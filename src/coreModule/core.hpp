@@ -224,8 +224,8 @@ public:
 	//! Set whether sky position is to be locked. Both-paths mirror (defined in
 	//! core.cpp): old navigation flag + new-path Camera sky-lock (INTENT 11.58).
 	void setFlagLockSkyPosition(bool b);
-	//! Whether the sky position is locked ON THE PATH THAT DRAWS — B33
-	//! (§11.108(f), the F12 template §11.118(f)). Defined in core.cpp: this
+	//! Whether the sky position is locked ON THE PATH THAT DRAWS -- B33
+	//! (S11.108(f), the F12 template S11.118(f)). Defined in core.cpp: this
 	//! header does not see the Camera, and the answer is the Camera's whenever
 	//! the new path is the one drawing.
 	bool getFlagLockSkyPosition(void);
@@ -236,17 +236,17 @@ public:
 	//! the OLD navigator only, while the drawn mount is `Camera::mount`
 	//! (`Camera::setMount`, whose transition is a deduce-identical-view
 	//! recovery the old setter has no equivalent of). Both are config-only
-	//! today — this method and toggleMountMode have ZERO callers in src/, and
+	//! today -- this method and toggleMountMode have ZERO callers in src/, and
 	//! both authorities are initialised from the SAME key
 	//! ([navigation] viewing_mode: core.cpp for the navigator,
-	//! ssystem_factory.cpp for the camera) — which is B35, and the spelling of
+	//! ssystem_factory.cpp for the camera) -- which is B35, and the spelling of
 	//! the command that would wire it is Vixy's (D15 adjacency). Whoever wires
 	//! it makes this dual FIRST; the getter is already asking the right
-	//! question. (INTENT §11.131.)
+	//! question. (INTENT S11.131.)
 	void setMountMode(MOUNT_MODE m) {
 		navigation->setViewingMode((m==MOUNT_ALTAZIMUTAL) ? Navigator::VIEW_HORIZON : Navigator::VIEW_EQUATOR);
 	}
-	//! Get current mount type — of the path that DRAWS (B33). Defined in
+	//! Get current mount type -- of the path that DRAWS (B33). Defined in
 	//! core.cpp, same reason as getFlagLockSkyPosition.
 	MOUNT_MODE getMountMode(void);
 	//! Toggle current mount mode between equatorial and altazimutal
@@ -356,7 +356,7 @@ public:
 	//! the old pointer would double-draw at the old path's projected position.
 	//! That holds for old-tree bodies (OBJECT_BODY) and for new-only composed
 	//! bodies (OBJECT_MODULAR) alike - both are driven by
-	//! ModularBody::getSelected() there (B24-select, INTENT §11.106).
+	//! ModularBody::getSelected() there (B24-select, INTENT S11.106).
 	//! Non-body pointers (star/nebula) have no new-path counterpart and stay.
 	bool needOldSelectionPointer() const {
 		if (!selected_object || !object_pointer_visibility)
@@ -440,41 +440,41 @@ public:
 	// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
 	void ssystemDualDump(const std::string& file);
 
-	//! The direction the OLD path draws the sky from (§2 row B19's twin).
+	//! The direction the OLD path draws the sky from (S2 row B19's twin).
 	//! The star field, the milky way and the nebulae are aimed by this vector
-	//! and by nothing the camera holds — measured 107.634 deg away from the
-	//! camera in a scene where nothing aimed either path (INTENT §11.130).
+	//! and by nothing the camera holds -- measured 107.634 deg away from the
+	//! camera in a scene where nothing aimed either path (INTENT S11.130).
 	const Vec3d& getSkyVision() const;
 
 	//! Put that direction back where a session recorded it, and make it MEAN
 	//! something: the transforms are recomputed from the observer and the date
 	//! FIRST, because a restore runs between two frames and the navigator's
-	//! matrices are otherwise still the previous frame's — on the launch body,
+	//! matrices are otherwise still the previous frame's -- on the launch body,
 	//! at the launch date. Same two calls Core::init makes after it moves the
 	//! observer; no existing caller of the old path changes.
 	void restoreSkyVision(const Vec3d& localVision);
 
-	//! §2 row B10 on BOTH paths. `setViewOffset` is already the one sink the
-	//! two §2(c) channels funnel into, so the scalar is its business; what it
+	//! S2 row B10 on BOTH paths. `setViewOffset` is already the one sink the
+	//! two S2(c) channels funnel into, so the scalar is its business; what it
 	//! cannot do is assert the ARMING LATCH, which D32 saves as a condition and
 	//! snaps. The old navigator's latch is otherwise only reachable through an
 	//! aim, and a restore must not aim. Session-restore use only.
 	void restoreViewOffset(double offset, bool armed);
 
-	//! READBACK ONLY (INTENT §5.63 / §11.130) — the OLD path's view state, as
+	//! READBACK ONLY (INTENT S5.63 / S11.130) -- the OLD path's view state, as
 	//! one JSON object, written into the dual-path dump's header.
 	//! What it is FOR: the composed screen of a restored session differs from
 	//! the saved one ONLY in old-path sky content (stars / milky way /
 	//! nebulae), while every field of the camera dump agrees. The state those
 	//! three are drawn from lives in the navigator, the observer, the projector
-	//! and the star pipeline, and none of it was observable — so the difference
+	//! and the star pipeline, and none of it was observable -- so the difference
 	//! could be measured but not attributed. Each owner writes its own part;
 	//! this method only composes them and adds what Core itself owns.
 	//! Const, side-effect-free, dump-channel only: the old render path is
-	//! unchanged by construction (§11.52(b)).
+	//! unchanged by construction (S11.52(b)).
 	void dumpOldViewState(std::ostream &out) const;
 
-	//! ---- THE INTERACTIVE-RAMP INSTRUMENT (INTENT §11.133, B34) -----------
+	//! ---- THE INTERACTIVE-RAMP INSTRUMENT (INTENT S11.133, B34) -----------
 	//! READBACK ONLY. One record per `Core::updateMove` frame in which an
 	//! interactive ramp is active, plus the FIRST frame after it stops (so a
 	//! key RELEASE has a row of its own and is not read off an absence).
@@ -483,10 +483,10 @@ public:
 	//! it changes no behaviour.
 	//! What it is FOR: the parity claim B34's ramp member makes is a PER-STEP
 	//! one. A `body action dual_dump` before and after a 2.5 s key hold gives
-	//! two ABSOLUTE states — it cannot say whether the two paths took the same
+	//! two ABSOLUTE states -- it cannot say whether the two paths took the same
 	//! step, the same number of steps, or the same law; and on a binary with no
 	//! mirror it cannot tell "the ramp did not reach the camera" from "the
-	//! readout does not exist" (§11.132(a)'s fiction, the reason instruments
+	//! readout does not exist" (S11.132(a)'s fiction, the reason instruments
 	//! come first and in their own commit). Each row therefore carries the
 	//! frame's INPUTS (delta_time, both fov authorities, the scaled steps) and
 	//! BOTH paths' view parameters before and after the step.
@@ -498,10 +498,10 @@ public:
 		double dAz, dAlt, dFov, dHeight;	//!< the per-frame steps AFTER the ramp law
 		double coefAz, coefAlt;		//!< the joypad-axis coefficients that scaled them
 		//! OLD: the vision vector's spherical coordinates in the ACTIVE mount's
-		//! frame — exactly the pair `Navigator::updateMove` reads and writes.
+		//! frame -- exactly the pair `Navigator::updateMove` reads and writes.
 		double oldAz, oldAlt, oldAzAfter, oldAltAfter;
-		//! NEW: `Camera`'s own view parameters (its convention: az = −lng and
-		//! alt = −lat of the forward direction in the param frame).
+		//! NEW: `Camera`'s own view parameters (its convention: az = -lng and
+		//! alt = -lat of the forward direction in the param frame).
 		double newAz, newAlt, newAzAfter, newAltAfter;
 		bool active;				//!< false on the release row
 	};
@@ -623,7 +623,7 @@ private:
 	//! colors) to the new-path planet grid, once per frame before the modular
 	//! system draws. Reproduces old Body::drawPlanetGrid's per-frame poll of the
 	//! sky managers (body.cpp:1257-1258): the planet-grid tropic circles ride
-	//! LINE_TROPIC, the polar circles LINE_CIRCLE_POLAR (INTENT §11.57, B23).
+	//! LINE_TROPIC, the polar circles LINE_CIRCLE_POLAR (INTENT S11.57, B23).
 	void syncPlanetGridSkyState();
 
 	//! Callback to record actions
@@ -717,7 +717,7 @@ private:
 	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
 	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales
-	std::unique_ptr<StarNavigator> starNav; 			// permet le voyage dans les étoiles
+	std::unique_ptr<StarNavigator> starNav; 			// permet le voyage dans les etoiles
 	std::unique_ptr<CloudNavigator> cloudNav; 			// draw galaxy gaz clouds
 	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
 	std::unique_ptr<StarGalaxy> starGalaxy; 			// draw galaxy stars when in universe

@@ -62,14 +62,14 @@ std::string ModularObject::getShortInfoNavString(const Navigator *nav, const Tim
     oss << ("SA ") << Utility::printAngleDMS(2*M_PI-tmp.first)
 	    << (" GHA ") << Utility::printAngleDMS(GHA)
 	    << (" LHA ") << Utility::printAngleDMS(HA);
-	// calculate alt az. Old path prints az/alt/coAlt (coAlt = 90°−alt) under
-	// the "Az/Alt/coA" label [body.cpp:433]; the new path had swapped alt↔az
-	// (raw az too) - a port defect flagged at §11.4. Reproduce the old order +
-	// convention exactly via the single authority (I2/parity, §11.60).
+	// calculate alt az. Old path prints az/alt/coAlt (coAlt = 90deg-alt) under
+	// the "Az/Alt/coA" label [body.cpp:433]; the new path had swapped alt<->az
+	// (raw az too) - a port defect flagged at S11.4. Reproduce the old order +
+	// convention exactly via the single authority (I2/parity, S11.60).
     const auto aa = altAz();  // (alt, az) in the old-path convention
 	oss << "@" << (" Az/Alt/coA: ") << Utility::printAngleDMS(aa.second) << "/" << Utility::printAngleDMS(aa.first) << "/" << Utility::printAngleDMS(M_PI_2-aa.first) << " LPA " << Utility::printAngleDMS(PA);
 
-    // B27 A5 (§11.73(b), 2026-07-25): the day-length line was keyed on the name
+    // B27 A5 (S11.73(b), 2026-07-25): the day-length line was keyed on the name
     // "Sun" (old body.cpp:434). RESOLVED to the CAPABILITY isStar(), not the
     // system star: `daytime` above is computed from THIS body's declination and
     // the observer's latitude, i.e. the length of the day this body makes when
@@ -132,8 +132,8 @@ std::pair<double, double> ModularObject::altAz() const
     // &ret.first, ...) puts latitude(alt) in .first, longitude(az) in .second.
     const auto tmp = Camera::instance->observedPosToAltAz(body->getObservedPosition());
     // Old-path azimuth convention (N=0, E=90). The new raw az zero is offset
-    // -π/2 from the old raw frame [measured, §11.60], so π/2 − az_raw
-    // reproduces Body::getAltAz's az exactly (float32 residual ≤3e-5°).
+    // -pi/2 from the old raw frame [measured, S11.60], so pi/2 - az_raw
+    // reproduces Body::getAltAz's az exactly (float32 residual <=3e-5deg).
     double az = std::fmod(M_PI_2 - tmp.second, 2 * M_PI);
     if (az < 0)
         az += 2 * M_PI;
@@ -169,7 +169,7 @@ double ModularObject::getSatellitesFov(const Navigator *nav) const
 {
     // Old path excluded the Sun by name; the structural equivalent is excluding
     // the system's PRIMARY (its "satellites" span the whole system). D27 split
-    // (§11.113(f)): primacy, not luminosity - a dark primary's children span the
+    // (S11.113(f)): primacy, not luminosity - a dark primary's children span the
     // system just as widely, and a companion star that orbits something else has
     // an ordinary subsystem worth fitting.
     if (body->hasChildren() && !body->isPrimary()) {

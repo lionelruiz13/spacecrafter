@@ -72,7 +72,7 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
         ),
 	rings(nullptr), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
 {
-	if (_bodyTexture.tex_night != "") {  // prépare au night_shader
+	if (_bodyTexture.tex_night != "") {  // prepare au night_shader
 		tex_night = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true, true);
 		tex_specular = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true);
 	}

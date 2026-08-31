@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.3)
 
 
 message("---------------------------------------------")
-message(" Project Earth by Lartillot Jérôme")
+message(" Project Earth by Lartillot Jerome")
 message("---------------------------------------------")
 
 project(earth)

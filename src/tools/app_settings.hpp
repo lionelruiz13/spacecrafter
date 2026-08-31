@@ -81,7 +81,7 @@ public:
 	//! Get the name of the directory containing the data
 	const std::string getDataDir() const;
 
-	//! renvoie le répertoire contenant les locales du logiciel
+	//! renvoie le repertoire contenant les locales du logiciel
 	const std::string getLocaleDir() const;
 
 	//! Get the fullname of the directory containing the fonts user

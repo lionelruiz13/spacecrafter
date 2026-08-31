@@ -11,11 +11,11 @@
     "source_anchor_convention": "Bare 'app_command_interface.cpp:N' = src/interfaceModule/app_command_interface.cpp (the handler file, per the dispatch schema). Any other anchor is written repo-relative from the tree root.",
     "schema_notes": [
       "`required` is tri-state: true = the command cannot act without the key on any path; false = optional on every path; \"conditional\" = required only inside a branch, the branch named in the key's `notes` and in the command's `branches`.",
-      "`branches` (unit-1 field, kept) — most handlers in this unit are selector-shaped (`action`, `jump`, the first-non-empty ladders of `select`/`date`/`zoom`): a flat required/optional split would misstate them.",
-      "`value_docs` (unit-1 field, kept) — where a key is enumerated and each value selects a different effect, C6's per-thing doc line is attached per value, not only per key.",
-      "`exclusive_groups` — used here only where the code itself picks ONE of several spellings for the same quantity (moveto lat/latitude, lon/longitude, alt/altitude).",
-      "`downstream` (unit-1 field) — not used in this unit: no handler in 3096-3944 forwards the whole `args` map. The one cross-handler hand-off is `media` -> `audio`, and it goes through a rebuilt COMMAND STRING, not through the map (:3511, recorded in media.notes).",
-      "Absent-key value for every eval* conversion is fixed IN the handler file and is not opaque: evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" [app_command_interface.cpp:4458-4479]. What a NON-empty string evaluates to stays opaque here (app_command_eval.cpp, INTENT §5 item 5): recorded as evalDouble/evalInt/evalString, $-variable substitution possible.",
+      "`branches` (unit-1 field, kept) -- most handlers in this unit are selector-shaped (`action`, `jump`, the first-non-empty ladders of `select`/`date`/`zoom`): a flat required/optional split would misstate them.",
+      "`value_docs` (unit-1 field, kept) -- where a key is enumerated and each value selects a different effect, C6's per-thing doc line is attached per value, not only per key.",
+      "`exclusive_groups` -- used here only where the code itself picks ONE of several spellings for the same quantity (moveto lat/latitude, lon/longitude, alt/altitude).",
+      "`downstream` (unit-1 field) -- not used in this unit: no handler in 3096-3944 forwards the whole `args` map. The one cross-handler hand-off is `media` -> `audio`, and it goes through a rebuilt COMMAND STRING, not through the map (:3511, recorded in media.notes).",
+      "Absent-key value for every eval* conversion is fixed IN the handler file and is not opaque: evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" [app_command_interface.cpp:4458-4479]. What a NON-empty string evaluates to stays opaque here (app_command_eval.cpp, INTENT S5 item 5): recorded as evalDouble/evalInt/evalString, $-variable substitution possible.",
       "Conversions that are NOT eval* are named with the function that does them (Utility::strToPosDouble, Utility::strToBool, Utility::isTrue, std::stod, FixedPointI16_2::fromString): those take the raw text, so no $-variable substitution happens on them."
     ],
     "other_args_uses": [],
@@ -116,10 +116,10 @@
       {"line": 3919, "command": "date", "keys": ["sun"]}
     ],
     "shared_context": {
-      "executeCommandStatus": "app_command_interface.cpp:1163-1177 — the return path of every handler. debug_message EMPTY = success: `commandline` is recorded when recording is on and 'true' is returned. debug_message SET = two log lines ('Could not execute: <line>' + the message) and 'false'. A handler that returns without setting debug_message therefore reports SUCCESS even when it did nothing (three cases in this unit: mode with no `jump`, date sun with an unknown value, media's colour helper).",
-      "args_container": "stringHash_t = std::map<std::string,std::string> (src/tools/utility.hpp:85), member `args` (app_command_interface.hpp:204), cleared at the top of every executeCommand (app_command_interface.cpp:196-199). `args[KEY]` is std::map::operator[]: reading an ABSENT key INSERTS an empty entry. No handler in this unit walks the map, so the insertions are invisible here — but `media` can re-enter executeCommand (:3511), which CLEARS and rebuilds `args` under the running handler (see media.notes).",
+      "executeCommandStatus": "app_command_interface.cpp:1163-1177 -- the return path of every handler. debug_message EMPTY = success: `commandline` is recorded when recording is on and 'true' is returned. debug_message SET = two log lines ('Could not execute: <line>' + the message) and 'false'. A handler that returns without setting debug_message therefore reports SUCCESS even when it did nothing (three cases in this unit: mode with no `jump`, date sun with an unknown value, media's colour helper).",
+      "args_container": "stringHash_t = std::map<std::string,std::string> (src/tools/utility.hpp:85), member `args` (app_command_interface.hpp:204), cleared at the top of every executeCommand (app_command_interface.cpp:196-199). `args[KEY]` is std::map::operator[]: reading an ABSENT key INSERTS an empty entry. No handler in this unit walks the map, so the insertions are invisible here -- but `media` can re-enter executeCommand (:3511), which CLEARS and rebuilds `args` under the running handler (see media.notes).",
       "wait_channel": "commandZoom is the one handler of this unit taking `uint64_t &wait` (:3268, dispatched at :297). The value is added to the script's own wait_time in milliseconds (src/scriptModule/script_mgr.cpp:306-331), i.e. it holds the SCRIPT, not the view.",
-      "handler_ranges_measured": "select 3096-3147 · deselect 3149-3157 · comment 3160-3164 · uncomment 3167-3171 · look_at 3174-3203 · star_lines 3206-3222 · galaxy_stars 3224-3250 · position 3253-3266 · zoom 3268-3301 · timerate 3303-3394 · moveto 3396-3463 · mode 3465-3488 · media 3490-3777 · domemasters 3780-3796 · date 3799-3943 (measured: grep '^int AppCommandInterface::|^}' over the range). The lines between two handlers are blank; no `args[` lives outside a handler body."
+      "handler_ranges_measured": "select 3096-3147 * deselect 3149-3157 * comment 3160-3164 * uncomment 3167-3171 * look_at 3174-3203 * star_lines 3206-3222 * galaxy_stars 3224-3250 * position 3253-3266 * zoom 3268-3301 * timerate 3303-3394 * moveto 3396-3463 * mode 3465-3488 * media 3490-3777 * domemasters 3780-3796 * date 3799-3943 (measured: grep '^int AppCommandInterface::|^}' over the range). The lines between two handlers are blank; no `args[` lives outside a handler body."
     }
   },
 
@@ -129,7 +129,7 @@
       "lines": "3096-3147",
       "aliases": [],
       "registration": "app_command_init.cpp:85 (ACP_CN_SELECT = \"select\", base_command_interface.hpp:376)",
-      "doc": "Choose the object the program points at and describes — a star, a body of the solar system, a deep-sky object or a constellation.",
+      "doc": "Choose the object the program points at and describes -- a star, a body of the solar system, a deep-sky object or a constellation.",
       "args": {
         "hp": {
           "doc": "The number of a star in the Hipparcos star catalogue.",
@@ -187,7 +187,7 @@
           "notes": "The short name is matched without regard to case (src/coreModule/constellation_mgr.cpp findFromAbbreviation uppercases both sides). Selecting a constellation clears the selected OBJECT (src/coreModule/core.cpp:1057-1058), so nothing is described afterwards."
         },
         "constellation_star": {
-          "doc": "The short name of a constellation whose brightest star should be selected — the way to centre the view on a constellation.",
+          "doc": "The short name of a constellation whose brightest star should be selected -- the way to centre the view on a constellation.",
           "value": "string (a constellation short name)",
           "default": "absent or empty -> nothing is selected: \"command 'select' : no object found\"",
           "required": "conditional",
@@ -209,7 +209,7 @@
         {"selector": "none of the seven identity keys", "requires": [], "optional": [], "effect": "\"command 'select' : no object found\"", "source": "app_command_interface.cpp:3133-3136"}
       ],
       "notes": [
-        "The seven identity keys are tried in a FIXED order written into the code — hp, star, planet, body, nebula, constellation, constellation_star (:3108-3132) — and the first one present wins, whatever order the author wrote them in. The zodiac test comes before all of them (:3103).",
+        "The seven identity keys are tried in a FIXED order written into the code -- hp, star, planet, body, nebula, constellation, constellation_star (:3108-3132) -- and the first one present wins, whatever order the author wrote them in. The zodiac test comes before all of them (:3103).",
         "Selecting something stops the view from following what it was following (Core::selectObject sets tracking off, src/coreModule/core.cpp:1081-1087)."
       ],
       "flagged": []
@@ -246,7 +246,7 @@
       "args": {},
       "key_grammar": {
         "doc": "This command takes no key. Anything written after it is parsed as key/value pairs and ignored.",
-        "key_domain": "none — the handler reads no key",
+        "key_domain": "none -- the handler reads no key",
         "value": "n/a",
         "default": "n/a",
         "required": false,
@@ -254,7 +254,7 @@
       },
       "notes": [
         "The whole handler is `swapCommand = true` (:3162), the flag the executor tests before dispatching anything: while it is set, every command is skipped and logged 'this command has not been executed' (executeCommand :225-228, field declared app_command_interface.hpp:206).",
-        "Because `comment`, `uncomment` and `struct` are compared BEFORE the skip test (:215-222 vs :225), those three still act inside a skipped block — which is what makes the block closable at all. A second `comment` inside a block changes nothing.",
+        "Because `comment`, `uncomment` and `struct` are compared BEFORE the skip test (:215-222 vs :225), those three still act inside a skipped block -- which is what makes the block closable at all. A second `comment` inside a block changes nothing.",
         "The skip state belongs to the interface, not to the file: it is cleared at construction (:72) and by `script action end` (:2809, unit 2), and reaching the end of a script runs exactly that (terminateScript :178-181 <- src/scriptModule/script_mgr.cpp:335). So a block left open at the end of a script does not leak into the next one.",
         "Being outside m_commands also means the did-you-mean suggester can never propose these two names (parse_model.pre_table_commands).",
         "There is one more `unskippable` escape: `terminateScript` sets it (:180) so the closing `script action end` runs even inside a skipped block (:225)."
@@ -271,7 +271,7 @@
       "args": {},
       "key_grammar": {
         "doc": "This command takes no key. Anything written after it is parsed as key/value pairs and ignored.",
-        "key_domain": "none — the handler reads no key",
+        "key_domain": "none -- the handler reads no key",
         "value": "n/a",
         "default": "n/a",
         "required": false,
@@ -293,7 +293,7 @@
       "args": {
         "azimuth": {
           "doc": "Where to look, measured around the horizon in degrees.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> the turn-to form is not taken (it needs `altitude` as well) and the nudge form is tried instead",
           "required": "conditional",
           "source": "app_command_interface.cpp:3176, 3179-3188 -> src/coreModule/coreLink.hpp:375-382 -> src/navModule/navigator.cpp:144-157 (W_AZIMUTH=\"azimuth\", base_command_interface.hpp:153)",
@@ -301,7 +301,7 @@
         },
         "altitude": {
           "doc": "Where to look, measured up from the horizon in degrees.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> the turn-to form is not taken and the nudge form is tried instead",
           "required": "conditional",
           "source": "app_command_interface.cpp:3177, 3179-3188 -> src/navModule/navigator.cpp:152 (W_ALTITUDE=\"altitude\", base_command_interface.hpp:179)",
@@ -309,22 +309,22 @@
         },
         "duration": {
           "doc": "How many seconds the turn takes.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "in the turn-to form, absent -> 1 second (the default argument of CoreLink::lookAt, src/coreModule/coreLink.hpp:375); in the nudge form, absent -> 0, i.e. the view jumps at once",
           "required": false,
           "source": "app_command_interface.cpp:3181-3188 (turn-to) and 3198 (nudge) -> src/navModule/navigator.cpp:363-385 (W_DURATION=\"duration\", base_command_interface.hpp:102)"
         },
         "delta_azimuth": {
-          "doc": "How far to nudge the view around the horizon — in RADIANS, not degrees (half a turn is about 3.14).",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "How far to nudge the view around the horizon -- in RADIANS, not degrees (half a turn is about 3.14).",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> 0, no nudge around; with `delta_altitude` also absent the command reports \"Command 'look_at': wrong argument\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:3194, 3196-3198 -> src/coreModule/core.hpp:265-268 -> src/navModule/navigator.cpp:181-198 (W_DELTA_AZIMUTH=\"delta_azimuth\", base_command_interface.hpp:154)",
-          "notes": "[derived] Radians: the value is added to an angle that comes out of Utility::rectToSphe, which returns radians (src/tools/utility.cpp:102-107; use at src/navModule/navigator.cpp:186-193) — no PI/180 anywhere on this path, unlike `azimuth`. It is SUBTRACTED from the current azimuth (src/navModule/navigator.cpp:193), so its sign is the opposite of `azimuth`'s direction."
+          "notes": "[derived] Radians: the value is added to an angle that comes out of Utility::rectToSphe, which returns radians (src/tools/utility.cpp:102-107; use at src/navModule/navigator.cpp:186-193) -- no PI/180 anywhere on this path, unlike `azimuth`. It is SUBTRACTED from the current azimuth (src/navModule/navigator.cpp:193), so its sign is the opposite of `azimuth`'s direction."
         },
         "delta_altitude": {
-          "doc": "How far to nudge the view up or down — in RADIANS, not degrees (a quarter turn is about 1.57).",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "How far to nudge the view up or down -- in RADIANS, not degrees (a quarter turn is about 1.57).",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> 0, no nudge up or down",
           "required": "conditional",
           "source": "app_command_interface.cpp:3195, 3196-3198 -> src/navModule/navigator.cpp:194-198 (W_DELTA_ALTITUDE=\"delta_altitude\", base_command_interface.hpp:195)",
@@ -332,12 +332,12 @@
         }
       },
       "branches": [
-        {"selector": "azimuth AND altitude both non-empty", "requires": ["azimuth", "altitude"], "optional": ["duration"], "effect": "turn the view to that direction over `duration` seconds (1 by default), then return — the delta keys are never read", "source": "app_command_interface.cpp:3179-3191"},
+        {"selector": "azimuth AND altitude both non-empty", "requires": ["azimuth", "altitude"], "optional": ["duration"], "effect": "turn the view to that direction over `duration` seconds (1 by default), then return -- the delta keys are never read", "source": "app_command_interface.cpp:3179-3191"},
         {"selector": "delta_azimuth or delta_altitude non-empty", "requires": [], "optional": ["duration"], "effect": "nudge the view by those amounts; stops the view following whatever it was following (src/coreModule/core.hpp:266)", "source": "app_command_interface.cpp:3194-3198"},
         {"selector": "neither form", "requires": [], "optional": [], "effect": "\"Command 'look_at': wrong argument\"", "source": "app_command_interface.cpp:3199-3201"}
       ],
       "notes": [
-        "The turn-to form needs BOTH `azimuth` and `altitude`: with only one of them the command falls through to the nudge form and, with no delta key, reports 'wrong argument' — the given key is silently dropped.",
+        "The turn-to form needs BOTH `azimuth` and `altitude`: with only one of them the command falls through to the nudge form and, with no delta key, reports 'wrong argument' -- the given key is silently dropped.",
         "The two forms use different units for the same kind of quantity (degrees for `azimuth`/`altitude`, radians for `delta_azimuth`/`delta_altitude`) and different absent-defaults for `duration` (1 second against 0)."
       ],
       "flagged": []
@@ -348,7 +348,7 @@
       "lines": "3206-3222",
       "aliases": [],
       "registration": "app_command_init.cpp:89 (ACP_CN_STAR_LINES = \"star_lines\", base_command_interface.hpp:380)",
-      "doc": "Draw straight lines between named stars — the stick figures of the constellations — from a file or from one line of text.",
+      "doc": "Draw straight lines between named stars -- the stick figures of the constellations -- from a file or from one line of text.",
       "args": {
         "action": {
           "doc": "The only thing this can say is drop: erase every star line being drawn.",
@@ -371,7 +371,7 @@
         },
         "asterism": {
           "doc": "One star-line record given directly on the line: a name, then how many segments follow, then that many pairs of star catalogue numbers.",
-          "value": "string — several words, so it has to be written between double quotes",
+          "value": "string -- several words, so it has to be written between double quotes",
           "default": "absent or empty -> \"Command 'star_lines': wrong argument\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:3216-3219 -> src/coreModule/coreLink.cpp:361-363 -> src/coreModule/starLines.cpp:250-302 (W_ASTERISM=\"asterism\", base_command_interface.hpp:196)",
@@ -441,7 +441,7 @@
       "notes": [
         "One bookmark only, held in memory and lost when the program stops: date, field of view, latitude, longitude, altitude, home body, current scale (src/coreModule/backup_mgr.hpp:45-56). This is NOT the `session` command, which writes a file.",
         "`load` before any `save` skips the place-and-date part (the recorded date is 0, src/coreModule/backup_mgr.cpp:49) but still runs the last two lines: it asks for an empty body name and puts you back in the solar-system scale (src/coreModule/backup_mgr.cpp:75-76, the struct's defaults).",
-        "The place is read from, and restored to, the path that actually draws (src/coreModule/backup_mgr.cpp:59-73, 82-90) — the same seam `moveto` uses."
+        "The place is read from, and restored to, the path that actually draws (src/coreModule/backup_mgr.cpp:59-73, 82-90) -- the same seam `moveto` uses."
       ],
       "flagged": []
     },
@@ -451,7 +451,7 @@
       "lines": "3268-3301",
       "aliases": [],
       "registration": "app_command_init.cpp:98 (ACP_CN_ZOOM = \"zoom\" -> SC_ZOOMR, base_command_interface.hpp:389)",
-      "signature": "commandZoom(uint64_t &wait) — the `center` form writes the script's inter-command delay (dispatched at :297)",
+      "signature": "commandZoom(uint64_t &wait) -- the `center` form writes the script's inter-command delay (dispatched at :297)",
       "doc": "Change how much sky the screen shows: zoom in on what is selected, go to a given width of view, or bring the selected object to the middle.",
       "args": {
         "auto": {
@@ -478,15 +478,15 @@
         },
         "duration": {
           "doc": "How many seconds the movement takes.",
-          "value": "on the `auto` form: number read as raw text and always made positive (Utility::strToPosDouble, src/tools/utility.cpp:420-429) — NO $-variable substitution; on the `fov` and `center` forms: number(evalDouble) — $-variable substitution possible",
+          "value": "on the `auto` form: number read as raw text and always made positive (Utility::strToPosDouble, src/tools/utility.cpp:420-429) -- NO $-variable substitution; on the `fov` and `center` forms: number(evalDouble) -- $-variable substitution possible",
           "default": "on `auto`, absent -> the application's own move duration (`set auto_move_duration`, src/coreModule/core.hpp:277-280); on `fov`, absent -> 0, the change is instant; on `center`, absent -> 5 seconds",
           "required": false,
           "source": "app_command_interface.cpp:3270, 3276 (auto), 3288 (fov), 3293-3294 (center)",
-          "notes": "The same key is read three times with two different converters — a value like `$myvar` works after `fov` and `center` but not after `auto`, where it becomes 0. On `auto` a negative value is turned positive."
+          "notes": "The same key is read three times with two different converters -- a value like `$myvar` works after `fov` and `center` but not after `auto`, where it becomes 0. On `auto` a negative value is turned positive."
         },
         "fov": {
-          "doc": "Go to a given width of view, in degrees — how much sky the screen shows from edge to edge.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "Go to a given width of view, in degrees -- how much sky the screen shows from edge to edge.",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> the next form is tried",
           "required": "conditional",
           "source": "app_command_interface.cpp:3286-3288 -> src/coreModule/coreLink.hpp:311-315 -> src/coreModule/projector.cpp:683-694 (W_FOV=\"fov\", base_command_interface.hpp:201)",
@@ -494,7 +494,7 @@
         },
         "delta_fov": {
           "doc": "Widen (a positive number) or narrow (a negative number) the view by this many degrees, at once.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> the next form is tried",
           "required": "conditional",
           "source": "app_command_interface.cpp:3290 -> src/coreModule/coreLink.hpp:327-330 (W_DELTA_FOV=\"delta_fov\", base_command_interface.hpp:202)",
@@ -520,7 +520,7 @@
       "notes": [
         "One form per line, in the fixed order auto, fov, delta_fov, center.",
         "The `center` form is the only one that holds the script: `wait` is set to duration x 1000 milliseconds (:3296) and only when that is more than 0. Every other form returns at once while the view keeps moving on its own.",
-        "The `auto` form reads `duration` twice — once as a positive number for every branch (:3270) and once as an emptiness test for the default (:3276)."
+        "The `auto` form reads `duration` twice -- once as a positive number for every branch (:3270) and once as an emptiness test for the default (:3276)."
       ],
       "flagged": []
     },
@@ -534,7 +534,7 @@
       "args": {
         "rate": {
           "doc": "How many seconds of sky time pass for each second of real time: 1 is real time, 0 is frozen, a negative number runs time backwards.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> the `action` forms are tried instead",
           "required": "conditional",
           "source": "app_command_interface.cpp:3305, 3311-3318 -> src/coreModule/coreLink.cpp:493-499 -> src/coreModule/time_mgr.cpp:42 (W_RATE=\"rate\", base_command_interface.hpp:204)",
@@ -542,18 +542,18 @@
         },
         "duration": {
           "doc": "How many seconds to take easing into the new speed, instead of changing it at once.",
-          "value": "number read as raw text with std::stod — NO $-variable substitution",
+          "value": "number read as raw text with std::stod -- NO $-variable substitution",
           "default": "absent or empty -> the speed changes at once",
           "required": false,
           "source": "app_command_interface.cpp:3308, 3312-3317 -> src/coreModule/time_mgr.cpp:51-60 (W_DURATION=\"duration\", base_command_interface.hpp:102)",
-          "notes": "On this path time is only let free again when the easing FINISHES (src/coreModule/time_mgr.cpp:34-38), unlike the instant form which frees it first. A value that is not a number stops the program — see `flagged`."
+          "notes": "On this path time is only let free again when the easing FINISHES (src/coreModule/time_mgr.cpp:34-38), unlike the instant form which frees it first. A value that is not a number stops the program -- see `flagged`."
         },
         "action": {
           "doc": "What to do to the flow of time when no speed is given.",
           "value": "enumerated",
           "values": ["pause", "resume", "increment", "decrement", "sincrement", "sdecrement"],
           "value_docs": {
-            "pause": "stop time where it is — or start it again if it is already stopped: this value FLIPS the state rather than only stopping (:3321)",
+            "pause": "stop time where it is -- or start it again if it is already stopped: this value FLIPS the state rather than only stopping (:3321)",
             "resume": "let time run again",
             "increment": "make time run faster by one step (twice as fast unless `step` says otherwise)",
             "decrement": "make time run slower by one step (half as fast unless `step` says otherwise)",
@@ -567,7 +567,7 @@
         },
         "step": {
           "doc": "The number one step multiplies the speed by.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> 2 for increment and decrement, 1.05 for sincrement and sdecrement",
           "required": false,
           "source": "app_command_interface.cpp:3307, 3330-3333 (increment), 3347-3350 (sincrement), 3363-3366 (decrement), 3378-3382 (sdecrement) (W_STEP=\"step\", base_command_interface.hpp:205)",
@@ -600,7 +600,7 @@
       "args": {
         "lat": {
           "doc": "Where to go: how far north (a positive number) or south (a negative one) of the equator, in degrees.",
-          "value": "number(evalDouble) — $-variable substitution possible — or one of the two words below",
+          "value": "number(evalDouble) -- $-variable substitution possible -- or one of the two words below",
           "values": ["default", "inverse", "<number of degrees>"],
           "value_docs": {
             "default": "the latitude the program starts at (src/coreModule/coreLink.hpp:884-886)",
@@ -612,7 +612,7 @@
         },
         "latitude": {
           "doc": "The same thing as `lat`, spelled out.",
-          "value": "number(evalDouble) — $-variable substitution possible — or default / inverse",
+          "value": "number(evalDouble) -- $-variable substitution possible -- or default / inverse",
           "values": ["default", "inverse", "<number of degrees>"],
           "default": "absent or empty -> the latitude you are at now is kept",
           "required": "conditional",
@@ -621,7 +621,7 @@
         },
         "lon": {
           "doc": "Where to go: how far east (a positive number) or west (a negative one), in degrees.",
-          "value": "number(evalDouble) — $-variable substitution possible — or one of the two words below",
+          "value": "number(evalDouble) -- $-variable substitution possible -- or one of the two words below",
           "values": ["default", "inverse", "<number of degrees>"],
           "value_docs": {
             "default": "the longitude the program starts at (src/coreModule/coreLink.hpp:888-890)",
@@ -633,7 +633,7 @@
         },
         "longitude": {
           "doc": "The same thing as `lon`, spelled out.",
-          "value": "number(evalDouble) — $-variable substitution possible — or default / inverse",
+          "value": "number(evalDouble) -- $-variable substitution possible -- or default / inverse",
           "values": ["default", "inverse", "<number of degrees>"],
           "default": "absent or empty -> the longitude you are at now is kept",
           "required": "conditional",
@@ -642,7 +642,7 @@
         },
         "alt": {
           "doc": "How high to stand above the body, in metres; a value that starts with + or - is added to your present height instead of replacing it.",
-          "value": "number(evalDouble) — $-variable substitution possible — or the word default",
+          "value": "number(evalDouble) -- $-variable substitution possible -- or the word default",
           "values": ["default", "<number of metres>", "+<number> / -<number> = relative to your present height"],
           "value_docs": {
             "default": "the height the program starts at (src/coreModule/coreLink.hpp:892-894)"
@@ -654,7 +654,7 @@
         },
         "altitude": {
           "doc": "The same thing as `alt`, spelled out.",
-          "value": "number(evalDouble) — $-variable substitution possible — or default, or a value starting with + or -",
+          "value": "number(evalDouble) -- $-variable substitution possible -- or default, or a value starting with + or -",
           "default": "absent or empty -> the height you are at now is kept",
           "required": "conditional",
           "source": "app_command_interface.cpp:3409 (W_ALTITUDE=\"altitude\", base_command_interface.hpp:179)",
@@ -662,28 +662,28 @@
         },
         "delta_lat": {
           "doc": "How many degrees to move north (positive) or south (negative) from where the move already puts you.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> no change",
           "required": "conditional",
           "source": "app_command_interface.cpp:3402, 3412, 3445-3447 (W_DELTA_LAT=\"delta_lat\", base_command_interface.hpp:209)"
         },
         "delta_lon": {
           "doc": "How many degrees to move east (positive) or west (negative) from where the move already puts you.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> no change",
           "required": "conditional",
           "source": "app_command_interface.cpp:3403, 3412, 3448-3450 (W_DELTA_LON=\"delta_lon\", base_command_interface.hpp:210)"
         },
         "delta_alt": {
           "doc": "How many metres to rise (positive) or drop (negative) from the height the move already puts you at.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> no change",
           "required": "conditional",
           "source": "app_command_interface.cpp:3404, 3412, 3451-3453 (W_DELTA_ALT=\"delta_alt\", base_command_interface.hpp:211)"
         },
         "multiply_alt": {
-          "doc": "Multiply the height by this number — 2 puts you twice as high, 0.5 half as high.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "Multiply the height by this number -- 2 puts you twice as high, 0.5 half as high.",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> no change",
           "required": "conditional",
           "source": "app_command_interface.cpp:3405, 3412, 3454-3456 (W_MULTIPLY_ALT=\"multiply_alt\", base_command_interface.hpp:212)",
@@ -691,7 +691,7 @@
         },
         "duration": {
           "doc": "How many seconds the move takes; leave it out to arrive at once.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, the move is immediate",
           "required": false,
           "source": "app_command_interface.cpp:3458 -> src/coreModule/coreLink.hpp:963-966 -> src/navModule/observer.cpp:160-199 (W_DURATION=\"duration\", base_command_interface.hpp:102)",
@@ -746,7 +746,7 @@
         },
         "altitude": {
           "doc": "How high to stand after the jump, in metres; a value starting with + or - is added to your present height instead.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "values": ["<number of metres>", "+<number> / -<number> = relative to your present height"],
           "default": "absent or empty -> your height is unchanged",
           "required": false,
@@ -771,7 +771,7 @@
       "lines": "3490-3777",
       "aliases": [],
       "registration": "app_command_init.cpp:67 (ACP_CN_MEDIA = \"media\", base_command_interface.hpp:357)",
-      "doc": "Play a video in the dome — or a sound on its own — and control it while it plays.",
+      "doc": "Play a video in the dome -- or a sound on its own -- and control it while it plays.",
       "args": {
         "action": {
           "doc": "What to do with the video.",
@@ -793,8 +793,8 @@
           "value": "enumerated, matched without regard to case",
           "values": ["vr360", "vrcube", "image", "viewport", "dual_viewport"],
           "value_docs": {
-            "vr360": "wrapped on a sphere all around you — a 360-degree video",
-            "vrcube": "wrapped on a cube all around you — a cube-map video",
+            "vr360": "wrapped on a sphere all around you -- a 360-degree video",
+            "vrcube": "wrapped on a cube all around you -- a cube-map video",
             "image": "as a picture object in the sky, placed by `name` and `position`",
             "viewport": "flat, over the whole screen",
             "dual_viewport": "flat, in the two-part screen arrangement"
@@ -802,7 +802,7 @@
           "default": "absent, or a value that is none of the five -> if `audioname` is given the whole command becomes an `audio` command (see notes); otherwise \"Command 'media' argument action need argument 'type'\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:3507-3515 -> src/mediaModule/media.cpp:48-71 (W_TYPE=\"type\", base_command_interface.hpp:119; W_VR360=\"vr360\", W_VRCUBE=\"vrcube\": base_command_interface.hpp:278, 279)",
-          "notes": "Matched without regard to case (src/mediaModule/media.cpp:65) — but the folder the file is looked for in is decided by comparing the value AS TYPED against 'vr360'/'vrcube' (:3521): `type VR360` plays as a 360-degree video while the file is looked for in the ordinary media folder instead of the vr360 one."
+          "notes": "Matched without regard to case (src/mediaModule/media.cpp:65) -- but the folder the file is looked for in is decided by comparing the value AS TYPED against 'vr360'/'vrcube' (:3521): `type VR360` plays as a 360-degree video while the file is looked for in the ordinary media folder instead of the vr360 one."
         },
         "videoname": {
           "doc": "The video file to play.",
@@ -899,7 +899,7 @@
           "default": "absent on an `action play` line -> subtitles are shown when a subtitle file was found and left alone otherwise (:3620-3623); absent on a line with no known action -> this form is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:3611-3623 (on an `action play` line) and 3762-3771 (on its own) (W_SUBTITLE=\"subtitle\", W_TOGGLE=\"toggle\": base_command_interface.hpp:165, 124)",
-          "notes": "The two places read the same key differently — on its own, the toggle test looks at the value of `action`, not at this value (:3764). See `flagged`."
+          "notes": "The two places read the same key differently -- on its own, the toggle test looks at the value of `action`, not at this value (:3764). See `flagged`."
         },
         "subtitle_project": {
           "doc": "How many copies of the subtitles are drawn around the dome.",
@@ -916,23 +916,23 @@
         },
         "speed": {
           "doc": "How fast to play: 1 is the normal speed, 2 twice as fast, 0.5 half as fast.",
-          "value": "number with at most two figures after the point (FixedPointI16_2, src/tools/fixed_point.hpp:2198) — read as raw text, NO $-variable substitution",
+          "value": "number with at most two figures after the point (FixedPointI16_2, src/tools/fixed_point.hpp:2198) -- read as raw text, NO $-variable substitution",
           "default": "absent on an `action play` line -> the normal speed 1 (:3687-3689); absent on a line with no known action -> this form is not taken",
           "required": false,
           "source": "app_command_interface.cpp:3684-3689 (on an `action play` line) and 3752-3756 (on its own) -> src/mediaModule/video_player.cpp:179-201 (W_SPEED=\"speed\", base_command_interface.hpp:163)",
-          "notes": "Kept between 0.1 and 10; 0 or less is refused with a log line and nothing changes (src/mediaModule/video_player.cpp:181-196). Figures past the second decimal are dropped. While the speed is not exactly 1 the separate sound file is cut, and it starts again in step when the speed returns to 1 (src/mediaModule/media.hpp:428-441). A value containing anything but figures, a sign and one point stops the program — see `flagged`."
+          "notes": "Kept between 0.1 and 10; 0 or less is refused with a log line and nothing changes (src/mediaModule/video_player.cpp:181-196). Figures past the second decimal are dropped. While the speed is not exactly 1 the separate sound file is cut, and it starts again in step when the speed returns to 1 (src/mediaModule/media.hpp:428-441). A value containing anything but figures, a sign and one point stops the program -- see `flagged`."
         },
         "speed_increment": {
-          "doc": "Add this to the playing speed — a negative number slows it down.",
-          "value": "number with at most two figures after the point (FixedPointI16_2) — read as raw text, NO $-variable substitution",
+          "doc": "Add this to the playing speed -- a negative number slows it down.",
+          "value": "number with at most two figures after the point (FixedPointI16_2) -- read as raw text, NO $-variable substitution",
           "default": "absent -> this form is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:3757-3761 -> src/mediaModule/media.hpp:442-444 (W_SPEED_INCREMENT=\"speed_increment\", base_command_interface.hpp:164)",
           "notes": "The sum is kept between 0.1 and 10 like `speed`. Only read on a line with no known `action`, and only when `speed` is not also there (:3752-3757)."
         },
         "value": {
-          "doc": "For `action jump`: how many seconds to move within the video — forward if positive, back if negative.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "For `action jump`: how many seconds to move within the video -- forward if positive, back if negative.",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, the video does not move",
           "required": "conditional",
           "source": "app_command_interface.cpp:3745 -> src/mediaModule/media.cpp:279-281 -> src/mediaModule/video_player.cpp:672-675 (W_VALUE=\"value\", base_command_interface.hpp:91)",
@@ -1001,13 +1001,13 @@
       "notes": [
         "The colour keys, `keycolor` and `speed` are read on the `action play` path only (except `speed`, which has a second reading of its own at :3752): the see-through colour of a video that is already playing cannot be changed.",
         "Colour errors are deliberately swallowed here: when the colour helper reports one, the message is thrown away (:3714-3715) and the video plays unchanged.",
-        "C1-relevant, the audio-only path (:3511): the handler calls executeCommand again from inside itself, and that call CLEARS and refills `args` and replaces `commandline` (:196-199). Two consequences: nothing after :3511 may read `args` (nothing does — the call is returned immediately), and a recording of `media action play audioname x` stores the rebuilt `audio ...` line instead of the line the author wrote (executeCommandStatus :1167).",
-        "Also C1-relevant at :3511: the rebuilt line ends with 'loop ' when `loop` is absent — a key with no value, which the parser silently drops (parse_model.pair_extraction). And an audio file name containing spaces cannot survive the rebuild, because the quotes were already stripped when the line was parsed.",
+        "C1-relevant, the audio-only path (:3511): the handler calls executeCommand again from inside itself, and that call CLEARS and refills `args` and replaces `commandline` (:196-199). Two consequences: nothing after :3511 may read `args` (nothing does -- the call is returned immediately), and a recording of `media action play audioname x` stores the rebuilt `audio ...` line instead of the line the author wrote (executeCommandStatus :1167).",
+        "Also C1-relevant at :3511: the rebuilt line ends with 'loop ' when `loop` is absent -- a key with no value, which the parser silently drops (parse_model.pair_extraction). And an audio file name containing spaces cannot survive the rebuild, because the quotes were already stripped when the line was parsed.",
         "`action play` needs the video file to exist even when `type` is image: the picture is a video texture (:3526-3530, src/mediaModule/media.cpp:219-222).",
         "The five actions each return at once, so no line can both play and stop."
       ],
       "flagged": [
-        "media `subtitle` on its own (app_command_interface.cpp:3762-3771): the toggle test at :3764 reads `argAction`, not `argSubtitle`. `media subtitle toggle` therefore does NOT flip the subtitles — 'toggle' is not an on-form, so it HIDES them — while `media action toggle subtitle <anything>` flips them. The `action play` reading of the same key (:3613) does it correctly. Which of the two is the intended spelling decides what the editor documents and completes: Vixy. Recorded, not fixed (out of scope).",
+        "media `subtitle` on its own (app_command_interface.cpp:3762-3771): the toggle test at :3764 reads `argAction`, not `argSubtitle`. `media subtitle toggle` therefore does NOT flip the subtitles -- 'toggle' is not an on-form, so it HIDES them -- while `media action toggle subtitle <anything>` flips them. The `action play` reading of the same key (:3613) does it correctly. Which of the two is the intended spelling decides what the editor documents and completes: Vixy. Recorded, not fixed (out of scope).",
         "media `speed` / `speed_increment`: FixedPointI16_2::fromString throws on any character that is not a figure, a sign or a point, and on more than one point (src/tools/fixed_point.hpp:397-421, with THROW_ON_FIXED_POINT_ERROR = 1 at src/tools/fixed_point.hpp:12); nothing in the call chain catches it (same check as for timerate). `media speed fast`, or `media speed $var`, therefore stops the program. Same class as the unit-1 dso3d `depth` finding; lint severity needs Vixy. Recorded, not fixed."
       ]
     },
@@ -1025,12 +1025,12 @@
           "values": ["snapshot", "record"],
           "value_docs": {
             "snapshot": "save one picture of the dome now",
-            "record": "start saving one picture per frame — or stop, if a sequence is already being saved: this value FLIPS the state (src/appModule/save_screen_interface.cpp:96-102)"
+            "record": "start saving one picture per frame -- or stop, if a sequence is already being saved: this value FLIPS the state (src/appModule/save_screen_interface.cpp:96-102)"
           },
           "default": "absent, or a value that is neither -> \"command 'domemasters': unknown argument\"",
           "required": true,
           "source": "app_command_interface.cpp:3782-3794 -> src/appModule/save_screen_interface.cpp:96-102, 146-154 (W_ACTION=\"action\", W_SNAPSHOT=\"snapshot\", W_RECORD=\"record\": base_command_interface.hpp:81, 83, 84)",
-          "notes": "A single picture is refused while a sequence is being saved (src/appModule/save_screen_interface.cpp:148-149) — with no message, so the command still reports success. The file names are <base>-YY.MM.DD-HH.MM.SS.png for a single picture and <base>-000000.png, -000001.png ... for a sequence, with .jpg instead of .png while the display feature 'image_compression_loss' is on (src/appModule/save_screen_interface.cpp:118-127, 347-360)."
+          "notes": "A single picture is refused while a sequence is being saved (src/appModule/save_screen_interface.cpp:148-149) -- with no message, so the command still reports success. The file names are <base>-YY.MM.DD-HH.MM.SS.png for a single picture and <base>-000000.png, -000001.png ... for a sequence, with .jpg instead of .png while the display feature 'image_compression_loss' is on (src/appModule/save_screen_interface.cpp:118-127, 347-360)."
         }
       },
       "branches": [
@@ -1053,21 +1053,21 @@
       "doc": "Set the date and time the sky is showing, either outright or by moving it along.",
       "args": {
         "jday": {
-          "doc": "The date given as a Julian day — the running count of days astronomers use, where the whole number changes at noon.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "The date given as a Julian day -- the running count of days astronomers use, where the whole number changes at noon.",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> the next form is tried",
           "required": "conditional",
           "source": "app_command_interface.cpp:3802-3807 -> src/coreModule/coreLink.cpp:507-509 (W_JDAY=\"jday\", base_command_interface.hpp:218)",
-          "notes": "The date that lands is kept inside the range the ephemerides can serve (src/coreModule/time_mgr.cpp:45-46). The half-day offset the doc line mentions — the whole number changing at noon and not at midnight — is written into the conversion itself (src/appModule/space_date.cpp:239-244)."
+          "notes": "The date that lands is kept inside the range the ephemerides can serve (src/coreModule/time_mgr.cpp:45-46). The half-day offset the doc line mentions -- the whole number changing at noon and not at midnight -- is written into the conversion itself (src/appModule/space_date.cpp:239-244)."
         },
         "local": {
           "doc": "The date and time written out, read as the time on your own clock.",
-          "value": "text of the shape [+/-]YYYY-MM-DDThh:mm:ss — the T is a letter you write; a value starting with T sets the time only and keeps the day",
+          "value": "text of the shape [+/-]YYYY-MM-DDThh:mm:ss -- the T is a letter you write; a value starting with T sets the time only and keeps the day",
           "values": ["YYYY-MM-DDThh:mm:ss", "Thh:mm:ss (time only, same day)"],
           "default": "absent or empty -> the next form is tried; a value that cannot be read -> \"Error parsing date local\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:3810-3828 -> src/appModule/space_date.cpp:255-279 (reading), 579-594 (the day the T-form keeps) (W_LOCAL=\"local\", base_command_interface.hpp:219)",
-          "notes": "How the text is actually read (src/appModule/space_date.cpp:265): a number, then ONE character of any kind, then the next number, and so on — so 2020/01/01T00:00:00 is read just as happily as the dashes-and-colons form. A value with no time part is read as that day at 00:00:00. The month must be 1 to 12, the day 1 to 31 (whatever the month), the hour 0 to 23, the minutes and seconds 0 to 59; anything else is refused. The value is then moved by the program's time-zone setting to get the sky's own time (:3823)."
+          "notes": "How the text is actually read (src/appModule/space_date.cpp:265): a number, then ONE character of any kind, then the next number, and so on -- so 2020/01/01T00:00:00 is read just as happily as the dashes-and-colons form. A value with no time part is read as that day at 00:00:00. The month must be 1 to 12, the day 1 to 31 (whatever the month), the hour 0 to 23, the minutes and seconds 0 to 59; anything else is refused. The value is then moved by the program's time-zone setting to get the sky's own time (:3823)."
         },
         "utc": {
           "doc": "The date and time written out, read as universal time (the time at longitude zero) instead of your own.",
@@ -1078,16 +1078,16 @@
           "notes": "Same reading as `local` but with no time-zone step, and there is no T-only form here: a value starting with T is refused."
         },
         "relative": {
-          "doc": "Move the date on by this many days of the body you are standing on — its own day, which is not always 24 hours.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "Move the date on by this many days of the body you are standing on -- its own day, which is not always 24 hours.",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> the next form is tried",
           "required": "conditional",
           "source": "app_command_interface.cpp:3843-3855 -> src/bodyModule/body.hpp:395-397 (W_RELATIVE=\"relative\", base_command_interface.hpp:220)",
-          "notes": "The body's own day is used unless it is longer than 366 of our days, in which case one of our days is used instead (:3852). Standing nowhere — in the galaxy or the universe view — the command reports an error (:3847-3850, the message is in French in the source)."
+          "notes": "The body's own day is used unless it is longer than 366 of our days, in which case one of our days is used instead (:3852). Standing nowhere -- in the galaxy or the universe view -- the command reports an error (:3847-3850, the message is in French in the source)."
         },
         "relative_year": {
           "doc": "Move the date on by this many years, keeping the same month, day and time.",
-          "value": "int(evalInt) — $-variable substitution possible",
+          "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent or empty -> the next form is tried",
           "required": "conditional",
           "source": "app_command_interface.cpp:3858-3863 -> src/coreModule/core.cpp:2523-2529 (W_RELATIVE_YEAR=\"relative_year\", base_command_interface.hpp:221)",
@@ -1095,15 +1095,15 @@
         },
         "relative_month": {
           "doc": "Move the date on by this many months, keeping the same day and time.",
-          "value": "int(evalInt) — $-variable substitution possible",
+          "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent or empty -> the next form is tried",
           "required": "conditional",
           "source": "app_command_interface.cpp:3866-3871 -> src/coreModule/core.cpp:2523-2529 (W_RELATIVE_MONTH=\"relative_month\", base_command_interface.hpp:222)",
           "notes": "The month number is simply added, so 13 means a year and a month later (src/coreModule/core.cpp:2528)."
         },
         "sidereal": {
-          "doc": "Move the date on by this many turns of the body you are standing on with respect to the stars — its sidereal day.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "Move the date on by this many turns of the body you are standing on with respect to the stars -- its sidereal day.",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> the next form is tried",
           "required": "conditional",
           "source": "app_command_interface.cpp:3874-3887 -> src/bodyModule/body.hpp:240-242 (W_SIDEREAL=\"sidereal\", base_command_interface.hpp:223)",
@@ -1115,7 +1115,7 @@
           "values": ["current", "preset", "keep_time"],
           "value_docs": {
             "current": "set the sky to the computer's date and time right now",
-            "preset": "set the sky to the date the program is configured to start at — but only when it is configured to start at a preset date, otherwise the computer's date is used (:3898-3900)",
+            "preset": "set the sky to the date the program is configured to start at -- but only when it is configured to start at a preset date, otherwise the computer's date is used (:3898-3900)",
             "keep_time": "take today's date from the computer but keep the time of day the sky is already showing"
           },
           "default": "absent or empty -> the next form is tried; any other value -> \"Command 'date': unknown load value\"",
@@ -1130,13 +1130,13 @@
           "value_docs": {
             "set": "the time the Sun sets today at your place",
             "rise": "the time the Sun rises today at your place",
-            "meridian": "the time the Sun is highest today — local noon",
+            "meridian": "the time the Sun is highest today -- local noon",
             "midnight": "the opposite of local noon: the calculation is made half a world away and the answer moved on one day (:3933-3936)"
           },
           "default": "absent or empty -> \"command 'date' : unknown argument\"; any other value -> nothing happens and the command reports SUCCESS (see `flagged`)",
           "required": "conditional",
           "source": "app_command_interface.cpp:3919-3940 -> src/coreModule/coreLink.cpp:535-547 -> src/coreModule/time_mgr.cpp:62-158 (rise), 159-251 (set), 253-349 (meridian) (W_SUN=\"sun\", W_SET=\"set\", W_RISE=\"rise\", W_MERIDIAN=\"meridian\", W_MIDNIGHT=\"midnight\": base_command_interface.hpp:126, 289, 290, 291, 292)",
-          "notes": "The calculation uses the longitude and latitude you are at. Where the Sun neither rises nor sets that day, the time goes to about local noon instead (time_mgr.cpp, the |Ho|>1 branch). If the calculation returns exactly zero the date is left alone (:3923, 3927, 3931, 3935 — each carries the author's own TODO)."
+          "notes": "The calculation uses the longitude and latitude you are at. Where the Sun neither rises nor sets that day, the time goes to about local noon instead (time_mgr.cpp, the |Ho|>1 branch). If the calculation returns exactly zero the date is left alone (:3923, 3927, 3931, 3935 -- each carries the author's own TODO)."
         }
       },
       "branches": [
@@ -1146,18 +1146,18 @@
       "notes": [
         "The nine forms are tried in a fixed order written into the code (jday, local, utc, relative, relative_year, relative_month, sidereal, load, sun) and only the first one present acts, whatever the order on the line.",
         "Sharp edge on the T-only form of `local`: the day it keeps comes from a text that begins with 'BC ' when the sky is at a year before 1 AD (src/appModule/space_date.cpp:587-593), so the first ten characters are not a date and the command reports 'Error parsing date local'. Only years before 1 AD are affected.",
-        "DEFECT, recorded not fixed: `date load preset` tests the same thing twice — `getStartupTimeMode() == W_PRESET || getStartupTimeMode() == W_PRESET` (:3898). The startup path that this is plainly copied from tests the two spellings 'preset' and 'Preset' (src/appModule/app.cpp:656), and W_PRESET is only \"preset\" (base_command_interface.hpp:287). So with the setting written 'Preset' the program starts at the preset date but `date load preset` goes to the computer's date instead."
+        "DEFECT, recorded not fixed: `date load preset` tests the same thing twice -- `getStartupTimeMode() == W_PRESET || getStartupTimeMode() == W_PRESET` (:3898). The startup path that this is plainly copied from tests the two spellings 'preset' and 'Preset' (src/appModule/app.cpp:656), and W_PRESET is only \"preset\" (base_command_interface.hpp:287). So with the setting written 'Preset' the program starts at the preset date but `date load preset` goes to the computer's date instead."
       ],
       "flagged": [
-        "date `sun` with a value that is none of the four (app_command_interface.cpp:3937-3938): the line `_(\"Command 'date': unknown sun value\");` translates a message and throws it away — debug_message is never set, so `date sun banana` reports SUCCESS and is recorded. Same class as the unit-1 suntrace finding (a branch that reports success having done nothing). Whether this should become a lint error and with what severity: Vixy. Recorded, not fixed (out of scope)."
+        "date `sun` with a value that is none of the four (app_command_interface.cpp:3937-3938): the line `_(\"Command 'date': unknown sun value\");` translates a message and throws it away -- debug_message is never set, so `date sun banana` reports SUCCESS and is recorded. Same class as the unit-1 suntrace finding (a branch that reports success having done nothing). Whether this should become a lint error and with what severity: Vixy. Recorded, not fixed (out of scope)."
       ]
     }
   },
 
   "unit_findings": {
     "c1_parse_model": [
-      "CONFIRMS parse_model.pre_table_commands from the other side: commandComment/commandUncomment are two-line handlers that only move `swapCommand` (:3162, :3169), and the executor tests those literals BEFORE the skip test (:215-222 vs :225) — which is what lets a block be closed at all. Adds the third escape the model does not mention: `unskippable` (:180, :229), set only by terminateScript so the closing `script action end` runs inside a skipped block.",
-      "ADDS to parse_model: a handler may RE-ENTER executeCommand. `media` does it at :3511 (the audio-only path), and executeCommand clears `args` and replaces `commandline` at :196-199. Consequences for scedit: (a) the recorded line for `media action play audioname x` is the rebuilt `audio ...` line, not what the author wrote; (b) the rebuilt line is built by string concatenation from values whose quotes were already stripped, so a file name with spaces is destroyed; (c) it ends with a dangling `loop` key when `loop` is absent, which the parser then drops silently (parse_model.pair_extraction) — the drop is what makes it harmless.",
+      "CONFIRMS parse_model.pre_table_commands from the other side: commandComment/commandUncomment are two-line handlers that only move `swapCommand` (:3162, :3169), and the executor tests those literals BEFORE the skip test (:215-222 vs :225) -- which is what lets a block be closed at all. Adds the third escape the model does not mention: `unskippable` (:180, :229), set only by terminateScript so the closing `script action end` runs inside a skipped block.",
+      "ADDS to parse_model: a handler may RE-ENTER executeCommand. `media` does it at :3511 (the audio-only path), and executeCommand clears `args` and replaces `commandline` at :196-199. Consequences for scedit: (a) the recorded line for `media action play audioname x` is the rebuilt `audio ...` line, not what the author wrote; (b) the rebuilt line is built by string concatenation from values whose quotes were already stripped, so a file name with spaces is destroyed; (c) it ends with a dangling `loop` key when `loop` is absent, which the parser then drops silently (parse_model.pair_extraction) -- the drop is what makes it harmless.",
       "CONFIRMS the recording-rewrite class found in unit 1 on `flag`: `timerate action increment|decrement|sincrement|sdecrement` rewrites `commandline` to `timerate rate <resulting speed>` (:3341, 3358, 3374, 3390) so a recording replays a state, not a step. Two of the four commands that rewrite their own line are now known; both are in the 'relative operation' family.",
       "REFINES parse_model: the SAME key can carry a different value grammar in different branches of one handler. `zoom duration` is Utility::strToPosDouble on the `auto` branch (raw text, no $-substitution, sign discarded) and evalDouble on the `fov`/`center` branches (:3270 vs :3288, :3294). `media subtitle` and `media speed` likewise have two readings each (:3611/:3762, :3684/:3752). A tool that maps key -> value domain per COMMAND is not faithful; the mapping is per command AND branch.",
       "REFINES parse_model.key_case's consequence for VALUES: value case is preserved by the parser, and handlers disagree about what to do with it. Matched case-insensitively: `mode jump` (src/executorModule/executor.cpp:86), `media type` (src/mediaModule/media.cpp:65), `media position` (src/mediaModule/image_mgr.cpp:76), constellation short names (constellation_mgr findFromAbbreviation). Matched exactly as typed: `zoom center` (only 'on'), `media project`/`media subtitle_project` (only 'twice'/'thrice'), every W_* comparison in `date`, `star_lines`, `position`, `timerate`. And `media type` is BOTH at once (:3521 compares the raw text while src/mediaModule/media.cpp:65 lowercases), which is a behaviour difference, not just a spelling one.",
@@ -1169,27 +1169,27 @@
       "used_as_KEYS in this unit": ["W_CONSTELLATION", "W_HP", "W_STAR", "W_PLANET", "W_BODY", "W_NEBULA", "W_CONSTELLATION_STAR", "W_POINTER", "W_AZIMUTH", "W_ALTITUDE", "W_DURATION", "W_DELTA_AZIMUTH", "W_DELTA_ALTITUDE", "W_ACTION", "W_LOAD", "W_ASTERISM", "W_AUTO", "W_MANUAL", "W_FOV", "W_DELTA_FOV", "W_CENTER", "W_RATE", "W_STEP", "W_LAT", "W_LON", "W_ALT", "W_LATITUDE", "W_LONGITUDE", "W_DELTA_LAT", "W_DELTA_LON", "W_DELTA_ALT", "W_MULTIPLY_ALT", "W_JUMP", "W_PAUSE", "W_LOOP", "W_TYPE", "W_AUDIONAME", "W_VIDEONAME", "W_NAME", "W_POSITION", "W_PROJECT", "W_SUBTITLENAME", "W_SUBTITLE", "W_SUBTITLE_PROJECT", "W_SPEED", "W_SPEED_INCREMENT", "W_COLOR_VALUE", "W_R", "W_G", "W_B", "W_INTENSITY", "W_KEYCOLOR", "W_VALUE", "W_JDAY", "W_LOCAL", "W_UTC", "W_RELATIVE", "W_RELATIVE_YEAR", "W_RELATIVE_MONTH", "W_SIDEREAL", "W_SUN"],
       "used_as_VALUES in this unit": ["W_ZODIAC", "ACP_SC_HOME_PLANET", "W_DROP", "W_SAVE", "W_LOAD", "W_OUT", "W_INITIAL", "W_ON", "W_PAUSE", "W_RESUME", "W_INCREMENT", "W_DECREMENT", "W_SINCREMENT", "W_SDECREMENT", "W_DEFAULT", "W_INVERSE", "W_PLAY", "W_STOP", "W_JUMP", "W_RESTART", "W_TOGGLE", "W_AUTO", "W_VR360", "W_VRCUBE", "W_TWICE", "W_THRICE", "W_SRT", "W_OGG", "W_SNAPSHOT", "W_RECORD", "W_CURRENT", "W_PRESET", "W_KEEPTIME", "W_SET", "W_RISE", "W_MERIDIAN", "W_MIDNIGHT"],
       "both_roles": [
-        "W_LOAD — key on `star_lines`/`galaxy_stars`/`date` (:3212, 3226, 3890), value of `position action` (:3260)",
-        "W_AUTO — key on `zoom` (:3271), value of `media subtitlename`/`audioname` (:3557, 3637)",
-        "W_PAUSE — key on `media action play` (:3496), value of `timerate action` (:3319) and of `media action` (:3741)",
-        "W_JUMP — key on `mode` (:3467), value of `media action` (:3744)",
-        "W_SUN — key on `date` (:3919); in unit 1 it was the argument of suntrace's suspected typo (:1633)"
+        "W_LOAD -- key on `star_lines`/`galaxy_stars`/`date` (:3212, 3226, 3890), value of `position action` (:3260)",
+        "W_AUTO -- key on `zoom` (:3271), value of `media subtitlename`/`audioname` (:3557, 3637)",
+        "W_PAUSE -- key on `media action play` (:3496), value of `timerate action` (:3319) and of `media action` (:3741)",
+        "W_JUMP -- key on `mode` (:3467), value of `media action` (:3744)",
+        "W_SUN -- key on `date` (:3919); in unit 1 it was the argument of suntrace's suspected typo (:1633)"
       ],
       "cross_family_spellings": [
         "ACP_SC_HOME_PLANET (\"home_planet\", base_command_interface.hpp:550) is a SET name (families.set_names) used here as a VALUE of `select planet`/`select body` (:3117, 3122).",
-        "W_SET (\"set\") is a COMMAND name used here as a VALUE of `date sun` (:3921) — the same shape as unit 1's ACP_CN_CLEAR note.",
+        "W_SET (\"set\") is a COMMAND name used here as a VALUE of `date sun` (:3921) -- the same shape as unit 1's ACP_CN_CLEAR note.",
         "W_POSITION (\"position\") is a COMMAND name used here as a KEY of `media` (:3518), and in unit 1 it was a VALUE of `get status`.",
         "W_BODY (\"body\") is a KEY on both `select` (:3119) and `mode` (:3471), and `body` is also a command name (unit 4).",
-        "W_SUBTITLE (\"subtitle\") is a KEY on `media` (:3611, 3762) and also one of the 97 flag names (families.flags) — the same spelling in two families; the media path even switches that flag on (:3604)."
+        "W_SUBTITLE (\"subtitle\") is a KEY on `media` (:3611, 3762) and also one of the 97 flag names (families.flags) -- the same spelling in two families; the media path even switches that flag on (:3604)."
       ],
       "census_dead_token_check": "Three of the census's suspected-dead W_* are LIVE in this range: W_RECORD (:3788, domemasters), W_TERMINATION is NOT here (only W_VIDEO_TERMINATION, unit 1), W_OFF is not read here (the off side is Utility::isFalse). Nothing in this range settles W_FALSE, W_MINIMAL, W_REPLACE or W_RECURSIVE."
     },
     "defects_recorded_not_fixed": [
-      "domemasters (:3791-3794): the 'unknown action value' message is always overwritten by 'unknown argument' before it is read — the branch does not return.",
-      "date (:3898): `getStartupTimeMode() == W_PRESET || getStartupTimeMode() == W_PRESET` — the same test twice; the startup code it copies tests 'preset' then 'Preset' (src/appModule/app.cpp:656).",
+      "domemasters (:3791-3794): the 'unknown action value' message is always overwritten by 'unknown argument' before it is read -- the branch does not return.",
+      "date (:3898): `getStartupTimeMode() == W_PRESET || getStartupTimeMode() == W_PRESET` -- the same test twice; the startup code it copies tests 'preset' then 'Preset' (src/appModule/app.cpp:656).",
       "date (:3937-3938): the unknown-sun-value message is computed and discarded, so the command reports success (flagged).",
       "media (:3764): the standalone subtitle branch tests `argAction` where it means `argSubtitle` (flagged).",
-      "mode (:3468, 3487): with no `jump` the command does nothing and reports success — no message is ever set.",
+      "mode (:3468, 3487): with no `jump` the command does nothing and reports success -- no message is ever set.",
       "timerate (:3317) and media (:3686, 3754, 3759): raw-text numeric conversions that throw with no catch anywhere in the command path (flagged).",
       "src/coreModule/coreLink.hpp:311-314 (outside this unit's write surface, seen while tracing `zoom fov`): CoreLink::zoomTo dereferences Camera::instance with no null test, while Core::zoomToBothPaths (src/coreModule/core.cpp:1312) tests it. Not reachable from a defect in this unit's grammar; recorded because it was observed."
     ]

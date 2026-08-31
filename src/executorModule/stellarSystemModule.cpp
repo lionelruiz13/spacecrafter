@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2021 Jérémy Calvo
+ * Copyright (C) 2021 Jeremy Calvo
  * Copyright (C) 2022 Calvin Ruiz
  *
  * This program is free software; you can redistribute it and/or
@@ -204,7 +204,7 @@ void StellarSystemModule::draw(int delta_time)
 	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
 	// Key the new-path planet-grid tropic/polar circles to the sky-line flags
-	// (LINE_TROPIC / LINE_CIRCLE_POLAR) just read above (INTENT §11.57, B23).
+	// (LINE_TROPIC / LINE_CIRCLE_POLAR) just read above (INTENT S11.57, B23).
 	core->syncPlanetGridSkyState();
 	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
@@ -217,7 +217,7 @@ void StellarSystemModule::draw(int delta_time)
 	// Update meteors
 	core->meteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
 
-	// retiré la condition && atmosphere->getFlagShow() de sorte à pouvoir en avoir par atmosphère ténue
+	// retire la condition && atmosphere->getFlagShow() de sorte a pouvoir en avoir par atmosphere tenue
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
 	// Dual-path (S8): see solarSystemModule.cpp - same seams.
 	if ((core->ssystemFactory->drawModularSystem

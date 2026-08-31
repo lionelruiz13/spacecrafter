@@ -526,7 +526,7 @@ template<class T> const Matrix4<T> Matrix4<T>::rotationZ(T angle)
 //! @return the corresponding rotation matrix.
 template<class T> const Matrix4<T> Matrix4<T>::zrotation(T cos,T sin)
 {
-	// writted by Jérôme while zrotation is unconventionnally CW instead of CCW.
+	// writted by Jerome while zrotation is unconventionnally CW instead of CCW.
 
 	return Matrix4<T>(cos, -sin, 0, 0,
 	                  sin, cos, 0, 0,

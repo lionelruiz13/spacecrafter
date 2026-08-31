@@ -9,7 +9,7 @@
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
 
-// B24 composition provider (INTENT §11.78; spelling `surface_point` +
+// B24 composition provider (INTENT S11.78; spelling `surface_point` +
 // ramp keys pending Vixy sign-off, the B28 protocol): a point ON a body's
 // surface, expressed in the parent's SURFACE frame - the co-rotation comes
 // from the GROUNDED fold (ModularBody::computeBodyToSurface, the parent's
@@ -17,7 +17,7 @@
 // this provider. This is the structural rover/launchpad form; the legacy
 // `location_orbit` instead self-rotates with a degraded approximation (raw
 // JD, no epoch, offset frozen at construction) and silently DOUBLE-applies
-// spin if combined with a grounded body (the §11.78(c) trap).
+// spin if combined with a grounded body (the S11.78(c) trap).
 //
 // Keys (data, degrees/km like every legacy key):
 //   orbit_lon, orbit_lat        - planetographic position on the parent
@@ -31,7 +31,7 @@
 //                                 over [start, start+duration], clamped both
 //                                 sides. (The dead legacy `linearOrbit` has
 //                                 its lerp weights SWAPPED - defect recorded,
-//                                 NOT reproduced here, §11.52(b).)
+//                                 NOT reproduced here, S11.52(b).)
 class SurfacePointOrbit : public Orbit {
 public:
     SurfacePointOrbit(ModularBody *parent, Vec3d direction,
@@ -60,7 +60,7 @@ public:
         return os.str();
     }
 
-    // THE MODEL LAYER (D21 [vixy 2026-08-22] via §11.149(c1)/(c2); §2(a)'s
+    // THE MODEL LAYER (D21 [vixy 2026-08-22] via S11.149(c1)/(c2); S2(a)'s
     // two-layer rule): the parent's UNSCALED datum, read AT EVERY EVALUATION.
     //
     // It used to be `datum + altKm/AU` folded into a `const double` at LOAD
@@ -71,10 +71,10 @@ public:
     // is a 5 s ASmooth ramp and a baked constant cannot inherit a ramp - which
     // is also why the same scene had DIFFERENT geometry by load route
     // (`body action reload` MOVED a composed rover by up to
-    // radius x (scale-1) = 6949.6 km on the shipped Moon, §11.101(f)).
+    // radius x (scale-1) = 6949.6 km on the shipped Moon, S11.101(f)).
     // (ii) It put a DISPLAY flag inside a PHYSICAL position: the position the
     // orbit, the shadow geometry and every model-position consumer read
-    // depended on `flag moon_scaled` - the D8 leak §11.101(f)(iii) recorded
+    // depended on `flag moon_scaled` - the D8 leak S11.101(f)(iii) recorded
     // against `ModularBody.hpp`'s own "Just visual scaling" contract.
     //
     // Reading the RAW datum live fixes both, and it costs one float load: the
@@ -128,7 +128,7 @@ class SurfacePointOrbitLoader : public OrbitLoader {
                 LOG_TYPE::L_WARNING);
         }
         // The co-rotation precondition, checked at the one place that knows
-        // both sides (§2(f)): this provider emits a surface-frame point, so a
+        // both sides (S2(f)): this provider emits a surface-frame point, so a
         // body that is NOT grounded would sit frozen in the parent's
         // non-spinning frame - the inverse of the location_orbit double-spin
         // trap. Load proceeds (the position is still well-defined); the log

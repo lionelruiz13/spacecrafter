@@ -132,7 +132,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_HP                        "hp"
 #define W_COLOR               		"color"
 #define W_COLOR_VALUE               "color_value"
-// B10 §5.2 / §11.79(e) D9key: the runtime command tokens for the two per-body
+// B10 S5.2 / S11.79(e) D9key: the runtime command tokens for the two per-body
 // navigation scalars. The COMMAND matches the DATA word order (datum/ground
 // first, then radius) - the data keys stay datum_radius/ground_radius, and the
 // command uses the SAME word, NOT Q12's rejected `radius datum`/`radius ground`.
@@ -593,7 +593,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_SC_DATETIME_DISPLAY_POSITION            "datetime_display_position"
 #define ACP_SC_DATETIME_DISPLAY_NUMBER              "datetime_display_number"
 
-// lsite de flagCommand à faire disparaitre !!!!!!!!!!!!
+// lsite de flagCommand a faire disparaitre !!!!!!!!!!!!
 // #define FLAG_ATMOSPHERE_ON                  "flag atmosphere on"
 // #define FLAG_LANDSCAPE_ON                   "flag landscape on"
 // #define FLAG_ATMOSPHERE_OFF                 "flag atmosphere off"

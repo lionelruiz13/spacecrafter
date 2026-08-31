@@ -463,7 +463,7 @@ public:
                 ++fracLen;
                 ++i;
             }
-            // ignore remaining digits beyond DecimalPlaces → TRUNCATION (no rounding)
+            // ignore remaining digits beyond DecimalPlaces -> TRUNCATION (no rounding)
             while (i < s.size() && std::isdigit((unsigned char)s[i])) ++i;
         }
 
@@ -712,8 +712,8 @@ public:
         // Write ua = q0*ub + r0 with 0 <= r0 < ub.
         // Then floor((ua * uS) / ub) = q0*uS + floor((r0 * uS) / ub).
         //
-        // If q0*uS already exceeds U::max → overflow.
-        // If q0*uS == U::max, then ANY positive fractional part → overflow.
+        // If q0*uS already exceeds U::max -> overflow.
+        // If q0*uS == U::max, then ANY positive fractional part -> overflow.
         // If q0*uS is close to the limit, we check whether the fractional part
         // floor((r0 * uS) / ub) would overflow the remaining headroom.
 

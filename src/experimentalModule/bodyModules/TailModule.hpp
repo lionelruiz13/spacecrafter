@@ -17,9 +17,9 @@
 // Regime: far components (a tail is visible when the nucleus is a dot).
 // Deduction rule: comet-typed bodies (param type=Comet) or explicit.
 //
-// PORT (INTENT §11.43; row 12) - reconciliation of the landing zone with the
-// established SYSTEM-PHASE line-family shape (TRAIL §11.41) plus the Renderer
-// batching service (HINT §11.24):
+// PORT (INTENT S11.43; row 12) - reconciliation of the landing zone with the
+// established SYSTEM-PHASE line-family shape (TRAIL S11.41) plus the Renderer
+// batching service (HINT S11.24):
 // - Regime & sweep: reconciled from "far components" to a SYSTEM phase, like
 //   TRAIL. The old tail was accumulated in SmallBody::drawHalo (draw-time,
 //   whenever the comet was drawn), batched with the halos, and rendered
@@ -41,7 +41,7 @@
 //   InstanceData is uploaded per frame (old Tail::endDraw scheme) and drawn with
 //   ONE vkCmdDrawIndexed. The pipeline lives in the registry, NOT in a module
 //   global (Tail::global dissolved). Push-constant fov + spec-8 projection type
-//   (registry-injected, §11.33); NO descriptor set (the tail shader has none) -
+//   (registry-injected, S11.33); NO descriptor set (the tail shader has none) -
 //   which is why it rides its own Renderer entry, not the generic uboSet-binding
 //   batchPush service (halo/hint). Whether TAIL + row-5 RING_ASTEROID should be
 //   folded into a generalized instanced batchPush service is SUSPENDED for Vixy.
@@ -52,7 +52,7 @@
 //   landing zone's singular {ejectionForce, coefRadius, color} become that list;
 //   coefRadius is Vec3f (the old quadratic radius profile {xx,x,base}), not the
 //   scalar sketch - a scalar cannot express the tail's radius-over-length shape.
-// - Magnitude coupling SUSPENDED (§11.43): the coma/tail SIZE model
+// - Magnitude coupling SUSPENDED (S11.43): the coma/tail SIZE model
 //   (projectpluto comet_tail_formula, getComaDiameterAndTailLengthAU) needs an
 //   absolute magnitude H + activity slope G (old SmallBody absoluteMagnitude/
 //   slopeParameter, from params apparent_magnitude/slope). The landing zone says
@@ -88,7 +88,7 @@ public:
     // The tail phase (ModularSystem::drawTails) is skipped entirely when no
     // comet with a tail is loaded - the default (no comets) pays nothing (no
     // sweep). Mirrors TrailModule::anyActive (the always-run sweep hung scene E,
-    // §11.39: the gate is mandatory).
+    // S11.39: the gate is mandatory).
     static bool anyActive() { return activeCount > 0; }
 
 protected:

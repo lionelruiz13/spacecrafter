@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(scedit LANGUAGES CXX)
 
-# Standalone tool — deliberately NOT wired into the spacecrafter build
+# Standalone tool -- deliberately NOT wired into the spacecrafter build
 # (util/ siblings pattern). Build:
 #   cmake -B build && cmake --build build
 # Test:
@@ -13,8 +13,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Until now the project set no warning flags at all, so every "clean build, 0
 # warnings" claim in a delivery was a criterion that COULD NOT FAIL. It can now.
 # Target-scoped rather than global on purpose: third_party/ftxui and
-# third_party/nlohmann are vendored upstream trees (README § Vendoring) compiled
-# exactly as their authors ship them — warnings there are neither ours to fix
+# third_party/nlohmann are vendored upstream trees (README S Vendoring) compiled
+# exactly as their authors ship them -- warnings there are neither ours to fix
 # nor evidence about our code, and a global add_compile_options() would bury
 # ours in theirs. Every target below is one we write; the list is the whole of
 # scedit's own code.
@@ -39,7 +39,7 @@ target_include_directories(scedit_core PUBLIC
 
 # The terminal layer, kept in its own target so the headless core never links
 # a UI library and cannot start depending on one (decision D1: FTXUI; vendoring
-# record in README.md § Vendoring).
+# record in README.md S Vendoring).
 add_subdirectory(third_party/ftxui)
 add_library(scedit_tui STATIC src/sc_tui.cpp)
 target_compile_options(scedit_tui PRIVATE ${SCEDIT_WARNINGS})
@@ -77,7 +77,7 @@ add_test(NAME parse_oracle COMMAND scedit_parse_oracle_test
 	${CMAKE_CURRENT_SOURCE_DIR}/../../claude/harness/b16_reload_check.sts)
 
 # The headless interaction core: buffer, cursor->token, completion, doc bar,
-# live findings — every editor behaviour, reached without a terminal. The
+# live findings -- every editor behaviour, reached without a terminal. The
 # fixture contract exists for the one path the real one cannot arm yet (D31's
 # machine-readable default); tests/fixture-grammar.json says so itself.
 add_executable(scedit_editcore_test tests/editcore_test.cpp)
@@ -88,7 +88,7 @@ add_test(NAME editcore COMMAND scedit_editcore_test
 	${CMAKE_CURRENT_SOURCE_DIR}/tests/fixture-grammar.json)
 
 # Round-trip gate: open a real ISO-8859, CRLF, 1407-line script in the editor,
-# save it untouched, and compare MD5s — plus one edit that must change exactly
+# save it untouched, and compare MD5s -- plus one edit that must change exactly
 # the line it was made on and nothing else.
 add_executable(scedit_roundtrip_test tests/roundtrip_test.cpp)
 target_compile_options(scedit_roundtrip_test PRIVATE ${SCEDIT_WARNINGS})
@@ -114,8 +114,8 @@ add_test(NAME seed_gate
 	COMMAND scedit --grammar ${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json)
 
 # One construct per armed lint id: proves each rule fires, with the right id,
-# severity and D6 shape — and that the "must stay silent" section stays silent.
-# NOTE: tests/lint_cases.sts is NOT pure ASCII — it carries raw 0xA0 bytes for
+# severity and D6 shape -- and that the "must stay silent" section stays silent.
+# NOTE: tests/lint_cases.sts is NOT pure ASCII -- it carries raw 0xA0 bytes for
 # the `invisible-separator` cases (one that must fire, one inside a quoted value
 # that must not). Anything that "cleans up" that file byte-wise destroys the
 # test. Same discipline as the corpus: scripts are read as bytes, never decoded.
@@ -127,9 +127,9 @@ add_test(NAME lint_rules
 		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/lint-expected.txt
 		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_gate.cmake)
 
-# History gate: `--history` — the error pane's list, printed. Two inputs, on
+# History gate: `--history` -- the error pane's list, printed. Two inputs, on
 # purpose: the lint fixture, whose scedit rows must stay in step with the
-# `--check` record above (one reader, two printers — if they ever disagree, one
+# `--check` record above (one reader, two printers -- if they ever disagree, one
 # of these two gates goes red), and tests/history_cases.sts, an F63-SHAPED file
 # carrying real `#!` tails the ENGINE wrote (scedit composes none). Every row of
 # the record has its disposition in a comment beside the bytes that produce it,
@@ -144,7 +144,7 @@ add_test(NAME history_list
 		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_gate.cmake)
 
 # JSON check gate: the SAME findings as objects. Runs the same comparator as the
-# text record above with `--json` added to the mode, which is the point — one
+# text record above with `--json` added to the mode, which is the point -- one
 # finding set, two printers, and if they ever disagree about what was found, one
 # of these two gates goes red.
 add_test(NAME check_json
@@ -168,7 +168,7 @@ add_test(NAME doc_queries
 
 # MCP gate: a stdlib-only client spawns `scedit --mcp`, speaks both protocol
 # eras at it, calls every registered tool with good and bad arguments, and
-# asserts the shapes the fetched specification defines — including that a `doc`
+# asserts the shapes the fetched specification defines -- including that a `doc`
 # the contract file does not have arrives as JSON null through the protocol.
 add_test(NAME mcp_protocol
 	COMMAND ${CMAKE_COMMAND} -E env
@@ -191,8 +191,8 @@ add_test(NAME tcp_client
 
 # PTY gate: the editor's live KEYS, pressed on a pseudo-terminal, with the
 # stand-in engine asserting what arrived. This is the seam between the two gates
-# on either side of it — ui_selftest pins what is DRAWN, the live legs pin what
-# the core and client DO — and without it "F8 plays the file" was read from the
+# on either side of it -- ui_selftest pins what is DRAWN, the live legs pin what
+# the core and client DO -- and without it "F8 plays the file" was read from the
 # source rather than measured. Control codes rather than function keys: the
 # twins exist for terminals that eat F-keys, and they are the same branch.
 add_test(NAME pty_keys

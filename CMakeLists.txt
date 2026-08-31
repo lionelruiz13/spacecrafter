@@ -242,7 +242,7 @@ ADD_SUBDIRECTORY( iniparser )
 
 
 
-########### Récapitulatif ###########
+########### Recapitulatif ###########
 
 message("---------------------------------------------")
 message(" Spacecrafter conclusion")

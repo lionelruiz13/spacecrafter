@@ -29,7 +29,7 @@ static std::string trim(const std::string& str, const std::string& whitespace = 
 }
 
 
-// compte le nombre de / d'une chaine de caractère
+// compte le nombre de / d'une chaine de caractere
 static short countSlash(const std::string &s)
 {
 	short n = 0;
@@ -51,7 +51,7 @@ static short countSpace(const std::string& str)
 }
 
 
-// vérifie la présence d'un // dans la chaine
+// verifie la presence d'un // dans la chaine
 static bool hasDoubleSlash(const std::string &s)
 {
 	for(unsigned int i=0; i<s.size()-1; i++) {
@@ -72,7 +72,7 @@ static std::string removeExtraWhitespaces(const string &input)
 }
 
 
-// cas indices négatifs: on les remet positif
+// cas indices negatifs: on les remet positif
 static void changeSigneAvecIndice(int *vector, int indiceMax)
 {
 	for (int i=0; i<3; i++) {
@@ -132,7 +132,7 @@ bool Obj3D::ReadMaterialLibrary(const std::string& filename)
 {
 	ifstream fp(filename.c_str(),ios::in);
 	if(!fp) {
-		cout << "OBJ3D : Fichier mtl " << filename<< " non trouvé"<< endl;
+		cout << "OBJ3D : Fichier mtl " << filename<< " non trouv\xc3\xa9"<< endl;
 		return false;
 	}
 	string tmp(std::istreambuf_iterator<char>(fp), (std::istreambuf_iterator<char>()));
@@ -340,7 +340,7 @@ bool Obj3D::readOBJ()
 				tmpMesh->normalIndices.push_back(normalIndex[2]);
 			} break;
 
-			case 4 : {//if (nbIndices ==4) { //on traite un quadrilatère
+			case 4 : {//if (nbIndices ==4) { //on traite un quadrilatere
 				int vertexIndex[4], uvIndex[4], normalIndex[4];
 
 				if (hasUVs)
@@ -398,7 +398,7 @@ bool Obj3D::readOBJ()
 			string fullpath = string(materials_name);
 			bool tmp = ReadMaterialLibrary(fullpath);
 			if (tmp==false) {
-				cout << "OBJ3D : Problème ReadMaterialLibrary " << fullpath << " n'existe pas !" << endl;
+				cout << "OBJ3D : Probl\xc3\xa8me ReadMaterialLibrary " << fullpath << " n'existe pas !" << endl;
 				return false;
 			}
 			continue;
@@ -443,7 +443,7 @@ void Obj3D::print()
 	cout<< "Nombre de normales " << positionData.normals.size() << endl;
 
 	for(unsigned int i=0; i< meshes.size(); i++) {
-		cout<< "***** Mesh n°"<< i<< endl;
+		cout<< "***** Mesh n\xc2\xb0"<< i<< endl;
 		cout<< "Nombre d'indices de vectrices " << meshes[i]->vertexIndices.size() << endl;
 		//~ for(unsigned int j=0; j< meshes[i]->vertexIndices.size() ; j++)
 		//~ cout << " " << meshes[i]->vertexIndices[j];
@@ -460,8 +460,8 @@ void Obj3D::print()
 		//~ cout << endl;
 	}
 
-	//Bilan des matériaux
-	cout << "OBJ3D : Nombre de matériaux :" << this->materials.size()<< endl;
+	//Bilan des materiaux
+	cout << "OBJ3D : Nombre de mat\xc3\xa9riaux :" << this->materials.size()<< endl;
 	for(unsigned int i=0; i<this->materials.size(); i++) {
 		cout << "OBJ3D: -- Name : " << this->materials[i]->name<< endl;
 	}

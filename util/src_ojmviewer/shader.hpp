@@ -9,7 +9,7 @@
 
 /**
  * @file    shader.h shader.c
- * @author  Jérôme Lartillot modified by Olivier Nivoix
+ * @author  Jerome Lartillot modified by Olivier Nivoix
  * @version 1.0
  *
  * @section REQUIREMENTS

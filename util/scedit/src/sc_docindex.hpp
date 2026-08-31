@@ -1,10 +1,10 @@
 /*
- * scedit — sc_docindex.hpp
+ * scedit -- sc_docindex.hpp
  *
  * WHAT THIS IS FOR
  * ================
  * The PROSE half of grammar/sc-grammar.json: the one-line documentation of a
- * command, of an argument key, of a single enumerated value, of a family name —
+ * command, of an argument key, of a single enumerated value, of a family name --
  * plus the value domain, the default sentence and the engine anchor that go
  * with them. This is what the editor's documentation bar shows, and it is the
  * whole of constraint C6: someone with no knowledge of scripting must be able
@@ -12,7 +12,7 @@
  *
  * WHY THIS IS NOT IN sc_grammar.hpp
  * =================================
- * Not a second copy of the contract — a second READING of the same file, for a
+ * Not a second copy of the contract -- a second READING of the same file, for a
  * different question (invariant I2 is about two AUTHORITIES, and there is still
  * exactly one: the JSON). `Grammar` answers structural questions an analyser
  * asks ("is this a command?", "may I call this key unknown?", "what severity
@@ -26,7 +26,7 @@
  * here as `doc_known == false` and an EMPTY string, and the renderer must say
  * so in its own words (`kNoDoc`) rather than print something plausible. Two
  * real cases exist today and both must survive to the screen intact:
- *   - `dso3d.z_reflection` and `suntrace.sun` carry `"doc": null` — the sweep
+ *   - `dso3d.z_reflection` and `suntrace.sun` carry `"doc": null` -- the sweep
  *     could not answer them from the code and flagged them for Vixy;
  *   - five families (flags, color_names, obsolete_tokens, reserved_variables,
  *     font_targets) are still the v1 shape, a plain array of names with no doc
@@ -38,10 +38,10 @@
  * for a human reader: literal values the author types (`current`, `preset`,
  * `toggle`) and PROSE describing the rest of the domain (`<file name>`,
  * `anything else = off`, `on-forms per Utility::isTrue`). Nothing in the schema
- * distinguishes them (a flagged grammar-shape finding, see README § Vendoring's
- * neighbour § "What the editor cannot do yet"). scedit therefore applies one
+ * distinguishes them (a flagged grammar-shape finding, see README S Vendoring's
+ * neighbour S "What the editor cannot do yet"). scedit therefore applies one
  * stated rule, `isCompletableLiteral`: an entry may be OFFERED only if every
- * byte of it is [A-Za-z0-9_] — a bare word the author could type unquoted.
+ * byte of it is [A-Za-z0-9_] -- a bare word the author could type unquoted.
  * Everything else is still SHOWN in the doc bar, verbatim. Offering is a UI
  * decision and cannot make scedit claim anything false; the doc bar, which can,
  * shows the file's own text and nothing else.
@@ -55,7 +55,7 @@
  * English and guessing. The mechanism is here and arms itself from data: an
  * explicit `default_value` string in a spec becomes `default_literal`, is
  * offered first among the value candidates and is what the ghost shows on an
- * empty field. Count at HEAD: 0. `dormantFeatures()` says so out loud — the
+ * empty field. Count at HEAD: 0. `dormantFeatures()` says so out loud -- the
  * `unarmedRules()` precedent, for the same reason.
  *
  * OWNERSHIP: by value; returned pointers point into the DocIndex.
@@ -75,7 +75,7 @@ namespace scedit {
 extern const char *const kNoDoc;
 
 //! May this string be OFFERED as a completion candidate? True iff it is a
-//! non-empty run of [A-Za-z0-9_] — see the header note.
+//! non-empty run of [A-Za-z0-9_] -- see the header note.
 bool isCompletableLiteral(const std::string &s);
 
 //! Everything the file says about one named thing (an argument key, a family
@@ -124,15 +124,15 @@ public:
 	bool load(const std::string &path, std::string &err);
 
 	const CommandInfo *command(const std::string &name) const;
-	//! Every command the engine accepts, byte-lexicographic — the pre-table
+	//! Every command the engine accepts, byte-lexicographic -- the pre-table
 	//! literals (comment, uncomment) included, because the engine accepts them
 	//! and so the editor may offer them.
 	const std::vector<std::string> &commandNames() const { return command_names_; }
 	//! The same names in the order the CONTRACT FILE lists them. Two orders
 	//! exist because two questions do: a did-you-mean must answer in the
 	//! engine's own order (byte-lexicographic, `commandNames`), while anything
-	//! that ENUMERATES the surface — the machine catalogue, the search ranking's
-	//! tie-break — answers in the file's order, so that the page a tie picks is
+	//! that ENUMERATES the surface -- the machine catalogue, the search ranking's
+	//! tie-break -- answers in the file's order, so that the page a tie picks is
 	//! the file's own first answer and not an alphabetical accident. Recording
 	//! it is why this reader parses with `ordered_json` (sc_docindex.cpp).
 	const std::vector<std::string> &commandFileOrder() const { return command_file_order_; }
@@ -150,7 +150,7 @@ public:
 
 	//! What the file says about one name of one family. `present == false` when
 	//! the family or the name is unknown; a v1 (plain-name) family yields
-	//! `present == true, doc_known == false` — the name exists, the doc does not.
+	//! `present == true, doc_known == false` -- the name exists, the doc does not.
 	Spec familyMember(const std::string &family, const std::string &name) const;
 
 	//! Features that exist in the code but have no data to run on yet, with the

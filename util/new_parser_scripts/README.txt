@@ -1,36 +1,36 @@
 /*
 Auteur: Nicolas Barile <n.barile.57@gmail.com> pour association-sirius.org
-Mise à jour le 3/06/2020
+Mise a jour le 3/06/2020
 */
 
 Parser (texte -> HTML/CSS)
 
 
-Les espaces ou tabulations au début de la ligne (avant les balises) seront ignorés, mais nécéssaire pour la lecture, pareil pour les lignes vides
+Les espaces ou tabulations au debut de la ligne (avant les balises) seront ignores, mais necessaire pour la lecture, pareil pour les lignes vides
 Fermeture implicite d'un bloc par un nouveau NAME ou par un NAME END en fin de fichier
 
 
 Format d'un bloc :
 
-NAME NomDeLaCommande #Sert d'ouverture, obligatoirement une et au début.
+NAME NomDeLaCommande #Sert d'ouverture, obligatoirement une et au debut.
 	@Descrpition
 	@Particularity	
 
-ARGUMENT Variable @ Type 		#Élément d'une liste d'arguments
+ARGUMENT Variable @ Type 		#Element d'une liste d'arguments
 	@Descrpition
 	@Particularity [Listedevaleurs]	
 
-$ Valeur 				#Élément d'une liste des valeurs possibles dans un argument
+$ Valeur 				#Element d'une liste des valeurs possibles dans un argument
 @Description
 @Particularity 
 
-EXEMPLE Exemple 			#C'est une balise spéciale
+EXEMPLE Exemple 			#C'est une balise speciale
 
 @@ 					#Definit la fin d'une commande
 
-NAME END 				#Définit la fin de toutes les commandes (Et donc la fin du fichier)
+NAME END 				#Definit la fin de toutes les commandes (Et donc la fin du fichier)
 
-IMG url					#Image associéé : chemin relatif, absolu ou url
+IMG url					#Image associee : chemin relatif, absolu ou url
 
 
 Exemple Bloc:
@@ -55,8 +55,8 @@ ARGUMENT sun @ string ;
 EXEMPLE	
 	L'exemple qui
 	montre comment
-	ça marche
+	ca marche
 @@
 								# les deux saut de ligne
-								# sont nécéssaire entre chaque blocs
+								# sont necessaire entre chaque blocs
 NAME END

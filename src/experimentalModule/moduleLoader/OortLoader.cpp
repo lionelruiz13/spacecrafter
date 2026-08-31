@@ -22,7 +22,7 @@ std::unique_ptr<BodyModule> OortLoader::load(ModularBody *target, std::map<std::
         ? Vec3f(0.f, 0.5f, 1.f) : Utility::strToVec3f(params["oort_color"]);
     auto module = std::make_unique<OortModule>(nbr, color);
     // NEAR component: the cloud is hidden while the observer sits inside the
-    // body's scaledRadius·2 (in/grounded regime) and shown once outside it -
+    // body's scaledRadius*2 (in/grounded regime) and shown once outside it -
     // the LOW edge of the old altitude gate, reproduced through the regime
     // machinery (ModularBody::draw), never a distance test in the module.
     addNearComponent(target, module.get());

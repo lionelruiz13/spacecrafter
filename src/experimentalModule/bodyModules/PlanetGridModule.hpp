@@ -15,7 +15,7 @@ class VertexBuffer;
 // setFlagPlanetGrid toggle) - demonstrates the explicit-slot half of the
 // module declaration model (ModuleLoaderMgr::loadModule slot parameter).
 //
-// PORT RECONCILIATION (2026-07-19, T4 - INTENT §11.42):
+// PORT RECONCILIATION (2026-07-19, T4 - INTENT S11.42):
 //  * Shader contract = the AXIS/ORBIT PUSH family (planet_grid.vert declares
 //    push_constant {mat4 ModelViewMatrix; vec3 clipping_fov} + custom_project
 //    spec-8) - NOT TRAIL's cam_block UBO. Deployed shaders reused VERBATIM
@@ -25,9 +25,9 @@ class VertexBuffer;
 //    (body.cpp:229-234). The seam mirror lives in SSystemFactory::setFlagAxis.
 //  * Geometry: 24 meridians + evenly-spaced parallels (equator included), plus
 //    the astronomically-meaningful tropic (+/-axialTilt) and polar (+/-(90 -
-//    axialTilt)) circles RESTORED (INTENT §11.57, B23 / Q16). The tilt comes
+//    axialTilt)) circles RESTORED (INTENT S11.57, B23 / Q16). The tilt comes
 //    from ModularBody::getAxialTilt() (the ssystem.ini axial_tilt key, already
-//    loaded into RotationElements::axialTilt - the §11.42 "no axial-tilt scalar"
+//    loaded into RotationElements::axialTilt - the S11.42 "no axial-tilt scalar"
 //    was a missing getter, not missing data). Tropics ride the LINE_TROPIC
 //    sky-line flag, polar circles the LINE_CIRCLE_POLAR flag - the old coupling
 //    (body.cpp:1257-1258) is deliberate: they are the lines that show obliquity
@@ -49,7 +49,7 @@ public:
     // grid is znear-clipped by the bucket range).
     virtual bool update(ModularBody *body, float scaledRadius) override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
-    // Harness instrument (INTENT §11.57): the tropic/polar latitudes actually
+    // Harness instrument (INTENT S11.57): the tropic/polar latitudes actually
     // baked for this body (measured from the running process, DoD-2), plus the
     // flag gates. `hasTropics`/`bodyAxialTilt` are set at first build; before
     // that the fields read their construction defaults (a body whose grid never

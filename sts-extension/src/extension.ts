@@ -12,7 +12,7 @@ const T = {
 	string: 3,
 	boolean: 4,
 	number: 5,
-	function: 6 // Utiliser "function" pour différencier des autres valeurs
+	function: 6 // Utiliser "function" pour differencier des autres valeurs
 } as const;
 
 function isQuotedString(t: string): boolean {
@@ -28,7 +28,7 @@ function isBoolean(t: string): boolean {
 	return t === "true" || t === "false";
 }
 
-// Gère int/float/double + notation scientifique simple
+// Gere int/float/double + notation scientifique simple
 function isNumber(t: string): boolean {
 	// refuser les trucs du genre "-" ou "."
 	if (!t || t === "-" || t === "." || t === "+") {
@@ -38,13 +38,13 @@ function isNumber(t: string): boolean {
 }
 
 function findClosingQuote(s: string, start: number, quote: "'" | '"'): number {
-	// start = index du premier caractère APRÈS la quote d’ouverture
+	// start = index du premier caractere APRES la quote d'ouverture
 	for (let i = start; i < s.length; i++) {
 		if (s[i] !== quote) {
 			continue;
 		}
 
-		// si la quote est échappée par un nombre impair de backslashes, on ignore
+		// si la quote est echappee par un nombre impair de backslashes, on ignore
 		let bs = 0;
 		for (let j = i - 1; j >= 0 && s[j] === "\\"; j--) {
 			bs++;
@@ -53,7 +53,7 @@ function findClosingQuote(s: string, start: number, quote: "'" | '"'): number {
 			continue;
 		}
 
-		return i; // quote fermante trouvée
+		return i; // quote fermante trouvee
 	}
 	return -1;
 }
@@ -71,14 +71,14 @@ function tokenizeLine(line: string): string[] {
 	for (let i = 0; i < s.length; ) {
 		const ch = s[i];
 
-		// séparateurs
+		// separateurs
 		if (/\s/.test(ch)) {
 			flush();
 			i++;
 			continue;
 		}
 
-		// tentative de string quotée "..." ou '...'
+		// tentative de string quotee "..." ou '...'
 		if (ch === `"` || ch === `'`) {
 			const quote = ch as "'" | '"';
 			const end = findClosingQuote(s, i + 1, quote);
@@ -132,7 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 
 				// Pour placer les tokens, on cherche leurs positions dans la ligne
-				// en avançant de gauche à droite.
+				// en avancant de gauche a droite.
 				let searchFrom = 0;
 
 				for (let i = 0; i < tokens.length; i++) {
@@ -155,8 +155,8 @@ export function activate(context: vscode.ExtensionContext) {
 						} else if (isNumber(t)) {
 							tokenType = T.number;     // number = valeur
 						} else {
-							// function ici pour différencier de parameter (vscode default: parameter => blue, variable => blue)
-							// et aussi pour différencier des autres types (string, boolean, number)
+							// function ici pour differencier de parameter (vscode default: parameter => blue, variable => blue)
+							// et aussi pour differencier des autres types (string, boolean, number)
 							tokenType = T.function;   // function = valeur
 						}
 					}

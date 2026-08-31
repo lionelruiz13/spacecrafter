@@ -1,10 +1,10 @@
 /*
- * scedit — sc_document.hpp
+ * scedit -- sc_document.hpp
  *
  * WHAT THIS IS FOR
  * ================
  * The edited file, held as BYTES, so that saving a file you did not change
- * gives back the file you opened — byte for byte — and saving one you changed
+ * gives back the file you opened -- byte for byte -- and saving one you changed
  * on line 40 leaves lines 1-39 and 41-end exactly as their author wrote them.
  *
  * WHY THAT IS A REQUIREMENT AND NOT A NICETY
@@ -12,8 +12,8 @@
  * These files are ISO-8859, not UTF-8, and their bytes are significant:
  * `--check`'s `invisible-separator` rule exists because byte 0xA0 in column N
  * changes what the engine reads (grammar/sc-grammar.json lint_seeds). A round
- * trip through any decoder — UTF-8, latin-1-to-UTF-8, "clean up the whitespace"
- * — destroys the very defect the tool was written to show you, and silently
+ * trip through any decoder -- UTF-8, latin-1-to-UTF-8, "clean up the whitespace"
+ * -- destroys the very defect the tool was written to show you, and silently
  * rewrites a file the dome will read tonight. So: no decoding, ever. A line is
  * a std::string of bytes; the editor moves a cursor over byte offsets; the
  * renderer is the only place that must think about how a byte LOOKS.
@@ -30,7 +30,7 @@
  *   - a line opened in a CRLF file gets a CRLF line under it, because
  *     `splitLine` gives the new line the terminator the split one had. The
  *     editor does not decide what a line ending is; the file does.
- * A '\r' anywhere ELSE stays in the text — it is not a terminator to the engine
+ * A '\r' anywhere ELSE stays in the text -- it is not a terminator to the engine
  * either (Script::loadInternal's std::getline splits on '\n' only).
  *
  * The engine reads the line WITH its '\r' (that is why the script layer tests
@@ -105,7 +105,7 @@ private:
 	};
 	std::vector<L> lines_;
 	//! What a NEW line's terminator is: the one this file already uses. Never a
-	//! guess — it is read off the file, and only falls back to "\n" for a file
+	//! guess -- it is read off the file, and only falls back to "\n" for a file
 	//! that has no terminated line to learn from.
 	std::string default_term_ = "\n";
 	bool dirty_ = false;

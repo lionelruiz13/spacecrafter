@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2021 Jérémy Calvo
+ * Copyright (C) 2021 Jeremy Calvo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -193,7 +193,7 @@ void SolarSystemModule::draw(int delta_time)
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->nebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
-	// Dual-path (S8, B5 §6.9): the OLD altitude-gated oort is REPLACED in the
+	// Dual-path (S8, B5 S6.9): the OLD altitude-gated oort is REPLACED in the
 	// modular phase by the OortModule at the SolarSystem floor (regime-gated,
 	// ssystemFactory->draw below) - but ONLY when that modular oort was actually
 	// instantiated (the pilot flag). Without it the old oort still draws in both
@@ -209,7 +209,7 @@ void SolarSystemModule::draw(int delta_time)
 	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
 	// Key the new-path planet-grid tropic/polar circles to the sky-line flags
-	// (LINE_TROPIC / LINE_CIRCLE_POLAR) just read above (INTENT §11.57, B23).
+	// (LINE_TROPIC / LINE_CIRCLE_POLAR) just read above (INTENT S11.57, B23).
 	core->syncPlanetGridSkyState();
 	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 

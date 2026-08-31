@@ -46,10 +46,10 @@
 * The purpose of this class is to indicate in a hierarchy of nested if statements whether the following statement should be executed or not 
 * It refers to the vector m_ifSwapCommand which contains the different levels of scripts 
 * 
-* m_ifSwapCommand[i] = true indicates that the if n°i is in the part where it refutes the following instructions, they should not be executed
+* m_ifSwapCommand[i] = true indicates that the if ndegi is in the part where it refutes the following instructions, they should not be executed
 * (and so in this case all m_ifSwapCommand[i+1] and following are useless)
 *
-* m_ifSwapCommand[i] = false indicates that the if n°i is in the part where it accepts the following instructions, they must be executed
+* m_ifSwapCommand[i] = false indicates that the if ndegi is in the part where it accepts the following instructions, they must be executed
 */
 
 //! Pure state: this class keeps the stack and says what happened; the CALLER

@@ -1,6 +1,6 @@
 //
 // bodyStarSurface - fragment stage of the near-surface star family's
-// photosphere (B12; design note claude/b12-design.md §5.1).
+// photosphere (B12; design note claude/b12-design.md S5.1).
 //
 // A star's photosphere EMITS. Old-path anchor: at disc centre this is
 // body_sun.frag exactly (the texel, unmodified) - the old Sun's whole fragment
@@ -15,7 +15,7 @@
 //
 // DERIVED, not fitted and not recalled: the law has no measured coefficient in
 // it, which is what keeps it clear of the "physical values never from memory"
-// red line (INTENT §11.51(d)). A band-specific measured coefficient (the
+// red line (INTENT S11.51(d)). A band-specific measured coefficient (the
 // 1 - u(1-mu) family) would be a refinement needing a cited source.
 //
 #version 420

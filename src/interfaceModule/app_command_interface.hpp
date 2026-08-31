@@ -127,13 +127,13 @@ protected:
 	int commandRandom();
 	int commandScript(uint64_t &wait);
 	int commandSearch();
-	//! `session action save|load [filename <name>]` — b31-design §3.5. ONE
-	//! registration serves all of §11.55(h)'s command channels, so the operator
+	//! `session action save|load [filename <name>]` -- b31-design S3.5. ONE
+	//! registration serves all of S11.55(h)'s command channels, so the operator
 	//! reaches it from a script, the TCP line, the HTTP query, the pipe and a
 	//! joypad binding without a second artefact. EXPLICIT ONLY (D33): nothing
 	//! here is ever called by a startup or a shutdown path.
-	//! SPELLING IS A VETO POINT (B28 protocol; `body action save` §11.121(e) and
-	//! `follow_rotation` §11.111 are the precedents): the grammar is the
+	//! SPELLING IS A VETO POINT (B28 protocol; `body action save` S11.121(e) and
+	//! `follow_rotation` S11.111 are the precedents): the grammar is the
 	//! `<noun> action <verb>` one the surface already uses, and reversing it is
 	//! one `else if`.
 	int commandSession();
@@ -163,7 +163,7 @@ private:
 	//! What is this flag NOW? The READ half of the flag surface, and the only
 	//! authority for it: `setFlag`'s toggle branch and the session save are
 	//! both its consumers rather than two independent readers (I2,
-	//! b31-design §2 row E3, INTENT §11.128(e)). false = unknown flag.
+	//! b31-design S2 row E3, INTENT S11.128(e)). false = unknown flag.
 	//! The session's view of this surface: what names exist, what they read,
 	//! and how to write them (SessionFile::CommandSurface). Implemented here
 	//! because this class IS the inventory - a second list would be a second
@@ -179,7 +179,7 @@ private:
 	bool readFlag(FLAG_NAMES flagName, bool &value) const;
 	//! The same question for the `set` surface and the `color` surface. False =
 	//! this name has no read half in the tree (13 of the 43 `set` names, 2 of
-	//! the 46 colours) - said rather than guessed (§2(f)).
+	//! the 46 colours) - said rather than guessed (S2(f)).
 	bool readValue(SCD_NAMES name, std::string &value) const;
 	bool readColor(COLORCOMMAND_NAMES name, Vec3f &value) const;
 	//! The write half of `color`, extracted so a restore drives the same code
@@ -221,7 +221,7 @@ private:
 	bool loopOpen = false;				//!< a `struct loop <n>` is open, whatever n made it do
 	ScriptOrigin loopOpener;			//!< where that loop was opened
 	//! A script error, said the three-part way (what it is / what it does /
-	//! the action that prevents it - INTENT �11.169): to the script log with
+	//! the action that prevents it - INTENT S11.169): to the script log with
 	//! the line quoted, and to the `#!` channel when `at` names a file line.
 	void reportScriptError(const ScriptOrigin &at, const std::string &what);
 	//! How a diagnostic log line names the origin of the command being

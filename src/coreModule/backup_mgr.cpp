@@ -49,7 +49,7 @@ void CoreBackup::loadBackup()
 	if (mBackup.jday !=0) {
 		core->timeMgr->setJDay(mBackup.jday);
 		core->projection->setFov(mBackup.fov); //setFov(mBackup.fov);
-		// New-path fov mirror (§11.15c residual, closed T7 §11.45): bookmark
+		// New-path fov mirror (S11.15c residual, closed T7 S11.45): bookmark
 		// restore reached only the old projection fov; the new path carries fov
 		// on the Camera. Same surface + unit convention as coreLink::setFov
 		// (mBackup.fov is degrees, saved from projection->getFov()). loadBackup
@@ -59,12 +59,12 @@ void CoreBackup::loadBackup()
 		// THE WRITE HALF OF THE BOOKMARK (B34, F24). It used to be
 		// `observatory->moveTo` - the old observer alone - so `position load`
 		// did not move the path that draws, while the fov two lines up was
-		// mirrored long ago (§11.45 T7). observerMoveTo is the dual seam that
+		// mirrored long ago (S11.45 T7). observerMoveTo is the dual seam that
 		// every other place-restoring caller already uses (I2), so the camera
 		// lands where the bookmark was taken and the old observer follows.
-		// ASYMMETRY, stated because it is real and is NOT fixed here (§5.68):
+		// ASYMMETRY, stated because it is real and is NOT fixed here (S5.68):
 		// the two setters are dual but not equivalent - old clamps latitude to
-		// ±90°, maps exactly 0 to 1e-6 and floors altitude at 0.1 m; the camera
+		// +-90deg, maps exactly 0 to 1e-6 and floors altitude at 0.1 m; the camera
 		// clamps nothing. A bookmark taken at a clamped value therefore restores
 		// the CAMERA exactly (the read half now reports the camera's own place,
 		// so the round trip closes on the drawn path) and the old observer to
@@ -79,7 +79,7 @@ void CoreBackup::loadBackup()
 void CoreBackup::saveBackup()
 {
 	mBackup.jday=core->timeMgr->getJDay();
-	// THE READ HALF (B33 §11.131(f) -> B34, F24): the bookmark records the place
+	// THE READ HALF (B33 S11.131(f) -> B34, F24): the bookmark records the place
 	// the operator is LOOKING FROM, which is the drawn path's - these three
 	// getters ask which path draws and answer for it. Folded WITH the restore
 	// above and not before it: reading the drawn place while restoring into the

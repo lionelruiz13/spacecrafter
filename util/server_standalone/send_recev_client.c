@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 	unsigned int nb_read;
 	
 	
-	//première connexion, pour reception, on demande au serveur de nous placer en mode reception
+	//premiere connexion, pour reception, on demande au serveur de nous placer en mode reception
 	char login[]="$LOGON\n";
 	
 	nb_write = write(sockfd, login, strlen(login)+1);

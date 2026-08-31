@@ -190,7 +190,7 @@ public:
 	s_texture(const std::string& _textureName, Texture *_imgTex);
 	// texture destructor
 	~s_texture() = default;
-	// création d'une texture par copie d'une autre
+	// creation d'une texture par copie d'une autre
 	s_texture(const s_texture &t) = delete;
 	s_texture(const s_texture *t);
 	//ban operator =
@@ -278,7 +278,7 @@ public:
 	static void recordTransfer(VkCommandBuffer cmd);
 	// Display information about active big textures
 	static void debugBigTexture();
-	//! THE BIG-TEXTURE TABLE AS AN OBSERVABLE (B34 preload, INTENT §11.132).
+	//! THE BIG-TEXTURE TABLE AS AN OBSERVABLE (B34 preload, INTENT S11.132).
 	//! One JSON array, `{"name","w","h","acquired","ready","lifetime"}` per
 	//! record, in list order. This is the table `preload()` writes into - a
 	//! preload's whole effect is "a record for this texture exists, is acquired,

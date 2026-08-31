@@ -1,5 +1,5 @@
 /*
- * scedit — differential self-test for the tokenizer.
+ * scedit -- differential self-test for the tokenizer.
  *
  * Every case below is a sharp edge of the engine's parse model, written as a
  * constructed line plus the tokenization the engine produces for it. The
@@ -99,7 +99,7 @@ void expectTokens(const std::string &label, const std::string &raw, std::vector<
 
 void testScriptLayer()
 {
-	// script.cpp:114 — the whole comment rule, and nothing more than it.
+	// script.cpp:114 -- the whole comment rule, and nothing more than it.
 	eq((int)classifyLine("# hello"), (int)LineKind::Comment, "classify '#' at column 1");
 	eq((int)classifyLine("#"), (int)LineKind::Comment, "classify bare '#'");
 	eq((int)classifyLine(""), (int)LineKind::Blank, "classify empty line");
@@ -190,7 +190,7 @@ void testBasicShape()
 
 void testDanglingKey()
 {
-	// :148 — `while (str >> key >> value)`: the value extraction fails, the body
+	// :148 -- `while (str >> key >> value)`: the value extraction fails, the body
 	// never runs, and the key is dropped without a word.
 	expectTokens("dangling only key", "wait duration", {
 		{TokenRole::Command, "wait", 0, 4},
@@ -315,7 +315,7 @@ void testQuoting()
 
 void testSpaceAfterQuoteNormalization()
 {
-	// :135-139 — every ' " ' loses the byte after the quote, BEFORE tokenizing.
+	// :135-139 -- every ' " ' loses the byte after the quote, BEFORE tokenizing.
 	expectTokens("space after opening quote", "text string \" hello world \"", {
 		{TokenRole::Command, "text", 0, 4},
 		{TokenRole::Key, "string", 5, 11},
@@ -357,7 +357,7 @@ void testSpaceAfterQuoteNormalization()
 
 void testTrailingComment()
 {
-	// parse_model.comments.mid_line — the RULED rule, modelled ahead of the
+	// parse_model.comments.mid_line -- the RULED rule, modelled ahead of the
 	// engine by Vixy's order (2026-08-31): a '#' outside a "..." run ends the
 	// command; the cut runs on the raw line before any other normalisation.
 	expectTokens("trailing comment", "flag stars on # switch it on", {
@@ -415,7 +415,7 @@ void testTrailingComment()
 
 void testBlockComment()
 {
-	// executeCommand:215-222 — comment/uncomment are intercepted BEFORE the skip
+	// executeCommand:215-222 -- comment/uncomment are intercepted BEFORE the skip
 	// test, so they still act while skipping; `struct comment on|off` reaches
 	// the same two handlers (commandStruct :4663-4670).
 	struct Case { const char *line; bool skipped; };
@@ -453,7 +453,7 @@ void testBlockComment()
 
 void testBlockStructure()
 {
-	// commandStruct :4604-4661 — ifSwap is a stack: push on `struct if <cond>`,
+	// commandStruct :4604-4661 -- ifSwap is a stack: push on `struct if <cond>`,
 	// pop on `end`, flip on `else`; a closer on an empty stack is logged and
 	// ignored (if_swap.cpp:45, :76). The if-case is guarded by
 	// `swapCommand != true` (:4605): inside a comment block nothing counts.
@@ -538,7 +538,7 @@ void testEnginePredicates()
 	eq(levenshtein("", "abc"), (std::size_t)3, "levenshtein empty source");
 
 	// searchNeighbour: no threshold, strict '<', so the FIRST candidate at the
-	// minimum wins — the caller's order is part of the answer.
+	// minimum wins -- the caller's order is part of the answer.
 	eq(nearestNeighbour("xx", {"aa", "bb"}), std::string("aa"), "tie-break keeps the first");
 	eq(nearestNeighbour("flg", {"add", "flag", "font"}), std::string("flag"), "nearest wins");
 	eq(nearestNeighbour("anything", {}), std::string(""), "no candidates, no suggestion");

@@ -361,7 +361,7 @@ bool write(const std::string &path, const std::vector<Section> &sections,
         }
         pending = section.emit(content);
     }
-    // Sibling temp in the target's own directory (INTENT §11.52(a): rename
+    // Sibling temp in the target's own directory (INTENT S11.52(a): rename
     // atomicity is same-filesystem only - never /tmp).
     const std::string tmp = path + ".tmp";
     {

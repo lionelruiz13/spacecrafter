@@ -18,7 +18,7 @@
    "`wait_parameter` (added field) - for the one handler of this unit that takes `uint64_t &wait` (script).",
    "Branch/required convention (same as unit 1, e.g. dso3d `color_tex`): when a branch SELECTOR names a key, that key is repeated in the branch's `requires` for readability, while its own `required` stays false - the branch cannot be entered without it, so it is not required of the command. Examples here: constellation `intensity`, landscape `type`/`landing`, text `display`.",
    "A key marked \"conditional\" that no branch `requires` is one of an either-or pair: the condition is stated in its `default` and the pair is listed in `exclusive_groups` (constellation color_value vs r/g/b, heading azimuth vs delta_azimuth, script action vs speed, audio volume/nopause/action).",
-   "Absent-key value for every eval* conversion is fixed IN the handler file and is not opaque: evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" [app_command_interface.cpp:4458-4479]. What a NON-empty string evaluates to stays opaque here (app_command_eval.cpp, INTENT §5 item 5): recorded as evalDouble/evalInt/evalString, $-variable substitution possible.",
+   "Absent-key value for every eval* conversion is fixed IN the handler file and is not opaque: evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" [app_command_interface.cpp:4458-4479]. What a NON-empty string evaluates to stays opaque here (app_command_eval.cpp, INTENT S5 item 5): recorded as evalDouble/evalInt/evalString, $-variable substitution possible.",
    "Conversions that are NOT eval* are named explicitly (Utility::strToBool / strToFloat / strToDouble / strToVec3f / isTrue, std::stof): those take no $-variable and have their own absent/garbage behaviour."
   ],
   "other_args_uses": [
@@ -1655,7 +1655,7 @@
     "A name that matches no constellation is not an error: the command reports SUCCESS and only the log says nothing was found (src/coreModule/constellation_mgr.cpp:162, :184, :644)."
    ],
    "flagged": [
-    "constellation `name`: the set of legal abbreviations is data, not code - it comes from the loaded sky culture's constellation files, so the code cannot enumerate it. Recorded as a free string; completion for this key needs the data files (a stellar-system/sky-culture grammar item, INTENT §5 item 4)."
+    "constellation `name`: the set of legal abbreviations is data, not code - it comes from the loaded sky culture's constellation files, so the code cannot enumerate it. Recorded as a free string; completion for this key needs the data files (a stellar-system/sky-culture grammar item, INTENT S5 item 4)."
    ]
   },
   "external_viewer": {
@@ -2481,7 +2481,7 @@
    "notes": [
     "`action record` and `action cancelrecord` set recordable = 0 (:2821, :2824) so the command itself never appears in the file being recorded.",
     "`action pause` on a script that is ALREADY paused, or when skip-pause is on, falls into the pause-or-resume branch and RESUMES it instead (:2825-2829).",
-    "The comment at :2859-2864 records why the `speed` branch returns: without it a working `script speed ...` reported failure and was dropped from every recorded show (INTENT §11.108 rider).",
+    "The comment at :2859-2864 records why the `speed` branch returns: without it a working `script speed ...` reported failure and was dropped from every recorded show (INTENT S11.108 rider).",
     "This is one of the three commands in the sweep that take the `wait` parameter (with `wait` and `zoom` in units 1 and 3)."
    ],
    "flagged": []

@@ -7,7 +7,7 @@
 //  any purpose.
 
 //  Revision History
-//   20 Aug 2003 by Fabien Ch�reau
+//   20 Aug 2003 by Fabien Chereau
 //                Changed a ARG1 into ARG2 which was causing weird bugs..!
 //                Removed an implicitly typename warning that occured with gcc 3.2.2
 //                and changed file names for consistency

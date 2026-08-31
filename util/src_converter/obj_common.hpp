@@ -25,7 +25,7 @@ struct Shape {
 };
 
 
-//utilisé par OBJ3D
+//utilise par OBJ3D
 struct Material {
 	std::string name="";
 	Vec3f Ka=Vec3f(1.0, 1.0, 1.0);

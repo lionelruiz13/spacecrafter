@@ -38,24 +38,24 @@ void main()
 
 	if (pos.w == 1.0) {
 		if (radius>=1.0) {
-			// en bas à droite
+			// en bas a droite
 			float tex = (texture[0]+1)/nbTextures;
 			gl_Position   = MVP2D * ( pos +vec4( radius, -radius, 0.0, 0.0) );
 			TexCoord= vec2(tex, .0f);
 			EmitVertex();
 
-			// en haut à droite
+			// en haut a droite
 			gl_Position   = MVP2D * ( pos +vec4( radius, radius, 0.0, 0.0) );
 			TexCoord= vec2(tex, 1.0f);
 			EmitVertex();
 
 			tex = texture[0]/nbTextures;
-			// en Bas à gauche
+			// en Bas a gauche
 			gl_Position   = MVP2D * ( pos +vec4( -radius, -radius, 0.0, 0.0) );
 			TexCoord= vec2(tex, 0.0f);
 			EmitVertex();
 
-			// en haut à gauche
+			// en haut a gauche
 			gl_Position   = MVP2D * ( pos +vec4( -radius, radius, 0.0, 0.0) );
 			TexCoord= vec2(tex, 1.0f);
 			EmitVertex();

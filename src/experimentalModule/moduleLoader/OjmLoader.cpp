@@ -17,7 +17,7 @@ uint8_t OjmLoader::isLikely(ModularBody *target, std::map<std::string, std::stri
     // module the composed format DECLARED (`type = OJM` section): loadModule
     // runs isLikely for declared modules too, so a composed node that does not
     // carry the legacy `type = Artificial` silently lost its model. That is the
-    // §11.89(c) blocker for body-type-less composed nodes. B27 Tier B / D14: the
+    // S11.89(c) blocker for body-type-less composed nodes. B27 Tier B / D14: the
     // composed format does not read `type` here; the legacy format keeps the
     // duplicate, because a legacy deduction never requests OJM without it and
     // dropping the test would let a NON-artificial legacy body with a model_name

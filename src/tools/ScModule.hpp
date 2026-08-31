@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 of Association Sirius & Association Andromède
+ * Copyright (C) 2020-2021 of Association Sirius & Association Andromede
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

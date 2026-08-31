@@ -4,7 +4,7 @@
     tests/mcp_gate.py <scedit binary> <grammar file>
 
 WHAT THIS PROVES. That `scedit --mcp` speaks the protocol an outside harness
-will speak at it — both eras of it — and that the answers keep the properties
+will speak at it -- both eras of it -- and that the answers keep the properties
 the rest of the tool is held to. In particular: a `doc` the contract file does
 not have arrives as JSON **null** through the whole chain (DocIndex ->
 sc_docjson -> tool result -> the wire), because the one thing this surface
@@ -118,7 +118,7 @@ def main():
 
     s.notify("notifications/initialized")
     r = s.request("ping")
-    check("result" in r, "a notification is not answered — the next line is the ping's result")
+    check("result" in r, "a notification is not answered -- the next line is the ping's result")
 
     r = s.request("tools/list")
     tools = r["result"]["tools"]
@@ -149,7 +149,7 @@ def main():
     r = call(s, "doc_lookup", {"command": "flag", "name": "stars"})
     sc = r["result"]["structuredContent"]
     check(sc["present"] is True and sc["doc"] is None,
-          "a v1 family name: present true, doc null — the name exists, the sentence does not")
+          "a v1 family name: present true, doc null -- the name exists, the sentence does not")
 
     r = call(s, "doc_lookup", {"command": "set", "name": "atmosphere_fade_duration"})
     sc = r["result"]["structuredContent"]
@@ -176,7 +176,7 @@ def main():
           f"every command that names a family carries its names: {sorted(fams)}")
     check(len(fams["flag"]["members"]) == 97 and len(fams["set"]["members"]) == 43
           and len(fams["color"]["members"]) == 46 and len(fams["font"]["members"]) == 10,
-          "97 flag names, 43 set names, 46 colour names, 10 font targets — the second catalogue level")
+          "97 flag names, 43 set names, 46 colour names, 10 font targets -- the second catalogue level")
     check(all(m["doc"] is None for m in fams["flag"]["members"]),
           "the 97 flag names are honest blanks, not invented sentences")
 
@@ -225,14 +225,14 @@ def main():
         # run that had passed a minute earlier). `wait_for` is this file's own
         # rule - a gate never sleeps a fixed time waiting for the other side.
         check(eng.wait_for("$LOGOFF", timeout=5),
-              "and the connection was closed politely — one call, one connection")
+              "and the connection was closed politely -- one call, one connection")
         check("$DIAGOFF" in eng.lines(),
               "unsubscribing from the diagnostic link too: %s"
               % [l for l in eng.lines() if l.startswith("$")])
         check("$LOGON" in sc["note"] and "OTHER clients" in sc["note"],
               "the note warns that a reply may be another client's: %s" % sc["note"][:80])
 
-        # A command the engine answers with silence — which is MOST of them. The
+        # A command the engine answers with silence -- which is MOST of them. The
         # tool must not dress that up as either outcome.
         r = call(s, "run_command", {"command": "flag stars on",
                                     "host": eng.host, "port": eng.port, "wait_ms": 300})

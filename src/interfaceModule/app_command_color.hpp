@@ -79,7 +79,7 @@ private:
 	bool isOkay = false;
 	// transform r g b string to color
 	void setClassicColor(Vec3f &color, std::string debug_message, const std::string &_r,const std::string &_g,const std::string &_b);
-	// transform hexadécimal string to color
+	// transform hexadecimal string to color
 	void setHexColor(Vec3f &color, const std::string &_value);
 	// transform rXXgYYbZZ string to color
 	void decodeRGBColor(Vec3f &color, const std::string &_value, std::string &debug_message);

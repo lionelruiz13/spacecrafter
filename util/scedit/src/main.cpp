@@ -1,5 +1,5 @@
 /*
- * scedit — spacecrafter script/system-file editor, headless core.
+ * scedit -- spacecrafter script/system-file editor, headless core.
  *
  * Slice 1 (2026-08-03): grammar-contract loader + self-validation.
  * The grammar file (grammar/sc-grammar.json) is the single machine-readable
@@ -11,31 +11,31 @@
  * accidental edits), and checks in-family uniqueness. Engine-vs-file
  * validation is a separate concern (future emitter / extraction passes).
  *
- * Slice 2 (2026-08-04): `--check FILE...` — static analysis of scripts, read
+ * Slice 2 (2026-08-04): `--check FILE...` -- static analysis of scripts, read
  * exactly the way the engine reads them (src/sc_tokenizer.hpp), reported
  * gcc-shaped per D6 (src/sc_check.hpp). Exit 0 clean / 1 findings / 2 usage or
  * I/O error.
  *
- * Slice 3 (2026-08-04): the editor — `scedit FILE` / `scedit --edit FILE`.
+ * Slice 3 (2026-08-04): the editor -- `scedit FILE` / `scedit --edit FILE`.
  * The interaction lives in src/sc_editcore.hpp (headless, tested without a
  * tty); src/sc_tui.hpp only draws it. `--ui-selftest` renders fixed frames
  * off-screen so a gate can assert what actually reaches the screen.
  *
- * Slice 5 (2026-08-31): the machine surface — `--doc`, `--search`,
+ * Slice 5 (2026-08-31): the machine surface -- `--doc`, `--search`,
  * `--check --json` and `--mcp`. The same readers answer a program that a human
  * reads on screen (src/sc_docjson.hpp, src/sc_mcp.hpp); JSON goes to stdout
  * because it is the product, and nothing else does.
  *
- * Slice 6 (2026-08-31): live mode — `--tcp [host:]port` puts a running engine
+ * Slice 6 (2026-08-31): live mode -- `--tcp [host:]port` puts a running engine
  * at the other end of the editor (src/sc_tcpclient.hpp): send the caret's line,
  * play the open file, watch the `$LOGON` feed, and take back the `#!` findings
  * the engine writes into the script when the run ends. Without `--tcp` nothing
  * in this binary opens a socket.
  *
- * Slice 4 (2026-08-31): the error pane and `--history FILE...` — every `#!`
+ * Slice 4 (2026-08-31): the error pane and `--history FILE...` -- every `#!`
  * tail spacecrafter wrote and every finding scedit makes, listed in line order
- * with click-to-warp (scedit/INTENT.md §5 item 15(a-ii)). One reader
- * (EditCore::errorHistory), two printers: the pane and this. README § --history
+ * with click-to-warp (scedit/INTENT.md S5 item 15(a-ii)). One reader
+ * (EditCore::errorHistory), two printers: the pane and this. README S --history
  * states the printed shape, which a harness consumes.
  */
 
@@ -104,7 +104,7 @@ void checkNamesFamily(const json &family, const char *key, int expected) {
 // A v2 family entry that carries content must carry the SIX per-key facts the
 // extraction was gated on (SWEEP_DISPATCH DoD: doc, value, default, required,
 // source; `values` only when enumerated). A null doc is legal and means
-// "flagged, not invented" (C2) — an ABSENT one is not.
+// "flagged, not invented" (C2) -- an ABSENT one is not.
 void checkNamesFamilyV2Content(const json &family, const char *key) {
 	int objects = 0, complete = 0;
 	for (const auto &n : family.at("names")) {
@@ -344,7 +344,7 @@ void usage() {
 //! The contract file sits next to the tool in the source tree, and the editor
 //! is launched from wherever the author's scripts are. So: if the DEFAULT path
 //! does not resolve against the working directory, look beside the binary
-//! before giving up. An explicit `--grammar` is never second-guessed — a path
+//! before giving up. An explicit `--grammar` is never second-guessed -- a path
 //! the user named and that does not exist is an error, not a hint.
 std::string resolveDefaultGrammar(const std::string &fallbackRelative) {
 	std::ifstream in(fallbackRelative);
@@ -424,7 +424,7 @@ int check(const std::string &grammarPath, const std::vector<std::string> &files,
 }
 
 //! `--doc`: one page, or the catalogue. Exit 2 with a JSON error object when a
-//! name is not in the vocabulary — a machine reading stdout gets the same
+//! name is not in the vocabulary -- a machine reading stdout gets the same
 //! answer either way, and the exit code says which it is without parsing.
 int doc(const std::string &grammarPath, const std::vector<std::string> &args)
 {
@@ -479,11 +479,11 @@ int search(const std::string &grammarPath, const std::vector<std::string> &words
 }
 
 //! `--history`: the list the editor's error pane shows, for a caller with no
-//! tty. Same reader as the pane (EditCore::errorHistory) — there is one
+//! tty. Same reader as the pane (EditCore::errorHistory) -- there is one
 //! implementation of "where are the problems in this file", and this prints it.
 //!
-//! SHAPE, stable and stated in README § --history: one entry per line, seven
-//! TAB-separated fields —
+//! SHAPE, stable and stated in README S --history: one entry per line, seven
+//! TAB-separated fields --
 //!     file  line  source  id  severity  message  relation
 //! `source` is `spacecrafter` or `scedit`; `id` is the lint id, or the literal
 //! `#!` for an engine tail; `severity` is empty for an engine tail (the engine
@@ -539,7 +539,7 @@ int main(int argc, char **argv) {
 	for (int i = 1; i < argc; ++i) {
 		std::string a = argv[i];
 		// After a mode flag every remaining argument is an OPERAND of that mode
-		// — a file name, or a word of a search query — with three exceptions
+		// -- a file name, or a word of a search query -- with three exceptions
 		// that stay readable in either position (`--json`, `--scope`, `--limit`).
 		// A script's file name may look like anything; a query word may not
 		// start with `--`.
@@ -567,7 +567,7 @@ int main(int argc, char **argv) {
 		else if (a == "--mcp") mcpMode = true;
 		else if (a == "--tcp") {
 			// The argument is OPTIONAL, and it is consumed only if it parses as an
-			// endpoint — `--tcp show.sts` opens the file with live mode on the
+			// endpoint -- `--tcp show.sts` opens the file with live mode on the
 			// default engine, rather than eating the file name. A script called
 			// `7805` would be taken as a port; that is the whole ambiguity and it
 			// is written down here and in the README rather than hidden.

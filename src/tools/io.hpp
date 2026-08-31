@@ -48,7 +48,7 @@
 Application control server
 Utility: this program allows to talk with the application through the network
 Usage: to include in the C++ program
-Author: Aurélien Schwab <aurelien.schwab+dev@gmail.com> for association-sirius.org
+Author: Aurelien Schwab <aurelien.schwab+dev@gmail.com> for association-sirius.org
 Updated on 17/05/2016
 */
 
@@ -82,7 +82,7 @@ Updated on 17/05/2016
 
 
 //! A line of protocol together with the connection it belongs to.
-//! INTENT §5.47: `setOutput` names no addressee, and the addressee used to be
+//! INTENT S5.47: `setOutput` names no addressee, and the addressee used to be
 //! dropped at the first hop - `computeNormalString` knows which connection a
 //! command arrived on and pushed the bare string - so a `get`'s reply had
 //! nowhere to go but the feedback subscription ($LOGON), and with nobody
@@ -148,7 +148,7 @@ public:
 	//! Transfer of internal data outside the program: to the connection that
 	//! asked for it if there is one, and to the clients that subscribed to the
 	//! feedback channel with $LOGON in any case (they were the only recipients
-	//! before §5.47 and they keep receiving exactly what they received).
+	//! before S5.47 and they keep receiving exactly what they received).
 	void setOutput(std::string data);
 	//! Send ONE diagnostic line to the connections that subscribed with
 	//! $DIAGON, and to NO other connection.
@@ -182,7 +182,7 @@ private:
 	unsigned int bufferSize; //Receive buffer size
 	LOG_TYPE logType; //Log type (application specific)
 
-	/* Status variables */
+	/* Status variables */
 	bool serverOpen; //Server status
 	unsigned int clientCount; //Number of clients currently connected to the server
 	unsigned int broadcastId; //Broadcast message id
@@ -226,7 +226,7 @@ private:
 	int unlock(SDL_mutex *mutex);
 	SDL_mutex *running; //Mutex of active server
 	int activeSocketsCount; //Number of active sockets
-	//! The RECEIVE buffer, and only that (§5.73): `tcp_buffer_in_size` bytes,
+	//! The RECEIVE buffer, and only that (S5.73): `tcp_buffer_in_size` bytes,
 	//! filled by `SDLNet_TCP_Recv` and read back by `computeNewData`. The HTTP
 	//! branch also streams a file through it, in `bufferSize` chunks - bounded
 	//! by the buffer by construction. Nothing that the server SENDS is copied
@@ -276,7 +276,7 @@ private:
 	/* FFactoring or assistance functions */
 	//! Send ONE message to one client. The message is the caller's own, and
 	//! its length is bounded by itself.
-	//! INTENT §5.73: every sender used to `strcpy` its message into `buffer`
+	//! INTENT S5.73: every sender used to `strcpy` its message into `buffer`
 	//! first, and `buffer` is the RECEIVE buffer - `tcp_buffer_in_size` bytes,
 	//! 1024 in the shipped config. An answer is clamped to `MAX_BUFFER` = 1024
 	//! by `setOutput` and then sent as `data + '\n' + '\0'`, i.e. L + 2 bytes,
@@ -286,7 +286,7 @@ private:
 	//! `strlen + 1` (the terminator is part of the message - that is how a
 	//! client frames it), only the storage is now the message's own.
 	int send(TCPsocket client, const char *data);
-	int resetThread(); //Fonction qui redémarre le thread de traiement quand il est inactif
+	int resetThread(); //Fonction qui redemarre le thread de traiement quand il est inactif
 	int killThread(); //Function that kills the processing thread when it is inactive
 
 	std::string humanReadable(unsigned int); //Function that returns a formatted string (B, KB, MB, GB)

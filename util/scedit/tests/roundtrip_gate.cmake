@@ -1,6 +1,6 @@
 # The round-trip gate: opening a script in the editor and saving it must give
 # back the same file, BYTE FOR BYTE. Measured as an MD5 comparison, because that
-# is the claim — not "looks the same", not "parses the same".
+# is the claim -- not "looks the same", not "parses the same".
 #
 # Inputs: WORKER (the roundtrip_test binary), GRAMMAR, INPUT, TMPDIR.
 
@@ -27,7 +27,7 @@ if(NOT MD5_IN STREQUAL MD5_OUT)
 endif()
 message(STATUS "round trip: md5 ${MD5_IN} in == out")
 
-# The edited copy must NOT be identical — a gate that would pass on a buffer
+# The edited copy must NOT be identical -- a gate that would pass on a buffer
 # that ignores edits is not a gate.
 file(MD5 ${OUT2} MD5_EDITED)
 if(MD5_IN STREQUAL MD5_EDITED)

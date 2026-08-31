@@ -4,14 +4,14 @@
     tests/tcp_gate.py <tcpclient_test binary>
 
 WHAT THIS PROVES. That `sc_tcpclient` speaks the line protocol spacecrafter's
-`ServerSocket` speaks — the NUL-terminated records, the `$LOGON` subscription,
+`ServerSocket` speaks -- the NUL-terminated records, the `$LOGON` subscription,
 an answer that arrives on the asking connection and on the subscribers, a
-command that is answered with silence, ISO-8859 bytes that survive the wire —
+command that is answered with silence, ISO-8859 bytes that survive the wire --
 and that what it SENDS is what the caller asked it to send, asserted on the
 server side rather than taken from the client's own account of itself.
 
 Each leg is one process: this gate starts a stand-in engine
-(`tests/fake_engine.py` — its framing rules are read from the engine's source,
+(`tests/fake_engine.py` -- its framing rules are read from the engine's source,
 file by file, line by line), runs the leg, and then checks the transcript the
 stand-in recorded. A leg that passes its own checks while having sent nothing
 fails here.
@@ -86,7 +86,7 @@ def main():
         # Two of each: the leg connects, disconnects, reconnects and
         # disconnects again, and every connection both subscribes and
         # unsubscribes. (This assertion read `1 $LOGOFF` when it was first
-        # written — my miscount of my own leg, caught by the gate on its first
+        # written -- my miscount of my own leg, caught by the gate on its first
         # run. Kept as written down rather than quietly corrected.)
         check(lines.count("$LOGON") == 2 and lines.count("$LOGOFF") == 2,
               "each of the two connections subscribed and unsubscribed: %d $LOGON, %d $LOGOFF"
@@ -120,7 +120,7 @@ def main():
         check(b"\xe9" in raw and raw.count(b"\xe9") == 2,
               "the 0xE9 bytes arrived as bytes, not transcoded: %r" % raw)
         check(b"\xa0" in raw,
-              "the 0xA0 no-break space survived too — the byte `invisible-separator` is about")
+              "the 0xA0 no-break space survived too -- the byte `invisible-separator` is about")
 
     print("F. the feed is bounded and says what it dropped")
     with FakeEngine() as eng:

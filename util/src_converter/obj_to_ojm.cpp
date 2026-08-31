@@ -12,7 +12,7 @@ using namespace std;
 //
 // FONCTIONS UTILITAIRES
 //
-// fonctions copiées de opengl-tutorial.org
+// fonctions copiees de opengl-tutorial.org
 //
 // *****************************************************************************
 
@@ -170,7 +170,7 @@ bool ObjToOjm::createUniqueIndexFromVertices()
 
 bool ObjToOjm::fusionMaterials()
 {
-	//std::cout << "ObjToOjm fusion des matériaux similaires" << std::endl;
+	//std::cout << "ObjToOjm fusion des materiaux similaires" << std::endl;
 	bool isDone = false;
 	while (!isDone) {
 		for(unsigned short i=0; i< obj->meshes.size(); i++) {
@@ -218,7 +218,7 @@ bool ObjToOjm::exportOJM(const std::string &filename)
 	//std::cout << "Start export OBJ" << std::endl;
 
 	stream<<"# Spacecrafter personal file format"<<std::endl;
-	stream<<"# By Olivier Nivoix and Jérôme Lartillot"<< std::endl;
+	stream<<"# By Olivier Nivoix and J\xc3\xa9r\xc3\xb4me Lartillot"<< std::endl;
 	stream<<std::endl<<std::endl;
 	
 	for(unsigned int i=0; i<shapes.size(); i++) {

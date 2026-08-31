@@ -20,7 +20,7 @@ public:
     // Load a BodyModule for this body and route it into the regime lists (see loading contract above)
     // Ownership of the returned module is installed into the slot by ModuleLoaderMgr, not here.
     virtual std::unique_ptr<BodyModule> load(ModularBody *target, std::map<std::string, std::string> &params) = 0;
-    // B24 declaration override (INTENT §11.78(d)): re-home an already-loaded,
+    // B24 declaration override (INTENT S11.78(d)): re-home an already-loaded,
     // already-slotted module into the routing list named by `relation` -
     // the composed-format `relation =` key on a BodyModule declaration.
     // Routing knowledge lives HERE (this class owns every insertion rule,
@@ -28,7 +28,7 @@ public:
     // re-routing authority; the value domain IS the add*Component surface
     // below: far | near | grounded | in | orbit | trail | tail.
     // Returns false on an unknown relation name - the module keeps the
-    // routing its loader chose (caller logs, §2(f)).
+    // routing its loader chose (caller logs, S2(f)).
     static bool reroute(ModularBody *target, BodyModule *module, const std::string &relation);
 protected:
     static inline void addFarComponent(ModularBody *target, BodyModule *module) {

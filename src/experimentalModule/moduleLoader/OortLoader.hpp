@@ -3,8 +3,8 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
-// Loader of the OORT slot (B5, INTENT §6.9 content-migration PILOT). Rides the
-// CUSTOM loader family with an explicit slot (the GRID precedent, §6.7
+// Loader of the OORT slot (B5, INTENT S6.9 content-migration PILOT). Rides the
+// CUSTOM loader family with an explicit slot (the GRID precedent, S6.7
 // declaration half), keyed on the `oort=true` marker so it competes only for
 // bodies that requested it - GridLoader/StarLoader keep every other CUSTOM
 // body (isLikely 0 here otherwise). Routes the module as a NEAR component so

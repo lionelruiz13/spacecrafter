@@ -18,9 +18,9 @@ uint32_t TrailModule::flagGeneration = 0; // bumped by every global toggle
 int TrailModule::activeCount = 0;         // modules with a live fader (phase gate)
 Vec3f TrailModule::defaultColor{1.f, 0.5f, 0.f}; // config object_trails_color (checkConfig default)
 
-// TRAIL line family - third line-class family (AXIS §11.31, ORBIT §11.39 were
+// TRAIL line family - third line-class family (AXIS S11.31, ORBIT S11.39 were
 // the first two). body_trail.{vert,geom,frag} REUSED VERBATIM (parity by
-// construction). Its own push-constant contract (INTENT §10.1 "orbit/trail/
+// construction). Its own push-constant contract (INTENT S10.1 "orbit/trail/
 // axis/grid as separate families where push contracts differ"): a FRAGMENT
 // color at 0 (old uColor) and the VERTEX {int nbPoints, mat4 ModelViewMatrix,
 // float fader} at 12 (old layoutTrail, trail.cpp:192-193). The shaders read
@@ -30,7 +30,7 @@ Vec3f TrailModule::defaultColor{1.f, 0.5f, 0.f}; // config object_trails_color (
 // converted to push in the 2023-master merge; body_trail was not). LINE_STRIP
 // fed to the geometry shader (segment wrap-cull + subdivision), BLEND_SRC_ALPHA
 // carries the per-vertex fade alpha, NO depth (old setDepthStencilMode() =
-// test+write off). Spec-const 8 registry-injected (§11.33).
+// test+write off). Spec-const 8 registry-injected (S11.33).
 namespace {
 struct TrailFamilyData {
     std::unique_ptr<VertexArray> vertexModel; // 1 binding, vec3 pos (m_dataGL parity)
@@ -164,7 +164,7 @@ void TrailModule::accumulate(ModularBody *body)
     }
 }
 
-// THE UNHIDE EDGE (B39 §11.117 / D23 clause iv: "behave as if they never were
+// THE UNHIDE EDGE (B39 S11.117 / D23 clause iv: "behave as if they never were
 // hidden when unhidden"). See the header for the two behind-state halves.
 void TrailModule::resumeAfterHidden(ModularBody *body)
 {
@@ -200,10 +200,10 @@ void TrailModule::resumeAfterHidden(ModularBody *body)
     }
     const Orbit *orbit = body->getOrbit();
     if (!orbit) {
-        // THE ONE NAMED RESIDUAL of D23 (§11.113(b)(iv)): a past that is not a
+        // THE ONE NAMED RESIDUAL of D23 (S11.113(b)(iv)): a past that is not a
         // function of time cannot be reconstructed. Degrade to a fresh start and
-        // SAY SO (§2.0 D12 - a behaviour the author did not write must be
-        // visible; §2(f) shape: what happened, why, what was done, what to do).
+        // SAY SO (S2.0 D12 - a behaviour the author did not write must be
+        // visible; S2(f) shape: what happened, why, what was done, what to do).
         cLog::get()->write("Trail of '" + body->getEnglishName() + "': the "
             + std::to_string(missed) + " sample(s) missed while the body was hidden "
             "cannot be reconstructed, because this body has no orbit to evaluate at a "
@@ -218,7 +218,7 @@ void TrailModule::resumeAfterHidden(ModularBody *body)
     // newest-first. Each sample is evaluated 1 + RESUME_EXTRA_ITERATIONS times at
     // its own date: EllipticalOrbit/IterativeEll advance ONE Newton step per
     // call from the previous call's seed, so a single call at a jumped-to date
-    // would not be the position at that date - the same reason the §11.76(b)
+    // would not be the position at that date - the same reason the S11.76(b)
     // barrier exists, applied per reconstructed sample.
     OsculatingFunctionType *osc = orbit->getOsculatingFunction();
     Vec3d tmp;
@@ -276,7 +276,7 @@ bool TrailModule::update(ModularBody *body, float scaledRadius)
     // EVALUATED body, hidden ones included (their eclipticPos/lastJD/distance
     // ride recursiveTranslationUpdate), so `want` is the only thing that can
     // stop accumulation. Two conditions, two observables - reading them as one
-    // gate produces a wrong implementation (§13.B B11).
+    // gate produces a wrong implementation (S13.B B11).
     if (want) {
         if (!recording) { // rising edge of the flag = fresh restart
             recording = true;
@@ -318,7 +318,7 @@ void TrailModule::dumpState(std::ostream &out) const
         << ",\"accumulateCount\":" << accumulateCount
         << ",\"maxTrail\":" << maxTrail
         << ",\"deltaTrail\":" << deltaTrail
-        // Trail color (B29 runtime-color instrument, INTENT §11.65): the
+        // Trail color (B29 runtime-color instrument, INTENT S11.65): the
         // per-instance TRAIL channel drawn by this module (old BodyColor::trail).
         // Lets the harness read the runtime recolor + reload behaviour.
         << ",\"color\":[" << color[0] << ',' << color[1] << ',' << color[2] << "]"
@@ -329,7 +329,7 @@ void TrailModule::dumpState(std::ostream &out) const
         out << '[' << points.front().pos[0] << ',' << points.front().pos[1]
             << ',' << points.front().pos[2] << "],\"headJD\":"
             << std::setprecision(17) << points.front().jd
-            // Oldest sample's date + the POLYLINE LENGTH (B39 §11.117): together
+            // Oldest sample's date + the POLYLINE LENGTH (B39 S11.117): together
             // with `points` they make the recorded history's GEOMETRY observable,
             // not just its size. That is what separates "n samples appeared" from
             // "n samples that trace this body's actual orbit": length/span is the

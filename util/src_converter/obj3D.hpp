@@ -13,7 +13,7 @@ public:
 	Obj3D(const std::string _fileName);
 	~Obj3D();
 
-	//! renvoie l'état de l'objet: chargé et opérationnel, négatif sinon
+	//! renvoie l'etat de l'objet: charge et operationnel, negatif sinon
 	bool getOk() {
 		return is_ok;
 	}
@@ -29,13 +29,13 @@ private:
 
 	//! lecture du fichier MTL
 	bool ReadMaterialLibrary(const std::string& filename);
-	//! vérifie si les indices coincident dans l'objet
+	//! verifie si les indices coincident dans l'objet
 	bool testIndices();
 	//! charge un objet OBJ du disque dur
 	bool readOBJ();
 
 	RawData positionData;
-	//! indices des différents morceaux de l'objet
+	//! indices des differents morceaux de l'objet
 	std::vector<Mesh*> meshes;
 	//! vector contenant les materials de l'objet
 	std::vector<Material*> materials;

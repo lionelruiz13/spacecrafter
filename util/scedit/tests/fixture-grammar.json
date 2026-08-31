@@ -1,7 +1,7 @@
 {
 	"_meta": {
 		"what_this_is": "A tiny contract file that exists ONLY to exercise scedit code paths the real contract cannot reach yet. It is NOT a source of facts about spacecrafter and must never be read as one: every name in it is invented for the test and says so.",
-		"why_it_exists": "D31 asks for the DEFAULT value of an empty value field to be shown greyed and offered to completion. At HEAD every one of the 324 argument specs in grammar/sc-grammar.json states its default as an English SENTENCE ('absent -> 0', 'absent or empty -> the next form is tried'), so there is no literal a machine may type on the author's behalf. scedit therefore arms that feature from an explicit `default_value` field, of which the real contract has none — and this fixture has one, so the mechanism is tested rather than merely written.",
+		"why_it_exists": "D31 asks for the DEFAULT value of an empty value field to be shown greyed and offered to completion. At HEAD every one of the 324 argument specs in grammar/sc-grammar.json states its default as an English SENTENCE ('absent -> 0', 'absent or empty -> the next form is tried'), so there is no literal a machine may type on the author's behalf. scedit therefore arms that feature from an explicit `default_value` field, of which the real contract has none -- and this fixture has one, so the mechanism is tested rather than merely written.",
 		"see": "util/scedit/src/sc_docindex.hpp, section 'DEFAULTS ARE PROSE TODAY'"
 	},
 	"parse_model": {

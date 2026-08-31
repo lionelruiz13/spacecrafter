@@ -11,22 +11,22 @@
     "source_anchor_convention": "Bare 'app_command_interface.cpp:N' = src/interfaceModule/app_command_interface.cpp (the handler file, per the dispatch schema). Any other anchor is written repo-relative from the tree root.",
     "schema_notes": [
       "`required` is tri-state: true = the command cannot act without the key on any path; false = optional on every path; \"conditional\" = required only inside a branch, the branch named in the key's `notes` and in the command's `branches`.",
-      "`branches` (added field) — several handlers are selector-shaped (`action`, `pen`, `hidden`, `loading`): a flat required/optional split would misstate them. Each row: selector, requires, optional, effect, source.",
-      "`value_docs` (added field) — where a key is enumerated and each value selects a different effect, C6's per-thing doc line is attached per value, not only per key.",
-      "`key_grammar` (added field) — for the two commands whose key is not from a fixed list: `flag` (key = a flag name, cross-ref families.flags) and `print` (key = anything the author writes).",
-      "`downstream` (added field, boolean) — key not read in this line range: the handler forwards the whole args map and the key is read in another file. Anchored there. Such keys consume NO row of the count gate.",
-      "Absent-key value for every eval* conversion is fixed IN the handler file and is not opaque: evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" [app_command_interface.cpp:4458-4479]. What a NON-empty string evaluates to stays opaque here (app_command_eval.cpp, INTENT §5 item 5): recorded as evalDouble/evalInt/evalString, $-variable substitution possible."
+      "`branches` (added field) -- several handlers are selector-shaped (`action`, `pen`, `hidden`, `loading`): a flat required/optional split would misstate them. Each row: selector, requires, optional, effect, source.",
+      "`value_docs` (added field) -- where a key is enumerated and each value selects a different effect, C6's per-thing doc line is attached per value, not only per key.",
+      "`key_grammar` (added field) -- for the two commands whose key is not from a fixed list: `flag` (key = a flag name, cross-ref families.flags) and `print` (key = anything the author writes).",
+      "`downstream` (added field, boolean) -- key not read in this line range: the handler forwards the whole args map and the key is read in another file. Anchored there. Such keys consume NO row of the count gate.",
+      "Absent-key value for every eval* conversion is fixed IN the handler file and is not opaque: evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" [app_command_interface.cpp:4458-4479]. What a NON-empty string evaluates to stays opaque here (app_command_eval.cpp, INTENT S5 item 5): recorded as evalDouble/evalInt/evalString, $-variable substitution possible."
     ],
     "other_args_uses": [
-      {"line": 1183, "form": "args.begin() != args.end()", "role": "commandFlag: emptiness test — at least one key/value pair must have parsed, else debug_message 'Unrecognized or malformed command_flag behaviour'"},
-      {"line": 1185, "form": "args.begin()->first, args.begin()->second", "role": "commandFlag: the ONE pair applied — alphabetically first key and its value are passed to setFlag; every other pair on the line is silently ignored"},
+      {"line": 1183, "form": "args.begin() != args.end()", "role": "commandFlag: emptiness test -- at least one key/value pair must have parsed, else debug_message 'Unrecognized or malformed command_flag behaviour'"},
+      {"line": 1185, "form": "args.begin()->first, args.begin()->second", "role": "commandFlag: the ONE pair applied -- alphabetically first key and its value are passed to setFlag; every other pair on the line is silently ignored"},
       {"line": 1189, "form": "args.begin()->second", "role": "commandFlag: toggle detection for the recording rewrite"},
-      {"line": 1191, "form": "args.begin()->first", "role": "commandFlag: recording rewrite — commandline is rebuilt as '<command> <key> <val>' with val the RESULTING bool (0/1), so a recorded script replays the state rather than a toggle"},
+      {"line": 1191, "form": "args.begin()->first", "role": "commandFlag: recording rewrite -- commandline is rebuilt as '<command> <key> <val>' with val the RESULTING bool (0/1), so a recorded script replays the state rather than a toggle"},
       {"line": 1518, "form": "args (whole map)", "role": "commandDso3D: forwards the entire parsed map to CoreLink::dsoNavInsert -> DsoNavigator::insert, which reads its own keys (src/inGalaxyModule/dsoNavigator.cpp:267-290)"},
       {"line": 1520, "form": "args (whole map)", "role": "commandDso3D: forwards the entire parsed map to CoreLink::dsoNavSetupVolumetric(args, 0) -> DsoNavigator::setupVolumetric (src/inGalaxyModule/dsoNavigator.cpp:292-322)"},
       {"line": 1523, "form": "args (whole map)", "role": "commandDso3D: same as 1520 with defaultColorDepth = 1"},
-      {"line": 1971, "form": "args.begin() == args.end()", "role": "commandPrint: emptiness test — no pair parsed gives debug_message \"command_'print': malformed command\""},
-      {"line": 1975, "form": "for (const auto& i : args)", "role": "commandPrint: iterates EVERY pair — this is the only handler in the unit that consumes keys it does not name"}
+      {"line": 1971, "form": "args.begin() == args.end()", "role": "commandPrint: emptiness test -- no pair parsed gives debug_message \"command_'print': malformed command\""},
+      {"line": 1975, "form": "for (const auto& i : args)", "role": "commandPrint: iterates EVERY pair -- this is the only handler in the unit that consumes keys it does not name"}
     ],
     "accounting": [
       {"line": 1203, "command": "get", "keys": ["status"]},
@@ -99,8 +99,8 @@
       {"line": 1954, "command": "illuminate", "keys": ["filename"]}
     ],
     "shared_context": {
-      "executeCommandStatus": "app_command_interface.cpp:1163-1177 — the return path of every handler. debug_message EMPTY = success: the line is recorded when recording is on and 'true' is returned. debug_message SET = two log lines ('Could not execute: <line>' + the message) and 'false'. A handler that returns without setting debug_message therefore reports SUCCESS even when it did nothing.",
-      "args_container": "stringHash_t = std::map<std::string,std::string> (src/tools/utility.hpp:85), member `args` (app_command_interface.hpp:204), cleared at the top of every executeCommand (app_command_interface.cpp:199). `args[KEY]` is std::map::operator[]: reading an ABSENT key INSERTS an empty entry — visible to any handler that later walks the whole map (see C1 notes on dso3d and print)."
+      "executeCommandStatus": "app_command_interface.cpp:1163-1177 -- the return path of every handler. debug_message EMPTY = success: the line is recorded when recording is on and 'true' is returned. debug_message SET = two log lines ('Could not execute: <line>' + the message) and 'false'. A handler that returns without setting debug_message therefore reports SUCCESS even when it did nothing.",
+      "args_container": "stringHash_t = std::map<std::string,std::string> (src/tools/utility.hpp:85), member `args` (app_command_interface.hpp:204), cleared at the top of every executeCommand (app_command_interface.cpp:199). `args[KEY]` is std::map::operator[]: reading an ABSENT key INSERTS an empty entry -- visible to any handler that later walks the whole map (see C1 notes on dso3d and print)."
     }
   },
 
@@ -114,7 +114,7 @@
       "args": {},
       "key_grammar": {
         "doc": "One pair: the KEY is the name of the feature, the VALUE says on, off or toggle.",
-        "key_domain": "families.flags — the 97 registered flag names (app_command_init.cpp:113-209); an unregistered name gives 'Unrecognized or malformed flag argument'",
+        "key_domain": "families.flags -- the 97 registered flag names (app_command_init.cpp:113-209); an unregistered name gives 'Unrecognized or malformed flag argument'",
         "value": "boolean(flag grammar)",
         "values": ["toggle", "any on-form accepted by Utility::isTrue (src/tools/utility.hpp:160-171: \"1\", \"on\"/\"ON\", \"true\"/\"TRUE\", case-insensitive)", "ANYTHING ELSE = off, silently"],
         "default": "no pair at all -> debug_message 'Unrecognized or malformed command_flag behaviour', nothing changes",
@@ -123,7 +123,7 @@
       },
       "notes": [
         "SINGLE PAIR ONLY, and it is the ALPHABETICALLY FIRST key of the line, not the first written: the handler reads args.begin() and never loops (the code says so itself: '// could loop if want to allow that syntax', :1182). 'flag stars on nebulae off' applies only 'nebulae off'. Confirms parse_model.flag_multi_pair.",
-        "Recording rewrite: when the value is exactly 'toggle', the line stored by the recorder becomes '<command> <key> <0|1>' with the state the toggle produced (:1189-1193) — a recorded script replays a state, not a toggle. `val` is a bool streamed with operator<<, so the recorded spelling is '0'/'1' (both are legal values: utility.hpp:167,179).",
+        "Recording rewrite: when the value is exactly 'toggle', the line stored by the recorder becomes '<command> <key> <0|1>' with the state the toggle produced (:1189-1193) -- a recorded script replays a state, not a toggle. `val` is a bool streamed with operator<<, so the recorded spelling is '0'/'1' (both are legal values: utility.hpp:167,179).",
         "Per-flag documentation is NOT part of this unit (SWEEP_DISPATCH DoD 6): only the key grammar shape is recorded here."
       ],
       "flagged": []
@@ -154,10 +154,10 @@
         }
       },
       "branches": [
-        {"selector": "no network connection", "requires": [], "optional": [], "effect": "logs the warning 'No tcp : i can't send' and returns WITHOUT reading `status` and WITHOUT setting debug_message — so the command reports success and is recorded, having sent nothing", "source": "app_command_interface.cpp:1204-1207"}
+        {"selector": "no network connection", "requires": [], "optional": [], "effect": "logs the warning 'No tcp : i can't send' and returns WITHOUT reading `status` and WITHOUT setting debug_message -- so the command reports success and is recorded, having sent nothing", "source": "app_command_interface.cpp:1204-1207"}
       ],
       "notes": [
-        "The answer goes to the socket the interface holds (AppCommandInterface::setTcp, :114-117), i.e. the reply reaches the connection that asked — outside a network session this command has no effect at all.",
+        "The answer goes to the socket the interface holds (AppCommandInterface::setTcp, :114-117), i.e. the reply reaches the connection that asked -- outside a network session this command has no effect at all.",
         "`status` is read at :1203 BEFORE the connection test, so the map always gains a 'status' entry even on the no-connection path (std::map::operator[])."
       ],
       "flagged": []
@@ -213,7 +213,7 @@
         },
         "maxobject": {
           "doc": "How many matches to send back at most.",
-          "value": "int(evalInt) — $-variable substitution possible",
+          "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent -> 5 (the default argument of Core::getListMatchingObjects, src/coreModule/core.hpp:345)",
           "required": false,
           "source": "app_command_interface.cpp:1331, 1334-1338 (W_MAX_OBJECT=\"maxobject\", base_command_interface.hpp:100)"
@@ -221,7 +221,7 @@
       },
       "notes": [
         "The reply is the matching names joined by ';' (src/coreModule/core.cpp:207-216); when nothing matched the literal 'NOF' is sent instead (:1339-1340).",
-        "With no network connection the search still runs and the result is discarded (`if (tcp)`, :1341-1342) — the command reports success either way."
+        "With no network connection the search still runs and the result is discarded (`if (tcp)`, :1341-1342) -- the command reports success either way."
       ],
       "flagged": []
     },
@@ -242,7 +242,7 @@
         },
         "scale": {
           "doc": "How many times its true size to draw it at.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent or empty -> same error as a missing name; nothing changes",
           "required": true,
           "source": "app_command_interface.cpp:1352-1356 (W_SCALE=\"scale\", base_command_interface.hpp:101) -> CoreLink::planetSetSizeScale, src/coreModule/coreLink.cpp:1539"
@@ -260,16 +260,16 @@
       "lines": "1361-1406",
       "aliases": [],
       "registration": "app_command_init.cpp:97 (ACP_CN_WAIT = \"wait\", base_command_interface.hpp:388)",
-      "signature": "commandWait(uint64_t &wait) — the only unit-1 handler that writes the script's inter-command delay (executeCommand :296)",
-      "doc": "Hold the script here — for a number of seconds, or until the program has finished loading what it still has to load.",
+      "signature": "commandWait(uint64_t &wait) -- the only unit-1 handler that writes the script's inter-command delay (executeCommand :296)",
+      "doc": "Hold the script here -- for a number of seconds, or until the program has finished loading what it still has to load.",
       "args": {
         "duration": {
           "doc": "How many seconds to hold.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent: on its own, no wait at all; together with `loading`, a floor of 1 millisecond",
           "required": "conditional",
           "source": "app_command_interface.cpp:1365-1367 (plain form), 1396-1400 (with `loading`)",
-          "notes": "Plain form: the delay is set only when the value is > 0 (:1367), otherwise the command succeeds and holds nothing. With `loading`: the delay is max(duration x 1000, 1) milliseconds (:1399) — the wait is at least that long AND at least until loading is done."
+          "notes": "Plain form: the delay is set only when the value is > 0 (:1367), otherwise the command succeeds and holds nothing. With `loading`: the delay is max(duration x 1000, 1) milliseconds (:1399) -- the wait is at least that long AND at least until loading is done."
         },
         "loading": {
           "doc": "Hold until the program has finished loading things of the named urgency.",
@@ -337,11 +337,11 @@
         },
         "xy": {
           "doc": "The points to draw given directly on the command line instead of in a file.",
-          "value": "string — numbers separated by ';', read in pairs",
+          "value": "string -- numbers separated by ';', read in pairs",
           "default": "absent (and no `action`) -> \"command_'personal' : unrecognized or malformed argument\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:1427-1429 (W_XY=\"xy\", base_command_interface.hpp:106)",
-          "notes": "Each pair is an angle around then an angle up, used as-is (radians — the file form's degree conversion is NOT applied here): src/coreModule/skyDisplay.cpp:308-337 with Utility::spheToRect(lng, lat) (src/tools/utility.hpp:135-137). An odd count drops the last number and logs 'Skyperson loading incomplete data' (skyDisplay.cpp:322-325)."
+          "notes": "Each pair is an angle around then an angle up, used as-is (radians -- the file form's degree conversion is NOT applied here): src/coreModule/skyDisplay.cpp:308-337 with Utility::spheToRect(lng, lat) (src/tools/utility.hpp:135-137). An odd count drops the last number and logs 'Skyperson loading incomplete data' (skyDisplay.cpp:322-325)."
         }
       },
       "branches": [
@@ -360,7 +360,7 @@
       "lines": "1436-1512",
       "aliases": [],
       "registration": "app_command_init.cpp:54 (ACP_CN_DSO = \"dso\", base_command_interface.hpp:343)",
-      "doc": "Add, remove, show or hide a deep-sky picture — the images of galaxies, nebulae and clusters drawn on the sky.",
+      "doc": "Add, remove, show or hide a deep-sky picture -- the images of galaxies, nebulae and clusters drawn on the sky.",
       "args": {
         "action": {
           "doc": "Whether to add a picture, remove one, or remove every picture a script has added.",
@@ -399,28 +399,28 @@
         },
         "ra": {
           "doc": "Where the picture goes: the angle around, in degrees.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1450 -> src/coreModule/nebula.cpp:81 (ra x PI/180)"
         },
         "de": {
           "doc": "Where the picture goes: the angle up or down, in degrees.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1450 -> src/coreModule/nebula.cpp:82 (de x PI/180)"
         },
         "magnitude": {
           "doc": "How bright the object is said to be (smaller numbers are brighter).",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, which the object code then turns into 99 (i.e. treated as very faint)",
           "required": false,
           "source": "app_command_interface.cpp:1450 -> src/coreModule/nebula.cpp:90-91 ('if ((mag!=-30) && (mag < 1.0)) mag = 99.0')"
         },
         "angular_size": {
           "doc": "How big the picture is drawn on the sky, in arcminutes (sixtieths of a degree).",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1451 -> src/coreModule/nebula.cpp:83 (size/60 x PI/180), clamped to 1..150 for the object's own size at nebula.cpp:93-96",
@@ -428,7 +428,7 @@
         },
         "rotation": {
           "doc": "How far the picture is turned on the sky, in degrees.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1451 -> src/coreModule/nebula.cpp:84 (rotation x PI/180)"
@@ -439,11 +439,11 @@
           "default": "absent -> empty, so the shown text is 'Credit: '",
           "required": false,
           "source": "app_command_interface.cpp:1452 -> src/coreModule/nebula.cpp:72-78",
-          "notes": "The exact word 'none' means no credit at all; underscores in the text are displayed as spaces (nebula.cpp:72-78) — which is how a multi-word credit survives a parser that splits on spaces."
+          "notes": "The exact word 'none' means no credit at all; underscores in the text are displayed as spaces (nebula.cpp:72-78) -- which is how a multi-word credit survives a parser that splits on spaces."
         },
         "texture_luminance_adjust": {
           "doc": "How bright to draw the picture; leaving it out means zero, and a picture at zero is not drawn at all.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0 (evalDouble(\"\"), app_command_interface.cpp:4466-4471)",
           "required": false,
           "source": "app_command_interface.cpp:1452 -> src/coreModule/nebula.cpp:371-376 (brightness = 3 x ad_lum / average x this, and 'if (color < 0.001) return')",
@@ -451,11 +451,11 @@
         },
         "distance": {
           "doc": "How far away the object is recorded to be; the number is stored as given.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1453 -> src/coreModule/nebula.cpp:64 (myDistance = _distance)",
-          "notes": "No unit is stated anywhere in the code — see `flagged`."
+          "notes": "No unit is stated anywhere in the code -- see `flagged`."
         },
         "constellation": {
           "doc": "Which constellation the object is filed under.",
@@ -499,8 +499,8 @@
         {"selector": "no action, hidden present, name present", "requires": ["hidden", "name"], "optional": [], "effect": "hide/show that one picture", "source": "app_command_interface.cpp:1500-1503"}
       ],
       "notes": [
-        "`action drop` with no `name` does NOT report a missing name: the drop test is `argAction == W_DROP && !argName.empty()`, so the line falls through to the generic \"Command 'dso': unknown action value\" (:1459, :1471) — a misleading message for a real user mistake.",
-        "Inside the show/hide form the order tried is type, then constellation, then name (:1477, :1489, :1500) — the FIRST one present wins, whatever the author's order on the line.",
+        "`action drop` with no `name` does NOT report a missing name: the drop test is `argAction == W_DROP && !argName.empty()`, so the line falls through to the generic \"Command 'dso': unknown action value\" (:1459, :1471) -- a misleading message for a real user mistake.",
+        "Inside the show/hide form the order tried is type, then constellation, then name (:1477, :1489, :1500) -- the FIRST one present wins, whatever the author's order on the line.",
         "`type all` / `constellation all` do not select a kind called 'all': they call hide-all / show-all over every picture (:1479-1482, :1491-1494)."
       ],
       "flagged": [
@@ -544,7 +544,7 @@
         "depth": {
           "doc": "How many slices the density picture is cut into.",
           "value": "int",
-          "default": "absent -> 0 in the setupVolumetric path; but on the `restart` path at :1525 an absent or non-numeric value makes std::stoi throw — see notes",
+          "default": "absent -> 0 in the setupVolumetric path; but on the `restart` path at :1525 an absent or non-numeric value makes std::stoi throw -- see notes",
           "required": "conditional",
           "source": "app_command_interface.cpp:1525 (std::stoi) and src/inGalaxyModule/dsoNavigator.cpp:318 (IEXTRACT, std::stoi)",
           "notes": "This is the ONE place in the unit that converts with std::stoi instead of evalInt, so no $-variable substitution and no empty-string default."
@@ -579,7 +579,7 @@
         "rate": {"doc": "How many samples are taken through the object when drawing it.", "value": "int (std::stoi)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:307"},
         "color_depth": {"doc": "How many slices the colour picture is cut into.", "value": "int (std::stoi)", "default": "absent -> 0 for `action load` and 1 for `action restart` (the value the command passes in)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:319 + app_command_interface.cpp:1520, 1523"},
         "color_depth_column": {"doc": "Which column of the colour picture the slices are read from.", "value": "int (std::stoi)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:320"},
-        "z_reflection": {"doc": null, "value": "read but never used", "default": "no effect whatever the value", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:304-306", "notes": "DEFECT (out of scope, recorded not fixed): the key is looked up and the comparison result is discarded ('it->second == \"true\";' is a statement with no effect), so z_reflection is always false. A doc line would describe behaviour the code does not have — left null and flagged."}
+        "z_reflection": {"doc": null, "value": "read but never used", "default": "no effect whatever the value", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:304-306", "notes": "DEFECT (out of scope, recorded not fixed): the key is looked up and the comparison result is discarded ('it->second == \"true\";' is a statement with no effect), so z_reflection is always false. A doc line would describe behaviour the code does not have -- left null and flagged."}
       },
       "branches": [
         {"selector": "action load, color_tex absent", "requires": [], "optional": ["index", "pos_x", "pos_y", "pos_z", "yaw", "pitch", "roll", "xscale", "yscale", "zscale", "scale"], "effect": "place an object using the pictures already loaded", "source": "app_command_interface.cpp:1517-1518 -> dsoNavigator.cpp:267-290"},
@@ -589,11 +589,11 @@
       ],
       "notes": [
         "This is the one handler in the unit that forwards the WHOLE parsed map (:1518, :1520, :1523): its key vocabulary is not visible in this file at all, and any key the author invents is carried along and ignored silently.",
-        "C1-relevant: `args[\"color_tex\"]` at :1517 and `args[\"maxobject\"]` at :1522 are std::map::operator[] reads, which INSERT an empty entry for an absent key. The map handed downstream therefore differs from the map the line actually wrote — for these two keys the downstream reads (`find` at dsoNavigator.cpp:264-265, `operator[]` at :321) treat empty and absent alike, so no behaviour changes today; a tool that models 'the keys of this line' must still know the insertion happens.",
-        "The four literal key spellings here (\"color_tex\", \"alpha_tex\", \"depth\", \"maxobject\" at :1517-1525) are written as bare strings, not W_* tokens — only \"maxobject\" has a W_* twin (W_MAX_OBJECT, base_command_interface.hpp:100), and the handler does not use it."
+        "C1-relevant: `args[\"color_tex\"]` at :1517 and `args[\"maxobject\"]` at :1522 are std::map::operator[] reads, which INSERT an empty entry for an absent key. The map handed downstream therefore differs from the map the line actually wrote -- for these two keys the downstream reads (`find` at dsoNavigator.cpp:264-265, `operator[]` at :321) treat empty and absent alike, so no behaviour changes today; a tool that models 'the keys of this line' must still know the insertion happens.",
+        "The four literal key spellings here (\"color_tex\", \"alpha_tex\", \"depth\", \"maxobject\" at :1517-1525) are written as bare strings, not W_* tokens -- only \"maxobject\" has a W_* twin (W_MAX_OBJECT, base_command_interface.hpp:100), and the handler does not use it."
       ],
       "flagged": [
-        "dso3d `z_reflection`: the key is read and discarded (dsoNavigator.cpp:304-306). Whether the intended behaviour should be restored (and what it is) is not answerable from the code — Vixy. Doc left null.",
+        "dso3d `z_reflection`: the key is read and discarded (dsoNavigator.cpp:304-306). Whether the intended behaviour should be restored (and what it is) is not answerable from the code -- Vixy. Doc left null.",
         "dso3d `action restart` with `maxobject` present and not '1': std::stoi(args[\"depth\"]) at app_command_interface.cpp:1525 runs on the raw string, and nothing in the call chain catches exceptions (no catch in src/interfaceModule/, src/scriptModule/, src/mainModule/ or src/main.cpp). A missing or non-numeric `depth` therefore aborts the program rather than reporting a script error. Recorded, not fixed (out of scope); the lint rule this suggests needs Vixy's word on severity.",
         "dso3d `pos_x/pos_y/pos_z` unit: the code states no unit for the galaxy-space coordinates (dsoNavigator.cpp:275-277 feeds Mat4f::translation directly). The doc lines say only which direction each moves."
       ]
@@ -620,7 +620,7 @@
         },
         "index": {
           "doc": "Which of the catalogue's pictures this point is drawn with.",
-          "value": "number(evalDouble) — $-variable substitution possible; used as a whole number",
+          "value": "number(evalDouble) -- $-variable substitution possible; used as a whole number",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:184 (texDso3d)",
@@ -635,28 +635,28 @@
         },
         "size": {
           "doc": "How big the point is drawn.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:185 (W_SIZE=\"size\", base_command_interface.hpp:80)"
         },
         "ra": {
-          "doc": "Where the point goes: the angle around, in degrees — unless `xyz` is 1, in which case this is a straight coordinate.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "Where the point goes: the angle around, in degrees -- unless `xyz` is 1, in which case this is a straight coordinate.",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:165-177 (alpha)"
         },
         "de": {
-          "doc": "Where the point goes: the angle up or down, in degrees — unless `xyz` is 1, in which case this is a straight coordinate.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "Where the point goes: the angle up or down, in degrees -- unless `xyz` is 1, in which case this is a straight coordinate.",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:165-177 (delta)"
         },
         "distance": {
-          "doc": "How far out the point sits — unless `xyz` is 1, in which case this is a straight coordinate.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "doc": "How far out the point sits -- unless `xyz` is 1, in which case this is a straight coordinate.",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:165-177",
@@ -664,7 +664,7 @@
         },
         "xyz": {
           "doc": "Say 1 to give the position as three straight coordinates instead of two angles and a distance.",
-          "value": "number(evalDouble) — $-variable substitution possible; compared against 1 as a whole number",
+          "value": "number(evalDouble) -- $-variable substitution possible; compared against 1 as a whole number",
           "values": ["1 = ra/de/distance are used as x, y, z", "anything else = ra/de are angles in degrees and distance is how far out"],
           "default": "absent -> 0, i.e. the angle form",
           "required": false,
@@ -676,7 +676,7 @@
         {"selector": "action load", "requires": [], "optional": ["index", "name", "size", "ra", "de", "distance", "xyz"], "effect": "add the point; a false return gives 'Error loading dso.'", "source": "app_command_interface.cpp:1542-1547"}
       ],
       "notes": [
-        "Despite the name, this command feeds the SAME list as the in-galaxy 3-D point catalogue class (Core::loadDso2d -> Dso3d::loadCommand, src/coreModule/core.cpp:2513-2516) — 'clear' therefore reloads the file dso3d.dat.",
+        "Despite the name, this command feeds the SAME list as the in-galaxy 3-D point catalogue class (Core::loadDso2d -> Dso3d::loadCommand, src/coreModule/core.cpp:2513-2516) -- 'clear' therefore reloads the file dso3d.dat.",
         "The parameter names on the receiving side are alpha/delta, i.e. this command's `ra`/`de` (src/inGalaxyModule/dso3d.cpp:160)."
       ],
       "flagged": [
@@ -713,7 +713,7 @@
         },
         "xy": {
           "doc": "The points to draw given directly on the command line instead of in a file.",
-          "value": "string — numbers separated by ';', read in pairs",
+          "value": "string -- numbers separated by ';', read in pairs",
           "default": "absent (and no `action`) -> \"command_'personeq' : unrecognized or malformed argument\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:1576-1578",
@@ -749,12 +749,12 @@
         },
         "target": {
           "doc": "Which body the trail follows.",
-          "value": "string — a body name, or the word 'selected' for whatever is selected right now",
+          "value": "string -- a body name, or the word 'selected' for whatever is selected right now",
           "values": ["<body name>", "selected"],
           "default": "absent -> the body last chosen stays the one being traced",
           "required": false,
           "source": "app_command_interface.cpp:1589-1591 (alongside `pen`), 1617-1620 (on its own) -> src/coreModule/coreLink.cpp:1130-1135",
-          "notes": "A name no body answers to logs 'Unknown planet_name in bodyTraceBodyChange' and changes nothing (src/bodyModule/protosystem.cpp:468-475) — the command still reports success."
+          "notes": "A name no body answers to logs 'Unknown planet_name in bodyTraceBodyChange' and changes nothing (src/bodyModule/protosystem.cpp:468-475) -- the command still reports success."
         },
         "action": {
           "doc": "Erase the trail drawn so far.",
@@ -765,7 +765,7 @@
           "source": "app_command_interface.cpp:1613-1616"
         },
         "hide": {
-          "doc": "Show or stop showing one of the trails already drawn — give its number, or 'all' for every one.",
+          "doc": "Show or stop showing one of the trails already drawn -- give its number, or 'all' for every one.",
           "value": "enumerated | int",
           "values": ["all", "0", "1", "2", "3", "4", "5", "6"],
           "default": "absent -> this branch is not taken",
@@ -783,7 +783,7 @@
       ],
       "notes": [
         "Only ONE branch runs per line: each returns immediately (:1595, :1599, :1615, :1619, :1623). With `pen` present the branch order means `action clear` and `hide` on the same line are ignored.",
-        "`target` and `hide` are tested with `!= \"\"` rather than `.empty()` (:1589, :1617, :1621) — same meaning, noted only because it is the shape a mechanical extractor sees."
+        "`target` and `hide` are tested with `!= \"\"` rather than `.empty()` (:1589, :1617, :1621) -- same meaning, noted only because it is the shape a mechanical extractor sees."
       ],
       "flagged": []
     },
@@ -809,7 +809,7 @@
           "default": "absent -> the empty string is passed as the body to trace, which logs 'Unknown planet_name in bodyTraceBodyChange' and leaves the traced body unchanged",
           "required": false,
           "source": "app_command_interface.cpp:1633 -> src/coreModule/coreLink.cpp:1130-1135 -> src/bodyModule/protosystem.cpp:468-475",
-          "notes": "SUSPECTED TYPO, recorded not fixed: line 1633 reads `bodyTraceBodyChange(args[W_SUN])` — the VALUE of a key spelled 'sun' — while the other two branches of the same handler pass the literal token `W_SUN` (:1646, :1650). Under the code as written, `suntrace pen on` does not switch the trail to the Sun. Doc left null because the two readings (an undocumented body-name key, or a mis-typed literal) have opposite meanings for the editor's user."
+          "notes": "SUSPECTED TYPO, recorded not fixed: line 1633 reads `bodyTraceBodyChange(args[W_SUN])` -- the VALUE of a key spelled 'sun' -- while the other two branches of the same handler pass the literal token `W_SUN` (:1646, :1650). Under the code as written, `suntrace pen on` does not switch the trail to the Sun. Doc left null because the two readings (an undocumented body-name key, or a mis-typed literal) have opposite meanings for the editor's user."
         },
         "action": {
           "doc": "Erase the Sun's trail drawn so far.",
@@ -820,7 +820,7 @@
           "source": "app_command_interface.cpp:1645-1648"
         },
         "hide": {
-          "doc": "Show or stop showing one of the trails already drawn — give its number, or 'all' for every one.",
+          "doc": "Show or stop showing one of the trails already drawn -- give its number, or 'all' for every one.",
           "value": "enumerated | int",
           "values": ["all", "0", "1", "2", "3", "4", "5", "6"],
           "default": "absent -> this branch is not taken",
@@ -840,7 +840,7 @@
         "Also unlike `body_trace`, the `action` and `hide` branches do not return early (:1645-1652), so one line may run both."
       ],
       "flagged": [
-        "suntrace `sun` (app_command_interface.cpp:1633): key or typo — see the key's notes. Which one it is decides whether the editor offers a 'sun' key at all and whether `suntrace pen on` is documented as switching to the Sun. Vixy."
+        "suntrace `sun` (app_command_interface.cpp:1633): key or typo -- see the key's notes. Which one it is decides whether the editor offers a 'sun' key at all and whether `suntrace pen on` is documented as switching to the Sun. Vixy."
       ]
     },
 
@@ -853,7 +853,7 @@
       "args": {
         "property": {
           "doc": "Which drawn thing to recolour.",
-          "value": "enumerated — one of the registered colour names",
+          "value": "enumerated -- one of the registered colour names",
           "values": ["families.color_names (46 names, app_command_init.cpp:221-278)"],
           "default": "absent or empty -> \"Command 'color': unknown expected argument 'property'\"; unknown name -> \"Command 'color': unknown property\" plus a nearest-name suggestion in the log",
           "required": true,
@@ -890,8 +890,8 @@
           "source": "app_command_interface.cpp:1869, 1870 -> src/interfaceModule/app_command_color.cpp:58-78"
         },
         "index": {
-          "doc": "Which entry of the star colour table to set — only 'property star_table' uses it.",
-          "value": "int(evalInt) — $-variable substitution possible",
+          "doc": "Which entry of the star colour table to set -- only 'property star_table' uses it.",
+          "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1887 (W_INDEX=\"index\", base_command_interface.hpp:131) -> applyColor CC_STAR_TABLE :1708 -> src/starModule/hip_star_mgr.cpp:131-138",
@@ -901,7 +901,7 @@
       "exclusive_groups": [["value", "r"], ["value", "g"], ["value", "b"]],
       "notes": [
         "`value` wins: when it is non-empty the r/g/b keys are never looked at (app_command_color.cpp:96-110).",
-        "DEFECT, recorded not fixed: on the r/g/b path the error text is lost. AppCommandColor::setClassicColor takes `debug_message` BY VALUE (app_command_color.cpp:58-59) while the constructor holds it by reference (:92-94), so 'r g b : negative value' / 'r g b : value > 1.' never reach the caller. commandColor then returns at :1871-1872 with an EMPTY debug_message, i.e. executeCommandStatus reports SUCCESS and records the line — 'color property equator_line r 2 g 0 b 0' silently changes nothing and claims to have worked. (The same by-value slip does not affect the hex and rgb-word paths, whose messages are set on the reference: :103, :113, :119, :145, :149.)",
+        "DEFECT, recorded not fixed: on the r/g/b path the error text is lost. AppCommandColor::setClassicColor takes `debug_message` BY VALUE (app_command_color.cpp:58-59) while the constructor holds it by reference (:92-94), so 'r g b : negative value' / 'r g b : value > 1.' never reach the caller. commandColor then returns at :1871-1872 with an EMPTY debug_message, i.e. executeCommandStatus reports SUCCESS and records the line -- 'color property equator_line r 2 g 0 b 0' silently changes nothing and claims to have worked. (The same by-value slip does not affect the hex and rgb-word paths, whose messages are set on the reference: :103, :113, :119, :145, :149.)",
         "`property` is looked up in m_color directly, so the did-you-mean here is colour-specific (AppCommandInit::searchSimilarColor, :1883)."
       ],
       "flagged": []
@@ -916,7 +916,7 @@
       "args": {
         "hp": {
           "doc": "The catalogue number of the one star to light up.",
-          "value": "int(evalInt) — $-variable substitution possible",
+          "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent -> this branch is not taken (an empty string, not 0: the key is tested before it is evaluated)",
           "required": "conditional",
           "source": "app_command_interface.cpp:1893, 1929-1942 (W_HP=\"hp\", base_command_interface.hpp:132)",
@@ -933,7 +933,7 @@
           "default": "absent -> the constellation/hp branches are not taken; the command falls through to `action` and `filename`",
           "required": "conditional",
           "source": "app_command_interface.cpp:1894, 1900-1905, 1916-1942 (W_DISPLAY=\"display\", base_command_interface.hpp:92)",
-          "notes": "The two 'all_constellation_*' words are bare string literals in the handler, not W_* tokens (:1900, :1903), and they are tested BEFORE and independently of everything else — a line carrying one of them also runs the branches below it."
+          "notes": "The two 'all_constellation_*' words are bare string literals in the handler, not W_* tokens (:1900, :1903), and they are tested BEFORE and independently of everything else -- a line carrying one of them also runs the branches below it."
         },
         "constellation": {
           "doc": "The short name of the constellation whose stars to light up.",
@@ -945,7 +945,7 @@
         },
         "size": {
           "doc": "How big the halo is drawn, in arcminutes (sixtieths of a degree).",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, which REMOVES the halo and hides the star (see notes)",
           "required": false,
           "source": "app_command_interface.cpp:1897 -> src/coreModule/illuminate_mgr.cpp:126-140, 170-177; arcminute conversion at src/coreModule/illuminate.cpp:45",
@@ -953,7 +953,7 @@
         },
         "rotation": {
           "doc": "How far the halo picture is turned, in degrees.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:1898 -> src/coreModule/illuminate.cpp:51 (x PI/180)"
@@ -1020,8 +1020,8 @@
       "args": {},
       "key_grammar": {
         "doc": "Any key you like, with the text to write as its value; each pair becomes one log line '[key] text'.",
-        "key_domain": "unrestricted — this is the only command in the unit that accepts keys from no list",
-        "value": "string(evalString) — $-variable substitution possible",
+        "key_domain": "unrestricted -- this is the only command in the unit that accepts keys from no list",
+        "value": "string(evalString) -- $-variable substitution possible",
         "default": "no pair at all -> \"command_'print': malformed command\" (note that `print hello` is no pair: a key with no value is dropped by the parser, parse_model.pair_extraction)",
         "required": true,
         "source": "app_command_interface.cpp:1971-1981"
@@ -1038,18 +1038,18 @@
   "unit_findings": {
     "c1_parse_model": [
       "CONFIRMS parse_model.flag_multi_pair: commandFlag applies args.begin() only (:1183-1193).",
-      "CONFIRMS parse_model.duplicate_keys' alphabetical-iteration clause, and gives it a user-visible consequence: `print` writes its pairs in alphabetical key order (:1975), and `flag` picks the alphabetically first pair — the line's written order is never the order that acts.",
-      "REFINES parse_model: `args[KEY]` is std::map::operator[], so every read of an ABSENT key INSERTS an empty entry. The map a handler hands on is therefore not the set of pairs the line wrote. It matters only where a handler forwards the whole map — `dso3d` (:1517-1523) — and there it changes nothing today, but scedit's model of 'the keys of this line' must not be derived from handler behaviour.",
+      "CONFIRMS parse_model.duplicate_keys' alphabetical-iteration clause, and gives it a user-visible consequence: `print` writes its pairs in alphabetical key order (:1975), and `flag` picks the alphabetically first pair -- the line's written order is never the order that acts.",
+      "REFINES parse_model: `args[KEY]` is std::map::operator[], so every read of an ABSENT key INSERTS an empty entry. The map a handler hands on is therefore not the set of pairs the line wrote. It matters only where a handler forwards the whole map -- `dso3d` (:1517-1523) -- and there it changes nothing today, but scedit's model of 'the keys of this line' must not be derived from handler behaviour.",
       "REFINES parse_model: no handler in this unit re-reads the raw command line; commandFlag WRITES it (`commandline` is rebuilt at :1192 for the recorder), which is the only line-level rewrite in the unit.",
-      "ADDS to the eval boundary: the absent-key defaults are decided in app_command_interface.cpp, not in app_command_eval.cpp — evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" (:4458-4479). Only the non-empty case is opaque."
+      "ADDS to the eval boundary: the absent-key defaults are decided in app_command_interface.cpp, not in app_command_eval.cpp -- evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" (:4458-4479). Only the non-empty case is opaque."
     ],
     "obsolete_tokens_in_range": "None. No handler in 1180-2109 references any of the 7 names in families.obsolete_tokens (checked against app_command_init.cpp:14-23 while reading the range).",
     "argument_token_vocabulary_roles": {
       "used_as_KEYS in this unit": ["W_STATUS", "W_ACTION", "W_FILENAME", "W_NAME", "W_MAX_OBJECT", "W_SCALE", "W_LOADING", "W_DURATION", "W_VIDEO_TERMINATION", "W_XY", "W_PATH", "W_RA", "W_DE", "W_MAGNITUDE", "W_ANGULAR_S", "W_ROTATION", "W_CREDIT", "W_TEXTURE", "W_DISTANCE", "W_CONSTELLATION", "W_TYPE", "W_HIDDEN", "W_INDEX", "W_SIZE", "W_XYZ", "W_PEN", "W_TARGET", "W_HIDE", "W_SUN", "W_VALUE", "W_R", "W_G", "W_B", "W_PROPERTY", "W_HP", "W_DISPLAY", "W_COLOR_VALUE"],
       "used_as_VALUES in this unit": ["W_LOAD", "W_SAVE", "W_DROP", "W_RESTART", "W_TOGGLE", "W_ALL", "W_PRELOAD", "W_BACKGROUND", "W_VIDEO", "W_POSITION", "W_PLANET_P", "W_OBJECT", "W_MEDIA", "W_CONSTELLATION", "ACP_CN_CLEAR"],
-      "both_roles": ["W_CONSTELLATION — key on `dso`/`illuminate`, value of `get status` (:1217, :1453, :1489, :1895)"],
-      "literal_strings_with_no_W_token": ["\"color_tex\", \"alpha_tex\", \"depth\", \"maxobject\" (dso3d, :1517-1525 — 'maxobject' duplicates W_MAX_OBJECT without using it)", "\"all_constellation_on\", \"all_constellation_off\", \"clear_texture\" (illuminate, :1900, :1903, :1950)", "the whole downstream dso3d vocabulary (src/inGalaxyModule/dsoNavigator.cpp:264-321)"],
-      "note": "ACP_CN_CLEAR (\"clear\", base_command_interface.hpp:335) is a COMMAND name reused as an argument VALUE by personal/personeq/dso/dso2d/body_trace/suntrace/illuminate — the same spelling in two families."
+      "both_roles": ["W_CONSTELLATION -- key on `dso`/`illuminate`, value of `get status` (:1217, :1453, :1489, :1895)"],
+      "literal_strings_with_no_W_token": ["\"color_tex\", \"alpha_tex\", \"depth\", \"maxobject\" (dso3d, :1517-1525 -- 'maxobject' duplicates W_MAX_OBJECT without using it)", "\"all_constellation_on\", \"all_constellation_off\", \"clear_texture\" (illuminate, :1900, :1903, :1950)", "the whole downstream dso3d vocabulary (src/inGalaxyModule/dsoNavigator.cpp:264-321)"],
+      "note": "ACP_CN_CLEAR (\"clear\", base_command_interface.hpp:335) is a COMMAND name reused as an argument VALUE by personal/personeq/dso/dso2d/body_trace/suntrace/illuminate -- the same spelling in two families."
     }
   }
 }

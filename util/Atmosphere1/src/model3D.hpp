@@ -1,5 +1,5 @@
 //! @file model3D.cpp model3D.hpp
-//! @author Jérôme Lartillot
+//! @author Jerome Lartillot
 //! @date 28/12/2015
 //!
 //! @section Example2 Example with OpenGL 4.x
@@ -10,7 +10,7 @@
 //!
 //! Pour charger un .obj, utiliser load_OBJ suivi du nom du fichier OBJ et du nom du fichier BMP qui sert de texture.
 //!
-//! draw() permet ensuite de dessiner le modèle chargé.
+//! draw() permet ensuite de dessiner le modele charge.
 //!
 //!
 

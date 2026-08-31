@@ -300,7 +300,7 @@ void UI::drawScriptStatusIcon()
 		return;
 	}
 
-	// Position et taille de l'icône en pixels (centre de l'écran pour test)
+	// Position et taille de l'icone en pixels (centre de l'ecran pour test)
 	int screenW = m_sdl->getDisplayWidth();
 	int screenH = m_sdl->getDisplayHeight();
 

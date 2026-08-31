@@ -143,7 +143,7 @@ public:
 	// return the Selected body RA UNUSED?
 	// double getSelectedRA(const Navigator * nav) const;
 
-	// return the Selected body DE UNUSED?²
+	// return the Selected body DE UNUSED?^2
 	// double getSelectedDE(const Navigator * nav) const;
 
 private:

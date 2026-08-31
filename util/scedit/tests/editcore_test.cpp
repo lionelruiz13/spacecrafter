@@ -1,5 +1,5 @@
 /*
- * scedit — self-test for the headless interaction core.
+ * scedit -- self-test for the headless interaction core.
  *
  * WHAT THIS PINS
  * ==============
@@ -9,7 +9,7 @@
  * completion engine, the documentation bar, and the live findings.
  *
  * The expectations are DERIVED, not recorded: each one names where it comes
- * from — a rule of the parse model, a field of grammar/sc-grammar.json, or a
+ * from -- a rule of the parse model, a field of grammar/sc-grammar.json, or a
  * clause of sc_editcore.hpp's stated behaviour. Spans and columns are literal
  * numbers on purpose (a computed expectation moves with the bug).
  *
@@ -113,7 +113,7 @@ void testDocument()
 	eq(d.engineLine(0), std::string("flag stars on\r"), "A2 engineLine puts the '\\r' back");
 	eq(d.engineLine(2), std::string("zoom auto in"), "A2 ... and adds nothing where there was none");
 
-	// Editing one line leaves every other line's BYTES alone — the round-trip
+	// Editing one line leaves every other line's BYTES alone -- the round-trip
 	// promise at line granularity.
 	d.insert(0, 4, "X");
 	eq(d.line(0), std::string("flagX stars on"), "A3 the edit landed");
@@ -279,7 +279,7 @@ void testCompletion()
 
 	// C4b. An alias resolves to its canonical entry ONCE, at load: what the
 	// grammar, the completion and the bar answer for `div` is what they answer
-	// for `divide` (the file holds the facts once — I2). `div counter 2` is a
+	// for `divide` (the file holds the facts once -- I2). `div counter 2` is a
 	// key of the free-key kind (divide's key_grammar), so nothing is unknown.
 	{
 		EditCore a = at("div counter 2", 4);
@@ -401,7 +401,7 @@ void testCompletion()
 
 		EditCore real = at("date load ", -1);
 		eqn(real.docIndex().defaultLiteralCount(), 0,
-		   "C13 the real contract carries none — the feature is dormant, not dropped");
+		   "C13 the real contract carries none \xe2\x80\x94 the feature is dormant, not dropped");
 		bool named = false;
 		for (const auto &d : real.docIndex().dormantFeatures())
 			if (d.feature.find("D31") != std::string::npos)
@@ -460,7 +460,7 @@ void testDocBar()
 
 	// D4. A family name as a value documents itself from the family. Today
 	// families.color_names is the v1 shape (plain names, no doc), so the honest
-	// state is what must appear — the name exists, the sentence does not.
+	// state is what must appear -- the name exists, the sentence does not.
 	{
 		EditCore e = at("color property constellation_lines r 1", 20);
 		ok(!e.docBar().documented, "D4 no doc exists for a colour name (v1 family)");
@@ -468,7 +468,7 @@ void testDocBar()
 		eq(e.docBar().note, std::string(""), "D4 the name is a real one, so nothing is wrong either");
 	}
 
-	// D5. `"doc": null` — the sweep could not answer from the code and FLAGGED
+	// D5. `"doc": null` -- the sweep could not answer from the code and FLAGGED
 	// it. That is a state the bar must carry to the screen intact.
 	{
 		// The host must outlive the pointer: `at()` returns an EditCore by
@@ -523,7 +523,7 @@ void testDocBar()
 	}
 
 	// D9. The caret inside a trailing comment: the parser's own sentence about
-	// it (parse_model.comments.mid_line), and no ghost — a completion there
+	// it (parse_model.comments.mid_line), and no ghost -- a completion there
 	// would promise a meaning to bytes the engine never reads.
 	{
 		EditCore e = at("media action pause # stop video", 25);
@@ -550,7 +550,7 @@ void testLint()
 {
 	std::printf("E. live findings\n");
 
-	// A 0xA0 between `albedo` and `1` — the corpus case (superscript.sts:94),
+	// A 0xA0 between `albedo` and `1` -- the corpus case (superscript.sts:94),
 	// reduced. `--check` decides it is a finding, and the finding's SPAN is
 	// what puts the marker on the exact byte: one source for both.
 	const std::string buf = "flag stars on\nbody name Earth albedo\xA0""1\n";
@@ -577,7 +577,7 @@ void testLint()
 	eq(e.document().bytes(), std::string("flag stars on\nbody name Earth albedo 1\n"),
 	   "E3 and nothing else moved");
 
-	// E4. Spans: every finding points at its bytes (scedit/INTENT.md §5 item 10).
+	// E4. Spans: every finding points at its bytes (scedit/INTENT.md S5 item 10).
 	{
 		EditCore u = at("zomo action now\n", 0);
 		const std::vector<const Diagnostic *> d = u.diagnosticsForLine(1);
@@ -598,7 +598,7 @@ void testLint()
 	{
 		// E4f. A `#!` tail the ENGINE wrote (parse_model.comments.machine_tail):
 		// located as the engine locates it, shown with its relation to scedit's
-		// own finding on the line — the C1 signal.
+		// own finding on the line -- the C1 signal.
 		const std::string tail = "#! this 'struct if end' closes nothing: no 'struct if' is open here";
 		EditCore a = at("struct if end " + tail + "\n", 0);
 		MachineTail m = a.machineTail(0);
@@ -653,7 +653,7 @@ void testLint()
 }
 
 //! F. The error history: both sources, in line order, and the warp.
-//! (scedit/INTENT.md §5 item 15(a-ii); the "history" reading is stated in
+//! (scedit/INTENT.md S5 item 15(a-ii); the "history" reading is stated in
 //! sc_editcore.hpp's header note and flagged in the README.)
 void testHistory()
 {
@@ -728,7 +728,7 @@ void testHistory()
 	// F63's artifact F.sts line 1 is a column-0 comment holding a `#!`
 	// (`# F: a #! inside quotes is text`). The script layer drops such a line
 	// before executeCommand (script.cpp:114), so the annotator never holds a
-	// note for it and never writes or clears there — no engine entry.
+	// note for it and never writes or clears there -- no engine entry.
 	// (parse_model.comments.machine_tail, the executes-only clause.)
 	{
 		EditCore u = at("# F: a #! inside quotes is text\n"
@@ -746,7 +746,7 @@ void testHistory()
 		   "F4b an indented comment line holding `#!` is not a tail either");
 	}
 
-	// F5. A tail of a class scedit does not check is still listed — the pane
+	// F5. A tail of a class scedit does not check is still listed -- the pane
 	// is the engine's channel too, not only a view of scedit's own opinions.
 	{
 		EditCore u = at("flag stars on #! command 'flag' : unknown flag\n", 0);
@@ -828,7 +828,7 @@ void testWriteBack()
 		ok(e.diskState() == DiskState::Changed, "G2 the change on disk is seen");
 
 		// A CLEAN buffer: reload, and the engine's verdict is in the history
-		// immediately — this is what makes the pane light up after a run.
+		// immediately -- this is what makes the pane light up after a run.
 		e.moveTo(2, 5);
 		ok(e.reloadFromDisk(err), "G2 a clean buffer reloads");
 		ok(e.diskState() == DiskState::Same, "G2 and is Same again afterwards");
@@ -869,7 +869,7 @@ void testWriteBack()
 		ok(e.saveOverwriting(err), "G4 `save anyway` writes");
 		ok(slurp(path).find("# mine") != std::string::npos, "G4 the author's edit is on disk");
 		ok(slurp(path).find("#!") == std::string::npos,
-		   "G4 and the engine's tail is gone — because somebody chose that");
+		   "G4 and the engine's tail is gone \xe2\x80\x94 because somebody chose that");
 		ok(e.diskState() == DiskState::Same, "G4 the image follows the write");
 		ok(!e.dirty(), "G4 and the buffer is clean");
 		ok(e.save(err), "G4 an ordinary save right after it is allowed");
@@ -893,7 +893,7 @@ void testWriteBack()
 	}
 
 	// A file that has gone: a different answer from "changed", and a different
-	// refusal — scedit cannot say what a save would overwrite.
+	// refusal -- scedit cannot say what a save would overwrite.
 	{
 		EditCore e;
 		std::string err;
@@ -905,7 +905,7 @@ void testWriteBack()
 		   "G6 and the save is refused with its own reason");
 		ok(!e.reloadFromDisk(err), "G6 reloading a file that is gone fails");
 		ok(e.document().bytes() == original,
-		   "G6 and leaves the buffer exactly as it was — a failed reload loses nothing");
+		   "G6 and leaves the buffer exactly as it was \xe2\x80\x94 a failed reload loses nothing");
 	}
 
 	// The caret survives a file that got SHORTER under it (the engine's pass can

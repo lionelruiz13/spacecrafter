@@ -9,7 +9,7 @@
 //! ORDERED, and the reason is a measurement.
 //! nlohmann's default `json` stores an object in a std::map, so parsing loses
 //! the order the file was written in. Every lookup here is by name and does not
-//! care — but the machine surface (sc_docjson.cpp) RANKS pages, and a tie has
+//! care -- but the machine surface (sc_docjson.cpp) RANKS pages, and a tie has
 //! to be broken by something. The contract file's own order is that something:
 //! measured over the 340 witness questions of harness/f64_doc_router.py, 6 of
 //! them tie at the top score, and file order and alphabetical order disagree on
@@ -20,7 +20,7 @@ using json = nlohmann::ordered_json;
 
 namespace scedit {
 
-const char *const kNoDoc = "no documentation extracted — the contract file records none for this";
+const char *const kNoDoc = "no documentation extracted \xe2\x80\x94 the contract file records none for this";
 
 bool isCompletableLiteral(const std::string &s)
 {

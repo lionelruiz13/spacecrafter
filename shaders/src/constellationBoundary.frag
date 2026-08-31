@@ -5,7 +5,7 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-//entrée
+//entree
 layout (location=0) in float Intensity;
 layout (binding=0, set=1) uniform ubo {
 	vec3 Color;

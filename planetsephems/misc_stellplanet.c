@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 1999, 2000 Juan Carlos Remis
 * Copyright (C) 2002 Liam Girdwood
-* Copyright (C) 2003 Fabien Chéreau
+* Copyright (C) 2003 Fabien Chereau
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by

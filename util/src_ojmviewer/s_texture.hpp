@@ -46,22 +46,22 @@
 
 class s_texture {
 public:
-	// création d'une texture basique sans mipmap
+	// creation d'une texture basique sans mipmap
 	s_texture(const std::string& _textureName);
 
-	// création d'une texteure en détaillant ses paramètres
+	// creation d'une texteure en detaillant ses parametres
 	s_texture(const std::string& _textureName, int _loadType, const bool mipmap = false);
-	// création d'une texture à partir d'un GLuint
+	// creation d'une texture a partir d'un GLuint
 	s_texture(const std::string& _textureName, GLuint _imgTex);
 	// destructeur de texture
 	~s_texture();
-	// création d'une texture par copie d'une autre
+	// creation d'une texture par copie d'une autre
 	s_texture(const s_texture &t) = delete;
 	s_texture(const s_texture *t) = delete;
-	//interdiction d'opérateur = 
+	//interdiction d'operateur = 
 	const s_texture &operator=(const s_texture &t) = delete;
 
-	// Renvoie la référence de la texture en openGL
+	// Renvoie la reference de la texture en openGL
 	unsigned int getID() const {
 		return texID;
 	}
@@ -72,7 +72,7 @@ public:
 	// Returne les dimensions de la texture
 	void getDimensions(int &width, int &height) const;
 
-	// crée une texture rouge en cas de textures non chargée
+	// cree une texture rouge en cas de textures non chargee
 	void createEmptyTex();
 
 private:

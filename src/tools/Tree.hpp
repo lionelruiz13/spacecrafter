@@ -2,7 +2,7 @@
  * Tree
  *
  * Copyright 2020 AssociationSirius
- * Copyright 2020 Association Andromède
+ * Copyright 2020 Association Andromede
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

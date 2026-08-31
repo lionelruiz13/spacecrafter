@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2021 Jérémy Calvo
+ * Copyright (C) 2021 Jeremy Calvo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@ class Body;
 /**
  * \file solarsystem_display.hpp
  * \brief Handle solar system drawing functions
- * \author Jérémy Calvo
+ * \author Jeremy Calvo
  * \version 1
  *
  * \class SolarSystemDisplay

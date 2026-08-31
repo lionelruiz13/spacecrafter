@@ -1,10 +1,10 @@
 /*
- * scedit — sc_grammar.cpp — reader for grammar/sc-grammar.json.
+ * scedit -- sc_grammar.cpp -- reader for grammar/sc-grammar.json.
  *
  * Two tables below are CODE, not data, and should not stay that way; each
  * entry carries the engine line it was read from, and each is overridable by
  * the contract file the moment the file grows the field (see the notes).
- * Recorded in util/scedit/tests/derivation-diff.md §6.
+ * Recorded in util/scedit/tests/derivation-diff.md S6.
  */
 
 #include "sc_grammar.hpp"
@@ -85,7 +85,7 @@ void collectArgKeys(const json &args, std::set<std::string> &out)
 }
 
 //! A family's `names` entry: a plain string (v1) or an object with a `name`
-//! field (D7 v2). Both shapes coexist on purpose — a family converts when its
+//! field (D7 v2). Both shapes coexist on purpose -- a family converts when its
 //! doc pass fills content, one family at a time.
 bool familyMemberName(const json &entry, std::string &out)
 {

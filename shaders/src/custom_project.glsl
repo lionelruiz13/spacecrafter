@@ -47,11 +47,11 @@ vec4 allsphereProjectCustom(vec3 invec, mat4 ModelViewMatrix, vec3 clipping_fov)
 // EKISOLID PROJECTION - TODO: Remplacer par la vraie formule
 vec4 ekisolidProjectCustom(vec3 invec, mat4 ModelViewMatrix, vec3 clipping_fov)
 {
-	// Pour l'instant, identique à FISHEYE
+	// Pour l'instant, identique a FISHEYE
 	return fisheyeProjectCustom(invec, ModelViewMatrix, clipping_fov);
 }
 
-// ASPHERIC PROJECTION - Stereographic projection: r = 2 f tan(α/2)
+// ASPHERIC PROJECTION - Stereographic projection: r = 2 f tan(alpha/2)
 vec4 asphericProjectCustom(vec3 invec, mat4 ModelViewMatrix, vec3 clipping_fov)
 {
 	vec4 win = ModelViewMatrix * vec4(invec, 1);
@@ -64,7 +64,7 @@ vec4 asphericProjectCustom(vec3 invec, mat4 ModelViewMatrix, vec3 clipping_fov)
 	if (win.z > 0)
 		f = M_PI - f;
 
-	// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+	// Stereographic projection: r = tan(alpha/2) / tan(alpha_max/2)
 	f = tan(f * 0.5) / tanHalfFovOver2;
 	f /= rq;
 
@@ -159,7 +159,7 @@ vec4 asphericProjectCustomNoMV(vec3 win, vec3 clipping_fov)
 	if (win.z > 0)
 		f = M_PI - f;
 
-	// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+	// Stereographic projection: r = tan(alpha/2) / tan(alpha_max/2)
 	f = tan(f * 0.5) / tanHalfFovOver2;
 	f /= rq;
 
@@ -231,7 +231,7 @@ vec4 aspheric2DCustom(vec4 win, mat4 ModelViewMatrix, float fov)
 	if (win.z > 0)
 		f = M_PI - f;
 
-	// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+	// Stereographic projection: r = tan(alpha/2) / tan(alpha_max/2)
 	f = tan(f * 0.5) / tanHalfFovOver2;
 	f /= rq;
 
@@ -299,7 +299,7 @@ vec4 aspheric2DCustomNoMV(vec3 win, float fov)
 	if (win.z > 0)
 		f = M_PI - f;
 
-	// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+	// Stereographic projection: r = tan(alpha/2) / tan(alpha_max/2)
 	f = tan(f * 0.5) / tanHalfFovOver2;
 	f /= rq;
 

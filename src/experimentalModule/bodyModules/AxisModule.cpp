@@ -21,7 +21,7 @@ AxisModule::~AxisModule() = default; // VertexBuffer complete here
 // color would diverge from old behavior, so the Set is family-level, not
 // per-module). First line-class family: ORBIT/TRAIL/GRID reuse the shape
 // with their own contracts (separate families where contracts differ -
-// INTENT §10.1).
+// INTENT S10.1).
 namespace {
 struct AxisFamilyData {
     std::unique_ptr<VertexArray> vertexModel; // 1 binding, vec3 pos (axis.cpp:118-120)

@@ -72,7 +72,7 @@ private:
 	SDL_mutex* lock = nullptr;
 	// create thread for mkfifo
 	SDL_Thread* threadMkfifoRead;
-	// function thread qui gere la lecture des données de l'extérieur
+	// function thread qui gere la lecture des donnees de l'exterieur
 	int thread();
 	// function what call threadMkfifoRead
 	static int thread_wrapper(void *Data);

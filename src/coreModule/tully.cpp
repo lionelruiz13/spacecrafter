@@ -428,7 +428,7 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 		if (radius<2)
 			continue;
 
-		/* OPTIMISATION : radius < 2 means that d²< (3/2scale)² */
+		/* OPTIMISATION : radius < 2 means that d^2< (3/2scale)^2 */
 		tmpTully tmp;
 		tmp.position = Vec3f(x,y,z);
 		tmp.distance = distance;
@@ -534,7 +534,7 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 	// glActiveTexture(GL_TEXTURE0);
 	// glBindTexture(GL_TEXTURE_2D, texGalaxy->getID());
 
-	//tracé des galaxies de taille <1 px
+	//trace des galaxies de taille <1 px
 	// StateGL::disable(GL_DEPTH_TEST);
 	// StateGL::enable(GL_BLEND);
 	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode

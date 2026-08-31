@@ -207,7 +207,7 @@ set(FFmpeg_PKGS libavcodec${_avcodec_ver}
     endif()
   endif()
 
-# No internal FFmpeg fallback — tools/depends no longer exists in spacecrafter.
+# No internal FFmpeg fallback -- tools/depends no longer exists in spacecrafter.
 if(NOT FFmpeg_FOUND)
   message(FATAL_ERROR
     "FFmpeg ${REQUIRED_FFmpeg_VERSION} was not found on the system.\n"

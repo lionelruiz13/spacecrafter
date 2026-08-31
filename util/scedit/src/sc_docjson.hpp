@@ -1,14 +1,14 @@
 /*
- * scedit — sc_docjson.hpp
+ * scedit -- sc_docjson.hpp
  *
  * WHAT THIS IS FOR
  * ================
  * The same answers the editor's doc bar gives a human, serialised for a
  * machine: `--doc` (one page, or the whole catalogue), `--search` (which pages
  * a request is about), and `--check --json` (the findings as objects). The
- * outside consumer this exists for is a language model — through the MCP server
+ * outside consumer this exists for is a language model -- through the MCP server
  * (sc_mcp.hpp), through a harness shelling out, or through an author's own
- * script — and the point of it is that such a consumer gets the CONTRACT FILE's
+ * script -- and the point of it is that such a consumer gets the CONTRACT FILE's
  * own words instead of its recollection of a planetarium's script language.
  *
  * NO SECOND READER (invariant I2)
@@ -25,7 +25,7 @@
  * extracted" from "the documentation is empty" will fill the gap itself, which
  * is the one failure mode this whole surface exists to prevent. The two flagged
  * keys (`dso3d.z_reflection`, `suntrace.sun`) and all 184 v1 family names come
- * out as `"doc": null` with `"present": true` — the name exists, the sentence
+ * out as `"doc": null` with `"present": true` -- the name exists, the sentence
  * does not. Fields other than `doc` carry no such distinction because the file
  * draws none: absent and empty both arrive as an empty string.
  *
@@ -41,7 +41,7 @@
  * plus its doc line. Pages that score zero are not answers and are not
  * returned. The formula is not ours: it is the model-free baseline of
  * claude/harness/f64_doc_router.py, ported so that the tool and the measurement
- * that judges routing quality speak about the same ranking — the parity gate
+ * that judges routing quality speak about the same ranking -- the parity gate
  * (harness/f66_search_parity.py) asserts pair-by-pair agreement over that
  * script's 340 witness questions, which is a criterion this port can fail.
  * Ties keep ENUMERATION order: commands in the contract file's order, then (in
@@ -66,7 +66,7 @@
 namespace scedit {
 
 //! One `--doc` answer. `found == false` carries the error object instead of the
-//! page — the caller turns that into exit code 2 (CLI) or an isError result
+//! page -- the caller turns that into exit code 2 (CLI) or an isError result
 //! (MCP), and the object always names the vocabulary the name is missing from.
 struct DocAnswer {
 	bool found = false;
@@ -80,7 +80,7 @@ DocAnswer docLookup(const Grammar &g, const DocIndex &d,
                     const std::string &command, const std::string &name);
 
 //! Every command with its one-liner, plus the family names under the commands
-//! that name a family — the two-level shape a model is given as a catalogue.
+//! that name a family -- the two-level shape a model is given as a catalogue.
 //! Argument keys are NOT included: they are one `docLookup` away and would
 //! quadruple the answer.
 nlohmann::json docCatalogue(const Grammar &g, const DocIndex &d);

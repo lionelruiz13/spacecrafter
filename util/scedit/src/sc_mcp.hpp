@@ -1,10 +1,10 @@
 /*
- * scedit — sc_mcp.hpp
+ * scedit -- sc_mcp.hpp
  *
  * WHAT THIS IS FOR
  * ================
  * scedit as a Model Context Protocol server on stdio, so that any harness with
- * an MCP client — Claude Code, an ollama-backed one, a dome operator's own —
+ * an MCP client -- Claude Code, an ollama-backed one, a dome operator's own --
  * can ask the CONTRACT FILE what a spacecrafter command means and can have a
  * script checked, instead of recalling a script language it half-knows. It is
  * an adapter and nothing more: every answer comes from sc_docjson.hpp, which
@@ -23,12 +23,12 @@
  * deployed clients still speak. This server is therefore DUAL-ERA, which is the
  * spec's own name for the case: a request carrying the modern `_meta` is served
  * statelessly per 2026-07-28, anything else is served per 2025-11-25. What is
- * deliberately NOT implemented is listed in README.md § For machines, because a
+ * deliberately NOT implemented is listed in README.md S For machines, because a
  * silent omission is indistinguishable from a bug.
  *
- * THE REGISTRY IS THE SEAM — AND IT HELD
+ * THE REGISTRY IS THE SEAM -- AND IT HELD
  * =====================================
- * A tool is DECLARED in exactly one place — `registeredTools()` — as a name, a
+ * A tool is DECLARED in exactly one place -- `registeredTools()` -- as a name, a
  * description written to the zero-knowledge bar (it is what an outside model
  * reads before deciding to call it), an input schema and a handler. The
  * protocol code below names no tool and knows no tool's arguments. `run_command`
@@ -38,10 +38,10 @@
  * ONE OF THE TOOLS ACTS ON A LIVE DOME
  * ====================================
  * `run_command` opens a TCP connection to a RUNNING spacecrafter and executes a
- * command on it — a projector moves, a show changes. Three things follow, and
+ * command on it -- a projector moves, a show changes. Three things follow, and
  * they are in the tool's own description because that is what the outside model
- * reads: it is not a dry run; the engine answers only `get status …` and
- * `search name …`, so silence is neither success nor failure; and nothing here
+ * reads: it is not a dry run; the engine answers only `get status ...` and
+ * `search name ...`, so silence is neither success nor failure; and nothing here
  * retries, reconnects or keeps a connection alive between calls.
  *
  * STDOUT IS THE PROTOCOL. Every diagnostic, every load failure and every
@@ -80,8 +80,8 @@ struct ToolContext {
 //! What a tool handler returns. `structured` is the answer as data (the
 //! `structuredContent` of the result) and is also serialised into the text
 //! block, because a client that ignores structured content must still see it.
-//! `is_error` marks a TOOL EXECUTION error — a wrong argument, a file that
-//! cannot be read — which the calling model is expected to read and correct;
+//! `is_error` marks a TOOL EXECUTION error -- a wrong argument, a file that
+//! cannot be read -- which the calling model is expected to read and correct;
 //! protocol-level failures never come from here.
 struct ToolResult {
 	nlohmann::json structured;

@@ -9,7 +9,7 @@ class ModularBody;
 
 // ============================================================================
 // The render chain - the "effective thread" of the rendering domain.
-// Normative contract (INTENT.md §8.2); on divergence between this header and
+// Normative contract (INTENT.md S8.2); on divergence between this header and
 // INTENT.md, reconcile explicitly - neither silently wins.
 //
 // All draw-visible state (the body tree, slots, regime lists, notableBody,
@@ -51,7 +51,7 @@ class ModularBody;
 // latency); otherwise it chains behind pending publishes - so publishes
 // always execute between two frames, never inside one.
 //
-// Thread model (INTENT.md §8.2.10):
+// Thread model (INTENT.md S8.2.10):
 //   1 video-player thread (video frame loading)
 //   1 main thread (cadencer, usually runs the frame task inplace)
 //   1 events/scripts thread (SDL polling, scripts, non-recurrent actions:

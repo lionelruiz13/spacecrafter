@@ -57,7 +57,7 @@ public:
 		}
 	}
 
-	//! lit une string: le 1° char indique la taille de la string
+	//! lit une string: le 1deg char indique la taille de la string
 	void readString(std::string &s);
 
 	std::string getDescription() const {
@@ -77,15 +77,15 @@ public:
 	}
 
 private:
-	//! vérifie que le fichier est bien un fichier de SC
+	//! verifie que le fichier est bien un fichier de SC
 	void readSCB();
-	//! lit la date de création du fichier
+	//! lit la date de creation du fichier
 	void readDate();
 	//! lit la description du fichier
 	void readDescription();
 	
 	bool canUse = false;		// indicateur d'utilisation de la classe
-	bool isOpened = false;		// indique si le ficheir a été ouvert par open
+	bool isOpened = false;		// indique si le ficheir a ete ouvert par open
 
 	std::ifstream file;
 	std::string fileName;
@@ -194,16 +194,16 @@ public:
 	WriteBinary(const std::string & _fileName);
 	~WriteBinary();
 
-	//! initialise l'écriture du fichier et active l'écriture dans le fichier
+	//! initialise l'ecriture du fichier et active l'ecriture dans le fichier
 	bool writeHeader(const std::string &_description);
 	bool writeHeader(const std::string &_description, const std::string& _date);
-	//! ferme le fichier, termine l'écriture des données
+	//! ferme le fichier, termine l'ecriture des donnees
 	void close();
 
-	//! écrit une string. Le 1° caractère écrit indique la taille de la string
+	//! ecrit une string. Le 1deg caractere ecrit indique la taille de la string
 	void writeString(const std::string &s);
 
-	//! écrit un type de base, même les vecteurs
+	//! ecrit un type de base, meme les vecteurs
 	template<typename T> void write(const T& value) {
 		if (!canUse)
 			return;
@@ -223,11 +223,11 @@ public:
 	}
 
 private:
-	//! écrit le cartouche de Spacecrafter
+	//! ecrit le cartouche de Spacecrafter
 	void insertSCB();
-	//! écrit la date de creation du fichier
+	//! ecrit la date de creation du fichier
 	void insertDate(const std::string& _date);
-	//! écrit la description du fichier
+	//! ecrit la description du fichier
 	void insertDescription(const std::string &_description);
 
 	std::ofstream file;

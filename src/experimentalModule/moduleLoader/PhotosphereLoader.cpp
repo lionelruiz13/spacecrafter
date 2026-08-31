@@ -33,7 +33,7 @@ std::unique_ptr<BodyModule> PhotosphereLoader::load(ModularBody *target, std::ma
     if (obj) {
         auto mesh = std::make_unique<PhotosphereModule>(obj, params["tex_map"]);
         // NEAR regime, exactly where BasicMesh routes - the emissive base is
-        // not distance-gated (PhotosphereModule.hpp; design note §3.2).
+        // not distance-gated (PhotosphereModule.hpp; design note S3.2).
         addNearComponent(target, mesh.get());
         return mesh;
     }

@@ -1,5 +1,5 @@
 /*
- * scedit — sc_docjson.cpp
+ * scedit -- sc_docjson.cpp
  *
  * Serialisation only: every fact printed here was read by Grammar or DocIndex
  * from grammar/sc-grammar.json, and this file adds nothing to it except the
@@ -95,7 +95,7 @@ json commandJson(const Grammar &g, const DocIndex &d, const CommandInfo &ci)
 
 //! An error a machine can act on: what was not found, in which vocabulary, and
 //! the nearest name the CHECKER would have suggested for the same misspelling
-//! (one did-you-mean policy for the whole tool — sc_check.hpp).
+//! (one did-you-mean policy for the whole tool -- sc_check.hpp).
 json notFound(const std::string &kind, const std::string &message,
               const std::string &vocabulary, const std::string &token,
               const std::vector<std::string> &candidates)
@@ -270,7 +270,7 @@ DocAnswer docLookup(const Grammar &g, const DocIndex &d,
 		vocabulary = "the argument keys of '" + command + "' (" +
 		             std::to_string(candidates.size()) + " extracted" +
 		             (ci->args_complete ? ", the file claims the list is complete"
-		                                : ", the file states the list is INCOMPLETE — an "
+		                                : ", the file states the list is INCOMPLETE \xe2\x80\x94 an "
 		                                  "unlisted key may still be legal") + ")";
 	}
 	a.value = notFound("unknown-name",

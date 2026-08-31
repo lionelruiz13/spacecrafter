@@ -3,7 +3,7 @@ Minimum class for circular array
 Use: This class allows to push elements at the beginning and at the end of the array with a complexity in O(1)
 Usage: to be included in the C++ program
 Remark : this class is minimal (incomplete) and can cause errors in case of specific use
-Author: Aurélien Schwab <aurelien.schwab+dev@gmail.com> for immersiveadventure.net
+Author: Aurelien Schwab <aurelien.schwab+dev@gmail.com> for immersiveadventure.net
 Updated on 27/05/2017
 */
 

@@ -36,7 +36,7 @@ public:
 	Ojm(const std::string& _fileName, const std::string& _pathFile, float multiplier);
 	~Ojm();
 
-	//! renvoie l'état de l'objet: chargé et opérationnel, négatif sinon
+	//! renvoie l'etat de l'objet: charge et operationnel, negatif sinon
 	bool getOk() {
 		return is_ok;
 	}
@@ -52,20 +52,20 @@ public:
 
 private:
 	bool is_ok = false; //say if the model is correctly initialised and operationnal
-	//! vérifie si les indices coincident dans l'objet
+	//! verifie si les indices coincident dans l'objet
 
 	bool testIndices();
 
 	//! charge un objet OJM du disque dur
 	bool readOJM(const std::string& filename, float multiplier= 1.0);
 
-	//! indices des différents morceaux de l'objet
+	//! indices des differents morceaux de l'objet
 	std::vector<Shape> shapes;
 
 	//! initialise tous les parametres GL de l'ojm
 	void initGLparam();
 
-	//! supprime les paramètres GL de l'ojm
+	//! supprime les parametres GL de l'ojm
 	void delGLparam();
 
 	std::string fileName;

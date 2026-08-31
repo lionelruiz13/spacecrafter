@@ -72,10 +72,10 @@ Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type
 {
 
 	if (hasAlphaChannel && imgTex.a) {
-		// Utiliser YUVAImageTexture pour les vidéos avec alpha
+		// Utiliser YUVAImageTexture pour les videos avec alpha
 		imageTexture = new YUVAImageTexture(imgTex.y, imgTex.u, imgTex.v, imgTex.a, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUVA : m_layoutUnifiedYUVA);
 	} else {
-		// Utiliser YUVImageTexture classique pour les vidéos sans alpha
+		// Utiliser YUVImageTexture classique pour les videos sans alpha
 		imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUV : m_layoutUnifiedYUV);
 	}
 	imageTexture->setupSync(imgTex.sync);
@@ -443,29 +443,29 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 	if (flag_progressive_x) {
 		if (accelerate_x and not decelerate_x) {
 			mid_time_x = end_time; // switch from acceleration to deceleration at the end of the movement
-			coef_xmove = x_move / float(end_time * end_time); // the movement must be completed at end_time²
+			coef_xmove = x_move / float(end_time * end_time); // the movement must be completed at end_time^2
 		}
 		else if (accelerate_x and decelerate_x) {
 			mid_time_x = int(duration * 500.f + 0.5f); // switch from acceleration to deceleration at the middle of the movement
-			coef_xmove = x_move / float(2 * mid_time_x * mid_time_x); // the movement must be the middle of the complete movement at mid_time_x²
+			coef_xmove = x_move / float(2 * mid_time_x * mid_time_x); // the movement must be the middle of the complete movement at mid_time_x^2
 		}
 		else {   // (not accelerate_x and decelerate_x)
 			mid_time_x = 0; // switch from acceleration to deceleration at the beginning of the movement
-			coef_xmove = x_move / float(end_time * end_time); // the movement must be completed at end_time²
+			coef_xmove = x_move / float(end_time * end_time); // the movement must be completed at end_time^2
 		}
 	}
 	if (flag_progressive_y) {
 		if (accelerate_y and not decelerate_y) {
 			mid_time_y = end_time; // switch from acceleration to deceleration at the end of the movement
-			coef_ymove = y_move / float(end_time * end_time); // the movement must be completed at end_time²
+			coef_ymove = y_move / float(end_time * end_time); // the movement must be completed at end_time^2
 		}
 		else if (accelerate_y and decelerate_y) {
 			mid_time_y = int(duration * 500.f + 0.5f); // switch from acceleration to deceleration at the middle of the movement
-			coef_ymove = y_move / float(2 * mid_time_y * mid_time_y); // the movement must be the middle of the complete movement at mid_time_y²
+			coef_ymove = y_move / float(2 * mid_time_y * mid_time_y); // the movement must be the middle of the complete movement at mid_time_y^2
 		}
 		else {   // (not accelerate_y and decelerate_y)
 			mid_time_y = 0; // switch from acceleration to deceleration at the beginning of the movement
-			coef_ymove = y_move / float(end_time * end_time); // the movement must be completed at end_time²
+			coef_ymove = y_move / float(end_time * end_time); // the movement must be completed at end_time^2
 		}
 	}
 	x_move = x_move / (1000.f*duration);
@@ -604,7 +604,7 @@ bool Image::update(int delta_time)
 			if (my_timer < mid_time_x) { // acceleration phase
 				image_xpos = start_xpos + my_timer * my_timer * coef_xmove; // square function
 			} else if (my_timer < end_time) { // deceleration phase
-				image_xpos = end_xpos - (end_time - my_timer) * (end_time - my_timer) * coef_xmove; // (end - x)² function
+				image_xpos = end_xpos - (end_time - my_timer) * (end_time - my_timer) * coef_xmove; // (end - x)^2 function
 			} else { // movement completed
 				image_xpos = end_xpos;
 				flag_location = 0;
@@ -621,7 +621,7 @@ bool Image::update(int delta_time)
 			if (my_timer < mid_time_y) { // acceleration phase
 				image_ypos = start_ypos + my_timer * my_timer * coef_ymove; // square function
 			} else if (my_timer < end_time) { // deceleration phase
-				image_ypos = end_ypos - (end_time - my_timer) * (end_time - my_timer) * coef_ymove; // (end - x)² function
+				image_ypos = end_ypos - (end_time - my_timer) * (end_time - my_timer) * coef_ymove; // (end - x)^2 function
 			} else { // movement completed
 				image_ypos = end_ypos;
 				flag_location = 0;

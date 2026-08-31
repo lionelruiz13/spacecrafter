@@ -191,7 +191,7 @@ int AppCommandInterface::parseCommand(const std::string &command_line, std::stri
 }
 
 // The block-structure diagnostics, one sentence each carrying the three parts
-// INTENT �11.169 requires of a user-facing script error: WHAT it is, what it
+// INTENT S11.169 requires of a user-facing script error: WHAT it is, what it
 // DOES, and the self-contained ACTION. ASCII only: they are written into
 // ISO-8859 script files as `#!` tails.
 static const char MSG_UNCLOSED_IF[] =
@@ -312,7 +312,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 	command.clear(); // = ""; //vide l'ancienne valeur de args
 	args.clear(); //vide les anciennes valeurs de args //TODO A VERIFIER
 
-	// on découpe toute la ligne en CMD {ARG1,VALUE1} {ARG2,VALUE2} ...
+	// on decoupe toute la ligne en CMD {ARG1,VALUE1} {ARG2,VALUE2} ...
 	parseCommand(commandline, command, args);
 
 	FilePath::fixScriptPath(scriptInterface->getScriptPath());
@@ -432,7 +432,7 @@ bool AppCommandInterface::setFlag(const std::string &name, const std::string &va
 		return false;
 	}
 
-	//fix newval dans les cas ou il vaut on ou off, toggle sera fixé après si besoin
+	//fix newval dans les cas ou il vaut on ou off, toggle sera fixe apres si besoin
 	FLAG_VALUES flag_value = convertStrToFlagValues(value);
 
 	return this->setFlag(m_flag_it->second, flag_value, newval);
@@ -456,7 +456,7 @@ void AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value)
 }
 
 //! The READ half of the flag surface - the one place that answers "what is
-//! this flag now?" (b31-design §2 row E3; INTENT §11.128(e)).
+//! this flag now?" (b31-design S2 row E3; INTENT S11.128(e)).
 //! `setFlag`'s toggle branch is its first consumer and the session save is its
 //! second, so the value a toggle computes and the value a session records are
 //! the same answer from the same authority (I2).
@@ -777,7 +777,7 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 	// a second copy living inside every case (I2). Before this, the only code in
 	// the tree that knew a flag's current value was this switch, and it knew it
 	// only while mutating it: nothing could ask "what is this flag now?", which
-	// is why b31-design §2's row E3 had no save half (INTENT §11.128(e)).
+	// is why b31-design S2's row E3 had no save half (INTENT S11.128(e)).
 	// Two properties came out of the extraction and are behaviour, not cleanup:
 	//  * `newval` now reports the value the flag ENDS AT for every flag. 26 of
 	//    them (the sky grids and sky lines) used to read their value WITHOUT
@@ -1783,7 +1783,7 @@ int AppCommandInterface::commandSuntrace()
 
 //! Apply one colour by name. Extracted from `commandColor` so the session
 //! restore drives the SAME write the command does rather than a second copy of
-//! it (I2, b31-design §2 row E5).
+//! it (I2, b31-design S2 row E5).
 void AppCommandInterface::applyColor(COLORCOMMAND_NAMES name, const Vec3f &Vcolor, int index)
 {
 	switch(name) {
@@ -1797,10 +1797,10 @@ void AppCommandInterface::applyColor(COLORCOMMAND_NAMES name, const Vec3f &Vcolo
 		case COLORCOMMAND_NAMES::CC_PLANET_NAMES:			coreLink->planetSetDefaultColor(W_LABEL, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_PLANET_TRAILS:			coreLink->planetSetDefaultColor(W_TRAIL, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_AZIMUTHAL_GRID:			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor ); break;
-		case COLORCOMMAND_NAMES::CC_EQUATOR_GRID:			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor ); coreLink->planetsSyncGridColor(); break; // meridian = new grid (INTENT §11.42)
+		case COLORCOMMAND_NAMES::CC_EQUATOR_GRID:			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor ); coreLink->planetsSyncGridColor(); break; // meridian = new grid (INTENT S11.42)
 		case COLORCOMMAND_NAMES::CC_ECLIPTIC_GRID:			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ECLIPTIC, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_GALACTIC_GRID:			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_GALACTIC, Vcolor ); break;
-		case COLORCOMMAND_NAMES::CC_EQUATOR_LINE:			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, Vcolor ); coreLink->planetsSyncGridColor(); break; // parallel = new grid (INTENT §11.42)
+		case COLORCOMMAND_NAMES::CC_EQUATOR_LINE:			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, Vcolor ); coreLink->planetsSyncGridColor(); break; // parallel = new grid (INTENT S11.42)
 		case COLORCOMMAND_NAMES::CC_GALACTIC_LINE:			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_ECLIPTIC_LINE:			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_MERIDIAN_LINE:			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, Vcolor ); break;
@@ -1839,7 +1839,7 @@ void AppCommandInterface::applyColor(COLORCOMMAND_NAMES name, const Vec3f &Vcolo
 }
 
 //! What is this colour NOW? The read half of `applyColor`, and the session's
-//! only way to record §2 row E5. Two of the 46 have no getter at ANY level -
+//! only way to record S2 row E5. Two of the 46 have no getter at ANY level -
 //! the on-dome text colour and the star colour table - and they say so by
 //! returning false rather than by reporting a guess.
 bool AppCommandInterface::readColor(COLORCOMMAND_NAMES name, Vec3f &value) const
@@ -2111,7 +2111,7 @@ int AppCommandInterface::commandPrint()
 
 
 //! What is this `set` value NOW? The read half of `evalCommandSet` (b31-design
-//! §2 row E4, whose readback §11.108(k) recorded as "NOT established").
+//! S2 row E4, whose readback S11.108(k) recorded as "NOT established").
 //! 30 of the 43 registered names can answer; the other 13 are listed together
 //! at the bottom of the switch and return false, because each writes into a
 //! sink nothing in the tree can read back - `set mode` writes nothing at all.
@@ -2989,7 +2989,7 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 		// then falls into the "missing action argument" error below, so a
 		// command that WORKED reports failure - and executeCommandStatus() skips
 		// recordCommand() on failure, silently dropping `script speed ...` from
-		// every recorded show (INTENT §11.108 rider). The bogus-value leg keeps
+		// every recorded show (INTENT S11.108 rider). The bogus-value leg keeps
 		// its own diagnostic, which the fall-through used to overwrite.
 		return executeCommandStatus();
 	}
@@ -3974,7 +3974,7 @@ int AppCommandInterface::commandDate()
 		double days = evalDouble(argRelative);
 		std::shared_ptr<Body> home = coreLink->getObserverHomeBody();
 		if (home==nullptr) {
-			debug_message = _("Error date local, vous devez être sur un astre pour utiliser l'argument relative");
+			debug_message = _("Error date local, vous devez \xc3\xaatre sur un astre pour utiliser l'argument relative");
 			return executeCommandStatus();
 		}
 		float sol_local_day = home->getSolLocalDay();
@@ -4005,7 +4005,7 @@ int AppCommandInterface::commandDate()
 		double days = evalDouble(argSidereal);
 		std::shared_ptr<Body> home = coreLink->getObserverHomeBody();
 		if (home==nullptr) {
-			debug_message = _("Error date local, vous devez être sur un astre pour utiliser l'argument sideral");
+			debug_message = _("Error date local, vous devez \xc3\xaatre sur un astre pour utiliser l'argument sideral");
 			return executeCommandStatus();
 		}
 		float sol_sidereal_day = home->getSiderealDay();
@@ -4141,7 +4141,7 @@ int AppCommandInterface::commandBody()
 				debug_message = _("Command 'body': the current system has no data file to reload");
 		} else if (argAction == W_SAVE) {
 			// Write the observer's current system to a composed system file
-			// (B31 slice 2, INTENT §11.51(a): "save a system on-the-fly as well
+			// (B31 slice 2, INTENT S11.51(a): "save a system on-the-fly as well
 			// by targeting without the .disabled or under a different name from
 			// scripts"). The system-scope sibling of `reload`, which already
 			// lives in this slot: `reload` re-reads this system's file, `save`
@@ -4223,13 +4223,13 @@ int AppCommandInterface::commandBody()
 			return executeCommandStatus();
 		}
 
-		// Runtime navigation-radius seam (B10 §5.2, §11.79(e) D9key): set a
+		// Runtime navigation-radius seam (B10 S5.2, S11.79(e) D9key): set a
 		// body's datum_radius / ground_radius scalar at runtime, in km (the
 		// data-key unit). The COMMAND word order matches the DATA keys
 		// (datum/ground FIRST) - Q12's `radius datum`/`radius ground` word order
 		// was rejected by D9key. Routes through the SAME per-body scalar the
 		// loader feeds (scaling stays the single updateCache authority, I2);
-		// new-path concept only, so no old-path mirror. §2(f) diagnostics: a
+		// new-path concept only, so no old-path mirror. S2(f) diagnostics: a
 		// negative value or an unknown body logs the valid domain + fallback
 		// (value unchanged) + fix action, and does NOT reach the setter.
 		std::string argDatumRadius = args[W_DATUM_RADIUS];
@@ -4489,7 +4489,7 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 
 	if (argAction == W_FREE_MODE) {
 		// camera action free_mode state on|off - new-path free flight
-		// (INTENT §2(c): every capability dynamically reachable; the
+		// (INTENT S2(c): every capability dynamically reachable; the
 		// reference-transition layer rides on it).
 		std::string argState = args[W_STATE];
 		if (argState.empty()) {
@@ -4502,9 +4502,9 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 
 	if (argAction == W_DESCEND) {
 		// camera action descend coef <c> - view-directed free descent (B21,
-		// INTENT §11.72). coef<1 descends, coef>1 ascends (multAlt semantics).
+		// INTENT S11.72). coef<1 descends, coef>1 ascends (multAlt semantics).
 		// Sole command-reachable driver of the view-ray / last-selected descent
-		// geometry (multAlt/moveRelAlt are UI-key-only, B10 §11.71).
+		// geometry (multAlt/moveRelAlt are UI-key-only, B10 S11.71).
 		std::string argCoef = args[W_COEF];
 		if (argCoef.empty()) {
 			debug_message = "command 'camera descend' : missing coef";
@@ -4784,7 +4784,7 @@ int AppCommandInterface::commandStruct()
 				ifSwap->push(false, currentOrigin);
 			return executeCommandStatus();
 		}
-		//retro-compatibilité
+		//retro-compatibilite
 		if (evalDouble(argIf) == 0)
 			ifSwap->push(true, currentOrigin);
 		else
@@ -4810,7 +4810,7 @@ int AppCommandInterface::commandStruct()
 				reportScriptError(currentOrigin, MSG_LOOP_END_WITHOUT_LOOP);
 			loopOpen = false;
 			loopOpener = ScriptOrigin();
-			swapCommand = false; //cas ou nbrLoop était inférieur à 1
+			swapCommand = false; //cas ou nbrLoop etait inferieur a 1
 			scriptInterface->setScriptLoop(false);
 			scriptInterface->initScriptIterator();
 			return executeCommandStatus();

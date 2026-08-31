@@ -21,7 +21,7 @@ class ObjL;
 // behaviour of the photosphere, so it belongs to a photosphere type; parking
 // it on the generic planet mesh would make that type carry star physics it has
 // no other use for, and would leave the shell (a second geometry, additive)
-// with nowhere to live. §4.3 of the design note.
+// with nowhere to live. S4.3 of the design note.
 //
 // HOW IT REPLACES THE MESH: by G6 loader COMPETITION, not by a suppression
 // rule. deduceBodyModuleList still emits MESH for any body with tex_map;
@@ -31,14 +31,14 @@ class ObjL;
 //
 // REGIME: nearComponents, exactly where BasicMesh routes. NOT distance-gated -
 // a star's surface brightness is distance-invariant (radiance is conserved
-// along a ray), and the divergence this retires is measured at 1 AU (§11.44,
+// along a ray), and the divergence this retires is measured at 1 AU (S11.44,
 // zoom fov 30: new disc median 21 vs old 725). What the near regime will add
 // later is DETAIL (granulation/spots), whose boundary is the G4 criterion
-// "smallest added structure >= 1 px" - design note §3.
+// "smallest added structure >= 1 px" - design note S3.
 //
 // THE LAW (fragment shader bodyStarSurface.frag): Eddington grey-atmosphere
 // limb darkening L(mu) = (3*mu + 2)/5, DERIVED, not fitted and not recalled -
-// there is no measured coefficient in it (derivation: design note §5.1). At
+// there is no measured coefficient in it (derivation: design note S5.1). At
 // disc centre L(1) = 1, so the centre reproduces the old path's body_sun.frag
 // (the texel, unmodified) exactly: the change is monotone and anchored.
 //

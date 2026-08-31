@@ -14,8 +14,8 @@
 // clipping_fov} + custom_project spec-8 (the AXIS/ORBIT push contract, NOT
 // TRAIL's UBO), and per-vertex color (location 1) - so the family carries an
 // interleaved pos+color vertex and NO descriptor set. Spec-const 8 is
-// registry-injected (§11.33). Fourth line-class family (AXIS §11.31, ORBIT
-// §11.39, TRAIL §11.41 were the first three).
+// registry-injected (S11.33). Fourth line-class family (AXIS S11.31, ORBIT
+// S11.39, TRAIL S11.41 were the first three).
 
 // Grid resolution (old planet_grid.cpp DEFAULT_NB_MERIDIAN / SEGMENTS_PER_LINE).
 static constexpr int NB_MERIDIAN = 24;
@@ -216,7 +216,7 @@ void PlanetGridModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &
     // non-star bodies (old planet_grid.cpp:104, the isSatellite()/!="Sun" gate -
     // the name-sniff replaced by the clean isStar() type test, I4). The tropic/
     // polar latitudes are this body's axial_tilt (getAxialTilt, degrees).
-    // D27 split (§11.113(f)): the two halves land on DIFFERENT keys and both
+    // D27 split (S11.113(f)): the two halves land on DIFFERENT keys and both
     // are correct. A tropic is defined by the ILLUMINATOR's apparent path, so
     // the self-exclusion is luminosity (`light_source`, isStar) - a dark
     // primary lit by its companion does have tropics; while isSatellite() is

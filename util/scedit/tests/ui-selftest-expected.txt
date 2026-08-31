@@ -160,7 +160,7 @@ inv ----------i
 | 
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
 | command `media`
-| Play a video in the dome — or a sound on its own — and control it while it plays.   (documents: co
+| Play a video in the dome -- or a sound on its own -- and control it while it plays.   (documents:
 | 
 | engine: app_command_init.cpp:67 (ACP_CN_MEDIA = "media", base_command_interface.hpp:357)
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -312,7 +312,7 @@ inv ------------------------i
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
 | `struct` `if` = `end`
 | close the block opened by the last `struct if`   (documents: value)
-| value: number(evalDouble) — $-variable substitution possible | enumerated   one of: else, end, <a
+| value: number(evalDouble) -- $-variable substitution possible | enumerated   one of: else, end, <a
 | warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine log
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
 | F5 errors (4) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit

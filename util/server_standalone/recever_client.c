@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
        return 1;
     } 
 
-	//première connexion, pour reception, on demande au serveur de nous placer en mode reception
+	//premiere connexion, pour reception, on demande au serveur de nous placer en mode reception
 	char login[]="$LOGON";
 	
 	unsigned int nb_write;
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	else
 		printf("Error connection, serverlost ?\n");	
 	
-	//affichage des commandes émises par spacecrafter
+	//affichage des commandes emises par spacecrafter
 	int isAlive =1;
 	while(isAlive) {
 		nb_read = read(sockfd, recvBuff, SIZEBUFFER); 

@@ -38,7 +38,7 @@ int severityRank(const std::string &s)
 
 //! Fill every empty field of `base` from `fallback`. Used to make one spec out
 //! of "what the command says about this key" + "what the family says about this
-//! name" + "what the command says about keys in general" — most specific first.
+//! name" + "what the command says about keys in general" -- most specific first.
 void fillFrom(Spec &base, const Spec &fallback)
 {
 	if (!fallback.present)
@@ -272,10 +272,10 @@ bool EditCore::save(std::string &err)
 	}
 	// ALWAYS, before every write. The engine rewrites the script it played at
 	// the end of the run, and a save that has not looked is a save that can
-	// silently delete what it found (sc_editcore.hpp § THE ENGINE WRITES BACK).
+	// silently delete what it found (sc_editcore.hpp S THE ENGINE WRITES BACK).
 	switch (diskState()) {
 	case DiskState::Changed:
-		err = "the file changed on disk since it was opened — this is what "
+		err = "the file changed on disk since it was opened \xe2\x80\x94 this is what "
 		      "spacecrafter does at the end of a run: it writes its findings "
 		      "into the script as `#!` tails and clears the ones that are fixed. "
 		      "Saving now would write over them. Choose: reload the file (the "
@@ -327,8 +327,8 @@ void EditCore::afterMove()
 {
 	// The ENGINE's bytes, '\r' included: the tokenizer must read what
 	// parseCommand would read, not what the editing model finds convenient
-	// (constraint C1). The caret can never reach that byte — it is past the end
-	// of the editable text — so every span below is still a text offset.
+	// (constraint C1). The caret can never reach that byte -- it is past the end
+	// of the editable text -- so every span below is still a text offset.
 	line_ = tokenizeLine(doc_.engineLine(cur_.line));
 	computeCompletion();
 	computeDocBar();
@@ -351,7 +351,7 @@ void EditCore::rebuildHistory()
 	history_.clear();
 	// The engine's rows. The `find("#!")` is a pure PREFILTER, not a second
 	// reading of the rule: a line without those two bytes cannot carry a tail,
-	// and every line that has them goes through machineTail() — which is the
+	// and every line that has them goes through machineTail() -- which is the
 	// one place the locating rule lives. It keeps the per-keystroke rebuild off
 	// the tokenizer for the lines (almost all of them) that cannot match.
 	for (std::size_t l = 0; l < doc_.lineCount(); ++l) {
@@ -383,7 +383,7 @@ void EditCore::rebuildHistory()
 		history_.push_back(e);
 	}
 	// Line order; on one line the engine's row first, then the checker's own
-	// order (stable) — the reasons are in the header note.
+	// order (stable) -- the reasons are in the header note.
 	std::stable_sort(history_.begin(), history_.end(),
 	                 [](const ErrorEntry &a, const ErrorEntry &b) {
 		if (a.line != b.line)
@@ -574,7 +574,7 @@ std::vector<std::string> EditCore::valueCandidates(const std::string &command,
 	std::vector<std::string> out;
 	// D31: the default comes first, so that the ghost on an empty field shows
 	// the default. Dormant until a spec carries `default_value` (see
-	// DocIndex::dormantFeatures) — the rest is byte-lexicographic.
+	// DocIndex::dormantFeatures) -- the rest is byte-lexicographic.
 	if (s.has_default_literal && isCompletableLiteral(s.default_literal))
 		out.push_back(s.default_literal);
 	for (const auto &c : s.completable)
@@ -595,7 +595,7 @@ void EditCore::computeCompletion()
 		return;
 	}
 	// In the comment after a '#': the engine reads none of it, so nothing
-	// completes — a ghost there would be a promise about bytes with no meaning.
+	// completes -- a ghost there would be a promise about bytes with no meaning.
 	if (cur_.col >= line_.comment_begin) {
 		const MachineTail mt = machineTail(cur_.line);
 		completion_.context = (mt.present() && cur_.col >= mt.begin) ? Context::MachineTail : Context::Comment;
@@ -812,7 +812,7 @@ void EditCore::computeDocBar()
 			docbar_.doc_of = "any key of `" + command + "`";
 		} else if (!docbar_.documented && !completion_.candidates.empty()) {
 			// No sentence exists about this command's keys in general. Say what
-			// IS known — the list — instead of a blank the author cannot act on.
+			// IS known -- the list -- instead of a blank the author cannot act on.
 			docbar_.note = "Tab offers the " + std::to_string(completion_.candidates.size())
 			               + " keys scedit knows for `" + command + "`";
 		}

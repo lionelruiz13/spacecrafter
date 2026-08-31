@@ -323,7 +323,7 @@ void Ojm::print()
 {
 	std::cout<< "Number of shape " << shapes.size() << std::endl;
 	for(unsigned int i=0; i< shapes.size();i++) {
-		std::cout<< "***** shapes n°"<< i<< std::endl;
+		std::cout<< "***** shapes n\xc2\xb0"<< i<< std::endl;
 		std::cout<< "Number of vectrices " << shapes[i].vertices.size() << std::endl;
 		std::cout<< "Nombre Number of uvs        " << shapes[i].uvs.size() << std::endl;
 		std::cout<< "Number of normales  " << shapes[i].normals.size() << std::endl;

@@ -4,7 +4,7 @@
 #include <string>
 
 // THE line grammar of the spacecrafter `.ini` body/system/anchor family - ONE
-// authority for every reader of it (INTENT I2; §5.38 / §5.39 / D29 §11.113(h)).
+// authority for every reader of it (INTENT I2; S5.38 / S5.39 / D29 S11.113(h)).
 //
 // WHAT-FOR: a caller hands one raw file line and gets back what it IS. It never
 // needs to know where the '=' sits, how much space surrounds it, whether the
@@ -16,28 +16,28 @@
 //   - a '#' starts a comment that runs to the end of the line, anywhere on it;
 //     '#' is the family's comment character in every shipped corpus and in
 //     every writer in this tree, and no other character is accepted (adding
-//     ';' would invent grammar - veto point, INTENT §11.115);
+//     ';' would invent grammar - veto point, INTENT S11.115);
 //   - leading/trailing blanks (space, tab, CR, LF) are insignificant, around
 //     the whole line and around both sides of the '=';
 //   - '[header]' is a section; the text between the brackets is returned;
 //   - 'key = value' is an entry, split at the FIRST '=';
 //   - a non-empty line that is neither is MALFORMED and is reported as such,
-//     so the caller can name it (§2(f)) instead of silently inventing a key.
+//     so the caller can name it (S2(f)) instead of silently inventing a key.
 //
 // WHY IT EXISTS. Four readers each carried their own `line.substr(0, pos-1)` /
 // `line.substr(pos+2)` arithmetic, which requires exactly one space on each
 // side of the '='. On the shipped `galactic.ini` that arithmetic silently
-// dropped five minus signs and two leading digits (§5.38: six of seventeen star
+// dropped five minus signs and two leading digits (S5.38: six of seventeen star
 // systems at wrong coordinates), and on `ssystem.ini` it disagreed with the
-// composed-format reader on seven keys (§5.39). One grammar, one place.
+// composed-format reader on seven keys (S5.39). One grammar, one place.
 //
-// D13 (downgrade must stay possible, §2.0): this is a READING relaxation only.
+// D13 (downgrade must stay possible, S2.0): this is a READING relaxation only.
 // Nothing in this tree may WRITE a comment, or any other construct an older
 // build's parser cannot read, into a legacy file - what the writers emit is
 // unchanged by this header's existence.
 //
 // ONE WRITER READS THROUGH IT TOO, and that is why `read` reports a Span: a
-// rewrite that must preserve the author's line (INTENT §11.66(b)) has to know
+// rewrite that must preserve the author's line (INTENT S11.66(b)) has to know
 // where the VALUE sits inside it, and the only thing that knows is the grammar
 // (ModularSystemFormat::Section::set is the client). Asking the writer to
 // re-find the '=' itself would be a second copy of this grammar - the exact
@@ -45,7 +45,7 @@
 //
 // NOT a consumer of this authority, by construction: the OLD path's own
 // `ProtoSystem::load` (protosystem.cpp), which is the frozen comparison
-// baseline (§11.52(b)) and must keep reading exactly what it always read.
+// baseline (S11.52(b)) and must keep reading exactly what it always read.
 namespace IniLine {
 
 enum class Kind {
@@ -63,8 +63,8 @@ constexpr char COMMENT_CHAR = '#';
 // into the string that was passed to `read`. Reported for ENTRY only, and only
 // for the VALUE - it is what a line-preserving WRITER needs: replacing exactly
 // that range leaves the key text, every blank around the '=' and any trailing
-// comment byte-for-byte where the author put them (INTENT §11.66(b),
-// b31-design §5.2). An empty value yields an empty span at its insertion point.
+// comment byte-for-byte where the author put them (INTENT S11.66(b),
+// b31-design S5.2). An empty value yields an empty span at its insertion point.
 struct Span {
     std::size_t begin = 0, end = 0;
 };

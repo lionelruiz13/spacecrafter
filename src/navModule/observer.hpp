@@ -110,7 +110,7 @@ public:
 			latitude = 90.0;
 	}
 
-	//! renvoie la latitude de l'observer sur la planète
+	//! renvoie la latitude de l'observer sur la planete
 	double getLatitude() const {
 		return latitude;
 	}
@@ -124,10 +124,10 @@ public:
 	double getLongitude() const;
 	double getLongitudeForDisplay() const;
 
-	//! fixe l'altitude de l'observer sur la planète
+	//! fixe l'altitude de l'observer sur la planete
 	void setAltitude(double a);
 
-	//! renvoie l'altitude de l'observer sur la planète
+	//! renvoie l'altitude de l'observer sur la planete
 	double getAltitude(void) const {
 		return altitude;
 	}
@@ -165,11 +165,11 @@ public:
 	void moveTo(double lat, double lon, double alt, int duration, /*const std::string& _name,*/  bool calculate_duration=0);  // duration in ms
 
 	//! Move to quaternion angle (quaternion angle apply before every other transformations)
-	//! @param isMaxDuration is the given duration for a 180° rotation
+	//! @param isMaxDuration is the given duration for a 180deg rotation
 	void moveTo(const Vec4d &target, int duration, bool isMaxDuration = false);
 
 	//! Move to the quaternion angle relative to the current quaternion angle (quaternion angle apply before every other transformations)
-	//! @param isMaxDuration is the given duration for a 180° rotation
+	//! @param isMaxDuration is the given duration for a 180deg rotation
 	void moveRel(const Vec4d &relTarget, int duration, bool isMaxDuration = false);
 
 	//! Perform a movement relative to eye, only work for instantaneous movements
@@ -211,13 +211,13 @@ public:
 		this->mat_altitude_to_earth_equ = mat_altitude_to_earth_equ;
 	}
 
-	//! READBACK ONLY (INTENT §5.63 / §11.130) — this observer's whole place
+	//! READBACK ONLY (INTENT S5.63 / S11.130) -- this observer's whole place
 	//! state as one JSON object on the dual-path dump channel.
-	//! What it is FOR: the navigator's local→equatorial transform is built from
+	//! What it is FOR: the navigator's local->equatorial transform is built from
 	//! THIS object every frame (`getRotLocalToEquatorial`), so a sky that
 	//! differs while the camera agrees is answered here or in the navigator and
 	//! nowhere else. Const and side-effect-free; the old render path is
-	//! unchanged by construction (§11.52(b)).
+	//! unchanged by construction (S11.52(b)).
 	void dumpTrace(std::ostream &out) const;
 
 private:

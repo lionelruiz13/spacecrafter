@@ -2,7 +2,7 @@
 # (arguments -> exit code + stdout) table.
 #
 # WHY NOT check_gate.cmake. That one runs ONE scedit invocation over a list of
-# FILES and treats any exit above 1 as a failure — the right contract for
+# FILES and treats any exit above 1 as a failure -- the right contract for
 # `--check`/`--history`, and the wrong one here: these gates need MANY
 # invocations with different arguments, none of which are file names, and the
 # EXIT CODE is part of what is recorded (a `--doc` of a name that does not exist

@@ -8,7 +8,7 @@
 *   @file Camera.hpp Camera.cpp
 *   @date 29/12/2015
 *   @version 1.0
-*   @author Jérôme Lartillot
+*   @author Jerome Lartillot
 *
 *   @section Requirements Requirements
 *

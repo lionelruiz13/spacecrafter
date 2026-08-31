@@ -138,7 +138,7 @@ void BasicMesh::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &ma
 {
     // Row-8 TRACE prepass (S3 consumer live, 2026-07-19): writes this body's
     // disc into the depth buffer under the orbit-union range so the orbit LINE
-    // vanishes behind it. Old drawOrbit(cmdBodyDepth,…): push depthTraceInfo,
+    // vanishes behind it. Old drawOrbit(cmdBodyDepth,...): push depthTraceInfo,
     // draw the sphere (body.cpp:1215-1217). The Renderer binds the shared
     // sphere-trace pipeline for us (bind-and-record; passKind == TRACE).
     const FamilyBound bound = renderer.bind(TraceFamily::sphere());

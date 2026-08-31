@@ -197,7 +197,7 @@ public:
 	//! @return a vector of matching object name by order of relevance, or an empty vector if nothing match
 	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem=5) const;
 
-	//! Met à jour les flags et les couleurs des nouvelles constellations
+	//! Met a jour les flags et les couleurs des nouvelles constellations
 	void setCurrentStates();
 
 	void getHPStarsFromAbbreviation(const std::string& abbreviation, std::vector<unsigned int>& HpStarsFromAsterim) const;

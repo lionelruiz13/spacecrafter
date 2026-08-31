@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 of the Association Andromède
+ * Copyright (C) 2020 of the Association Andromede
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

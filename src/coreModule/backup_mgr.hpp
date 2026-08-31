@@ -64,7 +64,7 @@ public:
 	//! \param _coreLink the DUAL seam + the drawn-path readouts. `position
 	//! save`/`position load` is an observer bookmark, so both halves have to go
 	//! through the path that draws: the read through the B33 getters
-	//! (§11.131(f)) and the restore through observerMoveTo, which moves both
+	//! (S11.131(f)) and the restore through observerMoveTo, which moves both
 	//! authorities. Folding either half alone makes the pair incoherent - that
 	//! is exactly why F23 left the read where it was and routed the pair to B34.
 	CoreBackup(std::shared_ptr<Core> _core, std::shared_ptr<CoreLink> _coreLink);

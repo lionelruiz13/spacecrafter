@@ -480,7 +480,7 @@ void Navigator::alignUpVectorTo(const Mat4d& rotlocalToVsop87, double duration){
 }
 
 // ---------------------------------------------------------------------------
-// READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
+// READBACK ONLY (INTENT S5.63 / S11.130). See the header for what it is for.
 // Const, side-effect-free, called only from the dump channel.
 // ---------------------------------------------------------------------------
 static void dumpMat(std::ostream &out, const char *name, const Mat4d &m)
@@ -542,7 +542,7 @@ void Navigator::dumpTrace(std::ostream &out) const
 	// still be mid-transition (an anchor switch starts a 5 s heading ramp,
 	// anchor_manager.cpp:669), and a transition caught at a different phase is
 	// exactly the shape of a difference that VARIES from restore to restore
-	// (§5.63 exclusion 7).
+	// (S5.63 exclusion 7).
 	out << ",\"plans\":{\"flagAutoMove\":" << flag_auto_move
 	    << ",\"moveCoef\":";
 	jnum(out, move.coef);

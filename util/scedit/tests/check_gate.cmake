@@ -10,7 +10,7 @@
 #
 # EXPECTED is a RECORD, not a silencer: every line in it is dispositioned in the
 # dispatch report, and a finding that appears without being recorded there fails
-# the gate — which is the point of C3.
+# the gate -- which is the point of C3.
 
 if(NOT DEFINED MODE)
 	set(MODE "--check")

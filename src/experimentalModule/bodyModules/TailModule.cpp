@@ -7,7 +7,7 @@
 
 int TailModule::activeCount = 0;
 
-// TAIL instanced batch - row 12 (INTENT §11.43). Faithful port of the old
+// TAIL instanced batch - row 12 (INTENT S11.43). Faithful port of the old
 // Tail (tail.cpp) + SmallBody comet-tail machinery (body_smallbody.cpp), with
 // the global singleton Tail::global dissolved into the Renderer batching
 // service (submitTail/flushTails). The update()/draw() split maps the old

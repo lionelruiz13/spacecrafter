@@ -4,7 +4,7 @@
 #include "ModuleLoaderMgr.hpp"
 #include "environmentModules/LandscapeEnv.hpp"
 #include "environmentModules/AtmosphereEnv.hpp"
-#include "tools/ini_line.hpp" // the ONE .ini line grammar (INTENT §5.39/D29)
+#include "tools/ini_line.hpp" // the ONE .ini line grammar (INTENT S5.39/D29)
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
 #include "tools/context.hpp"
@@ -51,7 +51,7 @@ static inline BodyType strToBodyType(const std::string &str)
         CASE("KBO", MINOR_BODY);
         CASE("Comet", MINOR_BODY);
 		CASE("Planet", CUSTOM_BODY);
-		// CASE("Moon", ...) DELETED (B25-emit, §11.73 A4, 2026-07-23): it mapped
+		// CASE("Moon", ...) DELETED (B25-emit, S11.73 A4, 2026-07-23): it mapped
 		// to CUSTOM_BODY, which IS the default (below) - a dead case. "Moon"
 		// falls through to the default and still resolves to CUSTOM_BODY, so this
 		// is bit-identical for legacy and composed loads [re-verified at delete].
@@ -68,9 +68,9 @@ static inline BodyType strToBodyType(const std::string &str)
 #undef CASE
 
 // Parse the `sidereal_time` capability key (B27 A1; D10key ratified spelling
-// §11.79(e)): the analytic spin-phase model, data-selected (not identity-keyed).
+// S11.79(e)): the analytic spin-phase model, data-selected (not identity-keyed).
 // Absent / "generic" -> GENERIC (the default (jd-epoch)/period spin, every
-// body); "earth_apparent" -> EARTH_APPARENT (apparent sidereal time). §2(f):
+// body); "earth_apparent" -> EARTH_APPARENT (apparent sidereal time). S2(f):
 // an unknown value names the valid values, the fallback (generic), and the fix,
 // and never guesses (D12 - the fallback ACTS, so it is logged).
 static SiderealTimeModel parseSiderealTimeModel(const std::string &value, const std::string &bodyName)
@@ -87,9 +87,9 @@ static SiderealTimeModel parseSiderealTimeModel(const std::string &value, const 
     return SiderealTimeModel::GENERIC;
 }
 
-// --- Capability-key reading, D14 format boundary (B27 tail, §11.73/§11.79(h)) ---
+// --- Capability-key reading, D14 format boundary (B27 tail, S11.73/S11.79(h)) ---
 //
-// THE operator[] TRAP, once, structurally [§11.103(b), F0 2026-07-25]: loadBody
+// THE operator[] TRAP, once, structurally [S11.103(b), F0 2026-07-25]: loadBody
 // reads its keys through std::map::operator[], which INSERTS an empty entry for
 // an absent key - so `param.find(k) != param.end()` is TRUE for keys nobody
 // authored, and a naive key-absent guard silently inverts. "The data authored
@@ -103,14 +103,14 @@ static const std::string *authored(std::map<std::string, std::string> &param, co
     return (it == param.end() || it->second.empty()) ? nullptr : &it->second;
 }
 
-// SAY IT ONCE, IN BOTH CHANNELS (I2, b31-design §5.3). A loader diagnosis has
+// SAY IT ONCE, IN BOTH CHANNELS (I2, b31-design S5.3). A loader diagnosis has
 // always had one destination - the log, which the operator reads at launch and
 // nobody reads a month later, when the file is opened in a text editor and the
 // datum is right there with no trace of what the engine thought of it. So the
 // same sentence now also travels WITH the datum: `origin` is the section the
 // datum was read from, and the annotation lands ABOVE its line the next time an
 // explicit save writes that file (never at load - that is decided against, D33
-// §11.113(l)).
+// S11.113(l)).
 // `origin` is null wherever there is no writable datum to annotate - a legacy
 // file (READ-ONLY forever, D35), a script's parameter map - and the log line is
 // then the whole channel, exactly as before.
@@ -136,7 +136,7 @@ static void diagnose(ModularSystemFormat::Section *origin, const std::string &ke
         origin->annotate(key, reason, text);
 }
 
-// D14 (§11.79(h), [vixy 2026-07-23]) — "Yes for the new star system format, no
+// D14 (S11.79(h), [vixy 2026-07-23]) -- "Yes for the new star system format, no
 // for the legacy star system format". A capability whose LEGACY source is the
 // `type` data string keeps that source FOREVER in a legacy file (D9: the field is
 // frozen); in the composed format `type` grants nothing and the capability KEY is
@@ -159,7 +159,7 @@ static void logRetiredTypeCapability(const std::string &bodyName, const std::str
 }
 
 // Parse the `surface_model` capability key (B27 A6; D10key ratified spelling
-// §11.79(e)). §2(f): an unknown value names the valid values, the fallback and
+// S11.79(e)). S2(f): an unknown value names the valid values, the fallback and
 // the fix, and never guesses.
 static SurfaceModel parseSurfaceModel(const std::string &value, const std::string &bodyName)
 {
@@ -176,7 +176,7 @@ static SurfaceModel parseSurfaceModel(const std::string &value, const std::strin
 }
 
 // Parse a boolean capability key (B27 Tier B: `light_source`, `shadow_exempt`).
-// §2(f) on a non-boolean value; the caller has already established that the key
+// S2(f) on a non-boolean value; the caller has already established that the key
 // was authored (authored() above).
 static bool parseCapabilityFlag(const std::string &value, const std::string &bodyName, const char *key)
 {
@@ -194,7 +194,7 @@ ModularSystem::ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info) :
     ModularBody(parent, info), star(this)
 {
     isNotIsolated = false;
-    // Nav-radius CLASS DEFAULT (B10-datum0, §11.75(a) [vixy 2026-07-22]): a
+    // Nav-radius CLASS DEFAULT (B10-datum0, S11.75(a) [vixy 2026-07-22]): a
     // system node is something you navigate INTO, so an UNSET datum/ground
     // defaults to 0 - its centre: free-mode altitude measured from the centre,
     // free descent reaching the centre - instead of the plain-body `radius`.
@@ -203,7 +203,7 @@ ModularSystem::ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info) :
     // node) - I4, never a per-name list. The base ModularBody ctor already
     // resolved the sentinel to `radius`; the system default overrides it to 0.
     // USER-OVERRIDABLE: an explicit datum_radius/ground_radius arrives as a
-    // non-sentinel (>= 0) value - via a data key, or the §11.84 runtime command
+    // non-sentinel (>= 0) value - via a data key, or the S11.84 runtime command
     // which writes the member AFTER construction - and neither ctor's
     // sentinel branch touches it, so it wins (and reverses trivially).
     const bool datumDefaulted = (info.datumRadius < 0.f);
@@ -212,12 +212,12 @@ ModularSystem::ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info) :
         datumRadius = 0.f;
     if (groundDefaulted)
         groundRadius = 0.f;
-    // D12 (§2.0 - acting defaults must be logged): the system class default
+    // D12 (S2.0 - acting defaults must be logged): the system class default
     // DEVIATES from the universal `radius` default and, on a node with a
     // non-zero render radius, causes navigation behaviour the node's author did
     // not write - sharpest at a MilkyWay reference, where free-mode `moveto
     // altitude X` now lands at X instead of radius + X (a 3.2e9 AU shift,
-    // §11.80). That is an ACTION -> logged (load-time, once per such node).
+    // S11.80). That is an ACTION -> logged (load-time, once per such node).
     // When radius == 0 (Universe, per-system nodes) the default coincides with
     // `radius` (centre == surface) -> no distinct behaviour -> inaction -> silent.
     if ((datumDefaulted || groundDefaulted) && radius != 0.f) {
@@ -253,11 +253,11 @@ void ModularSystem::updateSystem()
     // lightPosition is CURRENT-SYSTEM-scoped (nested draws save/restore it,
     // drawSystem dispatch), and no body of a starless system consumes it
     // outside the delegation path.
-    // THE FRAME'S NON-RENDER USES, behind the D8 barrier (B39 §11.117). Both of
+    // THE FRAME'S NON-RENDER USES, behind the D8 barrier (B39 S11.117). Both of
     // these read a body's cached position every frame from OUTSIDE the draw
     // walks, so for a body that no longer ticks they are exactly the "use" D8
     // names - and both are reachable with a hidden body (a hidden star still
-    // illuminates, recorded §11.117; `S10.sts` SELECTS a hidden body).
+    // illuminates, recorded S11.117; `S10.sts` SELECTS a hidden body).
     if (ModularBody *s = getSystemStar()) {
         s->useNow();
         s->updateAsLightSource();
@@ -640,7 +640,7 @@ void ModularSystem::drawOrbits(Renderer &renderer)
         // offset undone. The cached frame is correct for EVERY body, visible or
         // not (unlike `mat`, whose rotation goes stale out of the view cone -
         // the halo-only planets whose orbits were misplaced pre-fix), and since
-        // §5.46 (F29) that now holds on the CLIMB as well as the descent: an
+        // S5.46 (F29) that now holds on the CLIMB as well as the descent: an
         // up-chain ancestor - Earth for an observer on the Moon - used to draw
         // its own orbit/trail in the frame of the last descent through it.
         Mat4f parentFrame = body.getMatLocalToBodyPos();
@@ -683,9 +683,9 @@ void ModularSystem::drawTrails(Renderer &renderer)
             continue; // parentless: no parent frame to draw the trail in
         // Parent POSITION frame (matLocalToBodyPos . translation(-ecl)) - the
         // frame the parent-relative trail points live in, identical to the
-        // ORBIT pass. §11.39's "a fully off-screen body's cache is stale" no
+        // ORBIT pass. S11.39's "a fully off-screen body's cache is stale" no
         // longer holds and had already stopped holding when selectiveUpdate's
-        // else-branch and recursiveTranslationUpdate took up the write; §5.46's
+        // else-branch and recursiveTranslationUpdate took up the write; S5.46's
         // up-chain hole (F29) was the last exception, so the frame is now fresh
         // for every body this sweep can reach.
         Mat4f parentFrame = body.getMatLocalToBodyPos();
@@ -761,12 +761,12 @@ void ModularSystem::drawNested(Renderer &renderer)
     // and the proxy dot vanished, in one frame. Softened over a band [T, T+B):
     //   - RESOLVED interior runs for px >= T EXACTLY as before (its expensive
     //     draw region is UNCHANGED, so the cross-fade adds NO resolved cost),
-    //     but its halos are scaled by t = (px-T)/B in the band ⇒ they fade IN.
-    //   - The DOT also runs across the band, scaled by (1-t) ⇒ it fades OUT.
+    //     but its halos are scaled by t = (px-T)/B in the band => they fade IN.
+    //   - The DOT also runs across the band, scaled by (1-t) => it fades OUT.
     //     This is the ONLY added cost: one drawStarProxy (one drawHaloCore /
     //     halo instance) per frame, and only while px is inside the band.
-    // Endpoints match by construction: at px=T, t=0 ⇒ interior invisible + dot
-    // full (== pure dot); at px=T+B, t=1 ⇒ interior full + no dot (== pure
+    // Endpoints match by construction: at px=T, t=0 => interior invisible + dot
+    // full (== pure dot); at px=T+B, t=1 => interior full + no dot (== pure
     // resolved). drawAlpha carries the ramp into every halo via drawHaloCore;
     // it is saved/restored here (nested-in-band compounds multiplicatively).
     const float px = (distance > subsystemRadius)
@@ -847,7 +847,7 @@ void ModularSystem::drawSystem(Renderer &renderer)
     // Depth-less instanced overlay in its own command buffer (beginTailDraw),
     // gated on anyActive(). Placed before the trails/orbits so the comet's tail
     // sits closest to the body/halo pass it belonged to (the exact z-order among
-    // these depth-less overlays is a documented, immaterial divergence, §11.43).
+    // these depth-less overlays is a documented, immaterial divergence, S11.43).
     drawTails(renderer);
     // Trail pass (row 9): accumulate + draw the fading path polylines, after the
     // body draw (old drew each trail in its body's command buffer, body.cpp:
@@ -885,7 +885,7 @@ void ModularSystem::drawSystem(Renderer &renderer)
 }
 
 namespace {
-// Rotation-frame declaration (B28, INTENT §11.67). The data declares which
+// Rotation-frame declaration (B28, INTENT S11.67). The data declares which
 // coordinate system its axial orientation is authored in; the loader converts
 // through this ONE authority (grep: the mat_j2000_to_vsop87 pole conversion
 // lives nowhere else in the new path).
@@ -900,7 +900,7 @@ enum class RotFrame { PARENT_RELATIVE, ABSOLUTE_POLE };
 //                    converted to the ecliptic (VSOP87) ROOT frame here; the
 //                    result is root-aligned, so the caller marks the body
 //                    absoluteTiltFrame and the accumulation skips ancestors
-//                    (§11.49(e): a parent-relative slot filled with an absolute
+//                    (S11.49(e): a parent-relative slot filled with an absolute
 //                    published pole is an invalid orientation that looks right
 //                    in the file - making the frame explicit closes it, and
 //                    lets B14 declare the 28 moon poles in the absolute frame).
@@ -909,8 +909,8 @@ enum class RotFrame { PARENT_RELATIVE, ABSOLUTE_POLE };
 // parent-relative), reproducing every legacy file bit-for-bit (the 7 existing
 // rot_pole_ra planets derive to absolute_pole, and the pole conversion below is
 // byte-for-byte the legacy arithmetic). A DEFAULT is applied in memory only and
-// NEVER written back (write-back is B31, §11.66(c)). An invalid `rot_frame`
-// value gets a §2(f) actionable diagnostic (valid states + error trace +
+// NEVER written back (write-back is B31, S11.66(c)). An invalid `rot_frame`
+// value gets a S2(f) actionable diagnostic (valid states + error trace +
 // fallback + fix action) and falls back to the derived default.
 RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
                               const std::string &englishName,
@@ -923,8 +923,8 @@ RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
     // default - bit-identical for every legacy body. An absolute-pole body may
     // instead declare the IAU prime meridian rot_pole_w0 (measured from the node
     // of the body equator on the ICRF/J2000 equator), which the loader CONVERTS
-    // to this ecliptic-node referential below (D4 §11.79(a), the meridian twin of
-    // the pole conversion - ONE authority, B28/§11.67 class).
+    // to this ecliptic-node referential below (D4 S11.79(a), the meridian twin of
+    // the pole conversion - ONE authority, B28/S11.67 class).
     rot_offset = Utility::strToFloat(param["rot_rotation_offset"], 0.);
 
     const std::string &decl = param["rot_frame"];
@@ -965,48 +965,48 @@ RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
         rot_asc_node = (ra + M_PI_2);
 
         // W0 (IAU prime-meridian) conversion - the meridian twin of the pole
-        // conversion above (D4 §11.79(a); ONE authority, B28/§11.67 class). The
+        // conversion above (D4 S11.79(a); ONE authority, B28/S11.67 class). The
         // IAU W0 (rot_pole_w0) is measured from the ascending node of the body
         // equator on the ICRF (J2000) equator; rot_rotation_offset is measured
-        // from that node on the ECLIPTIC (ascendingNode = ra_ecliptic+90°, the
-        // §11.69(e) referential mismatch) - a per-body node-difference. Convert
+        // from that node on the ECLIPTIC (ascendingNode = ra_ecliptic+90deg, the
+        // S11.69(e) referential mismatch) - a per-body node-difference. Convert
         // ONLY when the body declares rot_pole_w0 (a fetched IAU value); absent
         // => rot_rotation_offset raw (bit-identical; backward compat, D9/Q26).
         if (!param["rot_pole_w0"].empty()) {
             const float W0 = Utility::strToFloat(param["rot_pole_w0"], 0.) * M_PI / 180.;
             // IAU prime-meridian direction at W0, in the ecliptic root frame.
             // node = ascending node of the body equator on the ICRF equator
-            // (RA = pole_ra + 90°); perp = 90° east of it about the right-hand
-            // pole; the meridian is (cos W0)·node + (sin W0)·perp.
+            // (RA = pole_ra + 90deg); perp = 90deg east of it about the right-hand
+            // pole; the meridian is (cos W0)*node + (sin W0)*perp.
             const Vec3f node(-std::sin(J2000_npole_ra), std::cos(J2000_npole_ra), 0.f);
             const Vec3f perp(J2000_npole ^ node);
             const Vec3f pm_icrf(node * std::cos(W0) + perp * std::sin(W0));
             const Vec3f pm(mat_j2000_to_vsop87.multiplyWithoutTranslation(pm_icrf));
             // Loader equatorial-frame x/y axes (in the ecliptic) at this tilt.
             // WHERE THE MERIDIAN MUST LAND: on the texture's CENTRE column
-            // (u = 0.5), not on the mesh's x̂. The sphere is textured
-            // u = θ/360 − 0.25 [ojmModule/SphereObjL.cpp:153] and the draw spins
-            // it by getAxisRotation() = axisRotation + π/2 [ModularBody.hpp:487],
+            // (u = 0.5), not on the mesh's x_hat. The sphere is textured
+            // u = theta/360 - 0.25 [ojmModule/SphereObjL.cpp:153] and the draw spins
+            // it by getAxisRotation() = axisRotation + pi/2 [ModularBody.hpp:487],
             // so the two compose to: texture column u is drawn at azimuth
-            // axisRotation + 180° + 360°·u. The IMAGE CENTRE therefore draws at
-            // zrotation(axisRotation)·x̂ exactly - the +π/2 fudge and the −0.25
-            // texcoord cancel each other - while mesh x̂ is column u = 0.75.
+            // axisRotation + 180deg + 360deg*u. The IMAGE CENTRE therefore draws at
+            // zrotation(axisRotation)*x_hat exactly - the +pi/2 fudge and the -0.25
+            // texcoord cancel each other - while mesh x_hat is column u = 0.75.
             // rot_rotation_offset is thus the azimuth of the image centre, which
             // is the convention the shipped corpus is registered to: the four
             // longitudinally registered planets' file offsets place the IAU
             // meridian at u 0.5000 / 0.4998 / 0.4978 / 0.4923 (Saturn, Mercury,
-            // Mars, Neptune - §11.101(b2)), and Earth's Greenwich-centred map
+            // Mars, Neptune - S11.101(b2)), and Earth's Greenwich-centred map
             // agrees independently (its spin bypasses the offset through
             // apparent sidereal time, so GAST = 0 puts the image centre on the
             // vernal equinox - the definition of sidereal time).
-            // Solve xzrotation(obliquity,ascNode) · zrotation(offset) · x̂ = pm:
-            //     offset = atan2(pm·ey, pm·ex).
-            // Targeting mesh x̂ instead put every rot_pole_w0 body 90° out
-            // (§5.28, decided in the CONVERSION by D22 §11.113(a) - never in the
-            // 20 bodies' data, and never by retiring the +π/2, which would move
+            // Solve xzrotation(obliquity,ascNode) * zrotation(offset) * x_hat = pm:
+            //     offset = atan2(pm*ey, pm*ex).
+            // Targeting mesh x_hat instead put every rot_pole_w0 body 90deg out
+            // (S5.28, decided in the CONVERSION by D22 S11.113(a) - never in the
+            // 20 bodies' data, and never by retiring the +pi/2, which would move
             // every body's meridian instead of the three that are wrong). The
-            // correction is exactly +90° for every body, whatever its pole,
-            // because atan2(pm·ey, pm·ex) ≡ atan2(−(pm·ex), pm·ey) + 90°.
+            // correction is exactly +90deg for every body, whatever its pole,
+            // because atan2(pm*ey, pm*ex) == atan2(-(pm*ex), pm*ey) + 90deg.
             const Mat4f eqframe(Mat4f::xzrotation(rot_obliquity, rot_asc_node));
             const Vec3f ex(eqframe.multiplyWithoutTranslation(Vec3f(1, 0, 0)));
             const Vec3f ey(eqframe.multiplyWithoutTranslation(Vec3f(0, 1, 0)));
@@ -1022,7 +1022,7 @@ RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
     } else if (!param["rot_pole_w0"].empty()) {
         // rot_pole_w0 is meaningful only for an absolute pole (it is the IAU
         // prime meridian measured in the ICRF-equatorial frame); a parent_relative
-        // body has no absolute pole to reference it to. §2(f) actionable log.
+        // body has no absolute pole to reference it to. S2(f) actionable log.
         cLog::get()->write("Body '" + englishName + "': rot_pole_w0 is set but the "
             "rotation frame is 'parent_relative' (no absolute pole). rot_pole_w0 is the "
             "IAU prime meridian, measured from the ICRF-equator node, and needs an "
@@ -1040,11 +1040,11 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
 {
     // WHAT THE DATA SAID, taken HERE and not one line later: every read below
     // goes through operator[], which inserts an empty entry for every absent key
-    // it touches (§11.103(b)), so a snapshot taken after the load would carry a
+    // it touches (S11.103(b)), so a snapshot taken after the load would carry a
     // dozen keys nobody wrote - and a save built on it would author them into
     // the user's file. This copy is the body's declaration record
     // (ModularBody::declaredParams): the only source a runtime-pushed body will
-    // ever have for what it was asked to be (b31-design §4.1).
+    // ever have for what it was asked to be (b31-design S4.1).
     stringHash_t declared = param;
     // Avoid string copy and map search
     const std::string &englishName = param["name"];
@@ -1075,10 +1075,10 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
     // float orbit_bounding_radius = Utility::strToFloat(param["orbit_bounding_radius"], -1);
     float radius = Utility::strToFloat(param["radius"]);
 
-    // Rotation-frame declaration + conversion (B28, INTENT §11.67). The frame in
+    // Rotation-frame declaration + conversion (B28, INTENT S11.67). The frame in
     // which the axial orientation is authored is now DECLARED, not inferred:
     // resolveRotationFrame() is the ONE authority that reads the declaration,
-    // validates it (§2(f) actionable log), converts an absolute J2000 pole into
+    // validates it (S2(f) actionable log), converts an absolute J2000 pole into
     // the internal obliquity/ascendingNode, and reports whether the tilt is
     // root-aligned (absolute) so the orientation accumulation does not re-apply
     // ancestor tilts to it. Bit-identical for the 7 rot_pole_ra planets (frame
@@ -1098,7 +1098,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
     //                            is bit-identical unless its author adds one);
     //   key absent, LEGACY    -> the `type`-derived value, frozen forever (D9);
     //   key absent, COMPOSED  -> the neutral default; `type` grants nothing
-    //                            (D14 [vixy §11.79(h)]), and the divergence is
+    //                            (D14 [vixy S11.79(h)]), and the divergence is
     //                            logged when it would change something (D12).
     const std::string &bodyTypeString = param["type"];
     // A6 - surface-lighting lineage (`surface_model`), consumed by
@@ -1132,8 +1132,8 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
                 trailLength = legacyTrailLength;
         }
     }
-    // TIER B - the `type` -> CAPABILITY mapping (§11.73(c), D14 answered YES for
-    // the new format). THREE capabilities since the D27 split (§11.113(f)):
+    // TIER B - the `type` -> CAPABILITY mapping (S11.73(c), D14 answered YES for
+    // the new format). THREE capabilities since the D27 split (S11.113(f)):
     // `light_source` (the STAR bit - emits light, isStar()), `primary` (the
     // structural remainder of what the STAR bit used to mean, isPrimary(), its
     // own member - see ModularBody.hpp for why it is not a second enum bit), and
@@ -1145,7 +1145,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
     // needs no key and no log. Every other legacy value already maps to
     // CUSTOM_BODY, which IS the composed default - so the composed resolution
     // below reproduces strToBodyType EXACTLY, value for value, on everything but
-    // Sun/Star and Asteroid/KBO/Comet, which is precisely §11.73(c)'s Tier-B set.
+    // Sun/Star and Asteroid/KBO/Comet, which is precisely S11.73(c)'s Tier-B set.
     BodyType bodyType;
     bool primary;
     const BodyType legacyBodyType = strToBodyType(bodyTypeString);
@@ -1160,7 +1160,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
         // Same enum VALUES strToBodyType produces (STAR = 0x40 alone, not
         // CUSTOM_BODY|STAR): the two BodyType capabilities are not composable in
         // this enum's shape, so declaring both is reported rather than silently
-        // half-applied (§2(f)); no shipped body is both. `primary` is NOT in that
+        // half-applied (S2(f)); no shipped body is both. `primary` is NOT in that
         // enum and therefore composes freely with either.
         if (lightSource && shadowExempt) {
             diagnose(origin, "shadow_exempt", "capability-conflict",
@@ -1176,7 +1176,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
         // and does not. PER CAPABILITY since the D27 split - `type = Sun` now
         // grants TWO of them, so a single "some key is missing" gate would leave
         // one of the two silently unmentioned, which is the co-delivery hole
-        // §11.73(g) exists to prevent. (It also stops an unrelated key - a
+        // S11.73(g) exists to prevent. (It also stops an unrelated key - a
         // declared `shadow_exempt = false` - from suppressing a warning about
         // `light_source`, which the previous single gate did.)
         if (legacyStar) {
@@ -1201,7 +1201,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
         .englishName=englishName,
         .re={
             .period=Utility::strToFloat(param["rot_periode"], Utility::strToFloat(param["orbit_period"], 24.f))/24.f,
-            .offset=rot_offset,   // raw rot_rotation_offset, or the rot_pole_w0 conversion (B28/§11.67 class)
+            .offset=rot_offset,   // raw rot_rotation_offset, or the rot_pole_w0 conversion (B28/S11.67 class)
             .epoch=Utility::strToDouble(param["rot_epoch"], J2000),
             .obliquity=rot_obliquity,
             .ascendingNode=rot_asc_node,
@@ -1213,8 +1213,8 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
         .haloColor=param["color"].empty() ? defaultHaloColor : Utility::strToVec3f(param["color"]),
         .albedo=Utility::strToFloat(param["albedo"]),
         .radius=radius/static_cast<float>(AU),
-        // Navigation radii (B10 §5.2), both in km in the data (like `radius`),
-        // both DEFAULTING TO `radius` ⇒ absent keys reproduce today exactly.
+        // Navigation radii (B10 S5.2), both in km in the data (like `radius`),
+        // both DEFAULTING TO `radius` => absent keys reproduce today exactly.
         // datum_radius = altitude/landscape/atmosphere zero-point; ground_radius
         // = free-flight descent floor. Set datum_radius=ground_radius=0 for an
         // enterable / transparent body (the two-body-patch replacement, R4);
@@ -1229,13 +1229,13 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
         // Spin-phase model (B27 A1, the `sidereal_time` key). Absent -> GENERIC
         // (bit-identical to today for every legacy body); the legacy Earth reaches
         // EARTH_APPARENT through applyHardcodedContent below (legacy format only,
-        // D14), the composed Earth through the key the twin emits (§11.73 A1).
+        // D14), the composed Earth through the key the twin emits (S11.73 A1).
         .siderealTimeModel=parseSiderealTimeModel(param["sidereal_time"], englishName),
         // B27 tail (A6/A7 + D14 format scope) - resolved above, one site.
         .surfaceModel=surfaceModel,
         .trailLength=trailLength,
         .composedDeclaration=composedFile,
-        // B27 Tier B, the D27 split (§11.113(f)) - the structural half of what
+        // B27 Tier B, the D27 split (S11.113(f)) - the structural half of what
         // the STAR bit used to carry, resolved above with everything else.
         .primary=primary,
 
@@ -1255,12 +1255,12 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
     // rot formula instead of apparent sidereal time -> observer placed ~49 deg
     // off in longitude (measured, harness 2026-07-11). Name-keying remains the
     // acknowledged quarantine (INTENT.md 5.5).
-    // D14 FORMAT SCOPE (§11.79(h), B25-emit): the name/type-identity sniff is
+    // D14 FORMAT SCOPE (S11.79(h), B25-emit): the name/type-identity sniff is
     // LEGACY-FORMAT ONLY. The composed format expresses these capabilities as
     // explicit keys (sidereal_time A1, shadow_color A2) that the twin generator
     // materializes at the format boundary; running the sniff on a composed load
     // would re-introduce the identity dependency D14 retires AND mask a missing
-    // key (the co-delivery counterfactual would stop discriminating - §11.73(g)).
+    // key (the co-delivery counterfactual would stop discriminating - S11.73(g)).
     // The composed Earth therefore gets apparent sidereal time and its shadow
     // default from the KEYS, never from englishName.
     {
@@ -1270,7 +1270,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
     }
     // Relation from data BEFORE creation - relation is the ownership
     // authority (boundToSurface is its cache, written by createChild only).
-    // B24 (INTENT §11.78(d)): `relation = orbiting|grounded|inner` is the
+    // B24 (INTENT S11.78(d)): `relation = orbiting|grounded|inner` is the
     // declared form and the ONLY data route to INNER; the legacy
     // `bound_to_surface` boolean stays as an alias. One resolution authority,
     // both formats (legacy files simply never carry `relation`).
@@ -1315,13 +1315,13 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
         supplemental = replaced->supplemental;
     ModularBody *body = parent->createChild(createInfo, rel);
     body->supplemental = supplemental;
-    // The body keeps what declared it (B31 slice 2, b31-design §4.1): this is
+    // The body keeps what declared it (B31 slice 2, b31-design S4.1): this is
     // the record a save writes back, and for a script-pushed body it is the only
     // one that will ever exist. Handed over AFTER creation, so a load that
     // refused (unnamed, duplicate name, invalid orbit - each returns above)
     // leaves no declaration behind for a body that is not there.
     body->declaredParams = std::move(declared);
-    // --- Attitude default resolution (B24-att; D18 §11.79(l) + D12 §2.0) ------
+    // --- Attitude default resolution (B24-att; D18 S11.79(l) + D12 S2.0) ------
     // The default's home is the loader - the one site that owns rotation-key
     // resolution (I2/I4); no per-draw sniffing. `authoredSpin` = the author
     // wrote rot_periode (the spin-rate key the default supplies): its presence
@@ -1330,14 +1330,14 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
     //      stands on (a rover sits still, locked to the surface) -> surface-locked
     //      attitude (computeAxisRotation drops the own spin). This is INACTION
     //      (no rotation relative to the surface - D18: "inaction is no rotation")
-    //      -> SILENT (D12). The parent-surface FOLD (§5.23) is unaffected: it uses
+    //      -> SILENT (D12). The parent-surface FOLD (S5.23) is unaffected: it uses
     //      the PARENT's spin on this body's POSITION, a different observable.
     //  (2) NON-grounded + neither rot_periode NOR its orbit_period fallback: the
     //      legacy default rot_periode = 24 h ACTS - the body spins once/24 h though
     //      the author wrote no rotation. Kept for backward compat (D9, "likely the
-    //      legacy behavior") and now LOGGED (D12; §2(f): names what fired, why,
+    //      legacy behavior") and now LOGGED (D12; S2(f): names what fired, why,
     //      and the override). The orbit_period synchronous fallback is a distinct
-    //      default (out of this row's scope - a §11.79(l) general-D12 follow-up).
+    //      default (out of this row's scope - a S11.79(l) general-D12 follow-up).
     {
         const bool authoredSpin = !param["rot_periode"].empty();
         if (rel == BodyRelation::GROUNDED) {
@@ -1364,14 +1364,14 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
         }
     }
     // --- `display_scale`: the format's own display-scaling authority ---------
-    // §11.154(b)(c) [vixy 2026-08-26]: scaling ownership is FORMAT-SCOPED. The
+    // S11.154(b)(c) [vixy 2026-08-26]: scaling ownership is FORMAT-SCOPED. The
     // legacy format never held a scale, so config.ini owns it there; THIS format
     // holds it, and deprecates config.ini's value wherever it serves (the
     // precedence itself is decided at the config READ - SSystemFactory::
     // initDisplayScaling - because only that seam knows a value came from
     // config.ini rather than from an operator's command).
     // What it is: the AUTHORED DEFAULT under the operator's runtime `scaling`
-    // (§11.152(c)'s non-folding is untouched - this writes the same member a
+    // (S11.152(c)'s non-folding is untouched - this writes the same member a
     // `planet_scale` command writes, it does not add a third one), applied with
     // no transition because a body is born at its size.
     // NOT gated on `composedFile`: it is an ordinary body key, read wherever a
@@ -1401,7 +1401,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
         body->hide();
     // THE LOAD IS OVER for this body: what it holds now is what the DATA said,
     // and that is the baseline the override ledger measures a change against
-    // (b31-design §2 group D, D30's delta rule). It is taken here rather than
+    // (b31-design S2 group D, D30's delta rule). It is taken here rather than
     // in the constructor because the loader keeps writing into the body
     // afterwards - `hidden = true` is applied by calling hide(), and a body the
     // data declares hidden must not read as an operator's override.
@@ -1433,7 +1433,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
     // branch).
     if (body->envParams.hasAtmosphere)
         body->addEnvironment(std::make_unique<AtmosphereEnv>(), false);
-    // B24 compose gate (INTENT §11.78(d)): `compose = explicit` turns
+    // B24 compose gate (INTENT S11.78(d)): `compose = explicit` turns
     // deduction OFF for this body - its module list comes ONLY from the
     // file's BodyModule declarations (the generated twins emit this, so the
     // corpus equivalence test exercises the declaration path per slot).
@@ -1456,7 +1456,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
     if (deduce) {
         for (auto moduleType : body->deduceBodyModuleList(param))
             ModuleLoaderMgr::instance.loadModule(moduleType, body, param);
-        // Explicit-slot declaration (§6.7 declaration half, INTENT §11.42): the GRID
+        // Explicit-slot declaration (S6.7 declaration half, INTENT S11.42): the GRID
         // slot is NOT deduced - deduceBodyModuleList returns a bare BodyModuleType
         // and cannot name a slot, and CUSTOM's default slot name ("CUSTOM") would
         // collide. A body opts in with planet_grid=true, installed through
@@ -1476,14 +1476,14 @@ ModularBody *ModularSystem::findBodyAt(const std::pair<float, float> &searchPos)
     // takes candidates inside a 30-pixel circle (core.cpp:1049: fov per pixel
     // x 30), and screenPos is the angle over halfFov, so 30 px is
     // 30/viewportRadius here - ONE tolerance for both picking channels
-    // (§11.52(b): old's observable is the spec).
+    // (S11.52(b): old's observable is the spec).
     const float tol = 30.f / ModularBody::viewportRadius;
     const float tol2 = tol * tol;
     // TWO TIERS, both from recorded resolutions, in the old path's own shape.
     //
     //  (1) candidates whose CENTRE is inside the pick tolerance - A17's
     //      "candidates cluster inside the pick tolerance". BIGGEST WINS
-    //      [R5, vixy §11.70(d): "the biggest should win because it'll be the
+    //      [R5, vixy S11.70(d): "the biggest should win because it'll be the
     //      brightest in 99% of cases due to surface magnitude"]. The size is
     //      the APPARENT one (screenSize = halfAngularSize/halfFov): surface
     //      magnitude is an apparent-area argument, and screenSize is what
@@ -1533,14 +1533,14 @@ void ModularSystem::loadSystem(const std::string &filename)
     if (file) {
         systemFilename = filename;
         // A legacy file is not a write base: it is READ-ONLY forever (D35,
-        // §2.0 D13), and its composed expression is the machine-owned twin,
+        // S2.0 D13), and its composed expression is the machine-owned twin,
         // built whole. Cleared rather than left, because reloadSystem re-enters
         // here and a stale record of a PREVIOUS composed load would then be
         // written back as if it described this content.
         loadedSections.clear();
         stringHash_t bodyParams;
         // ONE line grammar for the whole .ini family (tools/ini_line.hpp,
-        // INTENT §5.39/D29): this reader used to do its own substr arithmetic,
+        // INTENT S5.39/D29): this reader used to do its own substr arithmetic,
         // which required exactly "key = value" - `radius  = 100` bound the key
         // "radius " and the body silently got no radius, and the twin generator
         // reading the SAME file through ModularSystemFormat::parse disagreed
@@ -1558,7 +1558,7 @@ void ModularSystem::loadSystem(const std::string &filename)
                     bodyParams[key] = value;
                     break;
                 case IniLine::Kind::MALFORMED:
-                    // §2(f): what fired, where, and what to do. Reachable on the
+                    // S2(f): what fired, where, and what to do. Reachable on the
                     // SHIPPED corpus - `[Sedna] orbit_LongOfPericenter 95.58754`
                     // has no '=' and has been silently turning into a garbage key
                     // (never read by anything) for as long as it has shipped.
@@ -1588,11 +1588,11 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
     }
     systemFilename = filename;
     composedFile = true;
-    // The file's own record, KEPT (b31-design §5.3): every line of it, in order.
+    // The file's own record, KEPT (b31-design S5.3): every line of it, in order.
     // Two things need it - a save gives the file back whole instead of
     // rebuilding it, and the diagnoses the loaders produce below annotate the
     // very sections they came from. Nothing is written here: a load NEVER
-    // rewrites the user's file (D33, §11.113(l) - decided against, not
+    // rewrites the user's file (D33, S11.113(l) - decided against, not
     // undecided). Iterating the MEMBER is what makes the section addresses
     // handed to the loaders outlive the load.
     loadedSections = std::move(sections);
@@ -1603,7 +1603,7 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
     for (auto &section : loadedSections) {
         // The lines before the file's first '[' - a banner, a note - declare
         // nothing. The parse keeps them so a rewrite gives them back
-        // (§11.66(b)); a loader has nothing to do with them.
+        // (S11.66(b)); a loader has nothing to do with them.
         if (section.isPreamble())
             continue;
         // What this section says, as the capability layer wants it. The section
@@ -1611,7 +1611,7 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
         // below fill defaults into their copy (loadBody does), which is exactly
         // why they may not be handed the file's own record of what it contains.
         stringHash_t params = section.params();
-        // D16 (INTENT §11.79(j)): ONE `type=` key carries the declaration kind.
+        // D16 (INTENT S11.79(j)): ONE `type=` key carries the declaration kind.
         // A value in the module-family vocabulary (ModuleLoaderMgr's own enum,
         // I2) declares a BodyModule OF that family; anything else declares a
         // ModularBody node - the value is then the body-type (`BODY`, a legacy
@@ -1619,9 +1619,9 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
         // materializes capability keys, or absent), read by loadBody exactly as
         // the legacy loader reads it. The two `type=` roles never collide: a
         // module section names its node with `body=`, a node never does - the
-        // presence of that binding disambiguates a mistyped family (§2(f)),
+        // presence of that binding disambiguates a mistyped family (S2(f)),
         // never a value guess across the composed/legacy namespaces (kept
-        // distinct by which loader runs, §11.79(j)).
+        // distinct by which loader runs, S11.79(j)).
         bool isFamily;
         const BodyModuleType famType =
             ModuleLoaderMgr::moduleTypeFromName(params["type"], isFamily);
@@ -1666,7 +1666,7 @@ void ModularSystem::loadDeclaredModule(std::map<std::string, std::string> &param
     // (module key wins); the grammar's own keys are not data. `type` is skipped
     // deliberately - it names the module FAMILY here, and must NOT overwrite the
     // node's own `type=` (its body-type, which loaders like OjmLoader read from
-    // the overlaid params, D16 §11.79(j)).
+    // the overlaid params, D16 S11.79(j)).
     stringHash_t effective;
     {
         const auto it = nodeParams.find(bodyName);
@@ -1711,7 +1711,7 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         // The legacy section's content. The TWIN is machine-owned and built
         // whole, section by section, from what the live body IS - it is not an
         // edit of the legacy file and never carries its layout (the legacy file
-        // is READ-ONLY forever, D35 §11.113(n)).
+        // is READ-ONLY forever, D35 S11.113(n)).
         stringHash_t legacy = section.params();
         const std::string name = legacy["name"];
         if (name.empty())
@@ -1726,11 +1726,11 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         // true"), so for a name another system loaded first the lookup succeeds
         // and returns a FOREIGN body. Without this test the twin of system S
         // declares bodies of system H, with H's live capabilities, and stops
-        // being the composed equivalent of S's own legacy load (§11.78(f)'s
+        // being the composed equivalent of S's own legacy load (S11.78(f)'s
         // contract). Reachable on the SHIPPED galactic.ini, which points five
         // entries (HelixDwarf/M57Dwarf/M1Pulsar/M27Dwarf/NGC2392Dwarf) at one
         // stellar_systems file: measured 5 byte-identical twins for 4 empty
-        // systems + 1 real one (INTENT §11.109(c)). The solar twin is
+        // systems + 1 real one (INTENT S11.109(c)). The solar twin is
         // unaffected - every body of ssystem.ini is in SolarSystem's subtree.
         if (!body->isInSubtreeOf(this)) {
             cLog::get()->write("Composed twin of " + legacyFilename + ": section '" + name
@@ -1743,7 +1743,7 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         // ONE emitter (I2): the twin and the live-tree save write the same
         // declaration for the same body, from the same rules - the twin's
         // declaration record is the legacy section it just read, the save's is
-        // the body's own (b31-design §4.1).
+        // the body's own (b31-design S4.1).
         appendWholeDeclaration(body, legacy, out);
     }
     const std::vector<std::string> banner{
@@ -1760,7 +1760,7 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
 
 stringHash_t ModularSystem::composedNodeParams(const ModularBody *body, const stringHash_t &declared)
 {
-    // What the data said, verbatim (D16 §11.79(j)): the node's own `type=` (its
+    // What the data said, verbatim (D16 S11.79(j)): the node's own `type=` (its
     // body-type, e.g. Planet/Moon/Sun) is a NON-family value, which is exactly
     // what marks the section as a node - no separate declaration key is emitted.
     stringHash_t node = declared;
@@ -1771,9 +1771,9 @@ stringHash_t ModularSystem::composedNodeParams(const ModularBody *body, const st
             node["relation"] = "grounded";    // one relation authority per generated file
         }
     }
-    // B25-emit / §11.73 A1+A2: materialize the capabilities the legacy name
+    // B25-emit / S11.73 A1+A2: materialize the capabilities the legacy name
     // sniff (applyHardcodedContent) granted this LIVE body as explicit keys,
-    // so the composed load - which does NOT run that sniff (D14 §11.79(h)) -
+    // so the composed load - which does NOT run that sniff (D14 S11.79(h)) -
     // reproduces them. Read the body's actual capability, not its name (I4):
     // the generator emits whatever the body IS. Only ADD when the declaration
     // did not already carry the key (explicit data is preserved verbatim
@@ -1785,21 +1785,21 @@ stringHash_t ModularSystem::composedNodeParams(const ModularBody *body, const st
     if (!node.count("shadow_color")
             && body->getShadowAbsorbtion() != Vec3f{1, 1, 1})
         node["shadow_color"] = Utility::vec3fToStr(body->getShadowAbsorbtion());
-    // B27 tail / D14 (§11.79(h)): the capabilities the legacy `type` string
+    // B27 tail / D14 (S11.79(h)): the capabilities the legacy `type` string
     // carried are materialized as KEYS here - the format boundary is exactly
     // where they must become explicit, because the composed load no longer
     // reads `type` for any of them. Same rule as above: read what the body
     // IS (I4), and only ADD where the declaration did not already declare
     // it. Emitted only when the value differs from the composed default, so
     // a file carries a key exactly where its absence would change something
-    // (the co-delivery contract, §11.73(g): every key consumed is emitted).
+    // (the co-delivery contract, S11.73(g): every key consumed is emitted).
     if (body->getSurfaceModel() == SurfaceModel::LUNAR
             && !node.count("surface_model"))
         node["surface_model"] = "lunar";
     if (body->getTrailLength() != TRAIL_LENGTH_DEFAULT
             && !node.count("trail_length"))
         node["trail_length"] = std::to_string(body->getTrailLength());
-    // D27's own requirement (§11.113(f)): a legacy star's `type` grants BOTH
+    // D27's own requirement (S11.113(f)): a legacy star's `type` grants BOTH
     // halves of the split, so both keys are emitted, value for value -
     // emit one and the composed load stops reproducing strToBodyType.
     if (body->isStar() && !node.count("light_source"))
@@ -1808,13 +1808,13 @@ stringHash_t ModularSystem::composedNodeParams(const ModularBody *body, const st
         node["primary"] = "true";
     if (body->isMinorBody() && !node.count("shadow_exempt"))
         node["shadow_exempt"] = "true";
-    // §11.154(c) [vixy 2026-08-26], forced by the SAME argument §11.113(f)
+    // S11.154(c) [vixy 2026-08-26], forced by the SAME argument S11.113(f)
     // recorded for the capability keys ("a legacy star's twin must emit BOTH
     // keys or the composed load stops reproducing"): a legacy system's display
     // scaling comes from config.ini, and the composed format takes ownership of
     // it - so a twin that did not carry the value would silently LOSE the
     // field's configured scaling at the exact moment ownership transfers
-    // (activating the twin, §11.51(a)). Read what the body IS (I4), and its
+    // (activating the twin, S11.51(a)). Read what the body IS (I4), and its
     // TARGET rather than the live ASmooth: the config block sets the value and
     // the 5 s ramp is still in flight when the twin is written, so the
     // instantaneous read would emit a point of the ramp. Emitted only when it
@@ -1843,14 +1843,14 @@ void ModularSystem::appendWholeDeclaration(ModularBody *body, const stringHash_t
     node["compose"] = "explicit";
     out.push_back(ModularSystemFormat::Section::fromParams(name, node));
     // One BodyModule declaration per family - the decomposition the twin exists
-    // to make visible [vixy, §11.50(b)]. `type=<family>` is the one declaration
+    // to make visible [vixy, S11.50(b)]. `type=<family>` is the one declaration
     // key (was declare=BodyModule + module=<family>, both retired by D16
-    // §11.79(j)).
+    // S11.79(j)).
     // WHICH LIST, and why it is not always the live one: the modules of a body
     // whose declaration DEDUCES them are what deduction makes of that
     // declaration, and re-deriving them keeps their ORDER - which is semantic
     // (a routing list holds modules in record order, and that is the draw order:
-    // the atmosphere shell draws after the disc, §11.19). The live slot list is
+    // the atmosphere shell draws after the disc, S11.19). The live slot list is
     // ordered by global slot id and would silently re-order them. A body whose
     // modules did NOT come from deduction (`compose = explicit`) has no such
     // derivation, and its live set is then the only honest answer.
@@ -1953,7 +1953,7 @@ bool ModularSystem::saveSystem(const std::string &outPath)
     //  (1) the sections this system was LOADED from, when the save targets that
     //      same file - they are that file's content AND they carry the loader's
     //      annotations, which is what makes an explicit save the moment the
-    //      diagnoses reach the file (b31-design §5.3, D33);
+    //      diagnoses reach the file (b31-design S5.3, D33);
     //  (2) a parse of the target, when it exists but is not our source - its
     //      author's content is preserved exactly as (1)'s is;
     //  (3) nothing: a file that does not exist yet is built whole, like the twin.
@@ -2018,15 +2018,15 @@ bool ModularSystem::saveSystem(const std::string &outPath)
 
 void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std::map<std::string, std::string> &param)
 {
-    // LEGACY-FORMAT ONLY (gated on !composedFile at the call site, D14 §11.79(h)):
-    // the composed format declares these capabilities as keys (B25-emit, §11.73).
+    // LEGACY-FORMAT ONLY (gated on !composedFile at the call site, D14 S11.79(h)):
+    // the composed format declares these capabilities as keys (B25-emit, S11.73).
     if (createInfo.englishName == "Earth") {
-        // A1 (§11.73): apparent sidereal time is now the sidereal_time capability
+        // A1 (S11.73): apparent sidereal time is now the sidereal_time capability
         // (SiderealTimeModel::EARTH_APPARENT), set here for the legacy Earth (the
         // twin emits sidereal_time=earth_apparent for the composed Earth). The old
         // BodyType::EARTH tag is RETIRED - its two consumers (computeAxisRotation,
         // getSiderealTime) now read this selector.
-        // PRECEDENCE (§11.102(c) -> §11.103): explicit data WINS over the sniff,
+        // PRECEDENCE (S11.102(c) -> S11.103): explicit data WINS over the sniff,
         // the rule this whole gate block states for itself above ("key present ->
         // explicit data wins") and the shadow_color branch below already honors.
         // Without the guard an authored `sidereal_time = generic` was silently
@@ -2042,7 +2042,7 @@ void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std
         const auto siderealIt = param.find("sidereal_time");
         if (siderealIt == param.end() || siderealIt->second.empty())
             createInfo.siderealTimeModel = SiderealTimeModel::EARTH_APPARENT;
-        // A2 (§11.73): Earth's shadow absorbs G/B more than R - red light
+        // A2 (S11.73): Earth's shadow absorbs G/B more than R - red light
         // diffracted by the atmosphere reaches the umbra (lunar-eclipse color;
         // replaces the old my_moon UmbraColor hardcode). VALUE IS DERIVED, not
         // tuned [visual-fidelity mandate, vixy 2026-07-12]: old composition
@@ -2056,7 +2056,7 @@ void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std
         if (param.find("shadow_color") == param.end())
             createInfo.shadowAbsorbtion = Vec3f(0.6f, 0.88f, 1.0f);
     }
-    // The "Moon" -> BodyType::EARTH_MOON branch is RETIRED (B25-emit, §11.73 A3):
+    // The "Moon" -> BodyType::EARTH_MOON branch is RETIRED (B25-emit, S11.73 A3):
     // EARTH_MOON had ZERO consumers, so it granted no behavior and needs no
     // capability key. The Moon's surface-shader lineage rides its `type=Moon`
     // (LayeredMeshLoader, A6 - a later Tier-B step, not this row).

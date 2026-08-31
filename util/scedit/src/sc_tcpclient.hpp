@@ -1,21 +1,21 @@
 /*
- * scedit — sc_tcpclient.hpp
+ * scedit -- sc_tcpclient.hpp
  *
  * WHAT THIS IS FOR
  * ================
  * One socket to a RUNNING spacecrafter, so the script under the caret can be
  * tried on the dome it was written for instead of guessed at. The engine's
  * control channel is a line protocol on TCP (`io:enable_tcp`, shipped true,
- * `io:tcp_port_in` = 7805, `claude/capability-surface.md` §1 row 2): a client
+ * `io:tcp_port_in` = 7805, `claude/capability-surface.md` S1 row 2): a client
  * writes a command line, and the engine executes it exactly as it executes a
  * line of a script file.
  *
- * WHAT COMES BACK — AND WHAT DOES NOT (measured at the source, not assumed)
+ * WHAT COMES BACK -- AND WHAT DOES NOT (measured at the source, not assumed)
  * ========================================================================
  * THREE things reach a client, and the third one is new:
- *   - the answer to `get status …` and to `search name …`
+ *   - the answer to `get status ...` and to `search name ...`
  *     `[observed: src/interfaceModule/app_command_interface.cpp:1309-1326,1440
- *      — the only callers of ServerSocket::setOutput in the whole tree]`;
+ *      -- the only callers of ServerSocket::setOutput in the whole tree]`;
  *   - the control replies to `$NOTICE` / `$LOGON` / `$LOGOFF`, and now to
  *     `$DIAGON` / `$DIAGOFF` `[observed: src/tools/io.cpp, computeNormalString]`;
  *   - since engine `be2ddd81` (INTENT 11.188): on a connection that sent
@@ -59,14 +59,14 @@
  *
  * An answer is delivered to the connection that asked AND to every `$LOGON`
  * subscriber, the addressee excluded so a client that is both gets one copy
- * `[observed: io.cpp:694-726, INTENT §11.135]`. This client subscribes on
- * connect, so its feed carries its own answers and everyone else's — which is
+ * `[observed: io.cpp:694-726, INTENT S11.135]`. This client subscribes on
+ * connect, so its feed carries its own answers and everyone else's -- which is
  * what makes it a FEED and not merely a reply channel.
  *
  * FRAMING, EXACTLY AS THE SERVER WRITES IT
  * ========================================
- * `ServerSocket::send` writes `strlen(data) + 1` bytes — the payload AND its
- * terminating NUL `[observed: io.cpp:743-756]` — and `deliver` builds the payload
+ * `ServerSocket::send` writes `strlen(data) + 1` bytes -- the payload AND its
+ * terminating NUL `[observed: io.cpp:743-756]` -- and `deliver` builds the payload
  * as `answer + '\n'`. So a record on the wire is NUL-terminated and normally
  * ends with a newline; `$NOTICE`'s reply carries no newline at all. This
  * client therefore frames on the NUL, then splits a record's own newlines into
@@ -92,7 +92,7 @@
  * A TcpClient owns its file descriptor and closes it in the destructor. It
  * holds NO reference to an EditCore, a Document or a Grammar, and EditCore
  * holds none to it: the editor layer owns both and moves bytes between them.
- * That is deliberate — the buffer's correctness must not depend on a socket's
+ * That is deliberate -- the buffer's correctness must not depend on a socket's
  * lifetime, and a headless test of either needs nothing of the other. The
  * references `feed()` returns die with the next `poll()` or with the client.
  */
@@ -115,12 +115,12 @@ struct Endpoint {
 	std::string text() const { return host + ":" + std::to_string(port); }
 };
 
-//! Parse `[host:]port` — `7805`, `127.0.0.1:7805`, `dome:7805`. A bare number
+//! Parse `[host:]port` -- `7805`, `127.0.0.1:7805`, `dome:7805`. A bare number
 //! is a port on the default host. Returns false and fills `err` with a sentence
 //! naming what was wrong and what the two accepted shapes are.
 bool parseEndpoint(const std::string &spec, Endpoint &out, std::string &err);
 
-//! What the connection is, as DATA — the editor shows it and the tests assert
+//! What the connection is, as DATA -- the editor shows it and the tests assert
 //! it. `Failed` remembers that the last attempt failed, which is not the same
 //! thing as never having tried (the status line says so, and `lastError()`
 //! carries the reason).
@@ -205,13 +205,13 @@ public:
 	std::size_t poll();
 	//! Poll until at least `want` lines have been added or `ms` milliseconds
 	//! have passed, whichever comes first. Returns the number added. `want` = 0
-	//! means "read for the whole time" — which is what a caller uses when it
+	//! means "read for the whole time" -- which is what a caller uses when it
 	//! cannot know how many records an answer is.
 	std::size_t pollFor(int ms, std::size_t want = 0);
 
 	//! Write a line into the feed WITHOUT sending anything: what scedit did,
 	//! shown in the same place as what the engine said, so the pane reads as a
-	//! conversation. Marked Local — nothing here ever came off the wire.
+	//! conversation. Marked Local -- nothing here ever came off the wire.
 	void note(const std::string &text);
 
 	//! The feed, oldest first, bounded (see setFeedBound).
@@ -223,7 +223,7 @@ public:
 	//! The bound, in LINES. Default 500: a long enough scrollback to read an
 	//! answer that arrived while you were typing, small enough that an engine
 	//! broadcasting to a subscriber cannot grow the editor's memory without
-	//! limit (this is a feed of other clients' traffic too — its rate is not
+	//! limit (this is a feed of other clients' traffic too -- its rate is not
 	//! scedit's to control). A bound of 0 means unbounded and is never the
 	//! default.
 	void setFeedBound(std::size_t lines) { bound_ = lines; trim(); }

@@ -59,30 +59,30 @@ void main()
 	// 	visible
 	// );
 
-	//test sur le centre afin d'écarter les stars invisibles ou hors caméra
+	//test sur le centre afin d'ecarter les stars invisibles ou hors camera
 	if (pos.w == 1.0) {
-		// en Bas à droite
+		// en Bas a droite
 		gl_Position   = MVP2D * ( pos +vec4( mag[0], -mag[0], 0.0, 0.0) );
                 gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(1.0f, .0f);
 		TexColor= color[0];
 		EmitVertex();
 
-		// en haut à droite
+		// en haut a droite
 		gl_Position   = MVP2D * ( pos +vec4( mag[0], mag[0], 0.0, 0.0) );
                 gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(1.0f, 1.0f);
 		TexColor= color[0];
 		EmitVertex();
 
-		// en Bas à gauche
+		// en Bas a gauche
 		gl_Position   = MVP2D * ( pos +vec4( -mag[0], -mag[0], 0.0, 0.0) );
                 gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(0.0f, 0.0f);
 		TexColor= color[0];
 		EmitVertex();
 
-		// en haut à gauche
+		// en haut a gauche
 		gl_Position   = MVP2D * ( pos +vec4( -mag[0], mag[0], 0.0, 0.0) );
                 gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(0.0f, 1.0f);

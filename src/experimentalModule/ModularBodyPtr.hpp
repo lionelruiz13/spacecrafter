@@ -15,7 +15,7 @@ public:
         ref.push_back(this);
     }
     ModularBodyPtr(ModularBody *body);
-    // Copying MUST re-register (B4, §11.111 / §5.43): the implicitly generated
+    // Copying MUST re-register (B4, S11.111 / S5.43): the implicitly generated
     // copy constructor duplicated `ptr` without pushing the new object into
     // `ref` and without incrementing pointerCount, so the copy's destructor ran
     // `while (ref[++i] != this)` past the end of `ref` - a SIGSEGV, and before

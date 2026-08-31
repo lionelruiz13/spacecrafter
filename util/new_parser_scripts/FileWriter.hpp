@@ -23,7 +23,7 @@ public:
 	void writeInFile(const std::string inHtml);
 
 private:
-	FILE* wstream;      //Flux d'écriture
+	FILE* wstream;      //Flux d'ecriture
 
 	//Fichier de Sortie
 	std::string outFile;

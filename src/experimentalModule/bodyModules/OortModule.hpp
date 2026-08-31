@@ -12,13 +12,13 @@ class Set;
 template<typename> class SharedBuffer;
 
 // OORT slot - the solar-system oort-cloud point cloud, as a modular body at the
-// SolarSystem floor (B5, INTENT §6.9 content-migration PILOT; the [vixy] mapping
+// SolarSystem floor (B5, INTENT S6.9 content-migration PILOT; the [vixy] mapping
 // rule "mode content becomes ModularBody instances at their floor level - oort
 // at/around the SolarSystem node"). The old altitude-gated draw (coreModule/
 // oort.cpp, solarSystemModule.cpp:196) is reproduced through the NEW path's
 // distance/visibility REGIME machinery (G4 floor gating), NOT a hardcoded
 // altitude test: attached as a NEAR component, so the body's own scaledRadius
-// gates the low edge (hidden while the observer sits inside scaledRadius·2 -
+// gates the low edge (hidden while the observer sits inside scaledRadius*2 -
 // the in/grounded regime - shown once outside it, ModularBody::draw) and the
 // node's resolve/collapse gates the far edge (a collapsed SolarSystem node
 // draws no children).
@@ -45,7 +45,7 @@ public:
     // body is visible whenever the observer is inside the cloud (all-direction
     // visibility - a small bounding sphere would cull the surrounding cloud when
     // the view points away from centre). NB (B5 finding): this extent feeds the
-    // parent's subsystemRadius/AoI - see the INTENT §6.9 coupling note.
+    // parent's subsystemRadius/AoI - see the INTENT S6.9 coupling note.
     virtual bool update(ModularBody *body, float scaledRadius) override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     // Far edge of the regime band (EARLY..FULL visibility, ModularBody.hpp):
@@ -58,7 +58,7 @@ public:
     // the oort", one operator surface; the pilot's A/B toggles it to isolate the
     // cloud's pixel contribution in each render phase.
     static bool show;
-    // Same dual-seam rule for the cloud COLOUR (F0, §11.102(e3) -> §11.103): the
+    // Same dual-seam rule for the cloud COLOUR (F0, S11.102(e3) -> S11.103): the
     // colour has exactly one writer outside construction - Core::setColorScheme,
     // which recolours the old cloud (`oort->setColor`) and now mirrors here, so
     // one operator concept "the oort cloud's colour" drives BOTH draws (I2).

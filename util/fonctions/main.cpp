@@ -9,7 +9,7 @@ std::string add1(std::string& value){
     while(!find && i < value.length()){
         char c = value[i];
 
-        if(!isalpha(c)){ //check si le caractère est un chiffre
+        if(!isalpha(c)){ //check si le caractere est un chiffre
             iValue = std::stoi(value.substr(i, value.length()));
             value.erase(i , value.length());
             find = true;
@@ -17,7 +17,7 @@ std::string add1(std::string& value){
         ++i;
     }
 
-    if(find){ //si un nombre a été trouvé, on fait +1.
+    if(find){ //si un nombre a ete trouve, on fait +1.
         return value + std::to_string(iValue+1);
     } else { //sinon, on rajoute 1
         return value + std::to_string(iValue);

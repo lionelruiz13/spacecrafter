@@ -153,7 +153,7 @@
       "file": "tests/lint_cases.sts",
       "id": "inert-command",
       "line": 44,
-      "message": "'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; — census §3.8, app_command_interface.cpp:1801 era)",
+      "message": "'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; -- census S3.8, app_command_interface.cpp:1801 era)",
       "severity": "info",
       "span": {
         "begin": 4,

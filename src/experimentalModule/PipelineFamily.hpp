@@ -15,7 +15,7 @@ class PipelineLayout;
 class Renderer;
 
 // ============================================================================
-// Pipeline-family contract (INTENT.md §10.3) - the descriptive half of
+// Pipeline-family contract (INTENT.md S10.3) - the descriptive half of
 // "modules DESCRIBE, the Renderer EXECUTES" (Renderer.hpp).
 //
 // Paradigm [vixy: 2026-07-11]: describe once, then refer by descriptor. A
@@ -56,7 +56,7 @@ class Renderer;
 // Domains: allocation and handle release belong to the registration domain
 // (module-loader registration path / events thread) - never the frame task;
 // registry refcounts are plain integers under that domain's serialization
-// (same reasoning as the §8.2.5 pin counters). bind()/batchPush() inside the
+// (same reasoning as the S8.2.5 pin counters). bind()/batchPush() inside the
 // frame task are registry-read-only.
 // ============================================================================
 
@@ -171,7 +171,7 @@ struct PassDesc {
 // One binding of a set contract - declarative, so the same data that builds
 // the layout also sizes the descriptor pools: a pool is always sized from the
 // layouts it serves, which structurally closes the class of error where a
-// pool lacks a type its layouts use (INTENT §11.1: shadowLayout's
+// pool lacks a type its layouts use (INTENT S11.1: shadowLayout's
 // SAMPLED_IMAGE vs SetMgr's hardcoded table).
 struct SetBindingDesc {
     uint8_t binding;

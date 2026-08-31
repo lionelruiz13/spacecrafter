@@ -46,12 +46,12 @@
 
 class s_texture {
 public:
-	// création d'une texture basique sans mipmap
+	// creation d'une texture basique sans mipmap
 	s_texture(const std::string& _textureName);
 	// destructeur de texture
 	~s_texture();
 
-	// Renvoie la référence de la texture en openGL
+	// Renvoie la reference de la texture en openGL
 	unsigned int getID(void) const {
 		return texID;
 	}
@@ -59,15 +59,15 @@ public:
 	// Returne les dimensions de la texture
 	void getDimensions(int &width, int &height) const;
 
-	// Indique le chemin par défaut des textures par défaut.
+	// Indique le chemin par defaut des textures par defaut.
 	static void setTexDir(const std::string& _texDir) {
 		s_texture::texDir = _texDir;
 	}
 
-	// crée une texture rouge en cas de textures non chargée
+	// cree une texture rouge en cas de textures non chargee
 	void createEmptyTex();
 
-	// Renvoie la taille utilisée par les textures dans la carte graphique
+	// Renvoie la taille utilisee par les textures dans la carte graphique
 	static unsigned long int getTotalGPUMem();
 
 	static long int getNumberTotalTexture(){

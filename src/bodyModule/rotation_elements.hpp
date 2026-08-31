@@ -38,7 +38,7 @@ struct RotationElements {
 	float precessionRate = 0.; // rate of precession of rotation axis in rads/day
 	double sidereal_period = 0.; // sidereal period (Body year in earth days)
 	float axialTilt = 0.; // Only used for tropic lines on planets
-	// Frame in which obliquity/ascendingNode are authored (B28, INTENT §11.67).
+	// Frame in which obliquity/ascendingNode are authored (B28, INTENT S11.67).
 	// false = parent_relative (accumulated through the ancestor-tilt walk);
 	// true  = absolute_pole (the loader has already converted a J2000 pole into
 	// the ecliptic ROOT frame, so obliquity/ascendingNode are root-aligned and

@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Spacecrafter pilot - Emmanuel Gaulon (Achères)</title>
+  <title>Spacecrafter pilot - Emmanuel Gaulon (Acheres)</title>
   <link rel="shortcut icon" href="#">
   <style type="text/css" media="screen">
 	.unstyled-button {

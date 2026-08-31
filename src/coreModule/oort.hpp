@@ -60,7 +60,7 @@ std::mt19937 oortRng() noexcept;
 
 //! Spatial law of the oort point cloud - THE single authority (I2) for the
 //! cloud's geometry, shared between the old-path Oort (below) and the new-path
-//! OortModule (B5 §6.9 content-migration pilot). One call draws one point in
+//! OortModule (B5 S6.9 content-migration pilot). One call draws one point in
 //! heliocentric-ecliptic AU (spheToRect of the historical theta/phi/radius
 //! distribution, verbatim from the old populate loop) from the caller-supplied
 //! frozen-seed generator (oortRng above): three draws, azimuthally uniform in

@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2021 Jérémy Calvo
+ * Copyright (C) 2021 Jeremy Calvo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -110,14 +110,14 @@ void ProtoSystem::load(Object &obj)
 
 // Init and load the solar system data
 // DELIBERATELY NOT on the shared `.ini` line grammar (tools/ini_line.hpp), which
-// every OTHER reader of this file family now uses (INTENT §5.38/§5.39/D29). This
+// every OTHER reader of this file family now uses (INTENT S5.38/S5.39/D29). This
 // is the OLD path: the frozen comparison baseline every parity measurement is
-// taken against (§11.52(b)), so it must keep reading exactly what it has always
+// taken against (S11.52(b)), so it must keep reading exactly what it has always
 // read, whitespace quirks included. Measured consequence of the asymmetry on the
 // shipped ssystem.ini: nine values are parsed differently by the two readers and
 // NONE of them changes a number - seven whitespace-only, two trailing comments,
 // all `strtod`-inert, plus `[Sedna]`'s '='-less line which both readers discard
-// (§11.115). Retire this reader with the old path, never before it.
+// (S11.115). Retire this reader with the old path, never before it.
 void ProtoSystem::load(const std::string& planetfile)
 {
 	stringHash_t bodyParams;
@@ -623,7 +623,7 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 	// dereferences it for ell_orbit and Body's update path dereferences it
 	// every frame. That is why a script pushing `coord_func = surface_point`
 	// (an orbit family only the experimental path knows) took the whole app
-	// down (INTENT §5.50). Skipping the body is what this path can honestly do
+	// down (INTENT S5.50). Skipping the body is what this path can honestly do
 	// with a declaration it cannot satisfy, and it costs nothing the author
 	// asked for: the push channel feeds BOTH paths from one map
 	// (SSystemFactory::addBody calls this, then the experimental loadBody), so

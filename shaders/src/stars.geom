@@ -28,31 +28,31 @@ layout (location=2) in vec2 position[];
 layout (location=0) out vec2 TexCoord;
 layout (location=1) out vec3 TexColor;
 
-//on veut représenter une texture sur un carré pour cela on construit deux triangles
+//on veut representer une texture sur un carre pour cela on construit deux triangles
 void main(void)
 {
     float mag1 = mag[0]/2;
     float mag2 = -mag1;
 	vec2 pos = position[0];
-    //en bas à droite
+    //en bas a droite
     gl_Position   = MVP2D * vec4(pos+vec2(mag1, mag2), 0.0, 1.0);
     TexCoord= vec2(1.0f, .0f);
     TexColor= color[0];
     EmitVertex();
 
-    // en haut à droite
+    // en haut a droite
     gl_Position   = MVP2D * vec4(pos+vec2(mag1, mag1), 0.0, 1.0);
     TexCoord= vec2(1.0f, 1.0f);
     TexColor= color[0];
     EmitVertex();
 
-    // en Bas à gauche
+    // en Bas a gauche
     gl_Position   = MVP2D * vec4(pos+vec2(mag2, mag2), 0.0,1.0);
     TexCoord= vec2(0.0f, 0.0f);
     TexColor= color[0];
     EmitVertex();
 
-    // en haut à gauche
+    // en haut a gauche
     gl_Position   = MVP2D * vec4(pos+vec2(mag2, mag1),0.0,1.0);
     TexCoord= vec2(0.0f, 1.0f);
     TexColor= color[0];

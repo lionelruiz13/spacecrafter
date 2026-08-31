@@ -69,7 +69,7 @@ private:
 	uint32_t videoTex[4]; // Support pour YUVA (4 textures)
 	bool isAlive = false;
 	bool canDraw = false;
-	bool hasAlphaChannel = false; // Flag pour indiquer si la vidéo a un canal alpha
+	bool hasAlphaChannel = false; // Flag pour indiquer si la video a un canal alpha
 
 	struct UniformData {
 		Mat4f mat;

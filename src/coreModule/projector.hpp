@@ -311,13 +311,13 @@ public:
 		return mat_earth_equ_to_eye.convert();
 	}
 
-	//! READBACK ONLY (INTENT §5.63 / §11.130) — the projector state the old sky
+	//! READBACK ONLY (INTENT S5.63 / S11.130) -- the projector state the old sky
 	//! is drawn through, as one JSON object on the dual-path dump channel.
 	//! What it is FOR: the fov SCALES every star (MagConverter::setFov) and the
 	//! unprojected viewport SELECTS the geodesic zones that get drawn at all
-	//! (HipStarMgr::preDraw) — two ways for the same sky to come out different
+	//! (HipStarMgr::preDraw) -- two ways for the same sky to come out different
 	//! that no camera-side or navigator-side field reports. Const and
-	//! side-effect-free; the old render path is unchanged (§11.52(b)).
+	//! side-effect-free; the old render path is unchanged (S11.52(b)).
 	void dumpTrace(std::ostream &out) const;
 
 protected:

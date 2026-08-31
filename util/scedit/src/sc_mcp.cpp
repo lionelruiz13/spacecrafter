@@ -1,5 +1,5 @@
 /*
- * scedit — sc_mcp.cpp
+ * scedit -- sc_mcp.cpp
  *
  * The adapter: JSON-RPC 2.0 over stdio, the two protocol eras, and the tool
  * registry. Protocol shapes are the fetched specification's (see sc_mcp.hpp for
@@ -39,7 +39,7 @@ const char *const kInstructions =
 	"reads them. Use doc_search to find which page answers a request, doc_lookup to read a "
 	"command or one of its keys, and check_script before showing a script to anyone: it reports "
 	"exactly where the engine's reading will differ from what the text plainly means. A `doc` "
-	"field that is null means no documentation has been extracted for that name yet — say so "
+	"field that is null means no documentation has been extracted for that name yet \xe2\x80\x94 say so "
 	"rather than filling the gap.";
 
 json serverInfo()
@@ -283,7 +283,7 @@ std::vector<Tool> buildRegistry()
 		"arguments to get the catalogue: every command with its one-line description, and under "
 		"the three commands that name a family (flag, set, color) the names that family accepts. "
 		"Fields are the contract's own text: `doc` (a null `doc` means no documentation has been "
-		"extracted for that name — report the gap, never invent one), `value_domain` and `values` "
+		"extracted for that name \xe2\x80\x94 report the gap, never invent one), `value_domain` and `values` "
 		"(what may be written as the value), `default` (what happens when the argument is "
 		"omitted), `required`, `source` (the engine file and lines the fact was read from), and "
 		"`notes`. An unknown name is answered, not guessed at: the reply names the vocabulary the "
@@ -307,7 +307,7 @@ std::vector<Tool> buildRegistry()
 		"a request (\"draw the constellation lines\", \"play a sound\"), best first. A page is a "
 		"command, an argument key of a command, or a name of a command's family; each result "
 		"carries `page`, which is exactly what to pass to doc_lookup. The ranking is a stated "
-		"word-overlap score over page names and documentation lines — no inference and no "
+		"word-overlap score over page names and documentation lines \xe2\x80\x94 no inference and no "
 		"synonyms, so a request that shares no word with any page returns nothing rather than a "
 		"plausible-looking guess.";
 	search.input_schema = json::parse(R"({
@@ -332,7 +332,7 @@ std::vector<Tool> buildRegistry()
 		"(the engine drops it silently), duplicated keys, bytes that look like a space and are "
 		"not, unclosed blocks. Each finding carries the line, a severity, an identifier and the "
 		"byte range it is about. Every rule reports engine BEHAVIOUR, never style, and rules that "
-		"cannot be checked without false positives are not run at all — so a finding is a fact "
+		"cannot be checked without false positives are not run at all \xe2\x80\x94 so a finding is a fact "
 		"about what will happen, and an empty result is not a promise that the script does what "
 		"its author wanted. Run this on any script before offering it to a user.";
 	check.input_schema = json::parse(R"({
@@ -470,7 +470,7 @@ json callToolJson(const ToolContext &ctx, const Tool &t, const json &args)
 
 //! The era of ONE request: modern when it carries the per-request protocol
 //! version the 2026-07-28 revision requires, legacy otherwise. The connection
-//! itself has no era — the spec's statelessness rule is that a server must not
+//! itself has no era -- the spec's statelessness rule is that a server must not
 //! infer anything from an earlier request.
 struct Era {
 	bool modern = false;

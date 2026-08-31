@@ -26,7 +26,7 @@ struct ojmShadowBlock;
 //
 // Drawing (all four types):
 // - draw/drawNoDepth: the model through the OJM family - old ShaderArtificial
-//   ported. ONE family, ONE layout (INTENT §10.3 rule 4 layout-invariance),
+//   ported. ONE family, ONE layout (INTENT S10.3 rule 4 layout-invariance),
 //   4 shader rows = the old 4 frags on two SHADER_SWAP axes: TEXLESS
 //   (per-SHAPE, switched mid-record by Ojm::record via Renderer::peek - a
 //   shape without map_Ka uses the notex row) x SHADOWED (per-DRAW: selected

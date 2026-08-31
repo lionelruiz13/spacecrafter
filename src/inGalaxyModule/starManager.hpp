@@ -53,7 +53,7 @@ struct StarInfo {
 
 
 //! \class Cube
-//! \brief la classe cube va contenir les étoiles
+//! \brief la classe cube va contenir les etoiles
 class Cube  {
 public:
 	//! \fn Cube(int size, int x, int y, int z, int cubeName)
@@ -162,13 +162,13 @@ public:
 		return c_z;
 	}
 
-	//! \brief Renvoie le cube en coordonnée (a,b,c), cree un cube si besoin
+	//! \brief Renvoie le cube en coordonnee (a,b,c), cree un cube si besoin
 	//! \return Cube aux coordonnees demandees
 	Cube &getCube(int a, int b, int c);
 
 	void addCubeStar(StarInfo &&star);
 
-	//! \brief renvoie la magnitude minimale de l'étoile inclue dans l'HC
+	//! \brief renvoie la magnitude minimale de l'etoile inclue dans l'HC
 	float getMinMagnitude();
 
 	//! \brief renvoie le nombre total de cube dans l'HC
@@ -176,7 +176,7 @@ public:
 		return NbTotalHyperCube;
 	}
 
-	//! renvoie le nombre d'étoiles inclues dans l'HC
+	//! renvoie le nombre d'etoiles inclues dans l'HC
 	unsigned int getNbrStars();
 
 protected:
@@ -191,14 +191,14 @@ protected:
 };
 
 /*! \class StarManager
- * \brief Classe stockant tous les HC nécessaire à la représentation des étoiles
+ * \brief Classe stockant tous les HC necessaire a la representation des etoiles
  * dans le logiciel
  *
- * \details Pour stocker et utiliser toutes les étoiles, StarManager découpe l'espace
- * en plusieurs HyperCubes HC contenant eux même des Cubes C qui eux contiennent
- * les étoiles.
+ * \details Pour stocker et utiliser toutes les etoiles, StarManager decoupe l'espace
+ * en plusieurs HyperCubes HC contenant eux meme des Cubes C qui eux contiennent
+ * les etoiles.
  *
- * Aussi l'espace est partitionné en gros cubes contenant des cubes afin de pouvoir
+ * Aussi l'espace est partitionne en gros cubes contenant des cubes afin de pouvoir
  * faire des optimisations par exemple ...
  *
  */
@@ -215,7 +215,7 @@ public:
 		return hyperCubeList.size();
 	}
 
-	//! récupère le nombre de cubes dans les hypercubes
+	//! recupere le nombre de cubes dans les hypercubes
 	//! \return return the total number of cubes
 	int getNbrCubes();
 
@@ -226,18 +226,18 @@ public:
 	}
 
 	//! \brief read the catalogue created before by the programm
-	//! \return vrai si toutes les lignes ont été insérées dans le programme.
+	//! \return vrai si toutes les lignes ont ete inserees dans le programme.
 	bool loadStarCatalog(const std::string &fileName);
 
 	//! \brief read the binary catalogue created before by the programm
-	//! \return vrai si toutes les lignes ont été insérées dans le programme.
+	//! \return vrai si toutes les lignes ont ete inserees dans le programme.
 	bool loadStarBinCatalog(const std::string &fileName);
 
-	//! \brief lit un autre catalogue d'étoiles dans le manager
-	//! \return vrai si toutes les lignes ont été insérées dans le programme.
+	//! \brief lit un autre catalogue d'etoiles dans le manager
+	//! \return vrai si toutes les lignes ont ete inserees dans le programme.
 	bool loadOtherStar(const std::string & fileName);
 
-	//! \brief lecture du catalogue initial et création des objets pour le contenir
+	//! \brief lecture du catalogue initial et creation des objets pour le contenir
 	bool loadStarRaw(const std::string &starPath);
 
 	//! \brief used to save the stars/cubes/hypercube in the structure
@@ -249,29 +249,29 @@ public:
 	//! \brief Renvoie le hypercube aux coordonnees demandees, en le creant s'il n'existe pas.
 	HyperCube &getHC(int a, int b, int c);
 
-	//! \brief Ajoute une étoile dans starManager
+	//! \brief Ajoute une etoile dans starManager
 	void addHcStar(StarInfo &&star);
 
-	//! \brief renvoie la plus grande magnitude absolue de toutes les étoiles
+	//! \brief renvoie la plus grande magnitude absolue de toutes les etoiles
 	float getMinMagnitude();
 
 	//! \brief renvoie des statistiques concernant le remplissage des HyperCubes
 	void HyperCubeStatistiques();
 
-	//! \brief renvoie des statistiques concernant les magnitudes des étoiles
+	//! \brief renvoie des statistiques concernant les magnitudes des etoiles
 	void MagStarStatistiques();
 
-	//! \brief renvoie le nombre d'étoiles dans toute la structure
+	//! \brief renvoie le nombre d'etoiles dans toute la structure
 	unsigned int getNbrStars();
 
-	//! \brief fonction de vérification des données dans la structure
+	//! \brief fonction de verification des donnees dans la structure
 	bool verificationData();
 
-	//! \brief sauvegarde les coordonnées des étoiles issues du fichier filenameIn
+	//! \brief sauvegarde les coordonnees des etoiles issues du fichier filenameIn
 	//! dans le fichier filenameOut.
 	bool saveAsterismStarsPosition(const std::string &fileNameIn,const std::string &fileNameOut);
 
-	//! \brief renvoie les caractéristiques de l'étoile identifiée par HIPName
+	//! \brief renvoie les caracteristiques de l'etoile identifiee par HIPName
 	StarInfo *findStar(unsigned int HIPName);
 
 protected:

@@ -40,7 +40,7 @@ template<typename> class SharedBuffer;
 // Implemented (S3, 2026-07-16): beginDraw drains the list and MERGES
 // overlapping [dist-r, dist+r] ranges into disjoint buckets (old-path
 // computePreDraw parity, solarsystem_display.cpp:136-176; no 1.1 margin -
-// boundingRadius is inclusive by definition, INTENT §10.3 decision 6).
+// boundingRadius is inclusive by definition, INTENT S10.3 decision 6).
 // clearDepth(zCenter, boundingRadius) enters one body's slice: the depth
 // clear and the clipping range are BUCKET-ENTRY actions - bodies sharing a
 // bucket share one cleared buffer and ONE depth mapping, so they occlude
@@ -56,7 +56,7 @@ template<typename> class SharedBuffer;
 //   SELF-SHADOW (drawSelfShadow) - self-shadow depth + grounded-slice prefill
 //   TRACE (drawTrace) - depth hole hiding orbit lines behind the body
 // Pipeline ownership and selection live in the pipeline-family registry
-// (contract: PipelineFamily.hpp; design: INTENT.md §10.3). drawNoDepth is the
+// (contract: PipelineFamily.hpp; design: INTENT.md S10.3). drawNoDepth is the
 // COLOR pass with the reserved VARIANT_NO_DEPTH variant bit - depth-less
 // drawing is pipeline state within the pass, not a pass of its own.
 //
@@ -111,7 +111,7 @@ public:
     // same-frame values) AND draws in the far->near sorted order the buckets
     // were built in. A slice outside coverage degrades to per-body clear +
     // range and self-names (WARNING, once per frame). Known interim producer:
-    // a body attached between sort and draw (events-thread bridge, §8.4.1)
+    // a body attached between sort and draw (events-thread bridge, S8.4.1)
     // draws once at the sorted tail - S4's publish-task handoff closes it.
     void clearDepth(float zCenter, float boundingRadius);
     // Establish one body's depth MAPPING without entering a slice (caller:
@@ -120,7 +120,7 @@ public:
     // ONLY half it may pay for.
     //
     // Why it is needed at all, given that the band's whole point is not to
-    // touch depth (INTENT §5.52): `custom_project` maps
+    // touch depth (INTENT S5.52): `custom_project` maps
     //   depth = (|eye| - clipping_fov.x) / (clipping_fov.y - clipping_fov.x)
     // and the RASTERIZER clips primitives whose NDC z leaves [0,1] - a
     // fixed-function stage that VARIANT_NO_DEPTH does not disable (that bit
@@ -175,7 +175,7 @@ public:
     void beginTrailDraw();
     // ---- Tail pass (row 12) -------------------------------------------------
     // The TAIL is an instanced batch: the comet gas/dust tail. Renderer-owned -
-    // the old Tail::global singleton is dissolved (§10.3 batching-as-a-service):
+    // the old Tail::global singleton is dissolved (S10.3 batching-as-a-service):
     // shared cone/strip geometry via an instance-rate VertexArray + a
     // primitive-restart index built once, per-tail instances submitted during
     // the tail sweep and rendered with ONE vkCmdDrawIndexed.
@@ -216,7 +216,7 @@ public:
     // (old needOrbitDepth, body.hpp:493: on-screen body over 10 px full
     // diameter - its orbit line must vanish behind its disc). {0,0} = no
     // body qualifies: draw orbits depth-free (old fallback used the backup
-    // scene planes). Consumer: the ORBIT module port (§12 row 8) - the
+    // scene planes). Consumer: the ORBIT module port (S12 row 8) - the
     // TRACE prepass and the orbit lines share this single range so orbit
     // fragments depth-test against the body trace holes. znear may be <= 0
     // with the camera inside the range - clamp at use (old: max(znear,1e-8)).
@@ -236,7 +236,7 @@ public:
     // "planethalo.png" at init) - the service loads its own s_texture
     // (texCache dedups by name); rebind happens at the next batchBegin.
     void setHaloTexture(const std::string &texName);
-    // Star BIG-halo glow (INTENT §12 row 14 / §11.44): the old Sun::drawBigHalo
+    // Star BIG-halo glow (INTENT S12 row 14 / S11.44): the old Sun::drawBigHalo
     // (sun_big_halo.{vert,geom,frag}, additive POINT->quad, no depth) dissolved
     // off its static command buffers into frame-task recording (the S1 note).
     // A Renderer-owned service like the pointer (single instance: only the Sun
@@ -247,7 +247,7 @@ public:
     void drawSunHalo(const std::pair<float, float> &pos, const Vec3f &color,
                      float rmag, float cmag, float radius);
     // Big-halo texture seam (old Sun::setBigHalo, body_sun.cpp:109-121): try
-    // path+file, else the standard texture paths. Load-time only (§9: no
+    // path+file, else the standard texture paths. Load-time only (S9: no
     // runtime big-halo command). Builds the SUN_HALO family on first call.
     void setSunHaloTexture(const std::string &texName, const std::string &path);
     // Queue a hint circle at a body's screen position (rect space [-1,1], i.e.
@@ -307,7 +307,7 @@ public:
     FamilyBound bind(const PipelineFamily &family, VariantKey wanted = 0);
     // Allocate a Set of the family's set contract `setIndex`, from pools
     // sized by the aggregate of allocated contracts (a pool always covers
-    // the layouts it serves - INTENT §11.1 structural fix). The big-texture
+    // the layouts it serves - INTENT S11.1 structural fix). The big-texture
     // generation rebind idiom (set.uninit() + rebind on texmap change) is
     // legal on these Sets: frees are deferred by the SetMgr.
     Set *allocSet(const PipelineFamily &family, uint8_t setIndex);
@@ -326,7 +326,7 @@ public:
     // Raw resident pipeline of ONE exact variant, or nullptr if not resident
     // (build enqueued; caller skips that geometry this frame - C3, the
     // drawLoaded semantics). For layout-invariant per-shape multi-pipeline
-    // recording ONLY (INTENT §10.3 rule 4 - the OJM tex/notex per-shape
+    // recording ONLY (INTENT S10.3 rule 4 - the OJM tex/notex per-shape
     // switch, where Ojm::record binds pipelines mid-draw against ONE layout):
     // the caller must have bound the family's layout via bind()/bindIn()
     // first and must not touch sets between switches. No fallback bit-drop
@@ -352,7 +352,7 @@ public:
         return passKind;
     }
 
-    // ---- Text service (INTENT §10.3 open #3 RESOLVED - projection-paths C7,
+    // ---- Text service (INTENT S10.3 open #3 RESOLVED - projection-paths C7,
     // accepted at plan approval 2026-07-12) ------------------------------------
     // Gravity-oriented label at an already-projected anchor. Pure function of
     // (anchor, viewport geometry, font, string): NO Projector, NO Navigator,
@@ -370,7 +370,7 @@ public:
     // - shifts are pixels, applied in the rotated (gravity) frame; the old
     //   hint label passes (10 + onScreenSize/2) for both.
     // Drawing is a delegation to s_font::print -> DrawHelper (text is not a
-    // pipeline family - §10.2); legal from any draw hook, same channel and
+    // pipeline family - S10.2); legal from any draw hook, same channel and
     // segment semantics as drawHint. NOT batched by this class: DrawHelper
     // segments already carry the occlusion contract for screen-space content.
     void printGravity(s_font *font, const std::pair<float, float> &pos,

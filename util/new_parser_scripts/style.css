@@ -26,7 +26,7 @@
             border: none;
         }
 
-        /* Entête de la page */
+        /* Entete de la page */
         body>header {
             background-color: rgba(25, 25, 25, 1);
             color: white;
@@ -61,13 +61,13 @@
             color: white;
         }
 
-        /* Lien survolé ou focussé dans le menu */
+        /* Lien survole ou focusse dans le menu */
         .menu a:hover,
         a:focus {
             font-weight: bold;
         }
 
-        /* Lien visité dans le menu */
+        /* Lien visite dans le menu */
         .menu a:visited {
             color: rgba(150, 150, 150, 1);
         }
@@ -102,7 +102,7 @@
             page-break-before: always;
         }
 
-        /* Entête de la commande */
+        /* Entete de la commande */
         .commande>article>header {
             margin-bottom: 3%;
         }
@@ -129,7 +129,7 @@
             color: white;
         }
 
-        /* Paragraphe contenant une particularité (d'une commande, d'un argument ou d'une valeur) */
+        /* Paragraphe contenant une particularite (d'une commande, d'un argument ou d'une valeur) */
         .particularite {
             color: rgba(150, 150, 150, 1);
             font-style: italic;
@@ -211,7 +211,7 @@
             margin-bottom : 50%;
         }
 
-        /* Lien de retour au menu visité ou non */
+        /* Lien de retour au menu visite ou non */
         .retour a:link,
         a:visited,
         a:active {
@@ -219,7 +219,7 @@
             padding-left: 5%;
         }
 
-        /* Lien de retour au menu survolé ou focussé */
+        /* Lien de retour au menu survole ou focusse */
         .retour a:hover,
         a:focus {
             font-weight: bold;

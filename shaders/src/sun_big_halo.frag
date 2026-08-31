@@ -17,8 +17,8 @@ layout (constant_id=0) const float viewportY = 1024;
 
 layout(location=0) out vec3 FragColor;
 
-//constantes à adapter
-const float C_RADIUS=1.1; //coefficient liée au radius
+//constantes a adapter
+const float C_RADIUS=1.1; //coefficient liee au radius
 const float ACCENTUATION1 = 1.1; //pour jouer sur la transparance
 const float ACCENTUATION2 = 0.7; //je ne sais pas a quoi cela sert
 

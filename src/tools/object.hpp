@@ -50,7 +50,7 @@ class ObjectBase;
 //! assignment CAN be the last release, i.e. can destroy the wrapper it drops.
 //!
 //! WHO MAY THEREFORE HOLD A RAW POINTER PAST AN ASSIGNMENT - the enumeration
-//! this class's invariant depends on (§5.34 / INTENT §11.140; the F29
+//! this class's invariant depends on (S5.34 / INTENT S11.140; the F29
 //! writer-enumeration precedent: the list is here so a new holder is added
 //! against it rather than in ignorance of it).
 //!   * NOBODY stores a raw `ObjectBase*`. `Object::rep` below is the only such

@@ -20,7 +20,7 @@ int main(int argc,char**argv)
 
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK);
 
-	/* Données de base */
+	/* Donnees de base */
 	SDL_DisplayMode dm;
 	if (SDL_GetDesktopDisplayMode(0, &dm) != 0) {
 		SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
@@ -51,7 +51,7 @@ int main(int argc,char**argv)
 	}
 	std::cout<<"Status: Using GLEW "<< glewGetString(GLEW_VERSION)<<std::endl;
 
-	/* Icône */
+	/* Icone */
 	icon=SDL_CreateRGBSurface(0,16,16,32,0,0,0,0);
 	SDL_FillRect(icon,NULL,SDL_MapRGB(icon->format,0,255,0));
 	SDL_SetWindowIcon(data->window,icon);
@@ -187,11 +187,11 @@ int main(int argc,char**argv)
 
 		// DRAWS
 		// ViewBeforeLookAt :
-		//matrix.hpp il s'agit de retrouver m dans la fonction lookAtFromMatrix qui donne le résultat view
+		//matrix.hpp il s'agit de retrouver m dans la fonction lookAtFromMatrix qui donne le resultat view
 		// donc tu as view et tu dois trovuer la matrice m de la fonction ci dessus.
 		//
-		// ViewBeforeLookAt sert pour aller a droite gauche haut bas ... dans la réalité (pour placer ta camera)
-		// mais comme le repère opengl n'est pas le repère de la réalité, il faut transformer cette matrice pour obtenir
+		// ViewBeforeLookAt sert pour aller a droite gauche haut bas ... dans la realite (pour placer ta camera)
+		// mais comme le repere opengl n'est pas le repere de la realite, il faut transformer cette matrice pour obtenir
 		// la matrice view (pour le monde opengl)
 	
 
@@ -225,8 +225,8 @@ int main(int argc,char**argv)
 		// glEnd();
 
 
-		// matrixArray[2][0] = matrice modèle de la terre
-		// pour obtenir la matrice modèle de l'atmosphère:
+		// matrixArray[2][0] = matrice modele de la terre
+		// pour obtenir la matrice modele de l'atmosphere:
 		// translation(positionTerre) * scaling(ATM_RADIUS) ou la matrice model de la terre * scaling (atmosphere)
 		Mat4f view = camera.getViewMatrix();
 
@@ -276,7 +276,7 @@ int main(int argc,char**argv)
 		SDL_Delay(10);
 	}
 
-	/* Destruction de la fenêtre et du contexte */
+	/* Destruction de la fenetre et du contexte */
 	SDL_GL_DeleteContext(data->context);
 	SDL_DestroyWindow(data->window);
 

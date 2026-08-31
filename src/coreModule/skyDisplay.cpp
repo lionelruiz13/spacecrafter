@@ -210,7 +210,7 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 			Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 			//oss << pt1[0] << " " << pt2[0] << pt1[1] << " " << pt2[1];
-			oss << i * 10 << "°";
+			oss << i * 10 << "\xc2\xb0";
 			skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 			oss.clear();
 		}
@@ -292,7 +292,7 @@ void SkyPerson::loadString(const std::string& message)
     // for(std::string::size_type i = 0; i < txt.length(); i++)
     // {
     //     char c = txt[i];
-    //     if(!(isdigit(c)||c==';'||c=='.')){ //check si le caractère est une lettre
+    //     if(!(isdigit(c)||c==';'||c=='.')){ //check si le caractere est une lettre
 	// 		cLog::get()->write("Skyperson error loading dataStr, check dataStr", LOG_TYPE::L_WARNING);
 	// 		// std::cout << "   " << c << std::endl;
     //         txt.erase(i, 1);
@@ -469,7 +469,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			oss << "+";
 		if (alt < 10.)
 			oss << "0";
-		oss << truncf(alt) << "°";
+		oss << truncf(alt) << "\xc2\xb0";
 		mn = truncf((alt - truncf(alt)) * 60);
 		if (mn < 10)
 			oss << "0";
@@ -506,7 +506,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			oss << "0";
 		if (az < 10.)
 			oss << "0";
-		oss << truncf(az) << "°";
+		oss << truncf(az) << "\xc2\xb0";
 		mn = truncf((az - truncf(az)) * 60);
 		if (mn < 10)
 			oss << "0";
@@ -571,7 +571,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			oss << "+";
 		if (dec < 10.)
 			oss << "0";
-		oss << truncf(dec) << "°";
+		oss << truncf(dec) << "\xc2\xb0";
 		mn = truncf((dec - truncf(dec)) * 60);
 		if (mn < 10)
 			oss << "0";
@@ -644,7 +644,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 			oss << "+";
 		if (alt < 10.)
 			oss << "0";
-		oss << truncf(alt) << "°";
+		oss << truncf(alt) << "\xc2\xb0";
 		mn = truncf((alt - truncf(alt)) * 60);
 		if (mn < 10)
 			oss << "0";
@@ -684,7 +684,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 			oss << "0";
 		if (az < 10.)
 			oss << "0";
-		oss << truncf(az) << "°";
+		oss << truncf(az) << "\xc2\xb0";
 		mn = truncf((az - truncf(az)) * 60);
 		if (mn < 10)
 			oss << "0";
@@ -755,7 +755,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 			oss << "+";
 		if (dec < 10.)
 			oss << "0";
-		oss << truncf(dec) << "°";
+		oss << truncf(dec) << "\xc2\xb0";
 		mn = truncf((dec - truncf(dec)) * 60);
 		if (mn < 10)
 			oss << "0";
@@ -854,7 +854,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 	if (truncf(ang) >= 1) {
-		oss << truncf(ang) << "°";
+		oss << truncf(ang) << "\xc2\xb0";
 		mn = truncf((ang - truncf(ang)) * 60);
 		if (mn < 10)
 			oss << "0";

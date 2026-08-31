@@ -18,12 +18,12 @@ void HintModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     fader.update(ModularBody::deltaTime);
     if (!fader.getInterstate())
         return;
-    // Angular-separation gate (old path: ang_dist = 300·atan(|ecl|/dist)/fov°,
+    // Angular-separation gate (old path: ang_dist = 300*atan(|ecl|/dist)/fovdeg,
     // drawn only when > 0.25 - body.cpp:961 + drawHints) - suppresses the hint
     // spam of satellites huddled around their planet at wide fov. The system's
     // PRIMARY skips it like the old BodySun::drawHints (its |ecl| ~ 0 would
     // otherwise suppress its own hint forever).
-    // D27 split, SECOND LOOK (§11.113(f) listed this site under `light_source`
+    // D27 split, SECOND LOOK (S11.113(f) listed this site under `light_source`
     // and flagged it as one of the two worth re-deriving before landing; the
     // re-derivation moves it): the reason for the skip is that the body sits AT
     // its parent's origin, which is a structural fact, not a luminous one. A
@@ -36,8 +36,8 @@ void HintModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     if (!body->isPrimary()) {
         if (ModularBody *parent = body->getParent()) {
             const float separation = (body->getObservedPosition() - parent->getObservedPosition()).length();
-            // old fov° = full fov in degrees; ModularBody::halfFov is the half
-            // fov in radians: fov° = halfFov · (360/π)
+            // old fovdeg = full fov in degrees; ModularBody::halfFov is the half
+            // fov in radians: fovdeg = halfFov * (360/pi)
             const float angDist = 300.f * atanf(separation / body->getDistanceToObserver())
                                 / (ModularBody::halfFov * (360.f / M_PI));
             if (angDist <= 0.25f)

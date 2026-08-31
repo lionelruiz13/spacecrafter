@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-// B24 composed-system file format - the PARSING layer only (INTENT §11.52(c):
+// B24 composed-system file format - the PARSING layer only (INTENT S11.52(c):
 // format is parsing-deep, never capability; this layer is a thin, swappable
 // reader/writer over the capability model and must never grow engine
 // knowledge - it does not know what a key MEANS, only where it lives).
@@ -16,14 +16,14 @@
 // section separators (header text is decorative - identity comes from the
 // 'name' key, legacy parity), 'key = value' lines. The LINE grammar is not
 // this file's to define: it is `tools/ini_line.hpp`, the one authority every
-// reader of the family shares (INTENT §5.39/D29 - the legacy reader
+// reader of the family shares (INTENT S5.39/D29 - the legacy reader
 // ModularSystem::loadSystem, the galactic reader and the anchor reader read
 // through the same grammar, so a key can no longer mean two things). What is
 // this layer's own: sections are returned in file order WITH their headers,
 // and nothing is interpreted.
 //
-// A FILE THAT COMES BACK THROUGH THIS LAYER COMES BACK WHOLE (INTENT §11.66(b),
-// b31-design §5.2). Read a file, write it again unchanged, and the result is
+// A FILE THAT COMES BACK THROUGH THIS LAYER COMES BACK WHOLE (INTENT S11.66(b),
+// b31-design S5.2). Read a file, write it again unchanged, and the result is
 // byte-identical: comments, blank lines, spacing, key order, malformed lines,
 // keys nothing in this engine understands, the absence of a final newline. The
 // author's file is the author's, and an engine that rewrites it owes it back.
@@ -36,29 +36,29 @@
 // WHICH FILES MAY BE WRITTEN AT ALL is not this layer's decision and this layer
 // cannot enforce it: composed files and the session file ONLY. The legacy
 // ssystem.ini / galactic.ini and anything else an older build's parser reads
-// are READ-ONLY forever (D35 §11.113(n), and §2.0 D13: a downgrade must stay
+// are READ-ONLY forever (D35 S11.113(n), and S2.0 D13: a downgrade must stay
 // possible, so nothing - not even a comment - may be written into a file an
-// older parser reads). The two contracts are distinct: §11.66(b) protects the
+// older parser reads). The two contracts are distinct: S11.66(b) protects the
 // AUTHOR's content, D13 protects the OLD PARSER's grammar. Callers own D13;
-// this layer owns §11.66(b).
+// this layer owns S11.66(b).
 //
 // What the sections MEAN (type=/body=/relation=/compose=...) is the
 // capability layer's contract: ModularSystem::loadComposedSystem. In
 // particular the ONE `type=` key selects the declaration kind AND, for a
-// module, its family (D16 §11.79(j): type=<family> declares a BodyModule,
+// module, its family (D16 S11.79(j): type=<family> declares a BodyModule,
 // anything else declares a ModularBody node).
 // File placement, candidacy and the .ini/.ini.disabled ownership split are
 // the SSystemFactory seam's contract (createModularSystem).
 //
-// Spelling status: the grammar keys are PRODUCT SURFACE (INTENT §2.0 D9).
+// Spelling status: the grammar keys are PRODUCT SURFACE (INTENT S2.0 D9).
 // The `type=` respell (one key replacing declare=+module=) is Vixy-signed-off
-// (D16, INTENT §11.79(j)); the remaining keys were ratified in the same batch.
+// (D16, INTENT S11.79(j)); the remaining keys were ratified in the same batch.
 namespace ModularSystemFormat {
 
 // Comment lines that begin with this marker are MACHINE-OWNED: the writer emits
 // them from the annotation set it was handed and drops any it finds before
 // re-emitting, which is what makes a rewrite idempotent instead of an inflating
-// pile of duplicated diagnostics (b31-design §5.3, check T9). A human comment is
+// pile of duplicated diagnostics (b31-design S5.3, check T9). A human comment is
 // any other comment and is never touched. Nothing else in this tree may write a
 // line starting with it.
 constexpr const char *ANNOTATION_MARKER = "#!sc:";
@@ -127,9 +127,9 @@ public:
     // that an engine deletes is gone (D9). No-op when the key is not there.
     void remove(const std::string &key, const std::string &reason);
 
-    // --- the loader's channel (b31-design §5.3) ------------------------
+    // --- the loader's channel (b31-design S5.3) ------------------------
     // Only the loader knows a datum is wrong, which states are valid, what was
-    // applied instead and what would fix it (§2(f)) - so the loader says it and
+    // applied instead and what would fix it (S2(f)) - so the loader says it and
     // the writer merely places it, ABOVE the datum. Above, because the legacy
     // reader takes a value as the rest of its line: a trailing annotation would
     // be swallowed INTO the value, silently for a number and destructively for
@@ -188,14 +188,14 @@ bool parse(const std::string &path, std::vector<Section> &out);
 
 // Serialize sections to `path` ATOMICALLY: write to a sibling temporary file
 // in the SAME directory (rename atomicity holds same-filesystem only,
-// INTENT §11.52(a)), then rename over the target. On any write failure the
+// INTENT S11.52(a)), then rename over the target. On any write failure the
 // temporary is removed and the pre-existing target is left untouched (the
 // disk-full case must discard the temp, never the original). `banner` lines
 // are emitted first as '#' comments (pass what the file should tell its
 // reader: ownership, regeneration policy, adoption workflow) - a file that was
 // PARSED carries its own banner in its preamble already, so a rewrite of one
 // passes none.
-// This is the ONE serialization authority (INTENT §11.51(a): dual-use writer,
+// This is the ONE serialization authority (INTENT S11.51(a): dual-use writer,
 // generation at load AND future script-triggered save go through here).
 bool write(const std::string &path, const std::vector<Section> &sections,
            const std::vector<std::string> &banner);

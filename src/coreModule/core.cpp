@@ -57,7 +57,7 @@
 #include "experimentalModule/Renderer.hpp" // dual-path pointer flag mirror
 #include "experimentalModule/Camera.hpp" // both-paths fov mirror (INTENT 11.40)
 #include "experimentalModule/ModularBody.hpp" // session restore: does this name exist?
-#include "experimentalModule/bodyModules/OortModule.hpp" // B5 §6.9 pilot: modular oort show flag
+#include "experimentalModule/bodyModules/OortModule.hpp" // B5 S6.9 pilot: modular oort show flag
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "coreModule/meteor_mgr.hpp"
@@ -397,29 +397,29 @@ void Core::init(const InitParser& conf)
 	deselect();
 	setHomePlanet("Earth");
 	navigation->setFlagTraking(0);
-	// ---- D15(d): init/reinit INITIALIZES the camera state (§11.150) --------
+	// ---- D15(d): init/reinit INITIALIZES the camera state (S11.150) --------
 	// [vixy 2026-08-26]: *"Structural parity is required here, init/reinit must
 	// initialize the state, which now include the freeMode and config.ini must
 	// enable to configure it. The default config.ini value is attached=True"*.
-	// This line used to be `navigation->setFlagLockEquPos(0)` — a force-reset of
+	// This line used to be `navigation->setFlagLockEquPos(0)` -- a force-reset of
 	// the OLD flag alone. Old had no config channel because it had no state to
 	// configure; the new-path Camera does (`skyLocked`/`lockedSkyRot`, freeMode),
 	// which is why the answer OVERRODE the standing "no key" recommendation.
 	//
 	// Read with findEntry first, NOT with the parser's own missing-key path:
 	// InitParser::getBoolean returns FALSE for an absent key (init_parser.cpp
-	// :164-178), so `attached` would read false — free flight at startup — in
+	// :164-178), so `attached` would read false -- free flight at startup -- in
 	// every fielded config.ini, none of which carries the key (D9: the installed
 	// field is frozen; the schema addition in CheckConfig only reaches a user
 	// file when the version string moves). The DEFAULTS ARE TODAY'S BEHAVIOUR:
 	// attached (not free) and the lock off, so no default acts here.
 	// The 3-argument getBoolean is deliberately not used: it writes an
-	// L_WARNING on every call, fired or not (§5.77's startup-noise class).
+	// L_WARNING on every call, fired or not (S5.77's startup-noise class).
 	const bool attached = conf.findEntry(std::string(SCS_NAVIGATION) + ":" + SCK_ATTACHED)
 	                      ? conf.getBoolean(SCS_NAVIGATION, SCK_ATTACHED) : true;
 	const bool lockSky = conf.findEntry(std::string(SCS_NAVIGATION) + ":" + SCK_FLAG_LOCK_SKY_POSITION)
 	                     ? conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_LOCK_SKY_POSITION) : false;
-	// D12 + §2(f): a configured value that ACTS at startup says so, names what
+	// D12 + S2(f): a configured value that ACTS at startup says so, names what
 	// it did, and names the way back. Silence is reserved for the values that
 	// change nothing.
 	if (Camera::instance) {
@@ -431,7 +431,7 @@ void Core::init(const InitParser& conf)
 			                   "anchored, set attached = true; to leave free flight at runtime, send "
 			                   "'camera action free_mode state off'.", LOG_TYPE::L_INFO);
 	}
-	// Through the both-paths mirror, so init leaves the two paths agreeing —
+	// Through the both-paths mirror, so init leaves the two paths agreeing --
 	// the same reason the four write sites now route through it (D15(c)).
 	setFlagLockSkyPosition(lockSky);
 	if (lockSky)
@@ -458,7 +458,7 @@ void Core::init(const InitParser& conf)
 
 		oort->populate(conf.getInt("rendering","oort_elements"));
 		oort->build();
-		// B5 §6.9 content-migration PILOT: also instantiate the oort as a modular
+		// B5 S6.9 content-migration PILOT: also instantiate the oort as a modular
 		// body at the SolarSystem floor (the [vixy] mapping rule). Gated OFF by
 		// default (flag_experimental_oort) so the shipped tree - and the b5
 		// collapse/AoI legs its cloud extent would perturb - stay unchanged;
@@ -616,7 +616,7 @@ void Core::init(const InitParser& conf)
 	cardinals_points->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CARDINAL_POINTS));
 
 	// The four display-scaling keys go in as ONE read: they are governed by one
-	// rule - ownership is FORMAT-SCOPED (§11.154(b), config.ini for a legacy
+	// rule - ownership is FORMAT-SCOPED (S11.154(b), config.ini for a legacy
 	// system, the modular file for a modular one) - and which of the two applies
 	// is not this level's business (I1).
 	ssystemFactory->initDisplayScaling(
@@ -624,11 +624,11 @@ void Core::init(const InitParser& conf)
 		conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED),  conf.getDouble(SCS_VIEWING, SCK_SUN_SCALE));
 	// ...and the machine-owned composed twins are written only now: a twin must
 	// reproduce the legacy load it came from, and the display scaling that load
-	// produces is the config value the line above has just applied (§11.154(c)).
+	// produces is the config value the line above has just applied (S11.154(c)).
 	ssystemFactory->generatePendingTwins();
 
 	oort->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
-	OortModule::show = conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT); // B5 §6.9 pilot: mirror to the modular oort
+	OortModule::show = conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT); // B5 S6.9 pilot: mirror to the modular oort
 
 	setLightPollutionLimitingMagnitude(conf.getDouble(SCS_VIEWING,SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE));
 
@@ -844,7 +844,7 @@ void Core::ssystemDualDump(const std::string& file)
 		// CoreLink owns most of those getters, so CoreLink writes it (I1).
 		out << ",\"control\":";
 		CoreLink::instance->dumpControlSurface(out);
-		// B34's ramp member (§11.133): the PER-STEP record of the interactive
+		// B34's ramp member (S11.133): the PER-STEP record of the interactive
 		// ramps. Core owns it because Core::updateMove is where the step is
 		// computed and where both paths' authorities are in scope at once.
 		out << ",\"ramp\":";
@@ -880,7 +880,7 @@ void Core::restoreSkyVision(const Vec3d& localVision)
 }
 
 // ---------------------------------------------------------------------------
-// READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
+// READBACK ONLY (INTENT S5.63 / S11.130). See the header for what it is for.
 // Const, side-effect-free, called only from the dump channel.
 // ---------------------------------------------------------------------------
 void Core::dumpOldViewState(std::ostream &out) const
@@ -925,10 +925,10 @@ void Core::setFlagLockSkyPosition(bool b)
 		Camera::instance->setSkyLock(b);
 }
 
-//! B33 (§11.108(f), the F12 template §11.118(f)): the sky lock of the path that
-//! DRAWS. Its setter above is dual (§11.58), and since §11.150 EVERY write site
+//! B33 (S11.108(f), the F12 template S11.118(f)): the sky lock of the path that
+//! DRAWS. Its setter above is dual (S11.58), and since S11.150 EVERY write site
 //! routes through it.
-//! ~~SUPERSEDED 2026-08-26 (§11.150), kept because it states what was true and
+//! ~~SUPERSEDED 2026-08-26 (S11.150), kept because it states what was true and
 //! why the fix needed a decision: "FOUR shipped sites write the old flag alone
 //! and are not this seam ... The four write sites are recorded, not mirrored:
 //! making them dual changes what the sky does in a shipped scene, and one of
@@ -936,10 +936,10 @@ void Core::setFlagLockSkyPosition(bool b)
 //! 2026-08-26]: *"Continual tracking must be preserved and smooth - it
 //! replicate the body tracking function of advanced telescopes. Without this,
 //! it's hard to impossible to properly observe a body while the time continue
-//! to tick."* So the four (selectObject/selectType ENABLE, autoZoomOut ×2
-//! DISABLE) are mirrored, and the toggle defect this comment described — the
+//! to tick."* So the four (selectObject/selectType ENABLE, autoZoomOut x2
+//! DISABLE) are mirrored, and the toggle defect this comment described -- the
 //! flag command reading 1 while nothing holds the sky, computing `!1` and
-//! writing 0 to both, §11.129's `flag satellites` shape one layer up — is gone
+//! writing 0 to both, S11.129's `flag satellites` shape one layer up -- is gone
 //! with them.
 bool Core::getFlagLockSkyPosition(void)
 {
@@ -994,7 +994,7 @@ void Core::preloadSolarSystemBody(stringHash_t& param)
 void Core::removeSolarSystemBody(const std::string& name)
 {
 	// Make sure this object is not already selected so won't crash.
-	// OBJECT_MODULAR too (B24-select, §11.106): removeBody drops the body in
+	// OBJECT_MODULAR too (B24-select, S11.106): removeBody drops the body in
 	// BOTH trees (ssystem_factory.hpp), and a composed body must lose its
 	// selection on removal exactly like an old one - without this the
 	// selection would silently slide onto the parent (the ModularBodyPtr
@@ -1016,7 +1016,7 @@ void Core::removeSupplementalSolarSystemBodies()
 {
 	//  cout << "Deleting planets and object deleteable = " << selected_object.isDeleteable() << endl;
 	// Make sure an object to delete is NOT selected so won't crash
-	// OBJECT_MODULAR too (B24-select §11.106, the same completion
+	// OBJECT_MODULAR too (B24-select S11.106, the same completion
 	// removeSolarSystemBody above already carries): the clear now drops the
 	// body in BOTH trees (B34, ssystem_factory.cpp), and a composed/pushed body
 	// must lose its selection on removal exactly like an old one - otherwise the
@@ -1089,11 +1089,11 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
-		// Both trees, old first (B24-select, INTENT §11.106): the old
+		// Both trees, old first (B24-select, INTENT S11.106): the old
 		// resolver still answers every name it knows, so old-body selection
 		// is unchanged by construction; a name only the new tree carries
 		// (composed bodies, B24) now resolves through the ModularObject
-		// bridge instead of selecting nothing (§11.97(d)).
+		// bridge instead of selecting nothing (S11.97(d)).
 		selectObject(ssystemFactory->searchObjectByEnglishName(id));
 
 	} else if (type=="nebula") {
@@ -1133,19 +1133,19 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 	if (selected_object) {
 		// D15(c) [vixy 2026-08-26]: *"Continual tracking must be preserved and
 		// smooth - it replicate the body tracking function of advanced
-		// telescopes"* ⇒ both flags of this transition reach BOTH paths
-		// (§11.150). Old-side values are unchanged (setFlagLockSkyPosition
+		// telescopes"* => both flags of this transition reach BOTH paths
+		// (S11.150). Old-side values are unchanged (setFlagLockSkyPosition
 		// writes navigation->setFlagLockEquPos(1); setFlagTracking(false)
-		// writes navigation->setFlagTraking(0)) — the change is the mirror.
+		// writes navigation->setFlagTraking(0)) -- the change is the mirror.
 		// The tracking clear is mirrored HERE and not merely recorded because
 		// the lock mirror alone is INERT at this site: Camera's sky-lock is
 		// dormant while `target` is set (Camera::update), so leaving the old-
 		// only setFlagTraking(0) would hold `Camera::target` and the new path
 		// would keep tracking while old holds the sky (MEASURED pre-change:
-		// camera.tracked='Mars' with old flagTraking 0, §11.150).
+		// camera.tracked='Mars' with old flagTraking 0, S11.150).
 		// Reachability of this site, since it is not the obvious one: the
 		// `planet`/`star`/`nebula`/`hp` branches above go through
-		// selectObject(Object), which clears tracking itself — unless the
+		// selectObject(Object), which clears tracking itself -- unless the
 		// object is ALREADY selected, where that overload returns early. So
 		// this fires on a RE-select of the tracked body.
 		if (navigation->getFlagTraking())
@@ -1195,18 +1195,18 @@ bool Core::findAndSelect(const Vec3d& pos)
 //! Find and select an object near given screen position
 bool Core::findAndSelect(int x, int y)
 {
-	// New route (B24-select, INTENT §11.106) asked FIRST since D26
-	// (§11.113(e), [vixy]: "Fable rec option 1" - the visible composed child
+	// New route (B24-select, INTENT S11.106) asked FIRST since D26
+	// (S11.113(e), [vixy]: "Fable rec option 1" - the visible composed child
 	// TAKES the click when it lands ON the child). It answers only for bodies
 	// the old tree cannot see, and only when the click is on the child's own
-	// drawn disc or within the pick tolerance of its centre - the §11.106(d)
+	// drawn disc or within the pick tolerance of its centre - the S11.106(d)
 	// two-tier rule, now extended ACROSS the old/new seam instead of stopping
 	// at it. Everywhere else it returns nothing and old picking decides
 	// exactly as before, so the default-object UX (click anywhere on the
 	// parent's disc -> parent) is untouched off the child's pixels.
 	// Before D26 this ran only after cleverFind declined, which made a rover
 	// drawn on its moon's disc permanently unselectable by pointer
-	// (§11.106(e), measured). The pick happens in the new path's screen frame,
+	// (S11.106(e), measured). The pick happens in the new path's screen frame,
 	// which is why the position goes down as window pixels rather than as the
 	// old equatorial ray.
 	Object obj = ssystemFactory->searchNewOnlyObjectAt(x, y);
@@ -1366,12 +1366,12 @@ Object Core::cleverFind(int x, int y) const
 	return cleverFind(v);
 }
 
-// Both-paths fov mirror (INTENT §11.40 / §11.15c residual). The OLD projection
+// Both-paths fov mirror (INTENT S11.40 / S11.15c residual). The OLD projection
 // eases its own fov; the NEW-path fov authority is ModularBody::halfFov, driven
 // through Camera::setHalfFov and read as Renderer clipping_fov.z
 // (Renderer.cpp:107/118). coreLink::zoomTo already mirrors scripted/UI `zoom
-// fov` (verified reaching the setter, §11.40); auto-zoom drove projection->zoomTo
-// DIRECTLY, so `zoom auto in/out` desynced the two paths (the §11.19 A/B
+// fov` (verified reaching the setter, S11.40); auto-zoom drove projection->zoomTo
+// DIRECTLY, so `zoom auto in/out` desynced the two paths (the S11.19 A/B
 // confound). Mirror at the target: same fov, same duration - the OLD path is
 // unchanged (the projection call below), the Camera eases to the same target.
 // AXIS/moon_scale seam precedent (both-paths, old behavior untouched).
@@ -1392,11 +1392,11 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 	if (!navigation->getFlagTraking()) {
 		navigation->setFlagTraking(true);
 		navigation->moveTo(selected_object.getEarthEquPos(navigation), move_duration, false, 1);
-		// NEW path (B17): a commanded view move arms the offset — mirror the old
+		// NEW path (B17): a commanded view move arms the offset -- mirror the old
 		// navigator->moveTo (zooming_mode != -1) that arms view_offset_transition
 		// (navigator.cpp:73-78). The Camera's per-frame tracking lookTo does NOT
 		// arm (old's per-frame tracking holds equ_vision without a moveTo), so
-		// the arm is these discrete moveTo sites only — the offset stays armed
+		// the arm is these discrete moveTo sites only -- the offset stays armed
 		// (sticky) until a zoom-out-to-init disarms it (autoZoomOut, below).
 		if (Camera::instance)
 			Camera::instance->armViewOffset(true);
@@ -1437,7 +1437,7 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 				// Need to go to init fov/direction
 				zoomToBothPaths(InitFov, move_duration);
 				navigation->moveTo(InitViewPos, move_duration, true, -1);
-				// D15(c), §11.150: both-paths, like the fov and the offset
+				// D15(c), S11.150: both-paths, like the fov and the offset
 				// beside them. Old-side identical (setFlagTracking(false) ->
 				// setFlagTraking(0); setFlagLockSkyPosition(false) ->
 				// setFlagLockEquPos(0)). The DISABLE half is the one that
@@ -1447,7 +1447,7 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 				// 131 182 px>32 against a 0 px floor).
 				setFlagTracking(false);
 				setFlagLockSkyPosition(false);
-				// NEW path (B17): zoom-out-to-init disarms the view offset — the
+				// NEW path (B17): zoom-out-to-init disarms the view offset -- the
 				// old view_offset_transition ramp-to-0 (navigator.cpp:76-77, the
 				// zooming_mode==-1 branch this -1 move sets).
 				if (Camera::instance)
@@ -1483,7 +1483,7 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 	//  cout << "Unzoom to initfov\n";
 	zoomToBothPaths(InitFov, move_duration);
 	navigation->moveTo(InitViewPos, move_duration, true, -1);
-	// D15(c), §11.150 — same both-paths transition as the manual branch above.
+	// D15(c), S11.150 -- same both-paths transition as the manual branch above.
 	setFlagTracking(false);
 	setFlagLockSkyPosition(false);
 	// NEW path (B17): zoom-out-to-init disarms the view offset (old
@@ -1678,7 +1678,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZODIAC,Utility::strToVec3f(conf.getStr(section,SCK_ZODIAC_COLOR)));
 
 	{
-		// B5 §6.9 pilot DUAL SEAM (F0, §11.102(e3)): the colour scheme's oort
+		// B5 S6.9 pilot DUAL SEAM (F0, S11.102(e3)): the colour scheme's oort
 		// colour drives BOTH clouds, exactly as `flag oort` drives both shows
 		// (CoreLink::oortSetFlagShow, plus the init mirror above). One value,
 		// read once, delivered to the two draws. Only meaningful when the
@@ -1810,7 +1810,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 
 
 //! Get a color used to display info about the currently selected object
-// @TODO reafire que l'objet sélectionné renvoie sa propore couleur
+// @TODO reafire que l'objet selectionne renvoie sa propore couleur
 Vec3f Core::getSelectedObjectInfoColor(void) const
 {
 	if (!selected_object) {
@@ -1818,7 +1818,7 @@ Vec3f Core::getSelectedObjectInfoColor(void) const
 		return Vec3f(1, 1, 1);
 	}
 	if (selected_object.getType()==OBJECT_NEBULA) return nebulas->getLabelColor();
-	// A composed/new-only body is a body here too (B24-select, §11.106) - the
+	// A composed/new-only body is a body here too (B24-select, S11.106) - the
 	// info colour is the body label colour, as for any other body.
 	if (selected_object.getType()==OBJECT_BODY
 	 || selected_object.getType()==OBJECT_MODULAR) return ssystemFactory->getDefaultBodyColor("label");
@@ -1955,11 +1955,11 @@ void Core::dragView(int x1, int y1, int x2, int y2)
 	setFlagLockSkyPosition(false);
 }
 
-// The old path's half of the ramp instrument (INTENT §11.133). EXACTLY the pair
+// The old path's half of the ramp instrument (INTENT S11.133). EXACTLY the pair
 // `Navigator::updateMove` reads and writes (navigator.cpp:186-189): the vision
 // vector of the ACTIVE mount, in spherical coordinates. Read through the
-// navigator's own const getters, so no old-path source is touched at all — the
-// §11.130 `oldView` readback precedent, one layer smaller.
+// navigator's own const getters, so no old-path source is touched at all -- the
+// S11.130 `oldView` readback precedent, one layer smaller.
 static void rampVisionAzAlt(const Navigator *nav, double &az, double &alt)
 {
 	Utility::rectToSphe(&az, &alt,
@@ -1970,7 +1970,7 @@ static void rampVisionAzAlt(const Navigator *nav, double &az, double &alt)
 //! Increment/decrement smoothly the vision field and position
 void Core::updateMove(int delta_time)
 {
-	// ---- ramp instrument, BEFORE half (INTENT §11.133; readback only) -----
+	// ---- ramp instrument, BEFORE half (INTENT S11.133; readback only) -----
 	// `active` is read before the scaling block below, which rewrites the
 	// magnitudes but never the zero/non-zero state, so this is the same
 	// predicate either side of it. The release row is the frame after the last
@@ -2029,7 +2029,7 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaHeight!=0) {
 		observatory->multAltitude(vzm.deltaHeight);
-		// DUAL SEAM (B21 unification, INTENT §11.71 finding / §11.72(c) residual):
+		// DUAL SEAM (B21 unification, INTENT S11.71 finding / S11.72(c) residual):
 		// the interactive altitude ramp reaches the new path through its ONE
 		// descent authority (Camera::multAlt -> Camera::descend, view-directed
 		// near / last-selected far / legacy radial when anchored) instead of a
@@ -2045,7 +2045,7 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaFov != 0 ) {
 		projection->changeFov(vzm.deltaFov);
-		// DUAL SEAM (B34's zoom ramp, INTENT §11.133). The drawn fov authority
+		// DUAL SEAM (B34's zoom ramp, INTENT S11.133). The drawn fov authority
 		// is ModularBody::halfFov, not the projector's, and the ramp reached
 		// only the projector - MEASURED on the instrument commit: 215 steps
 		// moving the old fov 60.00000 -> 28.40440 deg with halfFov
@@ -2066,10 +2066,10 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaAz != 0 || vzm.deltaAlt != 0) {
 		navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
-		// DUAL SEAM (B34's interactive VIEW ramp, INTENT §11.133 - the row's
+		// DUAL SEAM (B34's interactive VIEW ramp, INTENT S11.133 - the row's
 		// last member). Before this line the arrow keys turned the OLD
 		// navigator and left the drawn camera exactly where it was
-		// (§11.108(b2), measured: old 73 777 px>32, new az/alt bit-identical).
+		// (S11.108(b2), measured: old 73 777 px>32, new az/alt bit-identical).
 		// The SAME two numbers go to both paths: Camera::lookRel is the exact
 		// counterpart of Navigator::updateMove and carries old's convention,
 		// old's pole clamp and old's zero/zero guard (the argument, the sign
@@ -2091,7 +2091,7 @@ void Core::updateMove(int delta_time)
 		navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
 	}
 
-	// ---- ramp instrument, AFTER half (INTENT §11.133; readback only) ------
+	// ---- ramp instrument, AFTER half (INTENT S11.133; readback only) ------
 	if (rampRecord) {
 		step.dAz = vzm.deltaAz;
 		step.dAlt = vzm.deltaAlt;
@@ -2296,7 +2296,7 @@ static inline MatchTol matchTolerancesFor(OBJECT_TYPE t) {
     switch (t) {
         case OBJECT_STAR:          return { 0.30, 0.15f }; // very tight for stars
         case OBJECT_BODY:          return { 0.10, 0.50f }; // planets/satellites
-        // A new-path-only body (composed, B24-select §11.106) is a body: same
+        // A new-path-only body (composed, B24-select S11.106) is a body: same
         // tolerance. Without this it fell to the 1 arcsec default, which would
         // call two distinct composed bodies closer than that ONE object.
         case OBJECT_MODULAR:       return { 0.10, 0.50f };
@@ -2316,7 +2316,7 @@ static inline bool isSameLogicalObject(const Object& a,
                                        const Navigator* nav,
                                        bool useMagnitudeTieBreaker = true)
 {
-    // 0) Fast path: identical underlying pointer → same object
+    // 0) Fast path: identical underlying pointer -> same object
     if (a == b) return true;
 
     // 1) Different types => different objects
@@ -2337,7 +2337,7 @@ static inline bool isSameLogicalObject(const Object& a,
     const MatchTol tol = matchTolerancesFor(ta);
 
     // Convert arcseconds to radians inline:
-    // radians = arcseconds * (π / (180 * 3600))
+    // radians = arcseconds * (pi / (180 * 3600))
     const double tolRad = tol.pos_arcsec * (M_PI / (180.0 * 3600.0));
 
     // If the angular separation is larger than tolerance, not the same object
@@ -2387,10 +2387,10 @@ bool Core::selectObject(const Object &obj)
 	selected_object = obj;
 	setSelectedBodyName(selected_object);
 	// If an object was selected keep the earth following
-	// D15(c), §11.150: through the both-paths mirror, so the hold the old path
+	// D15(c), S11.150: through the both-paths mirror, so the hold the old path
 	// takes over reaches the path that DRAWS. Pre-change this site left old
 	// holding the sky (0.0000 deg over a 0.05 d sidereal advance) while the new
-	// path drifted with the horizon (18.0493 deg, 3287 px>32) — the ENABLE half
+	// path drifted with the horizon (18.0493 deg, 3287 px>32) -- the ENABLE half
 	// of the same desync.
 	if (getFlagTracking())
 		setFlagLockSkyPosition(true);
@@ -2420,7 +2420,7 @@ bool Core::selectObject(const Object &obj)
 		case OBJECT_BODY:
 		// A new-path-only body (composed, B24) is a body in every user-visible
 		// sense: same selection semantics, same recorded command. The factory
-		// seam routes it to the tree that owns it (INTENT §11.106).
+		// seam routes it to the tree that owns it (INTENT S11.106).
 		case OBJECT_MODULAR:
 			ssystemFactory->setSelected(selected_object);
 			// potentially record this action
@@ -2528,8 +2528,8 @@ void Core::setViewOffset(double offset)
 	if (offset < -0.5) off = -0.5;
 	if (offset > 0.5)  off =  0.5;
 
-	// §2(f): view_offset is a fraction of the fov radius; values outside
-	// [-0.5,0.5] are rejected (clamped). Old clamped SILENTLY — report the
+	// S2(f): view_offset is a fraction of the fov radius; values outside
+	// [-0.5,0.5] are rejected (clamped). Old clamped SILENTLY -- report the
 	// rejection with the applied value + valid domain so the operator can fix
 	// the config/command. Screen-identical to old (the clamped value is the
 	// same), a diagnostic only.
@@ -2544,8 +2544,8 @@ void Core::setViewOffset(double offset)
 	// adjust view direction (if tracking, should be corrected before render)
 	navigation->setLocalVision(InitViewPos);
 
-	// NEW path (B17, §11.79(c)): the SAME clamped scalar lands on the Camera.
-	// Core::setViewOffset is the ONE sink both §2(c) channels ([navigation]
+	// NEW path (B17, S11.79(c)): the SAME clamped scalar lands on the Camera.
+	// Core::setViewOffset is the ONE sink both S2(c) channels ([navigation]
 	// view_offset at startup + `set zoom_offset <v>` at runtime, R11) funnel
 	// into, so both reach the new path through this single authority (I2); the
 	// clamp above is that authority's, not duplicated in the Camera.

@@ -111,7 +111,7 @@ vec4 asphericProjectAdvanced(vec4 invec, vec3 clipping_fov)
             f = M_PI - f;
         win.w = mix(-1.0, 1.0, f<0.9*M_PI);
 
-		// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+		// Stereographic projection: r = tan(alpha/2) / tan(alpha_max/2)
 		f = tan(f * 0.5) / tanHalfFovOver2;
 
         f /= rq1;

@@ -274,13 +274,13 @@ void SkyGrid::draw(const Projector* prj)
 
 					if ( gtype == EQUATORIAL ) {
 						if (internalNav)
-							sprintf( str, "%d°E", (24-nm)*15);
+							sprintf( str, "%d\xc2\xb0" "E", (24-nm)*15);
 						else
 							sprintf( str, "%dh", nm);
 					} else if ( gtype == ALTAZIMUTAL ) {
-						sprintf( str, "%d°", nm<12 ? ((12-nm)*15) : ((36-nm)*15) );
+						sprintf( str, "%d\xc2\xb0", nm<12 ? ((12-nm)*15) : ((36-nm)*15) );
 					} else {
-						sprintf( str, "%d°", nm<12 ? (360-(12-nm)*15) : (360-(36-nm)*15) );
+						sprintf( str, "%d\xc2\xb0", nm<12 ? (360-(12-nm)*15) : (360-(36-nm)*15) );
 					}
 
 					Mat4f TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
@@ -302,7 +302,7 @@ void SkyGrid::draw(const Projector* prj)
 						angle *= -1;
 					}
 
-					sprintf( str, "%d°", (i-8)*10);
+					sprintf( str, "%d\xc2\xb0", (i-8)*10);
 
 					if ( gtype == GALACTIC || gtype == ALTAZIMUTAL || (gtype == EQUATORIAL && i >= 8)) {
 						angle += M_PI;

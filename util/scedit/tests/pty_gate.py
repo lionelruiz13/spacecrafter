@@ -5,8 +5,8 @@
 
 WHAT THIS CLOSES. Every other gate reaches live mode from one side or the other:
 `ui_selftest` pins what the editor DRAWS, and the `live_*` legs pin what the core
-and the client DO. Between them sat a seam nothing measured — that F6 is bound to
-connect, F7 to send the caret's line and F8 to play the file — read from
+and the client DO. Between them sat a seam nothing measured -- that F6 is bound to
+connect, F7 to send the caret's line and F8 to play the file -- read from
 `src/sc_tui.cpp` and believed. This runs the real binary on a pseudo-terminal,
 presses the keys, and asserts on the STAND-IN ENGINE'S side what arrived, so a
 key bound to nothing cannot pass.
@@ -15,7 +15,7 @@ The control codes are pressed rather than the function keys: F6 and friends are
 terminal-dependent escape sequences, the control twins exist precisely for
 terminals that eat them, and this gate is not the place to encode one terminal's
 table. The function keys and the control codes are the same branch in
-`sc_tui.cpp` — that much IS read rather than measured, and it is one `||`.
+`sc_tui.cpp` -- that much IS read rather than measured, and it is one `||`.
 
 Stdlib only. Exit 0 all green, 1 a check failed.
 """
@@ -122,7 +122,7 @@ def main():
               "Ctrl-L sent the line under the caret, verbatim: %s" % eng.lines())
 
         # The caret on a COMMENT line: the engine would run nothing, so nothing
-        # is sent — the refusal is scedit's own reading of the engine's rule.
+        # is sent -- the refusal is scedit's own reading of the engine's rule.
         before = len(eng.lines())
         ed.press(b"\x1b[B", 0.4)                    # arrow down, onto line 2
         ed.press(CTRL_L, 1.2)

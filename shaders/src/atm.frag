@@ -43,7 +43,7 @@ void main(void)
     // join the other side of the atmosphere
     // line/sphere collision:
     //https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
-    // delta = (F.(C-O))²-||C-O||²+r²
+    // delta = (F.(C-O))^2-||C-O||^2+r^2
     vec3 OC = -bodyPos2;
     float b = dot(ray,OC); //= -0,0000504613 * x
     float delta = b*b -dot(OC,OC) +1;//;+ planetRadius*planetRadius;
@@ -51,13 +51,13 @@ void main(void)
 
     float result;
     if (delta>0) {
-        // terre touchée
-        // r = -(F.CO)+-sqrt((F.CO)²-CO.CO+r²)
+        // terre touchee
+        // r = -(F.CO)+-sqrt((F.CO)^2-CO.CO+r^2)
         float deltasqrt = sqrt(delta);
         result = - b - deltasqrt;
 
     } else {
-        // atmosphère touchée
+        // atmosphere touchee
         deltaAtm = delta + atmRadius2*atmRadius2 -1;// - planetRadius*planetRadius;
 
         float deltasqrt = sqrt(deltaAtm);

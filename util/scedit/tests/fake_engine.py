@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """A stand-in for spacecrafter's control socket, framing bytes the way the
-engine frames them — so `sc_tcpclient` can be gated without a dome.
+engine frames them -- so `sc_tcpclient` can be gated without a dome.
 
 WHY A FAKE AND NOT THE ENGINE. Two different questions. Whether scedit's client
 speaks the protocol correctly is answerable at a desk, deterministically, in
@@ -27,12 +27,12 @@ WHAT IS IMITATED, and where each rule was read (code `116f6d19`):
     [io.cpp computeNormalString, INTENT 11.188]. A diagnostic is one record,
     `$DIAG|<origin>|<message>|<subject>`, sent to those subscribers and to
     nobody else - `diag_broadcast()` is how a gate makes one happen;
-  - ONLY `get status …` and `search name …` produce an answer at all; every
+  - ONLY `get status ...` and `search name ...` produce an answer at all; every
     other command is executed in silence [app_command_interface.cpp:1284-1301,
     1415 are the only callers of setOutput in the tree];
   - an answer goes to the connection that asked AND to every $LOGON subscriber,
     the addressee excluded so a client that is both gets one copy
-    [io.cpp:694-726, INTENT §11.135].
+    [io.cpp:694-726, INTENT S11.135].
 
 Everything it receives is recorded, in order, per connection: a gate asserts
 what scedit SENT as well as what scedit did with what came back.
@@ -43,7 +43,7 @@ what scedit SENT as well as what scedit did with what came back.
 import argparse, json, os, socket, threading, time
 
 # The canned answers. Shapes are the engine's own (five ';'-separated floats for
-# `get status position` — src/coreModule/coreLink.cpp tcpGetPosition), but the
+# `get status position` -- src/coreModule/coreLink.cpp tcpGetPosition), but the
 # VALUES are this file's: a fake must never be mistaken for a measurement.
 POSITION = " 45.00; 3.00;  75.00;2461233.500000;  12.500000;"
 CONSTELLATION = "UMa"
@@ -82,7 +82,7 @@ class FakeEngine:
         try:
             # Same reason as the connection sockets below: a thread is blocked in
             # accept() on this fd, and close() alone leaves the open file
-            # description — and therefore the LISTEN — alive, so the port goes on
+            # description -- and therefore the LISTEN -- alive, so the port goes on
             # accepting after stop() returns. Measured: a gate that stopped the
             # engine and then asked scedit to connect "where nothing listens" was
             # answered by a socket that was still there.
@@ -98,7 +98,7 @@ class FakeEngine:
         for s in socks:
             # SHUTDOWN before close, and this is not a nicety: on Linux,
             # close()ing a socket another thread is blocked in recv() on does
-            # NOT tear the connection down — the blocked call holds the open
+            # NOT tear the connection down -- the blocked call holds the open
             # file description, so no FIN goes out and the peer sees a live
             # socket that has simply gone quiet. shutdown() acts on the
             # connection itself, so the peer gets its end-of-stream at once.
@@ -127,7 +127,7 @@ class FakeEngine:
             return [l for c, l in self.received if c == conn_id]
 
     def wait_for(self, text, timeout=5.0):
-        """Block until a line equal to `text` has arrived. Returns True/False —
+        """Block until a line equal to `text` has arrived. Returns True/False --
         a gate never sleeps a fixed time waiting for the other side."""
         end = time.time() + timeout
         while time.time() < end:
@@ -222,7 +222,7 @@ class FakeEngine:
         with self.lock:
             self.received.append((conn_id, line))
         # The control commands, answered on the asking socket only and WITHOUT
-        # going through the output queue — io.cpp answers them inline.
+        # going through the output queue -- io.cpp answers them inline.
         if line.startswith("$NOTICE"):
             self._write(sock, "$NOTICE $LOGON $LOGOFF")
             return

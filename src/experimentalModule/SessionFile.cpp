@@ -39,7 +39,7 @@ std::string f2s(float v)
 // The file a name denotes, and the refusals that stand between a name and a
 // path. Both live HERE because this is the level that owns where sessions go -
 // the same argument that put `body action save`'s refusals at the SSystemFactory
-// seam (§11.121(e)).
+// seam (S11.121(e)).
 bool resolve(const std::string &name, std::string &path, const char *verb)
 {
     const std::string n = name.empty() ? DEFAULT_NAME : name;
@@ -58,14 +58,14 @@ bool resolve(const std::string &name, std::string &path, const char *verb)
     return true;
 }
 
-// The D8 use-site barrier at this save's own use sites (§6.1). A body the
+// The D8 use-site barrier at this save's own use sites (S6.1). A body the
 // engine froze (hidden - and a hidden body is a legal observer reference,
-// §11.113(b)(vi)) holds its position at its freeze date until something asks;
+// S11.113(b)(vi)) holds its position at its freeze date until something asks;
 // a save that named it without asking would describe a scene at a date that has
 // passed, and the restore would make that permanent. `useNow` is a no-op for a
 // body the walks still evaluate, so this costs nothing in the ordinary case.
 // SCOPE, stated rather than implied: this slice names three bodies (the
-// reference, the tracked one and the selection). The obligation §6.1 calls
+// reference, the tracked one and the selection). The obligation S6.1 calls
 // "the first consumer that touches EVERY body" arrives with the per-body
 // override ledger, which walks the whole tree.
 void useNow(const std::string &name)
@@ -79,7 +79,7 @@ void useNow(const std::string &name)
 // Every system in this tree that came from a file. `ModularBody::forEach` walks
 // the global registry, which is the one place that knows every body there is -
 // asking the render lists instead would miss a hidden one, and a hidden system
-// is still loaded content (§11.121(b)'s lesson, from the other side).
+// is still loaded content (S11.121(b)'s lesson, from the other side).
 void collectSystems(std::vector<ModularSystem *> &out)
 {
     ModularBody::forEach([&out](ModularBody &b) {
@@ -97,7 +97,7 @@ std::string v2s(const Vec3f &c)
 }
 
 // THE MISS REPORT'S CONTEXT, and the reason it is not the key (D34,
-// §11.113(m)): the key is the plain englishName, because that is the identifier
+// S11.113(m)): the key is the plain englishName, because that is the identifier
 // users already know and the one the engine enforces uniqueness on. The
 // system-qualified tree path is what makes a MISS legible - which tree the
 // override belonged to, so "the data renamed it" reads differently from "that
@@ -118,27 +118,27 @@ std::string qualifiedPath(ModularBody *b)
     return (file.empty() ? std::string("<no file>") : file) + "::" + chain;
 }
 
-// A flag or a value another §2 row owns. The list is short and each entry
+// A flag or a value another S2 row owns. The list is short and each entry
 // names the row that owns it, because "why is this not in the file" must be
-// answerable from the file (§2(f)).
+// answerable from the file (S2(f)).
 bool excludedFlag(const std::string &n)
 {
-    return n == "track_object"          // §2 row C5 - [selection] owns it
-        || n == "lock_sky_position"     // §2 row B9  - [observer] owns it
-        || n == "experimental_path"     // §2 row E6  - a dev gate, not show state
-        || n == "experimental_shadows"; // §2 row E6
+    return n == "track_object"          // S2 row C5 - [selection] owns it
+        || n == "lock_sky_position"     // S2 row B9  - [observer] owns it
+        || n == "experimental_path"     // S2 row E6  - a dev gate, not show state
+        || n == "experimental_shadows"; // S2 row E6
 }
 
 bool excludedValue(const std::string &n)
 {
-    return n == "home_planet"           // §2 row B1  - [observer] owns it
-        || n == "zoom_offset"           // §2 row B10 - [observer] owns it
-        || n == "heading"               // §2 row B6  - D28's mandated carve-out
-        || n == "landscape_name"        // §2 row F1  - needs the pin, not the name
-        || n == "time_zone"             // §2 row A6  - the config channel persists it
-        || n == "date_display_format"   // §2 row A6
-        || n == "time_display_format"   // §2 row A6
-        || n == "startup_time_mode";    // §2 row A6
+    return n == "home_planet"           // S2 row B1  - [observer] owns it
+        || n == "zoom_offset"           // S2 row B10 - [observer] owns it
+        || n == "heading"               // S2 row B6  - D28's mandated carve-out
+        || n == "landscape_name"        // S2 row F1  - needs the pin, not the name
+        || n == "time_zone"             // S2 row A6  - the config channel persists it
+        || n == "date_display_format"   // S2 row A6
+        || n == "time_display_format"   // S2 row A6
+        || n == "startup_time_mode";    // S2 row A6
 }
 
 } // namespace
@@ -183,7 +183,7 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
     Section observer;
     observer.setHeader("observer");
     camera->saveSession(observer);
-    // §2 row B19's twin, and the one field of it that is NOT derivable from the
+    // S2 row B19's twin, and the one field of it that is NOT derivable from the
     // camera: the direction the OLD path draws the sky from. See Host for the
     // measurement that put it here rather than leaving it to B19's clause.
     {
@@ -197,7 +197,7 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
         // save is not byte-identical to the first (measured: 10993 vs 11010 B,
         // T4). Nine significant digits absorb that drift and are still three
         // orders finer than a pixel: at fov 45 on a 2048 dome one pixel is
-        // 3.8e-4 rad. Same class as the fov-in-degrees rider, §11.128(c).
+        // 3.8e-4 rad. Same class as the fov-in-degrees rider, S11.128(c).
         observer.appendEntry("sky_vision",
                              f2s(static_cast<float>(sx)) + "," +
                              f2s(static_cast<float>(sy)) + "," +
@@ -210,7 +210,7 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
     selection.appendEntry("selected", selected);
     selection.appendEntry("track_object", host.getTracking() ? "true" : "false");
     if (selected.empty()) {
-        // §2 row C4 / D34's own unanswered half, said where it is missing.
+        // S2 row C4 / D34's own unanswered half, said where it is missing.
         selection.annotate("selected", "non-body-selection-unkeyed",
             "A selected STAR, nebula or DSO is not carried by this session. Its identity key "
             "(a catalogue identifier) is the one part of DECISIONS_PENDING D34 that was not "
@@ -219,14 +219,14 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
     }
     sections.push_back(std::move(selection));
 
-    // THE BULK VALUE ROWS (§2 E3/E4/E5). Each is written from the command
+    // THE BULK VALUE ROWS (S2 E3/E4/E5). Each is written from the command
     // surface's own inventory, so this code names no flag and no colour: what
     // the surface can read, the session carries.
     //
     // WHAT IS DELIBERATELY LEFT OUT, and it is per-ROW rather than per-group,
-    // because §2 classifies rows: a name another section of this file already
+    // because S2 classifies rows: a name another section of this file already
     // owns is not written twice (I2 - two answers to one question is how a
-    // file starts contradicting itself), and a name whose §2 row excludes it
+    // file starts contradicting itself), and a name whose S2 row excludes it
     // stays out with its reason.
     if (cmds) {
         int nFlags = 0, nValues = 0, nColors = 0;
@@ -246,7 +246,7 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
             ". `track_object` and `lock_sky_position` are carried by [selection] and "
             "[observer] instead - they are the same state, and one file must not hold two "
             "answers to one question. `experimental_path` and `experimental_shadows` are "
-            "excluded by b31-design §2 row E6: they are development gates that retire with "
+            "excluded by b31-design \xc2\xa7" "2 row E6: they are development gates that retire with "
             "the old render path, and a session is a show artefact.");
         sections.push_back(std::move(flags));
 
@@ -265,15 +265,15 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
             "`heading` is DECISIONS_PENDING D28's mandated carve-out (what it means across a "
             "reference change is unanswered, and a saved number would bake in an answer "
             "nobody gave); `landscape_name` needs the pin-vs-auto distinction its own row "
-            "(§2 F1) carries, and the name alone would silently turn a pin into a "
-            "coincidence; the timezone and the date/time display formats are §2 row A6 "
+            "(\xc2\xa7" "2 F1) carries, and the name alone would silently turn a pin into a "
+            "coincidence; the timezone and the date/time display formats are \xc2\xa7" "2 row A6 "
             "preferences the config channel already persists. Left out because they cannot "
             "be READ - there is no getter anywhere in the tree, so nothing here can be "
             "written honestly: moon_brightness, sun_brightness, milky_way_fader_duration, "
             "zodiacal_intensity, milky_way_texture, star_fader_duration, "
-            "text_fading_duration, screen_fader (§2 row H6 wants it), stall_radius_unit, "
+            "text_fading_duration, screen_fader (\xc2\xa7" "2 row H6 wants it), stall_radius_unit, "
             "datetime_display_position, datetime_display_number, init_fov - and `mode`, "
-            "which writes nothing at all (§2 row K3).");
+            "which writes nothing at all (\xc2\xa7" "2 row K3).");
         sections.push_back(std::move(values));
 
         Section colors;
@@ -287,11 +287,11 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
             " `color` names this build knows, this session carries " + std::to_string(wroteColors) +
             ". The rest have no read half at any level - the on-dome text colour and the star "
             "colour table - so they are named here instead of being guessed. The PER-BODY "
-            "colours are not these: they are §2 rows D3/D4 and live in [body:*].");
+            "colours are not these: they are \xc2\xa7" "2 rows D3/D4 and live in [body:*].");
         sections.push_back(std::move(colors));
     }
 
-    // THE PER-BODY OVERRIDE LEDGER (§2 group D). One section per body that
+    // THE PER-BODY OVERRIDE LEDGER (S2 group D). One section per body that
     // carries at least one override, keyed by plain englishName (D34).
     //
     // IT IS A DELTA, NOT A SNAPSHOT, and that is the whole point (D30): each
@@ -368,7 +368,7 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
         for (Section &s : bodySections)
             sections.push_back(std::move(s));
 
-        // §2 row D5: the runtime colour DEFAULTS. They are not per-body and
+        // S2 row D5: the runtime colour DEFAULTS. They are not per-body and
         // they are invisible in any per-body snapshot - they change what FUTURE
         // bodies get - so they are their own section, and they are a snapshot
         // rather than a delta because no body authored them.
@@ -382,10 +382,10 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
             "These four are the colours a body gets when its declaration names none. "
             "Changing one recolours NO existing body - only the ones loaded afterwards - "
             "which is why they cannot be recovered from the [body:*] sections and have "
-            "their own place here (b31-design §2 row D5).");
+            "their own place here (b31-design \xc2\xa7" "2 row D5).");
         sections.push_back(std::move(defs));
 
-        // §2 row D9: tesselation. The values are shared by both render paths
+        // S2 row D9: tesselation. The values are shared by both render paths
         // through one object, so there is nothing per-body to record and the
         // section is global.
         if (const auto &tes = ModularBody::getTesselation()) {
@@ -402,7 +402,7 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
             std::to_string(ledgerBodies) + " body/bodies", LOG_TYPE::L_INFO);
     }
 
-    // THE MANIFEST (§3.3): what this session assumed was loaded. It is what
+    // THE MANIFEST (S3.3): what this session assumed was loaded. It is what
     // makes the file readable on another install - D32 turned the artifact into
     // a diagnostic one, and a diagnostic that does not say what it assumed is a
     // guess.
@@ -428,7 +428,7 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
 
     // The banner carries NO date and NO run identity, and that is a
     // requirement rather than an omission: a save of an unchanged state must be
-    // byte-identical to the one before it (b31-design §6.2 T4), and a
+    // byte-identical to the one before it (b31-design S6.2 T4), and a
     // timestamp would give the file no fixed point at all.
     const std::vector<std::string> banner = {
         " spacecrafter SESSION - machine-owned, disposable.",
@@ -470,7 +470,7 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
         else if (h.compare(0, 7, "system:") == 0) systems.push_back(&s);
     }
 
-    // §9(1): a file from a version this build does not know is REFUSED whole.
+    // S9(1): a file from a version this build does not know is REFUSED whole.
     // Half-applying a future file is the worst failure available here - the
     // operator gets a scene that is neither the saved one nor the running one.
     if (!header || !header->find("format")) {
@@ -490,9 +490,9 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
     }
 
     // The manifest is CHECKED, not enacted. Loading a system this session names
-    // and this app does not have is the in-session load/unload half of §3.3 and
+    // and this app does not have is the in-session load/unload half of S3.3 and
     // it needs more than the manifest carries (where the system node sits, and
-    // the galactic load surface, which is §5.37's own suspended question). So a
+    // the galactic load surface, which is S5.37's own suspended question). So a
     // divergence is REPORTED and the rest of the restore proceeds - the
     // operator is told which file the session expected.
     for (const Section *s : systems) {
@@ -562,10 +562,10 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
         // The other three DUAL values, before the camera's own members. The sky
         // lock is set FIRST because engaging it CAPTURES the current view -
         // restoreSession then overwrites that capture with the matrix the
-        // session actually held, which is the value §2 row B9 calls state.
+        // session actually held, which is the value S2 row B9 calls state.
         if (const std::string *v = observer->find("fov"))
             host.setFov(Utility::strToDouble(*v, 0));
-        // THE VIEW OFFSET AND ITS LATCH (§2 row B10), before the direction:
+        // THE VIEW OFFSET AND ITS LATCH (S2 row B10), before the direction:
         // the one sink re-aims the old navigator to the config's initial view,
         // so anything that puts the direction back has to run after it.
         if (const std::string *v = observer->find("view_offset")) {
@@ -581,7 +581,7 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
         // the launch date (which is the system clock), at the launch place.
         // Turning the lock on there freezes that stale pair and every later
         // frame re-derives the local direction from it. Measured before the fix
-        // (INTENT §11.130, artifacts/f22view): the camera's alt/az identical to
+        // (INTENT S11.130, artifacts/f22view): the camera's alt/az identical to
         // the digit on both sides, the OLD view direction 107.634 deg apart
         // against an in-scene A/A floor of 1e-6 deg, 392 stars drawn against
         // 689, and a residual that moved every restore because the launch date
@@ -657,7 +657,7 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
     // every field it does NOT name at its current authored value - which is
     // what makes a data correction reach a session restored on top of it.
     //
-    // A KEY THAT DOES NOT RESOLVE IS REPORTED AND KEPT (D34, §11.113(m)): never
+    // A KEY THAT DOES NOT RESOLVE IS REPORTED AND KEPT (D34, S11.113(m)): never
     // dropped, never bound to a near match. Dropping it silently is a show that
     // looks wrong with no trace of why, and binding it to a same-named body
     // another system loaded is precisely the A29 hazard the plain-name key had
@@ -734,14 +734,14 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
             }
         }
     }
-    // §4.2: the session file is written by the same writer, so an unresolved
+    // S4.2: the session file is written by the same writer, so an unresolved
     // key is annotated IN PLACE, above its own section. Idempotent by the F13
     // rule - the same (key, reason) REPLACES - so a second restore of the same
     // file produces the same bytes.
     if (ledgerAnnotated)
         ModularSystemFormat::write(path, sections, {});
 
-    // The runtime colour DEFAULTS (§2 row D5) and tesselation (D9).
+    // The runtime colour DEFAULTS (S2 row D5) and tesselation (D9).
     for (const Section &s : sections) {
         if (s.getHeader() == "body_defaults") {
             if (const std::string *v = s.find("halo_color"))

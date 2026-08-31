@@ -133,7 +133,7 @@ Meteor::Meteor(Projector *proj, Navigator* nav, ToneReproductor* eye, double v)
 
 	unsigned int day_of_year = 81+equ_rotation*365/(2*M_PI);
 	day_of_year %= 365;
-	// radiant is located at 90° from Sun position
+	// radiant is located at 90deg from Sun position
 	equ_rotation -= M_PI_2;
     //std::cout << equ_rotation << "\n";
 

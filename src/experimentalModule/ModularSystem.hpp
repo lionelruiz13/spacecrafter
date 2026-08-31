@@ -55,8 +55,8 @@ public:
     }
     // The file this system was loaded from, and WHICH READER it belongs to.
     // Together they are the session manifest's per-system record (b31-design
-    // §3.3): a session says what it assumed was loaded, so that the file stays
-    // readable on an install that has something else loaded — which is what
+    // S3.3): a session says what it assumed was loaded, so that the file stays
+    // readable on an install that has something else loaded -- which is what
     // D32's diagnostic-artifact reading demands of it.
     inline const std::string &getSystemFilename() const {
         return systemFilename;
@@ -66,8 +66,8 @@ public:
     }
     // Load a system
     void loadSystem(const std::string &filename);
-    // B24 composed-system format (INTENT §11.78(d); the `type=` respell is
-    // Vixy-signed-off, D16 §11.79(j)). Same capability authorities as the
+    // B24 composed-system format (INTENT S11.78(d); the `type=` respell is
+    // Vixy-signed-off, D16 S11.79(j)). Same capability authorities as the
     // legacy path (loadBody / ModuleLoaderMgr::loadModule) behind a different,
     // thin parser (ModularSystemFormat) - a section is a DECLARATION carried by
     // ONE key, `type=`:
@@ -90,13 +90,13 @@ public:
     //     the BodyModule declarations, deduction off).
     // The two `type=` roles never collide: a module names its node with body=,
     // a node never does (that binding, not a value guess, disambiguates a
-    // mistyped family, §2(f)); the composed vs legacy `type=` namespaces stay
-    // apart because a different loader reads each file (D16 §11.79(j)).
+    // mistyped family, S2(f)); the composed vs legacy `type=` namespaces stay
+    // apart because a different loader reads each file (D16 S11.79(j)).
     // Sets systemFilename + composedFile, so reloadSystem() re-reads THIS
     // file (a composed system reloads like a legacy one, B16 parity).
     void loadComposedSystem(const std::string &filename);
     // Generate the machine-owned `.ini.disabled` twin of a legacy system file
-    // (the B25 generation half, INTENT §11.51(a)): parse `legacyFilename`
+    // (the B25 generation half, INTENT S11.51(a)): parse `legacyFilename`
     // (section order preserved - parent-before-child is load-bearing),
     // re-express every LOADED body as an explicit composition
     // (compose = explicit + one BodyModule declaration per family
@@ -104,32 +104,32 @@ public:
     // translated to relation=grounded, one authority per generated file) and
     // write through the one atomic writer (ModularSystemFormat::write).
     // Must run AFTER the legacy load - deduction queries live body state.
-    // The semantic-equivalence promise [vixy, §11.50(b)]: loading the twin
+    // The semantic-equivalence promise [vixy, S11.50(b)]: loading the twin
     // must reproduce the legacy load exactly; that makes generation a
     // corpus-wide coverage test of the composition grammar
     // (harness/b24_equivalence.py). applyHardcodedContent capability keys are
     // NOT emitted yet (B27 step 3 / B25-emit - a separate task; spellings are
-    // ratified, D10key §11.79(e)). Until it lands, a node's legacy body-type
+    // ratified, D10key S11.79(e)). Until it lands, a node's legacy body-type
     // stays under `type=` here (a non-family value = a valid node declaration).
     void generateComposedTwin(const std::string &legacyFilename, const std::string &outPath);
-    // Write THIS system to a composed file (B31 slice 2, b31-design §4.1; the
-    // route is Vixy's own [§11.51(a)]: "save a system on-the-fly as well by
+    // Write THIS system to a composed file (B31 slice 2, b31-design S4.1; the
+    // route is Vixy's own [S11.51(a)]: "save a system on-the-fly as well by
     // targeting without the .disabled or under a different name from scripts").
     // What it is FOR: a body a script pushed into the live tree exists only in
     // memory, and this is what turns it into ordinary authored data - from the
     // next launch it is loaded by the ordinary loader and its identity is what
-    // every authored body's identity already is (no new identity key, §4.1).
+    // every authored body's identity already is (no new identity key, S4.1).
     //
     // A FILE THAT ALREADY EXISTS IS EDITED, NEVER REBUILT: its own content is
     // the base (the sections this system was loaded from when it targets its own
     // file - annotations included - otherwise a parse of the target), so
     // comments, layout, malformed lines and keys this engine does not
-    // understand come back untouched (§11.66(b), the F13 layer). What this slice
+    // understand come back untouched (S11.66(b), the F13 layer). What this slice
     // ADDS to such a file is exactly what is missing from it: a declaration for
     // every live body the file does not declare, and the annotations the loader
     // produced about the data it read. What it deliberately does NOT do is edit
     // a declaration the file already carries - a value an operator changed at
-    // runtime is the session ledger's (b31-design §2 group D), a later slice, and
+    // runtime is the session ledger's (b31-design S2 group D), a later slice, and
     // silently rewriting an author's line here would pre-empt that decision.
     // A target that does not exist is built whole from the tree, like the twin.
     //
@@ -142,21 +142,21 @@ public:
     //
     // WHICH FILES may be written is NOT this level's decision and this level
     // cannot enforce it: the legacy ssystem.ini is READ-ONLY forever (D35,
-    // §2.0 D13). The path convention and that enforcement live at the
+    // S2.0 D13). The path convention and that enforcement live at the
     // SSystemFactory seam that owns them (saveCurrentSystem).
     // Returns false when the file could not be written (the writer left any
     // previous content untouched and said why).
     bool saveSystem(const std::string &outPath);
     // Load a body. `origin` is the section it was declared by, when that section
     // belongs to a file this engine may write (a composed file): the loader
-    // annotates it in place with what it diagnosed (b31-design §5.3). Null for a
+    // annotates it in place with what it diagnosed (b31-design S5.3). Null for a
     // legacy file (READ-ONLY forever, D35) and for a script's parameter map -
     // there is no datum in a writable file to annotate, and the log line is then
     // the whole diagnostic channel.
     //! `supplemental` says the caller is the RUNTIME push route (`body action
     //! load` -> SSystemFactory::addBody), not a file load - the provenance bit
     //! `body action clear` selects on (ModularBody::supplemental, B34
-    //! §11.108(f); old carries the same bit as ProtoSystem::addBody's
+    //! S11.108(f); old carries the same bit as ProtoSystem::addBody's
     //! `deletable` argument, false for file bodies). It is a parameter and not
     //! a post-hoc mark by the caller because only THIS function knows whether
     //! this call created the body: a load refused for a duplicate name would
@@ -231,7 +231,7 @@ public:
         needCleanUp = true;
     }
     // Internally used by ModularBody to inform the destruction of body in this
-    // system. BOUNDED since B39 (§11.117), and absence is now a LEGAL state, not
+    // system. BOUNDED since B39 (S11.117), and absence is now a LEGAL state, not
     // a broken invariant: hide() takes the parked subtree OUT of this list
     // (unregisterBody below), so a body destroyed while hidden - an anchor body
     // dropped by `camera action drop`, a hidden body's `body action reload` -
@@ -295,7 +295,7 @@ private:
     // One BodyModule declaration of the composed format (loadComposedSystem's
     // module half). `nodeParams` = this file's node sections by body name,
     // the overlay base. `type` = the module family, already resolved from the
-    // section's `type=` value by the caller (D16 §11.79(j): the one `type=` key
+    // section's `type=` value by the caller (D16 S11.79(j): the one `type=` key
     // is BOTH the node/module selector AND the family name).
     void loadDeclaredModule(std::map<std::string, std::string> &params, const std::string &header,
                             const std::map<std::string, std::map<std::string, std::string>> &nodeParams,
@@ -328,8 +328,8 @@ private:
     // it, in order (the F13 layer's whole-file record), kept so that a save can
     // give the file back whole instead of rebuilding it, and so that the
     // annotations the loader produced while reading it have something to travel
-    // on until an explicit save writes them (b31-design §5.3; a load NEVER
-    // rewrites the file - D33 decided against it, §11.113(l)).
+    // on until an explicit save writes them (b31-design S5.3; a load NEVER
+    // rewrites the file - D33 decided against it, S11.113(l)).
     // EMPTY after a legacy load, deliberately: the legacy file's layout is not a
     // write base, because that file is READ-ONLY forever (D35) and its twin is
     // machine-owned and built whole.

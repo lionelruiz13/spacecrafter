@@ -246,18 +246,18 @@ double Utility::getDecAngle(const std::string& str)
 }
 
 
-//! @brief Print the passed angle with the format ddÃƒÂ‚Ã‚Â°mm'ss(.ss)"
+//! @brief Print the passed angle with the format dddegmm'ss(.ss)"
 //! @param angle Angle in radian
 //! @param decimal Define if 2 decimal must also be printed
-//! @param useD Define if letter "d" must be used instead of Â°
+//! @param useD Define if letter "d" must be used instead of deg
 //! @return The corresponding string
 std::string Utility::printAngleDMS(double angle, bool decimals, bool useD)
 {
 	std::ostringstream oss;
 
 	char sign = '+';
-	// wchar_t degsign = L'Â°'; ???
-	std::string degsign = "°";
+	// wchar_t degsign = L'deg'; ???
+	std::string degsign = "\xc2\xb0";
 	//char degsign = '\u00B0';
 	if (useD) degsign = "d";
 

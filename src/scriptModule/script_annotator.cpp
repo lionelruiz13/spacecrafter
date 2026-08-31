@@ -165,7 +165,7 @@ void ScriptAnnotator::flush(bool naturalEnd)
 			out += pieces[i];
 		}
 		// Sibling temp in the target's own directory: rename atomicity is
-		// same-filesystem only (INTENT §11.52(a)).
+		// same-filesystem only (INTENT S11.52(a)).
 		const std::string tmp = path + ".tmp";
 		bool ok = false;
 		{

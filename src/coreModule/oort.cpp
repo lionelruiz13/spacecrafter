@@ -50,7 +50,7 @@ std::mt19937 oortRng() noexcept
 	return std::mt19937(OORT_SEED);
 }
 
-// Single authority for the oort cloud's spatial law (I2, B5 §6.9): the exact
+// Single authority for the oort cloud's spatial law (I2, B5 S6.9): the exact
 // per-point formula the old populate loop below used, extracted so BOTH paths
 // draw the SAME distribution without duplicating it. The distribution SHAPE is
 // verbatim from the historical loop; only the source of the three random draws
@@ -119,7 +119,7 @@ void Oort::populate(unsigned int nbr) noexcept
 {
 	vertex = m_dataGL->createBuffer(0, nbr, Context::instance->globalBuffer.get());
 	Vec3f *dataOort = (Vec3f *) Context::instance->transfer->planCopy(vertex->get());
-	// Shared spatial law (I2, B5 §6.9 - oortSamplePoint above) drawn from a
+	// Shared spatial law (I2, B5 S6.9 - oortSamplePoint above) drawn from a
 	// dedicated frozen-seed generator (B5-oort-2): this cloud is POINT-identical
 	// to the new-path OortModule's, which seeds its own generator from the SAME
 	// constant. The old render path's gates/intensity/draw-order are untouched;

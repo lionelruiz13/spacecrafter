@@ -84,7 +84,7 @@ public:
     }
     // TRACE (ring depth for orbit-line holes, old Ring::drawDepthTrace):
     // writes the ring annulus into the orbit-union depth range so an orbit
-    // line is cut behind the ring (LIVE 2026-07-19, INTENT §11.40, with its
+    // line is cut behind the ring (LIVE 2026-07-19, INTENT S11.40, with its
     // ORBIT consumer - holes have no observable without lines). Uses the
     // dedicated ring-trace family (TRIANGLE_STRIP, position-only).
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;

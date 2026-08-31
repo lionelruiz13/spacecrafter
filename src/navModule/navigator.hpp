@@ -94,7 +94,7 @@ public:
 	//! NOW. This is `setLocalVision` without its view-offset compensation:
 	//! that compensation is what an AIM owes a live offset, and a restore is
 	//! not an aim - it asserts a state that already had the offset in it.
-	//! Only a session restore uses it (INTENT §5.63 / §11.130); every other
+	//! Only a session restore uses it (INTENT S5.63 / S11.130); every other
 	//! caller of the old path is unchanged.
 	void restoreVision(const Vec3d& _localVision);
 
@@ -216,7 +216,7 @@ public:
 	//! there is no way to assert "armed" without also moving the view. A
 	//! restore has to assert exactly that and nothing else (D32 makes the latch
 	//! a saved condition and its ramp a motion that snaps), which is what this
-	//! is for. Restore-only (INTENT §11.130); no other caller.
+	//! is for. Restore-only (INTENT S11.130); no other caller.
 	void setViewOffsetTransition(float t) {
 		view_offset_transition = t;
 	}
@@ -234,15 +234,15 @@ public:
 
 	void alignUpVectorTo(const Mat4d& rot, double duration);
 
-	//! READBACK ONLY (INTENT §5.63 / §11.130) — writes this navigator's whole
+	//! READBACK ONLY (INTENT S5.63 / S11.130) -- writes this navigator's whole
 	//! view state as one JSON object onto the dual-path dump channel.
 	//! What it is FOR: the old path draws the star field, the milky way and the
 	//! nebulae from THIS object, and until this existed nothing outside could
-	//! ask it what view it was drawing from — so a restored scene whose sky
+	//! ask it what view it was drawing from -- so a restored scene whose sky
 	//! differed from the saved one could not be attributed to a field. It is a
 	//! const observer of already-computed state: it computes nothing, caches
 	//! nothing and is called only by the dump channel, so the old render path
-	//! is unchanged by construction (§11.52(b)).
+	//! is unchanged by construction (S11.52(b)).
 	void dumpTrace(std::ostream &out) const;
 
 private:

@@ -1,10 +1,10 @@
 /*
- * tests/tcpclient_test.cpp — sc_tcpclient against a stand-in engine.
+ * tests/tcpclient_test.cpp -- sc_tcpclient against a stand-in engine.
  *
  * Driven by tests/tcp_gate.py, one LEG per process: the gate starts the fake
  * engine (tests/fake_engine.py, whose framing rules are read from the engine's
  * own source), runs this binary with the leg's name and the endpoint, and then
- * asserts SERVER-SIDE what arrived — so each leg is checked from both ends and
+ * asserts SERVER-SIDE what arrived -- so each leg is checked from both ends and
  * a client that quietly sends nothing cannot pass by agreeing with itself.
  *
  *     tcpclient_test <leg> [host:port] [more...]
@@ -16,7 +16,7 @@
  * through a channel this binary does not touch (the session file, the script
  * log, `scedit --history`). What they do NOT drive is the terminal: they make
  * the calls the editor's keys make, in the editor's order, so a claim about a
- * KEY rests on the ui gate's frames plus this — stated in the delivery rather
+ * KEY rests on the ui gate's frames plus this -- stated in the delivery rather
  * than glossed over.
  *
  * Exit 0 when every check of the leg passed, 1 otherwise, 2 on misuse.
@@ -45,7 +45,7 @@ static void check(bool ok, const std::string &what)
 	std::printf("  %s  %s\n", ok ? "ok    " : "FAIL  ", what.c_str());
 }
 
-//! Every feed line, one string per entry, with the local ones marked — what a
+//! Every feed line, one string per entry, with the local ones marked -- what a
 //! leg asserts on.
 static std::vector<std::string> engineLines(const TcpClient &c)
 {
@@ -117,7 +117,7 @@ static void legParse()
 	check(!parseEndpoint("0", ep, err) && !parseEndpoint("65536", ep, err),
 	      "a port outside 1-65535 is refused");
 	// The default is the shipped one, and that is a fact about the ENGINE:
-	// io:tcp_port_in = 7805 (capability-surface §1 row 2).
+	// io:tcp_port_in = 7805 (capability-surface S1 row 2).
 	Endpoint d;
 	check(d.host == "127.0.0.1" && d.port == 7805,
 	      "the default endpoint is the shipped one: 127.0.0.1:7805");
@@ -134,7 +134,7 @@ static void legRefused(const Endpoint &ep)
 	check(c.state() == LinkState::Failed, "and the state says Failed, not Offline");
 	check(err.find(ep.text()) != std::string::npos, "the message names the endpoint");
 	check(err.find("io:enable_tcp") != std::string::npos,
-	      "and names the engine setting to check (§2(f): what, consequence, prevention)");
+	      "and names the engine setting to check (\xc2\xa7" "2(f): what, consequence, prevention)");
 	check(c.lastError() == err, "lastError carries the same sentence");
 	std::string serr;
 	check(!c.send("flag stars on", serr) && serr.find("not connected") != std::string::npos,
@@ -161,7 +161,7 @@ static void legBasic(const Endpoint &ep)
 	c.pollFor(2000, 1);
 	const std::vector<std::string> lines = engineLines(c);
 	check(containsSub(lines, "2461233.5"),
-	      "the answer to `get status position` arrives on THIS connection (§5.47/§11.135)");
+	      "the answer to `get status position` arrives on THIS connection (\xc2\xa7" "5.47/\xc2\xa7" "11.135)");
 	check(c.feed().size() > before + 1,
 	      "the feed carries both what was sent (a local line) and what came back");
 
@@ -174,7 +174,7 @@ static void legBasic(const Endpoint &ep)
 
 	// A command that is not `get`/`search` produces NOTHING on the wire. That
 	// is the engine's shape, and an editor must not present silence as either
-	// success or failure (sc_tcpclient.hpp § WHAT COMES BACK).
+	// success or failure (sc_tcpclient.hpp S WHAT COMES BACK).
 	const std::size_t quiet = engineLines(c).size();
 	check(c.send("flag stars on", err), "send an ordinary command");
 	c.pollFor(400);
@@ -182,7 +182,7 @@ static void legBasic(const Endpoint &ep)
 	      "an ordinary command is answered with silence: the feed gains nothing");
 
 	// Three: the subscription is not a command and is not counted, and the
-	// counter is per CONNECTION — it starts again at the reconnect below.
+	// counter is per CONNECTION -- it starts again at the reconnect below.
 	// (Written `== 4` first, on my own miscount; the gate said 3.)
 	check(c.linesSent() == 3, "three command lines were sent; $LOGON is not one of them");
 	check(c.bytesIn() > 0, "bytes were received");
@@ -228,7 +228,7 @@ static void legLatin1(const Endpoint &ep)
 	std::string err;
 	check(c.connect(ep, err), "connect: " + err);
 	c.pollFor(2000, 2);
-	// 0xE9 is 'é' in ISO-8859-1 and is not valid UTF-8 on its own: a client
+	// 0xE9 is 'e' in ISO-8859-1 and is not valid UTF-8 on its own: a client
 	// that decoded its input would mangle or refuse this.
 	const std::string line = "text name caf\xE9 string \"caf\xE9 \xA0 x\"";
 	check(c.send(line, err), "a latin-1 command line is sent: " + err);
@@ -259,7 +259,7 @@ static void legBound(const Endpoint &ep)
 }
 
 //! Another client asks; this one is subscribed and sees the answer. That is
-//! the $LOGON channel's actual semantics (INTENT §5.72), and it is why the
+//! the $LOGON channel's actual semantics (INTENT S5.72), and it is why the
 //! pane is a FEED.
 static void legFeed(const Endpoint &ep)
 {
@@ -295,11 +295,11 @@ static void legClosed(const Endpoint &ep)
 	check(!c.connected(), "the client notices that the engine closed the connection");
 	check(c.state() == LinkState::Failed, "the state is Failed, not Offline");
 	check(c.lastError().find("closed") != std::string::npos, "and says so: " + c.lastError());
-	// A LOCAL line: nothing came off the wire to say this — the wire went
+	// A LOCAL line: nothing came off the wire to say this -- the wire went
 	// away. The pane must still show it, which is why the feed carries both
 	// kinds. (Asserted against engineLines() first, and it failed, correctly.)
 	check(containsSub(allLines(c), "closed") && !containsSub(engineLines(c), "closed"),
-	      "the feed carries the event as a LOCAL line — the engine said nothing, scedit did");
+	      "the feed carries the event as a LOCAL line \xe2\x80\x94 the engine said nothing, scedit did");
 	std::string serr;
 	check(!c.send("flag stars on", serr), "nothing can be sent after that");
 }
@@ -377,8 +377,8 @@ static void legDiag(const Endpoint &ep)
 // ------------------------------------------------- the legs for a real engine
 
 //! Wait, at the editor's own cadence, for the file to change under the buffer.
-//! This is the bounded poll sc_tui.hpp describes — once a second, for a stated
-//! window — run here so the live instrument measures the real thing.
+//! This is the bounded poll sc_tui.hpp describes -- once a second, for a stated
+//! window -- run here so the live instrument measures the real thing.
 static bool waitForWriteBack(EditCore &core, int seconds)
 {
 	for (int i = 0; i < seconds; ++i) {
@@ -471,7 +471,7 @@ static void legLiveSend(const Endpoint &ep, const std::vector<std::string> &comm
 	c.disconnect();
 }
 
-//! §5.47: the reply to a `get` reaches the connection that ASKED. Before F27 it
+//! S5.47: the reply to a `get` reaches the connection that ASKED. Before F27 it
 //! reached only the $LOGON subscribers; this client is both, and must get one
 //! copy, not two.
 static void legLiveGet(const Endpoint &ep)
@@ -540,7 +540,7 @@ static void legLiveReconnect(const Endpoint &ep)
 }
 
 //! (d) Play the open file, let the engine write its `#!` back, and take it into
-//! a CLEAN buffer — the editor's whole write-back path, headless.
+//! a CLEAN buffer -- the editor's whole write-back path, headless.
 static void legLivePlay(const Endpoint &ep, const std::string &grammar,
                         const std::string &file, int seconds)
 {
@@ -578,7 +578,7 @@ static void legLivePlay(const Endpoint &ep, const std::string &grammar,
 }
 
 //! (e) The refusal, FORCED. The engine has written; the author has typed; the
-//! save must not happen. With `force`, the same driver takes the other choice —
+//! save must not happen. With `force`, the same driver takes the other choice --
 //! and the engine's tail is gone, which is what makes the refusal a fact rather
 //! than a hope.
 static void legLiveDirty(const Endpoint &ep, const std::string &grammar,

@@ -1,5 +1,5 @@
 /*
- * scedit — sc_tokenizer.cpp
+ * scedit -- sc_tokenizer.cpp
  *
  * Derivation of AppCommandInterface::parseCommand (app_command_interface.cpp
  * :124-176) and of the script-layer comment rule (script.cpp:114).
@@ -9,7 +9,7 @@
  * Method note (why this is written as a simulation and not as arithmetic):
  * the engine mutates the line before tokenizing it, so raw byte offsets shift.
  * Rather than reason about the shift, the normalisation is replayed on a
- * (buffer, offset-vector) pair — every surviving byte carries its own raw
+ * (buffer, offset-vector) pair -- every surviving byte carries its own raw
  * offset, so the raw span of a token is read off, never computed. The rule that
  * produced the shift can change without the mapping needing a second proof.
  */
@@ -63,7 +63,7 @@ public:
 	}
 
 	//! istream::get(). Returns -1 (EOF) and drops good() when there is nothing
-	//! left — exactly the condition the engine's quote loop breaks on.
+	//! left -- exactly the condition the engine's quote loop breaks on.
 	int get()
 	{
 		if (p_ < s_.size())
@@ -98,7 +98,7 @@ std::string asciiLower(const std::string &s)
 
 bool isTrueValue(const std::string &v)
 {
-	// Utility::isTrue, utility.hpp:160 — masking each byte with 0x5f and
+	// Utility::isTrue, utility.hpp:160 -- masking each byte with 0x5f and
 	// comparing to "TRUE"/"ON" is exactly a bit-5-insensitive byte compare.
 	switch (v.size()) {
 		case 4: {
@@ -196,7 +196,7 @@ std::string nearestNeighbour(const std::string &source, const std::vector<std::s
 
 LineKind classifyLine(const std::string &raw)
 {
-	// script.cpp:114 — `line[0]` on an empty std::string is the NUL terminator,
+	// script.cpp:114 -- `line[0]` on an empty std::string is the NUL terminator,
 	// which is exactly the `line[0] != 0` arm of the test.
 	const char c = raw.empty() ? '\0' : raw[0];
 	if (c == '#')
@@ -275,7 +275,7 @@ std::string Line::rawText(const Span &s) const
 }
 
 // ---------------------------------------------------------------------------
-// tokenizeLine — the derivation of parseCommand
+// tokenizeLine -- the derivation of parseCommand
 // ---------------------------------------------------------------------------
 
 Line tokenizeLine(const std::string &raw)
@@ -294,7 +294,7 @@ Line tokenizeLine(const std::string &raw)
 	std::vector<std::size_t> off(s.size());
 	std::iota(off.begin(), off.end(), std::size_t(0));
 
-	// The comment cut — parse_model.comments.mid_line, the ruled rule the
+	// The comment cut -- parse_model.comments.mid_line, the ruled rule the
 	// engine is brought into phase with (see the header). It runs FIRST, on the
 	// raw line: a '#' outside a "..." run ends the command, and quotes are
 	// counted by a plain toggle from the first byte, so a '#' inside quotes
@@ -314,7 +314,7 @@ Line tokenizeLine(const std::string &raw)
 		}
 	}
 
-	// :129-132 — strip leading spaces and tabs (and ONLY those: a leading '\r'
+	// :129-132 -- strip leading spaces and tabs (and ONLY those: a leading '\r'
 	// survives, which is why the script layer filters it first).
 	{
 		std::size_t k = 0;
@@ -326,7 +326,7 @@ Line tokenizeLine(const std::string &raw)
 		}
 	}
 
-	// :135-139 — every occurrence of ' " ' loses the byte AFTER the quote.
+	// :135-139 -- every occurrence of ' " ' loses the byte AFTER the quote.
 	// The engine re-searches from the start after each erase; replayed as-is,
 	// because a cascade (one erase creating a new match) is engine behaviour.
 	{
@@ -364,7 +364,7 @@ Line tokenizeLine(const std::string &raw)
 	// --- tokenisation -------------------------------------------------------
 	StreamSim stream(s);
 
-	// :145-146 — the command token, lowercased. On failure (whitespace-only
+	// :145-146 -- the command token, lowercased. On failure (whitespace-only
 	// line) the engine's `command` keeps the value executeCommand cleared it
 	// to: empty, and executeCommand:207 returns 0 without doing anything.
 	{
@@ -381,7 +381,7 @@ Line tokenizeLine(const std::string &raw)
 		}
 	}
 
-	// :148-167 — `while (commandstr >> key >> value)`.
+	// :148-167 -- `while (commandstr >> key >> value)`.
 	int pair_index = 0;
 	while (true) {
 		std::string key, value;
@@ -391,7 +391,7 @@ Line tokenizeLine(const std::string &raw)
 			break;                       // no key left: loop ends, nothing dropped
 
 		if (!stream.extract(value, vb, ve)) {
-			// :148 — the value extraction failed mid-pair, so the loop body
+			// :148 -- the value extraction failed mid-pair, so the loop body
 			// never runs and this key is SILENTLY DROPPED by the engine.
 			Token t;
 			t.role = TokenRole::DanglingKey;
@@ -414,7 +414,7 @@ Line tokenizeLine(const std::string &raw)
 			if (value[value.length() - 1] == '"') {               // :151
 				// one word in quotes. NOTE the degenerate case the engine
 				// hits for a lone `"`: length 1, so this branch is taken and
-				// substr(1, (size_t)-1) yields "" — a lone quote is an EMPTY
+				// substr(1, (size_t)-1) yields "" -- a lone quote is an EMPTY
 				// value, not an opening quote.
 				value = value.substr(1, value.length() - 2);      // :153
 				vt.quote_closed = true;
@@ -494,7 +494,7 @@ bool BlockSkipState::feed(const Line &line, std::size_t lineno)
 	if (line.kind != LineKind::Parsed || !line.has_command || line.command.empty())
 		return false;                       // executeCommand:207 returns 0
 
-	// executeCommand:215-222 — three literal comparisons BEFORE the skip test,
+	// executeCommand:215-222 -- three literal comparisons BEFORE the skip test,
 	// so these three always run, skipping or not.
 	if (line.command == "comment") {        // :215-216 -> commandComment (:3160)
 		skipping_ = true;
@@ -541,7 +541,7 @@ bool BlockSkipState::feed(const Line &line, std::size_t lineno)
 				loops_.push_back(b);
 			}
 			// The runtime-only half (n < 1 raises the skip flag, :4691-4692)
-			// stays unmodelled — see the header note.
+			// stays unmodelled -- see the header note.
 		}
 		return false;
 	}

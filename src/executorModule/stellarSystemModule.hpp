@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2021 Jérémy Calvo
+ * Copyright (C) 2021 Jeremy Calvo
  * Copyright (C) 2022 Calvin Ruiz
  *
  * This program is free software; you can redistribute it and/or

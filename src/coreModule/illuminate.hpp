@@ -49,7 +49,7 @@ public:
 		return XYZ;
 	}
 
-	//! rempli les buffers pour un tracé en groupe des illuminates
+	//! rempli les buffers pour un trace en groupe des illuminates
 	void draw(const Projector* prj, float *&data);
 
 private:

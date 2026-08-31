@@ -147,7 +147,7 @@ Body::Body(std::shared_ptr<Body> parent,
 		tex_norm = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_norm,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
-	if (!_bodyTexture.tex_heightmap.empty()) {  //preparation à la tesselation
+	if (!_bodyTexture.tex_heightmap.empty()) {  //preparation a la tesselation
 		tex_heightmap = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_heightmap,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
@@ -716,7 +716,7 @@ void Body::translateName(Translator& trans)
 // adapt to vulkan ???
 //! create parabola shell to represent a tail. Designed for slices=16, stacks=16, but should work with other sizes as well.
 //! (Maybe slices must be an even number.)
-// Parabola equation: z=x²/2p.
+// Parabola equation: z=x^2/2p.
 // xOffset for the dust tail, this may introduce a bend. Units are x per sqrt(z).
 // void Body::computeParabola(const float parameter, const float radius, const float zshift,
 // 						  QVector<Vec3d>& vertexArr, QVector<Vec2f>& texCoordArr,
@@ -825,7 +825,7 @@ void Body::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 	// 		if (tailActive)
 	// 		{
 	// 			float gasTailEndRadius=qMax(tailFactors[0], 0.025f*tailFactors[1]) ; // This avoids too slim gas tails for bright comets like Hale-Bopp.
-	// 			float gasparameter=gasTailEndRadius*gasTailEndRadius/(2.0f*tailFactors[1]); // parabola formula: z=r²/2p, so p=r²/2z
+	// 			float gasparameter=gasTailEndRadius*gasTailEndRadius/(2.0f*tailFactors[1]); // parabola formula: z=r^2/2p, so p=r^2/2z
 	// 			// The dust tail is thicker and usually shorter. The factors can be configured in the elements.
 	// 			float dustparameter=gasTailEndRadius*gasTailEndRadius*dustTailWidthFactor*dustTailWidthFactor/(2.0f*dustTailLengthFactor*tailFactors[1]);
 
@@ -974,7 +974,7 @@ void Body::asphericComputeScreenPos(const Projector* prj, const Vec3d &eye_plane
 		if (eye_planet[2] > 0)
 			f = M_PI - f;
 
-		// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+		// Stereographic projection: r = tan(alpha/2) / tan(alpha_max/2)
 		f = tan(f * 0.5) / tanHalfFovOver2;
 		f /= rq;
 	} else {

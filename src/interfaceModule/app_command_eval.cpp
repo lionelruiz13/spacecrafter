@@ -212,7 +212,7 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 	if (var_it == variables.end()) { //not found so we return the value of the string
 		cLog::get()->write("Not possible to operate with undefined variable so define to null from ops", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
 		define(mArg, mValue);
-	} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
+	} else { // trouve on renvoie la valeur de ce qui est stocke en memoire
 		var_it->second.first = formatNumber(var_it->second.second = f(var_it->second.second , evalDouble(mValue)));
 	}
 }

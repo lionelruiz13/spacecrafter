@@ -32,7 +32,7 @@
 #include "appModule/fontFactory.hpp"
 #include "appModule/space_date.hpp"
 #include "coreModule/oort.hpp"
-#include "experimentalModule/bodyModules/OortModule.hpp" // B5 §6.9 pilot: mirror the show flag
+#include "experimentalModule/bodyModules/OortModule.hpp" // B5 S6.9 pilot: mirror the show flag
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skygrid_mgr.hpp"
 #include "coreModule/milkyway.hpp"
@@ -188,7 +188,7 @@ bool CoreLink::oortGetFlagShow() const {
 
 void CoreLink::oortSetFlagShow(bool b) {
 	core->oort->setFlagShow(b);
-	// B5 §6.9 pilot: one operator concept "show the oort" drives BOTH cloud
+	// B5 S6.9 pilot: one operator concept "show the oort" drives BOTH cloud
 	// draws (I2 - the new modular oort mirrors the old cloud's flag through this
 	// single command choke point). Only meaningful when the modular oort exists
 	// (flag_experimental_oort); harmless otherwise.
@@ -559,14 +559,14 @@ std::string CoreLink::getPlanetsPosition() const {
 }
 
 // ---------------------------------------------------------------------------
-// B33 READBACK ONLY (INTENT §11.108(f) / §11.131). See the header for what it
+// B33 READBACK ONLY (INTENT S11.108(f) / S11.131). See the header for what it
 // is for. Const, side-effect-free, called only from the dump channel.
 // ---------------------------------------------------------------------------
 void CoreLink::dumpControlSurface(std::ostream &out) const
 {
 	const auto prec = out.precision();
 	const Camera *cam = Camera::instance;
-	// The camera's own answer to each readout, in the GETTER's units — the
+	// The camera's own answer to each readout, in the GETTER's units -- the
 	// same conversions observerMoveTo does in the write direction, so the two
 	// halves of the seam are one convention (I2).
 	const Vec3f place = cam ? cam->getPlace() : Vec3f(0, 0, 0);
@@ -594,7 +594,7 @@ void CoreLink::dumpControlSurface(std::ostream &out) const
 	    << ",\"altitude\":{\"reported\":" << observatoryGetAltitude()
 	    << ",\"old\":" << core->observatory->getAltitude()
 	    << ",\"new\":" << camAlt << "}"
-	    // heading is the member F12 already landed (§11.118(f)) — carried here
+	    // heading is the member F12 already landed (S11.118(f)) -- carried here
 	    // as the class's own positive control: on the delivered binary this row
 	    // behaves exactly like the four below it.
 	    << ",\"heading\":{\"reported\":" << getHeading()
@@ -616,7 +616,7 @@ void CoreLink::dumpControlSurface(std::ostream &out) const
 std::string CoreLink::tcpGetPosition() const {
 	char tmp[512];
 	memset(tmp, '\0', 512);
-	// B33 (§11.118 for the heading, §11.131 for the place): every field here
+	// B33 (S11.118 for the heading, S11.131 for the place): every field here
 	// was a SECOND reader going straight to the old Observer/Navigator, so the
 	// TCP position query and the `moveto` command would have reported different
 	// places the moment the paths diverge - and `camera action descend` makes
@@ -1189,7 +1189,7 @@ bool CoreLink::cameraTransitionToBody(const std::string& name){
 }
 
 bool CoreLink::cameraSetFollowRotation(const std::string& name, bool value){
-	// The name is FORWARDED since B4 (§11.111): the old path still ignores it
+	// The name is FORWARDED since B4 (S11.111): the old path still ignores it
 	// (its follow-rotation flag is manager-wide), the new path scopes it to the
 	// named anchor. Dropping it here was why the command's documented `name`
 	// argument had no effect anywhere.
@@ -1278,7 +1278,7 @@ namespace {
 
 // What a session needs from the application, supplied by the object that has
 // all of it. Every method is the OWNING authority for its datum rather than a
-// convenience wrapper over another path - b31-design §3.4(e)'s "read the model
+// convenience wrapper over another path - b31-design S3.4(e)'s "read the model
 // that draws", applied at the only place where following it is a choice.
 class SessionHost : public SessionFile::Host {
 public:
@@ -1583,9 +1583,9 @@ void CoreLink::starGalaxyLoadCatalog(const std::string &filename) {
 	core->starGalaxy->loadCatalog(filename);
 }
 
-// The read halves of three setters that had none on this façade. Each manager
+// The read halves of three setters that had none on this facade. Each manager
 // already owned the value; the session save is the first caller that needs to
-// ASK for it (b31-design §2 rows E4/E5, INTENT §11.129).
+// ASK for it (b31-design S2 rows E4/E5, INTENT S11.129).
 const Vec3f &CoreLink::skyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj)
 {
 	return core->skyDisplayMgr->getColor(nameObj);

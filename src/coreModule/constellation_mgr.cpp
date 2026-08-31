@@ -716,7 +716,7 @@ void ConstellationMgr::setFlagNames(bool b)
 
 Object ConstellationMgr::getSelected(void) const
 {
-	// An EMPTY selection answers with an EMPTY Object (§5.79) — the answer the
+	// An EMPTY selection answers with an EMPTY Object (S5.79) -- the answer the
 	// sibling selection holders already give: SolarSystemSelected::getSelected
 	// returns its default-constructed `selected` member
 	// (solarsystem_selected.hpp:60-62) and HipStarMgr::getSelected returns its
@@ -726,16 +726,16 @@ Object ConstellationMgr::getSelected(void) const
 	// (object.cpp:86-95), so getBrightestStarInConstellation answers through
 	// ObjectBase's own base implementation with an empty ObjectBaseP
 	// (object_base.cpp:45-48) and Core::selectObject unSelects on `!obj`
-	// (core.cpp:2284-2287) — the same answer `select` already gives for a name
+	// (core.cpp:2284-2287) -- the same answer `select` already gives for a name
 	// it cannot resolve.
 	//
 	// Without this the shipped `select constellation_star <abbrev>`
 	// (app_command_interface.cpp:3130 -> core.cpp:1063) dereferences
 	// `selected.begin()` on whatever the vector then is, and
 	// `setSelected(abbreviation)` leaves it untouched when the abbreviation does
-	// not resolve. Two measured manifestations of the one root (§11.143):
+	// not resolve. Two measured manifestations of the one root (S11.143):
 	// SIGSEGV when no constellation was ever selected (the vector never grew, so
-	// begin() is null — the default field state of this install), and the STALE
+	// begin() is null -- the default field state of this install), and the STALE
 	// pointer still in slot 0 after `deselect` cleared the vector, which
 	// silently re-selected the previous constellation's brightest star.
 	if (selected.empty())

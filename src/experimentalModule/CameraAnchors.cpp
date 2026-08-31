@@ -2,8 +2,8 @@
 #include "Camera.hpp"
 #include "ModularSystem.hpp"
 #include "ModuleLoaderMgr.hpp"
-#include "bodyModule/orbit.hpp" // the travel is a motion law (B4(iv), §11.141)
-#include "tools/ini_line.hpp" // the ONE .ini line grammar (INTENT §5.39/D29)
+#include "bodyModule/orbit.hpp" // the travel is a motion law (B4(iv), S11.141)
+#include "tools/ini_line.hpp" // the ONE .ini line grammar (INTENT S5.39/D29)
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp" // AU, in km - the unit `altitude` is given in
 #include <iomanip>
@@ -30,7 +30,7 @@ CameraAnchors::~CameraAnchors() = default;
 // 1/(1+e^7) = 9.11e-4 of the distance (a small POP at t0) and ends at
 // 1-1.5e-8 of it (it never exactly arrives). Those are the numbers the parity
 // check predicts, so they are reproduced rather than cleaned up: the old path
-// is the comparison baseline (§11.52(b)) and this is a port, not a redesign.
+// is the comparison baseline (S11.52(b)) and this is a port, not a redesign.
 // ============================================================================
 namespace {
 class TravelOrbit : public Orbit {
@@ -39,7 +39,7 @@ public:
     //! authored in ROOT coordinates, so the parent's own root position is
     //! subtracted at every date - read from the CACHED chain (the walk updates
     //! a parent before its children), never by re-evaluating an ancestor's
-    //! orbit off-cadence (§11.117 Newton-seed hazard).
+    //! orbit off-cadence (S11.117 Newton-seed hazard).
     //! @param resume the law to hand back to at arrival, or null to HOLD the
     //! arrival point. Null is the fixed-point case (old's plain AnchorPoint
     //! keeps the position the travel left it at, its update() being a no-op);
@@ -72,7 +72,7 @@ public:
         return std::move(resume);
     }
     std::string saveOrbit() const override {
-        // The old registry's save surface is §5.41/B31 territory and untouched
+        // The old registry's save surface is S5.41/B31 territory and untouched
         // here; a travel is a transient state, and the honest serialization of
         // it is where it is HEADING (D32's settled-value rule).
         return "coord_func = still_orbit\norbit_x = " + std::to_string(startRoot[0] + direction[0]*distance)
@@ -87,7 +87,7 @@ private:
         // time==0 branch, so `duration 0` produces a NaN position there); a NaN
         // here would poison the tree's cached frame state, and the D8 barrier
         // rejects NaN dates by design - the divergence is deliberate, recorded
-        // in §11.141, and confined to a degenerate input no shipped script uses.
+        // in S11.141, and confined to a degenerate input no shipped script uses.
         if (travelTime <= 0)
             return startRoot + direction * distance;
         if (JD > arrivalTime)
@@ -129,7 +129,7 @@ bool CameraAnchors::parseKind(const stringHash_t &params, const std::string &nam
         out = AnchorKind::FIXED_POINT;
         return true;
     }
-    // §2(f): what fired, the valid states, and the fix action. No fallback: an
+    // S2(f): what fired, the valid states, and the fix action. No fallback: an
     // unnamed kind has no defensible default (an `orbit` needs orbit elements,
     // a `point` needs coordinates), so the anchor is refused rather than
     // silently made into something the author did not ask for.
@@ -177,7 +177,7 @@ ModularBody *CameraAnchors::createAnchorBody(const std::string &name, ModularBod
         .solLocalDay = 0,
         // BodyType::ANCHOR is the enum's own value for exactly this ("Simplest
         // type, just an anchor", ModularBody.hpp:44). It has no behavioural
-        // consumer (verified §11.109-era; re-verified 2026-07-25), so it acts
+        // consumer (verified S11.109-era; re-verified 2026-07-25), so it acts
         // only as the dump's is-this-an-anchor observable.
         .bodyType = BodyType::ANCHOR,
         .isHaloEnabled = false,
@@ -187,7 +187,7 @@ ModularBody *CameraAnchors::createAnchorBody(const std::string &name, ModularBod
     body->hide();
     // Hidden BY CONSTRUCTION, not by an operator: an anchor's body is never
     // shown. Re-take its baseline so the override ledger does not read the
-    // engine's own decision as somebody's change (INTENT §11.129).
+    // engine's own decision as somebody's change (INTENT S11.129).
     body->captureAuthoredState();
     return body;
 }
@@ -456,7 +456,7 @@ bool CameraAnchors::setFollowRotation(const std::string &name, bool value, Camer
 }
 
 // ============================================================================
-// The scripted transitions (B4(iv), §11.141). Old-path member each mirrors is
+// The scripted transitions (B4(iv), S11.141). Old-path member each mirrors is
 // named at the declaration in the header; the refusals are mirrored with it,
 // because a script must get the same answer from both paths.
 // ============================================================================
@@ -483,7 +483,7 @@ CameraAnchors::Anchor *CameraAnchors::currentPlace(const Camera &camera)
 //! iterative solvers back where the frame left them. EllipticalOrbit's
 //! eccentricAnomaly performs ONE Newton step per call seeded from the previous
 //! call's result, so a single off-cadence evaluation leaves the seed at the
-//! wrong date and the next frame's step starts from it (§11.117, which is why
+//! wrong date and the next frame's step starts from it (S11.117, which is why
 //! useNow re-runs 1+4 times). The old path's own moveToBody has this defect and
 //! it is recorded, not inherited.
 static Vec3d positionAtDateReconverged(const ModularBody *body, double atJd, double frameJd)
@@ -523,7 +523,7 @@ bool CameraAnchors::installTravel(Anchor &place, const Vec3d &targetRoot, double
         jd, travelDays, std::move(resume)));
     body->useNow(); // publish this date's position under the new law
     if (place.kind == AnchorKind::FIXED_POINT) {
-        // The declaration is the re-creation authority (§11.111(g)): a place
+        // The declaration is the re-creation authority (S11.111(g)): a place
         // that travelled is a fixed point somewhere else, and a rebuild after a
         // system reload must land there, not back at the authored coordinates.
         const Vec3d landing = start + direction * distance;
@@ -707,7 +707,7 @@ bool CameraAnchors::transitionToBody(const std::string &name, Camera &camera)
     // THE OBSERVER DOES NOT MOVE. Old spends two bisections finding the
     // longitude/latitude that reproduce the place it is already at, and sets
     // the altitude to the distance it measured; the camera's pose IS that
-    // triple, so the same place is expressed directly and exactly (no 0.0055°
+    // triple, so the same place is expressed directly and exactly (no 0.0055deg
     // latitude residual - old's own bisection stops at interval > 0.01).
     const Vec3f place = camera.positionRelativeTo(body);
     if (!switchTo(name, camera))
@@ -717,7 +717,7 @@ bool CameraAnchors::transitionToBody(const std::string &name, Camera &camera)
     // 5 s) - a roll decision taken at a reference switch, which is D28's open
     // question (inherited at this clause, not re-stated) and is already
     // answered the other way for this path by A38: the reference switch holds
-    // the WHOLE orientation. §11.141 carries old's measured tail and the two
+    // the WHOLE orientation. S11.141 carries old's measured tail and the two
     // terms that fail to derive (the screen-projected axis angle has no
     // new-path counterpart, and "heading 0" is not the same physical roll once
     // B13 has rewritten the decomposition).
@@ -744,7 +744,7 @@ void CameraAnchors::dumpState(std::ostream &out) const
     out << "\",\"declaresFollowRotation\":" << ((cur && cur->declaresFollowRotation) ? "true" : "false")
         << ",\"followRotation\":" << ((cur && cur->followRotation) ? "true" : "false")
         << ",\"body\":\"" << ((cur && cur->body) ? cur->body->getEnglishName() : "")
-        // Travel state (B4(iv), §11.141): the two members old keeps as `moving`
+        // Travel state (B4(iv), S11.141): the two members old keeps as `moving`
         // + `arrivalTime`. The trajectory itself is the anchor body's orbit, so
         // its per-step observable is the camera's own `rootPos`.
         << "\",\"moving\":" << (moving ? "true" : "false")
@@ -771,7 +771,7 @@ void CameraAnchors::load(const std::string &path)
     }
     cLog::get()->write("CameraAnchors: reading anchor file " + path, LOG_TYPE::L_INFO);
     // The shipped grammar, through the ONE authority that owns it
-    // (tools/ini_line.hpp - INTENT §5.39/D29): `[` starts a new block, `#`
+    // (tools/ini_line.hpp - INTENT S5.39/D29): `[` starts a new block, `#`
     // comments, `key = value` with any amount of blank around the `=`. This
     // reader used to carry a copy of the legacy loader's substr arithmetic,
     // which is the defect class D29 unified away.

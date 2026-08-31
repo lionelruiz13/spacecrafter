@@ -1,5 +1,5 @@
 /*
- * scedit — sc_tcpclient.cpp
+ * scedit -- sc_tcpclient.cpp
  *
  * POSIX sockets, nothing else: no library, no thread, no timer. The contract
  * and every measured fact about the engine's wire are in sc_tcpclient.hpp.
@@ -31,7 +31,7 @@ std::string errnoText(int e)
 	return std::string(::strerror_r(e, buf, sizeof(buf)));
 }
 
-//! Milliseconds since an arbitrary origin, monotonic — used only for the
+//! Milliseconds since an arbitrary origin, monotonic -- used only for the
 //! pollFor deadline, never for a measurement claim.
 long nowMs()
 {
@@ -151,7 +151,7 @@ bool TcpClient::connect(const Endpoint &ep, std::string &err)
 	::freeaddrinfo(res);
 	if (sock < 0) {
 		err = "cannot connect to " + ep.text() + ": " + why +
-		      " — is spacecrafter running, and is `io:enable_tcp` true with "
+		      " \xe2\x80\x94 is spacecrafter running, and is `io:enable_tcp` true with "
 		      "`io:tcp_port_in` = " + port + " in its config.ini?";
 		last_error_ = err;
 		state_ = LinkState::Failed;
@@ -311,7 +311,7 @@ std::size_t TcpClient::poll()
 			break;
 		}
 		if (n == 0) {
-			// The engine closed the connection — it exited, or something else
+			// The engine closed the connection -- it exited, or something else
 			// took it down. This is the one connection event that arrives
 			// without anybody asking, and it must be visible.
 			last_error_ = "the engine closed the connection";

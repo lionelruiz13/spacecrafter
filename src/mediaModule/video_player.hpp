@@ -217,7 +217,7 @@ private:
 	std::array<void *[MAX_CACHED_FRAMES], 4> pImageBuffer;
 
 	std::string fileName; 	//!< video name
-	Resolution videoRes;	//!< int video_w, video_h;	//!< size w,h of the vidéo
+	Resolution videoRes;	//!< int video_w, video_h;	//!< size w,h of the video
 
 	bool m_isVideoPlayed;	//!< indicates if a video is playing
 	bool m_isVideoInPause;	//!< indicates if the video is paused

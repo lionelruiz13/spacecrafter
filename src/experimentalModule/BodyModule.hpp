@@ -150,7 +150,7 @@ struct ShadowCaster {
 // vector<unique_ptr<BodyModule>>) and therefore deleted through THIS type, so
 // the destructor must be virtual - without it every subclass destructor is
 // skipped and the module's own resources (Sets, buffers, textures) are never
-// released ([expr.delete]/3 UB; INTENT §5.51 measured it as 373 ASan
+// released ([expr.delete]/3 UB; INTENT S5.51 measured it as 373 ASan
 // new-delete-type-mismatch reports per shutdown, 746 across a reload). Free in
 // layout: the class already has a vtable. What a subclass destructor may do is
 // bounded by WHEN it runs: bodies die with the tree, i.e. before Context and
@@ -239,7 +239,7 @@ public:
     // Base no-op; ORBIT (and later TRAIL) route a per-name seam toggle here
     // via ModularBody's dedicated component list. NOT the four drawing types.
     virtual void setShown(bool shown) {}
-    // The UNHIDE edge (B39 §11.117, from D23: "behave as if they never were
+    // The UNHIDE edge (B39 S11.117, from D23: "behave as if they never were
     // hidden when unhidden"). While its body was hidden this module received no
     // update() and no draw() at all - the whole subtree was outside every sweep -
     // so any state of this module that TIME would have moved is now behind.
@@ -249,7 +249,7 @@ public:
     // The base no-op is the right answer for a module holding no time-dependent
     // state (the setShown/createTexSkin contract - no sniffing at the broadcast).
     // Where the past is NOT computable the override must degrade to a fresh start
-    // and LOG it (§2.0 D12: a behaviour the author did not write must be visible).
+    // and LOG it (S2.0 D12: a behaviour the author did not write must be visible).
     virtual void resumeAfterHidden(ModularBody *body) {}
     // Runtime skin-texture seam (old Body::createTexSkin/switchMapSkin;
     // commands `body name X skin_tex <file>` / `body name X skin_use on|off`).
@@ -267,8 +267,8 @@ public:
     // createTexSkin/setShown contract - no type sniffing at the broadcast).
     // HALO is body-owned and handled by ModularBody, not by any module.
     virtual void setColor(BodyColorType type, const Vec3f &c) {}
-    // THE READ HALF of the three seams above (b31-design §2 rows D4/D7/D8; the
-    // per-body twin of readFlag, INTENT §11.129). Same self-selection contract:
+    // THE READ HALF of the three seams above (b31-design S2 rows D4/D7/D8; the
+    // per-body twin of readFlag, INTENT S11.129). Same self-selection contract:
     // a module answers for the channel it owns and stays silent otherwise, so
     // the caller never sniffs a type to find out who holds what (I4). False =
     // "not mine", which is not the same answer as a value.

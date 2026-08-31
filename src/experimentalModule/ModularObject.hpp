@@ -68,12 +68,12 @@ private:
     // applied the conversion at EACH reporting site (Body::getAltAz body.cpp:381,
     // getInfoString body.cpp:341, getShortInfoNavString body.cpp:431 - the old
     // path itself duplicated it). Camera::observedPosToAltAz returns the RAW
-    // Camera-frame az, whose zero differs from the old raw frame by -π/2
-    // [measured: harness/b9_azconv.py -> az_old = π/2 − az_raw over 234/234
-    // non-degenerate bodies at ≤3e-5°], so the conversion that reproduces the
-    // old report is az = π/2 − az_raw (mod 2π) - NOT the 3π−az of the old raw→
-    // report step (that constant is frame-specific to the old raw frame; §11.4
-    // flagged exactly this, §11.60). getAltAz / getInfoString /
+    // Camera-frame az, whose zero differs from the old raw frame by -pi/2
+    // [measured: harness/b9_azconv.py -> az_old = pi/2 - az_raw over 234/234
+    // non-degenerate bodies at <=3e-5deg], so the conversion that reproduces the
+    // old report is az = pi/2 - az_raw (mod 2pi) - NOT the 3pi-az of the old raw->
+    // report step (that constant is frame-specific to the old raw frame; S11.4
+    // flagged exactly this, S11.60). getAltAz / getInfoString /
     // getShortInfoNavString all route here so the convention cannot desync.
     // Returns (alt, az) with az in the old-path convention.
     std::pair<double, double> altAz() const;

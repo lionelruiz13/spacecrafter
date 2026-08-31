@@ -30,38 +30,38 @@ void main()
 	// position de la galaxie
 	vec4 pos = custom_project(position[0]);
 	pos.z = clamp(pos.z, 0, 1);
-	// distance de la galaxie à la caméra correspond anciennement à d=sqrt((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
+	// distance de la galaxie a la camera correspond anciennement a d=sqrt((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
 	//~ float distance = length(position[0]-vec4(camPos, 1.0));
-	// taille apparente de la galaxie correspond à radiusTully.push_back(.3/(d*scaleTully[i]));
+	// taille apparente de la galaxie correspond a radiusTully.push_back(.3/(d*scaleTully[i]));
 	//~ float radius = 0.3 / (vertexIn[0].scale * distance);
 	float radius = radiusIn[0];
 
 	if ((pos.w == 1.0) && (radius>=2)) {
-		// TODO : ici intensity fixé à 0.8 car radius >1.0
+		// TODO : ici intensity fixe a 0.8 car radius >1.0
 		//~ float intensity = max(min(radius,0.8), 0.2);
 		float intensity = 1.0;
-		//~ // en bas à droite
+		//~ // en bas a droite
                 gl_Position   = MVP2D * (pos +vec4( radius, -radius, 0.0, 0.0));
 		gl_Position.z = pos.z;
 		TexCoord= vec2((texture[0]+1)/nbTextures, .0f);
 		intensityOut = intensity;
 		EmitVertex();
 
-		//~ // en haut à droite
+		//~ // en haut a droite
 		gl_Position   = MVP2D * ( pos +vec4( radius, radius, 0.0, 0.0) );
 		gl_Position.z = pos.z;
 		TexCoord= vec2((texture[0]+1)/nbTextures, 1.0f);
 		intensityOut = intensity;
 		EmitVertex();
 
-		// en Bas à gauche
+		// en Bas a gauche
 		gl_Position   = MVP2D * ( pos +vec4( -radius, -radius, 0.0, 0.0) );
 		gl_Position.z = pos.z;
 		TexCoord= vec2(texture[0]/nbTextures, 0.0f);
 		intensityOut = intensity;
 		EmitVertex();
 
-		// en haut à gauche
+		// en haut a gauche
 		gl_Position   = MVP2D * ( pos +vec4( -radius, radius, 0.0, 0.0) );
 		gl_Position.z = pos.z;
 		TexCoord= vec2(texture[0]/nbTextures, 1.0f);

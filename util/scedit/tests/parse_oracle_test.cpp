@@ -1,12 +1,12 @@
 /*
- * scedit — differential test against the engine's own parser.
+ * scedit -- differential test against the engine's own parser.
  *
  * The table-driven test (tokenizer_test.cpp) pins the tokenization scedit
  * BELIEVES the engine performs. This one removes the belief: it carries a
  * VERBATIM COPY of AppCommandInterface::parseCommand and compares scedit's
  * answer to the real function's answer, over
  *   (a) an exhaustive enumeration of short strings over the alphabet that
- *       drives every branch of the parser — {a, b, space, tab, "} up to 6
+ *       drives every branch of the parser -- {a, b, space, tab, "} up to 6
  *       bytes and {a, space, "} up to 9 bytes, and
  *   (b) every line of the real corpus handed to it on the command line.
  *

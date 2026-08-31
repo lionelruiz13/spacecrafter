@@ -9,19 +9,19 @@
 // pipelineBigHalo); here the body's STAR nature (BodyType bit, isStar()) is
 // data, and the star's appearance is this module.
 //
-// LANDING-ZONE RECONCILIATION (Opus 4.8, 2026-07-19, INTENT §11.44):
+// LANDING-ZONE RECONCILIATION (Opus 4.8, 2026-07-19, INTENT S11.44):
 // - The reachable feature is the SUN's BIG HALO (old Sun::drawBigHalo +
 //   sun_big_halo.{vert,geom,frag} + tex_big_halo, additive screen-space glow,
-//   no depth) - the dominant remaining cross-phase A/B residual (§11.19a,
-//   §11.19, §11.21, §11.22, §11.24: "the SUN's big-halo glow ... vs bare
+//   no depth) - the dominant remaining cross-phase A/B residual (S11.19a,
+//   S11.19, S11.21, S11.22, S11.24: "the SUN's big-halo glow ... vs bare
 //   disc"). It is drawn by drawBigHalo() below.
 // - The Sun's SURFACE disc already renders through the MESH module (tex_map,
-//   §11.19a "bare disc" == old body_sun.frag, measured parity), so this module
+//   S11.19a "bare disc" == old body_sun.frag, measured parity), so this module
 //   draws NO surface for the Sun; the header's draw()=="volumetric star
 //   surface (StarViewer)" is the BodyStar case (type=Star), which is
 //   UNREACHABLE in shipped data (default_ssystem.ini has only type=Sun) - its
 //   STAR_VIEWER / CORONA families (big_star_halo.*, big_star_corona.frag) are
-//   SUSPENDED for Vixy (INTENT §11.44 / §12 row 14).
+//   SUSPENDED for Vixy (INTENT S11.44 / S12 row 14).
 // - Regime: FAR component. The big halo is a screen-space glow at
 //   ModularBody::screenPos (ignores the surface matrix), so it belongs where
 //   farComponents draw - BEFORE clearDepth+the near disc, in every regime the
@@ -32,14 +32,14 @@
 //   myColor->getHalo(), respects the color-command seam); no stored member.
 // - Light emission stays body-level (ModularBody::updateAsLightSource, driven
 //   by ModularSystem's star designation) - NOT this module.
-// HALO SIZE (the load-bearing correction, INTENT §11.44): the ssystem.ini
+// HALO SIZE (the load-bearing correction, INTENT S11.44): the ssystem.ini
 // big_halo_size is DEAD for the main Sun - old SolarSystem::setFlagSunScale
 // OVERWRITES it (setHaloSize(200) unscaled, 200+SunScale*40 scaled;
 // solarsystem.hpp:96-107), called at init from config flag_sun_scaled
 // (core.cpp:566). So the effective size is the SUN-SCALE value (base 200),
 // not the data's 1. sunHaloSize is a static (one reachable Sun) driven by the
 // SSystemFactory::setFlagSunScale seam - the new-path mirror of that override.
-// Data: halo texture (Renderer SUN_HALO service resource, §9 load-time only).
+// Data: halo texture (Renderer SUN_HALO service resource, S9 load-time only).
 // Deduction rule: STAR-typed bodies with tex_big_halo (deduceBodyModuleList).
 class StarModule : public BodyModule {
 public:

@@ -7,7 +7,7 @@ $ scedit --doc dso3d z_reflection
   "doc": null,
   "kind": "key",
   "name": "z_reflection",
-  "notes": "DEFECT (out of scope, recorded not fixed): the key is looked up and the comparison result is discarded ('it->second == \"true\";' is a statement with no effect), so z_reflection is always false. A doc line would describe behaviour the code does not have — left null and flagged.",
+  "notes": "DEFECT (out of scope, recorded not fixed): the key is looked up and the comparison result is discarded ('it->second == \"true\";' is a statement with no effect), so z_reflection is always false. A doc line would describe behaviour the code does not have -- left null and flagged.",
   "present": true,
   "required": "false",
   "source": "src/inGalaxyModule/dsoNavigator.cpp:304-306",
@@ -25,7 +25,7 @@ $ scedit --doc suntrace sun
   "doc": null,
   "kind": "key",
   "name": "sun",
-  "notes": "SUSPECTED TYPO, recorded not fixed: line 1633 reads `bodyTraceBodyChange(args[W_SUN])` — the VALUE of a key spelled 'sun' — while the other two branches of the same handler pass the literal token `W_SUN` (:1646, :1650). Under the code as written, `suntrace pen on` does not switch the trail to the Sun. Doc left null because the two readings (an undocumented body-name key, or a mis-typed literal) have opposite meanings for the editor's user.",
+  "notes": "SUSPECTED TYPO, recorded not fixed: line 1633 reads `bodyTraceBodyChange(args[W_SUN])` -- the VALUE of a key spelled 'sun' -- while the other two branches of the same handler pass the literal token `W_SUN` (:1646, :1650). Under the code as written, `suntrace pen on` does not switch the trail to the Sun. Doc left null because the two readings (an undocumented body-name key, or a mis-typed literal) have opposite meanings for the editor's user.",
   "present": true,
   "required": "false",
   "source": "app_command_interface.cpp:1633 -> src/coreModule/coreLink.cpp:1130-1135 -> src/bodyModule/protosystem.cpp:468-475",
@@ -101,7 +101,7 @@ $ scedit --doc div
   "keys": [],
   "kind": "command",
   "name": "div",
-  "registration": "app_command_init.cpp:116 (ACP_CN_DIV = \"div\", base_command_interface.hpp:370) — the same enum value as `divide`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling"
+  "registration": "app_command_init.cpp:116 (ACP_CN_DIV = \"div\", base_command_interface.hpp:370) -- the same enum value as `divide`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling"
 }
 exit 0
 $ scedit --doc zomo
@@ -128,7 +128,7 @@ $ scedit --search --scope commands --limit 3 play a sound in the dome
   "results": [
     {
       "command": "media",
-      "doc": "Play a video in the dome — or a sound on its own — and control it while it plays.",
+      "doc": "Play a video in the dome -- or a sound on its own -- and control it while it plays.",
       "family": null,
       "kind": "command",
       "name": null,

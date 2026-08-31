@@ -21,13 +21,13 @@ class VertexBuffer;
 // orbit pass (trace + line) is a SYSTEM-level phase driven by
 // ModularSystem::drawOrbits after the body draw (old solarsystem_display.cpp
 // orbit phase), under the Renderer's orbit-union depth range
-// (getOrbitDepthBucket, §11.30). So orbit modules live only in the slot + the
+// (getOrbitDepthBucket, S11.30). So orbit modules live only in the slot + the
 // dedicated orbitComponents list (ModularBody).
 //
 // Representation: the old path shipped Orbit2D AND Orbit3D but instantiated
 // ONLY Orbit3D (body_bigbody/moon/smallbody/artificial - grep 2026-07-19).
 // Orbit2D is dead generality; the port carries the 3D form only (body_orbit3d
-// shaders VERBATIM) and records the retirement (INTENT §11.39). One
+// shaders VERBATIM) and records the retirement (INTENT S11.39). One
 // representation matches the header's single `draw`.
 //
 // Flags (master model, AXIS precedent): showPlanets/showSatellites are the
@@ -89,7 +89,7 @@ public:
         // is gated on anyActive() - see below).
         if (b && !live) { live = true; ++activeCount; }
     }
-    // THE UNHIDE EDGE (B39 §11.117 / D23 clause iv): while its body was hidden
+    // THE UNHIDE EDGE (B39 S11.117 / D23 clause iv): while its body was hidden
     // this module received no update() at all (the whole subtree was out of
     // ModularSystem::drawOrbits' sweep), so its DISPLAY fader - which advances in
     // wall time - froze wherever it stood. Snapping it to the target it would
@@ -125,7 +125,7 @@ public:
     // setDefaultBodyColor seam like HintModule::defaultLabelColor.
     static Vec3f defaultColor;
 protected:
-    // Effective visibility target for THIS body this frame (master ∧ class,
+    // Effective visibility target for THIS body this frame (master && class,
     // or the per-name override). Structural class test (I4): a satellite has a
     // BODY parent (parent && !parent->isSystem()); a planet's parent is the
     // system node.

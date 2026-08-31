@@ -156,7 +156,7 @@ void RingModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 
 void RingModule::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Row-8 TRACE consumer (INTENT §11.40): the ring annulus into the orbit-
+    // Row-8 TRACE consumer (INTENT S11.40): the ring annulus into the orbit-
     // union depth range so an orbit line is cut behind the ring. Old
     // Ring::drawDepthTrace (ring.cpp:300-304): push mc into the depthTrace
     // ModelViewMatrix's radius slot, draw lowUP. The new-path ring-trace

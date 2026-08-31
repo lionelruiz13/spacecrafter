@@ -113,10 +113,10 @@ public:
 	//! @return the string describing the Vector with the form "x,y,z"
 	static std::string vec3fToStr(const Vec3f& v);
 
-	//! @brief Print the passed angle with the format dd°mm'ss(.ss)"
+	//! @brief Print the passed angle with the format dddegmm'ss(.ss)"
 	//! @param angle Angle in radian
 	//! @param decimal Define if 2 decimal must also be printed
-	//! @param useD Define if letter "d" must be used instead of °
+	//! @param useD Define if letter "d" must be used instead of deg
 	//! @return The corresponding string
 	static std::string printAngleDMS(double angle, bool decimals = false, bool useD = false);
 

@@ -1,5 +1,5 @@
 /*
- * scedit — sc_editcore.hpp
+ * scedit -- sc_editcore.hpp
  *
  * WHAT THIS IS FOR
  * ================
@@ -7,17 +7,17 @@
  * what the cursor is standing on, what the documentation bar must say about it,
  * what a Tab would complete, and where the analyser's findings sit. The FTXUI
  * layer draws this and forwards key and mouse events into it; it decides
- * nothing. That is not tidiness for its own sake — a terminal cannot be
+ * nothing. That is not tidiness for its own sake -- a terminal cannot be
  * asserted on, and this can: every behaviour the editor has is reachable from
  * `tests/editcore_test.cpp` without a tty.
  *
  * THE ONE QUESTION THIS CLASS ANSWERS
  * ===================================
- * "The caret is at line L, byte C — what is it standing on, what do we tell the
+ * "The caret is at line L, byte C -- what is it standing on, what do we tell the
  * author about it, and what would Tab type for them?" Everything else (screen
  * size, colours, scrolling) belongs to the renderer.
  *
- * WHERE THE ANSWERS COME FROM (nothing is invented — constraint C2)
+ * WHERE THE ANSWERS COME FROM (nothing is invented -- constraint C2)
  * ================================================================
  *   sc_tokenizer.hpp  cursor -> token, in the engine's own reading of the line,
  *                     including the quote normalisation that makes a naive
@@ -26,7 +26,7 @@
  *                     unlisted key be called unknown (`argKeysAreExhaustive`),
  *                     which family does this command draw its names from;
  *   sc_docindex.hpp   the prose: the doc line, the value domain, the default
- *                     sentence, the engine anchor — and the honest blank where
+ *                     sentence, the engine anchor -- and the honest blank where
  *                     the contract file has none;
  *   sc_check.hpp      the findings, recomputed over the whole buffer after an
  *                     edit (never over a line in isolation: `comment` /
@@ -37,13 +37,13 @@
  * =====================
  * Ghost text is armed ONLY where inserting a suffix produces the candidate:
  * with the caret at the END of the word being typed, or in an empty slot. Mid
- * word the doc bar still works and the ghost is silent — an editor that offers
+ * word the doc bar still works and the ghost is silent -- an editor that offers
  * to append to `zo|om` is offering a lie.
  * `ghost()` is, always, exactly the bytes Tab would insert. That is the whole
  * contract of the greyed text (D31 + the 2026-08-04 refinement: show what would
  * be completed, for ANY completion and not only defaults). When several
  * candidates share the prefix, `selected` picks which one the ghost shows and
- * Tab cycles it — so the greyed text never promises something Tab will not do.
+ * Tab cycles it -- so the greyed text never promises something Tab will not do.
  *
  * `openness` is the `args_complete` answer carried through to the screen: a
  * command whose key list is known to be partial (body, camera, flyto) must not
@@ -52,14 +52,14 @@
  * FINDINGS ON THE SCREEN
  * ======================
  * `scedit::Diagnostic` (sc_check.hpp) carries a `span`: the raw byte range the
- * finding is about. The renderer reads it through `diagnosticsForLine()` —
+ * finding is about. The renderer reads it through `diagnosticsForLine()` --
  * the look-alike-space marker lands on `invisible-separator`'s span, an
- * underline on every other non-empty span — so what is marked on screen is
+ * underline on every other non-empty span -- so what is marked on screen is
  * exactly what the rule decided, and decided once: a 0xA0 inside a quoted
  * value is NOT marked, because the rule says it is ordinary text there.
  * (Until 2026-08-31 the marker column was re-derived from the bytes by a
  * `lookalikeSpaceColumns()` here, a second copy of half the rule; the Span
- * closed that gap — scedit/INTENT.md §5 item 10.)
+ * closed that gap -- scedit/INTENT.md S5 item 10.)
  *
  * THE ERROR HISTORY, AND WHAT "HISTORY" MEANS HERE
  * ================================================
@@ -67,11 +67,11 @@
  * script, in line order: each `#!` tail the ENGINE wrote when it last ran the
  * file, and each finding scedit makes now. `warpTo()` puts the caret on one.
  *
- * "History" is Vixy's word [2026-08-30, scedit/INTENT.md §5 item 15(a)]:
+ * "History" is Vixy's word [2026-08-30, scedit/INTENT.md S5 item 15(a)]:
  * *"otherwise listed in an error history with click-to-warp-cursor"*. READING,
- * flagged as an interpretation (README § The error pane, veto open): the
+ * flagged as an interpretation (README S The error pane, veto open): the
  * history is the CURRENT buffer's set, not a log of past editing sessions. The
- * argument is that the engine's channel already IS the log — a `#!` tail stays
+ * argument is that the engine's channel already IS the log -- a `#!` tail stays
  * in the file until the fault is fixed and the engine reaches a natural end
  * (parse_model.comments.machine_tail), so the file itself carries what
  * spacecrafter found the last time it ran, and a second store would be a copy
@@ -79,12 +79,12 @@
  * nothing survives its cause: fix the fault and the row goes.
  *
  * A line carrying BOTH a tail and a finding produces TWO entries, never one.
- * They are two claims by two authors about one line — the engine says what
- * happened when it RAN, scedit says what it reads NOW — and the case where
+ * They are two claims by two authors about one line -- the engine says what
+ * happened when it RAN, scedit says what it reads NOW -- and the case where
  * they differ is exactly the C1 signal item 15 names. Merging them would hide
  * it. The engine's row comes first on a line (there is at most one, and it
  * records a run that happened); scedit's follow in the checker's own order
- * (cause before consequence, sc_check.hpp § ORDER).
+ * (cause before consequence, sc_check.hpp S ORDER).
  *
  * THE ENGINE WRITES BACK, AND NOTHING MAY BE LOST TO IT
  * =====================================================
@@ -92,7 +92,7 @@
  * it puts a `#!` tail on every faulty line, and removes the tails of lines that
  * are now clean (src/scriptModule/script_annotator.hpp). So the file under an
  * open buffer changes while the buffer is open, written by somebody else, and
- * two different things can be lost — the author's edits, or the engine's
+ * two different things can be lost -- the author's edits, or the engine's
  * findings.
  *
  * The rule here is that NEITHER is lost without the author choosing it:
@@ -180,7 +180,7 @@ struct DocBar {
 	std::string doc;
 	//! WHAT the sentence in `doc` documents, so the bar never lets a general
 	//! sentence pass for a specific one. Empty when there is no doc; otherwise
-	//! "command", "key", "value", or "any key of `<command>`" — that last one is
+	//! "command", "key", "value", or "any key of `<command>`" -- that last one is
 	//! the case where the file documents the command's key GRAMMAR but has no
 	//! line for this particular name (every flag name today, families.flags
 	//! being still the v1 shape).
@@ -198,7 +198,7 @@ struct DocBar {
 };
 
 //! A `#!` tail the engine wrote on a line (parse_model.comments.machine_tail),
-//! and how it relates to what scedit finds on that line — the C1 signal:
+//! and how it relates to what scedit finds on that line -- the C1 signal:
 //! the two readings of one line must agree, and a disagreement is information.
 struct MachineTail {
 	std::size_t begin = std::string::npos;   //!< raw offset of the `#!`, npos = no tail
@@ -227,7 +227,7 @@ struct ErrorEntry {
 	std::string id;            //!< the lint id; the literal `#!` for an engine tail
 	std::string message;       //!< the finding's message, or the engine's sentence(s)
 	//! ENGINE rows only: how the tail relates to scedit's findings on that line
-	//! (MachineTail::relation) — agree / finds-nothing-now / unknown class.
+	//! (MachineTail::relation) -- agree / finds-nothing-now / unknown class.
 	std::string relation;
 	//! Where `warpTo` lands: the finding's own span, or the tail's `#!`. An
 	//! empty span (a finding about the line as a whole) warps to byte 0.
@@ -245,7 +245,7 @@ struct Cursor {
 enum class DiskState {
 	NoFile,    //!< this buffer has no path (a new buffer): nothing to compare
 	Same,      //!< byte-identical to what we read (or last wrote)
-	Changed,   //!< somebody else wrote it — the engine's `#!` pass, or another editor
+	Changed,   //!< somebody else wrote it -- the engine's `#!` pass, or another editor
 	Gone       //!< it can no longer be read (deleted, renamed, permissions)
 };
 
@@ -256,7 +256,7 @@ public:
 	//! Load the contract and take the buffer from memory (tests, --ui-selftest).
 	//! `label` is a NAME, not a path: findings are reported under it, and
 	//! nothing on disk is read, written or compared. `hasFile()` says false for
-	//! such a buffer, and `save()` refuses it — the two were conflated until a
+	//! such a buffer, and `save()` refuses it -- the two were conflated until a
 	//! write-back check asked a labelled buffer what was on disk and was told
 	//! "gone", which is an answer about a file that never existed.
 	bool openBytes(const std::string &grammarPath, const std::string &label,
@@ -294,7 +294,7 @@ public:
 	bool acceptCompletion();
 	void cycleCompletion(int delta);
 
-	//! Save — REFUSING when the file changed on disk since it was read (see the
+	//! Save -- REFUSING when the file changed on disk since it was read (see the
 	//! header note). On refusal `err` is a sentence naming what changed, why it
 	//! matters, and the two choices; nothing is written.
 	bool save(std::string &err);
@@ -311,8 +311,8 @@ public:
 	//! last successful save wrote. Empty for a buffer with no file.
 	const std::string &diskImage() const { return disk_image_; }
 	//! Re-read the file, replacing the buffer. The caret keeps its line and
-	//! column where the new file still has them. Everything derived — findings,
-	//! the error history, the doc bar — is rebuilt, so a `#!` tail the engine
+	//! column where the new file still has them. Everything derived -- findings,
+	//! the error history, the doc bar -- is rebuilt, so a `#!` tail the engine
 	//! has just written appears in `errorHistory()` immediately.
 	//! Returns false with `err` when the file cannot be read; the buffer is then
 	//! left exactly as it was.
@@ -329,7 +329,7 @@ public:
 	const DocBar &docBar() const { return docbar_; }
 
 	//! Raw offset where the comment of a 0-based line starts (its '#'), or
-	//! std::string::npos when the line has none — the engine's reading of the
+	//! std::string::npos when the line has none -- the engine's reading of the
 	//! line (parse_model.comments.mid_line), so the renderer can grey exactly
 	//! the bytes the engine never reads.
 	std::size_t commentBegin(std::size_t line) const;
@@ -361,7 +361,7 @@ private:
 	DocIndex docs_;
 	Document doc_;
 	std::string path_;
-	//! The bytes we believe the file holds — set at open, replaced at every
+	//! The bytes we believe the file holds -- set at open, replaced at every
 	//! successful save and reload. This is the ONE thing "changed on disk" is
 	//! measured against; keeping it means a save cannot be fooled by an edit
 	//! that happens to restore the original length or timestamp.

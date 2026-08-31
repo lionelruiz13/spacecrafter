@@ -36,7 +36,7 @@
 // converged 2026-07-12 at plan approval).
 //
 // INTERIM WORK DOMAIN (explicit divergence, reconciled in INTENT.md 12):
-// the §8/G5 work domain (Taskable pools) is the S4 track and does not exist
+// the S8/G5 work domain (Taskable pools) is the S4 track and does not exist
 // yet. Lazy variant builds therefore run on a dedicated builder thread here,
 // and publication is an atomic ready-flag (release-store by the builder,
 // acquire-load in bind()) instead of a render-chain task. This preserves the
@@ -166,7 +166,7 @@ struct Registry {
     // per allocSet, not assumed from creation order.
     uint32_t poolTypeMask = 0;
     // ...and the per-type COUNTS pools.back() was created with. Same defect
-    // class as poolTypeMask, one dimension over (B12, INTENT §11.123): the
+    // class as poolTypeMask, one dimension over (B12, INTENT S11.123): the
     // mask says the pool KNOWS a type, never that it has ENOUGH of it. Pools
     // are sized from the aggregate AT CREATION, so the first contract to
     // allocate a set fixes the first pool's per-type budget - and the first
@@ -241,7 +241,7 @@ Registry &registry()
 // are file-static here - the same division the halo/hint families keep (handle
 // on the Renderer, buffers off the frame path). The GPU buffers are released
 // in Renderer::releaseRegistry() (managers still alive), NOT at static
-// teardown (that is the shutdown-SIGSEGV class, §11.15d). Geometry constants
+// teardown (that is the shutdown-SIGSEGV class, S11.15d). Geometry constants
 // are the old tail.cpp macros verbatim.
 namespace {
 constexpr int NB_MAX_TAILS = 1024;
@@ -1069,7 +1069,7 @@ void Renderer::ensureTailFamily()
         t.instance = pattern->createBuffer(1, NB_MAX_TAILS, context.globalBuffer.get());
         t.index = context.indexBufferMgr->acquireBuffer(NB_TAIL_INDICES * sizeof(uint16_t));
         // Pipeline family = the old TailContext pipeline (tail.cpp:104-116):
-        // push fov, spec-8 projection type (registry-injected, §11.33),
+        // push fov, spec-8 projection type (registry-injected, S11.33),
         // TRIANGLE_STRIP + primitive restart (stripBreaks), cull, NO depth
         // (setDepthStencilMode()), blend SRC_ALPHA (EntityCore ctor default).
         // NO descriptor set - the tail shader has none. body_tail.{vert,frag}.spv
@@ -1363,7 +1363,7 @@ void Renderer::setSunHaloTexture(const std::string &texName, const std::string &
     // load time creates the image UNINITIALIZED (no transfer cmd) and captures
     // a black view that never refreshes (the halo service has the same deferral
     // - setHaloTexture stashes, batchBegin rebinds after recordTransfer's
-    // upload). Binding here left farHalo black (measured, INTENT §11.44).
+    // upload). Binding here left farHalo black (measured, INTENT S11.44).
     sunHaloTexBound = false;
 }
 

@@ -243,7 +243,7 @@ int main(int argc, char **argv)
 	stream.open(filenameOBJ.c_str(),std::ios_base::out);
 	if(!stream.is_open())
 		return -1;
-	stream<< "# extration d'une sphère historique de Spacecrafter"<<std::endl;
+	stream<< "# extration d'une sph\xc3\xa8re historique de Spacecrafter"<<std::endl;
 	stream<< "mtllib " << filenameMTL << std::endl;
 	stream<< "usemtl mat1" << std::endl;
 	stream<< std::endl<<std::endl;

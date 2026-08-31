@@ -1,5 +1,5 @@
 /*
- * scedit — sc_check.cpp
+ * scedit -- sc_check.cpp
  *
  * Each rule below states the engine site it reports. Rules fire only on lines
  * the engine will actually execute: lines the script layer drops (comment,
@@ -32,13 +32,13 @@ std::string Diagnostic::format() const
 //! DID-YOU-MEAN, DISPLAY CAP.
 //! The engine's searchNeighbour has no distance threshold: it always logs a
 //! nearest name, however far. `nearestNeighbour` in the tokenizer library
-//! reproduces that exactly and stays that way — it is the engine's behaviour and
+//! reproduces that exactly and stays that way -- it is the engine's behaviour and
 //! C1 owns it. What is capped here is only whether scedit PRINTS the answer.
 //!
 //! The cap: TWO edits, or one edit per three characters of what the author
 //! typed, whichever is more permissive. Two edits is the floor because the
-//! ordinary typo shapes cost two whatever the word's length — a transposition
-//! ('zomo' for 'zoom') is two substitutions — and a short name would otherwise
+//! ordinary typo shapes cost two whatever the word's length -- a transposition
+//! ('zomo' for 'zoom') is two substitutions -- and a short name would otherwise
 //! never get a suggestion. The proportional term is what keeps a long name
 //! honest: past a third of its length the candidate no longer agrees with what
 //! was typed, it is merely the closest entry in a list, and printing it spends
@@ -47,7 +47,7 @@ std::string Diagnostic::format() const
 //! (doc/superscript.sts:303) while the useful 'datetime_display_number' sits at
 //! distance 4 on the neighbouring `set` lines. The FINDING is unchanged in every
 //! case; only the trailing hint disappears.
-//! Recorded in util/scedit/tests/derivation-diff.md §5.7 and in the contract
+//! Recorded in util/scedit/tests/derivation-diff.md S5.7 and in the contract
 //! file's `lint_seeds` entry for unknown-command.
 std::size_t suggestionCap(const std::string &token)
 {
@@ -90,8 +90,8 @@ std::string quoteName(const std::string &s) { return "'" + s + "'"; }
 
 //! BYTES THAT LOOK LIKE A SEPARATOR AND ARE NOT.
 //! The engine splits on the C locale's whitespace only (SP TAB LF VT FF CR,
-//! std::istringstream at parseCommand:141). Every other byte — including every
-//! space character Unicode has — is an ordinary character that GLUES the words
+//! std::istringstream at parseCommand:141). Every other byte -- including every
+//! space character Unicode has -- is an ordinary character that GLUES the words
 //! around it into one token. In an editor they are all blank, so the author
 //! cannot see the difference; that is what makes the class worth an id of its
 //! own rather than only its consequences.
@@ -165,7 +165,7 @@ Span keySpanOf(const Line &L, const std::string &key)
 	return Span{};
 }
 
-//! The VALUE token of the last pair carrying `key` — the value `args` keeps.
+//! The VALUE token of the last pair carrying `key` -- the value `args` keeps.
 Span valueSpanOf(const Line &L, const std::string &key)
 {
 	Span s;
@@ -258,7 +258,7 @@ bool LineChecker::checkSubfamilyName(const Line &L, const CommandData &cd,
 
 //! Scope: bytes OUTSIDE a quoted value, and before the comment when the line
 //! has one. Inside a `"..."` run the engine already accepts spaces, so a
-//! no-break space there is ordinary text the author meant — reporting it would
+//! no-break space there is ordinary text the author meant -- reporting it would
 //! be a C3 false positive; past the '#' the engine reads nothing at all.
 //! Everywhere else the byte sits where a separator was meant, or turns a name
 //! into a name nothing knows.
@@ -302,7 +302,7 @@ void LineChecker::run(const Line &L)
 	// A line that is only blanks and/or a comment: the comment cut and the
 	// leading-blank strip leave nothing, `commandstr >> command` fails, and
 	// executeCommand:207 returns without acting. (Before the comment rule, an
-	// INDENTED '#' executed as an unknown command — the retired
+	// INDENTED '#' executed as an unknown command -- the retired
 	// `indented-comment` seed; parse_model.comments.script_layer.)
 	if (!L.has_command)
 		return;
@@ -426,7 +426,7 @@ void LineChecker::rules(const Line &L, const CommandData &cdRef)
 				// (app_command_interface.cpp:2119-2121): the FIRST pair that
 				// fails makes every later call short-circuit away, so the pairs
 				// after it are never applied at all. Say so once, on the pair
-				// that causes it — "there is a typo" and "this line does
+				// that causes it -- "there is a typo" and "this line does
 				// nothing" are different messages to the author.
 				bool aborted = false;
 				for (auto it = L.args.begin(); it != L.args.end(); ++it) {
@@ -525,7 +525,7 @@ std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
 			if (m.what == "end")
 				out.push_back(makeDiagnostic(g, path, i + 1, "end-without-if",
 					"this 'struct if end' closes nothing: no 'struct if' block is open here, so the "
-					"engine logs \"end without if\" and ignores the line — either this 'end' is one "
+					"engine logs \"end without if\" and ignores the line \xe2\x80\x94 either this 'end' is one "
 					"too many, or the block it was meant to close was never opened", m.span));
 			else if (m.what == "else")
 				out.push_back(makeDiagnostic(g, path, i + 1, "else-without-if",
@@ -534,7 +534,7 @@ std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
 			else
 				out.push_back(makeDiagnostic(g, path, i + 1, "loop-end-without-loop",
 					"this 'struct loop end' closes nothing: no 'struct loop' is open here, so the "
-					"engine resets an empty loop and nothing repeats — either this 'end' is one too "
+					"engine resets an empty loop and nothing repeats \xe2\x80\x94 either this 'end' is one too "
 					"many, or the 'struct loop <n>' it was meant to close is missing", m.span));
 		}
 		if (skipped)
@@ -545,7 +545,7 @@ std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
 	// --- still open at the end of the file --------------------------------------
 	// Reported at the OPENER: that is the root, EOF is only where the damage
 	// surfaces. ifSwap stays pushed until `script action end` (:2810), which the
-	// end of the script runs — so the loss is bounded to this file's own tail.
+	// end of the script runs -- so the loss is bounded to this file's own tail.
 	for (const auto &b : skip.openIfs())
 		out.push_back(makeDiagnostic(g, path, b.line, "unclosed-struct",
 			quoteName(b.text) + " is never closed: no 'struct if end' follows before the end of "
@@ -559,12 +559,12 @@ std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
 			              "it either run once and are never repeated, or are skipped to the end of "
 			              "the file";
 		else if (n > 1)
-			consequence = "the lines after it run ONCE and are never repeated — the repetition "
+			consequence = "the lines after it run ONCE and are never repeated \xe2\x80\x94 the repetition "
 			              "only starts at 'struct loop end'";
 		else if (n < 1)
 			consequence = "every line after it is skipped to the end of the file";
 		else
-			consequence = "a count of 1 repeats nothing, so the lines after it run once — "
+			consequence = "a count of 1 repeats nothing, so the lines after it run once \xe2\x80\x94 "
 			              "harmless today, but the block has no end";
 		out.push_back(makeDiagnostic(g, path, b.line, "unclosed-struct",
 			quoteName(b.text) + " is never closed: no 'struct loop end' follows before the end of "
@@ -635,7 +635,7 @@ std::vector<UnarmedRule> unarmedRules(const Grammar &g)
 	if (!incomplete_names.empty())
 		out.push_back({"unknown-parameter",
 		               "argument-key half DELIBERATELY dormant for: " + join(incomplete_names) +
-		               " (the entry says args_complete:false — the rest of the key vocabulary is "
+		               " (the entry says args_complete:false \xe2\x80\x94 the rest of the key vocabulary is "
 		               "another contract's deliverable, so an unlisted key is not known to be wrong)"});
 	if (!sourced_names.empty())
 		out.push_back({"unknown-parameter",
@@ -645,7 +645,7 @@ std::vector<UnarmedRule> unarmedRules(const Grammar &g)
 	if (!free_names.empty())
 		out.push_back({"unknown-parameter",
 		               "argument-key half not applicable to: " + join(free_names) +
-		               " (these commands have no fixed key list — the key is a flag name, a "
+		               " (these commands have no fixed key list \xe2\x80\x94 the key is a flag name, a "
 		               "variable name or free text; the entry's `key_grammar` says which). Nothing "
 		               "is missing here: every other registered command IS checked"});
 	if (subfam_unarmed) {

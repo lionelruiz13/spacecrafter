@@ -19,14 +19,14 @@ class VertexBuffer;
 // Deduction rule: default for moving bodies, created inert; recording starts
 // via the seam (startTrails / setFlagTrail).
 //
-// PORT (INTENT §11.41; row 9) - reconciliation of the landing zone with the
-// established line-family shape (ORBIT §11.39 / AXIS §11.31):
+// PORT (INTENT S11.41; row 9) - reconciliation of the landing zone with the
+// established line-family shape (ORBIT S11.39 / AXIS S11.31):
 // - Frame & accumulation: the accumulation buffer holds PARENT-RELATIVE
 //   positions (body->getEclipticPos, root-aligned VSOP87 - old
 //   get_heliocentric_ecliptic_pos maps to this for the trail set, whose parent
 //   is the ~fixed system root), sampled at the body's SIM time (getLastJD).
 //   Both ride recursiveTranslationUpdate, refreshed for EVERY evaluated body
-//   even when invisible (§3.2/G4) - the row-9 invisible-tick contract. The
+//   even when invisible (S3.2/G4) - the row-9 invisible-tick contract. The
 //   trail is NOT in a screen-size regime list (far-components never get
 //   update()): it lives in a dedicated trailComponents list swept every frame
 //   by ModularSystem::drawTrails (the OrbitModule system-phase precedent), so
@@ -43,7 +43,7 @@ class VertexBuffer;
 //   (old setFlagTrails, command `flag object_trails on|off`); a module's fader
 //   targets it unless a per-name override (setShown) is live at the current
 //   generation.
-// - THE RECORDING GATE (§11.56, closes the §11.41 suspension) [vixy Q14
+// - THE RECORDING GATE (S11.56, closes the S11.41 suspension) [vixy Q14
 //   2026-07-21]: the DISPLAY FLAG gates RECORDING. Flag off => accumulation
 //   STOPS at once and the recorded history is DISCARDED; flag on => recording
 //   restarts FRESH from the body's current position. Stated reason: nobody
@@ -52,18 +52,18 @@ class VertexBuffer;
 //   while the fader stays the DISPLAY gate so the fade-out is unchanged.
 // - THE TWO GATES ARE INDEPENDENT, and that is a requirement, not a detail.
 //   Trail flag off => not recording, whatever the body's visibility.
-//   Body merely OFF-SCREEN => STILL recording [vixy Q13 / A10, §11.54]:
+//   Body merely OFF-SCREEN => STILL recording [vixy Q13 / A10, S11.54]:
 //   drawTrails sweeps every EVALUATED body.
-//   Reading the two as one gate produces a wrong implementation (§13.B B11).
-// - Body HIDDEN => NO LONGER RECORDING [vixy D23 2026-07-26 -> §11.113(b),
-//   B39/§11.117; this SUPERSEDES the hidden half of §11.56, whose tester-ratified
+//   Reading the two as one gate produces a wrong implementation (S13.B B11).
+// - Body HIDDEN => NO LONGER RECORDING [vixy D23 2026-07-26 -> S11.113(b),
+//   B39/S11.117; this SUPERSEDES the hidden half of S11.56, whose tester-ratified
 //   answer governs the DISPLAY-FLAG gate and is untouched]. A hidden body is
 //   as-if-nonexistent in the rendered universe, so hide() takes its subtree out
 //   of drawTrails' sweep entirely: recording stops because the module is not
 //   ticked at all, not because a third gate was added. On unhide the missed span
 //   is RECONSTRUCTED from the orbit (resumeAfterHidden below) - "as if they never
 //   were hidden when unhidden" - or, where the past is not computable, discarded
-//   with a log (§2.0 D12).
+//   with a log (S2.0 D12).
 // - Deduce: TRAIL for a non-still orbit (orbit_visualization_period>0) that is
 //   NOT a satellite and NOT type=Artificial (old BigBody+SmallBody set:
 //   Planet/Dwarf 1460, Comet 2920, Asteroid/KBO 60; Moon/Sun/Star/Center/
@@ -121,7 +121,7 @@ public:
     int getShownOverride() const override {
         return (overrideGen == flagGeneration) ? nameOverride : -1;
     }
-    //! THE ACCUMULATED TRAIL (b31-design §2 row D10). D32 names trail points a
+    //! THE ACCUMULATED TRAIL (b31-design S2 row D10). D32 names trail points a
     //! carve-out from "transients snap to their settled target" - a trail is
     //! not a motion in flight, it is drawn CONTENT that took simulated time to
     //! accumulate, and "as-if continued" says it is still there. So it is read
@@ -136,7 +136,7 @@ public:
             lastJD = points.front().jd;
     }
 
-    // THE UNHIDE EDGE (B39 §11.117 / D23 clause iv). Two things were behind:
+    // THE UNHIDE EDGE (B39 S11.117 / D23 clause iv). Two things were behind:
     //  (1) the DISPLAY fader, which advances in wall time and froze - snapped to
     //      the state it would have settled at (a fade is under a second; anything
     //      else would fade a trail out AFTER the body came back);
@@ -146,7 +146,7 @@ public:
     //      at their own dates through the body's own Orbit, on the same cadence
     //      accumulate() uses, so the polyline comes back with no gap and no
     //      invented geometry. A body with no evaluable orbit degrades to a fresh
-    //      start and LOGS it (§2.0 D12) - that is the one named residual of D23.
+    //      start and LOGS it (S2.0 D12) - that is the one named residual of D23.
     virtual void resumeAfterHidden(ModularBody *body) override;
 
     // Global master + generation (seam entry - both-paths mirror). A global

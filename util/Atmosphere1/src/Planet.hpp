@@ -6,7 +6,7 @@
 
 
 //! @file Planet.cpp Planet.hpp
-//! @author Jérôme Lartillot
+//! @author Jerome Lartillot
 //! @date 06/04/2016
 //!
 //! @section Description Description

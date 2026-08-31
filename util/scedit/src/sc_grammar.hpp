@@ -1,5 +1,5 @@
 /*
- * scedit — sc_grammar.hpp
+ * scedit -- sc_grammar.hpp
  *
  * WHAT THIS IS FOR
  * ================
@@ -9,7 +9,7 @@
  * lint id X carry?".
  *
  * The JSON file is the authority for CONTENT; this class is only its reader.
- * Nothing here hard-codes a command, a flag or a family member — a name that
+ * Nothing here hard-codes a command, a flag or a family member -- a name that
  * is not in the file does not exist for scedit. The one exception is
  * documented and bounded: SubfamilyPosition (below).
  *
@@ -29,14 +29,14 @@
  * facts, and only the second one licenses calling a key UNKNOWN. Four handlers
  * forward the whole parsed map to another module; for two of them (dso3d,
  * landscape) that module's key set was extracted, for the other two (body,
- * camera — and `flyto`, which IS camera) it is another contract file's
+ * camera -- and `flyto`, which IS camera) it is another contract file's
  * deliverable. Those entries say `args_complete: false`, and no consumer may
  * report an unlisted key of theirs. The default when the field is absent is
  * TRUE, because a hand-written entry that lists keys is claiming to list them.
  *
  * A command may also point at a FAMILY instead of carrying its own key specs
  * (`args_source`, used by `set`: its 43 keys ARE families.set_names). Such a
- * command keeps `arg_keys` empty on purpose — the family-name check already
+ * command keeps `arg_keys` empty on purpose -- the family-name check already
  * covers every key of the line, and a second check over the same keys would
  * report each one twice.
  *

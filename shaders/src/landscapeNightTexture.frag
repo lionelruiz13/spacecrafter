@@ -8,7 +8,7 @@
 layout (binding=0, set=1) uniform sampler2D texunit0;
 layout (binding=1, set=1) uniform sampler2D texunit1;
 
-//entrée
+//entree
 layout (binding=3, set=1) uniform uFrag {
 	float sky_brightness;
 	float fader;

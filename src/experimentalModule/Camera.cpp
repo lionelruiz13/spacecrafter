@@ -20,9 +20,9 @@ float Camera::maxHalfFov = 3.05;
 // View-offset arming ramp rate (fraction of the 0..1 transition per second).
 // Old ramped view_offset_transition over the arming auto_move (navigator.cpp
 // :73-78, ~1-4 s of atan easing); the new move law differs, so only the
-// ENDPOINTS (0 inert / 1 armed) are byte-matched to old — the ramp curve is
+// ENDPOINTS (0 inert / 1 armed) are byte-matched to old -- the ramp curve is
 // perceptual-parity. Rate chosen so the offset arms smoothly within a fraction
-// of a second (B17, §11.79(c)).
+// of a second (B17, S11.79(c)).
 static constexpr float VIEW_OFFSET_RAMP_RATE = 2.f;
 
 Camera::Camera(ModularBody *reference, float longitude, float latitude, float altitude) :
@@ -44,23 +44,23 @@ Vec3f Camera::getPlace() const
         return Vec3f(longitude, latitude, distanceToReference());
     // The free-mode place lives in `position`; the spherical members were
     // frozen when free flight was entered. Converted back exactly as
-    // setFreeMode(false) does it — through the ONE authority, so the two cannot
-    // drift apart (they had: §5.80) — and `distance` is deliberately NOT used:
+    // setFreeMode(false) does it -- through the ONE authority, so the two cannot
+    // drift apart (they had: S5.80) -- and `distance` is deliberately NOT used:
     // it keeps a stale value in free mode on purpose (lateral-velocity parity,
-    // B10 §11.71), so distanceToReference() would report where the observer
+    // B10 S11.71), so distanceToReference() would report where the observer
     // was when it took off.
     const Vec3f place = posePartToPose(-position, longitude, latitude);
     return Vec3f(place[0], place[1], position.length() - reference->getAltitudeReference());
 }
 
-// Shared proximity-factor authority (B10 iv-b, §5.2). Base measured to the
+// Shared proximity-factor authority (B10 iv-b, S5.2). Base measured to the
 // ground (ground_radius), NOT the datum: == distanceToReference() for every
 // default (ground==datum) body, so bit-identical to today until the two radii
 // differ. Uses the SAME `distance` member as distanceToReference (legacy
 // free-mode velocity parity); the geometric ground barrier is enforced
 // separately by update()'s free-mode descent clamp on `position`. The floor is
 // radius-relative (stays defined at an enterable body's centre) and applies to
-// the outward/escape step only (§5.18).
+// the outward/escape step only (S5.18).
 float Camera::proximityFactor(bool escaping) const
 {
     float p = distance - reference->getScaledGroundRadius();
@@ -83,7 +83,7 @@ Mat4f Camera::fold() const
     // foldLat, not latitude: old-mount semantics keep the view LOCAL-frame
     // locked under observer moves (sky-locking is old flag_lock_equ_pos, a
     // separate feature); update() re-derives the params when latitude moves
-    // (measured before the interception: a 5.55° moveto latitude change
+    // (measured before the interception: a 5.55deg moveto latitude change
     // pitched the whole sky by exactly that angle vs old).
     if (mount == CameraMount::EQUATORIAL && !freeMode)
         return Mat4f::xrotation(M_PI_2 - foldLat);
@@ -92,8 +92,8 @@ Mat4f Camera::fold() const
 
 Mat4f Camera::viewRotation() const
 {
-    // heading+π: without it the camera frame is rolled 180° about the view
-    // axis relative to the old path (measured 179.994° on every body,
+    // heading+pi: without it the camera frame is rolled 180deg about the view
+    // axis relative to the old path (measured 179.994deg on every body,
     // INTENT 11.19b). This composition is the SINGLE AUTHORITY on the
     // alt/az/heading convention; observedToLocalPos is its exact transpose
     // and lookTo/recoverParams are its exact inverses.
@@ -113,8 +113,8 @@ Mat4f Camera::placementRotation() const
 }
 
 // The B17 view offset expressed as a fixed EYE-SPACE (screen-frame) rotation R'
-// such that mat_render == R' · mat_free (mat_free = the offset-free view). A pure
-// pitch about the eye x-axis of `offset·halfFov` — old's fov-coupled magnitude
+// such that mat_render == R' * mat_free (mat_free = the offset-free view). A pure
+// pitch about the eye x-axis of `offset*halfFov` -- old's fov-coupled magnitude
 // (navigator.cpp:309), applied in the PHYSICAL eye frame (leftmost, downstream
 // of everything incl. the heading roll). Identity when inert (effective 0) so
 // the no-offset path is byte-identical to pre-B17.
@@ -123,19 +123,19 @@ Mat4f Camera::placementRotation() const
 // BELOW its heading zrotation (navigator.cpp:309 before :314), coupling the
 // offset to the heading. In the new path the heading is a DECOMPOSITION param
 // that B13 (recoverParams) rewrites across a reference switch to hold the SAME
-// physical view (measured: Earth→Mars param-heading moves 2.655° while the
+// physical view (measured: Earth->Mars param-heading moves 2.655deg while the
 // physical eye orientation is held). Coupling the offset to that param-heading
-// makes the offset JUMP across a held ref switch (measured 2.06° absDelta,
-// >0.05° B13 tol) — corrupting the B13/B18 composition the row mandates. Applied
+// makes the offset JUMP across a held ref switch (measured 2.06deg absDelta,
+// >0.05deg B13 tol) -- corrupting the B13/B18 composition the row mandates. Applied
 // in the physical eye frame the offset is a constant screen pitch: it composes
 // invariantly (a held view stays held, shifted) AND reproduces old's OBSERVABLE
 // across ref switches (old holds heading in warpToBody, so old's offset is held
 // too). Matches old EXACTLY at heading 0 (the dome-show norm, all B17 A/B legs).
-// heading≠0 STATIC divergence from old (old rolls the offset with the view; this
-// keeps it screen-fixed) is recorded for Vixy — a dome-space offset is arguably
+// heading!=0 STATIC divergence from old (old rolls the offset with the view; this
+// keeps it screen-fixed) is recorded for Vixy -- a dome-space offset is arguably
 // the more correct reading, and old's pre-roll coupling can't hold the B13
 // mandate. Also the rotation the tracking feedback must undo (update()):
-// getObservedPosition() == R'·(offset-free eye pos), R'ᵀ recovers the true pos.
+// getObservedPosition() == R'*(offset-free eye pos), R'^T recovers the true pos.
 Mat4f Camera::viewOffsetEyeRotation() const
 {
     const float o = effectiveViewOffset();
@@ -145,9 +145,9 @@ Mat4f Camera::viewOffsetEyeRotation() const
 }
 
 // Render view rotation = the eye-space offset pitch composed (leftmost) with
-// viewRotation() (the SOLE composition authority — I2). The fisheye transfer
-// turns the offset·halfFov pitch into a constant fraction-of-dome shift
-// (§11.63(c), measured fov-independent). Byte-identical to viewRotation() when
+// viewRotation() (the SOLE composition authority -- I2). The fisheye transfer
+// turns the offset*halfFov pitch into a constant fraction-of-dome shift
+// (S11.63(c), measured fov-independent). Byte-identical to viewRotation() when
 // the offset is inert (R' == identity).
 Mat4f Camera::renderViewRotation() const
 {
@@ -163,7 +163,7 @@ Mat4f Camera::renderViewRotation() const
 // per-frame SNAPSHOT and the parameters are not: anything the camera does
 // between two updates (a descent, a moveRel, a look) changes the geometry
 // while the snapshot still describes where the eye was at the last dispatch.
-// Reading the snapshot back was §11.108(e)'s measured breach — ten
+// Reading the snapshot back was S11.108(e)'s measured breach -- ten
 // `camera action descend` in ONE frame all saw the same reference position
 // and compounded LINEARLY (x0.9) instead of geometrically (0.99^10), a D8
 // use-site-barrier violation reachable from any script or the TCP channel.
@@ -200,7 +200,7 @@ Mat4f Camera::viewMat() const
 
 void Camera::setViewOffset(double offset)
 {
-    // The [-0.5,0.5] clamp lives in the ONE sink Core::setViewOffset (both §2(c)
+    // The [-0.5,0.5] clamp lives in the ONE sink Core::setViewOffset (both S2(c)
     // channels funnel through it, core.cpp); store the already-clamped value.
     viewOffset = offset;
 }
@@ -219,7 +219,7 @@ void Camera::armViewOffset(bool armed)
 }
 
 // Advance the arming transition toward its latched target (old
-// view_offset_transition, navigator.cpp:73-78). Ramp only — never a snap — so
+// view_offset_transition, navigator.cpp:73-78). Ramp only -- never a snap -- so
 // the offset eases in/out; steady state reaches the target EXACTLY (clamped),
 // giving byte-exact endpoints against old.
 void Camera::advanceViewOffset(float deltaTime)
@@ -241,8 +241,8 @@ void Camera::advanceViewOffset(float deltaTime)
 
 Vec3f Camera::paramForward() const
 {
-    // Inverse of lookTo's parameter derivation (az=−lng, alt=−lat):
-    // d = (cos az·cos alt, −sin az·cos alt, −sin alt)
+    // Inverse of lookTo's parameter derivation (az=-lng, alt=-lat):
+    // d = (cos az*cos alt, -sin az*cos alt, -sin alt)
     const float ca = cosf(alt);
     return Vec3f(cosf(az)*ca, -sinf(az)*ca, -sinf(alt));
 }
@@ -256,14 +256,14 @@ void Camera::recoverParams(const Mat4f &totalRot)
     const Mat4f core = totalRot
         .multiplyFast(placementRotation().transpose())
         .multiplyFast(fold().transpose());
-    // core = Z(g1)·X(g2)·Z(g3), column-major element (i,j) = r[j*4+i]
+    // core = Z(g1)*X(g2)*Z(g3), column-major element (i,j) = r[j*4+i]
     float c2 = core.r[10];
     if (c2 > 1.f) c2 = 1.f;
     if (c2 < -1.f) c2 = -1.f;
     const float g2 = acosf(c2);
     float g1, g3;
     if (fabsf(c2) > 0.999999f) {
-        // Pole singularity: only g1±g3 is defined - keep the current az
+        // Pole singularity: only g1+-g3 is defined - keep the current az
         g3 = az - M_PI_2;
         const float base = atan2f(core.r[1], core.r[0]);
         g1 = (c2 > 0.f) ? (base - g3) : (base + g3);
@@ -294,8 +294,8 @@ static bool solvePlan(float v0, float d, float T, float &t1, float &a)
         a = 4.f*d/(T*T);
         return true;
     }
-    // t1 = (2d ∓ √(2·(T²v0² − 2Tdv0 + 2d²)))/(2v0); a = v0/(T − 2t1)
-    const float disc = T*T*v0*v0 - 2.f*T*d*v0 + 2.f*d*d; // = (Tv0−d)² + d² ≥ 0
+    // t1 = (2d -/+ sqrt(2*(T^2v0^2 - 2Tdv0 + 2d^2)))/(2v0); a = v0/(T - 2t1)
+    const float disc = T*T*v0*v0 - 2.f*T*d*v0 + 2.f*d*d; // = (Tv0-d)^2 + d^2 >= 0
     const float s = sqrtf(2.f*disc);
     bool found = false;
     for (const float cand : {(2.f*d - s)/(2.f*v0), (2.f*d + s)/(2.f*v0)}) {
@@ -371,7 +371,7 @@ void Camera::advanceView(float deltaTime)
 
 void Camera::switchToBody(ModularBody *dst)
 {
-    // BECOMING THE REFERENCE IS A USE (D8 §11.76 / B39 §11.117): a hidden body
+    // BECOMING THE REFERENCE IS A USE (D8 S11.76 / B39 S11.117): a hidden body
     // is a legal reference - `S10.sts` makes one its home_planet - and since B39
     // it no longer ticks, so its cached position is at its hide date until asked.
     // calculateSwitchCompensation below reads exactly that cached position, of
@@ -436,19 +436,19 @@ void Camera::warpToBody(ModularBody *dst)
         setBoundToSurface(false);
 }
 
-// ---- Where the observer IS, as a vector (B4(iv), §11.141) ------------------
+// ---- Where the observer IS, as a vector (B4(iv), S11.141) ------------------
 // viewMat() is the affine map the renderer consumes, and its input frame is the
 // reference's ACCUMULATED EQUATORIAL frame BY CONTRACT (see viewMat's own
 // declaration and dispatchUpdate's parameter) - the surface fold, when the
 // camera is bound, is a factor INSIDE that map, not a frame outside it. The eye
 // is the origin of the eye frame, so the eye's position p in that input frame
-// is the solution of Rot·p + t = 0, i.e. p = −Rotᵀ·t.
+// is the solution of Rot*p + t = 0, i.e. p = -Rot^T*t.
 //
 // Derived from the drawn matrix rather than from the pose members on purpose:
 // it is then right in freeMode and anchored, bound and unbound, and with or
-// without the view offset (a left-multiplied rotation cancels in −Rotᵀ·t), and
+// without the view offset (a left-multiplied rotation cancels in -Rot^T*t), and
 // it cannot fall out of step with what is on screen (I2). MEASURED against the
-// old path's own observer position on the same frame (§11.141): the two agree
+// old path's own observer position on the same frame (S11.141): the two agree
 // to 2.6e-08 AU, which is the float32 floor of a 1 AU subtraction, and the
 // three rejected candidates (undoing the fold, transposing the tilt, flipping
 // the sign) miss by 1.1e-05 / 3.2e-05 / 8.5e-05 AU - so the composition below
@@ -488,32 +488,32 @@ void Camera::placeAt(const Vec3f &pos, bool holdView)
 {
     // Hold the composed orientation across the placement when asked (A38/B13:
     // a reference switch holds the whole orientation). Captured BEFORE the
-    // pose members move, recovered after — the deduce-identical-view primitive
+    // pose members move, recovered after -- the deduce-identical-view primitive
     // every other transition in this class uses.
     const Mat4f R = holdView ? viewRotation().multiplyFast(placementRotation()) : Mat4f::identity();
     // Algebraic inverse of the SAME composition getReferenceRelativePosition
-    // reads. viewMat is [...]·X(lat−π/2)·Z(−lon)·S (or [...]·T(position)·S),
+    // reads. viewMat is [...]*X(lat-pi/2)*Z(-lon)*S (or [...]*T(position)*S),
     // with S = computeSurfaceToBody() when bound, so its input-frame eye
-    // position is Sᵀ·(the pose part) and S·pos is the pose part back.
+    // position is S^T*(the pose part) and S*pos is the pose part back.
     const Vec3f p = boundToSurface
         ? reference->computeSurfaceToBody().multiplyWithoutTranslation(pos)
         : pos;
     if (freeMode) {
-        // viewMat's free branch is mat = R·T(position) ⇒ p = −position.
+        // viewMat's free branch is mat = R*T(position) => p = -position.
         position = -p;
     } else {
-        // viewMat's anchored branch is mat = R·T(0,0,−distance)·X(lat−π/2)·Z(−lon),
-        // so p = Z(lon)·X(π/2−lat)·(0,0,distance) = distance·(cosφ·sinλ,
-        // −cosφ·cosλ, sinφ) = posePart(). This member is where that inverse was
-        // first written out (F33, §11.143); it now READS from the one authority
+        // viewMat's anchored branch is mat = R*T(0,0,-distance)*X(lat-pi/2)*Z(-lon),
+        // so p = Z(lon)*X(pi/2-lat)*(0,0,distance) = distance*(cosphi*sinlambda,
+        // -cosphi*coslambda, sinphi) = posePart(). This member is where that inverse was
+        // first written out (F33, S11.143); it now READS from the one authority
         // instead of restating it, which is what makes the free-mode converter
-        // the same expression rather than a fifth copy of it (§11.153).
+        // the same expression rather than a fifth copy of it (S11.153).
         const Vec3f place = posePartToPose(p, longitude, latitude);
         longitude = place[0];
         latitude = place[1];
         distance = place[2];
         // p == 0: the eye is AT the reference's centre, where longitude and
-        // latitude parametrize nothing — posePartToPose hands them back rather
+        // latitude parametrize nothing -- posePartToPose hands them back rather
         // than atan2(0,0), so a point anchor keeps the place readout it
         // arrived with (the old path leaves lon/lat alone there too).
         //
@@ -522,8 +522,8 @@ void Camera::placeAt(const Vec3f &pos, bool holdView)
         // view whenever `latitude != foldLat`, to keep the ZENITH-frame
         // direction across an observer LATITUDE MOVE (old-mount parity). A held
         // placement is the other case: the observer stands still and only its
-        // parametrization changed — a new reference expresses the same place at
-        // a different latitude — so re-deriving would turn the sky by exactly
+        // parametrization changed -- a new reference expresses the same place at
+        // a different latitude -- so re-deriving would turn the sky by exactly
         // that difference, which A38 (the switch holds the WHOLE orientation)
         // forbids. Order matters and was measured: writing foldLat AFTER
         // recoverParams changes fold() out from under the solution and applies
@@ -544,9 +544,9 @@ void Camera::update(double jd, float deltaTime)
     // single per-frame entry point of the new path - before any body update
     // runs (ModularBody::deltaTime contract).
     ModularBody::deltaTime = deltaTime * 1000.f;
-    // §5.32: the reference is the ONE node dispatchUpdate can skip update()
+    // S5.32: the reference is the ONE node dispatchUpdate can skip update()
     // for, and every consumer below reads its spin and its reach with no drawn
-    // gate — the bound placement (placementRotation / the tail of this
+    // gate -- the bound placement (placementRotation / the tail of this
     // function), the persistent longitude conversions of setBoundToSurface /
     // setFreeMode, and findBetterReference's threshold. Bring both to THIS
     // frame's date here, before the first of them: without it the camera
@@ -574,11 +574,11 @@ void Camera::update(double jd, float deltaTime)
     }
     foldLat = latitude;
     if (target) { // Note : the tracked position is from the last update
-        // getObservedPosition() rides the offset-included render mat (R'·P_free);
+        // getObservedPosition() rides the offset-included render mat (R'*P_free);
         // centre the OFFSET-FREE position so the offset does not get absorbed by
         // the tracking (old centres the body's true equatorial position, then
-        // the offset pitches the view — the tracked body ends up off-centre by
-        // the offset, the zoom_offset purpose). R'ᵀ recovers P_free; identity
+        // the offset pitches the view -- the tracked body ends up off-centre by
+        // the offset, the zoom_offset purpose). R'^T recovers P_free; identity
         // when the offset is inert (bit-identical to the pre-B17 tracking).
         Vec3f p = viewOffsetEyeRotation().transpose()
                       .multiplyWithoutTranslation(target->getObservedPosition());
@@ -614,12 +614,12 @@ void Camera::update(double jd, float deltaTime)
     // geometry) every frame, so integrated glides AND instant interactive
     // descents settle-and-HOLD at the ground rather than crossing it or
     // asymptoting toward it. A SYSTEM reference has no landable surface (the
-    // EnvironmentManager onBody rule, I4) so it carries no ground clamp —
+    // EnvironmentManager onBody rule, I4) so it carries no ground clamp --
     // flying INTO a galaxy / solar system stays free. ground_radius == 0
-    // (enterable body) ⇒ no clamp, descent to the centre allowed. Anchored
+    // (enterable body) => no clamp, descent to the centre allowed. Anchored
     // mode has no clamp by design (moveto altitude -X is an explicit
-    // declaration). This is the ONLY descent floor in Camera — there was none
-    // before (§5.2 finding ii), so it is inert for every default body until
+    // declaration). This is the ONLY descent floor in Camera -- there was none
+    // before (S5.2 finding ii), so it is inert for every default body until
     // the observer would cross its ground in free flight.
     if (freeMode && !reference->isSystem()) {
         const float ground = reference->getScaledGroundRadius();
@@ -706,7 +706,7 @@ void Camera::moveTo(const Vec3f &pos, float duration, bool calculateDuration)
         // Legacy spherical target converted to a free position through the ONE
         // triple<->cartesian authority, so this command names the SAME place in
         // both modes - it did not, and landed 16 700 km apart on free mode
-        // alone (§11.144(g)). Altitude counts from the reference's altitude
+        // alone (S11.144(g)). Altitude counts from the reference's altitude
         // reference, matching the anchored branch's distanceToReference()
         // semantics: the two branches below now differ only in WHICH
         // parametrization holds the identical place.
@@ -740,7 +740,7 @@ void Camera::setFreeMode(bool b)
     // recover the parameters under the NEW decomposition.
     const Mat4f R = viewRotation().multiplyFast(placementRotation());
     // The POSITION half of that transition is the composer's own inverse
-    // (§11.153, authorized by §11.151(a): "swapping ... must be transparent
+    // (S11.153, authorized by S11.151(a): "swapping ... must be transparent
     // include the position channel"). Both directions go through the one
     // authority, so entering and leaving free flight name the same place the
     // renderer was already drawing: the eye does not move. What used to stand
@@ -748,7 +748,7 @@ void Camera::setFreeMode(bool b)
     // different parametrization of the pose (a missing negation AND an azimuth
     // handedness, composing to one 180 deg rotation), so the toggle teleported
     // the observer ~125 deg around its reference at constant distance, which no
-    // shipped readout could see (§5.80, §11.144).
+    // shipped readout could see (S5.80, S11.144).
     if (b) {
         position = -posePart(longitude, latitude, distance);
     } else {
@@ -809,7 +809,7 @@ void Camera::setSkyLock(bool b)
 void Camera::lookTo(const Vec3f &direction, float duration, bool isMaxDuration)
 {
     // Parameter derivation is the exact inverse of viewRotation() (authority):
-    // centering `direction` (acting frame) requires az=−lng, alt=−lat of the
+    // centering `direction` (acting frame) requires az=-lng, alt=-lat of the
     // FOLDED direction (param frame). Smoothed per the dome-comfort law.
     Vec3f dirP = fold().multiplyWithoutTranslation(direction);
     const float len = dirP.length();
@@ -879,13 +879,13 @@ void Camera::lookTo(float _alt, float _az, float duration, bool isMaxDuration)
 // (navigator.cpp:181-221), and its parameters are OLD'S, not this class's:
 // +deltaAlt raises the VIEW (old's `altVision += deltaAlt`) and deltaAz turns it
 // the way old's `azVision -= deltaAz` does. The camera's own parameters are the
-// NEGATIVES of that pair — `az = −lng`, `alt = −lat` of the forward direction in
-// the param frame (paramForward above; `viewRotation()·paramForward() == (0,0,−1)`
-// is the derivation) — so old's `+deltaAlt` is `−deltaAlt` here and old's
+// NEGATIVES of that pair -- `az = -lng`, `alt = -lat` of the forward direction in
+// the param frame (paramForward above; `viewRotation()*paramForward() == (0,0,-1)`
+// is the derivation) -- so old's `+deltaAlt` is `-deltaAlt` here and old's
 // `deltaAz` is `+deltaAz` here. MEASURED before this was written, on five bodies
-// spread over 140° of azimuth: `alt_cam + altVision_old` is 0 to 1.1e-5 rad and
-// `az_cam + azVision_old` is constant at +25.264°, while both opposite mappings
-// spread by the full range (INTENT §11.133(b)(c)).
+// spread over 140deg of azimuth: `alt_cam + altVision_old` is 0 to 1.1e-5 rad and
+// `az_cam + azVision_old` is constant at +25.264deg, while both opposite mappings
+// spread by the full range (INTENT S11.133(b)(c)).
 // Stating the convention HERE, once, is what keeps the two call sites from
 // drifting apart (I2): `Core::updateMove` (the key ramp) and `Core::dragView`
 // both hand the SAME numbers to `navigation->updateMove` and to this.
@@ -896,7 +896,7 @@ void Camera::lookRel(float deltaAlt, float deltaAz, float duration, bool isMaxDu
     // The view altitude in old's convention, with old's pole clamp reproduced
     // line for line INCLUDING its look-ahead: the second and third tests read
     // the ALREADY-MUTATED value, so the clamp fires one step early (whenever
-    // altVision + 2·deltaAlt would cross a pole) and pins at ±(π/2 − 1e-6).
+    // altVision + 2*deltaAlt would cross a pole) and pins at +-(pi/2 - 1e-6).
     float viewAlt = -alt;
     if (deltaAlt != 0.f) {
         if (viewAlt + deltaAlt <= (float)M_PI_2 && viewAlt + deltaAlt >= -(float)M_PI_2)
@@ -913,11 +913,11 @@ void Camera::lookRel(float deltaAlt, float deltaAz, float duration, bool isMaxDu
     }
     // SNAP: assign the parameters. `lookTo(alt, az, 0)` would route them through
     // a direction and back, which is the identity in exact arithmetic (D8 as-if)
-    // but NOT in float32 near a pole — MEASURED: a clamped view altitude of
-    // π/2 − 1e-6 collapses onto EXACTLY ±π/2 (its sine rounds to 1), and once
-    // there the recovered azimuth FLIPS BY π every frame, i.e. a 180° image roll
+    // but NOT in float32 near a pole -- MEASURED: a clamped view altitude of
+    // pi/2 - 1e-6 collapses onto EXACTLY +-pi/2 (its sine rounds to 1), and once
+    // there the recovered azimuth FLIPS BY pi every frame, i.e. a 180deg image roll
     // per frame, because viewRotation() composes `az` into the roll. The float32
-    // threshold is ε > 2^-11.5 = 3.45e-4 rad, 345× old's clamp epsilon.
+    // threshold is epsilon > 2^-11.5 = 3.45e-4 rad, 345x old's clamp epsilon.
     // Assigning keeps old's epsilon and keeps cos(alt) > 0, so the view stays on
     // its own side of the pole.
     viewT = 0.f; // a snap drops any in-flight view plan (lookTo's own rule)
@@ -925,7 +925,7 @@ void Camera::lookRel(float deltaAlt, float deltaAz, float duration, bool isMaxDu
     // Keep the azimuth bounded, as old's rectToSphe round trip does: a float32
     // parameter of magnitude 1000 rad has a 6e-5 rad quantum, which would
     // quantize the view itself over a long uninterrupted turn. One branch, not
-    // a per-step trigonometric round trip: within (−π, π] the step is left
+    // a per-step trigonometric round trip: within (-pi, pi] the step is left
     // untouched, so the mirror pays no rounding old does not pay.
     if (newAz > (float)M_PI)
         newAz -= 2.f * (float)M_PI;
@@ -1037,19 +1037,19 @@ void Camera::setAltitude(double altitude)
     distance = altitude/(1000*AU)+reference->getAltitudeReference();
 }
 
-// View-directed free descent authority (B21, §11.72). The vertical the observer
+// View-directed free descent authority (B21, S11.72). The vertical the observer
 // moves along in free flight depends on the regime, riding B10's
 // proximityFactor() (I2):
-//   * NEAR a body (reference is NOT a system): the VIEW RAY — descend toward
+//   * NEAR a body (reference is NOT a system): the VIEW RAY -- descend toward
 //     the surface point under the screen centre (eye forward, -z). Q6/A18
-//     (§11.48). update()'s free-mode clamp holds the floor at ground_radius
-//     (R4 stop-and-hold) — this composes with it, it does not fight it.
+//     (S11.48). update()'s free-mode clamp holds the floor at ground_radius
+//     (R4 stop-and-hold) -- this composes with it, it does not fight it.
 //   * FAR / galactic (reference IS a system, no landable surface underfoot):
-//     aim at the LAST SELECTED body (R6 §11.70(e)). The existing distance-
+//     aim at the LAST SELECTED body (R6 S11.70(e)). The existing distance-
 //     driven reference transition (findBetterReference, update()) then captures
 //     the body and the near-field view-ray descent takes over. B21 changes only
-//     the descent DIRECTION here, never WHEN a transition fires (dispatch §2
-//     carve-out — the escalation/anchor policy is B20/§6.9 territory).
+//     the descent DIRECTION here, never WHEN a transition fires (dispatch S2
+//     carve-out -- the escalation/anchor policy is B20/S6.9 territory).
 // `coef` is the altitude multiplier (multAlt semantics): coef<1 descends,
 // coef>1 ascends. The along-axis step is multiplicative on the vertical's
 // length (ground proximity near, distance-to-selected far), so it mirrors the
@@ -1062,14 +1062,14 @@ void Camera::descend(float coef)
         return;
     }
     // FAR / galactic: the reference is a system (no landable surface
-    // underfoot) ⇒ aim at the LAST SELECTED body (R6 §11.70(e)). d is sel's
+    // underfoot) => aim at the LAST SELECTED body (R6 S11.70(e)). d is sel's
     // centre in the eye frame; moveEyeRel maps it so the observer steps by
-    // (1-coef)·|d| TOWARD sel for coef<1 (descend) and away for coef>1
-    // (ascend) — multiplicative on the distance to sel, mirroring the near
+    // (1-coef)*|d| TOWARD sel for coef<1 (descend) and away for coef>1
+    // (ascend) -- multiplicative on the distance to sel, mirroring the near
     // case's multiplicative-on-altitude feel. The existing distance-driven
     // reference transition (findBetterReference, update()) then captures the
-    // body and the near-field view-ray descent takes over — B21 changes only
-    // the descent DIRECTION, never WHEN a transition fires (dispatch §2).
+    // body and the near-field view-ray descent takes over -- B21 changes only
+    // the descent DIRECTION, never WHEN a transition fires (dispatch S2).
     if (reference->isSystem()) {
         if (ModularBody *sel = ModularBody::getSelected()) {
             const Vec3f d = sel->getObservedPosition();
@@ -1081,17 +1081,17 @@ void Camera::descend(float coef)
         // No selection / degenerate: fall through to the view-ray step.
     }
     // NEAR field: descend toward the surface point under the view ray. Work in
-    // the EYE frame — observer at the origin, forward = −z, the ground sphere
+    // the EYE frame -- observer at the origin, forward = -z, the ground sphere
     // centred at the reference centre C (= reference->getObservedPosition(),
     // |C| == the live observer distance) with radius g. This is LIVE geometry:
-    // it must NOT read the free-mode-stale `distance` member (B10 §11.71 —
+    // it must NOT read the free-mode-stale `distance` member (B10 S11.71 --
     // proximityFactor/distanceToReference keep that stale value for lateral-
     // velocity parity, but a descent that has to reach the ground needs the
-    // live position). Cast origin + s·(0,0,−1), take the near hit, and move a
-    // (1−coef) fraction of the way to it; update()'s R4 clamp holds the floor.
+    // live position). Cast origin + s*(0,0,-1), take the near hit, and move a
+    // (1-coef) fraction of the way to it; update()'s R4 clamp holds the floor.
     // LIVE geometry, from this camera's own parameters (viewMat) and not from
     // the reference's per-frame cache: N descents inside one frame must
-    // compound like N descents spread over N frames (§5.32/§11.108(e)).
+    // compound like N descents spread over N frames (S5.32/S11.108(e)).
     const Vec3f C = viewMat().getTranslation();
     const float g = reference->getScaledGroundRadius();
     const float len = C.length();
@@ -1100,8 +1100,8 @@ void Camera::descend(float coef)
     if (coef >= 1.f) {
         // ASCEND: back off along the view ray (reverse of the descent). The step
         // is proportional to the LIVE altitude and FLOORED to
-        // ANTISTUCK_ESCAPE_FLOOR·radius so takeoff from height 0 is ALWAYS
-        // possible — the §5.18 anti-stuck rule B10 enforces on every OUTWARD
+        // ANTISTUCK_ESCAPE_FLOOR*radius so takeoff from height 0 is ALWAYS
+        // possible -- the S5.18 anti-stuck rule B10 enforces on every OUTWARD
         // step (proximityFactor's escape floor), restored here on live geometry.
         float step = (coef - 1.f) * alt;
         const float floor = static_cast<float>(ANTISTUCK_ESCAPE_FLOOR)
@@ -1112,30 +1112,30 @@ void Camera::descend(float coef)
         return;
     }
     // DESCEND toward the surface point under the view ray. Cast origin +
-    // s·(0,0,−1), take the near hit, move (1−coef) of the way there.
+    // s*(0,0,-1), take the near hit, move (1-coef) of the way there.
     const float Cz = C[2];
     const float disc = Cz * Cz - (C.dot(C) - g * g);
     float s = -1.f;
     if (disc >= 0.f)
-        s = -Cz - sqrtf(disc);            // nearest ray∩sphere ahead of the eye
+        s = -Cz - sqrtf(disc);            // nearest ray^sphere ahead of the eye
     if (s > 0.f) {
-        moveEyeRel({0, 0, (1.f - coef) * s}); // forward toward S; (1−coef)>0
+        moveEyeRel({0, 0, (1.f - coef) * s}); // forward toward S; (1-coef)>0
     } else if (len > 0.f) {
         // The view ray misses the ground OR the sphere sits entirely behind the
         // eye (looking away): descend RADIALLY toward the reference centre so
         // "down" still lowers the observer.
-        moveEyeRel(C * ((coef - 1.f) * alt / len)); // observer Δ = (1−coef)·alt·Ĉ
+        moveEyeRel(C * ((coef - 1.f) * alt / len)); // observer Delta = (1-coef)*alt*C_hat
     }
 }
 
-// ---- Session state (b31-design §2 group B; contract in Camera.hpp) ---------
+// ---- Session state (b31-design S2 group B; contract in Camera.hpp) ---------
 
 namespace {
 
 // Round-trip-exact text for the two float widths this camera stores. A session
 // that comes back to a different number than it saved is not a session, and
 // the default ostream precision is what turned a JD into a 10-day quantum in
-// the surface this file replaces (§5.41).
+// the surface this file replaces (S5.41).
 std::string f2s(float v)
 {
     std::ostringstream s;
@@ -1157,7 +1157,7 @@ std::string b2s(bool v)
 
 // Reading is by ASSIGNMENT or not at all: a key the file does not carry leaves
 // the live value alone, which is what makes a hand-trimmed file apply the part
-// it does carry instead of half-destroying the state (§4.2's report-and-keep,
+// it does carry instead of half-destroying the state (S4.2's report-and-keep,
 // on the value side).
 bool readF(const ModularSystemFormat::Section &s, const char *key, float &out)
 {
@@ -1217,7 +1217,7 @@ void Camera::saveSession(ModularSystemFormat::Section &out) const
     // operator's own `moveto` takes, so a hand-edited session says what it
     // looks like it says; and the restore hands it straight to the seam that
     // moves BOTH paths, which is what keeps the old-path sky under the new
-    // path's observer (§2 rows B3/B19).
+    // path's observer (S2 rows B3/B19).
     out.appendEntry("altitude", d2s(static_cast<double>(dist - reference->getAltitudeReference())
                                     * 1000.0 * AU));
     out.appendEntry("position", f2s(pos[0]) + "," + f2s(pos[1]) + "," + f2s(pos[2]));
@@ -1225,7 +1225,7 @@ void Camera::saveSession(ModularSystemFormat::Section &out) const
     // D32 again, on the view: an in-flight smoothing plan lands on
     // rotateAbout(viewFrom, viewAxis, viewAngle) - advanceView's own exact
     // landing, taken here instead of a sampled mid-path direction. Tracking
-    // re-plans EVERY frame (§11.55(d)), so a mid-plan save has no fixed point
+    // re-plans EVERY frame (S11.55(d)), so a mid-plan save has no fixed point
     // and T4 could not exist.
     float sAlt = alt, sAz = az;
     if (viewT > 0.f) {
@@ -1240,7 +1240,7 @@ void Camera::saveSession(ModularSystemFormat::Section &out) const
     }
     out.appendEntry("alt", f2s(sAlt));
     out.appendEntry("az", f2s(sAz));
-    // §2 row B6. Written as a note rather than as a value, and attached to the
+    // S2 row B6. Written as a note rather than as a value, and attached to the
     // ABSENT key so that it lands at the section's end rather than above an
     // unrelated datum: the exclusion has to survive into the artifact, or the
     // slice that adds it has to rediscover why it is missing.
@@ -1263,7 +1263,7 @@ void Camera::saveSession(ModularSystemFormat::Section &out) const
     out.appendEntry("sky_locked", b2s(skyLocked));
     // The HELD matrix, not a derivation of it: lockedSkyRot is the rotation
     // captured when the lock engaged and it is not recoverable from anything
-    // else in this file (§2 row B9). Written even while the lock is OFF, where
+    // else in this file (S2 row B9). Written even while the lock is OFF, where
     // it is dormant rather than absent - the alternative (omit it, and let a
     // restore keep whatever the running app had) makes the restored state
     // depend on what the app was doing before the restore, which is exactly
@@ -1338,12 +1338,12 @@ void Camera::restoreSession(const ModularSystemFormat::Section &in)
             lockedSkyRot = m;
     }
     // view_offset and its latch are NOT applied here: they have a seam that
-    // drives the old path too (Core::setViewOffset is the ONE sink both §2(c)
+    // drives the old path too (Core::setViewOffset is the ONE sink both S2(c)
     // channels funnel into, and the old navigator's offset is what pitches the
     // star field), so the session restores them through it - see
     // SessionFile::Host::setViewOffset. Same reason as the place, the fov and
     // the sky lock above.
-    // foldLat is DERIVED (§2 row B7) and update() re-derives it; setting it
+    // foldLat is DERIVED (S2 row B7) and update() re-derives it; setting it
     // here would make the first restored frame re-fold a view that is already
     // expressed in the restored latitude's frame.
     foldLat = latitude;
@@ -1365,7 +1365,7 @@ void Camera::dumpTrace(std::ostream &out) const
         << ",\"mount\":\"" << (mount == CameraMount::EQUATORIAL ? "equatorial" : "altaz")
         << "\",\"skyLocked\":" << (skyLocked ? "true" : "false")
         // View offset (B17): the clamped scalar, its arming transition, and the
-        // EFFECTIVE offset (scalar·transition) that the render pitch uses — the
+        // EFFECTIVE offset (scalar*transition) that the render pitch uses -- the
         // numeric observable for the offset A/B and the arming state channel.
         << ",\"viewOffset\":" << jn(viewOffset)
         << ",\"viewOffsetTransition\":" << jn(viewOffsetTransition)
@@ -1378,8 +1378,8 @@ void Camera::dumpTrace(std::ostream &out) const
         << ",\"absFwd\":[" << jn(lastAbsFwd[0]) << ',' << jn(lastAbsFwd[1]) << ',' << jn(lastAbsFwd[2]) << ']'
         << ",\"position\":[" << jn(position[0]) << ',' << jn(position[1]) << ',' << jn(position[2])
         // Where the EYE is, in the ROOT (Universe) frame, in AU (B4(iv),
-        // §11.141). The old path's observer position is recoverable from
-        // `helioToEye` the same way (−Rᵀ·t), so this is the field that makes a
+        // S11.141). The old path's observer position is recoverable from
+        // `helioToEye` the same way (-R^T*t), so this is the field that makes a
         // scripted travel comparable between the two paths per step - a pose
         // triple cannot be compared across two different references.
         // 17 digits, locally: this one field is a ~1 AU quantity whose
@@ -1392,16 +1392,16 @@ void Camera::dumpTrace(std::ostream &out) const
         << ",\"refCached\":" << ((reference && reference->isCacheFresh()) ? "true" : "false")
         << ",\"refParent\":\"" << ((reference && reference->getParent()) ? reference->getParent()->getEnglishName() : "") << '"'
         // Selected body + the observer's distance to it (== the far-mode
-        // descent target, B21 §11.72): getObservedPosition() is what
+        // descent target, B21 S11.72): getObservedPosition() is what
         // Camera::descend aims at when the reference is a system. "" / 0 when
-        // nothing is selected. Frame-independent scalar — the far-case metric a
+        // nothing is selected. Frame-independent scalar -- the far-case metric a
         // system-distance dump cannot read off the (old-system-driven) per-body
         // list for a runtime-loaded target.
         << ",\"selected\":\"" << (ModularBody::getSelected() ? ModularBody::getSelected()->getEnglishName() : "")
         << "\",\"selDist\":" << jn(ModularBody::getSelected() ? ModularBody::getSelected()->getObservedPosition().length() : 0.f)
         << ",\"halfFov\":" << jn(ModularBody::halfFov)
         << ",\"cullHalfFov\":" << jn(ModularBody::cullHalfFov)
-        // The two gaps b31-design §6.2 T2 names: the HELD sky-lock matrix (it
+        // The two gaps b31-design S6.2 T2 names: the HELD sky-lock matrix (it
         // is state, not a derivation of anything else here) and the in-flight
         // plans (a session snaps them to their settled target, D32 - so a dump
         // that cannot see a plan cannot witness that they were snapped).

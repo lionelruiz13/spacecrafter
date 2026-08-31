@@ -315,7 +315,7 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 				std::ostringstream oss;
 
 				// TODO: center labels
-				oss << zod[((i-2)/4)+1] << "°";
+				oss << zod[((i-2)/4)+1] << "\xc2\xb0";
 
 				Mat4f MVP = prj->getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
@@ -792,7 +792,7 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 					double res = (i <= 18*(nb_segment/36)) ? 180 : 540;
 					res -= (i+1)/((nb_segment/36.0))*10;
 					if ((i+1)%((nb_segment/36)*2) == 0) {
-						oss << res << "°";
+						oss << res << "\xc2\xb0";
 						tickl = 4.0;
 					} else if ((i+2-5)%((nb_segment/36)*2) == 0) {
 						tickl = 2.0;
@@ -850,7 +850,7 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 			}
 
 			if ((i+1)%(nb_segment/36)==0) {
-				if (valdeg<=90) oss << valdeg << "°";
+				if (valdeg<=90) oss << valdeg << "\xc2\xb0";
 				tickl = 5.0;
 			} else if ((i+1-5)%(nb_segment/36)== 0) {
 				tickl = 3.0;
@@ -968,9 +968,9 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 					std::ostringstream oss;
 					float tickl = 4.0;
 					if (((i)/(nb_segment/24)+1)%24>9)
-						oss << ((i)/(nb_segment/24)+1)%24 << "h   " << (24-((i)/(nb_segment/24)+1)%24)*15 << "°";
+						oss << ((i)/(nb_segment/24)+1)%24 << "h   " << (24-((i)/(nb_segment/24)+1)%24)*15 << "\xc2\xb0";
 					else
-						oss << " " << ((i)/(nb_segment/24)+1)%24 << "h   " << (24-((i)/(nb_segment/24)+1)%24)*15 << "°";
+						oss << " " << ((i)/(nb_segment/24)+1)%24 << "h   " << (24-((i)/(nb_segment/24)+1)%24)*15 << "\xc2\xb0";
 
 					Mat4f MVP = prj->getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
@@ -1021,14 +1021,14 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 							if ((i+1)/(2*4)<10) oss << " ";
 							oss << (i+1)/(2*4) << "h   ";
 						}
-						oss << num << "°";
+						oss << num << "\xc2\xb0";
 					} else if (fmod(num,7.5) == 0) {
-						oss << num << "°";
+						oss << num << "\xc2\xb0";
 						tickl = 4;
 					} else tickl = 2;
 				} else {
 					if (line_equator_type == GALACTIC_EQUATOR)
-						oss << ((i+37)%72)*5 << "°";
+						oss << ((i+37)%72)*5 << "\xc2\xb0";
 					else if ((i+1)/2 == 24*4) oss << "0h";
 					else oss << (i+1)/(2*4) << "h";
 				}
@@ -1314,7 +1314,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 					tmp = TRANSFO * Vec4f(3.0,0.0,0.0,1.0);
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
 				}
-			} // End draw ticks - To do: graduate in ° from vernal point
+			} // End draw ticks - To do: graduate in deg from vernal point
 
 			if (draw_labels && (i+15) % 30 == 3) {
 
@@ -1333,7 +1333,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 					float degree = i-84.5;
 					if (degree < 0) degree += 360;
 					if (((internalNav)) || ((internalAstronomical)))
-						oss <<  month[ (i+15)/30 ] << " " << degree << "°";
+						oss <<  month[ (i+15)/30 ] << " " << degree << "\xc2\xb0";
 					else
 						oss << month[ (i+15)/30 ];
 				}
@@ -1519,7 +1519,7 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 				angle += M_PI;
 			} else val=0; //uninitialised var
 			if ((i+1)%(nb_segment/18)==0) {
-				oss << val << "°";
+				oss << val << "\xc2\xb0";
 				tickl = 5;
 			} else if ((i+1-5)%(nb_segment/18)== 0) {
 				tickl = 4;

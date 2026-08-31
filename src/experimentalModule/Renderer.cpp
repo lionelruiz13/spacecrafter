@@ -44,7 +44,7 @@ void Renderer::beginDraw(uint8_t _frameIdx)
     // - no 1.1 margin (boundingRadius is inclusive by definition, decision 6);
     // - no znear clamp at build (the old 1e-10 fed a Projector needing
     //   positive planes; the new shaders consume the raw range - landed
-    //   scenes run znear < 0 today, measured parity §11.27).
+    //   scenes run znear < 0 today, measured parity S11.27).
     sliceScratch.clear();
     orbitBucket = {0, 0};
     // Old needOrbitDepth gate is 10 px full diameter (absolute); px =
@@ -166,7 +166,7 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
         // and the bucket is the authority, so reading it again costs two loads
         // and removes an assumption. The assumption was that nothing writes
         // clippingFov between two same-bucket bodies; enterDepthlessSlice
-        // (INTENT §5.52) is exactly such a writer, and a mid-band body can sort
+        // (INTENT S5.52) is exactly such a writer, and a mid-band body can sort
         // between two members of one bucket. Re-establishing here means the
         // depth-less override cannot outlive the body that asked for it,
         // without that body having to save/restore renderer state (I2: one
@@ -176,10 +176,10 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
     } else {
         // Out-of-coverage slice. Two known producers:
         // - out-of-ORDER: a body attached between this frame's sort and its
-        //   draw (events-thread interim, INTENT §8.4.1 precondition; the S4
+        //   draw (events-thread interim, INTENT S8.4.1 precondition; the S4
         //   publish-task handoff closes it structurally) draws at the sorted
         //   tail - its range may lie in an already-passed bucket. Measured
-        //   live at every `body action load` (INTENT §11.30): one frame,
+        //   live at every `body action load` (INTENT S11.30): one frame,
         //   self-healing.
         // - out-of-LIST: a body drawing without a notable entry (a real
         //   contract breach - no known producer).

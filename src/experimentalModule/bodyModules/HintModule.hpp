@@ -69,7 +69,7 @@ public:
             labelColor = c;
     }
 
-    // THE UNHIDE EDGE (B39 §11.117 / D23 clause iv): this module's fader is
+    // THE UNHIDE EDGE (B39 S11.117 / D23 clause iv): this module's fader is
     // ticked AT DRAW (see the header note above), so while the body was hidden it
     // did not advance at all. Snap it to the global target the next draw would
     // have aimed at - the header already records that a fade "freezes while the

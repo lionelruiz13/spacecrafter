@@ -1,5 +1,5 @@
 /*
- * scedit — the round-trip gate's worker.
+ * scedit -- the round-trip gate's worker.
  *
  * WHY THIS EXISTS
  * ===============

@@ -16,13 +16,13 @@
 // Regime gate constants (header comment carries the derivation; convergence
 // point - tunable one-liners).
 constexpr float RAYMARCH_MAX_DISTANCE_RADII = 64.f;
-// The one screenSize threshold left in FRACTION units after §5.54 respelled the
+// The one screenSize threshold left in FRACTION units after S5.54 respelled the
 // G4 family in px. Deliberately not converted with them: it is a single-site
 // named constant (no I2 duplication to close) and it is a raymarch CAPABILITY
 // gate, not a G4 regime boundary, so converting it is a behaviour change at
 // non-2048 widths that this task had no mandate for. The px-intent argument
 // does apply to it - 0.025 is ~51 px at 2048, and this file's own comments
-// reason in px - so it is recorded with the §5.54 veto point rather than
+// reason in px - so it is recorded with the S5.54 veto point rather than
 // silently left in a second unit.
 constexpr float RAYMARCH_MIN_SCREEN_SIZE = 0.025f;
 

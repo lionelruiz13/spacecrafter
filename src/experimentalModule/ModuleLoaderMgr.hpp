@@ -35,7 +35,7 @@ public:
     // reuses the capability model's own enumeration, never a parallel one).
     static std::string_view moduleTypeName(BodyModuleType type);
     // Reverse lookup for the `module =` key; ok=false on an unknown name
-    // (caller logs the valid values, §2(f) - see moduleTypeNames()).
+    // (caller logs the valid values, S2(f) - see moduleTypeNames()).
     static BodyModuleType moduleTypeFromName(const std::string &name, bool &ok);
     // Every valid `module =` value, comma-separated - for actionable logs.
     static std::string moduleTypeNames();

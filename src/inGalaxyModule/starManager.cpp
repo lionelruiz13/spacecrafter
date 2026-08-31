@@ -816,7 +816,7 @@ void StarManager::HyperCubeStatistiques()
 	std::cout << "Statistics on the number of cubes in HyperCubes" << std::endl;
 	std::cout << std::setw(12) << "Number : " << "Hypercubes concerned" << std::endl;
 	for(int i=0; i<NBR_PAS_STATHC; i++) {
-		std::cout << std::setw(3) << i*8 << " à " << std::setw(3) << (i+1)*8 << " : " << std::setw(12) << statHc[i] << std::endl;
+		std::cout << std::setw(3) << i*8 << " \xc3\xa0 " << std::setw(3) << (i+1)*8 << " : " << std::setw(12) << statHc[i] << std::endl;
 	}
 	std::cout << std::endl;
 	std::cout << un_cube << " hc with only one cube to manage" << std::endl;
@@ -845,7 +845,7 @@ void StarManager::MagStarStatistiques()
 	std::cout << "Distribution of star magnitudes" << std::endl;
 	std::cout << std::setw(9) << "Magnitude : " << "Number of stars" << std::endl;
 	for(int i=0; i< MAG_PAS; i++)
-		std::cout << std::setw(3) << i*5-40<< " à " << std::setw(3) << i*5-35 << " : " << std::setw(12) << statMagStars[i] << std::endl;
+		std::cout << std::setw(3) << i*5-40<< " \xc3\xa0 " << std::setw(3) << i*5-35 << " : " << std::setw(12) << statMagStars[i] << std::endl;
 }
 
 

@@ -17,7 +17,7 @@ public:
 	//! charge un objet OBJ
 	void importOBJ(Obj3D* _obj);
 
-	//! mise en commun des shapes identiques cad ayant les mêmes paramètres
+	//! mise en commun des shapes identiques cad ayant les memes parametres
 	bool fusionMaterials();
 
 	//! le sauvegarde sur disque dur

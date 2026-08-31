@@ -29,7 +29,7 @@ private:
 	 */
 	void loadFile(const std::string& fileName);
 
-	//Fichier à traiter
+	//Fichier a traiter
 	std::string Text_File;
 	std::string Css_File;
 

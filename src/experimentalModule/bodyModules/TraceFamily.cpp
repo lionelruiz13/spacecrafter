@@ -20,7 +20,7 @@ PipelineFamily buildTrace(const char *name, VertexArray *vertex,
                            static_cast<uint16_t>(sizeof(TraceInfo))}};
     // my_atan in custom_project.glsl reads float64 support at spec 7 (old
     // depthTrace set it, bodyShader.cpp:383). Spec 8 (projection mode) is
-    // registry-injected (INTENT §11.33) - no per-family declaration.
+    // registry-injected (INTENT S11.33) - no per-family declaration.
     desc.specValues = {{7, Context::instance->isFloat64Supported}};
     PassDesc trace;
     trace.pass = PassKind::TRACE;

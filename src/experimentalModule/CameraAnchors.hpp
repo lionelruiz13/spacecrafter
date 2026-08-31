@@ -13,16 +13,16 @@ class ModularBody;
 class ModularSystem;
 
 // ============================================================================
-// CameraAnchors - the NEW path's named-anchor layer (B4, §12 row 19, S7).
+// CameraAnchors - the NEW path's named-anchor layer (B4, S12 row 19, S7).
 //
 // WHAT IT IS FOR (I1): a show declares WHERE the camera is attached by NAME -
 // "put me on the point that orbits the Moon", "put me on Mars keeping my
-// angle" - through two channels that must mean the same thing (§2(c)):
+// angle" - through two channels that must mean the same thing (S2(c)):
 // the authored `anchor.ini` and the runtime `camera action create/switch/drop/
 // follow_rotation` commands. This class owns that vocabulary; the Camera below
 // it owns only reference/pose/modes and knows nothing about names.
 //
-// THE THREE KINDS [R3, tester 2026-07-22, §11.70(b)] - each with the anchor.ini
+// THE THREE KINDS [R3, tester 2026-07-22, S11.70(b)] - each with the anchor.ini
 // `type` value that declares it, and what the camera does when you switch to it:
 //
 //  (1) ON_ORBIT  (`type = orbit`) - PRIMARY, the kind actually used: a point
@@ -39,7 +39,7 @@ class ModularSystem;
 //      the camera holds its lat/lon in the body's EQUATORIAL frame, so the body
 //      spins under it and the approach angle is preserved. That is exactly
 //      Camera::setBoundToSurface(false) - measured as today's meaning of "not
-//      following the rotation" (see §11.111). `follow_rotation = true` re-binds
+//      following the rotation" (see S11.111). `follow_rotation = true` re-binds
 //      to the surface (today's default for a body reference). The key ABSENT is
 //      INACTION: the camera's current bind state is left alone, so every
 //      pre-existing scene is bit-unchanged and there is no acting default to
@@ -47,7 +47,7 @@ class ModularSystem;
 //      D28 DEPENDENCY: what "keeping the angle" does to the image ROLL across
 //      the reference change the switch performs is D28's open question, not this
 //      class's - the switch uses Camera::warpToBody, so the kind inherits
-//      TODAY's answer (B13 §11.61: the whole orientation is held) and follows D28
+//      TODAY's answer (B13 S11.61: the whole orientation is held) and follows D28
 //      wherever it lands, with no anchor-side re-statement to keep in sync.
 //
 //  (3) FIXED_POINT (`type = point` | `type = observatory`) - a fixed point in AU.
@@ -56,7 +56,7 @@ class ModularSystem;
 //      which a fixed point stays fixed - and the anchor owns an invisible body
 //      parked there. Switching to it therefore PUTS the camera in the universe
 //      frame rather than refusing outside it: on the new path the reference
-//      chain IS the mode (§6.9), so "valid only in Universe mode" is realized by
+//      chain IS the mode (S6.9), so "valid only in Universe mode" is realized by
 //      the anchor living at the universe root, not by a mode test. The choice is
 //      logged at the switch (D12) so a show that lands there sees why.
 //      `observatory` folds into the same kind: it differs from `point` only by
@@ -66,7 +66,7 @@ class ModularSystem;
 //      has no new-path counterpart, so both spellings load.
 //
 // OWNED ANCHOR BODIES are created HIDDEN: parent-owned, position-ticking (B19
-// §11.54), outside every draw/pick walk by construction - an anchor is a place,
+// S11.54), outside every draw/pick walk by construction - an anchor is a place,
 // never a thing to see or click. They carry radius/datum/ground 0 (altitude is
 // measured from the point itself; a point is not landable) and BodyType::ANCHOR,
 // which is what the dump reports so a harness can tell an anchor from a body.
@@ -76,7 +76,7 @@ class ModularSystem;
 // (the params map kept in each entry is the authority) - checked at every use
 // through the name registry, never by dereferencing a stale pointer.
 //
-// THE SCRIPTED TRANSITIONS (B4(iv), §11.141) - the C3 time-driven half of row
+// THE SCRIPTED TRANSITIONS (B4(iv), S11.141) - the C3 time-driven half of row
 // 19, dual since 2026-08-09. `camera action move_to / transition_to` now reach
 // this class as well as the old AnchorManager, and they are expressed with the
 // SAME structural answer the three kinds are: A TRAVEL MOVES THE PLACE. The old
@@ -88,9 +88,9 @@ class ModularSystem;
 // dropped frame or a time jump lands where the date says, as old's does).
 //
 // NOT HERE: cross-session persistence [Q5: explicitly not needed];
-// saveCameraPosition, which stays the old AnchorManager's (§5.41 / B31 rule the
+// saveCameraPosition, which stays the old AnchorManager's (S5.41 / B31 rule the
 // serializer); the ROLL half of transitionToBody and `align_with` - see
-// transitionToBody below and §11.141 for the terms that do not derive.
+// transitionToBody below and S11.141 for the terms that do not derive.
 // ============================================================================
 
 //! Which of the three R3 kinds an anchor is. The `type` data value maps here
@@ -108,21 +108,21 @@ public:
     explicit CameraAnchors(ModularSystem *root) : root(root) {}
     ~CameraAnchors();
 
-    //! Channel 1 (§2(c)): load an authored anchor file. Grammar = the shipped
+    //! Channel 1 (S2(c)): load an authored anchor file. Grammar = the shipped
     //! `anchor.ini`'s, unchanged: `[section]` lines separate anchors (the
     //! section NAME is not read - it never was, AnchorManager::load:226-258),
     //! `key = value` inside, `#` comments. Each anchor block is handed to add()
     //! verbatim, so the two channels share ONE declaration grammar (I2).
-    //! Divergence recorded (§11.111): a file whose LAST block is not followed by
+    //! Divergence recorded (S11.111): a file whose LAST block is not followed by
     //! a section header is loaded here and dropped by the old loader (which
     //! flushes only on a `[`); the shipped file ends with `[end]`, so both agree
     //! on it.
     void load(const std::string &path);
 
-    //! Channel 2 (§2(c)): declare an anchor from a parameter hash - the SAME
+    //! Channel 2 (S2(c)): declare an anchor from a parameter hash - the SAME
     //! keys the file uses, which is what `camera action create name X type Y ...`
     //! already delivers (the args-passthrough grammar, anchor_manager.cpp:271).
-    //! Returns false and says what is wrong (§2(f)) on a missing/unknown `type`,
+    //! Returns false and says what is wrong (S2(f)) on a missing/unknown `type`,
     //! a missing target, an unloadable orbit, or a name that is already a body.
     bool add(stringHash_t params);
 
@@ -140,11 +140,11 @@ public:
     //! sets the named anchor's follow-rotation state and applies it immediately
     //! when that anchor is the current one. NAME-SCOPED, unlike the old path,
     //! whose CoreLink drops the argument and toggles a manager-wide flag
-    //! (coreLink.cpp:1124) - divergence recorded in §11.111, the command's own
+    //! (coreLink.cpp:1124) - divergence recorded in S11.111, the command's own
     //! documented argument being honoured here.
     bool setFollowRotation(const std::string &name, bool value, Camera &camera);
 
-    // ---- The scripted transitions (B4(iv), §11.141) ------------------------
+    // ---- The scripted transitions (B4(iv), S11.141) ------------------------
     // Every one of these mirrors an old `AnchorManager` member reachable from a
     // shipped `camera action` command, and mirrors its REFUSALS too: the script
     // must get the same answer from both paths, so the seam's `oldOk || newOk`
@@ -179,7 +179,7 @@ public:
     //! THE HEADING TAIL IS NOT MIRRORED - old ends with setHeading(-axisAngle)
     //! + changeHeading(0, 5s), a roll decision at a reference switch, which is
     //! D28's open question and is already answered the other way for this path
-    //! by A38 ("the reference switch holds the WHOLE orientation"). §11.141
+    //! by A38 ("the reference switch holds the WHOLE orientation"). S11.141
     //! carries the measurement of old's tail and the terms that fail.
     bool transitionToBody(const std::string &name, Camera &camera);
 
@@ -201,7 +201,7 @@ public:
         return currentName;
     }
 
-    //! Harness observable (§11.111): current anchor + kind + follow-rotation
+    //! Harness observable (S11.111): current anchor + kind + follow-rotation
     //! state + the declared set, as one JSON object. The channel-parity check
     //! (authored vs commanded must produce the same anchor) compares this
     //! together with the anchor body's own dumpTrace.
@@ -217,7 +217,7 @@ private:
         bool declaresFollowRotation = false;
         bool followRotation = true;
     };
-    //! Resolve `type` to a kind; false (+ §2(f) log naming the valid values) if
+    //! Resolve `type` to a kind; false (+ S2(f) log naming the valid values) if
     //! absent or unknown.
     static bool parseKind(const stringHash_t &params, const std::string &name, AnchorKind &out);
     //! Build (or rebuild) the body an anchor points at. ON_ORBIT/FIXED_POINT
@@ -243,7 +243,7 @@ private:
     //! `targetRoot` is in ROOT coordinates; the law is evaluated in the body's
     //! PARENT frame, so the parent's own (cached, already-evaluated) position is
     //! subtracted at each date - no orbit is re-evaluated off-cadence and no
-    //! Newton seed is disturbed (§11.117).
+    //! Newton seed is disturbed (S11.117).
     bool installTravel(Anchor &place, const Vec3d &targetRoot, double travelDays, double jd);
 
     ModularSystem *root;

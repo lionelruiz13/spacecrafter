@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2021 Jérémy Calvo
+ * Copyright (C) 2021 Jeremy Calvo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/ModularBodyPtr.hpp"
 #include "experimentalModule/CameraAnchors.hpp" // new-path named anchors (B4)
-#include "experimentalModule/bodyModules/StarModule.hpp" // sun-scale halo seam (§11.44)
+#include "experimentalModule/bodyModules/StarModule.hpp" // sun-scale halo seam (S11.44)
 #include "experimentalModule/bodyModules/HintModule.hpp"
 #include "experimentalModule/bodyModules/AxisModule.hpp"
 #include "experimentalModule/bodyModules/RingModule.hpp"
@@ -65,7 +65,7 @@ struct AtmosphereComputeInput; // atmosphereModule/atmosphere.hpp
 /**
  * \file ssystem_factory.hpp
  * \brief Handle solar system functions
- * \author Jérémy Calvo
+ * \author Jeremy Calvo
  * \version 1
  *
  * \class SSystemFactory
@@ -92,10 +92,10 @@ public:
     //! `extraHeader`, when set, is invoked once inside the header object so a
     //! state OWNER outside this class writes its own readback into the same
     //! file rather than exporting its internals to be written here (I1/I2).
-    //! Contract: it appends whole MEMBERS (`,"key":value` …) to the header
-    //! object — it names its own keys, because this class must not have to know
+    //! Contract: it appends whole MEMBERS (`,"key":value` ...) to the header
+    //! object -- it names its own keys, because this class must not have to know
     //! how many readbacks the owner has. Core uses it for the old-path view
-    //! state (§5.63 / §11.130) and the control-surface readback (B33 / §11.131).
+    //! state (S5.63 / S11.130) and the control-surface readback (B33 / S11.131).
     void dumpTracePaths(const std::string &file,
                         const std::function<void(std::ostream &)> &extraHeader = {});
     //! Startup selection of the rendered body path (beta_features.ini,
@@ -155,7 +155,7 @@ public:
 
     void registerFont(s_font* _font) {
         ssystem->registerFont(_font);
-        // Dual-path seam (INTENT §9 fonts row): the new path's label font.
+        // Dual-path seam (INTENT S9 fonts row): the new path's label font.
         // Same font object - the s_font render cache is shared, so a string
         // rendered by either path is a cache hit for the other.
         HintModule::setFont(_font);
@@ -168,7 +168,7 @@ public:
 	//! Set selected planet by english name or "" to select none
 	void setSelected(const std::string& englishName) {
         ssystemSelected->setSelected((englishName));
-        // Dual-path seam (INTENT §9 selection row): mirror into the new
+        // Dual-path seam (INTENT S9 selection row): mirror into the new
         // path's selection state (ModularBody::isSelected + the selected-body
         // aggregate consumed by the pointer service). Tolerates bodies the
         // new path doesn't carry (findBodyOnce: nullptr on miss).
@@ -183,26 +183,26 @@ public:
 	void setSelected(const Object &obj);
 
     //! Resolve a body NAME to a selectable Object across BOTH body trees
-    //! (B24-select, INTENT §11.106). The OLD tree is asked first and wins
+    //! (B24-select, INTENT S11.106). The OLD tree is asked first and wins
     //! wherever it answers: old-body selection must stay bit-identical, so
     //! the new route engages exactly where the old resolver fails. A name
     //! only the new tree carries (composed bodies, B24) yields the
-    //! ModularObject bridge (§11.60), which is what makes such a body
+    //! ModularObject bridge (S11.60), which is what makes such a body
     //! selectable at all. Object() when neither tree knows the name.
     //! Lookup scope on the new side is the whole body reference, not the
-    //! current system - A17 [vixy, §11.70(d) context]: "visibility is the
+    //! current system - A17 [vixy, S11.70(d) context]: "visibility is the
     //! selection domain, not system membership".
     Object searchObjectByEnglishName(const std::string &englishName) const;
 
     //! Resolve a POINTER pick to a selectable Object, for bodies the old tree
-    //! cannot resolve (B24-select, INTENT §11.106). (x, y) are window pixels
+    //! cannot resolve (B24-select, INTENT S11.106). (x, y) are window pixels
     //! as delivered by the UI click; the conversion into the new path's
     //! screen frame lives here so callers keep the old path's vocabulary (I1).
     //! Returns Object() when nothing is picked OR when the pick lands on a
     //! body the old tree also carries - old picking keeps every case that is
-    //! ITS OWN (§11.52(b) parity), and that filter is what confines this route
+    //! ITS OWN (S11.52(b) parity), and that filter is what confines this route
     //! to bodies only the new tree has.
-    //! ASKED FIRST since D26 (§11.113(e)): a hit here PRE-EMPTS old picking.
+    //! ASKED FIRST since D26 (S11.113(e)): a hit here PRE-EMPTS old picking.
     //! The pre-emption is bounded by the pick test itself - the body's drawn
     //! disc must cover the click, or its centre be within the pick tolerance
     //! (ModularSystem::findBodyAt) - so it reaches only the child's own pixels
@@ -248,8 +248,8 @@ public:
         return ssystemDisplay->getFlagLightTravelTime();
     }
 
-    //! Fresh-restart every trail, BOTH paths (B34 §11.108(k)). Not the display
-    //! flag - that is setFlagTrails, dual since §11.41(d); this is the restart
+    //! Fresh-restart every trail, BOTH paths (B34 S11.108(k)). Not the display
+    //! flag - that is setFlagTrails, dual since S11.41(d); this is the restart
     //! the two live callers mean (config init, and `Core::setHomePlanet`'s
     //! "reset planet trails due to changed perspective"). Out of line: the
     //! new-path half needs ModularSystem's definition.
@@ -263,7 +263,7 @@ public:
     // THESE FOUR ARE THE COMMAND SEAMS (`flag moon_scaled`, `moon_scale`, and
     // their Sun twins): an operator asked for a size, and the new path's half
     // animates over the ASmooth's 5 s. What config.ini says at startup is NOT
-    // one of them - display-scaling ownership is FORMAT-SCOPED (§11.154(b)) and
+    // one of them - display-scaling ownership is FORMAT-SCOPED (S11.154(b)) and
     // only the config READ knows a value came from config.ini rather than from
     // a command, so it has its own entry point: initDisplayScaling.
     void setFlagMoonScale(bool b) {
@@ -308,25 +308,25 @@ public:
     //! Apply the display scaling CONFIG.INI owns - one call for its four
     //! `[viewing]` keys, because one rule governs all four and the rule is not
     //! the caller's to know (I1).
-    //! THE RULE [vixy 2026-08-26, §11.154(b), ratified operable in (c)]: display
+    //! THE RULE [vixy 2026-08-26, S11.154(b), ratified operable in (c)]: display
     //! scaling is owned by the LEGACY format's config.ini, and by the MODULAR
     //! format's own file wherever that format serves. So a body this engine
     //! loaded from a modular system file keeps the scale that file authored
     //! (`display_scale`), and config.ini's value is deprecated FOR THAT BODY -
-    //! ignored, and said once with what overrode it (§2(f): a silently dead
-    //! config line is §5.77's class from the other side). A legacy-served body
+    //! ignored, and said once with what overrode it (S2(f): a silently dead
+    //! config line is S5.77's class from the other side). A legacy-served body
     //! takes the config value exactly as it always has, ramp included.
     //! The OLD path takes the config value either way and is untouched here
-    //! (§11.52(b)): it reads the legacy file and only the legacy file, so
+    //! (S11.52(b)): it reads the legacy file and only the legacy file, so
     //! config.ini is its scaling authority by construction.
     //! Commands are NOT affected: `moon_scale`/`sun_scale`/`planet_scale` still
     //! act on any body, whatever declared it - the file value is the authored
-    //! DEFAULT under the operator's runtime scaling (§11.152(c)).
+    //! DEFAULT under the operator's runtime scaling (S11.152(c)).
     void initDisplayScaling(bool flagMoonScale, double moonScale,
                             bool flagSunScale, double sunScale);
 
     //! Write the machine-owned composed twins of every legacy system loaded so
-    //! far, and forget them (B25 generation half, §11.51(a)).
+    //! far, and forget them (B25 generation half, S11.51(a)).
     //! WHY IT IS A SEPARATE STEP FROM THE LOAD THAT PRODUCES IT: a twin's whole
     //! contract is that loading it reproduces the legacy load, and part of what
     //! that load produces is config.ini's display scaling - which arrives after
@@ -334,7 +334,7 @@ public:
     //! written at the legacy load would describe a system whose scaling its own
     //! authority had not set yet, and activating it would silently drop the
     //! field's configured scale at the exact moment ownership transfers to the
-    //! file (§11.154(c), the §11.113(f) argument).
+    //! file (S11.154(c), the S11.113(f) argument).
     //! PRECONDITION, therefore: call it after initDisplayScaling. A system
     //! created later (nothing does today: every legacy load happens at startup)
     //! is written straight away, that condition already being met.
@@ -405,11 +405,11 @@ public:
         AxisModule::show = b; // both-paths seam, like setFlagHints
         // The planet grid rides the axis flag: old Body::setFlagAxis sets BOTH
         // flag_axis AND flag_planet_grid=b (body.cpp:229-234) - there is no
-        // independent setFlagPlanetGrid. Mirror it on the new path (INTENT §11.42).
+        // independent setFlagPlanetGrid. Mirror it on the new path (INTENT S11.42).
         PlanetGridModule::show = b;
     }
 
-    // Grid color seam (INTENT §11.42): sets the GLOBAL grid colors (old
+    // Grid color seam (INTENT S11.42): sets the GLOBAL grid colors (old
     // observable: sky-manager colors shared by every body). NEW-path only for
     // now - old's grid colors stay sky-manager-driven (body.cpp:1261-1264); the
     // color-authority unification (should the new path read the sky managers?
@@ -418,7 +418,7 @@ public:
         PlanetGridModule::setColors(meridian, parallel);
     }
 
-    // Grid tropic/polar-circle seam (INTENT §11.57, B23 / Q16): the tropic
+    // Grid tropic/polar-circle seam (INTENT S11.57, B23 / Q16): the tropic
     // circles ride the LINE_TROPIC sky-line flag, the polar circles the
     // LINE_CIRCLE_POLAR flag - old body.cpp:1257-1258 polled show+color from the
     // sky managers each draw. Pushed each frame by Core::syncPlanetGridSkyState
@@ -497,7 +497,7 @@ public:
 
 	void setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c) {
         ssystemColor->setBodyColor(englishName, colorName, c);
-        // Both-paths seam (INTENT §11.65): route the same runtime recolor to
+        // Both-paths seam (INTENT S11.65): route the same runtime recolor to
         // the new path's per-instance storage - HALO on the body, LABEL/ORBIT/
         // TRAIL on the modules (self-select on the channel, I4). "all"
         // broadcasts (old SolarSystemColor::setBodyColor "all" iterates the
@@ -512,22 +512,22 @@ public:
         }
     }
 
-    // Runtime per-body navigation-radius seam (B10 §5.2, §11.79(e) D9key):
+    // Runtime per-body navigation-radius seam (B10 S5.2, S11.79(e) D9key):
     // `body name <X> datum_radius|ground_radius <km>` sets, at runtime, the SAME
     // two scalars the ssystem.ini keys carry. NEW-PATH ONLY - there is no
     // old-path datum/ground concept (the split scalars replaced the retired
-    // `solid` flag, §11.71), so unlike setBodyColor there is nothing to mirror.
+    // `solid` flag, S11.71), so unlike setBodyColor there is nothing to mirror.
     // Value in km (the data-key unit); converted to AU with the loader's own
     // factor (ModularSystem.cpp:842) - the km->AU only, scaling stays the single
     // updateCache authority (I2). Returns false when no such body exists
-    // (findBody is nullptr-on-miss) - the §2(f) diagnostic hook. Defined
+    // (findBody is nullptr-on-miss) - the S2(f) diagnostic hook. Defined
     // out-of-line (needs AU from sc_const.hpp; keeping it out of this header
     // avoids pulling sc_const's pow10 into <cmath>-less translation units).
     bool setBodyDatumRadius(const std::string &englishName, double km);
     bool setBodyGroundRadius(const std::string &englishName, double km);
 
 	const Vec3f getBodyColor(const std::string &englishName, const std::string& colorName) const {
-        // Getter stays old-authority pre-switchover (§11.46 precedent): the
+        // Getter stays old-authority pre-switchover (S11.46 precedent): the
         // dual-write above keeps both paths' values in lock-step, so old's
         // value IS the new value; a new-path getter lands at old-path removal.
         return ssystemColor->getBodyColor(englishName, colorName);
@@ -535,7 +535,7 @@ public:
 
 	void setDefaultBodyColor(const std::string& colorName, const Vec3f& c) {
         ssystemColor->setDefaultBodyColor(colorName, c);
-        // Both-paths seam (INTENT §11.65): mirror the runtime default to the
+        // Both-paths seam (INTENT S11.65): mirror the runtime default to the
         // new module statics (the loaders read them for FUTURE body_action_load
         // bodies) + the body-owned halo default. Matches old EXACTLY: setting a
         // default recolors NO existing body (draw reads the per-instance
@@ -613,7 +613,7 @@ public:
 
 	void setPlanetSizeScale(const std::string &name, float s) {
         ssystemScale->setPlanetSizeScale(name, s);
-        // New-path mirror of the planet_scale seam (§11.35 gap, closed T7 §11.45).
+        // New-path mirror of the planet_scale seam (S11.35 gap, closed T7 S11.45).
         // Old setPlanetSizeScale -> Body::setSphereScale sets radius=initialRadius*s;
         // the new path carries it as per-body scaling (scaledRadius=radius*scaling),
         // which feeds both the drawn size AND the observer altitude reference - the
@@ -706,13 +706,13 @@ public:
 	//! Retires with the executors.
 	void drawExperimental();
 
-	//! B5 §6.9 content-migration PILOT: instantiate the oort cloud as a modular
+	//! B5 S6.9 content-migration PILOT: instantiate the oort cloud as a modular
 	//! body at the SolarSystem floor (the [vixy] mapping rule). Gated OFF by
 	//! default at the call site (Core, config flag_experimental_oort=false) so
 	//! the default tree - and the b5 collapse/AoI legs it would perturb - stay
 	//! unchanged; enabled only for the pilot's A/B. `nbr`/`color` share the old
 	//! cloud's config (oort_elements / oort_color). No-op if the "Solar" node is
-	//! absent. See INTENT §6.9 for the node-reach coupling this surfaces.
+	//! absent. See INTENT S6.9 for the node-reach coupling this surfaces.
 	void createExperimentalOort(unsigned int nbr, const Vec3f &color);
 	//! Whether the B5 pilot oort modular body was instantiated (the dual-path
 	//! seam suppresses the OLD oort in the modular phase ONLY when this is true,
@@ -742,12 +742,12 @@ public:
 
     //! Write the observer's current system to a composed system file (B31
     //! slice 2, `body action save`). The system-scope sibling of
-    //! reloadCurrentSystem, and the route is Vixy's own [§11.51(a)]: "save a
+    //! reloadCurrentSystem, and the route is Vixy's own [S11.51(a)]: "save a
     //! system on-the-fly as well by targeting without the .disabled or under a
     //! different name from scripts". A body a script pushed into the live tree
     //! becomes ordinary authored data this way - loaded by the ordinary loader
     //! at the next launch, with the identity every authored body already has
-    //! (b31-design §4.1: no new identity key).
+    //! (b31-design S4.1: no new identity key).
     //! `filename` empty = this system's OWN composed file (the one an enabled
     //! composed file is read from, i.e. the twin's name without `.disabled`) -
     //! the plain "make this session's system the one that loads next time".
@@ -758,13 +758,13 @@ public:
     //! ownership split, so it is the level that can tell a user file from the
     //! machine's and from the frozen legacy corpus. A path separator (the
     //! legacy `ssystem.ini` and every other file of the install are outside this
-    //! directory, and they are READ-ONLY forever - D35, §2.0 D13) and the
+    //! directory, and they are READ-ONLY forever - D35, S2.0 D13) and the
     //! `.disabled` twin name (machine-owned: the next legacy load would
-    //! overwrite the save without a word) are both refused with a §2(f)
+    //! overwrite the save without a word) are both refused with a S2(f)
     //! diagnostic and nothing is written.
     bool saveCurrentSystem(const std::string &filename);
 
-    //! `body action preload` on BOTH paths (B34 §11.108(f)). The purge half was
+    //! `body action preload` on BOTH paths (B34 S11.108(f)). The purge half was
     //! already engine-wide (s_texture's pools are static); the per-body half
     //! reached the old tree alone, so `ModularBody::preload` - and with it
     //! BasicMesh/LayeredMesh/PhotosphereModule::preload - had never run (B36).
@@ -776,7 +776,7 @@ public:
         return currentSystem->removeBody(name);
     }
 
-    //! `body action clear` on BOTH paths (B34 §11.108(f)): drop every body a
+    //! `body action clear` on BOTH paths (B34 S11.108(f)): drop every body a
     //! script pushed at runtime, keeping everything the system's data declared.
     //! \param name the observer's home planet - old's refusal condition (it will
     //! not clear while the observer stands on a supplemental body), and old's
@@ -875,7 +875,7 @@ public:
         currentSystem->getAnchorManager()->displayAnchor();
     }
 
-    // ---- Anchor surface: DUAL since B4 (§11.111) ---------------------------
+    // ---- Anchor surface: DUAL since B4 (S11.111) ---------------------------
     // Each of the four seams below drives BOTH registries from the same
     // declaration: the old AnchorManager (unchanged - it keeps serving old-path
     // scenes) and the new-path CameraAnchors. The return value is "did anything
@@ -904,7 +904,7 @@ public:
 		return oldOk || newOk;
 	}
 
-    // ---- Scripted transitions: DUAL since B4(iv) (§11.141) -----------------
+    // ---- Scripted transitions: DUAL since B4(iv) (S11.141) -----------------
     // Same seam shape as the anchor surface above: ONE declaration drives both
     // registries, the old AnchorManager unchanged. The return value is the
     // script's answer, and here it is required to be the SAME answer from both
@@ -954,7 +954,7 @@ public:
     //! `camera action follow_rotation name <X> value <v>`. The old path ignores
     //! the name (its flag is manager-wide, anchor_manager.hpp:193); the new path
     //! scopes it to the named anchor - the command's own documented argument
-    //! (§11.111 records the divergence).
+    //! (S11.111 records the divergence).
     bool cameraSetFollowRotation(const std::string &name, bool value){
 		const bool oldOk = currentSystem->getAnchorManager()->setFollowRotation(value);
 		const bool newOk = camera ? cameraAnchors->setFollowRotation(name, value, *camera) : false;
@@ -971,7 +971,7 @@ public:
 
     void anchorManagerInit(const InitParser &conf) {
         // ONE path literal for BOTH registries (I2): the authored anchor file is
-        // §2(c) channel 1 for the old AnchorManager and for the new-path
+        // S2(c) channel 1 for the old AnchorManager and for the new-path
         // CameraAnchors alike - they must never read different files.
         const std::string anchorFile = "anchor.ini";
         currentSystem->getAnchorManager()->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, SCK_STALL_RADIUS_UNIT));
@@ -983,7 +983,7 @@ public:
     void updateAnchorManager() {
         currentSystem->getAnchorManager()->update();
         // The new registry's own travel flag retires on the SAME tick as the old
-        // manager's (B4(iv), §11.141): both are cleared by the frame that finds
+        // manager's (B4(iv), S11.141): both are cleared by the frame that finds
         // the arrival date passed, so "am I still moving" cannot answer
         // differently on the two paths for one frame.
         cameraAnchors->update(timeMgr->getJDay());
@@ -1016,9 +1016,9 @@ public:
 
     void loadGalacticSystem(const std::string &path, const std::string &file);
     //! Instantiate ONE galactic.ini section. `section` is the '[header]' the
-    //! params came from - carried in so a rejected section can be NAMED (§2(f));
+    //! params came from - carried in so a rejected section can be NAMED (S2(f));
     //! it is the only identifier that survives a section whose `name` key is the
-    //! missing one (INTENT §5.45).
+    //! missing one (INTENT S5.45).
     void loadSystem(const std::string &path, stringHash_t &params, const std::string &section);
     std::unique_ptr<ProtoSystem> &createSystem(const std::string &mode);
     void createModularSystem(const std::string &name, const std::string &filename, const Vec3d &pos);
@@ -1068,7 +1068,7 @@ public:
     //! These two defaults are the no-configuration behaviour and must stay
     //! consistent with setRenderPathMode(NEW).
     bool drawModularSystem = true;
-    // B5 §6.9 pilot: set true by createExperimentalOort (gated OFF by default);
+    // B5 S6.9 pilot: set true by createExperimentalOort (gated OFF by default);
     // read by hasExperimentalOort() for the dual-path oort seam.
     bool experimentalOortInstantiated = false;
     // Path pinned: the 1s A/B auto-toggle runs ONLY when this is false, which
@@ -1090,7 +1090,7 @@ private:
     }
     //! The new path's mirror of old setHaloSize(200)/(200+SunScale*40)
     //! (solarsystem.hpp:100/103) - the STAR module's big-halo size; the
-    //! ssystem.ini big_halo_size is dead for the Sun (INTENT §11.44). It reads
+    //! ssystem.ini big_halo_size is dead for the Sun (INTENT S11.44). It reads
     //! the OLD path's own state, so it cannot disagree with the halo old draws;
     //! that also means it keeps riding config.ini when a modular file owns the
     //! Sun's display scale, the halo being old's quantity, not the file's.
@@ -1098,7 +1098,7 @@ private:
         StarModule::setSunHaloSize(ssystem->getFlagSunScale()
             ? 200.f + ssystem->getSunScale() * 40.f : 200.f);
     }
-    //! Does the MODULAR FILE own this body's display scale (§11.154(b))? True
+    //! Does the MODULAR FILE own this body's display scale (S11.154(b))? True
     //! exactly when the body was declared by the composed format - asked of the
     //! body, never of a file name (I1/I4: ModularBody::isComposedDeclared).
     //! A body that does not exist owns nothing and is not an error here: the
@@ -1114,13 +1114,13 @@ private:
     void initBodyDisplayScale(const char *bodyName, const char *configKey,
                               bool flag, double value);
     //! Say ONCE that a config.ini display-scale value was overridden by the file
-    //! that owns it, naming both sides and the way back (§2(f)). Silent when the
+    //! that owns it, naming both sides and the way back (S2(f)). Silent when the
     //! config value was not live in the first place (`flag_*_scaled = false`):
     //! nothing was overridden then, and saying so would be false.
     void announceDeprecatedScale(const char *bodyName, const char *configKey,
                                  bool flag, double value);
     //! Re-seat the display scaling config.ini owns on a tree that was just
-    //! REBUILT (§5.104 / §11.154(b)(i)): the rebuild re-read a file that never
+    //! REBUILT (S5.104 / S11.154(b)(i)): the rebuild re-read a file that never
     //! held a scale, so the owner's value has to stand across it. No transition
     //! (the value never changed - restoreScaling), and nothing is said: the
     //! deprecation line belongs to the config read, and repeating it per reload
@@ -1167,7 +1167,7 @@ private:
     Navigator *navigation;
     TimeMgr *timeMgr;
     std::unique_ptr<Camera> camera;
-    // New-path named-anchor layer (B4, §12 row 19). Declared AFTER `universe`
+    // New-path named-anchor layer (B4, S12 row 19). Declared AFTER `universe`
     // (it holds ModularBodyPtr into that tree and owns hidden anchor bodies in
     // it) so it releases before the tree is destroyed, like `camera`.
     std::unique_ptr<CameraAnchors> cameraAnchors;
@@ -1178,7 +1178,7 @@ private:
     ProtoSystem * currentSystem;
     bool inSystem = true;
     Object selected_object;
-    // New-path body selection (dual-path seam, INTENT §9 selection row):
+    // New-path body selection (dual-path seam, INTENT S9 selection row):
     // the ModularBodySelector maintains ModularBody::isSelected and the
     // getSelected() aggregate; redirect-safe across body replacement (I5).
     ModularBodySelector newSelectedBody;

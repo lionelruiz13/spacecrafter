@@ -13,7 +13,7 @@ layout (triangle_strip, max_vertices = 3) out;
 // for main_clipping_fov
 #include <cam_block_only.glsl>
 
-//entrées - sorties du pipeline
+//entrees - sorties du pipeline
 layout (location=0) in vec2 TexCoordIn[3];
 layout (location=1) in vec4 pos[3];
 

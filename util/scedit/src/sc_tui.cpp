@@ -43,7 +43,7 @@ constexpr int kPaneChrome = 1 + 1 + kPaneRows;
 constexpr int kFeedChrome = 1 + 1 + kFeedRows;
 
 //! HOW OFTEN the two clocked things happen. Both bounds are in the header's
-//! contract and in README § Live mode, because "it polls" with no number is not
+//! contract and in README S Live mode, because "it polls" with no number is not
 //! a statement anybody can check.
 constexpr long kDrainMs = 250;        //!< drain the socket (reading what was pushed)
 constexpr long kFileCheckMs = 1000;   //!< re-read the played file: never faster than 1 Hz
@@ -115,7 +115,7 @@ std::string opennessLabel(Openness o)
 {
 	switch (o) {
 	case Openness::Exhaustive: return "all of them";
-	case Openness::Open: return "known ones — there are more";
+	case Openness::Open: return "known ones \xe2\x80\x94 there are more";
 	case Openness::Unstated: return "";
 	}
 	return "";
@@ -123,7 +123,7 @@ std::string opennessLabel(Openness o)
 
 //! What the feed pane draws, as data. The LINES are borrowed, not copied: the
 //! pointer is set immediately before a render and is a `TcpClient`'s own deque
-//! (or, in the self-test, a local one) — non-owning, valid for the render call
+//! (or, in the self-test, a local one) -- non-owning, valid for the render call
 //! only (I5). Everything else is a snapshot of the link's state, so the
 //! renderer never asks a socket anything.
 struct FeedView {
@@ -149,8 +149,8 @@ struct View {
 	//! point of scrolling and a view that snaps straight back has not scrolled.
 	bool follow = true;
 	//! Is the error pane open? The pane costs kPaneChrome rows of text, and
-	//! most files are clean, so it is off until asked for — the count is on the
-	//! status line at all times, which is what makes it findable (README §
+	//! most files are clean, so it is off until asked for -- the count is on the
+	//! status line at all times, which is what makes it findable (README S
 	//! The error pane; a scedit UX call, veto open).
 	bool pane = false;
 	//! The pane's row, as of the last warp. Meaningless unless the caret still
@@ -179,7 +179,7 @@ int textCols(const View &v) { return std::max(1, v.width - kGutter); }
 // --- the error pane ---------------------------------------------------------
 // The pane keeps ONE piece of state, `View::sel`: the row the last warp landed
 // on. It is trusted only while the caret still stands exactly where that row
-// begins — the moment the author moves or types, it is recomputed from the
+// begins -- the moment the author moves or types, it is recomputed from the
 // caret. So an edit can never leave the pane pointing at a row that no longer
 // exists, and two rows that begin on the same byte are still told apart while
 // stepping (which a purely derived cursor cannot do).
@@ -245,7 +245,7 @@ void warpToRow(EditCore &core, View &v, std::size_t i)
 
 //! Warp to the row after (delta > 0) or before (delta < 0) the one the caret is
 //! on, wrapping. When the caret is not on a row, enter the list at the nearest
-//! one in the direction of travel — so F3 from the top of a file goes to the
+//! one in the direction of travel -- so F3 from the top of a file goes to the
 //! pane's first row, which is what it says on the screen.
 void warpStep(EditCore &core, View &v, int delta)
 {
@@ -401,7 +401,7 @@ Element renderDocBar(const EditCore &core, const View &v)
 	const int w = v.width - 2;
 
 	// Row 1: where the caret is, and what would complete there.
-	std::string row1 = d.path.empty() ? std::string("—") : d.path;
+	std::string row1 = d.path.empty() ? std::string("\xe2\x80\x94") : d.path;
 	if (!c.candidates.empty()) {
 		row1 += "   [" + c.what + ": " + std::to_string(c.candidates.size());
 		const std::string o = opennessLabel(c.openness);
@@ -463,9 +463,9 @@ Element renderDocBar(const EditCore &core, const View &v)
 }
 
 //! The error pane: every `#!` tail spacecrafter wrote and every finding scedit
-//! makes, in line order, click-to-warp (scedit/INTENT.md §5 item 15(a-ii)).
-//! A row's shape: `> E    12 │ sc  unknown-command: message`, where the leading
-//! `>` (and the inversion) mark EVERY entry on the caret's line — "the caret's
+//! makes, in line order, click-to-warp (scedit/INTENT.md S5 item 15(a-ii)).
+//! A row's shape: `> E    12 | sc  unknown-command: message`, where the leading
+//! `>` (and the inversion) mark EVERY entry on the caret's line -- "the caret's
 //! entry", derived rather than remembered. An engine row is marked `!` and `#!`
 //! because the engine states no severity of its own and scedit will not invent
 //! one for it (ErrorEntry::severity).
@@ -521,7 +521,7 @@ Element renderPane(const EditCore &core, View &v)
 	});
 }
 
-//! The live feed: what scedit sent (marked `>`, dim — it is not the engine
+//! The live feed: what scedit sent (marked `>`, dim -- it is not the engine
 //! speaking) and what the engine sent back, newest at the bottom.
 //!
 //! WHAT THE HEADER SAYS, and why each part is there: the endpoint and the link
@@ -614,7 +614,7 @@ Element renderFrame(const EditCore &core, View &v)
 	// The live marker goes right after the caret position and BEFORE the path,
 	// for the reason the position is first: it changes, it matters, and the tail
 	// of this row is what truncation takes. Nothing is added when --tcp was not
-	// given — an editor with no live mode says nothing about one.
+	// given -- an editor with no live mode says nothing about one.
 	std::string live;
 	if (v.feed.enabled) {
 		switch (v.feed.state) {
@@ -663,7 +663,7 @@ Element renderFrame(const EditCore &core, View &v)
 // --- input ------------------------------------------------------------------
 
 //! A character typed on a UTF-8 terminal, as the single ISO-8859 byte the file
-//! can hold. Returns false when the code point does not fit — refused, never
+//! can hold. Returns false when the code point does not fit -- refused, never
 //! transcoded into the buffer.
 bool isoByteOf(const std::string &utf8, char &out)
 {
@@ -684,7 +684,7 @@ bool isoByteOf(const std::string &utf8, char &out)
 // --- live mode ---------------------------------------------------------------
 // Everything with a socket or a clock in it is here, and every one of these
 // functions is called from a key handler except `tick`, which is the one
-// clocked path (sc_tui.hpp § LIVE MODE).
+// clocked path (sc_tui.hpp S LIVE MODE).
 
 long nowMs()
 {
@@ -700,7 +700,7 @@ struct Live {
 	bool enabled = false;
 	//! A play is in flight: from the moment the command went out until the file
 	//! changes, the window expires, or something else is played. Nothing about
-	//! this is the engine telling us anything — it cannot (sc_tcpclient.hpp).
+	//! this is the engine telling us anything -- it cannot (sc_tcpclient.hpp).
 	bool playing = false;
 	long playStart = 0;
 	long lastFileCheck = 0;
@@ -740,11 +740,11 @@ std::string takeWriteBack(EditCore &core, Live &live, View &view)
 	               ? std::string("spacecrafter rewrote this file and left no findings: the "
 	                             "tails it had written are cleared")
 	               : "spacecrafter rewrote this file: " + std::to_string(tails) +
-	                         " `#!` finding(s) — F3 walks them";
+	                         " `#!` finding(s) \xe2\x80\x94 F3 walks them";
 }
 
-//! The one clocked path. Drains the socket, and — at most once a second, only
-//! while a play is in flight, and only for the stated window — reads the played
+//! The one clocked path. Drains the socket, and -- at most once a second, only
+//! while a play is in flight, and only for the stated window -- reads the played
 //! file to see whether the engine has rewritten it.
 void tick(EditCore &core, Live &live, View &view)
 {
@@ -774,7 +774,7 @@ void tick(EditCore &core, Live &live, View &view)
 	}
 	if (now - live.playStart > kPlayWindowMs) {
 		live.playing = false;
-		view.status = "no write-back after 5 minutes — scedit has stopped watching the file. "
+		view.status = "no write-back after 5 minutes \xe2\x80\x94 scedit has stopped watching the file. "
 		              "It is still compared before every save.";
 	}
 }
@@ -814,7 +814,7 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 	view.feed.endpoint = opts.endpoint.text();
 	bool quitPending = false;
 	//! A save that was refused because the file changed under it. The second
-	//! Ctrl-S is the explicit "my edits win" — same shape as the quit warning
+	//! Ctrl-S is the explicit "my edits win" -- same shape as the quit warning
 	//! above it, and the refusal message names both ways out before it.
 	bool overwritePending = false;
 	auto screen = ScreenInteractive::Fullscreen();
@@ -854,7 +854,7 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 	auto renderer = Renderer([&] {
 		// Terminal::Size(), NOT screen.dimx()/dimy(): a ScreenInteractive learns
 		// its size from the document it has just laid out, so during the FIRST
-		// render those are still zero — and a text pane laid out one row tall
+		// render those are still zero -- and a text pane laid out one row tall
 		// makes every mouse click below row one land nowhere.
 		const Dimensions d = Terminal::Size();
 		view.width = d.dimx;
@@ -920,7 +920,7 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 					core.moveTo(ln, col);
 					return true;
 				}
-				// A click on a pane row warps the caret to that entry — the
+				// A click on a pane row warps the caret to that entry -- the
 				// same core call the keyboard uses, and the same reflected-box
 				// arithmetic as the text above it.
 				if (view.pane) {
@@ -942,7 +942,7 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 		if (e == Event::Escape || e == kCtrlQ || e == kCtrlC || e == Event::F10) {
 			if (core.dirty() && !quitPending) {
 				quitPending = true;
-				view.status = "unsaved changes — Ctrl-S to save, Ctrl-Q again to discard them";
+				view.status = "unsaved changes \xe2\x80\x94 Ctrl-S to save, Ctrl-Q again to discard them";
 				return true;
 			}
 			screen.Exit();
@@ -976,7 +976,7 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 			return true;
 		}
 		overwritePending = false;
-		// The error pane (scedit/INTENT.md §5 item 15(a-ii)). F3/F4 open it as
+		// The error pane (scedit/INTENT.md S5 item 15(a-ii)). F3/F4 open it as
 		// well as move in it: an author who wants the next error should not
 		// have to know the pane exists first.
 		if (e == Event::F5 || e == kCtrlE) {
@@ -1010,12 +1010,12 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 		}
 		if (live.enabled && (e == Event::F7 || e == kCtrlL)) {
 			if (!live.client.connected()) {
-				view.status = "not connected — F6 connects to " + live.endpoint.text();
+				view.status = "not connected \xe2\x80\x94 F6 connects to " + live.endpoint.text();
 				return true;
 			}
 			// The line as the author wrote it. The comment cut is the ENGINE's
 			// (parseCommand does it on every channel), so scedit sends the bytes
-			// and does not pre-chew them — but it does refuse to send a line the
+			// and does not pre-chew them -- but it does refuse to send a line the
 			// engine would read as no command at all, which is scedit's own
 			// reading of that same rule and saves a pointless round trip.
 			const std::string raw = core.document().line(core.cursor().line);
@@ -1034,7 +1034,7 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 		}
 		if (live.enabled && (e == Event::F8 || e == kCtrlR)) {
 			if (!live.client.connected()) {
-				view.status = "not connected — F6 connects to " + live.endpoint.text();
+				view.status = "not connected \xe2\x80\x94 F6 connects to " + live.endpoint.text();
 				return true;
 			}
 			if (!core.hasFile()) {
@@ -1066,7 +1066,7 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 			live.lastFileCheck = live.playStart;
 			view.feedPane = true;
 			view.feed.back = 0;
-			view.status = "playing " + abs + " — the engine says nothing when a "
+			view.status = "playing " + abs + " \xe2\x80\x94 the engine says nothing when a "
 				              "script ends, so scedit now watches this file for the "
 				              "`#!` findings it writes at the end of a run";
 			return true;
@@ -1086,7 +1086,7 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 					                         ? view.feed.back - (std::size_t)kFeedRows : 0;
 			return true;
 		}
-		// Reload — the other half of the write-back choice, and useful on its own
+		// Reload -- the other half of the write-back choice, and useful on its own
 		// whenever something else has written the file.
 		if (e == kCtrlU) {
 			std::string rerr;
@@ -1098,7 +1098,7 @@ int runEditor(const std::string &grammarPath, const std::string &file, const Liv
 			live.writeBackHeld = false;
 			const std::size_t tails = core.engineTailCount();
 			view.status = std::string("reloaded ") + core.path()
-				              + (wasDirty ? " — the unsaved edits in this buffer are gone" : "")
+				              + (wasDirty ? " \xe2\x80\x94 the unsaved edits in this buffer are gone" : "")
 				              + (tails ? ", " + std::to_string(tails) + " `#!` finding(s) from spacecrafter"
 					                       : "");
 			if (tails)
@@ -1184,14 +1184,14 @@ int uiSelfTest(const std::string &grammarPath)
 		std::size_t line;
 		long col;      //!< -1 = end of that line
 		bool pane = false;   //!< draw the error pane
-		//! >= 0: press F3 this many times before rendering — the pane's own
+		//! >= 0: press F3 this many times before rendering -- the pane's own
 		//! action, so what the record pins is where a WARP leaves the caret.
 		int warps = 0;
 		//! The pane costs kPaneChrome rows; the pane cases get a taller screen
 		//! rather than one text row. Every other frame keeps 14, so the record
 		//! of the frames that existed before the pane is unchanged by it.
 		int height = 14;
-		//! Live mode. `feedLines` is a canned conversation — the pane is drawn
+		//! Live mode. `feedLines` is a canned conversation -- the pane is drawn
 		//! from a deque, and here that deque is a literal rather than a socket,
 		//! which is the whole reason the renderer takes data and not a client.
 		bool live = false;
@@ -1214,7 +1214,7 @@ int uiSelfTest(const std::string &grammarPath)
 		// appears, because the '\r' is the terminator and not the text.
 		{"iso-8859-and-crlf", "flag stars on\r\nbody name Caf\xE9" "\tx\r\n", 1, 0},
 		// The comment after a '#': dim from the '#' to the end of the line, no
-		// finding (parse_model.comments.mid_line — the engine reads none of it).
+		// finding (parse_model.comments.mid_line -- the engine reads none of it).
 		{"comment-tail", "media action pause # stop video", 0, 0},
 		// The caret inside that comment: no ghost, and the bar says "comment".
 		{"caret-in-comment", "media action pause # stop video", 0, 25},
@@ -1227,9 +1227,9 @@ int uiSelfTest(const std::string &grammarPath)
 		{"machine-tail", "struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here\n", 0, 0},
 		// The same tail on a line scedit finds clean: the relation says so.
 		{"machine-tail-stale", "flag stars on #! this 'struct if end' closes nothing: no 'struct if' is open here\n", 0, 0},
-		// The error pane (scedit/INTENT.md §5 item 15(a-ii)). Both sources
-		// mixed: line 2 carries an engine tail AND scedit's own finding — two
-		// rows, the engine's first — line 3 a stale tail alone, line 4 a
+		// The error pane (scedit/INTENT.md S5 item 15(a-ii)). Both sources
+		// mixed: line 2 carries an engine tail AND scedit's own finding -- two
+		// rows, the engine's first -- line 3 a stale tail alone, line 4 a
 		// finding alone. The caret is on line 1, so NO row is marked.
 		{"pane-mixed",
 		 "flag stars on\n"
@@ -1237,7 +1237,7 @@ int uiSelfTest(const std::string &grammarPath)
 		 "flag stars off #! this 'struct if end' closes nothing: no 'struct if' is open here\n"
 		 "zomo action now\n",
 		 0, 0, true, 0, 20},
-		// One F3 from there: the caret warps to the FIRST entry — line 2, at
+		// One F3 from there: the caret warps to the FIRST entry -- line 2, at
 		// the `#!` (the engine's row comes first on a line). The `inv` mask
 		// pins the caret on the warped line, and the pane marks that line's
 		// two rows with `>`.
@@ -1259,7 +1259,7 @@ int uiSelfTest(const std::string &grammarPath)
 		// unexplained empty box.
 		{"pane-empty", "flag stars on\nbody name Earth\n", 0, 0, true, 0, 20},
 		// LIVE MODE (--tcp). A conversation: what scedit sent is dim and marked
-		// `>`, what the engine sent is not — because one of them is the engine
+		// `>`, what the engine sent is not -- because one of them is the engine
 		// speaking and the other is not, and a feed that draws them alike is a
 		// feed you cannot read. The title row and the status row gain live
 		// text HERE and nowhere else: with --tcp absent, every frame above is

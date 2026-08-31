@@ -20,7 +20,7 @@ Document Document::fromBytes(const std::string &bytes)
 		const std::size_t nl = bytes.find('\n', start);
 		if (nl == std::string::npos) {
 			// Trailing bytes with no terminator. When the file ended ON a '\n'
-			// (start == size) there is no such line — the same rule as
+			// (start == size) there is no such line -- the same rule as
 			// splitScriptLines, so line i here is line i+1 in a diagnostic.
 			if (start < bytes.size())
 				d.lines_.push_back(L{bytes.substr(start), "", false});
@@ -173,7 +173,7 @@ void Document::splitLine(std::size_t i, std::size_t col)
 	tail.term = head.term;      // the file's "no final newline" property travels
 	tail.touched = true;
 	head.text.erase(col);
-	// The new line ending is the one this line already had — so a CRLF file
+	// The new line ending is the one this line already had -- so a CRLF file
 	// stays a CRLF file. An unterminated last line has none to give, and takes
 	// the file's own.
 	head.term = head.term.empty() ? default_term_ : head.term;

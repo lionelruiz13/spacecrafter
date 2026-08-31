@@ -107,8 +107,8 @@ EllipticToRectangular(const double a,const double n,
     const double x1 = a * (cLe - elem[2] - psi*dlf*elem[3]);
     const double y1 = a * (sLe - elem[3] + psi*dlf*elem[2]);
 
-    const double elem_4q = elem[4] * elem[4]; // Q²
-    const double elem_5q = elem[5] * elem[5]; // P²
+    const double elem_4q = elem[4] * elem[4]; // Q^2
+    const double elem_5q = elem[5] * elem[5]; // P^2
     const double dwho = 2.0 * sqrt(1.0 - elem_4q - elem_5q);
     const double rtp = 1.0 - elem_5q - elem_5q;
     const double rtq = 1.0 - elem_4q - elem_4q;

@@ -42,9 +42,9 @@ layout (location=2) in flat float side;
 
 layout (location=0) out vec4 fragColor;
 
-// sin(x) = sqrt(1 - cos(x)²)
+// sin(x) = sqrt(1 - cos(x)^2)
 // sin(x) * (1 - cos(x))
-// sqrt(1 - cos(x)²) * (1 - cos(x))
+// sqrt(1 - cos(x)^2) * (1 - cos(x))
 
 #define UNIT_STEP_COUNT 1024
 #define STEP_COUNT 24

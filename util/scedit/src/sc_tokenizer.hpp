@@ -1,5 +1,5 @@
 /*
- * scedit — sc_tokenizer.hpp
+ * scedit -- sc_tokenizer.hpp
  *
  * WHAT THIS IS FOR
  * ================
@@ -12,7 +12,7 @@
  *     "where do I draw the ghost-text for a completion?".
  * Both are served here, so neither can drift from the engine's reading.
  *
- * ENGINE FIDELITY (constraint C1, scedit/INTENT.md §2)
+ * ENGINE FIDELITY (constraint C1, scedit/INTENT.md S2)
  * ====================================================
  * `tokenizeLine` is a derivation of AppCommandInterface::parseCommand
  * (src/interfaceModule/app_command_interface.cpp:124-176) and
@@ -20,7 +20,7 @@
  * The clause-by-clause mapping is `util/scedit/tests/derivation-diff.md`; the
  * differential corpus that pins it is `util/scedit/tests/tokenizer_test.cpp`.
  * If this header and the engine ever disagree, the engine is right and this is
- * a scedit defect — never the other way round.
+ * a scedit defect -- never the other way round.
  *
  * ONE RULE IS AHEAD OF THE ENGINE, BY RULING. A '#' outside a "..." run starts
  * a comment that runs to the end of the line (parse_model.comments.mid_line).
@@ -31,7 +31,7 @@
  * "the engine is right" reads "the ruled engine is right".
  *
  * The sharp edges this reproduces on purpose (all engine behaviour, not choices):
- *   - a '#' outside quotes ends the command — quotes are counted by a plain
+ *   - a '#' outside quotes ends the command -- quotes are counted by a plain
  *     toggle from the first byte, so a '#' inside quotes, closed or not, is
  *     text; a '#' glued to a word cuts at the '#' (see Line::comment_begin);
  *   - a trailing KEY with no VALUE is silently DROPPED (see Line::dangling);
@@ -52,10 +52,10 @@
  * exactly where quoting or a comment is involved.
  *
  * This library therefore keeps both strings and the map between them:
- *   raw          — the author's bytes, verbatim (what the editor buffer holds);
- *   normalized   — the string the engine actually tokenizes;
- *   erased       — raw offsets of the bytes normalisation deleted (ascending);
- *   rawOfNorm[i] — raw offset of normalized[i]  (strictly increasing).
+ *   raw          -- the author's bytes, verbatim (what the editor buffer holds);
+ *   normalized   -- the string the engine actually tokenizes;
+ *   erased       -- raw offsets of the bytes normalisation deleted (ascending);
+ *   rawOfNorm[i] -- raw offset of normalized[i]  (strictly increasing).
  * `Span` is ALWAYS in RAW coordinates: a half-open [begin,end) byte range of
  * `raw`, so it can be handed straight to a renderer. A span may cover erased
  * bytes (they sit inside the run the engine consumed); `Token::text` is what
@@ -101,7 +101,7 @@ enum class TokenRole {
 	Command,      //!< first whitespace-separated token; lowercased; looked up in m_commands
 	Key,          //!< key half of a key/value pair; lowercased; map key
 	Value,        //!< value half; case preserved; quote processing applied
-	DanglingKey   //!< a trailing key whose value never arrived — the engine DROPS it
+	DanglingKey   //!< a trailing key whose value never arrived -- the engine DROPS it
 };
 
 struct Token {
@@ -111,7 +111,7 @@ struct Token {
 	//!  - Command/Key: the raw bytes, ASCII-lowercased;
 	//!  - Value: quote processing applied (outer quotes stripped, a quoted run
 	//!    joined across spaces), case preserved;
-	//!  - DanglingKey: the raw bytes, ASCII-lowercased — recorded for
+	//!  - DanglingKey: the raw bytes, ASCII-lowercased -- recorded for
 	//!    diagnostics even though the engine keeps nothing.
 	std::string text;
 
@@ -128,7 +128,7 @@ struct Token {
 	//! The value opened with `"` (Value tokens only).
 	bool quoted = false;
 	//! A closing `"` was found before end of line (meaningful when `quoted`).
-	//! False means the engine swallowed the rest of the line into this value —
+	//! False means the engine swallowed the rest of the line into this value --
 	//! not an error engine-side, but the TUI should show where the value ends.
 	bool quote_closed = false;
 };
@@ -136,10 +136,10 @@ struct Token {
 //! What the SCRIPT layer does with the line, before the parser ever sees it.
 //! Rule: `line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n'`
 //! (script.cpp:114). Note what this does NOT say: an INDENTED '#' is not a
-//! comment — the line is handed to the parser and becomes an unknown command.
+//! comment -- the line is handed to the parser and becomes an unknown command.
 enum class LineKind {
-	Comment,   //!< first byte is '#'  — dropped by the script layer
-	Blank,     //!< empty, or first byte is NUL / CR / LF — dropped
+	Comment,   //!< first byte is '#'  -- dropped by the script layer
+	Blank,     //!< empty, or first byte is NUL / CR / LF -- dropped
 	Parsed     //!< handed to parseCommand (may still parse to nothing)
 };
 
@@ -155,7 +155,7 @@ struct Line {
 	std::vector<Token> tokens;
 
 	//! Lowercased command; empty when the line parses to no command at all
-	//! (whitespace-only Parsed line — the engine returns 0 and does nothing).
+	//! (whitespace-only Parsed line -- the engine returns 0 and does nothing).
 	std::string command;
 	bool has_command = false;
 
@@ -179,7 +179,7 @@ struct Line {
 	//! RAW offset of the '#' that starts this line's comment, or
 	//! std::string::npos when the line has none. For a `LineKind::Comment` line
 	//! it is 0. Everything from here to the end of the line is text the engine
-	//! never reads (parse_model.comments.mid_line) — no token covers it, and
+	//! never reads (parse_model.comments.mid_line) -- no token covers it, and
 	//! its bytes are in `erased`.
 	std::size_t comment_begin = static_cast<std::size_t>(-1);
 
@@ -187,7 +187,7 @@ struct Line {
 
 	//! Token under a raw byte offset (cursor position), or nullptr.
 	const Token *tokenAtRawColumn(std::size_t raw_off) const;
-	//! Token the caret is on OR immediately after — the anchor a completion
+	//! Token the caret is on OR immediately after -- the anchor a completion
 	//! should extend. nullptr when the caret is in whitespace between tokens.
 	const Token *tokenTouchingRawColumn(std::size_t raw_off) const;
 
@@ -212,14 +212,14 @@ Line tokenizeLine(const std::string &raw);
 
 //! Split a whole script file into lines the way Script::loadInternal's
 //! std::getline does: on '\n' only. A '\r' from a CRLF file STAYS at the end of
-//! the line — that is why the script layer tests `line[0] != '\r'`, and why a
+//! the line -- that is why the script layer tests `line[0] != '\r'`, and why a
 //! trailing '\r' is harmless inside a command line ('\r' is whitespace to the
 //! parser). A final '\n' does not produce a trailing empty line.
 std::vector<std::string> splitScriptLines(const std::string &file_bytes);
 
 // --- the small engine predicates callers keep needing ---------------------
 
-//! ASCII lowercase, C locale — `transform(..., ::tolower)` with LC_CTYPE="C".
+//! ASCII lowercase, C locale -- `transform(..., ::tolower)` with LC_CTYPE="C".
 //! Bytes >= 0x80 are left alone (the engine only calls setlocale(LC_TIME,...),
 //! src/main.cpp:242, so LC_CTYPE never leaves "C").
 std::string asciiLower(const std::string &s);
@@ -235,7 +235,7 @@ bool isFalseValue(const std::string &v);
 std::size_t levenshtein(const std::string &a, const std::string &b);
 
 //! AppCommandInit::searchNeighbour (app_command_init.cpp:368-387): nearest
-//! candidate by Levenshtein distance, NO threshold, first minimum wins — and
+//! candidate by Levenshtein distance, NO threshold, first minimum wins -- and
 //! `candidates` must be supplied in the engine's own order (the m_* maps are
 //! std::map, so: alphabetical) for the tie-break to match.
 //! Returns "" only when `candidates` is empty.
@@ -271,7 +271,7 @@ std::string nearestNeighbour(const std::string &source, const std::vector<std::s
 //!    the skip flag raised at :4691-4692 is never lowered. Loops are tracked
 //!    by pairing; `break` (:4684-4688) leaves the pair open.
 //!
-//! NOT decided here, deliberately (derivation-diff.md §5.1-5.2, answered
+//! NOT decided here, deliberately (derivation-diff.md S5.1-5.2, answered
 //! 2026-08-31 as "structure yes, arms no"): WHICH arm of an `if` runs, and
 //! whether a `struct loop <n>` with n < 1 skips - both need runtime values.
 //! Findings inside such regions are reported as on any other line. The loop

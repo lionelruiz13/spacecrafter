@@ -135,7 +135,7 @@ public:
 	void defineInitialMilkywayState(const std::string& path_file,const std::string& tex_file, const std::string& iris_tex_file, float _intensity);
 
 	//! prepares the software for a change of Milkyway
-	//! \param tex_file détermine le nom de la nouvelle texture
+	//! \param tex_file determine le nom de la nouvelle texture
 	//! \param _intensity determines the basic intensity associated with the new texture
 	void changeMilkywayState(const std::string& full_tex_file, float _intensity);
 

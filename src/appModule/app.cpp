@@ -675,7 +675,7 @@ void App::init()
 	media->playerStop(false);
 
 	// play startup script
-	// on sauvegarde ici l'état des composants du logiciel.
+	// on sauvegarde ici l'etat des composants du logiciel.
 	coreBackup->saveGridState();
 	coreBackup->saveDisplayState();
 	coreBackup->saveLineState();

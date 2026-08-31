@@ -42,7 +42,7 @@
 Application control server
 Utility: this program allows to talk with the application through the network
 Usage: to include in the C++ program
-Author: Aurélien Schwab <aurelien.schwab+dev@gmail.com> for association-sirius.org
+Author: Aurelien Schwab <aurelien.schwab+dev@gmail.com> for association-sirius.org
 Updated on 17/07/2017
 */
 
@@ -55,7 +55,7 @@ std::string toString(const T& t) //ServerSocket
 }
 
 
-/* Valeurs par défaut */
+/* Valeurs par defaut */
 #define DEFAULT_PORT		1234 //Default port
 #define MAX_CLIENTS			16 //Default simulated client limit
 #define BUFFER_SIZE 		65536 //Default buffer size (in bytes)
@@ -65,7 +65,7 @@ std::string toString(const T& t) //ServerSocket
 /* Warning values */
 #define LOT_OF_CLIENTS 		32 //Limit of simulated clients considered large and untested
 // The parenthesis said "must be larger than the messages that can be sent by
-// the server". That requirement is RETIRED (§5.73): the server no longer sends
+// the server". That requirement is RETIRED (S5.73): the server no longer sends
 // through this buffer, so the size answers one question only - how much can be
 // received in one read. It was never enforced anyway; an answer too big for it
 // was not truncated, it was written past the end.
@@ -270,7 +270,7 @@ int ServerSocket::close()
 
 	//Close all open clients
 	for (unsigned int client = 0; client < maxClients; client++) { //Scans all clients
-		if(clientCount <= 0) break; //Si on a déjà fermé tous les sockets clients on s'arrête
+		if(clientCount <= 0) break; //Si on a deja ferme tous les sockets clients on s'arrete
 		if (clientSocketTab[client] != NULL) { //If the socket is used
 			send(clientSocketTab[client], "GOODBYE"); //Send the message to the client
 			close(client); //Closing operations of the client socket
@@ -383,7 +383,7 @@ void ServerSocket::setOutput(std::string data)
 		// The answer is stamped with the request being served, not with
 		// "whoever is subscribed when it goes out": the queue can be drained
 		// several passes later, and by then the connection may be somebody
-		// else's (§5.47, I5).
+		// else's (S5.47, I5).
 		outputQueue.push(ClientMessage{servingClient, servingId, data});
 		unlock(outputting);
 	}
@@ -529,7 +529,7 @@ void ServerSocket::checkNewData()
 				} else if ((unsigned int)receivedByteCount >= bufferSize) { //Buffer overflow
 					possibleBufferOverflow++; //Increments the total number of buffer overflows
 					//The answer no longer overwrites what was just received:
-					//it is its own string (§5.73)
+					//it is its own string (S5.73)
 					send(clientSocketTab[client], "SERVER_OVERFLOW"); //Sends the message
 
 					debugOut("BUFFER_OVERFLOW too many data "+ clientIp(client), LOG_TYPE::L_WARNING); //Debug
@@ -617,7 +617,7 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 				// The HTTP connection is closed a few lines below, so this
 				// request's id will no longer match its slot by the time an
 				// answer exists: the answer then falls back to the feedback
-				// subscribers, which is where it went before §5.47. Nothing
+				// subscribers, which is where it went before S5.47. Nothing
 				// here needs to say so - deliver() reads it off the slot.
 				// Queued through the HTTP door: the application must be able to
 				// tell this from a control line, because this connection is
@@ -644,7 +644,7 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 				else type = "text/plain";
 
 				//Headers are built where they are sent, not in the receive
-				//buffer (§5.73). Unlike an answer they carry no terminator.
+				//buffer (S5.73). Unlike an answer they carry no terminator.
 				const std::string header = "HTTP/1.0 200 OK\r\nServer: SpaceCrafter (HTTP/BETA)\r\nContent-Length: " + toString(filestat.st_size) + "\nContent-Type: " + type + "\r\n\r\n";
 				SDLNet_TCP_Send(clientSocketTab[client], (void *)header.c_str(), header.size()); //Send headers
 				unsigned int size;
@@ -759,7 +759,7 @@ void ServerSocket::checkDataToSend()
 }
 
 //! One answer, to the connection that asked for it and to the feedback
-//! subscribers (§5.47). Before this, an answer had only the second half, so a
+//! subscribers (S5.47). Before this, an answer had only the second half, so a
 //! client that asked and did not subscribe was answered into nothing - the
 //! string was popped off the queue all the same, which is why the app's log
 //! carried no warning either.
@@ -776,7 +776,7 @@ void ServerSocket::deliver(const ClientMessage &out)
 
 	// The message, once, and sized by itself: `setOutput` allows an answer of
 	// up to MAX_BUFFER bytes and this adds one more, so it does not fit in a
-	// `tcp_buffer_in_size` buffer and never had to (§5.73).
+	// `tcp_buffer_in_size` buffer and never had to (S5.73).
 	const std::string message = out.data + '\n';
 
 	unsigned int recipients = 0;

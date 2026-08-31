@@ -35,11 +35,11 @@ float ModularBody::haloSizeLimit = 9;
 // it ramps a nested system's halo output resolved<->dot. Default 1.0 makes
 // every EXERCISED halo (drawHalo/drawStarProxy) byte-identical (x1.0f is an
 // exact IEEE-754 identity): the collapse path itself is runtime-unexercised
-// until the executor dissolution (§6.9), so in every shipped scene this stays 1.
+// until the executor dissolution (S6.9), so in every shipped scene this stays 1.
 float ModularBody::drawAlpha = 1.f;
 float ModularBody::viewportRadius = 1;
 // The G4 gates in screenSize units, derived from the px authority and the
-// viewport by setViewportRadius (INTENT §5.54). Seeded here from the
+// viewport by setViewportRadius (INTENT S5.54). Seeded here from the
 // viewportRadius seed above so a gate read before the first
 // setViewportRadius is consistent with the radius read there - not
 // meaningful, but not a different kind of not-meaningful.
@@ -83,7 +83,7 @@ void BodyModule::dumpState(std::ostream &out) const
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), siderealTimeModel(info.siderealTimeModel), surfaceModel(info.surfaceModel), trailLength(info.trailLength), composedDeclaration(info.composedDeclaration), primary(info.primary), isHaloEnabled(info.isHaloEnabled)
 {
-    // Nav-radius class default (B10-datum0, §11.75(a)): an UNSET (sentinel)
+    // Nav-radius class default (B10-datum0, S11.75(a)): an UNSET (sentinel)
     // datum/ground resolves to `radius` here - the plain-body default (altitude
     // measured from the surface, free descent stopped at it), bit-identical to a
     // single-reference body. A ModularSystem OVERRIDES this to 0 in its own ctor
@@ -176,7 +176,7 @@ ModularSystem *ModularBody::owningSystem() const
     return static_cast<ModularSystem *>(p);
 }
 
-// THE root fix of §5.31 (B39 §11.117). The defect the row names is that a
+// THE root fix of S5.31 (B39 S11.117). The defect the row names is that a
 // hidden body still reaches the system-level sweeps, and the reason it does is
 // structural: `sortedSystemBodies` is a FLAT per-system list that hide() never
 // edited (removeBody was destruction-only). Guarding each sweep would have been
@@ -191,7 +191,7 @@ ModularSystem *ModularBody::owningSystem() const
 // `ancestorHidden` carries D23's nesting clause down; each node ORs it with its
 // OWN declared relation, so:
 //   - a descendant declared hidden independently stays out when the ancestor is
-//     shown again (the old path re-shows it - §5.44, tracked not reproduced);
+//     shown again (the old path re-shows it - S5.44, tracked not reproduced);
 //   - no descendant's declared `relation` is ever written here, which is the
 //     clause "mustn't change the exposed hidden attribute/flag".
 void ModularBody::propagateRenderHidden(bool ancestorHidden)
@@ -231,7 +231,7 @@ std::unique_ptr<Orbit> ModularBody::setOrbit(std::unique_ptr<Orbit> newOrbit)
     // The cached position was produced by the law that just stopped applying,
     // so it is stale by definition. Clearing the D8 barrier's idempotency stamp
     // is what says so: useNow() re-evaluates instead of returning "already
-    // brought up to this frame's date" (§11.117 - without this a place given a
+    // brought up to this frame's date" (S11.117 - without this a place given a
     // new law inside a frame keeps the old law's position until the next one).
     evaluatedJD = -std::numeric_limits<double>::infinity();
     return previous;
@@ -384,8 +384,8 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
     } else {
         body->mat = mat_local_to_body;
         // The matLocalToBodyPos contract (member doc: "Set on EVERY position
-        // update, visible or not") - INTENT §5.46, second site. This branch is
-        // a position update of the REFERENCE that skips update() (§5.32: the
+        // update, visible or not") - INTENT S5.46, second site. This branch is
+        // a position update of the REFERENCE that skips update() (S5.32: the
         // one node dispatchUpdate can skip, when the observer looks away from
         // it or it is too far to subtend the cull cone), and it left the frame
         // at whatever the last VISIBLE frame cached. `flat` is this body's own
@@ -433,7 +433,7 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
         body = parent;
         body->mat = parentTilted; // assign BEFORE update: update() reads the member
         // The matLocalToBodyPos contract (member doc: "Set on EVERY position
-        // update, visible or not") - INTENT §5.46. `flat` has just climbed one
+        // update, visible or not") - INTENT S5.46. `flat` has just climbed one
         // level (transformBodyToParent above is the exact inverse of the
         // descent hop), so it IS this node's own flat position frame, and
         // `parentTilted` was formed from it by the very product recursiveUpdate
@@ -442,7 +442,7 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
         // body's parent frame from getMatLocalToBodyPos(), drew an up-chain
         // ancestor's own line in the frame of the last descent through it
         // (measured: an observer on the Moon put Earth's trail 366 px from
-        // Earth and 3.6 px from where the frame had been left, §11.137).
+        // Earth and 3.6 px from where the frame had been left, S11.137).
         body->matLocalToBodyPos = flat;
         body->preUpdate(jd, flat);
         body->update(jd, parentTilted);
@@ -450,7 +450,7 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
     return static_cast<ModularSystem *>(body);
 }
 
-// The D8 use-site barrier (§11.76(b)) - see the header for why +4 and why the
+// The D8 use-site barrier (S11.76(b)) - see the header for why +4 and why the
 // frame comes from the parent rather than from this body.
 void ModularBody::useNow()
 {
@@ -481,7 +481,7 @@ void ModularBody::useNow()
 }
 
 // Hand every module of this subtree the "you were out of the frame, come back as
-// if you never left" edge (D23 clause iv / §11.113(b)(iv)). The module decides
+// if you never left" edge (D23 clause iv / S11.113(b)(iv)). The module decides
 // what that means for its own state (I4): a fader snaps to the target it would
 // have reached, the trail reconstructs the samples it did not take - or gives up
 // and LOGS (D12) where the past is not computable. Default is a no-op.
@@ -512,16 +512,16 @@ void ModularBody::deselect()
 void ModularBody::updateCache()
 {
     bool cached = !scaling.isTransiting();
-    // THE display factor, once (I2): own display scale × the dilation inherited
-    // from the parent this body stands on (D21 [vixy 2026-08-22], §11.149(c3)
-    // ratified §11.151(b)). == `scaling` for every body that is not a grounded
+    // THE display factor, once (I2): own display scale x the dilation inherited
+    // from the parent this body stands on (D21 [vixy 2026-08-22], S11.149(c3)
+    // ratified S11.151(b)). == `scaling` for every body that is not a grounded
     // child, so nothing shipped changes by a bit; for a grounded child it is
     // the EXTENT half of the uniform dilation whose PLACEMENT half is
     // getDisplayEclipticPos().
     const float display = getDisplayScaling();
     scaledRadius = radius * display;
     // Navigation radii scale with the same visual scaling as the render radius
-    // (B10 §5.2): datum defaults to radius ⇒ scaledDatumRadius == scaledRadius
+    // (B10 S5.2): datum defaults to radius => scaledDatumRadius == scaledRadius
     // for every shipped body, bit-identical.
     scaledDatumRadius = datumRadius * display;
     scaledGroundRadius = groundRadius * display;
@@ -534,7 +534,7 @@ void ModularBody::updateCache()
     for (auto &module : inComponents) {
         cached &= module->update(this, scaledRadius);
     }
-    // D21 PRESENTATION PUSH (I3, §11.149(c2)): a GROUNDED child rides this
+    // D21 PRESENTATION PUSH (I3, S11.149(c2)): a GROUNDED child rides this
     // body's DISPLAYED surface, so it inherits this body's display factor -
     // and it must inherit it LIVE, because `scaling` is a 5 s ASmooth ramp and
     // a baked constant cannot inherit a ramp (that was the load-time latch,
@@ -589,7 +589,7 @@ void ModularBody::updateReach()
     // Dividing by the same factor keeps every body's AoI - grounded children
     // included - bit-identical to what it was before D21's inheritance existed,
     // which is deliberate: the REACH half of the scaled-bounding coupling is
-    // §11.96(e)'s promotion-grade item and D21 does NOT decide it (§11.149(c6)).
+    // S11.96(e)'s promotion-grade item and D21 does NOT decide it (S11.149(c6)).
     // A grounded child's reach must not change as a side effect of the display
     // fix, so it does not.
     float aoi = std::max(boundingRadius * 128 / getDisplayScaling(), subsystemRadius * 16);
@@ -641,7 +641,7 @@ void ModularBody::drawLoaded(Renderer &renderer)
     } else {
         for (auto &module : farComponents)
             module->draw(renderer, this, mat);
-        // Same depth-less mapping as draw()'s band (INTENT §5.52) - this is the
+        // Same depth-less mapping as draw()'s band (INTENT S5.52) - this is the
         // load-checking copy of the same ladder, so it takes the same call.
         renderer.enterDepthlessSlice(distance, boundingRadius);
         for (auto &module : nearComponents) {
@@ -698,7 +698,7 @@ bool ModularBody::hide()
         src.erase(it);
         relation = static_cast<BodyRelation>(static_cast<int>(relation) - 3); // -> HIDDEN_*
         parent->invalidateCachedState();
-        // B39 (§11.117): leave the RENDERED universe - this subtree out of the
+        // B39 (S11.117): leave the RENDERED universe - this subtree out of the
         // owning system's sorted list, the effective flag set on every node.
         propagateRenderHidden(parent->renderHidden);
         return true;
@@ -724,9 +724,9 @@ bool ModularBody::show()
             // hide time. Runs BEFORE the flag is cleared - useNow is a no-op for
             // a body the walks evaluate, so the order is what arms it.
             useNow();
-            // B39 (§11.117): re-enter the RENDERED universe. A descendant that
+            // B39 (S11.117): re-enter the RENDERED universe. A descendant that
             // is itself declared hidden stays out - propagateRenderHidden ORs
-            // each node's own relation, which is where the old path's §5.44
+            // each node's own relation, which is where the old path's S5.44
             // ("show re-shows everything") cannot happen here.
             propagateRenderHidden(parent->renderHidden);
             // ... and only THEN the modules, on a position that is already the
@@ -762,7 +762,7 @@ Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
     return diff.multiplyFast(to->accumulatedBodyPosToBody());
 }
 
-// The px->screenSize conversion of the G4 gates, in ONE place (INTENT §5.54).
+// The px->screenSize conversion of the G4 gates, in ONE place (INTENT S5.54).
 // screenSize is the bounding DIAMETER as a fraction of the render width under
 // the fisheye transfer, and viewportRadius is half that width, so dividing the
 // px gate by 2*viewportRadius is the whole conversion. Nothing else may write
@@ -866,8 +866,8 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
     // photometry drew no tail, so the module would draw nothing/garbage), OR an
     // explicit tail=true (the "or explicit" half). tail=false suppresses HERE
     // (deduce gate, not a runtime flag - a 0 bid on a deduced module fires the
-    // missing-loader warning, the hint=false lesson §11.19). Magnitude coupling
-    // (the landing zone's albedo/radius vs the old H/G) SUSPENDED for Vixy, §11.43.
+    // missing-loader warning, the hint=false lesson S11.19). Magnitude coupling
+    // (the landing zone's albedo/radius vs the old H/G) SUSPENDED for Vixy, S11.43.
     {
         const std::string &type = param["type"];
         const bool comet = type.size() >= 4 && std::memcmp(type.data(), "Come", 4) == 0;
@@ -882,7 +882,7 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
     // exactly the old setBigHalo precondition. Deduced as CUSTOM: StarLoader
     // (co-registered with GridLoader) outbids on stars, so it lands in the
     // default "CUSTOM" slot; the Sun carries no planet_grid, so no slot clash
-    // (INTENT §11.44). The disc itself stays MESH (§11.19a "bare disc"); this
+    // (INTENT S11.44). The disc itself stays MESH (S11.19a "bare disc"); this
     // module is only the additive screen-space halo.
     if (isStar() && !param["tex_big_halo"].empty())
         ret.push_back(BodyModuleType::CUSTOM);
@@ -904,7 +904,7 @@ void ModularBody::dumpTrace(std::ostream &out) const
         out << jn(mat.r[i]) << ((i < 15) ? "," : "");
     out << "],\"dist\":" << jn(distance)
         << ",\"screen\":[" << jn(screenPos.first) << ',' << jn(screenPos.second)
-        // B32 RECOMPUTE-AT-USE (D20 §11.79(n), the D8 §11.76 barrier): a dump is
+        // B32 RECOMPUTE-AT-USE (D20 S11.79(n), the D8 S11.76 barrier): a dump is
         // a USE, so the spin phase is recomputed here from the ROOT-fresh lastJD
         // (translation tick keeps lastJD current on EVERY body, visible or not,
         // B19) through the ONE authority computeAxisRotation (I2) - NOT read from
@@ -915,22 +915,22 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // tick genuinely froze the spin (invisible / frozen-under-invisible-
         // parent). Reading the cache in the dump leaked the LAUNCH wall-clock
         // spin phase of the last visible update - measured up to 4.49 rad of
-        // cross-launch scatter on Moon/Deimos/Phobos/Mars/Mercury (§5.24; the
+        // cross-launch scatter on Moon/Deimos/Phobos/Mars/Mercury (S5.24; the
         // ~20 pole-bearing moons in a scene where they are invisible). The
         // recompute is a closed-form evaluation (computeAxisRotation is a
         // polynomial+fmod, or the finite nutation series for EARTH_APPARENT - no
-        // convergence loop), so the §11.76 +4-iterations restoration does NOT
+        // convergence loop), so the S11.76 +4-iterations restoration does NOT
         // apply to spin (that clause is the ITERATIVE Kepler position solve,
-        // §11.76 territory, untouched here). Deterministic: a function of the
+        // S11.76 territory, untouched here). Deterministic: a function of the
         // bit-identical lastJD, so two fresh launches now agree exactly.
         << "],\"axisRot\":" << jn(computeAxisRotation(lastJD))
         // `attitude` == axisRot since the B32 fix (both = computeAxisRotation
         // (lastJD)); retained as the B24-att-named channel the b24_compose /
-        // b25 harnesses read (§11.90/§11.91) - not removed to avoid a dump-
+        // b25 harnesses read (S11.90/S11.91) - not removed to avoid a dump-
         // format break in landed evidence.
         << ",\"attitude\":" << jn(computeAxisRotation(lastJD))
         << ",\"surfaceLocked\":" << (surfaceLockedAttitude ? "true" : "false")
-        // B27-tail capability instrument (§11.107): the capabilities that used
+        // B27-tail capability instrument (S11.107): the capabilities that used
         // to be derived from the `type` data string, read at the body where they
         // now live. `bodyType` as its integer so the STAR (0x40) / MINOR_BODY (4)
         // / CUSTOM_BODY (7) distinction is exact-comparable - it is the ONLY
@@ -942,7 +942,7 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // it is the one field here that legitimately DIFFERS between the two
         // legs, and is therefore deliberately excluded from the equality gate.
         << ",\"bodyType\":" << static_cast<int>(bodyType)
-        // The OTHER half of the D27 split (§11.113(f)): `primary` is deliberately
+        // The OTHER half of the D27 split (S11.113(f)): `primary` is deliberately
         // not a BodyType bit, so `bodyType` alone can no longer witness the
         // Tier-B resolution - both fields together can, and legacy-vs-composed
         // equality on BOTH is what makes the two-key co-delivery observable.
@@ -951,18 +951,18 @@ void ModularBody::dumpTrace(std::ostream &out) const
         << ",\"trailLength\":" << jn(trailLength)
         << ",\"composedDecl\":" << (composedDeclaration ? "true" : "false")
         << ",\"boundingRadius\":" << jn(boundingRadius)
-        // Navigation radii, scaled, in AU (B10 §5.2 / B10-cmd instrument): the
+        // Navigation radii, scaled, in AU (B10 S5.2 / B10-cmd instrument): the
         // ONLY numeric observable of the datum_radius/ground_radius scalars, so
         // the harness can read the runtime `body name X datum_radius|ground_radius`
         // command taking effect (the behavioral discriminators - moveto altitude
         // 0 -> centre, free-descent hold at ground - ride these two values).
         << ",\"scaledDatumRadius\":" << jn(scaledDatumRadius)
         << ",\"scaledGroundRadius\":" << jn(scaledGroundRadius)
-        // THE DISPLAY FACTOR ITSELF (§11.150(n)(5)): the three scaled radii
+        // THE DISPLAY FACTOR ITSELF (S11.150(n)(5)): the three scaled radii
         // above are all `X * display`, so when one of them is wrong the dump
         // could not say whether the radius or the factor was - F38 measured a
         // NaN in all three and could not name the root from this channel
-        // (§5.102). Three fields, because they answer three questions: `scaling`
+        // (S5.102). Three fields, because they answer three questions: `scaling`
         // is the live ASmooth read (mid-ramp value included), `scalingTarget` is
         // what an operator commanded (D32's settled value), `inheritedScaling`
         // is the dilation a grounded child rides from its parent (D21). Their
@@ -979,7 +979,7 @@ void ModularBody::dumpTrace(std::ostream &out) const
         << jn(getDisplayEclipticPos()[1]) << ',' << jn(getDisplayEclipticPos()[2]) << "]"
         << ",\"visible\":" << ((isVisible & isBodyVisible) ? "true" : "false")
         << ",\"screenSize\":" << jn(screenSize)
-        // Halo color (B29 runtime-color instrument, INTENT §11.65): the
+        // Halo color (B29 runtime-color instrument, INTENT S11.65): the
         // body-owned color channel (haloColor, consumed by drawHalo). The
         // LABEL/ORBIT/TRAIL channels live on their modules; trail's is in its
         // dumpState below, orbit/label are measured on screen. Lets the harness
@@ -991,16 +991,16 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // dump PRESENCE never tracks it (the dump iterates the name registry,
         // which includes hidden bodies). INTENT 11.36 rare-path instrument.
         << ",\"relation\":" << static_cast<int>(relation)
-        // Provenance (B34 §11.108(f), F24): TRUE iff this body was pushed at
+        // Provenance (B34 S11.108(f), F24): TRUE iff this body was pushed at
         // runtime, i.e. iff `body action clear` removes it. Without it the
         // clear-mirror's mark is unobservable and a mistyped mark would pass
         // vacuously - the clear itself only shows the bodies it TOOK, never
         // the ones it correctly left, so the RED half of "no declared body is
         // removed" would have nothing to read. See the member's comment.
         << ",\"supplemental\":" << (supplemental ? "true" : "false")
-        // Preload seam counter (B34, §11.132) - see the member's comment.
+        // Preload seam counter (B34, S11.132) - see the member's comment.
         << ",\"preloadCount\":" << preloadCount
-        // evalCount (B39 §11.117): orbit-evaluation counter - the observable
+        // evalCount (B39 S11.117): orbit-evaluation counter - the observable
         // under which the hidden-body tick retirement is a measured fact (see
         // the member's own comment). Read as a DELTA over an interval.
         << ",\"evalCount\":" << evalCount
@@ -1018,7 +1018,7 @@ void ModularBody::dumpTrace(std::ostream &out) const
             sep = ",";
         }
     }
-    // Near-component state (B23 GRID instrument, INTENT §11.57): the planet-grid
+    // Near-component state (B23 GRID instrument, INTENT S11.57): the planet-grid
     // module lives here (addNearComponent). Its dumpState reports the tropic/
     // polar latitudes actually baked for this body (obliquity readout, DoD-2);
     // every other near module keeps the "null" default, so the non-null entry
@@ -1032,18 +1032,18 @@ void ModularBody::dumpTrace(std::ostream &out) const
             sep = ",";
         }
     }
-    // eclRoot (B24 grounded instrument, INTENT §11.78): the parent-relative
+    // eclRoot (B24 grounded instrument, INTENT S11.78): the parent-relative
     // position AFTER the surface fold - matLocalToBodyPos's translation, the
     // offset actually composed into the world. For orbiting bodies == ecl;
     // for grounded bodies it exposes what the fold DID (ecl is the fold's
     // INPUT, constant in the surface frame, and cannot show co-rotation).
     // Kept fresh for every body by the translation tick (B19 mechanism) -
     // unlike `mat`, which is chimeric on invisible bodies (INTENT 11.14b);
-    // spin freshness is the parent's (stale-spin finding, §11.78).
+    // spin freshness is the parent's (stale-spin finding, S11.78).
     out << "],\"eclRoot\":[" << jn(matLocalToBodyPos.r[12]) << ','
         << jn(matLocalToBodyPos.r[13]) << ',' << jn(matLocalToBodyPos.r[14]) << "]";
     // Slot inventory + routing counts (B24 equivalence instrument, INTENT
-    // §11.78): `modules` = the filled slot names (module-set identity per
+    // S11.78): `modules` = the filled slot names (module-set identity per
     // body - what the legacy-vs-composed equivalence compares); `routing` =
     // per-list module counts (the relation= override's observable: a reroute
     // moves a module between lists without changing the slot inventory).
@@ -1080,10 +1080,10 @@ void ModularBody::dumpHops(std::ostream &out) const
         b->transformBodyToParent(up);
         b->transformParentToBody(down);
         const Mat4f tilt = b->computeBodyPosToBody(b->lastJD);
-        // B32 recompute-at-use (D20 §11.79(n)): the dumped spin matrix is a USE,
+        // B32 recompute-at-use (D20 S11.79(n)): the dumped spin matrix is a USE,
         // recomputed from the fresh lastJD through the ONE authority (I2), not
         // read from the visibility-gated axisRotation cache computeBodyToSurface
-        // reads. Fixes the §11.54(j) stale-spin: Pluto/Charon are hidden, so
+        // reads. Fixes the S11.54(j) stale-spin: Pluto/Charon are hidden, so
         // their cached spin was frozen at JD 0 and every dumpHops spin matrix for
         // them was evaluated stale; now it tracks lastJD like `tilt` above. The
         // +M_PI_2 mirrors getAxisRotation()'s convention exactly.
@@ -1100,7 +1100,7 @@ void ModularBody::dumpHops(std::ostream &out) const
             << ",\"ascendingNode\":" << jn(b->re.ascendingNode)
             // re.offset (rot_rotation_offset, DEGREES) - the prime-meridian phase
             // at epoch. Projection-free, load-time readout of the rot_pole_w0 ->
-            // offset conversion (B14-W0, §11.79(a)); the DIRECT observable the
+            // offset conversion (B14-W0, S11.79(a)); the DIRECT observable the
             // W0-conversion discriminator reads (visibility-independent, unlike
             // the live axisRotation which only refreshes on visible bodies).
             << ",\"offset\":" << jn(b->re.offset)
@@ -1108,10 +1108,10 @@ void ModularBody::dumpHops(std::ostream &out) const
             // rotation rate the spin formula (ModularBody.hpp:350) divides into.
             // Projection-free, load-time, deterministic (no jd/visibility jitter,
             // unlike the cached axisRotation/spin) => the DIRECT commutator-class
-            // observable of the rot_periode data channel (B14-periode, §11.86(d)/
-            // §11.87(e)): a body's row moves iff its rot_periode was edited. Sign
+            // observable of the rot_periode data channel (B14-periode, S11.86(d)/
+            // S11.87(e)): a body's row moves iff its rot_periode was edited. Sign
             // encodes spin direction (negative = retrograde, the Venus -5832 h /
-            // Uranus-moon Ẇ<0 convention).
+            // Uranus-moon W_dot<0 convention).
             << ",\"period\":" << jn(b->re.period)
             << ",\"absoluteTiltFrame\":" << (b->re.absoluteTiltFrame ? "true" : "false");
         const char *names[4] = {"up", "down", "tilt", "spin"};

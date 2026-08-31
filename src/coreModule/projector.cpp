@@ -339,7 +339,7 @@ bool Projector::asphericProjectCustom(const Vec3d &v, Vec3d &win, const Mat4d &m
 	// halfFov = FOV / 2 in rad
 	double halfFov = fov * (M_PI/360.);
 	const double tanHalfFovOver2 = tan(halfFov * 0.5);
-	// Aspheric projection: r = tan(α/2) / tan(FOV/2)
+	// Aspheric projection: r = tan(alpha/2) / tan(FOV/2)
 	f = tan(f * 0.5) / tanHalfFovOver2;
 
 	// Scale factor -> r = f * viewport_radius
@@ -464,7 +464,7 @@ void Projector::asphericUnproject(double x, double y, const Mat4d& m, Vec3d& v) 
 	const auto pos = VulkanMgr::instance->screenToRect({x, y});
 	double length = sqrt(pos.first*pos.first + pos.second*pos.second);
 
-	// Inverse aspheric projection: from r = tan(α/2) / tan(FOV/2), get α = 2 * atan(r * tan(FOV/2))
+	// Inverse aspheric projection: from r = tan(alpha/2) / tan(FOV/2), get alpha = 2 * atan(r * tan(FOV/2))
 	const double halfFov = fov * (M_PI/360.);
 	const double tanHalfFovOver2 = tan(halfFov * 0.5);
 	const double angle_center = 2.0 * atan(length * tanHalfFovOver2);
@@ -543,7 +543,7 @@ void Projector::asphericUnprojectNormalized(double x, double y, const Mat4d& m, 
 {
 	double length = sqrt(x*x + y*y);
 
-	// Inverse aspheric projection: from r = tan(α/2) / tan(FOV/2), get α = 2 * atan(r * tan(FOV/2))
+	// Inverse aspheric projection: from r = tan(alpha/2) / tan(FOV/2), get alpha = 2 * atan(r * tan(FOV/2))
 	const double halfFov = fov * (M_PI/360.);
 	const double tanHalfFovOver2 = tan(halfFov * 0.5);
 	const double angle_center = 2.0 * atan(length * tanHalfFovOver2);
@@ -747,7 +747,7 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 }
 
 // ---------------------------------------------------------------------------
-// READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
+// READBACK ONLY (INTENT S5.63 / S11.130). See the header for what it is for.
 // Const, side-effect-free, called only from the dump channel.
 // ---------------------------------------------------------------------------
 
@@ -790,7 +790,7 @@ void Projector::dumpTrace(std::ostream &out) const
 	// The geodesic-zone SELECTOR itself, exactly as HipStarMgr::preDraw asks
 	// for it: a convex region of half-spaces in J2000. Two runs that differ
 	// here draw DIFFERENT STARS, which is a disjoint lit set rather than a
-	// displaced one — the shape §5.63's own correction reports.
+	// displaced one -- the shape S5.63's own correction reports.
 	const StelGeom::ConvexS cv = unprojectViewport();
 	out << ",\"unprojectViewport\":[";
 	for (size_t i = 0; i < cv.size(); ++i) {

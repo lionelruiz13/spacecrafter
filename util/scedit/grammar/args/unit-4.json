@@ -16,29 +16,29 @@
     "verification": [
       "Count gate, re-derived programmatically from the file at b12c8cdd: 77 lines matching 'args[' in 3945-4747 == 77 accounting rows, line-for-line equal; 83 raw 'args[' tokens == 83 key mentions, and equal PER LINE (0 mismatches).",
       "other_args_uses: 30 lines mentioning `args` without a bracket == 30 rows, line-for-line equal.",
-      "Key spellings: every accounting row's key list re-derived by resolving the macro inside each args[...] against the #define table of base_command_interface.hpp — 0 mismatches.",
-      "Header anchors: every '(W_X=\"spelling\", ... : base_command_interface.hpp:N,M,...)' checked positionally against the header's #define lines — 0 mismatches.",
-      "Registration anchors: every 'app_command_init.cpp:N (ACP_CN_X ...)' checked to contain that macro on line N — 0 mismatches.",
-      "Per-key in-range anchors: for every non-downstream key, at least one cited app_command_interface.cpp line/range contains the key spelling or its W_* macro — 0 failures.",
+      "Key spellings: every accounting row's key list re-derived by resolving the macro inside each args[...] against the #define table of base_command_interface.hpp -- 0 mismatches.",
+      "Header anchors: every '(W_X=\"spelling\", ... : base_command_interface.hpp:N,M,...)' checked positionally against the header's #define lines -- 0 mismatches.",
+      "Registration anchors: every 'app_command_init.cpp:N (ACP_CN_X ...)' checked to contain that macro on line N -- 0 mismatches.",
+      "Per-key in-range anchors: for every non-downstream key, at least one cited app_command_interface.cpp line/range contains the key spelling or its W_* macro -- 0 failures.",
       "All 333 file:line anchors in this fragment resolve to an existing file and an in-range line (checked mechanically); the cross-file ones were additionally read at their boundaries."
     ],
     "schema_notes": [
       "`required` is tri-state: true = the command cannot act without the key on any path; false = optional on every path; \"conditional\" = required only inside a branch, the branch named in the key's `notes` and in the command's `branches`.",
-      "`branches` (unit-1 field, kept) — every handler in this unit except the nine variable commands is selector-shaped (`action`, then a per-action sub-selector like `target`): a flat required/optional split would misstate them.",
-      "`value_docs` (unit-1 field, kept) — where a key is enumerated and each value selects a different effect, C6's per-thing doc line is attached per value.",
-      "`key_grammar` (unit-1 field, kept) — for the ten commands whose key is not from a fixed list: define/add/sub/multiply/divide/modulo/tangent/trunc/sinus (key = a variable name) and the `struct` loop/if forms are NOT of that shape (struct's keys are fixed and appear in `args`).",
-      "`downstream` (unit-1 field, kept, boolean) — key not read in this line range: the handler forwards the whole `args` map and the key is read in another file. Anchored there. Such keys consume NO row of the count gate.",
-      "Absent-key value for every eval* conversion is fixed IN the handler file and is not opaque: evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" — and the three functions PHYSICALLY LIVE IN THIS UNIT'S RANGE (app_command_interface.cpp:4458-4479, no `args[` inside them, so they consume no count-gate row). What a NON-empty string evaluates to stays opaque here (app_command_eval.cpp, INTENT §5 item 5): recorded as evalDouble/evalInt/evalString, $-variable substitution possible. EXCEPTION, recorded because this unit is where it is decided: the nine variable commands hand their pair to app_command_eval directly, so their SEMANTICS are that file's; the key/value GRAMMAR (which key is legal, what the value may be) is read from it here only far enough to state the key domain, per DoD 4 (no invention) — the arithmetic itself is anchored, not re-derived."
+      "`branches` (unit-1 field, kept) -- every handler in this unit except the nine variable commands is selector-shaped (`action`, then a per-action sub-selector like `target`): a flat required/optional split would misstate them.",
+      "`value_docs` (unit-1 field, kept) -- where a key is enumerated and each value selects a different effect, C6's per-thing doc line is attached per value.",
+      "`key_grammar` (unit-1 field, kept) -- for the ten commands whose key is not from a fixed list: define/add/sub/multiply/divide/modulo/tangent/trunc/sinus (key = a variable name) and the `struct` loop/if forms are NOT of that shape (struct's keys are fixed and appear in `args`).",
+      "`downstream` (unit-1 field, kept, boolean) -- key not read in this line range: the handler forwards the whole `args` map and the key is read in another file. Anchored there. Such keys consume NO row of the count gate.",
+      "Absent-key value for every eval* conversion is fixed IN the handler file and is not opaque: evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" -- and the three functions PHYSICALLY LIVE IN THIS UNIT'S RANGE (app_command_interface.cpp:4458-4479, no `args[` inside them, so they consume no count-gate row). What a NON-empty string evaluates to stays opaque here (app_command_eval.cpp, INTENT S5 item 5): recorded as evalDouble/evalInt/evalString, $-variable substitution possible. EXCEPTION, recorded because this unit is where it is decided: the nine variable commands hand their pair to app_command_eval directly, so their SEMANTICS are that file's; the key/value GRAMMAR (which key is legal, what the value may be) is read from it here only far enough to state the key domain, per DoD 4 (no invention) -- the arithmetic itself is anchored, not re-derived."
     ],
     "other_args_uses": [
-      {"line": 3995, "form": "args (whole map)", "role": "commandBody `action load`: forwards the ENTIRE parsed map to Core::addSolarSystemBody -> SSystemFactory::addBody, which feeds BOTH render paths (old ProtoSystem::addBody + new ModularSystem::loadBody). The forwarded vocabulary is the stellar-system-file body grammar — see commands.body.notes and .flagged for the scope boundary.", "source": "app_command_interface.cpp:3995 -> src/coreModule/core.cpp:783-786 -> src/bodyModule/ssystem_factory.cpp:698-708"},
+      {"line": 3995, "form": "args (whole map)", "role": "commandBody `action load`: forwards the ENTIRE parsed map to Core::addSolarSystemBody -> SSystemFactory::addBody, which feeds BOTH render paths (old ProtoSystem::addBody + new ModularSystem::loadBody). The forwarded vocabulary is the stellar-system-file body grammar -- see commands.body.notes and .flagged for the scope boundary.", "source": "app_command_interface.cpp:3995 -> src/coreModule/core.cpp:783-786 -> src/bodyModule/ssystem_factory.cpp:698-708"},
       {"line": 4030, "form": "args (whole map)", "role": "commandBody `action preload`: forwards the ENTIRE parsed map to Core::preloadSolarSystemBody -> SSystemFactory::preloadBody; the downstream reads `name`, `keep_time` and `purge` (recorded as downstream keys on the body entry).", "source": "app_command_interface.cpp:4030 -> src/coreModule/core.cpp:932-940 -> src/bodyModule/ssystem_factory.cpp:745-760 -> src/bodyModule/protosystem.cpp:1005-1017"},
       {"line": 4418, "form": "args (whole map)", "role": "commandCamera `action create`: forwards the ENTIRE parsed map to CoreLink::cameraAddAnchor -> SSystemFactory::cameraAddAnchor, which declares the anchor in BOTH registries (old AnchorManager::addAnchor + new CameraAnchors::add); the anchor key vocabulary is recorded as downstream keys on the camera entry.", "source": "app_command_interface.cpp:4418 -> src/coreModule/coreLink.cpp:1141-1143 -> src/bodyModule/ssystem_factory.hpp:852-857"},
-      {"line": 4484, "form": "args.begin() != args.end()", "role": "commandDefine: emptiness test — at least one key/value pair must have parsed, else debug_message \"Unexpected error in command_define\""},
-      {"line": 4485, "form": "args.begin()->first", "role": "commandDefine: the ONE key applied — the ALPHABETICALLY first key of the line becomes the variable name"},
+      {"line": 4484, "form": "args.begin() != args.end()", "role": "commandDefine: emptiness test -- at least one key/value pair must have parsed, else debug_message \"Unexpected error in command_define\""},
+      {"line": 4485, "form": "args.begin()->first", "role": "commandDefine: the ONE key applied -- the ALPHABETICALLY first key of the line becomes the variable name"},
       {"line": 4486, "form": "args.begin()->second", "role": "commandDefine: the value given to that variable"},
       {"line": 4498, "form": "args.begin() != args.end()", "role": "commandAdd: emptiness test, else debug_message \"unexpected error in command_addition\""},
-      {"line": 4499, "form": "args.begin()->first", "role": "commandAdd: the ONE key applied — alphabetically first, taken as the variable name"},
+      {"line": 4499, "form": "args.begin()->first", "role": "commandAdd: the ONE key applied -- alphabetically first, taken as the variable name"},
       {"line": 4500, "form": "args.begin()->second", "role": "commandAdd: the operand"},
       {"line": 4511, "form": "args.begin() != args.end()", "role": "commandSub: emptiness test, else debug_message \"unexpected error in command_substract\""},
       {"line": 4512, "form": "args.begin()->first", "role": "commandSub: variable name (alphabetically first key)"},
@@ -53,13 +53,13 @@
       {"line": 4552, "form": "args.begin()->first", "role": "commandModulo: variable name (alphabetically first key)"},
       {"line": 4553, "form": "args.begin()->second", "role": "commandModulo: the divisor"},
       {"line": 4564, "form": "args.begin() != args.end()", "role": "commandTangent: emptiness test, else debug_message \"unexpected error in command__tangent\""},
-      {"line": 4565, "form": "args.begin()->first", "role": "commandTangent: variable name (alphabetically first key) — the variable RECEIVES the result; its old value is not used"},
+      {"line": 4565, "form": "args.begin()->first", "role": "commandTangent: variable name (alphabetically first key) -- the variable RECEIVES the result; its old value is not used"},
       {"line": 4566, "form": "args.begin()->second", "role": "commandTangent: the angle in degrees"},
       {"line": 4577, "form": "args.begin() != args.end()", "role": "commandTrunc: emptiness test, else debug_message \"unexpected error in command__trunc\""},
-      {"line": 4578, "form": "args.begin()->first", "role": "commandTrunc: variable name (alphabetically first key) — receives the result; its old value is not used"},
+      {"line": 4578, "form": "args.begin()->first", "role": "commandTrunc: variable name (alphabetically first key) -- receives the result; its old value is not used"},
       {"line": 4579, "form": "args.begin()->second", "role": "commandTrunc: the number to cut"},
       {"line": 4590, "form": "args.begin() != args.end()", "role": "commandSinus: emptiness test, else debug_message \"unexpected error in command__sinus\""},
-      {"line": 4591, "form": "args.begin()->first", "role": "commandSinus: variable name (alphabetically first key) — receives the result; its old value is not used"},
+      {"line": 4591, "form": "args.begin()->first", "role": "commandSinus: variable name (alphabetically first key) -- receives the result; its old value is not used"},
       {"line": 4592, "form": "args.begin()->second", "role": "commandSinus: the angle in degrees"}
     ],
     "accounting": [
@@ -142,10 +142,10 @@
       {"line": 4731, "command": "transition", "keys": ["duration"]}
     ],
     "shared_context": {
-      "executeCommandStatus": "app_command_interface.cpp:1163-1177 — the return path of every handler. debug_message EMPTY = success: the line is recorded when recording is on and 'true' is returned. debug_message SET = two log lines ('Could not execute: <line>' + the message) and 'false'. A handler that returns without setting debug_message therefore reports SUCCESS even when it did nothing. ONE handler of this unit bypasses it entirely: `camera action lift_off` returns scriptInterface->addScriptFirst(...) (:4408), so that line is never recorded.",
-      "args_container": "stringHash_t = std::map<std::string,std::string> (src/tools/utility.hpp:85), member `args` (app_command_interface.hpp:204), cleared at the top of every executeCommand (app_command_interface.cpp:199). `args[KEY]` is std::map::operator[]: reading an ABSENT key INSERTS an empty entry — material here because THREE handlers of this unit forward the whole map (body x2, camera x1).",
+      "executeCommandStatus": "app_command_interface.cpp:1163-1177 -- the return path of every handler. debug_message EMPTY = success: the line is recorded when recording is on and 'true' is returned. debug_message SET = two log lines ('Could not execute: <line>' + the message) and 'false'. A handler that returns without setting debug_message therefore reports SUCCESS even when it did nothing. ONE handler of this unit bypasses it entirely: `camera action lift_off` returns scriptInterface->addScriptFirst(...) (:4408), so that line is never recorded.",
+      "args_container": "stringHash_t = std::map<std::string,std::string> (src/tools/utility.hpp:85), member `args` (app_command_interface.hpp:204), cleared at the top of every executeCommand (app_command_interface.cpp:199). `args[KEY]` is std::map::operator[]: reading an ABSENT key INSERTS an empty entry -- material here because THREE handlers of this unit forward the whole map (body x2, camera x1).",
       "eval_helpers_live_here": "AppCommandInterface::evalString (:4458-4463), evalDouble (:4466-4471), evalInt (:4474-4479) are inside this unit's line range. They hold the absent-key defaults the whole grammar depends on (\"\" -> \"\", 0.0, 0) and contain no `args[`.",
-      "pre_table_interception": "app_command_interface.cpp:215-222 — 'comment', 'uncomment' and 'struct' are literal-compared BEFORE the skip test at :225 and before the m_commands lookup at :231. Consequence for this unit: `struct` runs even inside a skipped block, which is what makes `struct if ... else ... end` and `struct loop end` able to close a block they are inside. See commands.struct.notes for the reconciliation with parse_model.pre_table_commands."
+      "pre_table_interception": "app_command_interface.cpp:215-222 -- 'comment', 'uncomment' and 'struct' are literal-compared BEFORE the skip test at :225 and before the m_commands lookup at :231. Consequence for this unit: `struct` runs even inside a skipped block, which is what makes `struct if ... else ... end` and `struct loop end` able to close a block they are inside. See commands.struct.notes for the reconciliation with parse_model.pre_table_commands."
     }
   },
 
@@ -176,7 +176,7 @@
           "default": "absent -> the command tries the `skin_use`/`skin_tex` forms, then the `name` form, then `tesselation`; present with any other word -> \"command 'body' : unknown action argument\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:3948, 3954-3970 (model path), 3989-4044 (system path) (W_ACTION=\"action\", W_LOAD=\"load\", W_REMOVE=\"remove\", ACP_CN_CLEAR=\"clear\", W_DROP=\"drop\", W_INITIAL=\"initial\", W_RELOAD=\"reload\", W_SAVE=\"save\", W_PRELOAD=\"preload\": base_command_interface.hpp:81,103,296,335,156,200,313,148,312)",
-          "notes": "\"dual_dump\" (:4031) and \"screenshot\" (:4034) are bare string literals with no W_* token — harness routes, kept in the surface because they are reachable from any script."
+          "notes": "\"dual_dump\" (:4031) and \"screenshot\" (:4034) are bare string literals with no W_* token -- harness routes, kept in the surface because they are reachable from any script."
         },
         "name": {
           "doc": "Which body the line is about, written as its English name.",
@@ -204,7 +204,7 @@
           "default": "absent (or any other word) -> the line is NOT the model form and `action` is read as a system action instead",
           "required": "conditional",
           "source": "app_command_interface.cpp:3951, 3954 -> src/ojmModule/ojm_mgr.cpp:44-53 (ACP_SC_MODE=\"mode\", base_command_interface.hpp:580)",
-          "notes": "The key spelling is the SET-name macro ACP_SC_MODE (families.set_names has a `mode` name too) reused as an argument key — same spelling in two families. The three words are bare literals in the handler (:3954); OjmMgr::convert maps anything else to OTHER, but the handler never gets there because its own test already failed."
+          "notes": "The key spelling is the SET-name macro ACP_SC_MODE (families.set_names has a `mode` name too) reused as an argument key -- same spelling in two families. The three words are bare literals in the handler (:3954); OjmMgr::convert maps anything else to OTHER, but the handler never gets there because its own test already failed."
         },
         "filename": {
           "doc": "The file to read or write, depending on the action.",
@@ -212,14 +212,14 @@
           "default": "on the model form: absent -> the built name is \"/.ojm\" and no model is found; on `action save`: absent -> this system's own file; on `action dual_dump`: absent -> /tmp/dual_trace.json; on `action screenshot`: absent -> an automatic name <base>-YY.MM.DD-HH.MM.SS.png",
           "required": "conditional",
           "source": "app_command_interface.cpp:3956-3957 (model), 4025 (save), 4033 (dual_dump), 4039 (screenshot) -> src/bodyModule/ssystem_factory.hpp:711-733 (save contract), src/bodyModule/ssystem_factory.cpp:975 (dump default), src/appModule/save_screen_interface.cpp:146-154, 347-361 (screenshot default)",
-          "notes": "MODEL FORM: the value is a FOLDER name; the file read is <value>/<value>.ojm inside the models directory (:3957 + src/tools/file_path.cpp:114-144, TFP::MODEL3D). SAVE FORM: a file NAME, not a path — a name containing a path separator, or the machine-owned `.disabled` twin name, is refused with an explanatory log line and nothing is written (src/bodyModule/ssystem_factory.hpp:724-733)."
+          "notes": "MODEL FORM: the value is a FOLDER name; the file read is <value>/<value>.ojm inside the models directory (:3957 + src/tools/file_path.cpp:114-144, TFP::MODEL3D). SAVE FORM: a file NAME, not a path -- a name containing a path separator, or the machine-owned `.disabled` twin name, is refused with an explanatory log line and nothing is written (src/bodyModule/ssystem_factory.hpp:724-733)."
         },
-        "pos_x": {"doc": "Where to put the three-dimensional model, left-right.", "value": "number(evalDouble) — $-variable substitution possible", "default": "absent -> 0", "required": false, "source": "app_command_interface.cpp:3958 -> src/coreModule/coreLink.cpp:635-637 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSX=\"pos_x\", base_command_interface.hpp:293)", "notes": "No unit is stated in the code — see `flagged`."},
-        "pos_y": {"doc": "Where to put the three-dimensional model, forward-back.", "value": "number(evalDouble) — $-variable substitution possible", "default": "absent -> 0", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSY=\"pos_y\", base_command_interface.hpp:294)"},
-        "pos_z": {"doc": "Where to put the three-dimensional model, up-down.", "value": "number(evalDouble) — $-variable substitution possible", "default": "absent -> 0", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSZ=\"pos_z\", base_command_interface.hpp:295)"},
+        "pos_x": {"doc": "Where to put the three-dimensional model, left-right.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "required": false, "source": "app_command_interface.cpp:3958 -> src/coreModule/coreLink.cpp:635-637 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSX=\"pos_x\", base_command_interface.hpp:293)", "notes": "No unit is stated in the code -- see `flagged`."},
+        "pos_y": {"doc": "Where to put the three-dimensional model, forward-back.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSY=\"pos_y\", base_command_interface.hpp:294)"},
+        "pos_z": {"doc": "Where to put the three-dimensional model, up-down.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSZ=\"pos_z\", base_command_interface.hpp:295)"},
         "scale": {
           "doc": "How big to draw the three-dimensional model, as a multiple of the size the model file itself declares.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, i.e. the model is scaled to nothing and cannot be seen",
           "required": false,
           "source": "app_command_interface.cpp:3960 -> src/ojmModule/ojm_mgr.cpp:70 ('multiplier *= tmp->Obj3D->getRadius()') (W_SCALE=\"scale\", base_command_interface.hpp:101)"
@@ -259,7 +259,7 @@
         },
         "keep_time": {
           "doc": "On `action preload`, how many seconds the fetched pictures are kept in memory before the program may drop them again.",
-          "value": "int (Utility::strToInt with default 10) — NO $-variable substitution",
+          "value": "int (Utility::strToInt with default 10) -- NO $-variable substitution",
           "default": "absent or empty -> 10 seconds; a value that is not a number -> 0 seconds (the stream conversion fails and leaves 0, src/tools/utility.cpp:459-467)",
           "required": false,
           "source": "app_command_interface.cpp:4028-4029 (kt = strToInt(kt,10) * stapp->getTargetFps()) -> src/bodyModule/protosystem.cpp:1015-1016 and src/bodyModule/ssystem_factory.cpp:758-759 -> src/bodyModule/body.cpp:1310-1315 -> src/tools/s_texture.hpp:294-298 (W_KEEPTIME=\"keep_time\", base_command_interface.hpp:288)",
@@ -272,7 +272,7 @@
           "default": "absent -> this form is not taken; present with any other value -> \"Command 'body': unknown hidden value\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:4050-4061 -> src/coreModule/coreLink.cpp:1369-1370 -> src/bodyModule/ssystem_factory.hpp:327-340 -> src/bodyModule/protosystem.cpp:280-293 (W_HIDDEN=\"hidden\", base_command_interface.hpp:120)",
-          "notes": "Hiding is recursive: the body's satellites are hidden with it (src/bodyModule/protosystem.cpp:295-301). This is one of the two booleans in the unit with a real third state — an unrecognised word is an error, not a silent 'show'."
+          "notes": "Hiding is recursive: the body's satellites are hidden with it (src/bodyModule/protosystem.cpp:295-301). This is one of the two booleans in the unit with a real third state -- an unrecognised word is an error, not a silent 'show'."
         },
         "orbit": {
           "doc": "Draw the line of this body's orbit (yes) or stop drawing it (no).",
@@ -311,7 +311,7 @@
         "b": {"doc": "How much blue, from 0 to 1.", "value": "number (Utility::strToDouble)", "default": "as `r`", "required": "conditional", "source": "app_command_interface.cpp:4083, 4086 -> src/interfaceModule/app_command_color.cpp:58-78 (W_B=\"b\", base_command_interface.hpp:255)"},
         "datum_radius": {
           "doc": "The height, in kilometres from the body's centre, that counts as its surface for moving about: 0 lets you go inside it.",
-          "value": "number(evalDouble) — $-variable substitution possible; kilometres; must be 0 or more",
+          "value": "number(evalDouble) -- $-variable substitution possible; kilometres; must be 0 or more",
           "default": "absent -> this form is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:4106-4119 -> src/coreModule/coreLink.cpp:1459-1461 -> src/bodyModule/ssystem_factory.hpp:483-494 (W_DATUM_RADIUS=\"datum_radius\", base_command_interface.hpp:139)",
@@ -319,7 +319,7 @@
         },
         "ground_radius": {
           "doc": "The height, in kilometres from the body's centre, that counts as the floor you cannot descend below: 0 lets you descend to the centre.",
-          "value": "number(evalDouble) — $-variable substitution possible; kilometres; must be 0 or more",
+          "value": "number(evalDouble) -- $-variable substitution possible; kilometres; must be 0 or more",
           "default": "absent -> this form is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:4121-4134 -> src/coreModule/coreLink.cpp:1463-1465 -> src/bodyModule/ssystem_factory.hpp:483-494 (W_GROUND_RADIUS=\"ground_radius\", base_command_interface.hpp:140)"
@@ -342,11 +342,11 @@
         },
         "value": {
           "doc": "The number for the chosen surface-detail setting.",
-          "value": "int(evalInt) — $-variable substitution possible",
+          "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent -> 0",
           "required": false,
           "source": "app_command_interface.cpp:4141 (W_VALUE=\"value\", base_command_interface.hpp:91)",
-          "notes": "No range is stated in any code on this path — see `flagged`."
+          "notes": "No range is stated in any code on this path -- see `flagged`."
         },
         "purge": {
           "doc": "On `action preload`, free memory before fetching.",
@@ -372,13 +372,13 @@
         },
         "coord_func": {
           "doc": "On `action load` without `mode`, which kind of orbit describes this body's movement; the orbit's own numbers are given by further keys.",
-          "value": "enumerated (open set — the list below is the one the engine's own refusal message names)",
+          "value": "enumerated (open set -- the list below is the one the engine's own refusal message names)",
           "values": ["ell_orbit", "comet_orbit", "barycenter", "still_orbit", "location_orbit", "earth_custom", "lunar_custom", "<name>_special"],
           "default": "absent -> no orbit can be built: the body is NOT added to the old drawing path and the reason is logged",
           "required": false,
           "downstream": true,
           "source": "src/bodyModule/protosystem.cpp:513, 561-641",
-          "notes": "The per-kind orbit keys (orbit_period, orbit_x/y/z, orbit_lon/lat/alt, and the elliptical elements) are part of the stellar-system-file grammar, INTENT §5 item 4 — see `flagged`."
+          "notes": "The per-kind orbit keys (orbit_period, orbit_x/y/z, orbit_lon/lat/alt, and the elliptical elements) are part of the stellar-system-file grammar, INTENT S5 item 4 -- see `flagged`."
         },
         "type": {
           "doc": "On `action load` without `mode`, what kind of object this is.",
@@ -414,17 +414,17 @@
       ],
       "notes": [
         "Order of the forms, which decides what a mixed line does: model form (needs `mode` AND `action`), then `skin_use`, then `skin_tex`, then `action`, then `name`, then `tesselation` (:3954, :3974, :3984, :3989, :4047, :4140). `body action load skin_use on` therefore only switches the picture.",
-        "`action drop` with no `name` does NOT report a missing name: the test is `argAction == W_DROP && argName != \"\"` (:3996), so the line falls through to \"command 'body' : unknown action argument\" (:4041) — the same misleading-message shape unit 1 recorded for `dso`.",
-        "A `mode` value outside the three words with a valid system `action` silently takes the SYSTEM path (the test at :3954 fails and `mode` is then never looked at again) — e.g. `body mode in_galaxie action clear` removes every script-added BODY instead of the models of a scene.",
+        "`action drop` with no `name` does NOT report a missing name: the test is `argAction == W_DROP && argName != \"\"` (:3996), so the line falls through to \"command 'body' : unknown action argument\" (:4041) -- the same misleading-message shape unit 1 recorded for `dso`.",
+        "A `mode` value outside the three words with a valid system `action` silently takes the SYSTEM path (the test at :3954 fails and `mode` is then never looked at again) -- e.g. `body mode in_galaxie action clear` removes every script-added BODY instead of the models of a scene.",
         "DEFECT, recorded not fixed, same class as unit 1's `color`: on the r/g/b path the colour helper writes its range errors into a BY-VALUE copy of debug_message (src/interfaceModule/app_command_color.cpp:58-59), so `body name X color halo r 2 g 0 b 0` changes nothing, reports success and is recorded. The hex and rgb-word paths set the message on the reference and do reach the script (src/interfaceModule/app_command_color.cpp:98-105, 112-119).",
         "C1-relevant: this is the handler that WRITES into the parsed map (`path` :3992, `tex_ring` :3994, `keep_time` :4028-4029) and then forwards the whole map (:3995, :4030). A tool that models 'the keys of this line' must not read them back from the downstream side.",
-        "DOC-vs-CODE divergence recorded, code wins: two engine-side comments spell the colour form as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 and :264), but the handler reads `color_value` (:4084) — `value` on a `body` line means the tesselation number and nothing else (:4141). An author following the header comment would silently set no colour."
+        "DOC-vs-CODE divergence recorded, code wins: two engine-side comments spell the colour form as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 and :264), but the handler reads `color_value` (:4084) -- `value` on a `body` line means the tesselation number and nothing else (:4141). An author following the header comment would silently set no colour."
       ],
       "flagged": [
-        "body downstream vocabulary (`action load` without `mode`): the forwarded map is read by the stellar-system-file body grammar (src/bodyModule/protosystem.cpp:508-830 and the new path's loaders), which is INTENT §5 item 4's own deliverable — the second contract file. Enumerating it here would duplicate that authority (I2). Recorded instead: the entry points (other_args_uses:3995) and the four keys the immediate downstream names before anything else (name, parent, coord_func, type). SCOPE DECISION, for the supervisor to confirm or reverse.",
-        "body.pos_x / pos_y / pos_z (three-dimensional model placement): the code states no unit — the three numbers go straight into the model's placement matrix (src/ojmModule/ojm_mgr.cpp:71-76). The doc lines say only which direction each moves.",
+        "body downstream vocabulary (`action load` without `mode`): the forwarded map is read by the stellar-system-file body grammar (src/bodyModule/protosystem.cpp:508-830 and the new path's loaders), which is INTENT S5 item 4's own deliverable -- the second contract file. Enumerating it here would duplicate that authority (I2). Recorded instead: the entry points (other_args_uses:3995) and the four keys the immediate downstream names before anything else (name, parent, coord_func, type). SCOPE DECISION, for the supervisor to confirm or reverse.",
+        "body.pos_x / pos_y / pos_z (three-dimensional model placement): the code states no unit -- the three numbers go straight into the model's placement matrix (src/ojmModule/ojm_mgr.cpp:71-76). The doc lines say only which direction each moves.",
         "body.value (with `tesselation`): no range is stated anywhere on the path (app_command_interface.cpp:4141 -> src/bodyModule/solarsystem_tex.cpp:92-113 -> BodyTesselation setters). A usable range for the doc bar needs Vixy.",
-        "body `action screenshot` and `action dual_dump`: both are harness routes with no W_* token (bare literals at :4031, :4034). Whether they belong on the editor's public command surface at all (offered in completion, documented to a zero-knowledge author) is a product decision — Vixy. Recorded here, doc lines written as development tools."
+        "body `action screenshot` and `action dual_dump`: both are harness routes with no W_* token (bare literals at :4031, :4034). Whether they belong on the editor's public command surface at all (offered in completion, documented to a zero-knowledge author) is a product decision -- Vixy. Recorded here, doc lines written as development tools."
       ]
     },
 
@@ -445,7 +445,7 @@
         },
         "target": {
           "doc": "Which kind of text to change.",
-          "value": "enumerated — one of the registered font targets",
+          "value": "enumerated -- one of the registered font targets",
           "values": ["text", "planets", "constellations", "cardinal_points", "stars", "menu", "nebulae", "grids", "lines", "displays"],
           "value_docs": {
             "text": "the text a script writes on the screen",
@@ -474,11 +474,11 @@
         },
         "size": {
           "doc": "How big the letters are; leave it out for the standard size.",
-          "value": "number (Utility::strToDouble) — NO $-variable substitution",
+          "value": "number (Utility::strToDouble) -- NO $-variable substitution",
           "default": "absent, empty or not a number -> 12 (the size is then NOT scaled to the screen)",
           "required": false,
           "source": "app_command_interface.cpp:4173 -> src/appModule/fontFactory.cpp:141-146 (W_SIZE=\"size\", base_command_interface.hpp:80)",
-          "notes": "The number you write is multiplied by a screen-size factor (src/appModule/fontFactory.cpp:86, the square root of the screen height over the configured reference height) — so the same script gives comparable letters on different screens. A value of 0, or anything that is not a number, falls back to a fixed 12 that skips that scaling."
+          "notes": "The number you write is multiplied by a screen-size factor (src/appModule/fontFactory.cpp:86, the square root of the screen height over the configured reference height) -- so the same script gives comparable letters on different screens. A value of 0, or anything that is not a number, falls back to a fixed 12 that skips that scaling."
         }
       },
       "branches": [
@@ -497,7 +497,7 @@
       "lines": "4186-4453",
       "aliases": ["flyto"],
       "registration": "app_command_init.cpp:44 (ACP_CN_CAMERA = \"camera\", base_command_interface.hpp:333); alias app_command_init.cpp:45 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:334)",
-      "signature": "commandCamera(uint64_t &wait) — writes the script's inter-command delay on the two `move_to` forms (executeCommand :245)",
+      "signature": "commandCamera(uint64_t &wait) -- writes the script's inter-command delay on the two `move_to` forms (executeCommand :245)",
       "doc": "Move the point of view about the universe: name a place, go to it, turn towards a body, or fly up from where you stand.",
       "args": {
         "action": {
@@ -529,7 +529,7 @@
           "default": "absent -> the four forms that need it are refused with \"command 'camera' : missing name\", which is ALSO what an unknown action reports",
           "required": "conditional",
           "source": "app_command_interface.cpp:4190, 4249, 4411-4414, 4426, 4434, 4445 (W_NAME=\"name\", base_command_interface.hpp:89)",
-          "notes": "On `action transition_to target body` the same key means a BODY name instead (:4249) — the only place in this handler where it does."
+          "notes": "On `action transition_to target body` the same key means a BODY name instead (:4249) -- the only place in this handler where it does."
         },
         "target": {
           "doc": "What the action acts on.",
@@ -542,15 +542,15 @@
           "default": "absent -> \"command 'camera' : missing target\" (rotate: \"missing target\"; transition_to and move_to: their own message); present with any other word -> \"command 'transition_to' : unknown target arg\" / \"command 'camera' : unknown target arg\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:4198-4202 (rotate), 4233-4238, 4240, 4248 (transition_to), 4269-4276, 4301 (move_to) (W_TARGET=\"target\", W_POINT=\"point\", W_BODY=\"body\": base_command_interface.hpp:123,225,224)",
-          "notes": "ON `action rotate` THE VALUE IS NOT USED: it must be non-empty, but the movement always goes to the place you are standing on — Core::lookAnchor ignores its name argument (the per-name branch is commented out, src/coreModule/core.cpp:2549-2559)."
+          "notes": "ON `action rotate` THE VALUE IS NOT USED: it must be non-empty, but the movement always goes to the place you are standing on -- Core::lookAnchor ignores its name argument (the per-name branch is commented out, src/coreModule/core.cpp:2549-2559)."
         },
         "duration": {
           "doc": "How long the movement takes, in seconds.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "on `rotate`: absent -> 2 seconds; on `align_with`: absent -> 0 (immediate); on `move_to target point`: absent -> the jump is immediate; on `move_to target body`: absent -> \"command 'move_to body' : missing a body_name or time\"; on `lift_off`: absent -> 3 seconds",
           "required": "conditional",
           "source": "app_command_interface.cpp:4203-4204 (rotate), 4216-4221 (align_with), 4280, 4289-4294 (move_to point), 4303-4305, 4315-4322 (move_to body), 4391, 4398-4400 (lift_off) (W_DURATION=\"duration\", base_command_interface.hpp:102)",
-          "notes": "On both `move_to` forms the script ALSO waits: the delay before the next command is set to this many seconds (:4293, :4322 — evalInt(value) x 1000 milliseconds, so a fractional duration is cut down to whole seconds for the wait but not for the movement). The travel itself is measured in simulated time: the seconds are divided by 86400 and the arrival is that many days later on the simulation clock (src/navModule/anchor_manager.cpp:430, 464)."
+          "notes": "On both `move_to` forms the script ALSO waits: the delay before the next command is set to this many seconds (:4293, :4322 -- evalInt(value) x 1000 milliseconds, so a fractional duration is cut down to whole seconds for the wait but not for the movement). The travel itself is measured in simulated time: the seconds are divided by 86400 and the arrival is that many days later on the simulation clock (src/navModule/anchor_manager.cpp:430, 464)."
         },
         "body": {
           "doc": "On `action align_with`, the name of the place (declared with `action create`, of the kind that follows a body) whose up direction the view should take.",
@@ -573,12 +573,12 @@
           "source": "app_command_interface.cpp:4302-4308, 4315-4317 -> src/coreModule/coreLink.cpp:1161-1171 -> src/navModule/anchor_manager.cpp:488-501 (W_BODYNAME=\"body_name\", base_command_interface.hpp:304)",
           "notes": "As with `body` above, the name is looked up among the declared PLACES that follow a body (src/navModule/anchor_manager.cpp:491-497), so only bodies that have such a place declared can be travelled to."
         },
-        "x": {"doc": "On `action move_to target point`, where to go: the first coordinate, counted from the Sun.", "value": "number(evalDouble) — $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4277, 4282-4292 -> src/navModule/anchor_manager.cpp:387-395, 405-442 (W_X=\"x\", base_command_interface.hpp:300)", "notes": "The three numbers are a position in the heliocentric ecliptic frame (src/navModule/anchor_manager.cpp:387-395, 405-442). The unit is NOT stated on this path: astronomical units is [derived] from two facts about the same frame — the km->AU divisor applied to `altitude` beside it (src/navModule/anchor_manager.cpp:475, with AU declared in kilometres at src/tools/sc_const.hpp:45), and the new-path anchor code, which says 'a fixed point x/y/z in AU' of the same coordinates (src/experimentalModule/CameraAnchors.cpp:39). On `action create` the same three spellings are read again downstream, for a fixed place (see the downstream keys)."},
-        "y": {"doc": "On `action move_to target point`, where to go: the second coordinate, counted from the Sun.", "value": "number(evalDouble) — $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4278, 4282-4292 (W_Y=\"y\", base_command_interface.hpp:301)"},
-        "z": {"doc": "On `action move_to target point`, where to go: the third coordinate, counted from the Sun.", "value": "number(evalDouble) — $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4279, 4282-4292 (W_Z=\"z\", base_command_interface.hpp:302)"},
+        "x": {"doc": "On `action move_to target point`, where to go: the first coordinate, counted from the Sun.", "value": "number(evalDouble) -- $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4277, 4282-4292 -> src/navModule/anchor_manager.cpp:387-395, 405-442 (W_X=\"x\", base_command_interface.hpp:300)", "notes": "The three numbers are a position in the heliocentric ecliptic frame (src/navModule/anchor_manager.cpp:387-395, 405-442). The unit is NOT stated on this path: astronomical units is [derived] from two facts about the same frame -- the km->AU divisor applied to `altitude` beside it (src/navModule/anchor_manager.cpp:475, with AU declared in kilometres at src/tools/sc_const.hpp:45), and the new-path anchor code, which says 'a fixed point x/y/z in AU' of the same coordinates (src/experimentalModule/CameraAnchors.cpp:39). On `action create` the same three spellings are read again downstream, for a fixed place (see the downstream keys)."},
+        "y": {"doc": "On `action move_to target point`, where to go: the second coordinate, counted from the Sun.", "value": "number(evalDouble) -- $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4278, 4282-4292 (W_Y=\"y\", base_command_interface.hpp:301)"},
+        "z": {"doc": "On `action move_to target point`, where to go: the third coordinate, counted from the Sun.", "value": "number(evalDouble) -- $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4279, 4282-4292 (W_Z=\"z\", base_command_interface.hpp:302)"},
         "altitude": {
           "doc": "On `move_to`, how high above the body to stop, in kilometres; on `lift_off`, the height to climb to, in whatever unit the `moveto` command reads (see notes).",
-          "value": "number(evalDouble) — $-variable substitution possible; kilometres on `move_to target body` [derived: the value is divided by AU, and AU is declared in kilometres]",
+          "value": "number(evalDouble) -- $-variable substitution possible; kilometres on `move_to target body` [derived: the value is divided by AU, and AU is declared in kilometres]",
           "default": "on `move_to target body`: absent -> stop at five times the body's own radius; on `lift_off`: absent -> \"command 'camera lift_off' : missing altitude\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:4310, 4314-4317 (move_to body), 4390, 4393-4396, 4404 (lift_off) -> src/navModule/anchor_manager.cpp:475 ('alt/AU', with AU in kilometres, src/tools/sc_const.hpp:45) (W_ALTITUDE=\"altitude\", base_command_interface.hpp:179)",
@@ -603,7 +603,7 @@
         },
         "coef": {
           "doc": "On `action descend`, how much closer to go: less than 1 goes down, more than 1 goes up (0.5 halves the distance, 2 doubles it).",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> \"command 'camera descend' : missing coef\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:4379-4385 -> src/coreModule/coreLink.hpp:952-961 -> src/experimentalModule/Camera.cpp:943-968 (W_COEF=\"coef\", base_command_interface.hpp:248)",
@@ -616,7 +616,7 @@
           "default": "absent -> no",
           "required": false,
           "source": "app_command_interface.cpp:4441-4445 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,243)",
-          "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar — the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here."
+          "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar -- the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here."
         },
         "type": {
           "doc": "On `action create`, what kind of place is being declared.",
@@ -638,7 +638,7 @@
         "orbit_center_x": {"doc": "On `action create` with type orbit and no parent, the centre of the orbit: first coordinate, in astronomical units.", "value": "number (std::stod)", "default": "absent -> the place is not created", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:139-150; src/experimentalModule/CameraAnchors.cpp:149-171"},
         "orbit_center_y": {"doc": "On `action create` with type orbit and no parent, the centre of the orbit: second coordinate, in astronomical units.", "value": "number (std::stod)", "default": "absent -> the place is not created", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:140-150; src/experimentalModule/CameraAnchors.cpp:149-171"},
         "orbit_center_z": {"doc": "On `action create` with type orbit and no parent, the centre of the orbit: third coordinate, in astronomical units.", "value": "number (std::stod)", "default": "absent -> the place is not created", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:141-150; src/experimentalModule/CameraAnchors.cpp:149-171"},
-        "coord_func": {"doc": "On `action create` with type orbit, which kind of orbit describes the movement.", "value": "string — the orbit-kind names of the stellar-system-file grammar", "default": "absent -> no orbit can be built and the place is not created", "required": false, "downstream": true, "source": "src/experimentalModule/CameraAnchors.cpp:45-55", "notes": "The orbit's own numbers are the same keys a body's orbit uses (INTENT §5 item 4) — see `flagged`."}
+        "coord_func": {"doc": "On `action create` with type orbit, which kind of orbit describes the movement.", "value": "string -- the orbit-kind names of the stellar-system-file grammar", "default": "absent -> no orbit can be built and the place is not created", "required": false, "downstream": true, "source": "src/experimentalModule/CameraAnchors.cpp:45-55", "notes": "The orbit's own numbers are the same keys a body's orbit uses (INTENT S5 item 4) -- see `flagged`."}
       },
       "branches": [
         {"selector": "action rotate", "requires": ["target"], "optional": ["duration"], "effect": "turn the view towards the place you stand on (the target VALUE is not used); duration defaults to 2 s", "source": "app_command_interface.cpp:4197-4206"},
@@ -659,16 +659,16 @@
         {"selector": "unknown action", "requires": [], "optional": [], "effect": "\"command 'camera' : missing name\" when no `name` was given (the name test comes FIRST, :4411), otherwise \"command 'camera' : unknown action argument\"", "source": "app_command_interface.cpp:4411-4414, 4451"}
       ],
       "notes": [
-        "The `name` test at :4411 sits between the two groups of actions: every action listed before it works without a name, every one after it needs one — and any UNKNOWN action word is reported as a missing name when none was written, which is a misleading message for a misspelt action.",
-        "C1-relevant: `action lift_off` does not act itself — it builds a three-line script (moveto / wait / camera action transition_to target point) and pushes it in front of the running script (:4402-4408). Those three lines are parsed by ScriptMgr::addScriptFirst (src/scriptModule/script_mgr.cpp:81-107), whose comment rule differs from the file loader's: there an INDENTED '#' IS dropped as a comment (src/scriptModule/script_mgr.cpp:90-97), while at the script-file layer only a '#' in the first column is (src/scriptModule/script.cpp:114, parse_model.comments).",
-        "C1-relevant: `action lift_off` returns addScriptFirst's value directly (:4408) instead of executeCommandStatus(), so the line is never recorded by the recorder and never reports a failure — addScriptFirst always returns true (src/scriptModule/script_mgr.cpp:106).",
+        "The `name` test at :4411 sits between the two groups of actions: every action listed before it works without a name, every one after it needs one -- and any UNKNOWN action word is reported as a missing name when none was written, which is a misleading message for a misspelt action.",
+        "C1-relevant: `action lift_off` does not act itself -- it builds a three-line script (moveto / wait / camera action transition_to target point) and pushes it in front of the running script (:4402-4408). Those three lines are parsed by ScriptMgr::addScriptFirst (src/scriptModule/script_mgr.cpp:81-107), whose comment rule differs from the file loader's: there an INDENTED '#' IS dropped as a comment (src/scriptModule/script_mgr.cpp:90-97), while at the script-file layer only a '#' in the first column is (src/scriptModule/script.cpp:114, parse_model.comments).",
+        "C1-relevant: `action lift_off` returns addScriptFirst's value directly (:4408) instead of executeCommandStatus(), so the line is never recorded by the recorder and never reports a failure -- addScriptFirst always returns true (src/scriptModule/script_mgr.cpp:106).",
         "`action create` forwards the whole parsed map (:4418) to TWO registries which read DIFFERENT vocabularies for the same declaration: the old one accepts type point/observatory/body/orbit with x/y/z, body_name, parent, orbit_center_* (src/navModule/anchor_creator_cor.cpp), the new one the same plus follow_rotation and the orbit keys, and refuses with an explaining log line (src/experimentalModule/CameraAnchors.cpp:14-43). The command reports success when EITHER registry accepted (src/bodyModule/ssystem_factory.hpp:852-857).",
         "`action rotate`, `align_with`, `move_to target body` and `align_with` all look their name up among the DECLARED PLACES, not among the bodies: without a place declared for a body (by `action create`, or by the anchor file the program reads at start), those forms cannot reach it."
       ],
       "flagged": [
-        "camera `action create` orbit keys: the orbit's own numbers (coord_func + the orbit_* family) are the stellar-system-file orbit grammar, INTENT §5 item 4 — not enumerated here for the same reason as `body action load` (I2). Recorded: the anchor-level keys and both registries' entry points. SCOPE DECISION, for the supervisor.",
+        "camera `action create` orbit keys: the orbit's own numbers (coord_func + the orbit_* family) are the stellar-system-file orbit grammar, INTENT S5 item 4 -- not enumerated here for the same reason as `body action load` (I2). Recorded: the anchor-level keys and both registries' entry points. SCOPE DECISION, for the supervisor.",
         "camera anchors/anchors double prefix (`action save` / `action load`, src/coreModule/coreLink.cpp:65,70 x src/bodyModule/ssystem_factory.hpp:946,950): a real path defect found while extracting. Recorded, not fixed (out of scope). Until it is decided, the doc line cannot honestly promise where the file lands, so it states what the code does. Vixy/supervisor: is this a fix or a documented path?",
-        "camera `action rotate` target: the value is required but unused (src/coreModule/core.cpp:2549-2559 has the per-name branch commented out). Whether the editor should offer completion for a key whose value does nothing — and whether the intent was to restore the branch — is not answerable from the code. Vixy."
+        "camera `action rotate` target: the value is required but unused (src/coreModule/core.cpp:2549-2559 has the per-name branch commented out). Whether the editor should offer completion for a key whose value does nothing -- and whether the intent was to restore the branch -- is not answerable from the code. Vixy."
       ]
     },
 
@@ -676,12 +676,12 @@
       "handler": "commandCamera",
       "lines": "4186-4453",
       "alias_of": "camera",
-      "registration": "app_command_init.cpp:115 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:334) — the same enum value as `camera`, so the same handler and the SAME arguments; registered in the aliases block AFTER the reverse map is built (:112-118, since 2026-08-31)",
+      "registration": "app_command_init.cpp:115 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:334) -- the same enum value as `camera`, so the same handler and the SAME arguments; registered in the aliases block AFTER the reverse map is built (:112-118, since 2026-08-31)",
       "doc": "Another spelling of `camera`: it does exactly the same thing, with the same keys.",
       "args": {},
       "notes": [
-        "Alias stub: the argument grammar is the `camera` entry, byte for byte — one handler, two registered names (app_command_init.cpp:44-45).",
-        "Recording keeps the spelling the author typed: ScriptMgr::recordCommand (script_mgr.cpp:252) writes the raw line, and m_commands_ToString has NO consumer at this revision (measured 2026-08-31) — parse_model.recording_alias_loss. The earlier note here (\"recording rewrites the spelling\") was an inference from the map's construction, never from a consumer; corrected with the record kept in the journal (scedit INTENT 2026-08-31c). The lint seed 'alias-respelled' that carried it is retired."
+        "Alias stub: the argument grammar is the `camera` entry, byte for byte -- one handler, two registered names (app_command_init.cpp:44-45).",
+        "Recording keeps the spelling the author typed: ScriptMgr::recordCommand (script_mgr.cpp:252) writes the raw line, and m_commands_ToString has NO consumer at this revision (measured 2026-08-31) -- parse_model.recording_alias_loss. The earlier note here (\"recording rewrites the spelling\") was an inference from the map's construction, never from a consumer; corrected with the record kept in the journal (scedit INTENT 2026-08-31c). The lint seed 'alias-respelled' that carried it is retired."
       ],
       "flagged": []
     },
@@ -718,16 +718,16 @@
       "args": {},
       "key_grammar": {
         "doc": "One pair: the KEY is the name of the value to change, the VALUE is the number to add to it.",
-        "key_domain": "a name given earlier by `define`, or one of the four reserved names that can be written (longitude, latitude, altitude, heading — families.reserved_variables); a name that was never defined is CREATED and set to the value written, with the log line \"Not possible to operate with undefined variable so define to null from ops\"",
+        "key_domain": "a name given earlier by `define`, or one of the four reserved names that can be written (longitude, latitude, altitude, heading -- families.reserved_variables); a name that was never defined is CREATED and set to the value written, with the log line \"Not possible to operate with undefined variable so define to null from ops\"",
         "value": "number, or the name of another variable (its value is used)",
         "default": "no pair at all -> debug_message \"unexpected error in command_addition\"",
         "required": true,
         "source": "app_command_interface.cpp:4498-4504 -> src/interfaceModule/app_command_eval.cpp:161-164, 202-218 (f_add = x+y, :7)"
       },
       "notes": [
-        "SINGLE PAIR ONLY, alphabetically first key (:4498-4500) — the handler even says so: '// could loop if want to allow that syntax' (:4497).",
+        "SINGLE PAIR ONLY, alphabetically first key (:4498-4500) -- the handler even says so: '// could loop if want to allow that syntax' (:4497).",
         "Writing to a reserved name works for the four that have a setter (longitude, latitude, altitude, heading); the others log \"No setter with reserved variable <name>. Do nothing.\" (src/interfaceModule/app_command_eval.cpp:348-376).",
-        "Reserved names take a SECOND path in the same call: after the reserved value is written the code falls on to the ordinary-variable branch, which does not find the name and tries to define it — which is refused, printing \"<name> is a reservedVar so you can't define it\" (src/interfaceModule/app_command_eval.cpp:205-214 then :137-141). The arithmetic still happened."
+        "Reserved names take a SECOND path in the same call: after the reserved value is written the code falls on to the ordinary-variable branch, which does not find the name and tries to define it -- which is refused, printing \"<name> is a reservedVar so you can't define it\" (src/interfaceModule/app_command_eval.cpp:205-214 then :137-141). The arithmetic still happened."
       ],
       "flagged": []
     },
@@ -820,7 +820,7 @@
       "args": {},
       "key_grammar": {
         "doc": "One pair: the KEY is the name that RECEIVES the result, the VALUE is the angle in degrees.",
-        "key_domain": "as `add` — but note the name's current value is not used at all, it is overwritten",
+        "key_domain": "as `add` -- but note the name's current value is not used at all, it is overwritten",
         "value": "number of degrees, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command__tangent\"",
         "required": true,
@@ -842,7 +842,7 @@
       "args": {},
       "key_grammar": {
         "doc": "One pair: the KEY is the name that RECEIVES the result, the VALUE is the number to cut.",
-        "key_domain": "as `add` — the name's current value is not used, it is overwritten",
+        "key_domain": "as `add` -- the name's current value is not used, it is overwritten",
         "value": "number, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command__trunc\"",
         "required": true,
@@ -861,7 +861,7 @@
       "args": {},
       "key_grammar": {
         "doc": "One pair: the KEY is the name that RECEIVES the result, the VALUE is the angle in degrees.",
-        "key_domain": "as `add` — the name's current value is not used, it is overwritten",
+        "key_domain": "as `add` -- the name's current value is not used, it is overwritten",
         "value": "number of degrees, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command__sinus\"",
         "required": true,
@@ -875,12 +875,12 @@
       "handler": "commandStruct",
       "lines": "4600-4706",
       "aliases": [],
-      "registration": "app_command_init.cpp:91 (ACP_CN_STRUCT = \"struct\", base_command_interface.hpp:382) — AND intercepted before the table at app_command_interface.cpp:221-222; see notes",
+      "registration": "app_command_init.cpp:91 (ACP_CN_STRUCT = \"struct\", base_command_interface.hpp:382) -- AND intercepted before the table at app_command_interface.cpp:221-222; see notes",
       "doc": "Control which lines of the script run: ask a question and skip what follows when the answer is no, repeat a block, or switch a block off.",
       "args": {
         "if": {
           "doc": "Open a block that only runs when a condition holds; also closes or flips such a block.",
-          "value": "number(evalDouble) — $-variable substitution possible | enumerated",
+          "value": "number(evalDouble) -- $-variable substitution possible | enumerated",
           "values": ["else", "end", "<a number or a variable name>"],
           "value_docs": {
             "else": "flip the block: what was skipped now runs and the other way round",
@@ -890,21 +890,21 @@
           "default": "absent -> the command tries `comment`, then `loop`, then `print`",
           "required": "conditional",
           "source": "app_command_interface.cpp:4604-4661 (W_IF=\"if\", W_ELSE=\"else\", W_END=\"end\": base_command_interface.hpp:239,240,157)",
-          "notes": "Blocks may be nested; each `struct if` must be closed by `struct if end` (an `end` with no open block logs \"end without if\", an `else` with none logs \"else without if\" — src/interfaceModule/if_swap.cpp:40-54, 71-81)."
+          "notes": "Blocks may be nested; each `struct if` must be closed by `struct if end` (an `end` with no open block logs \"end without if\", an `else` with none logs \"else without if\" -- src/interfaceModule/if_swap.cpp:40-54, 71-81)."
         },
         "equal": {
           "doc": "Run the block when the `if` value is the same as this one.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> the next comparison key is tried",
           "required": "conditional",
           "source": "app_command_interface.cpp:4614-4620 (W_EQUAL=\"equal\", base_command_interface.hpp:230)",
           "notes": "The two numbers count as the same when they differ by less than 0.0001 (:4602, :4615)."
         },
-        "diff": {"doc": "Run the block when the `if` value is NOT the same as this one.", "value": "number(evalDouble) — $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4621-4627 (W_DIFF=\"diff\", base_command_interface.hpp:231)", "notes": "Same 0.0001 tolerance as `equal`."},
-        "inf": {"doc": "Run the block when the `if` value is smaller than this one.", "value": "number(evalDouble) — $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4628-4634 (W_INF=\"inf\", base_command_interface.hpp:232)"},
-        "inf_equal": {"doc": "Run the block when the `if` value is smaller than this one or the same.", "value": "number(evalDouble) — $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4635-4641 (W_INF_ZQUAL=\"inf_equal\", base_command_interface.hpp:233)"},
-        "sup": {"doc": "Run the block when the `if` value is bigger than this one.", "value": "number(evalDouble) — $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4642-4648 (W_SUP=\"sup\", base_command_interface.hpp:234)"},
-        "sup_equal": {"doc": "Run the block when the `if` value is bigger than this one or the same.", "value": "number(evalDouble) — $-variable substitution possible", "default": "absent -> no comparison key is left: the block then runs when the `if` value is not zero", "required": "conditional", "source": "app_command_interface.cpp:4649-4661 (W_SUP_EQUAL=\"sup_equal\", base_command_interface.hpp:235)"},
+        "diff": {"doc": "Run the block when the `if` value is NOT the same as this one.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4621-4627 (W_DIFF=\"diff\", base_command_interface.hpp:231)", "notes": "Same 0.0001 tolerance as `equal`."},
+        "inf": {"doc": "Run the block when the `if` value is smaller than this one.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4628-4634 (W_INF=\"inf\", base_command_interface.hpp:232)"},
+        "inf_equal": {"doc": "Run the block when the `if` value is smaller than this one or the same.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4635-4641 (W_INF_ZQUAL=\"inf_equal\", base_command_interface.hpp:233)"},
+        "sup": {"doc": "Run the block when the `if` value is bigger than this one.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4642-4648 (W_SUP=\"sup\", base_command_interface.hpp:234)"},
+        "sup_equal": {"doc": "Run the block when the `if` value is bigger than this one or the same.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> no comparison key is left: the block then runs when the `if` value is not zero", "required": "conditional", "source": "app_command_interface.cpp:4649-4661 (W_SUP_EQUAL=\"sup_equal\", base_command_interface.hpp:235)"},
         "comment": {
           "doc": "Switch off the lines that follow (yes), or switch them back on (no).",
           "value": "boolean(flag grammar)",
@@ -916,7 +916,7 @@
         },
         "loop": {
           "doc": "Repeat the lines that follow a given number of times, or close/abandon such a repetition.",
-          "value": "int(via evalString then Utility::strToInt) — $-variable substitution possible | enumerated",
+          "value": "int(via evalString then Utility::strToInt) -- $-variable substitution possible | enumerated",
           "values": ["end", "break", "<a whole number>"],
           "value_docs": {
             "end": "close the repeated block: go back to its first line and run it again until the count is used up",
@@ -946,11 +946,11 @@
         {"selector": "nothing recognised", "requires": [], "optional": [], "effect": "no debug_message is ever set: the command reports SUCCESS having done nothing", "source": "app_command_interface.cpp:4705"}
       ],
       "notes": [
-        "RECONCILIATION with parse_model.pre_table_commands (the unit-4 assignment). `struct` IS both intercepted before the table (:221-222) and registered (app_command_init.cpp:91) — but the two paths are not equivalent: (a) the interception happens BEFORE the skip test at :225, which is why a `struct` line still runs inside a switched-off or skipped block — without that, no `struct if end` could ever close a block it is inside; (b) the REGISTERED path is dead code: the switch case for SC_STRUCT is an empty `break;` labelled '// for g++ warning' (:299), so reaching the table with the command `struct` would do nothing — and it cannot be reached anyway, since the literal test at :221 already caught it. What the registration actually buys is presence in the did-you-mean list and in the enum-to-name map used by the recorder (app_command_init.cpp:100-107). REFINES the parse_model line, which today says only 'struct is also registered'.",
-        "The `if` branch is guarded by `swapCommand != true` (:4605): inside a block switched off by `comment` (or by `struct comment true`), conditional lines are ignored — but `struct comment false` still works, since the `comment` branch has no such guard. This is what makes a switched-off block closable.",
+        "RECONCILIATION with parse_model.pre_table_commands (the unit-4 assignment). `struct` IS both intercepted before the table (:221-222) and registered (app_command_init.cpp:91) -- but the two paths are not equivalent: (a) the interception happens BEFORE the skip test at :225, which is why a `struct` line still runs inside a switched-off or skipped block -- without that, no `struct if end` could ever close a block it is inside; (b) the REGISTERED path is dead code: the switch case for SC_STRUCT is an empty `break;` labelled '// for g++ warning' (:299), so reaching the table with the command `struct` would do nothing -- and it cannot be reached anyway, since the literal test at :221 already caught it. What the registration actually buys is presence in the did-you-mean list and in the enum-to-name map used by the recorder (app_command_init.cpp:100-107). REFINES the parse_model line, which today says only 'struct is also registered'.",
+        "The `if` branch is guarded by `swapCommand != true` (:4605): inside a block switched off by `comment` (or by `struct comment true`), conditional lines are ignored -- but `struct comment false` still works, since the `comment` branch has no such guard. This is what makes a switched-off block closable.",
         "The `if` branch is NOT guarded by the if-skip state, which is what makes nesting work: every `struct if` inside a skipped block still pushes a level, so its own `end` pops the right one (src/interfaceModule/if_swap.cpp:57-61, 90-99).",
         "A block is skipped when ANY enclosing level says skip (src/interfaceModule/if_swap.cpp:90-99), so a false outer condition cannot be undone by a true inner one.",
-        "The `loop` branch does NOT return when the count is exactly 1, so such a line falls through to the `print` test (:4694-4701) — the only path in the handler where two branches can act on one line."
+        "The `loop` branch does NOT return when the count is exactly 1, so such a line falls through to the `print` test (:4694-4701) -- the only path in the handler where two branches can act on one line."
       ],
       "flagged": []
     },
@@ -964,14 +964,14 @@
       "args": {
         "min": {
           "doc": "The smallest number the chance value may take.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> unchanged; at program start 0",
           "required": "conditional",
           "source": "app_command_interface.cpp:4712-4716 -> src/interfaceModule/app_command_eval.cpp:242-245 (start value :31) (W_MIN=\"min\", base_command_interface.hpp:237)"
         },
         "max": {
           "doc": "The largest number the chance value may take.",
-          "value": "number(evalDouble) — $-variable substitution possible",
+          "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> unchanged; at program start 1",
           "required": "conditional",
           "source": "app_command_interface.cpp:4717-4721 -> src/interfaceModule/app_command_eval.cpp:247-250 (start value :32) (W_MAX=\"max\", base_command_interface.hpp:238)"
@@ -1008,15 +1008,15 @@
           "default": "absent or any other word -> \"command 'transition': unknown argument\"",
           "required": true,
           "source": "app_command_interface.cpp:4729-4745 (W_ACTION=\"action\", W_SKIP=\"skip\", W_PAUSE=\"pause\", W_RESUME=\"resume\": base_command_interface.hpp:81,310,160,168)",
-          "notes": "C1-relevant: read with std::move (:4729), so the map entry is left empty for the rest of the command — the only handler in the unit that empties a key it read."
+          "notes": "C1-relevant: read with std::move (:4729), so the map entry is left empty for the rest of the command -- the only handler in the unit that empties a key it read."
         },
         "duration": {
           "doc": "On `action skip`, how much fade time to jump through, in thousandths of a second.",
-          "value": "number(evalDouble) — $-variable substitution possible; milliseconds",
+          "value": "number(evalDouble) -- $-variable substitution possible; milliseconds",
           "default": "absent or 0 -> 3600 (the code's own comment: \"Ensure transitions complete now\")",
           "required": false,
           "source": "app_command_interface.cpp:4731-4739 -> src/coreModule/core.cpp:2541-2547 (Core::update takes delta_time in milliseconds: 'const float deltaSeconds = delta_time / 1000.f') (W_DURATION=\"duration\", base_command_interface.hpp:102)",
-          "notes": "The number is passed as the time step of one update, so it is in milliseconds — 3600 is 3.6 seconds of fade time. It reaches an `int` parameter, so anything after the decimal point is dropped."
+          "notes": "The number is passed as the time step of one update, so it is in milliseconds -- 3600 is 3.6 seconds of fade time. It reaches an `int` parameter, so anything after the decimal point is dropped."
         }
       },
       "branches": [
@@ -1030,24 +1030,24 @@
         "The jump advances both drawing paths' fades in one call (src/coreModule/core.cpp:2541-2547)."
       ],
       "flagged": [
-        "transition.duration unit: the code answers 'milliseconds' (Core::update's parameter), but the default of 3600 is commented \"Ensure transitions complete now\", which only holds for fades shorter than 3.6 seconds — the two readings (a millisecond step, or a seconds value that was meant) do not agree. The doc line states what the code does. Whether the intent was seconds is not answerable from the code: Vixy."
+        "transition.duration unit: the code answers 'milliseconds' (Core::update's parameter), but the default of 3600 is commented \"Ensure transitions complete now\", which only holds for fades shorter than 3.6 seconds -- the two readings (a millisecond step, or a seconds value that was meant) do not agree. The doc line states what the code does. Whether the intent was seconds is not answerable from the code: Vixy."
       ]
     }
   },
 
   "unit_findings": {
     "c1_parse_model": [
-      "REFINES parse_model.pre_table_commands: `struct` is intercepted at :221-222 BEFORE the skip test at :225 (which is what lets `struct if end` / `struct comment false` close a block they are inside), and its REGISTERED path is dead — `case SC_COMMAND::SC_STRUCT: break;` (:299) calls nothing. The registration's only live effects are the did-you-mean list and the recorder's enum-to-name map (app_command_init.cpp:91, 100-107). Suggested wording for the merge: 'struct is also registered, but only for the did-you-mean list and the recorder: the table's own case does nothing, and the literal test always catches the line first.'",
+      "REFINES parse_model.pre_table_commands: `struct` is intercepted at :221-222 BEFORE the skip test at :225 (which is what lets `struct if end` / `struct comment false` close a block they are inside), and its REGISTERED path is dead -- `case SC_COMMAND::SC_STRUCT: break;` (:299) calls nothing. The registration's only live effects are the did-you-mean list and the recorder's enum-to-name map (app_command_init.cpp:91, 100-107). Suggested wording for the merge: 'struct is also registered, but only for the did-you-mean list and the recorder: the table's own case does nothing, and the literal test always catches the line first.'",
       "CONFIRMS parse_model.flag_multi_pair's single-pair list for all nine variable commands: define(:4484-4486), add(:4498-4500), sub(:4511-4513), multiply(:4525-4527), divide(:4538-4540), modulo(:4551-4553), tangent(:4564-4566), trunc(:4577-4579), sinus(:4590-4592) each read args.begin() only; eight of the nine carry the comment '// could loop if want to allow that syntax' (define does not, :4482-4493, same shape). Consequence for the author: `add b 2 a 1` changes `a`, silently.",
-      "REFINES parse_model's map model (extends the unit-1 operator[] finding): this unit contains the only handlers that WRITE into the parsed map before forwarding it — commandBody sets `path` (:3992), rewrites `tex_ring` (:3994) and rewrites `keep_time` in place (:4028-4029). The map the loader receives is therefore not the set of pairs the line wrote, in values as well as in keys. commandTransition additionally MOVES a value out of the map (:4729), leaving the entry empty.",
-      "ADDS a second comment grammar, reachable from this unit: `camera action lift_off` pushes a three-line script through ScriptMgr::addScriptFirst (src/scriptModule/script_mgr.cpp:81-107), which strips leading whitespace and treats an INDENTED '#' as a comment — the opposite of the script-file layer's column-0-only rule (src/scriptModule/script.cpp:114). scedit's model of 'what is a comment' must be per-channel: file layer (column 0 only), addScriptFirst layer (first non-blank character), live channels (never stripped).",
+      "REFINES parse_model's map model (extends the unit-1 operator[] finding): this unit contains the only handlers that WRITE into the parsed map before forwarding it -- commandBody sets `path` (:3992), rewrites `tex_ring` (:3994) and rewrites `keep_time` in place (:4028-4029). The map the loader receives is therefore not the set of pairs the line wrote, in values as well as in keys. commandTransition additionally MOVES a value out of the map (:4729), leaving the entry empty.",
+      "ADDS a second comment grammar, reachable from this unit: `camera action lift_off` pushes a three-line script through ScriptMgr::addScriptFirst (src/scriptModule/script_mgr.cpp:81-107), which strips leading whitespace and treats an INDENTED '#' as a comment -- the opposite of the script-file layer's column-0-only rule (src/scriptModule/script.cpp:114). scedit's model of 'what is a comment' must be per-channel: file layer (column 0 only), addScriptFirst layer (first non-blank character), live channels (never stripped).",
       "CONFIRMS the eval boundary recorded by unit 1 and locates it: evalString/evalDouble/evalInt are at app_command_interface.cpp:4458-4479, inside THIS unit's range, and hold the absent-key defaults (\"\", 0.0, 0). They contain no `args[` and so consume no count-gate row.",
-      "ADDS a boolean-grammar exception for the vocabulary model: `camera action follow_rotation value <v>` is an exact string comparison against \"true\" (:4443), not the flag grammar — `on`, `1` and `TRUE` all mean NO there. Every other boolean of the unit is isTrue/isFalse/toggle. A lint rule that assumes flag grammar for every boolean-looking value would be wrong here."
+      "ADDS a boolean-grammar exception for the vocabulary model: `camera action follow_rotation value <v>` is an exact string comparison against \"true\" (:4443), not the flag grammar -- `on`, `1` and `TRUE` all mean NO there. Every other boolean of the unit is isTrue/isFalse/toggle. A lint rule that assumes flag grammar for every boolean-looking value would be wrong here."
     ],
     "obsolete_tokens_in_range": "None. No handler in 3945-4747 references any of the 7 names in families.obsolete_tokens (checked mechanically against app_command_init.cpp:14-23: 0 occurrences of each in the range).",
     "census_dead_token_check": {
       "method": "tree-wide grep for each census-suspect W_* outside base_command_interface.hpp (src/**.cpp, src/**.hpp)",
-      "W_TRUE": "LIVE — exactly ONE use in the whole tree, and it is in this unit: app_command_interface.cpp:4443 (camera follow_rotation). Retire it from the census's never-referenced set.",
+      "W_TRUE": "LIVE -- exactly ONE use in the whole tree, and it is in this unit: app_command_interface.cpp:4443 (camera follow_rotation). Retire it from the census's never-referenced set.",
       "W_FALSE": "confirmed dead (0 uses outside the header)",
       "W_OFF": "confirmed dead (0 uses outside the header; 'off' is live only as a VALUE spelling handled by Utility::isFalse)",
       "W_TERMINATION": "confirmed dead (0 uses outside the header)",
@@ -1059,21 +1059,21 @@
       "used_as_KEYS in this unit": ["W_ACTION", "W_NAME", "ACP_SC_MODE", "W_FILENAME", "W_POSX", "W_POSY", "W_POSZ", "W_SCALE", "W_SKINUSE", "W_SKINTEX", "W_PATH", "W_KEEPTIME", "W_HIDDEN", "W_ORBIT", "W_COLOR", "W_COLOR_VALUE", "W_R", "W_G", "W_B", "W_DATUM_RADIUS", "W_GROUND_RADIUS", "W_TESSELATION", "W_VALUE", "W_TARGET", "W_SIZE", "W_DURATION", "W_BODY", "W_X", "W_Y", "W_Z", "W_BODYNAME", "W_ALTITUDE", "W_STATE", "W_COEF", "W_IF", "W_EQUAL", "W_DIFF", "W_INF", "W_INF_ZQUAL", "W_SUP", "W_SUP_EQUAL", "W_COMMENT", "W_LOOP", "W_PRINT", "W_MIN", "W_MAX"],
       "used_as_VALUES in this unit": ["W_LOAD", "W_REMOVE", "ACP_CN_CLEAR", "W_DROP", "W_INITIAL", "W_RELOAD", "W_SAVE", "W_PRELOAD", "W_TOGGLE", "W_ROTATE", "W_ALIGN_WITH", "W_TRANSITION_TO", "W_MOVE_TO", "W_POINT", "W_BODY", "W_CREATE", "W_SWITCH", "W_FOLLOW_ROTATION", "W_FREE_MODE", "W_DESCEND", "W_LIFT_OFF", "W_TRUE", "W_ELSE", "W_END", "W_BREAK", "W_VAR", "W_SKIP", "W_PAUSE", "W_RESUME"],
       "both_roles": [
-        "W_BODY — KEY on `camera action align_with` (:4210) and VALUE of `target` on transition_to/move_to (:4248, :4301)",
-        "W_COMMENT — KEY on `struct` (:4665) and, as the same spelling, a pre-table COMMAND name (executeCommand :215)",
-        "W_PRINT / W_LOOP — KEYS on `struct` (:4701, :4675) whose spellings are also a command name (`print`, unit 1) and a media key (`loop`, unit 2 territory)",
-        "W_SAVE, W_LOAD, W_DROP, ACP_CN_CLEAR — VALUES of `action` here; ACP_CN_CLEAR is a COMMAND name reused as a value (as unit 1 recorded)",
-        "W_DURATION, W_ALTITUDE, W_X/Y/Z, W_NAME — KEYS here; `x`,`y`,`z`,`name`,`body_name`,`parent`,`follow_rotation` are ALSO downstream keys of `camera action create` (same spellings, read in the anchor registries)"
+        "W_BODY -- KEY on `camera action align_with` (:4210) and VALUE of `target` on transition_to/move_to (:4248, :4301)",
+        "W_COMMENT -- KEY on `struct` (:4665) and, as the same spelling, a pre-table COMMAND name (executeCommand :215)",
+        "W_PRINT / W_LOOP -- KEYS on `struct` (:4701, :4675) whose spellings are also a command name (`print`, unit 1) and a media key (`loop`, unit 2 territory)",
+        "W_SAVE, W_LOAD, W_DROP, ACP_CN_CLEAR -- VALUES of `action` here; ACP_CN_CLEAR is a COMMAND name reused as a value (as unit 1 recorded)",
+        "W_DURATION, W_ALTITUDE, W_X/Y/Z, W_NAME -- KEYS here; `x`,`y`,`z`,`name`,`body_name`,`parent`,`follow_rotation` are ALSO downstream keys of `camera action create` (same spellings, read in the anchor registries)"
       ],
       "literal_strings_with_no_W_token": [
         "\"in_universe\", \"in_galaxy\", \"in_sandbox\" (body `mode` values, :3954)",
-        "\"tex_ring\" (body, :3994 — written by the handler, no W_* twin)",
+        "\"tex_ring\" (body, :3994 -- written by the handler, no W_* twin)",
         "\"dual_dump\", \"screenshot\" (body `action` values, :4031, :4034)",
-        "the whole downstream anchor vocabulary of `camera action create` (type/x/y/z/body_name/parent/orbit_center_*/follow_rotation/coord_func — src/navModule/anchor_creator_cor.cpp, src/experimentalModule/CameraAnchors.cpp)",
-        "the whole downstream body vocabulary of `body action load` (the stellar-system-file grammar, INTENT §5 item 4)",
-        "the downstream `purge` value \"auto\" HAS a W_* twin (W_AUTO, base_command_interface.hpp:197) and the key does too (W_PURGE, :170) — both used in protosystem.cpp, not in the handler"
+        "the whole downstream anchor vocabulary of `camera action create` (type/x/y/z/body_name/parent/orbit_center_*/follow_rotation/coord_func -- src/navModule/anchor_creator_cor.cpp, src/experimentalModule/CameraAnchors.cpp)",
+        "the whole downstream body vocabulary of `body action load` (the stellar-system-file grammar, INTENT S5 item 4)",
+        "the downstream `purge` value \"auto\" HAS a W_* twin (W_AUTO, base_command_interface.hpp:197) and the key does too (W_PURGE, :170) -- both used in protosystem.cpp, not in the handler"
       ],
-      "note": "ACP_SC_MODE (\"mode\", a SET name, base_command_interface.hpp:580) and ACP_SC_HOME_PLANET (\"home_planet\", likewise :550) are used by commandBody as an argument KEY and an argument VALUE respectively (:3951, :3950) — the set-name family leaking into the argument vocabulary, the same cross-family reuse unit 1 recorded for ACP_CN_CLEAR."
+      "note": "ACP_SC_MODE (\"mode\", a SET name, base_command_interface.hpp:580) and ACP_SC_HOME_PLANET (\"home_planet\", likewise :550) are used by commandBody as an argument KEY and an argument VALUE respectively (:3951, :3950) -- the set-name family leaking into the argument vocabulary, the same cross-family reuse unit 1 recorded for ACP_CN_CLEAR."
     }
   }
 }

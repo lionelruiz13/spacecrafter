@@ -37,7 +37,7 @@ Mat4d AnchorPointBody::getRotLocalToEquatorial(double jd, double lat, double lon
 	if ( lat < -89.5 ) lat = -89.5;
 
 	// if(alt > body->getRadius() * rotationMultiplierCondition * AU *1000.0 || overrideRotationCondition) {
-	// 	//~ cout << "Décrochage : Altitude : " << alt << " limite pour la rotation " << body->getRadius() * rotationMultiplierCondition * AU *1000.0 << endl;
+	// 	//~ cout << "Decrochage : Altitude : " << alt << " limite pour la rotation " << body->getRadius() * rotationMultiplierCondition * AU *1000.0 << endl;
 	// 	//~ if(alt > body->getRadius() * rotationMultiplierCondition * 149597870000 || overrideRotationCondition){
 	// 	//~ if(alt > body->getRadius() * 5 * AU || overrideRotationCondition){
 	// 	//if we are further than rotationMultiplierCondition times the body's radius or the user chose to not follow the rotation

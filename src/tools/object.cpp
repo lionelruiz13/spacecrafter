@@ -106,7 +106,7 @@ Object::Object(const Object &o)
 	rep->retain();
 }
 
-// RETAIN THE NEW, THEN RELEASE THE OLD (§5.34, INTENT §11.140). Both
+// RETAIN THE NEW, THEN RELEASE THE OLD (S5.34, INTENT S11.140). Both
 // assignments used to overwrite `rep` after retaining the new one and never
 // release the old, so every reassignment of an Object leaked one reference to
 // a refcounted rep: a StarWrapperBase whose count never reached zero on the old

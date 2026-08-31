@@ -68,7 +68,7 @@ public:
 
     void takeVideoShot();
 
-    //! prend une capture d'écran
+    //! prend une capture d'ecran
     //! due to its nature, this function can be blocking
     void takeScreenShot(const std::string& _fileName="");
 

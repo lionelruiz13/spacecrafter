@@ -27,7 +27,7 @@ sudo apt install -y gettext
 sudo apt install -y make
 sudo apt install -y g++
 sudo apt install -y cmake
-#player vidéo
+#player video
 sudo apt install -y libavcodec-dev
 sudo apt install -y libavformat-dev
 sudo apt install -y libavutil-dev

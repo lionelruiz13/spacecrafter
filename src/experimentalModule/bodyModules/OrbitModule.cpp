@@ -21,15 +21,15 @@ uint32_t OrbitModule::flagGeneration = 0; // bumped by every global toggle
 int OrbitModule::activeCount = 0;         // modules with a live fader (phase gate)
 Vec3f OrbitModule::defaultColor{0.f, 0.f, 0.f}; // set by the seam (config planet_orbits_color)
 
-// ORBIT line family - the second line-class family (AXIS was the first, §11.31).
+// ORBIT line family - the second line-class family (AXIS was the first, S11.31).
 // body_orbit3d.{vert,geom,frag} REUSED VERBATIM (parity by construction). Its
-// own push-constant contract (INTENT §10.1 "orbit/trail/axis/grid as separate
+// own push-constant contract (INTENT S10.1 "orbit/trail/axis/grid as separate
 // families where push-constant contracts differ"): a FRAGMENT color at 0 and
 // the VERTEX|GEOMETRY {mat, clipping_fov} at 16 (old layoutOrbit3d,
 // orbit_plot.cpp:81-85). LINE_STRIP fed to the geometry shader, which
 // subdivides each segment; BLEND_SRC_ALPHA carries the fader alpha (the
 // EntityCore Pipeline default the old code relied on - registry default is
-// BLEND_NONE). Spec-const 8 registry-injected (§11.33).
+// BLEND_NONE). Spec-const 8 registry-injected (S11.33).
 namespace {
 struct OrbitFamilyData {
     std::unique_ptr<VertexArray> vertexModel; // 1 binding, vec3 pos (m_Orbit parity)

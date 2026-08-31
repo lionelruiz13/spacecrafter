@@ -215,7 +215,7 @@ void OjmModule::drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4
 
 void OjmModule::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Row-8 TRACE consumer (INTENT §11.40): the OJM model's own silhouette
+    // Row-8 TRACE consumer (INTENT S11.40): the OJM model's own silhouette
     // into the orbit-union depth range so an artificial body's orbit line is
     // cut where the body hides it. Old Artificial::drawOrbit(cmdBodyDepth,...):
     // push depthTraceInfo(mat.convert, clippingFov, radius, oblateness), then

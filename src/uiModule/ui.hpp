@@ -72,7 +72,7 @@ class InitParser;
 /**
  *  Changing the behavior of the keys
  * 	CTRL and SHIFT represent the keys of the same name
- *  SUPER represents the ² key (to the left of &1)
+ *  SUPER represents the ^2 key (to the left of &1)
  *  KWIN represents the Windows key (between CTRL and ALT)
  */
 enum MODIFIER {
@@ -271,7 +271,7 @@ private:
 	std::pair<float, float> nposMouse; // Mouse position (normalized viewport coordinates)
 	bool FlagMouseUsableInScript;
 	double MouseTimeLeft;  // for cursor timeout (seconds)
-	int MouseZoom;					//! représente la valeur du zoom
+	int MouseZoom;					//! represente la valeur du zoom
 
 	////////////////////////////////////////////////////////////////////////////
 	// Text UI components

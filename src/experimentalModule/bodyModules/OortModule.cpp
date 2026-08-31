@@ -25,7 +25,7 @@ OortModule::OortModule(unsigned int nbr, const Vec3f &color)
     vertexModel->createBindingEntry(3 * sizeof(float));
     vertexModel->addInput(VK_FORMAT_R32G32B32_SFLOAT);
 
-    // Point cloud, materialized from the SHARED spatial law (I2, B5 §6.9):
+    // Point cloud, materialized from the SHARED spatial law (I2, B5 S6.9):
     // oortSamplePoint() is the single authority both paths draw from. A dedicated
     // generator seeded from the frozen constant (oortRng, B5-oort-2 [vixy
     // 2026-07-24]) makes this cloud POINT-identical to the old path's - both seed

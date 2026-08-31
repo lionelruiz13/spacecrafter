@@ -459,7 +459,7 @@ void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
 }
 
 // ---------------------------------------------------------------------------
-// READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
+// READBACK ONLY (INTENT S5.63 / S11.130). See the header for what it is for.
 // Const, side-effect-free, called only from the dump channel.
 // ---------------------------------------------------------------------------
 
