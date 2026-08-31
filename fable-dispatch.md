@@ -2114,7 +2114,17 @@ per §5.79.
 transliteration proof + zero-count terminal census + both builds green +
 scedit gates green + smoke launch; §11.189 + stub + README; baselines
 re-derived as last act; trees clean; WIP cleared.
-**WIP:** —
+**WIP:** 2026-08-31 CP1 — census instrument `harness/f70_ascii.py` +
+`f70_partition.tsv` (boundary) + `f70_map.tsv` (82 rows) + `f70_translit.py`
++ `f70_dispositions.py` committed BEFORE any conversion, with the pre-state
+artifacts (`artifacts/f70/`). Census re-derived at `630b06fd`: 1498 tracked
+regular files, 561 non-ASCII (339 text / 222 binary); partition covers the
+tree with 0 UNCLASSIFIED, 284 CONVERT / 277 EXCLUDE; gate exits 1 pre-sweep.
+Delta vs round-open `e2c8477b` = 0 files added/removed. The prompt's "199"
+reconstructed as the ENGINE-CORE subset (text non-ASCII outside util/ doc/
+data/ include/ iniparser/ www/ sts-extension/) — reported, not an abort
+(11.179(a): the census IS this task's output). Next: apply the sweep,
+`f70_translit.py verify --from 630b06fd`, then the gates.
 
 ### F71 — EXTENSION: the missing documentation, extracted — scedit items 11/12 from the current superscript.sts, code-dug where silent (§11.186(e); session-18 queue position 1) [M]
 

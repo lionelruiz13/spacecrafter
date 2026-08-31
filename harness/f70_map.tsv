@@ -1,0 +1,120 @@
+# f70_map.tsv - the transliteration map D14's sweep is derived from.
+#
+# ONE authority (I2): f70_translit.py reads this file both to CONVERT and to
+# VERIFY, so the sweep cannot drift from the map that documents it.
+#
+# Format:   key <TAB> replacement <TAB> note
+#   key          one or more codepoints, "U+XXXX" separated by spaces.  A
+#                multi-codepoint key is matched FIRST (longest key wins), which
+#                is how a damaged sequence is repaired as a unit instead of
+#                character by character.
+#   replacement  literal ASCII.  <SP> = one space, <NONE> = delete.
+#   note         why this replacement and not another.  A row without a note is
+#                a guess, and a guess is not auditable.
+#
+# WHERE THE CHOICES COME FROM.  glibc's `iconv -t ASCII//TRANSLIT` is used as the
+# baseline wherever it HAS an answer, so the row is grounded in a standard rather
+# than invented [measured 2026-08-31: it yields "..." "x" "+-" "(C)" "->" "e"
+# ">>" "|" "<=" "--" and "." , and plain "?" for the section sign, the degree
+# sign and every Greek letter].  Two rows deviate from it DELIBERATELY, each with
+# its argument in the note; every row it has no answer for is a choice, said out
+# loud here.
+#
+# WHAT THIS MAP IS NOT APPLIED TO.  Inside a C-family STRING literal the sweep
+# does not transliterate at all - it re-spells the same bytes as \xNN escapes, so
+# the program's output does not move by one byte.  See f70_translit.py's header
+# for that rule and its reason; the map governs comments and prose only.
+
+# --- damaged sequences, repaired as a unit (these must match before singles) ---
+U+0043 U+0068 U+FFFD U+0072 U+0065 U+0061 U+0075	Chereau	an accent already destroyed before this sweep (the byte is U+FFFD, not an accent): the name is Fabien Chereau, spelt with its accent intact at planetsephems/pluto.c:3 in the same tree - repairing to the accent-removed form beats propagating "Ch?reau"
+U+004A U+FFFD U+0072 U+FFFD U+006D U+0065	Jerome	same class: the author is Jerome Lartillot, spelt in full at util/Atmosphere1/CMakeLists.txt:12 - two destroyed accents, repaired to their accent-removed form rather than to two question marks
+U+00C3 U+0192 U+00C2 U+201A U+00C3 U+201A U+00C2 U+00B0	deg	a degree sign UTF-8-encoded three times over (utility.cpp:249); the same comment says "degree" in words two lines down and the function is printAngleDMS, so the intent is not in doubt
+U+00C2 U+00B0	deg	a degree sign UTF-8-encoded twice (utility.cpp:252, :259) - same repair, one encoding layer shallower
+U+0078 U+0302	x_hat	"x" plus a COMBINING CIRCUMFLEX is the unit-vector x-hat of the texture-frame derivation (ModularSystem.cpp:987-1004); "x^" would read as an exponent
+U+207B U+00B9	^-1	superscript minus followed by superscript one is an inverse, not two separate marks (Camera.hpp:469)
+
+# --- letters: the mandate's own clause, "accents are to be removed" ---
+U+00E0	a	accent removed (glibc agrees)
+U+00E2	a	accent removed (glibc agrees)
+U+00E7	c	accent removed (glibc agrees)
+U+00E8	e	accent removed (glibc agrees)
+U+00E9	e	accent removed (glibc agrees)
+U+00EA	e	accent removed (glibc agrees)
+U+00EE	i	accent removed (glibc agrees)
+U+00EF	i	accent removed (glibc agrees)
+U+00F4	o	accent removed (glibc agrees)
+U+00F6	o	accent removed (glibc agrees)
+U+00F9	u	accent removed (glibc agrees)
+U+00FB	u	accent removed (glibc agrees)
+U+00C0	A	accent removed (glibc agrees)
+U+00C2	A	accent removed (glibc agrees)
+U+00C8	E	accent removed (glibc agrees)
+U+00C9	E	accent removed (glibc agrees)
+U+00CA	E	accent removed (glibc agrees)
+U+00C3	A	accent removed; present only inside the repaired mojibake above, kept so no residue can survive
+U+0153	oe	the oe ligature spelt out, as French orthography does when it cannot be typed
+U+0192	f	accent/hook removed; present only inside the repaired mojibake above
+U+0108	C_hat	a unit vector C-hat in the observer-displacement comment (Camera.cpp:1127), spelt like x_hat above
+U+1E86	W_dot	W with a dot above is a rotation RATE (ssystem_factory.cpp:1262, ModularBody.cpp:1114); plain "W" would delete the derivative
+
+# --- punctuation and typography ---
+U+2014	--	em dash (glibc's own answer; two hyphens keep it distinct from a real hyphen)
+U+2013	-	en dash (a plain hyphen; glibc gives the same)
+U+2026	...	horizontal ellipsis (glibc agrees; it is a compatibility decomposition of three dots)
+U+2019	'	right single quotation mark used as a French apostrophe (glibc agrees)
+U+201A	,	single low-9 quotation mark; present only inside the repaired mojibake above
+U+00BB	>>	right double angle quote (glibc agrees)
+U+00A0	<SP>	NO-BREAK SPACE: an ordinary space is what every reader already believes it is
+U+00A8	"	diaeresis standing alone
+U+00B4	'	acute accent standing alone
+U+00A9	(C)	copyright sign (glibc agrees)
+U+00AA	a	feminine ordinal indicator
+U+00BA	o	masculine ordinal indicator
+U+FFFD	?	REPLACEMENT CHARACTER - an accent already lost; "?" is the honest residue, and the two names above are repaired by the cited rows so this row should never fire
+
+# --- symbols the standard has no answer for: choices, stated ---
+U+00A7	S	SECTION SIGN.  glibc gives "?".  "S11.169" stays readable as a section reference and costs one character; "sec." would cost four on 1134 occurrences
+U+00B0	deg	DEGREE SIGN.  glibc gives "?".  "deg" is what the unit is called; note that every degree sign that is PRINTED lives in a string literal and is escaped, not transliterated, so no on-screen angle changes
+U+00B7	*	MIDDLE DOT.  glibc gives "." - DELIBERATE DEVIATION: every one of the 96 occurrences in the convert set is a multiplication or composition dot in a mathematical comment ("R'*(offset-free eye pos)", "Z(g1)*X(g2)*Z(g3)"), and "." would read as C++ member access at exactly those sites
+U+00B1	+-	plus-minus (glibc agrees)
+U+00B2	^2	superscript two as an exponent
+U+00B9	^1	superscript one as an exponent
+U+207B	^-	superscript minus as the start of a negative exponent (the common pair is repaired whole above)
+U+00D7	x	multiplication sign (glibc agrees)
+U+1D40	^T	MODIFIER LETTER CAPITAL T: matrix transpose, written the way plain-text linear algebra writes it
+U+0302	^	COMBINING CIRCUMFLEX standing alone; the only real use, x-hat, is repaired whole above
+U+2502	|	BOX DRAWINGS LIGHT VERTICAL (glibc agrees); it appears only in PROSE DESCRIBING a drawn row, never in what is drawn
+
+# --- mathematics ---
+U+2212	-	MINUS SIGN -> the ASCII hyphen-minus
+U+2192	->	rightwards arrow (glibc agrees)
+U+2190	<-	leftwards arrow
+U+2194	<->	left-right arrow
+U+21D2	=>	rightwards double arrow: implication
+U+2248	~=	ALMOST EQUAL TO: "approximately equal"
+U+221D	~	PROPORTIONAL TO: "~" is the plain-text idiom for proportionality, which is why "approximately" takes "~=" above
+U+2264	<=	less-than-or-equal (glibc agrees)
+U+2265	>=	greater-than-or-equal
+U+2260	!=	not equal
+U+2261	==	IDENTICAL TO: an identity, written as equality
+U+2227	&&	LOGICAL AND, in a C++ comment about a boolean conjunction (OrbitModule.hpp:128)
+U+2283	>	SUPERSET OF, in "universe > milkyway > systems" (ssystem_factory.cpp:81) where it means containment
+U+2229	^	INTERSECTION, in "ray^sphere" (Camera.cpp:1120) - the plain-text operator for set intersection
+U+2213	-/+	minus-or-plus
+U+221A	sqrt	square root, named rather than drawn
+
+# --- Greek: named, because glibc gives "?" for all of them ---
+U+03B1	alpha	Greek letter named in ASCII
+U+03B2	beta	Greek letter named in ASCII
+U+03B3	gamma	Greek letter named in ASCII
+U+03B4	delta	Greek letter named in ASCII
+U+03B5	epsilon	Greek letter named in ASCII
+U+03B8	theta	Greek letter named in ASCII
+U+03BB	lambda	Greek letter named in ASCII
+U+03BC	mu	Greek letter named in ASCII
+U+03C0	pi	Greek letter named in ASCII
+U+03C1	rho	Greek letter named in ASCII
+U+03C3	sigma	Greek letter named in ASCII
+U+03C6	phi	Greek letter named in ASCII
+U+03C9	omega	Greek letter named in ASCII
+U+0394	Delta	Greek capital named in ASCII

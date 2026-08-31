@@ -1,0 +1,89 @@
+# f70_partition.tsv - D14's boundary, in the one form that can be vetoed.
+#
+# D14 [vixy 2026-08-31]: "Every source file must be in ASCII, accents are to be
+# removed for this purpose."  Its boundary clause is [derived, veto-open]:
+# "source file" = files whose bytes are read by humans and compilers, NOT files
+# whose non-ASCII bytes are their FUNCTION.  This table IS that clause's
+# challengeable form: every EXCLUDE row carries a one-line reason, and the rule
+# applied throughout is "in doubt => EXCLUDE + flag, never silent conversion".
+#
+# Format:  decision <TAB> pathspec <TAB> reason
+#   decision  CONVERT | EXCLUDE
+#   pathspec  an exact tracked path, or a prefix ending in '/'
+#   matching  LONGEST pathspec wins, so an EXCLUDE island inside a CONVERT
+#             subtree is one reviewable row rather than a hidden special case.
+#
+# CONVERT means: the transliteration map is applied AND f70_ascii.py's gate
+# asserts ZERO non-ASCII bytes afterwards.  EXCLUDE means: not one byte touched.
+#
+# The table covers the WHOLE tree, not only today's non-ASCII files: the gate
+# fails on any non-ASCII file matching no row, so a future file cannot slip in
+# unclassified.  That is why CONVERT rows name whole subtrees.
+
+# ---------------------------------------------------------------- CONVERT ----
+# The engine and everything first-party that compiles, builds or is read as code.
+CONVERT	src/	engine source - the core of D14; comments and literals are read by humans and compilers
+CONVERT	shaders/src/	GLSL source compiled into the engine
+CONVERT	planetsephems/	ephemeris source compiled into the engine (vendored lineage, but locally modified and built as ours)
+CONVERT	cmake/	build-system source
+CONVERT	CMakeLists.txt	build-system source (top level)
+CONVERT	install_dependancies_ubuntu.sh	build/setup script
+CONVERT	install_dependancies_mageia.sh	build/setup script
+CONVERT	install_src.sh	build/setup script
+CONVERT	localinstall_src.sh	build/setup script
+CONVERT	install_sts-extension.sh	build/setup script
+CONVERT	debug.sh	developer script
+CONVERT	launch_debug.sh	developer script
+CONVERT	AUTHORS	project text read as source-adjacent prose
+CONVERT	README	project text
+CONVERT	INSTALL	project text
+CONVERT	TRADEMARKS	project text
+CONVERT	COPYING	project text
+CONVERT	LICENSE	project text
+CONVERT	vcpkg.json	build manifest
+CONVERT	.gitignore	repo control file
+CONVERT	.gitmodules	repo control file
+CONVERT	util/	first-party developer tools built from this tree (C/C++/CMake/scripts)
+CONVERT	util/scedit/src/	scedit source - first-party, ours to keep ASCII
+CONVERT	util/scedit/tests/	scedit test sources and fixtures we author (islands excluded below)
+CONVERT	util/scedit/grammar/args/	grammar DATA whose prose scedit DISPLAYS - it is authored documentation, not a pinned byte record
+CONVERT	util/scedit/grammar/sc-grammar.json	grammar DATA whose prose scedit DISPLAYS - authored documentation
+CONVERT	util/scedit/CMakeLists.txt	build-system source
+CONVERT	util/scedit/README.md	first-party prose in the code repo
+CONVERT	sts-extension/src/	first-party VS Code extension source
+CONVERT	www/	first-party web page source (islands excluded below)
+
+# ---------------------------------------------------------------- EXCLUDE ----
+# (1) Non-ASCII bytes ARE the artifact: compiled output, images, documents.
+EXCLUDE	shaders/compiled/	compiled SPIR-V binaries - build output, not source
+EXCLUDE	doc/spacecrafter-commandes_clavier.pdf	binary document asset
+EXCLUDE	doc/spacecrafter-keyboard_commands.pdf	binary document asset
+EXCLUDE	www/a1.png	binary image asset
+EXCLUDE	www/a2.png	binary image asset
+EXCLUDE	util/Atmosphere1/data/	binary model/texture assets consumed by the tool
+EXCLUDE	util/server_standalone/bi_communication_spacecrafter.odt	binary OpenDocument (a zip container) - a document asset, not source
+EXCLUDE	sts-extension/dist/	packaged .vsix - build output
+EXCLUDE	util/scedit/.gitignore	no bytes at issue; kept explicit so the subtree is fully covered
+
+# (2) Vendored third-party: converting it forks us from upstream, and in FTXUI's
+#     case the characters ARE the rendering payload.
+EXCLUDE	util/scedit/third_party/	vendored FTXUI - its box-drawing/block/braille tables are the glyphs it DRAWS, and edits fork us from upstream
+EXCLUDE	include/	vendored FFmpeg + SDL2 headers - upstream-owned, updated by replacement
+EXCLUDE	lib/	vendored FFmpeg import definitions - upstream-owned
+EXCLUDE	iniparser/	vendored third-party library - upstream-owned
+EXCLUDE	util/Atmosphere1/src/tiny_obj_loader.hpp	vendored tinyobjloader - upstream-owned, updated by replacement
+
+# (3) The tester's / the field's artifacts: not source, and not ours to rewrite.
+EXCLUDE	doc/	documentation, tester-owned; doc/superscript.sts is the script contract itself and is named untouchable by the task
+EXCLUDE	data/	shipped field data - D9 freezes the installed field, and city/star name spellings are the data's content
+
+# (4) Records whose exact bytes are the point: a fixture that PINS another
+#     artifact's output cannot be converted without destroying what it pins.
+EXCLUDE	util/scedit/grammar/witness/	witness fixtures pinning doc/superscript.sts bytes - converting them breaks the pin against an unchanged doc (the exclusion candidate named at D14's record, 11.186(d))
+EXCLUDE	util/scedit/tests/ui-selftest-expected.txt	a RECORD of rendered terminal frames (ui_gate.cmake: "never regenerating it blind"); 7193 of its 7330 non-ASCII characters are FTXUI's box drawing, which stays - converting it would break the gate against an unchanged renderer
+EXCLUDE	util/scedit/tests/lint_cases.sts	the lint corpus: its three 0xA0 bytes ARE the test subject (the look-alike-space finding) - converting them deletes the cases
+
+# (5) Inputs and outputs of the doc-generation tools: data, not code.
+EXCLUDE	util/new_parser_scripts/input_fr.txt	French documentation INPUT data for the html generator
+EXCLUDE	util/new_parser_scripts/resultat.html	generated OUTPUT of that tool, checked in as a sample
+EXCLUDE	util/Atmosphere1/config.txt	tool configuration data
