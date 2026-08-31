@@ -190,10 +190,43 @@ trade; WIP≈1 ⇒ minimal reaction latency (Little's law) and defect cost
 capped at ~zero inventory; integration debt deferred-superlinear vs
 local resolution immediate-linear. Trade DISSOLVES at the D10 horizon
 (robustness = the compounding term of integrated throughput), with the
-stated BOUNDARY: holds only for root-level local resolutions — the two
-recorded counterexamples are proxy-level ones that returned with
+stated BOUNDARY: ~~holds only for root-level local resolutions — the
+two recorded counterexamples are proxy-level ones that returned with
 interest (the 2020 log decision without a cost model → §5.115; the
-serial script model never refined → [parallel-script]). Corollary: the
+serial script model never refined → [parallel-script])~~ **SUPERSEDED
+same conversation [vixy 2026-08-31, sixth message] — the owner
+corrects the shape: both specimens were ROOT-LEVEL, EARLY resolutions
+BLOCKED AT A RESPECTED GATE, not shallow ones.** New facts, verbatim
+where testimony: *"the main tester/user is the gate for work in
+spacecrafter"* (governance statement — tester intent gates even the
+owner's root-level fixes; sharpens §11.177(f)'s two-axis routing with
+its historical dimension); the log hole was PREDICTED and WARNED
+(*"could take too much room"*), disregarded because the observable was
+absent; trigger = the infinite-loop feature (~1 year later), root = a
+choice predating spacecrafter by decades — trigger/root correctly
+separated by the owner at the time; countermeasure = **resolve and
+hold armed**: EntityCore's crash-only-retention log system built in
+OWNED territory, routed in advance for fast, non-conflicting
+deployment, deployed when BOTH predicted consequences materialized
+(valuable log erased; disk overloaded) — the tester's own >1 GB
+disk-trace being the gate-moving event; the script model: 5+ years of
+reject→refine→repropose (industry-standard-informed, aiming to close
+silently-dropped resources, hook limitations, script-imposed
+structural gates). **Boundary RELOCATED** [derived, veto]: the style's
+leak is not resolution depth but the GATE's evidence threshold (a
+correct prediction without an observable cannot move it — C3's
+feedback-channel precondition at the governance layer); the owner's
+standing fix is FORCED MATERIALIZATION of the evidence (*"I built
+around this capability and not only the root, so that I could show
+value, because I want it to land"*) — which grounds §5 below: the R25
+framing rule is the owner's own long-practiced gate-crossing method,
+now stated. Residual cost named: armed-solution inventory (converged,
+so it does not rot like unvalidated stock, but "not in conflict with
+spacecrafter" is a MAINTAINED property). Owner self-assessment line
+for §11.173(e): *"I think I have learned to see where the structure
+can break, so that I can prevent the materialisation of problems, not
+merely correct them as they get diagnosed"* — corroborated by the
+prevention shape of D9/D12/D13. Corollary UNCHANGED: the
 dispatch harness is the owner's style transposed one level up (the
 ledger/report contracts are the re-coupling machinery that made
 design-fraction delegation possible at all).
