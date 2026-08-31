@@ -86,8 +86,34 @@
  * records a run that happened); scedit's follow in the checker's own order
  * (cause before consequence, sc_check.hpp § ORDER).
  *
- * OWNERSHIP: an EditCore owns its Document, Grammar and DocIndex. References
- * and pointers it returns die with it or with the next mutation.
+ * THE ENGINE WRITES BACK, AND NOTHING MAY BE LOST TO IT
+ * =====================================================
+ * spacecrafter rewrites the script it just played: at the natural end of a run
+ * it puts a `#!` tail on every faulty line, and removes the tails of lines that
+ * are now clean (src/scriptModule/script_annotator.hpp). So the file under an
+ * open buffer changes while the buffer is open, written by somebody else, and
+ * two different things can be lost — the author's edits, or the engine's
+ * findings.
+ *
+ * The rule here is that NEITHER is lost without the author choosing it:
+ *   - `diskState()` compares the bytes on disk with `diskImage()`, the bytes
+ *     this buffer was read from or last written as. Byte comparison, not a
+ *     digest: the file is a script, the cost is one read, and there is then no
+ *     collision question to reason about at all.
+ *   - `save()` REFUSES when the disk has changed, and its message names the two
+ *     ways out rather than picking one. It refuses for a clean buffer too: a
+ *     clean buffer holds the bytes from BEFORE the run, so writing it back is
+ *     exactly how the engine's tails would disappear.
+ *   - `reloadFromDisk()` and `saveOverwriting()` are those two ways out, each
+ *     one explicit call. The editor binds a key to each and says which loses
+ *     what.
+ * WHEN the check runs is the caller's business (the editor runs it on a bounded
+ * poll after a play, and always before a save); this class has no clock.
+ *
+ * OWNERSHIP: an EditCore owns its Document, Grammar and DocIndex. It owns NO
+ * connection: the live channel is `sc_tcpclient.hpp`, held by the editor layer,
+ * and nothing here depends on a socket's lifetime (I5). References and pointers
+ * this class returns die with it or with the next mutation.
  */
 
 #ifndef SCEDIT_SC_EDITCORE_HPP
@@ -213,13 +239,32 @@ struct Cursor {
 	std::size_t col = 0;   //!< BYTE offset into the line, never a character count
 };
 
+//! What the file on disk is, compared with the bytes this buffer came from.
+//! There is no "newer"/"older" here on purpose: a timestamp answers a different
+//! question and can move without the content moving.
+enum class DiskState {
+	NoFile,    //!< this buffer has no path (a new buffer): nothing to compare
+	Same,      //!< byte-identical to what we read (or last wrote)
+	Changed,   //!< somebody else wrote it — the engine's `#!` pass, or another editor
+	Gone       //!< it can no longer be read (deleted, renamed, permissions)
+};
+
 class EditCore {
 public:
 	//! Load the contract, then the file. `filePath` may be empty (new buffer).
 	bool open(const std::string &grammarPath, const std::string &filePath, std::string &err);
 	//! Load the contract and take the buffer from memory (tests, --ui-selftest).
+	//! `label` is a NAME, not a path: findings are reported under it, and
+	//! nothing on disk is read, written or compared. `hasFile()` says false for
+	//! such a buffer, and `save()` refuses it — the two were conflated until a
+	//! write-back check asked a labelled buffer what was on disk and was told
+	//! "gone", which is an answer about a file that never existed.
 	bool openBytes(const std::string &grammarPath, const std::string &label,
 	               const std::string &bytes, std::string &err);
+
+	//! Is there a FILE under this buffer? False for `openBytes`, and for `open`
+	//! with an empty path (a new buffer).
+	bool hasFile() const { return has_file_; }
 
 	const Document &document() const { return doc_; }
 	const Grammar &grammar() const { return grammar_; }
@@ -249,8 +294,33 @@ public:
 	bool acceptCompletion();
 	void cycleCompletion(int delta);
 
+	//! Save — REFUSING when the file changed on disk since it was read (see the
+	//! header note). On refusal `err` is a sentence naming what changed, why it
+	//! matters, and the two choices; nothing is written.
 	bool save(std::string &err);
+	//! "My edits win": save over whatever is on disk now. The one call that can
+	//! destroy an engine tail, and it exists so that destroying one is an act.
+	bool saveOverwriting(std::string &err);
 	bool saveAs(const std::string &path, std::string &err);
+
+	// --- the file underneath (see the header note) --------------------------
+	//! Compare the file with the bytes this buffer was read from. One read per
+	//! call; the caller decides how often (this class has no clock).
+	DiskState diskState() const;
+	//! The bytes this buffer believes are on disk: what `open` read, or what the
+	//! last successful save wrote. Empty for a buffer with no file.
+	const std::string &diskImage() const { return disk_image_; }
+	//! Re-read the file, replacing the buffer. The caret keeps its line and
+	//! column where the new file still has them. Everything derived — findings,
+	//! the error history, the doc bar — is rebuilt, so a `#!` tail the engine
+	//! has just written appears in `errorHistory()` immediately.
+	//! Returns false with `err` when the file cannot be read; the buffer is then
+	//! left exactly as it was.
+	bool reloadFromDisk(std::string &err);
+	//! How many rows of the error history are the ENGINE's `#!` tails. The
+	//! editor reports the number after a reload ("spacecrafter left 5 findings"),
+	//! and a harness asserts it.
+	std::size_t engineTailCount() const;
 
 	// --- what the renderer draws -------------------------------------------
 	//! The cursor line, read the way the engine reads it.
@@ -291,6 +361,12 @@ private:
 	DocIndex docs_;
 	Document doc_;
 	std::string path_;
+	//! The bytes we believe the file holds — set at open, replaced at every
+	//! successful save and reload. This is the ONE thing "changed on disk" is
+	//! measured against; keeping it means a save cannot be fooled by an edit
+	//! that happens to restore the original length or timestamp.
+	std::string disk_image_;
+	bool has_file_ = false;
 	Cursor cur_;
 
 	Line line_;                        //!< tokenization of the cursor's line

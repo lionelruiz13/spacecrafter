@@ -1,5 +1,7 @@
 #include "sc_editcore.hpp"
 
+#include <fstream>
+#include <sstream>
 #include <algorithm>
 #include <set>
 
@@ -71,6 +73,11 @@ bool EditCore::open(const std::string &grammarPath, const std::string &filePath,
 	path_ = filePath;
 	if (!filePath.empty() && !doc_.loadFile(filePath, err))
 		return false;
+	// The bytes we now believe are on disk. Taken from the Document rather than
+	// re-read, so there is exactly one reading of the file per open and the
+	// image cannot disagree with the buffer by construction.
+	has_file_ = !filePath.empty();
+	disk_image_ = has_file_ ? doc_.bytes() : std::string();
 	cur_ = Cursor();
 	afterEdit();
 	return true;
@@ -85,6 +92,10 @@ bool EditCore::openBytes(const std::string &grammarPath, const std::string &labe
 		return false;
 	path_ = label;
 	doc_ = Document::fromBytes(bytes);
+	// A label is not a path: there is no file under this buffer, so there is
+	// nothing for `diskState()` to compare against and it says NoFile.
+	has_file_ = false;
+	disk_image_.clear();
 	cur_ = Cursor();
 	afterEdit();
 	return true;
@@ -198,13 +209,105 @@ void EditCore::cycleCompletion(int delta)
 	completion_.selected = (std::size_t)((s % (long)n + (long)n) % (long)n);
 }
 
-bool EditCore::save(std::string &err)
+//! Read a file as bytes. Returns false when it cannot be read at all, which is
+//! a different answer from "read something different".
+static bool readBytes(const std::string &path, std::string &out)
 {
-	if (path_.empty()) {
+	std::ifstream in(path, std::ios::binary);
+	if (!in)
+		return false;
+	std::ostringstream buf;
+	buf << in.rdbuf();
+	if (in.bad())
+		return false;
+	out = buf.str();
+	return true;
+}
+
+DiskState EditCore::diskState() const
+{
+	if (!has_file_)
+		return DiskState::NoFile;
+	std::string onDisk;
+	if (!readBytes(path_, onDisk))
+		return DiskState::Gone;
+	return onDisk == disk_image_ ? DiskState::Same : DiskState::Changed;
+}
+
+bool EditCore::reloadFromDisk(std::string &err)
+{
+	if (!has_file_) {
 		err = "no file name: this buffer was not opened from a file";
 		return false;
 	}
-	return doc_.saveFile(path_, err);
+	Document fresh;
+	if (!fresh.loadFile(path_, err))
+		return false;                      // the buffer is untouched
+	const Cursor keep = cur_;
+	doc_ = fresh;
+	disk_image_ = doc_.bytes();
+	cur_ = Cursor();
+	// Put the caret back where it was, as far as the new text allows: moveTo
+	// clamps, so a line the engine's pass did not add or remove keeps its
+	// caret, and a shorter file lands the caret on its last line.
+	moveTo(keep.line, keep.col);
+	afterEdit();
+	return true;
+}
+
+std::size_t EditCore::engineTailCount() const
+{
+	std::size_t n = 0;
+	for (const ErrorEntry &e : history_)
+		if (e.source == EntrySource::Engine)
+			++n;
+	return n;
+}
+
+bool EditCore::save(std::string &err)
+{
+	if (!has_file_) {
+		err = "no file name: this buffer was not opened from a file";
+		return false;
+	}
+	// ALWAYS, before every write. The engine rewrites the script it played at
+	// the end of the run, and a save that has not looked is a save that can
+	// silently delete what it found (sc_editcore.hpp § THE ENGINE WRITES BACK).
+	switch (diskState()) {
+	case DiskState::Changed:
+		err = "the file changed on disk since it was opened — this is what "
+		      "spacecrafter does at the end of a run: it writes its findings "
+		      "into the script as `#!` tails and clears the ones that are fixed. "
+		      "Saving now would write over them. Choose: reload the file (the "
+		      "edits in this buffer are lost) or save anyway (the engine's tails "
+		      "are lost).";
+		return false;
+	case DiskState::Gone:
+		err = "the file cannot be read any more (deleted, renamed, or its "
+		      "permissions changed), so scedit cannot tell what saving would "
+		      "overwrite. Save it under a name you choose instead.";
+		return false;
+	case DiskState::NoFile:
+	case DiskState::Same:
+		break;
+	}
+	if (!doc_.saveFile(path_, err))
+		return false;
+	disk_image_ = doc_.bytes();
+	return true;
+}
+
+bool EditCore::saveOverwriting(std::string &err)
+{
+	if (!has_file_) {
+		err = "no file name: this buffer was not opened from a file";
+		return false;
+	}
+	if (!doc_.saveFile(path_, err))
+		return false;
+	disk_image_ = doc_.bytes();
+	refreshDiagnostics();
+	return true;
 }
 
 bool EditCore::saveAs(const std::string &path, std::string &err)
@@ -212,6 +315,8 @@ bool EditCore::saveAs(const std::string &path, std::string &err)
 	if (!doc_.saveFile(path, err))
 		return false;
 	path_ = path;
+	has_file_ = true;
+	disk_image_ = doc_.bytes();
 	refreshDiagnostics();
 	return true;
 }

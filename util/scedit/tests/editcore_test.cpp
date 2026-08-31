@@ -27,8 +27,12 @@
 #include "sc_editcore.hpp"
 
 #include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
+#include <unistd.h>
 
 using namespace scedit;
 
@@ -756,6 +760,172 @@ void testHistory()
 
 } // namespace
 
+// ---------------------------------------------------------------------------
+// G. The engine writes the file back under an open buffer.
+//
+// spacecrafter rewrites the script it played, at the natural end of the run
+// (src/scriptModule/script_annotator.hpp). These checks are the invariant
+// sc_editcore.hpp states: neither the author's edits nor the engine's `#!`
+// tails are lost without somebody choosing which. They use a REAL file,
+// because the whole question is what is on disk.
+// ---------------------------------------------------------------------------
+
+std::string slurp(const std::string &path)
+{
+	std::ifstream in(path, std::ios::binary);
+	std::ostringstream b;
+	b << in.rdbuf();
+	return b.str();
+}
+
+void spit(const std::string &path, const std::string &bytes)
+{
+	std::ofstream o(path, std::ios::binary | std::ios::trunc);
+	o.write(bytes.data(), (std::streamsize)bytes.size());
+}
+
+void testWriteBack()
+{
+	char dirTemplate[] = "/tmp/scedit-writeback-XXXXXX";
+	const char *dir = ::mkdtemp(dirTemplate);
+	if (dir == nullptr) {
+		std::printf("  FATAL cannot make a temporary directory\n");
+		++failures;
+		return;
+	}
+	const std::string path = std::string(dir) + "/show.sts";
+
+	// What the author opened: a script with a fault the engine will complain
+	// about, and one more line so the caret has somewhere to be.
+	const std::string original =
+		"flag stars on\n"
+		"struct if end\n"
+		"flag planets on\n";
+	// What the engine leaves behind at the end of the run: the same bytes, with
+	// its verdict on the faulty line. Byte for byte the shape F63 measured.
+	const std::string annotated =
+		"flag stars on\n"
+		"struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here\n"
+		"flag planets on\n";
+
+	spit(path, original);
+
+	{
+		EditCore e;
+		std::string err;
+		ok(e.open(grammarPath, path, err), "G1 a file opens");
+		ok(e.diskState() == DiskState::Same, "G1 a freshly opened file is Same");
+		eq(e.diskImage(), original, "G1 the disk image is what was read");
+		eqn(e.engineTailCount(), 0, "G1 no engine tail yet");
+
+		// A buffer with no file at all has nothing to compare against, and says
+		// so rather than claiming Same.
+		EditCore mem = at("flag stars on", 0);
+		ok(mem.diskState() == DiskState::NoFile, "G1 a buffer with no file is NoFile");
+
+		// THE ENGINE WRITES. Nothing tells scedit; the file simply changes.
+		spit(path, annotated);
+		ok(e.diskState() == DiskState::Changed, "G2 the change on disk is seen");
+
+		// A CLEAN buffer: reload, and the engine's verdict is in the history
+		// immediately — this is what makes the pane light up after a run.
+		e.moveTo(2, 5);
+		ok(e.reloadFromDisk(err), "G2 a clean buffer reloads");
+		ok(e.diskState() == DiskState::Same, "G2 and is Same again afterwards");
+		eqn(e.engineTailCount(), 1, "G2 the engine's tail is one history row");
+		ok(e.errorHistory().size() >= 2,
+		   "G2 the tail and scedit's own finding are both listed");
+		ok(e.errorHistory()[0].source == EntrySource::Engine
+		   && e.errorHistory()[0].line == 2,
+		   "G2 the engine's row is first, on line 2");
+		eqn(e.cursor().line, 2, "G2 the caret keeps its line across a reload");
+		eqn(e.cursor().col, 5, "G2 and its column");
+		ok(!e.dirty(), "G2 a reloaded buffer is not dirty");
+	}
+
+	// A DIRTY buffer over a file the engine has rewritten: the save is REFUSED,
+	// nothing is written, and the message names both ways out.
+	spit(path, original);
+	{
+		EditCore e;
+		std::string err;
+		ok(e.open(grammarPath, path, err), "G3 open again");
+		e.moveTo(0, 13);
+		e.insertText("  # mine");          // an author edit, unsaved
+		ok(e.dirty(), "G3 the buffer is dirty");
+
+		spit(path, annotated);              // the engine writes underneath it
+		const std::string onDiskBefore = slurp(path);
+
+		ok(!e.save(err), "G3 saving over the engine's write is REFUSED");
+		ok(err.find("changed on disk") != std::string::npos, "G3 the message says what happened");
+		ok(err.find("#!") != std::string::npos, "G3 and why it happened");
+		ok(err.find("reload") != std::string::npos && err.find("save anyway") != std::string::npos,
+		   "G3 and names BOTH choices rather than taking one");
+		eq(slurp(path), onDiskBefore, "G3 and the file on disk is byte-identical: nothing was written");
+		ok(e.dirty(), "G3 the edit is still in the buffer, unsaved");
+
+		// Choice one, taken explicitly: the author's edits win.
+		ok(e.saveOverwriting(err), "G4 `save anyway` writes");
+		ok(slurp(path).find("# mine") != std::string::npos, "G4 the author's edit is on disk");
+		ok(slurp(path).find("#!") == std::string::npos,
+		   "G4 and the engine's tail is gone — because somebody chose that");
+		ok(e.diskState() == DiskState::Same, "G4 the image follows the write");
+		ok(!e.dirty(), "G4 and the buffer is clean");
+		ok(e.save(err), "G4 an ordinary save right after it is allowed");
+	}
+
+	// Choice two, taken explicitly: the engine's tails win and the edits go.
+	spit(path, original);
+	{
+		EditCore e;
+		std::string err;
+		ok(e.open(grammarPath, path, err), "G5 open again");
+		e.moveTo(0, 0);
+		e.insertText("XX");
+		spit(path, annotated);
+		ok(!e.save(err), "G5 refused, as before");
+		ok(e.reloadFromDisk(err), "G5 `reload` re-reads the file");
+		ok(!e.dirty() && e.document().bytes() == annotated,
+		   "G5 the buffer is now exactly what the engine left");
+		eqn(e.engineTailCount(), 1, "G5 with the tail listed");
+		ok(e.save(err), "G5 and saving is allowed again");
+	}
+
+	// A file that has gone: a different answer from "changed", and a different
+	// refusal — scedit cannot say what a save would overwrite.
+	{
+		EditCore e;
+		std::string err;
+		spit(path, original);
+		ok(e.open(grammarPath, path, err), "G6 open again");
+		::remove(path.c_str());
+		ok(e.diskState() == DiskState::Gone, "G6 a deleted file is Gone, not Changed");
+		ok(!e.save(err) && err.find("cannot be read") != std::string::npos,
+		   "G6 and the save is refused with its own reason");
+		ok(!e.reloadFromDisk(err), "G6 reloading a file that is gone fails");
+		ok(e.document().bytes() == original,
+		   "G6 and leaves the buffer exactly as it was — a failed reload loses nothing");
+	}
+
+	// The caret survives a file that got SHORTER under it (the engine's pass can
+	// remove a line's tail, and an author's other editor can remove lines).
+	{
+		EditCore e;
+		std::string err;
+		spit(path, original);
+		ok(e.open(grammarPath, path, err), "G7 open again");
+		e.moveTo(2, 8);
+		spit(path, "flag stars on\n");
+		ok(e.reloadFromDisk(err), "G7 reload a shorter file");
+		eqn(e.cursor().line, 0, "G7 the caret clamps to the last line that exists");
+		ok(e.cursor().col <= e.document().line(0).size(), "G7 and to a byte that exists");
+	}
+
+	::remove(path.c_str());
+	::rmdir(dir);
+}
+
 int main(int argc, char **argv)
 {
 	if (argc < 3) {
@@ -771,6 +941,7 @@ int main(int argc, char **argv)
 	testDocBar();
 	testLint();
 	testHistory();
+	testWriteBack();
 
 	std::printf("%s: %d checks, %d failures\n", failures ? "FAILED" : "ok", checks, failures);
 	return failures ? 1 : 0;
