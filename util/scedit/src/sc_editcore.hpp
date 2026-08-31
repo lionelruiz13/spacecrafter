@@ -61,6 +61,31 @@
  * `lookalikeSpaceColumns()` here, a second copy of half the rule; the Span
  * closed that gap — scedit/INTENT.md §5 item 10.)
  *
+ * THE ERROR HISTORY, AND WHAT "HISTORY" MEANS HERE
+ * ================================================
+ * `errorHistory()` is every place in THIS BUFFER something is wrong with the
+ * script, in line order: each `#!` tail the ENGINE wrote when it last ran the
+ * file, and each finding scedit makes now. `warpTo()` puts the caret on one.
+ *
+ * "History" is Vixy's word [2026-08-30, scedit/INTENT.md §5 item 15(a)]:
+ * *"otherwise listed in an error history with click-to-warp-cursor"*. READING,
+ * flagged as an interpretation (README § The error pane, veto open): the
+ * history is the CURRENT buffer's set, not a log of past editing sessions. The
+ * argument is that the engine's channel already IS the log — a `#!` tail stays
+ * in the file until the fault is fixed and the engine reaches a natural end
+ * (parse_model.comments.machine_tail), so the file itself carries what
+ * spacecrafter found the last time it ran, and a second store would be a copy
+ * of it that can only go stale (I2). Nothing is remembered across an open, and
+ * nothing survives its cause: fix the fault and the row goes.
+ *
+ * A line carrying BOTH a tail and a finding produces TWO entries, never one.
+ * They are two claims by two authors about one line — the engine says what
+ * happened when it RAN, scedit says what it reads NOW — and the case where
+ * they differ is exactly the C1 signal item 15 names. Merging them would hide
+ * it. The engine's row comes first on a line (there is at most one, and it
+ * records a run that happened); scedit's follow in the checker's own order
+ * (cause before consequence, sc_check.hpp § ORDER).
+ *
  * OWNERSHIP: an EditCore owns its Document, Grammar and DocIndex. References
  * and pointers it returns die with it or with the next mutation.
  */
@@ -158,6 +183,31 @@ struct MachineTail {
 	bool present() const { return begin != std::string::npos; }
 };
 
+//! Who says something is wrong with a line.
+enum class EntrySource {
+	Engine,   //!< spacecrafter wrote a `#!` tail there when it last ran the file
+	Scedit    //!< scedit's own finding, recomputed after every edit
+};
+
+//! One row of the error history (see the header note). Everything the pane and
+//! `--history` show, and everything `warpTo` needs.
+struct ErrorEntry {
+	EntrySource source = EntrySource::Scedit;
+	std::size_t line = 0;      //!< 1-based file line, `Diagnostic::line`'s numbering
+	//! The seed's severity for a scedit finding. EMPTY for an engine tail: the
+	//! engine states none, and giving it scedit's would be scedit's opinion
+	//! printed as the engine's.
+	std::string severity;
+	std::string id;            //!< the lint id; the literal `#!` for an engine tail
+	std::string message;       //!< the finding's message, or the engine's sentence(s)
+	//! ENGINE rows only: how the tail relates to scedit's findings on that line
+	//! (MachineTail::relation) — agree / finds-nothing-now / unknown class.
+	std::string relation;
+	//! Where `warpTo` lands: the finding's own span, or the tail's `#!`. An
+	//! empty span (a finding about the line as a whole) warps to byte 0.
+	Span span;
+};
+
 struct Cursor {
 	std::size_t line = 0;
 	std::size_t col = 0;   //!< BYTE offset into the line, never a character count
@@ -226,6 +276,13 @@ public:
 	//! Highest severity present on that line: "error" > "warning" > "info", "" when clean.
 	std::string severityForLine(std::size_t oneBasedLine) const;
 
+	//! Every engine tail and every finding in the buffer, in line order (see the
+	//! header note on what "history" means). Rebuilt with the findings after
+	//! every edit; the references die with the next mutation.
+	const std::vector<ErrorEntry> &errorHistory() const { return history_; }
+	//! Caret to the entry: its line, at the byte its span begins on.
+	void warpTo(const ErrorEntry &e);
+
 	//! Recompute the findings now (done automatically after every mutation).
 	void refreshDiagnostics();
 
@@ -240,9 +297,11 @@ private:
 	Completion completion_;
 	DocBar docbar_;
 	std::vector<Diagnostic> diags_;
+	std::vector<ErrorEntry> history_;
 
 	void afterMove();                  //!< retokenize + recompute completion/doc bar
 	void afterEdit();                  //!< afterMove + refreshDiagnostics
+	void rebuildHistory();             //!< after diags_: the two sources, merged in line order
 	void computeCompletion();
 	void computeDocBar();
 

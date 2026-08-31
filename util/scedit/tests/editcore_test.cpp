@@ -648,6 +648,112 @@ void testLint()
 	}
 }
 
+//! F. The error history: both sources, in line order, and the warp.
+//! (scedit/INTENT.md §5 item 15(a-ii); the "history" reading is stated in
+//! sc_editcore.hpp's header note and flagged in the README.)
+void testHistory()
+{
+	std::printf("F. the error history\n");
+	const std::string endTail = "#! this 'struct if end' closes nothing: no 'struct if' is open here";
+	const std::string ifTail = "#! this 'struct if' is never closed: no 'struct if end' follows";
+
+	// F1. Line order, and BOTH claims on one line kept as TWO entries: the
+	// engine's row first (what happened when it ran), then scedit's (what the
+	// bytes say now). Merging them would hide the case where they differ,
+	// which is the whole C1 signal.
+	{
+		EditCore u = at("zomo action now\n"                        // 1: scedit only
+		                "struct if end " + endTail + "\n"          // 2: both
+		                "flag stars on " + endTail + "\n",         // 3: engine only (stale)
+		                0);
+		const std::vector<ErrorEntry> &h = u.errorHistory();
+		eqn(h.size(), 4, "F1 four entries: one scedit, one pair, one engine");
+		eqn(h[0].line, 1, "F1a line 1 first");
+		ok(h[0].source == EntrySource::Scedit, "F1a ... scedit's");
+		eq(h[0].id, std::string("unknown-command"), "F1a ... unknown-command");
+		eq(h[0].severity, std::string("error"), "F1a ... with the seed's severity");
+		eqn(h[1].line, 2, "F1b line 2's ENGINE row comes before its scedit row");
+		ok(h[1].source == EntrySource::Engine, "F1b ... source ENGINE");
+		eq(h[1].id, std::string("#!"), "F1b ... id is the literal `#!`");
+		eq(h[1].severity, std::string(""), "F1b ... and it states no severity of its own");
+		eq(h[1].message, endTail.substr(3), "F1b ... its message is the engine's sentence");
+		ok(h[1].relation.find("agrees with scedit's end-without-if") != std::string::npos,
+		   "F1b ... carrying the relation to scedit's finding");
+		eqn(h[2].line, 2, "F1c then line 2's scedit row");
+		ok(h[2].source == EntrySource::Scedit, "F1c ... source SCEDIT");
+		eq(h[2].id, std::string("end-without-if"), "F1c ... end-without-if");
+		eqn(h[3].line, 3, "F1d and the stale tail on the clean line is still listed");
+		ok(h[3].source == EntrySource::Engine && h[3].relation.find("finds no end-without-if") != std::string::npos,
+		   "F1d ... with 'finds no ... here now' as its relation");
+	}
+
+	// F2. The warp lands on the stated byte: a finding's span begins, and the
+	// `#!` itself for an engine row.
+	{
+		EditCore u = at("flag stars on\n"
+		                "struct if end " + endTail + "\n", 0);
+		const std::vector<ErrorEntry> &h = u.errorHistory();
+		eqn(h.size(), 2, "F2 two entries on line 2");
+		u.warpTo(h[0]);
+		eqn(u.cursor().line, 1, "F2a the engine row warps to its line");
+		eqn(u.cursor().col, 14, "F2a ... at the `#!`");
+		u.warpTo(h[1]);
+		eqn(u.cursor().line, 1, "F2b the finding warps to its line");
+		eqn(u.cursor().col, 10, "F2b ... at the first byte of its span (the word 'end')");
+	}
+	// F2c. A finding whose span is empty (the line as a whole) warps to byte 0.
+	{
+		EditCore u = at("flag stars on\nzomo action now\n", 0);
+		ErrorEntry e = u.errorHistory().front();
+		e.span = Span{0, 0};
+		u.warpTo(e);
+		eqn(u.cursor().col, 0, "F2c an empty span warps to byte 0");
+	}
+
+	// F3. The history follows the edit: closing the block removes its rows.
+	{
+		EditCore u = at("struct if a equal b\nflag stars on\n", 0);
+		eqn(u.errorHistory().size(), 1, "F3 the unclosed opener is listed");
+		u.moveTo(1, 13);
+		u.insertNewline();
+		u.insertText("struct if end");
+		eqn(u.errorHistory().size(), 0, "F3 ... and closing it empties the history");
+	}
+
+	// F4. The EXECUTES-ONLY rule, on the shape that caught the harness out:
+	// F63's artifact F.sts line 1 is a column-0 comment holding a `#!`
+	// (`# F: a #! inside quotes is text`). The script layer drops such a line
+	// before executeCommand (script.cpp:114), so the annotator never holds a
+	// note for it and never writes or clears there — no engine entry.
+	// (parse_model.comments.machine_tail, the executes-only clause.)
+	{
+		EditCore u = at("# F: a #! inside quotes is text\n"
+		                "text name f63 string \"a #! b\" altitude 10\n"
+		                "flag stars on\n", 0);
+		ok(!u.machineTail(0).present(), "F4 a column-0 comment holding `#!` is not a tail");
+		ok(!u.machineTail(1).present(), "F4 ... nor is a `#!` inside a quoted value");
+		eqn(u.errorHistory().size(), 0, "F4 ... and F.sts's shape yields an EMPTY history");
+	}
+	// F4b. An INDENTED '#' reaches the parser but the comment rule drops the
+	// line whole, so it carries no command either: still no tail.
+	{
+		EditCore u = at("   # indented, a #! here is text too\n", 0);
+		ok(!u.machineTail(0).present() && u.errorHistory().empty(),
+		   "F4b an indented comment line holding `#!` is not a tail either");
+	}
+
+	// F5. A tail of a class scedit does not check is still listed — the pane
+	// is the engine's channel too, not only a view of scedit's own opinions.
+	{
+		EditCore u = at("flag stars on #! command 'flag' : unknown flag\n", 0);
+		const std::vector<ErrorEntry> &h = u.errorHistory();
+		eqn(h.size(), 1, "F5 an unknown-class tail is listed");
+		ok(h[0].source == EntrySource::Engine
+		   && h[0].relation.find("not a class scedit checks") != std::string::npos,
+		   "F5 ... and says so in its relation");
+	}
+}
+
 } // namespace
 
 int main(int argc, char **argv)
@@ -664,6 +770,7 @@ int main(int argc, char **argv)
 	testCompletion();
 	testDocBar();
 	testLint();
+	testHistory();
 
 	std::printf("%s: %d checks, %d failures\n", failures ? "FAILED" : "ok", checks, failures);
 	return failures ? 1 : 0;

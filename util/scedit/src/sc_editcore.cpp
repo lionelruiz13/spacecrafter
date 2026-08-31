@@ -238,6 +238,58 @@ void EditCore::afterEdit()
 void EditCore::refreshDiagnostics()
 {
 	diags_ = checkBuffer(grammar_, path_.empty() ? std::string("<buffer>") : path_, doc_.bytes());
+	rebuildHistory();
+}
+
+void EditCore::rebuildHistory()
+{
+	history_.clear();
+	// The engine's rows. The `find("#!")` is a pure PREFILTER, not a second
+	// reading of the rule: a line without those two bytes cannot carry a tail,
+	// and every line that has them goes through machineTail() — which is the
+	// one place the locating rule lives. It keeps the per-keystroke rebuild off
+	// the tokenizer for the lines (almost all of them) that cannot match.
+	for (std::size_t l = 0; l < doc_.lineCount(); ++l) {
+		if (doc_.line(l).find("#!") == std::string::npos)
+			continue;
+		const MachineTail mt = machineTail(l);
+		if (!mt.present())
+			continue;
+		ErrorEntry e;
+		e.source = EntrySource::Engine;
+		e.line = l + 1;
+		e.id = "#!";
+		e.message = mt.text;
+		e.relation = mt.relation;
+		e.span = Span{mt.begin, doc_.line(l).size()};
+		history_.push_back(e);
+	}
+	// scedit's own. Taken from the diagnostics themselves rather than by
+	// walking the lines, so a finding can never be dropped by a line-count
+	// disagreement between the checker and the buffer.
+	for (const Diagnostic &d : diags_) {
+		ErrorEntry e;
+		e.source = EntrySource::Scedit;
+		e.line = d.line;
+		e.severity = d.severity;
+		e.id = d.id;
+		e.message = d.message;
+		e.span = d.span;
+		history_.push_back(e);
+	}
+	// Line order; on one line the engine's row first, then the checker's own
+	// order (stable) — the reasons are in the header note.
+	std::stable_sort(history_.begin(), history_.end(),
+	                 [](const ErrorEntry &a, const ErrorEntry &b) {
+		if (a.line != b.line)
+			return a.line < b.line;
+		return a.source == EntrySource::Engine && b.source != EntrySource::Engine;
+	});
+}
+
+void EditCore::warpTo(const ErrorEntry &e)
+{
+	moveTo(e.line ? e.line - 1 : 0, e.span.empty() ? 0 : e.span.begin);
 }
 
 std::size_t EditCore::commentBegin(std::size_t line) const
