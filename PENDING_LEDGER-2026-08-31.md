@@ -173,6 +173,31 @@ zero-coupling boundary (disjoint write surfaces, e.g. this session
 beside F68/F69). Candidate home at merge: §11.173(e)'s owner self-model
 lines.
 
+**Refinement, same conversation** [vixy 2026-08-31, fifth message]:
+prior self-model was *reactive* — *"When I write code, I use it to test
+my ideas, so I can't delegate writing code without delegating designing
+it"* (⇒ the CAUSE behind the recorded pre-Fable LLM disinterest, a fact
+the ledger held without its cause); mechanism in his words: *"I avoid
+merging and the resolution part by making resolution local. I do less
+in the same time, but I correct more over feedback and end up reacting
+faster - because what slow down have not been built"*; and the trade
+re-evaluation: *"I thought I traded throughput for robustness. Maybe I
+didn't, if my style cover the losses with long-term gains."*
+Derived mechanism offered and accepted-pending-veto: feedback
+evaluation is the NON-PARALLELIZABLE stage (one head, one model) ⇒
+local-sequential is throughput-OPTIMAL given a serial validator, not a
+trade; WIP≈1 ⇒ minimal reaction latency (Little's law) and defect cost
+capped at ~zero inventory; integration debt deferred-superlinear vs
+local resolution immediate-linear. Trade DISSOLVES at the D10 horizon
+(robustness = the compounding term of integrated throughput), with the
+stated BOUNDARY: holds only for root-level local resolutions — the two
+recorded counterexamples are proxy-level ones that returned with
+interest (the 2020 log decision without a cost model → §5.115; the
+serial script model never refined → [parallel-script]). Corollary: the
+dispatch harness is the owner's style transposed one level up (the
+ledger/report contracts are the re-coupling machinery that made
+design-fraction delegation possible at all).
+
 ## 7. Provenance note
 
 The three script requests ([parallel-script]/[script-binding]/
