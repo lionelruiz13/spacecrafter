@@ -281,6 +281,13 @@ delivery mints one.
      (pristine pair as of compile date: `03fbee59` / `545a51ef`).
    - Loaded data `~/.spacecrafter/ssystem.ini` is ISO-8859 and untracked — the Bash
      `grep` wrapper silently excludes it; use `/usr/bin/grep` or Read.
+     **[CORRECTED 2026-08-31, F67 executor finding + supervisor measurement: the
+     wrapper is ugrep with `-I` — ANY file holding non-UTF-8 bytes is classed binary
+     and skipped silently, tracked or not; `src/interfaceModule/app_command_interface.cpp`
+     is the one such file among 500 tracked `src/` files, `doc/superscript.sts` another
+     (11 hits without `-I`, none with). `/usr/bin/grep` or Read on every ISO-8859 file.
+     CLAUDE.md (one file: the code-tree path is a link to `claude/CLAUDE.md`) carries
+     the corrected rule.]**
    - Cost claims use the **1 ms/frame** denominator (§2.0 D11). Acting defaults are
      LOGGED (§2.0 D12). Actionable diagnostics per §2(f).
    - A green build is not coverage — every task names its discriminating check; if a
@@ -1653,6 +1660,37 @@ terminal and a real engine at once; the write-back watch stops after 5 minutes. 
 ACTIVE at the first live launch → woken and disclosed (owner veto item);
 1 and 2 frame stalls per run. One dispatcher path gloss: `INTENT/5.47.md` does not
 exist — §5.47 is CLOSED, its record is `INTENT/11.135.md` + the live §5.72 row.
+*(ACCEPTED by supervisor [fable 2026-08-31]: journal `2026-08-31h` and
+`INTENT/11.185.md` read in full against the report; commits/authors/trailers
+checked (code `584edade → 8a5c7ce3 → 917b0e2b → 7b78229d → 4bf3f6cb → 5d3d577f →
+51cfc24d → e2c8477b`, harness `cccc803 → 00d6167 → 29f03c2 → 54f79d4 → 50c0c65 →
+87b092f`, both trees clean, no engine source touched — `cmake --build -n` empty);
+RE-RUN by me: 14/14 in `build-lovely` AND in fresh `build-f67`, 0 warnings; the
+live record read (two result JSONs, 28/28 each, `predictions` present, host record
+`screensaver_before/after_wake/at_end` + `frame_stalls` 2, tracked artifacts incl.
+`Eforce.sts` for the forced refusal); back-markers at §5.72 and §5.117 verified in
+the diff; item 6 struck. NOT re-launched: the artifacts + the forced control (e′)
+are the both-ways record §0b.4 asks for. Judgment calls ENDORSED with their
+arguments: annotate-not-mint for the lifecycle gap (§5.72 + §5.117 already own the
+channel and the severity; §5.119 stays one edit away — Vixy's, routed in
+§11.185(d)); byte comparison over a digest; `hasFile()` fixed at the interface;
+the second-Ctrl-S destructive branch and the five keys as README-stated UX;
+gate 14 `pty_keys` as a deliberate extension closing a seam the delivery itself
+named. DISPATCHER GLOSS TALLIED, this round's third: `INTENT/5.47.md` named as a
+source — the row is closed and its record is `INTENT/11.135.md`; not an abort
+(content reachable), reported not absorbed. EXECUTOR FINDING PROMOTED to a
+standing-rule correction in this commit: the Bash `grep` wrapper is ugrep `-I` —
+every ISO-8859 file is skipped silently, tracked or not (measured by me on
+`app_command_interface.cpp`: 11 hits without `-I`, none with; the one such file in
+500 tracked `src/` files) — CLAUDE.md (one file; the code-tree path is a symlink
+to `claude/CLAUDE.md`, git-ignored code-side) and §0.5 corrected. Instrument
+baselines re-derived: pair-check **201/176/25/90** (+5/+5/0/0 = §11.181–184 from
+the 2026-08-31 morning session, never re-baselined, + §11.185; inline stubs 90
+= no §5 mint, as the executor said); scan **119/159/97** (+1/+1/+2 — the
+round-open tree `f157778` ALREADY reads 119/159/97, so F67 moved the scan by
+ZERO: its markers sit on §5 targets, outside the §11↔§11 lexicon — F60's
+finding a third time; the delta is the morning session's, attributed in the
+round outcome).)*
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
