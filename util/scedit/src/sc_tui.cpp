@@ -27,8 +27,11 @@ namespace {
 // the frame, so every row must be where the code says it is.
 constexpr int kGutter = 10;    //!< severity + line number + separator, in cells
 constexpr int kDocRows = 4;    //!< the documentation bar (see renderDocBar)
+constexpr int kPaneRows = 4;   //!< entry rows of the error pane (see renderPane)
 //! title + separator + [text] + separator + doc bar + separator + status
 constexpr int kChrome = 1 + 1 + 1 + kDocRows + 1 + 1;
+//! separator + header + the entry rows, added to kChrome while the pane is open
+constexpr int kPaneChrome = 1 + 1 + kPaneRows;
 
 //! One byte of the buffer -> one display cell. See sc_tui.hpp for the rules.
 struct Glyph {
@@ -110,14 +113,121 @@ struct View {
 	//! wheel turns it off, because scrolling away from the caret is the whole
 	//! point of scrolling and a view that snaps straight back has not scrolled.
 	bool follow = true;
+	//! Is the error pane open? The pane costs kPaneChrome rows of text, and
+	//! most files are clean, so it is off until asked for — the count is on the
+	//! status line at all times, which is what makes it findable (README §
+	//! The error pane; a scedit UX call, veto open).
+	bool pane = false;
+	//! The pane's row, as of the last warp. Meaningless unless the caret still
+	//! stands where that row begins (paneCursor); npos-like values are simply
+	//! out of range and are treated as "not on a row".
+	std::size_t sel = (std::size_t)-1;
 	std::string status;
 	int width = 100;
 	int height = 30;
 	Box textBox;                //!< filled by the renderer, read by the mouse
+	Box paneBox;                //!< idem, for the pane's rows
 };
 
-int textRows(const View &v) { return std::max(1, v.height - kChrome); }
+int textRows(const View &v) { return std::max(1, v.height - kChrome - (v.pane ? kPaneChrome : 0)); }
 int textCols(const View &v) { return std::max(1, v.width - kGutter); }
+
+// --- the error pane ---------------------------------------------------------
+// The pane keeps ONE piece of state, `View::sel`: the row the last warp landed
+// on. It is trusted only while the caret still stands exactly where that row
+// begins — the moment the author moves or types, it is recomputed from the
+// caret. So an edit can never leave the pane pointing at a row that no longer
+// exists, and two rows that begin on the same byte are still told apart while
+// stepping (which a purely derived cursor cannot do).
+//
+// F3/F4 walk the LIST, not the file: on one line the engine's row comes before
+// scedit's although its `#!` sits further right, and a stepper that followed
+// byte order would skip that row forever.
+
+//! The row the caret is standing on, or npos.
+std::size_t paneCursor(const EditCore &core, const View &v)
+{
+	const std::vector<ErrorEntry> &h = core.errorHistory();
+	if (v.sel >= h.size())
+		return std::string::npos;
+	const ErrorEntry &e = h[v.sel];
+	return e.line == core.cursor().line + 1
+	       && (e.span.empty() ? 0 : e.span.begin) == core.cursor().col
+	       ? v.sel : std::string::npos;
+}
+
+//! The first row at or after the caret's line, else the size (past the end).
+std::size_t paneFocus(const EditCore &core, const View &v)
+{
+	const std::vector<ErrorEntry> &h = core.errorHistory();
+	const std::size_t cur = paneCursor(core, v);
+	if (cur != std::string::npos)
+		return cur;
+	const std::size_t here = core.cursor().line + 1;
+	std::size_t i = 0;
+	while (i < h.size() && h[i].line < here)
+		++i;
+	return i;
+}
+
+//! Which row sits at the top of the pane: derived from the focus, so the same
+//! caret always scrolls the pane the same way. The focus is kept near the
+//! middle when it can be.
+std::size_t paneTop(const EditCore &core, const View &v)
+{
+	const std::size_t n = core.errorHistory().size();
+	const std::size_t rows = (std::size_t)kPaneRows;
+	if (n <= rows)
+		return 0;
+	const std::size_t focus = std::min(paneFocus(core, v), n - 1);
+	std::size_t top = focus < rows / 2 ? 0 : focus - rows / 2;
+	if (top + rows > n)
+		top = n - rows;
+	return top;
+}
+
+//! Put the caret on row `i` and remember it as the pane's row.
+void warpToRow(EditCore &core, View &v, std::size_t i)
+{
+	const std::vector<ErrorEntry> &h = core.errorHistory();
+	if (i >= h.size())
+		return;
+	// By VALUE: warpTo must never be handed a reference into the list it may
+	// rebuild.
+	const ErrorEntry e = h[i];
+	v.sel = i;
+	core.warpTo(e);
+}
+
+//! Warp to the row after (delta > 0) or before (delta < 0) the one the caret is
+//! on, wrapping. When the caret is not on a row, enter the list at the nearest
+//! one in the direction of travel — so F3 from the top of a file goes to the
+//! pane's first row, which is what it says on the screen.
+void warpStep(EditCore &core, View &v, int delta)
+{
+	const std::vector<ErrorEntry> &h = core.errorHistory();
+	if (h.empty())
+		return;
+	const std::size_t n = h.size();
+	const std::size_t cur = paneCursor(core, v);
+	if (cur != std::string::npos) {
+		warpToRow(core, v, delta > 0 ? (cur + 1) % n : (cur + n - 1) % n);
+		return;
+	}
+	const std::size_t line = core.cursor().line + 1, col = core.cursor().col;
+	auto beginOf = [](const ErrorEntry &e) { return e.span.empty() ? (std::size_t)0 : e.span.begin; };
+	if (delta > 0) {
+		for (std::size_t i = 0; i < n; ++i)
+			if (h[i].line > line || (h[i].line == line && beginOf(h[i]) > col))
+				{ warpToRow(core, v, i); return; }
+		warpToRow(core, v, 0);       // wrap
+		return;
+	}
+	for (std::size_t i = n; i-- > 0;)
+		if (h[i].line < line || (h[i].line == line && beginOf(h[i]) < col))
+			{ warpToRow(core, v, i); return; }
+	warpToRow(core, v, n - 1);       // wrap
+}
 
 //! Keep the caret on screen. Called before rendering and after every move.
 void scrollToCursor(const EditCore &core, View &v)
@@ -308,6 +418,65 @@ Element renderDocBar(const EditCore &core, const View &v)
 	});
 }
 
+//! The error pane: every `#!` tail spacecrafter wrote and every finding scedit
+//! makes, in line order, click-to-warp (scedit/INTENT.md §5 item 15(a-ii)).
+//! A row's shape: `> E    12 │ sc  unknown-command: message`, where the leading
+//! `>` (and the inversion) mark EVERY entry on the caret's line — "the caret's
+//! entry", derived rather than remembered. An engine row is marked `!` and `#!`
+//! because the engine states no severity of its own and scedit will not invent
+//! one for it (ErrorEntry::severity).
+Element renderPane(const EditCore &core, View &v)
+{
+	const std::vector<ErrorEntry> &h = core.errorHistory();
+	std::size_t engine = 0;
+	for (const ErrorEntry &e : h)
+		if (e.source == EntrySource::Engine)
+			++engine;
+
+	std::string head;
+	if (h.empty()) {
+		head = "errors 0 \xE2\x80\x94 nothing to go to: no finding, no #! tail";
+	} else {
+		head = "errors " + std::to_string(h.size()) + " \xE2\x80\x94 "
+		       + std::to_string(engine) + " spacecrafter, " + std::to_string(h.size() - engine) + " scedit";
+	}
+	head += "   \xC2\xB7 F3/F4 next/prev \xC2\xB7 F5 hide \xC2\xB7 click to warp";
+
+	Elements rows;
+	const std::size_t top = paneTop(core, v);
+	const std::size_t here = core.cursor().line + 1;
+	// `>` marks the row the caret STANDS on when there is one; when the author
+	// has moved somewhere the pane did not send them, it marks every row of the
+	// line they are on, which is still exactly "the caret's entry".
+	const std::size_t cur = paneCursor(core, v);
+	for (int r = 0; r < kPaneRows; ++r) {
+		const std::size_t i = top + (std::size_t)r;
+		if (i >= h.size()) {
+			rows.push_back(text(""));
+			continue;
+		}
+		const ErrorEntry &e = h[i];
+		const bool engineRow = e.source == EntrySource::Engine;
+		const bool onCaret = cur != std::string::npos ? i == cur : e.line == here;
+		const std::string mark = engineRow ? std::string("!") : severityMark(e.severity);
+		char pre[32];
+		std::snprintf(pre, sizeof(pre), "%c%s %5zu \xE2\x94\x82 %s  ",
+		              onCaret ? '>' : ' ', mark.c_str(), e.line, engineRow ? "#!" : "sc");
+		std::string body = engineRow ? e.message : e.id + ": " + e.message;
+		// One cell per code point in `pre`: 8 ASCII + the U+2502.
+		Element row = hbox({text(pre), text(truncate(body, std::max(0, v.width - 14)))});
+		row = row | color(engineRow ? Color::Yellow : severityColor(e.severity));
+		if (onCaret)
+			row = row | inverted;
+		rows.push_back(row);
+	}
+
+	return vbox({
+		text(truncate(head, v.width)) | dim,
+		vbox(std::move(rows)) | reflect(v.paneBox),
+	});
+}
+
 Element renderFrame(const EditCore &core, View &v)
 {
 	Elements lines;
@@ -331,19 +500,29 @@ Element renderFrame(const EditCore &core, View &v)
 	                    + " \xE2\x94\x82 "
 	                    + (core.path().empty() ? std::string("(new buffer)") : core.path());
 
+	// The error COUNT goes first, for the same reason the caret position does on
+	// the title row: it is what changes, and on a narrow terminal the tail of
+	// this line is what truncation takes. It is also the only thing that tells
+	// an author the pane exists.
 	const std::string help =
-		"Tab complete \xC2\xB7 Shift-Tab previous candidate \xC2\xB7 Ctrl-S/F2 save \xC2\xB7 Ctrl-Q/F10 quit";
+		"F5 errors (" + std::to_string(core.errorHistory().size()) + ")"
+		" \xC2\xB7 Tab complete \xC2\xB7 Shift-Tab previous candidate"
+		" \xC2\xB7 Ctrl-S/F2 save \xC2\xB7 Ctrl-Q/F10 quit";
 	std::string status = v.status.empty() ? help : v.status;
 
-	return vbox({
-		text(truncate(title, v.width)) | bold | inverted,
-		separator(),
-		vbox(std::move(lines)) | reflect(v.textBox),
-		separator(),
-		renderDocBar(core, v),
-		separator(),
-		text(truncate(status, v.width)) | dim,
-	});
+	Elements frame;
+	frame.push_back(text(truncate(title, v.width)) | bold | inverted);
+	frame.push_back(separator());
+	frame.push_back(vbox(std::move(lines)) | reflect(v.textBox));
+	if (v.pane) {
+		frame.push_back(separator());
+		frame.push_back(renderPane(core, v));
+	}
+	frame.push_back(separator());
+	frame.push_back(renderDocBar(core, v));
+	frame.push_back(separator());
+	frame.push_back(text(truncate(status, v.width)) | dim);
+	return vbox(std::move(frame));
 }
 
 // --- input ------------------------------------------------------------------
@@ -402,6 +581,11 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 	const Event kCtrlS = Event::Special(std::string(1, (char)19));
 	const Event kCtrlQ = Event::Special(std::string(1, (char)17));
 	const Event kCtrlC = Event::Special(std::string(1, (char)3));
+	// The error pane's three actions, each with a control-code twin for
+	// terminals that eat function keys.
+	const Event kCtrlE = Event::Special(std::string(1, (char)5));    // toggle
+	const Event kCtrlN = Event::Special(std::string(1, (char)14));   // next
+	const Event kCtrlP = Event::Special(std::string(1, (char)16));   // previous
 
 	auto renderer = Renderer([&] {
 		// Terminal::Size(), NOT screen.dimx()/dimy(): a ScreenInteractive learns
@@ -447,6 +631,20 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 					core.moveTo(ln, col);
 					return true;
 				}
+				// A click on a pane row warps the caret to that entry — the
+				// same core call the keyboard uses, and the same reflected-box
+				// arithmetic as the text above it.
+				if (view.pane) {
+					const int pdrawn = view.paneBox.y_max - view.paneBox.y_min + 1;
+					const int pdy = m.y - view.paneBox.y_min;
+					if (pdy >= 0 && pdy < pdrawn) {
+						const std::size_t i = paneTop(core, view) + (std::size_t)pdy;
+						if (i < core.errorHistory().size()) {
+							warpToRow(core, view, i);
+							return true;
+						}
+					}
+				}
 			}
 			view.status = keep;
 			return false;
@@ -466,6 +664,22 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 		if (e == kCtrlS || e == Event::F2) {
 			std::string serr;
 			view.status = core.save(serr) ? "saved " + core.path() : "NOT saved: " + serr;
+			return true;
+		}
+		// The error pane (scedit/INTENT.md §5 item 15(a-ii)). F3/F4 open it as
+		// well as move in it: an author who wants the next error should not
+		// have to know the pane exists first.
+		if (e == Event::F5 || e == kCtrlE) {
+			view.pane = !view.pane;
+			return true;
+		}
+		if (e == Event::F3 || e == kCtrlN || e == Event::F4 || e == kCtrlP) {
+			if (core.errorHistory().empty()) {
+				view.status = "no errors: scedit finds nothing here, and spacecrafter left no #! tail";
+				return true;
+			}
+			view.pane = true;
+			warpStep(core, view, (e == Event::F3 || e == kCtrlN) ? +1 : -1);
 			return true;
 		}
 		if (e == Event::Tab) {
@@ -519,6 +733,14 @@ int uiSelfTest(const std::string &grammarPath)
 		const char *buffer;
 		std::size_t line;
 		long col;      //!< -1 = end of that line
+		bool pane = false;   //!< draw the error pane
+		//! >= 0: press F3 this many times before rendering — the pane's own
+		//! action, so what the record pins is where a WARP leaves the caret.
+		int warps = 0;
+		//! The pane costs kPaneChrome rows; the pane cases get a taller screen
+		//! rather than one text row. Every other frame keeps 14, so the record
+		//! of the frames that existed before the pane is unchanged by it.
+		int height = 14;
 	};
 	// Each case exists to put ONE claim of the D31 spec on a real screen.
 	static const Case cases[] = {
@@ -547,6 +769,37 @@ int uiSelfTest(const std::string &grammarPath)
 		{"machine-tail", "struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here\n", 0, 0},
 		// The same tail on a line scedit finds clean: the relation says so.
 		{"machine-tail-stale", "flag stars on #! this 'struct if end' closes nothing: no 'struct if' is open here\n", 0, 0},
+		// The error pane (scedit/INTENT.md §5 item 15(a-ii)). Both sources
+		// mixed: line 2 carries an engine tail AND scedit's own finding — two
+		// rows, the engine's first — line 3 a stale tail alone, line 4 a
+		// finding alone. The caret is on line 1, so NO row is marked.
+		{"pane-mixed",
+		 "flag stars on\n"
+		 "struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here\n"
+		 "flag stars off #! this 'struct if end' closes nothing: no 'struct if' is open here\n"
+		 "zomo action now\n",
+		 0, 0, true, 0, 20},
+		// One F3 from there: the caret warps to the FIRST entry — line 2, at
+		// the `#!` (the engine's row comes first on a line). The `inv` mask
+		// pins the caret on the warped line, and the pane marks that line's
+		// two rows with `>`.
+		{"pane-warp",
+		 "flag stars on\n"
+		 "struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here\n"
+		 "flag stars off #! this 'struct if end' closes nothing: no 'struct if' is open here\n"
+		 "zomo action now\n",
+		 0, 0, true, 1, 20},
+		// A second F3 steps to the SCEDIT row on the same line: same line, the
+		// caret on the finding's own byte rather than on the `#!`.
+		{"pane-warp-twice",
+		 "flag stars on\n"
+		 "struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here\n"
+		 "flag stars off #! this 'struct if end' closes nothing: no 'struct if' is open here\n"
+		 "zomo action now\n",
+		 0, 0, true, 2, 20},
+		// A clean buffer: the pane is open and says so, rather than showing an
+		// unexplained empty box.
+		{"pane-empty", "flag stars on\nbody name Earth\n", 0, 0, true, 0, 20},
 	};
 
 	for (const Case &c : cases) {
@@ -559,10 +812,13 @@ int uiSelfTest(const std::string &grammarPath)
 		const std::size_t col = c.col < 0 ? core.document().line(c.line).size()
 		                                  : (std::size_t)c.col;
 		core.moveTo(c.line, col);
-
 		View v;
 		v.width = 100;
-		v.height = 14;
+		v.height = c.height;
+		v.pane = c.pane;
+		// The pane's own action, through the same call the F3 key makes.
+		for (int w = 0; w < c.warps; ++w)
+			warpStep(core, v, +1);
 		scrollToCursor(core, v);
 		Element frame = renderFrame(core, v);
 		Screen screen = Screen::Create(Dimension::Fixed(v.width), Dimension::Fixed(v.height));

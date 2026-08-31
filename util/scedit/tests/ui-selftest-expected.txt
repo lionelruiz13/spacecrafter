@@ -12,7 +12,7 @@
 | 
 | error: unknown command 'zo'; did you mean 'dso'? [-Wunknown-command]
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (1) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd----dd
 mark m
 under ----------uu
@@ -31,7 +31,7 @@ inv ------------i
 | value: boolean(flag grammar)   one of: toggle, any on-form accepted by Utility::isTrue (src/tools/
 | error: key 'stars' has no value: the engine drops it silently and runs the rest of the line withou
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (1) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd-------------dddddd
 mark m
 under ---------------uuuuu
@@ -50,7 +50,7 @@ inv ---------------------i
 | value: enumerated   one of: current, preset, keep_time   default: absent or empty -> the next form
 | engine: app_command_interface.cpp:3890-3916 (W_LOAD="load", W_CURRENT="current", W_PRESET="preset"
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (0) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd-------------dddddd
 mark 
 under 
@@ -69,7 +69,7 @@ inv ---------------------i
 | value: number(evalDouble) - $-variable substitution possible   default: not written -> the setting
 | engine: app_command_interface.cpp:2192-2195 -> src/coreModule/coreLink.hpp:207-208 (starSetScale)
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (0) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd
 mark 
 under 
@@ -88,7 +88,7 @@ inv --------------------i
 | 
 | error: key 'ac' has no value: the engine drops it silently and runs the rest of the line without i
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (1) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd---------dddd
 mark m
 under ---------------uu
@@ -107,7 +107,7 @@ inv -----------------i
 | 
 | error: column 23 holds a no-break space, the ISO-8859 spelling (byte 0xA0), not a space: the engin
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (2) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd
 mark m-------------------------------m
 under --------------------------uuuuuuuu
@@ -126,7 +126,7 @@ inv ----------i
 | value: string (a body name)   default: absent -> the empty string is passed as the body to trace,
 | engine: app_command_interface.cpp:1633 -> src/coreModule/coreLink.cpp:1130-1135 -> src/bodyModule/
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (0) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd
 mark 
 under 
@@ -145,7 +145,7 @@ inv --------------------i
 | 
 | error: key 'x' has no value: the engine drops it silently and runs the rest of the line without it
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (1) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd----------------d
 mark m
 under -------------------------u
@@ -164,7 +164,7 @@ inv ----------i
 | 
 | engine: app_command_init.cpp:67 (ACP_CN_MEDIA = "media", base_command_interface.hpp:357)
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (0) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd---------------------dddddddddddd
 mark 
 under 
@@ -183,7 +183,7 @@ inv ----------i
 | 
 | engine: parseCommand (parse_model.comments.mid_line)
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (0) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd---------------------dddddddddddd
 mark 
 under 
@@ -202,7 +202,7 @@ inv -----------------------------------i
 | 
 | error: 'struct if a equal b' is never closed: no 'struct if end' follows before the end of the fil
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (1) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd
 mark m
 under ----------uuuuuuuuuuuuuuuuuuu
@@ -221,7 +221,7 @@ inv ----------i
 | 
 | warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine log
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (2) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd----------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 mark 
 under --------------------uuu
@@ -240,8 +240,108 @@ inv ----------i
 | 
 | spacecrafter wrote #! this 'struct if end' closes nothing: no 'struct if' is open here -- scedit f
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+| F5 errors (1) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd----------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+mark 
+under 
+inv ----------i
+### pane-mixed
+| scedit │ line 1, byte 0 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ flag stars on
+| W     2 │ struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here
+|       3 │ flag stars off #! this 'struct if end' closes nothing: no 'struct if' is open here
+| E     4 │ zomo action now
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| errors 4 — 2 spacecrafter, 2 scedit   · F3/F4 next/prev · F5 hide · click to warp
+|  !     2 │ #!  this 'struct if end' closes nothing: no 'struct if' is open here
+|  W     2 │ sc  end-without-if: this 'struct if end' closes nothing: no 'struct if' block is open her
+|  !     3 │ #!  this 'struct if end' closes nothing: no 'struct if' is open here
+|  E     4 │ sc  unknown-command: unknown command 'zomo'; did you mean 'zoom'?
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| command `flag`
+| Turn a named display feature on, off, or to the opposite of what it is now.   (documents: command)
+| 
+| engine: app_command_init.cpp:60 (ACP_CN_FLAG = "flag", base_command_interface.hpp:350)
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| F5 errors (4) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd
+mark 
+under 
+inv ----------i
+### pane-warp
+| scedit │ line 2, byte 14 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ flag stars on
+| W     2 │ struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here
+|       3 │ flag stars off #! this 'struct if end' closes nothing: no 'struct if' is open here
+| E     4 │ zomo action now
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| errors 4 — 2 spacecrafter, 2 scedit   · F3/F4 next/prev · F5 hide · click to warp
+| >!     2 │ #!  this 'struct if end' closes nothing: no 'struct if' is open here
+|  W     2 │ sc  end-without-if: this 'struct if end' closes nothing: no 'struct if' block is open her
+|  !     3 │ #!  this 'struct if end' closes nothing: no 'struct if' is open here
+|  E     4 │ sc  unknown-command: unknown command 'zomo'; did you mean 'zoom'?
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| #! annotation, written by spacecrafter
+| `#!` is RESERVED machine syntax inside a comment [vixy 2026-08-30, FEATURE_REQUESTS "`#!` - the en
+| 
+| warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine log
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| F5 errors (4) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd----------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+mark 
+under --------------------uuu
+inv ------------------------i
+### pane-warp-twice
+| scedit │ line 2, byte 10 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ flag stars on
+| W     2 │ struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here
+|       3 │ flag stars off #! this 'struct if end' closes nothing: no 'struct if' is open here
+| E     4 │ zomo action now
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| errors 4 — 2 spacecrafter, 2 scedit   · F3/F4 next/prev · F5 hide · click to warp
+|  !     2 │ #!  this 'struct if end' closes nothing: no 'struct if' is open here
+| >W     2 │ sc  end-without-if: this 'struct if end' closes nothing: no 'struct if' block is open her
+|  !     3 │ #!  this 'struct if end' closes nothing: no 'struct if' is open here
+|  E     4 │ sc  unknown-command: unknown command 'zomo'; did you mean 'zoom'?
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| `struct` `if` = `end`
+| close the block opened by the last `struct if`   (documents: value)
+| value: number(evalDouble) — $-variable substitution possible | enumerated   one of: else, end, <a
+| warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine log
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| F5 errors (4) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd----------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+mark 
+under --------------------uuu
+inv --------------------i
+### pane-empty
+| scedit │ line 1, byte 0 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ flag stars on
+|       2 │ body name Earth
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| errors 0 — nothing to go to: no finding, no #! tail   · F3/F4 next/prev · F5 hide · click to warp
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| command `flag`
+| Turn a named display feature on, off, or to the opposite of what it is now.   (documents: command)
+| 
+| engine: app_command_init.cpp:60 (ACP_CN_FLAG = "flag", base_command_interface.hpp:350)
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| F5 errors (0) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd
 mark 
 under 
 inv ----------i
