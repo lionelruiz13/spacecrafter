@@ -31,12 +31,14 @@
 
 #include <vector>
 #include <string>
+#include "scriptModule/script_origin.hpp"
 
 //management of the lines of code of a script
 class Token {
 public:
-	//s: ligne of script_file p: path of script_file
-	Token(const std::string &s, const std::string &p);
+	//s: ligne of script_file p: path of script_file o: where the line came from
+	//(file + physical line; an engine-synthesised line has no origin)
+	Token(const std::string &s, const std::string &p, const ScriptOrigin &o = ScriptOrigin());
 	~Token();
 	void printToken();
 	Token * pNext= nullptr;
@@ -49,9 +51,14 @@ public:
 		return path;
 	}
 
+	const ScriptOrigin &getOrigin() const {
+		return origin;
+	}
+
 private:
 	std::string elmt;
 	std::string path;
+	ScriptOrigin origin;
 };
 
 //complete management of scripts
@@ -71,6 +78,8 @@ public:
 
 	//!returns an item from the list with its path
 	int getFirst(std::string &command, std::string &dataDir);
+	//! the same, also returning where the command line came from
+	int getFirst(std::string &command, std::string &dataDir, ScriptOrigin &origin);
 
 	//! adds the given Token in first position in the command queue
 	void addFirstInQueue(Token * token);

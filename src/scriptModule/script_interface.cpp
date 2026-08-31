@@ -24,6 +24,7 @@
 
 #include "scriptModule/script_interface.hpp"
 #include "scriptModule/script_mgr.hpp"
+#include "scriptModule/script_origin.hpp"
 
 ScriptInterface::ScriptInterface(std::shared_ptr<ScriptMgr> _scriptMgr)
 {
@@ -111,6 +112,10 @@ void ScriptInterface::recordScript(const std::string &script_filename){
 
 void ScriptInterface::recordCommand(const std::string &commandline){
     scriptMgr->recordCommand(commandline);
+}
+
+void ScriptInterface::annotate(const ScriptOrigin &at, const std::string &message) {
+    scriptMgr->annotate(at, message);
 }
 
 void ScriptInterface::setScriptLoop(bool _value) {

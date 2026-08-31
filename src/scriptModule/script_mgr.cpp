@@ -109,6 +109,8 @@ bool ScriptMgr::addScriptFirst(const std::string & script)
 void ScriptMgr::cancelScript()
 {
 	cLog::get()->write("ScriptMgr: script end", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+	// every diagnostic of this run reaches its file now (ScriptAnnotator contract)
+	annotator.flush(naturalEnd);
 	// delete script object...
 	script->clean();
 	// images loaded are deleted from stel_command_interface directly
@@ -303,12 +305,14 @@ void ScriptMgr::update(int delta_time)
 		while (wait_time==0) {
 			std::string comd;
 
+			ScriptOrigin origin;
+
 			uint64_t wait=0;
 
 			if (repeatLoop) {
 				//~ printf("loop tour %i\n", nbrLoop);
 				if (indiceInLoop < loopVector.size()) {
-					commander->executeCommand(loopVector[indiceInLoop], wait);
+					commander->executeCommand(loopVector[indiceInLoop].text, wait, loopVector[indiceInLoop].origin);
 					wait_time += wait;
 					indiceInLoop++;
 				} else { //at the end of the loop, we start again except if nbrLoop==0
@@ -322,17 +326,26 @@ void ScriptMgr::update(int delta_time)
 						indiceInLoop = 0;
 					}
 				}
-			} else if ( (script->getFirst(comd,DataDir)) == 1 ) {
+			} else if ( (script->getFirst(comd,DataDir,origin)) == 1 ) {
 
 				if (isInLoop) {//we are in a loop and we have to copy the loop in a list.
-					loopVector.push_back(comd);
+					loopVector.push_back({comd, origin});
 				}
-				commander->executeCommand(comd, wait);
+				// a line carrying a `#!` tail: if this run reaches its natural end
+				// without a diagnostic for it, the tail is stale and gets cleared
+				if (ScriptAnnotator::hasAnnotation(comd))
+					annotator.saw(origin);
+				commander->executeCommand(comd, wait, origin);
 				wait_time += wait;
 			} else {
 				// script done
 				DataDir = "";
+				// the queue ran out: the natural end, the one moment an opener never
+				// closed is a fact (terminateScript audits before `script action end`
+				// discards the structure) and stale `#!` tails may be cleared
+				naturalEnd = true;
 				commander->terminateScript();
+				naturalEnd = false;
 				return;
 			}
 			if (global_lock_count == 0 && deadline < std::chrono::steady_clock::now())

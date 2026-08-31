@@ -37,6 +37,8 @@
 #include <vector>
 #include <memory>
 #include "tools/no_copy.hpp"
+#include "scriptModule/script_origin.hpp"
+#include "scriptModule/script_annotator.hpp"
 
 class AppCommandInterface;
 class Media;
@@ -80,6 +82,11 @@ public:
 
 	//! record a command (if recording)
 	void recordCommand(const std::string &commandline);
+	//! `#!` channel (ScriptAnnotator): a diagnostic for the line `at` names,
+	//! written into the script when the running script ends
+	void annotate(const ScriptOrigin &at, const std::string &message) {
+		annotator.note(at, message);
+	}
 
 	//! stop recording user interactions
 	void cancelRecordScript();
@@ -193,9 +200,17 @@ private:
 	bool isInLoop=false; 		//!< we are reading the instructions of a loop
 	bool repeatLoop=false; 	//!< we are repeating a loop
 	int nbrLoop=0;		//!< number of remaining loops
-	std::vector<std::string> loopVector; //!< the vector that contains the loop instructions to be repeated
+	//! one replayed loop line: its text and where it came from (so a
+	//! diagnostic inside a loop still lands on its file line)
+	struct LoopStep {
+		std::string text;
+		ScriptOrigin origin;
+	};
+	std::vector<LoopStep> loopVector; //!< the vector that contains the loop instructions to be repeated
 	unsigned int indiceInLoop=0; //!< indicates the place where we are in the loop
 	bool flagSkipPause; //!< skip pause in script
+	ScriptAnnotator annotator; //!< the `#!` channel, flushed at script end
+	bool naturalEnd = false;  //!< the script end being processed is the queue running out (not a cancel)
 };
 
 

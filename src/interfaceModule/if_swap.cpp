@@ -37,26 +37,27 @@ IfSwap::~IfSwap()
     this->reset();
 }
 
-void IfSwap::pop()
+bool IfSwap::pop()
 {
-    //assert(!m_ifSwapCommand.empty());
-    // end without if
-    if (m_ifSwapCommand.empty()){ //nothing to do
-        cLog::get()->write("end without if",LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
-        return;
-    }
+    // end without if: nothing to do here, the caller reports (it holds the
+    // line's origin and the log/annotation channels)
+    if (m_ifSwapCommand.empty())
+        return false;
 
     m_ifSwapCommand.pop_back();
+    m_openers.pop_back();
     if (m_ifSwapCommand.empty())
         commandSwap = false;
     else
         defineCommandSwap();
+    return true;
 }
 
 
-void IfSwap::push(bool v)
+void IfSwap::push(bool v, const ScriptOrigin &opener)
 {
     m_ifSwapCommand.push_back(v);
+    m_openers.push_back(opener);
     defineCommandSwap();
 }
 
@@ -64,20 +65,19 @@ void IfSwap::push(bool v)
 void IfSwap::reset()
 {
     m_ifSwapCommand.clear();
+    m_openers.clear();
     commandSwap = false;
 }
 
 
-void IfSwap::revert()
+bool IfSwap::revert()
 {
-//   assert(!m_ifSwapCommand.empty());
-    // else without if
-    if (m_ifSwapCommand.empty()){
-        cLog::get()->write("else without if",LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
-        return;
-    }
+    // else without if: nothing to do here, the caller reports
+    if (m_ifSwapCommand.empty())
+        return false;
     m_ifSwapCommand[m_ifSwapCommand.size()-1] = ! m_ifSwapCommand[m_ifSwapCommand.size()-1];
     defineCommandSwap();
+return true;
 }
 
 

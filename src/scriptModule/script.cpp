@@ -29,13 +29,14 @@
 #include "tools/log.hpp"
 
 
-Token::Token(const std::string &s, const std::string &p)
+Token::Token(const std::string &s, const std::string &p, const ScriptOrigin &o)
 {
 	elmt.clear();
 	path.clear();
 	pNext=nullptr;
 	elmt=s;
 	path=p;
+	origin=o;
 }
 
 Token::~Token()
@@ -108,12 +109,14 @@ int Script::loadInternal(const std::string &script_file,const std::string & scri
 	bool is_script_empty=true;
 	std::string line;
 	Token *token=nullptr;
+	unsigned lineNo = 0;   // physical line, 1-based, every getline counted (ScriptOrigin)
 	while (! input_file->eof() ) {
 		getline(*input_file,line);
+		++lineNo;
 
 		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
 			//cout << "[script.cpp => Line is: " << line << "]"<< endl;
-			token=new Token(line, script_path);
+			token=new Token(line, script_path, ScriptOrigin{script_file, lineNo, line});
 			is_script_empty=false;
 			if (wp==ListPosition::first)
 				addFirst(token);
@@ -169,6 +172,13 @@ void Script::addSecond(Token *token)
 
 int Script::getFirst(std::string &command, std::string &dataDir)
 {
+	ScriptOrigin ignored;
+	return getFirst(command, dataDir, ignored);
+}
+
+int Script::getFirst(std::string &command, std::string &dataDir, ScriptOrigin &origin)
+{
+	origin = ScriptOrigin();
 	Token *pMove;
 	if (pFirst == nullptr) {
 		cLog::get()->write("End of script",  LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
@@ -179,6 +189,7 @@ int Script::getFirst(std::string &command, std::string &dataDir)
 		pMove=pFirst;
 		dataDir=pFirst->getTokenPath();
 		command=pFirst->getToken();
+		origin=pFirst->getOrigin();
 		if (command=="script action end" && (pFirst->pNext != nullptr)) {
 			cLog::get()->write("End of script  detected but not at end of the execution stack", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 		}

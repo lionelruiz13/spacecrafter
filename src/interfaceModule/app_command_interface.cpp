@@ -190,8 +190,51 @@ int AppCommandInterface::parseCommand(const std::string &command_line, std::stri
 	return 1;  // no error checking yet
 }
 
+// The block-structure diagnostics, one sentence each carrying the three parts
+// INTENT �11.169 requires of a user-facing script error: WHAT it is, what it
+// DOES, and the self-contained ACTION. ASCII only: they are written into
+// ISO-8859 script files as `#!` tails.
+static const char MSG_UNCLOSED_IF[] =
+	"this 'struct if' is never closed: no 'struct if end' follows before the end of the script, "
+	"so whenever its test is false every line after it is skipped silently - add 'struct if end' "
+	"where the block should stop";
+static const char MSG_END_WITHOUT_IF[] =
+	"this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the "
+	"line - remove it, or add the 'struct if' it was meant to close";
+static const char MSG_ELSE_WITHOUT_IF[] =
+	"this 'struct if else' flips nothing: no 'struct if' is open here, so the engine ignores the "
+	"line - remove it, or add the 'struct if' it belongs to";
+static const char MSG_UNCLOSED_LOOP[] =
+	"this 'struct loop' is never closed: no 'struct loop end' follows before the end of the script, "
+	"so the lines after it run once and never repeat - add 'struct loop end' where the loop should stop";
+static const char MSG_LOOP_END_WITHOUT_LOOP[] =
+	"this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - "
+	"remove it, or add the 'struct loop <n>' it was meant to close";
+
+void AppCommandInterface::reportScriptError(const ScriptOrigin &at, const std::string &what)
+{
+	std::string line = at.valid() ? "script " + at.where() + ": " + what : "script: " + what;
+	if (!at.text.empty()) {
+		std::string quoted = at.text;
+		while (!quoted.empty() && (quoted.back() == '\r' || quoted.back() == '\n'))
+			quoted.pop_back();
+		line += " [" + quoted + "]";
+	}
+	cLog::get()->write(line, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
+	if (at.valid())
+		scriptInterface->annotate(at, what);
+}
+
 int AppCommandInterface::terminateScript()
 {
+	// The queue ran out (the only caller is ScriptMgr::update's script-done
+	// branch): an opener still open now was never closed. Report each at ITS
+	// line - the root, not the end of the file where the damage surfaces -
+	// BEFORE `script action end` discards the structure [vixy 2026-08-30].
+	for (const ScriptOrigin &opener : ifSwap->openers())
+		reportScriptError(opener, MSG_UNCLOSED_IF);
+	if (loopOpen)
+		reportScriptError(loopOpener, MSG_UNCLOSED_LOOP);
 	unskippable = true;
 	return executeCommand("script action end");
 }
@@ -205,6 +248,21 @@ int AppCommandInterface::executeCommand(const std::string &commandline )
 //! @brief called by script executors and transform a std::string to instruction
 int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_t &wait)
 {
+	return executeCommand(_commandline, wait, ScriptOrigin());
+}
+
+int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_t &wait, const ScriptOrigin &origin)
+{
+	// `currentOrigin` holds for exactly this command: a nested executeCommand
+	// (the two-argument overloads pass no origin) sees its own, and the outer
+	// line's origin is back when it returns, whatever path returned.
+	struct OriginScope {
+		ScriptOrigin &slot;
+		ScriptOrigin saved;
+		OriginScope(ScriptOrigin &s, const ScriptOrigin &o) : slot(s), saved(s) { slot = o; }
+		~OriginScope() { slot = saved; }
+	} originScope(currentOrigin, origin);
+
 	recordable = 1;  // true if command should be recorded (if recording)
 	debug_message.clear(); // initialise to empty
 	wait = 0;  // default, no wait between commands
@@ -2823,6 +2881,8 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 			media->imageDropAllNoPersistent();
 			swapCommand = false;
 			ifSwap->reset();
+			loopOpen = false;
+			loopOpener = ScriptOrigin();
 		} else if (argAction==W_PLAY && !filen.empty()) {
 			std::string file_with_path = FilePath(filen, FilePath::TFP::SCRIPT);
 			if( !scriptInterface->playScript(file_with_path) ) {
@@ -4619,60 +4679,62 @@ int AppCommandInterface::commandStruct()
 	std::string argIf = args[W_IF];
 	if (!argIf.empty() && swapCommand != true) {
 		if (argIf==W_ELSE) {
-			ifSwap->revert();
+			if (!ifSwap->revert())
+				reportScriptError(currentOrigin, MSG_ELSE_WITHOUT_IF);
 			return executeCommandStatus();
 		}
 		if (argIf==W_END) {
-			ifSwap->pop();
+			if (!ifSwap->pop())
+				reportScriptError(currentOrigin, MSG_END_WITHOUT_IF);
 			return executeCommandStatus();
 		}
 		if (args[W_EQUAL]!=""){  // ! A==B => |A-B| > e
 			if (fabs(evalDouble(argIf) - evalDouble(args[W_EQUAL]))>error)
-				ifSwap->push(true);
+				ifSwap->push(true, currentOrigin);
 			else
-				ifSwap->push(false);
+				ifSwap->push(false, currentOrigin);
 			return executeCommandStatus();
 		}
 		if (args[W_DIFF]!=""){  // ! A!=B => |A-B| < e
 			if (fabs(evalDouble(argIf) - evalDouble(args[W_DIFF]))<error)
-				ifSwap->push(true);
+				ifSwap->push(true, currentOrigin);
 			else
-				ifSwap->push(false);
+				ifSwap->push(false, currentOrigin);
 			return executeCommandStatus();
 		}
 		if (args[W_INF]!="") {
 			if (evalDouble(argIf) >= evalDouble(args[W_INF]))
-				ifSwap->push(true);
+				ifSwap->push(true, currentOrigin);
 			else
-				ifSwap->push(false);
+				ifSwap->push(false, currentOrigin);
 			return executeCommandStatus();
 		}
 		if (args[W_INF_ZQUAL]!="") {
 			if (evalDouble(argIf) > evalDouble(args[W_INF_ZQUAL]))
-				ifSwap->push(true);
+				ifSwap->push(true, currentOrigin);
 			else
-				ifSwap->push(false);
+				ifSwap->push(false, currentOrigin);
 			return executeCommandStatus();
 		}
 		if (args[W_SUP]!="") {
 			if (evalDouble(argIf) <= evalDouble(args[W_SUP]))
-				ifSwap->push(true);
+				ifSwap->push(true, currentOrigin);
 			else
-				ifSwap->push(false);
+				ifSwap->push(false, currentOrigin);
 			return executeCommandStatus();
 		}
 		if (args[W_SUP_EQUAL]!="") {
 			if (evalDouble(argIf) < evalDouble(args[W_SUP_EQUAL]))
-				ifSwap->push(true);
+				ifSwap->push(true, currentOrigin);
 			else
-				ifSwap->push(false);
+				ifSwap->push(false, currentOrigin);
 			return executeCommandStatus();
 		}
 		//retro-compatibilité
 		if (evalDouble(argIf) == 0)
-			ifSwap->push(true);
+			ifSwap->push(true, currentOrigin);
 		else
-			ifSwap->push(false);
+			ifSwap->push(false, currentOrigin);
 		return executeCommandStatus();
 	}
 
@@ -4690,6 +4752,10 @@ int AppCommandInterface::commandStruct()
 	std::string argLoop = args[W_LOOP];
 	if (!argLoop.empty() && ifSwap->get() != true) {
 		if (argLoop ==W_END) {
+			if (!loopOpen)
+				reportScriptError(currentOrigin, MSG_LOOP_END_WITHOUT_LOOP);
+			loopOpen = false;
+			loopOpener = ScriptOrigin();
 			swapCommand = false; //cas ou nbrLoop était inférieur à 1
 			scriptInterface->setScriptLoop(false);
 			scriptInterface->initScriptIterator();
@@ -4697,12 +4763,18 @@ int AppCommandInterface::commandStruct()
 		}
 
 		if (argLoop ==W_BREAK) {
+			loopOpen = false;
+			loopOpener = ScriptOrigin();
 			swapCommand = false;
 			scriptInterface->resetScriptLoop();
 			return executeCommandStatus();
 		}
 
 		int nbrLoop = Utility::strToInt(evalString(argLoop));
+		// whatever n makes the body do (skip, run once, repeat), `struct loop <n>`
+		// opens a block that only `struct loop end` closes
+		loopOpen = true;
+		loopOpener = currentOrigin;
 		if (nbrLoop < 1) {
 			swapCommand = true;
 			return executeCommandStatus();

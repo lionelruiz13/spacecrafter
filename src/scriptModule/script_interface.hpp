@@ -30,6 +30,7 @@
 
 class ScriptMgr;
 
+struct ScriptOrigin;
 class ScriptInterface {
 public:
     ScriptInterface(std::shared_ptr<ScriptMgr> _scriptMgr);
@@ -70,6 +71,10 @@ public:
 
 	void recordScript(const std::string &script_filename);
 	void recordCommand(const std::string &commandline);
+	//! Hand a diagnostic to the `#!` channel: written at the end of the line
+	//! `at` names when the running script ends (ScriptAnnotator contract).
+	//! No-op for an invalid origin - the log is the caller's job either way.
+	void annotate(const ScriptOrigin &at, const std::string &message);
 
 	void setSelectedScript(std::string filename) {
 		SelectedScript = filename + ".sts";

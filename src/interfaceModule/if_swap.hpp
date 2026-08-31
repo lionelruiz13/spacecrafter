@@ -29,6 +29,7 @@
 
 #include <vector>
 #include "tools/no_copy.hpp"
+#include "scriptModule/script_origin.hpp"
 
 /**
 * \file if_swap.hpp
@@ -51,24 +52,38 @@
 * m_ifSwapCommand[i] = false indicates that the if n°i is in the part where it accepts the following instructions, they must be executed
 */
 
+//! Pure state: this class keeps the stack and says what happened; the CALLER
+//! (AppCommandInterface::commandStruct / terminateScript) reports, because it
+//! is the one holding the origin of the current line and the log/annotation
+//! channels (2026-08-31: "end without if"/"else without if" moved out of here
+//! for that reason, unchanged in meaning).
 class IfSwap : public NoCopy {
 public:
     IfSwap();
     ~IfSwap();
-    //! shift to delete an old if
-    void pop();
-    //! shift to build a new if in state v
-    void push(bool v);
+    //! shift to delete an old if. false = nothing to close ("end without if"):
+    //! the state is unchanged and the caller reports.
+    bool pop();
+    //! shift to build a new if in state v, remembering where it was opened
+    //! (an invalid origin for a line with no file behind it)
+    void push(bool v, const ScriptOrigin &opener = ScriptOrigin());
     //! resets all conditions on if
     void reset();
-    //! swap the value of the last if 
-    void revert();
+    //! swap the value of the last if. false = nothing to flip ("else without
+    //! if"): the state is unchanged and the caller reports.
+    bool revert();
     //! returns the value indicating the execution of the next command
     bool get() const ;
+    //! every `struct if` still open, innermost last - what a script end that
+    //! finds this non-empty must report at each OPENER
+    const std::vector<ScriptOrigin> &openers() const {
+        return m_openers;
+    }
 private:
     //! function that indicates whether to execute the commands that are defined in a script
     void defineCommandSwap();
     std::vector<bool> m_ifSwapCommand;
+    std::vector<ScriptOrigin> m_openers;   //!< parallel to m_ifSwapCommand
     bool commandSwap = false;
 };
 

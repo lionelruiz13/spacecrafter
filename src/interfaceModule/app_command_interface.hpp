@@ -38,6 +38,7 @@
 #include "tools/no_copy.hpp"
 #include "EntityCore/Executor/AsyncLoaderMgr.hpp"
 #include "experimentalModule/SessionFile.hpp"
+#include "scriptModule/script_origin.hpp"
 
 class Core;
 class CoreLink;
@@ -64,6 +65,13 @@ public:
 	void deleteVar();
 	int executeCommand(const std::string &commandline);
 	int executeCommand(const std::string &command, uint64_t &wait);
+	//! The same, knowing where the line came from (ScriptMgr passes the token's
+	//! origin): a diagnostic raised while it runs is reported at that line and
+	//! handed to the `#!` channel. The two overloads above pass NO origin - a
+	//! TCP/HTTP/UI line, or a command nested inside another (`clear`, `media`,
+	//! `lift_off`'s splice) - and their diagnostics go to the log only; the
+	//! outer line's origin is restored when a nested call returns.
+	int executeCommand(const std::string &command, uint64_t &wait, const ScriptOrigin &origin);
 
 	void initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::shared_ptr<SpaceDate> _spaceDate, std::shared_ptr<SaveScreenInterface> _saveScreenInterface);
 
@@ -209,6 +217,13 @@ private:
 	LoadPriority waitPriority = LoadPriority::ACTIVE;
 	std::unique_ptr<IfSwap> ifSwap; 	// management of multiple if statements
 	std::string debug_message;			//!< for 'executeCommand' error details
+	ScriptOrigin currentOrigin;			//!< where the command being executed came from; invalid off-script
+	bool loopOpen = false;				//!< a `struct loop <n>` is open, whatever n made it do
+	ScriptOrigin loopOpener;			//!< where that loop was opened
+	//! A script error, said the three-part way (what it is / what it does /
+	//! the action that prevents it - INTENT §11.169): to the script log with
+	//! the line quoted, and to the `#!` channel when `at` names a file line.
+	void reportScriptError(const ScriptOrigin &at, const std::string &what);
 
 	// transcription between the text and the associated command
 	std::map<const std::string, SC_COMMAND> m_commands;
