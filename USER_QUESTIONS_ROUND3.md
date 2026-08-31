@@ -152,6 +152,16 @@ launched, *is* the running script; bound to a button it is simply at
 hand — pressed whenever, running beside whatever is playing, gone when
 done. **Triggers**: a script that fires by itself — when the camera
 attaches to a body, crosses an altitude, when a body comes into view.
+Where that lands: the two-appearance body you already build — a
+different look from far and from close, done today by giving the
+miniature/preview skin a second design. That works until it doesn't:
+the swap keys on apparent size, not distance, so far-but-zoomed shows
+the wrong face — the developer has already warned you this usage can
+break at any time. A trigger firing on the distance or visibility
+change, driving the `skin_tex`/`skin_use` swap you already have, is
+the same effect as a supported mechanism instead of a side effect of
+the miniature system. (R29 below asks which bodies do this today —
+it matters beyond this proposal.)
 Both of these mean a script starting *while your show is already
 playing* — and today's engine has no defined answer for that situation
 (scripts have always been serial; what nesting does today is accident,
@@ -179,7 +189,9 @@ new commands.
 *Your two earlier objections* were raised against an older draft and
 are answered in the current text: (1) "which script do the global
 controls target?" — the unnamed default keeps them global, named
-scripts are addressed by name, tree-wise; (2) "hard to track" —
+scripts are addressed by name, tree-wise, and the special name `*`
+addresses every running script at once (one word still stops
+everything); (2) "hard to track" —
 tracked/detached is explicit per launch, with the termination cascade.
 One honest gap: how resume/speedup compose down a tree is designed but
 not yet written as clauses.
@@ -199,6 +211,46 @@ minimum-acceleration transition. The developer's proposed default is
 **heading stays stable across the swap**, flagged by him "to confirm with
 user/tester". Is stable heading what you'd expect as the default?
 *(ref: D15(b), §11.149(a))*
+
+**R27. The RA/DE readout: the catalog number, or the pointing number?**
+When the app displays a body's RA/DE, two conventions exist and they
+only differ where you'd notice on the Moon (~1° — the Moon's parallax;
+everything farther is identical): the number **as seen from where the
+observer stands** (what you'd point a telescope with — today's
+long-standing behavior), or the number **as seen from the Earth's
+centre** (what a catalog or almanac prints). Which do you rely on when
+you read RA/DE off the screen? (Routed to you because you read
+coordinates professionally and this convention was inherited, not
+chosen. The *zero point* of RA is not part of the question — that is
+fixed by definition at the vernal equinox and is being verified against
+catalog values of known stars.)
+*(ref: §11.4 decision (2), §11.158(f); routing per §11.161(c),
+exercised [vixy 2026-08-31])*
+
+**R28. Tilted dome, rotated heading: does the view offset turn with the
+sky, or stay with the dome?** You confirmed (R11) that scripts change
+the view offset during shows on your tilted dome. When the heading is
+*also* rotated, the old behavior rolls the offset direction around with
+the heading; the new path keeps the offset fixed to the physical dome.
+Only someone standing under a tilted dome can say which is right — and
+heading is exercised by few enough operators that a wrong choice here
+would likely reach the field unnoticed, which is exactly why it comes
+to you. What should a tilted-dome show see?
+*(ref: §11.92(d), B17 residual; routing exercised [vixy 2026-08-31])*
+
+**R29. Which bodies deliberately look different from far than from
+close?** The shipped Sun and Moon carry a miniature/preview skin that is
+a *different picture* from their full-resolution map (the Moon visibly
+changes tone when crossing the swap distance — measured). Until now this
+was classed as a data inconsistency, to be fixed by regenerating the
+previews from the full maps. If it is instead your intended
+two-appearance design (the far/close effect from R25), regenerating
+would destroy it. Which is it — slip or design — and if design, on
+which bodies? (Your answer also decides at what distance the swap
+should engage, and R25's trigger is the supported replacement either
+way.)
+*(ref: A43 + A42, §11.127(c)(d), §11.172(c)(d); premise reframed by
+[vixy 2026-08-31]: the tester authors distinct normal/miniature skins)*
 
 ---
 
@@ -314,15 +366,24 @@ own room now.
 
 ## Not included, so the omission is visible
 
-Held back as the developer's decisions or pending his routing call, not
-because they're closed: the RA/DE readout origin question (§11.4 —
-observer- vs body-centred, tester-routable at his call), the tilted-dome
-heading×offset expectation (§11.92(d)), the free-flight `moveto`/
+Three items from this section's first draft moved UP into the questions
+at the developer's routing call (2026-08-31): the RA/DE origin (→ R27),
+the tilted-dome offset behavior (→ R28), and the far/close texture
+question (→ R29, which now also gates the Sun/Moon preview data fix).
+One item resolved without you and is stated here so you can object: the
+*zero point* of the RA readout — the new path's RA was off by a constant
+90° — is fixed by astronomical definition (RA = 0 at the vernal
+equinox; no convention freedom exists), so it is corrected against
+catalog values of known stars rather than asked. The small residual
+beyond the 90° (~1 arcsecond) gets attributed during the fix, not
+absorbed.
+
+Still held back as the developer's decisions: the free-flight `moveto`/
 `get status position` defaults (§11.144 riders — become FYI items here
 once he confirms), free-flight environment semantics (§5.106), the
 quit-during-render fork (A40), the dot-vs-disc pixel gate (A41), the
-texture-swap distance and the Sun/Moon preview data fix (A42/A43), the
-ring-shadow layer contract (A44), and the script-semantics defect batch
+texture-swap *distance* (A42 — R29's answer feeds it), the ring-shadow
+layer contract (A44), and the script-semantics defect batch
 (DEPLOYMENT-MAP T1.6). If any of these looks like it should have been
 YOUR question, say so — that's exactly what this section is for.
 
