@@ -2367,33 +2367,47 @@ annotated in ITS file, the caller untouched; J: a fault inside a `struct loop
 2` body → two log lines (first pass + replay, the replayed line keeps its
 origin), one tail. Measured 2026-08-31 on `2b8ec034`: **34/34**.
 
-## F63 × scedit — does scedit's reading of a line agree with the `#!` verdict the engine wrote on it? (`f63_scedit_agree.py`) — scedit INTENT §5 item 15(a-i), 2026-08-31
+## F63 × scedit — does scedit's reading of a line agree with the `#!` verdict the engine wrote on it? (`f63_scedit_agree.py`) — scedit INTENT §5 item 15, 2026-08-31 (rewritten onto `--history` at F65, same day)
 
     cd claude/harness && ./f63_scedit_agree.py [artifacts/f63] [scedit-binary]
 
 Constraint C1 measured on the FILE rather than on the parser: F63 leaves the
 scripts the engine annotated (`artifacts/f63/*.sts`, written by `ScriptAnnotator`
-at script end); for every line carrying a `#!` tail the tail's first clause is
-mapped to the lint id whose `engine_tail` data in the grammar starts with it
-(the editor's own `MachineTail::relation` mapping), and `scedit --check` must
-report exactly that id on exactly that line — and, the other way, every finding
-scedit reports on those files must sit on a line the engine annotated with the
-same class, except in the two files where the engine's write was REFUSED by the
-leg's design (E: read-only directory; G: the line changed since load), where
-scedit's findings are the expected state. Leg F's quoted `#!` maps to nothing on
-both sides. **Measured 2026-08-31 (F63 on `2b8ec034`, scedit `4a00cf31`): 12
-tails / 12 agree / 0 disagreements / 6 expected findings in E+G.**
+at script end); each engine sentence is mapped to the lint id whose `engine_tail`
+data in the grammar says so (shared data, the same the editor's
+`MachineTail::relation` reads), and scedit must report exactly that id on exactly
+that line — and, the other way, every finding scedit reports on those files must
+sit on a line the engine annotated with the same class, except in the two files
+where the engine's write was REFUSED by the leg's design (E: read-only directory;
+G: the line changed since load), where scedit's findings are the expected state.
+Leg F's quoted `#!`, and the column-0 comment holding one on its line 1, map to
+nothing on both sides. The script carries the LEG TABLE — all ten of F63's
+artifacts and what each puts in front of it — and refuses an artifact directory
+holding a file it does not know, so a stale or half-written `artifacts/f63` is a
+loud failure rather than a smaller pass. **Measured 2026-08-31 (F63 on
+`2b8ec034`, scedit `4a00cf31`): 12 tails / 12 agree / 0 disagreements / 6
+expected findings in E+G — and the same four numbers after the F65 rewrite, on
+the same artifacts.**
 
-What the first version got wrong, kept as record: its own `#!` reader applied the
+Both readings now come from ONE call per file, `scedit --history` (F65): its
+`spacecrafter` rows are the tails, its `scedit` rows the findings. Shown able to
+fail: on a COPY of the artifacts (never the committed ones), changing A.sts:3's
+tail to a different fault class gives `agree 11 / disagreements 2`, one per
+direction, exit 1.
+
+What the first version got wrong, kept as record: it carried its own `#!` reader,
+a THIRD reading of the rule after the engine's and scedit's, and it applied the
 grammar sentence ("the first `#!` at or after the first `#` outside quotes")
-without the clause the sentence omits — the annotator only holds notes for lines
-that EXECUTE (a comment-only line is dropped at `script.cpp:114` before
-`executeCommand`), so a `#!` inside a column-0 comment (leg F's line 1) is
-neither written nor cleared by the engine, and scedit's `machineTail` ignores it
-by construction (`sc_editcore.cpp:252-255`). The script's reader is a THIRD
-reading of that rule and is tolerated only until scedit exposes its list
-(`--history`, dispatch task F65) — then it is deleted and the script consumes
-scedit's own reading (I2).
+without the clause the sentence omitted — the annotator only holds notes for
+lines that EXECUTE (a comment-only line is dropped at `script.cpp:117` before
+`executeCommand`; `:114` before engine `2b8ec034` moved it), so a `#!` inside a
+column-0 comment (leg F's line 1) is neither written nor cleared by the engine,
+and scedit's `machineTail` ignores it by construction. F65 wrote the rule where
+it belongs — `parse_model.comments.machine_tail`, EXECUTES-ONLY clause, with its
+three anchors — and DELETED the copy (I2). The lesson is the shape of the fault,
+not the fault: a rule stated in one place and re-read in three is one clause away
+from three different behaviours, and the copy that diverges is the one nobody
+gates.
 
 ## F64 — can a small local model route a request to the right command page? (`f64_doc_router.py`) — FEATURE_REQUESTS 2026-08-31 (LLM assistance), 2026-08-31
 
