@@ -153,7 +153,27 @@ Generalized into `USER_QUESTIONS_ROUND3.md`'s header as the eighth
 format rule beside §11.177(i)'s seven. Candidate for the ledger home of
 the final-pass question-shape rules (§11.173(d) neighborhood) at merge.
 
-## 6. Provenance note
+## 6. Owner self-model line (configuration data, D10 horizon)
+
+[vixy 2026-08-31, in-conversation, off-work reflection]: *"My working
+style is quite sequential by design, which transpose into sessions
+being sequential dispatch orchestrate alternation. … The only aspect
+which is not sequentialized is the one which is not code related, nor
+work related. It contrast quite a lot with things like 'ultracode' in
+claude code which is heavily parallel, but doesn't fit my workflow very
+well."* — Owner self-report CORROBORATING the measured execution-mode
+signature (INT-7; §11.168's anticipatory-commit finding; §11.173(b)'s
+owner-confirmed intra-session resolution). Consequence for session
+design [derived, veto]: the sequential dispatch-orchestrate topology is
+RATIFIED by owner preference, not merely token-allowance-forced —
+heavy fan-out (ultracode/Workflow-style) is a configuration mismatch
+for this collaboration (depth-dominant work, single-authority ledger,
+review-attention-bounded); parallelism stays licensed only below the
+zero-coupling boundary (disjoint write surfaces, e.g. this session
+beside F68/F69). Candidate home at merge: §11.173(e)'s owner self-model
+lines.
+
+## 7. Provenance note
 
 The three script requests ([parallel-script]/[script-binding]/
 [script-trigger]) are VIXY's, not the tester's — FEATURE_REQUESTS.md
