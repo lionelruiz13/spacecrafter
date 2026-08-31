@@ -994,6 +994,48 @@ at its node THIS commit (F60's stale-forward-reference class, caught at
 the write). Scan limitation (only INTENT/<id>.md as event sources — a
 §5-sourced back-marker is invisible) joins the strict-credit v2 package.
 
+### F72 — POST-CLOSE: the file-origin log tag — `originTag()` names `<file>:<line>` too (§11.191(b); reverses §11.187(d)'s asymmetry on the owner's word) [S]
+
+**Why now / mandate:** owner ruling §11.191(b) (*"good idea"* on the §3
+question): a FILE-origin refusal at the diagnostic funnel and its bypassing
+sibling names `<file>:<line>` in the LOG, exactly as a TCP one names
+`tcp#<id>`. F68 predicted the reversal as one condition at `originTag()`
+(`channel != TCP` → `channel != NONE`, §11.187(d)).
+
+**Sources (re-read, never recall):** `INTENT/11.191.md` (b) (the ruling and
+its explicit non-reach: wire, `#!` channel, the ~1661 generic-channel
+decision all UNMOVED); `INTENT/11.187.md` (d)(f) (the asymmetry, the gate
+legs that measured it); `INTENT/11.188.md` (d) (the three routing sites —
+`sendFeedback` stays TCP-only); `harness/f68_provenance.py` (the legs that
+flip); `harness/f69_feedback.py` (the frozen-wire re-check).
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `96cfc352`, tree clean;
+harness HEAD as the prompt states, tree clean (concurrent-session allowances
+as F69–F71 stated); next free §11 number **192**; live `### F` count **5**;
+binary current at code HEAD; §11.187(d) carries the REVERSED marker;
+display `:0` per HOST-EVENTS post-reboot entries. ANY broken ⇒ abort.
+
+**Scope:** (1) the one-condition change at `originTag()` with the header
+comment updated to name §11.191(b) as the reversal's authority; (2) gate:
+`f68_provenance.py` legs that asserted the file-origin funnel refusal
+UNTAGGED now assert the tag (both-ways: the pre binary — current HEAD's —
+stays untagged; state the flipped legs in the entry); `f63_annotations.py`
+re-run green (the `#!` channel must be untouched); `f69_feedback.py` re-run
+— the frozen wire must reproduce 71/5/0/85 B and the `$DIAG` records must be
+UNCHANGED (file-origin refusals still route to no socket); (3) record: §11
+entry at **192** + stub, entry-first; back-marker at §11.187(d) flipping
+REVERSED → DELIVERED; §5.117 annotation updated (its emitter now names BOTH
+origins); README note; WIP per §0.6; new code pure ASCII (D14).
+
+**Boundaries:** LOG channel only — no wire change (delivery-blocking bar as
+F69/F70); no annotator change; no new tag content beyond the origin prefix;
+mint license per §5.79.
+
+**DoD:** condition + flipped gate legs green both ways; f63 green; frozen
+wire reproduced; §11.192 + markers; builds green; trees clean; WIP cleared;
+baselines re-derived LAST with deltas attributed.
+**WIP:** —
+
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
 - **B1/S4 + B2 + riding rows** (D4 surface streaming, RING asteroid, INSTANCED
@@ -1028,11 +1070,18 @@ the write). Scan limitation (only INTENT/<id>.md as event sources — a
     fail-2 — **on the desktop this can falsely abort any photometric task**.
     Fix = one line (btime+starttime) PLUS a re-bank of two banked epochs ON
     THE DESKTOP (one VALUES edit with argument, §0.5). Queued as next
-    desktop-round position 1; not fixable from this laptop. **[EXTENDED at
+    desktop-round position 1; not fixable from this laptop. **[OBJECTIVE
+    RULED 2026-08-31 → §11.191(c): *"falsely abort is not as bad as wrongly
+    continue, but that's to optimize against (false positive)"* — fail-closed
+    stands; the fix removes the false positive at its root (the wrong proxy);
+    no band-widening or gate-demotion is licensed.]** **[EXTENDED at
     F70 acceptance: the 20:57 reboot moved this laptop's display to `:0` —
     `BANK_DISPLAY=":2"` now names a display that does not exist here, canary
     exit 3 (was 2). Same disposition: per-host banks are your §11.174(f)
     fork; nothing re-banked.]**
+  - **[RATIFIED 2026-08-31 → §11.191(a): *"we mustn't change the
+    user-visible part"* — the escape rule stands owner-endorsed; the
+    reversal path is dead; the map-row sub-vetos stand by silence.]**
   - **D14'S ONE DESIGN FORK — the ESCAPE RULE (F70 §11.189(c)(h), veto-open,
     the round's sharpest):** the tree is 100% ASCII (282 files, 8269 bytes,
     gate standing), but C-family STRING LITERALS were re-spelled as `\xNN`
@@ -1074,6 +1123,9 @@ the write). Scan limitation (only INTENT/<id>.md as event sources — a
     colours in his own file. The 324 grammar `source` anchors are pinned at
     `b12c8cdd` and no longer resolve at HEAD (+141 lines) — re-anchoring
     queued, new rows self-pin.
+  - **[ANSWERED YES 2026-08-31 → §11.191(b): "good idea" — word-given as
+    post-close task F72 (the one condition + flipped gate legs; log channel
+    only, wire and `#!` decision unmoved).]**
   - **SHOULD A FILE-ORIGIN REFUSAL NAME `<file>:<line>` IN THE LOG?** (F68
     §11.187(d)): the funnel now prefixes TCP-origin refusals with `tcp#<id>`;
     the file half is DELIBERATELY absent — the executor read "every failing
