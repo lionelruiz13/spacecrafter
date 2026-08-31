@@ -147,12 +147,28 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   reserved vars 24 / font targets 10. Census (2026-07-25) cross-check:
   one delta, `session` (+1 command, B31) — explained, recorded in
   `_meta.count_deltas_vs_census_2026_07_25`.
-- **Tokenizer gate** (pending): derivation-diff against
+- ~~**Tokenizer gate** (pending): derivation-diff against
   `parseCommand` + differential corpus runs; the corpus gate C3 arms when
-  `--check` exists.
-- Future live legs (TCP) inherit the parent harness disciplines
+  `--check` exists.~~ **LIVE since 2026-08-04d (journal): `parse_oracle` —
+  scedit vs a verbatim copy of `parseCommand` (the ruled TARGET under amended
+  C1) — 119 337 comparisons / 0 mismatches at 2026-08-31; `tests/
+  derivation-diff.md` is the derivation-diff; C3's corpus gate armed the same
+  day (witness + harness corpus; the 408 shipped scripts await item 16).**
+- ~~Future live legs (TCP) inherit the parent harness disciplines
   (fresh-launch, md5 in==out); no build exists on this laptop yet —
-  rebuild is a prerequisite recorded, not done.
+  rebuild is a prerequisite recorded, not done.~~ **SUPERSEDED 2026-08-31: the
+  engine builds (GCC 11, `a3437670`) and RUNS here (display session for
+  `claude`; F61–F63 over port 7805). Live legs keep the parent disciplines
+  (`f27_reply.Session`: fresh temp-HOME launch, concurrent-instance probe,
+  md5 in==out) plus this host's own precondition — a LOCKED screen throttles
+  the engine to 1 Hz (`HOST-EVENTS.md` 2026-08-31).**
+- **Gate inventory at 2026-08-31 (F66 delivered; `ctest` in `build-lovely`):
+  12** — tokenizer 189 · parse_oracle 119 337/0 · editcore 223 · roundtrip
+  (md5) · ui_selftest 17 frames · seed_gate · lint_rules 27 · history_list 36 ·
+  corpus_gate 15 · check_json · doc_queries 10 · mcp_protocol 55; `-Wall
+  -Wextra` on scedit's own targets, 0 warnings (item 20). Each record gate is
+  edited deliberately and shown able to fail at the touch that adds it (README
+  § Verification is the per-gate description; this line is the count of record).
 
 ## 5. Open work (ordered)
 

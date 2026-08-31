@@ -1486,6 +1486,31 @@ hand-written family map missed `font` (10 targets absent from its two-level
 run); `f64_doc_router.py` overwrites its own artifact rows (F64's one-level rows
 lost, untracked, numbers intact); scedit INTENT §4 "Verification bar" is stale
 (pre-existing, out of scope).
+*(ACCEPTED by supervisor [fable 2026-08-31]: journal `2026-08-31g` read in full
+against the report; commits/authors/trailers checked (code `ac3e752e → 170ce615 →
+fbdf1d48 → 116f6d19`, harness `ec1e766 → 3e28c92 → 9fd6f0e → 3330c23 → c8571e7`,
+both trees clean); RE-RUN by me: 12/12 in `build-lovely` AND in fresh `build-f66`,
+0 warnings, the flags present in scedit's `flags.make` and absent from ftxui's;
+`--doc dso3d z_reflection` → `null`, `--doc flag stars` → present/null, `--doc zzz`
+→ exit 2 with the vocabulary object; `f66_search_parity.py` → 340/340, 80/340
+both sides. Judgment calls ENDORSED with their arguments: DUAL-ERA MCP (the
+fetched revision 2026-07-28 has no handshake; the deployed client speaks
+2025-11-25 — measured); legacy = 2025-11-25 only (nothing claimed unfetched);
+`ordered_json` + file-order tie-break (parity demanded it, gates prove
+behaviour preserved); zero-score ⇒ no answer (stated, two-directional
+criterion); `query_gate.cmake` (the exit code is part of the record); catalogue
+invariants instead of a byte record (the doc passes would churn it);
+`cappedSuggestion` shared (I2). DISPATCHER GLOSS TALLIED, this round's second:
+the F66 section named `initialize`/`initialized` FROM RECALL while ordering the
+spec fetched — the executor's fetch corrected it; the section text stands as the
+record. BOUNDARY NOTE for later tasks: the Claude Code binding smoke invoked
+`claude -p`, i.e. the OWNER's credentials ("Credit balance is too low" is what
+stopped the model turn) — an executor must not spend owner API credit without
+the owner's word; the binding is measured once, no task repeats it. Supervisor
+enactment in this commit: scedit INTENT §4 "Verification bar" superseded with
+record (its two stale bullets). Findings endorsed as recorded: F64's family map
+missed `font`; `f64_doc_router.py`'s artifact overwrite is the destructive-step
+class (Q-56's neighbour) — left as the executor left it, hazard banked.)*
 
 ### F67 — scedit: direct TCP mode — the live engine as target, the `$LOGON` feed as a pane, and the engine's `#!` write-back handled by requirement (D31 "direct tcp mode"; scedit INTENT §5 item 6) [M]
 
