@@ -1332,8 +1332,12 @@ ledger + README + FR annotation committed; code tree clean; WIP per §0.6.
 HEADs verified live). CP1 done, code `cdda1ee4`: scope 1 (EditCore
 `errorHistory()`/`warpTo()`, the "history" reading stated in the header,
 tail+finding = two entries), editcore 193 → 223, two tampers shown red.
-Next: scope 3 (`--history` CLI + its gate), then scope 2 (the pane), scope 4
-(grammar clause), the f63 instrument rewrite, then the records.
+CP2 `99260e28`: scope 3 (`--history`, 7 TAB fields; new gate `history_list`,
+8 → 9 gates; check_gate.cmake gains a MODE rather than a third copy).
+CP3 `4c70f2aa`: scope 2 (the pane, F5/F3/F4 + click; ui_selftest 13 → 17
+frames, the 13 old ones changed on the status row only, diff-verified).
+Next: scope 4 (grammar executes-only clause), the f63 instrument rewrite,
+then the records (mirror ledger + READMEs + FR) and the fresh-build proof.
 
 ### F66 — scedit: the documentation surface for machines — `--doc`, `--search`, `--check` as JSON, and an MCP stdio server over the same readers (FEATURE_REQUESTS 2026-08-31 "LLM assistance"; scedit INTENT §5 item 19) [M]
 
