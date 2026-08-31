@@ -150,6 +150,7 @@
           "doc": "The name of a body of the solar system; the word home_planet means the body you are standing on.",
           "value": "string, or the word home_planet",
           "values": ["<body name>", "home_planet"],
+          "completable": ["home_planet"],
           "value_docs": {
             "home_planet": "whatever body you are standing on right now (its English name is looked up and used instead, app_command_interface.cpp:3117-3118)"
           },
@@ -162,6 +163,7 @@
           "doc": "Another spelling of `planet`: the name of a body of the solar system.",
           "value": "string, or the word home_planet",
           "values": ["<body name>", "home_planet"],
+          "completable": ["home_planet"],
           "default": "absent or empty -> the next identity key is tried",
           "required": "conditional",
           "source": "app_command_interface.cpp:3119-3123 (W_BODY=\"body\", base_command_interface.hpp:224)",
@@ -178,6 +180,7 @@
           "doc": "The short name of a constellation to select, or the word zodiac to select the twelve constellations of the zodiac at once.",
           "value": "string (a constellation short name), or the word zodiac",
           "values": ["<constellation short name>", "zodiac"],
+          "completable": ["zodiac"],
           "value_docs": {
             "zodiac": "select the twelve zodiac constellations together: Ari, Tau, Gem, Cnc, Leo, Vir, Sco, Sgr, Cap, Aqr, Psc, Lib (src/coreModule/core.cpp:1100-1117)"
           },
@@ -197,6 +200,7 @@
           "doc": "Say off to select the object without drawing the marker around it.",
           "value": "boolean (off-forms only)",
           "values": ["off-forms per Utility::isFalse (\"0\", \"off\", \"false\", case-insensitive; src/tools/utility.hpp:172-183) = no marker", "anything else, and absent = the marker is drawn"],
+          "completable": [],
           "default": "absent -> the marker is turned ON (isFalse(\"\") is false, so the else branch runs)",
           "required": false,
           "source": "app_command_interface.cpp:3141-3144 -> src/coreModule/core.cpp:183-187 (W_POINTER=\"pointer\", base_command_interface.hpp:194)",
@@ -354,6 +358,7 @@
           "doc": "The only thing this can say is drop: erase every star line being drawn.",
           "value": "enumerated",
           "values": ["drop"],
+          "completable": ["drop"],
           "value_docs": {
             "drop": "erase all the star lines drawn so far"
           },
@@ -429,6 +434,7 @@
           "doc": "Whether to record the present view or to return to the recorded one.",
           "value": "enumerated",
           "values": ["save", "load"],
+          "completable": ["load", "save"],
           "value_docs": {
             "save": "record the date, the field of view, the place you are looking from, the body you are on and which scale you are in",
             "load": "go back to what was recorded"
@@ -458,6 +464,8 @@
           "doc": "Zoom in on the object that is selected, or back out.",
           "value": "enumerated (open set: any other word means zoom in)",
           "values": ["out", "initial", "<anything else> = in"],
+          "completable": ["initial", "out"],
+          "completable_excluded": {"in": "typeable and it does work, but only because the domain is OPEN: `out` and `initial` are recognised and EVERY other word zooms in. Offering `in` would teach a recognised token that does not exist, and would suggest `in`/`out` are a pair (value_docs says so itself)"},
           "value_docs": {
             "out": "go back out one step: to the view around the object's satellites, or to the starting view",
             "initial": "go all the way back to the starting width of view and the starting direction",
@@ -504,6 +512,7 @@
           "doc": "Say on to bring the selected object to the middle of the view.",
           "value": "the exact text 'on' and nothing else",
           "values": ["on"],
+          "completable": ["on"],
           "default": "absent, or any other value -> \"Command 'zoom': unknown argument\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:3292-3296 -> src/coreModule/core.hpp:259-262 (W_CENTER=\"center\", W_ON=\"on\": base_command_interface.hpp:203, 187)",
@@ -552,6 +561,7 @@
           "doc": "What to do to the flow of time when no speed is given.",
           "value": "enumerated",
           "values": ["pause", "resume", "increment", "decrement", "sincrement", "sdecrement"],
+          "completable": ["decrement", "increment", "pause", "resume", "sdecrement", "sincrement"],
           "value_docs": {
             "pause": "stop time where it is -- or start it again if it is already stopped: this value FLIPS the state rather than only stopping (:3321)",
             "resume": "let time run again",
@@ -602,6 +612,7 @@
           "doc": "Where to go: how far north (a positive number) or south (a negative one) of the equator, in degrees.",
           "value": "number(evalDouble) -- $-variable substitution possible -- or one of the two words below",
           "values": ["default", "inverse", "<number of degrees>"],
+          "completable": ["default", "inverse"],
           "value_docs": {
             "default": "the latitude the program starts at (src/coreModule/coreLink.hpp:884-886)",
             "inverse": "the same latitude on the other side of the equator (the present value with its sign turned round)"
@@ -614,6 +625,7 @@
           "doc": "The same thing as `lat`, spelled out.",
           "value": "number(evalDouble) -- $-variable substitution possible -- or default / inverse",
           "values": ["default", "inverse", "<number of degrees>"],
+          "completable": ["default", "inverse"],
           "default": "absent or empty -> the latitude you are at now is kept",
           "required": "conditional",
           "source": "app_command_interface.cpp:3407 (W_LATITUDE=\"latitude\", base_command_interface.hpp:178)",
@@ -623,6 +635,7 @@
           "doc": "Where to go: how far east (a positive number) or west (a negative one), in degrees.",
           "value": "number(evalDouble) -- $-variable substitution possible -- or one of the two words below",
           "values": ["default", "inverse", "<number of degrees>"],
+          "completable": ["default", "inverse"],
           "value_docs": {
             "default": "the longitude the program starts at (src/coreModule/coreLink.hpp:888-890)",
             "inverse": "half a turn round the body: the present longitude plus 180 degrees"
@@ -635,6 +648,7 @@
           "doc": "The same thing as `lon`, spelled out.",
           "value": "number(evalDouble) -- $-variable substitution possible -- or default / inverse",
           "values": ["default", "inverse", "<number of degrees>"],
+          "completable": ["default", "inverse"],
           "default": "absent or empty -> the longitude you are at now is kept",
           "required": "conditional",
           "source": "app_command_interface.cpp:3408 (W_LONGITUDE=\"longitude\", base_command_interface.hpp:177)",
@@ -644,6 +658,7 @@
           "doc": "How high to stand above the body, in metres; a value that starts with + or - is added to your present height instead of replacing it.",
           "value": "number(evalDouble) -- $-variable substitution possible -- or the word default",
           "values": ["default", "<number of metres>", "+<number> / -<number> = relative to your present height"],
+          "completable": ["default"],
           "value_docs": {
             "default": "the height the program starts at (src/coreModule/coreLink.hpp:892-894)"
           },
@@ -693,6 +708,8 @@
           "doc": "How many seconds the move takes; leave it out to arrive at once.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, the move is immediate",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:3587 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:3458 -> src/coreModule/coreLink.hpp:963-966 -> src/navModule/observer.cpp:160-199 (W_DURATION=\"duration\", base_command_interface.hpp:102)",
           "notes": "Turned into whole milliseconds (:3458), so anything under a thousandth of a second is the same as 0."
@@ -724,6 +741,7 @@
           "doc": "Which scale to jump to.",
           "value": "enumerated, matched without regard to case",
           "values": ["in_solarsystem", "insolarsystem", "in_stellarsystem", "instellarsystem", "in_galaxy", "ingalaxy", "in_universe", "inuniverse"],
+          "completable": ["in_galaxy", "in_solarsystem", "in_stellarsystem", "in_universe", "ingalaxy", "insolarsystem", "instellarsystem", "inuniverse"],
           "value_docs": {
             "in_solarsystem": "the scale of the solar system, seen from a body or from space near one (spelling 'insolarsystem' does the same)",
             "in_stellarsystem": "the scale of another star's system (spelling 'instellarsystem' does the same)",
@@ -739,6 +757,7 @@
           "doc": "Which body to stand on after the jump; the word selected means the object selected right now.",
           "value": "string (a body's English name), or the word selected",
           "values": ["<body name>", "selected"],
+          "completable": ["selected"],
           "default": "absent or empty -> you stay on the body you are on",
           "required": false,
           "source": "app_command_interface.cpp:3471-3473 -> src/coreModule/core.cpp:2076-2089 (W_BODY=\"body\", base_command_interface.hpp:224)",
@@ -748,6 +767,7 @@
           "doc": "How high to stand after the jump, in metres; a value starting with + or - is added to your present height instead.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "values": ["<number of metres>", "+<number> / -<number> = relative to your present height"],
+          "completable": [],
           "default": "absent or empty -> your height is unchanged",
           "required": false,
           "source": "app_command_interface.cpp:3475-3485 -> src/coreModule/coreLink.hpp:963-966 (W_ALTITUDE=\"altitude\", base_command_interface.hpp:179)",
@@ -777,6 +797,7 @@
           "doc": "What to do with the video.",
           "value": "enumerated",
           "values": ["play", "stop", "pause", "jump", "restart"],
+          "completable": ["jump", "pause", "play", "restart", "stop"],
           "value_docs": {
             "play": "start a video (all the other keys below belong to this one)",
             "stop": "stop the video that is playing",
@@ -792,6 +813,7 @@
           "doc": "How the video is shown.",
           "value": "enumerated, matched without regard to case",
           "values": ["vr360", "vrcube", "image", "viewport", "dual_viewport"],
+          "completable": ["dual_viewport", "image", "viewport", "vr360", "vrcube"],
           "value_docs": {
             "vr360": "wrapped on a sphere all around you -- a 360-degree video",
             "vrcube": "wrapped on a cube all around you -- a cube-map video",
@@ -816,6 +838,7 @@
           "doc": "A sound file to play in step with the video; the word auto asks for the one named after the video with the sky language added.",
           "value": "string (a file name), or the word auto",
           "values": ["<file name>", "auto"],
+          "completable": ["auto"],
           "value_docs": {
             "auto": "use <the video's name>-<sky language>.ogg from the media folder, if that file exists (:3637-3647)"
           },
@@ -836,6 +859,7 @@
           "doc": "What a `type image` video is fixed to.",
           "value": "enumerated, matched without regard to case",
           "values": ["viewport", "horizontal", "equatorial", "j2000", "dome", "spherical"],
+          "completable": ["dome", "equatorial", "horizontal", "j2000", "spherical", "viewport"],
           "value_docs": {
             "viewport": "fixed to the screen, so it does not move when the view turns",
             "horizontal": "fixed to your horizon, so it stays over the same part of the landscape",
@@ -845,6 +869,8 @@
             "spherical": "wrapped as a sphere around you"
           },
           "default": "absent, or any word that is none of the six -> viewport (src/mediaModule/image_mgr.cpp:73-82)",
+          "default_value": "viewport",
+          "default_value_source": "src/mediaModule/image_mgr.cpp:73-82 @ d64fd437 (lowercases, and an unknown or empty name returns POS_VIEWPORT)",
           "required": false,
           "source": "app_command_interface.cpp:3518, 3682 -> src/mediaModule/image_mgr.cpp:37-42, 58-70 -> src/mediaModule/image.cpp:682-709 (W_POSITION=\"position\", base_command_interface.hpp:95)",
           "notes": "Only used when `type` is image."
@@ -853,6 +879,7 @@
           "doc": "How many copies of a `type image` video are drawn around the dome.",
           "value": "enumerated (anything not listed means one copy)",
           "values": ["twice", "thrice", "<anything else> = once"],
+          "completable": ["thrice", "twice"],
           "value_docs": {
             "twice": "two copies, half a turn apart (0 and 180 degrees)",
             "thrice": "three copies, a third of a turn apart (0, 120 and 240 degrees)"
@@ -881,6 +908,7 @@
           "doc": "The subtitle file to show with the video; the word auto asks for the one named after the video in the subtitle language.",
           "value": "string (a file name), or the word auto",
           "values": ["<file name>", "auto"],
+          "completable": ["auto"],
           "value_docs": {
             "auto": "use <the video's name>-<subtitle language>.srt from the media folder, if that file exists (:3557-3567)"
           },
@@ -893,6 +921,7 @@
           "doc": "Show or hide the subtitles.",
           "value": "enumerated / boolean",
           "values": ["toggle", "on-forms per Utility::isTrue", "anything else = hide"],
+          "completable": ["toggle"],
           "value_docs": {
             "toggle": "show them if they are hidden, hide them if they are shown"
           },
@@ -905,6 +934,7 @@
           "doc": "How many copies of the subtitles are drawn around the dome.",
           "value": "enumerated (anything not listed means one copy)",
           "values": ["twice", "thrice", "<anything else> = once"],
+          "completable": ["thrice", "twice"],
           "value_docs": {
             "twice": "two copies, at the front and the back (180 and 0 degrees)",
             "thrice": "three copies (at 180, 60 and 300 degrees)"
@@ -934,6 +964,8 @@
           "doc": "For `action jump`: how many seconds to move within the video -- forward if positive, back if negative.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, the video does not move",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:3874 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": "conditional",
           "source": "app_command_interface.cpp:3745 -> src/mediaModule/media.cpp:279-281 -> src/mediaModule/video_player.cpp:672-675 (W_VALUE=\"value\", base_command_interface.hpp:91)",
           "notes": "Jumping back past the beginning starts the video again (src/mediaModule/video_player.cpp:692-695); jumping past the end does nothing (src/mediaModule/video_player.cpp:696)."
@@ -942,6 +974,8 @@
           "doc": "The colour to make see-through in the video, written in one word: x followed by six hexadecimal figures, or the three numbers 0-255 run together after the letters r, g and b.",
           "value": "string",
           "values": ["xRRGGBB", "r<0-255>g<0-255>b<0-255>"],
+          "completable": [],
+          "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
           "default": "absent -> the r/g/b keys are used instead; with none of them nothing about the see-through colour changes",
           "required": false,
           "source": "app_command_interface.cpp:3692, 3696 -> src/interfaceModule/app_command_color.cpp:92-120 (W_COLOR_VALUE=\"color_value\", base_command_interface.hpp:134)",
@@ -972,6 +1006,8 @@
           "doc": "How far a colour may differ from the chosen one and still be made see-through.",
           "value": "number (Utility::strToDouble)",
           "default": "absent -> 0.05 (the default of Media::setKeyColor / Media::imageSetKeyColor, src/mediaModule/media.hpp:128, 299)",
+          "default_value": "0.05",
+          "default_value_source": "app_command_interface.cpp:3827-3842 @ d64fd437 (empty takes the one-argument overload) -> src/mediaModule/media.hpp:128, 299 (`float intensity = 0.05`)",
           "required": false,
           "source": "app_command_interface.cpp:3698-3705 (W_INTENSITY=\"intensity\", base_command_interface.hpp:149)",
           "notes": "Read only when a colour was successfully read from `color_value` or from r/g/b (:3697)."
@@ -1023,6 +1059,7 @@
           "doc": "Whether to save one picture now or to start (or stop) saving a sequence.",
           "value": "enumerated",
           "values": ["snapshot", "record"],
+          "completable": ["record", "snapshot"],
           "value_docs": {
             "snapshot": "save one picture of the dome now",
             "record": "start saving one picture per frame -- or stop, if a sequence is already being saved: this value FLIPS the state (src/appModule/save_screen_interface.cpp:96-102)"
@@ -1064,6 +1101,7 @@
           "doc": "The date and time written out, read as the time on your own clock.",
           "value": "text of the shape [+/-]YYYY-MM-DDThh:mm:ss -- the T is a letter you write; a value starting with T sets the time only and keeps the day",
           "values": ["YYYY-MM-DDThh:mm:ss", "Thh:mm:ss (time only, same day)"],
+          "completable": [],
           "default": "absent or empty -> the next form is tried; a value that cannot be read -> \"Error parsing date local\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:3810-3828 -> src/appModule/space_date.cpp:255-279 (reading), 579-594 (the day the T-form keeps) (W_LOCAL=\"local\", base_command_interface.hpp:219)",
@@ -1113,6 +1151,7 @@
           "doc": "Take the date from the computer or from the program's own setting.",
           "value": "enumerated",
           "values": ["current", "preset", "keep_time"],
+          "completable": ["current", "keep_time", "preset"],
           "value_docs": {
             "current": "set the sky to the computer's date and time right now",
             "preset": "set the sky to the date the program is configured to start at -- but only when it is configured to start at a preset date, otherwise the computer's date is used (:3898-3900)",
@@ -1127,6 +1166,7 @@
           "doc": "Move the time to one of the Sun's moments of the day where you are standing.",
           "value": "enumerated",
           "values": ["set", "rise", "meridian", "midnight"],
+          "completable": ["meridian", "midnight", "rise", "set"],
           "value_docs": {
             "set": "the time the Sun sets today at your place",
             "rise": "the time the Sun rises today at your place",

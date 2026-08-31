@@ -303,6 +303,82 @@ int validate(const json &g, const std::string &grammarPath) {
 		check(ok, "argument tokens: every role is one of key|value|both|engine_internal|unreferenced");
 	}
 
+	// THE COMPLETABLE MARKER'S OWN I2 EXPOSURE, CLOSED THE SAME WAY (F71 item 12).
+	// `completable` lists the subset of a spec's value domain that scedit may
+	// type on the author's behalf, so a token now appears twice: once in
+	// `values` (or as a `value_docs` key) and once in `completable`. That is a
+	// pending silent desync unless something checks -- this does, and it checks
+	// the STRONG property, not just containment: the bare-token entries of the
+	// domain must be EXACTLY accounted for, each either offered or excluded with
+	// a stated reason. So a value added later cannot inherit a default; the gate
+	// stays red until somebody classifies it. A spec whose whole domain is prose
+	// legitimately offers nothing, and says so with an empty array.
+	//
+	// `default_value` gets the lighter check it needs: a literal is a claim
+	// about the engine, so it must name where that claim was read.
+	{
+		int marked = 0, offered = 0, excluded = 0, literals = 0;
+		std::vector<std::string> unaccounted, unsourced, notInDomain;
+		for (auto c = fam.at("commands").begin(); c != fam.at("commands").end(); ++c) {
+			if (c.key().rfind("_", 0) == 0) continue;
+			if (!c.value().contains("args") || !c.value().at("args").is_object()) continue;
+			for (auto a = c.value().at("args").begin(); a != c.value().at("args").end(); ++a) {
+				if (a.key().rfind("_", 0) == 0 || !a.value().is_object()) continue;
+				const auto &spec = a.value();
+				const std::string where = c.key() + "." + a.key();
+				if (spec.contains("default_value")) {
+					++literals;
+					if (!spec.contains("default_value_source"))
+						unsourced.push_back(where);
+				}
+				const bool hasDomain = spec.contains("values") || spec.contains("value_docs");
+				if (!hasDomain) continue;
+				// the bare tokens the domain actually holds
+				std::set<std::string> domain;
+				if (spec.contains("values"))
+					for (const auto &v : spec.at("values"))
+						if (v.is_string() && scedit::isCompletableLiteral(v.get<std::string>()))
+							domain.insert(v.get<std::string>());
+				if (spec.contains("value_docs"))
+					for (auto v = spec.at("value_docs").begin(); v != spec.at("value_docs").end(); ++v)
+						if (scedit::isCompletableLiteral(v.key()))
+							domain.insert(v.key());
+				if (!spec.contains("completable")) {
+					if (!domain.empty()) unaccounted.push_back(where + " (no `completable`)");
+					continue;
+				}
+				++marked;
+				std::set<std::string> classified;
+				for (const auto &v : spec.at("completable")) {
+					const std::string t = v.get<std::string>();
+					++offered;
+					classified.insert(t);
+					if (!domain.count(t)) notInDomain.push_back(where + ": " + t);
+				}
+				if (spec.contains("completable_excluded"))
+					for (auto e = spec.at("completable_excluded").begin();
+					     e != spec.at("completable_excluded").end(); ++e) {
+						++excluded;
+						classified.insert(e.key());
+						if (!domain.count(e.key())) notInDomain.push_back(where + ": " + e.key());
+					}
+				if (classified != domain) unaccounted.push_back(where);
+			}
+		}
+		check(unaccounted.empty(),
+		      "completable: every bare-token value is offered or excluded with a reason" +
+		      (unaccounted.empty() ? std::string() : " (unaccounted: " + unaccounted.front() +
+		       (unaccounted.size() > 1 ? " and " + std::to_string(unaccounted.size() - 1) + " more" : "") + ")"));
+		check(notInDomain.empty(),
+		      "completable: nothing offered or excluded that the value domain does not hold" +
+		      (notInDomain.empty() ? std::string() : " (" + notInDomain.front() + ")"));
+		check(unsourced.empty(),
+		      "default_value: every literal names where it was read" +
+		      (unsourced.empty() ? std::string() : " (unsourced: " + unsourced.front() + ")"));
+		std::printf("  note    %d specs carry `completable` (%d values offered, %d excluded with a reason); "
+		            "%d specs carry a `default_value` literal\n", marked, offered, excluded, literals);
+	}
+
 	// lint seeds: ids unique
 	std::set<std::string> lintIds;
 	for (const auto &l : g.at("lint_seeds")) lintIds.insert(l.at("id").get<std::string>());

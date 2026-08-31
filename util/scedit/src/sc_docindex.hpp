@@ -46,17 +46,33 @@
  * decision and cannot make scedit claim anything false; the doc bar, which can,
  * shows the file's own text and nothing else.
  *
- * DEFAULTS ARE PROSE TODAY (D31's ghost-default is DORMANT, not dropped)
- * =====================================================================
+ * DEFAULTS: PART DATA SINCE 2026-08-31 (F71 item 11), THE REST STILL PROSE
+ * ========================================================================
  * D31 asks for the default value greyed in an empty value field and offered to
- * completion. All 324 arg specs at HEAD carry `default` as a SENTENCE
- * ("absent -> 0", "absent or empty -> the next form is tried"), not a literal,
- * so there is nothing a machine may type on the author's behalf without reading
- * English and guessing. The mechanism is here and arms itself from data: an
- * explicit `default_value` string in a spec becomes `default_literal`, is
+ * completion. Every arg spec carries `default` as a SENTENCE ("absent -> 0",
+ * "absent or empty -> the next form is tried"); a sentence is not something a
+ * machine may type on the author's behalf without reading English and guessing,
+ * which C2 forbids. So the literals were read AT SOURCE, one by one, and written
+ * as data: an explicit `default_value` string becomes `default_literal`, is
  * offered first among the value candidates and is what the ghost shows on an
- * empty field. Count at HEAD: 0. `dormantFeatures()` says so out loud -- the
- * `unarmedRules()` precedent, for the same reason.
+ * empty field. 60 of the 324 carry one; `dormantFeatures()` reports the
+ * remaining coverage out loud -- the `unarmedRules()` precedent, same reason.
+ * Some of the 264 never will: a default that depends on which form the line
+ * takes has no single literal, and the FALSE side of a boolean has no spelling
+ * the engine recognises (`Utility::isTrue` accepts only TRUE/ON/1 and calls
+ * everything else false), so offering one would teach a word that does not
+ * exist. Each such exclusion is argued in `claude/harness/f71_defaults.py`.
+ *
+ * TWO PREDICATES, ON PURPOSE
+ * ==========================
+ * `isCompletableLiteral` filters a GUESS out of `values` prose, so it is strict.
+ * A `default_value` is not a guess: it is verified data carrying a source anchor,
+ * and the seed gate refuses one without it. Applying the strict rule to it would
+ * silently drop legitimate defaults that merely contain a dot or a minus sign
+ * (`0.05`, `-90`, `personal.txt`). So the default literal is filtered by
+ * `isTypeableValue` instead, which asks the only question that actually matters
+ * for inserting bytes into a script line: can the engine's tokenizer read this
+ * back as ONE unquoted value? -- i.e. no whitespace and no `"`.
  *
  * OWNERSHIP: by value; returned pointers point into the DocIndex.
  */
@@ -77,6 +93,14 @@ extern const char *const kNoDoc;
 //! May this string be OFFERED as a completion candidate? True iff it is a
 //! non-empty run of [A-Za-z0-9_] -- see the header note.
 bool isCompletableLiteral(const std::string &s);
+
+//! May this string be TYPED into a value slot as it stands? True iff it is
+//! non-empty and holds no whitespace and no `"` -- the tokenizer's own
+//! condition for reading a run of bytes back as one unquoted value. Used for
+//! the verified `default_value` literal, where the strict rule above would
+//! reject `0.05` and `personal.txt` for no reason that survives contact with
+//! the parser. See the header note "TWO PREDICATES, ON PURPOSE".
+bool isTypeableValue(const std::string &s);
 
 //! Everything the file says about one named thing (an argument key, a family
 //! name, or a command's key grammar). Fields are the file's own text.

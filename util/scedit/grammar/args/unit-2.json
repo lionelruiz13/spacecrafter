@@ -1327,6 +1327,7 @@
      "values": [
       "now"
      ],
+     "completable": ["now"],
      "value_docs": {
       "now": "close the program at once"
      },
@@ -1357,6 +1358,7 @@
       "clear",
       "load_star"
      ],
+     "completable": ["clear", "load", "load_star", "save"],
      "value_docs": {
       "load": "without `module`: re-read the settings file and restart the program's setup. With `module`: read the named file into that module.",
       "save": "without `module`: write the current settings back to the settings file. With `module`: write that module's data to the named file.",
@@ -1374,6 +1376,7 @@
       "star_lines",
       "star_navigator"
      ],
+     "completable": ["star_lines", "star_navigator"],
      "value_docs": {
       "star_lines": "the drawn lines that join stars",
       "star_navigator": "the star catalogue used when travelling among the stars"
@@ -1401,6 +1404,7 @@
       "0",
       "<anything else>"
      ],
+     "completable": ["0", "1", "false", "true"],
      "default": "absent or empty -> false (plain text); \"true\" or \"1\" (any capitalisation) -> true; anything else -> false",
      "required": false,
      "source": "app_command_interface.cpp:2262, 2300 (W_BINARY=\"binary_mode\" base_command_interface.hpp:147) -> src/tools/utility.cpp:432-445",
@@ -1414,6 +1418,7 @@
       "sc",
       "other"
      ],
+     "completable": ["other", "raw", "sc"],
      "value_docs": {
       "raw": "the unprocessed catalogue layout",
       "sc": "spacecrafter's own layout - the only one that also honours `binary_mode`",
@@ -1564,6 +1569,7 @@
       "line",
       "label"
      ],
+     "completable": ["label", "line"],
      "value_docs": {
       "line": "the lines joining the constellation's stars",
       "label": "the constellation's name written in the sky"
@@ -1579,6 +1585,8 @@
       "xRRGGBB",
       "r<0-255>g<0-255>b<0-255>"
      ],
+     "completable": [],
+     "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
      "default": "absent or empty -> the r/g/b keys are used instead",
      "required": "conditional",
      "source": "app_command_interface.cpp:2375, 2379 (W_COLOR_VALUE=\"color_value\" base_command_interface.hpp:134) -> src/interfaceModule/app_command_color.cpp:92-120"
@@ -1672,6 +1680,7 @@
       "play",
       "stop"
      ],
+     "completable": ["play", "stop"],
      "value_docs": {
       "play": "start the program that suits the file's last three letters",
       "stop": "stop every running vlc and mplayer"
@@ -1695,6 +1704,8 @@
       "<name>.swf",
       "<name>.png"
      ],
+     "completable": [],
+     "completable_excluded": {"bat": "a value_docs KEY naming a file extension, not a value: the value is `<name>.bat`, and the handler refuses anything shorter than five characters (app_command_interface.cpp:2401-2448)", "swf": "a value_docs KEY naming a file extension, not a value: the value is `<name>.swf`", "png": "a value_docs KEY naming a file extension, not a value: the value is `<name>.png`"},
      "value_docs": {
       "avi / mov / mpg / mp4": "played full screen by mplayer, looked for in the video folder",
       "mp3 / ogg": "played by cvlc, looked for in the audio folder",
@@ -1732,6 +1743,7 @@
       "natural",
       "<anything else, including absent>"
      ],
+     "completable": ["natural", "variable"],
      "value_docs": {
       "variable": "forget the script's own variables and change NOTHING else",
       "natural": "the ordinary view from the ground: air and ground scenery ON",
@@ -1764,6 +1776,7 @@
       "default",
       "<degrees>"
      ],
+     "completable": ["default"],
      "value_docs": {
       "default": "go back to the starting direction, at once, ignoring `duration`"
      },
@@ -1783,6 +1796,8 @@
      "doc": "How many seconds the turn takes.",
      "value": "number(evalDouble) - $-variable substitution possible",
      "default": "absent -> 0, the turn is instant (evalDouble(\"\") = 0.0, app_command_interface.cpp:4466-4471)",
+     "default_value": "0",
+     "default_value_source": "app_command_interface.cpp:2673, 2679 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
      "required": false,
      "source": "app_command_interface.cpp:2546, 2552 (W_DURATION=\"duration\" base_command_interface.hpp:102); seconds because the value is multiplied by 1000 into a millisecond move (:2547, :2560)",
      "notes": "Ignored when `azimuth default` is written, because that branch returns first (:2540-2543)."
@@ -1813,6 +1828,7 @@
      "values": [
       "clear"
      ],
+     "completable": ["clear"],
      "value_docs": {
       "clear": "remove every shower that was added"
      },
@@ -1831,6 +1847,8 @@
      "doc": "Where in the sky the shower comes from: right ascension.",
      "value": "number(evalDouble) - $-variable substitution possible",
      "default": "absent or empty -> 0",
+     "default_value": "0",
+     "default_value_source": "app_command_interface.cpp:2705 @ d64fd437 (`!args[W_RA].empty() ? evalDouble(args[W_RA]) : 0.`)",
      "required": false,
      "source": "app_command_interface.cpp:2578, 2581 (W_RA=\"ra\" base_command_interface.hpp:109)",
      "notes": "Only read when `day` is given. The code states no unit (degrees or hours) for it."
@@ -1839,6 +1857,8 @@
      "doc": "Where in the sky the shower comes from: declination.",
      "value": "number(evalDouble) - $-variable substitution possible",
      "default": "absent or empty -> 0",
+     "default_value": "0",
+     "default_value_source": "app_command_interface.cpp:2706 @ d64fd437 (`!args[W_DE].empty() ? evalDouble(args[W_DE]) : 0.`)",
      "required": false,
      "source": "app_command_interface.cpp:2579, 2581 (W_DE=\"de\" base_command_interface.hpp:110)",
      "notes": "Only read when `day` is given. The code states no unit for it."
@@ -1904,6 +1924,7 @@
       "load",
       "rotate"
      ],
+     "completable": ["load", "rotate"],
      "value_docs": {
       "load": "build a new ground scenery out of the keys written on this line",
       "rotate": "turn the scenery already in place"
@@ -1921,6 +1942,7 @@
       "1",
       "1.<digits>"
      ],
+     "completable": ["0", "1"],
      "default": "with `action load`: absent or anything other than the exact text \"0\" -> the scenery is built WITH landing; alone: an unrecognised text -> \"command 'landscape' : invalid action parameter\"",
      "required": false,
      "source": "app_command_interface.cpp:2593, 2598-2601, 2613-2619 (W_LANDING=\"landing\" base_command_interface.hpp:319) -> src/coreModule/core.cpp:754-758",
@@ -1956,6 +1978,7 @@
       "fisheye",
       "spherical"
      ],
+     "completable": ["fisheye", "spherical"],
      "value_docs": {
       "fisheye": "one round picture covering the whole sky above the observer",
       "spherical": "a picture wrapped all the way round the horizon"
@@ -1993,6 +2016,8 @@
      "doc": "How dark the scenery is allowed to get.",
      "value": "number(Utility::strToFloat)",
      "default": "absent or empty -> 0",
+     "default_value": "0",
+     "default_value_source": "src/coreModule/landscape.cpp:186-189 @ d64fd437 (`float limitedShadeValue = 0;`, overwritten only when the key is non-empty)",
      "required": false,
      "downstream": true,
      "source": "src/coreModule/landscape.cpp:186-189, spelling L_LIM_SHADE=\"limited_shade\" src/coreModule/landscape.cpp:62"
@@ -2001,6 +2026,8 @@
      "doc": "Whether the picture is smoothed when drawn small.",
      "value": "boolean(Utility::isTrue)",
      "default": "absent or empty -> true (on)",
+     "default_value": "on",
+     "default_value_source": "src/coreModule/landscape.cpp:197 @ d64fd437 (`param[L_MIPMAP].empty() ? true : Utility::isTrue(param[L_MIPMAP])`); `on` is one of the three spellings isTrue accepts (src/tools/utility.hpp:160-171), so it reproduces the absent behaviour without teaching a word the engine does not know",
      "required": false,
      "downstream": true,
      "source": "src/coreModule/landscape.cpp:197, spelling L_MIPMAP=\"mipmap\" src/coreModule/landscape.cpp:61"
@@ -2017,6 +2044,8 @@
      "doc": "How much of the sky a fisheye scenery picture covers - the older spelling.",
      "value": "number(Utility::strToDouble)",
      "default": "absent -> 180",
+     "default_value": "180",
+     "default_value_source": "src/coreModule/landscape.cpp:203 @ d64fd437 (`Utility::strToDouble(param[\"texturefov\"], 180)`)",
      "required": false,
      "downstream": true,
      "source": "src/coreModule/landscape.cpp:203 (bare literal \"texturefov\")"
@@ -2025,6 +2054,8 @@
      "doc": "How far the scenery is turned about the vertical, in degrees.",
      "value": "number(Utility::strToDouble)",
      "default": "absent -> 0",
+     "default_value": "0",
+     "default_value_source": "src/coreModule/landscape.cpp:204, 211 @ d64fd437 (`Utility::strToDouble(param[\"rotate_z\"], 0.)`, both the fisheye and the spherical branch)",
      "required": false,
      "downstream": true,
      "source": "src/coreModule/landscape.cpp:204 (fisheye), :211 (spherical) - bare literal \"rotate_z\"; a W_ROTATE_Z token exists (base_command_interface.hpp:115) and is NOT used here"
@@ -2033,6 +2064,8 @@
      "doc": "How low the wrapped picture reaches, in degrees.",
      "value": "number(Utility::strToDouble)",
      "default": "absent -> -90 (the nadir)",
+     "default_value": "-90",
+     "default_value_source": "src/coreModule/landscape.cpp:210 @ d64fd437 (`Utility::strToDouble(param[\"base_altitude\"], -90)`; spherical scenery only)",
      "required": false,
      "downstream": true,
      "source": "src/coreModule/landscape.cpp:210 - bare literal \"base_altitude\"; a W_BASE_ALTITUDE token exists (base_command_interface.hpp:185) and is NOT used here"
@@ -2041,6 +2074,8 @@
      "doc": "How high the wrapped picture reaches, in degrees.",
      "value": "number(Utility::strToDouble)",
      "default": "absent -> 90 (the zenith)",
+     "default_value": "90",
+     "default_value_source": "src/coreModule/landscape.cpp:211 @ d64fd437 (`Utility::strToDouble(param[\"top_altitude\"], 90)`; spherical scenery only)",
      "required": false,
      "downstream": true,
      "source": "src/coreModule/landscape.cpp:211 - bare literal \"top_altitude\"; a W_TOP_ALTITUDE token exists (base_command_interface.hpp:186) and is NOT used here"
@@ -2142,6 +2177,7 @@
       "update",
       "load"
      ],
+     "completable": ["clear", "drop", "load", "update"],
      "value_docs": {
       "clear": "remove every text on the dome and stop (no other key is needed)",
       "drop": "remove the text of this name",
@@ -2177,6 +2213,7 @@
       "true",
       "<anything else means hidden>"
      ],
+     "completable": ["1", "on", "true"],
      "default": "absent or empty -> the writing's shown/hidden state is left alone",
      "required": false,
      "source": "app_command_interface.cpp:2664, 2740-2757, 2769-2778 (W_DISPLAY=\"display\" base_command_interface.hpp:92) -> src/tools/utility.hpp:160-171",
@@ -2189,6 +2226,7 @@
       "twice",
       "thrice"
      ],
+     "completable": ["thrice", "twice"],
      "value_docs": {
       "twice": "two copies, the second half a turn round the dome (azimuth + 180)",
       "thrice": "three copies, a third of a turn apart (azimuth + 120 and + 240)"
@@ -2223,7 +2261,10 @@
       "X_LARGE",
       "XX_LARGE"
      ],
+     "completable": ["LARGE", "MEDIUM", "SMALL", "XX_LARGE", "XX_SMALL", "X_LARGE", "X_SMALL"],
      "default": "absent or empty -> MEDIUM; an unrecognised size -> MEDIUM and \"text size was not recognized\" in the log",
+     "default_value": "MEDIUM",
+     "default_value_source": "src/mediaModule/text_mgr.cpp:71-78 @ d64fd437 (`FONT_SIZE textSize = FONT_SIZE::T_MEDIUM;`, consulted only when the key is non-empty); the map is case-sensitive and holds \"MEDIUM\" (:42)",
      "required": false,
      "source": "app_command_interface.cpp:2696-2698 (W_SIZE=\"size\" base_command_interface.hpp:80) -> src/mediaModule/text_mgr.cpp:39-45, :70-78",
      "notes": "The value is upper-cased before use (:2698), so `large` and `LARGE` both work."
@@ -2236,7 +2277,10 @@
       "RIGHT",
       "CENTER"
      ],
+     "completable": ["CENTER", "LEFT", "RIGHT"],
      "default": "absent or empty -> LEFT; an unrecognised value -> LEFT and \"text alignement was not recognized\" in the log",
+     "default_value": "LEFT",
+     "default_value_source": "src/mediaModule/text_mgr.cpp:109-116 @ d64fd437 (`TEXT_ALIGN textAlign = TEXT_ALIGN::LEFT;`, consulted only when the key is non-empty); the map is case-sensitive and holds \"LEFT\" (:47)",
      "required": false,
      "source": "app_command_interface.cpp:2699-2701 (W_ALIGN=\"align\" base_command_interface.hpp:78) -> src/mediaModule/text_mgr.cpp:47-49, :108-116"
     },
@@ -2247,6 +2291,8 @@
       "xRRGGBB",
       "r<0-255>g<0-255>b<0-255>"
      ],
+     "completable": [],
+     "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
      "default": "absent or empty -> the r/g/b keys are used; all four absent -> the program's usual text colour",
      "required": false,
      "source": "app_command_interface.cpp:2704, 2709-2715 (W_COLOR_VALUE=\"color_value\" base_command_interface.hpp:134) -> src/interfaceModule/app_command_color.cpp:92-120; default colour src/mediaModule/text_mgr.cpp:118-124"
@@ -2281,6 +2327,7 @@
       "true",
       "<anything else means no fading>"
      ],
+     "completable": ["1", "on", "true"],
      "default": "absent or empty -> no fading",
      "required": false,
      "source": "app_command_interface.cpp:2716-2723 (W_FADER=\"fader\" base_command_interface.hpp:141) -> src/mediaModule/text_mgr.hpp:97-99 (how long the fade lasts is `set text_fading_duration`)"
@@ -2376,6 +2423,7 @@
      "values": [
       "load"
      ],
+     "completable": ["load"],
      "value_docs": {
       "load": "read the culture from that folder and use it"
      },
@@ -2414,6 +2462,7 @@
       "acquire",
       "release"
      ],
+     "completable": ["acquire", "cancelrecord", "default", "end", "faster", "pause", "play", "record", "release", "resume", "slower"],
      "value_docs": {
       "end": "stop the running script and clear what it put on screen: texts, music and every non-permanent picture",
       "play": "start the script named by `filename`",
@@ -2445,6 +2494,7 @@
      "values": [
       "global"
      ],
+     "completable": ["global"],
      "value_docs": {
       "global": "the one lock shared by every script"
      },
@@ -2461,6 +2511,7 @@
       "slower",
       "default"
      ],
+     "completable": ["default", "faster", "slower"],
      "value_docs": {
       "faster": "run faster",
       "slower": "run slower",
@@ -2501,6 +2552,7 @@
       "decrement",
       "<number 0-128>"
      ],
+     "completable": ["decrement", "increment"],
      "value_docs": {
       "increment": "5 louder",
       "decrement": "5 quieter",
@@ -2519,6 +2571,7 @@
       "true",
       "<anything else means the music stops>"
      ],
+     "completable": ["1", "on", "true"],
      "default": "absent or empty -> the setting is left alone and the other keys are used",
      "required": false,
      "source": "app_command_interface.cpp:2887-2891 (W_NOPAUSE=\"nopause\" base_command_interface.hpp:88) -> src/mediaModule/media.hpp:225-231 (\"@param true: the music continues to play if the script is paused\")"
@@ -2533,6 +2586,7 @@
       "drop",
       "sync"
      ],
+     "completable": ["drop", "pause", "play", "resume", "sync"],
      "value_docs": {
       "play": "load the file named by `filename` and start it",
       "pause": "hold the music where it is",
@@ -2561,6 +2615,7 @@
       "true",
       "<anything else means play once>"
      ],
+     "completable": ["1", "on", "true"],
      "default": "absent or empty -> played once",
      "required": false,
      "source": "app_command_interface.cpp:2912 (W_LOOP=\"loop\" base_command_interface.hpp:169/:284) -> src/mediaModule/media.hpp:162"
@@ -2594,6 +2649,7 @@
       "drop",
       "purge"
      ],
+     "completable": ["drop", "load", "purge"],
      "value_docs": {
       "load": "read the picture file and put it on the dome under the given name",
       "drop": "remove the picture of this name",
@@ -2629,6 +2685,7 @@
       "dome",
       "spherical"
      ],
+     "completable": ["dome", "equatorial", "horizontal", "j2000", "spherical", "viewport"],
      "value_docs": {
       "viewport": "stays put on the screen",
       "horizontal": "pinned to the ground and the compass, so it turns with the view",
@@ -2638,6 +2695,8 @@
       "spherical": "wrapped over the whole sky"
      },
      "default": "absent, empty or an unknown value -> viewport (fixed to the screen)",
+     "default_value": "viewport",
+     "default_value_source": "app_command_interface.cpp:3088 @ d64fd437 -> src/mediaModule/image_mgr.cpp:73-82 (lowercases, and an unknown or empty name returns POS_VIEWPORT)",
      "required": false,
      "source": "app_command_interface.cpp:2959-2962, 2978 (W_COORDINATE_SYSTEM=\"coordinate_system\" base_command_interface.hpp:227) -> src/mediaModule/image_mgr.cpp:37-42, :73-83",
      "notes": "Overridden: when `hp` is written the frame is forced to equatorial whatever this key says (:2960-2962)."
@@ -2657,6 +2716,7 @@
       "twice",
       "thrice"
      ],
+     "completable": ["thrice", "twice"],
      "value_docs": {
       "twice": "two copies, half a turn apart",
       "thrice": "three copies, a third of a turn apart"
@@ -2674,6 +2734,7 @@
       "true",
       "<anything else means off>"
      ],
+     "completable": ["1", "on", "true"],
      "default": "absent or empty -> off (\"Default off for historical reasons\", :2973)",
      "required": false,
      "source": "app_command_interface.cpp:2973-2975, 2978 (W_MIPMAP=\"mipmap\" base_command_interface.hpp:172)"
@@ -2682,6 +2743,8 @@
      "doc": "How many seconds every change asked for on this line takes.",
      "value": "number(evalDouble) - $-variable substitution possible",
      "default": "absent -> 0, every change happens at once (evalDouble(\"\") = 0.0, app_command_interface.cpp:4466-4471)",
+     "default_value": "0",
+     "default_value_source": "app_command_interface.cpp:3120, 3140-3187 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
      "required": false,
      "source": "app_command_interface.cpp:2991, 3011-3060 (W_DURATION=\"duration\" base_command_interface.hpp:102); seconds because the value is multiplied by 1000 downstream (src/mediaModule/image.cpp:408, :484)",
      "notes": "One duration for the whole line: alpha, scale, rotation, ratio and the position moves all share it."
@@ -2762,6 +2825,7 @@
       "true",
       "<anything else means it goes>"
      ],
+     "completable": ["1", "on", "true"],
      "default": "absent or empty -> the setting is left alone",
      "required": false,
      "source": "app_command_interface.cpp:3001, 3062-3067 (W_PERSISTENT=\"persistent\" base_command_interface.hpp:180); `script action end` drops every non-persistent picture (:2808)"
@@ -2772,6 +2836,7 @@
      "values": [
       "on"
      ],
+     "completable": ["on"],
      "default": "absent or anything but \"on\" -> the move starts at full speed",
      "required": false,
      "source": "app_command_interface.cpp:3002, 3039, 3051, 3059 (W_ACCELERATE_ALT=\"accelerate_alt\" base_command_interface.hpp:181, W_ON=\"on\" :187)",
@@ -2783,6 +2848,7 @@
      "values": [
       "on"
      ],
+     "completable": ["on"],
      "default": "absent or anything but \"on\" -> the move starts at full speed",
      "required": false,
      "source": "app_command_interface.cpp:3003, 3040, 3052, 3060 (W_ACCELERATE_AZ=\"accelerate_az\" base_command_interface.hpp:182)",
@@ -2794,6 +2860,7 @@
      "values": [
       "on"
      ],
+     "completable": ["on"],
      "default": "absent or anything but \"on\" -> the move stops dead",
      "required": false,
      "source": "app_command_interface.cpp:3004, 3039, 3051, 3059 (W_DECELERATE_ALT=\"decelerate_alt\" base_command_interface.hpp:183)"
@@ -2804,6 +2871,7 @@
      "values": [
       "on"
      ],
+     "completable": ["on"],
      "default": "absent or anything but \"on\" -> the move stops dead",
      "required": false,
      "source": "app_command_interface.cpp:3005, 3040, 3052, 3060 (W_DECELERATE_AZ=\"decelerate_az\" base_command_interface.hpp:184)"
@@ -2831,6 +2899,7 @@
       "true",
       "<anything else means off>"
      ],
+     "completable": ["1", "on", "true"],
      "default": "absent or empty -> the setting is left alone",
      "required": false,
      "source": "app_command_interface.cpp:3070-3076 (W_KEYCOLOR=\"keycolor\" base_command_interface.hpp:189) -> src/mediaModule/media.hpp:305-308"
@@ -2842,6 +2911,8 @@
       "xRRGGBB",
       "r<0-255>g<0-255>b<0-255>"
      ],
+     "completable": [],
+     "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
      "default": "absent or empty -> the r/g/b keys are used; all four absent -> no see-through colour is set and NO error is reported",
      "required": false,
      "source": "app_command_interface.cpp:3079, 3083-3091 (W_COLOR_VALUE=\"color_value\" base_command_interface.hpp:134) -> src/interfaceModule/app_command_color.cpp:92-120"
@@ -2871,6 +2942,8 @@
      "doc": "How close a colour has to be to the see-through colour to be hidden.",
      "value": "number(Utility::strToDouble) - NOT evaluated, so no $-variable substitution",
      "default": "absent or empty -> 0.05 (src/mediaModule/media.hpp:299)",
+     "default_value": "0.05",
+     "default_value_source": "app_command_interface.cpp:3214-3218 @ d64fd437 (empty takes the one-argument overload) -> src/mediaModule/media.hpp:299 (`float intensity = 0.05`)",
      "required": false,
      "source": "app_command_interface.cpp:3085-3087 (W_INTENSITY=\"intensity\" base_command_interface.hpp:149) -> src/mediaModule/media.hpp:299-303",
      "notes": "Only read when a colour was successfully given; a value that is not a number silently becomes 0 (src/tools/utility.cpp:399-406)."

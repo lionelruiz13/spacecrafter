@@ -573,9 +573,14 @@ std::vector<std::string> EditCore::valueCandidates(const std::string &command,
 	const Spec s = specForKey(command, key);
 	std::vector<std::string> out;
 	// D31: the default comes first, so that the ghost on an empty field shows
-	// the default. Dormant until a spec carries `default_value` (see
-	// DocIndex::dormantFeatures) -- the rest is byte-lexicographic.
-	if (s.has_default_literal && isCompletableLiteral(s.default_literal))
+	// the default. Live for the 60 specs that carry a verified `default_value`
+	// (see DocIndex::dormantFeatures for the coverage) -- the rest is
+	// byte-lexicographic. The filter is isTypeableValue, not the stricter
+	// isCompletableLiteral used on `values` prose: the literal here is data with
+	// a source anchor, not a guess, so the only question left is whether the
+	// tokenizer reads it back as one unquoted value (`0.05`, `-90` and
+	// `personal.txt` all do; the strict rule rejected them for their punctuation).
+	if (s.has_default_literal && isTypeableValue(s.default_literal))
 		out.push_back(s.default_literal);
 	for (const auto &c : s.completable)
 		if (!(s.has_default_literal && c == s.default_literal))

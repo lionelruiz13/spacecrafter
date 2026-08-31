@@ -388,8 +388,10 @@ void testCompletion()
 	}
 
 	// C13. D31's default-on-empty-value. The mechanism arms from an explicit
-	// `default_value`; the real contract has none (all 324 defaults are
-	// sentences), the fixture has one, and both facts are asserted.
+	// `default_value`. It was dormant until 2026-08-31 because all 324 defaults
+	// were sentences; F71 item 11 read 60 of them at source and wrote the
+	// literals, so this now asserts the mechanism on the FIXTURE and on the real
+	// contract, plus the coverage the editor reports for the rest.
 	{
 		EditCore f = at("fixture mode ", -1, 0, fixturePath);
 		ok(f.completion().context == Context::EmptyValue, "C13 an empty value slot");
@@ -399,14 +401,31 @@ void testCompletion()
 		eq(f.completion().candidates[1], std::string("alpha"), "C13 ... after the default");
 		eqn(f.docIndex().defaultLiteralCount(), 1, "C13 the fixture carries one");
 
-		EditCore real = at("date load ", -1);
-		eqn(real.docIndex().defaultLiteralCount(), 0,
-		   "C13 the real contract carries none \xe2\x80\x94 the feature is dormant, not dropped");
+		// The real contract, on a key whose default AND whose enumerated domain
+		// are both known: the default leads, the rest follow in byte order.
+		EditCore real = at("text align ", -1);
+		ok(real.completion().context == Context::EmptyValue, "C13 a real empty value slot");
+		eq(real.completion().ghost(), std::string("LEFT"),
+		   "C13 the real ghost is the engine's own fallback (text_mgr.cpp:109)");
+		eqn(real.completion().candidates.size(), 3, "C13 the whole domain is offered");
+		eq(real.completion().candidates[1], std::string("CENTER"), "C13 ... default first, then byte order");
+		eqn(real.docIndex().defaultLiteralCount(), 60,
+		   "C13 the real contract carries 60 verified literals (F71 item 11)");
+
+		// A literal the STRICT values-prose rule would have thrown away: the
+		// ghost must survive a dot. This is the regression that predicate split
+		// exists to prevent.
+		EditCore dotted = at("image intensity ", -1);
+		eq(dotted.completion().ghost(), std::string("0.05"),
+		   "C13 a default with a dot still ghosts (isTypeableValue, not isCompletableLiteral)");
+
+		// Coverage is still reported: 264 specs have no literal and some never
+		// can (per-branch defaults, the false side of a boolean).
 		bool named = false;
 		for (const auto &d : real.docIndex().dormantFeatures())
 			if (d.feature.find("D31") != std::string::npos)
 				named = true;
-		ok(named, "C13 ... and dormantFeatures() says so out loud");
+		ok(named, "C13 ... and dormantFeatures() still reports the uncovered rest");
 	}
 
 	// C14. An open key list in the fixture too, so the marking is tested against

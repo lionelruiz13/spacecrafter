@@ -140,6 +140,7 @@
           "doc": "Which piece of information to send back.",
           "value": "enumerated",
           "values": ["position", "planets_position", "constellation", "object", "media"],
+          "completable": ["constellation", "media", "object", "planets_position", "position"],
           "value_docs": {
             "position": "Where the observer stands and where the view is pointing, written as one JSON line (src/coreModule/coreLink.cpp:616-630 CoreLink::tcpGetPosition).",
             "planets_position": "One entry per non-satellite body, 'name:x:y:z;', its position around the Sun multiplied by 100 and rounded (src/bodyModule/protosystem.cpp:451-465). If the text comes back empty the reply sent is the literal 'NPF' (app_command_interface.cpp:1213-1216).",
@@ -174,6 +175,7 @@
           "doc": "Whether to write the current state to a session file or read one back.",
           "value": "enumerated",
           "values": ["save", "load"],
+          "completable": ["load", "save"],
           "value_docs": {
             "save": "Write the current state into the named session file.",
             "load": "Read a named session file back and apply it."
@@ -186,6 +188,8 @@
           "doc": "The name to save under or load from; leave it out to use the one default session.",
           "value": "string",
           "default": "absent -> the name 'session' (src/experimentalModule/SessionFile.hpp:207 DEFAULT_NAME)",
+          "default_value": "session",
+          "default_value_source": "src/experimentalModule/SessionFile.cpp:45 @ d64fd437 (`name.empty() ? DEFAULT_NAME : name`) -> SessionFile.hpp:207 (`DEFAULT_NAME = \"session\"`)",
           "required": false,
           "source": "app_command_interface.cpp:1315 + src/experimentalModule/SessionFile.cpp:43-58",
           "notes": "It is a NAME, not a path: the file is written as sessions/<name> with '.ini' appended when the name contains no dot; a name containing '/' or '\\' is refused with an explanatory log line and nothing is written or loaded (SessionFile.cpp:45-57, DIRECTORY = \"sessions\" SessionFile.hpp:211). The handler's own comment states the optionality on both save and load (:1312-1314)."
@@ -215,6 +219,8 @@
           "doc": "How many matches to send back at most.",
           "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent -> 5 (the default argument of Core::getListMatchingObjects, src/coreModule/core.hpp:345)",
+          "default_value": "5",
+          "default_value_source": "app_command_interface.cpp:1461-1464 @ d64fd437 (empty takes the one-argument overload) -> src/coreModule/core.hpp:345 (`unsigned int maxNbItem=5`)",
           "required": false,
           "source": "app_command_interface.cpp:1331, 1334-1338 (W_MAX_OBJECT=\"maxobject\", base_command_interface.hpp:100)"
         }
@@ -275,6 +281,7 @@
           "doc": "Hold until the program has finished loading things of the named urgency.",
           "value": "enumerated",
           "values": ["preload", "background", "all", "video"],
+          "completable": ["all", "background", "preload", "video"],
           "value_docs": {
             "preload": "wait for the things being fetched ahead of time (LoadPriority::PRELOAD)",
             "background": "wait for the things being fetched quietly in the background (LoadPriority::BACKGROUND)",
@@ -290,6 +297,7 @@
           "doc": "Choose whether the script pauses by itself while a video is playing.",
           "value": "boolean(flag grammar) or 'toggle'",
           "values": ["toggle", "on-forms per Utility::isTrue", "anything else = off"],
+          "completable": ["toggle"],
           "default": "absent -> this form is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:1371-1383 (W_VIDEO_TERMINATION=\"video_termination\", base_command_interface.hpp:213)",
@@ -319,6 +327,7 @@
           "doc": "Whether to load a drawing from a file or erase the one being drawn.",
           "value": "enumerated",
           "values": ["load", "clear"],
+          "completable": ["clear", "load"],
           "value_docs": {
             "load": "read the points from a file and draw them",
             "clear": "erase the drawing"
@@ -331,6 +340,8 @@
           "doc": "The file holding the points to draw.",
           "value": "string",
           "default": "absent or empty -> 'personal.txt'",
+          "default_value": "personal.txt",
+          "default_value_source": "app_command_interface.cpp:1540-1541 @ d64fd437 (`if (fileName.empty()) fileName = \"personal.txt\";`)",
           "required": false,
           "source": "app_command_interface.cpp:1412-1416",
           "notes": "A name that is not an absolute path is taken relative to the script folder (CallSystem::isAbsolute + scriptInterface->getScriptPath(), :1415-1416). File shape: a point count first, then that many angle pairs; a NEGATIVE count means the angles are in degrees, a positive one means they are used as-is (src/coreModule/skyDisplay.cpp:249-271)."
@@ -366,6 +377,7 @@
           "doc": "Whether to add a picture, remove one, or remove every picture a script has added.",
           "value": "enumerated",
           "values": ["load", "drop", "clear"],
+          "completable": ["clear", "drop", "load"],
           "value_docs": {
             "load": "add a picture using the keys below",
             "drop": "remove the picture with the given `name` (script-added ones only)",
@@ -401,6 +413,8 @@
           "doc": "Where the picture goes: the angle around, in degrees.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1577 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1450 -> src/coreModule/nebula.cpp:81 (ra x PI/180)"
         },
@@ -408,6 +422,8 @@
           "doc": "Where the picture goes: the angle up or down, in degrees.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1577 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1450 -> src/coreModule/nebula.cpp:82 (de x PI/180)"
         },
@@ -415,6 +431,8 @@
           "doc": "How bright the object is said to be (smaller numbers are brighter).",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, which the object code then turns into 99 (i.e. treated as very faint)",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1577 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1450 -> src/coreModule/nebula.cpp:90-91 ('if ((mag!=-30) && (mag < 1.0)) mag = 99.0')"
         },
@@ -422,6 +440,8 @@
           "doc": "How big the picture is drawn on the sky, in arcminutes (sixtieths of a degree).",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1578 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1451 -> src/coreModule/nebula.cpp:83 (size/60 x PI/180), clamped to 1..150 for the object's own size at nebula.cpp:93-96",
           "notes": "This one number fills BOTH catalogue columns: the object's size and the picture's size (src/coreModule/core.cpp:2484 passes angular_size twice)."
@@ -430,6 +450,8 @@
           "doc": "How far the picture is turned on the sky, in degrees.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1578 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1451 -> src/coreModule/nebula.cpp:84 (rotation x PI/180)"
         },
@@ -445,6 +467,8 @@
           "doc": "How bright to draw the picture; leaving it out means zero, and a picture at zero is not drawn at all.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0 (evalDouble(\"\"), app_command_interface.cpp:4466-4471)",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1579 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1452 -> src/coreModule/nebula.cpp:371-376 (brightness = 3 x ad_lum / average x this, and 'if (color < 0.001) return')",
           "notes": "The header calls it 'draw texture luminance adjustment for overexposed images' (src/coreModule/nebula.hpp:219). The invisible-at-zero consequence holds on the ordinary drawing path; the bright-nebula zoom path at nebula.cpp:362-365 does not use this number."
@@ -453,6 +477,8 @@
           "doc": "How far away the object is recorded to be; the number is stored as given.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1580 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1453 -> src/coreModule/nebula.cpp:64 (myDistance = _distance)",
           "notes": "No unit is stated anywhere in the code -- see `flagged`."
@@ -469,6 +495,7 @@
           "doc": "What kind of object the picture shows.",
           "value": "enumerated (open set: an unknown word is accepted and simply counts as generic)",
           "values": ["GALXY", "OPNCL", "GLOCL", "BRTNB", "PLNNB", "DRKNB", "CLNEB", "STARS", "GALCL", "QUASR", "SNREM", "GENRC"],
+          "completable": ["BRTNB", "CLNEB", "DRKNB", "GALCL", "GALXY", "GENRC", "GLOCL", "OPNCL", "PLNNB", "QUASR", "SNREM", "STARS"],
           "value_docs": {
             "GALXY": "galaxy", "OPNCL": "open cluster", "GLOCL": "globular cluster",
             "BRTNB": "bright nebula", "PLNNB": "planetary nebula", "DRKNB": "dark nebula",
@@ -476,6 +503,8 @@
             "QUASR": "quazar", "SNREM": "supernova remnant", "GENRC": "generic"
           },
           "default": "absent or empty on load -> 'GENRC' (src/coreModule/core.cpp:2481-2483); in the show/hide form the value 'all' means every picture",
+          "default_value": "GENRC",
+          "default_value_source": "src/coreModule/core.cpp:2564-2566 @ d64fd437 (`if (tmp_type == \"\") tmp_type = \"GENRC\";`)",
           "required": false,
           "source": "app_command_interface.cpp:1453 (load), 1477-1487 (show/hide); the twelve words and their meanings: src/coreModule/nebula.hpp:50-64 and src/coreModule/nebula.cpp:196-222",
           "notes": "The word chosen picks the marker's colour and symbol (nebula.cpp:140-189). In the show/hide form the comparison is against the word each object was loaded with, not against this list (src/coreModule/nebula_mgr.cpp:310-316)."
@@ -484,6 +513,7 @@
           "doc": "Whether to stop drawing the chosen pictures (yes) or draw them again (no).",
           "value": "boolean(flag grammar)",
           "values": ["on-forms per Utility::isTrue = hide", "anything else = show"],
+          "completable": [],
           "default": "absent (and no `action`) -> \"command 'dso' : unknown argument\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:1475-1507 (W_HIDDEN=\"hidden\", base_command_interface.hpp:120)",
@@ -519,6 +549,7 @@
           "doc": "Whether to place the object where the keys say, or to rebuild it from new picture files.",
           "value": "enumerated",
           "values": ["load", "restart"],
+          "completable": ["load", "restart"],
           "value_docs": {
             "load": "place the object (as one of many if a set is already loaded, otherwise as the single volumetric object)",
             "restart": "rebuild the volumetric object, or swap in another set of picture files"
@@ -553,6 +584,7 @@
           "doc": "How many of these objects the rebuild is for; more than one takes the swap-the-picture-files path instead of the rebuild path.",
           "value": "string compared literally against \"1\"",
           "values": ["(absent)", "1", "any other text"],
+          "completable": ["1"],
           "default": "absent or exactly '1' -> rebuild the single volumetric object; anything else -> swap in the given picture files",
           "required": false,
           "source": "app_command_interface.cpp:1522-1525",
@@ -562,23 +594,25 @@
           "doc": "Which picture of the loaded set this object uses.",
           "value": "int (std::stoi)",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:273-274 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)",
           "required": false,
           "downstream": true,
           "source": "src/inGalaxyModule/dsoNavigator.cpp:274"
         },
-        "pos_x": {"doc": "Where to put the object, left-right, in the galaxy's own coordinates.", "value": "number (std::stof)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:275, 308"},
-        "pos_y": {"doc": "Where to put the object, forward-back, in the galaxy's own coordinates.", "value": "number (std::stof)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:276, 309"},
-        "pos_z": {"doc": "Where to put the object, up-down, in the galaxy's own coordinates.", "value": "number (std::stof)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:277, 310"},
-        "yaw": {"doc": "How far the object is turned about its up axis, in degrees.", "value": "number (std::stof)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:278, 311 -> src/tools/vecmath.hpp:1697-1701 (x PI/180)"},
-        "pitch": {"doc": "How far the object is tipped, in degrees.", "value": "number (std::stof)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:279, 312 -> src/tools/vecmath.hpp:1697-1701"},
-        "roll": {"doc": "How far the object is rolled about its viewing axis, in degrees.", "value": "number (std::stof)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:280, 313 -> src/tools/vecmath.hpp:1697-1701"},
-        "xscale": {"doc": "How far the object is stretched along its own x axis.", "value": "number (std::stof)", "default": "absent -> 1", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:271, 281, 314"},
-        "yscale": {"doc": "How far the object is stretched along its own y axis.", "value": "number (std::stof)", "default": "absent -> 1", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:271, 282, 315"},
-        "zscale": {"doc": "How far the object is stretched along its own z axis.", "value": "number (std::stof)", "default": "absent -> 1", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:271, 283, 316"},
-        "scale": {"doc": "How big the object is drawn overall.", "value": "number (std::stof)", "default": "absent -> 1", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:272, 284, 317"},
-        "rate": {"doc": "How many samples are taken through the object when drawing it.", "value": "int (std::stoi)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:307"},
+        "pos_x": {"doc": "Where to put the object, left-right, in the galaxy's own coordinates.", "value": "number (std::stof)", "default": "absent -> 0", "default_value": "0", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:269, 296 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265) -> src/tools/vecmath.hpp:182 (`T v[3]{}` value-initialises, so a bare `Vec3f position;` is zeroed)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:275, 308"},
+        "pos_y": {"doc": "Where to put the object, forward-back, in the galaxy's own coordinates.", "value": "number (std::stof)", "default": "absent -> 0", "default_value": "0", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:269, 296 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265) -> src/tools/vecmath.hpp:182", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:276, 309"},
+        "pos_z": {"doc": "Where to put the object, up-down, in the galaxy's own coordinates.", "value": "number (std::stof)", "default": "absent -> 0", "default_value": "0", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:269, 296 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265) -> src/tools/vecmath.hpp:182", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:277, 310"},
+        "yaw": {"doc": "How far the object is turned about its up axis, in degrees.", "value": "number (std::stof)", "default": "absent -> 0", "default_value": "0", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:270, 297 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:278, 311 -> src/tools/vecmath.hpp:1697-1701 (x PI/180)"},
+        "pitch": {"doc": "How far the object is tipped, in degrees.", "value": "number (std::stof)", "default": "absent -> 0", "default_value": "0", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:270, 297 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:279, 312 -> src/tools/vecmath.hpp:1697-1701"},
+        "roll": {"doc": "How far the object is rolled about its viewing axis, in degrees.", "value": "number (std::stof)", "default": "absent -> 0", "default_value": "0", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:270, 297 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:280, 313 -> src/tools/vecmath.hpp:1697-1701"},
+        "xscale": {"doc": "How far the object is stretched along its own x axis.", "value": "number (std::stof)", "default": "absent -> 1", "default_value": "1", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:271, 298 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:271, 281, 314"},
+        "yscale": {"doc": "How far the object is stretched along its own y axis.", "value": "number (std::stof)", "default": "absent -> 1", "default_value": "1", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:271, 298 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:271, 282, 315"},
+        "zscale": {"doc": "How far the object is stretched along its own z axis.", "value": "number (std::stof)", "default": "absent -> 1", "default_value": "1", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:271, 298 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:271, 283, 316"},
+        "scale": {"doc": "How big the object is drawn overall.", "value": "number (std::stof)", "default": "absent -> 1", "default_value": "1", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:272, 299 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:272, 284, 317"},
+        "rate": {"doc": "How many samples are taken through the object when drawing it.", "value": "int (std::stoi)", "default": "absent -> 0", "default_value": "0", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:302, 307 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:307"},
         "color_depth": {"doc": "How many slices the colour picture is cut into.", "value": "int (std::stoi)", "default": "absent -> 0 for `action load` and 1 for `action restart` (the value the command passes in)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:319 + app_command_interface.cpp:1520, 1523"},
-        "color_depth_column": {"doc": "Which column of the colour picture the slices are read from.", "value": "int (std::stoi)", "default": "absent -> 0", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:320"},
+        "color_depth_column": {"doc": "Which column of the colour picture the slices are read from.", "value": "int (std::stoi)", "default": "absent -> 0", "default_value": "0", "default_value_source": "src/inGalaxyModule/dsoNavigator.cpp:301, 320 @ d64fd437 (initialiser; EXTRACT/IEXTRACT overwrite only when the key is present, :264-265)", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:320"},
         "z_reflection": {"doc": null, "value": "read but never used", "default": "no effect whatever the value", "required": false, "downstream": true, "source": "src/inGalaxyModule/dsoNavigator.cpp:304-306", "notes": "DEFECT (out of scope, recorded not fixed): the key is looked up and the comparison result is discarded ('it->second == \"true\";' is a statement with no effect), so z_reflection is always false. A doc line would describe behaviour the code does not have -- left null and flagged."}
       },
       "branches": [
@@ -610,6 +644,7 @@
           "doc": "Whether to add a point or to restore the shipped catalogue.",
           "value": "enumerated",
           "values": ["load", "clear"],
+          "completable": ["clear", "load"],
           "value_docs": {
             "load": "add one point with the keys below",
             "clear": "throw away everything added and read the shipped catalogue again"
@@ -622,6 +657,8 @@
           "doc": "Which of the catalogue's pictures this point is drawn with.",
           "value": "number(evalDouble) -- $-variable substitution possible; used as a whole number",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1670 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:184 (texDso3d)",
           "notes": "evalDouble's result is passed into an int parameter (Core::loadDso2d(int typeDso, ...), src/coreModule/core.cpp:2513), so the value is truncated."
@@ -637,6 +674,8 @@
           "doc": "How big the point is drawn.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1670 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:185 (W_SIZE=\"size\", base_command_interface.hpp:80)"
         },
@@ -644,6 +683,8 @@
           "doc": "Where the point goes: the angle around, in degrees -- unless `xyz` is 1, in which case this is a straight coordinate.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1670 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:165-177 (alpha)"
         },
@@ -651,6 +692,8 @@
           "doc": "Where the point goes: the angle up or down, in degrees -- unless `xyz` is 1, in which case this is a straight coordinate.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1670 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:165-177 (delta)"
         },
@@ -658,6 +701,8 @@
           "doc": "How far out the point sits -- unless `xyz` is 1, in which case this is a straight coordinate.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1670 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1543 -> src/inGalaxyModule/dso3d.cpp:165-177",
           "notes": "No unit is stated in the code; in the angle form the three numbers are turned into a position and halved (dso3d.cpp:179-181)."
@@ -666,7 +711,10 @@
           "doc": "Say 1 to give the position as three straight coordinates instead of two angles and a distance.",
           "value": "number(evalDouble) -- $-variable substitution possible; compared against 1 as a whole number",
           "values": ["1 = ra/de/distance are used as x, y, z", "anything else = ra/de are angles in degrees and distance is how far out"],
+          "completable": [],
           "default": "absent -> 0, i.e. the angle form",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:1670 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1543 (W_XYZ=\"xyz\", base_command_interface.hpp:303) -> src/inGalaxyModule/dso3d.cpp:165"
         }
@@ -695,6 +743,7 @@
           "doc": "Whether to load a drawing from a file or erase the one being drawn.",
           "value": "enumerated",
           "values": ["load", "clear"],
+          "completable": ["clear", "load"],
           "value_docs": {
             "load": "read the points from a file and draw them",
             "clear": "erase the drawing"
@@ -707,6 +756,8 @@
           "doc": "The file holding the points to draw.",
           "value": "string",
           "default": "absent or empty -> 'personeq.txt'",
+          "default_value": "personeq.txt",
+          "default_value_source": "app_command_interface.cpp:1689-1690 @ d64fd437 (`if (fileName.empty()) fileName = \"personeq.txt\";`)",
           "required": false,
           "source": "app_command_interface.cpp:1561-1565",
           "notes": "A name that is not an absolute path is taken relative to the script folder (:1564-1565). Same file shape as `personal` (src/coreModule/skyDisplay.cpp:249-271)."
@@ -742,6 +793,7 @@
           "doc": "Put the pen down (start drawing the trail), lift it (stop), or change it to whichever it is not.",
           "value": "boolean(flag grammar) or 'toggle'",
           "values": ["on-forms per Utility::isTrue = pen down", "off-forms per Utility::isFalse (\"0\", \"off\", \"false\", case-insensitive; src/tools/utility.hpp:172-183) = pen up", "toggle = the other one"],
+          "completable": [],
           "default": "absent -> the command goes on to `action`, `target`, `hide`; present with any other value -> \"Command 'body_trace': unknown pen value\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:1587-1611 (W_PEN=\"pen\", base_command_interface.hpp:122)",
@@ -751,6 +803,7 @@
           "doc": "Which body the trail follows.",
           "value": "string -- a body name, or the word 'selected' for whatever is selected right now",
           "values": ["<body name>", "selected"],
+          "completable": ["selected"],
           "default": "absent -> the body last chosen stays the one being traced",
           "required": false,
           "source": "app_command_interface.cpp:1589-1591 (alongside `pen`), 1617-1620 (on its own) -> src/coreModule/coreLink.cpp:1130-1135",
@@ -760,6 +813,7 @@
           "doc": "Erase the trail drawn so far.",
           "value": "enumerated",
           "values": ["clear"],
+          "completable": ["clear"],
           "default": "absent or any other value -> this branch is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:1613-1616"
@@ -768,6 +822,7 @@
           "doc": "Show or stop showing one of the trails already drawn -- give its number, or 'all' for every one.",
           "value": "enumerated | int",
           "values": ["all", "0", "1", "2", "3", "4", "5", "6"],
+          "completable": ["0", "1", "2", "3", "4", "5", "6", "all"],
           "default": "absent -> this branch is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:1621-1624 -> src/coreModule/coreLink.cpp:1123-1128 -> src/bodyModule/body_trace.cpp:62-72",
@@ -799,6 +854,7 @@
           "doc": "Put the pen down (start drawing the trail), lift it (stop), or change it to whichever it is not.",
           "value": "boolean(flag grammar) or 'toggle'",
           "values": ["on-forms per Utility::isTrue = pen down", "off-forms per Utility::isFalse = pen up", "toggle = the other one"],
+          "completable": [],
           "default": "absent -> the command goes on to `action` and `hide`; present with any other value -> NO error and no pen change (the if-chain simply ends, :1634-1643)",
           "required": "conditional",
           "source": "app_command_interface.cpp:1631-1644"
@@ -815,6 +871,7 @@
           "doc": "Erase the Sun's trail drawn so far.",
           "value": "enumerated",
           "values": ["clear"],
+          "completable": ["clear"],
           "default": "absent or any other value -> this branch is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:1645-1648"
@@ -823,6 +880,7 @@
           "doc": "Show or stop showing one of the trails already drawn -- give its number, or 'all' for every one.",
           "value": "enumerated | int",
           "values": ["all", "0", "1", "2", "3", "4", "5", "6"],
+          "completable": ["0", "1", "2", "3", "4", "5", "6", "all"],
           "default": "absent -> this branch is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:1649-1652 -> src/coreModule/coreLink.cpp:1123-1128 -> src/bodyModule/body_trace.cpp:62-72",
@@ -855,6 +913,7 @@
           "doc": "Which drawn thing to recolour.",
           "value": "enumerated -- one of the registered colour names",
           "values": ["families.color_names (46 names, app_command_init.cpp:221-278)"],
+          "completable": [],
           "default": "absent or empty -> \"Command 'color': unknown expected argument 'property'\"; unknown name -> \"Command 'color': unknown property\" plus a nearest-name suggestion in the log",
           "required": true,
           "source": "app_command_interface.cpp:1874-1885 (W_PROPERTY=\"property\", base_command_interface.hpp:127)"
@@ -863,6 +922,8 @@
           "doc": "The colour, written in one word: either x followed by six hex digits, or the three numbers 0-255 run together after the letters r, g and b.",
           "value": "string",
           "values": ["xRRGGBB", "r<0-255>g<0-255>b<0-255>"],
+          "completable": [],
+          "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
           "default": "absent or empty -> the r/g/b keys are used instead",
           "required": "conditional",
           "source": "app_command_interface.cpp:1866, 1870 -> src/interfaceModule/app_command_color.cpp:92-120",
@@ -893,6 +954,8 @@
           "doc": "Which entry of the star colour table to set -- only 'property star_table' uses it.",
           "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:2014 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1887 (W_INDEX=\"index\", base_command_interface.hpp:131) -> applyColor CC_STAR_TABLE :1708 -> src/starModule/hip_star_mgr.cpp:131-138",
           "notes": "Allowed range 0..127; anything else logs 'ColorTable index Error' and sets nothing (hip_star_mgr.cpp:133-135). It is read and evaluated for EVERY colour name; the other 45 ignore it (app_command_interface.hpp:177-179 records star_table as the one taking an index)."
@@ -926,6 +989,7 @@
           "doc": "Whether to put the halo on (yes) or take it off (no); two special words act on every constellation at once.",
           "value": "boolean(flag grammar) | enumerated",
           "values": ["on-forms per Utility::isTrue = add", "off-forms per Utility::isFalse = remove", "all_constellation_on", "all_constellation_off"],
+          "completable": ["all_constellation_off", "all_constellation_on"],
           "value_docs": {
             "all_constellation_on": "light up the stars of every constellation (uses `size` and `rotation`, ignores the colour keys)",
             "all_constellation_off": "take the halo off the stars of every constellation"
@@ -947,6 +1011,8 @@
           "doc": "How big the halo is drawn, in arcminutes (sixtieths of a degree).",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, which REMOVES the halo and hides the star (see notes)",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:2024 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1897 -> src/coreModule/illuminate_mgr.cpp:126-140, 170-177; arcminute conversion at src/coreModule/illuminate.cpp:45",
           "notes": "Three bands (illuminate_mgr.cpp:130-140): 0 or less hides the star and removes its halo; 1 or less removes the halo and shows the star again; above 1 draws the halo. A value below 1 that reaches the drawing code would be replaced by the manager's default size (illuminate_mgr.cpp:172-173), which the size bands make unreachable from this command."
@@ -955,6 +1021,8 @@
           "doc": "How far the halo picture is turned, in degrees.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:2025 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:1898 -> src/coreModule/illuminate.cpp:51 (x PI/180)"
         },
@@ -962,6 +1030,8 @@
           "doc": "The halo colour in one word: either x followed by six hex digits, or the three numbers 0-255 run together after r, g and b.",
           "value": "string",
           "values": ["xRRGGBB", "r<0-255>g<0-255>b<0-255>"],
+          "completable": [],
+          "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
           "default": "absent -> the r/g/b keys are used; if those are absent too the star's own colour is used",
           "required": false,
           "source": "app_command_interface.cpp:1909, 1914 -> src/interfaceModule/app_command_color.cpp:92-120 (W_COLOR_VALUE=\"color_value\", base_command_interface.hpp:134)",
@@ -974,6 +1044,7 @@
           "doc": "Take all the halos away, or just the picture they are drawn with.",
           "value": "enumerated",
           "values": ["clear", "clear_texture"],
+          "completable": ["clear", "clear_texture"],
           "value_docs": {
             "clear": "remove the halo picture and every halo",
             "clear_texture": "remove the halo picture only"

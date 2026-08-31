@@ -161,6 +161,7 @@
           "doc": "What to do; every other key on the line depends on this word.",
           "value": "enumerated",
           "values": ["load", "remove", "clear", "drop", "initial", "reload", "save", "preload", "dual_dump", "screenshot"],
+          "completable": ["clear", "drop", "dual_dump", "initial", "load", "preload", "reload", "remove", "save", "screenshot"],
           "value_docs": {
             "load": "Add an object. With `mode` it adds a three-dimensional model file (see `mode`); without it, it adds a body to the star system, described by the same keys a system data file uses.",
             "remove": "Remove one three-dimensional model, by `name`, from the scene named by `mode` (this value is only read on the model path).",
@@ -182,6 +183,7 @@
           "doc": "Which body the line is about, written as its English name.",
           "value": "string",
           "values": ["<body english name>", "home_planet", "all", "selected"],
+          "completable": ["all", "home_planet", "selected"],
           "value_docs": {
             "home_planet": "the body you are standing on: the handler replaces this word by that body's name before doing anything else (:3950)",
             "all": "on the `color` form only, every body at once (src/bodyModule/solarsystem_color.cpp:37-39)",
@@ -196,6 +198,7 @@
           "doc": "Say which of the three scenes a three-dimensional model file belongs to; writing it switches the whole line to the model form.",
           "value": "enumerated",
           "values": ["in_universe", "in_galaxy", "in_sandbox"],
+          "completable": ["in_galaxy", "in_sandbox", "in_universe"],
           "value_docs": {
             "in_universe": "the scene drawn when you are outside the galaxy",
             "in_galaxy": "the scene drawn when you are inside the galaxy",
@@ -214,13 +217,15 @@
           "source": "app_command_interface.cpp:3956-3957 (model), 4025 (save), 4033 (dual_dump), 4039 (screenshot) -> src/bodyModule/ssystem_factory.hpp:711-733 (save contract), src/bodyModule/ssystem_factory.cpp:975 (dump default), src/appModule/save_screen_interface.cpp:146-154, 347-361 (screenshot default)",
           "notes": "MODEL FORM: the value is a FOLDER name; the file read is <value>/<value>.ojm inside the models directory (:3957 + src/tools/file_path.cpp:114-144, TFP::MODEL3D). SAVE FORM: a file NAME, not a path -- a name containing a path separator, or the machine-owned `.disabled` twin name, is refused with an explanatory log line and nothing is written (src/bodyModule/ssystem_factory.hpp:724-733)."
         },
-        "pos_x": {"doc": "Where to put the three-dimensional model, left-right.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "required": false, "source": "app_command_interface.cpp:3958 -> src/coreModule/coreLink.cpp:635-637 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSX=\"pos_x\", base_command_interface.hpp:293)", "notes": "No unit is stated in the code -- see `flagged`."},
-        "pos_y": {"doc": "Where to put the three-dimensional model, forward-back.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSY=\"pos_y\", base_command_interface.hpp:294)"},
-        "pos_z": {"doc": "Where to put the three-dimensional model, up-down.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSZ=\"pos_z\", base_command_interface.hpp:295)"},
+        "pos_x": {"doc": "Where to put the three-dimensional model, left-right.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4087 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:3958 -> src/coreModule/coreLink.cpp:635-637 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSX=\"pos_x\", base_command_interface.hpp:293)", "notes": "No unit is stated in the code -- see `flagged`."},
+        "pos_y": {"doc": "Where to put the three-dimensional model, forward-back.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4087 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSY=\"pos_y\", base_command_interface.hpp:294)"},
+        "pos_z": {"doc": "Where to put the three-dimensional model, up-down.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4087 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSZ=\"pos_z\", base_command_interface.hpp:295)"},
         "scale": {
           "doc": "How big to draw the three-dimensional model, as a multiple of the size the model file itself declares.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, i.e. the model is scaled to nothing and cannot be seen",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:4089 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:3960 -> src/ojmModule/ojm_mgr.cpp:70 ('multiplier *= tmp->Obj3D->getRadius()') (W_SCALE=\"scale\", base_command_interface.hpp:101)"
         },
@@ -228,6 +233,7 @@
           "doc": "Switch this body between its ordinary picture and its alternative one.",
           "value": "boolean(flag grammar) or 'toggle'",
           "values": ["toggle", "on-forms per Utility::isTrue (src/tools/utility.hpp:160-171: \"1\", \"on\", \"true\", case-insensitive) = use the alternative picture", "ANYTHING ELSE = use the ordinary picture, silently"],
+          "completable": ["toggle"],
           "default": "absent -> this form is not taken",
           "required": "conditional",
           "source": "app_command_interface.cpp:3973-3981 -> src/coreModule/coreLink.cpp:1423-1431 -> src/bodyModule/ssystem_factory.hpp:423-434 (W_SKINUSE=\"skin_use\", W_TOGGLE=\"toggle\": base_command_interface.hpp:297,124)",
@@ -261,6 +267,8 @@
           "doc": "On `action preload`, how many seconds the fetched pictures are kept in memory before the program may drop them again.",
           "value": "int (Utility::strToInt with default 10) -- NO $-variable substitution",
           "default": "absent or empty -> 10 seconds; a value that is not a number -> 0 seconds (the stream conversion fails and leaves 0, src/tools/utility.cpp:459-467)",
+          "default_value": "10",
+          "default_value_source": "app_command_interface.cpp:4157-4158 @ d64fd437 (`Utility::strToInt(kt, 10)`) -> src/tools/utility.cpp:459-461 (returns the default on an empty string)",
           "required": false,
           "source": "app_command_interface.cpp:4028-4029 (kt = strToInt(kt,10) * stapp->getTargetFps()) -> src/bodyModule/protosystem.cpp:1015-1016 and src/bodyModule/ssystem_factory.cpp:758-759 -> src/bodyModule/body.cpp:1310-1315 -> src/tools/s_texture.hpp:294-298 (W_KEEPTIME=\"keep_time\", base_command_interface.hpp:288)",
           "notes": "C1-relevant: the handler REWRITES this entry of the map in place (seconds x the target frame rate = frames) before forwarding, so the value the downstream reads is never the value the line wrote. The old path converts it again with std::stoi (src/bodyModule/protosystem.cpp:1016), which is why the rewrite must leave a number there."
@@ -269,6 +277,7 @@
           "doc": "Stop drawing this body and everything that turns around it (yes), or draw them again (no).",
           "value": "boolean(flag grammar) or 'toggle'",
           "values": ["on-forms per Utility::isTrue = hide", "off-forms per Utility::isFalse (src/tools/utility.hpp:172-183: \"0\", \"off\", \"false\") = show", "toggle = whichever it is not"],
+          "completable": [],
           "default": "absent -> this form is not taken; present with any other value -> \"Command 'body': unknown hidden value\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:4050-4061 -> src/coreModule/coreLink.cpp:1369-1370 -> src/bodyModule/ssystem_factory.hpp:327-340 -> src/bodyModule/protosystem.cpp:280-293 (W_HIDDEN=\"hidden\", base_command_interface.hpp:120)",
@@ -278,6 +287,7 @@
           "doc": "Draw the line of this body's orbit (yes) or stop drawing it (no).",
           "value": "boolean(flag grammar)",
           "values": ["on-forms per Utility::isTrue = draw", "off-forms per Utility::isFalse = do not draw"],
+          "completable": [],
           "default": "absent -> this form is not taken; present with any other value -> \"Command 'body': unknown orbit value\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:4064-4073 -> src/coreModule/coreLink.cpp:1419-1421 -> src/bodyModule/ssystem_factory.hpp:413-421 -> src/bodyModule/solarsystem_selected.cpp:109-113 (W_ORBIT=\"orbit\", base_command_interface.hpp:128)"
@@ -286,6 +296,7 @@
           "doc": "Which of this body's colours to change.",
           "value": "enumerated",
           "values": ["halo", "label", "orbit", "trail", "all"],
+          "completable": ["all", "halo", "label", "orbit", "trail"],
           "value_docs": {
             "halo": "the glow drawn around the body",
             "label": "the body's name written on the sky",
@@ -301,6 +312,8 @@
           "doc": "The colour in one word: either x followed by six hexadecimal digits, or the three numbers 0-255 run together after the letters r, g and b.",
           "value": "string",
           "values": ["xRRGGBB", "r<0-255>g<0-255>b<0-255>"],
+          "completable": [],
+          "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
           "default": "absent or empty -> the r/g/b keys are used instead",
           "required": "conditional",
           "source": "app_command_interface.cpp:4084, 4086 -> src/interfaceModule/app_command_color.cpp:92-118 (W_COLOR_VALUE=\"color_value\", base_command_interface.hpp:134)",
@@ -328,6 +341,7 @@
           "doc": "Which of the surface-detail settings to change; the number goes in `value`.",
           "value": "enumerated",
           "values": ["min_tes_level", "max_tes_level", "planet_altimetry_level", "moon_altimetry_level", "earth_altimetry_level"],
+          "completable": ["earth_altimetry_level", "max_tes_level", "min_tes_level", "moon_altimetry_level", "planet_altimetry_level"],
           "value_docs": {
             "min_tes_level": "the least amount of surface detail used",
             "max_tes_level": "the most amount of surface detail used",
@@ -344,6 +358,8 @@
           "doc": "The number for the chosen surface-detail setting.",
           "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent -> 0",
+          "default_value": "0",
+          "default_value_source": "app_command_interface.cpp:4270 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
           "source": "app_command_interface.cpp:4141 (W_VALUE=\"value\", base_command_interface.hpp:91)",
           "notes": "No range is stated in any code on this path -- see `flagged`."
@@ -352,6 +368,7 @@
           "doc": "On `action preload`, free memory before fetching.",
           "value": "enumerated",
           "values": ["all", "auto"],
+          "completable": ["all", "auto"],
           "value_docs": {
             "all": "release as much picture memory as possible, even memory still in use if it can be",
             "auto": "release only the picture memory nothing is using"
@@ -374,6 +391,7 @@
           "doc": "On `action load` without `mode`, which kind of orbit describes this body's movement; the orbit's own numbers are given by further keys.",
           "value": "enumerated (open set -- the list below is the one the engine's own refusal message names)",
           "values": ["ell_orbit", "comet_orbit", "barycenter", "still_orbit", "location_orbit", "earth_custom", "lunar_custom", "<name>_special"],
+          "completable": ["barycenter", "comet_orbit", "earth_custom", "ell_orbit", "location_orbit", "lunar_custom", "still_orbit"],
           "default": "absent -> no orbit can be built: the body is NOT added to the old drawing path and the reason is logged",
           "required": false,
           "downstream": true,
@@ -384,6 +402,8 @@
           "doc": "On `action load` without `mode`, what kind of object this is.",
           "value": "string (see the stellar-system-file grammar)",
           "default": "absent or unrecognised -> 'Asteroid', with the log line \"No valid body type specified\"",
+          "default_value": "Asteroid",
+          "default_value_source": "src/bodyModule/protosystem.cpp:542 @ d64fd437 (log: \"No valid body type specified ..., assume 'Asteroid'\"); the accepted spelling is protosystem.cpp:493 `CASE(\"Asteroid\", ASTEROID)`",
           "required": false,
           "downstream": true,
           "source": "src/bodyModule/protosystem.cpp:519, 540-543"
@@ -439,6 +459,7 @@
           "doc": "Put every kind of lettering back to the size and shape the program's settings declare.",
           "value": "enumerated",
           "values": ["initial"],
+          "completable": ["initial"],
           "default": "absent -> the command changes one target instead; present with any other word -> \"Command 'font': unknown action argument\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:4154-4162 -> src/appModule/fontFactory.cpp:196-200 (W_ACTION=\"action\", W_INITIAL=\"initial\": base_command_interface.hpp:81,200)"
@@ -447,6 +468,7 @@
           "doc": "Which kind of text to change.",
           "value": "enumerated -- one of the registered font targets",
           "values": ["text", "planets", "constellations", "cardinal_points", "stars", "menu", "nebulae", "grids", "lines", "displays"],
+          "completable": ["cardinal_points", "constellations", "displays", "grids", "lines", "menu", "nebulae", "planets", "stars", "text"],
           "value_docs": {
             "text": "the text a script writes on the screen",
             "planets": "the names of solar-system bodies",
@@ -504,6 +526,7 @@
           "doc": "What to do with the point of view; every other key on the line depends on this word.",
           "value": "enumerated",
           "values": ["rotate", "align_with", "transition_to", "move_to", "save", "load", "free_mode", "descend", "lift_off", "create", "drop", "switch", "follow_rotation"],
+          "completable": ["align_with", "create", "descend", "drop", "follow_rotation", "free_mode", "lift_off", "load", "move_to", "rotate", "save", "switch", "transition_to"],
           "value_docs": {
             "rotate": "turn the view towards the place you are standing on, over `duration` seconds",
             "align_with": "tilt the view so that the named place's own up direction becomes yours, over `duration` seconds",
@@ -535,6 +558,7 @@
           "doc": "What the action acts on.",
           "value": "enumerated | string, depending on `action`",
           "values": ["point", "body", "<place name> (on action rotate)"],
+          "completable": ["body", "point"],
           "value_docs": {
             "point": "on `transition_to`: the exact place you are standing right now becomes a named place called temp_point; on `move_to`: the point given by `x`, `y` and `z`",
             "body": "a body: named by `name` on `transition_to`, by `body_name` on `move_to`"
@@ -564,6 +588,7 @@
           "doc": "On `action move_to target body`, which body to travel to.",
           "value": "string",
           "values": ["<place name that follows a body>", "selected", "default"],
+          "completable": ["default", "selected"],
           "value_docs": {
             "selected": "the body currently selected",
             "default": "the Earth"
@@ -596,6 +621,7 @@
           "doc": "On `action free_mode`, whether free flight is on.",
           "value": "boolean(flag grammar)",
           "values": ["on-forms per Utility::isTrue = free flight on", "ANYTHING ELSE = off, silently"],
+          "completable": [],
           "default": "absent -> \"command 'camera free_mode' : missing state\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:4365-4371 -> src/coreModule/coreLink.hpp:943-950 (W_STATE=\"state\", base_command_interface.hpp:150)",
@@ -613,6 +639,7 @@
           "doc": "On `action follow_rotation`, whether the view turns with the body: write exactly the word true for yes.",
           "value": "string compared literally against \"true\"",
           "values": ["true", "anything else = no"],
+          "completable": ["true"],
           "default": "absent -> no",
           "required": false,
           "source": "app_command_interface.cpp:4441-4445 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,243)",
@@ -622,6 +649,7 @@
           "doc": "On `action create`, what kind of place is being declared.",
           "value": "enumerated",
           "values": ["point", "observatory", "body", "orbit"],
+          "completable": ["body", "observatory", "orbit", "point"],
           "value_docs": {
             "point": "a fixed place, given by x, y and z",
             "observatory": "a fixed place, given by x, y and z (the same thing as point for the newer drawing path)",
@@ -882,6 +910,7 @@
           "doc": "Open a block that only runs when a condition holds; also closes or flips such a block.",
           "value": "number(evalDouble) -- $-variable substitution possible | enumerated",
           "values": ["else", "end", "<a number or a variable name>"],
+          "completable": ["else", "end"],
           "value_docs": {
             "else": "flip the block: what was skipped now runs and the other way round",
             "end": "close the block opened by the last `struct if`",
@@ -909,6 +938,7 @@
           "doc": "Switch off the lines that follow (yes), or switch them back on (no).",
           "value": "boolean(flag grammar)",
           "values": ["on-forms per Utility::isTrue = stop executing what follows", "ANYTHING ELSE = start executing again, silently"],
+          "completable": [],
           "default": "absent -> the command tries `loop`, then `print`",
           "required": "conditional",
           "source": "app_command_interface.cpp:4665-4672 -> commandComment :3160-3164 / commandUncomment :3167-3171 (W_COMMENT=\"comment\", base_command_interface.hpp:236)",
@@ -918,6 +948,7 @@
           "doc": "Repeat the lines that follow a given number of times, or close/abandon such a repetition.",
           "value": "int(via evalString then Utility::strToInt) -- $-variable substitution possible | enumerated",
           "values": ["end", "break", "<a whole number>"],
+          "completable": ["break", "end"],
           "value_docs": {
             "end": "close the repeated block: go back to its first line and run it again until the count is used up",
             "break": "abandon the repetition altogether, right now",
@@ -932,6 +963,7 @@
           "doc": "Write the list of named values and what they hold into the script log.",
           "value": "enumerated",
           "values": ["var"],
+          "completable": ["var"],
           "default": "absent or any other word -> nothing is written",
           "required": false,
           "source": "app_command_interface.cpp:4701-4703 -> src/interfaceModule/app_command_eval.cpp:253-269 (W_PRINT=\"print\", W_VAR=\"var\": base_command_interface.hpp:241,242)",
@@ -1000,6 +1032,7 @@
           "doc": "What to do with the fades.",
           "value": "enumerated",
           "values": ["skip", "pause", "resume"],
+          "completable": ["pause", "resume", "skip"],
           "value_docs": {
             "skip": "jump the fades forward by `duration` so that they are over now",
             "pause": "freeze every fade where it is",
@@ -1014,6 +1047,8 @@
           "doc": "On `action skip`, how much fade time to jump through, in thousandths of a second.",
           "value": "number(evalDouble) -- $-variable substitution possible; milliseconds",
           "default": "absent or 0 -> 3600 (the code's own comment: \"Ensure transitions complete now\")",
+          "default_value": "3600",
+          "default_value_source": "app_command_interface.cpp:4872-4874 @ d64fd437 (`float duration = evalDouble(args[W_DURATION]); if (!duration) duration = 3600;`)",
           "required": false,
           "source": "app_command_interface.cpp:4731-4739 -> src/coreModule/core.cpp:2541-2547 (Core::update takes delta_time in milliseconds: 'const float deltaSeconds = delta_time / 1000.f') (W_DURATION=\"duration\", base_command_interface.hpp:102)",
           "notes": "The number is passed as the time step of one update, so it is in milliseconds -- 3600 is 3.6 seconds of fade time. It reaches an `int` parameter, so anything after the decimal point is dropped."

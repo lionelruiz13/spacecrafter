@@ -35,6 +35,16 @@ bool isCompletableLiteral(const std::string &s)
 	return true;
 }
 
+bool isTypeableValue(const std::string &s)
+{
+	if (s.empty())
+		return false;
+	for (unsigned char c : s)
+		if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '"')
+			return false;
+	return true;
+}
+
 bool Spec::valueDoc(const std::string &v, std::string &out) const
 {
 	auto it = value_docs.find(v);
@@ -91,6 +101,24 @@ Spec specFrom(const json &o)
 		s.has_default_literal = !s.default_literal.empty();
 	}
 
+	// The offerable subset is DATA when the spec states it (F71 item 12): the
+	// contract lists it under `completable`, and the seed gate checks that the
+	// list accounts for every bare-token entry of `values`/`value_docs` -- so a
+	// value added later cannot quietly inherit a guess. Five entries are
+	// deliberately NOT offered and say why in `completable_excluded`: `xRRGGBB`
+	// (a shape), the three file-extension keys of `external_viewer.filename`,
+	// and `zoom.auto`'s `in` (typeable, but the domain is open and offering it
+	// would teach a token the engine does not recognise).
+	if (o.is_object() && o.contains("completable") && o.at("completable").is_array()) {
+		for (const auto &v : o.at("completable"))
+			if (v.is_string())
+				s.completable.push_back(v.get<std::string>());
+		std::sort(s.completable.begin(), s.completable.end());
+		return s;
+	}
+	// Fallback for a spec that does not state it: offer what is typeable. This
+	// is the pre-F71 rule, kept so a hand-written or older contract still
+	// completes something; it is what the marker exists to replace.
 	std::set<std::string> cand;
 	for (const auto &v : s.values)
 		if (isCompletableLiteral(v))
@@ -246,11 +274,18 @@ Spec DocIndex::familyMember(const std::string &family, const std::string &name) 
 std::vector<DocIndex::Dormant> DocIndex::dormantFeatures() const
 {
 	std::vector<Dormant> out;
-	if (default_literals_ == 0)
+	// D31's ghost arms PER SPEC, so this reports coverage rather than a single
+	// on/off: the specs still without a literal are the ones where the editor
+	// shows the default sentence and types nothing. Some of them will never get
+	// one -- a default that depends on which form the line takes has no single
+	// literal, and the false side of a boolean has no spelling the engine
+	// recognises (see grammar `default_value_source` / F71).
+	if (default_literals_ < arg_specs_)
 		out.push_back({"ghost-text default on an empty value field (D31)",
-		               "no arg spec carries a machine-readable `default_value`: all "
-		               + std::to_string(arg_specs_) + " specs state the default as a "
-		               "SENTENCE, which scedit will show but will not type for you"});
+		               std::to_string(default_literals_) + " of " + std::to_string(arg_specs_)
+		               + " arg specs carry a machine-readable `default_value`; the other "
+		               + std::to_string(arg_specs_ - default_literals_) + " state the default "
+		               "as a SENTENCE only, which scedit shows but will not type for you"});
 	if (family_names_v1_ != 0)
 		out.push_back({"per-name documentation for " + std::to_string(family_names_v1_)
 		               + " of the " + std::to_string(family_names_) + " family names",
