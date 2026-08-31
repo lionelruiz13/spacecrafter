@@ -1,0 +1,176 @@
+{
+ "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "results": [
+  {
+   "check": "A  exactly lines 3,4,5,6,8 carry a '#!' tail",
+   "ok": true,
+   "detail": "[3, 4, 5, 6, 8]"
+  },
+  {
+   "check": "A  L3 end-without-if",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A  L4 else-without-if",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A  L5 loop-end-without-loop",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A  L6 unclosed loop, at the OPENER",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A  L8 unclosed if, at the OPENER",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A  every other byte identical (tails stripped == original)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A  log: five 'script <file>:<line>: <what> [<line>]' lines",
+   "ok": true,
+   "detail": "[[\"3\", \"this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close\", \"struct if end\"], [\"4\", \"this 'struct if else' flips nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it belongs to\", \"struct if else\"], [\"5\", \"this 'struct loop end' closes nothi"
+  },
+  {
+   "check": "A  log: the quoted line is the faulty line itself",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A2 played again: byte-identical (no rewrite)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A2 the tails were comments: the same five diagnostics fired again",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A2 no 'rewritten' log line for A (A's first run had exactly one)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "B  the opener (L2) is annotated",
+   "ok": true,
+   "detail": "{\"2\": \"this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop\"}"
+  },
+  {
+   "check": "B  fixed by appending 'struct if end': the tail is CLEARED",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "check": "B  ... and the file is the fixed text exactly",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "C  the closer (L3) is annotated",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "C  fixed by giving it an opener: the tail is CLEARED",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "check": "C  ... file == fixed text",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "D  CRLF: every line still ends with CRLF",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "D  CRLF: the tails sit BEFORE the CR",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "D  CRLF: the same five lines",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "E  read-only dir: file untouched",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "E  read-only dir: one WARNING naming the file and '5 annotation(s) to place'",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "E  read-only dir: the five diagnostics are in the log anyway",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "F  a '#!' inside quotes is not a tail: file untouched",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "F  ... and no annotation activity for F in the log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "G  a line edited while the script ran: annotation SKIPPED, the edit survives",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "G  ... with a 'changed since the script was loaded' warning",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "H+I the opener in the CALLED script is annotated in ITS file (I line 1)",
+   "ok": true,
+   "detail": "{\"1\": \"this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop\"}"
+  },
+  {
+   "check": "H+I the caller is untouched",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "J  one tail on the replayed line (L3)",
+   "ok": true,
+   "detail": "{\"3\": \"this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close\"}"
+  },
+  {
+   "check": "J  two log lines: first pass and the replay both carry the origin",
+   "ok": true,
+   "detail": "[[\"3\", \"this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close\", \"struct if end\"], [\"3\", \"this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, "
+  },
+  {
+   "check": "engine exited on `shutdown action now`",
+   "ok": true,
+   "detail": "rc=0"
+  },
+  {
+   "check": "real ~/.spacecrafter config/ssystem md5 in == out",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "all_ok": true
+}
