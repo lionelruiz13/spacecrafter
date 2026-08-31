@@ -30,6 +30,7 @@ add_library(scedit_core STATIC
 	src/sc_docindex.cpp
 	src/sc_docjson.cpp
 	src/sc_editcore.cpp
+	src/sc_tcpclient.cpp
 	src/sc_mcp.cpp)
 target_compile_options(scedit_core PRIVATE ${SCEDIT_WARNINGS})
 target_include_directories(scedit_core PUBLIC
@@ -173,6 +174,20 @@ add_test(NAME mcp_protocol
 	COMMAND ${CMAKE_COMMAND} -E env
 		${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/mcp_gate.py
 		$<TARGET_FILE:scedit> ${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json)
+
+# TCP gate: the client that talks to a live engine, checked from BOTH ends
+# without one. tests/fake_engine.py is a stand-in whose framing rules are read
+# from src/tools/io.cpp line by line; the gate runs one leg per process and then
+# asserts what the stand-in RECEIVED, so a leg cannot pass by agreeing with
+# itself. The same facts are asserted against the real binary, on a fresh
+# launch, by claude/harness/f67_tcp_live.py.
+add_executable(scedit_tcpclient_test tests/tcpclient_test.cpp)
+target_compile_options(scedit_tcpclient_test PRIVATE ${SCEDIT_WARNINGS})
+target_link_libraries(scedit_tcpclient_test PRIVATE scedit_core)
+add_test(NAME tcp_client
+	COMMAND ${CMAKE_COMMAND} -E env
+		${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/tcp_gate.py
+		$<TARGET_FILE:scedit_tcpclient_test>)
 
 # C3 corpus gate: the engine-exercised scripts must stay clean of NEW findings.
 # Boundary [measured 2026-08-04]: ~/.spacecrafter/scripts/ is EMPTY on this
