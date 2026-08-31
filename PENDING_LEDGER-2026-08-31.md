@@ -231,6 +231,33 @@ dispatch harness is the owner's style transposed one level up (the
 ledger/report contracts are the re-coupling machinery that made
 design-fraction delegation possible at all).
 
+**Availability profile, same conversation** [vixy 2026-08-31, seventh
+message; configuration data for session/batch scheduling]: the
+owner-side gain of the collaboration is PARALLELISM ACROSS HIS
+UNAVAILABILITY, not speed (*"you are not much faster than myself, but
+you can work in parallel of me"* — completed same conversation:
+*"But you have more context window"* — the WORKING-SET asymmetry:
+whole-corpus coupling sweeps are the task class his substrate prices
+highest and the model's prices lowest, which is why aggregation
+compiles land on sessions and judgment stays with him; the ledger is
+the DUAL prosthesis — working-memory extension for the small-window
+persistent head, long-term memory for the large-window volatile one);
+decision latency is partly
+DELIBERATE pipelining (*"I let you work while I can't"*); reliable
+deep-work windows = weekdays + **Saturday morning**, the rest of the
+weekend unreliable. The cause was disclosed in-conversation and is
+DELIBERATELY NOT COMMITTED here (personal; this repo shares a public
+remote and the horizon is decades — the operational profile carries
+everything scheduling needs; adding the cause is the owner's override).
+Consequences [derived, veto]: steering bandwidth is the system's
+bottleneck resource ⇒ §11.177(i)'s question-format rules are
+BOTTLENECK MANAGEMENT, not interface polish, and apply to both humans'
+channels; decision batches target reliable windows, never the weekend's
+remainder; weekend-spanning sessions plan for ZERO steering
+(self-sufficient, gates respected, everything queued); the ledger's
+function list gains, explicitly: continuity of state across the
+owner's attention windows.
+
 ## 7. Provenance note
 
 The three script requests ([parallel-script]/[script-binding]/
