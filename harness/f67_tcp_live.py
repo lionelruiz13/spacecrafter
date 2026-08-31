@@ -168,7 +168,9 @@ if "true" in screensaver_before:
     woke = True
     print("MITIGATION APPLIED (owner veto item, §11.174(h)): SetActive false -> %s"
           % notes["mitigation"], flush=True)
+time.sleep(2.0)
 notes["screensaver_after_wake"] = gdbus("GetActive")
+print("screensaver GetActive after the wake: %s" % notes["screensaver_after_wake"], flush=True)
 keep_awake = threading.Event()
 if woke:
     def awake():
@@ -258,7 +260,7 @@ check("A  TRANSITION off -> on, read through `session action save`",
       a0 is not None and a1 is not None and a0.lower() in OFF and a1.lower() in ON,
       "a0=%s a1=%s" % (a0, a1))
 m = re.search(r"engine lines: (\d+)", outA)
-check("A  the engine sent NOTHING back for four ordinary commands",
+check("A  after the subscription, the engine sent NOTHING back for four ordinary commands",
       m is not None and m.group(1) == "0", "engine lines=%s" % (m.group(1) if m else "?"))
 
 print("\n--- B: the reply reaches the connection that asked (§5.47)", flush=True)
@@ -315,8 +317,9 @@ check("D  every other byte is identical (tails stripped == the original)", strip
 m = re.search(r"engine tails after reload: (\d+)", outD)
 check("D  the reloaded CLEAN buffer lists the engine's finding",
       m is not None and int(m.group(1)) == 1, "engine tails=%s" % (m.group(1) if m else "?"))
-m = re.search(r"engine lines during the whole play: (\d+)", outD)
-check("D  PROTOCOL GAP, measured: the engine said NOTHING on the wire during the play",
+m = re.search(r"engine lines after the subscription: (\d+)", outD)
+check("D  PROTOCOL GAP, measured: after the subscription the engine said NOTHING on the "
+      "wire for the whole play — no start, no end, no diagnostic",
       m is not None and m.group(1) == "0", "engine lines=%s" % (m.group(1) if m else "?"))
 h = subprocess.run([SCEDIT, "--grammar", GRAMMAR, "--history", str(D)],
                    capture_output=True, text=True)
@@ -372,6 +375,13 @@ keep_awake.set()
 md5_out = {k: md5(REAL / k) for k in PRISTINE}
 check("real ~/.spacecrafter config/ssystem md5 in == out", md5_out == md5_in)
 notes["screensaver_at_end"] = gdbus("GetActive")
+# The frame clock, RECORDED not gated: a locked session throttles the engine to
+# 1 Hz, and `Frame stall detected` every 1000 ms is what that looks like from
+# inside (HOST-EVENTS.md 2026-08-31). It prices the mitigation above.
+vk = sc / "log" / "vulkan.log"
+notes["frame_stalls"] = (vk.read_text(encoding="latin-1", errors="replace")
+                         .count("Frame stall detected") if vk.exists() else "no vulkan.log")
+print("frame stalls this run (recorded, not gated): %s" % notes["frame_stalls"], flush=True)
 
 (OUT / "script.log").write_text(script_log(), encoding="latin-1")
 for p in (D, E, EF):
@@ -379,9 +389,17 @@ for p in (D, E, EF):
 for name in sorted(x.name for x in sess.iterdir()):
     (OUT / ("session_" + name)).write_bytes((sess / name).read_bytes())
 ok = all(r["ok"] for r in results)
-(OUT / "f67_result.json").write_text(json.dumps(
-    {"binary": BIN, "scedit": SCEDIT, "driver": DRIVER, "endpoint": ENDPOINT,
-     "predictions": PREDICTIONS, "host": notes, "results": results, "all_ok": ok}, indent=1))
+payload = json.dumps({"binary": BIN, "scedit": SCEDIT, "driver": DRIVER, "endpoint": ENDPOINT,
+                      "run": time.strftime("%Y%m%d-%H%M%S"), "predictions": PREDICTIONS,
+                      "host": notes, "results": results, "all_ok": ok}, indent=1)
+# TWO names, on purpose. The stable one is what a record cites; the timestamped
+# one is what keeps a second run from destroying the first run's evidence — and
+# the first run's evidence is exactly where the host state that no longer exists
+# was written down (this run woke the session; the next one will find it awake).
+# The class is F66's `f64_doc_router.py` finding, met again here, in my own
+# instrument, on its second run.
+(OUT / "f67_result.json").write_text(payload)
+(OUT / ("f67_result-%s.json" % time.strftime("%Y%m%d-%H%M%S"))).write_text(payload)
 print("\n%s: %d/%d checks" % ("ALL GREEN" if ok else "RED",
                               sum(r["ok"] for r in results), len(results)))
 sys.exit(0 if ok else 1)

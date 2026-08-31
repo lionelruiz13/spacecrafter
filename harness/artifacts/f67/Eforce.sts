@@ -1,0 +1,5 @@
+# an edit made while the show was running
+# f67: the engine's write-back
+flag stars on
+struct if end
+flag stars off

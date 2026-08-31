@@ -1,0 +1,165 @@
+{
+ "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "scedit": "/home/claude/spacecrafter/util/scedit/build-lovely/scedit",
+ "driver": "/home/claude/spacecrafter/util/scedit/build-lovely/scedit_tcpclient_test",
+ "endpoint": "127.0.0.1:7805",
+ "run": "20260831-135703",
+ "predictions": {
+  "A": "a0 stars=off, a1 stars=on (a TRANSITION); 0 engine lines for four ordinary commands",
+  "B": "exactly 1 position reply on scedit's own connection",
+  "C": "the second client's answer arrives on scedit's subscribed feed",
+  "D": "one #! tail on the `struct if end` line, every other byte unchanged, 1 spacecrafter row in --history, 0 engine lines on the wire during the play",
+  "E": "the save is refused, both choices named, the file byte-identical to what the engine wrote",
+  "E'": "forced: the edit is on disk and the #! tail is gone",
+  "F": "both connections answered"
+ },
+ "host": {
+  "screensaver_before": "(false,)",
+  "screensaver_after_wake": "(false,)",
+  "screensaver_at_end": "(false,)",
+  "frame_stalls": 2
+ },
+ "results": [
+  {
+   "check": "A  the leg's own checks are green",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "A  the two session files were written into the FARM",
+   "ok": true,
+   "detail": "sessions/: ['a0.ini', 'a1.ini']"
+  },
+  {
+   "check": "A  TRANSITION off -> on, read through `session action save`",
+   "ok": true,
+   "detail": "a0=false a1=true"
+  },
+  {
+   "check": "A  after the subscription, the engine sent NOTHING back for four ordinary commands",
+   "ok": true,
+   "detail": "engine lines=0"
+  },
+  {
+   "check": "B  the leg's own checks are green (exactly one copy on this connection)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "B  a position reply was printed",
+   "ok": true,
+   "detail": "['3 checks, 0 failures']"
+  },
+  {
+   "check": "C  the second client asked its question",
+   "ok": true,
+   "detail": "[True]"
+  },
+  {
+   "check": "C  the leg's own checks are green",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "C  the other client's answer arrived on scedit's subscribed feed",
+   "ok": true,
+   "detail": "  feed: Vous receverez maintenant les logs\n  feed: 43.30;5.37;     75.10;2461283.997812;  0.000017;\n  feed: 43.30;5.37;     75.10;2461283.997847;  0.000017;\n  feed: 43.30;5.37;     75.10;2461283.997882;  0.000017;"
+  },
+  {
+   "check": "D  the leg's own checks are green",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "D  exactly line 3 carries a `#!` tail",
+   "ok": true,
+   "detail": "[3]"
+  },
+  {
+   "check": "D  the tail is the engine's diagnosis of the fault",
+   "ok": true,
+   "detail": "this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close"
+  },
+  {
+   "check": "D  every other byte is identical (tails stripped == the original)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "D  the reloaded CLEAN buffer lists the engine's finding",
+   "ok": true,
+   "detail": "engine tails=1"
+  },
+  {
+   "check": "D  PROTOCOL GAP, measured: after the subscription the engine said NOTHING on the wire for the whole play \u2014 no start, no end, no diagnostic",
+   "ok": true,
+   "detail": "engine lines=0"
+  },
+  {
+   "check": "D  `scedit --history`, a separate process, lists the engine's row",
+   "ok": true,
+   "detail": "/tmp/sc-farm-f67/f67/D.sts\t3\tspacecrafter\t#!\t\tthis 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close\tagrees with scedit's end-without-if\n/tmp/sc-farm-f67/f67/D.sts\t3\tscedit\tend-without-if\twarning\tthis 'struct if end' closes nothing: no 'struct if' block is open here, so the engine logs \"end without "
+  },
+  {
+   "check": "D  and relates it to scedit's own finding on that line (the C1 signal)",
+   "ok": true,
+   "detail": "agrees with scedit's end-without-if"
+  },
+  {
+   "check": "E  the leg's own checks are green (the save was REFUSED)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "E  the engine's tail is still on disk",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "E  the author's edit was NOT written",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "E  the file is byte-exactly what the engine left (tails stripped == the original)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "E  the refusal names both choices",
+   "ok": true,
+   "detail": "[\"  refusal: the file changed on disk since it was opened \u2014 this is what spacecrafter does at the end of a run: it writes its findings into the script as `#!` tails and clears the ones that are fixed. Saving now would write over them. Choose: reload the file (the edits in this buffer are lost) or save anyway (the engine's tails are lost).\"]"
+  },
+  {
+   "check": "E' the forced leg's own checks are green",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "E' FORCED: the author's edit IS on disk",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "E' FORCED: the engine's `#!` tail is GONE \u2014 which is what E prevents",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "F  the leg's own checks are green",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "engine exited on `shutdown action now`",
+   "ok": true,
+   "detail": "rc=0"
+  },
+  {
+   "check": "real ~/.spacecrafter config/ssystem md5 in == out",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "all_ok": true
+}
