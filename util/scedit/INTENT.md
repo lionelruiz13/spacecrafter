@@ -354,6 +354,18 @@ notes.*
 8. **Engine emitter** — the grammar file becomes a build/runtime
    artifact (D5 seams); propose upstream once the contract shape has
    survived slices 1–4.
+19. **LLM assistance over the documentation — the scedit-side surface**
+    [vixy 2026-08-31, FEATURE_REQUESTS "LLM assistance over the command
+    documentation"; untriaged, direction given: two roles, documentation
+    helper = a router, coding helper delegated to any harness through an
+    MCP binding]. What would land here: a `--doc <cmd> [member]` /
+    `--search <words>` JSON surface on scedit's existing readers (one
+    authority, I2) and an MCP stdio adapter over it (+ `--check`, + item 6's
+    TCP line as tools); the router measured by `harness/f64_doc_router.py`
+    (gemma4:latest, CPU-only: 45.0% one-level, 58.5% with family members as
+    pages, baseline 23.5%); its next lever is the flags/colours per-name doc
+    pass (items 11/12's neighbour). Waits for Vixy's triage (which mode
+    first, local-only default, checker as a hard gate in agent mode).
 9. ~~**superscript.sts doc-mining pass**~~ **DONE 2026-08-04 (journal
    2026-08-04g; gated). Residue: S-NP-1 suspended for Vixy; 6
    code-consistent doc answers queued for post-FTXUI grammar merge.**

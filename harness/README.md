@@ -2343,3 +2343,25 @@ warning, the edit intact; H+I: a fault in a script played BY another →
 annotated in ITS file, the caller untouched; J: a fault inside a `struct loop
 2` body → two log lines (first pass + replay, the replayed line keeps its
 origin), one tail. Measured 2026-08-31 on `2b8ec034`: **34/34**.
+
+## F64 — can a small local model route a request to the right command page? (`f64_doc_router.py`) — FEATURE_REQUESTS 2026-08-31 (LLM assistance), 2026-08-31
+
+    cd claude/harness && ./f64_doc_router.py [--members] [--limit N] [model ...]   # default gemma4:latest
+
+The documentation-helper role Vixy named ("gate which documentation page and
+command to show given what the user asked"), measured as ROUTING over the
+command surface scedit holds as data. Question set NOT written for the test:
+the 340 comment lines an author wrote directly above a command in
+`doc/superscript.sts` (usage-shaped: flag 91, set 31, body 25 …); a hit is
+the target command or an alias of it. CONTROL: a model-free bag-of-words
+overlap on the same pairs (23.5%). `--members` puts the family member names
+under their command as pages (`flag constellation_drawing`) and scores the
+member level too. Served by the local ollama (native `/api/chat`, `think:
+false` with a fallback for models that reject the field, temperature 0, the
+catalogue in the system prompt so the prefix cache carries it). Output: per
+model hit rate, per-target table, confusions, median/p90 latency;
+`artifacts/f64/<model>.json` holds every row. First run and its
+decomposition: FEATURE_REQUESTS, the LLM entry. Instrument facts learned:
+ollama on this laptop runs every model on CPU (`size_vram 0`); a `pkill -f`
+/ `pgrep -f` pattern that contains the script's name kills the calling shell
+(exit 144) — use a pidfile.

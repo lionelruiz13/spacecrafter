@@ -327,6 +327,88 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   whether the checker's verdict is a hard gate on execution in agent mode
   (rec: yes — C3's zero-false-positive discipline is what makes a hard gate
   acceptable).
+  **Refinement [vixy 2026-08-31, verbatim]:** *"The first test can be done
+  with gemma4:4b (not sure that's enough, but this laptop, TravellingFoxDev,
+  has only betwee 16 GB and 16 GiB of total RAM and 6 GiB of VRAM). For the
+  LLM, two sides. The documentation-helper LLM gate which documentation page
+  and command to show given what the user asked - the coding-helper LLM write
+  or edit spacecrafter script (or just bind the documentation-helper as MCP -
+  for instance, to claude code - which can be run with ollama launch using
+  local LLM - or another harness), vibe scripting is probably the easiest
+  path (it dissolves the cost to entry) for those who don't want of it.
+  Creating script is already encouraged, with contest trying to bring
+  engagement. Maybe this would helps further."*
+  Read back [fable, same day] — two roles, and the second may be delegated:
+  (1) the **documentation helper** = a ROUTER: request → the command/key page
+  to show. Small-model territory, measurable as a hit rate. (2) the **coding
+  helper** = writes/edits scripts — OR is not built at all: expose the
+  documentation helper (plus the checker, plus the TCP line) as an **MCP
+  server**, and any harness (Claude Code, Claude Code on a local model via
+  ollama, another) does the "vibe scripting" with our tools in its hands.
+  Structural read of (2): the MCP path is the higher-leverage one — one
+  server, every harness, and the two roles collapse into tools the outside
+  model calls (`doc_lookup`, `doc_search`, `check_script`, `run_command`),
+  so the router LLM is only needed for the standalone scedit path. Placement
+  rec, veto open: the tools' AUTHORITY stays scedit's C++ readers (Grammar,
+  DocIndex, checker) — a `scedit --doc <cmd> [key]` / `--search <words>`
+  JSON surface — and the MCP layer is a thin stdio JSON-RPC adapter over it,
+  either inside scedit (`--mcp`, nlohmann/json is vendored, one binary for a
+  dome operator to configure) or a small Python adapter shelling out;
+  either way no second reader of the grammar (I2). Protocol details are
+  fetched from the MCP spec at implementation time, never recalled.
+  Facts measured at receipt [2026-08-31]: ollama 0.33.1 is installed and
+  serving on this laptop; **the tag `gemma4:4b` does not exist in the
+  registry** (`pull model manifest: file does not exist`) — present
+  candidates of that size: `gemma3:4b`, `hf.co/unsloth/gemma-3-4b-it-GGUF:
+  Q8_K_XL`, `llama3.2:3b`, `gemma3:1b` (about 100 models on disk in total);
+  RAM 15 GiB, VRAM 6144 MiB (a 4B Q4 fits whole, a 12B does not); one query
+  with a 65-command catalogue in the system prompt ≈ 0.8 s on gemma3:4b.
+  **Experiment armed: `harness/f64_doc_router.py`** — the router role
+  scored on 340 real (comment → command) pairs mined from
+  `doc/superscript.sts` (the author's own line-above descriptions, not
+  written for the test), against a no-model bag-of-words baseline on the
+  same pairs; results appended below when the run lands.
+  **[vixy 2026-08-31, interrupting the first run]:** *"No, not gemma3, he
+  doesn't meet the low bar. Let try with gemma4:latest instead even if he is
+  bigger."* — the run I had started on gemma3:4b / gemma3:1b / llama3.2:3b /
+  gemma-3-4b Q8 after the `gemma4:4b` pull failed was MY substitution of the
+  model, a decision that was Vixy's (which model sets the bar); stopped, its
+  partial numbers void as a bar. Only the bag-of-words baseline (model-free)
+  stands from it. Candidate under test: `gemma4:latest`.
+  **F64 results, `gemma4:latest`** (8.0B, Q4_K_M, 9.6 GB on disk; the tag
+  pulled in seconds — its blobs were already local — and ran **entirely on
+  CPU**: `size_vram 0` for it AND for a 2.4 GB llama3.2:3b, so the snap ollama
+  on this laptop is not using the GTX 1660 Ti at all — a machine/snap
+  configuration fact, root-side, not a model fact; median 785 ms per query
+  anyway, prefix cache doing the work) — one-level catalogue (65 commands +
+  their one-liners), 340 witness pairs: **153/340 = 45.0% vs the model-free
+  baseline 80/340 = 23.5%**. Decomposition [measured]: `date` 13/13, `audio`
+  10/12, `media` 14/21, `image` 13/22, `body` 13/25, `landscape` 6/8 — the
+  verb-shaped commands route; **`flag` 13/91, `set` 7/31, `struct` 1/9** —
+  and the flag misses are STRUCTURAL: "Draw constellation line drawings." →
+  `star_lines` (a command) where the page is the flag NAME
+  `constellation_drawing`, which a command-level catalogue never shows the
+  model (97 flag names, 43 set names, 46 colour names absent from the
+  prompt). Second factor, question noise: 51 misses are ≤3-word comments that
+  are not requests ("Usage example", "Press key K"); hit rate 26/77 on those
+  vs 70/160 (44%) at 4–8 words and 57/103 (55%) beyond. Format followed:
+  1 empty answer, 4 off-catalogue, in 340. **Two-level catalogue** (the 97
+  flag / 43 set / 46 colour names listed as pages under their command, doc
+  line where the file has one — `set_names` only today): **199/340 = 58.5%**
+  (median 1.06 s, p90 1.75 s); `flag` 13 → 53/91, `set` 7 → 18/31; on
+  requests longer than three words 154/263 = 58.6%. Member level (command
+  AND member right) 54/124 of the pairs naming one; where the command is
+  right and the member wrong, the names are near-synonyms the file does not
+  yet tell apart (`orbits`/`planets_orbits`, `object_trails`/`planet_trails`,
+  `atmosphere`/`atmospheric_refraction`) — the flags family is still the v1
+  shape with no per-name doc, i.e. exactly scedit's doc debt (INTENT §5 items
+  11/12 and the family doc passes). New confusion with the second level:
+  `flag` → `color` ×14 ("Draw X" reads as either). Reading [fable]: as a
+  top-1 "show this page" helper on a CPU-only 8B, gemma4:latest is USABLE
+  (≈3 in 5, ≈4 in 5 on the verb-shaped commands) and not a gate; top-3
+  presentation not measured yet; the cheapest known gain is the per-name doc
+  pass on flags/colours, which serves scedit's bar and the router alike.
+  Rows: `harness/artifacts/f64/gemma4_latest*.json` (not tracked).
 
 **Provenance update to the three 2026-08-26 entries above [fable 2026-08-30,
 owner testimony in-conversation → §11.173]:** the file's text is the
