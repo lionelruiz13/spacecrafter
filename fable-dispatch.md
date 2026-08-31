@@ -1344,6 +1344,25 @@ not fail; one pre-existing `-Wall` warning in sc_check.cpp, left as found).
 For F66: `EditCore::errorHistory()`/`warpTo()` are the accessors, `--history`'s
 7-field TAB shape is a stated contract with a consumer, and `check_gate.cmake`
 takes a `MODE` so a `--doc`/`--search` record gate needs no fourth copy.
+*(ACCEPTED by supervisor [fable 2026-08-31]: journal `2026-08-31f` read in full
+against the report; commits/authors/trailers checked (code `cdda1ee4 → 99260e28 →
+4c70f2aa → a3e44b64 → 1ea75d0d`, harness `94d9dd5 → ae7d2bc → 1bd49f6 → 289a964`,
+one `Code:` trailer each, both trees clean); gates RE-RUN by me — 9/9 in
+`build-lovely` AND in the fresh `build-f65`; `--history` on the engine's own
+files reproduced (F.sts → nothing, exit 0; A.sts → 10 rows, engine row first);
+`f63_scedit_agree.py` re-run 12/12/0/6 with `tail_of` gone (one docstring mention
+remains, correctly, as history); `script.cpp:117` verified at source; the grammar
+clause and `_meta.amended` read; item 15 struck, item 20 minted. Judgment calls
+ENDORSED with their arguments: two entries per line (the C1 signal must stay
+visible), the list-walking stepper (a defect caught by a rendered frame, kept as
+record), the `MODE` on `check_gate.cmake` (I2), the three `:114 → :117` citation
+corrections (a line-number anchor is a cached conclusion with no gate — the
+correcting commit is the only moment its author holds both ends; the executor
+took that moment rather than adding a fourth stale copy). DISPATCHER GLOSS
+TALLIED, this round's first: my "0 warnings" DoD could not fail — the project
+sets no warning flags; enacted as F66 scope 7 (target-scoped `-Wall -Wextra`,
+the one `cmdSpan` warning deleted, item 20 struck there). The "history" reading
+stays FLAGGED for Vixy (README § The error pane), not decided here.)*
 
 ### F66 — scedit: the documentation surface for machines — `--doc`, `--search`, `--check` as JSON, and an MCP stdio server over the same readers (FEATURE_REQUESTS 2026-08-31 "LLM assistance"; scedit INTENT §5 item 19) [M]
 
@@ -1430,15 +1449,23 @@ broken ⇒ abort per §0.7.
    item 19 updated (scedit-side surface DONE; the router/LLM half stays with
    Vixy's triage, questions restated); FEATURE_REQUESTS entry status
    annotation; harness README section for the parity script.
+7. **The warning bar made real (F65's item 20, dispatcher gloss corrected):**
+   scedit's `CMakeLists.txt` sets NO warning flags, so every "0 warnings" DoD
+   so far could not fail. Add `-Wall -Wextra` to scedit's OWN targets only
+   (target-scoped; the vendored FTXUI/nlohmann trees compile as upstream ships
+   them — a build-shape call taken here with that argument, veto open), delete
+   the one warning the tree then yields (`cmdSpan` set-but-unused,
+   `src/sc_check.cpp:341`), and strike item 20 in the mirror ledger. From this
+   task on, "0 warnings" is a criterion that can fail.
 
 **Boundaries:** NO LLM call anywhere in scedit; NO grammar CONTENT change
 (items 11/12's doc passes are separate); NO engine code; NO TCP (F67); NO
 second parser of the grammar (the Python parity script may read the JSON only
 to extract the witness pairs, never to answer a query); no ollama/OpenAI client.
 
-**DoD:** scope 1–6; every gate green on a clean build, 0 warnings; the parity
-check committed with its result and falsification-tested; the spec revision
-recorded; code tree clean; WIP per §0.6.
+**DoD:** scope 1–7; every gate green on a clean build with `-Wall -Wextra` on
+scedit's own targets, 0 warnings; the parity check committed with its result and
+falsification-tested; the spec revision recorded; code tree clean; WIP per §0.6.
 **WIP:**
 
 ### F67 — scedit: direct TCP mode — the live engine as target, the `$LOGON` feed as a pane, and the engine's `#!` write-back handled by requirement (D31 "direct tcp mode"; scedit INTENT §5 item 6) [M]
