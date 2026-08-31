@@ -1,0 +1,90 @@
+{
+ "pass": "pass11",
+ "date": "2026-08-31",
+ "source": "fable-dispatch.md",
+ "pre_md5": "df897282fd3875f3467fd2ed4a23e868",
+ "pre_commit": "cc07722",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads re-inserted at recorded positions reproduce pre_md5)",
+ "units": [
+  {
+   "id": "update-s16",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s16.md",
+   "line_start": 37,
+   "line_count": 95,
+   "payload_md5": "79a54bf7589215ea67319c1d87900117"
+  },
+  {
+   "id": "update-s17",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s17.md",
+   "line_start": 132,
+   "line_count": 98,
+   "payload_md5": "6ac9043aa4eb9c868d6bb2f6cd9bfc2a"
+  },
+  {
+   "id": "F56",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F56.md",
+   "line_start": 630,
+   "line_count": 168,
+   "payload_md5": "e28aea51afe2408e215af4b1291b4ca9"
+  },
+  {
+   "id": "F57",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F57.md",
+   "line_start": 798,
+   "line_count": 116,
+   "payload_md5": "be6fe86d02f2f2a2a14210729ae50742"
+  },
+  {
+   "id": "F58",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F58.md",
+   "line_start": 914,
+   "line_count": 131,
+   "payload_md5": "8c98a8fd9887bd8baaf0c39c1e232f27"
+  },
+  {
+   "id": "F59",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F59.md",
+   "line_start": 1045,
+   "line_count": 165,
+   "payload_md5": "61e3122ac411454a523c661d983c0792"
+  },
+  {
+   "id": "F60",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F60.md",
+   "line_start": 1210,
+   "line_count": 129,
+   "payload_md5": "996f21e215d2fcdcf6eb5d8c6eb92e3c"
+  },
+  {
+   "id": "F65",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F65.md",
+   "line_start": 1341,
+   "line_count": 140,
+   "payload_md5": "90aade7c5d69efe53460c806b565ba15"
+  },
+  {
+   "id": "F66",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F66.md",
+   "line_start": 1481,
+   "line_count": 148,
+   "payload_md5": "b46a18b6c369b1432fb21831ab93326b"
+  },
+  {
+   "id": "F67",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F67.md",
+   "line_start": 1629,
+   "line_count": 173,
+   "payload_md5": "8310e77407362f8cdbe5b1277008c51b"
+  }
+ ]
+}
