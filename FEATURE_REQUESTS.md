@@ -540,3 +540,9 @@ refinement, and `legacy` is the honest name for the accretion.
   §11.185(d)(1) ruling in specific form; (d)(2)/(d)(3) stay open.
 - **Status:** accepted — tracked as §11.186(b)(c); dispatched 2026-08-31 as
   tasks F68 (provenance) and F69 (dedicated feedback link).
+  **Half (1) DELIVERED 2026-08-31 → §11.187** (engine `423cbe23`): a command
+  read on the control socket carries `tcp#<connection id>` and its
+  diagnostics say so; the file half is §11.184's, unchanged; HTTP/mkfifo/UI
+  are mapped and reported, not wired. Half (2) is F69, still open — and the frozen-wire
+  requirement it must meet is now MEASURED as a baseline (an unsubscribed
+  connection's bytes, pre and post, byte-identical).

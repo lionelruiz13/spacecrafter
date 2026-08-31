@@ -2545,3 +2545,75 @@ editor's order. What it does NOT drive is the terminal — that half is
 on a pseudo-terminal against the stand-in engine. The two together cover the
 path; **no single run holds a real terminal and a real engine at once**, which is
 the honest remaining gap. Overridable: `SC_BIN`, `SCEDIT_BIN`, `SCEDIT_DRIVER`.
+
+## F68 — a TCP line that knows it is one (`f68_provenance.py`) — INTENT §11.187, 2026-08-31
+
+```
+DISPLAY=:2 ./f68_provenance.py [absOutdir]     # default artifacts/f68
+SC_BIN=<delivered binary>  SC_BIN_PRE=<pre-change binary, named `spacecrafter`>
+```
+
+**Three launches, not one.** The same battery runs on the PRE-change binary
+twice and on the delivered one once. The A/A pair is not ceremony: leg (iv)
+claims a wire did not change, and that sentence is empty until something says
+this battery's wire is deterministic at all. **43/43** (2026-08-31, pre
+`fc651978` = `master-beta @ e2c8477b`, post `444db012` = `423cbe23`).
+
+One run sends the SAME fault (`struct if end`, nothing open) five ways:
+
+| # | sent by | post says | pre says |
+|---|---|---|---|
+| 1 | client P, cold | `script tcp#3: … [struct if end]` | `script: …` |
+| 2 | client P, right after a `clear` (thirty nested commands) | `script tcp#3: …` | `script: …` |
+| 3 | client Q, a SECOND connection | `script tcp#4: …` | `script: …` |
+| 4 | the HTTP `?command=` door | `script: …` (no origin) | `script: …` |
+| 5 | line 3 of a played FILE | `script <file>:3: …` + the `#!` tail | identical |
+
+Row 3 is what makes `tcp#<id>` mean the CONNECTION rather than the word "tcp":
+if the id were a constant, P and Q would collide and the check fails. Row 4 is
+the HTTP door proving it is mapped and NOT wired — HTTP `?command=` queries
+share the very same input queue (`io.cpp` `computeHttp` → `pushRequest`), so
+without `ClientMessage::http` they would have been labelled TCP, which would
+have been a false claim rather than a missing one.
+
+The other legs, each with what it could have found instead:
+
+- **the funnel** (`executeCommandStatus`, §5.117's single emitter): both of its
+  lines carry `tcp#3: ` for a TCP-origin refusal, neither does on the pre
+  binary. The emitter that BYPASSES the funnel (unrecognised command name)
+  carries it too, and still has no "Could not execute" companion — §5.117's map
+  re-measured, not assumed.
+- **nesting** (`media action play audioname nosuch.ogg` nests a failing
+  `audio filename …`): the nested refusal is untagged on BOTH binaries. Had the
+  nested call inherited the outer origin, this is where it would show. The next
+  fault from the same connection is `tcp#3` again.
+- **the file half is untouched**: the file-origin funnel refusal (line 5 of the
+  played script) is UNTAGGED on both binaries — the generic channel stays where
+  §11.184 left it, Vixy's to open. The full control is `f63_annotations.py`,
+  **34/34 on the delivered binary** (artifacts/f68/f63-control).
+- **the `#!` writer**: every farm script is md5'd after five wire faults and
+  before the play — no file is touched by a TCP-origin fault; a never-played
+  decoy file is still untouched at the end.
+- **the wire** (F69's baseline, committed): subscriber **71 B**, asking client
+  **5 B**, HTTP **85 B**, byte-identical pre == pre2 == post. The second
+  client's **0 B** is not evidence of anything — it is §11.185(a) measured
+  again (a client that only sends is told nothing), which is why the positive
+  control asserts the OTHER three are non-empty.
+
+Instrument facts worth carrying:
+
+- **A staging binary must be named `spacecrafter`.** `/proc/<pid>/comm` is
+  truncated to 15 bytes, so a copy called `spacecrafter-e2c8477b` reports
+  `spacecrafter-e2` and the concurrent-instance probe (§11.134(b)) goes blind on
+  exactly the binary the run depends on. The script refuses to start if either
+  binary has another name.
+- **The engine turns `\r` and `\0` into `\n` before splitting a request**
+  (`io.cpp` `checkNewData`) and skips empty segments, so an HTTP request's
+  `\r\n\r\n` costs nothing — a raw `\r` would otherwise have been executed as a
+  one-character command.
+- Wires are recorded as RAW BYTES per connection (`wire.<phase>.<who>.bin`),
+  terminator included: an answer goes out as `data + '\n' + '\0'`, and a diff
+  that normalises that away would be a diff about the harness.
+- Frame stalls: **17 / 18 / 0** across the three phases on an awake session
+  (`GetActive` false throughout, wake thread running anyway per §11.186(a)).
+  Recorded, unattributed, and no claim here is a timing claim.
