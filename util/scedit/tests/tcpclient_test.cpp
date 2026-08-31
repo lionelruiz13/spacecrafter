@@ -318,17 +318,20 @@ static void printHistory(const EditCore &core, const char *tag)
 
 //! Send one command and leave. The engine says nothing about it, so what it did
 //! is read by the harness through another channel entirely.
-static void legLiveSend(const Endpoint &ep, const std::string &command)
+static void legLiveSend(const Endpoint &ep, const std::vector<std::string> &commands)
 {
 	TcpClient c;
 	std::string err;
 	check(c.connect(ep, err), "connect to the live engine: " + err);
 	c.pollFor(2000, 1);
-	check(c.send(command, err), "send `" + command + "`: " + err);
-	c.pollFor(800);
-	std::printf("  sent: %s\n", command.c_str());
+	for (const std::string &command : commands) {
+		check(c.send(command, err), "send `" + command + "`: " + err);
+		c.pollFor(800);
+		std::printf("  sent: %s\n", command.c_str());
+	}
 	for (const FeedLine &f : c.feed())
 		std::printf("  feed[%s] %s\n", f.kind == FeedKind::Local ? "L" : "E", f.text.c_str());
+	std::printf("  engine lines: %zu\n", engineLines(c).size());
 	c.disconnect();
 }
 
@@ -426,6 +429,13 @@ static void legLivePlay(const Endpoint &ep, const std::string &grammar,
 		std::printf("  engine tails after reload: %zu\n", core.engineTailCount());
 		printHistory(core, "after:");
 	}
+	// THE PROTOCOL GAP, measured rather than argued: everything the engine sent
+	// this connection while a script ran and produced diagnostics. There is no
+	// script-end event and no diagnostic on this channel, which is exactly why
+	// the file above had to be watched.
+	for (const FeedLine &f : c.feed())
+		std::printf("  feed[%s] %s\n", f.kind == FeedKind::Local ? "L" : "E", f.text.c_str());
+	std::printf("  engine lines during the whole play: %zu\n", engineLines(c).size());
 	c.disconnect();
 }
 
@@ -449,7 +459,11 @@ static void legLiveDirty(const Endpoint &ep, const std::string &grammar,
 	// The author types AFTER the run finished, into the buffer that still holds
 	// the pre-run bytes. Both things now exist and only one can survive a save.
 	core.moveTo(0, 0);
-	core.insertText("# an edit made while the show was running\n");
+	// Through the editor's own two calls, not by pushing a '\n' into a line:
+	// a Document line holds its terminator separately, and text with a newline
+	// in it would be a line that cannot exist.
+	core.insertText("# an edit made while the show was running");
+	core.insertNewline();
 	check(core.dirty(), "the buffer is dirty");
 	check(core.diskState() == DiskState::Changed, "and the file has changed underneath it");
 
@@ -490,7 +504,8 @@ int main(int argc, char **argv)
 	else if (leg == "bound") legBound(ep);
 	else if (leg == "feed") legFeed(ep);
 	else if (leg == "closed") legClosed(ep);
-	else if (leg == "live_send" && argc > 3) legLiveSend(ep, argv[3]);
+	else if (leg == "live_send" && argc > 3)
+		legLiveSend(ep, std::vector<std::string>(argv + 3, argv + argc));
 	else if (leg == "live_get") legLiveGet(ep);
 	else if (leg == "live_feed") legLiveFeed(ep, argc > 3 ? std::atoi(argv[3]) : 10);
 	else if (leg == "live_reconnect") legLiveReconnect(ep);
