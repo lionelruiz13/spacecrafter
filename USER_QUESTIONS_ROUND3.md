@@ -33,6 +33,11 @@ answers were never wrong inside your own domain; what got lost was
   Last rounds you volunteered 21 proposals inside answers to other
   questions, and 4 became tracked work items. This time the slot is
   yours by design instead of displacing an answer.
+- **A proposal must arrive with its interest visible — what it enables,
+  simplifies, or removes from your hands — never as a bare change.**
+  (The developer's rule, added for this round: a change whose interest
+  isn't visible is *rightly* dismissed as a useless one. R25 was
+  reframed under it.)
 - Same rules as always: one line per answer is enough; "no strong
   opinion" is a valid answer; if a question doesn't make sense as asked,
   say so — that's information; what your *scripts/shows* do is decisive,
@@ -127,18 +132,56 @@ catalogue files on disk would do that in the field too, silently.)
 files in?** (Decides whether it must be honored as a search path.)
 *(ref: §5.90, second half)*
 
-**R25. Parallel scripts — a resubmission, not a re-ask.** You saw an
-early draft of the parallel-script proposal and raised two objections:
-(1) global controls (`script action stop/pause`, resume, speedup) become
-ambiguous about *which* script they target; (2) parallel scripts are hard
-to track. The current version answers both: an unnamed script keeps
-exactly today's global-control semantics (so existing shows are
-untouched); named scripts are targeted by name, tree-wise, with
-tracked/detached modes and a termination cascade. One honest gap: how
-resume/speedup compose across a tree is designed but not yet written as
-clauses. Question: **do the two answers above meet your two objections —
-re-evaluate yes/no** (a "no" with the reason is exactly as useful).
-*(ref: FEATURE_REQUESTS [parallel-script], §11.173(c))*
+**R25. Running more than one script at a time — a resubmission, with
+the interest stated first this time.**
+
+*What it unlocks.* Two features on the request list sit behind this
+one, and they are the ones aimed at you. **Dynamic binding**: a
+joystick or console has few buttons and they are fixed — with
+`script action bind on <key-or-button> launch <script>`, one button can
+mean a different thing in each show, or each moment of a show, and a
+binding can end with the script that made it (nothing to un-bind by
+hand). **Triggers**: a script that fires by itself — when the camera
+attaches to a body, crosses an altitude, when a body comes into view.
+Both of these mean a script starting *while your show is already
+playing* — and today's engine has no defined answer for that situation
+(scripts have always been serial; what nesting does today is accident,
+not contract). This proposal is the prerequisite that gives it one:
+scripts get names, a named script can run beside another, controls
+address the named one, and ending a script ends what it started.
+
+*What stops being managed by hand, even before any buttons.* A
+background strand — an ambient time-lapse, a repeating camera drift, a
+music/subtitle track — no longer has to be hand-woven into the main
+timeline with computed waits; it is its own named script, and stopping
+the show stops the whole tree without you keeping the list of what was
+started. And an unclosed `struct if` in a called script can no longer
+silently skip the rest of the *calling* script — the same silent-skip
+shape SS-24 just found inside superscript.sts, no longer able to cross
+a file boundary.
+
+*What it costs you: nothing until you use a name.* A script launched
+as today keeps name `""` and exactly today's global-control semantics;
+the execution policy defaults to `legacy`, which is a contract naming
+today's nesting behavior as-is. Existing shows byte-untouched, habits
+intact; it stays one vocabulary (`script action …`), not a family of
+new commands.
+
+*Your two earlier objections* were raised against an older draft and
+are answered in the current text: (1) "which script do the global
+controls target?" — the unnamed default keeps them global, named
+scripts are addressed by name, tree-wise; (2) "hard to track" —
+tracked/detached is explicit per launch, with the termination cascade.
+One honest gap: how resume/speedup compose down a tree is designed but
+not yet written as clauses.
+
+**Question: with the interest visible — worth having?** (If your two
+objections still stand against the current text, or the cost still
+looks unbalanced, say so with the reason — a "no because…" is exactly
+as useful, and it lands on the current version, not the draft you saw.)
+*(ref: FEATURE_REQUESTS [parallel-script] + [script-binding] +
+[script-trigger]; §11.173(c); prerequisite chain [vixy 2026-08-31];
+R21's hardware-controls line informs the binding half)*
 
 **R26. [confirm] Free flight ↔ attached: the proposed default.**
 Switching into or out of free flight will hold view continuity — no jump,

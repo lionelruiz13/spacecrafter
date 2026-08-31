@@ -161,6 +161,19 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   is a *surface* with one authority or two half-surfaces. A lifetime that is
   "script-lifetime" is also state a session save must classify (**B31** §2,
   declarative-in / time-bearing-out per D36).
+- **Dependency added [vixy 2026-08-31, in-conversation; recorded by fable]:**
+  `[parallel-script]` **is a prerequisite of this request** — *"dynamic binding
+  is where it may interest him [the tester], because joystick button are
+  severely limited and it's a pre-requisite"*. Structural reading [derived]: a
+  bound script fires *while a show is playing*, which is the concurrent case
+  the serial model never defined — binding is only meaningful once concurrent
+  execution has semantics (names, policies, tracking, termination). The chain
+  is therefore `[parallel-script]` → `[script-binding]` → `[script-trigger]`
+  (the txt's own `@requires` covering the last link), which reorders triage:
+  parallel-script is the root, not a sibling. Same statement carried the
+  framing rule now in `USER_QUESTIONS_ROUND3.md`'s header (a proposal leads
+  with what it enables/simplifies/removes, never with its own defense) — R25
+  reframed under it the same day.
 
 ### [2026-08-26] Script triggers — run a script when a condition is met
 - **From:** Vixy (`claude/vixy-side-ideas.txt` `[script-trigger]`, harness
