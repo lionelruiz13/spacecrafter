@@ -77,20 +77,49 @@ point, not sure it's really clean now though."*
   not his install. R28 rewritten accordingly (knows-or-expects basis,
   with the R13-style exit: "no dome I know uses it" downgrades the item
   to an engineering call).
-- **Old-as-spec WEAKENED for this surface** [derived]: §11.52(b)'s
+- ~~**Old-as-spec WEAKENED for this surface** [derived]: §11.52(b)'s
   parity is conditioned on old being exact; here the owner testifies
   old's offset behavior is the end state of accumulated fixes whose
-  cleanliness he doubts — the old behavior may be accident, not intent
-  (same class as D28's roll-rebuild-is-convention). Caveat lands on
-  B17's shape-(1) "reproduce old exactly" (D6): the answer stands, but
-  what "old exactly" is worth there is now qualified. Annotation owed
-  at §11.92(d)/B17.
-- **Named lead, not run**: the long-standing fixes are in git — an
-  archaeology pass over the old view-offset fix history
-  (navigator/projector territory, §11.161(d)'s maximal-struggle cell)
-  could reconstruct what the fixes were converging toward, i.e. the
-  requirement, independent of anyone's memory. Candidate task,
-  supervisor's queue.
+  cleanliness he doubts — the old behavior may be accident, not intent.
+  Caveat lands on B17's shape-(1) "reproduce old exactly" (D6): the
+  answer stands, but what "old exactly" is worth there is now
+  qualified.~~ **SUPERSEDED same day by the owner's own bounding**
+  [vixy 2026-08-31, third message]: *"The only two configurations which
+  aren't tested much are (window height > window width) and heading.
+  For the rest, I know one reported an issue about it, I don't know
+  about those who reported nothing (worked around silently, didn't
+  remark it or didn't take action to report it), though. But for the
+  rest, old-as-spec is the safest default, precisely because I don't
+  want to break what I don't know about."* The weakening is BOUNDED to
+  exactly two configurations: **portrait aspect (h > w)** and
+  **heading**. Everywhere else, old-as-spec binds INDEPENDENT of old's
+  cleanliness, on a ground §11.52(b) does not state: the silent user
+  population is unobservable (a workaround depends on the defect's
+  exact shape), so reproduction bounds every value of that unknown at
+  once — D9's frozen-field logic at the behavior layer. General rule
+  candidate [derived, veto]: **divergence license concentrates exactly
+  where defects do — in unexercised configurations — because silent
+  dependents cannot exist where nobody goes**; the audit prior
+  (§11.161(b), defects in rarely-exercised paths) and the divergence
+  license are the same exercise-density variable, read from both
+  sides. Consequences: B17/D6 shape (1) UN-qualified for the exercised
+  region (the caveat above is retracted there); §11.92(d)'s routing to
+  R28 CONFIRMED (heading is in the untested pair); R28 re-narrowed to
+  the heading×offset combination, plain-offset parity stated to the
+  tester as protected on principle.
+- **NEW verification-surface hole, named by the owner**: portrait
+  aspect (window height > width) is the second barely-tested
+  configuration — no ledger row exists for it. Field-side probe added
+  to R21's census (does portrait exist anywhere in the field?);
+  harness-side portrait leg is a cheap candidate (supervisor's queue).
+  Annotation owed wherever the verification-surface map lives.
+- **Named lead, RE-SCOPED**: the long-standing view-offset fixes in git
+  — an archaeology pass (navigator/projector territory, §11.161(d)'s
+  maximal-struggle cell) is now only worth running for the HEADING
+  corner: the exercised behavior needs no reconstruction, the field
+  ratified it; only the untested combination's intent is unrecoverable
+  from use. Candidate task, supervisor's queue, priority accordingly
+  lower.
 
 ## 5. Interface rule candidate (final-pass protocol)
 

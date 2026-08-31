@@ -114,6 +114,10 @@ work can block you at all and which never will.)
 - very large body populations (comet swarms, asteroid belts, 100+ moons)
 - runtime-loaded images / audio as show content
 - joystick or other hardware controls
+- a window/display taller than it is wide (portrait setup — one of the
+  two configurations the developer names as barely tested; knowing
+  whether it exists anywhere in the field decides if it needs testing
+  at all)
 *(ref: the content census, §11.162 / DEPLOYMENT-MAP T3)*
 
 **R22. On your installation, does `search` find constellations and named
@@ -227,21 +231,23 @@ catalog values of known stars.)
 *(ref: §11.4 decision (2), §11.158(f); routing per §11.161(c),
 exercised [vixy 2026-08-31])*
 
-**R28. The tilted-dome view offset: which behavior did the dome that
-used it depend on?** Background: the view offset exists for tilted-dome
-geometry (your round-1 answer) and can change mid-show (R11). The
-developer recalls it was driven by one installation's tilted dome — and
-that it collected long-standing fixes back then whose end state he is
-not sure is clean, which is why your memory of it outranks the code
-here. The open behavior: with the view offset engaged, rotating the
-heading turns the offset direction *with* the heading on the old
-software; the new path keeps the offset fixed to the physical dome. If
-you know that installation (or serve any tilted-dome setup today):
-which of the two does a tilted-dome show actually depend on? If no dome
-you know still uses it, say exactly that — that answer alone downgrades
-this to an engineering call and we stop pressing.
-*(ref: §11.92(d), B17 residual; routing + the fix-history testimony
-[vixy 2026-08-31])*
+**R28. The tilted-dome view offset: what happens when it meets a
+rotated heading?** Background: the view offset exists for tilted-dome
+geometry (your round-1 answer) and can change mid-show (R11). Its plain
+behavior is field-proven — an installation used it, issues got reported
+and fixed — and it stays exactly as it was, on principle: what the
+field may silently depend on is never changed. The corner nobody
+exercised is the *combination* with a rotated heading (heading is one
+of the two configurations the developer names as barely tested), and
+there the two paths disagree: the old software turns the offset
+direction *with* the heading; the new path keeps it fixed to the
+physical dome. If you know the installation that used the offset (or
+serve any tilted-dome setup): did it ever rotate the heading during a
+show — and if so, which behavior did it depend on? If the combination
+was never used to your knowledge, say exactly that — it downgrades this
+to an engineering call and we stop pressing.
+*(ref: §11.92(d), B17 residual; routing + the exercise-boundary
+testimony [vixy 2026-08-31])*
 
 **R29. Which bodies deliberately look different from far than from
 close?** The shipped Sun and Moon carry a miniature/preview skin that is
