@@ -7,16 +7,29 @@
  * asserts SERVER-SIDE what arrived — so each leg is checked from both ends and
  * a client that quietly sends nothing cannot pass by agreeing with itself.
  *
- *     tcpclient_test <leg> [host:port]
+ *     tcpclient_test <leg> [host:port] [more...]
+ *
+ * THE `live_*` LEGS ARE FOR A REAL ENGINE, and they are here rather than in a
+ * separate binary because they must be the SAME client and the same core calls
+ * (I2): `claude/harness/f67_tcp_live.py` launches spacecrafter on a temp-HOME
+ * farm and runs them over port 7805, reading the engine's side of each claim
+ * through a channel this binary does not touch (the session file, the script
+ * log, `scedit --history`). What they do NOT drive is the terminal: they make
+ * the calls the editor's keys make, in the editor's order, so a claim about a
+ * KEY rests on the ui gate's frames plus this — stated in the delivery rather
+ * than glossed over.
  *
  * Exit 0 when every check of the leg passed, 1 otherwise, 2 on misuse.
  */
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
+#include <unistd.h>
 #include <string>
 #include <vector>
 
+#include "sc_editcore.hpp"
 #include "sc_tcpclient.hpp"
 
 using namespace scedit;
@@ -280,6 +293,179 @@ static void legClosed(const Endpoint &ep)
 	check(!c.send("flag stars on", serr), "nothing can be sent after that");
 }
 
+// ------------------------------------------------- the legs for a real engine
+
+//! Wait, at the editor's own cadence, for the file to change under the buffer.
+//! This is the bounded poll sc_tui.hpp describes — once a second, for a stated
+//! window — run here so the live instrument measures the real thing.
+static bool waitForWriteBack(EditCore &core, int seconds)
+{
+	for (int i = 0; i < seconds; ++i) {
+		if (core.diskState() == DiskState::Changed)
+			return true;
+		::sleep(1);
+	}
+	return core.diskState() == DiskState::Changed;
+}
+
+static void printHistory(const EditCore &core, const char *tag)
+{
+	for (const ErrorEntry &e : core.errorHistory())
+		std::printf("  %s %s line %zu [%s] %s\n", tag,
+		            e.source == EntrySource::Engine ? "spacecrafter" : "scedit",
+		            e.line, e.id.c_str(), e.message.c_str());
+}
+
+//! Send one command and leave. The engine says nothing about it, so what it did
+//! is read by the harness through another channel entirely.
+static void legLiveSend(const Endpoint &ep, const std::string &command)
+{
+	TcpClient c;
+	std::string err;
+	check(c.connect(ep, err), "connect to the live engine: " + err);
+	c.pollFor(2000, 1);
+	check(c.send(command, err), "send `" + command + "`: " + err);
+	c.pollFor(800);
+	std::printf("  sent: %s\n", command.c_str());
+	for (const FeedLine &f : c.feed())
+		std::printf("  feed[%s] %s\n", f.kind == FeedKind::Local ? "L" : "E", f.text.c_str());
+	c.disconnect();
+}
+
+//! §5.47: the reply to a `get` reaches the connection that ASKED. Before F27 it
+//! reached only the $LOGON subscribers; this client is both, and must get one
+//! copy, not two.
+static void legLiveGet(const Endpoint &ep)
+{
+	TcpClient c;
+	std::string err;
+	check(c.connect(ep, err), "connect: " + err);
+	c.pollFor(2000, 1);
+	check(c.send("get status position", err), "send a get: " + err);
+	c.pollFor(4000, 1);
+	std::vector<std::string> lines = engineLines(c);
+	std::size_t positions = 0;
+	for (const auto &l : lines) {
+		std::printf("  reply: %s\n", l.c_str());
+		// The engine's shape: five ';'-separated fields (coreLink tcpGetPosition).
+		std::size_t semis = 0;
+		for (char ch : l)
+			if (ch == ';')
+				++semis;
+		if (semis == 5)
+			++positions;
+	}
+	check(positions == 1,
+	      "exactly ONE position reply on this connection (issuer + subscriber = one copy)");
+	c.disconnect();
+}
+
+//! The $LOGON feed: what the engine broadcasts arrives here. The harness has a
+//! SECOND client ask a question while this leg waits.
+static void legLiveFeed(const Endpoint &ep, int seconds)
+{
+	TcpClient c;
+	std::string err;
+	check(c.connect(ep, err), "connect: " + err);
+	c.pollFor(2000, 1);
+	std::printf("  MARKER subscribed\n");
+	std::fflush(stdout);
+	for (int i = 0; i < seconds * 4; ++i)
+		c.pollFor(250);
+	for (const FeedLine &f : c.feed())
+		if (f.kind == FeedKind::Engine)
+			std::printf("  feed: %s\n", f.text.c_str());
+	check(!engineLines(c).empty(), "something arrived on the feed");
+	c.disconnect();
+}
+
+static void legLiveReconnect(const Endpoint &ep)
+{
+	TcpClient c;
+	std::string err;
+	check(c.connect(ep, err), "first connect: " + err);
+	c.pollFor(2000, 1);
+	check(c.send("get status position", err), "ask on the first connection");
+	c.pollFor(4000, 1);
+	const std::size_t first = engineLines(c).size();
+	check(first > 0, "the first connection was answered");
+	c.disconnect();
+	check(c.state() == LinkState::Offline, "disconnected");
+	check(c.connect(ep, err), "reconnect: " + err);
+	c.pollFor(2000, 1);
+	check(c.send("get status position", err), "ask on the second connection");
+	c.pollFor(4000, 1);
+	check(engineLines(c).size() > 0, "the second connection was answered too");
+	std::printf("  lines after reconnect: %zu\n", engineLines(c).size());
+	c.disconnect();
+}
+
+//! (d) Play the open file, let the engine write its `#!` back, and take it into
+//! a CLEAN buffer — the editor's whole write-back path, headless.
+static void legLivePlay(const Endpoint &ep, const std::string &grammar,
+                        const std::string &file, int seconds)
+{
+	EditCore core;
+	std::string err;
+	check(core.open(grammar, file, err), "open the script: " + err);
+	check(core.diskState() == DiskState::Same, "the buffer starts in step with the file");
+	check(core.engineTailCount() == 0, "and with no engine tail in it");
+	printHistory(core, "before:");
+
+	TcpClient c;
+	check(c.connect(ep, err), "connect: " + err);
+	c.pollFor(2000, 1);
+	check(!core.dirty(), "the buffer is clean, so the play needs no save first");
+	check(c.send("script action play filename " + file, err), "play the file: " + err);
+
+	const bool changed = waitForWriteBack(core, seconds);
+	check(changed, "the engine rewrote the file within the window");
+	if (changed) {
+		check(core.reloadFromDisk(err), "the clean buffer reloads: " + err);
+		check(core.engineTailCount() > 0, "and the engine's `#!` finding(s) are listed");
+		std::printf("  engine tails after reload: %zu\n", core.engineTailCount());
+		printHistory(core, "after:");
+	}
+	c.disconnect();
+}
+
+//! (e) The refusal, FORCED. The engine has written; the author has typed; the
+//! save must not happen. With `force`, the same driver takes the other choice —
+//! and the engine's tail is gone, which is what makes the refusal a fact rather
+//! than a hope.
+static void legLiveDirty(const Endpoint &ep, const std::string &grammar,
+                         const std::string &file, int seconds, bool force)
+{
+	EditCore core;
+	std::string err;
+	check(core.open(grammar, file, err), "open the script: " + err);
+	TcpClient c;
+	check(c.connect(ep, err), "connect: " + err);
+	c.pollFor(2000, 1);
+	check(c.send("script action play filename " + file, err), "play the file: " + err);
+	const bool changed = waitForWriteBack(core, seconds);
+	check(changed, "the engine rewrote the file within the window");
+
+	// The author types AFTER the run finished, into the buffer that still holds
+	// the pre-run bytes. Both things now exist and only one can survive a save.
+	core.moveTo(0, 0);
+	core.insertText("# an edit made while the show was running\n");
+	check(core.dirty(), "the buffer is dirty");
+	check(core.diskState() == DiskState::Changed, "and the file has changed underneath it");
+
+	if (!force) {
+		const bool refused = !core.save(err);
+		check(refused, "the save is REFUSED");
+		std::printf("  refusal: %s\n", err.c_str());
+		check(err.find("reload") != std::string::npos && err.find("save anyway") != std::string::npos,
+		      "and names both choices");
+	} else {
+		check(core.saveOverwriting(err), "FORCED: the author's edits are written over it: " + err);
+		std::printf("  forced: the engine's tail was overwritten\n");
+	}
+	c.disconnect();
+}
+
 int main(int argc, char **argv)
 {
 	if (argc < 2) {
@@ -304,6 +490,16 @@ int main(int argc, char **argv)
 	else if (leg == "bound") legBound(ep);
 	else if (leg == "feed") legFeed(ep);
 	else if (leg == "closed") legClosed(ep);
+	else if (leg == "live_send" && argc > 3) legLiveSend(ep, argv[3]);
+	else if (leg == "live_get") legLiveGet(ep);
+	else if (leg == "live_feed") legLiveFeed(ep, argc > 3 ? std::atoi(argv[3]) : 10);
+	else if (leg == "live_reconnect") legLiveReconnect(ep);
+	else if (leg == "live_play" && argc > 4)
+		legLivePlay(ep, argv[3], argv[4], argc > 5 ? std::atoi(argv[5]) : 60);
+	else if (leg == "live_dirty" && argc > 4)
+		legLiveDirty(ep, argv[3], argv[4], argc > 5 ? std::atoi(argv[5]) : 60, false);
+	else if (leg == "live_dirty_force" && argc > 4)
+		legLiveDirty(ep, argv[3], argv[4], argc > 5 ? std::atoi(argv[5]) : 60, true);
 	else {
 		std::fprintf(stderr, "tcpclient_test: no such leg: %s\n", leg.c_str());
 		return 2;
