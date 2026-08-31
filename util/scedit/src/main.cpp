@@ -20,6 +20,12 @@
  * The interaction lives in src/sc_editcore.hpp (headless, tested without a
  * tty); src/sc_tui.hpp only draws it. `--ui-selftest` renders fixed frames
  * off-screen so a gate can assert what actually reaches the screen.
+ *
+ * Slice 4 (2026-08-31): the error pane and `--history FILE...` — every `#!`
+ * tail spacecrafter wrote and every finding scedit makes, listed in line order
+ * with click-to-warp (scedit/INTENT.md §5 item 15(a-ii)). One reader
+ * (EditCore::errorHistory), two printers: the pane and this. README § --history
+ * states the printed shape, which a harness consumes.
  */
 
 #include <cstdio>

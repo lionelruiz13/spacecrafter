@@ -40,12 +40,13 @@ under `third_party/` (see "Vendoring").
 
     cd util/scedit
     cmake -B build && cmake --build build
-    cd build && ctest --output-on-failure     # 8 gates, see "Verification"
+    cd build && ctest --output-on-failure     # 9 gates, see "Verification"
 
 ## Use
 
     scedit [--grammar FILE] [--list FAMILY]          # default: validate the contract
     scedit [--grammar FILE] [--rules] --check FILE...
+    scedit [--grammar FILE] --history FILE...        # the error pane's list, no tty
     scedit [--grammar FILE] [--edit] FILE            # the editor
     scedit [--grammar FILE] --ui-selftest            # render fixed frames, no tty
 
@@ -87,6 +88,28 @@ emit, and why. An unarmed rule is visible rather than silent: a check that
 cannot be grounded in the contract at zero false positives is not armed at all,
 and this is where you see which ones and what they are waiting for.
 
+**`--history FILE...`** — print the list the editor's error pane shows: every
+`#!` tail spacecrafter left in the file and every finding scedit makes, in line
+order. Same reader as the pane (`EditCore::errorHistory`), so a harness can
+measure what an author would see without a terminal. One entry per line, seven
+TAB-separated fields:
+
+    file  line  source  id  severity  message  relation
+
+`source` is `spacecrafter` or `scedit`. `id` is the lint id, or the literal
+`#!` for an engine tail. `severity` is empty for an engine tail — the engine
+states none, and scedit will not print its own opinion in the engine's column.
+`relation` is filled for engine tails only: *agrees with scedit's `<id>`*,
+*scedit finds no `<id>` here now* (fixed since the last run, or the two
+disagree), or *not a class scedit checks*. A field never contains a tab: the two
+prose fields are written with tabs and newlines turned into spaces, so a message
+cannot break the shape. Exit codes are `--check`'s: 0 nothing to list, 1 entries
+printed, 2 a file could not be read.
+
+The shape is a contract, not a print: `claude/harness/f63_scedit_agree.py`
+consumes it to compare scedit's reading of a script with the verdict the engine
+wrote into that same file.
+
 ## The editor
 
     scedit doc/superscript.sts
@@ -105,6 +128,8 @@ through it, and what can be completed is shown before you press anything.
 | Backspace / Delete | remove the byte before / under the caret; at a line edge, join |
 | **Tab** | insert the grey text; if it is already typed in full, show the next candidate |
 | Shift-Tab | show the previous candidate |
+| **F5**, or Ctrl-E | show or hide the error pane |
+| **F3**, or Ctrl-N | go to the next error; **F4**, or Ctrl-P, the previous one |
 | Ctrl-S, or F2 | save |
 | Ctrl-Q, Esc, or F10 | quit; with unsaved changes, once to warn and again to discard |
 
@@ -114,8 +139,9 @@ two things for terminals where that does not take.
 
 ### Mouse
 
-Click to put the caret where you clicked. Wheel to scroll — and the view stays
-where you scrolled it: it only chases the caret again when you next press a key.
+Click to put the caret where you clicked, in the text or on a row of the error
+pane. Wheel to scroll — and the view stays where you scrolled it: it only chases
+the caret again when you next press a key.
 
 ### The documentation bar
 
@@ -157,6 +183,46 @@ class scedit checks*. That relation is the one place the editor compares its
 reading of a line with the engine's actual verdict on it (constraint C1,
 measured on the file rather than on the parser). Inside the tail the bar
 says what a `#!` is and who owns it.
+
+### The error pane
+
+**F5** opens a list of every place something is wrong with the script: each
+`#!` tail spacecrafter left in the file, and each finding scedit makes, in line
+order. **F3** and **F4** step through it — they open the pane too, so wanting
+the next error is enough, you need not know the pane is there — and a **click**
+on a row puts the caret on that entry, at the byte it is about. `>` and the
+terminal's inversion mark the row you are standing on. The pane costs six rows
+and most files are clean, so it starts closed; the error COUNT is on the status
+line at all times, which is what tells you it exists.
+
+A row reads `E    12 │ sc  unknown-command: …` for scedit's own findings and
+`!    12 │ #!  …` for the engine's. The engine's rows carry no severity because
+the engine states none, and scedit will not print its own opinion in the
+engine's column; with the caret on such a line the doc bar's fourth row says how
+the two readings relate.
+
+A line carrying **both** a tail and a finding gives **two rows**, the engine's
+first. They are two claims by two authors about one line — what happened when
+spacecrafter RAN it, and what scedit reads NOW — and the case where they differ
+is exactly the C1 signal worth seeing. The engine's row comes first because
+there is at most one per line and it records a run that happened.
+
+**What "history" means here — an interpretation, stated so it can be vetoed.**
+The requirement is Vixy's, verbatim [2026-08-30]: *"RECOGNIZE `#!` machine
+annotations as navigable errors — shown on the doc bar when the caret is on the
+line, otherwise listed in an error history with click-to-warp-cursor"*. This
+pane reads "history" as **the current buffer's set**, not a log of past editing
+sessions. The argument: the engine's channel already IS the log — a `#!` stays
+in the file until the fault is fixed and spacecrafter reaches a natural end — so
+the file itself carries what the engine found last time it ran, and a second
+store could only be a copy of it that goes stale. Nothing is remembered across
+an open, and nothing outlives its cause: fix the fault, the row goes. If the
+word was meant to carry more than that — every diagnostic this editing session
+has seen, kept after it was fixed — say the word; it is a different feature and
+a different store.
+
+The keys, the placement, the toggle and the default-closed are scedit's own
+calls, made rather than asked, and equally open to veto.
 
 ### What the grey text means
 
@@ -275,13 +341,16 @@ Three layers, and the middle one is where everything happens:
 
     src/sc_document.hpp   the buffer: bytes in, the same bytes out
     src/sc_editcore.hpp   the interaction: cursor -> token, completion,
-                          documentation bar, live findings
+                          documentation bar, live findings, the error history
     src/sc_tui.hpp        the terminal: draws the above, forwards events,
                           decides nothing
 
 `sc_editcore` is headless on purpose. A terminal cannot be asserted on, and this
 can: `tests/editcore_test.cpp` reaches every behaviour the editor has without a
-tty, and `--ui-selftest` then proves those answers actually reach a screen. It
+tty, and `--ui-selftest` then proves those answers actually reach a screen. The
+error pane is the shape of that rule: the list and the warp are core calls with
+their own tests, `--history` prints the same list for a machine, and the pane
+only draws it and turns a click into the one call the keyboard also makes. It
 consumes four contracts through their headers and owns none of them —
 `sc_tokenizer` (the engine's reading of a line, and the raw-column↔token map),
 `sc_grammar` (the structural answers, `argKeysAreExhaustive` among them),
@@ -310,24 +379,26 @@ silently dropped translation unit.
 
 ## Verification
 
-Eight `ctest` gates, all green on a clean build:
+Nine `ctest` gates, all green on a clean build:
 
 | gate | what it measures |
 |---|---|
 | `tokenizer` | 189 checks: constructed lines, one per sharp edge of the parse model, each with its expected tokenization — the comment cut included (quoted `#`, unclosed quote, glued `#`, indented `#`) — plus the block structure (`struct if`/`loop` openers, closers, closers that close nothing, the `comment`-block guard) |
 | `parse_oracle` | scedit's reading vs a **verbatim copy of the engine's `parseCommand`** — carrying the ruled comment cut in the exact form the engine receives it — over exhaustively enumerated short strings ({a, b, space, tab, `"`} to 6 bytes, {a, space, `"`} to 9, {a, space, `"`, `#`} to 8), ISO-8859 high-byte lines and every line of the real corpus: 119 337 comparisons |
-| `editcore` | 175 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings with their spans (a finding points at its bytes; an opener never closed is reported on ITS line) |
+| `editcore` | 223 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings with their spans (a finding points at its bytes; an opener never closed is reported on ITS line), and the error history: both sources in line order, a warp landing on the stated byte, an edit that removes an entry, and the shapes that carry a `#!` and are NOT tails |
 | `roundtrip` | `doc/superscript.sts` — 1606 lines (rewritten upstream 2026-08-26, `f0c8ef83`), ISO-8859, CRLF — opened in the editor and saved untouched: **same MD5**. Plus one edit that must change exactly the line it was made on |
-| `ui_selftest` | the frames the editor actually DRAWS, rendered off-screen at a fixed size, with four masks of the caret's row: the ghost text is DIM, the look-alike-space marker lands on the column the finding names, every finding's span is UNDERLINED at exactly its bytes, and the caret is the standard SGR inversion on exactly one cell |
+| `ui_selftest` | 17 frames the editor actually DRAWS, rendered off-screen at a fixed size — the error pane among them, with both sources mixed, after one warp and after two, and empty on a clean buffer — each with four masks of the caret's row: the ghost text is DIM, the look-alike-space marker lands on the column the finding names, every finding's span is UNDERLINED at exactly its bytes, and the caret is the standard SGR inversion on exactly one cell |
 | `seed_gate` | the contract file validates (counts re-derived from the data, not asserted) — **and every fact in the four `grammar/args/` fragments is still byte-identical in the merged file**, which is what keeps the granular source and the merged contract from drifting apart |
 | `lint_rules` | `tests/lint_cases.sts` — one construct per armed id (15 ids), proving the rule fires with the right id, severity and shape; plus a section that must stay silent (comments in every position included), and a last section for what is only known at the end of the file |
+| `history_list` | `--history` over the lint fixture and `tests/history_cases.sts` produces exactly the recorded rows. Two inputs on purpose: the fixture's scedit rows include the 27 the `--check` record already pins, so one reader's two printers cannot drift apart silently; history_cases is F63-SHAPED — every `#!` in it is a sentence the ENGINE wrote — and three of its ten cases are deliberate ABSENCES (a `#!` in quotes, in a column-0 comment, in an indented one) |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 
-`tests/lint-expected.txt`, `tests/corpus-expected.txt` and
-`tests/ui-selftest-expected.txt` are a **record, not a silencer**: every line in
-the first two is dispositioned in `tests/derivation-diff.md` §7 with the engine
-site named, and a finding that appears without being recorded there fails the
-gate. That is constraint C3 — zero false positives before a rule ships — and it
+`tests/lint-expected.txt`, `tests/corpus-expected.txt`,
+`tests/history-expected.txt` and `tests/ui-selftest-expected.txt` are a
+**record, not a silencer**: every line in the first two is dispositioned in
+`tests/derivation-diff.md` §7 with the engine site named, every row of the third
+in a comment beside the bytes that produce it in `tests/history_cases.sts`, and
+anything that appears without being recorded fails the gate. That is constraint C3 — zero false positives before a rule ships — and it
 is why the expected files are edited deliberately and never regenerated blind.
 The same discipline applies to the rendered frames.
 
@@ -372,7 +443,18 @@ Stated rather than hidden — the `--rules` discipline, applied to the editor.
 - **The whole buffer is re-analysed after every keystroke** — 2.0 ms on
   `doc/superscript.sts` (measured 2026-08-04 on the then-1407-line file) in a
   Release build, so it is not worth making incremental yet, but it is linear
-  in file size and will be one day.
+  in file size and will be one day. The error pane rides that same pass and
+  adds only a `find("#!")` per line before it will tokenize one.
+- **The error pane never writes a `#!`, and never will from here.** The channel
+  is the engine's: scedit shows a tail, relates it to its own reading, and warps
+  to it. Deleting a tail by hand is an ordinary edit like any other — the editor
+  simply has no command that composes or rewrites one, which is what keeps the
+  round-trip guarantee above worth anything.
+- **The pane has no filter and no sort.** Line order, both sources, all of it.
+  A file with a thousand duplicate-key findings will list a thousand rows; "show
+  me only the engine's", "only errors", "group by id" are one accessor away
+  (`EditCore::errorHistory` is a plain vector) and are not built because nobody
+  has asked for them yet.
 - **No TCP mode**: `§5` item 6, blocked on a spacecrafter rebuild.
 
 `tests/derivation-diff.md` is the audit that makes engine fidelity (C1) a
@@ -387,8 +469,8 @@ Landed: the contract file (schema v2, per-key argument data merged), the
 tokenizer library (`src/sc_tokenizer.hpp` — also the editor's cursor→token
 engine), `--check` with its lint rules, the headless editor core
 (`src/sc_editcore.hpp`) with its byte-preserving buffer, completion and
-documentation bar, the FTXUI front end (`src/sc_tui.hpp`), and the eight gates
-above.
+documentation bar, the error pane and its `--history` twin, the FTXUI front end
+(`src/sc_tui.hpp`), and the nine gates above.
 
 Not yet: the stellar-system-file grammar (second contract file), `$`-variable
 semantics for the `reserved_variables` family, and the TCP client mode. Roadmap,
