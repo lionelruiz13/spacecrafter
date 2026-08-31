@@ -215,6 +215,19 @@ classification); (6) engine, on Vixy's word only: §5.119's fix · the
 nested-origin rule · the file-origin log tag · `$NOTICE` advertisement ·
 the lifecycle event · the three untriaged script requests; (7) §5.100's
 fix IF the §3 authorization lands.
+**Post-close addendum (2026-08-31/09-01):** three owner rulings → §11.191
+(the escape rule RATIFIED [D14 reaches source bytes, never rendered ones];
+the file-origin log tag word-given; the canary's objective stated as an
+asymmetry — fail-closed stands, false positives removed at the root, no
+band-widening licensed); **F72 → §11.192** dispatched, delivered and
+accepted same night (one condition at `originTag()`, 16-for-16 lines so no
+citation staled; f68 47/47, f69 52/52, f63 34/34; wire and subscriber
+recordings byte-identical to F68's and F70's committed baselines; both
+provenance instruments gain a DECLARED pre-era, retiring F70's three
+known-false reds per §11.191(c)). Session 19 final tally: **FIVE for
+five** (F68–F72), six supervisor defects all caught-and-corrected,
+criterion-integrity 5, baselines at true close pair-check **208/183/25/92**
+· scan **125/166/101**.
 
 ---
 
@@ -1043,6 +1056,22 @@ pre-vs-post in one run. Both provenance instruments now take a DECLARED
 pre-era (`SC_PRE_TAGS` / `SC_PRE_ERA`), which retires the three known-false
 reds F70 took. One stated deviation: the condition is `where().empty()`, not
 `channel == NONE` (§11.192(b)). Artifacts `harness/artifacts/f72/`.
+**ACCEPTED 2026-09-01 (Fable, session 19 post-close):** entry read in full;
+trees/commits verified; wires re-compared BY ME (four unsubscribed == F68's
+baseline, D's 939 B == F70's recording); ASCII gate + baselines reproduced
+to the digit. ENDORSED: `where().empty()` over the predicted literal (the
+namer asks the naming predicate — I2 at the predicate level; degenerate-
+origin-proof; the literal form one line away, veto-open at §11.192(b)); the
+zero-net-line-delta discipline (F68's +25 lesson applied); the DECLARED
+pre-era as §11.191(c)'s first enactment (declared-not-inferred is the
+right polarity: a wrong declaration reds, never greens); the nine
+neighbour instruments checked not assumed; the one-line-marker-span rule
+recorded for every future back-marker author. SUPERVISOR TALLY +1, mine:
+the §11.191(b) REVERSED marker reached §11.187's entry but NOT its derived
+stub in my `eef776d` commit — executor-caught, fixed at both ends,
+reported not absorbed (the pair-check's own divergence class, caught by
+hand before the instrument). Round addendum: **F72 → §11.192**, session 19
+closes at FIVE for five.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
