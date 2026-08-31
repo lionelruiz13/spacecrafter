@@ -320,7 +320,12 @@ file ASCII, accents removed — new §2.0 constraint **D14**; (e) superscript.st
 missing-doc extraction proposed ("could") — coincides with the session-18
 queue's own position 1 (scedit items 11/12). Warm-up: both trees clean at
 open, code `e2c8477b` / harness `8c92006`; binary current (`cmake --build -n`
-empty; mtime 2026-08-31 08:20); **definition-drift assert: md5 MATCH**
+empty; mtime 2026-08-31 08:20) **[CORRECTED at F68 acceptance: that check was
+a FALSE GREEN — `-n` is not a `cmake --build` option; with stderr piped away
+its help-text failure read as empty output. The real form is
+`cmake --build <dir> -- -n`; the executor ran it (zero compile steps), so the
+currency conclusion stands by ITS measurement, not mine — §11.158's
+configure-false-green class, supervisor tally]**; **definition-drift assert: md5 MATCH**
 (`a5a54d94`); next free §11 number **186** verified at open (live ∪ archive),
 CONSUMED by the transmission entry ⇒ **187** free at first dispatch; RAM
 11 GiB avail ⇒ **-j6** builds (§0.5); display per HOST-EVENTS 2026-08-31
@@ -1878,6 +1883,24 @@ flipped; harness README F68. Canary exit 2 as stated (+1 new NOTE:
 citations, +1 unmatched = §11.184→§11.186, the detector's documented
 inversion — the line IS the back-marker and §11.186(b) is the mandate it
 cites).
+**ACCEPTED 2026-08-31 (Fable, session 19):** entry read in full; commit
+chain/authors verified (code one commit, exactly the named surface, added
+lines 0 non-ASCII — D14 holds); wire artifacts re-compared by me (S/P/Q/HTTP
+identical ×3); both back-marker homes verified; §5.117 annotation +
+FEATURE_REQUESTS half-flip + stub placement verified; baselines reproduced
+to the digit by my own runs. All five judgment calls ENDORSED with their
+arguments: (1) HTTP `bool http` → no-origin (a false `tcp#<id>` would have
+been worse than none — the mandate's own point); (2) the file-half
+asymmetry of `originTag()` — conservative, reversible, both readings at the
+definition; the sharp question ROUTED to §3; (3) flag-name emitter left to
+§11.178's work order; (4) byte-level ISO-8859 patches with count asserts;
+(5) the comm-truncation rename (instrument integrity). TWO dispatcher
+defects it reported, both mine, tallied: the hpp/cpp line-attribution gloss
+in the F68 section; the warm-up `cmake --build -n` false green (my §0b.1
+check piped stderr away and read silence as currency — the executor's
+`-- -n` form is the real instrument; conclusion survived by its
+measurement, not mine). Canary NOTE (`xserver.restarted`) echoed to
+HOST-EVENTS at acceptance.
 
 ### F69 — The dedicated feedback link: TCP-origin feedback comes back on an opt-in channel; masterput's wire is frozen (§11.186(c); §11.185(d)(1) ruling; FEATURE_REQUESTS 2026-08-31) [M]
 
@@ -2137,13 +2160,24 @@ moved.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-19 decision items (2026-08-31, the provenance/ASCII round):**
+  - **SHOULD A FILE-ORIGIN REFUSAL NAME `<file>:<line>` IN THE LOG?** (F68
+    §11.187(d)): the funnel now prefixes TCP-origin refusals with `tcp#<id>`;
+    the file half is DELIBERATELY absent — the executor read "every failing
+    command names its line in the log" as the LOG half of §11.184's disclosed
+    ~1661-tails decision (still yours) and declined to prejudge it. The other
+    reading is real (a log line naming the line costs nothing; the log is not
+    the script). Reversal = one condition at `originTag()`
+    (`channel != TCP` → `channel != NONE`). Both readings at the definition.
+
 - **Session-18 decision items (2026-08-31, the scedit round on TravellingFoxDev):**
-  - **[ANSWERED IN PART 2026-08-31 → §11.186(a): lock-enabled now false
-    [measured]. RESIDUAL: idle-delay is still 300 / idle-activation still true —
-    the screen still BLANKS, and the 1 Hz attribution keys on the blanked
-    output, not the lock. Until a blank-only run discriminates, executors keep
-    the F67 wake mitigation. If you also want the blank gone:
-    `gsettings set org.gnome.desktop.session idle-delay 0`.]**
+  - **[ANSWERED IN FULL 2026-08-31 → §11.186(a) + HOST-EVENTS `149d518`:
+    lock-enabled false AND idle-delay 0, both measured. The owner enacted the
+    second arm mid-round on reading the residual flag, stating the narrowed
+    first enactment traced to THIS item's own headline (lock named, blank
+    operative) — supervisor report-shaping defect, tallied. Hazard removed
+    both arms; lock-vs-blank attribution closed as moot; executors keep a
+    zero-cost GetActive check-and-record at launch.]**
   - **YOUR DISPLAY DURING DISPATCH: a locked screen runs the engine at 1 Hz.**
     Measured: screensaver active → `Frame stall detected` every 1000 ms for
     whole runs (105/run, HEAD and the pre-fix control alike); awake → 1. Any

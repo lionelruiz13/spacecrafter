@@ -95,3 +95,9 @@ never rewrite (maintenance invariant). Archival per the standing convention
   defect, tallied session 19. Standing consequence: executors keep a
   CHECK-AND-RECORD of `GetActive` at launch (defense in depth, cost ~0); the
   per-minute wake loop is no longer load-bearing.
+- 2026-08-31 [measured, F68 canary run, §11.187(i)] **X SERVER FOR `:2`
+  RESTARTED** 2026-08-30 23:54:52 (vs the F67-era start), compositor
+  UNCHANGED — canary NOTE `xserver.restarted`, first seen this round; canary
+  exit still 2 (the two desktop-bank fail-by-construction members). No claim
+  rides it; echoed here because a display-stack birth-time change is exactly
+  what this channel exists to carry (§11.121(m) retroactive shape).
