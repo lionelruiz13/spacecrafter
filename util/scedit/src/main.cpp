@@ -31,6 +31,7 @@
 #include <nlohmann/json.hpp>
 
 #include "sc_check.hpp"
+#include "sc_editcore.hpp"
 #include "sc_grammar.hpp"
 #include "sc_tui.hpp"
 
@@ -308,6 +309,7 @@ void usage() {
 	std::fprintf(stderr,
 	             "usage: scedit [--grammar <file>] [--list commands|flags|set_names|color_names|obsolete_tokens|reserved_variables|font_targets]\n"
 	             "       scedit [--grammar <file>] [--rules] --check FILE...\n"
+	             "       scedit [--grammar <file>] --history FILE...\n"
 	             "       scedit [--grammar <file>] [--edit] FILE\n"
 	             "       scedit [--grammar <file>] --ui-selftest\n"
 	             "default action: validate the grammar contract\n"
@@ -374,6 +376,50 @@ int check(const std::string &grammarPath, const std::vector<std::string> &files,
 	return findings ? 1 : 0;
 }
 
+//! `--history`: the list the editor's error pane shows, for a caller with no
+//! tty. Same reader as the pane (EditCore::errorHistory) — there is one
+//! implementation of "where are the problems in this file", and this prints it.
+//!
+//! SHAPE, stable and stated in README § --history: one entry per line, seven
+//! TAB-separated fields —
+//!     file  line  source  id  severity  message  relation
+//! `source` is `spacecrafter` or `scedit`; `id` is the lint id, or the literal
+//! `#!` for an engine tail; `severity` is empty for an engine tail (the engine
+//! states none); `relation` is empty for a scedit finding. A field never
+//! contains a tab: the two prose fields are written with tabs turned into
+//! spaces, so the shape cannot be broken by a message.
+std::string oneLine(std::string s)
+{
+	for (char &c : s)
+		if (c == '\t' || c == '\n' || c == '\r')
+			c = ' ';
+	return s;
+}
+
+int history(const std::string &grammarPath, const std::vector<std::string> &files)
+{
+	int entries = 0, ioErrors = 0;
+	for (const auto &f : files) {
+		scedit::EditCore core;
+		std::string err;
+		if (!core.open(grammarPath, f, err)) {
+			std::fprintf(stderr, "scedit: %s\n", err.c_str());
+			++ioErrors;
+			continue;
+		}
+		for (const auto &e : core.errorHistory()) {
+			std::printf("%s\t%zu\t%s\t%s\t%s\t%s\t%s\n",
+			            f.c_str(), e.line,
+			            e.source == scedit::EntrySource::Engine ? "spacecrafter" : "scedit",
+			            e.id.c_str(), e.severity.c_str(),
+			            oneLine(e.message).c_str(), oneLine(e.relation).c_str());
+			++entries;
+		}
+	}
+	if (ioErrors) return 2;
+	return entries ? 1 : 0;
+}
+
 } // namespace
 
 int main(int argc, char **argv) {
@@ -383,12 +429,14 @@ int main(int argc, char **argv) {
 	std::string editFile;
 	std::vector<std::string> checkFiles;
 	bool checkMode = false, showRules = false, editMode = false, uiSelfTest = false;
+	bool historyMode = false;
 	for (int i = 1; i < argc; ++i) {
 		std::string a = argv[i];
-		if (checkMode) { checkFiles.push_back(a); continue; }
+		if (checkMode || historyMode) { checkFiles.push_back(a); continue; }
 		if (a == "--grammar" && i + 1 < argc) { grammarPath = argv[++i]; grammarGiven = true; }
 		else if (a == "--list" && i + 1 < argc) list = argv[++i];
 		else if (a == "--rules") showRules = true;
+		else if (a == "--history") historyMode = true;
 		else if (a == "--check") checkMode = true;
 		else if (a == "--ui-selftest") uiSelfTest = true;
 		else if (a == "--edit" && i + 1 < argc) { editMode = true; editFile = argv[++i]; }
@@ -407,6 +455,10 @@ int main(int argc, char **argv) {
 	if (checkMode) {
 		if (checkFiles.empty()) { usage(); return 2; }
 		return check(grammarPath, checkFiles, showRules);
+	}
+	if (historyMode) {
+		if (checkFiles.empty() || showRules) { usage(); return 2; }
+		return history(grammarPath, checkFiles);
 	}
 	if (showRules) { usage(); return 2; }
 

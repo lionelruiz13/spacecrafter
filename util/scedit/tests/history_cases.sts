@@ -1,0 +1,34 @@
+# history_cases.sts - one construct per ROW (or per deliberate ABSENCE of a row)
+# in tests/history-expected.txt, so every recorded line has its disposition next
+# to the bytes that produce it.  Shape: an F63 artifact, i.e. a script as the
+# ENGINE leaves it - every `#!` tail below is a verbatim ScriptAnnotator
+# sentence (engine 2b8ec034, harness/artifacts/f63/*.sts), never composed by
+# scedit, which writes none.  Read as bytes: do not reflow, do not "fix" a tail.
+#
+# 1. a tail whose class scedit finds too: the two agree
+struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here
+# 2. the same tail on a line scedit finds CLEAN: fixed since the engine last ran
+#    the script, or the two readings disagree - the relation says which
+flag stars on #! this 'struct if end' closes nothing: no 'struct if' is open here
+# 3. a tail of a class scedit does not check at all (the engine's generic
+#    channel, or a newer engine): listed all the same, said to be unknown
+flag stars off #! command 'flag' : unknown flag
+# 4. two engine sentences joined by '; ': ONE row, one relation each
+struct loop end #! this 'struct loop end' closes nothing: no 'struct loop <n>' is open here; this 'struct if end' closes nothing: no 'struct if' is open here
+# 5. the author's own comment first, the engine's tail appended after it
+flag stars on # my note #! this 'struct if end' closes nothing: no 'struct if' is open here
+# 6. a `#!` inside a quoted value is TEXT, not a tail: no row (F63 leg F line 2)
+text name f65 string "a #! b" altitude 10
+# 7. a column-0 comment holding a `#!`: the script layer drops the line before
+#    executeCommand (script.cpp:114), so the engine neither writes nor clears
+#    there and scedit reports nothing: no row (F63 leg F line 1, verbatim)
+# F: a #! inside quotes is text
+# 8. an indented comment holding a `#!`: reaches the parser, where the comment
+#    rule drops it whole - no command, so no tail: no row
+   # indented, a #! here is text too
+# 9. a scedit finding with no tail at all: the engine has not run this file
+zomo action now
+# 10. an opener never closed: the row sits on the OPENER, although the checker
+#     only knows at the end of the file
+struct if 1 equal 1
+flag stars off

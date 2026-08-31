@@ -102,6 +102,22 @@ add_test(NAME lint_rules
 		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/lint-expected.txt
 		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_gate.cmake)
 
+# History gate: `--history` — the error pane's list, printed. Two inputs, on
+# purpose: the lint fixture, whose scedit rows must stay in step with the
+# `--check` record above (one reader, two printers — if they ever disagree, one
+# of these two gates goes red), and tests/history_cases.sts, an F63-SHAPED file
+# carrying real `#!` tails the ENGINE wrote (scedit composes none). Every row of
+# the record has its disposition in a comment beside the bytes that produce it,
+# in history_cases.sts itself.
+add_test(NAME history_list
+	COMMAND ${CMAKE_COMMAND}
+		-DSCEDIT=$<TARGET_FILE:scedit>
+		-DSRC=${CMAKE_CURRENT_SOURCE_DIR}
+		-DMODE=--history
+		"-DFILES=${CMAKE_CURRENT_SOURCE_DIR}/tests/lint_cases.sts;${CMAKE_CURRENT_SOURCE_DIR}/tests/history_cases.sts"
+		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/history-expected.txt
+		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_gate.cmake)
+
 # C3 corpus gate: the engine-exercised scripts must stay clean of NEW findings.
 # Boundary [measured 2026-08-04]: ~/.spacecrafter/scripts/ is EMPTY on this
 # machine, so the shipped-scripts half of C3 cannot run here; it re-arms by

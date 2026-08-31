@@ -1,0 +1,36 @@
+tests/lint_cases.sts	8	scedit	unknown-command	error	unknown command 'zomo'; did you mean 'zoom'?	
+tests/lint_cases.sts	11	scedit	deprecated	warning	command 'movetocity' is no longer used in this software: the line is ignored	
+tests/lint_cases.sts	14	scedit	orphaned-flag	error	flag 'sky_draw' is never registered by the engine, so this line has no effect (the name exists in the engine source but no flag is bound to it)	
+tests/lint_cases.sts	17	scedit	deprecated	warning	'point_star' is no longer used in this software: the engine ignores it	
+tests/lint_cases.sts	20	scedit	unknown-parameter	error	'starz' is not a known flag; did you mean 'stars'?	
+tests/lint_cases.sts	23	scedit	silent-off-value	warning	flag value 'yes' is not an on-form ('on', 'true', '1'), an off-form ('off', 'false', '0') or 'toggle': the engine reads everything else as OFF, with no error	
+tests/lint_cases.sts	26	scedit	silent-off-value	warning	flag value 'TOGGLE' is not an on-form ('on', 'true', '1'), an off-form ('off', 'false', '0') or 'toggle': the engine reads everything else as OFF, with no error	
+tests/lint_cases.sts	29	scedit	single-pair-only	error	command 'flag' applies a single key/value pair per line: only 'atmosphere' (first in alphabetical order, not line order) is applied; the other 1 pair(s) are dropped silently	
+tests/lint_cases.sts	32	scedit	dangling-key	error	key 'action' has no value: the engine drops it silently and runs the rest of the line without it	
+tests/lint_cases.sts	35	scedit	duplicate-key	warning	key 'halo' is given 2 times on this line: the engine keeps only the last value ('false')	
+tests/lint_cases.sts	38	scedit	unsupported-quoting	warning	single quotes do not group words here: only " does, so this value ends at the first space and the remaining words are read as key/value pairs	
+tests/lint_cases.sts	38	scedit	unknown-parameter	error	'world'' is not an argument of command 'text'	
+tests/lint_cases.sts	41	scedit	unsupported-quoting	warning	backslash is not an escape here: the engine has no escape sequence, so the value ends at this " and the backslash is kept as an ordinary character	
+tests/lint_cases.sts	44	scedit	inert-command	info	'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; — census §3.8, app_command_interface.cpp:1801 era)	
+tests/lint_cases.sts	47	scedit	unknown-parameter	error	'stall_radius_unitt' is not a known set name; did you mean 'stall_radius_unit'?	
+tests/lint_cases.sts	50	scedit	unknown-parameter	error	'constellation_liness' is not a known color name; did you mean 'constellation_lines'?	
+tests/lint_cases.sts	55	scedit	unknown-parameter	error	'zrot' is not an argument of command 'dso3d'	
+tests/lint_cases.sts	58	scedit	unknown-parameter	error	'nmae' is not an argument of command 'landscape'; did you mean 'name'?	
+tests/lint_cases.sts	63	scedit	unknown-parameter	error	'date_display_number' is not a known flag	
+tests/lint_cases.sts	67	scedit	invisible-separator	error	column 28 holds a no-break space, the ISO-8859 spelling (byte 0xA0), not a space: the engine separates words on space, tab, CR, LF, VT and FF only, so what is written on either side of this byte is read as ONE word	
+tests/lint_cases.sts	72	scedit	invisible-separator	error	column 35 holds a no-break space, the ISO-8859 spelling (byte 0xA0), not a space: the engine separates words on space, tab, CR, LF, VT and FF only, so what is written on either side of this byte is read as ONE word	
+tests/lint_cases.sts	72	scedit	dangling-key	error	key '3' has no value: the engine drops it silently and runs the rest of the line without it	
+tests/lint_cases.sts	76	scedit	end-without-if	warning	this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine logs "end without if" and ignores the line — either this 'end' is one too many, or the block it was meant to close was never opened	
+tests/lint_cases.sts	77	scedit	else-without-if	warning	this 'struct if else' flips nothing: no 'struct if' block is open here, so the engine logs "else without if" and ignores the line	
+tests/lint_cases.sts	80	scedit	loop-end-without-loop	warning	this 'struct loop end' closes nothing: no 'struct loop' is open here, so the engine resets an empty loop and nothing repeats — either this 'end' is one too many, or the 'struct loop <n>' it was meant to close is missing	
+tests/lint_cases.sts	142	scedit	unclosed-struct	error	'struct if a equal b' is never closed: no 'struct if end' follows before the end of the file, so whenever this test fails the engine skips every line from here to the end of the file, silently; put 'struct if end' where the block should stop	
+tests/lint_cases.sts	143	scedit	unclosed-struct	error	'struct loop 3' is never closed: no 'struct loop end' follows before the end of the file, so the lines after it run ONCE and are never repeated — the repetition only starts at 'struct loop end'; put 'struct loop end' where the block should stop	
+tests/history_cases.sts	9	spacecrafter	#!		this 'struct if end' closes nothing: no 'struct if' is open here	agrees with scedit's end-without-if
+tests/history_cases.sts	9	scedit	end-without-if	warning	this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine logs "end without if" and ignores the line — either this 'end' is one too many, or the block it was meant to close was never opened	
+tests/history_cases.sts	12	spacecrafter	#!		this 'struct if end' closes nothing: no 'struct if' is open here	scedit finds no end-without-if here now: fixed since spacecrafter last ran this script (it clears the tail on the next full run), or the two readings disagree - worth reporting
+tests/history_cases.sts	15	spacecrafter	#!		command 'flag' : unknown flag	not a class scedit checks (the engine's generic channel, or a newer engine)
+tests/history_cases.sts	17	spacecrafter	#!		this 'struct loop end' closes nothing: no 'struct loop <n>' is open here; this 'struct if end' closes nothing: no 'struct if' is open here	agrees with scedit's loop-end-without-loop | scedit finds no end-without-if here now: fixed since spacecrafter last ran this script (it clears the tail on the next full run), or the two readings disagree - worth reporting
+tests/history_cases.sts	17	scedit	loop-end-without-loop	warning	this 'struct loop end' closes nothing: no 'struct loop' is open here, so the engine resets an empty loop and nothing repeats — either this 'end' is one too many, or the 'struct loop <n>' it was meant to close is missing	
+tests/history_cases.sts	19	spacecrafter	#!		this 'struct if end' closes nothing: no 'struct if' is open here	scedit finds no end-without-if here now: fixed since spacecrafter last ran this script (it clears the tail on the next full run), or the two readings disagree - worth reporting
+tests/history_cases.sts	30	scedit	unknown-command	error	unknown command 'zomo'; did you mean 'zoom'?	
+tests/history_cases.sts	33	scedit	unclosed-struct	error	'struct if 1 equal 1' is never closed: no 'struct if end' follows before the end of the file, so whenever this test fails the engine skips every line from here to the end of the file, silently; put 'struct if end' where the block should stop	
