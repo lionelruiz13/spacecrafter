@@ -135,8 +135,11 @@ files in?** (Decides whether it must be honored as a search path.)
 **R25. Running more than one script at a time — a resubmission, with
 the interest stated first this time.**
 
-*What it unlocks.* Two features on the request list sit behind this
-one, and they are the ones aimed at you. **Dynamic binding**: a
+*What it unlocks.* Two more ideas from the developer's own list sit
+behind this one — his proposals, like this whole item, not something
+you asked for; they are described here because their use would land in
+your hands, and you are the judge of whether it's worth anything.
+**Dynamic binding**: a
 joystick or console has few buttons and they are fixed — with
 `script action bind on <key-or-button> launch <script>`, one button can
 mean a different thing in each show, or each moment of a show, and a
