@@ -477,13 +477,16 @@ void testDocBar()
 		eq(e.docBar().doc_of, std::string("value"), "D3 it documents this value");
 	}
 
-	// D4. A family name as a value documents itself from the family. Today
-	// families.color_names is the v1 shape (plain names, no doc), so the honest
-	// state is what must appear -- the name exists, the sentence does not.
+	// D4. A family name as a value documents itself from the family. Until
+	// 2026-08-31 families.color_names was the v1 shape (plain names, no doc) and
+	// this asserted the honest blank; F71 item 3 filled all 46, so it now asserts
+	// that the bar reaches the NAME's own sentence rather than the command's.
 	{
 		EditCore e = at("color property constellation_lines r 1", 20);
-		ok(!e.docBar().documented, "D4 no doc exists for a colour name (v1 family)");
-		eq(e.docBar().doc, std::string(""), "D4 and nothing is invented in its place");
+		ok(e.docBar().documented, "D4 a colour name now documents itself (v2 family)");
+		eq(e.docBar().doc,
+		   std::string("The colour of the stick-figure lines that join the stars of every constellation."),
+		   "D4 ... with the family's own sentence, not the command's");
 		eq(e.docBar().note, std::string(""), "D4 the name is a real one, so nothing is wrong either");
 	}
 
@@ -505,14 +508,26 @@ void testDocBar()
 		ok(!e.docBar().domain.empty(), "D5 what IS known is still shown (the value domain)");
 	}
 
-	// D6. A general sentence must not pass for a specific one. `flag`'s key
-	// grammar documents what a key MEANS there; families.flags has no per-name
-	// doc, so the bar says which of the two it is showing.
+	// D6. A general sentence must not pass for a specific one, and the bar says
+	// which of the two it is showing. Until 2026-08-31 families.flags had no
+	// per-name doc, so `flag stars` could only be answered by `flag`'s key
+	// GRAMMAR and the label said so. F71 item 3 documented all 97, so the same
+	// position now answers with the name's OWN sentence -- the label is what
+	// proves the distinction survived the fill rather than being papered over.
 	{
 		EditCore e = at("flag stars on", 7);
 		ok(e.docBar().documented, "D6 something is known about this position");
-		eq(e.docBar().doc_of, std::string("any key of `flag`"),
-		   "D6 ... and the bar states it is the key GRAMMAR, not a doc for `stars`");
+		eq(e.docBar().doc_of, std::string("key"),
+		   "D6 ... and it is now the specific doc for `stars`, not the key grammar");
+		ok(e.docBar().doc.find("star") != std::string::npos,
+		   "D6 ... which is about the stars, not about keys in general");
+
+		// The general answer is still there for a name the family does NOT hold:
+		// that is the fallback the label distinguishes, and it must not have been
+		// lost by filling the family.
+		EditCore g = at("flag not_a_flag_name on", 7);
+		eq(g.docBar().doc_of, std::string("any key of `flag`"),
+		   "D6 an unknown name still falls back to the key GRAMMAR, labelled as such");
 	}
 
 	// D7. An unknown name is named as unknown, from the structural answer

@@ -41,8 +41,17 @@ const BuiltinPlacement kBuiltinPlacements[] = {
 	// commandColor: m_color.find(args[W_PROPERTY]) -> "unknown property"
 	{"color", SubfamilyPosition::ValueOfKey, "property",
 	 "app_command_interface.cpp:1874-1885"},
-	// `font`: the name IS args[W_TARGET] (:4152) but the rejection lives in
-	// FontFactory::updateFont, unread - left UNARMED on purpose.
+	// commandFont: targetName = args[W_TARGET] (app_command_interface.cpp:4281),
+	// handed to FontFactory::updateFont at :4302. ARMED 2026-08-31 (F71 item 3)
+	// once that function was finally read: the accepted set is the map
+	// m_strToTarget, whose only writer inserts exactly the ten TF_* spellings
+	// (fontFactory.cpp:41-53, called once from the constructor at :38), and the
+	// lookup at :149 is a std::map::find -- a byte compare, so it is CLOSED and
+	// CASE-SENSITIVE. Worth arming precisely because the engine's own refusal is
+	// invisible from a script: an unknown target logs a warning at :151, returns,
+	// and commandFont tests nothing afterwards, so the command reports SUCCESS.
+	{"font", SubfamilyPosition::ValueOfKey, "target",
+	 "app_command_interface.cpp:4281, 4302 -> src/appModule/fontFactory.cpp:149-153"},
 };
 
 //! COMMANDS THAT APPLY ONLY args.begin() AND DROP THE REST SILENTLY.

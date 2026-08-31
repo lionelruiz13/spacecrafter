@@ -178,7 +178,10 @@
               "decrement",
               "<number 0-128>"
             ],
-            "completable": ["decrement", "increment"],
+            "completable": [
+              "decrement",
+              "increment"
+            ],
             "value_docs": {
               "increment": "5 louder",
               "decrement": "5 quieter",
@@ -197,7 +200,11 @@
               "true",
               "<anything else means the music stops>"
             ],
-            "completable": ["1", "on", "true"],
+            "completable": [
+              "1",
+              "on",
+              "true"
+            ],
             "default": "absent or empty -> the setting is left alone and the other keys are used",
             "required": false,
             "source": "app_command_interface.cpp:2887-2891 (W_NOPAUSE=\"nopause\" base_command_interface.hpp:88) -> src/mediaModule/media.hpp:225-231 (\"@param true: the music continues to play if the script is paused\")"
@@ -212,7 +219,13 @@
               "drop",
               "sync"
             ],
-            "completable": ["drop", "pause", "play", "resume", "sync"],
+            "completable": [
+              "drop",
+              "pause",
+              "play",
+              "resume",
+              "sync"
+            ],
             "value_docs": {
               "play": "load the file named by `filename` and start it",
               "pause": "hold the music where it is",
@@ -241,7 +254,11 @@
               "true",
               "<anything else means play once>"
             ],
-            "completable": ["1", "on", "true"],
+            "completable": [
+              "1",
+              "on",
+              "true"
+            ],
             "default": "absent or empty -> played once",
             "required": false,
             "source": "app_command_interface.cpp:2912 (W_LOOP=\"loop\" base_command_interface.hpp:169/:284) -> src/mediaModule/media.hpp:162"
@@ -283,7 +300,16 @@
               "in_universe",
               "inuniverse"
             ],
-            "completable": ["in_galaxy", "in_solarsystem", "in_stellarsystem", "in_universe", "ingalaxy", "insolarsystem", "instellarsystem", "inuniverse"],
+            "completable": [
+              "in_galaxy",
+              "in_solarsystem",
+              "in_stellarsystem",
+              "in_universe",
+              "ingalaxy",
+              "insolarsystem",
+              "instellarsystem",
+              "inuniverse"
+            ],
             "value_docs": {
               "in_solarsystem": "the scale of the solar system, seen from a body or from space near one (spelling 'insolarsystem' does the same)",
               "in_stellarsystem": "the scale of another star's system (spelling 'instellarsystem' does the same)",
@@ -302,7 +328,9 @@
               "<body name>",
               "selected"
             ],
-            "completable": ["selected"],
+            "completable": [
+              "selected"
+            ],
             "default": "absent or empty -> you stay on the body you are on",
             "required": false,
             "source": "app_command_interface.cpp:3471-3473 -> src/coreModule/core.cpp:2076-2089 (W_BODY=\"body\", base_command_interface.hpp:224)",
@@ -381,7 +409,9 @@
               "<body name>",
               "selected"
             ],
-            "completable": ["selected"],
+            "completable": [
+              "selected"
+            ],
             "default": "absent -> the body last chosen stays the one being traced",
             "required": false,
             "source": "app_command_interface.cpp:1589-1591 (alongside `pen`), 1617-1620 (on its own) -> src/coreModule/coreLink.cpp:1130-1135",
@@ -393,7 +423,9 @@
             "values": [
               "clear"
             ],
-            "completable": ["clear"],
+            "completable": [
+              "clear"
+            ],
             "default": "absent or any other value -> this branch is not taken",
             "required": "conditional",
             "source": "app_command_interface.cpp:1613-1616"
@@ -411,7 +443,16 @@
               "5",
               "6"
             ],
-            "completable": ["0", "1", "2", "3", "4", "5", "6", "all"],
+            "completable": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "all"
+            ],
             "default": "absent -> this branch is not taken",
             "required": "conditional",
             "source": "app_command_interface.cpp:1621-1624 -> src/coreModule/coreLink.cpp:1123-1128 -> src/bodyModule/body_trace.cpp:62-72",
@@ -496,7 +537,18 @@
               "dual_dump",
               "screenshot"
             ],
-            "completable": ["clear", "drop", "dual_dump", "initial", "load", "preload", "reload", "remove", "save", "screenshot"],
+            "completable": [
+              "clear",
+              "drop",
+              "dual_dump",
+              "initial",
+              "load",
+              "preload",
+              "reload",
+              "remove",
+              "save",
+              "screenshot"
+            ],
             "value_docs": {
               "load": "Add an object. With `mode` it adds a three-dimensional model file (see `mode`); without it, it adds a body to the star system, described by the same keys a system data file uses.",
               "remove": "Remove one three-dimensional model, by `name`, from the scene named by `mode` (this value is only read on the model path).",
@@ -523,7 +575,11 @@
               "all",
               "selected"
             ],
-            "completable": ["all", "home_planet", "selected"],
+            "completable": [
+              "all",
+              "home_planet",
+              "selected"
+            ],
             "value_docs": {
               "home_planet": "the body you are standing on: the handler replaces this word by that body's name before doing anything else (:3950)",
               "all": "on the `color` form only, every body at once (src/bodyModule/solarsystem_color.cpp:37-39)",
@@ -542,7 +598,11 @@
               "in_galaxy",
               "in_sandbox"
             ],
-            "completable": ["in_galaxy", "in_sandbox", "in_universe"],
+            "completable": [
+              "in_galaxy",
+              "in_sandbox",
+              "in_universe"
+            ],
             "value_docs": {
               "in_universe": "the scene drawn when you are outside the galaxy",
               "in_galaxy": "the scene drawn when you are inside the galaxy",
@@ -606,7 +666,9 @@
               "on-forms per Utility::isTrue (src/tools/utility.hpp:160-171: \"1\", \"on\", \"true\", case-insensitive) = use the alternative picture",
               "ANYTHING ELSE = use the ordinary picture, silently"
             ],
-            "completable": ["toggle"],
+            "completable": [
+              "toggle"
+            ],
             "default": "absent -> this form is not taken",
             "required": "conditional",
             "source": "app_command_interface.cpp:3973-3981 -> src/coreModule/coreLink.cpp:1423-1431 -> src/bodyModule/ssystem_factory.hpp:423-434 (W_SKINUSE=\"skin_use\", W_TOGGLE=\"toggle\": base_command_interface.hpp:297,124)",
@@ -682,7 +744,13 @@
               "trail",
               "all"
             ],
-            "completable": ["all", "halo", "label", "orbit", "trail"],
+            "completable": [
+              "all",
+              "halo",
+              "label",
+              "orbit",
+              "trail"
+            ],
             "value_docs": {
               "halo": "the glow drawn around the body",
               "label": "the body's name written on the sky",
@@ -702,7 +770,9 @@
               "r<0-255>g<0-255>b<0-255>"
             ],
             "completable": [],
-            "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
+            "completable_excluded": {
+              "xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"
+            },
             "default": "absent or empty -> the r/g/b keys are used instead",
             "required": "conditional",
             "source": "app_command_interface.cpp:4084, 4086 -> src/interfaceModule/app_command_color.cpp:92-118 (W_COLOR_VALUE=\"color_value\", base_command_interface.hpp:134)",
@@ -754,7 +824,13 @@
               "moon_altimetry_level",
               "earth_altimetry_level"
             ],
-            "completable": ["earth_altimetry_level", "max_tes_level", "min_tes_level", "moon_altimetry_level", "planet_altimetry_level"],
+            "completable": [
+              "earth_altimetry_level",
+              "max_tes_level",
+              "min_tes_level",
+              "moon_altimetry_level",
+              "planet_altimetry_level"
+            ],
             "value_docs": {
               "min_tes_level": "the least amount of surface detail used",
               "max_tes_level": "the most amount of surface detail used",
@@ -784,7 +860,10 @@
               "all",
               "auto"
             ],
-            "completable": ["all", "auto"],
+            "completable": [
+              "all",
+              "auto"
+            ],
             "value_docs": {
               "all": "release as much picture memory as possible, even memory still in use if it can be",
               "auto": "release only the picture memory nothing is using"
@@ -816,7 +895,15 @@
               "lunar_custom",
               "<name>_special"
             ],
-            "completable": ["barycenter", "comet_orbit", "earth_custom", "ell_orbit", "location_orbit", "lunar_custom", "still_orbit"],
+            "completable": [
+              "barycenter",
+              "comet_orbit",
+              "earth_custom",
+              "ell_orbit",
+              "location_orbit",
+              "lunar_custom",
+              "still_orbit"
+            ],
             "default": "absent -> no orbit can be built: the body is NOT added to the old drawing path and the reason is logged",
             "required": false,
             "downstream": true,
@@ -1115,7 +1202,21 @@
               "switch",
               "follow_rotation"
             ],
-            "completable": ["align_with", "create", "descend", "drop", "follow_rotation", "free_mode", "lift_off", "load", "move_to", "rotate", "save", "switch", "transition_to"],
+            "completable": [
+              "align_with",
+              "create",
+              "descend",
+              "drop",
+              "follow_rotation",
+              "free_mode",
+              "lift_off",
+              "load",
+              "move_to",
+              "rotate",
+              "save",
+              "switch",
+              "transition_to"
+            ],
             "value_docs": {
               "rotate": "turn the view towards the place you are standing on, over `duration` seconds",
               "align_with": "tilt the view so that the named place's own up direction becomes yours, over `duration` seconds",
@@ -1151,7 +1252,10 @@
               "body",
               "<place name> (on action rotate)"
             ],
-            "completable": ["body", "point"],
+            "completable": [
+              "body",
+              "point"
+            ],
             "value_docs": {
               "point": "on `transition_to`: the exact place you are standing right now becomes a named place called temp_point; on `move_to`: the point given by `x`, `y` and `z`",
               "body": "a body: named by `name` on `transition_to`, by `body_name` on `move_to`"
@@ -1185,7 +1289,10 @@
               "selected",
               "default"
             ],
-            "completable": ["default", "selected"],
+            "completable": [
+              "default",
+              "selected"
+            ],
             "value_docs": {
               "selected": "the body currently selected",
               "default": "the Earth"
@@ -1261,7 +1368,9 @@
               "true",
               "anything else = no"
             ],
-            "completable": ["true"],
+            "completable": [
+              "true"
+            ],
             "default": "absent -> no",
             "required": false,
             "source": "app_command_interface.cpp:4441-4445 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,243)",
@@ -1276,7 +1385,12 @@
               "body",
               "orbit"
             ],
-            "completable": ["body", "observatory", "orbit", "point"],
+            "completable": [
+              "body",
+              "observatory",
+              "orbit",
+              "point"
+            ],
             "value_docs": {
               "point": "a fixed place, given by x, y and z",
               "observatory": "a fixed place, given by x, y and z (the same thing as point for the newer drawing path)",
@@ -1544,7 +1658,10 @@
               "natural",
               "<anything else, including absent>"
             ],
-            "completable": ["natural", "variable"],
+            "completable": [
+              "natural",
+              "variable"
+            ],
             "value_docs": {
               "variable": "forget the script's own variables and change NOTHING else",
               "natural": "the ordinary view from the ground: air and ground scenery ON",
@@ -1593,7 +1710,9 @@
               "r<0-255>g<0-255>b<0-255>"
             ],
             "completable": [],
-            "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
+            "completable_excluded": {
+              "xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"
+            },
             "default": "absent or empty -> the r/g/b keys are used instead",
             "required": "conditional",
             "source": "app_command_interface.cpp:1866, 1870 -> src/interfaceModule/app_command_color.cpp:92-120",
@@ -1671,7 +1790,12 @@
               "clear",
               "load_star"
             ],
-            "completable": ["clear", "load", "load_star", "save"],
+            "completable": [
+              "clear",
+              "load",
+              "load_star",
+              "save"
+            ],
             "value_docs": {
               "load": "without `module`: re-read the settings file and restart the program's setup. With `module`: read the named file into that module.",
               "save": "without `module`: write the current settings back to the settings file. With `module`: write that module's data to the named file.",
@@ -1689,7 +1813,10 @@
               "star_lines",
               "star_navigator"
             ],
-            "completable": ["star_lines", "star_navigator"],
+            "completable": [
+              "star_lines",
+              "star_navigator"
+            ],
             "value_docs": {
               "star_lines": "the drawn lines that join stars",
               "star_navigator": "the star catalogue used when travelling among the stars"
@@ -1717,7 +1844,12 @@
               "0",
               "<anything else>"
             ],
-            "completable": ["0", "1", "false", "true"],
+            "completable": [
+              "0",
+              "1",
+              "false",
+              "true"
+            ],
             "default": "absent or empty -> false (plain text); \"true\" or \"1\" (any capitalisation) -> true; anything else -> false",
             "required": false,
             "source": "app_command_interface.cpp:2262, 2300 (W_BINARY=\"binary_mode\" base_command_interface.hpp:147) -> src/tools/utility.cpp:432-445",
@@ -1731,7 +1863,11 @@
               "sc",
               "other"
             ],
-            "completable": ["other", "raw", "sc"],
+            "completable": [
+              "other",
+              "raw",
+              "sc"
+            ],
             "value_docs": {
               "raw": "the unprocessed catalogue layout",
               "sc": "spacecrafter's own layout - the only one that also honours `binary_mode`",
@@ -1885,7 +2021,10 @@
               "line",
               "label"
             ],
-            "completable": ["label", "line"],
+            "completable": [
+              "label",
+              "line"
+            ],
             "value_docs": {
               "line": "the lines joining the constellation's stars",
               "label": "the constellation's name written in the sky"
@@ -1902,7 +2041,9 @@
               "r<0-255>g<0-255>b<0-255>"
             ],
             "completable": [],
-            "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
+            "completable_excluded": {
+              "xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"
+            },
             "default": "absent or empty -> the r/g/b keys are used instead",
             "required": "conditional",
             "source": "app_command_interface.cpp:2375, 2379 (W_COLOR_VALUE=\"color_value\" base_command_interface.hpp:134) -> src/interfaceModule/app_command_color.cpp:92-120"
@@ -2061,7 +2202,11 @@
               "preset",
               "keep_time"
             ],
-            "completable": ["current", "keep_time", "preset"],
+            "completable": [
+              "current",
+              "keep_time",
+              "preset"
+            ],
             "value_docs": {
               "current": "set the sky to the computer's date and time right now",
               "preset": "set the sky to the date the program is configured to start at -- but only when it is configured to start at a preset date, otherwise the computer's date is used (:3898-3900)",
@@ -2081,7 +2226,12 @@
               "meridian",
               "midnight"
             ],
-            "completable": ["meridian", "midnight", "rise", "set"],
+            "completable": [
+              "meridian",
+              "midnight",
+              "rise",
+              "set"
+            ],
             "value_docs": {
               "set": "the time the Sun sets today at your place",
               "rise": "the time the Sun rises today at your place",
@@ -2185,7 +2335,10 @@
               "snapshot",
               "record"
             ],
-            "completable": ["record", "snapshot"],
+            "completable": [
+              "record",
+              "snapshot"
+            ],
             "value_docs": {
               "snapshot": "save one picture of the dome now",
               "record": "start saving one picture per frame -- or stop, if a sequence is already being saved: this value FLIPS the state (src/appModule/save_screen_interface.cpp:96-102)"
@@ -2247,7 +2400,11 @@
               "drop",
               "clear"
             ],
-            "completable": ["clear", "drop", "load"],
+            "completable": [
+              "clear",
+              "drop",
+              "load"
+            ],
             "value_docs": {
               "load": "add a picture using the keys below",
               "drop": "remove the picture with the given `name` (script-added ones only)",
@@ -2378,7 +2535,20 @@
               "SNREM",
               "GENRC"
             ],
-            "completable": ["BRTNB", "CLNEB", "DRKNB", "GALCL", "GALXY", "GENRC", "GLOCL", "OPNCL", "PLNNB", "QUASR", "SNREM", "STARS"],
+            "completable": [
+              "BRTNB",
+              "CLNEB",
+              "DRKNB",
+              "GALCL",
+              "GALXY",
+              "GENRC",
+              "GLOCL",
+              "OPNCL",
+              "PLNNB",
+              "QUASR",
+              "SNREM",
+              "STARS"
+            ],
             "value_docs": {
               "GALXY": "galaxy",
               "OPNCL": "open cluster",
@@ -2509,7 +2679,10 @@
               "load",
               "restart"
             ],
-            "completable": ["load", "restart"],
+            "completable": [
+              "load",
+              "restart"
+            ],
             "value_docs": {
               "load": "place the object (as one of many if a set is already loaded, otherwise as the single volumetric object)",
               "restart": "rebuild the volumetric object, or swap in another set of picture files"
@@ -2548,7 +2721,9 @@
               "1",
               "any other text"
             ],
-            "completable": ["1"],
+            "completable": [
+              "1"
+            ],
             "default": "absent or exactly '1' -> rebuild the single volumetric object; anything else -> swap in the given picture files",
             "required": false,
             "source": "app_command_interface.cpp:1522-1525",
@@ -2813,7 +2988,10 @@
               "load",
               "clear"
             ],
-            "completable": ["clear", "load"],
+            "completable": [
+              "clear",
+              "load"
+            ],
             "value_docs": {
               "load": "add one point with the keys below",
               "clear": "throw away everything added and read the shipped catalogue again"
@@ -2940,7 +3118,10 @@
               "play",
               "stop"
             ],
-            "completable": ["play", "stop"],
+            "completable": [
+              "play",
+              "stop"
+            ],
             "value_docs": {
               "play": "start the program that suits the file's last three letters",
               "stop": "stop every running vlc and mplayer"
@@ -2965,7 +3146,11 @@
               "<name>.png"
             ],
             "completable": [],
-            "completable_excluded": {"bat": "a value_docs KEY naming a file extension, not a value: the value is `<name>.bat`, and the handler refuses anything shorter than five characters (app_command_interface.cpp:2401-2448)", "swf": "a value_docs KEY naming a file extension, not a value: the value is `<name>.swf`", "png": "a value_docs KEY naming a file extension, not a value: the value is `<name>.png`"},
+            "completable_excluded": {
+              "bat": "a value_docs KEY naming a file extension, not a value: the value is `<name>.bat`, and the handler refuses anything shorter than five characters (app_command_interface.cpp:2401-2448)",
+              "swf": "a value_docs KEY naming a file extension, not a value: the value is `<name>.swf`",
+              "png": "a value_docs KEY naming a file extension, not a value: the value is `<name>.png`"
+            },
             "value_docs": {
               "avi / mov / mpg / mp4": "played full screen by mplayer, looked for in the video folder",
               "mp3 / ogg": "played by cvlc, looked for in the audio folder",
@@ -3005,7 +3190,9 @@
             "values": [
               "initial"
             ],
-            "completable": ["initial"],
+            "completable": [
+              "initial"
+            ],
             "default": "absent -> the command changes one target instead; present with any other word -> \"Command 'font': unknown action argument\"",
             "required": "conditional",
             "source": "app_command_interface.cpp:4154-4162 -> src/appModule/fontFactory.cpp:196-200 (W_ACTION=\"action\", W_INITIAL=\"initial\": base_command_interface.hpp:81,200)"
@@ -3025,7 +3212,18 @@
               "lines",
               "displays"
             ],
-            "completable": ["cardinal_points", "constellations", "displays", "grids", "lines", "menu", "nebulae", "planets", "stars", "text"],
+            "completable": [
+              "cardinal_points",
+              "constellations",
+              "displays",
+              "grids",
+              "lines",
+              "menu",
+              "nebulae",
+              "planets",
+              "stars",
+              "text"
+            ],
             "value_docs": {
               "text": "the text a script writes on the screen",
               "planets": "the names of solar-system bodies",
@@ -3106,7 +3304,9 @@
               "default",
               "<degrees>"
             ],
-            "completable": ["default"],
+            "completable": [
+              "default"
+            ],
             "value_docs": {
               "default": "go back to the starting direction, at once, ignoring `duration`"
             },
@@ -3196,7 +3396,13 @@
               "object",
               "media"
             ],
-            "completable": ["constellation", "media", "object", "planets_position", "position"],
+            "completable": [
+              "constellation",
+              "media",
+              "object",
+              "planets_position",
+              "position"
+            ],
             "value_docs": {
               "position": "Where the observer stands and where the view is pointing, written as one JSON line (src/coreModule/coreLink.cpp:616-630 CoreLink::tcpGetPosition).",
               "planets_position": "One entry per non-satellite body, 'name:x:y:z;', its position around the Sun multiplied by 100 and rounded (src/bodyModule/protosystem.cpp:451-465). If the text comes back empty the reply sent is the literal 'NPF' (app_command_interface.cpp:1213-1216).",
@@ -3252,7 +3458,10 @@
               "all_constellation_on",
               "all_constellation_off"
             ],
-            "completable": ["all_constellation_off", "all_constellation_on"],
+            "completable": [
+              "all_constellation_off",
+              "all_constellation_on"
+            ],
             "value_docs": {
               "all_constellation_on": "light up the stars of every constellation (uses `size` and `rotation`, ignores the colour keys)",
               "all_constellation_off": "take the halo off the stars of every constellation"
@@ -3297,7 +3506,9 @@
               "r<0-255>g<0-255>b<0-255>"
             ],
             "completable": [],
-            "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
+            "completable_excluded": {
+              "xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"
+            },
             "default": "absent -> the r/g/b keys are used; if those are absent too the star's own colour is used",
             "required": false,
             "source": "app_command_interface.cpp:1909, 1914 -> src/interfaceModule/app_command_color.cpp:92-120 (W_COLOR_VALUE=\"color_value\", base_command_interface.hpp:134)",
@@ -3331,7 +3542,10 @@
               "clear",
               "clear_texture"
             ],
-            "completable": ["clear", "clear_texture"],
+            "completable": [
+              "clear",
+              "clear_texture"
+            ],
             "value_docs": {
               "clear": "remove the halo picture and every halo",
               "clear_texture": "remove the halo picture only"
@@ -3468,7 +3682,11 @@
               "drop",
               "purge"
             ],
-            "completable": ["drop", "load", "purge"],
+            "completable": [
+              "drop",
+              "load",
+              "purge"
+            ],
             "value_docs": {
               "load": "read the picture file and put it on the dome under the given name",
               "drop": "remove the picture of this name",
@@ -3504,7 +3722,14 @@
               "dome",
               "spherical"
             ],
-            "completable": ["dome", "equatorial", "horizontal", "j2000", "spherical", "viewport"],
+            "completable": [
+              "dome",
+              "equatorial",
+              "horizontal",
+              "j2000",
+              "spherical",
+              "viewport"
+            ],
             "value_docs": {
               "viewport": "stays put on the screen",
               "horizontal": "pinned to the ground and the compass, so it turns with the view",
@@ -3535,7 +3760,10 @@
               "twice",
               "thrice"
             ],
-            "completable": ["thrice", "twice"],
+            "completable": [
+              "thrice",
+              "twice"
+            ],
             "value_docs": {
               "twice": "two copies, half a turn apart",
               "thrice": "three copies, a third of a turn apart"
@@ -3553,7 +3781,11 @@
               "true",
               "<anything else means off>"
             ],
-            "completable": ["1", "on", "true"],
+            "completable": [
+              "1",
+              "on",
+              "true"
+            ],
             "default": "absent or empty -> off (\"Default off for historical reasons\", :2973)",
             "required": false,
             "source": "app_command_interface.cpp:2973-2975, 2978 (W_MIPMAP=\"mipmap\" base_command_interface.hpp:172)"
@@ -3644,7 +3876,11 @@
               "true",
               "<anything else means it goes>"
             ],
-            "completable": ["1", "on", "true"],
+            "completable": [
+              "1",
+              "on",
+              "true"
+            ],
             "default": "absent or empty -> the setting is left alone",
             "required": false,
             "source": "app_command_interface.cpp:3001, 3062-3067 (W_PERSISTENT=\"persistent\" base_command_interface.hpp:180); `script action end` drops every non-persistent picture (:2808)"
@@ -3655,7 +3891,9 @@
             "values": [
               "on"
             ],
-            "completable": ["on"],
+            "completable": [
+              "on"
+            ],
             "default": "absent or anything but \"on\" -> the move starts at full speed",
             "required": false,
             "source": "app_command_interface.cpp:3002, 3039, 3051, 3059 (W_ACCELERATE_ALT=\"accelerate_alt\" base_command_interface.hpp:181, W_ON=\"on\" :187)",
@@ -3667,7 +3905,9 @@
             "values": [
               "on"
             ],
-            "completable": ["on"],
+            "completable": [
+              "on"
+            ],
             "default": "absent or anything but \"on\" -> the move starts at full speed",
             "required": false,
             "source": "app_command_interface.cpp:3003, 3040, 3052, 3060 (W_ACCELERATE_AZ=\"accelerate_az\" base_command_interface.hpp:182)",
@@ -3679,7 +3919,9 @@
             "values": [
               "on"
             ],
-            "completable": ["on"],
+            "completable": [
+              "on"
+            ],
             "default": "absent or anything but \"on\" -> the move stops dead",
             "required": false,
             "source": "app_command_interface.cpp:3004, 3039, 3051, 3059 (W_DECELERATE_ALT=\"decelerate_alt\" base_command_interface.hpp:183)"
@@ -3690,7 +3932,9 @@
             "values": [
               "on"
             ],
-            "completable": ["on"],
+            "completable": [
+              "on"
+            ],
             "default": "absent or anything but \"on\" -> the move stops dead",
             "required": false,
             "source": "app_command_interface.cpp:3005, 3040, 3052, 3060 (W_DECELERATE_AZ=\"decelerate_az\" base_command_interface.hpp:184)"
@@ -3718,7 +3962,11 @@
               "true",
               "<anything else means off>"
             ],
-            "completable": ["1", "on", "true"],
+            "completable": [
+              "1",
+              "on",
+              "true"
+            ],
             "default": "absent or empty -> the setting is left alone",
             "required": false,
             "source": "app_command_interface.cpp:3070-3076 (W_KEYCOLOR=\"keycolor\" base_command_interface.hpp:189) -> src/mediaModule/media.hpp:305-308"
@@ -3731,7 +3979,9 @@
               "r<0-255>g<0-255>b<0-255>"
             ],
             "completable": [],
-            "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
+            "completable_excluded": {
+              "xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"
+            },
             "default": "absent or empty -> the r/g/b keys are used; all four absent -> no see-through colour is set and NO error is reported",
             "required": false,
             "source": "app_command_interface.cpp:3079, 3083-3091 (W_COLOR_VALUE=\"color_value\" base_command_interface.hpp:134) -> src/interfaceModule/app_command_color.cpp:92-120"
@@ -3863,7 +4113,10 @@
               "load",
               "rotate"
             ],
-            "completable": ["load", "rotate"],
+            "completable": [
+              "load",
+              "rotate"
+            ],
             "value_docs": {
               "load": "build a new ground scenery out of the keys written on this line",
               "rotate": "turn the scenery already in place"
@@ -3881,7 +4134,10 @@
               "1",
               "1.<digits>"
             ],
-            "completable": ["0", "1"],
+            "completable": [
+              "0",
+              "1"
+            ],
             "default": "with `action load`: absent or anything other than the exact text \"0\" -> the scenery is built WITH landing; alone: an unrecognised text -> \"command 'landscape' : invalid action parameter\"",
             "required": false,
             "source": "app_command_interface.cpp:2593, 2598-2601, 2613-2619 (W_LANDING=\"landing\" base_command_interface.hpp:319) -> src/coreModule/core.cpp:754-758",
@@ -3917,7 +4173,10 @@
               "fisheye",
               "spherical"
             ],
-            "completable": ["fisheye", "spherical"],
+            "completable": [
+              "fisheye",
+              "spherical"
+            ],
             "value_docs": {
               "fisheye": "one round picture covering the whole sky above the observer",
               "spherical": "a picture wrapped all the way round the horizon"
@@ -4210,7 +4469,13 @@
               "jump",
               "restart"
             ],
-            "completable": ["jump", "pause", "play", "restart", "stop"],
+            "completable": [
+              "jump",
+              "pause",
+              "play",
+              "restart",
+              "stop"
+            ],
             "value_docs": {
               "play": "start a video (all the other keys below belong to this one)",
               "stop": "stop the video that is playing",
@@ -4232,7 +4497,13 @@
               "viewport",
               "dual_viewport"
             ],
-            "completable": ["dual_viewport", "image", "viewport", "vr360", "vrcube"],
+            "completable": [
+              "dual_viewport",
+              "image",
+              "viewport",
+              "vr360",
+              "vrcube"
+            ],
             "value_docs": {
               "vr360": "wrapped on a sphere all around you -- a 360-degree video",
               "vrcube": "wrapped on a cube all around you -- a cube-map video",
@@ -4260,7 +4531,9 @@
               "<file name>",
               "auto"
             ],
-            "completable": ["auto"],
+            "completable": [
+              "auto"
+            ],
             "value_docs": {
               "auto": "use <the video's name>-<sky language>.ogg from the media folder, if that file exists (:3637-3647)"
             },
@@ -4288,7 +4561,14 @@
               "dome",
               "spherical"
             ],
-            "completable": ["dome", "equatorial", "horizontal", "j2000", "spherical", "viewport"],
+            "completable": [
+              "dome",
+              "equatorial",
+              "horizontal",
+              "j2000",
+              "spherical",
+              "viewport"
+            ],
             "value_docs": {
               "viewport": "fixed to the screen, so it does not move when the view turns",
               "horizontal": "fixed to your horizon, so it stays over the same part of the landscape",
@@ -4312,7 +4592,10 @@
               "thrice",
               "<anything else> = once"
             ],
-            "completable": ["thrice", "twice"],
+            "completable": [
+              "thrice",
+              "twice"
+            ],
             "value_docs": {
               "twice": "two copies, half a turn apart (0 and 180 degrees)",
               "thrice": "three copies, a third of a turn apart (0, 120 and 240 degrees)"
@@ -4344,7 +4627,9 @@
               "<file name>",
               "auto"
             ],
-            "completable": ["auto"],
+            "completable": [
+              "auto"
+            ],
             "value_docs": {
               "auto": "use <the video's name>-<subtitle language>.srt from the media folder, if that file exists (:3557-3567)"
             },
@@ -4361,7 +4646,9 @@
               "on-forms per Utility::isTrue",
               "anything else = hide"
             ],
-            "completable": ["toggle"],
+            "completable": [
+              "toggle"
+            ],
             "value_docs": {
               "toggle": "show them if they are hidden, hide them if they are shown"
             },
@@ -4378,7 +4665,10 @@
               "thrice",
               "<anything else> = once"
             ],
-            "completable": ["thrice", "twice"],
+            "completable": [
+              "thrice",
+              "twice"
+            ],
             "value_docs": {
               "twice": "two copies, at the front and the back (180 and 0 degrees)",
               "thrice": "three copies (at 180, 60 and 300 degrees)"
@@ -4422,7 +4712,9 @@
               "r<0-255>g<0-255>b<0-255>"
             ],
             "completable": [],
-            "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
+            "completable_excluded": {
+              "xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"
+            },
             "default": "absent -> the r/g/b keys are used instead; with none of them nothing about the see-through colour changes",
             "required": false,
             "source": "app_command_interface.cpp:3692, 3696 -> src/interfaceModule/app_command_color.cpp:92-120 (W_COLOR_VALUE=\"color_value\", base_command_interface.hpp:134)",
@@ -4616,7 +4908,9 @@
             "values": [
               "clear"
             ],
-            "completable": ["clear"],
+            "completable": [
+              "clear"
+            ],
             "value_docs": {
               "clear": "remove every shower that was added"
             },
@@ -4716,7 +5010,10 @@
               "inverse",
               "<number of degrees>"
             ],
-            "completable": ["default", "inverse"],
+            "completable": [
+              "default",
+              "inverse"
+            ],
             "value_docs": {
               "default": "the latitude the program starts at (src/coreModule/coreLink.hpp:884-886)",
               "inverse": "the same latitude on the other side of the equator (the present value with its sign turned round)"
@@ -4733,7 +5030,10 @@
               "inverse",
               "<number of degrees>"
             ],
-            "completable": ["default", "inverse"],
+            "completable": [
+              "default",
+              "inverse"
+            ],
             "default": "absent or empty -> the latitude you are at now is kept",
             "required": "conditional",
             "source": "app_command_interface.cpp:3407 (W_LATITUDE=\"latitude\", base_command_interface.hpp:178)",
@@ -4747,7 +5047,10 @@
               "inverse",
               "<number of degrees>"
             ],
-            "completable": ["default", "inverse"],
+            "completable": [
+              "default",
+              "inverse"
+            ],
             "value_docs": {
               "default": "the longitude the program starts at (src/coreModule/coreLink.hpp:888-890)",
               "inverse": "half a turn round the body: the present longitude plus 180 degrees"
@@ -4764,7 +5067,10 @@
               "inverse",
               "<number of degrees>"
             ],
-            "completable": ["default", "inverse"],
+            "completable": [
+              "default",
+              "inverse"
+            ],
             "default": "absent or empty -> the longitude you are at now is kept",
             "required": "conditional",
             "source": "app_command_interface.cpp:3408 (W_LONGITUDE=\"longitude\", base_command_interface.hpp:177)",
@@ -4778,7 +5084,9 @@
               "<number of metres>",
               "+<number> / -<number> = relative to your present height"
             ],
-            "completable": ["default"],
+            "completable": [
+              "default"
+            ],
             "value_docs": {
               "default": "the height the program starts at (src/coreModule/coreLink.hpp:892-894)"
             },
@@ -5033,7 +5341,10 @@
               "load",
               "clear"
             ],
-            "completable": ["clear", "load"],
+            "completable": [
+              "clear",
+              "load"
+            ],
             "value_docs": {
               "load": "read the points from a file and draw them",
               "clear": "erase the drawing"
@@ -5106,7 +5417,10 @@
               "load",
               "clear"
             ],
-            "completable": ["clear", "load"],
+            "completable": [
+              "clear",
+              "load"
+            ],
             "value_docs": {
               "load": "read the points from a file and draw them",
               "clear": "erase the drawing"
@@ -5210,7 +5524,10 @@
               "save",
               "load"
             ],
-            "completable": ["load", "save"],
+            "completable": [
+              "load",
+              "save"
+            ],
             "value_docs": {
               "save": "record the date, the field of view, the place you are looking from, the body you are on and which scale you are in",
               "load": "go back to what was recorded"
@@ -5331,7 +5648,19 @@
               "acquire",
               "release"
             ],
-            "completable": ["acquire", "cancelrecord", "default", "end", "faster", "pause", "play", "record", "release", "resume", "slower"],
+            "completable": [
+              "acquire",
+              "cancelrecord",
+              "default",
+              "end",
+              "faster",
+              "pause",
+              "play",
+              "record",
+              "release",
+              "resume",
+              "slower"
+            ],
             "value_docs": {
               "end": "stop the running script and clear what it put on screen: texts, music and every non-permanent picture",
               "play": "start the script named by `filename`",
@@ -5363,7 +5692,9 @@
             "values": [
               "global"
             ],
-            "completable": ["global"],
+            "completable": [
+              "global"
+            ],
             "value_docs": {
               "global": "the one lock shared by every script"
             },
@@ -5380,7 +5711,11 @@
               "slower",
               "default"
             ],
-            "completable": ["default", "faster", "slower"],
+            "completable": [
+              "default",
+              "faster",
+              "slower"
+            ],
             "value_docs": {
               "faster": "run faster",
               "slower": "run slower",
@@ -5457,7 +5792,10 @@
               "save",
               "load"
             ],
-            "completable": ["load", "save"],
+            "completable": [
+              "load",
+              "save"
+            ],
             "value_docs": {
               "save": "Write the current state into the named session file.",
               "load": "Read a named session file back and apply it."
@@ -5514,7 +5852,9 @@
               "<body name>",
               "home_planet"
             ],
-            "completable": ["home_planet"],
+            "completable": [
+              "home_planet"
+            ],
             "value_docs": {
               "home_planet": "whatever body you are standing on right now (its English name is looked up and used instead, app_command_interface.cpp:3117-3118)"
             },
@@ -5530,7 +5870,9 @@
               "<body name>",
               "home_planet"
             ],
-            "completable": ["home_planet"],
+            "completable": [
+              "home_planet"
+            ],
             "default": "absent or empty -> the next identity key is tried",
             "required": "conditional",
             "source": "app_command_interface.cpp:3119-3123 (W_BODY=\"body\", base_command_interface.hpp:224)",
@@ -5550,7 +5892,9 @@
               "<constellation short name>",
               "zodiac"
             ],
-            "completable": ["zodiac"],
+            "completable": [
+              "zodiac"
+            ],
             "value_docs": {
               "zodiac": "select the twelve zodiac constellations together: Ari, Tau, Gem, Cnc, Leo, Vir, Sco, Sgr, Cap, Aqr, Psc, Lib (src/coreModule/core.cpp:1100-1117)"
             },
@@ -5666,7 +6010,9 @@
             "values": [
               "now"
             ],
-            "completable": ["now"],
+            "completable": [
+              "now"
+            ],
             "value_docs": {
               "now": "close the program at once"
             },
@@ -5705,7 +6051,9 @@
             "values": [
               "load"
             ],
-            "completable": ["load"],
+            "completable": [
+              "load"
+            ],
             "value_docs": {
               "load": "read the culture from that folder and use it"
             },
@@ -5736,7 +6084,9 @@
             "values": [
               "drop"
             ],
-            "completable": ["drop"],
+            "completable": [
+              "drop"
+            ],
             "value_docs": {
               "drop": "erase all the star lines drawn so far"
             },
@@ -5872,7 +6222,10 @@
               "end",
               "<a number or a variable name>"
             ],
-            "completable": ["else", "end"],
+            "completable": [
+              "else",
+              "end"
+            ],
             "value_docs": {
               "else": "flip the block: what was skipped now runs and the other way round",
               "end": "close the block opened by the last `struct if`",
@@ -5948,7 +6301,10 @@
               "break",
               "<a whole number>"
             ],
-            "completable": ["break", "end"],
+            "completable": [
+              "break",
+              "end"
+            ],
             "value_docs": {
               "end": "close the repeated block: go back to its first line and run it again until the count is used up",
               "break": "abandon the repetition altogether, right now",
@@ -5965,7 +6321,9 @@
             "values": [
               "var"
             ],
-            "completable": ["var"],
+            "completable": [
+              "var"
+            ],
             "default": "absent or any other word -> nothing is written",
             "required": false,
             "source": "app_command_interface.cpp:4701-4703 -> src/interfaceModule/app_command_eval.cpp:253-269 (W_PRINT=\"print\", W_VAR=\"var\": base_command_interface.hpp:241,242)",
@@ -6093,7 +6451,9 @@
             "values": [
               "clear"
             ],
-            "completable": ["clear"],
+            "completable": [
+              "clear"
+            ],
             "default": "absent or any other value -> this branch is not taken",
             "required": "conditional",
             "source": "app_command_interface.cpp:1645-1648"
@@ -6111,7 +6471,16 @@
               "5",
               "6"
             ],
-            "completable": ["0", "1", "2", "3", "4", "5", "6", "all"],
+            "completable": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "all"
+            ],
             "default": "absent -> this branch is not taken",
             "required": "conditional",
             "source": "app_command_interface.cpp:1649-1652 -> src/coreModule/coreLink.cpp:1123-1128 -> src/bodyModule/body_trace.cpp:62-72",
@@ -6183,7 +6552,12 @@
               "update",
               "load"
             ],
-            "completable": ["clear", "drop", "load", "update"],
+            "completable": [
+              "clear",
+              "drop",
+              "load",
+              "update"
+            ],
             "value_docs": {
               "clear": "remove every text on the dome and stop (no other key is needed)",
               "drop": "remove the text of this name",
@@ -6219,7 +6593,11 @@
               "true",
               "<anything else means hidden>"
             ],
-            "completable": ["1", "on", "true"],
+            "completable": [
+              "1",
+              "on",
+              "true"
+            ],
             "default": "absent or empty -> the writing's shown/hidden state is left alone",
             "required": false,
             "source": "app_command_interface.cpp:2664, 2740-2757, 2769-2778 (W_DISPLAY=\"display\" base_command_interface.hpp:92) -> src/tools/utility.hpp:160-171",
@@ -6232,7 +6610,10 @@
               "twice",
               "thrice"
             ],
-            "completable": ["thrice", "twice"],
+            "completable": [
+              "thrice",
+              "twice"
+            ],
             "value_docs": {
               "twice": "two copies, the second half a turn round the dome (azimuth + 180)",
               "thrice": "three copies, a third of a turn apart (azimuth + 120 and + 240)"
@@ -6267,7 +6648,15 @@
               "X_LARGE",
               "XX_LARGE"
             ],
-            "completable": ["LARGE", "MEDIUM", "SMALL", "XX_LARGE", "XX_SMALL", "X_LARGE", "X_SMALL"],
+            "completable": [
+              "LARGE",
+              "MEDIUM",
+              "SMALL",
+              "XX_LARGE",
+              "XX_SMALL",
+              "X_LARGE",
+              "X_SMALL"
+            ],
             "default": "absent or empty -> MEDIUM; an unrecognised size -> MEDIUM and \"text size was not recognized\" in the log",
             "default_value": "MEDIUM",
             "default_value_source": "src/mediaModule/text_mgr.cpp:71-78 @ d64fd437 (`FONT_SIZE textSize = FONT_SIZE::T_MEDIUM;`, consulted only when the key is non-empty); the map is case-sensitive and holds \"MEDIUM\" (:42)",
@@ -6283,7 +6672,11 @@
               "RIGHT",
               "CENTER"
             ],
-            "completable": ["CENTER", "LEFT", "RIGHT"],
+            "completable": [
+              "CENTER",
+              "LEFT",
+              "RIGHT"
+            ],
             "default": "absent or empty -> LEFT; an unrecognised value -> LEFT and \"text alignement was not recognized\" in the log",
             "default_value": "LEFT",
             "default_value_source": "src/mediaModule/text_mgr.cpp:109-116 @ d64fd437 (`TEXT_ALIGN textAlign = TEXT_ALIGN::LEFT;`, consulted only when the key is non-empty); the map is case-sensitive and holds \"LEFT\" (:47)",
@@ -6298,7 +6691,9 @@
               "r<0-255>g<0-255>b<0-255>"
             ],
             "completable": [],
-            "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
+            "completable_excluded": {
+              "xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"
+            },
             "default": "absent or empty -> the r/g/b keys are used; all four absent -> the program's usual text colour",
             "required": false,
             "source": "app_command_interface.cpp:2704, 2709-2715 (W_COLOR_VALUE=\"color_value\" base_command_interface.hpp:134) -> src/interfaceModule/app_command_color.cpp:92-120; default colour src/mediaModule/text_mgr.cpp:118-124"
@@ -6333,7 +6728,11 @@
               "true",
               "<anything else means no fading>"
             ],
-            "completable": ["1", "on", "true"],
+            "completable": [
+              "1",
+              "on",
+              "true"
+            ],
             "default": "absent or empty -> no fading",
             "required": false,
             "source": "app_command_interface.cpp:2716-2723 (W_FADER=\"fader\" base_command_interface.hpp:141) -> src/mediaModule/text_mgr.hpp:97-99 (how long the fade lasts is `set text_fading_duration`)"
@@ -6445,7 +6844,14 @@
               "sincrement",
               "sdecrement"
             ],
-            "completable": ["decrement", "increment", "pause", "resume", "sdecrement", "sincrement"],
+            "completable": [
+              "decrement",
+              "increment",
+              "pause",
+              "resume",
+              "sdecrement",
+              "sincrement"
+            ],
             "value_docs": {
               "pause": "stop time where it is -- or start it again if it is already stopped: this value FLIPS the state rather than only stopping (:3321)",
               "resume": "let time run again",
@@ -6543,7 +6949,11 @@
               "pause",
               "resume"
             ],
-            "completable": ["pause", "resume", "skip"],
+            "completable": [
+              "pause",
+              "resume",
+              "skip"
+            ],
             "value_docs": {
               "skip": "jump the fades forward by `duration` so that they are over now",
               "pause": "freeze every fade where it is",
@@ -6639,7 +7049,12 @@
               "all",
               "video"
             ],
-            "completable": ["all", "background", "preload", "video"],
+            "completable": [
+              "all",
+              "background",
+              "preload",
+              "video"
+            ],
             "value_docs": {
               "preload": "wait for the things being fetched ahead of time (LoadPriority::PRELOAD)",
               "background": "wait for the things being fetched quietly in the background (LoadPriority::BACKGROUND)",
@@ -6659,7 +7074,9 @@
               "on-forms per Utility::isTrue",
               "anything else = off"
             ],
-            "completable": ["toggle"],
+            "completable": [
+              "toggle"
+            ],
             "default": "absent -> this form is not taken",
             "required": "conditional",
             "source": "app_command_interface.cpp:1371-1383 (W_VIDEO_TERMINATION=\"video_termination\", base_command_interface.hpp:213)",
@@ -6728,8 +7145,13 @@
               "initial",
               "<anything else> = in"
             ],
-            "completable": ["initial", "out"],
-            "completable_excluded": {"in": "typeable and it does work, but only because the domain is OPEN: `out` and `initial` are recognised and EVERY other word zooms in. Offering `in` would teach a recognised token that does not exist, and would suggest `in`/`out` are a pair (value_docs says so itself)"},
+            "completable": [
+              "initial",
+              "out"
+            ],
+            "completable_excluded": {
+              "in": "typeable and it does work, but only because the domain is OPEN: `out` and `initial` are recognised and EVERY other word zooms in. Offering `in` would teach a recognised token that does not exist, and would suggest `in`/`out` are a pair (value_docs says so itself)"
+            },
             "value_docs": {
               "out": "go back out one step: to the view around the object's satellites, or to the starting view",
               "initial": "go all the way back to the starting width of view and the starting direction",
@@ -6778,7 +7200,9 @@
             "values": [
               "on"
             ],
-            "completable": ["on"],
+            "completable": [
+              "on"
+            ],
             "default": "absent, or any other value -> \"Command 'zoom': unknown argument\"",
             "required": "conditional",
             "source": "app_command_interface.cpp:3292-3296 -> src/coreModule/core.hpp:259-262 (W_CENTER=\"center\", W_ON=\"on\": base_command_interface.hpp:203, 187)",
@@ -6958,109 +7382,538 @@
     },
     "flags": {
       "_source": "app_command_init.cpp:113-209 x base_command_interface.hpp:393-490",
-      "_schema_note": "STILL v1 SHAPE (array of names), on purpose. The 97-flag doc pass has not run - it was explicitly outside the extraction sweep's scope (SWEEP_DISPATCH.md DoD 6, which recorded only the key-grammar shape of the `flag` command). Converting to the D7 v2 [{name, doc}] shape now would create 97 null docs and invite invention (C2). The shape changes when the doc pass fills content. Value grammar for all 97: parse_model.flag_value_grammar.",
+      "_schema_note": "D7 v2 SHAPE since 2026-08-31 (F71 item 3): `names` is an array of OBJECTS, one per registered flag, each carrying a zero-knowledge `doc` line and the `source` chain it was read from (app_command_init.cpp registration -> FLAG_NAMES enumerator -> the setFlag switch case -> coreLink -> the owning module). The VALUE grammar is NOT repeated here: it is one grammar for all 97 names and lives on the `flag` command entry, which is where a consumer must read it (I2). `notes` carries the sharp edge where one exists -- a cross-flag side effect, a name that contradicts its call, or a flag nothing reads.",
       "names": [
-        "antialias_lines",
-        "constellation_drawing",
-        "constellation_names",
-        "constellation_art",
-        "dual_viewport",
-        "constellation_boundaries",
-        "constellation_pick",
-        "star_twinkle",
-        "navigation",
-        "astronomical",
-        "show_tui_datetime",
-        "show_tui_short_obj_info",
-        "manual_zoom",
-        "light_travel_time",
-        "fog",
-        "atmosphere",
-        "azimuthal_grid",
-        "equatorial_grid",
-        "ecliptic_grid",
-        "galactic_grid",
-        "equator_line",
-        "galactic_line",
-        "ecliptic_line",
-        "precession_circle",
-        "circumpolar_circle",
-        "tropic_lines",
-        "meridian_line",
-        "zenith_line",
-        "polar_circle",
-        "polar_point",
-        "ecliptic_center",
-        "galactic_pole",
-        "galactic_center",
-        "vernal_points",
-        "analemma_line",
-        "analemma",
-        "aries_line",
-        "zodiac",
-        "personal",
-        "personeq",
-        "nautical_alt",
-        "nautical_ra",
-        "object_coordinates",
-        "mouse_coordinates",
-        "angular_distance",
-        "loxodromy",
-        "orthodromy",
-        "greenwich_line",
-        "vertical_line",
-        "cardinal_points",
-        "clouds",
-        "moon_scaled",
-        "sun_scaled",
-        "landscape",
-        "stars",
-        "star_names",
-        "star_pick",
-        "dso_pick",
-        "body_pick",
-        "atmospheric_refraction",
-        "planets",
-        "planet_names",
-        "planet_orbits",
-        "orbits",
-        "planets_orbits",
-        "planets_axis",
-        "satellites_orbits",
-        "nebulae",
-        "nebula_names",
-        "nebula_hints",
-        "milky_way",
-        "bright_nebulae",
-        "object_trails",
-        "track_object",
-        "script_gui_debug",
-        "lock_sky_position",
-        "body_trace",
-        "show_latlon",
-        "color_inverse",
-        "oort",
-        "stars_trace",
-        "star_lines",
-        "star_lines_selected",
-        "dso_pictograms",
-        "zodiacal_light",
-        "tully",
-        "tully_color_mode",
-        "satellites",
-        "quaternion_mode",
-        "eye_relative_mode",
-        "subtitle",
-        "experimental_shadows",
-        "experimental_path",
-        "skip_pause",
-        "image_compression_loss",
-        "lunar_eclipse_umbra",
-        "lunar_eclipse_penumbra"
+        {
+          "name": "antialias_lines",
+          "doc": "Remembers a smooth-lines preference; nothing in the drawing reads it, so the picture does not change.",
+          "source": "app_command_init.cpp:133 (FN_ANTIALIAS_LINES); base_command_interface.hpp:402; app_command_interface.cpp:803-804 -> src/appModule/app.cpp:552-553 -> src/appModule/appDraw.hpp:68-78,95",
+          "notes": "No-op on screen: the only readers of AppDraw::antialiasLines are the text menu (src/uiModule/ui_tuiconf.cpp:735) and the config save (src/appModule/app.cpp:969). The member comment at src/appModule/appDraw.hpp:95 says 'using GL_LINE_SMOOTH', an OpenGL notion, in a Vulkan renderer."
+        },
+        {
+          "name": "constellation_drawing",
+          "doc": "Show the stick-figure lines that join the stars of each constellation.",
+          "source": "app_command_init.cpp:134 (FN_CONSTELLATION_DRAWING); base_command_interface.hpp:403; app_command_interface.cpp:807-809 -> src/coreModule/coreLink.hpp:407-408 -> src/coreModule/constellation_mgr.hpp:98-99, constellation_mgr.cpp:657-670"
+        },
+        {
+          "name": "constellation_names",
+          "doc": "Show the name of each constellation written across the sky beside its figure.",
+          "source": "app_command_init.cpp:135 (FN_CONSTELLATION_NAMES); base_command_interface.hpp:404; app_command_interface.cpp:812-814 -> src/coreModule/coreLink.hpp:415-416 -> src/coreModule/constellation_mgr.hpp:112-113, constellation_mgr.cpp:702-715"
+        },
+        {
+          "name": "constellation_art",
+          "doc": "Show the painted artwork of each constellation laid over its stars.",
+          "source": "app_command_init.cpp:136 (FN_CONSTELLATION_ART); base_command_interface.hpp:405; app_command_interface.cpp:817-819 -> src/coreModule/coreLink.hpp:411-412 -> src/coreModule/constellation_mgr.hpp:91-92, constellation_mgr.cpp:687-700"
+        },
+        {
+          "name": "dual_viewport",
+          "doc": "Show a playing video as two half-dome images instead of one image over the whole dome.",
+          "source": "app_command_init.cpp:137 (FN_DUAL_VIEWPORT); base_command_interface.hpp:406; app_command_interface.cpp:822-824 -> src/coreModule/coreLink.hpp:423-424 -> src/mediaModule/media.hpp:381-387 -> src/mediaModule/viewport.hpp:61-64"
+        },
+        {
+          "name": "constellation_boundaries",
+          "doc": "Show the official boundary lines that divide the sky up between the constellations.",
+          "source": "app_command_init.cpp:138 (FN_CONSTELLATION_BOUNDARIES); base_command_interface.hpp:407; app_command_interface.cpp:827-829 -> src/coreModule/coreLink.hpp:419-420 -> src/coreModule/constellation_mgr.hpp:105-106, constellation_mgr.cpp:672-685"
+        },
+        {
+          "name": "constellation_pick",
+          "doc": "Draw only the constellation you have selected, instead of every constellation at once.",
+          "source": "app_command_init.cpp:139 (FN_CONSTELLATION_PICK); base_command_interface.hpp:408; app_command_interface.cpp:832-834 -> src/coreModule/coreLink.hpp:437-438 -> src/coreModule/constellation_mgr.hpp:119-126, constellation_mgr.cpp:661-715,800-855"
+        },
+        {
+          "name": "star_twinkle",
+          "doc": "Make the stars twinkle, the way they do when you look at them through the air.",
+          "source": "app_command_init.cpp:140 (FN_STAR_TWINKLE); base_command_interface.hpp:409; app_command_interface.cpp:837-839 -> src/coreModule/coreLink.hpp:194 -> src/starModule/hip_star_mgr.hpp:301-308",
+          "notes": "Overwritten as a side effect of `flag atmosphere`: app_command_interface.cpp:878 forces twinkle to follow the atmosphere value on every atmosphere on/off."
+        },
+        {
+          "name": "navigation",
+          "doc": "Add navigator markings: the in-between compass points, degree ticks on the sky lines and a navigation clock.",
+          "source": "app_command_init.cpp:141 (FN_NAVIGATION); base_command_interface.hpp:410; app_command_interface.cpp:855-857 -> src/coreModule/core.cpp:265-271 -> src/coreModule/cardinals.cpp:95-119, skyline.cpp:766,944,1015,1335, skygrid.cpp:276-279, src/uiModule/ui_tuiconf.cpp:94-100,129-136"
+        },
+        {
+          "name": "astronomical",
+          "doc": "The same extra sky markings as navigation, except that it does not relabel the equatorial grid.",
+          "source": "app_command_init.cpp:142 (FN_ASTRONOMICAL); base_command_interface.hpp:411; app_command_interface.cpp:860-862 -> src/coreModule/core.cpp:273-279 -> src/coreModule/cardinals.cpp:95, skyline.cpp:766,944,1015,1335, src/uiModule/ui_tuiconf.cpp:94,129",
+          "notes": "Near-duplicate of `navigation`: every consumer tests `internalNav || internalAstronomical` (cardinals.cpp:95; skyline.cpp:766,944,1015,1040,1058,1060,1335). The one place that reads internalNav alone is skygrid.cpp:276, the equatorial-grid hour/degree labels, which `astronomical` therefore does not reach."
+        },
+        {
+          "name": "show_tui_datetime",
+          "doc": "Write the date and time across the dome, together with the place name, field of view and frame rate if those are on.",
+          "source": "app_command_init.cpp:143 (FN_SHOW_TUI_DATETIME); base_command_interface.hpp:412; app_command_interface.cpp:842-843 -> src/uiModule/ui.cpp:385-387 -> src/uiModule/ui_tuiconf.cpp:56-124"
+        },
+        {
+          "name": "show_tui_short_obj_info",
+          "doc": "Write a short line of information about the object you have selected onto the dome.",
+          "source": "app_command_init.cpp:144 (FN_SHOW_TUI_SHORT_OBJ_INFO); base_command_interface.hpp:413; app_command_interface.cpp:846-847 -> src/uiModule/ui.cpp:382-384 -> src/uiModule/ui_tuiconf.cpp:125-140"
+        },
+        {
+          "name": "manual_zoom",
+          "doc": "Let zoom in and zoom out step the view by halves each time instead of jumping straight to the object.",
+          "source": "app_command_init.cpp:145 (FN_MANUAL_ZOOM); base_command_interface.hpp:414; app_command_interface.cpp:850-852 -> src/coreModule/core.hpp:288-295 -> src/coreModule/core.cpp:1409-1424,1433-1439"
+        },
+        {
+          "name": "light_travel_time",
+          "doc": "Place every body where its light left it, so you see the solar system as the light actually reaches you.",
+          "source": "app_command_init.cpp:146 (FN_LIGHT_TRAVEL_TIME); base_command_interface.hpp:415; app_command_interface.cpp:865-867 -> src/coreModule/coreLink.hpp:473 -> src/bodyModule/ssystem_factory.hpp:242-245 -> src/bodyModule/solarsystem_display.cpp:343-380"
+        },
+        {
+          "name": "fog",
+          "doc": "Show the band of haze that sits along the horizon of the landscape.",
+          "source": "app_command_init.cpp:147 (FN_FOG); base_command_interface.hpp:416; app_command_interface.cpp:870-872 -> src/coreModule/coreLink.hpp:691-692 -> src/coreModule/coreLink.cpp:1552-1554 (landscape->fogSetFlagShow)",
+          "notes": "Turned off for you whenever `flag atmosphere off` runs (app_command_interface.cpp:877)."
+        },
+        {
+          "name": "atmosphere",
+          "doc": "Show the sky's daylight glow; switching it off also clears the fog and stops the stars twinkling.",
+          "source": "app_command_init.cpp:148 (FN_ATMOSPHERE); base_command_interface.hpp:417; app_command_interface.cpp:875-879 -> src/coreModule/coreLink.hpp:1034-1035 -> src/coreModule/coreLink.cpp:438-443 -> src/bodyModule/body_decor.hpp:61-63",
+          "notes": "Three writes in one case: fog off when turning off (line 877), star twinkle set to the same value (878), then the atmosphere itself (879)."
+        },
+        {
+          "name": "azimuthal_grid",
+          "doc": "Show the grid of height and compass-bearing lines that stays fixed to your horizon.",
+          "source": "app_command_init.cpp:149 (FN_AZIMUTHAL_GRID); base_command_interface.hpp:418; app_command_interface.cpp:882-883 -> src/coreModule/coreLink.hpp:83 -> src/coreModule/skygrid_mgr.cpp:197-202 (GridAltAzimutal) -> src/coreModule/skygrid.cpp:262-295"
+        },
+        {
+          "name": "equatorial_grid",
+          "doc": "Show the coordinate grid that turns with the stars, labelled in hours of right ascension.",
+          "source": "app_command_init.cpp:150 (FN_EQUATORIAL_GRID); base_command_interface.hpp:419; app_command_interface.cpp:886-887 -> src/coreModule/coreLink.hpp:83 -> src/coreModule/skygrid_mgr.cpp:190-195 (GridEquatorial) -> src/coreModule/skygrid.cpp:275-284",
+          "notes": "With `flag navigation on` the same labels are written in degrees East instead of hours (skygrid.cpp:276-279)."
+        },
+        {
+          "name": "ecliptic_grid",
+          "doc": "Show the coordinate grid built around the path the Sun follows through the year.",
+          "source": "app_command_init.cpp:151 (FN_ECLIPTIC_GRID); base_command_interface.hpp:420; app_command_interface.cpp:890-891 -> src/coreModule/coreLink.hpp:83 -> src/coreModule/skygrid_mgr.cpp:204-209 (GridEcliptic)"
+        },
+        {
+          "name": "galactic_grid",
+          "doc": "Show the coordinate grid built around the plane of the Milky Way.",
+          "source": "app_command_init.cpp:152 (FN_GALACTIC_GRID); base_command_interface.hpp:421; app_command_interface.cpp:894-895 -> src/coreModule/coreLink.hpp:83 -> src/coreModule/skygrid_mgr.cpp:211-215 (GridGalactic)"
+        },
+        {
+          "name": "equator_line",
+          "doc": "Show the celestial equator, the great circle standing over the Earth's equator, with hour marks along it.",
+          "source": "app_command_init.cpp:153 (FN_EQUATOR_LINE); base_command_interface.hpp:422; app_command_interface.cpp:898-899 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:887-901,921-1069 (SkyLine_Equator EQUATOR)"
+        },
+        {
+          "name": "galactic_line",
+          "doc": "Show the line of the Milky Way's own equator running right around the sky, marked in degrees.",
+          "source": "app_command_init.cpp:154 (FN_GALACTIC_LINE); base_command_interface.hpp:423; app_command_interface.cpp:902-903 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:892-901,1030-1031 (SkyLine_Equator GALACTIC_EQUATOR)"
+        },
+        {
+          "name": "ecliptic_line",
+          "doc": "Show the Sun's yearly path around the sky, ticked day by day and labelled with the months.",
+          "source": "app_command_init.cpp:155 (FN_ECLIPTIC_LINE); base_command_interface.hpp:424; app_command_interface.cpp:906-907 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1224-1355 (SkyLine_Ecliptic)"
+        },
+        {
+          "name": "precession_circle",
+          "doc": "Show the slow circle each sky pole walks around over the ages, labelled in thousands of years.",
+          "source": "app_command_init.cpp:156 (FN_PRECESSION_CIRCLE); base_command_interface.hpp:425; app_command_interface.cpp:910-911 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1372-1440 (SkyLine_Precession)",
+          "notes": "Only drawn from Earth (skyline.cpp:1378)."
+        },
+        {
+          "name": "circumpolar_circle",
+          "doc": "Show the circles that separate the stars that never set from those that never rise where you stand.",
+          "source": "app_command_init.cpp:157 (FN_CIRCUMPOLAR_CIRCLE); base_command_interface.hpp:426; app_command_interface.cpp:918-919 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:377-416 (SkyLine_CircumPolar; radius follows your latitude, line 388)"
+        },
+        {
+          "name": "tropic_lines",
+          "doc": "Show the equator and the two tropic circles of the world you are standing on.",
+          "source": "app_command_init.cpp:158 (FN_TROPIC_LINES); base_command_interface.hpp:427; app_command_interface.cpp:914-915 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1094-1218 (SkyLine_Tropic; circles at the body's own axial tilt, line 1115)",
+          "notes": "Not drawn in space, on a moon, on the Sun, or above 10 km with the planet grid on (skyline.cpp:1099-1107)."
+        },
+        {
+          "name": "meridian_line",
+          "doc": "Show the meridian, the graduated north-south circle that passes right over your head.",
+          "source": "app_command_init.cpp:159 (FN_MERIDIAN_LINE); base_command_interface.hpp:428; app_command_interface.cpp:922-923 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:727-881 (SkyLine_Meridian)"
+        },
+        {
+          "name": "zenith_line",
+          "doc": "Mark the point straight overhead with a small ring lettered Z, and the point straight down with N.",
+          "source": "app_command_init.cpp:160 (FN_ZENITH_LINE); base_command_interface.hpp:429; app_command_interface.cpp:926-927 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1564-1681 (SkyLine_Zenith; labels at lines 1627 and 1669)"
+        },
+        {
+          "name": "polar_circle",
+          "doc": "Show the two polar circles, the rings drawn 66.5 degrees away from the celestial equator.",
+          "source": "app_command_init.cpp:161 (FN_POLAR_CIRCLE); base_command_interface.hpp:430; app_command_interface.cpp:930-931 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:289 (CIRCLE_POLE, 66.5) -> skyline.cpp:195-234"
+        },
+        {
+          "name": "polar_point",
+          "doc": "Mark the two poles of the turning sky, each with a small ring drawn one degree across.",
+          "source": "app_command_init.cpp:162 (FN_POLAR_POINT); base_command_interface.hpp:431; app_command_interface.cpp:934-935 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:296 (POINT_POLE, 89) -> skyline.cpp:195-234"
+        },
+        {
+          "name": "ecliptic_center",
+          "doc": "Mark the two poles of the Sun's yearly path, each with a small ring drawn one degree across.",
+          "source": "app_command_init.cpp:163 (FN_ECLIPTIC_CENTER); base_command_interface.hpp:432; app_command_interface.cpp:938-939 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:303 (ECLIPTIC_POLE, 89) -> skyline.cpp:180-182,195-234",
+          "notes": "Name contradicts what is drawn: the spelling says 'center' but the flag maps to SKYLINE_TYPE::LINE_ECLIPTIC_POLE, built as SkyLine_Pole::ECLIPTIC_POLE at radius 89 deg, i.e. rings around the ecliptic POLES."
+        },
+        {
+          "name": "galactic_pole",
+          "doc": "Mark the two poles of the Milky Way's plane, each with a small ring drawn one degree across.",
+          "source": "app_command_init.cpp:164 (FN_GALACTIC_POLE); base_command_interface.hpp:433; app_command_interface.cpp:942-943 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:310 (GALACTIC_POLE, 89) -> skyline.cpp:183-185,195-234"
+        },
+        {
+          "name": "galactic_center",
+          "doc": "Mark the direction of the centre of the Milky Way, and the point opposite it, with small rings.",
+          "source": "app_command_init.cpp:165 (FN_GALACTIC_CENTER); base_command_interface.hpp:434; app_command_interface.cpp:946-947 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:509-549 (SkyLine_Galactic_Center)"
+        },
+        {
+          "name": "vernal_points",
+          "doc": "Mark the two points where the Sun crosses the celestial equator, in spring and in autumn.",
+          "source": "app_command_init.cpp:166 (FN_VERNAL_POINTS); base_command_interface.hpp:435; app_command_interface.cpp:950-951 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:554-593 (SkyLine_Vernal)",
+          "notes": "SkyLine_Vernal::draw (skyline.cpp:566-593) and SkyLine_Galactic_Center::draw (skyline.cpp:521-549) are the same code line for line; the only difference is the frame chosen in the constructors (projectEarthEqu at line 557 vs projectJ2000Galactic at line 512)."
+        },
+        {
+          "name": "analemma_line",
+          "doc": "Draw the Sun's yearly figure-of-eight out in the turning sky, carried round by the current date.",
+          "source": "app_command_init.cpp:167 (FN_ANALEMMA_LINE); base_command_interface.hpp:436; app_command_interface.cpp:954-955 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:421-434,464-504 (SkyLine_Analemme ANALEMMALINE)",
+          "notes": "The ANALEMMALINE half uses the rotating equatorial frame (projectEarthEqu, skyline.cpp:427) with longitude 0 and a date term T (skyline.cpp:477-481); ANALEMMA uses the fixed frame with your own longitude and T=0 (482-486). Only drawn from Earth (line 467)."
+        },
+        {
+          "name": "analemma",
+          "doc": "Draw the Sun's yearly figure-of-eight held at a fixed place above your own horizon.",
+          "source": "app_command_init.cpp:168 (FN_ANALEMMA); base_command_interface.hpp:437; app_command_interface.cpp:958-959 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:429-431,482-486 (SkyLine_Analemme ANALEMMA, projectEarthEquFixed)",
+          "notes": "'Fixed' here means the frame that ignores the sky's daily turn (src/coreModule/projector.hpp:173-175 -> src/navModule/navigator.cpp:343 -> src/navModule/observer.cpp:108-114). Only drawn from Earth (skyline.cpp:467)."
+        },
+        {
+          "name": "aries_line",
+          "doc": "Show the circle of sky running through the Sun's spring crossing point, labelled Aries.",
+          "source": "app_command_init.cpp:169 (FN_ARIES_LINE); base_command_interface.hpp:438; app_command_interface.cpp:962-963 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:665-722 (SkyLine_Aries; label at line 716)",
+          "notes": "Only drawn from Earth (skyline.cpp:678)."
+        },
+        {
+          "name": "zodiac",
+          "doc": "Show the band along the Sun's path, split into the twelve zodiac signs and labelled with their names.",
+          "source": "app_command_init.cpp:170 (FN_ZODIAC); base_command_interface.hpp:439; app_command_interface.cpp:966-967 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:239-346 (SkyLine_Zodiac; names at lines 242-253, band at +/-16 deg, lines 296,332)",
+          "notes": "Only drawn from Earth (skyline.cpp:266)."
+        },
+        {
+          "name": "personal",
+          "doc": "Show your own drawing, loaded with the personal command, pinned to your horizon.",
+          "source": "app_command_init.cpp:171 (FN_PERSONAL); base_command_interface.hpp:440; app_command_interface.cpp:986-987 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:176-181 (SkyPerson, AL) -> src/coreModule/skyDisplay.cpp:62-77,240-345",
+          "notes": "Nothing is drawn until points are loaded by `personal action load` or `personal xy ...` (app_command_interface.cpp:1534-1561); an empty drawing returns early at skyDisplay.cpp:222."
+        },
+        {
+          "name": "personeq",
+          "doc": "Show your own drawing, loaded with the personeq command, pinned to the turning sky.",
+          "source": "app_command_init.cpp:172 (FN_PERSONEQ); base_command_interface.hpp:441; app_command_interface.cpp:990-991 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:183-188 (SkyPerson, EQ) -> src/coreModule/skyDisplay.cpp:62-77",
+          "notes": "Same class as `personal`, only the frame differs (EQ = equatorial, skyDisplay.cpp:70-72). Loaded by the personeq command (app_command_interface.cpp:1693,1704)."
+        },
+        {
+          "name": "nautical_alt",
+          "doc": "Show a scale graduated in degrees running through the selected object, measured from your horizon.",
+          "source": "app_command_init.cpp:173 (FN_NAUTICAL); base_command_interface.hpp:442; app_command_interface.cpp:994-995 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:190-194 (SkyNautic, AL) -> src/coreModule/skyDisplay.cpp:351-413,189-218"
+        },
+        {
+          "name": "nautical_ra",
+          "doc": "Show a scale graduated in degrees running through the selected object, measured on the turning sky.",
+          "source": "app_command_init.cpp:174 (FN_NAUTICEQ); base_command_interface.hpp:443; app_command_interface.cpp:998-999 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:196-200 (SkyNautic, EQ) -> src/coreModule/skyDisplay.cpp:351-413",
+          "notes": "Same class as nautical_alt; the AL branch converts to alt/az first (skyDisplay.cpp:367-375), the EQ branch keeps right ascension (line 366)."
+        },
+        {
+          "name": "object_coordinates",
+          "doc": "Write the height, bearing, right ascension and declination of the selected object beside it.",
+          "source": "app_command_init.cpp:175 (FN_OBJCOORD); base_command_interface.hpp:444; app_command_interface.cpp:1002-1003 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:202-206 (SkyCoords) -> src/coreModule/skyDisplay.cpp:419-582"
+        },
+        {
+          "name": "mouse_coordinates",
+          "doc": "Write the height, bearing, right ascension and declination of the spot under the mouse pointer.",
+          "source": "app_command_init.cpp:176 (FN_MOUSECOORD); base_command_interface.hpp:445; app_command_interface.cpp:1006-1007 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:208-212 (SkyMouse) -> src/coreModule/skyDisplay.cpp:588-766"
+        },
+        {
+          "name": "angular_distance",
+          "doc": "Draw the shortest arc between the object you selected and the one before it, with the angle written on it.",
+          "source": "app_command_init.cpp:177 (FN_ANG_DIST); base_command_interface.hpp:446; app_command_interface.cpp:1010-1011 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:214-218 (SkyAngDist) -> src/coreModule/skyDisplay.cpp:771-871",
+          "notes": "The two ends are the current and the previous selection, passed in at src/executorModule/solarSystemModule.cpp:210 and stellarSystemModule.cpp:205."
+        },
+        {
+          "name": "loxodromy",
+          "doc": "Draw the constant-bearing track between your previous and current selection, with its length in miles.",
+          "source": "app_command_init.cpp:178 (FN_LOXODROMY); base_command_interface.hpp:447; app_command_interface.cpp:1014-1015 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:220-224 (SkyLoxodromy) -> src/coreModule/skyDisplay.cpp:876-937",
+          "notes": "Draws nothing while the two selections are the same point (skyDisplay.cpp:878)."
+        },
+        {
+          "name": "orthodromy",
+          "doc": "Draw the great-circle shortest track between your previous and current selection, with its length in miles.",
+          "source": "app_command_init.cpp:179 (FN_ORTHODROMY); base_command_interface.hpp:448; app_command_interface.cpp:1018-1019 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:226-230 (SkyOrthodromy) -> src/coreModule/skyDisplay.cpp:942-1031"
+        },
+        {
+          "name": "greenwich_line",
+          "doc": "Show the circle of sky standing over the Greenwich meridian, labelled GM.",
+          "source": "app_command_init.cpp:180 (FN_GREENWICH_LINE); base_command_interface.hpp:449; app_command_interface.cpp:978-979 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:600-660 (SkyLine_Greenwich; label at line 654)",
+          "notes": "Only drawn from Earth (skyline.cpp:613)."
+        },
+        {
+          "name": "vertical_line",
+          "doc": "Show a circle graduated in degrees, running up from the horizon, over your head and down the far side.",
+          "source": "app_command_init.cpp:181 (FN_VERTICAL_LINE); base_command_interface.hpp:450; app_command_interface.cpp:982-983 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1471-1548 (SkyLine_Vertical, drawn in local coordinates)"
+        },
+        {
+          "name": "cardinal_points",
+          "doc": "Show the compass letters N, S, E and W standing around the edge of the horizon.",
+          "source": "app_command_init.cpp:182 (FN_CARDINAL_POINTS); base_command_interface.hpp:451; app_command_interface.cpp:1022-1024 -> src/coreModule/coreLink.hpp:394-395 -> src/coreModule/coreLink.cpp:275-277 -> src/coreModule/cardinals.cpp:80-119",
+          "notes": "With navigation or astronomical on, the in-between points (NE, NW, SE, SW) are added too (cardinals.cpp:95-119)."
+        },
+        {
+          "name": "clouds",
+          "doc": "Show the cloud layer painted over the planets that have one.",
+          "source": "app_command_init.cpp:183 (FN_CLOUDS); base_command_interface.hpp:452; app_command_interface.cpp:1027-1029 -> src/coreModule/coreLink.hpp:508-509 -> src/coreModule/coreLink.cpp:1253-1255 -> src/bodyModule/protosystem.hpp:128-131 (Body::setFlagClouds)"
+        },
+        {
+          "name": "moon_scaled",
+          "doc": "Draw the Moon at the enlarged size set by moon_scale, so it reads clearly on the dome.",
+          "source": "app_command_init.cpp:184 (FN_MOON_SCALED); base_command_interface.hpp:453; app_command_interface.cpp:1032-1034 -> src/coreModule/coreLink.hpp:484-485 -> src/coreModule/coreLink.cpp:1223-1225 -> src/bodyModule/ssystem_factory.hpp:263-272",
+          "notes": "Off puts the scale back to 1; the new path animates the change over about 5 s (ssystem_factory.hpp:263-268)."
+        },
+        {
+          "name": "sun_scaled",
+          "doc": "Draw the Sun at the enlarged size set by sun_scale, so it reads clearly on the dome.",
+          "source": "app_command_init.cpp:185 (FN_SUN_SCALED); base_command_interface.hpp:454; app_command_interface.cpp:1037-1039 -> src/coreModule/coreLink.hpp:490-491 -> src/coreModule/coreLink.cpp:1231-1237 -> src/bodyModule/ssystem_factory.hpp:278-282",
+          "notes": "Also resizes the Sun's halo (ssystem_factory.hpp:281)."
+        },
+        {
+          "name": "landscape",
+          "doc": "Show the ground panorama standing around the observer, which hides the sky below the horizon.",
+          "source": "app_command_init.cpp:186 (FN_LANDSCAPE); base_command_interface.hpp:455; app_command_interface.cpp:1042-1044 -> src/coreModule/coreLink.hpp:700-701 -> src/coreModule/coreLink.cpp:1565-1567 (landscape->setFlagShow)"
+        },
+        {
+          "name": "stars",
+          "doc": "Show the stars, both the ones drawn on the sky and the ones you fly among.",
+          "source": "app_command_init.cpp:187 (FN_STARS); base_command_interface.hpp:456; app_command_interface.cpp:1047-1049 -> src/coreModule/coreLink.hpp:168 -> src/coreModule/coreLink.cpp:650-653 (hip_stars->setFlagShow and starNav->setFlagStars)"
+        },
+        {
+          "name": "star_names",
+          "doc": "Show star names - on the sky, in the fly-through star field, and on the Tully galaxies.",
+          "source": "app_command_init.cpp:188 (FN_STAR_NAMES); base_command_interface.hpp:457; app_command_interface.cpp:1052-1065 -> src/coreModule/coreLink.hpp:182,186,134 -> src/coreModule/coreLink.cpp:679-692,963-969",
+          "notes": "One name drives three separate states (hip_stars, starNav, tully). On a toggle the case recomputes newval twice (app_command_interface.cpp:1056-1063), so the value reported back and recorded into the script is the negation of TULLY's name state, not of the star names. readFlag reports only the primary (app_command_interface.cpp:642-644, contract at 464-467)."
+        },
+        {
+          "name": "star_pick",
+          "doc": "Show star names only for the stars you have selected, instead of for every named star.",
+          "source": "app_command_init.cpp:189 (FN_STAR_PICK); base_command_interface.hpp:458; app_command_interface.cpp:1067-1069 -> src/coreModule/coreLink.hpp:441-442 -> src/starModule/hip_star_mgr.hpp:282-290, hip_star_mgr.cpp:828-834 -> src/starModule/zone_array.cpp:296-320,385"
+        },
+        {
+          "name": "dso_pick",
+          "doc": "Show the name and the marker only for the deep-sky objects you have selected.",
+          "source": "app_command_init.cpp:190 (FN_DSO_PICK); base_command_interface.hpp:459; app_command_interface.cpp:1072-1074 -> src/coreModule/coreLink.hpp:769-770 -> src/coreModule/nebula_mgr.hpp:191-192 -> src/coreModule/nebula_mgr.cpp:199-224"
+        },
+        {
+          "name": "body_pick",
+          "doc": "Show the name only for the planet or moon you have selected, instead of for every body.",
+          "source": "app_command_init.cpp:191 (FN_BODY_PICK); base_command_interface.hpp:460; app_command_interface.cpp:1077-1079 -> src/coreModule/coreLink.hpp:668-669 -> src/bodyModule/ssystem_factory.hpp:436 -> src/bodyModule/solarsystem_selected.cpp:81-92",
+          "notes": "Suspected bug at src/bodyModule/solarsystem_selected.cpp:85-89 (and the same shape at 98-102): the selected body's hint is set true, then the loop over ALL bodies of the system sets every hint false - including the selected one. So turning body_pick on while something is already selected clears its label too; the label only comes back on the next selection (solarsystem_selected.cpp:50-51)."
+        },
+        {
+          "name": "atmospheric_refraction",
+          "doc": "Bend the star positions near the horizon the way real air does; only acts while the air is being drawn.",
+          "source": "app_command_init.cpp:192 (FN_ATMOSPHERIC_REFRACTION); base_command_interface.hpp:461; app_command_interface.cpp:1232-1234 -> src/coreModule/coreLink.hpp:1052-1053 -> src/coreModule/coreLink.cpp:480-482 -> src/executorModule/stellarSystemModule.cpp:285, solarSystemModule.cpp:298",
+          "notes": "Gated by the atmosphere: the draw sites pass `atmosphere->getFlagShow() && FlagAtmosphericRefraction`, so with `flag atmosphere off` this does nothing."
+        },
+        {
+          "name": "planets",
+          "doc": "Show the planets, moons and other bodies of the solar system.",
+          "source": "app_command_init.cpp:193 (FN_PLANETS); base_command_interface.hpp:462; app_command_interface.cpp:1082-1084 -> src/coreModule/coreLink.hpp:553-554 -> src/coreModule/coreLink.cpp:1377-1379 (ssystemFactory->setFlagPlanets)"
+        },
+        {
+          "name": "planet_names",
+          "doc": "Show the name beside each planet and moon; it also switches the bodies back on if they were hidden.",
+          "source": "app_command_init.cpp:194 (FN_PLANET_NAMES); base_command_interface.hpp:463; app_command_interface.cpp:1087-1090 -> src/coreModule/coreLink.hpp:579-580 -> src/coreModule/coreLink.cpp:1407-1409 -> src/bodyModule/ssystem_factory.hpp:431-434",
+          "notes": "The second line of the case (app_command_interface.cpp:1090) force-shows the planets whenever hints end up on - a comment there calls it 'for safety if script turns planets off'."
+        },
+        {
+          "name": "planet_orbits",
+          "doc": "Show the orbit paths of the planets and of the moons together.",
+          "source": "app_command_init.cpp:195 (FN_PLANET_ORBITS); base_command_interface.hpp:464; app_command_interface.cpp:1093-1096 -> src/coreModule/coreLink.hpp:585-586,602-603 -> src/coreModule/coreLink.cpp:1415-1417,1441-1443",
+          "notes": "Exact synonym of `orbits`: the two cases (app_command_interface.cpp:1093-1097 and 1104-1108) are identical, and so are their read halves (readFlag lines 660-662 and 666-668)."
+        },
+        {
+          "name": "orbits",
+          "doc": "Show the orbit paths of the planets and of the moons together - the same thing as planet_orbits.",
+          "source": "app_command_init.cpp:196 (FN_ORBITS); base_command_interface.hpp:465; app_command_interface.cpp:1104-1107 -> src/coreModule/coreLink.hpp:585-586,602-603 -> src/coreModule/coreLink.cpp:1415-1417,1441-1443",
+          "notes": "Exact synonym of `planet_orbits` (identical setFlag case and identical readFlag)."
+        },
+        {
+          "name": "planets_orbits",
+          "doc": "Show the orbit paths of the planets only, leaving the moons' orbits as they were.",
+          "source": "app_command_init.cpp:197 (FN_PLANETS_ORBITS); base_command_interface.hpp:466; app_command_interface.cpp:1110-1112 -> src/coreModule/coreLink.hpp:585-586 -> src/coreModule/coreLink.cpp:1415-1417 -> src/bodyModule/ssystem_factory.hpp:440-443",
+          "notes": "Not a synonym of `planet_orbits`/`orbits`, despite the near-identical spelling: this one does not touch the moons."
+        },
+        {
+          "name": "planets_axis",
+          "doc": "Show the line of the rotation axis drawn through each planet and moon.",
+          "source": "app_command_init.cpp:198 (FN_PLANETS_AXIS); base_command_interface.hpp:467; app_command_interface.cpp:1099-1101 -> src/coreModule/coreLink.hpp:565-566 -> src/coreModule/coreLink.cpp:1393-1398"
+        },
+        {
+          "name": "satellites_orbits",
+          "doc": "Show the orbit paths of the moons only, leaving the planets' orbits as they were.",
+          "source": "app_command_init.cpp:199 (FN_SATELLITES_ORBITS); base_command_interface.hpp:468; app_command_interface.cpp:1115-1117 -> src/coreModule/coreLink.hpp:602-603 -> src/coreModule/coreLink.cpp:1441-1443"
+        },
+        {
+          "name": "nebulae",
+          "doc": "Show the deep-sky objects, both the pictures on the sky and the point cloud you see out in the galaxy.",
+          "source": "app_command_init.cpp:200 (FN_NEBULAE); base_command_interface.hpp:469; app_command_interface.cpp:1120-1122 -> src/coreModule/coreLink.hpp:743-744 -> src/coreModule/coreLink.cpp:858-861 (nebulas->setFlagShow and dso3d->setFlagShow)"
+        },
+        {
+          "name": "nebula_names",
+          "doc": "Show the names of the deep-sky objects, on the sky and in the 3D galaxy view.",
+          "source": "app_command_init.cpp:201 (FN_NEBULA_NAMES); base_command_interface.hpp:470; app_command_interface.cpp:1135-1143 -> src/coreModule/coreLink.hpp:763-764,775-776 -> src/coreModule/coreLink.cpp:918-920,867-869",
+          "notes": "Two states from one name (nebulas, dso3d). Line 1137 calls nebulaSetFlagNames(true) and line 1138 immediately calls it again with newval - the first call is dead. On a toggle, newval is recomputed from dso3d at line 1141, so the value reported back and recorded is dso3d's, not the primary's."
+        },
+        {
+          "name": "nebula_hints",
+          "doc": "Show the small markers that stand in for the deep-sky objects too small to show as a picture.",
+          "source": "app_command_init.cpp:202 (FN_NEBULA_HINTS); base_command_interface.hpp:471; app_command_interface.cpp:1125-1127 -> src/coreModule/coreLink.hpp:747-748 -> src/coreModule/coreLink.cpp:881-883 -> src/coreModule/nebula_mgr.cpp:190,210-224"
+        },
+        {
+          "name": "milky_way",
+          "doc": "Show the picture of the Milky Way spread across the whole sky.",
+          "source": "app_command_init.cpp:203 (FN_MILKY_WAY); base_command_interface.hpp:472; app_command_interface.cpp:1146-1148 -> src/coreModule/coreLink.hpp:713-714 -> src/coreModule/coreLink.cpp:201-203 -> src/coreModule/milkyway.hpp:122-123"
+        },
+        {
+          "name": "bright_nebulae",
+          "doc": "Keep deep-sky pictures bright in a dark sky instead of dimming them to their true faintness.",
+          "source": "app_command_init.cpp:204 (FN_BRIGHT_NEBULAE); base_command_interface.hpp:473; app_command_interface.cpp:1156-1158 -> src/coreModule/coreLink.hpp:751-752 -> src/coreModule/nebula_mgr.hpp:155-158 -> src/coreModule/nebula.cpp:350-379"
+        },
+        {
+          "name": "object_trails",
+          "doc": "Leave a trail behind each body as it moves, so you can see the shape of its motion.",
+          "source": "app_command_init.cpp:205 (FN_OBJECT_TRAILS); base_command_interface.hpp:474; app_command_interface.cpp:1161-1163 -> src/coreModule/coreLink.hpp:559-560 -> src/coreModule/coreLink.cpp:1385-1391 -> src/bodyModule/solarsystem_selected.cpp:62-79",
+          "notes": "With a body selected, only that body's and its parent's trails are kept (solarsystem_selected.cpp:70-78)."
+        },
+        {
+          "name": "track_object",
+          "doc": "Keep the view locked onto the object you have selected as time runs on.",
+          "source": "app_command_init.cpp:206 (FN_TRACK_OBJECT); base_command_interface.hpp:475; app_command_interface.cpp:1166-1168 -> src/coreModule/core.hpp:217-218 -> src/coreModule/core.cpp:2484-2498"
+        },
+        {
+          "name": "script_gui_debug",
+          "doc": "Print every log message to the terminal as it happens, each one stamped with the time.",
+          "source": "app_command_init.cpp:207 (FN_SCRIPT_GUI_DEBUG); base_command_interface.hpp:476; app_command_interface.cpp:1171-1173 -> src/tools/log.hpp:99-105 -> src/tools/log.cpp:117-127",
+          "notes": "The spelling suggests something about the on-screen interface, but the only effect is cLog::isDebug, i.e. echoing the log to the console (log.cpp:122-127)."
+        },
+        {
+          "name": "lock_sky_position",
+          "doc": "Hold the view on the same patch of sky, so the ground turns underneath it instead.",
+          "source": "app_command_init.cpp:208 (FN_LOCK_SKY_POSITION); base_command_interface.hpp:477; app_command_interface.cpp:1176-1178 -> src/coreModule/core.hpp:224-226 -> src/coreModule/core.cpp:921-926"
+        },
+        {
+          "name": "body_trace",
+          "doc": "Draw a pen line following the chosen body across the sky; switching it off erases the line drawn so far.",
+          "source": "app_command_init.cpp:209 (FN_BODY_TRACE); base_command_interface.hpp:478; app_command_interface.cpp:1200-1202 -> src/coreModule/coreLink.hpp:250-251 -> src/coreModule/coreLink.cpp:1099-1101 -> src/bodyModule/ssystem_factory.hpp:846-848 -> src/bodyModule/body_trace.hpp:86-90",
+          "notes": "Off is destructive, not just hiding: setFlagShow(false) calls clear() (body_trace.hpp:86-90)."
+        },
+        {
+          "name": "show_latlon",
+          "doc": "Add your latitude and longitude - and, when high up, altitude and speed - to the date-and-time readout.",
+          "source": "app_command_init.cpp:210 (FN_SHOW_LATLON); base_command_interface.hpp:479; app_command_interface.cpp:1181-1182 -> src/uiModule/ui.cpp:379-381 -> src/uiModule/ui_tuiconf.cpp:72-93",
+          "notes": "Does nothing on its own: the whole block is inside `if (FlagShowTuiDateTime)` (ui_tuiconf.cpp:56), so `flag show_tui_datetime on` is needed first. The altitude and speed part only appears above 1000 units of altitude (ui_tuiconf.cpp:75)."
+        },
+        {
+          "name": "color_inverse",
+          "doc": "Turn every colour on the screen into its opposite, which gives a white sky with black stars.",
+          "source": "app_command_init.cpp:211 (FN_COLOR_INVERSE); base_command_interface.hpp:480; app_command_interface.cpp:1205-1206 -> src/appModule/app.cpp:542-543 -> src/appModule/app.cpp:897-898 (appDraw->drawColorInverse), app.hpp:169"
+        },
+        {
+          "name": "oort",
+          "doc": "Show the Oort cloud, the shell of icy bodies lying far out beyond the planets.",
+          "source": "app_command_init.cpp:212 (FN_OORT); base_command_interface.hpp:482; app_command_interface.cpp:1185-1187 -> src/coreModule/coreLink.hpp:785 -> src/coreModule/coreLink.cpp:189-196 (oort->setFlagShow and OortModule::show)"
+        },
+        {
+          "name": "stars_trace",
+          "doc": "Keep each frame's stars on screen instead of wiping them, so moving stars smear into trails.",
+          "source": "app_command_init.cpp:213 (FN_STARS_TRACE); base_command_interface.hpp:483; app_command_interface.cpp:1213-1215 -> src/coreModule/coreLink.hpp:172 -> src/coreModule/coreLink.cpp:659-661 -> src/starModule/hip_star_mgr.hpp:310-317, hip_star_mgr.cpp:846,881-892"
+        },
+        {
+          "name": "star_lines",
+          "doc": "Show the custom star-to-star figures loaded from your own asterism file.",
+          "source": "app_command_init.cpp:214 (FN_STAR_LINES); base_command_interface.hpp:484; app_command_interface.cpp:1218-1220 -> src/coreModule/coreLink.hpp:42-43 -> src/coreModule/coreLink.cpp:333-335 -> src/coreModule/starLines.hpp:39-43,54-57, starLines.cpp:344-370"
+        },
+        {
+          "name": "star_lines_selected",
+          "doc": "Stores a value, but nothing in the drawing reads it, so the picture does not change.",
+          "source": "app_command_init.cpp:215 (FN_STAR_LINES_SELECTED); base_command_interface.hpp:485; app_command_interface.cpp:1223-1225 -> src/coreModule/coreLink.hpp:45 -> src/coreModule/coreLink.cpp:337-343 -> src/coreModule/starLines.hpp:59-66,166",
+          "notes": "Suspected dead flag: StarLines::selectedFader appears at exactly three places in the tree (starLines.hpp:60, 65, 166) - written by the setter, read by the getter, declared. No draw path consults it and it is never even updated, so the flag has no visible effect."
+        },
+        {
+          "name": "dso_pictograms",
+          "doc": "Mark each deep-sky object with a symbol for its kind instead of one plain circle for all of them.",
+          "source": "app_command_init.cpp:216 (FN_DSO_PICTOGRAMS); base_command_interface.hpp:487; app_command_interface.cpp:1130-1132 -> src/coreModule/core.hpp:520-521 -> src/coreModule/core.cpp:668-670 -> src/coreModule/nebula_mgr.hpp:119-122, nebula.cpp:381-406"
+        },
+        {
+          "name": "zodiacal_light",
+          "doc": "Show the zodiacal light, the faint glow lying along the Sun's path through the sky.",
+          "source": "app_command_init.cpp:217 (FN_ZODIAC_LIGHT); base_command_interface.hpp:488; app_command_interface.cpp:1151-1153 -> src/coreModule/coreLink.hpp:717-718 -> src/coreModule/coreLink.cpp:209-215 -> src/coreModule/milkyway.hpp:46-53,152-153"
+        },
+        {
+          "name": "tully",
+          "doc": "Show the Tully catalogue of galaxies as a cloud of points around our own.",
+          "source": "app_command_init.cpp:218 (FN_TULLY); base_command_interface.hpp:489; app_command_interface.cpp:1190-1192 -> src/coreModule/coreLink.hpp:124 -> src/coreModule/coreLink.cpp:946-948 -> src/coreModule/tully.hpp:40,79-87"
+        },
+        {
+          "name": "tully_color_mode",
+          "doc": "Draw every Tully galaxy plain white instead of in the colour its catalogue gives it.",
+          "source": "app_command_init.cpp:219 (FN_TULLY_COLOR_MODE); base_command_interface.hpp:491; app_command_interface.cpp:1195-1197 -> src/coreModule/coreLink.hpp:128 -> src/coreModule/coreLink.cpp:954-957 -> src/coreModule/tully.hpp:99-105, tully.cpp:93-94,553-556 -> shaders/src/tully.vert:7,25"
+        },
+        {
+          "name": "satellites",
+          "doc": "Show the moons that go round the planets; off hides every one of them at once.",
+          "source": "app_command_init.cpp:220 (FN_SATELLITES); base_command_interface.hpp:490; app_command_interface.cpp:1228-1230 -> src/coreModule/coreLink.hpp:627 -> src/coreModule/coreLink.cpp:1483-1485 -> src/bodyModule/ssystem_factory.hpp:562-564 -> src/bodyModule/protosystem.cpp:259-278",
+          "notes": "Name/call mismatch worth knowing: the case calls setHideSatellites with the SHOW value, and ProtoSystem::toggleHideSatellites inverts its argument on the first line (protosystem.cpp:261), so `flag satellites on` really does show them. The read half negates the stored bit back (app_command_interface.cpp:738-747) and carries a comment about the toggle defect that used to follow from not doing so."
+        },
+        {
+          "name": "quaternion_mode",
+          "doc": "Steer the observer by free rotation rather than by latitude and longitude.",
+          "source": "app_command_init.cpp:221 (FN_QUATERNION_MODE); base_command_interface.hpp:492; app_command_interface.cpp:1236-1237 -> src/coreModule/coreLink.hpp:992-994 -> src/navModule/observer.hpp:190-196 -> src/navModule/observer.cpp:394-423"
+        },
+        {
+          "name": "eye_relative_mode",
+          "doc": "Make up-and-down moves go forwards along your line of sight; time is held still while it is on.",
+          "source": "app_command_init.cpp:222 (FN_EYE_RELATIVE_MODE); base_command_interface.hpp:493; app_command_interface.cpp:1239-1241 -> src/coreModule/coreLink.hpp:1000-1007 -> src/navModule/observer.hpp:198-204 -> src/navModule/observer.cpp:425-443",
+          "notes": "Entering the mode calls timeLock() and leaving it calls timeUnlock() (observer.cpp:432,436)."
+        },
+        {
+          "name": "subtitle",
+          "doc": "Draw your on-screen text over the top of a playing video instead of underneath it.",
+          "source": "app_command_init.cpp:223 (FN_SUBTITLE); base_command_interface.hpp:481; app_command_interface.cpp:1209-1210 -> src/appModule/app.cpp:550-551 -> src/appModule/app.cpp:900-914, app.hpp:170"
+        },
+        {
+          "name": "experimental_shadows",
+          "doc": "Let the bodies cast shadows on one another and on their own relief, as they do in an eclipse.",
+          "source": "app_command_init.cpp:224 (FN_EXPERIMENTAL_SHADOWS); base_command_interface.hpp:494; app_command_interface.cpp:1254-1263 -> src/tools/context.hpp:199-200 + src/experimentalModule/ShadowService.hpp:110-121 -> src/experimentalModule/ModularSystem.cpp:305-335, src/bodyModule/protosystem.cpp:1028",
+          "notes": "The case comment (app_command_interface.cpp:1255-1259) records that the old XOR-against-default behaviour was a defect and is deliberately not reproduced."
+        },
+        {
+          "name": "experimental_path",
+          "doc": "Draw the planets with the new rendering engine; turn it off to fall back to the old drawing.",
+          "source": "app_command_init.cpp:225 (FN_EXPERIMENTAL_PATH); base_command_interface.hpp:495; app_command_interface.cpp:1248-1251 -> src/coreModule/core.hpp:510-512 -> src/coreModule/core.cpp:960-963 (ssystemFactory->setExperimentalPath)"
+        },
+        {
+          "name": "skip_pause",
+          "doc": "Make a script run straight through its own pause commands instead of stopping at them.",
+          "source": "app_command_init.cpp:226 (FN_SKIP_PAUSE); base_command_interface.hpp:496; app_command_interface.cpp:1242-1243 -> src/scriptModule/script_interface.cpp:54-56 -> src/scriptModule/script_mgr.hpp:162-168,211 -> app_command_interface.cpp:2954-2958",
+          "notes": "With it on, `script action pause` falls through to the resume branch (app_command_interface.cpp:2954-2958)."
+        },
+        {
+          "name": "image_compression_loss",
+          "doc": "Save screenshots and recorded frames as JPEG rather than PNG: smaller files, a little quality lost.",
+          "source": "app_command_init.cpp:227 (FN_IMAGE_COMPRESSION_LOSS); base_command_interface.hpp:497; app_command_interface.cpp:1245-1246 -> src/appModule/save_screen_interface.hpp:84-90 -> src/appModule/save_screen_interface.cpp:121-124,354-357,371-376"
+        },
+        {
+          "name": "lunar_eclipse_umbra",
+          "doc": "Show the circle of the Earth's deep shadow at the Moon's distance, where a total eclipse happens.",
+          "source": "app_command_init.cpp:228 (FN_LUNAR_ECLIPSE_UMBRA); base_command_interface.hpp:498; app_command_interface.cpp:970-971 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.hpp:388-403 -> src/coreModule/skyline.cpp:1696-1820 (umbra radius, lines 1761-1766)"
+        },
+        {
+          "name": "lunar_eclipse_penumbra",
+          "doc": "Show the wider circle of the Earth's partial shadow at the Moon's distance, where the Moon just dims.",
+          "source": "app_command_init.cpp:229 (FN_LUNAR_ECLIPSE_PENUMBRA); base_command_interface.hpp:499; app_command_interface.cpp:974-975 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.hpp:388-403 -> src/coreModule/skyline.cpp:1696-1820 (penumbra radius, lines 1767-1773)"
+        }
       ],
       "orphaned": {
         "sky_draw": "spelled in base_command_interface.hpp:477 but NEVER registered in m_flags and NOT on the obsolete list -- 'flag sky_draw on' takes the unknown-name path (B38, census S3.8)"
-      }
+      },
+      "_doc_source": "one sentence per flag traced app_command_init registration -> FLAG_NAMES -> setFlag switch case -> coreLink/module, doxygen where present"
     },
     "set_names": {
       "_source": "app_command_init.cpp:280-335 x base_command_interface.hpp:542-585 (tully_color_mode commented out on both sides)",
@@ -7522,56 +8375,280 @@
     },
     "color_names": {
       "_source": "app_command_init.cpp:221-278 x base_command_interface.hpp:494-539",
-      "_schema_note": "STILL v1 SHAPE (array of names), on purpose: the 46-colour doc pass has not run either. The sweep extracted the `color` COMMAND's own argument keys (property / value / r / g / b / index, unit 1) but not a doc line per colour name; 46 null docs would be invention (C2). Shape changes when the doc pass fills content.",
+      "_schema_note": "D7 v2 SHAPE since 2026-08-31 (F71 item 3): one object per colour name, `doc` + `source` traced app_command_init.cpp registration -> COLORCOMMAND_NAMES -> the applyColor switch case -> the module that owns what is being coloured. The `color` COMMAND's own argument keys (property / value / r / g / b / index) stay on the command entry; this family documents the NAMES only. All 46 have a live applyColor case.",
       "names": [
-        "constellation_lines",
-        "constellation_lines3d",
-        "constellation_names",
-        "constellation_art",
-        "constellation_boundaries",
-        "cardinal_points",
-        "planet_orbits",
-        "planet_names",
-        "planet_trails",
-        "azimuthal_grid",
-        "equator_grid",
-        "ecliptic_grid",
-        "galactic_grid",
-        "equator_line",
-        "galactic_line",
-        "ecliptic_line",
-        "meridian_line",
-        "zenith_line",
-        "polar_point",
-        "polar_circle",
-        "ecliptic_center",
-        "galactic_pole",
-        "galactic_center",
-        "vernal_points",
-        "analemma",
-        "analemma_line",
-        "greenwich_line",
-        "aries_line",
-        "zodiac",
-        "personal",
-        "personeq",
-        "nautical_alt",
-        "nautical_ra",
-        "object_coordinates",
-        "mouse_coordinates",
-        "angular_distance",
-        "loxodromy",
-        "orthodromy",
-        "vertical_line",
-        "nebula_names",
-        "nebula_circle",
-        "precession_circle",
-        "text_usr_color",
-        "star_table",
-        "lunar_eclipse_umbra",
-        "lunar_eclipse_penumbra"
+        {
+          "name": "constellation_lines",
+          "doc": "The colour of the stick-figure lines that join the stars of every constellation.",
+          "source": "registration app_command_init.cpp:243, spelling base_command_interface.hpp:503, case app_command_interface.cpp:1790 -> coreLink.cpp:1059-1061 -> ConstellationMgr::setLineColor constellation_mgr.cpp:143-150 (loops over every asterism)"
+        },
+        {
+          "name": "constellation_lines3d",
+          "doc": "The colour of the hand-made star figures that keep their shape as you fly out among the stars.",
+          "source": "registration app_command_init.cpp:244, spelling base_command_interface.hpp:504, case app_command_interface.cpp:1791 -> coreLink.cpp:1063-1065 -> StarLines::setColor starLines.hpp:74-76",
+          "notes": "Different module from the other four constellation_* colours: this is StarLines ('a custom asterism from an uploaded HIP star catalog', starLines.hpp:39-43), the drawing switched on by the star_lines flag, not the flat constellation figures."
+        },
+        {
+          "name": "constellation_names",
+          "doc": "The colour of the constellation names written across the sky.",
+          "source": "registration app_command_init.cpp:245, spelling base_command_interface.hpp:505, case app_command_interface.cpp:1792 -> coreLink.cpp:1071-1073 -> ConstellationMgr::setLabelColor constellation_mgr.cpp:165-172 -> printed by Constellation::drawName constellation.cpp:150-161",
+          "notes": "Sets every constellation at once; ConstellationMgr also has a one-named-constellation form (constellation_mgr.cpp:174-185) reached from the `constellation` command, not from `color`."
+        },
+        {
+          "name": "constellation_art",
+          "doc": "The colour tint laid over the constellation artwork pictures.",
+          "source": "registration app_command_init.cpp:246, spelling base_command_interface.hpp:506, case app_command_interface.cpp:1793 -> coreLink.cpp:1083-1085 -> ConstellationMgr::setArtColor constellation_mgr.cpp:187-190; the value is pushed to the shader as push.color at constellation_mgr.cpp:411",
+          "notes": "One colour for all the artwork at once - unlike the per-constellation art intensity."
+        },
+        {
+          "name": "constellation_boundaries",
+          "doc": "The colour of the lines marking the official borders between constellations.",
+          "source": "registration app_command_init.cpp:247, spelling base_command_interface.hpp:507, case app_command_interface.cpp:1794 -> coreLink.cpp:1087-1089 -> ConstellationMgr::setBoundaryColor constellation_mgr.cpp:1015-1019 (writes the shared shader uniform *uColor)"
+        },
+        {
+          "name": "cardinal_points",
+          "doc": "The colour of the N, S, E and W letters set around the horizon.",
+          "source": "registration app_command_init.cpp:248, spelling base_command_interface.hpp:508, case app_command_interface.cpp:1795 -> coreLink.cpp:283-285 -> Cardinals::draw cardinals.cpp:73 (colour) and cardinals.cpp:82-94 (the four letters)",
+          "notes": "In navigation and astronomical modes the same colour also carries the in-between markings drawn at cardinals.cpp:95-118."
+        },
+        {
+          "name": "planet_orbits",
+          "doc": "The orbit-line colour given to planets and moons loaded from now on that carry no colour of their own.",
+          "source": "registration app_command_init.cpp:249, spelling base_command_interface.hpp:509, case app_command_interface.cpp:1796 -> coreLink.cpp:1471-1473 -> SolarSystemColor::setDefaultBodyColor solarsystem_color.cpp:60-62 -> BodyColor::setDefault body_color.cpp:82-99 (writes the static defaultOrbit)",
+          "notes": "IMPORTANT and easy to get wrong: this writes a STATIC DEFAULT, not the colour of anything already on screen. A body copies defaultOrbit into its own initialOrbit only in the BodyColor constructor (body_color.cpp:26-29, 36), and drawing reads the body's own value (orbit_2d.cpp:54, orbit_3d.cpp:46). BodyColor::reset is called from nowhere but that constructor. So setting this mid-script changes nothing you can see until a body is loaded afterwards. To recolour a body that is already there, use the `body` command's per-body colour (solarsystem_color.cpp:35-45)."
+        },
+        {
+          "name": "planet_names",
+          "doc": "The label colour given to planets and moons loaded from now on that carry no colour of their own.",
+          "source": "registration app_command_init.cpp:250, spelling base_command_interface.hpp:510, case app_command_interface.cpp:1797 -> coreLink.cpp:1471-1473 -> solarsystem_color.cpp:60-62 -> BodyColor::setDefault body_color.cpp:89-91 (defaultLabel); the label is drawn from the body's own value at hints.cpp:75",
+          "notes": "Same default-only behaviour as planet_orbits - see that entry."
+        },
+        {
+          "name": "planet_trails",
+          "doc": "The trail colour given to planets and moons loaded from now on that carry no colour of their own.",
+          "source": "registration app_command_init.cpp:251, spelling base_command_interface.hpp:511, case app_command_interface.cpp:1798 -> coreLink.cpp:1471-1473 -> solarsystem_color.cpp:60-62 -> BodyColor::setDefault body_color.cpp:93-95 (defaultTrail); the trail is drawn from the body's own value at trail.cpp:106",
+          "notes": "Same default-only behaviour as planet_orbits - see that entry."
+        },
+        {
+          "name": "azimuthal_grid",
+          "doc": "The colour of the horizon grid and of the degree figures printed along it.",
+          "source": "registration app_command_init.cpp:252, spelling base_command_interface.hpp:512, case app_command_interface.cpp:1799 -> coreLink.cpp:146-148 -> SkyGridMgr::setColor skygrid_mgr.cpp:124 -> SkyGrid::setColor skygrid.hpp:58-60; the lines take it at skygrid.cpp:227 and the figures at skygrid.cpp:252 with the azimuth text built at skygrid.cpp:281 and the altitude text at skygrid.cpp:305",
+          "notes": "The grid of altitude and azimuth circles, fixed to the horizon (GridAltAzimutal, skygrid_mgr.cpp:199)."
+        },
+        {
+          "name": "equator_grid",
+          "doc": "The colour of the equatorial grid, of its hour and degree figures, and of the meridians drawn on the ground.",
+          "source": "registration app_command_init.cpp:253, spelling base_command_interface.hpp:513, case app_command_interface.cpp:1800 -> coreLink.cpp:146-148 -> skygrid_mgr.cpp:124 (GridEquatorial, skygrid_mgr.cpp:192); lines skygrid.cpp:227, figures skygrid.cpp:252 with the right-ascension text at skygrid.cpp:279",
+          "notes": "The only colour besides equator_line that carries a second write: applyColor also calls coreLink->planetsSyncGridColor() on the same line (app_command_interface.cpp:1800 -> coreLink.cpp:1401-1405 -> ssystem_factory.hpp:417-419), which hands this colour to the meridians of the grid painted on the surface of the body you are standing on. The old drawing path reads the same colour straight back each frame at body.cpp:1261."
+        },
+        {
+          "name": "ecliptic_grid",
+          "doc": "The colour of the grid built around the Sun's yearly path, and of the degree figures along it.",
+          "source": "registration app_command_init.cpp:254, spelling base_command_interface.hpp:514, case app_command_interface.cpp:1801 -> coreLink.cpp:146-148 -> skygrid_mgr.cpp:124 (GridEcliptic, skygrid_mgr.cpp:206); lines skygrid.cpp:227, figures skygrid.cpp:252 and :283"
+        },
+        {
+          "name": "galactic_grid",
+          "doc": "The colour of the grid built around the plane of the Milky Way, and of the degree figures along it.",
+          "source": "registration app_command_init.cpp:255, spelling base_command_interface.hpp:515, case app_command_interface.cpp:1802 -> coreLink.cpp:146-148 -> skygrid_mgr.cpp:124 (GridGalactic, skygrid_mgr.cpp:213); lines skygrid.cpp:227, figures skygrid.cpp:252 and :283"
+        },
+        {
+          "name": "equator_line",
+          "doc": "The colour of the celestial equator, its hour marks, and the equator drawn on the ground beneath you.",
+          "source": "registration app_command_init.cpp:256, spelling base_command_interface.hpp:516, case app_command_interface.cpp:1803 -> coreLink.cpp:142-144 -> SkyLineMgr::setColor skyline_mgr.cpp:144-154 -> SkyLine_Equator, built at skyline_mgr.cpp:366 and skyline.cpp:887-913, drawn skyline.cpp:921-1069 with the hour labels at skyline.cpp:1012-1034 and :1058-1061",
+          "notes": "Like equator_grid this line also calls coreLink->planetsSyncGridColor() (app_command_interface.cpp:1803 -> coreLink.cpp:1401-1405), which gives the same colour to the equator of the grid painted on the body under your feet (body.cpp:1262). In navigation and astronomical modes the same object also draws a second circle 70 degrees up (skyline.cpp:936-986)."
+        },
+        {
+          "name": "galactic_line",
+          "doc": "The colour of the line running down the middle of the Milky Way, and of its degree figures.",
+          "source": "registration app_command_init.cpp:257, spelling base_command_interface.hpp:517, case app_command_interface.cpp:1804 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Equator in galactic mode, built skyline_mgr.cpp:372, projection chosen at skyline.cpp:896-898, labels skyline.cpp:1030-1031 and :1061"
+        },
+        {
+          "name": "ecliptic_line",
+          "doc": "The colour of the Sun's yearly path, with its day-by-day ticks and its month names.",
+          "source": "registration app_command_init.cpp:258, spelling base_command_interface.hpp:518, case app_command_interface.cpp:1805 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Ecliptic built at skyline_mgr.cpp:422, drawn skyline.cpp:1235-1355, month names translated at skyline.cpp:144-160 and printed at skyline.cpp:1336-1345",
+          "notes": "The ticks and month names appear only while the observer is on Earth (skyline.cpp:1248)."
+        },
+        {
+          "name": "meridian_line",
+          "doc": "The colour of the circle that runs from due north up over your head and down to due south.",
+          "source": "registration app_command_init.cpp:259, spelling base_command_interface.hpp:519, case app_command_interface.cpp:1806 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Meridian built at skyline_mgr.cpp:378 and skyline.cpp:727-742, drawn skyline.cpp:750-881 with the altitude figures at skyline.cpp:841-875",
+          "notes": "The full circle, so it continues below the horizon through the point underfoot. In navigation and astronomical modes the same object also draws a ring 70 degrees up (skyline.cpp:759-817)."
+        },
+        {
+          "name": "zenith_line",
+          "doc": "The colour of the small ringed cross marking the point straight overhead, and its twin underfoot.",
+          "source": "registration app_command_init.cpp:260, spelling base_command_interface.hpp:520, case app_command_interface.cpp:1807 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Zenith built at skyline_mgr.cpp:408, drawn skyline.cpp:1564-1681: two small rings of about 1.3 degrees radius with crossing diameters (skyline.cpp:1573-1609, :1636-1651)",
+          "notes": "It carries two one-letter labels, 'Z' overhead (skyline.cpp:1627, printed :1633) and 'N' underfoot (skyline.cpp:1669, printed :1675); the 'N' means nadir, not north."
+        },
+        {
+          "name": "polar_point",
+          "doc": "The colour of the tiny rings that mark the north and south poles of the sky.",
+          "source": "registration app_command_init.cpp:261, spelling base_command_interface.hpp:521, case app_command_interface.cpp:1808 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Pole(POINT_POLE, 89, 72) built at skyline_mgr.cpp:301, drawn skyline.cpp:195-234 as circles at declination +89 and -89",
+          "notes": "The 'point' is really a ring about one degree across, and there are two of them. No text."
+        },
+        {
+          "name": "polar_circle",
+          "doc": "The colour of the two polar circles, and of the polar circles drawn on the ground beneath you.",
+          "source": "registration app_command_init.cpp:262, spelling base_command_interface.hpp:522, case app_command_interface.cpp:1809 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Pole(CIRCLE_POLE, 66.5, 72) built at skyline_mgr.cpp:294, drawn skyline.cpp:195-234 as circles at declination +66.5 and -66.5",
+          "notes": "Same class as polar_point; only the 89-versus-66.5 argument differs. The ground grid of the body you stand on reads this same colour back for its own polar circles (body.cpp:1264). Hidden above 10 km altitude when that ground grid is on (skyline.cpp:199-203). No text."
+        },
+        {
+          "name": "ecliptic_center",
+          "doc": "The colour of the tiny rings that mark the two poles of the Sun's yearly path.",
+          "source": "registration app_command_init.cpp:263, spelling base_command_interface.hpp:523, case app_command_interface.cpp:1810 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Pole(ECLIPTIC_POLE, 89, 72) built at skyline_mgr.cpp:308, ecliptic projection chosen at skyline.cpp:180-182, drawn skyline.cpp:195-234",
+          "notes": "NAME DOES NOT MATCH THE DRAWING. The script spelling says 'center'; the geometry is the two ecliptic POLES (the enumerator is LINE_ECLIPTIC_POLE, core_common.hpp:4-27). Nothing is drawn at any 'centre'. Kept as spelt because the installed field depends on it. No text."
+        },
+        {
+          "name": "galactic_pole",
+          "doc": "The colour of the tiny rings that mark the north and south poles of the Milky Way.",
+          "source": "registration app_command_init.cpp:264, spelling base_command_interface.hpp:524, case app_command_interface.cpp:1811 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Pole(GALACTIC_POLE, 89, 72) built at skyline_mgr.cpp:315, galactic projection at skyline.cpp:183-185, drawn skyline.cpp:195-234",
+          "notes": "No text."
+        },
+        {
+          "name": "galactic_center",
+          "doc": "The colour of the small rings marking the centre of the Milky Way and the point right opposite it.",
+          "source": "registration app_command_init.cpp:265, spelling base_command_interface.hpp:525, case app_command_interface.cpp:1812 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Galactic_Center built at skyline_mgr.cpp:343 and skyline.cpp:509-515, drawn skyline.cpp:521-549 as two loops 180 degrees apart (the +j*M_PI term at skyline.cpp:535)",
+          "notes": "The name is singular but two markers are drawn. No text."
+        },
+        {
+          "name": "vernal_points",
+          "doc": "The colour of the small rings marking the two equinox points on the celestial equator.",
+          "source": "registration app_command_init.cpp:266, spelling base_command_interface.hpp:526, case app_command_interface.cpp:1813 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Vernal built at skyline_mgr.cpp:350 and skyline.cpp:554-560, drawn skyline.cpp:566-593",
+          "notes": "The maths is the same as galactic_center's (skyline.cpp:566-593 versus :521-549); only the projection differs (skyline.cpp:557). No text."
+        },
+        {
+          "name": "analemma",
+          "doc": "The colour of the figure-of-eight showing where the Sun stands at the same clock time all year.",
+          "source": "registration app_command_init.cpp:267, spelling base_command_interface.hpp:527, case app_command_interface.cpp:1814 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Analemme(ANALEMMA) built at skyline_mgr.cpp:322, 93-point table at skyline.cpp:421-458, drawn skyline.cpp:464-504 through the branch at skyline.cpp:482-486",
+          "notes": "Drawn in the frame that turns with the ground, anchored at the observer's own longitude, so it stays put over the landscape. Earth only (skyline.cpp:467). No text."
+        },
+        {
+          "name": "analemma_line",
+          "doc": "The colour of the second figure-of-eight, the one that turns with the date to follow today's Sun.",
+          "source": "registration app_command_init.cpp:268, spelling base_command_interface.hpp:528, case app_command_interface.cpp:1815 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Analemme(ANALEMMALINE) built at skyline_mgr.cpp:329, same 93-point table (skyline.cpp:421-458), drawn through the branch at skyline.cpp:477-481",
+          "notes": "Same class and same curve as analemma. Only the frame and the offset differ: this one is drawn against the stars with a date-driven rotation, analemma against the ground at your longitude. Despite the name it is not a straight line. No text."
+        },
+        {
+          "name": "greenwich_line",
+          "doc": "The colour of the circle standing for the Greenwich meridian projected on the sky, labelled GM.",
+          "source": "registration app_command_init.cpp:269, spelling base_command_interface.hpp:529, case app_command_interface.cpp:1816 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Greenwich built at skyline_mgr.cpp:357 and skyline.cpp:600-604, drawn skyline.cpp:610-660 with the literal 'GM' printed at skyline.cpp:654",
+          "notes": "Suspect: the circle is placed at fixed longitude -2 * observer longitude (skyline.cpp:623), so it sits on the true Greenwich meridian only when the observer is at longitude 0 or 180. Earth only (skyline.cpp:613)."
+        },
+        {
+          "name": "aries_line",
+          "doc": "The colour of the circle through both sky poles and the spring equinox point, labelled Aries.",
+          "source": "registration app_command_init.cpp:270, spelling base_command_interface.hpp:530, case app_command_interface.cpp:1817 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Aries built at skyline_mgr.cpp:364 and skyline.cpp:665-669, drawn skyline.cpp:675-722 with the literal 'Aries' printed at skyline.cpp:716",
+          "notes": "Not the same thing as vernal_points: this is the whole great circle at 0 hours, while vernal_points are two little rings sitting on the equator. The word 'Aries' is never translated. Earth only (skyline.cpp:678)."
+        },
+        {
+          "name": "zodiac",
+          "doc": "The colour of the ladder-shaped band along the Sun's path that is split into the twelve zodiac signs.",
+          "source": "registration app_command_init.cpp:271, spelling base_command_interface.hpp:531, case app_command_interface.cpp:1818 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Zodiac built at skyline_mgr.cpp:415 and skyline.cpp:239-256, drawn skyline.cpp:262-346: twelve cross-rungs at skyline.cpp:277-290 and two rails 16 degrees either side of the ecliptic at skyline.cpp:293-341",
+          "notes": "The sign names are printed in the same colour at skyline.cpp:318 and :324; they are hardcoded and untranslated (skyline.cpp:242-253), and skyline.cpp:318 appends a degree sign after the name, so the screen reads e.g. LEO followed by a degree symbol. Earth only (skyline.cpp:266)."
+        },
+        {
+          "name": "personal",
+          "doc": "The colour of your own drawing loaded onto the sky, the copy that stays fixed to the horizon.",
+          "source": "registration app_command_init.cpp:272, spelling base_command_interface.hpp:532, case app_command_interface.cpp:1821 -> coreLink.cpp:306-308 -> SkyDisplayMgr::setColor skydisplay_mgr.cpp:142 -> SkyPerson(AL) built at skydisplay_mgr.cpp:177, ctor skyDisplay.cpp:237, drawn by the base SkyDisplay::draw skyDisplay.cpp:220-228",
+          "notes": "The shape comes from the `personal` command (app_command_interface.cpp:1534-1561), which loads a point file (default personal.txt) or an inline list; the engine computes nothing. No text. This overlay and personeq are the only two of the nine still drawn once you leave the solar system view."
+        },
+        {
+          "name": "personeq",
+          "doc": "The colour of your own drawing loaded onto the sky, the copy that rides along with the stars.",
+          "source": "registration app_command_init.cpp:273, spelling base_command_interface.hpp:533, case app_command_interface.cpp:1822 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyPerson(EQ) built at skydisplay_mgr.cpp:184; frame chosen at skyDisplay.cpp:226",
+          "notes": "Same class as personal but a separate set of points, fed by the `personeq` command (app_command_interface.cpp:1683-1709, default personeq.txt). Loading one does not fill the other. No text."
+        },
+        {
+          "name": "nautical_alt",
+          "doc": "The colour of the graduated height scale drawn through the selected object, like a sextant arc.",
+          "source": "registration app_command_init.cpp:274, spelling base_command_interface.hpp:534, case app_command_interface.cpp:1823 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyNautic(AL) built at skydisplay_mgr.cpp:191, drawn skyDisplay.cpp:351-413, figures printed by SkyDisplay::draw_text skyDisplay.cpp:189-218",
+          "notes": "Runs from -90 to +90 degrees of altitude through the selected object's bearing, ticked every degree, numbered every ten. Needs a selected object."
+        },
+        {
+          "name": "nautical_ra",
+          "doc": "The colour of the graduated scale drawn along the selected object's hour circle among the stars.",
+          "source": "registration app_command_init.cpp:275, spelling base_command_interface.hpp:535, case app_command_interface.cpp:1824 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyNautic(EQ) built at skydisplay_mgr.cpp:197, same draw skyDisplay.cpp:351-413 with the alt-az branch at :367-375 skipped",
+          "notes": "Same scale as nautical_alt but in the star frame, so the figures read as declination. Needs a selected object."
+        },
+        {
+          "name": "object_coordinates",
+          "doc": "The colour of the four-line position readout printed beside the object you have selected.",
+          "source": "registration app_command_init.cpp:276, spelling base_command_interface.hpp:536, case app_command_interface.cpp:1825 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyCoords built at skydisplay_mgr.cpp:203, drawn skyDisplay.cpp:419-582",
+          "notes": "Text only, no lines: height, bearing, right ascension and declination, stacked in the sky next to the object rather than in a screen corner. Needs a selected object."
+        },
+        {
+          "name": "mouse_coordinates",
+          "doc": "The colour of the position readout that follows the mouse pointer around the sky.",
+          "source": "registration app_command_init.cpp:277, spelling base_command_interface.hpp:537, case app_command_interface.cpp:1826 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyMouse built at skydisplay_mgr.cpp:209, drawn skyDisplay.cpp:588-766, pointer read at skyDisplay.cpp:594-596",
+          "notes": "The same four lines as object_coordinates but for whatever the pointer is over. Text only, no lines."
+        },
+        {
+          "name": "angular_distance",
+          "doc": "The colour of the arc and figure giving the angle between the last two objects you selected.",
+          "source": "registration app_command_init.cpp:278, spelling base_command_interface.hpp:538, case app_command_interface.cpp:1827 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyAngDist built at skydisplay_mgr.cpp:215, arc skyDisplay.cpp:805-830, figure skyDisplay.cpp:834-870",
+          "notes": "The figure reads degrees and minutes above one degree, minutes and seconds below (skyDisplay.cpp:856-868). The arc itself is the same curve orthodromy draws, so switching both on stacks two curves and two labels."
+        },
+        {
+          "name": "loxodromy",
+          "doc": "The colour of the steady-bearing track between the last two selected objects, marked in nautical miles.",
+          "source": "registration app_command_init.cpp:279, spelling base_command_interface.hpp:539, case app_command_interface.cpp:1828 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyLoxodromy built at skydisplay_mgr.cpp:221, curve skyDisplay.cpp:910-919, figure skyDisplay.cpp:930-936",
+          "notes": "Drawn among the stars, unlike orthodromy which is drawn against the horizon; nothing at all is drawn when the two positions are identical (skyDisplay.cpp:878)."
+        },
+        {
+          "name": "orthodromy",
+          "doc": "The colour of the shortest-path arc between the last two selected objects, marked in nautical miles.",
+          "source": "registration app_command_init.cpp:280, spelling base_command_interface.hpp:540, case app_command_interface.cpp:1829 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyOrthodromy built at skydisplay_mgr.cpp:227, arc skyDisplay.cpp:976-1001, figure skyDisplay.cpp:1005-1029"
+        },
+        {
+          "name": "vertical_line",
+          "doc": "The colour of the half circle running from due east up over your head down to due west.",
+          "source": "registration app_command_init.cpp:281, spelling base_command_interface.hpp:541, case app_command_interface.cpp:1830 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Vertical built at skyline_mgr.cpp:400 and skyline.cpp:1471-1476, drawn skyline.cpp:1484-1548 with the height figures at skyline.cpp:1514-1541",
+          "notes": "Sits square across the meridian line and, unlike it, stops at the horizon instead of continuing underneath."
+        },
+        {
+          "name": "nebula_names",
+          "doc": "The colour of the names written next to nebulae, galaxies and star clusters.",
+          "source": "registration app_command_init.cpp:282, spelling base_command_interface.hpp:542, case app_command_interface.cpp:1831 -> coreLink.cpp:927-929 -> NebulaMgr::setLabelColor nebula_mgr.hpp:110-112, used at nebula_mgr.cpp:203 and :206 -> Nebula::drawName nebula.cpp:408-418"
+        },
+        {
+          "name": "nebula_circle",
+          "doc": "The colour of the little marker rings put on deep-sky objects that are too small to show as pictures.",
+          "source": "registration app_command_init.cpp:283, spelling base_command_interface.hpp:543, case app_command_interface.cpp:1832 -> coreLink.cpp:930-932 -> NebulaMgr::setCircleColor nebula_mgr.hpp:130-132, used at nebula_mgr.cpp:212 and :222 -> Nebula::drawHint nebula.cpp:401-404",
+          "notes": "nebula_names paints the words, nebula_circle paints the marker. The marker is only reached for objects below the size limit (nebula_mgr.cpp:210). It has NO effect while the dso_pictograms flag is on and the object qualifies: that branch draws the per-type pictogram with the object's own neb_color instead (nebula.cpp:395-399, selected at nebula_mgr.cpp:211-222)."
+        },
+        {
+          "name": "precession_circle",
+          "doc": "The colour of the big circle the sky pole slowly walks around, with its year markers.",
+          "source": "registration app_command_init.cpp:284, spelling base_command_interface.hpp:544, case app_command_interface.cpp:1833 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Precession built at skyline_mgr.cpp:394, drawn skyline.cpp:1372-1464 with the year labels at skyline.cpp:1423-1447",
+          "notes": "Two circles are drawn, one around each ecliptic pole. The labels are calendar years every thousand years. Earth only (skyline.cpp:1378)."
+        },
+        {
+          "name": "text_usr_color",
+          "doc": "The colour given to text put on the dome from now on when the text command names no colour of its own.",
+          "source": "registration app_command_init.cpp:285, spelling base_command_interface.hpp:545, case app_command_interface.cpp:1834 -> Media::textSetDefaultColor media.hpp:338-340 -> TextMgr::setColor text_mgr.cpp:130-133 (writes defaultTextColor), consumed when a text is created at text_mgr.cpp:118-125",
+          "notes": "Belongs to the `text` command (app_command_interface.cpp:2813-2837), NOT to `print`: `print` only writes its arguments to the log and draws nothing (app_command_interface.cpp:2096-2110). The colour is copied into each text as it is created, so texts already on the dome keep the colour they were given. It is also the only colour besides star_table with no getter anywhere in the tree (app_command_interface.cpp:1841-1844), so a saved session cannot read it back."
+        },
+        {
+          "name": "star_table",
+          "doc": "The colour used for stars of one shade; index picks the shade, 0 for the bluest through 127 for the reddest.",
+          "source": "registration app_command_init.cpp:286, spelling base_command_interface.hpp:546, case app_command_interface.cpp:1835 (the only case that passes index) -> coreLink.cpp:667-669 -> HipStarMgr::setColorStarTable hip_star_mgr.cpp:131-138, writing the static color_table[128] declared hip_star_mgr.cpp:104; every star is drawn with color_table[its own shade index] at zone_array.cpp:293 and :382 and hip_star_wrapper.hpp:93",
+          "notes": "WHAT THE INDEX SELECTS: one of the 128 slots of the star colour table, keyed on the star's colour index. Slot i stands for B-V = i*(4/127) - 0.5 (IndexToBV, hip_star.hpp:46-49), so slot 0 is B-V -0.5 (hottest, blue) and slot 127 is B-V +3.5 (coolest, red). The slots are filled at startup from the 'colors' section of stars.ini, keys color_000 to color_127 (hip_star_mgr.cpp:112-129). An index outside 0-127 changes nothing and logs 'ColorTable index Error' (hip_star_mgr.cpp:133-135). An omitted index means slot 0, because evalInt of an absent key returns 0 (app_command_interface.cpp:2014 and :4605-4606) - so `color property star_table value 1,0,0` silently repaints the bluest stars red. This is the only colour with no getter at any level (app_command_interface.cpp:1841-1844)."
+        },
+        {
+          "name": "lunar_eclipse_umbra",
+          "doc": "Meant for the ring of Earth's deep shadow at the Moon's distance, but nothing is drawn, so this has no effect.",
+          "source": "registration app_command_init.cpp:287, spelling base_command_interface.hpp:547, case app_command_interface.cpp:1819 -> coreLink.cpp:142-144 -> SkyLineMgr::setColor skyline_mgr.cpp:144-154; the target class SkyLine_LunarEclipse(UMBRA) exists (factory case skyline_mgr.cpp:427-433, geometry skyline.cpp:1696-1820, umbra radius skyline.cpp:1761-1766) but is never instantiated",
+          "notes": "DEAD AT THIS HEAD. Core builds exactly twenty sky lines at core.cpp:128-149 and neither eclipse type is among them; a search of src/ finds no other skyLineMgr->Create call site. So SkyLineMgr::setColor walks an empty match, logs 'SkyLineMgr error : setColor not found LINE_LUNAR_ECLIPSE_UMBRA' at skyline_mgr.cpp:153 and returns. The script sees success. The matching flag `flag lunar_eclipse_umbra on` is equally inert. Worse for a saved session: the read side, SkyLineMgr::getColor, returns the fallback baseColor for a missing line (skyline_mgr.cpp:164-165) rather than failing, so a session would record a colour that was never anyone's."
+        },
+        {
+          "name": "lunar_eclipse_penumbra",
+          "doc": "Meant for the wider ring of Earth's part-shadow at the Moon, but nothing is drawn, so this has no effect.",
+          "source": "registration app_command_init.cpp:288, spelling base_command_interface.hpp:548, case app_command_interface.cpp:1820 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154; the target class SkyLine_LunarEclipse(PENUMBRA) exists (factory case skyline_mgr.cpp:434-440, penumbra radius skyline.cpp:1767-1773) but is never instantiated",
+          "notes": "Same dead path as lunar_eclipse_umbra - see that entry for the full trace."
+        }
       ],
-      "note": "star_table is the one color taking an 'index' argument (app_command_interface.hpp:179)"
+      "note": "star_table is the one color taking an 'index' argument (app_command_interface.hpp:179)",
+      "_doc_source": "Read-only trace at HEAD d64fd437, four hops per name: (1) registration into m_color, AppCommandInit::initialiseColorCommand, app_command_init.cpp:243-288; (2) the spelling macro, base_command_interface.hpp:503-548; (3) the routing switch AppCommandInterface::applyColor, app_command_interface.cpp:1787-1839, reached from commandColor app_command_interface.cpp:1989-2016; (4) the CoreLink setter and the module that actually paints, read line by line. Nothing here is recalled: every claim carries a file:line opened in this session. NOTE ON THE BRIEF'S ANCHORS: the brief pointed at app_command_init.cpp:221-278 and base_command_interface.hpp:494-539; at this HEAD the blocks are at :243-288 and :503-548 respectively (an offset of 22 and 9 lines). The line numbers recorded below are the observed ones."
     },
     "obsolete_tokens": {
       "_source": "AppCommandInit::setObsoleteToken, app_command_init.cpp:14-23; engine logs '<name> is no longer used in software'",
@@ -7619,19 +8696,92 @@
     },
     "font_targets": {
       "_source": "TF_* base_command_interface.hpp:675-684",
-      "_schema_note": "STILL v1 SHAPE: the ten targets are self-describing spellings, and the engine's acceptance test for them lives in FontFactory::updateFont, which has not been read - so scedit's family check for `font` stays UNARMED (never guessed, C2; reported by `scedit --rules`).",
+      "_schema_note": "D7 v2 SHAPE since 2026-08-31 (F71 item 3), and the family is now ARMED. The engine's acceptance test was the blocker and has been read: `FontFactory::updateFont` (src/appModule/fontFactory.cpp:141-169) looks the target up in `m_strToTarget`, whose ONLY writer is `setStrToTarget` (:41-53, called once from the constructor at :38) and which inserts EXACTLY these ten TF_* spellings, one each (base_command_interface.hpp:684-693). So the set is closed, and the lookup is `std::map::find` with the default comparator -- a byte compare, CASE-SENSITIVE: `Text` and `STARS` are refused. See `_acceptance_test` for what refusal looks like, which is the reason a check is worth having at all.",
       "names": [
-        "text",
-        "planets",
-        "constellations",
-        "cardinal_points",
-        "stars",
-        "menu",
-        "nebulae",
-        "grids",
-        "lines",
-        "displays"
-      ]
+        {
+          "name": "text",
+          "doc": "The typeface used for the text a script puts on the dome with the 'text' command.",
+          "source": "spelling TF_TEXT base_command_interface.hpp:684; mapped to CLASSEFONT::CLASS_MENU at fontFactory.cpp:43; handled by the early-return branch fontFactory.cpp:156-159 -> media.hpp:362-364 -> TextMgr::updateFont text_mgr.cpp:216-222; the text itself is created by the `text` command, app_command_interface.cpp:2813-2837, and drawn by TextMgr::draw text_mgr.cpp:207-214",
+          "notes": "Side effect a script author will see: TextMgr::updateFont calls clearCache() and clear() (text_mgr.cpp:218-219), and clear() empties textUsr (text_mgr.cpp:136-139) - so changing this font ERASES every text currently on the dome. TextMgr keeps seven sizes around the requested one (mFontSize+2*(i-3), text_mgr.cpp:220-221), which is what the `text` command's size words select. Despite the enumerator being called CLASS_MENU this is the script-text font, not the menu font."
+        },
+        {
+          "name": "planets",
+          "doc": "The typeface used for the names printed next to planets and moons.",
+          "source": "spelling TF_PLANETS base_command_interface.hpp:685; mapped to CLASSEFONT::CLASS_SSYSTEM at fontFactory.cpp:44; font handed to the solar system at core.cpp:197 (ssystemFactory->registerFont); the label is drawn in hints.cpp:75 using the body's label colour"
+        },
+        {
+          "name": "constellations",
+          "doc": "The typeface used for the constellation names written across the sky.",
+          "source": "spelling TF_CONSTELLATIONS base_command_interface.hpp:686; mapped to CLASSEFONT::CLASS_ASTERIMS at fontFactory.cpp:45; font handed over at core.cpp:203 (asterisms->registerFont); drawn by Constellation::drawName constellation.cpp:150-161"
+        },
+        {
+          "name": "cardinal_points",
+          "doc": "The typeface used for the N, S, E and W letters around the horizon.",
+          "source": "spelling TF_CARDINAL base_command_interface.hpp:687; mapped to CLASSEFONT::CLASS_CARDINALS at fontFactory.cpp:46; font handed over at core.cpp:204 (cardinals_points->registerFont); the four letters are printed in Cardinals::draw cardinals.cpp:78-94, with the intercardinal pairs added at cardinals.cpp:95-118 in navigation and astronomical modes"
+        },
+        {
+          "name": "stars",
+          "doc": "The typeface used for star names, and for the labels in the star-flight and galaxy views.",
+          "source": "spelling TF_STARS base_command_interface.hpp:688; mapped to CLASSEFONT::CLASS_HIPSTARS at fontFactory.cpp:47; the same s_font pointer is handed to three modules - hip_stars at core.cpp:191, starNav at core.cpp:194 and tully at core.cpp:195; star names are printed in hip_star_mgr.cpp:919",
+          "notes": "One target, three consumers: changing it also changes the star-navigation and Tully-galaxy labels, not only the star names."
+        },
+        {
+          "name": "menu",
+          "doc": "The typeface used for the setup menu and the date, time and object readouts drawn over the sky.",
+          "source": "spelling TF_MENU base_command_interface.hpp:689; mapped to CLASSEFONT::CLASS_UI at fontFactory.cpp:48; font handed over at app.cpp:705 (ui->registerFont) and stored as tuiFont in UI::registerFont ui.cpp:93-96; used for the date/time line at ui_tuiconf.cpp:99-118, the selected-object line at ui_tuiconf.cpp:134-151 and the menu itself further down the same file",
+          "notes": "Despite the spelling this is CLASSEFONT::CLASS_UI; the enumerator CLASS_MENU belongs to the `text` target instead."
+        },
+        {
+          "name": "nebulae",
+          "doc": "The typeface used for the names of nebulae, galaxies and clusters.",
+          "source": "spelling TF_NEBULAE base_command_interface.hpp:690; mapped to CLASSEFONT::CLASS_NEBULAE at fontFactory.cpp:49; font handed to nebulas at core.cpp:192 and again at core.cpp:202, and to dso3d at core.cpp:193; the name is printed in Nebula::drawName nebula.cpp:408-418",
+          "notes": "Also drives the labels of the 3D deep-sky catalogue (dso3d, core.cpp:193)."
+        },
+        {
+          "name": "grids",
+          "doc": "The typeface used for the degree and hour numbers printed along the sky grids.",
+          "source": "spelling TF_GRIDS base_command_interface.hpp:691; mapped to CLASSEFONT::CLASS_SKYGRID at fontFactory.cpp:50; font handed over at core.cpp:198 (skyGridMgr->registerFont), declared static in skygrid.cpp:45; the right-ascension / azimuth figures are printed at skygrid.cpp:290 and :292 and the declination / altitude figures at skygrid.cpp:314"
+        },
+        {
+          "name": "lines",
+          "doc": "The typeface used for the words and figures written along the sky lines and circles.",
+          "source": "spelling TF_LINES base_command_interface.hpp:692; mapped to CLASSEFONT::CLASS_SKYLINE at fontFactory.cpp:51; font handed over at core.cpp:199 (skyLineMgr->registerFont); examples of what it prints: \"GM\" on the Greenwich line skyline.cpp:654, \"Aries\" skyline.cpp:716, and the graduations at skyline.cpp:324, :816, :875, :985, :1059-1061, :1345, :1447, :1541, :1633, :1675"
+        },
+        {
+          "name": "displays",
+          "doc": "The typeface used for the coordinate readouts and the graduated scales drawn beside the selected object.",
+          "source": "spelling TF_DISPLAYS base_command_interface.hpp:693; mapped to CLASSEFONT::CLASS_SKYDISPLAY at fontFactory.cpp:52; font handed over at core.cpp:200 (skyDisplayMgr->registerFont); printed through skydisplay_font in SkyDisplay::draw_text skyDisplay.cpp:214, which serves the nautical scales, and the same font carries the object and mouse coordinate readouts and the angular-distance / loxodromy / orthodromy figures drawn in skyDisplay.cpp:419-1031",
+          "notes": "These are the overlays switched on by the flags personal, personeq, nautical_alt, nautical_ra, object_coordinates, mouse_coordinates, angular_distance, loxodromy and orthodromy."
+        }
+      ],
+      "_doc_source": "Read-only trace at HEAD d64fd437: spellings base_command_interface.hpp:684-693 (TF_*) -> handler AppCommandInterface::commandFont app_command_interface.cpp:4278-4313 -> acceptance test FontFactory::updateFont fontFactory.cpp:141-169, whose accepted set is the map built in FontFactory::setStrToTarget fontFactory.cpp:41-53 -> CLASSEFONT consumer resolved through FontFactory::registerFont fontFactory.cpp:182-193 and its call sites (core.cpp:191-204, app.cpp:705), then one hop into the module that prints with that s_font. Cross-check on the accepted set: core.cpp:1594-1603 calls updateFont with nine literal target strings. Nothing here is recalled; every claim carries a file:line read in this session.",
+      "_acceptance_test": {
+        "function": "FontFactory::updateFont",
+        "source": "src/appModule/fontFactory.cpp:141-169 (lookup at :149-153); the accepted set is the std::map m_strToTarget filled in FontFactory::setStrToTarget, src/appModule/fontFactory.cpp:41-53",
+        "accepted_spellings": [
+          "text",
+          "planets",
+          "constellations",
+          "cardinal_points",
+          "stars",
+          "menu",
+          "nebulae",
+          "grids",
+          "lines",
+          "displays"
+        ],
+        "case_sensitive": true,
+        "case_sensitive_evidence": "fontFactory.cpp:149 is m_strToTarget.find(targetName) on a std::map<std::string, CLASSEFONT> (declared fontFactory.hpp:115) with the default std::less<std::string>, i.e. a plain byte comparison. Neither commandFont (app_command_interface.cpp:4278-4313) nor updateFont applies any case folding to the target, unlike the `size` and `align` keys of the `text` command which are explicitly upper-cased (app_command_interface.cpp:2825, 2828). So \"Text\" or \"STARS\" are rejected.",
+        "on_unknown": "Silent-to-the-script no-op with a log line: fontFactory.cpp:150-153 writes \"Unknown FontFactory target \" + targetName at LOG_TYPE::L_WARNING (fontFactory.cpp:151) and returns. No exception, no assert, no abort. updateFont returns void and commandFont does not test anything after calling it (app_command_interface.cpp:4302-4304), so debug_message stays empty and the `font` command reports SUCCESS to the script for a misspelt target. A wrong target name is therefore invisible in the script and visible only in the engine log.",
+        "differs_from_TF_list": "no - the accepted set is EXACTLY the ten TF_* spellings. setStrToTarget (fontFactory.cpp:43-52) inserts exactly the ten macros TF_TEXT, TF_PLANETS, TF_CONSTELLATIONS, TF_CARDINAL, TF_STARS, TF_MENU, TF_NEBULAE, TF_GRIDS, TF_LINES, TF_DISPLAYS (base_command_interface.hpp:684-693), one entry each, and setStrToTarget is the only writer of m_strToTarget (it is called only from the constructor, fontFactory.cpp:38). The family check for `font` can be armed as a closed, case-sensitive, exactly-ten-member set.",
+        "cross_check": "core.cpp:1594-1603 calls updateFont with nine literal targets (text, menu, planets, constellations, cardinal_points, grids, lines, displays, stars) at every sky-locale change; the tenth, \"nebulae\", is at core.cpp:1603. All ten literals are in the accepted set, and no literal outside the TF_* list appears.",
+        "notes": [
+          "Naming inversion worth knowing: TF_TEXT (\"text\") maps to CLASSEFONT::CLASS_MENU and TF_MENU (\"menu\") maps to CLASSEFONT::CLASS_UI (fontFactory.cpp:43 and :48). CLASS_MENU is the Media/TextMgr font, not a menu font. Reading the enumerator name instead of the map will give the wrong answer for both targets.",
+          "CLASS_MENU is the only accepted target that is not in listFont: it is special-cased and returns early at fontFactory.cpp:156-159 via media->updateTextFont. The other nine are pushed into listFont by FontFactory::init (fontFactory.cpp:91-131).",
+          "The assert(0) at fontFactory.cpp:167 fires only if an accepted target resolves to a CLASSEFONT absent from listFont; after a normal init() that cannot happen for any of the ten, so it is dead code on the `font` command path.",
+          "The `font` command surface also has the target-free form `font action initial`, which rebuilds every font at its startup size and name (fontFactory.cpp:196-200) and never consults the accepted set."
+        ]
+      }
     }
   },
   "argument_token_vocabulary": {

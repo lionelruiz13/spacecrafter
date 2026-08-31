@@ -101,23 +101,38 @@ void checkNamesFamily(const json &family, const char *key, int expected) {
 	      std::string(key) + ": all names unique");
 }
 
-// A v2 family entry that carries content must carry the SIX per-key facts the
-// extraction was gated on (SWEEP_DISPATCH DoD: doc, value, default, required,
-// source; `values` only when enumerated). A null doc is legal and means
-// "flagged, not invented" (C2) -- an ABSENT one is not.
-void checkNamesFamilyV2Content(const json &family, const char *key) {
+// A v2 family entry that carries content must carry the facts its KIND of
+// family was gated on. There are two kinds, and conflating them was the reason
+// this check had to be split (F71 item 3).
+//
+//   KEY-LIKE (set_names): each member IS an argument key -- `set <name> <value>`
+//   gives every name its own value domain, default and requiredness. Those are
+//   the SIX per-key facts the extraction sweep was gated on (SWEEP_DISPATCH
+//   DoD: doc, value, default, required, source; `values` only when enumerated).
+//
+//   NAME-LIKE (flags, color_names, font_targets): each member is a NAME selected
+//   by a key, and every name in the family shares ONE value grammar that lives
+//   on the COMMAND entry. Repeating `value`/`default`/`required` on 97 flags
+//   would be 97 copies of one fact -- I2's pending silent desync, manufactured
+//   on purpose. So the required set here is doc + source: what it does, and
+//   where that was read.
+//
+// A null doc is legal in both and means "flagged, not invented" (C2) -- an
+// ABSENT one is not.
+void checkNamesFamilyV2Content(const json &family, const char *key, bool keyLike) {
 	int objects = 0, complete = 0;
 	for (const auto &n : family.at("names")) {
 		if (!n.is_object()) continue;
 		++objects;
-		if (n.contains("doc") && n.contains("value") && n.contains("default")
-		    && n.contains("required") && n.contains("source"))
+		const bool base = n.contains("doc") && n.contains("source");
+		const bool six = n.contains("value") && n.contains("default") && n.contains("required");
+		if (base && (!keyLike || six))
 			++complete;
 	}
 	if (objects == 0) return;   // still v1 shape: nothing to check
 	check(complete == objects,
-	      std::string(key) + ": " + std::to_string(objects) +
-	      " object entries, all carrying doc/value/default/required/source");
+	      std::string(key) + ": " + std::to_string(objects) + " object entries, all carrying " +
+	      (keyLike ? "doc/value/default/required/source" : "doc/source"));
 }
 
 // THE MERGE'S OWN I2 EXPOSURE, CLOSED BY MEASUREMENT.
@@ -256,9 +271,12 @@ int validate(const json &g, const std::string &grammarPath) {
 	            withArgs, argsIncomplete, argsSourced);
 
 	checkNamesFamily(fam.at("flags"), "flags", exp.at("flags").get<int>());
+	checkNamesFamilyV2Content(fam.at("flags"), "flags", false);
 	checkNamesFamily(fam.at("set_names"), "set_names", exp.at("set_names").get<int>());
-	checkNamesFamilyV2Content(fam.at("set_names"), "set_names");
+	checkNamesFamilyV2Content(fam.at("set_names"), "set_names", true);
 	checkNamesFamily(fam.at("color_names"), "color_names", exp.at("color_names").get<int>());
+	checkNamesFamilyV2Content(fam.at("color_names"), "color_names", false);
+	checkNamesFamilyV2Content(fam.at("font_targets"), "font_targets", false);
 	checkNamesFamily(fam.at("obsolete_tokens"), "obsolete_tokens", exp.at("obsolete_tokens").get<int>());
 	checkNamesFamily(fam.at("reserved_variables"), "reserved_variables", exp.at("reserved_variables").get<int>());
 	checkNamesFamily(fam.at("font_targets"), "font_targets", exp.at("font_targets").get<int>());

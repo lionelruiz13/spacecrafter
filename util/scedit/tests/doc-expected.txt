@@ -40,14 +40,14 @@ $ scedit --doc flag stars
   "completable": [],
   "default": "",
   "default_literal": null,
-  "doc": null,
+  "doc": "Show the stars, both the ones drawn on the sky and the ones you fly among.",
   "family": "flags",
   "kind": "member",
   "name": "stars",
   "notes": "",
   "present": true,
   "required": "",
-  "source": "",
+  "source": "app_command_init.cpp:187 (FN_STARS); base_command_interface.hpp:456; app_command_interface.cpp:1047-1049 -> src/coreModule/coreLink.hpp:168 -> src/coreModule/coreLink.cpp:650-653 (hip_stars->setFlagShow and starNav->setFlagStars)",
   "value_docs": {},
   "value_domain": "",
   "values": []
@@ -165,21 +165,21 @@ $ scedit --search --limit 4 constellation lines colour
   "results": [
     {
       "command": "color",
-      "doc": null,
+      "doc": "The colour of the stick-figure lines that join the stars of every constellation.",
       "family": "color_names",
       "kind": "member",
       "name": "constellation_lines",
       "page": "color constellation_lines",
-      "score": 0.828427
+      "score": 0.720759
     },
     {
       "command": "color",
-      "doc": null,
+      "doc": "The colour of the lines marking the official borders between constellations.",
       "family": "color_names",
       "kind": "member",
-      "name": "constellation_lines3d",
-      "page": "color constellation_lines3d",
-      "score": 0.828427
+      "name": "constellation_boundaries",
+      "page": "color constellation_boundaries",
+      "score": 0.720759
     },
     {
       "command": "constellation",
@@ -191,17 +191,17 @@ $ scedit --search --limit 4 constellation lines colour
       "score": 0.694987
     },
     {
-      "command": "constellation",
-      "doc": "Which part of the constellation the colour is for.",
-      "family": null,
-      "kind": "key",
-      "name": "type",
-      "page": "constellation type",
-      "score": 0.548584
+      "command": "color",
+      "doc": "The colour of the hand-made star figures that keep their shape as you fly out among the stars.",
+      "family": "color_names",
+      "kind": "member",
+      "name": "constellation_lines3d",
+      "page": "color constellation_lines3d",
+      "score": 0.585582
     }
   ],
   "scope": "all",
-  "total_matches": 66
+  "total_matches": 110
 }
 exit 0
 $ scedit --search xyzzy plugh

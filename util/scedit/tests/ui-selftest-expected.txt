@@ -27,7 +27,7 @@ inv ------------i
 | 
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
 | `flag` `stars` = <no value yet>   [value of `stars`: 1]
-| One pair: the KEY is the name of the feature, the VALUE says on, off or toggle.   (documents: any
+| Show the stars, both the ones drawn on the sky and the ones you fly among.   (documents: key)
 | value: boolean(flag grammar)   one of: toggle, any on-form accepted by Utility::isTrue (src/tools/
 | error: key 'stars' has no value: the engine drops it silently and runs the rest of the line withou
 | ────────────────────────────────────────────────────────────────────────────────────────────────────

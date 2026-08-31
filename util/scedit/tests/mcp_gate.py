@@ -146,10 +146,14 @@ def main():
     r = call(s, "doc_lookup", {"command": "suntrace", "name": "sun"})
     check(r["result"]["structuredContent"]["doc"] is None, "suntrace.sun arrives as `doc: null` too")
 
+    # families.flags was v1 (names only) until 2026-08-31; this asserted the
+    # honest blank. F71 item 3 filled all 97 from source, so the machine surface
+    # now serves the name's own sentence -- and the doc must be ABOUT the name,
+    # which is what distinguishes a fill from a copy of the command's line.
     r = call(s, "doc_lookup", {"command": "flag", "name": "stars"})
     sc = r["result"]["structuredContent"]
-    check(sc["present"] is True and sc["doc"] is None,
-          "a v1 family name: present true, doc null -- the name exists, the sentence does not")
+    check(sc["present"] is True and isinstance(sc["doc"], str) and "star" in sc["doc"].lower(),
+          "a v2 family name: present true, and the sentence is about that name")
 
     r = call(s, "doc_lookup", {"command": "set", "name": "atmosphere_fade_duration"})
     sc = r["result"]["structuredContent"]
@@ -177,8 +181,11 @@ def main():
     check(len(fams["flag"]["members"]) == 97 and len(fams["set"]["members"]) == 43
           and len(fams["color"]["members"]) == 46 and len(fams["font"]["members"]) == 10,
           "97 flag names, 43 set names, 46 colour names, 10 font targets -- the second catalogue level")
-    check(all(m["doc"] is None for m in fams["flag"]["members"]),
-          "the 97 flag names are honest blanks, not invented sentences")
+    check(all(isinstance(m["doc"], str) and m["doc"] for m in fams["flag"]["members"]),
+          "the 97 flag names each carry a sentence (F71 item 3; blanks until 2026-08-31)")
+    check(all(isinstance(m["doc"], str) and m["doc"] for m in fams["color"]["members"])
+          and all(isinstance(m["doc"], str) and m["doc"] for m in fams["font"]["members"]),
+          "and so do the 46 colours and the 10 font targets")
 
     r = call(s, "doc_search", {"query": "play a sound in the dome", "scope": "commands", "limit": 3})
     sc = r["result"]["structuredContent"]
@@ -362,7 +369,8 @@ def main():
           "the live tool answers in the stateless era too, refusal and all")
     r = call(s, "doc_lookup", {"command": "flag", "name": "stars"}, meta=modern_meta())
     check(r["result"]["resultType"] == "complete"
-          and r["result"]["structuredContent"]["doc"] is None,
+          and isinstance(r["result"]["structuredContent"]["doc"], str)
+          and "star" in r["result"]["structuredContent"]["doc"].lower(),
           "the same answer, in the stateless era")
     r = s.request("initialize", {"protocolVersion": LEGACY}, meta=modern_meta())
     check(r.get("error", {}).get("code") == -32601,
