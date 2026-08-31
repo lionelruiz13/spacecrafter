@@ -1466,7 +1466,13 @@ to extract the witness pairs, never to answer a query); no ollama/OpenAI client.
 **DoD:** scope 1–7; every gate green on a clean build with `-Wall -Wextra` on
 scedit's own targets, 0 warnings; the parity check committed with its result and
 falsification-tested; the spec revision recorded; code tree clean; WIP per §0.6.
-**WIP:**
+**WIP:** 2026-08-31 — §0.7 gate PASSED (all stated premises verified live: both
+HEADs, 9/9 gates with the stated counts, lint_seeds 15, `--history` 7 fields,
+§11.185 free, F count 8, f64 baseline 80/340 reproduced by measurement, MCP spec
+reachable — latest revision **2026-07-28**). CP1 done: scope 7 landed (code
+`ac3e752e`, target-scoped `-Wall -Wextra`, `cmdSpan` deleted, 0 warnings, 9/9
+green, flag shown live by a throwaway that warned). Next: scope 1 (`--doc` JSON
+over DocIndex) + its query gate.
 
 ### F67 — scedit: direct TCP mode — the live engine as target, the `$LOGON` feed as a pane, and the engine's `#!` write-back handled by requirement (D31 "direct tcp mode"; scedit INTENT §5 item 6) [M]
 
