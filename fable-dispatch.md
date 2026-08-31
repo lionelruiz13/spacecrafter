@@ -2259,7 +2259,22 @@ findings route SS-n per C2; S-NP-1 stays suspended; no router/LLM work
 incl. `font`; missing-doc proposal artifact + SS-n rows; gates green;
 mirror journal; WIP cleared; baselines re-derived only if a parent row
 moved.
-**WIP:** —
+**WIP:** 2026-08-31 **CP1** — §0.7 gate PASSED on every stated premise (code
+`d64fd437` clean, harness `c4c35fc` at entry, superscript.sts md5 as stated,
+§11.190 free, `### F` = 12, items 11/12 open, F68–F70 ACCEPTED). Harness HEAD
+has since moved to `2a4d0b0` — ONE commit, author Claude Fable 5, touching only
+`PENDING_LEDGER-2026-08-31.md`: Allowance 1 satisfied (file differs from the two
+the prompt named; reported, not an abort). **Items 11+12 LANDED AND GATED** at
+code `50185663`: 60 `default_value` literals + 120 `completable` arrays, in the
+merged contract AND the four fragments; 3 new seed-gate checks, each
+falsification-tested; ctest **14/14**, 0 warnings, D14 ASCII gate PASS. Scope 1
+finding: the grammar's per-spec `source` anchors are pinned by `_meta.merged` to
+`b12c8cdd` and `app_command_interface.cpp` is +141 lines since (4747 -> 4888), so
+no anchor resolves at HEAD — new rows self-pin with `@ <sha>`. NEXT: merge the
+three extraction passes (97 flags / 46 colours / 10 font targets, all returned)
+into the v2 family shape, then scope 4 (missing-doc proposal + SS-n rows), then
+the mirror journal + item flips. Parent-ledger fact pending verification: §5.92's
+"INVENTORY DISCHARGED" list omits `dsoNavigator.cpp:264-265` EXTRACT/IEXTRACT.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
