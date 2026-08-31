@@ -236,18 +236,18 @@ void AppCommandInterface::reportScriptError(const ScriptOrigin &at, const std::s
 
 std::string AppCommandInterface::originTag() const
 {
-	// TCP only, deliberately. A line that came from a FILE already has a
-	// channel that reports AT the line - reportScriptError above and the `#!`
-	// tail it writes - and whether EVERY failing command joins that channel is
-	// a decision that would write about 1661 annotations into 35 shipped
-	// scripts: it is Vixy's, recorded open at INTENT 11.184, and this is not
-	// the task that takes it. A line that came from the control socket has no
-	// such channel and no file to write into, so the log line is the only
-	// place its provenance can appear at all (INTENT 11.187). Adding the file
-	// half here later is this one condition.
-	if (currentOrigin.channel != ScriptChannel::TCP)
+	// EVERY origin that has something to name, now: a FILE line prefixes
+	// `<file>:<line>: ` exactly as a control line prefixes `tcp#<id>: `. F68
+	// shipped the TCP half alone and recorded the file half as one condition
+	// to reverse: taking it then would have prejudged the ~1661-annotations-
+	// into-35-shipped-scripts decision (INTENT 11.184, still OPEN), and the
+	// owner has since severed the two and given this half - the LOG half,
+	// and only it - his word (INTENT 11.191(b), F72). Gating on `where()` is
+	// the header's own rule: the tag exists when there is a name, never `: `.
+	const std::string where = currentOrigin.where();
+	if (where.empty())
 		return std::string();
-	return currentOrigin.where() + ": ";
+	return where + ": ";
 }
 
 void AppCommandInterface::sendFeedback(const ScriptOrigin &at, const std::string &message,
@@ -256,9 +256,9 @@ void AppCommandInterface::sendFeedback(const ScriptOrigin &at, const std::string
 	// The routing key is the ORIGIN, and only TCP routes. HTTP shares the input
 	// queue but carries no origin at all and its connection is closed before the
 	// application sees the command, so it routes nowhere by construction; a FILE
-	// line reports at its own line and through the `#!` tail, and whether its
-	// refusals should also go on a socket is a separate decision, still open
-	// (INTENT 11.184, 11.187(c)(d)). `!tcp` is the no-server case: with
+	// line reports at its own line, in the log tag (11.191(b)) and through the
+	// `#!` tail; whether its refusals should ALSO go on a socket is a separate
+	// decision, still open (11.184, 11.187(c)(d)). `!tcp` is no server: with
 	// `io:enable_tcp` false there is no origin of this kind either, and this
 	// guard is what makes that true rather than assumed.
 	if (!tcp || at.channel != ScriptChannel::TCP)
@@ -1290,8 +1290,8 @@ int AppCommandInterface::executeCommandStatus()
 		//std::stringstream oss;
 		// Both lines carry the tag: a reader that greps for the message alone
 		// still finds its origin, and a reader that greps for the command line
-		// alone does too. Empty for every origin but TCP, so a file script's
-		// refusals are byte-identical to what they were (INTENT 11.187).
+		// alone does too. Non-empty for a FILE line as well as a control one
+		// since INTENT 11.191(b); empty when there is nothing to name.
 		const std::string tag = originTag();
 		cLog::get()->write( tag + "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		cLog::get()->write( tag + debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );

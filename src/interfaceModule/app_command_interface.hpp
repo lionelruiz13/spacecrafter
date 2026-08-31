@@ -225,9 +225,14 @@ private:
 	//! the line quoted, and to the `#!` channel when `at` names a file line.
 	void reportScriptError(const ScriptOrigin &at, const std::string &what);
 	//! How a diagnostic log line names the origin of the command being
-	//! executed: "tcp#<id>: " for a line read on the control socket, "" for
-	//! every other origin. The file half is deliberately absent - the reason
-	//! is at the definition, and it is one condition to add.
+	//! executed: "<file>:<line>: " for a line of a script file, "tcp#<id>: "
+	//! for one read on the control socket, "" for every other origin (the UI,
+	//! the pipe, an HTTP query, a command nested inside another - nothing to
+	//! name). The file half was deliberately absent until the owner gave it
+	//! his word: INTENT 11.191(b), task F72, and the LOG channel only. What
+	//! it does NOT widen: the `#!` annotator still gates on
+	//! ScriptOrigin::valid(), and sendFeedback below still sends for a TCP
+	//! origin alone, so a file-origin refusal still reaches no socket.
 	std::string originTag() const;
 	//! The same diagnostic, sent BACK on the dedicated link - and only for a
 	//! command that arrived on the control socket, which is the whole of what
