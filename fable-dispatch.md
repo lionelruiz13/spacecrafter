@@ -1985,7 +1985,16 @@ question stays Vixy's); no lifecycle events; mint license per §5.79.
 diffs) + scedit consumption with gates; parent §11.188 + mirror journal +
 row annotations; builds green both trees (`-j6`); baselines re-derived as
 last act, deltas attributed; trees clean; WIP cleared.
-**WIP:** —
+**WIP:** 2026-08-31 CP1 — §0.7 gate PASSED on every enumerated premise (both
+HEADs, F68 accepted, 188 free, 12 sections, `computeNormalString` still the
+three verbs, binary current by `cmake --build -- -n`, canary exit 2 + the
+`xserver.restarted` NOTE, GetActive false). Engine half committed `be2ddd81`,
+builds green `-j6`: `$DIAGON`/`$DIAGOFF` + `clientDiagTab` +
+`sendDiagnostic`/`deliverDiagnostic` (io.{hpp,cpp}), `sendFeedback` routed at
+the three F68 sites (app_command_interface.{hpp,cpp}, byte-level patch, 55/18
+non-ASCII bytes unchanged, 0 added lines non-ASCII). PRE binary staged
+`/tmp/f69-pre/spacecrafter` md5 444db012. NEXT: `harness/f69_feedback.py`
+(frozen-wire battery + the subscriber's own wire), then the scedit half.
 
 ### F70 — Every source file pure ASCII: census, conversion, exclusion table (D14, §11.186(d)) [M]
 
