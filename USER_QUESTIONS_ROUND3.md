@@ -144,7 +144,13 @@ joystick or console has few buttons and they are fixed — with
 `script action bind on <key-or-button> launch <script>`, one button can
 mean a different thing in each show, or each moment of a show, and a
 binding can end with the script that made it (nothing to un-bind by
-hand). **Triggers**: a script that fires by itself — when the camera
+hand). Where that lands in practice: a single button that cycles
+between modes; navigation handled by a script — which you already do
+in part (the script section that offers the planets and warps to the
+one selected). The difference the binding makes: today such a script,
+launched, *is* the running script; bound to a button it is simply at
+hand — pressed whenever, running beside whatever is playing, gone when
+done. **Triggers**: a script that fires by itself — when the camera
 attaches to a body, crosses an altitude, when a body comes into view.
 Both of these mean a script starting *while your show is already
 playing* — and today's engine has no defined answer for that situation
