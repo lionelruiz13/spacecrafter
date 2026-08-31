@@ -1,0 +1,869 @@
+{
+  "_extracted": "2026-08-31, F71, doc/superscript.sts f0c8ef83 (md5 496fdc6801cdcf0e5ac99afb48b9ef77) vs mined revision b0696413",
+  "_delta": {
+    "added": 266,
+    "removed": 67
+  },
+  "_method": "Every one of the 266 added lines was read in the current file with surrounding context (Read tool on a transliterated, line-numbered rendering; /usr/bin/grep with LC_ALL=C for byte work; the Bash grep wrapper was never used on this ISO-8859 file). Every divergence and every answer carries a code anchor read at HEAD d64fd437. Two whole-file sweeps back the negative claims: (1) the first token of every non-comment line was checked against the 68 registered command spellings, (2) every flag/set/color name on an added line was checked against the ACP_FN_/ACP_SC_/ACP_CC_ tables. Read-only throughout; doc/superscript.sts was not touched.",
+  "_example_only_definition": "Added lines that are neither blank nor cited in any other bucket: further usage examples, section headers, and metadata (e.g. the copyright year on line 4) that add no new fact. Blank added lines are counted separately and excluded.",
+  "_added_blank_lines": 47,
+  "_example_only_lines": [
+    4,
+    117,
+    290,
+    767,
+    794,
+    806,
+    919,
+    926,
+    952,
+    1046,
+    1051,
+    1077,
+    1314,
+    1434,
+    1604
+  ],
+  "answers": [
+    {
+      "line": 29,
+      "command": "audio",
+      "key": "nopause",
+      "documents": "A worked example (lines 29-46) of `audio nopause on` combined with media/script pause: it shows which pause stops the sound and which does not. First usage example in the AUDIO section; the engine had the key but the file had no scenario for it.",
+      "verbatim": "# Usage example",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:3016-3019 - `audio nopause <v>` calls media->audioSetMusicToPause(Utility::isTrue(v)); src/mediaModule/media.hpp:225-230 documents exactly 'true: the music continues to play if the script is paused'. Utility::isTrue (src/tools/utility.hpp:160-171) accepts 'on'. The per-line behavioural claims on lines 37-46 (which pause cuts sound) are experiential and were NOT verified statically.",
+      "consistent": true
+    },
+    {
+      "line": 79,
+      "command": "body",
+      "key": "type",
+      "documents": "Vesta is now created with an explicit `type Asteroid`.",
+      "verbatim": "body action load name \"Vesta\" parent Sun type Asteroid oblateness 0.0 color 1.0,1.0,1.0 halo true lighting true coord_func ell_orbit radius 2000 tex_map asteroids/asteroid.png tex_halo asteroids/star16x16.png albedo .5 orbit_SemiMajorAxis 353258016.65208 orbit_MeanLongitude 167.26633 orbit_Inclination 7.1405 orbit_Epoch 2456600.5 orbit_Eccentricity 0.0885024 orbit_AscendingNode 103.85153 orbit_LongOfPericenter 255.05099 orbit_visualization_period 1325.39759943908 orbit_Period 1325.39759943908",
+      "code_check": "src/bodyModule/protosystem.cpp:493 CASE(\"Asteroid\", ASTEROID) registers the value; :542 shows the previous untyped line already fell back to Asteroid but logged 'No valid body type specified for <name>, assume Asteroid'. The added `type` removes that warning; behaviour is unchanged.",
+      "consistent": true
+    },
+    {
+      "line": 81,
+      "command": "body",
+      "key": "rings / tex_ring / ring_inner_size / ring_outer_size",
+      "documents": "How to give a body rings on a `body action load` line. This is the ONLY place in the whole file where any ring key appears - the ring vocabulary had no documentation at all before.",
+      "verbatim": "# Create rings on Neptune",
+      "code_check": "src/bodyModule/protosystem.cpp:813-817 - the block is gated on Utility::strToBool(param[\"rings\"], 0) (so `rings true` works and `rings on` would NOT, src/tools/utility.cpp:432-438; the doc correctly writes `true`), then reads ring_inner_size and ring_outer_size, both divided by AU, and tex_ring, and builds a Ring. `tex_ring` is additionally prefixed with the script path at src/interfaceModule/app_command_interface.cpp:4123. `coord_func neptune_special` on the same line is real: src/coreModule/../bodyModule/orbit.cpp:890. The fifth key on the line, `ring_shadow`, is read by nothing - see new_surface.",
+      "consistent": true
+    },
+    {
+      "line": 95,
+      "command": "body",
+      "key": "action preload / name selected",
+      "documents": "`body action preload` preloads ring particles and big textures, and the value `selected` on `name` means the currently selected body.",
+      "verbatim": "# Preload rings particles and big textures",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:4156-4159 routes action==preload to stcore->preloadSolarSystemBody(args); src/coreModule/core.cpp:984-992 resolves name=='selected' to getSelectedPlanetEnglishName() (and 'home_planet' likewise).",
+      "consistent": true
+    },
+    {
+      "line": 98,
+      "command": "body",
+      "key": "action preload purge all",
+      "documents": "`body action preload purge all` frees every big texture, even ones in use.",
+      "verbatim": "# Purge all big textures to free memory",
+      "code_check": "src/bodyModule/protosystem.cpp:1005-1013: purge=='all' -> s_texture::releaseAllMemory() ('Aggressive purge, release as many memory as possible, even used ones if possible'); purge=='auto' -> releaseUnusedMemory().",
+      "consistent": true
+    },
+    {
+      "line": 101,
+      "command": "body",
+      "key": "keep_time",
+      "documents": "`keep_time` on `body action preload` holds the big texture for at least N seconds so you have time to travel there; the default is 10 s.",
+      "verbatim": "# Keep big textures at least some seconds to permit to go there (default = 10s)",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:4157-4158 - keep_time is read with Utility::strToInt(kt, 10) (DEFAULT 10, exactly as documented) and multiplied by stapp->getTargetFps() to convert seconds to frames; src/bodyModule/protosystem.cpp:1012 passes it to body->preload().",
+      "consistent": true
+    },
+    {
+      "line": 133,
+      "command": "body",
+      "key": "model3D / ojml",
+      "documents": "An OJML body needs THREE meshes: original (high), one decimated below 20000 points, one below 4000; an 'artificial' is a single-mesh .ojm because you only ever get close to it.",
+      "verbatim": "# Note for creating an OJML (a model for a body with one texture only)",
+      "code_check": "src/ojmModule/objl.cpp:62-76 requires <name>_1L.ojm, _2M.ojm and _3H.ojm (all three, else 'Could not find file object'); :88-93 enforces the 4000-vertex limit on the low mesh with a hard EquiSphere fallback above 40000. CAVEAT: the 20000-vertex check on the medium mesh is present but COMMENTED OUT at HEAD (objl.cpp:85-87), so that half is advice, not enforcement.",
+      "consistent": true
+    },
+    {
+      "line": 180,
+      "command": "body",
+      "key": "comet tail parameters",
+      "documents": "Sixteen previously undocumented comet-tail body keys with their exact defaults, plus the statement that apparent_magnitude AND slope are mandatory for a tail to appear. Verbatim list at lines 182-200.",
+      "verbatim": "# Comet tails / # Those parameters are mandatory to view a tail / # apparent_magnitude 4.0 slope 4.0 / # Those parameters are optional (default values indicated) / [lines 185-200 list the 16 keys and defaults]",
+      "code_check": "src/bodyModule/protosystem.cpp:838 gates the whole tail block on both apparent_magnitude and slope being non-empty (matches 'Those parameters are mandatory'); :841-870 carries every default the doc states: gaz_tail_trace_jd 1, gaz_tail_ejection_force 30, gaz_tail_radius_xx_coef -1, _x_coef 0.5, _base_coef 2, gaz colours 0.3/0.3/0.7; dust_tail_trace_jd 30, dust_tail_ejection_force 0.5, dust_tail_radius_xx_coef -2, _x_coef 1, _base_coef 2, dust colours 0.5/0.5/0.5. ALL SIXTEEN MATCH. Undocumented siblings the engine also reads: gaz/dust_tail_ejection_linearity (default 1), the whole extra_tail_* family (protosystem.cpp:871-886) and halo_alpha_override / halo_scale_override (:887-889).",
+      "consistent": true
+    },
+    {
+      "line": 256,
+      "command": "camera",
+      "key": "action rotate / target",
+      "documents": "`camera action rotate` looks at the body or anchor you are ATTACHED to. This is the first statement of intent for a command whose target value the engine reads but does not use.",
+      "verbatim": "# Look at the body/anchor you are attached to",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:4326-4334 requires a non-empty target then calls stcore->lookAnchor(target, duration.empty()?2:duration); src/coreModule/core.cpp:2632-2642 IGNORES the name - the per-name branch is commented out and the only live line moves to observatory->getObserverCenterPoint(), i.e. exactly 'the body/anchor you are attached to'. This ANSWERS the previously open gap G-CAM-3 in superscript-witness.json ('target: value required but unused - intended behaviour unknown'). Note the value is still required to be non-empty and any value gives the same result; the default duration is 2 s, which the doc's example writes explicitly.",
+      "consistent": true
+    },
+    {
+      "line": 282,
+      "command": "color",
+      "key": "property constellation_lines3d",
+      "documents": "The colour of the 3D constellation lines is a separate `color property` from constellation_lines.",
+      "verbatim": "color property constellation_lines3d r 0.5 g 0.5 b 0.3",
+      "code_check": "src/interfaceModule/base_command_interface.hpp:504 defines ACP_CC_CONSTELLATION_LINES3D = \"constellation_lines3d\"; registered at src/interfaceModule/app_command_init.cpp:244.",
+      "consistent": true
+    },
+    {
+      "line": 339,
+      "command": "date",
+      "key": "load keep_time",
+      "documents": "`date load keep_time` returns to today's date while keeping the current hour/minute/second.",
+      "verbatim": "# Back to today but keeping hour",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:4030-4041 - saves h/m/s, sets the JD to SpaceDate::JulianFromSys(), then rebuilds the JD with today's y/m/d and the saved h/m/s. Exactly the documented behaviour.",
+      "consistent": true
+    },
+    {
+      "line": 376,
+      "command": "set",
+      "key": "datetime_display_number / datetime_display_position",
+      "documents": "The multi-date readout is set with `set datetime_display_number` and `set datetime_display_position` (lines 376 and 379) - the corrected spellings, replacing the removed `date_display_*` lines.",
+      "verbatim": "set datetime_display_number 3",
+      "code_check": "src/interfaceModule/base_command_interface.hpp:593-594 define \"datetime_display_position\"/\"datetime_display_number\"; registered at src/interfaceModule/app_command_init.cpp:343-344; handled at src/interfaceModule/app_command_interface.cpp:2345-2346 (ui->setDateTimePosition / ui->setDateDisplayNumber). This RESOLVES the `set` half of divergence D-DATEDISP; the `flag` half is NOT resolved - see divergences.",
+      "consistent": true
+    },
+    {
+      "line": 395,
+      "command": "domemasters",
+      "key": "action record",
+      "documents": "`domemasters action record` is a TOGGLE: the same line twice starts then stops the image-per-image recording. Both lines were previously commented out; they are now live.",
+      "verbatim": "# Record image per image sequence at X FPS",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:3917-3919 -> saveScreenInterface->takeVideoShot(); src/appModule/save_screen_interface.cpp:96-102 - 'if (readScreen==ReadScreen::VIDEO) stopVideo(); else startVideo();'. Toggle confirmed.",
+      "consistent": true
+    },
+    {
+      "line": 401,
+      "command": "dso3d",
+      "key": "action restart / rate / z_reflection / yaw pitch roll",
+      "documents": "The DSO3D/DSO2D section is rewritten: `action restart` (not `reset`) is the live action, `rate` is the ray-sample count, rotation keys are yaw/pitch/roll (not zrot/yrot), and `dso3d action restart` on its own clears the object.",
+      "verbatim": "# DSO2D / DSO3D",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:1648-1652 accepts only `load` and `restart` (this RESOLVES divergence D-DSO3D-RESET); src/inGalaxyModule/dsoNavigator.cpp:307 IEXTRACT(rayPoints, \"rate\"); :278-280 EXTRACT yaw/pitch/roll (this RESOLVES divergence D-ZROT). The `z_reflection` and 'default rate is the width' claims on line 403 do NOT hold - see divergences.",
+      "consistent": true
+    },
+    {
+      "line": 410,
+      "command": "dso2d",
+      "key": "action load index/name/size/ra/de/distance/xyz + action clear",
+      "documents": "First documentation of the `dso2d` command at all: `action load` with index/name/size/ra/de/distance/xyz, and `action clear` to drop objects added into inGalaxy.",
+      "verbatim": "# For 2D dso objects from dsocat.png",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:1669-1673 maps exactly those seven keys onto stcore->loadDso2d(); :1664-1667 maps `action clear` onto removeSupplementalDso(). src/inGalaxyModule/dso3d.cpp:196-205 clears the added objects and reloads dso3d.dat, i.e. exactly 'clear a dso object added into inGalaxy'. (xyz==1 means the three numbers ARE x/y/z, xyz==0 means compute them from ra/de/distance - dso3d.cpp:165-182; the doc writes `xyz 0` but does not state the meaning.) This ANSWERS gap G-DSO2D-1's premise that 'the command is never exercised'.",
+      "consistent": true
+    },
+    {
+      "line": 467,
+      "command": "flag",
+      "key": "body_pick",
+      "documents": "`flag body_pick on` draws the name of selected bodies only, and you must put it back off to get all body names again.",
+      "verbatim": "# Draw name of selected bodies only",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:1077-1079 -> coreLink->bodySetFlagIsolateSelected(newval); read back at :651-652. Name and behaviour match ('isolate selected').",
+      "consistent": true
+    },
+    {
+      "line": 496,
+      "command": "flag",
+      "key": "dual_viewport",
+      "documents": "`flag dual_viewport` toggles between standard viewport video play and duplication of the video's bottom part.",
+      "verbatim": "# Toggle between viewport standard video play and video bottom part duplication",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:822-824 -> coreLink->mediaSetFlagDualViewport(newval); src/mediaModule/media.cpp:211-218 (V_DUALVIEWPORT sets viewPort->displayFullScreen(false) and dualViewport=true) confirms 'bottom part' vs full viewport.",
+      "consistent": true
+    },
+    {
+      "line": 541,
+      "command": "flag",
+      "key": "image_compression_loss",
+      "documents": "`flag image_compression_loss off` saves snapshots and image-per-image frames as PNG instead of JPEG; JPEG (flag on) is the default.",
+      "verbatim": "# Save snapshots/image per image in PNG instead of JPEG (default when on)",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:1245-1246 -> saveScreenInterface->setImageCompressionLoss(newval); src/appModule/save_screen_interface.cpp:121-124 picks '.jpg' when true and '.png' when false. Default confirmed true (JPEG) at src/mainModule/checkConfig.cpp:105 (flag_image_compression_loss = \"true\").",
+      "consistent": true
+    },
+    {
+      "line": 550,
+      "command": "flag",
+      "key": "lunar_eclipse_umbra / lunar_eclipse_penumbra",
+      "documents": "Two new flags draw the Earth's umbra and penumbra at the Moon's distance.",
+      "verbatim": "# Lunar eclipse flags to draw Earth shadow at the distance of the Moon.",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:970-975 -> coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA / _PENUMBRA, newval); flag names registered at src/interfaceModule/app_command_init.cpp:228-229, spellings at base_command_interface.hpp:498-499. Matching `color property lunar_eclipse_umbra/penumbra` also exist (app_command_init.cpp:287-288) but the doc does not mention them.",
+      "consistent": true
+    },
+    {
+      "line": 622,
+      "command": "flag",
+      "key": "skip_pause",
+      "documents": "`flag skip_pause on` makes the engine skip every `script action pause`.",
+      "verbatim": "# Skip all \"script action pause\".",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:1242-1243 -> scriptInterface->setSkipPauseDisabled(newval) -> ScriptMgr::flagSkipPause; consumed at app_command_interface.cpp:2954 where `script action pause` only pauses if !isSkipPauseDisabled(), otherwise falling through to :2957 which resumes. The internal name is inverted-sounding but the polarity is exactly what the doc says.",
+      "consistent": true
+    },
+    {
+      "line": 744,
+      "command": "illuminate",
+      "key": "size 0",
+      "documents": "`illuminate hp <n> size 0 display on` DISCARDS the drawing of that star (hides it).",
+      "verbatim": "# Discard star drawing",
+      "code_check": "src/coreModule/illuminate_mgr.cpp:130-133 - if (_size <= 0) { hip_stars->hideStar(num); remove(num); return; }. Exactly the documented effect. (This also explains why the removed line `illuminate constellation UMa display on`, with no size, hid every UMa star: evalDouble(\"\") is 0 via Utility::strToDouble's catch-all default, src/tools/utility.cpp:399-405.)",
+      "consistent": true
+    },
+    {
+      "line": 827,
+      "command": "image",
+      "key": "project twice / thrice",
+      "documents": "Image and video duplication around the dome is expressed as `project twice` / `project thrice` ON THE LOAD LINE (180 deg for twice, +/-120 deg for thrice), replacing the old `image name X action twice` form.",
+      "verbatim": "# Duplicate the image or video at 180deg if Twice and +120deg and -120deg if Thrice",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:3093-3100 reads W_PROJECT during `action load` and maps twice/thrice to IMG_PROJECT::TWICE/THRICE. `action twice` is handled NOWHERE in commandImage (:3064-3082 only knows purge/drop/load), which is why the old form was dead. This RESOLVES divergence D-IMGTWICE for the IMAGE section - but the dead form survives at lines 974 and 1570 of the current file.",
+      "consistent": true
+    },
+    {
+      "line": 834,
+      "command": "image",
+      "key": "coordinate_system spherical",
+      "documents": "A landscape can be shown as an image with `coordinate_system spherical`.",
+      "verbatim": "# Get a landscape as an image",
+      "code_check": "src/mediaModule/image_mgr.cpp:42 strToPos[\"spherical\"] = IMG_POSITION::POS_SPHERICAL, resolved by convertStrToPosition (:73-82, lower-cased, falling back to POS_VIEWPORT for anything unknown). The image path also supports `top_altitude`/`base_altitude` for spherical images (app_command_interface.cpp:3136,3151-3155), which the doc still does not mention.",
+      "consistent": true
+    },
+    {
+      "line": 892,
+      "command": "landscape",
+      "key": "landing",
+      "documents": "`landscape landing <n>` does a lift-off (0.x) or a landing (1.x) on the landscape; the fraction is the share of the image already drawn when the effect starts; the transition takes 2 seconds; the default when the key is absent on `action load` is 1.",
+      "verbatim": "# Do a liftoff with the landscape",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:2740-2746 - '0'/'0.x' -> setLandingLandscape(false, x), '1'/'1.x' -> setLandingLandscape(true, x-1), anything else -> 'invalid action parameter'; :2725-2728 - on `action load`, landing=='0' passes 0 and EVERYTHING ELSE (including absence) passes 1, matching 'Default parameter is 1'. The 2 s figure is real: src/coreModule/landscape.cpp:508 constructs landingFader(false, 2); the geometry is src/coreModule/landscape.cpp:711-716. CAVEAT: src/coreModule/core.cpp:803-807 only acts when the current landscape's format is \"spherical\" - see divergences for what that does to the example's first line.",
+      "consistent": true
+    },
+    {
+      "line": 957,
+      "command": "media",
+      "key": "type IMAGE with position viewport / position spherical",
+      "documents": "A fulldome video can be played as an IMAGE with `position viewport`, and a VR video with `position spherical`, so it can then be zoomed/rotated by `image` commands with other images in front.",
+      "verbatim": "#Play a Fulldome video as an image to zoom and rotate with other images in front if needed",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:3647 reads W_POSITION and :3811 passes it to media->playerPlay; src/mediaModule/media.cpp:219-223 (case V_IMAGE) hands it straight to imageMgr->loadImage(..., _position, ...), which resolves it through the same table as `image coordinate_system` (src/mediaModule/image_mgr.cpp:37-42, :73-82). Both `viewport` and `spherical` are in that table.",
+      "consistent": true
+    },
+    {
+      "line": 985,
+      "command": "media",
+      "key": "loop",
+      "documents": "`media ... action play loop on` loops the video file.",
+      "verbatim": "# Loop the video file",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:3626-3634 - loop is read with Utility::isTrue (which does accept 'on', src/tools/utility.hpp:160-171) and no loop key means media->setLoop(false).",
+      "consistent": true
+    },
+    {
+      "line": 991,
+      "command": "media",
+      "key": "subtitlename / subtitle / subtitle_project",
+      "documents": "SRT subtitles inside a video: `subtitlename <file.srt>`, `subtitle on|off|toggle`, `subtitle_project twice|thrice` to duplicate the subtitle around the dome; `media subtitle off` turns them off on the fly.",
+      "verbatim": "# Play SRT within a video",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:3683-3738 loads the srt (with an `auto` form and a '-xx' locale form), forces `flag subtitle on` when one is found (:3733), :3740-3752 handles the subtitle switch, :3754-3761 maps subtitle_project onto IMG_PROJECT. `media subtitle off` alone is served by :3891-3900. All three keys are registered (base_command_interface.hpp:216, 166). The example ON LINE 992 nevertheless does not do what its comment says - see divergences.",
+      "consistent": true
+    },
+    {
+      "line": 997,
+      "command": "media",
+      "key": "speed / speed_increment",
+      "documents": "`media speed_increment -0.1` / `+0.1` slow down and speed up the running video; `media speed 1` returns to normal speed.",
+      "verbatim": "# speed down a video",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:3881-3890 - both keys are served OUTSIDE the action block, so no `action` is needed; they go to media->playerSetSpeed / playerIncrementSpeed via FixedPointI16_2::fromString. Note src/interfaceModule/app_command_interface.cpp:3815 also warns 'audio will be cut if the speed isn't 1.0', which the doc does not say.",
+      "consistent": true
+    },
+    {
+      "line": 1018,
+      "command": "meteors",
+      "key": "day / ra / de / zhr and action clear",
+      "documents": "A meteor radiant can be added by hand with `meteors day <day-of-year> ra <deg> de <deg> zhr <n>`; the day counts from the start of the year and is shifted by one in leap years; `meteors action clear` erases added meteors. First documentation of `meteors day` and `meteors action clear`.",
+      "verbatim": "#Add a meteor radiant manually (ra=right ascension and de=declination) in degrees",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:2703-2709 -> coreLink->createRadiant(day, Vec3f(ra, de, zhr)); src/coreModule/meteor.hpp:51-53 stores it at radiant[(day-1) % 366], which is exactly why the doc's leap-year warning is right (a fixed 366-slot array indexed by day number). `meteors action clear` at :2698-2700 -> Meteor::clear() -> radiant = baseRadiant (src/coreModule/meteor.cpp:113). The claim on lines 1021-1022 about the zhr argument does NOT hold - see divergences.",
+      "consistent": true
+    },
+    {
+      "line": 1062,
+      "command": "mode",
+      "key": "jump value list",
+      "documents": "The `mode jump` value list is extended and three worked jumps are added, with the altitudes that put you at 1 light-year (in_galaxy) and 1 Mly (in_universe).",
+      "verbatim": "# jump to any mode (in_solarsystem in_stellarsystem in_galaxy in_universe in_sandbox)",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:3594-3616 -> stapp->switchMode(argJump) then optional body/altitude; src/executorModule/executor.cpp:89-100 accepts in_solarsystem, in_galaxy, in_universe and in_stellarsystem (each also without the underscore). `in_sandbox` is NOT accepted - see divergences.",
+      "consistent": true
+    },
+    {
+      "line": 1263,
+      "command": "select",
+      "key": "body",
+      "documents": "`select body <name>` is an accepted spelling alongside `select planet <name>`.",
+      "verbatim": "select body Jupiter pointer off",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:3248-3252 - W_BODY is read and mapped to select_type = W_PLANET, with the same `home_planet` substitution as the planet branch. Exactly equivalent to `select planet`.",
+      "consistent": true
+    },
+    {
+      "line": 1310,
+      "command": "set",
+      "key": "moon_brightness",
+      "documents": "`set moon_brightness` sets the Moon's influence on the sky, default 0.5.",
+      "verbatim": "# set the Moon influence in the sky (0.5 by default)",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:2283 -> coreLink->moonSetBrightness (or moonSetDefaultBrightness for the value 'default') -> src/coreModule/coreLink.cpp:459-467 -> atmosphere->setMoonBrightness, i.e. sky brightness. DEFAULT CONFIRMED 0.5: src/mainModule/checkConfig.cpp:331 and the installed ~/.spacecrafter/config.ini line 243. This ANSWERS half of the open gap G-SET-4 ('moon_brightness / sun_brightness: never written, no unit and no range stated').",
+      "consistent": true
+    },
+    {
+      "line": 1339,
+      "command": "set",
+      "key": "sun_brightness",
+      "documents": "`set sun_brightness` is the Sun BIG HALO size factor, default 200.",
+      "verbatim": "# Set Sun big halo value factor to fit the perception more accurately (200 = default)",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:2284 -> coreLink->sunSetBrightness -> src/bodyModule/ssystem_factory.hpp:1062 setSunBrightness(f) { ssystem->setHaloSize(f); }, so 'big halo value factor' is literally right. DEFAULT CONFIRMED 200: src/mainModule/checkConfig.cpp:332 and ~/.spacecrafter/config.ini line 244. This ANSWERS the other half of gap G-SET-4.",
+      "consistent": true
+    },
+    {
+      "line": 1356,
+      "command": "set",
+      "key": "stall_radius_unit",
+      "documents": "`set stall_radius_unit 5.0` - the radius at which the spacecraft detaches from its planet's rotation; the old spelling was `rotation_multiplier_condition`. Written WITHOUT the stray '=' the previous revision carried.",
+      "verbatim": "# A partir de quel rayon on decroche le vaisseau de la rotation de sa planete",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:2344 -> coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)), which matches the retired name given in the doc's own line 1357. This RESOLVES divergence D-STALL: the old line `set stall_radius_unit = 5.0` produced the pairs (stall_radius_unit,\"=\") and a dangling 5.0.",
+      "consistent": true
+    },
+    {
+      "line": 1421,
+      "command": "struct",
+      "key": "loop break (comment indentation)",
+      "documents": "The two comments explaining `struct loop break` are moved to column 0.",
+      "verbatim": "# should do it four times",
+      "code_check": "src/scriptModule/script.cpp:117 - a line is a comment only if its FIRST byte is '#'. The previous revision indented both, so they reached the parser as an unknown command '#'. This RESOLVES divergence D-INDENT. The behaviour they describe is correct: src/interfaceModule/app_command_interface.cpp:4819-4825 - `struct loop break` closes the loop and calls resetScriptLoop(), so the body runs once.",
+      "consistent": true
+    },
+    {
+      "line": 1429,
+      "command": "text",
+      "key": "display / align",
+      "documents": "Correction of a default: `display` is NO LONGER on by default for `text action load` - you must state it. `align` is left/center/right, left by default. The example now carries `display on`.",
+      "verbatim": "# Draw at 45deg above South the text \"Orion - The Hunter\" for 4 seconds",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:2867 only calls textDisplay when argDisplay is non-empty; the Text object's visibility is its fader, default-constructed false (src/EntityCore/Executor/AFader.hpp:10 'AFader(bool state = false, ...)'; src/mediaModule/text.cpp Text ctor never touches it). Align default confirmed at src/mediaModule/text_mgr.cpp:109 'TEXT_ALIGN textAlign = TEXT_ALIGN::LEFT;'. The doc's OLD line said 'display is on by default'; the new line corrects it and the code agrees with the NEW line.",
+      "consistent": true
+    },
+    {
+      "line": 1443,
+      "command": "text",
+      "key": "@{variable} interpolation",
+      "documents": "Variables can be interpolated into a text string with @{name}.",
+      "verbatim": "# Draw text mixed with variables",
+      "code_check": "src/interfaceModule/app_command_eval.cpp:90-113 implements @{...} substitution (nesting-aware, recursive through evalString); src/interfaceModule/app_command_interface.cpp:2794 runs every `text ... string` through evalString before translation, so the example works. Reserved variables resolve through the same call (:78-82).",
+      "consistent": true
+    },
+    {
+      "line": 1447,
+      "command": "text",
+      "key": "write twice / thrice",
+      "documents": "`write twice` / `write thrice` duplicates a text around the dome.",
+      "verbatim": "# Double or triple text with write TWICE or THRICE",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:2851-2865 - twice adds a second copy at azimuth+180, thrice adds two more at +120 and +240; :2867-2884 mirrors the same on `display`, and `action update` (:2805-2811) and `action drop` (:2784-2788) know about the name+\"1\"/\"2\"/\"3\" suffixes.",
+      "consistent": true
+    },
+    {
+      "line": 1472,
+      "command": "transition",
+      "key": "action skip / pause / resume",
+      "documents": "A whole new TRANSITION section: `transition action skip [duration]` settles the pending fades, `action pause` freezes them, `action resume` restarts them. The command had no documentation at all before.",
+      "verbatim": "#################",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:4868-4888 - skip runs stcore->update(duration) with the transition flag forced on, defaulting duration to 3600 ('Ensure transitions complete now'); pause/resume set stcore->setFlagEnableTransition(false/true). The two prose claims about `skip` do NOT both hold - see divergences.",
+      "consistent": true
+    },
+    {
+      "line": 1490,
+      "command": "define",
+      "key": "variable case",
+      "documents": "Variables must be written in lowercase, and a variable can hold a quoted string containing whitespace.",
+      "verbatim": "# Beware, variables must be in lowercase",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:180 lower-cases EVERY argument key before storing it, so `define A 10` defines the variable 'a'; the value is not lower-cased, so a later `@{A}` looks up 'A' and misses. The quoting rule is :164-178 (a value starting with '\"' pulls in every byte up to the closing quote via commandstr.get(), so the TAB byte inside line 1492 survives verbatim). NOTE FOR THE TESTER: line 1492 contains a literal TAB (0x09) between 'a' and 'text' inside the quotes - deliberate or not, it is invisible in an editor.",
+      "consistent": true
+    },
+    {
+      "line": 1506,
+      "command": "mod",
+      "key": "alias",
+      "documents": "`mod a 2` is the modulo command.",
+      "verbatim": "# modulo of a value a=a mod 2",
+      "code_check": "src/interfaceModule/base_command_interface.hpp:363 defines \"modulo\" and :372 defines the alias \"mod\"; src/interfaceModule/app_command_init.cpp:71 and :120 register both onto SC_COMMAND::SC_MODULO; handler at app_command_interface.cpp:4677-4688. The doc uses the alias, which is accepted on input but is not the canonical spelling (app_command_init.cpp:99-120).",
+      "consistent": true
+    },
+    {
+      "line": 1527,
+      "command": "struct",
+      "key": "system variables list",
+      "documents": "The system-variable list is extended from 17 to 22 names: heading, selected_star_ra, selected_star_de, body_selected, language, joypad, selected_magnitude, selected_distance are added.",
+      "verbatim": "# altitude longitude latitude sun_altitude sun_azimuth heading date_year date_month date_day date_hour date_minute selected_ra selected_de selected_star_ra selected_star_de selected_alt selected_az body_selected language joypad selected_magnitude selected_distance",
+      "code_check": "src/interfaceModule/app_command_eval.cpp:40-63 registers exactly these plus `random`; every one of the 22 names the doc lists is present, and the readers are at :294-339. `random` (documented separately at lines 1518-1520) and `current_mode` (documented at line 1546) are the only two the line 1527 list omits.",
+      "consistent": true
+    },
+    {
+      "line": 1534,
+      "command": "struct",
+      "key": "language variable encoding",
+      "documents": "$language is the sky_locale's first letter x 100 + its second letter, with de=405, fr=618, en=514, es=519.",
+      "verbatim": "# language variable is the sky_locale first_letter x 100 + second_letter - de=405 fr=618 en=514 es=519 ...",
+      "code_check": "src/coreModule/core.cpp:2214-2223 Core::setLanguage(): for each of the first two letters it finds j in 1..26 with lang[i]==j+96 and folds language = language*100 + j. So a=1..z=26: d=4,e=5 -> 405; f=6,r=18 -> 618; e=5,n=14 -> 514; e=5,s=19 -> 519. ALL FOUR EXAMPLES CORRECT. (A letter outside a-z yields 27; a locale shorter than 2 characters reads lang[1] past the end.)",
+      "consistent": true
+    },
+    {
+      "line": 1546,
+      "command": "struct",
+      "key": "current_mode variable",
+      "documents": "$current_mode tells which mode you are in: SOLAR_SYSTEM 0, IN_GALAXY 1, IN_UNIVERSE 2, STELLAR_SYSTEM 3, IN_SANDBOX 4. The variable itself was undocumented.",
+      "verbatim": "# Variable telling the mode we are in (SOLAR_SYSTEM => 0 - IN_GALAXY => 1 - IN_UNIVERSE => 2 - STELLAR_SYSTEM => 3 - IN_SANDBOX => 4)",
+      "code_check": "src/interfaceModule/app_command_eval.cpp:62 registers \"current_mode\" and :336-337 returns coreLink->getCurrentModule() = src/coreModule/coreLink.hpp:938-940 = core->getFlagIngalaxy(), whose type is enum MODULE {SOLAR_SYSTEM, IN_GALAXY, IN_UNIVERSE, STELLAR_SYSTEM, IN_SANDBOX} - src/executorModule/executorModule.hpp:30. The five numbers are exactly the enum order. (Line 1547 opens a `struct if` with no `struct if end`, which is a lone example fragment, not an error in the claim.)",
+      "consistent": true
+    },
+    {
+      "line": 1555,
+      "command": "wait",
+      "key": "loading preload | background | all | video",
+      "documents": "A whole new `wait loading <level>` family: wait until preload / background / all textures, volumetrics and ojm are loaded, or until video frames are loaded, with an optional minimum duration.",
+      "verbatim": "# Wait until preloading textures/volumetric/ojm are loaded and wait at least XX seconds (optional) and 1 frame by default",
+      "code_check": "src/interfaceModule/app_command_interface.cpp:1490,1511-1528 - the `loading` key selects waitPriority = PRELOAD / BACKGROUND / LOADING(all) / or sets waitVideoCache for `video`; an absent duration gives wait=1 and a present one gives max(duration*1000, 1). This is the live replacement for the removed `wait action reset_timer`. Small imprecision: 'and 1 frame by default' is really 1 MILLISECOND (the wait unit is ms, cf. :1494), which normally spans one frame but is not the same statement.",
+      "consistent": true
+    },
+    {
+      "line": 1330,
+      "command": "set",
+      "key": "star_limiting_mag",
+      "documents": "The default of star_limiting_mag is 6.5 and it applies at a full sky view; the previous 'Might be removed in future releases' caveat is retired.",
+      "verbatim": "# Default is 6.5. Simply does not draw stars dimmer than this value at a full sky view.",
+      "code_check": "Default confirmed 6.5 at src/mainModule/checkConfig.cpp:181 and ~/.spacecrafter/config.ini line 84. 'at a full sky view' is confirmed by the setter name: src/coreModule/core.cpp:356 conf value goes to hip_stars->setMagConverterMaxScaled60DegMag(), i.e. the magnitude at a 60-degree field. The set name is still registered (app_command_init.cpp:328), so retiring the removal warning matches the code.",
+      "consistent": true
+    },
+    {
+      "line": 523,
+      "command": "flag",
+      "key": "fog",
+      "documents": "The caveat '(support depends on landscape)' is dropped from `flag fog`.",
+      "verbatim": "# Draw fog along the horizon",
+      "code_check": "Correct at HEAD: the Fog object is built in the BASE Landscape constructor (src/coreModule/landscape.cpp:89-91) and drawn unconditionally by the base Landscape::drawEnv (src/coreModule/landscape.cpp:274-291, fog->drawEnv at :290), so every landscape type supports fog. Only its geometry is landscape-configurable (fog_alt_angle / fog_angle_shift read at landscape.cpp:231-232, with defaults 30 and 0).",
+      "consistent": true
+    },
+    {
+      "line": 736,
+      "command": "illuminate",
+      "key": "constellation ... size",
+      "documents": "The constellation-brightening example now carries `size 50`.",
+      "verbatim": "illuminate constellation UMa size 50 display on",
+      "code_check": "This is a REAL fix, not cosmetics: the removed line had no size, and src/interfaceModule/app_command_interface.cpp:2024 computes ang_size = evalDouble(args[\"size\"]) which is 0 for a missing key (src/tools/utility.cpp:399-405), and src/coreModule/illuminate_mgr.cpp:130-133 treats size<=0 as hideStar+remove FOR EVERY STAR OF THE CONSTELLATION. The old line therefore hid UMa instead of brightening it.",
+      "consistent": true
+    }
+  ],
+  "divergences": [
+    {
+      "line": 373,
+      "claim": "`flag datetime_display_number on/off/toggle` - that the multiple-date drawing is switched on with a FLAG of that name.",
+      "code_says": "There is no flag called datetime_display_number. The flag table has 98 entries and none of them is this name; setFlag() fails on the lookup, sets 'Unrecognized or malformed flag argument' and logs a Levenshtein did-you-mean. The value 'on/off/toggle' is never even reached.",
+      "code_anchor": "src/interfaceModule/app_command_init.cpp:131-229 (the full m_flags registration, no such entry) and src/interfaceModule/app_command_interface.cpp:427-433 (m_flags.find fails -> searchSimilarFlag -> return false), reported at :1312-1313",
+      "reading": "doc-error-at-writing-time",
+      "why": "This is the surviving half of the previously banked divergence D-DATEDISP. The tester correctly renamed `set date_display_number/position` to `set datetime_display_*` on lines 376 and 379, and applied the same rename to the FLAG line - but there was never a flag by either name. The live flag for the date/time readout is `show_tui_datetime`, which the file already documents at line 630. The old spelling was equally dead, so nothing regressed; the fix simply did not reach this line."
+    },
+    {
+      "line": 403,
+      "claim": "'z_reflection is used when the object has symetry' - that setting z_reflection changes how the volumetric object is drawn.",
+      "code_says": "The value is looked up and then thrown away by a typo: `it->second == \"true\";` is an equality COMPARISON whose result is discarded, not an assignment. z_reflection is therefore always false, so VolumObj3D::reconstruct never sets texCoef.z=2 and never ORs PS_ZREFLECT into the pipeline selection.",
+      "code_anchor": "src/inGalaxyModule/dsoNavigator.cpp:303-306 (bool z_reflection = false; auto it = args.find(\"z_reflection\"); if (it != args.end()) it->second == \"true\";) and the consumer src/coreModule/volumObj3D.cpp:230-233",
+      "reading": "undetermined",
+      "why": "The `== / =` typo makes this look like an engine defect rather than a doc error, and the doc line is valuable precisely because it states the INTENT that the code cannot: 'used when the object has symetry' is exactly what texCoef.z=2 plus PS_ZREFLECT would do (mirror the volume about z). This ANSWERS the previously open gap G-DSO3D-1 ('read and discarded; intended behaviour unknown') and simultaneously pins the defect."
+    },
+    {
+      "line": 403,
+      "claim": "'Usual tex are 512x512 - Default rate is the width' - that when `rate` is omitted it defaults to the texture's width.",
+      "code_says": "The default is the hard-coded constant 512, not the texture width: rayPoints = (_rayPoints) ? _rayPoints : 512. A 256- or 1024-wide texture still gets 512 ray samples.",
+      "code_anchor": "src/coreModule/volumObj3D.cpp:228 (rayPoints = (_rayPoints) ? _rayPoints : 512;), reached with _rayPoints from src/inGalaxyModule/dsoNavigator.cpp:307",
+      "reading": "undetermined",
+      "why": "The claim is true for the 512x512 textures the same sentence calls 'usual', and the code comment one line below (volumObj3D.cpp:229 'Assume width and height are equal') shows the author had the same width-based model in mind, so this may be intent that was never implemented. It is false for any other texture size, which is the case a reader would hit."
+    },
+    {
+      "line": 747,
+      "claim": "'Put brightness of Algol to minimum of brightness m2.1/m3.4 = 0.62 (1 is normal brightness)' with `illuminate hp 14576 size 0.62 display on` - that a size between 0 and 1 scales the star's brightness.",
+      "code_says": "For 0 < size <= 1 the engine only un-hides the star and removes any illuminate, then returns: no magnitude is touched. The code that would do exactly what the doc describes - addVariableStar with magMax = magMin = mag * _size - is present but COMMENTED OUT.",
+      "code_anchor": "src/coreModule/illuminate_mgr.cpp:134-140 (else { showStar(num); if (_size <= 1) { remove(num); return; } }) with the commented-out brightness path at :145-156",
+      "reading": "engine-drift-since",
+      "why": "The disabled block matches the documented formula literally (mag * size, with size=1 meaning unchanged), so the feature existed and was switched off rather than the doc having invented it. At HEAD the only live producer of variable-star magnitudes is the variable_stars.txt loader (src/starModule/hip_star_mgr.cpp:1350-1396). The neighbouring claim on line 745 (size 0 = discard the star) IS live - see answers."
+    },
+    {
+      "line": 940,
+      "claim": "Two prose lines beginning '(Warning! Don't forget to put a wait duration 0.01 ...' at lines 940 and 945, written as documentation.",
+      "code_says": "Neither line starts with '#', so the script loader turns both into tokens and the parser executes them. The command becomes '(warning!' (lower-cased), which is in no command table, so each produces an unknown-command error plus a Levenshtein did-you-mean, twice per run of the file.",
+      "code_anchor": "src/scriptModule/script.cpp:117 (a line is kept as a command whenever line[0] != '#' && != 0 && != '\\r' && != '\\n') and src/interfaceModule/app_command_interface.cpp:160-161 (first token lower-cased into `command`)",
+      "reading": "doc-error-at-writing-time",
+      "why": "This is a NEW instance of the class that divergence D-INDENT described, introduced by this revision - and it arrived in the same edit that FIXED D-INDENT (the two indented '#' comments at old lines 1269/1271 are now at column 0). A sweep of the whole current file finds exactly these two lines as non-comment lines whose first token is not a registered command; prefixing each with '#' is the whole fix. Note that INLINE '#' comments on command lines (used heavily in the new lines 37-46) are safe: app_command_interface.cpp:128-141 strips a '#' outside quotes before parsing."
+    },
+    {
+      "line": 988,
+      "claim": "'# Start video paused (forcing preloading)' with `media videoname ... action play pause on` - that `pause on` starts the video paused.",
+      "code_says": "The paused flag is read with Utility::strToBool, which returns true ONLY for 'true' or '1' (case-insensitively). 'on' is not accepted, so paused is false and the video starts playing normally. Writing `pause true` or `pause 1` would work.",
+      "code_anchor": "src/interfaceModule/app_command_interface.cpp:3625 (bool paused = Utility::strToBool(args[W_PAUSE], false);) and src/tools/utility.cpp:432-438 (only \"true\" or \"1\")",
+      "reading": "doc-error-at-writing-time",
+      "why": "The trap is that the neighbouring key on the same command uses a DIFFERENT converter: `loop on` works because :3626-3631 uses Utility::isTrue, which does accept 'on' (src/tools/utility.hpp:160-171). Two adjacent keys of the same command disagree about what 'on' means, and the doc's example landed on the side that loses. Either the doc line should read `pause true`, or :3625 should use isTrue like the rest of the command; that choice is the owner's."
+    },
+    {
+      "line": 992,
+      "claim": "'# Play SRT within a video' with a `media subtitlename ... videoname ... type VIEWPORT audioname ...` line - that this line plays the video with its subtitles.",
+      "code_says": "The line has no `action`, so commandMedia skips the entire play block (which is where subtitlename, subtitle_project, videoname, type and audioname are read) and falls through to the standalone subtitle branch, which only calls playerSetShowSubtitles(true) and returns SUCCESS. No srt is loaded, no video is played, and nothing reports a problem.",
+      "code_anchor": "src/interfaceModule/app_command_interface.cpp:3621-3624 (the whole block is gated on a non-empty `action`) vs the fall-through at :3891-3900; the srt loader that is skipped is at :3683-3738",
+      "reading": "doc-error-at-writing-time",
+      "why": "Adding `action play` to the line makes it do what the comment says. All four keys the line uses are real and registered; only the missing `action` disarms them. This is a fresh instance of the silent-success class already recorded as D-CONFMOD (a well-formed line that reports SUCCESS while doing almost nothing)."
+    },
+    {
+      "line": 1062,
+      "claim": "'# jump to any mode (in_solarsystem in_stellarsystem in_galaxy in_universe in_sandbox)' and the worked line `mode jump in_sandbox`.",
+      "code_says": "Executor::switchMode has no branch for in_sandbox (or insandbox), and the Executor holds no sandbox module at all. The call still runs currentMode->onExit(), clears the selection, and runs currentMode->onEnter() on the SAME mode - so the observer stays where it was, loses its selection, and the command reports success.",
+      "code_anchor": "src/executorModule/executor.cpp:80-104 (the four accepted values are ingalaxy/in_galaxy, inuniverse/in_universe, insolarsystem/in_solarsystem, instellarsystem/in_stellarsystem, with an unconditional onExit/onEnter around them); reached from src/interfaceModule/app_command_interface.cpp:3596-3598",
+      "reading": "undetermined",
+      "why": "in_sandbox is a real engine token elsewhere - src/interfaceModule/app_command_interface.cpp:4083 accepts it as a `body action load mode` value, src/ojmModule/ojm_mgr.cpp:50-51 maps it to STATE_POSITION::IN_SANDBOX, and MODULE::IN_SANDBOX is enum value 4 (which the doc correctly documents at line 1546). So either the switchMode branch was never written or it was removed; the doc may be describing a mode that exists everywhere except at its entry point. Worth putting to the owner rather than deciding here. The other four values on line 1062 are all live."
+    },
+    {
+      "line": 1021,
+      "claim": "'# the ZHR value is indicative and not taken into account at the moment / # you have to use a \"meteors zhr\" command to make it effective' - that the zhr argument of `meteors day ... zhr N` does nothing.",
+      "code_says": "It is taken into account. `meteors day D ... zhr N` stores N as the third component of that day's radiant, and on every update MeteorMgr compares the current day's radiant[2] against ZHR and, when they differ, calls setZHR with it - so on day D the stored value takes over the rate.",
+      "code_anchor": "src/coreModule/meteor_mgr.cpp:102-106 (Vec3f radiant = Meteor::getRadiant(currentDayOfYear); if (radiant[2] != (float)ZHR) setZHR((int)radiant[2]);) with the store at src/coreModule/meteor.hpp:51-53 and the reverse coupling at src/coreModule/meteor_mgr.hpp:55-59 (setZHR also writes the value into TODAY's radiant slot)",
+      "reading": "engine-drift-since",
+      "why": "The tester's own hedge 'at the moment' says he expected this to change, and the shipped baseRadiant table (src/coreModule/meteor.cpp:51+) already carries per-day ZHR values in the third component, which only makes sense if that component is read. The practical consequence is the opposite of the doc's advice: a `meteors zhr X` issued while the date sits on a day that has a stored radiant ZHR will be overwritten on the next update."
+    },
+    {
+      "line": 1316,
+      "claim": "'# set the field of view by default when reseting with [Home] key' for `set init_fov 180`.",
+      "code_says": "Pressing [Home] calls App::init(), which re-reads init_fov FROM THE CONFIG FILE into Core::InitFov and immediately applies it to the projection - so the scripted value is discarded, not used. What `set init_fov` really governs is the auto-zoom-out target used by `zoom auto out` / `zoom auto initial`.",
+      "code_anchor": "src/uiModule/ui.cpp:2528-2531 ([Home] -> app->init() then queue internal/initial.sts), src/appModule/app.cpp:646 (core->init(conf)), src/coreModule/core.cpp:537-538 (InitFov = conf.getDouble(SCS_NAVIGATION, SCK_INIT_FOV); projection->setFov(InitFov);). The live consumer of a scripted value is src/coreModule/core.cpp:1436-1438 and :1484 (zoomToBothPaths(InitFov, ...)). The setter itself is src/coreModule/core.hpp:204.",
+      "reading": "undetermined",
+      "why": "The command is real and registered (app_command_init.cpp:345, handler app_command_interface.cpp:2347), and the installed internal/initial.sts that [Home] runs contains no zoom command at all, so nothing in that path re-applies the scripted FOV either. Whether [Home] SHOULD preserve a scripted init_fov is a product question, not a documentation one - hence undetermined rather than 'doc is wrong'."
+    },
+    {
+      "line": 1478,
+      "claim": "'# All faders to off in 1 second' with `transition action skip duration 1`.",
+      "code_says": "The duration is in MILLISECONDS, not seconds. Core::update takes an int delta_time and divides by 1000 to get seconds, so `duration 1` advances the faders by 0.001 s - effectively nothing. One second would be `duration 1000`. (The default, when duration is absent, is 3600 ms = 3.6 s, which is what makes the plain `transition action skip` on line 1476 look instantaneous.)",
+      "code_anchor": "src/interfaceModule/app_command_interface.cpp:4872-4880 (float duration = evalDouble(args[W_DURATION]); if (!duration) duration = 3600; ... stcore->update(duration)) and src/coreModule/core.cpp:2624-2626 (void Core::update(int delta_time) { ... const float deltaSeconds = delta_time / 1000.f; ...})",
+      "reading": "doc-error-at-writing-time",
+      "why": "This is the first documentation the `transition` command has ever had, so the unit was never stated anywhere before; the open gap G-TRANS-1 records exactly this ambiguity ('the code answers milliseconds but the default 3600 is commented Ensure transitions complete now'). The new doc line resolves the ambiguity in the wrong direction. A second, smaller trap on the same path: `duration` is truncated to int by the call, so `duration 0.5` advances by 0 ms while still passing the !duration test."
+    },
+    {
+      "line": 1475,
+      "claim": "'# All faders to off for the preceding actions' for `transition action skip`.",
+      "code_says": "`skip` does not set faders off; it runs the transition clock forward so every pending fade REACHES ITS TARGET at once. After `flag atmosphere on` followed by `transition action skip`, the atmosphere is fully ON, not off.",
+      "code_anchor": "src/interfaceModule/app_command_interface.cpp:4871-4880 - the only thing `skip` does is force the transition flag on, call stcore->update(duration) and restore the flag; src/coreModule/core.cpp:2624-2626 advances CoreLink::update and transitions.update by that many seconds",
+      "reading": "undetermined",
+      "why": "The sentence is readable two ways - 'set the faders to off' (wrong) or 'turn the fading off, i.e. finish it now' (right) - and only the tester knows which he meant. Flagged rather than resolved because the first reading is the natural English one and would mislead."
+    },
+    {
+      "line": 127,
+      "claim": "'# Create planet in in_stellar_system' / '# Create moon in in_stellar_system' with `body action load mode in_stellar_system ...` - that `mode` chooses which system the new body is created in.",
+      "code_says": "For `body action load`, `mode` is only consulted to decide whether the line is an OJM/3D-model load; the three values tested are in_universe, in_galaxy and in_sandbox. Any other value - including this one - falls through and the body is added to whatever system is CURRENT, with the mode key silently dropped.",
+      "code_anchor": "src/interfaceModule/app_command_interface.cpp:4080 (argMode = args[\"mode\"]) and :4083 (the three-value test), then :4118-4124 which calls stcore->addSolarSystemBody(args) unconditionally; src/coreModule/core.cpp:832-835 -> src/bodyModule/ssystem_factory.cpp:827-829 (currentSystem->addBody(param))",
+      "reading": "undetermined",
+      "why": "The spelling makes it worse: `in_stellar_system` occurs NOWHERE in the engine (see new_surface) - the stellar-system token is `in_stellarsystem`/`instellarsystem`, and only Executor::switchMode knows it. So the two lines happen to work if and only if you are already standing in the 51Peg system, and the `mode` key contributes nothing. Whether `body action load mode <system>` SHOULD target a system is exactly the scope question the earlier pass deferred (gap G-BODY-1, 'body downstream vocabulary - deferred to INTENT item 4'), so this is evidence for that decision, not a bug report."
+    },
+    {
+      "line": 898,
+      "claim": "The lift-off demonstration at lines 892-901 opens with `landscape landing 0.8` before loading the spherical landscape it is meant to act on.",
+      "code_says": "Core::setLandingLandscape does nothing unless the CURRENT landscape's format is \"spherical\". The landscape in force at line 898 is the fisheye one loaded at line 890, so line 898 is a silent no-op; only lines 900-901 (spherical load, then landing 1.8) do anything.",
+      "code_anchor": "src/coreModule/core.cpp:803-807 (if (landscape->getFormat() == \"spherical\") landscape->setLanding(landing, speed);) - the base class stub src/coreModule/landscape.hpp:124 'virtual void setLanding(bool, float) {}' is empty, and only LandscapeSpherical overrides it (landscape.hpp:186, landscape.cpp:711)",
+      "reading": "undetermined",
+      "why": "Two readings and I cannot separate them from the text: either the example's ordering is a slip, or the tester means line 898 to be read as 'this is the command' rather than 'run this here'. Either way the doc never says the effect is spherical-only, which is the fact a reader needs - the same landscape section documents fisheye landscapes four lines earlier."
+    }
+  ],
+  "new_surface": [
+    {
+      "line": 128,
+      "spelling": "in_stellar_system",
+      "kind": "value",
+      "searched": "LC_ALL=C /usr/bin/grep -rn over all of src/ for in_stellar_system, in_stellarsystem and instellarsystem; also base_command_interface.hpp (all ACP_* and W_* string literals) and app_command_init.cpp",
+      "note": "ZERO hits anywhere in the engine. The only stellar-system tokens are `instellarsystem` and `in_stellarsystem` at src/executorModule/executor.cpp:98, and they are `mode jump` values, not `body ... mode` values. Used on doc lines 128 and 131. See the divergence at line 127 for what the lines actually do."
+    },
+    {
+      "line": 185,
+      "spelling": "dust_tail_trace_JD / gaz_tail_trace_JD (uppercase JD)",
+      "kind": "key",
+      "searched": "LC_ALL=C /usr/bin/grep -rn for each of the 16 tail key spellings across src/; found 14 of 16 verbatim, and these two only in lowercase form",
+      "note": "The engine keys are `dust_tail_trace_jd` and `gaz_tail_trace_jd`, all lowercase (src/bodyModule/protosystem.cpp:842 and :857; identically in src/experimentalModule/moduleLoader/TailLoader.cpp:25,41). The uppercase spelling the doc uses is HARMLESS IN A SCRIPT because the parser lower-cases every argument key (src/interfaceModule/app_command_interface.cpp:180), so `dust_tail_trace_JD 45` on a `body action load` line reaches the engine as `dust_tail_trace_jd`. It is worth telling the tester anyway: the same 16 keys are read from ssystem.ini data by the same param map, and that path does not go through :180. The other 14 spellings on lines 183-200 match the engine byte for byte."
+    },
+    {
+      "line": 82,
+      "spelling": "ring_shadow",
+      "kind": "key",
+      "searched": "LC_ALL=C /usr/bin/grep -rn for ring_shadow over all of src/ (*.cpp and *.hpp), plus a read of the whole ring-construction block in src/bodyModule/protosystem.cpp:813-817",
+      "note": "Read by NOTHING on the shipped path: protosystem.cpp:813-817 reads rings, ring_inner_size, ring_outer_size and tex_ring, and stops there. The only occurrences of the token in the tree are in the NEW render path, which names it explicitly as dead: src/experimentalModule/moduleLoader/RingLoader.cpp:30-31 comments 'ring_shadow_color: the D8-resolved ADDITIVE data key ... a color key parameterises (expands), the dead ring_shadow gate key', and only `ring_shadow_color` (a different spelling) is actually read there (:35-37). So `ring_shadow true` on doc line 82 is inert on both paths - though ring shadows themselves are drawn, just not gated by this key."
+    }
+  ],
+  "example_only_count": 15,
+  "removed_lines": [
+    {
+      "old_line": 94,
+      "text": "body action load name milkyway parent Sun ... lighting true<0xA0>albedo 1  [elided; the byte 0xA0 shown as <0xA0>]",
+      "documented": "How to load a 3D model body (the Milkyway ojml). The line carried a NON-BREAKING SPACE (0xA0) between `true` and `albedo`, which welded two tokens together.",
+      "still_in_engine": true,
+      "note": "HEADLINE FIX. This was banked divergence D-NBSP (INTENT 5.97(a) / SCRIPT_SURFACE SS-1) - the one 0xA0 that sat inside a COMMAND line. The replacement at current line 125 is byte-identical except that the 0xA0 is now a plain 0x20, so the `albedo 1` pair now parses. A byte census of the whole current file finds NO non-breaking space in any command line (only three survive, all inside comments)."
+    },
+    {
+      "old_line": 1167,
+      "text": "set home_planet Mars duration 5",
+      "documented": "That the home planet can be changed over 5 seconds.",
+      "still_in_engine": true,
+      "note": "FIX for banked divergence D-SETDUR / SS-2. `duration` is not a registered set name, and commandSet folds every pair with && in alphabetical order, so `duration` failed first and `home_planet` never ran. The replacement at current line 1314 is plain `set home_planet Mars`, which works (app_command_interface.cpp:2291-2292)."
+    },
+    {
+      "old_line": 303,
+      "text": "flag date_display_number on/off/toggle / set date_display_number 3 / set date_display_position 120 (old lines 303, 306, 309)",
+      "documented": "The multi-date screen readout.",
+      "still_in_engine": true,
+      "note": "PARTIAL FIX for banked divergence D-DATEDISP / SS-3. The two `set` lines are correctly reborn as `datetime_display_*` at current lines 376 and 379. The FLAG line came back at current line 373 with the same rename applied - and there is no flag by either name. See divergences."
+    },
+    {
+      "old_line": 930,
+      "text": "movetocity name Paris country France (with its section header and comment, old lines 926-930)",
+      "documented": "Changing latitude/longitude from a city name in cities.fab.",
+      "still_in_engine": false,
+      "note": "CORRECT REMOVAL of banked divergence D-MOVETOCITY / SS-4. `movetocity` is a registered OBSOLETE token (src/interfaceModule/app_command_init.cpp:18) that only logs 'is no longer used in software'. `movetocity` now appears zero times in the file."
+    },
+    {
+      "old_line": 912,
+      "text": "moveto lat 43.33 lon 5.33 alt 75 name marseille",
+      "documented": "A `name` key on `moveto`.",
+      "still_in_engine": false,
+      "note": "CORRECT REMOVAL. commandMoveto reads only lat/lon/alt (and their long forms), delta_lat/lon/alt, multiply_alt and duration - src/interfaceModule/app_command_interface.cpp:3527-3538,3587; there is no `name` key. The replacement at current line 1077 keeps the same line without it."
+    },
+    {
+      "old_line": 1133,
+      "text": "set mode \"InGalaxy\" (old lines 1133 and 1152-1153 with its comment)",
+      "documented": "That `set mode` changes the viewing mode, with values InGalaxy / InUniverse / InSolarSystem.",
+      "still_in_engine": true,
+      "note": "REMOVAL of banked divergence D-SETMODE / SS-5. `mode` IS still a registered set name (app_command_init.cpp:339) but its handler is `case SCD_NAMES::APP_MODE: break;` (app_command_interface.cpp:2356) - it parses, reports success and does nothing. Removing the doc is defensible, but note the effect: the engine now carries a registered, silently-successful `set mode` with NO documentation anywhere, and the earlier pass had recorded the tester's own statement of its intent as the answer to gap G-SET-1. The live replacement, `mode jump`, is documented at lines 1062-1069."
+    },
+    {
+      "old_line": 1142,
+      "text": "# Line width settings / flag antialias_lines on / set line_width 1.5 (old lines 1142-1144)",
+      "documented": "`set line_width` - the only place in the file that ever wrote it.",
+      "still_in_engine": true,
+      "note": "*** THIS REMOVAL DELETED THE ONLY DOCUMENTATION OF A LIVE FEATURE. *** `line_width` is registered (src/interfaceModule/base_command_interface.hpp:561, src/interfaceModule/app_command_init.cpp:312) and handled (app_command_interface.cpp:2295 -> stapp->setLineWidth(evalDouble(setValue))). The string `line_width` now occurs ZERO times in doc/superscript.sts. `flag antialias_lines` survives at line 444, so only the width setting was lost. This is also the exact key the earlier pass listed in open gap G-SET-4 as 'no unit and no allowed range stated for any of them' - the file no longer even names it."
+    },
+    {
+      "old_line": 1159,
+      "text": "# what azimuthal position is at the bottom of the screen (East in the example) / set heading 90 / # set heading relative to position in <0xB0> / set heading +15 / set heading -15 / # if you need to go to a negative value ... (old lines 1159-1164)",
+      "documented": "`set heading`, absolute and (claimed) relative.",
+      "still_in_engine": true,
+      "note": "MIXED. The RELATIVE claim was banked divergence D-SETHEAD and its removal is correct: APP_HEADING is a plain assignment, coreLink->setHeading(evalDouble(setValue)) at app_command_interface.cpp:2289-2290, so `set heading +15` jumps to 15, it does not add 15. But `set heading` itself is LIVE and registered (base_command_interface.hpp for ACP_SC_HEADING, app_command_init.cpp:309) and now occurs ZERO times in the file. Mitigation: the `heading azimuth` / `heading delta_azimuth` command, which is the properly-relative one (app_command_interface.cpp:2677-2688), is documented at lines 715-723, and old line 831's `set heading 90` inside the VR block was replaced by `heading azimuth 90 duration 3` at current line 952. So the FUNCTION is still documented; only the `set heading` spelling is not."
+    },
+    {
+      "old_line": 1364,
+      "text": "# This command permit to reset the timer to resynchronize after some images loading / # It'll wait automatically the time needed to load those images / wait action reset_timer (old lines 1364-1366)",
+      "documented": "`wait action reset_timer`.",
+      "still_in_engine": false,
+      "note": "CORRECT REMOVAL of banked divergence D-WAITRESET / SS-10. commandWait at HEAD (src/interfaceModule/app_command_interface.cpp:1488-1532) knows only `loading`, `duration` and `video_termination`; `action` reaches the final 'unrecognized or malformed argument name'. The intent is now served by the new `wait loading ...` family at lines 1555-1565."
+    },
+    {
+      "old_line": 680,
+      "text": "# This permit to keep a panorama even after a lift-off (spacecraft argument) / image name zodfisheye ... spacecraft on action load (old lines 680-682)",
+      "documented": "`spacecraft on` on an IMAGE line.",
+      "still_in_engine": false,
+      "note": "HALF of banked divergence D-SPACECRAFT / SS-9 removed. commandImage never reads a `spacecraft` key (app_command_interface.cpp:3062-3222), so this half was dead. BUT the LANDSCAPE half survives at current lines 874-875 ('# Draw a landscape that will resist to take-off (as a spacecraft cockpit)' / `landscape ... spacecraft on action load`), and it is equally dead: a case-insensitive grep for 'spacecraft' over all of src/ (excluding the product name) returns only COMMENTED-OUT occurrences - src/bodyModule/body_decor.cpp:14,16,28,32,34 and src/coreModule/core.cpp:737. The divergence is therefore half-retired, half-live."
+    },
+    {
+      "old_line": 725,
+      "text": "# Duplicate the image or video at 180<0xB0> if Twice and +120<0xB0> and -120<0xB0> if Thrice / image name zodiac action twice / image name zodiac action thrice (old lines 725-727)",
+      "documented": "Dome duplication of an image.",
+      "still_in_engine": false,
+      "note": "FIX for banked divergence D-IMGTWICE, replaced by `project twice|thrice` on the load line at current lines 827-829 (app_command_interface.cpp:3093-3100). The dead `action twice` form nevertheless SURVIVES at current lines 974 and 1570, both inside the MEDIA section, so the divergence is not fully retired."
+    },
+    {
+      "old_line": 332,
+      "text": "dso3d action reset color_tex m57.png alpha_tex m57volumetric.png depth 256 color_depth 1 / dso3d action load ... zrot 0 yrot 0 ... (old lines 332-333)",
+      "documented": "Volumetric dso3d setup.",
+      "still_in_engine": false,
+      "note": "FIX for banked divergences D-DSO3D-RESET and D-ZROT together: `action reset` is not accepted (only load/restart, app_command_interface.cpp:1648-1655) and the rotation keys are yaw/pitch/roll (dsoNavigator.cpp:278-280). Both are corrected at current lines 404-405."
+    },
+    {
+      "old_line": 1269,
+      "text": "  # should do it four times /   # but in fact do it just one  (old lines 1269 and 1271, both indented)",
+      "documented": "The behaviour of `struct loop break`.",
+      "still_in_engine": true,
+      "note": "FIX for banked divergence D-INDENT / SS-7: both comments are now at column 0 (current lines 1421 and 1423), so script.cpp:117 classifies them as comments. A sweep of the whole current file finds no indented '#' line left."
+    },
+    {
+      "old_line": 637,
+      "text": "illuminate constellation UMa display on",
+      "documented": "Brightening a whole constellation.",
+      "still_in_engine": true,
+      "note": "CORRECTED, and the old line was actively harmful: with no `size`, ang_size is 0 (app_command_interface.cpp:2024 + src/tools/utility.cpp:399-405) and src/coreModule/illuminate_mgr.cpp:130-133 HIDES every star of the constellation instead of brightening it. The replacement at current line 736 adds `size 50`."
+    },
+    {
+      "old_line": 60,
+      "text": "body action load name \"Vesta\" parent Sun oblateness 0.0 ... (no `type`)",
+      "documented": "Creating an asteroid.",
+      "still_in_engine": true,
+      "note": "Replaced at current line 79 by the same line with `type Asteroid`. Behaviour unchanged - src/bodyModule/protosystem.cpp:542 already defaulted to Asteroid - but the old line produced a warning in the log."
+    },
+    {
+      "old_line": 1205,
+      "text": "set stall_radius_unit = 5.0",
+      "documented": "The stall radius.",
+      "still_in_engine": true,
+      "note": "FIX for banked divergence D-STALL / SS-6: the stray '=' made the pairs (stall_radius_unit,\"=\") with a dangling 5.0. Corrected at current line 1358."
+    },
+    {
+      "old_line": 1277,
+      "text": "# Draw at 45<0xB0> above South the text \"Orion - The Hunter\" for 4 seconds / # align can be left/center/right (left by default) and display is on by default / text name orion_string string ... action load fader on (old lines 1277-1278, 1281)",
+      "documented": "The `text` example and its defaults.",
+      "still_in_engine": true,
+      "note": "SELF-CORRECTION, and the code backs the NEW text: the old comment claimed 'display is on by default', the new one (current line 1430) says it is not and you must state it, which matches AFader's default-false state (src/EntityCore/Executor/AFader.hpp:10) and app_command_interface.cpp:2867. The example line gained `display on` at current line 1434."
+    },
+    {
+      "old_line": 1347,
+      "text": "# altitude longitude latitude sun_altitude sun_azimuth heading date_year date_month date_day date_hour date_minute selected_ra selected_de selected_alt selected_az",
+      "documented": "The system-variable list (17 names).",
+      "still_in_engine": true,
+      "note": "Superseded by a longer and still-accurate list at current line 1527 (22 names). No name was dropped."
+    },
+    {
+      "old_line": 326,
+      "text": "#domemasters action record (twice, old lines 326-327)",
+      "documented": "Frame-sequence recording, commented out.",
+      "still_in_engine": true,
+      "note": "Uncommented at current lines 396 and 398, so the toggle is now actually exercised by the functional test. `domemasters action snapshot` at line 393 is still commented out."
+    },
+    {
+      "old_line": 434,
+      "text": "# Draw fog along the horizon (support depends on landscape).",
+      "documented": "A caveat on `flag fog`.",
+      "still_in_engine": true,
+      "note": "Caveat retired at current line 523. Correct at HEAD: fog is built and drawn by the BASE Landscape class (src/coreModule/landscape.cpp:89-91, :274-291), so it is not landscape-type dependent; only fog_alt_angle / fog_angle_shift come from the landscape file (:231-232)."
+    },
+    {
+      "old_line": 1180,
+      "text": "# Default is 6.5. Simply does not draw stars dimmer than this value at a full sky view. Might be removed in future releases.",
+      "documented": "star_limiting_mag, with a deprecation warning.",
+      "still_in_engine": true,
+      "note": "Only the deprecation clause was dropped (current line 1330 keeps the rest). Consistent: the set name is still registered (app_command_init.cpp:328) and the 6.5 default still ships (checkConfig.cpp:181)."
+    },
+    {
+      "old_line": 831,
+      "text": "set heading 90 (inside the VR-video block)",
+      "documented": "Turning the dome during a VR video.",
+      "still_in_engine": true,
+      "note": "Replaced at current line 952 by `heading azimuth 90 duration 3`, which is the live command form and adds a duration. See the note on old line 1159 for what this leaves undocumented."
+    },
+    {
+      "old_line": 86,
+      "text": "# Une fonction qui remplace agreablement r 0.4 g 0.5 b 0.5 ... [the source byte at 'agr.ablement' was 0xE9]",
+      "documented": "The `color_value` shorthand.",
+      "still_in_engine": true,
+      "note": "Re-added verbatim at current line 117 with the accent stripped to plain ASCII. Part of a wider de-accenting sweep: the file went from 17 lines carrying non-ASCII bytes to 5, and ALL 14 degree signs (0xB0) became the letters 'deg'. Comment content unchanged."
+    },
+    {
+      "old_line": 662,
+      "text": "#Square image positioned relatively to the sky in right ascension (azimuth=0 to 360<0xB0>) and declination (altitude=-90<0xB0> to 90<0xB0>) coordinates (also old lines 692, 704, 802, 1405)",
+      "documented": "Image / media coordinate-system comments.",
+      "still_in_engine": true,
+      "note": "Not deletions: these five comment lines reappear unchanged at current lines 767, 794, 806, 919 and 1604 with the 0xB0 degree signs written as 'deg'. They show up in the diff only because of the byte change."
+    },
+    {
+      "old_line": 330,
+      "text": "# DSO3D",
+      "documented": "The section header.",
+      "still_in_engine": true,
+      "note": "Renamed to '# DSO2D / DSO3D' at current line 401, matching the section's new dso2d content."
+    },
+    {
+      "old_line": 903,
+      "text": "# jump to any mode (in_solarsystem in_galaxy in_universe in_stellarsystem)",
+      "documented": "The mode list.",
+      "still_in_engine": true,
+      "note": "Superseded at current line 1062, which adds in_sandbox - a value switchMode does not accept. See divergences."
+    },
+    {
+      "old_line": 223,
+      "text": "color property personeq r 0.3 g 0.7 b 1",
+      "documented": "The equatorial personal-grid colour.",
+      "still_in_engine": true,
+      "note": "Same command at current line 290 with different values (0.0/0.2/0.3), so personal and personeq no longer share a colour in the example. Registered either way (ACP_CC_PERSONEQ, base_command_interface.hpp:533)."
+    }
+  ],
+  "unclear": [
+    {
+      "line": 840,
+      "text": "clear state natural",
+      "tried": "Read lines 837-864 in context. Line 840 is byte-identical to line 841 and both open the INITIALISATION block with no comment between them; commandClear (src/interfaceModule/app_command_interface.cpp:2595-2662) is idempotent so the duplicate is harmless. I could find no fact the second copy documents and no comment attached to it, so I cannot tell whether it is deliberate (e.g. belt-and-braces before a show) or an editing accident. Worth one question to the tester rather than a guess."
+    },
+    {
+      "line": 1547,
+      "text": "struct if current_mode equal 0",
+      "tried": "Read lines 1542-1552. The block opens a `struct if` and no `struct if end` follows before the WAIT section. app_command_interface.cpp:197-200 shows the engine now reports exactly this ('this struct if is never closed ... every line after it is skipped silently'), so as written the fragment would swallow the rest of the file. But the two neighbouring examples (lines 1530-1532, 1535-1540) are both closed, so this looks like an example deliberately left open to show the syntax rather than a bug - and doc/superscript.sts is also a functional test that is actually run, where it would matter. I cannot tell which was meant."
+    }
+  ],
+  "nbsp_findings": [
+    {
+      "line": 619,
+      "context": "# If on, will print script errors to the screen.<NBSP> Good for debugging.  -- the 0xA0 sits between '.' and ' Good'",
+      "inside_command_line": false
+    },
+    {
+      "line": 1245,
+      "context": "#If no arguments are supplied, deselects current object.<NBSP> (Leaves constellation selection alone.)<NBSP> See deselect command.  -- TWO 0xA0 bytes on this one line",
+      "inside_command_line": false
+    },
+    {
+      "line": 1257,
+      "context": "#Whether to draw the highlighting pointer around the selected object. <NBSP>Default is on.  -- the 0xA0 follows an ordinary space",
+      "inside_command_line": false
+    },
+    {
+      "line": 125,
+      "context": "CLEARED: the body-load line for the milkyway model. At revision b0696413 this line (old line 94) carried a 0xA0 between 'lighting true' and 'albedo 1' INSIDE THE COMMAND LINE - banked divergence D-NBSP, the shipped line that had already been broken by it. At f0c8ef83 the byte is a plain 0x20 and the line parses. A byte census of the whole 1606-line file confirms only the three comment-line 0xA0 above remain; NO command line in the current revision holds a non-breaking space.",
+      "inside_command_line": false
+    }
+  ],
+  "_transliterations": [
+    {
+      "line": 0,
+      "original_byte": "0xb0",
+      "wrote": "deg",
+      "context": "NOT a transliteration by me: the tester himself replaced all 14 degree signs with the ASCII letters 'deg' in this revision (old lines 662,692,704,725,802,1161,1164,1277,1405 -> current lines 767,794,806,827,919,1429,1604 etc). The current file contains no 0xB0 byte."
+    },
+    {
+      "line": 619,
+      "original_byte": "0xa0",
+      "wrote": " (a plain space)",
+      "context": "NON-BREAKING SPACE inside a comment line - see nbsp_findings"
+    },
+    {
+      "line": 1046,
+      "original_byte": "0xe0",
+      "wrote": "a",
+      "context": "French accented letter in a comment line: # inverse le ciel pour apprendre ? se reperer avec une carte celeste sans ?tre dans le noir"
+    },
+    {
+      "line": 1046,
+      "original_byte": "0xea",
+      "wrote": "e",
+      "context": "French accented letter in a comment line: # inverse le ciel pour apprendre ? se reperer avec une carte celeste sans ?tre dans le noir"
+    },
+    {
+      "line": 1245,
+      "original_byte": "0xa0",
+      "wrote": " (a plain space)",
+      "context": "NON-BREAKING SPACE inside a comment line - see nbsp_findings"
+    },
+    {
+      "line": 1257,
+      "original_byte": "0xa0",
+      "wrote": " (a plain space)",
+      "context": "NON-BREAKING SPACE inside a comment line - see nbsp_findings"
+    },
+    {
+      "line": 1356,
+      "original_byte": "0xe8",
+      "wrote": "e",
+      "context": "French accented letter in a comment line"
+    }
+  ],
+  "_example_only_note": "The 4 lines that are pure metadata or section text (4 = copyright year 2015-2022 -> 2015-2026) are included here; 767, 794, 806, 919 and 1604 are unchanged comments that appear in the diff only because the tester replaced their 0xB0 degree signs with the letters 'deg'; 117, 1046 and 1051 likewise for French accents; 290, 952, 1077, 1314 and 1434 are the replacement halves of removals already detailed in removed_lines; 926 is a corrected comment on a pre-existing media example (the old line duplicated the 'green as transparency' comment onto the wrong command)."
+}

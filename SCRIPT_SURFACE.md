@@ -325,3 +325,110 @@ things are not:
 (Minor, no decision needed: the new comet-tails demo line 181 repeats
 `halo true` twice, like the old Wirtanen line — harmless, the engine keeps
 the last value.)
+
+## 5. The added lines read for CONTENT — 2026-08-31
+
+Section 4 ran the CHECKER over your rewrite: it asked whether each new line
+PARSES the way you meant. This pass asks the other question, which no checker
+can: does the new prose TELL THE TRUTH about what the engine does? Every line
+added since the previous revision was read against the handler that serves it.
+
+**The headline is good.** 48 of the new comments answer something the project
+had open, and several answer it exactly right — the 16 comet-tail keys with
+their defaults (lines 180-200) all match the loader; `$language` = first letter
+x 100 + second letter (de=405, fr=618, en=514, es=519) is correct on all four;
+`moon_brightness` 0.5 and `sun_brightness` 200 are the real defaults; the whole
+new TRANSITION section and `wait loading` document two commands that had no
+documentation at all anywhere. **Six divergences banked in earlier passes are
+FIXED by this revision**, including the invisible character on the old line 94
+(SS-1) — a byte census confirms no command line in the file now carries one.
+`movetocity` and `wait action reset_timer` were correctly deleted.
+
+Six new things. Two of them are worth your attention beyond a text fix.
+
+- **SS-26** — Line 988, `media action play … pause on`, documented as starting
+  the video paused. It does not: the video plays. **`on` is not a word this
+  particular key understands.** Everywhere in `flag`, the words `on`, `true`
+  and `1` all mean yes. But `media`'s `pause` key, `configuration`'s
+  `binary_mode`, and the true/false keys of the stellar-system files
+  (`halo`, `rings`, `close_orbit`, `has_atmosphere`, `hidden`) go through a
+  DIFFERENT reader that accepts only `true` and `1` — `on` falls through to
+  "no", silently, and the command reports success. Write `pause true` and it
+  works. We checked the installed `ssystem.ini`: every one of those keys is
+  written `true` or `false` there, so no shipped body data is affected today.
+  Two questions, and only you can answer the first: (a) is there any show of
+  yours writing `on`/`off` for those keys? (b) Should the engine be made to
+  accept the same words everywhere — this is a real inconsistency and Vixy
+  would have to rule on it, but it is your surface that would change.
+  Status: OPEN.
+
+- **SS-27** — Lines 1478-1479, `transition action skip duration 1`, documented
+  as "All faders to off in 1 second". The duration is in **MILLISECONDS**, so
+  that line advances the faders by one thousandth of a second. To get the
+  second you describe, write `duration 1000`. (For reference, when you leave
+  `duration` off entirely the engine uses 3600 — i.e. 3.6 s — with the comment
+  "ensure transitions complete now".) Fix: change the number, or the comment,
+  whichever you meant. Status: OPEN.
+
+- **SS-28** — Lines 127-131, `body action load mode in_stellar_system …`. The
+  spelling `in_stellar_system` appears **nowhere in the engine**; the engine
+  knows `in_stellarsystem` and `instellarsystem` (no underscore before
+  "system"). And on a `body` line the `mode` key is only consulted for the
+  three 3D-model modes, so on these two lines it is dropped either way and the
+  new planet and moon are created in whatever system you are currently in.
+  That may well be what you want — but the comment says the mode chooses, and
+  it does not. Question: did you intend these bodies to land in a NAMED system?
+  If so that is a missing capability, not a typo. Status: OPEN.
+
+- **SS-29** — Line 373, `flag datetime_display_number`. There is no flag by
+  that name (the line is accepted and does nothing). Same family as SS-3, which
+  was about the `date` command's own spellings; this one is on `flag`.
+  Status: OPEN.
+
+- **SS-30** — a REMOVAL to double-check. The old lines 1142-1144 documented
+  `set line_width 1.5`, and the string `line_width` now appears **zero** times
+  in the file. The setting is still live and still registered in the engine, so
+  the effect of the removal is that a real control is now documented nowhere at
+  all. Deliberate (it is being retired) or lost in the rewrite?
+  Status: OPEN.
+
+- **SS-31** — **the missing-documentation list, as a proposal.** Not a
+  divergence: a map of what the engine accepts that your file never
+  demonstrates, so you can decide what deserves a line. Machine-readable at
+  `claude/harness/artifacts/f71/missing_doc.json`; the criterion is
+  deliberately generous (a name counts as covered if it appears anywhere at
+  all), so everything listed is a genuine gap and the real gap is larger.
+
+  | | never in the file | driven, but never this way | in comments only | exercised |
+  |---|---|---|---|---|
+  | commands (65) | 7 | - | 4 | 54 |
+  | argument keys (324) | 15 | 33 | 4 | 272 |
+  | flags (97) | 6 | - | - | 91 |
+  | colour names (46) | 5 | 23 | - | 18 |
+  | `set` names (43) | 8 | 3 | 1 | 31 |
+  | font targets (10) | - | - | - | 10 |
+
+  The colour surface is the striking one: **only 18 of the 46 colour names are
+  ever driven as colours**. Many of the other 28 appear in the file as FLAG
+  names (`flag analemma on`) but never as `color property analemma …`, so an
+  author reading your file learns the thing exists and not that its colour can
+  be set. Never in the file at all: commands `session`, `galaxy_stars`, `sub`,
+  `suntrace`, `flyto`, `div`, `mul`; flags `navigation`, `astronomical`,
+  `loxodromy`, `orthodromy`, `experimental_shadows`, `experimental_path`;
+  `set` names `line_width` (see SS-30), `srt_locale`, `ui_locale`,
+  `star_size_limit`, `planet_size_limit`, `star_scale`,
+  `text_fading_duration`, `zodiacal_intensity`. `loxodromy` and `orthodromy`
+  are absent as both flag and colour — a whole feature with no line anywhere.
+  Status: OPEN, no action required — this is a menu, not a bug list.
+
+Eight further divergences were found by the same pass and are recorded with
+their code anchors in `claude/harness/f71/superscript_delta.json`
+(`divergences`), but are NOT written up as SS rows here because they were not
+independently re-verified at source: `illuminate … size` (line 747),
+meteor ZHR (1021), `init_fov` and the [Home] key (1316), what `transition
+action skip` settles faders TO (1475), the SRT-only `media` line (992),
+`mode jump in_sandbox` (1062), the lift-off demo's landscape line (898), and
+`dso3d`'s default rate (403). Each carries a file:line so you can judge it
+directly. Also noted there: three comment lines still hold invisible
+characters (619, 1245, 1257) — harmless where they are, since comments are
+never parsed.
