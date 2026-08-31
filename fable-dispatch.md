@@ -1466,19 +1466,26 @@ to extract the witness pairs, never to answer a query); no ollama/OpenAI client.
 **DoD:** scope 1–7; every gate green on a clean build with `-Wall -Wextra` on
 scedit's own targets, 0 warnings; the parity check committed with its result and
 falsification-tested; the spec revision recorded; code tree clean; WIP per §0.6.
-**WIP:** 2026-08-31 — §0.7 gate PASSED (all stated premises verified live: both
-HEADs, 9/9 gates with the stated counts, lint_seeds 15, `--history` 7 fields,
-§11.185 free, F count 8, f64 baseline 80/340 reproduced by measurement, MCP spec
-reachable — latest revision **2026-07-28**). CP1 done: scope 7 landed (code
-`ac3e752e`, target-scoped `-Wall -Wextra`, `cmdSpan` deleted, 0 warnings, 9/9
-green, flag shown live by a throwaway that warned). CP2: scopes 1–4 landed
-(code `170ce615`; `--doc`/`--search`/`--check --json`/`--mcp` dual-era over the
-same readers) + parity 340/340 with F64's 80/340 reproduced (harness `3e28c92`,
-falsified at the third tamper — the first two never reached the criterion). CP3:
-gates 9 → **12** (`check_json`, `doc_queries`, `mcp_protocol` 55 checks; code
-`fbdf1d48`), all four new criteria tamper-shown red and restored. Next: the
-Claude Code binding smoke, the fresh-dir clean build, then README + mirror
-ledger + FEATURE_REQUESTS.
+**WIP:** — **DELIVERED 2026-08-31** (scedit mirror ledger journal
+**[2026-08-31g]**, §5 item 19 scedit-half DONE with its three triage questions
+restated as Vixy's, item 20 STRUCK; no parent §11 — no engine-side fact was
+produced, §11.185 stays free). Code `ac3e752e` (scope 7: target-scoped
+`-Wall -Wextra`, `cmdSpan` deleted) → `170ce615` (scopes 1–4: `--doc`,
+`--search`, `--check --json`, dual-era `--mcp`) → `fbdf1d48` (scope 5: gates
+**9 → 12**) → `116f6d19` (README § For machines). Harness `3e28c92` (parity) →
+`3330c23` (records). **12/12 gates green, 0 warnings, in `build-lovely` AND in a
+fresh `build-f66`.** Measurements: `--search` == the f64 baseline **340/340**
+question by question, both sides **80/340 = 23.5%**
+(`harness/f66_search_parity.py`, rows `artifacts/f66/search_parity.json.gz`);
+MCP spec revision **2026-07-28** fetched 2026-08-31 (the latest era has NO
+`initialize` — the server is dual-era); Claude Code 2.1.251 binding measured,
+opening with `2025-11-25` (`artifacts/f66/claude_code_binding.log`). Every new
+criterion tamper-shown red and restored (4 tampers; the parity tamper took THREE
+attempts to reach the criterion). Findings recorded, not fixed: F64's
+hand-written family map missed `font` (10 targets absent from its two-level
+run); `f64_doc_router.py` overwrites its own artifact rows (F64's one-level rows
+lost, untracked, numbers intact); scedit INTENT §4 "Verification bar" is stale
+(pre-existing, out of scope).
 
 ### F67 — scedit: direct TCP mode — the live engine as target, the `$LOGON` feed as a pane, and the engine's `#!` write-back handled by requirement (D31 "direct tcp mode"; scedit INTENT §5 item 6) [M]
 
