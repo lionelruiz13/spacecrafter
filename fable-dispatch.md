@@ -1623,7 +1623,14 @@ grammar content; NO writes into `~/.spacecrafter` (farm launches only).
 **DoD:** scope 1–6; offline gates green on a clean build, 0 warnings; the live
 instrument committed with its both-ways discrimination record; canary output
 recorded; code tree clean; WIP per §0.6.
-**WIP:**
+**WIP:** 2026-08-31 — §0.7 gate PASSED (both HEADs `116f6d19`/`feea097` clean; 12/12
+gates with every stated count re-measured: tokenizer 189, oracle 119337/0, editcore
+223, ui 17 frames, lint 27, history 36, corpus 15, doc_queries 10, mcp 55; engine
+binary at HEAD; display :2 1920x1080; screensaver ACTIVE at open; canary
+`--no-scene` exit 2 / 2 FAIL recorded not gated; no instance; md5 pair pristine;
+§11.185 free; journal letter `h` free). ONE dispatcher path gloss: `INTENT/5.47.md`
+does not exist — §5.47 is CLOSED, its record is `INTENT/11.135.md` + live §5.72;
+read there, not an abort (content reachable). NEXT: scope 1, `sc_tcpclient`.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
