@@ -227,16 +227,21 @@ catalog values of known stars.)
 *(ref: §11.4 decision (2), §11.158(f); routing per §11.161(c),
 exercised [vixy 2026-08-31])*
 
-**R28. Tilted dome, rotated heading: does the view offset turn with the
-sky, or stay with the dome?** You confirmed (R11) that scripts change
-the view offset during shows on your tilted dome. When the heading is
-*also* rotated, the old behavior rolls the offset direction around with
-the heading; the new path keeps the offset fixed to the physical dome.
-Only someone standing under a tilted dome can say which is right — and
-heading is exercised by few enough operators that a wrong choice here
-would likely reach the field unnoticed, which is exactly why it comes
-to you. What should a tilted-dome show see?
-*(ref: §11.92(d), B17 residual; routing exercised [vixy 2026-08-31])*
+**R28. The tilted-dome view offset: which behavior did the dome that
+used it depend on?** Background: the view offset exists for tilted-dome
+geometry (your round-1 answer) and can change mid-show (R11). The
+developer recalls it was driven by one installation's tilted dome — and
+that it collected long-standing fixes back then whose end state he is
+not sure is clean, which is why your memory of it outranks the code
+here. The open behavior: with the view offset engaged, rotating the
+heading turns the offset direction *with* the heading on the old
+software; the new path keeps the offset fixed to the physical dome. If
+you know that installation (or serve any tilted-dome setup today):
+which of the two does a tilted-dome show actually depend on? If no dome
+you know still uses it, say exactly that — that answer alone downgrades
+this to an engineering call and we stop pressing.
+*(ref: §11.92(d), B17 residual; routing + the fix-history testimony
+[vixy 2026-08-31])*
 
 **R29. Which bodies deliberately look different from far than from
 close?** The shipped Sun and Moon carry a miniature/preview skin that is
