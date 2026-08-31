@@ -113,3 +113,20 @@ never rewrite (maintenance invariant). Archival per the standing convention
   the probe is fixed AND `BANK_XSERVER_START`/`compositor.start_epoch` are
   re-banked there (one VALUES edit with argument, §0.5; queued for the next
   desktop round, owner-visible in fable-dispatch §3).
+- 2026-08-31 20:57 [stated: vixy ("I forgot to disarm the scheduled shutdown");
+  boot measured 20:57:30] **SCHEDULED SHUTDOWN mid-round, host rebooted** —
+  killed the supervising session AND the F70 executor mid-sweep (CP1 was
+  committed `df39166`; the conversion diff survived UNCOMMITTED in the code
+  tree; loss bounded per §0.6). `/tmp` WIPED: all staging binaries gone
+  (`/tmp/f70-pre`, `/tmp/f68-pre`) — pre binaries are rebuildable from their
+  named commits. Persisted across the boot: `idle-delay` 0, `lock-enabled`
+  false [measured]. **DISPLAY STACK MOVED: `:2` no longer exists** — sockets
+  are now `X0`/`X1`, both answering 1920x1080 under
+  `/run/user/1003/.mutter-Xwaylandauth.ZA0TU3`; claude holds logind session 2
+  (seat0, tty2). The F28 recipe generalizes (mutter auth + the session's
+  display) but the NUMBER is per-boot: `DISPLAY=:0` here, verified by
+  xdpyinfo before use. Retro-note: the previous boot was 2026-08-30 23:31 —
+  the 23:54:51 X start §11.188(j) measured is that boot's, consistent; the
+  canary's per-pid mtime proxy remains the refuted instrument, and its
+  display-target member will now also mismatch on this host (still exit-2
+  fail-by-construction territory, desktop bank).
