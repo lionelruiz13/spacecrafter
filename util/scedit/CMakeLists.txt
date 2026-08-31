@@ -189,6 +189,17 @@ add_test(NAME tcp_client
 		${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/tcp_gate.py
 		$<TARGET_FILE:scedit_tcpclient_test>)
 
+# PTY gate: the editor's live KEYS, pressed on a pseudo-terminal, with the
+# stand-in engine asserting what arrived. This is the seam between the two gates
+# on either side of it — ui_selftest pins what is DRAWN, the live legs pin what
+# the core and client DO — and without it "F8 plays the file" was read from the
+# source rather than measured. Control codes rather than function keys: the
+# twins exist for terminals that eat F-keys, and they are the same branch.
+add_test(NAME pty_keys
+	COMMAND ${CMAKE_COMMAND} -E env
+		${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/pty_gate.py
+		$<TARGET_FILE:scedit> ${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json)
+
 # C3 corpus gate: the engine-exercised scripts must stay clean of NEW findings.
 # Boundary [measured 2026-08-04]: ~/.spacecrafter/scripts/ is EMPTY on this
 # machine, so the shipped-scripts half of C3 cannot run here; it re-arms by

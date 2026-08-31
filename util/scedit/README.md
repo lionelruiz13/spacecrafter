@@ -40,7 +40,7 @@ under `third_party/` (see "Vendoring").
 
     cd util/scedit
     cmake -B build && cmake --build build
-    cd build && ctest --output-on-failure     # 13 gates, see "Verification"
+    cd build && ctest --output-on-failure     # 14 gates, see "Verification"
 
 `-Wall -Wextra` are set on scedit's OWN targets (library, TUI layer, binary,
 test binaries) and on nothing else: the vendored trees under `third_party/`
@@ -664,7 +664,7 @@ silently dropped translation unit.
 
 ## Verification
 
-Thirteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings):
+Fourteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings):
 
 | gate | what it measures |
 |---|---|
@@ -680,6 +680,7 @@ Thirteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings)
 | `doc_queries` | ten recorded (arguments → stdout + exit code) answers of `--doc` and `--search`, each line of `tests/doc-queries.txt` saying what it pins: both flagged keys answering `doc: null`, a v1 family name beside a v2 one, an alias, both not-found vocabularies with their did-you-mean and exit 2, the ranking, and a query that matches nothing. stderr must stay empty for every one |
 | `mcp_protocol` | 77 checks from a stdlib-only Python client (`tests/mcp_gate.py`) that spawns `scedit --mcp` — a second implementation on purpose: both protocol eras, every tool with good and bad arguments, the honest null arriving as JSON `null` through the whole chain, the catalogue's counts, the five refusals (parse error, no method, unknown method, unknown tool, unsupported version), and `run_command` driven against the stand-in engine with both sides asserted — the answer verbatim, the stand-in's own record of what arrived, a silent command with the note that says silence is neither outcome, and the no-engine path as a tool error naming what to check |
 | `tcp_client` | 23 gate checks over 65 leg checks: `sc_tcpclient` against `tests/fake_engine.py`, a stand-in whose framing rules are each read from a named line of `src/tools/io.cpp`. One leg per process, and after each one the gate asserts what the stand-in RECEIVED — so a leg cannot pass by agreeing with itself. Endpoint parsing and its refusals, a port nothing listens on, subscribe/ask/answer/disconnect/reconnect, a two-line command refused with nothing sent, latin-1 and 0xA0 bytes arriving as bytes, the bounded feed counting what it drops, another client's answer arriving because we subscribed, and the engine closing the connection |
+| `pty_keys` | the editor's live KEYS, pressed on a **pseudo-terminal**, with the stand-in engine asserting what arrived: `--tcp` alone connects to nothing, Ctrl-T subscribes, Ctrl-L sends the caret's line verbatim and sends NOTHING from a comment line, Ctrl-R plays the file by absolute path, the engine's own words reach the feed pane on screen, Ctrl-Q exits 0 having unsubscribed. This is the seam between the two gates on either side of it — one pins what is DRAWN, the other what the core and client DO — and it is what makes "F8 plays the file" a measurement rather than a reading |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 
 `tests/lint-expected.txt`, `tests/corpus-expected.txt`,
@@ -745,14 +746,17 @@ Stated rather than hidden — the `--rules` discipline, applied to the editor.
   me only the engine's", "only errors", "group by id" are one accessor away
   (`EditCore::errorHistory` is a plain vector) and are not built because nobody
   has asked for them yet.
-- **Live mode's keys are not driven by a terminal in any gate.** What the
-  editor DRAWS is pinned by twenty rendered frames, and what its actions DO is
-  pinned by the same core and client calls, in the same order, run headlessly
-  against the real engine (`claude/harness/f67_tcp_live.py`, and the `live_*`
-  legs of `tests/tcpclient_test.cpp`). What sits between them — that F8 is bound
-  to the play sequence — is read from `src/sc_tui.cpp` and not measured. A gate
-  driving the editor under a pseudo-terminal would close that, and does not
-  exist.
+- **The FUNCTION keys are not pressed by any gate — their control twins are.**
+  `pty_keys` presses Ctrl-T/Ctrl-L/Ctrl-R/Ctrl-W/Ctrl-Q on a real
+  pseudo-terminal; F6/F7/F8/F9/F10 arrive as terminal-dependent escape
+  sequences, and encoding one terminal's table in a gate would be measuring that
+  table. Each pair is one `||` in the same branch of `src/sc_tui.cpp`, which is
+  read rather than measured. The twins exist for exactly the terminals where the
+  F-keys do not arrive.
+- **Nothing measures the editor against a real engine and a real terminal at the
+  same time.** `pty_keys` uses the stand-in; `claude/harness/f67_tcp_live.py`
+  uses the real engine headlessly. The two halves have never been held together
+  in one run.
 - **The engine cannot be asked whether a command worked.** Not a scedit
   limitation: the wire carries answers to `get`/`search` and nothing else, so
   after `flag stars on` there is nothing to show but the fact that it was sent.
@@ -778,7 +782,7 @@ documentation bar, the error pane and its `--history` twin, the FTXUI front end
 (`src/sc_tui.hpp`), the machine surface (`--doc`, `--search`, `--check --json`
 and the MCP server over the same readers), live mode (`--tcp`: the client, the
 feed, the play, the `#!` write-back that loses neither side, and the
-`run_command` tool over the same client), and the thirteen gates above.
+`run_command` tool over the same client), and the fourteen gates above.
 
 Not yet: the stellar-system-file grammar (second contract file) and `$`-variable
 semantics for the `reserved_variables` family. The router half of the
