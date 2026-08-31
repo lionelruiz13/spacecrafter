@@ -89,8 +89,15 @@ PREDICTIONS = {
               "it - twice, for $DIAGON and $DIAGOFF - which post does NOT",
     "vi-post": "D's wire opens with `$DIAGON ok:` and then carries one `$DIAG|tcp#<id>|msg|subject` "
                "record per TCP-origin refusal: the cold fault, the funnel's `get status nonsense`, "
-               "the bypassed `flagg stars on`, the nested audio refusal, the fault after `clear`, "
-               "and one tagged with Q's OTHER id",
+               "the bypassed `flagg stars on`, ~~the nested audio refusal~~, the fault after "
+               "`clear`, and one tagged with Q's OTHER id. "
+               "[CORRECTED after the first run, and the correction is the interesting part: this "
+               "enumeration listed the NESTED audio refusal, and the check written beside it "
+               "asserts the opposite - a nested call passes no origin (11.184's rule), so it "
+               "routes nowhere. The measurement agreed with the CHECK: 5 records, none about "
+               "audio. The prediction text was wrong where the check was right; both were "
+               "committed before the run, so the disagreement is on the record rather than "
+               "resolved by whichever one the result happened to match.]",
     "vi-none": "NO `$DIAG` record names a file path or an empty origin: the HTTP-origin fault and "
                "every fault of the played FILE route nowhere",
     "vii": "after `$DIAGOFF` the confirmation arrives and then nothing: one more fault from P adds "
