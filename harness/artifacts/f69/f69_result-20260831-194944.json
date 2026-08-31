@@ -3,8 +3,9 @@
   "iv": "S/P/Q/HTTP wires: pre == pre2 (deterministic) and pre == post (frozen), and each equal BYTE FOR BYTE to F68's committed wire - 71 / 5 / 0 / 85 B",
   "iv-S": "the $LOGON subscriber receives NO record beginning `$DIAG` in any phase",
   "vi-pre": "on the pre binary D's wire is EMPTY (0 B): `$DIAGON` is not a verb there, it is a command, and the script log carries `Unrecognized or malformed command name` for it - twice, for $DIAGON and $DIAGOFF - which post does NOT",
-  "vi-post": "D's wire opens with `$DIAGON ok:` and then carries one `$DIAG|tcp#<id>|msg|subject` record per TCP-origin refusal: the cold fault, the funnel's `get status nonsense`, the bypassed `flagg stars on`, the nested audio refusal, the fault after `clear`, and one tagged with Q's OTHER id",
+  "vi-post": "D's wire opens with `$DIAGON ok:` and then carries one `$DIAG|tcp#<id>|msg|subject` record per TCP-origin refusal: the cold fault, the funnel's `get status nonsense`, the bypassed `flagg stars on`, ~~the nested audio refusal~~, the fault after `clear`, and one tagged with Q's OTHER id. [CORRECTED after the first run, and the correction is the interesting part: this enumeration listed the NESTED audio refusal, and the check written beside it asserts the opposite - a nested call passes no origin (11.184's rule), so it routes nowhere. The measurement agreed with the CHECK: 5 records, none about audio. The prediction text was wrong where the check was right; both were committed before the run, so the disagreement is on the record rather than resolved by whichever one the result happened to match.]",
   "vi-none": "NO `$DIAG` record names a file path or an empty origin: the HTTP-origin fault and every fault of the played FILE route nowhere",
+  "ix": "scedit's OWN client, on the same launch: `live_diag` green on post (a refused command comes back, split into origin/message/subject) and green on pre WITH `none` (the same leg, the opposite expectation, because that engine has no such verb)",
   "vii": "after `$DIAGOFF` the confirmation arrives and then nothing: one more fault from P adds 0 bytes to D",
   "viii": "the script log carries the SAME number of `Could not execute: get status nonsense` lines (2) and of `struct if end` faults on both binaries: the wire added a copy",
   "v": "no farm file changes during the TCP battery; after the play exactly one `#!` tail, on line 3, every other byte identical"
@@ -20,17 +21,17 @@
   "screensaver_before_pre": "(false,)",
   "xserver_start_after_pre": 1788126891,
   "screensaver_after_pre": "(false,)",
-  "frame_stalls_pre": 19,
+  "frame_stalls_pre": 27,
   "xserver_start_before_pre2": 1788126891,
   "screensaver_before_pre2": "(false,)",
   "xserver_start_after_pre2": 1788126891,
   "screensaver_after_pre2": "(false,)",
-  "frame_stalls_pre2": 20,
+  "frame_stalls_pre2": 28,
   "xserver_start_before_post": 1788126891,
   "screensaver_before_post": "(false,)",
   "xserver_start_after_post": 1788126891,
   "screensaver_after_post": "(false,)",
-  "frame_stalls_post": 21,
+  "frame_stalls_post": 23,
   "ids_observed": {
    "P": "tcp#4",
    "Q": "tcp#5"
@@ -94,7 +95,35 @@
     "raw": "$DIAG|tcp#5|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end"
    }
   ],
-  "D_nonascii_bytes": 0
+  "D_nonascii_bytes": 0,
+  "scedit_legs": {
+   "pre": {
+    "rc": 0,
+    "argv": [
+     "/home/claude/spacecrafter/util/scedit/build-lovely/scedit_tcpclient_test",
+     "live_diag",
+     "127.0.0.1:7805",
+     "none"
+    ]
+   },
+   "pre2": {
+    "rc": 0,
+    "argv": [
+     "/home/claude/spacecrafter/util/scedit/build-lovely/scedit_tcpclient_test",
+     "live_diag",
+     "127.0.0.1:7805",
+     "none"
+    ]
+   },
+   "post": {
+    "rc": 0,
+    "argv": [
+     "/home/claude/spacecrafter/util/scedit/build-lovely/scedit_tcpclient_test",
+     "live_diag",
+     "127.0.0.1:7805"
+    ]
+   }
+  }
  },
  "results": [
   {
@@ -323,11 +352,26 @@
    "detail": "{\"/tmp/sc-farm-f69/f69/f69_file.sts\": \"37b7f5858976cc307a6cc0bb80ebe47b\", \"/tmp/sc-farm-f69/f69/untouched.sts\": \"ab55c24fb672d5337453f44e818d3f5c\"}"
   },
   {
+   "check": "ix   scedit's own client on the live engine, phase post: a refused command COMES BACK",
+   "ok": true,
+   "detail": "{\"rc\": 0, \"argv\": [\"/home/claude/spacecrafter/util/scedit/build-lovely/scedit_tcpclient_test\", \"live_diag\", \"127.0.0.1:7805\"]}"
+  },
+  {
+   "check": "ix   scedit's own client on the live engine, phase pre : the same leg, expecting NOTHING (this engine has no verb)",
+   "ok": true,
+   "detail": "{\"rc\": 0, \"argv\": [\"/home/claude/spacecrafter/util/scedit/build-lovely/scedit_tcpclient_test\", \"live_diag\", \"127.0.0.1:7805\", \"none\"]}"
+  },
+  {
+   "check": "ix   the two phases were given OPPOSITE expectations (otherwise both greens are one)",
+   "ok": true,
+   "detail": "[{\"rc\": 0, \"argv\": [\"/home/claude/spacecrafter/util/scedit/build-lovely/scedit_tcpclient_test\", \"live_diag\", \"127.0.0.1:7805\"]}, {\"rc\": 0, \"argv\": [\"/home/claude/spacecrafter/util/scedit/build-lovely/scedit_tcpclient_test\", \"live_diag\", \"127.0.0.1:7805\", \"none\"]}]"
+  },
+  {
    "check": "real ~/.spacecrafter config/ssystem md5 in == out",
    "ok": true,
    "detail": ""
   }
  ],
- "run": "20260831-191929",
+ "run": "20260831-194944",
  "all_ok": true
 }

@@ -46,6 +46,13 @@ WHAT IS ASSERTED, and what each check could have found instead:
   viii THE LOG KEEPS EVERYTHING. The wire adds a copy, it never diverts one:
       the funnel's two lines and the five structure faults are in the script
       log in the same numbers on both binaries.
+  ix  SCEDIT ITSELF, on the same launch. `scedit_tcpclient_test live_diag`
+      connects with its own client, sends a command the engine refuses, and
+      reads it back off the wire - on post expecting a diagnostic, on pre
+      expecting NONE. The same leg, the same binary, the opposite expectation:
+      that is what says the post green measured the engine and not the client's
+      own hopes. It runs AFTER the wires above are snapshotted, so nothing it
+      asks can reach the recordings leg iv compares.
   v   NO FILE IS TOUCHED by any of it (F68's leg v, re-run): the `#!` writer
       still writes only for file origins, and a TCP fault touches no byte of
       any script.
@@ -73,6 +80,8 @@ REAL = Path.home() / ".spacecrafter"
 PRISTINE = {"config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
             "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"}
 PORT = 7805
+SCEDIT_TEST = os.environ.get("SCEDIT_TCP_TEST",
+                             str(REPO / "util/scedit/build-lovely/scedit_tcpclient_test"))
 FAULT = "struct if end"
 MSG_FAULT = "this 'struct if end' closes nothing"
 UNREC = "Unrecognized or malformed command name"
@@ -100,6 +109,9 @@ PREDICTIONS = {
                "resolved by whichever one the result happened to match.]",
     "vi-none": "NO `$DIAG` record names a file path or an empty origin: the HTTP-origin fault and "
                "every fault of the played FILE route nowhere",
+    "ix": "scedit's OWN client, on the same launch: `live_diag` green on post (a refused command "
+          "comes back, split into origin/message/subject) and green on pre WITH `none` (the same "
+          "leg, the opposite expectation, because that engine has no such verb)",
     "vii": "after `$DIAGOFF` the confirmation arrives and then nothing: one more fault from P adds "
            "0 bytes to D",
     "viii": "the script log carries the SAME number of `Could not execute: get status nonsense` "
@@ -319,6 +331,25 @@ def battery(phase, binary):
 
     wires = {"S": bytes(sub.buf), "P": bytes(p.buf), "Q": bytes(q.buf), "HTTP": http_wire,
              "D": bytes(d.buf)}
+
+    # ix: SCEDIT'S OWN CLIENT, on this engine, on this launch - and it runs
+    # AFTER the wires above are snapshotted, so nothing it asks can reach the
+    # recordings leg iv compares. Its `get status position` would otherwise be
+    # broadcast to S, which is exactly the kind of accident leg iv exists to
+    # catch and would have caught.
+    # The leg is given the OPPOSITE expectation per phase: on post a refused
+    # command must come back, on pre it must not. Same binary, same leg, and a
+    # green that means two different things.
+    scedit_leg = None
+    if Path(SCEDIT_TEST).exists():
+        argv = [SCEDIT_TEST, "live_diag", "127.0.0.1:%d" % PORT] + \
+               ([] if phase == "post" else ["none"])
+        try:
+            r = subprocess.run(argv, capture_output=True, text=True, timeout=180)
+            scedit_leg = {"rc": r.returncode, "argv": argv}
+            (OUT / ("scedit.%s.txt" % phase)).write_text(r.stdout + r.stderr)
+        except subprocess.TimeoutExpired:
+            scedit_leg = {"rc": "timeout", "argv": argv}
     p.send("shutdown action now", pause=0.2)
     for c in (sub, d, p, q):
         c.close()
@@ -339,6 +370,7 @@ def battery(phase, binary):
     for k, v in wires.items():
         (OUT / ("wire.%s.%s.bin" % (phase, k))).write_bytes(v)
     return {"log": log, "played": played, "original": original, "wires": wires,
+            "scedit_leg": scedit_leg,
             "farm_before_play": farm_before_play, "farm_after": farm_after,
             "diag_before_off": diag_before_off, "off_confirmation": off_confirmation,
             "diag_after_off": diag_after_off,
@@ -581,6 +613,19 @@ check("v    every other byte of the played file is identical", stripped == post[
 check("v    the never-played file is untouched after the play too",
       post["farm_after"].get(str(farmdir / "untouched.sts")) == hashlib.md5(DECOY).hexdigest(),
       json.dumps(post["farm_after"]))
+
+# ---------------------------------------- ix: scedit consumes it, live
+notes["scedit_legs"] = {k: runs[k]["scedit_leg"] for k in runs}
+for phase, what in (("post", "a refused command COMES BACK"),
+                    ("pre", "the same leg, expecting NOTHING (this engine has no verb)")):
+    leg = runs[phase]["scedit_leg"]
+    check("ix   scedit's own client on the live engine, phase %-4s: %s" % (phase, what),
+          leg is not None and leg["rc"] == 0, json.dumps(leg))
+check("ix   the two phases were given OPPOSITE expectations (otherwise both greens are one)",
+      runs["post"]["scedit_leg"] is not None and runs["pre"]["scedit_leg"] is not None
+      and "none" not in runs["post"]["scedit_leg"]["argv"]
+      and "none" in runs["pre"]["scedit_leg"]["argv"],
+      json.dumps([runs["post"]["scedit_leg"], runs["pre"]["scedit_leg"]]))
 
 md5_out = {k: md5(REAL / k) for k in PRISTINE}
 check("real ~/.spacecrafter config/ssystem md5 in == out", md5_out == md5_in)

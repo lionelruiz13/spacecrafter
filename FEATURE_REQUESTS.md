@@ -561,6 +561,23 @@ answer; the ledger-row flip itself is the supervising session's.
   **Half (1) DELIVERED 2026-08-31 → §11.187** (engine `423cbe23`): a command
   read on the control socket carries `tcp#<connection id>` and its
   diagnostics say so; the file half is §11.184's, unchanged; HTTP/mkfifo/UI
-  are mapped and reported, not wired. Half (2) is F69, still open — and the frozen-wire
+  are mapped and reported, not wired. ~~Half (2) is F69, still open — and the frozen-wire
   requirement it must meet is now MEASURED as a baseline (an unsubscribed
-  connection's bytes, pre and post, byte-identical).
+  connection's bytes, pre and post, byte-identical).~~
+  **Half (2) DELIVERED 2026-08-31 → §11.188** (engine `be2ddd81`, scedit
+  `630b06fd`): a connection opts in with `$DIAGON` and receives one
+  `$DIAG|<origin>|<message>|<subject>` record per diagnostic about a
+  TCP-origin command; scedit subscribes on connect and draws a refusal red,
+  and its `run_command` MCP tool returns them as a second list. **The freeze
+  held as measured**: an unsubscribed connection's wire reproduced
+  71 / 5 / 0 / 85 B, identical across three runs AND identical to the
+  recordings F68 committed on another binary — with the `$LOGON` subscriber
+  additionally proved to receive no `$DIAG` record at all. The one delta is
+  the verb itself (a client sending `$DIAGON` is now answered by the socket
+  layer rather than refused by the application), which is what opt-in costs.
+  `$NOTICE` was deliberately NOT extended to advertise it, because that reply
+  is bytes on the same wire — a veto point, one line to reverse. Both halves
+  of the request are now delivered; what the request did NOT ask for and did
+  not get: script lifecycle events, success acknowledgements, and feedback for
+  a refusal produced INSIDE another command (that one carries no origin, so it
+  reaches nobody — the sharpest remaining gap, recorded at §11.188(h)).

@@ -162,12 +162,24 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   (`f27_reply.Session`: fresh temp-HOME launch, concurrent-instance probe,
   md5 in==out) plus this host's own precondition — a LOCKED screen throttles
   the engine to 1 Hz (`HOST-EVENTS.md` 2026-08-31).**
-- **Gate inventory at 2026-08-31 (F67 delivered; `ctest` in `build-lovely` and in
+- ~~**Gate inventory at 2026-08-31 (F67 delivered; `ctest` in `build-lovely` and in
   a fresh `build-f67`): 14 gates — tokenizer 189 · parse_oracle 119 337/0 ·
   editcore 266 · roundtrip · ui_selftest 20 frames · seed_gate · lint_rules 27 ·
   history_list 36 · corpus_gate 15 · check_json · doc_queries 10 ·
   mcp_protocol 77 · tcp_client 23/65 · pty_keys 11. `-Wall -Wextra` on scedit's
-  own targets, 0 warnings. Live: `claude/harness/f67_tcp_live.py` 28/28, twice.**
+  own targets, 0 warnings. Live: `claude/harness/f67_tcp_live.py` 28/28, twice.**~~
+  **[SUPERSEDED 2026-08-31 by the F69 line below; kept as the F67 state of
+  record, per the maintenance invariant.]**
+- **Gate inventory at 2026-08-31 (F69 delivered; `ctest` in `build-lovely` and in
+  a fresh `build-f69`): still 14 gates, three of them widened — tokenizer 189 ·
+  parse_oracle 119 337/0 · editcore 266 · roundtrip · ui_selftest **21 frames**
+  · seed_gate · lint_rules 27 · history_list 36 · corpus_gate 15 · check_json ·
+  doc_queries 10 · mcp_protocol **85** · tcp_client **30/112** · pty_keys 11.
+  `-Wall -Wextra` on scedit's own targets, 0 warnings; the full suite run three
+  times consecutively green after the last edit. Live:
+  `claude/harness/f69_feedback.py` **49/49** over three fresh launches, which
+  includes scedit's own `live_diag` leg on the real engine run with OPPOSITE
+  expectations per binary (journal 2026-08-31i, parent §11.188).**
 - ~~**Gate inventory at 2026-08-31 (F66 delivered; `ctest` in `build-lovely`):
   12** — tokenizer 189 · parse_oracle 119 337/0 · editcore 223 · roundtrip
   (md5) · ui_selftest 17 frames · seed_gate · lint_rules 27 · history_list 36 ·
@@ -462,6 +474,79 @@ notes.*
    the args merge gates.
 
 ## 6. Journal (append-only)
+
+- **[2026-08-31i] The dedicated link, consumed: scedit asks for refusals and
+  gets them, and the wire the closed-source client speaks did not move.**
+  Dispatch task F69 (`claude/fable-dispatch.md`), executor run; the ENGINE half
+  is parent territory and is recorded at **INTENT §11.188** (code `be2ddd81`),
+  this entry is the scedit half (code `630b06fd`). Cross-cited both ways.
+
+  **What the engine now offers.** Vixy's mandate [2026-08-31, §11.186(c)]:
+  *"feedback about tcp sent back … through the tcp link dedicated for scedit"*,
+  with the existing masterput-visible channel FROZEN because that client is
+  closed-source. The engine gained `$DIAGON`/`$DIAGOFF` and one record per
+  diagnostic about a command it read on the control socket:
+  `$DIAG|<origin>|<message>|<subject>` — four fields, engine-controlled first
+  so a subject containing the separator still splits at three.
+
+  **What scedit does with it.** `TcpClient::connect` sends `$DIAGON` after
+  `$LOGON` (two subscriptions, one connection); `disconnect` unsubscribes from
+  both. A `$DIAGON` failure is **NOT fatal**: against an engine older than
+  `be2ddd81` it is an unrecognised command, and a working connection must not
+  be discarded because the newer half of the protocol is absent — the feed is
+  then simply as quiet as it always was. `FeedKind` gains `Diagnostic`,
+  classified on the ENGINE's own `$DIAG|` label rather than on content scedit
+  invented (C2: identified knowledge only — this is the first time the wire
+  labels anything, and the classification reads that label). The pane draws it
+  RED.
+
+  **Adding a KIND rather than a flag is what made the second consumer move.**
+  `sc_mcp.cpp`'s `run_command` filtered `FeedKind::Engine` and would have
+  dropped every diagnostic in silence while its `note` went on telling a model
+  that *"the engine writes its refusals to its own log file, which is not on
+  this channel"* — true the day before, false now. It returns a second list,
+  `diagnostics`, split into origin/message/subject with the raw record kept,
+  and its note is COMPUTED from what arrived (I3: the owner of the state pushes
+  to its dependents).
+
+  **Gates** (§4 bar), green in `build-lovely` AND a fresh `build-f69`, `-Wall
+  -Wextra` 0 warnings: `tcp_client` **23/65 → 30/112** — both subscriptions
+  sent in order, the four fields, a subject holding a `|`, a truncated record
+  SHOWN rather than dropped (a client that hides what it cannot parse hides a
+  change of protocol), and a `$LOGON`-only ONLOOKER socket proving from the
+  other end that it received the answer and not one byte of the diagnostic
+  channel; `mcp_protocol` **77 → 85**; `ui_selftest` **20 → 21 frames**, its
+  feed mask now three-valued (`E`/`D`/`L`) and read off the PIXELS, so "a
+  refusal looks different" is proved from the screen and not from the
+  `FeedKind` the renderer was handed (recorded mask `feed ELDLE`; the
+  seventeen non-live frames stayed byte-identical, diff verified purely
+  additive). New LIVE leg `live_diag` against the real engine, run on BOTH
+  binaries with the OPPOSITE expectation — a refusal must come back on the
+  delivered one and must NOT on the pre one, which is what makes the first
+  green a measurement of the engine rather than of scedit's hopes.
+
+  **One gate assertion changed for a reason and not for green**: `mcp_gate`
+  now WAITS for `$LOGOFF` instead of sampling the transcript. Disconnect writes
+  two unsubscribe lines now, and the widened window made a race visible that
+  had passed a minute earlier. Recorded because a green obtained by sampling
+  later is not the same green.
+
+  **What the README now says, and what stayed said.** § Live mode is rewritten:
+  three things reach a client instead of two, with the record's shape spelled
+  out — and the silence that REMAINS is named in three parts, because it is the
+  part a user will get wrong: success is still silent, a script's lifecycle is
+  still unannounced (§11.185, and scedit's bounded file poll is still needed),
+  and a refusal produced INSIDE another command carries no origin and does not
+  arrive at all. A diagnostic caused by ANOTHER client arrives here too, tagged
+  with its origin; reading one as "my command failed" without checking that
+  field is the mistake the field exists to prevent.
+
+  **D14 note for the ASCII sweep (F70).** Every line this task added to scedit
+  is pure ASCII. Nine added lines are not, all in
+  `tests/ui-selftest-expected.txt`, and all of them box-drawing the TERMINAL
+  draws — the file is a record of rendered output, so converting it would break
+  the gate against an unchanged renderer. Named as an exclusion candidate, not
+  silently skipped.
 
 - **[2026-08-31h] The engine at the other end of the editor: `--tcp`, the feed,
   the `#!` write-back that loses neither side — and the measured fact that the

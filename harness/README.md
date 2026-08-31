@@ -2617,3 +2617,72 @@ Instrument facts worth carrying:
 - Frame stalls: **17 / 18 / 0** across the three phases on an awake session
   (`GetActive` false throughout, wake thread running anyway per §11.186(a)).
   Recorded, unattributed, and no claim here is a timing claim.
+
+## F69 — the dedicated feedback link, and the wire that had to not move (`f69_feedback.py`) — INTENT §11.188, 2026-08-31
+
+    cd claude/harness && DISPLAY=:2 ./f69_feedback.py     # 49/49, three fresh launches, ~9 min
+
+The mandate had two halves pulling opposite ways [vixy 2026-08-31, §11.186(c)]:
+send feedback about TCP-origin commands back, and do not touch the wire a
+closed-source client (masterput) may be speaking. This runs F68's battery with
+**one client added** — D, who sends `$DIAGON` — which is the sharpest form of
+the question: if adding a subscriber changed what the others hear, the frozen
+leg is where it shows.
+
+Phases `pre` / `pre2` / `post`: the pre binary is F68's delivery
+(`SC_BIN_PRE`, default `/tmp/f69-pre/spacecrafter`, and it must be NAMED
+`spacecrafter` — see F68's note on `/proc/<pid>/comm`), run twice as the A/A
+control, then the delivered one.
+
+What it asserts, and what each check could have found instead:
+
+- **iv — THE FROZEN WIRE.** S (`$LOGON`), P (the driver), Q (sends only) and an
+  HTTP request record every byte received: `pre == pre2` (this battery is
+  deterministic at all) and `pre == post` (nothing new is sent), **and each
+  compared against F68's committed `artifacts/f68/wire.pre.*`** — another task,
+  another binary, another day. Reproduced: **71 / 5 / 0 / 85 B**. Three are
+  asserted NON-EMPTY, because identity over empty recordings is a green that
+  cannot fail; and S is separately asserted to have received no record beginning
+  `$DIAG` — byte-identity says nothing arrived, that says the RIGHT nothing did.
+- **vi — THE SUBSCRIBED WIRE.** D's 939 B: the confirmation, then one
+  `$DIAG|tcp#<id>|<message>|<subject>` per TCP-origin refusal, including one
+  tagged with a SECOND connection's id (which is what makes the origin field
+  mean the connection rather than the word "tcp"), and NOTHING for the
+  HTTP-origin fault or for the played file's own faults. On `pre` that same
+  wire is **0 B** and the log carries `Unrecognized or malformed command name`
+  three times where post carries it once — the verb's own both-ways control.
+- **vii — the subscription can be dropped.** After `$DIAGOFF`, one more fault
+  adds 0 bytes, while the LOG shows three faults from that connection against
+  the two on D's wire. A leg that only checked the silence would pass on a
+  broken engine that stopped producing faults.
+- **viii — the log keeps everything.** Same counts of funnel lines and
+  structure faults on both binaries: the wire adds a COPY, it never diverts.
+- **ix — scedit itself, on the same launch.** `scedit_tcpclient_test live_diag`
+  is run with the OPPOSITE expectation per phase (post: a refusal must come
+  back split into fields; pre: it must not). It runs AFTER the wires are
+  snapshotted, because its own `get status position` would otherwise be
+  broadcast to S — the kind of accident leg iv exists to catch.
+
+Instrument facts worth carrying:
+
+- **The canary's `xserver.restarted` NOTE is the instrument, not the host.**
+  `f56_canary.sh:270` reads `stat -c %Y "/proc/<pid>"` — a /proc DIRECTORY
+  MTIME, not a start time. Measured three ways on the same pid
+  (`artifacts/f69/xserver-epoch-probe.txt`): `ps -o lstart` and `/proc/stat`
+  btime + `starttime`/HZ both say 2026-08-30 23:54:51, while that mtime moved
+  19 hours for a process that never restarted. **The same proxy backs
+  `compositor.start_epoch`, whose twin is a GATING `fail 2`** — a false red
+  there makes an executor stop and report a stack change that did not happen.
+  Not fixed by F69: `BANK_XSERVER_START` was banked with the same wrong proxy,
+  so correcting it re-bases a banked value, and §0.5 makes re-banking one
+  VALUES-block edit WITH an argument.
+- **Adding a client does not move the other wires, but adding a QUESTION does.**
+  Any new leg that issues `get status …` puts an answer on every `$LOGON`
+  subscriber's wire. Order matters more than isolation here: snapshot first,
+  ask afterwards.
+- **`$DIAG|` appears inside the subscription's own confirmation**, which
+  describes the record shape. A consumer must test the START of a line, not a
+  substring — scedit's gate went red the other way first.
+- Frame stalls **27 / 28 / 23**, `GetActive` false at all six reads (both arms
+  of the blank hazard removed by the owner mid-round, §11.186(a)); no wake
+  mitigation applied or needed. Recorded, unattributed, no timing claim.

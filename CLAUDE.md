@@ -39,9 +39,13 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   (§11.51(d) red line). Loaded data = `~/.spacecrafter/ssystem.ini` (ISO-8859; the
   Bash-tool `grep` wrapper is ugrep with `-I`: any file holding non-UTF-8 bytes is
   classed BINARY and skipped SILENTLY — not only that ini: `src/interfaceModule/
-  app_command_interface.cpp` (the one ISO-8859 file among 500 tracked `src/` files)
-  and `doc/superscript.sts` too [measured 2026-08-31, F67 executor + supervisor: 11
-  hits without `-I`, none with]. Use `/usr/bin/grep` or Read on any ISO-8859 file).
+  app_command_interface.cpp` ~~(the one ISO-8859 file among 500 tracked `src/` files)~~
+  **[CORRECTED 2026-08-31, F69 §11.188(k): there are TWO, not one — the `.cpp`
+  (55 non-ASCII bytes) AND `app_command_interface.hpp` (18), both non-UTF-8-decodable,
+  the `.hpp` already so at `423cbe23~1` so F68 did not introduce it; census over all
+  505 tracked regular files under `src/`]** and `doc/superscript.sts` too
+  [measured 2026-08-31, F67 executor + supervisor: 11 hits without `-I`, none with].
+  Use `/usr/bin/grep` or Read on any ISO-8859 file).
 - Suspended-for-Vixy items: work on them is blocked by protocol, not dependencies.
 - Corrections propagate forward only (`spacecrafter-data` → future deliveries); the
   installed field is frozen — backward compatibility is forced (§2.0 D9).

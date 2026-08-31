@@ -377,7 +377,11 @@ ruling, by design). Parent §5 register untouched at open.
      **[CORRECTED 2026-08-31, F67 executor finding + supervisor measurement: the
      wrapper is ugrep with `-I` — ANY file holding non-UTF-8 bytes is classed binary
      and skipped silently, tracked or not; `src/interfaceModule/app_command_interface.cpp`
-     is the one such file among 500 tracked `src/` files, `doc/superscript.sts` another
+     is ~~the one~~ **[CORRECTED 2026-08-31, F69 §11.188(k): ONE OF TWO — the `.hpp`
+     of the same name is ISO-8859 as well (18 non-ASCII bytes, already so at
+     `423cbe23~1`); census over all 505 tracked regular files under `src/` finds
+     exactly those two]** such file among 500 tracked `src/` files,
+     `doc/superscript.sts` another
      (11 hits without `-I`, none with). `/usr/bin/grep` or Read on every ISO-8859 file.
      CLAUDE.md (one file: the code-tree path is a link to `claude/CLAUDE.md`) carries
      the corrected rule.]**
@@ -1985,16 +1989,27 @@ question stays Vixy's); no lifecycle events; mint license per §5.79.
 diffs) + scedit consumption with gates; parent §11.188 + mirror journal +
 row annotations; builds green both trees (`-j6`); baselines re-derived as
 last act, deltas attributed; trees clean; WIP cleared.
-**WIP:** 2026-08-31 CP1 — §0.7 gate PASSED on every enumerated premise (both
-HEADs, F68 accepted, 188 free, 12 sections, `computeNormalString` still the
-three verbs, binary current by `cmake --build -- -n`, canary exit 2 + the
-`xserver.restarted` NOTE, GetActive false). Engine half committed `be2ddd81`,
-builds green `-j6`: `$DIAGON`/`$DIAGOFF` + `clientDiagTab` +
-`sendDiagnostic`/`deliverDiagnostic` (io.{hpp,cpp}), `sendFeedback` routed at
-the three F68 sites (app_command_interface.{hpp,cpp}, byte-level patch, 55/18
-non-ASCII bytes unchanged, 0 added lines non-ASCII). PRE binary staged
-`/tmp/f69-pre/spacecrafter` md5 444db012. NEXT: `harness/f69_feedback.py`
-(frozen-wire battery + the subscriber's own wire), then the scedit half.
+**WIP:** DELIVERED 2026-08-31 — §11.188 (entry file + stub); engine `be2ddd81`,
+scedit `630b06fd`. Gate `harness/f69_feedback.py` **49/49** over three fresh
+launches (pre `444db012` twice as A/A + both-ways control, post `2ea5d54b`);
+scedit `ctest` **14/14** in `build-lovely` and a fresh `build-f69`, 0 warnings,
+three consecutive green suites. FROZEN WIRE REPRODUCED: S 71 B / P 5 B / Q 0 B /
+HTTP 85 B, pre == pre2 == post AND byte-identical to F68's committed
+`artifacts/f68/wire.pre.*`; subscriber D's own wire 939 B (post) vs 0 B (pre) is
+the positive discrimination, both directions committed. Verb `$DIAGON`/`$DIAGOFF`
+(candidates + rejections argued at (b)); `$NOTICE` NOT extended — veto point
+stated at (c). Gates widened: tcp_client 23/65→30/112, mcp_protocol 77→85,
+ui_selftest 20→21 frames (feed mask now E/D/L off the pixels). Records:
+§11.185(d)(1) flipped ANSWERED+IMPLEMENTED with the lifecycle half still routed,
+§11.186(c) DELIVERED, §11.187(i) back-marked (the canary NOTE is the instrument),
+§11.187(j) closed; §5.72 + §5.117 annotated at their nodes; scedit mirror journal
+`2026-08-31i` + its §4 gate inventory. Canary exit 2 as stated; GetActive false
+at all six reads. TWO findings outside the mandate, both reported not fixed: the
+canary's start-epoch proxy is `/proc/<pid>` mtime (probe committed; the same
+proxy backs a GATING check) and `app_command_interface.hpp` is ISO-8859 too, so
+tracked `src/` holds TWO such files — rule corrected at CLAUDE.md and §0.5.
+Baselines re-derived LAST: pair-check **204/179/25/90** (F68's post-state
+203/178/25/90: +1/+1/0/0 = this entry and its stub); scan **121/162/99** (F68 post-state **120/161/98**: +1 raw = the §11.187(i) CORRECTED line, +1 pair = its citation, +1 unmatched = §11.187→§11.188 — the SAME documented inversion F68 recorded for §11.184→§11.186, the line at the corrected node IS the back-marker; the §11.185/§11.186 flips used discharge vocabulary and moved the scan by zero, by the F52 ruling).
 
 ### F70 — Every source file pure ASCII: census, conversion, exclusion table (D14, §11.186(d)) [M]
 
