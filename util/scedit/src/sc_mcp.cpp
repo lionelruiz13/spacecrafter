@@ -201,10 +201,12 @@ ToolResult runCommandTool(const ToolContext &ctx, const json &args)
 		r.structured = out;
 		return r;
 	}
-	// The subscription confirmation is the engine's answer to $LOGON, not to
-	// this command; it is read and dropped so that `replies` holds what the
-	// command produced and nothing else.
-	client.pollFor(500, 1);
+	// The subscription confirmations are the engine's answers to $LOGON and
+	// $DIAGON, not to this command; they are read and dropped so that `replies`
+	// holds what the command produced and nothing else. Two records now, and
+	// possibly one on an older engine - so this waits for the pair but does not
+	// require it, and clears whatever arrived either way.
+	client.pollFor(500, 2);
 	client.clearFeed();
 
 	if (!client.send(command, err)) {
@@ -220,28 +222,47 @@ ToolResult runCommandTool(const ToolContext &ctx, const json &args)
 	}
 	client.pollFor((int)waitMs);
 	json replies = json::array();
-	for (const FeedLine &f : client.feed())
+	json diagnostics = json::array();
+	for (const FeedLine &f : client.feed()) {
 		if (f.kind == FeedKind::Engine)
 			replies.push_back(f.text);
+		else if (f.kind == FeedKind::Diagnostic) {
+			// Split for the caller: a model should not have to know the wire
+			// format to learn WHICH connection a refusal belongs to.
+			const scedit::FeedDiagnostic d = parseFeedDiagnostic(f.text);
+			diagnostics.push_back({{"origin", d.origin}, {"message", d.message},
+			                       {"subject", d.subject}, {"raw", f.text}});
+		}
+	}
 	client.disconnect();
 
 	out["sent"] = true;
 	out["replies"] = replies;
 	out["reply_count"] = replies.size();
+	out["diagnostics"] = diagnostics;
+	out["diagnostic_count"] = diagnostics.size();
 	// The single most important field for a model reading this: what an empty
 	// reply list means. Saying it once, here, is cheaper than a model guessing
-	// it every time.
-	out["note"] = replies.empty()
-	                      ? "The engine sent nothing back. That is the normal case: only "
-	                        "`get status ...` and `search name ...` produce a reply, and every "
-	                        "other command runs in silence. This is NOT evidence that the "
-	                        "command succeeded, and NOT evidence that it failed — the engine "
-	                        "writes its refusals to its own log file, which is not on this "
-	                        "channel. Read a state back with `get status ...` if you need to "
-	                        "know what happened."
-	                      : "Replies to this connection, and anything the engine broadcast to "
-	                        "its $LOGON feed while we waited — which includes answers to OTHER "
-	                        "clients' commands.";
+	// it every time. The answer CHANGED with INTENT 11.188 - silence used to be
+	// uninterpretable, and now it is one thing less so - which is exactly why
+	// this note is computed rather than written once and left.
+	if (!diagnostics.empty())
+		out["note"] = "The engine REFUSED something: see `diagnostics`. Each carries the "
+		              "connection that caused it (`origin`, e.g. `tcp#7`) - this call uses one "
+		              "connection of its own, so a diagnostic from a DIFFERENT origin was "
+		              "caused by another client and is not about this command.";
+	else if (replies.empty())
+		out["note"] = "The engine sent nothing back. This connection asked for diagnostics "
+		              "($DIAGON), so on an engine that has them (INTENT 11.188) no diagnostic "
+		              "means the command was not refused at the top level - but success is "
+		              "still SILENT, a refusal produced inside another command carries no "
+		              "origin and does not arrive, and an OLDER engine sends nothing at all. "
+		              "Read a state back with `get status ...` if you need to know what "
+		              "happened.";
+	else
+		out["note"] = "Replies to this connection, and anything the engine broadcast to its "
+		              "$LOGON feed while we waited - which includes answers to OTHER clients' "
+		              "commands.";
 	ToolResult r;
 	r.structured = out;
 	return r;
@@ -334,13 +355,18 @@ std::vector<Tool> buildRegistry()
 		"its control socket, and return whatever it says back. This is not a simulation and not "
 		"a dry run: the dome moves, the show changes, and there is no undo. Ask the person you "
 		"are working for before using it, and check the line with check_script first. "
-		"WHAT COMES BACK: only `get status <what>` and `search name <name>` produce a reply. "
-		"Every other command runs in SILENCE, so an empty `replies` means neither success nor "
-		"failure — the engine writes its refusals to a log file that is not on this channel. To "
-		"find out what actually happened, read a state back with `get status ...`. The `replies` "
-		"list can also carry answers to OTHER clients' commands: this connection subscribes to "
-		"the engine's feedback channel while it waits. A command that plays a script returns as "
-		"soon as the script STARTS; nothing announces that it has ended.";
+		"WHAT COMES BACK, in two lists. `replies`: only `get status <what>` and `search name "
+		"<name>` produce one, so an empty `replies` is the normal case and is NOT evidence of "
+		"success. `diagnostics`: what the engine REFUSED and why, with the connection that "
+		"caused it - this connection asks for them with $DIAGON (INTENT 11.188). An empty "
+		"`diagnostics` therefore means the command was not refused at the top level, and no "
+		"more than that: success is silent, a refusal produced INSIDE another command carries "
+		"no origin and does not arrive, and an engine older than that change sends nothing at "
+		"all. To find out what actually happened, read a state back with `get status ...`. "
+		"Both lists can carry OTHER clients' traffic: this connection subscribes to the "
+		"engine's feedback channel while it waits, and a diagnostic names its own origin so "
+		"you can tell. A command that plays a script returns as soon as the script STARTS; "
+		"nothing announces that it has ended.";
 	run.input_schema = json::parse(R"({
 		"type": "object",
 		"properties": {

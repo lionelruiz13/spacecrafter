@@ -12,21 +12,50 @@
  *
  * WHAT COMES BACK — AND WHAT DOES NOT (measured at the source, not assumed)
  * ========================================================================
- * Two things, and only two, ever reach a client:
+ * THREE things reach a client, and the third one is new:
  *   - the answer to `get status …` and to `search name …`
- *     `[observed: src/interfaceModule/app_command_interface.cpp:1284-1301,1415
+ *     `[observed: src/interfaceModule/app_command_interface.cpp:1309-1326,1440
  *      — the only callers of ServerSocket::setOutput in the whole tree]`;
- *   - the control replies to `$NOTICE` / `$LOGON` / `$LOGOFF`
- *     `[observed: src/tools/io.cpp:640-663]`.
- * EVERYTHING ELSE IS SILENT. A `flag stars on` that worked and a `flag stars
- * onn` that did not are the same nothing on this wire: the refusal is written
- * to the script log at L_DEBUG (INTENT §5.117) and the `$LOGON` subscription,
- * whose greeting promises the logs, actually carries other clients' command
- * answers and no log line at all (INTENT §5.72). There is also NO
- * notification when a played script ends. So a client cannot treat silence as
- * failure, cannot treat it as success, and cannot wait on an end-of-script
- * event; the editor's `#!` reload therefore watches the FILE, on a bounded
- * poll, and says so (sc_editcore.hpp § THE ENGINE WRITES BACK).
+ *   - the control replies to `$NOTICE` / `$LOGON` / `$LOGOFF`, and now to
+ *     `$DIAGON` / `$DIAGOFF` `[observed: src/tools/io.cpp, computeNormalString]`;
+ *   - since engine `be2ddd81` (INTENT 11.188): on a connection that sent
+ *     `$DIAGON`, one record per DIAGNOSTIC the engine produces about a command
+ *     it read on the control socket - the refusals it used to write only into
+ *     its own log. This client subscribes on connect, so a `flag stars onn`
+ *     that was refused now says so.
+ *
+ * ~~EVERYTHING ELSE IS SILENT.~~ That was the whole story until 11.188, and
+ * the part of it that still holds is worth keeping straight, because an older
+ * engine is a real target:
+ *   - SUCCESS is still silent. `flag stars on` that WORKED sends nothing, so
+ *     silence still cannot be read as success - only as "no diagnostic".
+ *   - a script's LIFECYCLE is still silent: no event when a play starts, none
+ *     when it ends (11.185). The editor's `#!` reload therefore still watches
+ *     the FILE, on a bounded poll, and says so (sc_editcore.hpp section THE ENGINE
+ *     WRITES BACK).
+ *   - a refusal produced INSIDE another command (the engine's nested calls,
+ *     `media action play ...` -> `audio filename ...`) carries no origin, so it
+ *     routes nowhere and does not arrive `[measured: claude/harness/
+ *     f69_feedback.py leg vi]`.
+ *   - against an engine older than `be2ddd81`, `$DIAGON` is not a verb: it is
+ *     an unrecognised command, refused into that engine's log, and nothing
+ *     comes back. Connecting is unharmed; the feed is simply as quiet as it
+ *     always was.
+ * The refusals are also still written to the script log at L_DEBUG (INTENT
+ * 5.117) - the wire carries a COPY. And the `$LOGON` subscription, whose
+ * greeting promises the logs, still carries other clients' command answers and
+ * no log line at all (INTENT 5.72): the two subscriptions are different
+ * things and this client holds both.
+ *
+ * THE DIAGNOSTIC RECORD, EXACTLY
+ * ==============================
+ * `$DIAG|<origin>|<message>|<subject>` - four fields, engine-controlled first,
+ * so the SUBJECT (a command line, which may itself contain a `|`) is the last
+ * and the split is bounded at three. `<origin>` is `tcp#<id>`, the engine's
+ * never-reused connection id: a diagnostic caused by ANOTHER client on the same
+ * engine arrives here too, tagged with its id and not with ours. Reading it as
+ * "my command failed" without checking the origin is the mistake this field
+ * exists to prevent.
  *
  * An answer is delivered to the connection that asked AND to every `$LOGON`
  * subscriber, the addressee excluded so a client that is both gets one copy
@@ -102,14 +131,33 @@ enum class LinkState {
 };
 
 //! Where a feed line came from, as far as this layer can honestly tell.
-//! The wire does not label its records, so this is not a parse of content: it
-//! is the CONTROL replies (which are answers to what this client just asked)
-//! told apart from everything else. Anything richer would be scedit inventing
-//! a protocol the engine does not speak.
+//! `FeedKind::Diagnostic` is the one content test in here, and it is a test the ENGINE
+//! made available: a record that begins `$DIAG|` is labelled as a diagnostic by
+//! the engine itself (INTENT 11.188), so telling it apart is reading the
+//! protocol rather than guessing at it. Everything else stays what it was - the
+//! records the engine sent, and the lines scedit wrote itself. Anything richer
+//! would be scedit inventing a protocol the engine does not speak.
 enum class FeedKind {
 	Engine,      //!< a record the engine sent
+	Diagnostic,  //!< a record the engine sent AND labelled `$DIAG|...`: something
+	             //!< it refused, and why. Still an engine record - a reader that
+	             //!< wants "everything the engine said" takes both.
 	Local        //!< a line scedit wrote into the feed itself (what it sent, and why)
 };
+
+//! A `$DIAG|<origin>|<message>|<subject>` record, split. `ok` is false when the
+//! line did not have that shape, and then the other fields are empty and the
+//! caller should use the raw text: a malformed record is shown, never dropped.
+struct FeedDiagnostic {
+	bool ok = false;
+	std::string origin;    //!< `tcp#<id>` - WHICH connection caused it, not necessarily ours
+	std::string message;   //!< the engine's own words
+	std::string subject;   //!< the command line it is about (may contain `|`)
+};
+
+//! Split one feed line into its diagnostic fields. Returns `ok == false` for
+//! any line that is not a `$DIAG|` record.
+FeedDiagnostic parseFeedDiagnostic(const std::string &line);
 
 struct FeedLine {
 	FeedKind kind = FeedKind::Engine;
@@ -123,12 +171,20 @@ public:
 	TcpClient(const TcpClient &) = delete;
 	TcpClient &operator=(const TcpClient &) = delete;
 
-	//! Open the connection and subscribe to the feedback channel with `$LOGON`.
+	//! Open the connection and subscribe to BOTH channels: `$LOGON` for the
+	//! answer feed and `$DIAGON` for the diagnostics about commands sent on the
+	//! control socket. Two verbs because they are two subscriptions in the
+	//! engine - `$LOGON`'s is the one a closed-source client may also be on and
+	//! which therefore never changed; `$DIAGON`'s is the link this tool was
+	//! given (INTENT 11.186(c), 11.188).
+	//! Only `$LOGON` failing is fatal: `$DIAGON` on an engine that predates it
+	//! is an unrecognised command, which costs nothing and must not stop a
+	//! connection that would otherwise work.
 	//! Returns false and fills `err` (also stored in `lastError`) on failure;
 	//! the state is then `Failed`. Connecting while connected is a no-op that
 	//! returns true.
 	bool connect(const Endpoint &ep, std::string &err);
-	//! `$LOGOFF`, then close. Safe to call when not connected.
+	//! `$DIAGOFF`, `$LOGOFF`, then close. Safe to call when not connected.
 	void disconnect();
 
 	LinkState state() const { return state_; }
@@ -179,6 +235,10 @@ public:
 	//! "connected and the engine is talking" are distinguishable.
 	std::size_t bytesIn() const { return bytes_in_; }
 	std::size_t linesSent() const { return lines_sent_; }
+	//! How many diagnostics have arrived since the connection opened. Counted
+	//! over the connection's life, not over the feed, so the bound discarding
+	//! old lines does not un-count a refusal that happened.
+	std::size_t diagnosticsIn() const { return diagnostics_in_; }
 
 private:
 	int fd_ = -1;
@@ -191,8 +251,11 @@ private:
 	std::size_t dropped_ = 0;
 	std::size_t bytes_in_ = 0;
 	std::size_t lines_sent_ = 0;
+	std::size_t diagnostics_in_ = 0;
 
 	void push(FeedKind kind, const std::string &text);
+	//! Which kind a received line is: the engine's `$DIAG|` label, or nothing.
+	static FeedKind kindOf(const std::string &line);
 	void trim();
 	//! Split a complete record into feed lines. Public behaviour is tested
 	//! through poll(); this exists so the framing rule lives in one place.

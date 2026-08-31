@@ -76,12 +76,34 @@ bool parseEndpoint(const std::string &spec, Endpoint &out, std::string &err)
 	return true;
 }
 
+FeedDiagnostic parseFeedDiagnostic(const std::string &line)
+{
+	FeedDiagnostic d;
+	static const std::string PREFIX = "$DIAG|";
+	if (line.compare(0, PREFIX.size(), PREFIX) != 0)
+		return d;
+	// Three splits, not four: the SUBJECT is a command line and may contain the
+	// separator, so it takes whatever is left. The engine composes it in that
+	// order for exactly this reason (INTENT 11.188).
+	const std::size_t a = line.find('|', PREFIX.size());
+	if (a == std::string::npos)
+		return d;
+	const std::size_t b = line.find('|', a + 1);
+	if (b == std::string::npos)
+		return d;
+	d.ok = true;
+	d.origin = line.substr(PREFIX.size(), a - PREFIX.size());
+	d.message = line.substr(a + 1, b - a - 1);
+	d.subject = line.substr(b + 1);
+	return d;
+}
+
 TcpClient::~TcpClient()
 {
 	// No $LOGOFF from the destructor: a socket being torn down at exit cannot
 	// wait for anything, and closing the connection already unsubscribes it
-	// (io.cpp clears clientBroadcastTab on close). disconnect() is the polite
-	// path and the editor takes it.
+	// from BOTH channels (io.cpp's close clears clientBroadcastTab and
+	// clientDiagTab). disconnect() is the polite path and the editor takes it.
 	closeSocket();
 }
 
@@ -144,6 +166,7 @@ bool TcpClient::connect(const Endpoint &ep, std::string &err)
 	last_error_.clear();
 	bytes_in_ = 0;
 	lines_sent_ = 0;
+	diagnostics_in_ = 0;
 
 	// The subscription, immediately: from here the feed carries every command
 	// answer the engine produces, this client's own included (io.cpp:614).
@@ -155,7 +178,18 @@ bool TcpClient::connect(const Endpoint &ep, std::string &err)
 		closeSocket();
 		return false;
 	}
-	note("connected to " + ep.text() + ", subscribed with $LOGON");
+	// ... and the DEDICATED diagnostic link, which is a second subscription and
+	// not a second connection. A failure here is NOT fatal: on an engine older
+	// than INTENT 11.188 this is simply an unrecognised command, and a working
+	// connection must not be thrown away because the newer half of the protocol
+	// is not there. What that costs is a quiet feed, which is what every engine
+	// gave until now.
+	if (!writeAll("$DIAGON\n", serr)) {
+		note("connected to " + ep.text() + ", subscribed with $LOGON; $DIAGON could not be "
+		     "sent (" + serr + ") - refusals will not appear on this feed");
+		return true;
+	}
+	note("connected to " + ep.text() + ", subscribed with $LOGON and $DIAGON");
 	return true;
 }
 
@@ -163,8 +197,9 @@ void TcpClient::disconnect()
 {
 	if (fd_ >= 0 && state_ == LinkState::Connected) {
 		std::string err;
+		writeAll("$DIAGOFF\n", err);  // both subscriptions, in the order they were made
 		writeAll("$LOGOFF\n", err);   // best effort: we are closing either way
-		poll();                       // take the confirmation if it is already there
+		poll();                       // take the confirmations if they are already there
 		note("disconnected from " + endpoint_.text());
 	}
 	closeSocket();
@@ -221,18 +256,26 @@ void TcpClient::records(const std::string &chunk)
 {
 	// The record separator is the NUL the server's send() writes; within a
 	// record, the engine's own '\n' separates lines of one answer.
+	// A line the engine labelled `$DIAG|` is a diagnostic; every other line is a
+	// record like any other. The test is on the engine's own label, not on the
+	// content (sc_tcpclient.hpp, FeedKind).
 	std::string line;
 	for (const char c : chunk) {
 		if (c == '\n' || c == '\r') {
 			if (!line.empty())
-				push(FeedKind::Engine, line);
+				push(kindOf(line), line);
 			line.clear();
 			continue;
 		}
 		line.push_back(c);
 	}
 	if (!line.empty())
-		push(FeedKind::Engine, line);
+		push(kindOf(line), line);
+}
+
+FeedKind TcpClient::kindOf(const std::string &line)
+{
+	return parseFeedDiagnostic(line).ok ? FeedKind::Diagnostic : FeedKind::Engine;
 }
 
 std::size_t TcpClient::poll()
@@ -318,6 +361,10 @@ void TcpClient::note(const std::string &text)
 
 void TcpClient::push(FeedKind kind, const std::string &text)
 {
+	// Counted here rather than in the pane: the bound below discards old lines,
+	// and a refusal that scrolled off still happened.
+	if (kind == FeedKind::Diagnostic)
+		++diagnostics_in_;
 	feed_.push_back(FeedLine{kind, text});
 	trim();
 }

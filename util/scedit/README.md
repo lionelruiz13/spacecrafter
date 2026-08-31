@@ -319,30 +319,58 @@ the same client, and the same rule.
 
 ### What comes back, and what does not
 
-Two things reach a client, and no others:
+Three things reach a client, and no others:
 
 - the answer to `get status …` and to `search name …`
-  (`src/interfaceModule/app_command_interface.cpp:1284-1301,1415` — the only
+  (`src/interfaceModule/app_command_interface.cpp:1309-1326,1440` - the only
   callers of `ServerSocket::setOutput` in the tree);
-- the replies to `$NOTICE` / `$LOGON` / `$LOGOFF` (`src/tools/io.cpp:640-663`).
+- the replies to `$NOTICE` / `$LOGON` / `$LOGOFF`, and to `$DIAGON` / `$DIAGOFF`
+  (`src/tools/io.cpp`, `computeNormalString`);
+- **a refusal, if you asked for refusals.** Since engine `be2ddd81`
+  (INTENT 11.188), a connection that sends `$DIAGON` receives one record per
+  diagnostic the engine produces about a command it read on the control socket.
+  scedit sends it on connect, so `flag stars onn` now comes back as
 
-**Everything else is silence.** `flag stars on` that worked and `flag stars onn`
-that did not are the same nothing on this wire: a refusal is written to the
-script log at debug level (INTENT §5.117) and never sent. So the feed showing
-nothing after a command is not a report of success, and scedit does not present
-it as one. To find out what happened, read a state back — `get status position`
-— or look at the engine's log.
+      $DIAG|tcp#7|Unrecognized or malformed command name|flag stars onn
 
-The connection subscribes with `$LOGON`, so the feed also carries **other
-clients' answers**: that subscription's greeting promises the logs, and what it
-actually delivers is every command answer the engine produces (INTENT §5.72).
-That is why the pane is a feed rather than a reply box, and why an answer in it
-is not necessarily an answer to you.
+  Four fields: the marker, the **origin** (`tcp#<id>`, the engine's never-reused
+  connection id), the engine's own **message**, and the **command line** it is
+  about. The command line is last because it may itself contain a `|`.
+
+The pane draws these **red**: on a feed where everything else is an answer, the
+one line that says something went wrong should not look like the rest.
+
+**The silence that remains is still silence.** A command that WORKED sends
+nothing, so an empty feed is still not a report of success. Nor is it a report
+of failure in three cases worth knowing: a refusal produced *inside* another
+command (`media action play ...` runs `audio filename ...`, and the inner one is
+the one that fails) carries no origin and does not arrive; a script's start and
+end are still unannounced; and an engine older than `be2ddd81` has no `$DIAGON`
+at all, treats it as an unrecognised command, and tells you nothing - scedit
+connects to it perfectly well and the feed is simply as quiet as it always was.
+To find out what happened, read a state back - `get status position` - or look
+at the engine's log, which still has every refusal it ever had (INTENT 5.117:
+the wire got a COPY, not the original).
+
+**Two subscriptions, and the older one did not move.** `$LOGON` is the feed of
+command answers, and it carries **other clients' answers** too: that
+subscription's greeting promises the logs, and what it actually delivers is
+every command answer the engine produces (INTENT 5.72). `$DIAGON` is the
+separate, opt-in diagnostic link. They are separate because the `$LOGON` wire is
+also spoken by a closed-source client (masterput), so it was frozen
+byte-identical rather than extended - an engine that did not receive `$DIAGON`
+from you sends you exactly the bytes it sent before this feature existed, and
+that is a measured claim, not a design intention
+(`claude/harness/f69_feedback.py` leg iv).
+
+Note that a diagnostic caused by ANOTHER client arrives here too, tagged with
+that client's origin. Reading one as "my command failed" without looking at the
+origin is the mistake that field exists to prevent.
 
 The feed keeps the last **500 lines**; older ones are dropped and the header
 says how many, because a bounded buffer that discards in silence is one you
 cannot trust. Lines scedit wrote itself — what it sent, what it did — are dim
-and marked `>`; the engine's are not.
+and marked `>`; the engine's answers are plain; its refusals are red.
 
 ### The engine writes into your file, and neither side loses
 
@@ -489,11 +517,19 @@ they are what the outside model sees before it decides to call one:
 | `run_command` | `{command, host?, port?, wait_ms?}` → **runs one line on a LIVE engine** and returns what it says |
 
 `run_command` is the only one that changes anything: the dome moves, the show
-changes, and there is no undo. Its description says so, and says the three
-things a caller cannot work out for itself — that most commands answer with
-silence which is neither success nor failure, that a reply may be an answer to
-another client's command (the `$LOGON` subscription), and that playing a script
-returns when the script STARTS because nothing announces that it ended. Its
+changes, and there is no undo. Its description says so, and says the things a
+caller cannot work out for itself - that most commands answer with silence,
+that a reply may be an answer to another client's command (the `$LOGON`
+subscription), and that playing a script returns when the script STARTS because
+nothing announces that it ended. It returns **two** lists: `replies`, and
+`diagnostics` - the refusals, split into `origin` / `message` / `subject`, off
+the `$DIAGON` link this connection also subscribes to (INTENT 11.188). The
+`note` field is computed from what actually arrived, because what silence MEANS
+changed with that link and a note written once and left would now be wrong: an
+empty `diagnostics` says the command was not refused at the top level, and no
+more than that - success is silent, a refusal nested inside another command
+carries no origin and does not arrive, and an older engine sends nothing at all.
+Its
 `wait_ms` is bounded at both ends (100–10000): asking for 1 ms and then
 reporting a reply as absent is not a measurement. `--tcp` before `--mcp` sets
 where it sends by default:
@@ -672,14 +708,14 @@ Fourteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings)
 | `parse_oracle` | scedit's reading vs a **verbatim copy of the engine's `parseCommand`** — carrying the ruled comment cut in the exact form the engine receives it — over exhaustively enumerated short strings ({a, b, space, tab, `"`} to 6 bytes, {a, space, `"`} to 9, {a, space, `"`, `#`} to 8), ISO-8859 high-byte lines and every line of the real corpus: 119 337 comparisons |
 | `editcore` | 266 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings with their spans (a finding points at its bytes; an opener never closed is reported on ITS line), and the error history: both sources in line order, a warp landing on the stated byte, an edit that removes an entry, and the shapes that carry a `#!` and are NOT tails; and the write-back rule against a real file on disk — the change seen, a clean buffer reloading with the engine's tail listed and the caret kept, a dirty one's save refused with the file byte-identical afterwards, each of the two explicit choices doing exactly what it says, a deleted file answered differently from a changed one |
 | `roundtrip` | `doc/superscript.sts` — 1606 lines (rewritten upstream 2026-08-26, `f0c8ef83`), ISO-8859, CRLF — opened in the editor and saved untouched: **same MD5**. Plus one edit that must change exactly the line it was made on |
-| `ui_selftest` | 20 frames the editor actually DRAWS, rendered off-screen at a fixed size — the error pane among them, with both sources mixed, after one warp and after two, and empty on a clean buffer — each with four masks of the caret's row: the ghost text is DIM, the look-alike-space marker lands on the column the finding names, every finding's span is UNDERLINED at exactly its bytes, and the caret is the standard SGR inversion on exactly one cell. Three of the twenty are live mode, with a fifth mask (`feed LELEL`) that reads off the pixels which lines scedit wrote and which the engine did; the other seventeen are byte-identical to what they were before live mode existed, which is how "no `--tcp`, nothing on the screen" is checked rather than asserted |
+| `ui_selftest` | 21 frames the editor actually DRAWS, rendered off-screen at a fixed size - the error pane among them, with both sources mixed, after one warp and after two, and empty on a clean buffer - each with four masks of the caret's row: the ghost text is DIM, the look-alike-space marker lands on the column the finding names, every finding's span is UNDERLINED at exactly its bytes, and the caret is the standard SGR inversion on exactly one cell. Four of the twenty-one are live mode, with a fifth mask (`feed ELDLE`) that reads off the PIXELS which lines scedit wrote (`L`, dim cyan), which the engine answered (`E`) and which it REFUSED (`D`, red) - so the claim that a refusal looks different is proved from the screen and not from the FeedKind the renderer was handed; the other seventeen are byte-identical to what they were before live mode existed, which is how "no `--tcp`, nothing on the screen" is checked rather than asserted |
 | `seed_gate` | the contract file validates (counts re-derived from the data, not asserted) — **and every fact in the four `grammar/args/` fragments is still byte-identical in the merged file**, which is what keeps the granular source and the merged contract from drifting apart |
 | `lint_rules` | `tests/lint_cases.sts` — one construct per armed id (15 ids), proving the rule fires with the right id, severity and shape; plus a section that must stay silent (comments in every position included), and a last section for what is only known at the end of the file |
 | `history_list` | `--history` over the lint fixture and `tests/history_cases.sts` produces exactly the recorded rows. Two inputs on purpose: the fixture's scedit rows include the 27 the `--check` record already pins, so one reader's two printers cannot drift apart silently; history_cases is F63-SHAPED — every `#!` in it is a sentence the ENGINE wrote — and three of its ten cases are deliberate ABSENCES (a `#!` in quotes, in a column-0 comment, in an indented one) |
 | `check_json` | `--check --json` over the lint fixture produces exactly the recorded objects — the same comparator as the text record above, with `--json` added to its mode, so the two printers of one finding set cannot drift apart |
 | `doc_queries` | ten recorded (arguments → stdout + exit code) answers of `--doc` and `--search`, each line of `tests/doc-queries.txt` saying what it pins: both flagged keys answering `doc: null`, a v1 family name beside a v2 one, an alias, both not-found vocabularies with their did-you-mean and exit 2, the ranking, and a query that matches nothing. stderr must stay empty for every one |
-| `mcp_protocol` | 77 checks from a stdlib-only Python client (`tests/mcp_gate.py`) that spawns `scedit --mcp` — a second implementation on purpose: both protocol eras, every tool with good and bad arguments, the honest null arriving as JSON `null` through the whole chain, the catalogue's counts, the five refusals (parse error, no method, unknown method, unknown tool, unsupported version), and `run_command` driven against the stand-in engine with both sides asserted — the answer verbatim, the stand-in's own record of what arrived, a silent command with the note that says silence is neither outcome, and the no-engine path as a tool error naming what to check |
-| `tcp_client` | 23 gate checks over 65 leg checks: `sc_tcpclient` against `tests/fake_engine.py`, a stand-in whose framing rules are each read from a named line of `src/tools/io.cpp`. One leg per process, and after each one the gate asserts what the stand-in RECEIVED — so a leg cannot pass by agreeing with itself. Endpoint parsing and its refusals, a port nothing listens on, subscribe/ask/answer/disconnect/reconnect, a two-line command refused with nothing sent, latin-1 and 0xA0 bytes arriving as bytes, the bounded feed counting what it drops, another client's answer arriving because we subscribed, and the engine closing the connection |
+| `mcp_protocol` | 85 checks from a stdlib-only Python client (`tests/mcp_gate.py`) that spawns `scedit --mcp` - a second implementation on purpose: both protocol eras, every tool with good and bad arguments, the honest null arriving as JSON `null` through the whole chain, the catalogue's counts, the five refusals (parse error, no method, unknown method, unknown tool, unsupported version), and `run_command` driven against the stand-in engine with both sides asserted - the answer verbatim, the stand-in's own record of what arrived, a silent command with the note that says exactly how much that silence is worth, a REFUSED command coming back in `diagnostics` split into origin/message/subject with the raw record kept, and the no-engine path as a tool error naming what to check |
+| `tcp_client` | 30 gate checks over 112 leg checks: `sc_tcpclient` against `tests/fake_engine.py`, a stand-in whose framing rules are each read from a named line of `src/tools/io.cpp`. One leg per process, and after each one the gate asserts what the stand-in RECEIVED - so a leg cannot pass by agreeing with itself. Endpoint parsing and its refusals, a port nothing listens on, subscribe/ask/answer/disconnect/reconnect, a two-line command refused with nothing sent, latin-1 and 0xA0 bytes arriving as bytes, the bounded feed counting what it drops, another client's answer arriving because we subscribed, the engine closing the connection - and the DEDICATED diagnostic link: both subscriptions sent in order, a `$DIAG|` record split into its four fields (a subject containing the separator included), a malformed one SHOWN rather than dropped, and a second `$LOGON`-only onlooker proving from the other end that it received the answer and not one byte of the diagnostic channel |
 | `pty_keys` | the editor's live KEYS, pressed on a **pseudo-terminal**, with the stand-in engine asserting what arrived: `--tcp` alone connects to nothing, Ctrl-T subscribes, Ctrl-L sends the caret's line verbatim and sends NOTHING from a comment line, Ctrl-R plays the file by absolute path, the engine's own words reach the feed pane on screen, Ctrl-Q exits 0 having unsubscribed. This is the seam between the two gates on either side of it — one pins what is DRAWN, the other what the core and client DO — and it is what makes "F8 plays the file" a measurement rather than a reading |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 

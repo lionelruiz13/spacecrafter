@@ -373,6 +373,34 @@ mark
 under 
 inv ----------i
 feed LELEL
+### live-feed-diagnostic
+| scedit │ line 1, byte 0 │ live 127.0.0.1:7805 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ flag stars on
+| E     2 │ flagg stars on
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| live 127.0.0.1:7805 — connected, 2 sent, 96 B in   · 7 lines   · F6 connect · F7 send line · F8 play
+| $DIAGON ok: this connection now receives every diagnostic
+| > flagg stars on
+| $DIAG|tcp#4|Unrecognized or malformed command name|flagg stars on
+| > get status position
+|  45.00; 3.00;  75.00;2461233.500000;  12.500000;
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| command `flag`
+| Turn a named display feature on, off, or to the opposite of what it is now.   (documents: command)
+| 
+| engine: app_command_init.cpp:60 (ACP_CN_FLAG = "flag", base_command_interface.hpp:350)
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| F5 errors (1) · F6 live · F7 send · F8 play · F9 feed · Tab complete · Shift-Tab previous candidate
+dim -ddddddd
+mark 
+under 
+inv ----------i
+feed ELDLE
 ### live-offline
 | scedit │ line 1, byte 0 │ live off │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────

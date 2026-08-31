@@ -76,8 +76,10 @@ def main():
         check(rc == 0, "the `basic` leg is green")
         lines = eng.lines()
         # SERVER SIDE: what the client actually put on the wire, in order.
-        check(lines[:2] == ["$LOGON", "get status position"],
-              "the client subscribes FIRST and then asks: %s" % lines[:2])
+        # TWO subscriptions now, in this order, before anything is asked: the
+        # log/answer feed and the dedicated diagnostic link (INTENT 11.188).
+        check(lines[:3] == ["$LOGON", "$DIAGON", "get status position"],
+              "the client subscribes to BOTH channels first and then asks: %s" % lines[:3])
         check("$NOTICE" in lines, "the $NOTICE probe was sent")
         check("flag stars on" in lines, "the ordinary command was sent verbatim")
         check("$LOGOFF" in lines, "disconnect sends $LOGOFF before closing")
@@ -89,6 +91,12 @@ def main():
         check(lines.count("$LOGON") == 2 and lines.count("$LOGOFF") == 2,
               "each of the two connections subscribed and unsubscribed: %d $LOGON, %d $LOGOFF"
               % (lines.count("$LOGON"), lines.count("$LOGOFF")))
+        # ... and the same for the diagnostic link, which is a SECOND
+        # subscription on each of those same two connections and not a third
+        # connection (INTENT 11.188).
+        check(lines.count("$DIAGON") == 2 and lines.count("$DIAGOFF") == 2,
+              "and to the diagnostic link on both: %d $DIAGON, %d $DIAGOFF"
+              % (lines.count("$DIAGON"), lines.count("$DIAGOFF")))
         # Two connections were used, one after the other, and the second one
         # carried the second question.
         check(eng.lines_of(1)[0] == "$LOGON" and eng.lines_of(2)[0] == "$LOGON",
@@ -139,6 +147,69 @@ def main():
         check(rc == 0, "the `feed` leg is green")
         check("search name m1" in eng.lines(), "the second client did ask")
         check(len({c for c, _ in eng.received}) == 2, "two connections were used")
+
+    print("I. the DEDICATED diagnostic link ($DIAGON), and who does NOT hear it")
+    with FakeEngine() as eng:
+        # A SECOND client, subscribed with $LOGON only - masterput's shape, and
+        # the whole boundary of INTENT 11.186(c). It must receive the answer
+        # broadcast (it always did) and NOT one byte of the diagnostic channel.
+        import socket as _socket
+        onlooker = _socket.create_connection((eng.host, eng.port), timeout=5)
+        onlooker.settimeout(0.5)
+        onlooker.sendall(b"$LOGON\n")
+        heard = bytearray()
+        listening = threading.Event()
+
+        def listen():
+            while not listening.is_set():
+                try:
+                    b = onlooker.recv(4096)
+                except _socket.timeout:
+                    continue
+                except OSError:
+                    return
+                if not b:
+                    return
+                heard.extend(b)
+
+        lt = threading.Thread(target=listen, daemon=True)
+        lt.start()
+
+        def pusher():
+            # One well-formed diagnostic when the refused command arrives, then
+            # one MALFORMED record after the question - both on the diagnostic
+            # channel, so the onlooker below must hear neither.
+            if eng.wait_for("flagg stars on", timeout=20):
+                n = eng.diag_broadcast("tcp#1", "Unrecognized or malformed command name",
+                                       "flagg stars on")
+                print("  [stand-in] diagnostic pushed to %d subscriber(s)" % n)
+            if eng.wait_for("get status position", timeout=20):
+                time.sleep(0.5)
+                eng.diag_raw("$DIAG|tcp#1|truncated\n")
+
+        t = threading.Thread(target=pusher, daemon=True)
+        t.start()
+        rc = run_leg(binary, "diag", eng.endpoint())
+        t.join(timeout=30)
+        check(rc == 0, "the `diag` leg is green")
+        lines = eng.lines()
+        check("$DIAGON" in lines, "the client subscribed to the diagnostic channel by name")
+        check(lines.index("$LOGON") < lines.index("$DIAGON"),
+              "and did it AFTER $LOGON, in the order the header states")
+        check("$DIAGOFF" in lines and "$LOGOFF" in lines,
+              "disconnect unsubscribes from both: %s" % [l for l in lines if l.startswith("$")])
+        time.sleep(0.5)
+        listening.set()
+        lt.join(timeout=5)
+        onlooker.close()
+        # THE BOUNDARY, from the other end: a $LOGON-only client heard the
+        # answer and nothing else. If the diagnostic channel ever leaked into
+        # the broadcast, this is the check that goes red.
+        check(b"$DIAG" not in bytes(heard),
+              "the $LOGON-only onlooker received NO diagnostic: %r" % bytes(heard)[:120])
+        check(b"2461233.5" in bytes(heard),
+              "and it DID receive the other client's answer, so it was listening: %r"
+              % bytes(heard)[:120])
 
     print("H. the engine goes away")
     with FakeEngine() as eng:

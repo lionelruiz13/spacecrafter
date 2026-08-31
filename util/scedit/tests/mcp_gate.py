@@ -219,8 +219,16 @@ def main():
         check(sc["reply_count"] == 1, "with its count")
         check("$LOGON" in eng.lines() and "get status position" in eng.lines(),
               "the stand-in saw the subscription and the command: %s" % eng.lines())
-        check("$LOGOFF" in eng.lines(),
+        # WAITED for, not sampled: disconnect now writes TWO unsubscribe lines
+        # and closes, so reading the transcript the instant the call returns is
+        # a race the widened window made visible (it went red here once, on a
+        # run that had passed a minute earlier). `wait_for` is this file's own
+        # rule - a gate never sleeps a fixed time waiting for the other side.
+        check(eng.wait_for("$LOGOFF", timeout=5),
               "and the connection was closed politely — one call, one connection")
+        check("$DIAGOFF" in eng.lines(),
+              "unsubscribing from the diagnostic link too: %s"
+              % [l for l in eng.lines() if l.startswith("$")])
         check("$LOGON" in sc["note"] and "OTHER clients" in sc["note"],
               "the note warns that a reply may be another client's: %s" % sc["note"][:80])
 
@@ -232,10 +240,45 @@ def main():
         check(r["result"]["isError"] is False and sc["sent"] is True,
               "an ordinary command is sent successfully")
         check(sc["replies"] == [], "and answered with nothing")
-        check("NOT evidence that the command succeeded" in sc["note"]
-              and "NOT evidence that it failed" in sc["note"],
-              "and the note says that silence is neither outcome")
+        check(sc["diagnostics"] == [] and sc["diagnostic_count"] == 0,
+              "with no diagnostic either")
+        # The note CHANGED with INTENT 11.188 and this assertion changed with
+        # it, deliberately: silence used to mean nothing at all, and now it
+        # means "not refused at the top level" and no more. The three things
+        # that still make silence uninformative are named in the note, and the
+        # gate pins all three - a note that dropped one would be a note that
+        # over-promises.
+        check("not refused at the top level" in sc["note"]
+              and "success is still SILENT" in sc["note"]
+              and "inside another command" in sc["note"]
+              and "OLDER engine" in sc["note"],
+              "and the note says exactly how much that silence is worth: %s" % sc["note"][:120])
         check("flag stars on" in eng.lines(), "the stand-in did receive it")
+
+        # A REFUSAL comes back, split into fields, and says whose it was.
+        def refuse():
+            if eng.wait_for("flagg stars on", timeout=20):
+                eng.diag_broadcast("tcp#9", "Unrecognized or malformed command name",
+                                   "flagg stars on")
+        t = threading.Thread(target=refuse, daemon=True)
+        t.start()
+        r = call(s, "run_command", {"command": "flagg stars on",
+                                    "host": eng.host, "port": eng.port, "wait_ms": 2500})
+        t.join(timeout=25)
+        sc = r["result"]["structuredContent"]
+        check(sc["diagnostic_count"] == 1, "a refused command comes back as ONE diagnostic")
+        check(sc["diagnostics"] and sc["diagnostics"][0]["origin"] == "tcp#9"
+              and sc["diagnostics"][0]["subject"] == "flagg stars on"
+              and sc["diagnostics"][0]["message"] == "Unrecognized or malformed command name",
+              "split into origin / message / subject: %s" % sc["diagnostics"][:1])
+        check(sc["diagnostics"] and sc["diagnostics"][0]["raw"].startswith("$DIAG|"),
+              "with the raw record kept, so nothing is lost in the split")
+        check(sc["replies"] == [], "and it is NOT in `replies`: the two lists are exclusive")
+        check("REFUSED" in sc["note"] and "origin" in sc["note"],
+              "the note points at the diagnostics and warns about the origin: %s" % sc["note"][:100])
+        check("$DIAGON" in eng.lines(),
+              "the tool's own connection subscribed to the diagnostic link: %s"
+              % [l for l in eng.lines() if l.startswith("$")])
 
     # NOW nothing is listening: the same call must fail with a sentence the
     # caller can act on, not a crash and not a fake success. The port is one

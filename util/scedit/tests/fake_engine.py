@@ -18,7 +18,15 @@ WHAT IS IMITATED, and where each rule was read (code `116f6d19`):
   - `$NOTICE` is answered `"$NOTICE $LOGON $LOGOFF"` with NO trailing newline,
     `$LOGON` with `"Vous receverez maintenant les logs\n"`, `$LOGOFF` with
     `"Vous receverez maintenant PLUS les logs\n"`, and anything else beginning
-    with `$LOG` with `"REQUEST ERROR"` [io.cpp:640-663];
+    with `$LOG` with `"REQUEST ERROR"` [io.cpp:640-663]. The $NOTICE reply does
+    NOT advertise $DIAGON: that reply is bytes on the wire a closed-source
+    client may be parsing, and it was deliberately left alone [INTENT 11.188];
+  - `$DIAGON` / `$DIAGOFF` subscribe and unsubscribe a connection from the
+    DEDICATED diagnostic link, each answered with its own `$DIAGON ok:` /
+    `$DIAGOFF ok:` line, and any other `$DIAG...` with `$DIAG ERROR:`
+    [io.cpp computeNormalString, INTENT 11.188]. A diagnostic is one record,
+    `$DIAG|<origin>|<message>|<subject>`, sent to those subscribers and to
+    nobody else - `diag_broadcast()` is how a gate makes one happen;
   - ONLY `get status …` and `search name …` produce an answer at all; every
     other command is executed in silence [app_command_interface.cpp:1284-1301,
     1415 are the only callers of setOutput in the tree];
@@ -56,7 +64,7 @@ class FakeEngine:
         self.host, self.port = self.sock.getsockname()
         self.answer_delay = answer_delay
         self.lock = threading.Lock()
-        self.conns = {}          # id -> {"sock":…, "logon":bool}
+        self.conns = {}          # id -> {"sock":..., "logon":bool, "diag":bool}
         self.received = []       # [(conn_id, line)] in arrival order
         self.stop_flag = False
         self.thread = threading.Thread(target=self._accept_loop, daemon=True)
@@ -141,6 +149,22 @@ class FakeEngine:
             self._write(s, payload)
         return len(targets)
 
+    def diag_broadcast(self, origin, message, subject):
+        """One diagnostic, to the $DIAGON subscribers and to NOBODY else - the
+        separation is the point of the channel, so a gate that wants to prove a
+        $LOGON-only client hears nothing calls this and looks at both."""
+        return self.diag_raw("$DIAG|%s|%s|%s\n" % (origin, message, subject))
+
+    def diag_raw(self, payload):
+        """The same channel, with the payload UNSHAPED - so a gate can push a
+        record that does not split and check the client shows it rather than
+        dropping what it cannot parse."""
+        with self.lock:
+            targets = [c["sock"] for c in self.conns.values() if c.get("diag")]
+        for s in targets:
+            self._write(s, payload)
+        return len(targets)
+
     # -- the wire ----------------------------------------------------------
     @staticmethod
     def _write(sock, payload):
@@ -159,7 +183,7 @@ class FakeEngine:
                 return
             next_id += 1
             with self.lock:
-                self.conns[next_id] = {"sock": s, "logon": False}
+                self.conns[next_id] = {"sock": s, "logon": False, "diag": False}
             threading.Thread(target=self._serve, args=(next_id, s), daemon=True).start()
 
     def _answer(self, conn_id, sock, text):
@@ -215,6 +239,25 @@ class FakeEngine:
                 self._write(sock, "Vous receverez maintenant PLUS les logs\n")
             else:
                 self._write(sock, "REQUEST ERROR")
+            return
+        if line.startswith("$DIAG"):
+            # Subscribing twice is not an error here either: the engine answers
+            # with the state the connection is now in (io.cpp, INTENT 11.188).
+            if line[5:7] == "ON":
+                with self.lock:
+                    self.conns[conn_id]["diag"] = True
+                self._write(sock, "$DIAGON ok: this connection now receives every diagnostic "
+                                  "the engine produces about a command read on the control "
+                                  "socket, one record per diagnostic, as "
+                                  "$DIAG|<origin>|<message>|<command>\n")
+            elif line[5:8] == "OFF":
+                with self.lock:
+                    self.conns[conn_id]["diag"] = False
+                self._write(sock, "$DIAGOFF ok: this connection no longer receives command "
+                                  "diagnostics\n")
+            else:
+                self._write(sock, "$DIAG ERROR: the verb is $DIAGON or $DIAGOFF; nothing was "
+                                  "changed\n")
             return
         # A command. Only these two produce anything on the wire.
         words = line.split()

@@ -81,6 +81,17 @@ static bool containsSub(const std::vector<std::string> &v, const std::string &s)
 	return false;
 }
 
+//! Does any of these lines BEGIN with this? Not the same question as `contains
+//! a substring`, and the difference matters for `$DIAG|`: the subscription's own
+//! confirmation MENTIONS the record shape in its text.
+static bool startsWithAny(const std::vector<std::string> &v, const std::string &s)
+{
+	for (const auto &x : v)
+		if (x.compare(0, s.size(), s) == 0)
+			return true;
+	return false;
+}
+
 // --------------------------------------------------------------- the legs
 
 //! Pure parsing: no socket at all. `[host:]port`, and the refusals.
@@ -140,7 +151,7 @@ static void legBasic(const Endpoint &ep)
 	std::string err;
 	check(c.connect(ep, err), "connect: " + err);
 	check(c.connected() && c.state() == LinkState::Connected, "the state is Connected");
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	check(containsSub(engineLines(c), "Vous receverez maintenant les logs"),
 	      "the $LOGON subscription is confirmed by the engine");
 	check(containsSub(engineLines(c), "logs"), "the confirmation reached the FEED, not a log");
@@ -184,7 +195,7 @@ static void legBasic(const Endpoint &ep)
 	// Reconnect on the same object: a new connection, a new subscription.
 	check(c.connect(ep, err), "reconnect: " + err);
 	check(c.connected(), "the reconnected client is Connected");
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	check(c.send("get status constellation", err), "and it can ask again");
 	c.pollFor(2000, 1);
 	check(contains(engineLines(c), "UMa"), "the answer arrives on the NEW connection");
@@ -197,7 +208,7 @@ static void legNewline(const Endpoint &ep)
 	TcpClient c;
 	std::string err;
 	check(c.connect(ep, err), "connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	const std::size_t sent = c.linesSent();
 	std::string serr;
 	check(!c.send("flag stars on\nflag planets on", serr), "a two-line command is refused");
@@ -216,7 +227,7 @@ static void legLatin1(const Endpoint &ep)
 	TcpClient c;
 	std::string err;
 	check(c.connect(ep, err), "connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	// 0xE9 is 'é' in ISO-8859-1 and is not valid UTF-8 on its own: a client
 	// that decoded its input would mangle or refuse this.
 	const std::string line = "text name caf\xE9 string \"caf\xE9 \xA0 x\"";
@@ -234,7 +245,7 @@ static void legBound(const Endpoint &ep)
 	c.setFeedBound(4);
 	check(c.feedBound() == 4, "the bound is settable");
 	check(c.connect(ep, err), "connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	for (int i = 0; i < 10; ++i)
 		c.send("get status position", err);
 	c.pollFor(3000, 0);
@@ -255,7 +266,7 @@ static void legFeed(const Endpoint &ep)
 	TcpClient c;
 	std::string err;
 	check(c.connect(ep, err), "connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	// The marker tells the gate to have a SECOND client ask a question.
 	check(c.send("get status object", err), "marker sent");
 	c.pollFor(2000, 1);
@@ -275,7 +286,7 @@ static void legClosed(const Endpoint &ep)
 	TcpClient c;
 	std::string err;
 	check(c.connect(ep, err), "connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	check(c.send("get status position", err), "marker sent (the gate stops the engine now)");
 	c.pollFor(8000, 2);
 	// Poll until the close is seen or the budget runs out.
@@ -291,6 +302,76 @@ static void legClosed(const Endpoint &ep)
 	      "the feed carries the event as a LOCAL line — the engine said nothing, scedit did");
 	std::string serr;
 	check(!c.send("flag stars on", serr), "nothing can be sent after that");
+}
+
+//! Every DIAGNOSTIC feed line, split into its fields.
+static std::vector<FeedDiagnostic> diagnostics(const TcpClient &c)
+{
+	std::vector<FeedDiagnostic> out;
+	for (const FeedLine &f : c.feed())
+		if (f.kind == FeedKind::Diagnostic)
+			out.push_back(parseFeedDiagnostic(f.text));
+	return out;
+}
+
+//! The dedicated diagnostic link, against the stand-in: subscribed on connect,
+//! a `$DIAG|` record told apart from an answer, and a malformed one SHOWN.
+static void legDiag(const Endpoint &ep)
+{
+	// Parsing first, with no socket in it: the record's shape is a contract and
+	// a broken record must not become an invisible one.
+	const FeedDiagnostic d = parseFeedDiagnostic("$DIAG|tcp#7|command 'get': unknown status value|"
+	                                     "get status nonsense");
+	check(d.ok && d.origin == "tcp#7" && d.message == "command 'get': unknown status value"
+	      && d.subject == "get status nonsense", "a well-formed record splits into four fields");
+	const FeedDiagnostic pipe = parseFeedDiagnostic("$DIAG|tcp#7|bad|text string \"a|b\"");
+	check(pipe.ok && pipe.subject == "text string \"a|b\"",
+	      "a SUBJECT containing the separator survives: the split is bounded at three");
+	check(!parseFeedDiagnostic("$DIAG|tcp#7").ok && !parseFeedDiagnostic("Vous receverez").ok
+	      && !parseFeedDiagnostic("$DIAG").ok && !parseFeedDiagnostic("").ok,
+	      "a truncated or foreign line is NOT a diagnostic");
+
+	TcpClient c;
+	std::string err;
+	check(c.connect(ep, err), "connect: " + err);
+	c.pollFor(2000, 2);
+	check(containsSub(allLines(c), "$LOGON and $DIAGON"),
+	      "the local note says BOTH subscriptions were sent");
+	check(containsSub(engineLines(c), "$DIAGON ok:"),
+	      "and the engine confirmed the diagnostic one");
+	check(c.diagnosticsIn() == 0,
+	      "the confirmation is NOT counted as a diagnostic: it is an answer to a verb");
+
+	// One diagnostic, pushed by the stand-in exactly as the engine pushes one.
+	check(c.send("flagg stars on", err), "send a command the engine will refuse: " + err);
+	c.pollFor(2000, 1);
+	const std::vector<FeedDiagnostic> got = diagnostics(c);
+	check(got.size() == 1, "exactly one diagnostic arrived");
+	check(got.size() == 1 && got[0].origin == "tcp#1" && got[0].subject == "flagg stars on"
+	      && got[0].message == "Unrecognized or malformed command name",
+	      "with the origin, the message and the command line it is about");
+	check(c.diagnosticsIn() == 1, "and the counter moved");
+	check(!startsWithAny(engineLines(c), "$DIAG|"),
+	      "a diagnostic is NOT also an ordinary engine line: the kinds are exclusive "
+	      "(the $DIAGON confirmation MENTIONS the shape, which is why this tests the "
+	      "start of a line and not a substring - it went red the other way first)");
+
+	// The two channels coexist: an ANSWER still arrives, and is not a diagnostic.
+	const std::size_t diagsBefore = c.diagnosticsIn();
+	check(c.send("get status position", err), "ask a question too: " + err);
+	c.pollFor(2000, 1);
+	check(containsSub(engineLines(c), "2461233.5"), "the answer arrives as an ENGINE line");
+	check(c.diagnosticsIn() == diagsBefore, "and is not mistaken for a diagnostic");
+
+	// A malformed record is SHOWN rather than dropped: a client that hides what
+	// it cannot parse is a client that hides a change of protocol. The gate
+	// pushes `$DIAG|tcp#1|truncated` - a prefix without its third separator.
+	c.pollFor(3000, 1);
+	check(containsSub(allLines(c), "$DIAG|tcp#1|truncated"),
+	      "a record that does not split is still on the feed, verbatim");
+	check(c.diagnosticsIn() == diagsBefore,
+	      "and it did NOT count as a diagnostic: the parse decides, not the prefix");
+	c.disconnect();
 }
 
 // ------------------------------------------------- the legs for a real engine
@@ -316,6 +397,55 @@ static void printHistory(const EditCore &core, const char *tag)
 		            e.line, e.id.c_str(), e.message.c_str());
 }
 
+//! THE DEDICATED LINK, AGAINST THE REAL ENGINE. Two ways, one leg: with
+//! `expectDiagnostics` the engine is one that has INTENT 11.188 and a refused
+//! command must come back; without it the engine PREDATES the change and the
+//! same command must come back as nothing at all. The second form is not a
+//! formality - it is what says the first one measured the engine rather than
+//! scedit's own hopes, and it is the only leg here whose green means the
+//! opposite thing.
+static void legLiveDiag(const Endpoint &ep, bool expectDiagnostics)
+{
+	TcpClient c;
+	std::string err;
+	check(c.connect(ep, err), "connect to the live engine: " + err);
+	c.pollFor(3000, 2);
+	check(containsSub(engineLines(c), "Vous receverez maintenant les logs"),
+	      "the $LOGON subscription is confirmed (unchanged, both engines)");
+	check(containsSub(engineLines(c), "$DIAGON ok:") == expectDiagnostics,
+	      expectDiagnostics ? "and $DIAGON is confirmed too"
+	                        : "and $DIAGON is NOT confirmed: this engine has no such verb");
+
+	// A command this engine cannot recognise. On the old one it vanishes into a
+	// log file nobody on this socket can read; on the new one it comes back.
+	const std::size_t before = c.diagnosticsIn();
+	check(c.send("flagg stars on", err), "send a command the engine will refuse: " + err);
+	c.pollFor(3000, 1);
+	const std::vector<FeedDiagnostic> got = diagnostics(c);
+	if (expectDiagnostics) {
+		check(got.size() == 1, "exactly one diagnostic came back");
+		check(got.size() == 1 && got[0].subject == "flagg stars on",
+		      "naming the command line it is about");
+		check(got.size() == 1 && got[0].origin.compare(0, 4, "tcp#") == 0
+		      && got[0].origin.size() > 4,
+		      "and the connection it came from: " + (got.empty() ? "" : got[0].origin));
+		check(got.size() == 1 && got[0].message.find("nrecognized") != std::string::npos,
+		      "with the engine's own words, not scedit's");
+		check(c.diagnosticsIn() == before + 1, "the counter moved by exactly one");
+	} else {
+		check(got.empty() && c.diagnosticsIn() == before,
+		      "nothing came back: this engine refuses in silence, as every engine did");
+	}
+
+	// Whatever the engine's age, an ANSWER still arrives on the same socket -
+	// the frozen half, checked from the client's side.
+	check(c.send("get status position", err), "ask a question: " + err);
+	c.pollFor(3000, 1);
+	check(containsSub(engineLines(c), ";"),
+	      "the `get status position` answer arrives, both engines alike");
+	c.disconnect();
+}
+
 //! Send one command and leave. The engine says nothing about it, so what it did
 //! is read by the harness through another channel entirely.
 static void legLiveSend(const Endpoint &ep, const std::vector<std::string> &commands)
@@ -323,7 +453,7 @@ static void legLiveSend(const Endpoint &ep, const std::vector<std::string> &comm
 	TcpClient c;
 	std::string err;
 	check(c.connect(ep, err), "connect to the live engine: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	// The subscription's confirmation IS an engine line, and counting it among
 	// the answers to the commands is how a count of 0 becomes a count of 1 and
 	// says nothing. It is asserted here and then cleared, so what follows is
@@ -349,7 +479,7 @@ static void legLiveGet(const Endpoint &ep)
 	TcpClient c;
 	std::string err;
 	check(c.connect(ep, err), "connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	check(c.send("get status position", err), "send a get: " + err);
 	c.pollFor(4000, 1);
 	std::vector<std::string> lines = engineLines(c);
@@ -376,7 +506,7 @@ static void legLiveFeed(const Endpoint &ep, int seconds)
 	TcpClient c;
 	std::string err;
 	check(c.connect(ep, err), "connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	std::printf("  MARKER subscribed\n");
 	std::fflush(stdout);
 	for (int i = 0; i < seconds * 4; ++i)
@@ -393,7 +523,7 @@ static void legLiveReconnect(const Endpoint &ep)
 	TcpClient c;
 	std::string err;
 	check(c.connect(ep, err), "first connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	check(c.send("get status position", err), "ask on the first connection");
 	c.pollFor(4000, 1);
 	const std::size_t first = engineLines(c).size();
@@ -401,7 +531,7 @@ static void legLiveReconnect(const Endpoint &ep)
 	c.disconnect();
 	check(c.state() == LinkState::Offline, "disconnected");
 	check(c.connect(ep, err), "reconnect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	check(c.send("get status position", err), "ask on the second connection");
 	c.pollFor(4000, 1);
 	check(engineLines(c).size() > 0, "the second connection was answered too");
@@ -423,7 +553,7 @@ static void legLivePlay(const Endpoint &ep, const std::string &grammar,
 
 	TcpClient c;
 	check(c.connect(ep, err), "connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	check(!engineLines(c).empty(), "the $LOGON subscription was confirmed by the engine");
 	c.clearFeed();   // from here, everything on this wire is about the script
 	check(!core.dirty(), "the buffer is clean, so the play needs no save first");
@@ -459,7 +589,7 @@ static void legLiveDirty(const Endpoint &ep, const std::string &grammar,
 	check(core.open(grammar, file, err), "open the script: " + err);
 	TcpClient c;
 	check(c.connect(ep, err), "connect: " + err);
-	c.pollFor(2000, 1);
+	c.pollFor(2000, 2);
 	check(c.send("script action play filename " + file, err), "play the file: " + err);
 	const bool changed = waitForWriteBack(core, seconds);
 	check(changed, "the engine rewrote the file within the window");
@@ -516,6 +646,8 @@ int main(int argc, char **argv)
 		legLiveSend(ep, std::vector<std::string>(argv + 3, argv + argc));
 	else if (leg == "live_get") legLiveGet(ep);
 	else if (leg == "live_feed") legLiveFeed(ep, argc > 3 ? std::atoi(argv[3]) : 10);
+	else if (leg == "diag") legDiag(ep);
+	else if (leg == "live_diag") legLiveDiag(ep, !(argc > 3 && std::string(argv[3]) == "none"));
 	else if (leg == "live_reconnect") legLiveReconnect(ep);
 	else if (leg == "live_play" && argc > 4)
 		legLivePlay(ep, argv[3], argv[4], argc > 5 ? std::atoi(argv[5]) : 60);

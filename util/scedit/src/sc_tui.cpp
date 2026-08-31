@@ -575,7 +575,16 @@ Element renderFeed(View &v)
 		for (const char c : l.text)
 			shown += glyphFor((unsigned char)c).s;
 		Element e = text(truncate(shown, v.width));
-		e = l.kind == FeedKind::Local ? (e | dim | color(Color::Cyan)) : e;
+		// Three kinds, three weights, and the order matters: what scedit sent is
+		// DIM (it is not the engine speaking), what the engine refused is RED
+		// (it is the one line on this feed that says something went wrong), and
+		// everything else is plain. A feed that draws a refusal like an answer
+		// is a feed on which a refusal is invisible - which is the state this
+		// channel exists to end (INTENT 11.188).
+		if (l.kind == FeedKind::Local)
+			e = e | dim | color(Color::Cyan);
+		else if (l.kind == FeedKind::Diagnostic)
+			e = e | color(Color::Red);
 		out.push_back(e);
 	}
 	return vbox({
@@ -1262,6 +1271,20 @@ int uiSelfTest(const std::string &grammarPath)
 		  {FeedKind::Local, "> get status position"},
 		  {FeedKind::Engine, " 45.00; 3.00;  75.00;2461233.500000;  12.500000;"},
 		  {FeedKind::Local, "> flag stars on"}}},
+		// A REFUSAL on the feed. The engine labels it `$DIAG|` and the pane
+		// draws it red, so the one line that says something went wrong does not
+		// look like the answer above it. Before INTENT 11.188 this line could
+		// not exist: the refusal went to a log file on the engine's machine.
+		{"live-feed-diagnostic", "flag stars on\nflagg stars on\n", 0, 0, false, 0, 22, true,
+		 LinkState::Connected, 0, 0,
+		 {{FeedKind::Local, "connected to 127.0.0.1:7805, subscribed with $LOGON and $DIAGON"},
+		  {FeedKind::Engine, "Vous receverez maintenant les logs"},
+		  {FeedKind::Engine, "$DIAGON ok: this connection now receives every diagnostic"},
+		  {FeedKind::Local, "> flagg stars on"},
+		  {FeedKind::Diagnostic,
+		   "$DIAG|tcp#4|Unrecognized or malformed command name|flagg stars on"},
+		  {FeedKind::Local, "> get status position"},
+		  {FeedKind::Engine, " 45.00; 3.00;  75.00;2461233.500000;  12.500000;"}}},
 		// --tcp given, nothing connected: the header says which of the two
 		// reasons for silence this is, and the title says `live off`.
 		{"live-offline", "flag stars on\n", 0, 0, false, 0, 22, true,
@@ -1362,7 +1385,12 @@ int uiSelfTest(const std::string &grammarPath)
 					const Pixel &p = screen.PixelAt(x, y);
 					if (p.character == " " || p.character.empty())
 						continue;
-					k = (p.dim && p.foreground_color == Color::Cyan) ? 'L' : 'E';
+					if (p.dim && p.foreground_color == Color::Cyan)
+						k = 'L';
+					else if (!p.dim && p.foreground_color == Color::Red)
+						k = 'D';
+					else
+						k = 'E';
 					break;
 				}
 				kinds += k;
