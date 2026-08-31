@@ -70,6 +70,7 @@ U+00B4	'	acute accent standing alone
 U+00A9	(C)	copyright sign (glibc agrees)
 U+00AA	a	feminine ordinal indicator
 U+00BA	o	masculine ordinal indicator
+U+200B	<NONE>	ZERO WIDTH SPACE: it renders as nothing and means nothing; deleting it is the only transliteration that preserves what a reader sees (found inside an identifier in a commented-out GLSL line, Atmosphere1 planet.frag:17)
 U+FFFD	?	REPLACEMENT CHARACTER - an accent already lost; "?" is the honest residue, and the two names above are repaired by the cited rows so this row should never fire
 
 # --- symbols the standard has no answer for: choices, stated ---

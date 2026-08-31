@@ -44,6 +44,7 @@ CONVERT	vcpkg.json	build manifest
 CONVERT	.gitignore	repo control file
 CONVERT	.gitmodules	repo control file
 CONVERT	util/	first-party developer tools built from this tree (C/C++/CMake/scripts)
+CONVERT	util/Atmosphere1/data/shaders/	GLSL SOURCE for the Atmosphere1 tool - it sits under a directory called data/, but a shader is code (found 2026-08-31 auditing my own table: the EXCLUDE row that covered it said "binary assets", which described two of its four members)
 CONVERT	util/scedit/src/	scedit source - first-party, ours to keep ASCII
 CONVERT	util/scedit/tests/	scedit test sources and fixtures we author (islands excluded below)
 CONVERT	util/scedit/grammar/args/	grammar DATA whose prose scedit DISPLAYS - it is authored documentation, not a pinned byte record
@@ -60,7 +61,7 @@ EXCLUDE	doc/spacecrafter-commandes_clavier.pdf	binary document asset
 EXCLUDE	doc/spacecrafter-keyboard_commands.pdf	binary document asset
 EXCLUDE	www/a1.png	binary image asset
 EXCLUDE	www/a2.png	binary image asset
-EXCLUDE	util/Atmosphere1/data/	binary model/texture assets consumed by the tool
+EXCLUDE	util/Atmosphere1/data/models/	binary Blender assets consumed by the tool
 EXCLUDE	util/server_standalone/bi_communication_spacecrafter.odt	binary OpenDocument (a zip container) - a document asset, not source
 EXCLUDE	sts-extension/dist/	packaged .vsix - build output
 EXCLUDE	util/scedit/.gitignore	no bytes at issue; kept explicit so the subtree is fully covered

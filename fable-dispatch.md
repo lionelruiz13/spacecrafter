@@ -2115,8 +2115,8 @@ transliteration proof + zero-count terminal census + both builds green +
 scedit gates green + smoke launch; §11.189 + stub + README; baselines
 re-derived as last act; trees clean; WIP cleared.
 **WIP:** DELIVERED 2026-08-31 — §11.189 (entry file + stub); code
-`1012c643`. **280 files converted, 8250 non-ASCII bytes → 0**; census 561
-non-ASCII files → 280, every survivor an EXCLUDE member; `mixed` class 2→0;
+`1012c643`. **282 files converted, 8269 non-ASCII bytes → 0**; census 561
+non-ASCII files → 278, every survivor an EXCLUDE member; `mixed` class 2→0;
 CONVERT-set characters **0**. Diff 2731/2731 with added==removed in EVERY
 file. Gates: `f70_ascii.py gate` PASS · `f70_translit.py verify --from
 630b06fd` PASS · **`f70_binary_equal.py`: all 27 allocated ELF sections
@@ -2133,7 +2133,10 @@ fixture are untouched. 619 literals dispositioned with a traced consumer each;
 `_()` proven NOT gettext and all 71 catalogues proven to carry ZERO non-ASCII
 keys, so no catalogue was edited. 5 records re-recorded deliberately (9 lines,
 all grammar prose, diff committed); witness/, doc/, data/, third_party/
-byte-untouched. Back-markers at §11.186(d), §11.188(k), §11.188's
+byte-untouched. Self-audit of the delivered table found two GLSL sources under a `data/` row
+that called them binary assets — fixed at the root, code `d64fd437` (+2 files,
++1 map row: U+200B, on the converter's first REFUSAL).
+Back-markers at §11.186(d), §11.188(k), §11.188's
 ui-selftest note and §2.0 D14's boundary clause, all this commit.
 **OWED TO THE SUPERVISOR:** the CLAUDE.md/§0.5 ISO-8859 rule NARROWS (src/ now
 holds no non-UTF-8-decodable file) and must also be CORRECTED — the two
