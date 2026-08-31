@@ -85,6 +85,7 @@ enum class Context {
 	None,          //!< nothing to say (no command on the line, unknown command...)
 	CommentLine,   //!< the script layer drops this line whole
 	Comment,       //!< the caret is in the comment after a '#' (the engine reads none of it)
+	MachineTail,   //!< the caret is inside a `#!` tail the ENGINE wrote (parse_model.comments.machine_tail)
 	CommandName,   //!< the command word
 	ArgKey,        //!< the key half of a pair
 	ArgValue,      //!< the value half of a pair
@@ -139,6 +140,22 @@ struct DocBar {
 	std::string required;
 	std::string source;      //!< engine anchor
 	std::string note;        //!< structural remark (open key list, unknown name, ...)
+	//! The `#!` tail on the caret's line, if any, as the bar shows it: the
+	//! engine's sentence(s) followed by their relation to scedit's own findings
+	//! (MachineTail::relation). "" when the line carries none.
+	std::string annotation;
+};
+
+//! A `#!` tail the engine wrote on a line (parse_model.comments.machine_tail),
+//! and how it relates to what scedit finds on that line — the C1 signal:
+//! the two readings of one line must agree, and a disagreement is information.
+struct MachineTail {
+	std::size_t begin = std::string::npos;   //!< raw offset of the `#!`, npos = no tail
+	std::string text;                        //!< after "#! ", the sentence(s)
+	//! One sentence per engine message: "agrees with scedit's <id>" /
+	//! "scedit finds no <id> here now: ..." / "not a class scedit checks".
+	std::string relation;
+	bool present() const { return begin != std::string::npos; }
 };
 
 struct Cursor {
@@ -196,6 +213,12 @@ public:
 	//! line (parse_model.comments.mid_line), so the renderer can grey exactly
 	//! the bytes the engine never reads.
 	std::size_t commentBegin(std::size_t line) const;
+
+	//! The `#!` tail the engine wrote on a 0-based line, located exactly as the
+	//! engine locates it (the first `#!` at or after the comment's '#'), with
+	//! its relation to scedit's findings on that line. Never written by the
+	//! editor: shown, and compared.
+	MachineTail machineTail(std::size_t line) const;
 
 	//! Findings on a 1-based file line (Diagnostic::line's own numbering).
 	std::vector<const Diagnostic *> diagnosticsForLine(std::size_t oneBasedLine) const;

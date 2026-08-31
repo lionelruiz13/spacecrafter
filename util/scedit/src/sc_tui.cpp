@@ -284,11 +284,16 @@ Element renderDocBar(const EditCore &core, const View &v)
 	// Row 4: the findings on this line, else the note, else the engine anchor.
 	Element row4;
 	const std::vector<const Diagnostic *> diags = core.diagnosticsForLine(core.cursor().line + 1);
-	if (!diags.empty()) {
+	if (!diags.empty() || !d.annotation.empty()) {
 		std::string t;
 		for (const auto *dg : diags)
 			t += (t.empty() ? "" : " | ") + dg->severity + ": " + dg->message + " [-W" + dg->id + "]";
-		row4 = text(truncate(t, w)) | color(severityColor(diags.front()->severity));
+		// What the ENGINE wrote on this line the last time it ran the script,
+		// and whether scedit's reading agrees (MachineTail::relation).
+		if (!d.annotation.empty())
+			t += (t.empty() ? "" : " | ") + std::string("spacecrafter wrote #! ") + d.annotation;
+		const bool agree = d.annotation.empty() || d.annotation.find("agrees with") != std::string::npos;
+		row4 = text(truncate(t, w)) | color(!diags.empty() && agree ? severityColor(diags.front()->severity) : Color::Yellow);
 	} else if (!d.note.empty()) {
 		row4 = text(truncate(d.note, w)) | color(Color::Yellow);
 	} else {
@@ -536,6 +541,12 @@ int uiSelfTest(const std::string &grammarPath)
 		// An opener never closed is reported at the OPENER line (the root),
 		// although the checker only knows at the end of the file.
 		{"finding-unclosed-struct", "struct if a equal b\nflag stars on\n", 0, 0},
+		// A `#!` tail the engine wrote (parse_model.comments.machine_tail): dim
+		// like any comment, and row 4 says what the engine wrote and that
+		// scedit's own finding agrees.
+		{"machine-tail", "struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here\n", 0, 0},
+		// The same tail on a line scedit finds clean: the relation says so.
+		{"machine-tail-stale", "flag stars on #! this 'struct if end' closes nothing: no 'struct if' is open here\n", 0, 0},
 	};
 
 	for (const Case &c : cases) {

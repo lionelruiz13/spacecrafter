@@ -143,6 +143,21 @@ renderer. A comment — from its `#` to the end of the line — is drawn dim, li
 the ghost: text the engine does not read. With the caret inside one, the bar
 says `comment` and nothing completes.
 
+A **`#!` tail** is a comment the ENGINE wrote: when spacecrafter runs a script
+and finds a block fault, it writes the diagnosis at the end of the faulty line
+(the opener, for a `struct if`/`struct loop` never closed), replaces it when
+the verdict changes, and removes it once the fault is gone
+(`parse_model.comments.machine_tail`; the writer's contract is
+`src/scriptModule/script_annotator.hpp`). scedit never writes one. With the
+caret anywhere on such a line, row 4 shows `spacecrafter wrote #! …` followed
+by how that relates to scedit's own reading of the line — *agrees with
+scedit's `end-without-if`*, or *scedit finds no `end-without-if` here now*
+(fixed since the last run, or the two disagree — worth reporting), or *not a
+class scedit checks*. That relation is the one place the editor compares its
+reading of a line with the engine's actual verdict on it (constraint C1,
+measured on the file rather than on the parser). Inside the tail the bar
+says what a `#!` is and who owns it.
+
 ### What the grey text means
 
 Grey text at the caret is **exactly what Tab would insert** — never a hint,

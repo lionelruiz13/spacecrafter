@@ -121,6 +121,7 @@ bool DocIndex::load(const std::string &path, std::string &err)
 	{
 		comment_line_doc_ = str(g.at("parse_model").at("comments"), "script_layer");
 		comment_tail_doc_ = str(g.at("parse_model").at("comments"), "mid_line");
+		machine_tail_doc_ = str(g.at("parse_model").at("comments"), "machine_tail");
 	}
 
 	if (fam.contains("commands")) {

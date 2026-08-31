@@ -245,6 +245,57 @@ std::size_t EditCore::commentBegin(std::size_t line) const
 	return tokenizeLine(doc_.engineLine(line)).comment_begin;
 }
 
+MachineTail EditCore::machineTail(std::size_t line) const
+{
+	MachineTail mt;
+	const Line L = tokenizeLine(doc_.engineLine(line));
+	// A line the script layer drops whole is never dispatched, so the engine
+	// never writes or reads a tail there; only a command line can carry one.
+	if (!L.has_command || L.comment_begin == std::string::npos)
+		return mt;
+	const std::string &raw = doc_.line(line);
+	const std::size_t at = raw.find("#!", L.comment_begin);
+	if (at == std::string::npos)
+		return mt;
+	mt.begin = at;
+	std::string text = raw.substr(at + 2);
+	while (!text.empty() && (text.back() == '\r' || text.back() == ' ' || text.back() == '\t'))
+		text.pop_back();
+	std::size_t s = 0;
+	while (s < text.size() && (text[s] == ' ' || text[s] == '\t'))
+		++s;
+	mt.text = text.substr(s);
+
+	// The relation, one sentence per engine message (they join with "; ").
+	const std::vector<const Diagnostic *> mine = diagnosticsForLine(line + 1);
+	std::size_t from = 0;
+	while (from <= mt.text.size()) {
+		std::size_t sep = mt.text.find("; this ", from);
+		std::string sentence = mt.text.substr(from, sep == std::string::npos ? std::string::npos : sep - from);
+		if (!sentence.empty()) {
+			const LintSeed *seed = grammar_.seedForEngineTail(sentence);
+			std::string r;
+			if (!seed) {
+				r = "not a class scedit checks (the engine's generic channel, or a newer engine)";
+			} else {
+				bool agree = false;
+				for (const auto *d : mine)
+					if (d->id == seed->id)
+						agree = true;
+				r = agree ? "agrees with scedit's " + seed->id
+				          : "scedit finds no " + seed->id + " here now: fixed since spacecrafter last ran this "
+				            "script (it clears the tail on the next full run), or the two readings disagree - "
+				            "worth reporting";
+			}
+			mt.relation += (mt.relation.empty() ? "" : " | ") + r;
+		}
+		if (sep == std::string::npos)
+			break;
+		from = sep + 2;
+	}
+	return mt;
+}
+
 std::vector<const Diagnostic *> EditCore::diagnosticsForLine(std::size_t oneBasedLine) const
 {
 	std::vector<const Diagnostic *> out;
@@ -389,7 +440,8 @@ void EditCore::computeCompletion()
 	// In the comment after a '#': the engine reads none of it, so nothing
 	// completes — a ghost there would be a promise about bytes with no meaning.
 	if (cur_.col >= line_.comment_begin) {
-		completion_.context = Context::Comment;
+		const MachineTail mt = machineTail(cur_.line);
+		completion_.context = (mt.present() && cur_.col >= mt.begin) ? Context::MachineTail : Context::Comment;
 		completion_.anchor = Span{cur_.col, cur_.col};
 		return;
 	}
@@ -497,6 +549,21 @@ void EditCore::computeDocBar()
 		docbar_.documented = !docbar_.doc.empty();
 		docbar_.doc_of = docbar_.documented ? "comment" : "";
 		docbar_.source = "src/scriptModule/script.cpp:114";
+		return;
+	}
+	// The `#!` tail, wherever the caret is on its line: the engine's sentence
+	// and how it relates to what scedit finds here (the C1 signal).
+	{
+		const MachineTail mt = machineTail(cur_.line);
+		if (mt.present())
+			docbar_.annotation = mt.text + " -- " + mt.relation;
+	}
+	if (completion_.context == Context::MachineTail) {
+		docbar_.path = "#! annotation, written by spacecrafter";
+		docbar_.doc = docs_.machineTailDoc();
+		docbar_.documented = !docbar_.doc.empty();
+		docbar_.doc_of = docbar_.documented ? "comment" : "";
+		docbar_.source = "src/scriptModule/script_annotator.hpp (parse_model.comments.machine_tail)";
 		return;
 	}
 	if (completion_.context == Context::Comment) {

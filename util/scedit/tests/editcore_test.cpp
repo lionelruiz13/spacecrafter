@@ -592,6 +592,39 @@ void testLint()
 		eqn(u.commentBegin(1), std::string::npos, "E4b ... and that the next line has none");
 	}
 	{
+		// E4f. A `#!` tail the ENGINE wrote (parse_model.comments.machine_tail):
+		// located as the engine locates it, shown with its relation to scedit's
+		// own finding on the line — the C1 signal.
+		const std::string tail = "#! this 'struct if end' closes nothing: no 'struct if' is open here";
+		EditCore a = at("struct if end " + tail + "\n", 0);
+		MachineTail m = a.machineTail(0);
+		ok(m.present() && m.begin == 14, "E4f the tail is found at the engine's offset");
+		eq(m.text, tail.substr(3), "E4f ... its text is the engine's sentence");
+		ok(m.relation.find("agrees with scedit's end-without-if") != std::string::npos,
+		   "E4f ... and scedit's own finding AGREES");
+		ok(a.docBar().annotation.find("agrees with") != std::string::npos,
+		   "E4f the bar carries it with the caret on the command");
+		EditCore in = at("struct if end " + tail + "\n", 20);
+		ok(in.completion().context == Context::MachineTail, "E4f inside the tail: its own context");
+		ok(in.docBar().documented && in.docBar().doc.find("RESERVED") != std::string::npos,
+		   "E4f ... documented by parse_model.comments.machine_tail");
+		EditCore before = at("struct if end # note " + tail + "\n", 16);
+		ok(before.completion().context == Context::Comment, "E4f the author's comment before it stays a comment");
+		ok(before.machineTail(0).begin == 21, "E4f ... and the tail starts at the `#!`, after the author's words");
+		EditCore stale = at("flag stars on " + tail + "\n", 0);
+		ok(stale.diagnosticsForLine(1).empty() && stale.machineTail(0).relation.find("finds no end-without-if") != std::string::npos,
+		   "E4f a tail on a clean line: 'finds no ... here now' (fixed, or disagree)");
+		EditCore other = at("flag stars on #! command 'flag' : unknown flag\n", 0);
+		ok(other.machineTail(0).relation.find("not a class scedit checks") != std::string::npos,
+		   "E4f a sentence of no known class is said to be one");
+		EditCore quoted = at("text name t string \"a #! b\" altitude 10\n", 0);
+		ok(!quoted.machineTail(0).present(), "E4f a \"#!\" inside quotes is text, not a tail");
+		EditCore two = at("struct loop end " + std::string("#! this 'struct loop end' closes nothing: x; this 'struct if end' closes nothing: y") + "\n", 0);
+		ok(two.machineTail(0).relation.find("loop-end-without-loop") != std::string::npos
+		   && two.machineTail(0).relation.find("finds no end-without-if") != std::string::npos,
+		   "E4f two joined sentences: one relation each");
+	}
+	{
 		// An opener never closed: reported on ITS line, not on the last one.
 		EditCore u = at("struct if a equal b\nflag stars on\n", 0);
 		const std::vector<const Diagnostic *> d1 = u.diagnosticsForLine(1);

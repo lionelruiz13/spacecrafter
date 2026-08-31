@@ -123,6 +123,11 @@ struct LintSeed {
 	std::string severity;
 	std::string rule;
 	std::string source;
+	//! What a `#!` tail of this class starts with, VERBATIM from the engine's
+	//! own message constants (`engine_tail` in the file, anchored to
+	//! app_command_interface.cpp's MSG_*). Empty for rules the engine does
+	//! not write into scripts. The editor's C1 signal reads it.
+	std::vector<std::string> engine_tails;
 };
 
 class Grammar {
@@ -144,6 +149,10 @@ public:
 	bool isObsolete(const std::string &token) const { return obsolete_.count(token) != 0; }
 
 	const LintSeed *seed(const std::string &id) const;
+	//! The seed whose engine message a `#!` tail sentence starts with, or
+	//! nullptr: a class the engine writes that scedit does not check (its
+	//! generic channel, or a newer engine).
+	const LintSeed *seedForEngineTail(const std::string &sentence) const;
 
 	//! Commands that read only `args.begin()` and silently drop the rest.
 	bool isSinglePairCommand(const std::string &name) const { return single_pair_.count(name) != 0; }

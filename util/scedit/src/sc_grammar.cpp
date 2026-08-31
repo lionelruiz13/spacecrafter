@@ -262,6 +262,10 @@ bool Grammar::load(const std::string &path, std::string &err)
 			s.severity = l.value("severity", std::string("warning"));
 			s.rule = l.value("rule", std::string());
 			s.source = l.value("source", std::string());
+			if (l.contains("engine_tail") && l.at("engine_tail").is_array())
+				for (const auto &t : l.at("engine_tail"))
+					if (t.is_string())
+						s.engine_tails.push_back(t.get<std::string>());
 			seeds_[s.id] = s;
 		}
 	} catch (const std::exception &e) {
@@ -275,6 +279,15 @@ const CommandData *Grammar::command(const std::string &name) const
 {
 	auto it = commands_.find(name);
 	return it == commands_.end() ? nullptr : &it->second;
+}
+
+const LintSeed *Grammar::seedForEngineTail(const std::string &sentence) const
+{
+	for (const auto &kv : seeds_)
+		for (const auto &prefix : kv.second.engine_tails)
+			if (!prefix.empty() && sentence.compare(0, prefix.size(), prefix) == 0)
+				return &kv.second;
+	return nullptr;
 }
 
 const FamilyData *Grammar::family(const std::string &name) const
