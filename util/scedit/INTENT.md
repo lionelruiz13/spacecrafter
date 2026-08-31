@@ -295,6 +295,15 @@ notes.*
     command or the author's own comment; several diagnostics on one line join
     with `; `. (a)/(b) are now unblocked; (b) holds by construction today
     (the editor writes bytes back and never composes a `#!`).**
+    **(a-i) DONE 2026-08-31 (code `4a00cf31`): the tail is recognised
+    (`EditCore::machineTail`, `Context::MachineTail`), shown on the bar's
+    findings row with the caret anywhere on the line, and RELATED to scedit's
+    own finding — agree / finds-nothing-now (fixed or disagree) / not a class
+    scedit checks — the mapping carried as data (`engine_tail` on the four
+    block seeds, anchored to the engine's MSG_* constants);
+    `parse_model.comments.machine_tail` written; two selftest frames + E4f.
+    (a-ii) OPEN: the error-history pane in sc_tui listing every `#!` line
+    (and scedit's findings) with click-to-warp-cursor.**
 16. **Shipped-corpus dispositioning sweep** [measured 2026-08-30e] — the 13
     older seeds over the 408 shipped scripts: **1757 findings in 35 files**
     (duplicate-key 1596 — 1500 in the generated `internal/
@@ -379,10 +388,13 @@ notes.*
   write needs). Two checker slips before green, both mine: a `flyto` sub-leg
   in F62 that could not succeed (dropped; the claim rides on `div`), and an
   F63 check that searched the log for a path the `Execute_command` line
-  legitimately contains. **Item 15's scedit half is next**: recognise the
-  tail on the doc bar (context + the C1 signal when scedit's own finding for
-  the line disagrees or is absent), a parse_model `comments.machine_tail`
-  clause, and the error-history/click-to-warp pane in sc_tui.
+  legitimately contains. **Item 15's scedit half, part one, same evening
+  (code `4a00cf31`)**: the tail recognised and related to scedit's own finding
+  (the C1 signal as a sentence on the bar: agree / finds-nothing-now /
+  unknown class), `parse_model.comments.machine_tail`, `engine_tail` data on
+  the four block seeds, two selftest frames, E4f; 8/8. Left for the next
+  session: the error-history/click-to-warp pane (15 a-ii), and Vixy's
+  decision on the generic channel.
 - **[2026-08-31c] The engine runs here: both rulings confirmed live, the
   aliases land, and a claim three records carried turns out to name a map
   nothing reads.** Display session available for `claude` (`DISPLAY=:2`,
