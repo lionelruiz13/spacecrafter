@@ -287,7 +287,14 @@ notes.*
     **(c) DONE 2026-08-31: sc_tui already drew the caret with FTXUI's
     `inverted` (SGR 7); the ui_selftest now prints an `inv` mask per frame
     and the record pins one inverted cell at the caret in all 10 frames.
-    (a)/(b) wait for the `#!` format to exist engine-side.**
+    ~~(a)/(b) wait for the `#!` format to exist engine-side.~~ ENGINE HALF
+    LANDED 2026-08-31 (code `2b8ec034`, parent §11.184, gate F63 34/34). The
+    format scedit must recognise: the tail from the first `#!` at or after
+    the first `#` outside quotes (the parser's own toggle — ScriptAnnotator::
+    annotationBegin), written as ` #! <one ASCII sentence>` after the
+    command or the author's own comment; several diagnostics on one line join
+    with `; `. (a)/(b) are now unblocked; (b) holds by construction today
+    (the editor writes bytes back and never composes a `#!`).**
 16. **Shipped-corpus dispositioning sweep** [measured 2026-08-30e] — the 13
     older seeds over the 408 shipped scripts: **1757 findings in 35 files**
     (duplicate-key 1596 — 1500 in the generated `internal/
@@ -354,6 +361,28 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-31d] The `#!` channel exists — engine half of item 15 landed
+  (code `2b8ec034`, parent §11.184, harness `f63_annotations.py` 34/34).**
+  Design, from the session's reading: provenance threaded (Token → LoopStep →
+  executeCommand's origin overload with an RAII scope → IfSwap openers; loop
+  opener tracked in the interface), the natural end (`terminateScript`, sole
+  caller = the queue running out) audits both stacks before `script action
+  end` discards them; `ScriptAnnotator` writes per file at script end
+  (byte-compare, sibling temp + rename, clear stale tails at natural end
+  only, skip a line changed since load, log-only when unwritable, CRLF kept).
+  Producers = the ruled block-structure class; the generic `debug_message`
+  channel deliberately NOT wired — ~1661 tails into 35 shipped scripts on
+  first run — disclosed to Vixy in FEATURE_REQUESTS with the count. Gate legs
+  incl. the splice (a fault in a script played by another lands in ITS file),
+  the loop replay (two log lines, one tail), a read-only DIRECTORY (a file's
+  own mode does not stop a rename — the directory is what the sibling-temp
+  write needs). Two checker slips before green, both mine: a `flyto` sub-leg
+  in F62 that could not succeed (dropped; the claim rides on `div`), and an
+  F63 check that searched the log for a path the `Execute_command` line
+  legitimately contains. **Item 15's scedit half is next**: recognise the
+  tail on the doc bar (context + the C1 signal when scedit's own finding for
+  the line disagrees or is absent), a parse_model `comments.machine_tail`
+  clause, and the error-history/click-to-warp pane in sc_tui.
 - **[2026-08-31c] The engine runs here: both rulings confirmed live, the
   aliases land, and a claim three records carried turns out to name a map
   nothing reads.** Display session available for `claude` (`DISPLAY=:2`,

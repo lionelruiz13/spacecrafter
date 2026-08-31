@@ -2319,3 +2319,27 @@ Instrument lesson, recorded in the file: a recorded line must SUCCEED to be
 written, and three `camera`/`flyto` forms tried blind failed for camera-state
 reasons — read `families.commands.camera.args` in the grammar before choosing
 a form; `div y 2` carries the claim alone.
+
+## F63 — the `#!` channel: the diagnosis written on the faulty line (`f63_annotations.py`) — INTENT §11.184, 2026-08-31
+
+    cd claude/harness && DISPLAY=:2 ./f63_annotations.py [absOutdir]     # default artifacts/f63
+
+One launch on a temp-HOME farm, ten scripts played over TCP one after the other
+(each waited to its `ScriptMgr: script end` through the script log). Legs and
+what each pins — A: five block faults in one file (`end`/`else`/`loop end` with
+nothing open, `struct loop 2` and `struct if 1 equal 1` never closed) → exactly
+those five lines gain ` #! <what / consequence / action>`, the unclosed ones at
+their OPENER, every other byte identical, and the log carries `script
+<file>:<line>: <what> [<line>]`; A2: replayed → byte-identical (no rewrite) and
+the same five diagnostics (the tail IS a comment); B: fix by APPENDING `struct
+if end` → the opener's tail cleared at the next natural end; C: fix by editing
+the line above → the closer's tail cleared; D: CRLF → tails before the CR,
+endings preserved; E: a read-only DIRECTORY → file untouched, one WARNING with
+the count, diagnostics still logged (a read-only FILE would not do: rename
+replaces it — the directory is what a sibling-temp write needs); F: `#!`
+inside a quoted value → not a tail; G: a line the driver edits while the
+script waits → skipped with the "changed since the script was loaded"
+warning, the edit intact; H+I: a fault in a script played BY another →
+annotated in ITS file, the caller untouched; J: a fault inside a `struct loop
+2` body → two log lines (first pass + replay, the replayed line keeps its
+origin), one tail. Measured 2026-08-31 on `2b8ec034`: **34/34**.

@@ -200,8 +200,26 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   who doesn't want to ever try using scedit."* For the unclosed `struct if`,
   the annotation lands on the OPENER line; message content follows the
   three-part log schema (§11.169: cause + content + self-contained action).
-- **Status:** accepted — engine change pending. Consequences flagged at
-  record time [derived]:
+- **Status:** ~~accepted — engine change pending~~ **LANDED 2026-08-31 (code
+  `2b8ec034`, §11.184; gate `harness/f63_annotations.py` 34/34)** for the
+  RULED class — unclosed `struct if`/`struct loop` annotated at their OPENER,
+  `end`/`else` without `if` and `loop end` without `loop` at their line —
+  through `ScriptAnnotator` (contract in `scriptModule/script_annotator.hpp`:
+  batch per file at script end, sibling temp + rename, no write when the tails
+  already say this, stale tails cleared at a natural end, unwritable file →
+  log only, CRLF/ISO-8859 preserved). Of the consequences below: (1) met
+  earlier by `3d9179d2`; (3) IMPLEMENTED as stated (fixed ⇒ cleared at the next
+  natural end); (4) IMPLEMENTED (read-only degrades to the log with the count);
+  (5) confined to `addScriptFirst`'s engine-synthesised lines — a script played
+  BY another keeps its own file and line (gate leg H+I); (2) the parse_model
+  clause is scedit's half, with item 15(a)/(b), still owed. **DECISION FOR VIXY,
+  disclosed with its measurement**: the generic channel — every failing
+  command's `debug_message` written on its line — is three lines away and NOT
+  wired: it would put ~1661 `#!` tails into 35 of the 408 shipped scripts on
+  their first runs (scedit corpus count 2026-08-30; 1500 in the generated
+  `internal/comet-particles.sts`), i.e. §2(b)/D9 at scale. Say yes, no, or
+  which subset (unknown command / unknown flag are the two that dominate).
+  Consequences flagged at record time [derived]:
   (1) **ordering**: a trailing `#!` comment is only a comment if mid-line
   `#` is real — this REQUIRES the same-day mid-line-# ruling to land first
   or together, else the engine would write junk args into scripts;
@@ -261,6 +279,54 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   The recorder's canonical name must be chosen explicitly (long form), not
   inherited from map order — a one-line ordering decision, but a D9-grade
   one (recordings are shipped artefacts).
+
+### [2026-08-31] LLM assistance over the command documentation (ollama / OpenAI-compatible)
+- **From:** Vixy (in-conversation, mid-turn, verbatim): *"New idea, as feature :
+  To make spacecrafter script more accessible, is there a way to integrate
+  ollama/OpenAI LLM support ? It would require to interface the command
+  documentation."*
+- **Status:** new — untriaged. Facts triage starts from [fable, recorded at
+  receipt]:
+  (1) **the interface it needs already exists as data**: `util/scedit/grammar/
+  sc-grammar.json` is the machine-readable command contract — per-command and
+  per-key one-liners written to the zero-knowledge bar (C6, "someone without any
+  knowledge of script should be able to understand and modify any script"),
+  value domains, defaults, required-ness, the parse model's sharp edges, and
+  the lint seeds; scedit's `DocIndex` is a reader of it. An LLM needs exactly
+  that: a grammar it can be given (as context or as tool definitions) and
+  cannot invent. "Interface the command documentation" = expose this file, not
+  write a second one.
+  (2) **the red line is C2 in the other direction**: the LLM is a CONSUMER of
+  grammar facts, never a SOURCE — every line it produces goes through scedit's
+  `--check` (engine-fidelity tokenizer, C3-gated rules) before the engine sees
+  it, and the doc bar / `#!` annotations are what it reads back. A model that
+  hallucinates a key gets the same `unknown-parameter` an author does.
+  (3) **modes, in order of value**: natural language → script (generate, then
+  `--check`, then show — the editor's completion and doc bar already know the
+  vocabulary); script → explanation (the doc lines are the material);
+  NL → live command over TCP (item 6's channel) as an agent mode — the last is
+  the one with a live engine at the other end and wants the checker in the
+  loop as a gate, not a hint.
+  (4) **placement**: outside the engine. A model call is seconds of latency and
+  a network dependency; spacecrafter is a soft-realtime Vulkan process (D11).
+  scedit (or a sibling tool) talking to the engine over TCP is the shape the
+  architecture already has; the engine's part is the EMITTER of the grammar
+  (D5's target state — the file becomes a build/runtime artefact) so the
+  documentation the LLM sees is the engine's own, never a stale copy.
+  (5) **what limits the quality today is the same doc debt scedit has**: 184
+  of 227 family names undocumented (flags, colours, obsolete, reserved
+  variables, font targets still v1 arrays), all 324 arg defaults as prose, no
+  `completable` marker on values (scedit INTENT §5 items 11/12 and the doc
+  passes). An LLM over thin docs answers thinly; the doc passes are the
+  prerequisite, and they serve both consumers.
+  (6) **provider surface**: ollama exposes an OpenAI-compatible HTTP API, so one
+  client shape (base URL + model name, no key for local) covers both named
+  providers and a local-first default — no network, no cost, and a dome's
+  offline setting stays possible.
+  Triage questions for Vixy: which mode first; local-only default or not;
+  whether the checker's verdict is a hard gate on execution in agent mode
+  (rec: yes — C3's zero-false-positive discipline is what makes a hard gate
+  acceptable).
 
 **Provenance update to the three 2026-08-26 entries above [fable 2026-08-30,
 owner testimony in-conversation → §11.173]:** the file's text is the
