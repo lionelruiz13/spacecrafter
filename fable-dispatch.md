@@ -1328,7 +1328,12 @@ TCP (F66/F67); `--check`'s printed shape untouched (D6).
 falsification-tested (a tampered expected line → FAIL, shown in the report);
 `f63_scedit_agree.py` green through `--history` with its own reader deleted;
 ledger + README + FR annotation committed; code tree clean; WIP per §0.6.
-**WIP:**
+**WIP:** 2026-08-31 — §0.7 gate PASSED (all 9 stated counts + artifacts + both
+HEADs verified live). CP1 done, code `cdda1ee4`: scope 1 (EditCore
+`errorHistory()`/`warpTo()`, the "history" reading stated in the header,
+tail+finding = two entries), editcore 193 → 223, two tampers shown red.
+Next: scope 3 (`--history` CLI + its gate), then scope 2 (the pane), scope 4
+(grammar clause), the f63 instrument rewrite, then the records.
 
 ### F66 — scedit: the documentation surface for machines — `--doc`, `--search`, `--check` as JSON, and an MCP stdio server over the same readers (FEATURE_REQUESTS 2026-08-31 "LLM assistance"; scedit INTENT §5 item 19) [M]
 
