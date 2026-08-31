@@ -1,0 +1,8 @@
+tracked regular files: 1498
+  ascii     1218
+  utf8        55
+  mixed        0
+  iso8859      3
+  binary     222
+non-ASCII files: 280 (text 58, binary 222)
+non-ASCII chars by context (text files): comment=1973, string=1576, char=0, code=0, text=15404

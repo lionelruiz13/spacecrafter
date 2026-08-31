@@ -1,0 +1,2 @@
+  (.note.gnu.build-id differs, as it must: it hashes the debug information too)
+PASS: all 27 allocated sections identical (7938005 bytes hashed); only DWARF and the build-id moved.

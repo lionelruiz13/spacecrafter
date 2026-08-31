@@ -1,0 +1,377 @@
+{
+ "predictions": {
+  "iv": "S/P/Q/HTTP wires: pre == pre2 (deterministic) and pre == post (frozen), and each equal BYTE FOR BYTE to F68's committed wire - 71 / 5 / 0 / 85 B",
+  "iv-S": "the $LOGON subscriber receives NO record beginning `$DIAG` in any phase",
+  "vi-pre": "on the pre binary D's wire is EMPTY (0 B): `$DIAGON` is not a verb there, it is a command, and the script log carries `Unrecognized or malformed command name` for it - twice, for $DIAGON and $DIAGOFF - which post does NOT",
+  "vi-post": "D's wire opens with `$DIAGON ok:` and then carries one `$DIAG|tcp#<id>|msg|subject` record per TCP-origin refusal: the cold fault, the funnel's `get status nonsense`, the bypassed `flagg stars on`, ~~the nested audio refusal~~, the fault after `clear`, and one tagged with Q's OTHER id. [CORRECTED after the first run, and the correction is the interesting part: this enumeration listed the NESTED audio refusal, and the check written beside it asserts the opposite - a nested call passes no origin (11.184's rule), so it routes nowhere. The measurement agreed with the CHECK: 5 records, none about audio. The prediction text was wrong where the check was right; both were committed before the run, so the disagreement is on the record rather than resolved by whichever one the result happened to match.]",
+  "vi-none": "NO `$DIAG` record names a file path or an empty origin: the HTTP-origin fault and every fault of the played FILE route nowhere",
+  "ix": "scedit's OWN client, on the same launch: `live_diag` green on post (a refused command comes back, split into origin/message/subject) and green on pre WITH `none` (the same leg, the opposite expectation, because that engine has no such verb)",
+  "vii": "after `$DIAGOFF` the confirmation arrives and then nothing: one more fault from P adds 0 bytes to D",
+  "viii": "the script log carries the SAME number of `Could not execute: get status nonsense` lines (2) and of `struct if end` faults on both binaries: the wire added a copy",
+  "v": "no farm file changes during the TCP battery; after the play exactly one `#!` tail, on line 3, every other byte identical"
+ },
+ "host": {
+  "binaries": {
+   "post": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+   "post_md5": "c69c96c012128411192b030a81ea5b9e",
+   "pre": "/tmp/f70-pre/spacecrafter",
+   "pre_md5": "2ea5d54bff51128943a1ad5f98038aa0"
+  },
+  "xserver_start_before_pre": "no Xwayland :2",
+  "screensaver_before_pre": "(false,)",
+  "xserver_start_after_pre": "no Xwayland :2",
+  "screensaver_after_pre": "(false,)",
+  "frame_stalls_pre": 21,
+  "xserver_start_before_pre2": "no Xwayland :2",
+  "screensaver_before_pre2": "(false,)",
+  "xserver_start_after_pre2": "no Xwayland :2",
+  "screensaver_after_pre2": "(false,)",
+  "frame_stalls_pre2": 21,
+  "xserver_start_before_post": "no Xwayland :2",
+  "screensaver_before_post": "(false,)",
+  "xserver_start_after_post": "no Xwayland :2",
+  "screensaver_after_post": "(false,)",
+  "frame_stalls_post": 24,
+  "ids_observed": {
+   "P": "tcp#4",
+   "Q": "tcp#5"
+  },
+  "fault_origins_post": [
+   "tcp#4",
+   "tcp#4",
+   "tcp#5",
+   "",
+   "/tmp/sc-farm-f69/f69/f69_file.sts:3",
+   "tcp#4"
+  ],
+  "fault_origins_pre": [
+   "tcp#4",
+   "tcp#4",
+   "tcp#5",
+   "",
+   "/tmp/sc-farm-f69/f69/f69_file.sts:3",
+   "tcp#4"
+  ],
+  "D_wire_post_len": 939,
+  "D_wire_pre_len": 939,
+  "D_records_post": [
+   "$DIAGON ok: this connection now receives every diagnostic the engine produces about a command read on the control socket, one record per diagnostic, as $DIAG|<origin>|<message>|<command>\n",
+   "$DIAG|tcp#4|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end\n",
+   "$DIAG|tcp#4|command 'get': unknown status value|get status nonsense\n",
+   "$DIAG|tcp#4|Unrecognized or malformed command name|flagg stars on\n",
+   "$DIAG|tcp#4|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end\n",
+   "$DIAG|tcp#5|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end\n",
+   "$DIAGOFF ok: this connection no longer receives command diagnostics\n"
+  ],
+  "D_diag_records": [
+   {
+    "origin": "tcp#4",
+    "message": "this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close",
+    "subject": "struct if end",
+    "raw": "$DIAG|tcp#4|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end"
+   },
+   {
+    "origin": "tcp#4",
+    "message": "command 'get': unknown status value",
+    "subject": "get status nonsense",
+    "raw": "$DIAG|tcp#4|command 'get': unknown status value|get status nonsense"
+   },
+   {
+    "origin": "tcp#4",
+    "message": "Unrecognized or malformed command name",
+    "subject": "flagg stars on",
+    "raw": "$DIAG|tcp#4|Unrecognized or malformed command name|flagg stars on"
+   },
+   {
+    "origin": "tcp#4",
+    "message": "this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close",
+    "subject": "struct if end",
+    "raw": "$DIAG|tcp#4|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end"
+   },
+   {
+    "origin": "tcp#5",
+    "message": "this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close",
+    "subject": "struct if end",
+    "raw": "$DIAG|tcp#5|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end"
+   }
+  ],
+  "D_nonascii_bytes": 0,
+  "scedit_legs": {
+   "pre": {
+    "rc": 1,
+    "argv": [
+     "/home/claude/spacecrafter/util/scedit/build-f70/scedit_tcpclient_test",
+     "live_diag",
+     "127.0.0.1:7805",
+     "none"
+    ]
+   },
+   "pre2": {
+    "rc": 1,
+    "argv": [
+     "/home/claude/spacecrafter/util/scedit/build-f70/scedit_tcpclient_test",
+     "live_diag",
+     "127.0.0.1:7805",
+     "none"
+    ]
+   },
+   "post": {
+    "rc": 0,
+    "argv": [
+     "/home/claude/spacecrafter/util/scedit/build-f70/scedit_tcpclient_test",
+     "live_diag",
+     "127.0.0.1:7805"
+    ]
+   }
+  }
+ },
+ "results": [
+  {
+   "check": "pre   engine exited on `shutdown action now`",
+   "ok": true,
+   "detail": "rc=0"
+  },
+  {
+   "check": "pre2  engine exited on `shutdown action now`",
+   "ok": true,
+   "detail": "rc=0"
+  },
+  {
+   "check": "post  engine exited on `shutdown action now`",
+   "ok": true,
+   "detail": "rc=0"
+  },
+  {
+   "check": "iv   S    A/A control: pre == pre2, so this wire is deterministic",
+   "ok": true,
+   "detail": "71 vs 71 bytes; identical"
+  },
+  {
+   "check": "iv   S    FROZEN: post == pre, byte for byte",
+   "ok": true,
+   "detail": "71 vs 71 bytes; identical"
+  },
+  {
+   "check": "iv   S    == F68's committed wire (another run, another day, 71 B)",
+   "ok": true,
+   "detail": "71 B now vs 71 B then; identical"
+  },
+  {
+   "check": "iv   P    A/A control: pre == pre2, so this wire is deterministic",
+   "ok": true,
+   "detail": "5 vs 5 bytes; identical"
+  },
+  {
+   "check": "iv   P    FROZEN: post == pre, byte for byte",
+   "ok": true,
+   "detail": "5 vs 5 bytes; identical"
+  },
+  {
+   "check": "iv   P    == F68's committed wire (another run, another day, 5 B)",
+   "ok": true,
+   "detail": "5 B now vs 5 B then; identical"
+  },
+  {
+   "check": "iv   Q    A/A control: pre == pre2, so this wire is deterministic",
+   "ok": true,
+   "detail": "0 vs 0 bytes; identical"
+  },
+  {
+   "check": "iv   Q    FROZEN: post == pre, byte for byte",
+   "ok": true,
+   "detail": "0 vs 0 bytes; identical"
+  },
+  {
+   "check": "iv   Q    == F68's committed wire (another run, another day, 0 B)",
+   "ok": true,
+   "detail": "0 B now vs 0 B then; identical"
+  },
+  {
+   "check": "iv   HTTP A/A control: pre == pre2, so this wire is deterministic",
+   "ok": true,
+   "detail": "85 vs 85 bytes; identical"
+  },
+  {
+   "check": "iv   HTTP FROZEN: post == pre, byte for byte",
+   "ok": true,
+   "detail": "85 vs 85 bytes; identical"
+  },
+  {
+   "check": "iv   HTTP == F68's committed wire (another run, another day, 85 B)",
+   "ok": true,
+   "detail": "85 B now vs 85 B then; identical"
+  },
+  {
+   "check": "iv   the $LOGON subscriber's wire is NOT empty (identity over nothing proves nothing)",
+   "ok": true,
+   "detail": "b'Vous receverez maintenant les logs\\n\\x00EOL\\n\\x00127.0.0.1/HTTP|struct if end\\n\\x00'"
+  },
+  {
+   "check": "iv   the asking client's wire is NOT empty either",
+   "ok": true,
+   "detail": "b'EOL\\n\\x00'"
+  },
+  {
+   "check": "iv   the HTTP door answered too",
+   "ok": true,
+   "detail": "b'HTTP/1.0 500 Internal Error\\r\\nServer: SpaceCrafter (HTTP/BETA)\\r\\nContent-Length: 0\\r\\n\\r\\n\\x00'"
+  },
+  {
+   "check": "iv-S the $LOGON subscriber received NO `$DIAG` record - the right nothing, not just nothing",
+   "ok": true,
+   "detail": "b'Vous receverez maintenant les logs\\n\\x00EOL\\n\\x00127.0.0.1/HTTP|struct if end\\n\\x00'"
+  },
+  {
+   "check": "iv-S ... and neither did the plain clients P and Q",
+   "ok": true,
+   "detail": "b'EOL\\n\\x00' / b''"
+  },
+  {
+   "check": "vi-pre  D's wire on the PRE binary is EMPTY: `$DIAGON` was not a verb there",
+   "ok": false,
+   "detail": "pre 939 B / pre2 939 B: b'$DIAGON ok: this connection now receives every diagnostic the engine produces about a command read on the control socket'"
+  },
+  {
+   "check": "vi-pre  ... and the PRE engine logged THREE unrecognised commands: $DIAGON, $DIAGOFF and `flagg` - the two verbs were ordinary commands to it",
+   "ok": false,
+   "detail": "[\"tcp#4: Unrecognized or malformed command name\"]"
+  },
+  {
+   "check": "vi-post the POST engine logs exactly ONE (`flagg` alone): the socket layer consumed the two verbs before the application ever saw them",
+   "ok": true,
+   "detail": "[\"tcp#4: Unrecognized or malformed command name\"]"
+  },
+  {
+   "check": "vi-post D's wire is NOT empty",
+   "ok": true,
+   "detail": "b\"$DIAGON ok: this connection now receives every diagnostic the engine produces about a command read on the control sock"
+  },
+  {
+   "check": "vi-post the first record is the subscription's own confirmation",
+   "ok": true,
+   "detail": "[\"$DIAGON ok: this connection now receives every diagnostic the engine produces about a command read on the control socket, one record per diagnostic, as $DIAG|<origin>|<message>|<command>\\n\"]"
+  },
+  {
+   "check": "vi-post D received diagnostics at all",
+   "ok": true,
+   "detail": "5 records"
+  },
+  {
+   "check": "vi-post every one names a TCP origin - no file path, no empty origin (the HTTP-origin fault and the played file's own faults route NOWHERE)",
+   "ok": true,
+   "detail": "[\"tcp#4\", \"tcp#4\", \"tcp#4\", \"tcp#4\", \"tcp#5\"]"
+  },
+  {
+   "check": "vi-post the cold `struct if end` came back, quoted, tagged with P's id",
+   "ok": true,
+   "detail": "[\"$DIAG|tcp#4|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end\", \"$DIAG|tcp#4|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end\"]"
+  },
+  {
+   "check": "vi-post the FUNNEL's refusal came back with its command line",
+   "ok": true,
+   "detail": "[\"$DIAG|tcp#4|command 'get': unknown status value|get status nonsense\"]"
+  },
+  {
+   "check": "vi-post the emitter that BYPASSES the funnel came back too",
+   "ok": true,
+   "detail": "[\"$DIAG|tcp#4|Unrecognized or malformed command name|flagg stars on\"]"
+  },
+  {
+   "check": "vi-post a SECOND connection's fault came back tagged with ITS id, not P's",
+   "ok": true,
+   "detail": "P=tcp#4 Q=tcp#5; origins seen [\"tcp#4\", \"tcp#5\"]"
+  },
+  {
+   "check": "vi-post the fault sent after `clear` (thirty nested calls) is tagged tcp#idP again",
+   "ok": true,
+   "detail": "[\"$DIAG|tcp#4|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end\", \"$DIAG|tcp#4|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close|struct if end\", \"$DIAG|tcp#5|this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add t"
+  },
+  {
+   "check": "vi-post the NESTED audio refusal routes NOWHERE - the inner command has no origin, so the subscriber hears nothing about it (11.184's rule, and its cost)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "check": "vi-post ... and the log DID record that nested refusal, so the silence above is the channel's and not the run's",
+   "ok": true,
+   "detail": "[\"Could not execute: audio filename nosuch.ogg action play loop \", \"Could not execute: audio filename nosuch.ogg action play loop \"]"
+  },
+  {
+   "check": "vii  `$DIAGOFF` is confirmed",
+   "ok": true,
+   "detail": "b'$DIAGOFF ok: this connection no longer receives command diagnostics\\n\\x00'"
+  },
+  {
+   "check": "vii  and then a further fault adds NOTHING to D's wire",
+   "ok": true,
+   "detail": "before 870 + confirmation 69 = 939, observed 939"
+  },
+  {
+   "check": "vii  the fault D did not hear about DID happen: the log has THREE faults from P and D's wire carries TWO - the missing one is the one sent after $DIAGOFF",
+   "ok": true,
+   "detail": "log 3 from tcp#4, wire 2"
+  },
+  {
+   "check": "viii the funnel still writes its two lines, on both binaries",
+   "ok": true,
+   "detail": "post [\"tcp#4: Could not execute: get status nonsense\", \"Could not execute: get status nonsense\"] / pre [\"tcp#4: Could not execute: get status nonsense\", \"Could not execute: get status nonsense\"]"
+  },
+  {
+   "check": "viii the structure faults are in the log in the same number on both",
+   "ok": true,
+   "detail": "post [\"tcp#4\", \"tcp#4\", \"tcp#5\", \"\", \"/tmp/sc-farm-f69/f69/f69_file.sts:3\", \"tcp#4\"] / pre [\"tcp#4\", \"tcp#4\", \"tcp#5\", \"\", \"/tmp/sc-farm-f69/f69/f69_file.sts:3\", \"tcp#4\"]"
+  },
+  {
+   "check": "viii the file-origin funnel refusal is still UNTAGGED (11.187(d)'s asymmetry, unmoved)",
+   "ok": true,
+   "detail": "[\"tcp#4: Could not execute: get status nonsense\", \"Could not execute: get status nonsense\"]"
+  },
+  {
+   "check": "v    the TCP battery touched NO file - every farm script byte-identical before the play",
+   "ok": true,
+   "detail": "{\"observed\": {\"/tmp/sc-farm-f69/f69/f69_file.sts\": \"f5c838dd4abb736f6e92b29eda0b48bc\", \"/tmp/sc-farm-f69/f69/untouched.sts\": \"ab55c24fb672d5337453f44e818d3f5c\"}, \"expected\": {\"/tmp/sc-farm-f69/f69/f69_file.sts\": \"f5c838dd4abb736f6e92b29eda0b48bc\", \"/tmp/sc-farm-f69/f69/untouched.sts\": \"ab55c24fb672d5337453f44e818d3f5c\"}}"
+  },
+  {
+   "check": "v    exactly one `#!` tail, on line 3",
+   "ok": true,
+   "detail": "[3]"
+  },
+  {
+   "check": "v    the tail is the engine's diagnosis",
+   "ok": true,
+   "detail": "this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close"
+  },
+  {
+   "check": "v    every other byte of the played file is identical",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "v    the never-played file is untouched after the play too",
+   "ok": true,
+   "detail": "{\"/tmp/sc-farm-f69/f69/f69_file.sts\": \"37b7f5858976cc307a6cc0bb80ebe47b\", \"/tmp/sc-farm-f69/f69/untouched.sts\": \"ab55c24fb672d5337453f44e818d3f5c\"}"
+  },
+  {
+   "check": "ix   scedit's own client on the live engine, phase post: a refused command COMES BACK",
+   "ok": true,
+   "detail": "{\"rc\": 0, \"argv\": [\"/home/claude/spacecrafter/util/scedit/build-f70/scedit_tcpclient_test\", \"live_diag\", \"127.0.0.1:7805\"]}"
+  },
+  {
+   "check": "ix   scedit's own client on the live engine, phase pre : the same leg, expecting NOTHING (this engine has no verb)",
+   "ok": false,
+   "detail": "{\"rc\": 1, \"argv\": [\"/home/claude/spacecrafter/util/scedit/build-f70/scedit_tcpclient_test\", \"live_diag\", \"127.0.0.1:7805\", \"none\"]}"
+  },
+  {
+   "check": "ix   the two phases were given OPPOSITE expectations (otherwise both greens are one)",
+   "ok": true,
+   "detail": "[{\"rc\": 0, \"argv\": [\"/home/claude/spacecrafter/util/scedit/build-f70/scedit_tcpclient_test\", \"live_diag\", \"127.0.0.1:7805\"]}, {\"rc\": 1, \"argv\": [\"/home/claude/spacecrafter/util/scedit/build-f70/scedit_tcpclient_test\", \"live_diag\", \"127.0.0.1:7805\", \"none\"]}]"
+  },
+  {
+   "check": "real ~/.spacecrafter config/ssystem md5 in == out",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "run": "20260831-212337",
+ "all_ok": false
+}

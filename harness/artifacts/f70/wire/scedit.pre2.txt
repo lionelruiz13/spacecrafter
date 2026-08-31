@@ -1,0 +1,9 @@
+=== leg live_diag (127.0.0.1:7805)
+  ok      connect to the live engine: 
+  ok      the $LOGON subscription is confirmed (unchanged, both engines)
+  FAIL    and $DIAGON is NOT confirmed: this engine has no such verb
+  ok      send a command the engine will refuse: 
+  FAIL    nothing came back: this engine refuses in silence, as every engine did
+  ok      ask a question: 
+  ok      the `get status position` answer arrives, both engines alike
+7 checks, 2 failures

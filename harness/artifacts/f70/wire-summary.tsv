@@ -1,0 +1,13 @@
+# F70 frozen-wire regression -- pre = the PRE-CONVERSION engine, post = the converted one.
+# Instrument: harness/f69_feedback.py, three fresh launches, DISPLAY=:0.
+# pre  md5 2ea5d54bff51128943a1ad5f98038aa0  (rebuilt in-tree from 630b06fd)
+# post md5 c69c96c012128411192b030a81ea5b9e  (code 1012c643)
+# EVERY wire recording, subscribed or not, is byte-identical. The mandate asked only
+# that the UNSUBSCRIBED four be frozen; the subscribed one is here because a
+# conversion that moved a diagnostic byte would show up nowhere else.
+wire	bytes	md5_pre	md5_post	verdict
+S	71	5b92d2e35adc7be1e933d8df18d0f9dd	5b92d2e35adc7be1e933d8df18d0f9dd	IDENTICAL
+P	5	39db100331cd43fd103ee79a8026c023	39db100331cd43fd103ee79a8026c023	IDENTICAL
+Q	0	d41d8cd98f00b204e9800998ecf8427e	d41d8cd98f00b204e9800998ecf8427e	IDENTICAL
+HTTP	85	760598531b8cb59eb25985167066f1e1	760598531b8cb59eb25985167066f1e1	IDENTICAL
+D	939	001b34d7e26a46237ace516038769af2	001b34d7e26a46237ace516038769af2	IDENTICAL

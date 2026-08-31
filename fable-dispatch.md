@@ -2126,8 +2126,22 @@ trust — gate+verify re-derived the whole tree from the committed base after
 the boot. `/tmp/f70-pre` was lost; PRE binary rebuilt IN-TREE (measured:
 Release/NDEBUG, 0 source paths in .rodata, so build location cannot affect
 the section comparison — cheaper than a worktree and no submodule hazard).
-Next: PRE build → `f70_binary_equal.py` → `f69_feedback.py` frozen wire →
-smoke launch on `:0` → §11.189.
+CP3 — ALL GATES GREEN. Engine build green `-j6`, 0 new warnings; binary
+`c69c96c0` vs PRE `2ea5d54b` (rebuilt in-tree; md5 reproduced its pre-reboot
+value exactly, so the build is deterministic and the pre/post delta is the
+source change and nothing else). `f70_binary_equal.py`: **all 27 allocated
+sections identical, 7938005 B** — only DWARF columns + build-id moved;
+decoy 1 bit ⇒ exit 1. FROZEN WIRE **71/5/0/85 B**, A/A == post == F68's
+committed wires; and the 939 B SUBSCRIBED wire is byte-identical too (all
+five recordings, `artifacts/f70/wire-summary.tsv`). Engine stdout pre vs
+post textually identical (only an ASLR handle + GPU free-MiB drift).
+3 of 49 wire checks FAIL by construction: they assert the PRE binary LACKS
+`$DIAGON`, and F70's PRE is F69's binary, which has it. Canary exit **3**
+(not the stated 2): `display.reachable` + `compositor.absent`, both from
+`BANK_DISPLAY=":2"` — no X2 socket exists post-reboot; ran on `:0`
+(1920x1080, verified by my own xdpyinfo). GetActive false at all 6 reads.
+NO re-banking (§11.174(f) is the owner's). Next: §11.189 entry + stub +
+README + baselines.
 **WIP-CP1:** census instrument `harness/f70_ascii.py` +
 `f70_partition.tsv` (boundary) + `f70_map.tsv` (82 rows) + `f70_translit.py`
 + `f70_dispositions.py` committed BEFORE any conversion, with the pre-state
