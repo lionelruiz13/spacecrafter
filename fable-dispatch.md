@@ -1034,13 +1034,15 @@ mint license per §5.79.
 **DoD:** condition + flipped gate legs green both ways; f63 green; frozen
 wire reproduced; §11.192 + markers; builds green; trees clean; WIP cleared;
 baselines re-derived LAST with deltas attributed.
-**WIP:** 2026-09-01 ckpt2 — code `1014e5a5` (originTag reversed, 16/16 lines so
-no line number moved), build green -j6 / 0 warnings / D14 gate PASS. ALL THREE
-GATES GREEN both ways: f68 **47/47** (was 43/43), f63 **34/34**, f69 **52/52**
-(was 49/49); wire 71/5/0/85 B == F68's committed baselines and D == F70's
-committed 939 B. Artifacts `harness/artifacts/f72/`. NEXT: §11.192 entry-first,
-stub, back-markers at §11.187(d) (entry + stub), §5.117 annotation, README,
-baselines re-derived LAST.
+**WIP:** — DELIVERED 2026-09-01, §11.192. Code `master-beta @ 1014e5a5` (16
+lines changed for 16 — no line number moved). Gates: `f68_provenance.py`
+**47/47** (43/43 before), `f63_annotations.py` **34/34**, `f69_feedback.py`
+**52/52** (49/49 before), three fresh launches each; wire 71/5/0/85 B ==
+F68's committed recordings, subscriber 939 B == F70's and byte-identical
+pre-vs-post in one run. Both provenance instruments now take a DECLARED
+pre-era (`SC_PRE_TAGS` / `SC_PRE_ERA`), which retires the three known-false
+reds F70 took. One stated deviation: the condition is `where().empty()`, not
+`channel == NONE` (§11.192(b)). Artifacts `harness/artifacts/f72/`.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 

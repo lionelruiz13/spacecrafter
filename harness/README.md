@@ -2761,3 +2761,76 @@ rewrites and every gate's final STRIP, prints the diff, and only writes on
 `--write`. It preserves each record's leading and trailing whitespace: the gates
 STRIP both sides so they cannot see it, but a diff can, and a diff with an
 unexplained byte in it is not reviewable.
+
+---
+
+## F72 — the file line names itself: the reversal, and two instruments that can no longer be falsely red — INTENT §11.192, 2026-09-01
+
+**The change (engine, `1014e5a5`).** `originTag()` returns its prefix for EVERY
+origin that has something to name, so a FILE-origin refusal logs `<file>:<line>:
+Could not execute: <line>` exactly as a control one logs `tcp#<id>: …`. Both
+consumers (the funnel `executeCommandStatus` and the emitter that BYPASSES it)
+were already written to at F68, so the reversal reached both without either
+being touched. `sendFeedback` is a SEPARATE predicate on `channel == TCP` and
+did not move: a file refusal still reaches no socket.
+
+**Running the two provenance gates after F72:**
+
+```
+cd claude/harness
+export DISPLAY=:0 XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)
+SC_BIN_PRE=/tmp/f72-pre/spacecrafter SC_PRE_TAGS=tcp \
+  python3 f68_provenance.py $PWD/artifacts/<task>/f68      # 47/47
+SC_BIN_PRE=/tmp/f72-pre/spacecrafter SC_PRE_ERA=f69 \
+  SCEDIT_TCP_TEST=<a CURRENT scedit build>/scedit_tcpclient_test \
+  python3 f69_feedback.py $PWD/artifacts/<task>/f69        # 52/52
+python3 f63_annotations.py $PWD/artifacts/<task>/f63       # 34/34
+```
+
+**PASS AN OUTDIR, ALWAYS.** Both default to `artifacts/f68` / `artifacts/f69`,
+which are the COMMITTED CROSS-TASK BASELINES those same instruments compare
+against (`wire.pre.*.bin`, and `artifacts/f70/wire/wire.post.D.bin`). Running
+either with its default overwrites the evidence it is about to check itself
+against, and the run still goes green. F70 got this right by hand; it is written
+down here so the next task does not have to.
+
+**THE PRE-ERA IS A DECLARED INPUT, not a guess (added at F72).** Both
+instruments are re-run by every later task that touches this surface, and by
+then the "pre" binary is not the one they were written against. F70 ran
+`f69_feedback.py` against an f69-era pre and took three known-false reds
+(`vi-pre` twice, `ix`) — nothing wrong with the engine, an instrument asserting
+a claim about a binary that no longer existed. §11.191(c) rules that class out
+for a gating instrument, so:
+
+| variable | values | what it names |
+|---|---|---|
+| `SC_PRE_TAGS` (f68) | `none` \| **`tcp`** | which origins the pre binary tags: `none` = before `423cbe23`, `tcp` = `423cbe23`..`96cfc352` |
+| `SC_PRE_ERA` (f69) | `f68` \| **`f69`** | whether the pre binary has the `$DIAG` channel: `f68` = `423cbe23` or older, `f69` = `be2ddd81`..`96cfc352` |
+
+Declared, never inferred — an instrument that read its own pre phase to decide
+what to expect would assert whatever it measured. A WRONG declaration turns the
+pre-side legs RED; it cannot turn a red run green. Under `SC_PRE_ERA=f69` the
+scedit leg loses its opposite-expectation discrimination (both phases have the
+verb) and SAYS SO in its own text, naming `iv-D`/`vi-pre` wire identity as what
+discriminates in that era instead.
+
+**The wire baselines, as of F72.** `71 / 5 / 0 / 85 B` for the four unsubscribed
+recordings, reproduced across THREE tasks and six independent runs; `939 B` for
+the `$DIAG` subscriber, across two. `f69_feedback.py` compares the first four
+against `artifacts/f68/wire.pre.*` and the fifth against
+`artifacts/f70/wire/wire.post.D.bin`. Any future socket work re-runs it.
+
+**A staging binary must be called `spacecrafter`** (F68's rule, still enforced by
+both instruments): `/proc/<pid>/comm` truncates at 15 bytes, so a name like
+`spacecrafter-96cfc352` reads as `spacecrafter-96` and the concurrent-instance
+probe goes blind to the very binary the run depends on. Copy, do not rename:
+`mkdir -p /tmp/<task>-pre && cp build-claude/src/spacecrafter /tmp/<task>-pre/`
+BEFORE the rebuild.
+
+**Nine instruments read the funnel's text and none of them broke.**
+`f27_reply.py`, `f33_field.py`, `f28_send_buffer.py`, `f22_b10_offset.py`,
+`f61_live_rulings.py`, `f58_gaptable.py`, `f53_guards.py`, `f62_aliases.py`,
+`f4_scriptspeed.sh` all match `Could not execute` / `Unrecognized or malformed`
+as a SUBSTRING of the line, so a prefix passes through. Checked at F72, not
+assumed; anything new that parses this log should match the same way rather than
+anchoring at the start of the line.
