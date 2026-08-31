@@ -14,7 +14,7 @@ uniform sampler2D normalMap;
 //in bool gl_FrontFacing;
 in vec2 gl_PointCoord;
 layout(origin_upper_left) in vec4 gl_FragCoord;
-//layout(pixel_center_integer​) in vec4 gl_FragCoord;
+//layout(pixel_center_integer) in vec4 gl_FragCoord;
 
 //in int gl_SampleID;
 //in vec2 gl_SamplePosition;
