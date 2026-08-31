@@ -69,3 +69,15 @@ never rewrite (maintenance invariant). Archival per the standing convention
   length only); keeping the display awake during dispatch (idle-delay 0 / lock off) vs a
   per-launch wake is the OWNER's call — decision flag in the session-18 report. Auto-suspend
   inert: `sleep-inactive-ac-timeout 0`, on AC.
+- 2026-08-31 [stated: vixy, session-19 trigger line; setting measured same minute]
+  **AUTO LOCK-SCREEN DISABLED** on TravellingFoxDev — the owner's answer to the
+  session-18 display item, option (a)'s LOCK half: `org.gnome.desktop.screensaver
+  lock-enabled` = **false** [measured]. The BLANK half is NOT enacted:
+  `idle-delay` = 300, `idle-activation-enabled` = true — the screen still blanks
+  at 5 min idle, and the 1 Hz entry above attributes the throttle to "the
+  compositor throttling a blanked output" (keyed on screensaver-active, not
+  LockedHint). CONSEQUENCE, until a blank-only run discriminates (named check:
+  idle past 300 s, read `GetActive`, count `Frame stall` over one run): the 1 Hz
+  hazard is treated as LIVE, and every live-launch executor keeps the F67 wake
+  mitigation (`SetActive false` + `SimulateUserActivity`, recorded per run) —
+  it keys on GetActive, which covers both attributions. Full record §11.186(a).

@@ -510,3 +510,20 @@ level, but evolved with things which made the question more complicated,
 without the model being refined, ever"* — features accreted on a serial
 model that was never revisited; `[parallel-script]` is that first model
 refinement, and `legacy` is the honest name for the accretion.
+
+### [2026-08-31] Command provenance (file/tcp + line) carried by the engine, and TCP feedback on a link dedicated to scedit
+- **From:** Vixy (in-conversation, session-19 trigger line; full record §11.186(b)(c))
+- **Request:** verbatim: *"spacecrafter script engine must carry the provenance
+  (file/tcp + line), feedback about tcp sent back (note: an existing tcp path
+  exists, used by masterput (which is closed-source), do not modify this
+  channel) - and sent it back through the tcp link dedicated for scedit."*
+  Two halves: (1) every command the engine executes knows where it came from —
+  a script file (path + line, §11.184's existing half) or TCP — so a diagnostic
+  can name its origin; (2) feedback about TCP-origin commands goes back over a
+  TCP link DEDICATED to scedit (opt-in), never over the existing channel
+  masterput speaks — that channel's wire-visible behaviour is FROZEN
+  (closed-source client, tolerance unknowable: an unsubscribed connection must
+  see byte-identical traffic, proven by a control leg). This is the
+  §11.185(d)(1) ruling in specific form; (d)(2)/(d)(3) stay open.
+- **Status:** accepted — tracked as §11.186(b)(c); dispatched 2026-08-31 as
+  tasks F68 (provenance) and F69 (dedicated feedback link).

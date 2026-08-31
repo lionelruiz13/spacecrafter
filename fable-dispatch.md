@@ -1761,6 +1761,12 @@ round outcome).)*
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
 - **Session-18 decision items (2026-08-31, the scedit round on TravellingFoxDev):**
+  - **[ANSWERED IN PART 2026-08-31 → §11.186(a): lock-enabled now false
+    [measured]. RESIDUAL: idle-delay is still 300 / idle-activation still true —
+    the screen still BLANKS, and the 1 Hz attribution keys on the blanked
+    output, not the lock. Until a blank-only run discriminates, executors keep
+    the F67 wake mitigation. If you also want the blank gone:
+    `gsettings set org.gnome.desktop.session idle-delay 0`.]**
   - **YOUR DISPLAY DURING DISPATCH: a locked screen runs the engine at 1 Hz.**
     Measured: screensaver active → `Frame stall detected` every 1000 ms for
     whole runs (105/run, HEAD and the pre-fix control alike); awake → 1. Any
