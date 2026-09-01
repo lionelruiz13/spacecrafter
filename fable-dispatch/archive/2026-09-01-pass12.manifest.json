@@ -1,0 +1,74 @@
+{
+ "pass": "pass12",
+ "date": "2026-09-01",
+ "source": "fable-dispatch.md",
+ "pre_md5": "e3cae1d8a41f3e676e064fa26f663d00",
+ "pre_commit": "e6f9c8c",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads re-inserted at recorded positions reproduce pre_md5)",
+ "units": [
+  {
+   "id": "update-s18",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s18.md",
+   "line_start": 39,
+   "line_count": 72,
+   "payload_md5": "87c091cac383f45bb86bc623c85c1a5a"
+  },
+  {
+   "id": "F68",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F68.md",
+   "line_start": 543,
+   "line_count": 117,
+   "payload_md5": "4992289fbb3e73c25c6a57b0252912dd"
+  },
+  {
+   "id": "F69",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F69.md",
+   "line_start": 660,
+   "line_count": 128,
+   "payload_md5": "4950fdd846134ec17a5089444ffb759c"
+  },
+  {
+   "id": "F70",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F70.md",
+   "line_start": 788,
+   "line_count": 150,
+   "payload_md5": "43163c6fed10bff37c42ce2e66692246"
+  },
+  {
+   "id": "F71",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F71.md",
+   "line_start": 938,
+   "line_count": 106,
+   "payload_md5": "3f68da0e1853791a7a262d3c6468a76e"
+  },
+  {
+   "id": "F72",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F72.md",
+   "line_start": 1044,
+   "line_count": 66,
+   "payload_md5": "55f7e499c56b21c2a8252f53ddd71332"
+  },
+  {
+   "id": "F73",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F73.md",
+   "line_start": 1110,
+   "line_count": 103,
+   "payload_md5": "2b87d6ebe6b7d37a90ffba21c29be6fd"
+  },
+  {
+   "id": "F74",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F74.md",
+   "line_start": 1213,
+   "line_count": 82,
+   "payload_md5": "a29a4aa88f81f50b639d47acedcd1bb8"
+  }
+ ]
+}
