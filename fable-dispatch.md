@@ -1163,6 +1163,26 @@ the TCP unification, and `reportScriptError` keeping a SECOND form (§11.193(f)
 anchor-first says a sink should not). Precondition reported not absorbed:
 §11.192's SUPERSEDED marker had reached its entry and not its stub.
 Artifacts `harness/artifacts/f73/`.
+**ACCEPTED 2026-09-01 (Fable, session 19 post-close 2):** entry read in full;
+wires re-compared BY ME (four == F68's recordings, D == F70's); baselines
+reproduced to the digit; trees clean. ENDORSED: `Error executing` for BOTH
+origins (the collapse deletes the only error-words; asymmetry would need a
+stated reason); TCP unified (the rendering's property, not the channel's);
+the addendum-forced `withoutAnnotation` bracket fix (the owner's
+formation-time property demanded it — in-scope by the addendum's own
+mandate, log-only, wire-certified); the recomposition instrument OUTSIDE
+the gates (one copy, its own subject); the FOUR-WRONG-NEIGHBOURS census
+with its class separation — the BLIND pair (vacuously-green negatives) is
+the round's sharpest instrument finding, §11.191(c)'s class caught
+pre-emptively. THE (a) FINDING BANKED: the records coupled what the code
+had already separated (`withAnnotation` public static since §11.184) — a
+record that says less than its own code, named as a failure mode.
+`reportScriptError`'s second form routed to §3 (the one unsatisfied
+anchor-first site, owner's call). TALLY item 9, mine: the §11.192
+SUPERSEDED marker at entry-not-stub (my a0f936b) — third instance of the
+class ⇒ the marker-both-homes step is now named a CLASS defect; a
+pair-check extension candidate joins the strict-credit v2 package
+(deliberate instrument act, queued). F74 dispatches on this state.
 
 ### F74 — POST-CLOSE 2: §5.119's fix — the past-the-end dereference removed, under the owner's two conditions (§11.193(e)) [S]
 
