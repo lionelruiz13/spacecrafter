@@ -181,6 +181,32 @@ def m1b_continuation_clears_I2():
         a["I2"], BASE["p1"]["I2"], b["I2"], BASE["p2"]["I2"])
 
 
+# ------------------------------------------------------------------- member 2 (scan)
+@case
+def m2_incomplete_is_an_event():
+    """An uppercase INCOMPLETE beside a citation is an event for v2 and not for v1."""
+    d = scratch()
+    edit_entry(d, "11.100", "\n", "\nDecoy: §11.99's clause is INCOMPLETE as stated.\n", 1)
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = (a[:3] == BASE["v1"][:3] and
+          b[0] == BASE["v2"][0] + 1 and b[1] == BASE["v2"][1] + 1)
+    if not KEEP: shutil.rmtree(d)
+    return "m2    INCOMPLETE beside a citation is an event", ok, "v1 %d/%d / v2 %d/%d (base %d/%d)" % (
+        a[0], a[1], b[0], b[1], BASE["v2"][0], BASE["v2"][1])
+
+
+@case
+def m2_lowercase_is_not():
+    """The same sentence in lowercase must move nothing, in EITHER version --
+    the ledger's grammar makes an uppercase word a declaration and prose narration."""
+    d = scratch()
+    edit_entry(d, "11.100", "\n", "\nDecoy: §11.99's clause is incomplete as stated.\n", 1)
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = a[:3] == BASE["v1"][:3] and b[:3] == BASE["v2"][:3]
+    if not KEEP: shutil.rmtree(d)
+    return "m2    the same sentence lowercase moves nothing", ok, "v1 %d/%d/%d / v2 %d/%d/%d" % (a[:3] + b[:3])
+
+
 def main():
     print("ledger root: %s" % ROOT)
     BASE["v1"], BASE["v2"] = scan(SCAN_V1, ROOT), scan(SCAN_V2, ROOT)

@@ -27,7 +27,16 @@ if len(sys.argv) < 2:
     sys.exit("usage: intent_backmarker_scan.py <root>  (root is required; "
              "pass the tree to scan explicitly — no default)")
 ROOT = sys.argv[1]
-KEYRE = re.compile("REFUTED|SUPERSEDED|CORRECTED|RETRACTED|WITHDRAWN")
+# EVENT lexicon.  v1's five words [F49].
+# [F78 member 2, 2026-09-01] + INCOMPLETE: S11.177 measured that a marker can satisfy
+# S11.161(g) completely and still be uncredited, because the lexicon has no term for
+# THIS CLAIM WAS INCOMPLETE.  Its own specimen is the marker S11.177(m) placed at
+# S11.48(b): "the A17 residual list is INCOMPLETE".  One word, one named specimen.
+# BOUNDED by the session-16 scan-owner ruling: discharge vocabulary stays OUT of this
+# lexicon BY DESIGN -- a discharge is not a supersession.  DISCHARGED / ANSWERED /
+# DELIVERED / PAID are therefore absent here on purpose, and admissible only in
+# MARKRE, where the question asked is a different one (see member 3).
+KEYRE = re.compile("REFUTED|SUPERSEDED|CORRECTED|RETRACTED|WITHDRAWN|INCOMPLETE")
 MARKRE = re.compile("ANNOTATION|ADDENDUM|BACK-MARKER|SUPERSED|REFUT|CORRECT|RETRACT|WITHDRAW", re.I)
 CITE = re.compile(r"§(\d+\.\d+)")
 W = 160
