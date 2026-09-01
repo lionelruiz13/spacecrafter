@@ -2833,4 +2833,90 @@ BEFORE the rebuild.
 `f4_scriptspeed.sh` all match `Could not execute` / `Unrecognized or malformed`
 as a SUBSTRING of the line, so a prefix passes through. Checked at F72, not
 assumed; anything new that parses this log should match the same way rather than
-anchoring at the start of the line.
+anchoring at the start of the line. **[SUPERSEDED 2026-09-01 by F73 (§11.194):
+that check was right and stopped being true one task later — F73 DELETES the
+`Could not execute` substring for every origin that has a name, and four of
+these nine were wrong about it (two red, two vacuously green). See the F73
+section below; the survivors are f61 and f62, which match the MESSAGE.]**
+
+---
+
+## F73 — the log line IS the line: one rendering, and four neighbours that were wrong about it — INTENT §11.194, 2026-09-01
+
+**The change (engine, `9a3b7a55`).** The funnel's TWO lines collapse into ONE:
+`Error executing <origin>: <the raw line, author comment kept> #! <message>` —
+the **intent-modified line**, with any `#!` tail already on the line REPLACED.
+The composition is `ScriptAnnotator::withAnnotation`, the `#!` writer's own
+public static since §11.184: the log CALLS it, so the logged line is byte for
+byte what the writer would land on that line, whether or not the write can land.
+`AppCommandInterface::errorLine()` adds the origin prefix and is the only new
+function; both emitters call it and neither composes anything of its own.
+
+**Where the collapse STOPS.** `errorLine` returns empty unless the origin has
+BOTH a name (`where()`) and a line (`lineText()`). FILE and TCP have both, NONE
+(nested call, UI key, mkfifo, HTTP query) has neither — so those keep the legacy
+`Could not execute: <line>` + `<message>` pair, byte-identically, and §11.184's
+nesting rule is untouched. **A reader that wants "did the app refuse anything"
+must match BOTH shapes**; `f27_reply.Session.refused()` is the reference.
+
+**The block-structure diagnostic also moved, one expression's worth.**
+`reportScriptError` quotes its line as `withoutAnnotation(line)` now. That class
+of fault IS annotated, so before this the second execution of an annotated
+script quoted the tail the first execution had written — the same error logged
+differently on run 2 (owner's argument, §11.193's Root-1 refinement). The wire's
+subject keeps the raw text byte for byte.
+
+**Running the gates after F73:**
+
+```
+cd claude/harness
+export DISPLAY=:0 XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)
+SC_BIN_PRE=/tmp/<task>-pre/spacecrafter SC_PRE_TAGS=all \
+  python3 f68_provenance.py $PWD/artifacts/<task>/f68      # 58/58
+SC_BIN_PRE=/tmp/<task>-pre/spacecrafter SC_PRE_ERA=f72 \
+  SCEDIT_TCP_TEST=<a CURRENT scedit build>/scedit_tcpclient_test \
+  python3 f69_feedback.py $PWD/artifacts/<task>/f69        # 53/53
+python3 f63_annotations.py $PWD/artifacts/<task>/f63       # 34/34
+```
+
+`SC_PRE_TAGS=all` / `SC_PRE_ERA=f72` are the NEW DEFAULTS and name a `1014e5a5`
+pre binary (both origins tagged, funnel still writing the legacy pair). A pre
+binary at `9a3b7a55` or later needs a further era value in each: since F73 the
+funnel's SHAPE is part of what an era names, not just which origins it tags.
+Everything F72's section says about passing an outdir and about copying the pre
+binary under the name `spacecrafter` still holds and still matters.
+
+**`f73_line.py` is the expected-line authority.** It re-implements §11.184's
+tail rule (first `#!` at or after the first `#` outside a `"…"` run) FROM THE
+CONTRACT, and f68/f69 assert that the logged line equals what it composes from
+the script's own bytes. Import it; never re-implement it in a third gate, and
+never ask the engine what the engine should have printed. It is also why f68 was
+run twice at F73: the recomposition was written inline first, and shipping the
+duplication inside a task about not duplicating was not an option.
+
+**Two new legs worth reusing.** `r` plays a script in a read-only DIRECTORY (a
+file's own mode does NOT stop a rename — §11.184 measured that) and asserts the
+log shows the intent-modified line WHILE the file is byte-identical AND the
+annotator reports it could not write: the identity is then a write that failed,
+not a write that never came. `x` plays a WRITABLE ruled-class fault twice
+through a natural end: post logs the same bytes both times, the PRE binary logs
+a longer line the second time. Both new scripts are separate files — playing a
+file adds ZERO bytes to every wire, and their faults produce messages no
+existing leg counts, which is how they were added without disturbing anything.
+
+**~~Nine instruments read the funnel's text and none of them broke.~~ FOUR OF
+THEM WERE WRONG AT F73** — the property that made them safe under F72 (loose
+substring matching on `Could not execute`) is what made them silent when the
+substring was DELETED for named origins:
+
+| | instrument | after F73, unfixed |
+|---|---|---|
+| RED | `f22_b10_offset.py`, `f4_scriptspeed.sh` | assert the needle POSITIVELY — a false red for the next task |
+| BLIND | `f27_reply.py::refused()` (inherited by `f28_send_buffer.py` and `f53_guards.py`), `f33_field.py` | assert NEGATIVELY ("nothing was refused") — the list becomes unconditionally empty and the leg passes for free: a green that cannot fail (§11.191(c)) |
+| safe | `f61_live_rulings.py`, `f62_aliases.py` | match the MESSAGE as a substring, and the sibling emitter is still one line at the same distance from `Execute_command` |
+| static | `f58_gaptable.py` | runs nothing; prose only |
+
+All four fixed with the change; f22 and f4 re-run green on the rewritten legs.
+The lesson for anything new that reads this log: match the message, not the
+scaffolding around it, and if you assert a NEGATIVE make sure the matcher can
+still see a positive.

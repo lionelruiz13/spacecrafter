@@ -1146,13 +1146,23 @@ change; mint license per §5.79.
 **DoD:** renderer shared not duplicated; one-line log shape measured
 both-ways incl. read-only leg; all F72 bars re-held; §11.194 + markers;
 trees clean; WIP cleared; baselines re-derived LAST with deltas attributed.
-**WIP:** 2026-09-01 — CHECKPOINT 1: code landed `master-beta @ 9a3b7a55`
-(+36 net lines in `app_command_interface.cpp`; build `-j6` rc 0, 0 warnings,
-md5 `982b9a9c`). Smoke-verified all six rendering cases incl. the addendum's
-re-execution leg. NEXT: gate updates (f68 new era + collapsed legs +
-independent recomposition + twice-played + read-only; f69 funnel legs; the
-four dependent instruments the census found: f22/f4 BREAK, f27/f33 go
-vacuously green), then runs, then §11.194.
+**WIP:** — DELIVERED 2026-09-01, §11.194. Code `master-beta @ 9a3b7a55`
+(+36 net lines; the shift map and the two annotated citations are §11.194(i)).
+Gates: `f68_provenance.py` **58/58** (47/47 before), `f69_feedback.py`
+**53/53** (52/52), `f63_annotations.py` **34/34**, three fresh launches each;
+`f22_b10_offset.py` and `f4_scriptspeed.sh` re-run green on rewritten legs.
+Wire reproduced: 71/5/0/85 B == F68's recordings, D's 939 B == F70's,
+pre == pre2 == post in-run. The renderer needed no extraction — the
+composition has been a pure static on the annotator since §11.184; the gates'
+expected line is recomposed independently by the new `harness/f73_line.py`.
+The addendum's re-execution leg landed as a gate leg AND as a code change
+(`reportScriptError`'s bracket now excludes the machine tail). FOUR neighbour
+instruments were WRONG, not stale: two would have gone red, two vacuously
+green. THREE veto-open items: the `Error executing ` prefix for both origins,
+the TCP unification, and `reportScriptError` keeping a SECOND form (§11.193(f)
+anchor-first says a sink should not). Precondition reported not absorbed:
+§11.192's SUPERSEDED marker had reached its entry and not its stub.
+Artifacts `harness/artifacts/f73/`.
 
 ### F74 — POST-CLOSE 2: §5.119's fix — the past-the-end dereference removed, under the owner's two conditions (§11.193(e)) [S]
 
