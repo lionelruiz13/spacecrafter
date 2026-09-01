@@ -82,6 +82,15 @@ src	tgt	CLASS	GROUND	nohome	invmech	srcreg	quoted	tablerow	fromstub	excerpt
 11.188	11.189	INVERTED	machine rule	0	1	0	0	0	0	  **[CORRECTED 2026-08-31, F70 §11.189(a) — the COUNT was right, the CLASS was
 11.19	11.24	INVERTED	machine rule	0	1	0	0	0	0	    **Hints implemented** (strategy.txt TODO): HintModule circle via `Renderer::drawHint` → new `DRAW_HINT_POS` DrawHelper entry (same seam-borrow class as the 
 11.191	11.193	INVERTED	machine rule	0	1	0	0	0	0	**[SHAPE CORRECTED 2026-09-01 → §11.193: the owner's "good idea" ratified a richer shape than the question offered — the log line as the INTENT-MODIFIED line, n
+11.197	0.7	NO-HOME	machine rule	1	0	0	0	0	0	  executor-caught), §11.192's SUPERSEDED marker likewise (F73 executor's §0.7 report), and
+11.197	11.164	CATALOGUE	§11.197(j) quoting §11.172 -> §11.174's own description, in which the CORRECTED belongs to a neighbouring claim about §11.164/§11.167	0	0	0	0	0	0	    `CORRECTED` in the window belongs to a neighbouring claim about §11.164/§11.167); and
+11.197	11.167	CATALOGUE	same sentence, same quotation	0	0	0	0	0	0	    `CORRECTED` in the window belongs to a neighbouring claim about §11.164/§11.167); and
+11.197	11.180	CATALOGUE	§11.197(g) naming F60's three STALE ROUTING markers, i.e. quoting the pair §5.44 -> §11.180 that member 6 makes visible	0	0	0	0	0	0	  visible for the first time, and `§5.44 → §11.180` completes F60's three STALE ROUTING
+11.197	11.192	CATALOGUE	§11.197(h) quoting the F73 executor's §0.7 report about §11.192's SUPERSEDED marker	0	0	0	0	0	0	  executor-caught), §11.192's SUPERSEDED marker likewise (F73 executor's §0.7 report), and
+11.197	11.75	CATALOGUE	§11.197(j) quoting §11.76(c)'s own assertion verbatim, to show the rule that accepted it -- the quotation manufactures the pair the quotation is about	0	0	0	0	0	0	    and it accepted `**(c) SUPERSEDES the §11.75(b)/§2.0 [derived] tension reconciliation**`
+11.197	11.76	INVERTED	machine rule	0	1	0	0	0	0	    3(b).** *Reading 1, an arrear*: §11.76(c) says it SUPERSEDES the §11.75(b)/§2.0 tension
+11.197	2.0	NO-HOME	machine rule	1	0	0	0	0	0	    and it accepted `**(c) SUPERSEDES the §11.75(b)/§2.0 [derived] tension reconciliation**`
+11.197	5.44	CATALOGUE	same sentence	0	0	0	0	0	0	  visible for the first time, and `§5.44 → §11.180` completes F60's three STALE ROUTING
 11.48	11.113	INVERTED	machine rule	0	1	0	0	0	0	    - **(a) Resolved outright — row leaves §13.A, implementation row opens in §13.B**: **A1** (Q14) display gates recording, re-enable starts FRESH — stated rea
 11.48	11.76	INVERTED	machine rule	0	1	0	0	0	0	    - **(a) Resolved outright — row leaves §13.A, implementation row opens in §13.B**: **A1** (Q14) display gates recording, re-enable starts FRESH — stated rea
 11.54	11.113	INVERTED	machine rule	0	1	0	0	0	0	    **[MECHANISM SUPERSEDED 2026-07-26 — D23 → §11.113(b)(iii); marker added 2026-07-29 (checking pass, §11.114).** *"For performance reason, hidden bodies shou

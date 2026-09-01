@@ -3177,3 +3177,92 @@ saved it — by §11.184's rule that comment does contain a tail. The defect was
 choosing a tail-detector for a question about a WRITE. The fixture is kept, so
 a line whose own text holds a `#!` and which the engine leaves alone is now a
 free control.
+
+## F78 — the two LEDGER INSTRUMENTS, strict-credit v2 (`intent_backmarker_scan.py`, `intent_pair_check.py` — both at the `claude/` repo ROOT, not here) — INTENT §11.197, 2026-09-01
+
+**INVOCATION — the ROOT IS REQUIRED ON BOTH, and a bare call now exits 1.**
+
+```
+python3 intent_backmarker_scan.py <root>              # e.g.  python3 intent_backmarker_scan.py .
+python3 intent_pair_check.py      <root> [--json]     # e.g.  python3 intent_pair_check.py .
+```
+
+The scan has required its root since the F52 acceptance (§11.168(m)). The pair-check
+required nothing until F78, and §11.168(m)'s closing clause — *"`intent_pair_check.py` is
+cwd-relative and has no such trap"* — was **false at the source**: it defaulted to
+`os.path.dirname(os.path.abspath(__file__))`, the SCRIPT's own directory, so a run
+launched from an extracted pre-tree without an explicit root silently measured the LIVE
+tree. Unchanged since `89b83cc`. Both now fail loudly instead; §11.168(m) carries the
+back-marker. **If you compare two trees, pass each root positionally — that is the whole
+point of the change.**
+
+**BASELINES AT THE F78 DELIVERY** (re-derive after any ledger write; the entry-first
+signature is +1 entry file / +1 live pair for a new §11 entry with a stub):
+
+```
+scan  v2 : 202 / 251 / 124        (raw event lines / distinct pairs / unmarked)
+pair  v2 : 213 / 188 / 25 / 95    (entry files / live pairs / archived / inline stubs)
+           D 35 · D2 11 · I 87 · I2 36 · M 80
+scan  v1 : 133 / 176 / 108        pair v1 : 213 / 188 / 25 / 95 · 35 · 11 · 87 · 36
+```
+
+The full three-tree table, with every delta attributed, is INTENT §11.197(n).
+
+**The pair-check has a FIFTH counter, `M`** — the both-homes marker class: a DATED marker
+span citing source §X present in one home and not the other. It is a FILTER like its four
+siblings, not a verdict; the stub is a derived summary and mirrors a marker only where it
+relays the superseded claim (§11.156(f)), so `entry_only` flags are expected in bulk.
+
+**v1 IS PRESERVED BYTE-EXACT** as `intent_backmarker_scan.v1.py` (md5
+`f7c151d0d75a832f1cfe89062e0d3457`) and `intent_pair_check.v1.py` (md5
+`f1761dd0799fd04c2fb66e039479a1c5`), so any tree can still be measured with the
+pre-package instrument without archaeology. Note that **pair v1 still has the root trap** —
+if you run it, pass the root.
+
+**THE RESIDUAL IS A PARTITION, NOT A NUMBER.** Regenerate it rather than re-reading a
+ledger entry:
+
+```
+python3 harness/f78_partition.py <root> [--tsv harness/artifacts/f78/PARTITION.tsv]
+```
+
+It prints the class totals, the count adjudicated BY READING versus by machine rule, and —
+the line that matters — `REAL ARREARS`. Its per-pair adjudications and their grounds are
+in the file itself, so a disagreement is a diff, not an argument. Expected signature at
+delivery: 55 INVERTED · 45 CATALOGUE · 10 PROXIMITY · 5 NO-HOME · 4 OFF-AXIS ·
+3 MINT-ROUTE · 1 NAMESPACE · 1 AMBIGUOUS = **124**, **0 REAL**. A pair outside it is a real signal
+(the §11.156(e) precedent).
+
+**EVERY v2 BEHAVIOUR CHANGE IS SHOWN ABLE TO FAIL, and the cases must stay green:**
+
+```
+python3 harness/f78_discriminate.py <root>            # 23 cases, both versions, 0 failed
+```
+
+Each case builds a scratch copy of `INTENT.md` + `INTENT/`, injects one decoy, and runs
+BOTH versions against it; a case passes only when v1 and v2 disagree in the predicted
+direction. It includes the NEGATIVE controls that shaped the package — a bold span
+carrying a citation and NO marker word must credit nothing; bare `STALE` beside a citation
+must move nothing, because *"the pre-existing distant-TNO STALE class (§11.39)"* is a
+CLASS NAME in this ledger and putting the word in the event lexicon manufactured 25 pairs.
+
+**GOTCHAS MEASURED HERE, worth knowing before you touch either file:**
+
+1. **The dangerous direction is CREDIT.** A narrow event lexicon misses silently; a wide
+   MARKER lexicon credits an arrear and makes it vanish. Any widening of half 2 must be
+   read pair by pair — F78 read all 17 of its own.
+2. **`SPAN_RE`'s bracket arm is capped at 300 characters and 175 of the 250 bracketed
+   dated marker spans in this ledger are longer** (70%). Tests D2 and I2 are still on it
+   deliberately, so their baselines do not move under the supervisor; test M uses a
+   balanced, uncapped extractor. Unifying them re-baselines D2/I2 — candidate C5/C6 at
+   §11.197(k).
+3. **The bold arm `\*\*(.+?)\*\*` is non-greedy from the FIRST `**` on the line**, so on a
+   line with several bold runs whether a given span is captured depends on PARITY.
+4. **A register row is a BLOCK**, not a line: markdown's list rule (blank or indented
+   continues). §5.117 is the only real multi-line row today, and it has no entry file.
+5. **`INTENT.md` lines outside `## 5.` and `## 11.` are not read as event sources** — they
+   are not attributable to a §N.M id. The scan PRINTS how many would have qualified (12 at
+   delivery), so the bound is a number rather than a silence.
+6. **§13 row ids (`A<n>`/`B<n>`) are still unreadable, by design**: §11.180(i) measured
+   that axis as not machine-decidable, 15 of 73 references NOT-A-ROW from seven namespace
+   collisions.

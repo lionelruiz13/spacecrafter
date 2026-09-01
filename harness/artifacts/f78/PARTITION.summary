@@ -1,22 +1,22 @@
 CLASS TOTALS
    AMBIGUOUS  1
-   CATALOGUE  39
-   INVERTED   54
+   CATALOGUE  45
+   INVERTED   55
    MINT-ROUTE 3
    NAMESPACE  1
-   NO-HOME    3
+   NO-HOME    5
    OFF-AXIS   4
    PROXIMITY  10
-   TOTAL      115  (sum, must equal the v2 unmarked counter)
+   TOTAL      124  (sum, must equal the v2 unmarked counter)
 
-v2 unmarked residual : 115
-  nohome             : 3
-  invmech (the line IS the marker, read backwards)  : 53
+v2 unmarked residual : 124
+  nohome             : 5
+  invmech (the line IS the marker, read backwards)  : 54
   srcreg  (source is a §5 row, F59 OFF-AXIS shape)  : 4
   fromstub (member 6's own contribution)            : 25
 
-  by ADJUDICATION (read at the node) : 33
-  by MACHINE RULE                    : 82
+  by ADJUDICATION (read at the node) : 39
+  by MACHINE RULE                    : 85
 PAIRS NO RULE AND NO ADJUDICATION REACHES : 0
 
 REAL ARREARS (a genuine entry-to-entry supersession whose target lacks its back-marker) : 0

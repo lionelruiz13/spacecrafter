@@ -144,6 +144,17 @@ ADJUDICATED = {
  ("11.165", "5.59"):  ("MINT-ROUTE", "§11.165(d) routes §11.122(i)'s surviving residual to the named defect §5.59 -- a route, not a supersession of §5.59's own claim; §11.165(c)'s bucket 3 shape"),
  ("11.179", "5.106"): ("CATALOGUE",  "NAMED EXCEPTION, re-verified: §11.179(e)'s sentence QUOTING §11.144's own [ATTRIBUTION REFUTED ... -> new §5.106] to name the direction-inversion family"),
  ("11.76",  "11.75"): ("AMBIGUOUS",  "CLASS ADDED DURING THE WALK, with its argument (F59's AMBIGUOUS, added the same way its OFF-AXIS was): SURFACED BY MEMBER 3(b) AND CANNOT BE HONESTLY RESOLVED BY ME. Reading 1, an arrear: §11.76(c) says it SUPERSEDES the §11.75(b)/§2.0 tension reconciliation, and INTENT/11.75.md contains the string 11.76 ZERO times, so §11.75's own node carries nothing. Reading 2, nothing owed: the superseded TEXT is §2.0's line 104, which does carry a dated marker (**SUPERSEDED [vixy 2026-07-22, §11.76(c)]**) -- the marker went where the claim lived, and §11.75(b) only points at §2.0. §2.0 is not a node this instrument can resolve (it is the NO-HOME member on the same line). PLACING OR NOT PLACING A MARKER AT §11.75 IS THE SUPERVISOR'S ACT; this task writes no ledger text to move a counter"),
+ # -- §11.197's OWN pairs.  An entry ABOUT supersessions reproduces the catalogue
+ # signature exactly as §11.165(c) measured for itself ("this entry adds 21 candidate
+ # pairs of its own"); every one below is this entry QUOTING another node's marker or
+ # another instrument's finding, never asserting about the target.  §11.172(l)'s
+ # sentence-creates-the-event family, and these were expected before they were counted.
+ ("11.197", "11.164"):("CATALOGUE",  "§11.197(j) quoting §11.172 -> §11.174's own description, in which the CORRECTED belongs to a neighbouring claim about §11.164/§11.167"),
+ ("11.197", "11.167"):("CATALOGUE",  "same sentence, same quotation"),
+ ("11.197", "11.180"):("CATALOGUE",  "§11.197(g) naming F60's three STALE ROUTING markers, i.e. quoting the pair §5.44 -> §11.180 that member 6 makes visible"),
+ ("11.197", "5.44"):  ("CATALOGUE",  "same sentence"),
+ ("11.197", "11.192"):("CATALOGUE",  "§11.197(h) quoting the F73 executor's §0.7 report about §11.192's SUPERSEDED marker"),
+ ("11.197", "11.75"): ("CATALOGUE",  "§11.197(j) quoting §11.76(c)'s own assertion verbatim, to show the rule that accepted it -- the quotation manufactures the pair the quotation is about"),
  ("11.172", "11.174"):("INVERTED",   "NAMED EXCEPTION, re-verified at the node and the carried label HOLDS on both halves: the §11.174(c) citation sits inside an [ANNOTATION ... original preserved.] span AT §11.172 (the line IS the marker), and the CORRECTED in the window belongs to a neighbouring claim about §11.164/§11.167. invmech misses it, so 62 is a FLOOR"),
 }
 
