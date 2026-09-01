@@ -252,7 +252,7 @@
       "file": "tests/lint_cases.sts",
       "id": "end-without-if",
       "line": 76,
-      "message": "this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine logs \"end without if\" and ignores the line — either this 'end' is one too many, or the block it was meant to close was never opened",
+      "message": "this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine reports an error on this line and ignores it — either this 'end' is one too many, or the block it was meant to close was never opened",
       "severity": "warning",
       "span": {
         "begin": 10,
@@ -263,7 +263,7 @@
       "file": "tests/lint_cases.sts",
       "id": "else-without-if",
       "line": 77,
-      "message": "this 'struct if else' flips nothing: no 'struct if' block is open here, so the engine logs \"else without if\" and ignores the line",
+      "message": "this 'struct if else' flips nothing: no 'struct if' block is open here, so the engine reports an error on this line and ignores it",
       "severity": "warning",
       "span": {
         "begin": 10,
@@ -274,7 +274,7 @@
       "file": "tests/lint_cases.sts",
       "id": "loop-end-without-loop",
       "line": 80,
-      "message": "this 'struct loop end' closes nothing: no 'struct loop' is open here, so the engine resets an empty loop and nothing repeats — either this 'end' is one too many, or the 'struct loop <n>' it was meant to close is missing",
+      "message": "this 'struct loop end' closes nothing: no 'struct loop' is open here, so the engine reports an error on this line, resets an empty loop and nothing repeats — either this 'end' is one too many, or the 'struct loop <n>' it was meant to close is missing",
       "severity": "warning",
       "span": {
         "begin": 12,

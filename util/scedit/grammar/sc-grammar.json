@@ -6237,7 +6237,7 @@
             "default": "absent -> the command tries `comment`, then `loop`, then `print`",
             "required": "conditional",
             "source": "app_command_interface.cpp:4769-4828 (W_IF=\"if\", W_ELSE=\"else\", W_END=\"end\": base_command_interface.hpp:239,240,157)",
-            "notes": "Blocks may be nested; each `struct if` must be closed by `struct if end` (an `end` with no open block logs \"end without if\", an `else` with none logs \"else without if\" -- src/interfaceModule/if_swap.cpp:40-54, 73-81)."
+            "notes": "Blocks may be nested; each `struct if` must be closed by `struct if end` (an `end` or an `else` with no open block is reported as an error on its own line and ignored -- src/interfaceModule/app_command_interface.cpp:4771-4780)."
           },
           "equal": {
             "doc": "Run the block when the `if` value is the same as this one.",
@@ -10920,7 +10920,7 @@
     {
       "id": "unclosed-struct",
       "severity": "error",
-      "rule": "a `struct if <cond>` or `struct loop <n>` still open at the end of the file, reported at the OPENER line (the root; EOF is only where the damage surfaces). if: ifSwap stays pushed until `script action end` (parse_model.if_structure) and skip-while-set at :361 means that whenever the test fails every following line is skipped to the end of the file, silently. loop: without `struct loop end` the block runs once and never repeats (n > 1) or the tail is skipped (n < 1) (parse_model.loop_structure); a non-literal count is reported as either. `struct if` lines inside a `comment` block do not count (commandStruct :4770 guard). RULED 2026-08-30 [vixy]: the engine will LOG the unclosed if with the three-part schema and annotate the opener line with a `#!` tail; the seed is unaffected - an unclosed opener is a defect under every exec policy.",
+      "rule": "a `struct if <cond>` or `struct loop <n>` still open at the end of the file, reported at the OPENER line (the root; EOF is only where the damage surfaces). if: ifSwap stays pushed until `script action end` (parse_model.if_structure) and skip-while-set at :361 means that whenever the test fails every following line is skipped to the end of the file, silently. loop: without `struct loop end` the block runs once and never repeats (n > 1) or the tail is skipped (n < 1) (parse_model.loop_structure); a non-literal count is reported as either. `struct if` lines inside a `comment` block do not count (commandStruct :4770 guard). RULED 2026-08-30 [vixy] and LANDED at code 2b8ec034: the engine LOGS the unclosed opener with the three-part schema and annotates the opener line with a `#!` tail, from terminateScript :291-303 when the script's queue runs out. So `silently` above is now true of NEITHER half, strictly: each skipped line is logged at L_INFO as \"this command has not been executed <line>\" (executeCommand :361-364) and the opener is reported once at the end. The seed's MESSAGE still says `silently` and was deliberately left saying it (F76): whether an L_INFO line in the same log as the per-command echo counts as a signal to a user is S5.117's open question and not scedit's to answer -- routed, not rewritten. The seed is unaffected - an unclosed opener is a defect under every exec policy.",
       "source": "commandStruct :4769-4828 / :4842-4876; if_swap.cpp:40-54, :90-97; script_mgr.hpp:127-138; corpus witness doc/superscript.sts:1404-1409 + :1547 (SS-24); scedit/INTENT.md S5 item 14",
       "note": "NEW id minted 2026-08-31, D6 kebab-case. VETO OPEN.",
       "engine_tail": [
@@ -10932,7 +10932,7 @@
     {
       "id": "end-without-if",
       "severity": "warning",
-      "rule": "`struct if end` with no `struct if` block open: the engine logs 'end without if' (L_ERROR, if_swap.cpp:45 @ 2fe14699 [NOT AT HEAD: the referent left this file: IfSwap::pop now returns false and the caller reports]) and ignores the line. No functional damage by itself; it is the trace of a copy-paste extra `end`, or of an opener missing above. Shipped witness: fscripts/panorama5.sts:100-102 @ 2fe14699 [NOT AT HEAD: field data, not a file of this repository] closes three where :97-98 opened two (SS-25).",
+      "rule": "`struct if end` with no `struct if` block open: the engine reports an error on the line and ignores it (commandStruct :4776-4780 -> reportScriptError :215-239, which logs at L_ERROR and writes a `#!` tail onto the line; measured live F76). Until code 2b8ec034 the write was if_swap.cpp's own and its words were 'end without if' -- the engine's current sentence has ONE home, this seed's `engine_tail`, which f63_scedit_agree.py maps against the running engine. No functional damage by itself; it is the trace of a copy-paste extra `end`, or of an opener missing above. Shipped witness: fscripts/panorama5.sts:100-102 @ 2fe14699 [NOT AT HEAD: field data, not a file of this repository] closes three where :97-98 opened two (SS-25).",
       "source": "commandStruct :4776-4780 -> IfSwap::pop, if_swap.cpp:40-54",
       "note": "NEW id minted 2026-08-31. VETO OPEN. Warning, not error: the engine itself reports it (log), and the line is a no-op.",
       "engine_tail": [
@@ -10943,7 +10943,7 @@
     {
       "id": "else-without-if",
       "severity": "warning",
-      "rule": "`struct if else` with no `struct if` block open: the engine logs 'else without if' (L_ERROR, if_swap.cpp:76 @ 2fe14699 [NOT AT HEAD: the referent left this file: IfSwap::revert now returns false and the caller reports]) and ignores the line.",
+      "rule": "`struct if else` with no `struct if` block open: the engine reports an error on the line and ignores it (commandStruct :4771-4775 -> reportScriptError :215-239). Until code 2b8ec034 the write was if_swap.cpp's own and its words were 'else without if'.",
       "source": "commandStruct :4771-4775 -> IfSwap::revert, if_swap.cpp:73-81",
       "note": "NEW id minted 2026-08-31. VETO OPEN. Not in the corpus.",
       "engine_tail": [
@@ -10954,7 +10954,7 @@
     {
       "id": "loop-end-without-loop",
       "severity": "warning",
-      "rule": "`struct loop end` with no `struct loop <n>` open: the engine resets an empty loop (setLoop(false) + initIterator over an empty loopVector, script_mgr.hpp:127-138) and logs NOTHING - nothing repeats, silently.",
+      "rule": "`struct loop end` with no `struct loop <n>` open: the engine reports an error on the line (commandStruct :4846 -> reportScriptError :215-239) and resets an empty loop (setLoop(false) + initIterator over an empty loopVector, script_mgr.hpp:127-138); nothing repeats. The 'logs NOTHING' this rule carried was true until code 2b8ec034 gave the three closer forms a report each.",
       "source": "commandStruct :4844-4853; script_mgr.hpp:127-138",
       "note": "NEW id minted 2026-08-31. VETO OPEN. Not in the corpus.",
       "engine_tail": [

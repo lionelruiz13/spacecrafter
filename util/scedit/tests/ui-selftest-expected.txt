@@ -219,7 +219,7 @@ inv ----------i
 | command `struct`
 | Control which lines of the script run: ask a question and skip what follows when the answer is no,
 | 
-| warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine log
+| warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine rep
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
 | F5 errors (2) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd----------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
@@ -288,7 +288,7 @@ inv ----------i
 | #! annotation, written by spacecrafter
 | `#!` is RESERVED machine syntax inside a comment [vixy 2026-08-30, FEATURE_REQUESTS "`#!` - the en
 | 
-| warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine log
+| warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine rep
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
 | F5 errors (4) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd----------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
@@ -313,7 +313,7 @@ inv ------------------------i
 | `struct` `if` = `end`
 | close the block opened by the last `struct if`   (documents: value)
 | value: number(evalDouble) -- $-variable substitution possible | enumerated   one of: else, end, <a
-| warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine log
+| warning: this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine rep
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
 | F5 errors (4) · Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd----------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd

@@ -256,8 +256,13 @@ std::string nearestNeighbour(const std::string &source, const std::vector<std::s
 //!    (`std::vector<bool>`, if_swap.hpp:71): `struct if <cond>` pushes
 //!    (commandStruct :4614-4661), `struct if else` flips the top (:4606-4609 ->
 //!    IfSwap::revert, if_swap.cpp:71-81), `struct if end` pops (:4610-4613 ->
-//!    IfSwap::pop, :40-54). An `end` or `else` on an empty stack is LOGGED
-//!    ("end without if" :45 / "else without if" :76) and ignored. The whole
+//!    IfSwap::pop, :40-54). An `end` or `else` on an empty stack is REPORTED
+//!    BY THE CALLER and ignored (app_command_interface.cpp:4773 and :4778 ->
+//!    reportScriptError, :215-239, code e3afca8f: an L_ERROR line AND a `#!`
+//!    tail written onto the offending line). if_swap.cpp wrote those two log
+//!    lines itself, with the words "end without if" / "else without if", until
+//!    code 2b8ec034 moved them out - which is what this sentence used to quote
+//!    (F76). The whole
 //!    if-case is guarded by `swapCommand != true` (:4605): inside a `comment`
 //!    block NO `struct if` line counts, `end` included. The stack is cleared
 //!    only by `script action end` (:2810), which the end of every script runs

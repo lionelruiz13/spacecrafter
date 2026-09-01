@@ -920,7 +920,7 @@
           "default": "absent -> the command tries `comment`, then `loop`, then `print`",
           "required": "conditional",
           "source": "app_command_interface.cpp:4769-4828 (W_IF=\"if\", W_ELSE=\"else\", W_END=\"end\": base_command_interface.hpp:239,240,157)",
-          "notes": "Blocks may be nested; each `struct if` must be closed by `struct if end` (an `end` with no open block logs \"end without if\", an `else` with none logs \"else without if\" -- src/interfaceModule/if_swap.cpp:40-54, 73-81)."
+          "notes": "Blocks may be nested; each `struct if` must be closed by `struct if end` (an `end` or an `else` with no open block is reported as an error on its own line and ignored -- src/interfaceModule/app_command_interface.cpp:4771-4780)."
         },
         "equal": {
           "doc": "Run the block when the `if` value is the same as this one.",

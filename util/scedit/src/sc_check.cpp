@@ -517,25 +517,40 @@ std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
 			continue;
 		const std::size_t seen = skip.unmatched().size();
 		const bool skipped = skip.feed(L, i + 1);
-		// A closer that closes nothing. The engine logs the two if-forms as
-		// errors and ignores them (if_swap.cpp:45, :76); the loop form resets
-		// an empty loop and logs nothing (commandStruct :4677-4682).
+		// A closer that closes nothing. All three forms are REPORTED by the
+		// engine and ignored -- `reportScriptError` at commandStruct :4773
+		// (else), :4778 (end) and :4846 (loop end), which logs at L_ERROR and
+		// writes a `#!` tail onto the offending line (app_command_interface.cpp
+		// :215-239, code e3afca8f).
+		//
+		// These three messages used to QUOTE the engine's log text ("end
+		// without if", "else without if") and one described the loop form as
+		// logging nothing. Both were true of the engine that if_swap.cpp:45,:76
+		// used to be, and code 2b8ec034 (2026-08-31) moved those writes to the
+		// caller and gave them new words -- so the quotes named strings the
+		// engine had stopped writing, and nothing checked them (F76, measured
+		// live: the log line, the `#!`, and this file's own reading of it all
+		// agree, and none of them says "end without if"). The engine's exact
+		// sentence has ONE home that IS checked, the grammar's `engine_tail`
+		// data, which f63_scedit_agree.py maps against the running engine;
+		// prose here says what HAPPENS and quotes nothing (I2).
 		for (std::size_t u = seen; u < skip.unmatched().size(); ++u) {
 			const auto &m = skip.unmatched()[u];
 			if (m.what == "end")
 				out.push_back(makeDiagnostic(g, path, i + 1, "end-without-if",
 					"this 'struct if end' closes nothing: no 'struct if' block is open here, so the "
-					"engine logs \"end without if\" and ignores the line \xe2\x80\x94 either this 'end' is one "
+					"engine reports an error on this line and ignores it \xe2\x80\x94 either this 'end' is one "
 					"too many, or the block it was meant to close was never opened", m.span));
 			else if (m.what == "else")
 				out.push_back(makeDiagnostic(g, path, i + 1, "else-without-if",
 					"this 'struct if else' flips nothing: no 'struct if' block is open here, so the "
-					"engine logs \"else without if\" and ignores the line", m.span));
+					"engine reports an error on this line and ignores it", m.span));
 			else
 				out.push_back(makeDiagnostic(g, path, i + 1, "loop-end-without-loop",
 					"this 'struct loop end' closes nothing: no 'struct loop' is open here, so the "
-					"engine resets an empty loop and nothing repeats \xe2\x80\x94 either this 'end' is one too "
-					"many, or the 'struct loop <n>' it was meant to close is missing", m.span));
+					"engine reports an error on this line, resets an empty loop and nothing repeats "
+					"\xe2\x80\x94 either this 'end' is one too many, or the 'struct loop <n>' it was meant to "
+					"close is missing", m.span));
 		}
 		if (skipped)
 			continue;   // inside a `comment` block: the engine never runs this
