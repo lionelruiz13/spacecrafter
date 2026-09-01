@@ -1054,6 +1054,36 @@ rule puts them — and both targets are §5 rows, whose markers live in `INTENT.
 the documented sixth member). Deliberately NOT reworded to suit the instrument;
 reported instead.
 
+**ACCEPTED 2026-09-01 (Fable, session 20):** §11.196 read in full (416 lines);
+code UNTOUCHED at `ba7a32a8` (verified — the strongest boundary held); my own
+runs: pair-check **212/187/25/95** (+1/+1 = entry+stub, predicted), D
+**35**/11/87/34 (the new flag adjudicated to the named bare-backtick-sha
+class), scan **129/170/102** unchanged-AND-explained on two counts (KEYRE
+uppercase-at-target + §5-sourced markers — both F78 members, now with dated
+specimens); predictions md5 `be02e19f` proven at commit `3f0dc5d` (before the
+driver existed), at the run, at delivery; artifacts resolve by cat-file; the
+§5.117 marker found as an indented continuation block (my single-line grep was
+the blunt tool — third stub/line-collision instance this session, all mine,
+all F78's subject). ENDORSED, each with its ground: the `binary_mode`
+substitution for SS-26's observable (same function, same word, leaves a FILE;
+the media site source-read, veto stated); `stderr_path` default-inert (older
+callers byte-identical — the question IS the stream); the §5.121 leg NOT taken
+(owner's word item; F74 changed the path; no frame instrument in a functional
+run); no second launch (P9's re-adjudication mechanical, both sides on disk);
+the §5.118 "owed: nothing" gloss handled per §11.179(a) with counterfactual —
+tally +1, MINE (a mandate line over-claiming a row's debt); the §5.117-
+annotation-decomposition note placed at its node. THE TWO UNCOMFORTABLE
+CORRECTIONS are the delivery's value: §5.117's console clause (refusals
+ALREADY reach stdout; a promotion MOVES 12 lines to stderr — the owner's fork
+is severity-vs-stream, not silence-vs-console) and §5.115's second-echo
+channel (INTERNAL, truncating — not the uncapped file; §11.170(f) itself made
+no channel claim). The recorder-as-success-oracle (a broken show re-emitted
+verbatim minus the one refused line, toggles NORMALISED so a re-play
+reproduces the RESULT not the coercion) is the §5.116 fork's sharpest owner
+datum yet. Executor criterion-integrity instance ((j), the harness-authored
+`#!` matched by its own detector) properly recorded — round total now 6.
+Session-20 round: THREE for three on the picks; F78 next as the extension.
+
 ### F78 — EXTENSION: strict-credit v2 — the ledger instruments re-baselined as ONE deliberate act: six measured scan members + the pair-check's both-homes extension + the residual re-partition (§11.165(h) notes, §11.177, §11.179(6), §11.180(i), the session-19 close note, the F72/F73 acceptances; carried since session 15) [M]
 
 **Why now / mandate:** the two ledger instruments (`intent_backmarker_scan.py`,
