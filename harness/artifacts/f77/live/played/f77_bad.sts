@@ -1,0 +1,22 @@
+# F77 - one deliberately bad line per mechanism, neutral neighbours between.
+wait duration 0.2
+flag atmosphere yes
+flag atmosphere toggle
+wait duration 0.2
+flag atmosphere on
+flag atmosphere toggle
+wait duration 0.2
+flag atmosphere Off
+flag atmosphere toggle
+wait duration 0.2
+set moon_scale big
+wait duration 0.2
+set stall_radius_unit = 5.0
+wait duration 0.2
+configuration module star_lines action load_star name f77seed star_name 1000 star_pos 1,2,3
+configuration module star_lines action save name /home/claude/spacecrafter/claude/harness/artifacts/f77/live/played/f77_sl_on.txt binary_mode on
+configuration module star_lines action save name /home/claude/spacecrafter/claude/harness/artifacts/f77/live/played/f77_sl_true.bin binary_mode true
+configuration module star_lines action save name /home/claude/spacecrafter/claude/harness/artifacts/f77/live/played/f77_sl_off.txt binary_mode off
+wait duration 0.2
+flag nosuchflag on
+wait duration 0.2

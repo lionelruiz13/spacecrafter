@@ -184,8 +184,9 @@ def main():
     # that "no tail on the bad script" is a fact about the funnel and not about
     # a dead annotator.
     end_file = play / "f77_end_without_if.sts"
-    end_file.write_text("# F77 leg I: the ruled class, so the `#!` writer is\n"
-                        "struct if end\n")
+    end_text = ("# F77 leg I: the ruled class, so the `#!` writer is\n"
+                "struct if end\n")
+    end_file.write_text(end_text)
     end_md5_before = md5(end_file)
 
     def prepare(dst):
@@ -513,15 +514,30 @@ def main():
         "file_after": end_after.decode("latin-1"),
         "md5_before": end_md5_before, "md5_after": md5(end_file),
     }
-    tail_lines = [i + 1 for i, l in enumerate(end_after.decode("latin-1").splitlines())
-                  if "#!" in l]
+    # WHICH LINES THE ENGINE WROTE ON is a diff against the bytes THIS SCRIPT
+    # wrote, never a search for `#!`. The first version searched, and line 1 of
+    # this very fixture quotes `#!` inside an author comment - so the needle
+    # matched text the harness had authored itself and called a held prediction
+    # a failure. The fixture is deliberately kept as it is: a line whose own
+    # text contains `#!` and which the engine leaves alone is a free control on
+    # the writer's idempotency rule.
+    b_lines = end_text.splitlines()
+    a_lines = end_after.decode("latin-1").splitlines()
+    written = [i + 1 for i, (x, y) in enumerate(zip(b_lines, a_lines)) if x != y]
+    appended = {i: a_lines[i - 1][len(b_lines[i - 1]):] for i in written}
+    RESULTS["P9"]["lines_written_by_engine"] = written
+    RESULTS["P9"]["appended"] = appended
+    tail_lines = written
     err_line = [l for l in RESULTS["P9"]["log"] if "(Error)" in l]
-    if err_line and tail_lines == [2]:
+    if (err_line and tail_lines == [2]
+            and appended[2].startswith(" #! this 'struct if end' closes nothing")):
         good("P9", "the `#!` writer WAS armed this launch: an L_ERROR log line "
-                   "and a tail on line 2 of its own file -- so the bad script's "
+                   "and a tail APPENDED to line 2 of its own file (line 1, whose "
+                   "author text contains `#!`, untouched) -- so the bad script's "
                    "untouched bytes are the funnel's doing, not a dead writer")
     else:
-        bad("P9", "error lines %s, tails on %s" % (err_line, tail_lines))
+        bad("P9", "error lines %s, engine wrote lines %s (%s)"
+            % (err_line, tail_lines, appended))
 
     # ==================================================== the end, then CONSOLE
     rc_app = sess.stop(drive)

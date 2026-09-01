@@ -1,0 +1,17 @@
+print_log = true is the SHIPPED default (config.ini [debug]); cLog::writeConsole
+echoes EVERY log line and the SEVERITY chooses the stream (log.cpp:204-208).
+
+stdout: 2161 lines   stderr: 247 lines
+stdout by severity: {'(untagged)': 234, 'Info': 749, 'Debug': 1178}
+stderr by severity: {'Warn.': 215, '(untagged)': 3, 'Error': 29}
+
+--- every refusal line, and which stream it went to ---
+stdout | (Debug): Error executing tcp#2: flag nosuchflag on #! Unrecognized or malformed flag argument
+stdout | (Debug): Error executing <PLAY>/f77_bad.sts:21: flag nosuchflag on #! Unrecognized or malformed flag argument
+
+--- the ruled-class L_ERROR line, and which stream it went to ---
+stderr | (Error): script <PLAY>/f77_end_without_if.sts:2: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]
+
+So: the 157 L_DEBUG refusals ALREADY reach a console under the shipped
+default -- stdout. A promotion to L_ERROR MOVES them to stderr; it does
+not put them on a console they were absent from.

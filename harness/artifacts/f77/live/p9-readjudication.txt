@@ -1,0 +1,12 @@
+lines: 2 before, 2 after
+lines the ENGINE wrote on: [2]
+  line 2 appended exactly: " #! this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close"
+  line 1 UNCHANGED: '# F77 leg I: the ruled class, so the `#!` writer is'
+
+VERDICT: P9 HELD. The engine appended one tail, to line 2, the ruled-class
+line. Line 1 carries `#!` in its author text and was left alone, which is
+also the writer's idempotency rule not firing on a line with no fault.
+The driver's FIRST encoding of this criterion searched for the substring
+`#!` and therefore counted the harness's own comment: an instrument that
+reported a held prediction as a failure. Corrected in place; the fixture
+is kept, because a line whose own text contains `#!` is a free control.

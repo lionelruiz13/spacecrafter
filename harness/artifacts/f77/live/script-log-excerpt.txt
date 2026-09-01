@@ -1,0 +1,80 @@
+000000045129: (Info ): Execute_command script action play filename <PLAY>/f77_bad.sts
+000000045129: (Info ): ScriptMgr: load <PLAY>/f77_bad.sts
+000000045129: (Debug): RECORD: script action play filename <PLAY>/f77_bad.sts
+000000046132: (Info ): Execute_command wait duration 0.2
+000000046132: (Debug): RECORD: wait duration 0.2
+000000047135: (Info ): Execute_command flag atmosphere yes
+000000047135: (Debug): RECORD: flag atmosphere yes
+000000047135: (Info ): Execute_command flag atmosphere toggle
+000000047135: (Debug): RECORD: flag atmosphere 1
+000000047135: (Info ): Execute_command wait duration 0.2
+000000047135: (Debug): RECORD: wait duration 0.2
+000000048136: (Info ): Execute_command flag atmosphere on
+000000048136: (Debug): RECORD: flag atmosphere on
+000000048136: (Info ): Execute_command flag atmosphere toggle
+000000048136: (Debug): RECORD: flag atmosphere 0
+000000048136: (Info ): Execute_command wait duration 0.2
+000000048136: (Debug): RECORD: wait duration 0.2
+000000049140: (Info ): Execute_command flag atmosphere Off
+000000049140: (Debug): RECORD: flag atmosphere Off
+000000049140: (Info ): Execute_command flag atmosphere toggle
+000000049140: (Debug): RECORD: flag atmosphere 1
+000000049140: (Info ): Execute_command wait duration 0.2
+000000049140: (Debug): RECORD: wait duration 0.2
+000000050140: (Info ): Execute_command set moon_scale big
+000000050140: (Debug): RECORD: set moon_scale big
+000000050140: (Info ): Execute_command wait duration 0.2
+000000050140: (Debug): RECORD: wait duration 0.2
+000000051144: (Info ): Execute_command set stall_radius_unit = 5.0
+000000051144: (Debug): RECORD: set stall_radius_unit = 5.0
+000000051144: (Info ): Execute_command wait duration 0.2
+000000051144: (Debug): RECORD: wait duration 0.2
+000000052144: (Info ): Execute_command configuration module star_lines action load_star name f77seed star_name 1000 star_pos 1,2,3
+000000052144: (Debug): RECORD: configuration module star_lines action load_star name f77seed star_name 1000 star_pos 1,2,3
+000000052144: (Info ): Execute_command configuration module star_lines action save name <PLAY>/f77_sl_on.txt binary_mode on
+000000052155: (Debug): RECORD: configuration module star_lines action save name <PLAY>/f77_sl_on.txt binary_mode on
+000000052155: (Info ): Execute_command configuration module star_lines action save name <PLAY>/f77_sl_true.bin binary_mode true
+000000052156: (Debug): RECORD: configuration module star_lines action save name <PLAY>/f77_sl_true.bin binary_mode true
+000000052156: (Info ): Execute_command configuration module star_lines action save name <PLAY>/f77_sl_off.txt binary_mode off
+000000052169: (Debug): RECORD: configuration module star_lines action save name <PLAY>/f77_sl_off.txt binary_mode off
+000000052169: (Info ): Execute_command wait duration 0.2
+000000052169: (Debug): RECORD: wait duration 0.2
+000000053148: (Info ): Execute_command flag nosuchflag on
+000000053148: (Debug): 
+000000053148: (Debug): nosuchflag is unknown. Did you mean nebulae ?
+000000053148: (Debug): Error executing <PLAY>/f77_bad.sts:21: flag nosuchflag on #! Unrecognized or malformed flag argument
+000000053148: (Info ): Execute_command wait duration 0.2
+000000053148: (Debug): RECORD: wait duration 0.2
+000000054151: (Info ): End of script
+000000054151: (Info ): Execute_command script action end
+000000054151: (Info ): ScriptMgr: script end
+000000054151: (Debug): RECORD: script action end
+000000045129: (Info ): get tcp : script action play filename <PLAY>/f77_bad.sts
+000000045129: (Info ): ScriptMgr: load <PLAY>/f77_bad.sts
+000000045127: (Warn.): This frame stall is very long
+000000045277: (Warn.): Frame stall detected
+000000045327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000046277: (Warn.): Frame stall detected
+000000046327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000047277: (Warn.): Frame stall detected
+000000047327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000048277: (Warn.): Frame stall detected
+000000048327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000049277: (Warn.): Frame stall detected
+000000049327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000050277: (Warn.): Frame stall detected
+000000050327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000051277: (Warn.): Frame stall detected
+000000051327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000052277: (Warn.): Frame stall detected
+000000052327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000053277: (Warn.): Frame stall detected
+000000053327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000054277: (Warn.): Frame stall detected
+000000054327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000055277: (Warn.): Frame stall detected
+000000055327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000056277: (Warn.): Frame stall detected
+000000056327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured
+000000057277: (Warn.): Frame stall detected
+000000057327: (Warn.): SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured

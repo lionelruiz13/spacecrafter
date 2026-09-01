@@ -1,0 +1,6 @@
+=== moon_scale 0 (the coerced value) ===
+  old path : screenSz=0 visible=False dist=0.0025060533080250025
+  new path : scaling=0 scalingTarget=0 screenSize=0
+=== moon_scale 5 (restored) ===
+  old path : screenSz=543.8455200195312 visible=True dist=0.0025060533080250025
+  new path : scaling=0.401601583 scalingTarget=5 screenSize=0

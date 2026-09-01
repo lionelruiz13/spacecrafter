@@ -1,0 +1,40 @@
+# Spacecrafter 2026.07.11
+# Script recorded 26-09-01_22h30m31
+#
+set home_planet Earth
+moveto lat 43.3 lon 5.36667 alt 75.1043 duration 0
+date utc 2026:9:1T20:30:22.7
+deselect
+flag track_object off
+wait duration 1
+script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f77/live/played/f77_bad.sts
+wait duration 1
+wait duration 0.2
+wait duration 1
+flag atmosphere yes
+flag atmosphere 1
+wait duration 0.2
+wait duration 1
+flag atmosphere on
+flag atmosphere 0
+wait duration 0.2
+wait duration 1
+flag atmosphere Off
+flag atmosphere 1
+wait duration 0.2
+wait duration 1
+set moon_scale big
+wait duration 0.2
+wait duration 1
+set stall_radius_unit = 5.0
+wait duration 0.2
+wait duration 1
+configuration module star_lines action load_star name f77seed star_name 1000 star_pos 1,2,3
+configuration module star_lines action save name /home/claude/spacecrafter/claude/harness/artifacts/f77/live/played/f77_sl_on.txt binary_mode on
+configuration module star_lines action save name /home/claude/spacecrafter/claude/harness/artifacts/f77/live/played/f77_sl_true.bin binary_mode true
+configuration module star_lines action save name /home/claude/spacecrafter/claude/harness/artifacts/f77/live/played/f77_sl_off.txt binary_mode off
+wait duration 0.2
+wait duration 1
+wait duration 0.2
+wait duration 1
+script action end

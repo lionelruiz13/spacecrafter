@@ -1,0 +1,54 @@
+=== F56 ENVIRONMENT CANARY  2026-09-01 22:29:29 CEST  out=/home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260901-222929
+    banked stack: DISPLAY :2 2448x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+
+--- (a) display stack ---
+  host.boot = 2026-08-31 20:57:30
+  host.now_epoch = 1788294569
+  display.target = :2
+  display.expected = :2
+  xauthority.inherited = /run/user/1003/.mutter-Xwaylandauth.ZA0TU3
+  xauthority = /run/user/1003/.mutter-Xwaylandauth.ZA0TU3
+  display.dimensions = <none>
+  display.screens = <none>
+
+CANARY FAIL [display.reachable]
+  WHAT        : xdpyinfo cannot talk to :2: Invalid MIT-MAGIC-COOKIE-1 keyxdpyinfo:  unable to open display ":2".
+  CONSEQUENCES: the display is dead or not ours; a launch would either fail or render into nothing, and the app's own comment (app_command_interface.cpp:4035-4039) says external grabs see black on a headless X, so the failure can look like a black scene rather than a crash.
+  PREVENTION  : STOP and report the host state (this is an OWNER VETO ITEM, §11.174(h)). Check: is the compositor alive ('gnome-shell --headless --virtual-monitor 2448x1332'), is /tmp/.X11-unix/X2 present, is XAUTHORITY readable?
+  xdg_runtime_dir = /run/user/1003
+  x11.sockets = X0 X1 X1024 X1025 X2 X3 
+
+--- (a2) compositor identity ---
+  compositor.cmd_banked = gnome-shell --headless --virtual-monitor 2448x1332
+  compositor.pid = <absent>
+
+CANARY FAIL [compositor.absent]
+  WHAT        : no process matching the banked compositor command line is alive.
+  CONSEQUENCES: the display stack every banked number was measured on no longer exists; whatever answers :2 now is a different stack, and §11.174 is the record of what an unnoticed stack change costs (a full session of dark, green-looking evidence).
+  PREVENTION  : STOP and report: the host's display provisioning changed (reboot, logout, or a manual rebuild). This is an OWNER VETO ITEM (§0.5, §11.174(h)) -- report the failure rather than rebuilding a substitute; if a rebuild IS ratified, re-bank BANK_COMPOSITOR_* and re-measure the band.
+  xserver.pid = 90210
+  xserver.start_epoch = 1788278977
+  xserver.start_banked = 1788007886
+
+CANARY NOTE [xserver.restarted]
+  the X server serving :2 was started at 1788278977 (2026-09-01 18:09:37), banked 1788007886 -- a restarted server under an unchanged compositor. Recorded, not gated (the compositor member above is the gating one); if this appears without a compositor change, it is a new fact and belongs in the delivery.
+
+--- (b) GPU ---
+  gpu.query = NVIDIA GeForce GTX 1660 Ti, 580.173.02, 6 MiB, 6144 MiB, 0 %
+  gpu.used_mib = 6
+
+--- (c) RDP connection state / (d) dispatch method ---
+  rdp.estab_3389 = 0
+  rdp.note = count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+  logind.claude_sessions = 2 
+  dispatch.has_logind_session = yes
+  dispatch.wayland_display = wayland-0
+  dispatch.dbus = unix:path=/run/user/1003/bus
+  dispatch.inherited_display = :2
+fingerprint: 24 members -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260901-222929/fingerprint.json
+
+--- cache manifest (standalone) ---
+manifest: 38 files, 680177199 B, aggregate md5 58484e8aae8579161954b237dac4303e  -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260901-222929/cache_manifest.json
+fingerprint: 24 members -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260901-222929/fingerprint.json
+
+=== CANARY VERDICT: exit 3  (2 fail, 1 note; scene arm NOT run)

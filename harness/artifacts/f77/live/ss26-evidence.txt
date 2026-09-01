@@ -1,0 +1,17 @@
+SS-26, measured on ONE launch: the SAME word, two functions, two answers.
+
+isTrue  (flag <name> <value>)   -- `on` is YES  : the recorded toggle after
+        `flag atmosphere on` reads `flag atmosphere 0` (it was ON).
+strToBool (configuration ... binary_mode <v>) -- `on` is NO : below.
+
+f77_sl_on.txt      157573 B  md5 9c208c1a62fdf9739d3d15b6ac747394
+                 first 48 bytes: b'# Created by SC StarLines::saveHipCatalogue \n88 '
+f77_sl_true.bin     80720 B  md5 7388b6629c0b26707ab83fc706e33701
+                 first 48 bytes: b'X\x00\x00\x00Xy\xef\xc2\xb0\xd2\x08C\x9b\xff\x0f?k\x00\x00\x00\xe3e\xd4\xc2\xc9\x16\x00C\x1bd\x1e?z\x00\x00\x00\xa4pn\xc1\xe9\xc6\x81B\x83\xbe\xd4='
+f77_sl_off.txt     157573 B  md5 9c208c1a62fdf9739d3d15b6ac747394
+                 first 48 bytes: b'# Created by SC StarLines::saveHipCatalogue \n88 '
+
+on == off : True   (both TEXT, StarLines::saveHipCat)
+on == true: False   (true took the BINARY branch, saveHipBinCat)
+
+All three lines were echoed, none refused, all three RECORDED as successes.
