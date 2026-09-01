@@ -1,0 +1,16 @@
+27:000000049901: (Debug): Error executing tcp#2: date f76dangling #! command 'date' : unknown argument
+29:000000050901: (Debug): Error executing tcp#2: nebula action load ra 29 de 3.2 magnitude -30 angular_size 250 name soleil filename circlepos/soleil.png credit ACA texture_luminance_adjust 1 #! Unrecognized or malformed command name
+30:000000050901: (Debug): nebula is unknown. Did you mean media ?
+34:000000052906: (Debug): lanscape is unknown. Did you mean landscape ?
+35:000000052906: (Debug): Error executing tcp#2: flag lanscape off #! Unrecognized or malformed flag argument
+41:000000058922: (Debug): aaa_f76bogus is unknown. Did you mean heading ?
+42:000000058922: (Debug): Error executing tcp#2: set aaa_f76bogus 1 heading 77 #! command_'set': unknown argument
+45:000000060926: (Debug): heading is unknown. Did you mean heading ?
+46:000000060926: (Debug): Error executing tcp#2: set zzz_f76bogus 1 heading 99 #! command_'set': unknown argument
+49:000000062931: (Debug): duration is unknown. Did you mean heading ?
+50:000000062931: (Debug): Error executing tcp#2: set home_planet Earth duration 0 #! command_'set': unknown argument
+54:000000065940: (Debug): RECORD: flag stars ofn
+56:000000066945: (Debug): RECORD: flag stars 1
+62:000000069954: (Debug): RECORD: flag stars on
+64:000000070957: (Debug): RECORD: flag stars 0
+75:000000074966: (Error): script /home/claude/spacecrafter/claude/harness/artifacts/f76/live/played/f76_end_without_if.sts:7: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]

@@ -107,17 +107,23 @@ def manifest():
     return out
 
 
+def readout(client):
+    """`get status position` -> the parsed reply, or None.  The reply reaches
+    the asking socket because this client subscribed with $LOGON (S5.47: the
+    queue drains to subscribers)."""
+    client.sock.sendall(b"get status position\n")
+    reply, _lat, _raw = client.poll_for_reply(6.0)
+    return reply
+
+
 def jday(client):
-    """Field 4 of `get status position`, through the subscriber wire."""
-    client.send("get status position", pause=1.2)
-    pos = F27.positions(bytes(client.buf))
-    return pos[-1]["jday"] if pos else None
+    r = readout(client)
+    return r["jday"] if r else None
 
 
 def heading(client):
-    client.send("get status position", pause=1.2)
-    pos = F27.positions(bytes(client.buf))
-    return pos[-1]["heading"] if pos else None
+    r = readout(client)
+    return r["heading"] if r else None
 
 
 def main():
@@ -174,6 +180,29 @@ def main():
     c = sess.client("drive")
     c.send("$LOGON", pause=1.0)        # so `get` answers reach this socket
     time.sleep(1.0)
+    # The simulation clock RUNS (startup.sts sets `timerate rate 1`), so two
+    # readouts taken seconds apart differ in jday by seconds of sky time. Legs
+    # A and B compare jdays for EQUALITY, so the clock is stopped rather than a
+    # tolerance widened to swallow it - and the drift is measured either way,
+    # so the size of what was removed is on the record instead of assumed
+    # small. (First run of this instrument called leg A a FAILURE on a 1e-6-day
+    # gap that was exactly this drift.)
+    d0 = jday(c)
+    time.sleep(3.0)
+    d1 = jday(c)
+    c.send("timerate rate 0", pause=1.0)
+    f0 = jday(c)
+    time.sleep(3.0)
+    f1 = jday(c)
+    RESULTS["clock"] = {"drift_over_3s_running": None if None in (d0, d1) else d1 - d0,
+                        "drift_over_3s_frozen": None if None in (f0, f1) else f1 - f0}
+    print("clock: %s running / %s frozen (jday over ~3 s)"
+          % (RESULTS["clock"]["drift_over_3s_running"],
+             RESULTS["clock"]["drift_over_3s_frozen"]), flush=True)
+    if RESULTS["clock"]["drift_over_3s_frozen"] != 0.0:
+        bad("clock", "`timerate rate 0` did not freeze the clock (%s) - legs A "
+                     "and B compare jdays for equality and cannot be trusted"
+            % RESULTS["clock"]["drift_over_3s_frozen"])
 
     def since(mark):
         return sess.lognew(mark)
@@ -304,7 +333,7 @@ def main():
         c.send("script action record filename %s" % path, pause=1.5)
         c.send("flag stars %s" % value, pause=1.0)
         c.send("flag stars toggle", pause=1.0)
-        c.send("script action cancel", pause=1.5)
+        c.send("script action cancelrecord", pause=1.5)
     def recorded(p):
         return p.read_text(encoding="latin-1").splitlines() if p.exists() else []
     l_ofn, l_on = recorded(rec_ofn), recorded(rec_on)
@@ -335,7 +364,20 @@ def main():
                            str(end_file)], capture_output=True, text=True,
                           encoding="latin-1")
     rows = [r.split("\t") for r in hist.stdout.splitlines() if r.count("\t") == 6]
-    eng_rows = {int(r[1]): r[3] for r in rows if r[2] == "spacecrafter"}
+    # An ENGINE row of `--history` carries `#!` in the id column: the tail is
+    # the engine's sentence, and which lint id that sentence IS lives in the
+    # grammar's `engine_tail` data - the one home f63_scedit_agree reads too,
+    # so this is not a second opinion about the mapping. (First run of this
+    # instrument compared the `#!` literal to a lint id and called the
+    # agreement a failure.)
+    tails = {}
+    for seed in json.loads(GRAMMAR.read_text())["lint_seeds"]:
+        for clause in seed.get("engine_tail", []):
+            tails[clause] = seed["id"]
+    def tail_id(message):
+        hit = [i for cl, i in tails.items() if message.startswith(cl)]
+        return hit[0] if hit else None
+    eng_rows = {int(r[1]): tail_id(r[5]) for r in rows if r[2] == "spacecrafter"}
     sce_rows = {}
     for r in rows:
         if r[2] == "scedit":

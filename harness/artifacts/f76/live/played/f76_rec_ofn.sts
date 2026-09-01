@@ -1,0 +1,12 @@
+# Spacecrafter 2026.07.11
+# Script recorded 26-09-01_21h40m26
+#
+set home_planet Earth
+moveto lat 43.3 lon 5.36667 alt 75.1043 duration 0
+date utc 2011:6:16T0:0:0
+deselect
+flag track_object off
+wait duration 2
+flag stars ofn
+wait duration 1
+flag stars 1

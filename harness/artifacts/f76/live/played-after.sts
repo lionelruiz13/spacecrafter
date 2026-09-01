@@ -1,0 +1,7 @@
+# f76 leg H: the fscripts/panorama5.sts shape, in this farm only
+struct if 1 inf 2
+struct if 3 diff 4
+flag stars on
+struct if end
+struct if end
+struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close

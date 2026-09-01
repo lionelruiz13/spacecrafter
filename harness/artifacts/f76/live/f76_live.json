@@ -1,0 +1,111 @@
+{
+ "clock": {
+  "drift_over_3s_running": 3.50000336766243e-05,
+  "drift_over_3s_frozen": 0.0
+ },
+ "A": {
+  "j_a": 2455728.5,
+  "j_b": 2458850.0,
+  "j_dup": 2458850.0,
+  "refusals": []
+ },
+ "B": {
+  "j_dangling": 2455728.5,
+  "refusals_with_utc": [],
+  "refusals_alone": [
+   "000000049901: (Debug): Error executing tcp#2: date f76dangling #! command 'date' : unknown argument"
+  ]
+ },
+ "C": {
+  "refusals": [
+   "000000050901: (Debug): Error executing tcp#2: nebula action load ra 29 de 3.2 magnitude -30 angular_size 250 name soleil filename circlepos/soleil.png credit ACA texture_luminance_adjust 1 #! Unrecognized or malformed command name"
+  ],
+  "control_refusals": [],
+  "suggestion": [
+   "000000050901: (Debug): nebula is unknown. Did you mean media ?"
+  ]
+ },
+ "D": {
+  "refusals": [
+   "000000052906: (Debug): Error executing tcp#2: flag lanscape off #! Unrecognized or malformed flag argument"
+  ],
+  "control_refusals": [],
+  "suggestion": [
+   "000000052906: (Debug): lanscape is unknown. Did you mean landscape ?"
+  ]
+ },
+ "E": {
+  "refusals": [],
+  "echo": [
+   "000000054910: (Info ): Execute_command deselect constellation Dor pointer off"
+  ]
+ },
+ "F": {
+  "h0": 42.000001,
+  "h_after_early_bad_name": 42.000001,
+  "h_after_late_bad_name": 98.999999,
+  "refusals_early": [
+   "000000058922: (Debug): Error executing tcp#2: set aaa_f76bogus 1 heading 77 #! command_'set': unknown argument"
+  ],
+  "refusals_late": [
+   "000000060926: (Debug): Error executing tcp#2: set zzz_f76bogus 1 heading 99 #! command_'set': unknown argument"
+  ],
+  "refusals_corpus_line": [
+   "000000062931: (Debug): Error executing tcp#2: set home_planet Earth duration 0 #! command_'set': unknown argument"
+  ]
+ },
+ "G": {
+  "recorded_after_ofn": [
+   "# Spacecrafter 2026.07.11",
+   "# Script recorded 26-09-01_21h40m26",
+   "#",
+   "set home_planet Earth",
+   "moveto lat 43.3 lon 5.36667 alt 75.1043 duration 0",
+   "date utc 2011:6:16T0:0:0",
+   "deselect",
+   "flag track_object off",
+   "wait duration 2",
+   "flag stars ofn",
+   "wait duration 1",
+   "flag stars 1"
+  ],
+  "recorded_after_on": [
+   "# Spacecrafter 2026.07.11",
+   "# Script recorded 26-09-01_21h40m31",
+   "#",
+   "set home_planet Earth",
+   "moveto lat 43.3 lon 5.36667 alt 75.1043 duration 0",
+   "date utc 2011:6:16T0:0:0",
+   "deselect",
+   "flag track_object off",
+   "wait duration 1",
+   "flag stars on",
+   "wait duration 1",
+   "flag stars 0"
+  ]
+ },
+ "H": {
+  "log": [
+   "000000074966: (Error): script /home/claude/spacecrafter/claude/harness/artifacts/f76/live/played/f76_end_without_if.sts:7: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]"
+  ],
+  "annotated_lines": [
+   7
+  ],
+  "history_engine": {
+   "7": "end-without-if"
+  },
+  "history_scedit": {
+   "7": [
+    "end-without-if"
+   ]
+  },
+  "agree": [
+   7
+  ],
+  "file_changed": true
+ },
+ "corpus_untouched": true,
+ "corpus_moved": [],
+ "app_exit": 0,
+ "harness_fails": []
+}
