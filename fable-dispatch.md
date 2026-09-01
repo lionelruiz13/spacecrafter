@@ -857,32 +857,35 @@ directory → loud skip, not pass).
 **DoD:** table complete; live legs per class; SS rows + §5 routing; gate armed
 with its absent-corpus behaviour; journal + README; trees clean; WIP cleared;
 baselines LAST (deltas attributed to every SS row and §5 touch).
-**WIP:** 2026-09-01 **CP1** — §0.7 gate PASSED with one reported dispatcher
-defect (`cmake --build build-claude -- -n` is NOT empty: F75's decoy
-insert-and-restore moved `if_swap.cpp`'s mtime; the binary is content-current,
-PROVEN by recompiling that TU to a byte-identical `.o`, md5 `921dabdd`); corpus
-premise reproduces EXACTLY (1661/26, by-id as stated, two scedit builds giving
-byte-identical output; 408 files; 43 md5 groups). Universe committed:
-`harness/f76_corpus.py` + `artifacts/f76/dispositions.tsv.gz`, 1661 rows all
-UNADJUDICATED, `--strict` reds. **CP2** — adjudicated: 1661/1661 TRUE-shipped,
-13 distinct authored defects, `--strict` green; every ground read at the engine
-(a full vocabulary re-derivation from `app_command_init.cpp` x
-`base_command_interface.hpp` reproduces the grammar's 97 flags / 43 set names /
-46 colours EXACTLY). SIGNAL column added, and it is F77's number: **12 of 1661
-findings make the engine say anything** (10 LOG-DEBUG + 2 LOG-ERROR), 1647
-SILENT. `f76_live.py` committed WITH its predictions before any launch. **CP3** — one
-fresh launch, **8/8 legs green BOTH WAYS**, every id class confirmed on the
-running engine; corpus PROVEN untouched (408/408 md5-identical across the run,
-and the engine annotates played files, so this was a real hazard). Three
-instrument defects on the first run, all corrected without moving a criterion
-(the sim clock ran -> frozen and the drift MEASURED; `script action cancel` is
-spelled `cancelrecord`; an engine `--history` row carries `#!` in the id column
-and the id lives in `engine_tail`). TWO engine findings measured en route:
-`set`'s suggestion names `args.begin()->first`, not the key that failed
-(observed live: *"heading is unknown. Did you mean heading ?"* for a line where
-`heading` WORKED), and scedit's `end-without-if`/`else-without-if` messages
-still quote a log string the engine stopped writing at `2b8ec034`. NEXT: the
-scedit message fix, SS-32..39 + SS-25, §5.122/§5.123, the gate, the records.
+**DELIVERED 2026-09-01.** Code `8eeffb9d` (the message fix) + `ba7a32a8`
+(the gate); delivery record = scedit journal **2026-09-01b**, item 16 STRUCK.
+**1661/1661 dispositioned TRUE-shipped, zero false positives**, thirteen
+authored defects, table `harness/artifacts/f76/dispositions.tsv.gz` with the
+engine ground for each. **8/8 live legs both ways on one fresh launch**, every
+id class, and the shipped shows PROVEN untouched (408/408 md5-identical; the
+farm symlinks `scripts` at the field data and the engine annotates played
+files, so this was a live hazard). The SIGNAL column is F77's number: **12 of
+1661 findings make the engine say anything**, 1647 are silent. Routed: SS-25
+amended + **SS-32…SS-39**; parent **§5.122** minted (an unread argument key is
+unobservable to everyone; 39 shipped lines), **§5.123** minted (`set`'s "did
+you mean" names the wrong key — measured live), annotations at §5.116 (its
+first FIELD instance) and §5.117 (the refusal shape and the 12/1661 ratio; the
+file-origin and console halves stay F77's). C3's shipped half ARMED as the
+16th ctest gate (`shipped_corpus_gate`, counts + package md5, decoy-red,
+loud SKIP when absent); the "EMPTY" note retired at its node. ONE scedit
+defect fixed: three block-structure messages quoted engine log text
+`2b8ec034` stopped writing — a live instance of the class F75 named. ctest
+**16/16** fresh, 0 warnings, D14 PASS, corpus delta exactly 2 message lines.
+DEVIATIONS: `anchor_gate` re-recorded (6663 -> 6667, my citations); the
+`-n`-is-empty premise was FALSE (F75's decoy moved `if_swap.cpp`'s mtime) and
+the binary was proved current by recompiling that TU byte-identically instead.
+Baselines re-derived LAST: pair-check **211/186/25/95** — +2 on the fourth
+number only (the two §5 mints are inline rows with no entry file, which is
+what that column counts); D/D2/I/I2 **34/11/87/34**, unchanged to the digit.
+Back-marker scan **129/170/102**, unchanged to the digit — and predicted to
+be: it reads only `INTENT/<id>.md` as event sources, so a §5-sourced
+annotation is invisible to it (the session-19 close note's sixth
+strict-credit member, F78's subject).
 
 ### F77 — The bad-script launch: what a shipped show with one typo does today on EVERY channel — §5.116's coercion, §5.117's severity, §5.118's silent drop, measured not derived (the three rows' "owed before it is judged"; session-17 carry-over "pricing launch") [S]
 

@@ -3021,3 +3021,78 @@ the fragments do not, which is why nothing goes through a JSON writer.
 **Artifacts** (`harness/f75/`, gz): `pins.json` the recovered pin per string,
 `anchor_map.json` the per-reference verdict, `rewrites.json` the old->new
 string map the sweep applied and `verify` reads back.
+
+---
+
+## F76 — the shipped corpus, dispositioned (`f76_corpus.py`, `f76_live.py`)
+
+scedit's C3 says a lint rule ships only after the shipped corpus produces zero
+false positives, with the true findings recorded upstream rather than silenced.
+The 408 installed scripts had produced 1661 findings that nobody had judged.
+They are judged: **1661 TRUE-shipped, zero false positives, thirteen authored
+defects** (scedit journal `2026-09-01b`; SS-25 + SS-32…SS-39; §5.122, §5.123).
+
+**`f76_corpus.py`** builds the table (`artifacts/f76/dispositions.tsv.gz`,
+summary beside it). Shape is `f70_dispositions.py`'s on purpose: a MECHANICAL
+census — `scedit --check` itself, never a second reading of the scripts —
+joined to HAND-MADE traces, where a finding matching no trace is an ERROR and
+not a default. `--strict` exits 1 on any UNADJUDICATED row; the universe was
+committed with all 1661 unjudged (`d49b13c`) before one of them was decided.
+
+**`f76_live.py`** puts every id class to the running engine, both ways, in one
+fresh `f27_reply.Session` launch. Predictions are in the file and the file was
+committed before the launch.
+
+### What this cost, and what to reuse
+
+- **THE HARNESS FARM SYMLINKS `scripts` AT THE REAL FIELD DATA**
+  (`b25_galactic.build_farm`: everything not specially handled is
+  `symlink_to(e)`), and the engine ANNOTATES a faulty script line IN THE FILE
+  it played (`reportScriptError` → `scriptInterface->annotate`). So the obvious
+  way to test a block-structure fault — play the corpus file that has one —
+  writes into the tester's shows. Three layers instead: an ABSOLUTE path for
+  every play and record (`FilePath` short-circuits on absolute and never
+  consults the script directory, `file_path.cpp:107-111`); a `prepare()` hook
+  that replaces the farm's `scripts` symlink with a real directory holding only
+  a copy of `fscripts/startup.sts` (the one file startup names,
+  `script_mgr.cpp:397-401`, and it plays nothing else, so startup is
+  unchanged); and an md5 manifest of all 408 scripts before and after, which is
+  the only one of the three that is evidence. 408/408 unmoved.
+- **The simulation clock RUNS** (`startup.sts` sets `timerate rate 1`), so two
+  `get status position` reads seconds apart differ in `jday` by seconds of sky
+  time. A leg comparing jdays for EQUALITY must stop the clock —
+  `timerate rate 0` — and not widen its tolerance: the first run of leg A
+  called a true result a failure over 3.5e-5 jday, which is three seconds.
+  Measure the drift both ways and record it; the frozen figure is exactly 0.0.
+- **A FLAG'S STATE IS READABLE WITHOUT PHOTOMETRY.** `get` answers no flag, but
+  `commandFlag` rewrites its own `commandline` on a TOGGLE with the value the
+  flag ENDS at, and `script action record` writes that back. So
+  `record` → `flag x <value>` → `flag x toggle` → `cancelrecord` yields a file
+  saying `flag x 1` or `flag x 0`, which is the state before the toggle. This
+  is how `silent-off-value` was proved on a functional run.
+- **`script action cancel` DOES NOT EXIST**: the spelling is
+  `cancelrecord` (`W_CANCEL`, `base_command_interface.hpp:159`). A second
+  `script action record` while one is running is a STOP, not a restart
+  (`ScriptMgr::recordScript`'s guard) — so a mis-spelled cancel silently
+  costs the next recording, which is how this was found.
+- **An ENGINE row of `scedit --history` carries `#!` in the id column.** Which
+  lint id an engine sentence IS lives in the grammar's `engine_tail` data —
+  the one home `f63_scedit_agree.py` maps against. Reading the id column and
+  comparing it to a lint id turns agreement into a failure.
+- **`Client` (f27_reply) accumulates into `.all`**, and the reader that stops
+  at the first parsed reply is `poll_for_reply(seconds)`. There is no `.buf`.
+- **The engine's `set` diagnostic can name a key that WORKED** (§5.123). A leg
+  asserting on "did you mean" text must not assume the subject is the failure.
+
+### Vocabulary re-derivation (reusable, ~20 lines)
+
+Resolving the `ACP_*` macros of `base_command_interface.hpp` through the
+`m_flags` / `m_commands` / `m_set` / `m_color` registrations of
+`app_command_init.cpp` gives the engine's four vocabularies independently of
+scedit's grammar: **97 flags, 43 set names, 46 colour names, 63 commands**
+(+`comment`/`uncomment`, matched by string at `app_command_interface.cpp:351`
+and `:354`, which is why the grammar's command family is 65). It reproduces the
+grammar exactly. **Strip comments first**: without that it reports
+`tully_color_mode` as a set name the grammar lacks, and the registration is
+commented out on both sides — the grammar was right and the instrument was
+wrong, which is the shape of the correction to expect from this check.
