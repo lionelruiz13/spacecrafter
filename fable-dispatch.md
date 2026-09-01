@@ -215,6 +215,26 @@ classification); (6) engine, on Vixy's word only: §5.119's fix · the
 nested-origin rule · the file-origin log tag · `$NOTICE` advertisement ·
 the lifecycle event · the three untriaged script requests; (7) §5.100's
 fix IF the §3 authorization lands.
+**Post-close addendum 2 (2026-09-01):** the error-shape equalization →
+**§11.193** (three exchanges: the intent-modified-line shape; Root 1 twice
+refined by the owner — generator gap, then formation-time provenance; the
+ANCHOR-FIRST mechanism banked, §0.5 bullet + the I9 delta version at
+`~/shared/system-prompt-parts-PROPOSAL-2026-09-01/`, Q-14 batch 6) →
+**F73 → §11.194** (one renderer — already public since §11.184: the records
+coupled what the code had separated; the collapse live both origins; the
+re-execution leg caught the ruled-class bracket quoting its own tail; FOUR
+neighbour instruments found WRONG, the blind vacuously-green pair the
+sharpest instrument finding) → **F74 → §11.195** (§5.119 proved reachable
+by construction — the Translator fallback promise measured FALSE en route —
+then removed without moving anything defined; **§5.121 minted**: one static
+translation table serves both locales, `set sky_locale` silently
+de-translates the UI). Supervisor tally final: **ten** items, all
+caught-and-corrected (7 narrow-frame/gloss class + 2 marker-single-home +
+1 referent collapse); marker-both-homes named a CLASS, pair-check extension
+queued to strict-credit v2. Session 19 FINAL: **SEVEN for seven**
+(F68–F74), baselines at true close pair-check **211/186/25/93** · scan
+**129/170/102**.
+
 **Post-close addendum (2026-08-31/09-01):** three owner rulings → §11.191
 (the escape rule RATIFIED [D14 reaches source bytes, never rendered ones];
 the file-origin log tag word-given; the canary's objective stated as an
@@ -318,6 +338,12 @@ criterion-integrity 5, baselines at true close pair-check **208/183/25/92**
      `${DISPLAY:-:2}` keep the wrong one), verify `xdpyinfo` BEFORE the first
      launch (full note `harness/README.md`). The stack is rebuilt-not-inherited:
      a candidate variable for any A/A floor vs pre-2026-08-27 baselines.
+     **[SUPERSEDED AS STANDING VALUES 2026-09-01 (F74 executor report — the
+     bullet's `/tmp/rt-claude` + `:2` are the DESKTOP's pre-reboot era and do
+     not exist on this laptop): display target, auth path and session shape
+     are PER-HOST AND PER-BOOT — `HOST-EVENTS.md` is the authority, read its
+     latest entries for the current host before any launch; `xdpyinfo` before
+     the first launch remains the invariant part of this bullet.]**
      (b) `timeout -s KILL` bounds NOTHING
      in this session type (measured: rc=124 only after the child's full run;
      mechanism unattributed, signal-mask hypothesis refuted) — use plain `timeout`
@@ -1240,6 +1266,31 @@ back-markers at §11.193(e) and §11.190(d), entry AND stub; §5.121 MINTED
 en route (one static translation table for two locales). Baselines:
 pair-check 210/185/25/92 → 211/186/25/93, tests D/D2/I/I2 34/11/87/34
 unchanged; back-marker scan 129/170/102 unchanged.
+**ACCEPTED 2026-09-01 (Fable, session 19 post-close 2):** entry read;
+trees/commits/baselines verified by my own runs; repro + artifacts
+committed and present. THE OWNER'S TWO CONDITIONS held in order: the chain
+cited link-by-link with BOTH potential breakers checked in the engine's own
+code (the Translator fallback promise measured FALSE — the branch tests the
+script's own string on every host; the container's class set
+input-independent — the search CANNOT succeed), then demonstrated four ways
+(GLIBCXX_DEBUG rc134 / UBSan naming the sibling member's data pointer,
+byte-dump matching the font path string / ASan honestly silent
+intra-object / plain surviving into a 6.7e+22 font size — which ANSWERS
+§5.119's owed live-vs-instrument question: live, garbage propagates).
+ENDORSED: the no-launch proportionality call (real code over real container
+states; the engine-side links read at source; the optional field-
+consequence launch NAMED, routed to §3); the no-assert deviation (the
+branch fires on every zh/ja switch — not a can't-happen; NDEBUG voids
+asserts in Release anyway; veto-open); skip-not-route (any size would be
+invented — condition 2's own bar); the UB-path log honesty clause. §5.121
+ENDORSED as a mint (distinct mechanism, shipped-visible: `set sky_locale`
+silently de-translates the UI, masked when both locales match) → §3.
+TWO dispatcher items from its report, both mine: the section's
+`INTENT/5.119.md` source that does not exist (tenth tally, pre-hedged in
+the prompt) and §0.5's STALE display bullet (`/tmp/rt-claude`, `:2` — the
+desktop's pre-reboot era) — corrected THIS commit: HOST-EVENTS.md is the
+per-host/per-boot display authority. The self-caught `git rm --cached`
+noted as reported. Session 19 closes at **SEVEN for seven** (F68–F74).
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
@@ -1313,6 +1364,24 @@ unchanged; back-marker scan 129/170/102 unchanged.
     refusal routes to no wire and no `#!` — the subscriber is told nothing
     while the log carries it twice. Making a nested call inherit the outer
     origin is a change to §11.184's recorded rule: yours to say.
+  - **§5.121 — ONE static TRANSLATION TABLE FOR TWO LOCALES** (F74 §11.195,
+    minted en route, READ not RUN): `Translator::m_translator` is a single
+    `static` map filled only in constructors — the last translator
+    constructed owns the table for BOTH the UI and the sky, so `set
+    sky_locale` silently de-translates the UI (masked today because both
+    locales are `fr`). Riders: the header's fallback promise is FALSE
+    (measured on the §5.119 chain — a bad locale name is kept, not
+    defaulted); a missing locale file produces NO diagnostic; a `lastUsed`
+    identity test on a pointer that dangles [derived]. Fix = core
+    architecture, yours; the settling launch is named at the row.
+  - **F74 RESIDUALS, each one line**: the field-consequence launch (a pre
+    binary, one scripted `set sky_locale zh_CN`, what the USER sees) was
+    named-not-run — say the word if you want it on record; the fix's guard
+    log stands on a previously-UB path (no preservation claim binds it,
+    said plainly at the entry); the no-`assert` deviation from the
+    neighbours' form is veto-open (the branch fires on every zh/ja switch);
+    §5.119's behaviour rider (SHOULD `text` route to `media->updateTextFont`
+    with a real size?) stays open at its node.
   - **F71'S ENGINE HARVEST — two new §5 rows and a retraction, all READ not
     RUN** (§11.190(d)): **§5.119** `FontFactory::updateAllFont` dereferences a
     past-the-end iterator, reached by ONE script line (`set sky_locale zh_CN`)
