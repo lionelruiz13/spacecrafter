@@ -698,6 +698,15 @@ fragments premise false by measurement (above); three readings suspended, S1/S2
 resolved by the dispatcher from recorded rules (README:649; I2), section
 revised in place, re-dispatched same day. Baselines unmoved (211/186/25/93 ·
 129/170/102).
+**WIP (second dispatch, 2026-09-01):** CP1 — §0.7 gate PASSED (census
+reproduced exactly: merged 2890 refs/1134 strings under the {cpp,hpp,ts,sts}
+whitelist, 1703 coupled / 1186 free, 60 self-pinned, fragments 1766/897;
+ONE deviation reported, not absorbed: an extension-agnostic regex finds 2891 —
+`shaders/src/tully.vert:7,25` is a real tracked anchor the whitelist hid).
+`harness/f75_anchors.py` parses + pins; shapes enumerated (5928 tokens / 6732
+refs, 3 classes + a TIME non-anchor class); pin recovery by PATH TRACKING,
+100% recovered, validated 60/60 on tree-equality (strict sha 0/60, refuted by
+construction). NEXT: the HEAD content map + partition.
 
 ### F76 — scedit item 16: the shipped corpus DISPOSITIONED — 1661 findings in 26 files, each TRUE (→ SS-n / §5) or a scedit defect (→ rule fix), and the corpus gate's shipped half ARMED (scedit INTENT §5 item 16; C3; session-19 queue position 2) [M]
 
