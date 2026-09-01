@@ -642,6 +642,22 @@ key. Nothing is written from recall or inference: where the code cannot answer,
 the entry is `null` and the question is listed in that entry's `flagged` array
 for Vixy. `UNEXTRACTED`/`null` are the honest states (constraint C2).
 
+**Which commit a line number is a line number OF** is one fact, stated once per
+file in `_meta.anchor_pin`, and it is the pin for every anchor OUTSIDE `_meta`.
+A reference that must deviate from it carries its own `@ <sha>` -- today only
+the four that say `[NOT AT HEAD: ...]`, which is C2's honest state for a
+referent that left the file or lives outside this repository. `_meta` has a
+different pin (`code` in a fragment, `merged`/`seeded` here) and keeps it: those
+blocks are dated MEASUREMENT records -- a fragment's `handler_range` is the
+range over which its `args_bracket_expected` was counted, and 384 of its
+`accounting` rows carry their line as a bare integer no `file:line` parser can
+see. Moving half of a measurement is how two copies of one fact start
+disagreeing.
+
+Anchors go stale in silence -- between 2026-08-04 and 2026-09-01 every one of
+them did, and it was found by opening three of them at random. `anchor_gate`
+below is what makes that a test failure instead of a discovery.
+
 The granular source of the per-key data is `grammar/args/unit-{1,2,3,4}.json`,
 the four fragments of the per-handler extraction sweep. They stay in the tree
 and each carries its own count gate (every `args[` line in its range mapped to
@@ -700,7 +716,7 @@ silently dropped translation unit.
 
 ## Verification
 
-Fourteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings):
+Fifteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings):
 
 | gate | what it measures |
 |---|---|
@@ -717,12 +733,13 @@ Fourteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings)
 | `mcp_protocol` | 85 checks from a stdlib-only Python client (`tests/mcp_gate.py`) that spawns `scedit --mcp` - a second implementation on purpose: both protocol eras, every tool with good and bad arguments, the honest null arriving as JSON `null` through the whole chain, the catalogue's counts, the five refusals (parse error, no method, unknown method, unknown tool, unsupported version), and `run_command` driven against the stand-in engine with both sides asserted - the answer verbatim, the stand-in's own record of what arrived, a silent command with the note that says exactly how much that silence is worth, a REFUSED command coming back in `diagnostics` split into origin/message/subject with the raw record kept, and the no-engine path as a tool error naming what to check |
 | `tcp_client` | 30 gate checks over 112 leg checks: `sc_tcpclient` against `tests/fake_engine.py`, a stand-in whose framing rules are each read from a named line of `src/tools/io.cpp`. One leg per process, and after each one the gate asserts what the stand-in RECEIVED - so a leg cannot pass by agreeing with itself. Endpoint parsing and its refusals, a port nothing listens on, subscribe/ask/answer/disconnect/reconnect, a two-line command refused with nothing sent, latin-1 and 0xA0 bytes arriving as bytes, the bounded feed counting what it drops, another client's answer arriving because we subscribed, the engine closing the connection - and the DEDICATED diagnostic link: both subscriptions sent in order, a `$DIAG|` record split into its four fields (a subject containing the separator included), a malformed one SHOWN rather than dropped, and a second `$LOGON`-only onlooker proving from the other end that it received the answer and not one byte of the diagnostic channel |
 | `pty_keys` | the editor's live KEYS, pressed on a **pseudo-terminal**, with the stand-in engine asserting what arrived: `--tcp` alone connects to nothing, Ctrl-T subscribes, Ctrl-L sends the caret's line verbatim and sends NOTHING from a comment line, Ctrl-R plays the file by absolute path, the engine's own words reach the feed pane on screen, Ctrl-Q exits 0 having unsubscribed. This is the seam between the two gates on either side of it -- one pins what is DRAWN, the other what the core and client DO -- and it is what makes "F8 plays the file" a measurement rather than a reading |
+| `anchor_gate` | every `file:line` the contract cites into the engine still resolves. Two checks, and the order is the point: first AT ITS PIN -- the pin is a commit, so that check cannot rot, and a reference past the end of its own file at its own pin is a broken citation whatever HEAD is doing; then against the WORKING TREE, reported per reference as clean, moved or gone, with `gone` red unless the reference declares it with a `[NOT AT HEAD: ...]` marker. The HEAD side is the tree and not the commit deliberately: a gate that only saw committed state would pass on the very edit that breaks the citations and fail later, when whoever moved the line has moved on. Counts recorded in `tests/anchor-expected.txt` -- 6663 clean, 2 declared, 69 skipped inside `_meta` and saying so -- so the day a handler shifts, `clean` falls and somebody has to look at what. Shown able to fail on ONE inserted line in an engine file: 21 references move and the gate exits 1 |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 
 `tests/lint-expected.txt`, `tests/corpus-expected.txt`,
 `tests/history-expected.txt`, `tests/check-json-expected.txt`,
-`tests/doc-expected.txt` and `tests/ui-selftest-expected.txt` are a
-**record, not a silencer**: every line in the first two is dispositioned in
+`tests/doc-expected.txt`, `tests/ui-selftest-expected.txt` and
+`tests/anchor-expected.txt` are a **record, not a silencer**: every line in the first two is dispositioned in
 `tests/derivation-diff.md` S7 with the engine site named, every row of the third
 in a comment beside the bytes that produce it in `tests/history_cases.sts`, and
 anything that appears without being recorded fails the gate. That is constraint C3 -- zero false positives before a rule ships -- and it
