@@ -174,8 +174,14 @@ void FontFactory::updateAllFont(const std::string& fontName)
 	std::list<FontContener>::iterator it2 = listFont.begin();
 	for (it = m_strToTarget.begin(); it != m_strToTarget.end(); it++){
 		it2 = std::find_if( listFont.begin(), listFont.end(), [&](const FontContener &element){ return element.classeFont == it->second;} );
-		float size = it2->fontPtr->getFontSize();
-		updateFont(it->first, fontName, std::to_string(size/fontFactor));
+		if (it2 != std::end(listFont)) {
+			float size = it2->fontPtr->getFontSize();
+			updateFont(it->first, fontName, std::to_string(size/fontFactor));
+		} else {
+			// no FontContener holds this target's font: CLASS_MENU is Media's,
+			// built and updated by Media itself (see updateFont's special case)
+			cLog::get()->write("FontFactory::updateAllFont : target "+it->first+" has no font container, so its font is left unchanged - set it with 'font target "+it->first+" filename <file.ttf>'", LOG_TYPE::L_WARNING);
+		}
 	}
 }
 
