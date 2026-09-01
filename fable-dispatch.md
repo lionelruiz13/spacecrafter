@@ -714,7 +714,12 @@ RESOLVED path not spelling (36 fake ties + 261 fake coin-flips), the D14
 rescue (F70 transliterated lines read as lost referents). Implicit default
 = app_command_interface.cpp, MEASURED (552/646 land in the command's own
 handler; 94/94 of the rest inside another function of the same file; 20/20
-read by hand). NEXT: 16 rows re-anchored by reading, then the sweep.
+read by hand). CP3 — SWEEP APPLIED, code `b00abd11`: 2071 string occurrences
+across 1170 distinct strings; seed gate green INCLUDING `fragments: every fact
+identical`, shown RED at a one-file state; ctest 14/14; D14 PASS; byte proof
+(f) EMPTY on all five; check (e) `--doc` 65 commands = 1024 lines, zero
+non-digit. `_meta` EXCLUDED with its argument (384 bare `line:` integers).
+NEXT: the anchor_gate ctest, then the records.
 
 ### F76 — scedit item 16: the shipped corpus DISPOSITIONED — 1661 findings in 26 files, each TRUE (→ SS-n / §5) or a scedit defect (→ rule fix), and the corpus gate's shipped half ARMED (scedit INTENT §5 item 16; C3; session-19 queue position 2) [M]
 
