@@ -302,6 +302,29 @@ def m4_stale_marker_credits():
         a[2], BASE["v1"][2], b[2], BASE["v2"][2])
 
 
+# ------------------------------------------------------------------- member 5 (scan)
+@case
+def m5_nohome_is_reporting_only():
+    """The split must not move the headline counters -- the supervisor's gate keeps its
+    meaning.  Verified by parsing the sub-count line off a normal run."""
+    out = subprocess.run([sys.executable, SCAN_V2, ROOT], capture_output=True, text=True).stdout
+    m = re.search(r"NO HOME IN THIS LEDGER \(cannot carry one\) : (\d+)", out)
+    listed = len(re.findall(r"\[NO HOME\]", out))
+    ok = m is not None and int(m.group(1)) == listed and listed >= 1
+    return "m5    the NO-HOME sub-count equals its rows", ok, "count %s / rows %d" % (
+        m.group(1) if m else "-", listed)
+
+
+@case
+def m5_archived_target_is_not_homeless():
+    """The clause added by measurement: an id whose only home is INTENT/archive/ must
+    NOT be called homeless.  §5.10 and §5.31 are the two the first cut got wrong."""
+    out = subprocess.run([sys.executable, SCAN_V2, ROOT], capture_output=True, text=True).stdout
+    bad = [l for l in out.split("\n") if "[NO HOME]" in l and ("5.10" in l or "5.31" in l)]
+    ok = not bad and os.path.exists(os.path.join(ROOT, "INTENT", "archive", "5.10.md"))
+    return "m5    an ARCHIVED-only target is not homeless", ok, "mislabelled rows: %d" % len(bad)
+
+
 def main():
     print("ledger root: %s" % ROOT)
     BASE["v1"], BASE["v2"] = scan(SCAN_V1, ROOT), scan(SCAN_V2, ROOT)

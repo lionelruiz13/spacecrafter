@@ -201,9 +201,39 @@ for src, path in FILES.items():
         if hit:
             events += 1
 
+ARCHDIR = os.path.join(ROOT, "INTENT", "archive")
+
+def homeless(tgt):
+    """[F78 member 5, 2026-09-01] a target with NO home ANYWHERE in this ledger -- no
+    entry file, no register stub, no archived entry -- CANNOT carry a marker, so filing
+    it under "no back-marker at the target" asserts something the corpus cannot make
+    true (F59's NO-LIVE-NODE verdict class).
+
+    THE ARCHIVE CLAUSE IS LOAD-BEARING AND WAS ADDED BY MEASUREMENT: the first cut asked
+    only for an entry file and a stub, and it labelled S5.31 and S5.10 homeless.  Both
+    have `INTENT/archive/5.N.md` (F59's homes() reads exactly those three homes), so the
+    class was over-claiming on two of its three members.  In particular it did NOT
+    resolve session-18 S3(e)'s named exception: S11.182's `S5.10` means scedit's
+    tests/derivation-diff.md S5.10, and an id that RESOLVES in this ledger while meaning
+    a document outside it is a namespace collision no machine can settle -- it stays a
+    read exception in the partition, which is the honest place for it.
+
+    Today the class has exactly one member, S2.0 -- the domain-constraint block, outside
+    both registers.  REPORTING only: the headline counter's definition does not move, so
+    the supervisor's gate keeps its meaning and one line reverses the split.
+
+    NOT taken, recorded as candidate C4: half 2 does not read ARCHIVED homes for credit,
+    so a marker at an archived S5 row is invisible.  F59 re-implemented half 2 to read
+    them and found zero arrears there; widening credit is the dangerous direction and
+    this would be an eighth member."""
+    return (tgt not in FILES and not stub(tgt)
+            and not os.path.exists(os.path.join(ARCHDIR, tgt + ".md")))
+
 unmarked = sorted(p for p in pairs if not has_backmarker(p[1], p[0]))
+nohome = [p for p in unmarked if homeless(p[1])]
 print("RAW EVENT LINES                     : %d" % events)
 print("DISTINCT CANDIDATE (src, tgt) PAIRS : %d" % len(pairs))
 print("CANDIDATES WITH NO BACK-MARKER AT THE TARGET NAMING THE SOURCE : %d" % len(unmarked))
+print("   of which THE TARGET HAS NO HOME IN THIS LEDGER (cannot carry one) : %d" % len(nohome))
 for s, t in unmarked:
-    print("   §%-8s -> §%-8s" % (s, t))
+    print("   §%-8s -> §%-8s%s" % (s, t, "   [NO HOME]" if homeless(t) else ""))
