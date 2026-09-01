@@ -316,11 +316,22 @@ things are not:
 - **SS-25** — `fscripts/panorama5.sts` line 102 (and the identical copy in
   `navigation/fscripts/panorama5.sts`): the last block, lines 96-97, opens
   TWO `struct if` and lines 100-102 close THREE — one `struct if end` too
-  many, copied from the earlier blocks that open three. The engine logs
-  "end without if" and ignores the extra line, so the script works; the
-  log line is the only trace. Fix: delete line 102 (in both copies — the
+  many, copied from the earlier blocks that open three. The engine reports it
+  and ignores the extra line, so the script works; that report is the only
+  trace. Fix: delete line 102 (in both copies — the
   two files are byte-identical, so a fix in one and not the other leaves
-  them diverging). Status: OPEN.
+  them diverging). Status: OPEN. **[2026-09-01] Confirmed on a running
+  engine, and this entry had one detail wrong.** The checker now finds
+  these two lines by itself (they were found by hand in August), and a
+  test run reproduced exactly what happens: the engine writes an ERROR
+  line naming the file and the line, AND it writes the explanation into
+  the script itself, at the end of line 102, after a `#!` marker — so
+  after a run the file tells you what is wrong with it. What this entry
+  used to say, that the engine logs the words "end without if", stopped
+  being true on 2026-08-31 when that message was replaced by the fuller
+  sentence; the checker was saying the same outdated thing and has been
+  corrected too. Nothing about the fix changes: delete line 102, in both
+  copies.
 
 (Minor, no decision needed: the new comet-tails demo line 181 repeats
 `halo true` twice, like the old Wirtanen line — harmless, the engine keeps
@@ -432,3 +443,136 @@ action skip` settles faders TO (1475), the SRT-only `media` line (992),
 directly. Also noted there: three comment lines still hold invisible
 characters (619, 1245, 1257) — harmless where they are, since comments are
 never parsed.
+
+## 6. The installed shows, checked for the first time — 2026-09-01
+
+Everything above came from `doc/superscript.sts`, the reference script. This
+pass is different: the checker was run over **all 408 scripts installed on this
+machine** — your shows, the navigation scripts, the internal ones — and every
+single thing it said was then checked against the engine's own code, and eight
+of them against a running engine.
+
+**The headline is that the checker was right 1661 times out of 1661** — it
+never once complained about something that is in fact fine. And those 1661
+complaints are only **thirteen actual slips**, because a few of them are on
+lines that were copied a great many times.
+
+**Nine of the thirteen do nothing visible.** They are lines, or parts of lines,
+that quietly have no effect. That is the reason for this pass: the engine tells
+you nothing about them — of the 1661 complaints, the engine says a word about
+**twelve**, and even those twelve go into the script log marked `(Debug)`,
+next to the ordinary trace. Nothing here is urgent. Some of it may be worth an
+afternoon.
+
+Two general notes before the list. **Files come in copies**: 43 groups of the
+installed scripts are byte-for-byte identical (usually `navigation/fscripts/X`
+being a copy of `fscripts/X`, but also six trios under `iphases_eclipses`), so
+where a defect is in one it is in the others and a fix has to land in each —
+the counts below already say how many lines. And **`fscripts/W17.sts` and
+`navigation/fscripts/W17.sts` are NOT copies of each other** (18 lines against
+173): same name, different scripts, which is worth knowing on its own.
+
+- **SS-32** — **Five deep-sky drawings are dimmer than the file asks, and lose
+  their credit.** `internal/deepsky_drawings.sts` has 60 `dso action load`
+  lines; 55 of them write the photographer as one word, `credit
+  Laurent_Ferrero`. Five do not: lines **36, 40, 45** write the name with a
+  SPACE (`credit Nicolas Biver`, `credit Laurent Ferrero`, `credit Jere
+  Kahampaa`) and lines **8 and 41** have no `credit` word at all, just the name
+  after the filename. Because the engine reads a line as alternating
+  name/value, a two-word name pushes everything after it out of step: on all
+  five lines the `texture_luminance_adjust 1` at the end **never arrives**, and
+  the engine uses 0 instead of 1. The credit is lost or cut in half as well.
+  Fix: an underscore instead of the space on the three, and `credit ` in front
+  of the name on the other two — exactly what the file's other 55 lines do.
+  This is the one on the list with a visible consequence. Status: OPEN.
+
+- **SS-33** — **`fscripts/06old.sts` has three lines that are not what they
+  look like.** Line **104** is just `LS`, and line **299** is
+  `==> e_sats-tle-new.sts <==` — both look like the leftovers of pasting
+  several files together, and both are run as commands and fail. Line **286**
+  is subtler and worse: it reads `... lighting false color0.5,0.5,0.5
+  tex_map ...` with **no space after `color`**, and from that point on every
+  name/value pair on the line is out of step, so the satellite "TDRS 3" is
+  loaded with a scrambled set of parameters — no texture, no orbit. Compare it
+  with the line above it to see the difference. Question: is `06old.sts` still
+  used, or is it superseded by another file? If it is live, line 286 is worth
+  fixing. Status: OPEN.
+
+- **SS-34** — **Four spellings the command simply ignores, on 39 lines.** Each
+  of these is read by nobody: the command runs, reports success, and the word
+  does nothing at all.
+  - `deselect ... pointer off` — **27 lines**, `navigation/fscripts/13.sts`.
+    `select ... pointer off` IS real, which is surely where the spelling came
+    from; `deselect` reads only `constellation`.
+  - `audio ... output_rate 44100` — **9 lines**, in `fscripts/K9.sts`,
+    `navigation/fscripts/K9.sts`, `internal/white_room.sts`,
+    `internal/white_room_old.sts`, `internal/white_room_open_only.sts`. The
+    sound plays; the rate request is dropped. There is no way to ask for a
+    sample rate from a script.
+  - `media ... key_color off` — **2 lines**, `fscripts/W06.sts` and its
+    navigation copy. The engine's spelling is **`keycolor`**, one word.
+  - `date utc ... duration 0` — **1 line**, `fscripts/08.sts:163`. The date IS
+    set; only the word `duration` is dropped. (Same word, same question as
+    SS-2 on `set`.)
+  Question for all four: did you expect any of them to do something? For
+  `key_color` the fix is one character. For the other three there is nothing to
+  fix except deleting the words — unless you want the capability, which is a
+  different conversation. Status: OPEN.
+
+- **SS-35** — **`set home_planet Earth duration 0` does not set the home
+  planet**, and this is the one place where an ignored word costs the whole
+  line. `fscripts/S13.sts:2` and its navigation copy. The engine goes through
+  the words of a `set` line in ALPHABETICAL order, and it stops at the first
+  one it does not know: `duration` comes before `home_planet`, so it stops
+  before ever reaching `home_planet`. Measured on a running engine, both ways:
+  the same line with a bad word that sorts AFTER the real one works fine.
+  The engine's own advice on this line is unhelpfully wrong, too — it says
+  *"duration is unknown. Did you mean heading ?"*. Fix: delete ` duration 0`
+  and the line does what it says. Status: OPEN.
+
+- **SS-36** — **Four switch names that do not exist**, on 5 lines. `flag`
+  refuses each of these outright (it is one of the twelve things the engine
+  does mention, in the `(Debug)` log):
+  - `flag suntrace off` — `internal/clear_mess.sts:39`,
+    `internal/clearVR360.sts:14`. `suntrace` is a COMMAND, not a switch; if
+    the intent is to stop the sun trace, the command form is what does it.
+  - `flag ground off` — `navigation/fscripts/09.sts:22`. Did you mean
+    `landscape`?
+  - `flag show_selected_object_info off` — `shows/3d_sky.sts:12`. No switch of
+    that name exists under any spelling we can find.
+  - `flag lanscape off` — `shows/image_spherical.sts:13`. A missing `d`;
+    the engine even suggests `landscape`.
+  Both "clear" scripts and the 3d_sky one are presumably meant to turn
+  something OFF and are not doing it. Status: OPEN.
+
+- **SS-37** — **Three images that never appear: `nebula action load ...`**
+  There is no `nebula` command. `internal/skypole.sts:12` (the pole star
+  marker), `navigation/fscripts/16.sts:64 and :65` (a sun and a moon marker).
+  The command that takes exactly these words — `ra`, `de`, `magnitude`,
+  `angular_size`, `name`, `filename`, `credit`, `texture_luminance_adjust` —
+  is **`dso`**. Changing the first word of each line is very likely the whole
+  fix; the engine's own suggestion ("did you mean media?") points the wrong
+  way. Worth checking whether `nebula` was the name in an older engine.
+  Status: OPEN.
+
+- **SS-38** — **`flag stars ofn` — a typo that happens to be harmless.**
+  `fscripts/M17.sts:16`, between `flag bright_nebulae off` and `flag planets
+  on`. `ofn` is obviously `off`, and the stars do go off — but not because
+  the engine understood: **any word it does not recognise means OFF** on a
+  `flag` line, silently and reporting success. So this line is right by luck.
+  The reason it is worth a line here is the general rule behind it: a typo in
+  the VALUE of a `flag` never fails, it just means off. `flag stars onn` would
+  turn the stars off too. Status: OPEN (the typo is a one-character fix; the
+  general behaviour is a question for Vixy and is recorded).
+
+- **SS-39** — **`halo true` is written twice on the same line, 1595 times.**
+  Harmless — both copies say `true` and the engine keeps the last — but it is
+  one comet-body template that has been copied a great deal:
+  `internal/comet-particles.sts` (1500 lines, `c1` to `c1500`),
+  `navigation/fscripts/W17.sts` (94), `internal/comet.sts` (1). Nothing needs
+  fixing. Two questions instead: **(a)** what produces
+  `internal/comet-particles.sts`? It looks generated — 1500 mechanically
+  identical bodies — but there is no generator anywhere in the program's
+  source, and no script anywhere on this machine plays it. If a tool of yours
+  writes it, that tool has the duplicate in it. **(b)** is that file still
+  wanted? Status: OPEN, FYI.
