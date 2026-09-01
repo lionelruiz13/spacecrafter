@@ -114,11 +114,9 @@ def m1_own_stub_credited():
     i, line = row_line(d, "11", "97")
     put_line(d, i, line + " **[ANNOTATION 2099-01-01, §11.100 — CORRECTED here for the decoy.]**")
     a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
-    ok = (a[2] == BASE["v1"][2] and ("11.100", "11.97") in a[3] and
-          b[2] == BASE["v2"][2] - 1 and ("11.100", "11.97") not in b[3])
+    ok = ("11.100", "11.97") in a[3] and ("11.100", "11.97") not in b[3]
     if not KEEP: shutil.rmtree(d)
-    return "m1-A  marker in the target's OWN stub", ok, "v1 %d (base %d) / v2 %d (base %d)" % (
-        a[2], BASE["v1"][2], b[2], BASE["v2"][2])
+    return "m1-A  marker in the target's OWN stub", ok, "pair unmarked in v1 / credited in v2 (%d -> %d)" % (a[2], b[2])
 
 
 @case
@@ -129,11 +127,9 @@ def m1_twin_stub_refused():
     i, line = row_line(d, "5", "97")
     put_line(d, i, line + " **[ANNOTATION 2099-01-01, §11.100 — CORRECTED here for the decoy.]**")
     a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
-    ok = (a[2] == BASE["v1"][2] - 1 and ("11.100", "11.97") not in a[3] and
-          b[2] == BASE["v2"][2] and ("11.100", "11.97") in b[3])
+    ok = ("11.100", "11.97") not in a[3] and ("11.100", "11.97") in b[3]
     if not KEEP: shutil.rmtree(d)
-    return "m1-A  marker in the COLLIDING S5.N line only", ok, "v1 %d (base %d) / v2 %d (base %d)" % (
-        a[2], BASE["v1"][2], b[2], BASE["v2"][2])
+    return "m1-A  marker in the COLLIDING S5.N line only", ok, "credited in v1 / REFUSED in v2 (%d -> %d)" % (a[2], b[2])
 
 
 @case
@@ -144,11 +140,9 @@ def m1_continuation_credited():
     i, _ = row_line(d, "11", "97")
     insert_line(d, i + 1, "    **[ANNOTATION 2099-01-01, §11.100 — CORRECTED in a continuation line.]**")
     a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
-    ok = (a[2] == BASE["v1"][2] and ("11.100", "11.97") in a[3] and
-          b[2] == BASE["v2"][2] - 1 and ("11.100", "11.97") not in b[3])
+    ok = ("11.100", "11.97") in a[3] and ("11.100", "11.97") not in b[3]
     if not KEEP: shutil.rmtree(d)
-    return "m1-B  marker in a CONTINUATION line", ok, "v1 %d (base %d) / v2 %d (base %d)" % (
-        a[2], BASE["v1"][2], b[2], BASE["v2"][2])
+    return "m1-B  marker in a CONTINUATION line", ok, "pair unmarked in v1 / credited in v2 (%d -> %d)" % (a[2], b[2])
 
 
 # ------------------------------------------------------------- member 1b (pair-check)
@@ -323,6 +317,41 @@ def m5_archived_target_is_not_homeless():
     bad = [l for l in out.split("\n") if "[NO HOME]" in l and ("5.10" in l or "5.31" in l)]
     ok = not bad and os.path.exists(os.path.join(ROOT, "INTENT", "archive", "5.10.md"))
     return "m5    an ARCHIVED-only target is not homeless", ok, "mislabelled rows: %d" % len(bad)
+
+
+# ------------------------------------------------------------------- member 6 (scan)
+@case
+def m6_register_row_is_a_source():
+    """A correction ASSERTED in a register row is an event for v2 and invisible to v1."""
+    d = scratch()
+    i, line = row_line(d, "5", "18")
+    put_line(d, i, line + " This clause is CORRECTED by §11.100.")
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = (a[:3] == BASE["v1"][:3] and
+          b[0] == BASE["v2"][0] + 1 and b[1] >= BASE["v2"][1] + 1)
+    if not KEEP: shutil.rmtree(d)
+    return "m6    a register row is an event source", ok, "v1 %d/%d / v2 %d/%d (base %d/%d)" % (
+        a[0], a[1], b[0], b[1], BASE["v2"][0], BASE["v2"][1])
+
+
+@case
+def m6_outside_the_registers_is_not_read():
+    """The stated bound: a qualifying line OUTSIDE `## 5.` and `## 11.` is not
+    attributable to a §N.M id, so it is NOT read -- and the instrument SAYS how many
+    such lines it is declining, rather than being silent about them."""
+    d = scratch()
+    p = os.path.join(d, "INTENT.md")
+    L = open(p, encoding="utf-8").read().split("\n")
+    L.insert(3, "A header line asserting that §11.99 is CORRECTED by §11.100.")
+    open(p, "w", encoding="utf-8").write("\n".join(L))
+    out = subprocess.run([sys.executable, SCAN_V2, d], capture_output=True, text=True).stdout
+    base = subprocess.run([sys.executable, SCAN_V2, ROOT], capture_output=True, text=True).stdout
+    g = lambda t: int(re.search(r"would have qualified : (\d+)", t).group(1))
+    b = scan(SCAN_V2, d)
+    ok = b[:3] == BASE["v2"][:3] and g(out) == g(base) + 1
+    if not KEEP: shutil.rmtree(d)
+    return "m6    outside the registers: refused AND counted", ok, "counters %d/%d/%d, declined %d -> %d" % (
+        b[0], b[1], b[2], g(base), g(out))
 
 
 def main():

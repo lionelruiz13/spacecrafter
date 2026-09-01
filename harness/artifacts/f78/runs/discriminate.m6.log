@@ -1,0 +1,21 @@
+ledger root: /home/claude/spacecrafter/claude
+  base scan v1 129/170/102   v2 195/241/115
+  PASS m1-A  marker in the target's OWN stub          pair unmarked in v1 / credited in v2 (102 -> 114)
+  PASS m1-A  marker in the COLLIDING S5.N line only   credited in v1 / REFUSED in v2 (101 -> 116)
+  PASS m1-B  marker in a CONTINUATION line            pair unmarked in v1 / credited in v2 (102 -> 114)
+  PASS m1b   stub continuation reaches test D         v1 D 35 (base 35) / v2 D 36 (base 35)
+  PASS m1b   stub continuation clears an I2 flag      v1 I2 34 (base 34) / v2 I2 33 (base 34)
+  PASS m2    INCOMPLETE beside a citation is an event v1 129/170 / v2 196/242 (base 195/241)
+  PASS m2    the same sentence lowercase moves nothing v1 129/170/102 / v2 195/241/115
+  PASS m3-a  a BOLD dated marker credits              v1 102 (base 102) / v2 114 (base 115)
+  PASS m3-a  the widened marker vocabulary credits    v1 102 (base 102) / v2 114 (base 115)
+  PASS m3-a  a bold span with NO marker word credits nothing v1 102 / v2 115 (base 115)
+  PASS m3-b  present-tense SUPERSEDES is an event     v1 129/170 / v2 196/242 (base 195/241)
+  PASS m4    STALE ROUTING is an event                v1 129/170 / v2 196/242 (base 195/241)
+  PASS m4    bare STALE is refused (class-name control) v1 129/170/102 / v2 195/241/115
+  PASS m4    a STALE ROUTING span credits             v1 102 (base 102) / v2 114 (base 115)
+  PASS m5    the NO-HOME sub-count equals its rows    count 3 / rows 3
+  PASS m5    an ARCHIVED-only target is not homeless  mislabelled rows: 0
+  PASS m6    a register row is an event source        v1 129/170 / v2 196/244 (base 195/241)
+  PASS m6    outside the registers: refused AND counted counters 195/241/115, declined 12 -> 13
+18 case(s), 0 failed

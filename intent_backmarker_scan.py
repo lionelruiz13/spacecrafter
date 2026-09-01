@@ -185,9 +185,40 @@ def has_backmarker(tgt, src):
                         return True
     return False
 
+# [F78 member 6, 2026-09-01] THE SOURCE SET.  v1 read only INTENT/<id>.md and opened
+# INTENT.md solely to resolve a TARGET's stub, so a correction ASSERTED IN A REGISTER ROW
+# was invisible as a source.  F59(b) measured 27 of 62 candidate lines on the S5-target
+# axis alone to be exactly that shape, and this session added two dated specimens: F76's
+# S5-sourced annotations and F77's S11.196 -> S5.115/S5.117 correction pair, invisible on
+# two counts each.  Register rows of `## 5.` and `## 11.` now join the source set, each
+# attributed to its own id and read as the block member 1 resolves (one resolver, I2).
+# THE BOUND, stated rather than waved at: INTENT.md lines OUTSIDE those two registers --
+# the header, S2.0's domain constraints, S13's ledger -- are not attributable to a S<N.M>
+# id and are NOT read; the count of such lines that WOULD have qualified is printed, so
+# what this member still cannot see is a number instead of a silence.
+SOURCES = [(src, open(path, encoding="utf-8").read()) for src, path in sorted(FILES.items())]
+SOURCES += sorted(STUBS.items())
+
+_covered = set()
+for _sid, _txt in sorted(STUBS.items()):
+    pass
+_regs = _register_spans(INTENT_LINES)
+_inreg = set()
+for _sec in ("5", "11"):
+    if _sec in _regs:
+        _a, _b = _regs[_sec]
+        _inreg |= set(range(_a, _b))
+unattributable = 0
+for _i, _l in enumerate(INTENT_LINES):
+    if _i in _inreg:
+        continue
+    _ks = [m.start() for m in KEYRE.finditer(_l)]
+    if _ks and any(any(abs(k - m.start()) <= W for k in _ks) for m in CITE.finditer(_l)):
+        unattributable += 1
+
 events, pairs = 0, set()
-for src, path in FILES.items():
-    for line in open(path, encoding="utf-8").read().splitlines():
+for src, text in SOURCES:
+    for line in text.splitlines():
         ks = [m.start() for m in KEYRE.finditer(line)]
         if not ks:
             continue
@@ -234,6 +265,8 @@ nohome = [p for p in unmarked if homeless(p[1])]
 print("RAW EVENT LINES                     : %d" % events)
 print("DISTINCT CANDIDATE (src, tgt) PAIRS : %d" % len(pairs))
 print("CANDIDATES WITH NO BACK-MARKER AT THE TARGET NAMING THE SOURCE : %d" % len(unmarked))
+print("   INTENT.md lines OUTSIDE the two registers that would have qualified : %d"
+      " (unattributable to a §N.M id -- NOT read as sources)" % unattributable)
 print("   of which THE TARGET HAS NO HOME IN THIS LEDGER (cannot carry one) : %d" % len(nohome))
 for s, t in unmarked:
     print("   §%-8s -> §%-8s%s" % (s, t, "   [NO HOME]" if homeless(t) else ""))
