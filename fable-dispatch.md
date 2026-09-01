@@ -1138,7 +1138,13 @@ change; mint license per §5.79.
 **DoD:** renderer shared not duplicated; one-line log shape measured
 both-ways incl. read-only leg; all F72 bars re-held; §11.194 + markers;
 trees clean; WIP cleared; baselines re-derived LAST with deltas attributed.
-**WIP:** —
+**WIP:** 2026-09-01 — CHECKPOINT 1: code landed `master-beta @ 9a3b7a55`
+(+36 net lines in `app_command_interface.cpp`; build `-j6` rc 0, 0 warnings,
+md5 `982b9a9c`). Smoke-verified all six rendering cases incl. the addendum's
+re-execution leg. NEXT: gate updates (f68 new era + collapsed legs +
+independent recomposition + twice-played + read-only; f69 funnel legs; the
+four dependent instruments the census found: f22/f4 BREAK, f27/f33 go
+vacuously green), then runs, then §11.194.
 
 ### F74 — POST-CLOSE 2: §5.119's fix — the past-the-end dereference removed, under the owner's two conditions (§11.193(e)) [S]
 
