@@ -2,7 +2,15 @@ entry ids                                  : 207
 ARM 1-A  v1 stub != register-correct stub  : 107  (of which S11.N: 101)
          v1 returned a WRONG-BUT-PLAUSIBLE : 107
          v1 returned '' where a stub exists: 0
-ARM 1-B  register rows with continuations  : 151 of 182 ids with a live stub
-         longest block (lines)             : 11
+ARM 1-B  entry ids whose stub is MULTI-LINE : 0 of 182 ids with a live stub
 register rows total (S5 + S11)             : 282
-         with a continuation block          : 232
+         with a REAL continuation block     : 1  ['5.117']
+         longest, in extra lines            : 7
+
+NOTE [F78, 2026-09-01]: an earlier run of this probe reported 232 of 282 rows
+carrying a continuation block, up to 11 lines.  That was WRONG and the wrongness
+is instructive: the block ran to the next numbered row, so every BLANK SEPARATOR
+line counted as content.  Under markdown's own list-continuation rule (blank or
+indented) the true figure is the line above.  The error was caught by the
+measurement it was supposed to explain -- member 1b moved no counter at all, and
+232 affected rows could not have done that.

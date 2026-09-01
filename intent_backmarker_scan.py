@@ -44,8 +44,12 @@ INTENT_LINES = open(os.path.join(ROOT, "INTENT.md"), encoding="utf-8").read().sp
 #       returned S5.104's stub -- 79 S11 entry files affected, and F59 measured the
 #       mirror (stub("5.31") -> S11.31's line; 23 retired S5 numbers).
 # (1-B) the ONE-LINE TRUNCATION: a register row's later content lives in indented
-#       continuation lines, and v1 returned only the numbered line.  Live specimen:
-#       S5.117's "MEASURED AND PARTLY CORRECTED 2026-09-01 (F77, S11.196)" block.
+#       continuation lines, and v1 returned only the numbered line.  Live specimen,
+#       and on today's tree the ONLY one: S5.117's "MEASURED AND PARTLY CORRECTED
+#       2026-09-01 (F77, S11.196)" block, 7 lines.  A continuation is a blank line
+#       or an INDENTED line (markdown's own list-item rule) -- a non-indented line
+#       ends the row, which is what keeps S11.14's "---" and S11.196's trailing
+#       maintenance-marker paragraph out of their stubs.
 # Both are the same fact resolved wrongly: "the stub of id X".  Resolution is now by
 # REGISTER SPAN + BLOCK, and a missing home answers "" -- never a wrong-but-plausible
 # stub.  Half 1 does not call this; the change is confined to half 2's credit.
@@ -66,7 +70,12 @@ def _build_stubs(lines):
         idx = [i for i in range(a, b) if ROW_HEAD.match(lines[i])]
         for k, i in enumerate(idx):
             end = idx[k + 1] if k + 1 < len(idx) else b
-            out["%s.%s" % (sec, ROW_HEAD.match(lines[i]).group(1))] = "\n".join(lines[i:end])
+            j = i + 1
+            while j < end and (lines[j].strip() == "" or lines[j][:1].isspace()):
+                j += 1
+            while j - 1 > i and lines[j - 1].strip() == "":
+                j -= 1
+            out["%s.%s" % (sec, ROW_HEAD.match(lines[i]).group(1))] = "\n".join(lines[i:j])
     return out
 
 STUBS = _build_stubs(INTENT_LINES)

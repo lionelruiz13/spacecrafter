@@ -151,6 +151,36 @@ def m1_continuation_credited():
         a[2], BASE["v1"][2], b[2], BASE["v2"][2])
 
 
+# ------------------------------------------------------------- member 1b (pair-check)
+@case
+def m1b_continuation_seen_by_D():
+    """A dated marker in a CONTINUATION line of a pair's stub, absent from the entry.
+    v1 reads the numbered line only and sees nothing; v2 reads the block and D fires."""
+    d = scratch()
+    i, _ = row_line(d, "5", "18")     # §5.18 carries NO D flag in either version
+    insert_line(d, i + 1, "    **[ANNOTATION 2099-01-01, §11.999 — a decoy the entry file does not carry.]**")
+    a = pair(PAIR_V1, d); b = pair(PAIR_V2, d)
+    ok = (a["D"] == BASE["p1"]["D"] and b["D"] == BASE["p2"]["D"] + 1 and
+          a["files"] == b["files"] and a["pairs"] == b["pairs"])
+    if not KEEP: shutil.rmtree(d)
+    return "m1b   stub continuation reaches test D", ok, "v1 D %d (base %d) / v2 D %d (base %d)" % (
+        a["D"], BASE["p1"]["D"], b["D"], BASE["p2"]["D"])
+
+
+@case
+def m1b_continuation_clears_I2():
+    """The inverse: §5.2 is I2-flagged on dates 2026-07-22 / 2026-08-30 that its stub
+    lacks.  Put them in a CONTINUATION line; v1 still flags, v2 must not."""
+    d = scratch()
+    i, _ = row_line(d, "5", "2")
+    insert_line(d, i + 1, "    (mirror 2026-07-22 / 2026-08-30)")
+    a = pair(PAIR_V1, d); b = pair(PAIR_V2, d)
+    ok = a["I2"] == BASE["p1"]["I2"] and b["I2"] == BASE["p2"]["I2"] - 1
+    if not KEEP: shutil.rmtree(d)
+    return "m1b   stub continuation clears an I2 flag", ok, "v1 I2 %d (base %d) / v2 I2 %d (base %d)" % (
+        a["I2"], BASE["p1"]["I2"], b["I2"], BASE["p2"]["I2"])
+
+
 def main():
     print("ledger root: %s" % ROOT)
     BASE["v1"], BASE["v2"] = scan(SCAN_V1, ROOT), scan(SCAN_V2, ROOT)

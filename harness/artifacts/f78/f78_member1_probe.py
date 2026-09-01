@@ -37,7 +37,13 @@ def v2_block(idn):                      # register-correct + block (1-A + 1-B)
     idx = [i for i in range(a, b) if ROW.match(L[i])]
     for k, i in enumerate(idx):
         if ROW.match(L[i]).group(1) == num:
-            return "\n".join(L[i:(idx[k+1] if k+1 < len(idx) else b)])
+            end = idx[k+1] if k+1 < len(idx) else b
+            j = i + 1
+            while j < end and (L[j].strip() == "" or L[j][:1].isspace()):
+                j += 1
+            while j - 1 > i and L[j-1].strip() == "":
+                j -= 1
+            return "\n".join(L[i:j])
     return ""
 
 d = os.path.join(ROOT, "INTENT")
@@ -50,13 +56,23 @@ print("entry ids                                  : %d" % len(ids))
 print("ARM 1-A  v1 stub != register-correct stub  : %d  (of which S11.N: %d)" % (len(coll), len(coll11)))
 print("         v1 returned a WRONG-BUT-PLAUSIBLE : %d" % len([i for i in coll if v1_stub(i)]))
 print("         v1 returned '' where a stub exists: %d" % len([i for i in coll if not v1_stub(i) and v2_line(i)]))
-print("ARM 1-B  register rows with continuations  : %d of %d ids with a live stub"
+print("ARM 1-B  entry ids whose stub is MULTI-LINE : %d of %d ids with a live stub"
       % (len(multi), len([i for i in ids if v2_block(i)])))
-print("         longest block (lines)             : %d" % max([v2_block(i).count("\n")+1 for i in ids if v2_block(i)] or [0]))
 # every INTENT.md register row, not only those with an entry file
 allrows = []
 for sec in ("5", "11"):
     a, b = spans[sec]
     allrows += [("%s.%s" % (sec, ROW.match(L[i]).group(1))) for i in range(a, b) if ROW.match(L[i])]
 print("register rows total (S5 + S11)             : %d" % len(allrows))
-print("         with a continuation block          : %d" % len([r for r in allrows if v2_block(r).count("\n") > 0]))
+cont = [r for r in allrows if v2_block(r).count("\n") > 0]
+print("         with a REAL continuation block     : %d  %s" % (len(cont), cont))
+print("         longest, in extra lines            : %d"
+      % max([v2_block(r).count("\n") for r in allrows] or [0]))
+print()
+print("NOTE [F78, 2026-09-01]: an earlier run of this probe reported 232 of 282 rows")
+print("carrying a continuation block, up to 11 lines.  That was WRONG and the wrongness")
+print("is instructive: the block ran to the next numbered row, so every BLANK SEPARATOR")
+print("line counted as content.  Under markdown's own list-continuation rule (blank or")
+print("indented) the true figure is the line above.  The error was caught by the")
+print("measurement it was supposed to explain -- member 1b moved no counter at all, and")
+print("232 affected rows could not have done that.")

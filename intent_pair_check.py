@@ -96,12 +96,30 @@ def enumerate_pairs(root):
     spans = {name: (start, heads[k + 1][0] if k + 1 < len(heads) else len(lines))
              for k, (start, name) in enumerate(heads)}
     stubs = {}
+    # [F78 member 1b, 2026-09-01] A stub is its numbered line PLUS its continuation
+    # lines -- markdown's own list-item rule: a following line continues the row if it
+    # is blank or INDENTED, and a non-indented line ends it.  v1 took lines[i] alone,
+    # so a dated marker living in a continuation block was invisible to all four
+    # tests.  Extent on the 2026-09-01 tree: exactly ONE register row has a real
+    # continuation block, §5.117 (7 lines, F76's and F77's annotations), and it has no
+    # entry file, so no live PAIR is multi-line and no counter moves today -- the class
+    # is closed prospectively and its decoys are in harness/f78_discriminate.py.
+    # The indentation rule is what keeps §11.14's '---' and §11.196's trailing
+    # maintenance-marker paragraph out of their stubs.
+    # Same defect, same fix as member 1 in intent_backmarker_scan.py: one fact, 'the
+    # stub of id X', was resolved twice and wrongly in both copies (I2).
     for sec in ('5', '11'):
         a, b = spans[sec]
-        for i in range(a, b):
+        idx = [i for i in range(a, b) if re.match(r'^(\d+[a-z]?)\.\s', lines[i])]
+        for k, i in enumerate(idx):
             m = re.match(r'^(\d+[a-z]?)\.\s', lines[i])
-            if m:
-                stubs['%s.%s' % (sec, m.group(1))] = (i + 1, lines[i])
+            end = idx[k + 1] if k + 1 < len(idx) else b
+            j = i + 1
+            while j < end and (lines[j].strip() == '' or lines[j][:1].isspace()):
+                j += 1
+            while j - 1 > i and lines[j - 1].strip() == '':
+                j -= 1
+            stubs['%s.%s' % (sec, m.group(1))] = (i + 1, '\n'.join(lines[i:j]))
     d = os.path.join(root, 'INTENT')
     files = sorted(f[:-3] for f in os.listdir(d) if f.endswith('.md'))
     pairs = [f for f in files if f in stubs]

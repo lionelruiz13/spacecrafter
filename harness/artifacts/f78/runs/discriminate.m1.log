@@ -3,4 +3,6 @@ ledger root: /home/claude/spacecrafter/claude
   PASS m1-A  marker in the target's OWN stub          v1 102 (base 102) / v2 99 (base 100)
   PASS m1-A  marker in the COLLIDING S5.N line only   v1 101 (base 102) / v2 100 (base 100)
   PASS m1-B  marker in a CONTINUATION line            v1 102 (base 102) / v2 99 (base 100)
-3 case(s), 0 failed
+  PASS m1b   stub continuation reaches test D         v1 D 35 (base 35) / v2 D 36 (base 35)
+  PASS m1b   stub continuation clears an I2 flag      v1 I2 34 (base 34) / v2 I2 33 (base 34)
+5 case(s), 0 failed
