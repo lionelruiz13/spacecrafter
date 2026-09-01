@@ -1,0 +1,256 @@
+entry files 212 | live pairs 187 | archived-in-place (no live stub) 25 | inline stubs (no file) 95
+
+=== test D: 35 pair(s) flagged ===
+  5.2      (INTENT.md:269)  {"date": ["2026-08-29"], "sec": ["11.156"], "lid": ["F42"]}
+  5.5      (INTENT.md:270)  {"state": ["LANDED"]}
+  5.25     (INTENT.md:286)  {"state": ["OPEN"]}
+  5.27     (INTENT.md:290)  {"sec": ["11.113"]}
+  5.28     (INTENT.md:292)  {"state": ["RETIRED"], "sec": ["11.136"]}
+  11.86    (INTENT.md:801)  {"date": ["2026-08-29"], "sec": ["11.156"], "lid": ["F42"]}
+  11.89    (INTENT.md:807)  {"date": ["2026-08-29"], "sec": ["11.156"], "lid": ["F42"]}
+  11.97    (INTENT.md:823)  {"date": ["2026-08-29"], "sec": ["11.156"], "lid": ["F42"]}
+  11.99    (INTENT.md:827)  {"state": ["CLOSED"]}
+  11.122   (INTENT.md:854)  {"state": ["CONFIRMED", "FIXED"]}
+  11.124   (INTENT.md:858)  {"sec": ["11.156"], "lid": ["F42"]}
+  11.133   (INTENT.md:876)  {"lid": ["F4"]}
+  11.135   (INTENT.md:879)  {"state": ["REFUTED"]}
+  11.136   (INTENT.md:881)  {"state": ["FIXED", "OPEN", "PENDING"], "date": ["2026-08-29"], "sec": ["11.156"], "lid": ["F42"]}
+  11.137   (INTENT.md:883)  {"state": ["CORRECTED"], "date": ["2026-08-29"], "sec": ["11.156"], "lid": ["F42"]}
+  11.140   (INTENT.md:889)  {"state": ["VERIFIED"]}
+  11.144   (INTENT.md:896)  {"lid": ["F42"]}
+  11.150   (INTENT.md:908)  {"state": ["INERT"]}
+  11.152   (INTENT.md:911)  {"sha": ["ca3205f"]}
+  11.157   (INTENT.md:920)  {"sec": ["11.101"]}
+  11.159   (INTENT.md:923)  {"sha": ["03fbee59", "0aec3e72", "545a51ef"]}
+  11.160   (INTENT.md:924)  {"state": ["CORRECTED"]}
+  11.173   (INTENT.md:948)  {"state": ["ANSWERED", "DEAD"]}
+  11.174   (INTENT.md:950)  {"lid": ["F45"]}
+  11.175   (INTENT.md:952)  {"state": ["LANDED"]}
+  11.177   (INTENT.md:956)  {"sha": ["4d5b2486"]}
+  11.180   (INTENT.md:961)  {"state": ["CLOSES"]}
+  11.186   (INTENT.md:969)  {"sec": ["11.186"]}
+  11.187   (INTENT.md:971)  {"sec": ["11.187"], "sha": ["423cbe23"]}
+  11.188   (INTENT.md:973)  {"sha": ["be2ddd81"]}
+  11.189   (INTENT.md:975)  {"sha": ["1012c643"]}
+  11.190   (INTENT.md:977)  {"sha": ["50185663"]}
+  11.192   (INTENT.md:981)  {"sec": ["0.7"]}
+  11.193   (INTENT.md:983)  {"sha": ["54a2b844", "9a3b7a55"]}
+  11.196   (INTENT.md:989)  {"sha": ["ba7a32a8"]}
+
+=== test D2: 11 pair(s) flagged ===
+  5.26     (INTENT.md:288)  [["strike", "**OPEN (2026-07-24, §11.92(e); candidate for the next command-surface sweep)**"]]
+  5.27     (INTENT.md:290)  [["strike", "**OPEN (found 2026-07-24, §11.100; behavior half gated on D21)**"]]
+  11.86    (INTENT.md:801)  [["strike", "planet offsets are TEXTURE-registered, not IAU (§11.69(e) premise refuted → B14(v), Vixy's"]]
+  11.89    (INTENT.md:807)  [["strike", "NEW galactic-node boundingRadius denormal oscillation (pre-existing, unattributed) → B30-a"]]
+  11.96    (INTENT.md:821)  [["strike", "(queued)"]]
+  11.97    (INTENT.md:823)  [["strike", "composed bodies UNSELECTABLE (old-system-only select → S6 sweep)"]]
+  11.124   (INTENT.md:858)  [["strike", "**no report of any other class appears**, which is the check that mattered"]]
+  11.136   (INTENT.md:881)  [["strike", "(still owed: no star catalogs on this machine)"]]
+  11.137   (INTENT.md:883)  [["strike", "the second tree still carries the blob across 84 commits, deliberately untouched [vixy: *\""], ["marker", "[(i)-ANNOTATED 2026-08-23, §11.147 — entry-file-only until the stub was refreshed 2026-08-"]]
+  11.144   (INTENT.md:896)  [["strike", "**3 300 642 px>8** vs A/A floors of 861/664"]]
+  11.186   (INTENT.md:969)  [["strike", "199 files carry non-ASCII at open [measured]"]]
+
+=== test I: 87 pair(s) flagged ===
+  5.2      (INTENT.md:269)  {"state": ["STALE"]}
+  5.18     (INTENT.md:275)  {"state": ["RESOLVED"], "date": ["2026-07-20", "2026-07-23"], "sec": ["5.2"]}
+  5.20     (INTENT.md:279)  {"sec": ["11.52"]}
+  5.27     (INTENT.md:290)  {"lid": ["B3", "F1"]}
+  11.1     (INTENT.md:643)  {"date": ["2026-07-11"], "sec": ["10.3"]}
+  11.2     (INTENT.md:644)  {"sec": ["11.29"]}
+  11.3     (INTENT.md:645)  {"sec": ["3.3", "5.15"]}
+  11.5     (INTENT.md:647)  {"sec": ["11.16"]}
+  11.8     (INTENT.md:650)  {"state": ["AUDITED"], "date": ["2026-07-21", "2026-07-22"], "sec": ["11.51", "11.60", "11.73", "5.5"], "lid": ["A5", "B24", "B25", "B27"]}
+  11.11    (INTENT.md:653)  {"date": ["2026-07-16"], "sec": ["11.30"], "lid": ["S3"]}
+  11.14    (INTENT.md:683)  {"sec": ["10.3", "11.10", "3.6"]}
+  11.14a   (INTENT.md:656)  {"state": ["CONFIRMED"], "sec": ["11.5"]}
+  11.15    (INTENT.md:658)  {"state": ["CLOSED", "CORRECTED", "FIXED", "RESOLVED"], "date": ["2025-09-20", "2026-07-19", "2026-07-21"], "sec": ["11.40", "11.45", "11.5", "11.54", "3.2", "5.10", "5.14"], "lid": ["A10", "D2", "Q13", "T7"]}
+  11.17    (INTENT.md:660)  {"sec": ["11.15", "11.16"]}
+  11.18    (INTENT.md:661)  {"sec": ["11.16"]}
+  11.19    (INTENT.md:662)  {"sec": ["11.9"]}
+  11.19a   (INTENT.md:663)  {"sec": ["11.16"]}
+  11.20    (INTENT.md:666)  {"sec": ["11.16"], "lid": ["S1"]}
+  11.21    (INTENT.md:671)  {"sec": ["11.15c"], "lid": ["S2"]}
+  11.22    (INTENT.md:669)  {"sec": ["10.3", "11.20"], "lid": ["S4", "S5"]}
+  11.25    (INTENT.md:675)  {"state": ["RESOLVED", "RETIRED"], "sec": ["11.1", "11.24"], "lid": ["D1", "D3", "D7", "S1"]}
+  11.26    (INTENT.md:677)  {"lid": ["S8"]}
+  11.27    (INTENT.md:679)  {"sec": ["11.23"]}
+  11.28    (INTENT.md:681)  {"sec": ["11.26", "5.16"], "lid": ["A3", "B3", "D10", "D2", "D8", "S4", "S5"]}
+  11.29    (INTENT.md:687)  {"sec": ["10.3"], "lid": ["A3", "S4"]}
+  11.30    (INTENT.md:689)  {"sec": ["10.3", "11.27"]}
+  11.31    (INTENT.md:691)  {"lid": ["S3"]}
+  11.33    (INTENT.md:695)  {"sec": ["11.32"]}
+  11.35    (INTENT.md:699)  {"sec": ["11.15"]}
+  11.37    (INTENT.md:703)  {"state": ["DISSOLVED"], "sec": ["11.15d", "11.28", "6.9"], "lid": ["A3", "D9"]}
+  11.44    (INTENT.md:717)  {"date": ["2026-07-22"], "sec": ["11.36", "11.64"], "lid": ["B22"]}
+  11.46    (INTENT.md:721)  {"lid": ["T7"]}
+  11.47    (INTENT.md:723)  {"state": ["DONE"], "sec": ["11.13", "11.2", "11.9", "6.3"], "lid": ["A22"]}
+  11.48    (INTENT.md:725)  {"date": ["2026-07-20"]}
+  11.51    (INTENT.md:731)  {"lid": ["B27", "B29"]}
+  11.54    (INTENT.md:737)  {"sec": ["11.48"], "lid": ["A10", "Q13"]}
+  11.55    (INTENT.md:739)  {"sec": ["11.48"], "lid": ["A20", "Q27"]}
+  11.56    (INTENT.md:741)  {"state": ["SUSPENDED"], "sec": ["11.48"], "lid": ["A1", "Q14"]}
+  11.57    (INTENT.md:743)  {"state": ["SUSPENDED"], "sec": ["11.48"], "lid": ["A4", "Q16"]}
+  11.58    (INTENT.md:745)  {"date": ["2026-07-21", "2026-07-22"], "sec": ["11.19c", "11.48"], "lid": ["A25", "Q4"]}
+  11.59    (INTENT.md:747)  {"date": ["2026-07-21", "2026-07-22"], "sec": ["11.36", "11.48"], "lid": ["A13", "A14", "Q7", "Q8"]}
+  11.60    (INTENT.md:749)  {"sec": ["11.4"]}
+  11.61    (INTENT.md:751)  {"state": ["CLOSES"], "date": ["2026-07-21", "2026-07-22"], "sec": ["11.19b", "11.19c", "11.48"], "lid": ["A11", "Q2"]}
+  11.62    (INTENT.md:753)  {"state": ["STALE"], "date": ["2026-07-21"], "sec": ["11.48"], "lid": ["A15", "A17", "A19", "Q10"]}
+  11.63    (INTENT.md:755)  {"date": ["2026-07-21", "2026-07-22"]}
+  11.64    (INTENT.md:757)  {"state": ["OPEN"], "sec": ["11.48"], "lid": ["A15", "Q9"]}
+  11.65    (INTENT.md:759)  {"sec": ["11.45", "11.51", "11.52"]}
+  11.67    (INTENT.md:763)  {"lid": ["B14"]}
+  11.68    (INTENT.md:765)  {"state": ["SUSPENDED"], "date": ["2026-07-22"], "sec": ["11.51"]}
+  11.69    (INTENT.md:767)  {"state": ["SUSPENDED"], "date": ["2026-07-22"], "sec": ["11.51", "11.68"]}
+  11.70    (INTENT.md:769)  {"state": ["SUPERSEDED"], "sec": ["11.48", "11.52"], "lid": ["B10"]}
+  11.71    (INTENT.md:771)  {"sec": ["11.70", "5.2"]}
+  11.72    (INTENT.md:773)  {"sec": ["11.71", "6.9"], "lid": ["B10", "B20"]}
+  11.73    (INTENT.md:775)  {"sec": ["11.15", "11.51"], "lid": ["B24"]}
+  11.82    (INTENT.md:793)  {"sec": ["11.81"]}
+  11.83    (INTENT.md:795)  {"sec": ["11.80"]}
+  11.88    (INTENT.md:805)  {"sec": ["11.86"]}
+  11.89    (INTENT.md:807)  {"state": ["RETIRED"], "sec": ["11.52"]}
+  11.90    (INTENT.md:809)  {"sec": ["5.23"], "lid": ["D9"]}
+  11.91    (INTENT.md:811)  {"sec": ["11.73"]}
+  11.95    (INTENT.md:819)  {"sha": ["2912d303"]}
+  11.96    (INTENT.md:821)  {"state": ["LANDED"], "sec": ["6.9"]}
+  11.98    (INTENT.md:825)  {"state": ["LANDED"], "sec": ["11.96"]}
+  11.99    (INTENT.md:827)  {"lid": ["D1"]}
+  11.100   (INTENT.md:829)  {"lid": ["A4", "F1"]}
+  11.116   (INTENT.md:845)  {"state": ["PENDING"], "lid": ["F10"], "sha": ["22ac05a", "6b472d8"]}
+  11.123   (INTENT.md:856)  {"lid": ["F6"]}
+  11.125   (INTENT.md:861)  {"state": ["OPEN", "REFUTED", "REPLACED"], "lid": ["B23"]}
+  11.128   (INTENT.md:867)  {"sec": ["11.119", "5.39"], "sha": ["03fbee59", "27d581f0", "545a51ef", "9c7def9b"]}
+  11.129   (INTENT.md:868)  {"sec": ["11.119", "11.121", "11.128", "5.39"]}
+  11.130   (INTENT.md:870)  {"state": ["CLOSED"], "sec": ["6.2"], "lid": ["B31"]}
+  11.131   (INTENT.md:872)  {"lid": ["D28"]}
+  11.133   (INTENT.md:876)  {"lid": ["B21"]}
+  11.143   (INTENT.md:894)  {"sec": ["11.52"], "sha": ["03fbee59", "545a51ef"]}
+  11.144   (INTENT.md:896)  {"lid": ["B10", "B21"], "sha": ["03fbee59", "545a51ef"]}
+  11.145   (INTENT.md:898)  {"sha": ["03fbee59", "545a51ef", "93ad740", "eca1c26", "f8aff2a"]}
+  11.151   (INTENT.md:909)  {"lid": ["F38"]}
+  11.152   (INTENT.md:911)  {"sha": ["03fbee59", "545a51ef"]}
+  11.153   (INTENT.md:913)  {"sha": ["03fbee59", "545a51ef"]}
+  11.155   (INTENT.md:917)  {"sha": ["03fbee59", "18b6f13f", "545a51ef", "98d09488", "fa00dead"]}
+  11.156   (INTENT.md:918)  {"state": ["CORRECTION"], "date": ["2026-07-23"]}
+  11.157   (INTENT.md:920)  {"state": ["FIXED"], "sha": ["5a284a5"]}
+  11.171   (INTENT.md:944)  {"sec": ["11.170"], "sha": ["03fbee59", "545a51ef"]}
+  11.172   (INTENT.md:946)  {"date": ["2026-08-29"]}
+  11.173   (INTENT.md:948)  {"sec": ["11.170", "11.171", "11.172"], "lid": ["F53", "F54", "F55"]}
+  11.176   (INTENT.md:954)  {"sha": ["0a76ad6", "5fc4200", "88a81b4"]}
+  11.191   (INTENT.md:979)  {"sec": ["2.0"]}
+
+=== test I2: 34 pair(s) flagged ===
+  5.2      (INTENT.md:269)  [[12, ["2026-07-22", "2026-08-30"], "[STALE ROUTING 2026-08-30 (F60, §11.180(c)) — this sentence addresses B10 prospectively an"]]
+  5.5      (INTENT.md:270)  [[5, ["2026-07-25"], "[SUPERSEDED IN ITS MECHANISM 2026-08-29, F47 §11.163(c) — this row describes the PRE-FIX t"]]
+  5.26     (INTENT.md:288)  [[4, ["2026-08-29"], "[OBSERVABLE SUPERSEDED 2026-07-25 by F4 §11.108(c) — §11.108(j) records *\"§5.26 annotated "]]
+  11.15    (INTENT.md:658)  [[3, ["2026-07-19"], "CORRECTED + CLOSED (2026-07-19, §11.40)"], [3, ["2026-07-19"], "CLOSED (2026-07-19, §11.45): backup restore (loadBackup) now mirrors Camera::setHalfFov [m"]]
+  11.16    (INTENT.md:659)  [[10, ["2026-07-21"], "CLOSED 2026-07-21, §11.54 (they tick; the divergence was 5.75e9 km on Pluto)"]]
+  11.35    (INTENT.md:699)  [[9, ["2026-07-24"], "[ANNOTATION 2026-07-24, §11.101(g): the CHARON leg's instrument cannot fail, so this readi"]]
+  11.36    (INTENT.md:701)  [[8, ["2026-07-22"], "[CLOSED 2026-07-22, §11.62/B15: the cache-freeze was a defect, not an approximation (A19/Q"], [10, ["2026-07-21"], "[CLOSED 2026-07-21, §11.55: `body action reload`; the first live exercise of the method im"], [12, ["2
+  11.44    (INTENT.md:717)  [[3, ["2026-07-22"], "[Updated 2026-07-22, §11.64: B22 added ONE line to `drawHaloCore` — `cmag *= drawAlpha` — "]]
+  11.45    (INTENT.md:719)  [[39, ["2026-07-21"], "yes (CLOSED 2026-07-21, §11.55)"], [41, ["2026-07-22"], "CLOSED 2026-07-22, §11.65 (B29): runtime per-body + default colour setters now DUAL; the r"], [41, ["2026-07-21"], "CLOSED 2026-07-21, §11.55 (`body action relo
+  11.47    (INTENT.md:723)  [[7, ["2026-07-21"], "[updated 2026-07-21, §11.48: A1 is now answered (→ B11) and A3 is narrowed to one residual"]]
+  11.48    (INTENT.md:725)  [[4, ["2026-07-26", "2026-07-29"], "[SUPERSEDED 2026-07-26 by Vixy's D23 → §11.113(b): hidden bodies do NOT tick; the honesty "], [5, ["2026-08-30"], "[ANNOTATION 2026-08-30, §11.177 (task F57) — THIS RESIDUAL LIST IS INCOMPLETE; original p
+  11.52    (INTENT.md:733)  [[4, ["2026-07-22"], "⚠ CLAUSE 3 SUPERSEDED [vixy 2026-07-22, §11.66(b)]: the \"clean-file precondition ⇒ NO writ"]]
+  11.54    (INTENT.md:737)  [[5, ["2026-07-26", "2026-07-29"], "[MECHANISM SUPERSEDED 2026-07-26 — D23 → §11.113(b)(iii); marker added 2026-07-29 (checkin"], [15, ["2026-07-24"], "[ANNOTATION 2026-07-24, §11.101(e): this BOUNDARY CLAIM is FALSE at source, and was fals
+  11.56    (INTENT.md:741)  [[5, ["2026-07-26", "2026-07-29"], "[HIDDEN-HALF SUPERSEDED 2026-07-26 — D23 → §11.113(b)(ii); marker added 2026-07-29 (checki"]]
+  11.58    (INTENT.md:745)  [[12, ["2026-08-26"], "[2026-08-26, §11.150 (F38): items (iii) and (iv) of (f) BELOW ARE CLOSED."], [14, ["2026-07-22"], "⚠ CORRECTED — this premise is FALSE, see §11.61(f) [dispatcher-verified 2026-07-22]:"]]
+  11.60    (INTENT.md:749)  [[10, ["2026-07-25"], "[THE BRIDGE WENT LIVE 2026-07-25, §11.106 (F2), code `2c611b02`: `ModularObject` is instan"]]
+  11.62    (INTENT.md:753)  [[6, ["2026-07-24"], "[ANNOTATION 2026-07-24, §11.101(d2): accurate about the CALL SITE, over-broad as a FRESHNE"]]
+  11.66    (INTENT.md:761)  [[7, ["2026-07-25"], "[DESIGN PASS DELIVERED 2026-07-25, §11.110 — `claude/b31-design.md`: 75 state rows (39 MUS"]]
+  11.69    (INTENT.md:767)  [[8, ["2026-07-23"], "[ANNOTATION 2026-07-23, §11.86(c): this entry's PREMISE is partially REFUTED — the planet "]]
+  11.73    (INTENT.md:775)  [[25, ["2026-07-25"], "[F3 ANNOTATION 2026-07-25 — the tail is LANDED; per-site outcomes and two path corrections"]]
+  11.78    (INTENT.md:785)  [[9, ["2026-07-25"], "[ANNOTATED 2026-07-25, F5 §11.109 — the B25 generation half is now verified on a GALACTIC "]]
+  11.90    (INTENT.md:809)  [[13, ["2026-07-24"], "[AUDIT ANNOTATION 2026-07-24, §11.102(d) — claims verified at source; one D12 corner added"]]
+  11.92    (INTENT.md:813)  [[13, ["2026-07-25"], "[MEASUREMENT ANNOTATION 2026-07-25, F4 §11.108(c) — (e)'s number does not reproduce; (d)'s"]]
+  11.96    (INTENT.md:821)  [[12, ["2026-08-29"], "[ANNOTATION 2026-08-29 (F42, §11.156) — the routing above is DISCHARGED; original preserve"]]
+  11.126   (INTENT.md:863)  [[22, ["2026-08-29"], "[BACK-MARKER 2026-08-29 (§11.113(p)) — REFUTED by F47 §11.163(d), and this one is worth re"]]
+  11.132   (INTENT.md:874)  [[76, ["2026-08-22"], "CORRECTION 2026-08-22 (§11.137) — the \"all uncommitted\" clause was FALSE for `sc_f24_pre` "]]
+  11.149   (INTENT.md:906)  [[97, ["2026-08-30"], "[2026-08-30 DISCHARGED — both halves]"]]
+  11.156   (INTENT.md:918)  [[43, ["2026-08-26"], "BEHAVIOUR HALF UNBLOCKED 2026-08-26 — D21 ANSWERED [vixy 2026-08-22, harness` `d521807a` `"], [51, ["2026-07-24"], "ANNOTATION 2026-07-24, §11.100 — original preserved; root closed the same day"], [53, ["2026-07-24"],
+  11.165   (INTENT.md:933)  [[5, ["2026-07-24"], "ANNOTATION 2026-07-24, §11.100 — original preserved; …"]]
+  11.166   (INTENT.md:935)  [[48, ["2026-08-30"], "SUPERSEDED 2026-08-30, §11.170(i): **unreachable** — all five producers closed"], [59, ["2026-08-30"], "BACK-MARKER: items (1) and (2) are SUPERSEDED 2026-08-30 by §11.170 (F53); (3), (4) and (5"]]
+  11.167   (INTENT.md:937)  [[30, ["2026-08-26"], "[THE \"EPOCH\" FRAMING IS SUPERSEDED, THE CENSUS IS NOT — 2026-08-30, §11.176 (task F56); or"]]
+  11.169   (INTENT.md:941)  [[25, ["2022-11-22", "2026-07-22", "2026-08-26"], "[DISCHARGED 2026-08-30, §11.178 (task F58) — the audit is RUN and the gap list exists; ori"]]
+  11.179   (INTENT.md:960)  [[121, ["2026-07-25"], "ANNOTATED 2026-07-25, F4 §11.108(e) …"], [122, ["2026-08-01"], "CLOSED 2026-08-01, F20 §11.128(a)(a2) …"]]
+  11.180   (INTENT.md:961)  [[94, ["2026-07-23"], "fully closed 2026-07-23"]]
+
+=== test M: 78 pair(s) flagged ===
+  5.2      (INTENT.md:269)  [["entry_only", "11.180"], ["entry_only", "11.71"], ["entry_only", "11.79"], ["entry_only", "5.18"], ["stub_only", "11.156"]]
+  5.5      (INTENT.md:270)  [["stub_only", "11.107"], ["stub_only", "11.118"], ["stub_only", "11.91"], ["stub_only", "5.98"]]
+  5.18     (INTENT.md:275)  [["stub_only", "11.79"]]
+  5.26     (INTENT.md:288)  [["entry_only", "11.156"], ["stub_only", "11.113"]]
+  5.27     (INTENT.md:290)  [["entry_only", "11.100"], ["stub_only", "11.113"], ["stub_only", "11.151"], ["stub_only", "11.96"]]
+  5.28     (INTENT.md:292)  [["stub_only", "11.136"]]
+  11.15    (INTENT.md:658)  [["entry_only", "11.40"], ["entry_only", "11.45"], ["entry_only", "11.54"]]
+  11.16    (INTENT.md:659)  [["entry_only", "11.54"]]
+  11.19    (INTENT.md:662)  [["entry_only", "11.24"]]
+  11.29    (INTENT.md:687)  [["entry_only", "11.28"]]
+  11.35    (INTENT.md:699)  [["entry_only", "11.101"], ["entry_only", "11.53"], ["entry_only", "11.68"], ["entry_only", "11.69"], ["entry_only", "11.80"]]
+  11.36    (INTENT.md:701)  [["entry_only", "11.54"], ["entry_only", "11.55"], ["entry_only", "11.59"], ["entry_only", "11.62"], ["entry_only", "11.80"]]
+  11.39    (INTENT.md:707)  [["entry_only", "11.40"]]
+  11.44    (INTENT.md:717)  [["entry_only", "11.64"]]
+  11.45    (INTENT.md:719)  [["entry_only", "11.46"], ["entry_only", "11.55"], ["entry_only", "11.65"]]
+  11.47    (INTENT.md:723)  [["entry_only", "11.48"]]
+  11.48    (INTENT.md:725)  [["entry_only", "11.113"], ["entry_only", "11.114"], ["entry_only", "11.177"], ["entry_only", "11.76"]]
+  11.50    (INTENT.md:729)  [["entry_only", "11.53"]]
+  11.52    (INTENT.md:733)  [["entry_only", "11.66"]]
+  11.54    (INTENT.md:737)  [["entry_only", "11.101"], ["entry_only", "11.113"], ["entry_only", "11.114"], ["entry_only", "11.52"], ["entry_only", "11.56"], ["entry_only", "11.76"], ["entry_only", "11.93"], ["entry_only", "5.31"]]
+  11.56    (INTENT.md:741)  [["entry_only", "11.113"], ["entry_only", "11.114"], ["entry_only", "11.76"]]
+  11.58    (INTENT.md:745)  [["entry_only", "11.149"], ["entry_only", "11.150"], ["entry_only", "11.61"]]
+  11.60    (INTENT.md:749)  [["entry_only", "11.106"]]
+  11.62    (INTENT.md:753)  [["entry_only", "11.101"], ["entry_only", "11.54"], ["entry_only", "5.32"]]
+  11.66    (INTENT.md:761)  [["entry_only", "11.110"], ["entry_only", "11.70"]]
+  11.69    (INTENT.md:767)  [["entry_only", "11.86"]]
+  11.73    (INTENT.md:775)  [["entry_only", "11.107"]]
+  11.78    (INTENT.md:785)  [["entry_only", "11.109"], ["entry_only", "5.37"], ["entry_only", "5.40"]]
+  11.82    (INTENT.md:793)  [["entry_only", "11.81"], ["entry_only", "11.83"]]
+  11.83    (INTENT.md:795)  [["entry_only", "11.80"], ["stub_only", "6.9"]]
+  11.86    (INTENT.md:801)  [["entry_only", "11.87"], ["entry_only", "5.28"], ["stub_only", "11.156"]]
+  11.88    (INTENT.md:805)  [["entry_only", "11.86"]]
+  11.89    (INTENT.md:807)  [["entry_only", "11.107"], ["stub_only", "11.156"], ["stub_only", "11.87"]]
+  11.90    (INTENT.md:809)  [["entry_only", "11.102"]]
+  11.91    (INTENT.md:811)  [["entry_only", "11.102"]]
+  11.92    (INTENT.md:813)  [["entry_only", "11.102"], ["entry_only", "11.108"], ["stub_only", "5.26"]]
+  11.93    (INTENT.md:815)  [["entry_only", "11.101"], ["entry_only", "5.32"]]
+  11.94    (INTENT.md:817)  [["stub_only", "11.89"]]
+  11.95    (INTENT.md:819)  [["stub_only", "11.82"]]
+  11.96    (INTENT.md:821)  [["entry_only", "11.156"]]
+  11.97    (INTENT.md:823)  [["entry_only", "11.99"], ["stub_only", "11.156"]]
+  11.98    (INTENT.md:825)  [["entry_only", "11.102"], ["entry_only", "11.96"]]
+  11.100   (INTENT.md:829)  [["stub_only", "11.5"], ["stub_only", "11.97"]]
+  11.122   (INTENT.md:854)  [["entry_only", "11.95"], ["entry_only", "5.51"]]
+  11.124   (INTENT.md:858)  [["entry_only", "11.113"], ["entry_only", "11.163"], ["entry_only", "5.50"], ["entry_only", "5.55"], ["entry_only", "5.56"], ["stub_only", "11.156"]]
+  11.125   (INTENT.md:861)  [["entry_only", "11.122"], ["entry_only", "5.51"], ["entry_only", "5.57"], ["entry_only", "5.58"], ["entry_only", "5.59"], ["entry_only", "5.60"]]
+  11.126   (INTENT.md:863)  [["entry_only", "11.113"], ["entry_only", "11.124"], ["entry_only", "11.163"], ["entry_only", "5.55"], ["entry_only", "5.56"], ["entry_only", "5.57"], ["entry_only", "5.58"], ["entry_only", "5.59"], ["entry_only", "5.61"]]
+  11.130   (INTENT.md:870)  [["entry_only", "5.63"]]
+  11.132   (INTENT.md:874)  [["entry_only", "11.137"]]
+  11.135   (INTENT.md:879)  [["stub_only", "5.47"]]
+  11.136   (INTENT.md:881)  [["stub_only", "11.156"], ["stub_only", "5.74"], ["stub_only", "5.77"], ["stub_only", "5.88"], ["stub_only", "5.90"]]
+  11.137   (INTENT.md:883)  [["stub_only", "11.156"]]
+  11.138   (INTENT.md:885)  [["stub_only", "5.73"]]
+  11.139   (INTENT.md:887)  [["stub_only", "5.46"]]
+  11.142   (INTENT.md:892)  [["stub_only", "5.34"]]
+  11.144   (INTENT.md:896)  [["entry_only", "11.158"], ["entry_only", "5.86"]]
+  11.149   (INTENT.md:906)  [["entry_only", "11.117"], ["entry_only", "11.144"], ["entry_only", "11.150"], ["entry_only", "11.151"]]
+  11.151   (INTENT.md:909)  [["entry_only", "11.153"], ["entry_only", "5.106"]]
+  11.152   (INTENT.md:911)  [["entry_only", "11.155"], ["entry_only", "5.104"]]
+  11.155   (INTENT.md:917)  [["entry_only", "11.156"]]
+  11.156   (INTENT.md:918)  [["entry_only", "11.100"], ["entry_only", "11.161"], ["stub_only", "11.107"]]
+  11.157   (INTENT.md:920)  [["entry_only", "11.104"], ["entry_only", "11.167"], ["entry_only", "5.107"]]
+  11.159   (INTENT.md:923)  [["entry_only", "11.174"], ["entry_only", "11.176"]]
+  11.164   (INTENT.md:931)  [["entry_only", "11.159"], ["entry_only", "11.174"]]
+  11.165   (INTENT.md:933)  [["entry_only", "11.100"], ["entry_only", "11.111"], ["entry_only", "11.31"], ["entry_only", "5.32"]]
+  11.166   (INTENT.md:935)  [["entry_only", "11.170"]]
+  11.167   (INTENT.md:937)  [["entry_only", "11.104"], ["entry_only", "11.105"], ["entry_only", "11.171"], ["entry_only", "11.174"], ["entry_only", "11.176"], ["entry_only", "5.53"]]
+  11.169   (INTENT.md:941)  [["entry_only", "11.178"], ["entry_only", "5.116"], ["entry_only", "5.117"]]
+  11.170   (INTENT.md:943)  [["entry_only", "5.113"]]
+  11.172   (INTENT.md:946)  [["entry_only", "0.5"]]
+  11.174   (INTENT.md:950)  [["entry_only", "11.104"], ["entry_only", "11.156"], ["entry_only", "11.168"]]
+  11.176   (INTENT.md:954)  [["entry_only", "11.179"]]
+  11.177   (INTENT.md:956)  [["entry_only", "11.179"]]
+  11.179   (INTENT.md:960)  [["entry_only", "11.108"], ["entry_only", "11.128"]]
+  11.185   (INTENT.md:967)  [["entry_only", "11.187"], ["entry_only", "11.194"]]
+  11.187   (INTENT.md:971)  [["stub_only", "11.184"]]
+  11.191   (INTENT.md:979)  [["entry_only", "11.193"]]
+  11.192   (INTENT.md:981)  [["stub_only", "0.7"]]

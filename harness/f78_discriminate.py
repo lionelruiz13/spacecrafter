@@ -354,6 +354,66 @@ def m6_outside_the_registers_is_not_read():
         b[0], b[1], b[2], g(base), g(out))
 
 
+# ------------------------------------------------------------- member 7 (pair-check)
+@case
+def m7_one_home_only_flags():
+    """A dated marker span citing a source, injected into ONE home only, must raise M by
+    exactly one atom on exactly that pair, and move no other counter."""
+    d = scratch()
+    edit_entry(d, "11.3", "\n", "\n**[ANNOTATION 2099-01-01, §11.999 — a marker with one home only.]**\n", 1)
+    a = pair(PAIR_V1, d); b = pair(PAIR_V2, d)
+    # I2 rises with it BY DESIGN and the two are not redundant: I2 fires on the DATE
+    # (an entry marker whose date the stub lacks), M on the CITATION (both homes asked
+    # for a span naming the same source).  The next case separates them.
+    ok = ("M" not in a and b["M"] == BASE["p2"]["M"] + 1 and
+          all(b[k] == BASE["p2"][k] for k in ("files", "pairs", "arch", "inline", "D", "D2", "I")))
+    if not KEEP: shutil.rmtree(d)
+    return "m7    a one-home marker raises M (v1 has no M at all)", ok, "v2 M %d (base %d), I2 %d (base %d)" % (
+        b["M"], BASE["p2"]["M"], b["I2"], BASE["p2"]["I2"])
+
+
+@case
+def m7_both_homes_is_silent():
+    """The same marker in BOTH homes must move nothing -- the test asks whether the two
+    homes carry the same object, not whether a marker exists."""
+    d = scratch()
+    edit_entry(d, "11.3", "\n", "\n**[ANNOTATION 2099-01-01, §11.999 — a marker with one home only.]**\n", 1)
+    i, line = row_line(d, "11", "3")
+    put_line(d, i, line + " **[ANNOTATION 2099-01-01, §11.999 — mirrored into the stub.]**")
+    b = pair(PAIR_V2, d)
+    ok = b["M"] == BASE["p2"]["M"]
+    if not KEEP: shutil.rmtree(d)
+    return "m7    the same marker in BOTH homes is silent", ok, "v2 M %d (base %d)" % (
+        b["M"], BASE["p2"]["M"])
+
+
+@case
+def m7_separates_from_I2():
+    """M is not I2 in another shape: a marker whose DATE the stub already carries but
+    whose CITATION it does not must raise M and leave I2 alone."""
+    d = scratch()
+    i, line = row_line(d, "11", "3")
+    put_line(d, i, line + " (mirror 2099-01-01)")
+    edit_entry(d, "11.3", "\n", "\n**[ANNOTATION 2099-01-01, §11.999 — dated in both, cited in one.]**\n", 1)
+    b = pair(PAIR_V2, d)
+    ok = b["M"] == BASE["p2"]["M"] + 1 and b["I2"] == BASE["p2"]["I2"]
+    if not KEEP: shutil.rmtree(d)
+    return "m7    M separates from I2 (citation vs date)", ok, "v2 M %d (base %d), I2 %d (base %d)" % (
+        b["M"], BASE["p2"]["M"], b["I2"], BASE["p2"]["I2"])
+
+
+@case
+def m7_undated_span_is_not_a_marker():
+    """The §11.180(i) bound: the object compared is a DATED marker span.  An undated one
+    is a reading, not a test, and must not fire."""
+    d = scratch()
+    edit_entry(d, "11.3", "\n", "\n**[ANNOTATION — §11.999, no date at all.]**\n", 1)
+    b = pair(PAIR_V2, d)
+    ok = b["M"] == BASE["p2"]["M"]
+    if not KEEP: shutil.rmtree(d)
+    return "m7    an UNDATED span is not a marker", ok, "v2 M %d (base %d)" % (b["M"], BASE["p2"]["M"])
+
+
 def main():
     print("ledger root: %s" % ROOT)
     BASE["v1"], BASE["v2"] = scan(SCAN_V1, ROOT), scan(SCAN_V2, ROOT)

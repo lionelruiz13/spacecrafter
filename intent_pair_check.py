@@ -69,6 +69,17 @@ MARK_RE  = re.compile(r'(ANNOTATION|ANNOTATED|ADDENDUM|SUPERSED\w*|CORRECTION|CO
                       r'RETRACTED|RATIFIED|REOPEN\w*|UPDATED?|WITHDRAWN|DELIVERED|PERFORMED|'
                       r'DISCHARGED|UNBLOCK\w*|ATTRIBUTED|CLOSED)', re.I)
 SPAN_RE  = re.compile(r'\*\*(.+?)\*\*|\[([^\]]{5,300})\]')
+# [F78 member 7, 2026-09-01] test M's own marker vocabulary.  MARK_RE stays exactly as
+# F42 wrote it, because D2 and I2 are the supervisor's gate and this member must leave
+# them where they are.  M needs a wider one, and the widening is specimen-driven, not
+# imagined: §11.187's entry opens its marker "[REVERSED 2026-08-31 -> §11.191(b) ...]"
+# and MARK_RE has no REVERSED, so M reported a both-homes divergence that is not there --
+# member 3's disease arriving at the sibling instrument.  The rest are the same specimens
+# member 3 measured in intent_backmarker_scan.py, so the package holds ONE marker
+# vocabulary rather than three (I2).  Unifying MARK_RE with it is candidate C6: it
+# re-baselines D2 and I2, which is a supervisor's call, not this member's.
+MARKM_RE = re.compile(MARK_RE.pattern.rstrip(')') +
+                      '|REVERSED|REFRESH\w*|ROOT-CAUSED?|FIXED|TESTED|INCOMPLETE|STALE)', re.I)
 
 
 def atoms(text):
@@ -80,6 +91,55 @@ def atoms(text):
       'ss'   : set('SS-%s' % m for m in SS_RE.findall(text)),
       'sha'  : set(SHA_RE.findall(text)),
     }
+
+
+def marker_spans(line):
+    """[F78 member 7] BALANCED bracketed spans plus bold spans, with NO size cap.
+
+    SPAN_RE (:71) is kept for D2/I2 so their baselines do not move, but it cannot serve
+    test M, and the reason is measured: its bracket arm is `\[([^\]]{5,300})\]`, and
+    **175 of the 250 bracketed dated marker spans in this corpus exceed 300 characters**
+    (70%) -- §11.192's "[DELIVERED 2026-09-01 at §11.194, F73 ...]" is 707.  Its bold arm
+    is non-greedy from the FIRST `**` on the line, so on a line carrying several bold runs
+    whether a given span is captured depends on PARITY.  A both-homes test built on that
+    reports divergences that are not there.  D2/I2's exposure to the same cap is recorded
+    as candidate C5, measured and not enacted -- moving it re-baselines two counters this
+    member is required to leave alone.
+    """
+    out, depth, start = [], 0, None
+    for i, ch in enumerate(line):
+        if ch == '[':
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == ']' and depth:
+            depth -= 1
+            if depth == 0:
+                out.append(line[start:i + 1])
+    if depth:
+        # UNTERMINATED run.  Measured, not hypothetical: INTENT/11.192.md:29 opens
+        # "**[SUPERSEDED IN PART 2026-09-01 -> §11.193 ..." and "[DELIVERED 2026-09-01 at
+        # §11.194, F73 ..." and carries ONE closing bracket for the two -- a malformed
+        # marker span in the ledger's text, routed as a finding.  Crediting what is
+        # plainly there is the strict-credit direction; punishing a real marker for a
+        # missing bracket would manufacture a divergence that does not exist.
+        out.append(line[start:])
+    out += re.findall(r'\*\*(.+?)\*\*', line)
+    return out
+
+
+def markercites(text):
+    """[F78 member 7] the §-ids cited inside DATED MARKER SPANS of one home.
+
+    A span counts only if it carries a marker word AND a date -- the §11.113(p) marker
+    form.  Anything looser stops being machine-decidable, which is the §11.180(i) bound.
+    """
+    out = set()
+    for l in text.split('\n'):
+        for s in marker_spans(l):
+            if MARKM_RE.search(s) and DATE_RE.search(s):
+                out |= set('%s.%s' % m for m in SEC_RE.findall(s))
+    return out
 
 
 def enumerate_pairs(root):
@@ -151,6 +211,21 @@ def check(root):
                    for i, l in enumerate(body.split('\n'), 1)
                    for sp in SPAN_RE.findall(l) for s in [sp[0] or sp[1]]
                    if MARK_RE.search(s) and (set(DATE_RE.findall(s)) - sa['date'])]
+        # [F78 member 7, 2026-09-01] test M -- the BOTH-HOMES class, its own counter.
+        # Three measured instances: §11.187's REVERSED marker reached the entry and not
+        # the stub (F72 acceptance, executor-caught); §11.192's SUPERSEDED marker likewise
+        # (F73 executor's §0.7 report); the F73 acceptance named it a CLASS and queued
+        # this extension.  D2 and I2 compare marker spans by DATE, so a marker whose date
+        # appears anywhere else in the other home passes them.
+        # THE BOUND IS §11.180(i)'s, applied literally: the test asks both homes for the
+        # SAME OBJECT -- a DATED marker span citing source §X -- which is machine-decidable.
+        # "Does the stub relay the claim the entry corrected" is a READING and is not
+        # implemented.  Like its four siblings this is a FILTER, not a verdict: the stub is
+        # a derived summary and mirrors a marker only where it relays the superseded claim
+        # (§11.156(f)), so entry_only flags are expected in bulk and are adjudicated.
+        ec, sc = markercites(body) - {pid}, markercites(stub) - {pid}
+        r['M'] = ([('entry_only', x) for x in sorted(ec - sc)] +
+                  [('stub_only', x) for x in sorted(sc - ec)])
         out.append(r)
     return dict(n_entry_files=len(pairs) + len(orphan_file), n_pairs=len(pairs),
                 orphan_file=orphan_file, orphan_stub=orphan_stub, report=out)
@@ -165,7 +240,7 @@ if __name__ == '__main__':
         raise SystemExit(0)
     print('entry files %d | live pairs %d | archived-in-place (no live stub) %d | inline stubs (no file) %d'
           % (res['n_entry_files'], res['n_pairs'], len(res['orphan_file']), len(res['orphan_stub'])))
-    for t in ('D', 'D2', 'I', 'I2'):
+    for t in ('D', 'D2', 'I', 'I2', 'M'):
         hits = [r for r in res['report'] if r[t]]
         print('\n=== test %s: %d pair(s) flagged ===' % (t, len(hits)))
         for r in hits:
