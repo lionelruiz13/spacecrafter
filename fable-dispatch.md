@@ -543,9 +543,60 @@ over 7 commits — not the 4888 F71 measured; F72–F74 moved it further) ·
 unchanged. Pins are NOT uniform: `_meta.seeded` (2026-08-03, code `d13681eb`)
 covers the families/registration layer, `_meta.merged` (`b12c8cdd`) the arg
 specs, and each later amendment (`6a4d184b`, `2b8ec034`, F65, F71) its own sha.
-The four fragments `grammar/args/unit-{1..4}.json` (~900 anchors) are FROZEN at
+~~The four fragments `grammar/args/unit-{1..4}.json` (~900 anchors) are FROZEN at
 their `_merged` date by precedent — every post-merge amendment touched the
-merged file only — and are out of scope, stated.
+merged file only — and are out of scope, stated.~~ **[FALSE — struck 2026-09-01
+at the first executor's §0.7 ABORT, measured both ways with a control: F71
+(`50185663`) wrote its 60 `default_value_source` fields into ALL FOUR fragments,
+F70 (`1012c643`) and the alias commit (`7fd5ea75`) touched them too (`git log --
+util/scedit/grammar/args/`); `checkFragments` (`util/scedit/src/main.cpp:147-199`)
+compares every command's `args` (whole-object JSON equality), `registration`,
+`notes`, `flagged`, `key_grammar`, `branches`, `wait_parameter`, and `set_names`
+against the fragments — so **1703 of the 2889 references (58.9 %) are
+fragment-COUPLED** (args 1087 · branches 167 · registration 131 · notes 58 ·
+key_grammar 28 · flagged 23 · wait_parameter 1 · set_names 208); the other 1186
+(flags 606 · color_names 413 · font_targets 89 · parse_model/lint_seeds/_meta 78)
+are FREE. Decoy proof: +1 on an `args` anchor → seed gate `FAIL fragments …
+(differs: audio.args)`; +1 on a `flags` anchor → green. The fragments carry
+**1766** references in 897 strings (1703 = the coupled duplicates; 63 in fragment
+`_meta`, uncompared). The README RECORDS the rule the premise contradicted:
+*"A correction goes into the fragment first, then into the merged file — and the
+seed gate compares the two on every run"* (`util/scedit/README.md:649`), and
+`harness/f71_patch.py:10` restates it. Dispatcher defect, supervisor tally +1
+(a "measured" line that was [derived] from `_meta.amended` prose, never from
+the git log of the files it spoke about). RESOLUTION, traceable: (S1) the
+fragments ARE the granular source (four homes: README, `checkFragments`,
+`SWEEP_DISPATCH.md`, the F70/F71 precedent; the struck reading had none) ⇒ the
+sweep rewrites BOTH files IDENTICALLY and `checkFragments` becomes the free
+proof that both halves moved together; (S2) a pin is ONE fact (I2): each file
+carries ONE file-level pin (`_meta` — the merged file's, and each fragment's
+`_meta.code`, today `master-beta @ b12c8cdd`), and a per-string `@ <sha>`
+survives ONLY where a string's pin deviates from its file's (after the sweep,
+none should — the 60 F71 pins fold into the file pin); the doc bar (C6) then
+shows a bare, resolving `file:line`. Both veto-open at §3. Census reconciled by
+the executor: 2890 references / 1134 strings including the one `.ts` reference
+(`lint_seeds[8]`, `extension.ts:18-59`), 2889 / 1133 without; self-pinned
+anchor strings **60** (all `default_value_source @ d64fd437`), the "62" having
+counted two `_meta.amended` prose strings. Executor-measured INPUTS for the
+resolver: 67 distinct bare basenames (2012 refs), ZERO ambiguous against `git
+ls-files` (bare-basename resolution is safe by measurement; `F.sts` the only
+untracked one, an F63 fixture); 119 repo-relative paths (878 refs), four not in
+the parent index — `tools/utility.hpp` (WRONG path, should be `src/tools/…`: a
+content defect, routed not applied), `fscripts/panorama5.sts` (field data, out
+of tree), `src/EntityCore/Executor/{AsyncLoaderMgr.cpp,AsyncBase.hpp}` (the
+SUBMODULE — 2 refs need submodule handling); residual anchor SHAPES the
+`file.ext:N` regex does NOT see and a rewrite must not corrupt: bare `:NNN`
+continuations inheriting the previous file (`… :264-265`), comma continuations
+(`dsoNavigator.cpp:269, 296`), symbol-not-file anchors (`parseCommand:141`,
+`commandStruct :4604-4661`), `->` chains with parenthesised sub-anchors; the
+fragments' `_meta.source_anchor_convention` (bare = `src/interfaceModule/…`,
+else repo-relative) which the merged file departs from in 66 other basenames.
+The merged file round-trips byte-identically through `json.dumps(indent=2)+"\n"`;
+the fragments are HAND-FORMATTED and do not — their write path is text-level
+string replacement (the `f71_patch.py` shape) with byte-identity proven outside
+the replaced strings. One executor claim REFUTED by the dispatcher's re-read:
+every fragment DOES carry a top-level `_merged` key (`_merged`, `_meta`,
+`commands`, `unit_findings`) — `_meta.merged`'s sentence is correct.]**
 
 **Sources (re-read, never recall):** `INTENT/11.190.md` (e), (d)(3); scedit
 `INTENT.md` §2 C2 (the anchor classes), C6 (docs are product surface — the doc
@@ -587,9 +638,13 @@ outside a hunk = cumulative shift; inside = CANDIDATE, settled by content).
 `HEAD:<file>:<new>` (state the whitespace rule) — a reference whose text no
 longer exists at HEAD (the −40) is FLAGGED with both texts, never re-pointed by
 arithmetic.
-(2) **The sweep** over the merged grammar: every resolved reference rewritten
-to its HEAD line AND self-pinned (`@ <sha>` — ONE pin for the whole sweep, the
-delivery's code HEAD, named in `_meta.amended`), every other byte of the string
+(2) **The sweep** over the merged grammar AND the four fragments, IDENTICALLY
+(the README's recorded rule; `checkFragments` is the proof): every resolved
+reference rewritten to its HEAD line; the pin is ONE file-level fact per file
+(`_meta.anchor_pin` or the existing `_meta.code` in each fragment, set to the
+delivery's code HEAD and named in `_meta.amended`), with a per-string `@ <sha>`
+kept ONLY where a string's pin must deviate (state each; the 60 F71 pins fold
+into the file pin); every other byte of the string
 preserved (the `->` chains, the parenthesised sub-anchors) — a string that
 changes in anything but line numbers and pin is a defect of the tool (diff of
 generality). Flagged references re-anchored BY READING (the handler moved or
@@ -617,13 +672,18 @@ class per the partition table — its content stays in that class).
 
 **Boundaries:** the merged grammar's anchor strings and `_meta` only — no
 doc/value/default content change (one found necessary en route is a finding,
-routed, not applied); fragments untouched; no engine code; no launch; the seed
-gate's existing checks never narrowed; mint license per §5.79 (an engine defect
+routed, not applied); fragments rewritten ONLY in the same anchor strings as the
+merged file, byte-identical elsewhere (their hand formatting preserved — prove
+it: a diff of each fragment restricted to non-anchor bytes is EMPTY); no engine
+code; no launch; the seed gate's existing checks never narrowed; mint license per §5.79 (an engine defect
 seen while reading a handler = §5 candidate, recorded not fixed).
 
 **Discriminating checks:** (a) pin recovery 62/62 on the pre-pinned strings
-(state the count; a miss rejects the method); (b) the 2889 partitioned
-clean-by-content / moved-and-verified / re-read / not-at-HEAD, summing exactly;
+(state the count; a miss rejects the method); (b) the 2890 (2889 + the
+`.ts`) partitioned clean-by-content / moved-and-verified / re-read / not-at-HEAD,
+summing exactly, and the SAME partition reproduced on the fragments' 1703
+coupled duplicates (they must move identically — `checkFragments` green is the
+proof, its RED at any intermediate state the alarm);
 (c) the gate reds on the decoy, greens on HEAD; (d) `ctest` 14/14 → 15/15 in a
 FRESH build dir; (e) `scedit --doc` over all 63 commands diffed pre/post — only
 anchor strings differ (C6 surface moved as intended and nothing else).
@@ -632,7 +692,12 @@ anchor strings differ (C6 surface moved as intended and nothing else).
 `2026-09-01a`; §11.190(e) marker in both homes; both READMEs; ctest green in a
 fresh build; ASCII gate; trees clean; WIP cleared; baselines re-derived LAST
 (pair-check / scan — expected unchanged but for the marker; state the deltas).
-**WIP:** —
+**WIP:** — **ABORTED at the §0.7 gate, first dispatch 2026-09-01** (executor
+run, 0 mutations, both trees clean at `54a2b844` / `0e595d6`): the FROZEN-
+fragments premise false by measurement (above); three readings suspended, S1/S2
+resolved by the dispatcher from recorded rules (README:649; I2), section
+revised in place, re-dispatched same day. Baselines unmoved (211/186/25/93 ·
+129/170/102).
 
 ### F76 — scedit item 16: the shipped corpus DISPOSITIONED — 1661 findings in 26 files, each TRUE (→ SS-n / §5) or a scedit defect (→ rule fix), and the corpus gate's shipped half ARMED (scedit INTENT §5 item 16; C3; session-19 queue position 2) [M]
 
