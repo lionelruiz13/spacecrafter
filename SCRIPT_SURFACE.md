@@ -371,7 +371,21 @@ Six new things. Two of them are worth your attention beyond a text fix.
   yours writing `on`/`off` for those keys? (b) Should the engine be made to
   accept the same words everywhere — this is a real inconsistency and Vixy
   would have to rule on it, but it is your surface that would change.
-  Status: OPEN.
+  **CONFIRMED ON A RUNNING ENGINE 2026-09-01** (F77, INTENT §11.196(f)): we put
+  the two readers to the engine on the SAME launch, one after the other, and
+  they disagreed about the same word. `configuration module star_lines action
+  save … binary_mode on` and the same line with `binary_mode off` wrote
+  **byte-identical text files** (157 573 B each), while `binary_mode true`
+  wrote a binary one (80 720 B) — so `on` was read as NO. In the same run,
+  `flag atmosphere on` left the flag ON. All of these lines were echoed by the
+  engine, none was refused, and every one of them was written into the engine's
+  own recording as a success. We drove `binary_mode` rather than `media …
+  pause` because `binary_mode` leaves a file we can look at and `pause` leaves
+  nothing any channel reports; it is the same reader, so the finding is the
+  same one — but if you want the `media` line itself driven, say so and it will
+  need a video and a way to ask the player whether it is paused.
+  Status: OPEN (question (a) is still yours, and it is the one that decides
+  whether this is a documentation fix or a compatibility problem).
 
 - **SS-27** — Lines 1478-1479, `transition action skip duration 1`, documented
   as "All faders to off in 1 second". The duration is in **MILLISECONDS**, so
