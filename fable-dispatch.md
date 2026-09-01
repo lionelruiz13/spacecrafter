@@ -276,6 +276,14 @@ criterion-integrity 5, baselines at true close pair-check **208/183/25/92**
      `python3 harness/f70_ascii.py gate`. CLAUDE.md carries the clean rule.]**
    - Cost claims use the **1 ms/frame** denominator (§2.0 D11). Acting defaults are
      LOGGED (§2.0 D12). Actionable diagnostics per §2(f).
+   - **Anchor-first enumeration (owner mechanism, 2026-09-01, §11.193):** a task
+     that creates or reroutes an information event (a diagnostic, a notification,
+     a recorded fact) NAMES the event's responsibility anchor — its I2 placement;
+     in execution space, the detection point — and walks the channels FROM it in
+     the task section before implementation. The form is owned at the anchor and
+     routed down; sinks never re-render. Reason: enumeration at the anchor is
+     complete by topology; at any sink it is recall — the §11.184 log-channel
+     miss is the measured instance.
    - A green build is not coverage — every task names its discriminating check; if a
      check needs a display, say so instead of substituting a weaker one.
    - **No `run_in_background` for long campaigns** — foreground within-turn batches
