@@ -1,0 +1,4 @@
+F76 scedit corpus disposition table -- summary of the run that produced dispositions.tsv.gz
+corpus: ~/.spacecrafter/scripts (untracked field data, host-varying); scedit: util/scedit/build-f75/scedit at code e3afca8f
+# 1661 findings over 26 files in 408 scripts; by id: dangling-key=6 duplicate-key=1596 end-without-if=2 silent-off-value=1 unknown-command=5 unknown-parameter=51; by disposition: UNADJUDICATED=1661
+# 1661 finding(s) carry no disposition row

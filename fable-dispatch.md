@@ -857,7 +857,15 @@ directory → loud skip, not pass).
 **DoD:** table complete; live legs per class; SS rows + §5 routing; gate armed
 with its absent-corpus behaviour; journal + README; trees clean; WIP cleared;
 baselines LAST (deltas attributed to every SS row and §5 touch).
-**WIP:** —
+**WIP:** 2026-09-01 **CP1** — §0.7 gate PASSED with one reported dispatcher
+defect (`cmake --build build-claude -- -n` is NOT empty: F75's decoy
+insert-and-restore moved `if_swap.cpp`'s mtime; the binary is content-current,
+PROVEN by recompiling that TU to a byte-identical `.o`, md5 `921dabdd`); corpus
+premise reproduces EXACTLY (1661/26, by-id as stated, two scedit builds giving
+byte-identical output; 408 files; 43 md5 groups). Universe committed:
+`harness/f76_corpus.py` + `artifacts/f76/dispositions.tsv.gz`, 1661 rows all
+UNADJUDICATED, `--strict` reds. NEXT: adjudicate (16 distinct defects
+enumerated), then the six live legs.
 
 ### F77 — The bad-script launch: what a shipped show with one typo does today on EVERY channel — §5.116's coercion, §5.117's severity, §5.118's silent drop, measured not derived (the three rows' "owed before it is judged"; session-17 carry-over "pricing launch") [S]
 
