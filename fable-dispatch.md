@@ -1073,6 +1073,115 @@ reported not absorbed (the pair-check's own divergence class, caught by
 hand before the instrument). Round addendum: **F72 → §11.192**, session 19
 closes at FIVE for five.
 
+### F73 — POST-CLOSE 2: the log line becomes the intent-modified line — one renderer, shared with the annotator (§11.193(a)-(c); supersedes F72's message rendering in part) [S/M]
+
+**Why now / mandate:** owner statement §11.193 (verbatim there): the log's
+error line is the **intent-modified line** — the raw line as read (author
+comments kept, so the line is unambiguous) + the ` #! <message>` tail —
+origin-prefixed, self-sufficient, matching what the user finds in the file;
+on a READ-ONLY file the log still shows it. Reasons owner-stated:
+non-duplication of the error reporting itself + emergent resolution (log
+and file are one rendering, they cannot disagree).
+
+**Sources (re-read, never recall):** `INTENT/11.193.md` IN FULL ((c) is the
+spec with its veto points; (b) Root 1 is the decoupling that makes the shape
+derivable); `INTENT/11.192.md` (what F72 measured — every "did not move" leg
+stays a bar); `INTENT/11.184.md` (the annotator's composition contract: tail
+position by the parser's quote toggle, after the author's comment,
+idempotent replacement); `src/scriptModule/script_annotator.{hpp,cpp}`;
+`harness/f68_provenance.py` + `f69_feedback.py` (the legs that assert log
+shapes — they flip WITH this change, both-ways).
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `1014e5a5`, tree clean;
+harness HEAD as the prompt states (concurrent-session allowances as
+F69–F72); next free §11 number **194**; live `### F` count **7**; binary
+current at code HEAD; §11.192 carries the SUPERSEDED-IN-PART marker.
+ANY broken ⇒ abort.
+
+**Scope:**
+1. **One renderer**: extract/share the annotator's line+tail composition
+   (never duplicate it — I2 is this task's own subject): input = raw line +
+   origin + message; output = the intent-modified line. An existing `#!`
+   tail on the line is REPLACED in the rendering (the writer's idempotency
+   rule, same code).
+2. **The LOG consumes it** at the funnel and the bypassing sibling: ONE
+   line per error — `<origin-prefix> <intent-modified line>` — replacing
+   the legacy two-line emission (the collapse is part of the shape; the
+   owner's example is one line). Prefix wording yours with veto (`Error
+   executing <file>:5:` is the owner's example spelling).
+3. **File-origin AND TCP-origin log lines** unified through the same
+   renderer (TCP = [derived] in the spec, veto flagged in the entry);
+   nested refusals stay origin-less and keep their current lines (§11.184's
+   rule, untouched).
+4. **What does NOT move** (each re-measured, F72's bars): the WIRE —
+   `$DIAG|origin|message|subject` unchanged, frozen wire 71/5/0/85 B + D's
+   939 B reproduced against the committed baselines; the FILE writer —
+   ruled class only, `f63_annotations.py` green; message CONTENT — today's
+   `debug_message` text rides in the tail (the §11.169 three-part upgrade
+   stays F58's work order); §5.117's severity claim.
+5. **Gates**: f68/f69 legs updated WITH the change (declared pre-era
+   discipline per §11.192(f)); the sharpest leg re-derived for the new
+   shape: post line == renderer(raw line, origin, message) recomputed
+   independently by the gate from the raw script bytes — the gate must not
+   trust the engine's own composition; a read-only-file leg (log shows the
+   intent-modified line, file untouched); f63 34/34; build green `-j6`;
+   ASCII gate PASS.
+6. **Record**: §11 entry at **194** + stub entry-first; back-markers at
+   §11.192 (DELIVERED flip of its SUPERSEDED-IN-PART) and §11.193; §5.117
+   annotation updated; README; WIP per §0.6; new code pure ASCII (D14);
+   one-line marker spans (the §11.192(h) scanner rule).
+
+**Boundaries:** LOG rendering only — no wire change (delivery-blocking), no
+file-write behaviour change, no message-content rewrite, no nested-origin
+change; mint license per §5.79.
+
+**DoD:** renderer shared not duplicated; one-line log shape measured
+both-ways incl. read-only leg; all F72 bars re-held; §11.194 + markers;
+trees clean; WIP cleared; baselines re-derived LAST with deltas attributed.
+**WIP:** —
+
+### F74 — POST-CLOSE 2: §5.119's fix — the past-the-end dereference removed, under the owner's two conditions (§11.193(e)) [S]
+
+**Why now / mandate:** owner authorization §11.193(e), verbatim: *"you can
+correct it, but the one correcting it must verify it's structurally
+reachable, not just seemingly so - and not modify the behavior beyond
+removing the UB access."*
+
+**Sources (re-read, never recall):** `INTENT/5.119.md` (the row: the claim,
+the neighbours' guard shape, the one-line reach `set sky_locale zh_CN`);
+`INTENT/11.193.md` (e); `src/appModule/fontFactory.{hpp,cpp}` at HEAD.
+
+**Preconditions (checkable, §0.7 gate):** F73 delivered and accepted; code
+HEAD = F73's delivery sha, tree clean; next free §11 number **195**; live
+`### F` count **7**; §5.119 carries the FIX-AUTHORIZED marker. ANY broken ⇒
+abort.
+
+**Scope:** (1) STRUCTURAL reachability first: the full call chain from
+`set sky_locale zh_CN` to the dereference, every guard on the path read and
+cited; then a MEASURED demonstration — a sanitizer build (`-fsanitize=
+address` on the affected objects or a local asan build; the desktop
+build-asan binaries do not load here) or equivalent instrumentation showing
+the UB access fire on that one script line; if reachability FAILS the
+structural test, STOP — the finding replaces the fix (report, no code
+change, §5.119 annotated with the analysis). (2) The fix: the neighbours'
+guard shape, removing the UB access and NOTHING else — every defined-path
+behaviour byte-identical (as-if bar); state the defined-behaviour argument
+in the entry. (3) Gate: the reachability demonstration both ways (pre
+binary fires under sanitizer, fixed binary does not; the same script's
+DEFINED effects identical on both); build green; ASCII gate. (4) Record:
+§11 entry at **195** + stub; §5.119 flipped FIXED with the reachability
+record; README; WIP; D14.
+
+**Boundaries:** one function's guard — no other behaviour change, no
+refactor, no severity/log change beyond what the guard's own path needs
+(D12 if the guard ACTS: log the skip, §2(f) shape); mint license per §5.79.
+
+**DoD:** reachability established structurally AND demonstrated, or the
+finding replacing the fix; the guard landed with the as-if argument; gates
+both ways; §11.195 + §5.119 flip; trees clean; WIP cleared; baselines
+LAST.
+**WIP:** —
+
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
 - **B1/S4 + B2 + riding rows** (D4 surface streaming, RING asteroid, INSTANCED
@@ -1162,7 +1271,13 @@ closes at FIVE for five.
     queued, new rows self-pin.
   - **[ANSWERED YES 2026-08-31 → §11.191(b): "good idea" — word-given as
     post-close task F72 (the one condition + flipped gate legs; log channel
-    only, wire and `#!` decision unmoved).]**
+    only, wire and `#!` decision unmoved).]** **[SHAPE CORRECTED 2026-09-01
+    → §11.193: the ratified shape is the INTENT-MODIFIED LINE in the log
+    (raw line + comments + `#!` tail, one line, origin-prefixed), not a
+    prefix on the legacy messages — delta traced to three roots (the
+    rendering/write coupling in our records; my question's narrow frame,
+    seventh tally; two I2 derivations locating the authority at different
+    nodes). Re-dispatched as F73.]**
   - **SHOULD A FILE-ORIGIN REFUSAL NAME `<file>:<line>` IN THE LOG?** (F68
     §11.187(d)): the funnel now prefixes TCP-origin refusals with `tcp#<id>`;
     the file half is DELIBERATELY absent — the executor read "every failing

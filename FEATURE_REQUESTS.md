@@ -293,6 +293,11 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   reversal of the policy).
   scedit's half is tracked as scedit INTENT §5 item 15 (recognize,
   navigate, error history, caret standard).
+  **[REFINED 2026-09-01 → §11.193: the `#!` RENDERING is decoupled from the
+  file WRITE — owner: on a read-only file the log still shows the
+  intent-modified line *"even if the modification never lands there"*. The
+  LOG becomes a sink of the same rendering (F73); the ~1661 file-write
+  decision above remains OPEN and is unchanged by that.]**
 
 ### [2026-08-30] Short aliases for the long math commands: mod, div, mul
 - **From:** Vixy (in-conversation, replacing the declined expansion idea
