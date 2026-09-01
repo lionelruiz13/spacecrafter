@@ -864,8 +864,14 @@ PROVEN by recompiling that TU to a byte-identical `.o`, md5 `921dabdd`); corpus
 premise reproduces EXACTLY (1661/26, by-id as stated, two scedit builds giving
 byte-identical output; 408 files; 43 md5 groups). Universe committed:
 `harness/f76_corpus.py` + `artifacts/f76/dispositions.tsv.gz`, 1661 rows all
-UNADJUDICATED, `--strict` reds. NEXT: adjudicate (16 distinct defects
-enumerated), then the six live legs.
+UNADJUDICATED, `--strict` reds. **CP2** — adjudicated: 1661/1661 TRUE-shipped,
+13 distinct authored defects, `--strict` green; every ground read at the engine
+(a full vocabulary re-derivation from `app_command_init.cpp` x
+`base_command_interface.hpp` reproduces the grammar's 97 flags / 43 set names /
+46 colours EXACTLY). SIGNAL column added, and it is F77's number: **12 of 1661
+findings make the engine say anything** (10 LOG-DEBUG + 2 LOG-ERROR), 1647
+SILENT. `f76_live.py` committed WITH its predictions before any launch. NEXT:
+the eight live legs, then the SS rows / the gate / the records.
 
 ### F77 — The bad-script launch: what a shipped show with one typo does today on EVERY channel — §5.116's coercion, §5.117's severity, §5.118's silent drop, measured not derived (the three rows' "owed before it is judged"; session-17 carry-over "pricing launch") [S]
 
