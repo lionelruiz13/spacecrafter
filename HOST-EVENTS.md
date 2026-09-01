@@ -130,3 +130,17 @@ never rewrite (maintenance invariant). Archival per the standing convention
   canary's per-pid mtime proxy remains the refuted instrument, and its
   display-target member will now also mismatch on this host (still exit-2
   fail-by-construction territory, desktop bank).
+- 2026-09-01 [measured: F76 executor (report), re-verified at the socket by
+  the supervisor same evening] **DISPLAY `:2` EXISTS AGAIN ON THIS LAPTOP AND
+  IT IS NOT OURS** — `/tmp/.X11-unix/X2` (and `X3`) are owned by **foxy**
+  (Xwayland pid 90210, started 18:09:36, auth under `/run/user/1000`; gdm
+  holds X1024/X1025 since the same minute — a second graphical login on
+  seat0/tty3). claude's sockets remain `X0`/`X1` (2026-08-31 20:57 boot,
+  `DISPLAY=:0` verified by xdpyinfo). CONSEQUENCE: the canary's `:2`
+  display-target member now REACHES a live server that belongs to another
+  user — exit moved **2 → 3** (fail members `display.reachable`,
+  `compositor.absent`; supervisor's own run 22:07, artifacts f56/canary/
+  20260901-220758). Still fail-by-construction vs the desktop bank; nothing
+  re-banked (§11.174(f) fork stands). Standing rule unchanged: HOST-EVENTS
+  is the per-host/per-boot display authority — and NEVER launch at `:2` on
+  this laptop; it is another user's session.

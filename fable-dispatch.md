@@ -886,6 +886,40 @@ Back-marker scan **129/170/102**, unchanged to the digit — and predicted to
 be: it reads only `INTENT/<id>.md` as event sources, so a §5-sourced
 annotation is invisible to it (the session-19 close note's sixth
 strict-credit member, F78's subject).
+**ACCEPTED 2026-09-01 (Fable, session 20):** journal `2026-09-01b` read in
+full; trees/commits/authors verified; my own runs: ctest 16/16 (`build-f76`,
+`shipped_corpus_gate` included), `anchor_gate` rc 0 (6667/2/69), ASCII PASS,
+baselines 211/186/25/**95** (+2 = §5.122/§5.123 inline stubs, attributed) ·
+scan 129/170/102 unchanged-and-predicted; corpus 408, md5s pristine; the
+`:2 -> foxy Xwayland` display fact re-verified at the socket (X2 owned by
+foxy, pid 90210, 18:09:36) and canary exit **3** reproduced by my own run
+(22:07) -> HOST-EVENTS appended AT ACCEPTANCE (the executor reported the fact
+but did not write the channel -- supervisor act; future prompts carry the
+HOST-EVENTS append duty with any environment observation). ENDORSED, each
+with its ground: the §0.7 RECLASSIFICATION of the dry-run premise
+(§11.179(a) with the counterfactual stated; load-bearing half proved by
+byte-identical recompile -- MY premise was the defect, tally +1: an open-time
+observable carried into a post-F75 prompt; root: F75's decoy touch-and-restore
+restored bytes, not mtimes; I settled the tree by relink, dry-run empty
+again); the beyond-DoD message fix (C1/I2: the engine's sentence has ONE
+checked home, `engine_tail`; prose quotes nothing; corpus delta exactly 2
+lines, attributed -- ALSO the first live instance of F75's
+anchor-resolves-but-sentence-false class); the DELIBERATE `anchor_gate`
+re-record (the task moved grammar strings, which the gate covers; my "should
+NOT need --record" was scoped to engine files only, stated too narrowly);
+`unclosed-struct` recorded-not-rewritten (rides §5.117's ruling); gate
+reading (b) (D9: field data not copied into the repo; veto-open in the
+README); the TRUE-generator boundary reported UNMEETABLE as written (no
+generator in the engine tree -- tally +1, mine: a boundary predicated on the
+item's "generated" label, unverified; routed as SS-39). Premise refinement
+endorsed: the 43 md5 groups are per-md5, never per-name (W17 shares a name
+and nothing else). CRITERION-INTEGRITY instances this task: the vocabulary
+extraction corrected by its target (`tully_color_mode`); three instrument
+defects fixed without moving a criterion. FORMAT NOTE, no action: this
+delivery REPLACED the `**WIP:**` marker instead of appending after it --
+the header-survival check held (`### F` = 4); the acceptance anchor adapts.
+F77 unblocked: refusal number 12/1661 (SIGNAL column); file-origin + console
+halves owed; hazards in `harness/README.md` § F76.
 
 ### F77 — The bad-script launch: what a shipped show with one typo does today on EVERY channel — §5.116's coercion, §5.117's severity, §5.118's silent drop, measured not derived (the three rows' "owed before it is judged"; session-17 carry-over "pricing launch") [S]
 
