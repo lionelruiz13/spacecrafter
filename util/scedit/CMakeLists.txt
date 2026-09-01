@@ -215,6 +215,15 @@ set(SCEDIT_CORPUS
 	${CMAKE_CURRENT_SOURCE_DIR}/../../claude/harness/artifacts/f27/pre_final/f27_script_get.sts
 	${CMAKE_CURRENT_SOURCE_DIR}/../../claude/harness/artifacts/f27/post/f27_script_get.sts
 	${CMAKE_CURRENT_SOURCE_DIR}/../../claude/harness/artifacts/f27/post_final/f27_script_get.sts)
+# Anchor gate: every `file:line` the contract cites into the engine still
+# resolves -- AT ITS PIN, which cannot rot, and its state at HEAD is the
+# recorded one. This is the check that fires when the ENGINE moves rather than
+# when the grammar does: between 2026-08-04 and 2026-09-01 every anchor in the
+# file went stale and nothing said so. `_meta` is out of scope by construction
+# and says so in its own counts (tests/anchor_gate.py explains why).
+add_test(NAME anchor_gate
+	COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/anchor_gate.py)
+
 add_test(NAME corpus_gate
 	COMMAND ${CMAKE_COMMAND}
 		-DSCEDIT=$<TARGET_FILE:scedit>
