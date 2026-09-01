@@ -41,8 +41,18 @@ ROOT = sys.argv[1]
 # THIS RETRACTS OR CORRECTS" -- a MARKED pair carrying three covered claims, invisible
 # because the lexicon knew only past participles.  No new concept enters, only the
 # other tense of words already ruled in.
+# [F78 member 4, 2026-09-01] + STALE.  S11.180(l) committed a scan prediction, measured
+# it wrong, and traced the failure: every refutation in that entry is written
+# lowercase-bold and the keyword its three annotations open with is "STALE ROUTING",
+# so a delivery that corrected three rows moved the scan by zero.  An assertion that a
+# claim is STALE is a correction-class event, and "[STALE ROUTING <date>, S11.180 ...]"
+# at a target is a back-marker naming its source -- so the word enters BOTH lexicons.
+# NOT taken with it, and stated: S13 row ids (A<n>/B<n>) stay unreadable.  S11.180(i)
+# measured that axis as not machine-decidable (15 of 73 references NOT-A-ROW from seven
+# namespace collisions), and a test that emits them installs a permanent false-positive
+# population -- exactly the debt this package is paying down.
 KEYRE = re.compile("REFUTED|SUPERSEDED|CORRECTED|RETRACTED|WITHDRAWN|INCOMPLETE|"
-                   "REFUTES|SUPERSEDES|CORRECTS|RETRACTS|WITHDRAWS")
+                   "REFUTES|SUPERSEDES|CORRECTS|RETRACTS|WITHDRAWS|STALE ROUTING")
 # MARKER lexicon (half 2, form A only -- see the asymmetry note below).
 # [F78 member 3 arm (a), 2026-09-01] v1's eight words are the SUPERSESSION lexicon
 # wearing a second hat, and S11.179(i)/M1 measured six genuine dated markers they
@@ -66,7 +76,7 @@ KEYRE = re.compile("REFUTED|SUPERSEDED|CORRECTED|RETRACTED|WITHDRAWN|INCOMPLETE|
 # source, and refusing to read it manufactures a false arrear.
 MARKRE = re.compile("ANNOTAT|ADDENDUM|BACK-MARKER|SUPERSED|REFUT|CORRECT|RETRACT|WITHDRAW|"
                     "RATIFIED|REOPEN|UPDATED?|DELIVERED|PERFORMED|DISCHARG|UNBLOCK|ATTRIBUTED|"
-                    "CLOSED|FIXED|REFRESH|ROOT-CAUSE|TESTED|INCOMPLETE", re.I)
+                    "CLOSED|FIXED|REFRESH|ROOT-CAUSE|TESTED|INCOMPLETE|STALE", re.I)
 CITE = re.compile(r"§(\d+\.\d+)")
 W = 160
 

@@ -259,6 +259,49 @@ def m3b_present_tense_is_an_event():
         a[0], a[1], b[0], b[1], BASE["v2"][0], BASE["v2"][1])
 
 
+# ------------------------------------------------------------------- member 4 (scan)
+@case
+def m4_stale_routing_is_an_event():
+    """F60's own marker keyword: STALE ROUTING beside a citation is an event for v2."""
+    d = scratch()
+    edit_entry(d, "11.100", "\n", "\nDecoy: **[STALE ROUTING 2099-01-01, §11.99(a)]** the clause names a delivered row.\n", 1)
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = (a[:3] == BASE["v1"][:3] and
+          b[0] == BASE["v2"][0] + 1 and b[1] == BASE["v2"][1] + 1)
+    if not KEEP: shutil.rmtree(d)
+    return "m4    STALE ROUTING is an event", ok, "v1 %d/%d / v2 %d/%d (base %d/%d)" % (
+        a[0], a[1], b[0], b[1], BASE["v2"][0], BASE["v2"][1])
+
+
+@case
+def m4_bare_stale_is_not():
+    """THE NEGATIVE CONTROL THAT DECIDED THE MEMBER'S SHAPE.  Bare STALE is a CLASS
+    NAME in this ledger -- "the pre-existing distant-TNO STALE class (§11.39)" -- and
+    putting it in the event lexicon manufactured 25 pairs, ~20 of them that one phrase
+    and ordinary narration.  v2 must NOT fire on it."""
+    d = scratch()
+    edit_entry(d, "11.100", "\n", "\nDecoy: the pre-existing distant-TNO STALE class (§11.99).\n", 1)
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = a[:3] == BASE["v1"][:3] and b[:3] == BASE["v2"][:3]
+    if not KEEP: shutil.rmtree(d)
+    return "m4    bare STALE is refused (class-name control)", ok, "v1 %d/%d/%d / v2 %d/%d/%d" % (a[:3] + b[:3])
+
+
+@case
+def m4_stale_marker_credits():
+    """The MARKER arm: a [STALE ROUTING ...] span at the target credits under v2 only.
+    It moves nothing on today's corpus, so it needs this to discriminate at all."""
+    d = scratch()
+    i, _ = row_line(d, "11", "97")
+    put_line(d, i, open(os.path.join(d, "INTENT.md"), encoding="utf-8").read().split("\n")[i] +
+             " **[STALE ROUTING 2099-01-01 (§11.100): this row's routing is superseded.]**")
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = a[2] == BASE["v1"][2] and b[2] == BASE["v2"][2] - 1
+    if not KEEP: shutil.rmtree(d)
+    return "m4    a STALE ROUTING span credits", ok, "v1 %d (base %d) / v2 %d (base %d)" % (
+        a[2], BASE["v1"][2], b[2], BASE["v2"][2])
+
+
 def main():
     print("ledger root: %s" % ROOT)
     BASE["v1"], BASE["v2"] = scan(SCAN_V1, ROOT), scan(SCAN_V2, ROOT)
