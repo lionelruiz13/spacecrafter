@@ -36,8 +36,37 @@ ROOT = sys.argv[1]
 # lexicon BY DESIGN -- a discharge is not a supersession.  DISCHARGED / ANSWERED /
 # DELIVERED / PAID are therefore absent here on purpose, and admissible only in
 # MARKRE, where the question asked is a different one (see member 3).
-KEYRE = re.compile("REFUTED|SUPERSEDED|CORRECTED|RETRACTED|WITHDRAWN|INCOMPLETE")
-MARKRE = re.compile("ANNOTATION|ADDENDUM|BACK-MARKER|SUPERSED|REFUT|CORRECT|RETRACT|WITHDRAW", re.I)
+# [F78 member 3 arm (b), 2026-09-01] + the PRESENT TENSE of the same five words.
+# S11.179(i)/M2: "S11.130 -> S5.63"'s source line heads "THREE THINGS S5.63 SAID THAT
+# THIS RETRACTS OR CORRECTS" -- a MARKED pair carrying three covered claims, invisible
+# because the lexicon knew only past participles.  No new concept enters, only the
+# other tense of words already ruled in.
+KEYRE = re.compile("REFUTED|SUPERSEDED|CORRECTED|RETRACTED|WITHDRAWN|INCOMPLETE|"
+                   "REFUTES|SUPERSEDES|CORRECTS|RETRACTS|WITHDRAWS")
+# MARKER lexicon (half 2, form A only -- see the asymmetry note below).
+# [F78 member 3 arm (a), 2026-09-01] v1's eight words are the SUPERSESSION lexicon
+# wearing a second hat, and S11.179(i)/M1 measured six genuine dated markers they
+# cannot see.  Two changes, both traceable:
+#   (1) the SIBLING instrument's list is adopted whole -- intent_pair_check.py:68-70's
+#       MARK_RE is this ledger's own recorded answer to "what word opens a marker",
+#       and keeping a second poorer copy here is the duplication I2 forbids;
+#   (2) five words neither list had, each with a named specimen:
+#       REFRESH   <- "[STUB REFRESHED 2026-08-29 -- F42/S11.156 ...]"        (S5.2)
+#       ROOT-CAUSE<- "**(a) ROOT-CAUSED 2026-07-31 by F18, S11.127(c) ...**" (S5.53)
+#       FIXED     <- "**FIXED AND CLOSED 2026-08-26 (F40, S11.153 ...)**"    (S5.104, S5.80)
+#       TESTED    <- "[TESTED 2026-08-30, S11.177 (task F57) ...]"           (S11.173)
+#       INCOMPLETE<- "[ANNOTATION 2026-08-30, S11.177 ... IS INCOMPLETE]"    (S11.48)
+# THE ASYMMETRY, stated because it is the package's governing argument: a wide MARKER
+# lexicon credits an arrear and makes it VANISH, which is the failure this instrument
+# exists to prevent, while a wide EVENT lexicon only adds visible noise.  So this list
+# is used ONLY inside form A, which already requires a BRACKETED-or-BOLD span holding
+# the citation; the unbracketed proximity form B stays keyed on KEYRE.  Discharge
+# vocabulary is admissible HERE and not in KEYRE (session-16 ruling): "[OWED SWEEP
+# DISCHARGED 2026-08-29 (F46 -> S11.160)]" at a target IS a back-marker naming its
+# source, and refusing to read it manufactures a false arrear.
+MARKRE = re.compile("ANNOTAT|ADDENDUM|BACK-MARKER|SUPERSED|REFUT|CORRECT|RETRACT|WITHDRAW|"
+                    "RATIFIED|REOPEN|UPDATED?|DELIVERED|PERFORMED|DISCHARG|UNBLOCK|ATTRIBUTED|"
+                    "CLOSED|FIXED|REFRESH|ROOT-CAUSE|TESTED|INCOMPLETE", re.I)
 CITE = re.compile(r"§(\d+\.\d+)")
 W = 160
 
@@ -92,8 +121,23 @@ STUBS = _build_stubs(INTENT_LINES)
 def stub(idnum):
     return STUBS.get(idnum, "")
 
+BOLD = re.compile(r"\*\*(.+?)\*\*")
+
 def spans(line):
-    """bracketed [...] spans, non-nested, plus the whole line as a fallback span."""
+    """marker-span candidates on one line.
+
+    v1: bracketed [...] spans, non-nested.
+    [F78 member 3 arm (a), 2026-09-01] PLUS **bold** spans.  S11.179(i)/M1 measured six
+    genuine, dated, correctly-placed S11.113(p) markers that half 2 cannot see because
+    they are "neither bracketed nor uppercase-keyworded" -- and FOUR of the six are
+    bold, not bracketed: "**(a) ROOT-CAUSED 2026-07-31 by F18, S11.127(c) ...**",
+    "**OWED SWEEP DISCHARGED 2026-08-29 (F46 -> S11.160)**", "**FIXED AND CLOSED
+    2026-08-26 (F40, S11.153 ...)**", "**EXTENSION 2026-08-09 (F34, S11.144 ...): ...
+    the row's own text is corrected ...**".  A vocabulary widening alone would have
+    credited none of them.  The sibling instrument already reads both shapes as one
+    class (`SPAN_RE` in intent_pair_check.py:71) -- this is that notion of a span,
+    held once (I2).
+    """
     out, depth, start = [], 0, None
     for i, ch in enumerate(line):
         if ch == "[":
@@ -104,6 +148,7 @@ def spans(line):
             depth -= 1
             if depth == 0:
                 out.append(line[start:i + 1])
+    out += BOLD.findall(line)
     return out
 
 def has_backmarker(tgt, src):

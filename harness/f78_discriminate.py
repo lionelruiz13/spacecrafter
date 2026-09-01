@@ -207,6 +207,58 @@ def m2_lowercase_is_not():
     return "m2    the same sentence lowercase moves nothing", ok, "v1 %d/%d/%d / v2 %d/%d/%d" % (a[:3] + b[:3])
 
 
+# ------------------------------------------------------------------- member 3 (scan)
+@case
+def m3a_bold_span_credits():
+    """A dated marker in a BOLD span (not bracketed) at the target: v1 blind, v2 credits.
+    Four of §11.179/M1's six specimens are exactly this shape."""
+    d = scratch()
+    edit_entry(d, "11.97", "\n", "\n**FIXED AND CLOSED 2099-01-01 (§11.100): the decoy's own marker.**\n", 1)
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = a[2] == BASE["v1"][2] and b[2] == BASE["v2"][2] - 1
+    if not KEEP: shutil.rmtree(d)
+    return "m3-a  a BOLD dated marker credits", ok, "v1 %d (base %d) / v2 %d (base %d)" % (
+        a[2], BASE["v1"][2], b[2], BASE["v2"][2])
+
+
+@case
+def m3a_vocab_credits():
+    """A BRACKETED span whose opening word is in the widened vocabulary only."""
+    d = scratch()
+    edit_entry(d, "11.97", "\n", "\n[STUB REFRESHED 2099-01-01 — §11.100: the decoy's own marker.]\n", 1)
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = a[2] == BASE["v1"][2] and b[2] == BASE["v2"][2] - 1
+    if not KEEP: shutil.rmtree(d)
+    return "m3-a  the widened marker vocabulary credits", ok, "v1 %d (base %d) / v2 %d (base %d)" % (
+        a[2], BASE["v1"][2], b[2], BASE["v2"][2])
+
+
+@case
+def m3a_unmarked_bold_refused():
+    """Control: a BOLD span carrying the citation but NO marker word must credit
+    nothing -- the widening is span-plus-vocabulary, not bare co-occurrence."""
+    d = scratch()
+    edit_entry(d, "11.97", "\n", "\n**A plain bold sentence mentioning §11.100 and nothing else.**\n", 1)
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = a[2] == BASE["v1"][2] and b[2] == BASE["v2"][2]
+    if not KEEP: shutil.rmtree(d)
+    return "m3-a  a bold span with NO marker word credits nothing", ok, "v1 %d / v2 %d (base %d)" % (
+        a[2], b[2], BASE["v2"][2])
+
+
+@case
+def m3b_present_tense_is_an_event():
+    """SUPERSEDES beside a citation: an event for v2, invisible to v1."""
+    d = scratch()
+    edit_entry(d, "11.100", "\n", "\nDecoy: this clause SUPERSEDES §11.99's reading.\n", 1)
+    a = scan(SCAN_V1, d); b = scan(SCAN_V2, d)
+    ok = (a[:3] == BASE["v1"][:3] and
+          b[0] == BASE["v2"][0] + 1 and b[1] == BASE["v2"][1] + 1)
+    if not KEEP: shutil.rmtree(d)
+    return "m3-b  present-tense SUPERSEDES is an event", ok, "v1 %d/%d / v2 %d/%d (base %d/%d)" % (
+        a[0], a[1], b[0], b[1], BASE["v2"][0], BASE["v2"][1])
+
+
 def main():
     print("ledger root: %s" % ROOT)
     BASE["v1"], BASE["v2"] = scan(SCAN_V1, ROOT), scan(SCAN_V2, ROOT)
