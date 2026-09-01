@@ -1,0 +1,120 @@
+### source: working tree /home/claude/spacecrafter/src/appModule/fontFactory.cpp  (== master-beta @ 54a2b844)
+### md5(fontFactory.cpp) = dd87911c631a75271487acd9de7eb4f8
+
+=== config: plain   []
+--- run exit code: 0
+[layout ] sizeof(std::list<FontContener>)=24  offsetof(FontContener,fontPtr)=8
+[driver ] --- App::firstInit (app.cpp:701-705) ---
+[s_font  base   ] /home/claude/.spacecrafter/fonts/DejaVuSansMono.ttf
+[s_font  ctor   ] size=14 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=24 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=18 name=/home/claude/.spacecrafter/fonts/DejaVuSansMono-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   setText] size=16 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   build  ]
+[driver ] --- set sky_locale zh_CN -> Core::setSkyLanguage -> core.cpp:1590 ---
+[s_font  rebuild] size=24 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=18 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=14 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[log WARNING] FontFactory::updateAllFont : target text has no font container, so its font is left unchanged - set it with 'font target text filename <file.ttf>'
+[driver ] --- updateAllFont RETURNED, no fault ---
+
+=== config: gdebug   [-D_GLIBCXX_DEBUG]
+--- run exit code: 0
+[layout ] sizeof(std::list<FontContener>)=48  offsetof(FontContener,fontPtr)=8
+[driver ] --- App::firstInit (app.cpp:701-705) ---
+[s_font  base   ] /home/claude/.spacecrafter/fonts/DejaVuSansMono.ttf
+[s_font  ctor   ] size=14 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=24 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=18 name=/home/claude/.spacecrafter/fonts/DejaVuSansMono-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   setText] size=16 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   build  ]
+[driver ] --- set sky_locale zh_CN -> Core::setSkyLanguage -> core.cpp:1590 ---
+[s_font  rebuild] size=24 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=18 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=14 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[log WARNING] FontFactory::updateAllFont : target text has no font container, so its font is left unchanged - set it with 'font target text filename <file.ttf>'
+[driver ] --- updateAllFont RETURNED, no fault ---
+
+=== config: asan   [-fsanitize=address -fno-omit-frame-pointer]
+--- run exit code: 0
+[layout ] sizeof(std::list<FontContener>)=24  offsetof(FontContener,fontPtr)=8
+[driver ] --- App::firstInit (app.cpp:701-705) ---
+[s_font  base   ] /home/claude/.spacecrafter/fonts/DejaVuSansMono.ttf
+[s_font  ctor   ] size=14 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=24 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=18 name=/home/claude/.spacecrafter/fonts/DejaVuSansMono-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   setText] size=16 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   build  ]
+[driver ] --- set sky_locale zh_CN -> Core::setSkyLanguage -> core.cpp:1590 ---
+[s_font  rebuild] size=24 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=18 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=14 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[log WARNING] FontFactory::updateAllFont : target text has no font container, so its font is left unchanged - set it with 'font target text filename <file.ttf>'
+[driver ] --- updateAllFont RETURNED, no fault ---
+
+=== config: ubsan   [-fsanitize=undefined -fno-omit-frame-pointer]
+--- run exit code: 0
+[layout ] sizeof(std::list<FontContener>)=24  offsetof(FontContener,fontPtr)=8
+[driver ] --- App::firstInit (app.cpp:701-705) ---
+[s_font  base   ] /home/claude/.spacecrafter/fonts/DejaVuSansMono.ttf
+[s_font  ctor   ] size=14 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=24 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=18 name=/home/claude/.spacecrafter/fonts/DejaVuSansMono-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   setText] size=16 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   build  ]
+[driver ] --- set sky_locale zh_CN -> Core::setSkyLanguage -> core.cpp:1590 ---
+[s_font  rebuild] size=24 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=18 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=14 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[log WARNING] FontFactory::updateAllFont : target text has no font container, so its font is left unchanged - set it with 'font target text filename <file.ttf>'
+[driver ] --- updateAllFont RETURNED, no fault ---
+
+### logs in /tmp/f74_out_post

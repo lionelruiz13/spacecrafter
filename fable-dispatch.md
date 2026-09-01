@@ -1224,13 +1224,22 @@ refactor, no severity/log change beyond what the guard's own path needs
 finding replacing the fix; the guard landed with the as-if argument; gates
 both ways; §11.195 + §5.119 flip; trees clean; WIP cleared; baselines
 LAST.
-**WIP:** 2026-09-01 — §0.7 gate PASSED. Chain READ end to end; REACHABILITY
-DEMONSTRATED pre-fix (`harness/f74_repro/`, artifact
-`artifacts/f74/f74_pre_9a3b7a55.txt`): `_GLIBCXX_DEBUG` aborts with
-*"attempt to dereference a past-the-end iterator"* (rc 134), UBSan reports
-at `fontFactory.cpp:177:41`, plain run survives and hands `6.74291e+22` to
-`media->updateTextFont`. NEXT: the guard (positive `!= std::end` form, log,
-NO assert), engine rebuild `-j6`, post-fix run, then §11.195 + §5.119 flip.
+**WIP:** — DELIVERED 2026-09-01, §11.195. Code `master-beta @ 54a2b844`
+(+8/−2, one function); build green `-j6` 0 warnings; ASCII gate PASS.
+Reachability established STRUCTURALLY (the `listFont` class set is
+input-independent; the `zh` branch tests a locale name `Translator` stores
+verbatim, its header's fallback promise being false) and DEMONSTRATED both
+ways on the real `fontFactory.cpp` (`harness/f74_repro/`, four
+configurations, artifacts `artifacts/f74/`): `_GLIBCXX_DEBUG` rc 134 pre /
+0 post, UBSan at `fontFactory.cpp:177:41` pre / silent post, ASan blind to
+both (intra-object), and the plain run answers §5.119's owed question —
+pre-fix SURVIVES and hands `6.74291e+22` to `media->updateTextFont`.
+Defined-path traces byte-identical for 24 lines in all four configs.
+§5.119 FLIPPED (its behaviour question deliberately left open);
+back-markers at §11.193(e) and §11.190(d), entry AND stub; §5.121 MINTED
+en route (one static translation table for two locales). Baselines:
+pair-check 210/185/25/92 → 211/186/25/93, tests D/D2/I/I2 34/11/87/34
+unchanged; back-marker scan 129/170/102 unchanged.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 

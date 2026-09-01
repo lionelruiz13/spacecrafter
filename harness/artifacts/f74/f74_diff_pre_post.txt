@@ -1,0 +1,48 @@
+=== plain: diff pre -> post (run traces) ===
+25c25
+< [media   update ] size=6.74291e+22 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+---
+> [log WARNING] FontFactory::updateAllFont : target text has no font container, so its font is left unchanged - set it with 'font target text filename <file.ttf>'
+=== gdebug: diff pre -> post (run traces) ===
+25,42c25,26
+< /usr/include/c++/11/debug/safe_iterator.h:316:
+< In function:
+<     gnu_debug::_Safe_iterator<_Iterator, _Sequence, _Category>::pointer 
+<     gnu_debug::_Safe_iterator<_Iterator, _Sequence, _Category>::operator->() 
+<     const [with _Iterator = std::_List_iterator<FontContener>; _Sequence = 
+<     std::debug::list<FontContener>; _Category = std::forward_iterator_tag; 
+<     gnu_debug::_Safe_iterator<_Iterator, _Sequence, _Category>::pointer = 
+<     FontContener*]
+< 
+< Error: attempt to dereference a past-the-end iterator.
+< 
+< Objects involved in the operation:
+<     iterator "this" @ 0x7ffc62d81430 {
+<       type = std::_List_iterator<FontContener> (mutable iterator);
+<       state = past-the-end;
+<       references sequence with type 'std::debug::list<FontContener, std::allocator<FontContener> >' @ 0x7ffc62d81578
+<     }
+< timeout: the monitored command dumped core
+---
+> [log WARNING] FontFactory::updateAllFont : target text has no font container, so its font is left unchanged - set it with 'font target text filename <file.ttf>'
+> [driver ] --- updateAllFont RETURNED, no fault ---
+=== asan: diff pre -> post (run traces) ===
+25c25
+< [media   update ] size=6.74291e+22 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+---
+> [log WARNING] FontFactory::updateAllFont : target text has no font container, so its font is left unchanged - set it with 'font target text filename <file.ttf>'
+=== ubsan: diff pre -> post (run traces) ===
+25,35c25
+< /home/claude/spacecrafter/src/appModule/fontFactory.cpp:177:41: runtime error: member call on address 0x6342891335b0 which does not point to an object of type 's_font'
+< 0x6342891335b0: note: object has invalid vptr
+<  00 00 00 00  2f 68 6f 6d 65 2f 63 6c  61 75 64 65 2f 2e 73 70  61 63 65 63 72 61 66 74  65 72 2f 66
+<               ^~~~~~~~~~~~~~~~~~~~~~~
+<               invalid vptr
+< /home/claude/spacecrafter/claude/harness/f74_repro/stub/tools/s_font.hpp:41:16: runtime error: member access within address 0x6342891335b0 which does not point to an object of type 's_font'
+< 0x6342891335b0: note: object has invalid vptr
+<  00 00 00 00  2f 68 6f 6d 65 2f 63 6c  61 75 64 65 2f 2e 73 70  61 63 65 63 72 61 66 74  65 72 2f 66
+<               ^~~~~~~~~~~~~~~~~~~~~~~
+<               invalid vptr
+< [media   update ] size=6.74291e+22 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+---
+> [log WARNING] FontFactory::updateAllFont : target text has no font container, so its font is left unchanged - set it with 'font target text filename <file.ttf>'

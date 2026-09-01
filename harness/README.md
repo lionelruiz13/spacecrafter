@@ -2920,3 +2920,43 @@ All four fixed with the change; f22 and f4 re-run green on the rewritten legs.
 The lesson for anything new that reads this log: match the message, not the
 scaffolding around it, and if you assert a NEGATIVE make sure the matcher can
 still see a positive.
+
+---
+
+## F74 — a past-the-end dereference, proved reachable without an engine (`f74_repro/`) — INTENT §11.195 / §5.119, 2026-09-01
+
+**What it is.** `f74_repro/f74_build_run.sh [git-rev]` compiles the **real**
+`src/appModule/fontFactory.{hpp,cpp}` — not a transcription — against a stub
+tree (`f74_repro/stub/`: `s_font`, `InitParser`, `AppSettings`, `cLog`,
+`Utility`, `Media`, ~40 lines each, every one printing) plus a driver that
+replays `App::firstInit`'s four calls and then the `zh` branch's
+`updateAllFont`. Four configurations in ~10 s, no engine, no display, no GPU:
+plain, `-D_GLIBCXX_DEBUG`, `-fsanitize=address`, `-fsanitize=undefined`. With a
+git-rev argument it extracts that revision's `fontFactory.{hpp,cpp}` into an
+overlay ahead of `src/` on the include path — that is how a PRE-fix column is
+reproduced after the fix has landed:
+
+    OUT_DIR=/tmp/pre  claude/harness/f74_repro/f74_build_run.sh 9a3b7a55
+    OUT_DIR=/tmp/post claude/harness/f74_repro/f74_build_run.sh
+    diff /tmp/pre/plain.run.log /tmp/post/plain.run.log
+
+**Why a stub harness answers a reachability question at all** (the argument, so
+it can be challenged): the question is only which `CLASSEFONT` values are in
+`listFont` versus in `m_strToTarget`, and BOTH sets are produced by the real
+code — nine literal `push_back`s in `init()`, ten literal keys from the real
+`TF_*` macros. The stubs decide what a font *does* and where a log line goes,
+never what is in the containers. Config values come from this host's live
+`[font]` section, so `fontFactor` is 1 and the printed sizes are the real ones.
+
+**Instrument facts worth keeping (measured here):**
+
+| detector | on a past-the-end `std::list` iterator dereference |
+|---|---|
+| `-D_GLIBCXX_DEBUG` | **fires, by name** — *"attempt to dereference a past-the-end iterator"*, prints the iterator's state and its sequence, aborts (rc 134). The right tool for this class. |
+| `-fsanitize=undefined` | **fires** when the garbage is then used as a polymorphic `this` — gives the line AND column and dumps the bytes it landed in, which is how the sibling member was identified |
+| `-fsanitize=address` | **silent.** The read stays inside the containing object (`FontFactory`'s next member) — an *intra-object* overflow, and ASan has no redzone between two members of one object |
+
+So: ASan sees allocations, checked libstdc++ sees **iterators**. A container
+question that lives inside one allocation needs the second, and a green ASan run
+is not evidence about it. `_GLIBCXX_DEBUG` changes `std::list`'s layout, so read
+any layout probe from the plain or ASan configuration, never from that one.
