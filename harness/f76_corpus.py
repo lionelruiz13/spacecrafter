@@ -54,7 +54,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))          # /home/claude/spacecrafter
-DEFAULT_SCEDIT = os.path.join(REPO, "util/scedit/build-f75/scedit")
+DEFAULT_SCEDIT = os.path.join(REPO, "util/scedit/build-f76/scedit")
 DEFAULT_GRAMMAR = os.path.join(REPO, "util/scedit/grammar/sc-grammar.json")
 DEFAULT_CORPUS = os.path.expanduser("~/.spacecrafter/scripts")
 
@@ -267,8 +267,10 @@ DEFECTS = [
   "at L_ERROR AND annotates the faulty line in the file with a `#!` tail "
   "[observed: :215-239]. Already SS-25 in the script-surface channel (opened "
   "2026-08-31 from a python pre-scan); this is the first time the shipped checker "
-  "itself reports it. NOTE the message is stale on one clause - see the journal: "
-  "the engine has not written the string \"end without if\" since code 2b8ec034"),
+  "itself reports it. The message CARRIED a false clause when this row was first "
+  "written - it said the engine logs \"end without if\", a string code 2b8ec034 "
+  "stopped writing on 2026-08-31 - and that was corrected at code 8eeffb9d before "
+  "this table was delivered; the finding itself never moved"),
  # ---- silent-off-value ----------------------------------------------------
  ("a-typo-that-happens-to-mean-what-was-meant",
   _at((_F + "M17.sts", 16)),

@@ -87,6 +87,17 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   `~/.spacecrafter/ssystem.ini` must pass with 0 false positives (true
   findings in shipped content are recorded upstream instead — they are
   engine/data findings, not lint noise).
+  **[MEASURED IN FULL 2026-09-01, F76, journal `2026-09-01b`]** The shipped
+  half is no longer a promise: the 13 shipped seeds over the 408 installed
+  scripts give **1661 findings, all TRUE, zero false positives**, each
+  dispositioned with the engine code its judgment was read at
+  (`claude/harness/artifacts/f76/dispositions.tsv.gz`) and each routed to its
+  owner (SS-25, SS-32…SS-39; parent §5.122, §5.123, §5.116). `--check` is
+  gated on it by `shipped_corpus_gate`. Two clauses of C3 that only showed
+  their teeth when it ran: *recorded upstream* is per DISTINCT DEFECT and not
+  per line (1661 findings are 13 authored slips), and *not lint noise* cuts
+  both ways — the one false statement the sweep found was in scedit's own
+  message text, not in a rule. `ssystem.ini`'s half is still item 4's.
 - **C4 — imported from the parent ledger** (references, not copies):
   legacy data files are ISO-8859 (CLAUDE.md standing rule); writes into
   LEGACY files must never introduce new-format constructs — comments/new
@@ -153,7 +164,10 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   scedit vs a verbatim copy of `parseCommand` (the ruled TARGET under amended
   C1) — 119 337 comparisons / 0 mismatches at 2026-08-31; `tests/
   derivation-diff.md` is the derivation-diff; C3's corpus gate armed the same
-  day (witness + harness corpus; the 408 shipped scripts await item 16).**
+  day (witness + harness corpus; ~~the 408 shipped scripts await item 16~~
+  **[2026-09-01, F76: the 408 shipped scripts are dispositioned -- 1661
+  findings, all TRUE-shipped, zero false positives -- and gated by
+  `shipped_corpus_gate`; item 16 is struck]**).**
 - ~~Future live legs (TCP) inherit the parent harness disciplines
   (fresh-launch, md5 in==out); no build exists on this laptop yet —
   rebuild is a prerequisite recorded, not done.~~ **SUPERSEDED 2026-08-31: the
@@ -170,7 +184,21 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   own targets, 0 warnings. Live: `claude/harness/f67_tcp_live.py` 28/28, twice.**~~
   **[SUPERSEDED 2026-08-31 by the F69 line below; kept as the F67 state of
   record, per the maintenance invariant.]**
-- **Gate inventory at 2026-09-01 (F75 delivered; `ctest` in a fresh
+- **Gate inventory at 2026-09-01 (F76 delivered; `ctest` in a fresh
+  `build-f76`): 16 gates. `shipped_corpus_gate` joins the fifteen and it is
+  C3's other half, owed since 2026-08-04: `--check` over the INSTALLED script
+  package (408 scripts, 1661 findings, every one dispositioned TRUE-shipped),
+  recorded as per-file per-id COUNTS plus the package's aggregate md5 rather
+  than as 1661 lines -- the reasons are in README.md § Verification and are
+  veto-open, the short one being that those lines are another person's shows
+  and their line-level record belongs in the disposition table, which carries
+  the ground each was judged on as well. Absent package: exit 77, which
+  `SKIP_RETURN_CODE` makes a REPORTED skip and never a pass. Shown able to fail
+  on ONE line added to ONE script in a hardlink copy (four lines of delta,
+  exit 1, and the md5 row naming the DATA as what moved). `anchor_gate`'s
+  record moves 6663 -> 6667 clean, deliberately: this task added citations.
+  0 warnings; journal 2026-09-01b.**
+- ~~**Gate inventory at 2026-09-01 (F75 delivered; `ctest` in a fresh
   `build-f75`): 15 gates -- the first NEW one since F67. `anchor_gate` joins
   the fourteen: every `file:line` the contract cites into the engine resolves
   AT ITS PIN (a commit, so the check cannot rot) and its state against the
@@ -182,7 +210,9 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   `if_swap.cpp` (21 references move, exit 1; restored, exit 0). Five record
   files moved with the sweep and every changed line of them is identical to
   its predecessor once digits are stripped -- checked, not asserted. 0
-  warnings; journal 2026-09-01a.**
+  warnings; journal 2026-09-01a.**~~
+  **[SUPERSEDED 2026-09-01 by the F76 line above; kept as the F75 state of
+  record, per the maintenance invariant.]**
 - ~~**Gate inventory at 2026-08-31 (F69 delivered; `ctest` in `build-lovely` and in
   a fresh `build-f69`): still 14 gates, three of them widened — tokenizer 189 ·
   parse_oracle 119 337/0 · editcore 266 · roundtrip · ui_selftest **21 frames**
@@ -413,7 +443,7 @@ notes.*
     a store of its own: say the word. Stated in `util/scedit/README.md` § The
     error pane, with the keys, the placement, the toggle and the
     default-closed named as scedit's own calls, all veto-open.**
-16. **Shipped-corpus dispositioning sweep** [measured 2026-08-30e] — the 13
+16. ~~**Shipped-corpus dispositioning sweep** [measured 2026-08-30e] — the 13
     older seeds over the 408 shipped scripts: **1757 findings in 35 files**
     (duplicate-key 1596 — 1500 in the generated `internal/
     comet-particles.sts`, indented-comment 98, unknown-parameter 51,
@@ -424,7 +454,21 @@ notes.*
     Dispatchable (fragment pattern, per-category units); true findings
     route to SCRIPT_SURFACE (SS-n) per C2's ownership split; a data-package
     fact to carry: 43 md5-identical script pairs (`navigation/fscripts/`
-    mirrors `fscripts/`), so every fix lands twice.
+    mirrors `fscripts/`), so every fix lands twice.~~ **DONE 2026-09-01
+    (F76, journal `2026-09-01b`; code `8eeffb9d` + `ba7a32a8`).** 1661
+    findings (the 1757 was pre-`indented-comment`-retirement) in 26 files,
+    **all 1661 dispositioned TRUE-shipped — zero false positives**, thirteen
+    authored defects behind them, table at
+    `claude/harness/artifacts/f76/dispositions.tsv.gz` with the engine ground
+    for each and one live leg per id class. C3's shipped half is ARMED as the
+    sixteenth ctest gate (`shipped_corpus_gate`, counts + package md5, loud
+    SKIP where the package is absent) and the "EMPTY" note is retired at its
+    node. Routed: SS-32…SS-39 + an SS-25 amendment; parent §5.122, §5.123 and
+    a §5.116 annotation. "Plausibly all TRUE" turned out to be right about the
+    findings and to have hidden the two things worth knowing: which THIRTEEN
+    authored slips they are, and that the engine says nothing about 1647 of
+    them. The one defect the sweep found was scedit's own — three messages
+    quoting engine log text the engine stopped writing at `2b8ec034`.
 17. ~~**SUSPENDED FOR VIXY — engine-version targeting.**~~ **RESOLVED
     [vixy 2026-08-31, verbatim: "scedit target HEAD only, yes."] — C1
     stands as written; a retiring seed simply retires (no `since:`/
@@ -516,6 +560,167 @@ notes.*
    the args merge gates.
 
 ## 6. Journal (append-only)
+
+- **[2026-09-01b] 1661 findings over the shipped shows, judged one by one:
+  every one TRUE, thirteen authored defects behind them, and the engine says
+  nothing about 1647.** Dispatch task F76 (`claude/fable-dispatch.md`),
+  executor run; code `8eeffb9d` (the message fix) + `ba7a32a8` (the gate),
+  harness `d49b13c` -> this entry. Mandate: **§5 item 16**, **C3** (zero false
+  positives; true findings recorded upstream, never silenced) and **C2**'s
+  ownership routing. Item 16 is struck by this entry.
+
+  **The corpus premise reproduced exactly** (1661 findings in 26 files;
+  duplicate-key 1596 with 1500 in `internal/comet-particles.sts`,
+  unknown-parameter 51, dangling-key 6, unknown-command 5, end-without-if 2,
+  silent-off-value 1; 408 scripts; 43 md5-identical groups). Two independent
+  scedit builds (`build-f71final`, `build-f75`) produced BYTE-IDENTICAL output,
+  so the number is not a property of which checker was asked. Refinement of a
+  premise, not a break: the 43 groups are not all `navigation/fscripts/X`
+  mirroring `fscripts/X` -- 33 are, plus six TRIPLES (`iphases_eclipses` /
+  `iphases_eclipsesh` / `navigation/...`), one group of FOUR and three other
+  pairs; and `fscripts/W17.sts` (18 lines) and `navigation/fscripts/W17.sts`
+  (173 lines) share a NAME and nothing else, so the twin rule is per-md5 and
+  never per-name. The disposition table measures the groups at run time and
+  carries them in a TWINS column rather than trusting a sentence.
+
+  **(a) The universe was committed before the judging** (`d49b13c`: 1661 rows,
+  every one UNADJUDICATED, `--strict` exiting 1) -- the F58/F70 pattern, so
+  that no finding could quietly not be there at the end. Final state: 1661
+  rows, **1661 TRUE-shipped**, zero false positives, zero UNADJUDICATED,
+  `--strict` green. **C3's shipped half is answered**:
+  `claude/harness/artifacts/f76/dispositions.tsv.gz`, generator
+  `harness/f76_corpus.py` (a mechanical census joined to hand traces; a finding
+  matching no trace is an ERROR, not a default -- f70_dispositions.py's shape).
+
+  **(b) Thirteen authored defects, and the 1596 duplicates are two of them.**
+  1595 rows are ONE comet-body template copied across three files
+  (`comet-particles.sts` 1500, `navigation/fscripts/W17.sts` 94,
+  `internal/comet.sts` 1) whose two `halo` values are the SAME token on every
+  one of those lines -- measured, so last-wins costs nothing there. The
+  1596th is a different thing entirely: `fscripts/06old.sts:286` writes
+  `color0.5,0.5,0.5` with no space, and because the extraction loop pairs
+  tokens positionally (`while (commandstr >> key >> value)`,
+  app_command_interface.cpp:164) every pair after it is off by one -- which
+  produces the duplicate AND the dangling key on that one line, and loads the
+  body with a garbage parameter set. The sharpest of the thirteen for the
+  tester is `internal/deepsky_drawings.sts`: five of its sixty lines write the
+  credit with a SPACE (or omit `credit`), where the other 55 write
+  `credit Laurent_Ferrero` as one token -- so `args[W_TEXTURE]` arrives empty,
+  `evalDouble("")` returns 0.0 (:4631-4635), and those five drawings get
+  `texture_luminance_adjust` **0 instead of 1**.
+
+  **(c) The vocabulary was re-derived from the engine, not read off the
+  grammar.** Resolving the `ACP_*` macros of `base_command_interface.hpp`
+  through the `m_flags` / `m_commands` / `m_set` / `m_color` registrations of
+  `app_command_init.cpp` reproduces the grammar's **97 flags, 43 set names and
+  46 colour names exactly**, with `comment`/`uncomment` the only commands the
+  grammar has beyond `m_commands` (they are matched by string at
+  app_command_interface.cpp:351,354, so the grammar is right and richer). That
+  is what the four "not a known flag / not a known set name" classes rest on.
+  **Criterion-integrity instance:** the first extraction reported a set name
+  the grammar lacked (`tully_color_mode`) -- and the GRAMMAR was right, the
+  registration being commented out on both sides and the extraction lacking
+  comment-stripping. The instrument was corrected by its target.
+
+  **(d) The second question turned out to be the sharper one.** The table
+  carries a SIGNAL column: when this line runs, does the engine say anything?
+  **12 of 1661** do -- 10 refusals at `(Debug): ` through the funnel or the
+  unknown-command emitter, 2 at L_ERROR with a `#!` written back onto the line
+  -- and **1647 are silent**. A misspelt argument KEY is the silent class and
+  it is 44 of the 51 unknown-parameter findings. This is the refusal-frequency
+  number F77 needs, and it is measured rather than derived.
+
+  **(e) Eight live legs, one fresh launch, every id class both ways**
+  (`harness/f76_live.py`, predictions committed BEFORE the run, results in
+  `artifacts/f76/live/`): `date utc A utc B` lands on B; `date utc A
+  <dangling>` sets A and says nothing while `date <dangling>` alone IS refused;
+  a corpus `nebula ...` line and `flag lanscape off` are refused by name and
+  their correct spellings are not; `deselect constellation Dor pointer off`
+  RAN -- the echo proves it -- and produced no word about `pointer`;
+  `set aaa_bogus 1 heading 77` left the heading at 42 while
+  `set zzz_bogus 1 heading 99` moved it to 99, which is the map-order
+  short-circuit measured; `flag stars ofn` left the stars OFF, read back
+  through the recorder (a toggle is written with the value the flag ENDED at:
+  `flag stars 1` after `ofn`, `flag stars 0` after `on`); and the panorama5
+  shape played as a file produced the L_ERROR line, the `#!` tail on the right
+  line, and scedit reading that tail back as `end-without-if`.
+  **The shipped shows were provably untouched: 408 md5s before, 408 after,
+  none moved** -- not ceremony, because the harness farm symlinks `scripts`
+  straight at the field data and the engine ANNOTATES faulty lines in files it
+  plays. Absolute paths, a real startup-only `scripts/` in the farm, and the
+  manifest as the proof. **Three instrument defects on the first run, none of
+  them a disagreement, and none fixed by moving a criterion**: the simulation
+  clock runs (frozen with `timerate rate 0` and the drift MEASURED at 3.5e-5
+  jday over 3 s, exactly 0.0 frozen); `script action cancel` is spelled
+  `cancelrecord` (W_CANCEL, base_command_interface.hpp:159 -- invented instead
+  of read); and an ENGINE row of `--history` carries `#!` in the id column,
+  the id living in the grammar's `engine_tail` (f63_scedit_agree's mapping).
+
+  **(f) One scedit defect found and fixed, and it is not a false positive**
+  (code `8eeffb9d`). Three block-structure messages described the engine as it
+  was before code `2b8ec034` (2026-08-31): two QUOTED its log text ("end
+  without if", "else without if") and one said the loop form logs nothing. That
+  commit moved those writes out of `if_swap.cpp` into the caller and gave them
+  new words, so the checker had been telling a reader to look for a string the
+  engine had stopped writing -- measured live before anything was changed. The
+  fix is at the duplication and not at the symptom: the engine's exact sentence
+  has ONE home that IS checked against the engine, this file's `engine_tail`
+  data, and the prose now says what HAPPENS and quotes nothing (I2). Five
+  grammar `rule`/`notes` strings plus one comment in `sc_check.cpp` and one in
+  `sc_tokenizer.hpp` carried the same stale copy and moved together. **This is
+  a live instance of the class F75 named and had no check for** -- the two
+  `if_swap.cpp:45`/`:76` citations F75 had already marked `[NOT AT HEAD]` were
+  still standing beside prose asserting what used to be at them: an anchor can
+  resolve, or honestly declare that it does not, and the sentence around it can
+  still be false. **Recorded rather than rewritten:** `unclosed-struct` still
+  says the engine skips the tail "silently", and strictly it does not -- every
+  skipped line is logged at L_INFO (`executeCommand :361-364`) and the opener
+  is reported at script end (`terminateScript :291-303`). Whether an L_INFO
+  line in the same log as the per-command echo is a SIGNAL to a user is
+  §5.117's open question and not scedit's to answer, so the measurement is in
+  the seed's rule and the wording waits for a ruling.
+  Delta attributed line by line: over the 408 scripts the count is unchanged at
+  **1661** and exactly TWO output lines differ, `fscripts/panorama5.sts:102`
+  and its twin. `ctest` 15/15 in a fresh `build-f76`, three consecutive runs,
+  0 warnings; four record files re-recorded and every changed line differs only
+  in the message text; `anchor_gate` re-recorded DELIBERATELY (6663 -> 6667
+  clean: the citations moved because this task moved them, each new one
+  verified by reading the lines it names).
+
+  **(g) C3's shipped half is ARMED** (code `ba7a32a8`): a sixteenth ctest gate,
+  `shipped_corpus_gate`, over the installed package. It is a gate of its own
+  rather than more files in `SCEDIT_CORPUS` because the two corpora are not the
+  same kind of thing -- one is tracked here and recorded line for line, the
+  other is untracked, host-varying field data belonging to the person who
+  writes the shows -- so it records per-file per-id COUNTS plus the package's
+  aggregate md5, and points at the disposition table for the line-level record.
+  Both readings are in `util/scedit/README.md` § Verification with the argument
+  for this one, **veto-open**. Shown able to fail AND able to abstain: one line
+  added to one script in a hardlink copy gives four lines of delta and exit 1
+  (with the md5 row saying the DATA moved, not the checker), and a HOME with no
+  package gives exit 77, which `SKIP_RETURN_CODE` turns into a REPORTED skip.
+  The "EMPTY" note of `CMakeLists.txt` is retired at its node, struck not
+  deleted. `ctest` **16/16** in a fresh `build-f76`; D14 PASS.
+
+  **(h) Routed, per C2's ownership split.** To the script-surface owner:
+  **SS-32...SS-39** (eight new rows) and an amendment at **SS-25**, whose
+  shipped witness the checker now reports itself -- and whose own text carried
+  the same stale "end without if" quote, corrected there too. To the parent
+  ledger: **§5.122** (an unknown argument KEY is unobservable to everyone --
+  `args` is a `std::map` read with `operator[]`, so "the author did not write
+  this key" and "wrote it empty" are one state, and a key the author DID write
+  that no handler reads costs a silence; 44 shipped lines) and **§5.123**
+  (`set`'s "did you mean" names `args.begin()->first`, not the key that failed
+  -- measured live: *"heading is unknown. Did you mean heading ?"* on a line
+  where `heading` worked), plus an annotation at **§5.116** recording its first
+  FIELD instances.
+
+  **Open after this:** the `unclosed-struct` "silently" wording (above, waiting
+  on §5.117); item 4 (stellar-system grammar); item 5
+  (`app_command_eval.cpp`); item 8 (engine emitter); item 19 (the LLM surface).
+  The shipped-corpus record now dates the package it was taken against
+  (`corpus.aggregate_md5 6440c9b9`), so a data-package update is a red with a
+  readable delta rather than a mystery.
 
 - **[2026-09-01a] The anchors resolve again, and a gate now says so: 6663
   references re-dated, re-read and re-pointed, both halves moving together.**
