@@ -36,8 +36,6 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
 ---
 
----
-
 **Update [Fable 2026-08-31, supervising session 19 — TravellingFoxDev, the
 provenance/ASCII round]:** trigger = the §0b verbatim line PLUS four in-line
 transmissions, recorded BEFORE anything else moved (→ **§11.186**, commit
@@ -176,6 +174,50 @@ known-false reds per §11.191(c)). Session 19 final tally: **FIVE for
 five** (F68–F72), six supervisor defects all caught-and-corrected,
 criterion-integrity 5, baselines at true close pair-check **208/183/25/92**
 · scan **125/166/101**.
+
+---
+
+**Update [Fable 2026-09-01, supervising session 20 — TravellingFoxDev, the
+anchors / corpus / bad-script round]:** trigger = the §0b verbatim line, no
+in-line transmission. Warm-up: both trees clean at open, code `54a2b844` /
+harness `e6f9c8c`; binary current (`cmake --build build-claude -- -n` → zero
+compile/link steps; no `src/` file newer than the binary; the F74 executor's
+build at 09:31:08 precedes its commit by 32 s — consistent); definition-drift
+assert md5 MATCH (`a5a54d94`); next free §11 number **196** (live ∪ archive);
+live `### F` count **7 → 0** by **archival pass 12** (F68–F74 + update-s18, 8
+units, byte-exact, manifest `2026-09-01-pass12`, reconstruction md5 `e3cae1d8`
+proven in-process AND from disk, commit `6ea07be`) — done at OPEN this time: the
+s19 deferral's cost is every executor's warm-up read of ~830 dead lines —
+**→ 4** by the mints below; RAM 9 GiB avail ⇒ `-j6`; display `:0` 1920x1080
+answers `xdpyinfo` under `/run/user/1003/.mutter-Xwaylandauth.ZA0TU3`, logind
+session 2 (seat0/tty2), `lock-enabled false` / `idle-delay 0` persisted
+[measured]; no `spacecrafter` in `/proc/*/comm`; config/ssystem md5 pristine
+(`03fbee59` / `545a51ef`); the canary bank is the desktop's — `--no-scene` fails
+by construction here, REPORTED (the session-18/19 line stands); this round's
+one launch class (F76 live legs, F77) is FUNCTIONAL. Instrument baselines at
+open: pair-check **211/186/25/93** (D/D2/I/I2 34/11/87/34) · scan
+**129/170/102** — both to the digit of the session-19 true close. QUEUE
+CONSUMPTION (session-19 close, in order): (1) the canary start-epoch fix +
+re-bank is DESKTOP-ONLY by its own record — a probe fix without the re-bank
+would false-red the desktop exactly where the re-bank cannot be done from here
+— deferred, not dropped; (2) item 16 → **F76**; (3) the grammar anchor repair →
+**F75**, taken FIRST because F76's verification reads anchors — its premise
+corrected at mint: the grammar carries **2889** `file:line` references in 1133
+strings (62 self-pinned), not "324" (the arg-spec count), and
+`app_command_interface.cpp` stands at 4924 lines (+217/−40 since `b12c8cdd`),
+not F71's 4888; (4) item 4 (stellar grammar, L) deferred — an L takes a round's
+first slot, not its third; (5) the carried queue: the pricing launch → **F77**
+(display-bound; the display exists here and not on the desktop — the
+session-18 argument for F67), strict-credit v2 → **F78** minted as the
+EXTENSION member (four rounds queued; a section makes it dispatchable without
+re-derivation), F52(k)'s git-only checks and F58's adjacent-loader
+classification stay queued (record-only; nothing downstream waits), F60's
+routed flips (§11.180(g)(3), (j)(1)–(3)) are SUPERVISOR acts — taken at this
+round's close or re-queued explicitly; (6)–(7) unchanged (owner's word).
+Picks: **F75 → F76 → F77**, F78 if health permits. Deliveries: F75/F76 to the
+MIRROR ledger (journal `2026-09-01a` / `b`; a parent §11 number only if an
+engine finding mints one), F77/F78 to the parent (§11.196+, refreshed at each
+dispatch). Remotes unchanged (local contains origin on both, push = ff).
 
 ---
 
@@ -462,11 +504,426 @@ archived pass 10) · F56 §11.176 · F57 §11.177 · F58 §11.178 · F59 §11.17
 F60 §11.180 (session-17 round — five for five DELIVERED and accepted;
 archived pass 11) · F65 → scedit journal 2026-08-31f · F66 → 2026-08-31g ·
 F67 → 2026-08-31h + parent §11.185 (session-18 scedit round — three for
-three; archived pass 11). Live below: the session-19 round **F68–F71**.
-Remaining candidates next-round: see the session-19 outcome's queue. Still
-blocked: §5.100's fix (authorization unanswered).*
+three; archived pass 11) · F68 §11.187 · F69 §11.188 · F70 §11.189 · F71
+§11.190 + scedit journal 2026-08-31j · F72 §11.192 · F73 §11.194 · F74 §11.195
+(session-19 round + its two post-close extensions — seven for seven DELIVERED
+and accepted; archived pass 12). Live below: the session-20 round **F75–F78**
+(F78 the EXTENSION member). Remaining candidates next-round: see the session-20
+open note's deferred set. Still blocked: §5.100's fix (authorization
+unanswered).*
 
 ---
+
+### F75 — The grammar's engine anchors resolve again, and can never rot silently: pin recovery, content-verified re-anchor, a gate that reds when the engine moves (§11.190(e); scedit journal 2026-08-31j "open after this"; session-19 queue position 3) [M]
+
+**Why now / mandate:** §11.190(e) (F71): every `source` anchor is pinned once at
+file level (`_meta.merged` = code `b12c8cdd`) and the engine has moved since —
+the anchors are correct as documented and unresolvable from where a reader
+stands. C2 (identified knowledge: no entry without a source anchor) is what
+this file's anchors implement; an anchor that does not resolve is, in effect,
+an entry without one. F76 (item 16) verifies 1661 findings against the engine
+through exactly these anchors — every stale one is a cost paid there. Queue
+position 3 of the session-19 close, taken FIRST this round because F76 stands
+on it.
+
+**Measured at dispatch (supervisor, 2026-09-01, code `54a2b844`) — the premise
+CORRECTED at mint:** the merged grammar `util/scedit/grammar/sc-grammar.json`
+carries **2889** `file:line` references in **1133** strings over 15 fields
+(`source` 698 · `notes` 142 · `registration` 65 · `default_value_source` 60 ·
+`notes[]` 51 · `flagged[]` 19 · `default` 18 · `_source` 9 · …) into ≥15
+engine files (`app_command_interface.cpp` 743 · `base_command_interface.hpp`
+515 · `app_command_init.cpp` 270 · `coreLink.hpp` 122 · `coreLink.cpp` 112 ·
+`skyline.cpp` 102 · …); **62** strings already self-pin with `@ <sha>` (the F71
+form). The "324" of §11.190(e) is the ARG-SPEC count, not the anchor count.
+Drift since `b12c8cdd`: `app_command_interface.cpp` 4747 → **4924** (+217/−40
+over 7 commits — not the 4888 F71 measured; F72–F74 moved it further) ·
+`app_command_init.cpp` 387 → 407 (+22/−2) · `base_command_interface.hpp` 686 →
+695 (+11/−2) · `core.hpp` +24/−24 (same length, content moved) ·
+`app_command_eval.cpp`, `dsoNavigator.cpp` ±1 · `media.hpp`, `landscape.cpp`
+unchanged. Pins are NOT uniform: `_meta.seeded` (2026-08-03, code `d13681eb`)
+covers the families/registration layer, `_meta.merged` (`b12c8cdd`) the arg
+specs, and each later amendment (`6a4d184b`, `2b8ec034`, F65, F71) its own sha.
+The four fragments `grammar/args/unit-{1..4}.json` (~900 anchors) are FROZEN at
+their `_merged` date by precedent — every post-merge amendment touched the
+merged file only — and are out of scope, stated.
+
+**Sources (re-read, never recall):** `INTENT/11.190.md` (e), (d)(3); scedit
+`INTENT.md` §2 C2 (the anchor classes), C6 (docs are product surface — the doc
+bar SHOWS the anchor: `tests/editcore_test.cpp:468` D2), §4 verification bar,
+journal `2026-08-31j` ("open after this"); `claude/util/scedit/SWEEP_DISPATCH.md`
+(lessons: machine-verify every anchor — 22 wrong on first write in unit 1;
+repo-relative path convention); `harness/f71_defaults.py` (the self-pin form and
+its reason); `util/scedit/src/main.cpp` (the seed gate: what it checks about
+`source` today — presence only); `util/scedit/README.md` § Verification, the
+veto-point conventions; `harness/f70_partition.tsv` (which class the grammar
+file is in under D14).
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `54a2b844`, tree clean;
+harness HEAD as the prompt states, tree clean; live `### F` count **4**; next
+free §11 number **196** — reserved only if a PARENT entry is minted (delivery is
+mirror-ledger: journal `2026-09-01a`; §11.190(e) receives a DISCHARGED
+back-marker at its node, entry file AND stub, same commit); the anchor census
+above reproduces (2889 / 1133 / 62 — re-measure; the numbers are the gate);
+`util/scedit/build-f71final/scedit` current (no scedit source newer than it)
+and `ctest` 14/14 there; `~/.spacecrafter/scripts` 408 files (F76's input,
+untouched here). No launch, no engine build needed. ANY broken ⇒ abort.
+
+**Scope:**
+(1) **A resolver tool, committed** (placement by who runs it: with scedit's
+tests if the gate is a ctest, else `harness/f75_anchors.py` — state the
+choice): parse every anchor-bearing string into its `file:line[-line]`
+components — the anchor grammar is informal (`A:n -> B:m-k (W_X="x" C:p)`, bare
+names vs repo-relative paths, `registration`/`spelling`/`census` prefixes) —
+ENUMERATE the shapes met, with counts, BEFORE mapping; a shape the parser
+cannot read is a reported residual, never a skipped one. Recover each string's
+pin: the grammar lives in the CODE tree, so `git log -S'<string>' --
+util/scedit/grammar/sc-grammar.json` names the code commit that introduced it,
+i.e. the engine tree the anchor was written against [derived — VALIDATE on the
+62 pre-pinned strings: recovered sha == written pin, 62/62, or the method is
+rejected and the fallback is the `_meta` pins by field origin]. Map each pinned
+`file:line` to HEAD through the diff hunks (`git diff <pin>..HEAD -- <file>`:
+outside a hunk = cumulative shift; inside = CANDIDATE, settled by content).
+**Verify by content**: the text at `<pin>:<file>:<line>` must equal the text at
+`HEAD:<file>:<new>` (state the whitespace rule) — a reference whose text no
+longer exists at HEAD (the −40) is FLAGGED with both texts, never re-pointed by
+arithmetic.
+(2) **The sweep** over the merged grammar: every resolved reference rewritten
+to its HEAD line AND self-pinned (`@ <sha>` — ONE pin for the whole sweep, the
+delivery's code HEAD, named in `_meta.amended`), every other byte of the string
+preserved (the `->` chains, the parenthesised sub-anchors) — a string that
+changes in anything but line numbers and pin is a defect of the tool (diff of
+generality). Flagged references re-anchored BY READING (the handler moved or
+was rewritten — F68/F69/F73's edits are the likely population), each with its
+reason in a committed per-reference table; a referent that no longer exists
+becomes `<file>:<old> @ <pin> [NOT AT HEAD: <reason>]` — C2's honest state,
+never a silent drop.
+(3) **The gate** (`anchor_gate`, ctest): every pinned reference resolves at ITS
+pin (immutable — the tautology that makes a pin sufficient) AND the HEAD
+mapping is reported clean / moved / gone, with "gone" RED unless the reference
+carries the `[NOT AT HEAD…]` marker; counts recorded (`tests/anchor-expected.txt`,
+C3's record-not-silencer form). Shown able to fail: one decoy edit in a
+scratch copy of an engine file reds exactly one reference.
+(4) **The doc bar** (C6): the anchor is product surface and `@ <sha>` is now on
+62 rows — extend to all (the F71 precedent) unless the README rules otherwise;
+recorded as a scedit UX veto point.
+(5) **Record**: journal `2026-09-01a` (mirror ledger, the delivery record);
+`_meta.amended` entry; the "none resolves at HEAD" sentence in
+`_meta.schema_version_note` superseded IN PLACE (dated, struck not deleted);
+parent back-marker DISCHARGED at §11.190(e), entry file AND `INTENT.md` stub,
+same commit (F72's lesson); scedit README § Verification gains the gate;
+`harness/README.md` F75 section; WIP per §0.6; D14: new code pure ASCII,
+`python3 harness/f70_ascii.py gate` before every commit (the grammar's own
+class per the partition table — its content stays in that class).
+
+**Boundaries:** the merged grammar's anchor strings and `_meta` only — no
+doc/value/default content change (one found necessary en route is a finding,
+routed, not applied); fragments untouched; no engine code; no launch; the seed
+gate's existing checks never narrowed; mint license per §5.79 (an engine defect
+seen while reading a handler = §5 candidate, recorded not fixed).
+
+**Discriminating checks:** (a) pin recovery 62/62 on the pre-pinned strings
+(state the count; a miss rejects the method); (b) the 2889 partitioned
+clean-by-content / moved-and-verified / re-read / not-at-HEAD, summing exactly;
+(c) the gate reds on the decoy, greens on HEAD; (d) `ctest` 14/14 → 15/15 in a
+FRESH build dir; (e) `scedit --doc` over all 63 commands diffed pre/post — only
+anchor strings differ (C6 surface moved as intended and nothing else).
+
+**DoD:** tool + sweep + gate committed; the partition summing to 2889; journal
+`2026-09-01a`; §11.190(e) marker in both homes; both READMEs; ctest green in a
+fresh build; ASCII gate; trees clean; WIP cleared; baselines re-derived LAST
+(pair-check / scan — expected unchanged but for the marker; state the deltas).
+**WIP:** —
+
+### F76 — scedit item 16: the shipped corpus DISPOSITIONED — 1661 findings in 26 files, each TRUE (→ SS-n / §5) or a scedit defect (→ rule fix), and the corpus gate's shipped half ARMED (scedit INTENT §5 item 16; C3; session-19 queue position 2) [M]
+
+**Why now / mandate:** item 16 [measured 2026-08-30e]: C3 requires every
+finding over the 408 shipped scripts dispositioned before the shipped half
+joins the corpus gate — *"by inspection plausibly all TRUE, but plausibly is
+not a disposition"*. Every undispositioned true finding is a shipped-content
+defect the tester does not know about, and his channel (SCRIPT_SURFACE, the
+final tester pass) is where they go. Queue position 2, taken after F75 because
+the verification reads anchors.
+
+**Measured at dispatch (supervisor, 2026-09-01, `build-f71final/scedit --check`
+over `find ~/.spacecrafter/scripts -name '*.sts'`, 408 files, rc 1):** **1661
+findings in 26 files** — `duplicate-key` **1596** (1500 of them in
+`internal/comet-particles.sts`, a GENERATED file) · `unknown-parameter` **51** ·
+`dangling-key` **6** · `unknown-command` **5** · `end-without-if` **2**
+(`fscripts/panorama5.sts:102` + its `navigation/` twin) · `silent-off-value`
+**1** (`fscripts/M17.sts:16`, `ofn`). Item 16's text says 1757 / 35 files (13
+seeds, before `indented-comment` retired — journal `2026-08-31b` re-measured
+1661); today's 26 files is that state. **43 md5-identical pairs**
+(`navigation/fscripts/` mirrors `fscripts/`) reproduce today: a disposition of a
+`fscripts/` line covers its twin, and every fix lands twice (a data-package
+fact for the tester). The corpus is `~/.spacecrafter/scripts` — untracked field
+data, bytes never decoded (the checker's own discipline; ISO-8859 possible:
+`/usr/bin/grep`, never the wrapper).
+
+**Sources (re-read, never recall):** scedit `INTENT.md` §2 C1 (a finding is
+TRUE iff the ENGINE does what the message says), C2 (routing by ownership:
+script-surface divergences → `SCRIPT_SURFACE.md` SS-n; engine internals →
+parent §5), C3 (zero false positives; true findings recorded upstream, never
+silenced), §5 item 16, journals `2026-08-30e`, `2026-08-31b`;
+`SCRIPT_SURFACE.md` in full (SS-1…SS-31 — the channel's conventions:
+observables, never internals; a finding may already be a row: SS-6,
+SS-20…SS-25 are corpus-adjacent); `util/scedit/CMakeLists.txt:203-225`
+(`SCEDIT_CORPUS`, the superseded "EMPTY" note), `tests/corpus-expected.txt`
+(the record form, 15 lines), `tests/check_gate.cmake`;
+`harness/f63_scedit_agree.py` (the scedit ↔ engine `#!` agreement instrument —
+the block-structure class is verifiable LIVE: the engine writes `#!` on
+`end-without-if`); `harness/f27_reply.py` (`Session`: fresh temp-HOME,
+concurrent-instance probe, md5 in==out); parent `INTENT.md` §5.116 (the
+`silent-off-value` mechanism: `isTrue`'s set, the F71 extension's SECOND set),
+§5.117; `harness/f70_dispositions.py` (the disposition-table precedent).
+
+**Preconditions (checkable, §0.7 gate):** F75 delivered and accepted; code
+HEAD = F75's delivery sha (the prompt states it), tree clean; harness HEAD as
+stated, clean; live `### F` count **4**; next free §11 number as the prompt
+states (a parent entry only if minted; delivery = journal `2026-09-01b` + SS
+rows + §5 touches); the count above reproduces at HEAD with a CURRENT scedit
+build (1661 / 26 / by-id as listed — a different number is a broken premise:
+report); 408 files, 43 md5 pairs; engine binary current at code HEAD (the live
+legs need it); display per HOST-EVENTS (`:0`, the mutter auth), `GetActive`
+recorded per launch. ANY broken ⇒ abort.
+
+**Scope:**
+(1) **Disposition table, committed FIRST** (`harness/artifacts/f76/
+dispositions.tsv`, F70's shape): one row per finding — file:line, id, message,
+DISPOSITION ∈ {TRUE-shipped (the script is wrong; the engine does what the
+message says) · TRUE-generator (the file is generated; the defect is the
+generator's — name it: `grep -r comet-particles src/`) · FALSE-POSITIVE (scedit
+is wrong — a C1 defect of the rule or the grammar) · ENGINE (the engine's
+behaviour is the defect; the script is reasonable)} + the GROUND (the engine
+code read, anchored post-F75, or the live observation). Per-CLASS grounding is
+legitimate where the mechanism is one (the 1500 generated duplicates: one
+generator, one reading — is last-wins harmless there or a real data loss?);
+per-LINE grounding for the 65 others (51+6+5+2+1), each read at the engine.
+(2) **Verification height:** at least ONE finding per id class verified LIVE
+on the engine (fresh temp-HOME launch, `f27_reply.Session`,
+`f63_scedit_agree.py`'s pattern), never by reading alone — `end-without-if`
+gets the engine's own `#!`; `unknown-parameter` / `unknown-command` get the
+log's refusal line (F73's shape); `silent-off-value` gets the STATE (the flag
+reads OFF after `ofn`); `dangling-key` gets the rest-of-line effect; the
+generated file's `duplicate-key` gets last-wins observed on one line. Both-ways
+discrimination is the disposition. If the display is unavailable, say so — do
+not substitute reading silently.
+(3) **Routing:** TRUE-shipped → `SCRIPT_SURFACE.md` SS-n rows (next free SS
+id; one row per DISTINCT defect, not per line — `output_rate ×9` is one row;
+the 43 twins named once with the twin rule); ENGINE → parent §5 candidate per
+§5.79 (record, never fix) or an annotation at an existing row (§5.116 for the
+`ofn` class — its first FIELD instance, measured); FALSE-POSITIVE → a scedit fix
+IN THIS TASK (C3: a rule that fires falsely on shipped content does not ship),
+with the oracle/gate showing it; TRUE-generator → a parent finding (the
+generator is engine code) + the file dispositioned as a class.
+(4) **Arm the gate:** `SCEDIT_CORPUS` gains the shipped half — two readings,
+both stated in the README, one chosen with its reason, veto-open: (a) the 408
+files in the gate with `corpus-expected.txt` carrying the 1661 recorded lines
+(record-not-silencer, every line dispositioned); (b) a shipped-corpus gate
+over a COUNT-BY-ID record + the per-file list. Either way: the corpus is
+untracked, host-varying field data — a gate that needs it must SKIP LOUDLY
+where it is absent, never pass vacuously (F70's exclude-list precedent). Retire
+the "EMPTY" note at its node.
+(5) **Record:** journal `2026-09-01b` (mirror ledger), item 16 struck with its
+content; SS rows; parent §5 annotations/mints (entry-first order for any mint);
+`harness/README.md` F76 section; WIP; D14 (new code pure ASCII; the corpus
+never decoded).
+
+**Boundaries:** no file under `~/.spacecrafter/scripts` is EDITED (field data,
+D9 frozen; fixes are the tester's, via SS); no engine change; no NEW lint rule
+(a false-positive fix narrows a rule, never widens one); one sequential
+executor (the parallel fragment pattern is allowed by the 2026-08-04b ruling
+and not used — one writer of `corpus-expected.txt`); mint license per §5.79.
+
+**Discriminating checks:** (a) the table's row count == 1661 with no blank
+DISPOSITION; (b) the per-class live legs both ways — the engine's `#!` / log /
+state agrees with the message, or does not (a FALSE-POSITIVE or an ENGINE
+finding, both recorded); (c) after any scedit fix, `ctest` green in a FRESH
+build dir and the corpus re-measured with the delta attributed line by line;
+(d) the armed gate reds on one injected decoy line in a scratch copy and greens
+on the real corpus; the absent-corpus path demonstrated (a HOME without the
+directory → loud skip, not pass).
+
+**DoD:** table complete; live legs per class; SS rows + §5 routing; gate armed
+with its absent-corpus behaviour; journal + README; trees clean; WIP cleared;
+baselines LAST (deltas attributed to every SS row and §5 touch).
+**WIP:** —
+
+### F77 — The bad-script launch: what a shipped show with one typo does today on EVERY channel — §5.116's coercion, §5.117's severity, §5.118's silent drop, measured not derived (the three rows' "owed before it is judged"; session-17 carry-over "pricing launch") [S]
+
+**Why now / mandate:** §5.116, §5.117 and §5.118 each close with an owed datum
+— *"one launch with a deliberately bad script"* — before the owner's class
+decision (refuse vs named-default-and-log; severity or channel) is priced.
+Every consequence claim in those rows is READ (`d6aec251`), not driven. Three
+rounds since have changed what a REFUSAL looks like (F68 origin tag, F69 the
+`$DIAGON` wire, F73 the intent-modified log line) — and none of them can reach
+a COERCED value, because coercion never refuses: that is the prediction this
+launch tests. The display exists on this host (`:0`, HOST-EVENTS 2026-08-31
+20:57) while the desktop's stack is canary-blocked — display-bound work belongs
+in this round (the session-18 argument for F67).
+
+**Sources (re-read, never recall):** `INTENT.md` §5.116 (both halves + the F71
+extension: TWO accepted sets, `isTrue` vs `strToBool`), §5.117 (+ the F67 / F68
+/ F73 annotations), §5.118 (the composed SS-6 line); `INTENT/11.178.md`
+(e1)(f4) and the four work-order shapes; `INTENT/11.194.md` (F73: the log
+line's shape; `f27_reply.Session.refused()` matches both shapes);
+`harness/README.md` § F68 / § F69 / § F73 (launch recipe, `SC_PRE_TAGS` /
+`SC_PRE_ERA`, staging-binary naming, `$DIAGON` subscription, wire recorded as
+raw bytes); `harness/f27_reply.py`; `harness/f63_annotations.py` (the `#!`
+writer's observation); `HOST-EVENTS.md` (display; the `GetActive`
+check-and-record); §0.5 (the canary `--no-scene` fails by construction here —
+REPORT its exit, never re-bank; FUNCTIONAL launch, no photometry);
+`harness/dumpread.py` (the dump channel's single reader, if a state read needs
+it).
+
+**Preconditions (checkable, §0.7 gate):** F76 delivered and accepted; code
+HEAD as the prompt states, tree clean; harness HEAD as stated, clean; live
+`### F` count **4**; next free §11 number as the prompt states — THIS task mints
+the parent entry; engine binary current at code HEAD (`cmake --build
+build-claude -- -n` → zero compile/link steps); display `:0` answers
+`xdpyinfo` under the mutter auth (`/run/user/$(id -u)/.mutter-Xwaylandauth.*`);
+`lock-enabled false`, `idle-delay 0` [measured 2026-09-01]; no `spacecrafter` in
+`/proc/*/comm`; config/ssystem md5 `03fbee59` / `545a51ef`. ANY broken ⇒ abort.
+
+**Scope:**
+(1) **Predictions committed BEFORE the launch** (`harness/artifacts/f77/
+predictions.md`, §11.159(c)'s template): per bad line, per channel — script
+log (F73 shape? nothing?), `$DIAGON` wire (bytes? nothing?), `#!` tail on the
+line (written? untouched?), the STATE the line leaves (the flag's value, the
+number's value, what the dome shows), and the success/failure
+`executeCommandStatus` reports. A prediction that cannot fail is not one.
+(2) **The script** (in the temp-HOME, never in field data), one line per
+mechanism, each isolated by a neutral neighbour so the log attributes per
+line: `flag atmosphere yes` (§5.116(a): predicted OFF, success, silence
+everywhere) · `flag atmosphere Off` (the `& 0x5f` fold: predicted OFF, success)
+· `set moon_scale big` (§5.116(b): predicted 0 — and what the dome does with a
+0 scale is an unknown this launch exists to see) · the two accepted sets side
+by side — `media … pause on` vs `flag … on` (SS-26: `on` = yes on one, no on
+the other, predicted from §5.116's extension) · `set stall_radius_unit = 5.0`
+(§5.118 ∘ §5.116: `=` → 0 → dropped, success) · ONE genuine refusal as the
+POSITIVE CONTROL (`flag nosuchflag on`: predicted F73-shape log line, `$DIAGON`
+bytes, `#!` tail) — the control proves the channels were LISTENING when the
+coerced lines said nothing. State reads: `get status …` where it reaches the
+value (the SS-6 witness names which), else the dump channel or a frame-level
+discriminator (atmosphere on/off is a sky-brightness step: a two-frame A/B at
+the same instant, px>8 class — functional, not photometric); say which reach
+each read has.
+(3) **The launch:** `f27_reply.Session` discipline — fresh temp-HOME,
+concurrent-instance probe, md5 in==out, `GetActive` recorded, the canary's
+exit recorded (fail-by-construction here, reported), wire as raw bytes, the
+script log copied out. ONE launch is the plan; a second only if attribution is
+ambiguous (state why).
+(4) **§5.117's console half:** with `print_log = true` in the temp config,
+does the refusal control reach the console today? (predicted no — `L_DEBUG`).
+The PRICE of a promotion to `L_ERROR` is then one number: how many console
+lines the SHIPPED shows would gain — countable from F76's table (cite it; do
+not re-derive).
+(5) **Record:** §11 entry at the number the prompt states + stub, entry-first;
+§5.116 / §5.117 / §5.118 annotated MEASURED at their nodes — the `[derived]`
+consequence claims flipped to `[measured]`, or CORRECTED where the launch
+disagrees, back-marker at the node in the same commit; SS-26 annotated if the
+two-sets claim is confirmed live; `harness/README.md` F77 section; artifacts
+force-added (log, wire, predictions, the script); WIP; D14.
+
+**Boundaries:** NO engine change (record-don't-fix stands on all three rows —
+the class decision is the owner's); no field data touched; no photometry; no
+new instrument beyond a thin driver reusing `f27_reply.Session`; the §5.121
+leg (`set sky_locale zh_CN` on a `fr` UI — does the UI de-translate?) is the
+owner's "say the word" item at §3 and is NOT taken unless the same launch
+reaches it at zero marginal cost with ONE named observable (the UI strings'
+language in a frame) — if taken, say so plainly; mint license per §5.79.
+
+**Discriminating checks:** (a) the predictions file's md5 unchanged from before
+the launch to delivery; (b) the positive control lights every channel (F73
+shape in the log, `$DIAGON` bytes > 0, `#!` tail written) — else the run is not
+evidence; (c) each coerced line: all channels silent AND the state changed as
+predicted (a disagreement is the finding); (d) md5 in==out, no concurrent
+instance, `GetActive` false.
+
+**DoD:** predictions first; one launch with the control lit; the per-line
+per-channel table; the §11 entry + the three rows' annotations; artifacts;
+trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+### F78 — EXTENSION: strict-credit v2 — the ledger instruments re-baselined as ONE deliberate act: six measured scan members + the pair-check's both-homes extension + the residual re-partition (§11.165(h) notes, §11.177, §11.179(6), §11.180(i), the session-19 close note, the F72/F73 acceptances; carried since session 15) [M]
+
+**Why now / mandate:** the two ledger instruments (`intent_backmarker_scan.py`,
+`intent_pair_check.py`, both at `claude/` root) are the supervisor's gate at
+every acceptance; their counters (scan 129/170/102, pair-check 211/186/25/93 at
+this open) are read against a KNOWN-NOISY residual (82 real + 13 named
+exceptions + 2 unclassed) that is hand-compared every time. Seven measured
+blind spots have been folded into one package across four rounds — *"ONE
+deliberate act"* (the F56–F60 acceptance rulings) — and each round deferred it
+behind product work. Minted as this round's EXTENSION member so it is
+dispatchable without re-derivation; dispatched only if health permits after
+F75–F77.
+
+**The package — members and where each is measured (re-read each; none is
+restated here):** (1) the `stub()` collision — `stub("11.104")` returns
+§5.104's stub, 79 entries affected, two-line fix named (§11.165 FOURTH-
+INSTRUMENT-PROPERTY note); (2) the event lexicon has no term for *this claim
+was incomplete* (§11.177 — and the scan-owner ruling on discharge vocabulary
+BOUNDS what v2 may count: re-read it before deciding); (3) the MARKER-half
+lexicon blind spot — six specimens (`STUB REFRESHED` / `ROOT-CAUSED` / `OWED
+SWEEP DISCHARGED` / `FIXED AND CLOSED` outside brackets) + the past-participle-
+only gap (`RETRACTS OR CORRECTS`) (§11.179(6)); (4) the STALE/keyword miss
+(F60, `INTENT/11.180.md`, its fifth-member paragraph); (5) the proximity false
+positive (§11.177 → §11.161, kept as a specimen) and the named-exception
+partition — §11.182's forward marker read as an event, the `§5.10` namespace
+collision with scedit's `tests/derivation-diff.md` (session-18 §3 (e)); (6) the
+scan reads only `INTENT/<id>.md` as EVENT SOURCES — a §5-sourced back-marker is
+invisible (session-19 close note); (7) pair-check: a marker present in the
+entry file but not its stub, or vice versa — the both-homes class (the F72/F73
+acceptances' marker-single-home tally items) — an extension test with its own
+counter, bounded by §11.180(i)'s argument (machine-decidable only where both
+homes carry a dated marker span citing the same source; anything softer is a
+reading, not a test).
+
+**Sources (re-read, never recall):** the two instruments IN FULL (the lexicon
+at scan:30, the 160-char window :86-98, the root argument made REQUIRED by the
+§11.165 veto (2), the F52(m) `argv[1]` gotcha); `INTENT/11.165.md` (c)(h) + its
+appended notes; `INTENT/11.177.md` (the scan-number chain — the canonical
+marker form ruling); `INTENT/11.179.md` (6) + `harness/artifacts/f59/METHOD.md`
+(method-before-verdict precedent); `INTENT/11.180.md` (i) (why NO pair-check
+extension shipped THEN); `fable-dispatch/archive/F56.md`, `F57.md`, `F59.md`,
+`F60.md` (the acceptance rulings that assembled the package).
+
+**Preconditions (checkable, §0.7 gate):** the round's prior deliveries
+accepted (the prompt names which); code HEAD as stated — this task touches NO
+code (harness repo only), tree clean; harness HEAD as stated, clean; live
+`### F` count **4**; next free §11 number as the prompt states (this task mints
+a parent entry: an instrument change on the parent ledger); the open baselines
+reproduce to the digit on the pre-change instruments (scan 129/170/102,
+pair-check 211/186/25/93, D/D2/I/I2 34/11/87/34) — re-run BEFORE touching
+anything. ANY broken ⇒ abort.
+
+**Scope:** (1) METHOD FIRST, committed before any instrument edit
+(`harness/artifacts/f78/METHOD.md`): per member the exact change, the
+predicted effect on each counter with direction and argument, and what would
+refute it; (2) the v1 instruments PRESERVED byte-exact beside the v2
+(`*.v1.py`) — the re-baselining must stay A/B-able forever; (3) the v2 edits
+ONE MEMBER PER COMMIT, each commit's counter deltas recorded against its
+prediction; (4) the re-partition: the residual after v2 enumerated by (src,
+tgt) pair with a class per pair (real arrear / named exception with its reason
+/ new specimen) — the LIST is the baseline, the counters its derived summary;
+(5) member 7 as bounded above; (6) record: §11 entry + stub; `harness/README.md`
+(the instruments' invocation with the REQUIRED root); WIP; D14.
+
+**Boundaries:** instrument code only — the ledger's TEXT is never edited to
+move a counter (a marker v2 reveals missing is a FINDING in the re-partition,
+placed by the supervisor at acceptance); no eighth member (one found en route
+is a candidate, recorded); mint license per §5.79 (not expected).
+
+**Discriminating checks:** (a) the v1 scripts reproduce the open baselines on
+the delivery tree (ledger text unchanged ⇒ v1 numbers unchanged: the proof that
+only instruments moved); (b) per-member prediction vs measurement, both
+directions; (c) the re-partition sums to the v2 unmarked counter; (d) every
+named exception's reason re-verified at its node, never carried by label
+(§11.179(a)'s "83 → 82" is the precedent for a carried label being wrong).
+
+**DoD:** METHOD before edits; v1 preserved; v2 per member; re-partition
+complete; entry + README; trees clean; WIP cleared; baselines LAST — BOTH v1
+and v2 numbers stated at close.
+**WIP:** —
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
