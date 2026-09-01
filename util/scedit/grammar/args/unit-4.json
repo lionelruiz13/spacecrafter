@@ -3,6 +3,7 @@
   "_meta": {
     "unit": 4,
     "code": "master-beta @ b12c8cdd",
+    "anchor_pin": "master-beta @ 54a2b844 -- every `file:line` anchor in this fragment OUTSIDE `_meta` resolves at this commit; `code` above stays the pin of this `_meta` block's own measurements (handler_range, args_bracket, accounting), which are NOT swept.",
     "handler_range": "app_command_interface.cpp:3945-4747",
     "commands_in_unit": 15,
     "entries_in_commands": 16,
@@ -176,8 +177,8 @@
           },
           "default": "absent -> the command tries the `skin_use`/`skin_tex` forms, then the `name` form, then `tesselation`; present with any other word -> \"command 'body' : unknown action argument\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:3948, 3954-3970 (model path), 3989-4044 (system path) (W_ACTION=\"action\", W_LOAD=\"load\", W_REMOVE=\"remove\", ACP_CN_CLEAR=\"clear\", W_DROP=\"drop\", W_INITIAL=\"initial\", W_RELOAD=\"reload\", W_SAVE=\"save\", W_PRELOAD=\"preload\": base_command_interface.hpp:81,103,296,335,156,200,313,148,312)",
-          "notes": "\"dual_dump\" (:4031) and \"screenshot\" (:4034) are bare string literals with no W_* token -- harness routes, kept in the surface because they are reachable from any script."
+          "source": "app_command_interface.cpp:4113, 4119-4135 (model path), 3989-4044 (system path) (W_ACTION=\"action\", W_LOAD=\"load\", W_REMOVE=\"remove\", ACP_CN_CLEAR=\"clear\", W_DROP=\"drop\", W_INITIAL=\"initial\", W_RELOAD=\"reload\", W_SAVE=\"save\", W_PRELOAD=\"preload\": base_command_interface.hpp:81,103,296,335,156,200,313,148,312)",
+          "notes": "\"dual_dump\" (:4196) and \"screenshot\" (:4199) are bare string literals with no W_* token -- harness routes, kept in the surface because they are reachable from any script."
         },
         "name": {
           "doc": "Which body the line is about, written as its English name.",
@@ -185,13 +186,13 @@
           "values": ["<body english name>", "home_planet", "all", "selected"],
           "completable": ["all", "home_planet", "selected"],
           "value_docs": {
-            "home_planet": "the body you are standing on: the handler replaces this word by that body's name before doing anything else (:3950)",
+            "home_planet": "the body you are standing on: the handler replaces this word by that body's name before doing anything else (:4115)",
             "all": "on the `color` form only, every body at once (src/bodyModule/solarsystem_color.cpp:37-39)",
-            "selected": "on the `skin_use`/`skin_tex` forms, the body currently selected (src/coreModule/coreLink.cpp:1423-1431); on `action preload`, likewise (src/coreModule/core.cpp:932-938)"
+            "selected": "on the `skin_use`/`skin_tex` forms, the body currently selected (src/coreModule/coreLink.cpp:1423-1431); on `action preload`, likewise (src/coreModule/core.cpp:984-990)"
           },
           "default": "absent -> the `name` form is not taken; on `action drop` the removal is skipped silently (see notes); on `action load` the body is refused downstream with the log line \"SolarSystem: can not add body with no name\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:3949, 3950, 3996, 4047, 4053-4057, 4067-4069 -> src/bodyModule/protosystem.cpp:511, 522-525 (W_NAME=\"name\", ACP_SC_HOME_PLANET=\"home_planet\": base_command_interface.hpp:89, 550)",
+          "source": "app_command_interface.cpp:4114, 4115, 4161, 4212, 4218-4222, 4232-4234 -> src/bodyModule/protosystem.cpp:511, 522-525 (W_NAME=\"name\", ACP_SC_HOME_PLANET=\"home_planet\": base_command_interface.hpp:89, 559)",
           "notes": "A name no body answers to is a silent no-op on most forms: setPlanetHidden catches the lookup failure and returns (src/bodyModule/protosystem.cpp:280-293), the per-name orbit flag simply finds nothing (src/bodyModule/solarsystem_selected.cpp:109-113), and the colour setter likewise (src/bodyModule/solarsystem_color.cpp:35-45). Only `datum_radius`/`ground_radius` report an unknown body to the script."
         },
         "mode": {
@@ -206,28 +207,28 @@
           },
           "default": "absent (or any other word) -> the line is NOT the model form and `action` is read as a system action instead",
           "required": "conditional",
-          "source": "app_command_interface.cpp:3951, 3954 -> src/ojmModule/ojm_mgr.cpp:44-53 (ACP_SC_MODE=\"mode\", base_command_interface.hpp:580)",
-          "notes": "The key spelling is the SET-name macro ACP_SC_MODE (families.set_names has a `mode` name too) reused as an argument key -- same spelling in two families. The three words are bare literals in the handler (:3954); OjmMgr::convert maps anything else to OTHER, but the handler never gets there because its own test already failed."
+          "source": "app_command_interface.cpp:4116, 4119 -> src/ojmModule/ojm_mgr.cpp:44-53 (ACP_SC_MODE=\"mode\", base_command_interface.hpp:589)",
+          "notes": "The key spelling is the SET-name macro ACP_SC_MODE (families.set_names has a `mode` name too) reused as an argument key -- same spelling in two families. The three words are bare literals in the handler (:4119); OjmMgr::convert maps anything else to OTHER, but the handler never gets there because its own test already failed."
         },
         "filename": {
           "doc": "The file to read or write, depending on the action.",
           "value": "string",
           "default": "on the model form: absent -> the built name is \"/.ojm\" and no model is found; on `action save`: absent -> this system's own file; on `action dual_dump`: absent -> /tmp/dual_trace.json; on `action screenshot`: absent -> an automatic name <base>-YY.MM.DD-HH.MM.SS.png",
           "required": "conditional",
-          "source": "app_command_interface.cpp:3956-3957 (model), 4025 (save), 4033 (dual_dump), 4039 (screenshot) -> src/bodyModule/ssystem_factory.hpp:711-733 (save contract), src/bodyModule/ssystem_factory.cpp:975 (dump default), src/appModule/save_screen_interface.cpp:146-154, 347-361 (screenshot default)",
-          "notes": "MODEL FORM: the value is a FOLDER name; the file read is <value>/<value>.ojm inside the models directory (:3957 + src/tools/file_path.cpp:114-144, TFP::MODEL3D). SAVE FORM: a file NAME, not a path -- a name containing a path separator, or the machine-owned `.disabled` twin name, is refused with an explanatory log line and nothing is written (src/bodyModule/ssystem_factory.hpp:724-733)."
+          "source": "app_command_interface.cpp:4121-4122 (model), 4025 (save), 4033 (dual_dump), 4039 (screenshot) -> src/bodyModule/ssystem_factory.hpp:743-765 (save contract), src/bodyModule/ssystem_factory.cpp:1111 (dump default), src/appModule/save_screen_interface.cpp:146-154, 347-361 (screenshot default)",
+          "notes": "MODEL FORM: the value is a FOLDER name; the file read is <value>/<value>.ojm inside the models directory (:4122 + src/tools/file_path.cpp:114-144, TFP::MODEL3D). SAVE FORM: a file NAME, not a path -- a name containing a path separator, or the machine-owned `.disabled` twin name, is refused with an explanatory log line and nothing is written (src/bodyModule/ssystem_factory.hpp:756-765)."
         },
-        "pos_x": {"doc": "Where to put the three-dimensional model, left-right.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4087 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:3958 -> src/coreModule/coreLink.cpp:635-637 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSX=\"pos_x\", base_command_interface.hpp:293)", "notes": "No unit is stated in the code -- see `flagged`."},
-        "pos_y": {"doc": "Where to put the three-dimensional model, forward-back.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4087 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSY=\"pos_y\", base_command_interface.hpp:294)"},
-        "pos_z": {"doc": "Where to put the three-dimensional model, up-down.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4087 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:3958 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSZ=\"pos_z\", base_command_interface.hpp:295)"},
+        "pos_x": {"doc": "Where to put the three-dimensional model, left-right.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4123 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:4123 -> src/coreModule/coreLink.cpp:635-637 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSX=\"pos_x\", base_command_interface.hpp:293)", "notes": "No unit is stated in the code -- see `flagged`."},
+        "pos_y": {"doc": "Where to put the three-dimensional model, forward-back.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4123 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:4123 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSY=\"pos_y\", base_command_interface.hpp:294)"},
+        "pos_z": {"doc": "Where to put the three-dimensional model, up-down.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4123 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:4123 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSZ=\"pos_z\", base_command_interface.hpp:295)"},
         "scale": {
           "doc": "How big to draw the three-dimensional model, as a multiple of the size the model file itself declares.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> 0, i.e. the model is scaled to nothing and cannot be seen",
           "default_value": "0",
-          "default_value_source": "app_command_interface.cpp:4089 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
+          "default_value_source": "app_command_interface.cpp:4125 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
-          "source": "app_command_interface.cpp:3960 -> src/ojmModule/ojm_mgr.cpp:70 ('multiplier *= tmp->Obj3D->getRadius()') (W_SCALE=\"scale\", base_command_interface.hpp:101)"
+          "source": "app_command_interface.cpp:4125 -> src/ojmModule/ojm_mgr.cpp:70 ('multiplier *= tmp->Obj3D->getRadius()') (W_SCALE=\"scale\", base_command_interface.hpp:101)"
         },
         "skin_use": {
           "doc": "Switch this body between its ordinary picture and its alternative one.",
@@ -236,7 +237,7 @@
           "completable": ["toggle"],
           "default": "absent -> this form is not taken",
           "required": "conditional",
-          "source": "app_command_interface.cpp:3973-3981 -> src/coreModule/coreLink.cpp:1423-1431 -> src/bodyModule/ssystem_factory.hpp:423-434 (W_SKINUSE=\"skin_use\", W_TOGGLE=\"toggle\": base_command_interface.hpp:297,124)",
+          "source": "app_command_interface.cpp:4138-4146 -> src/coreModule/coreLink.cpp:1423-1431 -> src/bodyModule/ssystem_factory.hpp:455-466 (W_SKINUSE=\"skin_use\", W_TOGGLE=\"toggle\": base_command_interface.hpp:297,124)",
           "notes": "Same silent-off class as `flag`: a value that is not an on-form and not `toggle` means OFF with no diagnostic. `name selected` is understood here."
         },
         "skin_tex": {
@@ -244,33 +245,33 @@
           "value": "string (a texture file name)",
           "default": "absent -> this form is not taken",
           "required": "conditional",
-          "source": "app_command_interface.cpp:3983-3987 -> src/coreModule/coreLink.cpp:1433-1435 -> src/bodyModule/ssystem_factory.hpp:443-451 -> src/bodyModule/solarsystem_tex.cpp:67-73 (W_SKINTEX=\"skin_tex\", base_command_interface.hpp:298)",
-          "notes": "Creating or replacing the alternative picture never activates it (src/bodyModule/ssystem_factory.hpp:445-446). An unknown body name is a silent no-op (src/bodyModule/solarsystem_tex.cpp:69-72)."
+          "source": "app_command_interface.cpp:4148-4152 -> src/coreModule/coreLink.cpp:1433-1435 -> src/bodyModule/ssystem_factory.hpp:475-483 -> src/bodyModule/solarsystem_tex.cpp:67-73 (W_SKINTEX=\"skin_tex\", base_command_interface.hpp:298)",
+          "notes": "Creating or replacing the alternative picture never activates it (src/bodyModule/ssystem_factory.hpp:477-478). An unknown body name is a silent no-op (src/bodyModule/solarsystem_tex.cpp:69-72)."
         },
         "path": {
           "doc": "Not an argument to write: on `action load` the handler REPLACES whatever you wrote with the folder the script is in, and the picture files of the new body are looked for there.",
           "value": "string (overwritten by the handler)",
           "default": "always the script folder on `action load`; anything the author wrote is discarded",
           "required": false,
-          "source": "app_command_interface.cpp:3992 (args[W_PATH] = scriptInterface->getScriptPath()) (W_PATH=\"path\", base_command_interface.hpp:107)",
-          "notes": "C1-relevant: this is a WRITE into the parsed map before the map is forwarded (:3995), so the map the loader sees is not the set of pairs the line wrote."
+          "source": "app_command_interface.cpp:4157 (args[W_PATH] = scriptInterface->getScriptPath()) (W_PATH=\"path\", base_command_interface.hpp:107)",
+          "notes": "C1-relevant: this is a WRITE into the parsed map before the map is forwarded (:4160), so the map the loader sees is not the set of pairs the line wrote."
         },
         "tex_ring": {
           "doc": "The picture file for a ring around this body; it is looked for in the script folder.",
           "value": "string (a texture file name)",
-          "default": "absent -> the handler still writes the key: its value becomes the script folder alone (:3994)",
+          "default": "absent -> the handler still writes the key: its value becomes the script folder alone (:4159)",
           "required": false,
-          "source": "app_command_interface.cpp:3994 -> src/bodyModule/protosystem.cpp:813-817 (old path) and src/experimentalModule/ModularBody.cpp:697-700 + src/experimentalModule/moduleLoader/RingLoader.cpp:8-45 (new path)",
-          "notes": "C1-relevant: `args[\"tex_ring\"] = args[W_PATH] + args[\"tex_ring\"]` runs for EVERY `body action load` line, so the forwarded map always carries a non-empty tex_ring even when the author wrote none. It is harmless only because a ring is created only when `rings` is also true on both paths (src/bodyModule/protosystem.cpp:813, src/experimentalModule/ModularBody.cpp:700). The spelling is a bare literal, not a W_* token."
+          "source": "app_command_interface.cpp:4159 -> src/bodyModule/protosystem.cpp:813-817 (old path) and src/experimentalModule/ModularBody.cpp:794-797 + src/experimentalModule/moduleLoader/RingLoader.cpp:8-45 (new path)",
+          "notes": "C1-relevant: `args[\"tex_ring\"] = args[W_PATH] + args[\"tex_ring\"]` runs for EVERY `body action load` line, so the forwarded map always carries a non-empty tex_ring even when the author wrote none. It is harmless only because a ring is created only when `rings` is also true on both paths (src/bodyModule/protosystem.cpp:813, src/experimentalModule/ModularBody.cpp:797). The spelling is a bare literal, not a W_* token."
         },
         "keep_time": {
           "doc": "On `action preload`, how many seconds the fetched pictures are kept in memory before the program may drop them again.",
           "value": "int (Utility::strToInt with default 10) -- NO $-variable substitution",
           "default": "absent or empty -> 10 seconds; a value that is not a number -> 0 seconds (the stream conversion fails and leaves 0, src/tools/utility.cpp:459-467)",
           "default_value": "10",
-          "default_value_source": "app_command_interface.cpp:4157-4158 @ d64fd437 (`Utility::strToInt(kt, 10)`) -> src/tools/utility.cpp:459-461 (returns the default on an empty string)",
+          "default_value_source": "app_command_interface.cpp:4193-4194 (`Utility::strToInt(kt, 10)`) -> src/tools/utility.cpp:459-461 (returns the default on an empty string)",
           "required": false,
-          "source": "app_command_interface.cpp:4028-4029 (kt = strToInt(kt,10) * stapp->getTargetFps()) -> src/bodyModule/protosystem.cpp:1015-1016 and src/bodyModule/ssystem_factory.cpp:758-759 -> src/bodyModule/body.cpp:1310-1315 -> src/tools/s_texture.hpp:294-298 (W_KEEPTIME=\"keep_time\", base_command_interface.hpp:288)",
+          "source": "app_command_interface.cpp:4193-4194 (kt = strToInt(kt,10) * stapp->getTargetFps()) -> src/bodyModule/protosystem.cpp:1015-1016 and src/bodyModule/ssystem_factory.cpp:887-888 -> src/bodyModule/body.cpp:1310-1315 -> src/tools/s_texture.hpp:294-298 (W_KEEPTIME=\"keep_time\", base_command_interface.hpp:288)",
           "notes": "C1-relevant: the handler REWRITES this entry of the map in place (seconds x the target frame rate = frames) before forwarding, so the value the downstream reads is never the value the line wrote. The old path converts it again with std::stoi (src/bodyModule/protosystem.cpp:1016), which is why the rewrite must leave a number there."
         },
         "hidden": {
@@ -280,7 +281,7 @@
           "completable": [],
           "default": "absent -> this form is not taken; present with any other value -> \"Command 'body': unknown hidden value\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4050-4061 -> src/coreModule/coreLink.cpp:1369-1370 -> src/bodyModule/ssystem_factory.hpp:327-340 -> src/bodyModule/protosystem.cpp:280-293 (W_HIDDEN=\"hidden\", base_command_interface.hpp:120)",
+          "source": "app_command_interface.cpp:4215-4226 -> src/coreModule/coreLink.cpp:1369-1370 -> src/bodyModule/ssystem_factory.hpp:359-372 -> src/bodyModule/protosystem.cpp:280-293 (W_HIDDEN=\"hidden\", base_command_interface.hpp:120)",
           "notes": "Hiding is recursive: the body's satellites are hidden with it (src/bodyModule/protosystem.cpp:295-301). This is one of the two booleans in the unit with a real third state -- an unrecognised word is an error, not a silent 'show'."
         },
         "orbit": {
@@ -290,7 +291,7 @@
           "completable": [],
           "default": "absent -> this form is not taken; present with any other value -> \"Command 'body': unknown orbit value\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4064-4073 -> src/coreModule/coreLink.cpp:1419-1421 -> src/bodyModule/ssystem_factory.hpp:413-421 -> src/bodyModule/solarsystem_selected.cpp:109-113 (W_ORBIT=\"orbit\", base_command_interface.hpp:128)"
+          "source": "app_command_interface.cpp:4229-4238 -> src/coreModule/coreLink.cpp:1419-1421 -> src/bodyModule/ssystem_factory.hpp:445-453 -> src/bodyModule/solarsystem_selected.cpp:109-113 (W_ORBIT=\"orbit\", base_command_interface.hpp:128)"
         },
         "color": {
           "doc": "Which of this body's colours to change.",
@@ -306,7 +307,7 @@
           },
           "default": "absent -> this form is not taken; present with any other word -> nothing is changed and the log says \"Unknown value <word> in bodyColor\" (the command still reports success)",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4076-4095 -> src/coreModule/coreLink.cpp:1455-1457 -> src/bodyModule/ssystem_factory.hpp:466-481 -> src/bodyModule/body_color.cpp:217-233 (old path) and src/experimentalModule/BodyModule.hpp:50-57 (new path) (W_COLOR=\"color\", base_command_interface.hpp:133)"
+          "source": "app_command_interface.cpp:4241-4260 -> src/coreModule/coreLink.cpp:1455-1457 -> src/bodyModule/ssystem_factory.hpp:498-513 -> src/bodyModule/body_color.cpp:217-233 (old path) and src/experimentalModule/BodyModule.hpp:50-57 (new path) (W_COLOR=\"color\", base_command_interface.hpp:133)"
         },
         "color_value": {
           "doc": "The colour in one word: either x followed by six hexadecimal digits, or the three numbers 0-255 run together after the letters r, g and b.",
@@ -316,18 +317,18 @@
           "completable_excluded": {"xRRGGBB": "a SHAPE, not a value: RR/GG/BB stand for two hexadecimal digits each"},
           "default": "absent or empty -> the r/g/b keys are used instead",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4084, 4086 -> src/interfaceModule/app_command_color.cpp:92-118 (W_COLOR_VALUE=\"color_value\", base_command_interface.hpp:134)",
+          "source": "app_command_interface.cpp:4249, 4251 -> src/interfaceModule/app_command_color.cpp:92-118 (W_COLOR_VALUE=\"color_value\", base_command_interface.hpp:134)",
           "notes": "Note the key name: the `color` COMMAND (unit 1) spells the same thing `value`, and here `value` means something else entirely (the tesselation number)."
         },
-        "r": {"doc": "How much red, from 0 to 1.", "value": "number (Utility::strToDouble)", "default": "absent -> 0 when either of g or b is given; all three absent AND `color_value` absent -> \"'color': missing expected argument 'r' or 'g' or 'b'\"", "required": "conditional", "source": "app_command_interface.cpp:4081, 4086 -> src/interfaceModule/app_command_color.cpp:58-78, 108-114 (W_R=\"r\", base_command_interface.hpp:253)"},
-        "g": {"doc": "How much green, from 0 to 1.", "value": "number (Utility::strToDouble)", "default": "as `r`", "required": "conditional", "source": "app_command_interface.cpp:4082, 4086 -> src/interfaceModule/app_command_color.cpp:58-78 (W_G=\"g\", base_command_interface.hpp:254)"},
-        "b": {"doc": "How much blue, from 0 to 1.", "value": "number (Utility::strToDouble)", "default": "as `r`", "required": "conditional", "source": "app_command_interface.cpp:4083, 4086 -> src/interfaceModule/app_command_color.cpp:58-78 (W_B=\"b\", base_command_interface.hpp:255)"},
+        "r": {"doc": "How much red, from 0 to 1.", "value": "number (Utility::strToDouble)", "default": "absent -> 0 when either of g or b is given; all three absent AND `color_value` absent -> \"'color': missing expected argument 'r' or 'g' or 'b'\"", "required": "conditional", "source": "app_command_interface.cpp:4246, 4251 -> src/interfaceModule/app_command_color.cpp:58-78, 108-114 (W_R=\"r\", base_command_interface.hpp:253)"},
+        "g": {"doc": "How much green, from 0 to 1.", "value": "number (Utility::strToDouble)", "default": "as `r`", "required": "conditional", "source": "app_command_interface.cpp:4247, 4251 -> src/interfaceModule/app_command_color.cpp:58-78 (W_G=\"g\", base_command_interface.hpp:254)"},
+        "b": {"doc": "How much blue, from 0 to 1.", "value": "number (Utility::strToDouble)", "default": "as `r`", "required": "conditional", "source": "app_command_interface.cpp:4248, 4251 -> src/interfaceModule/app_command_color.cpp:58-78 (W_B=\"b\", base_command_interface.hpp:255)"},
         "datum_radius": {
           "doc": "The height, in kilometres from the body's centre, that counts as its surface for moving about: 0 lets you go inside it.",
           "value": "number(evalDouble) -- $-variable substitution possible; kilometres; must be 0 or more",
           "default": "absent -> this form is not taken",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4106-4119 -> src/coreModule/coreLink.cpp:1459-1461 -> src/bodyModule/ssystem_factory.hpp:483-494 (W_DATUM_RADIUS=\"datum_radius\", base_command_interface.hpp:139)",
+          "source": "app_command_interface.cpp:4271-4284 -> src/coreModule/coreLink.cpp:1459-1461 -> src/bodyModule/ssystem_factory.hpp:515-526 (W_DATUM_RADIUS=\"datum_radius\", base_command_interface.hpp:139)",
           "notes": "A negative value, or a body name nothing answers to, is refused with a message that states the valid range and the fix; nothing changes. New drawing path only."
         },
         "ground_radius": {
@@ -335,7 +336,7 @@
           "value": "number(evalDouble) -- $-variable substitution possible; kilometres; must be 0 or more",
           "default": "absent -> this form is not taken",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4121-4134 -> src/coreModule/coreLink.cpp:1463-1465 -> src/bodyModule/ssystem_factory.hpp:483-494 (W_GROUND_RADIUS=\"ground_radius\", base_command_interface.hpp:140)"
+          "source": "app_command_interface.cpp:4286-4299 -> src/coreModule/coreLink.cpp:1463-1465 -> src/bodyModule/ssystem_factory.hpp:515-526 (W_GROUND_RADIUS=\"ground_radius\", base_command_interface.hpp:140)"
         },
         "tesselation": {
           "doc": "Which of the surface-detail settings to change; the number goes in `value`.",
@@ -351,17 +352,17 @@
           },
           "default": "absent -> \"Command 'body': unknown argument\"; present with any other word -> nothing happens and nothing is reported",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4140-4143 -> src/coreModule/coreLink.cpp:1543-1545 -> src/bodyModule/ssystem_factory.hpp:595-597 -> src/bodyModule/solarsystem_tex.cpp:92-113 (W_TESSELATION=\"tesselation\", base_command_interface.hpp:299)",
-          "notes": "This form is only reached when NO `name` was given (:4047, :4140): `body name Mars tesselation ...` takes the name form and reports \"case name unknown argument\"."
+          "source": "app_command_interface.cpp:4305-4308 -> src/coreModule/coreLink.cpp:1543-1545 -> src/bodyModule/ssystem_factory.hpp:627-629 -> src/bodyModule/solarsystem_tex.cpp:92-113 (W_TESSELATION=\"tesselation\", base_command_interface.hpp:299)",
+          "notes": "This form is only reached when NO `name` was given (:4212, :4305): `body name Mars tesselation ...` takes the name form and reports \"case name unknown argument\"."
         },
         "value": {
           "doc": "The number for the chosen surface-detail setting.",
           "value": "int(evalInt) -- $-variable substitution possible",
           "default": "absent -> 0",
           "default_value": "0",
-          "default_value_source": "app_command_interface.cpp:4270 @ d64fd437 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
+          "default_value_source": "app_command_interface.cpp:4306 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)",
           "required": false,
-          "source": "app_command_interface.cpp:4141 (W_VALUE=\"value\", base_command_interface.hpp:91)",
+          "source": "app_command_interface.cpp:4306 (W_VALUE=\"value\", base_command_interface.hpp:91)",
           "notes": "No range is stated in any code on this path -- see `flagged`."
         },
         "purge": {
@@ -403,48 +404,48 @@
           "value": "string (see the stellar-system-file grammar)",
           "default": "absent or unrecognised -> 'Asteroid', with the log line \"No valid body type specified\"",
           "default_value": "Asteroid",
-          "default_value_source": "src/bodyModule/protosystem.cpp:542 @ d64fd437 (log: \"No valid body type specified ..., assume 'Asteroid'\"); the accepted spelling is protosystem.cpp:493 `CASE(\"Asteroid\", ASTEROID)`",
+          "default_value_source": "src/bodyModule/protosystem.cpp:542 (log: \"No valid body type specified ..., assume 'Asteroid'\"); the accepted spelling is protosystem.cpp:493 `CASE(\"Asteroid\", ASTEROID)`",
           "required": false,
           "downstream": true,
           "source": "src/bodyModule/protosystem.cpp:519, 540-543"
         }
       },
       "branches": [
-        {"selector": "mode in {in_universe,in_galaxy,in_sandbox} + action load", "requires": ["mode", "action"], "optional": ["name", "filename", "pos_x", "pos_y", "pos_z", "scale"], "effect": "read a three-dimensional model file and place it in that scene", "source": "app_command_interface.cpp:3954-3962"},
-        {"selector": "mode present + action remove", "requires": ["mode", "action", "name"], "optional": [], "effect": "remove that one model from that scene", "source": "app_command_interface.cpp:3963-3966"},
-        {"selector": "mode present + action clear", "requires": ["mode", "action"], "optional": [], "effect": "remove every model from that scene", "source": "app_command_interface.cpp:3967-3970"},
-        {"selector": "skin_use present", "requires": ["skin_use"], "optional": ["name"], "effect": "switch the body between its two pictures", "source": "app_command_interface.cpp:3973-3981"},
-        {"selector": "skin_tex present", "requires": ["skin_tex"], "optional": ["name"], "effect": "prepare an alternative picture for the body", "source": "app_command_interface.cpp:3983-3987"},
-        {"selector": "action load (no mode)", "requires": ["action"], "optional": ["name", "parent", "coord_func", "type", "tex_ring", "(the whole system-file body vocabulary)"], "effect": "add a body to the current system, on both drawing paths; `path` is forced to the script folder first", "source": "app_command_interface.cpp:3990-3995"},
-        {"selector": "action drop", "requires": ["action", "name"], "optional": [], "effect": "remove that body (script-added ones only)", "source": "app_command_interface.cpp:3996-3998"},
-        {"selector": "action clear (no mode)", "requires": ["action"], "optional": [], "effect": "remove every body a script added", "source": "app_command_interface.cpp:3999-4001"},
-        {"selector": "action initial", "requires": ["action"], "optional": [], "effect": "put every body back to what its data file declared", "source": "app_command_interface.cpp:4002-4003"},
-        {"selector": "action reload", "requires": ["action"], "optional": [], "effect": "re-read the current system's data file, keeping the view and the date; failure gives \"Command 'body': the current system has no data file to reload\"", "source": "app_command_interface.cpp:4004-4012"},
-        {"selector": "action save", "requires": ["action"], "optional": ["filename"], "effect": "write the current system to a system file; failure gives \"Command 'body': the current system could not be saved\"", "source": "app_command_interface.cpp:4013-4026"},
-        {"selector": "action preload", "requires": ["action"], "optional": ["name", "keep_time", "purge"], "effect": "fetch the body's big pictures now and keep them for a while", "source": "app_command_interface.cpp:4027-4030"},
-        {"selector": "action dual_dump", "requires": ["action"], "optional": ["filename"], "effect": "write the development trace file", "source": "app_command_interface.cpp:4031-4033"},
-        {"selector": "action screenshot", "requires": ["action"], "optional": ["filename"], "effect": "take a picture of the screen", "source": "app_command_interface.cpp:4034-4039"},
-        {"selector": "no action, name present, hidden present", "requires": ["name", "hidden"], "optional": [], "effect": "hide or show that body and its satellites", "source": "app_command_interface.cpp:4050-4061"},
-        {"selector": "no action, name present, orbit present", "requires": ["name", "orbit"], "optional": [], "effect": "draw or stop drawing that body's orbit line", "source": "app_command_interface.cpp:4064-4073"},
-        {"selector": "no action, name present, color present", "requires": ["name", "color"], "optional": ["color_value", "r", "g", "b"], "effect": "recolour one of that body's four colours", "source": "app_command_interface.cpp:4076-4095"},
-        {"selector": "no action, name present, datum_radius present", "requires": ["name", "datum_radius"], "optional": [], "effect": "set the body's navigation surface height", "source": "app_command_interface.cpp:4106-4119"},
-        {"selector": "no action, name present, ground_radius present", "requires": ["name", "ground_radius"], "optional": [], "effect": "set the body's floor height", "source": "app_command_interface.cpp:4121-4134"},
-        {"selector": "no action, no name, tesselation present", "requires": ["tesselation"], "optional": ["value"], "effect": "change one surface-detail setting", "source": "app_command_interface.cpp:4140-4143"},
-        {"selector": "none of the above", "requires": [], "optional": [], "effect": "\"Command 'body': case name unknown argument\" when a name was given (:4136), \"Command 'body': unknown argument\" otherwise (:4145)", "source": "app_command_interface.cpp:4136, 4145"}
+        {"selector": "mode in {in_universe,in_galaxy,in_sandbox} + action load", "requires": ["mode", "action"], "optional": ["name", "filename", "pos_x", "pos_y", "pos_z", "scale"], "effect": "read a three-dimensional model file and place it in that scene", "source": "app_command_interface.cpp:4119-4127"},
+        {"selector": "mode present + action remove", "requires": ["mode", "action", "name"], "optional": [], "effect": "remove that one model from that scene", "source": "app_command_interface.cpp:4128-4131"},
+        {"selector": "mode present + action clear", "requires": ["mode", "action"], "optional": [], "effect": "remove every model from that scene", "source": "app_command_interface.cpp:4132-4135"},
+        {"selector": "skin_use present", "requires": ["skin_use"], "optional": ["name"], "effect": "switch the body between its two pictures", "source": "app_command_interface.cpp:4138-4146"},
+        {"selector": "skin_tex present", "requires": ["skin_tex"], "optional": ["name"], "effect": "prepare an alternative picture for the body", "source": "app_command_interface.cpp:4148-4152"},
+        {"selector": "action load (no mode)", "requires": ["action"], "optional": ["name", "parent", "coord_func", "type", "tex_ring", "(the whole system-file body vocabulary)"], "effect": "add a body to the current system, on both drawing paths; `path` is forced to the script folder first", "source": "app_command_interface.cpp:4155-4160"},
+        {"selector": "action drop", "requires": ["action", "name"], "optional": [], "effect": "remove that body (script-added ones only)", "source": "app_command_interface.cpp:4161-4163"},
+        {"selector": "action clear (no mode)", "requires": ["action"], "optional": [], "effect": "remove every body a script added", "source": "app_command_interface.cpp:4164-4166"},
+        {"selector": "action initial", "requires": ["action"], "optional": [], "effect": "put every body back to what its data file declared", "source": "app_command_interface.cpp:4167-4168"},
+        {"selector": "action reload", "requires": ["action"], "optional": [], "effect": "re-read the current system's data file, keeping the view and the date; failure gives \"Command 'body': the current system has no data file to reload\"", "source": "app_command_interface.cpp:4169-4177"},
+        {"selector": "action save", "requires": ["action"], "optional": ["filename"], "effect": "write the current system to a system file; failure gives \"Command 'body': the current system could not be saved\"", "source": "app_command_interface.cpp:4178-4191"},
+        {"selector": "action preload", "requires": ["action"], "optional": ["name", "keep_time", "purge"], "effect": "fetch the body's big pictures now and keep them for a while", "source": "app_command_interface.cpp:4192-4195"},
+        {"selector": "action dual_dump", "requires": ["action"], "optional": ["filename"], "effect": "write the development trace file", "source": "app_command_interface.cpp:4196-4198"},
+        {"selector": "action screenshot", "requires": ["action"], "optional": ["filename"], "effect": "take a picture of the screen", "source": "app_command_interface.cpp:4199-4204"},
+        {"selector": "no action, name present, hidden present", "requires": ["name", "hidden"], "optional": [], "effect": "hide or show that body and its satellites", "source": "app_command_interface.cpp:4215-4226"},
+        {"selector": "no action, name present, orbit present", "requires": ["name", "orbit"], "optional": [], "effect": "draw or stop drawing that body's orbit line", "source": "app_command_interface.cpp:4229-4238"},
+        {"selector": "no action, name present, color present", "requires": ["name", "color"], "optional": ["color_value", "r", "g", "b"], "effect": "recolour one of that body's four colours", "source": "app_command_interface.cpp:4241-4260"},
+        {"selector": "no action, name present, datum_radius present", "requires": ["name", "datum_radius"], "optional": [], "effect": "set the body's navigation surface height", "source": "app_command_interface.cpp:4271-4284"},
+        {"selector": "no action, name present, ground_radius present", "requires": ["name", "ground_radius"], "optional": [], "effect": "set the body's floor height", "source": "app_command_interface.cpp:4286-4299"},
+        {"selector": "no action, no name, tesselation present", "requires": ["tesselation"], "optional": ["value"], "effect": "change one surface-detail setting", "source": "app_command_interface.cpp:4305-4308"},
+        {"selector": "none of the above", "requires": [], "optional": [], "effect": "\"Command 'body': case name unknown argument\" when a name was given (:4301), \"Command 'body': unknown argument\" otherwise (:4310)", "source": "app_command_interface.cpp:4301, 4310"}
       ],
       "notes": [
-        "Order of the forms, which decides what a mixed line does: model form (needs `mode` AND `action`), then `skin_use`, then `skin_tex`, then `action`, then `name`, then `tesselation` (:3954, :3974, :3984, :3989, :4047, :4140). `body action load skin_use on` therefore only switches the picture.",
-        "`action drop` with no `name` does NOT report a missing name: the test is `argAction == W_DROP && argName != \"\"` (:3996), so the line falls through to \"command 'body' : unknown action argument\" (:4041) -- the same misleading-message shape unit 1 recorded for `dso`.",
-        "A `mode` value outside the three words with a valid system `action` silently takes the SYSTEM path (the test at :3954 fails and `mode` is then never looked at again) -- e.g. `body mode in_galaxie action clear` removes every script-added BODY instead of the models of a scene.",
+        "Order of the forms, which decides what a mixed line does: model form (needs `mode` AND `action`), then `skin_use`, then `skin_tex`, then `action`, then `name`, then `tesselation` (:4119, :4139, :4149, :4154, :4212, :4305). `body action load skin_use on` therefore only switches the picture.",
+        "`action drop` with no `name` does NOT report a missing name: the test is `argAction == W_DROP && argName != \"\"` (:4161), so the line falls through to \"command 'body' : unknown action argument\" (:4206) -- the same misleading-message shape unit 1 recorded for `dso`.",
+        "A `mode` value outside the three words with a valid system `action` silently takes the SYSTEM path (the test at :4119 fails and `mode` is then never looked at again) -- e.g. `body mode in_galaxie action clear` removes every script-added BODY instead of the models of a scene.",
         "DEFECT, recorded not fixed, same class as unit 1's `color`: on the r/g/b path the colour helper writes its range errors into a BY-VALUE copy of debug_message (src/interfaceModule/app_command_color.cpp:58-59), so `body name X color halo r 2 g 0 b 0` changes nothing, reports success and is recorded. The hex and rgb-word paths set the message on the reference and do reach the script (src/interfaceModule/app_command_color.cpp:98-105, 112-119).",
-        "C1-relevant: this is the handler that WRITES into the parsed map (`path` :3992, `tex_ring` :3994, `keep_time` :4028-4029) and then forwards the whole map (:3995, :4030). A tool that models 'the keys of this line' must not read them back from the downstream side.",
-        "DOC-vs-CODE divergence recorded, code wins: two engine-side comments spell the colour form as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 and :264), but the handler reads `color_value` (:4084) -- `value` on a `body` line means the tesselation number and nothing else (:4141). An author following the header comment would silently set no colour."
+        "C1-relevant: this is the handler that WRITES into the parsed map (`path` :4157, `tex_ring` :4159, `keep_time` :4193-4194) and then forwards the whole map (:4160, :4195). A tool that models 'the keys of this line' must not read them back from the downstream side.",
+        "DOC-vs-CODE divergence recorded, code wins: two engine-side comments spell the colour form as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 and :264), but the handler reads `color_value` (:4249) -- `value` on a `body` line means the tesselation number and nothing else (:4306). An author following the header comment would silently set no colour."
       ],
       "flagged": [
-        "body downstream vocabulary (`action load` without `mode`): the forwarded map is read by the stellar-system-file body grammar (src/bodyModule/protosystem.cpp:508-830 and the new path's loaders), which is INTENT S5 item 4's own deliverable -- the second contract file. Enumerating it here would duplicate that authority (I2). Recorded instead: the entry points (other_args_uses:3995) and the four keys the immediate downstream names before anything else (name, parent, coord_func, type). SCOPE DECISION, for the supervisor to confirm or reverse.",
+        "body downstream vocabulary (`action load` without `mode`): the forwarded map is read by the stellar-system-file body grammar (src/bodyModule/protosystem.cpp:508-830 and the new path's loaders), which is INTENT S5 item 4's own deliverable -- the second contract file. Enumerating it here would duplicate that authority (I2). Recorded instead: the entry points (other_args_uses:4160) and the four keys the immediate downstream names before anything else (name, parent, coord_func, type). SCOPE DECISION, for the supervisor to confirm or reverse.",
         "body.pos_x / pos_y / pos_z (three-dimensional model placement): the code states no unit -- the three numbers go straight into the model's placement matrix (src/ojmModule/ojm_mgr.cpp:71-76). The doc lines say only which direction each moves.",
-        "body.value (with `tesselation`): no range is stated anywhere on the path (app_command_interface.cpp:4141 -> src/bodyModule/solarsystem_tex.cpp:92-113 -> BodyTesselation setters). A usable range for the doc bar needs Vixy.",
-        "body `action screenshot` and `action dual_dump`: both are harness routes with no W_* token (bare literals at :4031, :4034). Whether they belong on the editor's public command surface at all (offered in completion, documented to a zero-knowledge author) is a product decision -- Vixy. Recorded here, doc lines written as development tools."
+        "body.value (with `tesselation`): no range is stated anywhere on the path (app_command_interface.cpp:4306 -> src/bodyModule/solarsystem_tex.cpp:92-113 -> BodyTesselation setters). A usable range for the doc bar needs Vixy.",
+        "body `action screenshot` and `action dual_dump`: both are harness routes with no W_* token (bare literals at :4196, :4199). Whether they belong on the editor's public command surface at all (offered in completion, documented to a zero-knowledge author) is a product decision -- Vixy. Recorded here, doc lines written as development tools."
       ]
     },
 
@@ -452,7 +453,7 @@
       "handler": "commandFont",
       "lines": "4149-4184",
       "aliases": [],
-      "registration": "app_command_init.cpp:58 (ACP_CN_FONT = \"font\", base_command_interface.hpp:348)",
+      "registration": "app_command_init.cpp:57 (ACP_CN_FONT = \"font\", base_command_interface.hpp:348)",
       "doc": "Change the lettering used for one kind of text on the screen, or put all the lettering back to what the settings say.",
       "args": {
         "action": {
@@ -462,7 +463,7 @@
           "completable": ["initial"],
           "default": "absent -> the command changes one target instead; present with any other word -> \"Command 'font': unknown action argument\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4154-4162 -> src/appModule/fontFactory.cpp:196-200 (W_ACTION=\"action\", W_INITIAL=\"initial\": base_command_interface.hpp:81,200)"
+          "source": "app_command_interface.cpp:4319-4327 -> src/appModule/fontFactory.cpp:202-206 (W_ACTION=\"action\", W_INITIAL=\"initial\": base_command_interface.hpp:81,200)"
         },
         "target": {
           "doc": "Which kind of text to change.",
@@ -483,7 +484,7 @@
           },
           "default": "absent -> \"Command 'font': missing target argument\"; a word outside the list -> nothing changes and the log says \"Unknown FontFactory target <word>\" (the command still reports success)",
           "required": true,
-          "source": "app_command_interface.cpp:4152, 4165-4168, 4173 -> src/appModule/fontFactory.cpp:43-52, 149-153 (W_TARGET=\"target\", base_command_interface.hpp:123; the ten spellings are TF_*, base_command_interface.hpp:675-684)",
+          "source": "app_command_interface.cpp:4317, 4330-4333, 4338 -> src/appModule/fontFactory.cpp:43-52, 149-153 (W_TARGET=\"target\", base_command_interface.hpp:123; the ten spellings are TF_*, base_command_interface.hpp:684-693)",
           "notes": "Cross-ref families.font_targets (10 names)."
         },
         "filename": {
@@ -491,7 +492,7 @@
           "value": "string (a font file name)",
           "default": "absent -> \"Command 'font': missing filename argument\"",
           "required": true,
-          "source": "app_command_interface.cpp:4151, 4170-4182",
+          "source": "app_command_interface.cpp:4316, 4335-4347",
           "notes": "The file is looked for in the script folder first, then as written, then in the program's font folder (src/tools/file_path.cpp:114-144, TFP::FONTS); a file that is nowhere gives \"command 'font' : filename <name> can't be found\"."
         },
         "size": {
@@ -499,16 +500,16 @@
           "value": "number (Utility::strToDouble) -- NO $-variable substitution",
           "default": "absent, empty or not a number -> 12 (the size is then NOT scaled to the screen)",
           "required": false,
-          "source": "app_command_interface.cpp:4173 -> src/appModule/fontFactory.cpp:141-146 (W_SIZE=\"size\", base_command_interface.hpp:80)",
+          "source": "app_command_interface.cpp:4338 -> src/appModule/fontFactory.cpp:141-146 (W_SIZE=\"size\", base_command_interface.hpp:80)",
           "notes": "The number you write is multiplied by a screen-size factor (src/appModule/fontFactory.cpp:86, the square root of the screen height over the configured reference height) -- so the same script gives comparable letters on different screens. A value of 0, or anything that is not a number, falls back to a fixed 12 that skips that scaling."
         }
       },
       "branches": [
-        {"selector": "action present", "requires": ["action"], "optional": [], "effect": "rebuild every kind of lettering from the settings; returns before `target` is looked at", "source": "app_command_interface.cpp:4155-4162"},
-        {"selector": "action absent", "requires": ["target", "filename"], "optional": ["size"], "effect": "change that one kind of lettering", "source": "app_command_interface.cpp:4165-4182"}
+        {"selector": "action present", "requires": ["action"], "optional": [], "effect": "rebuild every kind of lettering from the settings; returns before `target` is looked at", "source": "app_command_interface.cpp:4320-4327"},
+        {"selector": "action absent", "requires": ["target", "filename"], "optional": ["size"], "effect": "change that one kind of lettering", "source": "app_command_interface.cpp:4330-4347"}
       ],
       "notes": [
-        "`filename` and `target` are read at the top (:4151-4152) but only checked in the second branch, so `font action initial filename X` ignores the file name.",
+        "`filename` and `target` are read at the top (:4316-4317) but only checked in the second branch, so `font action initial filename X` ignores the file name.",
         "An unknown `target` is NOT reported to the script (src/appModule/fontFactory.cpp:149-153 logs and returns): the command reports success and nothing changed. The `text` target is special-cased to the media text (src/appModule/fontFactory.cpp:156-159); every other target rebuilds its font in place."
       ],
       "flagged": []
@@ -518,8 +519,8 @@
       "handler": "commandCamera",
       "lines": "4186-4453",
       "aliases": ["flyto"],
-      "registration": "app_command_init.cpp:44 (ACP_CN_CAMERA = \"camera\", base_command_interface.hpp:333); alias app_command_init.cpp:45 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:334)",
-      "signature": "commandCamera(uint64_t &wait) -- writes the script's inter-command delay on the two `move_to` forms (executeCommand :245)",
+      "registration": "app_command_init.cpp:44 (ACP_CN_CAMERA = \"camera\", base_command_interface.hpp:333); alias app_command_init.cpp:117 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:334)",
+      "signature": "commandCamera(uint64_t &wait) -- writes the script's inter-command delay on the two `move_to` forms (executeCommand :389)",
       "doc": "Move the point of view about the universe: name a place, go to it, turn towards a body, or fly up from where you stand.",
       "args": {
         "action": {
@@ -544,15 +545,15 @@
           },
           "default": "absent -> \"command 'camera' : action argument\"; present with any other word -> \"command 'camera' : missing name\" when no `name` was given, else \"command 'camera' : unknown action argument\"",
           "required": true,
-          "source": "app_command_interface.cpp:4189, 4192-4195, 4197, 4208, 4232, 4267, 4331, 4346, 4361, 4374, 4388, 4411-4451 (W_ROTATE=\"rotate\", W_ALIGN_WITH=\"align_with\", W_TRANSITION_TO=\"transition_to\", W_MOVE_TO=\"move_to\", W_SAVE=\"save\", W_LOAD=\"load\", W_FREE_MODE=\"free_mode\", W_DESCEND=\"descend\", W_LIFT_OFF=\"lift_off\", W_CREATE=\"create\", W_DROP=\"drop\", W_SWITCH=\"switch\", W_FOLLOW_ROTATION=\"follow_rotation\": base_command_interface.hpp:155,252,251,250,148,103,246,247,249,226,156,229,245)"
+          "source": "app_command_interface.cpp:4354, 4357-4360, 4362, 4373, 4397, 4432, 4496, 4511, 4526, 4539, 4553, 4576-4616 (W_ROTATE=\"rotate\", W_ALIGN_WITH=\"align_with\", W_TRANSITION_TO=\"transition_to\", W_MOVE_TO=\"move_to\", W_SAVE=\"save\", W_LOAD=\"load\", W_FREE_MODE=\"free_mode\", W_DESCEND=\"descend\", W_LIFT_OFF=\"lift_off\", W_CREATE=\"create\", W_DROP=\"drop\", W_SWITCH=\"switch\", W_FOLLOW_ROTATION=\"follow_rotation\": base_command_interface.hpp:155,252,251,250,148,103,246,247,249,226,156,229,245)"
         },
         "name": {
           "doc": "The name of a place the view can be attached to (its own name, not a body's).",
           "value": "string",
           "default": "absent -> the four forms that need it are refused with \"command 'camera' : missing name\", which is ALSO what an unknown action reports",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4190, 4249, 4411-4414, 4426, 4434, 4445 (W_NAME=\"name\", base_command_interface.hpp:89)",
-          "notes": "On `action transition_to target body` the same key means a BODY name instead (:4249) -- the only place in this handler where it does."
+          "source": "app_command_interface.cpp:4355, 4414, 4576-4579, 4591, 4599, 4610 (W_NAME=\"name\", base_command_interface.hpp:89)",
+          "notes": "On `action transition_to target body` the same key means a BODY name instead (:4414) -- the only place in this handler where it does."
         },
         "target": {
           "doc": "What the action acts on.",
@@ -565,23 +566,23 @@
           },
           "default": "absent -> \"command 'camera' : missing target\" (rotate: \"missing target\"; transition_to and move_to: their own message); present with any other word -> \"command 'transition_to' : unknown target arg\" / \"command 'camera' : unknown target arg\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4198-4202 (rotate), 4233-4238, 4240, 4248 (transition_to), 4269-4276, 4301 (move_to) (W_TARGET=\"target\", W_POINT=\"point\", W_BODY=\"body\": base_command_interface.hpp:123,225,224)",
-          "notes": "ON `action rotate` THE VALUE IS NOT USED: it must be non-empty, but the movement always goes to the place you are standing on -- Core::lookAnchor ignores its name argument (the per-name branch is commented out, src/coreModule/core.cpp:2549-2559)."
+          "source": "app_command_interface.cpp:4363-4367 (rotate), 4233-4238, 4240, 4248 (transition_to), 4269-4276, 4301 (move_to) (W_TARGET=\"target\", W_POINT=\"point\", W_BODY=\"body\": base_command_interface.hpp:123,225,224)",
+          "notes": "ON `action rotate` THE VALUE IS NOT USED: it must be non-empty, but the movement always goes to the place you are standing on -- Core::lookAnchor ignores its name argument (the per-name branch is commented out, src/coreModule/core.cpp:2632-2642)."
         },
         "duration": {
           "doc": "How long the movement takes, in seconds.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "on `rotate`: absent -> 2 seconds; on `align_with`: absent -> 0 (immediate); on `move_to target point`: absent -> the jump is immediate; on `move_to target body`: absent -> \"command 'move_to body' : missing a body_name or time\"; on `lift_off`: absent -> 3 seconds",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4203-4204 (rotate), 4216-4221 (align_with), 4280, 4289-4294 (move_to point), 4303-4305, 4315-4322 (move_to body), 4391, 4398-4400 (lift_off) (W_DURATION=\"duration\", base_command_interface.hpp:102)",
-          "notes": "On both `move_to` forms the script ALSO waits: the delay before the next command is set to this many seconds (:4293, :4322 -- evalInt(value) x 1000 milliseconds, so a fractional duration is cut down to whole seconds for the wait but not for the movement). The travel itself is measured in simulated time: the seconds are divided by 86400 and the arrival is that many days later on the simulation clock (src/navModule/anchor_manager.cpp:430, 464)."
+          "source": "app_command_interface.cpp:4368-4369 (rotate), 4216-4221 (align_with), 4280, 4289-4294 (move_to point), 4303-4305, 4315-4322 (move_to body), 4391, 4398-4400 (lift_off) (W_DURATION=\"duration\", base_command_interface.hpp:102)",
+          "notes": "On both `move_to` forms the script ALSO waits: the delay before the next command is set to this many seconds (:4458, :4487 -- evalInt(value) x 1000 milliseconds, so a fractional duration is cut down to whole seconds for the wait but not for the movement). The travel itself is measured in simulated time: the seconds are divided by 86400 and the arrival is that many days later on the simulation clock (src/navModule/anchor_manager.cpp:430, 464)."
         },
         "body": {
           "doc": "On `action align_with`, the name of the place (declared with `action create`, of the kind that follows a body) whose up direction the view should take.",
           "value": "string",
           "default": "absent -> \"command 'align_with' : missing body\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4210-4214, 4223 -> src/coreModule/coreLink.cpp:1203-1205 -> src/navModule/anchor_manager.cpp:793-816 (W_BODY=\"body\", base_command_interface.hpp:224)",
+          "source": "app_command_interface.cpp:4375-4379, 4388 -> src/coreModule/coreLink.cpp:1203-1205 -> src/navModule/anchor_manager.cpp:793-816 (W_BODY=\"body\", base_command_interface.hpp:224)",
           "notes": "Despite the key name it is looked up among the declared PLACES, not among the bodies, and the place must be one that follows a body; otherwise the log says \"anchor not found\" / \"wrong anchor type\" and the command reports \"error align_with_body body\"."
         },
         "body_name": {
@@ -595,27 +596,27 @@
           },
           "default": "absent -> \"command 'move_to body' : missing a body_name or time\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4302-4308, 4315-4317 -> src/coreModule/coreLink.cpp:1161-1171 -> src/navModule/anchor_manager.cpp:488-501 (W_BODYNAME=\"body_name\", base_command_interface.hpp:304)",
+          "source": "app_command_interface.cpp:4467-4473, 4480-4482 -> src/coreModule/coreLink.cpp:1161-1171 -> src/navModule/anchor_manager.cpp:488-501 (W_BODYNAME=\"body_name\", base_command_interface.hpp:304)",
           "notes": "As with `body` above, the name is looked up among the declared PLACES that follow a body (src/navModule/anchor_manager.cpp:491-497), so only bodies that have such a place declared can be travelled to."
         },
-        "x": {"doc": "On `action move_to target point`, where to go: the first coordinate, counted from the Sun.", "value": "number(evalDouble) -- $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4277, 4282-4292 -> src/navModule/anchor_manager.cpp:387-395, 405-442 (W_X=\"x\", base_command_interface.hpp:300)", "notes": "The three numbers are a position in the heliocentric ecliptic frame (src/navModule/anchor_manager.cpp:387-395, 405-442). The unit is NOT stated on this path: astronomical units is [derived] from two facts about the same frame -- the km->AU divisor applied to `altitude` beside it (src/navModule/anchor_manager.cpp:475, with AU declared in kilometres at src/tools/sc_const.hpp:45), and the new-path anchor code, which says 'a fixed point x/y/z in AU' of the same coordinates (src/experimentalModule/CameraAnchors.cpp:39). On `action create` the same three spellings are read again downstream, for a fixed place (see the downstream keys)."},
-        "y": {"doc": "On `action move_to target point`, where to go: the second coordinate, counted from the Sun.", "value": "number(evalDouble) -- $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4278, 4282-4292 (W_Y=\"y\", base_command_interface.hpp:301)"},
-        "z": {"doc": "On `action move_to target point`, where to go: the third coordinate, counted from the Sun.", "value": "number(evalDouble) -- $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4279, 4282-4292 (W_Z=\"z\", base_command_interface.hpp:302)"},
+        "x": {"doc": "On `action move_to target point`, where to go: the first coordinate, counted from the Sun.", "value": "number(evalDouble) -- $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4442, 4447-4457 -> src/navModule/anchor_manager.cpp:387-395, 405-442 (W_X=\"x\", base_command_interface.hpp:300)", "notes": "The three numbers are a position in the heliocentric ecliptic frame (src/navModule/anchor_manager.cpp:387-395, 405-442). The unit is NOT stated on this path: astronomical units is [derived] from two facts about the same frame -- the km->AU divisor applied to `altitude` beside it (src/navModule/anchor_manager.cpp:475, with AU declared in kilometres at src/tools/sc_const.hpp:45), and the new-path anchor code, which says 'a fixed point x/y/z in AU' of the same coordinates (src/experimentalModule/CameraAnchors.cpp:141). On `action create` the same three spellings are read again downstream, for a fixed place (see the downstream keys)."},
+        "y": {"doc": "On `action move_to target point`, where to go: the second coordinate, counted from the Sun.", "value": "number(evalDouble) -- $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4443, 4447-4457 (W_Y=\"y\", base_command_interface.hpp:301)"},
+        "z": {"doc": "On `action move_to target point`, where to go: the third coordinate, counted from the Sun.", "value": "number(evalDouble) -- $-variable substitution possible; astronomical units", "default": "absent -> \"command 'move_to point' : missing a coordinate\"", "required": "conditional", "source": "app_command_interface.cpp:4444, 4447-4457 (W_Z=\"z\", base_command_interface.hpp:302)"},
         "altitude": {
           "doc": "On `move_to`, how high above the body to stop, in kilometres; on `lift_off`, the height to climb to, in whatever unit the `moveto` command reads (see notes).",
           "value": "number(evalDouble) -- $-variable substitution possible; kilometres on `move_to target body` [derived: the value is divided by AU, and AU is declared in kilometres]",
           "default": "on `move_to target body`: absent -> stop at five times the body's own radius; on `lift_off`: absent -> \"command 'camera lift_off' : missing altitude\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4310, 4314-4317 (move_to body), 4390, 4393-4396, 4404 (lift_off) -> src/navModule/anchor_manager.cpp:475 ('alt/AU', with AU in kilometres, src/tools/sc_const.hpp:45) (W_ALTITUDE=\"altitude\", base_command_interface.hpp:179)",
-          "notes": "On `lift_off` the value is not used directly: it is written into a `moveto altitude <value> duration <duration>` line (:4404), i.e. it becomes the `moveto` command's own altitude argument (unit 3)."
+          "source": "app_command_interface.cpp:4475, 4479-4482 (move_to body), 4390, 4393-4396, 4404 (lift_off) -> src/navModule/anchor_manager.cpp:475 ('alt/AU', with AU in kilometres, src/tools/sc_const.hpp:45) (W_ALTITUDE=\"altitude\", base_command_interface.hpp:179)",
+          "notes": "On `lift_off` the value is not used directly: it is written into a `moveto altitude <value> duration <duration>` line (:4569), i.e. it becomes the `moveto` command's own altitude argument (unit 3)."
         },
         "filename": {
           "doc": "The file to write the view into, or to read it back from.",
           "value": "string (a file name)",
           "default": "on `action save`: absent -> the name 'anchor' (src/coreModule/coreLink.hpp:371); on `action load`: absent -> \"command 'camera load' : missing file name\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4334-4339 (save), 4347-4354 (load) -> src/coreModule/coreLink.cpp:63-71 -> src/bodyModule/ssystem_factory.hpp:945-951 -> src/navModule/anchor_manager.cpp:696-740 (write), 742-791 (read)",
-          "notes": "The file written holds the place's declaration plus your height, longitude, latitude, the date and the direction you look in (src/navModule/anchor_manager.cpp:722-733). DEFECT, recorded not fixed: the folder 'anchors/' is prepended TWICE on both paths (src/coreModule/coreLink.cpp:65 and src/bodyModule/ssystem_factory.hpp:946; likewise :70 and :950), so the file actually used is anchors/anchors/<name>, relative to the folder the program was started in."
+          "source": "app_command_interface.cpp:4499-4504 (save), 4347-4354 (load) -> src/coreModule/coreLink.cpp:63-71 -> src/bodyModule/ssystem_factory.hpp:1005-1011 -> src/navModule/anchor_manager.cpp:696-740 (write), 742-791 (read)",
+          "notes": "The file written holds the place's declaration plus your height, longitude, latitude, the date and the direction you look in (src/navModule/anchor_manager.cpp:722-733). DEFECT, recorded not fixed: the folder 'anchors/' is prepended TWICE on both paths (src/coreModule/coreLink.cpp:65 and src/bodyModule/ssystem_factory.hpp:1006; likewise :70 and :1010), so the file actually used is anchors/anchors/<name>, relative to the folder the program was started in."
         },
         "state": {
           "doc": "On `action free_mode`, whether free flight is on.",
@@ -624,7 +625,7 @@
           "completable": [],
           "default": "absent -> \"command 'camera free_mode' : missing state\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4365-4371 -> src/coreModule/coreLink.hpp:943-950 (W_STATE=\"state\", base_command_interface.hpp:150)",
+          "source": "app_command_interface.cpp:4530-4536 -> src/coreModule/coreLink.hpp:943-950 (W_STATE=\"state\", base_command_interface.hpp:150)",
           "notes": "Same silent-off class as `flag`: a typo means 'off' with no diagnostic. New drawing path only."
         },
         "coef": {
@@ -632,8 +633,8 @@
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> \"command 'camera descend' : missing coef\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4379-4385 -> src/coreModule/coreLink.hpp:952-961 -> src/experimentalModule/Camera.cpp:943-968 (W_COEF=\"coef\", base_command_interface.hpp:248)",
-          "notes": "What it goes down towards depends on where you are: the ground under the view ray when a body is close, the last selected body when you are out among the systems (src/experimentalModule/Camera.cpp:945-968). New drawing path only."
+          "source": "app_command_interface.cpp:4544-4550 -> src/coreModule/coreLink.hpp:952-961 -> src/experimentalModule/Camera.cpp:1057-1082 (W_COEF=\"coef\", base_command_interface.hpp:248)",
+          "notes": "What it goes down towards depends on where you are: the ground under the view ray when a body is close, the last selected body when you are out among the systems (src/experimentalModule/Camera.cpp:1059-1082). New drawing path only."
         },
         "value": {
           "doc": "On `action follow_rotation`, whether the view turns with the body: write exactly the word true for yes.",
@@ -642,7 +643,7 @@
           "completable": ["true"],
           "default": "absent -> no",
           "required": false,
-          "source": "app_command_interface.cpp:4441-4445 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,243)",
+          "source": "app_command_interface.cpp:4606-4610 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,243)",
           "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar -- the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here."
         },
         "type": {
@@ -659,44 +660,44 @@
           "default": "absent -> the place is not created; both registries log what was expected",
           "required": true,
           "downstream": true,
-          "source": "src/navModule/anchor_creator_cor.cpp:31, 58, 88, 121 (old registry) and src/experimentalModule/CameraAnchors.cpp:14-43 (new registry)"
+          "source": "src/navModule/anchor_creator_cor.cpp:31, 58, 88, 121 (old registry) and src/experimentalModule/CameraAnchors.cpp:116-145 (new registry)"
         },
-        "follow_rotation": {"doc": "On `action create` with type body, whether the place turns with the body.", "value": "boolean(flag grammar)", "default": "absent -> the place does not declare it", "required": false, "downstream": true, "source": "src/experimentalModule/CameraAnchors.cpp:250-254"},
-        "parent": {"doc": "On `action create` with type orbit, the body the orbit goes around.", "value": "string (a body english name)", "default": "absent -> the orbit must instead be given a centre with orbit_center_x/y/z", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:137-160; src/experimentalModule/CameraAnchors.cpp:141-183"},
-        "orbit_center_x": {"doc": "On `action create` with type orbit and no parent, the centre of the orbit: first coordinate, in astronomical units.", "value": "number (std::stod)", "default": "absent -> the place is not created", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:139-150; src/experimentalModule/CameraAnchors.cpp:149-171"},
-        "orbit_center_y": {"doc": "On `action create` with type orbit and no parent, the centre of the orbit: second coordinate, in astronomical units.", "value": "number (std::stod)", "default": "absent -> the place is not created", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:140-150; src/experimentalModule/CameraAnchors.cpp:149-171"},
-        "orbit_center_z": {"doc": "On `action create` with type orbit and no parent, the centre of the orbit: third coordinate, in astronomical units.", "value": "number (std::stod)", "default": "absent -> the place is not created", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:141-150; src/experimentalModule/CameraAnchors.cpp:149-171"},
-        "coord_func": {"doc": "On `action create` with type orbit, which kind of orbit describes the movement.", "value": "string -- the orbit-kind names of the stellar-system-file grammar", "default": "absent -> no orbit can be built and the place is not created", "required": false, "downstream": true, "source": "src/experimentalModule/CameraAnchors.cpp:45-55", "notes": "The orbit's own numbers are the same keys a body's orbit uses (INTENT S5 item 4) -- see `flagged`."}
+        "follow_rotation": {"doc": "On `action create` with type body, whether the place turns with the body.", "value": "boolean(flag grammar)", "default": "absent -> the place does not declare it", "required": false, "downstream": true, "source": "src/experimentalModule/CameraAnchors.cpp:352-356"},
+        "parent": {"doc": "On `action create` with type orbit, the body the orbit goes around.", "value": "string (a body english name)", "default": "absent -> the orbit must instead be given a centre with orbit_center_x/y/z", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:137-160; src/experimentalModule/CameraAnchors.cpp:243-285"},
+        "orbit_center_x": {"doc": "On `action create` with type orbit and no parent, the centre of the orbit: first coordinate, in astronomical units.", "value": "number (std::stod)", "default": "absent -> the place is not created", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:139-150; src/experimentalModule/CameraAnchors.cpp:251-273"},
+        "orbit_center_y": {"doc": "On `action create` with type orbit and no parent, the centre of the orbit: second coordinate, in astronomical units.", "value": "number (std::stod)", "default": "absent -> the place is not created", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:140-150; src/experimentalModule/CameraAnchors.cpp:251-273"},
+        "orbit_center_z": {"doc": "On `action create` with type orbit and no parent, the centre of the orbit: third coordinate, in astronomical units.", "value": "number (std::stod)", "default": "absent -> the place is not created", "required": false, "downstream": true, "source": "src/navModule/anchor_creator_cor.cpp:141-150; src/experimentalModule/CameraAnchors.cpp:251-273"},
+        "coord_func": {"doc": "On `action create` with type orbit, which kind of orbit describes the movement.", "value": "string -- the orbit-kind names of the stellar-system-file grammar", "default": "absent -> no orbit can be built and the place is not created", "required": false, "downstream": true, "source": "src/experimentalModule/CameraAnchors.cpp:147-157", "notes": "The orbit's own numbers are the same keys a body's orbit uses (INTENT S5 item 4) -- see `flagged`."}
       },
       "branches": [
-        {"selector": "action rotate", "requires": ["target"], "optional": ["duration"], "effect": "turn the view towards the place you stand on (the target VALUE is not used); duration defaults to 2 s", "source": "app_command_interface.cpp:4197-4206"},
-        {"selector": "action align_with", "requires": ["body"], "optional": ["duration"], "effect": "tilt the view to that place's up direction; failure gives \"error align_with_body body\"", "source": "app_command_interface.cpp:4208-4229"},
-        {"selector": "action transition_to target point", "requires": ["target"], "optional": [], "effect": "detach the view where it stands, as a place called temp_point; failure gives \"error transition_to point\"", "source": "app_command_interface.cpp:4232-4246 -> src/navModule/anchor_manager.cpp:504-545"},
-        {"selector": "action transition_to target body", "requires": ["target", "name"], "optional": [], "effect": "attach the view to that body without travelling; failure gives \"error transition_to body\"", "source": "app_command_interface.cpp:4248-4261"},
-        {"selector": "action move_to target point", "requires": ["target", "x", "y", "z"], "optional": ["duration"], "effect": "travel to that point; with a duration the script also waits that long; failure gives \"error move_to point\"", "source": "app_command_interface.cpp:4267-4299"},
-        {"selector": "action move_to target body", "requires": ["target", "body_name", "duration"], "optional": ["altitude"], "effect": "travel to that body and stop at `altitude` km above it (default: five radii); the script waits `duration`; failure gives \"error move_to body\"", "source": "app_command_interface.cpp:4301-4325"},
-        {"selector": "action save", "requires": [], "optional": ["filename"], "effect": "write the view's place, height, date and direction to a file; failure gives \"error saving camera\"", "source": "app_command_interface.cpp:4331-4344"},
-        {"selector": "action load", "requires": ["filename"], "optional": [], "effect": "read such a file back; failure gives \"error loading CameraAnchor\"", "source": "app_command_interface.cpp:4346-4359"},
-        {"selector": "action free_mode", "requires": ["state"], "optional": [], "effect": "switch free flight on or off", "source": "app_command_interface.cpp:4361-4372"},
-        {"selector": "action descend", "requires": ["coef"], "optional": [], "effect": "go down towards, or up away from, what you look at", "source": "app_command_interface.cpp:4374-4386"},
-        {"selector": "action lift_off", "requires": ["altitude"], "optional": ["duration"], "effect": "queue three commands in front of the script: climb to that height, wait, then detach the view; duration defaults to 3", "source": "app_command_interface.cpp:4388-4409"},
-        {"selector": "action create", "requires": ["name", "type"], "optional": ["x", "y", "z", "body_name", "parent", "orbit_center_x", "orbit_center_y", "orbit_center_z", "follow_rotation", "coord_func"], "effect": "declare a new named place in both registries; failure gives \"error creating CameraAnchor\"", "source": "app_command_interface.cpp:4416-4422"},
-        {"selector": "action drop", "requires": ["name"], "optional": [], "effect": "forget that place (refused while the view is attached to it); failure gives \"error drop CameraAnchor\"", "source": "app_command_interface.cpp:4424-4430 -> src/experimentalModule/CameraAnchors.cpp:262-275"},
-        {"selector": "action switch", "requires": ["name"], "optional": [], "effect": "attach the view to that place; failure gives \"error switch CameraAnchor\"", "source": "app_command_interface.cpp:4432-4438"},
-        {"selector": "action follow_rotation", "requires": ["name"], "optional": ["value"], "effect": "say whether the view turns with the body; failure gives \"error camera follow_rotation\"", "source": "app_command_interface.cpp:4440-4449"},
-        {"selector": "unknown action", "requires": [], "optional": [], "effect": "\"command 'camera' : missing name\" when no `name` was given (the name test comes FIRST, :4411), otherwise \"command 'camera' : unknown action argument\"", "source": "app_command_interface.cpp:4411-4414, 4451"}
+        {"selector": "action rotate", "requires": ["target"], "optional": ["duration"], "effect": "turn the view towards the place you stand on (the target VALUE is not used); duration defaults to 2 s", "source": "app_command_interface.cpp:4362-4371"},
+        {"selector": "action align_with", "requires": ["body"], "optional": ["duration"], "effect": "tilt the view to that place's up direction; failure gives \"error align_with_body body\"", "source": "app_command_interface.cpp:4373-4394"},
+        {"selector": "action transition_to target point", "requires": ["target"], "optional": [], "effect": "detach the view where it stands, as a place called temp_point; failure gives \"error transition_to point\"", "source": "app_command_interface.cpp:4397-4411 -> src/navModule/anchor_manager.cpp:504-545"},
+        {"selector": "action transition_to target body", "requires": ["target", "name"], "optional": [], "effect": "attach the view to that body without travelling; failure gives \"error transition_to body\"", "source": "app_command_interface.cpp:4413-4426"},
+        {"selector": "action move_to target point", "requires": ["target", "x", "y", "z"], "optional": ["duration"], "effect": "travel to that point; with a duration the script also waits that long; failure gives \"error move_to point\"", "source": "app_command_interface.cpp:4432-4464"},
+        {"selector": "action move_to target body", "requires": ["target", "body_name", "duration"], "optional": ["altitude"], "effect": "travel to that body and stop at `altitude` km above it (default: five radii); the script waits `duration`; failure gives \"error move_to body\"", "source": "app_command_interface.cpp:4466-4490"},
+        {"selector": "action save", "requires": [], "optional": ["filename"], "effect": "write the view's place, height, date and direction to a file; failure gives \"error saving camera\"", "source": "app_command_interface.cpp:4496-4509"},
+        {"selector": "action load", "requires": ["filename"], "optional": [], "effect": "read such a file back; failure gives \"error loading CameraAnchor\"", "source": "app_command_interface.cpp:4511-4524"},
+        {"selector": "action free_mode", "requires": ["state"], "optional": [], "effect": "switch free flight on or off", "source": "app_command_interface.cpp:4526-4537"},
+        {"selector": "action descend", "requires": ["coef"], "optional": [], "effect": "go down towards, or up away from, what you look at", "source": "app_command_interface.cpp:4539-4551"},
+        {"selector": "action lift_off", "requires": ["altitude"], "optional": ["duration"], "effect": "queue three commands in front of the script: climb to that height, wait, then detach the view; duration defaults to 3", "source": "app_command_interface.cpp:4553-4574"},
+        {"selector": "action create", "requires": ["name", "type"], "optional": ["x", "y", "z", "body_name", "parent", "orbit_center_x", "orbit_center_y", "orbit_center_z", "follow_rotation", "coord_func"], "effect": "declare a new named place in both registries; failure gives \"error creating CameraAnchor\"", "source": "app_command_interface.cpp:4581-4587"},
+        {"selector": "action drop", "requires": ["name"], "optional": [], "effect": "forget that place (refused while the view is attached to it); failure gives \"error drop CameraAnchor\"", "source": "app_command_interface.cpp:4589-4595 -> src/experimentalModule/CameraAnchors.cpp:364-377"},
+        {"selector": "action switch", "requires": ["name"], "optional": [], "effect": "attach the view to that place; failure gives \"error switch CameraAnchor\"", "source": "app_command_interface.cpp:4597-4603"},
+        {"selector": "action follow_rotation", "requires": ["name"], "optional": ["value"], "effect": "say whether the view turns with the body; failure gives \"error camera follow_rotation\"", "source": "app_command_interface.cpp:4605-4614"},
+        {"selector": "unknown action", "requires": [], "optional": [], "effect": "\"command 'camera' : missing name\" when no `name` was given (the name test comes FIRST, :4576), otherwise \"command 'camera' : unknown action argument\"", "source": "app_command_interface.cpp:4576-4579, 4616"}
       ],
       "notes": [
-        "The `name` test at :4411 sits between the two groups of actions: every action listed before it works without a name, every one after it needs one -- and any UNKNOWN action word is reported as a missing name when none was written, which is a misleading message for a misspelt action.",
-        "C1-relevant: `action lift_off` does not act itself -- it builds a three-line script (moveto / wait / camera action transition_to target point) and pushes it in front of the running script (:4402-4408). Those three lines are parsed by ScriptMgr::addScriptFirst (src/scriptModule/script_mgr.cpp:81-107), whose comment rule differs from the file loader's: there an INDENTED '#' IS dropped as a comment (src/scriptModule/script_mgr.cpp:90-97), while at the script-file layer only a '#' in the first column is (src/scriptModule/script.cpp:114, parse_model.comments).",
-        "C1-relevant: `action lift_off` returns addScriptFirst's value directly (:4408) instead of executeCommandStatus(), so the line is never recorded by the recorder and never reports a failure -- addScriptFirst always returns true (src/scriptModule/script_mgr.cpp:106).",
-        "`action create` forwards the whole parsed map (:4418) to TWO registries which read DIFFERENT vocabularies for the same declaration: the old one accepts type point/observatory/body/orbit with x/y/z, body_name, parent, orbit_center_* (src/navModule/anchor_creator_cor.cpp), the new one the same plus follow_rotation and the orbit keys, and refuses with an explaining log line (src/experimentalModule/CameraAnchors.cpp:14-43). The command reports success when EITHER registry accepted (src/bodyModule/ssystem_factory.hpp:852-857).",
+        "The `name` test at :4576 sits between the two groups of actions: every action listed before it works without a name, every one after it needs one -- and any UNKNOWN action word is reported as a missing name when none was written, which is a misleading message for a misspelt action.",
+        "C1-relevant: `action lift_off` does not act itself -- it builds a three-line script (moveto / wait / camera action transition_to target point) and pushes it in front of the running script (:4567-4573). Those three lines are parsed by ScriptMgr::addScriptFirst (src/scriptModule/script_mgr.cpp:81-107), whose comment rule differs from the file loader's: there an INDENTED '#' IS dropped as a comment (src/scriptModule/script_mgr.cpp:90-97), while at the script-file layer only a '#' in the first column is (src/scriptModule/script.cpp:117, parse_model.comments).",
+        "C1-relevant: `action lift_off` returns addScriptFirst's value directly (:4573) instead of executeCommandStatus(), so the line is never recorded by the recorder and never reports a failure -- addScriptFirst always returns true (src/scriptModule/script_mgr.cpp:106).",
+        "`action create` forwards the whole parsed map (:4583) to TWO registries which read DIFFERENT vocabularies for the same declaration: the old one accepts type point/observatory/body/orbit with x/y/z, body_name, parent, orbit_center_* (src/navModule/anchor_creator_cor.cpp), the new one the same plus follow_rotation and the orbit keys, and refuses with an explaining log line (src/experimentalModule/CameraAnchors.cpp:116-145). The command reports success when EITHER registry accepted (src/bodyModule/ssystem_factory.hpp:884-889).",
         "`action rotate`, `align_with`, `move_to target body` and `align_with` all look their name up among the DECLARED PLACES, not among the bodies: without a place declared for a body (by `action create`, or by the anchor file the program reads at start), those forms cannot reach it."
       ],
       "flagged": [
         "camera `action create` orbit keys: the orbit's own numbers (coord_func + the orbit_* family) are the stellar-system-file orbit grammar, INTENT S5 item 4 -- not enumerated here for the same reason as `body action load` (I2). Recorded: the anchor-level keys and both registries' entry points. SCOPE DECISION, for the supervisor.",
-        "camera anchors/anchors double prefix (`action save` / `action load`, src/coreModule/coreLink.cpp:65,70 x src/bodyModule/ssystem_factory.hpp:946,950): a real path defect found while extracting. Recorded, not fixed (out of scope). Until it is decided, the doc line cannot honestly promise where the file lands, so it states what the code does. Vixy/supervisor: is this a fix or a documented path?",
-        "camera `action rotate` target: the value is required but unused (src/coreModule/core.cpp:2549-2559 has the per-name branch commented out). Whether the editor should offer completion for a key whose value does nothing -- and whether the intent was to restore the branch -- is not answerable from the code. Vixy."
+        "camera anchors/anchors double prefix (`action save` / `action load`, src/coreModule/coreLink.cpp:65,70 x src/bodyModule/ssystem_factory.hpp:1006,1010): a real path defect found while extracting. Recorded, not fixed (out of scope). Until it is decided, the doc line cannot honestly promise where the file lands, so it states what the code does. Vixy/supervisor: is this a fix or a documented path?",
+        "camera `action rotate` target: the value is required but unused (src/coreModule/core.cpp:2632-2642 has the per-name branch commented out). Whether the editor should offer completion for a key whose value does nothing -- and whether the intent was to restore the branch -- is not answerable from the code. Vixy."
       ]
     },
 
@@ -708,8 +709,8 @@
       "doc": "Another spelling of `camera`: it does exactly the same thing, with the same keys.",
       "args": {},
       "notes": [
-        "Alias stub: the argument grammar is the `camera` entry, byte for byte -- one handler, two registered names (app_command_init.cpp:44-45).",
-        "Recording keeps the spelling the author typed: ScriptMgr::recordCommand (script_mgr.cpp:252) writes the raw line, and m_commands_ToString has NO consumer at this revision (measured 2026-08-31) -- parse_model.recording_alias_loss. The earlier note here (\"recording rewrites the spelling\") was an inference from the map's construction, never from a consumer; corrected with the record kept in the journal (scedit INTENT 2026-08-31c). The lint seed 'alias-respelled' that carried it is retired."
+        "Alias stub: the argument grammar is the `camera` entry, byte for byte -- one handler, two registered names (app_command_init.cpp:44, 117).",
+        "Recording keeps the spelling the author typed: ScriptMgr::recordCommand (script_mgr.cpp:254) writes the raw line, and m_commands_ToString has NO consumer at this revision (measured 2026-08-31) -- parse_model.recording_alias_loss. The earlier note here (\"recording rewrites the spelling\") was an inference from the map's construction, never from a consumer; corrected with the record kept in the journal (scedit INTENT 2026-08-31c). The lint seed 'alias-respelled' that carried it is retired."
       ],
       "flagged": []
     },
@@ -718,7 +719,7 @@
       "handler": "commandDefine",
       "lines": "4482-4493",
       "aliases": [],
-      "registration": "app_command_init.cpp:51 (ACP_CN_DEFINE = \"define\", base_command_interface.hpp:340)",
+      "registration": "app_command_init.cpp:50 (ACP_CN_DEFINE = \"define\", base_command_interface.hpp:340)",
       "doc": "Give a name to a value so that later commands can use it instead of writing the number again.",
       "args": {},
       "key_grammar": {
@@ -727,12 +728,12 @@
         "value": "a number, or the name of another variable (its value is copied), or the name of a reserved variable (its current value is copied), or any other text (stored as text, counting as 0 in arithmetic)",
         "default": "no pair at all -> debug_message \"Unexpected error in command_define\" (note that `define x` is no pair: a key with no value is dropped by the parser, parse_model.pair_extraction)",
         "required": true,
-        "source": "app_command_interface.cpp:4484-4491 -> src/interfaceModule/app_command_eval.cpp:135-159"
+        "source": "app_command_interface.cpp:4649-4656 -> src/interfaceModule/app_command_eval.cpp:135-159"
       },
       "notes": [
-        "SINGLE PAIR ONLY, and it is the ALPHABETICALLY FIRST key of the line, not the first written: the handler reads args.begin() and never loops (:4484-4486). `define b 2 a 1` defines only `a`. Confirms parse_model.flag_multi_pair's list.",
+        "SINGLE PAIR ONLY, and it is the ALPHABETICALLY FIRST key of the line, not the first written: the handler reads args.begin() and never loops (:4649-4651). `define b 2 a 1` defines only `a`. Confirms parse_model.flag_multi_pair's list.",
         "How the value is read (src/interfaceModule/app_command_eval.cpp:143-157): a reserved name gives that reading's current value; an existing variable name gives that variable's value; otherwise the text is converted to a number, and if it is not a number at all it is kept as text with the numeric value 0.",
-        "The variables live until the program stops or a script ends (AppCommandInterface::deleteVar, :119-122); `struct print var` lists them."
+        "The variables live until the program stops or a script ends (AppCommandInterface::deleteVar, :120-123); `struct print var` lists them."
       ],
       "flagged": []
     },
@@ -750,10 +751,10 @@
         "value": "number, or the name of another variable (its value is used)",
         "default": "no pair at all -> debug_message \"unexpected error in command_addition\"",
         "required": true,
-        "source": "app_command_interface.cpp:4498-4504 -> src/interfaceModule/app_command_eval.cpp:161-164, 202-218 (f_add = x+y, :7)"
+        "source": "app_command_interface.cpp:4663-4669 -> src/interfaceModule/app_command_eval.cpp:161-164, 202-218 (f_add = x+y, :7)"
       },
       "notes": [
-        "SINGLE PAIR ONLY, alphabetically first key (:4498-4500) -- the handler even says so: '// could loop if want to allow that syntax' (:4497).",
+        "SINGLE PAIR ONLY, alphabetically first key (:4663-4665) -- the handler even says so: '// could loop if want to allow that syntax' (:4662).",
         "Writing to a reserved name works for the four that have a setter (longitude, latitude, altitude, heading); the others log \"No setter with reserved variable <name>. Do nothing.\" (src/interfaceModule/app_command_eval.cpp:348-376).",
         "Reserved names take a SECOND path in the same call: after the reserved value is written the code falls on to the ordinary-variable branch, which does not find the name and tries to define it -- which is refused, printing \"<name> is a reservedVar so you can't define it\" (src/interfaceModule/app_command_eval.cpp:205-214 then :137-141). The arithmetic still happened."
       ],
@@ -764,7 +765,7 @@
       "handler": "commandSub",
       "lines": "4508-4519",
       "aliases": [],
-      "registration": "app_command_init.cpp:92 (ACP_CN_SUB = \"sub\", base_command_interface.hpp:383)",
+      "registration": "app_command_init.cpp:91 (ACP_CN_SUB = \"sub\", base_command_interface.hpp:392)",
       "doc": "Take a number away from a named value.",
       "args": {},
       "key_grammar": {
@@ -773,9 +774,9 @@
         "value": "number, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command_substract\"",
         "required": true,
-        "source": "app_command_interface.cpp:4511-4517 -> src/interfaceModule/app_command_eval.cpp:166-169, 202-218 (f_sub = x-y, :8)"
+        "source": "app_command_interface.cpp:4676-4682 -> src/interfaceModule/app_command_eval.cpp:166-169, 202-218 (f_sub = x-y, :8)"
       },
-      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4511-4513). Reserved-name behaviour as `add`."],
+      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4676-4678). Reserved-name behaviour as `add`."],
       "flagged": []
     },
 
@@ -783,7 +784,7 @@
       "handler": "commandMultiply",
       "lines": "4522-4533",
       "aliases": [],
-      "registration": "app_command_init.cpp:70 (ACP_CN_MULTIPLY = \"multiply\", base_command_interface.hpp:361)",
+      "registration": "app_command_init.cpp:69 (ACP_CN_MULTIPLY = \"multiply\", base_command_interface.hpp:361)",
       "doc": "Multiply a named value by a number.",
       "args": {},
       "key_grammar": {
@@ -792,9 +793,9 @@
         "value": "number, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command__multiply\"",
         "required": true,
-        "source": "app_command_interface.cpp:4525-4531 -> src/interfaceModule/app_command_eval.cpp:171-174, 202-218 (f_mul = x*y, :9)"
+        "source": "app_command_interface.cpp:4690-4696 -> src/interfaceModule/app_command_eval.cpp:171-174, 202-218 (f_mul = x*y, :9)"
       },
-      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4525-4527). Reserved-name behaviour as `add`."],
+      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4690-4692). Reserved-name behaviour as `add`."],
       "flagged": []
     },
 
@@ -802,7 +803,7 @@
       "handler": "commandDivide",
       "lines": "4535-4546",
       "aliases": [],
-      "registration": "app_command_init.cpp:71 (ACP_CN_DIVIDE = \"divide\", base_command_interface.hpp:362)",
+      "registration": "app_command_init.cpp:70 (ACP_CN_DIVIDE = \"divide\", base_command_interface.hpp:362)",
       "doc": "Divide a named value by a number.",
       "args": {},
       "key_grammar": {
@@ -811,10 +812,10 @@
         "value": "number, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command__divide\"",
         "required": true,
-        "source": "app_command_interface.cpp:4538-4544 -> src/interfaceModule/app_command_eval.cpp:176-179, 202-218 (f_div = x/y, :10)"
+        "source": "app_command_interface.cpp:4703-4709 -> src/interfaceModule/app_command_eval.cpp:176-179, 202-218 (f_div = x/y, :10)"
       },
       "notes": [
-        "SINGLE PAIR ONLY, alphabetically first key (:4538-4540). Reserved-name behaviour as `add`.",
+        "SINGLE PAIR ONLY, alphabetically first key (:4703-4705). Reserved-name behaviour as `add`.",
         "Nothing checks for a zero divisor: the division is plain floating-point, so dividing by 0 stores an infinite value (src/interfaceModule/app_command_eval.cpp:10)."
       ],
       "flagged": []
@@ -824,7 +825,7 @@
       "handler": "commandModulo",
       "lines": "4548-4559",
       "aliases": [],
-      "registration": "app_command_init.cpp:72 (ACP_CN_MODULO = \"modulo\", base_command_interface.hpp:363)",
+      "registration": "app_command_init.cpp:71 (ACP_CN_MODULO = \"modulo\", base_command_interface.hpp:363)",
       "doc": "Replace a named value by what is left over after dividing it by a number.",
       "args": {},
       "key_grammar": {
@@ -833,9 +834,9 @@
         "value": "number, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command__modulo\"",
         "required": true,
-        "source": "app_command_interface.cpp:4551-4557 -> src/interfaceModule/app_command_eval.cpp:181-184, 202-218 (f_mod = fmod(x,y), :11)"
+        "source": "app_command_interface.cpp:4716-4722 -> src/interfaceModule/app_command_eval.cpp:181-184, 202-218 (f_mod = fmod(x,y), :11)"
       },
-      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4551-4553). The remainder is the floating-point one (std::fmod), so it works with values that are not whole numbers. Reserved-name behaviour as `add`."],
+      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4716-4718). The remainder is the floating-point one (std::fmod), so it works with values that are not whole numbers. Reserved-name behaviour as `add`."],
       "flagged": []
     },
 
@@ -843,7 +844,7 @@
       "handler": "commandTangent",
       "lines": "4561-4572",
       "aliases": [],
-      "registration": "app_command_init.cpp:73 (ACP_CN_TANGENT = \"tangent\", base_command_interface.hpp:364)",
+      "registration": "app_command_init.cpp:72 (ACP_CN_TANGENT = \"tangent\", base_command_interface.hpp:373)",
       "doc": "Put the tangent of an angle into a named value.",
       "args": {},
       "key_grammar": {
@@ -852,10 +853,10 @@
         "value": "number of degrees, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command__tangent\"",
         "required": true,
-        "source": "app_command_interface.cpp:4564-4570 -> src/interfaceModule/app_command_eval.cpp:186-189, 202-218 (f_tan = tan(y x 3.1415926/180), :12)"
+        "source": "app_command_interface.cpp:4729-4735 -> src/interfaceModule/app_command_eval.cpp:186-189, 202-218 (f_tan = tan(y x 3.1415926/180), :12)"
       },
       "notes": [
-        "SINGLE PAIR ONLY, alphabetically first key (:4564-4566).",
+        "SINGLE PAIR ONLY, alphabetically first key (:4729-4731).",
         "Unlike add/sub/multiply/divide/modulo this is NOT a two-sided operation: the function ignores the variable's current value and stores the tangent of the value written (src/interfaceModule/app_command_eval.cpp:12). The angle is in degrees, converted with 3.1415926 (a shortened value of pi, so results carry a small error)."
       ],
       "flagged": []
@@ -865,7 +866,7 @@
       "handler": "commandTrunc",
       "lines": "4574-4585",
       "aliases": [],
-      "registration": "app_command_init.cpp:74 (ACP_CN_TRUNC = \"trunc\", base_command_interface.hpp:365)",
+      "registration": "app_command_init.cpp:73 (ACP_CN_TRUNC = \"trunc\", base_command_interface.hpp:374)",
       "doc": "Put a number, with everything after its decimal point cut off, into a named value.",
       "args": {},
       "key_grammar": {
@@ -874,9 +875,9 @@
         "value": "number, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command__trunc\"",
         "required": true,
-        "source": "app_command_interface.cpp:4577-4583 -> src/interfaceModule/app_command_eval.cpp:191-194, 202-218 (f_trunc = trunc(y), :13)"
+        "source": "app_command_interface.cpp:4742-4748 -> src/interfaceModule/app_command_eval.cpp:191-194, 202-218 (f_trunc = trunc(y), :13)"
       },
-      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4577-4579). Cutting is towards zero: -2.7 becomes -2."],
+      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4742-4744). Cutting is towards zero: -2.7 becomes -2."],
       "flagged": []
     },
 
@@ -884,7 +885,7 @@
       "handler": "commandSinus",
       "lines": "4587-4598",
       "aliases": [],
-      "registration": "app_command_init.cpp:75 (ACP_CN_SINUS = \"sinus\", base_command_interface.hpp:366)",
+      "registration": "app_command_init.cpp:74 (ACP_CN_SINUS = \"sinus\", base_command_interface.hpp:375)",
       "doc": "Put the sine of an angle into a named value.",
       "args": {},
       "key_grammar": {
@@ -893,9 +894,9 @@
         "value": "number of degrees, or the name of another variable",
         "default": "no pair at all -> debug_message \"unexpected error in command__sinus\"",
         "required": true,
-        "source": "app_command_interface.cpp:4590-4596 -> src/interfaceModule/app_command_eval.cpp:196-199, 202-218 (f_sin = sin(y x 3.1415926/180), :14)"
+        "source": "app_command_interface.cpp:4755-4761 -> src/interfaceModule/app_command_eval.cpp:196-199, 202-218 (f_sin = sin(y x 3.1415926/180), :14)"
       },
-      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4590-4592). Degrees, converted with the same shortened pi as `tangent`."],
+      "notes": ["SINGLE PAIR ONLY, alphabetically first key (:4755-4757). Degrees, converted with the same shortened pi as `tangent`."],
       "flagged": []
     },
 
@@ -903,7 +904,7 @@
       "handler": "commandStruct",
       "lines": "4600-4706",
       "aliases": [],
-      "registration": "app_command_init.cpp:91 (ACP_CN_STRUCT = \"struct\", base_command_interface.hpp:382) -- AND intercepted before the table at app_command_interface.cpp:221-222; see notes",
+      "registration": "app_command_init.cpp:90 (ACP_CN_STRUCT = \"struct\", base_command_interface.hpp:391) -- AND intercepted before the table at app_command_interface.cpp:357-358; see notes",
       "doc": "Control which lines of the script run: ask a question and skip what follows when the answer is no, repeat a block, or switch a block off.",
       "args": {
         "if": {
@@ -918,22 +919,22 @@
           },
           "default": "absent -> the command tries `comment`, then `loop`, then `print`",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4604-4661 (W_IF=\"if\", W_ELSE=\"else\", W_END=\"end\": base_command_interface.hpp:239,240,157)",
-          "notes": "Blocks may be nested; each `struct if` must be closed by `struct if end` (an `end` with no open block logs \"end without if\", an `else` with none logs \"else without if\" -- src/interfaceModule/if_swap.cpp:40-54, 71-81)."
+          "source": "app_command_interface.cpp:4769-4828 (W_IF=\"if\", W_ELSE=\"else\", W_END=\"end\": base_command_interface.hpp:239,240,157)",
+          "notes": "Blocks may be nested; each `struct if` must be closed by `struct if end` (an `end` with no open block logs \"end without if\", an `else` with none logs \"else without if\" -- src/interfaceModule/if_swap.cpp:40-54, 73-81)."
         },
         "equal": {
           "doc": "Run the block when the `if` value is the same as this one.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> the next comparison key is tried",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4614-4620 (W_EQUAL=\"equal\", base_command_interface.hpp:230)",
-          "notes": "The two numbers count as the same when they differ by less than 0.0001 (:4602, :4615)."
+          "source": "app_command_interface.cpp:4781-4787 (W_EQUAL=\"equal\", base_command_interface.hpp:230)",
+          "notes": "The two numbers count as the same when they differ by less than 0.0001 (:4767, :4782)."
         },
-        "diff": {"doc": "Run the block when the `if` value is NOT the same as this one.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4621-4627 (W_DIFF=\"diff\", base_command_interface.hpp:231)", "notes": "Same 0.0001 tolerance as `equal`."},
-        "inf": {"doc": "Run the block when the `if` value is smaller than this one.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4628-4634 (W_INF=\"inf\", base_command_interface.hpp:232)"},
-        "inf_equal": {"doc": "Run the block when the `if` value is smaller than this one or the same.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4635-4641 (W_INF_ZQUAL=\"inf_equal\", base_command_interface.hpp:233)"},
-        "sup": {"doc": "Run the block when the `if` value is bigger than this one.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4642-4648 (W_SUP=\"sup\", base_command_interface.hpp:234)"},
-        "sup_equal": {"doc": "Run the block when the `if` value is bigger than this one or the same.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> no comparison key is left: the block then runs when the `if` value is not zero", "required": "conditional", "source": "app_command_interface.cpp:4649-4661 (W_SUP_EQUAL=\"sup_equal\", base_command_interface.hpp:235)"},
+        "diff": {"doc": "Run the block when the `if` value is NOT the same as this one.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4788-4794 (W_DIFF=\"diff\", base_command_interface.hpp:231)", "notes": "Same 0.0001 tolerance as `equal`."},
+        "inf": {"doc": "Run the block when the `if` value is smaller than this one.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4795-4801 (W_INF=\"inf\", base_command_interface.hpp:232)"},
+        "inf_equal": {"doc": "Run the block when the `if` value is smaller than this one or the same.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4802-4808 (W_INF_ZQUAL=\"inf_equal\", base_command_interface.hpp:233)"},
+        "sup": {"doc": "Run the block when the `if` value is bigger than this one.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> the next comparison key is tried", "required": "conditional", "source": "app_command_interface.cpp:4809-4815 (W_SUP=\"sup\", base_command_interface.hpp:234)"},
+        "sup_equal": {"doc": "Run the block when the `if` value is bigger than this one or the same.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> no comparison key is left: the block then runs when the `if` value is not zero", "required": "conditional", "source": "app_command_interface.cpp:4816-4828 (W_SUP_EQUAL=\"sup_equal\", base_command_interface.hpp:235)"},
         "comment": {
           "doc": "Switch off the lines that follow (yes), or switch them back on (no).",
           "value": "boolean(flag grammar)",
@@ -941,8 +942,8 @@
           "completable": [],
           "default": "absent -> the command tries `loop`, then `print`",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4665-4672 -> commandComment :3160-3164 / commandUncomment :3167-3171 (W_COMMENT=\"comment\", base_command_interface.hpp:236)",
-          "notes": "Exactly the same switch as the `comment` and `uncomment` commands (parse_model.comments.block_form); skipped lines are logged \"this command has not been executed\" (:226). Same silent-off class as `flag`."
+          "source": "app_command_interface.cpp:4832-4839 -> commandComment :3325-3329 / commandUncomment :3332-3336 (W_COMMENT=\"comment\", base_command_interface.hpp:236)",
+          "notes": "Exactly the same switch as the `comment` and `uncomment` commands (parse_model.comments.block_form); skipped lines are logged \"this command has not been executed\" (:362). Same silent-off class as `flag`."
         },
         "loop": {
           "doc": "Repeat the lines that follow a given number of times, or close/abandon such a repetition.",
@@ -956,8 +957,8 @@
           },
           "default": "absent -> the command tries `print`",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4675-4699 -> src/scriptModule/script_interface.cpp:80-82, 92-98, 116-118 -> src/scriptModule/script_mgr.hpp:125-140, src/scriptModule/script_mgr.cpp:266-273, 306-330 (W_LOOP=\"loop\", W_BREAK=\"break\", W_END=\"end\": base_command_interface.hpp:169 (also 284), 171, 157)",
-          "notes": "A count of exactly 1 does nothing at all (:4691-4698 acts only below 1 and above 1), which is the same as running the block once. The repetition only works for lines coming from a script FILE: the lines are collected as the file is read (src/scriptModule/script_mgr.cpp:327-328), so commands sent over the network are not repeated. This key is IGNORED while a `struct if` block is being skipped (:4676)."
+          "source": "app_command_interface.cpp:4842-4876 -> src/scriptModule/script_interface.cpp:81-83, 93-99, 121-123 -> src/scriptModule/script_mgr.hpp:132-147, src/scriptModule/script_mgr.cpp:268-275, 310-338 (W_LOOP=\"loop\", W_BREAK=\"break\", W_END=\"end\": base_command_interface.hpp:169 (also 284), 171, 157)",
+          "notes": "A count of exactly 1 does nothing at all (:4868-4875 acts only below 1 and above 1), which is the same as running the block once. The repetition only works for lines coming from a script FILE: the lines are collected as the file is read (src/scriptModule/script_mgr.cpp:331-332), so commands sent over the network are not repeated. This key is IGNORED while a `struct if` block is being skipped (:4843)."
         },
         "print": {
           "doc": "Write the list of named values and what they hold into the script log.",
@@ -966,23 +967,23 @@
           "completable": ["var"],
           "default": "absent or any other word -> nothing is written",
           "required": false,
-          "source": "app_command_interface.cpp:4701-4703 -> src/interfaceModule/app_command_eval.cpp:253-269 (W_PRINT=\"print\", W_VAR=\"var\": base_command_interface.hpp:241,242)",
+          "source": "app_command_interface.cpp:4878-4880 -> src/interfaceModule/app_command_eval.cpp:253-269 (W_PRINT=\"print\", W_VAR=\"var\": base_command_interface.hpp:241,242)",
           "notes": "The names are written in alphabetical order, one per line, between two marker lines; with no names defined the line written is \"Not variable available\"."
         }
       },
       "branches": [
-        {"selector": "if present (and no `comment` block is switched off)", "requires": ["if"], "optional": ["equal", "diff", "inf", "inf_equal", "sup", "sup_equal"], "effect": "open, flip or close a conditional block; the FIRST comparison key present decides, in the order equal, diff, inf, inf_equal, sup, sup_equal; with none, the block runs when the `if` value is not zero", "source": "app_command_interface.cpp:4604-4661"},
-        {"selector": "comment present", "requires": ["comment"], "optional": [], "effect": "switch the following lines off or on", "source": "app_command_interface.cpp:4665-4672"},
-        {"selector": "loop present (and not inside a skipped `if` block)", "requires": ["loop"], "optional": [], "effect": "start, close or abandon a repetition", "source": "app_command_interface.cpp:4675-4699"},
-        {"selector": "print var", "requires": ["print"], "optional": [], "effect": "list the named values in the log", "source": "app_command_interface.cpp:4701-4703"},
-        {"selector": "nothing recognised", "requires": [], "optional": [], "effect": "no debug_message is ever set: the command reports SUCCESS having done nothing", "source": "app_command_interface.cpp:4705"}
+        {"selector": "if present (and no `comment` block is switched off)", "requires": ["if"], "optional": ["equal", "diff", "inf", "inf_equal", "sup", "sup_equal"], "effect": "open, flip or close a conditional block; the FIRST comparison key present decides, in the order equal, diff, inf, inf_equal, sup, sup_equal; with none, the block runs when the `if` value is not zero", "source": "app_command_interface.cpp:4769-4828"},
+        {"selector": "comment present", "requires": ["comment"], "optional": [], "effect": "switch the following lines off or on", "source": "app_command_interface.cpp:4832-4839"},
+        {"selector": "loop present (and not inside a skipped `if` block)", "requires": ["loop"], "optional": [], "effect": "start, close or abandon a repetition", "source": "app_command_interface.cpp:4842-4876"},
+        {"selector": "print var", "requires": ["print"], "optional": [], "effect": "list the named values in the log", "source": "app_command_interface.cpp:4878-4880"},
+        {"selector": "nothing recognised", "requires": [], "optional": [], "effect": "no debug_message is ever set: the command reports SUCCESS having done nothing", "source": "app_command_interface.cpp:4882"}
       ],
       "notes": [
-        "RECONCILIATION with parse_model.pre_table_commands (the unit-4 assignment). `struct` IS both intercepted before the table (:221-222) and registered (app_command_init.cpp:91) -- but the two paths are not equivalent: (a) the interception happens BEFORE the skip test at :225, which is why a `struct` line still runs inside a switched-off or skipped block -- without that, no `struct if end` could ever close a block it is inside; (b) the REGISTERED path is dead code: the switch case for SC_STRUCT is an empty `break;` labelled '// for g++ warning' (:299), so reaching the table with the command `struct` would do nothing -- and it cannot be reached anyway, since the literal test at :221 already caught it. What the registration actually buys is presence in the did-you-mean list and in the enum-to-name map used by the recorder (app_command_init.cpp:100-107). REFINES the parse_model line, which today says only 'struct is also registered'.",
-        "The `if` branch is guarded by `swapCommand != true` (:4605): inside a block switched off by `comment` (or by `struct comment true`), conditional lines are ignored -- but `struct comment false` still works, since the `comment` branch has no such guard. This is what makes a switched-off block closable.",
-        "The `if` branch is NOT guarded by the if-skip state, which is what makes nesting work: every `struct if` inside a skipped block still pushes a level, so its own `end` pops the right one (src/interfaceModule/if_swap.cpp:57-61, 90-99).",
+        "RECONCILIATION with parse_model.pre_table_commands (the unit-4 assignment). `struct` IS both intercepted before the table (:357-358) and registered (app_command_init.cpp:90) -- but the two paths are not equivalent: (a) the interception happens BEFORE the skip test at :245, which is why a `struct` line still runs inside a switched-off or skipped block -- without that, no `struct if end` could ever close a block it is inside; (b) the REGISTERED path is dead code: the switch case for SC_STRUCT is an empty `break;` labelled '// for g++ warning' (:443), so reaching the table with the command `struct` would do nothing -- and it cannot be reached anyway, since the literal test at :357 already caught it. What the registration actually buys is presence in the did-you-mean list and in the enum-to-name map used by the recorder (app_command_init.cpp:111-127). REFINES the parse_model line, which today says only 'struct is also registered'.",
+        "The `if` branch is guarded by `swapCommand != true` (:4770): inside a block switched off by `comment` (or by `struct comment true`), conditional lines are ignored -- but `struct comment false` still works, since the `comment` branch has no such guard. This is what makes a switched-off block closable.",
+        "The `if` branch is NOT guarded by the if-skip state, which is what makes nesting work: every `struct if` inside a skipped block still pushes a level, so its own `end` pops the right one (src/interfaceModule/if_swap.cpp:57-62, 90-99).",
         "A block is skipped when ANY enclosing level says skip (src/interfaceModule/if_swap.cpp:90-99), so a false outer condition cannot be undone by a true inner one.",
-        "The `loop` branch does NOT return when the count is exactly 1, so such a line falls through to the `print` test (:4694-4701) -- the only path in the handler where two branches can act on one line."
+        "The `loop` branch does NOT return when the count is exactly 1, so such a line falls through to the `print` test (:4871-4878) -- the only path in the handler where two branches can act on one line."
       ],
       "flagged": []
     },
@@ -991,7 +992,7 @@
       "handler": "commandRandom",
       "lines": "4709-4725",
       "aliases": [],
-      "registration": "app_command_init.cpp:81 (ACP_CN_RANDOM = \"random\", base_command_interface.hpp:372)",
+      "registration": "app_command_init.cpp:80 (ACP_CN_RANDOM = \"random\", base_command_interface.hpp:381)",
       "doc": "Set the range that the built-in chance value is drawn from.",
       "args": {
         "min": {
@@ -999,20 +1000,20 @@
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> unchanged; at program start 0",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4712-4716 -> src/interfaceModule/app_command_eval.cpp:242-245 (start value :31) (W_MIN=\"min\", base_command_interface.hpp:237)"
+          "source": "app_command_interface.cpp:4889-4893 -> src/interfaceModule/app_command_eval.cpp:242-245 (start value :31) (W_MIN=\"min\", base_command_interface.hpp:237)"
         },
         "max": {
           "doc": "The largest number the chance value may take.",
           "value": "number(evalDouble) -- $-variable substitution possible",
           "default": "absent -> unchanged; at program start 1",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4717-4721 -> src/interfaceModule/app_command_eval.cpp:247-250 (start value :32) (W_MAX=\"max\", base_command_interface.hpp:238)"
+          "source": "app_command_interface.cpp:4894-4898 -> src/interfaceModule/app_command_eval.cpp:247-250 (start value :32) (W_MAX=\"max\", base_command_interface.hpp:238)"
         }
       },
       "exclusive_groups": [],
       "branches": [
-        {"selector": "min and/or max present", "requires": [], "optional": ["min", "max"], "effect": "set one or both ends of the range; both may be given on one line", "source": "app_command_interface.cpp:4712-4721"},
-        {"selector": "neither", "requires": [], "optional": [], "effect": "debug_message \"unknown random parameter\"", "source": "app_command_interface.cpp:4722-4723"}
+        {"selector": "min and/or max present", "requires": [], "optional": ["min", "max"], "effect": "set one or both ends of the range; both may be given on one line", "source": "app_command_interface.cpp:4889-4898"},
+        {"selector": "neither", "requires": [], "optional": [], "effect": "debug_message \"unknown random parameter\"", "source": "app_command_interface.cpp:4899-4900"}
       ],
       "notes": [
         "This is the one command of the unit that reads TWO keys of its own and acts on both: at least one of them must be there.",
@@ -1025,7 +1026,7 @@
       "handler": "commandTransition",
       "lines": "4727-4747",
       "aliases": [],
-      "registration": "app_command_init.cpp:96 (ACP_CN_TRANSITION = \"transition\", base_command_interface.hpp:387)",
+      "registration": "app_command_init.cpp:95 (ACP_CN_TRANSITION = \"transition\", base_command_interface.hpp:396)",
       "doc": "Control the smooth fades the program plays when something appears or disappears: let them finish at once, freeze them, or let them run again.",
       "args": {
         "action": {
@@ -1040,29 +1041,29 @@
           },
           "default": "absent or any other word -> \"command 'transition': unknown argument\"",
           "required": true,
-          "source": "app_command_interface.cpp:4729-4745 (W_ACTION=\"action\", W_SKIP=\"skip\", W_PAUSE=\"pause\", W_RESUME=\"resume\": base_command_interface.hpp:81,310,160,168)",
-          "notes": "C1-relevant: read with std::move (:4729), so the map entry is left empty for the rest of the command -- the only handler in the unit that empties a key it read."
+          "source": "app_command_interface.cpp:4906-4922 (W_ACTION=\"action\", W_SKIP=\"skip\", W_PAUSE=\"pause\", W_RESUME=\"resume\": base_command_interface.hpp:81,310,160,168)",
+          "notes": "C1-relevant: read with std::move (:4906), so the map entry is left empty for the rest of the command -- the only handler in the unit that empties a key it read."
         },
         "duration": {
           "doc": "On `action skip`, how much fade time to jump through, in thousandths of a second.",
           "value": "number(evalDouble) -- $-variable substitution possible; milliseconds",
           "default": "absent or 0 -> 3600 (the code's own comment: \"Ensure transitions complete now\")",
           "default_value": "3600",
-          "default_value_source": "app_command_interface.cpp:4872-4874 @ d64fd437 (`float duration = evalDouble(args[W_DURATION]); if (!duration) duration = 3600;`)",
+          "default_value_source": "app_command_interface.cpp:4908-4910 (`float duration = evalDouble(args[W_DURATION]); if (!duration) duration = 3600;`)",
           "required": false,
-          "source": "app_command_interface.cpp:4731-4739 -> src/coreModule/core.cpp:2541-2547 (Core::update takes delta_time in milliseconds: 'const float deltaSeconds = delta_time / 1000.f') (W_DURATION=\"duration\", base_command_interface.hpp:102)",
+          "source": "app_command_interface.cpp:4908-4916 -> src/coreModule/core.cpp:2624-2630 (Core::update takes delta_time in milliseconds: 'const float deltaSeconds = delta_time / 1000.f') (W_DURATION=\"duration\", base_command_interface.hpp:102)",
           "notes": "The number is passed as the time step of one update, so it is in milliseconds -- 3600 is 3.6 seconds of fade time. It reaches an `int` parameter, so anything after the decimal point is dropped."
         }
       },
       "branches": [
-        {"selector": "action skip", "requires": ["action"], "optional": ["duration"], "effect": "jump the fades forward; when fades are frozen they are briefly allowed to run so the jump takes effect, then frozen again", "source": "app_command_interface.cpp:4730-4739"},
-        {"selector": "action pause", "requires": ["action"], "optional": [], "effect": "freeze every fade", "source": "app_command_interface.cpp:4740-4741"},
-        {"selector": "action resume", "requires": ["action"], "optional": [], "effect": "let the fades run again", "source": "app_command_interface.cpp:4742-4743"},
-        {"selector": "anything else", "requires": [], "optional": [], "effect": "\"command 'transition': unknown argument\"", "source": "app_command_interface.cpp:4744-4745"}
+        {"selector": "action skip", "requires": ["action"], "optional": ["duration"], "effect": "jump the fades forward; when fades are frozen they are briefly allowed to run so the jump takes effect, then frozen again", "source": "app_command_interface.cpp:4907-4916"},
+        {"selector": "action pause", "requires": ["action"], "optional": [], "effect": "freeze every fade", "source": "app_command_interface.cpp:4917-4918"},
+        {"selector": "action resume", "requires": ["action"], "optional": [], "effect": "let the fades run again", "source": "app_command_interface.cpp:4919-4920"},
+        {"selector": "anything else", "requires": [], "optional": [], "effect": "\"command 'transition': unknown argument\"", "source": "app_command_interface.cpp:4921-4922"}
       ],
       "notes": [
-        "`action skip` while the fades are frozen does NOT leave them running: the handler switches them on, does the jump and switches them off again (:4734-4738).",
-        "The jump advances both drawing paths' fades in one call (src/coreModule/core.cpp:2541-2547)."
+        "`action skip` while the fades are frozen does NOT leave them running: the handler switches them on, does the jump and switches them off again (:4911-4915).",
+        "The jump advances both drawing paths' fades in one call (src/coreModule/core.cpp:2624-2630)."
       ],
       "flagged": [
         "transition.duration unit: the code answers 'milliseconds' (Core::update's parameter), but the default of 3600 is commented \"Ensure transitions complete now\", which only holds for fades shorter than 3.6 seconds -- the two readings (a millisecond step, or a seconds value that was meant) do not agree. The doc line states what the code does. Whether the intent was seconds is not answerable from the code: Vixy."
@@ -1072,17 +1073,17 @@
 
   "unit_findings": {
     "c1_parse_model": [
-      "REFINES parse_model.pre_table_commands: `struct` is intercepted at :221-222 BEFORE the skip test at :225 (which is what lets `struct if end` / `struct comment false` close a block they are inside), and its REGISTERED path is dead -- `case SC_COMMAND::SC_STRUCT: break;` (:299) calls nothing. The registration's only live effects are the did-you-mean list and the recorder's enum-to-name map (app_command_init.cpp:91, 100-107). Suggested wording for the merge: 'struct is also registered, but only for the did-you-mean list and the recorder: the table's own case does nothing, and the literal test always catches the line first.'",
-      "CONFIRMS parse_model.flag_multi_pair's single-pair list for all nine variable commands: define(:4484-4486), add(:4498-4500), sub(:4511-4513), multiply(:4525-4527), divide(:4538-4540), modulo(:4551-4553), tangent(:4564-4566), trunc(:4577-4579), sinus(:4590-4592) each read args.begin() only; eight of the nine carry the comment '// could loop if want to allow that syntax' (define does not, :4482-4493, same shape). Consequence for the author: `add b 2 a 1` changes `a`, silently.",
-      "REFINES parse_model's map model (extends the unit-1 operator[] finding): this unit contains the only handlers that WRITE into the parsed map before forwarding it -- commandBody sets `path` (:3992), rewrites `tex_ring` (:3994) and rewrites `keep_time` in place (:4028-4029). The map the loader receives is therefore not the set of pairs the line wrote, in values as well as in keys. commandTransition additionally MOVES a value out of the map (:4729), leaving the entry empty.",
-      "ADDS a second comment grammar, reachable from this unit: `camera action lift_off` pushes a three-line script through ScriptMgr::addScriptFirst (src/scriptModule/script_mgr.cpp:81-107), which strips leading whitespace and treats an INDENTED '#' as a comment -- the opposite of the script-file layer's column-0-only rule (src/scriptModule/script.cpp:114). scedit's model of 'what is a comment' must be per-channel: file layer (column 0 only), addScriptFirst layer (first non-blank character), live channels (never stripped).",
-      "CONFIRMS the eval boundary recorded by unit 1 and locates it: evalString/evalDouble/evalInt are at app_command_interface.cpp:4458-4479, inside THIS unit's range, and hold the absent-key defaults (\"\", 0.0, 0). They contain no `args[` and so consume no count-gate row.",
-      "ADDS a boolean-grammar exception for the vocabulary model: `camera action follow_rotation value <v>` is an exact string comparison against \"true\" (:4443), not the flag grammar -- `on`, `1` and `TRUE` all mean NO there. Every other boolean of the unit is isTrue/isFalse/toggle. A lint rule that assumes flag grammar for every boolean-looking value would be wrong here."
+      "REFINES parse_model.pre_table_commands: `struct` is intercepted at :357-358 BEFORE the skip test at :361 (which is what lets `struct if end` / `struct comment false` close a block they are inside), and its REGISTERED path is dead -- `case SC_COMMAND::SC_STRUCT: break;` (:443) calls nothing. The registration's only live effects are the did-you-mean list and the recorder's enum-to-name map (app_command_init.cpp:90, 111-127). Suggested wording for the merge: 'struct is also registered, but only for the did-you-mean list and the recorder: the table's own case does nothing, and the literal test always catches the line first.'",
+      "CONFIRMS parse_model.flag_multi_pair's single-pair list for all nine variable commands: define(:4649-4651), add(:4663-4665), sub(:4676-4678), multiply(:4690-4692), divide(:4703-4705), modulo(:4716-4718), tangent(:4729-4731), trunc(:4742-4744), sinus(:4755-4757) each read args.begin() only; eight of the nine carry the comment '// could loop if want to allow that syntax' (define does not, :4647-4658, same shape). Consequence for the author: `add b 2 a 1` changes `a`, silently.",
+      "REFINES parse_model's map model (extends the unit-1 operator[] finding): this unit contains the only handlers that WRITE into the parsed map before forwarding it -- commandBody sets `path` (:4157), rewrites `tex_ring` (:4159) and rewrites `keep_time` in place (:4193-4194). The map the loader receives is therefore not the set of pairs the line wrote, in values as well as in keys. commandTransition additionally MOVES a value out of the map (:4906), leaving the entry empty.",
+      "ADDS a second comment grammar, reachable from this unit: `camera action lift_off` pushes a three-line script through ScriptMgr::addScriptFirst (src/scriptModule/script_mgr.cpp:81-107), which strips leading whitespace and treats an INDENTED '#' as a comment -- the opposite of the script-file layer's column-0-only rule (src/scriptModule/script.cpp:117). scedit's model of 'what is a comment' must be per-channel: file layer (column 0 only), addScriptFirst layer (first non-blank character), live channels (never stripped).",
+      "CONFIRMS the eval boundary recorded by unit 1 and locates it: evalString/evalDouble/evalInt are at app_command_interface.cpp:4623-4644, inside THIS unit's range, and hold the absent-key defaults (\"\", 0.0, 0). They contain no `args[` and so consume no count-gate row.",
+      "ADDS a boolean-grammar exception for the vocabulary model: `camera action follow_rotation value <v>` is an exact string comparison against \"true\" (:4608), not the flag grammar -- `on`, `1` and `TRUE` all mean NO there. Every other boolean of the unit is isTrue/isFalse/toggle. A lint rule that assumes flag grammar for every boolean-looking value would be wrong here."
     ],
     "obsolete_tokens_in_range": "None. No handler in 3945-4747 references any of the 7 names in families.obsolete_tokens (checked mechanically against app_command_init.cpp:14-23: 0 occurrences of each in the range).",
     "census_dead_token_check": {
       "method": "tree-wide grep for each census-suspect W_* outside base_command_interface.hpp (src/**.cpp, src/**.hpp)",
-      "W_TRUE": "LIVE -- exactly ONE use in the whole tree, and it is in this unit: app_command_interface.cpp:4443 (camera follow_rotation). Retire it from the census's never-referenced set.",
+      "W_TRUE": "LIVE -- exactly ONE use in the whole tree, and it is in this unit: app_command_interface.cpp:4608 (camera follow_rotation). Retire it from the census's never-referenced set.",
       "W_FALSE": "confirmed dead (0 uses outside the header)",
       "W_OFF": "confirmed dead (0 uses outside the header; 'off' is live only as a VALUE spelling handled by Utility::isFalse)",
       "W_TERMINATION": "confirmed dead (0 uses outside the header)",
@@ -1094,21 +1095,21 @@
       "used_as_KEYS in this unit": ["W_ACTION", "W_NAME", "ACP_SC_MODE", "W_FILENAME", "W_POSX", "W_POSY", "W_POSZ", "W_SCALE", "W_SKINUSE", "W_SKINTEX", "W_PATH", "W_KEEPTIME", "W_HIDDEN", "W_ORBIT", "W_COLOR", "W_COLOR_VALUE", "W_R", "W_G", "W_B", "W_DATUM_RADIUS", "W_GROUND_RADIUS", "W_TESSELATION", "W_VALUE", "W_TARGET", "W_SIZE", "W_DURATION", "W_BODY", "W_X", "W_Y", "W_Z", "W_BODYNAME", "W_ALTITUDE", "W_STATE", "W_COEF", "W_IF", "W_EQUAL", "W_DIFF", "W_INF", "W_INF_ZQUAL", "W_SUP", "W_SUP_EQUAL", "W_COMMENT", "W_LOOP", "W_PRINT", "W_MIN", "W_MAX"],
       "used_as_VALUES in this unit": ["W_LOAD", "W_REMOVE", "ACP_CN_CLEAR", "W_DROP", "W_INITIAL", "W_RELOAD", "W_SAVE", "W_PRELOAD", "W_TOGGLE", "W_ROTATE", "W_ALIGN_WITH", "W_TRANSITION_TO", "W_MOVE_TO", "W_POINT", "W_BODY", "W_CREATE", "W_SWITCH", "W_FOLLOW_ROTATION", "W_FREE_MODE", "W_DESCEND", "W_LIFT_OFF", "W_TRUE", "W_ELSE", "W_END", "W_BREAK", "W_VAR", "W_SKIP", "W_PAUSE", "W_RESUME"],
       "both_roles": [
-        "W_BODY -- KEY on `camera action align_with` (:4210) and VALUE of `target` on transition_to/move_to (:4248, :4301)",
-        "W_COMMENT -- KEY on `struct` (:4665) and, as the same spelling, a pre-table COMMAND name (executeCommand :215)",
-        "W_PRINT / W_LOOP -- KEYS on `struct` (:4701, :4675) whose spellings are also a command name (`print`, unit 1) and a media key (`loop`, unit 2 territory)",
+        "W_BODY -- KEY on `camera action align_with` (:4375) and VALUE of `target` on transition_to/move_to (:4413, :4466)",
+        "W_COMMENT -- KEY on `struct` (:4832) and, as the same spelling, a pre-table COMMAND name (executeCommand :351)",
+        "W_PRINT / W_LOOP -- KEYS on `struct` (:4878, :4842) whose spellings are also a command name (`print`, unit 1) and a media key (`loop`, unit 2 territory)",
         "W_SAVE, W_LOAD, W_DROP, ACP_CN_CLEAR -- VALUES of `action` here; ACP_CN_CLEAR is a COMMAND name reused as a value (as unit 1 recorded)",
         "W_DURATION, W_ALTITUDE, W_X/Y/Z, W_NAME -- KEYS here; `x`,`y`,`z`,`name`,`body_name`,`parent`,`follow_rotation` are ALSO downstream keys of `camera action create` (same spellings, read in the anchor registries)"
       ],
       "literal_strings_with_no_W_token": [
-        "\"in_universe\", \"in_galaxy\", \"in_sandbox\" (body `mode` values, :3954)",
-        "\"tex_ring\" (body, :3994 -- written by the handler, no W_* twin)",
-        "\"dual_dump\", \"screenshot\" (body `action` values, :4031, :4034)",
+        "\"in_universe\", \"in_galaxy\", \"in_sandbox\" (body `mode` values, :4119)",
+        "\"tex_ring\" (body, :4159 -- written by the handler, no W_* twin)",
+        "\"dual_dump\", \"screenshot\" (body `action` values, :4196, :4199)",
         "the whole downstream anchor vocabulary of `camera action create` (type/x/y/z/body_name/parent/orbit_center_*/follow_rotation/coord_func -- src/navModule/anchor_creator_cor.cpp, src/experimentalModule/CameraAnchors.cpp)",
         "the whole downstream body vocabulary of `body action load` (the stellar-system-file grammar, INTENT S5 item 4)",
         "the downstream `purge` value \"auto\" HAS a W_* twin (W_AUTO, base_command_interface.hpp:197) and the key does too (W_PURGE, :170) -- both used in protosystem.cpp, not in the handler"
       ],
-      "note": "ACP_SC_MODE (\"mode\", a SET name, base_command_interface.hpp:580) and ACP_SC_HOME_PLANET (\"home_planet\", likewise :550) are used by commandBody as an argument KEY and an argument VALUE respectively (:3951, :3950) -- the set-name family leaking into the argument vocabulary, the same cross-family reuse unit 1 recorded for ACP_CN_CLEAR."
+      "note": "ACP_SC_MODE (\"mode\", a SET name, base_command_interface.hpp:589) and ACP_SC_HOME_PLANET (\"home_planet\", likewise :559) are used by commandBody as an argument KEY and an argument VALUE respectively (:4116, :4115) -- the set-name family leaking into the argument vocabulary, the same cross-family reuse unit 1 recorded for ACP_CN_CLEAR."
     }
   }
 }
