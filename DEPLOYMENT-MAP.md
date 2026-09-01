@@ -33,13 +33,13 @@ Ordered by operational weight for the tester, not by age:
    question)**: old rolls the view offset with the heading, the new path keeps it
    dome-fixed. Planetarium-geometry-central (tilted domes are the deployment reality);
    blocks the §5.66 `look_at` family and §5.71's `panView` port. NOTE: per §11.161(c) the
-   *expectation* half ("what should a tilted-dome operator see") may be tester-routable.
+   *expectation* half ("what should a tilted-dome operator see") may be tester-routable. **[2026-09-02, §11.198(d): expectation half ROUTED — round-3 R28, NARROWED to the heading×offset combination (heading = one of the owner's two named under-exercised configurations); plain-offset behavior stays old-parity by the owner's silent-population bounding; aim/draw coupling defect candidate recorded, not minted.]**
 3. **§11.96(e)(1–6) + §11.98(f)(i–iii) — the reach/visibility decoupling batch**: gates
    the B5 remainder = dso3d/tully/ojmMgr floors — i.e. the DEEP-SKY content classes on
    the new path. A planetarium show without its DSO layer is not transparent.
 4. **§11.4's two numbered decisions** (RA zero point −90.0003° epoch-stable; origin
    observer- vs body-centred — origin sub-question tester-routable) → unlocks the §5.86
-   fix (+ §5.19 folds in). Until then the new path's RA/DE readouts for composed bodies
+   fix (+ §5.19 folds in). **[2026-09-02, §11.198(b): decision (1) RESOLVED by delegation — equinox definition, catalog-rooted, residual attributed; decision (2) → round-3 R27.]** Until then the new path's RA/DE readouts for composed bodies
    answer in a scrambled frame — he reads coordinates professionally.
 5. **§5.109's layer half** — what `moveto alt` means above a display-scaled body (drawn
    vs physical surface). He authors scenes on scaled bodies.
@@ -57,7 +57,7 @@ Ordered by operational weight for the tester, not by age:
    cover the mid-session route), §5.90 (stars.ini pairing + is `~/.spacecrafter/stars/`
    a search path — tester-routable per §11.161(c1)), A40 (quit vs incomplete frame),
    A41/A42/A43 (early-visibility gate px / texture-level switch / preview-asset data —
-   A43 is a DATA regeneration, i.e. the paid product), A44 (ring shadow contract),
+   A43 is a DATA regeneration, i.e. the paid product) **[A43 GATED on R29, 2026-09-02 — §11.198(c): regeneration may destroy the tester's authored two-skin design]**, A44 (ring shadow contract),
    §5.106 (free-flight environment: close-as-accepted vs design question), the two
    §11.144 riders (free-flight `moveto` meaning + `get status position` — defaults live,
    confirm or redirect), §5.108 (`flag_sun_scaled` dead — reviving it is a behavior
