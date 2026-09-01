@@ -2960,3 +2960,64 @@ So: ASan sees allocations, checked libstdc++ sees **iterators**. A container
 question that lives inside one allocation needs the second, and a green ASan run
 is not evidence about it. `_GLIBCXX_DEBUG` changes `std::list`'s layout, so read
 any layout probe from the plain or ASan configuration, never from that one.
+
+## F75 — the grammar's engine anchors, re-dated and re-pointed (`f75_anchors.py`; the gate is `util/scedit/tests/anchor_gate.py`) — scedit journal 2026-09-01a, parent §11.190(e), 2026-09-01
+
+**The anchor grammar is NOT here.** It lives in the code tree, in
+`util/scedit/tests/anchor_gate.py`, because the GATE is what everybody who
+builds scedit runs and a second copy of the parse layer in this repo would be
+two implementations of one contract (I2) — which is the failure this task was
+dispatched to repair, one level up. `f75_anchors.py` imports it and keeps only
+what is a one-shot sweep instrument: pin recovery, the hand-read table, the
+writer and the byte proof.
+
+    f75_anchors.py shapes            the shape census, with counts
+    f75_anchors.py pins              pin recovery + its distribution
+    f75_anchors.py map               the HEAD partition -> f75/anchor_map.json
+    f75_anchors.py default-check     the falsifiable check on the implicit file
+    f75_anchors.py read-table-check  are the hand-read rows pin-independent
+    f75_anchors.py sweep [--dry]     apply; records f75/rewrites.json
+    f75_anchors.py verify [--base R] the byte proof, by inversion
+
+**Measured gotchas, each of which cost a wrong number before it was found:**
+
+- **A `file.ext:N` regex does not see the population.** 2890 references in the
+  merged file by that measure; **6734** by the real one, because 1042 are bare
+  `:N` continuations inheriting the file named earlier in their own string and
+  1703 more live in the four `grammar/args/` fragments. Rewriting what the
+  regex sees and leaving the siblings makes a string internally inconsistent —
+  half-right reads as right.
+- **A colon after a DIGIT is a clock, not an anchor** (`00:00:00`, `23:59`).
+  16 occurrences, all in the `date` and `time_display_format` prose.
+- **`git log -S` dates an anchor WRONG** wherever a content-preserving rewrite
+  touched it: F70's ASCII sweep re-authored 198 anchor strings (`S5` for a
+  section sign) without moving one line number. Tracking the JSON PATH is wrong
+  the other way: an array index shifts when something is inserted ahead of it.
+  Key on the anchor's own line-number identity, matched anywhere in the
+  revision, with a similarity floor — 0.85, because the two rewrites this has
+  to see through changed 2 bytes in 180 and 0 bytes respectively.
+- **A pin is the PARENT of the commit that records it.** The author pins the
+  engine HEAD they READ; the grammar commit lands after. "Recovered sha ==
+  written pin" is 0/60 by construction and is not the check. Tree equality on
+  the anchored files is: 60/60.
+- **Read the working tree in BINARY.** Text mode translates newlines, so
+  `doc/superscript.sts` (CRLF by design) reads as four lost referents nobody
+  has touched.
+- **Deduplicate candidate files by RESOLVED PATH, not spelling.**
+  `app_command_interface.cpp` and `src/interfaceModule/app_command_interface.cpp`
+  are one file; treating them as rivals manufactured 36 ties and 261
+  coin-flips that were never ambiguities.
+- **`_meta` is not swept and must not be.** Those blocks are dated measurements
+  pinned by their own `code`/`merged` field, and 384 of a fragment's
+  `accounting` rows carry their line as a bare integer no `file:line` parser
+  can see. Sweeping the visible half is I2's silent desync, manufactured.
+
+**The proof that licenses text-level replacement on four hand-formatted files**
+is inversion: undo every rewrite, remove the inserted pin line, and each file
+is byte-identical to its committed self (`verify`, EMPTY on all five). The
+merged file round-trips through `json.dumps(indent=2)+"\n"` byte-identically;
+the fragments do not, which is why nothing goes through a JSON writer.
+
+**Artifacts** (`harness/f75/`, gz): `pins.json` the recovered pin per string,
+`anchor_map.json` the per-reference verdict, `rewrites.json` the old->new
+string map the sweep applied and `verify` reads back.

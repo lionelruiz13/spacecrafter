@@ -170,7 +170,20 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   own targets, 0 warnings. Live: `claude/harness/f67_tcp_live.py` 28/28, twice.**~~
   **[SUPERSEDED 2026-08-31 by the F69 line below; kept as the F67 state of
   record, per the maintenance invariant.]**
-- **Gate inventory at 2026-08-31 (F69 delivered; `ctest` in `build-lovely` and in
+- **Gate inventory at 2026-09-01 (F75 delivered; `ctest` in a fresh
+  `build-f75`): 15 gates -- the first NEW one since F67. `anchor_gate` joins
+  the fourteen: every `file:line` the contract cites into the engine resolves
+  AT ITS PIN (a commit, so the check cannot rot) and its state against the
+  WORKING TREE is reported clean/moved/gone, `gone` red unless the reference
+  declares `[NOT AT HEAD: ...]`. Counts recorded in
+  `tests/anchor-expected.txt` (6663 clean / 2 declared / 69 skipped inside
+  `_meta`), a record and not a silencer: when a handler moves, `clean` falls
+  and somebody has to look. Shown able to fail on ONE inserted line in
+  `if_swap.cpp` (21 references move, exit 1; restored, exit 0). Five record
+  files moved with the sweep and every changed line of them is identical to
+  its predecessor once digits are stripped -- checked, not asserted. 0
+  warnings; journal 2026-09-01a.**
+- ~~**Gate inventory at 2026-08-31 (F69 delivered; `ctest` in `build-lovely` and in
   a fresh `build-f69`): still 14 gates, three of them widened — tokenizer 189 ·
   parse_oracle 119 337/0 · editcore 266 · roundtrip · ui_selftest **21 frames**
   · seed_gate · lint_rules 27 · history_list 36 · corpus_gate 15 · check_json ·
@@ -179,7 +192,9 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   times consecutively green after the last edit. Live:
   `claude/harness/f69_feedback.py` **49/49** over three fresh launches, which
   includes scedit's own `live_diag` leg on the real engine run with OPPOSITE
-  expectations per binary (journal 2026-08-31i, parent §11.188).**
+  expectations per binary (journal 2026-08-31i, parent §11.188).**~~
+  **[SUPERSEDED 2026-09-01 by the F75 line above; kept as the F69 state of
+  record, per the maintenance invariant.]**
 - ~~**Gate inventory at 2026-08-31 (F66 delivered; `ctest` in `build-lovely`):
   12** — tokenizer 189 · parse_oracle 119 337/0 · editcore 223 · roundtrip
   (md5) · ui_selftest 17 frames · seed_gate · lint_rules 27 · history_list 36 ·
@@ -502,6 +517,141 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-09-01a] The anchors resolve again, and a gate now says so: 6663
+  references re-dated, re-read and re-pointed, both halves moving together.**
+  Dispatch task F75 (`claude/fable-dispatch.md`), executor run; code
+  `b00abd11` (the sweep) + `7b227ed6` (the gate), harness `5db3966`+. Parent
+  back-marker at **INTENT §11.190(e)**, which is where this was left open.
+  Mandate: that clause, this journal's own "Open after this", and **C2** --
+  no entry without a source anchor, which an anchor that does not resolve
+  is a violation of in effect.
+
+  **What was actually there.** §11.190(e) reported "324 `source` anchors
+  pinned at b12c8cdd". The population is **6734 references** in 2465 strings
+  across the merged file and the four fragments, and the gap is not a
+  counting slip -- it is three shapes a `file.ext:N` regex cannot see:
+  **1042 bare `:N` continuations** inheriting the file named earlier in their
+  own string (`... tested at :225 and cleared at :229`), symbol-prefixed
+  anchors (`commandStruct :4604-4661`), and comma continuations. Sweeping
+  what the regex sees and leaving their siblings would have left strings
+  internally inconsistent -- worse than stale, because half-right reads as
+  right. One class must never be touched and is now excluded by rule: a colon
+  preceded by a DIGIT is a clock (`00:00:00`, `23:59` in the `date` and
+  `time_display_format` prose, 16 occurrences, all measured).
+
+  **The dispatcher's premise that the fragments were frozen was false, and
+  the correction is the reason this worked.** 1703 of the references live in
+  `grammar/args/unit-*.json` as byte-identical duplicates, and
+  `checkFragments` compares them on every seed-gate run. So the sweep rewrote
+  both halves identically and the seed gate became the free proof that they
+  moved together: reverting ONE fragment to its pre-sweep state turns that
+  check red (`differs: audio.notes and 53 more`) with everything else green.
+  That is the README's own rule (a correction goes into the fragment first,
+  then the merged file) working as a gate rather than as a habit.
+
+  **Dating an anchor is harder than it looks, and both obvious methods are
+  wrong.** `git log -S` on the string dates 198 anchors to F70's ASCII sweep,
+  which changed `S5` for a section sign and not one line number. Tracking the
+  JSON path dates `lint_seeds[11]` to a later commit, because a seed was
+  inserted ahead of it and every index shifted -- its anchors
+  (`commandStruct :4604-4661 / :4675-4699`) land exactly on the if-block and
+  the loop-block at 2fe14699 and nowhere else. The method that survives is
+  the anchor's own LINE-NUMBER IDENTITY, matched anywhere in the revision
+  with a similarity floor: what a rewrite must change and an accent removal
+  must not. Validated where it could fail -- 286 of 330 arg `source` anchors
+  land on a line the fragments' own measured `_meta.accounting` lists for
+  that command at b12c8cdd, every miss explained by a named mechanism.
+
+  **The stated check was refuted, and the refutation is the finding.** "The
+  60 pre-pinned strings recover their written pin" is **0/60**, and it is
+  false BY CONSTRUCTION: a pin names the engine HEAD its author READ, which
+  is the PARENT of the grammar commit that records it (`d64fd437` is
+  `50185663`'s parent). The property that decides resolution is tree equality
+  on the anchored files, and that is **60/60**.
+
+  **951 references name no file at all, and the answer was measured rather
+  than assumed.** Nothing STATES what a bare `:N` refers to -- the fragments'
+  `_meta.source_anchor_convention` rules on bare BASENAMES, not on this. The
+  grammar itself supplies a check that can fail: it names each command's
+  handler, and a string attached to command X should anchor inside X's
+  handler. **552 of 646** do; all **94** of the rest land inside another
+  function of the same file; and a 20-reference read sample confirms
+  line-for-line, including `"mplayer -fs -osdlevel 0 "` and a comment the
+  string describes as the author's own doubt. Where two candidate files both
+  fit, the reading is decided by CONTENT against the pin -- four rules that
+  can each fail, recorded per reference -- and the one genuine tie left
+  (`flyto.registration`'s `:112-118`) is settled by reading the sentence and
+  recorded as a keyed row, not folded into a heuristic.
+
+  **`_meta` is deliberately NOT swept**, and this is the decision to argue
+  with if any is. Each fragment's `_meta` is a measurement taken at
+  `b12c8cdd`: `handler_range` is the range over which `args_bracket_expected`
+  was counted, and **384 rows of `accounting` carry their line as a bare
+  integer** no `file:line` parser can see. Moving the 69 visible references
+  while those 384 stayed would manufacture exactly the silent desync I2
+  exists to prevent -- and break the fragments' own count gate.
+  `_meta.amended` is worse: an append-only dated record, one entry of which
+  reads "anchor corrected 114 -> 117 in the same pass". Rewriting that 117
+  falsifies a record of what was done. So `code` stays the pin of the
+  measurements, `anchor_pin` is the pin of the anchors: two facts, two
+  fields, neither a copy of the other. **This departs from the dispatcher's
+  S2** ("each fragment's existing `_meta.code` set to your delivery's HEAD"),
+  and the departure is the measurement above; S2's principle -- ONE
+  file-level pin per file for the anchors -- is honoured exactly.
+
+  **The 60 F71 self-pins fold in**, including the 51 whose numbers never
+  moved: a pin the file states once has no business being restated per
+  string. Two strings state theirs in PROSE ("Read-only trace at HEAD
+  d64fd437") where the `@ <sha>` form does not reach; without that they would
+  have kept the old tree's name over freshly-moved numbers.
+
+  **Four references keep `[NOT AT HEAD]` rather than a number**, which is
+  C2's honest state and visible to a reader for the first time. Two because
+  the referent LEFT the file: `IfSwap::pop`/`revert` no longer log "end
+  without if"/"else without if" themselves, the caller reports. Two because
+  the file is shipped field data this repository does not contain.
+
+  **Gates.** New ctest **`anchor_gate`**, and the gate inventory goes
+  **14 -> 15**: every reference resolves AT ITS PIN (a commit, so that check
+  cannot rot -- which is what makes a pin worth having), and its state
+  against the WORKING TREE is reported clean/moved/gone, `gone` red unless
+  declared. Counts recorded (`tests/anchor-expected.txt`), a record and not a
+  silencer: 6663 clean, 2 declared, 69 skipped inside `_meta` and saying so.
+  Shown able to fail on ONE inserted line in `if_swap.cpp` (21 references
+  move, exit 1; restored, exit 0). `ctest` **15/15** in a fresh `build-f75`,
+  0 warnings; seed gate green including `fragments: every fact identical`;
+  D14 ASCII gate PASS. Byte proof by inversion on all five files: undo every
+  rewrite, remove the inserted line, byte-identical to the committed
+  original. `--doc` over all 65 commands: 1024 lines changed, **zero** in
+  anything but numbers and the folded pins.
+
+  **Four content defects the reading turned up, ROUTED and not applied**
+  (the task's boundary: an anchor's NUMBERS are its business, its CLAIMS are
+  not):
+  (1) the `inert-command` seed says "`case APP_MODE: break;` --
+  app_command_interface.cpp:1801 era" and line 1801 at that pin holds
+  `return true;` inside a COLOUR switch; `case SCD_NAMES::APP_MODE: break;`
+  is elsewhere entirely. The sweep moved it faithfully to the line it
+  POINTED at, which is now equally wrong and looks current -- this is the
+  sharpest instance of a class: **an anchor can point at one line and claim
+  another, and a content-preserving sweep cannot tell.**
+  (2) `flyto.registration`'s first anchor points at the aliases-block COMMENT,
+  not at the `m_commands[ACP_CN_FLYTO]` line two below it.
+  (3) the `set`-multi-pair note describes `executeCommandStatus` as writing
+  "two log lines"; since F73 it writes one rendered line and keeps the pair
+  only for an origin with no line to show.
+  (4) the `struct if` prose says the engine logs "end without if" in
+  `if_swap.cpp`; it does not, since F72/F73.
+  One anchor was RESOLVED by reading rather than routed, because a file
+  component is part of an anchor: `tools/utility.hpp` resolves to
+  `src/tools/utility.hpp` (1 reference, unambiguous at the pin).
+
+  **Open after this**: the four routed defects above; and the class (1) names
+  -- an anchor whose CLAIM and whose LINE disagree -- has no check. The gate
+  proves a reference resolves; nothing yet proves it resolves to what its
+  sentence says. Two instances found by accident while doing something else,
+  which is the worst way to find a class.
+
 - **[2026-08-31j] The documentation extracted: 60 defaults, 153 names, and the
   one function that was blocking a check.** Dispatch task F71
   (`claude/fable-dispatch.md`), executor run; code `50185663` + `94f2af65`,
@@ -575,10 +725,15 @@ notes.*
   **80/340 unchanged** — the enrichment is additive to the command-scope
   router, not perturbing; the all-scope surface grew (`--search` 66 -> 110).
 
-  **Open after this**, for whoever takes the next grammar touch: the 324 `source`
+  ~~**Open after this**, for whoever takes the next grammar touch: the 324 `source`
   anchors are pinned once by `_meta.merged` at `b12c8cdd` and
   `app_command_interface.cpp` is 4747 -> 4888 lines since, so none resolves at
-  HEAD (§11.190(e)); `_meta.schema_version_note` now says so. 264 specs still
+  HEAD (§11.190(e)); `_meta.schema_version_note` now says so.~~
+  **[CLOSED 2026-09-01 by journal 2026-09-01a (F75): they resolve at HEAD
+  again. Two numbers here are corrected at that node: the population is 6734
+  references, not 324 (that is the arg-spec count), and the file stands at
+  4924 lines, not 4888. The `_meta` sentence is superseded in place rather
+  than deleted, per the maintenance invariant.]** 264 specs still
   have no `default_value` and some never can; `obsolete_tokens` (7) and
   `reserved_variables` (24) are still v1, each with its reason in its own
   `_schema_note`.

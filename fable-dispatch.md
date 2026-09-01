@@ -698,33 +698,21 @@ fragments premise false by measurement (above); three readings suspended, S1/S2
 resolved by the dispatcher from recorded rules (README:649; I2), section
 revised in place, re-dispatched same day. Baselines unmoved (211/186/25/93 ·
 129/170/102).
-**WIP (second dispatch, 2026-09-01):** CP1 — §0.7 gate PASSED (census
-reproduced exactly: merged 2890 refs/1134 strings under the {cpp,hpp,ts,sts}
-whitelist, 1703 coupled / 1186 free, 60 self-pinned, fragments 1766/897;
-ONE deviation reported, not absorbed: an extension-agnostic regex finds 2891 —
-`shaders/src/tully.vert:7,25` is a real tracked anchor the whitelist hid).
-`harness/f75_anchors.py` parses + pins; shapes enumerated (5928 tokens / 6732
-refs, 3 classes + a TIME non-anchor class); pin recovery by PATH TRACKING,
-100% recovered, validated 60/60 on tree-equality (strict sha 0/60, refuted by
-construction). CP2 — the HEAD map, content-verified: 6732 references
-partition 3391 clean / 3295 moved / 14 D14-rescued / 27 gone / 5 unresolved
-(sums exactly). THREE tool defects found by their own residual counts and
-fixed: paren-scoped inheritance (89 out-of-range), candidate dedup by
-RESOLVED path not spelling (36 fake ties + 261 fake coin-flips), the D14
-rescue (F70 transliterated lines read as lost referents). Implicit default
-= app_command_interface.cpp, MEASURED (552/646 land in the command's own
-handler; 94/94 of the rest inside another function of the same file; 20/20
-read by hand). CP3 — SWEEP APPLIED, code `b00abd11`: 2071 string occurrences
-across 1170 distinct strings; seed gate green INCLUDING `fragments: every fact
-identical`, shown RED at a one-file state; ctest 14/14; D14 PASS; byte proof
-(f) EMPTY on all five; check (e) `--doc` 65 commands = 1024 lines, zero
-non-digit. `_meta` EXCLUDED with its argument (384 bare `line:` integers).
-CP4 — `anchor_gate` ctest, code `7b227ed6`: 15/15 in a FRESH build-f75, 0
-warnings; check (c) proven both ways (one inserted line in if_swap.cpp moves 21
-refs, rc 1; restored rc 0); the gate reads the WORKING TREE, not HEAD. The
-anchor grammar now lives ONCE, in `util/scedit/tests/anchor_gate.py`, and the
-harness tool imports it (I2). NEXT: journal 2026-09-01a, 11.190(e) markers,
-READMEs, baselines.
+**DELIVERED 2026-09-01** (second dispatch; the first aborted at §0.7, record
+above). Code `b00abd11` (sweep) + `7b227ed6` (gate) + `e3afca8f` (README);
+delivery record = scedit journal **2026-09-01a**, parent back-marker
+DISCHARGED at **§11.190(e)** in both homes. 6734 references (not 324:
+§11.190(e)'s number is the arg-spec count) partitioned 3390 clean / 3297
+moved / 14 D14-rescued / 21 read by hand / 4 declared `[NOT AT HEAD]`, both
+halves swept identically with `checkFragments` as the proof (shown RED at a
+one-file state). New ctest **`anchor_gate`**, inventory 14 -> 15, `ctest`
+**15/15** in a fresh `build-f75`, 0 warnings, D14 PASS; byte proof EMPTY on
+all five files; `--doc` over 65 commands changed 1024 lines, zero in anything
+but numbers. DEVIATION from S2, argued and measured: `_meta.code` is NOT
+retargeted (384 bare `line:` integers in the fragments' accounting would
+desync) — the anchors get `_meta.anchor_pin`, two facts in two fields. FOUR
+content defects routed, not applied; ONE class named with no check for it (an
+anchor can point at one line and CLAIM another).
 
 ### F76 — scedit item 16: the shipped corpus DISPOSITIONED — 1661 findings in 26 files, each TRUE (→ SS-n / §5) or a scedit defect (→ rule fix), and the corpus gate's shipped half ARMED (scedit INTENT §5 item 16; C3; session-19 queue position 2) [M]
 
