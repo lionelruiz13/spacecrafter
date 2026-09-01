@@ -1224,7 +1224,12 @@ refactor, no severity/log change beyond what the guard's own path needs
 finding replacing the fix; the guard landed with the as-if argument; gates
 both ways; §11.195 + §5.119 flip; trees clean; WIP cleared; baselines
 LAST.
-**WIP:** —
+**WIP:** 2026-09-01 — §0.7 gate PASSED (both HEADs, F count 7, 195 free,
+§5.119 marker, binary current, RAM 12 GiB ⇒ -j6). Structural chain READ
+and complete (script line → `evalCommandSet` → `setSkyLanguage` →
+`updateAllFont` → `find_if` end() on the LAST map key "text"). NEXT:
+standalone reproduction (real `fontFactory.cpp` + stub harness) under
+`-D_GLIBCXX_DEBUG`/ASan, both ways; then the guard.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
