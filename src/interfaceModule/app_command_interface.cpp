@@ -46,6 +46,7 @@
 #include "interfaceModule/app_command_init.hpp"
 #include "interfaceModule/app_command_eval.hpp"
 #include "scriptModule/script_interface.hpp"
+#include "scriptModule/script_annotator.hpp"
 #include "interfaceModule/if_swap.hpp"
 #include "mediaModule/media.hpp"
 #include "tools/app_settings.hpp"
@@ -219,14 +220,18 @@ void AppCommandInterface::reportScriptError(const ScriptOrigin &at, const std::s
 	const std::string origin = at.where();
 	std::string line = origin.empty() ? "script: " + what : "script " + origin + ": " + what;
 	// Hoisted out of the `if` so the routed copy below quotes the same text the
-	// log does; the log line itself is byte for byte what it was (the gate is
-	// still `at.text` non-empty, not `quoted` non-empty - a line that is only a
-	// line ending still logs its empty brackets, as it always did).
-	std::string quoted = at.text;
-	while (!quoted.empty() && (quoted.back() == '\r' || quoted.back() == '\n'))
-		quoted.pop_back();
+	// log does (the gate is still `at.text` non-empty, not `quoted` non-empty -
+	// a line that is only a line ending still logs its empty brackets, as it
+	// always did). The WIRE's subject stays this raw text, byte for byte.
+	std::string quoted = at.lineText();
+	// The LOG quotes the line WITHOUT the machine tail, and that is the fix for
+	// an instability the owner named [vixy 2026-09-01, INTENT 11.193]: this
+	// class of fault IS annotated, so on the second run of the same script the
+	// line carries the tail THIS line wrote, and the same error was logged
+	// differently the second time. Stripping it with the writer's own function
+	// makes the diagnostic byte-identical on every execution.
 	if (!at.text.empty())
-		line += " [" + quoted + "]";
+		line += " [" + ScriptAnnotator::withoutAnnotation(quoted) + "]";
 	cLog::get()->write(line, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
 	if (at.valid())
 		scriptInterface->annotate(at, what);
@@ -248,6 +253,23 @@ std::string AppCommandInterface::originTag() const
 	if (where.empty())
 		return std::string();
 	return where + ": ";
+}
+
+std::string AppCommandInterface::errorLine(const std::string &message) const
+{
+	// The contract is in the header. The composition is the `#!` writer's OWN
+	// function, called and not copied: a second copy of it would BE the defect
+	// this shape exists to remove (I2, INTENT 11.193(a)).
+	// Two questions are asked and they are not the same one: `where()` says the
+	// origin has a NAME, `lineText()` says it has a LINE to show. Every origin
+	// this engine produces answers both or neither, so a producer that one day
+	// has only one falls back to the two-line form instead of logging
+	// `Error executing : ` or a tail with no line in front of it.
+	const std::string where = currentOrigin.where();
+	const std::string raw = currentOrigin.lineText();
+	if (where.empty() || raw.empty())
+		return std::string();
+	return "Error executing " + where + ": " + ScriptAnnotator::withAnnotation(raw, message);
 }
 
 void AppCommandInterface::sendFeedback(const ScriptOrigin &at, const std::string &message,
@@ -345,7 +367,11 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 	auto m_commands_it = m_commands.find(command);
 	if (m_commands_it == m_commands.end()) {
 		debug_message = _("Unrecognized or malformed command name");
-		cLog::get()->write( originTag() + debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		// The same one rendering as the funnel's, from the same function: this
+		// emitter refuses a line the same way, so it shows it the same way.
+		const std::string rendered = errorLine(debug_message);
+		cLog::get()->write( rendered.empty() ? originTag() + debug_message : rendered,
+		                    LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		// This site never reaches executeCommandStatus (11.187(d)), so it routes
 		// its own copy or an unknown command name would be the one refusal a
 		// subscriber never hears about.
@@ -1287,17 +1313,27 @@ int AppCommandInterface::executeCommandStatus()
 		//cLog::get()->write( "have execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		return true;
 	} else {
-		//std::stringstream oss;
-		// Both lines carry the tag: a reader that greps for the message alone
-		// still finds its origin, and a reader that greps for the command line
-		// alone does too. Non-empty for a FILE line as well as a control one
-		// since INTENT 11.191(b); empty when there is nothing to name.
-		const std::string tag = originTag();
-		cLog::get()->write( tag + "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-		cLog::get()->write( tag + debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-		// One record for the two lines: what went wrong, and the line it went
-		// wrong on. Both stay in the log exactly as they are above - a
-		// subscriber gets a copy, never the only copy.
+		// ONE line per error, and it is the line the user will find at that
+		// place in the file: the two lines this funnel used to write were the
+		// subject and the message of a single error, which is the duplication
+		// the unified rendering removes [vixy 2026-09-01, INTENT 11.193(a)].
+		// An origin with no line to show - a nested call, a UI key, an HTTP
+		// query - keeps those two lines exactly as they were: 11.184's nesting
+		// rule is untouched here, and the tag is still theirs when they have
+		// one.
+		const std::string rendered = errorLine(debug_message);
+		if (!rendered.empty())
+			cLog::get()->write( rendered ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		else {
+			const std::string tag = originTag();
+			cLog::get()->write( tag + "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+			cLog::get()->write( tag + debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		}
+		// The wire is UNMOVED by the rendering above: a machine consumer wants
+		// the fields split, and `$DIAG|origin|message|subject` is what it was
+		// accepted as (11.188). Its two fields are still the engine's own
+		// message and the command line, unrendered - a subscriber gets a copy
+		// of the fact, never the log's arrangement of it.
 		sendFeedback(currentOrigin, debug_message, commandline);
 		return false;
 	}

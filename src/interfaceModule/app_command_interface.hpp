@@ -234,6 +234,18 @@ private:
 	//! ScriptOrigin::valid(), and sendFeedback below still sends for a TCP
 	//! origin alone, so a file-origin refusal still reaches no socket.
 	std::string originTag() const;
+	//! THE INTENT-MODIFIED LINE, origin-prefixed: the one rendering of an
+	//! error [vixy 2026-09-01, INTENT 11.193(a)] - the line as it reads where
+	//! it came from, the author's own comment kept so the line is recognisable
+	//! without ambiguity, with the machine's ` #! <message>` tail appended and
+	//! any tail already there REPLACED. The composition is ScriptAnnotator's
+	//! own function, not a copy of it: what this log line shows is byte for
+	//! byte what the `#!` writer would land on that line, so the two views
+	//! cannot disagree - and the log shows it even when the write never lands
+	//! (a read-only file, or the generic-channel decision still open).
+	//! Empty when the origin names no line: a nested call, a UI key, an HTTP
+	//! query. Those keep the two-line form the funnel always had.
+	std::string errorLine(const std::string &message) const;
 	//! The same diagnostic, sent BACK on the dedicated link - and only for a
 	//! command that arrived on the control socket, which is the whole of what
 	//! was mandated [vixy 2026-08-31: "feedback about tcp sent back ... through

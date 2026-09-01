@@ -104,6 +104,16 @@ struct ScriptOrigin {
 	//! file that can be annotated. Its meaning has not moved since the
 	//! annotator was written - a TCP origin does not widen it, it fails it.
 	bool valid() const { return channel == ScriptChannel::FILE && !file.empty() && line != 0; }
+	//! The raw line as TEXT: `text` with its line ending removed. ONE
+	//! definition of "the line as the user has it" - a CRLF file's CR belongs
+	//! to the file, never to a log line or to a quoted subject - asked by
+	//! every reader that shows the line rather than executing it.
+	std::string lineText() const {
+		std::string s = text;
+		while (!s.empty() && (s.back() == '\r' || s.back() == '\n'))
+			s.pop_back();
+		return s;
+	}
 	//! How a log line names this origin: "file:line", "tcp#<id>", or "" when
 	//! there is nothing to name.
 	std::string where() const {
