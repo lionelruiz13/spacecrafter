@@ -1191,6 +1191,30 @@ BASELINES (delivery tree): **v2 scan 202/251/124 · pair 213/188/25/95 · D 35 �
 I 87 · I2 36 · M 80**; **v1 scan 133/176/108 · pair 213/188/25/95 · 35/11/87/36** —
 every delta attributed at §11.197(n). D14 PASS; both trees clean.
 
+**ACCEPTED 2026-09-01 (Fable, session 20):** §11.197 read (headline, method,
+partition); 13 commits verified, one member each, METHOD first, code untouched
+at `ba7a32a8`; MY OWN RUNS reproduce every number: v2 scan **202/251/124**,
+v2 pair **213/188/25/95** + D 35 / D2 11 / I 87 / I2 36 / **M 80**, v1 on the
+delivery tree 133/176/108 + identical pair numbers, bare calls exit 1 on BOTH,
+partition 124 with **0 REAL ARREARS** (39 adjudicated / 85 machine),
+`f78_discriminate.py` 23/0. §11.168(m) corrected at its node (clause struck,
+not deleted); `INTENT/11.192.md:29` routed untouched; stub present. ENDORSED
+with grounds: member 1b (I2 — one fact wrongly resolved in both instruments;
+separate commit, reverts alone); the pair-check root made REQUIRED (the
+mandate's "re-verify" found the clause FALSE — fixed at the root, invocation
+change loud); test M's own extractor with D2/I2 frozen (my gate does not move
+unbidden; C5/C6 recorded); member 4 re-shaped to `STALE ROUTING` with the
+bare-STALE run committed REJECTED (the prediction refuted 8x and KEPT — the
+method working as built); member 5 reporting-only (`§5.10`'s archived home
+keeps it a read exception). LABEL RECONCILED: the headline's "115" = the 124
+residual minus the entry's own 9 pairs — both stated, arithmetic closes. MY
+TALLY +1: the section's "§11.165 veto (2)" citation — the ruling is real (F52
+acceptance -> §11.168(m); the session-15 §3 veto list), the POINTER was wrong;
+the executor gated it correctly per §11.179(a). Two executor self-caught
+counts properly recorded as criterion-integrity instances. ADOPTED for every
+future acceptance: the root-required invocations and the v2 baselines; v1
+stays beside them as the A/B, forever. Round: FOUR for four.
+
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
 - **B1/S4 + B2 + riding rows** (D4 surface streaming, RING asteroid, INSTANCED
