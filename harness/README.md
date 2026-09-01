@@ -3096,3 +3096,84 @@ grammar exactly. **Strip comments first**: without that it reports
 `tully_color_mode` as a set name the grammar lacks, and the registration is
 commented out on both sides — the grammar was right and the instrument was
 wrong, which is the shape of the correction to expect from this check.
+
+---
+
+## F77 — the bad-script launch: five channels at once, and the recorder as a success oracle (`f77_badscript.py`) — INTENT §11.196, 2026-09-01
+
+```
+cd claude/harness
+export DISPLAY=:0 XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)
+./f77_badscript.py $PWD/artifacts/f77/live        # 0 = every prediction held
+```
+
+One fresh `f27_reply.Session` launch. A deliberately bad script — one mechanism
+per line — is played **as a FILE** by absolute path, while five things are
+watched: the script log, the `$DIAGON` link, the `#!` the annotator writes into
+the played file, the state each line leaves, and the console. Predictions are
+`artifacts/f77/predictions.md`, committed at `3f0dc5d` **before this driver
+existed**, and the run itself re-reads their md5 into its result JSON.
+
+**Four techniques worth reusing, in order of how much they save.**
+
+- **THE RECORDER IS A SUCCESS ORACLE.** `executeCommandStatus` calls
+  `recordCommand` on the success branch and nowhere else
+  (`app_command_interface.cpp:1310-1312`). So `script action record` around
+  anything under test yields the engine's own list of what it reported success
+  for — no photometry, no source reading, no inference from an absent log line.
+  This is how "the command reports SUCCESS" stopped being a claim about a
+  `debug_message` and became a file. Spelling is `cancelrecord` (F76); a
+  second `record` STOPS rather than restarts. Toggles come back NORMALISED
+  (`commandFlag` rewrites its own commandline), which is also F76's leg-G state
+  channel — the same mechanism doing double duty.
+- **`configuration action save` IS A PARTIAL SHIPPED READOUT — know which
+  half.** It writes ~90 live values into `$HOME/.spacecrafter/config.ini`
+  (`core.cpp:1693-1760` + `ui.cpp:332`), which under a temp-HOME is the farm's
+  copy, so it is safe and it reaches things `get status` does not
+  (`[viewing] moon_scale`, `[landscape] flag_atmosphere`). **The trap**: a key
+  `saveCurrentConfig` does not SET is re-emitted from the value that was
+  LOADED and is indistinguishable from a live one. `stall_radius_unit` is
+  exactly that case, which is how F77 established that its value is on no
+  channel at all. Check the setter list before trusting a key.
+- **SPLIT THE CHILD'S CONSOLE.** `F27.Session(..., stderr_path=<path>)`, new at
+  F77, default `None` so every older caller keeps its byte-identical merged
+  applog. Needed because `cLog::write` echoes EVERY line to a console when
+  `print_log` is true and the SEVERITY picks the stream — `L_ERROR`/`L_WARNING`
+  to `std::cerr`, everything else to `std::cout` (`log.cpp:122-124, :204-208`).
+  A merged capture cannot tell "reached the console" from "reached the error
+  console", which is the whole of §5.117's console question. `std::cout` is
+  block-buffered off a tty, so read both files AFTER the app exits and attribute
+  by CONTENT, never by time.
+- **A `#!` TAIL IN THE LOG IS NOT A `#!` TAIL IN THE FILE.** The funnel renders
+  the as-if line through `ScriptAnnotator::withAnnotation` and never calls
+  `annotate`; only `reportScriptError` writes. A gate that sees the tail in the
+  log and concludes the file has one is wrong on every ordinary refusal. F77
+  asserts both: the played file byte-identical, and a SEPARATE ruled-class file
+  gaining its tail on the same launch so the silence is the funnel's and not a
+  dead writer's.
+
+**Facts the legs measured that a next task can rely on.**
+
+- **`Error executing ` at FILE origin carries the FULL PATH**, not a basename
+  (`script_origin.hpp:120-125`). A matcher expecting a basename misses it.
+- **The `$DIAGON` link is silent for FILE origins**, by routing rule
+  (`sendFeedback` returns unless `channel == TCP`). Measured 0 B for a whole
+  file leg against 72 B for the same fault over TCP, on one launch — which is
+  the shape any wire leg should have: the same fault, two origins.
+- **An unknown flag NAME writes a BLANK `(Debug):` line** above the useful one
+  (§11.178(e1)'s commented-out assignment), untagged, carrying no file:line.
+- `isTrue`'s switch has cases for 4, 2 and 1 bytes only: **no 3-byte token can
+  ever be true**, so `Off`, `yes` and `ofn` are all one mechanism and the
+  `& 0x5f` fold never runs on them.
+
+**One instrument defect, recorded because its shape recurs.** The first
+encoding of the `#!` leg searched for the substring `#!` — and line 1 of the
+fixture is a comment the harness itself wrote containing `` `#!` ``, so the
+needle matched harness text and reported a HELD prediction as a failure.
+Corrected to the fact the prediction actually states: *did this line change,
+and is the change exactly the appended tail*, diffed against the bytes the
+driver wrote. Note that importing `f73_line.annotation_begin` would NOT have
+saved it — by §11.184's rule that comment does contain a tail. The defect was
+choosing a tail-detector for a question about a WRITE. The fixture is kept, so
+a line whose own text holds a `#!` and which the engine leaves alone is now a
+free control.

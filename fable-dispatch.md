@@ -1015,22 +1015,44 @@ instance, `GetActive` false.
 **DoD:** predictions first; one launch with the control lit; the per-line
 per-channel table; the §11 entry + the three rows' annotations; artifacts;
 trees clean; WIP cleared; baselines LAST.
-**WIP:** — **CP1 2026-09-01** (harness only, code untouched at `ba7a32a8`):
-§0.7 gate PASSED on every enumerated premise (both HEADs, `### F`=4, §11.196
-free, binary current by `cmake --build build-claude -- -n` = zero compile/link
-steps, `:0` 1920x1080 under the mutter auth, lock/idle 0, no instance,
-md5 `03fbee59`/`545a51ef`, F76's SIGNAL column re-read). Predictions P1–P11
-committed at `harness/artifacts/f77/predictions.md` BEFORE any launch
-(md5 `be02e19f`). **CP3 2026-09-01**: ONE launch made (`f77_badscript.py`,
-`DISPLAY=:0`, canary `--no-scene` exit **3** recorded, `GetActive` false, md5
-in==out, 408/408 corpus unmoved, app exit 0). **P1–P8, P10, P11 HELD; P9 held
-on re-adjudication** (the driver's first tail detector searched for `#!` and
-matched the fixture's OWN comment — instrument defect, corrected, artifact
-`live/p9-readjudication.txt`). Predictions md5 unchanged through the run.
-TWO CORRECTIONS found: §5.117's console clause (the refusals ALREADY reach a
-console — stdout; a promotion MOVES them to stderr) and §5.115's `get tcp :`
-channel clause (it writes to `LOG_FILE::INTERNAL`, 0 in the script log / 19 in
-`spacecrafter.log`). Next: §11.196 entry + stub, then the row annotations.
+**WIP:** —
+**DELIVERED 2026-09-01.** NO engine change (code stays `ba7a32a8`); delivery =
+**§11.196** (`INTENT/11.196.md` + stub) with **§5.116 / §5.117 / §5.118
+annotated MEASURED at their nodes and §5.115 CORRECTED**, all four back-markers
+in the same commit (`8ddc50c`), SS-26 confirmed live in `SCRIPT_SURFACE.md`.
+Harness `3f0dc5d` (predictions, before the driver existed) + `6ac18a7` (driver +
+`Session.stderr_path`, default-inert) + `b3ef170` (artifacts) + `8ddc50c`
+(delivery) + this. ONE launch, `DISPLAY=:0`; **11 predictions, 10 held on the
+first pass, P9 held on re-adjudication** (my tail detector searched for `#!` and
+matched the fixture's own comment — corrected to a byte diff, artifact
+`live/p9-readjudication.txt`); predictions md5 `be02e19f` unchanged throughout.
+HEADLINES: the engine's own **recording** re-emits all five coerced lines
+verbatim and drops the one it refused (success made into an artifact); the
+FILE-origin refusal shape measured beside the TCP one on one launch, with a
+blank `(Debug):` line above it and the played file byte-identical (the `#!` is
+an as-if line); **0 B** on `$DIAGON` for the whole file leg; `set moon_scale
+big` makes **the Moon disappear** (`screenSz` 0, `visible` false, both path
+authorities at 0); §5.118's value readable on **no** shipped channel; SS-26
+live (`binary_mode on` == `off` != `true`). TWO CORRECTIONS: §5.117's console
+clause (the refusals ALREADY reach a console — **stdout**; promotion MOVES 12
+lines to stderr, F76's number cited not re-derived) and §5.115's `get tcp :`
+channel clause (`LOG_FILE::INTERNAL`: 0 in the script log, 19 in
+`spacecrafter.log`). Canary `--no-scene` **3** recorded, not re-banked;
+`GetActive` false; md5 in==out; 408/408 corpus unmoved; 45 frame stalls
+recorded, unattributed; no §5 row minted; `doc/superscript.sts` sweep still
+owed at §5.116. BASELINES re-derived LAST: pair-check **212/187/25/95**
+(+1/+1/0/0 = this entry + its stub, exactly as predicted), tests D/D2/I/I2
+**35/11/87/34** — D +1, ADJUDICATED as the KNOWN over-flag class:
+`SHA_RE = r'`[0-9a-f]{7,8}`'` needs a BARE backticked sha and every recent entry
+writes `` `master-beta @ <sha>` `` in one span, so 9 of the 35 D flags are this
+one shape (`ba7a32a8` is in `INTENT/11.196.md` twice, `/usr/bin/grep -c` → 2).
+Back-marker scan **129/170/102**, unchanged TO THE DIGIT — and that is a
+FINDING for F78, not a null: this entry corrected two rows and the scan cannot
+see either, on two counts (its `KEYRE` is uppercase-exact — the entry says
+"CORRECTION"/"corrected", the uppercase markers being at the TARGETS where the
+rule puts them — and both targets are §5 rows, whose markers live in `INTENT.md`,
+the documented sixth member). Deliberately NOT reworded to suit the instrument;
+reported instead.
 
 ### F78 — EXTENSION: strict-credit v2 — the ledger instruments re-baselined as ONE deliberate act: six measured scan members + the pair-check's both-homes extension + the residual re-partition (§11.165(h) notes, §11.177, §11.179(6), §11.180(i), the session-19 close note, the F72/F73 acceptances; carried since session 15) [M]
 
