@@ -218,6 +218,51 @@ Picks: **F75 → F76 → F77**, F78 if health permits. Deliveries: F75/F76 to th
 MIRROR ledger (journal `2026-09-01a` / `b`; a parent §11 number only if an
 engine finding mints one), F77/F78 to the parent (§11.196+, refreshed at each
 dispatch). Remotes unchanged (local contains origin on both, push = ff).
+**Round outcome (session 20 close, 2026-09-01):** F75 -> scedit journal
+`2026-09-01a` + §11.190(e) DISCHARGED (after one §0.7 ABORT on a dispatcher
+premise — the FROZEN-fragments claim — re-dispatched same day with the premise
+struck and resolved from recorded rules) · F76 -> journal `2026-09-01b` +
+§5.122/§5.123 + SS-32…SS-39 · F77 -> **§11.196** · F78 -> **§11.197** — **four
+for four** delivered AND supervisor-verified same session (every delivery
+re-verified by my own runs: anchor_gate 6663→6667/2/69, ctest 14→15→16/16,
+shipped-corpus gate, both instruments to the digit, canary exit reproduced,
+wires/artifacts by cat-file). Code `54a2b844 -> ba7a32a8` (5 executor commits:
+anchors `b00abd11`+`7b227ed6`+`e3afca8f`; corpus `8eeffb9d`+`ba7a32a8`; F77/F78
+shipped NO code byte); harness `e6f9c8c ->` this close. HEADLINES: the
+grammar's 6663 engine anchors resolve at ONE stated pin with a gate that reds
+on drift (population **6734**, not "324"); the shipped corpus is FULLY
+dispositioned (1661 findings, ALL true, 0 false positives, 13 authored defects
+to the tester, the engine silent on 1647); the broken-show launch materialised
+§5.116's fork (recorder = success oracle; the Moon VANISHES at a coerced 0)
+and corrected §5.117's console clause + §5.115's channel claim in the
+uncomfortable direction; strict-credit v2 landed as ONE act (0 real arrears,
+the M counter born, root REQUIRED on both instruments, v1 preserved as the
+eternal A/B). SUPERVISOR TALLY, session 20: **six dispatcher defects**, all
+caught via report-not-absorb or the §0.7 gate (FROZEN-fragments [the abort] ·
+S2's `_meta.code` clause · the stale dry-run premise post-F75 · the unmeetable
+generator boundary · the §5.118 "owed" gloss · the §11.165-veto-(2) citation)
++ **two instrument slips of mine**, both caught same-minute (an edit-commit
+chain ungated on the edit's success — amended `9e4b1a1`->`e211d1a`; a commit
+referencing a message file never written) + **three single-line/stub-collision
+grep misreads** (F78 member 1's class, live at the supervision layer — its fix
+now shipped). EXECUTOR criterion-integrity instances this round: **6** (F75's
+pin-parent refutation · F76's `tully_color_mode` + three instrument defects
+fixed without moving a criterion · F77's P9 detector · F78's two self-caught
+counts). BASELINES AT CLOSE — NEW REGIME (v2, root-required): scan
+**202/251/124** (0 real arrears; 115 + the entry's own 9) · pair-check
+**213/188/25/95** D 35 · D2 11 · I 87 · I2 36 · **M 80**; v1 on the same tree
+133/176/108 · 213/188/25/95. Archival pass 12 ran at OPEN; F75–F78 stay live
+for the next open pass. NEXT-ROUND QUEUE, in order: (1) desktop round position
+1 unchanged (canary start-epoch fix + re-bank — NOT doable here); (2) the F60
+routed flips at round OPEN (re-queued in §3 with the reason); (3) scedit item
+4 (stellar-system grammar, L — takes a first slot); (4) the anchor
+CONTENT-vs-SENTENCE audit, if Vixy words it; (5) scedit items 5 · 8 · 19's
+router half (Vixy's triage); (6) F52(k) git-only checks · F58 adjacent-loader
+classification (record-only carry); (7) engine, on Vixy's word only: the
+§5.116 class decision (now fully priced) · §5.117's stream fork (12 lines) ·
+§5.122/§5.123 · the three untriaged script requests · §5.100 (authorization
+still unanswered). DECISIONS_PENDING open set: unchanged. Remotes: measured at
+close — local contains origin on BOTH repos, push = ff.
 
 ---
 
@@ -1238,6 +1283,71 @@ stays beside them as the A/B, forever. Round: FOUR for four.
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-20 decision items (2026-09-01, the anchors/corpus/bad-script round):**
+  - **THE GRAMMAR'S ANCHORS RESOLVE AGAIN — two resolutions taken from recorded
+    rules, veto-open (F75, scedit journal `2026-09-01a`):** (S1) the sweep moved
+    BOTH halves (merged + fragments) per the README's own fragment-first rule,
+    `checkFragments` the proof; (S2) ONE file-level pin (`_meta.anchor_pin` =
+    `master-beta @ 54a2b844`), the 60 per-string pins folded in; the doc bar now
+    shows a bare, resolving `file:line`; each fragment's `_meta.code` deliberately
+    NOT retargeted (384 bare-integer accounting rows would desync — measured).
+    FOUR content defects ROUTED, not applied: the `inert-command` seed's 1801-era
+    claim; `flyto.registration` pointing at a comment; the "two log lines" prose
+    (one line since F73); the if_swap wording. NEW CLASS WITH NO CHECK: an anchor
+    can RESOLVE while its SENTENCE is false (two accidental F75 instances + F76's
+    live third) — a content-vs-anchor audit is a candidate task on your word.
+  - **THE 408 SHIPPED SCRIPTS ARE FULLY DISPOSITIONED (F76, journal
+    `2026-09-01b`):** 1661/1661 TRUE — the checker's zero-false-positive
+    discipline MEASURED on the whole field corpus; 13 authored defects routed to
+    the tester (SS-32…SS-39 + SS-25 amended; sharpest: five deep-sky drawings
+    dimmed by a spaced `credit`; `06old.sts:286`'s `color0.5,0.5,0.5` shifts
+    every later pair off by one and loads garbage); the engine says ANYTHING
+    about only 12 of the 1661. NEW ENGINE ROWS, record-don't-fix: **§5.122** (an
+    argument KEY no handler reads is unobservable to everyone; 39 shipped lines)
+    · **§5.123** (`set`'s "did you mean" names the alphabetically FIRST key, not
+    the failing one — measured live). Veto-open: the shipped-corpus gate records
+    counts + package md5 rather than copying your tester's shows into the repo.
+    `comet-particles.sts` provenance → tester (NO generator exists in the tree).
+  - **THE BROKEN-SHOW LAUNCH (F77, §11.196) — §5.116's class fork now has its
+    data, all measured on one launch:** the RECORDER IS A SUCCESS ORACLE — a
+    broken show is re-recorded verbatim minus the one refused line, toggles
+    normalised so a replay reproduces the RESULT of the coercion, not the
+    coercion; `set moon_scale big` makes the MOON VANISH (screenSz 0, visible
+    false, BOTH path authorities at 0) with success reported and silence on
+    every channel; §5.118's dropped value is readable from NO shipped surface.
+    TWO CLAUSES CORRECTED, one in the ledger's favour: §5.117's console half —
+    the 157 refusals ALREADY reach stdout under the shipped default; a
+    promotion to L_ERROR MOVES exactly **12** corpus lines to stderr — so your
+    fork is severity-vs-STREAM, not silence-vs-console; and §5.115's second
+    echo is on the TRUNCATING internal log, not the uncapped file. SS-26
+    confirmed live (`on` = yes to `flag`, NO to `binary_mode`; `on` and `off`
+    produced the SAME file). §5.121's field-consequence launch still awaits
+    your word (F74 residual).
+  - **STRICT-CREDIT v2 IS ENACTED (F78, §11.197)** — both ledger instruments
+    re-baselined in ONE act, v1 preserved byte-exact beside them. NEW
+    INVOCATION (root REQUIRED, bare call exits 1): `python3
+    intent_backmarker_scan.py .` · `python3 intent_pair_check.py .`. NEW
+    STANDING BASELINES: scan **202/251/124** (partition names every pair, **0
+    real arrears**; 115 excluding the entry's own 9) · pair-check
+    **213/188/25/95** D 35 · D2 11 · I 87 · I2 36 · **M 80** (the new
+    one-home-marker counter). YOUR ONE MARKER CALL: `§11.76 -> §11.75` is
+    AMBIGUOUS (both readings at §11.197(j)) — place a marker at §11.75, or rule
+    §2.0's existing span covers it. Also yours or the next editor's: the
+    malformed marker span at `INTENT/11.192.md:29` (two `[`, one `]`). Six
+    priced candidates recorded, none enacted (C1 sha-atom over-flag · C2 a
+    machine inversion detector reaching 53/54 · C3 negation credit · C4
+    archived homes · C5 span cap · C6 unify MARK_RE).
+  - **HOST:** `:2` on this laptop is now FOXY'S LIVE SESSION (HOST-EVENTS
+    2026-09-01) — never a launch target here; canary exit moved 2 -> 3 (both
+    fail members are the desktop bank's, by construction). The desktop
+    start-epoch fix + two-value re-bank REMAINS QUEUED, position 1 of the next
+    desktop round.
+  - **F60's ROUTED FLIPS RE-QUEUED EXPLICITLY (supervisor's):** §5.24's
+    close-question, B15's row edit, B14's §5.28 citer note — deferred to the
+    NEXT round's OPEN with the reason on record: end-of-session ledger flips at
+    this session's measured supervisor slip rate (three small, all same-minute
+    caught) price worse than one round of carry; not silence, a scheduled entry.
 
 - **Session-19 decision items (2026-08-31, the provenance/ASCII round):**
   - **THE CANARY'S START-EPOCH PROBE IS WRONG, AND ONE OF ITS TWO MEMBERS
