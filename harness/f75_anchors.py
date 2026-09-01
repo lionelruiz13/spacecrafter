@@ -91,21 +91,35 @@ FILERX   = re.compile(r'[A-Za-z0-9_./+-]*[A-Za-z0-9_+-]\.[A-Za-z][A-Za-z0-9]*$')
 ELEM     = re.compile(r'(\d+)(\s*-\s*)?(\d+)?')
 
 class Tok:
-    __slots__ = ("start", "end", "kind", "head", "listtext", "elems", "file")
+    __slots__ = ("start", "end", "kind", "head", "listtext", "elems", "file", "flat")
     def __init__(self, start, end, kind, head, listtext, elems):
         self.start, self.end, self.kind = start, end, kind
         self.head, self.listtext, self.elems = head, listtext, elems
-        self.file = None
+        self.file = self.flat = None
     def __repr__(self):
         return "<%s %s %s -> %s>" % (self.kind, self.head, self.listtext, self.file)
 
 def tokenize(s):
     """Return the anchor tokens of one string, in order, with `file` filled in
     from the string's own left context.  `file` is None for a token whose file
-    could not be determined -- reported, never guessed."""
-    toks, cur = [], None
+    could not be determined -- reported, never guessed.
+
+    INHERITANCE IS PARENTHESIS-SCOPED, and it has to be.  A parenthesis is how
+    this file writes a SUB-anchor: `app_command_interface.cpp:1887 (W_INDEX=
+    "index", base_command_interface.hpp:131) -> applyColor CC_STAR_TABLE :1708`
+    -- the `:1708` belongs to app_command_interface.cpp, not to the header the
+    parenthesis happened to mention last.  Reading it flat put 89 references
+    past the end of a file that was never their file; the out-of-range count is
+    what made the bug visible, which is why a shape the parser cannot read is a
+    reported residual rather than a skipped one."""
+    toks, cur, flat, stack = [], None, None, []
     for m in CAND.finditer(s):
         i = m.start()
+        for ch in s[(toks[-1].end if toks else 0):i]:
+            if ch == "(":
+                stack.append(cur)
+            elif ch == ")" and stack:
+                cur = stack.pop()
         hm = HEADRX.search(s[:i])
         if hm and not hm.group(2):
             head = hm.group(1)
@@ -123,8 +137,9 @@ def tokenize(s):
             elems.append((a, b, em.start(), em.end()))
         t = Tok(hstart, m.end(), kind, head, m.group(1), elems)
         if kind == "FILE":
-            cur = head
+            cur = flat = head
         t.file = head if kind == "FILE" else cur
+        t.flat = head if kind == "FILE" else flat
         toks.append(t)
     return toks
 
@@ -278,6 +293,30 @@ def classify(rev, repo_path, n, repo=REPO, head="HEAD"):
     if n in m:
         j = m[n]
         return (("clean" if j == n else "moved"), j, src, b[j - 1])
+    # SECOND PASS -- the D14 rescue.  F70 transliterated the whole tree
+    # (`S5.2` for the section sign, `+-90deg` for the degree sign), so a line
+    # that carried an accent has different BYTES at HEAD while being the same
+    # line.  That is a dated, whole-tree, characterised transformation, not a
+    # rewrite, and refusing to see it would report a referent as lost when it
+    # is sitting in place.  The rescue is bounded on both sides by the nearest
+    # lines that DID map, so it can only find the referent where the referent
+    # can be, and it fires only when the pin line has non-ASCII and the
+    # candidate is pure ASCII.  Every rescue is recorded with both texts.
+    if any(ord(c) > 127 for c in src):
+        lo = max((k for k in m if k < n), default=None)
+        hi = min((k for k in m if k > n), default=None)
+        j0 = (m[lo] + 1) if lo is not None else 1
+        j1 = (m[hi] - 1) if hi is not None else len(b)
+        best, bestr = None, 0.0
+        for j in range(max(1, j0), min(len(b), j1) + 1):
+            cand = b[j - 1]
+            if any(ord(c) > 127 for c in cand):
+                continue
+            r = difflib.SequenceMatcher(a=src, b=cand, autojunk=False).ratio()
+            if r > bestr:
+                best, bestr = j, r
+        if best is not None and bestr >= 0.80:
+            return ("d14" if best == n else "d14-moved", best, src, b[best - 1])
     return ("gone", None, src, (b[n - 1] if 1 <= n <= len(b) else None))
 
 # --------------------------------------------------------------------------
@@ -352,6 +391,251 @@ def cmd_pins():
     json.dump(allpins, open(os.path.join(OUT, "pins.json"), "w"), indent=1)
     print("\n-> %s/pins.json" % OUT)
 
+# --------------------------------------------------------------------------
+# 9. DISAMBIGUATION BY CONTENT
+#
+# A bare `:N` inherits a file, and WHICH file is not decidable from the text.
+# Two readings, and each has a counter-example against the other:
+#
+#   PAREN-SCOPED  `app_command_interface.cpp:1887 (W_INDEX="index",
+#                  base_command_interface.hpp:131) -> applyColor
+#                  CC_STAR_TABLE :1708`
+#                 -- the header is a SUB-anchor; :1708 is the .cpp.
+#   FLAT          `AppCommandColor::setClassicColor takes `debug_message` BY
+#                  VALUE (app_command_color.cpp:58-59) while the constructor
+#                  holds it by reference (:92-94)`
+#                 -- the parenthesis IS the subject; :92-94 is app_command_color.
+#
+# So the reading is decided by CONTENT, against the pin, by rules that can all
+# fail, and every decision is recorded per reference:
+#
+#   R1  the enclosing function at <candidate>:<line> is NAMED in the string
+#   R2  the string belongs to command X and the enclosing function is the
+#       handler the grammar itself gives X
+#   R3  a quoted fragment of the string (`...` or "...") occurs in the
+#       anchored lines
+#   R4  the candidate file is NAMED in the string (an unstated default never
+#       outranks a file the author actually wrote)
+#   R0  in range at the pin (necessary, never sufficient)
+#
+# A tie between two candidates that both score, or a token no rule reaches, is
+# FLAGGED and read by hand -- never decided by the tool.
+# --------------------------------------------------------------------------
+QUOTED = re.compile(r'`([^`]{5,60})`|"([^"]{5,60})"')
+
+def _score(cand, pin, lo, hi, s, handler, named=False):
+    rp, how = resolve_file(cand)
+    if rp is None:
+        return None
+    ls = lines_at(pin, rp)
+    if ls is None or lo < 1 or (hi or lo) > len(ls):
+        return None
+    sc, why = 1, ["R0"]
+    if named:
+        sc += 2; why.append("R4")
+    sym = enclosing_symbol(pin, rp, lo)
+    if sym and sym in s:
+        sc += 5; why.append("R1")
+    if sym and handler and sym == handler:
+        sc += 4; why.append("R2")
+    body = "\n".join(ls[lo - 1:(hi or lo)])
+    for m in QUOTED.finditer(s):
+        frag = m.group(1) or m.group(2)
+        if frag and frag in body:
+            sc += 3; why.append("R3(%s)" % frag[:18]); break
+    return (sc, "+".join(why), rp, how)
+
+def disambiguate(t, pin, s, handler):
+    """-> (repo_path, how, basis, evidence) or (None, None, 'FLAG', reason)."""
+    # Candidates are deduplicated by their RESOLVED PATH, not by spelling: the
+    # bare `app_command_interface.cpp` and the repo-relative default are the
+    # same file, and treating them as rivals manufactured 36 ties and 261
+    # coin-flips that were never ambiguities.
+    cands, seen = [], set()
+    for name, tag in ((t.file, "inherited-paren"), (t.flat, "inherited-flat"),
+                      (DEFAULT_FILE, "implicit-default")):
+        if not name:
+            continue
+        rp0, _how0 = resolve_file(name)
+        if rp0 is None or rp0 in seen:
+            continue
+        seen.add(rp0)
+        r = _score(name, pin, t.elems[0][0], t.elems[0][1], s, handler,
+                   named=(tag != "implicit-default"))
+        if r:
+            cands.append((r[0], tag, r[1], r[2], r[3]))
+    if not cands:
+        return (None, None, "FLAG", "no candidate in range at the pin")
+    cands.sort(key=lambda c: -c[0])
+    if len(cands) > 1 and cands[0][0] == cands[1][0] and cands[0][0] > 1:
+        return (None, None, "FLAG", "tie %s vs %s" % (cands[0][1], cands[1][1]))
+    return (cands[0][3], cands[0][4], cands[0][1], cands[0][2])
+
+# --------------------------------------------------------------------------
+# 6. THE SUBMODULE (src/EntityCore) -- read-only, resolved at ITS pinned commit
+# --------------------------------------------------------------------------
+def sub_commit(rev):
+    out = git("ls-tree", rev, SUBMODULE)
+    if not out:
+        return None
+    m = re.search(rb'commit ([0-9a-f]{40})', out)
+    return m.group(1).decode() if m else None
+
+def classify_any(pin, repo_path, n, how):
+    """classify() with the submodule routed to its own repository."""
+    if how == "submodule":
+        a, b = sub_commit(pin), sub_commit("HEAD")
+        if not a or not b:
+            return ("no-file", None, None, None)
+        rel = repo_path[len(SUBMODULE) + 1:]
+        return classify(a, rel, n, repo=os.path.join(REPO, SUBMODULE), head=b)
+    return classify(pin, repo_path, n)
+
+# --------------------------------------------------------------------------
+# 7. THE MAP: every reference partitioned
+#
+#   clean      the text at the pin is at the SAME line at HEAD
+#   moved      the text at the pin is at a DIFFERENT line at HEAD (verified)
+#   gone       the line's text does not survive to HEAD  -> re-read / NOT AT HEAD
+#   no-file    the string never names a file for this token
+#   unresolved the named file is not in this tree at this pin
+# --------------------------------------------------------------------------
+def build_map():
+    pins = json.load(open(os.path.join(OUT, "pins.json")))
+    result = {}
+    for path in TARGETS:
+        P = pins[path]["pins"]
+        rows = []
+        for jp, s in walk(load(path)):
+            toks = tokenize(s)
+            if not toks:
+                continue
+            pin = P[jp][0]
+            cm = re.match(r'\.families\.commands\.([A-Za-z0-9_]+)\.' if path == MERGED
+                          else r'\.commands\.([A-Za-z0-9_]+)\.', jp)
+            handler = None
+            if cm:
+                cmds = (load(path)["families"]["commands"] if path == MERGED
+                        else load(path)["commands"])
+                handler = cmds.get(cm.group(1), {}).get("handler")
+            for ti, t in enumerate(toks):
+                evidence = None
+                if t.kind == "FILE":
+                    rp, how = resolve_file(t.file)
+                    basis = "respelled" if how == "respelled" else "named"
+                else:
+                    rp, how, basis, evidence = disambiguate(t, pin, s, handler)
+                if rp is None:
+                    for ei, (a, b, _, _) in enumerate(t.elems):
+                        rows.append(dict(jp=jp, ti=ti, ei=ei, pin=pin, file=t.file,
+                                         basis=basis, ev=evidence, old=[a, b],
+                                         verdict="unresolved:" + (how or basis), new=None))
+                    continue
+                for ei, (a, b, _, _) in enumerate(t.elems):
+                    va, na, ta, ha = classify_any(pin, rp, a, how)
+                    if b is None:
+                        rows.append(dict(jp=jp, ti=ti, ei=ei, pin=pin, file=t.file, repo=rp,
+                                         how=how, basis=basis, ev=evidence,
+                                         old=[a, None], verdict=va, new=[na, None], text=ta))
+                    else:
+                        vb, nb, tb, hb = classify_any(pin, rp, b, how)
+                        OK = ("clean", "moved", "d14", "d14-moved")
+                        v = "clean" if va == vb == "clean" else \
+                            (("d14" if "d14" in (va, vb) or "d14-moved" in (va, vb) else "moved")
+                             if va in OK and vb in OK else
+                             (va if va not in OK else vb))
+                        rows.append(dict(jp=jp, ti=ti, ei=ei, pin=pin, file=t.file, repo=rp,
+                                         how=how, basis=basis, ev=evidence,
+                                         old=[a, b], verdict=v, new=[na, nb],
+                                         text=ta, text2=tb))
+        result[path] = rows
+    return result
+
+def cmd_map():
+    res = build_map()
+    os.makedirs(OUT, exist_ok=True)
+    json.dump(res, open(os.path.join(OUT, "anchor_map.json"), "w"))
+    grand = collections.Counter(); basis = collections.Counter()
+    for path, rows in res.items():
+        basis.update(r.get("basis", "?") for r in rows)
+        c = collections.Counter(r["verdict"].split(":")[0] for r in rows)
+        print("== %-16s %5d references" % (path.split("/")[-1], len(rows)))
+        for k, v in c.most_common():
+            print("     %-14s %5d" % (k, v))
+        grand.update(c)
+    print("== TOTAL             %5d references" % sum(grand.values()))
+    for k, v in grand.most_common():
+        print("     %-14s %5d" % (k, v))
+    print("\nBY BASIS (how the reference's FILE was determined)")
+    for k, v in basis.most_common():
+        print("     %-26s %5d" % (k, v))
+    ev = collections.Counter()
+    for rows in res.values():
+        for r in rows:
+            if r.get("ev"):
+                ev[re.sub(r'\(.*?\)', '', r["ev"])] += 1
+    print("BY EVIDENCE (which rules decided an inherited file)")
+    for k, v in ev.most_common():
+        print("     %-26s %5d" % (k, v))
+    # what is unresolved, in detail
+    print("\nUNRESOLVED file names:")
+    d = collections.Counter()
+    for rows in res.values():
+        for r in rows:
+            if r["verdict"].startswith("unresolved"):
+                d[(r["file"], r["verdict"])] += 1
+    for (f, v), n in d.most_common():
+        print("   %-52s %-28s %d" % (f, v, n))
+
+# --------------------------------------------------------------------------
+# 8. IS THE IMPLICIT DEFAULT REALLY app_command_interface.cpp?
+#
+# 951 references sit in strings that name no file at all (`... tested at :225
+# and cleared at :229`).  Nothing STATES their referent -- the fragments'
+# `_meta.source_anchor_convention` rules on bare BASENAMES, not on bare `:N`.
+# So it is measured, by a check that can fail: the grammar already says which
+# HANDLER each command has, and a string attached to command X that anchors
+# into app_command_interface.cpp must land inside X's handler.  A string about
+# `media` landing inside commandDate would refute the default.
+# --------------------------------------------------------------------------
+def cmd_default_check():
+    res = json.load(open(os.path.join(OUT, "anchor_map.json")))
+    ok = bad = untestable = 0
+    misses = []
+    for path, rows in res.items():
+        g = load(path)
+        cmds = g["families"]["commands"] if path == MERGED else g["commands"]
+        for r in rows:
+            if r.get("basis") not in ("implicit-default", "default-after-refutation"):
+                continue
+            m = re.match(r'\.families\.commands\.([A-Za-z0-9_]+)\.' if path == MERGED
+                         else r'\.commands\.([A-Za-z0-9_]+)\.', r["jp"])
+            if not m:
+                untestable += 1
+                continue
+            entry = cmds.get(m.group(1), {})
+            handler = entry.get("handler")
+            if not handler:
+                untestable += 1
+                continue
+            sym = enclosing_symbol(r["pin"], DEFAULT_FILE, r["old"][0])
+            if sym == handler:
+                ok += 1
+            else:
+                bad += 1
+                if len(misses) < 12:
+                    misses.append((path.split("/")[-1], m.group(1), handler, sym, r["old"][0]))
+    print("IMPLICIT-DEFAULT CHECK -- the enclosing function at <default>:<line> at the pin")
+    print("  must be the handler the grammar names for the command the string belongs to.")
+    print("  agree     %5d" % ok)
+    print("  DISAGREE  %5d" % bad)
+    print("  untestable%5d  (parse_model / _meta / unit_findings: no command scope)" % untestable)
+    for m in misses:
+        print("     %-16s %-14s grammar=%-22s enclosing=%-22s :%d" % m)
+    return bad == 0
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "shapes"
-    {"shapes": cmd_shapes, "pins": cmd_pins}[cmd]()
+    {"shapes": cmd_shapes, "pins": cmd_pins, "map": cmd_map,
+     "default-check": cmd_default_check}[cmd]()
+

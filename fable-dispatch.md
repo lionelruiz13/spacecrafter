@@ -706,7 +706,15 @@ ONE deviation reported, not absorbed: an extension-agnostic regex finds 2891 —
 `harness/f75_anchors.py` parses + pins; shapes enumerated (5928 tokens / 6732
 refs, 3 classes + a TIME non-anchor class); pin recovery by PATH TRACKING,
 100% recovered, validated 60/60 on tree-equality (strict sha 0/60, refuted by
-construction). NEXT: the HEAD content map + partition.
+construction). CP2 — the HEAD map, content-verified: 6732 references
+partition 3391 clean / 3295 moved / 14 D14-rescued / 27 gone / 5 unresolved
+(sums exactly). THREE tool defects found by their own residual counts and
+fixed: paren-scoped inheritance (89 out-of-range), candidate dedup by
+RESOLVED path not spelling (36 fake ties + 261 fake coin-flips), the D14
+rescue (F70 transliterated lines read as lost referents). Implicit default
+= app_command_interface.cpp, MEASURED (552/646 land in the command's own
+handler; 94/94 of the rest inside another function of the same file; 20/20
+read by hand). NEXT: 16 rows re-anchored by reading, then the sweep.
 
 ### F76 — scedit item 16: the shipped corpus DISPOSITIONED — 1661 findings in 26 files, each TRUE (→ SS-n / §5) or a scedit defect (→ rule fix), and the corpus gate's shipped half ARMED (scedit INTENT §5 item 16; C3; session-19 queue position 2) [M]
 
