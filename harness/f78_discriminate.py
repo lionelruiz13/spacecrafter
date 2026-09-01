@@ -414,6 +414,21 @@ def m7_undated_span_is_not_a_marker():
     return "m7    an UNDATED span is not a marker", ok, "v2 M %d (base %d)" % (b["M"], BASE["p2"]["M"])
 
 
+# ------------------------------------------------- the REQUIRED root, both instruments
+@case
+def root_required_both():
+    """§11.168(m)'s ruling, re-verified on BOTH instruments: a run without an explicit
+    root must fail loudly rather than silently measure the tree the script lives in."""
+    r = {}
+    for name, script in (("scan v1", SCAN_V1), ("scan v2", SCAN_V2),
+                         ("pair v1", PAIR_V1), ("pair v2", PAIR_V2)):
+        o = subprocess.run([sys.executable, script], capture_output=True, text=True)
+        r[name] = o.returncode
+    ok = r["scan v1"] and r["scan v2"] and r["pair v2"] and not r["pair v1"]
+    return "root  REQUIRED on both v2 (pair v1 had the trap)", ok, \
+        "rc scan v1/v2 %d/%d, pair v1/v2 %d/%d" % (r["scan v1"], r["scan v2"], r["pair v1"], r["pair v2"])
+
+
 def main():
     print("ledger root: %s" % ROOT)
     BASE["v1"], BASE["v2"] = scan(SCAN_V1, ROOT), scan(SCAN_V2, ROOT)

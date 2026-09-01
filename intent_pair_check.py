@@ -43,7 +43,8 @@ DISCRIMINATING CHECK (must be re-run whenever this file changes)
     (458a71f = d43abec^, the commit before F37's §5.27 repair.)
 
 USAGE
-    python3 intent_pair_check.py [ROOT] [--json]
+    python3 intent_pair_check.py <ROOT> [--json]      # ROOT is REQUIRED, see the
+                                                      # note at __main__ (F78)
 """
 import os, re, sys, json
 
@@ -232,8 +233,23 @@ def check(root):
 
 
 if __name__ == '__main__':
+    # Root is REQUIRED [F78 2026-09-01, re-verifying the F52 acceptance / §11.168(m)
+    # ruling on the sibling instrument].  §11.168(m) closes with "intent_pair_check.py is
+    # cwd-relative and has no such trap", and that clause is FALSE at the source: the old
+    # default was os.path.dirname(os.path.abspath(__file__)), the SCRIPT's own directory,
+    # so a run launched from an extracted pre-tree without an explicit root silently
+    # measured the LIVE tree -- exactly the trap the F52 acceptance removed from
+    # intent_backmarker_scan.py, present here unchanged since this file's first commit
+    # (89b83cc, verified at git show).  The acceptance's own reason applies verbatim:
+    # "the instrument-chain rule prefers loud-fail", and "a probe that can silently
+    # measure the wrong target converts observation into fiction".  A back-marker is
+    # placed at §11.168(m) in the delivery commit (§11.161(g)).
+    # Measurement logic untouched; input contract only.
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
-    root = args[0] if args else os.path.dirname(os.path.abspath(__file__))
+    if not args:
+        sys.exit("usage: intent_pair_check.py <root> [--json]  (root is required; "
+                 "pass the tree to check explicitly - no default)")
+    root = args[0]
     res = check(root)
     if '--json' in sys.argv:
         print(json.dumps(res, ensure_ascii=False))
