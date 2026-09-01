@@ -201,9 +201,17 @@ add_test(NAME pty_keys
 		$<TARGET_FILE:scedit> ${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json)
 
 # C3 corpus gate: the engine-exercised scripts must stay clean of NEW findings.
-# Boundary [measured 2026-08-04]: ~/.spacecrafter/scripts/ is EMPTY on this
+# ~~Boundary [measured 2026-08-04]: ~/.spacecrafter/scripts/ is EMPTY on this
 # machine, so the shipped-scripts half of C3 cannot run here; it re-arms by
-# adding those files to this list once the data package is installed.
+# adding those files to this list once the data package is installed.~~
+# [RETIRED 2026-09-01, F76: the package IS installed -- 408 scripts, 1661
+# findings, every one of them dispositioned. The shipped half does NOT join
+# this list: these files are TRACKED and their output is recorded line by line,
+# while the shipped scripts are untracked, host-varying field data belonging to
+# the script-surface owner. It gets its own gate, `shipped_corpus_gate` below,
+# recording counts rather than lines and SKIPPING LOUDLY where the package is
+# not installed. The two readings and the reason for this one are in
+# README.md S Verification, veto-open.]
 set(SCEDIT_CORPUS
 	${CMAKE_CURRENT_SOURCE_DIR}/../../doc/superscript.sts
 	${CMAKE_CURRENT_SOURCE_DIR}/../../claude/harness/b10_cmd_script.sts
@@ -231,3 +239,15 @@ add_test(NAME corpus_gate
 		"-DFILES=${SCEDIT_CORPUS}"
 		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/corpus-expected.txt
 		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_gate.cmake)
+
+# C3's SHIPPED half, armed 2026-09-01 (F76). The installed script package is
+# untracked field data, so this gate reports a SKIP where it is absent -- 77 is
+# the exit code, and SKIP_RETURN_CODE below is what makes ctest say "Skipped"
+# out loud instead of counting a vacuous pass.
+add_test(NAME shipped_corpus_gate
+	COMMAND ${Python3_EXECUTABLE}
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/shipped_corpus_gate.py
+		$<TARGET_FILE:scedit>
+		${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/shipped-corpus-expected.txt)
+set_tests_properties(shipped_corpus_gate PROPERTIES SKIP_RETURN_CODE 77)

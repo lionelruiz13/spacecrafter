@@ -716,7 +716,10 @@ silently dropped translation unit.
 
 ## Verification
 
-Fifteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings):
+Sixteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings).
+One of them, `shipped_corpus_gate`, reports a SKIP where its input -- the
+installed script package -- is not on the machine; that is a reported skip in
+the ctest summary and never a pass.
 
 | gate | what it measures |
 |---|---|
@@ -733,8 +736,9 @@ Fifteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings):
 | `mcp_protocol` | 85 checks from a stdlib-only Python client (`tests/mcp_gate.py`) that spawns `scedit --mcp` - a second implementation on purpose: both protocol eras, every tool with good and bad arguments, the honest null arriving as JSON `null` through the whole chain, the catalogue's counts, the five refusals (parse error, no method, unknown method, unknown tool, unsupported version), and `run_command` driven against the stand-in engine with both sides asserted - the answer verbatim, the stand-in's own record of what arrived, a silent command with the note that says exactly how much that silence is worth, a REFUSED command coming back in `diagnostics` split into origin/message/subject with the raw record kept, and the no-engine path as a tool error naming what to check |
 | `tcp_client` | 30 gate checks over 112 leg checks: `sc_tcpclient` against `tests/fake_engine.py`, a stand-in whose framing rules are each read from a named line of `src/tools/io.cpp`. One leg per process, and after each one the gate asserts what the stand-in RECEIVED - so a leg cannot pass by agreeing with itself. Endpoint parsing and its refusals, a port nothing listens on, subscribe/ask/answer/disconnect/reconnect, a two-line command refused with nothing sent, latin-1 and 0xA0 bytes arriving as bytes, the bounded feed counting what it drops, another client's answer arriving because we subscribed, the engine closing the connection - and the DEDICATED diagnostic link: both subscriptions sent in order, a `$DIAG|` record split into its four fields (a subject containing the separator included), a malformed one SHOWN rather than dropped, and a second `$LOGON`-only onlooker proving from the other end that it received the answer and not one byte of the diagnostic channel |
 | `pty_keys` | the editor's live KEYS, pressed on a **pseudo-terminal**, with the stand-in engine asserting what arrived: `--tcp` alone connects to nothing, Ctrl-T subscribes, Ctrl-L sends the caret's line verbatim and sends NOTHING from a comment line, Ctrl-R plays the file by absolute path, the engine's own words reach the feed pane on screen, Ctrl-Q exits 0 having unsubscribed. This is the seam between the two gates on either side of it -- one pins what is DRAWN, the other what the core and client DO -- and it is what makes "F8 plays the file" a measurement rather than a reading |
-| `anchor_gate` | every `file:line` the contract cites into the engine still resolves. Two checks, and the order is the point: first AT ITS PIN -- the pin is a commit, so that check cannot rot, and a reference past the end of its own file at its own pin is a broken citation whatever HEAD is doing; then against the WORKING TREE, reported per reference as clean, moved or gone, with `gone` red unless the reference declares it with a `[NOT AT HEAD: ...]` marker. The HEAD side is the tree and not the commit deliberately: a gate that only saw committed state would pass on the very edit that breaks the citations and fail later, when whoever moved the line has moved on. Counts recorded in `tests/anchor-expected.txt` -- 6663 clean, 2 declared, 69 skipped inside `_meta` and saying so -- so the day a handler shifts, `clean` falls and somebody has to look at what. Shown able to fail on ONE inserted line in an engine file: 21 references move and the gate exits 1 |
-| `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
+| `anchor_gate` | every `file:line` the contract cites into the engine still resolves. Two checks, and the order is the point: first AT ITS PIN -- the pin is a commit, so that check cannot rot, and a reference past the end of its own file at its own pin is a broken citation whatever HEAD is doing; then against the WORKING TREE, reported per reference as clean, moved or gone, with `gone` red unless the reference declares it with a `[NOT AT HEAD: ...]` marker. The HEAD side is the tree and not the commit deliberately: a gate that only saw committed state would pass on the very edit that breaks the citations and fail later, when whoever moved the line has moved on. Counts recorded in `tests/anchor-expected.txt` -- 6667 clean, 2 declared, 69 skipped inside `_meta` and saying so -- so the day a handler shifts, `clean` falls and somebody has to look at what. Shown able to fail on ONE inserted line in an engine file: 21 references move and the gate exits 1 |
+| `corpus_gate` | `--check` over the TRACKED corpus -- `doc/superscript.sts` and the harness scripts -- produces exactly the recorded findings, line for line |
+| `shipped_corpus_gate` | `--check` over the INSTALLED script package (408 scripts, 1661 findings, every one dispositioned at F76), against a record of per-file per-id COUNTS plus the package's own aggregate md5. Absent package: exit 77, which CMake's `SKIP_RETURN_CODE` turns into a reported skip. Shown able to fail on one injected line in a hardlink copy of the corpus: four lines of delta, and the md5 row says the DATA moved rather than the checker |
 
 `tests/lint-expected.txt`, `tests/corpus-expected.txt`,
 `tests/history-expected.txt`, `tests/check-json-expected.txt`,
@@ -745,6 +749,40 @@ in a comment beside the bytes that produce it in `tests/history_cases.sts`, and
 anything that appears without being recorded fails the gate. That is constraint C3 -- zero false positives before a rule ships -- and it
 is why the expected files are edited deliberately and never regenerated blind.
 The same discipline applies to the rendered frames.
+
+### The shipped half of the corpus gate, and why it records counts
+
+C3 asks for zero false positives over the shipped corpus before a rule ships.
+Until 2026-09-01 only half of it ran: `SCEDIT_CORPUS` carried a note saying the
+script directory was empty on the machine the gate was written on. It is not,
+and its 1661 findings are now dispositioned one by one -- all 1661 TRUE, no
+false positive -- in the harness repository at
+`claude/harness/artifacts/f76/dispositions.tsv.gz`, each with the engine code
+its judgment was read at, and routed to the script-surface owner as SS-25 and
+SS-32..SS-39.
+
+Two shapes were on the table for arming it, and the choice is veto-open:
+
+- **(a) the 1661 lines**, the way `corpus-expected.txt` records its 15. Exact,
+  and it would catch one finding being replaced by another of the same id in
+  the same file, which (b) cannot.
+- **(b) per-file per-id counts** plus the totals and an aggregate md5 of the
+  package. This is what shipped.
+
+(b) was chosen for two reasons. The first is ownership: the shipped scripts are
+another person's shows, untracked field data that this repository does not
+carry, and a line-level record would copy their key names and values into it as
+a side effect of testing. The second is that the line-level record already
+exists, in the disposition table, which carries more than the lines -- the
+ground each was judged on -- and `f76_corpus.py --strict` is the check that
+fails when a finding appears with no disposition, which is precisely the swap
+(b) is blind to. The aggregate md5 earns its line separately: when this gate
+fails it says whether the SCRIPTS moved or the CHECKER did, which is the first
+question anybody will ask.
+
+The absent case is a skip and not a pass because a gate that greens on missing
+input is worth less than no gate: it reports "checked" for a machine where
+nothing was. The `[EXCLUDE]` rows of the D14 sweep are the same lesson.
 
 `tests/fixture-grammar.json` is a tiny contract file that exists only to reach
 one code path the real one cannot arm yet (see below). It says so itself, in its
