@@ -1,0 +1,147 @@
+### source: working tree /home/claude/spacecrafter/src/appModule/fontFactory.cpp
+### md5(fontFactory.cpp) = 7971093759f59aa70c21da4a0572b10a
+
+=== config: plain   []
+--- run exit code: 0
+[layout ] sizeof(std::list<FontContener>)=24  offsetof(FontContener,fontPtr)=8
+[driver ] --- App::firstInit (app.cpp:701-705) ---
+[s_font  base   ] /home/claude/.spacecrafter/fonts/DejaVuSansMono.ttf
+[s_font  ctor   ] size=14 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=24 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=18 name=/home/claude/.spacecrafter/fonts/DejaVuSansMono-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   setText] size=16 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   build  ]
+[driver ] --- set sky_locale zh_CN -> Core::setSkyLanguage -> core.cpp:1590 ---
+[s_font  rebuild] size=24 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=18 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=14 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[media   update ] size=6.74291e+22 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[driver ] --- updateAllFont RETURNED, no fault ---
+
+=== config: gdebug   [-D_GLIBCXX_DEBUG]
+/home/claude/spacecrafter/claude/harness/f74_repro/f74_build_run.sh: line 49: 69839 Aborted                 ASAN_OPTIONS=detect_leaks=0 timeout 60 "$bin" > "$OUT/$name.run.log" 2>&1
+--- run exit code: 134
+[layout ] sizeof(std::list<FontContener>)=48  offsetof(FontContener,fontPtr)=8
+[driver ] --- App::firstInit (app.cpp:701-705) ---
+[s_font  base   ] /home/claude/.spacecrafter/fonts/DejaVuSansMono.ttf
+[s_font  ctor   ] size=14 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=24 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=18 name=/home/claude/.spacecrafter/fonts/DejaVuSansMono-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   setText] size=16 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   build  ]
+[driver ] --- set sky_locale zh_CN -> Core::setSkyLanguage -> core.cpp:1590 ---
+[s_font  rebuild] size=24 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=18 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=14 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+/usr/include/c++/11/debug/safe_iterator.h:316:
+In function:
+    gnu_debug::_Safe_iterator<_Iterator, _Sequence, _Category>::pointer 
+    gnu_debug::_Safe_iterator<_Iterator, _Sequence, _Category>::operator->() 
+    const [with _Iterator = std::_List_iterator<FontContener>; _Sequence = 
+    std::debug::list<FontContener>; _Category = std::forward_iterator_tag; 
+    gnu_debug::_Safe_iterator<_Iterator, _Sequence, _Category>::pointer = 
+    FontContener*]
+
+Error: attempt to dereference a past-the-end iterator.
+
+Objects involved in the operation:
+    iterator "this" @ 0x7ffc62d81430 {
+      type = std::_List_iterator<FontContener> (mutable iterator);
+      state = past-the-end;
+      references sequence with type 'std::debug::list<FontContener, std::allocator<FontContener> >' @ 0x7ffc62d81578
+    }
+timeout: the monitored command dumped core
+
+=== config: asan   [-fsanitize=address -fno-omit-frame-pointer]
+--- run exit code: 0
+[layout ] sizeof(std::list<FontContener>)=24  offsetof(FontContener,fontPtr)=8
+[driver ] --- App::firstInit (app.cpp:701-705) ---
+[s_font  base   ] /home/claude/.spacecrafter/fonts/DejaVuSansMono.ttf
+[s_font  ctor   ] size=14 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=24 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=18 name=/home/claude/.spacecrafter/fonts/DejaVuSansMono-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   setText] size=16 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   build  ]
+[driver ] --- set sky_locale zh_CN -> Core::setSkyLanguage -> core.cpp:1590 ---
+[s_font  rebuild] size=24 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=18 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=14 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[media   update ] size=6.74291e+22 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[driver ] --- updateAllFont RETURNED, no fault ---
+
+=== config: ubsan   [-fsanitize=undefined -fno-omit-frame-pointer]
+--- run exit code: 0
+[layout ] sizeof(std::list<FontContener>)=24  offsetof(FontContener,fontPtr)=8
+[driver ] --- App::firstInit (app.cpp:701-705) ---
+[s_font  base   ] /home/claude/.spacecrafter/fonts/DejaVuSansMono.ttf
+[s_font  ctor   ] size=14 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=24 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=18 name=/home/claude/.spacecrafter/fonts/DejaVuSansMono-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans.ttf
+[s_font  ctor   ] size=12 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   setText] size=16 name=/home/claude/.spacecrafter/fonts/DejaVuSans-Bold.ttf
+[media   build  ]
+[driver ] --- set sky_locale zh_CN -> Core::setSkyLanguage -> core.cpp:1590 ---
+[s_font  rebuild] size=24 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=18 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=14 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[s_font  rebuild] size=12 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+/home/claude/spacecrafter/src/appModule/fontFactory.cpp:177:41: runtime error: member call on address 0x6342891335b0 which does not point to an object of type 's_font'
+0x6342891335b0: note: object has invalid vptr
+ 00 00 00 00  2f 68 6f 6d 65 2f 63 6c  61 75 64 65 2f 2e 73 70  61 63 65 63 72 61 66 74  65 72 2f 66
+              ^~~~~~~~~~~~~~~~~~~~~~~
+              invalid vptr
+/home/claude/spacecrafter/claude/harness/f74_repro/stub/tools/s_font.hpp:41:16: runtime error: member access within address 0x6342891335b0 which does not point to an object of type 's_font'
+0x6342891335b0: note: object has invalid vptr
+ 00 00 00 00  2f 68 6f 6d 65 2f 63 6c  61 75 64 65 2f 2e 73 70  61 63 65 63 72 61 66 74  65 72 2f 66
+              ^~~~~~~~~~~~~~~~~~~~~~~
+              invalid vptr
+[media   update ] size=6.74291e+22 name=/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf
+[driver ] --- updateAllFont RETURNED, no fault ---
+
+### logs in /tmp/f74_out_pre

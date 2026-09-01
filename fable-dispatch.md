@@ -1224,12 +1224,13 @@ refactor, no severity/log change beyond what the guard's own path needs
 finding replacing the fix; the guard landed with the as-if argument; gates
 both ways; §11.195 + §5.119 flip; trees clean; WIP cleared; baselines
 LAST.
-**WIP:** 2026-09-01 — §0.7 gate PASSED (both HEADs, F count 7, 195 free,
-§5.119 marker, binary current, RAM 12 GiB ⇒ -j6). Structural chain READ
-and complete (script line → `evalCommandSet` → `setSkyLanguage` →
-`updateAllFont` → `find_if` end() on the LAST map key "text"). NEXT:
-standalone reproduction (real `fontFactory.cpp` + stub harness) under
-`-D_GLIBCXX_DEBUG`/ASan, both ways; then the guard.
+**WIP:** 2026-09-01 — §0.7 gate PASSED. Chain READ end to end; REACHABILITY
+DEMONSTRATED pre-fix (`harness/f74_repro/`, artifact
+`artifacts/f74/f74_pre_9a3b7a55.txt`): `_GLIBCXX_DEBUG` aborts with
+*"attempt to dereference a past-the-end iterator"* (rc 134), UBSan reports
+at `fontFactory.cpp:177:41`, plain run survives and hands `6.74291e+22` to
+`media->updateTextFont`. NEXT: the guard (positive `!= std::end` form, log,
+NO assert), engine rebuild `-j6`, post-fix run, then §11.195 + §5.119 flip.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
