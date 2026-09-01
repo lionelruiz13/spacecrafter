@@ -1,0 +1,8 @@
+entry ids                                  : 207
+ARM 1-A  v1 stub != register-correct stub  : 107  (of which S11.N: 101)
+         v1 returned a WRONG-BUT-PLAUSIBLE : 107
+         v1 returned '' where a stub exists: 0
+ARM 1-B  register rows with continuations  : 151 of 182 ids with a live stub
+         longest block (lines)             : 11
+register rows total (S5 + S11)             : 282
+         with a continuation block          : 232
