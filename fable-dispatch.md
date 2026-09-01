@@ -1163,7 +1163,7 @@ named exception's reason re-verified at its node, never carried by label
 **DoD:** METHOD before edits; v1 preserved; v2 per member; re-partition
 complete; entry + README; trees clean; WIP cleared; baselines LAST — BOTH v1
 and v2 numbers stated at close.
-**WIP:** —
+**WIP:** — 2026-09-01 CP1: §0.7 gate PASSED (both HEADs, F count 4, §11.197 free, v1 baselines 212/187/25/95 · 35/11/87/34 · 129/170/102 reproduced to the digit, D14 PASS). METHOD committed at `harness/artifacts/f78/METHOD.md` BEFORE any instrument edit. Next: v1 byte-exact preservation, then member 1.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
