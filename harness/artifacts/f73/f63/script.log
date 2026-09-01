@@ -1,0 +1,168 @@
+000000017762: (Info ): ScriptMgr: script end
+000000018385: (Info ): End of loading SC
+000000018420: (Info ): ScriptMgr: script end
+000000018422: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000018424: (Info ): Execute_command deselect
+000000018424: (Info ): Execute_command deselect
+000000018424: (Info ): Execute_command timerate rate 1
+000000018424: (Info ): Execute_command flag subtitle off
+000000018424: (Info ): End of script
+000000018424: (Info ): Execute_command script action end
+000000018424: (Info ): ScriptMgr: script end
+000000020900: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/A.sts
+000000020900: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/A.sts
+000000021903: (Info ): Execute_command flag stars on
+000000021903: (Info ): Execute_command struct if end
+000000021903: (Error): script /tmp/sc-farm-f63/f63/A.sts:3: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]
+000000021903: (Info ): Execute_command struct if else
+000000021903: (Error): script /tmp/sc-farm-f63/f63/A.sts:4: this 'struct if else' flips nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it belongs to [struct if else]
+000000021903: (Info ): Execute_command struct loop end
+000000021903: (Error): script /tmp/sc-farm-f63/f63/A.sts:5: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]
+000000021903: (Info ): Execute_command struct loop 2
+000000021903: (Info ): Execute_command flag stars off
+000000021903: (Info ): Execute_command struct if 1 equal 1
+000000021903: (Info ): Execute_command flag stars on
+000000021903: (Info ): End of script
+000000021903: (Error): script /tmp/sc-farm-f63/f63/A.sts:8: this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop [struct if 1 equal 1]
+000000021903: (Error): script /tmp/sc-farm-f63/f63/A.sts:6: this 'struct loop' is never closed: no 'struct loop end' follows before the end of the script, so the lines after it run once and never repeat - add 'struct loop end' where the loop should stop [struct loop 2]
+000000021903: (Info ): Execute_command script action end
+000000021903: (Info ): ScriptMgr: script end
+000000021903: (Info ): script annotation: '/tmp/sc-farm-f63/f63/A.sts' rewritten - 5 '#!' line(s) written, 0 cleared
+000000022905: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/A.sts
+000000022905: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/A.sts
+000000023908: (Info ): Execute_command flag stars on
+000000023909: (Info ): Execute_command struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close
+000000023909: (Error): script /tmp/sc-farm-f63/f63/A.sts:3: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]
+000000023909: (Info ): Execute_command struct if else #! this 'struct if else' flips nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it belongs to
+000000023909: (Error): script /tmp/sc-farm-f63/f63/A.sts:4: this 'struct if else' flips nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it belongs to [struct if else]
+000000023909: (Info ): Execute_command struct loop end #! this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close
+000000023909: (Error): script /tmp/sc-farm-f63/f63/A.sts:5: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]
+000000023909: (Info ): Execute_command struct loop 2 #! this 'struct loop' is never closed: no 'struct loop end' follows before the end of the script, so the lines after it run once and never repeat - add 'struct loop end' where the loop should stop
+000000023909: (Info ): Execute_command flag stars off
+000000023909: (Info ): Execute_command struct if 1 equal 1 #! this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop
+000000023909: (Info ): Execute_command flag stars on
+000000023909: (Info ): End of script
+000000023909: (Error): script /tmp/sc-farm-f63/f63/A.sts:8: this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop [struct if 1 equal 1]
+000000023909: (Error): script /tmp/sc-farm-f63/f63/A.sts:6: this 'struct loop' is never closed: no 'struct loop end' follows before the end of the script, so the lines after it run once and never repeat - add 'struct loop end' where the loop should stop [struct loop 2]
+000000023909: (Info ): Execute_command script action end
+000000023909: (Info ): ScriptMgr: script end
+000000024910: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/B.sts
+000000024910: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/B.sts
+000000025912: (Info ): Execute_command struct if 1 equal 1
+000000025912: (Info ): Execute_command flag stars on
+000000025912: (Info ): End of script
+000000025912: (Error): script /tmp/sc-farm-f63/f63/B.sts:2: this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop [struct if 1 equal 1]
+000000025912: (Info ): Execute_command script action end
+000000025912: (Info ): ScriptMgr: script end
+000000025913: (Info ): script annotation: '/tmp/sc-farm-f63/f63/B.sts' rewritten - 1 '#!' line(s) written, 0 cleared
+000000026915: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/B.sts
+000000026915: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/B.sts
+000000027917: (Info ): Execute_command struct if 1 equal 1 #! this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop
+000000027917: (Info ): Execute_command flag stars on
+000000027917: (Info ): Execute_command struct if end
+000000027917: (Info ): End of script
+000000027917: (Info ): Execute_command script action end
+000000027917: (Info ): ScriptMgr: script end
+000000027922: (Info ): script annotation: '/tmp/sc-farm-f63/f63/B.sts' rewritten - 0 '#!' line(s) written, 1 cleared
+000000028920: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/C.sts
+000000028920: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/C.sts
+000000029922: (Info ): Execute_command flag stars on
+000000029922: (Info ): Execute_command struct if end
+000000029922: (Error): script /tmp/sc-farm-f63/f63/C.sts:3: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]
+000000029922: (Info ): End of script
+000000029922: (Info ): Execute_command script action end
+000000029922: (Info ): ScriptMgr: script end
+000000029922: (Info ): script annotation: '/tmp/sc-farm-f63/f63/C.sts' rewritten - 1 '#!' line(s) written, 0 cleared
+000000030924: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/C.sts
+000000030924: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/C.sts
+000000031926: (Info ): Execute_command struct if 1 equal 1
+000000031926: (Info ): Execute_command struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close
+000000031926: (Info ): End of script
+000000031926: (Info ): Execute_command script action end
+000000031926: (Info ): ScriptMgr: script end
+000000031926: (Info ): script annotation: '/tmp/sc-farm-f63/f63/C.sts' rewritten - 0 '#!' line(s) written, 1 cleared
+000000032928: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/D.sts
+000000032928: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/D.sts
+000000033932: (Info ): Execute_command flag stars on
+000000033932: (Info ): Execute_command struct if end
+000000033932: (Error): script /tmp/sc-farm-f63/f63/D.sts:3: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]
+000000033932: (Info ): Execute_command struct if else
+000000033932: (Error): script /tmp/sc-farm-f63/f63/D.sts:4: this 'struct if else' flips nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it belongs to [struct if else]
+000000033932: (Info ): Execute_command struct loop end
+000000033932: (Error): script /tmp/sc-farm-f63/f63/D.sts:5: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]
+000000033932: (Info ): Execute_command struct loop 2
+000000033932: (Info ): Execute_command flag stars off
+000000033932: (Info ): Execute_command struct if 1 equal 1
+000000033932: (Info ): Execute_command flag stars on
+000000033932: (Info ): End of script
+000000033932: (Error): script /tmp/sc-farm-f63/f63/D.sts:8: this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop [struct if 1 equal 1]
+000000033932: (Error): script /tmp/sc-farm-f63/f63/D.sts:6: this 'struct loop' is never closed: no 'struct loop end' follows before the end of the script, so the lines after it run once and never repeat - add 'struct loop end' where the loop should stop [struct loop 2]
+000000033932: (Info ): Execute_command script action end
+000000033932: (Info ): ScriptMgr: script end
+000000033933: (Info ): script annotation: '/tmp/sc-farm-f63/f63/D.sts' rewritten - 5 '#!' line(s) written, 0 cleared
+000000034933: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/ro/E.sts
+000000034933: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/ro/E.sts
+000000035936: (Info ): Execute_command flag stars on
+000000035936: (Info ): Execute_command struct if end
+000000035936: (Error): script /tmp/sc-farm-f63/f63/ro/E.sts:3: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]
+000000035936: (Info ): Execute_command struct if else
+000000035936: (Error): script /tmp/sc-farm-f63/f63/ro/E.sts:4: this 'struct if else' flips nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it belongs to [struct if else]
+000000035936: (Info ): Execute_command struct loop end
+000000035936: (Error): script /tmp/sc-farm-f63/f63/ro/E.sts:5: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]
+000000035936: (Info ): Execute_command struct loop 2
+000000035936: (Info ): Execute_command flag stars off
+000000035936: (Info ): Execute_command struct if 1 equal 1
+000000035936: (Info ): Execute_command flag stars on
+000000035936: (Info ): End of script
+000000035936: (Error): script /tmp/sc-farm-f63/f63/ro/E.sts:8: this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop [struct if 1 equal 1]
+000000035937: (Error): script /tmp/sc-farm-f63/f63/ro/E.sts:6: this 'struct loop' is never closed: no 'struct loop end' follows before the end of the script, so the lines after it run once and never repeat - add 'struct loop end' where the loop should stop [struct loop 2]
+000000035937: (Info ): Execute_command script action end
+000000035937: (Info ): ScriptMgr: script end
+000000035937: (Warn.): script annotation: cannot write '/tmp/sc-farm-f63/f63/ro/E.sts' (5 annotation(s) to place, 0 to clear): the file or its directory is not writable by this process, so the diagnostics stay in this log only; make the script writable to have them placed on their lines
+000000036937: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/F.sts
+000000036937: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/F.sts
+000000037939: (Info ): Execute_command text name f63 string "a #! b" altitude 10
+000000037939: (Debug): Error executing /tmp/sc-farm-f63/f63/F.sts:2: text name f63 string "a #! b" altitude 10 #! Command 'text': unknown argument
+000000037939: (Info ): Execute_command flag stars on
+000000037939: (Info ): End of script
+000000037939: (Info ): Execute_command script action end
+000000037939: (Info ): ScriptMgr: script end
+000000038941: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/G.sts
+000000038941: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/G.sts
+000000039943: (Info ): Execute_command struct if end
+000000039943: (Error): script /tmp/sc-farm-f63/f63/G.sts:2: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]
+000000039943: (Info ): Execute_command wait duration 4
+000000043952: (Info ): Execute_command flag stars on
+000000043952: (Info ): End of script
+000000043952: (Info ): Execute_command script action end
+000000043952: (Info ): ScriptMgr: script end
+000000043952: (Warn.): script annotation: '/tmp/sc-farm-f63/f63/G.sts' line 2 changed since the script was loaded; not written: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close
+000000044954: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/H.sts
+000000044954: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/H.sts
+000000045957: (Info ): Execute_command flag stars on
+000000045957: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/I.sts
+000000045957: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/I.sts
+000000045958: (Info ): Execute_command struct if 1 equal 1
+000000045958: (Info ): Execute_command flag stars off
+000000045958: (Info ): Execute_command flag stars off
+000000045958: (Info ): End of script
+000000045958: (Error): script /tmp/sc-farm-f63/f63/I.sts:1: this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop [struct if 1 equal 1]
+000000045958: (Info ): Execute_command script action end
+000000045958: (Info ): ScriptMgr: script end
+000000045958: (Info ): script annotation: '/tmp/sc-farm-f63/f63/I.sts' rewritten - 1 '#!' line(s) written, 0 cleared
+000000046960: (Info ): Execute_command script action play filename /tmp/sc-farm-f63/f63/J.sts
+000000046960: (Info ): ScriptMgr: load /tmp/sc-farm-f63/f63/J.sts
+000000047963: (Info ): Execute_command struct loop 2
+000000047963: (Info ): Execute_command struct if end
+000000047963: (Error): script /tmp/sc-farm-f63/f63/J.sts:3: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]
+000000047963: (Info ): Execute_command flag stars on
+000000047963: (Info ): Execute_command struct loop end
+000000047963: (Info ): Execute_command struct if end
+000000047963: (Error): script /tmp/sc-farm-f63/f63/J.sts:3: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]
+000000047963: (Info ): Execute_command flag stars on
+000000047963: (Info ): End of script
+000000047963: (Info ): Execute_command script action end
+000000047963: (Info ): ScriptMgr: script end
+000000047964: (Info ): script annotation: '/tmp/sc-farm-f63/f63/J.sts' rewritten - 1 '#!' line(s) written, 0 cleared
+000000048966: (Info ): Execute_command shutdown action now
+(Info ): EOF

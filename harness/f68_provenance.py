@@ -26,10 +26,22 @@ whatever it happened to measure, which is a green that cannot fail.
   SC_PRE_TAGS=none  pre predates F68 (master-beta e2c8477b): no origin tag at
                     all. The era F68 was delivered against.
   SC_PRE_TAGS=tcp   pre is F68..F71 (423cbe23 .. 96cfc352): `tcp#<id>: ` on a
-                    control-line refusal and NOTHING on a file one. THE
-                    DEFAULT, and the era F72 was delivered against.
+                    control-line refusal and NOTHING on a file one. The era
+                    F72 was delivered against.
+  SC_PRE_TAGS=all   pre is F72 (1014e5a5): BOTH origins tagged, and the funnel
+                    still writes its LEGACY TWO LINES - `<tag>Could not
+                    execute: <command line>` then `<tag><message>`. THE
+                    DEFAULT, and the era F73 was delivered against.
 
 A wrong declaration turns the pre-side legs RED; it cannot make a run pass.
+
+WHAT F73 CHANGED, and why the legs below could not stay as they were: the two
+lines are ONE now, and that one line is the INTENT-MODIFIED LINE - the raw
+line as read, the author's comment kept, with ` #! <message>` appended and any
+tail already there replaced - behind `Error executing <origin>: `. So the
+needle `Could not execute` no longer exists for an origin that has a name, and
+every post-side expectation here is rebuilt around a line this instrument
+COMPOSES ITSELF from the script's own bytes (INTENT 11.193, 11.194).
 
 WHAT IS ASSERTED, and what each check could have found instead:
 
@@ -48,16 +60,36 @@ WHAT IS ASSERTED, and what each check could have found instead:
       origin (11.184's rule, unchanged) - and the NEXT fault from the same
       connection carries tcp#<idP> again, so nothing was lost on the way back.
       Had the nested call inherited the outer origin, the first half fails.
-  i   THE FILE HALF - and since F72 this is a CHANGE leg, not a control one.
+  r   THE RENDERING ITSELF, F73's own leg and the sharpest one here. The gate
+      RECOMPUTES the line it expects from the SCRIPT'S OWN BYTES and the
+      message, through f73_line.py's re-implementation of 11.184's tail rule
+      - never the engine's function, because a gate that asks the engine what
+      it should have printed measures nothing. Four cases, one
+      read-only script: an author's comment KEPT with the tail after it, a
+      stale `#!` tail REPLACED and not doubled, a `#!` inside quotes left as
+      text (the parser's own quote toggle), and the file byte-UNTOUCHED while
+      the log shows the line anyway - the owner's read-only clause, measured.
+  x   THE SAME FAULT, THE SAME LINE, TWICE - the owner's own discriminator
+      [vixy 2026-09-01]: *"where the script with the error is re-executed,
+      [it] would make the same error being logged differently on the first
+      execution vs the next ones"*. A WRITABLE script whose fault IS annotated
+      (the ruled class) is played twice through a natural end, so the second
+      execution reads the line the first execution wrote a tail onto.
+      PREDICTED: post logs the same bytes both times; PRE logs a longer line
+      the second time, because it quoted the tail it had just written. That
+      opposition is what makes this leg discriminate rather than pass.
+  i   THE FILE HALF - a CHANGE leg since F72, and a different change now.
       The file-origin structure fault still logs `script <file>:3: <what>
-      [<line>]` and still gets its `#!` tail: reportScriptError named a file
-      line from the start and F72 does not touch it. What MOVED is the funnel
-      (`get status nonsense`, line 5) and its bypassing sibling (`flagg stars
-      on`, line 7, added to the played file at F72 so the second emitter's file
-      half is measured rather than assumed): both carry `<file>:<line>: ` on
-      the delivered binary and NOTHING on the pre one. The sharpest form of the
-      claim is asserted directly - the post line is the pre line with the tag
-      PREPENDED and nothing else changed. What is NOT widened: the `#!` channel
+      [<line>]` and still gets its `#!` tail; what F73 moved there is only that
+      the quoted line is shown WITHOUT its machine tail, which is leg x's
+      subject. What MOVED here is the funnel (`get status nonsense`, line 5)
+      and its bypassing sibling (`flagg stars on`, line 7, added to the played
+      file at F72 so the second emitter's file half is measured rather than
+      assumed): each is now ONE rendered line where the pre binary wrote a
+      tagged PAIR. The sharpest form of the claim is asserted directly - the
+      rendered line equals this instrument's own recomposition, and separately
+      equals the pre binary's two lines joined at ` #! `, so nothing was
+      invented and nothing was dropped. What is NOT widened: the `#!` channel
       (leg v md5s every farm file; the full 11.184 control is
       f63_annotations.py on the same binary) and the wire (leg iv).
   v   THE `#!` WRITER STILL WRITES FOR FILE ORIGINS ONLY. Every farm file is
@@ -79,6 +111,7 @@ Exit 0 all green, 1 a check failed, 2 no run.
 """
 import gzip, hashlib, json, os, re, socket, subprocess, sys, threading, time
 from pathlib import Path
+from f73_line import error_lines, rendered, script_line
 
 HARNESS = Path(__file__).resolve().parent
 REPO = HARNESS.parents[1]
@@ -93,9 +126,15 @@ PORT = 7805
 FAULT = "struct if end"
 MSG_FAULT = "this 'struct if end' closes nothing"
 UNREC = "Unrecognized or malformed command name"
-# Which origins the PRE binary tags. Declared by the caller, never inferred from
-# the run - see the docstring. "tcp" is F68..F71, "none" is anything before F68.
-PRE_TAGS = os.environ.get("SC_PRE_TAGS", "tcp")
+# Which origins the PRE binary tags, and how it renders a refusal. Declared by
+# the caller, never inferred from the run - see the docstring. "all" is F72
+# (both origins tagged, legacy TWO lines), "tcp" is F68..F71, "none" is older.
+PRE_TAGS = os.environ.get("SC_PRE_TAGS", "all")
+PRE_ERAS = ("none", "tcp", "all")
+# Every pre era wrote the funnel's TWO lines; they differ only in which origins
+# they prefixed. F73 is the first era to write ONE.
+PRE_TAGS_TCP = PRE_TAGS in ("tcp", "all")
+PRE_TAGS_FILE = PRE_TAGS == "all"
 
 PREDICTIONS = {
     "ii": "post: the five identical faults are tagged tcp#idP | tcp#idP | tcp#idQ | (none, HTTP) "
@@ -110,11 +149,19 @@ PREDICTIONS = {
            "`clear` is tagged tcp#idP again",
     "i": "the file-origin structure fault logs `script <file>:3: ... [struct if end]` on both "
          "binaries (reportScriptError is unmoved by F72)",
-    "i-f72": "post: the file-origin FUNNEL refusal on line 5 reads '<file>:5: Could not execute: "
-             "get status nonsense' AND '<file>:5: command ...: unknown status value'; the "
-             "bypassing sibling on line 7 reads '<file>:7: Unrecognized or malformed command "
-             "name'. PRE: all three bare, whatever SC_PRE_TAGS says (no era tags a file). Post "
-             "is pre with the prefix PREPENDED, nothing else changed",
+    "i-f73": "post: the file-origin FUNNEL refusal on line 5 is ONE line reading 'Error "
+             "executing <file>:5: get status nonsense #! command ...: unknown status value', "
+             "and the bypassing sibling on line 7 is one line of the same shape; the needle "
+             "'Could not execute' does not occur for either. PRE (declared era): TWO lines "
+             "each, tagged per SC_PRE_TAGS",
+    "r": "every refusal line the post binary logs for a named origin equals this instrument's "
+         "OWN recomposition of it from the script bytes: raw line + ' #! ' + message, an "
+         "existing tail replaced, a quoted '#!' left as text, an author's comment kept",
+    "r-ro": "the read-only script's three refusals are logged as intent-modified lines while "
+            "the file stays byte-identical and the annotator says it could not write",
+    "x": "post: the twice-played script's fault logs the SAME BYTES on both executions; PRE: "
+         "the second execution's line is LONGER, because it quotes the tail the first wrote; "
+         "both binaries leave the file identical after the second execution",
     "v": "no farm file changes during the TCP battery; after the play exactly one `#!` tail, on "
          "line 3, every other byte identical - F72 adds a refusing line to the played file and "
          "the annotator must still write nothing for it",
@@ -133,6 +180,34 @@ FILE_LINES = [
     # expectation F68 recorded against this file still reads the same line.
     "flagg stars on",
 ]
+
+# F73's own scripts. They are SEPARATE files rather than more lines in the one
+# above, and that is deliberate three times over: the file above keeps every
+# byte and every line number F68 and F72 measured against; playing a file adds
+# not one byte to any wire (a file-origin refusal routes nowhere, and `script
+# action play` is answered by nothing), so leg iv still compares what it always
+# did; and the faults chosen below produce messages NO existing leg counts, so
+# the counting legs above cannot be disturbed by their presence.
+#
+# The twice-played one carries a RULED-class fault - the only class the writer
+# annotates - because the owner's argument is about a script whose tail LANDS:
+# the second execution reads a line the first execution changed.
+TWICE_LINES = [
+    "# f73: the same fault, played twice - the log line may not move",
+    "struct loop end",
+]
+# The read-only one carries the rendering cases. `get nonsense value` refuses
+# with "command 'get': unknown argument", a message no other leg here counts.
+RO_LINES = [
+    "# f73: the rendering cases, in a directory that cannot be written",
+    "get nonsense value # an author's own note",
+    "get nonsense value #! a stale tail from an older run",
+    'get nonsense "a #! inside quotes"',
+    "struct loop end",
+]
+RO_DIR = Path("/tmp/f68-ro")
+UNKNOWN_ARG = "command 'get': unknown argument"
+LOOP_FAULT = "this 'struct loop end' closes nothing"
 
 results = []
 notes = {}
@@ -245,6 +320,19 @@ def battery(phase, binary):
     decoy = S / "untouched.sts"
     decoy.write_bytes(b"# f68: never played, never annotated\nflag stars on\n")
     original = play_file.read_bytes()
+    twice_file = S / "f73_twice.sts"
+    twice_file.write_bytes(("\n".join(TWICE_LINES) + "\n").encode("latin-1"))
+    twice_original = twice_file.read_bytes()
+    # A read-only DIRECTORY, not a read-only file: 11.184 measured that the
+    # file's own mode does not stop a rename into it, so the mode that makes
+    # the write fail is the directory's.
+    subprocess.run(["chmod", "-R", "u+w", str(RO_DIR)], capture_output=True)
+    subprocess.run(["rm", "-rf", str(RO_DIR)], check=True)
+    RO_DIR.mkdir(parents=True)
+    ro_file = RO_DIR / "f73_ro.sts"
+    ro_file.write_bytes(("\n".join(RO_LINES) + "\n").encode("latin-1"))
+    ro_original = ro_file.read_bytes()
+    os.chmod(RO_DIR, 0o555)
 
     app_out = open(OUT / ("app.%s.out" % phase), "wb")
     t0 = time.time()
@@ -291,15 +379,37 @@ def battery(phase, binary):
     farm_before_play = {str(f): md5(f) for f in sorted(S.glob("*.sts"))}
     log_before_play = script_log()
 
-    p.send("script action play filename %s" % play_file, pause=0.2)
-    t = time.time()
-    while time.time() - t < 90:
-        txt = script_log()[mark:]
-        if ("ScriptMgr: load %s" % play_file) in txt and \
-           "ScriptMgr: script end" in txt.split("ScriptMgr: load %s" % play_file, 1)[1]:
-            break
-        time.sleep(0.2)
-    time.sleep(1.5)
+    def play(path, since):
+        """One play, waited out to its NATURAL end - the annotator flushes
+        there and nowhere else, so a leg about what landed in a file needs
+        this wait and not a sleep."""
+        p.send("script action play filename %s" % path, pause=0.2)
+        t = time.time()
+        while time.time() - t < 90:
+            txt = script_log()[since:]
+            if ("ScriptMgr: load %s" % path) in txt and \
+               "ScriptMgr: script end" in txt.split("ScriptMgr: load %s" % path, 1)[1]:
+                break
+            time.sleep(0.2)
+        time.sleep(1.5)
+
+    play(play_file, mark)
+
+    # F73: the same fault, twice, on a WRITABLE script - the tail the first
+    # execution writes is what the second execution reads.
+    twice_mark_1 = len(script_log())
+    play(twice_file, twice_mark_1)
+    twice_after_1 = twice_file.read_bytes()
+    twice_mark_2 = len(script_log())
+    play(twice_file, twice_mark_2)
+    twice_after_2 = twice_file.read_bytes()
+    twice_log_1 = script_log()[twice_mark_1:twice_mark_2]
+    twice_log_2 = script_log()[twice_mark_2:]
+    # F73: the rendering cases, where the write cannot land.
+    ro_mark = len(script_log())
+    play(ro_file, ro_mark)
+    ro_after = ro_file.read_bytes()
+    ro_log = script_log()[ro_mark:]
 
     log = script_log()[mark:]
     played = play_file.read_bytes()
@@ -319,11 +429,19 @@ def battery(phase, binary):
     check("%-5s engine exited on `shutdown action now`" % phase, proc.returncode == 0,
           "rc=%s" % proc.returncode)
 
+    os.chmod(RO_DIR, 0o755)            # so the next phase can rebuild it
     (OUT / ("script.%s.log.gz" % phase)).write_bytes(gzip.compress(log.encode("latin-1")))
     (OUT / ("played.%s.sts" % phase)).write_bytes(played)
+    (OUT / ("twice.%s.sts" % phase)).write_bytes(twice_after_2)
+    (OUT / ("ro.%s.sts" % phase)).write_bytes(ro_after)
     for k, v in wires.items():
         (OUT / ("wire.%s.%s.bin" % (phase, k))).write_bytes(v)
     return {"log": log, "played": played, "original": original, "wires": wires,
+            "twice_file": str(twice_file), "twice_original": twice_original,
+            "twice_after_1": twice_after_1, "twice_after_2": twice_after_2,
+            "twice_log_1": twice_log_1, "twice_log_2": twice_log_2,
+            "ro_file": str(ro_file), "ro_original": ro_original, "ro_after": ro_after,
+            "ro_log": ro_log,
             "farm_before_play": farm_before_play, "farm_after": farm_after,
             "log_before_play_len": len(log_before_play),
             "frame_stalls": ((sc / "log" / "vulkan.log").read_text(encoding="latin-1",
@@ -340,8 +458,8 @@ for k, v in PREDICTIONS.items():
 print(flush=True)
 
 OUT.mkdir(parents=True, exist_ok=True)
-if PRE_TAGS not in ("none", "tcp"):
-    die("SC_PRE_TAGS must be `none` or `tcp` (see the docstring), not %r" % PRE_TAGS)
+if PRE_TAGS not in PRE_ERAS:
+    die("SC_PRE_TAGS must be one of %s (see the docstring), not %r" % (PRE_ERAS, PRE_TAGS))
 notes["pre_tags_declared"] = PRE_TAGS
 print("PRE binary era, DECLARED: SC_PRE_TAGS=%s\n" % PRE_TAGS, flush=True)
 for f in (BIN, PRE):
@@ -420,6 +538,7 @@ def lines_with(log, needle):
     return [l.split("(Debug): ", 1)[-1] for l in log.splitlines() if needle in l]
 
 
+
 def tails(raw):
     out = {}
     for i, line in enumerate(raw.split(b"\n"), 1):
@@ -431,9 +550,21 @@ def tails(raw):
 def pre_tcp_line(line, body):
     """What the PRE binary is DECLARED to have written for a TCP-origin
     diagnostic whose body is `body` - read off SC_PRE_TAGS, never off the run."""
-    if PRE_TAGS == "none":
+    if not PRE_TAGS_TCP:
         return line == body
     return re.fullmatch(r"tcp#\d+: " + re.escape(body), line) is not None
+
+
+def pre_file_line(line, body, origin):
+    """The same question for a FILE origin: tagged only in the `all` era."""
+    return line == ((origin + ": " if PRE_TAGS_FILE else "") + body)
+
+
+# ---- the intent-modified line: recomposed by f73_line.py, from 11.184's stated
+# contract rather than from the engine's own function - and living in ONE file
+# because f69_feedback.py asserts against the same line (I2, which is F73's own
+# subject: a second copy of this composition inside a second gate would be the
+# defect the shape it checks exists to remove).
 
 
 post, pre, pre2 = runs["post"], runs["pre"], runs["pre2"]
@@ -484,33 +615,40 @@ check("ii   post: the tagged diagnostic quotes the offending line, as the file o
       [l for l in post["log"].splitlines() if idP + ": " + MSG_FAULT in l][:1])
 
 # ------------------------------------------------- ii: the funnel and the :306 emitter
-cne_post = lines_with(post["log"], "Could not execute: get status nonsense")
+MSG_STATUS = "command 'get': unknown status value"
+err_post = error_lines(post["log"])
+notes["error_lines_post"] = err_post
+gs_post = [l for l in err_post if "get status nonsense" in l]
 cne_pre = lines_with(pre["log"], "Could not execute: get status nonsense")
-check("ii   post: the funnel names the origin of a TCP refusal",
-      len(cne_post) == 2 and cne_post[0].startswith(idP + ": "), json.dumps(cne_post))
-check("ii   post: the funnel's SECOND line (the message) carries it too",
-      any(l.startswith(idP + ": ") and "unknown status value" in l
-          for l in lines_with(post["log"], "unknown status value")),
-      json.dumps(lines_with(post["log"], "unknown status value")))
-check("ii   PRE (declared %s): the TCP funnel line matches its era, and the FILE one is bare"
-      % PRE_TAGS,
-      len(cne_pre) == 2 and pre_tcp_line(cne_pre[0], "Could not execute: get status nonsense")
-      and cne_pre[1] == "Could not execute: get status nonsense", json.dumps(cne_pre))
-unrec_post = lines_with(post["log"], UNREC)
-unrec_pre = lines_with(pre["log"], UNREC)
-check("ii-306 post: the emitter that bypasses the funnel carries the TCP origin too",
-      len(unrec_post) == 2 and unrec_post[0] == idP + ": " + UNREC, json.dumps(unrec_post))
-check("ii-306 post (F72): ... and its FILE half names line 7 - the SECOND site the reversal "
-      "touches, measured and not assumed from the funnel's behaviour",
-      len(unrec_post) == 2 and unrec_post[1] == pf + ":7: " + UNREC, json.dumps(unrec_post))
-check("ii-306 PRE (declared %s): the TCP one per its era, the FILE one bare in EVERY era"
-      % PRE_TAGS,
-      len(unrec_pre) == 2 and pre_tcp_line(unrec_pre[0], UNREC) and unrec_pre[1] == UNREC,
-      json.dumps(unrec_pre))
-check("ii-306 post: and still no 'Could not execute' companion for either (5.117's map holds "
-      "for the file half too)",
-      not any("flagg" in l for l in lines_with(post["log"], "Could not execute")),
+msg_pre = lines_with(pre["log"], "unknown status value")
+check("ii   post: the funnel writes ONE line for a TCP refusal and it IS the line that was "
+      "sent, with the message as its `#!` tail (11.193(a): one rendering, and the log is one "
+      "of its sinks)",
+      len(gs_post) == 2 and gs_post[0] == rendered(idP, "get status nonsense", MSG_STATUS),
+      json.dumps(gs_post))
+check("ii   post: the two-line form is GONE for every refusal that has an origin - no "
+      "`Could not execute` companion survives for one",
+      not any("get status nonsense" in l for l in lines_with(post["log"], "Could not execute")),
       json.dumps(lines_with(post["log"], "Could not execute")))
+check("ii   PRE (declared SC_PRE_TAGS=%s): TWO lines for the same refusal, tagged per its era "
+      "- the control that says the collapse is this change and not this battery" % PRE_TAGS,
+      len(cne_pre) == 2 and len(msg_pre) == 2
+      and pre_tcp_line(cne_pre[0], "Could not execute: get status nonsense")
+      and pre_tcp_line(msg_pre[0], MSG_STATUS)
+      and pre_file_line(cne_pre[1], "Could not execute: get status nonsense",
+                        pre["play_file"] + ":5")
+      and pre_file_line(msg_pre[1], MSG_STATUS, pre["play_file"] + ":5"),
+      json.dumps([cne_pre, msg_pre]))
+unrec_post = [l for l in err_post if UNREC in l]
+unrec_pre = lines_with(pre["log"], UNREC)
+check("ii-306 post: the emitter that BYPASSES the funnel renders the same way - same function, "
+      "so the two sites cannot drift apart",
+      len(unrec_post) == 2 and unrec_post[0] == rendered(idP, "flagg stars on", UNREC),
+      json.dumps(unrec_post))
+check("ii-306 PRE (declared %s): the TCP one per its era, the FILE one per its era" % PRE_TAGS,
+      len(unrec_pre) == 2 and pre_tcp_line(unrec_pre[0], UNREC)
+      and pre_file_line(unrec_pre[1], UNREC, pre["play_file"] + ":7"),
+      json.dumps(unrec_pre))
 
 # ------------------------------------------------- iii: nesting
 nested_post = lines_with(post["log"], "Could not execute: audio filename")
@@ -525,26 +663,37 @@ check("iii  PRE: the same two lines, identically untagged",
 check("iii  post: the fault sent AFTER `clear` (thirty nested calls) still names tcp#idP",
       len(seq_post) > 1 and seq_post[1] == idP, json.dumps(seq_post[:2]))
 
-# ------------------------------------------------- i: the file half - F72's own leg, both ways
-FILE_TAG = pf + ":5: "
-msg_post = lines_with(post["log"], "unknown status value")
-msg_pre = lines_with(pre["log"], "unknown status value")
-check("i-f72 post: the FILE funnel refusal NAMES ITS LINE - 11.191(b) reverses 11.187(d)",
-      len(cne_post) == 2 and cne_post[1] == FILE_TAG + "Could not execute: get status nonsense",
-      json.dumps(cne_post))
-check("i-f72 post: BOTH funnel lines carry it, as they do for a control line",
-      len(msg_post) == 2 and msg_post[1].startswith(FILE_TAG), json.dumps(msg_post))
-check("i-f72 PRE (both ways, EVERY era): the same two file lines carried NO tag - this is the "
-      "control that says the tag above is the change and not the battery",
-      len(cne_pre) == 2 and len(msg_pre) == 2
-      and cne_pre[1] == "Could not execute: get status nonsense"
-      and not msg_pre[1].startswith(pf) and not msg_pre[1].startswith("tcp#"),
-      json.dumps([cne_pre[1:], msg_pre[1:]]))
-check("i-f72 the post line is the pre line with the prefix PREPENDED and NOTHING else changed - "
-      "the strongest form of 'the log gained an origin and lost nothing'",
-      len(cne_post) == 2 and len(msg_post) == 2
-      and cne_post[1] == FILE_TAG + cne_pre[1] and msg_post[1] == FILE_TAG + msg_pre[1],
-      json.dumps({"pre": [cne_pre[1], msg_pre[1]], "post": [cne_post[1], msg_post[1]]}))
+# ------------------------------------------------- i: the file half, F73's shape, both ways
+# The pre binary's FILE tag, per the DECLARED era (empty before F72).
+PRE_FILE_TAG5 = (pre["play_file"] + ":5: ") if PRE_TAGS_FILE else ""
+raw5 = script_line(post["original"], 5)
+raw7 = script_line(post["original"], 7)
+check("i-f73 post: the FILE funnel refusal is ONE line, and it is line 5 OF THAT FILE with the "
+      "message on it - recomposed here from the script's own bytes, never read back from the "
+      "engine's own composition",
+      len(gs_post) == 2 and gs_post[1] == rendered(pf + ":5", raw5, MSG_STATUS),
+      json.dumps({"expected": rendered(pf + ":5", raw5, MSG_STATUS),
+                  "observed": gs_post[1] if len(gs_post) > 1 else None,
+                  "raw line 5 read from the file": raw5}))
+check("i-f73 post: the bypassing sibling's FILE half likewise, on line 7 - the SECOND emitter, "
+      "measured and not inferred from the funnel's behaviour",
+      len(unrec_post) == 2 and unrec_post[1] == rendered(pf + ":7", raw7, UNREC),
+      json.dumps({"expected": rendered(pf + ":7", raw7, UNREC),
+                  "observed": unrec_post[1] if len(unrec_post) > 1 else None}))
+check("i-f73 post: FOUR refusals with an origin in the battery proper, FOUR rendered lines - "
+      "two emitters, two channels, one shape (the read-only script's three are leg r's)",
+      len([l for l in err_post if post["ro_file"] not in l]) == 4,
+      json.dumps([l for l in err_post if post["ro_file"] not in l]))
+check("i-f73 the collapse is exactly the pre PAIR joined: the rendered line's raw-line part is "
+      "what the pre binary's first line said after `Could not execute: `, and its tail is what "
+      "the pre binary's second line said - nothing was invented and nothing was dropped",
+      len(gs_post) == 2 and len(cne_pre) == 2 and len(msg_pre) == 2
+      and gs_post[1] == rendered(
+          pf + ":5",
+          cne_pre[1][len(PRE_FILE_TAG5):].split("Could not execute: ", 1)[1],
+          msg_pre[1][len(PRE_FILE_TAG5):]),
+      json.dumps({"pre pair": [cne_pre[1], msg_pre[1]],
+                  "post one line": gs_post[1] if len(gs_post) > 1 else None}))
 tp, tpre = tails(post["played"]), tails(pre["played"])
 check("i    post: exactly one `#!` tail, on line 3", sorted(tp) == [3], json.dumps(sorted(tp)))
 check("i    post: the tail is the engine's diagnosis", MSG_FAULT in tp.get(3, ""), tp.get(3, ""))
@@ -554,10 +703,94 @@ stripped = b"\n".join(l.split(b" #! ")[0] for l in post["played"].split(b"\n"))
 check("i    post: every other byte of the played file is identical",
       stripped == post["original"])
 
+# ------------------------------------------------- r: the rendering, recomposed independently
+rof = post["ro_file"]
+ro_err = error_lines(post["ro_log"])
+notes["ro_error_lines_post"] = ro_err
+notes["ro_error_lines_pre"] = error_lines(pre["ro_log"])
+ro_expected = [rendered(rof + ":" + str(n), script_line(post["ro_original"], n), UNKNOWN_ARG)
+               for n in (2, 3, 4)]
+check("r    post: the three refusals of the read-only script are EXACTLY the three lines this "
+      "instrument composed from the file's bytes - an author's comment kept, a stale `#!` tail "
+      "replaced, a quoted `#!` left as text",
+      ro_err == ro_expected,
+      json.dumps({"expected": ro_expected, "observed": ro_err}))
+check("r    post: the author's own comment survives INSIDE the rendered line, with the machine "
+      "tail after it (the owner's clause: the line stays recognisable)",
+      len(ro_err) > 0 and "# an author's own note #! " in ro_err[0], json.dumps(ro_err[:1]))
+check("r    post: the stale tail was REPLACED, not doubled - one ` #! ` in the line and the old "
+      "text gone (the writer's idempotency rule, in the log, from the same function)",
+      len(ro_err) > 1 and ro_err[1].count(" #! ") == 1
+      and "a stale tail from an older run" not in ro_err[1], json.dumps(ro_err[1:2]))
+check("r    post: a `#!` INSIDE QUOTES is text - the tail went to the end of the line, and the "
+      "quoted one is untouched (the parser's own toggle, not a substring search)",
+      len(ro_err) > 2 and ro_err[2].endswith(' "a #! inside quotes" #! ' + UNKNOWN_ARG),
+      json.dumps(ro_err[2:3]))
+check("r-ro post: the file the log just quoted is byte-IDENTICAL - the rendering exists "
+      "independently of the write, which is the owner's read-only clause measured",
+      post["ro_after"] == post["ro_original"],
+      "%d vs %d bytes" % (len(post["ro_after"]), len(post["ro_original"])))
+check("r-ro post: and the write was ATTEMPTED and refused - the annotator says so, so the "
+      "identity above is a write that failed and not a write that never came",
+      any("cannot write" in l and rof in l for l in post["ro_log"].splitlines()),
+      json.dumps([l.split("): ", 1)[-1] for l in post["ro_log"].splitlines()
+                  if "script annotation" in l]))
+check("r-ro PRE: the same three refusals, in the two-line form of its era - the rendering is "
+      "what changed, not the reachability of these lines",
+      len(error_lines(pre["ro_log"])) == 0
+      and len(lines_with(pre["ro_log"], UNKNOWN_ARG)) == 3,
+      json.dumps(lines_with(pre["ro_log"], UNKNOWN_ARG)))
+check("r-ro PRE: its read-only file is byte-identical too (the control for the leg above)",
+      pre["ro_after"] == pre["ro_original"])
+
+# ------------------------------------------------- x: the owner's re-execution discriminator
+twf = post["twice_file"]
+
+
+def loop_fault_lines(log, path):
+    return [l.split("(Error): ", 1)[-1] for l in log.splitlines()
+            if LOOP_FAULT in l and path in l]
+
+
+x_post_1 = loop_fault_lines(post["twice_log_1"], twf)
+x_post_2 = loop_fault_lines(post["twice_log_2"], twf)
+x_pre_1 = loop_fault_lines(pre["twice_log_1"], pre["twice_file"])
+x_pre_2 = loop_fault_lines(pre["twice_log_2"], pre["twice_file"])
+notes["twice_lines_post"] = [x_post_1, x_post_2]
+notes["twice_lines_pre"] = [x_pre_1, x_pre_2]
+check("x    post: the SAME fault, the same line, played twice - the log line is BYTE-IDENTICAL "
+      "on the second execution, though the first execution wrote a `#!` tail onto that line "
+      "[vixy 2026-09-01: the same error may not be logged differently the second time]",
+      len(x_post_1) == 1 and x_post_1 == x_post_2, json.dumps([x_post_1, x_post_2]))
+check("x    post: and the tail DID land between the two executions - the file changed, so the "
+      "stability above was tested against a real second reading",
+      post["twice_after_1"] != post["twice_original"]
+      and b"#!" in post["twice_after_1"],
+      repr(post["twice_after_1"])[:200])
+check("x    PRE: on the pre binary the second execution logs a DIFFERENT, longer line - it "
+      "quotes the tail it had just written. This opposition is what makes the leg above "
+      "discriminate rather than pass by luck",
+      len(x_pre_1) == 1 and len(x_pre_2) == 1 and x_pre_1 != x_pre_2
+      and len(x_pre_2[0]) > len(x_pre_1[0]), json.dumps([x_pre_1, x_pre_2]))
+check("x    both binaries: the file after the SECOND execution is identical to after the first "
+      "- the writer's own idempotency, unmoved by the rendering change (f63's property)",
+      post["twice_after_2"] == post["twice_after_1"]
+      and pre["twice_after_2"] == pre["twice_after_1"],
+      "post %s / pre %s" % (post["twice_after_2"] == post["twice_after_1"],
+                            pre["twice_after_2"] == pre["twice_after_1"]))
+check("x    both binaries: exactly one tail landed, on the faulty line, and every other byte of "
+      "the twice-played file is what it was written as",
+      b"\n".join(l.split(b" #! ")[0] for l in post["twice_after_2"].split(b"\n"))
+      == post["twice_original"]
+      and b"\n".join(l.split(b" #! ")[0] for l in pre["twice_after_2"].split(b"\n"))
+      == pre["twice_original"],
+      repr(post["twice_after_2"])[:200])
+
 # ------------------------------------------------- v: the annotator writes files only for files
 DECOY = b"# f68: never played, never annotated\nflag stars on\n"
 farmdir = Path(post["play_file"]).parent
 expect_before = {str(farmdir / "f68_file.sts"): hashlib.md5(post["original"]).hexdigest(),
+                 str(farmdir / "f73_twice.sts"): hashlib.md5(post["twice_original"]).hexdigest(),
                  str(farmdir / "untouched.sts"): hashlib.md5(DECOY).hexdigest()}
 check("v    post: the TCP battery touched NO file - every farm script byte-identical "
       "after five wire faults and before the play",

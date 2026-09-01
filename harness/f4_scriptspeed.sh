@@ -51,7 +51,12 @@ sleep 1
 echo "--- script-log lines produced by this run ---"
 tail -c +$((OFF+1)) "$LOG" > "$OUT/script_tail.log" 2>/dev/null
 grep -a -E "script speed|missing action|unknown parameter" "$OUT/script_tail.log" || echo "(none)"
-N=$(grep -ac "Could not execute: script speed" "$OUT/script_tail.log" 2>/dev/null || echo 0)
+# The refusal shape changed at F73 (INTENT 11.194): a TCP-origin refusal is ONE
+# line, `Error executing tcp#<id>: script speed ... #! <message>`, and the old
+# `Could not execute: <line>` companion is gone for it. Both shapes are counted
+# so the 4-vs-1 split below keeps meaning the same thing on either binary.
+N=$(grep -acE "Could not execute: script speed|Error executing .*: script speed" \
+        "$OUT/script_tail.log" 2>/dev/null || echo 0)
 echo "COULD_NOT_EXECUTE_COUNT=$N   (pre-fix expectation: 4 = every leg incl. the bogus one;"
 echo "                              post-fix expectation: 1 = the bogus leg ONLY)"
 MD5_OUT=$(md5sum "$CFG" | cut -d' ' -f1)

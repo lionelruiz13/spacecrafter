@@ -1,0 +1,5 @@
+# f73: the rendering cases, in a directory that cannot be written
+get nonsense value # an author's own note
+get nonsense value #! a stale tail from an older run
+get nonsense "a #! inside quotes"
+struct loop end

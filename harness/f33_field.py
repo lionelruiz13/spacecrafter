@@ -95,7 +95,12 @@ def main():
     old_ref = [l for l in log.splitlines() if "AnchorManager" in l and "error" in l]
     new_ref = [l for l in log.splitlines() if "camera action" in l
                and ("does nothing" in l or "IGNORED" in l or "NOT changed" in l)]
-    could_not = [l for l in log.splitlines() if "Could not execute" in l]
+    # Both shapes: since F73 a refusal with a named origin reads `Error
+    # executing <origin>: <line> #! <message>` and one without keeps the old
+    # pair (INTENT 11.194). This leg plays a FILE, so it is the first shape it
+    # would see - matching only the old needle would make it blind.
+    could_not = [l for l in log.splitlines()
+                 if "Could not execute" in l or "Error executing " in l]
     chk(not old_ref and not new_ref and not could_not,
         "the shipped flow runs with NO refusal from either path",
         f"old={old_ref} new={new_ref} cmd={could_not}")

@@ -1,0 +1,2 @@
+struct if 1 equal 1 #! this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop
+flag stars off

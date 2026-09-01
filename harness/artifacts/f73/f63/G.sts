@@ -1,0 +1,4 @@
+# G: edited while it runs
+struct if end   
+wait duration 4
+flag stars on

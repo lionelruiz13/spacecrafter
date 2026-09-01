@@ -1,0 +1,2 @@
+# f73: the same fault, played twice - the log line may not move
+struct loop end #! this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close

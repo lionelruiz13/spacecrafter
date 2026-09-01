@@ -1,0 +1,13 @@
+=== leg live_diag (127.0.0.1:7805)
+  ok      connect to the live engine: 
+  ok      the $LOGON subscription is confirmed (unchanged, both engines)
+  ok      and $DIAGON is confirmed too
+  ok      send a command the engine will refuse: 
+  ok      exactly one diagnostic came back
+  ok      naming the command line it is about
+  ok      and the connection it came from: tcp#7
+  ok      with the engine's own words, not scedit's
+  ok      the counter moved by exactly one
+  ok      ask a question: 
+  ok      the `get status position` answer arrives, both engines alike
+11 checks, 0 failures

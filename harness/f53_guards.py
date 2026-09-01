@@ -194,6 +194,13 @@ def note(m):
 # ---------------------------------------------------------------- predictions
 # Committed to git BEFORE the launch.  Every entry names the line it is derived
 # from, so a mismatch is traceable rather than absorbable.
+# WORDING NOTE, not a change of expectation (F73, INTENT 11.194): the entries
+# below say "zero new 'Could not execute' lines". Since F73 a refusal whose
+# origin has a name is logged as ONE `Error executing <origin>: <line> #!
+# <message>` line instead. The claim they make is unchanged - ZERO refusals -
+# and the reader that decides it, f27_reply.Session.refused(), matches both
+# shapes. The strings are left as written because they are pinned to the sha
+# above: they record what was predicted then, not what is expected now.
 PRED = {
     "code": "master-beta @ d6aec251",
     "A": {

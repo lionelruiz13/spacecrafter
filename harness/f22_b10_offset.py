@@ -164,10 +164,16 @@ def main():
     if n != 1:
         fail(f"expected exactly one did-you-mean refusal in this launch (the old spelling), "
              f"found {n} — either the old spelling was accepted or the new one was refused")
-    elif "Could not execute: set view_offset" not in lt:
+    # The refusal line changed shape at F73 (INTENT 11.194): a TCP-origin
+    # refusal is now ONE line, `Error executing tcp#<id>: <the line as sent> #!
+    # <message>`, and the old `Could not execute: <line>` companion is gone for
+    # it. What discriminates is unchanged - WHICH command line is named.
+    elif not any("Error executing " in l and "set view_offset" in l
+                 for l in lt.splitlines()):
         fail("the refusal is logged but not against `set view_offset` — the leg is not "
              "measuring what it says")
-    elif "Could not execute: set zoom_offset" in lt:
+    elif any("Error executing " in l and "set zoom_offset" in l
+             for l in lt.splitlines()):
         fail("`set zoom_offset` was refused — it is not the registered name after all")
     else:
         ok("exactly one refusal in the launch, against `set view_offset`, none against "

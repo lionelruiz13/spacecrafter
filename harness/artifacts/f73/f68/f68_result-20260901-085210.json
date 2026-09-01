@@ -1,0 +1,375 @@
+{
+ "predictions": {
+  "ii": "post: the five identical faults are tagged tcp#idP | tcp#idP | tcp#idQ | (none, HTTP) | <file>:3 ; pre: per SC_PRE_TAGS for the first four, <file>:3 for the last either way",
+  "ii-id": "idP != idQ, and the ids follow the connection order (probe 1, S 2, P 3, Q 4, HTTP 5)",
+  "ii-funnel": "post: 'tcp#idP: Could not execute: get status nonsense' AND 'tcp#idP: command 'get': unknown status value'; pre: tagged iff SC_PRE_TAGS=tcp",
+  "ii-306": "post: 'tcp#idP: Unrecognized or malformed command name' for `flagg stars on`, with no 'Could not execute' companion (that emitter bypasses the funnel)",
+  "iii": "the NESTED audio refusal is untagged on BOTH binaries - no tcp# and no file path, which is what says F72 did not widen 11.184's nesting rule; the fault sent after `clear` is tagged tcp#idP again",
+  "i": "the file-origin structure fault logs `script <file>:3: ... [struct if end]` on both binaries (reportScriptError is unmoved by F72)",
+  "i-f73": "post: the file-origin FUNNEL refusal on line 5 is ONE line reading 'Error executing <file>:5: get status nonsense #! command ...: unknown status value', and the bypassing sibling on line 7 is one line of the same shape; the needle 'Could not execute' does not occur for either. PRE (declared era): TWO lines each, tagged per SC_PRE_TAGS",
+  "r": "every refusal line the post binary logs for a named origin equals this instrument's OWN recomposition of it from the script bytes: raw line + ' #! ' + message, an existing tail replaced, a quoted '#!' left as text, an author's comment kept",
+  "r-ro": "the read-only script's three refusals are logged as intent-modified lines while the file stays byte-identical and the annotator says it could not write",
+  "x": "post: the twice-played script's fault logs the SAME BYTES on both executions; PRE: the second execution's line is LONGER, because it quotes the tail the first wrote; both binaries leave the file identical after the second execution",
+  "v": "no farm file changes during the TCP battery; after the play exactly one `#!` tail, on line 3, every other byte identical - F72 adds a refusing line to the played file and the annotator must still write nothing for it",
+  "iv": "S/P/Q/HTTP wires: pre == pre2 (deterministic) and pre == post (frozen), all non-empty"
+ },
+ "host": {
+  "pre_tags_declared": "all",
+  "binaries": {
+   "post": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+   "post_md5": "982b9a9cc504f21b601673e2fb034014",
+   "pre": "/tmp/f73-pre/spacecrafter",
+   "pre_md5": "9f935785fd41ce803898db45e2fff14e"
+  },
+  "screensaver_before": "(false,)",
+  "wake_thread": "SimulateUserActivity every 60 s for the whole run",
+  "frame_stalls_pre": 27,
+  "frame_stalls_pre2": 27,
+  "frame_stalls_post": 27,
+  "screensaver_at_end": "(false,)",
+  "fault_origins_post": [
+   "tcp#3",
+   "tcp#3",
+   "tcp#4",
+   "",
+   "/tmp/sc-farm-f68/f68/f68_file.sts:3"
+  ],
+  "fault_origins_pre": [
+   "tcp#3",
+   "tcp#3",
+   "tcp#4",
+   "",
+   "/tmp/sc-farm-f68/f68/f68_file.sts:3"
+  ],
+  "ids_observed": {
+   "P": "tcp#3",
+   "Q": "tcp#4",
+   "predicted": "tcp#3 / tcp#4"
+  },
+  "error_lines_post": [
+   "Error executing tcp#3: get status nonsense #! command 'get': unknown status value",
+   "Error executing tcp#3: flagg stars on #! Unrecognized or malformed command name",
+   "Error executing /tmp/sc-farm-f68/f68/f68_file.sts:5: get status nonsense #! command 'get': unknown status value",
+   "Error executing /tmp/sc-farm-f68/f68/f68_file.sts:7: flagg stars on #! Unrecognized or malformed command name",
+   "Error executing /tmp/f68-ro/f73_ro.sts:2: get nonsense value # an author's own note #! command 'get': unknown argument",
+   "Error executing /tmp/f68-ro/f73_ro.sts:3: get nonsense value #! command 'get': unknown argument",
+   "Error executing /tmp/f68-ro/f73_ro.sts:4: get nonsense \"a #! inside quotes\" #! command 'get': unknown argument"
+  ],
+  "ro_error_lines_post": [
+   "Error executing /tmp/f68-ro/f73_ro.sts:2: get nonsense value # an author's own note #! command 'get': unknown argument",
+   "Error executing /tmp/f68-ro/f73_ro.sts:3: get nonsense value #! command 'get': unknown argument",
+   "Error executing /tmp/f68-ro/f73_ro.sts:4: get nonsense \"a #! inside quotes\" #! command 'get': unknown argument"
+  ],
+  "ro_error_lines_pre": [],
+  "twice_lines_post": [
+   [
+    "script /tmp/sc-farm-f68/f68/f73_twice.sts:2: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]"
+   ],
+   [
+    "script /tmp/sc-farm-f68/f68/f73_twice.sts:2: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]"
+   ]
+  ],
+  "twice_lines_pre": [
+   [
+    "script /tmp/sc-farm-f68/f68/f73_twice.sts:2: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]"
+   ],
+   [
+    "script /tmp/sc-farm-f68/f68/f73_twice.sts:2: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end #! this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close]"
+   ]
+  ]
+ },
+ "results": [
+  {
+   "check": "pre   engine exited on `shutdown action now`",
+   "ok": true,
+   "detail": "rc=0"
+  },
+  {
+   "check": "pre2  engine exited on `shutdown action now`",
+   "ok": true,
+   "detail": "rc=0"
+  },
+  {
+   "check": "post  engine exited on `shutdown action now`",
+   "ok": true,
+   "detail": "rc=0"
+  },
+  {
+   "check": "ii   post: five identical faults, five diagnostics",
+   "ok": true,
+   "detail": "[\"tcp#3\", \"tcp#3\", \"tcp#4\", \"\", \"/tmp/sc-farm-f68/f68/f68_file.sts:3\"]"
+  },
+  {
+   "check": "ii   pre : five identical faults, five diagnostics",
+   "ok": true,
+   "detail": "[\"tcp#3\", \"tcp#3\", \"tcp#4\", \"\", \"/tmp/sc-farm-f68/f68/f68_file.sts:3\"]"
+  },
+  {
+   "check": "ii   post: the first fault names the CONNECTION it came from (tcp#<id>)",
+   "ok": true,
+   "detail": "tcp#3"
+  },
+  {
+   "check": "ii   post: the same connection's second fault names the SAME id",
+   "ok": true,
+   "detail": "[\"tcp#3\", \"tcp#3\"]"
+  },
+  {
+   "check": "ii   post: a SECOND connection gets a DIFFERENT id (the tag is not a constant)",
+   "ok": true,
+   "detail": "P=tcp#3 Q=tcp#4"
+  },
+  {
+   "check": "ii-id post: the ids are the connection order's own - Q is the NEXT id after P",
+   "ok": true,
+   "detail": "P=tcp#3 Q=tcp#4 (predicted tcp#3 / tcp#4: yes)"
+  },
+  {
+   "check": "ii   post: the HTTP `?command=` door carries NO origin (mapped, not wired)",
+   "ok": true,
+   "detail": "[\"tcp#3\", \"tcp#3\", \"tcp#4\", \"\", \"/tmp/sc-farm-f68/f68/f68_file.sts:3\"]"
+  },
+  {
+   "check": "ii   post: the FILE fault still names <file>:3",
+   "ok": true,
+   "detail": "[\"/tmp/sc-farm-f68/f68/f68_file.sts:3\"]"
+  },
+  {
+   "check": "ii   PRE (declared SC_PRE_TAGS=all): the four wire faults ALREADY name their connection (tcp#idP | tcp#idP | tcp#idQ | none, HTTP)",
+   "ok": true,
+   "detail": "[\"tcp#3\", \"tcp#3\", \"tcp#4\", \"\", \"/tmp/sc-farm-f68/f68/f68_file.sts:3\"]"
+  },
+  {
+   "check": "ii   PRE: and its FILE fault names <file>:3 exactly as post does",
+   "ok": true,
+   "detail": "[\"/tmp/sc-farm-f68/f68/f68_file.sts:3\"]"
+  },
+  {
+   "check": "ii   post: the tagged diagnostic quotes the offending line, as the file one does",
+   "ok": true,
+   "detail": "[\"000000021886: (Error): script tcp#3: this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close [struct if end]\"]"
+  },
+  {
+   "check": "ii   post: the funnel writes ONE line for a TCP refusal and it IS the line that was sent, with the message as its `#!` tail (11.193(a): one rendering, and the log is one of its sinks)",
+   "ok": true,
+   "detail": "[\"Error executing tcp#3: get status nonsense #! command 'get': unknown status value\", \"Error executing /tmp/sc-farm-f68/f68/f68_file.sts:5: get status nonsense #! command 'get': unknown status value\"]"
+  },
+  {
+   "check": "ii   post: the two-line form is GONE for every refusal that has an origin - no `Could not execute` companion survives for one",
+   "ok": true,
+   "detail": "[\"Could not execute: audio filename nosuch.ogg action play loop \", \"Could not execute: audio filename nosuch.ogg action play loop \"]"
+  },
+  {
+   "check": "ii   PRE (declared SC_PRE_TAGS=all): TWO lines for the same refusal, tagged per its era - the control that says the collapse is this change and not this battery",
+   "ok": true,
+   "detail": "[[\"tcp#3: Could not execute: get status nonsense\", \"/tmp/sc-farm-f68/f68/f68_file.sts:5: Could not execute: get status nonsense\"], [\"tcp#3: command 'get': unknown status value\", \"/tmp/sc-farm-f68/f68/f68_file.sts:5: command 'get': unknown status value\"]]"
+  },
+  {
+   "check": "ii-306 post: the emitter that BYPASSES the funnel renders the same way - same function, so the two sites cannot drift apart",
+   "ok": true,
+   "detail": "[\"Error executing tcp#3: flagg stars on #! Unrecognized or malformed command name\", \"Error executing /tmp/sc-farm-f68/f68/f68_file.sts:7: flagg stars on #! Unrecognized or malformed command name\"]"
+  },
+  {
+   "check": "ii-306 PRE (declared all): the TCP one per its era, the FILE one per its era",
+   "ok": true,
+   "detail": "[\"tcp#3: Unrecognized or malformed command name\", \"/tmp/sc-farm-f68/f68/f68_file.sts:7: Unrecognized or malformed command name\"]"
+  },
+  {
+   "check": "iii  post: a NESTED command's refusal carries NO tag - not tcp#, and since F72 not a file path either (11.184's nesting rule, NOT widened by the reversal)",
+   "ok": true,
+   "detail": "[\"Could not execute: audio filename nosuch.ogg action play loop \", \"Could not execute: audio filename nosuch.ogg action play loop \"]"
+  },
+  {
+   "check": "iii  PRE: the same two lines, identically untagged",
+   "ok": true,
+   "detail": "[\"Could not execute: audio filename nosuch.ogg action play loop \", \"Could not execute: audio filename nosuch.ogg action play loop \"]"
+  },
+  {
+   "check": "iii  post: the fault sent AFTER `clear` (thirty nested calls) still names tcp#idP",
+   "ok": true,
+   "detail": "[\"tcp#3\", \"tcp#3\"]"
+  },
+  {
+   "check": "i-f73 post: the FILE funnel refusal is ONE line, and it is line 5 OF THAT FILE with the message on it - recomposed here from the script's own bytes, never read back from the engine's own composition",
+   "ok": true,
+   "detail": "{\"expected\": \"Error executing /tmp/sc-farm-f68/f68/f68_file.sts:5: get status nonsense #! command 'get': unknown status value\", \"observed\": \"Error executing /tmp/sc-farm-f68/f68/f68_file.sts:5: get status nonsense #! command 'get': unknown status value\", \"raw line 5 read from the file\": \"get status nonsense\"}"
+  },
+  {
+   "check": "i-f73 post: the bypassing sibling's FILE half likewise, on line 7 - the SECOND emitter, measured and not inferred from the funnel's behaviour",
+   "ok": true,
+   "detail": "{\"expected\": \"Error executing /tmp/sc-farm-f68/f68/f68_file.sts:7: flagg stars on #! Unrecognized or malformed command name\", \"observed\": \"Error executing /tmp/sc-farm-f68/f68/f68_file.sts:7: flagg stars on #! Unrecognized or malformed command name\"}"
+  },
+  {
+   "check": "i-f73 post: FOUR refusals with an origin in the battery proper, FOUR rendered lines - two emitters, two channels, one shape (the read-only script's three are leg r's)",
+   "ok": true,
+   "detail": "[\"Error executing tcp#3: get status nonsense #! command 'get': unknown status value\", \"Error executing tcp#3: flagg stars on #! Unrecognized or malformed command name\", \"Error executing /tmp/sc-farm-f68/f68/f68_file.sts:5: get status nonsense #! command 'get': unknown status value\", \"Error executing /tmp/sc-farm-f68/f68/f68_file.sts:7: flagg stars on #! Unrecognized or malformed command name\"]"
+  },
+  {
+   "check": "i-f73 the collapse is exactly the pre PAIR joined: the rendered line's raw-line part is what the pre binary's first line said after `Could not execute: `, and its tail is what the pre binary's second line said - nothing was invented and nothing was dropped",
+   "ok": true,
+   "detail": "{\"pre pair\": [\"/tmp/sc-farm-f68/f68/f68_file.sts:5: Could not execute: get status nonsense\", \"/tmp/sc-farm-f68/f68/f68_file.sts:5: command 'get': unknown status value\"], \"post one line\": \"Error executing /tmp/sc-farm-f68/f68/f68_file.sts:5: get status nonsense #! command 'get': unknown status value\"}"
+  },
+  {
+   "check": "i    post: exactly one `#!` tail, on line 3",
+   "ok": true,
+   "detail": "[3]"
+  },
+  {
+   "check": "i    post: the tail is the engine's diagnosis",
+   "ok": true,
+   "detail": "this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close"
+  },
+  {
+   "check": "i    PRE: the same one tail on the same line (the file half did not move)",
+   "ok": true,
+   "detail": "[3]"
+  },
+  {
+   "check": "i    post: every other byte of the played file is identical",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "r    post: the three refusals of the read-only script are EXACTLY the three lines this instrument composed from the file's bytes - an author's comment kept, a stale `#!` tail replaced, a quoted `#!` left as text",
+   "ok": true,
+   "detail": "{\"expected\": [\"Error executing /tmp/f68-ro/f73_ro.sts:2: get nonsense value # an author's own note #! command 'get': unknown argument\", \"Error executing /tmp/f68-ro/f73_ro.sts:3: get nonsense value #! command 'get': unknown argument\", \"Error executing /tmp/f68-ro/f73_ro.sts:4: get nonsense \\\"a #! inside quotes\\\" #! command 'get': unknown argument\"], \"observed\": [\"Error executing /tmp/f68-ro/f73_ro.sts:2: get nonsense value # an author's own note #! command 'get': unknown argument\", \"Error execut"
+  },
+  {
+   "check": "r    post: the author's own comment survives INSIDE the rendered line, with the machine tail after it (the owner's clause: the line stays recognisable)",
+   "ok": true,
+   "detail": "[\"Error executing /tmp/f68-ro/f73_ro.sts:2: get nonsense value # an author's own note #! command 'get': unknown argument\"]"
+  },
+  {
+   "check": "r    post: the stale tail was REPLACED, not doubled - one ` #! ` in the line and the old text gone (the writer's idempotency rule, in the log, from the same function)",
+   "ok": true,
+   "detail": "[\"Error executing /tmp/f68-ro/f73_ro.sts:3: get nonsense value #! command 'get': unknown argument\"]"
+  },
+  {
+   "check": "r    post: a `#!` INSIDE QUOTES is text - the tail went to the end of the line, and the quoted one is untouched (the parser's own toggle, not a substring search)",
+   "ok": true,
+   "detail": "[\"Error executing /tmp/f68-ro/f73_ro.sts:4: get nonsense \\\"a #! inside quotes\\\" #! command 'get': unknown argument\"]"
+  },
+  {
+   "check": "r-ro post: the file the log just quoted is byte-IDENTICAL - the rendering exists independently of the write, which is the owner's read-only clause measured",
+   "ok": true,
+   "detail": "211 vs 211 bytes"
+  },
+  {
+   "check": "r-ro post: and the write was ATTEMPTED and refused - the annotator says so, so the identity above is a write that failed and not a write that never came",
+   "ok": true,
+   "detail": "[\"script annotation: cannot write '/tmp/f68-ro/f73_ro.sts' (1 annotation(s) to place, 1 to clear): the file or its directory is not writable by this process, so the diagnostics stay in this log only; make the script writable to have them placed on their lines\"]"
+  },
+  {
+   "check": "r-ro PRE: the same three refusals, in the two-line form of its era - the rendering is what changed, not the reachability of these lines",
+   "ok": true,
+   "detail": "[\"/tmp/f68-ro/f73_ro.sts:2: command 'get': unknown argument\", \"/tmp/f68-ro/f73_ro.sts:3: command 'get': unknown argument\", \"/tmp/f68-ro/f73_ro.sts:4: command 'get': unknown argument\"]"
+  },
+  {
+   "check": "r-ro PRE: its read-only file is byte-identical too (the control for the leg above)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "x    post: the SAME fault, the same line, played twice - the log line is BYTE-IDENTICAL on the second execution, though the first execution wrote a `#!` tail onto that line [vixy 2026-09-01: the same error may not be logged differently the second time]",
+   "ok": true,
+   "detail": "[[\"script /tmp/sc-farm-f68/f68/f73_twice.sts:2: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]\"], [\"script /tmp/sc-farm-f68/f68/f73_twice.sts:2: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]\"]]"
+  },
+  {
+   "check": "x    post: and the tail DID land between the two executions - the file changed, so the stability above was tested against a real second reading",
+   "ok": true,
+   "detail": "b\"# f73: the same fault, played twice - the log line may not move\\nstruct loop end #! this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add t"
+  },
+  {
+   "check": "x    PRE: on the pre binary the second execution logs a DIFFERENT, longer line - it quotes the tail it had just written. This opposition is what makes the leg above discriminate rather than pass by luck",
+   "ok": true,
+   "detail": "[[\"script /tmp/sc-farm-f68/f68/f73_twice.sts:2: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end]\"], [\"script /tmp/sc-farm-f68/f68/f73_twice.sts:2: this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close [struct loop end #! this 'struct loop end' closes nothing: no 'struct "
+  },
+  {
+   "check": "x    both binaries: the file after the SECOND execution is identical to after the first - the writer's own idempotency, unmoved by the rendering change (f63's property)",
+   "ok": true,
+   "detail": "post True / pre True"
+  },
+  {
+   "check": "x    both binaries: exactly one tail landed, on the faulty line, and every other byte of the twice-played file is what it was written as",
+   "ok": true,
+   "detail": "b\"# f73: the same fault, played twice - the log line may not move\\nstruct loop end #! this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add t"
+  },
+  {
+   "check": "v    post: the TCP battery touched NO file - every farm script byte-identical after five wire faults and before the play",
+   "ok": true,
+   "detail": "{\"observed\": {\"/tmp/sc-farm-f68/f68/f68_file.sts\": \"4eca90494bc31fe25617bbae598da8c2\", \"/tmp/sc-farm-f68/f68/f73_twice.sts\": \"00fd1750b4ec55ecd21310c4b7569aac\", \"/tmp/sc-farm-f68/f68/untouched.sts\": \"746d50d5f35e0e2f03a4712f41942043\"}, \"expected\": {\"/tmp/sc-farm-f68/f68/f68_file.sts\": \"4eca90494bc31fe25617bbae598da8c2\", \"/tmp/sc-farm-f68/f68/f73_twice.sts\": \"00fd1750b4ec55ecd21310c4b7569aac\", \"/tmp/sc-farm-f68/f68/untouched.sts\": \"746d50d5f35e0e2f03a4712f41942043\"}}"
+  },
+  {
+   "check": "v    post: the never-played file is untouched after the play too",
+   "ok": true,
+   "detail": "{\"/tmp/sc-farm-f68/f68/f68_file.sts\": \"155160d998076ec5c62c5bf7e8b92cc3\", \"/tmp/sc-farm-f68/f68/f73_twice.sts\": \"464e62e899b29d4f663ac5f35c57516e\", \"/tmp/sc-farm-f68/f68/untouched.sts\": \"746d50d5f35e0e2f03a4712f41942043\"}"
+  },
+  {
+   "check": "iv   S    A/A control: pre == pre2, so this wire is deterministic",
+   "ok": true,
+   "detail": "71 vs 71 bytes; identical"
+  },
+  {
+   "check": "iv   S    FROZEN: post == pre, byte for byte",
+   "ok": true,
+   "detail": "71 vs 71 bytes; identical"
+  },
+  {
+   "check": "iv   P    A/A control: pre == pre2, so this wire is deterministic",
+   "ok": true,
+   "detail": "5 vs 5 bytes; identical"
+  },
+  {
+   "check": "iv   P    FROZEN: post == pre, byte for byte",
+   "ok": true,
+   "detail": "5 vs 5 bytes; identical"
+  },
+  {
+   "check": "iv   Q    A/A control: pre == pre2, so this wire is deterministic",
+   "ok": true,
+   "detail": "0 vs 0 bytes; identical"
+  },
+  {
+   "check": "iv   Q    FROZEN: post == pre, byte for byte",
+   "ok": true,
+   "detail": "0 vs 0 bytes; identical"
+  },
+  {
+   "check": "iv   HTTP A/A control: pre == pre2, so this wire is deterministic",
+   "ok": true,
+   "detail": "85 vs 85 bytes; identical"
+  },
+  {
+   "check": "iv   HTTP FROZEN: post == pre, byte for byte",
+   "ok": true,
+   "detail": "85 vs 85 bytes; identical"
+  },
+  {
+   "check": "iv   the subscriber's wire is NOT empty (otherwise 'identical' proves nothing)",
+   "ok": true,
+   "detail": "b'Vous receverez maintenant les logs\\n\\x00EOL\\n\\x00127.0.0.1/HTTP|struct if end\\n\\x00'"
+  },
+  {
+   "check": "iv   the asking client's wire is NOT empty either",
+   "ok": true,
+   "detail": "b'EOL\\n\\x00'"
+  },
+  {
+   "check": "iv   the HTTP door answered too",
+   "ok": true,
+   "detail": "b'HTTP/1.0 500 Internal Error\\r\\nServer: SpaceCrafter (HTTP/BETA)\\r\\nContent-Length: 0\\r\\n\\r\\n\\x00'"
+  },
+  {
+   "check": "iv   the subscriber received the OTHER client's answer (5.72's broadcast, live)",
+   "ok": true,
+   "detail": "b'Vous receverez maintenant les logs\\n\\x00EOL\\n\\x00127.0.0.1/HTTP|struct if end\\n\\x00'"
+  },
+  {
+   "check": "real ~/.spacecrafter config/ssystem md5 in == out",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "run": "20260901-085210",
+ "all_ok": true
+}

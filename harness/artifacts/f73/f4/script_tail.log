@@ -1,0 +1,17 @@
+000000016972: (Info ): ScriptMgr: script end
+000000017573: (Info ): End of loading SC
+000000017606: (Info ): ScriptMgr: script end
+000000017613: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000017614: (Info ): Execute_command deselect
+000000017614: (Info ): Execute_command deselect
+000000017614: (Info ): Execute_command timerate rate 1
+000000017614: (Info ): Execute_command flag subtitle off
+000000017614: (Info ): End of script
+000000017614: (Info ): Execute_command script action end
+000000017614: (Info ): ScriptMgr: script end
+000000024698: (Info ): Execute_command script speed faster
+000000025701: (Info ): Execute_command script speed slower
+000000026703: (Info ): Execute_command script speed default
+000000027706: (Info ): Execute_command script speed bogus_value
+000000027706: (Debug): Error executing tcp#1: script speed bogus_value #! command_script : unknown parameter from 'speed' argument
+(Info ): EOF

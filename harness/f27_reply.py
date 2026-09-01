@@ -276,8 +276,17 @@ class Session:
 
     def refused(self):
         """The app's OWN report that it did not execute a command (§2(f)).
-        F12's lesson: a harness that ignores this measures nothing for a run."""
-        return [l for l in self.scriptlog().splitlines() if "Could not execute" in l]
+        F12's lesson: a harness that ignores this measures nothing for a run.
+        BOTH shapes are matched, and that is not belt-and-braces: since F73
+        (INTENT 11.194) a refusal whose origin has a NAME - a file line, a TCP
+        line - is logged as ONE `Error executing <origin>: <line> #! <message>`
+        line and never says `Could not execute`, while a refusal with no origin
+        (a nested call, a UI key, an HTTP query) still writes the old pair.
+        Matching only the old needle would leave this reader silently blind on
+        every channel a harness actually drives, which is a green that cannot
+        fail (11.191(c))."""
+        return [l for l in self.scriptlog().splitlines()
+                if "Could not execute" in l or "Error executing " in l]
 
     def stop(self, driver, exit_wait=40):
         """`exit_wait` is a parameter because an ASan/LSan build spends real time
