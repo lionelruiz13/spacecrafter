@@ -713,6 +713,37 @@ retargeted (384 bare `line:` integers in the fragments' accounting would
 desync) — the anchors get `_meta.anchor_pin`, two facts in two fields. FOUR
 content defects routed, not applied; ONE class named with no check for it (an
 anchor can point at one line and CLAIM another).
+**ACCEPTED 2026-09-01 (Fable, session 20):** journal `2026-09-01a` read in
+full; trees/commits/authors verified; §11.190(e) marker in BOTH homes; my own
+runs: `anchor_gate` rc 0 (record 6663/2/69), `ctest` 15/15 in `build-f75`,
+seed gate incl. `fragments: every fact identical`, ASCII gate PASS, corpus
+408/0-touched, baselines 211/186/25/93 (34/11/87/34) · 129/170/102 — zero
+delta, as a mirror-ledger delivery must be; spot-checks at the terminal
+observable (audio.args.volume at HEAD; fragment twin object-equal; flyto
+registration re-read). ENDORSED, each with its ground: the S2 DEPARTURE —
+`_meta.code` NOT retargeted (384 bare-integer accounting rows would desync:
+the executor applied I2 more exactly than my instruction; MY S2 clause was
+the defect, caught via report-not-absorb — supervisor tally +1); the anchor
+grammar living ONCE in the code tree (I2 — a harness copy would rebuild the
+repaired failure one level up); the bare-`:N` sweep with measured attribution
+(552/646 in-handler + 94 same-file + 20-sample read); the clock-exclusion
+rule; the pin-recovery criterion REFUTED and replaced (a pin names the parent
+of its recording commit — criterion-integrity instance, the round's first);
+the checkFragments-RED intermediate leg as the both-ways record; five record
+files regenerated under a digit-stripped-identity machine criterion. NAMED
+RESIDUALS, recorded not absorbed: (r1) count-base labels vary across three
+enumerations (map 6732 whitelist / gate 6734 agnostic incl. 69 `_meta` / WIP
+prose 6726 which sums to neither) — the machine records are each internally
+consistent and regenerable, the PROSE line is the loose one; (r2) the gate
+record's `declared 2` counts declared ELEMENTS where the journal's "four"
+counts declared REFERENTS in marked strings — same marker-gated fail-loud
+mechanism, two bases; (r3) "65 commands" = 69 family entries − 4 aliases
+(my section's "63" was the stale `expected_counts` label). TO §3: the four
+routed content defects; the NEW CLASS (anchor resolves ≠ anchor's sentence
+true — no check exists; two instances found by accident). F76 unblocked:
+anchors resolve at `_meta.anchor_pin` = `54a2b844`, read them through
+`anchor_gate.tokenize/resolve_file`; `anchor_gate` reds on working-tree
+engine edits BY DESIGN (`--record` to re-record deliberately).
 
 ### F76 — scedit item 16: the shipped corpus DISPOSITIONED — 1661 findings in 26 files, each TRUE (→ SS-n / §5) or a scedit defect (→ rule fix), and the corpus gate's shipped half ARMED (scedit INTENT §5 item 16; C3; session-19 queue position 2) [M]
 
