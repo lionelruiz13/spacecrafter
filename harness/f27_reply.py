@@ -197,7 +197,7 @@ class Client:
 
 class Session:
     def __init__(self, outdir, tag, binary, launch_prefix=(), port_wait=90,
-                 prepare=None, env_extra=None):
+                 prepare=None, env_extra=None, stderr_path=None):
         """`launch_prefix` is prepended to the argv, so a caller can run the same
         launch UNDER another program without re-deriving the farm, the
         concurrent-instance assert or the frozen-md5 pair (I2). F31 passes
@@ -209,7 +209,16 @@ class Session:
         writes `modularSystem/SolarSystem.ini`: a composed body exists only if
         it is on disc when the system loads). `env_extra` is merged into the
         child environment (F32 passes ASAN_OPTIONS). Both default to inert, so
-        every existing caller's launch is byte-identical."""
+        every existing caller's launch is byte-identical.
+
+        `stderr_path` SPLITS the child's console. The default is None, which
+        keeps the merged `stderr=STDOUT` every caller before F77 was written
+        against - so their applog is byte-for-byte what it was. F77 needs the
+        split because the question it asks IS the stream: with `print_log`
+        true, `cLog::writeConsole` sends L_ERROR/L_WARNING to `std::cerr` and
+        everything else to `std::cout` (log.cpp:204-208), so a merged capture
+        cannot tell "the refusal reached the console" from "the refusal reached
+        the ERROR console", which is the whole of INTENT 5.117's console half."""
         self.tag, self.outdir, self.binary = tag, outdir, Path(binary)
         insts = concurrent_instances()
         if insts:
@@ -223,9 +232,11 @@ class Session:
         if prepare is not None:
             prepare(self.dst)
         self.applog = outdir / f"{tag}.applog"
+        self.errlog = Path(stderr_path) if stderr_path else None
         self.proc = subprocess.Popen(
             [*launch_prefix, str(self.binary)], cwd=str(self.dst),
-            stdout=open(self.applog, "w"), stderr=subprocess.STDOUT,
+            stdout=open(self.applog, "w"),
+            stderr=(open(self.errlog, "w") if self.errlog else subprocess.STDOUT),
             env={**os.environ, "HOME": str(self.farm),
                  "DISPLAY": os.environ.get("DISPLAY", ":2"),
                  **(env_extra or {})})
