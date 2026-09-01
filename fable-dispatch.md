@@ -1015,7 +1015,13 @@ instance, `GetActive` false.
 **DoD:** predictions first; one launch with the control lit; the per-line
 per-channel table; the §11 entry + the three rows' annotations; artifacts;
 trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** — **CP1 2026-09-01** (harness only, code untouched at `ba7a32a8`):
+§0.7 gate PASSED on every enumerated premise (both HEADs, `### F`=4, §11.196
+free, binary current by `cmake --build build-claude -- -n` = zero compile/link
+steps, `:0` 1920x1080 under the mutter auth, lock/idle 0, no instance,
+md5 `03fbee59`/`545a51ef`, F76's SIGNAL column re-read). Predictions P1–P11
+committed at `harness/artifacts/f77/predictions.md` BEFORE any launch
+(md5 `be02e19f`). Next: the driver `harness/f77_badscript.py`, then ONE launch.
 
 ### F78 — EXTENSION: strict-credit v2 — the ledger instruments re-baselined as ONE deliberate act: six measured scan members + the pair-check's both-homes extension + the residual re-partition (§11.165(h) notes, §11.177, §11.179(6), §11.180(i), the session-19 close note, the F72/F73 acceptances; carried since session 15) [M]
 
