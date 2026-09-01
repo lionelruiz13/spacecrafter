@@ -719,7 +719,12 @@ across 1170 distinct strings; seed gate green INCLUDING `fragments: every fact
 identical`, shown RED at a one-file state; ctest 14/14; D14 PASS; byte proof
 (f) EMPTY on all five; check (e) `--doc` 65 commands = 1024 lines, zero
 non-digit. `_meta` EXCLUDED with its argument (384 bare `line:` integers).
-NEXT: the anchor_gate ctest, then the records.
+CP4 — `anchor_gate` ctest, code `7b227ed6`: 15/15 in a FRESH build-f75, 0
+warnings; check (c) proven both ways (one inserted line in if_swap.cpp moves 21
+refs, rc 1; restored rc 0); the gate reads the WORKING TREE, not HEAD. The
+anchor grammar now lives ONCE, in `util/scedit/tests/anchor_gate.py`, and the
+harness tool imports it (I2). NEXT: journal 2026-09-01a, 11.190(e) markers,
+READMEs, baselines.
 
 ### F76 — scedit item 16: the shipped corpus DISPOSITIONED — 1661 findings in 26 files, each TRUE (→ SS-n / §5) or a scedit defect (→ rule fix), and the corpus gate's shipped half ARMED (scedit INTENT §5 item 16; C3; session-19 queue position 2) [M]
 
