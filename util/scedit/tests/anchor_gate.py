@@ -44,7 +44,12 @@ REPO = os.path.abspath(os.path.join(HARN, "..", "..", ".."))
 
 MERGED = "util/scedit/grammar/sc-grammar.json"
 FRAGS  = ["util/scedit/grammar/args/unit-%d.json" % i for i in (1, 2, 3, 4)]
-TARGETS = [MERGED] + FRAGS
+# The SECOND contract file (F80): the stellar-system file's grammar. It cites the
+# loader exactly as the command contract cites the interface, so it is the same
+# gate's subject -- an anchor that rots there rots the same way. It has no
+# command family, which is the one thing below that has to know the difference.
+SSYSTEM = "util/scedit/grammar/ss-grammar.json"
+TARGETS = [MERGED] + FRAGS + [SSYSTEM]
 
 # --------------------------------------------------------------------------
 # git helpers (all reads; nothing here writes to a repository)
@@ -589,7 +594,16 @@ def run():
     for path in TARGETS:
         pin = file_pin(path)
         g = load(path)
-        cmds = g["families"]["commands"] if path == MERGED else g["commands"]
+        # The handler-attribution check below asks "does a string attached to
+        # command X anchor inside X's handler". A contract with no commands has
+        # no such question to answer, and answering it with an empty map is the
+        # honest shape rather than a special case further down.
+        if path == MERGED:
+            cmds = g["families"]["commands"]
+        elif "commands" in g:
+            cmds = g["commands"]
+        else:
+            cmds = {}
         for jp, s in walk(g):
             if jp.startswith("._meta"):
                 tally["skipped(_meta)"] += sum(len(t.elems) for t in tokenize(s))
