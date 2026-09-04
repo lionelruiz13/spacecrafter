@@ -246,6 +246,15 @@ serve any tilted-dome setup): did it ever rotate the heading during a
 show — and if so, which behavior did it depend on? If the combination
 was never used to your knowledge, say exactly that — it downgrades this
 to an engineering call and we stop pressing.
+A second, plainer question about the same offset, from a measurement made
+this week: when a show changes the offset *while the view is following a
+body*, the old software snaps the view back to the show's starting
+direction (`init_view_pos`) — and at narrow fields of view the body it was
+following can leave the image entirely; the new path keeps looking at the
+body. Did any show that changes the offset mid-show rely on that snap-back
+(the view returning to where the show started), or was the view expected
+to stay on what it was looking at? Either answer settles it; "never
+changed it mid-show" settles it too.
 *(ref: §11.92(d), B17 residual; routing + the exercise-boundary
 testimony [vixy 2026-08-31]. **POINTER 2026-09-04, F81 §11.201 → §5.128
 (measured, record-only): the plain offset carries a SECOND corner beside

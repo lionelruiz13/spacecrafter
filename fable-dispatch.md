@@ -177,6 +177,68 @@ if an engine finding mints one). Launch classes: F79 PHOTOMETRIC by design (the
 band re-measure IS the canary's scene arm, run on purpose, six times); F81/F82
 FUNCTIONAL (dump/frame geometry, no photometric claim). Remotes: local contains
 origin on both; push from this host impossible (HOST-EVENTS).
+**Round outcome (session 21 close, 2026-09-05 ~01:00):** F79 → **§11.199** · F80 →
+scedit journal `2026-09-04a` + **§11.200** + **§5.124–§5.127** + SS-40…43 (after
+ONE §0.7 ABORT on four premises of mine, re-dispatched same day to the same
+executor) · F81 → **§11.201** + **§5.128** · F82 → **§11.202** + **§5.129** —
+**FOUR for four** delivered AND supervisor-verified same session, every delivery
+re-verified by my own runs or recomputation (canary both arms; a fresh scedit
+build + ctest 19/19 + the strict corpus run reproducing 4014/0/0; the F81 command
+leg re-launched and reproduced on all six cells; F82's 368-blob `verify` and the
+`VulkanMgr.cpp` site read). Code `ba7a32a8 → 85cc2785` (five executor commits, all
+`util/scedit/`; NO ENGINE BYTE this round — every engine finding record-only);
+harness `d79180b →` this close. IN-SESSION OWNER TRANSMISSIONS, all homed: `/tmp` is
+session-lifetime; three carried trees; the ssh era keeps `:2` open (SDL2 → X11 →
+DISPLAY); the Q-59 collision cause (two concurrent sessions — Fable-5 head → Q-62);
+`CLAUDE_CODE_THRIFTY_SONIC=0` verified at the 2.1.260 bundle and ENACTED at the
+owner's word in the carried `~/.claude/settings.json` (Q-60 RESOLVED). HEADLINE
+FINDINGS: the canary's fingerprint re-banked on the real session with the band
+reproduced a third way and the dwell frame byte-identical across two compositors
+AND two binaries; the stellar-system file has a contract — 142 keys / 422 read
+sites — and 8.2 % of the field data reaches no reader (§5.124), one authored line
+(`halo = on`) makes the two paths disagree (§5.126), a use-after-free reachable
+from the shipped `anchor.ini` (§5.127); the view offset's two couplings are real
+and `set zoom_offset` while tracking is a 29° teleport on the old path only
+(§5.128); a portrait window draws the dome 128 px low with a dead band above it,
+one shared stage, parity empty (§5.129). SUPERVISOR TALLY, session 21: **sixteen
+dispatcher defects** (four ABORT-grade — F80's D16–D19/PROPOSED/`type=`/shipped-copy
+set, root: an unmarked answered node §11.78(e), marker now placed; twelve
+report-only/output-side — the stale B14 re-queue member, "6734", "24 members",
+the harness CONVERT-class gloss, "`cmake -n` empty", the 19:50:18 echo of the
+refuted probe, the base-D pointer, method-dependent bounds, "arm `camera`",
+"10.5°", the `setLocalVision` aim command, F82's stale `ba7a32a8`), all caught via
+report-not-absorb or the §0.7 gate and corrected at their nodes; **four
+instrument slips of mine**, all caught before they became findings (the archival
+reconstruction assert firing on my own proof — nothing written; the §5.104/§11.104
+stub-collision misread; the Q-61 append past the queue's `<EOF/>` marker; the F81
+re-run on the shipped `init_view_pos` instead of the run's `initview`). EXECUTOR
+criterion-integrity instances this round: **twelve** (F79's refuted P2 · F80's
+abort, its corpus-refuted census, the composed-only-≠-new-format recognition, the
+`--strict` first run, the `camera` refusal · F81's searched-not-assumed meridian
+premise, the mutated model refuted four ways · F82's failed-and-kept S_P1, the
+withdrawn resize claim, the predicted-first third launch, its own three marker
+corrections). BASELINES AT CLOSE (v2, root-required): scan **209/256/126** ·
+pair-check **218/193/25/101** D 35 · D2 11 · I 89 · I2 36 · M 81 — every delta over
+the open (204→209 / 253→256 / 125→126 · 214→218 / 189→193 / 25 / 95→101) attributed
+per task in its acceptance line; the scan's +1 unmarked is F81's `§11.201 → §11.159`
+off-axis pair (method citation, adjudicated, no marker owed). Archival pass 14
+(update-s20 + F79–F82) DEFERRED to the next open — recorded here so the deferral is
+not silent. NEXT-ROUND QUEUE, in order: (1) archival pass 14 at open; (2) the R28 /
+R21 / §5.129 / §5.126 owner answers — none dispatchable, all priced; (3) scedit
+items 5 (`app_command_eval.cpp`) · 8 (the emitter, now TWO contracts) · 19's router
+half — Vixy's triage; the anchor.ini THIRD contract (unlocks `camera`); the anchor
+content-vs-sentence audit — Vixy's word; (4) F52(k) · F58 record-only carry; (5)
+the §5.127 members if any is scheduled (own rows first); the Moon's 4.98 px
+crescent (a photometric leg, canary green here); the X-server selector's
+uid-blindness (§11.199(j), one line); (6) engine, on Vixy's word only: §5.116's
+class decision · §5.117's stream fork · §5.119's rider · §5.121 · §5.124–§5.129
+fixes · the three untriaged script requests · §5.100 (authorization unanswered).
+DECISIONS_PENDING open set: EMPTY (its own header, since 2026-08-26 — the fact
+whose grep-shaped misread cost F80's abort). Remotes: GitHub unreachable from this
+host (publickey); local contains origin on both repos, +63 code / +638 harness at
+close (measured `git rev-list --count`, the close commit included — a first draft
+of this line said "+630", reconstructed rather than read: the empirical-sediment
+rule, applied to itself); push from the laptop or after the owner's key lands here.
 
 ---
 
@@ -1037,6 +1099,36 @@ F81 delivered.
 **DoD:** artifacts + table; §11 entry + stub; R21 rider; README; trees clean; WIP
 cleared; baselines LAST.
 **WIP:** — DELIVERED 2026-09-05: §11.202 (+ stub), §5.129 minted record-only, back-markers at §11.198(e) and §11.201(j) in both homes, R21 rider, README section, artifacts `harness/artifacts/f82/`. Three launches (square control, portrait, and a reported scope-expansion third at the default `render_size`), all clean, md5 in == out.
+**ACCEPTED 2026-09-05 (supervisor, session 21).** Verified by my own reads and
+recomputation: §11.202 read in full; seven harness commits (Claude Opus 5, trailer
+`85cc2785` on all seven), predictions `981f334` at 00:20:11 and the supplement
+`dd02c85` at 00:33:14 each PRECEDING the launch they predict (artifacts 00:26:23 /
+00:34:42); both trees clean, engine binary untouched; every flip at its home —
+§5.129 row (2800 chars), §11.198 and §11.201 markers BOTH homes, the R21 rider
+(body unchanged, DRAFT preserved); **`f82_portrait.py verify` over the committed
+artifacts, run by me: 368 blobs recomputed, 0 mismatches**; the site read by me at
+`src/EntityCore/Core/VulkanMgr.cpp:160-163` — `offsetX = (swapW − scaledW) / 2 +
+scaleX` against `offsetY = (swapH − scaledH) + scaleY`, exactly the row's claim.
+No launch of mine: the committed artifacts carry both-ways discrimination (the
+centred model seeded and refuted 24-to-0 at every fov; the default-`render_size`
+control centred; the zero control byte-equal across aspects and to F81's) — §0b.4's
+condition for not re-running is met. Deviations ENDORSED with the executor's
+arguments: the third launch (a §5 row must name its branch — the default branch
+would otherwise have been assumed; predicted first); S_P1 failed-and-kept (the
+extent lines all live inside `dedicatedViewport`); the withdrawn resize claim
+(`regenerateSwapchain` has no caller); "both paths" read as render paths with both
+readback channels taken too; the Moon's 4.98 px lit-blob old/new difference
+recorded, not adjudicated (identical at both aspects — not portrait's, and
+photometric, which this leg is barred from); three marker-form corrections at
+close. DISPATCHER DEFECT reported, mine: the F82 section's precondition still said
+`code HEAD ba7a32a8` — minted before F80 and not refreshed at dispatch; the prompt
+superseded it, output-side, tallied. Executor findings no source stated, each
+measured rather than assumed: `Windows size is` is the REQUESTED size
+(`Swapchain :` and `xwininfo` are the authorities); `x11grab -window_id` alive on
+the real-logind `:2` stack (the root grab still dead); `H == 2R` a coincidence of
+the square-render branch. Standing consequence for the corpus: every recorded
+measurement was square, and the square case is exactly where the three placement
+models coincide — the class of hole that a full corpus cannot see.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
@@ -1142,6 +1234,27 @@ cleared; baselines LAST.
     90-vs-fov/2 scaling is wrong; no ⇒ the whole aim half is the defect. The
     "exact cancellation at fov 180" of §11.198(d) is a MERIDIAN-view statement
     (the two rotations share an axis only there) — corrected at its node.
+  - **THE PORTRAIT HOLE HAS CONTENT, AND IT IS NOT A PARITY QUESTION (F82, §11.202
+    → §5.129, record-only; your stratum — EntityCore/Vulkan):** a window taller than
+    wide, at the field's authored `render_size = 2048`, draws the dome **(H−W)/2 px
+    BELOW the window centre with the top H−W rows never written** — 768x1024 puts
+    the centre at y 639.5 where the same function's X rule gives 511.5; the
+    centred model was seeded and refuted 24-to-0 at every fov, both paths. Cause,
+    read at `src/EntityCore/Core/VulkanMgr.cpp:160-163`: `mouseNorm.offsetX =
+    (swapW − scaledW) / 2 + scaleX` but `offsetY = (swapH − scaledH) + scaleY` — no
+    `/2` on Y; the file's other two writers of the same quantity centre both axes.
+    At the DEFAULT `render_size = 0` the same window centres correctly (the
+    projector becomes aspect-aware) — the defect is one branch's, the field's.
+    **Parity at portrait is EMPTY**: every `square − portrait` cell is exactly 0.0
+    on both paths — the aspect enters downstream of both, at a stage they share.
+    **Your call:** intended projector geometry (a low image for a tilted dome?) or a
+    slip? The site is the read-only submodule; no fix attempted. R21's field census
+    line now retires a KNOWN cost instead of an unknown one. Named-not-adjudicated:
+    the Moon's lit crescent differs old-vs-new by 4.98 px while its centre agrees
+    to 0.09 — a shading question, identical at both aspects, for a photometric leg.
+    Two harness facts corrected/generalized: the PNG↔dump mirror is `png_y =
+    (scissor.offset.y + extent.height) − dump_y` (F81's `H − y` the offset-0 case);
+    `Windows size is` in the applog is the REQUESTED size, `Swapchain :` the truth.
 - **Session-20 decision items (2026-09-01, the anchors/corpus/bad-script round):**
   - **THE GRAMMAR'S ANCHORS RESOLVE AGAIN — two resolutions taken from recorded
     rules, veto-open (F75, scedit journal `2026-09-01a`):** (S1) the sweep moved
