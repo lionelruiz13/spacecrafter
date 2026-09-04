@@ -144,3 +144,31 @@ never rewrite (maintenance invariant). Archival per the standing convention
   re-banked (§11.174(f) fork stands). Standing rule unchanged: HOST-EVENTS
   is the per-host/per-boot display authority — and NEVER launch at `:2` on
   this laptop; it is another user's session.
+- 2026-09-04 20:08 [measured: fable session 21 warm-up — the FIRST desktop round since
+  session 17, host **LovelyFoxDev**] host BOOTED **18:45:08**; foxy's seat0/tty2
+  session 2 owns `:0`/`:1` from 18:45; claude holds REAL logind sessions **14** (user,
+  seatless = remote) + 15 (manager) under `/run/user/1003` — `gnome-remote-desktop` in
+  the runtime dir, an RDP connection ESTAB on :3389 — with a real `/usr/bin/gnome-shell`
+  (pid 43595) + Xwayland **`:2`**/`:3` (pid 43800, born **19:50:18**, auth
+  `/run/user/1003/.mutter-Xwaylandauth.5KBYU3`); `xdpyinfo` **2448x1332**. F43's
+  substitute stack (`/tmp/rt-claude`, headless `--virtual-monitor 2448x1332`) is GONE
+  with `/tmp` and nobody rebuilt it ⇒ the §11.174(f) fork's two branches have collapsed
+  to ONE claude-owned display — the real session, now on `:2` (the number the substitute
+  held; the real session was `:4` on 2026-08-29). CANARY `--no-scene` on `:2`: **exit 2,
+  `compositor.absent`** (the banked command line matches no live process) + NOTE
+  `xserver.restarted` (19:50:18 vs banked 2026-08-29 14:51:26 — read through the refuted
+  /proc-mtime probe, §11.188(j)); the dims member PASSES (2448x1332 == bank);
+  artifacts `harness/artifacts/f56/canary/20260904-201433`. GPU RTX 5090, driver
+  **580.159.03** (the 2026-08-26 entry above recorded 580.636.192 — a different
+  number; the driver class is photometrically inert per §11.176(g), recorded not
+  judged), VRAM 1191/32607 MiB. Host: 24 threads, affinity 0-23 (the §0.5 "12-core
+  affinity" self-cap was this host's earlier state; the session hook now says safe
+  -j24), RAM 59 GiB / 52 avail. **GitHub SSH from this host: `Permission denied
+  (publickey)`** — fetch/push impossible here; local contains origin on both repos
+  (+58 code / +604 harness commits over the stale origin refs). The working tree carries
+  sessions 19–20's LAPTOP commits with no sync daemon running (reflog lists them as local
+  commits ⇒ the home was file-synced by the owner's hand before this session; `build-claude/`
+  was NOT: binary dated Aug 26, 209 compile steps pending ⇒ rebuilt at `ba7a32a8`, -j24,
+  20:11, md5 `c8e12950`). Config/ssystem md5 pristine (`03fbee59`/`545a51ef`); no
+  spacecrafter process. `lock-enabled`/`idle-delay` not re-measured here (the 2026-08-31
+  settings were the laptop's; executors keep the GetActive check-and-record).
