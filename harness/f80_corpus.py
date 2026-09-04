@@ -157,11 +157,14 @@ TRACES = {
         "[Sedna] line 2426, `orbit_LongOfPericenter 95.58754` with no '='. Already "
         "recorded engine-side at INTENT S11.109(i) as the one structural divergence "
         "between the two parsers of this file. THREE slips in one section (this plus "
-        "the two case slips above), and all three are the CamelCase spelling the "
-        "engine's own error messages use -- orbit_creator_cor.cpp:184 and :208 say "
-        "`orbit_MeanMotion`, `orbit_Period`, `orbit_Epoch`, `orbit_MeanAnomaly`, none "
-        "of which any reader accepts. That is a hypothesis about how the slips got "
-        "there, not a measurement; the case mismatch itself is measured."),
+        "the two case slips above), all three in CamelCase -- AND THAT CASE IS NOT AN "
+        "ARBITRARY MISTAKE. It is the SCRIPT convention, where it works: the command "
+        "parser lowercases every argument key (app_command_interface.cpp:181) and no "
+        "stellar-system-FILE reader does, so `orbit_Eccentricity` is a live key on a "
+        "`body action load` line -- 3128 shipped script lines rely on exactly that -- "
+        "and a dead one in ssystem.ini. Both halves measured. The engine's own error "
+        "messages spell those keys the same way (orbit_creator_cor.cpp:184, :208), "
+        "which does not help."),
 
     # ---- the two readers of one file disagree --------------------------------
     ("ss-mid-line-comment", None): (
@@ -175,6 +178,105 @@ TRACES = {
         "the INTENT S11.109(i) pair, on the comment axis. It stops being inert the "
         "moment such a value is read as a string rather than a number."),
 }
+
+
+# --- the SCRIPT corpus arm --------------------------------------------------
+# Flipping `body` to a complete vocabulary (part (5)) made its keys checkable for
+# the first time, and 3384 shipped findings appeared at once. C3 does not care
+# that they are new; it cares that every one is TRUE. They are 21 distinct
+# subjects: three misspelled keys, and eighteen VALUES that arrive in a key
+# position because one earlier token on their line shifted the positional
+# pairing -- the class INTENT S5.122 records, whose `color0.5,0.5,0.5` instance
+# F76 already dispositioned at fscripts/06old.sts:286.
+SCRIPT_TRACES = {
+    "big_halo": (
+        "TRUE-authored-slip", "SS (data)",
+        "no read site: the only occurrences of the string in src/ are prose in "
+        "experimentalModule/bodyModules/StarModule.hpp naming the SHADER "
+        "sun_big_halo.vert and the real keys tex_big_halo / big_halo_size",
+        "2779 lines. The keys that exist are `tex_big_halo` (which is what ENABLES the "
+        "big halo, by being set at all) and `big_halo_size`."),
+    "orbit_visualisation_period": (
+        "TRUE-authored-slip", "SS (data)",
+        "zero occurrences in src/; the key that exists is "
+        "`orbit_visualization_period`, with 5 read sites",
+        "496 lines. One letter: the British 's' where the engine spells a 'z'."),
+    "sideral_period": (
+        "TRUE-authored-slip", "SS (data)",
+        "zero occurrences in src/",
+        "90 lines, and doubly inert: `sidereal_period` -- the spelling this one is "
+        "missing an 'e' from -- has no reader either (it is in this contract's dead-key "
+        "list)."),
+}
+SCRIPT_VALUE_TRACE = (
+    "TRUE-pairing-shift", "SS (data) + parent S5.122",
+    "app_command_interface.cpp:164 -- `while (commandstr >> key >> value)` pairs "
+    "tokens POSITIONALLY, so one glued or missing separator shifts every pair after "
+    "it by one",
+    "A VALUE arriving where a key belongs: the line's own earlier defect, surfacing "
+    "one token later. Same mechanism as the `color0.5,0.5,0.5` instance F76 "
+    "dispositioned at fscripts/06old.sts:286.")
+
+
+def looks_like_a_value(subject):
+    """A subject that is plainly a VALUE and not a key spelling.
+
+    Deliberately narrow, and each arm is a shape actually observed in the
+    corpus: a number, a file path, a value word the body grammar itself uses, or
+    the glued `color0.5,0.5,0.5` shape. Anything else falls through to
+    UNADJUDICATED rather than being absorbed by a catch-all -- which is the
+    point, and which is how the first run of this arm found the one subject
+    (`8`) the earlier test missed.
+    """
+    if subject in ("true", "false", "ell_orbit"):
+        return True
+    try:
+        float(subject)
+        return True
+    except ValueError:
+        pass
+    if "/" in subject or subject.endswith((".png", ".jpg", ".jpeg", ".ojm")):
+        return True
+    if subject.startswith("color") and "," in subject:
+        return True
+    return False
+
+
+def script_corpus(scedit, grammar, tsv_rows):
+    """Disposition the body-key findings the part-(5) flip made visible."""
+    root = os.path.join(HOME, ".spacecrafter", "scripts")
+    if not os.path.isdir(root):
+        return 0, 0
+    files = []
+    for d, _sub, names in os.walk(root):
+        files += [os.path.join(d, n) for n in names if n.endswith(".sts")]
+    files.sort()
+    p = subprocess.run([scedit, "--grammar", grammar, "--check"] + files,
+                       capture_output=True)
+    if p.returncode > 1:
+        raise SystemExit("scedit exited %d on the script corpus" % p.returncode)
+    total = unadj = 0
+    for line in p.stdout.decode("latin-1").split("\n"):
+        if "is not an argument of command 'body'" not in line:
+            continue
+        m = LINE_RE.match(line)
+        if not m:
+            raise SystemExit("unparsed: %r" % line)
+        f, n, sev, msg, lid = m.groups()
+        sm = SUBJ_RE.match(msg)
+        subj = sm.group(1) if sm else ""
+        tr = SCRIPT_TRACES.get(subj)
+        if tr is None and looks_like_a_value(subj):
+            tr = SCRIPT_VALUE_TRACE
+        if tr is None:
+            verdict, routed, ground, note = "UNADJUDICATED", "", "", ""
+            unadj += 1
+        else:
+            verdict, routed, ground, note = tr
+        total += 1
+        tsv_rows.append(("scripts", os.path.basename(f), n, sev, lid, subj,
+                         verdict, routed, ground, note))
+    return total, unadj
 
 
 def run(scedit, grammar, path):
@@ -218,6 +320,14 @@ def main():
                          verdict, routed, ground, note))
             by_verdict[verdict] = by_verdict.get(verdict, 0) + 1
             by_id[lid] = by_id.get(lid, 0) + 1
+
+    ntotal, nunadj = script_corpus(a.scedit, a.grammar, rows)
+    if ntotal:
+        print("script-corpus body-key findings (new at F80 part 5): %d" % ntotal)
+        print("  UNADJUDICATED among them: %d" % nunadj)
+        unadjudicated += nunadj
+        for r in rows[-ntotal:]:
+            by_verdict[r[6]] = by_verdict.get(r[6], 0) + 1
 
     if a.tsv:
         with open(a.tsv, "w", encoding="ascii", errors="backslashreplace") as fh:
