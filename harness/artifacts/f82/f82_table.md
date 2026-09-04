@@ -130,7 +130,28 @@ Every body is measured twice per aspect: the engine's own dual dump (old render 
 
 *fov 90: 17 bodies share ONE luminance blob at (1614.021, 765.603) (Adrastea, Amalthea, Ananke, Callisto, Carme, Elara, Europa, Ganymede, Himalia, Io, Jupiter, Leda, Lysithea, Metis, Pasiphae, Sinope, Thebe) - the frame channel cannot separate them, the dump channel can; the first is listed above and the rest are the same measurement.*
 
-## 7. Environment asserts
+## 7. SUPPLEMENTARY LEG - the same portrait window at the DEFAULT `render_size` (0), which is what `checkConfig.cpp:106` writes into a generated config.ini
 
-- **square**: GetActive `(false,)`, no other spacecrafter before the launch, real `~/.spacecrafter` md5 in `03fbee59`/`545a51ef` == out `03fbee59`/`545a51ef`; fails: none
+This is a THIRD launch and a scope expansion, taken so that any mint from this leg can name which branch it fires in rather than assume it. Predictions in `f82_predictions_supplement.json`, committed before it ran.
+
+| reading | portrait, render_size 2048 (field, authored) | portrait, render_size 0 (default) | predicted for the default branch |
+|---|---|---|---|
+| applog `Scaling` / `Viewport` / `Swapchain` / `Rect` | all four present ([0.375] / (2048, -2048) / (768, 1024) / (2048, 2048, 0, 0)) | ABSENT - all four are printed only inside `dedicatedViewport` | absent (the prediction named only three of the four; `Swapchain` is in that function too - prediction S_P1 partly WRONG, kept) |
+| FrameBuffer 'main 0' | (2048, 2048) | (768, 1024) | (768, 1024) |
+| projector.viewport | [0, 0, 2048, 2048] | [0, 128, 768, 768] | [0, 128, 768, 768] |
+| projector.viewportCenter | [1024, 1024, 0] | [384, 512, 0] | [384, 512, 0] |
+| projector.viewportRadius | 1024 | 384 | 384 |
+| channel A readback dims | [2048, 2048] | [768, 768] | [768, 768] |
+| target in channel A (new) | (1024.18, 1024.044) at R 1024 | (384.136, 384.028) at R 384 | (384, 384) +- the instrument zero |
+| target in channel A (old) | (1024.18, 1024.044) at R 1024 | (384.184, 384.046) at R 384 | (384, 384) +- the instrument zero |
+| **dome centre in the WINDOW** (new) | [383.504, 639.473] | (384.134, 512.028) | (384, 512) - CENTRED |
+| **dome centre in the WINDOW** (old) | [383.502, 639.49] | (384.181, 512.048) | (384, 512) - CENTRED |
+
+**The 128 px is the whole finding**: the same window, the same scene, the same binary; the authored branch puts the dome centre at y 639.5 and the default branch at y 512.0. The default branch also makes the PROJECTOR aspect-aware (viewport [0,128,768,768], radius 384) where the authored branch keeps it square and window-blind.
+
+
+## 8. Environment asserts
+
 - **portrait**: GetActive `(false,)`, no other spacecrafter before the launch, real `~/.spacecrafter` md5 in `03fbee59`/`545a51ef` == out `03fbee59`/`545a51ef`; fails: none
+- **square**: GetActive `(false,)`, no other spacecrafter before the launch, real `~/.spacecrafter` md5 in `03fbee59`/`545a51ef` == out `03fbee59`/`545a51ef`; fails: none
+- **defaultrender (supplementary)**: GetActive `(false,)`, no other spacecrafter before the launch, real `~/.spacecrafter` md5 in `03fbee59`/`545a51ef` == out `03fbee59`/`545a51ef`; fails: none

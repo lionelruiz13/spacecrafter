@@ -1049,9 +1049,13 @@ Square: Swapchain (1024,1024), Scaling 0.5, zero control old (1024.180, 1024.044
 (a) PASSES — Scaling 0.375, projector IDENTICAL (viewport [0,0,2048,2048], R
 1024) at all three fovs, readback 2048^2, zero control byte-equal to square's.
 The blit map measured: dome centre (383.50, 639.49) vs predicted (383.5, 639.5),
-centred-letterbox mutation refuted 24/24 bodies to 0/24. NEXT: table refit
-(compact parity + candidate counts), then the §11.202 entry, §5 mint, R21 rider,
-README.
+centred-letterbox mutation refuted 24/24 bodies to 0/24. Checkpoint 3: a THIRD
+launch (scope expansion, argued) at the DEFAULT `render_size = 0` — the branch a
+generated config takes: there the projector IS aspect-aware ([0,128,768,768],
+R 384), the readback is 768^2 and the dome centre sits at (384.1, 512.0),
+CENTRED. So the bottom-alignment is the authored-`render_size` branch's alone.
+Parity: every `sq - pt` exactly 0.0, both channels, every body, every fov.
+NEXT: §11.202 entry + stub, §5.129 mint, R21 rider, README, baselines.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 

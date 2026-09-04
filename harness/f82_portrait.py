@@ -709,9 +709,59 @@ def build_table(d):
               f"cannot separate them, the dump channel can; the first is listed above "
               f"and the rest are the same measurement.*")
 
-    A("\n## 7. Environment asserts\n")
-    for a in ("square", "portrait"):
-        r = R[a]
+    dr_path = d / "defaultrender" / "f82_defaultrender.json"
+    if dr_path.exists():
+        dr = json.loads(dr_path.read_text())
+        A("\n## 7. SUPPLEMENTARY LEG - the same portrait window at the DEFAULT "
+          "`render_size` (0), which is what `checkConfig.cpp:106` writes into a "
+          "generated config.ini\n")
+        A("This is a THIRD launch and a scope expansion, taken so that any mint "
+          "from this leg can name which branch it fires in rather than assume it. "
+          "Predictions in `f82_predictions_supplement.json`, committed before it ran.\n")
+        A("| reading | portrait, render_size 2048 (field, authored) | portrait, render_size 0 (default) | predicted for the default branch |")
+        A("|---|---|---|---|")
+        pt = _pt(R["portrait"], 180.0)
+        d0 = dr["points"][0]
+        A(f"| applog `Scaling` / `Viewport` / `Swapchain` / `Rect` | all four present "
+          f"({R['portrait']['applog_extents'].get('scaling')} / "
+          f"{tuple(R['portrait']['applog_extents'].get('viewport', []))} / "
+          f"{tuple(R['portrait']['applog_extents'].get('swapchain', []))} / "
+          f"{tuple(R['portrait']['applog_extents'].get('rect', []))}) | "
+          f"{'ABSENT' if not dr['applog_extents'].get('scaling') else 'present'} - "
+          f"all four are printed only inside `dedicatedViewport` | absent (the "
+          f"prediction named only three of the four; `Swapchain` is in that function too "
+          f"- prediction S_P1 partly WRONG, kept) |")
+        A(f"| FrameBuffer 'main 0' | "
+          f"{tuple(R['portrait']['applog_extents'].get('framebuffer_main0', []))} | "
+          f"{tuple(dr['applog_extents'].get('framebuffer_main0', []))} | (768, 1024) |")
+        A(f"| projector.viewport | {pt['projector']['viewport']} | "
+          f"{d0['projector']['viewport']} | [0, 128, 768, 768] |")
+        A(f"| projector.viewportCenter | {pt['projector']['viewportCenter']} | "
+          f"{d0['projector']['viewportCenter']} | [384, 512, 0] |")
+        A(f"| projector.viewportRadius | {pt['projector']['viewportRadius']} | "
+          f"{d0['projector']['viewportRadius']} | 384 |")
+        A(f"| channel A readback dims | "
+          f"{pt['paths']['old'].get('frame_dims')} | {d0.get('frame_dims')} | [768, 768] |")
+        for p in dr["points"]:
+            A(f"| target in channel A ({p['path']}) | (1024.18, 1024.044) at R 1024 | "
+              f"({p['A_brightest']['cx']}, {p['A_brightest']['cy']}) at R 384 | "
+              f"(384, 384) +- the instrument zero |")
+        for p in dr["points"]:
+            A(f"| **dome centre in the WINDOW** ({p['path']}) | "
+              f"{(pt['map_fit'][p['path']] or {}).get('dome_centre_in_window')} | "
+              f"({p['B_brightest']['cx']}, {p['B_brightest']['cy']}) | (384, 512) - CENTRED |")
+        A("\n**The 128 px is the whole finding**: the same window, the same scene, "
+          "the same binary; the authored branch puts the dome centre at y 639.5 and "
+          "the default branch at y 512.0. The default branch also makes the "
+          "PROJECTOR aspect-aware (viewport [0,128,768,768], radius 384) where the "
+          "authored branch keeps it square and window-blind.\n")
+
+    A("\n## 8. Environment asserts\n")
+    allr = dict(R)
+    if dr_path.exists():
+        allr["defaultrender (supplementary)"] = json.loads(dr_path.read_text())
+    for a in allr:
+        r = allr[a]
         A(f"- **{a}**: GetActive `{r['screensaver_GetActive'].strip()}`, "
           f"no other spacecrafter before the launch, real `~/.spacecrafter` md5 in "
           f"`{r['real_home_md5_in']['config.ini'][:8]}`/`{r['real_home_md5_in']['ssystem.ini'][:8]}` "
