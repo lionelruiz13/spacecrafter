@@ -957,6 +957,40 @@ HOST-EVENTS 2026-09-04 (`:2`, auth `.5KBYU3`, 2448x1332) still answers `xdpyinfo
 §11.198(d) marker both homes; §5 mint or retraction; README; trees clean; WIP
 cleared; baselines re-derived LAST with deltas stated.
 **WIP:** — DELIVERED 2026-09-04: §11.201 (entry+stub), §5.128 minted (record-only), §11.198(d) back-marker both homes, §11.92(a) + B17 row + DEPLOYMENT-MAP + R28 pointer annotated, `harness/f81_{predictions.json,offset.py,run.sh,table.py}` + README section, artifacts `harness/artifacts/f81/`. 12/12 table cells on the pre-committed prediction.
+**ACCEPTED 2026-09-05 (supervisor, session 21).** Verified by my own launch and reads:
+§11.201 read in full; six harness commits (Claude Opus 5, trailer `85cc2785` on all
+six), predictions commit `1fe6af1` at 23:10:46 PRECEDING the first artifact (prep
+23:23:57), both trees clean, engine binary untouched; every flip at its home —
+§5.128 row (2986 chars), §11.198 and §11.92 markers BOTH homes, B17 row,
+DEPLOYMENT-MAP, the R28 POINTER (question not written into the body — the
+executor's correct call, it is this session's to word); the pre-launch canary
+record lives in the tree (`artifacts/f56/canary/20260904-230122`, exit 0 — the
+report's `/tmp` path was the console capture only). **My own re-run of the
+`command` leg** (`f81_run.sh command`, the executor's jd and `initview`, comm
+probe 0, GetActive false, md5 in==out): all six cells reproduce — fov-180 old at
+the zero (1024.18, 1024.044), fov-90 old at y 1331.245 (0.300 R DOWN), fov-40 old
+OFF FRAME, new 716.8 (0.300 R UP) at all three fovs — five to the last printed
+digit, one (fov-180 new cx 1024.141 vs 1024.14) a last-digit float inside the
+0.185 px instrument zero. Supervisor instrument slip, tallied: my FIRST re-run
+extracted the shipped default `init_view_pos` (the zenith) instead of the run's
+top-level `initview` and measured the re-aim onto the zenith — the new-path cells
+matched to the pixel regardless (the new path does not re-aim), which is (h)'s
+teleport reproduced by accident; caught by the old-path mismatch, re-run
+correctly. Deviations ENDORSED with the executor's arguments: the stated scene
+(no source names one for geometry); `init_view_pos` written in the farm config
+(forced by the sink's unconditional re-aim); the meridian premise SEARCHED, not
+assumed — the sharpest piece of criterion integrity here, a premise no source
+stated, found at warm-up, satisfied by measurement; the fourth (`teleport`) launch;
+the R28 pointer only. DISPATCHER DEFECTS reported by the executor, both mine:
+"10.5° at fov 90" (0.3 × 45° = 13.5 — an arithmetic slip in the section AND the
+prompt, fitting no model) and "a shipped command that aims through
+`setLocalVision`" (none exists — its runtime callers are the sink itself, the
+anchor loader and the eye-relative toggle; the executor named `select` + `flag
+track_object on`, the one arm site wired to both paths). Also corrected at its
+node by the executor: §11.198(d)'s "exact cancellation at fov 180" is a
+MERIDIAN-VIEW statement. Standing harness trap now recorded: the written PNG is the
+vertical mirror of the OLD dump's screen px (`b3_ladder.screen_px` flips only the
+new one).
 
 ### F82 — EXTENSION: the portrait leg — one launch with a window taller than wide (768x1024) on both paths: what the projection, the readback, the dump and the fisheye transfer do when the assumed aspect inverts, every difference classified against the square baseline (§11.198(e): the owner-named verification-surface hole, "a cheap candidate for a supervising session"; R21's harness-side half) [S]
 
@@ -1085,6 +1119,29 @@ cleared; baselines LAST.
     F80 from that stale node and the executor aborted at the gate on four false
     premises of mine. Marker placed both homes. The class: an answered decision
     whose question-node never learned it was answered.
+  - **THE VIEW OFFSET'S TWO COUPLINGS ARE REAL (F81, §11.201 → §5.128, record-only)
+    — and one of them is a TELEPORT on a shipped command:** on the old path the aim
+    compensation undoes a FIXED `offset × 90°` while the draw applies `offset ×
+    fov/2`, so a body the operator aimed at lands `offset × (90° − fov/2)` from the
+    drawn centre — dead centre at fov 180 (the dome case), 13.5° at fov 90, **21°
+    at fov 40 = off the rendered image**; measured 12/12 cells on a prediction
+    committed before the launch, the mutated model refuted four ways, and
+    reproduced by my own re-run. The new path has ONE coupling and reads 0.300
+    dome radii everywhere. Two more things the run found: (1) the CONFIG channel's
+    compensation can never act — at startup `view_offset_transition` is 0, so
+    `setLocalVision`'s correction is multiplied by zero; only the runtime `set
+    zoom_offset` fires it — same scalar, same sink, two behaviours; (2) **`set
+    zoom_offset 0.3` while tracking Jupiter at fov 40 THROWS the old view 29.4°
+    onto `init_view_pos` and puts Jupiter 1.36 dome radii off the image, while the
+    new path keeps its aim** — `Core::restoreViewOffset`'s own comment already
+    orders its calls around this. Nothing changed (your bounding: old-as-spec is
+    the safest default). **Decision, routed to R28's basis (the tester's
+    knows-or-expects; the one installation that drove the offset), worded by me
+    for the final pass:** *when a show sets `zoom_offset` mid-show, does it expect
+    the view to snap back to `init_view_pos`?* — yes ⇒ the design, and only the
+    90-vs-fov/2 scaling is wrong; no ⇒ the whole aim half is the defect. The
+    "exact cancellation at fov 180" of §11.198(d) is a MERIDIAN-view statement
+    (the two rotations share an axis only there) — corrected at its node.
 - **Session-20 decision items (2026-09-01, the anchors/corpus/bad-script round):**
   - **THE GRAMMAR'S ANCHORS RESOLVE AGAIN — two resolutions taken from recorded
     rules, veto-open (F75, scedit journal `2026-09-01a`):** (S1) the sweep moved
