@@ -507,7 +507,7 @@ gdm's, claude's) with IDENTICAL command lines — a cmdline-only match cannot
 discriminate any more.
 
 **OWNER RULING AT DISPATCH (§11.174(f) + (h); asked by the supervisor before this
-task runs, recorded here):** ⟨FILLED AT DISPATCH⟩. If the ruling is anything other
+task runs, recorded here):** **[vixy 2026-09-04, in-session answer to the supervisor's one question, option chosen verbatim: *"Real session on :2 (Recommended)"* — re-bank the fingerprint on the real claude logind session serving `:2`; the photometric band is NOT edited — six f51 runs must reproduce it, else STOP and report; the mtime probe fixed at its root. The alternatives offered and not chosen: rebuild the `/tmp` substitute (a mitigation-class act, §11.174(h)); hold F79 and dispatch F80 first.]** If the ruling is anything other
 than "re-bank on the real session on `:2`", this section is revised before
 dispatch, never adapted by the executor.
 
