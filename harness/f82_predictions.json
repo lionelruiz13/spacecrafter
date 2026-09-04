@@ -1,0 +1,63 @@
+{
+  "task": "F82 - the portrait leg (window taller than wide) - INTENT 11.198(e)'s verification-surface hole",
+  "written": "2026-09-05, BEFORE any launch of this task (the 11.99->11.100 FM-4 rule)",
+  "binary_md5_expected": "c8e12950",
+  "code": "master-beta @ 85cc2785, engine sources ba7a32a8",
+  "aspects": {"portrait": [768, 1024], "square_control": [1024, 1024]},
+
+  "model_read_at_source": {
+    "M0_window": "main.cpp:296-305 - screen_w/screen_h are read only when autoscreen=false && remote_display=false (both false in the field config); sdl->createWindow(APP_NAME, curW, curH, fullscreen=false, ...) [observed: main.cpp:303]",
+    "M1_curMin": "main.cpp:308 `auto curMin = std::min(curW, curH);` -> VulkanMgrCreateInfo{.width=curMin, .height=-curMin}: the SQUARE min side is what VulkanMgr is ASKED for",
+    "M2_swapExtent": "VulkanMgr.cpp:539-552 chooseSwapExtent returns capabilities.currentExtent whenever it is not UINT32_MAX; on X11 that is the WINDOW's real size, so the ask at M1 is overridden and the swapchain carries the window's aspect",
+    "M3_renderSize": "app.cpp:107-108 renderSize = config [video] render_size = 2048 -> VulkanMgr::dedicatedViewport(2048, -2048)",
+    "M4_appWH": "app.cpp:266-272 `if (renderSize) width = height = renderSize;` -> Core(2048, 2048) [app.cpp:159] -> Projector(2048, 2048, 60) [core.cpp:93]",
+    "M5_projector": "projector.cpp:69-84 setViewportDisk(2048,2048): t = min(w,h) = 2048, vec_viewport = [0,0,2048,2048], viewport_center = (1024,1024), viewport_radius = 1024 - a function of the RENDER size only, never of the window",
+    "M6_readback": "app.cpp:146-147 `SaveScreenInterface(VkRect2D{0,0,renderSize,renderSize}, ...)` when renderSize != 0 -> the app's own readback is renderSize x renderSize whatever the window is",
+    "M7_blitmap": "VulkanMgr.cpp:145-163 dedicatedViewport: scalingFactor = min(swapW/2048, swapH/2048); scaledW = scaledH = scalingFactor*2048 (SQUARE); mouseNorm.scaleX = 0.5*(scaledW-1); mouseNorm.scaleY = 0.5*(scaledH-1); mouseNorm.offsetX = (swapW - scaledW)/2 + scaleX; mouseNorm.offsetY = (swapH - scaledH) + scaleY  <-- the Y term has NO /2",
+    "M8_blit": "app.cpp:1107-1113 the offscreen 2048^2 image is blitted to dstOffsets rectToScreen({-1,-1}) .. rectToScreen({1,1}) [VulkanMgr.hpp:122-124], i.e. exactly the mouseNorm rectangle of M7; only that rectangle of the swapchain image is ever written"
+  },
+
+  "predictions": {
+    "P1_applog_windowsize": {"portrait": "Windows size is 768x1024px", "square": "Windows size is 1024x1024px",
+      "note": "sdl_facade.cpp:195-199 logs the REQUESTED size (getLogInfos(w,h) is passed the arguments, not a queried size) - it proves the config was read, NOT that the window was created at that size"},
+    "P2_applog_swapchain": {"portrait": "Swapchain : (768, 1024)", "square": "Swapchain : (1024, 1024)",
+      "role": "DISCRIMINATING CHECK (a) - this is the authoritative extent read (M2)",
+      "mutation_M2a": "if currentExtent were UINT32_MAX the ask at M1 would stand and this would read (768, 768)",
+      "mutation_M2b": "(1024, 1024) at portrait = the config was not honoured = the leg measured nothing, and it must be said"},
+    "P3_applog_viewport": {"portrait": ["Scaling : 0.375", "Viewport : (2048, -2048)", "Rect : (2048, 2048) offset=(0, 0)"],
+      "square": ["Scaling : 0.5", "Viewport : (2048, -2048)", "Rect : (2048, 2048) offset=(0, 0)"],
+      "square_is_recorded": "artifacts/f81/prep/prep.applog.gz lines 60-63 read Scaling 0.5 / Viewport (2048,-2048) / Swapchain (1024,1024) / Rect (2048,2048) offset=(0,0)"},
+    "P4_dump_projector": "IDENTICAL between the two aspects at every fov: viewport [0,0,2048,2048], viewportRadius 1024, projectionType FISHEYE, fov as commanded, camera halfFov as commanded (M4/M5)",
+    "P5_app_readback": "2048 x 2048 PNG in BOTH aspects (M6); and H == 2*viewportRadius is MEASURED here (PNG dimensions vs the projector's own dump), not inherited from f81_table.py's constant",
+    "P6_zero_control": "Sun old-dump screen exactly [1024,1024]; new-dump screen ~[0,0]; app-readback blob centroid within 0.25 px of (1024,1024) in BOTH aspects (F81's instrument zero was <= 0.185 px over six cells). If portrait moves this, every downstream reading is wrong and the leg says so.",
+    "P7_grab_dims": {"portrait": [768, 1024], "square": [1024, 1024]},
+    "P8_render_to_window_map": {
+      "form": "window_x = a * render_x + b ; window_y = a * render_y + d, fitted from >= 3 body centroids at fov 180 (the dump gives each body's render px; the grab gives the same bodies)",
+      "portrait": {"a": 0.375, "b": 0.0, "d": 256.0, "disc_columns": [0, 767], "disc_rows": [256, 1023], "dome_centre_in_window": [384.0, 640.0]},
+      "square": {"a": 0.5, "b": 0.0, "d": 0.0, "disc_columns": [0, 1023], "disc_rows": [0, 1023], "dome_centre_in_window": [512.0, 512.0]},
+      "mutation_M8a_centred_letterbox": "the model a reader would assume, and the one the X axis obeys: d = (swapH - scaledH)/2 = 128 -> disc rows [128, 895], dome centre (384, 512). It differs from the prediction by 128 px and one measurement decides between them.",
+      "mutation_M8b_crop": "no scaling at all (a = 1, the 2048 render clipped to the window): the Sun would sit at (1024,1024) of a 768x1024 window, i.e. off the frame entirely"},
+    "P9_unwritten_band": "at portrait the rows OUTSIDE the blit rectangle (predicted 0..255) are never a blit destination, so nothing this app draws reaches them; predicted CONSTANT across two grabs 1.5 s apart. If they change between grabs, that is a second finding.",
+    "P10_parity": "NO old-vs-new divergence that exists only at portrait. Reason: the projector, the render target and the app readback are aspect-independent (P4/P5) and the one aspect-dependent stage (the blit, M7/M8) is downstream of both paths and shared by them. Predicted: |old-new| per body at portrait == |old-new| at square within the instrument zero, on both the dump channel and the frame channel.",
+    "P11_mouse_not_measured": "screenToRect (VulkanMgr.hpp:118-120) reads the SAME mouseNorm as the blit, so pointer mapping stays consistent with what is displayed [derived: source]. NOT measured here - this leg has no input channel; stated so it is not mistaken for a measurement."
+  },
+
+  "classification_committed_in_advance": {
+    "expected_by_aspect": "the LETTERBOX itself: the fisheye disc is fitted by scaling the whole 2048^2 render by min(swapW,swapH)/2048, so the drawn disc diameter in the window is min(W,H) and nothing is cropped. Predictor = M7's scalingFactor.",
+    "anomaly_candidate": "the VERTICAL PLACEMENT: offsetX is centred ((swapW-scaledW)/2) and offsetY is not ((swapH-scaledH), no /2), so the disc is pinned to the BOTTOM of a portrait window and the unwritten band is all at the top. The aspect predicts a letterbox; it does not predict an ASYMMETRIC one. If measured, this is a 5.79 candidate: reachable (one config edit) with consequence (the disc sits 128 px below where the same code's own X rule would put it, and a band of the window is never written).",
+    "if_the_anomaly_does_not_reproduce": "then M7 is being overridden somewhere this reading did not find, and the finding is that instead - to be traced, not absorbed."
+  },
+
+  "scene": {
+    "choice": "F81's scene, and it is a valid one for this leg: shipped default config + shipped default solar system, time FROZEN at jd 2461288.9841951793 (F81's measured meridian transit of the Sun, altitude 53.400 deg), atmosphere/landscape/stars/milky_way/nebulae/planet_names/planet_orbits off, meteors 0, timerate 0, tracking the Sun then released.",
+    "why_valid": "(1) it is the scene whose zero control is already RECORDED at 1024^2 (f81_table.md), so the square control is a cross-launch reproduction and not only an internal baseline; (2) the aspect question is about geometry, and a frozen sky with several separated bright bodies is what a geometric map fit needs; (3) view_offset stays 0 everywhere here - F81's variable is deliberately held at its neutral value.",
+    "one_addition": "a star-field frame (flag stars on + milky_way on) at fov 180 per path, taken AFTER the measurement points, as a second and independent read of the disc extent in the window. Turned back off; it is a probe, not the scene."
+  },
+
+  "discriminating_checks": {
+    "a": "the swapchain extent reads 768x1024 at portrait (P2); 1024x1024 would mean the leg measured nothing",
+    "b": "the square control reproduces the recorded 1024^2 extent AND F81's zero: centre (1024.0 +- 0.2, 1024.0 +- 0.2)",
+    "c": "every difference row carries expected/anomaly with its predictor",
+    "d": "real ~/.spacecrafter config.ini 03fbee59 / ssystem.ini 545a51ef md5 in == out around every launch"
+  }
+}

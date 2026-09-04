@@ -1036,7 +1036,14 @@ F81 delivered.
 
 **DoD:** artifacts + table; §11 entry + stub; R21 rider; README; trees clean; WIP
 cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-05 — §0.7 gate PASSED on every enumerated premise (both HEADs,
+binary `c8e12950` at 0 compile/link steps, §11 202 free, `### F` count 4, canary
+`--no-scene` exit 0 / 30 members, GetActive `(false,)`, comm probe 0, md5
+`03fbee59`/`545a51ef`, baselines 205/254/126 and 217/192/25/100 · 35/11/89/36/81
+reproduced). Checkpoint 1: predictions + instrument committed BEFORE any launch
+(`f82_predictions.json`, `f82_portrait.py`, `f82_run.sh`; the instrument
+reproduces F81's recorded zero (1024.180, 1024.044) from the committed frame).
+NEXT: the square control launch, then portrait.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
