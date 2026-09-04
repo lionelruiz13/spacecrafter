@@ -383,9 +383,27 @@ def measure_point(app, res, tag, fov, target):
         # tried and which one holds a lit pixel is recorded.
         if png:
             if path == "old":
+                # MEASURED (F81 prep + config legs, artifacts/f81): the written
+                # PNG is the VERTICAL MIRROR of the old dump's screen px --
+                # every body of the fov-180 zero frame sits at (x, H - y_dump)
+                # and none at (x, y_dump).  `rectToRender` maps y with
+                # (y*0.5+0.5) while the readback's row order runs the other way;
+                # b3_ladder's `screen_px` already encodes the flip for the NEW
+                # dump and nothing recorded it for the OLD one.  Both candidates
+                # are tried and the one that holds the body is recorded.
                 s = e["bodyOld"]["screen"]
-                e["centroid"] = centroid(png, tuple(s) if s else None)
-                e["seed_convention"] = "old dump screen px, direct"
+                if s:
+                    H = 2 * (R or 1024)
+                    b1, b2 = blob_at(png, (s[0], H - s[1])), blob_at(png, tuple(s))
+                    e["centroid"] = {"seeded": b1 if b1.get("found") else b2,
+                                     "seeded_yflip": b1, "seeded_ydirect": b2,
+                                     "brightest": blob_at(png, None)}
+                    e["seed_convention"] = ("y-flip" if b1.get("found")
+                                            else ("y-direct" if b2.get("found")
+                                                  else "neither"))
+                else:
+                    e["centroid"] = centroid(png, None)
+                    e["seed_convention"] = "no old screen in dump"
             else:
                 s = e["bodyNew"]["screen"]
                 if s:

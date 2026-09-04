@@ -1,0 +1,1042 @@
+{
+ "stage": "run",
+ "binary": "/home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter",
+ "binary_md5": "c8e129509132e357d586346e47983d74",
+ "target": "Sun",
+ "fovs": [
+  180.0,
+  90.0,
+  40.0
+ ],
+ "t_start": 1788557060.478,
+ "display": ":2",
+ "screensaver_GetActive": "(false,)",
+ "no_instance_before_launch": true,
+ "real_home_md5_in": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "points": [
+  {
+   "tag": "config_fov180",
+   "fov": 180.0,
+   "fov_settled": true,
+   "fov_polls": 1,
+   "fov_secs": 0.85,
+   "paths": {
+    "new": {
+     "screen_a": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       3.93340027e-09,
+       0.299999982
+      ]
+     },
+     "screen_b": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       3.93340027e-09,
+       0.299999982
+      ]
+     },
+     "screen_c": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       3.93340027e-09,
+       0.299999982
+      ]
+     },
+     "stationary": true,
+     "nav": {
+      "localVision": [
+       0.6011140539466523,
+       2.064840853299721e-07,
+       0.809413040188788
+      ],
+      "equVision": [
+       -0.9638381249077685,
+       0.2714137754591602,
+       0.11763590840028132
+      ],
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "flagTraking": 0,
+      "viewingMode": 1
+     },
+     "navPlans": {
+      "flagAutoMove": 0,
+      "moveCoef": 1,
+      "moveSpeed": 0.00019999999494757503,
+      "moveLocalPos": false,
+      "zoomingMode": 0,
+      "flagChangeHeading": false,
+      "startHeading": 0,
+      "endHeading": 0,
+      "moveToCoef": 0,
+      "moveToMult": 0,
+      "moveAim": [
+       -0.9559893709209158,
+       0.2692035910960695,
+       0.11667797233073428
+      ],
+      "moveStart": [
+       -0.9559893720935836,
+       0.2692035905283074,
+       0.11667796403255844
+      ]
+     },
+     "camera": {
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "viewOffsetEff": 0.300000012,
+      "halfFov": 1.57079637,
+      "tracked": ""
+     },
+     "control": {
+      "reported": 0.3,
+      "old": 0.3,
+      "new": 0.3
+     },
+     "bodyOld": {
+      "screen": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "dist": 1.0082100629806519,
+      "visible": true,
+      "screenSz": 6.016506671905518
+     },
+     "bodyNew": {
+      "screen": [
+       3.93340027e-09,
+       0.299999982
+      ],
+      "dist": 1.00821006,
+      "visible": true,
+      "screenSize": 0.00293774763
+     },
+     "frame": "frames/config_fov180_new.png",
+     "centroid": {
+      "seeded": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": [
+        1024.0000040278019,
+        716.800018432
+       ],
+       "found": true,
+       "cx": 1024.14,
+       "cy": 716.839,
+       "npx": 335,
+       "peak": 255.0,
+       "bbox": [
+        1014,
+        1034,
+        706,
+        726
+       ],
+       "touches_window_edge": false
+      },
+      "seeded_yflip": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": [
+        1024.0000040278019,
+        716.800018432
+       ],
+       "found": true,
+       "cx": 1024.14,
+       "cy": 716.839,
+       "npx": 335,
+       "peak": 255.0,
+       "bbox": [
+        1014,
+        1034,
+        706,
+        726
+       ],
+       "touches_window_edge": false
+      },
+      "seeded_ydirect": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": [
+        1024.0000040278019,
+        1331.199981568
+       ],
+       "found": false,
+       "why": "no lit pixel within 24 px of the dump's position",
+       "local_max": 0.0
+      },
+      "brightest": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": null,
+       "found": true,
+       "cx": 1024.14,
+       "cy": 716.839,
+       "npx": 335,
+       "peak": 255.0,
+       "bbox": [
+        1014,
+        1034,
+        706,
+        726
+       ],
+       "touches_window_edge": false
+      }
+     },
+     "seed_convention": "y-flip"
+    },
+    "old": {
+     "screen_a": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       3.93340027e-09,
+       0.299999982
+      ]
+     },
+     "screen_b": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       3.93340027e-09,
+       0.299999982
+      ]
+     },
+     "screen_c": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       3.93340027e-09,
+       0.299999982
+      ]
+     },
+     "stationary": true,
+     "nav": {
+      "localVision": [
+       0.6011140539466523,
+       2.064840853299721e-07,
+       0.809413040188788
+      ],
+      "equVision": [
+       -0.9638381249077685,
+       0.2714137754591602,
+       0.11763590840028132
+      ],
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "flagTraking": 0,
+      "viewingMode": 1
+     },
+     "navPlans": {
+      "flagAutoMove": 0,
+      "moveCoef": 1,
+      "moveSpeed": 0.00019999999494757503,
+      "moveLocalPos": false,
+      "zoomingMode": 0,
+      "flagChangeHeading": false,
+      "startHeading": 0,
+      "endHeading": 0,
+      "moveToCoef": 0,
+      "moveToMult": 0,
+      "moveAim": [
+       -0.9559893709209158,
+       0.2692035910960695,
+       0.11667797233073428
+      ],
+      "moveStart": [
+       -0.9559893720935836,
+       0.2692035905283074,
+       0.11667796403255844
+      ]
+     },
+     "camera": {
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "viewOffsetEff": 0.300000012,
+      "halfFov": 1.57079637,
+      "tracked": ""
+     },
+     "control": {
+      "reported": 0.3,
+      "old": 0.3,
+      "new": 0.3
+     },
+     "bodyOld": {
+      "screen": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "dist": 1.0082100629806519,
+      "visible": true,
+      "screenSz": 6.016506671905518
+     },
+     "bodyNew": {
+      "screen": [
+       3.93340027e-09,
+       0.299999982
+      ],
+      "dist": 1.00821006,
+      "visible": true,
+      "screenSize": 0.00293774763
+     },
+     "frame": "frames/config_fov180_old.png",
+     "centroid": {
+      "seeded": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": [
+        1023.9692993164062,
+        1331.199951171875
+       ],
+       "found": false,
+       "why": "no lit pixel within 24 px of the dump's position",
+       "local_max": 0.0
+      },
+      "brightest": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": null,
+       "found": true,
+       "cx": 1024.145,
+       "cy": 716.845,
+       "npx": 337,
+       "peak": 255.0,
+       "bbox": [
+        1014,
+        1034,
+        706,
+        726
+       ],
+       "touches_window_edge": false
+      }
+     },
+     "seed_convention": "old dump screen px, direct"
+    }
+   },
+   "viewportRadius": 1024,
+   "gatesViewportRadius": 1024
+  },
+  {
+   "tag": "config_fov90",
+   "fov": 90.0,
+   "fov_settled": true,
+   "fov_polls": 1,
+   "fov_secs": 0.85,
+   "paths": {
+    "new": {
+     "screen_a": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       7.64943398e-09,
+       0.299999714
+      ]
+     },
+     "screen_b": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       7.64943398e-09,
+       0.299999714
+      ]
+     },
+     "screen_c": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       7.64943398e-09,
+       0.299999714
+      ]
+     },
+     "stationary": true,
+     "nav": {
+      "localVision": [
+       0.6011140539466523,
+       2.064840853299721e-07,
+       0.809413040188788
+      ],
+      "equVision": [
+       -0.9638381249077685,
+       0.2714137754591602,
+       0.11763590840028132
+      ],
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "flagTraking": 0,
+      "viewingMode": 1
+     },
+     "navPlans": {
+      "flagAutoMove": 0,
+      "moveCoef": 1,
+      "moveSpeed": 0.00019999999494757503,
+      "moveLocalPos": false,
+      "zoomingMode": 0,
+      "flagChangeHeading": false,
+      "startHeading": 0,
+      "endHeading": 0,
+      "moveToCoef": 0,
+      "moveToMult": 0,
+      "moveAim": [
+       -0.9559893709209158,
+       0.2692035910960695,
+       0.11667797233073428
+      ],
+      "moveStart": [
+       -0.9559893720935836,
+       0.2692035905283074,
+       0.11667796403255844
+      ]
+     },
+     "camera": {
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "viewOffsetEff": 0.300000012,
+      "halfFov": 0.785398185,
+      "tracked": ""
+     },
+     "control": {
+      "reported": 0.3,
+      "old": 0.3,
+      "new": 0.3
+     },
+     "bodyOld": {
+      "screen": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "dist": 1.0082100629806519,
+      "visible": true,
+      "screenSz": 12.033013343811035
+     },
+     "bodyNew": {
+      "screen": [
+       7.64943398e-09,
+       0.299999714
+      ],
+      "dist": 1.00820982,
+      "visible": true,
+      "screenSize": 0.00587549619
+     },
+     "frame": "frames/config_fov90_new.png",
+     "centroid": {
+      "seeded": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": [
+        1024.0000078330204,
+        716.8002928640001
+       ],
+       "found": true,
+       "cx": 1024.116,
+       "cy": 716.831,
+       "npx": 387,
+       "peak": 255.0,
+       "bbox": [
+        1013,
+        1034,
+        706,
+        727
+       ],
+       "touches_window_edge": false
+      },
+      "seeded_yflip": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": [
+        1024.0000078330204,
+        716.8002928640001
+       ],
+       "found": true,
+       "cx": 1024.116,
+       "cy": 716.831,
+       "npx": 387,
+       "peak": 255.0,
+       "bbox": [
+        1013,
+        1034,
+        706,
+        727
+       ],
+       "touches_window_edge": false
+      },
+      "seeded_ydirect": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": [
+        1024.0000078330204,
+        1331.199707136
+       ],
+       "found": false,
+       "why": "no lit pixel within 24 px of the dump's position",
+       "local_max": 0.0
+      },
+      "brightest": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 255.0,
+       "seed": null,
+       "found": true,
+       "cx": 1024.116,
+       "cy": 716.831,
+       "npx": 387,
+       "peak": 255.0,
+       "bbox": [
+        1013,
+        1034,
+        706,
+        727
+       ],
+       "touches_window_edge": false
+      }
+     },
+     "seed_convention": "y-flip"
+    },
+    "old": {
+     "screen_a": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       7.64943398e-09,
+       0.299999714
+      ]
+     },
+     "screen_b": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       7.64943398e-09,
+       0.299999714
+      ]
+     },
+     "screen_c": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       7.64943398e-09,
+       0.299999714
+      ]
+     },
+     "stationary": true,
+     "nav": {
+      "localVision": [
+       0.6011140539466523,
+       2.064840853299721e-07,
+       0.809413040188788
+      ],
+      "equVision": [
+       -0.9638381249077685,
+       0.2714137754591602,
+       0.11763590840028132
+      ],
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "flagTraking": 0,
+      "viewingMode": 1
+     },
+     "navPlans": {
+      "flagAutoMove": 0,
+      "moveCoef": 1,
+      "moveSpeed": 0.00019999999494757503,
+      "moveLocalPos": false,
+      "zoomingMode": 0,
+      "flagChangeHeading": false,
+      "startHeading": 0,
+      "endHeading": 0,
+      "moveToCoef": 0,
+      "moveToMult": 0,
+      "moveAim": [
+       -0.9559893709209158,
+       0.2692035910960695,
+       0.11667797233073428
+      ],
+      "moveStart": [
+       -0.9559893720935836,
+       0.2692035905283074,
+       0.11667796403255844
+      ]
+     },
+     "camera": {
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "viewOffsetEff": 0.300000012,
+      "halfFov": 0.785398185,
+      "tracked": ""
+     },
+     "control": {
+      "reported": 0.3,
+      "old": 0.3,
+      "new": 0.3
+     },
+     "bodyOld": {
+      "screen": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "dist": 1.0082100629806519,
+      "visible": true,
+      "screenSz": 12.033013343811035
+     },
+     "bodyNew": {
+      "screen": [
+       7.64943398e-09,
+       0.299999714
+      ],
+      "dist": 1.00820982,
+      "visible": true,
+      "screenSize": 0.00587549619
+     },
+     "frame": "frames/config_fov90_old.png",
+     "centroid": {
+      "seeded": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 254.0,
+       "seed": [
+        1023.9692993164062,
+        1331.199951171875
+       ],
+       "found": false,
+       "why": "no lit pixel within 24 px of the dump's position",
+       "local_max": 0.0
+      },
+      "brightest": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 254.0,
+       "seed": null,
+       "found": true,
+       "cx": 1024.097,
+       "cy": 716.829,
+       "npx": 379,
+       "peak": 254.0,
+       "bbox": [
+        1013,
+        1034,
+        706,
+        727
+       ],
+       "touches_window_edge": false
+      }
+     },
+     "seed_convention": "old dump screen px, direct"
+    }
+   },
+   "viewportRadius": 1024,
+   "gatesViewportRadius": 1024
+  },
+  {
+   "tag": "config_fov40",
+   "fov": 40.0,
+   "fov_settled": true,
+   "fov_polls": 1,
+   "fov_secs": 0.85,
+   "paths": {
+    "new": {
+     "screen_a": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       1.70835932e-08,
+       0.299999446
+      ]
+     },
+     "screen_b": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       1.70835932e-08,
+       0.299999446
+      ]
+     },
+     "screen_c": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       1.70835932e-08,
+       0.299999446
+      ]
+     },
+     "stationary": true,
+     "nav": {
+      "localVision": [
+       0.6011140539466523,
+       2.064840853299721e-07,
+       0.809413040188788
+      ],
+      "equVision": [
+       -0.9638381249077685,
+       0.2714137754591602,
+       0.11763590840028132
+      ],
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "flagTraking": 0,
+      "viewingMode": 1
+     },
+     "navPlans": {
+      "flagAutoMove": 0,
+      "moveCoef": 1,
+      "moveSpeed": 0.00019999999494757503,
+      "moveLocalPos": false,
+      "zoomingMode": 0,
+      "flagChangeHeading": false,
+      "startHeading": 0,
+      "endHeading": 0,
+      "moveToCoef": 0,
+      "moveToMult": 0,
+      "moveAim": [
+       -0.9559893709209158,
+       0.2692035910960695,
+       0.11667797233073428
+      ],
+      "moveStart": [
+       -0.9559893720935836,
+       0.2692035905283074,
+       0.11667796403255844
+      ]
+     },
+     "camera": {
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "viewOffsetEff": 0.300000012,
+      "halfFov": 0.34906584,
+      "tracked": ""
+     },
+     "control": {
+      "reported": 0.3,
+      "old": 0.3,
+      "new": 0.3
+     },
+     "bodyOld": {
+      "screen": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "dist": 1.0082100629806519,
+      "visible": true,
+      "screenSz": 27.07427978515625
+     },
+     "bodyNew": {
+      "screen": [
+       1.70835932e-08,
+       0.299999446
+      ],
+      "dist": 1.00821006,
+      "visible": true,
+      "screenSize": 0.013219865
+     },
+     "frame": "frames/config_fov40_new.png",
+     "centroid": {
+      "seeded": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 246.0,
+       "seed": [
+        1024.0000174935994,
+        716.800567296
+       ],
+       "found": true,
+       "cx": 1024.049,
+       "cy": 716.816,
+       "npx": 785,
+       "peak": 246.0,
+       "bbox": [
+        1008,
+        1039,
+        701,
+        732
+       ],
+       "touches_window_edge": false
+      },
+      "seeded_yflip": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 246.0,
+       "seed": [
+        1024.0000174935994,
+        716.800567296
+       ],
+       "found": true,
+       "cx": 1024.049,
+       "cy": 716.816,
+       "npx": 785,
+       "peak": 246.0,
+       "bbox": [
+        1008,
+        1039,
+        701,
+        732
+       ],
+       "touches_window_edge": false
+      },
+      "seeded_ydirect": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 246.0,
+       "seed": [
+        1024.0000174935994,
+        1331.199432704
+       ],
+       "found": false,
+       "why": "no lit pixel within 24 px of the dump's position",
+       "local_max": 0.0
+      },
+      "brightest": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 246.0,
+       "seed": null,
+       "found": true,
+       "cx": 1024.049,
+       "cy": 716.816,
+       "npx": 785,
+       "peak": 246.0,
+       "bbox": [
+        1008,
+        1039,
+        701,
+        732
+       ],
+       "touches_window_edge": false
+      }
+     },
+     "seed_convention": "y-flip"
+    },
+    "old": {
+     "screen_a": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       1.70835932e-08,
+       0.299999446
+      ]
+     },
+     "screen_b": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       1.70835932e-08,
+       0.299999446
+      ]
+     },
+     "screen_c": {
+      "old": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "new": [
+       1.70835932e-08,
+       0.299999446
+      ]
+     },
+     "stationary": true,
+     "nav": {
+      "localVision": [
+       0.6011140539466523,
+       2.064840853299721e-07,
+       0.809413040188788
+      ],
+      "equVision": [
+       -0.9638381249077685,
+       0.2714137754591602,
+       0.11763590840028132
+      ],
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "flagTraking": 0,
+      "viewingMode": 1
+     },
+     "navPlans": {
+      "flagAutoMove": 0,
+      "moveCoef": 1,
+      "moveSpeed": 0.00019999999494757503,
+      "moveLocalPos": false,
+      "zoomingMode": 0,
+      "flagChangeHeading": false,
+      "startHeading": 0,
+      "endHeading": 0,
+      "moveToCoef": 0,
+      "moveToMult": 0,
+      "moveAim": [
+       -0.9559893709209158,
+       0.2692035910960695,
+       0.11667797233073428
+      ],
+      "moveStart": [
+       -0.9559893720935836,
+       0.2692035905283074,
+       0.11667796403255844
+      ]
+     },
+     "camera": {
+      "viewOffset": 0.3,
+      "viewOffsetTransition": 1,
+      "viewOffsetEff": 0.300000012,
+      "halfFov": 0.34906584,
+      "tracked": ""
+     },
+     "control": {
+      "reported": 0.3,
+      "old": 0.3,
+      "new": 0.3
+     },
+     "bodyOld": {
+      "screen": [
+       1023.9692993164062,
+       1331.199951171875
+      ],
+      "dist": 1.0082100629806519,
+      "visible": true,
+      "screenSz": 27.07427978515625
+     },
+     "bodyNew": {
+      "screen": [
+       1.70835932e-08,
+       0.299999446
+      ],
+      "dist": 1.00821006,
+      "visible": true,
+      "screenSize": 0.013219865
+     },
+     "frame": "frames/config_fov40_old.png",
+     "centroid": {
+      "seeded": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 247.0,
+       "seed": [
+        1023.9692993164062,
+        1331.199951171875
+       ],
+       "found": false,
+       "why": "no lit pixel within 24 px of the dump's position",
+       "local_max": 0.0
+      },
+      "brightest": {
+       "w": 2048,
+       "h": 2048,
+       "max_frame": 247.0,
+       "seed": null,
+       "found": true,
+       "cx": 1024.004,
+       "cy": 716.807,
+       "npx": 776,
+       "peak": 247.0,
+       "bbox": [
+        1008,
+        1039,
+        701,
+        732
+       ],
+       "touches_window_edge": false
+      }
+     },
+     "seed_convention": "old dump screen px, direct"
+    }
+   },
+   "viewportRadius": 1024,
+   "gatesViewportRadius": 1024
+  }
+ ],
+ "fails": [],
+ "channel": "config",
+ "offset": 0.3,
+ "jd": 2461288.9841951793,
+ "initview": [
+  0.5962190452088474,
+  2.0566700573552617e-07,
+  0.8028218047177142
+ ],
+ "config_edits": {
+  "init_view_pos": "1e-04,1e-04,1",
+  "view_offset": "0"
+ },
+ "farm_config_md5": "7b7f3769f350cb41a4ead536be62fe68",
+ "startup_nav": {
+  "localVision": [
+   0.5962190628051758,
+   2.0566700698054774e-07,
+   0.8028218150138855
+  ],
+  "viewOffset": 0.3,
+  "viewOffsetTransition": 0
+ },
+ "startup_camera": {
+  "viewOffset": 0.3,
+  "viewOffsetTransition": 0,
+  "viewOffsetEff": 0
+ },
+ "arm": {
+  "settled": true,
+  "polls": 3,
+  "secs": 4.16,
+  "old_transition": 1,
+  "new_transition": 1
+ },
+ "aim_before": {
+  "localVision": [
+   0.5962190449139703,
+   2.0480263826321458e-07,
+   0.8028218049367065
+  ],
+  "angle_to_initview_deg": 0.0
+ },
+ "transition_after_release": {
+  "old": 1,
+  "new": 1
+ },
+ "real_home_md5_out": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "t_end": 1788557156.14
+}
