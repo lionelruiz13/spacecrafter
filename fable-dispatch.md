@@ -661,24 +661,59 @@ file (`["key"]` / `"key")` forms — an upper bound, not the census):
 authority per §11.78(d), `:754-909` at THAT entry's pin — re-resolve) ·
 `ModuleLoaderMgr.cpp` 1; also `orbit.cpp`, `orbit_creator_cor.cpp` (the
 `coord_func` families) and `CameraAnchors.cpp` (anchor.ini — a DIFFERENT file,
-B4's; OUT of scope, stated). The field file `~/.spacecrafter/ssystem.ini`: 2518
-lines, 90 sections, ISO-8859, md5 `545a51ef`, untracked — the ONE legacy corpus
-(no shipped copy exists in the code tree: shipped data lives in `spacecrafter-data`,
-D9). Composed files: `~/.spacecrafter/modularSystem/*.ini.disabled` (51Peg,
-Antares, Arcturus, … — machine-owned twins, ALL disabled) — the composed corpus,
-read-only. The B24 grammar is §11.78(d): `declare`→`type=` (B24's row: `type=`
-replaces `declare=`+`module=`), `relation = orbiting | grounded | inner`
-(superseding `bound_to_surface`; both-present-and-disagreeing = §2(f) error),
-`compose = deduced | explicit`, plus D16–D19's spellings (DECISIONS_PENDING,
-sign-off pending — the grammar records them as PROPOSED, the B28 protocol). C4
-(scedit INTENT §2): legacy files ISO-8859; writes into LEGACY files must never
-introduce new-format constructs (comments/new keys break downgrade, D13) ⇒ HARD
-lint in the legacy regime; `englishName` is THE identity, globally unique — a
-duplicate silently drops the second body (D34, §11.109(c)) ⇒ cross-file lint. The
-stub's "base-D census residual": the parent's census series is §11.108's (base-B …
-base-F, cited by B37/B38) — the executor LOCATES base-D's ssystem residual there
-and states it; if no such residual exists, that is a §0.7 REPORT, not a premise to
-repair.
+B4's; OUT of scope, stated). **TWO legacy corpora** [corrected at the first
+executor's §0.7 ABORT, 2026-09-04 — the first draft said "the ONE legacy corpus,
+no shipped copy in the tree"; `find -name ssystem.ini` missed the file because its
+name is `default_ssystem.ini`]: (i) the field file `~/.spacecrafter/ssystem.ini`:
+2518 lines, 90 body sections + the `[end]` sentinel (91 `^\[` lines — `[end]` is
+LOAD-BEARING: `ProtoSystem::load` flushes a body on the NEXT header, so it is never
+an unknown section), ISO-8859, md5 `545a51ef`, untracked; (ii) the SHIPPED
+`data/default_ssystem.ini`, TRACKED in the code repo: 1918 lines, 79 sections, 78
+`type =` keys, md5 `c4b426df` — same legacy grammar. Composed files:
+`~/.spacecrafter/modularSystem/*.ini.disabled` (18 files — 51Peg, Antares,
+Arcturus, SolarSystem, … — machine-owned twins, ALL disabled) — the composed
+corpus, read-only. The B24 grammar is §11.78(d) AS RATIFIED AND LANDED — **not**
+"proposed / sign-off pending" [the first draft's claim; corrected at the ABORT]:
+D16–D19 were ANSWERED by the owner on 2026-07-23 (`DECISIONS_PENDING.md:149-164`
+→ §11.79(j)–(m)); D16's respell LANDED (§11.89, code `f911646b`): ONE `type=` key
+replaces `declare=`+`module=`; `relation = orbiting | grounded | inner`
+(superseding `bound_to_surface`, kept as alias; both-present-and-disagreeing =
+§2(f) error); `compose = deduced | explicit`; module sections bind to their node
+with `body=`. **THE `type=` KEY IS ALSO A LEGACY KEY** — 90 of 90 field sections
+and 78 of 79 shipped sections carry `type = Sun|Planet|Moon|Dwarf|Asteroid|…`, read
+as the body type by BOTH loaders (`protosystem.cpp:519` `setPlanetType(param["type"])`;
+`ModularSystem.cpp:1103` `bodyTypeString = param["type"]`) — and in the composed
+regime the SAME key names a module's family on module sections
+(`ModularSystem.cpp:1627` `moduleTypeFromName(params["type"], isFamily)`); the two
+roles never collide because a module section carries `body=` and a node never does
+(the loader's own comment, `ModularSystem.cpp:1618-1626`, citing §11.79(j)). The
+node's `type` today is the LEGACY body type — §11.89's second veto point records it
+verbatim: *"transitional body-type-under-`type=` on nodes (full `type=BODY` needs
+Tier-B emission beyond B25-emit's A1/A2)"* — so `type = BODY` on a node is NOT yet a
+valid spelling (read as a legacy body type; what `setPlanetType` returns for an
+unknown string is read at its code and recorded); the contract records D16–D19 as
+RATIFIED (D16 with its override) and the node `type` domain as TRANSITIONAL with
+that veto point cited, never as PROPOSED. C4 (scedit INTENT §2): legacy files
+ISO-8859; writes into LEGACY files must never introduce new-format constructs
+(comments/new keys break downgrade, D13) ⇒ HARD lint in the legacy regime;
+`englishName` is THE identity, globally unique — a duplicate silently drops the
+second body (D34, §11.109(c)) ⇒ cross-file lint. The stub's "base-D census
+residual" LIVES at `claude/capability-surface.md` §2 (the six-base table §11.108(a)
+names as the audit's authority — the first draft pointed one hop short, at
+§11.108 itself): base **D** = *"data-authorable behaviour: every `param["…"]` key
+read by a loader"*, state *"DONE for the new path; old-path-only keys
+(`bodyModule/`) not swept"* — so item 4's census IS that residual: the
+old-path-only keys (`protosystem.cpp`, `ssystem_factory.cpp`, `solarsystem.cpp:85`,
+`orbit*.cpp`) swept for the first time, joined to the new-path set. Two legacy
+READERS disagree about comments [first executor's finding, read at the code]:
+`ProtoSystem::load` (`protosystem.cpp:121-140`, the frozen baseline, deliberately
+NOT on the shared line grammar per its own comment at `:112`) treats `#` as a
+comment at COLUMN 0 only; `tools/ini_line.hpp` (the ONE authority since
+§11.115(b), consumed by `ssystem_factory.cpp`, `ModularSystem.cpp`,
+`ModularSystemFormat.*`, `CameraAnchors.cpp`) treats `#` anywhere on the line and
+carries D13 explicitly ("a READING relaxation only"). A mid-line `#` in a legacy
+file is therefore a LIVE divergence between two readers of the same file — the
+§5.39 class on the comment axis — a §5 candidate for this task to record.
 
 **Mandate:**
 (1) **The key census, from the LOADER, not from the file:** every key the engine
@@ -697,19 +732,27 @@ regimes as data, not code; `_meta` in the F75 form (pins, counts); `anchor_gate`
 coverage extended to this file — the gate's population count grows and is recorded.
 (3) **The linter, two regimes:** legacy — unknown key; duplicate `englishName`
 across the file AND across enabled composed files; new-format construct in a legacy
-file (HARD: `type=`, `relation=`, `compose=`, and comment lines IF the legacy parser
-has none — read what the legacy parser does with a `#` line FIRST, at its code);
-value-domain violations. Composed — the full B24 grammar with the legacy set as its
-node-declaration base. Diagnostics in D6's shape with a span (item 10's form);
+file (HARD: `relation=`, `compose=`, `body=`, a `[Name:FAMILY]` module-section
+header, a `type=` VALUE outside the legacy body-type domain — `type=` itself is a
+LEGACY key and MUST be silent on all 90 field / 78 shipped occurrences, see above —
+and a mid-line `#`, which column-0-only `ProtoSystem::load` does NOT read as a
+comment; a column-0 `#` is read by both readers and is NOT a finding); value-domain
+violations. Composed — the full B24 grammar with the legacy set as its
+node-declaration base, node `type` = the legacy body-type domain (TRANSITIONAL,
+§11.89 veto point 2 cited in the contract), module `type` = the
+`defaultModuleName` family vocabulary, the `body=` binding the discriminator. Diagnostics in D6's shape with a span (item 10's form);
 `--check` selects the regime by file LOCATION (§11.78(d): `~/.spacecrafter/
 modularSystem/<Name>.ini` vs `ssystem.ini`), never by sniffing content silently — a
 location/content mismatch is itself a finding.
 (4) **C3 on the field file:** `--check ~/.spacecrafter/ssystem.ini` — every finding
 TRUE, dispositioned one by one in F76's form (`dispositions.tsv`), zero false
 positives, true findings routed (SS-n for authored data slips, parent §5 for engine
-behaviour); the composed `.disabled` files likewise; a `field_corpus_gate` twin of
-`shipped_corpus_gate` (counts + md5, NEVER copying the field file into the repo —
-the F76 precedent). ISO-8859 at the boundary: read latin-1, report positions in
+behaviour); the composed `.disabled` files likewise; TWO corpus gates: the FIELD
+file through a `field_corpus_gate` twin of `shipped_corpus_gate` (counts + md5,
+NEVER copying the field file into the repo — the F76 precedent), and the SHIPPED
+`data/default_ssystem.ini` — already tracked, so it takes the line-for-line
+`corpus_gate` shape (expected-output record, C3's record-not-silencer form); both
+dispositioned. ISO-8859 at the boundary: read latin-1, report positions in
 BYTES and the decoded line (F70's decoder is the reference: greedy UTF-8 +
 per-byte fallback — a whole-file Latin-1 decode mojibakes mixed files).
 (5) **What it unlocks, armed or explicitly deferred:** `body`/`camera`
@@ -729,18 +772,25 @@ loader defect seen while reading = §5 candidate, recorded); NO data file writte
 the field `ssystem.ini` and the composed twins are READ-ONLY, md5 asserted at open
 and close (`545a51ef`); NO launch (item 4 is read-and-check; a "what does the
 engine do with X" question that needs a launch is recorded as OWED, F77's form);
-no command-grammar content change (anchor strings excepted only if the
-`args_complete` hook needs a field — say so); checkpoints at (1), (2), (3), (4),
-(5); no `run_in_background`.
+no command-grammar content change — the `args_complete` schema field ALREADY
+EXISTS and `body`/`camera`/`flyto` already answer `false` "because their downstream
+vocabulary is the stellar-system contract's to state" (`util/scedit/README.md` §
+The grammar file; first executor's finding), so part (5) flips a value fed from the
+new contract, it adds no field; checkpoints at (1), (2), (3), (4), (5); no
+`run_in_background`.
 
 **Discriminating checks:** (a) the census's site count vs the quoted-key upper
-bounds (103/34/81) — every quoted key either IS a read site or is explained (a
-non-key string); (b) decoys on SCRATCH copies: one unknown key ⇒ exactly one
-finding; one `type=` line in the scratch LEGACY copy ⇒ exactly one HARD finding;
-the same line in a scratch COMPOSED file ⇒ zero; (c) the duplicate-`englishName`
-rule fires on a scratch pair and is silent on the real field (or its real hits are
-dispositioned TRUE); (d) the field run's finding count with its disposition table
-summing exactly; (e) `anchor_gate` population before/after (6734 → N) and green;
+bounds — METHOD-DEPENDENT figures, state yours: the dispatcher's regex gave
+103/34/81/1, the first executor's union-of-forms method 103/37/74/1 — every quoted
+key either IS a read site or is explained (a non-key string); (b) decoys on SCRATCH
+copies: one unknown key ⇒ exactly one finding; one `relation=` line in the scratch
+LEGACY copy ⇒ exactly one HARD finding, and one `type = BODY` on a legacy node ⇒
+exactly one value-domain finding, while the copy's own 90 `type =` lines stay
+SILENT; the same `relation=` line in a scratch COMPOSED file ⇒ zero; (c) the
+duplicate-`englishName` rule fires on a scratch pair and is silent on the real field
+(or its real hits are dispositioned TRUE); (d) each corpus run's finding count with
+its disposition table summing exactly; (e) `anchor_gate` record before/after
+(`6667 / 2 / 69` → the new figures, the file re-recorded deliberately) and green;
 (f) ctest 16/16 → N/N in a FRESH build dir; (g) the ISO-8859 round trip: a
 byte-exact re-emit of a read section (scratch only, never the real file).
 
@@ -756,14 +806,41 @@ INTENT §5 item 4 is the four-line stub, unstruck; field
 `ssystem.ini` md5 `545a51ef`, 2518 lines, 90 sections; `~/.spacecrafter/
 modularSystem/` holds only `.ini.disabled` files; §11.78(d) names `loadBody` at
 `ModularSystem.cpp:754-909` at ITS pin (line drift at HEAD is expected, not an
-abort); DECISIONS_PENDING D16–D19 still open; live `### F` count **4**; the next
-free §11 number is NOT this task's to assume — verified at record time if needed.
+abort; `loadBody` observed at `:1037` on 2026-09-04); DECISIONS_PENDING D16–D19
+**ANSWERED 2026-07-23** (`DECISIONS_PENDING.md:149-164`, propagated §11.79(j)–(m);
+the file's own header: "THE OPEN SET IS EMPTY") and D16's respell LANDED (§11.89,
+code `f911646b`) with its second veto point — transitional body-type-under-`type=`
+on nodes — STANDING **[the first draft said "still open" — a grep-shaped read of a
+state file; dispatcher defect, corrected at the ABORT]**; `data/default_ssystem.ini`
+tracked (`git ls-files`), md5 `c4b426df`, 1918 lines, 79 sections, 78 `type =`
+keys; field `ssystem.ini` carries 90 `type =` lines and 0 `relation`/`compose`
+lines; `ModularSystem.cpp:1618-1626` carries the two-roles comment citing
+§11.79(j); live `### F` count **4**; the next free §11 number is NOT this task's
+to assume — verified at record time if needed.
 
 **DoD:** census + contract + linter + gates committed (code repo, scedit subtree);
 journal `2026-09-04a`; item 4 struck; READMEs both; C3 half discharged; field md5
 unchanged; fresh-build ctest green; ASCII gate; trees clean; WIP cleared; parent
 baselines re-derived LAST (unchanged unless a parent entry was minted — state).
-**WIP:** —
+**WIP:** — **ABORTED at the §0.7 gate, first dispatch 2026-09-04** (executor run, 0
+mutations, both trees byte-identical at `ba7a32a8` / `8652be2`; ctest 16/16 baseline
+paid in a fresh dir and the dir removed): FOUR premises false, ALL the dispatcher's —
+(B1) "D16–D19 still open" (answered 2026-07-23 → §11.79(j)–(m)); (B2) "recorded as
+PROPOSED" (ratified, D16 with an override already shipped by the generator); (B3)
+`type=` listed as a HARD new-format construct while it is a LEGACY key on 90/90 field
+sections — the rule would have manufactured 90 false positives on the very file
+mandate (4) requires zero on, and check (b) was unsatisfiable as written; (B4) "no
+shipped copy in the tree" (`data/default_ssystem.ini` is tracked). Two report-only:
+the base-D pointer one hop short (§11.108 → `capability-surface.md` §2); two
+quoted-key upper bounds method-dependent (37/74 vs 34/81). ROOT, mine: the section
+was derived from §11.78(d)(e) read at its PRE-RULING state — §11.78(e) ("Suspended
+for Vixy") carried NO back-marker to §11.79(j)–(m)/§11.89, the ledger gap that made
+the stale read possible; marker placed in both homes with this revision. The
+`type=` fork the executor routed to the owner is NOT open: §11.89's second veto point
+and the loader's own comment (`ModularSystem.cpp:1618-1626`) record the transitional
+resolution — section revised in place from the record, re-dispatched same day to the
+same executor with its warm-up intact. Baselines unmoved (204/253/125 ·
+215/190/25/95).
 
 ### F81 — The view offset's two couplings, measured on one launch: old re-aims by a FIXED 90° and draws by fov/2 — a 21° aim-vs-draw mismatch predicted at fov 40 / offset 0.3 and zero at fov 180 — the new path's single coupling beside it; §5 minted if the prediction holds, the design-or-defect question ROUTED (§11.198(d) "a next supervising session's call"; B17 residual; R28's entry point) [S]
 

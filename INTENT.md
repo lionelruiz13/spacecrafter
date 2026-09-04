@@ -782,7 +782,7 @@ Ordered by priority-to-the-refactoring; each entry = observation + where to look
 
 77. **D3 COMPLETED — the data-ecosystem model lands, and it reframes more than D3 (2026-07-22, Vixy, recorded by Claude Fable 5).** Facts [vixy]: `~/.spacecrafter` currently holds the latest data version (to Vixy's knowledge); deliveries are **frozen individually**, updates **offline** […] → INTENT/11.77.md
 
-78. **B24 wave opened — the STRUCTURAL-OBJECT COMPOSITION criterion stated; grammar derived; composition-fit inventory (2026-07-22, Claude Fable 5).** → INTENT/11.78.md
+78. **B24 wave opened — the STRUCTURAL-OBJECT COMPOSITION criterion stated; grammar derived; composition-fit inventory (2026-07-22, Claude Fable 5).** **[ANSWERED 2026-07-23 → §11.79(j)–(m) (D16–D19) and LANDED → §11.89 (`type=` respell, two veto points); marker placed 2026-09-04 — (e)'s "Suspended for Vixy" had no pointer to its answers, and the F80 section was minted from that stale node (first executor aborted at the gate).]** → INTENT/11.78.md
 
 79. **DECISIONS_PENDING batch D4–D14 + D16–D20 answered by Vixy (2026-07-23, recorded by Claude Fable 5); D15 is the ONLY survivor. Two answers carry new domain constraints → §2.0 D11 (1 ms/frame soft-realtime) + §2.0 D12 (acting defaults must be logged).** […] → INTENT/11.79.md
 
