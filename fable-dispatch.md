@@ -241,7 +241,10 @@ origin on both; push from this host impossible (HOST-EVENTS).
      mid-task):** session affinity is now 12 cores, so `-j$(nproc)` self-caps at 12;
      additionally check `free -g` BEFORE each build — available < 16 GiB ⇒ use `-j6`.
      Other sessions share this host's RAM; memory, not cores, is the binding
-     constraint.
+     constraint. **[PER-HOST 2026-09-04, session 21: on LovelyFoxDev (the desktop)
+     the affinity is `0-23`, so `-j$(nproc)` = 24 — the SessionStart hook prints the
+     host's safe `-j` from live `free -g`/`nproc` (24 at open, 52 GiB avail); use
+     THAT number, the "12" above is the state of one earlier session, not a rule.]**
    - **Concurrent-instance assert (2026-07-31, §11.121(m)):** before each measurement
      launch, assert no other spacecrafter process exists — ANY account: the observed
      confound is INTRA-account (concurrent claude sessions/agents share
@@ -312,13 +315,38 @@ origin on both; push from this host impossible (HOST-EVENTS).
      §11.175(e)):** before any measuring launch, run `harness/f56_canary.sh` (full,
      ~100 s, for photometric tasks; `--no-scene`, seconds, otherwise). Non-zero exit
      = STOP and report per §11.174(h) — never mitigate silently, never widen the band
-     to make a run pass (re-banking is one VALUES-block edit WITH an argument; the
-     :2/:4 canonical-display fork is the OWNER's, §11.174(f)). Band on `:2`:
-     165.258/6.644 new · 160.142/6.603 old, ±1.0/±0.15. §11.104(d)'s numbers are
+     to make a run pass (re-banking is one VALUES-block edit WITH an argument; ~~the
+     :2/:4 canonical-display fork is the OWNER's, §11.174(f)~~ **[FORK CLOSED
+     2026-09-04, F79 §11.199: the substitute died with `/tmp`; the owner ruled
+     "Real session on :2"; the fingerprint is re-banked on that session and the
+     bank is PER-BOOT by design — a red after a reboot is the protocol, never a
+     fault to mitigate]**). Band on `:2`:
+     165.258/6.644 new · 160.142/6.603 old, ±1.0/±0.15 **[REPRODUCED A THIRD WAY
+     2026-09-04, F79: 72/72 members, spread 0.000, across a compositor change AND a
+     binary change; dwell frame md5 `5215565b` byte-identical — recorded, never gated]**.
+     §11.104(d)'s numbers are
      TARGETS AGAIN, but only on a canary-passed stack (§11.164(l)(2) refuted at its
      node); 61.431/42.476 stay non-targets — the canary refuses them by construction.
      A/A floors are PER SCENE (374 px = star field; 28 px = Moon frame, cross-epoch).
      The shared `~/.spacecrafter/cache` is WATCHED, not isolated (`f56_manifest.py`).
+   - **`/tmp` IS SESSION-LIFETIME, THREE TREES CARRY, SSH KEEPS `:2` (2026-09-04,
+     owner-stated, session 21; cross-project record `~/shared/QUEUE.md` Q-61):**
+     (1) *"/tmp get cleared at the end of the session — nothing tell when it will
+     persist and when it's not traced"* [vixy] — ASSERT every staging binary, farm,
+     log or draft under `/tmp` is gone after the working session (the 2026-08-31
+     20:57 and 2026-09-04 18:45 wipes were instances, not the rule); anything meant
+     to survive lives in a carried tree; a `/tmp`-homed display stack (F43's shape)
+     is dead by construction. (2) Exactly THREE trees migrate between devices:
+     `~/spacecrafter`, `~/shared`, `~/.claude` [vixy] — `build-claude/`, `/tmp`,
+     gsettings and everything else are per-device (why this host's binary was stale
+     and its `lock-enabled` differs from the laptop's). (3) Future sessions may run
+     over SSH to the desktop [vixy]: *"I would leave :2 open and set DISPLAY to it.
+     Spacecrafter use SDL2 which uses X11 which work through DISPLAY"* — the
+     canonical display stays the RDP-created real logind session on `:2`, kept
+     logged in; `Linger=no` and the mutter auth cookie live only with that session,
+     so a logout/reboot = re-provision by the owner + canary re-bank via HOST-EVENTS;
+     under ssh `export DISPLAY=:2 XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)`
+     (the F28 recipe) and `xdpyinfo` before the first launch remain the invariant part.
    - **Question routing by stratum (2026-08-29, §11.161(c), owner-stated):**
      old-behavior intent/expectation questions → the main tester (*"he either
      knows or tell what he had always expected, both are a resolution"*);
@@ -582,7 +610,36 @@ entry file + stub; §11.188(j) back-marker in BOTH homes (entry + stub) same com
 event, values); `harness/README.md` canary section; trees clean; WIP cleared;
 baselines re-derived LAST with deltas stated.
 **[DELIVERED 2026-09-04 -> INTENT §11.199. §11.191(c) HONORED AT THE QUEUE ITEM, which is what that clause asks for: the false positive was removed at its ROOT — the `/proc/<pid>`-mtime proxy, replaced on BOTH members by `btime` + `starttime`/CLK_TCK — and nothing was traded for it. NO band was widened: six `f51_run.sh --samples 2` runs on `:2` returned 165.258/6.644 new and 160.142/6.603 old on **72 of 72** gated members, to the last printed digit, spread **0.000** => disposition **(a)**, band untouched. NO gating member was demoted: `compositor.restarted` still exits 2 on a +1 decoy, and the compositor match GAINED an owner-uid filter rather than losing its gate (3 cmdline-only matches on this host, 1 owned). `BANK_FRAME_MD5` was not re-banked because it did not move — the dwell frame is byte-identical to 2026-08-30's across both a different compositor and a different binary, which refutes the executor's own committed P2. Full canary exit **0**; `--no-scene` exit **0**. Harness `d2cc023 -> 22b2aa3 -> 22dbf14 -> 5dbff2f -> d77dd5a -> <delivery>`; code `ba7a32a8` unchanged, no engine byte.]**
-**WIP:** —
+**WIP:** — **ACCEPTED 2026-09-04 (supervisor, session 21).** Verified by my own
+runs and reads, not by the report: §11.199 read in full; five executor commits
+(`22b2aa3`..`0c73206`, Claude Opus 5, trailer on all five), both trees clean; every
+claimed marker at BOTH homes — §11.188 `[PAID]` entry+stub, §11.174(f)/§11.176(a)
+`[FORK CLOSED]` entry+stub each, §11.191(c) `[ENACTED]` entry+stub; §11.104's
+`[ANNOTATION]` is entry-only BECAUSE its index line was retired into the file at
+pass 1 (one home by construction — test M rightly unmoved; my first read of "the 104
+stub" hit §5.104's register row, the stub-collision class, caught before it became a
+finding); script read at `f56_canary.sh:204-216` (btime + field-22/CLK_TCK, both
+call sites :353/:367), uid filter :328-342, six retired values struck in the VALUES
+block; artifacts read (probe three-way, reverse-glob control, decoy exit 2, P1/P2
+predictions committed at `22dbf14`, six-runs table); **my own canary on `:2`**:
+`--no-scene` exit 0 (30 members, 3/1 filter counts, epochs 1788544217) and the FULL
+arm exit 0 — 165.258/6.644 · 160.142/6.603 at delta 0.0 on every member, cache 0
+mutations, md5 in==out, and the dwell frame md5 **`5215565b`** a seventh time.
+Instruments reproduced to the digit (204/253/125 · 215/190/25/95 D35 D2 11 I 88
+I2 36 M 81). Deviations ENDORSED with the executor's arguments: the three
+header/PREVENTION/help-range edits (back-marker-at-the-write inside one file; the
+`set -u` line dropping from `--help` is the only behavioural delta, an improvement);
+decoy placed after the re-bank (the only reachable placement); four pids not three;
+predictions in their own prior commit; `--samples 2` (I2 with the banked runs);
+frames uncommitted; the X-server selector's uid-blindness NAMED at (j), not fixed
+(mandate-bounded; the laptop counter-example attached). DISPATCHER DEFECTS reported
+by the executor, all four ACCEPTED as mine: check (d)'s "24 members" (the
+compositor-absent run's count, not a healthy baseline — 30/34 are); the harness
+"CONVERT-class" gloss (harness files are outside D14's `git ls-files` scope on the
+code repo); "`cmake -n` empty" (four no-op lines, zero steps); and "born 19:50:18"
+(the refuted mtime probe's reading, which I wrote into HOST-EVENTS as fact — the
+same propagation class as session 19's ghost echo). Standing consequence: the
+canary is GREEN on this host and WILL red at the next boot by design.
 
 ### F80 — scedit item 4: the stellar-system-file grammar — the second contract file: every `ssystem.ini` key the loader reads, sourced at its `file:line`; the composed B24 format on top (`type=`/`relation=`/`compose=`); two-regime lint per C4 (legacy: no new-format construct, HARD; composed: the full grammar); ISO-8859 at the file boundary; `--check` armed on the field file with C3's zero-false-positive discipline (scedit INTENT §5 item 4; C2, C3, C4; session-20 queue position 3) [L]
 
@@ -688,8 +745,14 @@ summing exactly; (e) `anchor_gate` population before/after (6734 → N) and gree
 byte-exact re-emit of a read section (scratch only, never the real file).
 
 **Preconditions (checkable, §0.7):** code HEAD `ba7a32a8`, harness HEAD ⟨at
-dispatch⟩; scedit builds and `ctest` 16/16 in a fresh dir; `anchor_gate` population
-6734, green at HEAD; scedit INTENT §5 item 4 is the four-line stub, unstruck; field
+dispatch⟩; scedit builds and `ctest` 16/16 in a FRESH build dir (the existing
+`util/scedit/build` is a STALE configure — `ctest -N` lists 8 tests there; never use
+it as the gate's home — build in a fresh dir such as `util/scedit/build-f80`);
+`anchor_gate` record as the FILE states it — `tests/anchor-expected.txt` reads
+`clean 6667 · not-at-head(declared) 2 · skipped(_meta) 69` — green at HEAD **[the
+first draft of this line said "population 6734", the session-20 headline's figure;
+the file is the authority — dispatcher defect, corrected before dispatch]**; scedit
+INTENT §5 item 4 is the four-line stub, unstruck; field
 `ssystem.ini` md5 `545a51ef`, 2518 lines, 90 sections; `~/.spacecrafter/
 modularSystem/` holds only `.ini.disabled` files; §11.78(d) names `loadBody` at
 `ModularSystem.cpp:754-909` at ITS pin (line drift at HEAD is expected, not an

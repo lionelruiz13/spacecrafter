@@ -200,3 +200,27 @@ never rewrite (maintenance invariant). Archival per the standing convention
   per-boot display authority. `GetActive` **(false,)** at all seven launch-time reads
   of this task; no `spacecrafter` process before any of them; config/ssystem md5
   `03fbee59`/`545a51ef` pristine in == out on every run.
+- 2026-09-04 [stated: vixy, in-session during F79; measured same minute by the
+  supervisor; cross-project record `~/shared/QUEUE.md` Q-61] **THREE STANDING FACTS
+  FOR THIS AND EVERY HOST.** (1) `/tmp` is SESSION-LIFETIME: *"/tmp get cleared at
+  the end of the session — nothing tell when it will persist and when it's not
+  traced"* — assert it gone after the working session; the reboot wipes recorded
+  above were instances of a broader rule; nothing under `/tmp` may be a bank, a
+  display stack or a record. (2) Exactly THREE trees migrate between devices —
+  `~/spacecrafter`, `~/shared`, `~/.claude`; everything else is per-device, which is
+  why this host's `build-claude/` was stale at open and why (3b) below differs from
+  the laptop. (3) SSH era planned: *"I would leave :2 open and set DISPLAY to it.
+  Spacecrafter use SDL2 which uses X11 which work through DISPLAY"* — the canonical
+  display stays THIS RDP-created real logind session on `:2`, kept logged in; F79's
+  bank carries over unchanged as long as it lives. (3a) [measured]: `Linger=no`, so
+  an ssh login alone provisions no graphical session and `/run/user/1003` (with the
+  `.mutter-Xwaylandauth.*` cookie) lives only while the RDP session does — a
+  logout/reboot = owner re-provision + canary re-bank, recorded here. (3b)
+  [measured, gsettings via `/run/user/1003/bus`, session 14]: `idle-delay` = **0**
+  (the blank arm dead on idle, as on the laptop) but **`lock-enabled` = true** — the
+  laptop's 2026-08-31 change never reached this host (gsettings is not carried);
+  cannot fire on idle at idle-delay 0, CAN fire from an explicit lock/suspend path,
+  and an unattended ssh-era session would then sit in the F67 1 Hz throttle;
+  `idle-activation-enabled` true (moot), `sleep-inactive-ac-type` 'nothing',
+  GetActive false, LockedHint no, Remote=yes Type=wayland. Setting `lock-enabled`
+  false here is one gsettings line and the owner's call — flagged, not done.
