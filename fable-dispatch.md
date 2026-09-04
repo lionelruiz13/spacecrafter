@@ -125,6 +125,61 @@ close — local contains origin on BOTH repos, push = ff.
 
 ---
 
+**Update [Fable 2026-09-04, supervising session 21 — LovelyFoxDev, the DESKTOP
+round: canary / stellar grammar / view offset]:** trigger = the §0b verbatim line,
+no in-line transmission. Warm-up: both trees clean at open, code `ba7a32a8` /
+harness `d79180b` (one commit landed after session 20's close — **§11.198**, the
+round-3 conversation, 2026-09-02); definition-drift assert md5 MATCH (`a5a54d94`);
+next free §11 number **199** (live ∪ archive); live `### F` count **4 → 0** by
+**archival pass 13** at OPEN (update-s19 + F75–F78, 842 lines, manifest
+`2026-09-04-pass13`, pre-md5 `d351a644` reproduced in-process AND from disk,
+commit `db0dc57`; one recorded seam tidy) **→ 4** by the mints below. HOST: this is
+**LovelyFoxDev, the desktop** — the first desktop round since session 17; booted
+18:45 today; claude's REAL logind session (14/15, remote-desktop shape) serves
+**`:2`** at 2448x1332 under `/run/user/1003`; F43's `/tmp` substitute is gone and
+unrebuilt ⇒ **the §11.174(f) fork has one branch left**; canary `--no-scene`
+**exit 2 `compositor.absent`** + note `xserver.restarted` (the refuted mtime
+probe) — REPORTED, not mitigated (§11.174(h)); full record HOST-EVENTS 2026-09-04,
+commit `17dd50f`. Binary was STALE (Aug 26 — the laptop rounds never reached this
+build dir) ⇒ rebuilt at `ba7a32a8` (-j24 per the session hook; affinity is 0-23
+here, so the §0.5 "12-core affinity" line is not this host's state today; RAM 52
+GiB avail), md5 `c8e12950`, `cmake --build -- -n` empty after. GitHub SSH refused
+from this host (publickey) — push impossible here; local contains origin on both
+repos (+58/+604). No sync daemon: the tree carries the laptop's commits by the
+owner's hand; writer set during the session = this session. Config/ssystem md5
+pristine; no spacecrafter process; ASCII gate PASS. Instrument baselines at open:
+scan **203/252/125** · pair-check **214/189/25/95** D 35 · D2 11 · I 88 · I2 36 ·
+M 81 — every delta over the session-20 close (+1/+1/+1 · +1/+1/0/0 · I+1 · M+1)
+attributes to §11.198 (its `entry_only 11.4` pair visible in test I). SUPERVISOR
+ACTS AT OPEN (commit `17dd50f`): the F60 routed flips — §5.24 CLOSED as FIXED by
+B32 (its harness-exclusion claim refuted at `b24_equivalence.py`); B15's reference
+half recorded closed by §5.32; B39's "never caches" clause recorded false since
+§5.46's fix ((j)(4), which the session-20 re-queue had omitted without a reason —
+taken with the other two). **Dispatcher defect #1, mine:** the re-queue's third
+member (B14's §5.28 citer note) was ALREADY enacted at F60 acceptance (`df97965`,
+2026-08-30) — a stale re-queue entry. QUEUE CONSUMPTION (session-20 close, in
+order): (1) desktop position 1 → **F79** (the canary: probe root-fix + fingerprint
+re-bank + the band by measurement; the re-bank TARGET is an OWNER DECISION per
+§11.174(f)/(h), asked before dispatch and recorded in the section); (2) the F60
+flips — DONE above; (3) scedit item 4 → **F80** (L; minted from the scedit
+ledger's four-line stub + C4 + the loader's key sites, measured at mint:
+`protosystem.cpp` 103 quoted keys · `ssystem_factory.cpp` 34 · `ModularSystem.cpp`
+81); (4) the anchor content-vs-sentence audit — Vixy's word, not minted; (5) items
+5/8/19 — Vixy's triage, not minted; (6) F52(k) · F58 record-only carry (nothing
+downstream waits); (7) engine on Vixy's word — unchanged. NEW since session 20,
+from **§11.198**: (d)'s view-offset DEFECT CANDIDATE ("a next supervising
+session's call") → **F81** (S, one functional launch, display-bound — the display
+exists here; sites re-read at mint); (e)'s portrait leg ("a cheap candidate") →
+**F82** (S, the EXTENSION member). Picks: **F79 → F80 → F81**, F82 if health
+permits. Deliveries: F79/F81/F82 to the parent (§11.199+, refreshed at each
+dispatch); F80 to the MIRROR ledger (journal `2026-09-04a`; a parent number only
+if an engine finding mints one). Launch classes: F79 PHOTOMETRIC by design (the
+band re-measure IS the canary's scene arm, run on purpose, six times); F81/F82
+FUNCTIONAL (dump/frame geometry, no photometric claim). Remotes: local contains
+origin on both; push from this host impossible (HOST-EVENTS).
+
+---
+
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
 
 1. `CLAUDE.md` auto-loads (the map). Read THIS file; locate your task's section; read
@@ -411,12 +466,365 @@ F67 → 2026-08-31h + parent §11.185 (session-18 scedit round — three for
 three; archived pass 11) · F68 §11.187 · F69 §11.188 · F70 §11.189 · F71
 §11.190 + scedit journal 2026-08-31j · F72 §11.192 · F73 §11.194 · F74 §11.195
 (session-19 round + its two post-close extensions — seven for seven DELIVERED
-and accepted; archived pass 12). Live below: the session-20 round **F75–F78**
-(F78 the EXTENSION member). Remaining candidates next-round: see the session-20
-open note's deferred set. Still blocked: §5.100's fix (authorization
+and accepted; archived pass 12) · F75 → scedit journal 2026-09-01a · F76 →
+2026-09-01b + §5.122/§5.123 · F77 §11.196 · F78 §11.197 (session-20 round —
+four for four DELIVERED and accepted; archived pass 13). Live below: the
+session-21 round **F79–F82** (F82 the EXTENSION member). Remaining candidates
+next-round: see the session-21 open note's deferred set. Still blocked: §5.100's fix (authorization
 unanswered).*
 
 ---
+
+### F79 — The canary tells the truth on the desktop again: the start-epoch probe replaced at its root (btime+starttime, F69's method), the display-stack fingerprint re-banked on the ONE claude-owned display, and the photometric band re-established by measurement — six runs, never a widened tolerance (§11.188(j) queue position 1; §11.191(c) ruling; §11.174(f) fork, collapsed by the environment — owner's word recorded below) [M]
+
+**Why now / mandate:** §11.188(j): `f56_canary.sh` reads `/proc/<pid>` directory
+MTIME as a start time — a proxy F69 measured drifting 19 h for a pid alive
+throughout (`harness/artifacts/f69/xserver-epoch-probe.txt`, three-way) — and the
+SAME proxy backs the GATING `compositor.restarted` member. §11.191(c) [vixy]:
+*"falsely abort is not as bad as wrongly continue, but that's to optimize against
+(false positive)"* — fail-closed stands, the false positive is removed at its ROOT,
+no band is widened and no gating member is demoted. Queue position 1 of sessions 19
+and 20, "not doable from the laptop" — this is the desktop. Every photometric task
+after this one stands on a green canary; today it cannot be green for a reason that
+is not a fault: the banked stack cannot exist any more.
+
+**Measured at dispatch (supervisor, 2026-09-04; HOST-EVENTS 2026-09-04 entry, commit
+`17dd50f`):** the bank names F43's hand-built headless stack
+(`XDG_RUNTIME_DIR=/tmp/rt-claude`, `gnome-shell --headless --virtual-monitor
+2448x1332`, born 2026-08-29 14:51) — `/tmp` is wiped at every boot, the host booted
+2026-09-04 18:45:08, nobody rebuilt it (rebuilding it would itself be a §11.174(h)
+veto item). What serves `:2` now: claude's REAL logind session (14 user + 15
+manager, seatless = remote-desktop; `gnome-remote-desktop` in `/run/user/1003`, an
+RDP connection ESTAB on :3389) → `/usr/bin/gnome-shell` pid 43595 → Xwayland `:2`
+pid 43800 born 19:50:18, auth `/run/user/1003/.mutter-Xwaylandauth.5KBYU3`;
+`xdpyinfo` **2448x1332** (== the bank's dims — that member PASSES). Canary
+`--no-scene`: **exit 2**, fail set exactly {`compositor.absent`}, note set exactly
+{`xserver.restarted`}; artifacts `harness/artifacts/f56/canary/20260904-201433`.
+GPU RTX 5090, driver 580.159.03, VRAM 1191/32607 MiB. The §11.174(f) fork ("F43's
+self-owned :2 vs the real session's :4") has ONE branch left — the real session,
+now itself on `:2`. THREE `gnome-shell` processes are alive on this host (foxy's,
+gdm's, claude's) with IDENTICAL command lines — a cmdline-only match cannot
+discriminate any more.
+
+**OWNER RULING AT DISPATCH (§11.174(f) + (h); asked by the supervisor before this
+task runs, recorded here):** ⟨FILLED AT DISPATCH⟩. If the ruling is anything other
+than "re-bank on the real session on `:2`", this section is revised before
+dispatch, never adapted by the executor.
+
+**Mandate, four parts, in order:**
+(1) **The probe, at its root:** replace `stat -c %Y /proc/<pid>` (BOTH members: the
+gating `compositor.start_epoch` and the noted `xserver.start_epoch`) with kernel
+start time = `/proc/stat btime` + `/proc/<pid>/stat` field 22 / `CLK_TCK` (F69's
+method (2)); proven against `ps -o lstart=` to the second on three live pids
+including the compositor's, committed as an artifact in F69's form. A scratch-copy
+decoy shows the gate still fails: `BANK_COMPOSITOR_START` perturbed by +1 ⇒ exit 2
+`compositor.restarted`.
+(2) **The compositor match, made discriminating:** the walk over `/proc` selects the
+compositor by (owner uid == `id -u`) AND cmdline — measured first: count the
+cmdline-only matches (expect 3), then the filtered ones (expect 1, pid 43595 at
+this boot). Record both counts.
+(3) **The fingerprint re-bank — one VALUES-block edit WITH its argument:**
+`BANK_XDG_RUNTIME_DIR`, `BANK_XAUTH_GLOB`, `BANK_COMPOSITOR_CMD`,
+`BANK_COMPOSITOR_START`, `BANK_XSERVER_START`, `BANK_HOST_BOOT` to the measured
+values of THIS stack; `BANK_DISPLAY`/`BANK_DIMS` unchanged (measured equal). Every
+replaced value stays in the block struck-not-deleted with date + reason (the
+block's own rule: an explicit act with an argument). State in the block that a real
+session's epochs and display NUMBER are per-boot: the canary will red at the next
+boot BY DESIGN (report + re-bank is the protocol); HOST-EVENTS is the per-boot
+authority (§0.5, F74).
+(4) **The band, by measurement only:** after (1)–(3) pass `--no-scene` at exit 0, run
+`f51_run.sh` SIX times on `:2` (the ledger's own spread argument; each run
+fresh-launch, the `/proc/<pid>/comm` concurrent-instance assert before each, md5
+in==out asserted by the runner, `GetActive` checked-and-recorded). Compare each to
+the banked centre 165.258/6.644 new · 160.142/6.603 old. Dispositions PRE-STATED:
+**(a)** all six inside ±1.0/±0.15 and spread ≤ 0.001 ⇒ band UNCHANGED — the stack
+change is photometrically INERT, recorded as such (the cross-stack twin of
+§11.172(e)'s cross-epoch result); `BANK_FRAME_MD5` re-measured and, if it moved
+while the metric did not, re-banked with THAT argument stated (byte identity is
+stack-coupled; the metric is the objective — a re-bank, not a demotion: the member
+keeps its role); **(b)** any run outside the band ⇒ STOP, report per §11.174(h) with
+the six numbers — NO band edit, NO widening; the delivery is the report plus
+(1)–(3), and the band question goes to §3 for the owner; **(c)** inside the band,
+spread > 0.001 ⇒ band unchanged, the spread recorded as a NOTE-class finding with
+its runs. Then the FULL canary (scene arm) must exit 0 under (a), or reproduce (b)'s
+red — stated either way.
+
+**Boundaries:** `f56_canary.sh` (VALUES block, the two probe lines, the owner filter)
++ its README section only; no engine code, no data, no other harness script; no
+display stack built, restarted or reconfigured (if the real session dies mid-task:
+STOP, checkpoint, report — §11.174(h)); no band value edited except under
+disposition (a)'s md5 clause; no gating member demoted to a NOTE; D14 (new lines
+pure ASCII, gate before every commit); no `run_in_background`.
+
+**Discriminating checks:** (a) the old probe vs the new on the compositor pid, with
+`ps -o lstart=` as the third reading — the old is the one that disagrees or is
+shown drifting (re-read it 60 s apart); (b) decoy: +1 on `BANK_COMPOSITOR_START`
+in a scratch copy ⇒ exit 2 `compositor.restarted`; (c) filter: cmdline-only matches
+3, filtered 1; (d) `--no-scene` exit 0 on the re-banked block, fingerprint member
+count unchanged (24); (e) six f51 numbers to the last printed digit + spread + the
+disposition letter; (f) the full canary's exit code.
+
+**Preconditions (checkable, §0.7):** code HEAD `ba7a32a8`, harness HEAD ⟨at
+dispatch⟩; binary `build-claude/src/spacecrafter` md5 `c8e12950`, `cmake --build
+build-claude -- -n` empty; next free §11 number **199**; live `### F` count **4**;
+`/tmp/.X11-unix/X2` owned by claude and `xdpyinfo` (DISPLAY=:2,
+XAUTHORITY=/run/user/1003/.mutter-Xwaylandauth.5KBYU3) answers 2448x1332; `uptime
+-s` = 2026-09-04 18:45:08 — if not, the pid/epoch premises above are dead: ABORT and
+report; canary `--no-scene` fail set == {compositor.absent}, note set ==
+{xserver.restarted}; no `spacecrafter` in `/proc/*/comm`; config/ssystem md5
+`03fbee59`/`545a51ef`; `harness/artifacts/f69/xserver-epoch-probe.txt` present; the
+owner ruling above FILLED.
+
+**DoD:** probe + filter + VALUES block committed with README; artifacts (probe
+three-way, decoy, filter counts, six f51 runs, both canary runs); parent §11.199
+entry file + stub; §11.188(j) back-marker in BOTH homes (entry + stub) same commit,
+§11.191(c)'s queue-item annotation honored; HOST-EVENTS twin entry (the re-bank
+event, values); `harness/README.md` canary section; trees clean; WIP cleared;
+baselines re-derived LAST with deltas stated.
+**WIP:** —
+
+### F80 — scedit item 4: the stellar-system-file grammar — the second contract file: every `ssystem.ini` key the loader reads, sourced at its `file:line`; the composed B24 format on top (`type=`/`relation=`/`compose=`); two-regime lint per C4 (legacy: no new-format construct, HARD; composed: the full grammar); ISO-8859 at the file boundary; `--check` armed on the field file with C3's zero-false-positive discipline (scedit INTENT §5 item 4; C2, C3, C4; session-20 queue position 3) [L]
+
+**Why now / mandate:** the scedit ledger's *"Remaining open surface: item 4 (stellar
+grammar — unlocks body/camera args_complete + SS-answers)"*; `body nmae Earth` is
+*"silent BY DESIGN until item 4's grammar lands"* (journal 2026-08-04g); C3's
+`ssystem.ini` half *"is still item 4's"* (journal 2026-09-01b); the comet-tail key
+set + defaults were mined as *"item 4 input"*. Item 4 is the last CONTRACT the
+editor lacks: the command grammar knows every verb, and nothing knows the bodies
+those verbs name. Queue position 3 of the session-20 close, an L that "takes a
+first slot".
+
+**Measured at dispatch (supervisor, 2026-09-04, code `ba7a32a8`):** the scedit item
+is a four-line stub (`claude/util/scedit/INTENT.md:263-266`) — this section is its
+derivation, challengeable. Loader key sites, counted as DISTINCT quoted keys per
+file (`["key"]` / `"key")` forms — an upper bound, not the census):
+`src/bodyModule/protosystem.cpp` **103** · `src/bodyModule/ssystem_factory.cpp`
+**34** · `src/experimentalModule/ModularSystem.cpp` **81** (the ONE `loadBody`
+authority per §11.78(d), `:754-909` at THAT entry's pin — re-resolve) ·
+`ModuleLoaderMgr.cpp` 1; also `orbit.cpp`, `orbit_creator_cor.cpp` (the
+`coord_func` families) and `CameraAnchors.cpp` (anchor.ini — a DIFFERENT file,
+B4's; OUT of scope, stated). The field file `~/.spacecrafter/ssystem.ini`: 2518
+lines, 90 sections, ISO-8859, md5 `545a51ef`, untracked — the ONE legacy corpus
+(no shipped copy exists in the code tree: shipped data lives in `spacecrafter-data`,
+D9). Composed files: `~/.spacecrafter/modularSystem/*.ini.disabled` (51Peg,
+Antares, Arcturus, … — machine-owned twins, ALL disabled) — the composed corpus,
+read-only. The B24 grammar is §11.78(d): `declare`→`type=` (B24's row: `type=`
+replaces `declare=`+`module=`), `relation = orbiting | grounded | inner`
+(superseding `bound_to_surface`; both-present-and-disagreeing = §2(f) error),
+`compose = deduced | explicit`, plus D16–D19's spellings (DECISIONS_PENDING,
+sign-off pending — the grammar records them as PROPOSED, the B28 protocol). C4
+(scedit INTENT §2): legacy files ISO-8859; writes into LEGACY files must never
+introduce new-format constructs (comments/new keys break downgrade, D13) ⇒ HARD
+lint in the legacy regime; `englishName` is THE identity, globally unique — a
+duplicate silently drops the second body (D34, §11.109(c)) ⇒ cross-file lint. The
+stub's "base-D census residual": the parent's census series is §11.108's (base-B …
+base-F, cited by B37/B38) — the executor LOCATES base-D's ssystem residual there
+and states it; if no such residual exists, that is a §0.7 REPORT, not a premise to
+repair.
+
+**Mandate:**
+(1) **The key census, from the LOADER, not from the file:** every key the engine
+READS from a body section and from the file's non-body sections, per reading site,
+with `file:line` anchors pinned at `_meta.anchor_pin` (the F75 form) — value domain
+from the code's own enumeration/parse (never a parallel invention, I2), default when
+absent (read at the site), REQUIRED/optional, and WHICH loader regime reads it
+(legacy `protosystem`/`ssystem_factory` path vs the B24 `loadBody` path — a key
+read by only one regime is a finding). Keys PRESENT in the field file but read by
+NO site = the silent-drop class (§5.122's twin on the data surface): counted,
+listed, routed as a §5 candidate (record, not fix).
+(2) **The contract file** `util/scedit/grammar/ss-grammar.json` (the name is the
+README's call, veto open): schema discriminated from the command grammar (a
+`_meta.contract` field — ONE authority for "which contract is this"); the two
+regimes as data, not code; `_meta` in the F75 form (pins, counts); `anchor_gate`
+coverage extended to this file — the gate's population count grows and is recorded.
+(3) **The linter, two regimes:** legacy — unknown key; duplicate `englishName`
+across the file AND across enabled composed files; new-format construct in a legacy
+file (HARD: `type=`, `relation=`, `compose=`, and comment lines IF the legacy parser
+has none — read what the legacy parser does with a `#` line FIRST, at its code);
+value-domain violations. Composed — the full B24 grammar with the legacy set as its
+node-declaration base. Diagnostics in D6's shape with a span (item 10's form);
+`--check` selects the regime by file LOCATION (§11.78(d): `~/.spacecrafter/
+modularSystem/<Name>.ini` vs `ssystem.ini`), never by sniffing content silently — a
+location/content mismatch is itself a finding.
+(4) **C3 on the field file:** `--check ~/.spacecrafter/ssystem.ini` — every finding
+TRUE, dispositioned one by one in F76's form (`dispositions.tsv`), zero false
+positives, true findings routed (SS-n for authored data slips, parent §5 for engine
+behaviour); the composed `.disabled` files likewise; a `field_corpus_gate` twin of
+`shipped_corpus_gate` (counts + md5, NEVER copying the field file into the repo —
+the F76 precedent). ISO-8859 at the boundary: read latin-1, report positions in
+BYTES and the decoded line (F70's decoder is the reference: greedy UTF-8 +
+per-byte fallback — a whole-file Latin-1 decode mojibakes mixed files).
+(5) **What it unlocks, armed or explicitly deferred:** `body`/`camera`
+`args_complete` for the body-name argument, fed from the census's `englishName`
+set — armed if the command grammar's hook exists (README states the cost), else the
+deferral recorded with its reason; `body nmae Earth` then reachable by the checker
+— prove it on the witness.
+(6) **Record:** scedit journal `2026-09-04a` (mirror ledger, the delivery); item 4
+struck with pointers; scedit README (usage + § Verification gates 16 → N); C3's
+`ssystem.ini` half discharged at its clause with a dated block; parent §11 entry
+ONLY if an engine finding mints one (199 is F79's — F80 takes the next FREE number
+at its own record time, verified live ∪ archive); `harness/README.md` F80 section;
+WIP per §0.6; D14 gate before every commit.
+
+**Boundaries:** scedit tree + its grammar dir + its tests only; NO engine code (a
+loader defect seen while reading = §5 candidate, recorded); NO data file written —
+the field `ssystem.ini` and the composed twins are READ-ONLY, md5 asserted at open
+and close (`545a51ef`); NO launch (item 4 is read-and-check; a "what does the
+engine do with X" question that needs a launch is recorded as OWED, F77's form);
+no command-grammar content change (anchor strings excepted only if the
+`args_complete` hook needs a field — say so); checkpoints at (1), (2), (3), (4),
+(5); no `run_in_background`.
+
+**Discriminating checks:** (a) the census's site count vs the quoted-key upper
+bounds (103/34/81) — every quoted key either IS a read site or is explained (a
+non-key string); (b) decoys on SCRATCH copies: one unknown key ⇒ exactly one
+finding; one `type=` line in the scratch LEGACY copy ⇒ exactly one HARD finding;
+the same line in a scratch COMPOSED file ⇒ zero; (c) the duplicate-`englishName`
+rule fires on a scratch pair and is silent on the real field (or its real hits are
+dispositioned TRUE); (d) the field run's finding count with its disposition table
+summing exactly; (e) `anchor_gate` population before/after (6734 → N) and green;
+(f) ctest 16/16 → N/N in a FRESH build dir; (g) the ISO-8859 round trip: a
+byte-exact re-emit of a read section (scratch only, never the real file).
+
+**Preconditions (checkable, §0.7):** code HEAD `ba7a32a8`, harness HEAD ⟨at
+dispatch⟩; scedit builds and `ctest` 16/16 in a fresh dir; `anchor_gate` population
+6734, green at HEAD; scedit INTENT §5 item 4 is the four-line stub, unstruck; field
+`ssystem.ini` md5 `545a51ef`, 2518 lines, 90 sections; `~/.spacecrafter/
+modularSystem/` holds only `.ini.disabled` files; §11.78(d) names `loadBody` at
+`ModularSystem.cpp:754-909` at ITS pin (line drift at HEAD is expected, not an
+abort); DECISIONS_PENDING D16–D19 still open; live `### F` count **4**; the next
+free §11 number is NOT this task's to assume — verified at record time if needed.
+
+**DoD:** census + contract + linter + gates committed (code repo, scedit subtree);
+journal `2026-09-04a`; item 4 struck; READMEs both; C3 half discharged; field md5
+unchanged; fresh-build ctest green; ASCII gate; trees clean; WIP cleared; parent
+baselines re-derived LAST (unchanged unless a parent entry was minted — state).
+**WIP:** —
+
+### F81 — The view offset's two couplings, measured on one launch: old re-aims by a FIXED 90° and draws by fov/2 — a 21° aim-vs-draw mismatch predicted at fov 40 / offset 0.3 and zero at fov 180 — the new path's single coupling beside it; §5 minted if the prediction holds, the design-or-defect question ROUTED (§11.198(d) "a next supervising session's call"; B17 residual; R28's entry point) [S]
+
+**Why now / mandate:** §11.198(d) [2026-09-02]: *"DEFECT CANDIDATE, NOT MINTED …
+§5 mint + one-leg verification (set offset, zoom, command an aim, measure
+land-vs-draw) = a next supervising session's call"* — this is the call. The owner's
+bounding [vixy, §11.198(d)(2)]: "old-as-spec is the safest default, precisely
+because I don't want to break what I don't know about" — the offset's exercised
+region is a place where a defect, if real, has silent dependents; it must be
+measured, not argued. Display-bound; the display exists on this host.
+
+**Measured at dispatch (supervisor, 2026-09-04, code `ba7a32a8`, sites re-read):**
+`src/navModule/navigator.cpp:162` — `setLocalVision`: `local_vision =
+Mat4d::yrotation(-view_offset * M_PI_2 * view_offset_transition) * _pos` (aim
+compensation: FIXED 90°·fraction, y-axis, LOCAL frame); `:324` — draw:
+`mat_local_to_eye = Mat4d::xrotation(view_offset * fov/2 * π/180 *
+view_offset_transition) * mat_local_to_eye` (fov-coupled, x-axis, EYE frame),
+followed by the heading z-rotation (`:329`, `+ 0.0001`); `src/coreModule/core.cpp:
+2528-2552` — `Core::setViewOffset` is the ONE sink for config `[navigation]
+view_offset` and `set zoom_offset <v>` (clamped to [-0.5,0.5], logged), old path
+`navigation->setViewOffset(off); navigation->setLocalVision(InitViewPos)`, new
+path `Camera::instance` receives the same scalar; `src/experimentalModule/Camera.
+cpp:139-155` — `viewOffsetEyeRotation() = xrotation(o * ModularBody::halfFov)`,
+composed leftmost in `renderViewRotation()`, and the comment states `update()`
+UNDOES the same rotation ("R'^T recovers the true pos") — the new path is
+self-consistent by construction (§11.63(c): the fisheye transfer makes it a
+constant fraction-of-dome shift). The dump already exposes
+`viewOffset.{reported,old,new}` (`coreLink.cpp:603-605`). PREDICTION, stated before
+the launch: old mismatch = offset × (90° − fov/2) — 0.3 × 70° = **21.0°** at fov
+40, **10.5°** at fov 90 (0.3 × 45°), **0°** at fov 180; sign and axis to be
+measured; new path **0°** at every fov.
+
+**Mandate:** (1) functional launches on the temp-HOME farm (`b3_farm.sh` pattern —
+never the real `~/.spacecrafter`; md5 in==out asserted), reference scene,
+`view_offset` 0.3 via config AND, separately, via `set zoom_offset 0.3` (both
+channels of the ONE sink); at fov 180, 90, 40; on each: command an aim at a bright
+body through the path `setLocalVision` re-aims on (read its callers FIRST and name
+the command), let `view_offset_transition` settle BY MEASUREMENT in the dump (never
+`sleep N`), then read the dump's view vectors AND grab one frame per path (old =
+baseline frame, new = `drawExperimental` frame, the SAME launch); **land-vs-draw**
+= the body's pixel centroid vs where the dump's aim says it should land. (2)
+Compare to the prediction; the residual beyond it is ATTRIBUTED (fisheye transfer,
+the +0.0001 heading epsilon, transition state) or reported UNEXPLAINED — never
+absorbed. (3) If the mismatch reproduces on old: mint **§5.⟨next⟩** (reachable:
+shipped config key + shipped command; consequence: the aim lands off the drawn
+sweet spot by offset × (90° − fov/2), invisible at the dome's fov 180 and growing
+with zoom) — RECORD, no fix; the fix is B17 territory and the design-or-defect half
+routes to R28's basis (the tester's knows-or-expects; the one installation that
+drove the offset). If it does NOT reproduce: the §11.198(d) candidate is RETRACTED
+at its node with the measurement. (4) Record: parent §11.⟨next free at dispatch⟩
+entry + stub; §11.198(d) back-marker (both homes, same commit); DEPLOYMENT-MAP /
+R28 pointer if minted; `harness/f81_offset.py` + README; WIP per §0.6; D14 gate.
+
+**Boundaries:** no engine code, no data, no config write outside the farm; old path
+untouched by construction; NO photometric claim (geometry only); canary
+`--no-scene` result REPORTED whichever way it reads (after F79 it should be exit 0;
+if F79 ended in disposition (b), this launch is FUNCTIONAL under a reported red —
+the session-19/20 precedent); no `run_in_background`; concurrent-instance assert
+before each launch; `GetActive` check-and-record.
+
+**Discriminating checks:** (a) the prediction table (3 fovs × 2 channels × 2 paths)
+filled with MEASURED values — the fov-180 old case must read ≈ 0 (the control that
+proves the instrument), and a mutated prediction (fixed 45° instead of 90°) must NOT
+fit; (b) the two channels agree (config vs command) — a disagreement is its own
+finding; (c) frame centroid vs dump aim agree on the NEW path at all fovs (the
+second control); (d) md5 in==out; (e) the dump's `viewOffset.old == .new == 0.3`
+after the clamp (the sink's contract).
+
+**Preconditions (checkable, §0.7):** code HEAD `ba7a32a8`, harness HEAD ⟨at
+dispatch⟩, binary md5 `c8e12950`; next free §11 number ⟨at dispatch⟩; live `### F`
+count **4**; `navigator.cpp:162`/`:324`, `core.cpp:2528-2552`, `Camera.cpp:139-155`
+read as quoted (line drift = re-resolve; CONTENT drift = abort); the display per
+HOST-EVENTS 2026-09-04 (`:2`, auth `.5KBYU3`, 2448x1332) still answers `xdpyinfo`;
+§11.198(d) unmarked; F79 delivered, its disposition letter stated in the prompt.
+
+**DoD:** table + frames + dump extracts committed as artifacts; §11 entry + stub;
+§11.198(d) marker both homes; §5 mint or retraction; README; trees clean; WIP
+cleared; baselines re-derived LAST with deltas stated.
+**WIP:** —
+
+### F82 — EXTENSION: the portrait leg — one launch with a window taller than wide (768x1024) on both paths: what the projection, the readback, the dump and the fisheye transfer do when the assumed aspect inverts, every difference classified against the square baseline (§11.198(e): the owner-named verification-surface hole, "a cheap candidate for a supervising session"; R21's harness-side half) [S]
+
+**Why now / mandate:** §11.198(e) [vixy 2026-08-31]: only TWO configurations are
+barely tested in the field — portrait aspect (window h > w) and heading — and
+"old-as-spec" is the safest default everywhere else. No ledger row exists for
+portrait; two probes were named: the field census line (R21, the tester's) and a
+harness-side leg (this). A "no" from the field retires the hole; the harness leg
+prices what a "yes" would cost. Cheap: one config pair, two launches, reads only.
+
+**Measured at dispatch (supervisor, 2026-09-04):** field config `screen_w = 1024`,
+`screen_h = 1024`, `fullscreen = false` (`~/.spacecrafter/config.ini:27-31`) — the
+square case every recorded measurement used (F51's 2048² app readback, §11.172(c)'s
+1024² window grab). Display `:2` 2448x1332 fits a 768x1024 window.
+
+**Mandate:** (1) temp-HOME farm config with `screen_w = 768`, `screen_h = 1024`
+(and the square control in the same session), reference scene, one launch each,
+both paths in each launch; read: the applog's swapchain/extent lines, the dump's
+projection fields (fov, aspect, viewport), the app readback's dimensions, one frame
+per path; (2) classify EVERY difference vs the square control as expected-by-aspect
+(state the formula that predicts it) or ANOMALY (a difference the aspect does not
+predict — a §5 candidate under §5.79 if reachable with consequence: portrait is one
+config edit away, so reachability is given; the consequence is what the frame
+shows); (3) parity old-vs-new at portrait per §11.52(b) (perceptual, conditioned on
+old being exact) — a divergence that exists ONLY at portrait is the hole's content;
+(4) record: parent §11.⟨next⟩ + stub; R21's harness half pointed at from
+USER_QUESTIONS_ROUND3 (a one-line rider; the send-time view is DRAFT);
+`harness/f82_portrait.py` + README; WIP; D14.
+
+**Boundaries:** no engine code, no data, farm-only config; no fix; no photometric
+claim (geometry and presence only); canary `--no-scene` reported; concurrent-
+instance assert; `GetActive` check; no `run_in_background`.
+
+**Discriminating checks:** (a) the swapchain extent reads 768x1024 (the launch
+honoured the config) — if it reads 1024x1024 the leg measured nothing, say so; (b)
+the square control reproduces the recorded 1024² extent; (c) every difference row
+carries expected/anomaly with its predictor; (d) md5 in==out.
+
+**Preconditions (checkable, §0.7):** code HEAD `ba7a32a8`, harness HEAD ⟨at
+dispatch⟩, binary md5 `c8e12950`; next free §11 number ⟨at dispatch⟩; live `### F`
+count **4**; config keys as quoted; display per HOST-EVENTS 2026-09-04; F79 and
+F81 delivered.
+
+**DoD:** artifacts + table; §11 entry + stub; R21 rider; README; trees clean; WIP
+cleared; baselines LAST.
+**WIP:** —
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
