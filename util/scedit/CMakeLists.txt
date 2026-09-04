@@ -252,3 +252,47 @@ add_test(NAME shipped_corpus_gate
 		${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/shipped-corpus-expected.txt)
 set_tests_properties(shipped_corpus_gate PROPERTIES SKIP_RETURN_CODE 77)
+
+# C3's OTHER half, the stellar-system one, owed since 2026-08-04 and armed by
+# F80. It needs TWO gates because there are two corpora and they are not the
+# same kind of thing:
+#
+#   ss_corpus_gate     data/default_ssystem.ini is TRACKED HERE, so it takes the
+#                      line-for-line record shape the script corpus gate uses --
+#                      the strongest form, and available because the file is
+#                      ours to carry.
+#   field_corpus_gate  ~/.spacecrafter/ssystem.ini and the composed twins are
+#                      untracked, host-varying field data belonging to the
+#                      person who authors the shows. Counts plus an md5, never
+#                      the lines, for the same ownership reason shipped_corpus_
+#                      gate records counts (README S Verification), and a loud
+#                      SKIP where the field data is not on the machine.
+# The rules fixture for the second contract, and its point is the PAIR: the
+# same `relation =` line is a hard error in tests/sslint_ssystem.ini and silent
+# in tests/modularSystem/SsLintComposed.ini, because the regime comes from where
+# the file IS. Likewise `type = BODY`, a value-domain finding on a legacy node
+# and the canonical marker on a composed one. A rule that stopped discriminating
+# would still pass a one-file fixture; it cannot pass this one.
+add_test(NAME ss_lint_rules
+	COMMAND ${CMAKE_COMMAND}
+		-DSCEDIT=$<TARGET_FILE:scedit>
+		-DSRC=${CMAKE_CURRENT_SOURCE_DIR}
+		"-DFILES=${CMAKE_CURRENT_SOURCE_DIR}/tests/sslint_ssystem.ini;${CMAKE_CURRENT_SOURCE_DIR}/tests/modularSystem/SsLintComposed.ini"
+		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/ss-lint-expected.txt
+		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_gate.cmake)
+
+add_test(NAME ss_corpus_gate
+	COMMAND ${CMAKE_COMMAND}
+		-DSCEDIT=$<TARGET_FILE:scedit>
+		-DSRC=${CMAKE_CURRENT_SOURCE_DIR}
+		"-DFILES=${CMAKE_CURRENT_SOURCE_DIR}/../../data/default_ssystem.ini"
+		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/ss-corpus-expected.txt
+		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_gate.cmake)
+
+add_test(NAME field_corpus_gate
+	COMMAND ${Python3_EXECUTABLE}
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/field_corpus_gate.py
+		$<TARGET_FILE:scedit>
+		${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/field-corpus-expected.txt)
+set_tests_properties(field_corpus_gate PROPERTIES SKIP_RETURN_CODE 77)
