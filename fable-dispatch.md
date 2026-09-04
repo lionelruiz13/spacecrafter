@@ -1043,7 +1043,15 @@ binary `c8e12950` at 0 compile/link steps, §11 202 free, `### F` count 4, canar
 reproduced). Checkpoint 1: predictions + instrument committed BEFORE any launch
 (`f82_predictions.json`, `f82_portrait.py`, `f82_run.sh`; the instrument
 reproduces F81's recorded zero (1024.180, 1024.044) from the committed frame).
-NEXT: the square control launch, then portrait.
+Checkpoint 2: BOTH launches done, both clean (fails []), md5 in==out on both.
+Square: Swapchain (1024,1024), Scaling 0.5, zero control old (1024.180, 1024.044)
+= F81's recorded value to the digit. Portrait: **Swapchain (768, 1024)** — check
+(a) PASSES — Scaling 0.375, projector IDENTICAL (viewport [0,0,2048,2048], R
+1024) at all three fovs, readback 2048^2, zero control byte-equal to square's.
+The blit map measured: dome centre (383.50, 639.49) vs predicted (383.5, 639.5),
+centred-letterbox mutation refuted 24/24 bodies to 0/24. NEXT: table refit
+(compact parity + candidate counts), then the §11.202 entry, §5 mint, R21 rider,
+README.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
