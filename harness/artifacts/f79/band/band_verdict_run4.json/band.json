@@ -1,0 +1,166 @@
+{
+ "label": "artifacts/f79/band/run4/f51_dwell.json",
+ "source": "artifacts/f79/band/run4/f51_dwell.json",
+ "members": [
+  {
+   "member": "dwell.s0",
+   "metric": "disc_mean",
+   "kind": "new",
+   "observed": 165.258,
+   "banked": 165.258,
+   "delta": 0.0,
+   "tol": 1.0,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "dwell.s0",
+   "metric": "hf_mean",
+   "kind": "new",
+   "observed": 6.644,
+   "banked": 6.644,
+   "delta": 0.0,
+   "tol": 0.15,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "dwell.s1",
+   "metric": "disc_mean",
+   "kind": "new",
+   "observed": 165.258,
+   "banked": 165.258,
+   "delta": 0.0,
+   "tol": 1.0,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "dwell.s1",
+   "metric": "hf_mean",
+   "kind": "new",
+   "observed": 6.644,
+   "banked": 6.644,
+   "delta": 0.0,
+   "tol": 0.15,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "leg.newpath_after",
+   "metric": "disc_mean",
+   "kind": "new",
+   "observed": 165.258,
+   "banked": 165.258,
+   "delta": 0.0,
+   "tol": 1.0,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "leg.newpath_after",
+   "metric": "hf_mean",
+   "kind": "new",
+   "observed": 6.644,
+   "banked": 6.644,
+   "delta": 0.0,
+   "tol": 0.15,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "leg.newpath_after_plus10s",
+   "metric": "disc_mean",
+   "kind": "new",
+   "observed": 165.258,
+   "banked": 165.258,
+   "delta": 0.0,
+   "tol": 1.0,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "leg.newpath_after_plus10s",
+   "metric": "hf_mean",
+   "kind": "new",
+   "observed": 6.644,
+   "banked": 6.644,
+   "delta": 0.0,
+   "tol": 0.15,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "leg.oldpath_fov10",
+   "metric": "disc_mean",
+   "kind": "old",
+   "observed": 160.142,
+   "banked": 160.142,
+   "delta": 0.0,
+   "tol": 1.0,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "leg.oldpath_fov10",
+   "metric": "hf_mean",
+   "kind": "old",
+   "observed": 6.603,
+   "banked": 6.603,
+   "delta": 0.0,
+   "tol": 0.15,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "leg.oldpath_fov10_plus10s",
+   "metric": "disc_mean",
+   "kind": "old",
+   "observed": 160.142,
+   "banked": 160.142,
+   "delta": 0.0,
+   "tol": 1.0,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  },
+  {
+   "member": "leg.oldpath_fov10_plus10s",
+   "metric": "hf_mean",
+   "kind": "old",
+   "observed": 6.603,
+   "banked": 6.603,
+   "delta": 0.0,
+   "tol": 0.15,
+   "verdict": "IN-BAND",
+   "exact_reproduction": true
+  }
+ ],
+ "n_members": 12,
+ "n_out_of_band": 0,
+ "n_drift_in_band": 0,
+ "info": {
+  "oldpath_fov60": {
+   "disc_mean": 125.531,
+   "hf_mean": 6.893,
+   "n": 389305
+  },
+  "binary_md5": "c8e129509132e357d586346e47983d74",
+  "n_samples": 2,
+  "fails_reported_by_driver": []
+ },
+ "banked": {
+  "new_disc": 165.258,
+  "new_hf": 6.644,
+  "old_disc": 160.142,
+  "old_hf": 6.603,
+  "tol_disc": 1.0,
+  "tol_hf": 0.15,
+  "exact_spread": 0.001,
+  "frame_md5": "5215565b11d24328a9bb01198c875b25"
+ },
+ "frame_md5_observed": [
+  "5215565b11d24328a9bb01198c875b25"
+ ],
+ "md5_note": null,
+ "verdict": "PASS"
+}

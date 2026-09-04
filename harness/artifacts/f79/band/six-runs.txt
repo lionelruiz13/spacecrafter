@@ -1,0 +1,92 @@
+=== F79 part (4): SIX f51_run.sh runs on DISPLAY :2, the re-banked stack.
+=== Same invocation as the SIX banked bracket runs of 2026-08-30 (--samples 2,
+=== cadence 5.0), so the comparison is instrument-for-instrument.
+binary /home/claude/spacecrafter/build-claude/src/spacecrafter
+binary_md5 c8e129509132e357d586346e47983d74   (code master-beta ba7a32a8)
+banked centre: new 165.258 / 6.644   old 160.142 / 6.603   tol +-1.0 / +-0.15
+
+run  dwell.s0            dwell.s1            newpath_after       +10s                oldpath_fov10       +10s                
+1    165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     160.142 / 6.603     160.142 / 6.603     
+2    165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     160.142 / 6.603     160.142 / 6.603     
+3    165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     160.142 / 6.603     160.142 / 6.603     
+4    165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     160.142 / 6.603     160.142 / 6.603     
+5    165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     160.142 / 6.603     160.142 / 6.603     
+6    165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     165.258 / 6.644     160.142 / 6.603     160.142 / 6.603     
+
+  distinct values of new_disc  : [165.258]   spread = 0.000000
+  distinct values of new_hf    : [6.644]   spread = 0.000000
+  distinct values of old_disc  : [160.142]   spread = 0.000000
+  distinct values of old_hf    : [6.603]   spread = 0.000000
+
+  72 gated members over six runs (12 each); every one equals the banked centre
+  to the last printed digit.  SPREAD = 0.000 on all four quantities, which is the
+  banked spread of the 2026-08-30 nine-launch family reproduced on a DIFFERENT
+  compositor.  f56_band.py verdict per run: PASS 12/12 (band_verdict_run*.json).
+
+=== INFO leg, never gated (different framing, fov 60):
+  run1  oldpath_fov60  125.531 / 6.893  n=389305
+  run2  oldpath_fov60  125.531 / 6.893  n=389305
+  run3  oldpath_fov60  125.531 / 6.893  n=389305
+  run4  oldpath_fov60  125.531 / 6.893  n=389305
+  run5  oldpath_fov60  125.531 / 6.893  n=389305
+  run6  oldpath_fov60  125.531 / 6.893  n=389305
+
+=== FRAME BYTES.  Banked BANK_FRAME_MD5 = 5215565b11d24328a9bb01198c875b25
+  run1  dwell ['5215565b11d24328a9bb01198c875b25']
+        legs  oldpath_fov10=88bbda7f  oldpath_fov60=308724db  oldpath_fov10_plus10s=88bbda7f  newpath_after=5215565b  newpath_after_plus10s=5215565b
+  run2  dwell ['5215565b11d24328a9bb01198c875b25']
+        legs  oldpath_fov10=88bbda7f  oldpath_fov60=308724db  oldpath_fov10_plus10s=88bbda7f  newpath_after=5215565b  newpath_after_plus10s=5215565b
+  run3  dwell ['5215565b11d24328a9bb01198c875b25']
+        legs  oldpath_fov10=88bbda7f  oldpath_fov60=308724db  oldpath_fov10_plus10s=88bbda7f  newpath_after=5215565b  newpath_after_plus10s=5215565b
+  run4  dwell ['5215565b11d24328a9bb01198c875b25']
+        legs  oldpath_fov10=88bbda7f  oldpath_fov60=308724db  oldpath_fov10_plus10s=88bbda7f  newpath_after=5215565b  newpath_after_plus10s=5215565b
+  run5  dwell ['5215565b11d24328a9bb01198c875b25']
+        legs  oldpath_fov10=88bbda7f  oldpath_fov60=308724db  oldpath_fov10_plus10s=88bbda7f  newpath_after=5215565b  newpath_after_plus10s=5215565b
+  run6  dwell ['5215565b11d24328a9bb01198c875b25']
+        legs  oldpath_fov10=88bbda7f  oldpath_fov60=308724db  oldpath_fov10_plus10s=88bbda7f  newpath_after=5215565b  newpath_after_plus10s=5215565b
+
+=== CROSS-STACK: the same members from the 2026-08-30 banked bracket runs
+=== (artifacts/s16_dim_bracket/run1..6.json), measured on F43's SUBSTITUTE stack:
+  2026-08-30 run1  s0 165.258/6.644  old 160.142/6.603  fov60 125.531/6.893  dwell md5 5215565b
+  2026-08-30 run2  s0 165.258/6.644  old 160.142/6.603  fov60 125.531/6.893  dwell md5 5215565b
+  2026-08-30 run3  s0 165.258/6.644  old 160.142/6.603  fov60 125.531/6.893  dwell md5 5215565b
+  2026-08-30 run4  s0 165.258/6.644  old 160.142/6.603  fov60 125.531/6.893  dwell md5 5215565b
+  2026-08-30 run5  s0 165.258/6.644  old 160.142/6.603  fov60 125.531/6.893  dwell md5 5215565b
+  2026-08-30 run6  s0 165.258/6.644  old 160.142/6.603  fov60 125.531/6.893  dwell md5 5215565b
+
+=== DISPOSITION: (a).  All six runs inside the band; spread 0.000 on all four
+=== quantities.  The band is UNCHANGED and no tolerance was touched.
+
+BANK_FRAME_MD5 was NOT re-banked, because it did not move: disposition (a)'s md5
+clause ("if it moved while the metric did not, re-bank with THAT argument") is a
+no-op here, and saying so is the point -- the clause was written for the case that
+did not happen.
+
+P2 IS REFUTED, and the refutation is the stronger result.  I predicted the dwell
+frame bytes would NOT reproduce, because byte identity is stack-coupled while the
+metric is the objective (11.176(a) records the md5 as recorded-never-gated for
+exactly that reason).  Measured: md5 5215565b11d24328a9bb01198c875b25 in all six
+runs, which is the value banked on 2026-08-30 -- and the two epochs differ in TWO
+variables at once, not one:
+    2026-08-30   F43 substitute compositor (gnome-shell --headless
+                 --virtual-monitor), binary md5 fa00deade57fe02739800013364a9611
+                 at code d6aec251
+    2026-09-04   claude's real logind session's /usr/bin/gnome-shell under
+                 gnome-remote-desktop, binary md5 c8e129509132e357d586346e47983d74
+                 at code ba7a32a8
+So the 2048^2 readback of this scene is bit-reproducible across a compositor change
+AND five days of engine commits.  What that buys: the photometric arm's "in band"
+is not the only available discriminator on this scene -- byte identity holds, so a
+future stack question can be asked at 32 bits per pixel rather than at +-1.0 on a
+mean.  What it does NOT buy: the md5 stays RECORDED, NEVER GATED (11.176(a)) -- a
+legitimate texture-cache or driver change may move bytes without moving luminance,
+and gating it would convert a stronger instrument into a more brittle one.
+
+The non-gated INFO leg agrees too: oldpath_fov60 reads 125.531 / 6.893 over
+n=389305 px in all six runs today and in all six banked runs of 2026-08-30.
+
+Per-run preflight, recorded: /proc/<pid>/comm probe 0 before each of the six;
+`GetActive` (false,) at all six reads, so no wake mitigation was applied or needed;
+`config/ssystem md5 in=out OK` reported by f51_run.sh on all six; driver-reported
+`fails` list empty on all six.  Timestamps 20:54:16, 20:56:12, 20:57:55, 20:59:49,
+21:01:32, 21:03:24 CEST.

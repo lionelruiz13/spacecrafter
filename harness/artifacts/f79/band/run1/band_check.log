@@ -1,0 +1,21 @@
+=== F56 ENVIRONMENT CANARY  2026-09-04 21:05:18 CEST  out=artifacts/f79/band/run1/../band_verdict_run1
+    banked stack: DISPLAY :2 2448x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+--- photometric arm only, on artifacts/f79/band/run1/f51_dwell.json (no launch) ---
+=== F56 PHOTOMETRIC ARM — artifacts/f79/band/run1/f51_dwell.json
+  banked: new 165.258/6.644  old 160.142/6.603  tol disc +-1.0 hf +-0.15
+  IN-BAND     dwell.s0                     disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     dwell.s0                     hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     dwell.s1                     disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     dwell.s1                     hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     leg.newpath_after            disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     leg.newpath_after            hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     leg.newpath_after_plus10s    disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     leg.newpath_after_plus10s    hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     leg.oldpath_fov10            disc_mean observed 160.142  banked 160.142  delta 0.0
+  IN-BAND     leg.oldpath_fov10            hf_mean   observed 6.603  banked 6.603  delta 0.0
+  IN-BAND     leg.oldpath_fov10_plus10s    disc_mean observed 160.142  banked 160.142  delta 0.0
+  IN-BAND     leg.oldpath_fov10_plus10s    hf_mean   observed 6.603  banked 6.603  delta 0.0
+  INFO        leg.oldpath_fov60          {'disc_mean': 125.531, 'hf_mean': 6.893, 'n': 389305} (not gated: different framing)
+  VERDICT     : PASS  (12/12 members in band)
+
+=== CANARY VERDICT: exit 0 (photometric arm only)

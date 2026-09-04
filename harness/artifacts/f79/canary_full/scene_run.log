@@ -1,0 +1,25 @@
+IN : 03fbee59bc3ec506c58f0a3f1e1d73df  /home/claude/.spacecrafter/config.ini
+545a51ef76294891579a1fc2fe13792b  /home/claude/.spacecrafter/ssystem.ini
+farm ready: /tmp/f51_farm/.spacecrafter
+s000 t+   -0.0s disc_mean 165.258 hf 6.644
+s001 t+    5.0s disc_mean 165.258 hf 6.644
+{
+ "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "binary_md5": "c8e129509132e357d586346e47983d74",
+ "site": "moon(base)",
+ "fov": 10.0,
+ "cadence_s": 5.0,
+ "n_samples": 2,
+ "convention": "post",
+ "commanded_lon": 230.3,
+ "nadir_lon": 140.3,
+ "metric": "f51_disc.metrics: L=PIL convert('L'), Bl=GaussianBlur(4), mask r<900 about ((w-1)/2,(h-1)/2) and L>8",
+ "t_launch": 1788548788.382,
+ "fails": [],
+ "t_port": 1788548809.385,
+ "t_dwell_start": 1788548843.756,
+ "t_dwell_end": 1788548849.546
+}
+OUT: 03fbee59bc3ec506c58f0a3f1e1d73df  /home/claude/.spacecrafter/config.ini
+545a51ef76294891579a1fc2fe13792b  /home/claude/.spacecrafter/ssystem.ini
+config/ssystem md5 in=out OK

@@ -1,0 +1,9 @@
+SESSION   UID USER        SEAT  LEADER CLASS         TTY  IDLE SINCE
+     14  1003 claude      -     43263  user          -    no   -
+     15  1003 claude      -     43331  manager       -    no   -
+      2  1000 foxy        seat0 4731   user          tty2 no   -
+      3  1000 foxy        -     4881   manager       -    no   -
+      4 60579 gdm-greeter -     6978   manager-early -    no   -
+     c2 60579 gdm-greeter -     6971   greeter       -    yes  2h 15min ago
+
+6 sessions listed.

@@ -1,0 +1,246 @@
+{
+ "root": "/home/claude/.spacecrafter/cache",
+ "taken_wall": 1788548787.381,
+ "taken_iso": "2026-09-04T21:06:27+0200",
+ "root_exists": true,
+ "root_is_symlink": false,
+ "root_symlink_target": null,
+ "files": {
+  "loader.sav": {
+   "size": 21152,
+   "mtime_ns": 1785463904945552712,
+   "mtime_iso": "2026-07-31T04:11:44",
+   "md5": "22b8235913004e409f935e817e24ee17"
+  },
+  "pipelineCache.dat": {
+   "size": 33250443,
+   "mtime_ns": 1788074464487804800,
+   "mtime_iso": "2026-08-30T09:21:04",
+   "md5": "9285bfa1204d02658bf1334fff4aa677"
+  },
+  "t-bodies-deimos.dat": {
+   "size": 919658,
+   "mtime_ns": 1785428199435829544,
+   "mtime_iso": "2026-07-30T18:16:39",
+   "md5": "569dd027a741fdf5a42df5623937bc26"
+  },
+  "t-bodies-earth.dat": {
+   "size": 174011542,
+   "mtime_ns": 1762851583976523388,
+   "mtime_iso": "2025-11-11T09:59:43",
+   "md5": "8db99a41b5d1aee84f26a9c11d67528e"
+  },
+  "t-bodies-earth_alti.dat": {
+   "size": 880075,
+   "mtime_ns": 1783800050385056568,
+   "mtime_iso": "2026-07-11T22:00:50",
+   "md5": "69096aadb387dc1a3b52bb6a0d889cdb"
+  },
+  "t-bodies-earth_night.dat": {
+   "size": 11014637,
+   "mtime_ns": 1783800056918992243,
+   "mtime_iso": "2026-07-11T22:00:56",
+   "md5": "c005ef01367eae820ba4a09c15583983"
+  },
+  "t-bodies-earth_normal.dat": {
+   "size": 21630089,
+   "mtime_ns": 1783800053865022309,
+   "mtime_iso": "2026-07-11T22:00:53",
+   "md5": "45bcc41699b356290bf9413e9d18be4b"
+  },
+  "t-bodies-earth_specular.dat": {
+   "size": 2112106,
+   "mtime_ns": 1784211079809003155,
+   "mtime_iso": "2026-07-16T16:11:19",
+   "md5": "9be0f3cbdc0ddec38caf1a849e492475"
+  },
+  "t-bodies-enceladus.dat": {
+   "size": 1948981,
+   "mtime_ns": 1785428199597828128,
+   "mtime_iso": "2026-07-30T18:16:39",
+   "md5": "d65bbfcbe4ce61249dd279de28df3c1a"
+  },
+  "t-bodies-europa.dat": {
+   "size": 2269244,
+   "mtime_ns": 1785428200184823000,
+   "mtime_iso": "2026-07-30T18:16:40",
+   "md5": "f93eed2745c2fa74132a5c89fc1e3676"
+  },
+  "t-bodies-iapetus.dat": {
+   "size": 1995923,
+   "mtime_ns": 1784377930535585693,
+   "mtime_iso": "2026-07-18T14:32:10",
+   "md5": "57eb2e738ca50cf1ce5191438a32d47f"
+  },
+  "t-bodies-iapetus_alti.dat": {
+   "size": 1385889,
+   "mtime_ns": 1784377930282589545,
+   "mtime_iso": "2026-07-18T14:32:10",
+   "md5": "da31c20a24a3f726260d04539fdddc2d"
+  },
+  "t-bodies-io.dat": {
+   "size": 3353716,
+   "mtime_ns": 1785428199972824853,
+   "mtime_iso": "2026-07-30T18:16:39",
+   "md5": "009f95db6b173d3168232e2c16e5b918"
+  },
+  "t-bodies-io_night.dat": {
+   "size": 509241,
+   "mtime_ns": 1785428200034824311,
+   "mtime_iso": "2026-07-30T18:16:40",
+   "md5": "970e073d44b7eab24cac8cd210870851"
+  },
+  "t-bodies-jupiter.dat": {
+   "size": 2809850,
+   "mtime_ns": 1784462914116901856,
+   "mtime_iso": "2026-07-19T14:08:34",
+   "md5": "0fb0a8537d359e796bc7828e3ee777e3"
+  },
+  "t-bodies-mars.dat": {
+   "size": 139301864,
+   "mtime_ns": 1784495523198549813,
+   "mtime_iso": "2026-07-19T23:12:03",
+   "md5": "e27098fb1003de018daf76061addbbf8"
+  },
+  "t-bodies-mars_alti.dat": {
+   "size": 6381680,
+   "mtime_ns": 1783854603238933841,
+   "mtime_iso": "2026-07-12T13:10:03",
+   "md5": "e0a36fb937091a87fed9ba254e31f8db"
+  },
+  "t-bodies-mars_normal.dat": {
+   "size": 45353355,
+   "mtime_ns": 1783854600684961560,
+   "mtime_iso": "2026-07-12T13:10:00",
+   "md5": "d76571e6bafbab43925915153b98914c"
+  },
+  "t-bodies-mercury.dat": {
+   "size": 40802849,
+   "mtime_ns": 1785428205135779736,
+   "mtime_iso": "2026-07-30T18:16:45",
+   "md5": "26743e986085e7074ef10633131b039f"
+  },
+  "t-bodies-moon.dat": {
+   "size": 45045455,
+   "mtime_ns": 1786233684919031656,
+   "mtime_iso": "2026-08-09T02:01:24",
+   "md5": "6a33c64988a4fae6db1cb7c358a1d544"
+  },
+  "t-bodies-moon_alti.dat": {
+   "size": 13155347,
+   "mtime_ns": 1769247215222469359,
+   "mtime_iso": "2026-01-24T10:33:35",
+   "md5": "ad9af4293fda7d6487a4a3927eb7b1d6"
+  },
+  "t-bodies-moon_normal.dat": {
+   "size": 51763233,
+   "mtime_ns": 1788077361390201708,
+   "mtime_iso": "2026-08-30T10:09:21",
+   "md5": "d668ba53ec9738f1538fa0af8ba5ffb4"
+  },
+  "t-bodies-neptune.dat": {
+   "size": 863311,
+   "mtime_ns": 1785428199355830242,
+   "mtime_iso": "2026-07-30T18:16:39",
+   "md5": "cb9d7f954efb2fd24941b276d0df2a66"
+  },
+  "t-bodies-phobos.dat": {
+   "size": 1435684,
+   "mtime_ns": 1785428202891799348,
+   "mtime_iso": "2026-07-30T18:16:42",
+   "md5": "1f72bf54a374feb79f05fc7f94f97607"
+  },
+  "t-bodies-saturn.dat": {
+   "size": 3655428,
+   "mtime_ns": 1784377943615386527,
+   "mtime_iso": "2026-07-18T14:32:23",
+   "md5": "2c437532d637d6f2c271ac52a3811eda"
+  },
+  "t-bodies-sun.dat": {
+   "size": 49329552,
+   "mtime_ns": 1762852262365932920,
+   "mtime_iso": "2025-11-11T10:11:02",
+   "md5": "e34a54d2e729383d75ec9856f8dbce84"
+  },
+  "t-bodies-triton.dat": {
+   "size": 735220,
+   "mtime_ns": 1785428199274830950,
+   "mtime_iso": "2026-07-30T18:16:39",
+   "md5": "f7095908ef9d2158c80a20bddd562337"
+  },
+  "t-bodies-uranus.dat": {
+   "size": 422341,
+   "mtime_ns": 1784677026379278027,
+   "mtime_iso": "2026-07-22T01:37:06",
+   "md5": "c7c2d656d5e98daa84d61a9257cc8dd3"
+  },
+  "t-bodies-venus.dat": {
+   "size": 805496,
+   "mtime_ns": 1784688720592684332,
+   "mtime_iso": "2026-07-22T04:52:00",
+   "md5": "6433952c4dac8902860fc2d86015d9a4"
+  },
+  "texture-cache.sav": {
+   "size": 2797,
+   "mtime_ns": 1788077449859901235,
+   "mtime_iso": "2026-08-30T10:10:49",
+   "md5": "fe0c607e39d1ed5fd52b0741058700c0"
+  },
+  "data/0": {
+   "size": 159968,
+   "mtime_ns": 1758964863760423118,
+   "mtime_iso": "2025-09-27T11:21:03",
+   "md5": "1c693f161dd2cda85be0b6dea00acdb5"
+  },
+  "data/1": {
+   "size": 2630220,
+   "mtime_ns": 1758964863838422172,
+   "mtime_iso": "2025-09-27T11:21:03",
+   "md5": "fcd2fe4fa7d5697809dd76712e8e392b"
+  },
+  "data/2": {
+   "size": 342324,
+   "mtime_ns": 1758964863848422050,
+   "mtime_iso": "2025-09-27T11:21:03",
+   "md5": "805ab35752335405b558bc3a93b8e050"
+  },
+  "data/3": {
+   "size": 662528,
+   "mtime_ns": 1758964863867421820,
+   "mtime_iso": "2025-09-27T11:21:03",
+   "md5": "f6d4ac2bd8f50161c10a55f6f7f25ab9"
+  },
+  "data/4": {
+   "size": 159968,
+   "mtime_ns": 1758964863871421771,
+   "mtime_iso": "2025-09-27T11:21:03",
+   "md5": "1c693f161dd2cda85be0b6dea00acdb5"
+  },
+  "data/5": {
+   "size": 7187200,
+   "mtime_ns": 1758964864022419938,
+   "mtime_iso": "2025-09-27T11:21:04",
+   "md5": "9c2ebc82256b3a0bd7f01792a0d669ea"
+  },
+  "data/6": {
+   "size": 6153184,
+   "mtime_ns": 1758964864187417935,
+   "mtime_iso": "2025-09-27T11:21:04",
+   "md5": "2cdabf40fcfcc0d80caf4668bfa5c93a"
+  },
+  "data/7": {
+   "size": 6355552,
+   "mtime_ns": 1758964864364415787,
+   "mtime_iso": "2025-09-27T11:21:04",
+   "md5": "c8c5d84e448db2b1ec67030f6487b1d5"
+  }
+ },
+ "dirs": [
+  "data"
+ ],
+ "symlinks": {},
+ "errors": [],
+ "n_files": 38,
+ "n_bytes": 680817102,
+ "aggregate_md5": "68a7d015812fbbc24c4a95f36e50f976"
+}

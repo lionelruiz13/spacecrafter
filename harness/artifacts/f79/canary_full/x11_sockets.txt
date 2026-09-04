@@ -1,0 +1,9 @@
+total 0
+drwxrwxrwt  2 root        root   160 Sep  4 19:50 .
+drwxrwxrwt 25 root        root   840 Sep  4 21:06 ..
+srwxrwxr-x  1 foxy        foxy     0 Sep  4 18:45 X0
+srwxrwxr-x  1 foxy        foxy     0 Sep  4 18:45 X1
+srwxr-xr-x  1 gdm-greeter gdm      0 Sep  4 18:45 X1024
+srwxr-xr-x  1 gdm-greeter gdm      0 Sep  4 18:45 X1025
+srwxrwxr-x  1 claude      claude   0 Sep  4 19:50 X2
+srwxrwxr-x  1 claude      claude   0 Sep  4 19:50 X3

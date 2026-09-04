@@ -1,0 +1,83 @@
+=== F56 ENVIRONMENT CANARY  2026-09-04 21:06:25 CEST  out=/home/claude/spacecrafter/claude/harness/artifacts/f79/canary_full
+    banked stack: DISPLAY :2 2448x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+
+--- (a) display stack ---
+  host.boot = 2026-09-04 18:45:08
+  host.now_epoch = 1788548785
+  display.target = :2
+  display.expected = :2
+  xauthority.inherited = /run/user/1003/.mutter-Xwaylandauth.5KBYU3
+  xauthority = /run/user/1003/.mutter-Xwaylandauth.5KBYU3
+  display.dimensions = 2448x1332
+  display.screens = 1
+  xdg_runtime_dir = /run/user/1003
+  x11.sockets = X0 X1 X1024 X1025 X2 X3 
+
+--- (a2) compositor identity ---
+  compositor.cmd_banked = /usr/bin/gnome-shell
+  compositor.owner_uid = 1003
+  compositor.match_cmdline_only = 3
+  compositor.match_owned = 1
+  compositor.pid = 43595
+  compositor.start_epoch = 1788544217
+  compositor.start_iso = 2026-09-04 19:50:17
+  compositor.start_banked = 1788544217
+  xserver.pid = 43800
+  xserver.start_epoch = 1788544217
+  xserver.start_banked = 1788544217
+
+--- (b) GPU ---
+  gpu.query = NVIDIA GeForce RTX 5090, 580.159.03, 854 MiB, 32607 MiB, 18 %
+  gpu.used_mib = 854
+
+--- (c) RDP connection state / (d) dispatch method ---
+  rdp.estab_3389 = 2
+  rdp.note = count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+  logind.claude_sessions = 14 15 
+  dispatch.has_logind_session = yes
+  dispatch.wayland_display = wayland-0
+  dispatch.dbus = unix:path=/run/user/1003/bus
+  dispatch.inherited_display = :2
+
+--- (e) reference scene (f51_run.sh, the §11.174(e) scene) ---
+  concurrency.spacecrafter_pre = 0
+manifest: 38 files, 680817102 B, aggregate md5 68a7d015812fbbc24c4a95f36e50f976  -> /home/claude/spacecrafter/claude/harness/artifacts/f79/canary_full/cache_pre.json
+    launching: f51_run.sh /home/claude/spacecrafter/claude/harness/artifacts/f79/canary_full/scene --samples 2   (timeout 900 s, plain timeout per §0.5(b))
+  scene.f51_run_rc = 0
+ "t_dwell_end": 1788548849.546
+}
+OUT: 03fbee59bc3ec506c58f0a3f1e1d73df  /home/claude/.spacecrafter/config.ini
+545a51ef76294891579a1fc2fe13792b  /home/claude/.spacecrafter/ssystem.ini
+config/ssystem md5 in=out OK
+  scene.md5_in_eq_out = yes
+manifest: 38 files, 680817102 B, aggregate md5 68a7d015812fbbc24c4a95f36e50f976  -> /home/claude/spacecrafter/claude/harness/artifacts/f79/canary_full/cache_post.json
+CACHE MANIFEST DIFF  /home/claude/.spacecrafter/cache
+  window            : 102.665 s  (2026-09-04T21:06:27+0200 -> 2026-09-04T21:08:10+0200)
+  files             : 38 -> 38
+  aggregate md5     : 68a7d015812fbbc24c4a95f36e50f976 -> 68a7d015812fbbc24c4a95f36e50f976  CHANGED=False
+  mutations         : 0
+  (no file added, removed, rewritten or re-stamped inside the window)
+  cache.mutations = 0
+=== F56 PHOTOMETRIC ARM — canary 20260904-210625
+  banked: new 165.258/6.644  old 160.142/6.603  tol disc +-1.0 hf +-0.15
+  IN-BAND     dwell.s0                     disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     dwell.s0                     hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     dwell.s1                     disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     dwell.s1                     hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     leg.newpath_after            disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     leg.newpath_after            hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     leg.newpath_after_plus10s    disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     leg.newpath_after_plus10s    hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     leg.oldpath_fov10            disc_mean observed 160.142  banked 160.142  delta 0.0
+  IN-BAND     leg.oldpath_fov10            hf_mean   observed 6.603  banked 6.603  delta 0.0
+  IN-BAND     leg.oldpath_fov10_plus10s    disc_mean observed 160.142  banked 160.142  delta 0.0
+  IN-BAND     leg.oldpath_fov10_plus10s    hf_mean   observed 6.603  banked 6.603  delta 0.0
+  INFO        leg.oldpath_fov60          {'disc_mean': 125.531, 'hf_mean': 6.893, 'n': 389305} (not gated: different framing)
+  VERDICT     : PASS  (12/12 members in band)
+
+CANARY DEFAULT [frames.pruned]
+  CAUSE   : the reference scene writes 2048x2048 PNGs (~4 MB each) and this is a preflight, not an experiment
+  CONTENT : kept the first frame (new_after.png) as the visual record, deleted the rest of /home/claude/spacecrafter/claude/harness/artifacts/f79/canary_full/scene/frames
+  OVERRIDE: pass --keep-frames to keep every frame
+
+=== CANARY VERDICT: exit 0  (0 fail, 0 note)  artifacts: /home/claude/spacecrafter/claude/harness/artifacts/f79/canary_full

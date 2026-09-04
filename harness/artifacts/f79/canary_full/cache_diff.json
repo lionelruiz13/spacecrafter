@@ -1,0 +1,24 @@
+{
+ "root": [
+  "/home/claude/.spacecrafter/cache",
+  "/home/claude/.spacecrafter/cache"
+ ],
+ "window_s": 102.665,
+ "pre_iso": "2026-09-04T21:06:27+0200",
+ "post_iso": "2026-09-04T21:08:10+0200",
+ "aggregate_md5": [
+  "68a7d015812fbbc24c4a95f36e50f976",
+  "68a7d015812fbbc24c4a95f36e50f976"
+ ],
+ "aggregate_changed": false,
+ "n_files": [
+  38,
+  38
+ ],
+ "added": [],
+ "removed": [],
+ "content_changed": [],
+ "mtime_only": [],
+ "n_mutations": 0,
+ "symlinks_changed": false
+}
