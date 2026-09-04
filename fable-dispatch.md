@@ -822,7 +822,44 @@ to assume — verified at record time if needed.
 journal `2026-09-04a`; item 4 struck; READMEs both; C3 half discharged; field md5
 unchanged; fresh-build ctest green; ASCII gate; trees clean; WIP cleared; parent
 baselines re-derived LAST (unchanged unless a parent entry was minted — state).
-**WIP:** — **DELIVERED 2026-09-04** (scedit journal `2026-09-04a`; parent **§11.200** + **§5.124–§5.127**; SS-40…SS-43). Census 142 keys / 422 read sites (base-D residual PAID at `capability-surface.md` §2); `ss-grammar.json`; two-regime checker by LOCATION; **C3's stellar-system half DISCHARGED — 4014 findings over 5 corpora, ALL TRUE, 0 false positives, 0 unadjudicated**; ctest **16/16 → 19/19**; anchor_gate **6667 → 7196**; `body nmae Earth` REPORTED. `camera` NOT armed — the code refutes that premise (anchor registries, not the body grammar). Code `4b633b8a`+`3f3f7726`+`ab212f0d`+`befe7a5d`+`85cc2785`. Data md5 pristine. Prior run: — **ABORTED at the §0.7 gate, first dispatch 2026-09-04** (executor run, 0
+**WIP:** — **DELIVERED 2026-09-04** (scedit journal `2026-09-04a`; parent **§11.200** + **§5.124–§5.127**; SS-40…SS-43). Census 142 keys / 422 read sites (base-D residual PAID at `capability-surface.md` §2); `ss-grammar.json`; two-regime checker by LOCATION; **C3's stellar-system half DISCHARGED — 4014 findings over 5 corpora, ALL TRUE, 0 false positives, 0 unadjudicated**; ctest **16/16 → 19/19**; anchor_gate **6667 → 7196**; `body nmae Earth` REPORTED. `camera` NOT armed — the code refutes that premise (anchor registries, not the body grammar). Code `4b633b8a`+`3f3f7726`+`ab212f0d`+`befe7a5d`+`85cc2785`. Data md5 pristine.
+**ACCEPTED 2026-09-04 (supervisor, session 21).** Verified by my own runs and reads:
+§11.200 and journal `2026-09-04a` read in full; five code commits (Claude Opus 5,
+all confined to `util/scedit/` — `git diff --name-only` shows no other file) and
+seven harness commits, each trailer tracking its code sha; both trees clean; the
+engine binary UNTOUCHED and still current (`cmake -n` zero steps, md5 `c8e12950`).
+**My own fresh build** (`build-s21acc`, Release, -j24): ctest **19/19**, anchor record
+`7196 / 2 / 86` as recorded, D14 gate PASS (970 CONVERT files), the one GCC 15.2
+`-Wformat-truncation` warning exactly as reported; **my own strict corpus run**
+against that binary: **4014 = 3373 authored-slip + 535 dead-key + 84 one-regime +
+19 pairing-shift + 3 two-readers, 0 unadjudicated, 0 false positives, rc 0**.
+Ledger flips at their homes: §5.124–§5.127 inline; §5.122 `[EXTENDED …]` at its
+only home (inline row); §11.109(e) entry-only by construction (index line retired);
+SS-40…SS-43; item 4 struck; C3's clause discharged; base D annotated. Engine
+claims re-read at the code before endorsing the mints: `handle()` returns
+`std::unique_ptr<Orbit>` on every creator, so `.get()` at
+`anchor_creator_cor.cpp:130` dangles (§5.127(2) REAL, shipped-data-reachable);
+`isTrue` = TRUE|ON|1 masked, `isFalse` = FALSE|OFF|0, `strToBool` = true|1, and
+`halo` is read through the first on the composed path (`:1243`) and the third on
+the legacy one (`protosystem.cpp:685,711`) — §5.126 REAL: one data line makes the
+comparison baseline and the new path disagree, the case §11.52(b) parity work
+assumed impossible. Deviations ENDORSED with the executor's arguments: `camera` NOT
+armed (the code refutes my premise — its map goes to the anchor registries;
+dispatcher defect, output-side, tallied); `args_downstream_contract` added (the
+boundary permitted it, said so); `argKeysAreExhaustive()` now `args_complete &&
+args_downstream_contract.empty()` (a command-contract-only consumer must treat the
+list as partial — read at `main.cpp`, correct); §11.200 + four §5 rows minted
+(§5.79 met — reachable from shipped data, consequences stated); two read-only
+subagents under no-recall contracts, every sharp claim re-verified by the executor
+at the code; two self-caught WIP-chain slips (guarded); the GCC warning reported not
+fixed. Judgment of mine on the record: **§5.127 is a FIVE-member bundle** with two
+memory-unsafe members — if any member is ever scheduled, it gets its own row first
+(granularity veto point, §3). Criterion-integrity instances credited to the
+executor: the abort itself (report-not-absorb on four premises); the census's
+first version refuted by the corpus (811 legacy-only ⇒ the module loaders were
+missing); the recognition that composed-only keys (B28's 20 `rot_frame`/`rot_pole_w0`
+lines) are NOT new-format constructs — a HARD rule there would have been 40 false
+positives; `--strict`'s first run leaving one subject unadjudicated. Prior run: — **ABORTED at the §0.7 gate, first dispatch 2026-09-04** (executor run, 0
 mutations, both trees byte-identical at `ba7a32a8` / `8652be2`; ctest 16/16 baseline
 paid in a fresh dir and the dir removed): FOUR premises false, ALL the dispatcher's —
 (B1) "D16–D19 still open" (answered 2026-07-23 → §11.79(j)–(m)); (B2) "recorded as
@@ -991,6 +1028,63 @@ cleared; baselines LAST.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-21 decision items (2026-09-04, the desktop round — canary / stellar
+  grammar / view offset; written at F80's acceptance, extended at close):**
+  - **THE CANARY IS GREEN ON THE DESKTOP AND ITS BANK IS PER-BOOT (F79, §11.199):**
+    on your word ("Real session on :2") the fingerprint sits on your RDP-created
+    real logind session; the band reproduced a third way (72/72, spread 0.000,
+    across a compositor change AND a binary change — the dwell frame byte-identical,
+    `5215565b`, recorded never gated). It WILL red at the next reboot; that is the
+    protocol, not a fault. One line yours: **`lock-enabled` is `true` on this
+    desktop** (the 2026-08-31 change was the laptop's; gsettings is not carried) —
+    harmless at `idle-delay 0` unless an explicit lock/suspend path fires under an
+    unattended ssh-era session (the F67 1 Hz throttle). Named-not-fixed: the
+    X-server selector has the same uid-blindness the compositor match lost
+    (§11.199(j); on the laptop `:2` was foxy's).
+  - **YOUR THREE FACTS ARE STANDING RULES NOW** (§0.5 bullet; HOST-EVENTS; Q-61
+    resolved): `/tmp` session-lifetime; `~/spacecrafter`, `~/shared`, `~/.claude`
+    the only carried trees; the ssh era keeps `:2` open (SDL2 → X11 → DISPLAY) —
+    `Linger=no` means a logout ends the display; re-provision + re-bank then.
+  - **`CLAUDE_CODE_THRIFTY_SONIC=0` ENACTED at your word** in `~/.claude/settings.json`
+    (user scope, carried) — the auto-mode bash-first injection is gone for every
+    session launched after 2026-09-04; mechanism verified at the 2.1.260 bundle
+    (Q-60 RESOLVED). Residual: a future release renaming the flag re-enables it
+    silently; the tell is "wherever it can accomplish the job" reappearing.
+  - **THE STELLAR-SYSTEM FILE HAS A CONTRACT (F80, §11.200 + scedit journal
+    2026-09-04a) — and reading the loader to write it found four engine rows,
+    record-not-fix:** **§5.124** the data-surface silent-drop class — 8.2 % of your
+    field `ssystem.ini` (189 lines; `tex_halo`/`lighting` on EVERY body) and 9.4 %
+    of the shipped one reach NO reader, and on the script surface the same
+    mechanism is 200× larger (SS-41: `big_halo` on 2779 lines, `orbit_visualisation_
+    period` on 496, `sideral_period` on 90 — three misspellings, 3365 lines of the
+    shipped package); **§5.125** adopting the composed format silently DROPS four
+    keys the twin carries (`big_halo_size`, `tex_skin`, `halo_alpha_override`,
+    `halo_scale_override` — legacy-only readers); **§5.126, your eye:** `halo = on`
+    draws NOTHING on the old path (`strToBool` = true|1) and a halo on the new one
+    (`isTrue` = true|on|1) — one authored line makes the comparison baseline and
+    the new path disagree, which parity work assumed data alone could not do; plus
+    the case asymmetry (`parseCommand` lowercases keys, no data-file reader does —
+    `orbit_Eccentricity` live on 3128 script lines, dead in `ssystem.ini`, the best
+    explanation for `[Sedna]`'s three CamelCase slips, SS-42); **§5.127** five
+    orbit/anchor-chain defects read in passing — a null deref reachable by a
+    top-level comet with neither period nor mean motion, a USE-AFTER-FREE at
+    `anchor_creator_cor.cpp:130` reachable from the shipped `anchor.ini:51-59`
+    (`baryEarthMoon`), `orbit_semimajoraxis` in km under `ell_orbit` and AU under
+    `comet_orbit`, `saveOrbit` applying AU twice, the chain's last error message
+    naming the wrong class. **Granularity veto point (mine):** §5.127 is a bundle;
+    any member scheduled gets its own row first. **Decisions yours:** (1) the
+    `anchor.ini` grammar is now a NAMED, ABSENT third contract — `camera`/`flyto`
+    wait on it (`args_complete` stays false there); (2) `type = BODY` on every
+    composed node remains §11.89(c)'s transitional call, untouched; (3) the four
+    SS rows (SS-40…43) are the tester's data corrections, forward-only (D9).
+    Veto-open: the contract file's name `ss-grammar.json`; the `args_downstream_
+    contract` field. Also: the "0 warnings" record was GCC 11's — GCC 15.2 gives
+    one (`sc_tui.cpp:325 -Wformat-truncation`), reported not fixed.
+  - **A LEDGER GAP CLOSED, and it cost a round-trip:** §11.78(e) ("Suspended for
+    Vixy") carried NO back-marker to its answers (§11.79(j)–(m), §11.89) — I minted
+    F80 from that stale node and the executor aborted at the gate on four false
+    premises of mine. Marker placed both homes. The class: an answered decision
+    whose question-node never learned it was answered.
 - **Session-20 decision items (2026-09-01, the anchors/corpus/bad-script round):**
   - **THE GRAMMAR'S ANCHORS RESOLVE AGAIN — two resolutions taken from recorded
     rules, veto-open (F75, scedit journal `2026-09-01a`):** (S1) the sweep moved
