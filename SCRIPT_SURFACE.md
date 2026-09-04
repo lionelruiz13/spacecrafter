@@ -590,3 +590,64 @@ the counts below already say how many lines. And **`fscripts/W17.sts` and
   source, and no script anywhere on this machine plays it. If a tool of yours
   writes it, that tool has the duplicate in it. **(b)** is that file still
   wanted? Status: OPEN, FYI.
+
+- **SS-40** — **Two keys on EVERY body of the stellar-system files do nothing,
+  and 189 lines of your `ssystem.ini` are in the same state.** `tex_halo` and
+  `lighting` appear once per body in both `~/.spacecrafter/ssystem.ini` (90 each)
+  and the shipped `data/default_ssystem.ini` (77 and 78) — and no part of the
+  program reads either one. The only places those words appear in the source at
+  all are two blocks that WRITE them onto a star built from the star catalogue;
+  nothing ever reads them back. Same for `model3D` (4 lines), `ring_shadow` (2),
+  `sidereal_period` (1), and in the shipped file `tex_cloud` and
+  `tex_cloud_normal`. Altogether **189 lines of your file (8.2% of its key
+  lines) and 164 of the shipped one (9.4%) have no effect**. Nothing is broken
+  by them — they cost nothing at run time — so this is not a bug report. Two
+  questions: **(a)** were these keys meant to do something that was never
+  implemented, or did their feature go away? **(b)** would you rather they were
+  removed from future data, or left as documentation of intent? Nothing has been
+  changed. Status: OPEN, needs your word. [Measured 2026-09-04, F80; parent
+  §5.124.]
+
+- **SS-41** — **Three misspelled keys account for 3365 lines of the shipped
+  show package.** On `body action load` lines: **`big_halo` on 2779 lines** (the
+  keys the engine reads are `tex_big_halo`, which switches the big halo on by
+  being set at all, and `big_halo_size`); **`orbit_visualisation_period` on 496**
+  (the engine spells it `orbit_visualiZation_period` — one letter); and
+  **`sideral_period` on 90** (missing an `e`; and `sidereal_period`, the spelling
+  it is reaching for, is not read either — see SS-40). Every one of those lines
+  is silently ignored: an unrecognised key on a `body` line produces no message
+  of any kind. What that means in practice is that the halo settings on 2779
+  lines and the orbit-drawing period on 496 are not reaching the program at all,
+  and whatever they were meant to look like, the program is drawing the default
+  instead. Worth knowing which of the three you would want corrected in a future
+  data release — nothing has been changed here. Status: OPEN, needs your word.
+  [Measured 2026-09-04, F80 over the 408 installed scripts; parent §5.124.]
+
+- **SS-42** — **`[Sedna]` in your `ssystem.ini` loses three of its orbital
+  elements, and the reason is a rule that differs between scripts and data
+  files.** Lines 2420, 2426 and 2428 write `orbit_MeanLongitude`,
+  `orbit_LongOfPericenter` (with no `=` at all) and `orbit_Period`. None of the
+  three reaches the program: **in a SCRIPT, capitals do not matter — the command
+  reader lowercases every key — but in a stellar-system FILE they do**, and no
+  file reader lowercases anything. So `orbit_Eccentricity` works on a `body
+  action load` line (3128 shipped lines rely on exactly that) and the same
+  spelling is dead in `ssystem.ini`. Sedna therefore gets the default mean
+  longitude, no period, and no longitude of pericentre, silently. The missing
+  `=` on line 2426 was already known (parent §11.109(i)); the two capital-letter
+  ones are new. Question: is the capitals-matter-here-but-not-there rule
+  something you want the program to stop enforcing (i.e. should data files
+  lowercase keys too), or would you rather the data was corrected? That is a
+  design call, not a fix, so nothing has been changed. Status: OPEN, needs your
+  word. [Measured 2026-09-04, F80; parent §5.126.]
+
+- **SS-43** — **If you adopt the new composed format for a system, four keys
+  stop working, and the file still contains them.** The machine-written
+  `.ini.disabled` twin copies every key of your legacy file exactly — including
+  `big_halo_size`, `tex_skin`, `halo_alpha_override` and `halo_scale_override`,
+  which only the OLD loader reads. Adopt the twin (drop the `.disabled`) and a
+  star's big-halo size and a body's skin texture quietly stop being applied,
+  while the keys sit there in the file looking correct. Measured on the shipped
+  `SolarSystem.ini.disabled`: 4 such lines. This is a heads-up rather than a
+  question — it is the program's to fix (parent §5.125) — but if you were
+  planning to adopt a composed file, this is what would change. Status: OPEN,
+  FYI. [Measured 2026-09-04, F80.]

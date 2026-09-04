@@ -97,7 +97,23 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   their teeth when it ran: *recorded upstream* is per DISTINCT DEFECT and not
   per line (1661 findings are 13 authored slips), and *not lint noise* cuts
   both ways — the one false statement the sweep found was in scedit's own
-  message text, not in a rule. `ssystem.ini`'s half is still item 4's.
+  message text, not in a rule. ~~`ssystem.ini`'s half is still item 4's.~~
+  **[DISCHARGED 2026-09-04, F80, journal `2026-09-04a`]** The stellar-system
+  half is measured over THREE corpora and armed by two gates: the field
+  `~/.spacecrafter/ssystem.ini` (232 findings), the tracked
+  `data/default_ssystem.ini` (205) and the machine-owned composed twins (193)
+  -- **630 findings, all TRUE, zero false positives**, plus the **3384** the
+  same round made visible on the shipped SCRIPT package when `body`'s key
+  vocabulary finally became checkable: **4014 dispositioned, 0 unadjudicated**
+  (`claude/harness/f80_corpus.py --strict`,
+  `claude/harness/artifacts/f80/dispositions.tsv.gz`). C3 named TWO corpora
+  here and the split matters: the shipped file is tracked, so it takes the
+  line-for-line record (`ss_corpus_gate`); the field file and the twins are
+  untracked data belonging to the person who authors the shows, so they take
+  counts plus md5 and a loud SKIP (`field_corpus_gate`) -- the same ownership
+  argument `shipped_corpus_gate` records, with one reason of its own: those
+  files are READ-ONLY to every task that touches them, and copying them in
+  would make a second copy of data whose whole point is that there is one.
 - **C4 — imported from the parent ledger** (references, not copies):
   legacy data files are ISO-8859 (CLAUDE.md standing rule); writes into
   LEGACY files must never introduce new-format constructs — comments/new
@@ -184,7 +200,24 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   own targets, 0 warnings. Live: `claude/harness/f67_tcp_live.py` 28/28, twice.**~~
   **[SUPERSEDED 2026-08-31 by the F69 line below; kept as the F67 state of
   record, per the maintenance invariant.]**
-- **Gate inventory at 2026-09-01 (F76 delivered; `ctest` in a fresh
+- **Gate inventory at 2026-09-04 (F80 delivered; `ctest` in a fresh
+  `build-f80`): 19 gates.** Three arrive together because the SECOND CONTRACT
+  arrived: `ss_lint_rules` (a PAIR of fixtures, and the pair is the point -- the
+  same `relation =` line is a hard error in the legacy one and silent in the
+  composed one, `type = BODY` is a value-domain finding on a legacy node and the
+  canonical marker on a composed one, so a rule that stopped telling the regimes
+  apart would still pass a single-file fixture and cannot pass this);
+  `ss_corpus_gate` (the tracked `data/default_ssystem.ini`, line for line); and
+  `field_corpus_gate` (the field file and the composed twins, counts + md5, exit
+  77 where they are absent). Each shown able to fail -- one changed count, one
+  removed line, one added fixture line, all exit 1 -- and `field_corpus_gate`
+  shown able to ABSTAIN. `anchor_gate` takes the new contract as a sixth target:
+  **6667 -> 7196 clean**, the 529 attributed to it, and it went red on six
+  hand-typed citations while every generated anchor beside them resolved -- the
+  citations were fixed, not the gate. 0 warnings on GCC 11; ONE on this host's
+  GCC 15.2 (`sc_tui.cpp:325`, `-Wformat-truncation`, pre-existing and reported
+  rather than absorbed). Journal 2026-09-04a.
+- ~~**Gate inventory at 2026-09-01 (F76 delivered; `ctest` in a fresh
   `build-f76`): 16 gates. `shipped_corpus_gate` joins the fifteen and it is
   C3's other half, owed since 2026-08-04: `--check` over the INSTALLED script
   package (408 scripts, 1661 findings, every one dispositioned TRUE-shipped),
@@ -197,7 +230,9 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   on ONE line added to ONE script in a hardlink copy (four lines of delta,
   exit 1, and the md5 row naming the DATA as what moved). `anchor_gate`'s
   record moves 6663 -> 6667 clean, deliberately: this task added citations.
-  0 warnings; journal 2026-09-01b.**
+  0 warnings; journal 2026-09-01b.**~~
+  **[SUPERSEDED 2026-09-04 by the F80 line above; kept as the F76 state of
+  record, per the maintenance invariant.]**
 - ~~**Gate inventory at 2026-09-01 (F75 delivered; `ctest` in a fresh
   `build-f75`): 15 gates -- the first NEW one since F67. `anchor_gate` joins
   the fourteen: every `file:line` the contract cites into the engine resolves
@@ -260,10 +295,31 @@ notes.*
    app_command_interface.cpp:4404-4408, synthesized comment-free text)
    ⇒ not user-reachable, latent divergence recorded. parse_model update
    queued for merge time (grammar frozen while the tokenizer runs).**
-4. **Stellar-system-file grammar** — second contract file: legacy
+4. ~~**Stellar-system-file grammar** — second contract file: legacy
    `ssystem.ini` key set (loader grammar, base-D census residual) +
    composed/new-format B24 grammar (`type=`/`relation=`/`compose=`),
-   two-regime lint per C4, ISO-8859 handling at the file boundary.
+   two-regime lint per C4, ISO-8859 handling at the file boundary.~~
+   **DONE 2026-09-04 (F80, journal `2026-09-04a`; code `4b633b8a` +
+   `3f3f7726` + `ab212f0d` + `befe7a5d`; parent **§11.200**).**
+   `grammar/ss-grammar.json` — **142 keys over 422 read sites**, taken FROM
+   THE LOADER and generated (`claude/harness/f80_census.py` +
+   `f80_ssgrammar.py`), so every anchor and every count is mechanical and only
+   the per-key judgment is hand-authored. The base-D residual is PAID at its
+   own node (`claude/capability-surface.md` §2). Regime split **4 legacy-only ·
+   33 composed-only · 105 both**, and the split is the deliverable: `halo`
+   goes through DIFFERENT boolean predicates on the two paths, so `halo = on`
+   draws nothing on one and a halo on the other. D16–D19 are recorded
+   **RATIFIED** (answered 2026-07-23 → parent §11.79(j)–(m); D16's respell
+   landed at §11.89), with the one transitional clause quoted from §11.89(c)
+   rather than smoothed over. Twelve-rule two-regime checker (`sc_sscheck.*`)
+   selecting its regime by file LOCATION — never by content, because the
+   composed twin is byte-identical to its legacy original in every key. C3's
+   half discharged above; three gates, `ctest` 16 → 19. **Unlocked and armed:**
+   `body`'s `args_complete` (part (5)) — `body nmae Earth` is reported at last.
+   **NOT armed, and the code is why:** `camera` forwards its map to the two
+   ANCHOR registries, not to the body grammar, so its deferral stands with its
+   reason — the anchor grammar (`anchor.ini`, B4's) is a THIRD contract file
+   and nobody has written it.
 5. **`app_command_eval.cpp`** (376 lines) — `$`-variable substitution
    semantics for the reserved_variables family (currently UNEXTRACTED).
 6. ~~**TCP client mode** — line protocol + `$LOGON` feed pane~~ **DONE
@@ -560,6 +616,114 @@ notes.*
    the args merge gates.
 
 ## 6. Journal (append-only)
+
+- **[2026-09-04a] The second contract exists, and writing it from the loader
+  found that 8% of the field data reaches nothing.** Dispatch task F80
+  (`claude/fable-dispatch.md`), executor run, after one §0.7 ABORT the same day
+  on four false dispatcher premises (recorded in that section's WIP);
+  code `4b633b8a` (census + contract) + `3f3f7726` (the checker) + `ab212f0d`
+  (C3 + gates) + `befe7a5d` (part 5), harness `6135736` -> this entry. Parent
+  **§11.200** with **§5.124/§5.125/§5.126/§5.127**. Mandate: **§5 item 4**,
+  **C2** (identified knowledge only), **C3** (zero false positives) and **C4**
+  (the two regimes, and D13's downgrade rule). Item 4 is struck by this entry
+  and it was the last CONTRACT the editor lacked.
+
+  **The census is from the LOADER, and the one measurement that had to be right
+  first is READ versus WRITE.** 142 keys over 422 read sites, each anchored at
+  the line that reads it. `tex_halo` and `lighting` occur in `src/` ONLY as
+  writes -- in the two blocks that synthesize a star from a catalogue object --
+  and any `param["k"]` regex counts those as reads, which is exactly how 180
+  dead lines of the field file stay invisible. What is generated is every anchor
+  and every count; what is hand-authored is the judgment beside each key: the
+  doc line at the zero-knowledge bar (C6), the domain read at the code's own
+  enumeration (I2), the default read at the site, REQUIRED/optional. A key the
+  census finds with no disposition is an error, and so is a disposition no
+  census site reads -- both directions, because either alone rots.
+
+  **The corpus caught the census, not a review.** The first composed run
+  reported 811 keys as legacy-only, which is not a believable number: the
+  composed path does not read a section in one place (`loadBody` reads the node,
+  then every module loader reads the same map), and `moduleLoader/` +
+  `orbitModules/` -- the directories base D of the capability audit names by
+  name -- had been left out. With them the split is **4 legacy-only · 33
+  composed-only · 105 both**, and base D's residual is paid at its own node.
+
+  **The regimes disagree, and that is the deliverable rather than a caveat.**
+  `halo` and `hidden` go through `Utility::strToBool` on the legacy path
+  (`true`|`1`) and `Utility::isTrue` on the composed one (`true`|`on`|`1`), so
+  `halo = on` draws NOTHING on the old path and a halo on the new one -- one
+  authored line making the comparison baseline and the new path disagree.
+  `Utility::isFalse` inverts the polarity again for `hint`/`orbit`/`tail`: ON
+  unless `false`/`off`/`0`, so `hint = no` leaves the hint on. And the two
+  SURFACES disagree about case: `parseCommand` lowercases every argument key
+  and no data-file reader does, so `orbit_Eccentricity` is a live key on 3128
+  shipped script lines and a dead one in `ssystem.ini`. That is the best
+  available explanation for `[Sedna]`'s three CamelCase slips -- the script
+  convention, carried into a file that does not share it.
+
+  **What "new-format construct" means is narrower than it sounds, and the field
+  data is why.** It is NOT "a key the old loader ignores": the shipped
+  `ssystem.ini` already carries 20 `rot_frame` and 20 `rot_pole_w0` lines ON
+  PURPOSE (B28's absolute-pole declarations), and a HARD rule over composed-only
+  keys would have manufactured 40 false positives on the file C3 requires zero
+  on. It is a construct the old parser MISREADS: `relation=`/`compose=`/`body=`,
+  a `[Node:FAMILY]` header it would take for a body of that literal name, and a
+  mid-line `#`. The first draft of the task section had `type=` on that list --
+  and `type` is a LEGACY key on all 90 field sections, which is what the §0.7
+  gate aborted on before any of this was written.
+
+  **D16-D19 are RATIFIED, not proposed**, and the contract says so: answered by
+  the owner 2026-07-23 (parent §11.79(j)-(m)), D16 with an override whose
+  respell LANDED at §11.89. The one thing still transitional is quoted verbatim
+  from §11.89(c) rather than smoothed away -- a composed NODE carries the legacy
+  body type under `type=`, and moving every node to `type = BODY` is Vixy's
+  decision, not a default.
+
+  **C3's stellar-system half is DISCHARGED**: 630 findings over the field file,
+  the shipped `data/default_ssystem.ini` and the composed twins, all TRUE, zero
+  false positives -- and then 3384 more on the shipped SCRIPT package when part
+  (5) made `body`'s keys checkable. **4014 dispositioned, 0 unadjudicated, 0
+  false positives**, and `--strict`'s first run left one subject unadjudicated,
+  which is how the claim is known to be able to fail. Two gates rather than one
+  because the corpora are not the same kind of thing: the shipped file is
+  tracked here and takes the line-for-line record; the field file and the twins
+  are another person's data this repository deliberately does not carry, so they
+  take counts plus md5 and a loud SKIP. `ss_lint_rules` is a PAIR of fixtures
+  whose point is the discrimination -- the same `relation =` line hard in one
+  and silent in the other. `ctest` **16/16 -> 19/19**; `anchor_gate` 6667 ->
+  7196 clean, and it caught six broken citations in notes typed by hand while
+  every generated anchor beside them resolved. Both data files' md5 unchanged
+  throughout (`545a51ef` / `c4b426df`).
+
+  **Part (5) armed for `body` and REFUSED for `camera`, and the refusal is the
+  better half.** `body action load|preload` forwards its map to the
+  stellar-system body grammar, which now exists, so the entry answers
+  `args_complete: true` AND names `args_downstream_contract` -- the keys are
+  READ from the other file, never copied (I2) -- and `body nmae Earth`, silent
+  by design since 2026-08-04, is reported with the right suggestion. `camera`
+  does NOT qualify: its map goes to the two ANCHOR registries, whose vocabulary
+  is `anchor.ini`'s grammar and a third contract file nobody has written. The
+  task section asked for both; the code says one. One consequence had to be
+  enforced rather than documented: a consumer holding only the command contract
+  must still treat `body`'s list as partial, so `argKeysAreExhaustive()` answers
+  no for a downstream-naming command and the checker requires the second file to
+  be in hand -- without that, the editor, which loads one contract, would have
+  called every stellar-system key on a body line unknown.
+
+  **Routed.** To the script-surface owner: **SS-40** (the dead keys, 189+164
+  data lines), **SS-41** (the three script misspellings, 3365 lines), **SS-42**
+  (`[Sedna]`'s three slips and the case rule behind them), **SS-43** (the
+  composed-format key loss, for whoever adopts a twin). To the parent ledger:
+  **§5.124** (the data-surface silent-drop class), **§5.125** (four keys lost on
+  adoption), **§5.126** (one value, two meanings), **§5.127** (five orbit/anchor
+  chain defects read in passing, two of them memory-unsafe and reachable from
+  shipped data).
+
+  **Open after this:** item 5 (`app_command_eval.cpp`); item 8 (the engine
+  emitter, which now has TWO contracts to emit); item 19 (the LLM surface); the
+  `unclosed-struct` wording still waiting on §5.117. And a third contract file
+  is now named and absent: `anchor.ini`'s grammar, which is what `camera` is
+  waiting for.
 
 - **[2026-09-01b] 1661 findings over the shipped shows, judged one by one:
   every one TRUE, thirteen authored defects behind them, and the engine says

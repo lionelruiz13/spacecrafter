@@ -3313,3 +3313,67 @@ CLASS NAME in this ledger and putting the word in the event lexicon manufactured
 6. **§13 row ids (`A<n>`/`B<n>`) are still unreadable, by design**: §11.180(i) measured
    that axis as not machine-decidable, 15 of 73 references NOT-A-ROW from seven namespace
    collisions.
+
+## F80 — the stellar-system key census and its contract (`f80_census.py`, `f80_ssgrammar.py`, `f80_corpus.py`) — scedit journal 2026-09-04a, parent §11.200, 2026-09-04
+
+Three instruments, and the order matters: the census reads the loaders, the
+generator turns it into `util/scedit/grammar/ss-grammar.json`, and the corpus
+tool dispositions every finding the resulting checker produces.
+
+    python3 f80_census.py sites                       # candidate key accesses, TSV
+    python3 f80_census.py keys                        # distinct READ keys x regime
+    python3 f80_census.py datakeys <corpus.ini>       # keys PRESENT in a data file
+    python3 f80_ssgrammar.py                          # regenerate the contract
+    python3 f80_corpus.py --scedit <bin> --strict --tsv artifacts/f80/dispositions.tsv
+
+**READ vs WRITE is the whole census.** `m["k"] = v` is the CODE authoring a
+value, not the data supplying one, and getting this wrong in the permissive
+direction is what makes a dead key look alive: `tex_halo` and `lighting` occur
+in `src/` ONLY as writes, in the two blocks that synthesize a star from a
+catalogue `Object`, and counted as reads they hide 189 dead lines of the field
+file. `f80_census.py` classifies each site and the `keys` view drops the writes.
+
+**Where to look for the composed half.** `ModularSystem::loadBody` reads the
+node's own keys and then every MODULE LOADER reads the same map, so a census
+that scans `ModularSystem.cpp` alone under-reports the composed regime badly --
+811 keys looked legacy-only on the first run. The directories that matter are
+`experimentalModule/moduleLoader/` and `orbitModules/` (plus `ModularBody.cpp`
+and `modules.cpp`), which is exactly the list `capability-surface.md` base D
+names. Final split at `ba7a32a8`: **142 keys / 422 read sites**, 4 legacy-only,
+33 composed-only, 105 both.
+
+**The generator gates itself in both directions** — a census key with no
+disposition is an error, and a disposition no census site reads is an error too.
+That is what caught the 11 keys the module-loader sweep added, and it is why the
+contract's counts are derived rather than asserted.
+
+**`f80_corpus.py --strict` is the C3 instrument**, in F76's shape: a mechanical
+run joined to hand traces, one per distinct defect, and a finding matching no
+trace exits 1. 4014 findings over five corpora (field `ssystem.ini`, shipped
+`data/default_ssystem.ini`, the composed twins, and the 408 installed scripts
+whose `body` lines became checkable at part 5), all TRUE, zero false positives.
+Its first run left one subject unadjudicated — the value test was fixed, not the
+criterion.
+
+### Gotchas measured here
+
+- **The field data is READ-ONLY and the gates must never copy it.**
+  `field_corpus_gate` records per-file per-id counts plus md5 and nothing else;
+  `ss_corpus_gate` records lines because its corpus is tracked. Both md5s were
+  asserted unchanged at open and close (`545a51ef`, `c4b426df`).
+- **Keys are CASE-SENSITIVE in every data-file reader and lowercased by the
+  command reader** (`app_command_interface.cpp:181`). A tool comparing the two
+  vocabularies in their original case reports 3128 correct shipped script lines
+  as wrong. `SsGrammar::commandSurfaceKeys()` is the one place that lowercases.
+- **Three boolean predicates, not one**: `strToBool` (legacy, `true|1`),
+  `isTrue` (composed, `true|on|1`), `isFalse` (module switches, inverted). Any
+  instrument that assumes one boolean will mis-read the other two.
+- **`[end]` in `ssystem.ini` is load-bearing**, not a stray section: the legacy
+  reader flushes a body when it sees the NEXT header, so the file needs a final
+  one. Never report it as an unknown section.
+- **The ISO-8859 boundary is one byte wide here**: the field file carries
+  exactly one non-ASCII byte (0xE0, line 961, `[mimas]`). Decode latin-1 (total,
+  so it cannot throw), keep BYTE positions, and the round trip is byte-exact —
+  verified whole-file and per-section.
+- `harness/artifacts/` is gitignored: the disposition table is force-added
+  (`git add -f`) because the delivery cites it.
