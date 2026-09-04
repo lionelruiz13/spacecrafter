@@ -2,6 +2,6 @@
 # Edited deliberately: a count that moves means the ENGINE moved under
 # the grammar's citations, and somebody has to look at what.
 # Regenerate with: python3 tests/anchor_gate.py --record
-clean                    7026
+clean                    7196
 not-at-head(declared)    2
-skipped(_meta)           74
+skipped(_meta)           86

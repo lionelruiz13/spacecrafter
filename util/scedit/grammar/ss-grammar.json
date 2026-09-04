@@ -15,96 +15,21 @@
     "transitional": "S11.89(c), the second veto point, VERBATIM: 'transitional body-type-under-`type=` on nodes (full `type=BODY` needs Tier-B emission beyond B25-emit's A1/A2)'. So a composed NODE today carries the legacy body type under `type=` (`type = Sun`), and `type = BODY` is the canonical marker for a body-type-less node. Moving every node to `type = BODY` is Vixy's decision, not a default -- and in a LEGACY file `BODY` is not a body type at all, which is why the legacy `type` domain below excludes it.",
     "counts_note": "Every count here is DERIVED by the generator from the census, never asserted. `seed_gate`'s ss half re-derives them from the data on every run.",
     "expected_counts": {
-      "keys": 131,
-      "read_sites": 264,
-      "legacy_only_keys": 80,
-      "composed_only_keys": 22,
-      "both_regimes_keys": 29
+      "keys": 142,
+      "read_sites": 422,
+      "legacy_only_keys": 4,
+      "composed_only_keys": 33,
+      "both_regimes_keys": 105
     },
     "regime_split": {
       "legacy_only": [
-        "a",
-        "apparent_magnitude",
-        "atmosphere_ambient_b",
-        "atmosphere_ambient_deviation",
-        "atmosphere_ambient_g",
-        "atmosphere_ambient_r",
-        "atmosphere_ext_model",
-        "atmosphere_radius_factor",
-        "atmosphere_sun_deviation",
-        "b",
         "big_halo_size",
-        "body_A",
-        "body_B",
-        "dust_tail_color_blue",
-        "dust_tail_color_green",
-        "dust_tail_color_red",
-        "dust_tail_ejection_force",
-        "dust_tail_ejection_linearity",
-        "dust_tail_radius_base_coef",
-        "dust_tail_radius_x_coef",
-        "dust_tail_radius_xx_coef",
-        "dust_tail_trace_jd",
-        "extra_tail_color_blue",
-        "extra_tail_color_green",
-        "extra_tail_color_red",
-        "extra_tail_ejection_force",
-        "extra_tail_ejection_linearity",
-        "extra_tail_radius_base_coef",
-        "extra_tail_radius_x_coef",
-        "extra_tail_radius_xx_coef",
-        "extra_tail_trace_jd",
-        "gaz_tail_color_blue",
-        "gaz_tail_color_green",
-        "gaz_tail_color_red",
-        "gaz_tail_ejection_force",
-        "gaz_tail_ejection_linearity",
-        "gaz_tail_radius_base_coef",
-        "gaz_tail_radius_x_coef",
-        "gaz_tail_radius_xx_coef",
-        "gaz_tail_trace_jd",
         "halo_alpha_override",
         "halo_scale_override",
-        "label_color",
-        "model_name",
-        "orbit_alt",
-        "orbit_argofpericenter",
-        "orbit_ascendingnode",
-        "orbit_color",
-        "orbit_eccentricity",
-        "orbit_epoch",
-        "orbit_inclination",
-        "orbit_lat",
-        "orbit_lon",
-        "orbit_longofpericenter",
-        "orbit_meananomaly",
-        "orbit_meanlongitude",
-        "orbit_meanmotion",
-        "orbit_pericenterdistance",
-        "orbit_semimajoraxis",
-        "orbit_timeatpericenter",
-        "orbit_x",
-        "orbit_y",
-        "orbit_z",
-        "parent_rot_J2000_longitude",
-        "parent_rot_asc_node",
-        "parent_rot_obliquity",
-        "path",
-        "ring_inner_size",
-        "ring_outer_size",
-        "rings",
-        "slope",
-        "tex_big_halo",
-        "tex_heightmap",
-        "tex_map",
-        "tex_night",
-        "tex_normal",
-        "tex_ring",
-        "tex_skin",
-        "tex_specular",
-        "trail_color"
+        "tex_skin"
       ],
       "composed_only": [
+        "binary_secondary",
         "body",
         "bound_to_surface",
         "brightness",
@@ -113,11 +38,20 @@
         "display_scale",
         "ground_radius",
         "hardcoded",
+        "hint",
         "light_source",
+        "oort",
+        "oort_color",
+        "oort_elements",
+        "orbit",
+        "orbit_alt_end",
+        "orbit_ascent_duration",
+        "orbit_ascent_start",
         "planet_grid",
         "primary",
         "relation",
         "replace",
+        "ring_shadow_color",
         "rot_frame",
         "rot_pole_w0",
         "shadow_color",
@@ -126,9 +60,56 @@
         "slot",
         "surface_model",
         "system_star",
+        "tail",
         "trail_length"
       ]
     },
+    "dead_keys": {
+      "tex_halo": {
+        "why_no_reader": "The halo texture. Every body in both corpora sets it; the only occurrences of the string in src/ are the two blocks that SYNTHESIZE a star from a catalogue object (protosystem.cpp:102, ssystem_factory.cpp:390), which write it and never read it back.",
+        "literal_occurrences_in_src": 2,
+        "occurrences": [
+          "src/bodyModule/protosystem.cpp:102",
+          "src/bodyModule/ssystem_factory.cpp:390"
+        ]
+      },
+      "lighting": {
+        "why_no_reader": "Whether the body is lit. Same story as `tex_halo`, and the same two write sites (protosystem.cpp:105, ssystem_factory.cpp:393).",
+        "literal_occurrences_in_src": 2,
+        "occurrences": [
+          "src/bodyModule/protosystem.cpp:105",
+          "src/bodyModule/ssystem_factory.cpp:393"
+        ]
+      },
+      "model3D": {
+        "why_no_reader": "A 3D model for the body. The one literal in src/ is `REP_MODEL3D` (spacecrafter.hpp:71), which is a DIRECTORY name -- app_settings.cpp:162 returns it with a '/' appended and call_system.cpp:130 lists it as a subdirectory. It is not a section key read. `model_name` is the key that does select a model.",
+        "literal_occurrences_in_src": 1,
+        "occurrences": [
+          "src/spacecrafter.hpp:71"
+        ]
+      },
+      "ring_shadow": {
+        "why_no_reader": "Whether the rings cast a shadow. No occurrence in src/ at all.",
+        "literal_occurrences_in_src": 0,
+        "occurrences": []
+      },
+      "sidereal_period": {
+        "why_no_reader": "No occurrence in src/ at all. `orbit_visualization_period` and `orbit_period` are the keys that exist.",
+        "literal_occurrences_in_src": 0,
+        "occurrences": []
+      },
+      "tex_cloud": {
+        "why_no_reader": "A cloud-layer texture. No occurrence in src/ at all.",
+        "literal_occurrences_in_src": 0,
+        "occurrences": []
+      },
+      "tex_cloud_normal": {
+        "why_no_reader": "A cloud-layer normal map. No occurrence in src/ at all.",
+        "literal_occurrences_in_src": 0,
+        "occurrences": []
+      }
+    },
+    "dead_keys_note": "PRESENT IN THE DATA, READ BY NOTHING -- the data-surface twin of INTENT S5.122. Measured 2026-09-04 over both legacy corpora: 189 lines of ~/.spacecrafter/ssystem.ini (8.2% of its key lines) and 164 of data/default_ssystem.ini (9.4%) reach no reader, and `tex_halo` and `lighting` alone are 180 of the field's 189 -- one of each on every body.",
     "not_this_contract": {
       "system": "galactic.ini -- names a stellar_systems/*.ini file for one system; read at ssystem_factory.cpp:736-737 inside loadSystem, whose params come from galactic.ini (opened at ssystem_factory.cpp:619). Not a body-section key."
     },
@@ -178,6 +159,22 @@
       "reader": "Utility::strToVec3f",
       "doc": "Three comma-separated numbers, 'r,g,b'. NB a space after a comma is not a separator the legacy positional reader forgives."
     },
+    "bool_suppress": {
+      "reader": "Utility::isFalse (negated)",
+      "source": "tools/utility.hpp:172",
+      "false_set": [
+        "false",
+        "off",
+        "0"
+      ],
+      "case_insensitive": true,
+      "doc": "A module SUPPRESSION switch, and it reads the opposite way round from the other booleans: the module is on unless the key explicitly says 'false', 'off' or '0' (any case). Writing 'no' does NOT turn it off, and writing 'true' is the same as not writing the key at all."
+    },
+    "int": {
+      "reader": "Utility::strToInt",
+      "source": "tools/utility.cpp:strToInt",
+      "doc": "A whole number; an empty or unparseable value takes the key's default."
+    },
     "enum": {
       "reader": "(per key)",
       "doc": "One of a fixed set the code enumerates; see the key's `domain`."
@@ -220,6 +217,28 @@
       ],
       "source": "src/bodyModule/protosystem.cpp:483-501",
       "matching": "first four bytes; see the `type` key's notes"
+    },
+    "module_families": {
+      "doc": "The `type =` domain in a COMPOSED module section (one carrying `body =`). Also the default slot name of the module.",
+      "names": [
+        "CUSTOM",
+        "MESH",
+        "OJM",
+        "VOLUMETRIC",
+        "RING",
+        "HINT",
+        "POINTER",
+        "ORBIT",
+        "TRAIL",
+        "TAIL",
+        "ATMOSPHERE",
+        "AXIS"
+      ],
+      "source": [
+        "src/experimentalModule/ModuleLoaderMgr.cpp:7-19",
+        "src/experimentalModule/BodyModule.hpp:16-30"
+      ],
+      "section_header": "A module section's header is `[<node>:<slot>]`; the slot defaults to the family name, which is why the shipped twin reads `[Earth:MESH]`. The header is NOT what declares the family -- `type =` is."
     },
     "coord_func": {
       "doc": "The `coord_func =` domain: which orbit family positions the body.",
@@ -286,11 +305,14 @@
       "default": null,
       "required": true,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:286",
-        "src/bodyModule/orbit_creator_cor.cpp:304"
+        "src/bodyModule/orbit_creator_cor.cpp:304",
+        "src/experimentalModule/orbitModules/BaryOrbitLoader.hpp:3",
+        "src/experimentalModule/orbitModules/BaryOrbitLoader.hpp:17"
       ],
       "notes": "REQUIRED: an empty value drops the body (orbit_creator_cor.cpp:286-289). Only the RATIO is observable -- the position is body_A + (body_B - body_A) * b/(a+b) (orbit.cpp:1159) -- so a = b = 1 means the midpoint. Parsed by a BARE std::stod (orbit_creator_cor.cpp:304), not the guarded helper every other numeric key uses, so a non-empty non-numeric value throws out of the loader."
     },
@@ -320,11 +342,14 @@
       "default": null,
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:838",
-        "src/bodyModule/protosystem.cpp:840"
+        "src/bodyModule/protosystem.cpp:840",
+        "src/experimentalModule/ModularBody.cpp:874",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:79"
       ],
       "notes": "The setter it feeds is named setAbsoluteMagnitudeAndSlope (protosystem.cpp:840) while the key is spelled `apparent_` -- and `absolute_magnitude`, which the shipped file uses once, is read by nothing."
     },
@@ -334,10 +359,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:914"
+        "src/bodyModule/protosystem.cpp:914",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:89"
       ]
     },
     "atmosphere_ambient_deviation": {
@@ -346,10 +373,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:917"
+        "src/bodyModule/protosystem.cpp:917",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:91"
       ]
     },
     "atmosphere_ambient_g": {
@@ -358,10 +387,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:913"
+        "src/bodyModule/protosystem.cpp:913",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:88"
       ]
     },
     "atmosphere_ambient_r": {
@@ -370,10 +401,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:912"
+        "src/bodyModule/protosystem.cpp:912",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:87"
       ]
     },
     "atmosphere_ext_model": {
@@ -382,10 +415,14 @@
       "default": "none",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:906"
+        "src/bodyModule/protosystem.cpp:906",
+        "src/experimentalModule/ModularBody.cpp:821",
+        "src/experimentalModule/moduleLoader/AtmExtLoader.cpp:10",
+        "src/experimentalModule/moduleLoader/AtmExtLoader.cpp:40"
       ]
     },
     "atmosphere_lim_inf": {
@@ -414,6 +451,7 @@
       "source": [
         "src/bodyModule/protosystem.cpp:901",
         "src/bodyModule/protosystem.cpp:910",
+        "src/experimentalModule/ModularBody.cpp:820",
         "src/experimentalModule/ModularSystem.cpp:1419",
         "src/experimentalModule/ModularSystem.cpp:1424"
       ]
@@ -458,11 +496,14 @@
       "default": "1.05",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:907",
-        "src/bodyModule/protosystem.cpp:907"
+        "src/bodyModule/protosystem.cpp:907",
+        "src/experimentalModule/moduleLoader/AtmExtLoader.cpp:38",
+        "src/experimentalModule/moduleLoader/AtmExtLoader.cpp:39"
       ]
     },
     "atmosphere_sun_deviation": {
@@ -471,10 +512,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:916"
+        "src/bodyModule/protosystem.cpp:916",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:90"
       ]
     },
     "axial_tilt": {
@@ -498,11 +541,14 @@
       "default": null,
       "required": true,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:286",
-        "src/bodyModule/orbit_creator_cor.cpp:304"
+        "src/bodyModule/orbit_creator_cor.cpp:304",
+        "src/experimentalModule/orbitModules/BaryOrbitLoader.hpp:3",
+        "src/experimentalModule/orbitModules/BaryOrbitLoader.hpp:17"
       ],
       "notes": "REQUIRED; see `a`."
     },
@@ -519,6 +565,19 @@
         "src/bodyModule/protosystem.cpp:726",
         "src/bodyModule/protosystem.cpp:754"
       ]
+    },
+    "binary_secondary": {
+      "doc": "Names the second body of an Earth-Moon-style barycentric pair.",
+      "value_type": "string",
+      "default": null,
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/orbitModules/EarthOrbitLoader.hpp:8"
+      ],
+      "notes": "src/experimentalModule/orbitModules/EarthOrbitLoader.hpp:8."
     },
     "body": {
       "doc": "In a BodyModule section, the name of the node this module attaches to. Its PRESENCE is what makes a section a module declaration rather than a body.",
@@ -541,11 +600,14 @@
       "default": null,
       "required": true,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:291",
-        "src/bodyModule/orbit_creator_cor.cpp:296"
+        "src/bodyModule/orbit_creator_cor.cpp:296",
+        "src/experimentalModule/orbitModules/BaryOrbitLoader.hpp:7",
+        "src/experimentalModule/orbitModules/BaryOrbitLoader.hpp:11"
       ],
       "notes": "REQUIRED: empty, or naming no loaded body, drops the body (orbit_creator_cor.cpp:291-302). The shipped anchor.ini states an intended rule the code does NOT enforce -- that `parent` and `body_A` should be the same body for the orbit to mean anything."
     },
@@ -555,11 +617,14 @@
       "default": null,
       "required": true,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:291",
-        "src/bodyModule/orbit_creator_cor.cpp:297"
+        "src/bodyModule/orbit_creator_cor.cpp:297",
+        "src/experimentalModule/orbitModules/BaryOrbitLoader.hpp:7",
+        "src/experimentalModule/orbitModules/BaryOrbitLoader.hpp:12"
       ],
       "notes": "REQUIRED; see `body_A`."
     },
@@ -574,7 +639,8 @@
       "source": [
         "src/experimentalModule/ModularSystem.cpp:1280",
         "src/experimentalModule/ModularSystem.cpp:1301",
-        "src/experimentalModule/ModularSystem.cpp:1305"
+        "src/experimentalModule/ModularSystem.cpp:1305",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:136"
       ],
       "notes": "COMPOSED-PATH READ ONLY: the legacy loader never reads this key -- it derives the same state from `coord_func = location_orbit` (protosystem.cpp:598-609). Kept as an alias; prefer `relation`."
     },
@@ -602,7 +668,8 @@
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:555",
-        "src/experimentalModule/ModularSystem.cpp:1074"
+        "src/experimentalModule/ModularSystem.cpp:1074",
+        "src/experimentalModule/moduleLoader/OrbitLineLoader.cpp:21"
       ],
       "notes": "LEGACY ONLY -- the composed loader's read is commented out (ModularSystem.cpp:1074)."
     },
@@ -662,7 +729,8 @@
         "src/bodyModule/protosystem.cpp:513",
         "src/bodyModule/protosystem.cpp:647",
         "src/experimentalModule/ModularSystem.cpp:1246",
-        "src/experimentalModule/ModuleLoaderMgr.cpp:105"
+        "src/experimentalModule/ModuleLoaderMgr.cpp:105",
+        "src/experimentalModule/orbitModules/SpecialOrbitLoader.hpp:3"
       ],
       "domain": {
         "intercepted_before_the_chain": [
@@ -748,10 +816,12 @@
       "default": "0.5",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:868"
+        "src/bodyModule/protosystem.cpp:868",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:51"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -761,10 +831,12 @@
       "default": "0.5",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:867"
+        "src/bodyModule/protosystem.cpp:867",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:50"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -774,10 +846,12 @@
       "default": "0.5",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:866"
+        "src/bodyModule/protosystem.cpp:866",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:49"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -787,10 +861,12 @@
       "default": "0.5",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:858"
+        "src/bodyModule/protosystem.cpp:858",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:41"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -800,10 +876,12 @@
       "default": "1",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:859"
+        "src/bodyModule/protosystem.cpp:859",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:42"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -813,10 +891,12 @@
       "default": "2",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:863"
+        "src/bodyModule/protosystem.cpp:863",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:46"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -826,10 +906,12 @@
       "default": "1",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:862"
+        "src/bodyModule/protosystem.cpp:862",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:45"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -839,10 +921,12 @@
       "default": "-2",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:861"
+        "src/bodyModule/protosystem.cpp:861",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:44"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -852,10 +936,12 @@
       "default": "30",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:857"
+        "src/bodyModule/protosystem.cpp:857",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:40"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -865,10 +951,12 @@
       "default": "0.5",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:884"
+        "src/bodyModule/protosystem.cpp:884",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:68"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838). The extra tail also needs `extra_tail_trace_jd` to be present at all."
     },
@@ -878,10 +966,12 @@
       "default": "0.5",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:883"
+        "src/bodyModule/protosystem.cpp:883",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:67"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838). The extra tail also needs `extra_tail_trace_jd` to be present at all."
     },
@@ -891,10 +981,12 @@
       "default": "0.5",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:882"
+        "src/bodyModule/protosystem.cpp:882",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:66"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838). The extra tail also needs `extra_tail_trace_jd` to be present at all."
     },
@@ -904,10 +996,12 @@
       "default": "0.5",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:874"
+        "src/bodyModule/protosystem.cpp:874",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:58"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838). The extra tail also needs `extra_tail_trace_jd` to be present at all."
     },
@@ -917,10 +1011,12 @@
       "default": "1",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:875"
+        "src/bodyModule/protosystem.cpp:875",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:59"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838). The extra tail also needs `extra_tail_trace_jd` to be present at all."
     },
@@ -930,10 +1026,12 @@
       "default": "2",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:879"
+        "src/bodyModule/protosystem.cpp:879",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:63"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838). The extra tail also needs `extra_tail_trace_jd` to be present at all."
     },
@@ -943,10 +1041,12 @@
       "default": "1",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:878"
+        "src/bodyModule/protosystem.cpp:878",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:62"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838). The extra tail also needs `extra_tail_trace_jd` to be present at all."
     },
@@ -956,10 +1056,12 @@
       "default": "-2",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:877"
+        "src/bodyModule/protosystem.cpp:877",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:61"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838). The extra tail also needs `extra_tail_trace_jd` to be present at all."
     },
@@ -969,11 +1071,14 @@
       "default": "30",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:871",
-        "src/bodyModule/protosystem.cpp:873"
+        "src/bodyModule/protosystem.cpp:873",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:55",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:57"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838). The extra tail also needs `extra_tail_trace_jd` to be present at all."
     },
@@ -983,10 +1088,12 @@
       "default": "0.7",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:853"
+        "src/bodyModule/protosystem.cpp:853",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:35"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -996,10 +1103,12 @@
       "default": "0.3",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:852"
+        "src/bodyModule/protosystem.cpp:852",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:34"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -1009,10 +1118,12 @@
       "default": "0.3",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:851"
+        "src/bodyModule/protosystem.cpp:851",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:33"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -1022,10 +1133,12 @@
       "default": "30",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:843"
+        "src/bodyModule/protosystem.cpp:843",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:25"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -1035,10 +1148,12 @@
       "default": "1",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:844"
+        "src/bodyModule/protosystem.cpp:844",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:26"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -1048,10 +1163,12 @@
       "default": "2",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:848"
+        "src/bodyModule/protosystem.cpp:848",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:30"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -1061,10 +1178,12 @@
       "default": "0.5",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:847"
+        "src/bodyModule/protosystem.cpp:847",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:29"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -1074,10 +1193,12 @@
       "default": "-1",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:846"
+        "src/bodyModule/protosystem.cpp:846",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:28"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -1087,10 +1208,12 @@
       "default": "1",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:842"
+        "src/bodyModule/protosystem.cpp:842",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:24"
       ],
       "notes": "Read only when BOTH `apparent_magnitude` and `slope` are present (protosystem.cpp:838)."
     },
@@ -1179,6 +1302,7 @@
       "source": [
         "src/bodyModule/protosystem.cpp:901",
         "src/bodyModule/protosystem.cpp:904",
+        "src/experimentalModule/ModularBody.cpp:820",
         "src/experimentalModule/ModularSystem.cpp:1419",
         "src/experimentalModule/ModularSystem.cpp:1420"
       ]
@@ -1198,17 +1322,32 @@
       ],
       "notes": "Same two-predicate split as `halo` (protosystem.cpp:983 vs ModularSystem.cpp:1400)."
     },
+    "hint": {
+      "doc": "Draw the body's hint marker. On unless you turn it off.",
+      "value_type": "bool_suppress",
+      "default": "on",
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/ModularBody.cpp:833"
+      ],
+      "notes": "src/experimentalModule/ModularBody.cpp:833. Suppression switch: only 'false'/'off'/'0' disable it."
+    },
     "label_color": {
       "doc": "Colour of the body's name label.",
       "value_type": "vec3f",
       "default": null,
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:655",
-        "src/bodyModule/ssystem_factory.cpp:226"
+        "src/bodyModule/ssystem_factory.cpp:226",
+        "src/experimentalModule/moduleLoader/HintLoader.cpp:19"
       ]
     },
     "light_source": {
@@ -1230,11 +1369,19 @@
       "default": "the default model",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:672",
-        "src/bodyModule/protosystem.cpp:774"
+        "src/bodyModule/protosystem.cpp:774",
+        "src/experimentalModule/ModularBody.cpp:809",
+        "src/experimentalModule/moduleLoader/AtmExtLoader.cpp:26",
+        "src/experimentalModule/moduleLoader/BasicMeshLoader.cpp:37",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:28",
+        "src/experimentalModule/moduleLoader/OjmLoader.cpp:12",
+        "src/experimentalModule/moduleLoader/OjmLoader.cpp:42",
+        "src/experimentalModule/moduleLoader/PhotosphereLoader.cpp:25"
       ]
     },
     "name": {
@@ -1252,7 +1399,11 @@
         "src/bodyModule/ssystem_factory.cpp:230",
         "src/bodyModule/ssystem_factory.cpp:248",
         "src/experimentalModule/ModularSystem.cpp:1050",
-        "src/experimentalModule/ModularSystem.cpp:1642"
+        "src/experimentalModule/ModularSystem.cpp:1642",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:125",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:137",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:156",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:163"
       ],
       "notes": "D34/S11.109(c). Both loaders refuse a duplicate AND SAY SO at L_WARNING (protosystem.cpp:546-549, ModularSystem.cpp:1057-1060) -- the drop is logged, not silent, which scedit INTENT C4's wording predates."
     },
@@ -1275,17 +1426,87 @@
         "src/experimentalModule/ModularSystem.cpp:1224"
       ]
     },
+    "oort": {
+      "doc": "Make this body an Oort cloud.",
+      "value_type": "bool_composed",
+      "default": "false",
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/moduleLoader/OortLoader.cpp:10"
+      ],
+      "notes": "src/experimentalModule/moduleLoader/OortLoader.cpp:10."
+    },
+    "oort_color": {
+      "doc": "Colour of the Oort cloud, 'r,g,b'.",
+      "value_type": "vec3f",
+      "default": "0,0.5,1",
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/moduleLoader/OortLoader.cpp:21",
+        "src/experimentalModule/moduleLoader/OortLoader.cpp:22"
+      ],
+      "notes": "src/experimentalModule/moduleLoader/OortLoader.cpp:21-22."
+    },
+    "oort_elements": {
+      "doc": "How many particles the Oort cloud draws.",
+      "value_type": "int",
+      "default": "10000",
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/moduleLoader/OortLoader.cpp:20"
+      ],
+      "notes": "src/experimentalModule/moduleLoader/OortLoader.cpp:20."
+    },
+    "orbit": {
+      "doc": "Draw the body's orbit line. On unless you turn it off.",
+      "value_type": "bool_suppress",
+      "default": "on",
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/ModularBody.cpp:842"
+      ],
+      "notes": "src/experimentalModule/ModularBody.cpp:842. Suppression switch."
+    },
     "orbit_alt": {
       "doc": "Altitude above the parent's surface.",
       "value_type": "double",
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:604"
+        "src/bodyModule/protosystem.cpp:604",
+        "src/experimentalModule/orbitModules/LocationOrbitLoader.hpp:8",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:146"
       ]
+    },
+    "orbit_alt_end": {
+      "doc": "Altitude the body finishes its ascent at, KILOMETRES. One of the three ascent keys, and all three must be given together.",
+      "value_type": "double",
+      "default": null,
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:148",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:152"
+      ],
+      "notes": "D19 RATIFIED [vixy 2026-07-23 -> INTENT S11.79(m)]. src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:148-154; `coord_func = surface_point`, which the legacy path does not have."
     },
     "orbit_argofpericenter": {
       "doc": "Direction of closest approach, measured from the ascending node, DEGREES. `comet_orbit` only.",
@@ -1293,10 +1514,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/orbit_creator_cor.cpp:219"
+        "src/bodyModule/orbit_creator_cor.cpp:219",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:95"
       ],
       "notes": "NOT interchangeable with `ell_orbit`'s `orbit_longofpericenter`: the two differ by the ascending node (orbit_creator_cor.cpp:85 vs :219). Copying a value between an ell_orbit and a comet_orbit section under the obviously corresponding name is wrong by that angle."
     },
@@ -1306,12 +1529,43 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:81",
-        "src/bodyModule/orbit_creator_cor.cpp:218"
+        "src/bodyModule/orbit_creator_cor.cpp:218",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:94",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:33"
       ]
+    },
+    "orbit_ascent_duration": {
+      "doc": "How long the ascent lasts, DAYS. One of the three ascent keys.",
+      "value_type": "double",
+      "default": null,
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:150",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:154"
+      ],
+      "notes": "D19 RATIFIED. See `orbit_alt_end`."
+    },
+    "orbit_ascent_start": {
+      "doc": "Julian day the ascent begins. One of the three ascent keys.",
+      "value_type": "double",
+      "default": null,
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:149",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:153"
+      ],
+      "notes": "D19 RATIFIED. See `orbit_alt_end`."
     },
     "orbit_bounding_radius": {
       "doc": "Radius used for visibility/bounding tests, when the orbit cannot supply one.",
@@ -1334,11 +1588,13 @@
       "default": null,
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:655",
-        "src/bodyModule/ssystem_factory.cpp:227"
+        "src/bodyModule/ssystem_factory.cpp:227",
+        "src/experimentalModule/moduleLoader/OrbitLineLoader.cpp:19"
       ]
     },
     "orbit_eccentricity": {
@@ -1347,11 +1603,14 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:79",
-        "src/bodyModule/orbit_creator_cor.cpp:152"
+        "src/bodyModule/orbit_creator_cor.cpp:152",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:32",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:31"
       ]
     },
     "orbit_epoch": {
@@ -1360,11 +1619,14 @@
       "default": "J2000",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:77",
-        "src/bodyModule/orbit_creator_cor.cpp:205"
+        "src/bodyModule/orbit_creator_cor.cpp:205",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:81",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:29"
       ]
     },
     "orbit_inclination": {
@@ -1373,11 +1635,14 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:80",
-        "src/bodyModule/orbit_creator_cor.cpp:217"
+        "src/bodyModule/orbit_creator_cor.cpp:217",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:93",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:32"
       ]
     },
     "orbit_lat": {
@@ -1386,11 +1651,14 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:603",
-        "src/bodyModule/protosystem.cpp:952"
+        "src/bodyModule/protosystem.cpp:952",
+        "src/experimentalModule/orbitModules/LocationOrbitLoader.hpp:7",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:143"
       ]
     },
     "orbit_lon": {
@@ -1399,11 +1667,14 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:602",
-        "src/bodyModule/protosystem.cpp:953"
+        "src/bodyModule/protosystem.cpp:953",
+        "src/experimentalModule/orbitModules/LocationOrbitLoader.hpp:6",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:142"
       ]
     },
     "orbit_longofpericenter": {
@@ -1412,10 +1683,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/orbit_creator_cor.cpp:82"
+        "src/bodyModule/orbit_creator_cor.cpp:82",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:34"
       ],
       "notes": "See `orbit_argofpericenter` -- the comet spelling is a DIFFERENT angle."
     },
@@ -1425,10 +1698,12 @@
       "default": "treated as absent",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/orbit_creator_cor.cpp:206"
+        "src/bodyModule/orbit_creator_cor.cpp:206",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:82"
       ],
       "notes": "Required TOGETHER with `orbit_epoch` when `orbit_timeatpericenter` is absent (orbit_creator_cor.cpp:207-210)."
     },
@@ -1438,10 +1713,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/orbit_creator_cor.cpp:83"
+        "src/bodyModule/orbit_creator_cor.cpp:83",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:35"
       ],
       "notes": "Offset from `comet_orbit`'s `orbit_meananomaly` by the longitude of pericentre (orbit_creator_cor.cpp:86)."
     },
@@ -1451,10 +1728,12 @@
       "default": "treated as absent",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/orbit_creator_cor.cpp:178"
+        "src/bodyModule/orbit_creator_cor.cpp:178",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:56"
       ],
       "notes": "orbit_creator_cor.cpp:178,195,199."
     },
@@ -1464,10 +1743,12 @@
       "default": "treated as absent",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/orbit_creator_cor.cpp:154"
+        "src/bodyModule/orbit_creator_cor.cpp:154",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:34"
       ],
       "notes": "Required unless `orbit_semimajoraxis` is given. The absence test is `<= 0.0` (orbit_creator_cor.cpp:158), so an explicit 0 is indistinguishable from not writing the key."
     },
@@ -1486,7 +1767,10 @@
         "src/bodyModule/protosystem.cpp:587",
         "src/bodyModule/protosystem.cpp:960",
         "src/experimentalModule/ModularSystem.cpp:1203",
-        "src/experimentalModule/ModularSystem.cpp:1346"
+        "src/experimentalModule/ModularSystem.cpp:1346",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:59",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:28",
+        "src/experimentalModule/orbitModules/LunarOrbitLoader.hpp:5"
       ],
       "notes": "Under `ell_orbit` an ABSENT period is not an error: it defaults to 0 and the orbit then divides by it (orbit.cpp:450,569), so the body gets an infinite or NaN mean anomaly silently. Under `comet_orbit` it is required only when the parent body itself has a parent (orbit_creator_cor.cpp:182-186). It is ALSO the fallback for `rot_periode`, so editing it changes how fast the body SPINS unless `rot_periode` is present (protosystem.cpp:960)."
     },
@@ -1496,11 +1780,14 @@
       "default": "0 under ell_orbit; treated as absent under comet_orbit",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:78",
-        "src/bodyModule/orbit_creator_cor.cpp:159"
+        "src/bodyModule/orbit_creator_cor.cpp:159",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:39",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:30"
       ],
       "notes": "One key, one file, two units a factor of 1.496e8 apart: orbit_creator_cor.cpp:78 divides by AU, orbit_creator_cor.cpp:159 does not. The composed loaders reproduce the asymmetry (ElipticOrbitLoader.hpp divides, CometOrbitLoader.hpp does not), so it is the data grammar and not a one-path defect. Under `comet_orbit` it is REQUIRED unless `orbit_pericenterdistance` is given (orbit_creator_cor.cpp:158-164)."
     },
@@ -1510,10 +1797,12 @@
       "default": "treated as absent",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/orbit_creator_cor.cpp:202"
+        "src/bodyModule/orbit_creator_cor.cpp:202",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:78"
       ],
       "notes": "orbit_creator_cor.cpp:202,213."
     },
@@ -1529,6 +1818,8 @@
       "source": [
         "src/bodyModule/protosystem.cpp:955",
         "src/bodyModule/protosystem.cpp:966",
+        "src/experimentalModule/ModularBody.cpp:841",
+        "src/experimentalModule/ModularBody.cpp:857",
         "src/experimentalModule/ModularSystem.cpp:1209"
       ]
     },
@@ -1538,10 +1829,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:595"
+        "src/bodyModule/protosystem.cpp:595",
+        "src/experimentalModule/orbitModules/StillOrbitLoader.hpp:4"
       ]
     },
     "orbit_y": {
@@ -1550,10 +1843,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:596"
+        "src/bodyModule/protosystem.cpp:596",
+        "src/experimentalModule/orbitModules/StillOrbitLoader.hpp:5"
       ]
     },
     "orbit_z": {
@@ -1562,10 +1857,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:597"
+        "src/bodyModule/protosystem.cpp:597",
+        "src/experimentalModule/orbitModules/StillOrbitLoader.hpp:6"
       ]
     },
     "parent": {
@@ -1581,7 +1878,12 @@
         "src/bodyModule/orbit_creator_cor.cpp:43",
         "src/bodyModule/orbit_creator_cor.cpp:118",
         "src/bodyModule/protosystem.cpp:512",
-        "src/experimentalModule/ModularSystem.cpp:1051"
+        "src/experimentalModule/ModularSystem.cpp:1051",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:3",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:3",
+        "src/experimentalModule/orbitModules/LocationOrbitLoader.hpp:3",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:123",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:126"
       ],
       "notes": "Order matters: a parent must appear EARLIER in the file (ModularSystem.cpp:773-778 resolves by name against what is loaded)."
     },
@@ -1591,11 +1893,14 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:52",
-        "src/bodyModule/orbit_creator_cor.cpp:127"
+        "src/bodyModule/orbit_creator_cor.cpp:127",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:12",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:11"
       ],
       "notes": "RADIANS; ignored when `parent` resolves. See `parent_rot_obliquity`."
     },
@@ -1605,11 +1910,14 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:51",
-        "src/bodyModule/orbit_creator_cor.cpp:126"
+        "src/bodyModule/orbit_creator_cor.cpp:126",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:11",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:10"
       ],
       "notes": "RADIANS; ignored when `parent` resolves. See `parent_rot_obliquity`."
     },
@@ -1619,11 +1927,14 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/orbit_creator_cor.cpp:50",
-        "src/bodyModule/orbit_creator_cor.cpp:125"
+        "src/bodyModule/orbit_creator_cor.cpp:125",
+        "src/experimentalModule/orbitModules/CometOrbitLoader.hpp:10",
+        "src/experimentalModule/orbitModules/ElipticOrbitLoader.hpp:9"
       ],
       "notes": "RADIANS, not degrees -- every `orbit_*` angle in the same section is degrees, these three are not (orbit_creator_cor.cpp:50,125 apply no conversion; the writer at orbit.cpp:608 emits them raw while orbit.cpp:597 converts `orbit_inclination`). IGNORED whenever `parent` resolves: the values then come from the parent body itself, so editing this on a body with a real parent changes nothing and says nothing (orbit_creator_cor.cpp:49,124)."
     },
@@ -1633,12 +1944,14 @@
       "default": null,
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:699",
         "src/bodyModule/protosystem.cpp:725",
-        "src/bodyModule/protosystem.cpp:753"
+        "src/bodyModule/protosystem.cpp:753",
+        "src/experimentalModule/moduleLoader/StarLoader.cpp:36"
       ]
     },
     "planet_grid": {
@@ -1697,7 +2010,8 @@
       ],
       "source": [
         "src/experimentalModule/ModularSystem.cpp:1279",
-        "src/experimentalModule/ModularSystem.cpp:1684"
+        "src/experimentalModule/ModularSystem.cpp:1684",
+        "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:136"
       ],
       "domain": [
         "orbiting",
@@ -1725,10 +2039,12 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:814"
+        "src/bodyModule/protosystem.cpp:814",
+        "src/experimentalModule/moduleLoader/RingLoader.cpp:24"
       ]
     },
     "ring_outer_size": {
@@ -1737,11 +2053,27 @@
       "default": "0",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:815"
+        "src/bodyModule/protosystem.cpp:815",
+        "src/experimentalModule/moduleLoader/RingLoader.cpp:25"
       ]
+    },
+    "ring_shadow_color": {
+      "doc": "How much light of each channel survives the ring's shadow, 'r,g,b'.",
+      "value_type": "vec3f",
+      "default": "the ring module's own default",
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/moduleLoader/RingLoader.cpp:35",
+        "src/experimentalModule/moduleLoader/RingLoader.cpp:37"
+      ],
+      "notes": "src/experimentalModule/moduleLoader/RingLoader.cpp:35-37. NB the LEGACY-looking spelling `ring_shadow` that both corpora carry is NOT this key and is read by nothing."
     },
     "rings": {
       "doc": "Give this body a ring system. The three ring keys are only read when this is true.",
@@ -1749,10 +2081,12 @@
       "default": "false",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:813"
+        "src/bodyModule/protosystem.cpp:813",
+        "src/experimentalModule/ModularBody.cpp:797"
       ],
       "notes": "LEGACY ONLY (protosystem.cpp:813)."
     },
@@ -1957,11 +2291,13 @@
       "default": null,
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:838",
-        "src/bodyModule/protosystem.cpp:840"
+        "src/bodyModule/protosystem.cpp:840",
+        "src/experimentalModule/moduleLoader/TailLoader.cpp:80"
       ]
     },
     "slot": {
@@ -2017,18 +2353,36 @@
       ],
       "notes": "COMPOSED ONLY."
     },
+    "tail": {
+      "doc": "Give a comet its tail. On for a comet that has the magnitude keys, unless turned off; `tail = true` forces it on for a body that is not a comet.",
+      "value_type": "bool_suppress",
+      "default": "on for a comet with magnitude keys",
+      "required": false,
+      "regimes": [
+        "composed"
+      ],
+      "source": [
+        "src/experimentalModule/ModularBody.cpp:875",
+        "src/experimentalModule/ModularBody.cpp:876"
+      ],
+      "notes": "src/experimentalModule/ModularBody.cpp:875-876 -- the one switch read BOTH ways: not-false to keep the deduced answer, and explicitly true to override it."
+    },
     "tex_big_halo": {
       "doc": "Texture for the large halo drawn around a star. Setting it is what ENABLES the big halo.",
       "value_type": "string",
       "default": "none",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:697",
         "src/bodyModule/protosystem.cpp:723",
-        "src/bodyModule/protosystem.cpp:751"
+        "src/bodyModule/protosystem.cpp:751",
+        "src/experimentalModule/ModularBody.cpp:887",
+        "src/experimentalModule/moduleLoader/StarLoader.cpp:14",
+        "src/experimentalModule/moduleLoader/StarLoader.cpp:36"
       ]
     },
     "tex_heightmap": {
@@ -2037,10 +2391,13 @@
       "default": "none",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:666"
+        "src/bodyModule/protosystem.cpp:666",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:14",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:43"
       ]
     },
     "tex_map": {
@@ -2049,10 +2406,19 @@
       "default": "none",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:661"
+        "src/bodyModule/protosystem.cpp:661",
+        "src/experimentalModule/ModularBody.cpp:799",
+        "src/experimentalModule/ModularBody.cpp:828",
+        "src/experimentalModule/moduleLoader/BasicMeshLoader.cpp:23",
+        "src/experimentalModule/moduleLoader/BasicMeshLoader.cpp:46",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:12",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:39",
+        "src/experimentalModule/moduleLoader/PhotosphereLoader.cpp:12",
+        "src/experimentalModule/moduleLoader/PhotosphereLoader.cpp:34"
       ]
     },
     "tex_night": {
@@ -2061,10 +2427,13 @@
       "default": "none",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:664"
+        "src/bodyModule/protosystem.cpp:664",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:14",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:40"
       ]
     },
     "tex_normal": {
@@ -2073,10 +2442,13 @@
       "default": "none",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:663"
+        "src/bodyModule/protosystem.cpp:663",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:14",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:42"
       ]
     },
     "tex_ring": {
@@ -2085,10 +2457,14 @@
       "default": "none",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:816"
+        "src/bodyModule/protosystem.cpp:816",
+        "src/experimentalModule/ModularBody.cpp:797",
+        "src/experimentalModule/moduleLoader/RingLoader.cpp:10",
+        "src/experimentalModule/moduleLoader/RingLoader.cpp:39"
       ]
     },
     "tex_skin": {
@@ -2109,10 +2485,12 @@
       "default": "none",
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
-        "src/bodyModule/protosystem.cpp:665"
+        "src/bodyModule/protosystem.cpp:665",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:41"
       ]
     },
     "trail_color": {
@@ -2121,11 +2499,13 @@
       "default": null,
       "required": false,
       "regimes": [
+        "composed",
         "legacy"
       ],
       "source": [
         "src/bodyModule/protosystem.cpp:655",
-        "src/bodyModule/ssystem_factory.cpp:228"
+        "src/bodyModule/ssystem_factory.cpp:228",
+        "src/experimentalModule/moduleLoader/TrailLoader.cpp:19"
       ],
       "notes": "LEGACY ONLY (protosystem.cpp:655)."
     },
@@ -2154,9 +2534,14 @@
       "source": [
         "src/bodyModule/protosystem.cpp:519",
         "src/bodyModule/solarsystem.cpp:85",
+        "src/experimentalModule/ModularBody.cpp:810",
+        "src/experimentalModule/ModularBody.cpp:855",
+        "src/experimentalModule/ModularBody.cpp:872",
         "src/experimentalModule/ModularSystem.cpp:1103",
         "src/experimentalModule/ModularSystem.cpp:1627",
-        "src/experimentalModule/ModularSystem.cpp:1631"
+        "src/experimentalModule/ModularSystem.cpp:1631",
+        "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:52",
+        "src/experimentalModule/moduleLoader/OjmLoader.cpp:27"
       ],
       "domain": [
         "Sun",

@@ -49,6 +49,7 @@
 #include <nlohmann/json.hpp>
 
 #include "sc_check.hpp"
+#include "sc_sscheck.hpp"
 #include "sc_docindex.hpp"
 #include "sc_docjson.hpp"
 #include "sc_editcore.hpp"
@@ -475,15 +476,53 @@ int check(const std::string &grammarPath, const std::vector<std::string> &files,
 		std::fprintf(stderr, "scedit: %s\n", err.c_str());
 		return 2;
 	}
+	// THE SECOND CONTRACT (F80). It sits beside the first, so its path is
+	// DERIVED from the resolved one rather than resolved again -- one rule for
+	// where a contract lives, not two that can disagree (I2). Failing to load it
+	// is not fatal here: a script check does not need it, and a stellar-system
+	// file that arrives without it is refused by name below rather than silently
+	// checked against the wrong grammar.
+	std::string ssPath = grammarPath;
+	{
+		const std::size_t slash = ssPath.find_last_of('/');
+		ssPath = (slash == std::string::npos ? std::string() : ssPath.substr(0, slash + 1))
+		         + "ss-grammar.json";
+	}
+	scedit::SsGrammar ssg;
+	std::string ssErr;
+	const bool ssOk = ssg.load(ssPath, ssErr);
+
 	if (showRules && !asJson) {
 		for (const auto &u : scedit::unarmedRules(g))
 			std::printf("unarmed: %s: %s\n", u.id.c_str(), u.reason.c_str());
+		if (ssOk)
+			for (const auto &r : scedit::ssRules())
+				std::printf("ss-rule: %s (%s): %s\n", r.id.c_str(), r.severity.c_str(),
+				            r.what.c_str());
+		else
+			std::printf("ss-rules: UNAVAILABLE -- %s\n", ssErr.c_str());
 	}
 	int findings = 0, ioErrors = 0;
 	std::vector<scedit::Diagnostic> all;
 	for (const auto &f : files) {
 		std::string ioErr;
-		auto diags = scedit::checkFile(g, f, ioErr);
+		// Which contract applies is decided by the file's LOCATION, never by
+		// looking inside it: a composed twin is byte-identical to its legacy
+		// original in every key, so content cannot tell them apart even in
+		// principle (INTENT S11.78(d), F80 mandate (3)).
+		const scedit::SsRegime regime = scedit::classifyPath(f);
+		std::vector<scedit::Diagnostic> diags;
+		if (regime == scedit::SsRegime::NotStellarSystem) {
+			diags = scedit::checkFile(g, f, ioErr);
+		} else if (!ssOk) {
+			std::fprintf(stderr, "scedit: %s is a %s stellar-system file but the "
+			             "stellar-system contract could not be loaded: %s\n",
+			             f.c_str(), scedit::regimeName(regime), ssErr.c_str());
+			++ioErrors;
+			continue;
+		} else {
+			diags = scedit::ssCheckFile(ssg, f, regime, ioErr);
+		}
 		if (!ioErr.empty()) {
 			std::fprintf(stderr, "scedit: %s\n", ioErr.c_str());
 			++ioErrors;

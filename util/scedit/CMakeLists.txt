@@ -26,6 +26,7 @@ add_library(scedit_core STATIC
 	src/sc_tokenizer.cpp
 	src/sc_grammar.cpp
 	src/sc_check.cpp
+	src/sc_sscheck.cpp
 	src/sc_document.cpp
 	src/sc_docindex.cpp
 	src/sc_docjson.cpp
