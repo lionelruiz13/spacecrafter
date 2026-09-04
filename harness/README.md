@@ -2205,12 +2205,49 @@ A non-zero in-band delta is NOTED, not failed — with a spread of exactly zero,
 drift is news before it is a fault.
 
 **Banked on `:2`** — the harness default, and the display every healthy value
-in this corpus was measured on. Which display is the CANONICAL render host
+in this corpus was measured on. ~~Which display is the CANONICAL render host
 (F43's self-owned `:2` substitute vs the owner's real `:4` session) is the
-OWNER'S open fork, §11.174(f). Re-banking is one VALUES-block edit plus one
-re-measured run; nothing else in the script knows a display number. **Never
-widen a tolerance to make a run pass** — that is the failure mode the whole
-instrument exists to prevent.
+OWNER'S open fork, §11.174(f).~~ **[FORK CLOSED 2026-09-04, F79 §11.199: `/tmp`
+is wiped at every boot, so F43's substitute died with the 2026-09-04 18:45:08
+boot of the desktop and nobody rebuilt it — one claude-owned display was left,
+the REAL logind session, which now serves `:2`. The owner ruled it: *"Real
+session on :2 (Recommended)"*. The stack fingerprint is re-banked on it
+(runtime dir, auth glob, compositor command, both start epochs, host boot);
+`BANK_DISPLAY` and `BANK_DIMS` did not move, because they measured equal.]**
+Re-banking is one VALUES-block edit plus one re-measured run; nothing else in
+the script knows a display number. **Never widen a tolerance to make a run
+pass** — that is the failure mode the whole instrument exists to prevent.
+
+**The band is UNCHANGED and now reproduced a third independent way** (F79,
+2026-09-04): six `f51_run.sh --samples 2` runs on the re-banked stack returned
+**72 of 72** gated members at the banked centre to the last printed digit,
+spread **0.000** — so the substitute → real-session compositor change is
+photometrically INERT. `BANK_FRAME_MD5` was NOT re-banked either, because it
+did not move: the dwell frame is byte-identical to 2026-08-30's across that
+compositor change AND a different binary (`fa00deae` at `d6aec251` →
+`c8e12950` at `ba7a32a8`). It stays recorded and ungated all the same — a
+cache or driver change can move bytes without moving luminance — but if a
+future stack question needs more resolution than ±1.0 on a mean, this scene
+answers at the byte.
+
+**Two members are per-boot, and the canary reds after a reboot BY DESIGN.**
+`BANK_COMPOSITOR_START` / `BANK_XSERVER_START` (and `BANK_HOST_BOOT`, and
+potentially `BANK_DISPLAY`) belong to one boot of one real session. A red on
+`compositor.restarted` or `compositor.absent` after a reboot is the protocol
+working: report it, re-bank in one VALUES-block edit with its argument, never
+widen and never demote (§11.191(c)). `HOST-EVENTS.md` is the per-host,
+per-boot display authority — read its latest entry first.
+
+**The start epoch is a kernel start time, not a `/proc` mtime** (F79): one
+`pid_start_epoch` function, `/proc/stat` `btime` + field 22 of
+`/proc/<pid>/stat` / `CLK_TCK`, used by both start members. The old
+`stat -c %Y /proc/<pid>` was a directory mtime — 19 h wrong for a live pid in
+F69's measurement, 1–2 s late on three of four pids in F79's — and it backed a
+GATING member. **The compositor is matched by owner uid AND command line**,
+with both counts recorded (`compositor.match_cmdline_only` /
+`compositor.match_owned`; 3 / 1 on the desktop, where claude's, foxy's and
+gdm's shells all run `/usr/bin/gnome-shell`). The X-server member still matches
+on command line alone — same uid-blindness, NOT fixed, named at §11.199(j).
 
 **Two environment facts the canary encodes.** The auth cookie is a property of
 the STACK, not of the environment: this session inherits
@@ -2665,8 +2702,13 @@ What it asserts, and what each check could have found instead:
 
 Instrument facts worth carrying:
 
-- **The canary's `xserver.restarted` NOTE is the instrument, not the host.**
-  `f56_canary.sh:270` reads `stat -c %Y "/proc/<pid>"` — a /proc DIRECTORY
+- **The canary's `xserver.restarted` NOTE ~~is~~ WAS the instrument, not the
+  host.** **[FIXED 2026-09-04, F79 §11.199 — the line number below is a line
+  number of `f56_canary.sh` at harness `d2cc023` and no longer resolves: both
+  start members now call `pid_start_epoch`, and both banked epochs were
+  re-measured with it. The paragraph is kept because the measurement in it is
+  the evidence.]**
+  `f56_canary.sh:270` read `stat -c %Y "/proc/<pid>"` — a /proc DIRECTORY
   MTIME, not a start time. Measured three ways on the same pid
   (`artifacts/f69/xserver-epoch-probe.txt`): `ps -o lstart` and `/proc/stat`
   btime + `starttime`/HZ both say 2026-08-30 23:54:51, while that mtime moved
@@ -2675,7 +2717,12 @@ Instrument facts worth carrying:
   there makes an executor stop and report a stack change that did not happen.
   Not fixed by F69: `BANK_XSERVER_START` was banked with the same wrong proxy,
   so correcting it re-bases a banked value, and §0.5 makes re-banking one
-  VALUES-block edit WITH an argument.
+  VALUES-block edit WITH an argument. **[PAID 2026-09-04, F79 §11.199: the
+  computation and the re-bank landed together in one edit, which is what this
+  paragraph said the fix required. F79's own measurement strengthens the case
+  rather than merely acting on it — on a two-hour-old host the mtime is 1–2 s
+  LATE on three of four live pids and right on the fourth, so the 19-hour drift
+  is the visible end of a proxy that is simply not a start time.]**
 - **Adding a client does not move the other wires, but adding a QUESTION does.**
   Any new leg that issues `get status …` puts an answer on every `$LOGON`
   subscriber's wire. Order matters more than isolation here: snapshot first,

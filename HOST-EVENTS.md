@@ -172,3 +172,31 @@ never rewrite (maintenance invariant). Archival per the standing convention
   20:11, md5 `c8e12950`). Config/ssystem md5 pristine (`03fbee59`/`545a51ef`); no
   spacecrafter process. `lock-enabled`/`idle-delay` not re-measured here (the 2026-08-31
   settings were the laptop's; executors keep the GetActive check-and-record).
+- 2026-09-04 21:10 [measured: F79 executor, task delivery; INTENT §11.199, artifacts
+  `harness/artifacts/f79/`] **THE CANARY IS RE-BANKED ON THIS HOST AND GREEN** —
+  `f56_canary.sh --no-scene` exit **0** and the FULL canary (scene arm) exit **0**,
+  0 fail 0 note, first green on LovelyFoxDev since F43's substitute stack died with
+  `/tmp` at the 18:45:08 boot. Banked values now, all [measured] on claude's REAL
+  logind session (14/15) serving `:2`:
+  `BANK_XDG_RUNTIME_DIR=/run/user/1003` · `BANK_XAUTH_GLOB=/run/user/1003/.mutter-Xwaylandauth.*`
+  · `BANK_COMPOSITOR_CMD=/usr/bin/gnome-shell` · `BANK_COMPOSITOR_START=1788544217`
+  (pid 43595) · `BANK_XSERVER_START=1788544217` (pid 43800) ·
+  `BANK_HOST_BOOT=2026-09-04 18:45:08`; `BANK_DISPLAY=:2` and `BANK_DIMS=2448x1332`
+  UNCHANGED (measured equal). The photometric band is UNCHANGED — six `f51_run.sh
+  --samples 2` runs returned 165.258/6.644 new and 160.142/6.603 old on **72 of 72**
+  gated members to the last printed digit, spread **0.000**, so the substitute ->
+  real-session compositor change is photometrically INERT. The dwell frame is
+  BYTE-IDENTICAL (md5 `5215565b`) to 2026-08-30's, across both that compositor change
+  AND a different binary (`fa00deae` at `d6aec251` -> `c8e12950` at `ba7a32a8`).
+  **CORRECTION TO THIS FILE'S 2026-09-04 20:08 ENTRY ABOVE:** Xwayland `:2` pid 43800
+  was born **19:50:17**, not 19:50:18 — ":18" is the `/proc`-directory-mtime probe's
+  reading, and that probe is the very thing §11.188(j) refuted and F79 replaced
+  (`btime` + `starttime`/CLK_TCK now; `ps -o lstart=` agrees to the second on four
+  live pids). The compositor (43595) started in the SAME second, 19:50:17.
+  **PER-BOOT, BY DESIGN:** a real session's epochs and display NUMBER die with the
+  boot, so the canary WILL red at exit 2 after the next reboot. That is the protocol
+  working — report it and re-bank in one VALUES-block edit with its argument; never
+  widen the band, never demote a member (§11.191(c)). This file stays the per-host,
+  per-boot display authority. `GetActive` **(false,)** at all seven launch-time reads
+  of this task; no `spacecrafter` process before any of them; config/ssystem md5
+  `03fbee59`/`545a51ef` pristine in == out on every run.

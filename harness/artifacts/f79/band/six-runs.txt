@@ -21,7 +21,7 @@ run  dwell.s0            dwell.s1            newpath_after       +10s           
   72 gated members over six runs (12 each); every one equals the banked centre
   to the last printed digit.  SPREAD = 0.000 on all four quantities, which is the
   banked spread of the 2026-08-30 nine-launch family reproduced on a DIFFERENT
-  compositor.  f56_band.py verdict per run: PASS 12/12 (band_verdict_run*.json).
+  compositor.  f56_band.py verdict per run: PASS 12/12 (band_verdict_run*/band.json).
 
 === INFO leg, never gated (different framing, fov 60):
   run1  oldpath_fov60  125.531 / 6.893  n=389305
