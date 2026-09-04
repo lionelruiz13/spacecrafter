@@ -1,0 +1,46 @@
+=== F56 ENVIRONMENT CANARY  2026-09-04 20:51:04 CEST  out=/home/claude/spacecrafter/claude/harness/artifacts/f79/canary_rebanked_noscene
+    banked stack: DISPLAY :2 2448x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+
+--- (a) display stack ---
+  host.boot = 2026-09-04 18:45:08
+  host.now_epoch = 1788547864
+  display.target = :2
+  display.expected = :2
+  xauthority.inherited = /run/user/1003/.mutter-Xwaylandauth.5KBYU3
+  xauthority = /run/user/1003/.mutter-Xwaylandauth.5KBYU3
+  display.dimensions = 2448x1332
+  display.screens = 1
+  xdg_runtime_dir = /run/user/1003
+  x11.sockets = X0 X1 X1024 X1025 X2 X3 
+
+--- (a2) compositor identity ---
+  compositor.cmd_banked = /usr/bin/gnome-shell
+  compositor.owner_uid = 1003
+  compositor.match_cmdline_only = 3
+  compositor.match_owned = 1
+  compositor.pid = 43595
+  compositor.start_epoch = 1788544217
+  compositor.start_iso = 2026-09-04 19:50:17
+  compositor.start_banked = 1788544217
+  xserver.pid = 43800
+  xserver.start_epoch = 1788544217
+  xserver.start_banked = 1788544217
+
+--- (b) GPU ---
+  gpu.query = NVIDIA GeForce RTX 5090, 580.159.03, 853 MiB, 32607 MiB, 25 %
+  gpu.used_mib = 853
+
+--- (c) RDP connection state / (d) dispatch method ---
+  rdp.estab_3389 = 2
+  rdp.note = count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+  logind.claude_sessions = 14 15 
+  dispatch.has_logind_session = yes
+  dispatch.wayland_display = wayland-0
+  dispatch.dbus = unix:path=/run/user/1003/bus
+  dispatch.inherited_display = :2
+
+--- cache manifest (standalone) ---
+manifest: 38 files, 680817102 B, aggregate md5 68a7d015812fbbc24c4a95f36e50f976  -> /home/claude/spacecrafter/claude/harness/artifacts/f79/canary_rebanked_noscene/cache_manifest.json
+
+=== CANARY VERDICT: exit 0  (0 fail, 0 note; scene arm NOT run)
+    fingerprint green -- but the photometric member is the one 2026-08-29 needed: run without --no-scene before trusting a measurement.

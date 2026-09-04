@@ -581,7 +581,7 @@ entry file + stub; §11.188(j) back-marker in BOTH homes (entry + stub) same com
 §11.191(c)'s queue-item annotation honored; HOST-EVENTS twin entry (the re-bank
 event, values); `harness/README.md` canary section; trees clean; WIP cleared;
 baselines re-derived LAST with deltas stated.
-**WIP:** —
+**WIP:** 2026-09-04 checkpoint 1 of 4 -- parts (1)(2)(3) landed in `f56_canary.sh`: kernel start-epoch probe (btime+starttime/CLK_TCK) on both members, compositor walk filtered by owner uid with both counts recorded, VALUES block re-banked on the real logind session serving `:2` (struck-not-deleted). `--no-scene` exit **0**, 30 fingerprint members; decoy +1 on `BANK_COMPOSITOR_START` -> exit 2 `compositor.restarted`; filter 3 cmdline-only / 1 owned. Artifacts `harness/artifacts/f79/`. NEXT: part (4) -- six `f51_run.sh --samples 2` runs on `:2`, then the disposition and the full canary.
 
 ### F80 — scedit item 4: the stellar-system-file grammar — the second contract file: every `ssystem.ini` key the loader reads, sourced at its `file:line`; the composed B24 format on top (`type=`/`relation=`/`compose=`); two-regime lint per C4 (legacy: no new-format construct, HARD; composed: the full grammar); ISO-8859 at the file boundary; `--check` armed on the field file with C3's zero-false-positive discipline (scedit INTENT §5 item 4; C2, C3, C4; session-20 queue position 3) [L]
 

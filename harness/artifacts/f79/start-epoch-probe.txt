@@ -1,0 +1,47 @@
+=== F79: the canary's start-epoch probe replaced at its root. Measured three ways,
+=== four live pids on LovelyFoxDev (the desktop), boot 2026-09-04 18:45:08.
+date: 2026-09-04 20:46:51 CEST     host: LovelyFoxDev     kernel: 6.17.0-41-generic
+/proc/stat btime = 1788540308   getconf CLK_TCK = 100   uptime -s = 2026-09-04 18:45:08
+
+METHOD (2) of F69, now the canary's: start = btime + (/proc/<pid>/stat field 22) / CLK_TCK.
+  field 22 is read as field 20 of the substring AFTER the last ') ', because field 2
+  (comm) is parenthesised and may contain spaces.
+METHOD (3), what f56_canary.sh read until this commit: stat -c %Y /proc/<pid> -- a
+  DIRECTORY MTIME.  F69 measured it drifting 19 h for a pid alive throughout
+  (artifacts/f69/xserver-epoch-probe.txt); §11.188(j) is the record.
+
+pid     cmd                    uid      (1) ps -o lstart=     (2) btime+starttime   (3) stat -c %Y /proc  (3)-(2)
+1       /sbin/init splash      root     2026-09-04 18:45:08   2026-09-04 18:45:08   2026-09-04 18:45:10   2s
+43595   /usr/bin/gnome-shell   claude   2026-09-04 19:50:17   2026-09-04 19:50:17   2026-09-04 19:50:17   0s
+43800   /usr/bin/Xwayland :2   claude   2026-09-04 19:50:17   2026-09-04 19:50:17   2026-09-04 19:50:18   1s
+5174    /usr/bin/gnome-shell   foxy     2026-09-04 18:45:36   2026-09-04 18:45:36   2026-09-04 18:45:38   2s
+
+epochs, to the second:
+  pid 1 : ps=1788540308  btime+starttime=1788540308  mtime=1788540310   agree(1,2)=YES
+  pid 43595 : ps=1788544217  btime+starttime=1788544217  mtime=1788544217   agree(1,2)=YES
+  pid 43800 : ps=1788544217  btime+starttime=1788544217  mtime=1788544218   agree(1,2)=YES
+  pid 5174 : ps=1788540336  btime+starttime=1788540336  mtime=1788540338   agree(1,2)=YES
+
+=== CHECK (a): the old probe re-read, >60 s later.  Reading 1 was 2026-09-04 20:46:51.
+reading 2: 2026-09-04 20:52:29 CEST
+pid     true start   mtime r1     mtime r2     r2-r1        mtime-true
+1       1788540308   1788540310   1788540310   0s           2s
+43595   1788544217   1788544217   1788544217   0s           0s
+43800   1788544217   1788544218   1788544218   0s           1s
+5174    1788540336   1788540338   1788540338   0s           2s
+
+CONCLUSION, both arms of check (a) answered:
+  DISAGREES -- the old /proc-mtime probe is 1-2 s late on three of the four pids
+    (pid 1 +2, pid 43800 +1, pid 5174 +2) on a host 2 h old.  It agrees on 43595
+    only by rounding luck, which is why 'it agreed once' is not evidence.
+  DRIFTS    -- the mtime is MUTABLE state (F69 measured it moving 19 h for a pid
+    alive throughout, artifacts/f69/xserver-epoch-probe.txt); btime+starttime is
+    derived from immutable kernel fields and cannot move for a live pid.
+  The two members this backed are compositor.start_epoch (GATING, fail 2
+    compositor.restarted) and xserver.start_epoch (NOTE).  Both now use method (2).
+
+TWO RECORDED FACTS CORRECTED BY THIS MEASUREMENT:
+  * HOST-EVENTS 2026-09-04 and the F79 dispatch section both say Xwayland :2 pid
+    43800 was 'born 19:50:18'.  That is the REFUTED mtime probe's reading.  The
+    kernel start time is 19:50:17 (epoch 1788544217), which is what is banked.
+  * The compositor pid 43595 and the X server pid 43800 started in the SAME second.

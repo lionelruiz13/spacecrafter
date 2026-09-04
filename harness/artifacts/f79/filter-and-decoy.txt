@@ -1,0 +1,37 @@
+=== F79: the compositor match made uid-discriminating -- both counts, and the
+=== both-ways map of what the owner filter changes.  2026-09-04 20:52:08 CEST
+
+BANK_COMPOSITOR_CMD (re-banked) = /usr/bin/gnome-shell    id -u = 1003 (claude)
+
+(A) EVERY process whose cmdline matches the banked command line, with its owner:
+      pid 43595   uid 1003   claude       owned=YES
+      pid 5174    uid 1000   foxy         owned=no
+      pid 7184    uid 60579  gdm-greeter  owned=no
+    cmdline-only matches = 3        after the owner filter = 1
+
+(B) WHAT THE UNFILTERED SELECTOR DEPENDED ON.  The pre-F79 walk took the FIRST
+    match in /proc glob order and stopped.  That order is lexical on the pid
+    string, so which of the three it picks is an accident of pid allocation:
+      forward  order (the old code's) picks : pid 43595 (claude)
+      reverse  order picks                 : pid 7184 (gdm-greeter)
+    Today the forward order happens to reach claude's shell first, so the
+    unfiltered selector would ALSO be right today -- and that is the point: its
+    correctness rested on 43595 sorting before 5174 and 7184, not on ownership.
+    Reverse the walk and a GATING member is satisfied by gdm-greeter's compositor.
+    With the filter, the selection is a property of the stack (uid 1003) and the
+    two counts are recorded on every run, so a host whose counts move says so.
+
+(C) DECOY -- the gate still fails when the epoch moves.  Scratch copy of the
+    re-banked script with BANK_COMPOSITOR_START perturbed +1 (1788544217 -> ...218):
+      exit 2, fail set {compositor.restarted}, note set {} (log below)
+      CANARY FAIL [compositor.restarted]
+        WHAT        : the compositor is alive but was started at 1788544217 (2026-09-04 19:50:17), banked 1788544218 (2026-09-04 19:50:18).
+        CONSEQUENCES: a restarted compositor is a NEW stack: §0.5 standing rule is that a stack change (compositor, streamer, headless X, screen power state) means report + re-baseline, and §11.174(j)'s surviving model for the dim era is a LATCHED rendering state whose trigger candidates are exactly events like this one.
+        PREVENTION  : report the restart with its timestamp, then re-bank: re-measure f51_run.sh (six runs is what the ledger's own spread argument used) and edit BANK_COMPOSITOR_START plus, if the numbers moved, the band.
+      === CANARY VERDICT: exit 2  (1 fail, 0 note; scene arm NOT run)
+
+(D) The re-banked canary, --no-scene, unperturbed:
+      === CANARY VERDICT: exit 0  (0 fail, 0 note; scene arm NOT run)
+      fingerprint members: 30  (24 on the compositor-ABSENT run of 20:14 +3 compositor
+      epoch members that only exist when the match succeeds +3 new filter members:
+      compositor.owner_uid, compositor.match_cmdline_only, compositor.match_owned)

@@ -30,6 +30,15 @@
 # Re-banking on :4 costs exactly one edit of the VALUES block below plus one re-measured
 # reference run; nothing else in this script knows a display number.
 #
+# [FORK CLOSED 2026-09-04, F79 / INTENT §11.199 -- the paragraph above is kept as banked
+# and is no longer the state.]  The :2/:4 fork was collapsed by the host rather than
+# decided in the abstract: F43's substitute lived under /tmp, /tmp is wiped at every
+# boot, and after the 2026-09-04 18:45:08 boot nobody rebuilt it -- so exactly ONE
+# claude-owned display exists on this host, the REAL logind session, and it now serves
+# :2 (the number the substitute used to hold).  The owner ruled it verbatim: "Real
+# session on :2 (Recommended)" [vixy 2026-09-04].  The VALUES block below is the
+# authority for what is banked; the paragraph above is history.
+#
 # usage:
 #   f56_canary.sh [--out DIR]            full: fingerprint + cache manifest + scene
 #   f56_canary.sh --no-scene [--out DIR] fingerprint + cache manifest only (seconds)
@@ -48,18 +57,54 @@ set -u
 # The only banked state in this instrument.  Every number here is [measured] and dated;
 # re-banking is an explicit act with an argument, never a tolerance widened to fit.
 #
-# DISPLAY STACK -- measured 2026-08-30 (and identical to §11.174(f)'s probe of the same
-# processes): F43's substitute, born 2026-08-29 14:51:01, absent from loginctl by
-# construction (a hand-built process tree, not a session).
+# DISPLAY STACK -- RE-BANKED 2026-09-04 (F79, INTENT §11.199) on claude's REAL logind
+# session (14 user + 15 manager, seatless = remote-desktop; gnome-remote-desktop under
+# /run/user/1003): /usr/bin/gnome-shell pid 43595 -> Xwayland :2 pid 43800, both started
+# 2026-09-04 19:50:17 [measured: artifacts/f79/start-epoch-probe.txt].
+#   WHY, and it is not a tolerance moved to fit: the retired values below named F43's
+#   hand-built substitute stack under /tmp/rt-claude, born 2026-08-29 14:51:01.  /tmp is
+#   wiped at every boot; this host booted 2026-09-04 18:45:08 and nobody rebuilt the
+#   substitute -- rebuilding it would itself be an owner veto item (§11.174(h)).  The
+#   stack the numbers were banked on therefore CANNOT exist any more, which collapses the
+#   §11.174(f) fork (":2 substitute vs the real session's :4") to one branch.  The owner
+#   ruled it verbatim: "Real session on :2 (Recommended)" [vixy 2026-09-04].
+#   BANK_DISPLAY and BANK_DIMS are UNCHANGED because they were measured EQUAL: the real
+#   session happens to serve :2, and xdpyinfo answers 2448x1332 == the banked dims.
+#   The PHOTOMETRIC BAND below is NOT edited by this re-bank -- six f51_run.sh runs on
+#   the new stack had to reproduce it, and did (§11.199).
+#   The two _START values are now KERNEL start times (btime + starttime/CLK_TCK, the
+#   pid_start_epoch function below), not /proc directory mtimes: the old proxy was
+#   refuted at §11.188(j) and re-measured wrong here (artifacts/f79/start-epoch-probe.txt).
+#   BANK_COMPOSITOR_CMD is no longer unique on this host -- a real session's command line
+#   is plain `/usr/bin/gnome-shell`, and claude's, foxy's and gdm's all carry it.  The
+#   compositor walk below therefore filters by OWNER UID as well; the cmdline alone stopped
+#   discriminating the moment the substitute died.
+# PER-BOOT BY CONSTRUCTION, and that is the protocol rather than a defect: a real
+# session's process epochs die with every boot, and its display NUMBER is assigned in the
+# order the sessions come up.  So BANK_COMPOSITOR_START / BANK_XSERVER_START / BANK_HOST_BOOT
+# -- and potentially BANK_DISPLAY -- WILL mismatch after the next reboot and this canary
+# WILL red at exit 2 BY DESIGN.  The response is REPORT + re-bank (one VALUES-block edit
+# with its argument), never a widened band and never a demoted member (§11.191(c) [vixy]:
+# "falsely abort is not as bad as wrongly continue, but that's to optimize against (false
+# positive)").  HOST-EVENTS.md is the per-host, per-boot display authority (§0.5, F74):
+# read its latest entry before deciding anything about a red here.
+# RETIRED VALUES, struck not deleted (banked 2026-08-30 by F56, dead since the 18:45:08 boot):
+#   ~~BANK_XDG_RUNTIME_DIR="/tmp/rt-claude"~~
+#   ~~BANK_XAUTH_GLOB="/tmp/rt-claude/.mutter-Xwaylandauth.*"~~
+#   ~~BANK_COMPOSITOR_CMD="gnome-shell --headless --virtual-monitor 2448x1332"~~
+#   ~~BANK_COMPOSITOR_START=1788007861~~   # = 2026-08-29 14:51:01, read through the
+#                                          #   /proc-mtime proxy refuted at §11.188(j)
+#   ~~BANK_XSERVER_START=1788007886~~      # = 2026-08-29 14:51:26, same refuted proxy
+#   ~~BANK_HOST_BOOT="2026-08-27 07:32:05"~~
 BANK_DISPLAY=":2"
 BANK_DIMS="2448x1332"
-BANK_XDG_RUNTIME_DIR="/tmp/rt-claude"
-BANK_XAUTH_GLOB="/tmp/rt-claude/.mutter-Xwaylandauth.*"
-BANK_COMPOSITOR_CMD="gnome-shell --headless --virtual-monitor 2448x1332"
-BANK_COMPOSITOR_START=1788007861          # epoch of /proc/<pid>, = 2026-08-29 14:51:01
+BANK_XDG_RUNTIME_DIR="/run/user/1003"
+BANK_XAUTH_GLOB="/run/user/1003/.mutter-Xwaylandauth.*"
+BANK_COMPOSITOR_CMD="/usr/bin/gnome-shell"
+BANK_COMPOSITOR_START=1788544217          # kernel start of pid 43595 = 2026-09-04 19:50:17
 BANK_XSERVER_MATCH="Xwayland :2"
-BANK_XSERVER_START=1788007886             # = 2026-08-29 14:51:26
-BANK_HOST_BOOT="2026-08-27 07:32:05"
+BANK_XSERVER_START=1788544217             # kernel start of pid 43800 = 2026-09-04 19:50:17
+BANK_HOST_BOOT="2026-09-04 18:45:08"
 #
 # PHOTOMETRIC BAND -- the reference scene is `f51_run.sh`'s (§11.174(e) names it): the
 # Moon `base` scene at fov 10, the app's own 2048^2 readback, metric = §11.164(c)'s
@@ -121,7 +166,7 @@ while [ $# -gt 0 ]; do
         --expect-display) EXPECT_DPY="$2"; shift 2 ;;
         --expect-dims) EXPECT_DIMS="$2"; shift 2 ;;
         --keep-frames) KEEP_FRAMES=1; shift ;;
-        -h|--help) sed -n '1,45p' "$0"; exit 0 ;;
+        -h|--help) sed -n '1,53p' "$0"; exit 0 ;;
         *) echo "unknown option: $1"; exit 4 ;;
     esac
 done
@@ -140,6 +185,35 @@ NNOTE=0
 say()  { echo "$*" | tee -a "$LOG"; }
 kv()   { printf '%s\t%s\n' "$1" "$2" >> "$FP"; say "  $1 = $2"; }
 worse(){ [ "$1" -gt "$RC" ] && RC=$1; return 0; }
+# Kernel START TIME of a pid, in epoch seconds: /proc/stat `btime` plus field 22
+# (`starttime`) of /proc/<pid>/stat divided by CLK_TCK -- F69's method (2), and the one
+# probe in this script that answers "when did this process start".
+#   WHAT IT REPLACES, 2026-09-04 (F79, §11.199), and why that is a root fix and not a
+#   refactor: until this commit BOTH start members read `stat -c %Y /proc/<pid>` -- a
+#   DIRECTORY MTIME, which is not a start time.  F69 measured that mtime moving 19 h for
+#   a pid alive throughout (artifacts/f69/xserver-epoch-probe.txt, §11.188(j)); F79
+#   measured it 1-2 s LATE on three of four live pids on a 2 h-old host
+#   (artifacts/f79/start-epoch-probe.txt).  It backed the GATING `compositor.restarted`
+#   fail, so its drift was a FALSE RED: an executor stops and reports a stack change that
+#   never happened.  §11.191(c) [vixy] rules that class removed at its root -- the wrong
+#   proxy -- and not absorbed by a widened band or a demoted member.
+#   Field 2 (comm) is parenthesised and may contain spaces, so fields are counted from
+#   the substring after the LAST ') ': overall field 22 is field 20 of that remainder.
+#   Proven against `ps -o lstart=` to the second on four live pids including the
+#   compositor's and the X server's (artifacts/f79/start-epoch-probe.txt).
+pid_start_epoch() {
+    local st ticks btime hz
+    st=$(cat "/proc/$1/stat" 2>/dev/null) || return 1
+    [ -n "$st" ] || return 1
+    st=${st##*') '}
+    ticks=$(printf '%s\n' "$st" | awk '{print $20}')
+    case "$ticks" in ''|*[!0-9]*) return 1 ;; esac
+    btime=$(awk '/^btime /{print $2; exit}' /proc/stat)
+    case "$btime" in ''|*[!0-9]*) return 1 ;; esac
+    hz=$(getconf CLK_TCK 2>/dev/null)
+    case "$hz" in ''|*[!0-9]*|0) hz=100 ;; esac
+    echo $(( btime + ticks / hz ))
+}
 # §11.169 error schema: WHAT / CONSEQUENCES / PREVENTION, self-contained action.
 fail() {  # fail <code> <member> <what> <consequences> <prevention>
     NFAIL=$((NFAIL+1)); worse "$1"
@@ -185,7 +259,7 @@ if [ "$DPY" != "$EXPECT_DPY" ]; then
     fail 2 "display.target" \
       "rendering would go to DISPLAY $DPY but the band is banked on $EXPECT_DPY." \
       "the banked photometric numbers were measured on $EXPECT_DPY; a number taken on a different display is not comparable with the ledger's, and §11.174(f)(3) measured that the two displays on this host are DIFFERENT stacks (a hand-built substitute vs a logind session), not two names for one." \
-      "run without --display, or re-bank deliberately: measure f51_run.sh on the new display and edit the VALUES block at the top of $0 (BANK_DISPLAY + the four BANK_*_DISC/HF keys). The choice of canonical display is the OWNER'S open fork (§11.174(f)) -- report, do not decide."
+      "run without --display, or re-bank deliberately: measure f51_run.sh on the new display and edit the VALUES block at the top of $0 (BANK_DISPLAY + the four BANK_*_DISC/HF keys). The canonical display WAS the owner's open fork (§11.174(f)); he closed it 2026-09-04 -- the real claude logind session, which serves :2 (§11.199) -- so a mismatch here is a stack change to REPORT, not a display to re-choose."
 fi
 # The auth cookie is a property of the BANKED STACK, not of the environment: this
 # session inherits an XAUTHORITY, and on 2026-08-30 the inherited one was
@@ -241,20 +315,42 @@ kv x11.sockets "$(ls /tmp/.X11-unix/ 2>/dev/null | tr '\n' ' ')"
 # ---------------------------------------------------------------- (a2) COMPOSITOR
 say ""
 say "--- (a2) compositor identity ---"
+# The compositor is selected by OWNER UID *and* command line, and both counts are
+# recorded (2026-09-04, F79, §11.199).  The banked command line used to be unique on this
+# host by construction -- F43's substitute carried its whole `--headless --virtual-monitor
+# 2448x1332` invocation.  A real session's is plain `/usr/bin/gnome-shell`, and THREE
+# processes carry it here: claude's, foxy's and gdm's [measured: 3 cmdline-only matches,
+# 1 after the uid filter].  A cmdline-only match would select whichever /proc entry the
+# glob reached first, so another user's shell could satisfy a GATING member while claude's
+# own compositor was absent.  Recording both counts means a host whose counts move says so
+# instead of silently selecting differently.
 COMP_PID=""
+COMP_UID=$(id -u)
+COMP_N_CMD=0
+COMP_N_OWNED=0
 for p in /proc/[0-9]*; do
     c=$(tr '\0' ' ' < "$p/cmdline" 2>/dev/null)
-    case "$c" in "$BANK_COMPOSITOR_CMD "*|"$BANK_COMPOSITOR_CMD") COMP_PID=$(basename "$p"); break ;; esac
+    case "$c" in "$BANK_COMPOSITOR_CMD "*|"$BANK_COMPOSITOR_CMD") ;; *) continue ;; esac
+    COMP_N_CMD=$((COMP_N_CMD+1))
+    [ "$(stat -c %u "$p" 2>/dev/null)" = "$COMP_UID" ] || continue
+    COMP_N_OWNED=$((COMP_N_OWNED+1))
+    [ -z "$COMP_PID" ] && COMP_PID=$(basename "$p")
 done
 kv compositor.cmd_banked "$BANK_COMPOSITOR_CMD"
+kv compositor.owner_uid "$COMP_UID"
+kv compositor.match_cmdline_only "$COMP_N_CMD"
+kv compositor.match_owned "$COMP_N_OWNED"
 kv compositor.pid "${COMP_PID:-<absent>}"
+if [ "$COMP_N_OWNED" -gt 1 ]; then
+    note "compositor.ambiguous" "$COMP_N_OWNED processes owned by uid $COMP_UID match the banked command line; the first in /proc order (pid $COMP_PID) was used. The banked start epoch decides which one this is, so an ambiguous match is a NOTE and not a silent choice -- but if it appears, say which pids in the delivery."
+fi
 if [ -z "$COMP_PID" ]; then
     fail 2 "compositor.absent" \
-      "no process matching the banked compositor command line is alive." \
+      "no process owned by uid $COMP_UID matches the banked compositor command line ($COMP_N_CMD process(es) match the command line alone, $COMP_N_OWNED after the owner filter)." \
       "the display stack every banked number was measured on no longer exists; whatever answers $DPY now is a different stack, and §11.174 is the record of what an unnoticed stack change costs (a full session of dark, green-looking evidence)." \
       "STOP and report: the host's display provisioning changed (reboot, logout, or a manual rebuild). This is an OWNER VETO ITEM (§0.5, §11.174(h)) -- report the failure rather than rebuilding a substitute; if a rebuild IS ratified, re-bank BANK_COMPOSITOR_* and re-measure the band."
 else
-    CSTART=$(stat -c %Y "/proc/$COMP_PID" 2>/dev/null)
+    CSTART=$(pid_start_epoch "$COMP_PID")
     kv compositor.start_epoch "${CSTART:-<unknown>}"
     kv compositor.start_iso "$(date -d @${CSTART:-0} '+%F %T' 2>/dev/null)"
     kv compositor.start_banked "$BANK_COMPOSITOR_START"
@@ -268,7 +364,7 @@ fi
 XS_PID=""; XS_START=""
 for p in /proc/[0-9]*; do
     c=$(tr '\0' ' ' < "$p/cmdline" 2>/dev/null)
-    case "$c" in *"$BANK_XSERVER_MATCH"*) XS_PID=$(basename "$p"); XS_START=$(stat -c %Y "$p"); break ;; esac
+    case "$c" in *"$BANK_XSERVER_MATCH"*) XS_PID=$(basename "$p"); XS_START=$(pid_start_epoch "$XS_PID"); break ;; esac
 done
 kv xserver.pid "${XS_PID:-<absent>}"
 kv xserver.start_epoch "${XS_START:-<unknown>}"
