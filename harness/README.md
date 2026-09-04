@@ -3453,3 +3453,85 @@ read before every one.
 - **The `+ 0.0001` heading epsilon cannot touch a radius**: it is a rotation
   about the dome centre. It can displace a body tangentially by at most
   `r × 1e-4` = 0.031 px at r = 307 px, below the instrument zero.
+
+## F82 — the portrait leg (`f82_portrait.py`, `f82_run.sh`) — INTENT §11.202 / §5.129, 2026-09-05
+
+**What it measures.** Everything a window taller than wide changes, and
+everything it does not. Measured: the projector, the dump, the app's own
+readback and old-vs-new parity are the SQUARE CASE EXACTLY at 768x1024 (every
+`square − portrait` parity cell 0.0, both channels, every body, every fov);
+the ONE stage that knows the aspect — `dedicatedViewport`'s `mouseNorm`, which
+the final blit's destination rectangle is computed from — puts the dome centre
+at **y 639.49** where its own X rule gives **511.5**, and leaves the top **256
+rows** of the window unwritten. At the DEFAULT `render_size = 0` the same
+window centres correctly, so the offset belongs to one branch.
+
+```
+f82_run.sh square        <outdir>   # the control: 1024x1024, F81's scene
+f82_run.sh portrait      <outdir>   # 768x1024, same scene, same session
+f82_run.sh defaultrender <outdir>   # SUPPLEMENTARY: portrait at render_size 0
+f82_run.sh table         <artifacts/f82>       # -> f82_table.md
+f82_portrait.py verify   <artifacts/f82>       # recompute every blob from the
+                                               # committed frames and grabs
+```
+Each stage is ONE fresh launch on the b3_farm temp HOME; `screen_w`/`screen_h`
+(and `render_size` in the supplementary stage) are the only keys written, on
+the farm copy. The runner asserts the real `~/.spacecrafter` md5 in == out
+around the stage and the driver asserts it again around the launch, plus the
+`/proc/<pid>/comm` probe and a `GetActive` read before every one.
+
+### Two readback channels, and only one of them can see this
+
+- **Channel A** — `body action screenshot`, the app's own readback. It is
+  `VkRect2D{0, 0, render_size, render_size}` when `render_size` is set
+  [app.cpp:146-147], so it is 2048x2048 whatever the window is and it CANNOT
+  see the window at all.
+- **Channel B** — `ffmpeg -f x11grab -window_id <client>` of the mapped
+  window. The ROOT grab is still measured dead on this stack (all-black
+  2448x1332); the WINDOW grab carries the scene, re-confirmed here on the real
+  logind session. `-window_id` wants a DECIMAL id; a window of `Depth: 0` (the
+  mutter guard window) makes ffmpeg answer *"Not yet implemented in FFmpeg,
+  patches welcome"*, which is a depth complaint and not a method failure.
+
+### What to reuse, and what to re-measure before reusing it
+
+- **Seed channel B from the MEASURED channel-A centroid**, not from the dump:
+  then the only model under test is the blit's, and the dump's own y convention
+  cannot contaminate it.
+- **Try every candidate placement and record which one holds the body.** At
+  portrait the counts are 24 / 0 / 0 (bottom / centred / top). **At a SQUARE
+  window the three candidates COINCIDE** — 24/24/24 by construction — which is
+  precisely why a corpus of square measurements cannot see a Y-placement bug.
+  Any successor testing a placement needs a window where the candidates differ.
+- **`verify` mode**: recomputes every recorded blob from the committed frames
+  and grabs through the same rule (368 blobs, 0 mismatches at delivery). A
+  number in an entry that the committed artifacts cannot reproduce is not
+  evidence.
+
+### Gotchas measured here
+
+- **F81's mirror rule is a special case.** The written PNG maps as
+  `png_y = (scissor.offset.y + scissor.extent.height) − dump_y`. F81's
+  `H − y_dump` is that with offset 0, which holds whenever `render_size > 0`;
+  at the default `render_size = 0` the scissor offset is 128 and the two differ.
+- **`render_size` defaults to 0, not to 2048** [checkConfig.cpp:106]; the field
+  file carries an authored 2048. The two are DIFFERENT code paths at the
+  viewport (`dedicatedViewport` is not called at all), at the render target
+  (sized from the swapchain), at the readback (768x768, not 2048²) and at the
+  blit (full swapchain extent). State which branch any window-geometry claim
+  is about.
+- **The applog's `Windows size is WxHpx` is the REQUESTED size**
+  [sdl_facade.cpp:195-199], not a queried one. The authoritative extent read is
+  `Swapchain : (W, H)` — and `Scaling`, `Viewport`, `Swapchain` and `Rect` are
+  ALL printed inside `dedicatedViewport`, so at `render_size = 0` all four
+  vanish together and their absence is how you know which branch ran.
+- **`main.cpp:308`'s `min(curW, curH)` never reaches the swapchain**:
+  `chooseSwapExtent` returns the surface's `currentExtent` [VulkanMgr.cpp:542],
+  so the square ask is silently overridden by the window's real aspect.
+- **The instrument's zero is F81's, unchanged by the aspect**: 0.185 px (old) /
+  0.146 px (new), the same four centroid digits at 1024x1024 and 768x1024 and
+  the same as F81 recorded — it is a bias and it cancels in every difference.
+- **Seventeen bodies share one blob** at fov 180 (the Jovian system) and three
+  more (Mars/Phobos/Deimos). The frame channel cannot separate them; the dump
+  channel can. Report which rows are one measurement instead of counting them
+  as independent.

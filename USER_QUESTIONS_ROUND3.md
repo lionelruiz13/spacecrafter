@@ -118,7 +118,7 @@ work can block you at all and which never will.)
   two configurations the developer names as barely tested; knowing
   whether it exists anywhere in the field decides if it needs testing
   at all)
-*(ref: the content census, §11.162 / DEPLOYMENT-MAP T3)*
+*(ref: the content census, §11.162 / DEPLOYMENT-MAP T3; the portrait line's harness half is now measured — §11.202 / §5.129: a window taller than wide draws the dome 128 px low with an unwritten band above it, everything else about portrait being unchanged, so a "no" here retires a known cost rather than an unknown one. The question body is unchanged.)*
 
 **R22. On your installation, does `search` find constellations and named
 stars?** (On our test install the sky-culture data is empty — 2922

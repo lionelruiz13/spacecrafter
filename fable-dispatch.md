@@ -1036,26 +1036,7 @@ F81 delivered.
 
 **DoD:** artifacts + table; §11 entry + stub; R21 rider; README; trees clean; WIP
 cleared; baselines LAST.
-**WIP:** 2026-09-05 — §0.7 gate PASSED on every enumerated premise (both HEADs,
-binary `c8e12950` at 0 compile/link steps, §11 202 free, `### F` count 4, canary
-`--no-scene` exit 0 / 30 members, GetActive `(false,)`, comm probe 0, md5
-`03fbee59`/`545a51ef`, baselines 205/254/126 and 217/192/25/100 · 35/11/89/36/81
-reproduced). Checkpoint 1: predictions + instrument committed BEFORE any launch
-(`f82_predictions.json`, `f82_portrait.py`, `f82_run.sh`; the instrument
-reproduces F81's recorded zero (1024.180, 1024.044) from the committed frame).
-Checkpoint 2: BOTH launches done, both clean (fails []), md5 in==out on both.
-Square: Swapchain (1024,1024), Scaling 0.5, zero control old (1024.180, 1024.044)
-= F81's recorded value to the digit. Portrait: **Swapchain (768, 1024)** — check
-(a) PASSES — Scaling 0.375, projector IDENTICAL (viewport [0,0,2048,2048], R
-1024) at all three fovs, readback 2048^2, zero control byte-equal to square's.
-The blit map measured: dome centre (383.50, 639.49) vs predicted (383.5, 639.5),
-centred-letterbox mutation refuted 24/24 bodies to 0/24. Checkpoint 3: a THIRD
-launch (scope expansion, argued) at the DEFAULT `render_size = 0` — the branch a
-generated config takes: there the projector IS aspect-aware ([0,128,768,768],
-R 384), the readback is 768^2 and the dome centre sits at (384.1, 512.0),
-CENTRED. So the bottom-alignment is the authored-`render_size` branch's alone.
-Parity: every `sq - pt` exactly 0.0, both channels, every body, every fov.
-NEXT: §11.202 entry + stub, §5.129 mint, R21 rider, README, baselines.
+**WIP:** — DELIVERED 2026-09-05: §11.202 (+ stub), §5.129 minted record-only, back-markers at §11.198(e) and §11.201(j) in both homes, R21 rider, README section, artifacts `harness/artifacts/f82/`. Three launches (square control, portrait, and a reported scope-expansion third at the default `render_size`), all clean, md5 in == out.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
