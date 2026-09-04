@@ -1,0 +1,78 @@
+{
+  "task": "F81 - the view offset's two couplings, measured on one launch",
+  "written": "2026-09-04",
+  "written_before": "any F81 launch (the b3_ladder/FM-4 rule: predictions committed before the run they predict)",
+  "code": "master-beta @ 85cc2785 (engine sources = ba7a32a8; binary c8e12950, no rebuild)",
+
+  "model": {
+    "old_aim_site": "navigator.cpp:162  local_vision = Mat4d::yrotation(-view_offset * M_PI_2 * view_offset_transition) * _pos   [FIXED 90 deg, local frame y-axis]",
+    "old_draw_site": "navigator.cpp:324  mat_local_to_eye = Mat4d::xrotation(view_offset * fov/2 * pi/180 * view_offset_transition) * mat_local_to_eye   [fov-COUPLED, eye frame x-axis]",
+    "old_sink": "core.cpp:2524-2553  Core::setViewOffset: clamp to [-0.5,0.5] + L_WARNING on clamp; navigation->setViewOffset(off); navigation->setLocalVision(InitViewPos); Camera::instance->setViewOffset(off)",
+    "new_site": "Camera.cpp:139-155  viewOffsetEyeRotation() = xrotation(o * ModularBody::halfFov), composed leftmost in renderViewRotation(); Camera::setViewOffset only STORES the scalar - the new path never re-aims",
+    "fisheye_transfer": "Body::fisheyeComputeScreenPos (body.cpp:909-926): screen radius / viewportRadius = theta / halfFov, theta = angle from the drawn optical axis",
+    "UNSTATED PREMISE THE PREDICTION NEEDS (found at warm-up, no source states it)": "the aim compensation turns about the OLD LOCAL frame y-axis (East) while the draw pitch turns about the EYE x-axis s. With viewing_mode=equator, s = earthEquToLocal((equ_vision[1], -equ_vision[0], 0)); s is parallel to local East if and only if the view direction is PERPENDICULAR to local East, i.e. the view lies in the MERIDIAN plane. The 'exact cancellation at fov 180' claim, and the o*(90-fov/2) formula, therefore hold only for a meridian view. THE RUN IS DESIGNED TO SATISFY IT (target body placed on the meridian by a measured JD search) and the dependence is itself a finding."
+  },
+
+  "scene": {
+    "why not a named reference scene": "no source names a 'reference scene' for a geometry task; the canary's reference scene is photometric and this task makes NO photometric claim. Scene stated instead: shipped default config (Marseille +43d18'/+05d22', alt 75 m, home Earth, viewing_mode equator, heading 0), atmosphere/landscape/stars off, time FROZEN, target = the Sun at MERIDIAN TRANSIT (measured JD, not recalled), farm config's init_view_pos set to the measured local-frame direction of the target so that the ONE sink's re-aim target IS the body.",
+    "why init_view_pos = the body direction": "Core::setViewOffset re-aims the old navigator to InitViewPos (core.cpp:2545). Any runtime `set zoom_offset` therefore throws the old view to InitViewPos; the aimed body can only stay measurable if it IS at InitViewPos. Farm-local config write only."
+  },
+
+  "predictions": {
+    "P1_aim_compensation_direct": {
+      "what": "angle(oldView.nav.localVision before, after) across `set zoom_offset 0.3` with viewOffsetTransition == 1",
+      "value_deg": 27.0,
+      "fov_dependence": "NONE (fixed 90 deg * offset)",
+      "mutation_45deg_would_give": 13.5
+    },
+    "P2_old_draw_coupling_config_channel": {
+      "what": "body centroid radius / viewportRadius, OLD path, offset via CONFIG (transition = 0 at startup so the aim compensation never fires)",
+      "r_over_R": {"fov180": 0.300, "fov90": 0.300, "fov40": 0.300},
+      "theta_from_centre_deg": {"fov180": 27.0, "fov90": 13.5, "fov40": 6.0},
+      "note": "the fov-INDEPENDENT fraction-of-dome shift (11.63(c) / 11.92(b)'s 0.30000 signature)"
+    },
+    "P3_new_path": {
+      "what": "same measure, NEW path, BOTH channels",
+      "r_over_R": {"fov180": 0.300, "fov90": 0.300, "fov40": 0.300},
+      "note": "one coupling only; the Camera is never re-aimed by the offset. Deviation from the constant 0.300 is the 'new path 0 everywhere' the dispatch predicts."
+    },
+    "P4_old_command_channel_THE_DEFECT": {
+      "what": "angle from the DRAWN CENTRE to the aimed body, OLD path, offset via `set zoom_offset 0.3` while ARMED",
+      "formula": "offset * (90 deg - fov/2)",
+      "theta_from_centre_deg": {"fov180": 0.0, "fov90": 13.5, "fov40": 21.0},
+      "r_over_R": {"fov180": 0.000, "fov90": 0.300, "fov40": 1.050},
+      "fov40_consequence": "r/R > 1 => the aimed body is predicted OFF THE DOME DISC: no centroid, the dump's screenPos still reports it",
+      "fov90_note": "|r/R| equals the config channel's 0.300 at fov 90 - the two channels are separated there by the SIGN/DIRECTION of the displacement, not its magnitude",
+      "DISPATCH ARITHMETIC SLIP": "the dispatch prompt and the F81 section say '10.5 deg at fov 90 (0.3 x 45 deg)'; 0.3 x 45 = 13.5, and the formula they state twice gives 13.5. 13.5 is used here; 10.5 fits nothing.",
+      "mutation_45deg_would_give": {"fov180": 13.5, "fov90": 0.0, "fov40": 7.5}
+    },
+    "P5_zero_control": {
+      "what": "offset 0 everywhere",
+      "r_over_R": 0.000,
+      "role": "proves the instrument: it calibrates the optical centre in the frame and shows the centroid reads 0 when nothing is offset"
+    },
+    "P6_offset_sweep_at_fov40_command_channel_old": {
+      "what": "r/R vs offset o at fov 40, old path, command channel",
+      "slope": 3.5,
+      "values": {"0.1": 0.350, "0.2": 0.700, "0.3": 1.050},
+      "mutation_45deg_slope": 1.25,
+      "role": "keeps the fov-40 cell measurable (o=0.1,0.2 land on the disc) and reads the 90-deg coefficient as a SLOPE"
+    },
+    "P7_channel_disagreement": {
+      "what": "config vs command, OLD path",
+      "prediction": "they DISAGREE, and the mechanism is structural: the config channel fires Core::setViewOffset at startup where view_offset_transition is necessarily 0, so its setLocalVision compensation is multiplied by zero and can never act; the command channel fires it whenever the operator asks, armed or not. NEW path: the two channels agree at every fov."
+    },
+    "P8_sink_contract": {
+      "what": "dump control.viewOffset.{reported,old,new} after the clamp",
+      "value": 0.3
+    },
+    "P9_settle": {
+      "what": "measured, never slept",
+      "old": "oldView.nav.viewOffsetTransition == 1 and oldView.nav.plans.flagAutoMove == 0",
+      "new": "camera.viewOffsetTransition == 1",
+      "armed_by": "`flag track_object on` -> Core::setFlagTracking(true) -> navigation->moveTo (old) + Camera::armViewOffset(true) (new): the ONE arming command wired to BOTH paths. `zoom center on` is NOT used: it arms old only (11.102(b)(i) fifth site)."
+    }
+  },
+
+  "sign_and_axis": "NOT predicted - measured (the section asks for it). Recorded as the screen direction of the displacement in both channels and both paths."
+}

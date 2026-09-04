@@ -956,7 +956,12 @@ HOST-EVENTS 2026-09-04 (`:2`, auth `.5KBYU3`, 2448x1332) still answers `xdpyinfo
 **DoD:** table + frames + dump extracts committed as artifacts; §11 entry + stub;
 §11.198(d) marker both homes; §5 mint or retraction; README; trees clean; WIP
 cleared; baselines re-derived LAST with deltas stated.
-**WIP:** —
+**WIP:** 2026-09-04 — §0.7 gate PASSED (all premises as stated; one dispatcher
+arithmetic slip reported: "10.5° at fov 90" should be 13.5° by the formula the
+section states twice). Canary `--no-scene` exit 0. Predictions committed
+(`harness/f81_predictions.json`) + instrument written (`f81_offset.py`,
+`f81_run.sh`) BEFORE any launch. NEXT: prep launch (meridian-transit JD search +
+zero control), then the config and command channel launches.
 
 ### F82 — EXTENSION: the portrait leg — one launch with a window taller than wide (768x1024) on both paths: what the projection, the readback, the dump and the fisheye transfer do when the assumed aspect inverts, every difference classified against the square baseline (§11.198(e): the owner-named verification-surface hole, "a cheap candidate for a supervising session"; R21's harness-side half) [S]
 
