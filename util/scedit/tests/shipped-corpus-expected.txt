@@ -8,26 +8,31 @@
 #   Regenerate with: python3 tests/shipped_corpus_gate.py <scedit> <grammar> <expected> [corpus] --record
 corpus.files            408
 corpus.aggregate_md5    6440c9b9e7f84ff74915e442c9320a84
-findings.total          1661
+findings.total          5045
 findings.by-id          dangling-key         6
 findings.by-id          duplicate-key        1596
 findings.by-id          end-without-if       2
 findings.by-id          silent-off-value     1
 findings.by-id          unknown-command      5
-findings.by-id          unknown-parameter    51
+findings.by-id          unknown-parameter    3435
+file fscripts/06.sts                                unknown-parameter    1013
 file fscripts/06old.sts                             dangling-key         1
 file fscripts/06old.sts                             duplicate-key        1
 file fscripts/06old.sts                             unknown-command      2
+file fscripts/06old.sts                             unknown-parameter    188
 file fscripts/08.sts                                unknown-parameter    1
 file fscripts/K9.sts                                unknown-parameter    2
 file fscripts/M17.sts                               silent-off-value     1
-file fscripts/S13.sts                               unknown-parameter    1
+file fscripts/S13.sts                               unknown-parameter    2
 file fscripts/W06.sts                               unknown-parameter    1
 file fscripts/panorama5.sts                         end-without-if       1
+file internal/bodies-asteroids-501ex.sts            unknown-parameter    496
 file internal/clearVR360.sts                        unknown-parameter    1
 file internal/clear_mess.sts                        unknown-parameter    1
 file internal/comet-particles.sts                   duplicate-key        1500
+file internal/comet-particles.sts                   unknown-parameter    1500
 file internal/comet.sts                             duplicate-key        1
+file internal/comet.sts                             unknown-parameter    1
 file internal/deepsky_drawings.sts                  dangling-key         5
 file internal/deepsky_drawings.sts                  unknown-parameter    5
 file internal/skypole.sts                           unknown-command      1
@@ -38,9 +43,10 @@ file navigation/fscripts/09.sts                     unknown-parameter    1
 file navigation/fscripts/13.sts                     unknown-parameter    27
 file navigation/fscripts/16.sts                     unknown-command      2
 file navigation/fscripts/K9.sts                     unknown-parameter    2
-file navigation/fscripts/S13.sts                    unknown-parameter    1
+file navigation/fscripts/S13.sts                    unknown-parameter    2
 file navigation/fscripts/W06.sts                    unknown-parameter    1
 file navigation/fscripts/W17.sts                    duplicate-key        94
+file navigation/fscripts/W17.sts                    unknown-parameter    184
 file navigation/fscripts/panorama5.sts              end-without-if       1
 file shows/3d_sky.sts                               unknown-parameter    1
 file shows/image_spherical.sts                      unknown-parameter    1

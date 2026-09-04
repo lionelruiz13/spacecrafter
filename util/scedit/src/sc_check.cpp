@@ -9,6 +9,8 @@
  */
 
 #include "sc_check.hpp"
+
+#include <set>
 #include "sc_tokenizer.hpp"
 
 #include <algorithm>
@@ -188,8 +190,9 @@ bool wholeNumber(const std::string &s, long &n)
 class LineChecker {
 public:
 	LineChecker(const Grammar &g, const std::string &file, std::size_t lineno,
-	            std::vector<Diagnostic> &out)
-		: g_(g), file_(file), lineno_(lineno), out_(out) {}
+	            std::vector<Diagnostic> &out,
+	            const std::set<std::string> *downstreamKeys = nullptr)
+		: g_(g), file_(file), lineno_(lineno), out_(out), down_(downstreamKeys) {}
 
 	void emit(const char *id, const std::string &message, const Span &span = Span{})
 	{
@@ -213,6 +216,9 @@ private:
 	std::string file_;
 	std::size_t lineno_;
 	std::vector<Diagnostic> &out_;
+	//! The other contract's key vocabulary, lowercased; null when it was not
+	//! supplied. See sc_check.hpp for why it is a set and why the case matters.
+	const std::set<std::string> *down_ = nullptr;
 };
 
 bool LineChecker::checkSubfamilyName(const Line &L, const CommandData &cd,
@@ -479,7 +485,23 @@ void LineChecker::rules(const Line &L, const CommandData &cdRef)
 	// "unknown": `body` and `camera` (and `flyto`, which IS camera) forward
 	// their map to a grammar that is another contract file's deliverable, so
 	// they stay silent on their keys by construction, not by omission.
-	if (cd->has_args && cd->args_complete) {
+	// A command whose vocabulary CONTINUES into another contract is complete
+	// once that contract is in hand: `body` and `camera` forward their parsed
+	// map to the stellar-system-file body grammar, and since F80 that grammar
+	// exists (grammar/ss-grammar.json). The keys are read FROM it, never copied
+	// into this file (I2) -- which is why the entry keeps naming the other
+	// contract rather than growing a second list of its keys.
+	// A command that NAMES a downstream contract is complete only when that
+	// contract is actually in hand. Reading `args_complete` alone here would be
+	// the worst of both: the entry says true (its vocabulary IS fully stated,
+	// across two files), so a consumer holding only this file would call every
+	// stellar-system key of a `body action load` line unknown -- thousands of
+	// them. The entry's own text says a consumer without the second file must
+	// treat the list as partial; this is that sentence, enforced.
+	const bool hasDownstream = !cd->args_downstream_contract.empty();
+	const bool downstreamAvailable = hasDownstream && down_;
+	const bool vocabularyComplete = hasDownstream ? downstreamAvailable : cd->args_complete;
+	if (cd->has_args && vocabularyComplete) {
 		const bool name_is_key = fam &&
 			(cd->placement.pos == SubfamilyPosition::AppliedKey ||
 			 cd->placement.pos == SubfamilyPosition::EveryKey);
@@ -487,10 +509,15 @@ void LineChecker::rules(const Line &L, const CommandData &cdRef)
 			const std::string &k = L.tokens[p.key].text;
 			if (cd->arg_keys.count(k))
 				continue;
+			if (downstreamAvailable && down_->count(k))
+				continue;   // stated by the other contract, not missing here
 			if (name_is_key && fam->name_set.count(k))
 				continue;   // the key IS the family name, not an argument
 			std::string msg = quoteName(k) + " is not an argument of command " + quoteName(cd->name);
-			std::string near = cappedSuggestion(k, cd->arg_keys_sorted);
+			std::vector<std::string> cands = cd->arg_keys_sorted;
+			if (downstreamAvailable)
+				cands.insert(cands.end(), down_->begin(), down_->end());
+			std::string near = cappedSuggestion(k, cands);
 			if (!near.empty())
 				msg += "; did you mean " + quoteName(near) + "?";
 			emit("unknown-parameter", msg, L.tokens[p.key].span);
@@ -506,7 +533,8 @@ void LineChecker::rules(const Line &L, const CommandData &cdRef)
 } // namespace
 
 std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
-                                    const std::string &bytes)
+                                    const std::string &bytes,
+                                    const std::set<std::string> *downstreamKeys)
 {
 	std::vector<Diagnostic> out;
 	BlockSkipState skip;
@@ -554,7 +582,7 @@ std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
 		}
 		if (skipped)
 			continue;   // inside a `comment` block: the engine never runs this
-		LineChecker(g, path, i + 1, out).run(L);
+		LineChecker(g, path, i + 1, out, downstreamKeys).run(L);
 	}
 
 	// --- still open at the end of the file --------------------------------------
@@ -593,7 +621,8 @@ std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
 }
 
 std::vector<Diagnostic> checkFile(const Grammar &g, const std::string &path,
-                                  std::string &io_error)
+                                  std::string &io_error,
+                                  const std::set<std::string> *downstreamKeys)
 {
 	std::ifstream in(path, std::ios::binary);
 	if (!in) {
@@ -602,7 +631,7 @@ std::vector<Diagnostic> checkFile(const Grammar &g, const std::string &path,
 	}
 	std::ostringstream ss;
 	ss << in.rdbuf();
-	return checkBuffer(g, path, ss.str());
+	return checkBuffer(g, path, ss.str(), downstreamKeys);
 }
 
 std::vector<UnarmedRule> unarmedRules(const Grammar &g)

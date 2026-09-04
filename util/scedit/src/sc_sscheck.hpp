@@ -99,6 +99,15 @@ public:
 	//! Present in shipped data, read by nothing. Reason text, or nullptr.
 	const std::string *deadKey(const std::string &key) const;
 	const std::vector<std::string> &allKeyNames() const { return keyNames_; }
+
+	//! This vocabulary AS THE COMMAND SURFACE WILL SEE IT: lowercased, because
+	//! `parseCommand` lowercases every argument key it parses
+	//! (app_command_interface.cpp:181) and no stellar-system-FILE reader does.
+	//! That asymmetry is a real trap -- `orbit_Eccentricity` is a working key in
+	//! a script and a dead one in ssystem.ini, and 3128 lines of the shipped
+	//! scripts rely on the working half -- so stating it here, once, is what
+	//! keeps every consumer from rediscovering it.
+	std::set<std::string> commandSurfaceKeys() const;
 	const std::set<std::string> &moduleFamilies() const { return families_; }
 	const std::set<std::string> &bodyTypes() const { return bodyTypes_; }
 	const std::set<std::string> &coordFuncs() const { return coordFuncs_; }

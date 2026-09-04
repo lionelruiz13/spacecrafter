@@ -31,6 +31,7 @@
 #define SCEDIT_SC_CHECK_HPP
 
 #include <cstddef>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -56,14 +57,31 @@ struct Diagnostic {
 	std::string format() const;
 };
 
+//! The DOWNSTREAM key vocabulary: the keys a command forwards to a subsystem
+//! whose grammar is another contract file's (`args_downstream_contract`). It is
+//! passed as a plain key SET and not as the other grammar object on purpose --
+//! this checker needs a vocabulary, not a second contract reader, and taking
+//! the set keeps sc_check independent of sc_sscheck rather than mutually
+//! dependent on it (I1).
+//!
+//! THE KEYS MUST ARRIVE LOWERCASED, and that is not a formatting detail: the
+//! command surface lowercases every argument key it parses
+//! (app_command_interface.cpp:181) while no stellar-system-FILE reader does. So
+//! `orbit_Eccentricity` is a working key in a script and a dead one in
+//! ssystem.ini, and a checker that compared the two vocabularies in their
+//! original case would report 3128 shipped script lines as wrong.
+//! `SsGrammar::commandSurfaceKeys()` is what produces the set in that form.
+
 //! Analyse already-read file bytes. `path` is only used to label diagnostics.
 std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
-                                    const std::string &bytes);
+                                    const std::string &bytes,
+                                    const std::set<std::string> *downstreamKeys = nullptr);
 
 //! Read and analyse a file. Sets `io_error` (and returns empty) when the file
 //! cannot be read.
 std::vector<Diagnostic> checkFile(const Grammar &g, const std::string &path,
-                                  std::string &io_error);
+                                  std::string &io_error,
+                                  const std::set<std::string> *downstreamKeys = nullptr);
 
 //! The did-you-mean the checker prints, exposed because it must not be written
 //! twice: the machine surface (sc_docjson.hpp) answers an unknown name in a

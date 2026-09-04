@@ -186,6 +186,10 @@ bool Grammar::load(const std::string &path, std::string &err)
 			}
 			if (it.value().contains("args_complete") && it.value().at("args_complete").is_boolean())
 				cd.args_complete = it.value().at("args_complete").get<bool>();
+			if (it.value().contains("args_downstream_contract")
+			    && it.value().at("args_downstream_contract").is_string())
+				cd.args_downstream_contract =
+					it.value().at("args_downstream_contract").get<std::string>();
 			if (it.value().contains("args_source") && it.value().at("args_source").is_string())
 				cd.args_source = it.value().at("args_source").get<std::string>();
 			cd.free_keys = !cd.has_args && it.value().contains("key_grammar");
@@ -253,6 +257,7 @@ bool Grammar::load(const std::string &path, std::string &err)
 			cd.arg_keys = c.arg_keys;
 			cd.arg_keys_sorted = c.arg_keys_sorted;
 			cd.args_complete = c.args_complete;
+			cd.args_downstream_contract = c.args_downstream_contract;
 			cd.args_source = c.args_source;
 			cd.free_keys = c.free_keys;
 			if (single_pair_.count(c.name))

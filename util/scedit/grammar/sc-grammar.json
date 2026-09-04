@@ -1158,8 +1158,8 @@
             "source": "app_command_interface.cpp:4301, 4310"
           }
         ],
-        "args_complete": false,
-        "args_complete_reason": "downstream vocabulary DEFERRED, not missing: `body action load|preload` forwards the whole parsed map (:4160, :4195) to the stellar-system-file body grammar, which is scedit/INTENT.md S5 item 4's own deliverable (the second contract file). Enumerating it here would duplicate that authority (I2). The four keys the immediate downstream names first are listed with `downstream: true`; the rest are not listed, so NO consumer may call an unlisted key of `body` unknown.",
+        "args_complete": true,
+        "args_complete_reason": "downstream vocabulary STATED, not deferred: `body action load|preload` forwards the whole parsed map (:4160, :4195) to the stellar-system-file body grammar, and since F80 (2026-09-04) that grammar exists -- grammar/ss-grammar.json, generated from the loader's own read sites. The keys are READ from there and never copied here (I2), which is what `args_downstream_contract` names; a consumer without that second file must keep treating this key list as partial. The four keys the immediate downstream names first are still marked `downstream: true`. NB `camera` is NOT in the same position and stays args_complete:false: its map goes to the two ANCHOR registries, whose vocabulary is anchor.ini's grammar and not this one's.",
         "notes": [
           "Order of the forms, which decides what a mixed line does: model form (needs `mode` AND `action`), then `skin_use`, then `skin_tex`, then `action`, then `name`, then `tesselation` (:4119, :4139, :4149, :4154, :4212, :4305). `body action load skin_use on` therefore only switches the picture.",
           "`action drop` with no `name` does NOT report a missing name: the test is `argAction == W_DROP && argName != \"\"` (:4161), so the line falls through to \"command 'body' : unknown action argument\" (:4206) -- the same misleading-message shape unit 1 recorded for `dso`.",
@@ -1173,7 +1173,8 @@
           "body.pos_x / pos_y / pos_z (three-dimensional model placement): the code states no unit -- the three numbers go straight into the model's placement matrix (src/ojmModule/ojm_mgr.cpp:71-76). The doc lines say only which direction each moves.",
           "body.value (with `tesselation`): no range is stated anywhere on the path (app_command_interface.cpp:4306 -> src/bodyModule/solarsystem_tex.cpp:92-113 -> BodyTesselation setters). A usable range for the doc bar needs Vixy.",
           "body `action screenshot` and `action dual_dump`: both are harness routes with no W_* token (bare literals at :4196, :4199). Whether they belong on the editor's public command surface at all (offered in completion, documented to a zero-knowledge author) is a product decision -- Vixy. Recorded here, doc lines written as development tools."
-        ]
+        ],
+        "args_downstream_contract": "stellar-system-file"
       },
       "camera": {
         "enum": "SC_CAMERA",

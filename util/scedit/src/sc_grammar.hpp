@@ -27,12 +27,21 @@
  * =======================================================
  * "I know some of this command's keys" and "I know all of them" are different
  * facts, and only the second one licenses calling a key UNKNOWN. Four handlers
- * forward the whole parsed map to another module; for two of them (dso3d,
- * landscape) that module's key set was extracted, for the other two (body,
- * camera -- and `flyto`, which IS camera) it is another contract file's
- * deliverable. Those entries say `args_complete: false`, and no consumer may
- * report an unlisted key of theirs. The default when the field is absent is
- * TRUE, because a hand-written entry that lists keys is claiming to list them.
+ * forward the whole parsed map to another module. For two of them (dso3d,
+ * landscape) that module's key set was extracted into this file. For `body` it
+ * is ANOTHER CONTRACT FILE's, and since F80 that file exists
+ * (grammar/ss-grammar.json): `body` therefore answers `args_complete: true`
+ * AND names `args_downstream_contract`, which means "fully stated, across two
+ * files". For `camera` (and `flyto`, which IS camera) it is neither: its map
+ * goes to the two ANCHOR registries, whose vocabulary is anchor.ini's grammar,
+ * and that contract does not exist yet -- so camera keeps
+ * `args_complete: false` and no consumer may report an unlisted key of it.
+ * The default when the field is absent is TRUE, because a hand-written entry
+ * that lists keys is claiming to list them.
+ *
+ * A consumer holding ONLY this file must still treat a downstream-naming
+ * command's list as partial, and `argKeysAreExhaustive()` is where that is
+ * enforced rather than merely documented.
  *
  * A command may also point at a FAMILY instead of carrying its own key specs
  * (`args_source`, used by `set`: its 43 keys ARE families.set_names). Such a
@@ -107,6 +116,14 @@ struct CommandData {
 	//! False = there are more legal keys than are listed, so an unlisted key
 	//! must NOT be reported as unknown. Default true (see the header note).
 	bool args_complete = true;
+	//! Names ANOTHER contract file that states the rest of this command's key
+	//! vocabulary, when the command forwards its parsed map to a subsystem with
+	//! a grammar of its own. `body` and `camera` hand theirs to the
+	//! stellar-system-file body grammar, which is `grammar/ss-grammar.json`'s
+	//! deliverable -- so the keys are STATED, once, there, and a consumer that
+	//! wants the whole vocabulary reads both files instead of this one carrying
+	//! a copy that would go stale (I2). Empty = no downstream contract.
+	std::string args_downstream_contract;
 	//! Set when the keys live in a family instead of in `args` (`set`). The
 	//! value is the file's own text, used to explain the dormancy in --rules.
 	std::string args_source;
@@ -159,9 +176,17 @@ public:
 
 	//! May a consumer report an unlisted key of this command as unknown?
 	//! False for an unknown command too: nothing is known, so nothing is claimed.
+	//! Put another way: is THIS FILE's key list the whole accepted vocabulary of `name`?
+	//! A command that names a downstream contract answers NO here even when it
+	//! answers `args_complete: true`, and the two are not in tension: the
+	//! vocabulary is fully stated, across two files, and this file is one of
+	//! them. Every consumer holding only this contract -- the editor's
+	//! completion and its openness marker among them -- must keep treating such
+	//! a list as partial, which is what this returns.
 	bool argKeysAreExhaustive(const std::string &name) const {
 		const CommandData *cd = command(name);
-		return cd && cd->has_args && cd->args_complete;
+		return cd && cd->has_args && cd->args_complete
+		       && cd->args_downstream_contract.empty();
 	}
 
 private:

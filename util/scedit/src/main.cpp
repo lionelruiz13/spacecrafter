@@ -491,6 +491,12 @@ int check(const std::string &grammarPath, const std::vector<std::string> &files,
 	scedit::SsGrammar ssg;
 	std::string ssErr;
 	const bool ssOk = ssg.load(ssPath, ssErr);
+	// The downstream vocabulary for `body`/`camera`, lowercased to the shape the
+	// command surface parses keys into. Empty when the second contract is not
+	// available, and the script checker then falls back to saying nothing about
+	// those commands' keys -- which is what it did before F80.
+	const std::set<std::string> ssKeys =
+		ssOk ? ssg.commandSurfaceKeys() : std::set<std::string>();
 
 	if (showRules && !asJson) {
 		for (const auto &u : scedit::unarmedRules(g))
@@ -513,7 +519,7 @@ int check(const std::string &grammarPath, const std::vector<std::string> &files,
 		const scedit::SsRegime regime = scedit::classifyPath(f);
 		std::vector<scedit::Diagnostic> diags;
 		if (regime == scedit::SsRegime::NotStellarSystem) {
-			diags = scedit::checkFile(g, f, ioErr);
+			diags = scedit::checkFile(g, f, ioErr, ssOk ? &ssKeys : nullptr);
 		} else if (!ssOk) {
 			std::fprintf(stderr, "scedit: %s is a %s stellar-system file but the "
 			             "stellar-system contract could not be loaded: %s\n",

@@ -229,6 +229,22 @@ const SsGrammar::Key *SsGrammar::find(const std::string &key) const
 	return it == keys_.end() ? nullptr : &it->second;
 }
 
+std::set<std::string> SsGrammar::commandSurfaceKeys() const
+{
+	std::set<std::string> out;
+	for (const auto &kv : keys_)
+		out.insert(lower(kv.first));
+	// A DEAD key is still a key the author may legitimately type on a `body
+	// action load` line -- the engine will ignore it there exactly as it
+	// ignores it in a file -- so reporting it as "not an argument of body"
+	// would be a different (and wrong) message from the one the stellar-system
+	// checker already gives it. Included, and the dead-key rule stays the place
+	// that says it does nothing.
+	for (const auto &kv : dead_)
+		out.insert(lower(kv.first));
+	return out;
+}
+
 const std::string *SsGrammar::deadKey(const std::string &key) const
 {
 	auto it = dead_.find(key);
