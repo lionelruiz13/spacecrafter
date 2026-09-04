@@ -80,6 +80,18 @@ VALUE_TYPES = {
     "vec3f": {"reader": "Utility::strToVec3f",
               "doc": "Three comma-separated numbers, 'r,g,b'. NB a space after a comma "
                      "is not a separator the legacy positional reader forgives."},
+    "bool_suppress": {
+        "reader": "Utility::isFalse (negated)",
+        "source": "tools/utility.hpp:172",
+        "false_set": ["false", "off", "0"],
+        "case_insensitive": True,
+        "doc": "A module SUPPRESSION switch, and it reads the opposite way round from the "
+               "other booleans: the module is on unless the key explicitly says 'false', "
+               "'off' or '0' (any case). Writing 'no' does NOT turn it off, and writing "
+               "'true' is the same as not writing the key at all.",
+    },
+    "int": {"reader": "Utility::strToInt", "source": "tools/utility.cpp:strToInt",
+            "doc": "A whole number; an empty or unparseable value takes the key's default."},
     "enum": {"reader": "(per key)", "doc": "One of a fixed set the code enumerates; see the key's `domain`."},
 }
 
@@ -89,6 +101,16 @@ VALUE_TYPES = {
 COORD_FUNC_INTERCEPTED = ["earth_custom", "lunar_custom", "still_orbit", "location_orbit"]
 COORD_FUNC_CHAIN = ["barycenter", "ell_orbit", "comet_orbit"]
 COORD_FUNC_COMPOSED_ONLY = ["surface_point"]
+
+
+def module_families():
+    """The BodyModule family vocabulary, from the code's own array (I2)."""
+    import re as _re
+    path = os.path.join(ROOT, "src", "experimentalModule", "ModuleLoaderMgr.cpp")
+    with open(path, encoding="utf-8", errors="surrogateescape") as fh:
+        body = fh.read()
+    block = body.split("defaultModuleName{", 1)[1].split("};", 1)[0]
+    return _re.findall(r'"([A-Z_]+)"', block)
 
 
 def special_names():
@@ -449,6 +471,43 @@ KEYS = {
           "so a non-empty non-numeric value throws out of the loader."),
     "b": ("Weight of `body_B` in the barycentre split. `coord_func = barycenter` only.",
           D, None, None, True, "REQUIRED; see `a`."),
+    # ---- module presence switches (composed path) ---------------------------
+    "hint": ("Draw the body's hint marker. On unless you turn it off.", "bool_suppress",
+             None, "on", False,
+             "src/experimentalModule/ModularBody.cpp:833. Suppression switch: only 'false'/'off'/'0' disable it."),
+    "orbit": ("Draw the body's orbit line. On unless you turn it off.", "bool_suppress",
+              None, "on", False, "src/experimentalModule/ModularBody.cpp:842. Suppression switch."),
+    "tail": ("Give a comet its tail. On for a comet that has the magnitude keys, unless "
+             "turned off; `tail = true` forces it on for a body that is not a comet.",
+             "bool_suppress", None, "on for a comet with magnitude keys", False,
+             "src/experimentalModule/ModularBody.cpp:875-876 -- the one switch read BOTH ways: not-false to keep "
+             "the deduced answer, and explicitly true to override it."),
+    # ---- Oort cloud (a CUSTOM module, composed path) ------------------------
+    "oort": ("Make this body an Oort cloud.", BC, None, "false", False,
+             "src/experimentalModule/moduleLoader/OortLoader.cpp:10."),
+    "oort_elements": ("How many particles the Oort cloud draws.", "int", None, "10000", False,
+                      "src/experimentalModule/moduleLoader/OortLoader.cpp:20."),
+    "oort_color": ("Colour of the Oort cloud, 'r,g,b'.", V3, None, "0,0.5,1", False,
+                   "src/experimentalModule/moduleLoader/OortLoader.cpp:21-22."),
+    # ---- ring shadow (composed path) ----------------------------------------
+    "ring_shadow_color": ("How much light of each channel survives the ring's shadow, "
+                          "'r,g,b'.", V3, None, "the ring module's own default", False,
+                          "src/experimentalModule/moduleLoader/RingLoader.cpp:35-37. NB the LEGACY-looking spelling "
+                          "`ring_shadow` that both corpora carry is NOT this key and is read "
+                          "by nothing."),
+    "binary_secondary": ("Names the second body of an Earth-Moon-style barycentric pair.",
+                         S, None, None, False, "src/experimentalModule/orbitModules/EarthOrbitLoader.hpp:8."),
+    # ---- surface_point ascent ramp (D19, ratified) --------------------------
+    "orbit_alt_end": ("Altitude the body finishes its ascent at, KILOMETRES. One of the "
+                      "three ascent keys, and all three must be given together.",
+                      D, None, None, False,
+                      "D19 RATIFIED [vixy 2026-07-23 -> INTENT S11.79(m)]. "
+                      "src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp:148-154; `coord_func = "
+                      "surface_point`, which the legacy path does not have."),
+    "orbit_ascent_start": ("Julian day the ascent begins. One of the three ascent keys.",
+                           D, None, None, False, "D19 RATIFIED. See `orbit_alt_end`."),
+    "orbit_ascent_duration": ("How long the ascent lasts, DAYS. One of the three ascent keys.",
+                              D, None, None, False, "D19 RATIFIED. See `orbit_alt_end`."),
     # ---- comet tails ---------------------------------------------------------
 }
 
@@ -499,6 +558,51 @@ NOT_OURS = {
               "ssystem_factory.cpp:736-737 inside loadSystem, whose params come from "
               "galactic.ini (opened at ssystem_factory.cpp:619). Not a body-section key.",
 }
+# Keys that are PRESENT in a shipped or field corpus and that NO loader reads.
+# They are not typos -- they are historical spellings the format carried and the
+# code stopped answering, so the checker must name them as dead rather than as
+# unknown, and must not offer a did-you-mean for a key nobody misspelled.
+# The claim "no reader reads it" is CHECKED, not asserted: the generator greps
+# src/ for the quoted literal and records what it found, so a key that acquires
+# a reader later stops being in this list by failing the check.
+DEAD_KEYS = {
+    "tex_halo": "The halo texture. Every body in both corpora sets it; the only "
+                "occurrences of the string in src/ are the two blocks that SYNTHESIZE a "
+                "star from a catalogue object (protosystem.cpp:102, "
+                "ssystem_factory.cpp:390), which write it and never read it back.",
+    "lighting": "Whether the body is lit. Same story as `tex_halo`, and the same two "
+                "write sites (protosystem.cpp:105, ssystem_factory.cpp:393).",
+    "model3D": "A 3D model for the body. The one literal in src/ is `REP_MODEL3D` "
+               "(spacecrafter.hpp:71), which is a DIRECTORY name -- app_settings.cpp:162 "
+               "returns it with a '/' appended and call_system.cpp:130 lists it as a "
+               "subdirectory. It is not a section key read. `model_name` is the key that "
+               "does select a model.",
+    "ring_shadow": "Whether the rings cast a shadow. No occurrence in src/ at all.",
+    "sidereal_period": "No occurrence in src/ at all. `orbit_visualization_period` and "
+                       "`orbit_period` are the keys that exist.",
+    "tex_cloud": "A cloud-layer texture. No occurrence in src/ at all.",
+    "tex_cloud_normal": "A cloud-layer normal map. No occurrence in src/ at all.",
+}
+
+
+def dead_key_evidence():
+    """Grep src/ for each dead key's literal so the claim can fail."""
+    import subprocess as _sp
+    out = {}
+    for k, why in DEAD_KEYS.items():
+        r = _sp.run(["/usr/bin/grep", "-rn", '"%s"' % k, "--include=*.cpp",
+                     "--include=*.hpp", os.path.join(ROOT, "src")],
+                    capture_output=True, text=True)
+        hits = [l for l in r.stdout.splitlines() if l.strip()]
+        out[k] = {
+            "why_no_reader": why,
+            "literal_occurrences_in_src": len(hits),
+            "occurrences": [h.split(":", 1)[0].replace(ROOT + "/", "") + ":" + h.split(":")[1]
+                            for h in hits],
+        }
+    return out
+
+
 NEIGHBOURING_GRAMMARS = {
     "galactic.ini": "the system list: hip, name, system, x, y, z. Its x/y/z reach these "
                     "loaders only as values written into a synthesized orbit map "
@@ -529,6 +633,7 @@ def build():
                       "kind": "read", "regime": regime})
 
     specials = special_names()
+    families = module_families()
     bykey = {}
     for s in reads:
         bykey.setdefault(s["key"], []).append(s)
@@ -636,6 +741,13 @@ def build():
                 "legacy_only": onlylegacy,
                 "composed_only": onlycomposed,
             },
+            "dead_keys": dead_key_evidence(),
+            "dead_keys_note":
+                "PRESENT IN THE DATA, READ BY NOTHING -- the data-surface twin of INTENT "
+                "S5.122. Measured 2026-09-04 over both legacy corpora: 189 lines of "
+                "~/.spacecrafter/ssystem.ini (8.2% of its key lines) and 164 of "
+                "data/default_ssystem.ini (9.4%) reach no reader, and `tex_halo` and "
+                "`lighting` alone are 180 of the field's 189 -- one of each on every body.",
             "not_this_contract": NOT_OURS,
             "neighbouring_grammars": NEIGHBOURING_GRAMMARS,
         },
@@ -687,6 +799,17 @@ def build():
                 "names": KEYS["type"][2],
                 "source": "src/bodyModule/protosystem.cpp:483-501",
                 "matching": "first four bytes; see the `type` key's notes",
+            },
+            "module_families": {
+                "doc": "The `type =` domain in a COMPOSED module section (one carrying "
+                       "`body =`). Also the default slot name of the module.",
+                "names": families,
+                "source": ["src/experimentalModule/ModuleLoaderMgr.cpp:7-19",
+                           "src/experimentalModule/BodyModule.hpp:16-30"],
+                "section_header":
+                    "A module section's header is `[<node>:<slot>]`; the slot defaults to "
+                    "the family name, which is why the shipped twin reads `[Earth:MESH]`. "
+                    "The header is NOT what declares the family -- `type =` is.",
             },
             "coord_func": {
                 "doc": "The `coord_func =` domain: which orbit family positions the body.",

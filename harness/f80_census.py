@@ -32,6 +32,7 @@ Usage:
 import re
 import sys
 import os
+import glob
 from collections import OrderedDict
 
 SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src")
@@ -53,7 +54,24 @@ FILES = OrderedDict([
     ("bodyModule/orbit.cpp", "legacy"),
     ("experimentalModule/ModularSystem.cpp", "composed"),
     ("experimentalModule/ModuleLoaderMgr.cpp", "composed"),
+    ("experimentalModule/ModularBody.cpp", "composed"),
+    ("experimentalModule/modules.cpp", "composed"),
 ])
+
+# The composed regime does not read a body section in one place: loadBody reads
+# the node's own keys and then every MODULE loader reads the same map for the
+# keys its module needs. base D of the capability audit named exactly these
+# directories (`moduleLoader/ orbitModules/ ModularBody.cpp ModularSystem.cpp`,
+# capability-surface.md S2), and leaving them out is what made 811 keys look
+# legacy-only in the first composed run -- the corpus caught the instrument.
+for _d in ("moduleLoader", "orbitModules", "meshModules", "bodyModules",
+           "environmentModules"):
+    _dir = os.path.join(SRC, "experimentalModule", _d)
+    if not os.path.isdir(_dir):
+        continue
+    for _f in sorted(os.listdir(_dir)):
+        if _f.endswith((".cpp", ".hpp")):
+            FILES["experimentalModule/%s/%s" % (_d, _f)] = "composed"
 
 # Every access shape observed in the tree, each anchored to a real site:
 #   param["k"]              the operator[] read (THE trap, S11.103(b))
