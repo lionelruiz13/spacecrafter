@@ -1,0 +1,45 @@
+=== F79 part (4): predictions committed BEFORE the six runs.
+    Written 2026-09-04, harness HEAD 22b2aa3, binary c8e12950 at code ba7a32a8.
+    The dispositions (a)/(b)/(c) themselves are pre-stated by the task section at
+    harness d2cc023 (fable-dispatch.md, F79) -- this file adds the POINT prediction
+    and the reasons, so the outcome can refute something.
+
+WHAT IS BEING MEASURED.  Six `f51_run.sh <out> --samples 2` on DISPLAY :2, the same
+invocation shape as the SIX banked bracket runs of 2026-08-30 (artifacts/
+s16_dim_bracket/run1..6.json all carry n_samples 2, cadence 5.0) -- so the comparison
+is instrument-for-instrument, not a new experiment.  12 gated members per run:
+2 dwell samples x (disc_mean, hf_mean) on the new path, legs newpath_after and
+newpath_after_plus10s on the new path, legs oldpath_fov10 and oldpath_fov10_plus10s
+on the old.  Banked centre: new 165.258 / 6.644, old 160.142 / 6.603.
+
+P1 (the point prediction): DISPOSITION (a).  All 72 gated members read the banked
+   centre to the last printed digit; spread 0.000; every run in band.
+   REASONS: the numbers survived five weeks, one reboot and one driver bump
+   (11.176(g), July vs 2026-08-30 identical); they survived an `env -i` scrubbed
+   dispatch environment on the same server (11.174(i)); the star channel never moved
+   across the dim boundary at all (11.176(e)).  The variable changed today is WHICH
+   compositor process owns :2 -- same host, same GPU, same driver family, same
+   2448x1332 virtual monitor, same 1024x1024 swapchain.
+P1 CAN FAIL: the surviving model for the 2026-08-29 dim era is a LATCHED rendering
+   state coupled to session/connection state (11.174(h)(2)), and a real logind
+   session under gnome-remote-desktop is exactly a different session shape from
+   F43's hand-built headless tree.  If that coupling is real and stack-shaped, this
+   is the run that shows it.  61.431 / 2.464 new and 42.476 / 1.744 old are the
+   fault class's own numbers; anything near them is disposition (b).
+
+P2: the dwell-frame md5 does NOT reproduce the banked 5215565b11d24328a9bb01198c8
+   75b25.  REASON: byte identity is stack-coupled (the banked md5 was taken on the
+   substitute stack), while the metric is the objective; 11.176(a) records the md5
+   as recorded-never-gated for exactly this reason.  A re-bank of BANK_FRAME_MD5
+   under disposition (a) is a re-bank, not a demotion -- the member keeps its role.
+   P2 CAN FAIL: if the frames come back byte-identical, then the whole rendering
+   path is bit-reproducible across two different compositors, which is a stronger
+   result than the band and belongs in the entry.
+
+P3: all six runs report `config/ssystem md5 in=out OK`, the /proc/<pid>/comm probe
+   reads 0 before each, and `GetActive` reads false at all six reads.
+
+NOT PREDICTED, RECORDED EITHER WAY: cache mutations, frame stalls, driver-reported
+VRAM.  No band value is edited under any outcome except BANK_FRAME_MD5 under (a);
+no tolerance is widened and no gating member is demoted under any outcome
+(11.191(c) [vixy]).
