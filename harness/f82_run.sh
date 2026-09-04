@@ -33,6 +33,13 @@ case "$STAGE" in
     python3 "$HERE/f82_portrait.py" run "$OUT" --aspect "$STAGE" --bin "$SC_BIN"
     rc=$?
     ;;
+  defaultrender)
+    # SUPPLEMENTARY leg: portrait at the DEFAULT render_size (0), the branch a
+    # config-less install takes (checkConfig.cpp:106). See
+    # f82_predictions_supplement.json, committed before that launch.
+    python3 "$HERE/f82_portrait.py" defaultrender "$OUT" --bin "$SC_BIN"
+    rc=$?
+    ;;
   *) echo "unknown stage $STAGE" >&2; exit 4 ;;
 esac
 

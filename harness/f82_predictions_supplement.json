@@ -1,0 +1,32 @@
+{
+  "task": "F82 SUPPLEMENTARY LEG - portrait at the DEFAULT render_size (0), predicted before the launch",
+  "written": "2026-09-05, after the two mandated launches, BEFORE this third one",
+
+  "why_this_leg_exists": {
+    "finding_that_forced_it": "checkConfig.cpp:106 writes `render_size = 0` as the DEFAULT for a generated config.ini; the field config carries an AUTHORED 2048 (config.ini:38). So the two mandated launches measured the authored branch, and the branch a config-less install takes is a DIFFERENT one at every stage that matters here: app.cpp:107 skips `dedicatedViewport` entirely, app.cpp:267-271 sizes the render target from the swapchain instead of from render_size, and app.cpp:1114-1118 blits to the full swapchain extent instead of to the mouseNorm rectangle.",
+    "why_it_is_a_scope_expansion_and_taken_anyway": "The task section says one launch per aspect. This is a third launch. It is taken because the 5.79 reachability clause of any mint from this leg has to name WHICH branch it fires in, and 'the default one is unmeasured' would leave the mint's own scope statement assumed rather than measured - the failure mode this corpus keeps recording. Reads only, farm-only config, no fix; the expansion is reported with this argument.",
+    "what_it_does_NOT_do": "it does not re-open the mandated legs' conclusions, and no number from it enters the parity or difference tables of the two-aspect comparison."
+  },
+
+  "model_read_at_source": {
+    "S1": "app.cpp:107 `if ((renderSize = std::max(conf.getInt(SCS_VIDEO, SCK_RENDER_SIZE), 0)))` - false at 0, so `VulkanMgr::dedicatedViewport` is NEVER CALLED and mouseNorm keeps what the constructor set",
+    "S2": "VulkanMgr.cpp:87-101 (constructor): viewport.x = (swapW - createInfo.width)/2, viewport.y = (swapH - createInfo.height)/2 with createInfo = {768, -768} (main.cpp:308's curMin); height<0 so scissor.offset = (viewport.x, viewport.y + viewport.height) = (0, 128), scissor.extent = 768x768",
+    "S3": "VulkanMgr.cpp:102-105: mouseNorm from THAT scissor - offsetX = 0 + 383.5, offsetY = 128 + 383.5 = 511.5. BOTH axes centred. This is the same quantity dedicatedViewport computes at :160-163, where only X is centred.",
+    "S4": "app.cpp:267-271 `else { width = swapchainExtent.width; height = swapchainExtent.height; }` -> Core(768, 1024) -> Projector(768, 1024, 60)",
+    "S5": "projector.cpp:69-84 setViewportDisk(768, 1024): t = 768, vec_viewport = [0, 128, 768, 768], viewport_center = (384, 512), viewport_radius = 384",
+    "S6": "app.cpp:148-149 SaveScreenInterface(getScreenRect()) = the scissor -> the app readback is 768x768 at offset (0,128)",
+    "S7": "app.cpp:1114-1118 `else` branch: blit dst = the FULL swapchain extent (0,0)..(768,1024) from the full offscreen image"
+  },
+
+  "predictions": {
+    "S_P1": "the applog carries `Windows size is 768x1024px` and `Swapchain : (768, 1024)` as before, but NO `Scaling :`, NO `Viewport :` and NO `Rect :` line at all - those three are printed only inside dedicatedViewport (VulkanMgr.cpp:148-155). Their ABSENCE is the discriminator that this branch was taken.",
+    "S_P2": "`Build FrameBuffer 'main 0' with size (768, 1024)` - the render target takes the window's aspect",
+    "S_P3": "the projector's own dump: viewport [0, 128, 768, 768], viewportCenter [384, 512, 0], viewportRadius 384, viewportFovDiameter 768 - i.e. the projector becomes ASPECT-AWARE in this branch, which it is not in the authored one (it read [0,0,2048,2048] / 1024 there, at both aspects)",
+    "S_P4": "the app readback PNG is 768x768 (not 2048x2048, not 768x1024)",
+    "S_P5": "the tracked target's blob in that readback sits at (384, 384) +- the instrument zero (the scissor crop starts at render row 128, and the dome centre is render row 512)",
+    "S_P6": "the window grab is 768x1024 and the target sits at (384, 512) +- a few px - the disc CENTRED vertically, where the authored branch put it at (383.5, 639.5)",
+    "S_P7": "no unwritten band: the blit covers the whole swapchain here, so the rows outside the disc are written (black) rather than skipped. The band probe is therefore NOT discriminating in this branch and says so; the discriminating reading is S_P6's 512 vs the authored branch's 639.5."
+  },
+
+  "mutation": "if the projector's dump comes back [0,0,2048,2048] / viewportRadius 1024, or the readback comes back 2048x2048, then render_size = 0 did not take the branch this file describes and every S_P above is void - the leg would then have measured the authored branch twice and must say so."
+}

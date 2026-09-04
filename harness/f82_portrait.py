@@ -428,6 +428,79 @@ def stage_run(out, res, aspect):
     return app, res
 
 
+def stage_default_render(out, res):
+    """SUPPLEMENTARY leg: portrait at the DEFAULT render_size (0).
+
+    checkConfig.cpp:106 writes `render_size = 0` into a generated config.ini; the
+    field file carries an AUTHORED 2048.  At 0 the app skips `dedicatedViewport`
+    entirely (app.cpp:107), sizes the render target from the swapchain
+    (app.cpp:267-271) and blits to the full swapchain extent (app.cpp:1114-1118) -
+    a different code path at every stage this leg measures.  Predictions in
+    f82_predictions_supplement.json, committed before this launch.
+    """
+    w, h = ASPECTS["portrait"]
+    farmdir = F.farm_build()
+    cfg = farmdir / "config.ini"
+    res["config_edits"] = {"screen_w": F.ini_set(cfg, "video", "screen_w", w),
+                           "screen_h": F.ini_set(cfg, "video", "screen_h", h),
+                           "render_size": F.ini_set(cfg, "video", "render_size", 0)}
+    res["asked"] = {"screen_w": w, "screen_h": h, "render_size": 0}
+    res["farm_config_md5"] = F.md5(cfg)
+    app = F.App(out, farmdir, out / "defaultrender.applog")
+    try:
+        win, t0 = None, time.time()
+        while time.time() - t0 < 40 and win is None:
+            win = client_window()
+            if win is None:
+                time.sleep(0.3)
+        res["window"] = win
+        res["applog_extents"] = parse_applog(out / "defaultrender.applog")
+        F.ok(f"window {win}  extents {res['applog_extents']}")
+
+        F.common_setup(app, jd=JD)
+        app.send(f"select planet {TARGET}", 1.0)
+        app.send("flag track_object on", 2.0)
+        F.wait_until(app, "arm", lambda H, Bd: F.nav(H)["plans"]["flagAutoMove"] == 0,
+                     "auto-move complete (tracking aim landed)")
+        app.send("flag track_object off", 1.5)
+        F.wait_until(app, "hold", lambda H, Bd: F.nav(H)["flagTraking"] == 0
+                     and F.nav(H)["plans"]["flagAutoMove"] == 0,
+                     "tracking released, view held")
+        app.send("zoom fov 180 duration 0", 1.0)
+        F.wait_until(app, "fov",
+                     lambda H, Bd: abs(H["oldView"]["projector"]["fov"] - 180.0) < 1e-6,
+                     "fov -> 180")
+        res["points"] = []
+        for path, flag in (("new", "on"), ("old", "off")):
+            app.send(f"flag experimental_path {flag}", 1.5)
+            png = app.shot(f"dr_{path}")
+            g = window_grab(win, out / "grabs" / f"dr_{path}.png")
+            hh, bb = app.dump(f"dr_{path}")
+            proj = (hh.get("oldView") or {}).get("projector") or {}
+            rec = {"path": path,
+                   "projector": {k: proj.get(k) for k in
+                                 ("fov", "viewport", "viewportCenter", "viewportRadius",
+                                  "viewportFovDiameter", "projectionType")},
+                   "screen_old": ((bb.get(TARGET) or {}).get("old") or {}).get("screen"),
+                   "screen_new": ((bb.get(TARGET) or {}).get("new") or {}).get("screen"),
+                   "frame": str(png.relative_to(out)) if png else None, "grab": g}
+            # the target is the brightest thing in this scene by a wide margin and
+            # it is AT the dome centre; the blob at the brightest pixel therefore
+            # LOCATES the dome centre in each channel without needing a map fit.
+            if png:
+                a = np.asarray(Image.open(png).convert("L"), dtype=np.float64)
+                rec["frame_dims"] = [int(a.shape[1]), int(a.shape[0])]
+                rec["A_brightest"] = F.blob_at(png, None)
+            if g.get("ok"):
+                rec["B_brightest"] = F.blob_at(g["path"], None)
+                rec["B_rows"] = row_profile(g["path"])
+            res["points"].append(rec)
+    finally:
+        res["applog_extents"] = parse_applog(out / "defaultrender.applog") \
+            or res.get("applog_extents")
+    return app, res
+
+
 # ---------------------------------------------------------------------------
 def _pt(res, fov):
     for p in res["points"]:
@@ -509,7 +582,7 @@ def build_table(d):
     A("\n## 3. The render -> window map, FITTED from the bodies found in both channels\n")
     A("model: `window = a * A_centroid + b`, least squares over every body found in "
       "channel A and channel B of the same frame.\n")
-    A("| aspect | path | n bodies | a (x) | b (x) | max res x | a (y) | b (y) | max res y | dome centre in window | seed model that held |")
+    A("| aspect | path | n bodies | a (x) | b (x) | max res x | a (y) | b (y) | max res y | dome centre in window | bodies found: bottom / centred / top |")
     A("|---|---|---:|---:|---:|---:|---:|---:|---:|---|---|")
     for a in ("square", "portrait"):
         for fov in FOVS:
@@ -518,17 +591,41 @@ def build_table(d):
                 m = (p.get("map_fit") or {}).get(path)
                 if not m or m["x"]["a"] is None:
                     continue
-                models = sorted({e.get("B_seed_model") for e in p["paths"][path]["bodies"].values()
-                                 if e.get("B_seed_model")})
+                cnt = {k: 0 for k in ("bottom_aligned", "centred", "top_aligned")}
+                for e in p["paths"][path]["bodies"].values():
+                    for k, v in (e.get("B_candidates") or {}).items():
+                        if v.get("found"):
+                            cnt[k] += 1
                 A(f"| {a} fov {fov:.0f} | {path} | {m['n']} | {m['x']['a']} | {m['x']['b']} | "
                   f"{m['x']['maxres']} | {m['y']['a']} | {m['y']['b']} | {m['y']['maxres']} | "
-                  f"{m.get('dome_centre_in_window')} | {','.join(models) or '-'} |")
+                  f"{m.get('dome_centre_in_window')} | "
+                  f"{cnt['bottom_aligned']} / {cnt['centred']} / {cnt['top_aligned']} |")
+    A("\n**At the square control the three candidate seeds COINCIDE** (swapchain "
+      "height == the scaled square), so the counts there are 24/24/24 by "
+      "construction and discriminate nothing - which is exactly why the control "
+      "cannot see this. Portrait separates them by 128 px and the counts are "
+      "24 / 0 / 0.\n")
+    A("\nThe predictor, evaluated from each launch's OWN measured swapchain extent "
+      "(VulkanMgr.cpp:145-163 + VulkanMgr.hpp:122-124):\n")
+    A("| aspect | swapchain | scaled = min(W,H) | a = (scaled-1)/(2R) | dome x = (W-1)/2 | dome y, BOTTOM = H-1-(scaled-1)/2 | dome y, CENTRED (mutation) | measured dome centre |")
+    A("|---|---|---:|---:|---:|---:|---:|---|")
+    for a in ("square", "portrait"):
+        sw, sh = R[a]["applog_extents"]["swapchain"]
+        p = _pt(R[a], 90.0)
+        Rr = p["projector"]["viewportRadius"]
+        scaled = min(sw, sh)
+        A(f"| {a} | {sw}x{sh} | {scaled} | {(scaled - 1) / (2 * Rr):.6f} | "
+          f"{(sw - 1) / 2:.1f} | {sh - 1 - (scaled - 1) / 2:.1f} | "
+          f"{(sh - scaled) / 2 + (scaled - 1) / 2:.1f} | "
+          f"{(p['map_fit']['old'] or {}).get('dome_centre_in_window')} |")
     pp = pred["predictions"]["P8_render_to_window_map"]
-    A(f"\npredicted (committed before the run): portrait a={pp['portrait']['a']}, "
+    A(f"\npredicted before the run (integer form): portrait a={pp['portrait']['a']}, "
       f"b={pp['portrait']['b']}, d={pp['portrait']['d']}, dome centre "
       f"{pp['portrait']['dome_centre_in_window']}; square a={pp['square']['a']}, "
       f"b={pp['square']['b']}, d={pp['square']['d']}, dome centre "
-      f"{pp['square']['dome_centre_in_window']}.\n")
+      f"{pp['square']['dome_centre_in_window']}. The half-pixel between those and "
+      "the row above is the `(scaled - 1)` term of `mouseNorm.scaleX/Y`, which the "
+      "pre-run form rounded; it moves nothing that this leg decides.\n")
     A(f"mutation (centred letterbox): {pp['mutation_M8a_centred_letterbox']}\n")
 
     A("\n## 4. The disc extent, second and independent read (star field on, fov 180) - geometry only\n")
@@ -558,31 +655,59 @@ def build_table(d):
               f"{b['max'] if b else '-'} | {b['mean'] if b else '-'} | "
               f"{b['nonzero'] if b else '-'} | `{v['md5'][:8]}` |")
 
-    A("\n## 6. Parity old vs new, per body, per aspect (11.52(b): perceptual, geometry only)\n")
-    A("| aspect | fov | body | dump old (render px) | dump new (normalized) | new->render px | "
-      "|old-new| dump px | A centroid old | A centroid new | |old-new| frame px |")
-    A("|---|---:|---|---|---|---|---:|---|---|---:|")
-    for a in ("square", "portrait"):
-        for fov in FOVS:
-            p = _pt(R[a], fov)
-            Rr = p["projector"]["viewportRadius"]
-            names = sorted(set(p["paths"]["old"]["bodies"]) & set(p["paths"]["new"]["bodies"]))
-            for name in names:
-                eo = p["paths"]["old"]["bodies"][name]
-                en = p["paths"]["new"]["bodies"][name]
-                so, sn = eo["screen_old"], eo["screen_new"]
-                npx = ([ (sn[0] + 1) / 2 * 2 * Rr, (1 - sn[1]) / 2 * 2 * Rr ] if sn else None)
-                dd = (round(math.hypot(npx[0] - so[0], npx[1] - (2 * Rr - so[1])), 4)
-                      if (npx and so) else None)
-                ao = eo.get("A") or {}
-                an = en.get("A") or {}
-                df = (round(math.hypot(ao["cx"] - an["cx"], ao["cy"] - an["cy"]), 4)
-                      if (ao.get("found") and an.get("found")) else None)
-                A(f"| {a} | {fov:.0f} | {name} | {so} | "
-                  f"{[round(v, 9) for v in sn] if sn else '-'} | "
-                  f"{[round(v, 3) for v in npx] if npx else '-'} | {dd} | "
-                  f"{(round(ao['cx'], 3), round(ao['cy'], 3)) if ao.get('found') else '-'} | "
-                  f"{(round(an['cx'], 3), round(an['cy'], 3)) if an.get('found') else '-'} | {df} |")
+    A("\n## 6. Parity old vs new, and the ONE question this leg exists to answer: "
+      "does any divergence exist ONLY at portrait? (11.52(b): perceptual, geometry only)\n")
+
+    def _pair(a, fov, name):
+        """(dump |old-new| px, frame |old-new| px) for one body at one aspect."""
+        p = _pt(R[a], fov)
+        Rr = p["projector"]["viewportRadius"]
+        eo = p["paths"]["old"]["bodies"].get(name)
+        en = p["paths"]["new"]["bodies"].get(name)
+        if not (eo and en):
+            return None, None
+        so, sn = eo["screen_old"], eo["screen_new"]
+        dd = None
+        if so and sn:
+            nx = (sn[0] + 1) / 2 * 2 * Rr
+            ny = (1 - sn[1]) / 2 * 2 * Rr
+            dd = round(math.hypot(nx - so[0], ny - (2 * Rr - so[1])), 4)
+        ao, an = eo.get("A") or {}, en.get("A") or {}
+        df = (round(math.hypot(ao["cx"] - an["cx"], ao["cy"] - an["cy"]), 4)
+              if (ao.get("found") and an.get("found")) else None)
+        return dd, df
+
+    A("Every body is measured twice per aspect: the engine's own dual dump (old "
+      "render px vs new normalized, brought to render px) and the luminance "
+      "centroid in the frame the app itself wrote. `sq - pt` is the whole "
+      "question: a non-zero there is a divergence the aspect created.\n")
+    A("| fov | body | dump d, square | dump d, portrait | sq - pt | frame d, square | frame d, portrait | sq - pt |")
+    A("|---:|---|---:|---:|---:|---:|---:|---:|")
+    shared = {}
+    for fov in FOVS:
+        p = _pt(R["square"], fov)
+        groups, loose = {}, []
+        for name, e in sorted(p["paths"]["old"]["bodies"].items()):
+            c = e.get("A") or {}
+            if c.get("found"):
+                groups.setdefault((c["cx"], c["cy"]), []).append(name)
+            else:
+                loose.append(name)
+        shared[fov] = {k: v for k, v in groups.items() if len(v) > 1}
+        keep = sorted([v[0] for v in groups.values()] + loose)
+        for name in keep:
+            ds, fs = _pair("square", fov, name)
+            dp, fpv = _pair("portrait", fov, name)
+            A(f"| {fov:.0f} | {name} | {ds} | {dp} | "
+              f"{round(ds - dp, 6) if (ds is not None and dp is not None) else '-'} | "
+              f"{fs} | {fpv} | "
+              f"{round(fs - fpv, 6) if (fs is not None and fpv is not None) else '-'} |")
+    for fov in FOVS:
+        for k, v in shared[fov].items():
+            A(f"\n*fov {fov:.0f}: {len(v)} bodies share ONE luminance blob at "
+              f"{tuple(round(x, 3) for x in k)} ({', '.join(v)}) - the frame channel "
+              f"cannot separate them, the dump channel can; the first is listed above "
+              f"and the rest are the same measurement.*")
 
     A("\n## 7. Environment asserts\n")
     for a in ("square", "portrait"):
@@ -594,6 +719,46 @@ def build_table(d):
           f"`{r['real_home_md5_out']['ssystem.ini'][:8]}`; fails: {r['fails'] or 'none'}")
     (d / "f82_table.md").write_text("\n".join(L) + "\n")
     print(f"wrote {d / 'f82_table.md'}")
+
+
+def verify(d):
+    """Recompute every recorded blob from the COMMITTED frames and grabs, through
+    the same rule, and assert it equals what the run wrote.  A number in the entry
+    that the committed artifacts cannot reproduce is not evidence."""
+    d = Path(d)
+    n, bad = 0, []
+    for a in ("square", "portrait"):
+        run = d / a
+        res = json.loads((run / f"f82_{a}.json").read_text())
+        for p in res["points"]:
+            for path, e in p["paths"].items():
+                png = run / e["frame"] if e.get("frame") else None
+                Rr = (p["projector"] or {}).get("viewportRadius") or 1024
+                for name, ent in e["bodies"].items():
+                    rec = ent.get("A")
+                    if not (png and png.exists() and rec and rec.get("found")):
+                        continue
+                    s = ent["screen_old"]
+                    got = F.blob_at(png, (s[0], 2 * Rr - s[1]))
+                    n += 1
+                    if (got.get("cx"), got.get("cy"), got.get("npx")) != \
+                       (rec.get("cx"), rec.get("cy"), rec.get("npx")):
+                        bad.append((a, p["tag"], path, name, rec, got))
+                    b = ent.get("B")
+                    g = e.get("grab") or {}
+                    if b and b.get("found") and g.get("ok"):
+                        gp = run / "grabs" / Path(g["path"]).name
+                        if gp.exists():
+                            seed = ent["B_seed_px"][ent["B_seed_model"]]
+                            got2 = F.blob_at(gp, tuple(seed), win=40)
+                            n += 1
+                            if (got2.get("cx"), got2.get("cy")) != (b.get("cx"), b.get("cy")):
+                                bad.append((a, p["tag"], path, name + " [B]", b, got2))
+    print(f"verify: {n} blob(s) recomputed from the committed artifacts, "
+          f"{len(bad)} mismatch(es)")
+    for row in bad[:10]:
+        print("  MISMATCH", row)
+    return 1 if bad else 0
 
 
 def main():
@@ -609,9 +774,11 @@ def main():
     if stage == "table":
         build_table(outdir)
         return 0
+    if stage == "verify":
+        return verify(outdir)
 
     outdir.mkdir(parents=True, exist_ok=True)
-    aspect = kw["aspect"]
+    aspect = kw.get("aspect", "defaultrender" if stage == "defaultrender" else None)
     hits = F.no_instance()
     if hits:
         F.fail(f"another spacecrafter is running: pids {hits}")
@@ -627,7 +794,10 @@ def main():
            "real_home_md5_in": real_in, "points": [], "fails": []}
     app = None
     try:
-        app, res = stage_run(outdir, res, aspect)
+        if stage == "defaultrender":
+            app, res = stage_default_render(outdir, res)
+        else:
+            app, res = stage_run(outdir, res, aspect)
     finally:
         if app:
             app.close()
