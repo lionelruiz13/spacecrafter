@@ -247,7 +247,18 @@ show — and if so, which behavior did it depend on? If the combination
 was never used to your knowledge, say exactly that — it downgrades this
 to an engineering call and we stop pressing.
 *(ref: §11.92(d), B17 residual; routing + the exercise-boundary
-testimony [vixy 2026-08-31])*
+testimony [vixy 2026-08-31]. **POINTER 2026-09-04, F81 §11.201 → §5.128
+(measured, record-only): the plain offset carries a SECOND corner beside
+the heading one — old's aim site compensates a fixed 90° while its draw
+applies fov/2, so a mid-show `set zoom_offset` lands the aimed body
+0.0000°/13.5000°/21.0000° off the drawn centre at fov 180/90/40 and
+throws the old view 29.4474° back onto `init_view_pos`, while the new
+path keeps its aim. That raises a question this text does not yet ask —
+"when a show changes the offset mid-show, does it EXPECT the view to
+return to init_view_pos?" — whose answer decides whether only the
+scaling is wrong or the whole aim half is. RECORDED, not inserted into
+the question body: what this file asks a human is the supervising
+session's call, not the executor's.**)*
 
 **R29. Which bodies deliberately look different from far than from
 close?** The shipped Sun and Moon carry a miniature/preview skin that is

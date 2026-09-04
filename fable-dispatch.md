@@ -956,7 +956,7 @@ HOST-EVENTS 2026-09-04 (`:2`, auth `.5KBYU3`, 2448x1332) still answers `xdpyinfo
 **DoD:** table + frames + dump extracts committed as artifacts; §11 entry + stub;
 §11.198(d) marker both homes; §5 mint or retraction; README; trees clean; WIP
 cleared; baselines re-derived LAST with deltas stated.
-**WIP:** 2026-09-04 - checkpoint 4: all four launches done, table generated (`harness/artifacts/f81/f81_table.md`), 12/12 cells hit their prediction, teleport leg measured (old aim jumps 29.4474 deg to init_view_pos, target leaves the frame; new path keeps its aim). NEXT: the records - 11.201 entry+stub, 5.<next> mint, 11.198(d) back-marker both homes, DEPLOYMENT-MAP/R28 pointer, README, baselines.
+**WIP:** — DELIVERED 2026-09-04: §11.201 (entry+stub), §5.128 minted (record-only), §11.198(d) back-marker both homes, §11.92(a) + B17 row + DEPLOYMENT-MAP + R28 pointer annotated, `harness/f81_{predictions.json,offset.py,run.sh,table.py}` + README section, artifacts `harness/artifacts/f81/`. 12/12 table cells on the pre-committed prediction.
 
 ### F82 — EXTENSION: the portrait leg — one launch with a window taller than wide (768x1024) on both paths: what the projection, the readback, the dump and the fisheye transfer do when the assumed aspect inverts, every difference classified against the square baseline (§11.198(e): the owner-named verification-surface hole, "a cheap candidate for a supervising session"; R21's harness-side half) [S]
 
