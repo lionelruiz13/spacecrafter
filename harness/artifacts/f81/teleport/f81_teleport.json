@@ -1,0 +1,123 @@
+{
+ "stage": "teleport",
+ "binary": "/home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter",
+ "binary_md5": "c8e129509132e357d586346e47983d74",
+ "target": "Sun",
+ "fovs": [
+  180.0,
+  90.0,
+  40.0
+ ],
+ "t_start": 1788557989.731,
+ "display": ":2",
+ "screensaver_GetActive": "(false,)",
+ "no_instance_before_launch": true,
+ "real_home_md5_in": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "points": [],
+ "fails": [],
+ "channel": "teleport",
+ "offset": 0.3,
+ "jd": 2461288.9841951793,
+ "initview": [
+  0.5962190452088474,
+  2.0566700573552617e-07,
+  0.8028218047177142
+ ],
+ "config_edits": {
+  "init_view_pos": "1e-04,1e-04,1"
+ },
+ "before": {
+  "localVision": [
+   0.37224126479160247,
+   -0.43437388124526355,
+   0.8202169055062654
+  ],
+  "angle_to_initview_deg": 28.30629528544519,
+  "screen_other_old": [
+   1024,
+   1024
+  ],
+  "screen_other_new": [
+   -3.3238976e-07,
+   1.86969231e-07
+  ],
+  "screen_target_old": [
+   -354.405517578125,
+   576.3197021484375
+  ],
+  "viewOffset": 0,
+  "transition_old": 1,
+  "transition_new": 1
+ },
+ "after": {
+  "localVision": [
+   0.16676159467693194,
+   2.0566700312279894e-07,
+   0.9859972467206813
+  ],
+  "angle_to_initview_deg": 26.999999542324023,
+  "screen_other_old": [
+   2347.12939453125,
+   603.903076171875
+  ],
+  "screen_other_new": [
+   -3.32995484e-07,
+   0.299997807
+  ],
+  "screen_target_old": [
+   1024.107666015625,
+   -51.2000732421875
+  ],
+  "viewOffset": 0.3,
+  "transition_old": 1,
+  "control": {
+   "reported": 0.3,
+   "old": 0.3,
+   "new": 0.3
+  }
+ },
+ "view_jump_deg": 29.447438118384053,
+ "other_body": "Jupiter",
+ "after_blob": {
+  "new": {
+   "w": 2048,
+   "h": 2048,
+   "max_frame": 251.0,
+   "seed": [
+    1023.9996590126244,
+    716.802245632
+   ],
+   "found": true,
+   "cx": 1023.8,
+   "cy": 716.859,
+   "npx": 31,
+   "peak": 251.0,
+   "bbox": [
+    1020,
+    1026,
+    714,
+    719
+   ],
+   "touches_window_edge": false
+  },
+  "old": {
+   "w": 2048,
+   "h": 2048,
+   "max_frame": 0.0,
+   "seed": [
+    2347.12939453125,
+    1444.096923828125
+   ],
+   "found": false,
+   "why": "seed outside the frame"
+  }
+ },
+ "real_home_md5_out": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "t_end": 1788558062.728
+}

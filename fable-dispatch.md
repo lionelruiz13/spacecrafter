@@ -956,7 +956,7 @@ HOST-EVENTS 2026-09-04 (`:2`, auth `.5KBYU3`, 2448x1332) still answers `xdpyinfo
 **DoD:** table + frames + dump extracts committed as artifacts; §11 entry + stub;
 §11.198(d) marker both homes; §5 mint or retraction; README; trees clean; WIP
 cleared; baselines re-derived LAST with deltas stated.
-**WIP:** 2026-09-04 - checkpoint 3: BOTH channels measured, prediction holds to 5 decimals. Old command channel r/R = 0.00000 / 0.30000 / 1.05000 at fov 180/90/40 (theta 0.0000 / 13.5000 / 21.0000 deg); aim compensation measured 27.000000 deg, fov-independent; new path 0.30000 at every fov and both channels; offset sweep at fov 40 slope 3.500 (mutation 1.25 refuted). NEXT: one supplementary teleport leg (the same sink re-aims to init_view_pos), then the records (11.201 + 5.mint + back-marker + README).
+**WIP:** 2026-09-04 - checkpoint 4: all four launches done, table generated (`harness/artifacts/f81/f81_table.md`), 12/12 cells hit their prediction, teleport leg measured (old aim jumps 29.4474 deg to init_view_pos, target leaves the frame; new path keeps its aim). NEXT: the records - 11.201 entry+stub, 5.<next> mint, 11.198(d) back-marker both homes, DEPLOYMENT-MAP/R28 pointer, README, baselines.
 
 ### F82 — EXTENSION: the portrait leg — one launch with a window taller than wide (768x1024) on both paths: what the projection, the readback, the dump and the fisheye transfer do when the assumed aspect inverts, every difference classified against the square baseline (§11.198(e): the owner-named verification-surface hole, "a cheap candidate for a supervising session"; R21's harness-side half) [S]
 

@@ -604,6 +604,94 @@ def stage_run(out, res, channel, jd, initview, offset):
     return app, res
 
 
+def stage_teleport(out, res, jd, initview, offset, other="Jupiter"):
+    """SUPPLEMENTARY leg, same sink, second observable.
+
+    `Core::setViewOffset` calls `navigation->setLocalVision(InitViewPos)`
+    UNCONDITIONALLY (core.cpp:2545) - so the aim half does not merely mis-scale,
+    it DISCARDS the operator's current view direction and re-aims at the config's
+    `init_view_pos`.  The main legs cannot see that: they place the target AT
+    init_view_pos so the compensation is measurable on a body.  This leg aims at
+    a DIFFERENT body first, then issues the same command, and measures how far
+    the view moves and what happens to the two paths.
+    `Core::restoreViewOffset`'s own comment (core.cpp:856-859) already names this
+    as something a caller has to order its calls around.
+    """
+    farmdir = farm_build()
+    cfg = farmdir / "config.ini"
+    res["config_edits"] = {"init_view_pos": ini_set(
+        cfg, "navigation", "init_view_pos", "%.9g,%.9g,%.9g" % tuple(initview))}
+    app = App(out, farmdir, out / "teleport.applog")
+    try:
+        common_setup(app, jd=jd)
+        app.send(f"select planet {TARGET}", 1.0)
+        app.send("flag track_object on", 2.0)
+        wait_until(app, "tp_arm",
+                   lambda H, Bd: nav(H)["plans"]["flagAutoMove"] == 0
+                   and abs(nav(H)["viewOffsetTransition"] - 1.0) < 1e-9
+                   and abs(cam(H)["viewOffsetTransition"] - 1.0) < 1e-9,
+                   "armed on both paths")
+        app.send("flag track_object off", 1.5)
+        # now aim somewhere ELSE, with the offset still armed and still zero
+        app.send(f"select planet {other}", 1.0)
+        app.send("flag track_object on", 2.0)
+        wait_until(app, "tp_move",
+                   lambda H, Bd: nav(H)["plans"]["flagAutoMove"] == 0,
+                   f"aim moved to {other}")
+        app.send("flag track_object off", 1.5)
+        wait_until(app, "tp_hold",
+                   lambda H, Bd: nav(H)["flagTraking"] == 0, "aim held")
+        app.send("zoom fov 40 duration 0", 1.0)
+        wait_until(app, "tp_fov",
+                   lambda H, Bd: abs(H["oldView"]["projector"]["fov"] - 40.0) < 1e-6,
+                   "fov -> 40")
+        hb, bb = app.dump("teleport_before")
+        res["before"] = {
+            "localVision": unit(nav(hb)["localVision"]),
+            "angle_to_initview_deg": angle_between(nav(hb)["localVision"], initview),
+            "screen_other_old": (bb[other]["old"] or {}).get("screen"),
+            "screen_other_new": (bb[other]["new"] or {}).get("screen"),
+            "screen_target_old": (bb[TARGET]["old"] or {}).get("screen"),
+            "viewOffset": nav(hb)["viewOffset"],
+            "transition_old": nav(hb)["viewOffsetTransition"],
+            "transition_new": cam(hb)["viewOffsetTransition"]}
+        for path, flag in (("new", "on"), ("old", "off")):
+            app.send(f"flag experimental_path {flag}", 1.5)
+            app.shot(f"teleport_before_{path}")
+        app.send(f"set zoom_offset {offset}", 1.8)
+        ha, ba = app.dump("teleport_after")
+        res["after"] = {
+            "localVision": unit(nav(ha)["localVision"]),
+            "angle_to_initview_deg": angle_between(nav(ha)["localVision"], initview),
+            "screen_other_old": (ba[other]["old"] or {}).get("screen"),
+            "screen_other_new": (ba[other]["new"] or {}).get("screen"),
+            "screen_target_old": (ba[TARGET]["old"] or {}).get("screen"),
+            "viewOffset": nav(ha)["viewOffset"],
+            "transition_old": nav(ha)["viewOffsetTransition"],
+            "control": ha.get("control", {}).get("viewOffset")}
+        res["view_jump_deg"] = angle_between(nav(hb)["localVision"],
+                                             nav(ha)["localVision"])
+        res["other_body"] = other
+        for path, flag in (("new", "on"), ("old", "off")):
+            app.send(f"flag experimental_path {flag}", 1.5)
+            png = app.shot(f"teleport_after_{path}")
+            if png:
+                s = res["after"]["screen_other_old" if path == "old"
+                                 else "screen_other_new"]
+                if path == "old" and s:
+                    res.setdefault("after_blob", {})[path] = blob_at(
+                        png, (s[0], 2048 - s[1]))
+                elif s:
+                    res.setdefault("after_blob", {})[path] = blob_at(
+                        png, ((s[0] + 1) / 2 * 2048, (1 - s[1]) / 2 * 2048))
+        ok(f"view jumped {res['view_jump_deg']:.4f} deg on `set zoom_offset "
+           f"{offset}`; aim now {res['after']['angle_to_initview_deg']:.4f} deg "
+           f"from init_view_pos")
+    finally:
+        pass
+    return app, res
+
+
 def main():
     argv = sys.argv[1:]
     if "--bin" in argv:
@@ -632,8 +720,8 @@ def main():
            "no_instance_before_launch": True,
            "real_home_md5_in": real_md5_in,
            "points": [], "fails": []}
-    if stage == "run":
-        res["channel"] = kw["channel"]
+    if stage in ("run", "teleport"):
+        res["channel"] = kw.get("channel", stage)
         res["offset"] = float(kw.get("offset", 0.3))
         res["jd"] = float(kw["jd"])
         res["initview"] = [float(x) for x in kw["initview"].split(",")]
@@ -642,6 +730,9 @@ def main():
     try:
         if stage == "prep":
             app, res = stage_prep(outdir, res)
+        elif stage == "teleport":
+            app, res = stage_teleport(outdir, res, res["jd"], res["initview"],
+                                      res["offset"])
         else:
             app, res = stage_run(outdir, res, res["channel"], res["jd"],
                                  res["initview"], res["offset"])
@@ -654,8 +745,8 @@ def main():
             fail("real ~/.spacecrafter md5 CHANGED across the launch")
         res["fails"] = FAILS
         res["t_end"] = round(time.time(), 3)
-        (outdir / f"f81_{stage}{'_' + kw.get('channel', '') if stage == 'run' else ''}.json"
-         ).write_text(json.dumps(res, indent=1))
+        name = f"f81_{stage}" + ("_" + kw["channel"] if stage == "run" else "")
+        (outdir / f"{name}.json").write_text(json.dumps(res, indent=1))
     print(json.dumps({k: v for k, v in res.items()
                       if k not in ("points", "scan")}, indent=1)[:4000])
     return 1 if FAILS else 0

@@ -4,6 +4,7 @@
 #   f81_run.sh prep    <outdir>
 #   f81_run.sh config  <outdir> <jd> <x,y,z> [offset]
 #   f81_run.sh command <outdir> <jd> <x,y,z> [offset]
+#   f81_run.sh teleport <outdir> <jd> <x,y,z> [offset]
 #
 # Every launch runs on the temp-HOME farm (b3_farm.sh); the REAL ~/.spacecrafter
 # config.ini + ssystem.ini md5 are asserted in == out around the whole stage, in
@@ -31,6 +32,12 @@ case "$STAGE" in
   config|command)
     JD="$1"; IV="$2"; OFF="${3:-0.3}"
     python3 "$HERE/f81_offset.py" run "$OUT" --channel "$STAGE" \
+        --jd "$JD" --initview "$IV" --offset "$OFF" --bin "$SC_BIN"
+    rc=$?
+    ;;
+  teleport)
+    JD="$1"; IV="$2"; OFF="${3:-0.3}"
+    python3 "$HERE/f81_offset.py" teleport "$OUT" \
         --jd "$JD" --initview "$IV" --offset "$OFF" --bin "$SC_BIN"
     rc=$?
     ;;
