@@ -247,30 +247,77 @@ def cam(h):
 
 
 # ---- frame measurement ----------------------------------------------------
-def centroid(png, frac=0.5, win=400):
-    """Luminance centroid of the brightest blob.  Window around the brightest
-    pixel, weights = (L - t)+ with t = frac*max: unbiased on a symmetric blob,
-    immune to labels/stars below the threshold."""
+def blob_at(png, seed, frac=0.5, win=120):
+    """Luminance centroid of the ONE connected blob that contains `seed`.
+
+    The scene is the shipped default, so the frame holds the other planets too
+    (at fov 180 Mercury draws 92 px from the Sun) - a windowed centroid around
+    the global brightest pixel measures a MIXTURE.  Seeding at the position the
+    engine's own dump reports, then flood-filling the connected component there,
+    measures the body and nothing else; and if the dump's position holds no lit
+    pixel at all, that is REPORTED (found=False), not silently re-seeded.
+
+    seed is (x, y) in image pixel coordinates, or None for 'brightest pixel'.
+    """
     a = np.asarray(Image.open(png).convert("L"), dtype=np.float64)
     H, W = a.shape
-    mx = float(a.max())
-    if mx <= 2.0:
-        return {"found": False, "max": mx, "w": W, "h": H}
-    iy, ix = np.unravel_index(int(np.argmax(a)), a.shape)
+    out = {"w": W, "h": H, "max_frame": float(a.max()), "seed": seed}
+    if seed is None:
+        iy, ix = np.unravel_index(int(np.argmax(a)), a.shape)
+    else:
+        sx, sy = int(round(seed[0])), int(round(seed[1]))
+        if not (0 <= sx < W and 0 <= sy < H):
+            out["found"] = False
+            out["why"] = "seed outside the frame"
+            return out
+        y0, y1 = max(0, sy - 24), min(H, sy + 25)
+        x0, x1 = max(0, sx - 24), min(W, sx + 25)
+        sub = a[y0:y1, x0:x1]
+        if float(sub.max()) < 8.0:
+            out["found"] = False
+            out["why"] = "no lit pixel within 24 px of the dump's position"
+            out["local_max"] = float(sub.max())
+            return out
+        dy, dx = np.unravel_index(int(np.argmax(sub)), sub.shape)
+        iy, ix = y0 + dy, x0 + dx
+    mx = float(a[iy, ix])
+    t = frac * mx
     y0, y1 = max(0, iy - win), min(H, iy + win + 1)
     x0, x1 = max(0, ix - win), min(W, ix + win + 1)
     sub = a[y0:y1, x0:x1]
-    t = frac * mx
-    wgt = np.clip(sub - t, 0, None)
+    mask = sub >= t
+    lab = np.zeros(sub.shape, dtype=bool)
+    stack = [(iy - y0, ix - x0)]
+    lab[stack[0]] = True
+    while stack:
+        cy_, cx_ = stack.pop()
+        for ny, nx in ((cy_ - 1, cx_), (cy_ + 1, cx_), (cy_, cx_ - 1), (cy_, cx_ + 1)):
+            if 0 <= ny < sub.shape[0] and 0 <= nx < sub.shape[1] \
+                    and mask[ny, nx] and not lab[ny, nx]:
+                lab[ny, nx] = True
+                stack.append((ny, nx))
+    wgt = np.where(lab, sub - t, 0.0)
     tot = wgt.sum()
     if tot <= 0:
-        return {"found": False, "max": mx, "w": W, "h": H}
+        out["found"] = False
+        out["why"] = "blob has no weight"
+        return out
     ys, xs = np.mgrid[y0:y1, x0:x1]
-    cx = float((wgt * (xs + 0.5)).sum() / tot)
-    cy = float((wgt * (ys + 0.5)).sum() / tot)
-    return {"found": True, "cx": round(cx, 3), "cy": round(cy, 3),
-            "npx": int((wgt > 0).sum()), "max": mx, "w": W, "h": H,
-            "argmax": [int(ix), int(iy)]}
+    out.update({"found": True,
+                "cx": round(float((wgt * (xs + 0.5)).sum() / tot), 3),
+                "cy": round(float((wgt * (ys + 0.5)).sum() / tot), 3),
+                "npx": int(lab.sum()), "peak": mx,
+                "bbox": [int(xs[lab].min()), int(xs[lab].max()),
+                         int(ys[lab].min()), int(ys[lab].max())],
+                "touches_window_edge": bool(lab[0].any() or lab[-1].any()
+                                            or lab[:, 0].any() or lab[:, -1].any())})
+    return out
+
+
+def centroid(png, seed=None):
+    """Both readings: the blob at the dump's position, and the blob at the
+    frame's brightest pixel.  Equal blobs = no ambiguity to argue about."""
+    return {"seeded": blob_at(png, seed), "brightest": blob_at(png, None)}
 
 
 def unit(v):
@@ -329,7 +376,34 @@ def measure_point(app, res, tag, fov, target):
         e["bodyNew"] = {kk: (b3.get(target, {}).get("new") or {}).get(kk)
                         for kk in ("screen", "dist", "visible", "screenSize")}
         e["frame"] = str(png.relative_to(app.out)) if png else None
-        e["centroid"] = centroid(png) if png else None
+        # seed the blob search at the position the DRAWING path's own dump
+        # reports.  Old: render px already.  New: normalized (radius =
+        # theta/halfFov) -- the y sign convention between the normalized rect
+        # and the image is MEASURED here, not assumed: both candidates are
+        # tried and which one holds a lit pixel is recorded.
+        if png:
+            if path == "old":
+                s = e["bodyOld"]["screen"]
+                e["centroid"] = centroid(png, tuple(s) if s else None)
+                e["seed_convention"] = "old dump screen px, direct"
+            else:
+                s = e["bodyNew"]["screen"]
+                if s:
+                    R2 = 2 * (R or 1024)
+                    c1 = ((s[0] + 1) / 2 * R2, (1 - s[1]) / 2 * R2)
+                    c2 = ((s[0] + 1) / 2 * R2, (s[1] + 1) / 2 * R2)
+                    b1, b2 = blob_at(png, c1), blob_at(png, c2)
+                    e["centroid"] = {"seeded": b1 if b1.get("found") else b2,
+                                     "seeded_yflip": b1, "seeded_ydirect": b2,
+                                     "brightest": blob_at(png, None)}
+                    e["seed_convention"] = ("y-flip" if b1.get("found")
+                                            else ("y-direct" if b2.get("found")
+                                                  else "neither"))
+                else:
+                    e["centroid"] = centroid(png, None)
+                    e["seed_convention"] = "no new screen in dump"
+        else:
+            e["centroid"] = None
         rec["paths"][path] = e
     res["points"].append(rec)
     return rec

@@ -956,7 +956,7 @@ HOST-EVENTS 2026-09-04 (`:2`, auth `.5KBYU3`, 2448x1332) still answers `xdpyinfo
 **DoD:** table + frames + dump extracts committed as artifacts; §11 entry + stub;
 §11.198(d) marker both homes; §5 mint or retraction; README; trees clean; WIP
 cleared; baselines re-derived LAST with deltas stated.
-**WIP:** 2026-09-04 — §0.7 gate PASSED (all premises as stated; one dispatcher
+**WIP:** 2026-09-04 — checkpoint 2: prep launch GREEN (transit JD 2461288.9841951793, target Sun on the meridian to 0.00002°, alt 53.400°; zero control reads 1024.14/1024.03 px on 6/6 cells, R=1024). Centroid replaced by a dump-seeded flood fill (the shipped scene draws Mercury 92 px from the Sun at fov 180). NEXT: config-channel launch, then command-channel.
 arithmetic slip reported: "10.5° at fov 90" should be 13.5° by the formula the
 section states twice). Canary `--no-scene` exit 0. Predictions committed
 (`harness/f81_predictions.json`) + instrument written (`f81_offset.py`,
