@@ -822,7 +822,7 @@ to assume — verified at record time if needed.
 journal `2026-09-04a`; item 4 struck; READMEs both; C3 half discharged; field md5
 unchanged; fresh-build ctest green; ASCII gate; trees clean; WIP cleared; parent
 baselines re-derived LAST (unchanged unless a parent entry was minted — state).
-**WIP:** — **ABORTED at the §0.7 gate, first dispatch 2026-09-04** (executor run, 0
+**WIP:** 2026-09-04 checkpoint (1)+(2) DONE — census (131 keys / 264 read sites, 80 legacy-only · 22 composed-only · 29 both; silent-drop class 11 keys / 189 dead field lines) + `ss-grammar.json` + anchor_gate 6th target (6667→7026 clean, delta attributed 359+5), code `4b633b8a`, ctest 16/16 in `build-f80`. NEXT: (3) the two-regime linter. — **ABORTED at the §0.7 gate, first dispatch 2026-09-04** (executor run, 0
 mutations, both trees byte-identical at `ba7a32a8` / `8652be2`; ctest 16/16 baseline
 paid in a fresh dir and the dir removed): FOUR premises false, ALL the dispatcher's —
 (B1) "D16–D19 still open" (answered 2026-07-23 → §11.79(j)–(m)); (B2) "recorded as
