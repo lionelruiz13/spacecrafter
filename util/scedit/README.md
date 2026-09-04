@@ -621,12 +621,60 @@ Per-command, the field that governs `--check`'s argument vocabulary is
 **`args_complete`**. It answers one question -- *is the key list here the WHOLE
 vocabulary this command accepts?* -- because "I listed some keys" and "I listed
 all of them" are different claims and only the second licenses calling a key
-unknown. Four handlers hand their whole parsed map to another module; two of
-them (`dso3d`, `landscape`) have that module's keys extracted and answer `true`,
-two (`body`, `camera`, and `flyto` which is `camera`) answer `false` because
-their downstream vocabulary is the stellar-system contract's to state. Those
-last three are silent on their keys **by construction, not by omission**, and
-`--rules` says so.
+unknown. Four handlers hand their whole parsed map to another module. Two of
+them (`dso3d`, `landscape`) have that module's keys extracted into this file and
+answer `true`. **`body`** answers `true` as well since 2026-09-04, and names
+**`args_downstream_contract: "stellar-system-file"`**: its keys ARE stated, in
+`grammar/ss-grammar.json`, and the checker reads them from there rather than
+carrying a copy that would go stale. **`camera`** (and `flyto`, which IS camera)
+still answers `false`, and the reason is not symmetry: its map goes to the two
+ANCHOR registries, whose vocabulary is `anchor.ini`'s grammar -- a third
+contract file nobody has written yet. It is silent on its keys **by
+construction, not by omission**, and `--rules` says so.
+
+A consumer holding only this file must keep treating a downstream-naming
+command's key list as PARTIAL, and that is enforced rather than documented:
+`Grammar::argKeysAreExhaustive()` answers no for such a command, and the checker
+requires the second contract to be in hand before it reports an unlisted key.
+The editor loads one contract, so its completion still marks `body`'s key list
+open -- which is the honest answer for it.
+
+### The stellar-system contract
+
+`grammar/ss-grammar.json` is the second machine-readable contract: what the
+engine reads out of a stellar-system file. `--check` picks it up automatically
+for a file whose LOCATION says it is one, and reports in the same gcc shape:
+
+    scedit --check ~/.spacecrafter/ssystem.ini
+    scedit --check ~/.spacecrafter/modularSystem/SolarSystem.ini
+    scedit --check --rules ...        # every rule of both contracts
+
+The regime comes from where the file IS, never from what is in it:
+`~/.spacecrafter/modularSystem/<Name>.ini` (and its machine-owned
+`.ini.disabled` twin) is the COMPOSED format; `ssystem.ini`,
+`default_ssystem.ini` and `<name>_ssystem.ini` are LEGACY. That is not
+fastidiousness -- the twin is byte-identical to its legacy original in every
+key, so no amount of looking inside can tell them apart.
+
+Why the distinction earns its keep: the two loaders disagree, and the contract
+says where.
+
+    halo = on          draws NOTHING on the old path and a halo on the new one
+                       (strToBool accepts true|1; isTrue accepts true|on|1)
+    hint = no          does NOT switch the hint off -- that key reads the other
+                       way round (isFalse: off only for false|off|0)
+    relation = ...     a hard error in a legacy file: an older build must still
+                       read it (D13), and this key changes what a section IS
+    type = ...         a LEGACY key, on all 90 shipped body sections. In a
+                       composed MODULE section (one with `body =`) the same key
+                       names the module family instead
+    orbit_Period       dead in a data file and alive in a script: the command
+                       reader lowercases keys, no file reader does
+
+`_meta.contract` says which contract a file is, so a tool handed the wrong one
+says so instead of finding an empty vocabulary. `_meta.dead_keys` records the
+keys that appear in shipped data and that no loader reads, with the grep that
+establishes it -- so the claim fails if one of them acquires a reader.
 
 ### Authority chain
 
@@ -716,10 +764,12 @@ silently dropped translation unit.
 
 ## Verification
 
-Sixteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings).
-One of them, `shipped_corpus_gate`, reports a SKIP where its input -- the
-installed script package -- is not on the machine; that is a reported skip in
-the ctest summary and never a pass.
+Nineteen `ctest` gates, all green on a clean build (`-Wall -Wextra`; 0 warnings
+on GCC 11, one on GCC 15.2 -- `sc_tui.cpp:325`, `-Wformat-truncation`, which
+predates this file and is reported rather than hidden). Two of them,
+`shipped_corpus_gate` and `field_corpus_gate`, report a SKIP where their input --
+the installed script package, the field stellar-system files -- is not on the
+machine; that is a reported skip in the ctest summary and never a pass.
 
 | gate | what it measures |
 |---|---|
@@ -736,9 +786,12 @@ the ctest summary and never a pass.
 | `mcp_protocol` | 85 checks from a stdlib-only Python client (`tests/mcp_gate.py`) that spawns `scedit --mcp` - a second implementation on purpose: both protocol eras, every tool with good and bad arguments, the honest null arriving as JSON `null` through the whole chain, the catalogue's counts, the five refusals (parse error, no method, unknown method, unknown tool, unsupported version), and `run_command` driven against the stand-in engine with both sides asserted - the answer verbatim, the stand-in's own record of what arrived, a silent command with the note that says exactly how much that silence is worth, a REFUSED command coming back in `diagnostics` split into origin/message/subject with the raw record kept, and the no-engine path as a tool error naming what to check |
 | `tcp_client` | 30 gate checks over 112 leg checks: `sc_tcpclient` against `tests/fake_engine.py`, a stand-in whose framing rules are each read from a named line of `src/tools/io.cpp`. One leg per process, and after each one the gate asserts what the stand-in RECEIVED - so a leg cannot pass by agreeing with itself. Endpoint parsing and its refusals, a port nothing listens on, subscribe/ask/answer/disconnect/reconnect, a two-line command refused with nothing sent, latin-1 and 0xA0 bytes arriving as bytes, the bounded feed counting what it drops, another client's answer arriving because we subscribed, the engine closing the connection - and the DEDICATED diagnostic link: both subscriptions sent in order, a `$DIAG|` record split into its four fields (a subject containing the separator included), a malformed one SHOWN rather than dropped, and a second `$LOGON`-only onlooker proving from the other end that it received the answer and not one byte of the diagnostic channel |
 | `pty_keys` | the editor's live KEYS, pressed on a **pseudo-terminal**, with the stand-in engine asserting what arrived: `--tcp` alone connects to nothing, Ctrl-T subscribes, Ctrl-L sends the caret's line verbatim and sends NOTHING from a comment line, Ctrl-R plays the file by absolute path, the engine's own words reach the feed pane on screen, Ctrl-Q exits 0 having unsubscribed. This is the seam between the two gates on either side of it -- one pins what is DRAWN, the other what the core and client DO -- and it is what makes "F8 plays the file" a measurement rather than a reading |
-| `anchor_gate` | every `file:line` the contract cites into the engine still resolves. Two checks, and the order is the point: first AT ITS PIN -- the pin is a commit, so that check cannot rot, and a reference past the end of its own file at its own pin is a broken citation whatever HEAD is doing; then against the WORKING TREE, reported per reference as clean, moved or gone, with `gone` red unless the reference declares it with a `[NOT AT HEAD: ...]` marker. The HEAD side is the tree and not the commit deliberately: a gate that only saw committed state would pass on the very edit that breaks the citations and fail later, when whoever moved the line has moved on. Counts recorded in `tests/anchor-expected.txt` -- 6667 clean, 2 declared, 69 skipped inside `_meta` and saying so -- so the day a handler shifts, `clean` falls and somebody has to look at what. Shown able to fail on ONE inserted line in an engine file: 21 references move and the gate exits 1 |
+| `anchor_gate` | every `file:line` the contract cites into the engine still resolves. Two checks, and the order is the point: first AT ITS PIN -- the pin is a commit, so that check cannot rot, and a reference past the end of its own file at its own pin is a broken citation whatever HEAD is doing; then against the WORKING TREE, reported per reference as clean, moved or gone, with `gone` red unless the reference declares it with a `[NOT AT HEAD: ...]` marker. The HEAD side is the tree and not the commit deliberately: a gate that only saw committed state would pass on the very edit that breaks the citations and fail later, when whoever moved the line has moved on. Counts recorded in `tests/anchor-expected.txt` -- 7196 clean, 2 declared, 86 skipped inside `_meta` and saying so -- so the day a handler shifts, `clean` falls and somebody has to look at what. Shown able to fail on ONE inserted line in an engine file: 21 references move and the gate exits 1 |
 | `corpus_gate` | `--check` over the TRACKED corpus -- `doc/superscript.sts` and the harness scripts -- produces exactly the recorded findings, line for line |
 | `shipped_corpus_gate` | `--check` over the INSTALLED script package (408 scripts, 1661 findings, every one dispositioned at F76), against a record of per-file per-id COUNTS plus the package's own aggregate md5. Absent package: exit 77, which CMake's `SKIP_RETURN_CODE` turns into a reported skip. Shown able to fail on one injected line in a hardlink copy of the corpus: four lines of delta, and the md5 row says the DATA moved rather than the checker |
+| `ss_lint_rules` | the SECOND contract's rules fixture, and it is a PAIR on purpose: `tests/sslint_ssystem.ini` and `tests/modularSystem/SsLintComposed.ini` hold the SAME constructs in the two regimes, so the gate measures the discrimination and not just the rules. `relation =` is a hard error in the legacy file and silent in the composed one; `type = BODY` is a value-domain finding on a legacy node and the canonical marker on a composed one; the legacy fixture's own ten `type = Sun|Moon` lines stay silent throughout. A rule that stopped telling the regimes apart would still pass a one-file fixture and cannot pass this |
+| `ss_corpus_gate` | `--check` over `data/default_ssystem.ini` -- tracked in this repository, so it gets the line-for-line record the script corpus gets (205 findings, every one dispositioned at F80) |
+| `field_corpus_gate` | `--check` over `~/.spacecrafter/ssystem.ini` and the composed twins beside it: per-file per-id COUNTS plus each file's md5, never a line of their content. They are untracked field data belonging to the person who authors the shows, and they are READ-ONLY to every task that touches them -- copying them in would make a second copy of data whose whole point is that there is one. Absent: exit 77, a reported skip |
 
 `tests/lint-expected.txt`, `tests/corpus-expected.txt`,
 `tests/history-expected.txt`, `tests/check-json-expected.txt`,
