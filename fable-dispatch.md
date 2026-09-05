@@ -1128,20 +1128,30 @@ harness records (`git status` on the code repo EMPTY at close).
 
 **DoD:** census + checklist + patch artifact + breakage scan; §11 entry + stub; map R6
 annotated; README; both trees clean (code untouched); WIP cleared; baselines LAST.
-**WIP:** 2026-09-05 19:32 — checkpoint 1: §0.7 gate PASSED (all input-side premises
-verified; two output-side defects reported: the section's "5" F-sections is 6 and its
-118/189 census is 125/208 — both licensed re-measures — and the prompt's "the githooks
-pre-commit IS the trailer check" is refuted, the hook has no branch or trailer logic at
-all). Census instrument `harness/f92_census.py` + artifact
-`harness/artifacts/f92/rename-live-pointers.patch` written; round-open partition (code
-`0b46a63f` / harness `58f10f6`): code 18 = LIVE 1 · PIN 17 · HIST 0 · CONV 0; harness
-208 = LIVE 3 · PIN 116 · HIST 89 · CONV 0. — checkpoint 2 (19:37): patch VERIFIED in
-scratch worktrees `/home/claude/sc-f92/{code,harness}` — `git apply --check` rc 0 both,
-applied there only, 4 lines in 4 files, post-apply LIVE = 0 with PIN/HISTORICAL
-untouched; `f85_links` 129/25/16 · 0 dangling on the patched document; breakage scan
-measured (B1 supervised-by's silent branch→HEAD fallback is the one thing that would
-LIE; the githooks are NOT a trailer check). Artifacts `harness/artifacts/f92/`. NEXT:
-§11.212 entry + stub, map R6 + R0 head, §3 item, README section, then instruments.
+**WIP:** DELIVERED 2026-09-05 19:43 → **§11.212** (+ stub). The census is a PARTITION
+under one question — *does the rename make this sentence false?* — over all **226**
+occurrences at code `0b46a63f` / harness `58f10f6`: code 9 files / 18 = LIVE 1 · PIN 17;
+harness 125 / 208 (live ∪ archive) = LIVE 3 · PIN 116 · HIST 89; **CONVENTION 0, and the
+zero is the measurement** (the grammar is stated with `<branch>` and both trailer writers
+derive the name, so the mandate's *"one line to touch"* does not exist). Instrument
+`harness/f92_census.py` (sites located by unique snippet, never line number; fails on any
+unclassified hit; cross-checks itself against `git grep -o`). Patch
+`harness/artifacts/f92/rename-live-pointers.patch` = exactly the live class: `git apply
+--check` rc 0 in a scratch worktree of each repo, applied THERE only (4 lines / 4 files),
+post-apply LIVE 0 with 136 pins + 102 records untouched, `f85_links` 129/25/16 · 0
+dangling on the patched document; both worktrees REMOVED. Breakage scan
+(`artifacts/f92/f92_breakage.txt`): the one liar is `supervised-by.sh:236-238`/`:781`
+(silent branch→HEAD fallback, measured non-verdict-preserving); `@{upstream}` rider;
+**the `githooks/` "trailer check" the mandate and the prompt both name DOES NOT EXIST**
+(hook = derivation refusal by content; 0 branch/trailer logic — output-side dispatcher
+defect, reported not absorbed, with its counterfactual at §11.212(a)(3)). Also
+report-only: section says `### F` 5, live 6; section says 118/189, live 125/208. Owner's
+checklist = §11.212(h), eleven acts each with a failing check; DEPLOYMENT-MAP **R6
+ANNOTATED** (policy half answered: rename, not redirect; residual = the PR target, one
+sentence, his) + the R0 head; §3 carries the compact version; `harness/README.md` F92
+section. Records opened, not fixed: `f85_links.py:158`+`:177-178` crash on a bare
+worktree (back-marker at §11.206(e)), the two pin constructors. Code repo untouched
+(`git status` empty, HEAD `0b46a63f`); D14 PASS.
 
 ### F93 — The `b4_anchors` gate REPAIRED where F89 showed it blind: (1) a NEW assert that the OLD path's distance to the anchor's parent equals the authored radius (`Moon.old.dist` = 200 000.0 km — 17 417 km of discrimination, wrong in b4's own artifacts since F7 and asserted by nothing), (2) P7's screen-witness control re-expressed as a LIT-PIXEL COUNT comparison instead of a max-over-window (846 vs 21 px at t0, 2023 vs 27 at t1 — 30–100× on both binaries where the max form gives −35 / +172), (3) the scene's twinkle OFF so the gate is deterministic (0–2 px A/A instead of ~2200); proven BOTH WAYS on the two binaries F89 left: GREEN on the reference `2815d182`, RED on the pre-fix `sc-scratch-pre` `9471f2fc` at the new assert AND the new control — a gate that now reds on the corrupt build and greens on the correct one, which is the direction it had backwards (§11.208(i)(j); §13.B; the developer's first harness run) [S, instrument]
 
@@ -1328,6 +1338,27 @@ had backwards; b4's scene is deterministic (twinkle off via the farm copy, P0 as
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **THE RENAME, WHEN YOU WANT IT: ELEVEN ORDERED ACTS AND FOUR LINES TO EDIT
+  (session 23, F92 → §11.212; nothing here renames anything).** Your line —
+  *"The master-beta will became the reference and get renamed main once ready"* —
+  answers **R6**'s policy half (rename, not redirect; the map's row is annotated,
+  not struck). The footprint is measured: **226 occurrences of `master-beta` in the
+  two repositories = 4 LIVE POINTERS · 133 PINS · 89 HISTORICAL RECORDS · 0
+  CONVENTION.** The live four are `doc/developer-entry.md` §1, `CLAUDE.md:8` and
+  `agents/opus-xhigh.md:33`+`:88`; they are in
+  `harness/artifacts/f92/rename-live-pointers.patch`, which `git apply --check`s rc 0
+  in a scratch worktree of each repo and leaves LIVE 0 when applied there. **The
+  checklist is §11.212(h)**, each act with a check that can fail. **ONE SENTENCE IS
+  YOURS AND THE LINE DOES NOT ANSWER IT: after the rename, do pull requests still
+  target `2023-master`?** (the entry document says they do; the patch changes the
+  branch's name and leaves that half alone). Two riders, both cheap and both listed
+  not done: `supervised-by.sh:236-238` falls back to `HEAD` in silence when a
+  trailer's branch is gone (measured: the fallback flips a verdict), and
+  `f75_anchors.py:442`/`f80_ssgrammar.py:46` spell the branch out in the pins they
+  WRITE. And one correction to a thing the dispatch believed: **`githooks/pre-commit`
+  is not a trailer check** — it refuses derivations by content and knows nothing of
+  branches, so the rename cannot break it.
 
 - **Session-22 decision items (2026-09-05, the REFERENCE round — kept short on your
   word about this week's capacity; every item is one line to answer or to ignore):**

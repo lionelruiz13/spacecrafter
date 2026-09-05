@@ -4135,3 +4135,78 @@ stalls. The fault run reds S2 and S6 and exits 1. Artifacts `artifacts/f90/`:
 `tables.txt` (all four side by side), `run{1,2,3}_result.json.gz`,
 `fault_result.json.gz`, `plan.txt`, `navstr_mars_run1.txt` (the language datum
 verbatim), `reload_anchor_rebuild.log` (the engine's own rebuild lines).
+
+## F92 — the branch rename's footprint, and how to re-take it (`f92_census.py`) — INTENT §11.212, 2026-09-05
+
+`master-beta` is to become `main` [vixy 2026-09-05: *"The master-beta will became the
+reference and get renamed main once ready."*]. This is the instrument that says what
+that costs, and it is a PARTITION rather than a list because the 226 places the name is
+written down are not of one kind. One question sorts them, and it applies to a hit the
+table has never seen: **does the rename make this sentence false?** Yes → LIVE POINTER
+(the patch). No, it resolves by sha → PIN. No, it describes a past state → HISTORICAL
+RECORD (annotated at the rename, never rewritten). No, it is worded branch-agnostically
+→ CONVENTION.
+
+    python3 harness/f92_census.py census [--verbose]     # the table, both repos
+    python3 harness/f92_census.py patch --out harness/artifacts/f92/rename-live-pointers.patch
+    python3 harness/f92_census.py verify --code-root W1 --harness-root W2   # LIVE must be 0
+
+**Re-take it before acting on it.** The census is STAMPED at a commit (code `0b46a63f`
+/ harness `58f10f6`: code 9 files / 18 hits = LIVE 1 · PIN 17; harness 125 / 208 = LIVE
+3 · PIN 116 · HIST 89), and both repositories grow records that name the branch every
+round — every one of them lands in PIN or HISTORICAL by construction, but the totals
+move. `census` re-measures in a second; the reproducibility is the deliverable, not the
+number.
+
+**Three properties worth knowing before trusting it.** (1) It counts BYTES over
+`git ls-files` and then cross-checks its own total against `git grep -o` per repo,
+refusing to report a complete partition over a corpus it never read. (2) Live sites are
+located by a SNIPPET that must occur EXACTLY ONCE in its file, never by a line number —
+`INTENT.md` and `fable-dispatch.md` are appended to daily. A snippet that goes missing
+or duplicates is a STALE TABLE and fails the run, which is the opposite of silently
+dropping a site out of the patch. (3) An occurrence that is not a site, not a pin, not
+in a declared record surface is reported UNCLASSIFIED and fails the run: a new hit in a
+new kind of place has to be looked at, not counted.
+
+**After the rename**, `SEARCH_TOKEN` stays `master-beta` — the audit question is still
+"where is the OLD name" — and `SITE_BRANCH` becomes `main`; that one line is in the
+patch, so the instrument crosses over with the corpus it measures, and a clean run then
+reads LIVE POINTER 0 with every pin and record still saying `master-beta`. Note the
+asymmetry that makes the timing matter: `master-beta` is a unique token, `main` is not
+(676 occurrences of the word in the code repo, 2040 in the harness, plus EntityCore's
+own `branch = main` in `.gitmodules`). **The same audit cannot be taken by grep once
+the rename has happened.**
+
+**Re-checking the patch** needs two throwaway worktrees, because the patch must never
+touch the real trees:
+
+    git -C <code>    worktree add --detach /tmp/f92-code    HEAD
+    git -C <harness> worktree add --detach /tmp/f92-harness HEAD
+    git -C /tmp/f92-code    apply --check --verbose --include='doc/*' <patch>
+    git -C /tmp/f92-harness apply --check --verbose --include='CLAUDE.md' \
+                                  --include='agents/*' --include='harness/*' <patch>
+    # apply for real THERE, then:
+    python3 /tmp/f92-harness/harness/f92_census.py verify \
+            --code-root /tmp/f92-code --harness-root /tmp/f92-harness
+    git -C <code> worktree remove /tmp/f92-code ; git -C <harness> worktree remove /tmp/f92-harness
+
+The `--include` filters are what let ONE artifact serve both repositories: the two path
+sets are disjoint, and `--verbose` prints `Chemin '<path>' non traité` for each patch
+the other repo owns, so the skip is visible rather than assumed.
+
+**Gotcha, measured 2026-09-05 (F92, §11.212(f)):** `f85_links.py` run against a bare
+code worktree CRASHES with `IsADirectoryError` — `:177-178` lets a DIRECTORY become
+`last_path` and `:158` calls `count_lines()` on it without an `isfile` guard, which
+fires when a cited path is absent (a worktree has no `claude/` beside it). It is not
+caused by any edit: the same crash appears with the UNPATCHED document and the same
+root, and disappears with the PATCHED document and the real root (129/25/16, 0
+dangling). Run `f85_links.py` against the real tree, not a worktree, until that guard
+exists. The traceback exits 1, the same code as "dangling citation found".
+
+**The breakage scan** (`artifacts/f92/f92_breakage.txt`) is the other half and is worth
+re-running before the rename rather than after: the one thing that would LIE is
+`supervised-by.sh:236-238`/`:781`, which takes the branch name out of a historical
+`Code:` trailer and silently falls back to `HEAD` when that ref no longer exists —
+measured non-verdict-preserving on one commit against two targets (rc 0 vs rc 1). The
+`githooks/` pair, which the dispatch believed to be a trailer check, parses no trailer
+and reads no branch at all.

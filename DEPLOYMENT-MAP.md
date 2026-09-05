@@ -57,8 +57,12 @@ tester, decision-paced — the tiers that follow). **What is NECESSARY, and only
 they move this head on both criteria. Previous head kept above, struck where superseded.]**
 **What is NECESSARY, and only that, as of 2026-09-05 evening:**
 - **For R0 (the developer, one week):** **R5 the PUSH** (Vixy; `master-beta` + `CC-harness`
-  from a keyed host — nothing here substitutes it) · **R6 the branch policy** (Vixy, one
-  sentence) · and **one new owner question, from R23**: where the outside catalogue
+  from a keyed host — nothing here substitutes it) · ~~**R6 the branch policy** (Vixy, one
+  sentence)~~ **[ANNOTATED 2026-09-05: the policy half is ANSWERED — *"The master-beta will
+  became the reference and get renamed main once ready"* [vixy, verbatim] = RENAME, not
+  redirect. What is left of R6 for R0 is the owner's ACT (the rename, footprint measured by
+  F92 → §11.212: 4 live pointers out of 226 occurrences, patch + eleven-act checklist ready)
+  and ONE unanswered sentence, the PR target — see the row below]** · and **one new owner question, from R23**: where the outside catalogue
   installation procedure lives, and whether it may be documented in the repository. That
   third item is R6's sibling and §11.206's third residual; it is what stands between a
   clone and a sky with more than 26 561 stars in it. R1–R4 are met or owner-only.
@@ -250,6 +254,25 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    it. Also his: the developer's platform (if Windows, the vcpkg/`install_src.bat` path enters
    through R1 untested here) and whether the harness repo is meant to be readable by him
    (F85 points at it either way).
+   **[ANNOTATED 2026-09-05 — THE POLICY HALF IS ANSWERED, AND THE ROW IS NOT STRUCK BECAUSE
+   THE ACT HAS NOT HAPPENED.** [vixy 2026-09-05, verbatim, in-line at the round's trigger]:
+   *"The master-beta will became the reference and get renamed main once ready."* So of the
+   two readings this row offered, it is the **RENAME**: the branch becomes `main`, and
+   Kenan-Blasius, Lionel and Calvin are **not** redirected. The rename is the OWNER's act and
+   nothing here prepares it beyond a measured footprint — **F92 → §11.212**: all 226
+   occurrences of `master-beta` in both repositories partitioned (**4 LIVE POINTERS · 133
+   PINS · 89 HISTORICAL RECORDS · 0 CONVENTION**, stamped at code `0b46a63f` / harness
+   `58f10f6`, instrument `harness/f92_census.py`), an unapplied patch covering exactly the
+   live class (`harness/artifacts/f92/rename-live-pointers.patch`, `git apply --check` rc 0
+   in a scratch worktree of each repo, post-apply LIVE 0), an ordered eleven-act checklist
+   with a check per act, and a breakage scan whose one finding is `supervised-by.sh`'s silent
+   branch→HEAD fallback. **The gate the sentence names, *"once ready"*, is the map's own:
+   T5.1 ran 2026-09-05 (F90, §11.211), so it is T5.2 alone.** **RESIDUAL, still Vixy's and
+   NOT answered by the line:** the PR target. `doc/developer-entry.md` says pull requests
+   target `2023-master`; the rename makes the branch's NAME false there and says nothing
+   about that half, so the patch changes the name and leaves the target — one sentence, his.
+   The two riders above (the developer's platform, whether the harness repo is his to read)
+   are untouched by the line as well.]**
 
 Not required for R0 (challengeable): tester transparency (T0's tiers), the final pass, any T1
 decision — a developer can work on a branch whose tester-facing divergences are still open,
