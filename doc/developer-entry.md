@@ -119,13 +119,13 @@ location relative to its body" [`:19-23`].
 A git submodule [`.gitmodules:1-3`], described by its own README as a
 "Vulkan-based engine used to simplify use of Vulkan and debugging"
 [`src/EntityCore/README.md:2`]; four subdirectories under `src/EntityCore/`:
-Core, Executor, Resource and Tools. It is the owner's stratum: **treat it as read-only**
-unless he says otherwise, and route questions about it to him [`Sec.11.161`].
+Core, Executor, Resource and Tools. It is the owner's stratum: **treat it as
+read-only** unless he says otherwise, and route questions to him [`Sec.11.161`].
 
 ### The command surface
 
-`src/interfaceModule/` and `src/scriptModule/` are the script command surface, which
-has a second, machine-readable description outside the engine:
+`src/interfaceModule/` and `src/scriptModule/` are the script command surface,
+which has a second, machine-readable description outside the engine:
 `util/scedit/grammar/sc-grammar.json` is "the single machine-readable contract
 for spacecrafter's command surface" [`util/scedit/README.md:589-591`] and
 `util/scedit/grammar/ss-grammar.json` a second contract for what the engine
@@ -197,34 +197,35 @@ words, is in `claude/INTENT.md` section 2.0 [`Sec.2.0`].
 **D8 -- the as-if rule.** From the user's standpoint the software must behave
 *as if* everything were physically exact and fully computed. Any internal
 deviation -- lazy, frozen, skipped, iterative -- is valid exactly as long as
-no user-reachable observable can tell. That is the whole licence and the whole
-limit: the optimization is legal until an observable channel reveals it, so an
-optimization ships with the check that would reveal it.
+no user-reachable observable can tell [`Sec.2.0`, D8]. That is the whole
+licence and the whole limit: the optimization is legal until an observable
+channel reveals it, so an optimization ships with the check that would reveal it.
 
 **D9 -- data is the product, and the field is frozen.** Code is open source;
 the data is what is paid for. Deliveries are frozen individually and updates
 are offline, operated by hand, so in-field data is immutable in practice --
 corrections propagate forward into future deliveries, and backward
-compatibility with an already-installed file is forced rather than chosen.
+compatibility with an already-installed file is forced rather than chosen
+[`Sec.2.0`, D9].
 
 **D10 -- optimize the potential.** "What is not needed by (almost) everyone is
 not what's not needed, to me." The enthusiast pushing past the tested
 capabilities is a first-class constituency, because that is where discovery
 comes from. Read it as: prefer the general mechanism to the fitted one, even
-when only the fitted one is currently asked for.
+when only the fitted one is currently asked for [`Sec.2.0`, D10].
 
 **D11 -- 1 ms/frame.** The global timing goal is 1 ms/frame soft-realtime for
 the engine's work on the reference hardware, so older hardware keeps up and
-enthusiasts keep margin. Cost claims use that denominator, not a percentage
-of an unstated total.
+enthusiasts keep margin. Cost claims use that denominator, not a
+percentage of an unstated total [`Sec.2.0`, D11].
 
 **D12 -- acting defaults are logged.** A default that ACTS is logged; only
 inaction may be silent. If your code picks a value on the user's behalf and
-that choice does something, it says so in the log.
+that choice does something, it says so in the log [`Sec.2.0`, D12].
 
 **D13 -- downgrade must stay possible.** Reverting to an older build must not
 break a working install, as long as the newer features and formats are not
-actively used -- so a format change is additive by default.
+actively used -- so a format change is additive by default [`Sec.2.0`, D13].
 
 **D14 -- every source file is pure ASCII.** Accents are removed to get there
 [`Sec.2.0`, D14]. It governs source BYTES only: user-visible output may
