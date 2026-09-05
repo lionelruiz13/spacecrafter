@@ -820,6 +820,52 @@ Flips: §5.98 **FIXED**; back-markers at §11.163(b)(c), §11.207(b)6/(c1)/(g)(2
 `harness/README.md` F94 section. Instruments: scan **223/274/131** unchanged; pair-check
 **230/205/25/110** (+1 entry file, +1 live pair = 11.214), D 35 · D2 11 · I 89 · I2 36 · M 81
 all at baseline. Farm `/home/claude/sc-f94/`; artifacts `harness/artifacts/f94/`.
+**ACCEPTED 2026-09-06 — the verifying commands' `date` read 01:52:10 and 01:52:36–01:53:59
+(supervisor, session 24, Claude Fable 5.1).** Verified by my own runs and reads, not by the
+report: §11.214 read in full; ONE code commit `a2a880ef` (Claude Opus 5; `core.cpp` 3+/2− — the
+two literals and one citing comment, the diff READ) and four harness commits `0b619b7` →
+`73dc9c6` (Claude Opus 5; the predictions at `0b619b7` before the first launch), both trees
+clean; binary `404b9e89`, `cmake -n` 0, no `src/` file newer; the pre-fix binary preserved at
+`/home/claude/sc-f94/bin/spacecrafter-pre-f7112cb9`; §5.98 reads *FIXED 2026-09-06 (F94
+§11.214* at the row, its `**OPEN**` struck; §11.214 named at `INTENT/11.149.md`, `11.163.md`,
+`11.207.md`, `5.5.md` and six `INTENT.md` sites; SS-17 carries it; MAP at four sites (`:78`,
+`:396`, `:591`, `:614`); README §F94 (`:4309`); tree-wide `Satun` 0 / `Ganymed` 1 (the correct
+literal, `core.cpp:2252`); D14 PASS; instruments to the digit (scan 223/274/131 · pair-check
+230/205/25/110 · D 35 · D2 11 · I 89 · I2 36 · M 81 — +1/+1 the entry). **AND the instrument run
+by my own hand on BOTH binaries, sequentially, at 01:52:36–01:53:59
+(`/home/claude/sc-f94/supervisor-{pre,post}/`): PRE `f7112cb9` — D if · A Saturn/600 ELSE · B
+Ganymede/503 ELSE · C Titan/604 if · E Saturn/0 else; POST `404b9e89` — D if · A IF · B IF · C if
+· E else; every JDay to the executor's digit (2463232.5/2463963.5 pre, 2462867.5/2463598.5
+post for A/B), 0 FAILs both, canary exit 0 both, the four frozen files in==out both, rc 0
+both.** Deviations ENDORSED with the executor's arguments: the citing comment reworded so
+check (b) stays a live discriminator (its first draft quoted the old spellings and turned the
+check red on itself — the mandate's "comment allowed" and check (b) as worded could not both
+hold; MY defect, output-side, see below); the pre-fix play of the shipped consumer added (a
+post-only play has no counterfactual); test D + the neutral third date (without them a green
+table cannot separate "the fix works" from "`struct if` answers the same regardless" or a
+play that died early); the farm builder's self-catch on `startup.sts` (f55 leaves it to the
+caller; the annotator plays it at launch — the owner's file never reachable, `cea83254`
+in==out); the clock as the observable through the shipped `get status position` rather than
+a dump. DISPATCHER DEFECT reported, ACCEPTED as mine, output-side with the counterfactual:
+the section's *"a one-line comment citing this entry is allowed"* and its check (b) (*"`"Satun"`
+0 hits"*) are inconsistent if the comment names the token — the executor resolved it the
+right way (the check wins; the record lives at the commit and the entry). Also reported, NOT
+mine: `§11.207(g)(2)`, SS-17 and §5.98's R19 block cite `core.cpp:2173/:2177` (pre-F47
+numbers) — ledger drift predating this session, annotated at each node by the executor.
+Round tally: **two dispatcher defects** (F91's rounding, F94's comment/check tension). Logged,
+not chased, and handed to F95 as a baseline datum: the F90 gate on this binary logs **2 frame
+stalls per ~92 s launch** (the executor's run AND my own 01:10 run on `f7112cb9`) where F90's
+2026-09-05 runs recorded 0 — the §11.15d/stall class; the soak's sampler records the count
+with the lock state beside it. Routed: the doc token `doc/superscript.sts:1529` `Ganymed` →
+`Ganymede` (the tester's file, SS-17) and the fact-shaped half of §11.207(c1) with its
+measured answer for THIS field (§11.214(k)(2)) → the main tester, §3. STANDING CONSEQUENCES:
+**`$body_selected` answers 600 for Saturn and 503 for Ganymede** — the documented table is
+true for the first time on both bodies; the fix changes the behaviour of no shipped script on
+this field (1 of 408 reads the variable, tests 0, same arm both binaries, the observer at the
+same 100083400.74 m); the census question stays open for the tester's own installation only;
+`f94_bodyselect.py` is a 37-second both-ways instrument for any `struct if <reserved var>`
+question; a delivered section's PREMISES block FAILS afterwards by construction (F91 8/7,
+F94 9/7) — the post-delivery norm, said so a successor does not read it as drift.
 
 ### F95 — T5.2, the MULTI-HOUR SOAK under show load — the last member of the map's "ready" gate, never run: ONE launch on a private farm in the field's French locale, the eight shipped shows (`basis/` · `custom/` · `deepsky/`) played round-robin through the shipped command surface for ≥ 3 hours with every authored pause RESUMED, a cycle-boundary interlude (select · read out · a dual dump at a PINNED clock) so the §5.62 epoch-shift class has an instrument, a 30-second sampler on the process (RSS · VSZ · threads · fds · GPU MiB · stall counts · log bytes · probe round-trip · screen-lock state), the FAIL criteria and the LEAK criterion committed BEFORE the launch, ONE detached DRIVER owning the app while every executor call is a foreground read (the no-`run_in_background` design measured possible at this session's open), both detectors shown able to fail on two-minute controls, and ONE quit at the end measured against F19's 45 s bound (DEPLOYMENT-MAP T5.2: *"A planetarium session is hours"*; the stability class §5.61 · §5.59/A40 · §11.15d · B30 · §5.62) [M–L, instrument; display-bound, hours]
 
@@ -948,10 +994,10 @@ the design stands on it).
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => 0b46a63f
+git rev-parse --short=8 HEAD => a2a880ef
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 407b3d1d
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 213
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 404b9e89
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 215
 grep -c '^### F' claude/fable-dispatch.md => 3
 # the shows, the config and the channels the design stands on
 ls ~/.spacecrafter/scripts/basis/*.sts ~/.spacecrafter/scripts/custom/*.sts ~/.spacecrafter/scripts/deepsky/*.sts | wc -l => 8
