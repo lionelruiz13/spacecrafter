@@ -153,6 +153,76 @@ rule, applied to itself); push from the laptop or after the owner's key lands he
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-05, supervising session 22 — LovelyFoxDev, the
+REFERENCE round: reconcile / newcomer / entry document]:** trigger = the §0b
+verbatim line PLUS an in-line transmission: *"Read back and update if needed
+DEPLOYMENT-MAP.md to focus on the work necessary for clean deployment (and stable
+reference)"*. The phrase had no prior use in the ledger (grep live ∪ archive ∪
+`~/shared`, 0 hits); ONE question asked, answered [vixy 2026-09-05, verbatim]:
+*"Stable reference is because another junior developper, major of his promotion,
+5th year post-bac, will work on spacecrafter. I would prefer this branch to became
+the stable reference for development, otherwise work will continue and require
+further feature port. His work will start in a week."* — a SECOND deployment
+criterion (DEPLOYMENT-MAP **R0**), a one-week horizon [stated], and the owner's
+declared reduced capacity this week [vixy: *"probably a bit overloaded and not at
+the best of my capabilities this week"*] ⇒ this session asks nothing further and
+closes with a compact decision list. Signing identity: this session signs
+**`Claude Fable 5.1`** (the Bash tool's Git section is the identity authority per
+`~/shared/QUEUE.md`'s header rule); prior sessions' `Claude Fable 5` signatures
+are theirs, untouched (the QUEUE's over-claim lesson). Warm-up: both trees clean at
+open, code `85cc2785` / harness `34b6cae` (nothing landed since the session-21
+close; +63/+638 unpushed; GitHub still refuses publickey from this host);
+definition-drift assert MATCH (`a5a54d94`); binary current (`c8e12950`, `cmake -n`
+zero steps, no `src/` file newer); next free §11 number **203** (live ∪ archive);
+live `### F` count **4 → 0** by **archival pass 14** at OPEN (update-s20 + F79–F82,
+654 lines incl. one pass-13-style seam tidy, manifest `2026-09-05-pass14`, pre-md5
+`388deb00` reproduced in-process AND from disk, commit `dadf6b2`) **→ 5** by the
+mints below; same boot as session 21 (`uptime -s` 2026-09-04 18:45:08), `:2`
+2448x1332 under `.5KBYU3`, canary `--no-scene` **exit 0** (30 members, artifacts
+`f56/canary/20260905-095822`, ignored path); config/ssystem md5 pristine
+(`03fbee59`/`545a51ef`); no spacecrafter process; ASCII gate PASS (970 CONVERT
+files); RAM 50 GiB avail, `-j24`. Instrument baselines at open: scan
+**209/256/126** · pair-check **218/193/25/101** D 35 · D2 11 · I 89 · I2 36 · M 81
+— to the digit of the session-21 close. QUEUE.md: the owner announced a rework
+mid-session then withdrew it ("already done, I mistracked it") — writable; nothing
+queued there this session. DEPLOYMENT-MAP read back in full and REWORKED (tier
+**R** added — the development-reference criterion R0–R6; a "necessary, and only
+that" head; the tester tiers kept under §11.163(h)'s structural correction).
+MEASURED AT OPEN for R1 (the branch): local `2023-master` (`194c6074`,
+2025-09-20) ⊂ `master-beta`; `origin/2023-master` = `6ec2f43f` (last fetched
+2026-08-03 — a fetch is IMPOSSIBLE here) is 15 commits ahead by SHA but **2 by
+content** (`git cherry`: 13 `-`, 2 `+` = Kenan-Blasius's `c69687bc`+`6ec2f43f`,
+video-as-`s_texture`, 4 files under `src/tools/`, all pure ASCII); a trial merge
+in a scratch worktree (aborted, tree clean after) conflicts in 3 files / **4
+hunks, every one "keep ours"** (F70 ASCII ×2 · B31 `SC_SESSION` · F62
+`div/mul/mod`); submodule pin ours-advanced only (`7ce58350` vs `4e599c35` on
+both theirs and the base); version strings EQUAL both sides (2026.07.11 ⇒
+§5.112 silent on merge); host FFmpeg 7.1.1 / libavcodec 61.19.101 (the deployed
+line's "FFmpeg 8" commit is content-present already). Also measured for R2:
+`install_src.sh:22` `[ -n "$BUILD" ] &&BUILD=Release` sets the default only when
+already set ⇒ a newcomer's `cmake -DCMAKE_BUILD_TYPE=` is EMPTY (the script's own
+comment states the Release intent); INSTALL is the zip/Windows-VCPKG text and never
+says `--recurse-submodules`; both install scripts `sudo cmake --install` into
+`/usr/local`; the field config is 315 lines / 266 keys / 0 comment lines / 16
+sections and `data/default_config.ini` is 3 lines ⇒ the config is app-generated
+from `checkConfig`'s schema. **SUPERVISOR DEFECTS AT OPEN, both mine, both
+corrected before any mint:** (1) "the same feature built twice" (the
+`app_command_eval.cpp` conflict read as F62's aliases vs Calvin's modulo) —
+refuted by `git cherry` + the hunk text (it is F70's accents; the modulo commit is
+content-present); (2) "15 commits / 26 files" — a SHA count, not content. QUEUE
+CONSUMPTION (session-21 close): (1) archival pass 14 — DONE; (2) the
+R28/R21/§5.129/§5.126 owner answers — none asked this week (capacity); (3)–(6)
+deferred under the new criterion, recorded not dropped; the §5.127 granularity
+veto is honoured by F86's own-row-first checkpoint. Picks: **F83 → F84 → F85**,
+then F86 and F87 if health permits (both S). Deliveries: all to the parent
+(§11.203+, refreshed at each dispatch). Launch classes: F83 PHOTOMETRIC only
+through the full canary (the regression gate, banked band, never re-banked); F84
+FUNCTIONAL (fresh-HOME launches, the §5.48 rate); F85 none; F86 FUNCTIONAL under
+ASan; F87 FUNCTIONAL. Remotes: local contains origin on both; push impossible here
+— **the owner's push is R5, the one act nothing here can substitute.**
+
+---
+
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
 
 1. `CLAUDE.md` auto-loads (the map). Read THIS file; locate your task's section; read
@@ -469,12 +539,410 @@ three; archived pass 11) · F68 §11.187 · F69 §11.188 · F70 §11.189 · F71
 (session-19 round + its two post-close extensions — seven for seven DELIVERED
 and accepted; archived pass 12) · F75 → scedit journal 2026-09-01a · F76 →
 2026-09-01b + §5.122/§5.123 · F77 §11.196 · F78 §11.197 (session-20 round —
-four for four DELIVERED and accepted; archived pass 13). Live below: the
-session-21 round **F79–F82** (F82 the EXTENSION member). Remaining candidates
-next-round: see the session-21 open note's deferred set. Still blocked: §5.100's fix (authorization
-unanswered).*
+four for four DELIVERED and accepted; archived pass 13) · F79 §11.199 · F80 →
+scedit journal 2026-09-04a + §11.200 · F81 §11.201 · F82 §11.202 (session-21
+round — four for four DELIVERED and accepted; archived pass 14). Live below: the
+session-22 round **F83–F87** (F86/F87 the EXTENSION members). Remaining
+candidates next-round: the tester-workflow rehearsal (DEPLOYMENT-MAP T5.1), the
+§5.86 + RA zero-point fix (§11.198(b) resolved decision (1)), the session-21
+deferred set. Still blocked: §5.100's fix (authorization unanswered).*
 
 ---
+
+### F83 — Reconcile the deployed line: `origin/2023-master` merged into `master-beta` — two content commits (Kenan-Blasius's video-as-`s_texture`, `c69687bc`+`6ec2f43f`), four conflict hunks that all resolve to OURS and are proven byte-identical after the merge, the merged binary held to the banked canary band and every scedit gate; the fetch's staleness and the owner's push/fetch obligations recorded (DEPLOYMENT-MAP R1; owner's word 2026-09-05) [S]
+
+**Why now / mandate:** [vixy 2026-09-05]: *"I would prefer this branch to became
+the stable reference for development, otherwise work will continue and require
+further feature port. His work will start in a week."* Three developers
+(Kenan-Blasius, Lionel, Calvin) committed to `2023-master` in 2026; the last
+fetched state of that line carries one feature `master-beta` lacks. Without this
+merge the new developer's clone lacks the deployed video feature and the two lines
+keep diverging — the port cost the owner names, measured today at its smallest.
+
+**Measured at dispatch (supervisor, 2026-09-05, code `85cc2785`):** `origin/2023-master`
+= `6ec2f43f` (2026-08-03, Kenan-Blasius; the remote was last fetched then — GitHub
+refuses publickey from this host, no fetch is possible, and the staleness is a
+RECORDED premise, not a gap to work around); merge-base `1ddd32f0`; `git log
+--oneline master-beta..origin/2023-master | wc -l` = **15**; `git cherry
+master-beta origin/2023-master` = **13 `-` (content-present, cherry-picked earlier
+under other SHAs) + 2 `+`**: `c69687bc` "s_texture can now be a video texture"
+(`src/tools/s_texture.cpp` +67/−4, `s_texture.hpp` +7, NEW
+`video_surface_texture.cpp` 334, `.hpp` 72) and `6ec2f43f` "Fix 2D video s_texture
+being render upside down" (`video_surface_texture.cpp` +4) — all four files pure
+ASCII in their incoming version (`LC_ALL=C grep -c '[\x80-\xff]'` = 0 each).
+Trial merge (`git merge --no-commit --no-ff` in a scratch worktree, aborted, main
+tree clean after): conflicts in exactly THREE files, FOUR hunks, each resolving to
+OURS with a recorded reason — `cmake/FindFFmpeg.cmake:210-214` (`--` vs `—`, F70
+D14 §11.189) · `src/interfaceModule/app_command_eval.cpp:215-219` (a French comment
+with accents vs its ASCII form, F70) · `src/interfaceModule/base_command_interface.hpp:36-40`
+(ours carries the `SC_SESSION` token, B31 §11.128) · `:368-379` (ours carries the
+`div`/`mul`/`mod` alias defines, F62 §11.183). Submodule pin: ours `7ce58350`,
+theirs AND the base `4e599c35` ⇒ ours advanced, no conflict. `SPACECRAFTER_YEAR/
+MONTH/DAY` = 2026/07/11 on BOTH sides ⇒ the version string does not move and
+§5.112's rewrite does not fire on the field config. Host: FFmpeg 7.1.1,
+`libavcodec` 61.19.101 (the deployed line's "Update video_player.cpp to work with
+FFmpeg 8" is content-present in ours already, so the host's build state is the
+existing one). `~/.spacecrafter/videos` is EMPTY (§5.36) — the incoming feature
+cannot be exercised on this field.
+
+**Mandate:** (1) **The merge**, on the real working tree (never a worktree for the
+commit itself): `git -C /home/claude/spacecrafter merge --no-ff origin/2023-master`;
+resolve the four hunks to OURS; the merge commit's message names both content
+commits and each hunk's resolution WITH its reason (the four above); author = the
+executor, the standard footer. PROVE: `git diff 85cc2785 -- cmake/FindFFmpeg.cmake
+src/interfaceModule/app_command_eval.cpp src/interfaceModule/base_command_interface.hpp`
+is EMPTY (ours kept byte-exact); `git diff --stat 85cc2785 HEAD` lists exactly the
+four `src/tools/` files; `git cherry master-beta origin/2023-master` yields zero
+`+`. (2) **D14** on the merged tree: `python3 claude/harness/f70_ascii.py gate`
+PASS — if the two NEW files fall outside `f70_partition.tsv`'s CONVERT rows, add
+the row per F70's README (a partition edit with its argument, not a silencer) and
+re-run. (3) **Build** `build-claude` at the merged HEAD (`-j` per the SessionStart
+hook, `free -g` first): exit code the gate, binary mtime advanced, `cmake --build
+build-claude -- -n` zero steps after, md5 recorded. A compile failure of
+`video_surface_texture.cpp` against `libavcodec` 61 = STOP and report with the
+error (a version guard is a code change outside this task; the owner decides).
+(4) **Gates on the merged binary:** the FULL canary (`harness/f56_canary.sh`,
+scene arm) must exit 0 at the banked band 165.258/6.644 new · 160.142/6.603 old —
+`s_texture` is what EVERY textured body loads, so the band is the regression gate;
+any delta = STOP and report, NEVER re-bank; scedit in a FRESH build dir
+(`util/scedit/build-f83`, Release): ctest **19/19**; `anchor_gate` (the F80 record
+`clean 7196 · not-at-head 2 · skipped 86`) — none of the four files is anchored, so
+green is expected; if red, every drifted anchor is explained and the file
+re-recorded deliberately (F75's form); the strict corpus run reproduces
+**4014/0/0** (F80's README invocation) — the command-surface files are byte-identical
+to before, so any movement is a finding. (5) **The feature, named not exercised:**
+read Kenan's diff and NAME the script verb/argument that reaches `s_texture`'s video
+branch; record it OWED with the reason (no video in the field) in F77's form. (6)
+**Record:** §11.203 entry file FIRST + stub (the content-vs-SHA divergence table,
+the four resolutions, the gates, the FETCH STALENESS and the owner's two
+obligations: re-fetch + re-merge from a keyed host before the developer clones;
+push both repos); DEPLOYMENT-MAP R1 struck with pointers; `harness/README.md` F83
+section; WIP per §0.6; D14 gate before every commit.
+
+**Boundaries:** no code edit beyond the merge resolution (+ a partition row if D14
+needs one); no fetch, no push, no network workaround — publickey is refused, report
+it; no engine behaviour change; no data; no band edit; no `run_in_background`; the
+three conflicted files END byte-identical to `85cc2785`'s.
+
+**Discriminating checks:** (a) `git cherry` after the merge: 0 `+`; (b) the three
+conflicted files' `git diff 85cc2785` EMPTY; (c) `git diff --stat 85cc2785 HEAD` =
+the four `src/tools/` files only; (d) build green, mtime advanced, `-n` empty; (e)
+full canary exit 0 at the banked band to the last printed digit; (f) ctest 19/19,
+anchor gate as recorded (or re-recorded with every drift explained), corpus
+4014/0/0; (g) D14 gate PASS on the merged tree.
+
+**Preconditions (checkable, §0.7):** code HEAD `85cc2785`, harness HEAD ⟨at
+dispatch⟩; `git rev-parse origin/2023-master` = `6ec2f43f`; `git cherry
+master-beta origin/2023-master` = exactly 13 `-` and 2 `+` (`c69687bc`,
+`6ec2f43f`); merge-base `1ddd32f0`; `git ls-tree master-beta src/EntityCore` →
+`7ce58350`, `git ls-tree origin/2023-master src/EntityCore` → `4e599c35`;
+`SPACECRAFTER_YEAR/MONTH/DAY` equal both sides (2026/07/11); binary md5 `c8e12950`
+and `cmake -n` zero steps; next free §11 number **203**; live `### F` count **5**;
+canary `--no-scene` exit 0 (same boot: `uptime -s` = 2026-09-04 18:45:08, `:2`,
+auth `/run/user/1003/.mutter-Xwaylandauth.5KBYU3`, 2448x1332); `pkg-config
+--modversion libavcodec` = 61.19.101; config/ssystem md5 `03fbee59`/`545a51ef`;
+no `spacecrafter` in `/proc/*/comm`; `util/scedit/tests/anchor-expected.txt` reads
+`clean 7196`; ASCII gate PASS; `~/.spacecrafter/videos` empty; the working tree
+has NO merge in progress (`.git/MERGE_HEAD` absent).
+
+**DoD:** merge commit on `master-beta` + the merged build + all gates recorded;
+§11.203 entry + stub; DEPLOYMENT-MAP R1; README section; trees clean; WIP cleared;
+baselines re-derived LAST with deltas stated.
+**WIP:** —
+
+### F84 — The newcomer's first hour, measured: a clean clone of the merged HEAD taken through INSTALL / `install_src.sh` as written (no sudo, scratch prefix), every deviation he would hit recorded and the documents corrected to what IS; the install tree manifested; six fresh-HOME first launches (the §5.48 cold-HOME race rated); the §5.112 rewrite priced on a bumped-version copy of the field config — the deployment manifest that makes the branch a reference (DEPLOYMENT-MAP R2 + T3's §5.112 datum) [M]
+
+**Why now / mandate:** R0 [vixy 2026-09-05] and a one-week horizon: the developer's
+first act is a clone and a build by the documents, and nobody has ever measured
+what a fresh clone + install of this tree does; §5.112's N7 warning
+(USER_QUESTIONS_ROUND3) has no number; §5.48 is a newcomer's first launch at
+~15 % (its fix is EntityCore = the owner's; the RATE is ours to measure).
+
+**Measured at dispatch (supervisor, 2026-09-05):** `INSTALL` (40 lines) describes a
+source ZIP + Windows/VCPKG dependencies (`avcodec-59.dll` …) and ends with
+`sh install_src.sh -j<n>`; `README` §2 points to INSTALL, §3 "Linux (preferably
+Ubuntu), Vulkan card"; neither says `git clone --recurse-submodules`.
+`install_src.sh`: `rm -fr build; cd build; git submodule update --init || (cd
+../src && git clone https://github.com/Calvin-Ruiz/EntityCore.git)`; line 22
+`[ -n "$BUILD" ] &&BUILD=Release` — sets the default ONLY when `BUILD` is already
+set, so a plain run configures `cmake .. -DCMAKE_BUILD_TYPE=` (EMPTY) while the
+script's own comment states the Release intent (the fix is one character, `-z`);
+then `sudo cmake --install . --config $BUILD_MODE` into `/usr/local`.
+`localinstall_src.sh` is the same with `LocalRelease` and the same sudo.
+`install_dependancies_ubuntu.sh` = 25 `apt install` lines (SDL2 family, png,
+gettext, ffmpeg dev libs, vulkan). The tree's `data/` ships 13 `default_*` files;
+the developer field's data root `/usr/local/share/spacecrafter/` holds
+`data shaders stars textures`; the user dir is bootstrapped by
+`src/tools/call_system.cpp:141-143` (recursive copies from `CONFIG_DATA_DIR`);
+`data/default_config.ini` is 3 lines / 1 key while the field `~/.spacecrafter/
+config.ini` is 315 lines / 266 keys / 0 comment lines / 0 uppercase keys / 16
+sections ⇒ the config is APP-GENERATED from `src/mainModule/checkConfig.cpp`'s
+schema at first launch. `sky_cultures` = 2922 zero-byte files (§5.74),
+`stellar_systems` 13 zero-byte (§11.109), `videos` empty (§5.36) on THIS field —
+which of these classes a tree install even creates is part of the manifest. §5.48:
+`ASmooth` NaN on a cold HOME, 2 fires in the first 6 cold launches of F12, 0/8
+after. §5.112: `main.cpp:252` → `checkConfig.cpp:477` returns iff `main:version`
+equals the build's (`2026.07.11`); else `checkUselessKey` DELETES known-section
+keys absent from `sectionKeySettings` and rewrites the file. Host FFmpeg 7.1.1.
+The submodule URL is GitHub over https (SSH is what is refused here; https is
+untested — measure).
+
+**Mandate:** (1) **Clone**: `git clone --recurse-submodules /home/claude/spacecrafter
+/home/claude/sc-f84/spacecrafter` at F83's HEAD (a carried path, never `/tmp` —
+§0.5); record whether the submodule resolved from GitHub https; if refused, use
+`--reference /home/claude/spacecrafter/src/EntityCore` and RECORD that a networked
+newcomer takes the documented path. (2) **INSTALL as written, each deviation at
+the line where it bites:** the ZIP framing; the Windows block; the dependency
+script NOT run (sudo) — instead DIFF its package list against the tree's actual
+requirements (`find_package`/`pkg_check_modules`/`target_link_libraries` across
+the CMakeLists) and against `dpkg -l` on this host — every mismatch listed or
+"none"; `install_src.sh` NOT run as-is (sudo, `/usr/local`) — its steps replicated
+verbatim in the scratch clone with `-DCMAKE_INSTALL_PREFIX=/home/claude/sc-f84/prefix`,
+the configure line's `CMAKE_BUILD_TYPE` value under the script's own logic shown
+EMPTY, then the one-character fix applied and the value shown `Release` (both
+configure outputs kept). (3) **Install + manifest:** `cmake --install` into the
+scratch prefix; `harness/artifacts/f84/install-manifest.tsv` (path, bytes, md5 —
+force-added, gz); the content classes present in the installed data root vs the
+developer field's, and for each absent class WHERE it comes from (the tree,
+`spacecrafter-data`, or nowhere) with the evidence. (4) **Six fresh-HOME first
+launches** of the scratch binary from the scratch prefix (`HOME=/home/claude/
+sc-f84/home-<n>`, each new), display per HOST-EVENTS 2026-09-04, the
+`/proc/<pid>/comm` assert before each, `GetActive` recorded; per launch: exit code,
+the applog's startup errors AND silences (§5.77's class — what a missing class says
+or does not), the generated `config.ini` (md5, key count, `version`), and the §5.48
+criterion PRE-STATED: Moon and Sun `scaling`/`boundingRadius` finite in the dual
+dump (name the dump channel and reader — `dumpread.py`), fire count k/6. (5)
+**§5.112 priced:** copy the FIELD config into a seventh scratch HOME, set
+`version = 2026.09.05`, launch once; PREDICT from `checkConfig.cpp`'s tables the set
+of field keys outside the schema BEFORE the launch; then diff: keys deleted (count
++ names), keys lowercased (0 expected), comment lines (0 here — state that the
+tester's own file may differ), md5 before/after — the number N7 lacks. (6)
+**Docs, decision-free (what IS):** INSTALL rewritten for a Linux git clone (clone
+with submodules · dependency script · build · the scratch-prefix alternative to
+sudo · the Windows/VCPKG block kept as its own section, unchanged in content);
+README §2/§3 refreshed to point at it; `install_src.sh` line 22 `-n` → `-z` with
+the comment's intent cited in the commit (veto-open, one character to reverse).
+(7) **Record:** §11.204 entry FIRST + stub; §5.112 annotated with the measured
+count (both homes); USER_QUESTIONS_ROUND3 N7 gains a one-line rider with the number
+(DRAFT preserved); §5.48 annotated with the rate; DEPLOYMENT-MAP R2 + T3 struck
+with pointers; `harness/f84_install.sh` (the scratch recipe) + README section;
+WIP per §0.6; D14.
+
+**Boundaries:** no engine code; docs + the install script's one character only; no
+sudo; nothing written outside `/home/claude/sc-f84/` and the repo docs; the real
+`~/.spacecrafter` and `/usr/local` untouched (md5s asserted at open and close;
+config `03fbee59`, ssystem `545a51ef`); no fetch/push; no `run_in_background`;
+the scratch tree's path recorded and its cleanup stated (kept or removed, said).
+
+**Discriminating checks:** (a) the scratch binary runs from the scratch prefix with
+the scratch HOME — the applog's data-root path proves it; (b) the generated
+config's key set vs the field's: two counts (field-only, generated-only) with the
+names; (c) §5.112: predicted-then-measured deletion count, equal or the gap
+explained; (d) 6/6 launches exit 0; §5.48 k/6 with the criterion; (e) the
+dependency diff lists every mismatch or says none, both directions; (f) the
+`CMAKE_BUILD_TYPE` value shown EMPTY before and `Release` after the fix, from the
+configure output.
+
+**Preconditions (checkable, §0.7):** code HEAD ⟨F83's⟩, harness HEAD ⟨at
+dispatch⟩; F83 DELIVERED (its §11 entry present); binary current at that HEAD;
+next free §11 ⟨at dispatch⟩; live `### F` count **5**; `INSTALL` 40 lines;
+`install_src.sh:22` reads `[ -n "$BUILD" ] &&BUILD=Release`; `data/default_config.ini`
+3 lines; field config 315 lines / 266 keys / 0 comment lines; `~/.spacecrafter/
+videos` empty; `sky_cultures` zero-byte; display per HOST-EVENTS 2026-09-04
+answers `xdpyinfo`; §5.48 and §5.112 rows OPEN; `/home/claude/sc-f84/` ABSENT;
+canary `--no-scene` exit 0.
+
+**DoD:** manifest + artifacts; docs + script committed (code repo, code first);
+§11.204 + stub; row annotations at both homes; N7 rider; map R2/T3; harness script
++ README; trees clean; WIP cleared; baselines LAST with deltas.
+**WIP:** —
+
+### F85 — The developer's entry document: one file in the code repo, derived from the ledger and pointing back into it, that takes a newcomer from a clone to his first correct change — the two repositories and their contract, the code map, the two render paths and the parity rule, the domain constraints D8–D14 one paragraph each, build/run/test, how to ask the ledger whether something is known, the sharp edges — every sentence with its source (DEPLOYMENT-MAP R3; `claude/README.md`'s own filing criterion: *"must be promoted into the code repo … this repo is the lab notebook, not where other contributors will look"*) [M]
+
+**Why now / mandate:** R0 + one week + the owner's stated capacity: he cannot brief
+the developer in depth this week, and the code repo carries no map of the new path
+(measured: no `*.md` under `src/experimentalModule/`; `doc/` is user-facing — pdf,
+txt, html, `superscript.sts`; the only developer-facing `.md` files are scedit's,
+iniparser's, sts-extension's). The harness README states the promotion obligation
+in its own filing criterion, and nothing has ever been promoted under it.
+
+**Measured at dispatch (supervisor, 2026-09-05):** the harness carries the design
+records a newcomer would otherwise never find — `README.md` (repo contract),
+`INTENT.md` §2.0 (D1–D14), §3 (header-level contracts), §5 (the register), §10
+(renderer pipeline-family API), §13 (open items), `capability-surface.md` (the
+six-base audit), `b12-design.md`, `b31-design.md`, `projection-paths.md`,
+`shadow-paths.md`, `harness/README.md` (§Run and per-task sections);
+`CLAUDE.md` is ONE file (the code-tree path is a symlink into `claude/`). The
+owner's engineering principles (I1–I7) exist as HIS text outside both repos —
+not the executor's to author or paraphrase. Which path draws by default is a
+MEASURED fact (config + `checkConfig` default), not a recalled one.
+
+**Mandate:** (1) `doc/developer-entry.md` (name and placement veto-open; ASCII, D14),
+sections in this order: **(a)** the two repositories — code and the CC-harness lab
+notebook, how to clone the harness beside the code (`<spacecrafter>/claude/`, orphan
+branch, same remote), the trailer convention, the one-way dependency — from
+`claude/README.md`; **(b)** the code map — the top-level modules and what each
+owns; the old core vs `experimentalModule` (`ModularBody`, `ModularSystem`,
+`Camera`, the `Renderer`, the module families and loaders), `src/EntityCore` (the
+submodule, the Vulkan layer, the owner's stratum — read-only for contributors by
+default, §11.161(b)), `interfaceModule`/`scriptModule` (the command surface, the
+grammar scedit consumes), `util/scedit`; every claim from a header (I1: headers
+are the specification) or the ledger, cited; **(c)** the two render paths — which
+draws by default (MEASURED at the shipped config and the `checkConfig` default,
+stated with the key), the `experimental_*` gates, old = the unchanged comparison
+baseline (§11.52(b)) and what parity means, where accepted divergences are listed
+(§11.116(c), DEPLOYMENT-MAP T4); **(d)** the domain constraints D8–D14, ONE
+paragraph each with its §2.0 pointer (as-if · data-is-the-product/frozen field ·
+optimize-the-potential · 1 ms/frame · acting defaults logged · downgrade must stay
+possible · pure ASCII source); **(e)** build/run/test — INSTALL (F84's form), the
+harness (`claude/harness/README.md` §Run: `SC_BIN`, `build-claude`), scedit
+(`util/scedit/README.md`, ctest, the three gates), the measurement discipline in
+five lines (fresh launch, config/ssystem md5 in==out, the environment canary, no
+absolute photometry across stacks, the `/proc/<pid>/comm` assert); **(f)** asking
+the ledger — the §5 register and `INTENT/<id>.md`, §13, grep live ∪ archive, the
+provenance-tag grammar, entry-first write order — from INTENT.md's header; **(g)**
+the sharp edges a newcomer should read before touching them — the open crashers
+reachable from normal use (§5.92, §5.127, §5.48, §5.59) and the both-paths vs
+new-path distinction (§11.163(h)); **(h)** conventions — commit trailer, D14, author
+identity, never merge `CC-harness` into a code branch; **(i)** "Engineering
+principles" — a placeholder naming the OWNER as the source, to be filled by him
+(veto-open). (2) **Derivation-diff:** a table in the §11 entry (not in the doc)
+mapping every claim-bearing sentence group to its source; a sentence the executor
+cannot source is LEFT OUT and listed as a gap in the entry — never guessed. (3)
+Size: a newcomer reads it in one sitting — target ≤ 400 lines (a size claim,
+veto-open). (4) `harness/f85_links.py`: every path and §id the doc cites resolves
+at the current HEAD (paths on disk; §ids in INTENT.md live ∪ `INTENT/archive/`).
+(5) **Record:** §11.205 entry FIRST (with the source table) + stub; README §2 gains
+ONE line pointing at the doc (INSTALL untouched here — F84's); DEPLOYMENT-MAP R3
+struck; `harness/README.md` section; WIP; D14.
+
+**Boundaries:** no engine code; the doc + one README line + the link checker; no
+policy invented (unsourced = gap); no harness content copied wholesale (point,
+never duplicate — I2); no principle text authored on the owner's behalf; no
+launch beyond the one needed to MEASURE the default-path sentence (functional,
+farm, md5 asserted).
+
+**Discriminating checks:** (a) the source table covers 100 % of the doc's
+claim-bearing sentence groups (both counts stated); (b) `f85_links.py` 0 dangling;
+(c) the default-path sentence carries its measurement (config key + value +
+`checkConfig` line); (d) D14 gate PASS; (e) the line count.
+
+**Preconditions (checkable, §0.7):** code HEAD ⟨F84's⟩, harness HEAD ⟨at
+dispatch⟩; F83 and F84 DELIVERED; `doc/developer-entry.md` ABSENT; no `*.md`
+under `src/experimentalModule/`; `claude/README.md` lines 9–16 carry the filing
+criterion as quoted; INTENT.md §2.0 lists D1–D14; next free §11 ⟨at dispatch⟩;
+live `### F` count **5**.
+
+**DoD:** doc + README line (code repo, code first); §11.205 with the source table
++ stub; map R3; `f85_links.py` + README section; trees clean; WIP cleared;
+baselines LAST.
+**WIP:** —
+
+### F86 — EXTENSION: §5.127's two memory-unsafe members get their own rows and their fixes — (2) the use-after-free at `anchor_creator_cor.cpp:130`, reachable from the shipped `anchor.ini`: own row first (the granularity veto point of session 21), reproduced under AddressSanitizer on the shipped data, fixed at the ownership (I5), proved clean; (1) the null dereference for a top-level comet with neither period nor mean motion — the experimental reader's guard ported (DEPLOYMENT-MAP R4) [S]
+
+**Why now / mandate:** a developer who builds the reference with a sanitizer meets
+(2) on his first launch of the shipped data; both members are old-core, decision-free
+(a dangling pointer has no intended behaviour; the comet guard exists already on the
+new path, `CometOrbitLoader.hpp:12-15,62`). The session-21 veto point [supervisor]:
+*"§5.127 is a bundle; any member scheduled gets its own row first"* — honoured as
+checkpoint 1.
+
+**Measured at dispatch (supervisor, 2026-09-05, from §5.127 as recorded by F80 at
+`85cc2785`):** (2) `anchor_creator_cor.cpp:130` calls `.get()` on a TEMPORARY
+`std::unique_ptr<Orbit>` (every creator's `handle()` returns one — F80 acceptance
+read) and stores the dangling pointer at `:147`/`:156`; reachable from
+`~/.spacecrafter/anchor.ini:51-59` (`baryEarthMoon`). (1) `OrbitCreatorComet::handle`
+establishes `parent` may be null at `orbit_creator_cor.cpp:124` and dereferences it
+at `:183` on the branch a top-level comet with neither `orbit_period` nor
+`orbit_meanmotion` takes. ASan precedent: F17's `build-asan` (§11.125, README).
+Gate precedent for the anchor loader: `b4_anchors.py` (F7, §11.111). Line numbers
+are F80's at `85cc2785`; the merged HEAD may drift them — re-resolve, content drift
+= abort.
+
+**Mandate:** (1) **Rows first:** mint §5.130 (the UAF) and §5.131 (the null deref)
+from §5.127's text, each re-verified at the code at HEAD; §5.127 annotated at both
+homes (members (1)(2) → own rows; (3)(4)(5) stay). Checkpoint. (2) **Reproduce:**
+`build-asan` of the pre-fix HEAD (F17's recipe); one launch on a temp-HOME farm
+(`b3_farm.sh`) with the shipped `anchor.ini`: the ASan report naming the dangling
+read (or `:130`'s allocation freed) IS the reproduction; if ASan is SILENT, say so
+with the reason (the pointer may be stored and never read on this data) and
+re-grade §5.130 at its row rather than fixing blind. (3) **Fix at the ownership:**
+the orbit outlives its users — whoever holds the anchor holds the `unique_ptr`
+(read the chain; the smallest change that makes the lifetime explicit; no raw
+`new`, no leak-as-fix); the comet guard = the experimental reader's semantics
+ported (a §2(f) diagnostic naming the section, no silent default). (4) **Prove:**
+ASan clean on the same launch; the release binary's FULL canary at the banked band
+(anchors feed the camera); `b4_anchors.py` green on both binaries; the comet guard
+measured with a scratch `ssystem` section on the farm (a top-level comet lacking
+both keys: pre-fix crash, post-fix the diagnostic). (5) **Record:** §11.206 entry
+FIRST + stub; §5.130/§5.131 flipped FIXED with pointers; §5.127 annotated;
+DEPLOYMENT-MAP R4; `harness/README.md`; WIP; D14.
+
+**Boundaries:** the two sites and the ownership chain they need; no other §5.127
+member; no data; EntityCore untouched; the ASan build in its own dir, never
+installed; no `run_in_background`.
+
+**Discriminating checks:** (a) the ASan report pre-fix names the site (or the
+silence is explained); (b) ASan clean post-fix on the same launch; (c)
+`b4_anchors.py` green pre and post; (d) the full canary band unchanged on the
+release binary; (e) the comet guard both ways on the scratch section.
+
+**Preconditions (checkable, §0.7):** code HEAD ⟨F85's⟩, harness ⟨at dispatch⟩;
+§5.127 OPEN with (1)(2) as quoted (`orbit_creator_cor.cpp:124,183`;
+`anchor_creator_cor.cpp:130,147,156` — drift re-resolved, content abort);
+`~/.spacecrafter/anchor.ini:51-59` carries `baryEarthMoon`; §5.130/§5.131 ABSENT
+(next free §5 numbers verified live ∪ archive); next free §11 ⟨at dispatch⟩; live
+`### F` count **5**; display per HOST-EVENTS; canary `--no-scene` exit 0.
+
+**DoD:** rows + fixes (code first) + ASan proof + gates; §11.206 + stub; map R4;
+README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+### F87 — EXTENSION: §5.111 — the new path's object readouts translated where the old path's are: `ModularObject`'s labels re-wrapped in `_()` with the OLD path's exact msgids (parity: old is the baseline, so the French catalogue answers identically), plus the owed census of every other new-path user-visible string that lost its `_()` in the same port (DEPLOYMENT-MAP T2's decision-free candidate since 2026-08-29, never dispatched; the tester operates in French) [S]
+
+**Why now / mandate:** §5.111 [measured 2026-08-29, §11.158(j2)]: for the same body
+at the same frame the old path prints `AD/DE :` / `Distance : … UA` and the path that
+DRAWS prints `RA/DE:` / `Distance: … AU` — user-visible on every composed-body
+selection in the tester's French session. The row's "product-language decision"
+clause dissolves under §11.52(b): old is the baseline, so the msgids are OLD's,
+byte-exact — no new string is authored; a label with no old counterpart is
+recorded, not invented. The row's owed census is part of the task.
+
+**Measured at dispatch (supervisor, 2026-09-05):** `body.cpp` wraps 12 labels in
+`_()` (`:325,:331,:336,:344,:347` among them); `ModularObject.cpp` wraps 0
+(`:11,:17,:20,:23,:26` bare literals); field config `app_locale = fr`, `sky_locale
+= fr`; F44's sidecar instrument (`f44_parity.py`, `artifacts/f44/legA_003.json.navstr`)
+is the measurement channel; the `.po` files are EXCLUDE-listed under D14.
+
+**Mandate:** (1) **Census**, comment-stripped (§11.146's denominator rule): every
+string literal in `src/experimentalModule/` that reaches a user surface (info
+strings, TUI lines, the diagnostics old wraps) — wrapped vs unwrapped, with the old
+counterpart's site and msgid where one exists. (2) **Wrap** every unwrapped label
+that has a wrapped old counterpart with old's msgid BYTE-EXACT; verify each msgid
+hits the `fr` `.po` (grep count ≥ 1); a label with NO old counterpart stays
+unwrapped and is listed in the entry (the decision §5.111 names, left to the
+owner). (3) **Measure** in a French session on the farm: the dual dump's navstr
+sidecar — old and new print the same translated labels for the same body; a
+control body in an English farm session unchanged. (4) **Record:** §11.207 entry
+FIRST + stub; §5.111 flipped (FIXED for the matched set; the unmatched set listed
+at the row); README; WIP; D14 (msgids are ASCII on the code side).
+
+**Boundaries:** `experimentalModule` string wrapping only; no msgid invented; no
+`.po` edit; no old-path change; no `run_in_background`.
+
+**Discriminating checks:** (a) census counts before → after; (b) `.po` hit for every
+msgid used; (c) sidecar labels identical old vs new in `fr` for the measured body;
+(d) the English control unchanged.
+
+**Preconditions (checkable, §0.7):** code HEAD ⟨F86's⟩, harness ⟨at dispatch⟩;
+§5.111 OPEN; `grep -c '_(' src/experimentalModule/ModularObject.cpp` = 0 and
+`src/bodyModule/body.cpp` = 12 (drift re-resolved); `app_locale = fr` in the field
+config; display per HOST-EVENTS; next free §11 ⟨at dispatch⟩; live `### F` count
+**5**.
+
+**DoD:** wraps (code first) + census + measurement; §11.207 + stub; §5.111 flip;
+README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
