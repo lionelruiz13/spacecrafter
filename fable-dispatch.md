@@ -632,6 +632,17 @@ carries the PRE-FIX baseline measured offline on `artifacts/f44/legA_003.json.na
 — 90 bodies, G1 540 red, G2 540 red, OLD-missing **0**, names 68 same/22 differ, U+00A0
 **0** — and SIX PREDICTIONS committed before any launch. NEXT: the fr farm launch, then
 the en control launch, then `--compare-new` against the pre-fix artifact.
+2026-09-05 17:0x — CKPT3+4: canary `--no-scene` exit 0; FOUR farm launches, all exit 0,
+md5 in==out on the real `$HOME` each time, concurrent probe 0. **ALL EIGHT PREDICTIONS
+CONFIRMED, NONE REFUTED.** fr: G1 540→**0**, G2 540→**0** over 90 bodies, U+00A0 0→**90**,
+name channel unchanged at 68/22/22. English control (`app=en,sky=en`): G1 0, G2 0, names
+90/0, U+00A0 0, and every NEW `inf`+`nav` string **BYTE-IDENTICAL** to the pre-fix F44
+artifact for all 90 bodies. The control's FIRST attempt found a defect instead of passing:
+`app_locale=en, sky_locale=fr` printed FRENCH — `Translator::m_translator` is ONE STATIC
+map (`translator.hpp:85`) shared by app + sky translators, last loader wins, sky loads
+last. 2×2 factorial, byte-exact within columns: (fr,fr)≡(en,fr) md5 `7e14412d`;
+(en,en)≡(fr,en) md5 `4e56907c`. `app_locale` is INERT. NEXT: §11.209 + stub, §5.111 flip,
+§11.158(j2) back-mark, README, instruments LAST.
 
 ### F89 — The `b4_anchors` P7 screen-witness red DISCRIMINATED: the one gate that reds on the reference binary (green ×3 pre-§5.133, red ×2 post) gets its cause named — the twinkle-`rand()` candidate tested the way the two failed experiments could not (b4's own frozen-clock scene, twinkle OFF on both binaries, the two P7 windows' lit-pixel SETS diffed, predictions committed first), the control's margin read from the five F86 runs before any launch, every `rand()` consumer in `src/` enumerated — instrument fix if the instrument, §5.133's row if the product (§11.205(g)(h); session-22 queue position 2; the developer will run this harness) [S, instrument]
 

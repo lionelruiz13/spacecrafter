@@ -1,0 +1,66 @@
+{
+ "bodies": 90,
+ "g1_bad": 0,
+ "g2_bad": 0,
+ "old_missing": 0,
+ "g1_examples": [],
+ "g2_examples": [],
+ "names": {
+  "same": 68,
+  "differ": 22,
+  "explained_by_catalogue": 22,
+  "examples": [
+   [
+    "Amalthea",
+    "Amalthée"
+   ],
+   [
+    "Ceres",
+    "Cérès"
+   ],
+   [
+    "Dione",
+    "Dioné"
+   ],
+   [
+    "Earth",
+    "Terre"
+   ],
+   [
+    "Enceladus",
+    "Encelade"
+   ],
+   [
+    "Europa",
+    "Europe"
+   ],
+   [
+    "Ganymede",
+    "Ganymède"
+   ],
+   [
+    "Hyperion",
+    "Hypérion"
+   ],
+   [
+    "Iapetus",
+    "Japet"
+   ],
+   [
+    "Lysithea",
+    "Lysithéa"
+   ],
+   [
+    "Mercury",
+    "Mercure"
+   ],
+   [
+    "Metis",
+    "Métis"
+   ]
+  ]
+ },
+ "nbsp": 90,
+ "locale": "fr",
+ "navstr": "/home/claude/spacecrafter/claude/artifacts/f87/dump_fr.json.navstr"
+}

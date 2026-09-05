@@ -202,6 +202,12 @@ MARK = re.compile(r'^  (OLD|NEW) (nav|inf): (.*)$')
 # still carries at `body.cpp:333`ff.  Measured on the sidecar, not assumed; the
 # pattern accepts both spellings so the comparison is between the two paths'
 # NUMBERS and not between their locales.
+# [SUPERSEDED 2026-09-05, F87 / INTENT S11.209, code 1d839b9d: the "do NOT print
+#  the same label" premise no longer holds -- ModularObject.cpp now wraps the
+#  same 14 msgids, so in a French session BOTH sides print "AD/DE : ".  Nothing
+#  here needs changing: this regex was already written to accept both spellings,
+#  and that foresight is exactly why F87 did not move a landed baseline.  The
+#  line numbers moved with the wraps (`ModularObject.cpp:20` -> `:46`).]
 RADE = re.compile(r'(?:RA|AD)/DE\s*:\s*(\d+)h(\d+)m([\d.]+)s\s*/\s*'
                   r'([+-])(\d+)[^\d]+(\d+)\'([\d.]+)"')
 

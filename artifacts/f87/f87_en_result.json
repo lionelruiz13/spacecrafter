@@ -1,0 +1,107 @@
+{
+ "bodies": 90,
+ "g1_bad": 540,
+ "g2_bad": 0,
+ "old_missing": 540,
+ "g1_examples": [
+  [
+   "Adrastea",
+   "inf",
+   "Magnitude: "
+  ],
+  [
+   "Adrastea",
+   "inf",
+   "RA/DE: "
+  ],
+  [
+   "Adrastea",
+   "inf",
+   "Alt/Az: "
+  ],
+  [
+   "Adrastea",
+   "inf",
+   "Distance: "
+  ],
+  [
+   "Adrastea",
+   "inf",
+   "AU"
+  ],
+  [
+   "Adrastea",
+   "nav",
+   "RA/DE: "
+  ],
+  [
+   "Amalthea",
+   "inf",
+   "Magnitude: "
+  ],
+  [
+   "Amalthea",
+   "inf",
+   "RA/DE: "
+  ]
+ ],
+ "g2_examples": [],
+ "names": {
+  "same": 68,
+  "differ": 22,
+  "explained_by_catalogue": 0,
+  "examples": [
+   [
+    "Amalthea",
+    "Amalthée"
+   ],
+   [
+    "Ceres",
+    "Cérès"
+   ],
+   [
+    "Dione",
+    "Dioné"
+   ],
+   [
+    "Earth",
+    "Terre"
+   ],
+   [
+    "Enceladus",
+    "Encelade"
+   ],
+   [
+    "Europa",
+    "Europe"
+   ],
+   [
+    "Ganymede",
+    "Ganymède"
+   ],
+   [
+    "Hyperion",
+    "Hypérion"
+   ],
+   [
+    "Iapetus",
+    "Japet"
+   ],
+   [
+    "Lysithea",
+    "Lysithéa"
+   ],
+   [
+    "Mercury",
+    "Mercure"
+   ],
+   [
+    "Metis",
+    "Métis"
+   ]
+  ]
+ },
+ "nbsp": 90,
+ "locale": "en",
+ "navstr": "/home/claude/spacecrafter/claude/artifacts/f87/dump_en.json.navstr"
+}

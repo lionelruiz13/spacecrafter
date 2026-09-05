@@ -1,0 +1,19 @@
+{
+ "bodies": 90,
+ "g1_bad": 0,
+ "g2_bad": 0,
+ "old_missing": 0,
+ "g1_examples": [],
+ "g2_examples": [],
+ "names": {
+  "same": 90,
+  "differ": 0,
+  "explained_by_catalogue": 0,
+  "examples": []
+ },
+ "nbsp": 0,
+ "locale": "en",
+ "sky": "en",
+ "expected_from": "en",
+ "navstr": "/home/claude/spacecrafter/claude/artifacts/f87/dump_en_skyen.json.navstr"
+}
