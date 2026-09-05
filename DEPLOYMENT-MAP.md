@@ -131,7 +131,12 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    `master-beta` `76ee38c7`, `CC-harness` `eb9af25c` — all three byte-identical to the
    2026-08-03/04 fetch, so nothing has been pushed by anyone since and there is nothing
    left to re-fetch or re-merge. https READ works from this host; SSH and push do not.
-   This is the one act nothing here can substitute.]**
+   This is the one act nothing here can substitute.]** **[2026-09-05, F84 §11.204(b) →
+   §5.131: it is TWO pushes in TWO repositories — this one (both branches) AND
+   `Calvin-Ruiz/EntityCore` (`7ce58350`, §11.152's ASmooth fix, onto `main`); without the
+   second no `git clone --recurse-submodules` of this branch builds. Supervisor's reading
+   at F84 acceptance: the `main.cpp` half of R2's residual is NOT the owner's — §5.130's
+   one-line move is decision-free (§5.79/F35 precedent) and goes to F86.]**
 6. **R6 — Branch policy.** Three developers committed to `2023-master` in 2026 (Kenan-Blasius,
    Lionel, Calvin). For `master-beta` to be the reference, either it becomes the PR target /
    main, or the others are redirected to it. → **Vixy**, one sentence; nothing here can decide

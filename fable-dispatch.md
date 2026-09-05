@@ -879,6 +879,48 @@ then **I +1** (`5237ac0e` in the entry header, absent from the stub), then **M +
 **D2 +1** as the §11.203 back-marker landed in one home at a time — **each was closed at its
 cause rather than adjudicated away**, which is why the §11.203(d) `CONFIGURE_DEPENDS` marker
 now exists in BOTH homes with matching strike text and date.
+**ACCEPTED 2026-09-05 (supervisor, session 22, Claude Fable 5.1).** Verified by my own
+runs and reads, not by the report: §11.204 read in full; one code commit (`1cbd6780`,
+Claude Opus 5: INSTALL +122, README +27, `install_src.sh:25` `-n`→`-z`,
+`src/CMakeLists.txt:3` `CONFIGURE_DEPENDS`) and five harness commits (`2aa8687`..
+`1ccd164`), both trees clean; binary `225f0d93` unchanged; the submodule claim
+reproduced — `src/EntityCore` HEAD `7ce5835` "A fresh ASmooth movement…" over `224eba7`,
+`git branch -r --contains 7ce58350` EMPTY, remote `main` = `224eba7a` by `ls-remote`;
+§5.130/§5.131/§5.132 present as inline rows; artifacts present (`prediction.txt`,
+`result_six.json.gz`, `result_s112_*.json.gz`, `install-manifest.tsv`, the two configure
+logs, `f84_ec_probe.cpp`); **14** bootstrapped HOMEs under `/home/claude/sc-f84/`,
+`home-1/.spacecrafter/sky_cultures` = **262 files / 0 zero-byte** = the data root's 262,
+against the field's 2922/2922 — reproduced; field md5 `03fbee59`/`545a51ef` intact;
+instruments to the digit (scan 209/256/126 · pair-check 220/195/25/104 · D 35 · D2 11 ·
+I 89 · I2 36 · M 81). Deviations ENDORSED with the executor's arguments: the second
+§5.112 arm (the field number alone — 0 deleted — would have read as "the warning is
+empty"; the projection-onto-schema sentence is the one N7 needed); three rows minted
+(§5.79 met on each); the INSTALL KNOWN-ISSUE paragraph (a measured fact placed where its
+reader is; written to be deleted after the push — veto-open, §3); the ZIP section's two
+non-existent script names corrected; the 180 s shutdown budget. DISPATCHER DEFECTS
+reported, all four ACCEPTED as mine: the `:22` coordinate (line 25; ROOT: I quoted a
+line number from a `head -40` listing instead of `grep -n` — the same class as F82's
+stale `ba7a32a8`, prevention = cite `grep -n` output verbatim in sections); "13
+`default_*` files" (8); the submodule contingency's pre-written conclusion (the failure
+was not refusal but a missing OBJECT — the section assumed the mode); check (a)
+unsatisfiable (`CONFIG_DATA_DIR` is a compile-time `#define`, `spacecrafter.hpp:44` —
+a fact I did not know and the check exposed). Round tally: **eight dispatcher defects**.
+One executor coordinate slip noted, content exact: the row cites `main.cpp:193` for
+`current_path` — at HEAD the comment is :193 and the call is **:194** (`:198`/`:199` the
+two `checkUser*` calls, as stated). Criterion-integrity instances credited: the
+positive control on the §5.48 criterion (fires on quoted-nan / bare-nan / absent);
+predictions committed before every launch, two of them refuted and kept (P2a, P3b);
+the `if git … | sed` self-test catching its own `0 failed`; the typed-then-measured
+baseline line corrected; the field-binary CONTROL on §5.130 (the abort is the
+program's, not this build's). SUPERVISOR CALL, recorded as a veto point in §3:
+**§5.130's fix is decision-free** (a crash on a shipped path with a one-line
+reversible remedy — the §5.79/F35 precedent), so it joins **F86** as member (3) rather
+than waiting on the owner; §5.131 (the EntityCore push) and §5.48 (EntityCore) stay
+the owner's. Standing consequences: R2 NOT MET until the EntityCore push; the
+developer's first launch would abort on any fresh account until F86 lands; a tree
+install carries NO content and no document in the code repo says where content comes
+from (§11.204(f)) — R6's sibling question for the owner: what does the developer
+receive as data?
 
 ### F85 — The developer's entry document: one file in the code repo, derived from the ledger and pointing back into it, that takes a newcomer from a clone to his first correct change — the two repositories and their contract, the code map, the two render paths and the parity rule, the domain constraints D8–D14 one paragraph each, build/run/test, how to ask the ledger whether something is known, the sharp edges — every sentence with its source (DEPLOYMENT-MAP R3; `claude/README.md`'s own filing criterion: *"must be promoted into the code repo … this repo is the lab notebook, not where other contributors will look"*) [M]
 
@@ -961,7 +1003,20 @@ live `### F` count **5**.
 baselines LAST.
 **WIP:** —
 
-### F86 — EXTENSION: §5.127's two memory-unsafe members get their own rows and their fixes — (2) the use-after-free at `anchor_creator_cor.cpp:130`, reachable from the shipped `anchor.ini`: own row first (the granularity veto point of session 21), reproduced under AddressSanitizer on the shipped data, fixed at the ownership (I5), proved clean; (1) the null dereference for a top-level comet with neither period nor mean motion — the experimental reader's guard ported (DEPLOYMENT-MAP R4) [S]
+### F86 — EXTENSION, widened at F84 acceptance: the three startup faults a newcomer can meet on the shipped data — (3) **§5.130** the first launch on a fresh account ABORTS (`main.cpp:194` cds into `~/.spacecrafter` before `:198-199` create and populate it — one line moved, the empty-HOME launch as the gate, exit 134 → the bootstrap); (2) §5.127's use-after-free at `anchor_creator_cor.cpp:130`, reachable from the shipped `anchor.ini`: own row first (the granularity veto point of session 21), reproduced under AddressSanitizer, fixed at the ownership (I5), proved clean; (1) §5.127's null dereference for a top-level comet with neither period nor mean motion — the experimental reader's guard ported (DEPLOYMENT-MAP R2 + R4) [S]
+
+**Widening at F84 acceptance [supervisor, 2026-09-05, veto point in §3]:** §5.130 was
+minted by F84 (§11.204(c)) with the remedy named — *"one line moved"* — and left to the
+owner only because F84's boundary was "no engine code". The fix is decision-free by the
+§5.79/F35 precedent (a crash reachable from a shipped path, a one-line reversible
+remedy, no semantics beyond "runs instead of aborting"; when the directory exists the
+program's behaviour is as-if unchanged — D8). Site, read at HEAD `1cbd6780`: `main.cpp:194`
+`std::filesystem::current_path(appDir)`; `:198` `CallSystem::checkUserDirectory(appDir,
+dirResult)` (creates it); `:199` `checkUserSubDirectory(appDir, dirResult)` (populates,
+absolute paths); `:206` `Log->setDirectory("log/")` is the FIRST relative-path consumer —
+so the cd moves to between `:199` and `:201`, never later. Member (3) is FIRST in
+execution order (its gate is the cheapest launch in the tree) and the whole task stays
+[S].
 
 **Why now / mandate:** a developer who builds the reference with a sanitizer meets
 (2) on his first launch of the shipped data; both members are old-core, decision-free
@@ -982,9 +1037,21 @@ Gate precedent for the anchor loader: `b4_anchors.py` (F7, §11.111). Line numbe
 are F80's at `85cc2785`; the merged HEAD may drift them — re-resolve, content drift
 = abort.
 
-**Mandate:** (1) **Rows first:** mint §5.130 (the UAF) and §5.131 (the null deref)
-from §5.127's text, each re-verified at the code at HEAD; §5.127 annotated at both
-homes (members (1)(2) → own rows; (3)(4)(5) stay). Checkpoint. (2) **Reproduce:**
+**Mandate:** (0) **§5.130 first, the newcomer's launch:** reproduce on a scratch empty
+`$HOME` (a carried path under `/home/claude/sc-f86/`, never `/tmp`; the F84 form —
+`harness/f84_coldhome.py`'s launch shape without the `mkdir`): exit **134** and the
+verbatim `cannot set current path` message; move `main.cpp:194` to after `:199` (one
+line, nothing else); rebuild; the same launch exits **0**, the bootstrap runs
+(`checkUserDirectory` creates, `checkUserSubDirectory` copies — the applog's ten
+"Completed copy" lines, §5.132's known false-success included), `log/` is written
+under the new `~/.spacecrafter` (the relative-path consumer at `:206` proves the cd
+still precedes it); a second launch on an EXISTING `$HOME` (the farm) is byte-identical
+in its applog's first 40 lines to the pre-fix binary's — the as-if control. Flip §5.130
+FIXED at its row with the pointer. Checkpoint. (1) **Rows for §5.127's members:** mint
+the next two free §5 numbers (verified live ∪ archive — §5.130–§5.132 are TAKEN by F84;
+expect §5.133 the UAF and §5.134 the null deref) from §5.127's text, each re-verified at
+the code at HEAD; §5.127 annotated at both homes (members (1)(2) → own rows; (3)(4)(5)
+stay). Checkpoint. (2) **Reproduce:**
 `build-asan` of the pre-fix HEAD (F17's recipe); one launch on a temp-HOME farm
 (`b3_farm.sh`) with the shipped `anchor.ini`: the ASan report naming the dangling
 read (or `:130`'s allocation freed) IS the reproduction; if ASan is SILENT, say so
@@ -1001,24 +1068,31 @@ both keys: pre-fix crash, post-fix the diagnostic). (5) **Record:** §11.206 ent
 FIRST + stub; §5.130/§5.131 flipped FIXED with pointers; §5.127 annotated;
 DEPLOYMENT-MAP R4; `harness/README.md`; WIP; D14.
 
-**Boundaries:** the two sites and the ownership chain they need; no other §5.127
+**Boundaries:** the three sites and the ownership chain (2) needs; no other §5.127
 member; no data; EntityCore untouched; the ASan build in its own dir, never
-installed; no `run_in_background`.
+installed; the real `~/.spacecrafter` untouched (md5 asserted; every empty-HOME
+launch under `/home/claude/sc-f86/`); no `run_in_background`.
 
-**Discriminating checks:** (a) the ASan report pre-fix names the site (or the
-silence is explained); (b) ASan clean post-fix on the same launch; (c)
-`b4_anchors.py` green pre and post; (d) the full canary band unchanged on the
-release binary; (e) the comet guard both ways on the scratch section.
+**Discriminating checks:** (0) the empty-HOME launch: exit 134 pre-fix, exit 0
+post-fix, with the bootstrap's directory count (19) and `log/` present, and the
+existing-HOME control byte-identical in its applog head; (a) the ASan report pre-fix
+names the site (or the silence is explained); (b) ASan clean post-fix on the same
+launch; (c) `b4_anchors.py` green pre and post; (d) the full canary band unchanged on
+the release binary; (e) the comet guard both ways on the scratch section.
 
-**Preconditions (checkable, §0.7):** code HEAD ⟨F85's⟩, harness ⟨at dispatch⟩;
-§5.127 OPEN with (1)(2) as quoted (`orbit_creator_cor.cpp:124,183`;
-`anchor_creator_cor.cpp:130,147,156` — drift re-resolved, content abort);
-`~/.spacecrafter/anchor.ini:51-59` carries `baryEarthMoon`; §5.130/§5.131 ABSENT
-(next free §5 numbers verified live ∪ archive); next free §11 ⟨at dispatch⟩; live
-`### F` count **5**; display per HOST-EVENTS; canary `--no-scene` exit 0.
+**Preconditions (checkable, §0.7):** code HEAD ⟨at dispatch⟩, harness ⟨at dispatch⟩;
+`main.cpp:194` reads `std::filesystem::current_path(appDir);`, `:198`/`:199` the two
+`CallSystem::checkUser*` calls, `:206` `Log->setDirectory("log/")` (drift re-resolved,
+content abort); §5.130 OPEN as minted by F84 (§11.204(c)); §5.127 OPEN with (1)(2) as
+quoted (`orbit_creator_cor.cpp:124,183`; `anchor_creator_cor.cpp:130,147,156` — drift
+re-resolved, content abort); `~/.spacecrafter/anchor.ini:51-59` carries
+`baryEarthMoon`; §5.130–§5.132 TAKEN (F84), §5.133/§5.134 ABSENT (verified live ∪
+archive); next free §11 ⟨at dispatch⟩; live `### F` count **5**;
+`/home/claude/sc-f86/` ABSENT; display per HOST-EVENTS; canary `--no-scene` exit 0.
 
-**DoD:** rows + fixes (code first) + ASan proof + gates; §11.206 + stub; map R4;
-README; trees clean; WIP cleared; baselines LAST.
+**DoD:** §5.130 fix + the two rows + their fixes (code first) + the empty-HOME
+proof + ASan proof + gates; §11 entry + stub; §5.130 flipped; DEPLOYMENT-MAP R2 (the
+`main.cpp` half) + R4 struck; README; trees clean; WIP cleared; baselines LAST.
 **WIP:** —
 
 ### F87 — EXTENSION: §5.111 — the new path's object readouts translated where the old path's are: `ModularObject`'s labels re-wrapped in `_()` with the OLD path's exact msgids (parity: old is the baseline, so the French catalogue answers identically), plus the owed census of every other new-path user-visible string that lost its `_()` in the same port (DEPLOYMENT-MAP T2's decision-free candidate since 2026-08-29, never dispatched; the tester operates in French) [S]
