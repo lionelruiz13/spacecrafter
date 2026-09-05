@@ -172,6 +172,13 @@ def build_farm(farm):
     for e in sorted((HERE / "f94_scripts").iterdir()):
         shutil.copy2(e, dst / "scripts" / SCRATCH_DIR / e.name)
 
+    # (4) startup.sts a COPY - `f55_farm.sh` deliberately leaves this one to the
+    #     caller (it is the file F55 authored), and the app PLAYS it at launch,
+    #     so the annotator reaches it before anything else runs.
+    real_startup = REAL_HOME / "scripts" / "fscripts" / "startup.sts"
+    if real_startup.is_file():
+        shutil.copy2(real_startup, dst / "scripts" / "fscripts" / "startup.sts")
+
     asserts = {
         "config.ini.is_regular_file": (dst / "config.ini").is_file()
                                       and not (dst / "config.ini").is_symlink(),

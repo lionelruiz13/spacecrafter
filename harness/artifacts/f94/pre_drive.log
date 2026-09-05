@@ -1,0 +1,10 @@
+[    0.2s] binary /home/claude/sc-f94/bin/spacecrafter-pre-f7112cb9  md5 f7112cb9e6dd2640ef1bcc7cb6f09263
+[    0.7s] farm /home/claude/sc-f94/farm-pre  (5 scratch scripts)
+[   13.3s] TCP up in 12.6 s
+[   15.1s] D -         1 equal 1                  -> jday 2465059.5  branch=if  (1.4s, loaded=True ended=True)
+[   17.3s] A Saturn    body_selected equal 600    -> jday 2463232.5  branch=else  (1.4s, loaded=True ended=True)
+[   19.5s] B Ganymede  body_selected equal 503    -> jday 2463963.5  branch=else  (1.4s, loaded=True ended=True)
+[   21.7s] C Titan     body_selected equal 604    -> jday 2464328.5  branch=if  (1.4s, loaded=True ended=True)
+[   23.9s] E Saturn    body_selected equal 0      -> jday 2466154.5  branch=else  (1.4s, loaded=True ended=True)
+[   34.2s] consumer internal/fly_to_selected.sts: ended=True wall=7.4s md5 10665ae4 -> 10665ae4  #!=0
+[   36.8s] FAILS: 0 []
