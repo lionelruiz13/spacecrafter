@@ -56,6 +56,7 @@ private:
     std::unique_ptr<Pipeline> pipeline;
     std::unique_ptr<SharedBuffer<LensUniform>> uniform;
     std::vector<std::unique_ptr<Set>> sets;
+    std::vector<VkDescriptorImageInfo> inputAttachmentInfo;
     std::array<int, 3> commands{};
 };
 
