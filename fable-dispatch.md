@@ -160,6 +160,52 @@ README `:43`, the `[parallel-script]` question; (7) owner items per §3. Remotes
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-06, supervising session 24 — LovelyFoxDev, the
+ENGINE-AND-SOAK round: F91 RA/DE · §5.98's two spellings · T5.2 the soak]:** trigger =
+the §0b verbatim line PLUS one environment note [vixy 2026-09-06, verbatim]: *"Almost
+nothing running in the background for the whole session (only remmina + default
+background process + claude code), so no interference with your runs."* — no in-line
+transmission beyond it. Open at **Sunday 00:01 CEST**, outside the owner's reliable
+window (weekend = cache-hit + retrace only) ⇒ this session asks NOTHING and closes
+with a compact decision list. Warm-up (every value `date`-measured 00:01:06–00:02:27,
+the command beside the claim — Q-67): both trees CLEAN at open, code `0b46a63f` /
+harness `ebae1aa` (one commit past the session-23 close `ce378c9`: the PREMISES
+instrument); definition-drift assert MATCH (`8e364a3a`); binary `407b3d1d` current —
+`cmake -n` 0 steps, no `src/` file newer; same boot as sessions 21–23 (`uptime -s`
+2026-09-04 18:45:08); `:2` 2448x1332 under `.5KBYU3`; canary `--no-scene` **exit 0**
+(30 members, artifacts `f56/canary/20260906-000225`); config/ssystem md5 pristine
+(`03fbee59`/`545a51ef`); no `spacecrafter` in `/proc/*/comm`; RAM **53 GiB available
+of 59** (session 23 opened at 20 under the owner's `java`; his note above predicts the
+difference and the number agrees), `-j24`; next free §11 **213** (live ∪ archive,
+`max+1`); unpushed **88 code / 710 harness** (`rev-list --count`). Live `### F` **6 → 1**
+by **archival pass 16** at OPEN (update-s22 + F87/F89/F90/F92/F93, 845 lines incl. the
+pass-13/14/15-shape seam tidy, manifest `2026-09-06-pass16`, pre-md5 `56eee5a3`
+reproduced in-process AND from disk, the archive files written before the live surface
+— Q-56's ordering; commit `f327191`; **F91 KEPT LIVE — carried, not delivered**) **→ 3**
+by the mints below. Instrument baselines at open (run 00:1x): scan **223/274/131** ·
+pair-check **228/203/25/109** · D 35 · D2 11 · I 89 · I2 36 · M 81 — to the digit of the
+session-23 close. QUEUE CONSUMPTION (session-23 close, in order): (1) pass 16 — DONE;
+(2) **F91** — position 1; its PREMISES block re-run at open **15/15 PASS** (only the
+`### F` count changed, 6 → 3, refreshed at the mint commit); (3) **T5.2 the soak →
+F95** (M–L) — the foreground-poll design MEASURED possible at open: a `setsid -f nohup`
+child launched in one tool call (`sleep 300`, 00:06:20) was alive two calls later
+(00:08:20), so ONE detached driver owns the app and every executor call is a foreground
+read; (4) the §11.207(g) tail's S item **§5.98 → F94** — R19-authorised two spellings,
+the dependence fact he did not answer MEASURED at the mint (`/usr/bin/grep`, the
+wrapper skips `doc/superscript.sts`: one shipped script tests `body_selected`,
+`internal/fly_to_selected.sts:21`, against 0; none against 503/600); (5) instrument
+residues, (6) riders, (7) owner items — carried, not minted. **Both mints PASS
+`premise_check.py` at the mint event (F94 16/16, F95 13/13; 00:14:02) — the first
+sections minted under §0b.3's PREMISES rule.** Picks: **F91 → F94 → F95** (the soak
+LAST so it soaks the binary the round leaves; three executors, §0b.2's sweet spot).
+Deliveries: all to the parent (§11.213+, refreshed at each dispatch). Launch classes:
+F91 FUNCTIONAL (RA/DE parity through the sidecar, farm); F94 FUNCTIONAL (one scratch
+script, farm, pre/post); F95 FUNCTIONAL (the soak — hours on `:2`, no photometric
+claim). Remotes: local contains origin on both; push impossible here — the owner's push
+is R5, unchanged.
+
+---
+
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
 
 1. `CLAUDE.md` auto-loads (the map). Read THIS file; locate your task's section; read
@@ -501,12 +547,13 @@ four for four DELIVERED and accepted; archived pass 13) · F79 §11.199 · F80 �
 scedit journal 2026-09-04a + §11.200 · F81 §11.201 · F82 §11.202 (session-21
 round — four for four DELIVERED and accepted; archived pass 14) · F83 §11.203 ·
 F84 §11.204 · F86 §11.205 · F85 §11.206 · F88 §11.207 (session-22 round — five
-for five DELIVERED and accepted; archived pass 15). Live below: **F87** (carried
-from session 22) + the session-23 round **F89–F92** (F91/F92 the EXTENSION
-members). Remaining candidates next-round: the T5.2 soak (the "ready" gate's second
-half, needs a foreground-poll design), the §11.207(g) tail (§5.98 · §5.21 ·
-§5.66+§5.71 · §5.115 · A15's residual), the riders. Still blocked: §5.100's fix
-(authorization unanswered).*
+for five DELIVERED and accepted; archived pass 15) · F89 §11.208 · F87 §11.209 ·
+F93 §11.210 · F90 §11.211 · F92 §11.212 (session-23 round — five for five
+DELIVERED and accepted; archived pass 16). Live below: **F91** (carried from
+session 23, position 1) + the session-24 mints **F94** (§5.98) and **F95** (the
+T5.2 soak). Remaining candidates next-round: the §11.207(g) tail (§5.21 ·
+§5.66+§5.71 · §5.115 · A15's residual), the instrument residues, the riders.
+Still blocked: §5.100's fix (authorization unanswered).*
 
 ---
 
@@ -587,7 +634,7 @@ git rev-parse --short=8 HEAD => 0b46a63f
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 407b3d1d
 python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 213
-grep -c '^### F' claude/fable-dispatch.md => 6
+grep -c '^### F' claude/fable-dispatch.md => 3
 # ledger states the work stands on
 grep -m1 '^86\. ' claude/INTENT.md | grep -c 'OPEN' => 1
 grep -m1 '^19\. ' claude/INTENT.md | grep -c 'OPEN' => 1
@@ -605,6 +652,255 @@ test -e /home/claude/sc-f91 ; echo $? => 1
 
 **DoD:** fix (code first) + probe + table + controls; §11 entry + stub; the two rows
 flipped; back-markers; map; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+### F94 — §5.98 — the two misspelled body names in `Core::setSelectedBodyName` corrected (`"Satun"` → `"Saturn"` at `core.cpp:2255`, `"Ganymed"` → `"Ganymede"` at `:2251`) so `$body_selected` answers 600 and 503 as the documented table says instead of the 999 default — FIX AUTHORISED by the tester (round-3 R19, §11.207(b)#6 + (c1)), the dependence fact he did not answer MEASURED on this field at the mint (exactly one shipped script tests the variable, against 0), proven pre/post on the shipped command surface with a control body that fires on both binaries (§11.207(g) item 2; SS-17; DEPLOYMENT-MAP T1.10 → T4) [S, engine, both paths]
+
+**Why now / mandate:** §5.98 [observed 2026-08-04; re-verified §11.163(b)]: the
+selection-to-number table compares the selected object's English name against two
+literals no loaded body carries, so selecting Saturn or Ganymede answers the table's
+999 default and any `struct if body_selected equal 600|503` never fires. R19 [stated:
+tester (Lionel RUIZ), via owner commit `6ffb017`]: *"Satun must be corrected to Saturn
+and Ganymed to Ganymede."* — the surface's owner authorises the fix outright; the row is
+DECISION-FREE (§11.207(g)(2), size S). Both-paths (the command interface — §11.163(h)'s
+test says backlog, not a transparency gate), and the smallest item on the decision-free
+list: the developer's branch should carry the tester's own instruction before he clones.
+
+**Measured at dispatch (supervisor, 2026-09-06 00:1x, code `0b46a63f`; the PREMISES
+block below re-runs every number):** the chain `Core::setSelectedBodyName`
+(`core.cpp:2226`, `Sun=0 … Neptune=800`, `:2229-2276`) with `"Ganymed"` → 503 at `:2251`
+and `"Satun"` → 600 at `:2255`; the default `int selected_body_name=999;` at
+`core.hpp:752`; tree-wide `grep -rn 'Ganymed"\|Satun"' src/` = **2** hits — and since
+`Ganymed` ⊂ `Ganymede` that zero also proves no correctly-spelled comparison exists to
+compensate (§11.163(b)). Read surface: `$body_selected` = `ACI_RW_BODY_SELECTED`
+(`base_command_interface.hpp:677`) → `app_command_eval.cpp:59/:330/:360`
+(`SC_RESERVED_VAR::BODY_SELECTED`) → `Core::getSelectedBodyName()` (`core.hpp:601`).
+**Dependence census, the fact R19 did not answer** (`/usr/bin/grep` — the Bash-tool
+wrapper skips `doc/superscript.sts` SILENTLY, CLAUDE.md hazard (1)): files under
+`~/.spacecrafter/scripts/` naming `body_selected` = **1** — `internal/fly_to_selected.sts:21`
+`struct if body_selected equal 0`; tests against 503 or 600 anywhere in the scripts tree
+or in `doc/superscript.sts` = **0** ⇒ nothing on this field depends on today's 999 for
+these two bodies (the tester's shows ARE this field's `scripts/`, R21). The doc's table
+`doc/superscript.sts:1529` spells `Ganymed=503` and `Saturn=600`: after the fix its
+`Ganymed` becomes the one spelling that matches nothing — the doc is the TESTER's file
+(`f0c8ef83`), so that one token is ROUTED to him (SS-17), never edited here. The scedit
+witness `util/scedit/grammar/witness/superscript-witness.json` carries **8**
+`Satun|Ganymed` hits (a RECORD of the defect, e.g. `:13980` *"engine_does: … compares …
+against the literal \"Satun\" … a typo"*): classify at the entry whether any live scedit
+gate reads those entries as an EXPECTATION (F76's checker) — a pinned record is never
+edited; a live expectation that the fix falsifies is named, with the line, not patched.
+
+**Mandate:** (1) **The fix**, code first, ONE commit, the two literals only — no other
+line of the chain moves; a one-line comment at the chain's head citing this entry is
+allowed, nothing else. (2) **Proof on the shipped surface, pre/post, same farm, the
+predictions committed to `harness/artifacts/f94/prediction.txt` BEFORE the first
+launch:** a scratch script played via `script action play` that does `select planet
+Saturn` then `struct if body_selected equal 600` with an OBSERVABLE inside the branch
+and a different one in its `else` (the executor picks an observable readable through a
+shipped channel — a `get`, the script log, a flag state read back from the dump — and
+quotes it), the same for `Ganymede`/503, and a CONTROL body from the chain (e.g. `Titan`
+= 604) that fires on BOTH binaries; PRE-fix: the two branches do NOT fire (999), the
+control fires; POST-fix: all three fire. The one shipped consumer
+`internal/fly_to_selected.sts` played once on the post-fix binary: behaviour unchanged
+(it tests 0). (3) **Rebuild** the reference binary in `build-claude` (`-j` per §0.5 after
+`free -g`; md5 changes, `cmake -n` 0 after), D14 gate PASS. (4) **Record:** §11.⟨next⟩
+entry FIRST + stub (the pre/post table with the observables quoted, the census, the
+witness classification); §5.98 flipped **FIXED** with the pointer; back-markers at
+§11.163(b)(c) (both homes), §11.207(g)(2) and (c1), §11.73(f)/§5.5's cross-link
+(§5.5's close-candidate note names this site as one of its survivors — annotate);
+`SCRIPT_SURFACE.md` SS-17 FIXED with the routed doc token; DEPLOYMENT-MAP T1.10 and T4's
+`§5.98` cargo struck; `harness/README.md` section; WIP per §0.6; D14.
+
+**Boundaries:** the two literals only; NO doc edit, NO witness edit, NO scedit edit; no
+other chain member touched; the farm only (real HOME md5 in==out); FUNCTIONAL — no
+photometric claim (`--no-scene` canary only); no `run_in_background`; runs under
+`/home/claude/sc-f94/`.
+
+**Discriminating checks:** (a) the pre/post table — Saturn, Ganymede, control — with the
+observable quoted per cell, predictions before the runs; (b) post-fix tree-wide grep:
+`"Satun"` 0, `"Ganymed"` (the exact literal) 0; (c) `fly_to_selected.sts` unchanged
+behaviour, quoted; (d) binary md5 moved, `cmake -n` 0; (e) D14 PASS; (f) the witness
+classification with the line that decides it.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that
+are not commands: display per HOST-EVENTS (`:2`); canary `--no-scene` exit 0 before the
+first launch; `free -g` ≥ 16 GiB before the build (else `-j6`); the harness HEAD as the
+prompt states it; §5.98's row reads DECISION-FREE and not FIXED.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 0b46a63f
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 407b3d1d
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 213
+grep -c '^### F' claude/fable-dispatch.md => 3
+# ledger states the work stands on
+grep -m1 '^98\. ' claude/INTENT.md | grep -c 'DECISION-FREE' => 1
+grep -m1 '^98\. ' claude/INTENT.md | grep -c 'FIXED' => 0
+# sites, re-resolved at HEAD (content drift = abort)
+grep -n '"Ganymed"\|"Satun"' src/coreModule/core.cpp | cut -d: -f1 | tr '\n' ' ' => 2251 2255
+grep -rn 'Ganymed"\|Satun"' src/ | wc -l => 2
+sed -n '752p' src/coreModule/core.hpp | grep -c 'selected_body_name=999' => 1
+grep -c 'ACI_RW_BODY_SELECTED' src/interfaceModule/app_command_eval.cpp => 1
+# the dependence census (/usr/bin/grep: the wrapper skips doc/superscript.sts silently)
+/usr/bin/grep -rl 'body_selected' ~/.spacecrafter/scripts/ | wc -l => 1
+/usr/bin/grep -rn 'body_selected equal \(503\|600\)' ~/.spacecrafter/scripts/ doc/superscript.sts | wc -l => 0
+LC_ALL=C /usr/bin/grep -n 'Ganymed=503' doc/superscript.sts | cut -d: -f1 => 1529
+grep -c 'Satun\|Ganymed' util/scedit/grammar/witness/superscript-witness.json => 8
+test -e /home/claude/sc-f94 ; echo $? => 1
+```
+
+**DoD:** fix (code first) + pre/post proof + control + the shipped consumer; §11 entry +
+stub; §5.98 flip; SS-17; map; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+### F95 — T5.2, the MULTI-HOUR SOAK under show load — the last member of the map's "ready" gate, never run: ONE launch on a private farm in the field's French locale, the eight shipped shows (`basis/` · `custom/` · `deepsky/`) played round-robin through the shipped command surface for ≥ 3 hours with every authored pause RESUMED, a cycle-boundary interlude (select · read out · a dual dump at a PINNED clock) so the §5.62 epoch-shift class has an instrument, a 30-second sampler on the process (RSS · VSZ · threads · fds · GPU MiB · stall counts · log bytes · probe round-trip · screen-lock state), the FAIL criteria and the LEAK criterion committed BEFORE the launch, ONE detached DRIVER owning the app while every executor call is a foreground read (the no-`run_in_background` design measured possible at this session's open), both detectors shown able to fail on two-minute controls, and ONE quit at the end measured against F19's 45 s bound (DEPLOYMENT-MAP T5.2: *"A planetarium session is hours"*; the stability class §5.61 · §5.59/A40 · §11.15d · B30 · §5.62) [M–L, instrument; display-bound, hours]
+
+**Why now / mandate:** the map's "ready" gate has ONE member left (T5 item 1's strike:
+*"WHAT 'READY' STILL WAITS ON: T5.2 alone"*), the owner's line makes "ready" the rename's
+condition, and the developer starts within the week. F90 said why it needs a different
+instrument: *"five launches of ~91 s cannot see the stability class, and this suite's
+own quit measured 0.6 s five times out of five."* The class (map T5 item 2): §5.61 (a
+lost wakeup in EntityCore's `WorkQueue::pop`, recorded not claimed), §5.59/A40 (a
+teardown request unserviced while the drawing worker holds a frame), B7's intermittent
+§11.15d shutdown segfault, B30's frozen-scene micro-instability, §5.62's unattributed
+mid-session epoch shift — every one of them a function of HOURS, not of a launch.
+
+**Measured at dispatch (supervisor, 2026-09-06 00:0x–00:1x, code `0b46a63f`; the
+PREMISES block re-runs what is a command):** the playlist — every `.sts` directly under
+`scripts/basis|custom|deepsky` = **8** shows; authored waits by F90's own
+`show_own_duration` (`f90_rehearsal.py:573`; wait-total s / `script action pause` count /
+command lines): `basis/artificial_satellites.sts` 12.5 / 3 / 28 · `basis/moon_phases.sts`
+21.0 / 7 / 38 · `basis/moon_reliefs.sts` 23.0 / 8 / 67 · `basis/zodiacal_light.sts` 5.5 /
+1 / 8 · `custom/diaporama.sts` 3.1 / 1 / 153 · `deepsky/crux_flag.sts`,
+`deepsky/hr_diagram.sts`, `deepsky/subaru.sts` 6.0 / 1 / 11 each — **83.1 s of authored
+waits and 23 operator pauses per cycle**; the cycle's WALL time is the executor's first
+measurement (F90 measured one show at 91.2 s including startup — a cycle is minutes, not
+seconds). `scripts/fscripts/` holds **137** `.sts` — the tester's own shows (`06old.sts`
+authors 3000 satellites, §5.137): NOT in this playlist (they author bodies and run for
+minutes each); a second soak over them is a named follow-up, said at the entry.
+`config.ini:267` `flag_skip_pause = false` is the shipped default: the driver RESUMES each
+pause the way F90 does (`f90_rehearsal.py:700-718`, the script log's `script action pause`
+count), never `flag skip_pause on` — honour-vs-skip under unattended play is the tester's
+question (§3, session 23). The stall watchdog: `fps.cpp:156` `Frame stall detected` (two
+consecutive same-frame ticks, + SIGUSR1) and `:159` `This frame stall is very long`
+(twenty). The quit verb `shutdown action now` (F90, five uses in its driver). F19's HUNG
+bound = 45 s. Process channels: `/proc/<pid>/status` (VmRSS, VmSize, Threads),
+`/proc/<pid>/fd` count; `nvidia-smi --query-compute-apps=pid,used_memory --format=csv`
+answers per pid on this host (2 rows at open). Screen state: `org.gnome.ScreenSaver
+GetActive` + logind `LockedHint` (F67's `gdbus`, `f67_tcp_live.py:162`); HOST-EVENTS
+2026-09-04: `lock-enabled` is TRUE on this desktop at `idle-delay 0` — a lock throttles
+the engine to 1 Hz (F67), so every sample records the lock state beside the stall count
+(a throttle is ATTRIBUTED, never counted as a stall of the app's). The farm: F90's shape
+— f55 + real `sessions/` + a REAL COPY of every played script directory (the annotator
+rewrites a played file in place, `script_annotator.cpp:163-179`) + `config.ini` a copy.
+**The design premise, MEASURED at open:** a `setsid -f nohup` child launched inside one
+tool call (`sleep 300`, 00:06:20) was alive two tool calls later (00:08:20) — a detached
+process survives the call boundary on this host, so the driver can own the app across
+hours while the executor's calls stay foreground and short.
+
+**Design (the executor implements; every deviation argued at the entry):**
+(1) **`harness/f95_soak.py`, four verbs.** `start <absOutdir> [--hours H] [--sample S]`:
+builds the farm, runs the `/proc/<pid>/comm` assert and the canary `--no-scene`, records
+the real HOME's frozen md5s (config, ssystem, every played show, `startup.sts`), launches
+the DRIVER detached (`setsid`, its own log under the outdir), returns at once. The driver:
+launches the app on the farm, waits TCP up, `$LOGON`, then loops the playlist — `script
+action play filename <show>`, resume every pause seen in the farm's script log, wait for
+`script end` within (own waits + 60 s) else record `SHOW-TIMEOUT` for that show and
+move on (the show stays in rotation; three timeouts of the same show = a finding, not a
+gate); at every CYCLE BOUNDARY the interlude — `select planet Mars` · `get status
+object` · `get status position` · `date jday <J0>` + `timerate rate 0` (the SAME J0 every
+cycle) · `body action dual_dump <outdir>/cycle_<n>.json` · `deselect` · `timerate rate 1`;
+every S seconds the SAMPLER row → `samples.csv` (wall, sim date, pid alive, VmRSS,
+VmSize, Threads, fds, GPU MiB, applog bytes, script-log bytes, cumulative `Frame stall
+detected` and `very long` counts, the round-trip of `get status position` in ms,
+GetActive, LockedHint, loadavg); at T+H the driver sends `shutdown action now`, measures
+exit code and wall-to-exit, captures the teardown lines, writes `verdict.json`, exits.
+`status <outdir>`: the last sample, cycles done, flags so far — foreground, instant.
+`wait <outdir> <sec>` (≤ 540): foreground, prints one line per new sample, returns early
+on any FAIL flag — the executor's poll unit, one tool call each. `stop <outdir>`: asks
+the driver to end now (the controls and an abort use it; the driver's own T+H end is the
+normal path).
+(2) **Criteria committed to `harness/artifacts/f95/prediction.txt` BEFORE the first
+launch, each with the number that fails it:** **F1 DEATH** — the pid gone before T+H.
+**F2 HANG** — the probe round-trip > 45 s (F19's bound), OR `This frame stall is very
+long` in an UNLOCKED session. **F3 QUIT** — exit code ≠ 0, or wall-to-exit > 45 s, or a
+teardown fault line (A40/§5.59's class). **F4 FROZEN FILE MOVED** — any real-HOME md5
+out ≠ in. **LEAK** (sign-based, magnitude recorded): VmRSS read at every cycle boundary
+after the interlude (the same playlist point) — STRICTLY INCREASING over every boundary
+from cycle 2 to the last ⇒ LEAK, reported as MB/cycle and MB/h with the series; otherwise
+the largest swing between consecutive boundaries is the floor and last-vs-first is stated
+against it. **RECORDED, never gating:** stall counts per hour with the lock state beside
+them; the per-cycle wall time (a show slowing cycle after cycle: state the slope); log
+growth in B/h on both logs (§5.115's price for the 8-launch window R20 chose); the GPU
+MiB trend; the dump-field diff across cycles at the pinned clock — the §5.62 instrument:
+the executor names BEFORE cycle 2 which fields are expected byte-identical at the same
+J0 and which are expected to move (frame counters, wall clocks), and reports the
+exceptions with their values.
+(3) **Controls, two-minute runs BEFORE the soak, each shown able to fail:** (i) DEATH —
+`kill -9` the app from outside during a `wait` → F1 flagged within one sample; (ii) HANG
+— `kill -STOP` the app for 60 s → F2 flagged (round-trip > 45 s), then `kill -CONT` → a
+recovered sample and the driver's quit; (iii) the LEAK rule fed a synthetic monotone
+series and a non-monotone one in a unit test of the verdict function (both outcomes
+printed).
+(4) **The soak:** H = **3 hours minimum** (state the actual H; longer if the session
+permits), S = 30 s. The executor polls with `wait` (≤ 540 s per call), updates this
+section's WIP line at every hour (the driver's state is on disk — an executor abort does
+NOT stop the soak; a successor resumes with `status`), and commits the samples hourly
+(gz, `git add -f`) — never a long campaign on uncommitted work.
+(5) **Cycle campaign (optional, health permits):** the §11.15d shutdown class is
+intermittent and one quit cannot see it — ten launch/quit cycles of the smoke suite's
+shape (`f90_rehearsal_run.sh` ×10 on fresh farms: exit codes, wall-to-exit, teardown
+lines) as the secondary arm; stated as run or as owed.
+(6) **Record:** §11.⟨next⟩ entry FIRST + stub (the criteria, the controls, the sample
+summary — min/max/slope per metric — the cycle table, the verdicts, every finding → its
+existing §5 row cited with the back-marker at both homes, or a NEW row by §5.79's
+criterion or by the leak rule); DEPLOYMENT-MAP T5 item 2 struck with the record ("ready"
+is the owner's word from here: what the soak found and what it could not see);
+`harness/README.md` section; WIP per §0.6; D14.
+
+**Boundaries:** no engine code; the farm only (real HOME md5 in==out on every frozen
+file); FUNCTIONAL — no photometric claim, canary `--no-scene` only; the tool's
+`run_in_background` NEVER used — the driver is a `setsid` process and every executor
+call is foreground and ≤ 9 min; the `fscripts/` shows NOT played; no `flag skip_pause`;
+NOTHING fixed; all runs under `/home/claude/sc-f95/`; the WIP line updated hourly.
+
+**Discriminating checks:** (a) criteria + predictions committed before the first launch;
+(b) both controls RED, artifacts kept; (c) `samples.csv` with ≥ H×3600/S rows and the
+cycle table; (d) the leak verdict with its series; (e) the quit's exit code, wall-to-exit
+and teardown lines; (f) real HOME md5 ×N; (g) the §5.62 dump-diff table with the
+expected-constant set named before cycle 2.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that
+are not commands: display per HOST-EVENTS (`:2`, the owner's RDP-created real session,
+kept logged in); canary `--no-scene` exit 0 before the first launch; the harness HEAD as
+the prompt states it; the detached-process premise above (re-probe it as the FIRST act —
+a `setsid -f sleep 120` in one call, alive in the next; if it dies, STOP and report:
+the design stands on it).
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 0b46a63f
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 407b3d1d
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 213
+grep -c '^### F' claude/fable-dispatch.md => 3
+# the shows, the config and the channels the design stands on
+ls ~/.spacecrafter/scripts/basis/*.sts ~/.spacecrafter/scripts/custom/*.sts ~/.spacecrafter/scripts/deepsky/*.sts | wc -l => 8
+ls ~/.spacecrafter/scripts/fscripts/*.sts | wc -l => 137
+grep -n '^flag_skip_pause' ~/.spacecrafter/config.ini | cut -d: -f1 => 267
+grep -n 'Frame stall detected\|This frame stall is very long' src/appModule/fps.cpp | cut -d: -f1 | tr '\n' ' ' => 156 159
+grep -n 'def show_own_duration' claude/harness/f90_rehearsal.py | cut -d: -f1 => 573
+grep -c 'shutdown action now' claude/harness/f90_rehearsal.py => 5
+test -f claude/harness/f90_rehearsal.py && test -f claude/harness/f55_farm.sh && test -f claude/harness/f56_canary.sh && test -f claude/harness/dumpread.py && echo ok => ok
+test -e /home/claude/sc-f95 ; echo $? => 1
+```
+
+**DoD:** the driver + four verbs; predictions before the launch; both controls red;
+the ≥ 3 h soak with its samples, cycle table, dump diffs and verdicts; the quit measured;
+§11 entry + stub; map T5.2 struck; README; trees clean; WIP cleared; baselines LAST.
 **WIP:** —
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
