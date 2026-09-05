@@ -14,6 +14,70 @@ correction to how this map should read the set — see the critical path.]** Mai
 correct in place with dated strikes; regenerate wholesale when the drift exceeds reading
 comfort.
 
+**[REWORKED 2026-09-05 — A SECOND CRITERION, on the owner's word (supervising session 22,
+Claude Fable 5.1). Trigger: *"Read back and update if needed DEPLOYMENT-MAP.md to focus on the
+work necessary for clean deployment (and stable reference)"*; the phrase asked once and
+answered [vixy 2026-09-05, verbatim]: *"Stable reference is because another junior developper,
+major of his promotion, 5th year post-bac, will work on spacecrafter. I would prefer this
+branch to became the stable reference for development, otherwise work will continue and
+require further feature port. His work will start in a week."*]** The map now carries TWO
+criteria with different clocks: **R0** (the developer, ONE WEEK — tier R below) and **T0** (the
+tester, decision-paced — the tiers that follow). **What is NECESSARY, and only that, as of
+2026-09-05** — the rest of this file is the derivation and stays challengeable:
+- **For R0:** R1 reconcile the deployed line (**F83**) · R2 the newcomer's first hour + the
+  deployment manifest (**F84**) · R3 the entry document (**F85**) · R4 startup memory-unsafety
+  (**F86** for the two old-core members; §5.48 is EntityCore = Vixy's) · **R5 the PUSH (Vixy —
+  nothing here reaches the developer without it)** · R6 the branch policy (Vixy, one sentence).
+- **For T0**, after §11.163(h)'s test (*does the NEW path behave differently here? else backlog*):
+  T1.1 the zoom pair (Vixy, one line — §5.100's authorization asked 2026-08-26, unanswered) ·
+  §5.111 (**F87**) · §5.86 + the RA zero point (§11.198(b) resolved decision (1); dispatchable
+  next round with the origin held old-as-spec until R27) · §5.53(b) (Vixy, one token) · the
+  final-pass SEND (Vixy; R21/R27/R28/R29 travel inside it) · the T5.1 rehearsal (next round) ·
+  §5.112's warning (N7 drafted; F84 prices its number).
+- **Not required for either**, so the exclusion is visible: every both-paths defect (T1.6,
+  T1.10, T1.11 — backlog by §11.163(h)); B1/B2/B3 (until R21's census says otherwise); B8.
+
+## R — Reference for development (the second criterion, 2026-09-05)
+
+**R0 — The criterion** [vixy 2026-09-05, quoted above]: a junior developer clones THIS branch in
+one week and develops on it; no work continues on the deployed line that would later need
+porting. Derived requirements, each with its state MEASURED on 2026-09-05:
+
+1. **R1 — `master-beta` contains the deployed line.** Local `2023-master` (`194c6074`,
+   2025-09-20) ⊂ `master-beta`. `origin/2023-master` = `6ec2f43f` (last fetched 2026-08-03 —
+   no fetch is possible from this host, publickey refused) is 15 commits ahead by SHA and
+   **2 by content** (`git cherry`: Kenan-Blasius's video-as-`s_texture`, `c69687bc`+`6ec2f43f`,
+   four files under `src/tools/`, all ASCII); a trial merge conflicts in 4 hunks, every one
+   "keep ours" (F70 ASCII ×2, B31 `SC_SESSION`, F62 `div/mul/mod`); version strings equal
+   (2026.07.11 — §5.112 silent); submodule pin ours-advanced only. → **F83**. Residual, Vixy's:
+   the fetch is a month stale — re-fetch + re-merge from a keyed host before the developer
+   clones.
+2. **R2 — A clean clone builds, installs and runs by the documents.** INSTALL is the
+   source-ZIP + Windows/VCPKG text and never says `--recurse-submodules`; `install_src.sh:22`
+   leaves `CMAKE_BUILD_TYPE` EMPTY by a one-character inversion of its own stated intent; both
+   install scripts `sudo` into `/usr/local`; the config is app-generated from `checkConfig`'s
+   schema (`data/default_config.ini` is 3 lines; the field's is 315 lines / 266 keys / 0
+   comments); §5.48 fires on a cold HOME at ~15 % (EntityCore). → **F84** (measure, manifest,
+   docs, §5.112's number, §5.48's rate); §5.48's FIX is Vixy's.
+3. **R3 — An entry document exists in the code repo.** None does (`doc/` is user-facing; no
+   `*.md` under `src/experimentalModule/`); `claude/README.md`'s own filing criterion states the
+   promotion obligation and nothing was ever promoted under it. → **F85**.
+4. **R4 — No memory-unsafety reachable from the shipped data at startup.** §5.127(2) the UAF
+   from `anchor.ini`, §5.127(1) the comet null deref (old core) → **F86**; §5.48 (EntityCore)
+   → Vixy.
+5. **R5 — The branch is on the remote.** +63 code / +638 harness commits unpushed; GitHub
+   refuses publickey from this host. → **Vixy** (push from the laptop, or land the key here).
+6. **R6 — Branch policy.** Three developers committed to `2023-master` in 2026 (Kenan-Blasius,
+   Lionel, Calvin). For `master-beta` to be the reference, either it becomes the PR target /
+   main, or the others are redirected to it. → **Vixy**, one sentence; nothing here can decide
+   it. Also his: the developer's platform (if Windows, the vcpkg/`install_src.bat` path enters
+   through R1 untested here) and whether the harness repo is meant to be readable by him
+   (F85 points at it either way).
+
+Not required for R0 (challengeable): tester transparency (T0's tiers), the final pass, any T1
+decision — a developer can work on a branch whose tester-facing divergences are still open,
+provided they are RECORDED (they are: §5, T4).
+
 **T0 — The criterion** [derived from the ask + D15(b)'s transparency language]: the tester
 runs his existing workflows — the scripts and data he authors, TUI/keyboard operation,
 search/select/readouts, saves/config, multi-hour shows — on a deployment where the NEW path
@@ -40,7 +104,10 @@ Ordered by operational weight for the tester, not by age:
 4. **§11.4's two numbered decisions** (RA zero point −90.0003° epoch-stable; origin
    observer- vs body-centred — origin sub-question tester-routable) → unlocks the §5.86
    fix (+ §5.19 folds in). **[2026-09-02, §11.198(b): decision (1) RESOLVED by delegation — equinox definition, catalog-rooted, residual attributed; decision (2) → round-3 R27.]** Until then the new path's RA/DE readouts for composed bodies
-   answer in a scrambled frame — he reads coordinates professionally.
+   answer in a scrambled frame — he reads coordinates professionally. **[2026-09-05: with (1)
+   resolved, the §5.86 fix is DISPATCHABLE with the origin held old-as-spec (observer-centred)
+   until R27 — the parity target §11.158(f) states (≤ 0.002° for 89/90 bodies); next round's
+   first engine candidate, deferred behind tier R this round.]**
 5. **§5.109's layer half** — what `moveto alt` means above a display-scaled body (drawn
    vs physical surface). He authors scenes on scaled bodies.
 6. **The script-semantics batch** (both-paths defects his authoring will hit; each is a
@@ -99,7 +166,8 @@ Ordered by operational weight for the tester, not by age:
 ## T2 — Work, dispatchable now or upon its T1 gate
 
 - **§5.111** — wrap the new path's info strings in `_()` (parity restoration; the tester
-  operates in FRENCH; decision-free candidate, next round).
+  operates in FRENCH; decision-free candidate, next round). **[MINTED 2026-09-05 as F87, the
+  session-22 extension member: old's msgids byte-exact, unmatched labels listed not invented.]**
 - ~~**§5.110** — the owed live check (one script), then the type-filter fix routing.~~
   **[PAID 2026-08-29, F50 §11.166: live check RUN — six of six predictions matched, and
   the composed-selection answer is CHARACTER-IDENTICAL to nothing-selected (1 AU, mag −10,
@@ -176,7 +244,10 @@ Ordered by operational weight for the tester, not by age:
   "unknown key preserved" was the same-version command path only. Dormant here solely because
   build and file both read `2026.07.11` — which is why every launch's config md5 stays
   pristine. **This is a data-loss hazard on the delivery mechanism itself; he should be told
-  before the delivery, not after.**]**
+  before the delivery, not after.**]** **[2026-09-05: told — N7 in USER_QUESTIONS_ROUND3
+  (DRAFT); the NUMBER (keys deleted from the field config on a version bump) is F84's to
+  measure, predicted from `checkConfig.cpp`'s tables first. Measured today: the field config
+  has 0 comment lines and 0 uppercase keys, so on THIS field only the deletion arm can bite.]**
 - **The B14 data package** (poles/W0/periods corrections) riding the next
   `spacecrafter-data` delivery, forward-only (D9); his baselines shift accordingly.
 - **His script corpus**: the shipped 434 are our proxy; HIS files are the real test —
@@ -205,7 +276,8 @@ the fix is two spellings, free once given).
    scene harnesses are proxies built from OUR model of operation. The closing audit
    before "ready" is a his-day-in-the-app suite: author a body, run a show, search,
    select, save, reload, quit — one sitting, new path, French locale. CANDIDATE TASK
-   (M), buildable now, sharpest after T1.1/T1.4.
+   (M), buildable now, sharpest after T1.1/T1.4. **[2026-09-05: deferred behind tier R this
+   round — next round's first slot; it doubles as the developer's smoke suite.]**
 2. **Multi-hour soak under show load** (the stability class: §5.61 lost wakeup, §5.59/A40
    teardown, B7's intermittent §11.15d segfault, B30 frozen-scene micro-instability,
    §5.62's unattributed epoch shift) — never run. A planetarium session is hours.
@@ -264,3 +336,10 @@ authoring trap too). **The test to apply to every remaining row before it is all
 this critical path: does the NEW path behave differently from the old here? If not, it is
 backlog, not a deployment gate.** The one genuinely new item F47 adds to the path is §5.112,
 and it sits on the DELIVERY mechanism rather than on the render path.
+
+**[2026-09-05 — THE SHORT POLE IS NOW TIER R, one week.]** R1–R4 are dispatched this round
+(F83–F86); R5 and R6 are the owner's and cannot be substituted from here. T0's path is
+unchanged in shape but no longer the binding clock: the developer can start on a branch whose
+tester-facing divergences are open and recorded. The two clocks meet at F84's deployment
+manifest — the same artifact answers "what does a clone install" for him and "what will the
+next delivery carry" for the tester.
