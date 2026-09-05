@@ -55,6 +55,12 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   (4) D14 standing gate: `python3 claude/harness/f70_ascii.py gate` — a new
   non-ASCII file in an unclassified path FAILS it; new source is pure ASCII,
   string literals by `\xNN` escape (§11.189(c), veto-open).
+  (5) `/usr/bin/grep` does NOT parse `\xNN` inside a POSIX bracket expression: the
+  literal `'[\x80-\xff]'` matches the characters `x 8 0 - f` and reports hundreds
+  of false hits on a pure-ASCII file (measured 327/1162, §11.203(j)). Byte classes
+  need `-P`, or bash `$'[\x80-\xff]'` quoting (the shell expands the bytes), or a
+  Python byte census. The Bash-tool wrapper (ugrep) DOES parse the escape — which
+  is why the literal form looks right there and lies under `/usr/bin/grep`.
 - Suspended-for-Vixy items: work on them is blocked by protocol, not dependencies.
 - Corrections propagate forward only (`spacecrafter-data` → future deliveries); the
   installed field is frozen — backward compatibility is forced (§2.0 D9).

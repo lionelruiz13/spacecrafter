@@ -56,7 +56,9 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    binary `225f0d93`.** The four hunks resolved to ours exactly as measured, and proven so by
    a check that could have failed (markers deleted, not `git checkout --ours`, so the three
    files' `git diff 85cc2785` being empty is a result about the AUTO-merged remainder too);
-   `git cherry` after the merge is empty in both directions; the merge's stat is 4 files /
+   `git cherry` after the merge is ~~empty in both directions~~ **[supervisor correction at
+   acceptance: empty in the FORWARD direction — 0 `+`, 0 `−`; the reverse direction lists
+   `master-beta`'s own 260 patches by construction, §11.203(b)'s table has it right]**; the merge's stat is 4 files /
    480 insertions = the two commits' 476 + 4 to the line. Gates on the merged binary: full
    canary **12/12 in band, every delta 0.0**, dwell frame md5 unchanged across a third
    binary; D14 PASS (CONVERT 970 → 972, no partition edit); ctest 19/19; corpus 4014/0/0.

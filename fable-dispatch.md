@@ -679,6 +679,41 @@ filename <x>.mp4 name <id>`; the dispatch's reason corrected (`TFP::IMAGE` reads
 **219/194/25/101** (delta **+1/+1/0/0** = this entry file + its stub pair, which is also
 the proof the instruments READ the new entry) · D 35 · D2 11 · I 89 · I2 36 · M 81, all
 delta **0**.
+**ACCEPTED 2026-09-05 (supervisor, session 22, Claude Fable 5.1).** Verified by my own
+runs and reads, not by the report: §11.203 read in full; two code commits (Claude Opus 5;
+`c6784490` parents `85cc2785`+`6ec2f43f`, `03c85734` the anchor record) and five harness
+commits (`4222e6d`..`19ffd6d`), both trees clean; forward `git cherry` **0 lines**; the
+three conflicted files `git diff 85cc2785` **0 lines**; `git diff --stat 85cc2785
+c6784490` **4 files / 480+ / 4−**, HEAD adds only `tests/anchor-expected.txt`; binary md5
+**`225f0d93`**, `cmake -n` **0** steps; anchor record `clean 7194 · moved 2 ·
+not-at-head 2 · skipped 86`; D14 **PASS at 972**; canary log `20260905-105517` reads
+`exit 0 (0 fail, 0 note)` with every printed delta `0.0`; `setBigTextureLifetime` at
+`s_texture.hpp:299`; unpushed **80 / 646** (the report's 645 preceded its own delivery
+commit). Deviations ENDORSED with the executor's arguments: re-RECORD not re-point (the
+pin is a commit — F75's S2 shape; a re-point would falsify 7196 citations at their own
+pin); marker-deletion over `checkout --ours` (a check that could fail — the AUTO-merged
+remainder was never otherwise proven ours); the `cmake` re-configure before the build
+(the `GLOB_RECURSE` finding — a standing newcomer trap, handed to F84 as a one-line
+veto-open candidate: `CONFIGURE_DEPENDS`, cmake ≥ 3.12 and the tree's minimum is
+3.12). DISPATCHER DEFECTS reported by the executor, both ACCEPTED as mine: *"none of
+the four files is anchored"* (`s_texture.hpp` carries two `keep_time` citations —
+output-side, the mandate had both branches; counterfactual stated); the exercisability
+reason (`TFP::IMAGE` resolves under `pictures/`, not `videos/` — conclusion survives,
+both empty). Round tally: **four dispatcher defects** (two self-caught at open, two
+executor-caught). EXECUTOR claim corrected at the MAP, not the entry (the entry's
+table is right): *"`git cherry` empty in both directions"* — the reverse direction
+lists `master-beta`'s own **260** patches by construction; only the forward direction
+is empty (0 `+`, 0 `−`). Executor instrument slip endorsed as a hazard: `/usr/bin/grep`
+does not parse `\xNN` inside a bracket expression (literal form → 327 false hits on a
+pure file; bash `$'…'` byte quoting → 0; Python → 0; `-P` → 0) — my own open-note
+census used the `$'…'` form, so the two measurements agree; the rule now lives in
+CLAUDE.md as encoding hazard (5). Criterion-integrity instances credited: the
+prediction committed before the gates with P3 self-flagged weakest and then refuted;
+the anchor gate's red read as information; the grep slip mapped both ways before
+belief; the vacuous-compile-gate discovery (the gate would have passed while proving
+nothing — caught by reading `build.make`, not by the build). Standing consequences:
+§5.112 still silent (version unchanged); the canary bank/band/frame unchanged across a
+third binary; R1 met, R5 the owner's alone.
 
 ### F84 — The newcomer's first hour, measured: a clean clone of the merged HEAD taken through INSTALL / `install_src.sh` as written (no sudo, scratch prefix), every deviation he would hit recorded and the documents corrected to what IS; the install tree manifested; six fresh-HOME first launches (the §5.48 cold-HOME race rated); the §5.112 rewrite priced on a bumped-version copy of the field config — the deployment manifest that makes the branch a reference (DEPLOYMENT-MAP R2 + T3's §5.112 datum) [M]
 
