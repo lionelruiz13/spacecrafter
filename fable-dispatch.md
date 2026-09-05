@@ -242,7 +242,7 @@ replayed byte-identical — **SHA MAP: `741b4a8→367f2d1` · `c4686fc→4fb22f1
 §11.206 or the F85 prompt resolves through this map; nothing was on the remote).
 Picks after the events: **F83 ✓ → F84 ✓ → F86 ✓ → F85 ✓ → F88** (the propagation
 outranks F87 now: sixteen decisions the map waited on), F87 if health permits.
-**Round outcome (session 22 close, 2026-09-05 ~15:00 `date`-measured):** F83 → **§11.203**
+**Round outcome (session 22 close, 2026-09-05 — the close commit `7852ce5` reads 14:52:16 by its own clock; this line first said "~15:00 `date`-measured" and was NOT measured, the twenty-third dispatcher defect and the one that makes the class visible: a label that CLAIMS measurement without the command beside it is worse than an estimate, because it disarms the reader's check):** F83 → **§11.203**
 (the deployed line in; 4 keep-ours hunks proven byte-identical; canary band to the digit
 on a third binary; the anchor gate red and right) · F84 → **§11.204** + §5.130–§5.132 (R2
 measured NOT MET: the submodule pin on no remote, the first launch aborting; INSTALL
