@@ -435,6 +435,88 @@ def navstr_blocks(path, names):
     return out
 
 
+# ---------------------------------------------------------------------------
+# The composed body's NEW info readout, matched by SHAPE and never by spelling
+# (F93, INTENT §11.210; the repair decided at §11.209(h) and not applied there).
+#
+# WHY: until F93 the I1 leg below matched four ENGLISH labels - "RA/DE:",
+# "Alt/Az:", "Distance: ... AU", "Magnitude:" - while this script runs on a
+# `b3_farm.sh` farm, i.e. the FIELD config, i.e. FRENCH.  After F87 wrapped
+# `ModularObject`'s labels in `_()` with old's msgids, the same block reads
+# "AD/DE : ", "Alt/Az\xa0: " (U+00A0, supplied by the catalogue), "Distance :
+# ... UA" - so the check went red on a readout that is MORE correct.  Its
+# intent was always *"the composed body's info readout is populated"* and never
+# *"it is in English"*, so the label spellings are exactly what must not be
+# asserted: they belong to `~/.spacecrafter/language/<lang>.txt`, which is
+# installed field data frozen by D9 and shipped from another repository.
+#
+# WHAT IS ASSERTED INSTEAD - the SHAPE the writer guarantees:
+#   `ModularObject::getInfoString` emits five lines unconditionally (name,
+#   magnitude, RA/DE, Alt/Az, distance + unit), and the "  NEW inf: " marker
+#   that introduces them is written by `ssystem_factory.cpp:1206-1210` into an
+#   ARTIFACT channel that is never translated.  So: five lines; a magnitude
+#   that parses as a number; two pairs of sexagesimal angles; a distance number
+#   followed by a unit token.  The label of each line is RECORDED (so a locale
+#   change is visible in the artifact) and never compared.
+#
+# This lives beside `navstr_blocks` because both know the same writer's format
+# and only one of them may (I2) - and because a module-level function can be
+# replayed on a landed `.navstr` or a landed report without launching anything,
+# which is how the English and French forms were both proved at F93.
+_SEXA = re.compile(r"[+-]?\d+\D+\d+\D+\d+\D*")     # 09h21m12s | +60d00'00"
+_NUM_UNIT = re.compile(r"([-+0-9.eE]+)\s+(\S+)\Z")  # 0.00005905 AU | ... UA
+INFO_MARK = "  NEW inf: "
+
+
+def info_block_shape(blk):
+    """The NEW info readout inside a `navstr` body block, parsed by shape.
+    -> dict(name, labels[4], magnitude, radec, altaz, distance, unit) on a
+    well-formed block, or dict(error=...) naming the first thing that is wrong.
+    Nothing in here compares a label to a spelling."""
+    if not blk:
+        return {"error": "no block"}
+    lines = blk.splitlines()
+    start = next((i for i, ln in enumerate(lines) if ln.startswith(INFO_MARK)), None)
+    if start is None:
+        return {"error": "no '%s' marker" % INFO_MARK.strip()}
+    body = lines[start:]
+    out = {"lines": len(body), "name": body[0][len(INFO_MARK):], "labels": [], "raw": body}
+    if len(body) != 5:
+        out["error"] = "the readout is %d lines, the writer emits 5" % len(body)
+        return out
+    fields = []
+    for ln in body[1:]:
+        label, sep, value = ln.partition(":")
+        if not sep:
+            out["error"] = "unlabelled line %r" % ln
+            return out
+        out["labels"].append(label + ":")
+        fields.append(value.strip())
+    mag, radec, altaz, dist = fields
+    try:
+        out["magnitude"] = float(mag)          # `inf` is what a composed body
+    except ValueError:                         # reads today (§11.106), and it
+        out["error"] = "magnitude %r is not a number" % mag   # IS a number
+        return out
+    for key, val in (("radec", radec), ("altaz", altaz)):
+        pair = [p.strip() for p in val.split("/")]
+        if len(pair) != 2 or not all(_SEXA.fullmatch(p) for p in pair):
+            out["error"] = "%s %r is not a pair of sexagesimal angles" % (key, val)
+            return out
+        out[key] = pair
+    m = _NUM_UNIT.match(dist)
+    if not m:
+        out["error"] = "distance %r is not a number followed by a unit token" % dist
+        return out
+    try:
+        out["distance"] = float(m.group(1))
+    except ValueError:
+        out["error"] = "distance %r is not numeric" % m.group(1)
+        return out
+    out["unit"] = m.group(2)
+    return out
+
+
 def dump_names(json_path):
     names = set()
     for line in open(json_path):
@@ -858,23 +940,28 @@ def main():
                             dump_names(out / "info.json")).get("BigA")
         report["legs"]["I1_info"] = dict(block=blk)
         if blk:
-            dm = re.search(r"Distance: ([0-9.eE+-]+) AU", blk)
+            shape = info_block_shape(blk)
             dumped_au = (b_i.get("BigA", {}).get("new") or {}).get("dist")
-            fields = [k for k in ("RA/DE:", "Alt/Az:", "Distance:", "Magnitude:") if k in blk]
-            mag = re.search(r"Magnitude: (\S+)", blk)
-            report["legs"]["I1_info"]["fields"] = fields
-            report["legs"]["I1_info"]["magnitude"] = mag.group(1) if mag else None
-            if len(fields) < 4:
-                fail(f"I1 info: the composed body's info block is missing fields: {fields}")
-            print(f"note: composed-body info magnitude reads "
-                  f"'{mag.group(1) if mag else '?'}' (recorded, see 11.106)", flush=True)
-            if dm and dumped_au and abs(float(dm.group(1)) - dumped_au) <= 1e-6 * max(1.0, dumped_au):
-                ok(f"I1 info: the composed body's info readout is populated ({', '.join(fields)}) "
-                   f"and its Distance {float(dm.group(1)):.8f} AU matches the dumped position "
-                   f"{dumped_au:.8f} AU")
+            report["legs"]["I1_info"]["shape"] = {k: v for k, v in shape.items() if k != "raw"}
+            print(f"note: composed-body info labels read {shape.get('labels')} and its "
+                  f"magnitude reads {shape.get('magnitude')!r} (both RECORDED, never asserted - "
+                  f"the labels are the catalogue's, §11.209(d); the magnitude is §11.106's)",
+                  flush=True)
+            if "error" in shape:
+                fail(f"I1 info: the composed body's info readout is not the shape the writer "
+                     f"emits - {shape['error']} (block: {blk!r})")
+            elif not dumped_au:
+                fail(f"I1 info: no dumped distance for the composed body to compare against")
+            elif abs(shape["distance"] - dumped_au) <= 1e-6 * max(1.0, dumped_au):
+                ok(f"I1 info: the composed body's info readout is POPULATED - five lines, "
+                   f"magnitude {shape['magnitude']}, two angle pairs "
+                   f"({'/'.join(shape['radec'])} and {'/'.join(shape['altaz'])}), and a distance "
+                   f"{shape['distance']:.8f} {shape['unit']} that matches the dumped position "
+                   f"{dumped_au:.8f} AU - asserted by SHAPE, so it holds in any locale "
+                   f"(labels seen: {', '.join(shape['labels'])})")
             else:
-                fail(f"I1 info: distance mismatch (info={dm.group(1) if dm else None} "
-                     f"dump={dumped_au})")
+                fail(f"I1 info: distance mismatch (info={shape['distance']} "
+                     f"{shape['unit']} dump={dumped_au})")
         else:
             fail("I1 info: no NEW info block emitted for the composed body")
 

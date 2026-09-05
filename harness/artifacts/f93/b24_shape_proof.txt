@@ -1,0 +1,47 @@
+=== 1. THE LIVE FRENCH BLOCK (F93 run D1, reference binary 407b3d1d) ===
+'  NEW nav: AD/DE : 20h38m48s / +60°00\'00"\nSA +50°18\'00" GHA +160°41\'53" LHA +203°59\'53"@ Az/Alt/coA: +320°18\'00"/+12°40\'14"/+77°19\'46" LPA +156°00\'07"\n  NEW inf: BigA\nMagnitude : inf\nAD/DE : 20h38m48s / +60°00\'00"\nAlt/Az\xa0: +12°40\'14" / +320°18\'00"\nDistance : 0.00005905 UA\n'
+   shape: {'lines': 5, 'name': 'BigA', 'labels': ['Magnitude :', 'AD/DE :', 'Alt/Az\xa0:', 'Distance :'], 'magnitude': inf, 'radec': ['20h38m48s', '+60°00\'00"'], 'altaz': ['+12°40\'14"', '+320°18\'00"'], 'distance': 5.905e-05, 'unit': 'UA'}
+
+=== 2. THE LANDED PRE-FIX ENGLISH BLOCKS (b24's own reports) ===
+   artifacts/f43/sel_post
+   shape: {'lines': 5, 'name': 'BigA', 'labels': ['Magnitude:', 'RA/DE:', 'Alt/Az:', 'Distance:'], 'magnitude': inf, 'radec': ['20h38m48s', '+60°00\'00"'], 'altaz': ['+12°40\'14"', '+320°18\'00"'], 'distance': 5.905e-05, 'unit': 'AU'}
+   artifacts/b24_select_post
+   shape: {'lines': 5, 'name': 'BigA', 'labels': ['Magnitude:', 'RA/DE:', 'Alt/Az:', 'Distance:'], 'magnitude': inf, 'radec': ['09h21m12s', '+60°00\'00"'], 'altaz': ['+12°40\'14"', '+129°42\'00"'], 'distance': 5.905e-05, 'unit': 'AU'}
+
+=== 3. THE COUNTERFACTUAL - the pre-F93 spelling matchers on the French block ===
+   re.search(r'Distance: ([0-9.eE+-]+) AU')  -> None
+   fields in ('RA/DE:','Alt/Az:','Distance:','Magnitude:') -> [] (the leg needs 4)
+   re.search(r'Magnitude: (\S+)')           -> None
+   => 0 of 4 labels: the pre-F93 leg reds on this readout, by spelling alone.
+
+=== 4. SAME READOUT, TWO LANGUAGES, SAME NUMBERS (the control) ===
+   magnitude EN inf                                  FR inf                                  SAME
+   radec     EN ['20h38m48s', '+60°00\'00"']         FR ['20h38m48s', '+60°00\'00"']         SAME
+   altaz     EN ['+12°40\'14"', '+320°18\'00"']      FR ['+12°40\'14"', '+320°18\'00"']      SAME
+   distance  EN 5.905e-05                            FR 5.905e-05                            SAME
+   unit   EN 'AU'  FR 'UA'
+   labels EN ['Magnitude:', 'RA/DE:', 'Alt/Az:', 'Distance:']
+          FR ['Magnitude :', 'AD/DE :', 'Alt/Az\xa0:', 'Distance :']
+
+=== 5. THE MATCHER OVER WHOLE LANDED SIDECARS ===
+   artifacts/f44/legA_003 (PRE-FIX, English new half, exact name channel from the .json):
+      blocks 120  shape-green 120  red 0 {}
+      distinct label tuples: {('Magnitude:', 'RA/DE:', 'Alt/Az:', 'Distance:')}
+   artifacts/f87/dump_fr (POST-FIX, FRENCH, 90 shipped bodies):
+      blocks 90  shape-green 89  red 1 {'Vesta': 'the readout is 245 lines, the writer emits 5'}
+      distinct label tuples: {('Magnitude :', 'AD/DE :', 'Alt/Az\xa0:', 'Distance :')}
+      NOTE the single red is THIS SCRIPT's name channel, not the matcher: no .json dump
+      was landed beside that sidecar, so names are taken as 'the line before "  OLD nav:"',
+      which misses the one composed body (51PegSystem, no OLD half) and lets Vesta's block
+      swallow the file's tail.  The same case in the F44 sidecar above, read through the
+      REAL name channel (dump_names), is 120/120 green.
+
+=== 6. SHOWN ABLE TO FAIL - eight malformed blocks, each caught by its own reason ===
+   empty                        -> no block
+   no marker                    -> no 'NEW inf:' marker
+   four lines                   -> the readout is 4 lines, the writer emits 5
+   magnitude not a number       -> magnitude 'n/a' is not a number
+   one angle instead of a pair  -> altaz '+12°40\'14"' is not a pair of sexagesimal angles
+   angle is not sexagesimal     -> radec 'plus tard / +60°00\'00"' is not a pair of sexagesimal angles
+   distance without a unit      -> distance '0.00005905' is not a number followed by a unit token
+   distance not numeric         -> distance 'inconnue UA' is not a number followed by a unit token

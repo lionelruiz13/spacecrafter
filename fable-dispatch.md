@@ -1187,7 +1187,12 @@ done, every prediction met — reference ×2 **exit 0**, all green, P7 windows 8
 to the digit in both, A/A 0 px in every window (4 px frame-wide, all four inside a
 138×136 px box on the Moon); pre-fix **exit 1**, 9 reds ALL P1b (17417.2/18263.2 km),
 count control GREEN 45.0×/45.8× as predicted; guard-only lands in the pre group.
-Artifacts `harness/artifacts/f93/`. NEXT: b24_select (3b), then README + entry.
+Artifacts `harness/artifacts/f93/`. Checkpoint 4: b24 (3b) landed — the I1 leg matches the
+block by SHAPE (five lines, numeric magnitude, two sexagesimal pairs, number + unit), GREEN
+on the live FRENCH block (`Magnitude :` `AD/DE :` `Alt/Az\xa0:` `Distance : … UA`, b24_select
+exit 0) and on the landed pre-fix ENGLISH ones (both reports + 120/120 blocks of F44's
+sidecar); the old matchers find 0 of 4 labels on that same French block; eight malformed
+blocks each caught. NEXT: README F7 + the b24 bullet, then the entry.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
