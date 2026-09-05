@@ -1001,6 +1001,118 @@ live `### F` count **5**.
 **DoD:** doc + README line (code repo, code first); §11.205 with the source table
 + stub; map R3; `f85_links.py` + README section; trees clean; WIP cleared;
 baselines LAST.
+**[RE-DISPATCH NOTE 2026-09-05 13:5x (supervisor):** first dispatch **ABORTED at the
+§0.7 gate** (executor run, 0 mutations, 16 tool uses): the harness index carried a
+STAGED, uncommitted `USER_QUESTIONS_ROUND3.md` (+42/−6, staged 13:33:40) that no
+executor and not the supervisor had touched — the owner's in-flight round-3 replies,
+committed by him four minutes later (`c5be42b`, 13:38:30, author Calvin Ruiz). The abort
+was RIGHT on both grounds it gave: an unscoped checkpoint commit would have swept the
+owner's work under an executor's name, and the replies change a fact this section
+told the executor to write (R23: content is installed by *"an outside installation
+procedure"*). Dispatcher defects it reported, accepted: the prompt's "~14:45" (the
+clock read 13:36 — every time label in this session's prompts was an estimate, never
+`date`; from here on, measured); the section's "§11.205 entry FIRST" (F86's number,
+never refreshed at F86's widening); the `⟨at dispatch⟩` placeholders (by design, but
+noted). Re-dispatched with: the replies as OWNER-COMMITTED facts (R23/R24 for the
+content sentence; R22 "search is deprecated" for the sharp edges; R25 declined), the
+file's status flipped to ANSWERED and F84's N7 paragraph restored beside the reply
+(supervisor act, this commit), and the propagation minted as **F88**.]**
+**WIP:** —
+
+### F88 — The round-3 replies propagated: sixteen owner-committed answers (`c5be42b`, 2026-09-05) carried into every row, decision and map tier they resolve — each with its back-marker at the write, the file's rows flipped from STALE to PROPAGATED, and the newly decision-free work named for the next round (§11.116(c)'s final-pass contract; §11.198's precedent; DEPLOYMENT-MAP T1/T3/T4) [M, ledger-only]
+
+**Why now / mandate:** the final pass was the long pole of every tester-side tier; its
+replies landed today inline in `USER_QUESTIONS_ROUND3.md` by the owner's own commit and
+nothing in the ledger knows it yet. Every hour they sit unpropagated, a row that is now
+answered reads as open — the class §11.78(e) paid a round-trip for (F80's abort).
+Provenance question carried, not resolved: the replies are committed by Calvin Ruiz;
+whether they are relayed from the main tester or his own reading is unrecorded —
+tag them `[stated: owner commit c5be42b]` and put the one-line question to the owner
+in §3, never guess.
+
+**Measured at dispatch (supervisor, 2026-09-05, harness `c5be42b`+):** the sixteen
+replies and the rows they reach, as read from the diff — the executor re-reads the
+file, this list is a derivation to challenge: **R14** *"If we hide the star, it won't
+light the scene"* → D37 (§11.149(d), B39) decided: go dark · **R15** *"It depends on
+the ambient_light value"* → D37's attached question · **R16** *"No. Only one
+stellar_system at once"* → A30(ii)(iii) scope, Q11's lost part (§11.177(h)) ·
+**R17** *"Yes. Binary stars must be shown appropriately"* → A7 residual (multi-star
+halo) is WANTED · **R18** *"No"* → §5.21's fix UNBLOCKED (D9 compensation excluded) ·
+**R19** *"Satun must be corrected to Saturn and Ganymed to Ganymede"* → §5.98 /
+SS-17 fix AUTHORIZED (two spellings) · **R20** *"8 launches"* → §5.115's tester
+scalar (§11.173(b)) · **R21** *"All have been tested, but sometimes long ago…"* → the
+content census (T3): EVERY class incl. portrait (§5.129 has a cost to pay), with the
+staleness caveat · **R22** *"Search is deprecated"* → §5.74/§5.78/§5.88-search family
+DE-PRIORITIZED (record the tester's word at each row; no fix owed) · **R23** *"By
+default, only limited catalogs are loaded. Correct catalogs are loaded in an outside
+installation procedure"* → §5.90 + DEPLOYMENT-MAP R2's content question: an OUTSIDE
+procedure exists and is undocumented in the repo (its location = the R6-sibling
+question to the owner) · **R24** *"We should but for now it is in another
+directory"* → §5.90 second half: `~/.spacecrafter/stars/` SHOULD be honoured (a
+feature, routed) · **R25** *"No need for that"* → FEATURE_REQUESTS `[parallel-script]`
+DECLINED by the tester (the owner's own proposal — record both voices) · **R26**
+*"Stable heading when switching or at least change of camera orientation smoothly"*
+→ D15(b) CONFIRMED (§11.149(a)) · **R27** *"The RA/DE must be the value from our
+position"* → §11.4 decision (2) RESOLVED: observer-centred = old's — with (1) already
+resolved (§11.198(b)) the **§5.86 + §5.19 fix is now fully decision-free** (next
+round's first engine candidate; DEPLOYMENT-MAP T1.4 closes) · **R28** *"The offset is
+screen dependant. The change of heading shouldn't shift the offset position. I saw
+that it does now but it shouldn't"* → §11.92(d)/B17 residual RESOLVED **in favour of
+the NEW path** (dome-fixed); the OLD path's heading-coupled offset is a DEFECT of the
+deployed build (mint a §5 row: old-only, reachable, tester-confirmed); §5.66/§5.71
+unblocked; §5.128's second question (snap-back) NOT answered — stays at the row ·
+**R29** *"It's a design"* → A43 CLOSED as design (NO regeneration — the `-preview`
+skins are the tester's two-appearance design), A42's swap distance now a design
+parameter (route the number), §5.53(a) re-graded · **N5** *"Just switch to the
+planet, keeping the old values"* → D28/A38 CONFIRMED (§11.113(g)) · **N7** *"Put a #
+in front of the deprecated lines would be better"* → §5.112's fix DIRECTION stated
+(comment out, never delete — the migration writer's spec; §5.42's writer rides it) ·
+**L1** *"It would be better to have no residual threshold"* → A15's ~10 % residual
+step: REMOVE (a tuning task, B22's constants) · **L2** *"I didn't test it yet"* → stays
+open, state-stamped.
+
+**Mandate:** (1) re-read the file at `c5be42b`+ and the diff; build the reply→row
+table, every reply to at least one row (a reply reaching NO row is a finding); (2)
+propagate: each §13.A/§5/DECISIONS row and each §11 clause the reply resolves gets a
+dated `[ANSWERED 2026-09-05, round-3 Rnn, owner commit c5be42b: "<verbatim>"]` marker
+at BOTH homes where two exist (entry + stub — the §11.113(p) rule), the §13 row flips
+per the table's own rule (resolved rows leave §13.A with the answer's pointer),
+FEATURE_REQUESTS `[parallel-script]` annotated DECLINED, SCRIPT_SURFACE SS-17
+answered; (3) new rows: the old path's heading-coupled offset (R28) minted by §5.79's
+criterion, tester-confirmed; (4) DEPLOYMENT-MAP re-derived: T1.2 → resolved (new path
+correct), T1.4 → closed (both decisions), T1.7 A43 → design, T3's census → R21's
+answer with its caveat, T4's CONFIRM/INFORM items → confirmed, R2's content question
+→ R23's answer + the open location; the "necessary, and only that" head re-cut; (5)
+the newly decision-free work LISTED for the next round in one place (this section's
+delivery clause + the map): §5.86+§5.19 (RA/DE, both decisions), §5.98 (two
+spellings), §5.21 (exact fix), §5.66/§5.71 (`look_at`/`panView` under the new
+path's convention), §5.115 (8 launches), A15's residual, the R28 old-path row; (6)
+record: §11.⟨next⟩ entry FIRST + stub (the table, the propagation, the caveats, the
+provenance question), `USER_QUESTIONS_ROUND3.md` status → PROPAGATED with the entry
+pointer; WIP per §0.6; the instruments re-run LAST with every delta named (markers
+both homes — the F84/F86 discipline).
+
+**Boundaries:** ledger, map, the two channel files, FEATURE_REQUESTS — NO code, NO
+data, NO launch; no reply re-interpreted beyond its words (a reply that does not
+answer the question as asked — L2, the R28 snap-back half — stays open with the
+verbatim quoted); no §5 row closed by a reply that only DE-PRIORITIZES it (R22);
+no `run_in_background`.
+
+**Discriminating checks:** (a) sixteen replies, each mapped, each marker present at
+both homes where two exist — counted; (b) `intent_pair_check.py` every filter delta
+explained (D/D2/I/I2/M) and `intent_backmarker_scan.py` every new pair named; (c) the
+§13.A row count before/after with the leavers listed; (d) no reply's text altered
+(`git diff c5be42b -- USER_QUESTIONS_ROUND3.md` shows only status/marker lines).
+
+**Preconditions (checkable, §0.7):** harness HEAD ⟨at dispatch⟩ with `c5be42b` in
+its history and the file's status line reading ANSWERED (this commit); code HEAD ⟨at
+dispatch⟩, unchanged by this task; next free §11 ⟨at dispatch⟩; live `### F` count
+**6**; §5.86 OPEN, §5.98 OPEN, §5.21 OPEN, A43 OPEN in §13.A, D37 delegated (§11.149(d));
+`FEATURE_REQUESTS.md` carries `[parallel-script]`.
+
+**DoD:** table + markers + flips + new row + map re-derived + the next-round list;
+§11 entry + stub; file status PROPAGATED; trees clean; WIP cleared; baselines LAST
+with every delta named.
 **WIP:** —
 
 ### F86 — EXTENSION, widened at F84 acceptance: the three startup faults a newcomer can meet on the shipped data — (3) **§5.130** the first launch on a fresh account ABORTS (`main.cpp:194` cds into `~/.spacecrafter` before `:198-199` create and populate it — one line moved, the empty-HOME launch as the gate, exit 134 → the bootstrap); (2) §5.127's use-after-free at `anchor_creator_cor.cpp:130`, reachable from the shipped `anchor.ini`: own row first (the granularity veto point of session 21), reproduced under AddressSanitizer, fixed at the ownership (I5), proved clean; (1) §5.127's null dereference for a top-level comet with neither period nor mean motion — the experimental reader's guard ported (DEPLOYMENT-MAP R2 + R4) [S]

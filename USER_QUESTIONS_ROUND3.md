@@ -2,7 +2,12 @@
 
 Last updated: 2026-08-31.
 
-**Status: DRAFT — compiled 2026-08-31, NOT yet sent.** This file is the
+**Status: ~~DRAFT — compiled 2026-08-31, NOT yet sent.~~ ANSWERED 2026-09-05 — replies
+committed inline by the owner (Calvin Ruiz, commit `c5be42b`, "User question replies
+round 3"; whether relayed from the main tester or his own is not recorded in the
+commit — the propagation task F88 carries that as a one-line question). Propagation
+into the ledger (§13/§5/DECISIONS rows, DEPLOYMENT-MAP, back-markers) = F88;
+until it lands, the replies below are authoritative and the rows are STALE.** This file is the
 send-time view of the ledger-owned final-pass list (INTENT §11.116(c):
 tester items accumulate into ONE pass before testing deployment; the
 ledger wins on divergence). Before it goes out, the developer applies the
@@ -379,7 +384,15 @@ command needed, it happens on version mismatch alone. If your config
 carries hand-written comments or custom keys, copy it aside before
 upgrading. (This mechanism is years old and both-paths; you're being
 told now because a delivery is the trigger.)
-*(ref: §5.112, §11.163(f))*
+Measured 2026-09-05 on your own installed `config.ini`: a version bump deletes
+**nothing** from it and adds two keys — but on the same file with two comment
+lines, one hand-added key and one extra section, it deletes **all four** and
+both comments, and the result is byte-identical to the run that had nothing
+added. Whatever is not in the new version's list does not survive.
+*(ref: §5.112, §11.163(f), §11.204(j))*
+*[Paragraph RESTORED 2026-09-05 by the supervisor: the reply below was pasted
+onto a copy of this file taken before F84 added it; the measurement and its
+citation are the ledger's (§11.204(j)) and the reply is kept verbatim.]*
 
 Put a # in front of the deprecated lines would be better
 
