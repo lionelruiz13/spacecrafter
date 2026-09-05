@@ -937,7 +937,10 @@ config/ssystem md5 `03fbee59`/`545a51ef`.
 
 **DoD:** suite + runner + 3 runs + the fault run; the divergence list with rows; the doc
 line; §11 entry + stub; map T5.1; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-05 19:05 — CP1: suite `harness/f90_rehearsal.py` + `f90_rehearsal_run.sh`
+written and proven both ways (clean run exit 0, `--inject-fault` exit 1 at S2+S6); doc line
+committed code `0b46a63f`. NEXT: the three runs on fresh farms + the fault run on this
+final code, then §11.211 + stub + map T5.1 + README + back-markers + baselines.
 
 ### F91 — EXTENSION: §5.86 + §5.19 — the new path's RA/DE readout computed in the observer's frame, as the tester reads it: `Camera::observedToBodyLocalPos` made the true inverse of `viewMat` (the algebraic inverse `f34_probe_inverse.cpp` already carries, round trip 133.9° → ~1e-11 AU) and ONE conversion authority for `observedPosToRaDe` in old's frame (topocentric, the RA zero point by the equinox definition §11.198(b), never a magic constant), the SA/GHA/LHA nav fields riding it; parity §11.158(f): new == old to ≤ 0.002° for 89/90 bodies, the 90th attributed (§11.207(g) item 1 — both decisions closed by R27 + §11.198(b); T1.4 CLOSED) [M, engine]
 
