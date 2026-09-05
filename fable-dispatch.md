@@ -486,7 +486,12 @@ README `:43`, the `[parallel-script]` question; (7) owner items per §3. Remotes
    - Delivery = INTENT §11 entry (file + stub) + §13 row flip + harness commit, as
      usual. An abort before recording ⇒ the successor resumes at the last checkpoint.
 7. **Precondition gate (owner-stated 2026-08-30, §11.175) — the LAST warm-up act; nothing
-   mutates before it passes.** Enumerate every premise the task section and the dispatch
+   mutates before it passes.** **FIRST STEP (2026-09-05, §0b.3's PREMISES block): run
+   `python3 claude/harness/premise_check.py <ID>` from anywhere — every line of the
+   section's block re-runs against live state and prints observed-vs-stated in checkable
+   form; any FAIL is a broken premise (input-side ⇒ abort per the rule below; an
+   unrefreshed `REFRESH-AT-DISPATCH` line is a dispatcher defect to report). The prose
+   premises below are checked after, the same way.** Enumerate every premise the task section and the dispatch
    prompt state as true, and verify each against live state: both HEADs as stated; the
    next-free §11 number actually free; the live `### F` count as stated; the ledger
    rows/entries the task builds on in their claimed state; environment/instrument
@@ -550,6 +555,22 @@ session per claude/fable-dispatch.md §0b."*
    against live state — the executor aborts on any broken one, so an UNSTATED
    precondition is a dispatcher defect (ungateable = uncovered; §11.174's canary gap is
    the shape). Refresh the variables at dispatch time, not at round-open.
+   **PREMISES block (owner-ruled 2026-09-05, session 23 close, on the Q-67 prevention —
+   *"The prevention proposed is nice, you can implement it"*):** every task section
+   carries a fenced ```` ``` ```` block headed `PREMISES`, one line per checkable premise
+   in the form `<shell command> => <expected stdout>`, where the expected text is the
+   PASTED OUTPUT of that command — never a number, a coordinate, a count or a structure
+   recalled from a listing or from convention (session 23's seventeen defects: a
+   `body.cpp` count, a `.po` that does not exist, a hook role inferred from its
+   filename, README pointers quoted before a later insert shifted them). The
+   instrument is `harness/premise_check.py <ID>` (`--list` for coverage, `--self-test`
+   shown able to fail); it runs at THREE events: the MINT (every line PASSes before the
+   section is committed — a premise typed from memory fails one hop before it reaches an
+   executor), the DISPATCH (the per-round lines refreshed; a `REFRESH-AT-DISPATCH`
+   expectation FAILS by construction so an unrefreshed prompt is visible), and the
+   executor's §0.7 gate (first step). What cannot be a command stays in prose, labelled
+   `[derived]`/`[stated]`, and is not a premise the gate abort-tests. A live section
+   without a block is a coverage gap the rule forbids (`--list` names it).
 4. **Verify each delivery BEFORE the next dispatch**: read the §11 entry IN FULL;
    check trees/commits/authors; check every claimed ledger flip (§5, §13,
    DECISIONS_PENDING) at the ledger; judge every deviation and judgment call — endorse
@@ -1101,12 +1122,43 @@ canary NOT run (no photometric claim; `--no-scene` only).
 the fix; (b) the probe round trip pre/post; (c) the per-body table, max |Δ|, the named
 exception; (d) the nav fields; (e) the English control unchanged.
 
-**Preconditions (checkable, §0.7):** code HEAD ⟨at dispatch⟩, harness ⟨at dispatch⟩;
+**Preconditions (checkable, §0.7):** ~~code HEAD ⟨at dispatch⟩, harness ⟨at dispatch⟩;
 §5.86 OPEN and §5.19 OPEN (row + `INTENT/5.19.md`); the six site coordinates above
 re-resolved at HEAD (content drift = abort); `harness/f34_probe_inverse.cpp` and
 `harness/f44_parity.py` present; `artifacts/f44/legA_003.json.navstr` present; next
 free §11 ⟨at dispatch⟩; live `### F` count **5**; display per HOST-EVENTS; canary
-`--no-scene` exit 0; binary current at HEAD; `free -g` ≥ 16 GiB before the build.
+`--no-scene` exit 0; binary current at HEAD; `free -g` ≥ 16 GiB before the build.~~
+**[RE-EXPRESSED 2026-09-05 (session 23 close) as the first PREMISES block under §0b.3's
+new rule — every expected value below is the pasted output of its command at 20:34, code
+`0b46a63f`; the retrofit itself caught the section's stale coordinates: the four
+`ModularObject.cpp` sites are `:45/:73/:141/:178` at HEAD (F44's `:19/:47/:115/:152` were
+shifted by F87's wraps) and `viewMat` is `Camera.cpp:173`. Prose premises that are not
+commands: display per HOST-EVENTS; canary `--no-scene` exit 0 before the first launch;
+`free -g` ≥ 16 GiB before the build (else `-j6`); the harness HEAD as the prompt states
+it.]**
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 0b46a63f
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 407b3d1d
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 213
+grep -c '^### F' claude/fable-dispatch.md => 6
+# ledger states the work stands on
+grep -m1 '^86\. ' claude/INTENT.md | grep -c 'OPEN' => 1
+grep -m1 '^19\. ' claude/INTENT.md | grep -c 'OPEN' => 1
+# sites, re-resolved at HEAD (content drift = abort)
+sed -n '264p' src/experimentalModule/Camera.hpp | grep -c 'observedToBodyLocalPos' => 1
+sed -n '275p' src/experimentalModule/Camera.hpp | grep -c 'observedPosToRaDe' => 1
+sed -n '173p' src/experimentalModule/Camera.cpp | grep -c 'Camera::viewMat' => 1
+grep -n 'observedPosToRaDe\|observedToBodyLocalPos' src/experimentalModule/ModularObject.cpp | cut -d: -f1 | tr '\n' ' ' => 45 73 141 178
+# instruments and artifacts
+test -f claude/harness/f34_probe_inverse.cpp && test -f claude/harness/f44_parity.py && echo ok => ok
+test -f claude/artifacts/f44/legA_003.json.navstr.gz && echo ok => ok
+test -f claude/harness/artifacts/f90/navstr_mars_run1.txt && echo ok => ok
+test -e /home/claude/sc-f91 ; echo $? => 1
+```
 
 **DoD:** fix (code first) + probe + table + controls; §11 entry + stub; the two rows
 flipped; back-markers; map; README; trees clean; WIP cleared; baselines LAST.

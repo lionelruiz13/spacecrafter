@@ -4210,3 +4210,25 @@ re-running before the rename rather than after: the one thing that would LIE is
 measured non-verdict-preserving on one commit against two targets (rc 0 vs rc 1). The
 `githooks/` pair, which the dispatch believed to be a trailer check, parses no trailer
 and reads no branch at all.
+
+## premise_check.py — every checkable premise of a dispatch section, re-run at three events — fable-dispatch.md §0b.3 / §0.7, 2026-09-05
+
+    python3 claude/harness/premise_check.py F91        # one section: every line PASS, or the FAILs in observed-vs-stated form
+    python3 claude/harness/premise_check.py --list     # which live sections carry a PREMISES block (a live section without one is the gap the rule forbids)
+    python3 claude/harness/premise_check.py --self-test
+
+Owner ruling 2026-09-05 (session 23 close): *"The prevention proposed is nice, you can
+implement it."* The prevention: a premise written into a task section is the pasted
+OUTPUT of a command, never a number, coordinate, count or structure recalled from a
+listing or from convention (seventeen dispatcher defects in session 23 were that class).
+The block grammar is in the script's docstring; the rule and its three binding events
+(mint, dispatch, executor gate) are in `fable-dispatch.md` §0b.3 and §0.7.
+
+Gotchas: commands run with cwd = the CODE root, so harness paths are `claude/...`;
+`REFRESH-AT-DISPATCH` as an expected value FAILS by construction (it marks a per-round
+variable the dispatcher has not filled — the failure is the point); the denylist refuses
+obvious mutators (`rm`, `git commit/push/reset/checkout`, `sed -i`, redirects) so a typo'd
+premise cannot move a tree — a guard, not a boundary; `grep -m1 '^86\. '` on `INTENT.md`
+hits the §5 register first because §5 precedes §11 in the file (measured; a §11.86 stub
+has the same prefix). First user: F91, whose retrofit caught four stale coordinates in its
+own section.
