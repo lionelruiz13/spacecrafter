@@ -653,6 +653,55 @@ test -e /home/claude/sc-f91 ; echo $? => 1
 **DoD:** fix (code first) + probe + table + controls; §11 entry + stub; the two rows
 flipped; back-markers; map; README; trees clean; WIP cleared; baselines LAST.
 **WIP:** DELIVERED 2026-09-06 — §11.213 (entry + stub). Code `0b46a63f` -> `5a1e5749` (`Camera.hpp`/`.cpp` + `ModularObject.cpp`, old path untouched), binary `407b3d1d` -> `f7112cb9`, `cmake -n` 0 steps. **88 of 90 both-tree bodies now print the same RA/DE string on both paths, byte for byte** (exceptions Eris 1.199089 deg = the trees' own position gap, Puck 1 arcsec of declination = float32); §11.158(f)'s own metric max **0.002014 deg on Deimos**, its published target and body, PRE-REGISTERED before the fix; SA/GHA/LHA/LPA equal old-vs-new to **0.00 arcsec** for 89/90. The "-90.0003 deg zero point" is the `+M_PI_2` of `ModularBody::getAxisRotation()` — probe, pre-fix, +90.000000000 deg vs 0.000000000 deg. Two further defects in the same member measured and fixed (local hour angle built from the LATITUDE; bare `fmod` printing negative hour angles pre-J2000, 90/90 -> 0/90). Controls: both-ways model discrimination committed red-for-red, alt/az 88/90 <= 3e-5 deg, format control 0 differences against 420 on its own control, `f90_rehearsal_run.sh` **rc 0**. §5.86 + §5.19 FIXED, four back-markers at both homes, §5.110/§5.113 annotated, MAP T1.4 struck, README section, D14 PASS. TWO THREADS LEFT NAMED: `observedToLocalPos`'s offset contamination (alt/az half, photometric — out of this canary) and `observedPosToRaDe`'s pole branch swapping RA and DE (suspended for the dispatcher). Instruments at baseline; entry files 228->229 and live pairs 203->204 are the new entry.
+**ACCEPTED 2026-09-06 — the verifying commands' `date` read 01:09:25 and 01:10:11–01:11:48
+(supervisor, session 24, Claude Fable 5.1).** Verified by my own runs and reads, not by the
+report: §11.213 read in full; ONE code commit `5a1e5749` (Claude Opus 5; three
+`src/experimentalModule/` files, 179+/30−, nothing else) and five harness commits `c7bb3a3` →
+`8a0395b` (Claude Opus 5), both trees clean; binary `f7112cb9`, `cmake -n` 0, no `src/` file
+newer; §5.86 and §5.19 read *FIXED 2026-09-06, F91 §11.213* at the rows and `INTENT/5.19.md`
+carries the marker; §11.213 named at `INTENT/11.4.md`, `11.144.md`, `11.158.md`, `11.207.md`,
+`5.19.md` and nine `INTENT.md` sites; MAP T1.4 struck (`DEPLOYMENT-MAP.md:319`); README §F91
+(`:4236`); D14 PASS (972 files); instruments to the digit (scan 223/274/131 · pair-check
+229/204/25/109 · D 35 · D2 11 · I 89 · I2 36 · M 81 — +1/+1 the entry). **The committed tables
+counted by my own awk:** post-fix `RA_old==RA_new && DE_old==DE_new` **88 of 90 in BOTH
+locales**, the exceptions Eris (27.820833 / 27.295833) and Puck (20.833611 vs 20.833889 — one
+arcsecond); pre-fix **0**; nav maxima non-Eris dSA 1.00″ · dGHA/dLHA/dLPA 0.00″. The code
+diff READ: the inverse composed once (`localToBodyEqu` = `Z(+lon)·X(π/2−lat)` then
+`computeBodyToSurface()`), `observedToBodyEquPos` from `renderViewRotation()ᵀ`, the literal
+inverse expressed from it, `getEarthEquPos` re-pointed to the topocentric authority,
+`wrap2pi` + `getLongitude()` in the hour-angle line. **AND the developer's smoke suite run by
+my own hand on `f7112cb9` at 01:10:11–01:11:48 (`/home/claude/sc-f91/supervisor/`): rc 0,
+the same nine step states as §11.211 (S1/S7 DIVERGENCE with citations, S4 DEPRECATED, six
+PASS), S5's readout shape OK, exit 0 in 0.7 s, canary exit 0, frozen files in==out.**
+Deviations ENDORSED with the executor's arguments: the scope expansion to the
+LHA-from-LATITUDE and bare-`fmod` defects (DoD (3) cannot be met while `LHA` is built from
+the wrong angle — the blocking case the boundary rule names; old's arithmetic term for term;
+same member; old path untouched; recorded at (e), no row minted — the §11.4/B9 precedent);
+`getEarthEquPos` re-pointed to the observer-centred authority (I1 — `Body::getEarthEquPos`'s
+contract; `set home_planet selected` feeds the value back through the inverse map);
+`renderViewRotation()ᵀ` (the exact inverse; identity at every shipped default);
+`Camera::getLongitude()` added; the threshold read at §11.158(f)'s own six decimals (Deimos IS
+the published body); Q1 named non-discriminating with G3 committed red-for-red both ways; the
+§11.144 marker reworded out of the scan's lexicon (meaning kept — I read the word).
+DISPATCHER DEFECT reported, ACCEPTED as mine, output-side with the counterfactual: the
+prompt's *"≤ 0.002°"* restated §11.158(f)'s **0.002014°** lossily (the §5.19 row rounds it
+the same way — a ledger rounding I copied); Deimos sits exactly at the published value and
+prints byte-identical on the reader's channel; had the rounded bound been an independent
+requirement, a STOP. Round tally: **one dispatcher defect** (+ three cwd/quoting slips of my
+own instrument hand, each caught in the same minute, none in a record). THE TWO SUSPENSIONS,
+DISPOSED: (i1) the alt/az half — **MINTED as §5.138** at this acceptance (supervisor, the
+F32/§5.79 precedent; the mechanism re-read by me at `Camera.hpp:260-262`, `Camera.cpp:138-146`,
+`:647-649`, `EnvironmentManager.cpp:114`; record-only, one leg owed); (i2) the pole branch — a
+RIDER at §5.86's row, decision-free by §11.52(b) (old answers RA 0 / DE ±90° with no branch),
+queued for the next S task in this member. Routed: the two-line nav string vs old's one line
+→ the main tester (§3); `observedToBodyLocalPos` kept with no in-tree consumer → §3 veto
+point. STANDING CONSEQUENCES: **the new path's RA/DE readout is old's, byte for byte on 88 of
+90 bodies** — Eris the trees' own position gap (§11.158(f4)), Puck one arcsecond of float32;
+§11.4 is CLOSED and its "−90.0003° zero point" is the `+M_PI_2` of the surface fold; every
+recorded pre-`5a1e5749` new-path RA/DE/SA/GHA/LHA/LPA value is a record of the pre-fix
+engine (`f44_parity.py`'s `reconstruct` included — reuse `f91_parity.py`); `ModularObject.cpp`'s
+call sites are now `:59/:87/:166/:176/:213`; `/home/claude/sc-f91/` exists (four farms + my
+supervisor run).
 
 ### F94 — §5.98 — the two misspelled body names in `Core::setSelectedBodyName` corrected (`"Satun"` → `"Saturn"` at `core.cpp:2255`, `"Ganymed"` → `"Ganymede"` at `:2251`) so `$body_selected` answers 600 and 503 as the documented table says instead of the 999 default — FIX AUTHORISED by the tester (round-3 R19, §11.207(b)#6 + (c1)), the dependence fact he did not answer MEASURED on this field at the mint (exactly one shipped script tests the variable, against 0), proven pre/post on the shipped command surface with a control body that fires on both binaries (§11.207(g) item 2; SS-17; DEPLOYMENT-MAP T1.10 → T4) [S, engine, both paths]
 
@@ -730,10 +779,10 @@ prompt states it; §5.98's row reads DECISION-FREE and not FIXED.
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => 0b46a63f
+git rev-parse --short=8 HEAD => 5a1e5749
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 407b3d1d
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 213
+md5sum build-claude/src/spacecrafter | cut -c1-8 => f7112cb9
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 214
 grep -c '^### F' claude/fable-dispatch.md => 3
 # ledger states the work stands on
 grep -m1 '^98\. ' claude/INTENT.md | grep -c 'DECISION-FREE' => 1
