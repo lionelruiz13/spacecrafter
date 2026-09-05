@@ -937,10 +937,16 @@ config/ssystem md5 `03fbee59`/`545a51ef`.
 
 **DoD:** suite + runner + 3 runs + the fault run; the divergence list with rows; the doc
 line; §11 entry + stub; map T5.1; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-05 19:05 — CP1: suite `harness/f90_rehearsal.py` + `f90_rehearsal_run.sh`
-written and proven both ways (clean run exit 0, `--inject-fault` exit 1 at S2+S6); doc line
-committed code `0b46a63f`. NEXT: the three runs on fresh farms + the fault run on this
-final code, then §11.211 + stub + map T5.1 + README + back-markers + baselines.
+**WIP:** DELIVERED 2026-09-05 — §11.211 (+ stub) and the NEW row §5.137. Suite
+`harness/f90_rehearsal.py` + `f90_rehearsal_run.sh`; doc line code `0b46a63f`; harness
+`b45d934` + this delivery. Three runs on fresh farms step-for-step identical, ZERO flakes
+(91.2 s each, exit 0); the injected-typo run reds S2+S6 and exits 1. Three divergences, all
+pre-existing, none fixed: §5.77/§11.146 reproduced; §11.117(k)(3)'s two anchor drops with its
+open consequence question now answered (both rebuilt on use, §11.111(g) confirmed); and ONE
+MINT, §5.137, by §5.79's criterion. F87 confirmed from the tester's seat (French labels,
+U+00A0). Map T5.1 struck; "ready" waits on T5.2 alone. Baselines at parity: scan 223/274/131,
+pair-check 227/202/25/109 (entry-first +1/+1/+1), D 35 · D2 11 · I 89 · I2 36 · M 81.
+Artifacts `harness/artifacts/f90/`; run trees left under `/home/claude/sc-f90/`.
 
 ### F91 — EXTENSION: §5.86 + §5.19 — the new path's RA/DE readout computed in the observer's frame, as the tester reads it: `Camera::observedToBodyLocalPos` made the true inverse of `viewMat` (the algebraic inverse `f34_probe_inverse.cpp` already carries, round trip 133.9° → ~1e-11 AU) and ONE conversion authority for `observedPosToRaDe` in old's frame (topocentric, the RA zero point by the equinox definition §11.198(b), never a magic constant), the SA/GHA/LHA nav fields riding it; parity §11.158(f): new == old to ≤ 0.002° for 89/90 bodies, the 90th attributed (§11.207(g) item 1 — both decisions closed by R27 + §11.198(b); T1.4 CLOSED) [M, engine]
 

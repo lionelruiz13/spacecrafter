@@ -42,7 +42,7 @@ tester, decision-paced — the tiers that follow). **What is NECESSARY, and only
   T1.1 the zoom pair (Vixy, one line — §5.100's authorization asked 2026-08-26, unanswered) ·
   §5.111 (**F87**) · §5.86 + the RA zero point (§11.198(b) resolved decision (1); dispatchable
   next round with the origin held old-as-spec until R27) · §5.53(b) (Vixy, one token) · the
-  final-pass SEND (Vixy; R21/R27/R28/R29 travel inside it) · the T5.1 rehearsal (next round) ·
+  final-pass SEND (Vixy; R21/R27/R28/R29 travel inside it) · ~~the T5.1 rehearsal (next round)~~ **[RAN 2026-09-05, F90 §11.211; T5.1 struck at T5]** ·
   ~~§5.112's warning (N7 drafted; F84 prices its number)~~ **[PAID 2026-09-05, F84
   §11.204(j): 0 deleted / 2 added on the field config, 4 deleted on a hand-edited copy, both
   ending at one md5; N7 carries both numbers. See T3.]**
@@ -69,7 +69,7 @@ they move this head on both criteria. Previous head kept above, struck where sup
   **T1.1** the zoom pair (Vixy, one line, §5.100's authorization still unanswered since
   2026-08-26 — with T1.2 and T1.4 gone this is **the last operator-basics decision
   standing**) · **T1.3** the reach/visibility batch (DSO content) · **T1.5** §5.109's
-  layer half · **§5.53(b)** (T1.9, one token) · the **T5.1 rehearsal** · and the
+  layer half · **§5.53(b)** (T1.9, one token) · ~~the **T5.1 rehearsal**~~ **[RAN 2026-09-05, F90 §11.211 — "ready" now waits on T5.2 alone]** · and the
   **decision-free queue R27/R28/R18/R19/R20/L1 just created** (§11.207(g): §5.86+§5.19,
   §5.98, §5.21, §5.66+§5.71, §5.115, A15's residual). The final-pass SEND is no longer on
   this list: it fired, and came back — **nineteen of twenty answered, L2 alone open**.
@@ -565,12 +565,31 @@ direction (see T3).
 
 ## T5 — UNMAPPED (the map's own edges; completeness > certitude)
 
-1. **No end-to-end tester-workflow rehearsal has ever run.** The A–D battery, b24_*, and
+1. ~~**No end-to-end tester-workflow rehearsal has ever run.** The A-D battery, b24_*, and
    scene harnesses are proxies built from OUR model of operation. The closing audit
    before "ready" is a his-day-in-the-app suite: author a body, run a show, search,
-   select, save, reload, quit — one sitting, new path, French locale. CANDIDATE TASK
-   (M), buildable now, sharpest after T1.1/T1.4. **[2026-09-05: deferred behind tier R this
-   round — next round's first slot; it doubles as the developer's smoke suite.]**
+   select, save, reload, quit - one sitting, new path, French locale. CANDIDATE TASK
+   (M), buildable now, sharpest after T1.1/T1.4. [2026-09-05: deferred behind tier R this
+   round - next round's first slot; it doubles as the developer's smoke suite.]~~
+   **[RAN 2026-09-05, F90 -> INTENT §11.211. It is `harness/f90_rehearsal.py` +
+   `f90_rehearsal_run.sh`: one command, one launch on a private farm in the field's own
+   French locale, nine operator steps, every step's observable and pass criterion printed
+   BEFORE the launch, exit non-zero on any failure - and it is the line
+   `doc/developer-entry.md` §5 now hands the newcomer (code `0b46a63f`). WHAT IT FOUND, in
+   three runs that are step-for-step identical (zero flakes, 91.2 s each) plus one injected
+   operator typo that reds two steps and exits 1: THREE divergences, every one pre-existing
+   and none fixed. §5.77/§11.146's startup silences, reproduced exactly. §11.117(k)(3)'s two
+   anchor bodies dropped by `body action reload` - and its open consequence question
+   answered, both names still resolving and both owned bodies rebuilt on the next anchor use,
+   so neither is a §5 candidate. And ONE NEW ROW, **§5.137**: a body an operator authors with
+   `body action load` leaves the DRAWN path on `body action reload`, stays on the old one,
+   and `search` / `get status object` keep answering for it in full - a false success by
+   §5.79's criterion, record-only because the governing question is §11.55(i)'s, suspended
+   for Vixy. It also confirmed F87 from the tester's seat: the drawn readout is French, all
+   four labels `fr.txt` msgstrs, U+00A0 present. WHAT "READY" STILL WAITS ON: **T5.2 alone**,
+   and this campaign says why that needs a different instrument rather than more of the same -
+   five launches of ~91 s cannot see the stability class, and this suite's own quit measured
+   0.6 s five times out of five.]**
 2. **Multi-hour soak under show load** (the stability class: §5.61 lost wakeup, §5.59/A40
    teardown, B7's intermittent §11.15d segfault, B30 frozen-scene micro-instability,
    §5.62's unattributed epoch shift) — never run. A planetarium session is hours.
@@ -613,7 +632,7 @@ direction (see T3).
 Vixy answers T1.1 + T1.2 + T1.3 (operator basics · dome geometry · DSO content) and the
 T1.4 pair → two or three dispatch rounds burn T2 → the final pass fires carrying T3+T4
 (one batch, state-stamped, now including the content census and the field-content
-questions) → the T5.1 rehearsal + a T5.2 soak gate the word "ready". The decision batches
+questions) → ~~the T5.1 rehearsal~~ **[RAN 2026-09-05, F90 §11.211]** + a T5.2 soak gate the word "ready". The decision batches
 are the long pole; every measured datum they were waiting on is, as of session 14, PAID.
 
 **[STRUCTURAL CORRECTION 2026-08-29, F47 §11.163(h) — this changes how the map reads its own
@@ -644,7 +663,7 @@ became work. The path now reads: **Vixy answers T1.1** (§5.100's authorization,
 since 2026-08-26 — now the LAST operator-basics decision standing) **+ T1.3** (the DSO
 content batch) **+ T1.5** → the decision-free queue R18/R19/R20/R27/R28/L1 created burns in
 two or three dispatch rounds (**§5.86 + §5.19** first: RA/DE, both decisions closed) → the
-**T5.1 rehearsal** and a **T5.2 soak** gate the word "ready". **The final pass is behind
+~~**T5.1 rehearsal**~~ **[RAN 2026-09-05, F90 §11.211]** and a **T5.2 soak** gate the word "ready". **The final pass is behind
 us, not ahead**: it fired, and nineteen of twenty members came back — L2 alone is
 outstanding, and it needs him at the machine, not a decision. **Two things the replies
 made SMALLER**: A43's data regeneration is cancelled outright, and the §5.74/§5.78 search

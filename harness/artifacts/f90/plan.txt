@@ -1,0 +1,53 @@
+==============================================================================
+F90 REHEARSAL - the nine steps, their observables and their pass criteria
+STATES: PASS = the function was delivered | DIVERGENCE = delivered, with a
+        ledger row observed on the way (cited, NOT a failure) | FAIL = not
+        delivered.  Any FAIL exits non-zero.  A divergence with no row is a FAIL.
+==============================================================================
+
+S1  LAUNCH
+    OBSERVABLE  a TCP connection accepted on 127.0.0.1:7805; the process still alive; the farm's log/spacecrafter.log; the process's own stdout+stderr
+    CHANNEL     TCP connect + the farm's log/ + the launched process's stdout/stderr
+    CRITERION   PASS iff a connection is accepted within 180 s and the process has not exited.  RECORDED beside it: every ERROR/WARNING line the app log carries, and the Sec.5.77 SILENCES - failure-shaped lines written to a RAW stream (no cLog console tag, log.cpp:32-35) and ABSENT from spacecrafter.log.  A non-empty silence set is a DIVERGENCE citing Sec.5.77/Sec.11.146, never a FAIL: the app is up, and the row is open by the owner's own routing.  The presence of a STALE /tmp/spacecrafter.lock is recorded before the launch and never removed - it adds one silence of its own (main.cpp:236-245 shells out `kill -0`), and it is the axis that explains a silence count differing between two runs of this suite.
+
+S2  AUTHOR A BODY
+    OBSERVABLE  the authored body's english name among the dual dump's `type=body` records
+    CHANNEL     `body action load ...` over TCP, then `body action dual_dump <file>`
+    CRITERION   PASS iff the name is absent from a dump taken BEFORE the load and present in a dump taken after it.  The pre-dump is the control: without it the check cannot go red.  Under --inject-fault the load line carries a one-letter typo in the body's name, so the step MUST fail.
+
+S3  RUN A SHIPPED SHOW
+    OBSERVABLE  the farm script log's `ScriptMgr: load <path>` and `ScriptMgr: script end`; the count of `script action pause` the show stops at; the number of `#!` annotation tails in the played file after the run; the wall time
+    CHANNEL     `script action play filename <show>` over TCP + the farm's log/script-*.log + the farm's OWN COPY of the .sts
+    CRITERION   PASS iff the script log records the load AND reaches the end within the show's own wait-duration total + 60 s, with each authored pause resumed by `script action resume`.  `#!` count RECORDED: 0 on a show that parses; any other value is a DIVERGENCE, not a FAIL, and the file it is in is the farm's copy so the owner's is untouched by construction.
+
+S4  SEARCH  [DEPRECATED - R22]
+    OBSERVABLE  the reply to `search name <a shipped body>` on the $LOGON socket
+    CHANNEL     TCP
+    CRITERION   NO GATE.  The result is RECORDED and the step is reported DEPRECATED whatever it says: the owner retired the search family (R22), so a red here would be a claim about a surface nobody intends to keep.  The step stays IN because a rehearsal that skips what the tester still has on his keyboard is not a rehearsal.
+
+S5  SELECT + READ OUT
+    OBSERVABLE  the reply to `get status object` and to `get status position`; the NEW path's info block for the selected body in the dual dump's `.navstr` sidecar - its SHAPE, and, recorded separately, the LANGUAGE of its labels
+    CHANNEL     TCP + the `.navstr` sidecar written beside every dual dump [ssystem_factory.cpp:1179-1180]
+    CRITERION   PASS iff `select planet <body>` is followed by a `.navstr` block for that body whose NEW info readout satisfies b24_select.info_block_shape() - five lines, a numeric magnitude, two sexagesimal pairs, a number plus a unit token.  SPELLING IS NEVER COMPARED.  The labels are RECORDED verbatim and matched against the INSTALLED catalogue `language/fr.txt` to name the language mechanically (a cited fetch, never recall).  The two `get` replies are recorded; a missing reply is a DIVERGENCE citing Sec.5.47/Sec.11.135.
+
+S6  SAVE
+    OBSERVABLE  `sessions/<name>.ini` and `modularSystem/<name>.ini` under the FARM
+    CHANNEL     `session action save filename ...` + `body action save filename ...` over TCP; the farm's own directories
+    CRITERION   PASS iff both files exist under the FARM, are non-empty, and the composed system file names the authored body.  Also asserted: NOTHING was written under the real ~/.spacecrafter (the runner's md5 in == out covers config.ini/ssystem.ini/the show/startup.sts; this step additionally compares the real sessions/ and modularSystem/ listings before and after).
+
+S7  RELOAD
+    OBSERVABLE  the dual dump after `session action load`, and after `body action reload` - the NAMES gained and lost, not only the count; the session file written FROM the restored state, byte for byte; and, on either side of the reload, whether the SHIPPED anchor surface still resolves the anchor.ini names
+    CHANNEL     TCP + the farm's sessions/ + `body action dual_dump` + `camera action follow_rotation name <anchor>` (the NAME registry; its refusal is the anchor layer's own, CameraAnchors.cpp:442-449) + `camera action switch name <anchor>` (the anchor USE, whose `ensureBody` is Sec.11.111(g)'s rebuild-from-the-declaration, CameraAnchors.cpp:392-428)
+    CRITERION   PASS iff (i) the session written from the restored state is BYTE-IDENTICAL to the one that was loaded - Sec.11.129's T4 fixed point, which needs the clock frozen (`timerate rate 0`) because the file carries `jday`; and (ii) `body action reload` returns without an error line in the app log.  PREDICTION, committed here before the run: the authored body LEAVES THE DRAWN (new) path, because reload re-reads THIS system's own data file [ssystem_factory.cpp:952 -> ModularSystem::reloadSystem] and `ssystem.ini` never held it - while it may well SURVIVE ON THE OLD PATH, which the command does not touch at all (Sec.11.55(j)), so the per-path halves are read separately and a body-count alone is refused as evidence.  An old-only survivor is a DIVERGENCE citing Sec.11.55(i)(j), and the `search` and `get status object` answers taken right after say what the control surface still claims about a body the drawn universe no longer has.  Any body the reload LOSES is a DIVERGENCE citing Sec.11.117(k)(3); the two anchor probes say whether an operator would notice - the NAME probe on either side, then the USE probe, which is where Sec.11.111(g)'s rebuild must fire if the design holds.  A lost anchor that does NOT come back on use is a Sec.5.79 mint, and this suite says so rather than deciding it.
+
+S8  ONE KEYBOARD RAMP
+    OBSERVABLE  the OLD projector fov and the NEW drawn half-fov in the dual dump, before and after a held zoom-in and a held zoom-out
+    CHANNEL     F25's key channel - `xkey.c` (XTEST) on the app's own 1024x1024 window; the drag channel is DEAD on this host (README, F25 section) so keys only
+    CRITERION   PASS iff the fov MOVES under a held `Prior` (zoom in) and moves back under a held `Next` (zoom out), each by more than 1e-3 deg.  This is the arrival test for the interactive channel, not a parity claim.
+
+S9  QUIT
+    OBSERVABLE  the process's exit code and the wall time from `shutdown action now` to exit; the `Frame stall detected` count in the farm's vulkan log; any teardown fault
+    CHANNEL     `shutdown action now` [app_command_interface.cpp:2397-2405, the verb is `shutdown`, base_command_interface.hpp:387, with `action now`] + the process's own exit status + the farm's log/
+    CRITERION   PASS iff the process exits 0 within 180 s of the command.  A non-exit is the Sec.5.59/A40 class (an untimed frame wait upstream of teardown) and is recorded as a DIVERGENCE against that row, WITH the kill that had to follow it - never masked.  A negative exit code (a signal) is a FAIL and gets its own row check.
+
+==============================================================================

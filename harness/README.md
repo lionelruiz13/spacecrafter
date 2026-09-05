@@ -4046,3 +4046,92 @@ printed strings themselves contain newlines, so the tail of each record's
   content was already built. Re-run the build before quoting "0 steps"; here the
   rebuild produced the SAME binary md5 `407b3d1d` from the restored source, so
   this compilation is bit-reproducible and the extra build cost nothing but time.
+
+## F90 — the tester's day in the app, as the developer's smoke suite (`f90_rehearsal.py`, `f90_rehearsal_run.sh`) — INTENT §11.211 / §5.137, 2026-09-05
+
+```
+DISPLAY=:2 ./f90_rehearsal_run.sh <absOutdir>            # SC_BIN=… ; one command, one exit code
+DISPLAY=:2 ./f90_rehearsal_run.sh <absOutdir> --inject-fault    # the RED half, exits 1
+./f90_rehearsal.py --plan /tmp/x                         # the nine criteria, no launch
+```
+
+**This is the only instrument here that is not a proxy.** Everything else in this
+file is built from our model of how the application is operated; this one is the
+operation — one launch, one private farm, the field's own French locale, nine
+things an operator does in a sitting: launch · author a body · run a shipped show
+· search · select and read out · save · reload · one keyboard ramp · quit. It is
+also what `doc/developer-entry.md` §5 hands a newcomer, so it has to be readable
+as prose and usable as a gate at the same time.
+
+**Three step states, and the third is what makes it readable.** PASS = the command
+delivered its function. DIVERGENCE = it did, and a row (or a dated §11 clause) the
+ledger already carries was observed on the way; it is cited AT the step and the run
+stays green. FAIL = it did not; any FAIL exits non-zero. **A divergence with no
+citation is a FAIL by construction** — an unattributed divergence is either a new
+defect or a broken criterion, and both need a person. Four of the nine steps meet an
+open row on every launch, so a two-state suite would be red every time and nobody
+would read it.
+
+### The farm — one hazard this collection did not have covered
+
+`f55_farm.sh` makes `scripts/` and `scripts/fscripts/` real because a startup script
+has to be writable. **It leaves `scripts/basis/` a symlink to the owner's directory,
+and playing a shipped show is what reaches it**: `ScriptAnnotator::flush` rewrites
+the file it played whenever a line earns a `#!` diagnostic or a stale tail must be
+cleared — sibling `<path>.tmp` then `rename`, both in the target's own directory
+(`script_annotator.cpp:163-179`) — so both writes land on the owner's `.sts`. The F90
+farm rebuilds the played show's directory real with the show itself a COPY, copies
+`scripts/fscripts/startup.sts` for the same reason, and rebuilds `sessions/` real
+(`session action save` writes there; `SessionFile.hpp:211`). Ten farm-shape
+properties are asserted before the launch and the run aborts if one fails; the
+runner asserts md5 in == out on **four** real-home files, the two frozen ones plus
+the show and `startup.sts`. **Copy this shape into anything that plays a shipped
+script.**
+
+### Gotchas measured here, each of which cost a wrong number first
+
+- **A stderr-vs-log diff is NOT the §5.77 detector.** `print_log = true` puts cLog on
+  the console too, so the naive diff reported **7** silences where **3** is right —
+  four of them were the log echoing itself and only the ANSI colouring made the
+  strings differ. The rule that discriminates is the CHANNEL: a line carrying a
+  complete cLog console tag (`(Error): ` `(Warn.): ` `(Info ): ` `(Debug): `,
+  `log.cpp:32-35`) is in the log by construction; a line without one came from a raw
+  `std::cerr`/`printf`, which is the channel the row is about. `startup_silences()`
+  is that rule.
+- **`(Err.)` matches nothing.** The log file's tag is `(Error): `. A criterion keyed
+  on `(Err.)` cannot fire — one of this suite's own FAIL conditions was written that
+  way and would have been a permanent green.
+- **Every shipped `basis/` show contains `script action pause`**, and the field config
+  has `flag_skip_pause = false` (`config.ini:267`, routed at `app.cpp:648`, honoured
+  at `app_command_interface.cpp:2990`), so a show played with nobody at the console
+  STOPS. The suite polls the farm's script log for `ScriptMgr::script action pause`
+  and answers `script action resume`; `zodiacal_light.sts` is the shortest show
+  (5.5 s of authored waits, 1 pause) and runs in 5.9 s.
+- **A stale `/tmp/spacecrafter.lock` adds one silence**, because the single-instance
+  check shells out `kill -0 <pid>` (`main.cpp:149-164`, `:236-245`) and `sh`'s
+  "No such process" goes to the process's own stderr. The suite RECORDS the lock's
+  presence and never removes it: that is the only thing that explains a silence count
+  of 4 instead of 3, and removing it would erase the axis.
+- **`$LOGON` is no longer required to hear your own answer** — since §11.135 the reply
+  goes to the issuer when its connection still matches (`io.cpp:770-791`) — but
+  `ServerSocket::send` puts the NUL terminator on the wire (`io.cpp:832-834`), so the
+  blob is NUL-separated. Strip it in one place.
+- **`camera action switch name <n>` is the anchor USE probe**, `camera action
+  follow_rotation name <n>` only the NAME probe. The first calls `ensureBody`
+  (§11.111(g)'s rebuild); the second reads the registry and says nothing about the
+  body. Asking only the second is how a body-count delta stays ambiguous.
+- **A body count cannot see a dual-path desync.** After `body action reload` the
+  authored body's dump record has an old half and no new half, and the record count
+  moves by the wrong amount as a result. Read the halves.
+
+**Measured, three runs on fresh farms at code `1d839b9d` (binary `407b3d1d`), all
+step-for-step identical, ZERO flakes, 91.2 s each:** S1 DIVERGENCE §5.77/§11.146 (3
+silences, TCP up in 12.6 s) · S2 PASS 120 → 121 bodies · S3 PASS 5.9 s / 5.5 s
+authored / 1 pause / 0 `#!` · S4 DEPRECATED (R22) `Mars(P);` · S5 PASS shape 5 lines,
+labels French with U+00A0, unit `UA` · S6 PASS session 10894 B + system 78394 B under
+the farm · S7 DIVERGENCE §11.117(k)(3)/§11.111(g)/§11.55(i)(j), T4 byte-identical ·
+S8 PASS fov 180.00001 → 84.91497 → 179.53135 · S9 PASS exit 0 in 0.6 s, 0 frame
+stalls. The fault run reds S2 and S6 and exits 1. Artifacts `artifacts/f90/`:
+`tables.txt` (all four side by side), `run{1,2,3}_result.json.gz`,
+`fault_result.json.gz`, `plan.txt`, `navstr_mars_run1.txt` (the language datum
+verbatim), `reload_anchor_rebuild.log` (the engine's own rebuild lines).

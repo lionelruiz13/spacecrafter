@@ -1,0 +1,4 @@
+000000034366: (Info ): System 'SolarSystem' saved to modularSystem/f90sys.ini (91 declarations added, 0 already declared, 2 engine-owned bodies skipped) - a new file. It is read instead of this system's source at the next launch.
+000000050597: (Info ): System 'SolarSystem' reloaded (observer state kept)
+000000061218: (Info ): Anchor 'baryEarthMoon': its body is gone (system reload?) - rebuilding it from the anchor declaration.
+000000066030: (Info ): Anchor 'orbit_autour_lune': its body is gone (system reload?) - rebuilding it from the anchor declaration.

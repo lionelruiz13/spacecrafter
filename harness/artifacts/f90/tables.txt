@@ -1,0 +1,72 @@
+===== run1 =====
+F90 REHEARSAL - PER-STEP TABLE   tag=run1   91.2 s
+ID   STEP                     STATE       ROWS           WHY
+------------------------------------------------------------------------------
+S1   launch                   DIVERGENCE  Sec.5.77,Sec.11.146 the app is up (TCP after 12.6 s) and 3 raw-stream failure line(s) never reach spacecrafter.log: (InfZoneArray::create(stars_2_0v0_8.cat): fopen failed; ZoneArray::create(stars_3_1v0_4.cat): fopen failed; Invalid sky culture directory: western-spacecrafter
+S2   author a body            PASS        -              'F90ProbeSat' absent from 120 bodies before the load, present among 121 after
+S3   run a shipped show       PASS        -              loaded and ended: 5.9 s wall against 5.5 s of authored waits + 1 operator pause(s) this suite resumed
+S4   search  [DEPRECATED - R22] DEPRECATED  -              R22 retires the search family; the answer is a datum, never a gate. `search name Mars` -> 'Mars(P);'
+S5   select + read out        PASS        -              shape OK (5 lines, magnitude 1.38, ['06h58m17s', '-37°30\'49"'] / ['-12°45\'14"', '+319°51\'57"'], distance 1.82389784 UA); labels are french (every label is a fr.txt msgstr)
+S6   save                     PASS        -              sessions/f90.ini (10894 B) and modularSystem/f90sys.ini (78394 B) written under the FARM, the system file names 'F90ProbeSat', and the real home's two directories are untouched
+S7   reload                   DIVERGENCE  Sec.11.117(k)(3),Sec.11.111(g),Sec.11.55(i),Sec.11.55(j) T4 byte-identical (10894 B); `body action reload` logged no error; 121 -> 119 dump records; the authored body after the reload: old-half True / NEW(drawn)-half False, and the plan's prediction (it leaves the drawn path) HELD; the reload SILENTLY dropped ['baryEarthMoon', 'orbit_autour_lune']; the anchor NAME surface went {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} -> {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} and the owned body came back on USE: {'baryEarthMoon': True, 'orbit_autour_lune': True}; with the authored body off the drawn path, `search` answers 'F90ProbeSat(P);' and `get status object` answers 'F90ProbeSat\nMagnitude : -1.42\nAD/DE : 03h02m06s / -52Â°27\'38"\nAlt/AzÂ\xa0: -74Â°15\'57" / +132Â°17\'48"\nDistance : 0.00008679 UA'
+S8   one keyboard ramp        PASS        -              held Prior then Next: fov 180.00001 -> 84.91497 -> 179.53135 deg (-95.08504 then +94.61639); drawn halfFov 1.5707964 -> 0.7410229 -> 1.5667067 rad
+S9   quit                     PASS        -              `shutdown action now` -> exit 0 after 0.6 s; 0 frame stall(s) logged over the whole run
+------------------------------------------------------------------------------
+FAIL: none
+DIVERGENCE: S1(Sec.5.77,Sec.11.146), S7(Sec.11.117(k)(3),Sec.11.111(g),Sec.11.55(i),Sec.11.55(j))
+==============================================================================
+
+===== run2 =====
+F90 REHEARSAL - PER-STEP TABLE   tag=run2   91.2 s
+ID   STEP                     STATE       ROWS           WHY
+------------------------------------------------------------------------------
+S1   launch                   DIVERGENCE  Sec.5.77,Sec.11.146 the app is up (TCP after 12.6 s) and 3 raw-stream failure line(s) never reach spacecrafter.log: (InfZoneArray::create(stars_2_0v0_8.cat): fopen failed; ZoneArray::create(stars_3_1v0_4.cat): fopen failed; Invalid sky culture directory: western-spacecrafter
+S2   author a body            PASS        -              'F90ProbeSat' absent from 120 bodies before the load, present among 121 after
+S3   run a shipped show       PASS        -              loaded and ended: 5.9 s wall against 5.5 s of authored waits + 1 operator pause(s) this suite resumed
+S4   search  [DEPRECATED - R22] DEPRECATED  -              R22 retires the search family; the answer is a datum, never a gate. `search name Mars` -> 'Mars(P);'
+S5   select + read out        PASS        -              shape OK (5 lines, magnitude 1.38, ['06h56m21s', '-37°25\'02"'] / ['-12°57\'17"', '+320°12\'54"'], distance 1.82389104 UA); labels are french (every label is a fr.txt msgstr)
+S6   save                     PASS        -              sessions/f90.ini (10894 B) and modularSystem/f90sys.ini (78394 B) written under the FARM, the system file names 'F90ProbeSat', and the real home's two directories are untouched
+S7   reload                   DIVERGENCE  Sec.11.117(k)(3),Sec.11.111(g),Sec.11.55(i),Sec.11.55(j) T4 byte-identical (10894 B); `body action reload` logged no error; 121 -> 119 dump records; the authored body after the reload: old-half True / NEW(drawn)-half False, and the plan's prediction (it leaves the drawn path) HELD; the reload SILENTLY dropped ['baryEarthMoon', 'orbit_autour_lune']; the anchor NAME surface went {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} -> {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} and the owned body came back on USE: {'baryEarthMoon': True, 'orbit_autour_lune': True}; with the authored body off the drawn path, `search` answers 'F90ProbeSat(P);' and `get status object` answers 'F90ProbeSat\nMagnitude : -1.40\nAD/DE : 03h05m32s / -55Â°52\'50"\nAlt/AzÂ\xa0: -72Â°35\'53" / +142Â°49\'53"\nDistance : 0.00008613 UA'
+S8   one keyboard ramp        PASS        -              held Prior then Next: fov 180.00001 -> 84.91497 -> 179.53135 deg (-95.08504 then +94.61639); drawn halfFov 1.5707964 -> 0.7410229 -> 1.5667067 rad
+S9   quit                     PASS        -              `shutdown action now` -> exit 0 after 0.6 s; 0 frame stall(s) logged over the whole run
+------------------------------------------------------------------------------
+FAIL: none
+DIVERGENCE: S1(Sec.5.77,Sec.11.146), S7(Sec.11.117(k)(3),Sec.11.111(g),Sec.11.55(i),Sec.11.55(j))
+==============================================================================
+
+===== run3 =====
+F90 REHEARSAL - PER-STEP TABLE   tag=run3   91.2 s
+ID   STEP                     STATE       ROWS           WHY
+------------------------------------------------------------------------------
+S1   launch                   DIVERGENCE  Sec.5.77,Sec.11.146 the app is up (TCP after 12.6 s) and 3 raw-stream failure line(s) never reach spacecrafter.log: (InfZoneArray::create(stars_2_0v0_8.cat): fopen failed; ZoneArray::create(stars_3_1v0_4.cat): fopen failed; Invalid sky culture directory: western-spacecrafter
+S2   author a body            PASS        -              'F90ProbeSat' absent from 120 bodies before the load, present among 121 after
+S3   run a shipped show       PASS        -              loaded and ended: 5.9 s wall against 5.5 s of authored waits + 1 operator pause(s) this suite resumed
+S4   search  [DEPRECATED - R22] DEPRECATED  -              R22 retires the search family; the answer is a datum, never a gate. `search name Mars` -> 'Mars(P);'
+S5   select + read out        PASS        -              shape OK (5 lines, magnitude 1.38, ['06h54m24s', '-37°19\'00"'] / ['-13°09\'23"', '+320°34\'09"'], distance 1.82388461 UA); labels are french (every label is a fr.txt msgstr)
+S6   save                     PASS        -              sessions/f90.ini (10894 B) and modularSystem/f90sys.ini (78394 B) written under the FARM, the system file names 'F90ProbeSat', and the real home's two directories are untouched
+S7   reload                   DIVERGENCE  Sec.11.117(k)(3),Sec.11.111(g),Sec.11.55(i),Sec.11.55(j) T4 byte-identical (10894 B); `body action reload` logged no error; 121 -> 119 dump records; the authored body after the reload: old-half True / NEW(drawn)-half False, and the plan's prediction (it leaves the drawn path) HELD; the reload SILENTLY dropped ['baryEarthMoon', 'orbit_autour_lune']; the anchor NAME surface went {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} -> {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} and the owned body came back on USE: {'baryEarthMoon': True, 'orbit_autour_lune': True}; with the authored body off the drawn path, `search` answers 'F90ProbeSat(P);' and `get status object` answers 'F90ProbeSat\nMagnitude : -1.38\nAD/DE : 03h10m24s / -59Â°19\'44"\nAlt/AzÂ\xa0: -70Â°32\'58" / +151Â°43\'36"\nDistance : 0.00008522 UA'
+S8   one keyboard ramp        PASS        -              held Prior then Next: fov 180.00001 -> 84.91497 -> 179.53135 deg (-95.08504 then +94.61639); drawn halfFov 1.5707964 -> 0.7410229 -> 1.5667067 rad
+S9   quit                     PASS        -              `shutdown action now` -> exit 0 after 0.6 s; 0 frame stall(s) logged over the whole run
+------------------------------------------------------------------------------
+FAIL: none
+DIVERGENCE: S1(Sec.5.77,Sec.11.146), S7(Sec.11.117(k)(3),Sec.11.111(g),Sec.11.55(i),Sec.11.55(j))
+==============================================================================
+
+===== fault =====
+F90 REHEARSAL - PER-STEP TABLE   tag=fault   98.9 s
+ID   STEP                     STATE       ROWS           WHY
+------------------------------------------------------------------------------
+S1   launch                   DIVERGENCE  Sec.5.77,Sec.11.146 the app is up (TCP after 12.6 s) and 3 raw-stream failure line(s) never reach spacecrafter.log: (InfZoneArray::create(stars_2_0v0_8.cat): fopen failed; ZoneArray::create(stars_3_1v0_4.cat): fopen failed; Invalid sky culture directory: western-spacecrafter
+S2   author a body            FAIL        -              'F90ProbeSat' is not in the dump after `body action load` (sent as 'F90PrbeSat')
+S3   run a shipped show       PASS        -              loaded and ended: 5.9 s wall against 5.5 s of authored waits + 1 operator pause(s) this suite resumed
+S4   search  [DEPRECATED - R22] DEPRECATED  -              R22 retires the search family; the answer is a datum, never a gate. `search name Mars` -> 'Mars(P);'
+S5   select + read out        PASS        -              shape OK (5 lines, magnitude 1.38, ['06h52m28s', '-37°12\'47"'] / ['-13°21\'22"', '+320°55\'26"'], distance 1.82387793 UA); labels are french (every label is a fr.txt msgstr)
+S6   save                     FAIL        -              the composed system file does not name the authored body 'F90ProbeSat'
+S7   reload                   DIVERGENCE  Sec.11.117(k)(3),Sec.11.111(g) T4 byte-identical (10894 B); `body action reload` logged no error; 121 -> 119 dump records; the authored body after the reload: old-half False / NEW(drawn)-half False, and the plan's prediction (it leaves the drawn path) HELD; the reload SILENTLY dropped ['baryEarthMoon', 'orbit_autour_lune']; the anchor NAME surface went {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} -> {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} and the owned body came back on USE: {'baryEarthMoon': True, 'orbit_autour_lune': True}; with the authored body off the drawn path, `search` answers 'NOF' and `get status object` answers 'EOL'
+S8   one keyboard ramp        PASS        -              held Prior then Next: fov 180.00001 -> 84.91497 -> 179.53135 deg (-95.08504 then +94.61639); drawn halfFov 1.5707964 -> 0.7410229 -> 1.5667067 rad
+S9   quit                     PASS        -              `shutdown action now` -> exit 0 after 0.7 s; 0 frame stall(s) logged over the whole run
+------------------------------------------------------------------------------
+FAIL: S2, S6
+DIVERGENCE: S1(Sec.5.77,Sec.11.146), S7(Sec.11.117(k)(3),Sec.11.111(g))
+==============================================================================
+

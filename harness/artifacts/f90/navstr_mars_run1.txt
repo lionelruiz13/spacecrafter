@@ -1,0 +1,42 @@
+--- the Mars block of run1_03_selected.json.navstr, verbatim ---
+  OLD nav: AD/DE : 07h11m18s/+23°02'02"SA +252°10'32" GHA +131°32'27" LHA +136°54'27"@ Az/Alt/coA: +319°51'57"/-12°45'14"/+102°45'14" LPA +136°54'27"
+  NEW nav: AD/DE : 06h58m17s / -37°30'49"
+SA +255°25'47" GHA +134°47'43" LHA +178°05'43"@ Az/Alt/coA: +319°51'57"/-12°45'14"/+102°45'14" LPA +178°05'43"
+  OLD inf: Mars
+Magnitude : 1.38
+AD/DE : 07h11m18s / +23°02'02"
+Alt/Az : -12°45'14" / +319°51'57"
+Distance : 1.82389782 UA
+  NEW inf: Mars
+Magnitude : 1.38
+AD/DE : 06h58m17s / -37°30'49"
+Alt/Az : -12°45'14" / +319°51'57"
+Distance : 1.82389784 UA
+
+--- info_block_shape() ---
+{
+ "lines": 5,
+ "name": "Mars",
+ "labels": [
+  "Magnitude :",
+  "AD/DE :",
+  "Alt/Az :",
+  "Distance :"
+ ],
+ "magnitude": 1.38,
+ "radec": [
+  "06h58m17s",
+  "-37°30'49\""
+ ],
+ "altaz": [
+  "-12°45'14\"",
+  "+319°51'57\""
+ ],
+ "distance": 1.82389784,
+ "unit": "UA"
+}
+--- labels as escaped bytes ---
+'Magnitude :'
+'AD/DE :'
+'Alt/Az\xa0:'
+'Distance :'
