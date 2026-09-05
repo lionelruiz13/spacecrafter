@@ -22,6 +22,28 @@
 #      2a sin(pi dt/P) = 153073.373 km, while the MOON itself moves (its own
 #      ephemeris, > 1000 km over the interval).  The camera anchored to it must
 #      keep its relation to the anchor EXACTLY: distance delta == 0.
+#  P1b THE OLD PATH IS ON THE SAME ORBIT (added F93, INTENT 11.210; the repair
+#      11.208(i) recorded and did not apply).  P1 above reads the NEW path's
+#      `ecl`; the OLD path's own distance to the anchor's PARENT was in this
+#      dump from the first run of this gate (2026-07-25) and nothing asserted
+#      it - so at every dump whose camera reference is an orbit anchor,
+#      `<parent>.old.dist` must equal that anchor's AUTHORED semi-major axis
+#      within DIST_TOL_KM.  It is the check that would have caught 5.133 on
+#      day one: the pre-fix binary kept a dangling `Orbit*` for every
+#      `type = orbit` anchor and put the old observer 182582.8 km from the
+#      Moon where the authored radius is 200000.0 - 17417 km of discrimination
+#      that the whole screen witness below could not see.  The three orbit
+#      anchors of this scene carry TWO different authored radii (200000 and
+#      300000 km) and two different channels (authored file / `camera action
+#      create`), so the check discriminates IN-RUN as well as between binaries.
+#      TOLERANCE, DERIVED (artifacts/f93/prediction.txt, written before the
+#      first run of this revision): the OLD half of a body record prints at 17
+#      significant digits, so the field's own quantization is ~1.5e-11 km; the
+#      binding term is the old path's ease-out still settling when the dump is
+#      taken (11.208(a)), measured at <= 0.0482 km on this quantity over F89's
+#      eight runs.  1.0 km is 20x that, 17417x below the defect it catches, and
+#      is ALREADY the bound P1 applies to the same authored constant on the new
+#      path (:392) - one number for one quantity (I2).
 #  P2  KEEP-ANGLE.  Anchored to Mars with follow_rotation = false the camera's
 #      frame (`camera.mat`) is INVARIANT under a date advance - bit-identical,
 #      because nothing in its composition depends on jd once the surface bind is
@@ -70,6 +92,25 @@
 #      anchor's period apart must DIFFER, because the viewpoint swung 45 deg
 #      around the Moon between them.  The fixed-point shot is the in-run control
 #      for "renders at all" from the other kind.
+#      THE WINDOW OBSERVABLE IS A LIT-PIXEL COUNT, NOT A MAXIMUM (F93, INTENT
+#      11.210; the repair 11.208(i) recorded and did not apply).  Until F93 both
+#      window checks read the MAX luminance of the 112x112 px box, and a maximum
+#      cannot tell a star from a Moon: on the CORRECTED sky an ordinary star of
+#      luminance 217 stands in the other date's window while the Moon's own disc
+#      peaks at 182, so the control failed on the correct binary and had passed
+#      three times on a binary whose star field was 76 deg wrong.  Counting the
+#      box's lit pixels (px > LIT_THR) separates them by construction - a star
+#      is a handful of pixels, a disc is a thousand - and the separation is
+#      30-100x on BOTH binaries, where the max form gives -35 and +172.  Both
+#      constants come from F89's eight-run corpus with their margins stated at
+#      LIT_K / OWN_FLOOR below; the max form is GONE, not kept beside it (two
+#      observables for one claim is the duplicate I2 forbids).
+#      THE SCENE MUST BE DETERMINISTIC FOR ANY OF THIS TO MEAN ANYTHING: the
+#      runner writes `flag_star_twinkle = false` into the FARM's config copy
+#      (11.208(j)) and this driver ASSERTS the effect from every dump it takes
+#      (`oldView.stars.twinkleAmountEff` == 0), because with the shipped `true`
+#      the same binary differs from itself by 2165-2229 px frame-wide and the
+#      failing scalar itself wanders across a band that straddles the Moon's.
 #  P6  INSTRUMENT CHAIN.  14 anchors declared (10 shipped + 4 B4 - a load that
 #      silently dropped the shipped corpus would pass everything else); every
 #      OWNED anchor body carries bodyType 1 (ANCHOR) and relation < 3 (hidden,
@@ -85,8 +126,17 @@ AU_KM = 149597870.7
 J0 = 2461233.5
 DT_ORBIT = 0.0625          # P/8 of the authored 0.5 d anchor orbit
 DT_SPIN = 0.25             # Mars-spin interval for the keep-angle legs
-A_KM = 200000.0            # authored semi-major axis
+A_KM = 200000.0            # authored semi-major axis (b4_anchors.ini:28)
+A_OTHER_KM = 300000.0      # P4's differently-parametrized commanded anchor
 P_DAYS = 0.5               # authored period
+
+# P1b's tolerance, DERIVED - see the header and artifacts/f93/prediction.txt.
+DIST_TOL_KM = 1.0
+# P7's window observable and its two bars, both from F89's eight-run corpus
+# (artifacts/f93/prediction.txt) with the margin each carries:
+LIT_THR = 8                # px > 8: the metric 11.205(g)/f89_p7.py already use
+LIT_K = 4                  # own >= K x other; weakest measured ratio 40.14 (10.0x)
+OWN_FLOOR = 100            # px in the Moon's own window; weakest measured 843 (8.4x)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "artifacts", "b4")
@@ -227,8 +277,11 @@ for entry in (1, 2):                        # reversible pair, twice (P5)
 send("date jday %.9f" % J0, 1.2)
 for entry in (1, 2):
     send("camera action switch name Earth", 1.2)          # common start state
-    send("camera action create name b4_cmd_orbit %s200000.0" % ORBIT_KEYS, 1.2)
-    send("camera action create name b4_cmd_other %s300000.0" % ORBIT_KEYS, 1.2)
+    # The two radii are the module constants, so P1b's authored value and the
+    # command that authors it cannot desync (I2).  Byte-identical to the
+    # literals they replace: "%.1f" % 200000.0 == "200000.0".
+    send("camera action create name b4_cmd_orbit %s%.1f" % (ORBIT_KEYS, A_KM), 1.2)
+    send("camera action create name b4_cmd_other %s%.1f" % (ORBIT_KEYS, A_OTHER_KM), 1.2)
     send("camera action switch name b4_cmd_orbit", 1.2)
     dump("cmd%d" % entry)
     send("camera action switch name b4_orbit_moon", 1.2)
@@ -262,14 +315,34 @@ def check(ok, text, **kv):
     return ok
 
 
+# Every dump this scene takes, in scene order.  ONE list (I2): the loader, the
+# twinkle assert and P1b all walk it, so a dump added to the scene cannot be
+# left out of a check by omission.
+TAGS = ("base", "floor0", "floor1", "floor2", "floor3", "floor4",
+        "orb_t0", "orb_t1", "fix_t0", "fix_t1",
+        "keepangle1_t0", "keepangle1_t1", "follow1_t0", "follow1_t1",
+        "keepangle2_t0", "keepangle2_t1", "follow2_t0", "follow2_t1",
+        "cmd1", "auth1", "other1", "unanchor1", "dropped1",
+        "cmd2", "auth2", "other2", "unanchor2", "dropped2")
+
 D = {}
-for tag in ("base", "floor0", "floor1", "floor2", "floor3", "floor4",
-            "orb_t0", "orb_t1", "fix_t0", "fix_t1",
-            "keepangle1_t0", "keepangle1_t1", "follow1_t0", "follow1_t1",
-            "keepangle2_t0", "keepangle2_t1", "follow2_t0", "follow2_t1",
-            "cmd1", "auth1", "other1", "unanchor1", "dropped1",
-            "cmd2", "auth2", "other2", "unanchor2", "dropped2"):
+for tag in TAGS:
     D[tag] = load(tag)
+
+print("\n--- P0: the scene is deterministic (twinkle OFF), read from every dump ---")
+# 11.208(j): with the shipped `flag_star_twinkle = true` this scene's own A/A
+# floor is 2165-2229 px frame-wide and P7's failing scalar wanders over a band
+# that straddles the Moon's own, i.e. the verdict below is a coin toss.  The
+# RUNNER writes `false` into the FARM's config copy (core.cpp:346 is what reads
+# it; b4's scene sends nothing for it); this asserts the EFFECT from the app's
+# own dump rather than trusting the write.
+tw = {t: D[t][0]["oldView"]["stars"]["twinkleAmountEff"] for t in TAGS}
+tw_max = max(tw.values())
+check(tw_max == 0.0,
+      "twinkle is OFF at every one of the %d dumps (max twinkleAmountEff %.4f) - "
+      "run this gate through b4_anchors_run.sh, which writes flag_star_twinkle = false "
+      "into the FARM's config (INTENT 11.208(j))" % (len(TAGS), tw_max),
+      twinkleAmountEff_max=tw_max)
 
 print("\n--- P6: instrument chain (the authored file actually loaded) ---")
 anc = D["base"][0]["anchors"]
@@ -324,6 +397,38 @@ check(abs(chord - pred_chord) < 0.001 * pred_chord,
 check(moon > 1000.0, "the MOON itself moved %.1f km over the same interval" % moon, moon_km=moon)
 dd = h1["camera"]["distance"] - h0["camera"]["distance"]
 check(dd == 0.0, "camera-to-anchor distance delta = %.3e AU (must be exactly 0)" % dd, delta=dd)
+
+print("\n--- P1b: the OLD path's distance to the anchor's parent == the authored radius ---")
+# The scene's three orbit anchors and what each one was AUTHORED with: the file
+# for b4_orbit_moon (b4_anchors.ini:28, A_KM), the `camera action create`
+# commands above for the other two.  Nothing here is a recalled number; the
+# authored radius and the command that authors it are the same constant.
+ORBIT_ANCHORS = {"b4_orbit_moon": ("Moon", A_KM),
+                 "b4_cmd_orbit":  ("Moon", A_KM),
+                 "b4_cmd_other":  ("Moon", A_OTHER_KM)}
+n_asserted = 0
+for tag in TAGS:
+    h, b = D[tag]
+    ref = h["camera"]["reference"]
+    if ref not in ORBIT_ANCHORS:
+        continue                       # the quantity is not defined off an orbit anchor
+    parent, a_km = ORBIT_ANCHORS[ref]
+    old = b.get(parent, {}).get("old")
+    if old is None:
+        check(False, "%s: the OLD path has no record for '%s' - P1b cannot be read"
+              % (tag, parent))
+        continue
+    n_asserted += 1
+    d_km = old["dist"] * AU_KM
+    check(abs(d_km - a_km) <= DIST_TOL_KM,
+          "%s: OLD path is %.3f km from %s, authored radius of '%s' is %.1f km "
+          "(delta %+.3f km, tol %.1f) - a stale orbit here means the old path composed "
+          "the sky from somewhere the anchor never was (INTENT 5.133)"
+          % (tag, d_km, parent, ref, a_km, d_km - a_km, DIST_TOL_KM),
+          tag=tag, anchor=ref, old_dist_km=d_km, authored_km=a_km)
+check(n_asserted >= 13,
+      "P1b covered %d dumps (>= 13: five floor legs, both on-orbit shots, and both "
+      "entries of the commanded/authored/other triple)" % n_asserted, covered=n_asserted)
 
 print("\n--- P3: fixed point is fixed in the Universe frame (same instrument) ---")
 hf0, bf0 = D["fix_t0"]; hf1, bf1 = D["fix_t1"]
@@ -437,8 +542,9 @@ print("    frame-wide difference between the two on-orbit shots: %d px>32 (repor
 report["predictions"]["orb_px32"] = moved
 
 # THE screen witness proper: the composed screen must show the Moon WHERE THE
-# DUMP SAYS at both ends of the interval - a 2x2 contrast test with its own
-# in-run control (the other date's position is empty sky at this date).  The
+# DUMP SAYS at both ends of the interval - a 2x2 test of LIT-PIXEL COUNTS with
+# its own in-run control (the other date's position is empty sky at this date;
+# "empty" measured at 17-44 px against the disc's 843-2025, F89's corpus).  The
 # window radius is 2x the disc radius PREDICTED from measured quantities
 # (atan(R/d) / halfFov x H/2), never a tuned number; R and d come from the dump.
 H = img("orb_t0").shape[0]
@@ -453,31 +559,43 @@ print("    Moon disc radius %.1f px (from R=%.3e AU, d=%.3e AU, halfFov=%.4f); d
       "separation %.1f px; window +-%d px" % (rpx, Rm, dm, hf, sep_px, win))
 
 
-def bright(shot_tag, ndc):
+def lit_count(shot_tag, ndc):
+    """LIT PIXELS (px > LIT_THR) in the window at `ndc` - NOT the maximum.
+    A maximum is one pixel and one pixel is a star: F89 measured a 217-luminance
+    star beating the Moon's own 182-luminance disc in this very box (11.208(i)).
+    A count cannot be fooled that way - the disc is ~10^3 px, a star ~10^1."""
     a = img(shot_tag).max(axis=2)
     x = int((ndc[0] * 0.5 + 0.5) * a.shape[1])
     y = int((1.0 - (ndc[1] * 0.5 + 0.5)) * a.shape[0])   # screen y up -> image row down
     if not (0 <= x < a.shape[1] and 0 <= y < a.shape[0]):
         return None
-    return int(a[max(0, y - win):y + win, max(0, x - win):x + win].max())
+    return int((a[max(0, y - win):y + win, max(0, x - win):x + win] > LIT_THR).sum())
 
 
-cells = {(s, p): bright("orb_%s" % s, P[p]) for s in ("t0", "t1") for p in ("t0", "t1")}
-print("    window max luminance: %s" % {("%s@%s" % k): v for k, v in cells.items()})
+cells = {(s, p): lit_count("orb_%s" % s, P[p]) for s in ("t0", "t1") for p in ("t0", "t1")}
+print("    window lit-pixel counts (px>%d): %s"
+      % (LIT_THR, {("%s@%s" % k): v for k, v in cells.items()}))
+report["predictions"]["p7_lit_counts"] = {("%s@%s" % k): v for k, v in cells.items()}
 check(sep_px > 4 * rpx,
       "the dumped Moon position moved %.1f px, more than the %.1f px disc - the two windows are "
       "disjoint, so the test below has a real control" % (sep_px, 2 * rpx))
 check(all(v is not None for v in cells.values()),
       "both dumped Moon positions are inside the frame (the shot can witness them)")
 if all(v is not None for v in cells.values()):
-    check(cells[("t0", "t0")] > 64 and cells[("t1", "t1")] > 64,
-          "SCREEN WITNESS: the Moon is BRIGHT where the dump puts it at each date "
-          "(%d and %d / 255)" % (cells[("t0", "t0")], cells[("t1", "t1")]))
-    check(cells[("t0", "t1")] < cells[("t0", "t0")] and cells[("t1", "t0")] < cells[("t1", "t1")],
-          "SCREEN WITNESS control: the OTHER date's position is darker in each shot "
-          "(%d < %d and %d < %d) - the disc moved on the composed screen exactly as the anchor's "
-          "orbit says" % (cells[("t0", "t1")], cells[("t0", "t0")],
-                          cells[("t1", "t0")], cells[("t1", "t1")]))
+    check(cells[("t0", "t0")] >= OWN_FLOOR and cells[("t1", "t1")] >= OWN_FLOOR,
+          "SCREEN WITNESS: the Moon's disc is DRAWN where the dump puts it at each date - "
+          "%d and %d lit px (>%d) in its own %dx%d px window, floor %d"
+          % (cells[("t0", "t0")], cells[("t1", "t1")], LIT_THR, 2 * win, 2 * win, OWN_FLOOR))
+    check(cells[("t0", "t0")] >= LIT_K * cells[("t0", "t1")]
+          and cells[("t1", "t1")] >= LIT_K * cells[("t1", "t0")],
+          "SCREEN WITNESS control: the Moon's own window holds at least %dx the LIT PIXELS of the "
+          "other date's window in each shot (%d vs %d and %d vs %d, ratios %.1fx and %.1fx) - the "
+          "disc moved on the composed screen exactly as the anchor's orbit says, and a count "
+          "cannot mistake a star for a Moon the way the max form did (11.208(i))"
+          % (LIT_K, cells[("t0", "t0")], cells[("t0", "t1")],
+             cells[("t1", "t1")], cells[("t1", "t0")],
+             cells[("t0", "t0")] / max(cells[("t0", "t1")], 1),
+             cells[("t1", "t1")] / max(cells[("t1", "t0")], 1)))
 
 report["summary"] = {"failures": fail}
 with open(os.path.join(OUT, "b4_result.json"), "w") as f:

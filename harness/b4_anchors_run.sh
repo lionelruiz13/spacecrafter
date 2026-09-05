@@ -8,6 +8,10 @@
 # anchors appended.  Channel 1 of §2(c) is therefore exercised on a file the
 # app reads through the production path, and the real ~/.spacecrafter is never
 # written (md5 asserted in == out, exit 3 on a farm leak).
+#
+# It also switches the star TWINKLE OFF in the farm's config copy (F93, INTENT
+# 11.210) - see the block below for why that is a precondition of the gate and
+# not a preference.
 set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
 OUT=${1:-$HERE/artifacts/b4}
@@ -31,6 +35,25 @@ i = shipped.rfind(b'[end]')
 open(dst, 'wb').write(shipped[:i] + add + shipped[i:])
 EOF
 [ -f "$FARM/.spacecrafter/anchor.ini" ] || { echo "FAIL: authored anchor.ini not written"; exit 2; }
+
+# THE SCENE'S ONE RANDOM CHANNEL, SWITCHED OFF (F93, INTENT 11.210; measured at
+# 11.208(j)).  With the shipped `flag_star_twinkle = true` this scene differs
+# from ITSELF by 2165-2229 px frame-wide between two runs of one binary, and
+# P7's control scalar wanders over a band that straddles the value it is
+# compared against - i.e. the verdict is a coin toss.  With it false the same
+# pair is 0-2 px and the run is reproducible to the pixel.  It is set HERE and
+# not in the scene because `core.cpp:346` reads it from the config at startup
+# and b4's scene sends nothing for it; `b3_farm.sh` COPIES config.ini (it
+# symlinks everything else), so this write cannot reach the real ~/.spacecrafter
+# - which the md5 assert below then proves rather than promises.  The driver
+# ASSERTS the effect from every dump (P0, `twinkleAmountEff`), so a farm whose
+# config did not take the edit fails the gate instead of silently randomizing it.
+[ -f "$FARM/.spacecrafter/config.ini" ] && [ ! -L "$FARM/.spacecrafter/config.ini" ] \
+    || { echo "FAIL: the farm's config.ini is not a real copy - a write here would reach the field"; exit 2; }
+sed -i "s/^flag_star_twinkle .*/flag_star_twinkle              = false/" "$FARM/.spacecrafter/config.ini"
+grep -q "^flag_star_twinkle *= *false\$" "$FARM/.spacecrafter/config.ini" \
+    || { echo "FAIL: farm config twinkle not set to false"; exit 2; }
+echo "farm twinkle: $(grep '^flag_star_twinkle' "$FARM/.spacecrafter/config.ini")"
 
 B4_FARM=$FARM python3 "$HERE/b4_anchors.py" "$OUT" "$@"
 DRV=$?

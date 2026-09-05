@@ -1178,8 +1178,12 @@ count control red on the pre-fix binary" is refuted in advance by F89's own corp
 40–50× on BOTH binaries). Checkpoint 1: derivations + predictions committed BEFORE
 any edit — `harness/artifacts/f93/prediction.txt` (tolerance 1.0 km derived, K = 4
 with 10× margin, own-floor 100 px with 8.4× margin, the 13 asserted dumps' predicted
-values on both binaries). NEXT: edit `b4_anchors.py` + `b4_anchors_run.sh`, then the
-three runs under `/home/claude/sc-f93/`.
+values on both binaries). Checkpoint 2: the gate repaired — P1b (the distance assert,
+13 dumps, 1.0 km), P0 (twinkle asserted from every dump), P7's max form REMOVED for a
+lit-pixel count (K=4, floor 100); replayed OFFLINE over F89's eight landed runs first:
+reference 13/13 green + control green, pre-fix 9 red / 4 green (cmd+other are the
+in-run controls) + control GREEN, twinkle-ON run reds at P0. NEXT: the three launches
+under `/home/claude/sc-f93/`.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
