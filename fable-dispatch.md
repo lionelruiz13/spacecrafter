@@ -220,6 +220,10 @@ under the no-`run_in_background` rule (foreground polls, the F19 stall instrumen
 hang detector) — next round's candidate, said here so the gate's second half is not
 silent. Picks: **F89 → F87 → F90**, then F91 and F92 if health permits (session 22
 ran seven executors and closed on context; three is the sweet spot, §0b.2).
+**[16:38, at F89's acceptance: F89 found the P7 red is the PRODUCT's — the pre-fix binary
+drew its sky 76° from the scene it composed and the gate was green on that; the reference
+binary is RIGHT and the instrument is wrong (§11.208(i)). Its two repairs are decision-free
+harness work ⇒ **F93** minted (S); picks now **F89 ✓ → F87 → F93 → F90**, then F91/F92.]**
 Deliveries: all to the parent (§11.208+, refreshed at each dispatch). Launch classes:
 F89 FUNCTIONAL (star-field pixel sets under a frozen clock — no banked-band claim, the
 full canary is not required); F87 FUNCTIONAL (farm, French session, sidecar); F90
@@ -727,6 +731,42 @@ run). Instruments: scan **217/265/131** (flagged-set diff vs the open HEAD **emp
 pair-check **224/199/25/107**, D 35 · D2 11 · I 89 · I2 36 · M 81 — every filter delta 0.
 Left on disk: `/home/claude/sc-f89/` (three binaries in `bin/`, the code worktree `tree/` at
 the PRE source state, `build-var/`, eight run dirs).
+**ACCEPTED 2026-09-05 16:38 (`date` in the verifying command; supervisor, session 23, Claude
+Fable 5.1).** Verified by my own runs and reads, not by the report: §11.208 read in full;
+code UNTOUCHED at `a2fd3c5b` (status clean; `git worktree list` shows `/home/claude/sc-f89/tree`
+detached at `a2fd3c5b` — registered, does not touch `master-beta`); four harness commits
+`846cbeb` → `d264546` → `ef56580` → `9bb8b0d` (Claude Opus 5), tree clean; `b4_anchors.py` and
+`b4_anchors_run.sh` `git diff 6594960..HEAD` EMPTY; predictions committed at `846cbeb` BEFORE
+the runs at `d264546`; §11.208 markers present at §5.133, §5.134 and three times in
+`INTENT/11.205.md`; artifacts R1–R8 + `prediction.txt` + the three analyses present; the three
+scratch binaries `531b28aa` / `6f0c8de8` / `9471f2fc` (1.5 GB); instruments to the digit (scan
+217/265/131 · pair-check 224/199/25/107 · D 35 · D2 11 · I 89 · I2 36 · M 81). Deviations
+ENDORSED with the executor's arguments: the variant runner duplicating eight lines (the
+boundary forbade editing the gate; the gate stays `b4_anchors_run.sh`, said in the header);
+twinkle switched at the farm's config and VERIFIED from the dump (`twinkleAmountEff` 0.0000);
+the pre binary as `a2fd3c5b` with four files reverted rather than a `9e0f1e93` checkout (source
+equivalence MEASURED: the diff reduces to the tree-identical gitlink; one build dir, no
+dependence on the amended-away submodule commit); the optional third binary built (attribution
+became a measurement: §5.134's guard alone lands in the pre group); F86's outputs re-analysed
+AND reproduced by fresh runs; the `sets` relaxation to integer window centres (recorded).
+DISPATCHER DEFECTS reported, both ACCEPTED as mine: H2's criterion named NEW-path fields
+(`camera.mat`, the anchor's position) for an OLD-path (`navModule`) defect — taken literally it
+refutes what it tests; output-side by construction (mandate (2) makes the executor write the
+predictions), counterfactual stated; and *"every float at `%.17g`"* (only `oldView.*` and
+`camera.rootPos` print at 17 digits). Round tally: **four dispatcher defects** (two at open,
+two here). Criterion-integrity instances credited: H3 decided from the committed records
+before any launch; H1's refuting number stated first and met 845× over; H2's stated metric
+refuted and the hypothesis kept where it lives; the A/A floor re-measured with twinkle on AND
+off in the same session; the over-claim ("byte-identical in all thirteen") caught by measuring
+it. **THE ROUTED CALL, TAKEN:** §11.208(i)'s two repairs are §13.B harness work and
+decision-free by the instrument's own criterion — a control that was green on a sky 76° wrong
+and reds on the corrected one is a WRONG instrument, and the newcomer's first `b4_anchors_run.sh`
+meets that red — so they are minted as **F93** (S), dispatched after F87; the gate stays red
+until then, with its cause named in the README. STANDING CONSEQUENCES: §5.133's *"silent on the
+shipped build"* is CORRECTED at three homes (not crashing ≠ silent — the shipped build composed
+its star field for a different sky than its bodies after one `camera action switch` onto an
+orbit anchor); twinkle costs 2165–2229 px of A/A floor and turns P7's verdict into a coin toss
+— any pixel comparison switches it off first (`f89_b4_variant.sh <out> off`).
 
 ### F90 — T5.1, the tester's day in the app, REHEARSED — and written as the developer's smoke suite: one launch on a farm in French through the shipped command surface (launch · author a body · run a shipped show · search, recorded as deprecated · select and read out · save · reload · one keyboard ramp · quit), every step's observable and pass criterion stated BEFORE the run, three runs (the functional A/A floor — a flake is a finding), every divergence recorded against its §5 row or minted by §5.79's criterion and NONE fixed, the suite runnable by the newcomer in one command and shown able to fail (DEPLOYMENT-MAP T5.1: *"the closing audit before 'ready'"*; the owner's line today makes "ready" the criterion) [M]
 
@@ -949,6 +989,86 @@ harness records (`git status` on the code repo EMPTY at close).
 
 **DoD:** census + checklist + patch artifact + breakage scan; §11 entry + stub; map R6
 annotated; README; both trees clean (code untouched); WIP cleared; baselines LAST.
+**WIP:** —
+
+### F93 — The `b4_anchors` gate REPAIRED where F89 showed it blind: (1) a NEW assert that the OLD path's distance to the anchor's parent equals the authored radius (`Moon.old.dist` = 200 000.0 km — 17 417 km of discrimination, wrong in b4's own artifacts since F7 and asserted by nothing), (2) P7's screen-witness control re-expressed as a LIT-PIXEL COUNT comparison instead of a max-over-window (846 vs 21 px at t0, 2023 vs 27 at t1 — 30–100× on both binaries where the max form gives −35 / +172), (3) the scene's twinkle OFF so the gate is deterministic (0–2 px A/A instead of ~2200); proven BOTH WAYS on the two binaries F89 left: GREEN on the reference `2815d182`, RED on the pre-fix `sc-scratch-pre` `9471f2fc` at the new assert AND the new control — a gate that now reds on the corrupt build and greens on the correct one, which is the direction it had backwards (§11.208(i)(j); §13.B; the developer's first harness run) [S, instrument]
+
+**Why now / mandate:** §11.208(i): *"the gate was green for three runs on a binary whose
+entire star field was 76° wrong"*; on the reference binary it reds because an ordinary star
+of luminance 217 sits in the other date's 112×112 window while the Moon's disc peaks at
+182 — a MAX-over-window control cannot tell a star from a Moon. Both repairs are recorded
+there as strictly stronger, and the supervisor's call at F89's acceptance takes them: a
+harness gate whose verdict is inverted with respect to correctness is an instrument defect
+(§13.B, decision-free — no engine semantics, no band, no threshold demotion; every change
+is a STRENGTHENING shown to fail on the known-bad binary). The developer will run
+`b4_anchors_run.sh` on his clone; today it exits 1 on the correct binary.
+
+**Measured at dispatch (supervisor, 2026-09-05 16:3x, from §11.208 — the executor
+re-reads the entry, this is its derivation):** the control lives at `b4_anchors.py:476-480`
+(max luminance own-window vs other-window, two shots t0/t1); the margin table §11.208(b);
+the old path's distance to the anchor's parent is in the dump as `Moon.old.dist` (182 582.8
+km pre / 200 000.0 km fixed, seven runs, two sessions, to 0.1 km), the authored radius is
+`b4_anchors.ini`'s 200 000 km (P1's constant); the ease-out residue moves dumped NDC by
+~1e-7 and can shift a window centre by one pixel between runs (README F7 note); twinkle is
+read at `core.cpp:346` from the config key `flag_star_twinkle` (F89 switched it at the
+FARM's config; b4's scene sends nothing for it). Binaries: reference `build-claude/src/
+spacecrafter` `2815d182`; pre-fix `/home/claude/sc-f89/bin/sc-scratch-pre` `9471f2fc`
+(`9e0f1e93` sources, F89 (g)); guard-only `6f0c8de8` (lands in the pre group). A b4 run costs
+~2 min 50 s. `f89_p7.py` (`margins`/`sets`/`scalars`/`leafdiff`) and `f89_b4_variant.sh` are
+the analysis instruments F89 left; the GATE is `b4_anchors_run.sh` and stays so.
+
+**Mandate:** (1) **The assert**, in `b4_anchors.py` beside P1 (the on-orbit check): the OLD
+path's distance to the anchor's parent (`Moon.old.dist` from the dump, the reader
+`dumpread.py`) equals the authored semi-major axis within a tolerance DERIVED — from the
+ease-out residue and the float precision of the dump field, stated with its derivation, not
+picked — asserted at every dump the scene takes; the check's message names the row (§5.133)
+and the authored value. (2) **The control**: P7's screen-witness control compares LIT-PIXEL
+COUNTS (px>8, the corpus's own metric) of the Moon's own window vs the other date's window
+in each shot — own ≥ K × other with K derived from F89's corpus (846/21 and 2023/27 on BOTH
+binaries: state K and why, e.g. 4× — margin ≥ 7× below the weakest measured ratio); the
+MAX form is REMOVED, not kept beside (a second observable for one claim is I2's duplicate);
+the check's text says what it measures. (3) **Twinkle off** in the scene: since b4's scene
+sends nothing for it and the config key is what `core.cpp:346` reads, the runner
+(`b4_anchors_run.sh`) writes `flag_star_twinkle = false` into the FARM's config copy (the
+farm's `config.ini` must be a COPY for that — assert the real one's md5 in==out), with a
+comment citing §11.208(j); verify from the dump (`twinkleAmountEff` 0.0000) inside the
+script, never assumed. (4) **Prove both ways:** `b4_anchors_run.sh` on the reference binary
+→ **exit 0, every check green, ×2** (A/A: the two runs' P7 lit sets within the 0–2 px floor);
+on the pre-fix binary → **exit 1** with EXACTLY the new assert and the new control red, every
+other check as before (P1–P6 green — they were green on both), ×1; the guard-only binary → the
+pre group (×1, optional if health permits). State the counts (own/other px, the distance
+values) in the entry's table. (5) **Record:** §11.⟨next⟩ entry FIRST + stub; §11.208(i)
+back-marked in both homes (the repairs APPLIED); §5.133's row gains the pointer (the gate
+that catches its class); `harness/README.md` F7 section rewritten to the new gate (the "exits
+1 on the reference binary" opening REMOVED — it is no longer true); WIP per §0.6; D14 (harness
+only — state it).
+
+**Boundaries:** harness only (`b4_anchors.py`, `b4_anchors_run.sh`, README, the entry); NO
+engine code; NO re-bank of anything; NO threshold on the existing geometric checks P1–P6
+touched; the scene's sends unchanged except nothing (twinkle rides the config, not a send);
+the real `~/.spacecrafter` untouched (md5 asserted); all runs under `/home/claude/sc-f93/`;
+no `run_in_background`; the full canary NOT run (no band claim); the pre-fix binary is
+F89's file — never rebuilt here (if absent, STOP and report).
+
+**Discriminating checks:** (a) the tolerance's derivation, written before the runs; (b)
+reference ×2: exit 0, all green, A/A within floor — numbers; (c) pre-fix ×1: exit 1, the two
+NEW checks red and ONLY those, with the values (182 582.8 km; the counts); (d) `twinkleAmountEff`
+0.0000 read from every run's dump by the script; (e) real config md5 in==out; (f) the README's
+F7 opening no longer says the gate reds on the reference.
+
+**Preconditions (checkable, §0.7):** code HEAD `a2fd3c5b` (F87 may have moved it — state
+the HEAD at dispatch; the gate is source-independent), harness ⟨at dispatch⟩; §11.208
+present with (b)(i)(j) as quoted; `b4_anchors.py:476-480` the max-based control (drift
+re-resolved, content abort); `/home/claude/sc-f89/bin/sc-scratch-pre` md5 `9471f2fc` present;
+the reference binary current at HEAD (md5 stated at dispatch); `b4_anchors.ini` authored
+radius 200 000 km; `core.cpp:346` reads `flag_star_twinkle`; `harness/f89_p7.py` present;
+next free §11 ⟨at dispatch⟩; live `### F` count ⟨at dispatch⟩; `/home/claude/sc-f93/`
+ABSENT; canary `--no-scene` exit 0; display per HOST-EVENTS; no `spacecrafter` in
+`/proc/*/comm`; config/ssystem md5 `03fbee59`/`545a51ef`.
+
+**DoD:** the assert + the count control + twinkle-off in the runner; proven both ways with
+the numbers; §11 entry + stub; back-markers; §5.133 pointer; README F7 rewritten; trees
+clean; WIP cleared; baselines LAST.
 **WIP:** —
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
