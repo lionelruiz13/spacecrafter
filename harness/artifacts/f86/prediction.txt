@@ -1,0 +1,117 @@
+F86 -- predictions, committed BEFORE any launch of this task
+============================================================
+2026-09-05, code master-beta @ 1cbd6780, harness @ adb341a.
+Pre-fix release binary stashed at /home/claude/sc-f86/spacecrafter-prefix,
+md5 225f0d93301076385e84c596ac5ee4ea (= build-claude/src/spacecrafter at
+1cbd6780, the binary F83 built and F84 left unchanged).
+
+Every prediction below is written so that it CAN fail.  Where a prediction is
+weak (its green would not discriminate), that is said in the line itself.
+
+===============================================================================
+MEMBER (3) -- Sec.5.130, the empty-HOME abort            [main.cpp:194 -> :199]
+===============================================================================
+
+P0a  PRE-FIX, empty $HOME (a directory that exists and contains NOTHING; no
+     .spacecrafter inside it, which is the ONE thing F84's launches created):
+     exit code exactly 134; stderr carries, verbatim,
+       terminate called after throwing an instance of
+         'std::filesystem::__cxx11::filesystem_error'
+         what():  filesystem error: cannot set current path: No such file or directory
+     and the $HOME is left with 0 entries afterwards.
+     (This is F84's measurement re-run on the same binary: a reproduction, not
+     a discovery.  It fails if the abort is not reproducible on a second HOME.)
+
+P0b  POST-FIX (the single line `std::filesystem::current_path(appDir);` moved
+     from main.cpp:194 to after the two CallSystem::checkUser* calls, nothing
+     else changed), a NEW empty $HOME:
+       (1) exit code 0;
+       (2) $HOME/.spacecrafter exists and holds 19 subdirectories and 7 files
+           (the F84 bootstrap shape, read from /home/claude/sc-f84/home-1:
+           26 entries = 19 dirs + 7 files -- anchor.ini config.ini
+           deepsky_objects.fab joypad.ini landscapes.ini ssystem.ini stars.ini);
+       (3) the applog carries exactly TEN "Completed copy of " lines
+           (call_system.cpp:115-131 -- ten of the seventeen entries have
+           copy=true; Sec.5.132's known false-success is included in that ten and
+           does NOT invalidate the count);
+       (4) $HOME/.spacecrafter/log/spacecrafter.log EXISTS and is non-empty --
+           this is the load-bearing half: Log->setDirectory("log/") at :206 is
+           the first relative-path consumer, so its output landing under the
+           NEW ~/.spacecrafter proves the cd still precedes it.
+     P0b(4) is the one that can fail if the line is moved too far down.
+
+P0c  AS-IF CONTROL (D8).  The same existing-HOME farm (b3_farm.sh shape,
+     .spacecrafter present and populated), launched once with the PRE-fix
+     binary and once with the POST-fix binary: the first 40 lines of
+     .spacecrafter/log/spacecrafter.log are BYTE-IDENTICAL between the two.
+     Weak-by-construction note, stated up front: the first 40 lines contain
+     host/RAM/version text that is stable across runs of the SAME binary, so
+     this check can only refute a change in the startup ORDER, which is
+     exactly what the edit risks.  A same-binary A/A control is run first; if
+     A/A is not byte-identical the check is withdrawn rather than reported.
+
+===============================================================================
+MEMBER (2) -- Sec.5.127(2), the use-after-free   [anchor_creator_cor.cpp:130]
+===============================================================================
+
+P1a  PRE-FIX ASan, plain startup on a temp-HOME farm carrying the shipped
+     anchor.ini: **SILENT** (no heap-use-after-free report).  Reason, read
+     before the run, not after: the dangling Orbit* is only ever DEREFERENCED
+     by AnchorPointOrbit::update (anchor_point_orbit.cpp:44), and
+     AnchorManager::update calls update() on currentAnchor only
+     (anchor_manager.cpp:303-306), or, in eye-relative mode, only on anchors
+     for which isOnBody() is true (:293).  The startup anchor is
+     init_location:home_planet = Earth, an AnchorPointBody, so no
+     AnchorPointOrbit is ever updated.  ASan reports a UAF at the READ, not at
+     the store, so a silent run here is EXPECTED and is not evidence of
+     absence.
+P1b  PRE-FIX ASan, same launch plus one shipped-surface command,
+     `camera action switch name orbit_autour_lune` (app_command_interface.cpp
+     :4597-4602 -> cameraSwitchToAnchor -> AnchorManager::switchToAnchor):
+     ASan reports **heap-use-after-free**, a READ of 8 bytes inside
+     AnchorPointOrbit::update, in a block "freed by thread T0 here"
+     whose free stack passes through AnchorPointOrbitCreator::handle
+     (anchor_creator_cor.cpp:130) and was "previously allocated" in
+     OrbitCreatorEliptic::handle.  This is the reproduction the row needs.
+     If P1b is ALSO silent, the row is re-graded with the reason and nothing
+     is fixed blind (dispatch boundary).
+P1c  The same command on the RELEASE binary is not predicted to crash: a
+     use-after-free on a quarantine-free allocator usually reads the freed
+     bytes back intact.  Recorded so that a green release run is not read as
+     absence of the defect.
+
+P2   POST-FIX (AnchorPointOrbit OWNS the orbit; the unique_ptr is moved into
+     it instead of .get()'d from a temporary): the P1b launch is ASan-CLEAN --
+     zero reports of any kind, exit code 0 -- and `camera action switch` still
+     succeeds (the anchor is still constructed and still moves the camera).
+
+===============================================================================
+MEMBER (1) -- Sec.5.127(1), the comet null deref      [orbit_creator_cor.cpp:183]
+===============================================================================
+
+P3a  PRE-FIX, a scratch ssystem section on the farm (never the field file):
+     one body with `parent = none` (ProtoSystem::addBody:528-537 keeps a
+     `none` parent as a null shared_ptr and ADDS the body),
+     `coord_func = comet_orbit`, an `orbit_semimajoraxis` and an
+     `orbit_eccentricity` != 1, an `orbit_timeatpericenter`, and NEITHER
+     `orbit_period` NOR `orbit_meanmotion`: the process dies with SIGSEGV
+     (shell exit 139 / python returncode -11) during the ssystem load, before
+     the TCP port 7805 ever opens.
+P3b  POST-FIX: the same section produces NO crash; the app reaches port 7805
+     and exits 0 on `shutdown action now`; the applog carries a diagnostic
+     naming the section (the body's name) and the two keys that would fix it,
+     followed by protosystem.cpp:617's "Error when creating orbit from
+     <name>"; the body is absent from the loaded system.
+P3c  CONTROL that the section is not simply ignored: with `orbit_period`
+     ADDED and nothing else changed, the PRE-fix binary loads it without a
+     crash -- i.e. P3a's crash is caused by the missing pair, not by the
+     section being malformed.
+
+===============================================================================
+GATES (predicted green; a red is a finding, never a re-bank)
+===============================================================================
+P4  b4_anchors.py green on the pre-fix binary AND on the post-fix binary.
+P5  The FULL canary on the post-fix RELEASE binary: exit 0 at the banked band
+    (165.258/6.644 new, 160.142/6.603 old, +-1.0/+-0.15).  Anchors feed the
+    camera, so a band move would be the fix's fingerprint.
+P6  D14 ASCII gate PASS before every commit (972 CONVERT files at open).
