@@ -242,6 +242,46 @@ replayed byte-identical — **SHA MAP: `741b4a8→367f2d1` · `c4686fc→4fb22f1
 §11.206 or the F85 prompt resolves through this map; nothing was on the remote).
 Picks after the events: **F83 ✓ → F84 ✓ → F86 ✓ → F85 ✓ → F88** (the propagation
 outranks F87 now: sixteen decisions the map waited on), F87 if health permits.
+**Round outcome (session 22 close, 2026-09-05 ~15:00 `date`-measured):** F83 → **§11.203**
+(the deployed line in; 4 keep-ours hunks proven byte-identical; canary band to the digit
+on a third binary; the anchor gate red and right) · F84 → **§11.204** + §5.130–§5.132 (R2
+measured NOT MET: the submodule pin on no remote, the first launch aborting; INSTALL
+rewritten; `-z` + `CONFIGURE_DEPENDS`; §5.112 priced 0/4; §5.48 0/6; a tree install ships
+no content) · F86 → **§11.205** + §5.133/§5.134 (§5.130 fixed 134→0; the anchor UAF under
+ASan pre/post; the comet guard both ways; one gate red, held open) · F85 → **§11.206**
+after ONE §0.7 ABORT on an environment premise (the owner's in-flight staging — the
+gate's design case, 0 mutations) (`doc/developer-entry.md`, INSTALL −26, `f85_links.py`
+0 dangling) · F88 → **§11.207** + §5.135 (twenty replies propagated, A43 closed, T1.2/T1.4
+closed, the map re-cut) — **five for five delivered AND supervisor-verified same session**
+(every delivery re-verified by my own runs: cherry/diff/build/gates, the clone probe, the
+bootstrapped HOMEs, the ASan artifacts, the link checker, the instruments); F87 CARRIED
+(context budget — seven executor runs). SUPERVISOR ACTS: the pin bump `32af2efb`; the
+author amend `c5be42b → 6ffb017` (+ SHA map); the N7 restore; CLAUDE.md hazard (5); §5.130
+folded into F86. Code `85cc2785 → a2fd3c5b` (9 executor commits + 1 supervisor: the
+merge, the anchor record, the docs + two one-liners, the three startup fixes, the entry
+document — NO engine behaviour designed, three crash sites closed); harness `34b6cae →`
+this close. OWNER EVENTS IN-SESSION: the EntityCore push (12:23), the replies committed
+(13:38), the provenance ruling. SUPERVISOR TALLY: **twenty-two dispatcher defects**
+(root: coordinates/counts/times written from memory of a listing — prevention: `grep -n`
+and `date` in the same command as the claim; sections re-resolved at every widening)
++ two instrument slips (the "empty in both directions" phrasing corrected at the map;
+the 14:20 stamp); EXECUTOR criterion-integrity instances: **≥ 20** (the vacuous compile
+gate caught by reading `build.make`; the anchor gate's red read as information; the
+§0.7 abort on the staged file; the A/A run first; the predicted-silent ASan; the
+checker shown able to fail; the prediction's class refuted and kept; the source table
+counted both ways; the twenty-vs-sixteen count). BASELINES AT CLOSE (v2): scan
+**211/261/131** · pair-check **223/198/25/107** D 35 · D2 11 · I 89 · I2 36 · M 81 —
+every delta over the open attributed per task in its acceptance. Archival pass 15
+(update-s21 + F83–F88, live `### F` 6 → 0) DEFERRED to the next open, recorded here.
+NEXT-ROUND QUEUE, in order: (1) archival pass 15 at open; (2) the `b4_anchors` P7
+discriminator (instrument; twinkle pinned on both binaries, the two windows' lit sets
+compared); (3) **F87** §5.111 (S, minted, carried); (4) the decision-free engine list
+§11.207(g): §5.86+§5.19 (M, first) · §5.98 (S) · §5.21 (S–M) · §5.66+§5.71 (M) · §5.115
+(S–M) · A15's residual (S); (5) the T5.1 rehearsal (M — doubles as the developer's smoke
+suite); (6) riders: §5.59's `sender` arm, scedit README `:43`, the `[parallel-script]`
+withdrawal question; (7) owner items per §3. Remotes: 86 code / 674 harness unpushed at
+close (measured); a key exists on this machine for the session that pushed EntityCore —
+the supervisor never pushes.
 
 ---
 
@@ -1217,6 +1257,37 @@ not); structural **entry files 222 → 223** (+§11.207), **live pairs 197 → 1
 back-marker scan **211/261/131 unchanged** — expected, its EVENT lexicon excludes
 discharge vocabulary by design.
 
+**ACCEPTED 2026-09-05 14:55 (`date`-measured; supervisor, session 22, Claude Fable 5.1).**
+Verified by my own runs and reads, not by the report: §11.207 read (head, table, (g));
+seven harness commits (`e9ad58c`..`b7242d3`, Claude Opus 5), code UNTOUCHED at
+`a2fd3c5b`, both trees clean; §11.207 entry (218 lines) + stub; §5.135 present in the §5
+register; §13.A **16** rows, A43 struck with its §13.C pointer; the replies file reads
+PROPAGATED and its diff against `367f2d1` is status prose only; instruments to the
+digit (pair-check 223/198/25/107 · D 35 · D2 11 · I 89 · I2 36 · M 81; scan
+211/261/131 — the scan's lexicon excludes discharge vocabulary by design,
+`intent_backmarker_scan.py:34-38`). Deviations ENDORSED with the executor's arguments:
+`navigator.cpp` READ in a ledger-only task (reading is not mutating; it turned §5.135's
+mechanism from `[derived]` to `[observed at a2fd3c5b]` and closed B17's `:159/:309` →
+`:162/:324` drift); §5.135 minted NOT decision-free (the fix lands on the comparison
+baseline — §11.52(b) — the owner's call, both readings recorded); N5's minority
+reading recorded at D28 with its discriminator; R24 not minted as a channel id;
+ledger glyphs kept in §11.207 (D14 does not cover harness files). DISPATCHER
+DEFECTS reported, all four ACCEPTED as mine: "sixteen" (twenty — R14–R29 + N5/N7/L1/L2;
+my enumeration listed all twenty, the label undercounted it); §5.88 filed in R22's
+search family (it is a catalogue-load diagnostic, R23's — corrected at three homes);
+the section's marker template still saying `c5be42b`; check (d) unsatisfiable as
+written (my own `367f2d1` sits between the reply commit and the task — the
+discriminator is `git diff 367f2d1`). Round tally: **twenty-two dispatcher defects**
+(incl. the F85 acceptance stamp "14:20" against a clock reading 14:17 — estimated once
+more after the rule was written; the class is closed only by `date` in the same
+command as the stamp). Readings the executor added and I endorse: R19 answers with
+an instruction, not the asked question (the 999-dependence stays unknown); R29
+answers slip-vs-design only (A42's distance and the body list not given); R21's
+one-sentence census bounds the SET, not the STATE, so B1/B2/B3's escape clause no
+longer holds by absence; R14 + R17 make D37 non-academic. Standing consequence: the
+final pass (§11.116(c)) is DISCHARGED except L2; the map's head is re-cut on both
+criteria; the next round's decision-free engine list is §11.207(g).
+
 ### F86 — EXTENSION, widened at F84 acceptance: the three startup faults a newcomer can meet on the shipped data — (3) **§5.130** the first launch on a fresh account ABORTS (`main.cpp:194` cds into `~/.spacecrafter` before `:198-199` create and populate it — one line moved, the empty-HOME launch as the gate, exit 134 → the bootstrap); (2) §5.127's use-after-free at `anchor_creator_cor.cpp:130`, reachable from the shipped `anchor.ini`: own row first (the granularity veto point of session 21), reproduced under AddressSanitizer, fixed at the ownership (I5), proved clean; (1) §5.127's null dereference for a top-level comet with neither period nor mean motion — the experimental reader's guard ported (DEPLOYMENT-MAP R2 + R4) [S]
 
 **Widening at F84 acceptance [supervisor, 2026-09-05, veto point in §3]:** §5.130 was
@@ -1466,6 +1537,59 @@ README; trees clean; WIP cleared; baselines LAST.
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-22 decision items (2026-09-05, the REFERENCE round — kept short on your
+  word about this week's capacity; every item is one line to answer or to ignore):**
+  - **YOURS, and nothing here substitutes them:** (1) **R5 — the PUSH**: `master-beta`
+    (86 commits) and `CC-harness` (674) from a keyed host; the EntityCore push you made
+    at 12:23 is in and completed by the pin bump. (2) **R6 — the branch policy**: does
+    `master-beta` become the PR target / main, or are Kenan-Blasius, Lionel and Calvin
+    redirected to it? One sentence. (3) **R23's procedure**: where does the outside
+    catalogue/content installation procedure live, and may it be documented in the
+    repository? (§11.204(f): a tree install ships NO content; the entry document names
+    this as the one thing it cannot tell the developer.) (4) The developer's platform
+    (if Windows, the vcpkg path entered untested) and whether the harness repo is meant
+    to be readable by him (the entry document points at it either way).
+  - **VETO POINTS taken this session (implemented-and-live, each cheap to reverse;
+    silence = endorsed):** (a) the EntityCore pin bump `32af2efb` — the completing half
+    of your own push (tree-identical); (b) §5.130's one-line move folded into F86 as
+    decision-free (§5.79/F35 precedent) — a fresh account's first launch now works;
+    (c) `install_src.sh:25` `-n`→`-z` (the shipped default build was silently Debug/`-Og`
+    under a 1 ms/frame budget) and `src/CMakeLists.txt:3` `CONFIGURE_DEPENDS` (+0.05 s
+    per build; an incremental build now sees a new file); (d) INSTALL rewritten
+    Linux-first (the Windows/VCPKG block kept as its own section), `doc/developer-entry.md`
+    (424 lines, name/placement/size veto-open, every sentence sourced and
+    machine-checked by `harness/f85_links.py`); (e) the round-3 replies' commit author
+    amended to `Lionel RUIZ <lionel.ruiz@live.fr>` on your word, SHA map in the open
+    note; (f) CLAUDE.md gained encoding hazard (5) (`/usr/bin/grep` and `\xNN` in
+    brackets); (g) the F84/F86 scratch trees under `/home/claude/sc-f84/` (4.2 GB) and
+    `/home/claude/sc-f86/` (1.3 GB) KEPT — say the word to remove.
+  - **DECISIONS THE REPLIES OPENED (§11.207; the fix stratum is yours per §11.161(c)):**
+    **§5.135** — the OLD path rolls the view offset with the heading and the tester
+    says it shouldn't; the fix lands on the comparison baseline: correct it, or let it
+    retire with B8? · **D37's implementation** (hidden star → dark, ambient by
+    `ambient_light`) — schedule? · **N7** — the migration writer should comment out,
+    not delete (§5.112's direction; §5.42's writer rides it) — say when · **R25** — the
+    tester says "no need" to your own `[parallel-script]` proposal — withdrawn, or kept
+    as yours? · **§5.86 + §5.19** are now fully decision-free (R27: observer-centred) —
+    the next round's first engine candidate unless you say otherwise.
+  - **HELD OPEN, not absorbed:** `b4_anchors` P7's screen-witness CONTROL reds on the
+    F86 binary (green ×2 pre-fix and on a `main.cpp`-only binary); bounded — Moon
+    centroid bit-identical in all five runs, canary frame byte-identical across a
+    fourth binary — cause unconfirmed (twinkle `rand()` unseeded is the candidate, both
+    experiments failed); next round's instrument position 1. Also open: §5.48
+    (EntityCore, 0/6 today), §5.59's new `sender` arm (unmeasured), the tester's
+    unanswered halves (§5.128's snap-back, A42's distance and body list, R19's
+    999-dependence, L2).
+  - **FACTS, no decision asked:** the deployed line is fully in (`origin/2023-master`
+    is 2 commits by content, both Kenan's video-as-`s_texture`; the remote had not moved
+    since 2026-08-03); the canary band and dwell frame survived four binaries; §5.112 on
+    YOUR field config deletes nothing (0/2 added) and on a hand-authored one projects
+    everything off-schema away; a fresh HOME's `sky_cultures` is 262 real files — the
+    field's 2922 zero-byte set is the field's copy, not the data root's; every
+    "~HH:MM" in this session's prompts before 13:40 was ~1 h fast (estimated, never
+    `date`) — twenty-two dispatcher defects this round, all output-side, all corrected
+    at their nodes, the root named (numbers quoted from memory of a listing).
 
 - **Session-21 decision items (2026-09-04, the desktop round — canary / stellar
   grammar / view offset; written at F80's acceptance, extended at close):**

@@ -241,7 +241,7 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    one-line move is decision-free (§5.79/F35 precedent) and goes to F86.]** **[2026-09-05
    14:30: the EntityCore push HAPPENED (from this checkout, 12:23 — a key this session does
    not hold; the owner's hand or his other session) and the pin bump followed (`32af2efb`);
-   the clone probe passes. R5 is back to ONE act: push `master-beta` (81 code commits) and
+   the clone probe passes. R5 is back to ONE act: push `master-beta` (~~81~~ **86** code commits at the session-22 close, measured) and
    `CC-harness` from a keyed host — or from here, since a key evidently exists on this
    machine for some session; the supervisor never pushes.]**
 6. **R6 — Branch policy.** Three developers committed to `2023-master` in 2026 (Kenan-Blasius,
