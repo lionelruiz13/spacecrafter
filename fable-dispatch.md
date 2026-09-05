@@ -624,6 +624,14 @@ D9-frozen field data; the msgid check is therefore EXACT-KEY, not `grep -c`. Ins
 `ModularObject.cpp`), `_()`-wrapped **0**; 14 sites have a byte-exact old msgid, of which
 **5 msgids reach fr.txt and 5 fall through by identity — old's do too**. NEXT: the 14
 wraps in `ModularObject.cpp` (code first), rebuild, then the fr/en farm measurement.
+2026-09-05 17:1x — CKPT2: code `1d839b9d` (14 wraps, D14 gate PASS), rebuilt `-j13`,
+binary md5 `2815d182` → **`407b3d1d`**, `cmake -n` 0 steps. Census 0 → **14** wrapped, an
+exact bijection with old's 14 literal msgid sites (`body.cpp:331-435`); the 16 unwrapped
+readout literals are exactly the ones old leaves bare. `f87_labels.py` (self-test PASS)
+carries the PRE-FIX baseline measured offline on `artifacts/f44/legA_003.json.navstr.gz`
+— 90 bodies, G1 540 red, G2 540 red, OLD-missing **0**, names 68 same/22 differ, U+00A0
+**0** — and SIX PREDICTIONS committed before any launch. NEXT: the fr farm launch, then
+the en control launch, then `--compare-new` against the pre-fix artifact.
 
 ### F89 — The `b4_anchors` P7 screen-witness red DISCRIMINATED: the one gate that reds on the reference binary (green ×3 pre-§5.133, red ×2 post) gets its cause named — the twinkle-`rand()` candidate tested the way the two failed experiments could not (b4's own frozen-clock scene, twinkle OFF on both binaries, the two P7 windows' lit-pixel SETS diffed, predictions committed first), the control's margin read from the five F86 runs before any launch, every `rand()` consumer in `src/` enumerated — instrument fix if the instrument, §5.133's row if the product (§11.205(g)(h); session-22 queue position 2; the developer will run this harness) [S, instrument]
 
