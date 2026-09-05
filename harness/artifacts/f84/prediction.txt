@@ -1,0 +1,167 @@
+F84 PREDICTIONS -- committed BEFORE the launches they concern
+=============================================================
+Written 2026-09-05 by the F84 executor, code master-beta @ 03c85734, scratch
+binary md5 5237ac0e (installed at /home/claude/sc-f84/prefix/bin/spacecrafter).
+Every prediction below is derived from SOURCE ONLY -- no launch has been made
+with this binary.  Each states what would REFUTE it.
+
+===============================================================================
+P1 -- THE Sec.5.48 CRITERION (mandate part 4), stated before any launch
+===============================================================================
+CHANNEL.  `body action dual_dump filename <absolute path>`, the command at
+  app_command_interface.cpp -> commandBody; one JSON object per line, a
+  "header" line and one "body" line per body, each body nesting per-path state
+  under "old" and "new".
+READER.  claude/harness/dumpread.py, the dump channel's single reader
+  (Sec.5.103).  It holds `unquote_nonfinite` precisely because the new path
+  QUOTES its non-finite values, and `sanitize_nonfinite` for the grammar; a
+  reader without them turns a nan into a dropped body, which is the instrument
+  failure Sec.5.48's own row records as closed at the root.
+
+CRITERION (a fire, per launch).  For EITHER of the two bodies
+Sec.5.48 names -- **Moon** and **Sun**, the pair
+`SSystemFactory::setPlanetSizeScale` targets by name from `moon_scale` /
+`sun_scale` at startup -- the new-path `scaling` OR `boundingRadius` in the
+dual dump is NOT FINITE (nan / inf / -inf, in any spelling, quoted or not).
+No fire = all four numbers finite.
+RATE = k / 6 over six independent, never-before-used $HOME directories.
+
+POSITIVE CONTROL, run before the rate is believed.  The reader must be shown
+to SEE a non-finite value: a synthetic dump line carrying `"nan"` for
+`new.scaling` is fed to the same predicate and must be classified as a FIRE.
+A criterion that cannot report a fire cannot report 0/6 either.  If the
+control does not fire, the rate is withheld.
+
+PREDICTION P1.  k is small and possibly 0.  Sec.5.48 records 2 fires in the
+first 6 cold launches of F12 and then 0 of 4 vs 0 of 4 in a controlled
+alternating repeat, i.e. ~15 % at best and attributed to NEITHER binary.  I
+therefore predict **0 <= k <= 2**, with k = 0 the single most likely value,
+and I state now that a k of 0 is NOT evidence the row is closed -- it is one
+more sample of a startup race, and the row stays OPEN either way (its fix is
+EntityCore, the owner's).
+REFUTED BY: k >= 3, or any non-finite value on a body OTHER than Moon/Sun
+(which would widen the row's scope), or the positive control failing.
+
+BOUND, stated so it cannot be forgotten: this binary carries EntityCore
+7ce58350, i.e. Sec.11.152's ASmooth fix.  A newcomer whose clone stops at the
+remote's `main` (224eba7a) builds WITHOUT it -- so his rate is not necessarily
+this one, and nothing measured here speaks for that build.
+
+===============================================================================
+P2 -- THE COLD-$HOME BOOTSTRAP (mandate part 4), from call_system.cpp
+===============================================================================
+Source: call_system.cpp:99-107 (checkUserDirectory), :109-166
+(checkUserSubDirectory), :78-96 (checkIniFiles); main.cpp:198-199, :225.
+
+P2a. `$HOME/.spacecrafter/` is created, and exactly SEVENTEEN subdirectories:
+  copy=true (10): audio fonts ftp landscapes scripts textures videos
+                  sky_cultures model3D language
+  copy=false (7): log screenshot pictures vframes media vr360 www
+  `modularSystem` is NOT among them and will be ABSENT.
+P2b. All ten copy=true classes RESOLVE on this host's data root, nine by the
+  second form and one by the first (measured from the root, not assumed):
+    form1 <root>/textures
+    form2 <root>/data/{audio,fonts,ftp,landscapes,scripts,videos,
+                       sky_cultures,model3D,language}
+  so all ten copies SUCCEED and no class is empty.
+P2c. checkIniFiles copies seven files from <root>/data/default_<name>; all
+  seven are present, so `$HOME/.spacecrafter/` gains config.ini, anchor.ini,
+  landscapes.ini, ssystem.ini, stars.ini, joypad.ini, deepsky_objects.fab.
+P2d. **sky_cultures will be REAL, not zero-byte.**  The data root's
+  `data/sky_cultures` holds 262 files, 0 of them zero-byte, 28.1 MB
+  [measured].  The FIELD $HOME holds 2922 files, ALL zero-byte (Sec.5.74,
+  Sec.11.141).  So I predict a cold $HOME gets ~262 non-empty files, and that
+  Sec.5.74's zero-byte condition is a property of the FIELD $HOME copy, not of
+  this workstation's data root.  REFUTED BY: zero-byte files in the fresh
+  copy, or a count near 2922.
+P2e. **The "Failed to copy ... Abort !" branch is DEAD CODE** and will never
+  appear.  call_system.cpp:145 reads `if (ec || ec.message() == "Success")`
+  -> "Completed copy of ...", else -> the failure/abort path.  `ec` is truthy
+  exactly when the copy FAILED, and on success `ec.message()` is strerror(0)
+  = "Success" (the C locale still holds -- main.cpp's only setlocale is
+  LC_TIME at :243, after this runs).  Both branches of reality therefore take
+  the SUCCESS arm.  Nothing fails on this host, so this is [derived] from the
+  source; it will be tested separately with a standalone probe that reproduces
+  the expression with a deliberately failing copy.
+P2f. The applog will carry `ROOT   DIR: /usr/local/share/spacecrafter/`
+  (main.cpp:246) EVEN THOUGH the binary was installed into
+  /home/claude/sc-f84/prefix -- because CONFIG_DATA_DIR is a hardcoded
+  #define (spacecrafter.hpp:44) that -DCMAKE_INSTALL_PREFIX does not touch.
+  This is the prediction that makes the task's check (a) fail as written.
+  REFUTED BY: any other path on that line.
+
+===============================================================================
+P3 -- THE GENERATED config.ini (check (b)), from checkConfig.cpp
+===============================================================================
+The cold $HOME's config.ini starts as a copy of default_config.ini: 3 lines,
+1 key, `version = 17.06.1`.  main.cpp:252 then runs checkConfigIni against the
+build's "2026.07.11", the strings differ, and the full migration fires.
+
+P3a. Schema extracted mechanically (harness/f84_config_predict.py):
+  16 sections, 268 section:key pairs.
+P3b. The generated config will therefore hold **268 keys in 16 sections**
+  (1 present + 267 added), `version = 2026.07.11`, 0 comment lines,
+  0 uppercase keys.
+P3c. CHECK (b), predicted before the diff:
+    field-only keys      = 0
+    generated-only keys  = 2, namely
+        navigation:attached
+        navigation:flag_lock_sky_position
+  These are exactly the two D15(d)/Sec.11.150 keys the in-code comment at
+  checkConfig.cpp:412-418 warns about.  The field config is at
+  version 2026.07.11, so it has never been migrated since they were added.
+  REFUTED BY: any other count or name on either side.
+
+===============================================================================
+P4 -- Sec.5.112 PRICED (mandate part 5), two configs, predicted before launch
+===============================================================================
+Both copies get `version = 2026.09.05` (a bump), then one launch each.
+
+P4a -- HOME-7, the FIELD config verbatim + the bump.  Predicted:
+    deleted        = 0   (no unknown section; every key is on-schema)
+    added          = 2   navigation:attached, navigation:flag_lock_sky_position
+    lowercased     = 0   (0 uppercase keys in the file)
+    comment lines  = 0 -> 0   (there were none)
+    keys           = 266 -> 268 ;  sections 16 -> 16
+    md5            = MOVES (03fbee59 -> something else): the version stamp
+                     alone guarantees it.
+  So on THIS file the mechanism Sec.5.112 records deletes NOTHING.  That is a
+  fact about an APP-GENERATED config, and it is why P4b exists.
+
+P4b -- HOME-8, the same file with four hand-authored injections of exactly the
+  kind N7 warns about (a header comment, an in-section comment, an off-schema
+  key in a KNOWN section, a mixed-case off-schema key, and an unknown section
+  with two keys).  Predicted:
+    deleted        = 4
+                       f84_unknown_section:alpha   (unknown section)
+                       f84_unknown_section:beta    (unknown section)
+                       main:f84_authored_key       (known section, off-schema)
+                       main:f84_mixedcase_key      (known section, off-schema)
+    sections       = 17 -> 16  (f84_unknown_section removed entirely)
+    added          = 2  (the same two)
+    comment lines  = 2 -> 0
+    keys           = 270 -> 268
+  REFUTED BY: any surviving injected key or comment, or a different count.
+
+  WHY P4b IS RUN AT ALL (a scope judgment, flagged): the mandate asks for
+  "the number N7 lacks" from the field config.  That number is ZERO deleted,
+  which read alone says the warning is empty.  It is not: the field config
+  cannot lose anything because the app wrote it.  N7 addresses a file the
+  TESTER edited, and only P4b measures what happens to such a file.  Reporting
+  P4a alone would understate the warning it exists to price.
+
+  KNOWN HAZARD, predicted so its absence is also information:
+  checkUselessSection (checkConfig.cpp:560-573) removes sections while
+  iterating `for (i=0; i<getNsec(); i++)` -- an index-skipping shape.  With
+  exactly ONE unknown section it cannot bite.  I predict it does not bite here
+  and note that a config with TWO ADJACENT unknown sections would be the case
+  that shows it.
+
+===============================================================================
+P5 -- THE REAL FIELD IS NOT TOUCHED
+===============================================================================
+~/.spacecrafter/config.ini stays 03fbee59 and ssystem.ini stays 545a51ef
+across every launch (the copies are made INTO /home/claude/sc-f84/, and $HOME
+is redirected per launch).  /usr/local stays at manifest md5 b8ceb90b over
+1110 entries.  REFUTED BY: any md5 movement, which would be a boundary breach
+and reported as one.
