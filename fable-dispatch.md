@@ -1193,15 +1193,17 @@ dispatch⟩, unchanged by this task; next free §11 ⟨at dispatch⟩; live `###
 **DoD:** table + markers + flips + new row + map re-derived + the next-round list;
 §11 entry + stub; file status PROPAGATED; trees clean; WIP cleared; baselines LAST
 with every delta named.
-**WIP:** 2026-09-05 CP3 — §0.7 gate PASSED on every stated premise. Table built
+**WIP:** 2026-09-05 CP4 — §0.7 gate PASSED on every stated premise. Table built
 from the file + `git show 6ffb017`: **TWENTY replies, not sixteen** (R14–R29 +
 N5/N7/L1/L2) — count defect reported, enumeration intact. Done: §11.207 entry +
 stub (CP1); §13.A A7/A15/A30/A42 marked and **A43 CLOSED as design (17 → 16)**;
 §13.B B17/B39 marked; DECISIONS_PENDING D37 CLOSED + D15/D28 confirmed + header.
 Done also: §5 rows 19/21/53/66/71/74/78/86/88/90/98/112/115/128/129 marked
 (5.19 + 5.21 at BOTH homes) and **§5.135 minted** (the old path's heading-coupled
-offset, mechanism re-read at `navigator.cpp:324`/`:329`). NEXT: the §11 entries +
-stubs, then the four channel files, then DEPLOYMENT-MAP, then the instruments.
+offset, mechanism re-read at `navigator.cpp:324`/`:329`). Done also: 18 §11 entries marked
+(4/82/92/98/113/116/127/149/158/162/163/172/173/177/198/201/202/204) with 17
+matching stubs — §11.113 has no live stub (archived-in-place, one of the 25).
+NEXT: the four channel files, then DEPLOYMENT-MAP, then the instruments.
 
 ### F86 — EXTENSION, widened at F84 acceptance: the three startup faults a newcomer can meet on the shipped data — (3) **§5.130** the first launch on a fresh account ABORTS (`main.cpp:194` cds into `~/.spacecrafter` before `:198-199` create and populate it — one line moved, the empty-HOME launch as the gate, exit 134 → the bootstrap); (2) §5.127's use-after-free at `anchor_creator_cor.cpp:130`, reachable from the shipped `anchor.ini`: own row first (the granularity veto point of session 21), reproduced under AddressSanitizer, fixed at the ownership (I5), proved clean; (1) §5.127's null dereference for a top-level comet with neither period nor mean motion — the experimental reader's guard ported (DEPLOYMENT-MAP R2 + R4) [S]
 
