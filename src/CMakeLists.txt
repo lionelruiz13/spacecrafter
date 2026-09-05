@@ -1,6 +1,6 @@
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/planetsephems ${CMAKE_SOURCE_DIR}/iniparser )
 
-file(GLOB_RECURSE all_SRCS ${PROJECT_SOURCE_DIR} *.h *.hpp *.cpp )
+file(GLOB_RECURSE all_SRCS CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR} *.h *.hpp *.cpp )
 
 # creation of spacecrafter
 add_executable(spacecrafter ${all_SRCS})

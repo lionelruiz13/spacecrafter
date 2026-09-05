@@ -1,6 +1,126 @@
 -------------------- SPACECRAFTER INSTALLATION INSTRUCTIONS ---------------------
 
 ===============================================================================
+        LINUX (Ubuntu and derivatives) -- building from the git repository
+===============================================================================
+
+The source is a git repository with ONE submodule (src/EntityCore).  A plain
+"Download ZIP" does not contain the submodule and will not build.
+
+-------------------------------------------------------------------------------
+1. What the build needs
+-------------------------------------------------------------------------------
+- git
+- CMake >= 3.12          (see cmake_minimum_required in CMakeLists.txt)
+- a C++ compiler with C++20 concepts support (g++ is what the project uses)
+- pkg-config             (the configure step stops with a fatal error without it)
+- SDL2, SDL2_mixer, SDL2_ttf, SDL2_net  -- development packages
+- Vulkan loader + headers, and a Vulkan-capable card WITH CURRENT DRIVERS
+- libpng16 and zlib      -- development packages
+- FFmpeg development libraries: avcodec, avformat, avutil, swscale, avfilter,
+  swresample.  Any recent version: the project is built and run here against
+  FFmpeg 7.1 / libavcodec 61.  (The version constraint further down this file
+  is a Windows/VCPKG constraint, not a Linux one.)
+
+-------------------------------------------------------------------------------
+2. Install the dependencies
+-------------------------------------------------------------------------------
+~$ sudo sh install_dependancies_ubuntu.sh
+
+(The file name is spelt "dependancies"; there is also
+install_dependancies_mageia.sh.  The script needs root, and it installs a
+superset of the list above.  On recent Ubuntu one package it names,
+libpng16-16, has been renamed and the line fails harmlessly -- libpng-dev
+already pulls in the runtime.)
+
+-------------------------------------------------------------------------------
+3. Get the source, WITH the submodule
+-------------------------------------------------------------------------------
+~$ git clone --recurse-submodules <repository-url> spacecrafter
+~$ cd spacecrafter
+
+If you cloned without --recurse-submodules:
+
+~$ git submodule update --init
+
+KNOWN ISSUE, please read before reporting a build failure.  The submodule is
+currently pinned to a commit that has not been pushed to the EntityCore
+repository, so the two commands above end with
+
+    fatal: remote error: upload-pack: not our ref <sha>
+    fatal: Fetched in submodule path 'src/EntityCore', but it did not
+           contain <sha>
+
+and the build then fails on missing headers such as
+"EntityCore/Core/VulkanMgr.hpp: No such file or directory".  Nothing you can do
+locally fixes this; the pinned commit has to be pushed upstream first.  Once it
+is, this paragraph can be deleted.
+
+-------------------------------------------------------------------------------
+4. Build and install
+-------------------------------------------------------------------------------
+~$ sh install_src.sh -j<number of cores you want to use>
+
+The script erases build/, configures a Release build, compiles, and then runs
+`sudo cmake --install` -- so it will ask for your password and it writes into
+/usr/local (the binary into /usr/local/bin, the data into
+/usr/local/share/spacecrafter).  To rebuild after a `git pull` without erasing
+the build directory:
+
+~$ sh install_src.sh --update -j<n>
+
+New source files are picked up automatically (the source list is globbed with
+CONFIGURE_DEPENDS); if you use your own build directory made by an older
+checkout, re-run cmake once.
+
+Use `BUILD=LocalRelease sh install_src.sh -j<n>` to compile for the CPU that is
+installed right now (-march=native); the result must be recompiled if the CPU
+is replaced.  localinstall_src.sh does the same thing without the variable.
+
+THE DATA DIRECTORY IS FIXED AT COMPILE TIME.  It is /usr/local/share/spacecrafter/,
+written into the binary as CONFIG_DATA_DIR in src/spacecrafter.hpp.  Passing
+-DCMAKE_INSTALL_PREFIX to cmake changes where the files are COPIED and not where
+the program LOOKS, so an installation outside /usr/local needs that constant
+changed as well.
+
+-------------------------------------------------------------------------------
+5. The data the repository does NOT contain
+-------------------------------------------------------------------------------
+This repository installs the program, the compiled shaders, and eleven small
+metadata files (default_config.ini, default_ssystem.ini, name.fab, zone.tab and
+the like).  It contains NO textures, NO star catalogues, NO sky cultures, NO
+landscapes, NO fonts, NO audio, NO scripts, NO 3D models, NO translations and
+NO videos.  Those are delivered separately and have to be present under
+/usr/local/share/spacecrafter/ (textures/ and stars/ at the top level, the rest
+under data/) before the program is useful.
+
+If they are missing, the program still starts and its log still says
+"Completed copy of textures", "Completed copy of scripts" and so on -- the
+message is printed whether the copy worked or not.  Check that
+~/.spacecrafter/textures/ and the other directories are not empty.
+
+-------------------------------------------------------------------------------
+6. First run
+-------------------------------------------------------------------------------
+~$ mkdir -p ~/.spacecrafter
+~$ spacecrafter
+
+The mkdir is currently required.  Without it the program aborts immediately
+with
+
+    terminate called after throwing an instance of 'std::filesystem::filesystem_error'
+      what():  filesystem error: cannot set current path: No such file or directory
+
+because it changes into ~/.spacecrafter before creating it.  Once the directory
+exists, the first run fills it in and writes ~/.spacecrafter/config.ini, and
+the log of that run is ~/.spacecrafter/log/spacecrafter.log.
+
+Configuration is ~/.spacecrafter/config.ini.  Note that upgrading to a build
+with a different version string makes the program rewrite that file by itself:
+comments are dropped and any key it does not know is deleted.  Keep a copy
+aside before upgrading if you have edited it by hand.
+
+===============================================================================
         COMPILATION from the source package (spacecrafterXXXX-master.zip)
 ===============================================================================
 If you can't find a suited binary package or if you are curious you can also
@@ -8,7 +128,7 @@ compile the software by yourself.
 
 Make sure you install all the necessary dependencies.
 
-Launch install-dependencies-ubuntu.sh or install-dependencies-mageia.sh
+Launch install_dependancies_ubuntu.sh or install_dependancies_mageia.sh
 
 Spacecrafter requires :
 
