@@ -35,7 +35,7 @@ tester, decision-paced — the tiers that follow). **What is NECESSARY, and only
   CONTENT question (a tree install ships none, no document says where it comes from —
   §11.204(f)) is the owner's, R6's sibling]**. F84 shipped the docs and
   the two one-line build fixes; the manifest says a tree install carries no content at all]** ·
-  R3 the entry document (**F85**) · R4 startup memory-unsafety
+  ~~R3 the entry document (**F85**)~~ **[MET, §11.206]** · R4 startup memory-unsafety
   (**F86** for the two old-core members; §5.48 is EntityCore = Vixy's) · **R5 the PUSH (Vixy —
   nothing here reaches the developer without it)** · R6 the branch policy (Vixy, one sentence).
 - **For T0**, after §11.163(h)'s test (*does the NEW path behave differently here? else backlog*):
@@ -133,9 +133,31 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    (§5.131, §11.205(i)). **R2 therefore reduces to: bump the submodule pin (Vixy), and
    nothing else.** `INSTALL` section 6's `mkdir -p ~/.spacecrafter` paragraph is now obsolete
    and is named for F85 to delete, not edited by F86.]**]**
-3. **R3 — An entry document exists in the code repo.** None does (`doc/` is user-facing; no
+   **[R2's DOCUMENTATION HALF IS CLOSED 2026-09-05 by F85 → §11.206(d), code `d260d89c`:
+   BOTH obsolete paragraphs are deleted — §6's `mkdir` AND §3's KNOWN ISSUE (§5.131's) — and
+   neither was deleted on the strength of its row's flip: the clone probe was re-run (rc 0,
+   submodule `84f5d94b`, header present) and an empty-`$HOME` launch was re-run (exit 0,
+   19 directories + 7 files, real HOME md5 in==out). `INSTALL` §5, the "what the repository
+   does NOT contain" section, is measured and kept. **Nothing of R2 remains on the
+   documentation side; its pin-bump residual was discharged at code `32af2efb`.**]**
+3. ~~**R3 — An entry document exists in the code repo.** None does (`doc/` is user-facing; no
    `*.md` under `src/experimentalModule/`); `claude/README.md`'s own filing criterion states the
-   promotion obligation and nothing was ever promoted under it. → **F85**.
+   promotion obligation and nothing was ever promoted under it. → **F85**.~~
+   **[MET 2026-09-05 by F85 → §11.206; code `d260d89c` + `a2fd3c5b`. `doc/developer-entry.md` — 424 lines,
+   pure ASCII, nine sections, **78 claim-bearing sentence groups / 78 sourced** (source table
+   §11.206(b)) — is the FIRST thing ever promoted under that filing criterion. It points and
+   never duplicates: the harness README, INTENT.md's header, `INSTALL` and
+   `util/scedit/README.md` are cited, not copied. Which path draws by default is MEASURED, not
+   recalled, and the answer is not in `config.ini` at all (§11.206(c)). `README` section 2
+   gains one line pointing at it; `claude/harness/f85_links.py` holds its citations to
+   **129 paths / 25 continuations / 15 ledger ids, 0 dangling**, shown able to fail on one
+   injected fault per class — so the document cannot rot silently, which is the property that
+   makes it a REFERENCE rather than a snapshot. Three residuals, all recorded not guessed:
+   the **I1–I7 principles are the owner's text and exist in neither repo** (§9 is a
+   placeholder naming him — the one thing here he must still write), no human authorship
+   convention is stated anywhere, and R23's outside installation procedure is undocumented.
+   Name and placement stay veto-open; 424 lines against a 400 target is reported, not
+   absorbed (§11.206(i)).]**
 4. ~~**R4 — No memory-unsafety reachable from the shipped data at startup.** §5.127(2) the UAF
    from `anchor.ini`, §5.127(1) the comet null deref (old core) → **F86**; §5.48 (EntityCore)
    → Vixy.~~ **[MET FOR THE OLD-CORE HALF 2026-09-05 by F86 → §11.205; code `a4a7c226`.**

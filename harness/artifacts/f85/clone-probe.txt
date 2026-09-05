@@ -1,0 +1,23 @@
+F85 re-verification (i) -- Sec.5.131's KNOWN ISSUE no longer reproduces.
+2026-09-05, executor's own run, scratch tree /home/claude/sc-f85/clone (removed after).
+
+$ git clone --recurse-submodules /home/claude/spacecrafter /home/claude/sc-f85/clone
+Clonage dans '/home/claude/sc-f85/clone'...
+fait.
+Sous-module 'src/EntityCore' (https://github.com/Calvin-Ruiz/EntityCore.git) enregistre pour le chemin 'src/EntityCore'
+Clonage dans '/home/claude/sc-f85/clone/src/EntityCore'...
+Chemin de sous-module 'src/EntityCore' : '84f5d94bddfb04d22b3c037104bd784810d658a2' extrait
+CLONE_RC=0
+
+$ git -C .../clone submodule status
+ 84f5d94bddfb04d22b3c037104bd784810d658a2 src/EntityCore (heads/main)
+
+$ git -C .../clone ls-tree HEAD src/EntityCore
+160000 commit 84f5d94bddfb04d22b3c037104bd784810d658a2	src/EntityCore
+
+$ ls -la .../clone/src/EntityCore/Core/VulkanMgr.hpp
+-rw-rw-r-- 1 claude claude 12975 Sep  5 13:47 VulkanMgr.hpp
+
+The failure INSTALL section 3 quoted ("upload-pack: not our ref") does not occur.
+Also recorded from the same clone, for the entry document's section 1: the fresh
+clone contains NO claude/ directory (.gitignore:84-85).

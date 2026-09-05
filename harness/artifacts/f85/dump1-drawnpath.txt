@@ -1,0 +1,8 @@
+F85 default-path measurement -- the dump field that names the drawing path.
+Source: dump1.json line 1 (the `body action dual_dump` header), launch of
+2026-09-05 from a $HOME that had never existed, binary 2815d182, no
+beta_features.ini anywhere.  Field written at src/coreModule/coreLink.cpp:583.
+
+header bytes [5467..5787] of 6215:
+
+"drawnPath":"new","cameraPresent":true,"latitude":{"reported":46.108056011101084,"old":46.108056011101084,"new":46.108056011101084},"longitude":{"reported":4.7797224118321413,"old":4.7797224118321413,"new":4.7797224118321413},"longitudeForDisplay":{"reported":4.7797224118321413,"old":4.7797224118321413,"new":4.77972241
