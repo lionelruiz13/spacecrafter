@@ -63,6 +63,7 @@ class ComputePipeline;
 class PipelineLayout;
 
 class s_texture;
+class VideoSurfaceTexture;
 
 namespace txcache {
 	struct TextureCache {
@@ -210,10 +211,14 @@ public:
 	Texture &getTexture();
 	// Return true if the texture is currently loading
 	inline bool isLoading() {
+		if (videoTexture)
+			return false;
 		return (texture->loader && texture->loader->priority.load(std::memory_order_relaxed) != LoadPriority::DONE);
 	}
 	// Modify the level of priority
 	inline void prioritize(LoadPriority level) {
+		if (videoTexture)
+			return;
 		if (texture->loader && texture->loader->priority.load(std::memory_order_relaxed) > LoadPriority::LOADING)
 			texture->loader->priority.store(level, std::memory_order_relaxed);
 	}
@@ -327,6 +332,7 @@ private:
 
 	std::string textureName;
 	std::shared_ptr<txcache::texRecap> texture;
+	std::shared_ptr<VideoSurfaceTexture> videoTexture;
 	int loadType;
 	int loadWrapping;
 	VkFormat formatOverride = VK_FORMAT_UNDEFINED;
@@ -335,6 +341,7 @@ private:
 	static bool releaseThisFrame; // Tell if releaseUnusedMemory have been called in this frame
 	static int wantReleaseAllMemory; // Tell the Big texture loader to release all memory
 	static std::map<std::string, std::weak_ptr<txcache::texRecap>> texCache;
+	static std::vector<std::weak_ptr<VideoSurfaceTexture>> videoTextureCache;
 	static std::list<txcache::bigTexRecap> bigTextures;
 	static std::list<txcache::bigTexRecap> droppedBigTextures; // Big texture which have been freed
 	static WorkQueue<txcache::bigTexRecap *, 31> bigTextureQueue;
