@@ -1,0 +1,138 @@
+=== PASS 1 -- OLD-SIDE `_()` INVENTORY (src/ minus experimentalModule, minus EntityCore)
+    literal msgid sites: 206   distinct msgids: 179   non-literal `_()` sites: 38
+        14  src/bodyModule/body.cpp
+        23  src/coreModule/nebula.cpp
+        71  src/interfaceModule/app_command_interface.cpp
+         1  src/main.cpp
+         1  src/starModule/hip_star_mgr.cpp
+        16  src/starModule/hip_star_wrapper.cpp
+        80  src/uiModule/ui_tuiconf.cpp
+    non-literal `_()` (gettext on a runtime value):
+      src/coreModule/nebula.cpp:283: oss << "  " <<  _("Distance: ") << distance << " " << _(units);
+      src/coreModule/sky_localizer.cpp:89: cultures += _(iter->second);
+      src/coreModule/sky_localizer.cpp:106: cultures += _(iter->second);
+      src/coreModule/sky_localizer.cpp:121: return _(dirToNameEnglish[directory]);
+      src/coreModule/sky_localizer.cpp:127: if (_(iter->second) == cultureName) return iter->first;
+      src/bodyModule/body.cpp:325: oss << _(englishName);
+      src/bodyModule/body.cpp:363: oss << _(englishName);
+      src/bodyModule/body.cpp:364: oss << " : " << _(getTypePlanet(typePlanet)) << " ";
+      src/interfaceModule/app_command_interface.cpp:4275: debug_message = _("Command 'body' datum_radius: value must be >= 0 km "
+      src/interfaceModule/app_command_interface.cpp:4290: debug_message = _("Command 'body' ground_radius: value must be >= 0 km "
+      src/tools/translator.cpp:45: const std::string _(const std::string& t){
+      src/tools/translator.hpp:36: const std::string  _(const std::string& t);
+      src/uiModule/ui_tui.cpp:928: string_prompt1 = _(englishStringPrompt1);
+      src/uiModule/ui_tui.cpp:929: string_prompt2 = _(englishStringPrompt2);
+      src/uiModule/ui_tui.cpp:981: string_prompt1 = _(englishStringPrompt1);
+      src/uiModule/ui_tui.cpp:982: string_prompt2 = _(englishStringPrompt2);
+      src/uiModule/ui_tui.cpp:983: string_confirm = _(englishStringConfirm);
+      src/uiModule/ui_tuiconf.cpp:68: os << " " << _(coreLink->getObserverHomePlanetEnglishName());
+      src/uiModule/ui_tuiconf.cpp:604: tui_scripts_shows->replaceItemList(_(TUI_SCRIPT_MSG) +std::string("\n")
+      src/uiModule/ui_tuiconf.cpp:607: tui_scripts_basis->replaceItemList(_(TUI_SCRIPT_MSG) +std::string("\n")
+      src/uiModule/ui_tuiconf.cpp:610: tui_scripts_planets->replaceItemList(_(TUI_SCRIPT_MSG) +std::string("\n")
+      src/uiModule/ui_tuiconf.cpp:613: tui_scripts_deepsky->replaceItemList(_(TUI_SCRIPT_MSG) +std::string("\n")
+      src/uiModule/ui_tuiconf.cpp:616: tui_scripts_navigation->replaceItemList(_(TUI_SCRIPT_MSG) +std::string("\n")
+      src/uiModule/ui_tuiconf.cpp:619: tui_scripts_custom->replaceItemList(_(TUI_SCRIPT_MSG) +std::string("\n")
+      src/uiModule/ui_tuiconf.cpp:741: tui_scripts_basis->setCurrent(_(TUI_SCRIPT_MSG));
+      src/uiModule/ui_tuiconf.cpp:742: tui_scripts_deepsky->setCurrent(_(TUI_SCRIPT_MSG));
+      src/uiModule/ui_tuiconf.cpp:743: tui_scripts_navigation->setCurrent(_(TUI_SCRIPT_MSG));
+      src/uiModule/ui_tuiconf.cpp:744: tui_scripts_planets->setCurrent(_(TUI_SCRIPT_MSG));
+      src/uiModule/ui_tuiconf.cpp:745: tui_scripts_shows->setCurrent(_(TUI_SCRIPT_MSG));
+      src/uiModule/ui_tuiconf.cpp:746: tui_scripts_custom->setCurrent(_(TUI_SCRIPT_MSG));
+      src/uiModule/ui_tuiconf.cpp:815: if (tui_scripts_basis->getCurrent()!=_(TUI_SCRIPT_MSG)) {
+      src/uiModule/ui_tuiconf.cpp:826: if (tui_scripts_deepsky->getCurrent()!=_(TUI_SCRIPT_MSG)) {
+      src/uiModule/ui_tuiconf.cpp:837: if (tui_scripts_navigation->getCurrent()!=_(TUI_SCRIPT_MSG)) {
+      src/uiModule/ui_tuiconf.cpp:848: if (tui_scripts_planets->getCurrent()!=_(TUI_SCRIPT_MSG)) {
+      src/uiModule/ui_tuiconf.cpp:859: if (tui_scripts_shows->getCurrent()!=_(TUI_SCRIPT_MSG)) {
+      src/uiModule/ui_tuiconf.cpp:870: if (tui_scripts_custom->getCurrent()!=_(TUI_SCRIPT_MSG)) {
+      src/starModule/hip_star_mgr.cpp:550: const std::string commonNameI18n = _(englishCommonName.c_str());
+      src/inGalaxyModule/starNavigator.cpp:171: const std::string commonNameI18n = _(englishCommonName.c_str());
+
+=== PASS 2 -- NEW-SIDE LITERAL CENSUS (src/experimentalModule/, comment-stripped)
+    total literals: 2087
+        548  OTHER/KEY
+        494  PP
+        426  LOG
+        216  OTHER/TOKEN
+        185  ARTIFACT
+         92  DIAG
+         82  OTHER/PATH
+         30  READOUT
+         10  OTHER/UNCLASSIFIED
+          4  ASSERT
+    READOUT sites (the object-readout surface -- the ONLY translatable one):
+      src/experimentalModule/ModularObject.cpp:17  ModularObject::getInfoString wrapped=False 'Magnitude: '
+      src/experimentalModule/ModularObject.cpp:20  ModularObject::getInfoString wrapped=False 'RA/DE: '
+      src/experimentalModule/ModularObject.cpp:20  ModularObject::getInfoString wrapped=False ' / '
+      src/experimentalModule/ModularObject.cpp:23  ModularObject::getInfoString wrapped=False 'Alt/Az: '
+      src/experimentalModule/ModularObject.cpp:23  ModularObject::getInfoString wrapped=False ' / '
+      src/experimentalModule/ModularObject.cpp:26  ModularObject::getInfoString wrapped=False 'Distance: '
+      src/experimentalModule/ModularObject.cpp:26  ModularObject::getInfoString wrapped=False ' '
+      src/experimentalModule/ModularObject.cpp:26  ModularObject::getInfoString wrapped=False 'AU'
+      src/experimentalModule/ModularObject.cpp:34  ModularObject::getShortInfoString wrapped=False ' : '
+      src/experimentalModule/ModularObject.cpp:34  ModularObject::getShortInfoString wrapped=False 'ModularBody'
+      src/experimentalModule/ModularObject.cpp:34  ModularObject::getShortInfoString wrapped=False ' '
+      src/experimentalModule/ModularObject.cpp:37  ModularObject::getShortInfoString wrapped=False '  '
+      src/experimentalModule/ModularObject.cpp:37  ModularObject::getShortInfoString wrapped=False 'Magnitude: '
+      src/experimentalModule/ModularObject.cpp:40  ModularObject::getShortInfoString wrapped=False '  '
+      src/experimentalModule/ModularObject.cpp:40  ModularObject::getShortInfoString wrapped=False 'Distance: '
+      src/experimentalModule/ModularObject.cpp:40  ModularObject::getShortInfoString wrapped=False ' '
+      src/experimentalModule/ModularObject.cpp:40  ModularObject::getShortInfoString wrapped=False 'AU'
+      src/experimentalModule/ModularObject.cpp:48  ModularObject::getShortInfoNavString wrapped=False 'RA/DE: '
+      src/experimentalModule/ModularObject.cpp:48  ModularObject::getShortInfoNavString wrapped=False ' / '
+      src/experimentalModule/ModularObject.cpp:62  ModularObject::getShortInfoNavString wrapped=False 'SA '
+      src/experimentalModule/ModularObject.cpp:63  ModularObject::getShortInfoNavString wrapped=False ' GHA '
+      src/experimentalModule/ModularObject.cpp:64  ModularObject::getShortInfoNavString wrapped=False ' LHA '
+      src/experimentalModule/ModularObject.cpp:70  ModularObject::getShortInfoNavString wrapped=False '@'
+      src/experimentalModule/ModularObject.cpp:70  ModularObject::getShortInfoNavString wrapped=False ' Az/Alt/coA: '
+      src/experimentalModule/ModularObject.cpp:70  ModularObject::getShortInfoNavString wrapped=False '/'
+      src/experimentalModule/ModularObject.cpp:70  ModularObject::getShortInfoNavString wrapped=False '/'
+      src/experimentalModule/ModularObject.cpp:70  ModularObject::getShortInfoNavString wrapped=False ' LPA '
+      src/experimentalModule/ModularObject.cpp:85  ModularObject::getShortInfoNavString wrapped=False ' Day length: '
+      src/experimentalModule/ModularObject.cpp:87  ModularObject::getShortInfoNavString wrapped=False '00h00m00s'
+      src/experimentalModule/ModularObject.cpp:89  ModularObject::getShortInfoNavString wrapped=False '24h00m00s'
+    OTHER/UNCLASSIFIED (no sink rule matched -- hand-adjudicated in §11.209):
+      src/experimentalModule/CameraAnchors.cpp:261  CameraAnchors::buildBody ' (orbit centre)'
+      src/experimentalModule/SessionFile.cpp:118  qualifiedPath          '<no file>'
+      src/experimentalModule/SessionFile.cpp:677  load                   "This session recorded an override for a body called '"
+      src/experimentalModule/SessionFile.cpp:678  load                   "', and no body of that name is in the tree now"
+      src/experimentalModule/SessionFile.cpp:679  load                   ' (when it was saved it was '
+      src/experimentalModule/SessionFile.cpp:680  load                   '. The override was NOT applied and NOT applied to anything else - a '
+      src/experimentalModule/SessionFile.cpp:681  load                   'same-named body from another system would be the wrong body. It is kept '
+      src/experimentalModule/SessionFile.cpp:682  load                   'here so nothing is lost: if the data renamed it, rename this section to '
+      src/experimentalModule/SessionFile.cpp:683  load                   'match; if the system it belongs to is not loaded, load it and restore '
+      src/experimentalModule/ShadowService.cpp:61  ShadowService::ensureInit 'New-path projected shadows'
+    `_()`-WRAPPED literals in this module: 0
+
+=== PASS 3 -- THE CROSS: user-surface literals vs the old inventory vs the catalogue
+    catalogue: /home/claude/.spacecrafter/language/fr.txt -- 599 entries
+      line   literal          wrapped  old-msgid in-cat    fr answer
+      ModularObject.cpp:17 'Magnitude: '    False    YES       YES       'Magnitude : '
+      ModularObject.cpp:20 'RA/DE: '        False    YES       YES       'AD/DE : '
+      ModularObject.cpp:20 ' / '            False    no        no        
+      ModularObject.cpp:23 'Alt/Az: '       False    YES       YES       'Alt/Az\xa0: '
+      ModularObject.cpp:23 ' / '            False    no        no        
+      ModularObject.cpp:26 'Distance: '     False    YES       YES       'Distance : '
+      ModularObject.cpp:26 ' '              False    no        no        
+      ModularObject.cpp:26 'AU'             False    YES       YES       'UA'
+      ModularObject.cpp:34 ' : '            False    no        no        
+      ModularObject.cpp:34 'ModularBody'    False    no        no        
+      ModularObject.cpp:34 ' '              False    no        no        
+      ModularObject.cpp:37 '  '             False    no        no        
+      ModularObject.cpp:37 'Magnitude: '    False    YES       YES       'Magnitude : '
+      ModularObject.cpp:40 '  '             False    no        no        
+      ModularObject.cpp:40 'Distance: '     False    YES       YES       'Distance : '
+      ModularObject.cpp:40 ' '              False    no        no        
+      ModularObject.cpp:40 'AU'             False    YES       YES       'UA'
+      ModularObject.cpp:48 'RA/DE: '        False    YES       YES       'AD/DE : '
+      ModularObject.cpp:48 ' / '            False    no        no        
+      ModularObject.cpp:62 'SA '            False    YES       no        
+      ModularObject.cpp:63 ' GHA '          False    YES       no        
+      ModularObject.cpp:64 ' LHA '          False    YES       no        
+      ModularObject.cpp:70 '@'              False    no        no        
+      ModularObject.cpp:70 ' Az/Alt/coA: '  False    YES       no        
+      ModularObject.cpp:70 '/'              False    no        no        
+      ModularObject.cpp:70 '/'              False    no        no        
+      ModularObject.cpp:70 ' LPA '          False    no        no        
+      ModularObject.cpp:85 ' Day length: '  False    YES       no        
+      ModularObject.cpp:87 '00h00m00s'      False    no        no        
+      ModularObject.cpp:89 '24h00m00s'      False    no        no        

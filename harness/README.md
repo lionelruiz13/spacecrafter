@@ -3867,3 +3867,109 @@ code: §5.92's `app_command_interface.cpp:1525` is now `:1688`, §5.127(5)'s
 `orbit_creator_cor.cpp:260` is now `:283`, §5.59's `app.cpp:795` is now `:831`.
 The rows are cached conclusions (§5.2 class); the document cites the current
 site and names the stale one beside it.
+
+## F87 — the readout's fourteen labels, and the control that measured `app_locale` doing nothing (`f87_census.py`, `f87_labels.py`) — INTENT §11.209 / §5.111 / §5.136, 2026-09-05
+
+Two instruments. `f87_census.py` answers *"which literals in a module reach a
+user surface, and which of them has an old counterpart"*; `f87_labels.py`
+answers *"do the two paths print the same translated labels for the same body"*.
+Both are reusable for any readout or i18n change.
+
+    cd claude/harness
+    python3 f87_census.py --self-test
+    python3 f87_census.py [--old] [--new] [--cross] [--catalogue PATH] [--json OUT]
+
+    python3 f87_labels.py --self-test
+    python3 f87_labels.py <outdir> --locale fr|en [--sky fr|en] [--effective L] [--bin P] [--jd J]
+    python3 f87_labels.py --offline <navstr[.gz]> [--locale L]        # replay a landed sidecar
+    python3 f87_labels.py --compare-new <navstrA> <navstrB>           # byte-exact NEW-side control
+
+### THE TRANSLATION CHANNEL IS NOT GETTEXT — read this before any i18n work
+
+`_()` is `Translator::translateUTF8` (`src/tools/translator.cpp:45`), a lookup in
+a `std::map` filled by `Translator::reload()` from `<localeDir>/<lang>.txt` —
+lines of the form `"key";"value"`, `#` comments skipped, **empty values
+skipped** — with **identity fallback** for any absent key.
+
+- **There is no `.po`, `.mo` or `.pot` anywhere**: not in the code repo, not in
+  the harness repo, not in `data/`, not in the installed field. A task spec that
+  names one is wrong about the mechanism.
+- The catalogue is **installed field data** (`~/.spacecrafter/language/fr.txt`,
+  599 entries) shipped from `spacecrafter-data` and **frozen by D9**. Code cannot
+  add a key. So an invented msgid prints in English forever, silently; a msgid
+  copied byte-exact from the old path gets exactly the old path's answer.
+- **`grep -c` is the wrong test.** `/usr/bin/grep -c '"SA "' fr.txt` answers ≥ 1
+  on any line holding those bytes, while the KEY `"SA "` is **absent**. Test key
+  membership with the engine's own parse — `f87_census.load_catalogue()`.
+- `en.txt` parses to **ZERO** entries (every value is empty), so `app_locale = en`
+  is the identity map. That makes English the exact pre-wrap control.
+
+### `f87_census.py` — the denominator, and four ways a first draft gets it wrong
+
+Comment-stripped via `f44_census.strip_comments` (line numbers preserved, so
+every `file:line` it prints is valid against the original), then classified by
+the SINK of the whole **statement**. Its self-test pins four discriminations,
+each measured on this tree:
+
+1. a five-line `cLog::get()->write(...)` is ONE diagnostic — a line-level filter
+   reported **335** candidate-prose literals where the statement-level one
+   reports **10**;
+2. `out << '"' << a.name << '"';` (`CameraAnchors.cpp:758`, `ModularBody.cpp:1055`)
+   holds two CHAR literals and no string — a naive double-quote scan invents a
+   phantom `' << a.name << '` that reads as untranslated prose;
+3. a braced `banner` initializer is one statement, not a block — splitting on `{`
+   tore `SessionFile.cpp:433` and `ModularSystem.cpp:1749` into fragments whose
+   call name had been left behind (**56** lines);
+4. `saveOrbit`'s `os <<` is a serializer, `getInfoString`'s `oss <<` is a readout
+   — same operator, different surface, and only the second is translatable.
+
+Sinks: `PP` · `LOG` (adds `putLog`, the Vulkan channel) · `DIAG` (`diagnose()`) ·
+`ARTIFACT` (`annotate()`, `banner`, `IniLine::COMMENT_CHAR`, any `save*`) ·
+`THROW` · `ASSERT` · `READOUT` (an ostream inside `get*InfoString`/
+`getShortInfoNavString`) · `OSTREAM` · `OTHER/{KEY,PATH,TOKEN,UNCLASSIFIED}`.
+`UNCLASSIFIED` is the bucket you must read by hand; on `experimentalModule` it is
+10 items.
+
+### `f87_labels.py` — why the criterion is per-msgid and not string equality
+
+The port that dropped the `_()` also changed things that are not labels: the new
+nav string has a `std::endl` after RA/DE that old lacks (`ModularObject.cpp:74`
+vs `body.cpp:400`) and separates the angles with `" / "` where old writes `"/"`.
+A whole-string diff would be red on those forever. So:
+
+- **G1** `EXPECTED = catalogue.get(msgid, msgid)` occurs in OLD's text and NEW's;
+- **G2** where `EXPECTED != msgid`, the RAW msgid does **not** survive in NEW.
+
+G2 is the half that can fail, so **make it fail first**: `--offline` on a pre-fix
+sidecar. On `artifacts/f44/legA_003.json.navstr.gz` it reports 90 bodies, G1 540
+red, G2 540 red, **OLD-missing 0** — and that last zero is the load-bearing one,
+because it says the baseline carries every expected rendering.
+
+The sidecar parser is exact about the writer's format
+(`ssystem_factory.cpp:1206-1210`): a name line, then four marker lines, and the
+printed strings themselves contain newlines, so the tail of each record's
+`NEW inf` is the NEXT record's name. Do not parse it line-wise.
+
+### Gotchas measured here
+
+- **`app_locale` DOES NOT WORK when it differs from `sky_locale`** (§5.136).
+  `Translator`'s `lastUsed` and `m_translator` are **static**
+  (`translator.hpp:83-85`) — one map for every instance — and sky loads last.
+  Byte-exact 2x2 over 90 bodies: `(fr,fr) == (en,fr)` md5 `7e14412d` French;
+  `(en,en) == (fr,en)` md5 `4e56907c` English. **Set BOTH keys** in any locale
+  measurement, and never assert an English UI from `app_locale` alone.
+- **`b3_farm.sh` COPIES `config.ini` and `ssystem.ini`** and symlinks the rest,
+  so a locale edit in the farm is safe and the real `$HOME` md5 stays put
+  (asserted in==out on all four launches). It does NOT copy `language/`, which
+  is symlinked and read-only — the right shape, since D9 freezes it.
+- **The sharpest single check for "is the catalogue answering?"** is the U+00A0
+  in the French `Alt/Az` rendering: **no literal anywhere in `src/` contains
+  one**, so its count going 0 -> 90 cannot be produced by any code path other
+  than the lookup.
+- **`b24_select.py:861-864` matches the NEW block's ENGLISH labels** and runs on
+  a French farm, so since code `1d839b9d` its I1 check reds on a readout that is
+  more correct than before. Known cause, not a regression; the repair is to
+  assert the block's SHAPE (five lines, a numeric magnitude, two angle pairs, a
+  distance plus a unit token) instead of its spelling. `f44_parity.py` is fine —
+  its `RADE` regex already accepted both `RA/DE` and `AD/DE` — and `b9_azconv.py`
+  reads the dump's numbers, not its strings.

@@ -611,38 +611,24 @@ config; display per HOST-EVENTS; next free §11 ⟨at dispatch⟩; live `### F` 
 
 **DoD:** wraps (code first) + census + measurement; §11.207 + stub; §5.111 flip;
 README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-05 17:0x — CKPT1 (harness only, no code yet): §0.7 gate PASSED on every
-input-side premise (HEADs, F count 6, §11.209 free, §5.111 OPEN, `_(` 0/15, `fr` locale +
-md5 `03fbee59`/`545a51ef`, binary `2815d182` + 0 build steps, display `:2` 2448x1332, no
-running instance). TWO output-side dispatcher defects, reported not aborted: (1) NO `F44`
-section exists in `harness/README.md` (0 hits) — read `f44_parity.py` + `artifacts/f44/`
-instead; (2) **there is no `.po` anywhere in either repo or the field** — `_()` is
-`Translator::translateUTF8` (`translator.cpp:45`), a map loaded from
-`~/.spacecrafter/language/fr.txt` (`"key";"value"`, IDENTITY FALLBACK), which is
-D9-frozen field data; the msgid check is therefore EXACT-KEY, not `grep -c`. Instrument
-`harness/f87_census.py` (self-test PASS) lands the census: 2087 literals, READOUT 30 (all
-`ModularObject.cpp`), `_()`-wrapped **0**; 14 sites have a byte-exact old msgid, of which
-**5 msgids reach fr.txt and 5 fall through by identity — old's do too**. NEXT: the 14
-wraps in `ModularObject.cpp` (code first), rebuild, then the fr/en farm measurement.
-2026-09-05 17:1x — CKPT2: code `1d839b9d` (14 wraps, D14 gate PASS), rebuilt `-j13`,
-binary md5 `2815d182` → **`407b3d1d`**, `cmake -n` 0 steps. Census 0 → **14** wrapped, an
-exact bijection with old's 14 literal msgid sites (`body.cpp:331-435`); the 16 unwrapped
-readout literals are exactly the ones old leaves bare. `f87_labels.py` (self-test PASS)
-carries the PRE-FIX baseline measured offline on `artifacts/f44/legA_003.json.navstr.gz`
-— 90 bodies, G1 540 red, G2 540 red, OLD-missing **0**, names 68 same/22 differ, U+00A0
-**0** — and SIX PREDICTIONS committed before any launch. NEXT: the fr farm launch, then
-the en control launch, then `--compare-new` against the pre-fix artifact.
-2026-09-05 17:0x — CKPT3+4: canary `--no-scene` exit 0; FOUR farm launches, all exit 0,
-md5 in==out on the real `$HOME` each time, concurrent probe 0. **ALL EIGHT PREDICTIONS
-CONFIRMED, NONE REFUTED.** fr: G1 540→**0**, G2 540→**0** over 90 bodies, U+00A0 0→**90**,
-name channel unchanged at 68/22/22. English control (`app=en,sky=en`): G1 0, G2 0, names
-90/0, U+00A0 0, and every NEW `inf`+`nav` string **BYTE-IDENTICAL** to the pre-fix F44
-artifact for all 90 bodies. The control's FIRST attempt found a defect instead of passing:
-`app_locale=en, sky_locale=fr` printed FRENCH — `Translator::m_translator` is ONE STATIC
-map (`translator.hpp:85`) shared by app + sky translators, last loader wins, sky loads
-last. 2×2 factorial, byte-exact within columns: (fr,fr)≡(en,fr) md5 `7e14412d`;
-(en,en)≡(fr,en) md5 `4e56907c`. `app_locale` is INERT. NEXT: §11.209 + stub, §5.111 flip,
-§11.158(j2) back-mark, README, instruments LAST.
+**WIP:** DELIVERED 2026-09-05 → **§11.209** (+ stub). §5.111 **FIXED for the matched
+set** (14 msgids, byte-exact from `body.cpp`), the UNMATCHED set listed AT THE ROW and
+left to the owner: `"ModularBody"` in the type slot, the body NAME (`_(englishName)` in
+old; 22/90 differ, all 22 exactly `fr.txt[english]`), `" (orbit centre)"`. Code
+`a2fd3c5b` → **`1d839b9d`**, one file; binary `2815d182` → **`407b3d1d`**, `cmake -n` 0
+steps, D14 PASS. Census 2087 → 2088 literals / 119 files, READOUT 30, `_()` **0 → 14**,
+bijection exact both ways. Four farm launches, **8/8 predictions confirmed, 0 refuted**:
+G1+G2 **540 red → 0** over 90 bodies, U+00A0 **0 → 90**, English control BYTE-IDENTICAL to
+the pre-fix F44 sidecar on all 90 bodies. **NEW §5.136** — the control found that
+`app_locale` is INERT (one STATIC catalogue map for app+sky, `translator.hpp:83-85`; 2×2
+byte-exact: `(fr,fr)≡(en,fr)` `7e14412d`, `(en,en)≡(fr,en)` `4e56907c`). Back-markers at
+§11.158(j2)+(l5) both homes and §11.162's T2. **TWO OUTPUT-SIDE DISPATCHER DEFECTS**: no
+`F44` section exists in `harness/README.md`, and **no `.po` exists anywhere** (the channel
+is a D9-frozen `<lang>.txt` map with identity fallback). **FOR THE NEXT TASKS**:
+`b24_select.py:861-864` will red by known cause on the binary left here (`407b3d1d`) — it
+matches the NEW block's ENGLISH labels on a French farm; named, not patched (the F89/F93
+split). Artifacts `artifacts/f87/`; instruments `harness/f87_census.py`,
+`harness/f87_labels.py`; README F87 section.
 
 ### F89 — The `b4_anchors` P7 screen-witness red DISCRIMINATED: the one gate that reds on the reference binary (green ×3 pre-§5.133, red ×2 post) gets its cause named — the twinkle-`rand()` candidate tested the way the two failed experiments could not (b4's own frozen-clock scene, twinkle OFF on both binaries, the two P7 windows' lit-pixel SETS diffed, predictions committed first), the control's margin read from the five F86 runs before any launch, every `rand()` consumer in `src/` enumerated — instrument fix if the instrument, §5.133's row if the product (§11.205(g)(h); session-22 queue position 2; the developer will run this harness) [S, instrument]
 
