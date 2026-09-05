@@ -1171,7 +1171,15 @@ ABSENT; canary `--no-scene` exit 0; display per HOST-EVENTS; no `spacecrafter` i
 **DoD:** the assert + the count control + twinkle-off in the runner; proven both ways with
 the numbers; §11 entry + stub; back-markers; §5.133 pointer; README F7 rewritten; trees
 clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-05 17:35 — §0.7 gate PASSED (every stated premise verified; two
+report-only divergences: the section's prose names the reference binary `2815d182`
+where live is `407b3d1d`, re-resolved by the Preconditions line; and DoD (4)'s "the
+count control red on the pre-fix binary" is refuted in advance by F89's own corpus,
+40–50× on BOTH binaries). Checkpoint 1: derivations + predictions committed BEFORE
+any edit — `harness/artifacts/f93/prediction.txt` (tolerance 1.0 km derived, K = 4
+with 10× margin, own-floor 100 px with 8.4× margin, the 13 asserted dumps' predicted
+values on both binaries). NEXT: edit `b4_anchors.py` + `b4_anchors_run.sh`, then the
+three runs under `/home/claude/sc-f93/`.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 

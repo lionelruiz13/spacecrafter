@@ -1,0 +1,149 @@
+F93 - the b4_anchors gate repair: DERIVATIONS AND PREDICTIONS, COMMITTED BEFORE
+ANY EDIT AND BEFORE ANY LAUNCH (2026-09-05 17:34 CEST, task F93, INTENT 11.210).
+
+Every number below is read from F89's landed corpus (the eight run directories
+under /home/claude/sc-f89/out-*, harness/artifacts/f86's five, and the entry
+11.208) with the instruments F89 left - f89_p7.py's own window geometry, which
+is b4_anchors.py:444-453 reproduced.  Nothing here is picked and nothing is
+recalled.  Any of these can fail; the ones that would refute a claim are
+marked REFUTING.
+
+================================================================ 1. THE TOLERANCE
+for the NEW assert "the OLD path's distance to the anchor's parent equals the
+authored semi-major axis" (mandate (1)).  Two terms, as the mandate names them.
+
+ (a) THE DUMP FIELD'S FLOAT PRECISION.  MEASURED on the artifact, not assumed:
+     the OLD half of a body record prints at 17 significant digits
+     [/home/claude/sc-f89/out-R2-ref-off/b4_floor0.json, Moon: "dist":0.0013369173975661397]
+     while the NEW half prints at 9 ["dist":0.00133691775].  The assert reads
+     the OLD field, so its quantization is ~1e-19 AU = 1.5e-11 km - NEGLIGIBLE,
+     eleven orders below any other term.  (Had the check read the new field it
+     would be 1e-11 AU = 1.5e-3 km, still negligible.)
+
+ (b) THE EASE-OUT RESIDUE.  The old path's transition is still settling when the
+     dump is taken; 11.208(a) records it as ~1e-7 (NDC), enough to move a P7
+     window centre by one pixel.  MEASURED on THIS quantity over F89's whole
+     corpus - 8 runs x every dump whose camera reference is an orbit anchor,
+     both binary groups, correct legs only:
+        authored 200000.0 km  ->  199999.995978 km (delta -0.004022)
+                                  200000.048224 km (delta +0.048224)  <- worst
+        authored 300000.0 km  ->  300000.002674 km (delta +0.002674)
+     and the NEW path's own reading of the same geometry spreads a little wider
+     (200000.030749 / .048701 / .065157, worst delta +0.065157 km).
+     Worst residue anywhere in the corpus: 0.0652 km; on the asserted field:
+     0.0482 km.  Relative: 2.4e-7 - the same order as the recorded 1e-7.
+
+ (c) THE BOUND.  It must exceed (b) with margin and sit far below the
+     discrimination (17417 km).  CHOSEN: DIST_TOL_KM = 1.0 km, because
+       - 20x above the worst deviation ever measured on the asserted field
+         (0.0482 km) and 15x above the worst on either path (0.0652 km);
+       - 6.7e10 x above the dump quantization (a);
+       - 17417x below the pre-fix binary's error, so the check cannot be said
+         to have been fitted to the answer;
+       - and it is the number b4_anchors.py:319 ALREADY applies to the same
+         authored constant on the NEW path (abs(r0 - A_KM) < 1.0), so the gate
+         speaks ONE number for ONE quantity (I2) instead of two.
+     FAILURE CRITERION: if any correct leg reads further than 1.0 km from its
+     authored radius, the check reds - and that is the discrimination, not a
+     tolerance to widen.
+
+================================================================ 2. THE RATIO K
+for the count control (mandate (2)).  Metric: lit-pixel COUNT, px>8, in the same
+112x112 px window the gate already derives (win = max(8, int(2*rpx)) = 56).
+MEASURED over all eight F89 runs with f89_p7.py's window geometry:
+
+  run                     own@t0 oth@t0 own@t1 oth@t1   ratio t0  ratio t1
+  out-R1-ref-on              843     21   2021     24      40.14     84.21
+  out-R2-ref-off             846     21   2023     27      40.29     74.93
+  out-R3-ref-off             846     21   2023     27      40.29     74.93
+  out-R4-pre-off             855     19   2015     44      45.00     45.80
+  out-R5-pre-off             855     19   2015     44      45.00     45.80
+  out-R6-pre-on              853     17   2015     43      50.18     46.86
+  out-R7-scratchpost-off     846     21   2025     27      40.29     75.00
+  out-R8-guardonly-off       855     19   2015     44      45.00     45.80
+
+  (R2/R3 reproduce 11.208(i)'s quoted 846/21 and 2023/27 to the digit, which is
+  the instrument's own control.)
+
+  WEAKEST measured ratio: 40.14.  CHOSEN K = 4  =>  margin 10.0x below the
+  weakest ratio ever measured, on EITHER binary group and with twinkle either
+  way.  Why 4 and not 1: a 1x bar is met by one pixel, which is exactly how the
+  max form was beaten by a single 217-luminance star.  Why not 20: the "empty"
+  window's count is star-field dependent (17..44 across the corpus) and the bar
+  must survive a sky rotated 76 degrees, i.e. the pre-fix condition itself.
+
+  PRESENCE FLOOR (replacing the removed `max > 64` bar, same corpus method):
+  OWN_FLOOR = 100 px, 8.4x below the weakest own-window count measured (843).
+  It is STRICTLY STRONGER than the bar it replaces: one 65-level pixel satisfied
+  `max > 64`; one hundred lit pixels cannot come from one star.
+
+============================================== 3. WHAT THE RUNS MUST PRODUCE
+Binaries: reference build-claude/src/spacecrafter md5 407b3d1d (code 1d839b9d,
+F87's - NOT F89's 2815d182, which the F93 section's prose still names; the
+section's Preconditions line re-resolves it to 407b3d1d).  Pre-fix
+/home/claude/sc-f89/bin/sc-scratch-pre md5 9471f2fc.  Guard-only 6f0c8de8.
+All runs twinkle OFF (the repaired runner writes it into the farm's config).
+
+ P-A REFERENCE x2, exit 0, every check green.  The 13 asserted dumps and their
+     predicted OLD distances (from F89 R2/R3, same scene, same twinkle state;
+     REFUTING if any differs by more than the 1.0 km tolerance):
+       floor0..floor4, orb_t0, cmd1, auth1, cmd2, auth2   199999.995978 km
+       orb_t1                                             200000.048224 km
+       other1, other2                                     300000.002674 km
+     This is itself a prediction ACROSS a binary change: F87 moved the code from
+     a2fd3c5b to 1d839b9d (one file, readout strings only), so the geometry must
+     be unchanged to the digit.  REFUTING: any difference beyond 0.1 km would
+     say F87's wrap touched geometry.
+ P-B REFERENCE counts: own@t0 846, oth@t0 21, own@t1 2023, oth@t1 27 (+-2 px);
+     ratios ~40.3 and ~74.9, both >= 4 => the count control GREEN where the max
+     form was RED (182 vs 217).  A/A between the two runs: 0-2 px frame-wide.
+ P-C twinkleAmountEff = 0.0000 at all 28 dumps of every run.
+ P-D PRE-FIX x1, exit 1.  Predicted RED set - and it is NOT the mandate's:
+       floor0..floor4, orb_t0   182582.75 km   (delta -17417.25)
+       orb_t1                   181736.830435  (delta -18263.17)
+       auth1, auth2             182582.752752  (delta -17417.25)
+     = NINE distance asserts red, and
+       cmd1, cmd2               199999.995978  GREEN
+       other1, other2           300000.002674  GREEN
+     = FOUR green - the in-run control: on the SAME corrupt binary, an anchor
+     created by `camera action create` in this session is NOT corrupt, only the
+     one loaded from anchor.ini at startup is.  (Measured, F89 R4/R5/R8; this is
+     new information about 5.133's reach and is predicted here so it can fail.)
+ P-E PRE-FIX counts: own@t0 855, oth@t0 19, own@t1 2015, oth@t1 44; ratios 45.0
+     and 45.8, both >= 4 => THE COUNT CONTROL IS GREEN ON THE PRE-FIX BINARY.
+     ** This CONTRADICTS the F93 section's DoD (4)/(c) ("EXACTLY the new assert
+     and the new control red" on the pre-fix binary) and it AGREES with the
+     section's own source, 11.208(i): "a 30-100x discrimination on BOTH
+     binaries".  A control that discriminates on both binaries cannot red on
+     one of them.  The direction fix is carried entirely by the distance
+     assert.  Recorded here BEFORE the runs so the outcome cannot be read back
+     into the prediction.  REFUTING: if the pre-fix run reds at the count
+     control, this whole paragraph is wrong and the mandate was right. **
+ P-F GUARD-ONLY x1 (optional): lands in the PRE group on every leg above.
+ P-G Every other check (P1-P6, P7's frame floors, the reversible pairs) green on
+     both binaries, as F89 measured: the only new reds are the distance assert's.
+
+============================================== 4. b24_select's I1 (mandate (3b))
+The composed body's info block, five lines, from the writer
+[ssystem_factory.cpp:1206-1210 - the "  NEW inf: " marker is an ARTIFACT-channel
+literal and is NEVER translated] and the readout
+[ModularObject::getInfoString, unconditional: name / Magnitude / RA/DE / Alt/Az /
+Distance + unit].  Landed ENGLISH (pre-F87) form
+[harness/artifacts/b24_select_post/b24_select_result.json, legs.I1_info.block]:
+
+      NEW inf: BigA
+    Magnitude: inf
+    RA/DE: 09h21m12s / +60d00'00"
+    Alt/Az: +12d40'14" / +129d42'00"
+    Distance: 0.00005905 AU
+
+ P-H After F87 the same block on the FRENCH field config reads `Magnitude : `,
+     `AD/DE : `, `Alt/Az\xa0: ` (U+00A0) and `Distance : ... UA` [11.209(d)'s
+     catalogue table].  PREDICTED: the OLD (spelling) matcher finds 0 of its 4
+     labels there and I1 reds; the NEW (shape) matcher is green on BOTH that
+     French block and the landed English one above.
+ P-I THE MAGNITUDE OF A COMPOSED BODY IS `inf`, not a finite number - landed in
+     BOTH English artifacts (b24_select_post and f43/sel_post) and recorded at
+     11.106.  So "a numeric magnitude" must mean "a token that parses as a
+     number" (float('inf') does); requiring finiteness would red the gate on a
+     known, recorded, out-of-mandate product condition.  Stated before the run.
