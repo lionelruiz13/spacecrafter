@@ -731,7 +731,11 @@ run). Instruments: scan **217/265/131** (flagged-set diff vs the open HEAD **emp
 pair-check **224/199/25/107**, D 35 · D2 11 · I 89 · I2 36 · M 81 — every filter delta 0.
 Left on disk: `/home/claude/sc-f89/` (three binaries in `bin/`, the code worktree `tree/` at
 the PRE source state, `build-var/`, eight run dirs).
-**ACCEPTED 2026-09-05 16:38 (`date` in the verifying command; supervisor, session 23, Claude
+**ACCEPTED 2026-09-05 ~~16:38 (`date` in the verifying command~~ **[CORRECTED one commit later:
+the verifying command's `date` read 16:33:06 and the acceptance commit `d9025dd` reads
+16:35:16 — "16:38" was an ESTIMATE wearing the measured label, Q-67 class (c), dispatcher
+defect #5 this round, mine; the rule survives only as the `date` output pasted, never a
+number typed beside the word]** (supervisor, session 23, Claude
 Fable 5.1).** Verified by my own runs and reads, not by the report: §11.208 read in full;
 code UNTOUCHED at `a2fd3c5b` (status clean; `git worktree list` shows `/home/claude/sc-f89/tree`
 detached at `a2fd3c5b` — registered, does not touch `master-beta`); four harness commits
