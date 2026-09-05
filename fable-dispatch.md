@@ -657,8 +657,13 @@ verified. CHECKPOINT 1: the frame DERIVED from old's code and written into
 `INTENT/11.213.md` (a)(b)(c) BEFORE any code touch; `harness/f91_frame.cpp` probe
 proves F91's chain == old's frame to **0.000000000°** and F44's chain off by exactly
 **+90.000000000°** in RA (the `+M_PI_2` of `ModularBody::getAxisRotation`), and
-re-derives F34's 133.9041°/38.5856°/2.058e-11. NEXT: pre-fix measurement legs on the
-`/home/claude/sc-f91/` farm (French + English control), then the code fix.
+re-derives F34's 133.9041°/38.5856°/2.058e-11. CHECKPOINT 2: `harness/f91_parity.py`
++ `f91_run.sh` built and validated OFFLINE on F44's landed leg A (reproduces the
+60.3636° headline and the 88/90 alt/az control); the fix's parity PRE-REGISTERED at
+max **0.002014° on Deimos** / Eris 1.198271° — §11.158(f)'s own digits; and a SECOND
+defect measured on landed data: `ModularObject.cpp:82` computes the local hour angle
+from the observer's LATITUDE (LHA−GHA = 43.300000° on new vs 5.366667° on old).
+NEXT: pre-fix live legs (fr + en) on the farm, then the code fix.
 
 ### F94 — §5.98 — the two misspelled body names in `Core::setSelectedBodyName` corrected (`"Satun"` → `"Saturn"` at `core.cpp:2255`, `"Ganymed"` → `"Ganymede"` at `:2251`) so `$body_selected` answers 600 and 503 as the documented table says instead of the 999 default — FIX AUTHORISED by the tester (round-3 R19, §11.207(b)#6 + (c1)), the dependence fact he did not answer MEASURED on this field at the mint (exactly one shipped script tests the variable, against 0), proven pre/post on the shipped command surface with a control body that fires on both binaries (§11.207(g) item 2; SS-17; DEPLOYMENT-MAP T1.10 → T4) [S, engine, both paths]
 
