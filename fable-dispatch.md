@@ -228,6 +228,9 @@ harness work ⇒ **F93** minted (S); picks now **F89 ✓ → F87 → F93 → F90
 field `.txt` not a `.po`, and `app_locale` is inert → §5.136); F93 WIDENED with the second
 instrument red F87 named (`b24_select.py`'s English-label matcher); F90's farm paragraph
 corrected (the farm COPIES `config.ini`). Picks **F89 ✓ → F87 ✓ → F93 → F90**, then F91/F92.]**
+**[18:2x, at F93's acceptance: F93 ✓ (§11.210 — both instrument reds on the reference GREEN,
+the gate reds on the corrupt build, verified by my own b4 run). Picks **F89 ✓ → F87 ✓ → F93 ✓
+→ F90**, then F91/F92 if health permits.]**
 Deliveries: all to the parent (§11.208+, refreshed at each dispatch). Launch classes:
 F89 FUNCTIONAL (star-field pixel sets under a frozen clock — no banked-band claim, the
 full canary is not required); F87 FUNCTIONAL (farm, French session, sidecar); F90
@@ -1187,6 +1190,49 @@ runs. Baselines: scan **223/274/131** (+2/+3/0, flagged-set diff EMPTY), pair-ch
 filter delta 0; D14 PASS. Owed, named not fixed: `f89_p7.py margins` reads pre-F93 artifacts
 only; `b4_anchors_run.sh` has no concurrent-instance probe; `b4_anchors.py` still carries its
 own copy of the dump grammar instead of `dumpread.py`.
+**ACCEPTED 2026-09-05 — the verifying commands' `date` read 18:17:37 and 18:20:59 (supervisor,
+session 23, Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.210
+read in full; six harness commits `668cc2e`..`22c9a40` (Claude Opus 5), code UNTOUCHED at
+`1d839b9d`, both trees clean; §11.210 markers at `INTENT/11.205.md`, `11.208.md`, `11.209.md`
+and four sites in `INTENT.md`; README F7 opens on the run line, its "exits 1 on the reference"
+sentence gone; the max-over-window control absent from `b4_anchors.py` (`darker` 0 hits);
+artifacts A1/A2/B1/C1/D1 + `prediction.txt` + `b24_shape_proof.txt` present; instruments to the
+digit (scan 223/274/131 · pair-check 226/201/25/108 · D 35 · D2 11 · I 89 · I2 36 · M 81);
+**AND the gate run by my own hand on the reference `407b3d1d` at 18:17:55–18:20:46
+(`/home/claude/sc-f93/out-S1-supervisor/`): rc 0, 0 failures, 846/21 and 2023/27 to the digit,
+config/ssystem/anchor md5 in==out** — the developer's first harness command is green.
+Deviations ENDORSED with the executor's arguments: the count control GREEN on the pre-fix
+binary (45.0×/45.8×) and NOT tuned red — §11.208(i) said "on BOTH binaries" and the executor
+read the source over my DoD; the corruption is caught by P1b, which is the check that was in
+the dump since F7 and never asked; the b24 repair as a module-level `info_block_shape()`
+beside `navstr_blocks` (one owner of the format; provable on landed artifacts in both
+languages without a launch); "numeric magnitude" = parses as a number (`inf` is a recorded
+product condition, §11.106); b4's own dump loader kept over `dumpread.py` (measured zero
+quoted non-finites in the scene; the duplicate recorded, not silently converted); no
+concurrent-instance probe added to the gate (cannot be shown red without a decoy — the
+executor's rule that every gate change fails first, applied to itself). DISPATCHER DEFECTS
+reported, both ACCEPTED as mine, output-side with counterfactuals: the section's prose named
+`2815d182` as the reference after F87 had moved it to `407b3d1d` (the precondition line was
+re-resolved, the prose was not — the same "section widened, numbers not re-resolved" class as
+§11.205's); and DoD (4)/check (c)'s *"red at EXACTLY the new assert AND the new control"* —
+contradicted by §11.208(i)'s "30–100× on BOTH binaries", which I cited two lines earlier; the
+only way to satisfy it was to tune K until the corrupt binary failed, which the executor named
+as the anti-pattern and refused. Round tally: **twelve dispatcher defects.** Criterion-integrity
+instances credited: the tolerance derived from two measured terms and committed before the
+first edit; every P7 count predicted from F89's corpus before the launches and met to the
+digit; P0 shown RED on F89's twinkle-on artifact before it was allowed to pass; the shape
+matcher shown to fail on eight malformed blocks; the same readout to the digit in both
+languages (the control that makes "spelling, nothing else" a measurement); the marker-word
+asymmetry of the scan (SUPERSEDED opens an event, ANNOTATED does not) measured and recorded
+rather than worked around. FINDING kept, not absorbed: four P1b legs stay GREEN on the corrupt
+binary — anchors created seconds before being read report their authored radii while the
+startup-loaded one is 17 417 km out: same dangling pointer, allocator luck (§5.133 annotated) —
+a use-after-free read is only as visible as the allocator makes it. STANDING CONSEQUENCES:
+both instrument reds on the reference are GREEN (`b4_anchors_run.sh` 91/91; `b24_select
+--skip-parity` 22/0); the gate now REDS on the corrupt build (9 P1b reds) — the direction it
+had backwards; b4's scene is deterministic (twinkle off via the farm copy, P0 asserts it);
+`f89_b4_variant.sh … on` reds at P0 by construction; owed: `f89_p7.py margins`, the gate's
+`/proc` probe, the `dumpread.py` duplicate.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
