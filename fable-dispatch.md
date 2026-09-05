@@ -1131,6 +1131,57 @@ new pair named and adjudicated INVERTED or NO-HOME) · pair-check **221/196/25/1
 = the entry file, its pair, the two new §5 rows) · **D 35 · D2 11 · I 89 · I2 36 · M 81, every
 filter delta 0** — three of them closed at their causes, not adjudicated away, and the last
 exposed that a §11.200 marker had qualified only because the word *"updated"* sat in its prose.
+**ACCEPTED 2026-09-05 (supervisor, session 22, Claude Fable 5.1).** Verified by my own
+runs and reads, not by the report: §11.205 read in full; two code commits (`9e0f1e93` the
+one-line move — `main.cpp` now runs `checkUserDirectory`/`checkUserSubDirectory` BEFORE
+`current_path`, with its reason in a comment citing the row; `a4a7c226` the ownership +
+the guard, 5 files / +56/−16) and seven harness commits (`2db0267`..`77a98e9`), all
+Claude Opus 5; §5.130/§5.133/§5.134 FIXED at their rows with the pointers; binary
+`2815d182`, `cmake -n` 0 steps; 27 artifacts under `harness/artifacts/f86/`
+(predictions before the launches, both ASan reports, the five b4 runs, the A/A pair);
+field md5 `03fbee59`/`545a51ef` intact; instruments to the digit (scan 211/261/131 ·
+pair-check 221/196/25/106 · D 35 · D2 11 · I 89 · I2 36 · M 81). **The comet guard's
+semantics READ by me at the diff**: for a RESOLVED parent the new flag is exactly the old
+test (`isNotSystemCentered = (parent->get_parent() != nullptr)`), so the five shipped
+`comet_orbit` sections F86(f) names compute the same orbit as before — the fix touches
+only the null-parent branch that used to crash. Deviations ENDORSED with the executor's
+arguments: row flips at delivery (entry-first order); `--no-mkdir` added to F84's
+instrument rather than a copy (I2, default off); the `main.cpp`-only attribution build
+(a red that cannot be attributed is worse than the red); the split comet message (as-if on
+the log channel for the branch that already reached it); ASan at `-j12`; I6 applied to
+the class (the two sibling creators read and clean). DISPATCHER DEFECTS reported, all
+three ACCEPTED as mine (the section's "§11.206", "§5.131 flipped", and "re-grade §5.130"
+— written before F84 minted §5.130–§5.132, never refreshed at the widening; the prompt
+carried the right numbers, so output-side); the `anchor.ini:51-59` → `:53-61` coordinate
+too. Round tally: **twelve dispatcher defects**, the majority coordinates/numbers written
+from memory of an earlier listing — the prevention stands (cite `grep -n` verbatim;
+re-resolve every number when a section is widened). **THE ONE OPEN AXIS, held not
+closed: the `b4_anchors` P7 screen-witness CONTROL, green ×2 pre-fix + on the
+`main.cpp`-only binary, red ×2 on the fixed binary.** Bounded by the executor (Moon
+centroid bit-identical in all five runs; every dumped number equal; the canary dwell
+frame byte-identical across a fourth binary; a ~19030 px>8 star-field difference,
+bimodal by binary, within-group floor 730–860) and by my read (the comet guard cannot
+move a resolved orbit); the twinkle-`rand()`-unseeded candidate is UNCONFIRMED (both
+experiments failed, the second by its own A/A). NOT absorbed as "instrument": what
+changed between the two binaries is §5.133's ownership fix, and a real-drawn-object
+difference in the other-date window is not excluded. Queued as next round's instrument
+position 1 with its discriminator: b4's own scene (date pinned) with twinkle OFF on both
+binaries, and the two P7 windows' lit-pixel sets compared directly. HOST EVENT
+adjudicated: the 12:23 EntityCore amend+push came from THIS checkout with a key my
+session lacks (`ssh -T` still refuses publickey) — writer set = the owner's hand or his
+other session; the tree is identical; the pin bump is the completing act and I took it as
+a supervisor act (code `32af2efb`, veto point §3): **`git clone --recurse-submodules`
+probe rc 0 at `32af2efb`, EntityCore `84f5d94` fetched from GitHub, `VulkanMgr.hpp`
+present ⇒ §5.131 DISCHARGED** (flipped at the row with this probe; §11.204(b)
+back-marked both homes). Criterion-integrity instances credited: the empty-HOME gate
+that could fail (`log/` inside the new directory); the A/A run FIRST and the byte-identity
+claim narrowed to what survived it; the predicted-silent ASan startup with its reason,
+then the one command that makes it speak; the prediction's CLASS refuted and kept
+(overflow, not use-after-free — worse); the release binary shown silent on the same
+corruption; the b4 red bounded rather than re-banked. Standing consequences: a fresh
+account's first launch now works (`INSTALL` §6's `mkdir` paragraph and §3's KNOWN ISSUE
+are obsolete — F85 deletes both and re-verifies); five shipped comets run the guarded
+branch on every launch, unchanged; the ASan build dir is current and kept.
 
 ### F87 — EXTENSION: §5.111 — the new path's object readouts translated where the old path's are: `ModularObject`'s labels re-wrapped in `_()` with the OLD path's exact msgids (parity: old is the baseline, so the French catalogue answers identically), plus the owed census of every other new-path user-visible string that lost its `_()` in the same port (DEPLOYMENT-MAP T2's decision-free candidate since 2026-08-29, never dispatched; the tester operates in French) [S]
 

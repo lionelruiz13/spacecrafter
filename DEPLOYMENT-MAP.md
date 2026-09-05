@@ -27,8 +27,13 @@ tester, decision-paced — the tiers that follow). **What is NECESSARY, and only
 - **For R0:** ~~R1 reconcile the deployed line (**F83**)~~ **[DONE 2026-09-05, §11.203 —
   merged at `c6784490`; R1's residual collapsed into R5]** · ~~R2 the newcomer's first hour + the
   deployment manifest (**F84**)~~ **[MEASURED 2026-09-05, §11.204 — NOT MET, and what remains is
-  the OWNER's twice over: **§5.131** the EntityCore push (a DIFFERENT repository from R5's, so
-  R5 does not cover it) and **§5.130** one line moved in `main.cpp`. F84 shipped the docs and
+  the OWNER's twice over: ~~**§5.131** the EntityCore push (a DIFFERENT repository from R5's, so
+  R5 does not cover it) and **§5.130** one line moved in `main.cpp`~~ **[BOTH GONE by 14:30:
+  §5.131 DISCHARGED — the owner's 12:23 push (§11.205(i)) + the pin bump `32af2efb` (supervisor
+  act) + a clone probe rc 0; §5.130 FIXED by F86 (§11.205(b), code `9e0f1e93`). What R2 still
+  owes: F85 deletes INSTALL's two now-obsolete paragraphs and re-verifies the clone line; the
+  CONTENT question (a tree install ships none, no document says where it comes from —
+  §11.204(f)) is the owner's, R6's sibling]**. F84 shipped the docs and
   the two one-line build fixes; the manifest says a tree install carries no content at all]** ·
   R3 the entry document (**F85**) · R4 startup memory-unsafety
   (**F86** for the two old-core members; §5.48 is EntityCore = Vixy's) · **R5 the PUSH (Vixy —
@@ -167,7 +172,12 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    fix the clone by itself: the pin in `master-beta` still names the amended-away SHA, so the
    act that remains is a pin bump in THIS repository, not a push in that one.]** Supervisor's reading
    at F84 acceptance: the `main.cpp` half of R2's residual is NOT the owner's — §5.130's
-   one-line move is decision-free (§5.79/F35 precedent) and goes to F86.]**
+   one-line move is decision-free (§5.79/F35 precedent) and goes to F86.]** **[2026-09-05
+   14:30: the EntityCore push HAPPENED (from this checkout, 12:23 — a key this session does
+   not hold; the owner's hand or his other session) and the pin bump followed (`32af2efb`);
+   the clone probe passes. R5 is back to ONE act: push `master-beta` (81 code commits) and
+   `CC-harness` from a keyed host — or from here, since a key evidently exists on this
+   machine for some session; the supervisor never pushes.]**
 6. **R6 — Branch policy.** Three developers committed to `2023-master` in 2026 (Kenan-Blasius,
    Lionel, Calvin). For `master-beta` to be the reference, either it becomes the PR target /
    main, or the others are redirected to it. → **Vixy**, one sentence; nothing here can decide
