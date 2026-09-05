@@ -3535,3 +3535,71 @@ around the stage and the driver asserts it again around the launch, plus the
   more (Mars/Phobos/Deimos). The frame channel cannot separate them; the dump
   channel can. Report which rows are one measurement instead of counting them
   as independent.
+
+## F83 — the deployed-line merge, and the two gates that could actually see it (no new instrument) — INTENT §11.203, 2026-09-05
+
+F83 added no script. It ran existing gates against a merge, and the value is in
+which of them were capable of failing. Recorded here so the next merge does not
+have to rediscover it.
+
+**Reproduce the state**: code merge `c6784490` (parents `85cc2785` + `6ec2f43f`),
+delivered HEAD `03c85734`, binary md5 `225f0d93`. Predictions committed before the
+runs: `artifacts/f83/prediction.txt`. Gate logs: `artifacts/f83/ctest_19of19.log.gz`,
+`artifacts/f83/corpus_strict.log.gz`; canary run
+`artifacts/f56/canary/20260905-105517/`.
+
+### Gotchas measured here
+
+- **`git log … | wc -l` AND `git diff --stat` BOTH OVERSTATE A MERGE. Only
+  `git cherry` answers "what content arrives".** Here: 15 commits by SHA and 26
+  files / 763 insertions by base-relative diff, against **2 commits and 4 files**
+  by content — thirteen commits were already present under other SHAs. Reporting
+  the SHA count as the merge's size overstates it by 6.5x. The arrival check is
+  `git diff --stat <pre> HEAD` after the merge, cross-footed against the sum of
+  the incoming commits' own stats (480 = 476 + 4 here, to the line).
+- **`git checkout --ours` DESTROYS THE EVIDENCE FOR "ours was kept".** The natural
+  proof — "`git diff <pre>` over the conflicted files is empty" — is true BY
+  CONSTRUCTION under `checkout --ours`, because it discards the auto-merged
+  (non-conflicting) hunks in those files along with the conflict. Delete the
+  markers and keep the HEAD side instead (`/tmp/f83_resolve.py`'s ten lines,
+  byte-level, no transcription): then an empty diff is a RESULT — it says the
+  auto-merged remainder was ours-identical too, which is the part nobody checked.
+- **`src/CMakeLists.txt:3` globs sources with `file(GLOB_RECURSE)` and NO
+  `CONFIGURE_DEPENDS`, so a NEW source file is invisible to an incremental
+  build.** Measured: `video_surface_texture` appeared **0** times in
+  `build-claude/src/CMakeFiles/spacecrafter.dir/build.make` while 143 compile
+  steps were already pending; after `cmake -S . -B build-claude`, 13 times. A
+  build gated only on exit code would have compiled 143 objects, returned 0, and
+  never touched the file the gate was named after. **After any merge or
+  cherry-pick that ADDS a file, re-configure before building, and verify the new
+  TU by name in the build log and by symbol in the binary** (`nm -C | grep`).
+- **The anchor gate CAN see an engine merge, and the F83 dispatch's assumption
+  that it could not was wrong.** Any header the merge grows shifts every anchor
+  BELOW the insertion. `s_texture.hpp` grew 5 lines above `setBigTextureLifetime`
+  and the two citations of `s_texture.hpp:294-298` went `clean -> moved`. To find
+  which references moved there is no verbose flag: `grep -rn <basename>
+  util/scedit/grammar/` finds them directly, then read the referent at the pin
+  (`git show <pin>:<path>`) and at HEAD and confirm the shift equals the lines the
+  diff inserted above it.
+- **A moved anchor is RE-RECORDED, never re-pointed.** `_meta.anchor_pin` is a
+  COMMIT and `anchor_gate.py` checks the pin FIRST. Editing the line numbers to
+  match HEAD makes the citation false at its own pin, which is the one check that
+  cannot rot; re-pointing honestly means moving the pin, which re-baselines all
+  7196 references. **And the record file cannot carry the reason**:
+  `anchor_gate.py:678-684` builds a fixed four-line header plus sorted counts and
+  byte-compares the WHOLE file, so any explanatory comment added to
+  `tests/anchor-expected.txt` reds the gate. The explanation goes in the commit
+  message and the ledger entry.
+- **`/usr/bin/grep` does NOT honour `\x80` inside a bracket expression** — a third
+  member of CLAUDE.md's encoding-hazard family. `LC_ALL=C /usr/bin/grep -c
+  '[\x80-\xff]' <file>` returned **1162** on a file with **zero** non-ASCII bytes
+  (the bracket set is read as the literal characters `\`, `x`, `8`, `0`, ...).
+  The Bash-tool wrapper is ugrep, which DOES honour the escape, so an idiom that
+  works there silently lies under `/usr/bin/grep`. Use `-P`, and prefer an
+  independent Python byte census when the answer matters.
+- **Name which gates could have failed, in the entry.** Of F83's five, only two
+  could see the merge: the canary (because `s_texture` is the loader every
+  textured body goes through) and the anchor gate. ctest and the strict corpus run
+  over command-surface files the merge left byte-identical — their green is a
+  no-regression statement about scedit, not evidence about the merged feature, and
+  counting them as passing checks would be counting checks that could not fail.

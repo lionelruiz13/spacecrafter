@@ -648,35 +648,37 @@ has NO merge in progress (`.git/MERGE_HEAD` absent).
 **DoD:** merge commit on `master-beta` + the merged build + all gates recorded;
 §11.203 entry + stub; DEPLOYMENT-MAP R1; README section; trees clean; WIP cleared;
 baselines re-derived LAST with deltas stated.
-**WIP:** 2026-09-05 — §0.7 gate PASS on all 18 stated premises (incl. `git cherry`
-13`-`/2`+`, merge-base, both submodule pins, versions equal, binary `c8e12950` +
-`cmake -n` zero compile steps, canary `--no-scene` exit 0, ASCII gate, `clean 7196`).
-CKPT 1 (mandate 1+2) DONE: merge committed `c6784490` (parents `85cc2785`+`6ec2f43f`);
-four conflict hunks = exactly the four stated, all resolved to OURS by marker-deletion
-(NOT `checkout --ours`, so check (b) could fail); (a) `git cherry` EMPTY 0`+`/0`-`,
-(b) three files diff vs `85cc2785` = 0 lines + md5-equal, (c) exactly the four
-`src/tools/` files 480+/4-, (g) D14 gate PASS CONVERT 970 -> 972. CKPT 2 (mandate 3)
-DONE: `src/CMakeLists.txt` collects sources by `file(GLOB_RECURSE)` with NO
-CONFIGURE_DEPENDS, so an incremental build would have SILENTLY omitted the new TU
-(measured: 0 `video_surface_texture` refs in `build.make` before, 13 after a
-re-configure) -- re-configured, then built -j24: (d) exit 0, 143 objects incl. the
-new TU at 58 %, mtime 2026-09-04 20:11:16 -> 2026-09-05 10:53:00, md5 `c8e12950` ->
-`225f0d93`, `-n` zero steps after, 26 `VideoSurfaceTexture` symbols linked; NO
-libavcodec-61 failure. One warning, pre-existing and in an untouched file
-(`dsoNavigator.cpp:306`) = §5.92's already-recorded `z_reflection` rider. CKPT 3+4
-(mandate 4+5) DONE: (e) FULL canary exit 0, **12/12 in band, every delta 0.0**, exact
-banked values, cache mutations 0, md5 in==out; dwell frame md5 `5215565b…`
-BYTE-IDENTICAL to §11.199's, now across a THIRD binary. (f) ctest **19/19** (fresh
-`util/scedit/build-f83`, Release), strict corpus **4014/0/0** — BUT the anchor gate
-RED first: `clean 7196 -> 7194`, `moved 2`, refuting BOTH the dispatch's "none of the
-four files is anchored" and my own committed P3. The two are the same sentence stored
-twice (`sc-grammar.json:711`, `args/unit-4.json:274`) citing `s_texture.hpp:294-298`
-= `setBigTextureLifetime`, now at 299-303: shift +5 = exactly the merge's lines above
-it. Re-RECORDED not re-pointed (the pin is a COMMIT, `54a2b844`; re-pointing would
-falsify the citation at its own pin) — code `03c85734`, ctest 19/19 after. Mandate 5:
-the verb is `image action load filename <x>.mp4 name <n>` (`app_command_interface.cpp:3111`
--> `image_mgr.cpp:85` -> `image.cpp:66` -> `s_texture.cpp:305`); OWED, both candidate
-dirs empty. NEXT: mandate 6 (§11.203 + stub, DEPLOYMENT-MAP R1, README, baselines).
+**WIP:** — **DELIVERED 2026-09-05 (Claude Opus 5 executor) → §11.203** (entry file +
+stub), DEPLOYMENT-MAP **R1 struck as MET** (and R5 re-measured: R1's residual now lives
+there alone), `harness/README.md` F83 section. Code `85cc2785` → merge **`c6784490`**
+(parents `85cc2785`+`6ec2f43f`) → **`03c85734`**; binary **`225f0d93`**; harness
+`51d17fa` → `4222e6d` `0306217` `f7cc6ad` `3eae7e7` + this delivery commit. Both trees
+clean. **DoD, per item:**
+merge ✓ (four hunks = exactly the four stated, all OURS, resolved by marker-deletion so
+check (b) COULD fail); (a) `git cherry` empty both ways ✓; (b) three files 0-line diff +
+md5-equal ✓; (c) exactly four `src/tools/` files, 480+/4- = 476+4 ✓; (d) build exit 0,
+md5 `c8e12950`→`225f0d93`, `-n` zero after, 26 symbols linked, no libavcodec-61 failure
+✓; (e) FULL canary exit 0, **12/12 in band, every delta 0.0**, dwell frame md5
+`5215565b…` byte-identical across a THIRD binary ✓; (f) ctest **19/19**, corpus
+**4014/0/0** ✓, anchor gate **RED then re-recorded with the drift explained** ✓; (g) D14
+PASS, CONVERT 970→972, no partition edit ✓. **Two findings the dispatch did not
+expect:** `src/CMakeLists.txt:3` globs with no `CONFIGURE_DEPENDS`, so an incremental
+build would have omitted the new TU and passed the compile gate vacuously (0 refs in
+`build.make` before a re-configure, 13 after); and *"none of the four files is anchored"*
+is FALSE — `s_texture.hpp` carries two citations, `clean 7196→7194`, referent
+`setBigTextureLifetime` shifted +5 (294-298 → 299-303), re-RECORDED not re-pointed (the
+pin is a commit; re-pointing falsifies the citation at its own pin). Report-only per
+§11.179(a) — counterfactual stated in §11.203(j): had it been an input, abort.
+**Fetch staleness DISCHARGED** by the supervisor's read-only https `ls-remote` (all three
+tips identical to the 2026-08-03/04 fetch) ⇒ the owner's residual is **the PUSH alone**
+(80 code / 645 harness unpushed). Feature NAMED not exercised: `image action load
+filename <x>.mp4 name <id>`; the dispatch's reason corrected (`TFP::IMAGE` reads
+`getPictureDir()`, not `getVideoDir()` — both empty). **Baselines re-derived LAST:** scan
+**209/256/126** (delta **0/0/0** — §11.203 supersedes no entry; it corroborates §5.92 and
+§11.199, so no back-marker is owed and the instrument agrees); pair-check
+**219/194/25/101** (delta **+1/+1/0/0** = this entry file + its stub pair, which is also
+the proof the instruments READ the new entry) · D 35 · D2 11 · I 89 · I2 36 · M 81, all
+delta **0**.
 
 ### F84 — The newcomer's first hour, measured: a clean clone of the merged HEAD taken through INSTALL / `install_src.sh` as written (no sudo, scratch prefix), every deviation he would hit recorded and the documents corrected to what IS; the install tree manifested; six fresh-HOME first launches (the §5.48 cold-HOME race rated); the §5.112 rewrite priced on a bumped-version copy of the field config — the deployment manifest that makes the branch a reference (DEPLOYMENT-MAP R2 + T3's §5.112 datum) [M]
 

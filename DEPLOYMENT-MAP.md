@@ -24,7 +24,8 @@ require further feature port. His work will start in a week."*]** The map now ca
 criteria with different clocks: **R0** (the developer, ONE WEEK — tier R below) and **T0** (the
 tester, decision-paced — the tiers that follow). **What is NECESSARY, and only that, as of
 2026-09-05** — the rest of this file is the derivation and stays challengeable:
-- **For R0:** R1 reconcile the deployed line (**F83**) · R2 the newcomer's first hour + the
+- **For R0:** ~~R1 reconcile the deployed line (**F83**)~~ **[DONE 2026-09-05, §11.203 —
+  merged at `c6784490`; R1's residual collapsed into R5]** · R2 the newcomer's first hour + the
   deployment manifest (**F84**) · R3 the entry document (**F85**) · R4 startup memory-unsafety
   (**F86** for the two old-core members; §5.48 is EntityCore = Vixy's) · **R5 the PUSH (Vixy —
   nothing here reaches the developer without it)** · R6 the branch policy (Vixy, one sentence).
@@ -43,7 +44,7 @@ tester, decision-paced — the tiers that follow). **What is NECESSARY, and only
 one week and develops on it; no work continues on the deployed line that would later need
 porting. Derived requirements, each with its state MEASURED on 2026-09-05:
 
-1. **R1 — `master-beta` contains the deployed line.** Local `2023-master` (`194c6074`,
+1. ~~**R1 — `master-beta` contains the deployed line.** Local `2023-master` (`194c6074`,
    2025-09-20) ⊂ `master-beta`. `origin/2023-master` = `6ec2f43f` (last fetched 2026-08-03 —
    no fetch is possible from this host, publickey refused) is 15 commits ahead by SHA and
    **2 by content** (`git cherry`: Kenan-Blasius's video-as-`s_texture`, `c69687bc`+`6ec2f43f`,
@@ -51,7 +52,22 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    "keep ours" (F70 ASCII ×2, B31 `SC_SESSION`, F62 `div/mul/mod`); version strings equal
    (2026.07.11 — §5.112 silent); submodule pin ours-advanced only. → **F83**. Residual, Vixy's:
    the fetch is a month stale — re-fetch + re-merge from a keyed host before the developer
-   clones.
+   clones.~~ **[MET 2026-09-05 by F83 → §11.203; code merge `c6784490`, HEAD `03c85734`,
+   binary `225f0d93`.** The four hunks resolved to ours exactly as measured, and proven so by
+   a check that could have failed (markers deleted, not `git checkout --ours`, so the three
+   files' `git diff 85cc2785` being empty is a result about the AUTO-merged remainder too);
+   `git cherry` after the merge is empty in both directions; the merge's stat is 4 files /
+   480 insertions = the two commits' 476 + 4 to the line. Gates on the merged binary: full
+   canary **12/12 in band, every delta 0.0**, dwell frame md5 unchanged across a third
+   binary; D14 PASS (CONVERT 970 → 972, no partition edit); ctest 19/19; corpus 4014/0/0.
+   The anchor gate reded and was right — two citations of `s_texture.hpp:294-298` moved +5
+   to 299-303, explained and re-recorded (not re-pointed: the pin is a commit).
+   **THE RESIDUAL IS SMALLER THAN THIS ROW SAID:** a read-only https `ls-remote`
+   [measured: supervisor, 2026-09-05 11:05] returns all three remote tips byte-identical to
+   the 2026-08-03/04 fetch, so nothing was pushed since and this merge covers the ENTIRE
+   deployed-line delta. The re-fetch/re-merge half is DISCHARGED; what is left of R1 is
+   **R5, the push, and nothing else** (80 code / 645 harness commits unpushed; https READ
+   works from this host, SSH and push do not).**]**
 2. **R2 — A clean clone builds, installs and runs by the documents.** INSTALL is the
    source-ZIP + Windows/VCPKG text and never says `--recurse-submodules`; `install_src.sh:22`
    leaves `CMAKE_BUILD_TYPE` EMPTY by a one-character inversion of its own stated intent; both
@@ -65,8 +81,16 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
 4. **R4 — No memory-unsafety reachable from the shipped data at startup.** §5.127(2) the UAF
    from `anchor.ini`, §5.127(1) the comet null deref (old core) → **F86**; §5.48 (EntityCore)
    → Vixy.
-5. **R5 — The branch is on the remote.** +63 code / +638 harness commits unpushed; GitHub
+5. **R5 — The branch is on the remote.** ~~+63 code / +638 harness commits unpushed~~
+   **[RE-MEASURED 2026-09-05 after F83: **+80 code** (the 63, plus the 15 SHAs the merge
+   makes ancestors, plus F83's 2) **/ +645 harness**]**; GitHub
    refuses publickey from this host. → **Vixy** (push from the laptop, or land the key here).
+   **[2026-09-05, §11.203(i): R1's residual now lives HERE and nowhere else. A read-only
+   https `ls-remote` [measured: supervisor, 11:05] returns `2023-master` `6ec2f43f`,
+   `master-beta` `76ee38c7`, `CC-harness` `eb9af25c` — all three byte-identical to the
+   2026-08-03/04 fetch, so nothing has been pushed by anyone since and there is nothing
+   left to re-fetch or re-merge. https READ works from this host; SSH and push do not.
+   This is the one act nothing here can substitute.]**
 6. **R6 — Branch policy.** Three developers committed to `2023-master` in 2026 (Kenan-Blasius,
    Lionel, Calvin). For `master-beta` to be the reference, either it becomes the PR target /
    main, or the others are redirected to it. → **Vixy**, one sentence; nothing here can decide
