@@ -147,6 +147,13 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   contract (`util/scedit/grammar/sc-grammar.json`) ⇒ new words are B28-protocol
   spellings; and **§2(b)** (user scripts are immutable live-show content), which
   bounds what a policy may do to a script already playing.
+- **DECLINED by the main tester 2026-09-05** — round-3 **R25**, verbatim and
+  entire: ***"No need for that."*** `[stated: tester (Lionel RUIZ), via owner
+  commit 6ffb017]`. The requester is the OWNER, so both voices are recorded and
+  the entry is NOT retired. The full reading, the consequence for the
+  `[script-binding]` → `[script-trigger]` chain, and the two parts that survive
+  the decline on their own arguments are at the end of this entry's refinement
+  block below. → INTENT **§11.207**
 
 ### [2026-08-26] Script-bound key/joystick bindings — override a binding to launch a script
 - **From:** Vixy (`claude/vixy-side-ideas.txt` `[script-binding]`, harness
@@ -174,6 +181,16 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   framing rule now in `USER_QUESTIONS_ROUND3.md`'s header (a proposal leads
   with what it enables/simplifies/removes, never with its own defense) — R25
   reframed under it the same day.
+- **THE PREREQUISITE WAS DECLINED 2026-09-05** — round-3 **R25**: ***"No need
+  for that."*** `[stated: tester (Lionel RUIZ), via owner commit 6ffb017]`. The
+  dependency note above founds this request on tester interest (*"dynamic
+  binding is where it may interest him, because joystick button are severely
+  limited"*), and the decline removes exactly that footing. **The PREMISE
+  survives**: round-3 **R21** places joystick/hardware controls inside the
+  tester's content census, so the buttons are real and still few — what fell is
+  the interest, not the fact. The chain's ORDER is unchanged (parallel-script is
+  still the root); what changed is that nothing at the far end is currently
+  wanted by the person it was for. → INTENT **§11.207**
 
 ### [2026-08-26] Script triggers — run a script when a condition is met
 - **From:** Vixy (`claude/vixy-side-ideas.txt` `[script-trigger]`, harness
@@ -546,6 +563,36 @@ A43's premise (the Sun/Moon preview↔full mismatch may be the tester's
 authored design, not a data slip — regenerating would destroy it):
 routed as round-3 question **R29**, A43's fix direction gated on its
 answer; the ledger-row flip itself is the supervising session's.
+**[R29 ANSWERED 2026-09-05 — *"It's a design."* `[stated: tester (Lionel
+RUIZ), via owner commit 6ffb017]` ⇒ the reframing is confirmed by its own
+subject: A43 CLOSED as design, regeneration cancelled → INTENT §11.207.]**
+
+**DECLINED BY THE TESTER 2026-09-05 — `[parallel-script]`, and with it the
+resubmission this file spent three refinements preparing.** Round-3 **R25**,
+`[stated: tester (Lionel RUIZ), via owner commit 6ffb017]`, verbatim and
+entire: ***"No need for that."*** The resubmission was built exactly as the
+triage note above specified — interest first, both recovered objections
+answered against the current text, the `*` global-stop and the two concrete
+binding instances carried in — and the answer came back with no reason
+attached. **Both voices stay on the record, because they are different
+people**: the REQUESTER is the OWNER (`vixy-side-ideas.txt`, the text
+authority, unchanged by this), and the DECLINER is the main tester, in whose
+hands the feature would land. A tester's decline is decisive about *value to
+him*; it is not a withdrawal of the owner's own request, and nothing here
+retires the entry — it records that the interest argument no longer has the
+tester behind it. **Consequence for the chain** `[parallel-script]` →
+`[script-binding]` → `[script-trigger]`: the dependency note above founds the
+chain on tester interest ([vixy 2026-08-31]: *"dynamic binding is where it may
+interest him, because joystick button are severely limited and it's a
+pre-requisite"*), and R25 removes precisely that footing. The PREMISE survives
+— round-3 **R21** puts joystick/hardware controls inside the tester's content
+census, so the buttons are real and still few — so what fell is the interest,
+not the fact. **One thing R25 does not touch**, recorded so it is not lost with
+the decline: the triage note's two ledger hits are independent of parallelism
+— script-local resource scoping attacks §5.110/§5.113's stale-slot class at
+its root and is valuable single-script, and `[script-trigger]` remains the
+root-level answer to §5.115's poll-loop log storm (whose window scalar R20 just
+fixed at 8 launches). Those survive on their own arguments. → INTENT §11.207
 
 ### [2026-08-31] Command provenance (file/tcp + line) carried by the engine, and TCP feedback on a link dedicated to scedit
 - **From:** Vixy (in-conversation, session-19 trigger line; full record §11.186(b)(c))

@@ -2,16 +2,26 @@
 
 Last updated: 2026-08-31.
 
-**Status: ~~DRAFT — compiled 2026-08-31, NOT yet sent.~~ ANSWERED 2026-09-05 — the
+**Status: ~~DRAFT — compiled 2026-08-31, NOT yet sent.~~ ~~ANSWERED 2026-09-05~~
+**PROPAGATED 2026-09-05 → INTENT §11.207** (task F88; the reply→row table, the
+propagation, and everything the replies do NOT settle live there — the ledger wins on
+divergence, as always). **TWENTY replies, not sixteen**: R14–R29 plus N5, N7, L1 and
+L2, every one of them carried to at least one row. ANSWERED 2026-09-05 — the
 replies below are the MAIN TESTER's (Lionel RUIZ), transmitted by the owner
 [vixy 2026-09-05: *"Reading the claude code's Edit side, I can tell those came from
 the main tester/user"*]; committed inline 13:38:30 under the owner's git identity and,
 on his word, the commit's AUTHOR was amended to the tester's history identity
 (`Lionel RUIZ <lionel.ruiz@live.fr>`, 151 commits in the code repo): `c5be42b` →
 **`6ffb017`**, committer = the supervising session (the transport). Provenance tag for
-every reply: `[stated: tester, via owner commit 6ffb017]`. Propagation into the
+every reply: `[stated: tester, via owner commit 6ffb017]`. ~~Propagation into the
 ledger (§13/§5/DECISIONS rows, DEPLOYMENT-MAP, back-markers) = F88; until it lands,
-the replies are authoritative and the rows are STALE.** This file is the
+the replies are authoritative and the rows are STALE.~~ **[LANDED 2026-09-05, F88 →
+§11.207: sixteen §5 rows (fifteen marked + §5.135 minted), five §13.A rows with A43
+CLOSED as design, two §13.B rows, D37 CLOSED in `DECISIONS_PENDING.md` with D15(b) and
+D28 confirmed, eighteen §11 entries with seventeen matching stubs, `SCRIPT_SURFACE.md`
+SS-17 answered, `FEATURE_REQUESTS.md` `[parallel-script]` DECLINED, `DEPLOYMENT-MAP.md`
+re-derived. The rows are no longer stale. The replies below are UNTOUCHED — this file's
+only edits are these status lines.]** This file is the
 send-time view of the ledger-owned final-pass list (INTENT §11.116(c):
 tester items accumulate into ONE pass before testing deployment; the
 ledger wins on divergence). Before it goes out, the developer applies the

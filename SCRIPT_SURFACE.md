@@ -211,6 +211,17 @@ New entries:
   `Ganymed=503` / `Saturn=600`, so the mismatch is exactly as it was: the
   engine agrees with the table on `Ganymed` and disagrees on `Saturn`,
   while the actual body names are `Ganymede` and `Saturn`.
+  **ANSWERED 2026-09-05 — round-3 R19, your words: *"Satun must be corrected
+  to Saturn and Ganymed to Ganymede."*** `[stated: tester (Lionel RUIZ), via
+  owner commit 6ffb017]`. **Status: ANSWERED — the fix is authorised**, two
+  spellings in the engine (`core.cpp:2173` and `:2177`), and §5.98 is now
+  decision-free. One thing we did not learn, and are recording rather than
+  assuming: the question asked whether any of your shows *test* 600/503 or
+  work around today's 999, and the answer went straight to the correction. So
+  we do not know whether any existing show depends on the 999 — if one does,
+  it will change behaviour when the spellings land, and that is worth a look
+  on your side before the next delivery. The correction itself is not in
+  doubt: you own this surface, and you asked for it. → INTENT **§11.207**
 - **SS-18** — 15 more teach-vs-do divergences catalogued (full list:
   `witness/superscript-witness.json`), the sharpest for you:
   (a) lines 121-123 `*_altimetry_factor` — renamed engine-side
