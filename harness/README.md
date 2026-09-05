@@ -714,40 +714,73 @@ Two instrument lessons recorded here, both learned in this run:
   aims (select + track, tracking RELEASED before every shot — tracking would
   re-centre the Moon at t1 and hide the motion under test) and tests a 2x2
   contrast at the DUMPED screen positions with a window radius PREDICTED from
-  the dumped R/d/halfFov (28.3 px disc, 512 px separation). Measured 212/255 at
-  the Moon's own position vs 40/170 at the other date's.
+  the dumped R/d/halfFov (28.3 px disc, 512 px separation). ~~Measured 212/255
+  at the Moon's own position vs 40/170 at the other date's.~~ **[THE CONTRAST
+  IS A LIT-PIXEL COUNT SINCE 2026-09-05, F93 §11.210 — the max-over-window form
+  quoted here was beaten by a single star and is REMOVED; measured 846 vs 21 px
+  and 2023 vs 27 px, next section.]**
 
 Also: with the observer on a far fixed point the OLD path emits bare `nan`
 screen coordinates in `dual_dump` (2 lines of 103; the NEW side has none), so
 the loader normalizes `nan` -> `NaN` rather than losing the file.
 
-### P7's control is RED on the reference binary, and that is the RIGHT answer (F89, INTENT §11.208, 2026-09-05)
+### The gate reds on the corrupt binary and greens on the correct one — the two repairs, APPLIED (F93, INTENT §11.210, 2026-09-05)
 
-**Read this before you read a b4 run.** On the reference binary (code
-`a4a7c226`+, the shipped state) `b4_anchors_run.sh` exits 1 with exactly one
-failure — P7's *"SCREEN WITNESS control: the OTHER date's position is darker in
-each shot"*. **Every other check passes, the red is explained, and it is not to
-be re-banked, relaxed or demoted.** What it means:
+**Read this before you read a b4 run.** On the reference binary
+`b4_anchors_run.sh` **exits 0, every check green** — measured twice, 2026-09-05,
+binary `407b3d1d` at code `1d839b9d`. On the pre-`§5.133` binary
+(`/home/claude/sc-f89/bin/sc-scratch-pre`, `9471f2fc`) it **exits 1 with nine
+failures, all of them the new P1b assert**. Until F93 it was the other way
+round, and this section said so; §11.208(i) is where that inversion is
+diagnosed and §11.210 is where it is repaired. What changed, and what each
+repair buys:
 
-- The control compares the MAX luminance of a 112x112 px window at the Moon's
-  own dumped position against the MAX at the other date's position. On the
-  CORRECTED sky an ordinary star of luminance **217** stands in the other-date
-  window while the Moon's own disc peaks at **182**. A max-over-window test
-  cannot tell a star from a Moon; that is the whole of the red.
-- It was GREEN, three runs in a row, on binaries whose entire star field was
-  **76.4 deg** off, because the pre-`§5.133` build kept a dangling `Orbit*` for
-  every `type = orbit` anchor: `Moon.old.dist` read **182582.8 km** where the
-  anchor's authored radius is **200000.0 km**, and after b4's tracking command
-  the OLD path (which draws the stars, `solarSystemModule.cpp:298`) aimed 76 deg
-  away from the body layer. **A green b4 on a pre-fix binary was a pass on a
-  wrong sky.**
-- Two strictly stronger repairs are RECORDED and deliberately NOT APPLIED
-  (they are gate-design decisions, §11.208(i)): assert the OLD path's distance
-  to the anchor's parent against the authored radius (17417 km of
-  discrimination, wrong in b4's own artifacts since this gate was written), or
-  make the control count LIT PIXELS instead of taking a maximum (846 vs 21 px
-  at t0, 2023 vs 27 at t1 — 30-100x on both binaries, where the max form gives
-  -35 and +172). Whoever takes that decision should read §11.208(i) first.
+- **P1b — the OLD path's distance to the anchor's parent, against the AUTHORED
+  radius.** At every dump whose camera reference is an orbit anchor (13 of the
+  28 this scene takes), `<parent>.old.dist` must equal that anchor's authored
+  semi-major axis within **1.0 km**. The tolerance is DERIVED, not picked: the
+  OLD half of a body record prints at 17 significant digits (quantization
+  1.5e-11 km, measured on the artifact), the binding term is the old path's
+  ease-out still settling when the dump is taken, and that is ≤ **0.0482 km**
+  across F89's whole corpus — so 1.0 km is 20x the noise, 17417x below the
+  defect it catches, and is the number P1 already applies to the same authored
+  constant on the new path. Measured: reference **199999.996 / 200000.048 /
+  300000.003 km** against 200000.0 and 300000.0; pre-fix **182582.753 km** and
+  **181736.830 km**.
+- **The four P1b legs that stay GREEN on the corrupt binary are a control, not
+  a gap.** `b4_cmd_orbit` and `b4_cmd_other`, created by `camera action create`
+  seconds before they are read, report their authored radii correctly on the
+  same binary where `b4_orbit_moon`, loaded from `anchor.ini` at startup, is
+  17417 km out. The DEFECT is present in all three — every one of them stores a
+  pointer to a destroyed temporary (§5.133) — what differs is whether that
+  memory has been REUSED yet, which §11.205(c) already measured from the other
+  end (by the time the startup anchor is read, ASan can no longer even name the
+  chunk). So the gate gets a free in-run control, and a reader gets the warning
+  that a use-after-free read is only as visible as the allocator makes it.
+- **P7's window observable is a LIT-PIXEL COUNT (px>8), not a maximum.** A
+  maximum is one pixel and one pixel is a star: on the corrected sky an
+  ordinary star of luminance **217** stands in the other-date window while the
+  Moon's own disc peaks at **182**, which is the whole of the old red. Counting
+  gives **846 vs 21** at t0 and **2023 vs 27** at t1 on the reference, **855 vs
+  19** and **2015 vs 44** on the pre-fix binary — 40-85x either way, where the
+  max form gives -35 and +172. The bar is `own >= 4 x other`, from the weakest
+  ratio ever measured (40.14, eight runs, both binaries, twinkle either way),
+  i.e. a 10x margin; the presence bar is `own >= 100 px`, 8.4x below the
+  weakest own-window count (843) and strictly stronger than the `max > 64` it
+  replaces. **The max form is gone, not kept beside it** (two observables for
+  one claim is the duplicate I2 forbids).
+- **This control does NOT discriminate between the two binaries, and is not
+  meant to.** It passes on both (45.0x and 45.8x on the pre-fix binary), which
+  is exactly what §11.208(i)'s *"30-100x on BOTH binaries"* said. The gate's
+  direction is carried by P1b alone. A control that greens on a corrupt build
+  is only a fault when nothing else reds — which is the state F89 found and
+  F93 ended.
+- **P0 asserts the twinkle is OFF from the app's own dump**, at every one of the
+  28 dumps (`oldView.stars.twinkleAmountEff` == 0), and `b4_anchors_run.sh` is
+  what turns it off — in the farm's config copy, since `core.cpp:346` reads it
+  at startup and b4's scene sends nothing for it. `b3_farm.sh` COPIES
+  `config.ini`, so the write cannot reach the field, and the runner asserts
+  that the copy is a real file before writing it.
 
 **Reproducibility rules for anything that reads this scene's pixels** (measured,
 F89 §11.208(e)(j)):
@@ -756,6 +789,18 @@ F89 §11.208(e)(j)):
   to **0-2 px** frame-wide (`|A-B|>8` = 0-26). With the shipped `true` the same
   binary differs from itself by **2165-2229 px** (`|A-B|>8` 1171-1239) — that,
   not any code change, is the "730-860 px floor" earlier entries reported.
+  **[SINCE F93 THE RUNNER DOES THIS ITSELF and P0 asserts it from the dump, so
+  the rule is enforced rather than remembered. F93's own A/A on the current
+  binary: 0 px in every P7 window, **4 px** frame-wide (`|A-B|>8` = 30) — and
+  all four sit inside a 138x136 px box centred on the Moon, i.e. the halo's
+  response to the 17-metre ease-out residue the same pair shows in
+  `Moon.old.dist` (200000.013 vs 199999.996 km at `orb_t0`). The star field is
+  identical. So the floor is "0 px in the windows, a few px on the Moon's own
+  halo", slightly wider than F89's 0-2 and attributable to the dump instant.]**
+- **`f89_b4_variant.sh <dir> on` now reds at P0 by construction** — it exists to
+  run this scene with the twinkle ON, which is exactly what the gate refuses. A
+  twinkle-on experiment reads its numbers from the run's own output (the
+  variant prints them) and reads the gate's verdict as "P0 failed, as intended".
 - With twinkle ON this control's verdict on the FIXED binary is a coin toss:
   the same star reads 217 un-twinkled and 191/207/210 with twinkle, because
   `1 - twinkle_amount*rand()/RAND_MAX` with the shipped `star_twinkle_amount =
@@ -771,6 +816,14 @@ F89 §11.208(e)(j)):
   `leafdiff` / `sets`); it launches nothing and re-runs on committed artifacts.
   `harness/f89_b4_variant.sh` is the twinkle-switching RUNNER for experiments —
   **the gate is still `b4_anchors_run.sh`**, and the variant says so itself.
+  **[`f89_p7.py margins` READS PRE-F93 ARTIFACTS ONLY (F93, §11.210): it parses
+  the two numbers out of the max-based control's own check text, which no longer
+  exists — a post-F93 run has no `SCREEN WITNESS control: ... (a < b and c < d)`
+  line and `margins` raises on it. `scalars`, `leafdiff` and `sets` are
+  unaffected; the counts are in the new report as
+  `predictions.p7_lit_counts`. Not repaired here: `f89_p7.py` is outside F93's
+  file boundary and the fix is a second parse branch, owed to whoever next
+  touches it.]**
 - The dumped Moon NDC moves by ~1e-7 between runs (the old path's ease-out is
   still settling), which is 6e-5 px — but `int()` quantizes it, so P7's window
   centre can land 1 px apart between two runs of the same binary. `f89_p7.py
@@ -2097,8 +2150,12 @@ Ranked by real exposure:
 1. `b3_ladder.py` — `site_luma >= 30` is ALREADY red at 20.97 (§11.164); the
    nadir gate's margin fell 6.05× → 2.02×; the surface-regime `lit < 4194`
    gate is direction-(ii) but its committed frame reads 357, 12× below.
-2. `b4_anchors.py:477` — the corpus's ONLY absolute MAX-luminance bar
-   (`> 64` of 255) and it reads the Moon: recorded 181 / 255.
+2. ~~`b4_anchors.py:477` — the corpus's ONLY absolute MAX-luminance bar
+   (`> 64` of 255) and it reads the Moon: recorded 181 / 255.~~ **[REMOVED
+   2026-09-05, F93 §11.210: that bar is gone — both P7 window checks are
+   lit-pixel counts now (`own >= 100 px`, `own >= 4 x other`), so the corpus
+   has NO absolute max-luminance bar left. The census's own reasoning is what
+   retired it: a maximum is one pixel, and one pixel was a star.]**
 3. `f14_meridian.py:306` — a **px>40** count (exposure 0.67×) over three
    textured moons whose value is **never recorded**; plus an NCC bar at 1.87×.
 4. `f24_b34_seams.py:485` — the tightest margin in the corpus, **1.43×**
@@ -3966,11 +4023,21 @@ printed strings themselves contain newlines, so the tail of each record's
   in the French `Alt/Az` rendering: **no literal anywhere in `src/` contains
   one**, so its count going 0 -> 90 cannot be produced by any code path other
   than the lookup.
-- **`b24_select.py:861-864` matches the NEW block's ENGLISH labels** and runs on
+- ~~**`b24_select.py:861-864` matches the NEW block's ENGLISH labels** and runs on
   a French farm, so since code `1d839b9d` its I1 check reds on a readout that is
   more correct than before. Known cause, not a regression; the repair is to
   assert the block's SHAPE (five lines, a numeric magnitude, two angle pairs, a
-  distance plus a unit token) instead of its spelling. `f44_parity.py` is fine —
+  distance plus a unit token) instead of its spelling.~~ **[REPAIRED 2026-09-05,
+  F93 §11.210 — `info_block_shape()` (module level, beside `navstr_blocks`,
+  because both know the same writer's format) asserts exactly that shape and
+  RECORDS the labels and the magnitude instead of comparing them. `b24_select`
+  exits **0** on the reference binary with the French block
+  (`Magnitude :` / `AD/DE :` / `Alt/Az\xa0:` / `Distance : 0.00005905 UA`), and
+  the same matcher is green on the landed pre-fix ENGLISH blocks and on 120/120
+  blocks of `artifacts/f44/legA_003`. The two blocks are the same readout to the
+  digit, so the red was spelling and nothing else. Full proof, including the
+  old matchers finding 0 of 4 labels and eight malformed blocks each caught:
+  `artifacts/f93/b24_shape_proof.txt`.]** `f44_parity.py` is fine —
   its `RADE` regex already accepted both `RA/DE` and `AD/DE` — and `b9_azconv.py`
   reads the dump's numbers, not its strings.
 - **Taking a before/after census with `git checkout <sha> -- <file>` makes the

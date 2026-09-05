@@ -1192,7 +1192,12 @@ block by SHAPE (five lines, numeric magnitude, two sexagesimal pairs, number + u
 on the live FRENCH block (`Magnitude :` `AD/DE :` `Alt/Az\xa0:` `Distance : … UA`, b24_select
 exit 0) and on the landed pre-fix ENGLISH ones (both reports + 120/120 blocks of F44's
 sidecar); the old matchers find 0 of 4 labels on that same French block; eight malformed
-blocks each caught. NEXT: README F7 + the b24 bullet, then the entry.
+blocks each caught. Checkpoint 5: DELIVERED — `INTENT/11.210.md` + stub; back-markers at
+§11.208(i) and §11.209(h) in BOTH homes, at §11.205's stub ("the gate stays RED" no longer
+true) and at §5.133's row (which gains the §11.210 pointer); README F7 rewritten (its
+"exits 1 on the reference binary" opening REMOVED), plus the F51 census row (the corpus's
+only max-luminance bar is gone) and the F87 b24 bullet. No §13 row exists for this task
+(mandate rows are §11.208(i)(j) + §11.209(h), both marked). NEXT: instruments LAST.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
