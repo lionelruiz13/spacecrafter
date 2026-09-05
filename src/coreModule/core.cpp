@@ -2223,6 +2223,7 @@ void Core::setLanguage()
 }
 
 //set name as number for selected_object
+// S11.214 (S5.98): two of these literals were misspelled and matched no loaded body; corrected on the tester's own instruction (R19).
 void Core::setSelectedBodyName(const Object &selected_object)
 {
 	std::string object_name = selected_object.getEnglishName();
@@ -2248,11 +2249,11 @@ void Core::setSelectedBodyName(const Object &selected_object)
 		selected_body_name = 501;
 	else if (object_name == "Europa")
 		selected_body_name = 502;
-	else if (object_name == "Ganymed")
+	else if (object_name == "Ganymede")
 		selected_body_name = 503;
 	else if (object_name == "Callisto")
 		selected_body_name = 504;
-	else if (object_name == "Satun")
+	else if (object_name == "Saturn")
 		selected_body_name = 600;
 	else if (object_name == "Tethys")
 		selected_body_name = 601;
