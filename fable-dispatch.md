@@ -231,6 +231,9 @@ corrected (the farm COPIES `config.ini`). Picks **F89 ✓ → F87 ✓ → F93 �
 **[18:2x, at F93's acceptance: F93 ✓ (§11.210 — both instrument reds on the reference GREEN,
 the gate reds on the corrupt build, verified by my own b4 run). Picks **F89 ✓ → F87 ✓ → F93 ✓
 → F90**, then F91/F92 if health permits.]**
+**[19:2x, at F90's acceptance: F90 ✓ (§11.211 — T5.1 RAN, three identical runs + mine, §5.137
+minted, T5.2 the only "ready" member left). Four for four. Extension: **F92** next (S, the
+owner's line's own item), then F91 if health permits.]**
 Deliveries: all to the parent (§11.208+, refreshed at each dispatch). Launch classes:
 F89 FUNCTIONAL (star-field pixel sets under a frozen clock — no banked-band claim, the
 full canary is not required); F87 FUNCTIONAL (farm, French session, sidecar); F90
@@ -947,6 +950,52 @@ MINT, §5.137, by §5.79's criterion. F87 confirmed from the tester's seat (Fren
 U+00A0). Map T5.1 struck; "ready" waits on T5.2 alone. Baselines at parity: scan 223/274/131,
 pair-check 227/202/25/109 (entry-first +1/+1/+1), D 35 · D2 11 · I 89 · I2 36 · M 81.
 Artifacts `harness/artifacts/f90/`; run trees left under `/home/claude/sc-f90/`.
+**ACCEPTED 2026-09-05 — the verifying commands' `date` read 19:16:54 and 19:17:18–19:18:55
+(supervisor, session 23, Claude Fable 5.1).** Verified by my own runs and reads, not by the
+report: §11.211 read in full; ONE code commit `0b46a63f` (Claude Opus 5, `doc/developer-entry.md`
++7 — the smoke-suite paragraph in §5) and three harness commits `b45d934` → `bb611db` → `68ba423`,
+both trees clean; binary `407b3d1d` unchanged; `f85_links.py` 0 dangling; T5.1 struck at five
+map sites; §5.137 in the §5 register (`INTENT.md:503`); §11.211 markers at `INTENT/11.55.md`,
+`11.111.md`, `11.117.md` (2) and four sites in `INTENT.md`; the eight artifacts present;
+instruments to the digit (scan 223/274/131 · pair-check 227/202/25/109 · D 35 · D2 11 · I 89 ·
+I2 36 · M 81); **AND the suite run by my own hand on the reference at 19:17:18–19:18:55
+(`/home/claude/sc-f90/supervisor/`): rc 0, the same nine step states as the three delivered
+runs (S1/S7 DIVERGENCE with their citations, S4 DEPRECATED, six PASS), 91.9 s, `config.ini` /
+`ssystem.ini` / the played show / `startup.sts` md5 in==out** — a fourth identical run, and the
+developer's 90-second command is what I ran. Deviations ENDORSED with the executor's arguments:
+the farm's THIRD write hazard (`ScriptAnnotator::flush` rewrites the played `.sts` in place —
+`script_annotator.cpp:163-179` — so the f55 shape's `scripts/basis` symlink would have written
+the owner's `zodiacal_light.sts`; the suite copies the show and asserts four frozen files, not
+two — a hazard my section did not name, found by reading the writer before running it); three
+step states (PASS / DIVERGENCE-with-citation / FAIL; an uncited divergence is a FAIL by
+construction — the suite cannot go silently green over an open row); the pause resumed by
+polling the script log (the shows are operator-paced by design, `flag_skip_pause = false`); two
+criteria rewritten after they failed to discriminate (the §5.77 detector by CHANNEL rule, 7 → 3;
+`(Err.)` → `(Error)`); the stale-lock flake axis recorded and never removed. DISPATCHER DEFECTS
+reported, both ACCEPTED as mine, output-side: "live `### F` count 5" (6; superseded by the
+prompt) and the prompt's three README line pointers stale by F93's +105-line insert (content
+matched at each; the class: line numbers quoted from a listing made before a later task's
+insert — re-resolve at every dispatch, not at the mint). Round tally: **fourteen dispatcher
+defects.** ATTRIBUTION FACT recorded, not rewritten: executor commits this round carry the
+author `Claude Opus 5` throughout but their `Co-Authored-By` footer varies — `Claude Fable 5`
+(F87 `1d839b9d`, F93 `22c9a40`, F89 `9bb8b0d`: the tree's prior template, the QUEUE-header
+freshest-template pull) vs `Claude Fable 5.1` (F90 `0b46a63f`, `68ba423`: the prompt's rule
+read literally — the executor's tool section names the SUPERVISOR); the author field is
+right in every case, the footer names the dispatcher inconsistently; SHAs are cited in the
+ledger so nothing is amended — a rule for the executor definition is a §3 item. Criterion-
+integrity instances credited: the plan printed before the launch (`--plan`); the fault run as
+the NEGATIVE CONTROL of §5.137 (`NOF`/`EOL` where the clean run answers a full readout); the
+composed file 78384 vs 78394 B — ten bytes for ten occurrences of a one-character-shorter
+name; §11.117(k)(3)'s split verdict CORRECTED by a criterion that could have failed either
+way (both anchors' names resolve and both bodies come back, the engine logging the rebuild);
+the language recorded by cited fetch from `fr.txt` line numbers, never recall. STANDING
+CONSEQUENCES: **T5.1 is DONE — the map's "ready" gate now waits on T5.2 alone** (the soak; a
+different instrument, said why); the newcomer has a 90-second smoke suite in the entry
+document; **§5.137** — a body an operator authors then reloads leaves the DRAWN universe while
+`search`/`get status object` keep answering for it (the tester's `06old.sts` authors 3000
+satellites this way) — record-only, inside §11.55(i)'s suspended question; §11.117(k)(3)
+corrected (both anchor bodies are `anchor.ini` declarations, both recreated on use); the quit
+verb is `shutdown action now`; `f90_rehearsal_run.sh` is F91's 90-second regression gate.
 
 ### F91 — EXTENSION: §5.86 + §5.19 — the new path's RA/DE readout computed in the observer's frame, as the tester reads it: `Camera::observedToBodyLocalPos` made the true inverse of `viewMat` (the algebraic inverse `f34_probe_inverse.cpp` already carries, round trip 133.9° → ~1e-11 AU) and ONE conversion authority for `observedPosToRaDe` in old's frame (topocentric, the RA zero point by the equinox definition §11.198(b), never a magic constant), the SA/GHA/LHA nav fields riding it; parity §11.158(f): new == old to ≤ 0.002° for 89/90 bodies, the 90th attributed (§11.207(g) item 1 — both decisions closed by R27 + §11.198(b); T1.4 CLOSED) [M, engine]
 
