@@ -40,15 +40,20 @@ BlackHoleLensing::BlackHoleLensing(const std::vector<std::unique_ptr<Texture>> &
     layout = std::make_unique<PipelineLayout>(vkmgr);
     layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
     layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+    layout->setImageLocation(2, VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT);
     layout->buildLayout();
     layout->build();
 
     uniform = std::make_unique<SharedBuffer<LensUniform>>(*context.uniformMgr);
     sets.reserve(sceneTextures.size());
+    inputAttachmentInfo.reserve(sceneTextures.size());
     for (const auto &texture : sceneTextures) {
-        auto set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+        auto set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, false);
         set->bindTexture(*texture, 0);
         set->bindUniform(uniform, 1);
+        inputAttachmentInfo.push_back({VK_NULL_HANDLE, texture->getView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL});
+        set->getWrites().emplace_back(VkWriteDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, nullptr, VK_NULL_HANDLE, 2, 0, 1,
+            VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, &inputAttachmentInfo.back(), nullptr, nullptr});
         sets.push_back(std::move(set));
     }
 
