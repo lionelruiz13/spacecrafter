@@ -1,0 +1,82 @@
+F84 checkpoint 1 -- the newcomer's documented clone path, measured end to end
+============================================================================
+Host LovelyFoxDev, 2026-09-05, code master-beta @ 03c85734 (F83's HEAD).
+Everything below is [measured] in this session; commands and outputs verbatim
+(git speaks French on this host).
+
+(1) THE DOCUMENTED RECURSIVE CLONE FAILS.
+    $ git clone --recurse-submodules /home/claude/spacecrafter \
+                /home/claude/sc-f84/spacecrafter
+    Clonage dans '/home/claude/sc-f84/spacecrafter'... fait.
+    Sous-module 'src/EntityCore' (https://github.com/Calvin-Ruiz/EntityCore.git)
+      enregistre pour le chemin 'src/EntityCore'
+    Clonage dans '/home/claude/sc-f84/spacecrafter/src/EntityCore'...
+    fatal: erreur distante : upload-pack: not our ref
+           7ce58350d82e0e6931e7a70dd214e48cdaf21a2f
+    fatal: Chemin de sous-module 'src/EntityCore' recupere, mais il ne contenait
+           pas 7ce58350...  La recuperation directe de ce commit a echoue.
+
+    NOTE THE FAILURE MODE: https READ WORKS (the EntityCore repo itself cloned).
+    What is missing is the PINNED OBJECT.
+
+(2) WHY.  .gitmodules pins url = https://github.com/Calvin-Ruiz/EntityCore.git,
+    branch = main.  The superproject records:
+    $ git ls-tree HEAD src/EntityCore
+    160000 commit 7ce58350d82e0e6931e7a70dd214e48cdaf21a2f  src/EntityCore
+    The remote has only two refs:
+    $ git ls-remote https://github.com/Calvin-Ruiz/EntityCore.git
+    224eba7a69ed301732a33fc2037833e4e6e08cb7  HEAD
+    33b839b5a92fc6e185eaae37b9f8b336a1652f72  refs/heads/SpaceCrafter
+    224eba7a69ed301732a33fc2037833e4e6e08cb7  refs/heads/main
+    and locally:
+    $ git rev-parse 7ce58350^   ->  224eba7a...   (the pin's PARENT is the tip)
+    $ git branch -r --contains 7ce58350   ->  (empty: on no remote branch)
+    $ git log -1 7ce58350 -> 2026-08-26  Claude Opus 5
+        "A fresh ASmooth movement starts at phase time zero"
+    $ git diff --stat 224eba7a 7ce58350
+        Executor/ASmooth.hpp | 32 ++++++++++++++++++++++++++++----
+        1 file changed, 28 insertions(+), 4 deletions(-)
+    i.e. the pin is exactly INTENT Sec.11.152's authorized ASmooth fix, ONE
+    local unpushed commit on top of the remote's main.
+
+(3) THE INSTALL SCRIPT'S OWN PATH FAILS IN BOTH BRANCHES.
+    install_src.sh:24 is
+      git submodule update --init || (cd ../src && git clone https://github.com/Calvin-Ruiz/EntityCore.git)
+    Replicated verbatim in a fresh non-recursive clone (sc-f84/probe-clone):
+      git submodule update --init                       -> rc 128 (same fatal)
+      (cd ../src && git clone https://...EntityCore.git) -> rc 128
+        fatal: le chemin de destination 'EntityCore' existe deja et n'est pas un
+               repertoire vide
+      because step 1 already created src/EntityCore/ containing only .git .
+    LINE 24 CARRIES NO `|| exit`, so the script CONTINUES.
+
+(4) WHERE IT BITES.  Still in probe-clone, install_src.sh:25-26 verbatim:
+      BUILD before  = <unset>
+      [ -n "$BUILD" ] &&BUILD=Release
+      BUILD after    = <unset>          <-- the -n/-z inversion, see below
+      cmake .. -DCMAKE_BUILD_TYPE=      -> rc 0   (configure SUCCEEDS)
+        "Build type empty, so it's fixed to debug mode. ..."   (CMakeLists.txt:97)
+        "Build type Debug. ..."                                (CMakeLists.txt:115)
+        CMakeCache: CMAKE_BUILD_TYPE:STRING=Debug
+        C++ flags: -ggdb3 -Og -Wextra -Wall ... -fconcepts
+      cmake --build . -j24              -> rc 2, 20 objects, then
+        src/bodyModule/atm_ext.cpp:1:10: fatal error:
+          EntityCore/Core/VulkanMgr.hpp: Aucun fichier ou dossier de ce nom
+        (and the same for EntityCore/Resource/SharedBuffer.hpp, Forward.hpp,
+         Executor/AFader.hpp, SubBuffer.hpp)
+
+    SO: a networked newcomer following INSTALL gets a rc-0 configure and a
+    rc-2 build whose first error names a header, not the submodule.
+
+(5) THE WORKAROUND USED HERE, and it is NOT available to him.
+    $ git clone /home/claude/spacecrafter sc-f84/spacecrafter
+    $ git submodule update --init --reference /home/claude/spacecrafter/src/EntityCore
+      -> rc 0, ' 7ce58350... src/EntityCore (heads/main-1-g7ce5835)'
+    It works only because THIS host holds the unpushed commit.
+
+(6) CONSEQUENCE FOR THE RECORD.  The task section's fallback sentence -- "if
+    refused, use --reference ... and RECORD that a networked newcomer takes the
+    documented path" -- is FALSE here: the newcomer does not take the documented
+    path, because the object he needs is on no remote.  The fix is one push in a
+    SECOND repository (EntityCore 7ce58350), i.e. a sibling of DEPLOYMENT-MAP R5,
+    and it is the owner's act alone.

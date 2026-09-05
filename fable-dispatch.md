@@ -820,7 +820,23 @@ canary `--no-scene` exit 0.
 **DoD:** manifest + artifacts; docs + script committed (code repo, code first);
 §11.204 + stub; row annotations at both homes; N7 rider; map R2/T3; harness script
 + README; trees clean; WIP cleared; baselines LAST with deltas.
-**WIP:** —
+**WIP:** 2026-09-05 **CHECKPOINT 1** (Claude Opus 5 executor) — §0.7 gate run on all
+stated premises: all verified live EXCEPT `install_src.sh:22`, whose quoted text lives at
+line **25** (line 22 is blank; line 21 carries a DIFFERENT variable `BUILD_MODE` with the
+CORRECT `= ""` test) — the SUBSTANCE holds and is worse than stated (`CMakeLists.txt:95-99`
+FORCES `Debug` on an empty type, so the newcomer builds `-Og`, not `-Ofast`), so it is
+ruled REPORT-ONLY per §11.179(a) with the counterfactual, not an abort. Baselines banked:
+`/usr/local` census 1110 entries, manifest md5 `b8ceb90b`; config/ssystem `03fbee59`/
+`545a51ef`; canary `--no-scene` **exit 0** (`artifacts/f56/canary/20260905-111837`).
+**HEADLINE FINDING, part (1): the documented clone CANNOT WORK for a networked newcomer** —
+`git clone --recurse-submodules` fails `fatal: upload-pack: not our ref 7ce58350` because
+the submodule pin is a LOCAL UNPUSHED commit (§11.152's ASmooth fix, parent = the remote's
+`main` tip `224eba7a`); `install_src.sh:24`'s `||` fallback ALSO fails (rc 128, dir exists)
+and the line has no `|| exit`, so configure returns **0** and the build dies at
+`atm_ext.cpp:1:10 EntityCore/Core/VulkanMgr.hpp: no such file` after 20 objects. Evidence
+`harness/artifacts/f84/clone-submodule-probe.txt`. Working clone rebuilt with
+`--reference` (the section's fallback) at `03c85734`, submodule `7ce58350`, tree clean.
+**Next:** part (2) dependency diff + the configure pair, then the build.
 
 ### F85 — The developer's entry document: one file in the code repo, derived from the ledger and pointing back into it, that takes a newcomer from a clone to his first correct change — the two repositories and their contract, the code map, the two render paths and the parity rule, the domain constraints D8–D14 one paragraph each, build/run/test, how to ask the ledger whether something is known, the sharp edges — every sentence with its source (DEPLOYMENT-MAP R3; `claude/README.md`'s own filing criterion: *"must be promoted into the code repo … this repo is the lab notebook, not where other contributors will look"*) [M]
 
