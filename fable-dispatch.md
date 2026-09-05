@@ -836,7 +836,20 @@ and the line has no `|| exit`, so configure returns **0** and the build dies at
 `atm_ext.cpp:1:10 EntityCore/Core/VulkanMgr.hpp: no such file` after 20 objects. Evidence
 `harness/artifacts/f84/clone-submodule-probe.txt`. Working clone rebuilt with
 `--reference` (the section's fallback) at `03c85734`, submodule `7ce58350`, tree clean.
-**Next:** part (2) dependency diff + the configure pair, then the build.
+— **CHECKPOINT 2** (same day): parts (2)+(3) + the `CONFIGURE_DEPENDS` addition all
+measured, artifact `harness/artifacts/f84/build-and-manifest.txt` (+ manifest tsv/gz + both
+configure logs). **Check (f) PASSES both ways** — as written `-DCMAKE_BUILD_TYPE=` EMPTY ⇒
+`CMakeLists.txt:95-99` FORCES **Debug** (`-Og`), with `-z` ⇒ **Release**; the fix also
+un-clobbers the documented `BUILD=LocalRelease` override. Build rc **0**, 248 steps, md5
+**`5237ac0e`**, `-n` empty, 26 `VideoSurfaceTexture` symbols. **`CONFIGURE_DEPENDS`
+DISCRIMINATES**: arm A 0 steps / 0 refs / 0 objects, arm B 1 step / 13 refs / 1 object,
+cost +0.05 s per no-op build ⇒ it SHIPS. Install rc 0, no sudo, **227 files**; shaders
+aggregate md5 **`e5043cf7` identical to the field's**, all 11 `data/` files md5-equal —
+and **12 content classes absent** (`stars` `textures` `icon.bmp` + the 9 dirs under the
+field's `data/`), documented NOWHERE in the code repo. **Second unstated premise found**:
+`CONFIG_DATA_DIR` is a hardcoded `#define` (`spacecrafter.hpp:44`), NOT the install prefix
+⇒ check (a) cannot pass as written; the applog's `ROOT DIR:` line is the instrument that
+proves it. **Next:** predictions committed, then the six launches, then §5.112.
 
 ### F85 — The developer's entry document: one file in the code repo, derived from the ledger and pointing back into it, that takes a newcomer from a clone to his first correct change — the two repositories and their contract, the code map, the two render paths and the parity rule, the domain constraints D8–D14 one paragraph each, build/run/test, how to ask the ledger whether something is known, the sharp edges — every sentence with its source (DEPLOYMENT-MAP R3; `claude/README.md`'s own filing criterion: *"must be promoted into the code repo … this repo is the lab notebook, not where other contributors will look"*) [M]
 

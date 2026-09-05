@@ -1,0 +1,243 @@
+F84 checkpoint 2 -- INSTALL as written, the build, the install, the manifest
+============================================================================
+Host LovelyFoxDev, 2026-09-05. Scratch clone /home/claude/sc-f84/spacecrafter
+at master-beta 03c85734, submodule 7ce58350 (obtained with --reference; see
+clone-submodule-probe.txt for why the documented route cannot).
+Everything below is [measured] this session.
+
+------------------------------------------------------------------ (A) INSTALL
+INSTALL is 40 lines.  Read as a Linux newcomer would, the deviations, each at
+the line where it bites:
+
+ L4   "COMPILATION from the source package (spacecrafterXXXX-master.zip)"
+      -- the entry point is a ZIP.  There is no ZIP; the artifact is a git
+      repository with a submodule, and the word "submodule" never appears in
+      INSTALL, README or install_src.sh's documentation.
+ L11  "Launch install-dependencies-ubuntu.sh or install-dependencies-mageia.sh"
+      -- NEITHER FILE EXISTS.  The tree ships install_dependancies_ubuntu.sh
+      and install_dependancies_mageia.sh (underscores, and "dependancies"
+      misspelt).  L34 spells the real form, so the file contradicts itself.
+ L15  "Cmake > v3.3" -- CMakeLists.txt:6 is cmake_minimum_required(VERSION 3.12).
+ L21  "FFMPEG (VCPKG => 5.1.2#10) (required => avcodec-59.dll ...) (higher
+      versions crash)" -- a Windows/VCPKG constraint stated as a global one.
+      This host builds AND runs against libavcodec 61.19.101 / FFmpeg 7.1.1
+      (measured; F83 SS11.203(d) linked 26 VideoSurfaceTexture symbols against
+      it).  "Higher versions crash" is false for the Linux path.
+ L22  libvpx via VCPKG -- Windows only, same framing problem.
+ L31-33  "unzip ... cd ... sh install_dependancies_<...>.sh" -- the two steps a
+      Linux newcomer needs (clone WITH submodules, and that the dependency
+      script needs sudo) are the two the file does not have.
+ L37  "sh install_src.sh -j<n>" -- see (B).  The script sudo-installs into
+      /usr/local; nothing says so.
+ L40  "spacecrafter" -- only on the PATH after that sudo install.
+
+README section 2 says only "Please see the INSTALL file."  Section 3 says
+"Linux environment (preferably Ubuntu) / A Vulkan acceleration video card".
+
+--------------------------------------------------------- (B) DEPENDENCY DIFF
+install_dependancies_ubuntu.sh names 23 packages (25 apt lines, 2 commented).
+Diffed BOTH ways.  Host: Ubuntu 25.10.
+
+ REQUIRED BY THE BUILD, NOT NAMED BY THE SCRIPT
+ ----------------------------------------------
+ pkg-config    CMakeLists.txt:165-167 -> message(FATAL_ERROR "pkg-config not
+               found").  A hard stop, and the script never installs it.
+               (installed on this host, so it never bit here)
+ zlib1g-dev    cmake/FindPNG.cmake:65 find_package(ZLIB ${_FIND_ZLIB_ARG}),
+               and FIND_PACKAGE(PNG REQUIRED) makes that arg REQUIRED.
+               (usually pulled in by libpng-dev; still unnamed)
+
+ NAMED BY THE SCRIPT, NOT REQUIRED BY THE BUILD
+ ----------------------------------------------
+ libglew-dev   "GLEW" appears exactly ONCE in the whole build system, in a
+               COMMENTED line (CMakeLists.txt:214), and 0 times under src/.
+               The renderer is Vulkan.
+ libsdl2-image-dev  "SDL_image" appears only inside cmake/FindSDL2_ttf.cmake
+               (vendored find-module boilerplate); no FIND_PACKAGE(SDL2_image),
+               0 uses under src/.
+ gettext       No FIND_PACKAGE(Gettext), no include() of cmake/FindGettext.cmake,
+               no msgfmt/.po rule anywhere in CMakeLists.txt.  Not a build
+               dependency.  (LOCALEDIR is used at RUNTIME, and no catalogue is
+               built by this tree.)
+ mplayer       A runtime, optional, and OBSOLETE path: SCK_MPLAYER_MKFIFO_NAME
+               (app.cpp:738), CallSystem::killAllPidFrom("mplayer")
+               (app.cpp:1039), and "external_mplayer" is on the obsolete command
+               list at app_command_init.cpp:20.  Not a build dependency.
+ vulkan-tools  vulkaninfo/vkcube; referenced nowhere in the build.
+ vulkan-utility-libraries-dev  referenced nowhere in the build or under src/.
+ libpng16-16   REDUNDANT (libpng-dev pulls the runtime) *and* UNINSTALLABLE on
+               this distro:
+                 $ apt-cache policy libpng16-16
+                   Installe : (aucun)   Candidat : (aucun)
+                 $ apt-cache search --names-only '^libpng16-16'
+                   libpng16-16t64 - PNG library - runtime (version 1.6)
+               The t64 transition renamed it.  `sudo apt install -y libpng16-16`
+               FAILS here -- and the script has no `|| exit` and no `apt update`,
+               so the failure scrolls past and the run continues.
+
+ dpkg -l on this host: every other named package is "install ok installed";
+ libpng16-16 is "unknown ok not-installed".  So on THIS host the script's only
+ hard failure is the renamed package, and the two missing requirements happen
+ to be satisfied by other means.
+
+-------------------------------------------- (C) install_src.sh, check (f)
+The script's own logic, replicated verbatim in the scratch clone.  Note the
+line number: the dispatch says line 22; line 22 is BLANK.  The line quoted is
+line 25.  Line 21 is a DIFFERENT variable (BUILD_MODE) whose test is correct.
+
+  install_src.sh:21  [ "$BUILD_MODE" = "" ] &&BUILD_MODE=Release      <- correct
+  install_src.sh:25  [ -n "$BUILD" ] &&BUILD=Release   # Use "BUILD=LocalRelease
+                     ./install_src.sh" for optimisation specifics ...
+  install_src.sh:26  cmake .. -DCMAKE_BUILD_TYPE=$BUILD || exit $?
+
+ AS WRITTEN (-n), BUILD unset, i.e. every newcomer:
+   BUILD after line 25 = <unset>
+   cmake .. -DCMAKE_BUILD_TYPE= -DCMAKE_INSTALL_PREFIX=/home/claude/sc-f84/prefix
+   rc 0, and CMakeLists.txt:95-99 then FORCES the type:
+     "Build type empty, so it's fixed to debug mode. ..."
+     "Build type Debug. Use -DCMAKE_BUILD_TYPE=Release to activate Release mode"
+     Build type : Debug
+     CMakeCache: CMAKE_BUILD_TYPE:STRING=Debug
+     C++ flags:  -ggdb3 -Og -Wextra -Wall ... -fconcepts
+   (artifacts/f84/configure-as-written.log.gz)
+
+ WITH THE ONE-CHARACTER FIX (-z):
+   BUILD after line 25 = Release
+   cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=...
+     "Build type Release. Use -DCMAKE_BUILD_TYPE=Debug to activate Debug mode"
+     Build type : Release
+     CMakeCache: CMAKE_BUILD_TYPE:STRING=Release
+   (artifacts/f84/configure-fixed.log.gz)
+
+ THE FIX REPAIRS BOTH HALVES OF THE COMMENT'S INTENT, not one:
+   -n form, BUILD=LocalRelease -> 'Release'       (the user's choice CLOBBERED)
+   -z form, BUILD=LocalRelease -> 'LocalRelease'  (preserved, as documented)
+ So the consequence of the bug is not only "no optimisation by default": the
+ documented BUILD=LocalRelease override is silently overwritten as well.
+
+ CONSEQUENCE, stated in D11's units: the shipped default build is -Og, not
+ -Ofast, for a program with a 1 ms/frame budget.
+
+--------------------------------------------------------------- (D) THE BUILD
+ free -g: 50 GiB available; nproc 24; -j24 per the session hook.
+ cmake --build . -j24   ->  rc 0, 11:25:40 -> 11:26:30 (50 s)
+   248 "Building CXX object" steps, 262 objects, 15 warnings, link OK
+   binary /home/claude/sc-f84/spacecrafter/build/src/spacecrafter
+     217 024 048 B, md5 5237ac0e7d92e9c9b9d7fa24a00ff4d8
+   `cmake --build . -- -n` afterwards: 0 compile steps
+   `./src/spacecrafter --version` -> "spacecrafter 2026.07.11"
+   nm -C | grep -c VideoSurfaceTexture -> 26 (F83's feature is in)
+ The fresh clone's configure globbed EntityCore (377 refs in build.make) and
+ video_surface_texture (13) with no re-configure needed -- SS11.203(d)'s "a fresh
+ clone configures once and is immune" reproduced.
+
+-------------------------------------- (E) CONFIGURE_DEPENDS, both arms
+src/CMakeLists.txt:3 is
+  file(GLOB_RECURSE all_SRCS ${PROJECT_SOURCE_DIR} *.h *.hpp *.cpp )
+with no CONFIGURE_DEPENDS.  Designed so the two arms differ in ONE thing: in
+both, the new file is created AFTER the configure that armed (or did not arm)
+the glob, so the CMakeLists edit itself cannot be the cause.
+
+ ARM A -- glob as shipped.  src/tools/f84_probe_a.cpp created after configure.
+   refs to f84_probe_a in build.make before build : 0
+   cmake --build build -j24                        : rc 0, 0 compile steps
+   refs after                                      : 0
+   objects named f84_probe_a.cpp.o                 : 0
+   => the file is INVISIBLE to an incremental build.
+
+ (glob armed: CONFIGURE_DEPENDS added; the build that follows re-configures
+  because CMakeLists.txt changed -- expected, and NOT the claim.)
+
+ ARM B -- glob armed.  src/tools/f84_probe_b.cpp created after that configure.
+   refs to f84_probe_b in build.make before build : 0
+   cmake --build build -j24                        : rc 0, 1 compile step
+   refs after                                      : 13
+   objects named f84_probe_b.cpp.o                 : 1
+   => the file is picked up with no manual re-configure.
+
+ COST, measured, three no-op builds each way:
+   with CONFIGURE_DEPENDS   : 0.20 / 0.12 / 0.12 s
+   without                  : 0.08 / 0.10 / 0.09 s
+   delta ~ +0.05 s per build over ~2000 globbed files.
+ Both probes removed afterwards; the scratch tree's CMakeLists reverted with
+ `git checkout --`; `git status` clean; the INSTALLED binary (a copy taken
+ before the probes) md5 5237ac0e, unchanged.
+ Residue worth naming: the two stale .o files stay in the build dir after the
+ sources are deleted -- CMake does not reap them.  Harmless, recorded.
+
+--------------------------------------------- (F) THE INSTALL AND ITS MANIFEST
+ cmake --install . --config Release   (NO sudo, prefix /home/claude/sc-f84/prefix)
+   rc 0, < 1 s, 0 error/failure/denied lines.
+   The shaders/CMakeLists.txt INSTALL(CODE ...) ran ./compile.sh successfully.
+   227 files:
+     bin                          1 file    217 024 048 B
+     share/applications           1 file          178 B   (spacecrafter.desktop)
+     share/spacecrafter/data     11 files      246 455 B
+     share/spacecrafter/shaders 214 files    1 108 336 B
+   Full manifest: artifacts/f84/install-manifest.tsv(.gz), path/bytes/md5.
+
+ WHAT THE TREE INSTALL CREATES vs THE DEVELOPER FIELD'S DATA ROOT
+ (/usr/local/share/spacecrafter/, 1109 files, 255 MB, dated 2025-09-27):
+
+  class                     tree install        field root          evidence
+  ------------------------------------------------------------------------
+  bin/spacecrafter          yes                 yes (2026-07-31)    src/CMakeLists.txt:28
+  shaders/                  214 files           214 files           shaders/CMakeLists.txt:7
+      -> AGGREGATE md5 e5043cf79f0ee3f5a21ce55f8fc7ee50 ON BOTH SIDES: the
+         install-time compile.sh reproduces the field's shaders BYTE FOR BYTE.
+  data/ (11 metadata files) yes                 yes, all 11 md5-EQUAL
+                                                                    data/CMakeLists.txt:4
+  data/icon.bmp             NO                  yes (12 342 B)      not in the INSTALL list
+  data/audio/               NO                  12 files   16.0 MB
+  data/fonts/               NO                   7 files    3.1 MB
+  data/ftp/                 NO                   1 file       132 B
+  data/landscapes/          NO                   8 files   33.1 MB
+  data/language/            NO                  70 files    1.5 MB
+  data/model3D/             NO                  13 files    8.6 MB
+  data/scripts/             NO                 350 files   89.0 MB
+  data/sky_cultures/        NO                 262 files   28.1 MB
+  data/videos/              NO                  24 files    9.9 MB
+  stars/                    NO                   7 files    9.3 MB
+  textures/                 NO                 129 files   64.2 MB
+  share/applications/...    yes                 -- (not part of the data root)
+  share/locale/             NO                  --          no gettext rule exists
+
+ So a tree install produces the CODE, the SHADERS and 11 metadata files, and
+ NONE of the content.  Where the rest comes from, with the evidence:
+  - the tree: NO.  `ls` of the repository root shows no textures/ stars/
+    sky_cultures/ landscapes/ fonts/ audio/ scripts/ model3D/ language/
+    videos/ directory at all; the only install() rules in the whole tree are
+    the four cited above (grep over every CMakeLists.txt/*.cmake).
+  - the documents: NO.  grep for "spacecrafter-data|data package|download.*data"
+    over README, INSTALL and doc/ returns ZERO hits.
+  - `spacecrafter-data`: this is the answer the LEDGER gives (it is named in
+    INTENT.md:111 and in SS5.53/SS5.74/SS5.78/SS5.90 as the delivered data
+    product), but no file in the CODE repository mentions it.
+  So for a newcomer the honest answer is: NOWHERE DOCUMENTED.  That is the
+  R2 gap this manifest exists to name.
+
+ The ten classes checkUserSubDirectory copies with `true`
+ (call_system.cpp:113-129: audio fonts ftp landscapes scripts textures videos
+ sky_cultures model3D language) resolve against CONFIG_DATA_DIR + <name> first
+ and CONFIG_DATA_DIR + "data/" + <name> second (call_system.cpp:140-143).  On
+ the field root, `textures` matches the FIRST form and the other nine match the
+ SECOND.  On a tree-only install NONE of the ten resolves.
+
+--------------------------- (G) THE INSTALL PREFIX DOES NOT REACH THE BINARY
+ An unstated premise of this task, found by reading:
+   src/spacecrafter.hpp:44   #define CONFIG_DATA_DIR "/usr/local/share/spacecrafter/"
+   src/spacecrafter.hpp:45   #define LOCALEDIR       "/usr/local/share/locale/"
+ They are HARDCODED #defines with no #ifndef guard, and no CMake code sets or
+ configures them (grep: CONFIG_DATA_DIR appears in CMakeLists.txt zero times).
+ main.cpp:186 reads the macro into `dataRoot` and main.cpp:246 logs it as
+ "ROOT   DIR:".  Therefore:
+   * -DCMAKE_INSTALL_PREFIX moves WHERE THE FILES GO and nothing else;
+   * a binary installed into a scratch prefix still reads
+     /usr/local/share/spacecrafter/ at runtime;
+   * the task's check (a) -- "the applog's data-root path proves the scratch
+     binary runs from the scratch prefix" -- CANNOT pass as written, and the
+     applog line is exactly the instrument that shows why.
+ Consequence for the INSTALL rewrite: a "scratch prefix instead of sudo"
+ instruction would be WRONG unless it also said that the data root is fixed at
+ compile time.  The honest non-sudo instruction is: run the binary from the
+ build directory, with the data root already populated at /usr/local.
