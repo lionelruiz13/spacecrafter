@@ -115,3 +115,34 @@ P5  The FULL canary on the post-fix RELEASE binary: exit 0 at the banked band
     (165.258/6.644 new, 160.142/6.603 old, +-1.0/+-0.15).  Anchors feed the
     camera, so a band move would be the fix's fingerprint.
 P6  D14 ASCII gate PASS before every commit (972 CONVERT files at open).
+
+===============================================================================
+ADDENDUM, committed 2026-09-05 13:10 BEFORE the two launches it predicts --
+the b4 screen-witness control went RED post-fix and this is the discrimination
+===============================================================================
+MEASURED FIRST (so the addendum is honest about what provoked it): b4_anchors
+is green on the pre-fix binary twice (0 failures, orb_t0 lit 87983/87982) and
+on a main.cpp-ONLY binary (87921), and RED twice on the both-fixes binary
+(88803/88767, 1 failure: the SCREEN WITNESS control).  Bimodal, binary-
+attributable.  Every DUMPED number is identical pre/post (the whole b4_result
+diff is pixel counts); the frames differ in ~19000 px by >8 all over the dome
+(A/A floor 730-860), no translation improves the match, and the changed pixels
+are point-like: lit-in-one, dark-in-the-other.
+
+CANDIDATE MECHANISM, read in the code, not guessed from the numbers:
+hip_star_mgr.cpp:640-643 multiplies EVERY star's three colour channels by
+(1 - twinkle_amount*rand()/RAND_MAX), and `src/` contains **no srand( at all**
+(measured: 0 hits), so the star field is a pure function of the position of the
+global rand() stream -- i.e. of the frame index at which the grab lands.  Any
+code change that shifts startup by a few frames repaints every star.
+
+P8 (the discriminating pair, 2 launches, both arms inside EACH launch):
+   pre-fix and post-fix binaries, same farm, cmds:
+     1. body action screenshot filename <tag>_on.png     (twinkle ON, shipped)
+     2. flag star_twinkle off
+     3. body action screenshot filename <tag>_off.png
+   PREDICTED: pre-vs-post on the ON frames differs in thousands of px (>8);
+   pre-vs-post on the OFF frames collapses to the A/A floor (< ~1500 px).
+   REFUTED IF the OFF frames still differ by ~19000 px -- then the change is
+   NOT the twinkle phase, the b4 red is unexplained, and the fix goes to the
+   dispatcher as a suspension rather than as a delivery.
