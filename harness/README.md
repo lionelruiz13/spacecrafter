@@ -3973,3 +3973,9 @@ printed strings themselves contain newlines, so the tail of each record's
   distance plus a unit token) instead of its spelling. `f44_parity.py` is fine —
   its `RADE` regex already accepted both `RA/DE` and `AD/DE` — and `b9_azconv.py`
   reads the dump's numbers, not its strings.
+- **Taking a before/after census with `git checkout <sha> -- <file>` makes the
+  build stale even when you put the file back byte-identical**: make keys on
+  mtime, so `cmake --build build-claude -- -n` reported 2 steps on a tree whose
+  content was already built. Re-run the build before quoting "0 steps"; here the
+  rebuild produced the SAME binary md5 `407b3d1d` from the restored source, so
+  this compilation is bit-reproducible and the extra build cost nothing but time.

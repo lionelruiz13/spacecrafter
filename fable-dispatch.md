@@ -628,7 +628,11 @@ is a D9-frozen `<lang>.txt` map with identity fallback). **FOR THE NEXT TASKS**:
 `b24_select.py:861-864` will red by known cause on the binary left here (`407b3d1d`) — it
 matches the NEW block's ENGLISH labels on a French farm; named, not patched (the F89/F93
 split). Artifacts `artifacts/f87/`; instruments `harness/f87_census.py`,
-`harness/f87_labels.py`; README F87 section.
+`harness/f87_labels.py`; README F87 section. CLOSING STATE: code `1d839b9d`, harness at
+this commit, both trees CLEAN, binary **`407b3d1d`** with `cmake -n` **0 steps** (rebuilt
+twice from the same source to the same md5 — bit-reproducible), D14 PASS, baselines
+restored exactly (back-marker 221/271/**131**, pair 225/200/25/108, D 35 · D2 11 · I 89 ·
+I2 36 · M 81).
 
 ### F89 — The `b4_anchors` P7 screen-witness red DISCRIMINATED: the one gate that reds on the reference binary (green ×3 pre-§5.133, red ×2 post) gets its cause named — the twinkle-`rand()` candidate tested the way the two failed experiments could not (b4's own frozen-clock scene, twinkle OFF on both binaries, the two P7 windows' lit-pixel SETS diffed, predictions committed first), the control's margin read from the five F86 runs before any launch, every `rand()` consumer in `src/` enumerated — instrument fix if the instrument, §5.133's row if the product (§11.205(g)(h); session-22 queue position 2; the developer will run this harness) [S, instrument]
 
