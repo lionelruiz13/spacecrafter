@@ -1104,6 +1104,19 @@ pre/post applog-head diff is EXACTLY the A/A diff of one binary (3 RAM-census li
 37/40 identical). Row flips deferred to delivery per the dispatch prompt's entry-first
 order. NEXT: checkpoint 2 = mint §5.133 (UAF) + §5.134 (comet) from §5.127, annotate
 §5.127 at both homes; then the ASan build.
+2026-09-05 — CHECKPOINT 2 done: **§5.133** (the UAF) and **§5.134** (the comet null deref)
+minted OPEN in the §5 register at HEAD-verified sites, §5.127 annotated at both homes
+(row + `INTENT/11.200.md` (e)(1)(2) + the §11.200 stub). Two facts the mint added by
+measurement: five of the six shipped `comet_orbit` sections take the crashing branch on
+every launch (they survive because `parent = Sun` resolves), and the ANCHOR loader builds
+the orbit before it looks at the parent, so `anchor.ini`/`camera action create` reach the
+same line with a null parent. HOST EVENT, not mine, reported not absorbed: at **12:23:23**
+today the EntityCore submodule commit was AMENDED (`7ce58350` -> `84f5d94b`, tree
+IDENTICAL `6ee9f6a7`, `git diff` empty) and at **12:23:44** pushed (`origin/main` reflog:
+*update by push*) — so the code tree now carries ONE unstaged gitlink change I did not
+make and will not resolve; §5.131's clone blocker is NOT discharged by the push alone,
+because the pin recorded in `master-beta` is still the amended-away `7ce58350`.
+NEXT: checkpoint 3 = the ASan build of the pre-fix creator code + the reproduction.
 
 ### F87 — EXTENSION: §5.111 — the new path's object readouts translated where the old path's are: `ModularObject`'s labels re-wrapped in `_()` with the OLD path's exact msgids (parity: old is the baseline, so the French catalogue answers identically), plus the owed census of every other new-path user-visible string that lost its `_()` in the same port (DEPLOYMENT-MAP T2's decision-free candidate since 2026-08-29, never dispatched; the tester operates in French) [S]
 
