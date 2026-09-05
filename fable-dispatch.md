@@ -648,7 +648,15 @@ has NO merge in progress (`.git/MERGE_HEAD` absent).
 **DoD:** merge commit on `master-beta` + the merged build + all gates recorded;
 §11.203 entry + stub; DEPLOYMENT-MAP R1; README section; trees clean; WIP cleared;
 baselines re-derived LAST with deltas stated.
-**WIP:** —
+**WIP:** 2026-09-05 — §0.7 gate PASS on all 18 stated premises (incl. `git cherry`
+13`-`/2`+`, merge-base, both submodule pins, versions equal, binary `c8e12950` +
+`cmake -n` zero compile steps, canary `--no-scene` exit 0, ASCII gate, `clean 7196`).
+CKPT 1 (mandate 1+2) DONE: merge committed `c6784490` (parents `85cc2785`+`6ec2f43f`);
+four conflict hunks = exactly the four stated, all resolved to OURS by marker-deletion
+(NOT `checkout --ours`, so check (b) could fail); (a) `git cherry` EMPTY 0`+`/0`-`,
+(b) three files diff vs `85cc2785` = 0 lines + md5-equal, (c) exactly the four
+`src/tools/` files 480+/4-, (g) D14 gate PASS CONVERT 970 -> 972. NEXT: mandate 3
+(build at merged HEAD).
 
 ### F84 — The newcomer's first hour, measured: a clean clone of the merged HEAD taken through INSTALL / `install_src.sh` as written (no sudo, scratch prefix), every deviation he would hit recorded and the documents corrected to what IS; the install tree manifested; six fresh-HOME first launches (the §5.48 cold-HOME race rated); the §5.112 rewrite priced on a bumped-version copy of the field config — the deployment manifest that makes the branch a reference (DEPLOYMENT-MAP R2 + T3's §5.112 datum) [M]
 
