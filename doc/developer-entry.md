@@ -272,6 +272,13 @@ point [`:40-49`]; scripts default their binary to
 [`claude/README.md:21-23`]. The per-task sections below it document each
 instrument and, more usefully, the gotchas each one cost a measurement.
 
+**The smoke suite** is one command and one exit code --
+`DISPLAY=:2 claude/harness/f90_rehearsal_run.sh <absOutdir>` drives a launch on
+a private farm through the shipped command surface (launch, author a body, run
+a shipped show, search, select and read out, save, reload, one keyboard ramp,
+quit), prints every step's observable and pass criterion *before* it runs, and
+exits non-zero on any failed step [`Sec.11.211`].
+
 **scedit** (`util/scedit/`) is a standalone script and stellar-system-file
 editor and checker, deliberately not wired into the spacecrafter build, C++17
 with everything vendored [`util/scedit/README.md:35-43`]:
