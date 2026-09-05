@@ -1,0 +1,40 @@
+=================================================================
+(Info ): Welcome to spacecrafter
+(Info ): Version : spacecrafter 2026.07.11 - Vulkan Edition 2026
+(Info ):  Copyright (c) 2014-2020 Association Sirius, LSS team et al.
+ Copyright (c) 2012-2014 LSS team et al.
+ Copyright (c) 2003-2011 Digitalis Education Solutions, Inc. et al.
+ Copyright (c) 2000-2008 Fabien Chereau et al.
+ http://lss-planetariums.info
+=================================================================
+(Info ): system name = Linux
+node name   = LovelyFoxDev
+release     = 6.17.0-41-generic
+version     = #41-Ubuntu SMP PREEMPT_DYNAMIC Sat Jun 20 18:01:40 UTC 2026
+machine     = x86_64
+=================================================================
+(Info ): Memory information
+Total ram 63582703616
+Free  ram 20335628288
+Shared ram 795336704
+Buffer ram 532250624
+Total swap 0
+Free  swap 0
+=================================================================
+(Info ): Check home directory ok
+Check audio subdirectory ok
+Check fonts subdirectory ok
+Check ftp subdirectory ok
+Check landscapes subdirectory ok
+Check log subdirectory ok
+Check screenshot subdirectory ok
+Check scripts subdirectory ok
+Check pictures subdirectory ok
+Check textures subdirectory ok
+Check vframes subdirectory ok
+Check videos subdirectory ok
+Check media subdirectory ok
+Check vr360 subdirectory ok
+Check www subdirectory ok
+Check sky_cultures subdirectory ok
+Check model3D subdirectory ok

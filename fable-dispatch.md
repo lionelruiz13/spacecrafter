@@ -1093,7 +1093,17 @@ archive); next free §11 ⟨at dispatch⟩; live `### F` count **5**;
 **DoD:** §5.130 fix + the two rows + their fixes (code first) + the empty-HOME
 proof + ASan proof + gates; §11 entry + stub; §5.130 flipped; DEPLOYMENT-MAP R2 (the
 `main.cpp` half) + R4 struck; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-05 — CHECKPOINT 1 of 5 done (member (3), §5.130). Predictions committed
+FIRST (harness `2db0267`, `artifacts/f86/prediction.txt`). P0a reproduced (exit 134,
+verbatim message, $HOME left at 0 entries) on the stashed pre-fix binary
+`/home/claude/sc-f86/spacecrafter-prefix` md5 `225f0d93`; `main.cpp` line moved (code
+**`9e0f1e93`**), rebuilt → binary md5 **`8f23df02`**, `-n` zero steps; P0b exit **0**,
+19 dirs + 7 files, exactly 10 "Completed copy" lines, `log/spacecrafter.log` 54402 B
+under the NEW `~/.spacecrafter`; P0c as-if control holds in its measured form — the
+pre/post applog-head diff is EXACTLY the A/A diff of one binary (3 RAM-census lines,
+37/40 identical). Row flips deferred to delivery per the dispatch prompt's entry-first
+order. NEXT: checkpoint 2 = mint §5.133 (UAF) + §5.134 (comet) from §5.127, annotate
+§5.127 at both homes; then the ASan build.
 
 ### F87 — EXTENSION: §5.111 — the new path's object readouts translated where the old path's are: `ModularObject`'s labels re-wrapped in `_()` with the OLD path's exact msgids (parity: old is the baseline, so the French catalogue answers identically), plus the owed census of every other new-path user-visible string that lost its `_()` in the same port (DEPLOYMENT-MAP T2's decision-free candidate since 2026-08-29, never dispatched; the tester operates in French) [S]
 

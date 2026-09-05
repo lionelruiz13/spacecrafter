@@ -16,6 +16,13 @@ WHAT IT DOES, per launch, in this order:
      path").  Everything BELOW .spacecrafter/ is still the app's own bootstrap.
      Sec.5.48's own farm (b3_farm.sh) has the same shape, so the rate stays
      comparable to F12's;
+     [F86, 2026-09-05] `--no-mkdir` drops that deviation: the $HOME is created
+     EMPTY and the app is asked to bootstrap itself from nothing, which is
+     Sec.5.130's gate.  Against the pre-fix binary it aborts (exit 134); against
+     a binary carrying Sec.5.130's fix it must exit 0 having built the whole
+     tree.  The flag defaults OFF, so every F84 record this script produced
+     still reproduces byte for byte; it exists here rather than in a copy
+     because there must be exactly one launch shape (I2);
   4. optionally seeds $HOME/.spacecrafter/config.ini from --seed-config (the
      Sec.5.112 arms) before launching;
   5. launches, waits for TCP 7805 then 8 s of settle (the port opens before the
@@ -238,7 +245,7 @@ def key_set(path):
     return out
 
 
-def one_launch(idx, home, outdir, binary, seed_config, extra_cmds):
+def one_launch(idx, home, outdir, binary, seed_config, extra_cmds, no_mkdir=False):
     rec = {"index": idx, "home": str(home)}
     hits = no_instance()
     rec["concurrency_pre"] = hits
@@ -250,8 +257,13 @@ def one_launch(idx, home, outdir, binary, seed_config, extra_cmds):
     if Path(home).exists():
         fail("launch %s: $HOME %s already exists -- not a fresh home" % (idx, home))
         return rec
-    (Path(home) / ".spacecrafter").mkdir(parents=True)
-    rec["home_preseed"] = [".spacecrafter/ (mkdir only)"]
+    if no_mkdir:
+        # Sec.5.130's gate: an EMPTY $HOME, nothing inside it at all.
+        Path(home).mkdir(parents=True)
+        rec["home_preseed"] = ["(nothing -- --no-mkdir, Sec.5.130 gate)"]
+    else:
+        (Path(home) / ".spacecrafter").mkdir(parents=True)
+        rec["home_preseed"] = [".spacecrafter/ (mkdir only)"]
     if seed_config:
         shutil.copy(seed_config, Path(home) / ".spacecrafter" / "config.ini")
         rec["home_preseed"].append("config.ini <- " + str(seed_config))
@@ -261,7 +273,14 @@ def one_launch(idx, home, outdir, binary, seed_config, extra_cmds):
     applog = Path(outdir) / ("launch%s.applog" % idx)
     env = {**os.environ, "HOME": str(home), "DISPLAY": os.environ.get("DISPLAY", ":2")}
     t0 = time.time()
-    proc = subprocess.Popen([binary], cwd=str(Path(home) / ".spacecrafter"),
+    # cwd: the app cds to $HOME/.spacecrafter itself; with --no-mkdir that
+    # directory does not exist yet, so the launch starts from $HOME (which is
+    # also what a real first launch does -- a newcomer types the command from
+    # wherever he stands).
+    cwd = Path(home) / ".spacecrafter"
+    if not cwd.is_dir():
+        cwd = Path(home)
+    proc = subprocess.Popen([binary], cwd=str(cwd),
                             stdout=open(applog, "w"), stderr=subprocess.STDOUT, env=env)
     sock = wait_port(proc)
     rec["tcp_wait_s"] = round(time.time() - t0, 1)
@@ -329,6 +348,12 @@ def one_launch(idx, home, outdir, binary, seed_config, extra_cmds):
     stderrtxt = applog.read_bytes().decode("latin-1")
     rec["stderr_failed_copy"] = [l.strip() for l in stderrtxt.splitlines()
                                  if "Failed to copy" in l or "Abort" in l]
+    # F86: an aborting launch says everything it has to say on stderr and
+    # nothing in the applog (the log system does not exist yet), so the head of
+    # the process output is part of the record, not a debugging aid.
+    rec["stderr_head"] = [l.rstrip() for l in stderrtxt.splitlines()[:12]]
+    rec["home_entries"] = sorted(p.name for p in Path(home).iterdir()) \
+        if Path(home).is_dir() else None
     return rec
 
 
@@ -342,6 +367,9 @@ def main():
     ap.add_argument("--seed-config", default=None)
     ap.add_argument("--cmd", action="append", default=[])
     ap.add_argument("--tag", default="run")
+    ap.add_argument("--no-mkdir", action="store_true",
+                    help="create the $HOME EMPTY (Sec.5.130 gate, F86); default "
+                         "keeps F84's single `.spacecrafter/` mkdir")
     a = ap.parse_args()
 
     out = Path(a.outdir)
@@ -356,7 +384,8 @@ def main():
     launches = []
     for i in range(a.start, a.start + a.n):
         print("--- launch %d ---" % i, flush=True)
-        r = one_launch(i, a.homes + str(i), out, a.bin, a.seed_config, a.cmd)
+        r = one_launch(i, a.homes + str(i), out, a.bin, a.seed_config, a.cmd,
+                       no_mkdir=a.no_mkdir)
         launches.append(r)
         print("  exit=%s tcp=%s s548_fired=%s cfg_keys=%s cfg_ver=%s"
               % (r.get("exit_code"), r.get("tcp"), r.get("s548_fired"),
