@@ -1,0 +1,41 @@
+F94 - THE PRE/POST TABLE, one line per cell, observable quoted (INTENT 11.214)
+
+observable = field 4 (JDay) of the shipped `get status position`
+             lat;lon;alt;JDay;heading;   [coreLink.cpp:616-629]
+PRE  binary f7112cb9e6dd2640ef1bcc7cb6f09263  (code 5a1e5749, both typos present)
+POST binary 404b9e891bcb1c0dbc755fd5ec3b5f1a  (code a2a880ef, the two literals corrected)
+farms /home/claude/sc-f94/farm-{pre,post}, identical shape; runner f94_run.sh
+
+id  body      test                     PRE      PRE jday         POST     POST jday        predicted
+----------------------------------------------------------------------------------------------------
+D   -         1 equal 1                if       2465059.500000   if       2465059.500000   if/if OK 
+A   Saturn    body_selected equal 600  else     2463232.500000   if       2462867.500000   else/if OK
+B   Ganymede  body_selected equal 503  else     2463963.500000   if       2463598.500000   else/if OK
+C   Titan     body_selected equal 604  if       2464328.500000   if       2464328.500000   if/if OK 
+E   Saturn    body_selected equal 0    else     2466154.500000   else     2466154.500000   else/else OK
+
+THE READOUT BESIDE EACH CELL - `get status object`, which is what makes a
+pre-fix else-branch the TABLE's fault and not a selection that never happened:
+  A PRE  Saturne | Magnitude : 0.76 | AD/DE : 05h08m03s / +21°21'23" | Alt/Az : +57°40'24" / +236°24'05" | Distance : 8.10822077 UA
+  A POST Saturne | Magnitude : 0.81 | AD/DE : 04h05m08s / +18°46'26" | Alt/Az : +45°23'07" / +251°00'21" | Distance : 8.26282749 UA
+  B PRE  Ganymède | Magnitude : 5.62 | AD/DE : 22h28m03s / -10°44'25" | Alt/Az : -35°20'50" / +290°45'35" | Distance : 5.49087245 UA
+  B POST Ganymède | Magnitude : 5.82 | AD/DE : 20h36m50s / -19°09'08" | Alt/Az : -59°08'21" / +314°16'50" | Distance : 5.94108097 UA
+  C PRE  Titan | Magnitude : 8.57 | AD/DE : 08h23m39s / +19°40'52" | Alt/Az : +61°00'12" / +138°12'57" | Distance : 8.15964321 UA
+  C POST Titan | Magnitude : 8.57 | AD/DE : 08h23m39s / +19°40'52" | Alt/Az : +61°00'12" / +138°12'57" | Distance : 8.15964321 UA
+  E PRE  Saturne | Magnitude : 1.23 | AD/DE : 12h46m35s / -02°25'54" | Alt/Az : +01°13'59" / +94°30'28" | Distance : 9.51863011 UA
+  E POST Saturne | Magnitude : 1.23 | AD/DE : 12h46m35s / -02°25'54" | Alt/Az : +01°13'59" / +94°30'28" | Distance : 9.51863011 UA
+
+  (A and B differ pre/post only because their branch set a different date:
+   the epoch moved, so the ephemeris did.  C and E, whose branch did NOT
+   change, are byte-identical between the two runs.)
+
+THE ONE SHIPPED CONSUMER, internal/fly_to_selected.sts, played once per binary:
+  PRE  ended=True  wall=7.4s  md5 10665ae44af8a76aae55d3e29ff1a3cd -> 10665ae44af8a76aae55d3e29ff1a3cd  `#!` tails=0
+       position after the play: '7.83;-69.71;100083400.74;2466154.500086; -3.247477;'
+  POST ended=True  wall=7.4s  md5 10665ae44af8a76aae55d3e29ff1a3cd -> 10665ae44af8a76aae55d3e29ff1a3cd  `#!` tails=0
+       position after the play: '7.83;-69.71;100083400.74;2466154.500086; -3.248938;'
+  the altitude field (100083400.74 on both, to the centimetre) is the
+  `altitude 100000` ELSE arm of its `struct if body_selected equal 0`;
+  the if arm would have flown to `altitude 400000`.  Same arm, same number.
+
+EXIT CODES: pre 0, post 0   FAILS: pre [], post []

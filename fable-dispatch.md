@@ -812,7 +812,13 @@ at `/home/claude/sc-f94/bin/spacecrafter-pre-f7112cb9`. CHECKPOINT 2: PRE-fix ru
 and 5/5 as predicted (D if · A Saturn ELSE · B Ganymede ELSE · C Titan if · E else;
 `get status object` names the body in all four, so the two else-branches are the table's;
 consumer played, md5 unchanged, 0 `#!`, altitude 100083400.74 = the `equal 0` else arm).
-NEXT: the two-literal code fix + rebuild.
+CHECKPOINT 3: fix committed
+(code `a2a880ef`, two literals + one citing comment); rebuilt `f7112cb9` -> `404b9e89`,
+`cmake -n` 0, D14 PASS; POST-fix run GREEN 5/5 as predicted (A and B now fire, C/D/E
+unchanged); `f90_rehearsal_run.sh` rc 0, nine step states identical to F90's baseline;
+witness CLASSIFIED pinned-record (`coverage.md:7` pins the corpus at md5 `f7f6985c`,
+live doc is `496fdc68`; no gate in either repo reads the file). NEXT: the records
+(11.214 entry first, stub, §5.98 flip, back-markers, SS-17, MAP, README).
 
 ### F95 — T5.2, the MULTI-HOUR SOAK under show load — the last member of the map's "ready" gate, never run: ONE launch on a private farm in the field's French locale, the eight shipped shows (`basis/` · `custom/` · `deepsky/`) played round-robin through the shipped command surface for ≥ 3 hours with every authored pause RESUMED, a cycle-boundary interlude (select · read out · a dual dump at a PINNED clock) so the §5.62 epoch-shift class has an instrument, a 30-second sampler on the process (RSS · VSZ · threads · fds · GPU MiB · stall counts · log bytes · probe round-trip · screen-lock state), the FAIL criteria and the LEAK criterion committed BEFORE the launch, ONE detached DRIVER owning the app while every executor call is a foreground read (the no-`run_in_background` design measured possible at this session's open), both detectors shown able to fail on two-minute controls, and ONE quit at the end measured against F19's 45 s bound (DEPLOYMENT-MAP T5.2: *"A planetarium session is hours"*; the stability class §5.61 · §5.59/A40 · §11.15d · B30 · §5.62) [M–L, instrument; display-bound, hours]
 

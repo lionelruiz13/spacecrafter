@@ -1,0 +1,10 @@
+[    0.2s] binary /home/claude/spacecrafter/build-claude/src/spacecrafter  md5 404b9e891bcb1c0dbc755fd5ec3b5f1a
+[    0.7s] farm /home/claude/sc-f94/farm-post  (5 scratch scripts)
+[   13.3s] TCP up in 12.6 s
+[   15.1s] D -         1 equal 1                  -> jday 2465059.5  branch=if  (1.4s, loaded=True ended=True)
+[   17.3s] A Saturn    body_selected equal 600    -> jday 2462867.5  branch=if  (1.4s, loaded=True ended=True)
+[   19.5s] B Ganymede  body_selected equal 503    -> jday 2463598.5  branch=if  (1.4s, loaded=True ended=True)
+[   21.7s] C Titan     body_selected equal 604    -> jday 2464328.5  branch=if  (1.4s, loaded=True ended=True)
+[   24.0s] E Saturn    body_selected equal 0      -> jday 2466154.5  branch=else  (1.4s, loaded=True ended=True)
+[   34.2s] consumer internal/fly_to_selected.sts: ended=True wall=7.4s md5 10665ae4 -> 10665ae4  #!=0
+[   36.8s] FAILS: 0 []
