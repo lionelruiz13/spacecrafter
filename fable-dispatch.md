@@ -663,8 +663,20 @@ re-configure) -- re-configured, then built -j24: (d) exit 0, 143 objects incl. t
 new TU at 58 %, mtime 2026-09-04 20:11:16 -> 2026-09-05 10:53:00, md5 `c8e12950` ->
 `225f0d93`, `-n` zero steps after, 26 `VideoSurfaceTexture` symbols linked; NO
 libavcodec-61 failure. One warning, pre-existing and in an untouched file
-(`dsoNavigator.cpp:306`) = §5.92's already-recorded `z_reflection` rider. NEXT:
-mandate 4 (full canary, then scedit gates in `util/scedit/build-f83`).
+(`dsoNavigator.cpp:306`) = §5.92's already-recorded `z_reflection` rider. CKPT 3+4
+(mandate 4+5) DONE: (e) FULL canary exit 0, **12/12 in band, every delta 0.0**, exact
+banked values, cache mutations 0, md5 in==out; dwell frame md5 `5215565b…`
+BYTE-IDENTICAL to §11.199's, now across a THIRD binary. (f) ctest **19/19** (fresh
+`util/scedit/build-f83`, Release), strict corpus **4014/0/0** — BUT the anchor gate
+RED first: `clean 7196 -> 7194`, `moved 2`, refuting BOTH the dispatch's "none of the
+four files is anchored" and my own committed P3. The two are the same sentence stored
+twice (`sc-grammar.json:711`, `args/unit-4.json:274`) citing `s_texture.hpp:294-298`
+= `setBigTextureLifetime`, now at 299-303: shift +5 = exactly the merge's lines above
+it. Re-RECORDED not re-pointed (the pin is a COMMIT, `54a2b844`; re-pointing would
+falsify the citation at its own pin) — code `03c85734`, ctest 19/19 after. Mandate 5:
+the verb is `image action load filename <x>.mp4 name <n>` (`app_command_interface.cpp:3111`
+-> `image_mgr.cpp:85` -> `image.cpp:66` -> `s_texture.cpp:305`); OWED, both candidate
+dirs empty. NEXT: mandate 6 (§11.203 + stub, DEPLOYMENT-MAP R1, README, baselines).
 
 ### F84 — The newcomer's first hour, measured: a clean clone of the merged HEAD taken through INSTALL / `install_src.sh` as written (no sudo, scratch prefix), every deviation he would hit recorded and the documents corrected to what IS; the install tree manifested; six fresh-HOME first launches (the §5.48 cold-HOME race rated); the §5.112 rewrite priced on a bumped-version copy of the field config — the deployment manifest that makes the branch a reference (DEPLOYMENT-MAP R2 + T3's §5.112 datum) [M]
 
