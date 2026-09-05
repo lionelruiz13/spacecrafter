@@ -220,6 +220,28 @@ through the full canary (the regression gate, banked band, never re-banked); F84
 FUNCTIONAL (fresh-HOME launches, the §5.48 rate); F85 none; F86 FUNCTIONAL under
 ASan; F87 FUNCTIONAL. Remotes: local contains origin on both; push impossible here
 — **the owner's push is R5, the one act nothing here can substitute.**
+**MID-SESSION EVENTS (recorded as they happened; `date`-measured from 13:40 on — every
+earlier "~HH:MM" in this session's prompts was an ESTIMATE, ~1 h fast, dispatcher
+defect):** (1) 12:23:23 — the EntityCore submodule commit `7ce58350` was amended
+(tree-identical `84f5d94b`) and pushed to `origin/main` FROM THIS CHECKOUT by a hand
+with a key this session lacks (writer set: the owner or his other session); the pin was
+bumped on `master-beta` as a supervisor act (`32af2efb`, veto point §3) and a clone probe
+passed ⇒ §5.131 DISCHARGED. (2) 13:33:40 — `USER_QUESTIONS_ROUND3.md` STAGED with
+sixteen round-3 replies by the same external hand; 13:36 — the F85 executor ABORTED at
+the §0.7 gate on that staged file (correct on both its grounds; 0 mutations); 13:38:30 —
+the owner COMMITTED it (`c5be42b`, "User question replies round 3"). (3) 13:4x — F84's
+measured N7 paragraph, dropped by the paste (a copy predating it), RESTORED beside the
+reply; the file flipped to ANSWERED; **F88 minted** (the propagation, ledger-only);
+F85 re-dispatched with the replies as facts (live `### F` 5 → 6). (4) [vixy, in-session]:
+the replies are the MAIN TESTER's (Lionel RUIZ), transmitted by the owner; on his word
+the commit's author was amended to the tester's code-history identity at the
+quiescent point after F85's delivery: **`c5be42b` → `6ffb017`** (`Lionel RUIZ
+<lionel.ruiz@live.fr>`, committer = this session), the four later harness commits
+replayed byte-identical — **SHA MAP: `741b4a8→367f2d1` · `c4686fc→4fb22f1` ·
+`72aa116→0ee6ab7` · `c0efd3c→190ced4`** (any citation of the old SHAs in this file,
+§11.206 or the F85 prompt resolves through this map; nothing was on the remote).
+Picks after the events: **F83 ✓ → F84 ✓ → F86 ✓ → F85 ✓ → F88** (the propagation
+outranks F87 now: sixteen decisions the map waited on), F87 if health permits.
 
 ---
 
@@ -1036,16 +1058,57 @@ outside installation procedure. Reported not absorbed: 424 lines vs the 400
 target (§11.206(i)); four dispatcher defects (§11.206(j)); one scedit README
 divergence, recorded not fixed (§11.206(k)). ONE launch, not the three allowed.
 
+**ACCEPTED 2026-09-05 14:20 (supervisor, session 22, Claude Fable 5.1).** Verified by my
+own runs and reads, not by the report: §11.206 read in full; two code commits (Claude
+Opus 5, `d260d89c` + `a2fd3c5b`: `doc/developer-entry.md` 424 lines, INSTALL −26 across
+the two obsolete paragraphs, README +3) and three harness commits (`4fb22f1`, `0ee6ab7`,
+`190ced4` — post-rewrite SHAs; the pre-rewrite `c4686fc`/`72aa116`/`c0efd3c` are the
+same content), both trees clean; the doc pure ASCII (0 bytes ≥ 0x80, Python census);
+`f85_links.py` run by me: **0 dangling** (129 paths · 25 continuations · 15 ids);
+D14 PASS at 972; the default-path members at source (`ssystem_factory.hpp:1070`
+`drawModularSystem = true`; `pathPinned = true`); the §5.59 marker carries `:831`;
+instruments to the digit (scan 211/261/131 · pair-check 222/197/25/106 · D 35 · D2 11 ·
+I 89 · I2 36 · M 81). Deviations ENDORSED with the executor's arguments: one launch
+serving both the §6 re-verification and the default-path sentence (stronger, not
+weaker); the I1–I7 paraphrase CUT (a paraphrase in the code repo becomes the de-facto
+text — the boundary read exactly right); 424 > 400 lines (a sourced sentence outranks a
+size number; the cut list stands at §11.206(h)(5), veto-open). DISPATCHER DEFECTS
+reported, all four ACCEPTED as mine: "live `### F` count 5" in the section (6 after
+F88's mint; the prompt superseded — had it not, an ABORT: the commit gate consumes it);
+"`checkConfig`'s default" (it is `beta_features.ini` `[dual_path] render_path`,
+`define_key.hpp:54-55`, optional file, member initialisers NEW+pinned — the prompt's
+"MEASURE it" is what saved the sentence); "scedit's three gates" (nineteen); "§11.205"
+in the section. Round tally: **eighteen dispatcher defects**. Findings the round did
+not ask for, ENDORSED: three §5 coordinates drifted (§5.92 `:1525→:1688`, §5.127(5)
+`:260→:283`, §5.59 `:795→:831` — the last with a SHAPE change: `waitFrame` is now the
+`else` arm of a `sender ? acquireFrame : waitFrame` fork, and whether the `sender` arm
+shares the untimed-wait property is UNMEASURED — queued as a §5.59 rider); scedit
+README `:43` "14 gates" vs `:767` nineteen (one character, next opener's). Criterion-
+integrity instances credited: the checker shown able to fail (four injected faults, one
+report each); the source table segmented mechanically and counted both ways; the
+default-path premise refuted at source rather than absorbed; the ambiguous `[`:795`]`
+continuation caught by the tool and fixed in the PROSE. Standing consequences: R3 MET;
+R2's documentation half closed; the developer's entry point is
+`doc/developer-entry.md` → INSTALL → the harness; the open question it names for the
+owner is R23's outside installation procedure (where it lives, who owns it).
+
 ### F88 — The round-3 replies propagated: sixteen owner-committed answers (`c5be42b`, 2026-09-05) carried into every row, decision and map tier they resolve — each with its back-marker at the write, the file's rows flipped from STALE to PROPAGATED, and the newly decision-free work named for the next round (§11.116(c)'s final-pass contract; §11.198's precedent; DEPLOYMENT-MAP T1/T3/T4) [M, ledger-only]
 
 **Why now / mandate:** the final pass was the long pole of every tester-side tier; its
 replies landed today inline in `USER_QUESTIONS_ROUND3.md` by the owner's own commit and
 nothing in the ledger knows it yet. Every hour they sit unpropagated, a row that is now
 answered reads as open — the class §11.78(e) paid a round-trip for (F80's abort).
-Provenance question carried, not resolved: the replies are committed by Calvin Ruiz;
-whether they are relayed from the main tester or his own reading is unrecorded —
-tag them `[stated: owner commit c5be42b]` and put the one-line question to the owner
-in §3, never guess.
+Provenance RESOLVED before dispatch [vixy 2026-09-05: *"I can tell those came from the
+main tester/user"*]: the replies are the MAIN TESTER's (Lionel RUIZ), transmitted by
+the owner; the commit's author was amended to his history identity on the owner's
+word — `c5be42b` → **`6ffb017`** (`Lionel RUIZ <lionel.ruiz@live.fr>`; the four later
+harness commits replayed: `741b4a8→367f2d1`, `c4686fc→4fb22f1`, `72aa116→0ee6ab7`,
+`c0efd3c→190ced4`, content byte-identical). Tag every reply
+`[stated: tester, via owner commit 6ffb017]`. The main tester is ALSO a code
+contributor (151 commits) — where a reply touches the engine's design (N7's
+"put a #", R28's "it shouldn't", L1's "no residual") it is the tester's
+expectation, and the owner's stratum ruling per §11.161(c) still applies to the
+FIX; record both, decide neither.
 
 **Measured at dispatch (supervisor, 2026-09-05, harness `c5be42b`+):** the sixteen
 replies and the rows they reach, as read from the diff — the executor re-reads the

@@ -2,12 +2,16 @@
 
 Last updated: 2026-08-31.
 
-**Status: ~~DRAFT — compiled 2026-08-31, NOT yet sent.~~ ANSWERED 2026-09-05 — replies
-committed inline by the owner (Calvin Ruiz, commit `c5be42b`, "User question replies
-round 3"; whether relayed from the main tester or his own is not recorded in the
-commit — the propagation task F88 carries that as a one-line question). Propagation
-into the ledger (§13/§5/DECISIONS rows, DEPLOYMENT-MAP, back-markers) = F88;
-until it lands, the replies below are authoritative and the rows are STALE.** This file is the
+**Status: ~~DRAFT — compiled 2026-08-31, NOT yet sent.~~ ANSWERED 2026-09-05 — the
+replies below are the MAIN TESTER's (Lionel RUIZ), transmitted by the owner
+[vixy 2026-09-05: *"Reading the claude code's Edit side, I can tell those came from
+the main tester/user"*]; committed inline 13:38:30 under the owner's git identity and,
+on his word, the commit's AUTHOR was amended to the tester's history identity
+(`Lionel RUIZ <lionel.ruiz@live.fr>`, 151 commits in the code repo): `c5be42b` →
+**`6ffb017`**, committer = the supervising session (the transport). Provenance tag for
+every reply: `[stated: tester, via owner commit 6ffb017]`. Propagation into the
+ledger (§13/§5/DECISIONS rows, DEPLOYMENT-MAP, back-markers) = F88; until it lands,
+the replies are authoritative and the rows are STALE.** This file is the
 send-time view of the ledger-owned final-pass list (INTENT §11.116(c):
 tester items accumulate into ONE pass before testing deployment; the
 ledger wins on divergence). Before it goes out, the developer applies the
