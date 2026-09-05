@@ -1182,8 +1182,12 @@ values on both binaries). Checkpoint 2: the gate repaired — P1b (the distance 
 13 dumps, 1.0 km), P0 (twinkle asserted from every dump), P7's max form REMOVED for a
 lit-pixel count (K=4, floor 100); replayed OFFLINE over F89's eight landed runs first:
 reference 13/13 green + control green, pre-fix 9 red / 4 green (cmd+other are the
-in-run controls) + control GREEN, twinkle-ON run reds at P0. NEXT: the three launches
-under `/home/claude/sc-f93/`.
+in-run controls) + control GREEN, twinkle-ON run reds at P0. Checkpoint 3: FOUR launches
+done, every prediction met — reference ×2 **exit 0**, all green, P7 windows 846/21/2023/27
+to the digit in both, A/A 0 px in every window (4 px frame-wide, all four inside a
+138×136 px box on the Moon); pre-fix **exit 1**, 9 reds ALL P1b (17417.2/18263.2 km),
+count control GREEN 45.0×/45.8× as predicted; guard-only lands in the pre group.
+Artifacts `harness/artifacts/f93/`. NEXT: b24_select (3b), then README + entry.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
