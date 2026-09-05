@@ -1,0 +1,55 @@
+F83 -- predictions committed BEFORE the gate runs (2026-09-05, code c6784490)
+=============================================================================
+Written and committed before `f56_canary.sh` (full, scene arm) and before the
+scedit gates were run on the merged binary.  A green that could not have been
+red is not evidence; these are the numbers that would have falsified the merge.
+
+WHY THE CANARY IS THE RIGHT GATE HERE.  The merge's only engine-visible file is
+`src/tools/s_texture.cpp` -- the loader EVERY textured body goes through.  A
+photometric shift in the dwell scene is exactly what a botched texture-path
+merge produces, and the banked band reads it to three decimals.
+
+P1 -- FULL CANARY: exit 0, values EXACTLY at the banked band, to the last
+      printed digit, spread 0.000:
+          new  165.258 / 6.644
+          old  160.142 / 6.603
+      Ground for the prediction, read from the diff (not assumed):
+      (1) the new path is entered only when `isVideoTextureName(textureName)`
+          is true -- a case-insensitive suffix test over .mp4/.webm/.mov/.avi/
+          .mkv/.m4v (`s_texture.cpp:101-113`).  No texture the dwell scene
+          loads carries such a suffix, and `~/.spacecrafter/videos` is empty
+          (§5.36), so ZERO textures take the branch.
+      (2) the non-video branch is the same call it always was: the old code
+          chose `preload(textureName, ...)` or `preload(texDir + textureName,
+          ...)` on `isAbsolute || fileExist`; the new code hoists that choice
+          into `fullName` and calls `preload(fullName, ...)`.  Same predicate,
+          same argument, one temporary.
+      (3) the two new per-frame costs (`update()`'s expired-weak_ptr sweep and
+          `recordTransfer()`'s loop) both iterate `videoTextureCache`, which is
+          empty for the whole run.
+      FALSIFIER: any member off-band, or a nonzero spread, means the merge
+      perturbed the shared texture path and the resolution needs re-reading.
+
+P2 -- SCEDIT ctest: 19/19 pass in a fresh Release build dir.
+      Ground: the merge changed no file under `util/scedit/`.
+
+P3 -- ANCHOR GATE: `clean 7196 / not-at-head 2 / skipped 86`, unchanged.
+      Ground: anchors pin lines in `app_command_interface.cpp` and friends;
+      the merge left all five command-surface files byte-identical to
+      85cc2785 (check (b) proves three of them; the other two never
+      conflicted and show in no diff).
+      NOTE THIS IS THE WEAKEST PREDICTION: `s_texture.cpp` is not an anchored
+      file, so the gate CANNOT see this merge.  Green here is a
+      no-regression statement, not evidence about the merge.  Said plainly
+      rather than counted as a passing check.
+
+P4 -- STRICT CORPUS: 4014 findings / 0 false positives / 0 unadjudicated.
+      Ground: same -- the command-surface files are byte-identical, and the
+      corpus is unchanged, so any movement at all would be a finding about
+      the merge having touched something check (c) says it did not.
+
+P5 -- The four merged files compile against libavcodec 61.19.101 unmodified.
+      ALREADY RESOLVED before this file was written (build exit 0, the new TU
+      compiled, 26 VideoSurfaceTexture symbols linked) -- recorded here as
+      settled, not as an open prediction, so the list stays honest about
+      which of its members were still open when it was committed.
