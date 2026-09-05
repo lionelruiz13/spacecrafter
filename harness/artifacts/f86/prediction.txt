@@ -146,3 +146,29 @@ P8 (the discriminating pair, 2 launches, both arms inside EACH launch):
    REFUTED IF the OFF frames still differ by ~19000 px -- then the change is
    NOT the twinkle phase, the b4 red is unexplained, and the fix goes to the
    dispatcher as a suspension rather than as a delivery.
+
+P8 RAN AND DID NOT DISCRIMINATE -- recorded as a failed experiment, not deleted.
+   Measured: pre-vs-post ON = 448 px>8, OFF = 438 px>8, and ON-vs-OFF within one
+   binary = 34 px>8.  Cause: the scene I grabbed is the shipped startup view,
+   3.30 Mpx lit out of 4.19 Mpx -- atmosphere and landscape fill the frame and
+   the star field is not visible, so the instrument could not see the channel it
+   was built to test.  The 19000-px signal is not present in this scene either,
+   which is itself information: whatever produces it is not global to every
+   frame the two binaries draw.
+
+P8b (the repair, committed 2026-09-05 13:12 BEFORE its two launches): same two
+   binaries, same farm, but the star field made visible first --
+     1. flag atmosphere off
+     2. flag landscape off
+     3. body action screenshot filename <arm>_stars_on.png
+     4. flag star_twinkle off
+     5. body action screenshot filename <arm>_stars_off.png
+   PREDICTED: with the stars visible and twinkle ON, pre-vs-post differs in
+   THOUSANDS of px>8 (the b4 signature reproduced in a scene I control); with
+   twinkle OFF the same pair collapses to the few-hundred floor P8 measured
+   (448/438).
+   REFUTED IF: the ON pair stays at the few-hundred floor (then the b4 delta is
+   not reproducible outside b4's own anchored scene, and it goes to the report
+   as an unexplained, bounded, reproducible pixel difference), or if the OFF
+   pair stays in the thousands (then it is not the twinkle and the fix is
+   suspended rather than delivered).
