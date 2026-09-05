@@ -255,36 +255,71 @@ public:
 
     // Exact rotational inverse of viewRotation(): camera(observed) frame ->
     // the frame the view acts on (zenith frame when anchored, body frame when
-    // free). NOTE: observedPosToRaDe/AltAz below inherit the S11.19 frame
-    // corrections -- their absolute calibration against the old path is the
-    // still-open INTENT S11.4 caveat.
+    // free). observedPosToAltAz rides THIS one; the RA/DE members below do not
+    // (see the R'^T paragraph).
     inline Vec3f observedToLocalPos(const Vec3f &observedPos) const {
         return viewRotation().transpose().multiplyWithoutTranslation(observedPos);
     }
-    inline Vec3f observedToBodyLocalPos(const Vec3f &observedPos) const {
-        Vec3f ret = observedToLocalPos(observedPos);
-        if (freeMode) {
-            ret -= position;
-        } else {
-            ret.v[2] -= distance;
-            ret = Mat4f::yrotation(latitude-M_PI_2).multiplyWithoutTranslation(ret);
-            ret = Mat4f::zrotation(-longitude).multiplyWithoutTranslation(ret);
-        }
-        return ret;
-    }
-    inline std::pair<float, float> observedPosToRaDe(const Vec3f &observedPos) const {
-        Vec3f direction = observedToBodyLocalPos(observedPos);
-        std::pair<float, float> ret;
-        // Pole test was (x + y) == 0, which also swallowed every x == -y
-        // direction (same defect class as the old lookTo branch).
-        if (direction[0] == 0 && direction[1] == 0) {
-            ret.second = 0;
-            ret.first = std::copysign(M_PI_2, direction[2]);
-        } else {
-            Utility::rectToSphe(&ret.first, &ret.second, direction);
-        }
-        return ret;
-    }
+
+    // ---- THE READOUT FRAME: viewMat()'s inverse (INTENT S11.213) ----------
+    // viewMat() is, factor for factor (Camera.cpp, viewMat):
+    //     anchored: R' . Rv . T(0,0,-distance) . X(lat-pi/2) . Z(-longitude) [. S]
+    //     free:     R' . Rv . T(position)                                    [. S]
+    // with Rv = viewRotation(), R' = viewOffsetEyeRotation() and
+    // S = reference->computeSurfaceToBody().  Its inverse is therefore
+    //     [S^T .] Z(+longitude) . X(pi/2-lat) . T(0,0,+distance) . Rv^T . R'^T
+    // and that is what the members below compose, once, in Camera.cpp.  S^T is
+    // spelled `computeBodyToSurface()`, which IS zrotation(+getAxisRotation())
+    // and so is exactly S's transpose (ModularBody.hpp).
+    //
+    // WHICH FRAME THAT IS -- DERIVED FROM OLD'S CODE, NOT CHOSEN (S11.52(b),
+    // S11.213(b)): the reference body's equatorial frame OF DATE, with right
+    // ascension counted from the equinox that body's own sidereal time counts
+    // from.  Old builds `mat_local_to_earth_equ` as Z(siderealTime + longitude)
+    // . Y(90-latitude) [anchor_point_body.cpp, navigator.cpp:232], and
+    // `getAxisRotation()` is that same sidereal time plus the pi/2 the mesh
+    // convention carries -- so the fold, taken in FULL, lands on old's frame
+    // exactly (measured 0.000000000 deg over 64 directions,
+    // harness/f91_frame.cpp).  The old S11.4 caveat that used to sit here is
+    // CLOSED: its decision (1) is definitional (S11.198(b)(1)) and its decision
+    // (2) is the tester's own answer, round-3 R27 (S11.207(b) row 14).
+    //
+    // WHY THE FOLD MATTERS TWICE OVER: dropping it entirely is S5.86's defect
+    // (the answer then rotates with the reference body); dropping only its
+    // constant pi/2 leaves a fixed 90 deg right-ascension error, which is what
+    // S11.158(f2) measured offline and recorded as a "-90.0003 deg zero point".
+    //
+    // R'^T, NOT JUST Rv^T: `getObservedPosition()` is R' * (the offset-free eye
+    // position) -- viewOffsetEyeRotation's own note says so, and update()'s
+    // tracking feedback already undoes it -- so an inverse that divided only by
+    // Rv would leave the B17 view-offset pitch inside the answer.  Old's RA/DE
+    // has no eye-frame content at all (it never passes through a view matrix),
+    // so undoing R' is what old-parity requires as well as what "the inverse of
+    // viewMat" means.  Byte-identical to Rv^T whenever the offset is inert,
+    // which is every shipped default (offset 0 => R' == identity).
+
+    //! Observed(eye) frame -> the reference's equatorial frame, ROTATION ONLY:
+    //! the origin stays where `observedPos` already puts it, at the OBSERVER.
+    //! TOPOCENTRIC, which is old's contract for this quantity twice over --
+    //! `Body::getEarthEquPos` is `nav->helioToEarthPosEqu(...)`, whose own doc
+    //! reads "equatorial coordinate but centered on the observer position"
+    //! [navigator.hpp, body.cpp] -- and the tester's answer R27: "The RA/DE
+    //! must be the value from our position."  THE single authority (I2) for
+    //! every new-path readout that has to land in old's frame.
+    Vec3f observedToBodyEquPos(const Vec3f &observedPos) const;
+
+    //! The LITERAL inverse of viewMat(): the same frame, origin restored to the
+    //! reference body's CENTRE.  Kept because it is the map viewMat defines and
+    //! the one the round-trip probes score (harness/f34_probe_inverse.cpp,
+    //! f91_frame.cpp); it has NO in-tree consumer since S11.213, both readouts
+    //! wanting the observer as origin.  Expressed from the authority above
+    //! rather than beside it: the origin term is linear, so carrying it through
+    //! the same rotations at the end is exact, and the topocentric answer keeps
+    //! the shorter chain (no cancellation for a body close to the observer).
+    Vec3f observedToBodyLocalPos(const Vec3f &observedPos) const;
+
+    //! (ra, de) of an observed position, in the frame above.
+    std::pair<float, float> observedPosToRaDe(const Vec3f &observedPos) const;
     inline std::pair<float, float> observedPosToAltAz(const Vec3f &observedPos) const {
         Vec3f direction = observedToLocalPos(observedPos);
         std::pair<float, float> ret;
@@ -404,9 +439,24 @@ public:
     inline float getLatitude() const {
         return latitude;
     }
+    // Added by S11.213: the class had no longitude accessor at all, and
+    // ModularObject's local-hour-angle line was reading getLatitude() in the
+    // slot old spells `observatory->getLongitude()` [body.cpp].  A missing
+    // accessor is a plausible mechanism for that slip, so it is supplied here
+    // rather than worked around at the call site.
+    inline float getLongitude() const {
+        return longitude;
+    }
     // This disallow using multiple cameras, but multiple cameras can't be used simultaneously anyway
     static Camera *instance;
 private:
+    //! Steps 3 and 4 of viewMat()'s inverse: the zenith(local) frame -> the
+    //! reference body's equatorial frame.  Written ONCE because both public
+    //! members of S11.213 need exactly it, and because the pair that drifted
+    //! apart before was two re-statements of one composition (I2, the S5.80
+    //! shape recorded just below).
+    Vec3f localToBodyEqu(Vec3f v) const;
+
     // ---- THE pose part: one authority for triple <-> cartesian ------------
     // S5.80/S11.153. `posePart` is viewMat()'s ANCHORED branch solved for the
     // eye, and `posePartToPose` is its exact inverse; between them they are the

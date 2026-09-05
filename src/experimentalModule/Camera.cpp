@@ -198,6 +198,70 @@ Mat4f Camera::viewMat() const
     return mat;
 }
 
+// ---- viewMat()'s inverse: the readout frame (INTENT S11.213) --------------
+// The three members below are ONE composition read in two directions; the full
+// derivation, with the citations that make the target frame old's and not a
+// choice, is in Camera.hpp above their declarations.  They live here and not
+// inline in the header only because `reference` is a forward-declared
+// ModularBody there.
+Vec3f Camera::localToBodyEqu(Vec3f v) const
+{
+    // Z(+longitude) . X(pi/2-lat): the exact transposes of viewMat's
+    // X(lat-pi/2) . Z(-longitude), in the reversed order an inverse takes.
+    // The shipped expression had Y where the composition has X and the same
+    // sign on the longitude as the composition instead of the opposite one --
+    // S5.86's first two terms.
+    if (!freeMode) {
+        v = Mat4f::zrotation(longitude)
+                .multiplyFast(Mat4f::xrotation(M_PI_2 - latitude))
+                .multiplyWithoutTranslation(v);
+    }
+    // The surface fold, which the shipped expression omitted ENTIRELY (S5.86's
+    // fourth term).  computeBodyToSurface() is zrotation(+getAxisRotation()),
+    // the exact transpose of the computeSurfaceToBody() viewMat applies -- and
+    // it must be taken in FULL: getAxisRotation() is the reference's sidereal
+    // time PLUS pi/2, and dropping that pi/2 is the constant 90 deg
+    // right-ascension error S11.158(f2) recorded as a "zero point".
+    if (boundToSurface)
+        v = reference->computeBodyToSurface().multiplyWithoutTranslation(v);
+    return v;
+}
+
+Vec3f Camera::observedToBodyEquPos(const Vec3f &observedPos) const
+{
+    // renderViewRotation(), not viewRotation(): observedPos carries the B17
+    // eye-offset pitch R' (see viewOffsetEyeRotation above), and old's readout
+    // carries no eye-frame content at all.
+    return localToBodyEqu(renderViewRotation().transpose()
+        .multiplyWithoutTranslation(observedPos));
+}
+
+Vec3f Camera::observedToBodyLocalPos(const Vec3f &observedPos) const
+{
+    // + the OBSERVER's own place in the same frame, i.e. viewMat's translation
+    // factor carried through the same rotations.  The rotation is linear, so
+    // adding it at the end is exact and leaves the topocentric answer above as
+    // the one expression both share.  The shipped expression SUBTRACTED the
+    // distance where an inverse adds it -- S5.86's third term.
+    return observedToBodyEquPos(observedPos)
+        + localToBodyEqu(freeMode ? -position : Vec3f(0, 0, distance));
+}
+
+std::pair<float, float> Camera::observedPosToRaDe(const Vec3f &observedPos) const
+{
+    const Vec3f direction = observedToBodyEquPos(observedPos);
+    std::pair<float, float> ret;
+    // Pole test was (x + y) == 0, which also swallowed every x == -y
+    // direction (same defect class as the old lookTo branch).
+    if (direction[0] == 0 && direction[1] == 0) {
+        ret.second = 0;
+        ret.first = std::copysign(M_PI_2, direction[2]);
+    } else {
+        Utility::rectToSphe(&ret.first, &ret.second, direction);
+    }
+    return ret;
+}
+
 void Camera::setViewOffset(double offset)
 {
     // The [-0.5,0.5] clamp lives in the ONE sink Core::setViewOffset (both S2(c)

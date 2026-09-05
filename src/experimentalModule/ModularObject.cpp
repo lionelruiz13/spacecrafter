@@ -30,6 +30,20 @@
 // The separators are deliberately NOT wrapped - `" / "`, `"@"`, `"/"`, `" LPA "`,
 // `"00h00m00s"`, `"24h00m00s"` - because old does not wrap them either.
 
+namespace {
+// Old normalises its hour angles with `while (x >= 360) x -= 360; while (x < 0)
+// x += 360;` before printing them [body.cpp]. This is the same map, in radians:
+// fmod puts the value in (-2pi, 2pi) and one conditional lifts it into
+// [0, 2pi). It is not the loop because at a 1968 date the loop would run about
+// eleven thousand times; it is not a bare fmod because a bare fmod is exactly
+// what S11.213 measured printing negative hour angles there.
+inline double wrap2pi(double a)
+{
+    a = std::fmod(a, 2 * M_PI);
+    return (a < 0) ? a + 2 * M_PI : a;
+}
+}
+
 std::string ModularObject::getInfoString(const Navigator *nav) const
 {
     std::ostringstream oss;
@@ -79,8 +93,19 @@ std::string ModularObject::getShortInfoNavString(const Navigator *nav, const Tim
 	const double T = jd / 36525.0;
 	/* calc mean angle */
 	const double sidereal = (280.46061837 + (360.98564736629 * jd) + (0.000387933 * T * T) - (T * T * T / 38710000.0)) * (M_PI/180.);
-	const double HA = std::fmod(sidereal+Camera::instance->getLatitude()-tmp.first, M_PI*2);
-	const double GHA = std::fmod(sidereal-tmp.first, M_PI*2);
+    // Old's own arithmetic, term for term [body.cpp]: the LOCAL hour angle is
+    // the Greenwich one plus the observer's LONGITUDE (`Le = observatory->
+    // getLongitude()`), and BOTH angles are normalised into [0, 2pi) before
+    // they are printed and before PA is taken from HA.  Until S11.213 this line
+    // read `getLatitude()` and took a bare fmod, and both were measured on the
+    // dual dump's own sidecar: `LHA - GHA` printed the observer's LATITUDE
+    // (43.300000 deg) where old prints its LONGITUDE (5.366667 deg), constant
+    // over all 90 both-tree bodies; and at a pre-J2000 date, where `sidereal`
+    // is negative, the bare fmod printed GHA, LHA and LPA negative for 90
+    // bodies of 90 where old printed none.  SA and GHA are frame quantities and
+    // ride tmp.first; this line is the one term that is NOT the frame.
+    const double HA = wrap2pi(sidereal + Camera::instance->getLongitude() - tmp.first);
+    const double GHA = wrap2pi(sidereal - tmp.first);
     const double PA = (HA < M_PI) ? HA : (2*M_PI - HA);
     if (tmp.first < 0)
         tmp.first += 2*M_PI;
@@ -138,7 +163,17 @@ std::string ModularObject::getNameI18n() const
 
 Vec3d ModularObject::getEarthEquPos(const Navigator *nav) const
 {
-    Vec3f ret = Camera::instance->observedToBodyLocalPos(body->getObservedPosition());
+    // observedToBodyEquPos, not observedToBodyLocalPos (S11.213): the override
+    // must honour the contract `Body::getEarthEquPos` sets, and that contract is
+    // OBSERVER-CENTRED -- `nav->helioToEarthPosEqu(...)`, whose own doc says
+    // "equatorial coordinate but centered on the observer position"
+    // [navigator.hpp, body.cpp]. The literal inverse of a view matrix is
+    // body-centred, and this value's consumers need old's origin, not the
+    // matrix's: `set home_planet selected` feeds it straight back through
+    // `earthPosEquToHelio` [anchor_manager.cpp], which is the exact inverse of
+    // the observer-centred map, and the old path's view aiming reads it as a
+    // direction from the observer [navigator.cpp, core.cpp].
+    Vec3f ret = Camera::instance->observedToBodyEquPos(body->getObservedPosition());
     return Vec3d(ret[0], ret[1], ret[2]);
 }
 
