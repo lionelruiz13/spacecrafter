@@ -1128,7 +1128,15 @@ harness records (`git status` on the code repo EMPTY at close).
 
 **DoD:** census + checklist + patch artifact + breakage scan; §11 entry + stub; map R6
 annotated; README; both trees clean (code untouched); WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-05 19:32 — checkpoint 1: §0.7 gate PASSED (all input-side premises
+verified; two output-side defects reported: the section's "5" F-sections is 6 and its
+118/189 census is 125/208 — both licensed re-measures — and the prompt's "the githooks
+pre-commit IS the trailer check" is refuted, the hook has no branch or trailer logic at
+all). Census instrument `harness/f92_census.py` + artifact
+`harness/artifacts/f92/rename-live-pointers.patch` written; round-open partition (code
+`0b46a63f` / harness `58f10f6`): code 18 = LIVE 1 · PIN 17 · HIST 0 · CONV 0; harness
+208 = LIVE 3 · PIN 116 · HIST 89 · CONV 0. NEXT: scratch worktrees under
+`/home/claude/sc-f92/`, `git apply --check` + post-apply verify, then the breakage scan.
 
 ### F93 — The `b4_anchors` gate REPAIRED where F89 showed it blind: (1) a NEW assert that the OLD path's distance to the anchor's parent equals the authored radius (`Moon.old.dist` = 200 000.0 km — 17 417 km of discrimination, wrong in b4's own artifacts since F7 and asserted by nothing), (2) P7's screen-witness control re-expressed as a LIT-PIXEL COUNT comparison instead of a max-over-window (846 vs 21 px at t0, 2023 vs 27 at t1 — 30–100× on both binaries where the max form gives −35 / +172), (3) the scene's twinkle OFF so the gate is deterministic (0–2 px A/A instead of ~2200); proven BOTH WAYS on the two binaries F89 left: GREEN on the reference `2815d182`, RED on the pre-fix `sc-scratch-pre` `9471f2fc` at the new assert AND the new control — a gate that now reds on the corrupt build and greens on the correct one, which is the direction it had backwards (§11.208(i)(j); §13.B; the developer's first harness run) [S, instrument]
 
