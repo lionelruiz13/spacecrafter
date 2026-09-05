@@ -224,6 +224,10 @@ ran seven executors and closed on context; three is the sweet spot, §0b.2).
 drew its sky 76° from the scene it composed and the gate was green on that; the reference
 binary is RIGHT and the instrument is wrong (§11.208(i)). Its two repairs are decision-free
 harness work ⇒ **F93** minted (S); picks now **F89 ✓ → F87 → F93 → F90**, then F91/F92.]**
+**[17:2x, at F87's acceptance: F87 ✓ (§11.209 — fourteen labels, the catalogue is a frozen
+field `.txt` not a `.po`, and `app_locale` is inert → §5.136); F93 WIDENED with the second
+instrument red F87 named (`b24_select.py`'s English-label matcher); F90's farm paragraph
+corrected (the farm COPIES `config.ini`). Picks **F89 ✓ → F87 ✓ → F93 → F90**, then F91/F92.]**
 Deliveries: all to the parent (§11.208+, refreshed at each dispatch). Launch classes:
 F89 FUNCTIONAL (star-field pixel sets under a frozen clock — no banked-band claim, the
 full canary is not required); F87 FUNCTIONAL (farm, French session, sidecar); F90
@@ -633,6 +637,44 @@ this commit, both trees CLEAN, binary **`407b3d1d`** with `cmake -n` **0 steps**
 twice from the same source to the same md5 — bit-reproducible), D14 PASS, baselines
 restored exactly (back-marker 221/271/**131**, pair 225/200/25/108, D 35 · D2 11 · I 89 ·
 I2 36 · M 81).
+**ACCEPTED 2026-09-05 — the verifying command's `date` read 17:19:54 (supervisor, session
+23, Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.209 read in
+full; ONE code commit `1d839b9d` (Claude Opus 5, `ModularObject.cpp` +38/−12, nothing else)
+and seven harness commits `c8efac3`..`9f7b602`, both trees clean; binary `407b3d1d`, `cmake
+-n` 0; §5.111 reads *FIXED FOR THE MATCHED SET, 2026-09-05, §11.209* at the row; §5.136 present
+in the §5 register (`INTENT.md:502`); §11.158 carries the marker in the entry (2) and the
+ledger (5); `b3_farm.sh:22` COPIES `config.ini`/`ssystem.ini` — read by me; instruments to the
+digit (scan 221/271/131 · pair-check 225/200/25/108 · D 35 · D2 11 · I 89 · I2 36 · M 81).
+Deviations ENDORSED with the executor's arguments: the name channel NOT wrapped (a runtime
+lookup, not a msgid; the UI-vs-sky question both files flag; one token at two sites, the
+owner's); `b24_select.py:861-864` NOT patched (an unverified edit to a landed gate is
+§11.174(h)'s pattern; the F89/F93 split — it joins F93 as member (4)); §5.136 MINTED from the
+control (three shipped surfaces, no diagnostic, D12); the census as a program (statement-level
+sinks, four pinned discriminations); the per-msgid gate over a whole-string diff, with G2 made
+to fail first. DISPATCHER DEFECTS reported, all ACCEPTED as mine, all output-side with the
+counterfactual stated: (1) *"the F44 section of `harness/README.md`"* — no such section (0
+hits); (2) *"the `fr` `.po`"* and *"the `.po` files are EXCLUDE-listed under D14"* — NO `.po`
+exists anywhere; the channel is `Translator::translateUTF8` over `~/.spacecrafter/language/
+fr.txt`, a frozen field map with identity fallback — this one is a different CLASS from Q-67's
+numbers: a gettext CONVENTION imported from outside the project and written as a project fact
+(INT-4's "never import conventional exceptions"; §11.51(d)'s red line at the process layer);
+and the mandate's literal `.po`-hit criterion would have REJECTED five msgids old itself uses
+— the executor applied the parity criterion instead, which is the one that holds; (3) *"18
+`_()` sites"* (17); (4) *"live `### F` count 5"* (6, superseded by the prompt); (5) the prompt's
+*"`b3_farm.sh` SYMLINKS `config.ini`"* — it COPIES it (`:22`), the symlink rule is for the
+rest — a claim I made from the `*) ln -s` case without reading the cases above it; the same
+sentence sits in the F90 section and is corrected there in this commit. Round tally: **ten
+dispatcher defects.** Criterion-integrity instances credited: eight predictions committed
+before their runs, eight confirmed; G2 shown red on the pre-fix artifact (540) before it was
+allowed to pass; the control that did not pass and was KEPT as a finding (§5.136) with a 2×2
+that could refute it; the `.po` premise refuted at source instead of a `grep -c` that would
+have passed for the wrong reason; the U+00A0 count 0 → 90 as the proof the LOOKUP answers.
+STANDING CONSEQUENCES: a French session's readouts on the drawn path are French except the
+first line (the name) — `Magnitude : / AD/DE : / Alt/Az : / Distance : … UA`; `app_locale` is
+inert whenever it differs from `sky_locale` (§5.136) — every locale measurement sets BOTH;
+`b24_select.py` reds on the reference binary by known cause until F93; the translation
+channel is a frozen field `.txt`, no `.po` — i18n work copies msgids or changes
+`spacecrafter-data`, nothing else.
 
 ### F89 — The `b4_anchors` P7 screen-witness red DISCRIMINATED: the one gate that reds on the reference binary (green ×3 pre-§5.133, red ×2 post) gets its cause named — the twinkle-`rand()` candidate tested the way the two failed experiments could not (b4's own frozen-clock scene, twinkle OFF on both binaries, the two P7 windows' lit-pixel SETS diffed, predictions committed first), the control's margin read from the five F86 runs before any launch, every `rand()` consumer in `src/` enumerated — instrument fix if the instrument, §5.133's row if the product (§11.205(g)(h); session-22 queue position 2; the developer will run this harness) [S, instrument]
 
@@ -812,9 +854,20 @@ hazard this task must not repeat: `b3_farm.sh` SYMLINKS every `~/.spacecrafter` 
 does not rebuild (`b3_farm.sh:24`) — `scripts/` included, so anything writing
 `scripts/fscripts/startup.sts` writes the OWNER's file (README `:2097-2109`); `f55_farm.sh`
 rebuilds `scripts/` and `scripts/fscripts/` as real directories of symlinks (`:31-33`).
-`config.ini` is ALSO a symlink under both farms ⇒ any `configuration action save` in the
-farm would rewrite the REAL config (§5.42's writer): the F90 farm makes `config.ini` a
-COPY, and the real one's md5 (`03fbee59`) is asserted before and after every run.
+~~`config.ini` is ALSO a symlink under both farms ⇒ any `configuration action save` in the
+farm would rewrite the REAL config (§5.42's writer)~~ **[CORRECTED at F87's acceptance,
+2026-09-05: `b3_farm.sh:22` COPIES `config.ini` and `ssystem.ini` (`case config.ini|ssystem.ini)
+cp`), only the rest is symlinked — my claim was made from the `*) ln -s` default without
+reading the cases above it; the requirement stands unchanged]**: the F90 farm's `config.ini`
+IS a copy (assert it: not a symlink), and the real one's md5 (`03fbee59`) is asserted before
+and after every run. **Locale, post-F87 (§11.209(f), §5.136): `app_locale` is INERT whenever it
+differs from `sky_locale` — the field has both `fr`, so the farm copy inherits a French session;
+any English control sets BOTH keys.** **Label state after F87 (§11.209(e)(g)): on the drawn
+path a French readout is French except its first line — `Magnitude : / AD/DE : / Alt/Az\xa0: /
+Distance : … UA`; the body NAME stays English (owner's), `ModularBody` in the type slot,
+`SA/GHA/LHA/Az/Alt/coA/Day length` English on BOTH paths (absent from `fr.txt`).** Also: **F93
+(before this task) repairs `b24_select.py`'s English-label matcher** — do not copy that
+matcher's shape; the rehearsal's own readout check asserts SHAPE, never spelling.
 Verbs at source (cite the line at dispatch-time HEAD): `session action save|load
 [filename <name>]` (§11.128(f)), `body action load` / `body action save [filename
 <name>]` (§11.121(e)), `body action reload`, `get status position` (§11.135), `select
@@ -1057,7 +1110,24 @@ sends nothing for it and the config key is what `core.cpp:346` reads, the runner
 (`b4_anchors_run.sh`) writes `flag_star_twinkle = false` into the FARM's config copy (the
 farm's `config.ini` must be a COPY for that — assert the real one's md5 in==out), with a
 comment citing §11.208(j); verify from the dump (`twinkleAmountEff` 0.0000) inside the
-script, never assumed. (4) **Prove both ways:** `b4_anchors_run.sh` on the reference binary
+script, never assumed. **(3b) WIDENED AT F87's ACCEPTANCE [supervisor, 2026-09-05 17:2x,
+veto point §3] — the SECOND gate that reds on the reference by instrument cause:**
+`harness/b24_select.py:861-864` matches the composed body's info block by its ENGLISH labels
+(`re.search(r"Distance: ([0-9.eE+-]+) AU", blk)`, the `fields` list over `"RA/DE:"`,
+`"Alt/Az:"`, `"Distance:"`, `"Magnitude:"`, `re.search(r"Magnitude: (\S+)", blk)`) and runs on a
+`b3_farm.sh` farm, i.e. the FRENCH field config — after F87 (§11.209(h)) that block reads
+`AD/DE : `, `Alt/Az\xa0: `, `Distance : … UA`, so I1 reds on a readout that is MORE correct.
+The repair's shape is decided at §11.209(h) and is yours to land: assert the block's SHAPE
+(five lines; a numeric magnitude; two angle pairs; a distance number followed by a unit
+token), never its spelling — the check's intent is *"the composed body's info readout is
+populated"* and never was *"it is in English"*; the `dumped_au` comparison keeps its number
+(locale-independent). Prove it the way the gate proves itself: `b24_select`'s own run on the
+reference binary → the I1 leg GREEN with the French block quoted in the report, and — the
+check that could fail — the same matcher against F44's pre-fix English artifact
+(`artifacts/f44/legA_003.json.navstr.gz`, or b24's own landed pre-fix report) ALSO green:
+shape, not spelling, in both languages. Named at F87 as *"a two-line shape-vs-spelling
+repair"*; a composed-body launch is in this task's mandate now. (4) **Prove both ways:**
+`b4_anchors_run.sh` on the reference binary
 → **exit 0, every check green, ×2** (A/A: the two runs' P7 lit sets within the 0–2 px floor);
 on the pre-fix binary → **exit 1** with EXACTLY the new assert and the new control red, every
 other check as before (P1–P6 green — they were green on both), ×1; the guard-only binary → the
@@ -1081,12 +1151,19 @@ NEW checks red and ONLY those, with the values (182 582.8 km; the counts); (d) `
 0.0000 read from every run's dump by the script; (e) real config md5 in==out; (f) the README's
 F7 opening no longer says the gate reds on the reference.
 
-**Preconditions (checkable, §0.7):** code HEAD `a2fd3c5b` (F87 may have moved it — state
-the HEAD at dispatch; the gate is source-independent), harness ⟨at dispatch⟩; §11.208
-present with (b)(i)(j) as quoted; `b4_anchors.py:476-480` the max-based control (drift
-re-resolved, content abort); `/home/claude/sc-f89/bin/sc-scratch-pre` md5 `9471f2fc` present;
-the reference binary current at HEAD (md5 stated at dispatch); `b4_anchors.ini` authored
-radius 200 000 km; `core.cpp:346` reads `flag_star_twinkle`; `harness/f89_p7.py` present;
+**Preconditions (checkable, §0.7):** code HEAD ~~`a2fd3c5b` (F87 may have moved it — state
+the HEAD at dispatch; the gate is source-independent)~~ **`1d839b9d`** (F87's, 2026-09-05;
+the b4 gate is source-independent, the b24 leg stands on F87's wraps), harness ⟨at dispatch⟩;
+§11.208 present with (b)(i)(j) as quoted; **§11.209(h) present as quoted;**
+`b4_anchors.py:476-480` the max-based control (drift re-resolved, content abort);
+**`b24_select.py:861-864` the four English-label matchers as quoted (drift re-resolved,
+content abort);** `/home/claude/sc-f89/bin/sc-scratch-pre` md5 `9471f2fc` present;
+the reference binary current at HEAD (**md5 `407b3d1d`**, `cmake -n` 0 steps); `b4_anchors.ini` authored
+radius 200 000 km (`b4_anchors.ini:28` `orbit_semimajoraxis = 200000.0`); `src/coreModule/core.cpp:346`
+reads `conf.getBoolean(SCS_STARS, SCK_FLAG_STAR_TWINKLE)` — the literal `"flag_star_twinkle"`
+is `define_key.hpp:133`, so grep the MACRO in `core.cpp` (the literal gives 0 hits there —
+re-resolved 17:22 at the dispatch); field `config.ini:77` `flag_star_twinkle = true`, `:87`
+`star_twinkle_amount = 0.4000000059604645`; `harness/f89_p7.py` present;
 next free §11 ⟨at dispatch⟩; live `### F` count ⟨at dispatch⟩; `/home/claude/sc-f93/`
 ABSENT; canary `--no-scene` exit 0; display per HOST-EVENTS; no `spacecrafter` in
 `/proc/*/comm`; config/ssystem md5 `03fbee59`/`545a51ef`.
