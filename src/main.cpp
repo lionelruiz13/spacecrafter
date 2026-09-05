@@ -190,13 +190,19 @@ int main(int argc, const char *argv[])
 	LinuxExecutor executor(0, 0);
 	executor.start(false);
 
-	// Set .spacecrafter as current directory
-	std::filesystem::current_path(appDir);
-
 	//check if home Directory exist and if not try to create it.
 	std::string dirResult;
 	CallSystem::checkUserDirectory(appDir, dirResult);
 	CallSystem::checkUserSubDirectory(appDir, dirResult);
+
+	// Set .spacecrafter as current directory - AFTER the two calls above, which
+	// create and populate it (ledger Sec.5.130).  The setter overload of
+	// current_path throws filesystem_error on a missing path and nothing catches
+	// it, so doing this first aborted the very first launch of every account
+	// that had no ~/.spacecrafter yet (exit 134, before the log system exists).
+	// It must still stay ABOVE Log->setDirectory("log/") below: that is the
+	// first consumer of a path relative to this directory.
+	std::filesystem::current_path(appDir);
 
 	//-------------------------------------------
 	//create log system
