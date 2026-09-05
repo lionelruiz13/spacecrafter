@@ -1193,12 +1193,12 @@ dispatch⟩, unchanged by this task; next free §11 ⟨at dispatch⟩; live `###
 **DoD:** table + markers + flips + new row + map re-derived + the next-round list;
 §11 entry + stub; file status PROPAGATED; trees clean; WIP cleared; baselines LAST
 with every delta named.
-**WIP:** 2026-09-05 CP1 — §0.7 gate PASSED on every stated premise (`6ffb017` in
-history, file ANSWERED, §5.86/§5.98/§5.21 OPEN, A43 live, D37 delegated,
-`[parallel-script]` present, F count 6, §11.207 free, both HEADs as stated).
-Table built from the file + `git show 6ffb017`: **TWENTY replies, not sixteen**
-(R14–R29 + N5/N7/L1/L2) — count defect reported, enumeration intact. §11.207 entry
-file + stub written. NEXT: §13.A/§13.B row markers + DECISIONS_PENDING (D37/D15/D28).
+**WIP:** 2026-09-05 CP2 — §0.7 gate PASSED on every stated premise. Table built
+from the file + `git show 6ffb017`: **TWENTY replies, not sixteen** (R14–R29 +
+N5/N7/L1/L2) — count defect reported, enumeration intact. Done: §11.207 entry +
+stub (CP1); §13.A A7/A15/A30/A42 marked and **A43 CLOSED as design (17 → 16)**;
+§13.B B17/B39 marked; DECISIONS_PENDING D37 CLOSED + D15/D28 confirmed + header.
+NEXT: the §5 rows (15 marked + new §5.135).
 
 ### F86 — EXTENSION, widened at F84 acceptance: the three startup faults a newcomer can meet on the shipped data — (3) **§5.130** the first launch on a fresh account ABORTS (`main.cpp:194` cds into `~/.spacecrafter` before `:198-199` create and populate it — one line moved, the empty-HOME launch as the gate, exit 134 → the bootstrap); (2) §5.127's use-after-free at `anchor_creator_cor.cpp:130`, reachable from the shipped `anchor.ini`: own row first (the granularity veto point of session 21), reproduced under AddressSanitizer, fixed at the ownership (I5), proved clean; (1) §5.127's null dereference for a top-level comet with neither period nor mean motion — the experimental reader's guard ported (DEPLOYMENT-MAP R2 + R4) [S]
 
