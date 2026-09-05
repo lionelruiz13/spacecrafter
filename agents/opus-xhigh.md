@@ -86,7 +86,10 @@ from recall of a previous run.
   not evidence (nine recorded instances of this class; §11.159(c) is the template).
 - **Commit discipline**: code first when a change spans both repos; harness commits carry
   `Code: master-beta @ <sha>` trailer; author `--author="Claude Opus 5 <noreply@anthropic.com>"`;
-  end messages with `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`; NEVER push;
+  end messages with the `Co-Authored-By:` line the DISPATCH PROMPT names — the SUPERVISING
+  session's identity as its own Bash-tool Git section states it (session 23: `Claude Fable
+  5.1 <noreply@anthropic.com>`; this line said `Claude Fable 5` until 2026-09-05 and three
+  session-23 commits copied it — §11.212(k)); the AUTHOR stays the executor; NEVER push;
   logical-step granularity; always `git -C <explicit path>`. Cited discrimination artifacts are
   force-added (`git add -f`, small, gz where possible) — a citation must resolve by commit.
 - **Checkpoint discipline** (fable-dispatch.md §0.6): commit at every green checkpoint; update

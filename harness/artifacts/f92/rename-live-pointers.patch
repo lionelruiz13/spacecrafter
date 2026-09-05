@@ -13,9 +13,9 @@
 #     git -C <harness-repo> apply [--check] --include='CLAUDE.md' \
 #                                 --include='agents/*' --include='harness/*' <this file>
 #
-# NOT in this patch, deliberately (F92's census, 231 occurrences):
+# NOT in this patch, deliberately (F92's census, 307 occurrences):
 #   PIN               `master-beta @ <sha>` -- resolves by sha, the rename cannot stale it
-#   HISTORICAL RECORD ledger prose, archives, the 695 commit trailers already
+#   HISTORICAL RECORD ledger prose, archives, the 700 commit trailers already
 #                     written -- annotated at the rename, never rewritten
 #   CONVENTION        the `Code: <branch> @ <short-sha>` grammar -- stated with a
 #                     placeholder, and the two tools that write trailers read
@@ -63,9 +63,9 @@ diff --git a/agents/opus-xhigh.md b/agents/opus-xhigh.md
  - **Commit discipline**: code first when a change spans both repos; harness commits carry
 -  `Code: master-beta @ <sha>` trailer; author `--author="Claude Opus 5 <noreply@anthropic.com>"`;
 +  `Code: main @ <sha>` trailer; author `--author="Claude Opus 5 <noreply@anthropic.com>"`;
-   end messages with `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`; NEVER push;
-   logical-step granularity; always `git -C <explicit path>`. Cited discrimination artifacts are
-   force-added (`git add -f`, small, gz where possible) — a citation must resolve by commit.
+   end messages with the `Co-Authored-By:` line the DISPATCH PROMPT names — the SUPERVISING
+   session's identity as its own Bash-tool Git section states it (session 23: `Claude Fable
+   5.1 <noreply@anthropic.com>`; this line said `Claude Fable 5` until 2026-09-05 and three
 diff --git a/harness/f92_census.py b/harness/f92_census.py
 --- a/harness/f92_census.py
 +++ b/harness/f92_census.py

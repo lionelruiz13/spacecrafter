@@ -234,12 +234,61 @@ the gate reds on the corrupt build, verified by my own b4 run). Picks **F89 ✓ 
 **[19:2x, at F90's acceptance: F90 ✓ (§11.211 — T5.1 RAN, three identical runs + mine, §5.137
 minted, T5.2 the only "ready" member left). Four for four. Extension: **F92** next (S, the
 owner's line's own item), then F91 if health permits.]**
+**[19:5x, at F92's acceptance: F92 ✓ (§11.212 — the rename is four lines; the checklist and
+the patch are the owner's to run). **FIVE FOR FIVE. F91 CARRIED**, with the reason on record:
+an engine change on the reference branch in the week the developer clones deserves a
+supervisor-verified acceptance, and after five executor runs the remaining capacity of this
+session is spent on the close, not on a sixth delivery that might close unverified (session
+22's F87 precedent). F91 is minted, complete, and position 1 of the next round.]**
 Deliveries: all to the parent (§11.208+, refreshed at each dispatch). Launch classes:
 F89 FUNCTIONAL (star-field pixel sets under a frozen clock — no banked-band claim, the
 full canary is not required); F87 FUNCTIONAL (farm, French session, sidecar); F90
 FUNCTIONAL (the farm, three runs); F91 FUNCTIONAL (RA/DE parity through the sidecar);
 F92 none. Remotes: local contains origin on both; push impossible from this session
 (publickey) — the owner's push is R5, unchanged.
+**Round outcome (session 23 close, 2026-09-05 — the close commit's own clock is the stamp;
+every time in this note is pasted `date` output):** F89 → **§11.208** (the P7 red is the
+PRODUCT's — the pre-fix binary drew its sky 76° from its bodies, the gate green on that;
+twinkle refuted 845×) · F87 → **§11.209** + **§5.136** (fourteen labels, code `1d839b9d`; the
+catalogue is a frozen field `.txt`; `app_locale` inert) · F93 → **§11.210** (both instrument
+reds on the reference GREEN, the corrupt build REDS; verified by my own b4 run) · F90 →
+**§11.211** + **§5.137** (T5.1 RAN — three identical runs + mine; the newcomer's 90-second
+smoke suite in the entry document, code `0b46a63f`; the reload that makes an authored body
+invisible) · F92 → **§11.212** (the rename is four lines; eleven-act checklist + patch; the
+PR-target question surfaced) — **FIVE FOR FIVE delivered AND supervisor-verified same
+session**, every delivery re-verified by my own runs (b4 on the reference; the smoke suite;
+the patch `--check` on both real trees; the census; the instruments after each). **F91
+CARRIED** with its reason in the picks line. Code `a2fd3c5b → 0b46a63f` (two executor
+commits: the wraps, the doc paragraph — ONE engine file this round); harness `3a5ce8f →`
+this close. Binary `407b3d1d`. IN-SESSION OWNER TRANSMISSION: the trigger line only; no
+question asked of him. HOST: no event; same boot throughout; RAM 19–20 GiB available (his
+`java`); no HOST-EVENTS entry owed. SUPERVISOR TALLY: **seventeen dispatcher defects**
+(root: fourteen Q-67 — numbers/counts/times/pointers from memory of a listing, one of them
+an estimate wearing the measured label; three of the SIBLING class — structure asserted
+from convention: the `.po`, the githooks "trailer check", the farm's "symlinked
+`config.ini`"), all output-side, all corrected at their nodes; **one instrument slip of
+mine** (the harness `git apply --check` run with a code-relative path — my command, caught
+in the same minute). EXECUTOR criterion-integrity instances: **≥ 20** (F89: H3 decided from
+the records before any launch, the over-claim caught by measuring; F87: the control KEPT as
+a finding, the `.po` refuted at source, G2 red before green; F93: the refusal to tune K
+against the cited source, the tolerance derived first, P0 shown red first; F90: the negative
+control, the third hazard found by reading the writer, three step states; F92: the census
+failing on any unclassified hit, the crash discriminated to the root, the question the
+owner's line does not answer). BASELINES AT CLOSE (v2): scan **223/274/131** · pair-check
+**228/203/25/109** · D 35 · D2 11 · I 89 · I2 36 · M 81 — every delta over the open (211→223 /
+261→274 / 131 · 223→228 / 198→203 / 25 / 107→109) attributed per task in its acceptance.
+Archival pass 16 (update-s22 + F87/F89/F90/F92/F93; **F91 stays live**, carried) DEFERRED to
+the next open. NEXT-ROUND QUEUE, in order: (1) archival pass 16 at open; (2) **F91** (§5.86+
+§5.19, minted, position 1 — refresh its preconditions: code `0b46a63f`, binary `407b3d1d`,
+the F90 baseline `artifacts/f90/navstr_mars_run1.txt` as its pre-change reading,
+`f90_rehearsal_run.sh` as its 90-second regression gate); (3) **T5.2 the soak** — mint with a
+foreground-poll design (the last "ready" member); (4) the §11.207(g) tail: §5.98 (S) ·
+§5.21 (S–M) · §5.66+§5.71 (M) · §5.115 (S–M) · A15's residual (S); (5) instrument residues:
+`supervised-by.sh` B1 (owner-authorized), `f85_links.py` guard, `f89_p7.py margins`, the
+b4 `/proc` probe, the `dumpread.py` duplicate; (6) riders: §5.59's `sender` arm, scedit
+README `:43`, the `[parallel-script]` question; (7) owner items per §3. Remotes: 88 code /
+708 harness unpushed before this close's commit (measured 19:50:42); push from a keyed host
+— the supervisor never pushes.
 
 ---
 
@@ -1152,6 +1201,42 @@ sentence, his) + the R0 head; §3 carries the compact version; `harness/README.m
 section. Records opened, not fixed: `f85_links.py:158`+`:177-178` crash on a bare
 worktree (back-marker at §11.206(e)), the two pin constructors. Code repo untouched
 (`git status` empty, HEAD `0b46a63f`); D14 PASS.
+**ACCEPTED 2026-09-05 — the verifying commands' `date` read 19:49:49 and 19:50:42 (supervisor,
+session 23, Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.212
+read in full; five harness commits `e9fa766`..`71f2841` (Claude Opus 5), code UNTOUCHED at
+`0b46a63f` with `git status --porcelain` empty, `git worktree list` = the main tree + F89's,
+`/home/claude/sc-f92/` absent; **the patch `git apply --check`ed by me on both REAL trees
+(non-mutating): clean on both, trees still empty after**; `f92_census.py census` by my hand:
+LIVE POINTER **5** (the four + the instrument's own `SITE_BRANCH`, as (d) states), `git grep -o`
+agreeing at 291; markers at R6 (2), `INTENT/11.206.md`, the ledger; instruments to the digit
+(scan 223/274/131 · pair-check 228/203/25/109 · D 35 · D2 11 · I 89 · I2 36 · M 81). Deviations
+ENDORSED with the executor's arguments: the ledger's open items (R5's "push `master-beta`", the
+§13/§5 rows) kept OUT of the patch — a record surface's channel is the dated annotation, and
+rewriting them would make September's map ask for a push of a branch not yet so named;
+`agents/opus-xhigh.md:88` classed LIVE not CONVENTION by the discriminator ("does the rename
+make this sentence false?" — an instruction naming the current branch does); sites keyed by
+unique snippet, never line number (the two files are appended to daily — this round's own
+README-pointer defect is the instance); no rename anywhere, not even in a throwaway (B2 stays
+[derived] from `man git-branch` + the observed config and is converted into a CHECK the owner
+runs); the four `Fable 5` footers recorded not amended (SHAs cited live). DISPATCHER DEFECTS
+reported, all three ACCEPTED as mine, output-side: "live `### F` count 5" (6); "118 files /
+189 hits" (125/208 — the round's own records; self-licensed re-measure); and the substantive
+one — *"the `githooks/` trailer check"*, asserted in the prompt AS FACT and named in the
+section: **there is no trailer check** (`pre-commit` refuses compiled blobs by content; 0
+`master-beta`, no branch logic) — I inferred a hook's role from its filename after listing
+`githooks/`, the same class as F87's `.po`: structure asserted from convention, never
+extracted. Round tally: **seventeen dispatcher defects.** Criterion-integrity instances
+credited: the census cross-checked against `git grep -o` and FAILING on any unclassified hit;
+the patch proven in throwaway worktrees and shown to leave the entry document's checker at 0
+dangling; `f85_links.py`'s crash discriminated to the ROOT by the complementary run (unpatched
+doc, worktree root → same crash) and recorded with its exit-code masking; the PR-TARGET
+question surfaced as the half the owner's line does not answer; the "cannot be grepped after
+the rename" argument (B8: `main` occurs 676/2040 times already) as the reason to audit NOW.
+STANDING CONSEQUENCES: the rename is FOUR LINES (+ the git-ignored projection) — the owner's
+checklist is §11.212(h), 11 acts each with a check that can fail; 133 pins, 695 trailers and
+89 records must NOT be touched; `supervised-by.sh` would fall back SILENTLY on 695 trailers
+after the rename (B1, one line, a history tool — owed); `@{upstream}` needs `push -u` (B2);
+R6 annotated, not struck — its remaining half is one sentence (PR target).
 
 ### F93 — The `b4_anchors` gate REPAIRED where F89 showed it blind: (1) a NEW assert that the OLD path's distance to the anchor's parent equals the authored radius (`Moon.old.dist` = 200 000.0 km — 17 417 km of discrimination, wrong in b4's own artifacts since F7 and asserted by nothing), (2) P7's screen-witness control re-expressed as a LIT-PIXEL COUNT comparison instead of a max-over-window (846 vs 21 px at t0, 2023 vs 27 at t1 — 30–100× on both binaries where the max form gives −35 / +172), (3) the scene's twinkle OFF so the gate is deterministic (0–2 px A/A instead of ~2200); proven BOTH WAYS on the two binaries F89 left: GREEN on the reference `2815d182`, RED on the pre-fix `sc-scratch-pre` `9471f2fc` at the new assert AND the new control — a gate that now reds on the corrupt build and greens on the correct one, which is the direction it had backwards (§11.208(i)(j); §13.B; the developer's first harness run) [S, instrument]
 
@@ -1338,6 +1423,86 @@ had backwards; b4's scene is deterministic (twinkle off via the farm copy, P0 as
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-23 decision items (2026-09-05, the READINESS round — your line *"renamed main
+  once ready"* was the trigger; kept short on your word about this week's capacity; the
+  F92 executor's own rename item follows this block and is its expansion):**
+  - **YOURS, and nothing here substitutes them:** (1) **R5 — the PUSH**: `master-beta` (88
+    commits) and `CC-harness` (708 before this close's commit) from a keyed host — unchanged,
+    still the one act that makes any of this reach the developer. (2) **R6's remaining half,
+    one sentence: after the rename, do pull requests still target `2023-master`?** Your line
+    answers the policy (rename, not redirect) and not this; `doc/developer-entry.md` §1 says
+    they do; the patch changes the branch's NAME and leaves that half alone. **The rename
+    itself is §11.212(h): eleven ordered acts, each with a check that can fail, and a patch
+    covering exactly the four live pointers** (`harness/artifacts/f92/rename-live-pointers.patch`,
+    regenerated at this close after the definition edit below; step 0 re-measures before
+    anything). What NOT to touch: 133 pins, 695 trailers, 89 records — a search-and-replace
+    would destroy the record it claims to maintain. (3) **R23's procedure** — where the outside
+    catalogue installation lives and whether it may be documented (carried from session 22).
+    (4) **§5.111's unmatched set** (§11.209(g)): the body NAME on the drawn path stays English
+    — one token at two sites (`_(body->getEnglishName())` at `ModularObject.cpp:11,:33`), but
+    WHICH translation (UI or sky — `getNameI18n()` exists beside it) is the question both
+    files' comments flag; `ModularBody` in the type slot (a different string from old's
+    `_(getTypePlanet(...))`, not a missing wrap); the generated `" (orbit centre)"`. Until
+    answered, a French readout is French except its first line. (5) **§5.136** — `app_locale`
+    is INERT whenever it differs from `sky_locale` (one static map, last-loaded wins, the app
+    logs the locale it then ignores; three shipped surfaces; D12): core architecture, §5.121's
+    family — one map per translator, one translator, or an explicit order. (6) **§5.137** — a
+    body an operator authors then `body action reload`s leaves the DRAWN universe while
+    `search`/`get status object` keep answering for it (your tester's `06old.sts` authors 3000
+    satellites this way); the repair is inside §11.55(i)'s suspended question ("keep current
+    state" across a reload). (7) **Routed to the main tester, not asked:** the shipped `basis/`
+    shows all carry `script action pause` and `flag_skip_pause = false` — under UNATTENDED
+    play, honour or skip? (old-behaviour intent, §11.161(c)).
+  - **VETO POINTS taken this session (implemented-and-live, each cheap to reverse; silence =
+    endorsed):** (a) **F93's gate repairs** — `b4_anchors`' max-over-window control REMOVED
+    for a lit-pixel count (K = 4, 10× under the weakest measured ratio), a NEW assert that
+    the old path's distance to its anchor equals the authored radius (1.0 km, derived), the
+    scene's twinkle OFF via the farm copy with P0 asserting it; `b24_select`'s English-label
+    matcher replaced by a shape matcher. The reference is GREEN on both gates and the
+    corrupt build REDS (nine P1b) — the direction the gate had backwards for six weeks.
+    (b) **F87's fourteen wraps** (`ModularObject.cpp`, old's msgids byte-exact, code
+    `1d839b9d`) — the ONLY engine change this round. (c) **One paragraph in
+    `doc/developer-entry.md` §5**: the newcomer's 90-second smoke suite
+    (`f90_rehearsal_run.sh`). (d) **The executor definition's footer line** (this close,
+    `agents/opus-xhigh.md:89`): it named `Claude Fable 5` as the standing co-author, so
+    three executor commits this round carry `Fable 5` and three `Fable 5.1` while the AUTHOR
+    is `Claude Opus 5` throughout; now it says: the co-author is the SUPERVISING session's
+    identity as the dispatch prompt names it (the projection regenerated, md5 asserted). No
+    SHA amended. (e) **Scratch trees KEPT**: `/home/claude/sc-f89/` 1.5 GB (three binaries +
+    a detached code worktree at `a2fd3c5b` in the pre-fix source state — `git worktree
+    remove --force` disposes of it), `sc-f93/` 53 MB, `sc-f90/` ~30 MB, plus session 22's
+    `sc-f84/` 4.2 GB and `sc-f86/` 1.3 GB — say the word to remove. (f) **F91 carried**
+    (§5.86+§5.19, the RA/DE fix — decision-free since R27; the reason is in the picks line).
+  - **HELD OPEN, not absorbed:** **T5.2 — the multi-hour soak is now the ONLY member of the
+    map's "ready" gate** (T5.1 ran: three identical runs + mine); it needs a design under the
+    no-background rule (foreground polls, `f19_stall.sh` as the hang detector) — next round's
+    candidate, sized M–L, display-bound, hours. Instrument residues, each one line and owed:
+    `supervised-by.sh`'s SILENT fallback on a missing branch ref (B1 — after the rename, 695
+    trailers take it; a history-rewriting tool, yours to authorize); `f85_links.py`'s
+    `IsADirectoryError` masquerading as "dangling found" (exit 1 both ways); `f89_p7.py
+    margins` reads pre-F93 artifacts only; `b4_anchors_run.sh` still has no
+    concurrent-instance probe; `b4_anchors.py` duplicates `dumpread.py`'s grammar.
+  - **FACTS, no decision asked:** **the P7 red was the PRODUCT's** — the pre-fix (shipped-
+    class) binary composed its star field for a sky 76.46° from its bodies after one
+    `camera action switch` onto an orbit anchor (§5.133's use-after-free read: the old
+    observer 237 022 km off, `Moon.old.dist` 182 582.8 vs authored 200 000.0), the gate was
+    green on that and red on the corrected binary; "silent on the shipped build" is
+    corrected at three homes — not crashing ≠ silent; a use-after-free read is only as
+    visible as the allocator makes it (four anchor legs stay green on the corrupt build) ·
+    twinkle costs ~2200 px of A/A floor and made the gate a coin toss · the translation
+    channel is a frozen field `.txt` with identity fallback, NOT gettext — no `.po` exists;
+    i18n work copies msgids or changes `spacecrafter-data` · the quit verb is `shutdown
+    action now` · `ScriptAnnotator::flush` rewrites the played `.sts` IN PLACE — any farm
+    that plays a shipped show must copy it · the rename's blast radius is four lines and
+    cannot be re-audited by grep afterwards (`main` occurs 676/2040 times already) ·
+    **seventeen dispatcher defects this round, all mine, all output-side, all caught via
+    report-not-absorb**: fourteen of Q-67's class (numbers, counts, times, pointers from
+    memory of a listing — incl. one estimate WEARING the measured label, corrected one
+    commit later) and three of a SIBLING class now named at Q-67: structure asserted from
+    convention rather than extracted (the `.po`, the "githooks trailer check", the farm's
+    "symlinked `config.ini`") — prevention: a grep/read of the named file in the same
+    command as the claim, for structure as for numbers.
 
 - **THE RENAME, WHEN YOU WANT IT: ELEVEN ORDERED ACTS AND FOUR LINES TO EDIT
   (session 23, F92 → §11.212; nothing here renames anything).** Your line —
