@@ -663,7 +663,15 @@ re-derives F34's 133.9041°/38.5856°/2.058e-11. CHECKPOINT 2: `harness/f91_pari
 max **0.002014° on Deimos** / Eris 1.198271° — §11.158(f)'s own digits; and a SECOND
 defect measured on landed data: `ModularObject.cpp:82` computes the local hour angle
 from the observer's LATITUDE (LHA−GHA = 43.300000° on new vs 5.366667° on old).
-NEXT: pre-fix live legs (fr + en) on the farm, then the code fix.
+CHECKPOINT 3: pre-fix legs (fr+en+legD) green,
+code `5a1e5749` (Camera.hpp/.cpp + ModularObject.cpp, binary `407b3d1d` ->
+`f7112cb9`, cmake -n 0 steps), post-fix legs (fr+en) **0 FAIL**: 88/90 bodies print
+RA/DE BYTE-IDENTICAL on the two paths (exceptions Eris 1.199089 and Puck 1 arcsec);
+Q1 max non-Eris **0.002014** on Deimos = §11.158(f)'s own published number;
+SA/GHA/LHA/LPA equal to <= 2 arcsec for 89/90; leg D pre-J2000 negative hour angles
+90 -> 0; format control 0 shape differences with 420 on its own locale control; F90
+rehearsal rc 0, S5 shape unchanged. NEXT: the record (entry, stub, §5.86/§5.19 flips,
+back-markers, map, README) + baselines.
 
 ### F94 — §5.98 — the two misspelled body names in `Core::setSelectedBodyName` corrected (`"Satun"` → `"Saturn"` at `core.cpp:2255`, `"Ganymed"` → `"Ganymede"` at `:2251`) so `$body_selected` answers 600 and 503 as the documented table says instead of the 999 default — FIX AUTHORISED by the tester (round-3 R19, §11.207(b)#6 + (c1)), the dependence fact he did not answer MEASURED on this field at the mint (exactly one shipped script tests the variable, against 0), proven pre/post on the shipped command surface with a control body that fires on both binaries (§11.207(g) item 2; SS-17; DEPLOYMENT-MAP T1.10 → T4) [S, engine, both paths]
 

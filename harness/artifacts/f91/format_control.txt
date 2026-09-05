@@ -1,0 +1,10 @@
+F91 FORMAT CONTROL -- the readout's SHAPE, numbers replaced by placeholders
+  pre  = artifacts/f91/run-pre-en
+  post = artifacts/f91/run-post-en
+pre vs post (english):       120 bodies compared, 0 shape difference(s)
+  the shape itself, on Adrastea:
+  OLD_nav  RA/DE: <HMS>/<DMS>SA <DMS> GHA <DMS> LHA <DMS>@ Az/Alt/coA: <DMS>/<DMS>/<DMS> LPA <DMS>
+  NEW_nav  RA/DE: <HMS> / <DMS>
+SA <DMS> GHA <DMS> LHA <DMS>@ Az/Alt/coA: <DMS>/<DMS>/<DMS> LPA <DMS>
+pre vs post (french):        120 bodies compared, 0 shape difference(s)
+english vs french (pre):     120 bodies compared, 420 shape difference(s): [('51PegSystem', 'NEW_nav'), ('51PegSystem', 'NEW_inf'), ('Adrastea', 'OLD_nav'), ('Adrastea', 'NEW_nav'), ('Adrastea', 'OLD_inf'), ('Adrastea', 'NEW_inf'), ('Amalthea', 'OLD_nav'), ('Amalthea', 'NEW_nav')]

@@ -1,0 +1,17 @@
+ok:   LEG A jd=2461233.5 reference=Earth axisRot=5.059841000 free=False bound=True viewOffsetEff=0 lon=5.366667 deg lat=43.300001 deg -- 90 bodies carry BOTH paths' nav string
+ok:   G0 body count 90 (>= 89 expected; F44 measured 90)
+ok:   G1 viewOffsetEff == 0 (the reconstruction's own precondition)
+ok:   G1 anchored and bound to the surface, as the shipped place is
+ok:   G2 alt/az control: 88 of 90 agree to <= 3e-5 deg; exceptions [('Earth', 166.180922), ('Eris', 1.144513)]
+ok:   G2 every alt/az exception is Earth (nadir) or Eris (§11.158(f3)(f4))
+ok:   G3 model vs the binary's own printed NEW RA/DE: H_pre median 0.000673 deg, H_post median 60.363703 deg
+ok:   G3a the pre model reproduces the printed NEW readout: median 0.000673 deg (<= 0.005, one RA print quantum)
+ok:   G3b and the OTHER model does NOT (median 60.363703 deg > 1) -- the model can tell the two binaries apart
+ok:   LHA-GHA: OLD [5.366667, 5.366667] deg (longitude 5.366667) | NEW [43.300000, 43.300000] deg (latitude 43.300001)
+ok:   the OLD path's LHA-GHA is the observer's LONGITUDE, every body
+ok:   P1 PRE-FIX headline: median sep(OLD, NEW) = 60.3636 deg (§11.158(e) measured 60.3636)
+ok:   P1 the pre-fix gap is the recorded one (> 20 deg)
+ok:   P2 the NEW path's LHA-GHA is the observer's LATITUDE, every body -- the port slip at ModularObject.cpp:82, measured
+ok:   LEG D jd=2440000: negative hour angles printed -- OLD {'GHA': 0, 'LHA': 0, 'LPA': 0}, NEW {'GHA': 90, 'LHA': 90, 'LPA': 90} (of 90 bodies)
+
+0 FAIL(s), 0 NOTE(s); report -> /home/claude/spacecrafter/claude/harness/artifacts/f91/run-pre-fr/f91_result.json

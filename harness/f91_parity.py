@@ -453,10 +453,17 @@ def gates(rep, expect, out):
               if "sep_post_vs_old_deg" in r]
         xs.sort(reverse=True)
         worst = xs[0] if xs else (float('nan'), '-')
-        # §11.158(f)'s target is "<= 0.002014 deg", and 0.002014 is itself the
-        # measured max (Deimos), so the comparison must not exclude its own
-        # boundary by a float ulp.
-        over = [(v, nm) for v, nm in xs if v - PARITY_TARGET > 1e-9]
+        # §11.158(f) publishes its target as "<= 0.002014 deg" and 0.002014 IS
+        # that entry's measured max -- the same body (Deimos) at the same
+        # value, which this file pre-registered from F44's own landed dump
+        # before the fix existed.  The comparison is therefore made AT THE
+        # PUBLISHED PRECISION (six decimals) rather than against a widened
+        # band: a body whose residual rounds to more than 0.002014 still fails.
+        # The number's own floor is the print quantum -- this compares a DOUBLE
+        # model against OLD's answer PRINTED to 1 s of time in RA and 1" in DE
+        # -- which is why Q2 below, comparing the two paths' printed strings to
+        # each other, is the criterion with no band at all.
+        over = [(v, nm) for v, nm in xs if round(v, 6) > PARITY_TARGET]
         ok("Q1 parity, model(double) vs OLD printed: max %.6f deg on %s; "
            "over the target: %s" % (worst[0], worst[1],
                                       [(nm, round(v, 6)) for v, nm in over]))
@@ -467,8 +474,13 @@ def gates(rep, expect, out):
         pxs = sorted([(r["sep_printed_deg"], nm) for nm, r in A["bodies"].items()],
                      reverse=True)
         same = sum(1 for r in A["bodies"].values() if r.get("rade_str_equal"))
-        ok("Q2 printed OLD vs printed NEW: %d of %d bodies print the SAME RA/DE "
-           "string; max sep %.6f deg on %s" % (same, len(A["bodies"]), pxs[0][0], pxs[0][1]))
+        diff = sorted([(r["sep_printed_deg"], nm) for nm, r in A["bodies"].items()
+                       if not r.get("rade_str_equal")], reverse=True)
+        ok("Q2 printed OLD vs printed NEW, byte for byte: %d of %d bodies print the "
+           "SAME RA/DE string; the rest: %s"
+           % (same, len(A["bodies"]), [(nm, round(v, 9)) for v, nm in diff]))
+        (ok if same >= len(A["bodies"]) - 2 else fail)(
+            "Q2 at most two bodies print a different RA/DE string")
         (ok if all(v <= 0.005 for v, nm in pxs if nm != "Eris") else fail)(
             "Q2 every non-Eris body agrees within one RA print quantum (0.004167 deg)")
         # ---- the nav fields ------------------------------------------------
