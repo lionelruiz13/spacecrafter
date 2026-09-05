@@ -1017,7 +1017,17 @@ noted). Re-dispatched with: the replies as OWNER-COMMITTED facts (R23/R24 for th
 content sentence; R22 "search is deprecated" for the sharp edges; R25 declined), the
 file's status flipped to ANSWERED and F84's N7 paragraph restored beside the reply
 (supervisor act, this commit), and the propagation minted as **F88**.]**
-**WIP:** —
+**WIP:** 2026-09-05 ~14:3x — CHECKPOINT 1 (green, both repos committed): §0.7 gate
+PASSED on every enumerated premise (one stale premise reported, not abort-grade: the
+section's live-`### F` count says 5, live is 6 — the prompt supersedes it). Both
+re-verifications done: clone probe `--recurse-submodules` **rc 0**, submodule
+`84f5d94b`, `Core/VulkanMgr.hpp` present ⇒ INSTALL §3's KNOWN ISSUE deleted; empty-`$HOME`
+launch (`f84_coldhome.py --no-mkdir`) **exit 0**, 19 dirs + 7 files, real `~/.spacecrafter`
+md5 in==out ⇒ INSTALL §6's `mkdir` paragraph deleted. Default path MEASURED (same launch):
+`beta_features.ini [dual_path] render_path` absent ⇒ member defaults NEW+pinned ⇒ dump
+`"drawnPath":"new"`. Code `d260d89c` = doc (420 lines, ASCII) + INSTALL + README line.
+`f85_links.py` 129/25/15, **0 dangling**, red-shown 4/4. D14 gate PASS. NEXT: §11.206 entry
+file + stub, DEPLOYMENT-MAP R3 strike, §5.131/§5.130 back-markers, baselines LAST.
 
 ### F88 — The round-3 replies propagated: sixteen owner-committed answers (`c5be42b`, 2026-09-05) carried into every row, decision and map tier they resolve — each with its back-marker at the write, the file's rows flipped from STALE to PROPAGATED, and the newly decision-free work named for the next round (§11.116(c)'s final-pass contract; §11.198's precedent; DEPLOYMENT-MAP T1/T3/T4) [M, ledger-only]
 

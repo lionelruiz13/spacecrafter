@@ -3762,3 +3762,42 @@ tail; the applog's first N lines **with their md5** — that is the as-if contro
   `1324.2740 / 1767.6721` with mass `76290` in all five of F86's runs — identical to
   four decimals across two binaries and three builds — which excluded a geometric
   change in one zero-launch measurement after two launches had failed to.
+
+## F85 — do the entry document's citations resolve? (`f85_links.py`) — INTENT §11.206, 2026-09-05
+
+    cd claude/harness
+    python3 f85_links.py                       # defaults to doc/developer-entry.md
+    python3 f85_links.py <doc> [--root DIR] [--verbose]
+
+`doc/developer-entry.md` is derived from this ledger and points back into it, so
+its citations ARE its load-bearing surface: a reference that stops resolving is
+the document silently becoming wrong, and nothing else would notice. The checker
+verifies three classes and **exits 1 on any dangling one**:
+
+| class | what resolves |
+|---|---|
+| repo-relative path in backticks | exists on disk, and where a `:N` / `:N-M` is cited, the file HAS that line — a citation past the end of its own file is broken even though the path resolves (scedit's `anchor_gate` makes the same distinction) |
+| bare continuation (`` [`:8-20`] `` after a full path) | resolved against the most recent full path, which is what a reader does |
+| `Sec.A.B` ledger id | an entry file, an archived entry file, a numbered stub inside section A, or a header — **live UNION `INTENT/archive/`**, because archival never rewrites references (INTENT.md header), so a live-only checker false-dangles on every archived entry |
+
+Result at delivery: **129 paths, 25 continuations, 15 ledger ids, 0 dangling**;
+13 tokens skipped and LISTED under `--verbose` (absolute, `~`-home, `<placeholder>`,
+remote, shell fragment) — none of them is a claim about this tree, so checking
+them would measure the host instead of the document, and listing them keeps the
+exclusion from being silent.
+
+**Shown able to fail, one injected fault per class** (four temp copies, each
+reverted): a renamed path, a `:999999` line, `Sec.11.9999`, and a continuation
+past its file's end — `rc=1` and exactly one dangling report every time. A green
+from a checker whose red was never observed is not evidence.
+
+**Two things it caught that a reading would not have.** (1) The continuation
+form is genuinely ambiguous when the nearest preceding path is not the intended
+one: a `` [`:795`] `` written about `app.cpp` resolved against
+`src/tools/draw_helper.cpp` (575 lines) and reported dangling — the reader would
+have made the same mistake, so the document was rewritten rather than the
+checker taught. (2) Three line numbers recorded in §5 rows had DRIFTED from the
+code: §5.92's `app_command_interface.cpp:1525` is now `:1688`, §5.127(5)'s
+`orbit_creator_cor.cpp:260` is now `:283`, §5.59's `app.cpp:795` is now `:831`.
+The rows are cached conclusions (§5.2 class); the document cites the current
+site and names the stale one beside it.
