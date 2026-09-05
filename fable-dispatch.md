@@ -611,7 +611,19 @@ config; display per HOST-EVENTS; next free §11 ⟨at dispatch⟩; live `### F` 
 
 **DoD:** wraps (code first) + census + measurement; §11.207 + stub; §5.111 flip;
 README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-05 17:0x — CKPT1 (harness only, no code yet): §0.7 gate PASSED on every
+input-side premise (HEADs, F count 6, §11.209 free, §5.111 OPEN, `_(` 0/15, `fr` locale +
+md5 `03fbee59`/`545a51ef`, binary `2815d182` + 0 build steps, display `:2` 2448x1332, no
+running instance). TWO output-side dispatcher defects, reported not aborted: (1) NO `F44`
+section exists in `harness/README.md` (0 hits) — read `f44_parity.py` + `artifacts/f44/`
+instead; (2) **there is no `.po` anywhere in either repo or the field** — `_()` is
+`Translator::translateUTF8` (`translator.cpp:45`), a map loaded from
+`~/.spacecrafter/language/fr.txt` (`"key";"value"`, IDENTITY FALLBACK), which is
+D9-frozen field data; the msgid check is therefore EXACT-KEY, not `grep -c`. Instrument
+`harness/f87_census.py` (self-test PASS) lands the census: 2087 literals, READOUT 30 (all
+`ModularObject.cpp`), `_()`-wrapped **0**; 14 sites have a byte-exact old msgid, of which
+**5 msgids reach fr.txt and 5 fall through by identity — old's do too**. NEXT: the 14
+wraps in `ModularObject.cpp` (code first), rebuild, then the fr/en farm measurement.
 
 ### F89 — The `b4_anchors` P7 screen-witness red DISCRIMINATED: the one gate that reds on the reference binary (green ×3 pre-§5.133, red ×2 post) gets its cause named — the twinkle-`rand()` candidate tested the way the two failed experiments could not (b4's own frozen-clock scene, twinkle OFF on both binaries, the two P7 windows' lit-pixel SETS diffed, predictions committed first), the control's margin read from the five F86 runs before any launch, every `rand()` consumer in `src/` enumerated — instrument fix if the instrument, §5.133's row if the product (§11.205(g)(h); session-22 queue position 2; the developer will run this harness) [S, instrument]
 
