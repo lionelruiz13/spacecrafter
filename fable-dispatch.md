@@ -1171,33 +1171,22 @@ ABSENT; canary `--no-scene` exit 0; display per HOST-EVENTS; no `spacecrafter` i
 **DoD:** the assert + the count control + twinkle-off in the runner; proven both ways with
 the numbers; §11 entry + stub; back-markers; §5.133 pointer; README F7 rewritten; trees
 clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-05 17:35 — §0.7 gate PASSED (every stated premise verified; two
-report-only divergences: the section's prose names the reference binary `2815d182`
-where live is `407b3d1d`, re-resolved by the Preconditions line; and DoD (4)'s "the
-count control red on the pre-fix binary" is refuted in advance by F89's own corpus,
-40–50× on BOTH binaries). Checkpoint 1: derivations + predictions committed BEFORE
-any edit — `harness/artifacts/f93/prediction.txt` (tolerance 1.0 km derived, K = 4
-with 10× margin, own-floor 100 px with 8.4× margin, the 13 asserted dumps' predicted
-values on both binaries). Checkpoint 2: the gate repaired — P1b (the distance assert,
-13 dumps, 1.0 km), P0 (twinkle asserted from every dump), P7's max form REMOVED for a
-lit-pixel count (K=4, floor 100); replayed OFFLINE over F89's eight landed runs first:
-reference 13/13 green + control green, pre-fix 9 red / 4 green (cmd+other are the
-in-run controls) + control GREEN, twinkle-ON run reds at P0. Checkpoint 3: FOUR launches
-done, every prediction met — reference ×2 **exit 0**, all green, P7 windows 846/21/2023/27
-to the digit in both, A/A 0 px in every window (4 px frame-wide, all four inside a
-138×136 px box on the Moon); pre-fix **exit 1**, 9 reds ALL P1b (17417.2/18263.2 km),
-count control GREEN 45.0×/45.8× as predicted; guard-only lands in the pre group.
-Artifacts `harness/artifacts/f93/`. Checkpoint 4: b24 (3b) landed — the I1 leg matches the
-block by SHAPE (five lines, numeric magnitude, two sexagesimal pairs, number + unit), GREEN
-on the live FRENCH block (`Magnitude :` `AD/DE :` `Alt/Az\xa0:` `Distance : … UA`, b24_select
-exit 0) and on the landed pre-fix ENGLISH ones (both reports + 120/120 blocks of F44's
-sidecar); the old matchers find 0 of 4 labels on that same French block; eight malformed
-blocks each caught. Checkpoint 5: DELIVERED — `INTENT/11.210.md` + stub; back-markers at
-§11.208(i) and §11.209(h) in BOTH homes, at §11.205's stub ("the gate stays RED" no longer
-true) and at §5.133's row (which gains the §11.210 pointer); README F7 rewritten (its
-"exits 1 on the reference binary" opening REMOVED), plus the F51 census row (the corpus's
-only max-luminance bar is gone) and the F87 b24 bullet. No §13 row exists for this task
-(mandate rows are §11.208(i)(j) + §11.209(h), both marked). NEXT: instruments LAST.
+**WIP:** DELIVERED 2026-09-05 18:1x — §11.210 (entry + stub + back-markers at §11.208(i),
+§11.209(h), §11.205 and §5.133, both homes each). The gate's direction is FIXED: reference
+`407b3d1d` **exit 0, 91/91, ×2**; pre-fix `9471f2fc` **exit 1, 9 reds, all of them the new
+P1b distance assert** (182582.753 / 181736.830 km against the authored 200000.0); guard-only
+in the pre group. Tolerance 1.0 km DERIVED and K = 4 (10× margin) committed at `668cc2e`
+BEFORE any edit; the max form REMOVED; P0 asserts twinkle off at all 28 dumps; b24's I1 leg
+asserts SHAPE and greens in French (exit 0) and on the landed English artifacts. **Two
+dispatcher-side items for the round report:** (1) the section's prose names the reference
+binary `2815d182`, live is `407b3d1d` (its own Preconditions line re-resolves it); (2) DoD
+(4)'s "the new control red on the pre-fix binary" is REFUTED — by §11.208(i)'s own
+"30–100× on BOTH binaries", measured 45.0×/45.8× there, predicted in writing before the
+runs. Baselines: scan **223/274/131** (+2/+3/0, flagged-set diff EMPTY), pair-check
+**226/201/25/108** (the entry-first signature), D 35 · D2 11 · I 89 · I2 36 · M 81 — every
+filter delta 0; D14 PASS. Owed, named not fixed: `f89_p7.py margins` reads pre-F93 artifacts
+only; `b4_anchors_run.sh` has no concurrent-instance probe; `b4_anchors.py` still carries its
+own copy of the dump grammar instead of `dumpread.py`.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
