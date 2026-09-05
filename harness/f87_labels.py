@@ -72,6 +72,36 @@ tidied away.
       no literal in `src/` contains and that only the catalogue can supply, which
       is the sharpest single proof that the lookup, not the literal, is answering.
 
+RESULT OF P1/P2/P4/P6 (measured 2026-09-05 16:58, `artifacts/f87/`): all four
+CONFIRMED -- G1 bad 0, G2 bad 0, names 68/22/22 unchanged, U+00A0 0 -> 90.
+
+D-SHARED-MAP -- WHAT THE ENGLISH CONTROL FOUND INSTEAD OF PASSING.  The first
+control run set `app_locale = en` and left `sky_locale = fr`, and the app logged
+`Application locale is en` and then printed FRENCH labels on BOTH paths.  The
+cause is at `src/tools/translator.hpp:83-85`:
+
+    static Translator* lastUsed;
+    static std::map<std::string, std::string> m_translator;
+
+ONE map, shared by every `Translator` instance. `App::setAppLanguage`
+(`app.cpp:937`) and `Core::setSkyLanguage` (`core.cpp:1585`) each build a fresh
+`Translator`, whose constructor `reload()`s INTO THAT SHARED MAP. Whichever runs
+LAST owns the catalogue for both, and `_()` -- which reads `globalTranslator`,
+i.e. the same map -- answers in the sky locale. The startup order puts sky last
+(applog: `Application locale is en` at 010544, `Sky locale is fr` at 010545),
+so `app_locale` is silently overridden whenever the two differ. Recorded, NOT
+fixed (out of scope; §5 row at §11.209).
+
+Two further predictions, WRITTEN BEFORE THEIR RUNS:
+
+  P7  app=en, sky=en: the control works -- G1 bad 0 against `en.txt` (identity),
+      names 90 same / 0 differ, U+00A0 0, and `--compare-new` byte-identical to
+      the PRE-FIX artifact on the NEW side (P5's real form).
+  P8  app=fr, sky=en -- the discriminator between "sky wins" and "the LAST
+      loader wins": with the FRENCH app locale and an English sky locale, the
+      labels come out ENGLISH. If P8 is refuted the mechanism above is wrong and
+      the note must be rewritten, not patched.
+
 Usage:
     f87_labels.py <outdir> --locale fr|en [--bin PATH] [--jd JD]
     f87_labels.py --offline <navstr[.gz]> [--locale fr|en]
@@ -277,7 +307,7 @@ def no_instance():
     return hit
 
 
-def make_farm(farm, locale):
+def make_farm(farm, locale, sky=None):
     subprocess.run(["bash", str(HERE / "b3_farm.sh"), str(farm)], check=True)
     cfg = Path(farm) / ".spacecrafter" / "config.ini"
     # b3_farm.sh COPIES config.ini (it symlinks everything else), so this edit
@@ -286,13 +316,20 @@ def make_farm(farm, locale):
     new = re.sub(r'^(app_locale\s*=\s*)\S+', r'\g<1>' + locale, txt, flags=re.M)
     if new == txt and locale != 'fr':
         raise RuntimeError("app_locale line not found in the farm config")
+    if sky:
+        n2 = re.sub(r'^(sky_locale\s*=\s*)\S+', r'\g<1>' + sky, new, flags=re.M)
+        if n2 == new and sky != 'fr':
+            raise RuntimeError("sky_locale line not found in the farm config")
+        new = n2
     cfg.write_text(new, encoding='iso-8859-1')
-    got = re.search(r'^app_locale\s*=\s*(\S+)', new, re.M)
-    ok("farm %s: app_locale = %s" % (farm, got.group(1) if got else "?"))
+    a = re.search(r'^app_locale\s*=\s*(\S+)', new, re.M)
+    s = re.search(r'^sky_locale\s*=\s*(\S+)', new, re.M)
+    ok("farm %s: app_locale = %s, sky_locale = %s"
+       % (farm, a.group(1) if a else "?", s.group(1) if s else "?"))
     return cfg
 
 
-def run_live(out, locale, binp, jd):
+def run_live(out, locale, binp, jd, sky=None, tagsuffix=""):
     home = Path.home() / ".spacecrafter"
     md5_in = subprocess.run(["md5sum", str(home / "config.ini"), str(home / "ssystem.ini")],
                             capture_output=True, text=True).stdout
@@ -303,14 +340,15 @@ def run_live(out, locale, binp, jd):
         return None
     ok("concurrent-instance probe: 0")
 
-    farm = out / ("farm_" + locale)
-    make_farm(farm, locale)
+    slug = locale + tagsuffix
+    farm = out / ("farm_" + slug)
+    make_farm(farm, locale, sky)
     env = {**os.environ, "HOME": str(farm),
            "DISPLAY": os.environ.get("DISPLAY", ":2")}
     proc = subprocess.Popen([str(binp)], cwd=str(farm / ".spacecrafter"),
-                            stdout=open(out / ("f87_%s.applog" % locale), "w"),
+                            stdout=open(out / ("f87_%s.applog" % slug), "w"),
                             stderr=subprocess.STDOUT, env=env)
-    dump = out / ("dump_%s.json" % locale)
+    dump = out / ("dump_%s.json" % slug)
     try:
         s = wait_port()
         time.sleep(10)
@@ -434,17 +472,27 @@ def main(argv):
         else HERE.parents[1] / "build-claude/src/spacecrafter"
     jd = argv[argv.index("--jd") + 1] if "--jd" in argv else JD
 
-    side = run_live(out, locale, binp, jd)
+    sky = argv[argv.index("--sky") + 1] if "--sky" in argv else None
+    suffix = ("_sky" + sky) if sky else ""
+    # `--effective` names the catalogue the LABELS are expected to come from,
+    # which is NOT always `--locale`: see D-SHARED-MAP in the header.
+    eff = argv[argv.index("--effective") + 1] if "--effective" in argv else locale
+    cat = load_catalogue(str(LANGDIR / ("%s.txt" % eff)))
+    ok("expected-rendering catalogue: %s.txt (%d entries)" % (eff, len(cat)))
+
+    side = run_live(out, locale, binp, jd, sky, suffix)
     if side is None:
         return 1
     recs, _ = parse_navstr(side)
-    tag = "LIVE(%s)" % locale
-    rep = gate(recs, cat, tag, strict=(locale == "fr"))
+    tag = "LIVE(app=%s,sky=%s)" % (locale, sky or "fr")
+    rep = gate(recs, cat, tag, strict=True)
     rep["names"] = names_report(recs, cat, tag)
     rep["nbsp"] = nbsp_report(recs, tag)
     rep["locale"] = locale
+    rep["sky"] = sky
+    rep["expected_from"] = eff
     rep["navstr"] = str(side)
-    (out / ("f87_%s_result.json" % locale)).write_text(
+    (out / ("f87_%s%s_result.json" % (locale, suffix))).write_text(
         json.dumps(rep, indent=1, ensure_ascii=False))
     print("\n%d FAIL, %d NOTE" % (len(FAILS), len(NOTES)))
     return 1 if FAILS else 0
