@@ -1,0 +1,14 @@
+# F94 test A (INTENT 11.214) - does `struct if body_selected equal 600` fire
+# for Saturn, the way doc/superscript.sts:1529 says it does?
+# Observable: the clock, read back through the shipped `get status position`
+# (field 4 = JDay).  2031-01-01 = the branch fired, 2032-01-01 = the else fired,
+# 2030-01-01 = neither (the play never reached the test).
+timerate rate 0
+date utc 2030-01-01T00:00:00
+select planet Saturn
+wait duration 1
+struct if body_selected equal 600
+date utc 2031-01-01T00:00:00
+struct if else
+date utc 2032-01-01T00:00:00
+struct if end

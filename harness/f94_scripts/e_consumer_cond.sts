@@ -1,0 +1,17 @@
+# F94 - the ONE shipped consumer's own condition, on the body whose number the
+# fix moves (INTENT 11.214).  `internal/fly_to_selected.sts:21` tests
+# `body_selected equal 0`; this replays exactly that test with Saturn selected,
+# so "the shipped consumer's behaviour does not change" is a MEASUREMENT on both
+# binaries and not an argument about 999 and 600 both being non-zero.
+# Observable: the clock, read back through the shipped `get status position`
+# (field 4 = JDay).  2039-01-01 = the branch fired, 2040-01-01 = the else fired,
+# 2030-01-01 = neither (the play never reached the test).
+timerate rate 0
+date utc 2030-01-01T00:00:00
+select planet Saturn
+wait duration 1
+struct if body_selected equal 0
+date utc 2039-01-01T00:00:00
+struct if else
+date utc 2040-01-01T00:00:00
+struct if end

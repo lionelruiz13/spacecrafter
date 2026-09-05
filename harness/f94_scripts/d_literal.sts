@@ -1,0 +1,15 @@
+# F94 machinery control (INTENT 11.214) - no body, no table lookup.
+# `struct if` with a literal that is always true.  If THIS one does not answer
+# 2037, the instrument is broken and nothing measured with it means anything;
+# it isolates "struct if / date / readback works" from "the table is wrong".
+# Observable: the clock, read back through the shipped `get status position`
+# (field 4 = JDay).  2037-01-01 = the branch fired, 2038-01-01 = the else fired,
+# 2030-01-01 = neither (the play never reached the test).
+timerate rate 0
+date utc 2030-01-01T00:00:00
+wait duration 1
+struct if 1 equal 1
+date utc 2037-01-01T00:00:00
+struct if else
+date utc 2038-01-01T00:00:00
+struct if end

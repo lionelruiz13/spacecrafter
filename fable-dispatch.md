@@ -802,7 +802,13 @@ test -e /home/claude/sc-f94 ; echo $? => 1
 
 **DoD:** fix (code first) + pre/post proof + control + the shipped consumer; §11 entry +
 stub; §5.98 flip; SS-17; map; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-06 01:3x — §0.7 gate PASSED (`premise_check.py F94` 16/16; display `:2`
+2448x1332, canary `--no-scene` exit 0, RAM 53 GiB ⇒ `-j24`, no concurrent instance,
+frozen md5 `03fbee59`/`545a51ef`, binary `f7112cb9` at HEAD with `cmake -n` 0 steps).
+CHECKPOINT 1: instruments written, predictions COMMITTED BEFORE ANY LAUNCH
+(`harness/f94_bodyselect.py`, `f94_run.sh`, `f94_scripts/{d_literal,a_saturn,b_ganymede,
+c_titan,e_consumer_cond}.sts`, `artifacts/f94/prediction.txt`); pre-fix binary preserved
+at `/home/claude/sc-f94/bin/spacecrafter-pre-f7112cb9`. NEXT: the PRE-fix run.
 
 ### F95 — T5.2, the MULTI-HOUR SOAK under show load — the last member of the map's "ready" gate, never run: ONE launch on a private farm in the field's French locale, the eight shipped shows (`basis/` · `custom/` · `deepsky/`) played round-robin through the shipped command surface for ≥ 3 hours with every authored pause RESUMED, a cycle-boundary interlude (select · read out · a dual dump at a PINNED clock) so the §5.62 epoch-shift class has an instrument, a 30-second sampler on the process (RSS · VSZ · threads · fds · GPU MiB · stall counts · log bytes · probe round-trip · screen-lock state), the FAIL criteria and the LEAK criterion committed BEFORE the launch, ONE detached DRIVER owning the app while every executor call is a foreground read (the no-`run_in_background` design measured possible at this session's open), both detectors shown able to fail on two-minute controls, and ONE quit at the end measured against F19's 45 s bound (DEPLOYMENT-MAP T5.2: *"A planetarium session is hours"*; the stability class §5.61 · §5.59/A40 · §11.15d · B30 · §5.62) [M–L, instrument; display-bound, hours]
 

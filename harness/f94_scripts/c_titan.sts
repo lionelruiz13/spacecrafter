@@ -1,0 +1,16 @@
+# F94 body control (INTENT 11.214) - Titan = 604, a member of the SAME chain
+# whose literal was never misspelled.  It fires on BOTH binaries: that is what
+# makes the two zeros next to it attributable to the two typos and not to a
+# selection that never happened or a table that never runs.
+# Observable: the clock, read back through the shipped `get status position`
+# (field 4 = JDay).  2035-01-01 = the branch fired, 2036-01-01 = the else fired,
+# 2030-01-01 = neither (the play never reached the test).
+timerate rate 0
+date utc 2030-01-01T00:00:00
+select planet Titan
+wait duration 1
+struct if body_selected equal 604
+date utc 2035-01-01T00:00:00
+struct if else
+date utc 2036-01-01T00:00:00
+struct if end
