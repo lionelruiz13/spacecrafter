@@ -121,12 +121,23 @@ std::unique_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 	double parent_rot_asc_node = 0.0;
 	double parent_rot_J2000_longitude = 0.0;
 
+	// "Is this orbit centred on the centre of the system?" is the ONE question
+	// the mean-motion branch below actually asks.  It used to ask it as
+	// `parent->get_parent()`, which dereferences the very case the next three
+	// lines declare legal (ledger Sec.5.134).  The experimental reader already
+	// carries the answer as a flag (experimentalModule/orbitModules/
+	// CometOrbitLoader.hpp:4,13-14,61-64) and this is that semantics ported: a
+	// parent that was not found is NOT the system centre, because nothing here
+	// can know that it is.
+	bool isNotSystemCentered = true;
+
 	if(!parent) {
 		parent_rot_obliquity = Utility::strToDouble(params["parent_rot_obliquity"]);
 		parent_rot_asc_node = Utility::strToDouble(params["parent_rot_asc_node"]);
 		parent_rot_J2000_longitude = Utility::strToDouble(params["parent_rot_J2000_longitude"]);
 	}
 	else {
+		isNotSystemCentered = (parent->get_parent() != nullptr);
 		parent_rot_obliquity = parent && parent->get_parent()
 		                       ? parent->getRotObliquity() : 0.0;
 		parent_rot_asc_node = parent && parent->get_parent()
@@ -180,8 +191,20 @@ std::unique_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 	if (mean_motion <= -1e100) {
 		period = Utility::strToDouble(params["orbit_period"],-1e100);
 		if (period <= -1e100) {
-			if (parent->get_parent()) {
-				cLog::get()->write("OrbitCreatorComet::handle When the parent body is not the Sun\nyou must provide orbit_MeanMotion or orbit_Period");
+			if (isNotSystemCentered) {
+				if (parent) {
+					// Unchanged message for the case that already reached this
+					// line: a parent that exists and is not the system centre.
+					cLog::get()->write("OrbitCreatorComet::handle When the parent body is not the Sun\nyou must provide orbit_MeanMotion or orbit_Period");
+				} else {
+					// The case that used to crash here instead of saying this.
+					cLog::get()->write("OrbitCreatorComet::handle : \"" + params["name"]
+					                   + "\" has coord_func = comet_orbit and no parent body named \""
+					                   + params["parent"]
+					                   + "\" exists, so its mean motion cannot be deduced from the system centre. "
+					                   "Give it orbit_meanmotion or orbit_period, or a parent that exists.",
+					                   LOG_TYPE::L_ERROR);
+				}
 				return nullptr;
 			}
 			mean_motion = (eccentricity == 1.0)

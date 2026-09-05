@@ -24,18 +24,17 @@
 #include "tools/log.hpp"
 
 
-AnchorPointOrbit::AnchorPointOrbit(Orbit * _orbit, const TimeMgr* _timeMgr, const Body * _parent, Vec3d _orbitCenter) noexcept
+AnchorPointOrbit::AnchorPointOrbit(std::unique_ptr<Orbit> _orbit, const TimeMgr* _timeMgr, const Body * _parent, Vec3d _orbitCenter) noexcept
 {
-	orbit = _orbit;
+	orbit = std::move(_orbit);
 	timeMgr = _timeMgr;
 	parent = _parent;
 	orbitCenter = _orbitCenter;
 }
 
-AnchorPointOrbit::~AnchorPointOrbit()
-{
-	//delete orbit;
-}
+// Defined here, not defaulted in the header: Orbit is only forward-declared
+// there, and the unique_ptr member needs the complete type to destroy it.
+AnchorPointOrbit::~AnchorPointOrbit() = default;
 
 void AnchorPointOrbit::update() noexcept
 {

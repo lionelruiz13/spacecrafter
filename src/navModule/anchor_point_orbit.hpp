@@ -28,6 +28,7 @@
 #ifndef ANCHOR_POINT_ORBIT_HPP
 #define ANCHOR_POINT_ORBIT_HPP
 
+#include <memory>
 #include <string>
 #include "navModule/anchor_point.hpp"
 #include "tools/utility.hpp"
@@ -42,7 +43,11 @@ public :
 
 	AnchorPointOrbit() = delete;
 
-	AnchorPointOrbit(Orbit * orbit, const TimeMgr * timeMgr, const Body * parent, Vec3d orbitCenter = Vec3d(0,0,0)) noexcept;
+	//! The anchor OWNS its orbit: nothing else in the creator chain does, and
+	//! the orbit must outlive every update() call this anchor will ever make
+	//! (ledger Sec.5.133 - the previous signature took a raw pointer that the
+	//! caller had already let die).
+	AnchorPointOrbit(std::unique_ptr<Orbit> orbit, const TimeMgr * timeMgr, const Body * parent, Vec3d orbitCenter = Vec3d(0,0,0)) noexcept;
 
 	AnchorPointOrbit(const AnchorPointOrbit &) = delete;
 
@@ -54,7 +59,7 @@ public :
 
 private :
 
-	Orbit * orbit = nullptr;
+	std::unique_ptr<Orbit> orbit;
 	const TimeMgr * timeMgr = nullptr;
 	const Body * parent = nullptr;
 	Vec3d orbitCenter;

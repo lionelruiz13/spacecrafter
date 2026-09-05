@@ -127,7 +127,14 @@ std::shared_ptr<AnchorPoint> AnchorPointOrbitCreator::handle(stringHash_t params
 		}
 	}
 
-	Orbit * orbit = orbitCreator->handle(params).get();
+	// The creator chain hands ownership out (every handle() returns a
+	// unique_ptr), and this anchor is the only thing that will ever use the
+	// orbit - so this is where the ownership must be held until it is moved
+	// into the AnchorPointOrbit below.  Taking .get() off the returned
+	// temporary left the pointer dangling from the next statement on: the
+	// orbit died at the end of that expression and every update() of the
+	// anchor read recycled heap (ledger Sec.5.133).
+	std::unique_ptr<Orbit> orbit = orbitCreator->handle(params);
 
 	if(orbit == nullptr) {
 		cLog::get()->write("AnchorPointOrbitCreator:: could not create orbit from given paramaters");
@@ -144,7 +151,7 @@ std::shared_ptr<AnchorPoint> AnchorPointOrbitCreator::handle(stringHash_t params
 			return nullptr;
 		}
 
-		return std::make_shared<AnchorPointOrbit>(orbit, timeMgr, nullptr,
+		return std::make_shared<AnchorPointOrbit>(std::move(orbit), timeMgr, nullptr,
 		                            Vec3d(stod(params["orbit_center_x"]),
 		                                  stod(params["orbit_center_y"]),
 		                                  stod(params["orbit_center_z"])));
@@ -153,7 +160,7 @@ std::shared_ptr<AnchorPoint> AnchorPointOrbitCreator::handle(stringHash_t params
 		std::shared_ptr<Body> body = ssystem->searchByEnglishName(params["parent"]);
 
 		if(body != nullptr)
-			return std::make_shared<AnchorPointOrbit>(orbit, timeMgr, body.get());
+			return std::make_shared<AnchorPointOrbit>(std::move(orbit), timeMgr, body.get());
 		else {
 			cLog::get()->write("AnchorPointOrbitCreator:: could not find given parent : " + params["parent"]);
 			return nullptr;
