@@ -652,7 +652,13 @@ test -e /home/claude/sc-f91 ; echo $? => 1
 
 **DoD:** fix (code first) + probe + table + controls; §11 entry + stub; the two rows
 flipped; back-markers; map; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-06 — §0.7 gate 15/15 PASS, canary `--no-scene` exit 0, prose premises
+verified. CHECKPOINT 1: the frame DERIVED from old's code and written into
+`INTENT/11.213.md` (a)(b)(c) BEFORE any code touch; `harness/f91_frame.cpp` probe
+proves F91's chain == old's frame to **0.000000000°** and F44's chain off by exactly
+**+90.000000000°** in RA (the `+M_PI_2` of `ModularBody::getAxisRotation`), and
+re-derives F34's 133.9041°/38.5856°/2.058e-11. NEXT: pre-fix measurement legs on the
+`/home/claude/sc-f91/` farm (French + English control), then the code fix.
 
 ### F94 — §5.98 — the two misspelled body names in `Core::setSelectedBodyName` corrected (`"Satun"` → `"Saturn"` at `core.cpp:2255`, `"Ganymed"` → `"Ganymede"` at `:2251`) so `$body_selected` answers 600 and 503 as the documented table says instead of the 999 default — FIX AUTHORISED by the tester (round-3 R19, §11.207(b)#6 + (c1)), the dependence fact he did not answer MEASURED on this field at the mint (exactly one shipped script tests the variable, against 0), proven pre/post on the shipped command surface with a control body that fires on both binaries (§11.207(g) item 2; SS-17; DEPLOYMENT-MAP T1.10 → T4) [S, engine, both paths]
 

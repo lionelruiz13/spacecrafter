@@ -1,0 +1,10 @@
+=== F91 frame probe (predictions in the header; every line can fail)
+  bound=1 free=0 : shipped |err| 2.441e-04 AU  angle 133.9041 deg  |  F91 |err| 8.135e-12 AU  angle 0.0000 deg
+  bound=1 free=1 : shipped |err| 1.013e-04 AU  angle  38.5856 deg  |  F91 |err| 1.029e-11 AU  angle 0.0000 deg
+  bound=0 free=0 : shipped |err| 2.149e-04 AU  angle 158.4931 deg  |  F91 |err| 1.455e-11 AU  angle 0.0000 deg
+  bound=0 free=1 : shipped |err| 2.058e-11 AU  angle   0.0000 deg  |  F91 |err| 2.058e-11 AU  angle 0.0000 deg
+  frame identity, 64 directions, double:
+    F91 chain (fold Z(axisRot+pi/2))  vs old's frame : max 0.000000000 deg
+    F44 chain (fold Z(axisRot))       vs old's frame : max 89.965610188 deg
+    F44 chain, scored as 11.158(f2) does -- RA offset old-minus-f44:
+      [90.000000000, 90.000000000] deg, spread 0.000000000 ; max |dDE| 0.000000000 deg
