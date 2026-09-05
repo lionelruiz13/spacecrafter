@@ -1193,28 +1193,29 @@ dispatch⟩, unchanged by this task; next free §11 ⟨at dispatch⟩; live `###
 **DoD:** table + markers + flips + new row + map re-derived + the next-round list;
 §11 entry + stub; file status PROPAGATED; trees clean; WIP cleared; baselines LAST
 with every delta named.
-**WIP:** 2026-09-05 CP6 — §0.7 gate PASSED on every stated premise. Table built
-from the file + `git show 6ffb017`: **TWENTY replies, not sixteen** (R14–R29 +
-N5/N7/L1/L2) — count defect reported, enumeration intact. Done: §11.207 entry +
-stub (CP1); §13.A A7/A15/A30/A42 marked and **A43 CLOSED as design (17 → 16)**;
-§13.B B17/B39 marked; DECISIONS_PENDING D37 CLOSED + D15/D28 confirmed + header.
-Done also: §5 rows 19/21/53/66/71/74/78/86/88/90/98/112/115/128/129 marked
-(5.19 + 5.21 at BOTH homes) and **§5.135 minted** (the old path's heading-coupled
-offset, mechanism re-read at `navigator.cpp:324`/`:329`). Done also: 18 §11 entries marked
-(4/82/92/98/113/116/127/149/158/162/163/172/173/177/198/201/202/204) with 17
-matching stubs — §11.113 has no live stub (archived-in-place, one of the 25).
-Done also: the three channel files —
-`USER_QUESTIONS_ROUND3.md` → **PROPAGATED** (check (d) run: 21 reply line-strings
-byte-identical to `6ffb017`, 0 mismatches; note the raw `git diff 6ffb017` ALSO
-carries `367f2d1`'s N7 restoration, which is the supervisor's, not mine — the
-clean discriminator is `git diff 367f2d1`, 26 changed lines, all status prose),
-`FEATURE_REQUESTS.md` `[parallel-script]` **DECLINED** + the chain annotated,
-`SCRIPT_SURFACE.md` SS-17 **ANSWERED**. Done also: **DEPLOYMENT-MAP re-derived** — T1.2 and T1.4 CLOSED, T1.7's A43
-struck as design, T1.9 (a) re-graded, T1.10's §5.98 gate open, T2's §5.21/§5.66/
-§5.71 unblocked, T3's census + field-content + §5.112 answered, T4 discharged
-except L2, R2's content question answered with the procedure's location promoted
-to R0, and the "necessary, and only that" head + the critical path both re-cut for
-BOTH criteria. NEXT: the instruments, the delta accounting, and the WIP clear.
+**DELIVERED 2026-09-05 → §11.207** (Claude Opus 5 executor; harness-only, code
+`master-beta @ a2fd3c5b` untouched). **TWENTY replies, not sixteen** — R14–R29 plus
+N5/N7/L1/L2; every one reaches a row, so no orphan, and the section's count label is a
+reported dispatcher defect (its own enumeration lists all twenty). Propagated: **16 §5
+rows** (15 marked + **§5.135 minted** — the old path's heading-coupled offset, mechanism
+re-read at `navigator.cpp:324`/`:329`, B17's `:159`/`:309` citations corrected) · **5
+§13.A rows** with **A43 CLOSED as design (17 → 16)** and its §13.C pointer · **2 §13.B**
+(B17, B39) · **DECISIONS_PENDING** D37 CLOSED + D15(b)/D28 confirmed + header · **18 §11
+entries with 17 stubs** (§11.113 has no live stub) · SS-17 ANSWERED · `[parallel-script]`
+DECLINED · round-3 file → **PROPAGATED** · DEPLOYMENT-MAP re-derived with T1.2 and T1.4
+CLOSED and both heads re-cut. **NEWLY DECISION-FREE (§11.207(g))**: §5.86+§5.19 [M, next
+round's first engine candidate] · §5.98 [S] · §5.21 [S–M] · §5.66+§5.71 [M] · §5.115 [S–M]
+· A15's residual [S] · D37's implementation [S, owner-paced]. **STILL OPEN, quoted not
+assumed**: L2 (*"I didn't test it yet"* — the pass's one unanswered member), §5.128's
+snap-back half, A42's swap distance, A43's body list, whether any show depends on today's
+999, and R23's undocumented outside catalogue procedure (owner, promoted to R0).
+**Instruments LAST, all five filters back to baseline**: pair-check **D 35 · D2 11 · I 89
+· I2 36 · M 81**, zero new flagged ids (one §5.19 self-inflicted D+M pair found and closed
+at its cause — the entry marker's span closed early and cited two sections the stub did
+not); structural **entry files 222 → 223** (+§11.207), **live pairs 197 → 198**,
+**archived-in-place 25** unchanged, **inline stubs 106 → 107** (+§5.135, no entry file);
+back-marker scan **211/261/131 unchanged** — expected, its EVENT lexicon excludes
+discharge vocabulary by design.
 
 ### F86 — EXTENSION, widened at F84 acceptance: the three startup faults a newcomer can meet on the shipped data — (3) **§5.130** the first launch on a fresh account ABORTS (`main.cpp:194` cds into `~/.spacecrafter` before `:198-199` create and populate it — one line moved, the empty-HOME launch as the gate, exit 134 → the bootstrap); (2) §5.127's use-after-free at `anchor_creator_cor.cpp:130`, reachable from the shipped `anchor.ini`: own row first (the granularity veto point of session 21), reproduced under AddressSanitizer, fixed at the ownership (I5), proved clean; (1) §5.127's null dereference for a top-level comet with neither period nor mean motion — the experimental reader's guard ported (DEPLOYMENT-MAP R2 + R4) [S]
 
