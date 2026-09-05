@@ -47,7 +47,40 @@ tester, decision-paced — the tiers that follow). **What is NECESSARY, and only
   §11.204(j): 0 deleted / 2 added on the field config, 4 deleted on a hand-edited copy, both
   ending at one md5; N7 carries both numbers. See T3.]**
 - **Not required for either**, so the exclusion is visible: every both-paths defect (T1.6,
-  T1.10, T1.11 — backlog by §11.163(h)); B1/B2/B3 (until R21's census says otherwise); B8.
+  T1.10, T1.11 — backlog by §11.163(h)); ~~B1/B2/B3 (until R21's census says otherwise)~~
+  **[R21 ANSWERED 2026-09-05 — see the re-cut head below: the census excludes nothing, so
+  this escape clause no longer holds by absence; B1/B2/B3 stay excluded on their OWN
+  argument (Vixy-paced architecture), which is a weaker exclusion than the one it
+  replaces]**; B8.
+
+**[RE-CUT 2026-09-05 — the round-3 replies landed (F88 → §11.207); twenty answers, and
+they move this head on both criteria. Previous head kept above, struck where superseded.]**
+**What is NECESSARY, and only that, as of 2026-09-05 evening:**
+- **For R0 (the developer, one week):** **R5 the PUSH** (Vixy; `master-beta` + `CC-harness`
+  from a keyed host — nothing here substitutes it) · **R6 the branch policy** (Vixy, one
+  sentence) · and **one new owner question, from R23**: where the outside catalogue
+  installation procedure lives, and whether it may be documented in the repository. That
+  third item is R6's sibling and §11.206's third residual; it is what stands between a
+  clone and a sky with more than 26 561 stars in it. R1–R4 are met or owner-only.
+  **Nothing else is necessary for R0.**
+- **For T0 (the tester, decision-paced):** the shape changed more than the length. **Two
+  T1 gates CLOSE** — T1.2 (the dome-geometry call, R28) and T1.4 (§11.4's pair, R27) — and
+  what they were blocking becomes WORK, not decisions. So T0's necessary set is now:
+  **T1.1** the zoom pair (Vixy, one line, §5.100's authorization still unanswered since
+  2026-08-26 — with T1.2 and T1.4 gone this is **the last operator-basics decision
+  standing**) · **T1.3** the reach/visibility batch (DSO content) · **T1.5** §5.109's
+  layer half · **§5.53(b)** (T1.9, one token) · the **T5.1 rehearsal** · and the
+  **decision-free queue R27/R28/R18/R19/R20/L1 just created** (§11.207(g): §5.86+§5.19,
+  §5.98, §5.21, §5.66+§5.71, §5.115, A15's residual). The final-pass SEND is no longer on
+  this list: it fired, and came back — **nineteen of twenty answered, L2 alone open**.
+- **Newly NOT necessary, so the shrinkage is visible**: A43's data regeneration
+  (**cancelled** — R29 says it is design, and doing it would destroy the effect) · the
+  §5.74/§5.78 search family (**de-prioritized** by R22 — still open, no longer on any
+  path) · §5.90's fix as a *loader* question (R23 makes the default correct; what is left
+  is the undocumented procedure, moved to R0 above).
+- **Newly necessary, and small**: **§5.135** (the old path's heading-coupled offset, minted
+  by R28) — but its fix is NOT decision-free, because it lands on the comparison baseline;
+  it sits behind an owner call, not behind work.
 
 ## R — Reference for development (the second criterion, 2026-09-05)
 
@@ -140,6 +173,17 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    19 directories + 7 files, real HOME md5 in==out). `INSTALL` §5, the "what the repository
    does NOT contain" section, is measured and kept. **Nothing of R2 remains on the
    documentation side; its pin-bump residual was discharged at code `32af2efb`.**]**
+   **[R2's CONTENT QUESTION IS ANSWERED, AND THE ANSWER OPENS AN OWNER ITEM — 2026-09-05,
+   round-3 **R23** (F88 → §11.207): *"By default, only limited catalogs are loaded. Correct
+   catalogs are loaded in an outside installation procedure."* `[stated: tester (Lionel
+   RUIZ), via owner commit 6ffb017]`. F84's manifest found that a tree install ships no
+   content and that **no repository document names where content comes from** (§11.204(f));
+   R23 says where: an **installation procedure outside both repositories**. So the gap is
+   not that the loader is wrong or that the install is broken — it is that the procedure
+   is **undocumented**, which for a newcomer cloning this branch is the difference between
+   26 561 stars and the sky. **Its location, and whether it may be written down here, is
+   the OWNER's — R6's sibling, and the third residual F85 left at §11.206.** Promoted into
+   the R0 head above: it is the only R0 item this round added.]**
 3. ~~**R3 — An entry document exists in the code repo.** None does (`doc/` is user-facing; no
    `*.md` under `src/experimentalModule/`); `claude/README.md`'s own filing criterion states the
    promotion obligation and nothing was ever promoted under it. → **F85**.~~
@@ -230,7 +274,7 @@ Ordered by operational weight for the tester, not by age:
    question)**: old rolls the view offset with the heading, the new path keeps it
    dome-fixed. Planetarium-geometry-central (tilted domes are the deployment reality);
    blocks the §5.66 `look_at` family and §5.71's `panView` port. NOTE: per §11.161(c) the
-   *expectation* half ("what should a tilted-dome operator see") may be tester-routable. **[2026-09-02, §11.198(d): expectation half ROUTED — round-3 R28, NARROWED to the heading×offset combination (heading = one of the owner's two named under-exercised configurations); plain-offset behavior stays old-parity by the owner's silent-population bounding; aim/draw coupling defect candidate recorded, not minted.]** **[2026-09-04, F81 §11.201: the candidate is MEASURED and **§5.128 is MINTED** (record-only) — old's aim site compensates a FIXED 90° while its draw applies fov/2, so a mid-show `set zoom_offset` lands the aimed body 0.0000°/13.5000°/21.0000° off the drawn centre at fov 180/90/40 and throws the old view 29.4474° onto `init_view_pos` while the new path keeps its aim. R28 gains the question it could not yet ask: does a show that sets the offset mid-show EXPECT the view to return to `init_view_pos`? — the answer decides whether only the scaling is wrong or the whole aim half is.]**
+   *expectation* half ("what should a tilted-dome operator see") may be tester-routable. **[2026-09-02, §11.198(d): expectation half ROUTED — round-3 R28, NARROWED to the heading×offset combination (heading = one of the owner's two named under-exercised configurations); plain-offset behavior stays old-parity by the owner's silent-population bounding; aim/draw coupling defect candidate recorded, not minted.]** **[2026-09-04, F81 §11.201: the candidate is MEASURED and **§5.128 is MINTED** (record-only) — old's aim site compensates a FIXED 90° while its draw applies fov/2, so a mid-show `set zoom_offset` lands the aimed body 0.0000°/13.5000°/21.0000° off the drawn centre at fov 180/90/40 and throws the old view 29.4474° onto `init_view_pos` while the new path keeps its aim. R28 gains the question it could not yet ask: does a show that sets the offset mid-show EXPECT the view to return to `init_view_pos`? — the answer decides whether only the scaling is wrong or the whole aim half is.]** **[GATE CLOSED 2026-09-05 by round-3 R28 (F88 → §11.207) — [stated: tester (Lionel RUIZ), via owner commit 6ffb017]: *"The offset is screen dependant. The change of heading shouldn't shift the offset position. I saw that it does now but it shouldn't."* **The decision this tier existed to extract is made, and it is made in favour of the NEW path**: the offset is screen/dome-fixed, so the delivered shape was right and old's heading coupling is a defect — minted **§5.135** (old-path only; mechanism re-read at `navigator.cpp:324` then `:329`). **§5.66 and §5.71 UNBLOCK and move to work.** Two things stay: (i) §5.128's snap-back question — R28 does not mention it, so the fork it names is still undecided; (ii) §5.135's FIX is not decision-free, because correcting the old path means touching the comparison baseline (§11.52(b)) — an owner call, not a gate on the tester's transparency. **This row leaves the decision tier.**]**
 3. **§11.96(e)(1–6) + §11.98(f)(i–iii) — the reach/visibility decoupling batch**: gates
    the B5 remainder = dso3d/tully/ojmMgr floors — i.e. the DEEP-SKY content classes on
    the new path. A planetarium show without its DSO layer is not transparent.
@@ -240,7 +284,15 @@ Ordered by operational weight for the tester, not by age:
    answer in a scrambled frame — he reads coordinates professionally. **[2026-09-05: with (1)
    resolved, the §5.86 fix is DISPATCHABLE with the origin held old-as-spec (observer-centred)
    until R27 — the parity target §11.158(f) states (≤ 0.002° for 89/90 bodies); next round's
-   first engine candidate, deferred behind tier R this round.]**
+   first engine candidate, deferred behind tier R this round.]** **[GATE CLOSED
+   2026-09-05 by round-3 R27 (F88 → §11.207) — [stated: tester (Lionel RUIZ), via owner
+   commit 6ffb017]: *"The RA/DE must be the value from our position."* ⇒ decision (2)'s
+   origin is **OBSERVER-CENTRED (topocentric)**, which is what old already computes — so
+   the old-as-spec hold becomes a tester-STATED requirement rather than a default, and it
+   is the strongest form this answer could take: he reads coordinates professionally, as
+   this row's own sentence says. With (1) resolved by definition (§11.198(b)), **BOTH
+   numbered decisions are answered and this row LEAVES the decision tier.** §5.86 + §5.19
+   are fully decision-free and dispatchable at the stated parity target. **T1.4 CLOSED.**]**
 5. **§5.109's layer half** — what `moveto alt` means above a display-scaled body (drawn
    vs physical surface). He authors scenes on scaled bodies.
 6. **The script-semantics batch** (both-paths defects his authoring will hit; each is a
@@ -257,7 +309,7 @@ Ordered by operational weight for the tester, not by age:
    cover the mid-session route), §5.90 (stars.ini pairing + is `~/.spacecrafter/stars/`
    a search path — tester-routable per §11.161(c1)), A40 (quit vs incomplete frame),
    A41/A42/A43 (early-visibility gate px / texture-level switch / preview-asset data —
-   A43 is a DATA regeneration, i.e. the paid product) **[A43 GATED on R29, 2026-09-02 — §11.198(c): regeneration may destroy the tester's authored two-skin design]**, A44 (ring shadow contract),
+   A43 is a DATA regeneration, i.e. the paid product) **[A43 GATED on R29, 2026-09-02 — §11.198(c): regeneration may destroy the tester's authored two-skin design]** **[~~A43~~ **CLOSED AS DESIGN 2026-09-05** by round-3 R29 (F88 → §11.207) — [stated: tester (Lionel RUIZ), via owner commit 6ffb017]: *"It's a design."* ⇒ the Sun/Moon preview mismatch is the tester's AUTHORED two-appearance mechanism, so **the regeneration is CANCELLED, not deferred** — the paid `spacecrafter-data` product loses this item, and doing it would destroy an effect he uses. A43 leaves §13.A (17 → 16). **A42 does NOT close with it**: R29's own text said the answer would decide at what distance the swap should engage, and that number was not given — A42 is re-shaped from an align-or-leave engineering call into a DESIGN PARAMETER the tester still owes. **§5.90 also moves here** by R23/R24 — see T3; its loader half stops being the question and the undocumented outside procedure becomes it.]**, A44 (ring shadow contract),
    §5.106 (free-flight environment: close-as-accepted vs design question), the two
    §11.144 riders (free-flight `moveto` meaning + `get status position` — defaults live,
    confirm or redirect), §5.108 (`flag_sun_scaled` dead — reviving it is a behavior
@@ -277,12 +329,28 @@ Ordered by operational weight for the tester, not by age:
    resident sooner (D5/D6 residency, D10 headroom). Its sibling **§5.53(a)** is a DATA
    decision — two shipped previews are photometrically inconsistent with their
    full-resolution partners — riding `spacecrafter-data` forward propagation (D9).
+   **[(a) RE-GRADED, (b) SHARPENED, 2026-09-05 by round-3 R29 (F88 → §11.207) — *"It's a
+   design."* `[stated: tester (Lionel RUIZ), via owner commit 6ffb017]`. **(a) is no
+   longer a data decision**: the two previews differ from their partners because he
+   AUTHORED them that way, so the D9 forward-propagation item is withdrawn. **(b) is
+   unchanged in substance and stronger in argument**: the gate is still the
+   new-path-specific visible divergence on the two bodies he shows most, and R29 makes
+   aligning it MORE consequential, not less — the swap distance now carries a designed
+   effect, so moving the gate moves the effect. Still one token, still Vixy's (D5/D6
+   residency, D10 headroom), and now also waiting on A42's unnamed number.]**
 10. **§5.35 / §5.98 / §5.41** [TRIAGED here 2026-08-29 by F47, all BOTH-PATHS so none gates
    T0, each behind a named call]: `day_key_mode` — what should the control DO (today it
    neither sticks nor acts) · `$body_selected` answers 999 for **Saturn and Ganymede**,
    two typo'd spellings, gated on SS-17's owed answer from the script-surface owner
    (**tester-routable**, §11.161(c) — he authors `struct if body_selected equal 600`) ·
    `camera action save`, gated on B31's re-expression decision.
+   **[§5.98's GATE IS OPEN 2026-09-05 — round-3 R19 (F88 → §11.207): *"Satun must be
+   corrected to Saturn and Ganymed to Ganymede."* `[stated: tester (Lionel RUIZ), via
+   owner commit 6ffb017]` ⇒ the routing worked and the fix is AUTHORISED, two spellings,
+   decision-free; SS-17 answered in `SCRIPT_SURFACE.md`. **He answered with the
+   instruction, not with the asked question** — whether any show depends on today's 999
+   is still unknown, and is recorded as unknown rather than assumed absent. `day_key_mode`
+   (§5.35) and `camera action save` (§5.41) are untouched by round 3.]**
 11. **§5.113 + §5.110's fix routing** [ADDED 2026-08-30, F50 §11.166; both-paths at the
    mechanism (the uninitialized `Object` singleton predates the split) ⇒ NOT T0-gating]:
    ONE missing-guard class, three shipped reaches with nothing selected — `set
@@ -331,9 +399,18 @@ Ordered by operational weight for the tester, not by age:
   which builds the identical defective `LocationOrbit` ⇒ a BOTH-PATHS authoring trap, not
   new-path-superseded. Fix NOT decision-free (D9: authored `orbit_lat` may compensate);
   QUESTION ROUTED TO THE TESTER, joins the final-pass batch.]**
+  **[ANSWERED 2026-09-05 — round-3 R18 (F88 → §11.207): *"No."* `[stated: tester (Lionel
+  RUIZ), via owner commit 6ffb017]` ⇒ no `location_orbit` body was ever authored, so the
+  D9 objection that made this fix non-decision-free is EXCLUDED and **§5.21 is
+  decision-free**. Its both-paths reach is unchanged, so one fix serves both.]**
 - **§5.107** — extent-cache latch (5th member of the closed latch class; the fix shape
   exists).
 - **§5.71 + §5.66** — the `panView` port + `look_at` halves (after T1.2).
+  **[UNBLOCKED 2026-09-05 — T1.2 closed by round-3 R28 (F88 → §11.207): the offset is
+  screen/dome-fixed, so both port under the NEW path's convention and neither waits on a
+  decision any more. One caveat carried, not absorbed: §5.66's OWN owed item — which
+  landing an operator typing `look_at azimuth X altitude Y` means, the drawn bodies' or
+  the drawn sky's — is a DIFFERENT question and R28 does not answer it.]**
 - **B35/B36/B37 residues** — config-only / declared-but-driverless / UI-only capability
   audits: they BOUND what "the new path" can express; completing them completes the
   transparency claim's denominator.
@@ -351,9 +428,40 @@ Ordered by operational weight for the tester, not by age:
   his deployment carry sky-culture content (§5.74 — search currently returns NOTHING on
   our 2922×0-byte field), stellar_systems, the full star catalogues (§5.90 — our install
   silently runs 26 561 stars instead of millions; his stars.ini↔catalogue pairing)?
+  **[ANSWERED IN THREE PARTS 2026-09-05 (F88 → §11.207), `[stated: tester (Lionel RUIZ),
+  via owner commit 6ffb017]` — and the answers MOVE the question rather than close it.
+  **R22** *"Search is deprecated."* ⇒ the sky-culture/search half is **DE-PRIORITIZED**:
+  §5.74 and §5.78 stay OPEN with no fix owed, and leave every deployment path. He answered
+  a larger question than the one asked — whether search works on HIS install is still
+  unknown, and now uninteresting. **R23** *"By default, only limited catalogs are loaded.
+  Correct catalogs are loaded in an outside installation procedure."* ⇒ **our 26 561 stars
+  are the PRODUCT's default, not a fault of our install**, so §5.90's headline reading is
+  withdrawn — while its MECHANISM (list from the user dir, files from the data root,
+  mismatch silent) is untouched and stays OPEN, and **§5.88 gains weight**: if a limited
+  catalogue is normal, *"a missing catalogue is reported NOWHERE"* is what every site
+  experiences, with nothing to tell an operator which of the two he is running. **What
+  becomes the live question is the PROCEDURE itself**: it exists, it is outside both
+  repositories, and no document here describes it — R2's content question in its exact
+  form, R6's sibling, §11.206's third residual, and now an R0 item. **R24** *"We should but
+  for now it is in another directory."* ⇒ `~/.spacecrafter/stars/` SHOULD be honoured and
+  is not used today: a stated want with no current dependent, so no D9 risk either way.]**
 - **His content census** [NEW question for the final pass]: which content classes do his
   real shows actually load? This BOUNDS T1.3's urgency and whether B1/B2 (D4 streaming,
   RING asteroid, INSTANCED) block him at all — today they are assumed architectural-only.
+  **[ANSWERED 2026-09-05, AND IT BOUNDS NOTHING AWAY — round-3 R21 (F88 → §11.207):
+  *"All have been tested, but sometimes long ago, so maybe some features could have
+  altered the way it shall work."* `[stated: tester (Lionel RUIZ), via owner commit
+  6ffb017]`. **ONE sentence for the whole nine-line census** — nine lines were sent, one
+  answer came back, and it is propagated as one answer and never as nine ticks. **Every
+  class is IN**: sky cultures, deep-sky 3D, full catalogues, other star systems, videos,
+  large body populations, runtime images/audio, joystick/hardware, AND the portrait
+  window. So T1.3's urgency is NOT reduced, B1/B2's "unless the census says otherwise"
+  exclusion no longer holds by absence (they stay excluded on the weaker, Vixy-paced
+  argument), and §5.129's portrait cost (§11.202: the dome drawn 128 px low with a dead
+  band above it) is a cost the field may be paying rather than a hypothetical. **The
+  staleness caveat is part of the answer and must travel with it**: *tested*, possibly
+  *long ago*, explicitly not *works today* — this reply bounds the SET of classes, and
+  says nothing about the STATE of any of them. No class may be called healthy on it.]**
 - **His hardware**: §5.60 (the unconditional 2.68 GB video staging allocation vs his
   GPU's limit), his real dome/projector stack vs our headless `:2` (every cadence and
   pixel baseline here is stack-local — §11.159(k7)), his `maximum_fps`.
@@ -397,6 +505,15 @@ Ordered by operational weight for the tester, not by age:
   hand-edited his own `config.ini`, and this map cannot know that — his file is not this one.
   N7 now carries both numbers so he can judge it himself. The T3 line above stays open only
   for "his actual config version"; the mechanism is measured.]**
+  **[AND HE ANSWERED WITH A FIX DIRECTION 2026-09-05 — round-3 **N7** (F88 → §11.207):
+  *"Put a # in front of the deprecated lines would be better"* `[stated: tester (Lionel
+  RUIZ), via owner commit 6ffb017]`. Shown the two numbers, he does not acknowledge the
+  hazard — he **exercises the revise/revert offer** and states how the mechanism should
+  behave: **comment out, never delete**. That is the migration writer's spec (§5.42's
+  writer rides the same change), and this clause's own measurement is its discriminator —
+  under a comment-out the two runs would no longer converge on md5 `3465f7c8`. Recorded
+  as the tester's EXPECTATION: he is a code contributor, but the fix's stratum ruling and
+  its schedule stay the owner's (§11.161(c)). Nothing here authorises the edit.]**
 - **The B14 data package** (poles/W0/periods corrections) riding the next
   `spacecrafter-data` delivery, forward-only (D9); his baselines shift accordingly.
 - **His script corpus**: the shipped 434 are our proxy; HIS files are the real test —
@@ -418,6 +535,33 @@ a QUESTION to the tester — *has anyone authored `location_orbit`, and was `orb
 in degrees or tuned by eye?* (the fix is blocked on the answer, D9) · **§5.98** as a QUESTION
 to the tester — *do your shows test `body_selected` against 999 for Saturn/Ganymede?* (SS-17;
 the fix is two spellings, free once given).
+
+**[THE BATCH CAME BACK 2026-09-05 — F88 → §11.207; `[stated: tester (Lionel RUIZ), via owner
+commit 6ffb017]`. This tier is DISCHARGED EXCEPT ONE MEMBER.]** Member by member:
+**D15(a)–(d) INFORM ×4** — N1, N3, N4 drew no reply, which under this batch's own contract
+(*silence = accepted*) means they stand as built; **D15(b) CONFIRM** — round-3 **R26**:
+*"Stable heading when switching or at least change of camera orientation smoothly."* ⇒
+confirmed, plus a fallback clause the question did not offer, which reinforces the
+minimum-acceleration requirement rather than weakening the default · **D37** — round-3
+**R14 + R15**: *"If we hide the star, it won't light the scene."* / *"It depends on the
+ambient_light value."* ⇒ answered as option (2), ambient-valued; the DECISION closes, the
+implementation is the owner's to schedule · **A15's fade thresholds** — round-3 **L1**:
+*"It would be better to have no residual threshold"* ⇒ one of four axes judged (remove the
+residual step); the threshold and band stay open · **the oort-SHADOW onset item** —
+round-3 **L2**: *"I didn't test it yet"* ⇒ **THE ONE MEMBER STILL OPEN**, state-stamped,
+carried to whatever pass comes next · **D28/A38** — **N5**: *"Just switch to the planet,
+keeping the old values (that we will change by script anyway)."* ⇒ no revert; option (a)
+stands, and the accumulating-tilt price is accepted because his shows set the framing by
+script · **§5.83 INFORM** — silent, therefore accepted · **§5.21** — **R18** *"No."* ⇒
+answered, D9 risk excluded · **§5.98** — **R19** *"Satun must be corrected to Saturn and
+Ganymed to Ganymede."* ⇒ answered, fix authorised · **the field-content questions and the
+content census** — R22/R23/R24 and R21, see T3 · **§11.4's origin sub-question** — **R27**
+*"The RA/DE must be the value from our position."* ⇒ observer-centred, T1.4 closed.
+**Not carried in this batch and now on record**: the free-flight defaults and §5.106 were
+never sent (they wait on Vixy), and **N7** — the config-migration warning — came back not
+as an acknowledgement but as a **change request**: *"Put a # in front of the deprecated
+lines would be better"*, which EXERCISES the revise/revert offer and gives §5.112 its fix
+direction (see T3).
 
 ## T5 — UNMAPPED (the map's own edges; completeness > certitude)
 
@@ -492,3 +636,22 @@ unchanged in shape but no longer the binding clock: the developer can start on a
 tester-facing divergences are open and recorded. The two clocks meet at F84's deployment
 manifest — the same artifact answers "what does a clone install" for him and "what will the
 next delivery carry" for the tester.
+
+**[2026-09-05 EVENING — THE DECISION BATCHES STOPPED BEING THE LONG POLE (F88 → §11.207).]**
+The critical path above was written when *"the decision batches are the long pole"* was
+true. Twenty round-3 replies changed that: **T1.2 and T1.4 CLOSED**, and what they gated
+became work. The path now reads: **Vixy answers T1.1** (§5.100's authorization, unanswered
+since 2026-08-26 — now the LAST operator-basics decision standing) **+ T1.3** (the DSO
+content batch) **+ T1.5** → the decision-free queue R18/R19/R20/R27/R28/L1 created burns in
+two or three dispatch rounds (**§5.86 + §5.19** first: RA/DE, both decisions closed) → the
+**T5.1 rehearsal** and a **T5.2 soak** gate the word "ready". **The final pass is behind
+us, not ahead**: it fired, and nineteen of twenty members came back — L2 alone is
+outstanding, and it needs him at the machine, not a decision. **Two things the replies
+made SMALLER**: A43's data regeneration is cancelled outright, and the §5.74/§5.78 search
+family leaves every path. **One thing they made bigger**: R21's census retires nothing —
+every content class is in, portrait included, so the "unless the census says otherwise"
+exclusion that carried B1/B2/B3 no longer holds by absence. **And one they left where it
+was**: §5.128's snap-back fork, which R28 does not touch. §11.163(h)'s test still governs
+every row before it is allowed onto this path — *does the NEW path behave differently
+here?* — and §5.135, the one row this round added, passes it in the unusual direction: the
+divergence is real and it is the OLD path that is wrong.

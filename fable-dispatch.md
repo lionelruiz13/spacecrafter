@@ -1193,7 +1193,7 @@ dispatch⟩, unchanged by this task; next free §11 ⟨at dispatch⟩; live `###
 **DoD:** table + markers + flips + new row + map re-derived + the next-round list;
 §11 entry + stub; file status PROPAGATED; trees clean; WIP cleared; baselines LAST
 with every delta named.
-**WIP:** 2026-09-05 CP5 — §0.7 gate PASSED on every stated premise. Table built
+**WIP:** 2026-09-05 CP6 — §0.7 gate PASSED on every stated premise. Table built
 from the file + `git show 6ffb017`: **TWENTY replies, not sixteen** (R14–R29 +
 N5/N7/L1/L2) — count defect reported, enumeration intact. Done: §11.207 entry +
 stub (CP1); §13.A A7/A15/A30/A42 marked and **A43 CLOSED as design (17 → 16)**;
@@ -1209,7 +1209,12 @@ byte-identical to `6ffb017`, 0 mismatches; note the raw `git diff 6ffb017` ALSO
 carries `367f2d1`'s N7 restoration, which is the supervisor's, not mine — the
 clean discriminator is `git diff 367f2d1`, 26 changed lines, all status prose),
 `FEATURE_REQUESTS.md` `[parallel-script]` **DECLINED** + the chain annotated,
-`SCRIPT_SURFACE.md` SS-17 **ANSWERED**. NEXT: DEPLOYMENT-MAP, then the instruments.
+`SCRIPT_SURFACE.md` SS-17 **ANSWERED**. Done also: **DEPLOYMENT-MAP re-derived** — T1.2 and T1.4 CLOSED, T1.7's A43
+struck as design, T1.9 (a) re-graded, T1.10's §5.98 gate open, T2's §5.21/§5.66/
+§5.71 unblocked, T3's census + field-content + §5.112 answered, T4 discharged
+except L2, R2's content question answered with the procedure's location promoted
+to R0, and the "necessary, and only that" head + the critical path both re-cut for
+BOTH criteria. NEXT: the instruments, the delta accounting, and the WIP clear.
 
 ### F86 — EXTENSION, widened at F84 acceptance: the three startup faults a newcomer can meet on the shipped data — (3) **§5.130** the first launch on a fresh account ABORTS (`main.cpp:194` cds into `~/.spacecrafter` before `:198-199` create and populate it — one line moved, the empty-HOME launch as the gate, exit 134 → the bootstrap); (2) §5.127's use-after-free at `anchor_creator_cor.cpp:130`, reachable from the shipped `anchor.ini`: own row first (the granularity veto point of session 21), reproduced under AddressSanitizer, fixed at the ownership (I5), proved clean; (1) §5.127's null dereference for a top-level comet with neither period nor mean motion — the experimental reader's guard ported (DEPLOYMENT-MAP R2 + R4) [S]
 
