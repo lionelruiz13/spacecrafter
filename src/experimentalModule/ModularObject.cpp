@@ -2,7 +2,33 @@
 #include "ModularBody.hpp"
 #include "Camera.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
+#include "tools/translator.hpp"
 #include <sstream>
+
+// TRANSLATION, and why every msgid below is copied rather than written (S5.111,
+// S11.209). Old is the comparison baseline (S11.52(b)), so the label this path
+// prints must be the label the old path prints, byte for byte: the msgids here
+// are `Body::getInfoString` / `getShortInfoString` / `getShortInfoNavString`'s
+// own (body.cpp:331-435), and NOT ONE of them is authored here.
+//
+// The reason is mechanical, not stylistic. `_()` is NOT gettext: it is
+// `Translator::translateUTF8` (tools/translator.cpp:45), a std::map loaded from
+// `<localeDir>/<lang>.txt` with IDENTITY FALLBACK for a key it does not hold.
+// That catalogue is INSTALLED FIELD DATA (`~/.spacecrafter/language/fr.txt`),
+// frozen by D9 and shipped from another repository - this file cannot add a key
+// to it. So a msgid that is old's answers exactly as old answers, and a msgid
+// that is NOT old's answers in English forever, silently. Copying is the only
+// form of this change that can work.
+//
+// Five of the ten distinct msgids are in fr.txt today ("Magnitude: ", "RA/DE: ",
+// "Alt/Az: ", "Distance: ", "AU"); the other five ("SA ", " GHA ", " LHA ",
+// " Az/Alt/coA: ", " Day length: ") fall through to English - AND SO DO OLD'S,
+// through the same five keys. Wrapping them changes nothing observable today
+// and is still required: the day the catalogue gains one of those keys, the two
+// paths must move together, which is what having ONE msgid per label buys (I2).
+//
+// The separators are deliberately NOT wrapped - `" / "`, `"@"`, `"/"`, `" LPA "`,
+// `"00h00m00s"`, `"24h00m00s"` - because old does not wrap them either.
 
 std::string ModularObject::getInfoString(const Navigator *nav) const
 {
@@ -14,16 +40,16 @@ std::string ModularObject::getInfoString(const Navigator *nav) const
 	oss << std::endl;
 
 	oss.precision(2);
-	oss << ("Magnitude: ") << body->computeMagnitude() << std::endl;
+	oss << _("Magnitude: ") << body->computeMagnitude() << std::endl;
 
     auto tmp = Camera::instance->observedPosToRaDe(body->getObservedPosition());
-	oss << ("RA/DE: ") << Utility::printAngleHMS(tmp.first) << " / " << Utility::printAngleDMS(tmp.second) << std::endl;
+	oss << _("RA/DE: ") << Utility::printAngleHMS(tmp.first) << " / " << Utility::printAngleDMS(tmp.second) << std::endl;
 
     const auto aa = altAz();  // (alt, az) in the old-path convention (I2)
-	oss << ("Alt/Az: ") << Utility::printAngleDMS(aa.first) << " / " << Utility::printAngleDMS(aa.second) << std::endl;
+	oss << _("Alt/Az: ") << Utility::printAngleDMS(aa.first) << " / " << Utility::printAngleDMS(aa.second) << std::endl;
 
 	oss.precision(8);
-	oss << ("Distance: ") << body->getDistanceToObserver() << " " << ("AU");
+	oss << _("Distance: ") << body->getDistanceToObserver() << " " << _("AU");
     return oss.str();
 }
 
@@ -34,10 +60,10 @@ std::string ModularObject::getShortInfoString(const Navigator *nav) const
     oss << " : " << "ModularBody" << " ";
     oss.setf(std::ios::fixed);
     oss.precision(2);
-    oss << "  " << ("Magnitude: ") << body->computeMagnitude();
+    oss << "  " << _("Magnitude: ") << body->computeMagnitude();
 
     oss.precision(4);
-    oss << "  " <<  ("Distance: ") << body->getDistanceToObserver() << " " << ("AU");
+    oss << "  " <<  _("Distance: ") << body->getDistanceToObserver() << " " << _("AU");
     return oss.str();
 }
 
@@ -45,7 +71,7 @@ std::string ModularObject::getShortInfoNavString(const Navigator *nav, const Tim
 {
     std::ostringstream oss;
     auto tmp = Camera::instance->observedPosToRaDe(body->getObservedPosition());
-	oss << ("RA/DE: ") << Utility::printAngleHMS(tmp.first) << " / " << Utility::printAngleDMS(tmp.second) << std::endl;
+	oss << _("RA/DE: ") << Utility::printAngleHMS(tmp.first) << " / " << Utility::printAngleDMS(tmp.second) << std::endl;
     double daytime = tan(tmp.second)*tan(Camera::instance->getLatitude()); // partial calculation to determinate if midnight sun or not
 
     const double jd = timeMgr->getJulian() - 2451545.0;
@@ -59,15 +85,15 @@ std::string ModularObject::getShortInfoNavString(const Navigator *nav, const Tim
     if (tmp.first < 0)
         tmp.first += 2*M_PI;
 
-    oss << ("SA ") << Utility::printAngleDMS(2*M_PI-tmp.first)
-	    << (" GHA ") << Utility::printAngleDMS(GHA)
-	    << (" LHA ") << Utility::printAngleDMS(HA);
+    oss << _("SA ") << Utility::printAngleDMS(2*M_PI-tmp.first)
+	    << _(" GHA ") << Utility::printAngleDMS(GHA)
+	    << _(" LHA ") << Utility::printAngleDMS(HA);
 	// calculate alt az. Old path prints az/alt/coAlt (coAlt = 90deg-alt) under
 	// the "Az/Alt/coA" label [body.cpp:433]; the new path had swapped alt<->az
 	// (raw az too) - a port defect flagged at S11.4. Reproduce the old order +
 	// convention exactly via the single authority (I2/parity, S11.60).
     const auto aa = altAz();  // (alt, az) in the old-path convention
-	oss << "@" << (" Az/Alt/coA: ") << Utility::printAngleDMS(aa.second) << "/" << Utility::printAngleDMS(aa.first) << "/" << Utility::printAngleDMS(M_PI_2-aa.first) << " LPA " << Utility::printAngleDMS(PA);
+	oss << "@" << _(" Az/Alt/coA: ") << Utility::printAngleDMS(aa.second) << "/" << Utility::printAngleDMS(aa.first) << "/" << Utility::printAngleDMS(M_PI_2-aa.first) << " LPA " << Utility::printAngleDMS(PA);
 
     // B27 A5 (S11.73(b), 2026-07-25): the day-length line was keyed on the name
     // "Sun" (old body.cpp:434). RESOLVED to the CAPABILITY isStar(), not the
@@ -82,7 +108,7 @@ std::string ModularObject::getShortInfoNavString(const Navigator *nav, const Tim
     // body. Shipped corpus: `type = Sun` is the only STAR-tagged body, so the
     // truth set is unchanged [measured: ssystem.ini, 1 star / 91 sections].
 	if (body->isStar()) {
-		oss << (" Day length: ");
+		oss << _(" Day length: ");
 		if (daytime<-1) {
             oss << "00h00m00s";
 		} else if (daytime>1) {
