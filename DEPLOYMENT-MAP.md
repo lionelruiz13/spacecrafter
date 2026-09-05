@@ -316,6 +316,24 @@ Ordered by operational weight for the tester, not by age:
    this row's own sentence says. With (1) resolved by definition (§11.198(b)), **BOTH
    numbered decisions are answered and this row LEAVES the decision tier.** §5.86 + §5.19
    are fully decision-free and dispatchable at the stated parity target. **T1.4 CLOSED.**]**
+   **[WORK ITEM STRUCK 2026-09-06 — DELIVERED by F91 §11.213, code `5a1e5749`. The fix this
+   entry unlocked is landed and measured: **88 of 90 both-tree bodies print the same RA/DE
+   string on both paths, byte for byte**, the two exceptions named (Eris, the trees' own
+   1.198deg position gap; Puck, one arcsecond of declination = float32), and scored the way
+   §11.158(f) scored it the max away from Eris is 0.002014deg on Deimos -- that entry's
+   published target and its own body. **Decision (1) turned out not to be a decision at all**:
+   the "-90.0003deg epoch-stable RA zero point" this item names is the `+M_PI_2` inside
+   `ModularBody::getAxisRotation()`, i.e. the constant half of the surface fold §5.86 already
+   said the readout omits -- there was never a zero point to choose, and §11.198(b)(1)'s
+   "frame-construction defect, not a choice" is confirmed at the digit. Decision (2) did real
+   work: R27's topocentric answer is why `ModularObject::getEarthEquPos` moved to the
+   observer-centred authority, which also repairs `set home_planet selected` (it feeds that
+   value straight back through `earthPosEquToHelio`). Two further defects in the same member
+   were measured and fixed on the way -- the local hour angle was built from the observer's
+   LATITUDE, and a bare `fmod` printed all three hour angles negative at any pre-J2000 date.
+   §5.86 and §5.19 both FIXED. Left NAMED, not chased: `observedToLocalPos` still divides by
+   the offset-free rotation while its input carries the B17 pitch (the alt/az half; a
+   photometric surface, out of F91's canary).]**
 5. **§5.109's layer half** — what `moveto alt` means above a display-scaled body (drawn
    vs physical surface). He authors scenes on scaled bodies.
 6. **The script-semantics batch** (both-paths defects his authoring will hit; each is a

@@ -4232,3 +4232,76 @@ premise cannot move a tree — a guard, not a boundary; `grep -m1 '^86\. '` on `
 hits the §5 register first because §5 precedes §11 in the file (measured; a §11.86 stub
 has the same prefix). First user: F91, whose retrofit caught four stale coordinates in its
 own section.
+
+## F91 — the RA/DE readout in old's frame (`f91_frame.cpp`, `f91_parity.py`, `f91_run.sh`, `f91_format.py`) — INTENT §11.213 / §5.86 / §5.19, 2026-09-06
+
+```
+g++ -O0 -std=c++20 -I../../src -o /tmp/f91_frame f91_frame.cpp && /tmp/f91_frame
+DISPLAY=:2 ./f91_run.sh <absOutdir> --expect pre|post [--locale fr|en]   # SC_BIN=…
+./f91_parity.py <absOutdir> --expect pre|post --offline                  # re-score on disk
+./f91_format.py <preLegDir> <postLegDir> [--also <frPre> <frPost>]       # the FORMAT control
+```
+
+**`f91_frame.cpp` is the derivation, not a test.** It scores the new path's chain
+against OLD's composition (`Z(siderealTime + lon) · Y(90−lat)`, `anchor_point_body.cpp`
++ `navigator.cpp:232`) over 64 directions, in double, with the two frames bridged by
+§11.60's own measured azimuth convention read as a frame relation (`az_raw_old =
+π/2 + az_raw_new`). With the surface fold taken in FULL — `Z(axisRotation + π/2)` —
+the residual is **0.000000000°**; with the fold F44's reconstruction applied,
+`Z(axisRotation)`, the right ascension is off by **exactly +90.000000000°, spread
+0.000000000°, declinations identical**. That second row is what identifies
+§11.158(f2)'s "constant −90.0003° zero point" as the `+M_PI_2` of
+`ModularBody::getAxisRotation()`. The probe also re-derives F34's three published
+round-trip numbers (133.9041° / 38.5856° / 2.058e-11 AU) from an independently
+written composition, which is what says it is reading the same object.
+
+**`f91_parity.py` is ONE instrument read twice** (the F40 shape): it scores BOTH
+expressions of `observedToBodyLocalPos` on every body and `--expect` chooses which
+one the gates ask for, with **gate G3 requiring the other to FAIL**. A model that
+cannot name which binary it is looking at is not evidence. Both discrimination runs
+are committed as artifacts (`artifacts/f91/discrimination_*.txt`, 10 and 5 FAILs).
+
+### Two parsing facts, both of which cost a wrong reading first
+
+- **`f44_parity.parse_navstr` cannot see the nav fields at all.** The new path's nav
+  string carries a `std::endl` after its RA/DE line (`ModularObject.cpp`), so
+  `SA/GHA/LHA/LPA` land on a CONTINUATION line, and that parser reads MARKER lines
+  only — deliberately, it says so. `f91_parity.parse_navstr_full` accumulates the
+  continuation lines into the field's value. Everything F91 found about the local
+  hour angle was invisible until that changed.
+- **Read the angle tokens POSITIONALLY, never by label.** `printAngleDMS` writes
+  `<sign><ddd>°<mm>'<ss>"` (`utility.cpp`) and the nav string's DMS tokens are, in
+  order, DE · SA · GHA · LHA · Az · Alt · coAlt · LPA on BOTH paths. Keying on the
+  labels makes the instrument depend on the translation catalogue, which F87 has just
+  moved (§11.209) — and the degree sign's bytes then have to be matched as well.
+  `[^\d'"]{1,4}` for the degree sign sidesteps the encoding entirely.
+
+### Gotchas measured here
+
+- **A printed-vs-printed comparison carries TWO quantisations, a model-vs-printed one
+  carries ONE.** RA prints to 1 s of time = 0.004167°, DE to 1 arcsec. §11.158(f)'s
+  "≤ 0.002014°" is a model-vs-printed number and its floor IS the half quantum, which
+  is why the max sits exactly there. The criterion with NO band is byte equality of
+  the two paths' own printed strings — 88 of 90 here — and it is the one to quote.
+- **`float` dot products put an `acos` precision floor at ~0.03°.** A 2.058e-11 AU
+  round trip prints as "0.0198 deg" if the separation is computed in `Vec3f`. Compute
+  the angle in double even when the vectors are floats.
+- **A post-2000 date cannot see an hour-angle wrap.** `sidereal` is positive there, so
+  a bare `fmod` looks identical to old's `while` normalisation. Leg D runs at
+  `jd 2440000` (1968), where the new path printed GHA/LHA/LPA negative for **90 bodies
+  of 90** before the fix and 0 of 90 after, against old's 0 both times.
+- **`LHA − GHA` is the observer's LONGITUDE by definition**, and reading that
+  difference-of-differences is a check on the hour-angle term that is completely
+  INDEPENDENT of the frame — it cancels RA. It read 43.300000° (the LATITUDE) on the
+  new path and 5.366667° on old, constant over 90 bodies, on landed F44 data with no
+  launch at all.
+- **The English control needs BOTH locale keys.** §5.136: `app_locale` alone is inert;
+  the readout's labels follow `sky_locale`. `f91_parity.build_farm` moves both in the
+  farm's `config.ini` and asserts what it wrote.
+- **A format control needs its own control.** `f91_format.py` finds 0 shape
+  differences pre→post in both locales — and 420 between the English and French legs,
+  which is what says it could have seen one.
+- **`f44_parity.py`'s `reconstruct()` is now wrong for a post-`5a1e5749` binary** by
+  construction (pre-fix arithmetic, and it folds by the raw `axisRot`). It still
+  replays F44's own archive correctly, and its `RADE` regex still accepts both label
+  spellings. Reuse `f91_parity.py` instead.

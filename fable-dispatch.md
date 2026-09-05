@@ -652,26 +652,7 @@ test -e /home/claude/sc-f91 ; echo $? => 1
 
 **DoD:** fix (code first) + probe + table + controls; §11 entry + stub; the two rows
 flipped; back-markers; map; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-06 — §0.7 gate 15/15 PASS, canary `--no-scene` exit 0, prose premises
-verified. CHECKPOINT 1: the frame DERIVED from old's code and written into
-`INTENT/11.213.md` (a)(b)(c) BEFORE any code touch; `harness/f91_frame.cpp` probe
-proves F91's chain == old's frame to **0.000000000°** and F44's chain off by exactly
-**+90.000000000°** in RA (the `+M_PI_2` of `ModularBody::getAxisRotation`), and
-re-derives F34's 133.9041°/38.5856°/2.058e-11. CHECKPOINT 2: `harness/f91_parity.py`
-+ `f91_run.sh` built and validated OFFLINE on F44's landed leg A (reproduces the
-60.3636° headline and the 88/90 alt/az control); the fix's parity PRE-REGISTERED at
-max **0.002014° on Deimos** / Eris 1.198271° — §11.158(f)'s own digits; and a SECOND
-defect measured on landed data: `ModularObject.cpp:82` computes the local hour angle
-from the observer's LATITUDE (LHA−GHA = 43.300000° on new vs 5.366667° on old).
-CHECKPOINT 3: pre-fix legs (fr+en+legD) green,
-code `5a1e5749` (Camera.hpp/.cpp + ModularObject.cpp, binary `407b3d1d` ->
-`f7112cb9`, cmake -n 0 steps), post-fix legs (fr+en) **0 FAIL**: 88/90 bodies print
-RA/DE BYTE-IDENTICAL on the two paths (exceptions Eris 1.199089 and Puck 1 arcsec);
-Q1 max non-Eris **0.002014** on Deimos = §11.158(f)'s own published number;
-SA/GHA/LHA/LPA equal to <= 2 arcsec for 89/90; leg D pre-J2000 negative hour angles
-90 -> 0; format control 0 shape differences with 420 on its own locale control; F90
-rehearsal rc 0, S5 shape unchanged. NEXT: the record (entry, stub, §5.86/§5.19 flips,
-back-markers, map, README) + baselines.
+**WIP:** DELIVERED 2026-09-06 — §11.213 (entry + stub). Code `0b46a63f` -> `5a1e5749` (`Camera.hpp`/`.cpp` + `ModularObject.cpp`, old path untouched), binary `407b3d1d` -> `f7112cb9`, `cmake -n` 0 steps. **88 of 90 both-tree bodies now print the same RA/DE string on both paths, byte for byte** (exceptions Eris 1.199089 deg = the trees' own position gap, Puck 1 arcsec of declination = float32); §11.158(f)'s own metric max **0.002014 deg on Deimos**, its published target and body, PRE-REGISTERED before the fix; SA/GHA/LHA/LPA equal old-vs-new to **0.00 arcsec** for 89/90. The "-90.0003 deg zero point" is the `+M_PI_2` of `ModularBody::getAxisRotation()` — probe, pre-fix, +90.000000000 deg vs 0.000000000 deg. Two further defects in the same member measured and fixed (local hour angle built from the LATITUDE; bare `fmod` printing negative hour angles pre-J2000, 90/90 -> 0/90). Controls: both-ways model discrimination committed red-for-red, alt/az 88/90 <= 3e-5 deg, format control 0 differences against 420 on its own control, `f90_rehearsal_run.sh` **rc 0**. §5.86 + §5.19 FIXED, four back-markers at both homes, §5.110/§5.113 annotated, MAP T1.4 struck, README section, D14 PASS. TWO THREADS LEFT NAMED: `observedToLocalPos`'s offset contamination (alt/az half, photometric — out of this canary) and `observedPosToRaDe`'s pole branch swapping RA and DE (suspended for the dispatcher). Instruments at baseline; entry files 228->229 and live pairs 203->204 are the new entry.
 
 ### F94 — §5.98 — the two misspelled body names in `Core::setSelectedBodyName` corrected (`"Satun"` → `"Saturn"` at `core.cpp:2255`, `"Ganymed"` → `"Ganymede"` at `:2251`) so `$body_selected` answers 600 and 503 as the documented table says instead of the 999 default — FIX AUTHORISED by the tester (round-3 R19, §11.207(b)#6 + (c1)), the dependence fact he did not answer MEASURED on this field at the mint (exactly one shipped script tests the variable, against 0), proven pre/post on the shipped command surface with a control body that fires on both binaries (§11.207(g) item 2; SS-17; DEPLOYMENT-MAP T1.10 → T4) [S, engine, both paths]
 
