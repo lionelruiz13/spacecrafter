@@ -713,13 +713,20 @@ auth under `/run/user/1003`); no `spacecrafter` in `/proc/*/comm`; config/ssyste
 fix (if H1) with b4 green, or the §5.133 record (if not) with the red explained;
 §11.208 + stub; back-markers; README; trees clean; WIP cleared; baselines LAST with
 deltas.
-**WIP:** 2026-09-05 16:20 — checkpoint 2: three binaries built under `/home/claude/sc-f89/`
-and the 8-run matrix DONE (R1–R8, 15:51–16:15, md5 in==out every run). **H1 REFUTED,
-H2 CONFIRMED (its stated metric refuted), H3 REFUTED, H4/H5 confirmed:** twinkle OFF makes
-the split DETERMINISTIC — ref FAILs 217>182 twice, pre PASSes 45<217 twice, between-binary
-21950 px vs a 0–26 px A/A floor; the cause is §5.133's own defect (OLD-path anchor 182582.8
-km vs the authored 200000.0 km, view 76.46° off), and the guard-only binary lands in the pre
-group. Next: §11.208 entry + stub, back-markers, §5.133 row, README b4, instruments.
+**WIP:** DELIVERED 2026-09-05 16:35 → **§11.208** (+ stub). **H1 (twinkle) REFUTED, H2
+CONFIRMED with its stated metric refuted, H3 REFUTED, H4/H5 measured:** twinkle off makes the
+split deterministic (ref FAIL 217>182 ×2, pre PASS 45<217 ×2; 21950 px between binaries against
+a 0–26 px A/A floor), and the cause is §5.133's own defect on the OLD path — the anchor's
+observer 182582.8 km from the Moon against the authored 200000.0, the old view 76.46° off after
+one tracking command, the star field composed for a different sky (`nbStarsToDraw` 3446 vs 3573).
+A binary carrying §5.134's guard ALONE lands in the pre group. Gate left **RED with its cause
+named**; `b4_anchors.py` untouched (H1 was its only condition); two stronger repairs recorded,
+NOT applied (§11.208(i) — the dispatcher's call). Back-markers at §11.205(c)(g)(h) both homes,
+§5.133 and §5.134 rows; `harness/README.md` F7 + F86 sections. No band claim (full canary not
+run). Instruments: scan **217/265/131** (flagged-set diff vs the open HEAD **empty**),
+pair-check **224/199/25/107**, D 35 · D2 11 · I 89 · I2 36 · M 81 — every filter delta 0.
+Left on disk: `/home/claude/sc-f89/` (three binaries in `bin/`, the code worktree `tree/` at
+the PRE source state, `build-var/`, eight run dirs).
 
 ### F90 — T5.1, the tester's day in the app, REHEARSED — and written as the developer's smoke suite: one launch on a farm in French through the shipped command surface (launch · author a body · run a shipped show · search, recorded as deprecated · select and read out · save · reload · one keyboard ramp · quit), every step's observable and pass criterion stated BEFORE the run, three runs (the functional A/A floor — a flake is a finding), every divergence recorded against its §5 row or minted by §5.79's criterion and NONE fixed, the suite runnable by the newcomer in one command and shown able to fail (DEPLOYMENT-MAP T5.1: *"the closing audit before 'ready'"*; the owner's line today makes "ready" the criterion) [M]
 

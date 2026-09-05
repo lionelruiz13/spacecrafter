@@ -721,6 +721,61 @@ Also: with the observer on a far fixed point the OLD path emits bare `nan`
 screen coordinates in `dual_dump` (2 lines of 103; the NEW side has none), so
 the loader normalizes `nan` -> `NaN` rather than losing the file.
 
+### P7's control is RED on the reference binary, and that is the RIGHT answer (F89, INTENT §11.208, 2026-09-05)
+
+**Read this before you read a b4 run.** On the reference binary (code
+`a4a7c226`+, the shipped state) `b4_anchors_run.sh` exits 1 with exactly one
+failure — P7's *"SCREEN WITNESS control: the OTHER date's position is darker in
+each shot"*. **Every other check passes, the red is explained, and it is not to
+be re-banked, relaxed or demoted.** What it means:
+
+- The control compares the MAX luminance of a 112x112 px window at the Moon's
+  own dumped position against the MAX at the other date's position. On the
+  CORRECTED sky an ordinary star of luminance **217** stands in the other-date
+  window while the Moon's own disc peaks at **182**. A max-over-window test
+  cannot tell a star from a Moon; that is the whole of the red.
+- It was GREEN, three runs in a row, on binaries whose entire star field was
+  **76.4 deg** off, because the pre-`§5.133` build kept a dangling `Orbit*` for
+  every `type = orbit` anchor: `Moon.old.dist` read **182582.8 km** where the
+  anchor's authored radius is **200000.0 km**, and after b4's tracking command
+  the OLD path (which draws the stars, `solarSystemModule.cpp:298`) aimed 76 deg
+  away from the body layer. **A green b4 on a pre-fix binary was a pass on a
+  wrong sky.**
+- Two strictly stronger repairs are RECORDED and deliberately NOT APPLIED
+  (they are gate-design decisions, §11.208(i)): assert the OLD path's distance
+  to the anchor's parent against the authored radius (17417 km of
+  discrimination, wrong in b4's own artifacts since this gate was written), or
+  make the control count LIT PIXELS instead of taking a maximum (846 vs 21 px
+  at t0, 2023 vs 27 at t1 — 30-100x on both binaries, where the max form gives
+  -35 and +172). Whoever takes that decision should read §11.208(i) first.
+
+**Reproducibility rules for anything that reads this scene's pixels** (measured,
+F89 §11.208(e)(j)):
+
+- `flag_star_twinkle = false` in the FARM's config makes a b4 run reproducible
+  to **0-2 px** frame-wide (`|A-B|>8` = 0-26). With the shipped `true` the same
+  binary differs from itself by **2165-2229 px** (`|A-B|>8` 1171-1239) — that,
+  not any code change, is the "730-860 px floor" earlier entries reported.
+- With twinkle ON this control's verdict on the FIXED binary is a coin toss:
+  the same star reads 217 un-twinkled and 191/207/210 with twinkle, because
+  `1 - twinkle_amount*rand()/RAND_MAX` with the shipped `star_twinkle_amount =
+  0.4` spans [0.6, 1.0] x 217 = [130, 217], a band that straddles the Moon's
+  182. It has landed red 3/3 so far; do not read a single run as proof either
+  way, and prefer the twinkle-off form for any pixel comparison.
+- In THIS scene twinkle is the only live per-frame random channel: `rand()` has
+  one other per-frame consumer, `meteor_mgr.cpp:116`, and it returns first
+  whenever `tspeed <= 0 || |tspeed| > 1` (`:90-94`) — which `timerate rate 0`
+  guarantees. A free-running scene has two, which is why §11.205(h)'s P8b had
+  no reproducibility at all.
+- `harness/f89_p7.py` is the analysis instrument (`margins` / `scalars` /
+  `leafdiff` / `sets`); it launches nothing and re-runs on committed artifacts.
+  `harness/f89_b4_variant.sh` is the twinkle-switching RUNNER for experiments —
+  **the gate is still `b4_anchors_run.sh`**, and the variant says so itself.
+- The dumped Moon NDC moves by ~1e-7 between runs (the old path's ease-out is
+  still settling), which is 6e-5 px — but `int()` quantizes it, so P7's window
+  centre can land 1 px apart between two runs of the same binary. `f89_p7.py
+  sets` prints a NOTE and uses one run's box for both frames.
+
 ## F12 — the decision-implementation batch (INTENT §11.118, 2026-07-30)
 
 Three new drivers, one runner repair, and two fixes to shared instruments.
@@ -3756,12 +3811,23 @@ tail; the applog's first N lines **with their md5** — that is the as-if contro
   `flag star_twinkle off`, since `hip_star_mgr.cpp:640-643` scales every star by
   `1 - twinkle_amount*rand()/RAND_MAX` over a stream `src/` never seeds — there is
   no `srand(` anywhere). `b4_anchors` pins its dates, which is why ITS A/A floor is
-  773 px and not 23000.
+  773 px and not 23000. **[F89, §11.208(e)(j): both halves now measured. Pin the
+  date AND switch twinkle off and the floor is 0-2 px, not 773; the 773 IS the
+  twinkle. The frame index does NOT need pinning once twinkle is off, because
+  `meteor_mgr.cpp:116` — the only other per-frame draw from that stream — returns
+  before it whenever `tspeed <= 0 || |tspeed| > 1` (`:90-94`), which `timerate rate
+  0` guarantees. And twinkle can only DARKEN a star by <= `star_twinkle_amount`
+  (0.4 shipped), so it was never able to explain a 19030 px signal.]**
 - **When a rendered-frame check disagrees across builds, measure the camera before
   arguing about the scene.** The Moon's flux-weighted centroid in `b4_orb_t0.png` is
   `1324.2740 / 1767.6721` with mass `76290` in all five of F86's runs — identical to
   four decimals across two binaries and three builds — which excluded a geometric
-  change in one zero-launch measurement after two launches had failed to.
+  change in one zero-launch measurement after two launches had failed to. **[F89
+  completes the sentence: measure BOTH cameras. The new path's camera was identical
+  (that is what the centroid proved); the OLD path's, which draws the star field,
+  was 76.46 deg away and 237022 km off — and it says so in the same dump, at 17
+  digits, in `helioToEye` and `Moon.old.dist`. The dump the gate already reads held
+  the answer for two sessions. See the F7 section above and §11.208(f).]**
 
 ## F85 — do the entry document's citations resolve? (`f85_links.py`) — INTENT §11.206, 2026-09-05
 
