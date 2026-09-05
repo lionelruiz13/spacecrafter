@@ -43,19 +43,6 @@ If you cloned without --recurse-submodules:
 
 ~$ git submodule update --init
 
-KNOWN ISSUE, please read before reporting a build failure.  The submodule is
-currently pinned to a commit that has not been pushed to the EntityCore
-repository, so the two commands above end with
-
-    fatal: remote error: upload-pack: not our ref <sha>
-    fatal: Fetched in submodule path 'src/EntityCore', but it did not
-           contain <sha>
-
-and the build then fails on missing headers such as
-"EntityCore/Core/VulkanMgr.hpp: No such file or directory".  Nothing you can do
-locally fixes this; the pinned commit has to be pushed upstream first.  Once it
-is, this paragraph can be deleted.
-
 -------------------------------------------------------------------------------
 4. Build and install
 -------------------------------------------------------------------------------
@@ -102,18 +89,11 @@ message is printed whether the copy worked or not.  Check that
 -------------------------------------------------------------------------------
 6. First run
 -------------------------------------------------------------------------------
-~$ mkdir -p ~/.spacecrafter
 ~$ spacecrafter
 
-The mkdir is currently required.  Without it the program aborts immediately
-with
-
-    terminate called after throwing an instance of 'std::filesystem::filesystem_error'
-      what():  filesystem error: cannot set current path: No such file or directory
-
-because it changes into ~/.spacecrafter before creating it.  Once the directory
-exists, the first run fills it in and writes ~/.spacecrafter/config.ini, and
-the log of that run is ~/.spacecrafter/log/spacecrafter.log.
+The first run creates ~/.spacecrafter itself and fills it in -- 19 directories
+and 7 files, config.ini among them -- and the log of that run is
+~/.spacecrafter/log/spacecrafter.log.
 
 Configuration is ~/.spacecrafter/config.ini.  Note that upgrading to a build
 with a different version string makes the program rewrite that file by itself:

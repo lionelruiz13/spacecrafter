@@ -37,7 +37,8 @@ Digitarium (R) planetarium system remote control.
 2. INSTALLATION INSTRUCTIONS
 --------------------------------------------------------------------------------
 Please see the INSTALL file. Its first section is the Linux build from the git
-repository; the second is the Windows/VCPKG source package.
+repository; the second is the Windows/VCPKG source package.  If you are going to
+work ON the code rather than install it, read doc/developer-entry.md first.
 
 On Linux the short form is:
 
