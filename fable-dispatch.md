@@ -1135,8 +1135,13 @@ pre-commit IS the trailer check" is refuted, the hook has no branch or trailer l
 all). Census instrument `harness/f92_census.py` + artifact
 `harness/artifacts/f92/rename-live-pointers.patch` written; round-open partition (code
 `0b46a63f` / harness `58f10f6`): code 18 = LIVE 1 · PIN 17 · HIST 0 · CONV 0; harness
-208 = LIVE 3 · PIN 116 · HIST 89 · CONV 0. NEXT: scratch worktrees under
-`/home/claude/sc-f92/`, `git apply --check` + post-apply verify, then the breakage scan.
+208 = LIVE 3 · PIN 116 · HIST 89 · CONV 0. — checkpoint 2 (19:37): patch VERIFIED in
+scratch worktrees `/home/claude/sc-f92/{code,harness}` — `git apply --check` rc 0 both,
+applied there only, 4 lines in 4 files, post-apply LIVE = 0 with PIN/HISTORICAL
+untouched; `f85_links` 129/25/16 · 0 dangling on the patched document; breakage scan
+measured (B1 supervised-by's silent branch→HEAD fallback is the one thing that would
+LIE; the githooks are NOT a trailer check). Artifacts `harness/artifacts/f92/`. NEXT:
+§11.212 entry + stub, map R6 + R0 head, §3 item, README section, then instruments.
 
 ### F93 — The `b4_anchors` gate REPAIRED where F89 showed it blind: (1) a NEW assert that the OLD path's distance to the anchor's parent equals the authored radius (`Moon.old.dist` = 200 000.0 km — 17 417 km of discrimination, wrong in b4's own artifacts since F7 and asserted by nothing), (2) P7's screen-witness control re-expressed as a LIT-PIXEL COUNT comparison instead of a max-over-window (846 vs 21 px at t0, 2023 vs 27 at t1 — 30–100× on both binaries where the max form gives −35 / +172), (3) the scene's twinkle OFF so the gate is deterministic (0–2 px A/A instead of ~2200); proven BOTH WAYS on the two binaries F89 left: GREEN on the reference `2815d182`, RED on the pre-fix `sc-scratch-pre` `9471f2fc` at the new assert AND the new control — a gate that now reds on the corrupt build and greens on the correct one, which is the direction it had backwards (§11.208(i)(j); §13.B; the developer's first harness run) [S, instrument]
 

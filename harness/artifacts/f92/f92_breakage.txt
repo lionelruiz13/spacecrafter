@@ -1,0 +1,74 @@
+F92 -- breakage scan: what fails or LIES after `git branch -m master-beta main`
+date: Sat Sep  5 19:36:48 CEST 2026   code 0b46a63f   harness e9fa766
+
+B1. supervised-by.sh:236-238 (reachable_in_code) and :781 (build_repair_map)
+    Both read the branch name OUT OF the historical trailer text and try
+    refs/heads/<that name>; when it is absent they fall back to target=HEAD
+    with no message. After the rename all 695 trailers naming master-beta take
+    the fallback. Measured:
+      refs/heads/master-beta            -> 0b46a63f37981977c6f9c7f3001e2014b24a23c8
+      a name that is not a ref          -> rc=1 (the post-rename case)
+      is-ancestor 9e0f1e93 master-beta  -> rc=0 (reachable)
+      is-ancestor 9e0f1e93 2023-master  -> rc=1 (NOT reachable)
+    So the fallback is not verdict-preserving: with HEAD on 2023-master the same
+    trailer flips from reachable to dangling, and build_repair_map then calls it
+    UNREPAIRABLE. Today the branch ref exists, so HEAD does not matter.
+    Cost of the fix: one line -- warn (or refuse) when the named branch is gone.
+
+B2. supervised-by.sh:437 (default_range) -- `@{upstream}..HEAD`
+      branch.master-beta.merge = refs/heads/master-beta
+      @{upstream}              = origin/master-beta
+      refs/remotes/origin/master-beta = 76ee38c7 (frozen; 88 commits behind HEAD)
+    [derived: man git-branch(1), "-m, --move: Move/rename a branch, together with
+    its config and reflog"] the config SECTION moves to branch.main.*, its
+    merge VALUE does not: @{upstream} stays origin/master-beta, which still
+    exists on the remote. The pushed/unpushed line would then be measured against
+    a branch nobody pushes to. `git push -u origin main` repairs it; the owner's
+    checklist carries the check that proves it (git config --get branch.main.merge).
+
+B3. harness/f75_anchors.py:442 and harness/f80_ssgrammar.py:46 -- pin CONSTRUCTORS
+/home/claude/spacecrafter/claude/harness/f75_anchors.py:442:ANCHOR_PIN = "master-beta @ " + ANCHOR_PIN_SHA
+/home/claude/spacecrafter/claude/harness/f80_ssgrammar.py:46:ANCHOR_PIN = "master-beta @ ba7a32a8"
+    What they WRITE is a pin (`master-beta @ 54a2b844` / `@ ba7a32a8`), which
+    resolves by sha whatever the branch is called -- so nothing breaks. What they
+    would do after the rename is write a NEW pin naming a branch that no longer
+    exists. Cosmetic, one line each, the owner's call; left out of the patch
+    because a pin is not a pointer.
+
+B4. claude/githooks/pre-commit + install.sh -- NOT a trailer check (measured)
+/home/claude/spacecrafter/claude/githooks/pre-commit:0
+/home/claude/spacecrafter/claude/githooks/install.sh:0
+    and the only 'main' in either file:
+/home/claude/spacecrafter/claude/githooks/pre-commit:59:    # lost its main channel and still reports success is the instrument-chain
+    The hook refuses compiled artifacts by content and large unclassifiable blobs
+    by size. It reads no branch, parses no trailer. It cannot break at the rename.
+
+B5. harness/f85_links.py -- no branch logic at all (measured)
+      grep -ci 'branch'    -> 0        grep -c 'master-beta' -> 0
+      grep -c  'subprocess'-> 0        (it never runs git at all)
+      the one 'git' substring is line 52: ROOT_FILES = {..., ".gitignore", ".gitmodules"}
+    So the mandate's open question -- "f85_links.py IF it checks branch names" --
+    is answered NO: it is a filesystem checker over one document's citations.
+
+B6. The two tools that WRITE trailers already follow the rename by themselves:
+/home/claude/spacecrafter/claude/supervised-by.sh:934:                    CODE_TRAILER="Code: $(git -C "${CODE_REPO}" branch --show-current) @ $(git -C "${CODE_REPO}" rev-parse --short=8 HEAD)"
+/home/claude/spacecrafter/claude/purge-path.sh:231:BRANCH=$(G branch --show-current)
+/home/claude/spacecrafter/claude/purge-path.sh:549:            CODE_TRAILER="Code: $(git -C "${CODE_REPO}" branch --show-current) @ $(git -C "${CODE_REPO}" rev-parse --short=8 HEAD)"
+      git -C /home/claude/spacecrafter branch --show-current -> master-beta
+
+B7. The stale remote branch. refs/remotes/origin/master-beta survives a local
+    rename and a push of main; anything resolving it reads a frozen tip.
+      refs/remotes/origin/2023-master 6ec2f43f
+      refs/remotes/origin/CC-harness eb9af25c
+      refs/remotes/origin/master-beta 76ee38c7
+
+B8. The new name is not a greppable token, and it is already taken in this tree.
+      occurrences of the WORD main: code 676, harness 2040
+      .gitmodules:4:	branch = main
+    (that one is EntityCore's branch, a different repository). This census could be
+    taken because `master-beta` is unique; the same audit for `main` cannot be a
+    grep. It is the reason to take the census BEFORE the rename, not after.
+
+NOTHING ELSE. No script, hook or document in either repository resolves
+refs/heads/master-beta, origin/master-beta or `git rev-parse master-beta`:
+      (both greps: no hit outside record surfaces)

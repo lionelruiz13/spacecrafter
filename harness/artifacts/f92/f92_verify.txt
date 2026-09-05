@@ -1,0 +1,68 @@
+F92 -- verification transcript for rename-live-pointers.patch
+date: Sat Sep  5 19:36:14 CEST 2026
+code worktree    : /home/claude/sc-f92/code    @ 0b46a63f (detached, discarded at close)
+harness worktree : /home/claude/sc-f92/harness @ e9fa766 (detached, discarded at close)
+
+--- 1. git apply --check, code repo (pristine worktree) ------------------
+Chemin 'CLAUDE.md' non traité.
+Chemin 'agents/opus-xhigh.md' non traité.
+Chemin 'harness/f92_census.py' non traité.
+Vérification de la rustine doc/developer-entry.md...
+rc=0
+
+--- 2. git apply --check, harness repo (pristine worktree) ---------------
+Chemin 'doc/developer-entry.md' non traité.
+Vérification de la rustine CLAUDE.md...
+Vérification de la rustine agents/opus-xhigh.md...
+Vérification de la rustine harness/f92_census.py...
+rc=0
+
+--- 3. apply, then what changed -----------------------------------------
+code apply rc=0
+harness apply rc=0
+ doc/developer-entry.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ CLAUDE.md             | 2 +-
+ agents/opus-xhigh.md  | 4 ++--
+ harness/f92_census.py | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+--- 4. the census over the PATCHED worktrees: LIVE POINTER must be 0 -----
+
+== CODE  /home/claude/sc-f92/code  @ 0b46a63f
+   files with a hit: 8   occurrences: 17
+     LIVE POINTER          0
+     PIN                  17
+     HISTORICAL RECORD     0
+     CONVENTION            0
+   git grep -o agrees: 17
+
+== HARNESS  /home/claude/sc-f92/harness  @ e9fa766
+   files with a hit: 125   occurrences: 221
+     LIVE POINTER          0
+     PIN                 119
+     HISTORICAL RECORD   102
+     CONVENTION            0
+   git grep -o agrees: 221
+
+== BOTH REPOS: LIVE POINTER=0  PIN=136  HISTORICAL RECORD=102  CONVENTION=0  total=238
+rc=0
+
+  arithmetic for the harness delta 218 -> 221 (the patch REMOVED 4):
+    218 measured before the artifact was tracked
+  +   7 occurrences inside rename-live-pointers.patch itself, now a tracked file
+  -   4 live pointers the patch rewrites
+  = 221
+
+--- 5. does the patch break the entry document's citation surface? -------
+  A: PATCHED doc, root = the real code tree (isolates the patch)
+checked  : 129 paths, 25 continuations, 16 ledger ids
+skipped  : 14 non-repo tokens (absolute/home/placeholder/remote)
+DANGLING : 0
+  B: UNPATCHED doc, root = the scratch worktree (isolates the root)
+    with open(path, "rb") as fh:
+         ~~~~^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '/home/claude/sc-f92/code/doc'
+  => the crash in B is the ROOT's (a tree with no claude/ beside it), not the patch's;
+     f85_links.py:158 calls count_lines() on last_path without an isfile guard, and
+     :177-178 lets a DIRECTORY become last_path. Recorded, not fixed (F85's instrument).
