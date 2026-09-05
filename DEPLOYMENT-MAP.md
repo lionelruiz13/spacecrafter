@@ -25,8 +25,12 @@ criteria with different clocks: **R0** (the developer, ONE WEEK — tier R below
 tester, decision-paced — the tiers that follow). **What is NECESSARY, and only that, as of
 2026-09-05** — the rest of this file is the derivation and stays challengeable:
 - **For R0:** ~~R1 reconcile the deployed line (**F83**)~~ **[DONE 2026-09-05, §11.203 —
-  merged at `c6784490`; R1's residual collapsed into R5]** · R2 the newcomer's first hour + the
-  deployment manifest (**F84**) · R3 the entry document (**F85**) · R4 startup memory-unsafety
+  merged at `c6784490`; R1's residual collapsed into R5]** · ~~R2 the newcomer's first hour + the
+  deployment manifest (**F84**)~~ **[MEASURED 2026-09-05, §11.204 — NOT MET, and what remains is
+  the OWNER's twice over: **§5.131** the EntityCore push (a DIFFERENT repository from R5's, so
+  R5 does not cover it) and **§5.130** one line moved in `main.cpp`. F84 shipped the docs and
+  the two one-line build fixes; the manifest says a tree install carries no content at all]** ·
+  R3 the entry document (**F85**) · R4 startup memory-unsafety
   (**F86** for the two old-core members; §5.48 is EntityCore = Vixy's) · **R5 the PUSH (Vixy —
   nothing here reaches the developer without it)** · R6 the branch policy (Vixy, one sentence).
 - **For T0**, after §11.163(h)'s test (*does the NEW path behave differently here? else backlog*):
@@ -34,7 +38,9 @@ tester, decision-paced — the tiers that follow). **What is NECESSARY, and only
   §5.111 (**F87**) · §5.86 + the RA zero point (§11.198(b) resolved decision (1); dispatchable
   next round with the origin held old-as-spec until R27) · §5.53(b) (Vixy, one token) · the
   final-pass SEND (Vixy; R21/R27/R28/R29 travel inside it) · the T5.1 rehearsal (next round) ·
-  §5.112's warning (N7 drafted; F84 prices its number).
+  ~~§5.112's warning (N7 drafted; F84 prices its number)~~ **[PAID 2026-09-05, F84
+  §11.204(j): 0 deleted / 2 added on the field config, 4 deleted on a hand-edited copy, both
+  ending at one md5; N7 carries both numbers. See T3.]**
 - **Not required for either**, so the exclusion is visible: every both-paths defect (T1.6,
   T1.10, T1.11 — backlog by §11.163(h)); B1/B2/B3 (until R21's census says otherwise); B8.
 
@@ -70,13 +76,46 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    deployed-line delta. The re-fetch/re-merge half is DISCHARGED; what is left of R1 is
    **R5, the push, and nothing else** (80 code / 645 harness commits unpushed; https READ
    works from this host, SSH and push do not).**]**
-2. **R2 — A clean clone builds, installs and runs by the documents.** INSTALL is the
+2. ~~**R2 — A clean clone builds, installs and runs by the documents.** INSTALL is the
    source-ZIP + Windows/VCPKG text and never says `--recurse-submodules`; `install_src.sh:22`
    leaves `CMAKE_BUILD_TYPE` EMPTY by a one-character inversion of its own stated intent; both
    install scripts `sudo` into `/usr/local`; the config is app-generated from `checkConfig`'s
    schema (`data/default_config.ini` is 3 lines; the field's is 315 lines / 266 keys / 0
    comments); §5.48 fires on a cold HOME at ~15 % (EntityCore). → **F84** (measure, manifest,
-   docs, §5.112's number, §5.48's rate); §5.48's FIX is Vixy's.
+   docs, §5.112's number, §5.48's rate); §5.48's FIX is Vixy's.~~
+   **[MEASURED END TO END 2026-09-05 by F84 → §11.204, and R2 is NOT MET. Two blockers, each
+   one owner act away, neither visible before the measurement:**
+   **(i) §5.131 — `git clone --recurse-submodules` FAILS.** `upload-pack: not our ref
+   7ce58350`. https READ works; the PINNED OBJECT is missing. The pin is one LOCAL UNPUSHED
+   commit (§11.152's ASmooth fix) whose parent IS the remote's `main` tip; `git branch -r
+   --contains` is empty. `install_src.sh:24`'s `||` fallback fails too (rc 128) and the line
+   has no `|| exit`, so `cmake` returns 0 and the build dies at `atm_ext.cpp:1:10
+   EntityCore/Core/VulkanMgr.hpp`. **The remedy is one `git push` in the EntityCore
+   repository — a DIFFERENT repository from R5's, so R5 does not cover it.**
+   **(ii) §5.130 — the first launch on a machine with no `~/.spacecrafter` ABORTS**
+   (`filesystem_error: cannot set current path`, exit 134, empty HOME): `main.cpp:193` cds
+   into the directory five lines before `:198` creates it. The FIELD binary reproduces it
+   identically, so it is shipped behaviour (`da858612`, 2025-09-20). One line moved.
+   **What F84 DID close:** `install_src.sh` line **25** (not 22 — 21 is a different variable
+   whose test is already correct) `-n` → `-z`, measured both ways (`CMAKE_BUILD_TYPE=` EMPTY ⇒
+   `CMakeLists.txt:95-99` FORCES **Debug**/`-Og`, and the documented `BUILD=LocalRelease`
+   override was being clobbered); `src/CMakeLists.txt:3` gains `CONFIGURE_DEPENDS` (arm A 0
+   steps/0 refs/0 objects, arm B 1/13/1, cost +0.05 s per build); `INSTALL` rewritten
+   Linux-first and `README` §2/§3 refreshed, including the two blockers, the sudo, the
+   compile-time data root, and what the repository does not contain. Code `03c85734` →
+   **`1cbd6780`**.
+   **The manifest, which is R2's other half:** a tree install is **227 files** — binary, 214
+   shaders whose aggregate md5 `e5043cf7` is IDENTICAL to the field's, 11 `data/` files all
+   md5-equal — **and no content**: `stars/`, `textures/`, `icon.bmp` and nine class
+   directories are absent; the tree has none of them, no repository document names them, only
+   the ledger names `spacecrafter-data`. **And §5.132: a failed class copy prints "Completed
+   copy of X" anyway** (`ec || ec.message()=="Success"` takes the success arm on failure,
+   proved by probe), so a tree-only install creates ten empty directories silently.
+   **`CONFIG_DATA_DIR` is a hardcoded `#define`** (`spacecrafter.hpp:44`), so
+   `-DCMAKE_INSTALL_PREFIX` cannot relocate a deployment. §5.48 rated **0/6** with a control
+   that fires (row still OPEN; its fix is Vixy's, and the binary measured has the ASmooth fix
+   a newcomer's clone cannot reach). §5.112 priced — see T3.
+   **R2 therefore reduces to: the EntityCore push (Vixy) + the `main.cpp` line (Vixy).**]**
 3. **R3 — An entry document exists in the code repo.** None does (`doc/` is user-facing; no
    `*.md` under `src/experimentalModule/`); `claude/README.md`'s own filing criterion states the
    promotion obligation and nothing was ever promoted under it. → **F85**.
@@ -274,6 +313,22 @@ Ordered by operational weight for the tester, not by age:
   (DRAFT); the NUMBER (keys deleted from the field config on a version bump) is F84's to
   measure, predicted from `checkConfig.cpp`'s tables first. Measured today: the field config
   has 0 comment lines and 0 uppercase keys, so on THIS field only the deletion arm can bite.]**
+  **[T3's §5.112 DATUM IS PAID 2026-09-05 by F84 → §11.204(j); the row carries the full
+  record, N7 the sentence. Two launches, both predicted by name and count first, from a
+  schema extracted mechanically (`harness/f84_config_predict.py`: 16 sections, 268
+  `section:key` pairs). **On the installed field config verbatim, version bumped:
+  DELETED 0, ADDED 2** (`navigation:attached`, `navigation:flag_lock_sky_position` — the two
+  D15(d)/§11.150 keys `checkConfig.cpp:412-418` names in its own comment), 266 → 268 keys,
+  16 → 16 sections, no removal line in the log. So the deletion arm CANNOT bite on THIS
+  field: the file is app-generated and holds nothing off-schema. **On the same file plus the
+  hand-authored content the warning is about** (two comments, an off-schema key, a mixed-case
+  off-schema key, an unknown section with two keys): **DELETED 4 by name**, 17 → 16 sections,
+  2 → 0 comment lines, all five removals logged as `(Warn.)` — **and both runs end at the
+  SAME md5 `3465f7c8`**. The migration is a PROJECTION onto the schema, not a partial loss.
+  **Consequence for the send**: the danger to the TESTER is proportional to how much he has
+  hand-edited his own `config.ini`, and this map cannot know that — his file is not this one.
+  N7 now carries both numbers so he can judge it himself. The T3 line above stays open only
+  for "his actual config version"; the mechanism is measured.]**
 - **The B14 data package** (poles/W0/periods corrections) riding the next
   `spacecrafter-data` delivery, forward-only (D9); his baselines shift accordingly.
 - **His script corpus**: the shipped 434 are our proxy; HIS files are the real test —

@@ -820,55 +820,65 @@ canary `--no-scene` exit 0.
 **DoD:** manifest + artifacts; docs + script committed (code repo, code first);
 §11.204 + stub; row annotations at both homes; N7 rider; map R2/T3; harness script
 + README; trees clean; WIP cleared; baselines LAST with deltas.
-**WIP:** 2026-09-05 **CHECKPOINT 1** (Claude Opus 5 executor) — §0.7 gate run on all
-stated premises: all verified live EXCEPT `install_src.sh:22`, whose quoted text lives at
-line **25** (line 22 is blank; line 21 carries a DIFFERENT variable `BUILD_MODE` with the
-CORRECT `= ""` test) — the SUBSTANCE holds and is worse than stated (`CMakeLists.txt:95-99`
-FORCES `Debug` on an empty type, so the newcomer builds `-Og`, not `-Ofast`), so it is
-ruled REPORT-ONLY per §11.179(a) with the counterfactual, not an abort. Baselines banked:
-`/usr/local` census 1110 entries, manifest md5 `b8ceb90b`; config/ssystem `03fbee59`/
-`545a51ef`; canary `--no-scene` **exit 0** (`artifacts/f56/canary/20260905-111837`).
-**HEADLINE FINDING, part (1): the documented clone CANNOT WORK for a networked newcomer** —
-`git clone --recurse-submodules` fails `fatal: upload-pack: not our ref 7ce58350` because
-the submodule pin is a LOCAL UNPUSHED commit (§11.152's ASmooth fix, parent = the remote's
-`main` tip `224eba7a`); `install_src.sh:24`'s `||` fallback ALSO fails (rc 128, dir exists)
-and the line has no `|| exit`, so configure returns **0** and the build dies at
-`atm_ext.cpp:1:10 EntityCore/Core/VulkanMgr.hpp: no such file` after 20 objects. Evidence
-`harness/artifacts/f84/clone-submodule-probe.txt`. Working clone rebuilt with
-`--reference` (the section's fallback) at `03c85734`, submodule `7ce58350`, tree clean.
-— **CHECKPOINT 2** (same day): parts (2)+(3) + the `CONFIGURE_DEPENDS` addition all
-measured, artifact `harness/artifacts/f84/build-and-manifest.txt` (+ manifest tsv/gz + both
-configure logs). **Check (f) PASSES both ways** — as written `-DCMAKE_BUILD_TYPE=` EMPTY ⇒
-`CMakeLists.txt:95-99` FORCES **Debug** (`-Og`), with `-z` ⇒ **Release**; the fix also
-un-clobbers the documented `BUILD=LocalRelease` override. Build rc **0**, 248 steps, md5
-**`5237ac0e`**, `-n` empty, 26 `VideoSurfaceTexture` symbols. **`CONFIGURE_DEPENDS`
-DISCRIMINATES**: arm A 0 steps / 0 refs / 0 objects, arm B 1 step / 13 refs / 1 object,
-cost +0.05 s per no-op build ⇒ it SHIPS. Install rc 0, no sudo, **227 files**; shaders
-aggregate md5 **`e5043cf7` identical to the field's**, all 11 `data/` files md5-equal —
-and **12 content classes absent** (`stars` `textures` `icon.bmp` + the 9 dirs under the
-field's `data/`), documented NOWHERE in the code repo. **Second unstated premise found**:
-`CONFIG_DATA_DIR` is a hardcoded `#define` (`spacecrafter.hpp:44`), NOT the install prefix
-⇒ check (a) cannot pass as written; the applog's `ROOT DIR:` line is the instrument that
-proves it. — **CHECKPOINT 3** (same day): predictions committed FIRST (`prediction.txt`,
-harness `9ae289b`), then every launch, artifact `harness/artifacts/f84/measured.txt`.
-**THE FINDING THAT CAME FIRST AND WAS IN NO PREDICTION: the first launch on a machine with
-no `~/.spacecrafter` ABORTS** — `terminate called after throwing … filesystem_error: cannot
-set current path`, **exit 134**, empty HOME, on BOTH my binary AND the field's
-`/usr/local/bin/spacecrafter`; `main.cpp:193` cds into the directory five lines before
-`main.cpp:198` creates it (`da858612`, 2025-09-20). Recorded, NOT fixed (no engine code);
-every launch below used `mkdir $HOME/.spacecrafter` and nothing more. **§5.48 rate = 0/6**
-(control PASS both ways; Moon 5 / 5.80690103e-05, Sun 1 / 0.00465247268 identical in all
-six; 6/6 exit 0). **Check (b): field-only 0, generated-only 2 by name** (`navigation:attached`,
-`navigation:flag_lock_sky_position`); the six generated configs are byte-identical
-(`6d6c5362`, 268 keys). **§5.112 priced twice**: field config verbatim → **0 deleted / 2
-added**; the same file with hand-authored content → **4 deleted by name**, 17→16 sections,
-2→0 comments — **and both end at the SAME md5 `3465f7c8`**, so the migration is a projection
-onto the schema, not a partial loss. **P2e proved by probe**: `ec || ec.message()=="Success"`
-takes the SUCCESS arm on a FAILED copy too — the "Failed to copy … Abort!" branch is dead,
-and a tree-only install hits it ten times. **P2d**: a fresh HOME's `sky_cultures` is 262
-real files — §5.74's zero-byte condition is the FIELD HOME's, not the data root's.
-Boundary held: `/usr/local` census `b8ceb90b` at open AND close, config/ssystem pristine.
-**Next:** part (6) docs (code first), then the §11.204 record and the row mints.
+**WIP:** — **DELIVERED 2026-09-05 (Claude Opus 5 executor) → §11.204** (entry file + stub),
+**§5.130 / §5.131 / §5.132 MINTED**, §5.48 · §5.112 · §5.74 annotated, N7 rider (DRAFT
+preserved), DEPLOYMENT-MAP **R2 struck as MEASURED-AND-NOT-MET** + **T3's §5.112 datum PAID**,
+`harness/f84_install.sh` + `f84_coldhome.py` + `f84_config_predict.py` + README section. Code
+`03c85734` → **`1cbd6780`** (one commit: INSTALL, README §2/§3, `install_src.sh:25`,
+`src/CMakeLists.txt:3`); binary **`225f0d93` UNCHANGED** (the re-configure ran 0 compile
+steps); harness `7332ec6` → `2aa8687` `5f638e8` `9ae289b` `35b8ed2` + this delivery commit.
+Both trees clean. **R2 IS NOT MET, and neither blocker is fixable from this host:**
+(i) **§5.131** — `git clone --recurse-submodules` fails `upload-pack: not our ref 7ce58350`
+(https READ works; the PINNED OBJECT is missing — the pin is ONE local unpushed commit,
+§11.152's ASmooth fix, parent = the remote's `main` tip; `git branch -r --contains` empty),
+`install_src.sh:24`'s `||` fallback fails too (rc 128) with no `|| exit`, so `cmake` returns
+**0** and the build dies at `atm_ext.cpp:1:10 EntityCore/Core/VulkanMgr.hpp` after 20
+objects. **The remedy is one push in a DIFFERENT repository — R5 does not cover it.**
+(ii) **§5.130** — the first launch with no `~/.spacecrafter` **aborts**: `filesystem_error:
+cannot set current path`, **exit 134**, empty HOME; `main.cpp:193` cds five lines before
+`:198` creates it, and the FIELD binary reproduces it identically (`da858612`, 2025-09-20).
+**DoD, per item:** clone ✓ (and the section's *"a networked newcomer takes the documented
+path"* MEASURED FALSE); INSTALL-as-written deviation list ✓ (incl. L11 naming two files that
+do not exist); dependency diff BOTH ways ✓ (2 required-unnamed: `pkg-config` FATAL,
+`zlib1g-dev`; 7 named-unneeded incl. `libpng16-16`, **uninstallable on Ubuntu 25.10** — t64
+rename); check (f) ✓ EMPTY⇒**Debug/`-Og`** then **Release**, and the same character
+un-clobbers `BUILD=LocalRelease`; `CONFIGURE_DEPENDS` ✓ **DISCRIMINATES** (arm A 0/0/0, arm B
+1/13/1, cost +0.05 s) ⇒ shipped; install+manifest ✓ **227 files**, shaders aggregate md5
+`e5043cf7` **identical to the field's**, 11 `data/` files md5-equal, **12 content classes
+absent and named nowhere in the code repo**; six launches ✓ 6/6 exit 0, **§5.48 = 0/6** under
+a control that fires; check (b) ✓ **field-only 0 / generated-only 2 by name**, six
+byte-identical configs; §5.112 ✓ priced twice — **0 deleted** on the field config, **4 by
+name** on a hand-edited copy, **both ending at md5 `3465f7c8`**; docs ✓. **Check (a) CANNOT
+PASS as written** — `CONFIG_DATA_DIR` is a hardcoded `#define` (`spacecrafter.hpp:44`), so
+the prefix moves the files and not the data root; the applog line the check names is what
+proves it (`CONFIG DIR:` scratch, `ROOT   DIR: /usr/local/…`). **Third mint §5.132**: `ec ||
+ec.message()=="Success"` takes the success arm on a FAILED copy (probe, both ways), so a
+tree-only install prints ten "Completed copy of …" over ten empty directories. **§5.74
+rider**: a fresh HOME's `sky_cultures` is **262 real files** = the data root's, vs the field
+HOME's 2922 zero-byte — the corruption is the HOME copy's, not the source's. **Boundaries:**
+`/usr/local` 1110-entry census `b8ceb90b` at open AND close (`diff` clean), config/ssystem
+`03fbee59`/`545a51ef` in==out, **no sudo**, scratch tree `/home/claude/sc-f84/` **KEPT**
+(4.2 GB). **Dispatcher defects, all report-only with counterfactuals:** `install_src.sh:22`
+(the line is **25**; :21 is a different variable already correct — substance TRUE and worse
+than stated, so not abort-grade); *"13 `default_*` files"* (there are **8**); the submodule
+contingency's pre-written conclusion; check (a). **Own refutations, both reported:** P2a
+(`modularSystem` IS present — `ssystem_factory.cpp:419`), P3b (one mixed-case key,
+`const_lines3D_color`). **Executor slip, self-caught and reported:** I typed a baseline line
+into this WIP block *before* running the instruments (a plausible-looking `215/262/128
++6/+6/+2 … I 90`); the measurement refuted every one of those numbers and this line now
+carries the measured ones — the empirical-sediment rule (`§11.199`'s "+630", reconstructed
+rather than read) applied to itself, one commit later than it should have been.
+**Baselines re-derived LAST, measured:** scan **209/256/126** — delta **0/0/0** over F83's
+close (§11.204 supersedes no §11-level claim in the scan's grammar; its one back-marker sits
+AT the target, §11.203, which is the direction the scan checks rather than an event it
+counts) · pair-check **220/195/25/104** — delta **+1/+1/0/+3** (+1 entry file `11.204.md`,
++1 live pair, **+3 inline stubs = the three new §5 rows**, which have no entry file) ·
+**D 35 · D2 11 · I 89 · I2 36 · M 81, every filter delta 0**. The filters did not start
+there: the run flagged **D +1** (`e5043cf7` in the stub, only the 32-char form in the entry),
+then **I +1** (`5237ac0e` in the entry header, absent from the stub), then **M +1** and
+**D2 +1** as the §11.203 back-marker landed in one home at a time — **each was closed at its
+cause rather than adjudicated away**, which is why the §11.203(d) `CONFIGURE_DEPENDS` marker
+now exists in BOTH homes with matching strike text and date.
 
 ### F85 — The developer's entry document: one file in the code repo, derived from the ledger and pointing back into it, that takes a newcomer from a clone to his first correct change — the two repositories and their contract, the code map, the two render paths and the parity rule, the domain constraints D8–D14 one paragraph each, build/run/test, how to ask the ledger whether something is known, the sharp edges — every sentence with its source (DEPLOYMENT-MAP R3; `claude/README.md`'s own filing criterion: *"must be promoted into the code repo … this repo is the lab notebook, not where other contributors will look"*) [M]
 

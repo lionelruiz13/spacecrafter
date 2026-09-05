@@ -3603,3 +3603,101 @@ runs: `artifacts/f83/prediction.txt`. Gate logs: `artifacts/f83/ctest_19of19.log
   over command-surface files the merge left byte-identical — their green is a
   no-regression statement about scedit, not evidence about the merged feature, and
   counting them as passing checks would be counting checks that could not fail.
+
+## F84 — the newcomer's first hour: the scratch install and the cold-`$HOME` launches — INTENT §11.204 / §5.130 / §5.131 / §5.132, 2026-09-05
+
+    ./f84_install.sh [ROOT]                  # default ROOT=/home/claude/sc-f84
+    ./f84_config_predict.py <config.ini> [--src /home/claude/spacecrafter]
+    DISPLAY=:2 ./f84_coldhome.py <outdir> --homes /abs/prefix- --n 6
+    DISPLAY=:2 ./f84_coldhome.py <outdir> --homes /abs/prefix- --n 1 --start 7 \
+                                 --seed-config FILE
+
+**`f84_install.sh` is a RECIPE, not a gate**, and its exit code is the number of
+DOCUMENTED steps that failed — which is `1` today and is supposed to be. It takes
+a clean clone through `INSTALL` / `install_src.sh` as written, with no sudo and
+no write outside `ROOT`, and it asserts `~/.spacecrafter` and `/usr/local`
+md5-unchanged at both ends. Run it after any change to the install path; the day
+it prints `0 documented step(s) failed`, §5.131 is closed and the KNOWN ISSUE
+paragraph in `INSTALL` section 3 should be deleted.
+
+- **The documented clone fails and that is the finding.** `git clone
+  --recurse-submodules` ends `upload-pack: not our ref 7ce58350`. https READ
+  works — the EntityCore repo itself clones — the pinned OBJECT is missing,
+  because the pin is one local unpushed commit whose parent IS the remote's
+  `main`. The script then falls back to `--reference` against this host's copy,
+  which is exactly what a newcomer does not have; that fallback is labelled in
+  the output so it is never mistaken for the documented path working.
+- **`if git ... | sed` reads `sed`'s status, not git's.** This script's own first
+  self-test scored `0 failed` while the clone had exited 128, because the `if`
+  tested a pipeline. Same class as the grep/pipefail hazard above and worth the
+  same reflex: capture `$?` from the command, pipe afterwards. It is fixed here,
+  and it is the reason the self-test was run at all.
+- **Two build fixes shipped by F84, each measured with a check that could fail.**
+  `install_src.sh:25` (NOT :22 — :22 is blank and :21 is a different variable
+  whose `= ""` test is already correct) `-n` → `-z`: as shipped, `BUILD` stays
+  unset, `cmake .. -DCMAKE_BUILD_TYPE=` is EMPTY and `CMakeLists.txt:95-99`
+  FORCES `Debug` (`-Og`) into the cache. The same character also stops the
+  documented `BUILD=LocalRelease` override being overwritten. `src/CMakeLists.txt:3`
+  gains `CONFIGURE_DEPENDS`; the measurement that justifies it uses two arms
+  whose only difference is the flag — the probe `.cpp` is created AFTER the
+  configure in BOTH, so the `CMakeLists` edit cannot be the cause: arm A 0
+  compile steps / 0 `build.make` refs / 0 objects, arm B 1 / 13 / 1. Cost
+  +0.05 s on a no-op build.
+- **The install prefix does not reach the binary.** `CONFIG_DATA_DIR` and
+  `LOCALEDIR` are hardcoded `#define`s at `src/spacecrafter.hpp:44-45`, set
+  nowhere in CMake. `-DCMAKE_INSTALL_PREFIX` moves where files GO, not where the
+  program LOOKS, so there is no non-root deployment without editing that
+  constant. The proof is one applog line, `ROOT   DIR:` (`main.cpp:246`), printed
+  by `f84_coldhome.py` beside `CONFIG DIR:` — the scratch `$HOME` is real and the
+  scratch prefix is not the data root.
+- **A tree install is 227 files and no content.** Binary, 214 shaders and 11
+  `data/` metadata files. The shaders' aggregate md5 `e5043cf7` is IDENTICAL to
+  the field root's, and all 11 data files are md5-equal — so where the tree
+  reaches, it reproduces the field exactly. It does not reach `stars/`,
+  `textures/`, `icon.bmp` or the nine class directories under the field's
+  `data/`. Nothing in the repository installs them and no repository document
+  names them.
+
+**`f84_coldhome.py` is the launch instrument.** One `$HOME` per launch, never
+reused; it gates on the `/proc/<pid>/comm` concurrency probe, records
+`GetActive`, drives `body action dual_dump`, quits with `shutdown action now`,
+and asserts the real `~/.spacecrafter` md5s across the whole run.
+
+- **`mkdir $HOME/.spacecrafter` is a deliberate, minimal deviation, not a
+  convenience.** A truly empty `$HOME` ABORTS the program (§5.130): `main.cpp:193`
+  cds into that directory five lines before `main.cpp:198` creates it, the setter
+  overload of `current_path` throws, and the process dies at exit 134 with an
+  uncaught `filesystem_error` and an empty `$HOME`. The FIELD binary does the same,
+  so it is not a property of one build. Everything BELOW `.spacecrafter/` is still
+  the app's own bootstrap, and `b3_farm.sh` has always had this shape.
+- **The §5.48 predicate is controlled before the rate is believed.** A fire is
+  Moon or Sun with a non-finite or MISSING new-path `scaling`/`boundingRadius`.
+  The control feeds the same predicate a finite pair (→ no fire), a quoted
+  `"nan"`, a bare `float('nan')` and an absent body (→ fire, all three) and
+  prints `PASS`/`FAIL` at the top of every run; on `FAIL` the rate is withheld.
+  A rate of 0 from a predicate that cannot report 1 is not a measurement.
+- **It reads every body line, not `dumpread.load_dump`.** `load_dump` drops
+  records with no `"new"` side, which is right for a comparison and wrong here —
+  §5.48's own instrument lesson is that a nan body must not disappear. The
+  GRAMMAR is still `dumpread`'s single one (`loads` = `sanitize_nonfinite` +
+  `unquote_nonfinite`), so this is one more reader of one grammar (I2), not a copy.
+- **Budget the shutdown at 180 s, not 60.** A launch seeded with the FIELD
+  `config.ini` drives a far heavier async texture preload than a generated one and
+  teardown waits for the big-texture loader to quiesce; the first attempt was
+  still logging `Created image support for textures/bodies/...` at 60 s. A 2 s
+  reap pause after any kill keeps the NEXT launch's `/proc` assert from firing on
+  the corpse — it fired once, correctly, and that is how the overrun was noticed.
+- **Six independent cold `$HOME`s produce byte-identical `config.ini` files**
+  (md5 `6d6c5362`, 268 keys, 16 sections). If a run ever produces two different
+  ones, something non-deterministic entered the bootstrap.
+
+**`f84_config_predict.py` extracts `checkConfig`'s schema MECHANICALLY** —
+`define_key.hpp`'s `#define`s plus a source-order walk of `checkConfig.cpp` that
+skips commented-out `tmpSettings[...]` lines — and reports, for any `config.ini`,
+what a version bump will delete, add and lowercase. 16 sections, 268
+`section:key` pairs today. Run it BEFORE the launch and commit the output: that
+is what made §11.204(j)'s deletion set a prediction rather than a description.
+Its one warning to heed: **an app-generated config is a fixed point** (0 deleted,
+2 added), so measuring only that file makes §5.112 look empty. The number that
+matters comes from a copy carrying hand-authored content — 4 deleted, a section
+gone, both comments gone, and the SAME output md5 as the run that had none of it.

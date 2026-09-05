@@ -344,7 +344,12 @@ command needed, it happens on version mismatch alone. If your config
 carries hand-written comments or custom keys, copy it aside before
 upgrading. (This mechanism is years old and both-paths; you're being
 told now because a delivery is the trigger.)
-*(ref: §5.112, §11.163(f))*
+Measured 2026-09-05 on your own installed `config.ini`: a version bump deletes
+**nothing** from it and adds two keys — but on the same file with two comment
+lines, one hand-added key and one extra section, it deletes **all four** and
+both comments, and the result is byte-identical to the run that had nothing
+added. Whatever is not in the new version's list does not survive.
+*(ref: §5.112, §11.163(f), §11.204(j))*
 
 ---
 
