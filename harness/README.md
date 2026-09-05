@@ -4305,3 +4305,74 @@ are committed as artifacts (`artifacts/f91/discrimination_*.txt`, 10 and 5 FAILs
   construction (pre-fix arithmetic, and it folds by the raw `axisRot`). It still
   replays F44's own archive correctly, and its `RADE` regex still accepts both label
   spellings. Reuse `f91_parity.py` instead.
+
+## F94 — does the branch a show author writes actually fire? (`f94_bodyselect.py`, `f94_run.sh`, `f94_scripts/`) — INTENT §11.214 / §5.98, 2026-09-06
+
+```
+DISPLAY=:2 ./f94_run.sh <absOutdir> --bin <binary> --tag pre|post   # one command, one exit code
+./f94_bodyselect.py --plan                                          # the predictions, no launch
+```
+
+**THE OBSERVABLE IS THE CLOCK, and that is the reusable part.** The question was
+whether `struct if body_selected equal 600` fires after `select planet Saturn`.
+There is no `get` for `$body_selected`, so the answer has to come out through a
+side effect — and the cheapest side effect that is a NUMBER is the date. Each
+branch sets a different UTC date; `get status position` returns
+`lat;lon;alt;JDay;heading;` `[coreLink.cpp:616-629]` and field 4 says which
+branch ran. No locale in the path, no translated readout to parse, no pixel, no
+file to poll. `timerate rate 0` first so the reading cannot drift; the expected
+JDays come from transcribing `SpaceDate::JulianDayFromDateTime`
+`[space_date.cpp:206-250]` — **transcribe it, do not use a library**: it carries
+a non-standard `− floor(0.025·century)` term. Every predicted value landed to
+the printed digit, both binaries.
+
+**THREE outcomes, not two.** The script sets a NEUTRAL date before the test, so
+"the play never reached the test" has its own reading. Without it, a play that
+dies early is indistinguishable from a branch that declined — and on the pre-fix
+binary "declined" was the expected answer, which is exactly when you cannot
+afford the ambiguity. The driver treats a neutral reading as a FAIL.
+
+**Two controls and a premise probe, and each one can fail.** `d_literal.sts` is
+`struct if 1 equal 1` — no body, no table: if it does not fire, the instrument is
+broken and no other cell counts. `c_titan.sts` is Titan = 604, a member of the
+same chain whose literal was never misspelled: if it does not fire, the table is
+not being consulted at all and the two zeros beside it are not attributable to
+the typos. And `get status object` after every play is the **premise probe** —
+it answered *"Saturne | Magnitude : 0.76 | AD/DE : 05h08m03s …"* on the very
+pre-fix run where the branch declined, which is what makes the else-branch the
+TABLE's fault rather than a `select planet` that silently did nothing. A
+pre/post table without that third reading is consistent with three faults and
+identifies none.
+
+**Measured, 37 s per binary including launch and quit** (`artifacts/f94/table.txt`):
+D if/if · A Saturn `equal 600` **else → if** · B Ganymede `equal 503` **else → if**
+· C Titan `equal 604` if/if · E the shipped consumer's own `equal 0` on Saturn
+else/else. Five predictions committed to `artifacts/f94/prediction.txt` at harness
+`0b619b7`, 01:28, before any binary started at 01:29.
+
+### Gotchas measured here
+
+- **`f55_farm.sh` does NOT copy `startup.sts` — it deliberately leaves that one
+  file to its caller**, and the app PLAYS it at launch with the annotator armed,
+  so a driver that forgets the copy rewrites the owner's own startup script
+  before anything else runs. This driver's farm-shape assert caught exactly that,
+  in itself, before the first launch. Copy F90's `build_farm` shape whole; the
+  ten asserts are the point, not the ceremony.
+- **A `script action play` filename must end `.xyz` or it is re-evaluated as an
+  expression**: `commandScript` tests `filen[filen.size()-4] != '.'` and otherwise
+  runs `evalString(filen)` `[app_command_interface.cpp:2962-2965]`. `.sts` is
+  fine; a bare stem is not.
+- **`struct if <var> equal <n>` is a float comparison with a 1e-4 window**
+  (`fabs(evalDouble(a) − evalDouble(b)) > 0.0001` `[app_command_interface.cpp:4767]`),
+  and the reserved-variable name is written WITHOUT a `$` inside the test.
+- **`get status` has exactly five arguments** — `position`, `planet_positions`,
+  `constellation`, `object`, `media` `[app_command_interface.cpp, commandGet]`.
+  There is no flag readback and no `body_selected` readback; anything else has to
+  come out as a side effect.
+- **The engine writes UTF-8 on the socket; read it as latin-1 and you get
+  mojibake in your JSON.** `Ganymède` arrives as `Ganym\xc3\xa8de`. Decode once,
+  at the edge, or record the bytes and decode at the report.
+- **`select planet <name>` matches the FIELD DATA's `name` key**, because both
+  loaders take `englishName` straight from it `[protosystem.cpp:511,
+  solarsystem.cpp:84]`. That is why a table of hardcoded English literals can
+  silently stop matching: the literal and the datum have different owners.

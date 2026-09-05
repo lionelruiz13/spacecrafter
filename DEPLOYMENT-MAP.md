@@ -74,8 +74,9 @@ they move this head on both criteria. Previous head kept above, struck where sup
   2026-08-26 — with T1.2 and T1.4 gone this is **the last operator-basics decision
   standing**) · **T1.3** the reach/visibility batch (DSO content) · **T1.5** §5.109's
   layer half · **§5.53(b)** (T1.9, one token) · ~~the **T5.1 rehearsal**~~ **[RAN 2026-09-05, F90 §11.211 — "ready" now waits on T5.2 alone]** · and the
-  **decision-free queue R27/R28/R18/R19/R20/L1 just created** (§11.207(g): §5.86+§5.19,
-  §5.98, §5.21, §5.66+§5.71, §5.115, A15's residual). The final-pass SEND is no longer on
+  **decision-free queue R27/R28/R18/R19/R20/L1 just created** (§11.207(g): ~~§5.86+§5.19~~
+  **[DELIVERED 2026-09-06, F91 §11.213]**, ~~§5.98~~ **[DELIVERED 2026-09-06, F94 §11.214]**,
+  §5.21, §5.66+§5.71, §5.115, A15's residual). The final-pass SEND is no longer on
   this list: it fired, and came back — **nineteen of twenty answered, L2 alone open**.
 - **Newly NOT necessary, so the shrinkage is visible**: A43's data regeneration
   (**cancelled** — R29 says it is design, and doing it would destroy the effect) · the
@@ -379,7 +380,7 @@ Ordered by operational weight for the tester, not by age:
    aligning it MORE consequential, not less — the swap distance now carries a designed
    effect, so moving the gate moves the effect. Still one token, still Vixy's (D5/D6
    residency, D10 headroom), and now also waiting on A42's unnamed number.]**
-10. **§5.35 / §5.98 / §5.41** [TRIAGED here 2026-08-29 by F47, all BOTH-PATHS so none gates
+10. **§5.35 / ~~§5.98~~ / §5.41** [TRIAGED here 2026-08-29 by F47, all BOTH-PATHS so none gates
    T0, each behind a named call]: `day_key_mode` — what should the control DO (today it
    neither sticks nor acts) · `$body_selected` answers 999 for **Saturn and Ganymede**,
    two typo'd spellings, gated on SS-17's owed answer from the script-surface owner
@@ -392,6 +393,17 @@ Ordered by operational weight for the tester, not by age:
    instruction, not with the asked question** — whether any show depends on today's 999
    is still unknown, and is recorded as unknown rather than assumed absent. `day_key_mode`
    (§5.35) and `camera action save` (§5.41) are untouched by round 3.]**
+   **[§5.98 IS STRUCK FROM THIS ITEM 2026-09-06 — FIXED by F94 §11.214, code `a2a880ef`,
+   binary `404b9e89`: `"Ganymed"` → `"Ganymede"` (`core.cpp:2251`) and `"Satun"` →
+   `"Saturn"` (`:2255`). `$body_selected` answers **503** and **600**, measured pre/post on
+   the shipped command surface with the predictions committed before the first launch and a
+   control body (Titan = 604) firing on both binaries. **And the unknown this item names —
+   *whether any show depends on today's 999* — is MEASURED for this field rather than left
+   unknown**: 1 of 408 shipped scripts reads the variable, tests it against 0, and takes the
+   same arm on both binaries. T1.10 now carries `day_key_mode` (§5.35) and `camera action
+   save` (§5.41) only; both are still behind their named calls. One item goes OUT to the
+   tester with the fix: `doc/superscript.sts:1529` `Ganymed=503` → `Ganymede=503`, his file,
+   routed at SS-17 and not edited here.]**
 11. **§5.113 + §5.110's fix routing** [ADDED 2026-08-30, F50 §11.166; both-paths at the
    mechanism (the uninitialized `Object` singleton predates the split) ⇒ NOT T0-gating]:
    ONE missing-guard class, three shipped reaches with nothing selected — `set
@@ -573,9 +585,12 @@ batch and the compile did not carry them]:** **§5.83** as an INFORM — `camera
 … duration 0` NaNs on the old path and the new path guards it, a deliberate divergence (no
 shipped script uses it; 3 files use the command, all with non-zero durations) · **§5.21** as
 a QUESTION to the tester — *has anyone authored `location_orbit`, and was `orbit_lat` written
-in degrees or tuned by eye?* (the fix is blocked on the answer, D9) · **§5.98** as a QUESTION
+in degrees or tuned by eye?* (the fix is blocked on the answer, D9) · ~~**§5.98** as a QUESTION
 to the tester — *do your shows test `body_selected` against 999 for Saturn/Ganymede?* (SS-17;
-the fix is two spellings, free once given).
+the fix is two spellings, free once given)~~ **[OFF T4's CARGO 2026-09-06: asked, answered
+with an instruction (R19), and DELIVERED — F94 §11.214, code `a2a880ef`. The question itself
+was answered by measurement for this field (1 of 408 scripts, same arm on both binaries) and
+what goes to him instead is a one-character doc fix, routed at SS-17]**.
 
 **[THE BATCH CAME BACK 2026-09-05 — F88 → §11.207; `[stated: tester (Lionel RUIZ), via owner
 commit 6ffb017]`. This tier is DISCHARGED EXCEPT ONE MEMBER.]** Member by member:
@@ -594,8 +609,11 @@ carried to whatever pass comes next · **D28/A38** — **N5**: *"Just switch to 
 keeping the old values (that we will change by script anyway)."* ⇒ no revert; option (a)
 stands, and the accumulating-tilt price is accepted because his shows set the framing by
 script · **§5.83 INFORM** — silent, therefore accepted · **§5.21** — **R18** *"No."* ⇒
-answered, D9 risk excluded · **§5.98** — **R19** *"Satun must be corrected to Saturn and
-Ganymed to Ganymede."* ⇒ answered, fix authorised · **the field-content questions and the
+answered, D9 risk excluded · ~~**§5.98** — **R19** *"Satun must be corrected to Saturn and
+Ganymed to Ganymede."* ⇒ answered, fix authorised~~ **[CARGO DISCHARGED 2026-09-06, F94
+§11.214: authorised AND landed, code `a2a880ef`; nothing of §5.98 rides T4 any more. The
+one thing that does go to him is a doc token, `superscript.sts:1529` `Ganymed` →
+`Ganymede`, routed at SS-17]** · **the field-content questions and the
 content census** — R22/R23/R24 and R21, see T3 · **§11.4's origin sub-question** — **R27**
 *"The RA/DE must be the value from our position."* ⇒ observer-centred, T1.4 closed.
 **Not carried in this batch and now on record**: the free-flight defaults and §5.106 were

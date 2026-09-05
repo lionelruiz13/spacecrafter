@@ -222,6 +222,27 @@ New entries:
   it will change behaviour when the spellings land, and that is worth a look
   on your side before the next delivery. The correction itself is not in
   doubt: you own this surface, and you asked for it. → INTENT **§11.207**
+  **[2026-09-06] FIXED in the engine** — `Ganymed` → `Ganymede` and `Satun` →
+  `Saturn`, at `core.cpp:2251` and `:2255` (the `:2173`/`:2177` above were the
+  line numbers of an earlier tree). Selecting Saturn now makes `$body_selected`
+  answer **600** and selecting Ganymede **503**, which is what your own number
+  table says they should answer. Measured on the shipped command surface before
+  and after the change, with Titan (604) as a control that answers the same on
+  both builds. → INTENT **§11.214**
+  **One thing for you, and it is one character.** The number table in
+  `doc/superscript.sts` line 1529 still reads `Ganymed=503`. Before this change
+  the table agreed with the engine on that word and disagreed on `Saturn`; now it
+  is the other way round, and `Ganymed` is the only spelling on that line that
+  matches nothing. It is your file, so we have not touched it: it wants
+  `Ganymede=503`. (`Saturn=600` on the same line is correct for the first time.)
+  **And the question we could not answer for you.** We checked the scripts we
+  have here: exactly one of 408 reads `$body_selected`
+  (`internal/fly_to_selected.sts`, which tests it against 0), and we played it on
+  both builds -- same branch, same result, the observer lands in the same place
+  to the centimetre. So nothing here changes behaviour. If YOUR machine carries a
+  show that tests 600 or 503, it starts working now; if one relies on Saturn or
+  Ganymede answering 999, that one changes. Worth a look on your side before the
+  next delivery.
 - **SS-18** — 15 more teach-vs-do divergences catalogued (full list:
   `witness/superscript-witness.json`), the sharpest for you:
   (a) lines 121-123 `*_altimetry_factor` — renamed engine-side
