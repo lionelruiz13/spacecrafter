@@ -655,8 +655,16 @@ CKPT 1 (mandate 1+2) DONE: merge committed `c6784490` (parents `85cc2785`+`6ec2f
 four conflict hunks = exactly the four stated, all resolved to OURS by marker-deletion
 (NOT `checkout --ours`, so check (b) could fail); (a) `git cherry` EMPTY 0`+`/0`-`,
 (b) three files diff vs `85cc2785` = 0 lines + md5-equal, (c) exactly the four
-`src/tools/` files 480+/4-, (g) D14 gate PASS CONVERT 970 -> 972. NEXT: mandate 3
-(build at merged HEAD).
+`src/tools/` files 480+/4-, (g) D14 gate PASS CONVERT 970 -> 972. CKPT 2 (mandate 3)
+DONE: `src/CMakeLists.txt` collects sources by `file(GLOB_RECURSE)` with NO
+CONFIGURE_DEPENDS, so an incremental build would have SILENTLY omitted the new TU
+(measured: 0 `video_surface_texture` refs in `build.make` before, 13 after a
+re-configure) -- re-configured, then built -j24: (d) exit 0, 143 objects incl. the
+new TU at 58 %, mtime 2026-09-04 20:11:16 -> 2026-09-05 10:53:00, md5 `c8e12950` ->
+`225f0d93`, `-n` zero steps after, 26 `VideoSurfaceTexture` symbols linked; NO
+libavcodec-61 failure. One warning, pre-existing and in an untouched file
+(`dsoNavigator.cpp:306`) = §5.92's already-recorded `z_reflection` rider. NEXT:
+mandate 4 (full canary, then scedit gates in `util/scedit/build-f83`).
 
 ### F84 — The newcomer's first hour, measured: a clean clone of the merged HEAD taken through INSTALL / `install_src.sh` as written (no sudo, scratch prefix), every deviation he would hit recorded and the documents corrected to what IS; the install tree manifested; six fresh-HOME first launches (the §5.48 cold-HOME race rated); the §5.112 rewrite priced on a bumped-version copy of the field config — the deployment manifest that makes the branch a reference (DEPLOYMENT-MAP R2 + T3's §5.112 datum) [M]
 
