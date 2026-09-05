@@ -59,9 +59,13 @@ system.
 *(ref: D37 → B39, §11.149(d) — delegated to you by the developer because
 "it changes the behavior of spacecrafter under identical use")*
 
+If we hide the star, it won't light the scene.
+
 **R15. Only if R14 = "go dark": what does the darkened scene look like —
 a faint ambient glow, or genuinely black?**
 *(ref: D37's attached question)*
+
+It depends on the ambient_light value.
 
 **R16. Do you run shows with more than one star system loaded at once?**
 (Asked in round 1 inside Q11 and lost in the shuffle — our fault, it was
@@ -69,11 +73,15 @@ the fourth part of a four-part question. It matters: it decides how much
 of the multi-system machinery needs to be reachable for you.)
 *(ref: Q11 second part → A30, §11.177(h))*
 
+No. Only one stellar_system at once.
+
 **R17. Do you show (or plan to show) systems with more than one star,
 where each star would need its own halo colour/texture?**
 (The other lost sibling, from Q22. Also decides where R14 becomes
 observable at all.)
 *(ref: A7 residual)*
+
+Yes. Binary stars must be shown appropriately.
 
 **R18. Have you ever authored a body with `coord_func = location_orbit`
 in a data file?** If yes: was its `orbit_lat` written as real degrees, or
@@ -83,6 +91,8 @@ values were tuned by eye against the distortion, an exact fix would move
 your body — so the fix waits on this answer.)
 *(ref: §5.21, §11.163(j))*
 
+No.
+
 **R19. Do any of your shows test `$body_selected` against 600 (Saturn) or
 503 (Ganymede) — or deliberately work around getting 999 for those two?**
 (Background: selecting either body answers 999 today because of two
@@ -90,6 +100,8 @@ misspellings inside the engine's table; every other body matches its
 documented number. The fix is two spellings, free once you confirm
 nothing relies on today's 999.)
 *(ref: §5.98 / SCRIPT_SURFACE SS-17)*
+
+Satun must be corrected to Saturn and Ganymed to Ganymede.
 
 **R20. The script log: how far back do you actually reach?**
 Background you should have: this is the log that has already produced
@@ -102,6 +114,8 @@ you go back into old script logs, how far back do you need — days,
 weeks, a number of launches? "The last N days" or "N launches" both work
 as an answer.
 *(ref: §5.115, §11.173(b))*
+
+8 launches
 
 **R21. Content census — which of these do your real shows actually
 load?** (Tick/cross per line, one word each; this bounds which engine
@@ -120,11 +134,15 @@ work can block you at all and which never will.)
   at all)
 *(ref: the content census, §11.162 / DEPLOYMENT-MAP T3; the portrait line's harness half is now measured — §11.202 / §5.129: a window taller than wide draws the dome 128 px low with an unwritten band above it, everything else about portrait being unchanged, so a "no" here retires a known cost rather than an unknown one. The question body is unchanged.)*
 
+All have been tested, but sometimes long ago, so maybe some features could have altered the way it shall work.
+
 **R22. On your installation, does `search` find constellations and named
 stars?** (On our test install the sky-culture data is empty — 2922
 zero-byte files — so search finds nothing and we cannot tell what your
 deployment actually carries.)
 *(ref: §5.74 field-content family, routing ratified §11.161(c1))*
+
+Search is deprecated.
 
 **R23. Which star catalogue package does your installation run, and does
 your `stars.ini` name its files correctly?** (Ours silently runs 26 561
@@ -132,9 +150,13 @@ stars instead of millions — a name mismatch between `stars.ini` and the
 catalogue files on disk would do that in the field too, silently.)
 *(ref: §5.90)*
 
+By default, only limited catalogs are loaded. Correct catalogs are loaded in an outside installation procedure.
+
 **R24. Is `~/.spacecrafter/stars/` a directory you actually put catalogue
 files in?** (Decides whether it must be honored as a search path.)
 *(ref: §5.90, second half)*
+
+We should but for now it is in another directory.
 
 **R25. Running more than one script at a time — a resubmission, with
 the interest stated first this time.**
@@ -208,6 +230,8 @@ as useful, and it lands on the current version, not the draft you saw.)
 [script-trigger]; §11.173(c); prerequisite chain [vixy 2026-08-31];
 R21's hardware-controls line informs the binding half)*
 
+No need for that.
+
 **R26. [confirm] Free flight ↔ attached: the proposed default.**
 Switching into or out of free flight will hold view continuity — no jump,
 no warp; your heading is then recovered over a smooth,
@@ -215,6 +239,8 @@ minimum-acceleration transition. The developer's proposed default is
 **heading stays stable across the swap**, flagged by him "to confirm with
 user/tester". Is stable heading what you'd expect as the default?
 *(ref: D15(b), §11.149(a))*
+
+Stable heading when switching or at least change of camera orientation smoothly.
 
 **R27. The RA/DE readout: the catalog number, or the pointing number?**
 When the app displays a body's RA/DE, two conventions exist and they
@@ -230,6 +256,8 @@ fixed by definition at the vernal equinox and is being verified against
 catalog values of known stars.)
 *(ref: §11.4 decision (2), §11.158(f); routing per §11.161(c),
 exercised [vixy 2026-08-31])*
+
+The RA/DE must be the value from our position.
 
 **R28. The tilted-dome view offset: what happens when it meets a
 rotated heading?** Background: the view offset exists for tilted-dome
@@ -269,6 +297,9 @@ scaling is wrong or the whole aim half is. RECORDED, not inserted into
 the question body: what this file asks a human is the supervising
 session's call, not the executor's.**)*
 
+The offset is screen dependant. The change of heading shouldn't shift the offset position.
+I saw that it does now but it shouldn't.
+
 **R29. Which bodies deliberately look different from far than from
 close?** The shipped Sun and Moon carry a miniature/preview skin that is
 a *different picture* from their full-resolution map (the Moon visibly
@@ -282,6 +313,8 @@ should engage, and R25's trigger is the supported replacement either
 way.)
 *(ref: A43 + A42, §11.127(c)(d), §11.172(c)(d); premise reframed by
 [vixy 2026-08-31]: the tester authors distinct normal/miniature skins)*
+
+It's a design. 
 
 ---
 
@@ -330,6 +363,8 @@ the remedy is an explicit `set heading 0`, and the heading readout now
 reports the drawn view truthfully.
 *(ref: D28/A38, §11.113(g))*
 
+Just switch to the planet, keeping the old values (that we will change by script anyway).
+
 **N6. `camera action move_to … duration 0` is guarded on the new path.**
 The old path produces a broken camera (NaN) on that input; the new path
 refuses it cleanly. No shipped script uses duration 0 — this is only
@@ -344,12 +379,9 @@ command needed, it happens on version mismatch alone. If your config
 carries hand-written comments or custom keys, copy it aside before
 upgrading. (This mechanism is years old and both-paths; you're being
 told now because a delivery is the trigger.)
-Measured 2026-09-05 on your own installed `config.ini`: a version bump deletes
-**nothing** from it and adds two keys — but on the same file with two comment
-lines, one hand-added key and one extra section, it deletes **all four** and
-both comments, and the result is byte-identical to the run that had nothing
-added. Whatever is not in the new version's list does not survive.
-*(ref: §5.112, §11.163(f), §11.204(j))*
+*(ref: §5.112, §11.163(f))*
+
+Put a # in front of the deprecated lines would be better
 
 ---
 
@@ -368,6 +400,8 @@ right — too early, too late, band too narrow/too wide, is the residual
 step acceptable?
 *(ref: A15, §11.82)*
 
+It would be better to have no residual threshold
+
 **L2. Oort-cloud shadow onset.** Your 2026-07-24 observation: "I think
 the oort shadow are showing too early." The configuration that produced
 it was reconstructed: free flight, Sun-referenced, fov 340, climbing in
@@ -376,6 +410,8 @@ altitude. (In the anchored-Earth ladder the new path shows the cloud
 configuration.) The same scene gets re-flown with you watching,
 state-stamped: early against what expectation?
 *(ref: §11.98(c) → §11.116(b))*
+
+I didn't test it yet
 
 ---
 
