@@ -115,13 +115,40 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    `-DCMAKE_INSTALL_PREFIX` cannot relocate a deployment. §5.48 rated **0/6** with a control
    that fires (row still OPEN; its fix is Vixy's, and the binary measured has the ASmooth fix
    a newcomer's clone cannot reach). §5.112 priced — see T3.
-   **R2 therefore reduces to: the EntityCore push (Vixy) + the `main.cpp` line (Vixy).**]**
+   ~~**R2 therefore reduces to: the EntityCore push (Vixy) + the `main.cpp` line (Vixy).**~~
+   **[2026-09-05, F86 → §11.205: the `main.cpp` HALF IS PAID.** Code `9e0f1e93`: the line moved
+   below the two `checkUser*` calls, and the launch F84 could not make — a `$HOME` with nothing
+   in it — now exits **0**, builds **19 directories and 7 files**, prints ten "Completed copy"
+   lines and writes `log/spacecrafter.log` inside the new directory; the as-if control on an
+   existing `$HOME` differs in exactly the three RAM-census lines an A/A pair of one binary
+   differs in. **§5.130 CLOSED.** The EntityCore half moved too, but not to done: at **12:23**
+   that day an external writer amended and PUSHED the submodule commit (`7ce58350` →
+   `84f5d94b`, tree identical), so the clone now fails on a **stale pin** rather than on a
+   missing push — the remaining act is `git add src/EntityCore` + commit in THIS repository
+   (§5.131, §11.205(i)). **R2 therefore reduces to: bump the submodule pin (Vixy), and
+   nothing else.** `INSTALL` section 6's `mkdir -p ~/.spacecrafter` paragraph is now obsolete
+   and is named for F85 to delete, not edited by F86.]**]**
 3. **R3 — An entry document exists in the code repo.** None does (`doc/` is user-facing; no
    `*.md` under `src/experimentalModule/`); `claude/README.md`'s own filing criterion states the
    promotion obligation and nothing was ever promoted under it. → **F85**.
-4. **R4 — No memory-unsafety reachable from the shipped data at startup.** §5.127(2) the UAF
+4. ~~**R4 — No memory-unsafety reachable from the shipped data at startup.** §5.127(2) the UAF
    from `anchor.ini`, §5.127(1) the comet null deref (old core) → **F86**; §5.48 (EntityCore)
-   → Vixy.
+   → Vixy.~~ **[MET FOR THE OLD-CORE HALF 2026-09-05 by F86 → §11.205; code `a4a7c226`.**
+   **§5.133** (the UAF, minted from §5.127(2) before being touched): REPRODUCED under ASan at
+   the predicted read — `orbit.hpp:36` ← `AnchorPointOrbit::update:44` ← `AnchorManager::update:306`,
+   after one shipped command `camera action switch name orbit_autour_lune` — and CLEAN on the
+   same launch after the fix, which is an ownership statement (`AnchorPointOrbit` holds the
+   `unique_ptr`), not a guard. Two things the row did not know: a plain startup is SILENT
+   because only the current anchor is updated, and the RELEASE binary takes that command
+   without crashing, so the corruption is silent on the shipped build. **§5.134** (the comet
+   null deref): the experimental reader's guard ported with a §2(f) diagnostic; pre-fix
+   SIGSEGV, post-fix exit 0, control loads pre-fix — and **five of the six shipped
+   `comet_orbit` sections run that branch on every launch**, surviving only because
+   `parent = Sun` resolves. Gates: full canary 12/12 in band, every delta 0.0, dwell frame md5
+   unchanged across a fourth binary. **RESIDUAL, and it is not ours**: §5.48 (EntityCore, the
+   ASmooth NaN) is still Vixy's, so R4 is met for everything this repository owns. One gate
+   red is recorded at §11.205(g) — `b4_anchors`' screen-witness CONTROL — bounded to the star
+   field's brightness channel by the Moon's centroid being bit-identical in all five runs.]**
 5. **R5 — The branch is on the remote.** ~~+63 code / +638 harness commits unpushed~~
    **[RE-MEASURED 2026-09-05 after F83: **+80 code** (the 63, plus the 15 SHAs the merge
    makes ancestors, plus F83's 2) **/ +645 harness**]**; GitHub
@@ -134,7 +161,11 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    This is the one act nothing here can substitute.]** **[2026-09-05, F84 §11.204(b) →
    §5.131: it is TWO pushes in TWO repositories — this one (both branches) AND
    `Calvin-Ruiz/EntityCore` (`7ce58350`, §11.152's ASmooth fix, onto `main`); without the
-   second no `git clone --recurse-submodules` of this branch builds. Supervisor's reading
+   second no `git clone --recurse-submodules` of this branch builds. **[2026-09-05 12:23,
+   measured mid-run by F86, §11.205(i): the SECOND push HAPPENED — the commit was amended
+   (`7ce58350` → `84f5d94b`, tree identical) and pushed by an external writer. It does not
+   fix the clone by itself: the pin in `master-beta` still names the amended-away SHA, so the
+   act that remains is a pin bump in THIS repository, not a push in that one.]** Supervisor's reading
    at F84 acceptance: the `main.cpp` half of R2's residual is NOT the owner's — §5.130's
    one-line move is decision-free (§5.79/F35 precedent) and goes to F86.]**
 6. **R6 — Branch policy.** Three developers committed to `2023-master` in 2026 (Kenan-Blasius,

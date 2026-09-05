@@ -224,3 +224,23 @@ never rewrite (maintenance invariant). Archival per the standing convention
   `idle-activation-enabled` true (moot), `sleep-inactive-ac-type` 'nothing',
   GetActive false, LockedHint no, Remote=yes Type=wayland. Setting `lock-enabled`
   false here is one gsettings line and the owner's call — flagged, not done.
+- 2026-09-05 12:23 [measured: F86 executor, mid-task, from the submodule's own
+  reflogs; reported not absorbed per §11.174(h)] **AN EXTERNAL WRITER AMENDED AND
+  PUSHED THE `EntityCore` SUBMODULE COMMIT WHILE A DISPATCHED TASK WAS RUNNING.**
+  At **12:23:23** `src/EntityCore`'s HEAD moved `7ce58350` -> `84f5d94b` by
+  `commit (amend)` (reflog verbatim), author preserved (`Claude Opus 5`,
+  2026-08-26) and committer re-stamped (`Claude`, 2026-09-05); at **12:23:44**
+  `refs/remotes/origin/main` logged `update by push` to the same SHA. **The TREE
+  is identical** — `HEAD^{tree}` = `7ce58350^{tree}` = `6ee9f6a7`, `git diff`
+  empty — so no build is affected and every pre/post comparison of that task
+  stands (its release binaries were built at 12:22 and 12:41 with byte-identical
+  submodule sources). **Two consequences that outlive the event.** (1) The code
+  working tree now carries one unstaged entry, `M src/EntityCore` (gitlink
+  `7ce58350` -> `84f5d94b`), which F86 did not create and did not resolve: moving
+  a submodule pin is an owner decision and EntityCore is read-only to executors.
+  A warm-up that expects `git status` clean on the code repo will see it. (2)
+  **§5.131 is NOT discharged by the push**: `master-beta` still records the
+  amended-away `7ce58350`, no remote ref contains it, so `git clone
+  --recurse-submodules` fails exactly as F84 measured until the pin is bumped —
+  one `git add src/EntityCore` + commit in THIS repository. Recorded at §5.131,
+  DEPLOYMENT-MAP R2/R5 and §11.205(i).

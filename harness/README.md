@@ -3701,3 +3701,64 @@ Its one warning to heed: **an app-generated config is a fixed point** (0 deleted
 2 added), so measuring only that file makes §5.112 look empty. The number that
 matters comes from a copy carrying hand-authored content — 4 deleted, a section
 gone, both comments gone, and the SAME output md5 as the run that had none of it.
+
+## F86 — the three startup faults, and one launch shape per kind of `$HOME` (`f86_startup.py`, `f84_coldhome.py --no-mkdir`) — INTENT §11.205 / §5.130 / §5.133 / §5.134, 2026-09-05
+
+    cd claude/harness
+    # (1) the EMPTY $HOME -- Sec.5.130's gate.  --no-mkdir is F86's addition to F84's
+    #     script; default OFF, so every F84 record still reproduces byte for byte.
+    DISPLAY=:2 python3 f84_coldhome.py <absOutdir> --homes /abs/prefix --n 1 \
+        --bin /abs/spacecrafter --no-mkdir --tag <name>
+
+    # (2) an EXISTING, populated $HOME -- the faults you reach by LOADING data
+    DISPLAY=:2 python3 f86_startup.py <absOutdir> --bin /abs/spacecrafter \
+        --farm /abs/farmdir --tag <name> \
+        [--cmd 'camera action switch name orbit_autour_lune'] \
+        [--asan] [--asan-opts '<ASAN_OPTIONS body>'] \
+        [--ssystem-insert /abs/section.ini] [--head-lines 40]
+
+**Why two scripts and not one.** `f84_coldhome.py`'s subject is a `$HOME` that has
+never existed (§5.48's rate, §5.112's price, §5.130's abort); `f86_startup.py`'s is
+one that is already populated, because §5.133/§5.134 are reached by LOADING the
+shipped `anchor.ini` and `ssystem.ini`. Both assert the same three things
+themselves and fail rather than reporting afterwards: `/proc/<pid>/comm`
+concurrency (F26, §11.134(b)), the real `~/.spacecrafter` md5 in == out, and
+`DISPLAY` per HOST-EVENTS. `--ssystem-insert` writes ONLY into the farm's copy,
+before its final `[end]`, and records the md5 both sides of the insert.
+
+**What `f86_startup.py` records** (`result_<tag>.json`): exit code AND the signal
+if it died of one (a startup crash shows as `exit −11 / signal 11 / tcp never
+opened`, which is the whole verdict for a load-time segfault); the stderr head and
+tail; the applog's first N lines **with their md5** — that is the as-if control of
+§5.130's move; every ASan report file with its first 60 lines inlined; and each
+`--cmd`'s own reply.
+
+**Measured gotchas, each one bought with a launch:**
+
+- **The as-if applog head is NOT byte-identical between two runs of ONE binary.**
+  Three lines move (`Free/Shared/Buffer ram`, the host's state at startup). Run the
+  A/A first; the claim that survives is "the pre/post diff is exactly the A/A diff",
+  which is what F86 recorded (37 of 40 lines identical).
+- **ASan does not always call a dangling read a use-after-free.** F86's reproduction
+  aborts with `heap-buffer-overflow` and NO "freed by" stack, because by the time the
+  anchor is read the orbit's chunk has been recycled and its metadata is gone;
+  `quarantine_size_mb=1024` did not change the class. Predict the READ site, not
+  ASan's label. Reports are DISTINCT-PC counts (the F17 note below applies).
+- **`build-asan` needs `cmake .` before the build** whenever the file list moved
+  (F17's note, still true: F84's `CONFIGURE_DEPENDS` covers `build-claude` only if
+  that dir was configured after `1cbd6780`). Build ASan at `-j12`, not the host's
+  `-j24`: memory is the binding constraint, not cores.
+- **A star-field frame grab is NOT a cross-run instrument.** F86 spent two launches
+  learning this: with the atmosphere and landscape off, two launches of the SAME
+  binary differ by **23502 px>8** — MORE than the two different binaries did
+  (22564). The sky turns in real time while the driver sleeps, so any comparison of
+  star pixels between launches needs the date pinned AND the frame index pinned (or
+  `flag star_twinkle off`, since `hip_star_mgr.cpp:640-643` scales every star by
+  `1 - twinkle_amount*rand()/RAND_MAX` over a stream `src/` never seeds — there is
+  no `srand(` anywhere). `b4_anchors` pins its dates, which is why ITS A/A floor is
+  773 px and not 23000.
+- **When a rendered-frame check disagrees across builds, measure the camera before
+  arguing about the scene.** The Moon's flux-weighted centroid in `b4_orb_t0.png` is
+  `1324.2740 / 1767.6721` with mass `76290` in all five of F86's runs — identical to
+  four decimals across two binaries and three builds — which excluded a geometric
+  change in one zero-launch measurement after two launches had failed to.

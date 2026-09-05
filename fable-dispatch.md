@@ -1093,45 +1093,44 @@ archive); next free §11 ⟨at dispatch⟩; live `### F` count **5**;
 **DoD:** §5.130 fix + the two rows + their fixes (code first) + the empty-HOME
 proof + ASan proof + gates; §11 entry + stub; §5.130 flipped; DEPLOYMENT-MAP R2 (the
 `main.cpp` half) + R4 struck; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-05 — CHECKPOINT 1 of 5 done (member (3), §5.130). Predictions committed
-FIRST (harness `2db0267`, `artifacts/f86/prediction.txt`). P0a reproduced (exit 134,
-verbatim message, $HOME left at 0 entries) on the stashed pre-fix binary
-`/home/claude/sc-f86/spacecrafter-prefix` md5 `225f0d93`; `main.cpp` line moved (code
-**`9e0f1e93`**), rebuilt → binary md5 **`8f23df02`**, `-n` zero steps; P0b exit **0**,
-19 dirs + 7 files, exactly 10 "Completed copy" lines, `log/spacecrafter.log` 54402 B
-under the NEW `~/.spacecrafter`; P0c as-if control holds in its measured form — the
-pre/post applog-head diff is EXACTLY the A/A diff of one binary (3 RAM-census lines,
-37/40 identical). Row flips deferred to delivery per the dispatch prompt's entry-first
-order. NEXT: checkpoint 2 = mint §5.133 (UAF) + §5.134 (comet) from §5.127, annotate
-§5.127 at both homes; then the ASan build.
-2026-09-05 — CHECKPOINT 2 done: **§5.133** (the UAF) and **§5.134** (the comet null deref)
-minted OPEN in the §5 register at HEAD-verified sites, §5.127 annotated at both homes
-(row + `INTENT/11.200.md` (e)(1)(2) + the §11.200 stub). Two facts the mint added by
-measurement: five of the six shipped `comet_orbit` sections take the crashing branch on
-every launch (they survive because `parent = Sun` resolves), and the ANCHOR loader builds
-the orbit before it looks at the parent, so `anchor.ini`/`camera action create` reach the
-same line with a null parent. HOST EVENT, not mine, reported not absorbed: at **12:23:23**
-today the EntityCore submodule commit was AMENDED (`7ce58350` -> `84f5d94b`, tree
-IDENTICAL `6ee9f6a7`, `git diff` empty) and at **12:23:44** pushed (`origin/main` reflog:
-*update by push*) — so the code tree now carries ONE unstaged gitlink change I did not
-make and will not resolve; §5.131's clone blocker is NOT discharged by the push alone,
-because the pin recorded in `master-beta` is still the amended-away `7ce58350`.
-2026-09-05 — CHECKPOINTS 3 AND 4 done: `build-asan` re-configured and rebuilt (F17 recipe,
-`-j12` for ASan's memory), **the UAF REPRODUCED** (ASan aborts on the predicted READ stack
-`orbit.hpp:36` <- `AnchorPointOrbit::update:44` <- `AnchorManager::update:306` after ONE
-shipped command, `camera action switch name orbit_autour_lune`; the CLASS is
-heap-buffer-overflow not use-after-free, sub-prediction refuted and kept), **both fixes
-landed** (code **`a4a7c226`**, binary **`2815d182`**), **ASan CLEAN** on the identical
-launch, the comet guard measured all three ways (pre-fix SIGSEGV / post-fix the §2(f)
-diagnostic / control with `orbit_period` loads pre-fix), and the FULL CANARY exit 0,
-12/12 in band, every delta 0.0, dwell frame md5 `5215565b` byte-identical across a FOURTH
-binary. ONE RED, analysed not absorbed: `b4_anchors` P7's screen-witness CONTROL flips on
-the fixed binary (2 runs green pre, 1 green main.cpp-only, 2 red post) — the Moon's
-centroid is bit-identical in all five runs and every dumped number is equal, so it is NOT
-geometry; it is the star field's per-star brightness, whose only modulator is an unseeded
-`rand()` (`hip_star_mgr.cpp:640-643`). The experiment built to prove that (P8/P8b) FAILED
-to discriminate and is recorded as a failure with its A/A control. NEXT: checkpoint 5 =
-delivery (§11.205 + stub, the three row flips, DEPLOYMENT-MAP R2/R4, README, HOST-EVENTS).
+**WIP:** — **DELIVERED 2026-09-05 (Claude Opus 5 executor) → §11.205** (entry file + stub),
+**§5.130 FIXED**, **§5.133 + §5.134 MINTED then FIXED**, §5.127 annotated at both homes (three
+members left open), §5.131 annotated with a measured host event, §11.204(c) back-marked in both
+homes, DEPLOYMENT-MAP **R2's `main.cpp` half PAID** + **R4 struck as MET for everything this
+repository owns** + R5 re-measured, `harness/README.md` F86 section, `HOST-EVENTS.md` entry,
+`harness/f86_startup.py` + `f84_coldhome.py --no-mkdir`. Code `1cbd6780` → **`9e0f1e93`** →
+**`a4a7c226`**; binary `225f0d93` → `8f23df02` → **`2815d182`**; harness `adb341a` → `2db0267`
+`90db747` `51c77fc` `db438e5` `abfae85` `1a8b129` + this delivery commit. **DoD, per item:**
+§5.130 ✓ (empty `$HOME` **134 → 0**, 19 dirs + 7 files, ten copy lines, `log/` written inside;
+as-if control run **A/A first** and NOT byte-identical, so the surviving claim is 37/40 lines
+identical with the 3 differing being the A/A's own); §5.133 ✓ **reproduced under ASan at the
+predicted read** then **clean** on the identical launch (a plain startup is SILENT, predicted
+with its reason; the CLASS was refuted — heap-buffer-**overflow**, no "freed by", unchanged by a
+1 GiB quarantine — and the RELEASE binary takes the same command **without crashing**);
+§5.134 ✓ pre-fix **SIGSEGV** / post-fix the §2(f) diagnostic / control loads pre-fix, and the
+NEW path was already logging and skipping that body **1448 ticks before** the old one died;
+gates ✓ full canary **12/12 in band, every delta 0.0**, dwell frame md5 `5215565b…` byte-identical
+across a FOURTH binary, D14 PASS at 972. **ONE GATE RED, bounded not absorbed:** `b4_anchors`'
+P7 screen-witness CONTROL flips on the fixed binary (green ×2 pre, green on a `main.cpp`-only
+binary built to attribute it, red ×2 post) — the Moon's flux centroid is **1324.2740/1767.6721
+with mass 76290 in ALL FIVE runs** and every dumped number is equal, so the camera did not move;
+the difference is which faint stars clear the threshold. Candidate named (`hip_star_mgr.cpp:640-643`,
+`1 - twinkle_amount*rand()/RAND_MAX` over a stream `src/` never seeds — 0 `srand(`), **NOT
+confirmed**: two experiments built to test it failed and are kept with their causes, the second
+refuted by **its own A/A control coming in LARGER than its A/B** (23502 vs 22564 px>8).
+**HOST EVENT, reported not absorbed:** an external writer **amended and pushed** the EntityCore
+submodule commit at **12:23** (tree identical, `7ce58350` → `84f5d94b`), so the code tree ends
+with ONE unstaged `M src/EntityCore` I did not create and must not resolve, and **§5.131's clone
+still fails until the pin is bumped** — one commit, the owner's. **Dispatcher defects, both
+report-only with counterfactuals:** the section's mandate (5) says §11.**206** and *"§5.130/§5.131
+flipped FIXED"* (205 is free; §5.131 is F84's push row) and its (2) names §5.130 as the row to
+re-grade on ASan silence — the prompt carries all three correctly. **For F85:** `INSTALL`
+section 6 (`:105-116`) is now obsolete — the `mkdir -p ~/.spacecrafter` and the abort it quotes;
+named, not edited. **Baselines re-derived LAST:** scan **211/261/131** (delta +2/+5/+5, every
+new pair named and adjudicated INVERTED or NO-HOME) · pair-check **221/196/25/106** (+1/+1/0/+2
+= the entry file, its pair, the two new §5 rows) · **D 35 · D2 11 · I 89 · I2 36 · M 81, every
+filter delta 0** — three of them closed at their causes, not adjudicated away, and the last
+exposed that a §11.200 marker had qualified only because the word *"updated"* sat in its prose.
 
 ### F87 — EXTENSION: §5.111 — the new path's object readouts translated where the old path's are: `ModularObject`'s labels re-wrapped in `_()` with the OLD path's exact msgids (parity: old is the baseline, so the French catalogue answers identically), plus the owed census of every other new-path user-visible string that lost its `_()` in the same port (DEPLOYMENT-MAP T2's decision-free candidate since 2026-08-29, never dispatched; the tester operates in French) [S]
 
