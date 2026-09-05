@@ -1,0 +1,106 @@
+=== F89 P7 WINDOW LIT-PIXEL SETS (px>8), pairwise (mandate (3), check (d)) ===
+  A^B = symmetric difference of the two lit SETS; |A-B|>8 = the metric SS11.205(g)'s ~19030 used
+--- WITHIN-BINARY, twinkle OFF (the A/A floor) ---
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R2-ref-off vs out-R3-ref-off orb_t0    @t0            846      846        0      846
+out-R2-ref-off vs out-R3-ref-off orb_t0    @t1             21       21        0       21
+                             orb_t0    FRAME       274415   274417        2   274415   <- frame-wide sets; |A-B|>8 = 0
+out-R2-ref-off vs out-R3-ref-off orb_t1    @t0             27       27        0       27
+out-R2-ref-off vs out-R3-ref-off orb_t1    @t1           2023     2023        0     2023
+                             orb_t1    FRAME       275878   275878        0   275878   <- frame-wide sets; |A-B|>8 = 0
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R4-pre-off vs out-R5-pre-off orb_t0    @t0            855      855        0      855
+out-R4-pre-off vs out-R5-pre-off orb_t0    @t1             19       19        0       19
+                             orb_t0    FRAME       274088   274090        2   274088   <- frame-wide sets; |A-B|>8 = 26
+out-R4-pre-off vs out-R5-pre-off orb_t1    @t0             44       44        0       44
+out-R4-pre-off vs out-R5-pre-off orb_t1    @t1           2015     2015        0     2015
+                             orb_t1    FRAME       275552   275553        1   275552   <- frame-wide sets; |A-B|>8 = 2
+--- BETWEEN-BINARY, twinkle OFF (4 combinations) ---
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R2-ref-off vs out-R4-pre-off orb_t0    @t0            846      855       61      820
+out-R2-ref-off vs out-R4-pre-off orb_t0    @t1             21       19       40        0
+                             orb_t0    FRAME       274415   274088    22831   262836   <- frame-wide sets; |A-B|>8 = 21976
+out-R2-ref-off vs out-R4-pre-off orb_t1    @t0             27       44       71        0
+out-R2-ref-off vs out-R4-pre-off orb_t1    @t1           2023     2015       16     2011
+                             orb_t1    FRAME       275878   275552    22818   264306   <- frame-wide sets; |A-B|>8 = 21940
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R2-ref-off vs out-R5-pre-off orb_t0    @t0            846      855       61      820
+out-R2-ref-off vs out-R5-pre-off orb_t0    @t1             21       19       40        0
+                             orb_t0    FRAME       274415   274090    22829   262838   <- frame-wide sets; |A-B|>8 = 21950
+out-R2-ref-off vs out-R5-pre-off orb_t1    @t0             27       44       71        0
+out-R2-ref-off vs out-R5-pre-off orb_t1    @t1           2023     2015       16     2011
+                             orb_t1    FRAME       275878   275553    22817   264307   <- frame-wide sets; |A-B|>8 = 21938
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R3-ref-off vs out-R4-pre-off orb_t0    @t0            846      855       61      820
+out-R3-ref-off vs out-R4-pre-off orb_t0    @t1             21       19       40        0
+                             orb_t0    FRAME       274417   274088    22833   262836   <- frame-wide sets; |A-B|>8 = 21981
+out-R3-ref-off vs out-R4-pre-off orb_t1    @t0             27       44       71        0
+out-R3-ref-off vs out-R4-pre-off orb_t1    @t1           2023     2015       16     2011
+                             orb_t1    FRAME       275878   275552    22818   264306   <- frame-wide sets; |A-B|>8 = 21940
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R3-ref-off vs out-R5-pre-off orb_t0    @t0            846      855       61      820
+out-R3-ref-off vs out-R5-pre-off orb_t0    @t1             21       19       40        0
+                             orb_t0    FRAME       274417   274090    22831   262838   <- frame-wide sets; |A-B|>8 = 21950
+out-R3-ref-off vs out-R5-pre-off orb_t1    @t0             27       44       71        0
+out-R3-ref-off vs out-R5-pre-off orb_t1    @t1           2023     2015       16     2011
+                             orb_t1    FRAME       275878   275553    22817   264307   <- frame-wide sets; |A-B|>8 = 21938
+--- BUILD-DIRECTORY CONTROL (H5): scratch a2fd3c5b vs the reference binary, both twinkle OFF ---
+NOTE: B's own window centres {'t0': (1023, 1023), 't1': (512, 1036)} differ from A's {'t0': (1023, 1024), 't1': (512, 1036)} (<=1 px, dump quantization); A's box used for both
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R2-ref-off vs out-R7-scratchpost-off orb_t0    @t0            846      846        0      846
+out-R2-ref-off vs out-R7-scratchpost-off orb_t0    @t1             21       21        0       21
+                             orb_t0    FRAME       274415   274424       23   274408   <- frame-wide sets; |A-B|>8 = 0
+out-R2-ref-off vs out-R7-scratchpost-off orb_t1    @t0             27       27        0       27
+out-R2-ref-off vs out-R7-scratchpost-off orb_t1    @t1           2023     2025        2     2023
+                             orb_t1    FRAME       275878   275887       27   275869   <- frame-wide sets; |A-B|>8 = 29
+--- ATTRIBUTION (H4): guard-only vs pre, and guard-only vs reference (twinkle OFF) ---
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R4-pre-off vs out-R8-guardonly-off orb_t0    @t0            855      855        0      855
+out-R4-pre-off vs out-R8-guardonly-off orb_t0    @t1             19       19        0       19
+                             orb_t0    FRAME       274088   274090        2   274088   <- frame-wide sets; |A-B|>8 = 26
+out-R4-pre-off vs out-R8-guardonly-off orb_t1    @t0             44       44        0       44
+out-R4-pre-off vs out-R8-guardonly-off orb_t1    @t1           2015     2015        0     2015
+                             orb_t1    FRAME       275552   275552        0   275552   <- frame-wide sets; |A-B|>8 = 0
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R2-ref-off vs out-R8-guardonly-off orb_t0    @t0            846      855       61      820
+out-R2-ref-off vs out-R8-guardonly-off orb_t0    @t1             21       19       40        0
+                             orb_t0    FRAME       274415   274090    22829   262838   <- frame-wide sets; |A-B|>8 = 21950
+out-R2-ref-off vs out-R8-guardonly-off orb_t1    @t0             27       44       71        0
+out-R2-ref-off vs out-R8-guardonly-off orb_t1    @t1           2023     2015       16     2011
+                             orb_t1    FRAME       275878   275552    22818   264306   <- frame-wide sets; |A-B|>8 = 21940
+--- TWINKLE ON, within-binary floor, same boot (R1 vs F86's post; F86's post vs post2) ---
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R1-ref-on vs out-b4-post orb_t0    @t0            843      845        2      843
+out-R1-ref-on vs out-b4-post orb_t0    @t1             21       19        2       19
+                             orb_t0    FRAME       273827   273822     2229   272710   <- frame-wide sets; |A-B|>8 = 1171
+out-R1-ref-on vs out-b4-post orb_t1    @t0             24       25        3       23
+out-R1-ref-on vs out-b4-post orb_t1    @t1           2021     2022        1     2021
+                             orb_t1    FRAME       275246   275264     2226   274142   <- frame-wide sets; |A-B|>8 = 1225
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-b4-post vs out-b4-post2  orb_t0    @t0            845      845        2      844
+out-b4-post vs out-b4-post2  orb_t0    @t1             19       19        2       18
+                             orb_t0    FRAME       273822   273657     2165   272657   <- frame-wide sets; |A-B|>8 = 1239
+out-b4-post vs out-b4-post2  orb_t1    @t0             25       24        3       23
+out-b4-post vs out-b4-post2  orb_t1    @t1           2022     2022        0     2022
+                             orb_t1    FRAME       275264   275272     2168   274184   <- frame-wide sets; |A-B|>8 = 1189
+--- TWINKLE ON, between-binary (R1 ref vs R6 pre) ---
+NOTE: B's own window centres {'t0': (1023, 1023), 't1': (512, 1036)} differ from A's {'t0': (1023, 1024), 't1': (512, 1036)} (<=1 px, dump quantization); A's box used for both
+window +-56 px at pixel centres t0=(1023, 1024) t1=(512, 1036) (frame (2048, 2048, 3))
+pair                         shot      window         |A|      |B|      A^B    AandB
+out-R1-ref-on vs out-R6-pre-on orb_t0    @t0            843      853       54      821
+out-R1-ref-on vs out-R6-pre-on orb_t0    @t1             21       17       38        0
+                             orb_t0    FRAME       273827   273470    21615   262841   <- frame-wide sets; |A-B|>8 = 20423
+out-R1-ref-on vs out-R6-pre-on orb_t1    @t0             24       43       67        0
+out-R1-ref-on vs out-R6-pre-on orb_t1    @t1           2021     2015       14     2011
+                             orb_t1    FRAME       275246   274934    21584   264298   <- frame-wide sets; |A-B|>8 = 20348

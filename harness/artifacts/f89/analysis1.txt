@@ -1,0 +1,47 @@
+=== F89 RUN MATRIX (this task, 2026-09-05 15:51-16:15 CEST, host LovelyFoxDev, display :2) ===
+  R1 ref(2815d182) twinkle ON   | R2,R3 ref OFF | R4,R5 pre(9e0f1e93 src) OFF | R6 pre ON
+  R7 scratch-post(a2fd3c5b src, sc-f89/build-var) OFF | R8 guard-only(a2fd3c5b minus the 5.133 hunk) OFF
+
+=== margins ===
+run                    | shot t0: own vs other    | shot t1: own vs other    | verdict
+out-R1-ref-on          | own 181  other 191  m= -10 | own 255  other 153  m=+102 | FAIL (1 failure(s))
+out-R2-ref-off         | own 182  other 217  m= -35 | own 255  other 171  m= +84 | FAIL (1 failure(s))
+out-R3-ref-off         | own 182  other 217  m= -35 | own 255  other 171  m= +84 | FAIL (1 failure(s))
+out-R4-pre-off         | own 217  other  45  m=+172 | own 255  other 217  m= +38 | PASS (0 failure(s))
+out-R5-pre-off         | own 217  other  45  m=+172 | own 255  other 217  m= +38 | PASS (0 failure(s))
+out-R6-pre-on          | own 198  other  33  m=+165 | own 255  other 211  m= +44 | PASS (0 failure(s))
+out-R7-scratchpost-off | own 182  other 217  m= -35 | own 255  other 171  m= +84 | FAIL (1 failure(s))
+out-R8-guardonly-off   | own 217  other  45  m=+172 | own 255  other 217  m= +38 | PASS (0 failure(s))
+
+=== scalars ===
+run                    tag       OLDdistMoon_km NEWdistMoon_km old^new_deg nbStarsToDraw twinkEff
+out-R1-ref-on          base           361755.8      361755.8    27.008 [3313, 3313]   0.4000
+out-R1-ref-on          floor4         200000.0      200000.0    27.008 [3213, 3213]   0.4000
+out-R1-ref-on          orb_t0         200000.0      200000.0     0.374 [3573, 3573]   0.4000
+out-R1-ref-on          orb_t1         200000.0      200000.0     0.000 [3563, 3563]   0.4000
+out-R1-ref-on          fix_t0     1452770383.4  1452770383.9     0.000 [3563, 3563]   0.4000
+out-R2-ref-off         base           361755.8      361755.8    27.008 [3313, 3313]   0.0000
+out-R2-ref-off         floor4         200000.0      200000.0    27.008 [3213, 3213]   0.0000
+out-R2-ref-off         orb_t0         200000.0      200000.0     0.346 [3570, 3573]   0.0000
+out-R2-ref-off         orb_t1         200000.0      200000.0     0.000 [3563, 3563]   0.0000
+out-R2-ref-off         fix_t0     1452770383.4  1452770383.9     0.000 [3563, 3563]   0.0000
+out-R4-pre-off         base           361755.8      361755.8    27.008 [3313, 3313]   0.0000
+out-R4-pre-off         floor4         182582.8      200000.0    27.008 [3213, 3213]   0.0000
+out-R4-pre-off         orb_t0         182582.8      200000.0    76.463 [3446, 3446]   0.0000
+out-R4-pre-off         orb_t1         181736.8      200000.0    76.418 [3447, 3447]   0.0000
+out-R4-pre-off         fix_t0     1452770383.4  1452770383.9    76.418 [3447, 3447]   0.0000
+out-R6-pre-on          base           361755.8      361755.8    27.008 [3313, 3313]   0.4000
+out-R6-pre-on          floor4         182582.8      200000.0    27.008 [3213, 3213]   0.4000
+out-R6-pre-on          orb_t0         182582.8      200000.0    76.463 [3446, 3446]   0.4000
+out-R6-pre-on          orb_t1         181736.8      200000.0    76.418 [3447, 3447]   0.4000
+out-R6-pre-on          fix_t0     1452770383.4  1452770240.3    76.418 [3447, 3447]   0.4000
+out-R7-scratchpost-off base           361755.8      361755.8    27.008 [3313, 3313]   0.0000
+out-R7-scratchpost-off floor4         200000.0      200000.0    27.008 [3213, 3213]   0.0000
+out-R7-scratchpost-off orb_t0         200000.0      200000.0     0.346 [3573, 3570]   0.0000
+out-R7-scratchpost-off orb_t1         200000.0      200000.0     0.000 [3563, 3563]   0.0000
+out-R7-scratchpost-off fix_t0     1452770383.4  1452770240.3     0.000 [3563, 3563]   0.0000
+out-R8-guardonly-off   base           361755.8      361755.8    27.008 [3313, 3313]   0.0000
+out-R8-guardonly-off   floor4         182582.8      200000.0    27.008 [3213, 3213]   0.0000
+out-R8-guardonly-off   orb_t0         182582.7      200000.0    76.460 [3446, 3446]   0.0000
+out-R8-guardonly-off   orb_t1         181736.8      200000.0    76.418 [3447, 3447]   0.0000
+out-R8-guardonly-off   fix_t0     1452770383.4  1452770383.9    76.418 [3447, 3447]   0.0000

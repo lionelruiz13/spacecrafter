@@ -1,0 +1,89 @@
+=== H2 CHANNEL: every differing header leaf, ref(2815d182) vs pre(9e0f1e93 src), both twinkle OFF ===
+out-R2-ref-off vs out-R4-pre-off @ orb_t0: 67 of 406 header leaves differ
+   .helioToEye[0]                                       4.800159974874443e-07 != 0.9432748872447005
+   .helioToEye[10]                                      -0.0060354351212555295 != -0.7090593615080851
+   .helioToEye[12]                                      0.9569848048440216 != -0.00014378525455325413
+   .helioToEye[13]                                      -0.002208095491625785 != -0.7195896528614256
+   .helioToEye[14]                                      -0.3383209666995591 != -0.7164682792678824
+   .helioToEye[1]                                       0.006035435199430761 != 0.23546366965097953
+   .helioToEye[2]                                       0.9999817865949975 != 0.23407124421421763
+   .helioToEye[4]                                       0.9999999950000674 != 0.33201277403309265
+   .helioToEye[5]                                       9.999346008010496e-05 != -0.6688213837708065
+   .helioToEye[6]                                       -1.0835397787165627e-06 != -0.6651657496367017
+   .helioToEye[8]                                       -9.999817849295037e-05 != -7.051487929512165e-05
+   .helioToEye[9]                                       0.9999817815956759 != 0.7051487906005361
+   .oldLocalVision[0]                                   -0.9999817865949975 != -0.23407124421421768
+   .oldLocalVision[1]                                   1.0835397787168973e-06 != 0.6651657496367015
+   .oldLocalVision[2]                                   0.006035435121255528 != 0.7090593615080851
+   .oldView.nav.equVision[0]                            -0.9999817865949975 != -0.23407124421421768
+   .oldView.nav.equVision[1]                            1.0835397787168973e-06 != 0.6651657496367015
+   .oldView.nav.equVision[2]                            0.006035435121255528 != 0.7090593615080851
+   .oldView.nav.headingVector[0]                        0.006035435199430761 != 0.23546366965097953
+   .oldView.nav.headingVector[1]                        9.999346008016043e-05 != -0.6688213837708061
+   .oldView.nav.headingVector[2]                        0.9999817815956756 != 0.705148790600536
+   .oldView.nav.localVision[0]                          -0.9999817865949975 != -0.23407124421421768
+   .oldView.nav.localVision[1]                          1.0835397787168973e-06 != 0.6651657496367015
+   .oldView.nav.localVision[2]                          0.006035435121255528 != 0.7090593615080851
+   .oldView.nav.matEarthEquToEye[0]                     4.800159974874443e-07 != 0.9432748872447005
+   .oldView.nav.matEarthEquToEye[10]                    -0.006035435121255528 != -0.709059361508085
+   .oldView.nav.matEarthEquToEye[1]                     0.006035435199430761 != 0.23546366965097953
+   .oldView.nav.matEarthEquToEye[2]                     0.9999817865949975 != 0.23407124421421763
+   .oldView.nav.matEarthEquToEye[4]                     0.999999995000067 != 0.3320127740330925
+   .oldView.nav.matEarthEquToEye[5]                     9.999346008016043e-05 != -0.6688213837708061
+   .oldView.nav.matEarthEquToEye[6]                     -1.0835397787168973e-06 != -0.6651657496367014
+   .oldView.nav.matEarthEquToEye[8]                     -9.999817849289484e-05 != -7.051487929510321e-05
+   .oldView.nav.matEarthEquToEye[9]                     0.9999817815956756 != 0.705148790600536
+   .oldView.nav.matJ2000ToEye[0]                        9.203949001734931e-07 != 0.9432750334631378
+   .oldView.nav.matJ2000ToEye[10]                       -0.005537834920483264 != -0.9151369233379569
+   .oldView.nav.matJ2000ToEye[1]                        0.006035244327695304 != 0.23546324050241724
+   .oldView.nav.matJ2000ToEye[2]                        0.9999817877466859 != 0.2340710866750041
+   .oldView.nav.matJ2000ToEye[4]                        0.9175219094730139 != 0.30464338591650847
+   .oldView.nav.matJ2000ToEye[5]                        -0.3976779967230513 != -0.8941237439476732
+   .oldView.nav.matJ2000ToEye[6]                        0.0023992830878371185 != -0.3282303123209698
+   .oldView.nav.matJ2000ToEye[8]                        0.3976852343702839 != 0.13200234339753894
+   .oldView.nav.matJ2000ToEye[9]                        0.9175051971232894 != 0.3809196672280085
+   .oldView.nav.matLocalToEye[0]                        4.800159974874443e-07 != 0.9432748872447005
+   .oldView.nav.matLocalToEye[10]                       -0.006035435121255528 != -0.709059361508085
+   .oldView.nav.matLocalToEye[1]                        0.006035435199430761 != 0.23546366965097953
+   .oldView.nav.matLocalToEye[2]                        0.9999817865949975 != 0.23407124421421763
+   .oldView.nav.matLocalToEye[4]                        0.999999995000067 != 0.3320127740330925
+   .oldView.nav.matLocalToEye[5]                        9.999346008016043e-05 != -0.6688213837708061
+   .oldView.nav.matLocalToEye[6]                        -1.0835397787168973e-06 != -0.6651657496367014
+   .oldView.nav.matLocalToEye[8]                        -9.999817849289484e-05 != -7.051487929510321e-05
+   .oldView.nav.matLocalToEye[9]                        0.9999817815956756 != 0.705148790600536
+   .oldView.nav.plans.moveAim[0]                        -0.9999999999998143 != -0.23483112588717456
+   .oldView.nav.plans.moveAim[1]                        4.799671826736702e-07 != 0.6673233626635623
+   .oldView.nav.plans.moveAim[2]                        -3.755196419951272e-07 != 0.7067771020328529
+   .oldView.nav.plans.moveCoef                          0.9805968403816223 != 0.9791968464851379
+   .oldView.nav.plans.moveToCoef                        1.4733938690158646e-39 != 1.471759955006462e-39
+   .oldView.nav.precEquVision[0]                        -0.9999817877466859 != -0.23407108667500415
+   .oldView.nav.precEquVision[1]                        -0.0023992830878371185 != 0.32823031232096983
+   .oldView.nav.precEquVision[2]                        0.005537834920483264 != 0.915136923337957
+   .oldView.nav.viewOffsetTransition                    0.996157705783844 != 0.9958878755569458
+   .oldView.observer.moveToCoef                         -0.010756358504295349 != 5.2892666561141146e+17
+   .oldView.observer.moveToMult                         3.54206212827384e-41 != 3.496099538643986e-41
+   .oldView.projector.zoomAim                           0 != 5.29424431798624e-310
+   .oldView.projector.zoomCoef                          3.54206212827384e-41 != 0
+   .oldView.stars.nbStarsToDraw[0]                      3570 != 3446
+   .oldView.stars.nbStarsToDraw[1]                      3573 != 3446
+   .ramp.frames                                         5411 != 5447
+  [truncated to the first 8 of the differing leaves; the counts above are the claim]
+
+=== the same at floor4 (BEFORE any tracking command) ===
+out-R2-ref-off vs out-R4-pre-off @ floor4: 10 of 406 header leaves differ
+   .helioToEye[12]                                      -0.9158805857004874 != -0.9157137334837713
+   .helioToEye[13]                                      -0.43754837634791277 != -0.43886672617407835
+   .helioToEye[14]                                      0.0001999720284989838 != -0.0006628295151921582
+   .oldView.nav.plans.moveToCoef                        1.4733938690158646e-39 != 1.471759955006462e-39
+   .oldView.nav.plans.zoomingMode                       0 != 1052323
+   .oldView.observer.moveToCoef                         -0.010756358504295349 != 5.2892666561141146e+17
+   .oldView.observer.moveToMult                         3.54206212827384e-41 != 3.496099538643986e-41
+   .oldView.projector.zoomAim                           0 != 5.29424431798624e-310
+   .oldView.projector.zoomCoef                          3.54206212827384e-41 != 0
+   .ramp.frames                                         3913 != 3949
+
+=== the fields the F89 section's H2 criterion named, side by side (they do NOT differ) ===
+floor4 camera.mat equal: True | camera.rootPos equal: True | b4_orbit_moon new ecl equal: True | Moon new ecl equal: True
+    floor4 OLD Moon dist: 0.0013369173975661397 vs 0.0012204903177917004
+orb_t0 camera.mat equal: True | camera.rootPos equal: True | b4_orbit_moon new ecl equal: True | Moon new ecl equal: True
+    orb_t0 OLD Moon dist: 0.0013369173975661397 vs 0.0012204903177917004

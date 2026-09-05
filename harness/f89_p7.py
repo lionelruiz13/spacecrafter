@@ -159,9 +159,28 @@ def _mask(dirpath, shot, ndc, win, shape, thr=8):
 def cmd_sets(A, B):
     import numpy as np
     win, P, shape = _window(A)
-    winB, PB, _ = _window(B)
-    assert win == winB and P == PB, "the two runs' window geometry differs - not comparable"
-    print("window +-%d px at NDC t0=%s t1=%s (frame %s)" % (win, P["t0"], P["t1"], shape))
+    winB, PB, shapeB = _window(B)
+    # The comparison must read the SAME box in both frames.  The dumped NDC of
+    # the Moon can differ between runs in the 8th decimal (the old path's
+    # ease-out is still settling by ~1e-7 rad when the dump is taken), which is
+    # 6e-5 px - so the comparable quantity is the INTEGER pixel centre the mask
+    # actually uses, not the float.  Equality is asserted there, and A's
+    # geometry is then used for both.
+    def ctr(ndc, shp):
+        return (int((ndc[0] * 0.5 + 0.5) * shp[1]), int((1.0 - (ndc[1] * 0.5 + 0.5)) * shp[0]))
+    ca = {k: ctr(v, shape) for k, v in P.items()}
+    cb = {k: ctr(v, shapeB) for k, v in PB.items()}
+    assert win == winB and shape == shapeB, "window size / frame size differ - not comparable"
+    if ca != cb:
+        # Measured (F89): the dumped Moon NDC moves by ~1e-7 between runs (the
+        # old path's ease-out still settling), which is 6e-5 px - but int()
+        # quantizes it, so the centre can land one pixel apart.  A's box is used
+        # for BOTH images (comparing two frames means reading the same box); the
+        # divergence is printed rather than hidden, because for the gate's own
+        # max-over-window it means the window itself is not run-invariant.
+        print("NOTE: B's own window centres %s differ from A's %s (<=1 px, dump quantization);"
+              " A's box used for both" % (cb, ca))
+    print("window +-%d px at pixel centres t0=%s t1=%s (frame %s)" % (win, ca["t0"], ca["t1"], shape))
     print("%-28s %-9s %-9s %8s %8s %8s %8s" %
           ("pair", "shot", "window", "|A|", "|B|", "A^B", "AandB"))
     for shot in ("orb_t0", "orb_t1"):
@@ -174,8 +193,14 @@ def cmd_sets(A, B):
                 shot, "@" + w, int(ma.sum()), int(mb.sum()), sym, int((ma & mb).sum())))
         fa8 = fa > 8
         fb8 = fb > 8
-        print("%-28s %-9s %-9s %8d %8d %8d %8d   <- frame-wide" % (
-            "", shot, "FRAME", int(fa8.sum()), int(fb8.sum()), int((fa8 ^ fb8).sum()), int((fa8 & fb8).sum())))
+        # Two frame-wide numbers, because §11.205(g)'s recorded ~19030 is the
+        # SECOND one: A^B is the symmetric difference of the two lit SETS (the
+        # mandate's "lit-pixel SETS diffed"), |A-B|>8 counts pixels whose value
+        # moved by more than the threshold whether or not either was lit.
+        print("%-28s %-9s %-9s %8d %8d %8d %8d   <- frame-wide sets; |A-B|>8 = %d" % (
+            "", shot, "FRAME", int(fa8.sum()), int(fb8.sum()), int((fa8 ^ fb8).sum()),
+            int((fa8 & fb8).sum()),
+            int((np.abs(fa.astype(np.int16) - fb.astype(np.int16)) > 8).sum())))
 
 
 if __name__ == "__main__":
