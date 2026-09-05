@@ -168,6 +168,67 @@ the supervisor never pushes.
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-05, supervising session 23 — LovelyFoxDev, the
+READINESS round: the P7 red / the French labels / the rehearsal]:** trigger = the §0b
+verbatim line PLUS an in-line transmission [vixy 2026-09-05, verbatim]: *"The
+master-beta will became the reference and get renamed main once ready."* — this
+answers the policy half of DEPLOYMENT-MAP **R6** (the branch becomes `main` by RENAME,
+the others are not redirected) and names a gate, *"ready"*, which the map's critical
+path already defines as **the T5.1 rehearsal + a T5.2 soak** (*"gate the word
+'ready'"*, both re-cuts). No question asked of the owner this session (his stated
+capacity this week, 2026-09-05); the rename itself is his act and is not prepared
+beyond a measured footprint (F92). Warm-up (every value `date`-measured 15:16–15:20,
+the command beside the claim — Q-67's rule): both trees CLEAN at open, code
+`a2fd3c5b` / harness `3a5ce8f` (one commit past the session-22 close `7852ce5`: the
+stamp correction); definition-drift assert MATCH (`a5a54d94`); binary `2815d182`
+(F86's) current — `cmake -n` 0 steps, no `src/` file newer; next free §11 number
+**208** (live ∪ archive, `max+1`); §5 max 135; live `### F` count **6 → 1** by
+**archival pass 15** at OPEN (update-s21 + F83/F84/F85/F88/F86, 974 lines incl. the
+pass-13/14-shape seam tidy, manifest `2026-09-05-pass15`, pre-md5 `673303e0`
+reproduced in-process AND from disk, commit `6045ea4`; **F87 KEPT LIVE — carried,
+not delivered**) **→ 5** by the mints below. Same boot as sessions 21–22 (`uptime -s`
+2026-09-04 18:45:08), `:2` 2448x1332 under `.5KBYU3`, canary `--no-scene` **exit 0**
+(30 members, artifacts `f56/canary/20260905-151723`); config/ssystem md5 pristine
+(`03fbee59`/`545a51ef`); no `spacecrafter` in `/proc/*/comm`; ASCII gate not re-run
+at open (no code moved since the last PASS at 972). **HOST DELTA:** RAM **20 GiB
+available of 59** (session 22 opened at 50) — writer set enumerated: foxy's `java`
+29.6 GB RSS + his desktop (firefox, pulsar, Discord, remmina), i.e. the OWNER's hand
+on his own session, not ours; the SessionStart hook prints safe `-j13`; every build
+this round runs `free -g` first and drops to `-j6` under 16 GiB (§0.5). Instrument
+baselines at open: scan **211/261/131** · pair-check **223/198/25/107** D 35 · D2 11 ·
+I 89 · I2 36 · M 81 — to the digit of the session-22 close. Unpushed **86 code / 676
+harness** (measured `rev-list --count`; the 674 at close preceded its own close
+commit and the stamp correction). **DISPATCHER DEFECTS FOUND AT OPEN, both session
+22's (mine) and both corrected before any dispatch:** (1) the close note's *"archival
+pass 15 (update-s21 + F83–F88, live `### F` 6 → 0)"* — F87 was never delivered; the
+pass moved five sections, not six; (2) F87's *"`body.cpp` wraps 12 labels"* and its
+precondition *"= 12"* — measured **15** lines match `_(` at HEAD and `git log
+85cc2785..HEAD -- src/bodyModule/body.cpp` is EMPTY, so the 12 was written from
+memory at the mint (Q-67's class, a §0.7 abort had it been dispatched as written);
+corrected at the section with the command. QUEUE CONSUMPTION (session-22 close, in
+order): (1) pass 15 — DONE; (2) the `b4_anchors` P7 discriminator → **F89** (S,
+instrument; the red is on the REFERENCE binary and the developer will run the
+harness); (3) **F87** — carried, corrected, dispatched this round; (4) §11.207(g)'s
+first engine candidate §5.86+§5.19 → **F91** (M); (5) the T5.1 rehearsal → **F90**
+(M) — PROMOTED above (4) by today's line: it is the map's own "ready" gate and it
+doubles as the developer's smoke suite; (6) the riders (§5.59's `sender` arm, scedit
+README `:43`, the `[parallel-script]` question) — not minted, carried; (7) owner
+items — §3. NEW from today's line: the rename's footprint → **F92** (S, record-only:
+189 harness hits / 118 files + 9 code files measured at open, classified before
+anyone renames). **T5.2 (the soak) NOT minted**: a multi-hour campaign needs a design
+under the no-`run_in_background` rule (foreground polls, the F19 stall instrument as
+hang detector) — next round's candidate, said here so the gate's second half is not
+silent. Picks: **F89 → F87 → F90**, then F91 and F92 if health permits (session 22
+ran seven executors and closed on context; three is the sweet spot, §0b.2).
+Deliveries: all to the parent (§11.208+, refreshed at each dispatch). Launch classes:
+F89 FUNCTIONAL (star-field pixel sets under a frozen clock — no banked-band claim, the
+full canary is not required); F87 FUNCTIONAL (farm, French session, sidecar); F90
+FUNCTIONAL (the farm, three runs); F91 FUNCTIONAL (RA/DE parity through the sidecar);
+F92 none. Remotes: local contains origin on both; push impossible from this session
+(publickey) — the owner's push is R5, unchanged.
+
+---
+
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
 
 1. `CLAUDE.md` auto-loads (the map). Read THIS file; locate your task's section; read
@@ -486,11 +547,14 @@ and accepted; archived pass 12) · F75 → scedit journal 2026-09-01a · F76 →
 2026-09-01b + §5.122/§5.123 · F77 §11.196 · F78 §11.197 (session-20 round —
 four for four DELIVERED and accepted; archived pass 13) · F79 §11.199 · F80 →
 scedit journal 2026-09-04a + §11.200 · F81 §11.201 · F82 §11.202 (session-21
-round — four for four DELIVERED and accepted; archived pass 14). Live below: the
-session-22 round **F83–F87** (F86/F87 the EXTENSION members). Remaining
-candidates next-round: the tester-workflow rehearsal (DEPLOYMENT-MAP T5.1), the
-§5.86 + RA zero-point fix (§11.198(b) resolved decision (1)), the session-21
-deferred set. Still blocked: §5.100's fix (authorization unanswered).*
+round — four for four DELIVERED and accepted; archived pass 14) · F83 §11.203 ·
+F84 §11.204 · F86 §11.205 · F85 §11.206 · F88 §11.207 (session-22 round — five
+for five DELIVERED and accepted; archived pass 15). Live below: **F87** (carried
+from session 22) + the session-23 round **F89–F92** (F91/F92 the EXTENSION
+members). Remaining candidates next-round: the T5.2 soak (the "ready" gate's second
+half, needs a foreground-poll design), the §11.207(g) tail (§5.98 · §5.21 ·
+§5.66+§5.71 · §5.115 · A15's residual), the riders. Still blocked: §5.100's fix
+(authorization unanswered).*
 
 ---
 
@@ -504,8 +568,13 @@ clause dissolves under §11.52(b): old is the baseline, so the msgids are OLD's,
 byte-exact — no new string is authored; a label with no old counterpart is
 recorded, not invented. The row's owed census is part of the task.
 
-**Measured at dispatch (supervisor, 2026-09-05):** `body.cpp` wraps 12 labels in
-`_()` (`:325,:331,:336,:344,:347` among them); `ModularObject.cpp` wraps 0
+**Measured at dispatch (supervisor, 2026-09-05):** `body.cpp` ~~wraps 12 labels in
+`_()`~~ **[CORRECTED at the session-23 open, 2026-09-05 15:2x: `grep -c '_('
+src/bodyModule/body.cpp` = 15 LINES (18 `_()` sites, some lines carry two: `:347`,
+`:363-364`, `:371`), file untouched since the mint (`git log 85cc2785..HEAD --
+src/bodyModule/body.cpp` empty) — the 12 was written from memory, dispatcher
+defect]** (`:325,:331,:336,:344,:347` among them; the nav fields `:425-427`
+`SA`/`GHA`/`LHA` and `:433` `Az/Alt/coA` are wrapped too); `ModularObject.cpp` wraps 0
 (`:11,:17,:20,:23,:26` bare literals); field config `app_locale = fr`, `sky_locale
 = fr`; F44's sidecar instrument (`f44_parity.py`, `artifacts/f44/legA_003.json.navstr`)
 is the measurement channel; the `.po` files are EXCLUDE-listed under D14.
@@ -532,12 +601,341 @@ msgid used; (c) sidecar labels identical old vs new in `fr` for the measured bod
 
 **Preconditions (checkable, §0.7):** code HEAD ⟨F86's⟩, harness ⟨at dispatch⟩;
 §5.111 OPEN; `grep -c '_(' src/experimentalModule/ModularObject.cpp` = 0 and
-`src/bodyModule/body.cpp` = 12 (drift re-resolved); `app_locale = fr` in the field
+`src/bodyModule/body.cpp` = **15** (corrected 2026-09-05, session 23; drift re-resolved); `app_locale = fr` in the field
 config; display per HOST-EVENTS; next free §11 ⟨at dispatch⟩; live `### F` count
 **5**.
 
 **DoD:** wraps (code first) + census + measurement; §11.207 + stub; §5.111 flip;
 README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+### F89 — The `b4_anchors` P7 screen-witness red DISCRIMINATED: the one gate that reds on the reference binary (green ×3 pre-§5.133, red ×2 post) gets its cause named — the twinkle-`rand()` candidate tested the way the two failed experiments could not (b4's own frozen-clock scene, twinkle OFF on both binaries, the two P7 windows' lit-pixel SETS diffed, predictions committed first), the control's margin read from the five F86 runs before any launch, every `rand()` consumer in `src/` enumerated — instrument fix if the instrument, §5.133's row if the product (§11.205(g)(h); session-22 queue position 2; the developer will run this harness) [S, instrument]
+
+**Why now / mandate:** the reference branch carries a harness gate that is RED on its own
+binary with the cause unconfirmed (§11.205(g)): *"green ×2 pre-fix + on a `main.cpp`-only
+binary, red ×2 on the fixed binary"*. A newcomer who runs `b4_anchors_run.sh` on his clone
+meets that red first. Bounded already, by measurement: the Moon's flux-weighted centroid
+is **1324.2740 / 1767.6721, mass 76290, in ALL FIVE runs**; every dumped number in
+`b4_result.json` is identical; the frames differ in **~19030 px>8** between the two
+binary groups against a **730–860 px** within-group floor; no ±2 px translation improves
+the match ⇒ the camera did not move, and *"what differs is which faint stars sit above
+the threshold"*. Candidate, NOT finding: `hip_star_mgr.cpp:640-643`, `1 -
+twinkle_amount*rand()/RAND_MAX` over a stream nothing seeds (`src/` holds 0 `srand(`).
+Two experiments failed and are kept with their causes (§11.205(h)): **P8** used the
+shipped startup view (3.30 of 4.19 Mpx lit by atmosphere/landscape, no star field);
+**P8b** repaired the scene but let the clock run — its A/A control (23502 px>8) came in
+LARGER than its A/B, voiding both arms. The instrument note it left: *"comparing
+star-field pixels across launches needs the date pinned AND the frame index pinned (or
+twinkle off); b4's scene pins the date, which is why its floor is 773 and not 23000."*
+
+**Measured at dispatch (supervisor, 2026-09-05 15:1x, code `a2fd3c5b`):** b4's scene
+sends `timerate rate 0` BEFORE the epoch (`b4_anchors.py:185`) and `date jday J0`
+(`:186`), advances/returns by `DT_ORBIT`/`DT_SPIN` (`:205-227`); P7 prints at `:422`; the
+control's text at `:477` (*"SCREEN WITNESS control: the OTHER date's position is darker
+in each shot"*), its in-run rationale at `:441`. F86's five runs are committed:
+`harness/artifacts/f86/b4_{pre,pre2,post,post2,mainonly}.json.gz`. Binaries: the
+FIXED one is `build-claude/src/spacecrafter` (`2815d182`, code `a4a7c226` = HEAD's
+engine state); the PRE-fix state is code **`9e0f1e93`** (the `main.cpp`-only commit —
+its binary landed in the pre-fix GROUP, §11.205(g)); F86's scratch tree
+`/home/claude/sc-f86/` holds outputs (`out-b4-mainonly`, `b4_farm`, `build-asan`) — whether
+a pre-fix RELEASE binary survives there is for the executor to measure (`md5sum` +
+`git describe` of its build dir); if none, build `9e0f1e93` in `/home/claude/sc-f89/
+build-pre` (carried path, `-j` per §0.5 after `free -g` — 20 GiB avail at this open).
+`grep -rc 'srand(' src/ | grep -v ':0'` → nothing (re-measure). Twinkle's command-surface
+handle is NOT stated here — find it in `util/scedit/grammar/sc-grammar.json` and
+`app_command_interface.cpp`, cite the line.
+
+**Mandate:** (0) **Read before launching:** from the five F86 `b4_*.json.gz`, extract the
+TWO scalars P7's control compares in each run (the "darker than" pair) and state the
+MARGIN each run passed or failed by — a control that passes by a hair on the pre-fix
+binary is a finding by itself, and its numbers bound H1/H2 before any run. (1) **Random
+channels:** enumerate every `rand(`/`random(`/`drand48(`/`std::mt19937`/`uniform_*`
+consumer in `src/` (EntityCore included, read-only) with its site and whether it reaches
+the DRAW of the star field; state whether twinkle is the ONLY per-frame random channel
+on the P7 windows. (2) **Predictions, committed to `harness/artifacts/f89/prediction.txt`
+BEFORE any launch, each with the number that refutes it:** **H1 (twinkle)**: with twinkle
+OFF on BOTH binaries, under b4's frozen clock, the between-binary P7-window difference
+collapses to the within-binary floor AND the control is GREEN on both — refuted if the
+between-binary difference stays within an order of magnitude of 19030 with twinkle off.
+**H2 (the pre-fix binary drew from corrupt memory — §5.133's read)**: the pre-fix
+binary's camera/anchor state differs from the fixed one below the JSON's printed
+precision — refuted if the full-precision dump (`dumpread.py` channel, every float at
+`%.17g`) is byte-identical across the two binaries for `camera.mat` and the anchor's
+position; confirmed if any digit differs. **H3 (instrument at the margin)**: the control's
+margin on the pre-fix runs is within the within-group floor's equivalent, so a
+floor-sized change flips it — decided by (0). (3) **Runs** on a `b3_farm.sh` HOME
+(anchors from the shipped `anchor.ini`; `/proc/<pid>/comm` assert before each; GetActive
+recorded): b4's scene, twinkle OFF, **two runs per binary** (A/A within each), the P7
+windows' lit-pixel SETS (px>8 masks) saved and diffed pairwise — within-binary and
+between-binary counts stated; then the same with twinkle ON, one run per binary, so the
+twinkle-on floor is re-measured in the same session as the twinkle-off one. (4) **Verdict
+and act:** H1 confirmed ⇒ the INSTRUMENT is at fault: `b4_anchors.py` gains one send
+(`twinkle off` in the scene setup, beside `timerate rate 0`, with a comment citing this
+entry) and the README's b4 section says why; re-run `b4_anchors_run.sh` on the fixed
+binary — green is the DoD. H1 refuted ⇒ the difference is the PRODUCT's: attribute it
+between §5.133's ownership fix and §5.134's guard (the two commits are `9e0f1e93` →
+`a4a7c226`; a build with the comet guard alone is one revert of the ownership hunk in a
+scratch tree — do it if health permits, else name it owed), record at §5.133's row
+(both homes) what the pre-fix binary was drawing, and leave the gate RED with its cause
+named in the README — never re-bank, never demote the control. Either way §11.205(g)'s
+*"unconfirmed"* gets its back-marker. (5) **Record:** §11.208 entry FIRST + stub (the
+margin table, the random-channel census, the predictions and their fates, the set
+diffs, the verdict); §11.205(g)/(h) back-marked in both homes; `harness/README.md`
+b4 section (the instrument note upgraded to a rule if H1 holds); WIP per §0.6; D14.
+
+**Boundaries:** no engine code; `b4_anchors.py` edited ONLY on H1-confirmed and only by
+the one scene send + comment; no re-bank, no threshold change, no control demotion;
+builds and farms under `/home/claude/sc-f89/`; the real `~/.spacecrafter` untouched (md5
+asserted); no `run_in_background`; the full canary NOT run (no band claim is made —
+say so in the entry rather than substitute a weaker gate).
+
+**Discriminating checks:** (a) the control's two scalars + margin for all five F86 runs,
+from the committed artifacts; (b) the random-channel census with sites, and the
+"twinkle is/is not the only channel" sentence; (c) predictions committed before the
+runs, each with its refuting number, each marked confirmed/refuted after; (d) the P7
+window set-diffs: within-binary ×2, between-binary ×4, twinkle off — numbers; the
+twinkle-on floor re-measured; (e) the full-precision dump comparison for H2; (f) the
+gate's state after the task: green on both binaries (instrument fixed), or red with
+the cause named at §5.133 — one of the two, never "unexplained".
+
+**Preconditions (checkable, §0.7):** code HEAD `a2fd3c5b`, harness HEAD ⟨at dispatch⟩;
+binary `build-claude/src/spacecrafter` md5 `2815d182`, `cmake -n` 0 steps; the five
+`harness/artifacts/f86/b4_*.json.gz` present; `b4_anchors.py:185` reads `send("timerate
+rate 0", 1)`, `:186` `date jday`, `:422` the P7 print, `:477` the control string (drift
+re-resolved; content drift = abort); `hip_star_mgr.cpp:640-643` the twinkle site (drift
+re-resolved); `grep -rl 'srand(' src/` empty; §5.133 FIXED and §11.205 present with
+(g)/(h) as quoted; next free §11 **208**; live `### F` count **5**; `/home/claude/sc-f89/`
+ABSENT; canary `--no-scene` exit 0 this boot; display per HOST-EVENTS 2026-09-04 (`:2`,
+auth under `/run/user/1003`); no `spacecrafter` in `/proc/*/comm`; config/ssystem md5
+`03fbee59`/`545a51ef`; `free -g` available ≥ 16 GiB before any build (else `-j6`).
+
+**DoD:** the margin table + census + predictions + set diffs + verdict; the instrument
+fix (if H1) with b4 green, or the §5.133 record (if not) with the red explained;
+§11.208 + stub; back-markers; README; trees clean; WIP cleared; baselines LAST with
+deltas.
+**WIP:** —
+
+### F90 — T5.1, the tester's day in the app, REHEARSED — and written as the developer's smoke suite: one launch on a farm in French through the shipped command surface (launch · author a body · run a shipped show · search, recorded as deprecated · select and read out · save · reload · one keyboard ramp · quit), every step's observable and pass criterion stated BEFORE the run, three runs (the functional A/A floor — a flake is a finding), every divergence recorded against its §5 row or minted by §5.79's criterion and NONE fixed, the suite runnable by the newcomer in one command and shown able to fail (DEPLOYMENT-MAP T5.1: *"the closing audit before 'ready'"*; the owner's line today makes "ready" the criterion) [M]
+
+**Why now / mandate:** the map's own gate on the word "ready" (T5.1 + T5.2, both
+re-cuts of the critical path) has NEVER RUN — every harness in the tree is a proxy built
+from OUR model of operation (T5.1's own sentence). Today's line [vixy 2026-09-05]:
+*"…renamed main once ready."* ⇒ the rehearsal is the first half of what "ready" means
+here, and the SAME artifact is the smoke suite `doc/developer-entry.md` §build/run/test
+can hand the newcomer. Search is deprecated (R22) — the step stays IN, run once,
+recorded as deprecated: its result is a datum, not a gate.
+
+**Measured at dispatch (supervisor, 2026-09-05 15:1x):** field `config.ini:68`
+`app_locale = fr`, `:71` `sky_locale = fr`. Shipped scripts under
+`~/.spacecrafter/scripts/{basis,custom,deepsky,fscripts,internal}` (`basis/` holds
+`artificial_satellites.sts`, `moon_phases.sts`, … — the executor picks the SHORTEST
+show by reading, states the pick and its measured duration). FARM SAFETY, the one
+hazard this task must not repeat: `b3_farm.sh` SYMLINKS every `~/.spacecrafter` entry it
+does not rebuild (`b3_farm.sh:24`) — `scripts/` included, so anything writing
+`scripts/fscripts/startup.sts` writes the OWNER's file (README `:2097-2109`); `f55_farm.sh`
+rebuilds `scripts/` and `scripts/fscripts/` as real directories of symlinks (`:31-33`).
+`config.ini` is ALSO a symlink under both farms ⇒ any `configuration action save` in the
+farm would rewrite the REAL config (§5.42's writer): the F90 farm makes `config.ini` a
+COPY, and the real one's md5 (`03fbee59`) is asserted before and after every run.
+Verbs at source (cite the line at dispatch-time HEAD): `session action save|load
+[filename <name>]` (§11.128(f)), `body action load` / `body action save [filename
+<name>]` (§11.121(e)), `body action reload`, `get status position` (§11.135), `select
+planet <name>`, `search name <x>`; the quit verb is NOT stated here — find it. The live
+key channel is F25's (`f25_ramp.py`, README `:1229`); the drag channel is DEAD on this
+host (README `:1277`) — keys only. The path that draws by default is NEW (§11.206(c):
+`beta_features.ini [dual_path] render_path` absent ⇒ NEW+pinned). Teardown hazards a
+quit can meet: §5.59 / A40 (`f19_stall.sh` is the precedent instrument). The sidecar
+reader for info strings is `f44_parity.py` (`.navstr`); the dump reader `dumpread.py`.
+
+**Mandate:** (1) **The suite**, `harness/f90_rehearsal.py` + `f90_rehearsal_run.sh`
+(one command: `SC_BIN=… DISPLAY=… ./f90_rehearsal_run.sh <absOutdir>`), ONE launch per
+run on an f55-shape farm with `config.ini` a copy, the sequence with each step's
+OBSERVABLE, CHANNEL and PASS CRITERION written in the script's header and printed in
+the per-step table: **(a) launch** — exit of the startup phase, the applog's startup
+errors AND silences (§5.77's class: what a missing class says or does not), GetActive,
+the `/proc/<pid>/comm` assert; **(b) author a body** — `body action load` with a minimal
+scratch section (a shape the grammar accepts; F86's `section_withperiod.ini` is a
+precedent) → the body present in the dual dump; **(c) run a shipped show** — the chosen
+`basis/` script via the script verb → script-log start/end, `#!` count, wall time vs the
+show's own duration; **(d) search** — `search name <a shipped body>` once → result
+recorded, step labelled DEPRECATED (R22), never a gate; **(e) select + read out** —
+`select planet Mars` → `get status object`, the info string through the `.navstr`
+sidecar — the LANGUAGE of the labels on the drawn path recorded (post-F87 they should be
+French; if F87 was not delivered, record the English and cite §5.111), `get status
+position`; **(f) save** — `session action save filename f90` (+ `body action save` on the
+authored body) → files exist under the FARM; **(g) reload** — `session action load
+filename f90` → the restored state equals the saved one on the channels §11.129's T4
+names (byte-identity where the ledger claims it), `body action reload` → the authored
+body survives; **(h) keyboard** — one zoom-in/zoom-out ramp through F25's key channel →
+fov before/after from the dump; **(i) quit** — the verb → exit code, wall time to exit,
+`Frame stall` count, any teardown fault (A40/§5.59 class) — recorded, never masked by a
+kill. (2) **Three runs**, fresh farm each, tables side by side: a step that passes in
+some runs and not others is a FLAKE and a finding (name the axis). (3) **Shown able to
+fail**: one injected fault (a misspelled body name in (b)) makes the step fail and the
+run exit non-zero — kept as an artifact. (4) **Every divergence/failure** → its existing
+§5 row cited at the step (the row's back-marker written at both homes), or a NEW row by
+§5.79's criterion (a crash or false-success reachable from a shipped command) — NOTHING
+fixed. (5) `doc/developer-entry.md` §build/run/test gains ONE line pointing at the suite
+(code repo, code first; veto-open). (6) **Record:** §11.⟨next⟩ entry FIRST + stub (the
+step table ×3, the flake count, the divergence list with rows, the language datum, the
+timings); DEPLOYMENT-MAP T5.1 struck with the record (RAN; what it found; what "ready"
+still waits on = T5.2); `harness/README.md` section; WIP per §0.6; D14.
+
+**Boundaries:** no engine code; the farm only (`config.ini` a COPY in the farm, real md5
+asserted in==out, `scripts/` per f55, `/usr/local` untouched); one doc line in the code
+repo; FUNCTIONAL — no photometric claim; each launch foreground within-turn (a show
+longer than the tool's timeout is not chosen — the pick states this); no
+`run_in_background`; three runs' wall budget stated in the entry.
+
+**Discriminating checks:** (a) every step's observable + criterion printed BEFORE the
+launch (the header) and the table after; (b) 3/3 tables, flake count with axis; (c) the
+injected fault fails the run (artifact); (d) real HOME md5 in==out ×3; (e) the label
+language on the drawn path, quoted; (f) the quit's exit code and teardown record ×3.
+
+**Preconditions (checkable, §0.7):** code HEAD ⟨F87's, at dispatch⟩, harness ⟨at
+dispatch⟩; F87's state named (delivered or not — either is fine, the label step records
+it); binary current at that HEAD; `harness/f55_farm.sh` present and `b3_farm.sh:24` the
+symlink line; `config.ini:68` `app_locale = fr`; `~/.spacecrafter/scripts/basis/`
+present; the verbs above at source (re-resolved, cited); `f25_ramp.py` present; display
+per HOST-EVENTS (`:2`); canary `--no-scene` exit 0; next free §11 ⟨at dispatch⟩; live
+`### F` count **5**; `/home/claude/sc-f90/` ABSENT; no `spacecrafter` in `/proc/*/comm`;
+config/ssystem md5 `03fbee59`/`545a51ef`.
+
+**DoD:** suite + runner + 3 runs + the fault run; the divergence list with rows; the doc
+line; §11 entry + stub; map T5.1; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+### F91 — EXTENSION: §5.86 + §5.19 — the new path's RA/DE readout computed in the observer's frame, as the tester reads it: `Camera::observedToBodyLocalPos` made the true inverse of `viewMat` (the algebraic inverse `f34_probe_inverse.cpp` already carries, round trip 133.9° → ~1e-11 AU) and ONE conversion authority for `observedPosToRaDe` in old's frame (topocentric, the RA zero point by the equinox definition §11.198(b), never a magic constant), the SA/GHA/LHA nav fields riding it; parity §11.158(f): new == old to ≤ 0.002° for 89/90 bodies, the 90th attributed (§11.207(g) item 1 — both decisions closed by R27 + §11.198(b); T1.4 CLOSED) [M, engine]
+
+**Why now / mandate:** the first decision-free engine item the final pass created
+(§11.207(g)(1)); *"he reads coordinates professionally"* (DEPLOYMENT-MAP T1.4) and the
+new path's readout for a composed body answers in a scrambled frame (§5.86: 133.9041°
+round-trip error; §5.19: the Moon `04h57m15s/+26°41'47"` old vs `03h44m18s/+14°40'05"`
+new on the same frame). R27 [stated: tester, via `6ffb017`]: *"The RA/DE must be the
+value from our position."* ⇒ observer-centred, i.e. what old computes; decision (1)
+resolved at §11.198(b). Old is the baseline (§11.52(b)): the target frame is DERIVED
+from old's code, cited — never chosen.
+
+**Measured at dispatch (supervisor, 2026-09-05; row text at HEAD `a2fd3c5b`, sites
+last re-verified exact at `d6aec251` by F44 — RE-RESOLVE at HEAD, content drift =
+abort):** §5.86: the anchored branch applies `Y(latitude−π/2)` where `viewMat` composes
+`X(lat−π/2)`, `Z(−longitude)` where the inverse needs `Z(+lon)`, subtracts `distance`
+where the inverse adds it, omits the surface fold — `Camera.hpp:264-274` vs
+`Camera.cpp:183-197`; consumers `ModularObject.cpp:19, :47, :115, :152`; the FREE branch
+exact when unbound (2.058e-11 AU), off by the surface fold when bound (38.5856° at
+`axisRot` 0.7 rad); `observedPosToAltAz` NOT affected (rides `observedToLocalPos`).
+§5.19: `ModularObject::getRaDeValue`/`getInfoString`/`getShortInfoNavString` read
+`Camera::observedPosToRaDe(body->getObservedPosition())`; old: `Body::getRaDeValue` =
+`Utility::rectToSphe(getEarthEquPos)`; feeds `getSelectedRA/DE` and the SA/GHA/LHA nav
+fields. §11.158(f): RA zero point a constant −90.0003° epoch-independent, declination
+already matched to 0.0036°; with both settled + §5.86's fix, new == old to ≤ 0.002° for
+89/90 bodies. Instruments: `harness/f34_probe_inverse.cpp` (the inverse written out),
+`f44_parity.py` + `artifacts/f44/legA_003.json.navstr` (the sidecar channel F44
+measured on). The idiom to follow: `ModularObject::altAz()` (§5.19's own sentence).
+
+**Mandate:** (1) **Derive the target** before touching code: read `Body::getRaDeValue`
+and `getEarthEquPos` at HEAD and STATE the frame old answers in (which equator/equinox,
+which origin) with the citation; read §11.198(b) and state where the −90.0003° comes
+from as a definition (what rotation is missing, not "a constant"); read §11.158(f) for
+the 90th body and its attribution. (2) **The fix, new path only:** `observedToBodyLocalPos`
+= the exact inverse of `viewMat` (the probe's algebra), both branches; `observedPosToRaDe`
+routed through ONE authority that lands in old's frame; consumers untouched in shape;
+every new expression carries its derivation in a comment citing this entry. (3) **Prove
+with the project's own primitives:** the round-trip probe re-run pre/post (133.9041° →
+the post number, ≤ 1e-9 AU expected); the F44 sidecar leg on the farm — the body set F44
+used (state the count), old vs new RA/DE per body, |Δ| stated, **≤ 0.002° for all but
+the one §11.158(f) names**, that one attributed as there — a miss on any other body =
+STOP and report the residual with its attribution, never widen; the nav fields
+(SA/GHA/LHA) equal old vs new on the same frame; an English-locale control leg unchanged
+by the fix (readout format is not touched). (4) **Record:** §11.⟨next⟩ entry FIRST +
+stub (the derivation, the table, the exception); §5.86 (inline) and §5.19 (row + entry
+file) flipped FIXED with pointers; §11.4 and §11.158(f) back-marked; DEPLOYMENT-MAP
+(T1.4's work item struck); README section; WIP per §0.6; D14.
+
+**Boundaries:** `src/experimentalModule/` (Camera + ModularObject) only; NO old-path
+change; no data; no msgid change (F87's territory); no `run_in_background`; the full
+canary NOT run (no photometric claim; `--no-scene` only).
+
+**Discriminating checks:** (a) the frame derivation with old's citations, written before
+the fix; (b) the probe round trip pre/post; (c) the per-body table, max |Δ|, the named
+exception; (d) the nav fields; (e) the English control unchanged.
+
+**Preconditions (checkable, §0.7):** code HEAD ⟨at dispatch⟩, harness ⟨at dispatch⟩;
+§5.86 OPEN and §5.19 OPEN (row + `INTENT/5.19.md`); the six site coordinates above
+re-resolved at HEAD (content drift = abort); `harness/f34_probe_inverse.cpp` and
+`harness/f44_parity.py` present; `artifacts/f44/legA_003.json.navstr` present; next
+free §11 ⟨at dispatch⟩; live `### F` count **5**; display per HOST-EVENTS; canary
+`--no-scene` exit 0; binary current at HEAD; `free -g` ≥ 16 GiB before the build.
+
+**DoD:** fix (code first) + probe + table + controls; §11 entry + stub; the two rows
+flipped; back-markers; map; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+### F92 — EXTENSION, record-only: the rename's FOOTPRINT — every `master-beta` in both repositories classified (LIVE POINTER · PIN · HISTORICAL RECORD · CONVENTION) and the owner's rename reduced to one ordered checklist plus one unapplied patch covering exactly the live pointers, so that `master-beta → main` is a single act with a measured blast radius instead of a silent-drift generator (the owner's line 2026-09-05: *"…get renamed main once ready"*; I2 — every document naming the branch is a manual-resync point) [S]
+
+**Why now / mandate:** the rename is decided (today's line) and not yet due ("once
+ready"); what it stales is everything that names the branch. Measured at open
+(2026-09-05 15:1x, `git grep`): code repo **9 files** — `util/scedit/grammar/sc-grammar.json`
+×6, `args/unit-{1,2,3,4}.json` ×2 each, `ss-grammar.json` ×1, `witness/superscript-witness.json`
+×1, `tests/derivation-diff.md` ×1 (all of the shape `master-beta @ <sha>` — pins), and
+`doc/developer-entry.md` ×1 (the newcomer's ONE sentence naming the branch); harness
+repo **118 files / 189 hits** (`dispatch-2026-07-21-opus.md` 20, `fable-dispatch.md` 18,
+`DEPLOYMENT-MAP.md` 8, `INTENT.md` 5, `INTENT/11.203.md` 5, `INTENT/11.134.md` 3, scripts
+`f29_upchain.py:5`, `f38_mirror.py:11`, `f58_gaptable.py:9,:722`, `f68_provenance.py:26`,
+artifacts `f51/f52/f53/f55` json — every script/artifact hit is a `master-beta @ <sha>`
+citation by its text), plus every harness commit trailer `Code: master-beta @ <sha>`
+(history, never rewritten), `CLAUDE.md`'s branch line, `README.md`'s contract, and the
+remote's default `origin/HEAD → origin/2023-master` (no `main` exists locally or among
+the fetched remote refs). NOTHING is renamed by this task.
+
+**Mandate:** (1) **The census**, both repos, every hit in exactly ONE class: **LIVE
+POINTER** (a reader follows it to the branch today — CLAUDE.md, `claude/README.md`,
+`doc/developer-entry.md`, `INSTALL` if it names the branch, `harness/README.md` §Run,
+`f85_links.py` if it checks branch names, any script running `git rev-parse master-beta`
+or comparing the current branch name — grep for `rev-parse`, `symbolic-ref`, `branch
+--show-current` too, and the `githooks/` trailer check) · **PIN** (`master-beta @
+<sha>`: resolves by SHA whatever the branch is called — untouched forever; the scedit
+`_meta.anchor_pin` class, F75 S2) · **HISTORICAL RECORD** (ledger prose, archived
+notes, trailers in history — never rewritten) · **CONVENTION** (the `Code: <branch> @
+<sha>` trailer grammar — after the rename new trailers say `main`, old ones stay; the
+README sentence that states the grammar is the one line to touch). Counts per class per
+repo; the partition sums to the totals. (2) **The checklist for the owner**, ordered, each
+line one act: local `git branch -m master-beta main` · `git push -u origin main` · GitHub
+default branch → `main` · open PRs' base · every clone's `git remote set-head origin -a`
++ `git branch -u origin/main` · the developer's clone instruction (`developer-entry.md`,
+`INSTALL`) · the harness contract line · the `CC-harness` trailer convention going
+forward — and what does NOT change (pins, history, `2023-master`'s own existence).
+(3) **The patch**, `harness/artifacts/f92/rename-live-pointers.patch` (two hunks sets,
+one per repo; code first): exactly the LIVE POINTER edits, `git apply --check` clean in a
+scratch worktree of each repo, and — applied THERE only — `git grep master-beta` over the
+LIVE-POINTER class = 0 while PIN/HISTORICAL/CONVENTION-history are untouched; the
+worktrees discarded, the real trees never modified. (4) **Breakage scan:** which scripts
+would fail or lie after the rename (a script that greps the current branch name, a hook
+that validates the trailer against the branch) — each named with its line or "none". (5)
+**Record:** §11.⟨next⟩ entry FIRST + stub (the census table, the checklist, the
+breakage scan); DEPLOYMENT-MAP **R6** annotated — the policy half ANSWERED by the
+owner's line (rename, not redirect), the "ready" half = T5.1 (F90) + T5.2 per the
+map's own critical path — annotated, not struck (the rename has not happened); §3
+item; `harness/README.md` section; WIP per §0.6; D14.
+
+**Boundaries:** NO rename, NO branch created, NO edit of any live pointer in either
+real tree (the patch is an artifact), no push, no `git config` change, no history
+rewrite; scratch worktrees under `/home/claude/sc-f92/` and removed; no launch.
+
+**Discriminating checks:** (a) the census partition sums to the measured totals, both
+repos, every hit classified; (b) `git apply --check` clean in both scratch worktrees and
+the post-apply grep over the live class = 0 there; (c) the breakage scan names a line or
+says none, with the grep that proves it; (d) both real trees byte-unchanged except the
+harness records (`git status` on the code repo EMPTY at close).
+
+**Preconditions (checkable, §0.7):** code HEAD ⟨at dispatch⟩, harness ⟨at dispatch⟩;
+`git grep -l master-beta` code = 9 files, harness = 118 files (`-o | wc -l` 189) — drift
+= re-measure and report, not abort; `git symbolic-ref refs/remotes/origin/HEAD` =
+`refs/remotes/origin/2023-master`; `git branch -a | grep -c ' main$'` = 0; next free §11
+⟨at dispatch⟩; live `### F` count **5**; `/home/claude/sc-f92/` ABSENT.
+
+**DoD:** census + checklist + patch artifact + breakage scan; §11 entry + stub; map R6
+annotated; README; both trees clean (code untouched); WIP cleared; baselines LAST.
 **WIP:** —
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
