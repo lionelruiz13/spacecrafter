@@ -713,7 +713,12 @@ auth under `/run/user/1003`); no `spacecrafter` in `/proc/*/comm`; config/ssyste
 fix (if H1) with b4 green, or the §5.133 record (if not) with the red explained;
 §11.208 + stub; back-markers; README; trees clean; WIP cleared; baselines LAST with
 deltas.
-**WIP:** —
+**WIP:** 2026-09-05 15:55 — §0.7 gate PASS (every premise verified, none broken);
+checkpoint 1: margins + census + `f89_p7.py` + predictions COMMITTED before any launch
+(F86's surviving `/home/claude/sc-f86/out-b4-*` re-analysed: OLD-path Moon distance
+182582.8 km pre vs 200000.0 km post at `floor4`, old-vs-new view angle 76.46° vs 0.37°).
+Next: build the 9e0f1e93 and guard-only binaries under `/home/claude/sc-f89/`, then the
+8-run matrix.
 
 ### F90 — T5.1, the tester's day in the app, REHEARSED — and written as the developer's smoke suite: one launch on a farm in French through the shipped command surface (launch · author a body · run a shipped show · search, recorded as deprecated · select and read out · save · reload · one keyboard ramp · quit), every step's observable and pass criterion stated BEFORE the run, three runs (the functional A/A floor — a flake is a finding), every divergence recorded against its §5 row or minted by §5.79's criterion and NONE fixed, the suite runnable by the newcomer in one command and shown able to fail (DEPLOYMENT-MAP T5.1: *"the closing audit before 'ready'"*; the owner's line today makes "ready" the criterion) [M]
 

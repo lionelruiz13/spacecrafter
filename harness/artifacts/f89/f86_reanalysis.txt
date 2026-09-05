@@ -1,0 +1,35 @@
+=== f89_p7.py margins (mandate (0)): the five F86 runs, from the COMMITTED b4_result records ===
+run                    | shot t0: own vs other    | shot t1: own vs other    | verdict
+b4_pre.json.gz         | own 181  other  36  m=+145 | own 255  other 185  m= +70 | PASS (0 failure(s))
+b4_pre2.json.gz        | own 181  other  33  m=+148 | own 255  other 169  m= +86 | PASS (0 failure(s))
+b4_mainonly.json.gz    | own 189  other  41  m=+148 | own 255  other 209  m= +46 | PASS (0 failure(s))
+b4_post.json.gz        | own 181  other 207  m= -26 | own 255  other 160  m= +95 | FAIL (1 failure(s))
+b4_post2.json.gz       | own 182  other 210  m= -28 | own 255  other 154  m=+101 | FAIL (1 failure(s))
+
+=== f89_p7.py scalars: the same five runs, from F86's surviving output dirs /home/claude/sc-f86/out-b4-* ===
+run                    tag       OLDdistMoon_km NEWdistMoon_km old^new_deg nbStarsToDraw twinkEff
+out-b4-pre             base           361755.8      361755.8    27.008 [3313, 3313]   0.4000
+out-b4-pre             floor4         182582.8      200000.0    27.008 [3213, 3213]   0.4000
+out-b4-pre             orb_t0         182582.8      200000.0    76.463 [3446, 3446]   0.4000
+out-b4-pre             orb_t1         181736.8      200000.0    76.418 [3447, 3447]   0.4000
+out-b4-pre             fix_t0     1452770383.4  1452770383.9    76.418 [3447, 3447]   0.4000
+out-b4-pre2            base           361755.8      361755.8    27.008 [3313, 3313]   0.4000
+out-b4-pre2            floor4         182582.8      200000.0    27.008 [3213, 3213]   0.4000
+out-b4-pre2            orb_t0         182582.7      200000.0    76.460 [3446, 3446]   0.4000
+out-b4-pre2            orb_t1         181736.8      200000.0    76.418 [3447, 3447]   0.4000
+out-b4-pre2            fix_t0     1452770383.4  1452770383.9    76.418 [3447, 3447]   0.4000
+out-b4-mainonly        base           361755.8      361755.8    27.008 [3313, 3313]   0.4000
+out-b4-mainonly        floor4         182582.8      200000.0    27.008 [3213, 3213]   0.4000
+out-b4-mainonly        orb_t0         182582.7      200000.0    76.460 [3446, 3446]   0.4000
+out-b4-mainonly        orb_t1         181736.8      200000.0    76.418 [3447, 3447]   0.4000
+out-b4-mainonly        fix_t0     1452770383.4  1452770383.9    76.418 [3447, 3447]   0.4000
+out-b4-post            base           361755.8      361755.8    27.008 [3313, 3313]   0.4000
+out-b4-post            floor4         200000.0      200000.0    27.008 [3213, 3213]   0.4000
+out-b4-post            orb_t0         200000.0      200000.0     0.370 [3573, 3573]   0.4000
+out-b4-post            orb_t1         200000.0      200000.0     0.000 [3563, 3563]   0.4000
+out-b4-post            fix_t0     1452770383.4  1452770383.9     0.000 [3563, 3563]   0.4000
+out-b4-post2           base           361755.8      361755.8    27.008 [3313, 3313]   0.4000
+out-b4-post2           floor4         200000.0      200000.0    27.008 [3213, 3213]   0.4000
+out-b4-post2           orb_t0         200000.0      200000.0     0.349 [3570, 3573]   0.4000
+out-b4-post2           orb_t1         200000.0      200000.0     0.000 [3563, 3563]   0.4000
+out-b4-post2           fix_t0     1452770383.4  1452770383.9     0.000 [3563, 3563]   0.4000

@@ -1,0 +1,120 @@
+F89 PREDICTIONS - committed before any launch of this task.
+Written 2026-09-05 15:52 CEST (`date`), code master-beta @ a2fd3c5b, harness @ 6594960.
+Author: Claude Opus 5 executor (task F89), dispatched by Claude Fable 5.1.
+
+WHAT IS ALREADY MEASURED WHEN THESE ARE WRITTEN (mandate (0)+(1), no launch of mine):
+  - f89_p7.py margins over the five COMMITTED F86 records (artifacts/f86/b4_*.json.gz)
+    and f89_p7.py scalars over F86's surviving output dirs (/home/claude/sc-f86/out-b4-*).
+    Both transcripts: artifacts/f89/f86_reanalysis.txt.
+  - The control's two scalars per shot, and its margin:
+        run        shot t0 own/other margin   shot t1 own/other margin  verdict
+        pre        181 /  36   +145           255 / 185   +70           PASS
+        pre2       181 /  33   +148           255 / 169   +86           PASS
+        mainonly   189 /  41   +148           255 / 209   +46           PASS
+        post       181 / 207    -26           255 / 160   +95           FAIL
+        post2      182 / 210    -28           255 / 154  +101           FAIL
+    Only the t0 arm fails, and it fails by the OTHER window gaining ~170 levels
+    (33..41 -> 207..210), not by the margin being nibbled.
+  - The dumps say, in every run, at the dump taken right after the five no-op
+    switches to the on-orbit anchor (`floor4`, BEFORE any tracking command):
+        OLD path's distance to the Moon:  pre/pre2/mainonly 182582.8 km
+                                          post/post2       200000.0 km
+        NEW path's distance to the Moon:  200000.0 km in ALL FIVE
+    200000.0 km is the AUTHORED semi-major axis of `b4_orbit_moon` (b4_anchors.ini,
+    P1's own constant).  And at `orb_t0` the angle between the old path's view
+    direction and the new path's `absFwd` is 76.46 deg (pre group) against 0.37 deg
+    (post group), with `nbStarsToDraw` 3446 against 3573.
+  - Random-channel census (`grep -rn` over src/, EntityCore included): the only
+    per-frame consumer of the global rand() stream that can reach the star draw is
+    hip_star_mgr.cpp:641-643 (3 draws per drawn star), gated at :640 by
+    twinkle_amount = flagStarTwinkle ? twinkleAmount*twinkle_param : 0 (:798).
+    meteor_mgr.cpp:116 also draws from the same stream per frame, but returns
+    before it whenever |time speed| is 0 or > 1 real-time second (:90-94) - b4
+    sends `timerate rate 0`, so in THIS scene twinkle is the only live channel.
+    src/ holds no `srand(`, so the stream is the implicit seed-1 sequence.
+
+The hypotheses are therefore already heavily constrained by the reading; the runs
+below are a REPRODUCTION test plus the two arms the reading cannot supply (twinkle
+off, and the third binary).  Each prediction states the number that refutes it.
+
+----------------------------------------------------------------------------- H1
+H1 (TWINKLE): the between-binary P7 difference is the twinkle rand() channel;
+with twinkle OFF on both binaries it collapses to the within-binary floor and the
+control goes green on both.
+  PREDICTION: REFUTED.  With `flag_star_twinkle = false` in the farm config on
+  BOTH binaries, under b4's frozen clock:
+    (a) the frame-wide px>8 difference between the two binaries stays >= 15000
+        (F86 measured ~19030 with twinkle on);
+    (b) the control still FAILS on the fixed binary, with the t0 "other" window
+        at 195..220 against the Moon's own 175..190;
+    (c) the control still PASSES on the pre-fix binary.
+  REFUTING NUMBERS: H1 is CONFIRMED instead if, with twinkle off, the
+  between-binary frame difference falls below 2000 px>8 AND the control is green
+  on both binaries.  (The mandate's own form: "refuted if the between-binary
+  difference stays within an order of magnitude of 19030 with twinkle off".)
+  WHY (stated so the prediction is not a guess): twinkle multiplies a star's
+  colour by (1 - 0.4*u), u in [0,1), so it can only DARKEN a star by <= 40 %;
+  33 -> 207 is a factor 6.3.  And the divergence is absent at `base`/`floor0`/
+  `floor4` - dumps where twinkle is equally live - and appears exactly where the
+  old path's observer position is first consulted for a direction.
+
+H1b (TWINKLE'S REAL PRICE, the honest half of H1): twinkle IS live in b4's scene
+(twinkleAmountEff 0.4000 in every F86 dump), so it must contribute SOMETHING to
+the within-binary floor of 730..860 px>8.
+  PREDICTION: with twinkle off, the within-binary A/A frame difference drops
+  below 400 px>8 (and plausibly below 100).  REFUTED if the twinkle-off A/A floor
+  is >= 730 px>8, i.e. indistinguishable from the twinkle-on floor - which would
+  mean the floor is the old path's residual ease-out drift alone.
+
+----------------------------------------------------------------------------- H2
+H2 (THE PRE-FIX BINARY DREW FROM CORRUPT MEMORY - Sec.5.133's read).
+  PREDICTION: CONFIRMED IN SUBSTANCE, AND ITS STATED METRIC REFUTED.  My runs
+  will reproduce, on a freshly built 9e0f1e93 binary:
+    (a) OLD path's distance to the Moon at `floor4`/`orb_t0` = 182582.8 km
+        (+-1 km), against 200000.0 km on the reference binary;
+    (b) old-vs-new view angle at `orb_t0` = 76.4 deg (+-1.0), against < 1 deg;
+    (c) nbStarsToDraw at `orb_t0` in the 3440..3460 band, against 3560..3580.
+  REFUTING NUMBER: H2 is refuted if the 9e0f1e93 binary reads 200000.0 km for the
+  OLD path's Moon distance at `floor4` (i.e. if the two binaries agree there).
+  THE STATED METRIC IS ALREADY REFUTED, and this is recorded as a prediction so
+  it can be checked: the section's H2 says "refuted if the full-precision dump is
+  byte-identical across the two binaries for `camera.mat` and the anchor's
+  position".  Both of those ARE byte-identical in F86's five runs - `camera.mat`,
+  `camera.rootPos` (17 digits) and `b4_orbit_moon`'s new-path `ecl` agree to
+  every printed digit - because Sec.5.133 is an OLD-path (navModule) defect and
+  those two fields are the NEW path's.  Taken literally the criterion would have
+  declared H2 refuted and left the red unexplained.  The criterion I use instead
+  is EVERY leaf of the dump header (406 of them, f89_p7.py leafdiff): 65 differ
+  between the groups, all in `helioToEye` / `oldView.nav` / `oldView.observer`.
+
+----------------------------------------------------------------------------- H3
+H3 (INSTRUMENT AT THE MARGIN): the control's margin on the pre-fix runs is within
+the within-group floor's equivalent, so a floor-sized change flips it.
+  PREDICTION: REFUTED, decided by mandate (0) before any launch.  The passing
+  margin on the failing arm is +145/+148/+148 out of 255, while the same
+  quantity's within-group spread is 8 levels (33..41) on the pre group and 3
+  levels (207..210) on the post group.  A floor-sized change is ~5 %% of the
+  margin.  REFUTING NUMBER: H3 would hold if any pre-group margin were <= 20.
+
+------------------------------------------------------------------------ H4 (new)
+H4 (ATTRIBUTION, the mandate's "between Sec.5.133's ownership fix and Sec.5.134's
+guard"): the star-field divergence is caused by the Sec.5.133 ownership fix, not
+by the Sec.5.134 comet guard.
+  PREDICTION: a binary built from a2fd3c5b with ONLY the three Sec.5.133 files
+  reverted to 9e0f1e93 (navModule/anchor_creator_cor.cpp, anchor_point_orbit.cpp,
+  anchor_point_orbit.hpp - the comet guard in bodyModule/orbit_creator_cor.cpp
+  kept) lands in the PRE group: OLD Moon distance 182582.8 km at `floor4`,
+  nbStarsToDraw ~3446 at `orb_t0`, control PASS.
+  REFUTING NUMBER: it reads 200000.0 km / ~3573 / control FAIL, which would put
+  the cause in the comet guard or elsewhere in a4a7c226.
+
+H5 (BUILD-DIRECTORY CONTROL): the scratch build tree is not itself a variable.
+  PREDICTION: a2fd3c5b built in /home/claude/sc-f89/build-var reproduces the
+  reference binary's GROUP exactly - OLD Moon distance 200000.0 km, control FAIL,
+  nbStarsToDraw 3560..3580.  REFUTED if it lands in the pre group, in which case
+  every cross-binary claim of this task is void and the task reports that instead.
+
+------------------------------------------------------------------- WHAT FOLLOWS
+If H1 is refuted (predicted), b4_anchors.py is NOT edited (F89's boundary), the
+gate stays RED on the reference binary, and the red's cause is recorded at
+Sec.5.133 and in harness/README.md - never re-banked, never demoted.
