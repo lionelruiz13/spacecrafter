@@ -1,0 +1,233 @@
+F84 checkpoint 3 -- the launches, scored against prediction.txt
+===============================================================
+2026-09-05, code master-beta @ 03c85734, scratch binary md5 5237ac0e installed
+at /home/claude/sc-f84/prefix/bin/spacecrafter, EntityCore 7ce58350.
+Instrument: harness/f84_coldhome.py; raw records result_six.json.gz,
+result_s112_field.json.gz, result_s112_authored.json.gz.
+prediction.txt was committed at harness 9ae289b, BEFORE any of these launches.
+
+===============================================================================
+0 -- THE FINDING THAT CAME FIRST, AND IT IS NOT IN prediction.txt
+===============================================================================
+**THE FIRST LAUNCH ON A MACHINE WITH NO ~/.spacecrafter ABORTS.**
+
+    $ mkdir /home/claude/sc-f84/home-probe0        # an EMPTY $HOME
+    $ HOME=... /home/claude/sc-f84/prefix/bin/spacecrafter
+    terminate called after throwing an instance of
+      'std::filesystem::__cxx11::filesystem_error'
+      what():  filesystem error: cannot set current path:
+               No such file or directory
+    exit 134 (SIGABRT, core dumped); the $HOME is left completely empty.
+
+  main.cpp:193   std::filesystem::current_path(appDir);   // appDir = $HOME/.spacecrafter/
+  main.cpp:198   CallSystem::checkUserDirectory(appDir, dirResult);
+
+  The cd happens FIVE LINES BEFORE the function whose entire job is to create
+  that directory -- and whose own comment says so ("check if home Directory
+  exist and if not try to create it").  The setter overload of
+  std::filesystem::current_path throws on a missing path; nothing catches it.
+
+  CONTROL, so this is not a property of my build: the FIELD binary
+  /usr/local/bin/spacecrafter (built 2026-07-31, a different build entirely)
+  produces the SAME message and the SAME exit 134 on the same empty $HOME.
+  Attribution: `git log -L 193,199:src/main.cpp` -> da858612, 2025-09-20,
+  Calvin Ruiz ("Merge work between body-refactoring and 2023-master").
+
+  MINIMUM WORKAROUND, and what every launch below uses: `mkdir $HOME/.spacecrafter`
+  and nothing else.  Everything below that directory is still the app's own
+  bootstrap.  (Sec.5.48's own farm, b3_farm.sh, has the same shape, so the rate
+  stays comparable to F12's.)
+
+  NOT FIXED -- "no engine code" is this task's boundary.  The remedy is to move
+  line 193 below line 199; that is one line and the owner's call.
+
+===============================================================================
+P1 -- Sec.5.48: CONFIRMED, k = 0/6
+===============================================================================
+Positive control, run before every batch and printed in each log:
+    finite -> False   quoted-"nan" -> True   bare float nan -> True
+    body absent -> True                              => PASS
+So the predicate can report a fire, which is what makes 0/6 mean something.
+
+    launch  exit  bodies  Moon scaling / boundingRadius   Sun scaling / boundingRadius
+      1      0     90     5 / 5.80690103e-05              1 / 0.00465247268
+      2      0     90     5 / 5.80690103e-05              1 / 0.00465247268
+      3      0     90     5 / 5.80690103e-05              1 / 0.00465247268
+      4      0     90     5 / 5.80690103e-05              1 / 0.00465247268
+      5      0     90     5 / 5.80690103e-05              1 / 0.00465247268
+      6      0     90     5 / 5.80690103e-05              1 / 0.00465247268
+
+  RATE = 0/6.  Predicted 0 <= k <= 2 with 0 most likely: CONFIRMED.
+  The four numbers are IDENTICAL across all six independent cold $HOMEs, to
+  every printed digit -- a startup race that fired would have to break that.
+  6/6 launches exit 0; 6/6 concurrency asserts clean; GetActive "(false,)" at
+  every launch.
+
+  WHAT 0/6 DOES NOT MEAN, stated in advance and repeated here: the row stays
+  OPEN.  Sec.5.48 measured ~15 % at best and then 0/4 vs 0/4 on a controlled
+  repeat; six clean launches are one more such sample.  Its fix is EntityCore
+  and therefore the owner's.
+  BOUND: this binary carries EntityCore 7ce58350 = Sec.11.152's ASmooth fix.  A
+  newcomer whose submodule stops at the remote's main (224eba7a) builds
+  WITHOUT it, and nothing here speaks for that build.
+
+===============================================================================
+P2 -- the cold-$HOME bootstrap: four confirmed, one REFUTED, one proved by probe
+===============================================================================
+P2a  REFUTED IN PART, and the refutation is worth more than the prediction.
+  Predicted: 17 subdirectories, `modularSystem` ABSENT.
+  Measured: NINETEEN directories --
+    audio cache fonts ftp landscapes language log media model3D modularSystem
+    pictures screenshot scripts sky_cultures textures vframes videos vr360 www
+  plus SEVEN files: anchor.ini config.ini deepsky_objects.fab joypad.ini
+  landscapes.ini ssystem.ini stars.ini.
+  `modularSystem` IS present.  The sub-claim survives -- the applog carries no
+  "created home subdirectory modularSystem" line, so checkUserSubDirectory did
+  not make it -- and the actual creator is named:
+    ssystem_factory.cpp:419  std::filesystem::create_directories("modularSystem", ec);
+  `cache` likewise comes from elsewhere (the texture cache).  So the prediction
+  described the table and not the final state, and said the wrong thing.
+
+P2b  CONFIRMED.  All ten copy=true classes succeeded, one by <root>/<name> and
+  nine by <root>/data/<name>, with the applog naming each:
+    Completed copy of audio / fonts / ftp / landscapes / scripts / textures /
+                      videos / sky_cultures / model3D / language
+    Successfully created home subdirectory log / screenshot / pictures /
+                      vframes / media / vr360 / www
+  Six of the seven mkdir-only classes are empty afterwards; `log` is the
+  seventh and is non-empty because the app writes its logs into it.
+
+P2c  CONFIRMED.  Seven "No <x> file, i will try to copy default_<x>" lines,
+  one per file, and all seven land.
+
+P2d  CONFIRMED, AND IT ANSWERS HALF OF Sec.5.74'S OPEN QUESTION.
+    fresh $HOME sky_cultures : 262 files, ZERO of them zero-byte, 28 080 362 B
+    field  $HOME sky_cultures: 2922 files, ALL 2922 zero-byte (Sec.5.74/Sec.11.141)
+    data root data/sky_cultures: 262 files, 0 zero-byte, 28 080 362 B
+  The fresh copy is byte-for-byte the data root's.  So the zero-byte condition
+  is a property of the FIELD $HOME's copy, NOT of this workstation's data root,
+  and the two trees are not even the same tree (2922 vs 262 files).  Every
+  other class is likewise non-empty: audio 12, fonts 7, ftp 1, landscapes 8,
+  scripts 350 (1 zero-byte), textures 129, videos 24, model3D 13, language 70.
+  Sec.5.74's question to Vixy -- does the delivered spacecrafter-data carry
+  content or ship it empty -- is NOT answered by this (the data root here is
+  this workstation's), but its first branch now has evidence: on THIS host the
+  source is full and the $HOME copy is empty, which is an artifact of the $HOME
+  and not of the source.
+
+P2e  CONFIRMED BY A STANDALONE PROBE, because no copy failed here.
+  call_system.cpp:145 reads
+      if (ec || ec.message() == "Success") { "Completed copy of ..." }
+      else                                 { "Failed to copy ..." ; ... "Abort !" ; exit(-1); }
+  The probe (artifacts/f84/f84_ec_probe.cpp, g++ -std=c++20, same host):
+      A. source EXISTS  -> ec false, ec.message() "Success"
+                        -> branch "Completed copy of ..."
+      B. source ABSENT  -> ec TRUE,  ec.message() "No such file or directory"
+                        -> branch "Completed copy of ..."     <-- THE SAME ONE
+      destination after the failing arm: 0 entries.
+  The else arm is UNREACHABLE.  A failed class copy is reported as a success
+  and leaves an EMPTY directory, with no error on any channel.
+  LIVE INSTANCE, not hypothetical: a TREE-ONLY install (see build-and-manifest.txt)
+  supplies none of the ten classes, so a newcomer's first launch prints ten
+  "Completed copy of ..." lines and creates ten empty directories.
+
+P2f  CONFIRMED -- and this is check (a)'s answer.
+    (Info ): CONFIG DIR: /home/claude/sc-f84/home-1/.spacecrafter/
+    (Info ): ROOT   DIR: /usr/local/share/spacecrafter/
+    (Info ): LOCALE DIR: /usr/local/share/locale/
+  The scratch $HOME is proven (CONFIG DIR).  The scratch PREFIX is proven NOT
+  to be the data root: the binary was installed into /home/claude/sc-f84/prefix
+  and still reads /usr/local/share/spacecrafter/, because CONFIG_DATA_DIR is a
+  hardcoded #define (spacecrafter.hpp:44).  Check (a) as written therefore
+  CANNOT pass, and the line it names is exactly the instrument that shows why.
+
+===============================================================================
+P3 -- the generated config, check (b): CONFIRMED to the name
+===============================================================================
+  generated: 268 keys, 16 sections, 0 comment lines, version 2026.07.11
+  field    : 266 keys, 16 sections, 0 comment lines, version 2026.07.11
+  CHECK (b), the two counts:
+      field-only     = 0    []
+      generated-only = 2    navigation:attached
+                            navigation:flag_lock_sky_position
+  exactly the two D15(d)/Sec.11.150 keys the in-code comment at
+  checkConfig.cpp:412-418 warns about.  Predicted by name before the launch.
+
+  NOT PREDICTED, and worth recording: all six generated config.ini files are
+  BYTE-IDENTICAL, md5 6d6c536257af896e322694428e292500.  The generation is
+  deterministic across independent cold $HOMEs.
+
+  ONE SMALL REFUTATION of P3b's "0 uppercase keys": the generated file carries
+  exactly ONE mixed-case key, `const_lines3D_color`, and it is the ONLY schema
+  key in define_key.hpp:205 with an uppercase letter.  The field config spells
+  it `const_lines3d_color` (lowercase), and so does the migrated home-7 copy --
+  because insertKeyFromTmpSettings only ADDS a key the file lacks
+  (checkConfig.cpp:547, findEntry is case-insensitive), so an existing
+  lowercase spelling survives while a from-scratch generation keeps the
+  schema's.  Harmless (lookups go through strlwc) and recorded because
+  "config.ini keys are all lowercase" is false for a fresh install.
+
+===============================================================================
+P4 -- Sec.5.112 PRICED: both arms CONFIRMED, and the second is the number N7 needs
+===============================================================================
+P4a -- HOME-7, the FIELD config verbatim, version bumped to 2026.09.05:
+    before  md5 315b648e  266 keys  16 sections  0 comments  0 uppercase
+    after   md5 3465f7c8  268 keys  16 sections  0 comments  0 uppercase
+                                                   version -> 2026.07.11
+    DELETED = 0   []
+    ADDED   = 2   navigation:attached, navigation:flag_lock_sky_position
+    applog "has been removed" lines: NONE
+  Predicted exactly.  On an APP-GENERATED config the migration destroys nothing,
+  because there is nothing off-schema in it to destroy.
+
+P4b -- HOME-8, the same file plus the hand-authored content N7 warns about:
+    before  md5 b306604b  270 keys  17 sections  2 comments  1 uppercase
+    after   md5 3465f7c8  268 keys  16 sections  0 comments  0 uppercase
+    DELETED = 4
+        f84_unknown_section:alpha      (unknown section)
+        f84_unknown_section:beta       (unknown section)
+        main:f84_authored_key          (known section, off-schema)
+        main:f84_mixedcase_key         (known section, off-schema)
+    ADDED   = 2   (the same two)
+    the section [f84_unknown_section] is removed entirely: 17 -> 16
+    the two comment lines are gone: 2 -> 0
+    the applog logs all five removals as (Warn.):
+        key f84_unknown_section:alpha has been removed from config.ini
+        key f84_unknown_section:beta has been removed from config.ini
+        section [f84_unknown_section] has been removed from config.ini
+        key main:f84_authored_key has been removed from config.ini
+        key main:f84_mixedcase_key has been removed from config.ini
+  Predicted exactly, by name and by count.
+
+  STRONGER THAN PREDICTED, and this is the sentence N7 should carry:
+  **the two runs end at the SAME md5, 3465f7c8.**  Two different input files --
+  one with four extra keys, an extra section and two comments, one without --
+  produce a byte-identical output.  The migration is not "some keys may be
+  lost": it is a projection onto the schema, and everything outside the schema
+  is erased without residue.  The warning IS logged, in the app log, which the
+  user reads after the fact if at all -- and never before the file is gone.
+
+  The index-skipping shape at checkConfig.cpp:560-573 (sections removed while
+  iterating `for (i=0; i<getNsec(); i++)`) did NOT bite, as predicted: one
+  unknown section cannot expose it.  The case that would is two ADJACENT
+  unknown sections; not constructed here, named so it is not forgotten.
+
+===============================================================================
+P5 -- the boundary: CONFIRMED
+===============================================================================
+  ~/.spacecrafter/config.ini  03fbee59  in == out
+  ~/.spacecrafter/ssystem.ini 545a51ef  in == out
+  /usr/local: 1110-entry md5 census taken at open and at close, aggregate md5
+  b8ceb90b BOTH TIMES, `diff` clean.  No sudo was used at any point.
+
+===============================================================================
+ONE OPERATIONAL FACT, measured by accident and worth the next task's time
+===============================================================================
+The FIRST home-7 run failed the harness's own 60 s shutdown budget: the app was
+still logging "Created image support for textures/bodies/..." when
+`shutdown action now` arrived, and did not exit.  The FIELD config drives a far
+heavier async texture preload than the generated one, and teardown waits for
+the big-texture loader to quiesce.  Budget raised to 180 s; both arms then exit
+0.  The stray process was killed and the NEXT launch's /proc/<pid>/comm assert
+caught it before starting -- the instrument did its job, and a 2 s reap pause
+was added after every kill.

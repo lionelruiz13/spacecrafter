@@ -849,7 +849,26 @@ and **12 content classes absent** (`stars` `textures` `icon.bmp` + the 9 dirs un
 field's `data/`), documented NOWHERE in the code repo. **Second unstated premise found**:
 `CONFIG_DATA_DIR` is a hardcoded `#define` (`spacecrafter.hpp:44`), NOT the install prefix
 ⇒ check (a) cannot pass as written; the applog's `ROOT DIR:` line is the instrument that
-proves it. **Next:** predictions committed, then the six launches, then §5.112.
+proves it. — **CHECKPOINT 3** (same day): predictions committed FIRST (`prediction.txt`,
+harness `9ae289b`), then every launch, artifact `harness/artifacts/f84/measured.txt`.
+**THE FINDING THAT CAME FIRST AND WAS IN NO PREDICTION: the first launch on a machine with
+no `~/.spacecrafter` ABORTS** — `terminate called after throwing … filesystem_error: cannot
+set current path`, **exit 134**, empty HOME, on BOTH my binary AND the field's
+`/usr/local/bin/spacecrafter`; `main.cpp:193` cds into the directory five lines before
+`main.cpp:198` creates it (`da858612`, 2025-09-20). Recorded, NOT fixed (no engine code);
+every launch below used `mkdir $HOME/.spacecrafter` and nothing more. **§5.48 rate = 0/6**
+(control PASS both ways; Moon 5 / 5.80690103e-05, Sun 1 / 0.00465247268 identical in all
+six; 6/6 exit 0). **Check (b): field-only 0, generated-only 2 by name** (`navigation:attached`,
+`navigation:flag_lock_sky_position`); the six generated configs are byte-identical
+(`6d6c5362`, 268 keys). **§5.112 priced twice**: field config verbatim → **0 deleted / 2
+added**; the same file with hand-authored content → **4 deleted by name**, 17→16 sections,
+2→0 comments — **and both end at the SAME md5 `3465f7c8`**, so the migration is a projection
+onto the schema, not a partial loss. **P2e proved by probe**: `ec || ec.message()=="Success"`
+takes the SUCCESS arm on a FAILED copy too — the "Failed to copy … Abort!" branch is dead,
+and a tree-only install hits it ten times. **P2d**: a fresh HOME's `sky_cultures` is 262
+real files — §5.74's zero-byte condition is the FIELD HOME's, not the data root's.
+Boundary held: `/usr/local` census `b8ceb90b` at open AND close, config/ssystem pristine.
+**Next:** part (6) docs (code first), then the §11.204 record and the row mints.
 
 ### F85 — The developer's entry document: one file in the code repo, derived from the ledger and pointing back into it, that takes a newcomer from a clone to his first correct change — the two repositories and their contract, the code map, the two render paths and the parity rule, the domain constraints D8–D14 one paragraph each, build/run/test, how to ask the ledger whether something is known, the sharp edges — every sentence with its source (DEPLOYMENT-MAP R3; `claude/README.md`'s own filing criterion: *"must be promoted into the code repo … this repo is the lab notebook, not where other contributors will look"*) [M]
 
