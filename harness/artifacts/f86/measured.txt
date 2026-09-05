@@ -1,0 +1,153 @@
+F86 -- the three startup faults, scored against prediction.txt
+==============================================================
+2026-09-05.  Code master-beta 1cbd6780 -> 9e0f1e93 (Sec.5.130) -> a4a7c226
+(Sec.5.133 + Sec.5.134).  Binaries: pre-fix 225f0d93 (stashed at
+/home/claude/sc-f86/spacecrafter-prefix), main.cpp-only 8f23df02, both-fixes
+2815d182; ASan build-asan re-configured and rebuilt at each stage.
+prediction.txt was committed at harness 2db0267, BEFORE any launch; its two
+addenda (P8, P8b) were each committed before the launches they predict.
+Display :2 per HOST-EVENTS 2026-09-04; canary --no-scene exit 0 at 12:17 before
+the first launch; every launch under /home/claude/sc-f86/; the real
+~/.spacecrafter asserted 03fbee59 / 545a51ef in == out by every instrument.
+
+===============================================================================
+MEMBER (3) -- Sec.5.130: 134 -> 0                          VERDICT: as predicted
+===============================================================================
+P0a  CONFIRMED, twice.  By hand: exit 134, stderr exactly
+       terminate called after throwing an instance of
+         'std::filesystem::__cxx11::filesystem_error'
+         what():  filesystem error: cannot set current path: No such file or directory
+     and the $HOME left with 0 entries.  Through the instrument
+     (f84_coldhome.py --no-mkdir): returncode -6 = SIGABRT = 134, port never
+     opened.  Artifacts result_p0a_prefix.json.gz.
+P0b  CONFIRMED on all four sub-clauses.  exit 0; $HOME/.spacecrafter holds
+     19 directories and 7 files, name for name the shape F84's home-1 has;
+     exactly TEN "Completed copy of" lines; log/spacecrafter.log 54402 B
+     INSIDE the new directory (the clause that could have failed -- it is what
+     proves the cd still precedes Log->setDirectory("log/")).  The applog's
+     own CONFIG DIR line reads the scratch home.  result_p0b_postfix.json.gz.
+P0c  HELD, in the form the A/A control forced.  A/A first, same binary, two
+     farm launches: NOT byte-identical -- 3 lines differ (Free/Shared/Buffer
+     ram, the host's state).  So the claim measured is the one that survives:
+     pre-vs-post differs in EXACTLY those three lines and no other, 37 of 40
+     identical.  asif_aa1/aa2/post.applog_head are the three files; diff them.
+
+===============================================================================
+MEMBER (2) -- Sec.5.133: the use-after-free       VERDICT: reproduced and fixed,
+                                                  one sub-prediction REFUTED
+===============================================================================
+P1a  CONFIRMED SILENT, with the reason given in advance: plain ASan startup on
+     the farm with the shipped anchor.ini, exit 0, zero reports.  Only the
+     CURRENT anchor is update()d and the startup anchor is a body, so the
+     dangling pointer is stored on every launch and read on none.
+P1b  SITE CONFIRMED, CLASS REFUTED.  One shipped command
+     (`camera action switch name orbit_autour_lune`) and ASan aborts on
+       READ of size 8 ... in Orbit::positionAtTimevInVSOP87Coordinates
+                              (orbit.hpp:36 -- the vptr load of the virtual call)
+       #1 AnchorPointOrbit::update()   anchor_point_orbit.cpp:44
+       #2 AnchorManager::update()      anchor_manager.cpp:306
+     -- exactly the predicted stack.  But the CLASS is heap-buffer-overflow,
+     not heap-use-after-free, and there is NO "freed by" stack: the address
+     belongs to no live chunk (reported as 384 B after an unrelated 128-B
+     region).  A second launch with quarantine_size_mb=1024 did not change the
+     class; there the nearest live region is another EllipticalOrbit allocated
+     by ProtoSystem::addBody.  So the reproduction names the READ, not the
+     free: between the store and the read the process allocates enough (the
+     Vulkan validation layer alone) that the orbit's memory has been recycled
+     and its chunk identity lost.  Reports: asan_pre_switch.report.txt,
+     asan_pre_quarantine.report.txt.
+P1c  CONFIRMED: the RELEASE pre-fix binary takes the same command without
+     crashing (exit 0).  The defect is silent on the shipped build -- a virtual
+     call through a dangling vptr that happened to work.  That is why no launch
+     in this corpus ever caught it and why a green release run is not evidence.
+P2   CONFIRMED: the identical ASan launch on the fixed binary is CLEAN -- zero
+     reports, exit 0.  Positive control that the path was still exercised:
+     b4_anchors (which switches to on-orbit anchors and reads their positions)
+     is green on the fixed binary for every geometric check, and the pre-fix
+     ASan abort itself proves the command reaches AnchorPointOrbit::update.
+
+===============================================================================
+MEMBER (1) -- Sec.5.134: the comet null deref              VERDICT: as predicted
+===============================================================================
+P3a  CONFIRMED: scratch section `parent = none`, comet_orbit, semimajoraxis and
+     eccentricity present, NEITHER orbit_period NOR orbit_meanmotion ->
+     SIGSEGV (returncode -11), TCP never opened, during the ssystem load.
+P3b  CONFIRMED: same section, fixed binary -> exit 0 and, in the applog,
+       (Error): OrbitCreatorComet::handle : "F86TopLevelComet" has coord_func =
+       comet_orbit and no parent body named "none" exists, so its mean motion
+       cannot be deduced from the system centre. Give it orbit_meanmotion or
+       orbit_period, or a parent that exists.
+       (Error): Error when creating orbit from F86TopLevelComet
+       (Error): Body 'F86TopLevelComet': ... NOT added to the old render path.
+     UNPLANNED AND WORTH THE ROW: the same applog shows the NEW path already
+     logging its own version of this ("...not at the system center...",
+     CometOrbitLoader.hpp:62) and skipping the body, 1448 log-ticks earlier, in
+     the SAME pre-fix run that then died on the old path.  The two paths now
+     agree on the same authored file; before, one logged and the other died.
+P3c  CONFIRMED control: the same section plus `orbit_period = 1686.0` loads on
+     the PRE-fix binary, exit 0.  So P3a's crash is the missing pair, not the
+     section.
+
+===============================================================================
+GATES
+===============================================================================
+P5  CONFIRMED.  Full canary on the fixed release binary: exit 0, 12/12 members
+    in band, EVERY delta 0.0, and the dwell frame md5
+    5215565b11d24328a9bb01198c875b25 -- byte-identical across a FOURTH binary
+    (F79's, F83's two, and this one).  artifacts/f56/canary/20260905-130345.
+P6  CONFIRMED: D14 gate PASS (972 CONVERT files) before every commit.
+P4  HALF RED, and it is the one thing in this task that is not settled.
+    b4_anchors: pre-fix GREEN twice (0 failures), main.cpp-only GREEN,
+    both-fixes RED twice -- one check, P7's SCREEN WITNESS *control*
+    ("the OTHER date's window is darker than the Moon's own").
+    What is measured about it:
+      - bimodal by binary, not by time (the runs alternated pre/post/pre/post):
+        lit>16 in b4_orb_t0.png = 87983 / 87982 / 87921 (pre, pre, main-only)
+        vs 88803 / 88767 (fixed);
+      - the frames differ in ~19030 px by >8 across the groups and 730-860 px
+        within a group; no integer translation of +-2 px improves the match;
+        the changed pixels are point-like, lit-in-one and dark-in-the-other,
+        spread over radii 270..983 of the dome;
+      - the CAMERA is bit-stable: the Moon's flux-weighted centroid in
+        b4_orb_t0.png is 1324.2740 / 1767.6721 in ALL FIVE runs, with the same
+        353 px above 120 and the same mass 76290.  A geometric change is
+        therefore excluded, not argued away;
+      - every DUMPED number in b4_result.json is identical pre/post (the whole
+        diff is pixel counts), including the 512.0 px Moon separation and P1's
+        analytic chord;
+      - the shipped scene does not move at all (P5's byte-identical frame).
+    So the difference lives in the star field's per-star BRIGHTNESS.  The only
+    per-star brightness modulation in the code is hip_star_mgr.cpp:640-643,
+    `1 - twinkle_amount*rand()/RAND_MAX`, and `src/` contains NO srand( at all
+    (measured: 0 hits), so that channel is a function of the position of the
+    global rand() stream and cannot be invariant under any change to the work
+    the process does.  THAT REMAINS A CANDIDATE, NOT A FINDING: the experiment
+    built to test it (P8, then P8b) is recorded below as a failure.
+P8  FAILED TO DISCRIMINATE.  Grabbed the shipped startup view: 3.30 Mpx of
+    4.19 lit, atmosphere and landscape fill the frame, the star field is not on
+    screen.  pre-vs-post 448 px>8 (ON) and 438 (OFF); the 19000-px signal is
+    absent from this scene entirely.
+P8b FAILED TO DISCRIMINATE, and its own A/A control is what says so.  With
+    `flag atmosphere off` + `flag landscape off` the star field is visible
+    (10403 lit px) and pre-vs-post is 18813 px>8 with twinkle ON, 18867 with
+    twinkle OFF -- which looks like a refutation until the A/A control runs:
+    two launches of the SAME pre-fix binary differ by 23502 px>8 (ON) and
+    23539 (OFF), MORE than the cross-binary pair.  A free-running star-field
+    grab is not a cross-run instrument at all: the sky turns in real time and
+    every launch lands on a different instant.  Both arms of P8b are therefore
+    void as evidence -- neither the twinkle hypothesis nor its refutation.
+    THE INSTRUMENT NOTE THIS LEAVES: comparing star-field pixels between two
+    launches requires the date pinned AND the frame index pinned (or twinkle
+    off); b4's own scene pins the date, which is why its A/A floor is 773 and
+    not 23000.
+
+===============================================================================
+BOUNDARIES, asserted rather than claimed
+===============================================================================
+  real ~/.spacecrafter config.ini 03fbee59 / ssystem.ini 545a51ef, in == out on
+  every one of the 20 launches (each instrument asserts it itself and fails
+  rather than reporting afterwards); the scratch comet sections were inserted
+  only into the FARM's copy (545a51ef -> bcacd9cb inside the farm);
+  EntityCore not touched by this task -- see the HOST-EVENTS note for the
+  submodule commit an external writer amended and pushed at 12:23 today;
+  everything else written under /home/claude/sc-f86/ and build-asan/.

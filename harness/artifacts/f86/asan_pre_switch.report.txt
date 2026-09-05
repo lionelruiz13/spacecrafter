@@ -1,0 +1,73 @@
+=================================================================
+==642647==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x747a19219340 at pc 0x5702817f2584 bp 0x7ffcc23cb050 sp 0x7ffcc23cb040
+READ of size 8 at 0x747a19219340 thread T0
+    #0 0x5702817f2583 in Orbit::positionAtTimevInVSOP87Coordinates(double, double*) const /home/claude/spacecrafter/src/bodyModule/orbit.hpp:36
+    #1 0x5702817f2583 in AnchorPointOrbit::update() /home/claude/spacecrafter/src/navModule/anchor_point_orbit.cpp:44
+    #2 0x5702817c4185 in AnchorManager::update() /home/claude/spacecrafter/src/navModule/anchor_manager.cpp:306
+    #3 0x570281209fa0 in SSystemFactory::updateAnchorManager() /home/claude/spacecrafter/src/bodyModule/ssystem_factory.hpp:984
+    #4 0x570281209fa0 in SolarSystemModule::update(int) /home/claude/spacecrafter/src/executorModule/solarSystemModule.cpp:111
+    #5 0x5702811f82c9 in Executor::update(int) /home/claude/spacecrafter/src/executorModule/executor.cpp:60
+    #6 0x570280cca60f in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:817
+    #7 0x570280ccadc6 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1030
+    #8 0x570280b0634d in main /home/claude/spacecrafter/src/main.cpp:354
+    #9 0x777a24c2a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #10 0x777a24c2a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #11 0x570280b0bc24 in _start (/home/claude/spacecrafter/build-asan/src/spacecrafter+0x1b1c24) (BuildId: 3a7c042ebe0e2b3d01245e716852beb6396da230)
+
+0x747a19219340 is located 384 bytes after 128-byte region [0x747a19219140,0x747a192191c0)
+allocated by thread T25 here:
+    #0 0x777a2932375b in operator new(unsigned long, std::align_val_t) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:98
+    #1 0x7379d4e8c42a  (/lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so+0xa8c42a) (BuildId: 45d017bac41cc78442f5663272461c359e766b7e)
+    #2 0x7379d48305cb  (/lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so+0x4305cb) (BuildId: 45d017bac41cc78442f5663272461c359e766b7e)
+    #3 0x570280bd6d12 in ComputePipeline::build(bool) /home/claude/spacecrafter/src/EntityCore/Resource/ComputePipeline.cpp:90
+    #4 0x57028195ff3f in Context::buildShadowPipeline(unsigned int, unsigned int) /home/claude/spacecrafter/src/tools/context.cpp:115
+    #5 0x777a250f2583  (/lib/x86_64-linux-gnu/libstdc++.so.6+0xf2583) (BuildId: 280f658f43aae7a7f92bba6ec4c5d96bc2b53a7a)
+    #6 0x777a2925f802 in asan_thread_start ../../../../src/libsanitizer/asan/asan_interceptors.cpp:239
+    #7 0x777a24ca3d63 in start_thread nptl/pthread_create.c:448
+
+Thread T25 created by T0 here:
+    #0 0x777a293196aa in pthread_create ../../../../src/libsanitizer/asan/asan_interceptors.cpp:250
+    #1 0x777a250f2670 in std::thread::_M_start_thread(std::unique_ptr<std::thread::_State, std::default_delete<std::thread::_State> >, void (*)()) (/lib/x86_64-linux-gnu/libstdc++.so.6+0xf2670) (BuildId: 280f658f43aae7a7f92bba6ec4c5d96bc2b53a7a)
+    #2 0x5702819616b2 in std::thread::thread<void (Context::*)(unsigned int, unsigned int), Context*, unsigned int const&, unsigned int&, void>(void (Context::*&&)(unsigned int, unsigned int), Context*&&, unsigned int const&, unsigned int&) /usr/include/c++/15/bits/std_thread.h:175
+    #3 0x5702819616b2 in Context::initShadowStructures() /home/claude/spacecrafter/src/tools/context.cpp:100
+    #4 0x570280cc3356 in App::finalizeInitVulkan(InitParser&) /home/claude/spacecrafter/src/appModule/app.cpp:500
+    #5 0x570280cd9ecc in App::App(SDLFacade*) /home/claude/spacecrafter/src/appModule/app.cpp:140
+    #6 0x570280b05f23 in std::__detail::_MakeUniq<App>::__single_object std::make_unique<App, SDLFacade*>(SDLFacade*&&) /usr/include/c++/15/bits/unique_ptr.h:1084
+    #7 0x570280b05f23 in main /home/claude/spacecrafter/src/main.cpp:342
+    #8 0x777a24c2a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #9 0x777a24c2a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #10 0x570280b0bc24 in _start (/home/claude/spacecrafter/build-asan/src/spacecrafter+0x1b1c24) (BuildId: 3a7c042ebe0e2b3d01245e716852beb6396da230)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /home/claude/spacecrafter/src/bodyModule/orbit.hpp:36 in Orbit::positionAtTimevInVSOP87Coordinates(double, double*) const
+Shadow bytes around the buggy address:
+  0x747a19219080: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x747a19219100: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+  0x747a19219180: 00 00 00 00 00 00 00 00 fa fa fa fa fa fa fa fa
+  0x747a19219200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x747a19219280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+=>0x747a19219300: fa fa fa fa fa fa fa fa[fa]fa fa fa fa fa fa fa
+  0x747a19219380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x747a19219400: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+  0x747a19219480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x747a19219500: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x747a19219580: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==642647==ABORTING

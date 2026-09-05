@@ -109,6 +109,13 @@ def main():
     ap.add_argument("--tag", default="run")
     ap.add_argument("--cmd", action="append", default=[])
     ap.add_argument("--asan", action="store_true")
+    ap.add_argument("--asan-opts", default=None,
+                    help="replace the default ASAN_OPTIONS body (log_path is "
+                         "always appended). Used to raise the quarantine so a "
+                         "freed chunk is not recycled before it is read: with "
+                         "the default quarantine ASan reports the dangling read "
+                         "as heap-buffer-overflow into whatever took the memory, "
+                         "and never names the free.")
     ap.add_argument("--ssystem-insert", default=None)
     ap.add_argument("--expect-crash", action="store_true",
                     help="documentary only: recorded in the result, never gates")
@@ -155,9 +162,8 @@ def main():
     env = {**os.environ, "HOME": str(a.farm),
            "DISPLAY": os.environ.get("DISPLAY", ":2")}
     if a.asan:
-        env["ASAN_OPTIONS"] = ("detect_leaks=0:halt_on_error=1:"
-                               "malloc_context_size=30:log_path=%s"
-                               % (out / ("asan_%s" % a.tag)))
+        body = a.asan_opts or "detect_leaks=0:halt_on_error=1:malloc_context_size=30"
+        env["ASAN_OPTIONS"] = "%s:log_path=%s" % (body, out / ("asan_%s" % a.tag))
         rec["asan_options"] = env["ASAN_OPTIONS"]
 
     t0 = time.time()

@@ -1116,7 +1116,22 @@ IDENTICAL `6ee9f6a7`, `git diff` empty) and at **12:23:44** pushed (`origin/main
 *update by push*) — so the code tree now carries ONE unstaged gitlink change I did not
 make and will not resolve; §5.131's clone blocker is NOT discharged by the push alone,
 because the pin recorded in `master-beta` is still the amended-away `7ce58350`.
-NEXT: checkpoint 3 = the ASan build of the pre-fix creator code + the reproduction.
+2026-09-05 — CHECKPOINTS 3 AND 4 done: `build-asan` re-configured and rebuilt (F17 recipe,
+`-j12` for ASan's memory), **the UAF REPRODUCED** (ASan aborts on the predicted READ stack
+`orbit.hpp:36` <- `AnchorPointOrbit::update:44` <- `AnchorManager::update:306` after ONE
+shipped command, `camera action switch name orbit_autour_lune`; the CLASS is
+heap-buffer-overflow not use-after-free, sub-prediction refuted and kept), **both fixes
+landed** (code **`a4a7c226`**, binary **`2815d182`**), **ASan CLEAN** on the identical
+launch, the comet guard measured all three ways (pre-fix SIGSEGV / post-fix the §2(f)
+diagnostic / control with `orbit_period` loads pre-fix), and the FULL CANARY exit 0,
+12/12 in band, every delta 0.0, dwell frame md5 `5215565b` byte-identical across a FOURTH
+binary. ONE RED, analysed not absorbed: `b4_anchors` P7's screen-witness CONTROL flips on
+the fixed binary (2 runs green pre, 1 green main.cpp-only, 2 red post) — the Moon's
+centroid is bit-identical in all five runs and every dumped number is equal, so it is NOT
+geometry; it is the star field's per-star brightness, whose only modulator is an unseeded
+`rand()` (`hip_star_mgr.cpp:640-643`). The experiment built to prove that (P8/P8b) FAILED
+to discriminate and is recorded as a failure with its A/A control. NEXT: checkpoint 5 =
+delivery (§11.205 + stub, the three row flips, DEPLOYMENT-MAP R2/R4, README, HOST-EVENTS).
 
 ### F87 — EXTENSION: §5.111 — the new path's object readouts translated where the old path's are: `ModularObject`'s labels re-wrapped in `_()` with the OLD path's exact msgids (parity: old is the baseline, so the French catalogue answers identically), plus the owed census of every other new-path user-visible string that lost its `_()` in the same port (DEPLOYMENT-MAP T2's decision-free candidate since 2026-08-29, never dispatched; the tester operates in French) [S]
 

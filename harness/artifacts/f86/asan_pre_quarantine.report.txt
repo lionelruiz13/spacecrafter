@@ -1,0 +1,66 @@
+=================================================================
+==643444==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7cea5842b140 at pc 0x652557f5b584 bp 0x7ffcd28dcf90 sp 0x7ffcd28dcf80
+READ of size 8 at 0x7cea5842b140 thread T0
+    #0 0x652557f5b583 in Orbit::positionAtTimevInVSOP87Coordinates(double, double*) const /home/claude/spacecrafter/src/bodyModule/orbit.hpp:36
+    #1 0x652557f5b583 in AnchorPointOrbit::update() /home/claude/spacecrafter/src/navModule/anchor_point_orbit.cpp:44
+    #2 0x652557f2d185 in AnchorManager::update() /home/claude/spacecrafter/src/navModule/anchor_manager.cpp:306
+    #3 0x652557972fa0 in SSystemFactory::updateAnchorManager() /home/claude/spacecrafter/src/bodyModule/ssystem_factory.hpp:984
+    #4 0x652557972fa0 in SolarSystemModule::update(int) /home/claude/spacecrafter/src/executorModule/solarSystemModule.cpp:111
+    #5 0x6525579612c9 in Executor::update(int) /home/claude/spacecrafter/src/executorModule/executor.cpp:60
+    #6 0x65255743360f in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:817
+    #7 0x652557433dc6 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1030
+    #8 0x65255726f34d in main /home/claude/spacecrafter/src/main.cpp:354
+    #9 0x7fea6362a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #10 0x7fea6362a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #11 0x652557274c24 in _start (/home/claude/spacecrafter/build-asan/src/spacecrafter+0x1b1c24) (BuildId: 3a7c042ebe0e2b3d01245e716852beb6396da230)
+
+0x7cea5842b140 is located 320 bytes after 192-byte region [0x7cea5842af40,0x7cea5842b000)
+allocated by thread T0 here:
+    #0 0x7fea67d2319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86
+    #1 0x652557599841 in std::__detail::_MakeUniq<EllipticalOrbit>::__single_object std::make_unique<EllipticalOrbit, double&, double&, double&, double&, double&, double&, double&, double&, double&, double&, double&>(double&, double&, double&, double&, double&, double&, double&, double&, double&, double&, double&) /usr/include/c++/15/bits/unique_ptr.h:1084
+    #2 0x652557599841 in OrbitCreatorEliptic::handle(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >) const /home/claude/spacecrafter/src/bodyModule/orbit_creator_cor.cpp:90
+    #3 0x6525575a2838 in OrbitCreatorBary::handle(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >) const /home/claude/spacecrafter/src/bodyModule/orbit_creator_cor.cpp:279
+    #4 0x6525575df3fc in ProtoSystem::addBody(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, bool) /home/claude/spacecrafter/src/bodyModule/protosystem.cpp:612
+    #5 0x65255760b102 in SolarSystem::addBody(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, bool) /home/claude/spacecrafter/src/bodyModule/solarsystem.cpp:87
+    #6 0x6525575d9003 in ProtoSystem::load(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/bodyModule/protosystem.cpp:143
+    #7 0x65255773de7a in SSystemFactory::load(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/bodyModule/ssystem_factory.hpp:655
+    #8 0x65255773de7a in Core::init(InitParser const&) /home/claude/spacecrafter/src/coreModule/core.cpp:319
+    #9 0x6525574510ec in App::firstInit() /home/claude/spacecrafter/src/appModule/app.cpp:710
+    #10 0x65255726f062 in main /home/claude/spacecrafter/src/main.cpp:352
+    #11 0x7fea6362a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #12 0x7fea6362a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #13 0x652557274c24 in _start (/home/claude/spacecrafter/build-asan/src/spacecrafter+0x1b1c24) (BuildId: 3a7c042ebe0e2b3d01245e716852beb6396da230)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /home/claude/spacecrafter/src/bodyModule/orbit.hpp:36 in Orbit::positionAtTimevInVSOP87Coordinates(double, double*) const
+Shadow bytes around the buggy address:
+  0x7cea5842ae80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7cea5842af00: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+  0x7cea5842af80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7cea5842b000: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7cea5842b080: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+=>0x7cea5842b100: fa fa fa fa fa fa fa fa[fa]fa fa fa fa fa fa fa
+  0x7cea5842b180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7cea5842b200: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+  0x7cea5842b280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7cea5842b300: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+  0x7cea5842b380: 00 00 00 00 00 00 00 00 fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==643444==ABORTING
