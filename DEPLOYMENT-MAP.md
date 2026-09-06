@@ -334,7 +334,13 @@ Ordered by operational weight for the tester, not by age:
    LATITUDE, and a bare `fmod` printed all three hour angles negative at any pre-J2000 date.
    §5.86 and §5.19 both FIXED. Left NAMED, not chased: `observedToLocalPos` still divides by
    the offset-free rotation while its input carries the B17 pitch (the alt/az half; a
-   photometric surface, out of F91's canary).]**
+   photometric surface, out of F91's canary). **[PAID 2026-09-06, F96 §11.216, code `24100461`: `observedToLocalPos` is
+   `renderViewRotation()ᵀ` now, so the alt/az readout, the atmosphere's sun direction,
+   `moveEyeRel` and the tracking feedback read ONE expression. Measured with
+   `set zoom_offset 0.3` armed: old-vs-new alt/az **27.000006873°** before, **0.000017139°**
+   after, the Sun with them; byte-identical at every shipped default, and the FULL canary
+   this item was waiting for is **exit 0, 12/12 in band, dwell frame md5 `5215565b`
+   unmoved**. §5.138 FIXED; the §5.86 pole rider closed in the same commit.]**]**
 5. **§5.109's layer half** — what `moveto alt` means above a display-scaled body (drawn
    vs physical surface). He authors scenes on scaled bodies.
 6. **The script-semantics batch** (both-paths defects his authoring will hit; each is a

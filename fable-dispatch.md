@@ -709,23 +709,21 @@ test -e /home/claude/sc-f96 ; echo $? => 1
 the fix (code first) + the pole guard; the four proofs incl. the full canary; §11 entry +
 stub; §5.138 flipped; the rider closed; back-markers; map; README; trees clean; WIP
 cleared; baselines LAST.
-**WIP:** 2026-09-06 CP4 — THE FIX IS IN AND THE FOUR PROOFS ARE GREEN. Code
-`a2a880ef → 24100461` (`Camera.hpp`+`Camera.cpp` only, `EnvironmentManager.cpp` untouched);
-binary `404b9e89 → eb3f5e50`, dry build 0 steps, D14 gate PASS. POST-FIX
-(`artifacts/f96/leg_post/`, 0 FAIL): at offset 0.3 the 71 re-evaluated bodies read old's
-alt/az to **max 0.000017°** (pre-fix 27.000007°), the Sun with them — its `skyBrightness`
-term 0.16222356 vs old's 0.16222369 where pre-fix it read 0.5632; the readout no longer
-moves with the offset (max 0.000010°). Offset 0: **F91 table BYTE-IDENTICAL pre/post in
-both locales** (`c125adf0` fr, `9784f616` en), Q2 88/90 on both, format control 0 shape
-differences with 420 on its own locale control, P0 alt/az **90 of 90 byte-identical** with
-the camera state identical; smoke suite **rc 0**, 91.3 s, step for step; **FULL CANARY exit
-0, 12/12 in band, every delta 0.0**, dwell frame md5 **5215565b** = F79's. Tracking datum
-`screen` [~0, 0.2999999] both binaries; descend at offset 0.3 swaps expression (pre 0.0121°
-to `Rvᵀẑ`, post 0.0028° to `(R'Rv)ᵀẑ`). POLE RIDER: §11.213(i2)'s "measure-zero" premise is
-**REFUTED by measurement** — `select planet MilkyWay` + `get status object` answers
-`06h00m00s/+00°00'00"` pre and `00h00m00s/+90°00'00"` post (29 of 120 dump records carry an
-exactly-(0,0,0) eye position); Mars/Jupiter byte-identical. NEXT: the §11.216 entry + stub,
-§5.138 FIXED, the rider closed at §5.86, back-markers, map, README, D14, baselines LAST.
+**WIP:** DELIVERED 2026-09-06 — **§11.216** (`INTENT/11.216.md` + stub); **§5.138 FIXED** with the
+measured pitch (27.000006873° of old-vs-new alt/az before, **0.000017139°** after) and its open
+sub-question answered (the config key is a LATENT offset: the scalar lands at startup with the
+arming transition at 0); **the §5.86 pole rider CLOSED** — and §11.213(i2)'s "measure-zero" premise
+REFUTED on a shipped command (`select planet MilkyWay` + `get status object` moves; Mars and Jupiter
+do not). Code `a2a880ef → 24100461` (`Camera.hpp`+`Camera.cpp` only; `EnvironmentManager.cpp`
+untouched — it inherits through the authority; old path not one line); binary `404b9e89 → eb3f5e50`,
+dry build 0 steps, D14 PASS. Proofs: F91 table BYTE-IDENTICAL pre/post in both locales, format
+control 0 vs 420, 90/90 alt/az byte-identical at the un-moved view, smoke suite **rc 0**, **FULL
+CANARY exit 0, 12/12 in band, dwell md5 `5215565b`**; tracking aim and the Sun's own
+`skyBrightness` term both measured. Back-markers at §11.213(i1)(i2) both homes, §11.201 both homes,
+§5.128, §5.107; DEPLOYMENT-MAP + README. Harness `b111c878 → b690e03 → b97c9f1 → 052192d →
+277320d → this delivery`. **RECORDED NOT MINTED (§11.216(j1)):** a body out of view keeps a frozen
+eye-frame position — 48 of 120 records byte-identical across one aim change, then 109.893°–170.695°
+from old's alt/az — the same visibility gate §5.107 records, on a different member.
 
 ### F97 — §5.21 — `LocationOrbit` made EXACT on both paths: the authored latitude converted like the longitude (degrees, the loader's documented unit — `orbit.cpp:1091` converts one and not the other on the same line), and the spin read from the parent's ONE rotation authority at evaluation time instead of a linear model anchored at JD 0 with the parent's period and phase frozen at construction (`orbit.cpp:1102`; on Earth `Body::getSiderealTime` is the APPARENT sidereal time, which no linear model follows — magnitude to be MEASURED); on the new path the class registered at `modules.cpp:49` lands where `surface_point` + the grounded fold lands for the same keys, the spin applied exactly once whichever spelling the author uses (§11.78(c)'s double-spin trap closed by construction); D9 excluded by round-3 R18 (*"No."* — nobody has authored one), zero shipped/loaded uses measured at the mint, so no baseline scene moves (§11.207(g) item 3; DEPLOYMENT-MAP T2) [M, engine, both paths]
 

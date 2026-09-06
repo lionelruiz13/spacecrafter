@@ -4490,3 +4490,69 @@ out.
 - **The probe budget must exceed the bound it tests.** At a 45 s bound and a 45 s
   budget the instrument can only ever report ">= 45"; at 90 s it reported 54.3 s,
   which is a measurement.
+
+## F96 — the view offset inside the readout (`f96_frame.cpp`, `f96_offset.py`, `f96_run.sh`) — INTENT §11.216 / §5.138 / §5.86's pole rider, 2026-09-06
+
+```
+g++ -O0 -std=c++20 -I../../src -o /tmp/f96_frame f96_frame.cpp && /tmp/f96_frame
+/tmp/f96_frame --state <heading> <alt> <az> <foldLat> <offset> <halfFov>   # C for one state
+DISPLAY=:2 ./f96_run.sh <absOutdir> --tag pre|post [--bin PATH]
+        [--stages cmd,cfg,descend,guard] [--jd-sun JD]    # SC_BIN=…
+./f96_offset.py <absOutdir> --score                       # re-score on disk, no launch
+```
+
+**What it measures.** `getObservedPosition()` carries `R'·Rv` while the shipped
+`observedToLocalPos` divided by `Rv` alone, so the readout was the true direction
+turned by **C = Rvᵀ·R'·Rv** — a rotation by `offset × halfFov` about `Rvᵀ·x_eye`,
+27° at the shipped fov 180 with `set zoom_offset 0.3`. `f96_frame.cpp` is that
+derivation in the project's own `Mat4f` (predictions in the file header, before
+its first run); `f96_offset.py` is the same algebra written a second time in
+Python and scored against the running application.
+
+### The three shapes worth reusing
+
+- **A/B AT ONE HELD CAMERA STATE, with a FRESHNESS PARTITION measured
+  independently of the model.** The first pass took the offset-0 table at the
+  launch view and the offset-0.3 table after the arming had moved the camera, and
+  19 of 90 bodies then violated the model by up to 170° — because their eye-frame
+  position had not been re-evaluated, not because the model was wrong. The
+  criterion that sorts it is byte-identity of the dumped `mat` translation between
+  the two dumps, and it is independent of everything the model says. **Any
+  measurement that compares a new-path readout across a camera move needs it**:
+  48 of 120 records in the shipped default scene are frozen after one aim change.
+- **The RETURN CONTROL.** `set zoom_offset 0` after the A/B must put every readout
+  back byte-identically (120/120 here) with the camera state identical — otherwise
+  "the offset moved the table" is consistent with "something else moved it too".
+  Take it BEFORE re-arming the tracking: re-arming re-aims the camera, and the
+  first pass of this driver reported the control red for exactly that reason.
+- **A both-ways score INSIDE one run.** The descent step is
+  `observedToLocalPos(v)` for the `v` the descent chose, so scoring its direction
+  against BOTH expressions (`Rvᵀ·ẑ` and `(R'·Rv)ᵀ·ẑ`) says which one the binary
+  went through without the two runs having to start from the same state: pre-fix
+  0.0121° / 26.998°, post-fix 0.0028° / 26.998°, exactly swapped.
+
+### Gotchas measured here
+
+- **`viewOffsetEff` is a FLOAT: `set zoom_offset 0.3` reads 0.300000012.** A
+  settle predicate written `abs(eff - 0.3) < 1e-9` never fires; 1e-6 does. The
+  same applies to `viewOffsetTransition == 1`.
+- **The alt/az channel is the dump's `altaz_old` / `altaz_new`, both in OLD's
+  reported convention** (`ssystem_factory.cpp`), so both map into the new path's
+  raw local frame by `az_raw = π/2 − az_report` — §11.60's bridge, the one
+  `f91_parity.reconstruct` already used. Old's alt/az carries no eye-frame content
+  at all (§11.201), which is what makes it the reference for this measurement.
+- **The camera state after a tracking convergence is run-to-run variable** at
+  ~3.7e-04 rad in azimuth on ONE binary (4 of 90 alt/az values byte-identical
+  between two runs of the same build). Byte-identity claims belong to an UN-MOVED
+  view; there, 90 of 90 hold across a binary change.
+- **The shipped place is ON the ground**, so `camera action descend coef 0.9` in
+  free flight steps 10 % of ~0 — 6.4e-11 AU, which is at the dump's printed
+  precision. Ascend first (five `coef 3`), or measure `rootPos` (17 digits).
+- **The pole guard `x == 0 && y == 0` catches the ZERO VECTOR too**, and 29 of the
+  120 records in the shipped default scene carry an eye-frame position of exactly
+  (0,0,0) (`dist` 0 — systems and anchor bodies). It is reachable from a shipped
+  command: `select planet MilkyWay` resolves a new-only name through the
+  `ModularObject` bridge and `get status object` prints its nav string. Use
+  Mars/Jupiter in the same run as the control — they must not move.
+- **`f91_parity.py`'s farm root is now `F91_FARM_ROOT`-overridable** (default
+  unchanged), so a later task can keep its launches inside its own scratch root.
