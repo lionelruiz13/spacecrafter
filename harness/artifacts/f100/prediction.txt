@@ -1,0 +1,227 @@
+F100 — PREDICTIONS, COMMITTED BEFORE THE FIRST LAUNCH
+=====================================================
+Task F100 (fable-dispatch.md), row INTENT 5.139, mechanism reading INTENT
+11.216(j1).  Written 2026-09-06 at code master-beta @ 1af7fa48 (binary
+8e2c6ef3), harness CC-harness @ 776a59c.  Nothing in this file is measured on
+a running application: every number below is either (i) computed from LANDED
+F96 artifacts already in this repository, (ii) read at source, or (iii) a
+prediction about a run that has not happened.  Provenance is tagged per line.
+
+--------------------------------------------------------------------------
+0.  THE MODEL UNDER TEST  [derived, from the source read below]
+--------------------------------------------------------------------------
+A parked body's eye-frame position has exactly ONE writer: the D8 use-site
+barrier ModularBody::useNow() [observed: ModularBody.cpp:455-481], which
+early-returns when
+
+    evaluatedJD == currentJD                    [observed: ModularBody.cpp:459]
+
+`evaluatedJD` is stamped by the translation refresh itself
+[observed: ModularBody.hpp:683, :857] and `currentJD` is the frame's SIM date,
+written once per frame at the walk's entry [observed: ModularBody.cpp:375].
+The frame the refresh consumes is the parent's published flat frame
+[observed: ModularBody.cpp:466-478 -> publishParkedFrame, ModularBody.hpp:1003-1007],
+and that frame descends from Camera::viewMat() [observed: Camera.cpp:723,:734],
+i.e. it FOLLOWS THE CAMERA.
+
+So the memo key is complete for `eclipticPos` (a function of the date alone)
+and INCOMPLETE for `mat` (a function of the date AND the camera).  At a pinned
+clock the first use at a date refreshes `mat`; every later use returns at :459;
+the camera moves on without it.
+
+THE FIX SHAPE THIS PREDICTS (stated now so it cannot be retrofitted): the early
+return must also compare the FRAME the last refresh consumed; the +4
+re-convergence iterations stay bound to a DATE change (the Kepler seed is
+date-driven [observed: ModularBody.hpp:1015-1023]), and a frame-only change is
+ONE translation refresh.
+
+--------------------------------------------------------------------------
+1.  THE PARTITION KEY — INDEPENDENT OF ANY FRESHNESS MEASUREMENT
+--------------------------------------------------------------------------
+Two classes, both read from the dump's OWN fields (`relation`, `parent`,
+`dist`) plus the field census, never from F96's frozen list:
+
+  class P (PARKED)   effective renderHidden: the record's own `relation` < 3
+                     (BodyRelation::HIDDEN_* [observed: ModularBody.hpp:323-330])
+                     OR any ancestor's is, walking the `parent` chain.
+  class I (UNREACHED) eye-frame position exactly (0,0,0), i.e. `dist` == 0 —
+                     a `mat` that no walk and no useNow() ever wrote.
+
+[measured, offline, on the landed artifact
+ harness/artifacts/f96/leg_pre/cmd_a0_off0.json.gz — no launch]
+  |P| = 29 · |I| = 29 · |P n I| = 10 · |P u I| = 48 of 120 records.
+
+  P = Arrokoth Ceres Charon Eris Goldilocks_Zone Haumea Hiiaka Hydra_ Juno
+      Kerberos Makemake Namaka Nix Pallas Pluto Sedna Solar_System Styx Vesta
+      baryEarthMoon big_dipper center_sun galaxy_center orbit_autour_lune
+      orbit_autour_point "orbit_autour_point (orbit centre)" pleiades
+      sun_in_gal un_point
+  I = 51PegSystem AntaresSystem ArcturusSystem CapellaSystem DarkStarSystem
+      HelixDwarfSystem KeidSystem Kepler16System M1PulsarSystem M27DwarfSystem
+      M57DwarfSystem MilkyWay NGC2392DwarfSystem ProximaSystem SiriusSystem
+      TolimanSystem Trappist1System Universe VegaSystem baryEarthMoon
+      big_dipper center_sun galaxy_center orbit_autour_lune orbit_autour_point
+      "orbit_autour_point (orbit centre)" pleiades sun_in_gal un_point
+  P \ I (the 19 parked bodies with a MEANINGFUL position) =
+      Arrokoth Ceres Charon Eris Goldilocks_Zone Haumea Hiiaka Hydra_ Juno
+      Kerberos Makemake Namaka Nix Pallas Pluto Sedna Solar_System Styx Vesta
+
+The field census that says P's roots are the field's own hidden declarations is
+the section's PREMISES line (eris/ceres/haumea/arrokoth/pluto/makemake/sedna/
+vesta/pallas/juno = true; charon/mars = false) — the moons of the hidden
+dwarfs are P by the parent chain, not by their own key.
+
+WHY I EXISTS AT ALL, read at source and NOT part of the memo model
+[observed: ssystem_factory.cpp:1181-1218 vs :1223-1245]: the dump calls
+`nb->useNow()` ONLY in the loop over the OLD system's bodies; the second loop,
+which emits the 30 new-only records, does not.  So the 29 records of I are
+never used and never walked, and their `mat` stays the identity.  This is a
+property of the INSTRUMENT and of the isolation stop, not of the barrier.
+
+--------------------------------------------------------------------------
+2.  P1 — THE PINNED CLOCK, PRE-FIX BINARY 8e2c6ef3   [prediction]
+--------------------------------------------------------------------------
+Drive: F96's own move — `timerate rate 0`, `date jday <JD>`, dump P0 at the
+launch view, `select planet Jupiter` + `flag track_object on`, wait the aim
+out, `flag track_object off`, dump A0.  Offset 0 throughout.
+
+P1a  The frozen set (byte-identical new-path `mat` translation P0 -> A0) is
+     EXACTLY P u I: 48 of 120, body for body, 0 in either set difference.
+P1b  For the 19 of P \ I, `evalCount` is IDENTICAL in the two dumps (the memo
+     blocked the refresh: the position code did not run), while every walked
+     body's `evalCount` grows by hundreds over the same interval.
+P1c  At P0 every one of the 90 both-tree bodies agrees with old's alt/az; the
+     frozen class's disagreement (109.9 deg - 170.7 deg, 5.139) appears only
+     after the move.  Each body's own P0 disagreement is its BASELINE for
+     section 6 (Eris's ~1.1987 deg trees-gap is carried, never exempted).
+
+WHAT WOULD FAIL P1: any walked body frozen; any member of P \ I re-evaluated;
+`evalCount` growing for a frozen body (that would say the refresh ran and the
+result was identical — a different mechanism).
+
+--------------------------------------------------------------------------
+3.  P2 — THE RUNNING CLOCK, THE SAME BINARY   [prediction]
+--------------------------------------------------------------------------
+Drive: identical, with `timerate rate 1` instead of `rate 0`.
+P2a  The frozen set is EXACTLY I: 29 of 120.  The 19 of P \ I UN-FREEZE.
+P2b  Their `evalCount` grows by 5 (= 1 + RESUME_EXTRA_ITERATIONS) per useNow.
+
+THIS IS THE CHECK THAT SEPARATES THE TWO CANDIDATE MECHANISMS.  Under the
+row's original candidate (the update walk's visibility gate) the walk still
+never reaches a parked body, so those 19 would stay frozen at a running clock
+as well.  Only a DATE-KEYED MEMO un-freezes them.  A running clock that leaves
+the 48 frozen REFUTES the memo model and STOPS the task before any code
+change.
+
+--------------------------------------------------------------------------
+4.  P3 — THE OPERATOR CHANNEL ON A HIDDEN DWARF (Ceres)   [prediction]
+--------------------------------------------------------------------------
+P3a  THE TASK SECTION'S LITERAL FORM — "`get status object` before/after the
+     move answers the SAME alt/az string after the move (stale)".
+     I PREDICT THIS IS REFUTED, and say why before measuring: the readout is
+     `Camera::instance->observedPosToAltAz(body->getObservedPosition())`
+     [observed: ModularObject.cpp:189-200], i.e. a STALE eye-frame position
+     divided by the CURRENT camera rotation.  The string therefore MOVES with
+     the camera; it moves to a WRONG value.  Sameness is not the observable —
+     disagreement with old's answer for the same body at the same frame is.
+P3b  `select planet <name>` resolves OLD-FIRST
+     [observed: core.cpp:1091-1097 -> SSystemFactory::searchObjectByEnglishName,
+     ssystem_factory.cpp:909-915: old's tree answers first, the ModularObject
+     bridge only for a name old does not carry].  Every one of the 19 of P \ I
+     HAS an old half [measured on the landed dump: 90 of 120 records do; all 19
+     are among them], and every hidden NEW-ONLY body in the corpus is in I
+     (dist 0, a degenerate readout).  So I PREDICT the string `get status
+     object` prints for Ceres is the OLD path's — it will match the dump's own
+     `OLD inf:` sidecar line for Ceres, not the `NEW inf:` one, at both clocks,
+     before and after the move.  CONSEQUENCE IF SO: `get status object` does
+     NOT exhibit 5.139 on any shipped body whose position is meaningful, and
+     the row's reach sentence needs correcting at the row.
+P3c  THE OPERATOR CONSEQUENCE THAT IS REACHABLE, read at source: `flag
+     track_object on` hands the NEW path the tracked body
+     [observed: core.cpp:2494 `Camera::instance->trackBody(ModularBody::findBody(
+     selected_object.getEnglishName()))`] and the aim consumes its position
+     every frame [observed: Camera.cpp:653-664
+     `lookTo(observedToLocalPos(target->getObservedPosition()))`].  I predict:
+     at the PINNED clock, `select planet Ceres` + `flag track_object on` does
+     NOT bring Ceres to the screen centre — the dumped new-path `screen` for
+     Ceres stays further than 0.01 dome radii from [0,0] and/or the aim does
+     not settle — while at the RUNNING clock it does (|screen| <= 2.1e-06, the
+     F96 tracking datum, 11.216(h3)).  BOTH OUTCOMES ARE RECORDED; this is a
+     mechanism I have read and never run.
+P3d  Whatever P3b says, the DUMP channel exhibits it: `altaz_new` for Ceres at
+     A0 disagrees with `altaz_old` for Ceres at A0 by > 1 deg at the pinned
+     clock and by <= its P0 baseline at the running clock.
+
+--------------------------------------------------------------------------
+5.  P4 — THE WALKED CONTROL (Mars)   [prediction]
+--------------------------------------------------------------------------
+At BOTH clocks: Mars's `mat` translation moves P0 -> A0; its `evalCount` grows
+by hundreds; its `altaz_new` agrees with its `altaz_old` to <= 3e-5 deg
+(F91's own alt/az floor, 11.213(h2)) before and after the move; and its
+`get status object` string is stable in the same way Ceres's is (P3b's
+routing is a property of the name, not of the body's state).
+
+--------------------------------------------------------------------------
+6.  P5 — POST-FIX   [prediction]
+--------------------------------------------------------------------------
+P5a  At the PINNED clock the frozen set is EXACTLY I (29 of 120): zero parked
+     bodies frozen.  P \ I all re-evaluate.
+P5b  After the move, each of the 19's old-vs-new alt/az disagreement returns to
+     ITS OWN P0 value within 3e-5 deg (per-body baseline, so Eris's trees-gap
+     is carried rather than waived).
+P5c  The WALKED set (the 72 re-evaluated records of P1) is byte-identical
+     pre/post at P0 and at A0 — the fix touches only bodies the walk does not
+     reach.
+P5d  The P0 launch-state table is byte-identical pre/post (camera fields and
+     all 90 alt/az values), 11.216(d3)'s clean claim.
+P5e  The F91 parity table is byte-identical pre/post, md5 c125adf0 (fr):
+     F91's driver never moves the camera and changes the DATE before every
+     dump [observed: f91_parity.py:574-581], so every body is refreshed under
+     the pre-fix rule there too.  IF IT MOVES, the moved rows must be exactly
+     P and each must move TOWARD old's answer — that is the honest alternative
+     and it is stated here in advance.
+
+--------------------------------------------------------------------------
+7.  P6 — THE TWO MUTATIONS   [prediction]
+--------------------------------------------------------------------------
+M-A  "re-key on the date only" == no fix == the pre-fix binary: leaves the 48
+     frozen (P1).  REFUTED as a fix by P1 itself; no extra build needed.
+M-B  "drop the memo entirely" (delete the early return): a real binary, built
+     and run.  It PASSES P5a/P5b (freshness is restored) and is refuted on
+     COST: it pays 1 + RESUME_EXTRA_ITERATIONS = 5 orbit evaluations per use
+     per frame where the chosen form pays 0 when nothing changed and 1 when
+     only the frame changed.  Measured by `evalCount` deltas per frame over a
+     held camera at a pinned clock:
+       chosen fix, camera held, clock pinned  : delta evalCount == 0
+       chosen fix, camera moving              : delta evalCount == 1 per frame
+       no-memo mutant, camera held            : delta evalCount == 5 per frame
+     A no-memo binary showing 0 delta on a held camera would refute my reading
+     of what the early return does.
+D11  The per-frame users of the barrier are the system star and the SELECTION
+     [observed: ModularSystem.cpp:261-270].  The cost to price is: one
+     translation refresh of one parked subtree per frame, against 1 ms/frame.
+     Landed anchor for the arithmetic: B39 measured the retired tick at
+     0.217 us per parked body per frame [11.117(g)].  I predict the chosen
+     form's worst case on the shipped corpus (selection = Pluto, its 5 moons
+     under it, camera moving every frame) is under 2 us/frame, i.e. under
+     0.2 % of D11's denominator, and that the no-memo mutant is ~5x that.
+
+--------------------------------------------------------------------------
+8.  GATES   [prediction]
+--------------------------------------------------------------------------
+G1  `f90_rehearsal_run.sh` rc 0 on the delivered binary, step for step as
+    11.216(g4) records.
+G2  `f56_canary.sh --no-scene` exit 0 before every measuring launch.
+G3  D14: `python3 claude/harness/f70_ascii.py gate` PASS on every commit that
+    touches source.
+G4  Real ~/.spacecrafter md5 in == out (03fbee59 / 545a51ef) on every launch;
+    `/proc/*/comm` = 0 spacecrafter before each launch.
+G5  Old path: not one line.  Diff confined to
+    src/experimentalModule/ModularBody.{hpp,cpp}.
+
+--------------------------------------------------------------------------
+9.  THE STOP CONDITION
+--------------------------------------------------------------------------
+If P2 fails (the parked set stays frozen at a RUNNING clock), or P1 fails (the
+frozen set is not P u I), or any walked body is frozen — STOP before the fix,
+record the measured partition and what it implicates, deliver nothing in code.
