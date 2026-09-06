@@ -1,0 +1,163 @@
+{
+ "applog": "/home/claude/sc-f98/repro_06_gap60_14/repro.applog",
+ "lines": 11462,
+ "refusals_total": 1557,
+ "first_refusal_line": 6621,
+ "last_refusal_line": 11443,
+ "refusals_outside_any_body": [],
+ "solar_pushes": 1014,
+ "in_galaxy_pushes": 201,
+ "refusals_in_solar_pushes": 1357,
+ "refusals_in_in_galaxy_pushes": 200,
+ "refusals_old_path": 677,
+ "refusals_new_path": 680,
+ "ojm_success_lines": 201,
+ "N_first_refusing_solar_push": 675,
+ "N_first_refusing_solar_push_name": "ZHONGXING-20A",
+ "N_first_refusing_solar_push_split": {
+  "old": 1,
+  "new": 2,
+  "cmd": 0
+ },
+ "first_refusing_in_galaxy_index": 2,
+ "solar_push_refusal_histogram": {
+  "0": 674,
+  "2": 1,
+  "3": 1,
+  "4": 338
+ },
+ "in_galaxy_refusal_histogram": {
+  "0": 1,
+  "1": 200
+ },
+ "first_12_refusing_solar": [
+  {
+   "idx": 675,
+   "name": "ZHONGXING-20A",
+   "old": 1,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 676,
+   "name": "HYLAS 1",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 677,
+   "name": "INTELSAT 17 (IS-17)",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 678,
+   "name": "BEIDOU 7",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 679,
+   "name": "EUTELSAT KA-SAT 9A",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 680,
+   "name": "HISPASAT 30W-5",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 681,
+   "name": "KOREASAT 6",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 682,
+   "name": "BEIDOU 8",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 683,
+   "name": "INTELSAT NEW DAWN",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 684,
+   "name": "YAHSAT 1A",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 685,
+   "name": "SBIRS GEO-1 (USA 230)",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 686,
+   "name": "TELSTAR 14R",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  }
+ ],
+ "last_6_refusing_solar": [
+  {
+   "idx": 1009,
+   "name": "GSAT0218 (PRN E31)",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 1010,
+   "name": "GSAT0221 (PRN E15)",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 1011,
+   "name": "GSAT0222 (PRN E33)",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 1012,
+   "name": "GSAT0219 (PRN E36)",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 1013,
+   "name": "GSAT0220 (PRN E13)",
+   "old": 2,
+   "new": 2,
+   "cmd": 0
+  },
+  {
+   "idx": 1014,
+   "name": "Solsys",
+   "old": 0,
+   "new": 2,
+   "cmd": 0
+  }
+ ]
+}

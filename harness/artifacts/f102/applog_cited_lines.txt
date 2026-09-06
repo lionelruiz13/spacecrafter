@@ -1,0 +1,198 @@
+# F102 - the lines cited from /home/claude/sc-f98/repro_06_gap60_14/repro.applog
+# (that tree does not migrate between devices; these are the copies the record resolves against)
+# ANSI escapes stripped; the numbers are 1-based line numbers in the original 11462-line file.
+
+# ===== A - the FIRST refusal, 06.sts body 675 "ZHONGXING-20A" (the OLD path segment: between
+#     "Loading new Stellar System object..." and "Loading body") =====
+  6612  (Info ): Loading new Stellar System object... SKYTERRA 1
+  6613  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6614  (Info ): Loading body SKYTERRA 1
+  6615  (Debug): Body 'SKYTERRA 1': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  6616  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6617  (Info ): Execute_command body name "ZHONGXING-20A" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997315187622313 orbit_visualization_period 0.997315187622313 orbit_SemiMajorAxis 42136.4495839099 orbit_Eccentricity 0.0003322 orbit_Inclination 1.7345 orbit_AscendingNode 92.744 orbit_LongOfPericenter 7.3736 orbit_MeanLongitude 229.1169 action load
+  6618  
+  6619  (Info ): Loading new Stellar System object... ZHONGXING-20A
+  6620  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6621  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6622  (Info ): Loading body ZHONGXING-20A
+  6623  (Debug): Body 'ZHONGXING-20A': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  6624  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6625  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6626  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6627  (Info ): Execute_command body name "HYLAS 1" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997280824077878 orbit_visualization_period 0.997280824077878 orbit_SemiMajorAxis 42135.4816745396 orbit_Eccentricity 0.0001993 orbit_Inclination 0.9987 orbit_AscendingNode 93.9162 orbit_LongOfPericenter 332.0494 orbit_MeanLongitude 263.8124 action load
+  6628  
+  6629  (Info ): Loading new Stellar System object... HYLAS 1
+  6630  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+
+# ===== B - the steady state from body 676 on: 2 refusals in the old segment, 2 in the new =====
+  6631  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6632  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6633  (Info ): Loading body HYLAS 1
+  6634  (Debug): Body 'HYLAS 1': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  6635  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6636  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6637  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6638  (Info ): Execute_command body name "INTELSAT 17 (IS-17)" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997297095492882 orbit_visualization_period 0.997297095492882 orbit_SemiMajorAxis 42135.9399888063 orbit_Eccentricity 0.000251 orbit_Inclination 0.01 orbit_AscendingNode 287.2452 orbit_LongOfPericenter 160.9194 orbit_MeanLongitude 164.3828 action load
+  6639  
+  6640  (Info ): Loading new Stellar System object... INTELSAT 17 (IS-17)
+  6641  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6642  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6643  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6644  (Info ): Loading body INTELSAT 17 (IS-17)
+  6645  (Debug): Body 'INTELSAT 17 (IS-17)': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  6646  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6647  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6648  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6649  (Info ): Execute_command body name "BEIDOU 7" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997449432031846 orbit_visualization_period 0.997449432031846 orbit_SemiMajorAxis 42140.2307061138 orbit_Eccentricity 0.0085095 orbit_Inclination 50.871 orbit_AscendingNode 294.0626 orbit_LongOfPericenter 215.3428 orbit_MeanLongitude 91.1894 action load
+  6650  
+
+# ===== C - the last 06.sts body (1013), the show end, the 14.sts start, the system switch,
+#     the landscape swap that makes the pool GRANT again, and the first two in-galaxy loads =====
+ 10334  (Info ): Execute_command body name "GSAT0220 (PRN E13)" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.5,0.5,0.5 orbit_color 0.5,0.5,0.5 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.58659363591542 orbit_visualization_period 0.58659363591542 orbit_SemiMajorAxis 29579.7533699695 orbit_Eccentricity 0.0002344 orbit_Inclination 57.0156 orbit_AscendingNode 31.2892 orbit_LongOfPericenter 311.6219 orbit_MeanLongitude 31.3315 action load
+ 10335  
+ 10336  (Info ): Loading new Stellar System object... GSAT0220 (PRN E13)
+ 10337  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+ 10338  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 10339  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 10340  (Info ): Loading body GSAT0220 (PRN E13)
+ 10341  (Debug): Body 'GSAT0220 (PRN E13)': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+ 10342  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+ 10343  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 10344  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 10345  (Info ): End of script
+ 10346  (Info ): Execute_command script action end
+ 10347  (Info ): ScriptMgr: script end
+ 10348  (Debug): Created image support for 'scripts/fscripts/earth_sats/sattext001.png'
+ 10349  (Debug): big "textures/bodies/earth.jpg" is ready for use
+ 10350  (Debug): Loading big textures/bodies/earth_night.jpg...
+ 10351  (Debug): Dedicated allocation of 170 MiB of GPU memory.
+ 10352  (Debug): GPU memory	total : 32607 MiB   	available : 29018 MiB	used : 5279 MiB    	free : 23739 MiB
+ 10353  (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB
+ 10354  (Debug): Created image support for 'big "textures/bodies/earth_night.jpg"'
+ 10355  (Debug): Loading cached data for 'textures/bodies/earth_night.jpg'
+ 10356  (Debug): big "textures/bodies/earth_night.jpg" is ready for use
+ 10357  (Debug): Loading big textures/bodies/earth_specular.png...
+ 10358  (Debug): Dedicated allocation of 42 MiB of GPU memory.
+ 10359  (Debug): GPU memory	total : 32607 MiB   	available : 29051 MiB	used : 5323 MiB    	free : 23727 MiB
+ 10360  (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB
+ 10361  (Debug): Created image support for 'big "textures/bodies/earth_specular.png"'
+ 10362  (Debug): Loading cached data for 'textures/bodies/earth_specular.png'
+ 10363  (Debug): big "textures/bodies/earth_specular.png" is ready for use
+ 10364  (Info ): get tcp : script action play filename fscripts/14.sts
+ 10365  (Info ): Execute_command script action play filename fscripts/14.sts
+ 10366  (Info ): ScriptMgr: load scripts/fscripts/14.sts
+ 10367  (Info ): ScriptMgr: load scripts/fscripts/14.sts
+ 10368  (Info ): Execute_command image name black filename dome/black.png coordinate_system viewport alpha 0 scale 1 action load
+ 10369  
+ 10370  (Debug): Created image support for 'scripts/fscripts/dome/black.png'
+ 10371  (Debug): No cmd given for 'scripts/fscripts/dome/black.png', creating uninitialized texture
+ 10372  (Info ): Execute_command wait duration 0.5
+ 10373  
+ 10374  (Info ): Execute_command image name black alpha 1 duration 0.5
+ 10375  
+ 10376  (Info ): Execute_command wait duration 0.5
+ 10377  
+ 10378  (Info ): Execute_command moveto lat 90 lon 0 duration 0
+ 10379  
+ 10380  (Info ): Execute_command wait duration 0.05
+ 10381  
+ 10382  Altitude change received 75.1043
+ 10383  (Info ): Execute_command moveto alt 0.9E+9 duration 0
+ 10384  
+ 10385  (Info ): Execute_command wait duration 0.05
+ 10386  
+ 10387  Altitude change received 9e+08
+ 10388  Altitude change received 9e+08
+ 10389  (Info ): Execute_command moveto alt 0.9E+10 duration 0
+ 10390  
+ 10391  (Info ): Execute_command wait duration 0.05
+ 10392  
+ 10393  Altitude change received 9e+09
+ 10394  Altitude change received 9e+09
+ 10395  (Info ): Execute_command moveto alt 1.1E+16 duration 0
+ 10396  
+ 10397  (Info ): Execute_command wait duration 0.05
+ 10398  
+ 10399  Altitude change received 1.1e+16
+ 10400  Swapping to mode Solar System
+ 10401  upMode is defined
+ 10402  InSolarSystem->
+ 10403  ->InGalaxy
+ 10404  too high -> altitude = max
+ 10405  Altitude change received 1.1e+16
+ 10406  Altitude change received 1e+10
+ 10407  (Info ): Execute_command body action load name Solsys type Sphere filename Universe parent none hidden true color 0,0,0 halo false lighting false coord_func still_orbit radius 0.00001 scale 0.000001 albedo 0.0 orbit_x 0.00001 orbit_y 0.00001 orbit_z 0.00001 rot_periode 100000000000
+ 10408  
+ 10409  (Info ): Loading new Stellar System object... Solsys
+ 10410  (Warn.): No valid body type specified for Solsys, assume 'Asteroid'
+ 10411  (Info ): Loading body Solsys
+ 10412  (Debug): Body 'Solsys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+ 10413  (Info ): Execute_command wait duration 0.01
+ 10414  
+ 10415  (Info ): Execute_command set home_planet Solsys
+ 10416  
+ 10417  (Warn.): Init_parser can't find the configuration key "Solsys:type", default empty string returned
+ 10418  (Error): Unknown landscape type: 
+ 10419  (Info ): Landscape generic created
+ 10420  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 10421  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 10422  Body : Solsys Landscape : 
+ 10423  (Info ): Execute_command wait duration 0.01
+ 10424  
+ 10425  Modification observer to Solsys
+ 10426  (Warn.): Init_parser can't find the configuration key "Solsys:type", default empty string returned
+ 10427  (Error): Unknown landscape type: 
+ 10428  (Info ): Landscape generic created
+ 10429  Body : Solsys Landscape : 
+ 10430  (Info ): Execute_command select planet Solsys pointer off
+ 10431  
+ 10432  (Info ): Execute_command wait duration 0.01
+ 10433  
+ 10434  (Info ): Execute_command flag track_object on
+ 10435  
+ 10436  (Info ): Execute_command wait duration 0.01
+ 10437  
+ 10438  (Info ): Execute_command body action load mode in_galaxy name Sol filename Star_Yellow pos_x 0.0 pos_y 0.0 pos_z 0.0 scale 0.06
+ 10439  
+ 10440  (Info ): Succesfull loading ojm Sol
+ 10441  (Info ): Execute_command body action load mode in_galaxy name 8planets filename 8planets pos_x 0.0 pos_y 0.0 pos_z 0.0 scale 0.07
+ 10442  
+ 10443  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 10444  (Info ): Succesfull loading ojm 8planets
+ 10445  (Info ): Execute_command body action load mode in_galaxy name ProximaCen filename Star_Brown pos_x -0.35 pos_y -0.65 pos_z -0.80 scale 0.0225
+ 10446  
+
+# ===== D - the death: the last refusals, the stall parked in App::draw, the device loss, SIGABRT =====
+ 11430  
+ 11431  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 11432  (Info ): Succesfull loading ojm Scholz'sStarA
+ 11433  (Info ): Execute_command body action load mode in_galaxy name Scholz'sStarB filename Star_Brown pos_x -2.299305311 pos_y 5.378987676 pos_z -3.46320706 scale 0.0225
+ 11434  
+ 11435  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 11436  (Info ): Succesfull loading ojm Scholz'sStarB
+ 11437  (Info ): Execute_command body action load mode in_galaxy name 2MASSJ19284155+2356016 filename Star_Brown pos_x 2.355981385 pos_y -4.20198341 pos_z 4.842056286 scale 0.0225
+ 11438  
+ 11439  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 11440  (Info ): Succesfull loading ojm 2MASSJ19284155+2356016
+ 11441  (Info ): Execute_command body action load mode in_galaxy name WISEPAJ025409.45+022359.1 filename Star_Brown pos_x 4.957865068 pos_y 4.435529688 pos_z -1.61076649 scale 0.0225
+ 11442  
+ 11443  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+ 11444  (Info ): Succesfull loading ojm WISEPAJ025409.45+022359.1
+ 11445  (Info ): Execute_command wait duration 0.01
+ 11446  
+ 11447  (Warn.): Frame stall detected
+ 11448     0# Fps::sigstacktrace(int) at /home/claude/spacecrafter/src/appModule/fps.cpp:170
+ 11449     1#      at ./signal/../sysdeps/unix/sysv/linux/x86_64/libc_sigaction.c:0
+ 11450     2# syscall at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:37
+ 11451     3# void std::__detail::__platform_wait<int>(int const*, int) at /usr/include/c++/15/bits/atomic_wait.h:114
+ 11452     4# App::draw(int) at /home/claude/spacecrafter/src/appModule/app.cpp:831
+ 11453     5# App::startMainLoop() at /home/claude/spacecrafter/src/appModule/app.cpp:1031
+ 11454     6# main at /home/claude/spacecrafter/src/main.cpp:354
+ 11455     7# __libc_start_call_main at ../sysdeps/nptl/libc_start_call_main.h:58
+ 11456     8# __libc_start_main_impl at ../csu/libc-start.c:360
+ 11457     9# _start at :0
+ 11458    10# 
+ 11459  
+ 11460  (Warn.): This frame stall is very long
+ 11461  (Error): CRITICAL : Device lost while waiting frame completion
+ 11462  terminate called without an active exception

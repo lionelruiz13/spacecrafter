@@ -1269,6 +1269,18 @@ one block, no growth. Per-body carved, MEASURED (`f102_sizes.cpp`): 06.sts body 
 globals. PREDICTION committed: **N = 674, the first refusal INSIDE 06.sts** (bracket 662–692), the
 refused request the 832 B `meshFrag`; mutations: new-only 904, old-only never. NEXT: open the
 applog, measure N and the refusal structure, then the chain, the three prices, the record.
+2026-09-07 01:08 — CHECKPOINT 2 (the MEASUREMENT, `f102_applog.py` over the surviving arm-C applog;
+no launch). **N = 675**, body `ZHONGXING-20A`, **inside `06.sts`** (applog line 6621) — predicted 674,
+bracket 662–692, so the prediction lands one body short and INSIDE the bracket; the one-path
+mutations (new-only 904, old-only never) both MISS. The refused request is the OLD path's 192 B
+`globalVertProj`, not the 832 B `meshFrag` I named — that sub-prediction is REFUTED and recorded as
+such. Structure to the digit: 1557 refusals = 1355 in `06.sts` (674 bodies clean, then one at 3, then
+338 at 4) + 2 at the landscape the system switch builds + 200 of `14.sts`'s 201 in-galaxy loads; the
+model at baseline B in (142528, 142592] reproduces that histogram EXACTLY, so the shipped launch
+scene's own draw on the pool is MEASURED by inversion at **142.5–142.6 KB**. `06.sts` alone is NOT
+clean — the row's mint-time correction is itself wrong, and both readings are now recorded. 201
+`Succesfull loading ojm` lines for 200 refused allocations (§5.116's class at `ojm_mgr.cpp:86`).
+NEXT: the chain write-up, the three prices, the §11.222 record.
 
 ---
 

@@ -1,0 +1,41 @@
+# /home/claude/sc-f98/repro_06_gap60_14/repro.applog lines 6601-6640 (ANSI stripped) - the FIRST refusal is line 6621
+  6601  (Debug): Body 'BSAT-3B': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  6602  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6603  (Info ): Execute_command body name "BEIDOU 6" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997292739157356 orbit_visualization_period 0.997292739157356 orbit_SemiMajorAxis 42135.8172848653 orbit_Eccentricity 0.0003492 orbit_Inclination 0.8323 orbit_AscendingNode 46.8472 orbit_LongOfPericenter 120.9208 orbit_MeanLongitude 280.3445 action load
+  6604  
+  6605  (Info ): Loading new Stellar System object... BEIDOU 6
+  6606  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6607  (Info ): Loading body BEIDOU 6
+  6608  (Debug): Body 'BEIDOU 6': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  6609  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6610  (Info ): Execute_command body name "SKYTERRA 1" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997279232769949 orbit_visualization_period 0.997279232769949 orbit_SemiMajorAxis 42135.4368522974 orbit_Eccentricity 0.0001947 orbit_Inclination 2.1568 orbit_AscendingNode 17.011 orbit_LongOfPericenter 26.4062 orbit_MeanLongitude 12.1802 action load
+  6611  
+  6612  (Info ): Loading new Stellar System object... SKYTERRA 1
+  6613  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6614  (Info ): Loading body SKYTERRA 1
+  6615  (Debug): Body 'SKYTERRA 1': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  6616  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6617  (Info ): Execute_command body name "ZHONGXING-20A" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997315187622313 orbit_visualization_period 0.997315187622313 orbit_SemiMajorAxis 42136.4495839099 orbit_Eccentricity 0.0003322 orbit_Inclination 1.7345 orbit_AscendingNode 92.744 orbit_LongOfPericenter 7.3736 orbit_MeanLongitude 229.1169 action load
+  6618  
+  6619  (Info ): Loading new Stellar System object... ZHONGXING-20A
+  6620  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6621  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6622  (Info ): Loading body ZHONGXING-20A
+  6623  (Debug): Body 'ZHONGXING-20A': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  6624  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6625  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6626  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6627  (Info ): Execute_command body name "HYLAS 1" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997280824077878 orbit_visualization_period 0.997280824077878 orbit_SemiMajorAxis 42135.4816745396 orbit_Eccentricity 0.0001993 orbit_Inclination 0.9987 orbit_AscendingNode 93.9162 orbit_LongOfPericenter 332.0494 orbit_MeanLongitude 263.8124 action load
+  6628  
+  6629  (Info ): Loading new Stellar System object... HYLAS 1
+  6630  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6631  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6632  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6633  (Info ): Loading body HYLAS 1
+  6634  (Debug): Body 'HYLAS 1': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  6635  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  6636  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6637  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  6638  (Info ): Execute_command body name "INTELSAT 17 (IS-17)" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997297095492882 orbit_visualization_period 0.997297095492882 orbit_SemiMajorAxis 42135.9399888063 orbit_Eccentricity 0.000251 orbit_Inclination 0.01 orbit_AscendingNode 287.2452 orbit_LongOfPericenter 160.9194 orbit_MeanLongitude 164.3828 action load
+  6639  
+  6640  (Info ): Loading new Stellar System object... INTELSAT 17 (IS-17)
