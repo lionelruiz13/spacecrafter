@@ -1,0 +1,270 @@
+================================================================================================
+F95 - THE PINNED-CLOCK DUMP SERIES (Sec.5.62's class, at ulp scale)
+dumps 9   reference cycle 2   bodies in reference 286
+================================================================================================
+
+--- DUMP FILE SIZES (a changed printed digit changes the size) ---
+  367532 B : 1 dump(s)  cycles [6]
+  367650 B : 1 dump(s)  cycles [7]
+  367733 B : 1 dump(s)  cycles [4]
+  368003 B : 1 dump(s)  cycles [1]
+  368006 B : 1 dump(s)  cycles [8]
+  368022 B : 1 dump(s)  cycles [5]
+  368039 B : 1 dump(s)  cycles [3]
+  368090 B : 1 dump(s)  cycles [2]
+  368305 B : 1 dump(s)  cycles [9]
+
+--- WHICH BODIES MOVE, ON WHICH HALF, AND HOW FAR ---
+  body           half  max |delta| ulps        field[index]                 distinct values
+  Mercury        new   1.490e-07   5368290756  ecl[0]                       7
+  Venus          new   1.490e-07   5368290756  ecl[0]                       8
+  Metis          new   1.393e-07   5140000768699 ecl[1]                       8
+  Pallas         new   1.200e-07   540431956   ecl[1]                       3
+  Mars           new   1.200e-07   540431955   ecl[1]                       3
+  Earth          new   1.190e-07   1071856711  ecl[0]                       5
+  Amalthea       new   1.172e-07   2161995298927 ecl[0]                       8
+  Adrastea       new   1.125e-07   1037767704727 ecl[0]                       8
+  Saturn         new   1.100e-07   495395959   ecl[0]                       3
+  Ceres          new   8.940e-08   12883897814 ecl[1]                       7
+  Thebe          new   8.417e-08   776312777598 ecl[1]                       8
+  Daphnis        new   7.569e-08   5585083809709 ecl[0]                       8
+  Io             new   7.253e-08   334485586916 ecl[0]                       8
+  Epimetheus     new   7.066e-08   2607041446449 ecl[0]                       8
+  Juno           new   6.700e-08   4827858801  ecl[0]                       6
+  Pandora        new   6.650e-08   4906996254954 ecl[1]                       8
+  Prometheus     new   6.567e-08   2422869153618 ecl[1]                       8
+  Pan            new   6.292e-08   1160724477350 ecl[1]                       8
+  Europa         new   5.798e-08   267385555348 ecl[0]                       8
+  Janus          new   5.448e-08   502516978684 ecl[1]                       8
+  Telesto        new   4.977e-08   459019556158 ecl[0]                       8
+  Thalassa       new   4.936e-08   3642132528611 ecl[1]                       8
+  Mimas          new   4.936e-08   455265643739 ecl[0]                       8
+  Naiad          new   4.753e-08   3506799835388 ecl[0]                       8
+  Ganymede       new   4.634e-08   106852765047 ecl[1]                       8
+  Tethys         new   4.622e-08   426276585428 ecl[0]                       8
+  Rosalind       new   4.130e-08   12188575466239 ecl[2]                       8
+  Helene         new   4.121e-08   190047580820 ecl[0]                       8
+  Enceladus      new   4.121e-08   190047580819 ecl[0]                       8
+  Portia         new   4.115e-08   3036002033139 ecl[0]                       8
+  Dione          new   4.017e-08   185251427360 ecl[0]                       8
+  Larissa        new   3.978e-08   1467807425945 ecl[1]                       8
+  Galatea        new   3.837e-08   1415713820681 ecl[1]                       8
+  AKEBONO (EXOS-D) new   3.788e-08   44719204988171 ecl[1]                       8
+  Callisto       new   3.725e-08   171785304186 ecl[1]                       8
+  Rhea           new   3.702e-08   170724616402 ecl[0]                       8
+  Belinda        new   3.554e-08   1311046994807 ecl[2]                       8
+  IRIDIUM 8      new   3.411e-08   80534411584725 ecl[0]                       8
+  STELLA         new   3.406e-08   80418430263905 ecl[2]                       8
+  Despina        new   3.402e-08   1255190253751 ecl[1]                       8
+  CZ-2D R/B      new   3.387e-08   19990898884027 ecl[0]                       8
+  SARSAT 10 (NOAA 18) new   3.384e-08   159823771246240 ecl[2]                       8
+  SPOT 4         new   3.369e-08   39773010139930 ecl[2]                       8
+  OPAL (OO-38)   new   3.338e-08   39410084469805 ecl[1]                       8
+  NOAA 16        new   3.333e-08   168976900000124 ecl[2]                       8
+  SARSAT 8 (NOAA 16) new   3.333e-08   168976900000124 ecl[2]                       8
+  ORBVIEW 2 (SEASTAR) new   3.325e-08   19629071164109 ecl[2]                       8
+  IRAS           new   3.314e-08   264988211323513 ecl[0]                       8
+  NOAA 9         new   3.296e-08   77826960820934 ecl[2]                       8
+  NOAA 6         new   3.295e-08   77805474053436 ecl[2]                       8
+  CHUANGXIN 1-02 new   3.295e-08   77789370783729 ecl[2]                       8
+  IRS-1D         new   3.267e-08   38574178378672 ecl[2]                       8
+  UNISAT 3       new   3.243e-08   38291237790851 ecl[2]                       8
+  ISS DEB [TOOLBAG] new   3.241e-08   38266008547916 ecl[2]                       8
+  IRIDIUM 10     new   3.237e-08   19106163523462 ecl[2]                       8
+  ISS            new   3.222e-08   19018115000388 ecl[2]                       8
+  COSMOS 2445    new   3.215e-08   9490244772718 ecl[2]                       8
+  STARLETTE      new   3.198e-08   18877482926528 ecl[2]                       8
+  NOAA 2         new   3.192e-08   150745257801248 ecl[2]                       8
+  IRIDIUM 5      new   3.184e-08   37593319248348 ecl[2]                       8
+  ERBS           new   3.150e-08   18597210475770 ecl[2]                       8
+  OAO 2          new   3.139e-08   18527951068340 ecl[1]                       8
+  PICOSAT 1 & 2 [TETHERED] new   3.135e-08   18504356944800 ecl[2]                       8
+  SOYUZ-TMA 13   new   3.128e-08   36930806648550 ecl[1]                       8
+  Juliet         new   3.114e-08   574450057199 ecl[2]                       8
+  HST            new   3.057e-08   9022671461333 ecl[1]                       8
+  WESTPAC        new   3.046e-08   8989910043858 ecl[2]                       8
+  GRACE 2        new   3.038e-08   35862973333528 ecl[0]                       8
+  LANDSAT 5      new   3.010e-08   8883597768412 ecl[2]                       8
+  NOAA 8         new   2.998e-08   8848711286020 ecl[2]                       8
+  LANDSAT 4      new   2.990e-08   17646893250674 ecl[1]                       8
+  Proteus        new   2.980e-08   549749866885 ecl[1]                       8
+  SSETI EXPRESS (XO-53) new   2.966e-08   17506816054876 ecl[2]                       8
+  GRACE 1        new   2.952e-08   17425178144303 ecl[0]                       8
+  TOPEX/POSEIDON new   2.932e-08   8654887656689 ecl[2]                       8
+  2008-059B      new   2.924e-08   69045366168551 ecl[0]                       8
+  UK-DMC         new   2.919e-08   17230380526884 ecl[2]                       8
+  NOAA 3         new   2.905e-08   8574371308156 ecl[2]                       8
+  IRIDIUM 7      new   2.889e-08   8526055596078 ecl[0]                       8
+  IRIDIUM 6      new   2.886e-08   8519060590725 ecl[2]                       8
+  Puck           new   2.867e-08   528812812361 ecl[0]                       8
+  ROSAT          new   2.861e-08   8443915934067 ecl[1]                       8
+  IRIDIUM 12     new   2.860e-08   270165793127404 ecl[0]                       8
+  NIGERIASAT 1   new   2.825e-08   8337072392392 ecl[2]                       8
+  THOR AGENA D R/B new   2.822e-08   8329546120810 ecl[0]                       8
+  NOAA 15        new   2.821e-08   33304796574260 ecl[0]                       8
+  SARSAT 7 (NOAA 15) new   2.821e-08   33304796574260 ecl[0]                       8
+  NOAA 4         new   2.806e-08   8282322455981 ecl[2]                       8
+  PROGRESS-M 65  new   2.798e-08   16514705886406 ecl[0]                       8
+  SURFSAT        new   2.775e-08   8190501942680 ecl[0]                       8
+  INTERCOSMOS 24 new   2.750e-08   8118043131958 ecl[2]                       8
+  COSPAS 9 (NADEZHDA 6) new   2.748e-08   8109424813127 ecl[2]                       8
+  IRIDIUM 4      new   2.716e-08   8017102548387 ecl[0]                       8
+  BEIJING 1      new   2.701e-08   15942886334911 ecl[1]                       8
+  HJ-1A          new   2.697e-08   509485126167634 ecl[1]                       8
+  NOAA 5         new   2.697e-08   7959135499809 ecl[0]                       8
+  MIDORI (ADEOS) new   2.672e-08   15773264833805 ecl[1]                       8
+  HJ-1B          new   2.669e-08   63023286370433 ecl[1]                       8
+  SHIYAN 3 (SY-3) new   2.660e-08   7851199910885 ecl[2]                       8
+  UNISAT         new   2.653e-08   360147503841328 ecl[1]                       8
+  SL-8 R/B       new   2.652e-08   7828119344701 ecl[2]                       8
+  SAUDISAT 1C    new   2.640e-08   7792672081288 ecl[2]                       8
+  TIROS N        new   2.630e-08   15526255551960 ecl[1]                       8
+  MOZHAYETS      new   2.622e-08   7737390878648 ecl[2]                       8
+  SAUDISAT 1B    new   2.620e-08   15462958132215 ecl[1]                       8
+  UNISAT 2       new   2.585e-08   30523794952498 ecl[0]                       8
+  SERT 2         new   2.572e-08   15179486278165 ecl[0]                       8
+  SAUDISAT 3     new   2.568e-08   15160159993334 ecl[1]                       8
+  ALOUETTE 1 (S-27) new   2.567e-08   7575266134333 ecl[1]                       8
+  SL-3 R/B       new   2.545e-08   7512458660112 ecl[1]                       8
+  BILSAT 1       new   2.535e-08   7480759775095 ecl[0]                       8
+  METEOR 1-1     new   2.527e-08   3729636503799 ecl[1]                       8
+  IRIDIUM 13     new   2.524e-08   7449621671098 ecl[0]                       8
+  RADARSAT-1     new   2.518e-08   7431912796787 ecl[2]                       8
+  Ariel          new   2.484e-08   916434245581 ecl[2]                       8
+  COBE           new   2.483e-08   3664674449869 ecl[2]                       8
+  LAGEOS 2       new   2.482e-08   7325039740322 ecl[0]                       8
+  PROGRESS-M 1M  new   2.480e-08   29274492899454 ecl[0]                       8
+  SPOT 2         new   2.460e-08   29043108747710 ecl[1]                       8
+  ERS-2          new   2.455e-08   14489105813159 ecl[1]                       8
+  SAUDISAT 1A    new   2.442e-08   14417680020107 ecl[1]                       8
+  SARSAT 9 (NOAA 17) new   2.427e-08   7162944510798 ecl[0]                       8
+  SARA           new   2.420e-08   3571806161504 ecl[2]                       8
+  ALSAT 1        new   2.389e-08   7049666744790 ecl[0]                       8
+  Hyperion       new   2.386e-08   220115773659 ecl[0]                       8
+  SAUDISAT 2     new   2.385e-08   3520258579865 ecl[2]                       8
+  TRMM           new   2.375e-08   3505220794096 ecl[0]                       8
+  EGP            new   2.364e-08   6976617638258 ecl[0]                       8
+  FALCONSAT      new   2.358e-08   3479469139368 ecl[2]                       8
+  TOMS EP        new   2.358e-08   13917841139727 ecl[1]                       8
+  NOAA 7         new   2.346e-08   3461745507663 ecl[2]                       8
+  ORIZURU (DEBUT) new   2.345e-08   3460136951580 ecl[1]                       8
+  NOAA 1         new   2.332e-08   3440804763790 ecl[2]                       8
+  MAQSAT B       new   2.317e-08   1709932009959 ecl[0]                       8
+  IRIDIUM 16     new   2.292e-08   3381760425359 ecl[2]                       8
+  Miranda        new   2.282e-08   210449679765 ecl[0]                       8
+  IRIDIUM 914    new   2.251e-08   3321609282283 ecl[2]                       8
+  ATLAS CENTAUR 2 new   2.232e-08   6588498142947 ecl[0]                       8
+  ISIS 1         new   2.165e-08   12780211248087 ecl[1]                       8
+  LAGEOS 1       new   2.119e-08   12506408439411 ecl[1]                       8
+  UARS           new   2.101e-08   3099894175913 ecl[2]                       8
+  Umbriel        new   2.037e-08   375815517013 ecl[0]                       8
+  BREEZE-M DEB [TANK] new   1.853e-08   1367405487301 ecl[0]                       8
+  Titan          new   1.816e-08   20937054524 ecl[1]                       8
+  TEAMSAT        new   1.804e-08   1330895691430 ecl[1]                       8
+  Triton         new   1.770e-08   2611881872094 ecl[0]                       8
+  GPS BIIA-24    new   1.716e-08   20253462460474 ecl[0]                       8
+  Lysithea       new   1.680e-08   4842270320  ecl[0]                       6
+  GPS BIIA-25    new   1.660e-08   2450273636613 ecl[0]                       8
+  Titania        new   1.612e-08   148708427350 ecl[2]                       8
+  Setebos        new   1.500e-08   540431955   ecl[1]                       2
+  Vesta          new   1.500e-08   540431955   ecl[2]                       2
+  BREEZE-M R/B   new   1.496e-08   551889689197 ecl[0]                       8
+  GPS BIIA-14    new   1.487e-08   4389469160618 ecl[1]                       8
+  GPS BIIA-23    new   1.411e-08   1040986661567 ecl[2]                       8
+  INTELSAT 2     new   1.402e-08   4138209748939 ecl[0]                       8
+  GPS BIIA-21    new   1.402e-08   4136586435460 ecl[0]                       8
+  METEOSAT-7     new   1.396e-08   4118877561150 ecl[0]                       8
+  ATS 1          new   1.388e-08   2048710154221 ecl[0]                       8
+  GOES 7         new   1.382e-08   2039575326557 ecl[0]                       8
+  GPS BIIA-11    new   1.379e-08   2034734900911 ecl[0]                       8
+  GOES 2         new   1.376e-08   2030986522516 ecl[1]                       8
+  SATCOM C5      new   1.374e-08   4056040572137 ecl[1]                       8
+  INTELSAT 701   new   1.364e-08   1006631445405 ecl[0]                       8
+  HIMAWARI-5     new   1.361e-08   1004484244395 ecl[0]                       8
+  INTELSAT 605   new   1.356e-08   1000189842374 ecl[0]                       8
+  GSTAR 3        new   1.355e-08   1999317152290 ecl[1]                       8
+  INTELSAT 602   new   1.351e-08   996972730207 ecl[0]                       8
+  ATS 3          new   1.347e-08   3975524223604 ecl[1]                       8
+  Oberon         new   1.339e-08   61750475787 ecl[0]                       8
+  GOES 1         new   1.326e-08   978179187345 ecl[1]                       8
+  GPS BIIA-10    new   1.325e-08   3910562169674 ecl[2]                       8
+  GSTAR 1        new   1.317e-08   1944006434859 ecl[1]                       8
+  Iapetus        new   1.304e-08   7517048210  ecl[0]                       7
+  GOES 3         new   1.303e-08   961540224191 ecl[1]                       8
+  Himalia        new   1.300e-08   3746994890  ecl[1]                       5
+  Leda           new   1.300e-08   3746994890  ecl[1]                       7
+  ASTRA 1M       new   1.293e-08   954065603492 ecl[0]                       8
+  SBS-6          new   1.290e-08   3806404473936 ecl[1]                       8
+  INSAT 3A       new   1.288e-08   3802095314521 ecl[1]                       8
+  GOES 5         new   1.274e-08   940046077996 ecl[0]                       8
+  INTELSAT 704   new   1.274e-08   1879575647159 ecl[1]                       8
+  TDRS 5         new   1.273e-08   938983545537 ecl[1]                       8
+  GOES 4         new   1.266e-08   934143119893 ecl[1]                       8
+  MSG-1          new   1.266e-08   467071559946 ecl[0]                       8
+  ESIAFI 1 (COMSTAR 4 new   1.254e-08   925583830642 ecl[1]                       8
+  GOES 12        new   1.242e-08   916441624280 ecl[1]                       8
+  INTELSAT 705   new   1.231e-08   908391465166 ecl[1]                       8
+  INTELSAT 511   new   1.228e-08   453125821427 ecl[0]                       8
+  TDRS 1         new   1.203e-08   443976236366 ecl[1]                       8
+  TDRS 4         new   1.201e-08   442906325210 ecl[0]                       8
+  GOES 11        new   1.196e-08   441283011732 ecl[0]                       8
+  INTELSAT 603   new   1.183e-08   436486858272 ecl[0]                       8
+  IUE            new   1.174e-08   866037740773 ecl[0]                       8
+  METEOSAT-5     new   1.170e-08   431653811325 ecl[0]                       8
+  GOES 10        new   1.169e-08   431100409003 ecl[0]                       8
+  GPS BIIA-15    new   1.167e-08   3443490609727 ecl[2]                       8
+  GPS BIIA-12    new   1.164e-08   858954191048 ecl[1]                       8
+  CRRES          new   1.158e-08   427337273211 ecl[1]                       8
+  METEOSAT-6     new   1.155e-08   426267362056 ecl[0]                       8
+  GPS BIIA-22    new   1.139e-08   840728807903 ecl[2]                       8
+  Elara          new   1.120e-08   1614090107  ecl[0]                       7
+  Ananke         new   1.120e-08   3228180213  ecl[1]                       5
+  INTELSAT 601   new   1.118e-08   412321623535 ecl[1]                       8
+  GOES 8         new   1.054e-08   388709791121 ecl[1]                       8
+  MARISAT 2      new   1.051e-08   387602986477 ecl[1]                       8
+  INTELSAT 702   new   1.001e-08   369377603332 ecl[1]                       8
+  GOES 6         new   9.852e-09   363474645229 ecl[0]                       8
+  GOES 9         new   9.808e-09   361851331750 ecl[1]                       8
+  FENGYUN 2B     new   9.517e-09   351115326699 ecl[0]                       8
+  LES 9          new   9.386e-09   346282279752 ecl[0]                       8
+  MAQSAT H       new   8.716e-09   321563642693 ecl[1]                       8
+  Sinope         new   8.000e-09   576460752   ecl[1]                       3
+  Carme          new   7.500e-09   2161727821  ecl[0]                       6
+  Pasiphae       new   7.500e-09   540431955   ecl[2]                       4
+  Laomedeia      new   7.500e-09   540431955   ecl[1]                       2
+  Phobos         new   7.407e-09   1093065509437 ecl[1]                       8
+  Pluto          new   7.400e-09   533226196   ecl[2]                       2
+  Sycorax        new   7.400e-09   533226196   ecl[1]                       4
+  Deimos         new   5.442e-09   401578239787 ecl[1]                       8
+  Moon           new   4.249e-09   39190107785 ecl[1]                       7
+  Caliban        new   3.800e-09   547637714   ecl[0]                       4
+  iss            new   3.715e-09   8771394340779 ecl[0]                       8
+  station        new   3.715e-09   8771394340779 ecl[0]                       8
+  Halimede       new   3.700e-09   533226196   ecl[1]                       5
+  Prospero       new   3.700e-09   533226196   ecl[2]                       3
+  Sao            new   3.700e-09   533226196   ecl[2]                       2
+  Neried         new   1.900e-09   547637715   ecl[0]                       2
+  Charon         new   9.131e-10   2156067253251 ecl[1]                       8
+  Styx           new   7.404e-10   218527508994 ecl[0]                       7
+  Kerberos       new   5.384e-10   79453816074 ecl[0]                       8
+  Nix            new   4.370e-10   16122454320 ecl[2]                       8
+  Hydra_         new   4.070e-10   7507824838  ecl[0]                       7
+  Magnetosphere  new   8.400e-17   1624796302  ecl[1]                       8
+  Goldilocks_Zone new   4.310e-24   716188044129 ecl[1]                       2
+
+  OLD half moves for 0 body/ies: []
+  NEW half moves for 235 body/ies: ['2008-059B', 'AKEBONO (EXOS-D)', 'ALOUETTE 1 (S-27)', 'ALSAT 1', 'ASTRA 1M', 'ATLAS CENTAUR 2', 'ATS 1', 'ATS 3', 'Adrastea', 'Amalthea', 'Ananke', 'Ariel', 'BEIJING 1', 'BILSAT 1', 'BREEZE-M DEB [TANK]', 'BREEZE-M R/B', 'Belinda', 'CHUANGXIN 1-02', 'COBE', 'COSMOS 2445', 'COSPAS 9 (NADEZHDA 6)', 'CRRES', 'CZ-2D R/B', 'Caliban', 'Callisto', 'Carme', 'Ceres', 'Charon', 'Daphnis', 'Deimos', 'Despina', 'Dione', 'EGP', 'ERBS', 'ERS-2', 'ESIAFI 1 (COMSTAR 4', 'Earth', 'Elara', 'Enceladus', 'Epimetheus', 'Europa', 'FALCONSAT', 'FENGYUN 2B', 'GOES 1', 'GOES 10', 'GOES 11', 'GOES 12', 'GOES 2', 'GOES 3', 'GOES 4', 'GOES 5', 'GOES 6', 'GOES 7', 'GOES 8', 'GOES 9', 'GPS BIIA-10', 'GPS BIIA-11', 'GPS BIIA-12', 'GPS BIIA-14', 'GPS BIIA-15', 'GPS BIIA-21', 'GPS BIIA-22', 'GPS BIIA-23', 'GPS BIIA-24', 'GPS BIIA-25', 'GRACE 1', 'GRACE 2', 'GSTAR 1', 'GSTAR 3', 'Galatea', 'Ganymede', 'Goldilocks_Zone', 'HIMAWARI-5', 'HJ-1A', 'HJ-1B', 'HST', 'Halimede', 'Helene', 'Himalia', 'Hydra_', 'Hyperion', 'INSAT 3A', 'INTELSAT 2', 'INTELSAT 511', 'INTELSAT 601', 'INTELSAT 602', 'INTELSAT 603', 'INTELSAT 605', 'INTELSAT 701', 'INTELSAT 702', 'INTELSAT 704', 'INTELSAT 705', 'INTERCOSMOS 24', 'IRAS', 'IRIDIUM 10', 'IRIDIUM 12', 'IRIDIUM 13', 'IRIDIUM 16', 'IRIDIUM 4', 'IRIDIUM 5', 'IRIDIUM 6', 'IRIDIUM 7', 'IRIDIUM 8', 'IRIDIUM 914', 'IRS-1D', 'ISIS 1', 'ISS', 'ISS DEB [TOOLBAG]', 'IUE', 'Iapetus', 'Io', 'Janus', 'Juliet', 'Juno', 'Kerberos', 'LAGEOS 1', 'LAGEOS 2', 'LANDSAT 4', 'LANDSAT 5', 'LES 9', 'Laomedeia', 'Larissa', 'Leda', 'Lysithea', 'MAQSAT B', 'MAQSAT H', 'MARISAT 2', 'METEOR 1-1', 'METEOSAT-5', 'METEOSAT-6', 'METEOSAT-7', 'MIDORI (ADEOS)', 'MOZHAYETS', 'MSG-1', 'Magnetosphere', 'Mars', 'Mercury', 'Metis', 'Mimas', 'Miranda', 'Moon', 'NIGERIASAT 1', 'NOAA 1', 'NOAA 15', 'NOAA 16', 'NOAA 2', 'NOAA 3', 'NOAA 4', 'NOAA 5', 'NOAA 6', 'NOAA 7', 'NOAA 8', 'NOAA 9', 'Naiad', 'Neried', 'Nix', 'OAO 2', 'OPAL (OO-38)', 'ORBVIEW 2 (SEASTAR)', 'ORIZURU (DEBUT)', 'Oberon', 'PICOSAT 1 & 2 [TETHERED]', 'PROGRESS-M 1M', 'PROGRESS-M 65', 'Pallas', 'Pan', 'Pandora', 'Pasiphae', 'Phobos', 'Pluto', 'Portia', 'Prometheus', 'Prospero', 'Proteus', 'Puck', 'RADARSAT-1', 'ROSAT', 'Rhea', 'Rosalind', 'SARA', 'SARSAT 10 (NOAA 18)', 'SARSAT 7 (NOAA 15)', 'SARSAT 8 (NOAA 16)', 'SARSAT 9 (NOAA 17)', 'SATCOM C5', 'SAUDISAT 1A', 'SAUDISAT 1B', 'SAUDISAT 1C', 'SAUDISAT 2', 'SAUDISAT 3', 'SBS-6', 'SERT 2', 'SHIYAN 3 (SY-3)', 'SL-3 R/B', 'SL-8 R/B', 'SOYUZ-TMA 13', 'SPOT 2', 'SPOT 4', 'SSETI EXPRESS (XO-53)', 'STARLETTE', 'STELLA', 'SURFSAT', 'Sao', 'Saturn', 'Setebos', 'Sinope', 'Styx', 'Sycorax', 'TDRS 1', 'TDRS 4', 'TDRS 5', 'TEAMSAT', 'THOR AGENA D R/B', 'TIROS N', 'TOMS EP', 'TOPEX/POSEIDON', 'TRMM', 'Telesto', 'Tethys', 'Thalassa', 'Thebe', 'Titan', 'Titania', 'Triton', 'UARS', 'UK-DMC', 'UNISAT', 'UNISAT 2', 'UNISAT 3', 'Umbriel', 'Venus', 'Vesta', 'WESTPAC', 'iss', 'station']
+  bodies compared: 286   so the NEW path is bit-stable on 51 of 286
+
+--- HOW MANY DISTINCT VALUES (a coin flip is not a drift) ---
+
+--- THE TWO VALUES, VERBATIM, FOR THE WIDEST MOVER ---
+
+--- WHAT DISTINGUISHES THEM: ORBITAL ECCENTRICITY ---
+  read from /home/claude/.spacecrafter/ssystem.ini - a cited fetch, never recall (Sec.11.51(d))
+  eccentricities parsed from the installed file: 60 bodies
+  MOVERS   (0): []
+  the eight most eccentric bodies that DID NOT move: [('Sedna', 0.8588315), ('Neried', 0.7473678781920542), ('Neso', 0.6299942939512408), ('Setebos', 0.5613700935632252), ('Sycorax', 0.5099593095115899), ('Eris', 0.4373709923163567), ('Laomedeia', 0.3845786604193581), ('Prospero', 0.3311859462699863)]
+  -> movers' min eccentricity nan ; non-movers' max 0.8588
+
+================================================================================================

@@ -1123,46 +1123,7 @@ grep -c '3000' claude/INTENT/11.211.md claude/INTENT/11.215.md claude/DEPLOYMENT
 the control red; the ≥ 4 h soak with its samples, tables and verdicts; the quit measured;
 the four corrections; §11 entry + stub; map; README; trees clean; WIP cleared; baselines
 LAST.
-**WIP:** 2026-09-06 13:2x — CHECKPOINT 1 (no launch yet): gate 26/26 PASS + prose premises
-(display `:2` 2448x1332, canary `--no-scene` exit 0 `f56/canary/20260906-124809`, `/proc`
-clear, md5 `03fbee59`/`545a51ef`, detached-child probe alive across calls). Driver
-GENERALISED (`--playlist-dir`/`--root`/`--cap`), duration model one home
-`harness/sts_duration.py` (F90+F95 copies deleted; 145 files 0 differences,
-`artifacts/f98/model_equality.*`; F90 `--plan` byte-identical), `criteria_sha` `f5e0d602`
-= F95's leg-2 value, plan diff at F95's defaults committed, selftest PASS incl. the new
-loop/cap/digest cases, `artifacts/f98/prediction.txt` committed (cap 60 s + reasons +
-136-show model table + cycle prediction 25–40 min + P1–P9). CHECKPOINT 3 (13:50): DEATH
-control RED on the fscripts farm (F1 within one sample, exit −9, 139 md5s in==out);
-**the 17-min shakedown CRASHED the application** — F2 (≥90 s no answer + a very-long
-stall) during `14.sts`'s 528 authored bodies, then F1 exit −6 (SIGABRT): `Can't allocate
-buffer in 'uniform BufferMgr'` ×1557 → `Device lost while waiting frame completion` →
-`terminate called`. REPRODUCED THREE WAYS on fresh launches (`artifacts/f98/repro/`):
-14.sts alone CLEAN (528 loads, 0 errors, exit 0); `06.sts`+`14.sts` 1 s apart and 60 s
-apart both abort identically (202/1557/1/1, +16.0 s / +76.0 s). Corpus census corrected
-again: the command takes both word orders — `06.sts` authors **1013** bodies as `body
-name … action load`, so the corpus authors **1719 in 8 shows**, not 719 in 9. NEXT: the
-≥ 4 h soak with `--skip-show fscripts/06.sts` (recorded, echoed, reported).
-CHECKPOINT 4 (14:2x): the soak RUNS — started 13:42:26, H 4.5 h, S 30 s, 135 shows,
-canary green + `/proc` clear + md5s pristine at the launch. **Cycle 1: 1914.7 s = 31.9 min,
-13 CAPPED = exactly the 13 predicted, 7 SHOW-TIMEOUT, 104 pauses resumed, no flag** —
-so the ORIGINAL P1 (25–40 min) is confirmed and REVISION 1's R1 (45–90 min, extrapolated
-from the shakedown's first 20 = the heaviest shows) is refuted by my own instrument; both
-recorded. The 7 SHOW-TIMEOUTs are exactly the 7 chaining shows (`script … action play`)
-that the cap does not already cut — a model blindness with a static predictor, not an
-application fault. `14.sts` without `06.sts` ENDS in 6.0 s (it timed out at 92.7 s in the
-shakedown): the abort path is out. NEXT: poll hourly, commit samples hourly, then the
-report + §11.218 + the four corrections.
-CHECKPOINT 5 (15:4x, hourly): cycles 1–3 wall **1914.7 / 1916.6 / 1915.6 s** (spread 1.9 s),
-each 13 CAPPED / 7 SHOW-TIMEOUT / 104–106 pauses resumed, **no flag** in 234 samples.
-SECOND FINDING, measured on the dump halves: at every cycle boundary **bodies_old = 0,
-bodies_new = 286** — after cycle 1 the OLD path's dump half is EMPTY and stays empty
-(Earth/Mars/Sun are NEW-only), while after `06old.sts` in cycle 1 it read 246 both /
-30 new-only with `ALSAT 1` on both halves. Candidate mechanism [derived, unconfirmed]:
-`14.sts` authors `Solsys … parent none`, i.e. a SYSTEM, and the old half then walks that
-system (1 body) until a later `body action clear` empties it. Attribution run prepared
-(`f98_repro14.py --dump-after-each`), to run after the quit.
-CHECKPOINT 6 (17:0x, hourly): **six complete cycles, 1914.5–1916.6 s, spread 2.1 s**,
-397 samples, still **no flag**; every boundary 0/286. Ends 18:12:26.
+**WIP:** **DELIVERED 2026-09-06 → §11.218** (entry `INTENT/11.218.md` + stub; four corrections with markers; DEPLOYMENT-MAP T5 item 2 discharged; README section; D14 PASS). ONE driver generalised (`--playlist-dir`/`--root`/`--cap`/`--skip-show`; `criteria_sha` `f5e0d602` = F95's; plan diff committed), duration model ONE home (`sts_duration.py`, loop-aware; F90's triple unmoved on 145 files). **Soak: 4.508 h, 8 complete cycles of 135 shows, 541 samples, NO F1/F2/F3/F4, quit exit 0 in 0.76 s, 139 real-HOME md5s in==out.** Cap 60 s and the 13-show CAPPED set predicted before the launch and measured exactly; the 7 SHOW-TIMEOUTs are exactly the 7 chaining shows. **TWO FINDINGS, both §5 candidates named for the row's holder, nothing fixed:** (1) `06.sts`+`14.sts` ABORT the application (uniform buffer pool → device lost → `terminate`, SIGABRT), reproduced three ways, `14.sts` alone clean; (2) `14.sts` alone empties the OLD path's dump half (246 → 1 → 0) for the rest of the session while `search` says NOF and `get status object` answers in full. LEAK verdict **LEAK** (68.3 MB/h, 135/135 shows rising); §5.115 priced at **193 MB/h** (828 MB in one session) against F95's 1.88. Census corrected: the corpus authors **1719** bodies in 8 shows (both word orders), `06old.sts` **170**. Baselines: scan 234/289/135 · pair-check 234/209/25/113 · D 35 · D2 11 · I 89 · I2 37 · M 83, every delta named at §11.218(q) against a same-tool re-measured baseline.
 
 ---
 

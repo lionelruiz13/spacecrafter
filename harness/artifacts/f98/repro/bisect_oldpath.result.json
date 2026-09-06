@@ -1,0 +1,37 @@
+{
+ "shows": [
+  "fscripts/06old.sts",
+  "fscripts/14.sts"
+ ],
+ "bin": "/home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter",
+ "bin_md5": "46849f69",
+ "body_action_load_executed": 698,
+ "buffer_allocation_errors": 0,
+ "device_lost_lines": 0,
+ "terminate_lines": 0,
+ "died_unprompted_at_s": null,
+ "exit_status": 0,
+ "quit_exit_code": 0,
+ "quit_wall_s": 0.6,
+ "frozen_moved": [],
+ "applog": "/home/claude/sc-f98/bisect_oldpath/repro.applog",
+ "proc_after": [],
+ "dumps": [
+  {
+   "after": "fscripts/06old.sts",
+   "both": 246,
+   "old_only": 0,
+   "new_only": 30,
+   "bodies_old": 246,
+   "bodies_new": 276
+  },
+  {
+   "after": "fscripts/14.sts",
+   "both": 1,
+   "old_only": 0,
+   "new_only": 276,
+   "bodies_old": 1,
+   "bodies_new": 277
+  }
+ ]
+}

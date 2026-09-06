@@ -1,0 +1,259 @@
+================================================================================================
+F95 SOAK REPORT   /home/claude/sc-f98/soak1
+binary /home/claude/spacecrafter/build-claude/src/spacecrafter (md5 46849f69)   display :2   started 2026-09-06 13:42:28
+H requested 4.500 h   S 30 s   J0 2460000.500000   shows 135   criteria md5 f5e0d602
+================================================================================================
+
+--- 1. WHAT RAN ---
+wall (last sample)      : 16230.0 s = 4.508 h
+samples                 : 541 rows (expected >= 540 at S=30 over 4.500 h)
+cycles                  : 9 recorded, 8 COMPLETE (135/135 shows)
+playlist dirs / cap     : fscripts / 60 s
+FLAGS                   : none
+
+--- 2. THE SAMPLE SERIES (min/max/first/last and a fitted slope) ---
+  vmrss_kb           first  7202716.000  last  7992140.000  min  7202716.000  max  7992140.000  slope +121762.440/h kB
+  vmsize_kb          first  9988640.000  last 11001376.000  min  9988640.000  max 11083336.000  slope +110326.604/h kB
+  threads            first       60.000  last       60.000  min       59.000  max       73.000  slope +0.017/h
+  fds                first       83.000  last       83.000  min       82.000  max       85.000  slope -0.033/h
+  gpu_mib            first     5351.000  last     5671.000  min     5307.000  max     5843.000  slope +27.457/h MiB
+  scriptlog_b        first    12184.000  last 828426004.000  min    12184.000  max 828426004.000  slope +193357919.678/h B
+  applog_b           first   211908.000  last 928034759.000  min   211908.000  max 928034759.000  slope +216466655.285/h B
+  scapplog_b         first    78096.000  last  6806102.000  min    78096.000  max  6806102.000  slope +1523979.386/h B
+  vulkanlog_b        first   104187.000  last  1867093.000  min   104187.000  max  1867093.000  slope +386128.708/h B
+  probe_rtt_ms       first      205.600  last      208.800  min      201.100  max      213.900  slope +0.208/h ms
+  loadavg1           first        4.080  last        5.610  min        2.490  max       12.420  slope +0.129/h
+
+  probe round trip      : n=541  median 204.6 ms  p95 208.8 ms  max 213.9 ms  (F2 bound 45000 ms)  over-bound samples: 0
+  probe answered        : 541 of 541 samples
+
+--- 3. STALLS PER 1.00 h, WITH THE SCREEN STATE BESIDE THEM ---
+  (a lock throttles the engine to 1 Hz, F67 - so a stall count is only readable
+   next to the lock state; RECORDED, never gating)
+  bucket t_from_s  t_to_s    detected  very_long screensaver seen       lockedHint seen       
+  0      0         3600      76        0         false                  no                    
+  1      3600      7200      78        0         false                  no                    
+  2      7200      10800     78        0         false                  no                    
+  3      10800     14400     67        0         false                  no                    
+  4      14400     18000     35        0         false                  no                    
+  -> `Frame stall detected` rate per hour, per bucket: ['77.3', '78.7', '78.7', '67.6', '68.9']
+
+--- 4. LOG GROWTH (Sec.5.115's price for R20's eight-launch window) ---
+  script-YY.MM.DD.log (keepHistory=true, APPENDED across launches, uncapped)      12184 ->  828426004 B   +193357920 B/h = 193.36 MB/h
+  spacecrafter.log (truncates per launch)                         78096 ->    6806102 B   +1523979 B/h = 1.52 MB/h
+  vulkan log                                                     104187 ->    1867093 B   +386129 B/h = 0.39 MB/h
+  the process's own stdout+stderr capture                        211908 ->  928034759 B   +216466655 B/h = 216.47 MB/h
+  -> per COMPLETE cycle (135 shows): 102746057 B/cycle over 8 cycles
+
+--- 5. THE CYCLE TABLE ---
+  cyc  cmpl wall_s   shows  t/out   resumed  VmRSS kB    VmSize MB threads  fds      scriptlog B
+  1    1    1914.7   135    7       104      7652364     10636     60       83       102375258
+  2    1    1916.6   135    7       106      7731680     10641     60       83       204713191
+  3    1    1915.6   135    7       106      7799908     10646     60       83       307640590
+  4    1    1916.6   135    7       106      7841632     10663     60       83       410517579
+  5    1    1915.4   135    7       105      7885132     10681     60       83       513676210
+  6    1    1914.5   135    7       105      7923760     10705     60       83       616670444
+  7    1    1913.3   135    7       105      7959992     10727     60       83       719306456
+  8    1    1914.7   135    7       105      7991960     10744     60       83       821597660
+  9    0    919.2    17     3       70       7992140     10744     60       83       828426463
+  -> COMPLETE-cycle wall: first 1914.7 s  last 1914.7 s  min 1913.3  max 1916.6  spread 3.3 s  slope +0.0000 s/cycle
+
+--- 5b. THE PER-SHOW TABLE (one row per show per cycle) ---
+  rows: 1097
+  CAPPED  (by design, the model says longer than the cap): 13 show(s)
+    fscripts/01.sts                   9/ 9 cycle(s)  wall ['60.0', '60.3', '60.4', '60.5']
+    fscripts/02.sts                   9/ 9 cycle(s)  wall ['60.1', '60.2', '60.3']
+    fscripts/05.sts                   9/ 9 cycle(s)  wall ['60.1', '60.2', '60.3', '60.5', '60.7', '60.9']
+    fscripts/07nosphere.sts           9/ 9 cycle(s)  wall ['60.1', '60.2', '60.3']
+    fscripts/07old.sts                9/ 9 cycle(s)  wall ['60.1', '60.2', '60.3', '60.4', '60.5']
+    fscripts/08.sts                   9/ 9 cycle(s)  wall ['60.1', '60.2', '60.3', '60.4', '60.5']
+    fscripts/12.sts                   9/ 9 cycle(s)  wall ['60.0', '60.1', '60.2', '60.3']
+    fscripts/15.sts                   8/ 8 cycle(s)  wall ['60.0', '60.1', '60.2']
+    fscripts/S03old.sts               8/ 8 cycle(s)  wall ['60.0', '60.1', '60.2']
+    fscripts/S11.sts                  8/ 8 cycle(s)  wall ['60.0', '60.1', '60.2']
+    fscripts/W18.sts                  8/ 8 cycle(s)  wall ['60.0', '60.1', '60.2']
+    fscripts/panorama0.sts            8/ 8 cycle(s)  wall ['60.0', '60.2', '60.4']
+    fscripts/panorama5.sts            8/ 8 cycle(s)  wall ['60.0', '60.2']
+  SHOW-TIMEOUT (a FINDING: no `script end` within modelled + grace): 7 show(s)
+    fscripts/07.sts                   9/ 9 cycle(s)  own 0.0 expanded 0.0 deadline 60.0  wall ['60.1', '60.3', '60.4']
+    fscripts/07g.sts                  9/ 9 cycle(s)  own 4.2 expanded 4.2 deadline 64.2  wall ['64.2', '64.5', '64.6', '64.7']
+    fscripts/07isc.sts                9/ 9 cycle(s)  own 4.2 expanded 4.2 deadline 64.2  wall ['64.2', '64.5']
+    fscripts/S11a.sts                 8/ 8 cycle(s)  own 3.0 expanded 3.0 deadline 63.0  wall ['63.0', '63.2']
+    fscripts/S11b.sts                 8/ 8 cycle(s)  own 8.5 expanded 8.5 deadline 68.5  wall ['68.5', '68.6', '68.7']
+    fscripts/S14.sts                  8/ 8 cycle(s)  own 0.0 expanded 0.0 deadline 60.0  wall ['60.0', '60.2']
+    fscripts/W14.sts                  8/ 8 cycle(s)  own 4.0 expanded 4.0 deadline 64.0  wall ['64.0', '64.2', '64.4']
+  ENDED on their own: 927 row(s) over 115 distinct shows
+  slowest ten show-plays: fscripts/S11b.sts 68.7s, fscripts/S11b.sts 68.6s, fscripts/S11b.sts 68.6s, fscripts/S11b.sts 68.5s, fscripts/S11b.sts 68.5s, fscripts/S11b.sts 68.5s, fscripts/S11b.sts 68.5s, fscripts/S11b.sts 68.5s, fscripts/07g.sts 64.7s, fscripts/07g.sts 64.6s
+  play wall per cycle (s): {'1': 1669.5, '2': 1670.8, '3': 1669.7, '4': 1670.4, '5': 1669.7, '6': 1669.2, '7': 1667.7, '8': 1668.9, '9': 829.0}
+
+--- 5c. THE AUTHORING INSTRUMENT (body counts per path half, and the named probes) ---
+  cycle  where                      bodies_old bodies_new old_only  new_only 
+  1      boundary                   0          286        0         286      
+      probe Solsys           from fscripts/14.sts    old False new True   search NOF                    readout Solsys | Magnitude : inf | AD/DE : 10h05m32s / +10Â°32'20" | Alt/AzÂ : -15Â°55'5
+      probe Sol              from fscripts/14.sts    old False new False  search NOF                    readout 
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 10h05m56s / +10Â°35'09" | Alt/AzÂ : -15Â°4
+  1      after:fscripts/06old.sts   246        276        0         30       
+      probe ALSAT 1          from fscripts/06old.sts old True  new True   search ALSAT 1(P);            readout ALSAT 1 | Magnitude : -2.56 | AD/DE : 14h14m28s / -37Â°14'19" | Alt/AzÂ : -36Â°5
+  1      after:fscripts/14.sts      1          277        0         276      
+      probe Solsys           from fscripts/14.sts    old True  new True   search Solsys(P);             readout Solsys | Magnitude : inf | AD/DE : 20h04m00s / -10Â°00'00" | Alt/AzÂ : -90Â°00'0
+      probe Sol              from fscripts/14.sts    old False new False  search Solsys(P);             readout 
+  2      boundary                   0          286        0         286      
+      probe Solsys           from fscripts/14.sts    old False new True   search NOF                    readout Solsys | Magnitude : inf | AD/DE : 10h05m32s / +10Â°32'20" | Alt/AzÂ : -15Â°55'5
+      probe Sol              from fscripts/14.sts    old False new False  search NOF                    readout 
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 10h05m56s / +10Â°35'09" | Alt/AzÂ : -15Â°4
+  2      after:fscripts/06old.sts   0          286        0         286      
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 09h44m28s / +10Â°35'09" | Alt/AzÂ : +10Â°3
+  2      after:fscripts/14.sts      1          286        0         285      
+      probe Solsys           from fscripts/14.sts    old True  new True   search Solsys(P);             readout Solsys | Magnitude : inf | AD/DE : 20h04m00s / -10Â°00'00" | Alt/AzÂ : -90Â°00'0
+      probe Sol              from fscripts/14.sts    old False new False  search Solsys(P);             readout 
+  3      boundary                   0          286        0         286      
+      probe Solsys           from fscripts/14.sts    old False new True   search NOF                    readout Solsys | Magnitude : inf | AD/DE : 10h05m32s / +10Â°32'20" | Alt/AzÂ : -15Â°55'5
+      probe Sol              from fscripts/14.sts    old False new False  search NOF                    readout 
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 10h05m56s / +10Â°35'09" | Alt/AzÂ : -15Â°4
+  3      after:fscripts/06old.sts   0          286        0         286      
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 09h44m28s / +10Â°35'09" | Alt/AzÂ : +10Â°3
+  3      after:fscripts/14.sts      1          286        0         285      
+      probe Solsys           from fscripts/14.sts    old True  new True   search Solsys(P);             readout Solsys | Magnitude : inf | AD/DE : 20h04m00s / -10Â°00'00" | Alt/AzÂ : -90Â°00'0
+      probe Sol              from fscripts/14.sts    old False new False  search Solsys(P);             readout 
+  4      boundary                   0          286        0         286      
+      probe Solsys           from fscripts/14.sts    old False new True   search NOF                    readout Solsys | Magnitude : inf | AD/DE : 10h05m32s / +10Â°32'20" | Alt/AzÂ : -15Â°55'5
+      probe Sol              from fscripts/14.sts    old False new False  search NOF                    readout 
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 10h05m56s / +10Â°35'09" | Alt/AzÂ : -15Â°4
+  4      after:fscripts/06old.sts   0          286        0         286      
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 09h44m28s / +10Â°35'09" | Alt/AzÂ : +10Â°3
+  4      after:fscripts/14.sts      1          286        0         285      
+      probe Solsys           from fscripts/14.sts    old True  new True   search Solsys(P);             readout Solsys | Magnitude : inf | AD/DE : 20h04m00s / -10Â°00'00" | Alt/AzÂ : -90Â°00'0
+      probe Sol              from fscripts/14.sts    old False new False  search Solsys(P);             readout 
+  5      boundary                   0          286        0         286      
+      probe Solsys           from fscripts/14.sts    old False new True   search NOF                    readout Solsys | Magnitude : inf | AD/DE : 10h05m32s / +10Â°32'20" | Alt/AzÂ : -15Â°55'5
+      probe Sol              from fscripts/14.sts    old False new False  search NOF                    readout 
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 10h05m56s / +10Â°35'09" | Alt/AzÂ : -15Â°4
+  5      after:fscripts/06old.sts   0          286        0         286      
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 09h44m28s / +10Â°35'09" | Alt/AzÂ : +10Â°3
+  5      after:fscripts/14.sts      1          286        0         285      
+      probe Solsys           from fscripts/14.sts    old True  new True   search Solsys(P);             readout Solsys | Magnitude : inf | AD/DE : 20h04m00s / -10Â°00'00" | Alt/AzÂ : -90Â°00'0
+      probe Sol              from fscripts/14.sts    old False new False  search Solsys(P);             readout 
+  6      boundary                   0          286        0         286      
+      probe Solsys           from fscripts/14.sts    old False new True   search NOF                    readout Solsys | Magnitude : inf | AD/DE : 10h05m32s / +10Â°32'20" | Alt/AzÂ : -15Â°55'5
+      probe Sol              from fscripts/14.sts    old False new False  search NOF                    readout 
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 10h05m56s / +10Â°35'09" | Alt/AzÂ : -15Â°4
+  6      after:fscripts/06old.sts   0          286        0         286      
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 09h44m28s / +10Â°35'09" | Alt/AzÂ : +10Â°3
+  6      after:fscripts/14.sts      1          286        0         285      
+      probe Solsys           from fscripts/14.sts    old True  new True   search Solsys(P);             readout Solsys | Magnitude : inf | AD/DE : 20h04m00s / -10Â°00'00" | Alt/AzÂ : -90Â°00'0
+      probe Sol              from fscripts/14.sts    old False new False  search Solsys(P);             readout 
+  7      boundary                   0          286        0         286      
+      probe Solsys           from fscripts/14.sts    old False new True   search NOF                    readout Solsys | Magnitude : inf | AD/DE : 10h05m32s / +10Â°32'20" | Alt/AzÂ : -15Â°55'5
+      probe Sol              from fscripts/14.sts    old False new False  search NOF                    readout 
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 10h05m56s / +10Â°35'09" | Alt/AzÂ : -15Â°4
+  7      after:fscripts/06old.sts   0          286        0         286      
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 09h44m28s / +10Â°35'09" | Alt/AzÂ : +10Â°3
+  7      after:fscripts/14.sts      1          286        0         285      
+      probe Solsys           from fscripts/14.sts    old True  new True   search Solsys(P);             readout Solsys | Magnitude : inf | AD/DE : 20h04m00s / -10Â°00'00" | Alt/AzÂ : -90Â°00'0
+      probe Sol              from fscripts/14.sts    old False new False  search Solsys(P);             readout 
+  8      boundary                   0          286        0         286      
+      probe Solsys           from fscripts/14.sts    old False new True   search NOF                    readout Solsys | Magnitude : inf | AD/DE : 10h05m32s / +10Â°32'20" | Alt/AzÂ : -15Â°55'5
+      probe Sol              from fscripts/14.sts    old False new False  search NOF                    readout 
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 10h05m56s / +10Â°35'09" | Alt/AzÂ : -15Â°4
+  8      after:fscripts/06old.sts   0          286        0         286      
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 09h44m28s / +10Â°35'09" | Alt/AzÂ : +10Â°3
+  8      after:fscripts/14.sts      1          286        0         285      
+      probe Solsys           from fscripts/14.sts    old True  new True   search Solsys(P);             readout Solsys | Magnitude : inf | AD/DE : 20h04m00s / -10Â°00'00" | Alt/AzÂ : -90Â°00'0
+      probe Sol              from fscripts/14.sts    old False new False  search Solsys(P);             readout 
+  9      boundary                   0          286        0         286      
+      probe Solsys           from fscripts/14.sts    old False new True   search NOF                    readout Solsys | Magnitude : inf | AD/DE : 10h05m23s / +10Â°32'20" | Alt/AzÂ : -15Â°54'5
+      probe Sol              from fscripts/14.sts    old False new False  search NOF                    readout 
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 10h05m47s / +10Â°35'09" | Alt/AzÂ : -15Â°4
+  9      after:fscripts/06old.sts   0          286        0         286      
+      probe ALSAT 1          from fscripts/06old.sts old False new True   search NOF                    readout ALSAT 1 | Magnitude : 41.46 | AD/DE : 09h44m28s / +10Â°35'09" | Alt/AzÂ : +10Â°3
+
+--- 6. THE LEAK RULE (committed before the launch) ---
+  series (VmRSS kB at each COMPLETE cycle boundary, cycle 1 first):
+    [7652364, 7731680, 7799908, 7841632, 7885132, 7923760, 7959992, 7991960]
+  VERDICT: LEAK
+  why    : strictly increasing at every one of the 6 steps from cycle 2
+  steps (kB, from cycle 2): [68228, 41724, 43500, 38628, 36232, 31968]
+  largest consecutive swing (the FLOOR): 68228 kB = 66.63 MB
+  span cycle2->last: 260280 kB = 254.18 MB
+  -> 42.363 MB/cycle over 6 steps; 68.3 MB/h (13406.7 s of cycle wall covered)
+
+--- 6b. THE PER-SHOW BOUNDARY SERIES (SECONDARY; the LEAK VERDICT ABOVE IS THE ONE THAT WAS COMMITTED) ---
+  A cycle over this corpus is an hour or more, so the cycle series is short.
+  The same playlist point is available 135 times per cycle instead of once:
+  the RSS after show <i> of cycle n against the RSS after show <i> of cycle
+  n+1.  That is a MEDIAN over shows rather than a single difference, and it
+  is reported as a secondary reading - it cannot overturn the committed rule.
+  cycle 1 -> 2 : n=135 shows  median +210196.0 kB  mean +210424.6 kB  positive 135/135  min +77840  max +453792
+  cycle 2 -> 3 : n=135 shows  median  +74392.0 kB  mean  +73061.8 kB  positive 135/135  min +68228  max +79228
+  cycle 3 -> 4 : n=135 shows  median  +44576.0 kB  mean  +51665.1 kB  positive 135/135  min +31248  max +68224
+  cycle 4 -> 5 : n=135 shows  median  +39152.0 kB  mean  +40146.2 kB  positive 135/135  min +33996  max +43668
+  cycle 5 -> 6 : n=135 shows  median  +38692.0 kB  mean  +39079.8 kB  positive 135/135  min +24924  max +43500
+  cycle 6 -> 7 : n=135 shows  median  +41412.0 kB  mean  +44066.5 kB  positive 135/135  min +36176  max +59872
+  cycle 7 -> 8 : n=135 shows  median  +31968.0 kB  mean  +30584.0 kB  positive 135/135  min +24040  max +35676
+  cycle 8 -> 9 : n= 17 shows  median  +31968.0 kB  mean  +31968.2 kB  positive 17/17  min +31968  max +31972
+  shows whose own RSS series is strictly increasing over every cycle: 135 of 135 with >= 3 cycles
+
+--- 7. THE DUMP DIFF AT THE PINNED CLOCK J0 = 2460000.500000 (Sec.5.62) ---
+  reference = cycle 2 (cycle 1 carries first-touch state).  The
+  expected-constant set was NAMED IN prediction.txt BEFORE cycle 2 ran.
+  dumps written: 9 (9 non-empty), sizes [367532, 367650, 367733, 368003, 368006, 368022, 368039, 368090, 368305]
+  reference cycle_002.json: 286 bodies, header {'jd': 2460000.5, 'timeSpeed': 0, 'timePaused': False}
+  compared 7 later dumps against it
+  TOTAL DIFFERENCES INSIDE THE EXPECTED-CONSTANT SET: 1592
+    cycle_003.json: 227 diff(s)
+       2008-059B.new.ecl                  a=[-3.12286807e-06, 1.6865939e-05, -4.14858841e-05]  b=[-3.12947782e-06, 1.68616607e-05, -4.14871283e-05]
+       AKEBONO (EXOS-D).new.ecl           a=[-1.10981418e-05, -5.2003752e-06, 4.56004018e-05]  b=[-1.1097547e-05, -5.20893718e-06, 4.56009584e-05]
+       ALOUETTE 1 (S-27).new.ecl          a=[-8.30545923e-06, 2.70504061e-05, -4.04386192e-05]  b=[-8.30770659e-06, 2.70562068e-05, -4.04342572e-05]
+       ALSAT 1.new.ecl                    a=[-2.13957537e-05, 9.43839677e-06, 4.09391978e-05]  b=[-2.13902204e-05, 9.44389831e-06, 4.09408131e-05]
+       ASTRA 1M.new.ecl                   a=[0.000110947127, -0.000237386324, 0.000103496626]  b=[0.000110950052, -0.000237385175, 0.000103496139]
+       ATLAS CENTAUR 2.new.ecl            a=[2.84084381e-05, -3.43356114e-05, 2.5140429e-05]  b=[2.84134821e-05, -3.4330631e-05, 2.51420497e-05]
+    cycle_004.json: 225 diff(s)
+       2008-059B.new.ecl                  a=[-3.12286807e-06, 1.6865939e-05, -4.14858841e-05]  b=[-3.11626331e-06, 1.68702118e-05, -4.14846436e-05]
+       AKEBONO (EXOS-D).new.ecl           a=[-1.10981418e-05, -5.2003752e-06, 4.56004018e-05]  b=[-1.10987512e-05, -5.19160858e-06, 4.5599827e-05]
+       ALOUETTE 1 (S-27).new.ecl          a=[-8.30545923e-06, 2.70504061e-05, -4.04386192e-05]  b=[-8.3032146e-06, 2.70446108e-05, -4.04429775e-05]
+       ALSAT 1.new.ecl                    a=[-2.13957537e-05, 9.43839677e-06, 4.09391978e-05]  b=[-2.14011488e-05, 9.43302985e-06, 4.09376225e-05]
+       ASTRA 1M.new.ecl                   a=[0.000110947127, -0.000237386324, 0.000103496626]  b=[0.000110944209, -0.000237387474, 0.000103497121]
+       ATLAS CENTAUR 2.new.ecl            a=[2.84084381e-05, -3.43356114e-05, 2.5140429e-05]  b=[2.8403274e-05, -3.43407082e-05, 2.51387701e-05]
+    cycle_005.json: 227 diff(s)
+       2008-059B.new.ecl                  a=[-3.12286807e-06, 1.6865939e-05, -4.14858841e-05]  b=[-3.12975067e-06, 1.68614843e-05, -4.14871793e-05]
+       AKEBONO (EXOS-D).new.ecl           a=[-1.10981418e-05, -5.2003752e-06, 4.56004018e-05]  b=[-1.10975225e-05, -5.20929052e-06, 4.56009802e-05]
+       ALOUETTE 1 (S-27).new.ecl          a=[-8.30545923e-06, 2.70504061e-05, -4.04386192e-05]  b=[-8.30779936e-06, 2.70564451e-05, -4.0434079e-05]
+       ALSAT 1.new.ecl                    a=[-2.13957537e-05, 9.43839677e-06, 4.09391978e-05]  b=[-2.13901294e-05, 9.44398926e-06, 4.09408385e-05]
+       ASTRA 1M.new.ecl                   a=[0.000110947127, -0.000237386324, 0.000103496626]  b=[0.000110950168, -0.000237385131, 0.000103496117]
+       ATLAS CENTAUR 2.new.ecl            a=[2.84084381e-05, -3.43356114e-05, 2.5140429e-05]  b=[2.84136913e-05, -3.43304273e-05, 2.5142117e-05]
+    cycle_006.json: 233 diff(s)
+       2008-059B.new.ecl                  a=[-3.12286807e-06, 1.6865939e-05, -4.14858841e-05]  b=[-3.09647476e-06, 1.68830102e-05, -4.1480911e-05]
+       AKEBONO (EXOS-D).new.ecl           a=[-1.10981418e-05, -5.2003752e-06, 4.56004018e-05]  b=[-1.11005156e-05, -5.16618638e-06, 4.55981608e-05]
+       ALOUETTE 1 (S-27).new.ecl          a=[-8.30545923e-06, 2.70504061e-05, -4.04386192e-05]  b=[-8.29648616e-06, 2.70272412e-05, -4.04560233e-05]
+       ALSAT 1.new.ecl                    a=[-2.13957537e-05, 9.43839677e-06, 4.09391978e-05]  b=[-2.14173124e-05, 9.41694816e-06, 4.09328968e-05]
+       ASTRA 1M.new.ecl                   a=[0.000110947127, -0.000237386324, 0.000103496626]  b=[0.000110935456, -0.000237390923, 0.000103498598]
+       ATLAS CENTAUR 2.new.ecl            a=[2.84084381e-05, -3.43356114e-05, 2.5140429e-05]  b=[2.83882891e-05, -3.4355493e-05, 2.51339516e-05]
+    cycle_007.json: 234 diff(s)
+       2008-059B.new.ecl                  a=[-3.12286807e-06, 1.6865939e-05, -4.14858841e-05]  b=[-3.09362622e-06, 1.68848528e-05, -4.14803726e-05]
+       AKEBONO (EXOS-D).new.ecl           a=[-1.10981418e-05, -5.2003752e-06, 4.56004018e-05]  b=[-1.11007721e-05, -5.16249656e-06, 4.55979171e-05]
+       ALOUETTE 1 (S-27).new.ecl          a=[-8.30545923e-06, 2.70504061e-05, -4.04386192e-05]  b=[-8.29551755e-06, 2.70247401e-05, -4.04579005e-05]
+       ALSAT 1.new.ecl                    a=[-2.13957537e-05, 9.43839677e-06, 4.09391978e-05]  b=[-2.14196389e-05, 9.4146335e-06, 4.09322165e-05]
+       ASTRA 1M.new.ecl                   a=[0.000110947127, -0.000237386324, 0.000103496626]  b=[0.000110934197, -0.000237391418, 0.000103498809]
+       ATLAS CENTAUR 2.new.ecl            a=[2.84084381e-05, -3.43356114e-05, 2.5140429e-05]  b=[2.83861154e-05, -3.43576357e-05, 2.51332531e-05]
+    cycle_008.json: 223 diff(s)
+       2008-059B.new.ecl                  a=[-3.12286807e-06, 1.6865939e-05, -4.14858841e-05]  b=[-3.11760414e-06, 1.68693441e-05, -4.14848946e-05]
+       AKEBONO (EXOS-D).new.ecl           a=[-1.10981418e-05, -5.2003752e-06, 4.56004018e-05]  b=[-1.10986157e-05, -5.19355672e-06, 4.55999543e-05]
+       ALOUETTE 1 (S-27).new.ecl          a=[-8.30545923e-06, 2.70504061e-05, -4.04386192e-05]  b=[-8.30367026e-06, 2.70457876e-05, -4.04420898e-05]
+       ALSAT 1.new.ecl                    a=[-2.13957537e-05, 9.43839677e-06, 4.09391978e-05]  b=[-2.14000538e-05, 9.43411942e-06, 4.09379427e-05]
+       ASTRA 1M.new.ecl                   a=[0.000110947127, -0.000237386324, 0.000103496626]  b=[0.000110944799, -0.000237387241, 0.000103497019]
+       ATLAS CENTAUR 2.new.ecl            a=[2.84084381e-05, -3.43356114e-05, 2.5140429e-05]  b=[2.84044218e-05, -3.43395768e-05, 2.51391375e-05]
+
+--- 8. THE QUIT (F3's three numbers) ---
+  exit code       : 0
+  wall to exit    : 0.76 s   (bound 45 s)
+  had to be killed: False
+  teardown faults : none
+  stalls at quit  : detected 334 / very long 0
+  /proc after     : clear
+
+--- 9. THE BOUNDARY: real HOME md5 in == out ---
+  139 files recorded in, 139 out; MOVED: none
+  aggregate digest in a4b6ea4f  out a4b6ea4f  (per-file md5s sorted in C order and hashed - never a concatenation, which is locale-dependent)
+  the FARM's own .sts copies: 137 in, 137 out; rewritten by `ScriptAnnotator::flush`: ['/home/claude/sc-f98/soak1/farm/.spacecrafter/scripts/fscripts/panorama5.sts']
+
+================================================================================================

@@ -704,9 +704,23 @@ direction (see T3).
    **THE FIFTH MEMBER, B30, IS OUTSIDE THIS INSTRUMENT AND STAYS UNMAPPED**: the soak
    reads no pixel. Two further limits, stated so "ready" is not over-read: the playlist
    is image-overlay shows, so it does NOT exercise body authoring — a second soak over
-   the tester's own `fscripts/` corpus (`06old.sts` authors 3000 satellites, §5.137) is
+   the tester's own `fscripts/` corpus (`06old.sts` authors ~~3000~~ **170** satellites, §5.137) is
    named and OWED — and thirteen clean quits is a rate, not a proof against an
-   intermittent class. **"Ready" is the owner's word from here.**]**
+   intermittent class. **[BOTH HALVES SUPERSEDED 2026-09-06, F98 → §11.218: the number is
+   **170** (measured; the corpus authors **1719** bodies in 8 shows once both word orders of
+   the command are counted), and the second soak is **NO LONGER OWED — it RAN**: 4.508 h, 8
+   complete cycles of 135 shows, 541 samples, **no F1/F2/F3/F4**, quit exit 0 in 0.76 s, 139
+   real-HOME md5s in == out. It also found what the first soak could not: **two of the
+   tester's own shows (`06.sts` then `14.sts`) abort the application** — uniform buffer pool
+   exhausted → `Device lost while waiting frame completion` → `terminate`, SIGABRT,
+   reproduced three ways — and **`14.sts` alone empties the OLD path's dump half** (246 → 1 →
+   0 bodies) for the rest of the session while `select`+`get status object` still answers a
+   full readout for bodies `search` reports NOF. The LEAK rule says **LEAK** on this corpus
+   (68.3 MB/h, 42.4 MB/cycle over 8 cycles) where it said NO LEAK on the eight shipped shows,
+   and §5.115's script log costs **193 MB/h** here against 1.88 MB/h there — 828 MB in one
+   session, which is the field's "gigabyte-large script logs" made arithmetic. What is STILL
+   unmapped: B30 (no pixel is read) and §5.137's own trigger `body action reload`, which
+   appears in ZERO shows of this corpus.]** **"Ready" is the owner's word from here.**]**
 3. ~~**B38's residual state** ⚠ (dead tokens + reachable-but-defective handlers) — the
    command-surface sweep's defect row; verify what remains open at the row.~~
    **[RESOLVED 2026-08-29, F47 §11.163(i) — NOT unmapped. State read: all EIGHT survivors
