@@ -1043,7 +1043,23 @@ every cycle because F90's `show_own_duration` is loop-blind — the file wraps i
 `wait duration 3.1` and its single `script action pause` in `struct loop 100` (:146), so
 its authored duration is ~100x what the parser reports. Kept: every cycle then gets an
 identical deterministic 63 s slice, which is BETTER for cross-cycle comparison, and the
-section itself provides for SHOW-TIMEOUT. NEXT: hours 2 and 3, then the record.
+section itself provides for SHOW-TIMEOUT.
+2026-09-06 04:14 — CHECKPOINT 4 (SOAK HOUR 2 of 3, running): at +6823 s, **43 cycles,
+227 samples, flags STILL NONE**. VmRSS flat at 7429952 kB since cycle 28 (steady state
+from cycle ~16). Cycle wall 157.9-159.7 s with no slope over 42 complete cycles. Probe
+201-208 ms, screensaver `false` / lockedHint `no` every sample. Stalls 83.4 then 75.1
+per hour, `very long` **0**. Script log +1.88 MB/h = 82895 B per 8-show cycle. All 8
+played `.sts` in the farm byte-identical to the real ones (the annotator wrote nothing);
+2 `(Error)` lines in `spacecrafter.log`, both at startup. **THE §5.62 INSTRUMENT HAS A
+PAYLOAD, stable at 22 and at 42 dumps:** at the pinned J0 exactly **4 of 120 bodies**
+(Ananke, Neried, Setebos, Sycorax) take **two** distinct values, **on the OLD half
+only** — the NEW half is bit-identical on 120/120. Max |delta| **9.437e-16 AU** (136
+ulps), i.e. 2-4 orders BELOW §11.87(c)'s recorded Kepler float floor. Mechanism read at
+HEAD: `EllipticalOrbit::eccentricAnomaly` takes ONE step from a caller-persistent
+`lastE` (`orbit.cpp:515-562`) ⇒ **§5.84's magnitude, unmeasured on the row since
+2026-08-09, is measured here**. Eccentricity REFUTED as the selector (Sedna 0.859,
+Neso 0.630, Eris 0.437 do not move; Ananke does at 0.217). NEXT: hour 3, the quit,
+then the record.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
