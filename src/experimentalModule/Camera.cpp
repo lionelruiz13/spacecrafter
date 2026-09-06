@@ -95,8 +95,12 @@ Mat4f Camera::viewRotation() const
     // heading+pi: without it the camera frame is rolled 180deg about the view
     // axis relative to the old path (measured 179.994deg on every body,
     // INTENT 11.19b). This composition is the SINGLE AUTHORITY on the
-    // alt/az/heading convention; observedToLocalPos is its exact transpose
-    // and lookTo/recoverParams are its exact inverses.
+    // alt/az/heading convention; lookTo/recoverParams are its exact inverses,
+    // and observedToLocalPos is the exact transpose of renderViewRotation(),
+    // which is this composition with the B17 offset pitch on the left
+    // (~~observedToLocalPos is its exact transpose~~ -- corrected 2026-09-06,
+    // S11.216: an OBSERVED position has been through the render rotation, not
+    // through this one).
     return Mat4f::zrotation(heading+M_PI)
         .multiplyFast(Mat4f::xrotation(M_PI_2-alt))
         .multiplyFast(Mat4f::zrotation(az-M_PI_2))
@@ -254,8 +258,17 @@ std::pair<float, float> Camera::observedPosToRaDe(const Vec3f &observedPos) cons
     // Pole test was (x + y) == 0, which also swallowed every x == -y
     // direction (same defect class as the old lookTo branch).
     if (direction[0] == 0 && direction[1] == 0) {
-        ret.second = 0;
-        ret.first = std::copysign(M_PI_2, direction[2]);
+        // .first is RIGHT ASCENSION here and .second is DECLINATION -- that is
+        // the order rectToSphe is called in below (lng, then lat). The branch
+        // used to put the +-pi/2 in .first, so at the exact pole it answered
+        // RA +-90 deg / DE 0 where OLD, which has no branch at all, answers
+        // RA 0 / DE +-90 deg: atan2(0,0) is 0 and asin(+-1) is +-pi/2
+        // [body.cpp getRaDeValue -> Utility::rectToSphe]. Old-parity, S11.52(b)
+        // (S5.86's rider, S11.213(i2); measured both ways in
+        // harness/f96_frame.cpp). The SIBLING observedPosToAltAz keeps the two
+        // lines as they are, because there .first is the ALTITUDE.
+        ret.first = 0;
+        ret.second = std::copysign(M_PI_2, direction[2]);
     } else {
         Utility::rectToSphe(&ret.first, &ret.second, direction);
     }
@@ -638,15 +651,17 @@ void Camera::update(double jd, float deltaTime)
     }
     foldLat = latitude;
     if (target) { // Note : the tracked position is from the last update
-        // getObservedPosition() rides the offset-included render mat (R'*P_free);
-        // centre the OFFSET-FREE position so the offset does not get absorbed by
-        // the tracking (old centres the body's true equatorial position, then
-        // the offset pitches the view -- the tracked body ends up off-centre by
-        // the offset, the zoom_offset purpose). R'^T recovers P_free; identity
-        // when the offset is inert (bit-identical to the pre-B17 tracking).
-        Vec3f p = viewOffsetEyeRotation().transpose()
-                      .multiplyWithoutTranslation(target->getObservedPosition());
-        lookTo(observedToLocalPos(p), 5, true);
+        // Centre the body's TRUE direction: old centres its true equatorial
+        // position and lets the offset pitch the view afterwards, so the tracked
+        // body ends up off-centre by exactly the offset -- the zoom_offset
+        // purpose. observedToLocalPos IS that inverse now (renderViewRotation()^T,
+        // S11.216), so the R'^T this site used to apply BY HAND before calling it
+        // is gone: applying it twice would put the offset back into the aim.
+        // The composed map is unchanged (Rv^T.R'^T . R' == (R'.Rv)^T . I), which
+        // is why the tracked body's screen position is the same number before and
+        // after that change [measured: new `screen` [~0, 0.299999952] at
+        // viewOffsetEff 0.3 on both binaries, harness/artifacts/f96/].
+        lookTo(observedToLocalPos(target->getObservedPosition()), 5, true);
     }
     advanceView(deltaTime);
     advanceViewOffset(deltaTime);

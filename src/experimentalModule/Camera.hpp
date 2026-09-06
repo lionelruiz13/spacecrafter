@@ -140,6 +140,17 @@ public:
     }
 
     void moveRel(const Vec3f &position, float duration = 0, bool calculateDuration = false);
+    //! Step by a vector given in the EYE frame -- the RENDER eye frame, the one
+    //! the operator is looking at.  Every vector its callers hand it is
+    //! expressed there: descend() casts the screen-centre ray (0,0,-1) against
+    //! `viewMat().getTranslation()` and passes the selected body's
+    //! `getObservedPosition()`, all of which carry the B17 offset rotation R'
+    //! (Camera.cpp).  So the inverse that undoes them is the FULL one, which is
+    //! what `observedToLocalPos` now is (S11.216); before that change a descent
+    //! with `set zoom_offset` armed stepped 27 deg away from the ray under the
+    //! screen centre [measured: the step lay along Rv^T*z to 0.0121 deg and
+    //! 26.998 deg from (R'.Rv)^T*z, harness/f96_offset.py].  Byte-identical at
+    //! offset 0, which is every shipped default.
     inline void moveEyeRel(const Vec3f &position, float duration = 0) {
         moveRel(observedToLocalPos(position), duration);
     }
@@ -223,8 +234,16 @@ public:
     // viewOffsetEyeRotation for why the eye frame, not old's pre-heading chain
     // slot: the latter breaks the B13/B18 held-view composition the row
     // mandates). RENDER-ONLY: viewRotation() (the param<->view authority consumed
-    // by lookTo/recoverParams/observedToLocalPos) stays offset-free, exactly as
-    // old applies the offset only to mat_local_to_eye, never to the vision math.
+    // by lookTo and recoverParams) stays offset-free, exactly as old applies the
+    // offset only to mat_local_to_eye, never to the vision math.
+    // ~~and by observedToLocalPos~~ [CORRECTED 2026-09-06, S11.216 / S5.138:
+    // observedToLocalPos is an INVERSE, not a param authority. Its input is an
+    // OBSERVED position, which viewMat has already turned by R', so an inverse
+    // that divided only by Rv left the offset pitch inside the answer -- measured
+    // 27.000007 deg at the shipped fov 180 with `set zoom_offset 0.3`. It now
+    // takes renderViewRotation()^T, the same full inverse the RA/DE members have
+    // taken since F91 (S11.213(f)); the offset is still render-only in the sense
+    // that matters -- no VIEW PARAMETER carries it.]
     //
     // setViewOffset is fed by Core::setViewOffset -- the ONE sink both S2(c)
     // channels ([navigation] view_offset at startup AND `set zoom_offset <v>` at
@@ -253,12 +272,30 @@ public:
     //! the old one is what pitches the star field.
     void restoreViewOffsetLatch(bool armed);
 
-    // Exact rotational inverse of viewRotation(): camera(observed) frame ->
-    // the frame the view acts on (zenith frame when anchored, body frame when
-    // free). observedPosToAltAz rides THIS one; the RA/DE members below do not
-    // (see the R'^T paragraph).
+    // THE exact rotational inverse of the RENDER view rotation: observed(eye)
+    // frame -> the frame the view acts on (zenith frame when anchored, body
+    // frame when free).  ONE authority (I2) for every consumer that has to undo
+    // what viewMat did -- observedPosToAltAz, EnvironmentManager's sun
+    // direction, moveEyeRel and update()'s tracking feedback all read it and
+    // none re-derives it; the RA/DE members below compose the SAME rotation
+    // (see observedToBodyEquPos).
+    //
+    // WHY renderViewRotation()^T AND NOT viewRotation()^T (INTENT S11.216,
+    // row S5.138): getObservedPosition() is R' * (the offset-free eye position)
+    // -- viewOffsetEyeRotation's own note says so and viewMat composes exactly
+    // that -- so dividing only by Rv leaves the B17 offset pitch INSIDE the
+    // answer, conjugated into the local frame as Rv^T . R' . Rv: a rotation by
+    // `offset*halfFov` about Rv^T*x_eye.  MEASURED at the shipped fov 180 with
+    // `set zoom_offset 0.3`: the alt/az readout turned 27.000007 deg away from
+    // the old path's, whose readouts carry no eye-frame content at all
+    // (S11.201 -- old's offset lives in the draw and the aim), on every body
+    // the update walk re-evaluates.  Old-parity is the target here by S11.52(b),
+    // derived and not chosen.  BYTE-IDENTICAL to viewRotation()^T at every
+    // shipped default: offset 0 => viewOffsetEyeRotation() returns the identity
+    // on an exact float compare (Camera.cpp), so nothing below moves until the
+    // offset is both non-zero AND armed.
     inline Vec3f observedToLocalPos(const Vec3f &observedPos) const {
-        return viewRotation().transpose().multiplyWithoutTranslation(observedPos);
+        return renderViewRotation().transpose().multiplyWithoutTranslation(observedPos);
     }
 
     // ---- THE READOUT FRAME: viewMat()'s inverse (INTENT S11.213) ----------
@@ -290,13 +327,25 @@ public:
     // S11.158(f2) measured offline and recorded as a "-90.0003 deg zero point".
     //
     // R'^T, NOT JUST Rv^T: `getObservedPosition()` is R' * (the offset-free eye
-    // position) -- viewOffsetEyeRotation's own note says so, and update()'s
-    // tracking feedback already undoes it -- so an inverse that divided only by
-    // Rv would leave the B17 view-offset pitch inside the answer.  Old's RA/DE
-    // has no eye-frame content at all (it never passes through a view matrix),
-    // so undoing R' is what old-parity requires as well as what "the inverse of
-    // viewMat" means.  Byte-identical to Rv^T whenever the offset is inert,
-    // which is every shipped default (offset 0 => R' == identity).
+    // position) -- viewOffsetEyeRotation's own note says so -- so an inverse
+    // that divided only by Rv would leave the B17 view-offset pitch inside the
+    // answer.  Old's RA/DE has no eye-frame content at all (it never passes
+    // through a view matrix), so undoing R' is what old-parity requires as well
+    // as what "the inverse of viewMat" means.  Byte-identical to Rv^T whenever
+    // the offset is inert, which is every shipped default (offset 0 => R' ==
+    // identity).
+    //
+    // THAT ROTATION IS NOW WRITTEN ONCE, ABOVE (S11.216): `observedToLocalPos`
+    // IS `renderViewRotation()^T`, and these members compose it rather than
+    // restate it.  Between F91 and S11.216 the split was real and measured --
+    // this readout undid R' while the alt/az one did not, so with the offset
+    // armed the two readouts of one body answered in frames 27 deg apart (row
+    // S5.138).  ~~and update()'s tracking feedback already undoes it~~ [the
+    // tracking feedback's hand-applied R'^T is GONE with the same change: it
+    // now hands getObservedPosition() straight to observedToLocalPos, because
+    // applying R'^T twice would put the offset back in.  One composition, one
+    // place -- the I2 lesson S11.153 paid for, applied to the last consumer
+    // that had its own copy of it.]
 
     //! Observed(eye) frame -> the reference's equatorial frame, ROTATION ONLY:
     //! the origin stays where `observedPos` already puts it, at the OBSERVER.
