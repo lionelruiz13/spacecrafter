@@ -1,0 +1,183 @@
+F99 -- PRE-REGISTERED PREDICTIONS (INTENT S5.141's fix; dispatch section F99)
+Written 2026-09-06 by the F99 executor (Opus 5) BEFORE any launch of this task.
+Code HEAD at writing: 22499f04.  Pre-fix binary md5: 46849f69 (preserved at
+/home/claude/sc-f99/bin/spacecrafter-pre).
+
+Every number/string below is a COMMITMENT.  Where a prediction is derived from a
+read rather than measured, it says so, and it names WHAT WOULD REFUTE IT.  A
+prediction that could not have come out otherwise is not evidence and is marked
+as a control's premise instead.
+
+================================================================================
+THE TWO ARMS (the reach question the row gets wrong, corrected by the mint's read
+and MEASURED here, never inherited)
+================================================================================
+
+ARM A -- the row's headline arm, an UNKNOWN parent name:
+  body action load name ProbeLocA parent Nonexistent type Artificial radius 50 \
+      coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 \
+      orbit_alt 400000 tex_map bodies/generic.png
+
+ARM B -- the arm the read says actually reaches the dereference:
+  body action load name ProbeLocB parent none type Artificial radius 50 \
+      coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 \
+      orbit_alt 400000 tex_map bodies/generic.png
+
+CONTROL C -- same script, same launch, a coord_func both paths know, WITH the
+same `parent none`:
+  body action load name ProbeCtlC parent none type Artificial radius 50 \
+      coord_func still_orbit orbit_x 0.001 orbit_y 0 orbit_z 0 \
+      tex_map bodies/generic.png
+
+Both pushes travel Core::addSolarSystemBody -> SSystemFactory::addBody
+[observed: core.cpp:834, ssystem_factory.cpp:827-837], which calls the OLD path
+first (`currentSystem->addBody(param)`, :829) and the NEW path second
+(`camera->getCurrentSystem()->loadBody(param, nullptr, true)`, :836).
+
+================================================================================
+P1 -- ARM A DOES NOT CRASH, PRE-FIX, AND BOTH PATHS REFUSE IT BY NAME
+================================================================================
+[derived from: protosystem.cpp:531-536; ModularSystem.cpp:1066-1071]
+
+P1.1  The app is ALIVE after the arm-A push and exits rc 0 on
+      `shutdown action now`.
+P1.2  The OLD path refuses at protosystem.cpp:534 with, verbatim:
+        "SolarSystem: can't find parent for ProbeLocA"      (L_WARNING)
+P1.3  The NEW path refuses at ModularSystem.cpp:1069 with, verbatim:
+        "Can't find parent Nonexistent for ProbeLocA"       (L_WARNING)
+P1.4  The new path's own entry line DOES appear first -- ModularSystem.cpp:1061
+      writes "Loading body ProbeLocA" BEFORE the parent is resolved at :1063-1071.
+      (Stated so that its presence is not later read as "the body was created".)
+P1.5  ProbeLocA appears in the dual_dump on NEITHER half -- i.e. there is no
+      record named ProbeLocA at all (not "a null old half": neither path built
+      it).  This differs from S5.50's ProbeA, which had a null old half and a
+      LIVE new one.
+P1.6  `parent->getRadius()` at LocationOrbitLoader.hpp:47 is NEVER REACHED on
+      this arm, because the new path returns at :1070 before
+      ModuleLoaderMgr::loadOrbit runs at :1200.
+
+REFUTED IF: the app dies on arm A (then the row's headline arm IS the crash arm
+and the mint's correction is wrong); or either refusal line is absent; or
+ProbeLocA carries a live half.
+
+================================================================================
+P2 -- ARM B CRASHES PRE-FIX, AND THE FIRST DEREFERENCE IS THE OLD PATH'S
+================================================================================
+[derived from: protosystem.cpp:515 (`std::shared_ptr<Body> p, parent;` -- null by
+default), :528/:531 (neither branch assigns `parent` when str_parent == "none"),
+:598-599 (`parentSideralDay = parent->getSiderealDay();`); ssystem_factory.cpp
+:829 before :836]
+
+P2.1  The process DIES on the arm-B push: SIGSEGV, shell rc 139 (Python
+      Popen.poll() == -11).  Not an exception, not a clean refusal.
+P2.2  SITE ATTRIBUTION FROM THE LOG (cLog flushes every write --
+      log.cpp:151-155 -- so the farm's log/ file survives the signal even
+      though the stdout capture may not):
+        "Loading new Stellar System object... ProbeLocB"  (protosystem.cpp:517)
+            count == 1      <- the old path was entered
+        "Loading body ProbeLocB"                          (ModularSystem.cpp:1061)
+            count == 0      <- the new path was NEVER entered
+      That asymmetry is the site claim: the app died inside the old path's
+      addBody, before SSystemFactory::addBody reached :836.
+P2.3  SITE ATTRIBUTION UNDER gdb (run if and only if P2.2 is ambiguous, and in
+      any case as the independent confirmation the mandate asks for):
+      the faulting frame is `ProtoSystem::addBody` at
+      src/bodyModule/protosystem.cpp:599, with `parent` a null shared_ptr.
+      Launch UNDER gdb (ptrace_scope=1 blocks attach) and pass SIGUSR1.
+P2.4  NO "Can't find parent" line names ProbeLocB on either path (the `none`
+      branch is SILENT on both: protosystem.cpp:531 tests `str_parent != "none"`,
+      ModularSystem.cpp:1066 the same).  This is what makes arm B the dangerous
+      one: today it produces a crash with no diagnostic at all.
+
+REFUTED IF: the app survives arm B (=> the section's STOP clause fires: record,
+re-derive the reach, report, do NOT fix); or "Loading body ProbeLocB" is present
+(=> the new path was entered and the crash is at LocationOrbitLoader.hpp:47, the
+row's own site, and the old path is NOT the first dereference -- the mint's
+premise (b) would be wrong while the row's defect stands).
+
+================================================================================
+P3 -- POST-FIX, ARM B IS A DIAGNOSED REFUSAL ON BOTH PATHS
+================================================================================
+P3.1  The app is ALIVE after the arm-B push and exits rc 0.
+P3.2  Exactly ONE new S2(f) line per path names what fired, the consequence and
+      the fix:
+        OLD (protosystem.cpp, the location_orbit branch, before :599):
+          names ProbeLocB, says coord_func = location_orbit needs a parent BODY,
+          that `none` is not one, that the body is NOT added to the old render
+          path, and the fix (declare parent = <body>).
+        NEW (LocationOrbitLoader.hpp, at the loader -- the S11.193 anchor, the one
+          site holding the coord_func AND the parent name):
+          the same three, with "this body is not created on this path".
+P3.3  The EXISTING consumer refusal also fires on the new path, unchanged:
+        "Invalid orbit 'location_orbit' for body 'ProbeLocB', skip loading this
+         body."                                      (ModularSystem.cpp:1246)
+      -- i.e. "no orbit, no body" is served by the consumer that already exists;
+      the loader returns nullptr and NEVER throws (ModuleLoaderMgr.cpp:104-108
+      swallows a throw into the DEFAULT loader, which would silently substitute a
+      SpecialOrbit -- D12's opposite).
+P3.4  ProbeLocB is on NEITHER dump half.
+P3.5  CONTROL C (`still_orbit`, same `parent none`, same script, same launch) is
+      on BOTH halves.  This is the check that says the guard refused the class
+      and not the push channel: without it, P3.4 is also what a broken
+      `parent none` push would produce.
+
+REFUTED IF: the app still dies; or either line is missing; or ProbeLocB carries a
+half; or ProbeCtlC lost a half.
+
+================================================================================
+P4 -- NOTHING ELSE MOVES
+================================================================================
+P4.1  The F91 90-body parity table is BYTE-IDENTICAL pre-fix vs post-fix in the
+      French locale: md5 c125adf0 (the value banked at 46849f69, S11.217(f)).
+P4.2  The F90 smoke suite exits rc 0 on the post-fix binary.
+P4.3  Reason both must hold [derived]: the census is 0/0/0 -- no shipped or field
+      content uses `location_orbit` (premise-checked at the gate:
+      ~/.spacecrafter/ssystem.ini + ~/.spacecrafter/scripts/ = 0 files;
+      doc/superscript.sts = 0) -- so no shipped body can take either new branch.
+      Both guards are reached only by a body that would have crashed.
+P4.4  D14 gate PASS on every commit touching source.
+
+REFUTED IF: the table's md5 moves (then a shipped body DID change, and the census
+is wrong); or the suite reds.
+
+================================================================================
+P5 -- THE CameraAnchors ARM IS PRE-VALIDATED, NOT REACHABLE
+================================================================================
+[derived from the read, no launch owed]
+P5.1  `CameraAnchors::createAnchorBody` is the other loadOrbit caller
+      (CameraAnchors.cpp:149).  Its ON_ORBIT caller resolves the parent FIRST and
+      refuses a miss with its own S2(f) line before calling it
+      (:277-284) -- and that refusal catches BOTH arms, because `parent = none`
+      is a non-empty name that `ModularBody::findBody("none")` also misses.
+P5.2  The two internal createAnchorBody calls (:235 FIXED_POINT, :273 the
+      implicit orbit centre) hard-code `coord_func = still_orbit`, so the
+      location loader is not selected on them.
+P5.3  Therefore an anchor can reach LocationOrbitLoader ONLY with a parent that
+      findBody has just resolved -- non-null by construction.
+P5.4  Consequence for the fix's shape: the guard's log line uses params["name"],
+      which is EMPTY on the anchor route (anchors pass their own params, which
+      carry `name` only if the .ini declares it).  Recorded, not designed around:
+      the sibling SurfacePointOrbitLoader has the identical property, and the
+      anchor route cannot fire this line.
+
+REFUTED IF: the read is wrong -- an anchor path reaching loadOrbit without a
+resolved parent.
+
+================================================================================
+THE NINE-LOADER SWEEP (predicted from the read; the table lands in the entry)
+================================================================================
+Registered at modules.cpp:45-53 (8 keyed + 1 default):
+  barycenter    BaryOrbitLoader        findBodyOnce x2, guarded, returns nullptr
+  comet_orbit   CometOrbitLoader       findBody, `if(!parent)` -> parent_rot_* keys
+  earth_custom  EarthOrbitLoader       does not touch `parent`
+  ell_orbit     ElipticOrbitLoader     findBody, `if(!parent)` -> parent_rot_* keys
+  location_orbit LocationOrbitLoader   findBody, UNGUARDED  <-- S5.141
+  lunar_custom  LunarOrbitLoader       does not touch `parent`
+  still_orbit   StillOrbitLoader       does not touch `parent`
+  surface_point SurfacePointOrbitLoader findBodyOnce, guarded (warns, proceeds;
+                                        its orbit tolerates a null parent,
+                                        SurfacePointOrbitLoader.hpp:115)
+  <default>     SpecialOrbitLoader     does not touch `parent`
+PREDICTION: LocationOrbitLoader is the ONLY unguarded member -- 1 of 9.
+
+REFUTED IF: a second loader dereferences a parent it did not test.

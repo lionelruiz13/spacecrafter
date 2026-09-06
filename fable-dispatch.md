@@ -723,7 +723,12 @@ test -e /home/claude/sc-f99 ; echo $? => 1
 the fix at both sites (code first); the post-fix proofs; the sweep; §11 entry + stub; §5.141
 flipped with the arm correction; §5.50 annotated; back-markers; map; README; trees clean;
 WIP cleared; baselines LAST.
-**WIP:**
+**WIP:** 2026-09-06 — gate PASSED (24/24 PREMISES, canary `--no-scene` exit 0, `:2` 2448x1332,
+0 concurrent, md5 pristine); predictions P1–P5 pre-registered at
+`harness/artifacts/f99/prediction.txt`; pre-fix binary preserved
+`/home/claude/sc-f99/bin/spacecrafter-pre` (`46849f69`). NEXT: build the leg instrument
+(`f99_run.sh` + `f99_locguard.py`, farm via `f91_parity.build_farm`/`App`), then the pre-fix
+leg arms A/B.
 
 ### F100 — §5.139's mechanism leg, then the fix INSIDE the barrier's own contract: the frozen readouts are the PARKED bodies' (`hidden = true` in the field's `ssystem.ini` — every dwarf planet and asteroid of the frozen set — and their subtrees) at a PINNED clock: `useNow()`'s memo `evaluatedJD == currentJD` (`ModularBody.cpp:459`) is the right key for the orbit position and the WRONG key for the camera-dependent `mat`, so after the first use at a given date no camera move ever reaches a parked body's eye-frame position again; the dump ALREADY calls `useNow()` per body (`ssystem_factory.cpp:1192`) and the SELECTION every frame (`ModularSystem.cpp:270`), which is why the instrument and the operator's `get status object` are predicted to freeze TOGETHER — the leg discriminates pinned vs running clock and parked vs walked bodies with predictions before the launch; the fix re-keys the memo on (date, parent frame) with the +4 iterations bound to a date change only, under D11's denominator; STOP if the leg refutes the memo [S–M, engine, new path]
 
