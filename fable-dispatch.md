@@ -1142,6 +1142,16 @@ apart both abort identically (202/1557/1/1, +16.0 s / +76.0 s). Corpus census co
 again: the command takes both word orders — `06.sts` authors **1013** bodies as `body
 name … action load`, so the corpus authors **1719 in 8 shows**, not 719 in 9. NEXT: the
 ≥ 4 h soak with `--skip-show fscripts/06.sts` (recorded, echoed, reported).
+CHECKPOINT 4 (14:2x): the soak RUNS — started 13:42:26, H 4.5 h, S 30 s, 135 shows,
+canary green + `/proc` clear + md5s pristine at the launch. **Cycle 1: 1914.7 s = 31.9 min,
+13 CAPPED = exactly the 13 predicted, 7 SHOW-TIMEOUT, 104 pauses resumed, no flag** —
+so the ORIGINAL P1 (25–40 min) is confirmed and REVISION 1's R1 (45–90 min, extrapolated
+from the shakedown's first 20 = the heaviest shows) is refuted by my own instrument; both
+recorded. The 7 SHOW-TIMEOUTs are exactly the 7 chaining shows (`script … action play`)
+that the cap does not already cut — a model blindness with a static predictor, not an
+application fault. `14.sts` without `06.sts` ENDS in 6.0 s (it timed out at 92.7 s in the
+shakedown): the abort path is out. NEXT: poll hourly, commit samples hourly, then the
+report + §11.218 + the four corrections.
 
 ---
 

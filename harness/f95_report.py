@@ -304,6 +304,43 @@ def main():
                      if abs(lv["span"]) <= lv["floor"] else
                      "the rise exceeds the floor but the sign rule did not hold"))
 
+    # ---- 6b. the finer series: RSS at every SHOW boundary (F98)
+    if shp.exists():
+        print("\n--- 6b. THE PER-SHOW BOUNDARY SERIES (SECONDARY; the LEAK "
+              "VERDICT ABOVE IS THE ONE THAT WAS COMMITTED) ---")
+        print("  A cycle over this corpus is an hour or more, so the cycle "
+              "series is short.\n  The same playlist point is available 135 "
+              "times per cycle instead of once:\n  the RSS after show <i> of "
+              "cycle n against the RSS after show <i> of cycle\n  n+1.  That "
+              "is a MEDIAN over shows rather than a single difference, and it\n"
+              "  is reported as a secondary reading - it cannot overturn the "
+              "committed rule.")
+        per = {}
+        for r in srows:
+            v = fnum(r["vmrss_kb"])
+            if v is not None:
+                per.setdefault(r["show"], {})[int(r["cycle"])] = v
+        cycles_seen = sorted({int(r["cycle"]) for r in srows})
+        for i in range(len(cycles_seen) - 1):
+            c0, c1 = cycles_seen[i], cycles_seen[i + 1]
+            d = [per[s][c1] - per[s][c0] for s in per
+                 if c0 in per[s] and c1 in per[s]]
+            if not d:
+                continue
+            d.sort()
+            pos = sum(1 for x in d if x > 0)
+            print("  cycle %d -> %d : n=%3d shows  median %+9.1f kB  "
+                  "mean %+9.1f kB  positive %d/%d  min %+d  max %+d"
+                  % (c0, c1, len(d), d[len(d) // 2], sum(d) / len(d),
+                     pos, len(d), d[0], d[-1]))
+        mono = [s for s in per
+                if len(per[s]) >= 3
+                and all(per[s][b] > per[s][a] for a, b in
+                        zip(sorted(per[s])[:-1], sorted(per[s])[1:]))]
+        eligible = [s for s in per if len(per[s]) >= 3]
+        print("  shows whose own RSS series is strictly increasing over every "
+              "cycle: %d of %d with >= 3 cycles" % (len(mono), len(eligible)))
+
     # ---- 7. the Sec.5.62 dump diff
     print("\n--- 7. THE DUMP DIFF AT THE PINNED CLOCK J0 = %.6f (Sec.5.62) ---" % J0)
     print("  reference = cycle 2 (cycle 1 carries first-touch state).  The")

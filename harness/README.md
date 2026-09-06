@@ -4635,3 +4635,95 @@ unchanged · M3 **90.0000/0.0000** then **0.0000/90.0000**, unchanged · M4
 **51.3230°**, unchanged · the new §2(f) line 0 pre / 1 post. Controls: F91 table
 byte-identical, md5 `c125adf0`; `f90_rehearsal_run.sh` rc 0; D14 PASS. Artifacts
 `artifacts/f97/` (528 KB).
+
+## F98 — the SECOND soak, over the tester's own `fscripts/` corpus (`f95_soak.py` generalised, `sts_duration.py`, `artifacts/f98/f98_repro14.py`) — INTENT §11.218, 2026-09-06
+
+```
+./f95_soak.py plan  --playlist-dir fscripts --cap 60          # criteria + THE MODEL TABLE
+./f95_soak.py start <absOutdir> --hours H --sample 30 \
+      --playlist-dir fscripts --root /home/claude/sc-f98 --cap 60 \
+      --skip-show fscripts/06.sts --skip-reason "<why>"
+DISPLAY=:2 python3 artifacts/f98/f98_repro14.py <absOutdir> \
+      --shows fscripts/06.sts,fscripts/14.sts --gap 60         # the abort, isolated
+```
+
+**ONE DRIVER, NOT TWO.** F98 did not copy `f95_soak.py`; it gave it
+`--playlist-dir` (repeatable), `--root`, `--cap` and `--skip-show`. At the
+no-argument defaults it is F95's run: `criteria_sha` is `f5e0d602` in both
+campaigns' `config.json`, which is the mechanical form of "the criteria did not
+change", and the only differences in `plan`'s output are the parameter echo and
+the model's new column (`artifacts/f98/plan_f95defaults.diff`).
+
+### The duration model has ONE home now, and it can see a loop
+
+`sts_duration.py`. Both instruments read it; neither owns the other (the smoke
+suite is the developer's entry gate and must not depend on the soak driver).
+`show_own_duration` still returns F90's UNEXPANDED triple, so that suite's
+baseline cannot move — measured over all 145 `.sts` either instrument reads, **0
+differences** (`artifacts/f98/model_equality.{py,txt}`), and `f90_rehearsal.py
+--plan` is byte-identical before and after.
+
+`parse()` multiplies waits and pauses by every enclosing `struct loop N`
+(nested loops multiply). **What it cannot see is the point**: a `struct if` that
+skips a wait inside a loop (so the expansion is an UPPER bound), a `struct loop
+break`, and — the big one — everything that takes time without an authored
+wait: `moveto/zoom/look_at ... duration`, audio, media upload, `body action
+load` batches, and CHAINED sub-scripts. **89 of the 136 `fscripts/` shows model
+at 0.00 s and none of them takes 0 s.** A driver that turns this number into a
+timeout must carry a grace and attribute what overruns it.
+
+### CAPPED / SHOW-TIMEOUT / INTERRUPTED — three labels, decided before the run
+
+  - **CAPPED** the model says the show is longer than the cap ⇒ ended at the
+    cap by `script action end`. A design parameter, never a finding.
+    `panorama0.sts` is `struct loop 1000000`: infinite by construction.
+  - **SHOW-TIMEOUT** no `ScriptMgr: script end` within the show's own modelled
+    duration + 60 s (F95's meaning, unchanged). A FINDING — and the first thing
+    it is a finding about is the MODEL.
+  - **INTERRUPTED** the deadline never arrived; the RUN ended under the show.
+    **The DEATH control found this one**: `kill -9` at 47 s of a 60 s deadline
+    was first labelled CAPPED, and the same path would have labelled the last
+    show of every run SHOW-TIMEOUT — a finding manufactured by T+H.
+
+### Two of the tester's own shows abort the application
+
+`06.sts` (1013 authored bodies) then `14.sts` (528) ⇒ `Can't allocate buffer in
+'uniform BufferMgr'` ×1557, the engine's own stack trace parked in `App::draw`
+(`app.cpp:831`) inside `__platform_wait`, `This frame stall is very long`,
+`CRITICAL : Device lost while waiting frame completion`, `terminate called` —
+**SIGABRT**. `14.sts` ALONE is clean (528 loads, 0 errors, exit 0 in 0.66 s), so
+it is the accumulated body count. Both `06.sts`-first arms (1 s apart, 60 s
+apart) are identical to the digit. **Any campaign over this corpus must either
+skip one of the pair or expect to die ~15 min in** — `--skip-show` exists for
+that and prints its reason everywhere.
+
+### Gotchas measured here, each of which cost something first
+
+- **`body action load` and `body name ... action load` are the same command.**
+  The surface takes key/value pairs in any order and the corpus uses both
+  spellings: a census greping `body action load` misses `06.sts`'s **1013**
+  lines entirely — the corpus's LARGEST authoring show. The corpus authors
+  **1719 bodies in 8 shows**, not 719 in 9. The ledger's "3000 satellites in
+  `06old.sts`" was 17× that file's real 170 (§11.218).
+- **A concatenation digest is locale-dependent.** `cat $(ls *.sts)` and
+  `cat *.sts` over the same 137 files hash differently under `fr_FR.UTF-8`.
+  Freeze PER FILE; `frozen_digest()` reproduces
+  `md5sum … | cut -c1-32 | LC_ALL=C sort | md5sum` in-process (`3995e501` for
+  this corpus's 137 `.sts`).
+- **`select planet <name>` and a name with a space.** `search name ALSAT 1`
+  answers `ALSAT 1(P);` while the unquoted `select` left the readout empty; the
+  probe now tries the quoted spelling too and RECORDS which one the surface
+  took.
+- **The cycle boundary is the wrong place to look for authored bodies.** The
+  playlist's last show (`panorama5old2.sts`) issues `body action clear`, which
+  reaches `removeSupplementalBodies` and drops every deleteable body in BOTH
+  trees (`core.cpp:1029`, `protosystem.cpp:204-227`). The instrument takes its
+  authoring snapshot right after each authoring show as well, at a NON-pinned
+  clock and under a filename that can never be picked up by the §5.62
+  cycle-dump comparison.
+- **The Bash tool's default timeout is 120 s, not the 540 s the `wait` verb
+  accepts.** A `wait 300` without an explicit tool timeout is moved to the
+  background by the harness — §11.215(l)'s process deviation reached from the
+  other side. Pass the timeout; keep every call foreground.
+- **A dual dump of ~1700 bodies is 2.9 MB** and the whole `fscripts/` media
+  tree is 897 MB — the farm symlinks the media and copies only the 137 `.sts`.
