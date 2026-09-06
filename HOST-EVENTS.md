@@ -244,3 +244,16 @@ never rewrite (maintenance invariant). Archival per the standing convention
   --recurse-submodules` fails exactly as F84 measured until the pin is bumped —
   one `git add src/EntityCore` + commit in THIS repository. Recorded at §5.131,
   DEPLOYMENT-MAP R2/R5 and §11.205(i).
+- 2026-09-07 01:29 [measured: supervisor, session 26 (Claude Fable 5.1), the FIRST round run with
+  the owner over ssh from the laptop — his note verbatim: *"First attempt over ssh from the laptop
+  (TravellingFoxDev) - I have no physical access to the desktop (LovelyFoxDev) - precising in case
+  it changes something."*] **THE SSH MOVE CHANGED NOTHING THAT REACHES A LAUNCH.** At open
+  (21:24:37) `loginctl` still listed claude's sessions 14 (user) and 15 (manager) — the RDP-created
+  real logind session of 2026-09-04 19:50 — `XAUTHORITY=/run/user/1003/.mutter-Xwaylandauth.5KBYU3`
+  present, `DISPLAY=:2` answering `xdpyinfo` at **2448x1332**, canary `--no-scene` **exit 0**
+  (`artifacts/f56/canary/20260906-212529`, 30 members), `uptime -s` **2026-09-04 18:45:08**, RAM
+  52 GiB available of 59 at open and at close. Four executors ran 40+ launches on `:2` through the
+  night (F99 8, F100 16, F101 11, F102 0, plus the supervisor's own 9), every one with the canary
+  green, `/proc/*/comm` clear and **no `/tmp/spacecrafter.lock` at any check** — Q-61(3) holds as
+  stated: the display lives with the logged-in session, not with the owner's seat. Nothing
+  re-banked; nothing re-provisioned; no HOST-EVENTS entry was owed by any executor.

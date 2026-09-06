@@ -42,7 +42,7 @@ F102]:** trigger = the §0b verbatim line PLUS one environment note [vixy 2026-0
 *"First attempt over ssh from the laptop (TravellingFoxDev) - I have no physical access to the
 desktop (LovelyFoxDev) - precising in case it changes something."* — no in-line transmission
 beyond it. Open at **Sunday 21:24 CEST**, outside the owner's reliable window ⇒ this session
-asks NOTHING and closes with a compact decision list. What the ssh change DID change, measured:
+asks NOTHING and closes with a ~~compact~~ decision list **[CORRECTED IN-SESSION 2026-09-06 on the owner's word → Q-70: the proxy is the reader's working set — held set per position · reach to the furthest local element · non-lexical anchors — never density; "compact" was a decision-depth bound mis-mapped onto text length since session 23; the §3 block of this close is the first in that shape]**. What the ssh change DID change, measured:
 nothing that reaches a launch — the owner's RDP-created real logind session survived his move
 (`loginctl` lists claude's sessions 14/15 unchanged), `:2` answers `xdpyinfo` at 2448x1332
 under `.5KBYU3` exactly as HOST-EVENTS 2026-09-04 banks it, and the canary is green (Q-61's
@@ -100,6 +100,67 @@ the parent (§11.219+, refreshed at each dispatch). Launch classes: all FUNCTION
 (`--no-scene`); F102's one launch, if needed, ABORTS by design (§5.142's reproduction).
 Remotes: local contains origin on both; push impossible here — the owner's push is R5,
 unchanged.
+**Round outcome (session 26 close, 2026-09-07 — every time in this note is pasted `date` output; the
+close commit's own clock is the stamp):** F99 → **§11.219** + §5.141 FIXED at BOTH sites (the row's
+`parent <unknown>` arm refuted, `parent none` measured; the OLD path's `protosystem.cpp:599` died
+first and masked the loader's twin) · F100 → **§11.220** + §5.139 FIXED (the barrier's memo keyed on
+(date, parent frame); 48 → 29 frozen, the 29 the never-walked `dist` 0 class; `get status object` is
+OLD-first — the row's reach corrected to `flag track_object on`) + **§5.145** minted at acceptance
+(the +4 re-convergence short for Eris — every "Eris exception" since F44 was the barrier; YOUR
+constant) · F101 → **§11.221** + §5.143's mechanism MEASURED (the altitude, `leaveSystem()`, not the
+authored system; 8 shows; `S02.sts` with zero loads empties the half) + the `dumpread` guard · F102
+→ **§11.222** + §5.142 READ AND PRICED with ZERO launches (the pool runs out at `06.sts`'s 675th body;
+the three prices) + **§5.146** minted at acceptance (the refused `SubBuffer` released into the free
+list, Vixy's stratum) — **four for four delivered AND supervisor-verified same session**, every
+delivery re-verified by my own runs (F99: arm B on both binaries + the smoke suite; F100: the leg at
+both clocks + the smoke suite; F101: the self-test, its mutant, legs `p23` and `ctl_S02`; F102:
+`vulkaninfo` and the applog count to the body). Code `22499f04 → 1af7fa48 → 474c595d` (two executor
+commits: F99's two guard sites, F100's `ModularBody.{hpp,cpp}` — nothing else); binary `46849f69 →
+8e2c6ef3 → b5f08778`; harness `d9b911e → a67e6d0 →` this close. SUPERVISOR ACTS: archival pass 18
+(`fcfdd04`); four mints under the PREMISES rule (`cb6009f`, 95/95 PASS at the mint after nine
+first-run FAILs the instrument caught); the open note (`50cf583`); four acceptances (`776a59c`,
+`253cf1b`, `e4a3b0c`, this close) each after my own runs; **§5.145 and §5.146 minted** at
+acceptances with markers at every attributing node (§11.158(f4), §11.213(g), §11.220(j1),
+§11.222(g6)(i), both homes each); two instrument flags of my own mint aligned at this close (a `D8`
+token at §11.213's stub, §11.220's stub citation set); the per-round premises refreshed at each
+dispatch by content-located replace; in `~/shared`: **Q-70 NEW** (the owner's proxy correction, the
+trace of "compact"), Q-67 ×3 (the mint-time catch; the executor's third-home miss; the sibling
+class dominating). OWNER EVENTS IN-SESSION: ONE — the message on "compact" (Q-70), recorded and
+applied at this close; nothing asked (Sunday). HOST: same boot throughout (`uptime -s` 2026-09-04
+18:45:08); RAM 52 GiB available at open and at close; the RDP session and `:2` survived the ssh move
+(HOST-EVENTS entry at this close); no lock file at any of the executors' checks. SUPERVISOR TALLY:
+**nine dispatcher defects**, all output-side, all caught by an executor's report-not-absorb or an
+instrument, none reaching a delivery — value class ×4 (the keyed-loader count typed 7 for 8, caught
+at the mint; the `INTENT/11.153.md` pointer for §11.152(p)(2); a "red" control written empty where
+my own row says 1/277; the row sentence "corrected" at the mint against its own record) and
+structure class ×5 (the "§5.50 shape" label against its definition; `get status object` assumed
+new-path at two homes; the 22nd importer credited to the wrong file; the flat census pattern that
+missed `artifacts/f98/f98_repro14.py`; §5.143's headline asserting a candidate its body marked
+derived). EXECUTOR REPORT DEFECTS: F99's "eleven launches" (self-caught, its third home aligned by
+me); F98's §11.218(g) "zero errors after 06+06old" (found by F102 two rounds late from F98's own
+log). EXECUTOR criterion-integrity instances: **≥ 20** (F99: the arm predicted before the launch
+and the site attributed by frame; the pre binary reproducing the landed `c125adf0` FIRST; the sweep
+red on the pre tree. F100: the partition key built from fields that do not know they are frozen;
+one binary, two clocks; both mutations built, one as a binary; the cost read where fps was
+saturated; three predictions kept refuted. F101: the `p23` leg the section lacked; every count
+diffed with the instrument's own grammar; the red control that could not be red reported, not
+forced; a flush-lag lower bound named. F102: N predicted before the log was opened, one body off;
+the alignment pinned to the device the engine picks; the 7.7/body artefact explained; the
+corpus parser's own defect caught by its output). BASELINES AT CLOSE: (measured 01:32:37 after this close's mint and alignments) scan **252/319/143** · pair-check **238/213/25/118** · **D 35** · D2 11 · I 89 · I2 37 · **M 88** — over F102's close (252/319/143 · 238/213/25/117 · D 36 · M 87): +1 inline stub = §5.146; D −1 = the `D8` token dropped from my §11.213 stub marker (the §5.145 mint's own flag, closed at its cause); M +1 = §11.222's stub carrying one `§5.146` marker where its entry carries two (the (g)(6) and (i) clauses) — the entry-wins shape, licensed; the scan unchanged: a MINTED marker is not in its event lexicon.
+Archival pass 19 (update-s25 + F99/F100/F101/F102, live `### F` 4 → 0) DEFERRED to the next open.
+NEXT-ROUND QUEUE, in order: (1) archival pass 19 at open; (2) **§5.146's discriminating launch** (S:
+refuse, destroy, re-acquire, read the free list — on the owner's "read it first", else as a leg);
+(3) **the dump channel's two items** (S, decision-free: a system-identity field in the header,
+§11.221(n1); the barrier for the 30 new-only records, §11.220(j3)); (4) ON THE OWNER'S WORD: §5.142's
+policy · §5.145's constant · the `orbit_lon` ruling → §5.21's two halves + §5.140 · §5.144's 8–12 h
+leg; (5) the (g) tail: §5.115's retention design, §5.66+§5.71, A15's residual; (6) instrument
+residues: a PREMISES line per cited pointer (Q-67's candidate), recursive importer censuses,
+`f99_sweep.py`'s old-chain blind spot, `supervised-by.sh` B1, `f85_links.py` guard, `f89_p7.py
+margins`, the b4 `/proc` probe, the `dumpread` duplicates (`b24_equivalence`/`f89_p7`); (7) riders:
+`observedToBodyLocalPos` with no consumer, the `[parallel-script]` question, scedit README `:43`, the
+tester's `panorama5.sts:102`, `TDRS 3` and the 13 duplicate names in `06old.sts`; (8) owner items
+per §3. Remotes: **94 code / 792 harness** unpushed before this close's commit (measured 01:29:13);
+push from a keyed host — the supervisor never pushes.
 
 ---
 
@@ -587,7 +648,9 @@ STOP endorsed) · F98 §11.218 — three for three DELIVERED and accepted; archi
 **Session-26 (2026-09-06): archival pass 18 DONE at open (`fcfdd04`); live below: the
 session-26 mints **F99** (§5.141's fix, both sites), **F100** (§5.139's leg + the barrier
 fix), **F101** (§5.143's leg + the old-half assert at the one reader), **F102** (§5.142's
-reading, priced).**
+reading, priced).** **Session-26 round (2026-09-07): F99 §11.219 · F100 §11.220 · F101 §11.221 · F102
+§11.222 — four for four DELIVERED and accepted; §5.145/§5.146 minted at acceptances; archival pass
+19 (update-s25 + F99–F102) DEFERRED to the next open.**
 
 ---
 
@@ -1298,6 +1361,42 @@ scene's own draw on the pool is MEASURED by inversion at **142.5–142.6 KB**. `
 clean — the row's mint-time correction is itself wrong, and both readings are now recorded. 201
 `Succesfull loading ojm` lines for 200 refused allocations (§5.116's class at `ojm_mgr.cpp:86`).
 NEXT: the chain write-up, the three prices, the §11.222 record.~~ (checkpoint trail struck, kept.)
+**ACCEPTED 2026-09-07 — the verifying commands' `date` read 01:28:11–01:29:13 (supervisor, session
+26, Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.222 read in full;
+code UNTOUCHED at `474c595d`, `src/EntityCore` at `84f5d94b`, binary `b5f08778`, clean; four harness
+commits `5a2c608 → a67e6d0` (Claude Opus 5; the prediction at `5a2c608` before the log was opened),
+tree clean; §5.142 reads *READ AND PRICED 2026-09-07 (F102, §11.222)* with the marker in the RIGHT
+direction (the row's own sentence restored); §5.60, §5.116 and §11.218(g) name §11.222 in the entry
+AND the stub; README §F102 (`:4990`); the map's one hit named; instruments to the digit of the
+entry's close (scan 252/319/143 · pair-check 238/213/25/117 · D 36 · D2 11 · I 89 · I2 37 · M 87).
+**AND by my own hand (01:28): `vulkaninfo` — RTX 5090 `minUniformBufferOffsetAlignment = 0x40`,
+llvmpipe `0x10`; the surviving arm-C applog (10 226 lines, ending on `terminate called without an
+active exception`): first refusal at line 6621, **675** old-path `Loading new Stellar System object`
+lines from the `06.sts` play echo (line 2073) to it, the 675th being `ZHONGXING-20A`; 1557 refusals
+and 201 in-galaxy successes in total; the delivered parser re-run: 1357 solar + 200 in-galaxy,
+677 old / 680 new.** Deviations ENDORSED with the executor's arguments: no canary (no measuring
+launch was made — the preflight has no launch to precede); F98's shakedown applog read beyond the
+section's letter (it is the log §11.218(g) was written from); §11.218(g) corrected in part with the
+arm-C figures explicitly preserved; the `meshFrag`-first sub-prediction kept as refuted; the
+corpus parser's own defect found by its output before any number entered a record. SUSPENSIONS
+ENDORSED: the policy (§3, yours); "what the body IS" under REFUSE (yours); the two named
+candidates — **§5.146 MINTED** at this acceptance (the allocator releasing a refused `SubBuffer`,
+read not run, Vixy's stratum; markers at §11.222(g)(6)/(i) both homes), `ojm_mgr.cpp:86` annotated at
+§5.116 by the entry. DISPATCHER-SIDE FINDING reported, ACCEPTED as mine — and it is the round's
+sharpest: **the mint "corrected" a correct row sentence on the strength of §11.218(g)'s claim
+("zero buffer errors after `06.sts`+`06old.sts`, the errors begin inside `14.sts`"), which that
+entry's own shakedown log refutes** — a correction validated against one cached conclusion instead
+of the record it was written from (FM-2; "corrections are error candidates"); the mandate then
+instructed the executor to write the reversal into the ledger, and the executor wrote the marker in
+the measured direction instead and flagged it. Round tally: **nine dispatcher defects** (4 of the
+value class, 5 of the structure class). EXECUTOR REPORT DEFECT found two rounds late: F98's
+§11.218(g) sentence above — its own artifact contradicts it; corrected by F102 with markers, the
+arm-C figures reproduced to the digit. STANDING CONSEQUENCES: **`06.sts` is a ONE-show hazard on
+the reference binary — the pool runs out at its 675th body, whatever follows**; `14.sts`'s stars are
+128-byte in-galaxy models on neither body path; a `06.sts` body costs 1344 B of a 1 MiB pool that
+never grows (320 old-eager + 1024 new-at-load); the three prices are at §11.222(h) and §3; the
+allocator's post-refusal bookkeeping is §5.146; `/home/claude/sc-f98/` must survive until §5.146's
+launch (it holds the only complete arm-C log).
 
 ---
 
@@ -1324,6 +1423,86 @@ NEXT: the chain write-up, the three prices, the §11.222 record.~~ (checkpoint t
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-26 decision items (2026-09-07, the NULL-PARENT / PARKED-READOUT / SYSTEM-SWITCH /
+  UNIFORM-POOL round — F99 · F100 · F101 · F102, four for four). THE FIRST BLOCK IN Q-70's SHAPE, on
+  your word of 2026-09-06: one decision per node, its held set stated at the node, anchors by ID
+  and symbol, correlated items placed together; length is a free variable. Nothing asked in-session.**
+
+  ```
+  YOURS — nothing here substitutes them
+  [Y1] §5.142 · the uniform pool ─ a D13 POLICY in EntityCore
+       fact    1 MiB, created once, never grows; a 06.sts body costs 1344 B on both paths
+               (320 old-eager + 1024 new-at-load, alignment 64); the pool runs out at the
+               675th body of 06.sts ALONE (reproduced in two launches); 14.sts adds nothing —
+               its 527 "stars" are 128-byte in-galaxy OJM models that walk into the empty pool
+       GROW    2 MiB holds the whole corpus (1.72 MiB) with 14 % headroom; each MiB = 780
+               bodies today / 1024 after B8; on a smaller device the grown pool fails through
+               §5.60's own unguarded return ("Failed to create buffer bloc") — silently
+       REFUSE  anchor = the load authority (OjmMgr::load already prints both outcomes);
+               then the body is ABSENT (§5.50's shape: 339 of 1013 satellites silently gone)
+               or PRESENT without its disc (the new path supports it, the old does not)
+       DEGRADE meshFrag is 768 of its 784 B of shadowingBodies[8]; a cap of 1 gives 2.1x the
+               bodies per byte; the runtime-sized allocation exists, the shader's array does not
+       ask     one word: grow / refuse / degrade — and under REFUSE: absent, or disc-less
+       →       §11.222(h) · §5.142 · §11.161(b)
+
+  [Y2] §5.145 · RESUME_EXTRA_ITERATIONS = 4 ─ YOUR constant (§11.76(b))
+       fact    same date, same binary, only the evaluation count varies:
+               5 → Eris 1.198725°  ·  9 → 1.1e-05°  ·  15 → 2.2e-05°
+               every "Eris = the trees' own 1.198° gap" since F44 was this (markers placed)
+       ask     raise it (9 suffices today; a slower converger moves it again), or a
+               convergence criterion at the use (cost priced by F100's evalCount instrument)
+       →       §11.220(j1) · §5.145
+
+  [Y3] §5.146 · the allocator releases a REFUSED SubBuffer into its free list ─ read, not run
+       fact    acquireBuffer leaves offset/size indeterminate on refusal; SharedBuffer binds
+               through it and its destructor hands the garbage range back (SubBuffer.hpp:6-10,
+               BufferMgr.cpp:43-44, SharedBuffer.hpp:9,15-18); the arm-C log cannot separate
+               a phantom grant from the landscape's legitimate release
+       ask     "read it first" = one discriminating launch (S, next round), or yours
+       →       §11.222(g)(6) · §5.146
+
+  [Y4] R5 · the PUSH ─ master-beta 94 / CC-harness 792 unpushed at 01:29 (before this close)
+  [Y5] §5.144 · the 8–12 h cache-vs-leak leg ─ yes / no  (carried from s25, unchanged)
+  [Y6] §5.140 · what `orbit_lon` MEANS ─ one word; unblocks §5.21's two halves  (carried)
+  [Y7] scratch trees ─ say the word: sc-f99 · sc-f100 · sc-f101 · sc-f102 join s25's list;
+       sc-f98 (1.8 G) holds the ONLY complete arm-C applog — keep until [Y3]'s launch
+
+  ROUTED TO THE MAIN TESTER (§11.161(c)), not asked
+  [T1] eight of his shows fly above 1e16 (14 · S02 · S07 · S09 · S10 · S12 · S12old · W15):
+       is leaving the solar system for good MEANT? a home planet set out there decides
+       whether the descent comes home or lands in a fresh empty system   → §11.221(n3)
+  [T2] 06old.sts lands 156 of 170: 13 duplicate names + TDRS 3 with no coord_func
+       (both paths refuse it and say why)                                  → §11.221(g)
+  [T3] 06.sts alone aborts the reference binary at its 675th body — one show, not two → [Y1]
+
+  VETO POINTS taken (implemented-and-live, each cheap to reverse; silence = endorsed)
+  [V1] F99  the OLD path guarded inside protosystem.cpp's location_orbit branch (a crash
+            guard, the §5.50/§11.124(h) precedent; the only path it alters ended in SIGSEGV)
+            + the new loader's twin; `parent none` now refused in words on both paths
+  [V2] F100 useNow() keyed on (date, parent frame); the +4 bound to a date change; the
+            selection's per-frame use costs one 16-float compare (0.0000 refreshes held)
+  [V3] F101 dumpread.load_dump raises on an empty old half by default; 4 readers opt out
+  [V4] two §5 mints at acceptances (§5.145 [Y2], §5.146 [Y3]); three rows corrected at
+            their headlines by the executors' measurements (§5.141, §5.139, §5.143)
+  [V5] archival pass 18; this block's shape (Q-70)
+
+  HELD OPEN, not absorbed
+  [H1] the dump header names no system — one field, dump channel (S)         → §11.221(n1)
+  [H2] the dump calls the barrier for 90 of its 120 records (S)               → §11.220(j3)
+  [H3] §5.143 stays OPEN (retires with B8); `search` NOF outside the system (R22)
+  [H4] §11.218(g)'s "zero errors after 06+06old" — an F98 executor claim its own log
+       refutes; corrected by F102 with markers, the arm-C figures reproduced to the digit
+
+  FACTS, no decision asked
+  [F1] your ssh move changed nothing that reaches a launch — measured at open; Q-61(3) holds
+  [F2] `select planet` + `get status object` answers the OLD path for every both-tree name:
+       a new-path readout needs a new-only name or the dump's sidecar          → §11.220(e1)
+  [F3] nine dispatcher defects this round (4 value-class, 5 structure-class), all output-side,
+       all caught before a delivery; the PREMISES instrument caught one AT THE MINT; two
+       executor report defects (F99 self-caught; F98's found by F102 from F98's own log)
+  ```
 
 - **Session-25 decision items (2026-09-06, the OFFSET-FRAME / LOCATION-ORBIT / SECOND-SOAK round —
   F96 · F97 (in part) · F98; written Sunday evening on your stated capacity: nothing asked
