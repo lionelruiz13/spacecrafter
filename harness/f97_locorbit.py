@@ -135,9 +135,13 @@ def load(path):
         if not line:
             continue
         o = dumpread.loads(line)
-        if o.get("type") == "frame" or "camera" in o:
+        # The dump carries THREE line types and two of them are named: `body`
+        # (the record) and `hops` (a LIST under "new" -- the chain walk).  A
+        # reader keyed on "name" alone silently overwrites every body with its
+        # hops line; measured here, cost one run.
+        if o.get("type") == "header":
             hdr = o
-        elif "name" in o:
+        elif o.get("type") == "body":
             bodies[o["name"]] = o
     return bodies, hdr
 
@@ -356,9 +360,22 @@ def main():
         "SC_BIN", "/home/claude/spacecrafter/build-claude/src/spacecrafter"))
     ap.add_argument("--tag", required=True, choices=("pre", "post"))
     ap.add_argument("--jd", type=float, default=JD)
+    ap.add_argument("--offline", action="store_true",
+                    help="re-score the three dumps already on disk, no launch")
     a = ap.parse_args()
     print(PREDICTIONS)
-    run(a.out, a.bin, a.tag, a.jd)
+    if a.offline:
+        out = Path(a.out)
+        res = {"tag": a.tag, "jd": a.jd, "binary": str(a.bin), "offline": True}
+        d = sorted(out.glob("obs_*.json"))
+        pa = out / "obs_lon0_001.json"
+        pb = out / "obs_lon90_002.json"
+        pc = out / "obs_lon0_plus12h_003.json"
+        res["dumps"] = [str(pa), str(pb), str(pc)]
+        score(res, pa, pb, pc, a.jd)
+        (out / "f97_result.json").write_text(json.dumps(res, indent=1))
+    else:
+        run(a.out, a.bin, a.tag, a.jd)
     print("\n=== f97_locorbit %s: %d FAIL" % (a.tag, len(FAILS)))
     return 1 if FAILS else 0
 

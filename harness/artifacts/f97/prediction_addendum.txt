@@ -1,0 +1,85 @@
+F97 -- WHAT THE MEASUREMENTS DID TO THE PREDICTIONS
+INTENT S11.217.  Written after both legs, before the entry.  The
+pre-registrations themselves are NOT rewritten: they are in
+`harness/f97_frame.cpp`'s header (P1-P9, committed at harness `b5073be`) and in
+`harness/f97_locorbit.py`'s PREDICTIONS block (P-M1..P-M5, committed at
+`2d19321`), both before their first run.
+
+HELD
+  P1  orbit_lat 45 lands at 58.31 deg.  Offline 58.3100781 (I had written
+      58.3098861 -- my hand arithmetic was wrong in the 4th decimal and the
+      probe is the authority); live 58.31008 on BOTH halves of the dump, at
+      the running application, pre-fix.  Post-fix 45.00000 on both halves,
+      offline residual -7.1e-15 deg.  The lat-0 control reads 0.00000 both
+      times, so the instrument is not simply printing what it was told.
+  P2  the shipped class vs old's own authority: > 30 deg.  Live on the real
+      Mars at J2000, from the dump's own rotLocalToParent and axisRot:
+      86.306371 deg at (lon 0, lat 0).
+  P3  the restored form is exact: <= 1e-12 AU predicted, 1.7e-21 AU measured
+      over the grid, on the corrected Mars.
+  P5  Earth's frozen-vs-apparent spin: >= 1 deg predicted, +8.856158 deg at
+      J2000, +8.820824 at jd 2440000, +8.877772 at jd 2461234.
+  P7  surface_point + grounded is 90 deg east of the observer at the same
+      longitude.  Offline over 64 states: [89.999994, 90.000007] deg, spread
+      0.000013, latitudes identical to 6.5e-06 deg.  LIVE, both ways in one
+      run, angle at Mars's centre: observer at lon 0 -> F97SP0 90.0000 deg,
+      F97SPm90 0.0000 deg; observer at lon 90 -> 0.0000 and 90.0000.  The two
+      cells SWAP, which is what makes the number evidence rather than an
+      offset that could have been anything.
+  P8  the MUTATION, the fold without the +pi/2: [-0.000015, +0.000009] deg
+      where the model reads 90.  The probe can say which fold it is looking at.
+  P-M5  the doubly-spelled body lands >= 1 deg from the singly-spelled one:
+      51.3230 deg, identical pre and post.
+
+REFUTED, AND WHAT EACH REFUTATION TAUGHT
+  P4  "through the shipped `float` parentSideralDay the frozen spin is >= 1 deg
+      out on Mars."  MEASURED -0.000007 deg live (t0) and -0.000014 deg 12 h
+      later; offline on the corrected parent, -0.000003 deg.  CAUSE: I assumed
+      `re.period` is a double.  It is a FLOAT, and so are `offset`,
+      `obliquity`, `ascendingNode` and `precessionRate`
+      [observed: rotation_elements.hpp:33-38].  getSiderealTime and the frozen
+      model therefore read the SAME truncated period and there is no float cost
+      to find.  CONSEQUENCE FOR THE ROW: on a linear-`re` parent, S5.21's
+      defect (a) is an I2 defect and not a numeric one -- the child holds a
+      frozen COPY of the parent's spin state, so a runtime
+      `body name <parent> rot_periode ...` no longer reaches it -- while on
+      EARTH it stays numeric and large (P5).  The dispatch section had said
+      exactly this ("the float cost plus the FROZEN period/phase"); I predicted
+      the float cost too high by five orders of magnitude.
+  P6  "the new path's observer coincides with old's AnchorPointBody direction
+      to <= 1e-5 deg."  MEASURED 2.02e-5 deg max over 64 states.  The claim
+      holds; my BOUND was too tight by 2x.  2e-5 deg is the float floor for
+      this composition and sits inside the project's own measured alt/az floor
+      of 3e-5 deg (S11.213(h2)).
+  P9  "get_nutation's un-reset accumulator makes get_apparent_sidereal_time
+      non-repeatable by > 0.001 deg."  MEASURED 0.000000000 deg over 21 round
+      trips.  The accumulator really is never reset
+      [observed: sideral_time.c:216-262, `c_longitude += ...` with no zeroing,
+      only `c_ecliptic` re-initialised], but the `c_longitude /= 36000000.`
+      that follows the sum divides the CARRY-OVER too, so each recompute keeps
+      about 1/3.6e7 of the previous value: a residue of order 1e-10 deg.  The
+      code smell is real and its consequence is not.  Recorded because a
+      refuted prediction about a defect is worth as much as a confirmed one,
+      and because the next reader of that file will see the same smell.
+
+ONE PROBE DEFECT, FOUND BY THE LIVE LEG DISAGREEING WITH THE OFFLINE ONE
+  Section (2) of `f97_frame.cpp` first reported 57.750889 deg where the live
+  leg reported 86.306371.  Cause: its "Mars" was not Mars.  protosystem.cpp
+  turns `rot_pole_ra`/`rot_pole_de` into obliquity/ascendingNode only AFTER
+  rotating the J2000 pole into VSOP87 by `mat_j2000_to_vsop87`
+  [observed: protosystem.cpp:930-941, navigator.cpp:223-225]; the probe applied
+  :940-941 to the RAW J2000 pole.  Section (6) of the probe is the correction,
+  and it is a CROSS-CHECK rather than a patch: with the conversion applied the
+  offline number is 86.306365 deg against the live 86.306371, and the probe's
+  rotEquToVsop87 third column (0.446140676, -0.055631381, 0.893232135) is the
+  dumped Mars `rotLocalToParent` r[8..10] digit for digit.  The two
+  independently written compositions now agree, which is the thing that says
+  they are reading the same object.
+
+WHAT DID NOT MOVE ACROSS THE FIX (the fix's own discrimination)
+  The same instrument on the two binaries moved exactly one cell and its
+  dependent: M1 58.31008 -> 45.00000 on both halves, and M2's lat-45 body
+  51.997778 -> 62.923918 deg (its latitude moved, so its distance from old's
+  authority had to).  M2's lat-0 body 86.306371 -> 86.306371, M3 90/0 then
+  0/90 -> identical, M4 -0.000007 / -0.000014 -> identical, M5 51.3230 ->
+  51.3230.  The frame and spin halves are untouched, as stated.

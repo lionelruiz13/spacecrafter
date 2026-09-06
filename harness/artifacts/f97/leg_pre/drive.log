@@ -1,0 +1,36 @@
+
+P-M1  pre  : F97LO45 latitude of the emitted direction = 58.31008 deg on BOTH halves
+      post : 45.00000 deg on both halves (|err| <= 1e-4 deg)
+P-M2  pre  : F97LO0's old half is > 30 deg from old's own authority for (lon 0, lat 0)
+      post : unchanged (this task does not fix the frame)
+P-M3  obs at lon 0 : angle(observer, F97SP0)   = 90.000 deg +- 0.05
+                     angle(observer, F97SPm90) =  0.000 deg +- 0.05
+      obs at lon 90: angle(observer, F97SP0)   =  0.000 deg +- 0.05
+                     angle(observer, F97SPm90) = 90.000 deg +- 0.05
+P-M4  Mars: atan2(ecl) - live axisRot = +0.070360 deg (f97_frame.cpp), |err| <= 0.002
+      the same quantity 12 h later differs from it by <= 0.002 deg (a frozen OFFSET,
+      not a frozen RATE, at this separation)
+P-M5  F97LO0G (grounded spelling) and F97LO0 (not) land >= 1 deg apart on the new path
+
+farm: /home/claude/sc-f97/farm_pre  {"config_is_regular": true, "ssystem_is_regular": true, "log_is_real_dir": true, "app_locale": "fr", "sky_locale": "fr"}
+boot: 11.0 s
+
+--- the scene
+  ok   camera.reference = 'Mars'
+  ok   camera.boundToSurface = True
+  ok   camera.freeMode = False
+  ok   camera lon/lat = 0.000000000 / 0.000000000 rad (0.0000 / 0.0000 deg)
+Traceback (most recent call last):
+  File "/home/claude/spacecrafter/claude/harness/f97_locorbit.py", line 367, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/claude/spacecrafter/claude/harness/f97_locorbit.py", line 361, in main
+    run(a.out, a.bin, a.tag, a.jd)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/claude/spacecrafter/claude/harness/f97_locorbit.py", line 227, in run
+    score(res, d_a, d_b, d_c, jd)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/claude/spacecrafter/claude/harness/f97_locorbit.py", line 261, in score
+    e = mars["new"]["eclRoot"]
+        ~~~~~~~~~~~^^^^^^^^^^^
+TypeError: list indices must be integers or slices, not str

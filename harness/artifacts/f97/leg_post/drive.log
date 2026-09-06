@@ -1,0 +1,49 @@
+
+P-M1  pre  : F97LO45 latitude of the emitted direction = 58.31008 deg on BOTH halves
+      post : 45.00000 deg on both halves (|err| <= 1e-4 deg)
+P-M2  pre  : F97LO0's old half is > 30 deg from old's own authority for (lon 0, lat 0)
+      post : unchanged (this task does not fix the frame)
+P-M3  obs at lon 0 : angle(observer, F97SP0)   = 90.000 deg +- 0.05
+                     angle(observer, F97SPm90) =  0.000 deg +- 0.05
+      obs at lon 90: angle(observer, F97SP0)   =  0.000 deg +- 0.05
+                     angle(observer, F97SPm90) = 90.000 deg +- 0.05
+P-M4  Mars: atan2(ecl) - live axisRot = +0.070360 deg (f97_frame.cpp), |err| <= 0.002
+      the same quantity 12 h later differs from it by <= 0.002 deg (a frozen OFFSET,
+      not a frozen RATE, at this separation)
+P-M5  F97LO0G (grounded spelling) and F97LO0 (not) land >= 1 deg apart on the new path
+
+farm: /home/claude/sc-f97/farm_post  {"config_is_regular": true, "ssystem_is_regular": true, "log_is_real_dir": true, "app_locale": "fr", "sky_locale": "fr"}
+boot: 11.0 s
+
+--- the scene
+  ok   camera.reference = 'Mars'
+  ok   camera.boundToSurface = True
+  ok   camera.freeMode = False
+  ok   camera lon/lat = 0.000000000 / 0.000000000 rad (0.0000 / 0.0000 deg)
+  ok   |Mars.eclRoot| == Mars.dist to 3.12e-08
+
+--- M1  the unit of orbit_lat (frame-independent)
+  ok   F97LO45 old half: emitted latitude 45.00000 deg (authored 45)
+  ok   F97LO45 new half: emitted latitude 45.00000 deg (authored 45)
+  ok   F97LO0  old half: emitted latitude 0.00000 deg (authored 0 -- the control)
+
+--- M2  old half vs OLD'S OWN AUTHORITY, from the same dump
+  ok   F97LO0: 86.306371 deg from old's own authority
+  ok   F97LO45: 62.923918 deg from old's own authority
+
+--- M3  surface_point's orbit_lon vs the observer's lon (basis-free)
+  ok   obs lon 0: F97SP0 is 90.0000 deg from the observer, at Mars's centre
+  ok   obs lon 0: F97SPm90 is 0.0000 deg from the observer, at Mars's centre
+  ok   obs lon 90: F97SP0 is 0.0000 deg from the observer, at Mars's centre
+  ok   obs lon 90: F97SPm90 is 90.0000 deg from the observer, at Mars's centre
+
+--- M4  the frozen linear spin model, read off the emitted longitude
+  ok   t0: emitted lon 136.004921 - live axisRot 136.004929 = -0.000007 deg
+  ok   t0+12h: emitted lon -48.549087 - live axisRot 311.450928 = -0.000014 deg
+  ok   the error is a frozen OFFSET, not a rate: it moved -0.000007 deg in 12 h
+
+--- M5  location_orbit + bound_to_surface: the double-spin trap
+  ok   same keys, one spelled `bound_to_surface true`: 51.3230 deg apart
+  ok   relation: F97LO0 4  F97LO0G 3
+
+=== f97_locorbit post: 0 FAIL

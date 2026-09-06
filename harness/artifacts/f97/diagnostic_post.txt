@@ -1,0 +1,1 @@
+[1m[33m(Warn.): [0m[1m[37mBody 'F97LO0G' uses coord_func=location_orbit WITH the grounded relation: location_orbit already turns with the parent, so the grounded fold applies the parent's rotation a SECOND time and the body will not stay where it was authored. To fix: drop relation = grounded / bound_to_surface for this body.[0m

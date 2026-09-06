@@ -37,6 +37,19 @@
   P8 the MUTATION, fold WITHOUT +pi/2                  : [-0.000015, 0.000009] deg
   latitude difference, surface_point vs observer       : max 0.0000065 deg
 
+--- (6) ADDENDUM: the corrected Mars, and the float re-model
+  corrected obliquity 26.7177517 deg, ascNode 82.8922071 deg (was 37.1178800 / 407.6725000)
+  rotEquToVsop87 column 3 (the spin axis in VSOP87): 0.446140676 -0.055631381 0.893232135
+  live axisRot at J2000: 136.0050049 deg
+    (lon   0.0, lat   0.0): shipped  86.306365 deg off | restored 1.694e-21 AU
+    (lon   0.0, lat  45.0): shipped  51.997808 deg off | restored 3.054e-21 AU
+    (lon  45.0, lat   0.0): shipped  82.785152 deg off | restored 1.527e-21 AU
+    (lon  45.0, lat  45.0): shipped  65.542913 deg off | restored 1.894e-21 AU
+    jd 2451545.0000  live 136.005005  frozen 136.005002  diff -0.000003 deg
+    jd 2451545.5000  live 311.450997  frozen 311.450994  diff -0.000003 deg
+  the delivered half: authored orbit_lat 45 emits latitude 58.31008 deg (pre)
+                      with lat*pi/180 it emits             45.00000 deg (post)
+
 --- (5) get_nutation's cache never resets its accumulators
   first call at J2000      : 280.456812724 deg
   then J2000+10            : 290.313378915 deg

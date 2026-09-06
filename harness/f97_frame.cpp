@@ -372,6 +372,82 @@ int main()
         printf("  latitude difference, surface_point vs observer       : max %.7f deg\n\n", worstLat);
     }
 
+    // ================================================================= (6)
+    // ADDENDUM, added 2026-09-06 AFTER the live leg refuted two of the
+    // predictions above.  The header's PRED_* strings are the pre-registration
+    // and are NOT rewritten; this section states what was wrong and re-runs
+    // the corrected algebra.  Two errors, both mine, both found by the live
+    // measurement disagreeing with the offline one:
+    //   (a) section (2)'s "Mars" was NOT Mars.  protosystem.cpp:930-941 turns
+    //       rot_pole_ra/de into obliquity/ascendingNode only AFTER rotating the
+    //       J2000 pole into VSOP87 by `mat_j2000_to_vsop87`
+    //       [observed: navigator.cpp:223-225]; section (2) applied :940-941 to
+    //       the RAW J2000 pole, so it modelled a synthetic parent with the
+    //       right pole DISTANCE and the wrong pole.  Its 57.750889 deg is that
+    //       parent's number; the live leg measures 86.306371 deg on the real
+    //       Mars, from the dump's own rotLocalToParent.
+    //   (b) P4 assumed re.period is a double.  It is a FLOAT
+    //       [observed: rotation_elements.hpp:33-38: period, offset, obliquity,
+    //       ascendingNode, precessionRate are all float], so getSiderealTime
+    //       and the frozen model read the SAME truncated period and there is no
+    //       float cost to measure: on a linear-`re` parent the frozen model is
+    //       algebraically identical to the live one, full stop.  Live: -7e-06
+    //       deg at J2000 and -1.4e-05 deg 12 h later.  Defect (a) of S5.21 on
+    //       such a parent is therefore an I2 defect (the child holds a frozen
+    //       COPY of the parent's spin state, so a runtime rot_periode change no
+    //       longer reaches it) and NOT a numeric one.  On EARTH it stays
+    //       numeric and large -- (3) above, ~8.86 deg.
+    printf("--- (6) ADDENDUM: the corrected Mars, and the float re-model\n");
+    {
+        // mat_j2000_to_vsop87 [observed: navigator.cpp:223-225], verbatim
+        const Mat4d j2v = Mat4d::xrotation(-23.4392803055555555556 * (M_PI / 180))
+                        * Mat4d::zrotation(0.0000275 * (M_PI / 180));
+        Vec3d npole; spheToRect(317.6725 * M_PI / 180., 52.88212 * M_PI / 180., npole);
+        const Vec3d vpole = j2v.multiplyWithoutTranslation(npole);
+        double ra, de; rectToSphe(&ra, &de, vpole);
+        Parent m2 = mars;
+        m2.obliquity = (float)(M_PI_2 - de);      // re.obliquity is a FLOAT
+        m2.ascNode   = (float)(ra + M_PI_2);      // re.ascendingNode is a FLOAT
+        m2.periodDays = (float)(24.622962 / 24.); // re.period is a FLOAT
+        m2.offsetDeg  = (float)136.005;           // re.offset is a FLOAT
+        printf("  corrected obliquity %.7f deg, ascNode %.7f deg (was %.7f / %.7f)\n",
+               m2.obliquity * 180 / M_PI, m2.ascNode * 180 / M_PI,
+               mars.obliquity * 180 / M_PI, mars.ascNode * 180 / M_PI);
+        const Mat4d R = m2.rotEquToVsop87(J2000);
+        printf("  rotEquToVsop87 column 3 (the spin axis in VSOP87): %.9f %.9f %.9f\n",
+               R.r[8], R.r[9], R.r[10]);
+        printf("  live axisRot at J2000: %.7f deg\n", m2.siderealTime(J2000));
+        const float pOff = (float)m2.siderealTime(0.0);
+        const float pPer = (float)m2.periodDays;
+        for (double lonDeg : {0., 45.}) {
+            for (double latDeg : {0., 45.}) {
+                ShippedLocationOrbit s(lonDeg, latDeg, 0.0, m2.radiusAU, pPer, pOff);
+                const Vec3d got = s.at(J2000);
+                const Vec3d want = oldAuthorityDir(m2, J2000, lonDeg, latDeg) * m2.radiusAU;
+                Vec3d d; spheToRect((m2.siderealTime(J2000) + lonDeg) * (M_PI / 180.),
+                                    latDeg * (M_PI / 180.), d);
+                const Vec3d fixed = R.multiplyWithoutTranslation(d) * m2.radiusAU;
+                printf("    (lon %5.1f, lat %5.1f): shipped %10.6f deg off | restored %.3e AU\n",
+                       lonDeg, latDeg, angdeg(got, want), (fixed - want).length());
+            }
+        }
+        // the frozen model against the live one, both through re's FLOATS
+        for (double jd : {J2000, J2000 + 0.5}) {
+            const double live = fmod(m2.siderealTime(jd) + 360., 360.);
+            const double frozen = fmod((double)pOff + jd * (360. / (double)pPer) + 720., 360.);
+            double diff = fmod(frozen - live + 540., 360.) - 180.;
+            printf("    jd %.4f  live %10.6f  frozen %10.6f  diff %+.6f deg\n",
+                   jd, live, frozen, diff);
+        }
+        // the LATITUDE half, which is what this task delivers, on this parent
+        ShippedLocationOrbit pre(0., 45., 0., m2.radiusAU, pPer, pOff);
+        double L, B; rectToSphe(&L, &B, pre.at(J2000));
+        printf("  the delivered half: authored orbit_lat 45 emits latitude %.5f deg (pre)\n",
+               B * 180 / M_PI);
+        printf("                      with lat*pi/180 it emits             %.5f deg (post)\n", 45.0);
+    }
+    printf("\n");
+
     // ================================================================= (5)
     printf("--- (5) get_nutation's cache never resets its accumulators\n");
     {
