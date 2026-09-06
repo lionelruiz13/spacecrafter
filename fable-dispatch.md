@@ -1098,6 +1098,54 @@ test -e /home/claude/sc-f101 ; echo $? => 1
 the anchor with the 21 importers classed and the both-ways control; §11 entry + stub; the
 row's mechanism written; back-markers; README; trees clean; WIP cleared; baselines LAST.
 **WIP:** DELIVERED 2026-09-07 → **§11.221** (entry + stub), §5.143's mechanism WRITTEN at the row (stays OPEN, retires with B8; its candidate and the section's chain both refuted, the "assert `bodies_old > 0`" consequence DISCHARGED), §11.218(h)+(l) back-markers at BOTH homes, §5.137's class-sibling claim corrected, `harness/README.md` (contract line + F101 section). **Eleven launches, no engine change** (code `474c595d` / binary `b5f08778` untouched, tree clean at all six commits); 139/139 md5 in==out on every leg, `3995e501` over the 137, `/proc` clear and no lock at 22 checks. THE FINDING: **the ALTITUDE empties the old half at `14.sts:22`, three lines before anything is loaded** — `leaveSystem()` makes the never-populated `galacticSystem` current and the dump enumerates `currentSystem`; p23 **0/120**, p25 **1/121** (the script's own Sphere, `ecl` == its `orbit_x/y/z`), p27 = p31 = p27nc **1/121**. `set home_planet Solsys` moves no count — it re-points the galactic anchor off `Sun`, which decides the descent: p25desc RECOVERS **90/121**, p31desc does not (**0/122**), and `06old.sts` after it is refused **170/170** (old 0/278) against the control's **246/277**. Reach widened: **8 of 137 shows** cross 1e16 and `S02.sts` empties the half with **zero `body action load`**. The assert LANDED — `dumpread.load_dump(path, *, require_old=True)` raises the named `EmptyOldHalf` (path + both counts + a §2(f) fix line) when a dump has body records and `bodies_old == 0`; `python3 dumpread.py selftest` **17 PASS / 0 FAIL**, and the committed mutation (`bodies_old < 2`) turns it **13 PASS / 4 FAIL**, so the threshold is a measured choice. Real-data controls both ways from F98's OWN dumps: pre-14 246/276 GREEN, **post-14 1/277 GREEN** (the section's named RED control is green BY the criterion — reported), soak c002 0/286 RED, plus F101's p23 0/120 RED and p25 1/121 GREEN. the importers censused MECHANICALLY and classed (**24** by the section's flat pattern, **27** recursively); 4 opt out (`f95_soak.py`, `artifacts/f98/f98_repro14.py`, and my two) — the section's `harness/*.py` census misses `f98_repro14.py`, which the guard would have broken. Section boundaries held throughout; nothing under `/tmp`.
+**ACCEPTED 2026-09-07 — the verifying commands' `date` read 00:41:36 and 00:41:52–00:43:28
+(supervisor, session 26, Claude Fable 5.1).** Verified by my own runs and reads, not by the report:
+§11.221 read in full; code UNTOUCHED at `474c595d`, binary `b5f08778` before and after, clean; eight
+harness commits `675c49f → f1037fa` (Claude Opus 5; the predictions at `675c49f` before any process,
+two addenda each before the launches they predict), tree clean; the `dumpread.py` diff READ
+(`load_dump(path, *, require_old=True)`, `EmptyOldHalf` carrying the path and both counts, the §2(f)
+message, the opt-outs at `f95_soak.py` and `artifacts/f98/f98_repro14.py` with their reasons);
+§5.143 reads *MECHANISM MEASURED 2026-09-07, §11.221* and names `leaveSystem`/`galacticSystem`, stays
+OPEN (B8); §5.137 annotated (shape sibling, not class); §11.218(h)(l) name §11.221 in the entry AND
+the stub; README §F101 (`:4927`) + the `dumpread` contract line (`:1811-1815`); instruments to the
+digit of the entry's (p) (scan 249/314/142 · pair-check 237/212/25/117 · D 36 · D2 11 · I 89 · I2 37
+· M 87 — every filter delta 0, +4 raw/+6 pairs named, the one uncredited `11.221 → 11.113` disposed).
+**AND by my own hand: `python3 dumpread.py selftest` 17 PASS / 0 FAIL and the mutant (`bodies_old <
+2`) 13 PASS / 4 FAIL exit 1 (00:41:52); leg `p23` on `b5f08778` (00:42:08): 90/120 → 0/120 — the
+altitude alone; `ctlmars --then fscripts/S02.sts` (00:42:36): 90/120 → 90/120 → 0/121 — a show with
+zero `body action load` empties the half; exit 0 / quit 0.7 s both, 14.sts `31503adb` and the pair
+`03fbee59`/`545a51ef` pristine, `/proc` clear, no lock.** Deviations ENDORSED with the executor's
+arguments: the `p23` leg (the section's three prefixes could not separate the load from the
+altitude — a green that cannot discriminate), the descent pair (the row's "for the rest of the
+session" needs it), `--then` and `ctl_S02` (each with predictions committed first; C7 refutes the
+row's headline on a second shipped show); P0 refuted and kept (170 → 156: 13 duplicate names + `TDRS
+3` with no `coord_func`, refused identically by both paths — not a §5 candidate); the threshold
+`bodies_old == 0` (the set a comparison is DEFINED on, not a magic number); the opt-out written into
+F98's delivered `f98_repro14.py` (an opting caller, not a recorded criterion); `f40_env.py` keeping
+the default; §5.137 annotated narrowly. SUSPENSIONS ENDORSED: the dump header carries no system
+identity (a one-field dump-channel addition — next-round S candidate, queued below); `search` NOF
+outside the system (R22, retired); the 1e16-then-home-planet intent question ROUTED to the main
+tester (§3). FIVE DISPATCHER-SIDE FINDINGS reported, ALL ACCEPTED as mine with the counterfactual:
+(1) the warm-up pointer `INTENT/11.153.md` for the single-reader ruling — it is §11.152(p)(2); a
+pointer typed from memory (Q-67's class; had §11.153 contradicted the ruling, an abort); (2) the 22nd
+`dumpread` importer credited to F100's `f100_freeze.py` in the prompt AND in my acceptance commit —
+it is F99's `f99_locguard.py`; structure asserted without the read (the SIBLING class); (3) the
+mandated RED control "F98's post-14.sts dump raises" — that dump is 1/277, a number my own row
+carries; a value written against the record I held (Q-67's class); (4) the importer census
+`harness/*.py` never sees `harness/artifacts/f98/f98_repro14.py` — the first caller the guard would
+break; a pattern's model of the surface inside a measured count (the SIBLING class, F98's census
+shape a second time); (5) §5.143's headline and the section's chain assert an authored SYSTEM as
+the cause where the body said `[derived, NOT confirmed]` — the leg was built to test it and refuted
+it as designed, but the headline asserted more than its body. Round tally: **eight dispatcher
+defects** (the loader count; the "§5.50 shape" label; the old-first readout at two homes; and these
+five). STANDING CONSEQUENCES: **`dumpread.load_dump` refuses an empty old half by default** — a
+reader that measures the emptiness opts out by name; `b24_equivalence.load_dump` and
+`f89_p7.load_dump` are same-named different functions outside the guard; a dual dump is comparable
+only INSIDE the loaded system, and the stdout transition lines are the cheapest witness of which
+system the old column describes; **eight of the tester's 137 shows fly above 1e16 and empty the old
+half** (`14 S02 S07 S09 S10 S12 S12old W15`), and a home-planet set while out there decides whether
+the descent comes home or lands in a fresh empty system; `06old.sts` lands 156 bodies, not 170;
+`/home/claude/sc-f101/` holds the eleven farms and my two runs.
 
 ### F102 — §5.142's owed reading, priced for the owner's D13 policy: the uniform pool is ONE 1 MiB block created once (`app.cpp:274` → `BufferMgr.cpp:8`) and never grown — `acquireBuffer` only carves its free list and answers `VK_NULL_HANDLE` + the log line when it cannot (`:37-67`, `:55`); the per-body uniform cost on BOTH paths read at the acquire sites and rounded up to `minUniformBufferOffsetAlignment` (`VulkanMgr.cpp:82`); the body count at the first refusal PREDICTED from that arithmetic and committed BEFORE the log is read, then MEASURED from a full applog of arm C (`06.sts` then `14.sts` — the row's "`06.sts` alone" is corrected: alone it is clean, §11.218(g)); the chain from the null `SubBuffer` to the device loss read at the consumer; the three policies priced (grow / refuse with a §2(f) line at the anchor / degrade) — nothing fixed, EntityCore read-only [S, reading; one launch at most]
 
@@ -1179,10 +1227,10 @@ launch; the harness HEAD as the prompt states it; §5.142's row reads OPEN, reco
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => 22499f04
+git rev-parse --short=8 HEAD => 474c595d
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 46849f69
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 219
+md5sum build-claude/src/spacecrafter | cut -c1-8 => b5f08778
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 222
 grep -c '^### F' claude/fable-dispatch.md => 4
 # ledger states the work stands on
 grep -m1 '^142\. ' claude/INTENT.md | grep -c 'OPEN, record-only' => 1
