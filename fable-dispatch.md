@@ -724,6 +724,53 @@ CANARY exit 0, 12/12 in band, dwell md5 `5215565b`**; tracking aim and the Sun's
 277320d → this delivery`. **RECORDED NOT MINTED (§11.216(j1)):** a body out of view keeps a frozen
 eye-frame position — 48 of 120 records byte-identical across one aim change, then 109.893°–170.695°
 from old's alt/az — the same visibility gate §5.107 records, on a different member.
+**ACCEPTED 2026-09-06 — the verifying commands' `date` read 11:49:26 and 11:50:54–11:52:32
+(supervisor, session 25, Claude Fable 5.1).** Verified by my own runs and reads, not by the
+report: §11.216 read in full; ONE code commit `24100461` (Claude Opus 5; `Camera.hpp` + `Camera.cpp`,
+91+/27−, the diff READ: ONE functional line in the header — `renderViewRotation().transpose()` —
+the pole branch's two assignments swapped, the tracking site's hand-undo removed, nothing else)
+and six harness commits `b690e03 → 8728a78` (Claude Opus 5; the predictions at `b690e03` before
+the first launch, the addendum at `b97c9f1` before the re-run), both trees clean; binary
+`eb3f5e50`, `cmake -n` 0, no `src/` file newer; §5.138 reads *FIXED 2026-09-06, F96 §11.216*; the
+§5.86 rider reads *RIDER CLOSED 2026-09-06, F96 §11.216(i)*; §11.216 named at `INTENT/11.213.md`
+(i1)(i2), `11.201.md`, the §5.128/§5.107/§5.138/§5.86 rows and the 11.213 stub; MAP `:337`; README
+§F96 (`:4494`); D14 PASS (972); instruments to the digit (scan 230/281/135 · pair-check
+232/207/25/110 · D 35 · D2 11 · I 89 · I2 36 · M 81 — +4 raw/+2 pairs the entry's own markers with
+the arrear set unchanged, +1/+1 the entry). **The committed reports read by my own hand:**
+`leg_pre/f96_report.txt` — 71 re-evaluated, old-vs-new max **27.000007°** (Amalthea), model max
+0.000011°, M1 median 29.306855°, M2 median 7.509483°; `leg_post` — old-vs-new max **0.000017°**
+(Pandora), the model now the failing one (median 14.954761°); 19 frozen on both, 170.69°/170.89°
+from old; `guard/guard_{pre,post}.json` — MilkyWay/Universe/51PegSystem `06h00m00s / +00°00'00"` →
+`00h00m00s / +90°00'00"`, Mars `04h30m39s / +21°40'45"` and Jupiter `08h19m44s / +20°01'38"`
+character-identical. **AND the smoke suite run by my own hand on `eb3f5e50` at 11:50:54–11:52:31
+(`/home/claude/sc-f96/supervisor/`): rc 0, 91.2 s, the nine step states of §11.211 (S1/S7
+DIVERGENCE with citations, S4 DEPRECATED, six PASS), S5's readout shape OK, exit 0 in 0.6 s, 0
+frame stalls, canary exit 0, frozen 4/4 in==out.** Deviations ENDORSED with the executor's
+arguments: the leg re-taken at ONE held camera state with a model-independent freshness partition,
+the addendum's predictions committed before the re-run and leg 1 kept (without the partition the
+model check and the confound were one difference); the offset-0 byte-identity claimed at the
+un-moved view (a same-binary control shows the tracking convergence run-to-run variable at
+3.7e-4 rad — the fix sits inside that floor; P0 is the claim that needs no band); `f91_parity.py`'s
+root made env-overridable with its default unchanged; two markers aligned at one home after the
+pair-check caught them. DISPATCHER-SIDE FINDING reported, ACCEPTED as mine with the
+counterfactual: §11.213(i2)'s *"measure-zero reachable"* entered this section's framing from my
+F91-acceptance disposal without a measurement — the zero vector satisfies the guard and 29 of
+120 shipped records carry one, so the branch runs every frame for a quarter of the corpus; the
+fix is right at the true pole (old's own answer) and changes which undefined answer prints at the
+zero vector; had that framing been an input the executor stood on, an abort — it was not (the
+mandate was the pole's answer, which old defines). Round tally so far: **two dispatcher defects**
+(the premise counts typed before the run; the measure-zero premise). SUPERVISOR ACTS at this
+acceptance: **§5.139 MINTED** from (j1) (record-only; the F32/§5.138 precedent — a false readout
+reachable from a shipped command, magnitude measured, mechanism candidate named; marker at
+§11.216(j1) both homes); (j2) — the zero-vector guard — ROUTED to the owner (§3): an interface
+question, one line either way. STANDING CONSEQUENCES: **the new path has ONE inverse of the render
+rotation and every consumer reads it** — alt/az, the atmosphere's sun direction, the descent and
+the tracking aim are old's with the offset armed (27° → 1.7e-5°); every offset-0 observable is
+byte-identical across `24100461` (the F91 tables, the dwell frame `5215565b`); the config key is a
+LATENT offset on the new path (stored at startup, armed by the first commanded view move); a body
+out of the view cone answers in a stale camera state (§5.139) — any successor comparing new-path
+readouts across a camera move partitions by `f96_offset.freshness()` first; `/home/claude/sc-f96/`
+holds the farms, both legs, the pre-fix binary (`bin/spacecrafter-pre`, `404b9e89`) and my run.
 
 ### F97 — §5.21 — `LocationOrbit` made EXACT on both paths: the authored latitude converted like the longitude (degrees, the loader's documented unit — `orbit.cpp:1091` converts one and not the other on the same line), and the spin read from the parent's ONE rotation authority at evaluation time instead of a linear model anchored at JD 0 with the parent's period and phase frozen at construction (`orbit.cpp:1102`; on Earth `Body::getSiderealTime` is the APPARENT sidereal time, which no linear model follows — magnitude to be MEASURED); on the new path the class registered at `modules.cpp:49` lands where `surface_point` + the grounded fold lands for the same keys, the spin applied exactly once whichever spelling the author uses (§11.78(c)'s double-spin trap closed by construction); D9 excluded by round-3 R18 (*"No."* — nobody has authored one), zero shipped/loaded uses measured at the mint, so no baseline scene moves (§11.207(g) item 3; DEPLOYMENT-MAP T2) [M, engine, both paths]
 
@@ -840,10 +887,10 @@ prompt states it; §5.21's row reads DECISION-FREE and not FIXED.
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => a2a880ef
+git rev-parse --short=8 HEAD => 24100461
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 404b9e89
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 216
+md5sum build-claude/src/spacecrafter | cut -c1-8 => eb3f5e50
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 217
 grep -c '^### F' claude/fable-dispatch.md => 3
 # ledger states the work stands on
 grep -m1 '^21\. ' claude/INTENT.md | grep -c 'DECISION-FREE' => 1
