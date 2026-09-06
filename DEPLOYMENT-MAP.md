@@ -462,6 +462,20 @@ Ordered by operational weight for the tester, not by age:
   RUIZ), via owner commit 6ffb017]` ⇒ no `location_orbit` body was ever authored, so the
   D9 objection that made this fix non-decision-free is EXCLUDED and **§5.21 is
   decision-free**. Its both-paths reach is unchanged, so one fix serves both.]**
+  **[PARTLY DELIVERED 2026-09-06, F97 §11.217 (code `24100461` → `22499f04`): the
+  LATITUDE half is fixed on both paths at the one constructor both loaders call
+  (`lat(_lat*M_PI/180)`; measured 58.31008° → 45.00000° on both halves of a live dump),
+  and the double-spin trap now carries an §2(f) signal (0 lines pre / 1 post). **§5.21
+  STAYS ON T2**, and the "decision-free" above is REFUTED at its own target: R18 did
+  remove D9, but `surface_point` + grounded — the structural home the triage points at —
+  lands **exactly 90° east** of the planetographic longitude old's `AnchorPointBody`, the
+  camera's placement and `moveto lon` all mean (the `+M_PI_2` of `getAxisRotation()`;
+  measured both ways in one run and offline over 64 states), so "exact against old" and
+  "lands where `surface_point` + grounded lands" cannot both hold. A THIRD defect is named
+  with it: the class never applies the parent's `getRotEquatorialToVsop87()`, **86.306371°**
+  off old's own authority on Mars. Both readings at §11.217(d); the remainder is S once
+  the question is answered and undispatchable until it is. NOTE for T-planning: the 90° is
+  `surface_point`'s, a RATIFIED key (D16–D19), so this touches the authoring grammar.]**
 - **§5.107** — extent-cache latch (5th member of the closed latch class; the fix shape
   exists).
 - **§5.71 + §5.66** — the `panView` port + `look_at` halves (after T1.2).

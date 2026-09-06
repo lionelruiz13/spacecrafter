@@ -4556,3 +4556,82 @@ Python and scored against the running application.
   Mars/Jupiter in the same run as the control — they must not move.
 - **`f91_parity.py`'s farm root is now `F91_FARM_ROOT`-overridable** (default
   unchanged), so a later task can keep its launches inside its own scratch root.
+
+## F97 — `location_orbit`'s latitude, and the ninety degrees inside `surface_point` (`f97_frame.cpp`, `f97_locorbit.py`, `f97_run.sh`) — INTENT §11.217 / §5.21, 2026-09-06
+
+```
+gcc -O0 -c -o /tmp/sideral_time.o ../../planetsephems/sideral_time.c
+g++ -O0 -std=c++20 -I../../src -I../../planetsephems -o /tmp/f97_frame \
+    f97_frame.cpp /tmp/sideral_time.o && /tmp/f97_frame
+DISPLAY=:2 ./f97_run.sh <absOutdir> --tag pre|post [--bin PATH] [--jd JD]
+./f97_locorbit.py <absOutdir> --tag pre|post --offline    # re-score on disk, no launch
+```
+
+**What it measures.** `LocationOrbit` writes `spheToRect(lon + spin, lat) * r`
+straight into the position member, and that member is ROOT-aligned (VSOP87
+ecliptic) on both paths for a non-grounded body — so the class's three defects
+are a units bug (`lat` in radians), a frozen linear spin, and a missing
+`getRotEquatorialToVsop87()`. Only the first is fixed; the probe measures all
+three and the live driver scores them in the running application.
+
+### THE ONE FACT TO CARRY OUT OF HERE
+
+**`surface_point`'s `orbit_lon` is 90° east of every other longitude in this
+project.** `ModularBody::getAxisRotation()` is `axisRotation + M_PI_2` and the
+grounded fold is `Z(getAxisRotation())`; the camera's own placement cancels that
+`+pi/2` with the `-pi/2` inside `X(latitude - M_PI_2)` (`Camera.cpp:189-202`),
+but `surface_point` emits INTO the folded frame. So a rover authored at
+`orbit_lon 60` stands at planetographic 150, while an observer sent to `lon 60`
+stands at 60. This is §11.152(o)'s unexplained "exactly 90.0° in surface mode"
+and §11.4/§11.213's "−90.0003° zero point", one term. Anything that compares an
+authored surface point with an observer, a `moveto`, or old's own
+`AnchorPointBody` point must subtract it — or decide it, which is an owner
+question about a ratified key.
+
+### The three shapes worth reusing
+
+- **A BASIS-FREE ANGLE AT A PARENT'S CENTRE.** `eclRoot` is the body's position
+  in the EYE frame — the driver asserts `|Mars.eclRoot| == Mars.dist` (3.12e-08
+  relative) before using it — so the observer's own direction is `-Mars.eclRoot`
+  and a child's is `B.eclRoot - Mars.eclRoot`. The angle between them needs no
+  frame convention, which is the only honest way to measure one.
+- **MOVE THE OBSERVER 90° AND MAKE THE CELLS SWAP.** Two bodies at `orbit_lon 0`
+  and `orbit_lon -90`, the observer at `lon 0` then `lon 90`: 90.0000/0.0000 then
+  0.0000/90.0000. A single 90 could have been any constant; the swap could not.
+- **A DEFECT READ OFF ONE PRINTED NUMBER.** `LocationOrbit`'s emitted longitude
+  is `lon_frozen + JD*JDToRotation` by construction, so
+  `atan2(ecl_y, ecl_x)` minus the parent's live `axisRot` IS the frozen model's
+  error — no frame algebra, no matrices, one subtraction from the dump.
+
+### Gotchas measured here, each of which cost something first
+
+- **The dump has THREE line types and TWO of them are named.** `body` records
+  and `hops` lines both carry `"name"`, and `hops`'s `"new"` is a LIST. A reader
+  keyed on `"name"` alone silently replaces every body with its hops line;
+  it cost one launch. Key on `"type"`.
+- **`re.period`, `offset`, `obliquity`, `ascendingNode`, `precessionRate` are
+  `float`** (`rotation_elements.hpp:33-38`). A model that computes the "live"
+  side in double and the "frozen" side in float invents a discrepancy that the
+  application does not have: predicted ≥ 1°, measured −7e-06°.
+- **`rot_pole_ra`/`rot_pole_de` are J2000 EQUATORIAL and are rotated into VSOP87
+  before `obliquity = pi/2 - de` is taken** (`protosystem.cpp:930-941` +
+  `navigator.cpp:223-225`). Skipping that step builds a parent with the right
+  pole distance and the wrong pole — 57.75° where the truth is 86.31°.
+- **`get_nutation` never resets its accumulators** (`sideral_time.c:216-262`)
+  and it does not matter: the `/= 36000000.` after the sum divides the
+  carry-over too, leaving ~1e-10°. Measured 0.000000000° over 21 round trips —
+  a predicted defect the measurement took away.
+- **§5.50 is fixed, so `body action load … coord_func surface_point` is
+  authorable over TCP** (null old half, live new half); F90's suite still avoids
+  it deliberately and says so.
+- **`f91_parity.py`'s `F91_FARM_ROOT` (F96) is what lets a later task run the
+  90-body control inside its own scratch root** — used here for both legs.
+
+**Measured, code `24100461` → `22499f04`, binaries `eb3f5e50` / `46849f69`:**
+M1 emitted latitude for `orbit_lat 45` **58.31008° → 45.00000°** on BOTH halves
+(lat-0 control 0.00000 both) · M2 vs old's own authority **86.306371°**,
+unchanged · M3 **90.0000/0.0000** then **0.0000/90.0000**, unchanged · M4
+**−0.000007°** (Mars, frozen vs live), unchanged · M5 doubly-spelled vs singly
+**51.3230°**, unchanged · the new §2(f) line 0 pre / 1 post. Controls: F91 table
+byte-identical, md5 `c125adf0`; `f90_rehearsal_run.sh` rc 0; D14 PASS. Artifacts
+`artifacts/f97/` (528 KB).
