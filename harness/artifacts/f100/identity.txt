@@ -1,0 +1,16 @@
+=== P0 launch state, pinned clock: pre 8e2c6ef3 vs post b5f08778
+  A = /home/claude/sc-f100/pre_pinned/dumps/pinned_p0_launch.json
+  B = /home/claude/sc-f100/post_pinned/dumps/pinned_p0_launch.json
+  camera state identical: True
+  jd A 2461233.5  jd B 2461233.5
+  walked         n= 72  identical mat translation  72/ 72  identical altaz_new  71/ 71
+  parked (P)     n= 29  identical mat translation  29/ 29  identical altaz_new  19/ 19
+  unreached (I)  n= 29  identical mat translation  29/ 29  identical altaz_new   0/  0
+=== P0 launch state, RUNNING clock: pre vs post
+  A = /home/claude/sc-f100/pre_running/dumps/running_p0_launch.json
+  B = /home/claude/sc-f100/post_running/dumps/running_p0_launch.json
+  camera state identical: True
+  jd A 2461233.500041147  jd B 2461233.500041159
+  walked         n= 72  identical mat translation  72/ 72  identical altaz_new  71/ 71
+  parked (P)     n= 29  identical mat translation  29/ 29  identical altaz_new  19/ 19
+  unreached (I)  n= 29  identical mat translation  29/ 29  identical altaz_new   0/  0

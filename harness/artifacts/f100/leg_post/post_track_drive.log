@@ -1,0 +1,26 @@
+ok:   scale settled: Moon scaling 5.00000000 == target 5.00000000 (2 probes)
+ok:   [pinned clock] track Mars   (control_before): final alt -0.378373 az -0.739825, converged True, alt at +-pi/2 False, new screen [3.66311745e-08, 3.89206214e-08], old-vs-new alt/az 8.706816964856289e-06 deg
+ok:   [pinned clock] track Ceres  (hidden): final alt -0.369080 az -0.921560, converged True, alt at +-pi/2 False, new screen [0, 0], old-vs-new alt/az 7.778248095798993e-06 deg
+ok:   [pinned clock] track Mars   (control_after): final alt -0.378373 az -0.739825, converged True, alt at +-pi/2 False, new screen [3.66311745e-08, 3.89206214e-08], old-vs-new alt/az 8.706816964856289e-06 deg
+ok:   scale settled: Moon scaling 5.00000000 == target 5.00000000 (2 probes)
+ok:   [running clock] track Mars   (control_before): final alt -0.378373 az -0.737566, converged False, alt at +-pi/2 False, new screen [3.84627583e-07, -2.74733996e-08], old-vs-new alt/az 6.557959812547711e-06 deg
+ok:   [running clock] track Ceres  (hidden): final alt -0.369081 az -0.918095, converged False, alt at +-pi/2 False, new screen [0, 0], old-vs-new alt/az 2.000455603180256e-05 deg
+ok:   [running clock] track Mars   (control_after): final alt -0.378374 az -0.735160, converged False, alt at +-pi/2 False, new screen [2.56418559e-07, -4.3499579e-08], old-vs-new alt/az 2.2214527458981644e-05 deg
+=== clock pinned (timerate rate 0)
+  track Mars   (control_before): alt -0.378373 az -0.739825 heading -6.28318501 ; converged True ; alt at +-pi/2 False ; new screen [3.66311745e-08, 3.89206214e-08] ; old-vs-new alt/az 8.706816964856289e-06 deg
+      alt track: -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837
+  track Ceres  (hidden        ): alt -0.369080 az -0.921560 heading -6.28318501 ; converged True ; alt at +-pi/2 False ; new screen [0, 0] ; old-vs-new alt/az 7.778248095798993e-06 deg
+      alt track: -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908
+  track Mars   (control_after ): alt -0.378373 az -0.739825 heading -6.28318501 ; converged True ; alt at +-pi/2 False ; new screen [3.66311745e-08, 3.89206214e-08] ; old-vs-new alt/az 8.706816964856289e-06 deg
+      alt track: -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837
+  md5 in==out: True ; lock before {'present': False} after {'present': False} ; exit 0
+=== clock running (timerate rate 1)
+  track Mars   (control_before): alt -0.378373 az -0.737566 heading -6.28318501 ; converged False ; alt at +-pi/2 False ; new screen [3.84627583e-07, -2.74733996e-08] ; old-vs-new alt/az 6.557959812547711e-06 deg
+      alt track: -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837
+  track Ceres  (hidden        ): alt -0.369081 az -0.918095 heading -6.28318501 ; converged False ; alt at +-pi/2 False ; new screen [0, 0] ; old-vs-new alt/az 2.000455603180256e-05 deg
+      alt track: -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908
+  track Mars   (control_after ): alt -0.378374 az -0.735160 heading -6.28318501 ; converged False ; alt at +-pi/2 False ; new screen [2.56418559e-07, -4.3499579e-08] ; old-vs-new alt/az 2.2214527458981644e-05 deg
+      alt track: -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837
+  md5 in==out: True ; lock before {'present': False} after {'present': False} ; exit 0
+FAILS: 0  NOTES: 0
+

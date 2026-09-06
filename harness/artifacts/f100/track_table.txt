@@ -1,0 +1,30 @@
+=== F100 OPERATOR ARM: `select planet <X>` + `flag track_object on`, after a camera move
+    core.cpp:2494 hands the NEW body to Camera::trackBody; Camera.cpp:653-664 aims with
+    lookTo(observedToLocalPos(target->getObservedPosition())) every frame.
+    The WALKED control is tracked FIRST from the same moved camera state and again AFTER,
+    so a wrecked aim cannot be blamed on the move.  A hidden body's `screen` is never
+    written (it is not visible), so the observable is the camera's own alt across 7 polls.
+
+binary / clock             | arm              | final alt | at -pi/2  | old-vs-new alt/az (deg)
+-----------------------------------------------------------------------------------------------
+pre  8e2c6ef3 / pinned     | Mars ctl before  | -0.378373 | False     | 8.70682e-06
+pre  8e2c6ef3 / pinned     | Ceres hidden     | -1.570796 | True      | 61.6684
+pre  8e2c6ef3 / pinned     | Mars ctl after   | -0.378373 | False     | 8.70682e-06
+
+pre  8e2c6ef3 / running    | Mars ctl before  | -0.378373 | False     | 2.09131e-06
+pre  8e2c6ef3 / running    | Ceres hidden     | -0.369081 | False     | 2.00046e-05
+pre  8e2c6ef3 / running    | Mars ctl after   | -0.378374 | False     | 2.04014e-05
+
+post b5f08778 / pinned     | Mars ctl before  | -0.378373 | False     | 8.70682e-06
+post b5f08778 / pinned     | Ceres hidden     | -0.369080 | False     | 7.77825e-06
+post b5f08778 / pinned     | Mars ctl after   | -0.378373 | False     | 8.70682e-06
+
+post b5f08778 / running    | Mars ctl before  | -0.378373 | False     | 6.55796e-06
+post b5f08778 / running    | Ceres hidden     | -0.369081 | False     | 2.00046e-05
+post b5f08778 / running    | Mars ctl after   | -0.378374 | False     | 2.22145e-05
+
+alt tracks, 7 polls each (the hidden arm only):
+  pre  8e2c6ef3              pinned   Ceres: -1.15628 -1.57080 -1.57080 -1.57080 -1.57080 -1.57080 -1.57080
+  pre  8e2c6ef3              running  Ceres: -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908
+  post b5f08778              pinned   Ceres: -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908
+  post b5f08778              running  Ceres: -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908

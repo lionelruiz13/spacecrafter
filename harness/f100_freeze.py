@@ -207,18 +207,37 @@ def stage_freeze(app, leg, rate):
     leg["freshness"] = fr
     pt = part.partition({n: r for n, r in bA.items()})
     leg["partition"] = pt
+    # ONE INSTRUMENT READ TWICE (the F40/F91 shape): both hypotheses are scored
+    # on the same table and `--expect` chooses which one the gate asks for, with
+    # the OTHER required to FAIL.  A partition test that cannot say which binary
+    # it is looking at is not evidence.
     frozen, union, I = set(fr["frozen"]), set(pt["union"]), set(pt["I"])
-    leg["expect"] = "P u I" if not rate else "I"
-    expected = union if not rate else I
-    leg["frozen_minus_expected"] = sorted(frozen - expected)
-    leg["expected_minus_frozen"] = sorted(expected - frozen)
-    (ok if frozen == expected else fail)(
+    cand = {"PuI": union, "I": I}
+    leg["scored"] = {k: {"n": len(v), "frozen_minus": sorted(frozen - v),
+                         "minus_frozen": sorted(v - frozen),
+                         "equal": frozen == v} for k, v in cand.items()}
+    # pre-fix predicts P u I at a pinned clock and I at a running one; post-fix
+    # predicts I at both -- the running clock is where the two agree, which is
+    # why the PINNED leg is the discriminating one.
+    want = "I" if (rate or leg.get("expect_tag") == "post") else "PuI"
+    other = "PuI" if want == "I" else "I"
+    leg["expect"] = want
+    leg["frozen_minus_expected"] = leg["scored"][want]["frozen_minus"]
+    leg["expected_minus_frozen"] = leg["scored"][want]["minus_frozen"]
+    (ok if leg["scored"][want]["equal"] else fail)(
         "[%s clock] frozen = %d of %d; expected %s = %d; frozen\\expected %s ; "
         "expected\\frozen %s"
         % ("pinned" if not rate else "running", len(frozen), fr["n"],
-           leg["expect"], len(expected),
+           want, len(cand[want]),
            leg["frozen_minus_expected"] or "(none)",
            leg["expected_minus_frozen"] or "(none)"))
+    if not rate:
+        (ok if not leg["scored"][other]["equal"] else fail)(
+            "[pinned clock] DISCRIMINATION: the other hypothesis (%s) must FAIL "
+            "on this binary -- it %s, differing on %s"
+            % (other, "FAILS" if not leg["scored"][other]["equal"] else "PASSES",
+               (leg["scored"][other]["minus_frozen"] or
+                leg["scored"][other]["frozen_minus"]) or "(nothing)"))
 
     eP, eA = evalcounts(bP), evalcounts(bA)
     leg["evalcount"] = {n: [eP.get(n), eA.get(n)] for n in sorted(bA)}
@@ -423,7 +442,7 @@ def run_clock(binp, out, rep, rate, stages):
     name = "running" if rate else "pinned"
     farm = FARM_ROOT / name
     build_farm(farm)
-    rep[name] = leg = {"farm": str(farm), "rate": rate,
+    rep[name] = leg = {"farm": str(farm), "rate": rate, "expect_tag": rep["tag"],
                        "lock_before": lock_state(), "md5_in": md5_home()}
     hits = no_instance()
     if hits:

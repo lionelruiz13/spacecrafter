@@ -1,0 +1,45 @@
+=== clock pinned (timerate rate 0)
+  get status object Ceres  before -> OLD half
+      answer : Cérès Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°03'10" / +36°08'33" Distance : 3.55457353 UA
+      OLD    : Cérès Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°03'10" / +36°08'33" Distance : 3.55457353 UA
+      NEW    : Ceres Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°03'10" / +36°08'33" Distance : 3.55457377 UA
+  get status object Mars   before -> OLD half
+      answer : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°41'17" / +44°29'51" Distance : 2.07175947 UA
+      OLD    : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°41'17" / +44°29'51" Distance : 2.07175947 UA
+      NEW    : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°41'17" / +44°29'51" Distance : 2.07175946 UA
+  get status object Ceres  after  -> OLD half
+      answer : Cérès Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°03'10" / +36°08'33" Distance : 3.55457353 UA
+      OLD    : Cérès Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°03'10" / +36°08'33" Distance : 3.55457353 UA
+      NEW    : Ceres Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°03'10" / +36°08'33" Distance : 3.55457377 UA
+  get status object Mars   after  -> OLD half
+      answer : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°41'17" / +44°29'51" Distance : 2.07175947 UA
+      OLD    : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°41'17" / +44°29'51" Distance : 2.07175947 UA
+      NEW    : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°41'17" / +44°29'51" Distance : 2.07175946 UA
+  track Ceres : new screen [0, 0] |r| 0.0 settled True polls 3
+  track Mars  : new screen [3.66311745e-08, -2.747338e-08] |r| 4.578896760000001e-08 settled True polls 3
+  cost/held: 1664 frames, Pluto +0 (0.0000/frame), Charon +0, Sun +1664
+  cost/moving: 2103 frames, Pluto +1730 (0.8226/frame), Charon +1731, Sun +2103
+  md5 in==out: True ; lock before {'present': False} after {'present': False} ; exit 0
+=== clock running (timerate rate 1)
+  get status object Ceres  before -> neither half
+      answer : Cérès Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°02'39" / +36°09'36" Distance : 3.55457310 UA
+      OLD    : Cérès Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°01'56" / +36°11'02" Distance : 3.55457251 UA
+      NEW    : Ceres Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°01'56" / +36°11'02" Distance : 3.55457234 UA
+  get status object Mars   before -> neither half
+      answer : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°40'10" / +44°31'35" Distance : 2.07175912 UA
+      OLD    : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°39'49" / +44°32'07" Distance : 2.07175901 UA
+      NEW    : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°39'49" / +44°32'07" Distance : 2.07175899 UA
+  get status object Ceres  after  -> neither half
+      answer : Cérès Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -17°00'24" / +36°14'08" Distance : 3.55457125 UA
+      OLD    : Cérès Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -16°59'41" / +36°15'34" Distance : 3.55457067 UA
+      NEW    : Ceres Magnitude : 8.41 AD/DE : 05h12m18s / +21°08'48" Alt/Az : -16°59'41" / +36°15'34" Distance : 3.55457044 UA
+  get status object Mars   after  -> neither half
+      answer : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°37'29" / +44°35'44" Distance : 2.07175828 UA
+      OLD    : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°37'09" / +44°36'16" Distance : 2.07175817 UA
+      NEW    : Mars Magnitude : 1.50 AD/DE : 04h30m39s / +21°40'45" Alt/Az : -11°37'09" / +44°36'16" Distance : 2.07175827 UA
+  track Ceres : new screen [0, 0] |r| 0.0 settled True polls 3
+  track Mars  : new screen [1.83156061e-07, -1.37367051e-08] |r| 1.8367046509452763e-07 settled True polls 3
+  cost/held: 1664 frames, Pluto +8320 (5.0000/frame), Charon +8321, Sun +1664
+  cost/moving: 2103 frames, Pluto +10515 (5.0000/frame), Charon +10516, Sun +2103
+  md5 in==out: True ; lock before {'present': False} after {'present': False} ; exit 0
+FAILS: 0  NOTES: 0

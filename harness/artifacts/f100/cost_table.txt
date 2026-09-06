@@ -1,0 +1,18 @@
+=== F100 COST: orbit evaluations per FRAME of the parked subtree the SELECTION points at
+    Mars's own evalCount is the frame counter (11.117(f)); COST_BODY = Pluto (5 moons under it);
+    the number is delta(evalCount) / delta(Mars.evalCount) over one sample window.
+
+binary                             | clock=pinned, cam HELD | clock=pinned, cam MOVING
+-----------------------------------+------------------------+-----------------------
+pre  8e2c6ef3 (shipped)            | 0.0000/frame (1664 fr) | 0.0000/frame (2104 fr)
+post b5f08778 (delivered)          | 0.0000/frame (1664 fr) | 0.8226/frame (2103 fr)
+mut  0cf9cf28 (no memo)            | 5.0180/frame (1664 fr) | 5.0143/frame (2103 fr)
+
+binary                             | clock=RUNNING, cam HELD | clock=RUNNING, cam MOVING
+pre  8e2c6ef3 (shipped)            | 5.0000/frame (1664 fr) | 5.0000/frame (2103 fr)
+post b5f08778 (delivered)          | 5.0000/frame (1664 fr) | 5.0000/frame (2103 fr)
+
+frame cadence measured in every arm: 143.4 - 144.1 fps = the config cap
+(maximum_fps = 144; F45 11.159(k7) discharged the cadence question) -- so the
+frame-rate channel is SATURATED and cannot resolve any of these costs. The
+evaluation count is the instrument; the fps is recorded, not a null result.
