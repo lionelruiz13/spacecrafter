@@ -1021,7 +1021,8 @@ Both detectors RED on live controls (F1 within one sample of `kill -9`; F2 at a 
 54.3 s vs F19's 45.0 s bound, then recovery) + a `selftest` covering the leak rule and
 four matchers both ways. TWO LEGS, **2.735 h + 3.004 h = 5 h 44 min**, 128 complete
 cycles, 688 samples, **flags NONE in both**; quits **0.65 s / 0.61 s exit 0**, 0 teardown
-faults; 11/11 frozen md5s in==out on all fifteen launches; LEAK **NO LEAK BY THIS RULE**
+faults; 11/11 frozen md5s in==out on the four `f95_soak.py` launches (the ten campaign
+launches carry F90's own four-file assert); LEAK **NO LEAK BY THIS RULE**
 with the 0.28-0.38 MB/h tail named as the residue three hours cannot settle. Design (5)
 RAN: `f90_rehearsal_run.sh` x10 all exit 0 in 0.6-0.7 s, zero fails, step states identical
 - **thirteen clean quits on `404b9e89`**. FINDING: at the pinned J0, 4 of 120 bodies answer
