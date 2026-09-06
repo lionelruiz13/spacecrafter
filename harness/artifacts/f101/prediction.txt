@@ -1,0 +1,210 @@
+F101 - PREDICTIONS, COMMITTED BEFORE THE FIRST APPLICATION PROCESS STARTS
+=========================================================================
+Written 2026-09-07 00:0x CEST by the F101 executor (Claude Opus 5), on code
+`master-beta @ 474c595d`, binary md5 b5f08778, harness at the commit that
+carries this file.  Every number below is a PREDICTION.  Nothing here was
+measured on a running application; the derivations are from the source read at
+474c595d and from F98's committed bisect numbers.  The record keeps whatever
+these turn out to be, refuted or not.
+
+
+0. WHAT THE ROW SAYS AND WHAT THE DISPATCH SECTION SAYS
+-------------------------------------------------------
+Sec.5.143 (from Sec.11.218(h), F98): after `fscripts/14.sts` the dual dump's OLD
+half goes 246 -> 1, then to 0 after the corpus's `body action clear`, and never
+recovers, while the NEW half keeps every body.  The row's candidate mechanism is
+`[derived, NOT confirmed]`: *"the old half follows the ACTIVE system"*.
+
+The F101 section's candidate CHAIN is:
+    :22 `moveto alt 1.1E+16`      leaves the system
+    :25 `body action load ... parent none`  lands in whatever system is current
+    :27 `set home_planet Solsys`  RE-ENTERS through `enterSystem` ->
+        `changeSystem(querySelectedAnchorName())` -> `createSystem("Solsys")`
+        -> a fresh one-star `ProtoSystem` => old half 1
+and it names ONE refuter: *"the LOAD itself empties the half - then prefix-25
+alone already reads 1, and prefix-27 adds nothing."*
+
+I predict BOTH are wrong, in the same place, and that the section's own refuter
+cannot discriminate.  The reading below is the reason, and the p23 leg is the
+instrument the section's three prefixes do not contain.
+
+
+1. THE MECHANISM I PREDICT (read at 474c595d, site by site)
+------------------------------------------------------------
+(a) `moveto alt 1.1E+16 duration 0` -> `Observer::moveTo(..., duration 0)` ->
+    `setAltitude` -> queues `AltitudeEvent` [observer.cpp:66, :163-165] ->
+    `Executor::onAltitudeChange` -> `updateMode(altitude)` [executor.hpp:65].
+(b) `SolarSystemModule::maxAltToGoUp = 1.E16` [solarSystemModule.cpp:54], and
+    1.1e16 > 1e16, so `testValidAltitude` fires -> `nextMode = upMode` =
+    `InGalaxyModule` [executor.cpp:42].  `SolarSystemModule::onExit` calls
+    `core->ssystemFactory->leaveSystem()` [solarSystemModule.cpp:91].
+(c) `leaveSystem()` sets `currentSystem = galacticSystem.get()`
+    [ssystem_factory.cpp:772-778].
+(d) `galacticSystem` is a `ProtoSystem` constructed at
+    [ssystem_factory.cpp:143] and NEVER given a body: `load()` is called on
+    `ssystem` and on the per-name systems, never on it.  Its `systemBodies` map
+    is EMPTY.
+(e) The dump's old half is `for (auto it = currentSystem->begin(); ...)`
+    [ssystem_factory.cpp:1181], and `begin()` is `systemBodies.begin()`
+    [protosystem.hpp:176].
+    ==> THE OLD HALF IS EMPTIED BY THE ALTITUDE MOVE AT LINE 22, BEFORE ANY
+        `body action load` RUNS.  Not by the load, and not by line 27.
+(f) `body action load ... parent none` at :25 -> `Core::addSolarSystemBody` ->
+    `SSystemFactory::addBody` -> `currentSystem->addBody(param)`
+    [ssystem_factory.cpp:827-829] - i.e. into `galacticSystem` - and
+    `camera->getCurrentSystem()->loadBody(param, nullptr, true)` [:836] into the
+    camera's ModularSystem, which is still "Solar".  `parent none` passes the
+    parent test [protosystem.cpp:531].  ==> old half 0 -> 1, new half +1.
+(g) `set home_planet Solsys` at :27 -> `Core::setHomePlanet` [core.cpp:2154] ->
+    `switchToAnchor("Solsys")` [ssystem_factory.hpp:992].  The anchor EXISTS:
+    `ProtoSystem::addBody` registers one per body [protosystem.cpp:1002], and
+    :25 added Solsys to `galacticSystem`, whose manager is `galacticAnchorMgr`
+    [ssystem_factory.cpp:144].  `AnchorManager::switchToAnchor` sets
+    `currentAnchor` and calls `observer->setAnchorPoint`
+    [anchor_manager.cpp:357-375]; `Observer::setAnchorPoint` in the non
+    eye-relative branch only swaps the anchor [observer.cpp:445-459] - IT DOES
+    NOT CHANGE `altitude`.
+    ==> NO altitude event, so NO mode change, so `enterSystem()` is NOT called
+        and `createSystem("Solsys")` does NOT run.  The section's chain does not
+        fire at line 27.  What line 27 DOES change is which anchor the galactic
+        manager points at, and that decides the branch of any LATER descent (2h).
+(h) So the state after line 27 is: executor in `InGalaxyModule` (its `onEnter`
+    clamped the altitude from 1.1e16 to `minAltToGoDown` = 1e10, because
+    1.1e16 > `maxAltToGoUp` = 1e14 [inGalaxyModule.cpp:48-49, :61-64]), and
+    `currentSystem == galacticSystem` holding exactly one body, `Solsys`.
+
+
+2. THE PREDICTIONS
+-------------------
+Baseline (every leg dumps BEFORE its show, on its own fresh launch):
+
+  P0  bodies_old = 76, bodies_new = 106 on the pre-show dump of EVERY leg.
+      [derived from F98's committed bisect: after `06old.sts` the same
+      instrument read 246 old / 276 new (`artifacts/f98/repro/
+      bisect_oldpath.result.json`) and `06old.sts` authors 170 bodies
+      (Sec.11.218(i)); 246-170 = 76 and 276-170 = 106.]
+      A different baseline does NOT invalidate the per-leg deltas - each leg is
+      its own control - but it refutes P0 and is recorded as such.
+
+  P1  p23 (through `moveto alt 1.1E+16` + its wait, NO load):
+          bodies_old = 0, bodies_new = 106.
+      THIS IS THE DISCRIMINATING LEG.  The section's candidate and the section's
+      refuter BOTH predict 76 here (nothing has been loaded and, on their
+      reading, nothing has left the system yet).  My reading predicts 0.
+
+  P2  p25 (+ the `parent none` Solsys load):
+          bodies_old = 1, bodies_new = 107, and the one old body is named
+          `Solsys`.  ALL THREE readings predict 1 here - which is exactly why
+          p25 alone cannot decide anything and why p23 exists.
+      Sharper, and it separates my reading from the section's chain even at p25:
+      the old `Solsys` record must be THE SCRIPT'S body (radius 1e-5,
+      `coord_func still_orbit`, type Sphere, `hidden true`), never a
+      `createSystem` star (radius 1190.856, `coord_func stellar_special`, type
+      Star [ssystem_factory.cpp:381-392 / protosystem.cpp:90-108]).
+
+  P3  p27 (+ `set home_planet Solsys`):
+          bodies_old = 1, bodies_new = 107 - IDENTICAL to p25.
+      Witness form: the applog carries `Modification observer to Solsys`
+      [core.hpp:592] and does NOT carry `InGalaxy->`, `->InStellarSystem` or a
+      second `Loading new Stellar System object...`.
+      The section predicts a NEW system here; if `->InStellarSystem` appears,
+      my (g) is refuted.
+
+  P4  p31 (+ `select planet Solsys` + `flag track_object on`):
+          bodies_old = 1, bodies_new = 107 - identical to p27.
+      Reconciliation with F98: F98's bisect played `06old.sts` first, so its
+      counts are mine + 170 on both halves: 76+170 = 246 old and 106+170 = 276
+      new before `14.sts`; after it, old = 1 (the galactic system's single
+      Solsys) and new = 276+1 = 277.  F98 measured 246/276 -> 1/277.  My model
+      reproduces both of F98's numbers exactly; the section's chain reproduces
+      the 1 only if `createSystem`'s star happens to be named `Solsys`.
+
+  P5  THE WITNESS ORDER in the applog of p25/p27/p31, from the executor's own
+      `std::cout` prints (never cLog - these are on stdout):
+          `Swapping to mode Solar System`   [solarSystemModule.cpp:256]
+          `InSolarSystem->`                 [:86]
+          `->InGalaxy`                      [inGalaxyModule.cpp:55]
+          `too high -> altitude = max`      [:62]   (1.1e16 > 1e14)
+          then `Loading new Stellar System object... Solsys`
+                                            [protosystem.cpp:517]  (p25+)
+          then `Modification observer to Solsys`  [core.hpp:592]   (p27+)
+      and NOTHING after that: no `InGalaxy->`, no `->InStellarSystem`, no
+      `->InSolarSystem`.  `Altitude change received` appears at least twice
+      (the 1.1e16 the script set, and the 1e10 `InGalaxyModule::onEnter` clamps
+      to).
+
+Controls:
+
+  C1  p27nc (p27 with line 27 commented out): identical to p25 - old 1 / new
+      107 - and NO `Modification observer to` line.  Under the SECTION's chain
+      this control moves the count (line 27 is its whole mechanism); under mine
+      it cannot.  So the control discriminates in the direction that matters.
+
+  C2  ctlmars (`set home_planet Mars` alone, no altitude move):
+          old = 76, new = 106 - UNMOVED from the pre-dump; `Modification
+      observer to Mars` present; no executor transition print at all.  This is
+      the shipped-scene control: the command by itself is inert on the halves.
+
+  C3  p25desc (p25 + `moveto alt 0.9E+9`): the old half RECOVERS to 76 (and the
+      new half stays 107, with `Solsys` now a NEW-ONLY record).
+      Derivation: 9e8 < `InGalaxyModule::minAltToGoDown` = 1e10, so
+      `testValidAltitude` takes the down branch, and the branch is chosen by
+      `querySelectedAnchorName() == "Sun"` [inGalaxyModule.cpp:164].  For the
+      galactic manager that name IS `Sun`: `leaveSystem` -> `selectSystem` ->
+      `ProtoSystem::selectSystem` -> `AnchorManager::selectAnchor`, whose null
+      `currentAnchor` branch falls back to `switchToAnchor("Sun")`
+      [anchor_manager.cpp, selectAnchor], and `[Sun]` is the first section of
+      the shipped `~/.spacecrafter/galactic.ini` (measured: `LC_ALL=C
+      /usr/bin/grep -n '^\[' galactic.ini` -> `1:[Sun]`, 17 sections).
+      So the descent goes to `SolarSystemModule`, whose `onEnter` calls
+      `switchToAnchor("Sun")` then `enterSystem()` -> `changeSystem("Sun")` ->
+      `currentSystem = ssystem.get()` [ssystem_factory.cpp:294-297].
+      Witness: `InGalaxy->`, `->InSolarSystem`.
+
+  C4  p31desc (p31 + the same descent): the old half does NOT recover.
+      After line 27 the galactic manager's `currentAnchor` is `Solsys`, so
+      `querySelectedAnchorName() != "Sun"` and the descent takes `downModeAlt`
+      = `StellarSystemModule` [executor.cpp:45], whose `onEnter` calls
+      `enterSystem()` WITHOUT a `switchToAnchor` [stellarSystemModule.cpp:78] ->
+      `changeSystem("Solsys")` -> `systems.at("Solsys")` throws ->
+      `createSystem("Solsys")` [ssystem_factory.cpp:301, :741].
+      That system is loaded by `ProtoSystem::load(Object &obj)` with
+      `SSystemFactory::selected_object`, which is written ONLY on an
+      `OBJECT_STAR` selection [core.cpp:2400-2402] and is therefore still
+      DEFAULT here - `select planet Solsys` selects a body, not a star.  So the
+      star's name is empty and `addBody` refuses it ("SolarSystem: can not add
+      body with no name", protosystem.cpp:523).
+      PREDICTED: bodies_old = 0 at p31desc, with `can not add body with no name`
+      in the log, and the witness pair `InGalaxy->` + `->InStellarSystem`.
+      This is the least certain prediction on the page: if a default `Object`'s
+      `getEnglishName()` is not empty, the count is 1 and the body is a Star of
+      radius 1190.856.  Either answer is recorded; the DISCRIMINATOR between C3
+      and C4 - whether line 27 changes which branch a later descent takes - does
+      not depend on which of the two C4 lands on.
+
+
+3. WHAT WOULD REFUTE WHAT
+--------------------------
+  - p23 reading 76 refutes my (c)-(e) entirely and restores the section's
+    reading that something at or after line 25 does the emptying.
+  - p23 reading 0 refutes the section's named refuter ("the LOAD itself empties
+    the half"): nothing has been loaded at line 23.
+  - `->InStellarSystem` present in p27 refutes my (g) and confirms the
+    section's chain.
+  - p25 and p27 differing in either count refutes my (g).
+  - C2 moving refutes the claim that `set home_planet` is inert on the halves.
+  - C3 not recovering refutes the `Sun`-anchor derivation, and with it the
+    account of WHY the emptiness is permanent in F98's soak.
+  - C3 and C4 landing on the SAME old count refutes the claim that line 27 is
+    what makes the emptiness outlive the show.
+
+4. BOUNDARY PREDICTIONS (asserted every leg, not predicted loosely)
+--------------------------------------------------------------------
+  - 139 real-HOME md5s identical in and out on every leg; digest `3995e501`
+    over the 137 `.sts` alone (the dispatch's measured value).
+  - the farm's own copy of `14.sts` byte-identical after the prefix files are
+    written beside it.
+  - no `spacecrafter` in `/proc/*/comm` before and after every leg.
+  - `/tmp/spacecrafter.lock` state recorded per leg; removed only when its pid
+    is dead (F99's `lock_state`).
+  - every leg quits on `shutdown action now` with exit 0.

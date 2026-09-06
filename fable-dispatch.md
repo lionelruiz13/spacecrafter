@@ -1097,7 +1097,7 @@ test -e /home/claude/sc-f101 ; echo $? => 1
 **DoD:** predictions before the launch; the three-prefix leg + two controls; the assert at
 the anchor with the 21 importers classed and the both-ways control; §11 entry + stub; the
 row's mechanism written; back-markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:**
+**WIP:** 2026-09-07 00:07 CEST — CP1: §0.7 gate 25/25 PASS + prose premises; sources read; `harness/f101_bisect.py` (8 legs incl. the p23 discriminator the section's three prefixes lack, + p25desc/p31desc) and `artifacts/f101/prediction.txt` (P0–P5 + C1–C4, the section's chain AND its named refuter both predicted wrong) committed BEFORE any launch. NEXT: canary `--no-scene`, then the eight legs under `/home/claude/sc-f101/`.
 
 ### F102 — §5.142's owed reading, priced for the owner's D13 policy: the uniform pool is ONE 1 MiB block created once (`app.cpp:274` → `BufferMgr.cpp:8`) and never grown — `acquireBuffer` only carves its free list and answers `VK_NULL_HANDLE` + the log line when it cannot (`:37-67`, `:55`); the per-body uniform cost on BOTH paths read at the acquire sites and rounded up to `minUniformBufferOffsetAlignment` (`VulkanMgr.cpp:82`); the body count at the first refusal PREDICTED from that arithmetic and committed BEFORE the log is read, then MEASURED from a full applog of arm C (`06.sts` then `14.sts` — the row's "`06.sts` alone" is corrected: alone it is clean, §11.218(g)); the chain from the null `SubBuffer` to the device loss read at the consumer; the three policies priced (grow / refuse with a §2(f) line at the anchor / degrade) — nothing fixed, EntityCore read-only [S, reading; one launch at most]
 
