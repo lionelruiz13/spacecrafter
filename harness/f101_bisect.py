@@ -169,9 +169,20 @@ def main():
     ap.add_argument("--bin", default=str(S.DEFAULT_BIN))
     ap.add_argument("--budget", type=float, default=90.0,
                     help="seconds to wait for the show's own `script end`")
+    ap.add_argument("--then", default=None,
+                    help="a SECOND shipped show, played after the post dump, "
+                         "with a third dump after it. This is the CONSEQUENCE "
+                         "arm: Sec.11.218(h) measured that from cycle 2 on the "
+                         "170 satellites of `06old.sts` never reach the old "
+                         "path at all, and the mechanism for that is a refusal "
+                         "(`protosystem.cpp:531-535`) in whatever system the "
+                         "first show left current - which is a claim about a "
+                         "SECOND show and cannot be read off the first")
+    ap.add_argument("--tag", default=None,
+                    help="output sub-directory; defaults to the leg name")
     a = ap.parse_args()
 
-    out = Path(a.out).resolve() / a.leg
+    out = Path(a.out).resolve() / (a.tag or a.leg)
     out.mkdir(parents=True, exist_ok=True)
     res = {"leg": a.leg, "bin": a.bin, "bin_md5": S.md5(a.bin)[:8],
            "started": S.now_iso()}
@@ -187,7 +198,8 @@ def main():
     res["frozen_digest_in"] = S.frozen_digest(frozen)[:8]
 
     farm = out / "farm"
-    res["farm_asserts"] = S.build_farm(farm, [SRC_SHOW])
+    res["farm_asserts"] = S.build_farm(farm, [SRC_SHOW]
+                                       + ([a.then] if a.then else []))
     home = farm / ".spacecrafter"
     fs = home / "scripts" / "fscripts"
 
@@ -265,6 +277,27 @@ def main():
     time.sleep(2.0)
     if proc.poll() is None:
         res["dump_post"] = dump("post")
+
+    if a.then and proc.poll() is None:
+        tail.poll()
+        end_before = tail.counts[SCRIPT_END]
+        t1 = time.time()
+        res["then"] = a.then
+        wire.send("script action play filename %s" % a.then, 1.0)
+        seen2 = False
+        while time.time() - t1 < 240.0:
+            tail.poll()
+            if tail.counts[SCRIPT_END] > end_before:
+                seen2 = True
+                break
+            if proc.poll() is not None:
+                break
+            time.sleep(0.5)
+        res["then_wall_s"] = round(time.time() - t1, 2)
+        res["then_end_seen"] = seen2
+        time.sleep(2.0)
+        if proc.poll() is None:
+            res["dump_then"] = dump("then")
 
     txt = applog.read_text(encoding="latin-1", errors="replace")
     res["witness"] = {k: txt.count(v) for k, v in WITNESS.items()}

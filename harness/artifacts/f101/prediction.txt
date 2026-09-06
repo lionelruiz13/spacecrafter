@@ -208,3 +208,45 @@ Controls:
   - `/tmp/spacecrafter.lock` state recorded per leg; removed only when its pid
     is dead (F99's `lock_state`).
   - every leg quits on `shutdown action now` with exit 0.
+
+
+=========================================================================
+ADDENDUM 1 - THE CONSEQUENCE ARM, committed 2026-09-07 00:14 CEST, BEFORE
+the two launches it predicts and AFTER the eight legs above have run.
+=========================================================================
+WHY IT IS ADDED.  The eight legs settle WHERE the old half is emptied and what
+line 27 buys.  They do not measure the CONSEQUENCE Sec.11.218(h) recorded:
+*"cycles 2-8, after `06old.sts`: 0 old / 286 new - the 170 satellites the show
+authors this cycle never reach the old path at all"*.  That is a claim about a
+SECOND show, and no prefix of `14.sts` can carry it.  Sec.5.143's row is exactly
+this pair - the emptying and its persistence - so the leg is finished only with
+it.  The driver gains `--then <rel>`, a second shipped show played after the
+post dump with a third dump after it; nothing else changes.
+
+  C5  `--leg p31desc --then fscripts/06old.sts` (tag `p31desc06`):
+      dump_then = bodies_old 0, bodies_new 121 + n, where n is the number of
+      `06old.sts` bodies the NEW path accepts.  Every one of the show's
+      `parent Earth` pushes is REFUSED on the old path by
+      `searchByEnglishName(str_parent) == nullptr` in a system that holds no
+      Earth [protosystem.cpp:531-535], so the applog carries one
+      `SolarSystem: can't find parent for <name>` per refused body and
+      `oldpath_add` grows by the same number (the log line at :517 is written
+      BEFORE the parent test).  Predicted: `oldpath_no_parent` > 100 and
+      bodies_old still 0.
+
+  C6  `--leg p25desc --then fscripts/06old.sts` (tag `p25desc06`) - THE
+      CONTROL THAT MAKES C5 A PROPERTY OF THE SYSTEM AND NOT OF THE SHOW:
+      after p25desc the descent has put `ssystem` back (measured: 90/121), so
+      the same show's pushes must be ACCEPTED.  Predicted: bodies_old = 90 + n
+      and bodies_new = 121 + n with the SAME n as C5, and
+      `oldpath_no_parent` = 0.
+      If n = 156 this reproduces F98's own committed pre-`14.sts` bisect number
+      to the digit (246 old / 276 new = 90 + 156 / 120 + 156), which is the
+      arithmetic that also EXPLAINS P0's refutation below.
+
+  P0 IS REFUTED AND THE REFUTATION IS ATTRIBUTED.  P0 predicted a 76/106
+  baseline by subtracting `06old.sts`'s 170 authored bodies from F98's 246/276.
+  Measured baseline: 90 old / 120 new on all eight legs (`oldpath_add` = 90 at
+  startup on every one).  So F98's numbers mean 156 of the 170 landed, not 170;
+  the error was in the "all 170 land" assumption, not in the instrument, and
+  C6 tests that reading directly by measuring n.
