@@ -805,7 +805,7 @@ Ordered by priority-to-the-refactoring; each entry = observation + where to look
 
 75. **DECISIONS_PENDING D1–D3 answered by Vixy (2026-07-22, recorded by Claude Fable 5). D1 RESOLVED (overrides the rec), D2 RESOLVED-by-criterion (new domain constraint §2.0 D8), D3 PARTIAL — a third data repository exists; completion re-asked.** […] → INTENT/11.75.md
 
-76. **§2.0 D8 COMPLETED — the AS-IF RULE is the intent (2026-07-22, Vixy, recorded by Claude Fable 5).** […] → INTENT/11.76.md
+76. **§2.0 D8 COMPLETED — the AS-IF RULE is the intent (2026-07-22, Vixy, recorded by Claude Fable 5).** […] → INTENT/11.76.md **[ANNOTATED 2026-09-06, §11.215(g) (task F95) — THE BARRIER HAS ITS FIRST POSITIVE TEST: at a pinned clock across 129 dumps the NEW path's positions are bit-identical for 120 of 120 bodies while the OLD path's one-step-per-call solver seed moves four of them by ≤ 136 ulps — 2–4 orders below §11.87(c)'s recorded Kepler float floor; this second home written at F95's acceptance by the supervisor — the entry's (b) carried the marker alone (both homes).]**
 
 77. **D3 COMPLETED — the data-ecosystem model lands, and it reframes more than D3 (2026-07-22, Vixy, recorded by Claude Fable 5).** Facts [vixy]: `~/.spacecrafter` currently holds the latest data version (to Vixy's knowledge); deliveries are **frozen individually**, updates **offline** […] → INTENT/11.77.md
 

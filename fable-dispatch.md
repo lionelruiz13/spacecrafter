@@ -203,6 +203,75 @@ F91 FUNCTIONAL (RA/DE parity through the sidecar, farm); F94 FUNCTIONAL (one scr
 script, farm, pre/post); F95 FUNCTIONAL (the soak — hours on `:2`, no photometric
 claim). Remotes: local contains origin on both; push impossible here — the owner's push
 is R5, unchanged.
+**Round outcome (session 24 close, 2026-09-06 — every time in this note is pasted `date`
+output; the close commit's own clock is the stamp):** F91 → **§11.213** + §5.86/§5.19 FIXED +
+**§5.138** (supervisor-minted at acceptance) + the §5.86 pole-guard rider (the new path's RA/DE
+is old's byte for byte on 88 of 90 bodies; §11.4 CLOSED — its "−90.0003° zero point" was the
+surface fold's `+π/2`; two more port slips fixed in the same member; `getEarthEquPos`
+topocentric) · F94 → **§11.214** + §5.98 FIXED (`$body_selected` answers 600/503; proven both
+ways by my own runs on the preserved pre-fix binary and the reference; 1 of 408 shipped scripts
+reads the variable, its arm unchanged) · F95 → **§11.215** (T5.2 RAN: 5 h 44 min in two legs,
+128 cycles, 688 samples, no member of the stability class the instrument can see fired,
+thirteen clean quits; §5.84's mechanism measured at ≤ 136 ulps on four OLD-path bodies with
+the NEW path bit-stable 120/120; §5.115 priced at 1.88 MB/h; the RSS tail 0.28–0.38 MB/h
+named; DEPLOYMENT-MAP T5 item 2 struck) — **three for three delivered AND supervisor-verified
+same session**, every delivery re-verified by my own runs (the smoke suite on F91's binary;
+F94's instrument on BOTH binaries; a 9-minute soak leg on the reference; the tables re-counted
+with awk; the RSS step signs recomputed; the epoch diff re-run). Code `0b46a63f → 5a1e5749 →
+a2a880ef` (two executor commits: F91's three `experimentalModule` files, F94's `core.cpp` two
+literals — nothing else); binary `407b3d1d → f7112cb9 → 404b9e89`; harness `ebae1aa →` this
+close. SUPERVISOR ACTS: archival pass 16 (`f327191`); the two mints under the PREMISES rule
+(`8faab9b`, the first sections minted under it — every line PASS at the mint); §5.138 minted +
+the §5.86 rider (`7fe6d04`); F94's and F95's per-round premises refreshed by line-targeted
+`sed` with content assertions at each dispatch; the §11.215 marker's second home at the §11.76
+stub (this close — the executor wrote the entry's only; the first paraphrase then tripped the
+pair-check's D/M tests on two citations and was aligned to the entry's, both measured); Q-68 +
+one miss-ledger line in `~/shared`. OWNER EVENTS IN-SESSION: none — the trigger line plus his
+environment note; no question asked (Sunday). HOST: same boot throughout (`uptime -s`
+2026-09-04 18:45:08); RAM 53 GiB available all night (his note predicted it); `:2` unlocked on
+all 688 + 18 soak samples; no HOST-EVENTS entry owed. SUPERVISOR TALLY: **three dispatcher
+defects** — F91: the ledger's 0.002014° rounded to "0.002°" in my prompt (a rounding the §5.19
+row itself carries); F94: the section's "a citing comment is allowed" and its check (b)'s
+zero-hit grep, inconsistent when the comment names the token; F95: a two-run stall sample
+("2 per launch") stated as a rate — all output-side, all corrected at their nodes by the
+executors' report-not-absorb; plus **six instrument slips of my own hand**, each caught in the
+same minute and none in a record: cwd drift ×4 (a relative path after a `cd` in an earlier
+call — the rule adopted mid-session: absolute paths in every call), one mis-quoted grep
+pattern, and ONE in-window-hazard-didn't-fire instance — the Bash `grep` silently skipped
+`doc/superscript.sts` (CLAUDE.md hazard (1), in the window the whole time) and I read the
+0-hit as absence until the row's own `:1529` contradicted it; F94's premises then carried
+`/usr/bin/grep`. **EXECUTOR REPORT DEFECT** (F95): a baseline claimed *"I2 36 · M 81 — all 0"*
+where its own commits measure I2 37 · M 82 (a one-home marker) — caught by my instrument run,
+corrected at acceptance; Q-67's class on the executor side, a datum for that entry. EXECUTOR
+criterion-integrity instances: **≥ 15** (F91: the frame derived from old's code before the
+fix; the Deimos number pre-registered from F44's landed dump; G3 committed red-for-red both
+ways; the format control shown able to see 420 differences; the §11.144 marker reworded out
+of the scan's lexicon rather than left to manufacture an arrear. F94: predictions before the
+launch; a literal AND an in-chain control; the neutral third date; the comment reworded so
+check (b) could still fail; the farm builder's own `startup.sts` self-catch. F95: the criteria
+before the launch; both detectors shown RED on live controls; the hang control finding the
+detector's latch; the leg-1 race reproduced both ways and the leg re-run in full; a baseline
+prediction corrected instead of adjusted; the four movers reproduced on an independent
+launch; eccentricity refuted as the selector; §5.79 applied and answered NO). BASELINES AT
+CLOSE (v2, measured 08:50:32 after the marker alignment): scan **226/279/135** (+3/+5/+4 over
+the open — §11.215's citation-shaped candidates: one credited at §11.76, four disposed as
+citations at §11.215(n)) · pair-check **231/206/25/110** (+3 entry files / +3 live pairs =
+§11.213/§11.214/§11.215; inline stubs 109 → 110 = §5.138) · D 35 · D2 11 · I 89 · I2 36 · M 81
+(every filter at the open's value). Archival pass 17 (update-s23 + F91/F94/F95, live `### F`
+3 → 0) DEFERRED to the next open. NEXT-ROUND QUEUE, in order: (1) archival pass 17 at open;
+(2) **the second soak, over the tester's `fscripts/` corpus** (body authoring under load —
+§5.137's class; the F95 instrument with a `struct loop`-aware duration model, F90's
+`show_own_duration` fixed FIRST; M–L, hours); (3) **§5.138's leg + the §5.86 pole-guard
+rider** as ONE S task in `Camera` (arm `set zoom_offset 0.3`, dump, alt/az old vs new; the
+one-line guard fix); (4) the §11.207(g) tail: §5.21 (S–M) · §5.66+§5.71 (M) · §5.115 (S–M,
+now priced) · A15's residual (S); (5) the 8–12 h RSS-tail leg ONLY on the owner's word (§3);
+(6) instrument residues: `supervised-by.sh` B1 (owner-authorized), `f85_links.py` guard,
+`f89_p7.py margins`, the b4 `/proc` probe, the `dumpread.py` duplicate, F90's loop-blind
+parser, the two ledger instruments' directory named at their invocation line (the
+miss-ledger item); (7) riders: the two-line nav string (tester), `observedToBodyLocalPos`
+with no consumer (owner), the `[parallel-script]` question, scedit README `:43`; (8) owner
+items per §3. Remotes: **90 code / 735 harness** unpushed before this close's commit
+(measured 08:48:47); push from a keyed host — the supervisor never pushes.
 
 ---
 
@@ -1035,6 +1104,54 @@ defects found by the soak and fixed (a shared temp filename in `atomic_write_jso
 1154/3200 -> 0; F90's `show_own_duration` blind to `struct loop`). DEPLOYMENT-MAP T5 item
 2 struck + item 1's "T5.2 alone" annotated; `harness/README.md` F95 section; D14 PASS.
 Code UNTOUCHED at `a2a880ef`, binary `404b9e89` unchanged.
+**ACCEPTED 2026-09-06 — the verifying commands' `date` read 08:35:50 and 08:36:39–08:46:02
+(supervisor, session 24, Claude Fable 5.1).** Verified by my own runs and reads, not by the
+report: §11.215 read in full; twelve harness commits `c4e5c9e` → `439828b` (Claude Opus 5; the
+criteria at `c4e5c9e` before the first application process at 02:11:54); code UNTOUCHED at
+`a2a880ef`, binary `404b9e89`, both trees clean; markers at §5.59/§5.61/§5.62/§5.84/§5.115
+(`INTENT.md` :347/:351/:353/:395/:454), `INTENT/11.76.md`, the map (`:652`, `:664`), README
+§F95 (`:4380`); D14 PASS; no driver and no app in `/proc/*/comm`; frozen `03fbee59` /
+`545a51ef` / `cea83254`. **The committed artifacts counted by my own hand:** leg 1 **328**
+samples / **61** complete cycles, leg 2 **360** / **67**; the RSS series' step signs recomputed
+from `cycles.csv` — leg 1: 34 positive · 25 zero · **0 negative**, largest swing 26.50 MB; leg
+2: 39 · 26 · **0**, 23.98 MB — the entry's numbers to the digit, and the last 25 steps are 12–16
+kB each in BOTH legs (the monotone tail is real); `f95_epoch.py` on leg 2 by my hand reproduces
+the four movers (Ananke / Neried / Setebos / Sycorax, two values each, Ananke's two doubles
+verbatim). **AND the instrument run by my own hand — one 0.15 h leg on the reference
+(`/home/claude/sc-f95/supervisor/`, 08:36:39–08:46:02): the driver detached by `start` and
+finished on its own deadline; 18 samples, 3 complete cycles at 158.5 / 158.8 / 157.9 s, FLAGS
+none, RTT 202–208 ms, stalls 15/0 with the session unlocked, the dump diff 4 bodies at cycles 3
+and 4, quit exit 0 in 0.66 s, frozen 11 in==out; the leak rule INCONCLUSIVE at three boundaries
+by its own design.** Deviations ENDORSED with the executor's arguments: leg 1 re-run in full
+after the DRIVER's own race (diagnosed by reproduction 1154/3200 → 0, the shorter leg delivered
+beside the full one, two legs buying cross-launch reproducibility); `diaporama.sts`'s
+SHOW-TIMEOUT every cycle left in place mid-campaign (a deterministic 63 s slice beats a budget
+changed halfway; the defect is F90's duration model, `struct loop`-blind — recorded, not patched
+in F90); F2's second arm corrected from a cumulative count to GAINS after the hang control
+latched it — the control found the detector's defect, which is what a control is for; the
+controls at S = 10 s; the three chained `wait` calls (a process deviation, reported; the soak
+unaffected — the tool moved the over-long call to the background, a datum for Q-68).
+DISPATCHER DEFECT reported, ACCEPTED as mine, output-side with the counterfactual: *"2 `Frame
+stall detected` per ~92 s launch"* — a two-run sample stated as a rate; ten launches measure 1
+or 2. Round tally: **three dispatcher defects.** **EXECUTOR REPORT DEFECT, caught by my own
+instrument run and corrected at this acceptance:** the report's *"D 35 · D2 11 · I 89 · I2 36
+· M 81 — all 0"* was NOT the measured state — at its own commits `9e181d0` and `439828b` the
+pair-check reads **I2 37 · M 82**: the §11.215 marker at §11.76 was written at the ENTRY only
+(`INTENT/11.76.md` (b)), never at the stub — a one-home marker against §11.113(p); the second
+home is written in this commit (the §11.76 stub, `INTENT.md:808`) and the counts return to
+36/81 (measured after the write; the close note pastes them). The class is Q-67's on the
+executor side: a baseline claimed "all 0" without the command's output beside it. Routed: to the
+owner — the 0.28–0.38 MB/h RSS tail (one 8–12 h leg, or not) and the four-body selector (the
+executor recommends leaving it, below the accepted float floor); to the main tester — the
+pause honour/skip item enriched (~39 resumes per 159 s cycle; `diaporama.sts` alone authors 100
+pauses in a `struct loop`). STANDING CONSEQUENCES: **T5.2 has RUN — 5 h 44 min of show load in
+two launches plus thirteen quits on `404b9e89`, and no member of the stability class the
+instrument can see fired**; what it cannot see is at §11.215(m) (B30 — no pixel read; body
+authoring — the `fscripts/` corpus is a named second soak, OWED; thirteen quits is a rate, not
+a proof); §5.84 has its first measured magnitude (≤ 136 ulps, OLD path only; the NEW path's D8
+barrier tested positive 120/120); §5.115's price is 1.88 MB/h — ~45 MB across R20's eight
+launches, in ONE file; the soak's resume point is `f95_soak.py status <outdir>`;
+`/home/claude/sc-f95/` holds the two legs, the controls, ten cycle farms and my leg.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
@@ -1059,6 +1176,78 @@ Code UNTOUCHED at `a2a880ef`, binary `404b9e89` unchanged.
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-24 decision items (2026-09-06, the ENGINE-AND-SOAK round — F91 · F94 · F95, three
+  for three; written Sunday morning on your stated capacity: nothing asked in-session, every
+  item one line to answer or to ignore):**
+  - **YOURS, and nothing here substitutes them:** (1) **R5 — the PUSH**: `master-beta` (90
+    commits) and `CC-harness` (the count is in the close note) from a keyed host — unchanged,
+    still the one act that makes any of this reach the developer. (2) **"READY" IS NOW YOUR
+    WORD**: both gates the map put on it have run — T5.1 (F90, four identical runs) and T5.2
+    (F95: 5 h 44 min of show load in two launches, 128 cycles, thirteen clean quits, no member
+    of the stability class fired) — and what the soak CANNOT see is stated at §11.215(m): no
+    pixel (B30), no body authoring (the `fscripts/` corpus, `06old.sts`'s 3000 satellites —
+    a second soak, owed), an intermittent class at thirteen quits. The rename is §11.212(h) when
+    you say so; **the PR-target sentence is still yours** (session 23's item 2). (3) **The RSS
+    tail** — 0.28–0.38 MB/h, monotone, reproduced in both legs, 3–4 pages per cycle, ~3 MB over
+    an eight-hour day: is it worth ONE 8–12 h leg to separate a settling tail from a slow leak?
+    Yes/no. (4) **The four-body selector** (Ananke/Neried/Setebos/Sycorax answer two doubles ≤
+    136 ulps apart on the OLD path at a pinned clock — §5.84's mechanism measured): the
+    recommendation is to LEAVE it (2–4 orders below §11.87(c)'s accepted float floor; the new
+    path is bit-stable 120/120) — say the word only if you want the selector attributed.
+    (5) **`Camera::observedToBodyLocalPos` now has no in-tree consumer** (F91 kept it as
+    §5.86's member and the probes' contract): keep or delete — an interface decision, yours.
+    (6) **Scratch trees, say the word to remove** (measured at the close): `sc-f84` 4.2 GB ·
+    `sc-f86` 1.3 GB · `sc-f89` 1.5 GB (+ a registered code worktree: `git worktree remove
+    --force`) · `sc-f90` · `sc-f93` · `sc-f91` · `sc-f94` (the preserved pre-fix binary, 190 MB)
+    · `sc-f95` — every cited number resolves by commit without them.
+  - **ROUTED TO THE MAIN TESTER, not asked (§11.161(c)):** the doc token `doc/superscript.sts:1529`
+    `Ganymed=503` → `Ganymede=503` (his file; after F94 it is the one spelling on that line
+    matching nothing) · the sentence at §11.214(k)(2) on `$body_selected` (1 of 408 scripts on
+    this field reads it, tests 0, same arm both binaries — open only for his own installation)
+    · the new path's nav string is TWO lines with `" / "` where old prints one with `"/"`
+    (§11.213(i4): a readout-format expectation, not a frame question) · the pause item
+    (session 23 (7)) enriched: honouring the authored pauses unattended costs ~39 resumes per
+    159 s cycle, `diaporama.sts` alone authors 100 in a `struct loop`.
+  - **VETO POINTS taken this session (implemented-and-live, each cheap to reverse; silence =
+    endorsed):** (a) **F91's fix** (code `5a1e5749`, `src/experimentalModule/` only): the RA/DE
+    readout is `viewMat`'s exact inverse landing in old's frame — including the FULL surface
+    fold, whose constant `+π/2` was §11.4's "−90.0003° zero point" (so §11.4 closes with no
+    constant anywhere); plus two port slips found and fixed in the same member (the LOCAL hour
+    angle was built from the observer's LATITUDE; a bare `fmod` printed negative hour angles
+    pre-J2000); plus `ModularObject::getEarthEquPos` re-pointed to the observer-centred
+    authority (I1 — `Body::getEarthEquPos`'s contract; `set home_planet selected` feeds it
+    back through the inverse map). Result: 88 of 90 bodies print old's RA/DE string byte for
+    byte (Eris = the two trees' own 1.198° position gap; Puck = one arcsecond of float32).
+    (b) **F94's two literals** (code `a2a880ef`, `core.cpp:2251/:2255`): `$body_selected`
+    answers 600/503 on your tester's instruction. (c) **§5.138 minted at F91's acceptance**
+    (record-only): the new path's alt/az readout and the atmosphere's sun direction ride the
+    offset-FREE rotation while their inputs carry the B17 offset — pitched by `offset ×
+    halfFov` whenever `set zoom_offset` is armed; one leg owed, decision-free, next round.
+    (d) **The F95 instrument** (`f95_soak.py`, one detached driver + foreground reads — the
+    design Q-68 measured possible): a fourth harness family the developer can run. (e) the
+    §11.215 marker's second home at the §11.76 stub (the executor wrote one home). (f)
+    archival pass 16.
+  - **HELD OPEN, not absorbed:** the second soak over `fscripts/` (owed, next round's
+    candidate); §5.138's leg + the §5.86 pole-guard rider (one S task); `f44_parity.py`'s
+    `reconstruct` is now WRONG for a post-F91 binary by construction (§11.213(k)(3) — reuse
+    `f91_parity.py`); every harness value recorded before `5a1e5749` for the new path's
+    RA/DE/SA/GHA/LHA/LPA is a record of the pre-fix engine (a sweep for such matchers was NOT
+    run — §11.158(l)(2)'s warning stays live); F90's `show_own_duration` is `struct
+    loop`-blind (`diaporama.sts` SHOW-TIMEOUTs every cycle by that model, not by the app);
+    the `Frame stall detected` rate (~80/h unlocked; 1–2 per 92 s launch) is recorded, never
+    gated, and unattributed.
+  - **FACTS, no decision asked:** §11.4's calibration item was never a calibration item ·
+    the OLD path's Kepler solver seeds from a `mutable` member and steps once per call
+    (`orbit.cpp:515-573`) — §5.84, now measured; the NEW path's `useNow()` barrier (§11.76(b),
+    your `+4` constant) is what makes it bit-stable · the script log costs 1.88 MB/h under
+    show load, ~45 MB across R20's eight launches, all in ONE per-day file (§5.115) · thirteen
+    `shutdown action now` on `404b9e89`, all exit 0 within 0.7 s · **three dispatcher defects
+    this round, all mine, all output-side, all caught via report-not-absorb** (a ledger number
+    rounded in a prompt; a section whose "comment allowed" contradicted its own zero-hit
+    check; a two-run stall sample stated as a rate) — and one EXECUTOR report defect caught by
+    my own instrument run (a baseline claimed "all 0" where the pair-check read +1/+1: a
+    one-home marker), Q-67's class from the other side.
 
 - **Session-23 decision items (2026-09-05, the READINESS round — your line *"renamed main
   once ready"* was the trigger; kept short on your word about this week's capacity; the
