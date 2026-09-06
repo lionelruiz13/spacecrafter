@@ -634,6 +634,21 @@ def leak_verdict(series):
             "span_vs_floor": "span %s vs floor %s" % (span, floor)}
 
 
+def very_long_arm(prev, now, screensaver, locked_hint):
+    """F2's SECOND arm, as `prediction.txt` words it: the vulkan log GAINS a
+    `This frame stall is very long` in an UNLOCKED session.
+
+    The first implementation tested the CUMULATIVE count against zero, and the
+    HANG control showed what that costs: one very-long stall (caused by the
+    control's own SIGSTOP) latched the flag onto every later sample, so the
+    channel could never say "and now it is quiet again".  GAINS means an
+    increase since the previous sample, which is what was committed, and it is
+    also the only form that can go back to green."""
+    if now <= prev:
+        return False
+    return screensaver != "true" and locked_hint != "yes"
+
+
 CONST_BODY_FIELDS_OLD = ["ecl", "rotLocalToParent", "rotLocalToParentUnprecessed",
                          "matLocalToParent", "parent"]
 CONST_BODY_FIELDS_NEW = ["ecl", "parent", "bodyType", "primary"]
@@ -740,6 +755,7 @@ class Driver:
         self.stop_evt = threading.Event()
         self.terminal = threading.Event()
         self.stall = {"detected": 0, "very_long": 0}
+        self._prev_very_long = 0
         self.last_sample = {}
         self.session_id = ""
         self.vulk = None
@@ -898,28 +914,34 @@ class Driver:
         row["probe_lock_wait_ms"] = round(lock_wait * 1000, 1)
         row["sim_jd"] = hit.split(";")[3].strip() if hit else ""
 
-        fl = []
+        fl, why = [], []
         if rtt > HUNG_S:
             fl.append("F2")
-        if self.stall["very_long"] > 0 and row["locked_hint"] != "yes" \
-                and row["screensaver"] != "true":
+            why.append("round trip %.1f s exceeds the %.1f s bound" % (rtt, HUNG_S))
+        if very_long_arm(self._prev_very_long, self.stall["very_long"],
+                         row["screensaver"], row["locked_hint"]):
             fl.append("F2")
+            why.append("`This frame stall is very long` gained %d (total %d) with "
+                       "screensaver=%s lockedHint=%s"
+                       % (self.stall["very_long"] - self._prev_very_long,
+                          self.stall["very_long"], row["screensaver"],
+                          row["locked_hint"]))
+        self._prev_very_long = self.stall["very_long"]
         row["flags"] = ",".join(sorted(set(fl)))
         self.samples_w.writerow(row)
         self.last_sample = row
 
         if "F2" in fl and "F2" not in self.flags:
             self.raise_flag(
-                "F2", "the round trip of `get status position` took %.1f s "
-                      "(bound %.1f s) / `This frame stall is very long` count "
-                      "%d, with screensaver=%s lockedHint=%s"
-                      % (rtt, HUNG_S, self.stall["very_long"],
-                         row["screensaver"], row["locked_hint"]),
+                "F2", "; ".join(why),
                 rtt_s=round(rtt, 2), very_long=self.stall["very_long"],
                 screensaver=row["screensaver"], locked_hint=row["locked_hint"])
         elif "F2" in fl:
+            # every later firing is recorded too - a hang that recurs is a
+            # different fact from a hang that happened once.
             self.flag_detail.append({"flag": "F2-again", "at_iso": now_iso(),
-                                     "sample": self.i, "rtt_s": round(rtt, 2)})
+                                     "sample": self.i, "rtt_s": round(rtt, 2),
+                                     "why": "; ".join(why)})
 
         if self.i % 20 == 0:
             moved = self.check_frozen()
@@ -1353,6 +1375,10 @@ def verb_status(a):
         print("VERDICT    : flags %s | cycles %s | samples %s | leak %s"
               % (vd.get("flags") or "none", vd.get("cycles"), vd.get("samples"),
                  (vd.get("leak") or {}).get("verdict")))
+        print("leak series: %s" % (vd.get("leak_series_kb") or []))
+        nd = {k: len(v) for k, v in (vd.get("dump_diff_vs_cycle2") or {}).items()
+              if isinstance(v, list)}
+        print("dump diffs : %s" % (nd or "n/a"))
         print("quit       : %s" % json.dumps(
             {k: v2 for k, v2 in (vd.get("quit") or {}).items()
              if k not in ("teardown_tail",)})[:600])
@@ -1455,6 +1481,20 @@ def verb_selftest(a):
         hit = bool(TEARDOWN_FAULT.search(s))
         print("    MATCH %-5s %s" % (hit, s[:60]))
         ok &= not hit
+
+    print("\n(5b) F2's SECOND arm - GAINS, not a cumulative count.  The HANG "
+          "control\n     showed the cumulative form latching onto every later "
+          "sample.")
+    cases = [((0, 1, "false", "no"), True, "0 -> 1 unlocked: fires"),
+             ((1, 1, "false", "no"), False, "1 -> 1 unlocked: quiet again"),
+             ((1, 2, "false", "no"), True, "1 -> 2 unlocked: fires again"),
+             ((0, 1, "true", "no"), False, "0 -> 1 but the screensaver is ON"),
+             ((0, 1, "false", "yes"), False, "0 -> 1 but the session is LOCKED"),
+             ((2, 1, "false", "no"), False, "a counter that went DOWN")]
+    for args, want, label in cases:
+        got = very_long_arm(*args)
+        print("    %-5s (want %-5s) %s" % (got, want, label))
+        ok &= (got == want)
 
     print("\n(6) `get status position` reply matcher, both ways")
     good = "  43.60; 1.44;    150.00; 2460000.500000;   0.000000;"

@@ -1,0 +1,46 @@
+==========================================================================
+F95 SELFTEST - the verdict functions, each shown BOTH ways
+==========================================================================
+
+(1) LEAK rule, MONOTONE series [100, 110, 120, 130, 140, 150]
+    -> LEAK  (strictly increasing at every one of the 4 steps from cycle 2)
+    steps [10, 10, 10, 10]  per_cycle 10.0  floor 10
+
+(2) LEAK rule, NON-MONOTONE series [100, 130, 128, 141, 139, 150]
+    -> NO LEAK BY THIS RULE  (2 of 4 steps from cycle 2 are not positive)
+    steps [-2, 13, -2, 11]  span 20  floor 13
+
+(3) rises overall, not monotone [100, 200, 150, 260]
+    -> NO LEAK BY THIS RULE ; span 60 against floor 110
+
+(4) too few boundaries [100, 110, 120] -> INCONCLUSIVE
+
+(5) TEARDOWN-FAULT matcher, both ways
+    MATCH True  terminate called without an active exception
+    MATCH True  Segmentation fault (core dumped)
+    MATCH True  free(): invalid pointer
+    MATCH True  *** stack smashing detected ***
+    MATCH False (Info ): Vulkan instance created
+    MATCH False big moon.jpg is ready
+    MATCH False ScriptMgr: script end
+
+(5b) F2's SECOND arm - GAINS, not a cumulative count.  The HANG control
+     showed the cumulative form latching onto every later sample.
+    True  (want True ) 0 -> 1 unlocked: fires
+    False (want False) 1 -> 1 unlocked: quiet again
+    True  (want True ) 1 -> 2 unlocked: fires again
+    False (want False) 0 -> 1 but the screensaver is ON
+    False (want False) 0 -> 1 but the session is LOCKED
+    False (want False) a counter that went DOWN
+
+(6) `get status position` reply matcher, both ways
+    good -> '43.60; 1.44;    150.00; 2460000.500000;   0.000000;'
+    bad  -> None
+
+(7) DUMP-DIFF over the expected-constant set, both ways
+    identical -> 0 diff(s)
+    perturbed -> 3 diff(s): ['header.jd', 'body:Moon', 'Mars.old.ecl']
+
+==========================================================================
+SELFTEST: PASS
+==========================================================================

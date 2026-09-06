@@ -1020,8 +1020,16 @@ detached-process re-probe HELD — `setsid -f nohup sleep 120` at 01:57:18 alive
 next call at 01:57:26). `harness/f95_soak.py` written (four verbs + detached driver);
 `selftest` PASS (leak rule both ways, teardown matcher 4+/3-, dump-diff 0/3, position
 matcher both ways); criteria + predictions committed to
-`harness/artifacts/f95/prediction.txt`; D14 gate PASS. NEXT: the two live controls
-(DEATH `kill -9`, HANG `kill -STOP` 60 s), then the >= 3 h soak.
+`harness/artifacts/f95/prediction.txt`; D14 gate PASS.
+2026-09-06 02:2x — CHECKPOINT 2 (both live controls RED, artifacts kept): DEATH — app
+`kill -9`ed at 02:13:01 during a `wait`, **F1 at sample #7 (+70.1 s), exit status -9**,
+within one 10 s sample, driver terminal, `/proc/*/comm` clear, frozen 11/11 identical.
+HANG — `kill -STOP` 02:14:49 / `-CONT` 02:15:49, **F2 at sample #6, round trip 54.3 s
+against the 45.0 s F19 bound**, then samples #7-#11 recovered at ~201 ms, quit **exit 0
+in 0.61 s**, 0 teardown faults. The HANG control also found a defect in MY OWN detector
+(the second F2 arm tested the CUMULATIVE `very long` count, so one stall latched the
+flag onto every later sample; `prediction.txt` says GAINS) — corrected to an increase
+test, `very_long_arm()` with six selftest cases. NEXT: the >= 3 h soak.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
