@@ -69,7 +69,9 @@ JD_PRE2000 = "2440000.0"  # a date BEFORE J2000, where the mean-sidereal
                           # `fmod` [ModularObject.cpp:82-83].  A frame at a
                           # post-2000 date cannot discriminate the two.
 PARITY_TARGET = 0.002014  # §11.158(f), the number that entry measured
-FARM_ROOT = Path("/home/claude/sc-f91")
+# F96: overridable so a later task can keep its runs inside its own scratch
+# root (the default is unchanged, so F91's own invocation is untouched).
+FARM_ROOT = Path(os.environ.get("F91_FARM_ROOT", "/home/claude/sc-f91"))
 REAL_HOME = Path.home() / ".spacecrafter"
 
 FAILS, NOTES = [], []

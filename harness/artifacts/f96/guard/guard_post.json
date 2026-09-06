@@ -1,0 +1,37 @@
+{
+ "tag": "post",
+ "bin": "/home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter",
+ "stages": [
+  "guard"
+ ],
+ "bin_md5": "eb3f5e507505673a1ccd7bb1bd955288",
+ "jd": 2461233.5,
+ "offset": 0.3,
+ "target": "Jupiter",
+ "md5_in": "03fbee59bc3ec506c58f0a3f1e1d73df  /home/claude/.spacecrafter/config.ini\n545a51ef76294891579a1fc2fe13792b  /home/claude/.spacecrafter/ssystem.ini\n",
+ "guard": {
+  "farm": "/home/claude/sc-f96/farm/guard",
+  "answers": {
+   "MilkyWay": [
+    "MilkyWay\nMagnitude : -nan\nAD/DE : 00h00m00s / +90\u00b000'00\"\nAlt/Az\u00a0: +90\u00b000'00\" / +90\u00b000'00\"\nDistance : 0.00000000 UA\n"
+   ],
+   "51PegSystem": [
+    "51PegSystem\nMagnitude : -nan\nAD/DE : 00h00m00s / +90\u00b000'00\"\nAlt/Az\u00a0: +90\u00b000'00\" / +90\u00b000'00\"\nDistance : 0.00000000 UA\n"
+   ],
+   "Universe": [
+    "Universe\nMagnitude : -nan\nAD/DE : 00h00m00s / +90\u00b000'00\"\nAlt/Az\u00a0: +90\u00b000'00\" / +90\u00b000'00\"\nDistance : 0.00000000 UA\n"
+   ],
+   "Mars": [
+    "Mars\nMagnitude : 1.50\nAD/DE : 04h30m39s / +21\u00b040'45\"\nAlt/Az\u00a0: -11\u00b041'17\" / +44\u00b029'51\"\nDistance : 2.07175947 UA\n"
+   ],
+   "Jupiter": [
+    "Jupiter\nMagnitude : -1.36\nAD/DE : 08h19m44s / +20\u00b001'38\"\nAlt/Az\u00a0: -26\u00b003'11\" / +349\u00b053'39\"\nDistance : 6.26616869 UA\n"
+   ]
+  },
+  "tcp_seconds": 19.0,
+  "exit_code": 0
+ },
+ "md5_out": "03fbee59bc3ec506c58f0a3f1e1d73df  /home/claude/.spacecrafter/config.ini\n545a51ef76294891579a1fc2fe13792b  /home/claude/.spacecrafter/ssystem.ini\n",
+ "fails": [],
+ "notes": []
+}

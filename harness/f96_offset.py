@@ -279,6 +279,27 @@ class App:
         finally:
             self.sock.settimeout(None)
 
+    def query(self, cmd, pause=1.0):
+        """Send and READ THE ANSWER.  Since §11.135 the reply goes to the
+        connection that asked (`io.cpp`), and `ServerSocket::send` puts the NUL
+        terminator on the wire (F90's gotcha) -- so the blob is NUL-separated
+        and is decoded UTF-8 (F94: the engine writes UTF-8 on the socket)."""
+        self.sock.sendall((cmd + "\n").encode())
+        time.sleep(pause)
+        buf = b""
+        try:
+            self.sock.settimeout(1.5)
+            while True:
+                chunk = self.sock.recv(65536)
+                if not chunk:
+                    break
+                buf += chunk
+        except socket.timeout:
+            pass
+        finally:
+            self.sock.settimeout(None)
+        return [p for p in buf.decode("utf-8", "replace").split("\x00") if p.strip()]
+
     def dump(self, tag, pause=1.0, keep=True):
         self.n += 1
         p = self.out / "dumps" / ("%s_%s.json" % (self.name, tag))
@@ -812,6 +833,38 @@ def stage_cfg(binp, out, rep):
     return leg
 
 
+GUARD_NAMES = ["MilkyWay", "51PegSystem", "Universe", "Mars", "Jupiter"]
+
+
+def stage_guard(binp, out, rep):
+    """IS THE POLE GUARD REACHABLE FROM A SHIPPED COMMAND?  §11.213(i2) reasoned
+    it was measure-zero ("exact float equality of two coordinates").  The dump
+    says otherwise: 29 of the 120 records in the shipped default scene carry an
+    eye-frame position of EXACTLY (0,0,0) -- systems and anchor bodies whose
+    `dist` is 0 -- and (0,0,0) takes the same `x == 0 && y == 0` branch.  This
+    stage asks the question on the OPERATOR's own channel: `select planet <name>`
+    resolves a NEW-ONLY name through the ModularObject bridge
+    [observed: core.cpp:1090-1097 -> ssystem_factory.cpp:909-915] and
+    `get status object` prints that object's nav string.  Mars and Jupiter are
+    the CONTROL: ordinary bodies, whose answer must not move."""
+    farm = FARM_ROOT / "guard"
+    build_farm(farm)
+    rep["guard"] = leg = {"farm": str(farm), "answers": {}}
+    app = App(binp, farm, out, "guard")
+    try:
+        leg["tcp_seconds"] = app.start()
+        readout_setup(app)
+        app.settle_scale()
+        for name in GUARD_NAMES:
+            app.send("select planet %s" % name, 1.0)
+            ans = app.query("get status object", 1.0)
+            leg["answers"][name] = ans
+            ok("select planet %-14s -> %s" % (name, ans))
+    finally:
+        leg["exit_code"] = app.stop()
+    return leg
+
+
 def descend_score(leg):
     """WHICH EXPRESSION DID THE STEP GO THROUGH?  `moveEyeRel(v)` is
     `moveRel(observedToLocalPos(v))` and in free flight `moveRel` adds straight
@@ -979,7 +1032,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     tag = opt("--tag", "pre")
     binp = Path(opt("--bin", str(HERE.parents[1] / "build-claude/src/spacecrafter")))
-    stages = opt("--stages", "cmd,cfg,descend").split(",")
+    stages = opt("--stages", "cmd,cfg,descend,guard").split(",")
     jd_sun = opt("--jd-sun")
     jd_sun = float(jd_sun) if jd_sun else None
 
@@ -1005,6 +1058,8 @@ def main():
             stage_cfg(binp, out, rep)
         if "descend" in stages:
             stage_descend(binp, out, rep)
+        if "guard" in stages:
+            stage_guard(binp, out, rep)
     finally:
         md5_out = subprocess.run(["md5sum", str(REAL_HOME / "config.ini"),
                                   str(REAL_HOME / "ssystem.ini")],

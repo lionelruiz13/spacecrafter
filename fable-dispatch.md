@@ -709,26 +709,23 @@ test -e /home/claude/sc-f96 ; echo $? => 1
 the fix (code first) + the pole guard; the four proofs incl. the full canary; §11 entry +
 stub; §5.138 flipped; the rider closed; back-markers; map; README; trees clean; WIP
 cleared; baselines LAST.
-**WIP:** 2026-09-06 CP3 — THE LEG IS IN AND THE MODEL IS CONFIRMED; the fix is now
-unblocked. §0.7 gate 21/21 + prose premises; predictions P1–P14 committed before the first
-launch (`b690e03`), P15–P20 before the clean leg (`b97c9f1`). LEG (pre-fix `404b9e89`,
-`artifacts/f96/leg_pre/`, driver `f96_run.sh --stages cmd,cfg,descend`, **0 FAIL**): A/B at
-ONE held camera state, the offset the only variable — 72 of 120 positions re-evaluated and
-**all 72 land on `R'·p` exactly**, the other 48 byte-frozen; on the re-evaluated set the
-readout turns by C to **max 0.000011°** (median 5e-6), mutations refuted (M1 median 29.31°,
-M2 7.51°), max old-vs-new gap **27.000007°** = 0.3×90°, `axis(C)` vs `Rvᵀx` **0.000000°**;
-frozen set: the offset does not reach it at all (sep 0.000000°). RETURN CONTROL 120/120
-byte-identical with the camera state identical. CONFIG CHANNEL answered: at startup camera
-`viewOffset` **0.3**, `transition` **0**, `eff` **0** → the scalar lands, the arming is what
-gates it; after a commanded view move `eff` = 0.3 with no `set zoom_offset` at all.
-Tracking datum pre-fix: new `screen` **[6.8e-07, 0.299999952]**. Descend (free flight,
-offset 0.3): the step is along `Rvᵀ·ẑ` to **0.0121°** and **26.998°** from `(R'Rv)ᵀ·ẑ` —
-a both-ways discriminator inside one run. Sun at offset 0.3 pre-fix: alt **17.59°** vs old's
-**1.995°** ⇒ the atmosphere's own `skyBrightness` term 0.5632 vs 0.1622. NEW OUT-OF-SCOPE
-FINDING, measured, not fixed: a body whose eye-frame `mat` is not re-evaluated after a
-camera move keeps a frozen readout — 19 of 90 both-tree bodies, **109.9°–170.7°** from old
-at offset 0, while all 90 agree at the state they were last evaluated in. NEXT: the fix
-(`Camera.hpp`/`Camera.cpp` only), then the four proofs.
+**WIP:** 2026-09-06 CP4 — THE FIX IS IN AND THE FOUR PROOFS ARE GREEN. Code
+`a2a880ef → 24100461` (`Camera.hpp`+`Camera.cpp` only, `EnvironmentManager.cpp` untouched);
+binary `404b9e89 → eb3f5e50`, dry build 0 steps, D14 gate PASS. POST-FIX
+(`artifacts/f96/leg_post/`, 0 FAIL): at offset 0.3 the 71 re-evaluated bodies read old's
+alt/az to **max 0.000017°** (pre-fix 27.000007°), the Sun with them — its `skyBrightness`
+term 0.16222356 vs old's 0.16222369 where pre-fix it read 0.5632; the readout no longer
+moves with the offset (max 0.000010°). Offset 0: **F91 table BYTE-IDENTICAL pre/post in
+both locales** (`c125adf0` fr, `9784f616` en), Q2 88/90 on both, format control 0 shape
+differences with 420 on its own locale control, P0 alt/az **90 of 90 byte-identical** with
+the camera state identical; smoke suite **rc 0**, 91.3 s, step for step; **FULL CANARY exit
+0, 12/12 in band, every delta 0.0**, dwell frame md5 **5215565b** = F79's. Tracking datum
+`screen` [~0, 0.2999999] both binaries; descend at offset 0.3 swaps expression (pre 0.0121°
+to `Rvᵀẑ`, post 0.0028° to `(R'Rv)ᵀẑ`). POLE RIDER: §11.213(i2)'s "measure-zero" premise is
+**REFUTED by measurement** — `select planet MilkyWay` + `get status object` answers
+`06h00m00s/+00°00'00"` pre and `00h00m00s/+90°00'00"` post (29 of 120 dump records carry an
+exactly-(0,0,0) eye position); Mars/Jupiter byte-identical. NEXT: the §11.216 entry + stub,
+§5.138 FIXED, the rider closed at §5.86, back-markers, map, README, D14, baselines LAST.
 
 ### F97 — §5.21 — `LocationOrbit` made EXACT on both paths: the authored latitude converted like the longitude (degrees, the loader's documented unit — `orbit.cpp:1091` converts one and not the other on the same line), and the spin read from the parent's ONE rotation authority at evaluation time instead of a linear model anchored at JD 0 with the parent's period and phase frozen at construction (`orbit.cpp:1102`; on Earth `Body::getSiderealTime` is the APPARENT sidereal time, which no linear model follows — magnitude to be MEASURED); on the new path the class registered at `modules.cpp:49` lands where `surface_point` + the grounded fold lands for the same keys, the spin applied exactly once whichever spelling the author uses (§11.78(c)'s double-spin trap closed by construction); D9 excluded by round-3 R18 (*"No."* — nobody has authored one), zero shipped/loaded uses measured at the mint, so no baseline scene moves (§11.207(g) item 3; DEPLOYMENT-MAP T2) [M, engine, both paths]
 

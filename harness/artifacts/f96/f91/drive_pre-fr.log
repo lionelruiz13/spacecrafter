@@ -1,0 +1,36 @@
+md5 IN (real home):
+03fbee59bc3ec506c58f0a3f1e1d73df  /home/claude/.spacecrafter/config.ini
+545a51ef76294891579a1fc2fe13792b  /home/claude/.spacecrafter/ssystem.ini
+
+farm /home/claude/sc-f96/f91farm/post-fr : {'config_is_regular': True, 'ssystem_is_regular': True, 'log_is_real_dir': True, 'app_locale': 'fr', 'sky_locale': 'fr'}
+ok:   scale settled: Moon scaling 5.00000000 == target 5.00000000 (2 probes)
+ok:   md5 in == out on the real ~/.spacecrafter
+ok:   app exit code 0
+ok:   LEG A jd=2461233.5 reference=Earth axisRot=5.059841000 free=False bound=True viewOffsetEff=0 lon=5.366667 deg lat=43.300001 deg -- 90 bodies carry BOTH paths' nav string
+ok:   G0 body count 90 (>= 89 expected; F44 measured 90)
+ok:   G1 viewOffsetEff == 0 (the reconstruction's own precondition)
+ok:   G1 anchored and bound to the surface, as the shipped place is
+ok:   G2 alt/az control: 88 of 90 agree to <= 3e-5 deg; exceptions [('Earth', 166.778544), ('Eris', 1.144513)]
+ok:   G2 every alt/az exception is Earth (nadir) or Eris (§11.158(f3)(f4))
+ok:   G3 model vs the binary's own printed NEW RA/DE: H_pre median 60.363269 deg, H_post median 0.000886 deg
+ok:   G3a the post model reproduces the printed NEW readout: median 0.000886 deg (<= 0.005, one RA print quantum)
+ok:   G3b and the OTHER model does NOT (median 60.363269 deg > 1) -- the model can tell the two binaries apart
+ok:   LHA-GHA: OLD [5.366667, 5.366667] deg (longitude 5.366667) | NEW [5.366667, 5.366667] deg (latitude 43.300001)
+ok:   the OLD path's LHA-GHA is the observer's LONGITUDE, every body
+ok:   Q1 parity, model(double) vs OLD printed: max 1.198271 deg on Eris; over the target: [('Eris', 1.198271)]
+ok:   Q1 <= 0.002014 deg for every body but Eris (§11.158(f)'s target and its single named exception)
+ok:   Q2 printed OLD vs printed NEW, byte for byte: 88 of 90 bodies print the SAME RA/DE string; the rest: [('Eris', 1.199089259), ('Puck', 0.000277777)]
+ok:   Q2 at most two bodies print a different RA/DE string
+ok:   Q2 every non-Eris body agrees within one RA print quantum (0.004167 deg)
+ok:   Q3 SA  max |old-new| = 1886.00 arcsec on Eris; over 2 arcsec (non-Eris): []
+ok:   Q3 SA equal old vs new to <= 2 arcsec
+ok:   Q3 GHA max |old-new| = 1887.00 arcsec on Eris; over 2 arcsec (non-Eris): []
+ok:   Q3 GHA equal old vs new to <= 2 arcsec
+ok:   Q3 LHA max |old-new| = 1887.00 arcsec on Eris; over 2 arcsec (non-Eris): []
+ok:   Q3 LHA equal old vs new to <= 2 arcsec
+ok:   Q3 LPA max |old-new| = 1887.00 arcsec on Eris; over 2 arcsec (non-Eris): []
+ok:   Q3 LPA equal old vs new to <= 2 arcsec
+ok:   LEG D jd=2440000: negative hour angles printed -- OLD {'GHA': 0, 'LHA': 0, 'LPA': 0}, NEW {'GHA': 0, 'LHA': 0, 'LPA': 0} (of 90 bodies)
+ok:   Q4 the new path normalises its hour angles exactly as old does at a pre-J2000 date
+
+0 FAIL(s), 0 NOTE(s); report -> /home/claude/sc-f96/f91/pre-fr/f91_result.json
