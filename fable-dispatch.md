@@ -36,6 +36,73 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-06, supervising session 26 — LovelyFoxDev over SSH from the
+laptop, the NULL-PARENT / PARKED-READOUT / SYSTEM-SWITCH / UNIFORM-POOL round: F99 · F100 · F101 ·
+F102]:** trigger = the §0b verbatim line PLUS one environment note [vixy 2026-09-06, verbatim]:
+*"First attempt over ssh from the laptop (TravellingFoxDev) - I have no physical access to the
+desktop (LovelyFoxDev) - precising in case it changes something."* — no in-line transmission
+beyond it. Open at **Sunday 21:24 CEST**, outside the owner's reliable window ⇒ this session
+asks NOTHING and closes with a compact decision list. What the ssh change DID change, measured:
+nothing that reaches a launch — the owner's RDP-created real logind session survived his move
+(`loginctl` lists claude's sessions 14/15 unchanged), `:2` answers `xdpyinfo` at 2448x1332
+under `.5KBYU3` exactly as HOST-EVENTS 2026-09-04 banks it, and the canary is green (Q-61's
+(3): the display lives with that session, not with his seat). Warm-up (every value
+`date`-measured 21:24:37–21:26:29, the command beside the claim — Q-67): both trees CLEAN at
+open, code `22499f04` / harness `d9b911e` (the session-25 close commit); definition-drift assert
+MATCH (`8e364a3a`); binary `46849f69` current — dry build 0 steps, no `src/` file newer; same
+boot as sessions 21–25 (`uptime -s` 2026-09-04 18:45:08); canary `--no-scene` **exit 0** (30
+members, artifacts `f56/canary/20260906-212529`); config/ssystem md5 pristine
+(`03fbee59`/`545a51ef`); no `spacecrafter` in `/proc/*/comm`; RAM **52 GiB available of 59**,
+`-j24`; next free §11 **219** (live ∪ archive, `max+1`); unpushed **92 code / 761 harness**
+(`rev-list --count`). Live `### F` **3 → 0** by **archival pass 18** at OPEN (update-s24 +
+F96/F97/F98, 733 lines = 113 + 212 + 207 + 197 + two seam tidies — the doubled `---` after the
+moved note and the session-25 mint's own `---` before F96, restoring 5d94d3f's exact seam;
+manifest `2026-09-06-pass18`, pre-md5 `96ea375c` reproduced in-process AND from disk, the
+archive files written before the live surface — Q-56's ordering; commit `fcfdd04`; **nothing
+carried**) **→ 4** by the mints below (`cb6009f`). Instrument baselines at open (run 21:25:28–21:26:27):
+scan **234/289/135** · pair-check **234/209/25/116** · D 35 · D2 11 · I 89 · I2 37 · M 83 — to
+the digit of the session-25 close. QUEUE CONSUMPTION (session-25 close, in order): (1) pass 18
+— DONE; (2) **§5.141's fix → F99** (S — WIDENED by the read: the row's `parent <unknown>` arm
+is refused by `ModularSystem::loadBody:1067-1071` before any loader runs, so the arm that
+reaches the dereference is `parent none`, and on it the OLD path's own `location_orbit`
+branch dereferences the same null parent FIRST, `protosystem.cpp:599`, called before the new
+path — two sites, the old-path guard under the §5.50/§11.124(h) precedent, a veto point in
+§3); (3) **§5.139's mechanism leg → F100** (S–M — the row's candidate, the walk's visibility
+gate, does not survive the read: every body the walk reaches gets its `mat` translation
+refreshed visible or not; the frozen 48 are the PARKED subtrees — `hidden = true` in the
+field's `ssystem.ini` on every dwarf planet and asteroid of F96's frozen list, their moons
+under them — plus the isolation residue; their eye-frame position has ONE writer, the D8
+barrier `useNow()`, whose memo `evaluatedJD == currentJD` (`ModularBody.cpp:459`) keys on
+the date alone while `mat` also follows the camera; F96's dumps were at `timeSpeed 0`, and
+the dump (`ssystem_factory.cpp:1192`) and the SELECTION (`ModularSystem.cpp:270`) both
+already call the barrier — so the operator's `get status object` on a hidden dwarf at a
+pinned clock is PREDICTED stale too; leg first, fix inside the barrier's contract, STOP if
+refuted); (4) **§5.143's leg → F101** (S — the candidate chain read site by site: the old half
+enumerates `currentSystem` (`:1181`), `14.sts:22` leaves the system, `:25` loads `Solsys parent
+none`, `:27 set home_planet Solsys` re-enters through `enterSystem → changeSystem →
+createSystem` (`:764-768`, `:294-307`, `:741`) into a fresh one-star `ProtoSystem`; the assert
+lands at `dumpread.load_dump` — the channel's single reader, 21 importers — raising by default,
+the census/soak readers opting out by name); (5) **§5.142's reading → F102** (S — the row's
+own *"`06.sts` alone for the number of bodies at which the first error appears"* is WRONG:
+alone it is clean by F98's measurement, the launch is arm C; the executor's full arm-C applog
+still exists under the kept `sc-f98/` tree, 10 226 lines measured at the mint, so the reading
+may need no launch; the pool is ONE 1 MiB block never grown, `app.cpp:274` → `BufferMgr.cpp:8`);
+(6) owner-word items, (7) the (g) tail, (8) instrument residues, (9) riders — carried, not
+minted. **All four mints PASS `premise_check.py` at the mint event (F99 24/24, F100 24/24, F101
+25/25, F102 22/22; 21:48:31–21:48:34) — after NINE first-run FAILs the instrument caught before
+any executor could: six grep patterns carrying `->` (refused as a mutating token — an
+instrument-grammar collision, rewritten with `..`), the keyed-loader count typed **7** where
+`modules.cpp` registers **8** (Q-67's class — dispatcher defect 1 of this round, corrected in the
+title and body), and CR line endings in the tester's `14.sts` (`tr -d '\r'`).** Picks: **F99 →
+F100 → F101 → F102** (the two code tasks first — deliveries are each other's baselines — the
+instrument task, then the reading; four S-class executors ≈ §0b.2's three). Deliveries: all to
+the parent (§11.219+, refreshed at each dispatch). Launch classes: all FUNCTIONAL
+(`--no-scene`); F102's one launch, if needed, ABORTS by design (§5.142's reproduction).
+Remotes: local contains origin on both; push impossible here — the owner's push is R5,
+unchanged.
+
+---
+
 **Update [Claude Fable 5.1 2026-09-06, supervising session 25 — LovelyFoxDev, the
 OFFSET-FRAME / LOCATION-ORBIT / SECOND-SOAK round: F96 · F97 · F98]:** trigger = the §0b
 verbatim line and nothing else (no in-line transmission). Open at **Sunday 10:20 CEST**,
