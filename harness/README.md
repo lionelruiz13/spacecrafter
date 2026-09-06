@@ -4376,3 +4376,117 @@ else/else. Five predictions committed to `artifacts/f94/prediction.txt` at harne
   loaders take `englishName` straight from it `[protosystem.cpp:511,
   solarsystem.cpp:84]`. That is why a table of hardcoded English literals can
   silently stop matching: the literal and the datum have different owners.
+
+## F95 — the multi-hour soak under show load (`f95_soak.py`, `f95_report.py`, `f95_epoch.py`) — INTENT §11.215, 2026-09-06
+
+```
+./f95_soak.py plan                                   # the criteria, no launch
+./f95_soak.py selftest                               # the verdict functions, both ways
+DISPLAY=:2 ./f95_soak.py start  <absOutdir> [--hours H] [--sample S]
+./f95_soak.py status <absOutdir>                     # instant; THE RESUME POINT
+./f95_soak.py wait   <absOutdir> <sec<=540>          # the poll unit, one tool call each
+./f95_soak.py stop   <absOutdir>                     # end now (controls, or an abort)
+./f95_report.py <absOutdir>                          # the tables
+./f95_epoch.py  <absOutdir>                          # what moved at the pinned clock
+```
+
+**This is the T5.2 instrument, and its shape is dictated by a protocol rule rather
+than by taste.** `fable-dispatch.md` §0.5 forbids the Bash tool's
+`run_in_background` for long campaigns (three executor stalls root-caused to it), so
+the long-running thing is not a backgrounded tool call: `start` launches a DETACHED
+DRIVER with `setsid` and returns at once, the driver owns the application for the
+whole soak and writes its state to disk, and every later call is a FOREGROUND read
+of that state. **An executor abort does not stop the soak.** That is not a
+side-effect, it is the recovery procedure: a successor session runs
+`f95_soak.py status <outdir>`, reads the phase, the elapsed time, the cycle, the
+flags and the last sample, and either keeps polling with `wait` or ends the run
+with `stop`. Nothing of the run lives under `/tmp` (§0.5: `/tmp` is
+session-lifetime), and `start` REFUSES an outdir outside the task's farm root and
+refuses to reuse one that already carries a `state.json` — a soak's evidence is
+never overwritten.
+
+### The criteria are the deliverable, and they are committed before the evidence
+
+`CRITERIA` is a string in `f95_soak.py`; `plan` prints it; `artifacts/f95/prediction.txt`
+IS that printed output, committed before the first launch. One source (I2), and a
+criterion that was written after the numbers is visibly impossible. `f95_report.py`
+and `f95_epoch.py` IMPORT `leak_verdict` and `dump_diff` from the driver rather than
+re-implementing them, for the same reason.
+
+**F1 DEATH** pid gone before T+H · **F2 HANG** `get status position` round trip
+> 45.0 s (F19's bound, §5.59) or the vulkan log GAINS `This frame stall is very
+long` in an UNLOCKED session · **F3 QUIT** exit != 0, wall-to-exit > 45.0 s, or a
+teardown fault line · **F4 FROZEN FILE MOVED** any of eleven real-HOME md5s.
+F1 and F4 are terminal; F2 is not, so a recovery stays visible.
+
+**The LEAK rule is sign-based and that is the whole point.** VmRSS is read at every
+cycle boundary right after the interlude — the same playlist point every time —
+and only a series that is strictly increasing at every step from cycle 2 is a leak.
+Otherwise the largest consecutive swing is reported as the FLOOR and last-vs-first
+is stated against it. Measured here: RSS rises ~230 MB over the first sixteen
+cycles and then goes flat. A last-vs-first reading calls that a leak; the sign rule
+calls it a warm-up, and the texture-cache log lines (`texture: already in cache …`)
+say which is right.
+
+### Two sockets, and why the probe needs its own
+
+The hang detector is a round-trip time taken by the SAMPLER thread while the MAIN
+thread drives the playlist. One socket would make the measurement include the
+driver's own lock. So socket A is the `$LOGON` subscriber and sends every
+fire-and-forget command; socket B takes every `get` round trip, from both threads,
+under one lock — and the LOCK WAIT is recorded in its own column, separately from
+the round trip. Since §11.135 an answer goes to the connection that asked
+(`io.cpp:765-791`), so socket B hears itself without `$LOGON`; A's duplicate copy
+is drained and discarded.
+
+### The farm — F90's shape, widened, and one thing `f55_farm.sh` will not do for you
+
+`ScriptAnnotator::flush` rewrites the file it played (`script_annotator.cpp:163-179`),
+so every played `.sts` must be a COPY. `f55_farm.sh` makes `scripts/` and
+`scripts/fscripts/` real and leaves `scripts/basis/` a symlink, **and it
+deliberately does not copy `startup.sts`** (F94's gotcha). This playlist plays eight
+shows in three directories, so all three are rebuilt real, all eight are copies, the
+asset sub-directories beside them stay symlinks (they are only read), `startup.sts`
+is copied and `sessions/` is rebuilt real. Nineteen farm-shape properties are
+asserted before the launch. Measured over both legs: all eight farm copies stayed
+byte-identical to the originals and the eleven real-HOME md5s were identical in and
+out.
+
+### Gotchas measured here, each of which cost something first
+
+- **`show_own_duration()` cannot see `struct loop`.** F90's parser sums the `wait
+  duration` lines it finds; `custom/diaporama.sts` wraps its single
+  `wait duration 3.1` and its single `script action pause` in `struct loop 100`
+  (`:146`), so its authored duration is ~100x what the parser reports and it
+  SHOW-TIMEOUTs on every cycle. Nothing here is a product fault. It was NOT fixed
+  mid-campaign, deliberately: every cycle then gets an identical deterministic 63 s
+  slice of that show, which is better for a cross-cycle comparison than a budget
+  that changes halfway through it. **Any future driver that plays a corpus must
+  either teach the parser about loops or state that its budget is a slice.**
+- **A shared temp filename is not atomic between WRITERS.** `atomic_write_json` used
+  one `<path>.tmp` while two threads called `write_state()`, so one `os.replace`
+  consumed the temp file the other was about to rename. It took 2 h 44 min of a 3 h
+  run to fire, and it ended that run. Reproduced on demand both ways: the original
+  raises 1154 `FileNotFoundError` in 3200 concurrent writes from eight threads, the
+  fixed version (per-writer temp name AND a lock) raises 0. **A three-hour campaign
+  is an excellent race detector; make sure the races it finds are the
+  application's.** Log the TRACEBACK, not the repr — an exception that takes hours
+  to appear must say where it came from the first time.
+- **Never probe a dead pid.** The first draft raised F1 on a dead process and then
+  fell through to the probe, which would have burned the full 90 s budget and read
+  as a HANG. A dead pid ends the sample immediately, whatever the phase; only the
+  FLAG is phase-dependent, because a pid gone after `shutdown action now` is the
+  quit and not a death.
+- **A cumulative counter latches a flag and can never say "quiet again".** F2's
+  second arm first tested `very_long > 0`; the HANG control's own SIGSTOP produced
+  one very-long stall and every later sample then carried the flag. The committed
+  criterion said GAINS. `very_long_arm()` is that, with the two guards
+  (screensaver on, session locked) that ATTRIBUTE a 1 Hz throttle (F67) instead of
+  counting it as the application's.
+- **`get status position` is the cheapest honest liveness probe** — five numbers,
+  `lat;lon;alt;JDay;heading;` (`coreLink.cpp:616-629`), no locale in the path, and
+  field 4 doubles as a read of the simulation clock. F94 found it; this reuses it
+  380 times an hour.
+- **The probe budget must exceed the bound it tests.** At a 45 s bound and a 45 s
+  budget the instrument can only ever report ">= 45"; at 90 s it reported 54.3 s,
+  which is a measurement.
