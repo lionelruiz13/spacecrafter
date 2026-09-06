@@ -1,0 +1,55 @@
+{
+ "pass": "pass17",
+ "date": "2026-09-06",
+ "source": "fable-dispatch.md",
+ "pre_md5": "7fcb0abdfe37006dabd9852967c54900",
+ "pre_commit": "fa7104e",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads re-inserted at recorded positions in ascending order, then the seam-tidy lines, reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": {
+  "removed_after_unit": "update-s23",
+  "lines": [
+   "---",
+   ""
+  ],
+  "positions_pre": [
+   161,
+   162
+  ],
+  "reason": "the moved note sat between two --- separators; removing it leaves them doubled (pass-13/14/15/16 precedent, recorded so reconstruction stays exact)."
+ },
+ "kept_live": [],
+ "units": [
+  {
+   "id": "update-s23",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s23.md",
+   "line_start": 39,
+   "line_count": 122,
+   "payload_md5": "4f24977202da6b357cf38a784558c3f1"
+  },
+  {
+   "id": "F91",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F91.md",
+   "line_start": 629,
+   "line_count": 146,
+   "payload_md5": "0de626e1782f1f35b34b7398ecf1c8ff"
+  },
+  {
+   "id": "F94",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F94.md",
+   "line_start": 775,
+   "line_count": 164,
+   "payload_md5": "3a217eb2235540186558d6228489e6f0"
+  },
+  {
+   "id": "F95",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F95.md",
+   "line_start": 939,
+   "line_count": 217,
+   "payload_md5": "fe691d7378ca424dfa50b11d9c73a39f"
+  }
+ ]
+}
