@@ -918,7 +918,12 @@ test -e /home/claude/sc-f97 ; echo $? => 1
 **DoD:** derivation (code untouched) → fix (code first) → offline probe + live twins +
 the two controls; §11 entry + stub; §5.21 flipped (row + entry file); back-markers; map;
 README; trees clean; WIP cleared; baselines LAST.
-**WIP:**
+**WIP:** 2026-09-06 12:2x — §0.7 gate PASS (22/22 + prose). Checkpoint 1: DERIVATION
+written, code untouched (`harness/artifacts/f97/derivation.txt`, `harness/f97_frame.cpp`
+with P1-P9 in its header before its first run). Finding: the frame is ROOT-ALIGNED on
+old, and `surface_point`'s `orbit_lon` is 90° east of old's planetographic longitude
+(the `+M_PI_2` of `getAxisRotation()`) ⇒ the section's own STOP clause fires on the
+frame/spin halves. Next: run the probe, then the live legs, then the latitude half only.
 
 ### F98 — the SECOND SOAK, over the tester's own `fscripts/` corpus (body authoring under show load — §5.137's class, the residue §11.215(m) names and DEPLOYMENT-MAP T5 item 2 carries): the F95 instrument GENERALISED (playlist directories + farm root as parameters, F95's own behaviour at its defaults unchanged — one driver, I2), the duration model made `struct loop`-aware with a per-show CAP stated before the launch (`panorama0.sts` loops 1 000 000×: infinite by design — a CAP is a design parameter, a SHOW-TIMEOUT stays a finding), every one of the 137 real-HOME `.sts` a COPY on the farm and md5-asserted in==out per file, ≥ 4 h on the binary the round leaves with the F95 criteria + LEAK rule unchanged, PLUS the authoring instrument (the dump's body count per boundary; for one authored body per authoring show, its presence in each path's dump half and on the control surface); and the "3000 satellites" claim corrected at its four ledger homes with the measured count (170 lines in `06old.sts`, 529 in `14.sts`, 719 in 9 shows) [M–L, instrument; display-bound, hours]
 

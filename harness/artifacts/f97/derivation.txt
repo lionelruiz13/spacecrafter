@@ -1,0 +1,180 @@
+F97 -- THE DERIVATION, WRITTEN BEFORE ONE BYTE OF CODE IS TOUCHED
+INTENT S11.217 (task F97, S5.21).  Code master-beta @ 24100461, 2026-09-06.
+Every claim below carries the file:line it was read at.  Nothing here is
+recalled: the two data blocks were fetched from ~/.spacecrafter/ssystem.ini
+(S11.51(d) red line), the sites from the tree at 24100461.
+
+================================================================ (i) THE FRAME
+QUESTION (mandate 1(i)): in which frame does a child's
+positionAtTimevInVSOP87Coordinates output land on the OLD path -- the parent's
+EQUATORIAL frame (z = spin axis), or an ecliptic-parallel one?
+
+ANSWER: an ECLIPTIC-PARALLEL (root / VSOP87-oriented) frame centred on the
+parent.  Never the parent's equatorial frame, never its surface frame.  Three
+independent citations, each sufficient on its own:
+
+  1. Body::get_heliocentric_ecliptic_pos SUMS ecliptic_pos up the parent chain
+     with NO rotation at any hop [observed: body.cpp:619-626].  A sum of
+     vectors from differently-oriented frames would be meaningless; the code
+     that consumes it (the observer's own heliocentric position,
+     AnchorPointBody::update [anchor_point_body.cpp:73-76]) treats the result
+     as a VSOP87 vector.
+  2. Body::computeDraw composes the model matrix as
+     T(p_ecl) . T(b_ecl) . R_b . R_p  [observed: body.cpp:992-1011].  Its
+     TRANSLATION is p_ecl + b_ecl -- the child's offset enters unrotated.
+     (The rotation half, R_b . R_p, is in the opposite nesting order from
+     getRotEquatorialToVsop87's R_p . R_b [body.cpp:552-559]; that is an
+     old-path inconsistency of the ORIENTATION half only, it does not touch
+     the position, and it is not this task's -- S11.52(b).)
+  3. The providers themselves do the conversion.  OrbitCreatorEliptic reads
+     the PARENT's obliquity / ascending node / J2000 longitude and hands them
+     to EllipticalOrbit [observed: orbit_creator_cor.cpp:43-96], whose
+     constructor bakes them into a 3x3 `rotate_to_vsop87` applied to every
+     output [observed: orbit.cpp:394-436].  So "deliver root-aligned output"
+     is the PROVIDER's contract on this path -- which is exactly the contract
+     LocationOrbit does not honour.
+  Cross-check on the new path: ModularBody.hpp:655-664 states the same as a
+  measured contract ("Every ephemeris output ... is a vector in the ROOT
+  (ecliptic VSOP87) orientation ... hops between bodies are PURE TRANSLATIONS,
+  plus the surface fold for boundToSurface bodies"), harness 2026-07-11.
+
+CONSEQUENCE, and it is a THIRD defect S5.21 does not name: the shipped
+LocationOrbit writes spheToRect(lon + spin, lat) * r straight into
+ecliptic_pos [observed: orbit.cpp:1099-1105], so its `lat` is measured from
+the ECLIPTIC plane and its `lon` runs about the ECLIPTIC pole.  The authored
+point is not on the parent's surface at the authored planetographic
+coordinates for ANY parent whose equator is tilted -- i.e. for every parent
+in the shipped file.  The missing factor is the parent's
+getRotEquatorialToVsop87().
+
+OLD'S OWN AUTHORITY for "where is planetographic (lon, lat, alt) on body P" is
+the observer's, and it is one line:
+    AnchorPointBody::getRotLocalToEquatorial(jd, lat, lon, alt)
+      = Z((P->getSiderealTime(jd) + lon) * pi/180) . Y((90 - lat) * pi/180)
+      [observed: anchor_point_body.cpp:63-64]
+    composed with P->getRotEquatorialToVsop87()
+      [observed: anchor_point_body.cpp:69-71]
+Applied to (0,0,r) the Y/Z pair is exactly spheToRect(sid+lon, lat) * r.
+
+WHERE THE NEW PATH PUTS THE SAME CHILD.  ModularBody::recursiveUpdate hands
+GROUNDED children `mat` -- the parent's ACCUMULATED EQUATORIAL frame -- and
+orbiting/inner children `matLocalToBodyPos`, the flat root-aligned one
+[observed: ModularBody.cpp:345-358].  transformParentToBodyPos then folds
+Z(parent->getAxisRotation()) for a grounded child before translating by
+eclipticPos [observed: ModularBody.hpp:724-737].  So:
+    grounded     -> eclipticPos lives in the parent's SURFACE frame
+    not grounded -> eclipticPos lives in the ROOT-ALIGNED frame (== old's)
+
+=============================================================== (ii) THE SPIN
+Each path's ONE rotation authority, read at EVALUATION:
+    OLD:  Body::getSiderealTime(jd)  [observed: body.cpp:604-610]
+          Earth -> get_apparent_sidereal_time(jd) (DEGREES);
+          else  -> fmod((jd - re.epoch)/re.period*360 + re.offset, 360)
+    NEW:  ModularBody::computeAxisRotation(jd) [observed: ModularBody.hpp:567-573]
+          the same two laws in RADIANS, plus a surfaceLockedAttitude branch;
+          the fold uses getAxisRotation() = axisRotation + M_PI_2
+          [observed: ModularBody.hpp:575-581].
+
+WHAT THE SHIPPED CLASS DOES INSTEAD [observed: orbit.cpp:1090-1092, 1099-1105]:
+it freezes `parentOffset = P->getSiderealTime(0)` and
+`JDToRotation = 2*pi/parentPeriod` at CONSTRUCTION and extrapolates linearly
+from JD 0 -- 2.45 million days before J2000.  Both are carried through `float`
+locals [observed: protosystem.cpp:557-558] on the old path.  Three costs:
+  (a) the parent's period and phase are FROZEN: a runtime
+      `body name <parent> rot_periode ...` no longer reaches the child (I2 --
+      the child holds a degraded duplicate of the parent's spin state);
+  (b) on Earth the parent's law is the APPARENT sidereal time, which no linear
+      model follows (quadratic term + the equation of the equinoxes);
+  (c) the float truncation of a ~1 day period is multiplied by 2.45e6 days.
+(a)(b)(c) are what the probe measures; the magnitudes are P4/P5.
+
+LIFETIME (I5), if the spin is to be read at evaluation:
+    OLD:  Body holds `std::shared_ptr<Body> parent` [observed: body.hpp:637] and
+          its children as RAW pointers, `std::list<Body *> satellites`
+          [observed: body.hpp:638] -- so a strong reference from a child's Orbit
+          to its parent closes no cycle, and the child's Orbit is owned by the
+          child, which already holds that strong reference.  A
+          `std::shared_ptr<Body>` (or a raw pointer guarded by it) is
+          lifetime-guaranteed for exactly as long as the orbit exists.
+    NEW:  ModularBodyPtr -- the project's destruction-notified form, which also
+          REDIRECTS when a body is replaced by name; SurfacePointOrbit already
+          holds its parent that way [observed: SurfacePointOrbitLoader.hpp:109-114].
+    ORDERING HAZARD for whoever lands the frame half on the OLD path:
+    SolarSystemDisplay::computePositions runs compute_position for EVERY body
+    BEFORE computeTransMatrices runs compute_trans_matrix for any
+    [observed: solarsystem_display.cpp:342-379].  getSiderealTime(jd) is a pure
+    function of jd and is safe to call there; the parent's
+    rot_local_to_parent / axis_rotation MEMBERS are one frame stale at that
+    point and must NOT be read -- the rotation has to be recomputed from the
+    parent's elements, as compute_trans_matrix itself does.
+
+============================================================== (iii) THE UNIT
+`orbit_lat` is in DEGREES, and the proof is inside the same loader:
+    protosystem.cpp:951-952 converts BOTH keys of the SAME body by pi/180
+      M_PI_2 - strToDouble(param["orbit_lat"]) * (M_PI/180.)   // X rotation
+      strToDouble(param["orbit_lon"]) * (M_PI/180.)            // Z rotation
+    while orbit.cpp:1091 converts `lon` and passes `lat` RAW on one line
+      lon((_lon+parentOffset)*M_PI/180), lat(_lat)
+The new path agrees: SurfacePointOrbitLoader documents "degrees/km like every
+legacy key" [:22-24] and converts both [:145].  So `lat(_lat)` is a units bug
+with no second reading.
+
+======================================================= THE FORK, AND IT IS REAL
+Compose (i) and (ii) for the new path:
+  observer at (lon, lat) : viewMat = ... X(lat - pi/2) . Z(-lon) . Z(-(axisRot+pi/2))
+        [observed: Camera.cpp:189-202]; its inverse puts the observer at
+        equatorial-frame direction spheToRect(axisRot + lon, lat) -- the -pi/2
+        inside X(lat - pi/2) cancels the +pi/2 of getAxisRotation().
+        This is old's AnchorPointBody direction exactly (P6), and it is what
+        F91/F96 measured live: 88 of 90 bodies' alt/az agree to <= 1.7e-5 deg
+        (S11.213(h2), S11.216(h1)).
+  surface_point + grounded at (orbit_lon = lon, orbit_lat = lat) : the provider
+        emits spheToRect(lon, lat) in the SURFACE frame
+        [observed: SurfacePointOrbitLoader.hpp:142-145] and the fold applies
+        Z(axisRot + pi/2) [ModularBody.hpp:726-727], landing it at equatorial
+        longitude axisRot + pi/2 + lon.
+  => surface_point's orbit_lon is NINETY DEGREES EAST of the planetographic
+     longitude that old's authority, the observer, `moveto lon` and the data
+     file all mean by "lon".  P7 is that number measured; P8 is the mutation
+     that shows the probe can tell the two folds apart.
+  This is not new information, it is an EXPLANATION of information already on
+  record: S11.152(o) measured an observer at `moveto lat 0 lon 60` sitting
+  "exactly 90.0 deg" from a rover authored at `orbit_lon 60 orbit_lat 0` in
+  SURFACE mode and recorded it as "a THIRD channel ... not explained by"
+  S5.80/S11.144.  The +M_PI_2 of getAxisRotation() -- carrying the comment
+  "TODO Fix ojml ?" -- is that third channel, and F91 had already identified
+  the same term as S11.4's "-90.0003 deg zero point" (S11.213).
+
+CONSEQUENCE FOR THIS TASK'S MANDATE.  Mandate (2) asks for BOTH of
+    (A) `location_orbit` EXACT -- the same orbit_lon meaning on both paths, the
+        old half equal to old's own authority; and
+    (B) on the new path, "lands EXACTLY where surface_point + grounded lands
+        for the same keys".
+By P7 these differ by 90 deg, so (A) and (B) are MUTUALLY EXCLUSIVE and neither
+is decision-free:
+    READING 1 (planetographic).  orbit_lon means what old, the observer and
+      `moveto lon` mean.  Implementable inside this task's Boundaries: the old
+      half becomes getRotEquatorialToVsop87 . spheToRect(sid+lon, lat) * r; the
+      new half emits spheToRect(lon - pi/2, lat) * r when grounded (the fold
+      then supplies exactly axisRot + lon) and the full composition when not.
+      Cost: the twins of check (c) do NOT coincide -- by 90 deg -- and
+      `surface_point` stands exposed as carrying the offset.
+    READING 2 (surface_point parity).  orbit_lon means "azimuth in the folded
+      surface frame".  The twins coincide by construction; the class is then
+      NOT exact against old's authority, and the same data key means two
+      different longitudes on the two paths.
+  Choosing between them decides where `surface_point` -- a RATIFIED data key
+  (S11.79(j)-(m), D16-D19) with a shipped-grammar name -- points, which is a
+  user-visible-semantics decision about another provider that F97's Boundaries
+  put out of reach ("SurfacePointOrbitLoader.hpp's COMMENT" only).  Per the
+  F97 section's own stop clause -- "a frame the fix cannot land in without
+  changing another provider, or a semantic fork ... -> STOP at the derivation,
+  record both readings, deliver the latitude half if it is separable, report"
+  -- this task stops here on the frame/spin halves.
+
+WHAT IS SEPARABLE, AND WHY.  The latitude conversion is orthogonal to the fork:
+a z-rotation cannot change a latitude, so BOTH readings agree that
+`orbit_lat = 45` must reach spheToRect as 45*pi/180.  It is one token in the
+constructor that BOTH loaders share, its unit has no second reading (above),
+D9 is excluded by round-3 R18, and the census is 0/0/0 -- no shipped or loaded
+scene moves.  That half is delivered; the frame and spin halves are not.
