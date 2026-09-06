@@ -129,8 +129,9 @@ class dominating). OWNER EVENTS IN-SESSION: ONE — the message on "compact" (Q-
 applied at this close; nothing asked (Sunday). HOST: same boot throughout (`uptime -s` 2026-09-04
 18:45:08); RAM 52 GiB available at open and at close; the RDP session and `:2` survived the ssh move
 (HOST-EVENTS entry at this close); no lock file at any of the executors' checks. SUPERVISOR TALLY:
-**nine dispatcher defects**, all output-side, all caught by an executor's report-not-absorb or an
-instrument, none reaching a delivery — value class ×4 (the keyed-loader count typed 7 for 8, caught
+**ten dispatcher defects** — nine all output-side, all caught by an executor's report-not-absorb or
+an instrument, none reaching a delivery, plus ONE at the close (the M-delta attribution above, typed
+from expectation, corrected one commit later) — value class ×5 (the keyed-loader count typed 7 for 8, caught
 at the mint; the `INTENT/11.153.md` pointer for §11.152(p)(2); a "red" control written empty where
 my own row says 1/277; the row sentence "corrected" at the mint against its own record) and
 structure class ×5 (the "§5.50 shape" label against its definition; `get status object` assumed
@@ -146,7 +147,7 @@ saturated; three predictions kept refuted. F101: the `p23` leg the section lacke
 diffed with the instrument's own grammar; the red control that could not be red reported, not
 forced; a flush-lag lower bound named. F102: N predicted before the log was opened, one body off;
 the alignment pinned to the device the engine picks; the 7.7/body artefact explained; the
-corpus parser's own defect caught by its output). BASELINES AT CLOSE: (measured 01:32:37 after this close's mint and alignments) scan **252/319/143** · pair-check **238/213/25/118** · **D 35** · D2 11 · I 89 · I2 37 · **M 88** — over F102's close (252/319/143 · 238/213/25/117 · D 36 · M 87): +1 inline stub = §5.146; D −1 = the `D8` token dropped from my §11.213 stub marker (the §5.145 mint's own flag, closed at its cause); M +1 = §11.222's stub carrying one `§5.146` marker where its entry carries two (the (g)(6) and (i) clauses) — the entry-wins shape, licensed; the scan unchanged: a MINTED marker is not in its event lexicon.
+corpus parser's own defect caught by its output). BASELINES AT CLOSE: (measured 01:32:37 after this close's mint and alignments) scan **252/319/143** · pair-check **238/213/25/118** · **D 35** · D2 11 · I 89 · I2 37 · **M 88** — over F102's close (252/319/143 · 238/213/25/117 · D 36 · M 87): +1 inline stub = §5.146; D −1 = the `D8` token dropped from my §11.213 stub marker (the §5.145 mint's own flag, closed at its cause); M +1 = §11.222's pair, which the instrument lists as `stub_only 11.113, 11.218, 5.142, 5.50, 5.60` once my (i) marker cited §5.116 in the entry with no §5.116 in the stub's marker — the entry-wins shape, licensed; and §11.220's flag (`entry_only 11.158, 11.213, 5.145`) did NOT clear when its stub marker was realigned to name those nodes — the instrument's reading of that stub marker is unexplained and is left named, not forced **[this clause first attributed M +1 to a `§5.146` count difference typed from expectation, in the close commit `86ce0e5`; corrected one commit later to the instrument's own line — dispatcher defect 10 of the round, the close's own, Q-67's class]**; the scan unchanged: a MINTED marker is not in its event lexicon.
 Archival pass 19 (update-s25 + F99/F100/F101/F102, live `### F` 4 → 0) DEFERRED to the next open.
 NEXT-ROUND QUEUE, in order: (1) archival pass 19 at open; (2) **§5.146's discriminating launch** (S:
 refuse, destroy, re-acquire, read the free list — on the owner's "read it first", else as a leg);
@@ -1499,8 +1500,8 @@ launch (it holds the only complete arm-C log).
   [F1] your ssh move changed nothing that reaches a launch — measured at open; Q-61(3) holds
   [F2] `select planet` + `get status object` answers the OLD path for every both-tree name:
        a new-path readout needs a new-only name or the dump's sidecar          → §11.220(e1)
-  [F3] nine dispatcher defects this round (4 value-class, 5 structure-class), all output-side,
-       all caught before a delivery; the PREMISES instrument caught one AT THE MINT; two
+  [F3] ten dispatcher defects this round (5 value-class, 5 structure-class), all output-side,
+       nine caught before a delivery and one at the close (corrected one commit later); the PREMISES instrument caught one AT THE MINT; two
        executor report defects (F99 self-caught; F98's found by F102 from F98's own log)
   ```
 
