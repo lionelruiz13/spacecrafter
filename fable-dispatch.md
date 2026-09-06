@@ -1013,7 +1013,15 @@ test -e /home/claude/sc-f95 ; echo $? => 1
 **DoD:** the driver + four verbs; predictions before the launch; both controls red;
 the ≥ 3 h soak with its samples, cycle table, dump diffs and verdicts; the quit measured;
 §11 entry + stub; map T5.2 struck; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-06 02:2x — CHECKPOINT 1 (instrument + criteria, before any launch):
+§0.7 gate PASS (premise_check 13/13; display `:2` 2448x1332; canary `--no-scene` exit 0
+`artifacts/f56/canary/20260906-015749`; no `spacecrafter` in `/proc/*/comm`; the
+detached-process re-probe HELD — `setsid -f nohup sleep 120` at 01:57:18 alive in the
+next call at 01:57:26). `harness/f95_soak.py` written (four verbs + detached driver);
+`selftest` PASS (leak rule both ways, teardown matcher 4+/3-, dump-diff 0/3, position
+matcher both ways); criteria + predictions committed to
+`harness/artifacts/f95/prediction.txt`; D14 gate PASS. NEXT: the two live controls
+(DEATH `kill -9`, HANG `kill -STOP` 60 s), then the >= 3 h soak.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
