@@ -1058,8 +1058,20 @@ ulps), i.e. 2-4 orders BELOW §11.87(c)'s recorded Kepler float floor. Mechanism
 HEAD: `EllipticalOrbit::eccentricAnomaly` takes ONE step from a caller-persistent
 `lastE` (`orbit.cpp:515-562`) ⇒ **§5.84's magnitude, unmeasured on the row since
 2026-08-09, is measured here**. Eccentricity REFUTED as the selector (Sedna 0.859,
-Neso 0.630, Eris 0.437 do not move; Ananke does at 0.217). NEXT: hour 3, the quit,
-then the record.
+Neso 0.630, Eris 0.437 do not move; Ananke does at 0.217).
+2026-09-06 05:10 — CHECKPOINT 5 (LEG 1 ENDED EARLY AT 2 h 44 min — MY BUG, not the
+app's; leg 2 relaunching for the full H): at +9840 s the driver loop raised
+`FileNotFoundError`. Root cause found and reproduced on demand: `atomic_write_json`
+used ONE temp name `state.json.tmp` while BOTH the sampler thread and the playlist
+thread call `write_state()`, so one `os.replace` consumed the temp the other was about
+to rename. **Shown both ways: the leg-1 implementation raises 1154 `FileNotFoundError`
+in 3200 concurrent writes from 8 threads; the fixed one (unique temp name per writer +
+a lock) raises 0.** The driver now also records the TRACEBACK. LEG 1 IS EVIDENCE, NOT
+WASTE and is delivered: 2.735 h, **61 complete cycles, 328 samples, ZERO app flags**,
+quit **exit 0 in 0.65 s** with 0 teardown faults, frozen 11/11 in==out, LEAK verdict
+**NO LEAK BY THIS RULE** (25 of 59 steps non-positive), the 4-body pinned-clock finding
+stable at 61 dumps. Artifacts `harness/artifacts/f95/leg1/`. NEXT: leg 2, H = 3.0 h on
+the fixed driver, then the record.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 

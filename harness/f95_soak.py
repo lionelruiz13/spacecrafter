@@ -93,6 +93,7 @@ import subprocess
 import sys
 import threading
 import time
+import traceback
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -305,10 +306,26 @@ TEARDOWN_FAULT = re.compile(
     r"munmap_chunk|free\(\): |stack smashing|SIGSEGV|SIGABRT")
 
 
+_STATE_LOCK = threading.Lock()
+
+
 def atomic_write_json(path, obj):
-    tmp = Path(str(path) + ".tmp")
-    tmp.write_text(json.dumps(obj, indent=1, default=str))
-    os.replace(str(tmp), str(path))
+    """Atomic for a READER, and safe between WRITERS.
+
+    The first version used ONE temp name, `<path>.tmp`, and the soak's own
+    first leg is what found the cost: the sampler thread and the playlist
+    thread both call `write_state()`, and when their windows overlapped one
+    `os.replace` consumed the temp file the other was still about to rename -
+    `FileNotFoundError`, 2 h 44 min into a 3 h run, which ended the leg 16
+    minutes early.  A three-hour campaign is exactly the instrument that finds
+    a race this narrow, and it found it in the harness rather than in the
+    application.  The temp name is now unique per writer AND the whole
+    read-modify-replace is serialised, because either alone still leaves two
+    writers racing to be last."""
+    tmp = Path("%s.%d.%d.tmp" % (path, os.getpid(), threading.get_ident()))
+    with _STATE_LOCK:
+        tmp.write_text(json.dumps(obj, indent=1, default=str))
+        os.replace(str(tmp), str(path))
 
 
 class LogTail:
@@ -1192,9 +1209,15 @@ class Driver:
                             row["wall_s"], row["vmrss_kb"]))
                 self.write_state()
         except Exception as e:                                    # noqa: BLE001
-            self.log("driver loop raised %r" % e)
+            # WITH THE TRACEBACK.  Leg 1 recorded only the repr and the origin
+            # then had to be reasoned out rather than read; an exception that
+            # takes hours to reproduce must say where it came from the first
+            # time it happens.
+            tb = traceback.format_exc()
+            self.log("driver loop raised %r\n%s" % (e, tb))
             self.flag_detail.append({"flag": "DRIVER-EXCEPTION",
-                                     "at_iso": now_iso(), "why": repr(e)})
+                                     "at_iso": now_iso(), "why": repr(e),
+                                     "traceback": tb})
 
         q = {}
         if self.proc.poll() is None:
