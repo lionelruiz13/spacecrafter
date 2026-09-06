@@ -596,6 +596,28 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		                     Utility::strToDouble(param["orbit_y"]),
 		                     Utility::strToDouble(param["orbit_z"]));
 	} else if (funcname == "location_orbit") {
+		// No parent, no orbit - the SECOND site of the class this function's own
+		// "no orbit, no body" guard below already closes (INTENT S5.50 /
+		// S11.124(h)), found at S5.141 / S11.219 and measured here: `parent` is
+		// a null shared_ptr whenever str_parent == "none" (:531 leaves it so),
+		// and the next line dereferenced it - rc 139 on `body action load ...
+		// coord_func location_orbit parent none`, faulting frame
+		// ProtoSystem::addBody at this line, reached through
+		// SSystemFactory::addBody:829 BEFORE the experimental path's loadBody at
+		// :836, which is why this site hides the new path's twin defect.
+		// It cannot fall through to the guard below: every parameter of the
+		// orbit IS the parent, so there is nothing to build and nothing to
+		// degrade to. The line is its own because the guard below says "invalid
+		// coord_func", which is not what happened - the coord_func is valid and
+		// the declaration is incomplete.
+		if (!parent) {
+			cLog::get()->write("Body '" + englishName + "': coord_func = location_orbit needs a parent body "
+				"to sit on and turn with - the parent's radius, sidereal day and spin phase ARE this "
+				"orbit's parameters - and parent = '" + str_parent + "' gives none. This body is NOT added "
+				"to the old render path. To fix: declare parent = <a body already loaded in this system>.",
+				LOG_TYPE::L_ERROR);
+			return;
+		}
 		parentSideralDay = parent->getSiderealDay();
 		parentOffset = parent->getSiderealTime(J2000);
 		orb = std::make_unique<LocationOrbit>(

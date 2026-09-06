@@ -17,7 +17,32 @@
 // differ by exactly 90 deg; harness/f97_locorbit.py M3, both ways, live).
 class LocationOrbitLoader : public OrbitLoader {
     virtual std::unique_ptr<Orbit> load(std::map<std::string, std::string> &params) override {
-        auto parent = ModularBody::findBody(params["parent"]);
+        // findBodyOnce, not findBody: a body load is a unique search, so it has
+        // no business flushing the lookup cache [ModularBody.hpp:1568-1575] -
+        // the sibling provider's call, and the same nullptr on a miss.
+        ModularBody *parent = ModularBody::findBodyOnce(params["parent"]);
+
+        // NO PARENT, NO ORBIT - S5.141, and it is S5.50's class one provider
+        // over (S11.219).  Every one of this orbit's parameters below IS the
+        // parent (radius, sidereal day, spin phase at epoch), so a miss has
+        // nothing to degrade to: pre-fix the next lines dereferenced nullptr and
+        // took the app down.  RETURN, never THROW: ModuleLoaderMgr::loadOrbit
+        // wraps this call in `catch (...)` and falls through to the DEFAULT
+        // loader [ModuleLoaderMgr.cpp:101-109], so a throw would silently
+        // replace a refused location_orbit with a SpecialOrbit - D12's exact
+        // opposite.  "No orbit, no body" is then served by the consumer that
+        // already says it: ModularSystem::loadBody:1245-1247.
+        // The S2(f) line is written HERE because this is the one site holding
+        // the coord_func AND the parent name (S11.193, the same anchor argument
+        // as the double-spin warning below).
+        if (!parent) {
+            cLog::get()->write("location_orbit orbit of '" + params["name"] + "': parent '"
+                + params["parent"] + "' is not a loaded body, so there is no radius, sidereal "
+                "day or spin phase to build the orbit from. This body is NOT created on this "
+                "path. To fix: declare parent = <a body loaded before this one> ('none' is not "
+                "a body - a location_orbit must sit on something).", LOG_TYPE::L_ERROR);
+            return nullptr;
+        }
 
         // The DOUBLE-SPIN TRAP, said out loud at the one place that knows both
         // sides -- the S2(f) anchor for this event is the loader, because it
