@@ -1,0 +1,69 @@
+{
+ "pass": "pass18",
+ "date": "2026-09-06",
+ "source": "fable-dispatch.md",
+ "pre_md5": "96ea375cde89e05547843d0ecd4c9294",
+ "pre_commit": "d9b911e",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [
+  {
+   "removed_after_unit": "update-s24",
+   "lines": [
+    "---",
+    ""
+   ],
+   "positions_pre": [
+    152,
+    153
+   ],
+   "reason": "the moved note sat between two --- separators; removing it leaves them doubled (pass-13..17 precedent)."
+  },
+  {
+   "removed_before_unit": "F96",
+   "lines": [
+    "---",
+    ""
+   ],
+   "positions_pre": [
+    636,
+    637
+   ],
+   "reason": "the session-25 mint (b111c87) inserted its own --- before F96 ahead of the --- that precedes '## 2.'; with F96-F98 gone the two would be doubled — the post-pass-17 shape (5d94d3f: index paragraph, blank, ---, blank, '## 2.') is restored exactly."
+  }
+ ],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "update-s24",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s24.md",
+   "line_start": 39,
+   "line_count": 113,
+   "payload_md5": "efb20d4564db969e7d3fa9b8824dce32"
+  },
+  {
+   "id": "F96",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F96.md",
+   "line_start": 638,
+   "line_count": 212,
+   "payload_md5": "0be29a243a8737302811ec38757d9e38"
+  },
+  {
+   "id": "F97",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F97.md",
+   "line_start": 850,
+   "line_count": 207,
+   "payload_md5": "03714d904df901bc971f3f2bf8b78df7"
+  },
+  {
+   "id": "F98",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F98.md",
+   "line_start": 1057,
+   "line_count": 197,
+   "payload_md5": "4bb15be4e0ba60921dcfca8f14675d64"
+  }
+ ]
+}
