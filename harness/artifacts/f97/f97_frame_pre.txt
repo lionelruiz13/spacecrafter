@@ -1,0 +1,45 @@
+=== F97 frame probe -- predictions in the header, every line can fail
+  P1  shipped orbit_lat=45 lands at 58.3098861 deg (13.3098861 deg high); fixed 45.0 +- 1e-12
+  P2  shipped LocationOrbit vs old's own authority (Mars, J2000, lon 0 lat 0): > 30 deg
+  P3  restored form vs old's own authority: <= 1e-12 AU over the whole grid
+  P4  Mars frozen-vs-live spin: <= 1e-6 deg in double, >= 1 deg through the shipped float
+  P5  Earth frozen-vs-apparent spin at J2000: >= 1 deg
+  P6  new-path observer vs old's AnchorPointBody direction: <= 1e-5 deg over 64 states
+  P7  new-path surface_point+grounded vs that observer: 90.000000 deg, spread 0.000000
+  P8  same pair scored against the fold WITHOUT +pi/2: 0.000000 deg (the mutation)
+  P9  get_apparent_sidereal_time(J2000) is not repeatable across an intervening call: > 0.001 deg
+
+--- (1) THE UNIT OF orbit_lat
+  shipped  spheToRect(lon, 45.0)      -> latitude 58.3100781 deg  (error +13.3100781)
+  fixed    spheToRect(lon, 45.0*pi/180) -> latitude 45.0000000000000 deg  (error -7.105e-15)
+  |v| = 1 (unit either way -- nothing downstream can see the error)
+  authored lat ->  landed lat  (deg):  0->0.0000  10->-32.9578  30->-81.1266  45->58.3101  60->-17.7468  90->63.3798
+
+--- (2) THE FRAME: shipped LocationOrbit vs OLD'S OWN AUTHORITY (Mars)
+  (lon 0, lat 0): shipped is 57.750889 deg from old's authority
+  worst over the 20-point grid: shipped 153.930309 deg  |  restored 8.168e-21 AU
+
+--- (3) THE SPIN: frozen linear model vs the parent's own authority
+  Mars: rate 360/period = 350.89198448180 deg/day (double)
+    jd 2451545.0000 live 136.00500 | frozen(double) 136.00500 (-0.000000) | frozen(float) 136.07536 (+0.070360)
+    jd 2451545.5000 live 311.45099 | frozen(double) 311.45099 (-0.000000) | frozen(float) 311.52135 (+0.070360)
+    jd 2440000.0000 live 168.04416 | frozen(double) 168.04416 (-0.000000) | frozen(float) 168.11419 (+0.070029)
+    jd 2461234.0000 live  88.44264 | frozen(double)  88.44264 (-0.000000) | frozen(float)  88.51328 (+0.070638)
+  Earth: rate 8640/23.9344694 = 360.98565026054 deg/day vs mean sidereal 360.98564736629
+    jd 2451545.0000 apparent 280.45681 | frozen(double) 289.31297 (+8.856158 deg)
+    jd 2440000.0000 apparent  61.15989 | frozen(double)  69.98071 (+8.820824 deg)
+    jd 2461234.0000 apparent 110.40057 | frozen(double) 119.27835 (+8.877772 deg)
+
+--- (4) THE NEW PATH'S TWO SURFACE CONVENTIONS (float, the engine's own type)
+  states scored: 64
+  P6 observer(new) vs old's AnchorPointBody direction : max 0.0000202 deg
+  P7 surface_point+grounded MINUS that observer, longitude: [89.999994, 90.000007] deg (spread 0.000013)
+  P8 the MUTATION, fold WITHOUT +pi/2                  : [-0.000015, 0.000009] deg
+  latitude difference, surface_point vs observer       : max 0.0000065 deg
+
+--- (5) get_nutation's cache never resets its accumulators
+  first call at J2000      : 280.456812724 deg
+  then J2000+10            : 290.313378915 deg
+  then J2000 AGAIN         : 280.456812724 deg   (delta -0.000000000 deg)
+  after 20 more round trips: 280.456812724 deg   (delta -0.000000000 deg from the first)
+  mean sidereal at J2000   : 280.460618370 deg (the uncontaminated reference)
