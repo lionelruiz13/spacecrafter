@@ -923,6 +923,49 @@ operator channel; the fix (code first) or the STOP; the post-fix proofs incl. th
 and the D11 number; §11 entry + stub; §5.139 flipped or annotated; §5.107 annotated;
 back-markers; map; README; trees clean; WIP cleared; baselines LAST.
 **WIP:** DELIVERED 2026-09-06 (F100) — **§11.220** + **§5.139 FIXED** (code `1af7fa48` -> `474c595d`, `ModularBody.{hpp,cpp}` only, binary `8e2c6ef3` -> `b5f08778` bit-reproduced; harness `776a59c` -> `e01814a` -> `9ba27ec` -> `e27ff87` -> `f49c501` -> the record). The leg REFUTED the row's candidate and confirmed the memo: one binary, two clocks — 48 frozen = `P u I` at `rate 0` with the 19 parked bodies' `evalCount` IDENTICAL over 1875 frames and old-vs-new to 170.715618 deg, 29 = `I` at `rate 1`. Post-fix 29 = `I` at both clocks, 1.2044e-05 deg, the pre hypothesis failing on exactly the 19; launch state byte-identical 120/120 + 90/90 + camera; F91 `c125adf0`; smoke rc 0; D14 PASS; both mutations refuted (no-memo 5.018/frame held vs 0.0000). Row reach CORRECTED at the row: `get status object` is old-first, `flag track_object on` is the reachable channel and it ran the aim to alt = -pi/2. Back-markers §11.216(j1)(j3)(d2)(l3) both homes, §11.117(c)+index, §11.76(b) both homes, §5.107, §11.218; map names §5.139 0 times. **Owner item raised, not touched: `RESUME_EXTRA_ITERATIONS = 4` is short by ~4 on Eris (1.198725 deg of readout error at 5 evaluations, 1.09669e-05 at 9) — the constant is [vixy]'s.**
+**ACCEPTED 2026-09-06 — the verifying commands' `date` read 23:38:53 and 23:40:09–23:46:59 (supervisor,
+session 26, Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.220 read in
+full; ONE code commit `474c595d` (Claude Opus 5; `ModularBody.{hpp,cpp}`, 68+/7−, the diff READ: the
+memo keyed on (date, parent frame) with `evaluatedFrame` beside `evaluatedJD`, `sameFrame` an exact
+element compare, the date half read BEFORE the ancestor climb, the +4 bound to a date change only —
+nothing else) and seven harness commits `e01814a → 82a1f7f` (Claude Opus 5; the predictions at
+`e01814a` before the first launch), both trees clean; binary `b5f08778`, dry build 0 steps; §5.139
+reads *FIXED 2026-09-06, F100 §11.220* with its reach sentence corrected (`track_object` named);
+§5.107 names §11.220; §11.216 carries four markers in the entry and one in the stub; §11.76 both homes;
+§11.117 entry (the stub carries no barrier-contract text — entry-only licensed); README §F100
+(`:4811`); `DEPLOYMENT-MAP` 0 hits, said not assumed; instruments to the digit of the entry's stated
+successor value (scan 243/303/139 · pair-check 236/211/25/116 · D 35 · D2 11 · I 89 · I2 37 · M 86).
+**AND the delivered leg run by my own hand on `b5f08778` at BOTH clocks (`sc-f100/supervisor/post`,
+23:40:09–23:44:37): pinned — frozen 29 = I exactly, the pre-fix hypothesis P∪I FAILING on exactly the
+19 named bodies, `evalCount` still for 0 of 19 over 1875 frames, parked old-vs-new 1.93e-05° (Ceres)
+after the move and Eris 1.1987249° at the launch state before it (the (j1) under-convergence,
+reproduced); running — 29 = I, parked 1.66e-05°; AND the smoke suite on `b5f08778` (23:45:20–23:46:59):
+rc 0, the nine step states of §11.211 (S1/S7 DIVERGENCE with citations, S4 DEPRECATED, six PASS), S5's
+shape OK, exit 0 in 0.7 s, 1 frame stall, frozen 4/4 in==out, `/proc` clear, no lock file.**
+Deviations ENDORSED with the executor's arguments: three refuted predictions kept as refuted (P3a,
+P3c's observable, P5b); the `track` stage added — the section asked for the operator channel and the
+read showed `get status object` is old-first, so without the track arm the row's reach would have
+been left unmeasured instead of corrected; the post-fix pinned leg re-run once the instrument could
+name the binary it looks at; `parent->useNow()` unconditional (0.0000 refreshes/frame with the camera
+held, one 16-float compare, annotated at §11.117(c)). SUSPENSION ENDORSED and MINTED: the +4 constant
+short by about four for Eris — **§5.145** (record-only; the decision the owner's, §11.76(b)) with
+markers at §11.158(f4), §11.213(g), §11.220(j1) both homes — the "Eris = the trees' own 1.198° gap"
+attribution carried by three entries since F44 is superseded by measurement. DISPATCHER-SIDE FINDINGS
+reported, ACCEPTED as mine with the counterfactual: (1) the section's P3 asserted `get status object`
+reads the NEW path's block — it is old-first (`core.cpp:1091-1097`), a structure asserted without the
+read (Q-67's SIBLING class); (2) §5.139's reach sentence (mine, at F96's acceptance) inherited the same
+assumption — corrected at the row; had either been an INPUT the executor stood on, an abort — they
+were the predictions the leg tests, and the leg refuted them as designed. Round tally: **three
+dispatcher defects** (the keyed-loader count; the "§5.50 shape" label; the old-first readout assumed
+at two homes). STANDING CONSEQUENCES: **the D8 barrier now keys on (date, parent frame)** — a parked
+body's readout follows the camera at a pinned clock (48 → 29 frozen, the 29 being the never-walked
+`dist` 0 class, §11.216(i)); every un-moved-view observable and the F91 table (`c125adf0`) are
+byte-identical across `474c595d`; a harness that recorded a PARKED body's readout after a camera
+move at `timerate rate 0` now reads differently, because the number is right; `select planet` +
+`get status object` answers the OLD path for every both-tree name — a new-path readout must use a
+new-only name or the dump's `.navstr` sidecar; the dump calls the barrier for 90 of 120 records
+(§11.220(j3), the dump channel's own item); `/home/claude/sc-f100/` holds the farms, the post and
+no-memo binaries and my runs.
 
 ### F101 — §5.143's mechanism leg AND the old-half assert at the channel's ONE reader: the dump's old half enumerates `currentSystem` (`ssystem_factory.cpp:1181`) and the tester's `14.sts` moves that pointer — `moveto alt 1.1E+16` (`:22`) leaves the system, the `parent none` load (`:25`) lands in whatever system is current, `set home_planet Solsys` (`:27`) re-enters through `enterSystem` → `changeSystem(querySelectedAnchorName())` → `createSystem()` for a name no system carries (`:764-768`, `:294-307`, `:741`) — a fresh `ProtoSystem` holding one star, after which every `parent Earth` load is refused by that system's own name search (`protosystem.cpp:531-535`); the leg bisects farm COPIES of the 14.sts prefix (25 / 27 / 31 lines) with `f98_repro14.py --dump-after-each`, predictions first, the switch read back from the applog; then `dumpread.load_dump` raises on an empty old half by DEFAULT and the census/soak readers opt out by name (I9: one assert at the anchor, its 21 importers enumerated from it, F98's own dumps as the both-ways control) [S, instrument + reading; no engine change]
 
@@ -1019,10 +1062,10 @@ record-only; no `spacecrafter` in `/proc/*/comm` before each launch.
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => 22499f04
+git rev-parse --short=8 HEAD => 474c595d
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 46849f69
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 219
+md5sum build-claude/src/spacecrafter | cut -c1-8 => b5f08778
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 221
 grep -c '^### F' claude/fable-dispatch.md => 4
 # ledger states the work stands on
 grep -m1 '^143\. ' claude/INTENT.md | grep -c 'OPEN, record-only' => 1
@@ -1043,7 +1086,7 @@ wc -l < ~/.spacecrafter/scripts/fscripts/14.sts => 577
 # the reader and its importers
 sed -n '69p' claude/harness/dumpread.py | grep -c 'def load_dump(path):' => 1
 sed -n '87,88p' claude/harness/dumpread.py | grep -c 'rec.get("old") is None\|missing_old.append' => 2
-grep -l -E 'import dumpread|from dumpread' claude/harness/*.py | wc -l => 21
+grep -l -E 'import dumpread|from dumpread' claude/harness/*.py | wc -l => 22
 sed -n '1323p' claude/harness/f95_soak.py | grep -c '"bodies_old": len(pairs) + len(missing_new)' => 1
 # F98's control data and driver
 test -f claude/harness/artifacts/f98/f98_repro14.py && test -f claude/harness/artifacts/f98/repro/bisect_oldpath.result.json && test -f claude/harness/f55_farm.sh && echo ok => ok
