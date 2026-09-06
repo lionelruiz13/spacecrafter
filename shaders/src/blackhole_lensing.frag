@@ -12,7 +12,7 @@ layout(location=0) out vec4 FragColor;
 
 vec2 sceneUv(vec2 pixel, vec2 viewport)
 {
-    return clamp(vec2(pixel.x / viewport.x, 1.0 - pixel.y / viewport.y), vec2(0.0), vec2(1.0));
+    return clamp(pixel / viewport, vec2(0.0), vec2(1.0));
 }
 
 void main()
