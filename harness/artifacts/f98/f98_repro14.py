@@ -59,6 +59,10 @@ def main():
                          "a different condition and must not be confused with "
                          "it")
     ap.add_argument("--bin", default=str(S.DEFAULT_BIN))
+    ap.add_argument("--dump-after-each", action="store_true",
+                    help="take a dual dump after every show and count the two "
+                         "halves - the bisect that attributes a dual-path "
+                         "desync to ONE show instead of to a cycle")
     a = ap.parse_args()
 
     out = Path(a.out).resolve()
@@ -92,6 +96,34 @@ def main():
 
     t0 = time.time()
     events = []
+    import dumpread
+
+    def snapshot(i, rel):
+        """A dual dump taken AFTER show <rel> has had its gap to run."""
+        if not a.dump_after_each or proc.poll() is not None:
+            return
+        f = out / ("dump_%02d_%s.json"
+                   % (i, rel.split("/")[-1].replace(".sts", "")))
+        if 1:
+            wire.send("body action dual_dump filename %s" % f, 1.5)
+            end = time.time() + 60
+            while time.time() < end and not (
+                    f.exists() and f.stat().st_size > 0
+                    and Path(str(f) + ".navstr").exists()):
+                time.sleep(0.4)
+            time.sleep(0.6)
+            try:
+                _h, pairs, missing_new, missing_old = dumpread.load_dump(f)
+                row = {"after": rel, "both": len(pairs),
+                       "old_only": len(missing_new),
+                       "new_only": len(missing_old),
+                       "bodies_old": len(pairs) + len(missing_new),
+                       "bodies_new": len(pairs) + len(missing_old)}
+            except Exception as e:                                # noqa: BLE001
+                row = {"after": rel, "error": repr(e)}
+            events.append(row)
+            print("   dump : %s" % row)
+
     for i, rel in enumerate(shows):
         if i:
             end = time.time() + a.gap
@@ -99,8 +131,15 @@ def main():
                 time.sleep(0.5)
             if proc.poll() is not None:
                 break
+            snapshot(i - 1, shows[i - 1])
         wire.send("script action play filename %s" % rel, 1.0)
         print("play    : %s at %+.1f s" % (rel, time.time() - t0))
+    if shows and proc.poll() is None:
+        end = time.time() + a.gap
+        while time.time() < end and proc.poll() is None:
+            time.sleep(0.5)
+        snapshot(len(shows) - 1, shows[-1])
+
     dead_at = None
     while time.time() - t0 < a.budget:
         if proc.poll() is not None:
@@ -136,6 +175,7 @@ def main():
                          if S.md5(f) != m] if all(Path(f).exists()
                                                   for f in frozen) else "?",
         "applog": str(applog), "proc_after": S.no_instance(),
+        "dumps": events,
     }
     (out / "result.json").write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))

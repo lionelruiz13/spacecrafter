@@ -1152,6 +1152,15 @@ that the cap does not already cut — a model blindness with a static predictor,
 application fault. `14.sts` without `06.sts` ENDS in 6.0 s (it timed out at 92.7 s in the
 shakedown): the abort path is out. NEXT: poll hourly, commit samples hourly, then the
 report + §11.218 + the four corrections.
+CHECKPOINT 5 (15:4x, hourly): cycles 1–3 wall **1914.7 / 1916.6 / 1915.6 s** (spread 1.9 s),
+each 13 CAPPED / 7 SHOW-TIMEOUT / 104–106 pauses resumed, **no flag** in 234 samples.
+SECOND FINDING, measured on the dump halves: at every cycle boundary **bodies_old = 0,
+bodies_new = 286** — after cycle 1 the OLD path's dump half is EMPTY and stays empty
+(Earth/Mars/Sun are NEW-only), while after `06old.sts` in cycle 1 it read 246 both /
+30 new-only with `ALSAT 1` on both halves. Candidate mechanism [derived, unconfirmed]:
+`14.sts` authors `Solsys … parent none`, i.e. a SYSTEM, and the old half then walks that
+system (1 body) until a later `body action clear` empties it. Attribution run prepared
+(`f98_repro14.py --dump-after-each`), to run after the quit.
 
 ---
 
