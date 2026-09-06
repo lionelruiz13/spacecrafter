@@ -933,6 +933,51 @@ Code `24100461 → 22499f04`, binary `eb3f5e50 → 46849f69`. §5.21 stays OPEN 
 FIXED (row + entry). Controls: F91 table byte-identical `c125adf0`, `f90_rehearsal_run.sh`
 rc 0, D14 PASS. Back-markers at §11.78(c), §11.163(e), §11.207(g)(3), §11.152(o), both
 homes each; DEPLOYMENT-MAP T2 annotated; README section added.
+**ACCEPTED 2026-09-06 — DELIVERED IN PART, the STOP ENDORSED; the verifying commands' `date` read
+12:41:07 and 12:41:10–12:42:47 (supervisor, session 25, Claude Fable 5.1).** Verified by my own runs
+and reads, not by the report: §11.217 read in full; ONE code commit `22499f04` (Claude Opus 5; the
+diff READ — `orbit.cpp` ONE token `lat(_lat)` → `lat(_lat*M_PI/180)` plus its comment block,
+`LocationOrbitLoader.hpp` the §2(f) `L_WARNING` + includes + comment, `SurfacePointOrbitLoader.hpp`
+comment only; 91+/1−) and five harness commits `b5073be → c074a70` (Claude Opus 5; the derivation
+at `b5073be` before one byte of code, the live predictions at `2d19321` before their first run),
+both trees clean; binary `46849f69`, `cmake -n` 0, no `src/` file newer; §5.21 reads *PARTLY FIXED
+2026-09-06, F97 §11.217* at the row AND in `INTENT/5.21.md` and stays OPEN; §11.217 named at
+`INTENT/11.78.md`, `11.163.md`, `11.207.md`, `11.152.md` and their stubs; MAP `:465`/`:476`; README
+§F97 (`:4560`); D14 PASS; instruments (scan 230/281/**133** — the two §5.21 arrears paid by name;
+pair-check 233/208/25/111 — +1/+1 the entry; D 35 · D2 11 · I 89 · I2 36 · M 81). The diagnostic
+line read by my own hand (`artifacts/f97/diagnostic_post.txt`: *(Warn.): Body 'F97LO0G' uses
+coord_func=location_orbit WITH the grounded relation …*). **AND the smoke suite run by my own hand
+on `46849f69` at 12:41:10–12:42:47 (`/home/claude/sc-f97/supervisor/`): rc 0, the nine step
+states of §11.211 (S1/S7 DIVERGENCE with citations, S4 DEPRECATED, six PASS), S5's shape OK, exit 0
+in 0.6 s, 2 frame stalls, frozen 4/4 in==out.** THE STOP ENDORSED with the executor's argument:
+mandate (2)'s two requirements — exact against old, AND landing where `surface_point` + grounded
+lands — are mutually exclusive by exactly the mesh `+π/2`, measured both ways (the two cells swap;
+the mutation scores 0), and choosing decides where a RATIFIED key of another provider points
+(D16–D19) — the section's own clause, fired where it should; the latitude half is separable (a
+z-rotation cannot change a latitude, both readings agree) and landed with its own both-ways proof
+(58.31008° → 45.00000° on BOTH halves, the lat-0 control unmoved, the F91 table byte-identical
+`c125adf0` = §11.216(g1)'s). Deviations ENDORSED with the executor's arguments: the §2(f)
+diagnostic delivered though it belongs to the halted half (reading-independent, at the anchor
+§11.193 names, scored 0 pre / 1 post); three refuted predictions recorded as refuted (P4 —
+`re.period` is a `float`, so on a linear-`re` parent §5.21's defect (a) is I2, not numeric, and
++8.856° on Earth; P6 at its bound; P9 a defect predicted into existence, measured 0); the probe's
+Mars corrected by the live leg (57.75° → 86.31°, the third column then digit for digit); the Earth
+pair offline only. DISPATCHER DEFECT reported, ACCEPTED as mine, output-side: the section's *"two
+references computed, one used"* at `protosystem.cpp:600`/`:607` — both are used (`:600` → the
+child's rotation OFFSET at `:950`), a gloss from reading the loader branch without the
+rotation-elements lines below it (Q-67's SIBLING class: structure asserted without the read).
+Round tally: **three dispatcher defects**. SUPERVISOR ACTS at this acceptance: **§5.140 MINTED**
+(`surface_point`'s `orbit_lon` ninety degrees east — the `orbit_lon` decision ROUTED to the owner at
+the row, WITH the field census measured at 12:43: `surface_point` 0 uses in ssystem / scripts /
+modularSystem / doc / data ⇒ zero content cost either way) and **§5.141 MINTED** (the loader's null
+parent — §5.50's class; fix decision-free, next-round S); markers at §11.217(h1)(j2) both homes and
+at §5.49 / §5.50. STANDING CONSEQUENCES: `orbit_lat` reaches `spheToRect` in radians on both
+paths; §5.21's (a) and the third defect (the missing `getRotEquatorialToVsop87()`, 86.306371° on
+Mars) are BLOCKED ON A DECISION, not on effort — ONE question, both readings at §11.217(d): what
+`orbit_lon` MEANS; on `46849f69` the F91 table is byte-identical to `eb3f5e50`'s and no shipped
+body's dump changed; a `(Warn.)` line now exists for a body spelling both `location_orbit` and the
+grounded relation (the shipped corpus cannot produce it, census 0); `/home/claude/sc-f97/` holds
+the farms and my run.
 
 ### F98 — the SECOND SOAK, over the tester's own `fscripts/` corpus (body authoring under show load — §5.137's class, the residue §11.215(m) names and DEPLOYMENT-MAP T5 item 2 carries): the F95 instrument GENERALISED (playlist directories + farm root as parameters, F95's own behaviour at its defaults unchanged — one driver, I2), the duration model made `struct loop`-aware with a per-show CAP stated before the launch (`panorama0.sts` loops 1 000 000×: infinite by design — a CAP is a design parameter, a SHOW-TIMEOUT stays a finding), every one of the 137 real-HOME `.sts` a COPY on the farm and md5-asserted in==out per file, ≥ 4 h on the binary the round leaves with the F95 criteria + LEAK rule unchanged, PLUS the authoring instrument (the dump's body count per boundary; for one authored body per authoring show, its presence in each path's dump half and on the control surface); and the "3000 satellites" claim corrected at its four ledger homes with the measured count (170 lines in `06old.sts`, 529 in `14.sts`, 719 in 9 shows) [M–L, instrument; display-bound, hours]
 
@@ -1043,10 +1088,10 @@ the prompt states it; the detached-process premise (Q-68) re-probed as the FIRST
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => a2a880ef
+git rev-parse --short=8 HEAD => 22499f04
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 404b9e89
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 216
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 46849f69
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 218
 grep -c '^### F' claude/fable-dispatch.md => 3
 # the corpus (LC_ALL=C /usr/bin/grep: the wrapper skips non-UTF-8 files silently)
 ls ~/.spacecrafter/scripts/fscripts/*.sts | wc -l => 137
