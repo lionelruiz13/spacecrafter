@@ -517,6 +517,535 @@ instrument residues, the riders. Still blocked: §5.100's fix (authorization
 unanswered).* **Session-25 round (2026-09-06): F96 §11.216 · F97 §11.217 (in part — the
 STOP endorsed) · F98 §11.218 — three for three DELIVERED and accepted; archival pass 18
 (update-s24 + F96/F97/F98) DEFERRED to the next open.**
+**Session-26 (2026-09-06): archival pass 18 DONE at open (`fcfdd04`); live below: the
+session-26 mints **F99** (§5.141's fix, both sites), **F100** (§5.139's leg + the barrier
+fix), **F101** (§5.143's leg + the old-half assert at the one reader), **F102** (§5.142's
+reading, priced).**
+
+---
+
+### F99 — §5.141's fix: `LocationOrbitLoader` guards the parent it dereferences — the sibling's shape (`findBodyOnce` + a §2(f) line at the anchor naming what, consequence, fix; `return nullptr`, never throw) with "no orbit, no body" served by the consumer's EXISTING refusal (`ModularSystem.cpp:1245-1247`); the row's reach arm CORRECTED by the read and then MEASURED: `loadBody` refuses an UNKNOWN parent name before any loader runs (`:1067-1071`), so the arm that reaches the dereference is `parent none` (`loadBody` substitutes the system for `none`, `:1064-1067`; the loader looks up the literal `"none"`) — and on that arm the OLD path's own `location_orbit` branch dereferences the same null parent FIRST (`protosystem.cpp:598-599`, called before the new path at `ssystem_factory.cpp:829`/`:836`), so the guard lands at BOTH sites in the §5.50 shape, the both-ways proof pre SIGSEGV / post rc 0 + the lines, the same-class sweep over the nine orbit loaders recorded [S, engine, both paths — the old-path half a crash guard under the §5.50/§11.124(h) precedent, veto point §3]
+
+**Why now / mandate:** §5.141 [observed 2026-09-06, §11.217(h1) (F97); minted at F97's
+acceptance, record-only; session-25 close queue position 2, "S, decision-free"]:
+`LocationOrbitLoader::load` looks the parent up (`orbitModules/LocationOrbitLoader.hpp:20`,
+`ModularBody::findBody` — nullptr on a miss, `ModularBody.hpp:1558-1567`) and dereferences
+it at `:47-49`; the sibling `SurfacePointOrbitLoader` guards the same miss
+(`SurfacePointOrbitLoader.hpp:144-150`: `findBodyOnce` + a `L_WARNING` naming the fix);
+§11.124(h) guarded the same class at `protosystem.cpp` for the old path (§5.50: "no orbit,
+no body"). **Two things the mint READ that the row does not say — both premises of the
+both-ways proof, both to be MEASURED, never inherited:** (a) the row's headline arm,
+`parent <unknown>`, does not reach the loader through `body action load`:
+`ModularSystem::loadBody` resolves the parent NAME first and refuses a miss with its own
+line before `loadOrbit` runs (`ModularSystem.cpp:1067-1071`, then `:1200`), and the old
+path refuses the same push the same way (`protosystem.cpp:531-536`); the arm that DOES
+reach the dereference is **`parent none`** — `loadBody` substitutes the system itself for
+`none` (`:1064-1067`) and proceeds, while the loader looks up the literal `"none"` and gets
+nullptr. (b) On that arm the OLD path's `location_orbit` branch (`protosystem.cpp:598-608`)
+dereferences a null `parent` as well — `parent` stays a null `shared_ptr` when
+`str_parent == "none"` (`:531`) — and old's `addBody` runs BEFORE the new path's `loadBody`
+for one push (`ssystem_factory.cpp:829`, then `:836`), so the pre-fix crash is PREDICTED to
+be old's `:599`, the new loader's dereference masked behind it until old is guarded. Two
+sites, one class, one function each; the old-path change is the §5.50 precedent exactly (a
+crash guard at the same function; no shipped or loaded scene reaches the class — census
+`location_orbit` 0/0/0, §11.217(a)) and is said as a veto point in §3.
+
+**Measured at dispatch (supervisor, 2026-09-06 21:25–21:41, code `22499f04`; the PREMISES
+block re-runs what is a command):** the nine registered orbit loaders `modules.cpp:45-53`
+(eight keyed + the default `SpecialOrbitLoader`). Parent handling as READ (the task
+re-reads and states each): `ElipticOrbitLoader.hpp:3,8` and `CometOrbitLoader.hpp:3,9` —
+`findBody` then `if(!parent)` falling back to the `parent_rot_*` keys (guarded; a
+different behaviour, recorded not judged); `BaryOrbitLoader.hpp:11-16` — `findBodyOnce`
+×2, a log + `return nullptr` on a miss (guarded); `SurfacePointOrbitLoader.hpp:144-150` —
+guarded, proceeds (its orbit tolerates a null parent, `:114-115`);
+`LocationOrbitLoader.hpp:20,47-49` — UNGUARDED; `Still`/`Earth`/`Lunar`/`Special`: whether
+they touch `parent` at all is the task's to read. The consumer chain:
+`ModuleLoaderMgr::loadOrbit` (`ModuleLoaderMgr.cpp:101-109`) wraps the keyed loader in a
+`catch (...)` that falls through to the DEFAULT loader — a loader that THROWS is silently
+replaced by a `SpecialOrbit` (D12's opposite), which is why the guard must RETURN nullptr;
+`ModularSystem::loadBody:1245-1247` refuses a null orbit with *"Invalid orbit '…' for body
+'…', skip loading this body."* (`L_ERROR`) — the consequence line already exists at the
+consumer; `CameraAnchors::createAnchorBody` `:149-150` is the other `loadOrbit` caller and
+checks `!orbit` itself — whether its `orbitParams["parent"]` is validated before the call is
+for the task to read (`anchor.ini`'s grammar, §11.200). Instruments: `f90_rehearsal_run.sh`
+(the smoke suite), `f91_parity.py` + `f91_run.sh` (the 90-body table — the
+no-shipped-body-moves control, `c125adf0` fr at `46849f69`, §11.217(f)), `dumpread.py`,
+`b3_farm.sh`.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f99/prediction.txt`, committed before any
+launch): P1 arm A (`… coord_func location_orbit parent Nonexistent …`) → NO crash pre-fix,
+both paths' refusal lines (old `:534`, new `:1070`), the body on neither dump half; P2 arm B
+(`… parent none …`) → SIGSEGV pre-fix, attributed to OLD's `:599` as the first dereference in
+call order — the applog's last lines and (under gdb, §0's sediment) the faulting frame say
+WHICH site, not the reading; P3 post-fix arm B → alive, rc 0 at `shutdown action now`, ONE
+§2(f) line per path naming what (a `location_orbit` needs a parent body; `none` is not one),
+consequence (the body is not created on that path), fix (declare `parent = <body>`), the
+body on neither half, a `still_orbit` control body from the same script on BOTH halves; P4
+the F91 table byte-identical pre/post (fr) and the smoke suite rc 0 (census 0/0/0 ⇒ no
+shipped body can move); P5 the `CameraAnchors` arm: reachable or pre-validated, from the
+read. (2) **THE LEG, pre-fix** (`/home/claude/sc-f99/bin/spacecrafter-pre` preserved at
+`46849f69`; farm, French locale): arms A and B on fresh launches — the rc, the applog tail,
+the dump, the frame. (3) **THE FIX:** `LocationOrbitLoader.hpp` — `findBodyOnce` (the
+sibling's call), null ⇒ the `L_ERROR` line at the anchor (§11.193: the loader is the one site
+holding the coord_func AND the parent name) and `return nullptr` (never throw — see the
+`catch (...)` above); `protosystem.cpp`'s `location_orbit` branch — `if (!parent)` ⇒ the same
+line's old-path twin and `return`, BEFORE `:599` (the §5.50 shape in the same function);
+comments cite the entry; nothing else. (4) **PROVE:** P1–P5 measured post-fix; the
+nine-loader sweep as a table in the entry; D14. (5) **RECORD:** §11.⟨next⟩ FIRST + stub;
+§5.141 FIXED with the arm CORRECTED at the row (the `<unknown>` arm refuted by `:1067-1071`,
+the `none` arm measured, the old-path site added — a marker, this task's); §5.50 annotated (a
+second site of its class guarded in the same function); §11.217(h1) back-marker both homes;
+DEPLOYMENT-MAP (`grep -n '5\.141'` = 0 at the mint — say so if still 0); README section; WIP
+per §0.6; D14.
+
+**Boundaries:** `src/experimentalModule/orbitModules/LocationOrbitLoader.hpp` +
+`src/bodyModule/protosystem.cpp` (the `location_orbit` branch ONLY — an OLD-PATH crash
+guard under the §5.50/§11.124(h) precedent, veto point §3); nothing else; no data; no msgid;
+the farm only (real HOME md5 in==out); FUNCTIONAL (`--no-scene`); no `run_in_background`;
+runs under `/home/claude/sc-f99/`. If arm B does NOT crash pre-fix on either path (P2
+refuted) → STOP before the fix: record the measured behaviour, re-derive the reach, report —
+the guard is still the sibling's shape and may land, but the row's reach claim is then the
+thing to correct, and that is the dispatcher's call.
+
+**Discriminating checks:** (a) P2 red pre-fix (the signal / rc) and green post-fix (rc 0)
+on the same script; (b) the pre-fix crash attributed to a SITE from the log/frame, not from
+the reading; (c) P1 unchanged pre/post (two refusal lines, no crash); (d) the control body on
+both halves post-fix while the `none`-parent body is on neither; (e) the F91 table
+byte-identical + the smoke suite rc 0; (f) the nine-loader sweep table; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that
+are not commands: display per HOST-EVENTS (`:2`, the owner's RDP-created real session,
+alive under ssh — `xdpyinfo` 2448x1332 at 21:24); canary `--no-scene` exit 0 before the
+first launch; `free -g` ≥ 16 GiB before the build (52 GiB at open ⇒ `-j24`); the harness
+HEAD as the prompt states it; §5.141's row reads OPEN, record-only.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 22499f04
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 46849f69
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 219
+grep -c '^### F' claude/fable-dispatch.md => 4
+# ledger states the work stands on
+grep -m1 '^141\. ' claude/INTENT.md | grep -c 'OPEN, record-only' => 1
+grep -m1 '^141\. ' claude/INTENT.md | grep -c 'FIXED' => 0
+grep -m1 '^50\. ' claude/INTENT.md | grep -c 'FIXED 2026-07-31' => 1
+# sites, re-resolved at HEAD (content drift = abort)
+sed -n '20p' src/experimentalModule/orbitModules/LocationOrbitLoader.hpp | grep -c 'ModularBody::findBody(params\["parent"\])' => 1
+sed -n '47,49p' src/experimentalModule/orbitModules/LocationOrbitLoader.hpp | grep -c 'parent..get' => 3
+sed -n '144,145p' src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp | grep -c 'findBodyOnce\|if (!parent)' => 2
+sed -n '1064,1071p' src/experimentalModule/ModularSystem.cpp | grep -c 'parentName != "none"\|Can.t find parent\|return;' => 3
+sed -n '1245,1247p' src/experimentalModule/ModularSystem.cpp | grep -c 'if (!createInfo.orbit)\|skip loading this body' => 2
+sed -n '531,536p' src/bodyModule/protosystem.cpp | grep -c 'str_parent != "none"\|can.t find parent' => 2
+sed -n '598,599p' src/bodyModule/protosystem.cpp | grep -c 'location_orbit\|parent..getSiderealDay' => 2
+sed -n '829p;836p' src/bodyModule/ssystem_factory.cpp | grep -c 'currentSystem..addBody(param)\|loadBody(param, nullptr, true)' => 2
+sed -n '101,109p' src/experimentalModule/ModuleLoaderMgr.cpp | grep -c 'catch (...)\|defaultOrbitLoader..load' => 2
+sed -n '149,150p' src/experimentalModule/CameraAnchors.cpp | grep -c 'loadOrbit(orbitParams)\|if (!orbit)' => 2
+sed -n '11,13p' src/experimentalModule/orbitModules/BaryOrbitLoader.hpp | grep -c 'findBodyOnce\|== nullptr' => 3
+grep -c 'registerModule("' src/experimentalModule/modules.cpp => 8
+# the census (LC_ALL=C /usr/bin/grep: the wrapper skips non-UTF-8 files silently)
+/usr/bin/grep -rl 'location_orbit' ~/.spacecrafter/ssystem.ini ~/.spacecrafter/scripts/ 2>/dev/null | wc -l => 0
+LC_ALL=C /usr/bin/grep -c 'location_orbit' doc/superscript.sts => 0
+# instruments
+test -f claude/harness/f90_rehearsal_run.sh && test -f claude/harness/f91_parity.py && test -f claude/harness/f91_run.sh && test -f claude/harness/dumpread.py && test -f claude/harness/b3_farm.sh && echo ok => ok
+test -e /home/claude/sc-f99 ; echo $? => 1
+```
+
+**DoD:** predictions before the launch; the pre-fix leg (both arms, the site attribution);
+the fix at both sites (code first); the post-fix proofs; the sweep; §11 entry + stub; §5.141
+flipped with the arm correction; §5.50 annotated; back-markers; map; README; trees clean;
+WIP cleared; baselines LAST.
+**WIP:**
+
+### F100 — §5.139's mechanism leg, then the fix INSIDE the barrier's own contract: the frozen readouts are the PARKED bodies' (`hidden = true` in the field's `ssystem.ini` — every dwarf planet and asteroid of the frozen set — and their subtrees) at a PINNED clock: `useNow()`'s memo `evaluatedJD == currentJD` (`ModularBody.cpp:459`) is the right key for the orbit position and the WRONG key for the camera-dependent `mat`, so after the first use at a given date no camera move ever reaches a parked body's eye-frame position again; the dump ALREADY calls `useNow()` per body (`ssystem_factory.cpp:1192`) and the SELECTION every frame (`ModularSystem.cpp:270`), which is why the instrument and the operator's `get status object` are predicted to freeze TOGETHER — the leg discriminates pinned vs running clock and parked vs walked bodies with predictions before the launch; the fix re-keys the memo on (date, parent frame) with the +4 iterations bound to a date change only, under D11's denominator; STOP if the leg refutes the memo [S–M, engine, new path]
+
+**Why now / mandate:** §5.139 [measured 2026-09-06, §11.216(j1) (F96); minted at F96's
+acceptance, record-only; session-25 close queue position 3, "the fix decision-free once
+the mechanism is confirmed"]: after `select planet Jupiter` + `flag track_object on` at
+offset 0, **48 of 120 records keep a byte-identical new-path `mat` translation** and sit
+109.893°–170.695° from old's alt/az; the row's candidate was the walk's visibility gate
+(`preUpdate`/`update`, the same gate §5.107 records), *"which pruner excludes them is the
+unread part"*. **The mint READ the walk and the candidate does not survive it; a sharper
+one does, and it is stated here as [derived] for the leg to confirm or refute:** every
+body the walk REACHES gets its `mat` translation refreshed whether visible or not
+(`selectiveUpdate`'s else branch `ModularBody.hpp:915-945`, `recursiveTranslationUpdate`
+`:951-972`, `dispatchUpdate`'s else branch and its climb `ModularBody.cpp:382-407`,
+`:408-449`). What the walk does NOT reach is (i) PARKED subtrees — `hiddenBodies`, for
+which only `publishParkedFrame` runs (`ModularBody.hpp:1003-1007`; B39/D23: *"hidden bodies
+shouldn't tick"*) — and (ii) nodes above the isolation stop (`isNotIsolated = false` at
+`ModularSystem.cpp:196`; the climb `ModularBody.cpp:408`). F96's 48: the systems and
+anchors (ii, `dist` 0 — §11.216(i)'s zero-vector class) and **exactly the field's hidden
+bodies with their moons** (i): `eris ceres haumea arrokoth pluto makemake sedna vesta
+pallas juno` carry `hidden = true` in `~/.spacecrafter/ssystem.ini`, `charon/nix/kerberos/
+styx/hydra` sit under the hidden Pluto, `hiiaka/namaka` under the hidden Haumea (the census
+line is a premise). The parked bodies' eye-frame position has ONE writer, the D8 barrier
+`useNow()` (`ModularBody.cpp:455-482`: `recursiveTranslationUpdate(currentJD, frame)` 1+4
+times from the parent's published frame) — and the barrier returns early when
+`evaluatedJD == currentJD` (`:459`), a stamp written by the translation refresh itself
+(`ModularBody.hpp:683`, `:857`) and compared to the frame date `dispatchUpdate` publishes
+(`ModularBody.cpp:375`). That key is complete for `eclipticPos` (a function of the date)
+and INCOMPLETE for `mat` (a function of the date AND the parent's flat frame, which follows
+the camera): at a pinned clock the first use at that date refreshes `mat`, every later use
+returns at `:459`, and the camera moves on without it. F96's dumps were taken at
+`"timeSpeed":0` (the header; a premise line) — and the dump DOES call `nb->useNow()` for
+every body (`ssystem_factory.cpp:1192`, *"A DUMP IS A USE"*), so the instrument was not
+missing the barrier, the barrier was memoized. The SELECTION gets the same call every
+frame (`ModularSystem.cpp:261-270`, *"Being the SELECTION is a use"*) on the same key ⇒ the
+operator channel — pause or pin the clock, select a hidden dwarf (`S10.sts` selects a
+hidden body, the code's own comment), move the camera, `get status object` — is predicted
+to answer the OLD camera state too. The fix under this reading stays inside the barrier's
+own contract (§11.76(b) [vixy]: *"As soon as the position is used … it should be
+computed"*): the memo must also recognise a changed parent frame; the +4 re-convergence
+iterations belong to a DATE change only (the seed is date-driven, `ModularBody.hpp:1015-1023`);
+a frame-only change is one translation refresh. Decision-free because the contract is
+recorded and the fix restores it; D11 prices it (the selection + the star are the per-frame
+users, `:261-270`).
+
+**Measured at dispatch (supervisor, 2026-09-06 21:25–21:41, code `22499f04`):** the sites
+above, each a premise line; `getObservedPosition()` = `mat.getTranslation()`
+(`ModularBody.hpp:1493-1495`) and its readout consumers `ModularObject.cpp:59,87,176,194,213`
+(RA/DE, equatorial, alt/az — the strings `get status object` prints); the F96 leg artifacts
+`harness/artifacts/f96/leg_pre/` (`f96_report.txt` line 3 names the 48; `cmd_p0_launch` →
+`cmd_a0_off0` is the move at offset 0), the instrument `harness/f96_offset.py`
+(`freshness()` at `:457`, `body_pos()` reads `mat[12..14]`), `f91_parity.py`/`f91_run.sh`
+(the byte-identity control), `f90_rehearsal_run.sh`. The clock: F91/F96's drivers pin it
+(`timerate rate 0` — the header's `timeSpeed 0`); a RUNNING clock is `timerate rate 1`
+(state the command used).
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f100/prediction.txt`, before any launch):
+P1 at the pinned clock the frozen set of F96's move = parked subtrees ∪ the isolation
+residue, body for body (the field census + the dump's `relation` field as the partition
+key, INDEPENDENT of the freshness measurement); P2 the same move at a RUNNING clock leaves
+0 parked bodies frozen (each frame's new date defeats the memo) while the isolation
+residue stays at `dist` 0; P3 at the pinned clock `select planet Ceres` (hidden Dwarf) +
+`get status object` before/after the move answers the SAME alt/az string after the move
+(stale), while old's `altaz_old` for Ceres in the same dump moved — and at the running
+clock it follows; P4 the walked control (`select planet Mars`) fresh at both clocks; P5
+post-fix: 0 parked bodies frozen at the pinned clock, every parked body's alt/az within
+F91's floor (≤ 3e-5°) of `altaz_old` and its RA/DE string old's, the WALKED set
+byte-identical to pre-fix at every stage, the P0 launch-state table byte-identical; P6 the
+MUTATION: re-keying on the date only (= no fix) leaves the 48; dropping the memo entirely
+also passes P5 but pays 1+4 refreshes per use per frame — the chosen form's per-frame cost
+for the selection + the star, measured or bounded against 1 ms/frame (D11). (2) **THE LEG,
+pre-fix binary** (farm, French locale): (a) F96's move at the pinned clock, the freshness
+partition joined to the parked/isolated partition — P1 to the body; (b) the same at the
+running clock — P2; (c) P3 and P4 through the OPERATOR channel (`select` + `get status
+object`, the string), at both clocks; every dump pair also read by `freshness()`. (3) **THE
+FIX** (`ModularBody.{hpp,cpp}` only — `useNow()` and the stamp it keys on): the early return
+compares the parent frame the last refresh used as well as the date (a stamp beside
+`evaluatedJD`, or a by-value compare against `parent->parkedChildFrame` /
+`matLocalToBodyPos` — say which and why); a date change keeps the 1+4 iterations; a
+frame-only change runs the translation refresh once; the comment cites the entry and
+§11.76(b). **If the leg refutes the candidate** (parked bodies frozen at the RUNNING clock
+too, or walked bodies frozen, or the partition not matching P1) → STOP before the fix:
+record the measured partition and what it implicates, deliver nothing in code, report. (4)
+**PROVE post-fix:** P5 and P6; the F91 table byte-identical pre/post at the un-moved launch
+state (fr), the smoke suite rc 0, canary `--no-scene`; D14. (5) **RECORD:** §11.⟨next⟩
+FIRST + stub; §5.139 FIXED (or STOP-annotated with the measured partition); §5.107
+annotated (its second member's mechanism is the barrier's memo, not the walk's gate);
+§11.216(j1)(j3) back-markers both homes; §11.117 (B39, the barrier's origin) annotated at
+the clause the memo contract changes; the map (grep `5.139`); README section; WIP per §0.6;
+D14.
+
+**Boundaries:** `src/experimentalModule/ModularBody.hpp` + `ModularBody.cpp` only (the
+memo and its stamp); NO old-path change; no data; the farm only (real HOME md5 in==out);
+FUNCTIONAL (`--no-scene`); no `run_in_background`; runs under `/home/claude/sc-f100/`.
+
+**Discriminating checks:** (a) P1 body for body, the partition key independent of the
+measurement; (b) P2 — the running clock un-freezes the parked set on the SAME binary; (c)
+P3 through the operator's string, both clocks; (d) P5 pre/post with the walked set
+byte-identical; (e) P6 both mutations refuted; (f) the F91 table + smoke suite; (g) the
+D11 number; (h) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that
+are not commands: display per HOST-EVENTS (`:2`); canary `--no-scene` exit 0 before the
+first launch; `free -g` ≥ 16 GiB before the build; the harness HEAD as the prompt states
+it; §5.139's row reads OPEN, record-only.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 22499f04
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 46849f69
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 219
+grep -c '^### F' claude/fable-dispatch.md => 4
+# ledger states the work stands on
+grep -m1 '^139\. ' claude/INTENT.md | grep -c 'OPEN, record-only' => 1
+grep -m1 '^139\. ' claude/INTENT.md | grep -c 'FIXED' => 0
+# sites, re-resolved at HEAD (content drift = abort)
+sed -n '457p;459p' src/experimentalModule/ModularBody.cpp | grep -c '!renderHidden || !parent\|evaluatedJD == currentJD' => 2
+sed -n '479,480p' src/experimentalModule/ModularBody.cpp | grep -c 'RESUME_EXTRA_ITERATIONS\|recursiveTranslationUpdate(currentJD, frame)' => 2
+sed -n '375p' src/experimentalModule/ModularBody.cpp | grep -c 'currentJD = jd' => 1
+grep -n 'evaluatedJD = jd' src/experimentalModule/ModularBody.hpp | cut -d: -f1 | tr '\n' ' ' => 683 857
+sed -n '1493,1494p' src/experimentalModule/ModularBody.hpp | grep -c 'getObservedPosition() const\|return mat.getTranslation()' => 2
+sed -n '1003,1006p' src/experimentalModule/ModularBody.hpp | grep -c 'publishParkedFrame\|hiddenBodies.empty()\|parkedChildFrame = flat' => 3
+sed -n '1192p' src/bodyModule/ssystem_factory.cpp | grep -c 'nb..useNow()' => 1
+sed -n '269,270p' src/experimentalModule/ModularSystem.cpp | grep -c 'ModularBody::getSelected()\|sel..useNow()' => 2
+sed -n '196p' src/experimentalModule/ModularSystem.cpp | grep -c 'isNotIsolated = false' => 1
+sed -n '338p' src/experimentalModule/ModularBody.hpp | grep -c 'RESUME_EXTRA_ITERATIONS = 4' => 1
+# the field census (the parked set) and F96's record
+python3 -c "import re;t=open('/home/claude/.spacecrafter/ssystem.ini',encoding='latin-1').read();s=re.split(r'^\[([^\]]+)\]\s*$',t,flags=re.M);d={s[i].strip().lower():s[i+1] for i in range(1,len(s)-1,2)};f=lambda b:(lambda m:m.group(1) if m else '-')(re.search(r'^\s*hidden\s*=\s*(\S+)',d[b],re.M|re.I));print(' '.join(b+':'+f(b) for b in ['eris','ceres','haumea','arrokoth','pluto','makemake','sedna','vesta','pallas','juno','charon','mars']))" => eris:true ceres:true haumea:true arrokoth:true pluto:true makemake:true sedna:true vesta:true pallas:true juno:true charon:false mars:false
+zcat claude/harness/artifacts/f96/leg_pre/cmd_a0_off0.json.gz | head -1 | grep -o '"timeSpeed":[^,]*,"timePaused":[^,]*' => "timeSpeed":0,"timePaused":false
+grep -o '48 frozen / 72 re-evaluated of 120' claude/harness/artifacts/f96/leg_pre/f96_report.txt | head -1 => 48 frozen / 72 re-evaluated of 120
+grep -c 'frozen: 51PegSystem' claude/harness/artifacts/f96/leg_pre/f96_report.txt => 1
+grep -n 'def freshness' claude/harness/f96_offset.py | cut -d: -f1 => 457
+# instruments
+test -f claude/harness/f96_offset.py && test -f claude/harness/f91_parity.py && test -f claude/harness/f91_run.sh && test -f claude/harness/f90_rehearsal_run.sh && test -f claude/harness/dumpread.py && echo ok => ok
+test -e /home/claude/sc-f100 ; echo $? => 1
+```
+
+**DoD:** predictions before the launch; the leg at both clocks through the dump AND the
+operator channel; the fix (code first) or the STOP; the post-fix proofs incl. the mutation
+and the D11 number; §11 entry + stub; §5.139 flipped or annotated; §5.107 annotated;
+back-markers; map; README; trees clean; WIP cleared; baselines LAST.
+**WIP:**
+
+### F101 — §5.143's mechanism leg AND the old-half assert at the channel's ONE reader: the dump's old half enumerates `currentSystem` (`ssystem_factory.cpp:1181`) and the tester's `14.sts` moves that pointer — `moveto alt 1.1E+16` (`:22`) leaves the system, the `parent none` load (`:25`) lands in whatever system is current, `set home_planet Solsys` (`:27`) re-enters through `enterSystem` → `changeSystem(querySelectedAnchorName())` → `createSystem()` for a name no system carries (`:764-768`, `:294-307`, `:741`) — a fresh `ProtoSystem` holding one star, after which every `parent Earth` load is refused by that system's own name search (`protosystem.cpp:531-535`); the leg bisects farm COPIES of the 14.sts prefix (25 / 27 / 31 lines) with `f98_repro14.py --dump-after-each`, predictions first, the switch read back from the applog; then `dumpread.load_dump` raises on an empty old half by DEFAULT and the census/soak readers opt out by name (I9: one assert at the anchor, its 21 importers enumerated from it, F98's own dumps as the both-ways control) [S, instrument + reading; no engine change]
+
+**Why now / mandate:** §5.143 [measured 2026-09-06, §11.218(h) (F98); minted at F98's
+acceptance, record-only; session-25 close queue position 4]: after `14.sts` the old half
+goes **246 → 1**, the corpus's `body action clear` then leaves **0**, and no later `body
+action load` reaches it again while the new half keeps every body; the row's candidate,
+*"the old half follows the ACTIVE system"*, is `[derived, NOT confirmed]`; the row's
+standing consequence — *"instruments assert `bodies_old > 0` before reading the old
+half"* — is owed as an instrument change. **The mint READ the chain the candidate needs
+and it is coherent site by site; the leg confirms it or refutes it, nothing here is
+measured:** the old half of `dual_dump` is `for (auto it = currentSystem->begin(); …)`
+(`ssystem_factory.cpp:1181`); `currentSystem` moves in `changeSystem(mode)` (`:294-307`:
+`systems.at(mode)` or, for a name no system carries, `createSystem(mode)` — a NEW
+`ProtoSystem` seeded with one star named from `mode`, `:741`, `:379-392`) and in
+`leaveSystem()` (`:772-778`, → `galacticSystem`); `enterSystem()` (`:764-770`) calls
+`changeSystem(querySelectedAnchorName())` when `!inSystem`; old's `addBody` resolves a
+parent by `searchByEnglishName` INSIDE the current system and refuses a miss
+(`protosystem.cpp:531-535`). `14.sts` (`~/.spacecrafter/scripts/fscripts/14.sts`,
+Latin-1 — `LC_ALL=C` tools only, never the wrapper): `:22 moveto alt 1.1E+16 duration 0`,
+`:25 body action load name Solsys type Sphere … parent none hidden true … coord_func
+still_orbit …`, `:27 set home_planet Solsys`, `:29 select planet Solsys pointer off`,
+`:31 flag track_object on`, then the 527 bodies. Candidate chain: `:22` leaves the system
+(which caller of `leaveSystem` — the task reads it), `:25` adds `Solsys` to the then-current
+system on BOTH paths, `:27`/`:29` re-enter with the anchor name → `changeSystem` →
+`createSystem(<name>)` → `currentSystem` = a system that holds one body ⇒ old half 1
+(F98's `Solsys on both`); the corpus's later `body action clear` removes what that system
+holds ⇒ 0; every later `parent Earth` push is refused by `:531-535` in a system that has no
+Earth ⇒ F98's cycles 2–8 `0 / 286`. The mutation the leg must be able to see: the LOAD
+itself (`:25`, a `parent none` body) empties the half — then prefix-25 alone already
+reads 1, and prefix-27 adds nothing.
+
+**Measured at dispatch (supervisor, 2026-09-06 21:25–21:41):** `dumpread.py` is the dump
+channel's single reader (§11.153; **21** importers — `grep -l -E 'import dumpread|from
+dumpread' harness/*.py`); `load_dump` (`dumpread.py:69-91`) returns `(header, pairs,
+missing_new, missing_old)` and a record with `"old": null` lands in `missing_old` — an
+empty old half is therefore `pairs == []` with `missing_old` full, and today NOTHING says
+so; `f95_soak.py:1323` derives `bodies_old` from that tuple (a reader that must keep
+answering 0 — it MEASURES the emptiness); F98's own dumps are the real-data control:
+`harness/artifacts/f98/repro/bisect_oldpath.result.json` (246/276 → 1/277) and the driver
+`harness/artifacts/f98/f98_repro14.py` (`--shows`, `--gap`, `--dump-after-each`, `--bin`;
+it builds an f55-shaped farm with the 137 `.sts` as COPIES — §11.211(c): the annotator
+rewrites played files in place). The tester's file: md5 in the PREMISES, asserted in==out
+at the end; the truncated prefixes are FARM copies under new names, never his file.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f101/prediction.txt`): the chain above as
+P1–P5 with the old/new counts predicted per prefix — prefix-25 (load only): old 246+1 / new
+276+1; prefix-27 (+`set home_planet Solsys`): old = the new system's body count (predict
+it from `createSystem`'s seeding: the star's name is `mode` minus its last six characters,
+`:381` — read what `querySelectedAnchorName()` returns for `Solsys` and what body that
+yields; if the name comes out EMPTY the star is refused at `protosystem.cpp:523` and the
+count is 0 — say which you predict and why); prefix-31 (+select+track): F98's measured
+1/277 to reconcile; the mutation (prefix-25 already 1) named as the refuter; the applog
+lines that witness a switch (`Loading new Stellar System object`, `changeSystem`/anchor
+lines — name them from the source before the run). (2) **THE LEG** (reference binary
+`46849f69`, farm, `--no-scene` canary): three fresh launches, one per prefix copy
+(`f101_14_p25.sts`, `_p27`, `_p31`, each a `sed -n '1,Np'` of the farm's copy), each
+`--dump-after-each`; plus the negative control — prefix-27 with line 27 replaced by a
+comment — and the shipped-scene control `set home_planet Mars` alone (no switch
+predicted); the old/new counts, the names in each half, and the header's system identity
+if the dump carries one (read `dumpOldViewState`, `core.cpp:838-850`) or the applog's
+witness lines. (3) **THE ASSERT** at the anchor: `dumpread.load_dump(path, *,
+require_old=True)` raises a NAMED exception carrying the path and both counts when the old
+half is empty for every body record; signature widened keyword-only (every existing
+`header, pairs, mn, mo = load_dump(p)` compiles unchanged — I1); the 21 importers
+enumerated in the entry and classed — comparison/parity readers keep the default,
+census/soak readers (`f95_soak.py:1323` and any other that REPORTS the count) pass
+`require_old=False` with a one-line reason at the call; a self-test on a synthetic
+empty-old dump shows the raise AND the opt-out; the real-data control: F98's post-`14.sts`
+dump (from `bisect_oldpath` — regenerate on the farm if the dump itself was not kept)
+raises under the default, the pre-`14.sts` dump passes. (4) **RECORD:** §11.⟨next⟩ FIRST +
+stub; §5.143's mechanism written at the row from the measurement (the switch site, the
+exact counts per prefix, the refuter's fate) — the row stays OPEN (retires with B8) with
+"the assert landed" and the pointer; §11.218(h)(l) back-markers both homes; §5.137
+annotated if the reading moves its class statement; `harness/README.md` (the `dumpread`
+contract line); WIP per §0.6; D14.
+
+**Boundaries:** NO engine code (the leg reads; `git -C /home/claude/spacecrafter status`
+clean throughout); `harness/dumpread.py` + the opting callers + the leg's driver only; the
+farm only (the 137 + 2 real-HOME files md5 in==out); FUNCTIONAL (`--no-scene`); no
+`run_in_background`; runs under `/home/claude/sc-f101/`; the tester's corpus never edited.
+
+**Discriminating checks:** (a) the per-prefix counts against P1–P5, the refuter
+discriminated (prefix-25 vs prefix-27); (b) the switch WITNESSED in the applog, not
+inferred from the count; (c) the negative control unmoved; (d) the assert red on the
+synthetic case AND on F98's real post-14 dump, green on the pre-14 dump and under the
+opt-out; (e) the 21 importers each named with its class; (f) 139 md5s in==out; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that
+are not commands: display per HOST-EVENTS (`:2`); canary `--no-scene` exit 0 before the
+first launch; the harness HEAD as the prompt states it; §5.143's row reads OPEN,
+record-only; no `spacecrafter` in `/proc/*/comm` before each launch.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 22499f04
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 46849f69
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 219
+grep -c '^### F' claude/fable-dispatch.md => 4
+# ledger states the work stands on
+grep -m1 '^143\. ' claude/INTENT.md | grep -c 'OPEN, record-only' => 1
+grep -m1 '^143\. ' claude/INTENT.md | grep -c 'derived, NOT confirmed' => 1
+# sites, re-resolved at HEAD (content drift = abort)
+sed -n '1181p' src/bodyModule/ssystem_factory.cpp | grep -c 'currentSystem..begin()' => 1
+sed -n '764,768p' src/bodyModule/ssystem_factory.cpp | grep -c 'enterSystem\|changeSystem(querySelectedAnchorName())\|inSystem = true' => 3
+sed -n '294,307p' src/bodyModule/ssystem_factory.cpp | grep -c 'systems.at(mode)\|createSystem(mode)' => 2
+sed -n '741p' src/bodyModule/ssystem_factory.cpp | grep -c 'SSystemFactory::createSystem' => 1
+sed -n '381,382p' src/bodyModule/ssystem_factory.cpp | grep -c 'name.substr(0, name.size()-6)\|bodyParams\["parent"\] = "none"' => 2
+sed -n '531,535p' src/bodyModule/protosystem.cpp | grep -c 'str_parent != "none"\|searchByEnglishName(str_parent)\|return;' => 3
+sed -n '838p' src/coreModule/core.cpp | grep -c 'void Core::ssystemDualDump' => 1
+# the tester's file (Latin-1: LC_ALL=C, /usr/bin tools; the wrapper skips it silently)
+md5sum ~/.spacecrafter/scripts/fscripts/14.sts | cut -c1-8 => 31503adb
+LC_ALL=C sed -n '22p;25p;27p' ~/.spacecrafter/scripts/fscripts/14.sts | tr -d '\r' | cut -c1-40 | tr '\n' '|' => moveto alt 1.1E+16 duration 0|body action load name Solsys type Sphere|set home_planet Solsys|
+LC_ALL=C /usr/bin/grep -c 'parent none' ~/.spacecrafter/scripts/fscripts/14.sts => 2
+wc -l < ~/.spacecrafter/scripts/fscripts/14.sts => 577
+# the reader and its importers
+sed -n '69p' claude/harness/dumpread.py | grep -c 'def load_dump(path):' => 1
+sed -n '87,88p' claude/harness/dumpread.py | grep -c 'rec.get("old") is None\|missing_old.append' => 2
+grep -l -E 'import dumpread|from dumpread' claude/harness/*.py | wc -l => 21
+sed -n '1323p' claude/harness/f95_soak.py | grep -c '"bodies_old": len(pairs) + len(missing_new)' => 1
+# F98's control data and driver
+test -f claude/harness/artifacts/f98/f98_repro14.py && test -f claude/harness/artifacts/f98/repro/bisect_oldpath.result.json && test -f claude/harness/f55_farm.sh && echo ok => ok
+grep -n 'add_argument("--dump-after-each"' claude/harness/artifacts/f98/f98_repro14.py | cut -d: -f1 => 62
+test -e /home/claude/sc-f101 ; echo $? => 1
+```
+
+**DoD:** predictions before the launch; the three-prefix leg + two controls; the assert at
+the anchor with the 21 importers classed and the both-ways control; §11 entry + stub; the
+row's mechanism written; back-markers; README; trees clean; WIP cleared; baselines LAST.
+**WIP:**
+
+### F102 — §5.142's owed reading, priced for the owner's D13 policy: the uniform pool is ONE 1 MiB block created once (`app.cpp:274` → `BufferMgr.cpp:8`) and never grown — `acquireBuffer` only carves its free list and answers `VK_NULL_HANDLE` + the log line when it cannot (`:37-67`, `:55`); the per-body uniform cost on BOTH paths read at the acquire sites and rounded up to `minUniformBufferOffsetAlignment` (`VulkanMgr.cpp:82`); the body count at the first refusal PREDICTED from that arithmetic and committed BEFORE the log is read, then MEASURED from a full applog of arm C (`06.sts` then `14.sts` — the row's "`06.sts` alone" is corrected: alone it is clean, §11.218(g)); the chain from the null `SubBuffer` to the device loss read at the consumer; the three policies priced (grow / refuse with a §2(f) line at the anchor / degrade) — nothing fixed, EntityCore read-only [S, reading; one launch at most]
+
+**Why now / mandate:** §5.142 [measured 2026-09-06, §11.218(g) (F98), reproduced by the
+supervisor; minted at F98's acceptance, record-only, VIXY'S STRATUM; session-25 close
+queue position 5 and §3's headline item]: *"Owed before pricing: the pool's size and the
+per-body cost read at `BufferMgr` (one reading), and `06.sts` alone for the number of
+bodies at which the first error appears."* The second half of that sentence is WRONG as
+written (a dispatcher slip at the mint): `06.sts` alone is CLEAN — 1013 bodies, 0 buffer
+errors, and 1156 with `06old.sts` after it; the errors begin inside `14.sts` (§11.218(g)).
+The launch that carries the number is arm C (`06.sts`, a 60 s gap, `14.sts`), and F98 kept
+only the applog's TAIL of it (`repro_06_gap60_14.applog_tail.txt.gz`). The row is
+corrected at the row by this task, marker included (output-side). **What the mint READ
+(submodule `src/EntityCore`, read-only):** `context.uniformMgr` is constructed with
+`bufferBlocSize = 1*1024*1024`, `uniformBuffer = true`, HOST_VISIBLE|HOST_COHERENT with
+DEVICE_LOCAL preferred (`app.cpp:274`); the constructor calls `master.createBuffer` ONCE
+for exactly that size (`BufferMgr.cpp:8`) and seeds the free list with one `SubBuffer`
+spanning it (`:16-20`); `acquireBuffer(size)` rounds `size` up to
+`uniformOffsetAlignment` (`:39-41`), searches the free list, and when nothing fits leaves
+`buffer.buffer == VK_NULL_HANDLE` and logs *"Can't allocate buffer in '<name>' !"*
+(`:52-55`) — NO second block, no growth path (`createBuffer` appears once in the file);
+the alignment is the device's `minUniformBufferOffsetAlignment` (`VulkanMgr.cpp:82`). The
+callers of `uniformMgr` are the per-body modules of BOTH paths (`grep -rn uniformMgr` over
+`experimentalModule/` + `bodyModule/` — the count is a premise).
+
+**Mandate:** (1) **READ + PRE-REGISTER** (`artifacts/f102/prediction.txt`, before the log
+is opened): the alignment on this device (read from the engine's own log if it prints the
+limit, else `vulkaninfo`, else a two-line probe — state the source and the value); for the
+body kinds `06.sts` and `14.sts` author (`filename Star_*|Planet|…`, `type` per line —
+census both word orders, F98's lesson), the persistent `acquireBuffer` calls per body per
+path (which module, which struct, which size, rounded) — and the per-frame
+`fastAcquireBuffer` users named as NOT counting; the shipped launch scene's baseline draw
+on the pool (120 bodies + globals) if derivable; the predicted body index N at the first
+refusal = (pool − baseline) / per-body-both-paths, with the mutation (one path's share
+only) beside it; the predicted refusals per body after the first (how many acquisitions
+each later body attempts — F98's 1557 over 202 bodies ≈ 7.7/body is the number to
+explain). (2) **MEASURE:** the kept tail does NOT carry the first refusal (116 lines, 33 refusals,
+the first at its line 2 — measured at the mint), but the executor's FULL arm-C applog may
+still exist in the kept scratch tree, `/home/claude/sc-f98/repro_06_gap60_14/repro.applog`
+(a premise line says whether it did at the mint; `/tmp`-class survival is never assumed —
+verify, then copy the lines you cite into `artifacts/f102/`); if it is there and complete,
+no launch; else ONE launch on a farm
+(arm C shape via `f98_repro14.py --shows fscripts/06.sts,fscripts/14.sts --gap 60` or its
+equivalent, FULL applog kept; the app WILL abort — `/proc/*/comm` clear asserted after,
+139 md5s in==out): the bodies loaded before the first refusal (both word orders), the
+refusals per body after it, N against the prediction and the mutation. (3) **THE CHAIN:**
+where the null `SubBuffer` is stored without a check (the consumer of `acquireBuffer`'s
+return — `SharedBuffer`/the module), the first bind or write that reaches it, and how that
+becomes `App::draw`'s wait (`app.cpp:831`) and the device loss — with citations; whether
+the *"Succesfull loading ojm"* that follows each refusal is the same body reporting success
+on a refused allocation (§5.116's class — name the site that says success). (4) **PRICE for
+the owner, no policy chosen:** (a) GROW — bytes per body × the corpus's maximum (1719
+bodies, both paths today; the new path's share alone after B8) ⇒ the pool size that
+holds it and its memory class; (b) REFUSE — the anchor (the acquiring module knows the
+body and the pool; §11.193) and what the body then IS (absent from the draw? drawn
+without the module?), the §2(f) line drafted; (c) DEGRADE — what a body could drop to
+fit, if anything the modules already support. (5) **RECORD:** §11.⟨next⟩ FIRST + stub;
+§5.142 annotated with the reading, the numbers and the "alone" correction (marker);
+§5.60 annotated (the pool-sizing member now has its numbers); §11.218(g) back-marker both
+homes; the map (`grep -n '5\.142'` = 0 at the mint — T5's readiness sentence names the
+abort; annotate where it does); README section; WIP per §0.6; D14.
+
+**Boundaries:** NO code change (EntityCore read-only; no engine edit; both trees'
+`git status` clean of code throughout); the farm only; at most ONE launch, FUNCTIONAL
+(`--no-scene`); the abort in that launch is EXPECTED — the concurrent-instance probe
+after it, the real HOME md5 in==out; no `run_in_background`; runs under
+`/home/claude/sc-f102/`.
+
+**Discriminating checks:** (a) N predicted before the log is read, then measured, the
+one-path mutation refuted; (b) the alignment's source stated; (c) the refusals-per-body
+number explained by the per-body acquisition count; (d) the chain cited site by site; (e)
+the three prices with their arithmetic; (f) 139 md5s in==out and `/proc` clear after the
+abort; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that
+are not commands: display per HOST-EVENTS (`:2`); canary `--no-scene` exit 0 before the
+launch; the harness HEAD as the prompt states it; §5.142's row reads OPEN, record-only.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 22499f04
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 46849f69
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 219
+grep -c '^### F' claude/fable-dispatch.md => 4
+# ledger states the work stands on
+grep -m1 '^142\. ' claude/INTENT.md | grep -c 'OPEN, record-only' => 1
+grep -m1 '^142\. ' claude/INTENT.md | grep -c 'alone for the number of bodies' => 1
+# sites, re-resolved at HEAD (content drift = abort); the submodule pin is a premise too
+git -C src/EntityCore rev-parse --short=8 HEAD => 84f5d94b
+sed -n '274p' src/appModule/app.cpp | grep -c '1\*1024\*1024, "uniform BufferMgr", true' => 1
+sed -n '8p' src/EntityCore/Core/BufferMgr.cpp | grep -c 'master.createBuffer(bufferBlocSize' => 1
+grep -c 'createBuffer' src/EntityCore/Core/BufferMgr.cpp => 1
+sed -n '39,41p' src/EntityCore/Core/BufferMgr.cpp | grep -c 'uniformOffsetAlignment' => 1
+sed -n '55p' src/EntityCore/Core/BufferMgr.cpp | grep -c "Can't allocate buffer in" => 1
+sed -n '82p' src/EntityCore/Core/VulkanMgr.cpp | grep -c 'minUniformBufferOffsetAlignment' => 1
+grep -rn 'uniformMgr' src/experimentalModule/ src/bodyModule/ --include=*.cpp --include=*.hpp | wc -l => 71
+sed -n '831p' src/appModule/app.cpp | wc -l => 1
+# F98's kept evidence
+ls claude/harness/artifacts/f98/repro/ | wc -l => 7
+zcat claude/harness/artifacts/f98/repro/repro_06_gap60_14.applog_tail.txt.gz | grep -c "Can't allocate buffer in 'uniform BufferMgr'" => 33
+grep -o '"body_action_load_executed": *[0-9]*' claude/harness/artifacts/f98/repro/repro_06_gap60_14.result.json | head -1 => "body_action_load_executed": 202
+test -f claude/harness/artifacts/f98/f98_repro14.py && test -f claude/harness/f55_farm.sh && echo ok => ok
+# output-side (report, never abort): the executor's full arm-C applog in the kept scratch tree, if it survived
+test -f /home/claude/sc-f98/repro_06_gap60_14/repro.applog && echo present || echo absent => present
+test -e /home/claude/sc-f102 ; echo $? => 1
+```
+
+**DoD:** the reading with its citations; N predicted then measured; the chain; the three
+prices; §11 entry + stub; §5.142 and §5.60 annotated; back-markers; map; README; trees
+clean; WIP cleared; baselines LAST.
+**WIP:**
 
 ---
 
