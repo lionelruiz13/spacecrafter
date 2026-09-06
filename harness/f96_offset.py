@@ -573,25 +573,6 @@ def stage_cmd(binp, out, rep, jd_sun=None):
         leg["dump_a3_b"] = str(p2)
         leg["ab"] = ab_model(hA, bA, h1, b1)
 
-        # --- the tracking datum at offset 0.3 (F81's shape)
-        app.send("flag track_object on", 2.0)
-        _s, _n, h, b = app.wait_until("track3", lambda H, B: (
-            nav_of(H)["plans"]["flagAutoMove"] == 0
-            and abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-6),
-            "tracking re-armed at offset %g" % OFFSET)
-        h, b, _p = app.dump("track_o3", keep=False)
-        leg["track_o3"] = track_datum(h, b)
-        app.send("flag track_object off", 1.5)
-        app.wait_until("hold3", lambda H, B: nav_of(H)["flagTraking"] == 0
-                       and nav_of(H)["plans"]["flagAutoMove"] == 0,
-                       "tracking released again")
-
-        # --- the RA/DE half: it already rides the full inverse (§11.213(f)),
-        # so it must NOT move with the offset.  A0 vs A3, one camera state.
-        leg["rade_a0_vs_a3"] = rade_compare(str(pA), str(p1))
-        # and, for the record, what the camera MOVE alone does to it
-        leg["rade_p0_vs_a0"] = rade_compare(str(pP), str(pA))
-
         # --- THE RETURN CONTROL: the offset is a render-only pitch, so putting
         # it back to 0 must return every readout to A0 exactly.  Without this,
         # "the offset moved the table" is consistent with "something else moved
@@ -608,10 +589,37 @@ def stage_cmd(binp, out, rep, jd_sun=None):
                 if bA[n].get("altaz_new") == bR[n].get("altaz_new")]
         leg["return_identical_altaz"] = len(same)
         leg["return_n"] = len(set(bA) & set(bR))
+        leg["return_camera_identical"] = (leg["camera_a0"] == leg["camera_a0b"])
+        (ok if leg["return_camera_identical"] else fail)(
+            "RETURN CONTROL premise: the camera state at A0b is IDENTICAL to A0")
         (ok if len(same) == leg["return_n"] else fail)(
             "RETURN CONTROL: %d of %d bodies have a BYTE-IDENTICAL new-path "
             "alt/az at A0 and after the offset went back to 0"
             % (len(same), leg["return_n"]))
+
+        # --- the RA/DE half: it already rides the full inverse (§11.213(f)),
+        # so it must NOT move with the offset.  A0 vs A3, one camera state.
+        leg["rade_a0_vs_a3"] = rade_compare(str(pA), str(p1))
+        # and, for the record, what the camera MOVE alone does to it
+        leg["rade_p0_vs_a0"] = rade_compare(str(pP), str(pA))
+
+        # --- THE TRACKING DATUM at offset 0.3 (F81's shape).  Taken AFTER the
+        # return control, because re-arming the tracking re-aims the camera and
+        # would make "the readout came back" untestable (measured: it did, and
+        # the first pass of this driver reported the return control red for
+        # exactly that reason).
+        app.send("set zoom_offset %g" % OFFSET, 1.5)
+        app.send("flag track_object on", 2.0)
+        _s, _n, h, b = app.wait_until("track3", lambda H, B: (
+            nav_of(H)["plans"]["flagAutoMove"] == 0
+            and abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-6),
+            "tracking re-armed at offset %g" % OFFSET)
+        h, b, _p = app.dump("track_o3", keep=False)
+        leg["track_o3"] = track_datum(h, b)
+        app.send("flag track_object off", 1.5)
+        app.wait_until("hold3", lambda H, B: nav_of(H)["flagTraking"] == 0
+                       and nav_of(H)["plans"]["flagAutoMove"] == 0,
+                       "tracking released again")
 
         # --- the frame pair for the owner's eye (no gate, no claim): the
         # default scene with the Sun low, at offset 0 and at 0.3.  LAST,
@@ -804,6 +812,32 @@ def stage_cfg(binp, out, rep):
     return leg
 
 
+def descend_score(leg):
+    """WHICH EXPRESSION DID THE STEP GO THROUGH?  `moveEyeRel(v)` is
+    `moveRel(observedToLocalPos(v))` and in free flight `moveRel` adds straight
+    to `position`, so the measured step IS `observedToLocalPos(v)` for the v
+    the descent chose.  The two candidate v are the screen-centre ray (0,0,+-1)
+    and the reference centre C, both in the RENDER eye frame; the two candidate
+    expressions are Rv^T (shipped) and (R'.Rv)^T (the fix).  Scored in the SAME
+    run, so the pre and post runs do not have to start from the same state --
+    each run says for itself which expression its own step went through."""
+    cam = leg["before_camera"]
+    rv = view_rotation(cam)
+    rp = rx(cam["viewOffsetEff"] * cam["halfFov"])
+    shipped = mat_t(rv)                                  # Rv^T
+    fixed = mat_t(mat_mul(rp, rv))                       # (R'.Rv)^T
+    step = leg["step"]
+    out = {}
+    cands = {"ray_z": [0.0, 0.0, 1.0]}
+    if leg.get("before_ref_pos"):
+        cands["ref_C"] = leg["before_ref_pos"]
+    for vname, v in cands.items():
+        for ename, m in (("shipped_RvT", shipped), ("fixed_RRvT", fixed)):
+            a = angle_between(mat_vec(m, v), step)
+            out["%s_%s_deg" % (vname, ename)] = min(a, 180.0 - a)
+    return out
+
+
 def stage_descend(binp, out, rep):
     """`camera action descend coef <c>` -- the ONE shipped verb that reaches
     `Camera::moveEyeRel` [coreLink.hpp:959-961, app_command_interface.cpp:4539-4550;
@@ -831,9 +865,21 @@ def stage_descend(binp, out, rep):
             cam_of(H)["freeMode"] is True
             and abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-6),
             "free mode ON and viewOffsetEff == %g" % OFFSET)
+        # GAIN ALTITUDE FIRST: the shipped place sits ON the ground, so a
+        # descent step there is 10 % of ~0 and the step direction is unreadable
+        # at the dump's precision (measured: |d| = 6.4e-11 AU on the first
+        # pass).  Five ascents give the descent something to be a fraction of.
+        for i in range(5):
+            app.send("camera action descend coef 3", 1.2)
+        _s, _n, h, b = app.wait_until("dup", lambda H, B: True, "ascent settled",
+                                      tries=3)
         leg["before_camera"] = cam_fields(h)
         leg["before_position"] = cam_of(h)["position"]
         leg["before_rootPos"] = cam_of(h).get("rootPos")
+        leg["before_distance"] = cam_of(h)["distance"]
+        # the reference's own eye-frame position: `C` in Camera.cpp:1159, the
+        # other vector the descent can hand to moveEyeRel
+        leg["before_ref_pos"] = body_pos(b.get(cam_of(h)["reference"], {}))
         app.send("camera action descend coef 0.9", 1.5)
         _s, _n, h, b = app.wait_until("dstep", lambda H, B:
                                       cam_of(H)["position"] != leg["before_position"],
@@ -844,8 +890,15 @@ def stage_descend(binp, out, rep):
         d = [a - bb for a, bb in zip(leg["after_position"], leg["before_position"])]
         leg["step"] = d
         leg["step_len"] = math.sqrt(sum(x * x for x in d))
+        if leg["before_rootPos"] and leg["after_rootPos"]:
+            dr = [a - bb for a, bb in zip(leg["after_rootPos"], leg["before_rootPos"])]
+            leg["step_root"] = dr              # 17 digits [Camera.cpp:1452]
+            leg["step_root_len"] = math.sqrt(sum(x * x for x in dr))
+        leg["step_score"] = descend_score(leg)
         ok("descend step %s (|d| = %.9g AU) at viewOffsetEff %s"
            % (d, leg["step_len"], leg["before_camera"]["viewOffsetEff"]))
+        ok("descend direction vs the two expressions: %s"
+           % json.dumps(leg["step_score"]))
     finally:
         leg["exit_code"] = app.stop()
     return leg

@@ -709,17 +709,26 @@ test -e /home/claude/sc-f96 ; echo $? => 1
 the fix (code first) + the pole guard; the four proofs incl. the full canary; §11 entry +
 stub; §5.138 flipped; the rider closed; back-markers; map; README; trees clean; WIP
 cleared; baselines LAST.
-**WIP:** 2026-09-06 CP2 — §0.7 gate PASS (`premise_check.py F96` 21/21; canary `--no-scene`
-exit 0; display `:2`; md5 `03fbee59`/`545a51ef`; `cmake -n` 0 steps). Predictions P1–P14
-committed BEFORE the first launch (`b690e03`), P15–P20 addendum before leg 2. LEG 1 on the
-PRE-FIX binary `404b9e89` RAN (`artifacts/f96/leg1_pre/`): the model holds at max
-**0.000019262°** on the 71 bodies whose position is re-evaluated, both mutations refuted
-(median 29.32° / 7.49°), max old-vs-new gap **27.000008°** = the predicted 0.3×90°, C's
-axis vs `Rvᵀx` **0.000000°**; and a CONFOUND found and isolated — 19 of 90 bodies have a
-BYTE-IDENTICAL eye-frame `mat` across a camera move (frozen readout, up to 170.7° from
-old), exactly the 19 that violated the model. Leg 2 re-takes the A/B at ONE held camera
-state with a measured freshness partition. NO code touched yet. NEXT: leg 2 (cmd/cfg/
-descend) on the pre-fix binary, then the fix if the leg confirms.
+**WIP:** 2026-09-06 CP3 — THE LEG IS IN AND THE MODEL IS CONFIRMED; the fix is now
+unblocked. §0.7 gate 21/21 + prose premises; predictions P1–P14 committed before the first
+launch (`b690e03`), P15–P20 before the clean leg (`b97c9f1`). LEG (pre-fix `404b9e89`,
+`artifacts/f96/leg_pre/`, driver `f96_run.sh --stages cmd,cfg,descend`, **0 FAIL**): A/B at
+ONE held camera state, the offset the only variable — 72 of 120 positions re-evaluated and
+**all 72 land on `R'·p` exactly**, the other 48 byte-frozen; on the re-evaluated set the
+readout turns by C to **max 0.000011°** (median 5e-6), mutations refuted (M1 median 29.31°,
+M2 7.51°), max old-vs-new gap **27.000007°** = 0.3×90°, `axis(C)` vs `Rvᵀx` **0.000000°**;
+frozen set: the offset does not reach it at all (sep 0.000000°). RETURN CONTROL 120/120
+byte-identical with the camera state identical. CONFIG CHANNEL answered: at startup camera
+`viewOffset` **0.3**, `transition` **0**, `eff` **0** → the scalar lands, the arming is what
+gates it; after a commanded view move `eff` = 0.3 with no `set zoom_offset` at all.
+Tracking datum pre-fix: new `screen` **[6.8e-07, 0.299999952]**. Descend (free flight,
+offset 0.3): the step is along `Rvᵀ·ẑ` to **0.0121°** and **26.998°** from `(R'Rv)ᵀ·ẑ` —
+a both-ways discriminator inside one run. Sun at offset 0.3 pre-fix: alt **17.59°** vs old's
+**1.995°** ⇒ the atmosphere's own `skyBrightness` term 0.5632 vs 0.1622. NEW OUT-OF-SCOPE
+FINDING, measured, not fixed: a body whose eye-frame `mat` is not re-evaluated after a
+camera move keeps a frozen readout — 19 of 90 both-tree bodies, **109.9°–170.7°** from old
+at offset 0, while all 90 agree at the state they were last evaluated in. NEXT: the fix
+(`Camera.hpp`/`Camera.cpp` only), then the four proofs.
 
 ### F97 — §5.21 — `LocationOrbit` made EXACT on both paths: the authored latitude converted like the longitude (degrees, the loader's documented unit — `orbit.cpp:1091` converts one and not the other on the same line), and the spin read from the parent's ONE rotation authority at evaluation time instead of a linear model anchored at JD 0 with the parent's period and phase frozen at construction (`orbit.cpp:1102`; on Earth `Body::getSiderealTime` is the APPARENT sidereal time, which no linear model follows — magnitude to be MEASURED); on the new path the class registered at `modules.cpp:49` lands where `surface_point` + the grounded fold lands for the same keys, the spin applied exactly once whichever spelling the author uses (§11.78(c)'s double-spin trap closed by construction); D9 excluded by round-3 R18 (*"No."* — nobody has authored one), zero shipped/loaded uses measured at the mint, so no baseline scene moves (§11.207(g) item 3; DEPLOYMENT-MAP T2) [M, engine, both paths]
 

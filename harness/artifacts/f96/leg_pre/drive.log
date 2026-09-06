@@ -1,0 +1,62 @@
+md5 IN (real home):
+03fbee59bc3ec506c58f0a3f1e1d73df  /home/claude/.spacecrafter/config.ini
+545a51ef76294891579a1fc2fe13792b  /home/claude/.spacecrafter/ssystem.ini
+
+ok:   scale settled: Moon scaling 5.00000000 == target 5.00000000 (2 probes)
+ok:   launch state: viewOffsetEff = 0, 90 bodies carry both alt/az
+ok:   settled view_offset_transition == 1 on BOTH paths, auto-move complete after 3 poll(s), 4.9s
+ok:   settled tracking released, view held (offset still 0) after 1 poll(s), 1.2s
+ok:   freshness across the camera move (offset 0 both sides): 48 frozen, 72 re-evaluated, of 120
+ok:   settled viewOffsetEff == 0.3 and the aim settled after 1 poll(s), 1.2s
+ok:   the camera state is IDENTICAL across two consecutive dumps (the model reads the state the readout was taken in)
+ok:   the camera state is UNCHANGED between A0 and A3 except the three offset fields -- the offset is the only variable in the A/B
+ok:   settled viewOffsetEff back to 0 after 1 poll(s), 1.2s
+ok:   RETURN CONTROL premise: the camera state at A0b is IDENTICAL to A0
+ok:   RETURN CONTROL: 120 of 120 bodies have a BYTE-IDENTICAL new-path alt/az at A0 and after the offset went back to 0
+ok:   settled tracking re-armed at offset 0.3 after 3 poll(s), 4.9s
+ok:   settled tracking released again after 1 poll(s), 1.2s
+ok:   settled offset back to 0 for the reference frame after 1 poll(s), 1.2s
+ok:   settled offset 0.3 for the second frame after 1 poll(s), 1.2s
+ok:   CONFIG CHANNEL at startup: camera viewOffset=0.3 transition=0 eff=0 | old nav viewOffset=0.3 transition=0
+ok:   scale settled: Moon scaling 5.00000000 == target 5.00000000 (2 probes)
+ok:   settled the config-armed offset reaches transition 1 on the new path after 3 poll(s), 4.9s
+ok:   settled tracking released, view held after 1 poll(s), 1.2s
+ok:   scale settled: Moon scaling 5.00000000 == target 5.00000000 (2 probes)
+ok:   settled armed on the new path after 3 poll(s), 4.9s
+ok:   settled free mode ON and viewOffsetEff == 0.3 after 1 poll(s), 1.2s
+ok:   settled ascent settled after 1 poll(s), 1.2s
+ok:   settled the descent step landed after 1 poll(s), 1.2s
+ok:   descend step [3.619800000001791e-10, -1.3497000000048365e-09, -5.093000000005272e-10] (|d| = 1.48731506e-09 AU) at viewOffsetEff 0.300000012
+ok:   md5 in == out on the real ~/.spacecrafter
+=== leg cmd (pre)
+  FRESHNESS across the camera move, offset 0 both sides: 48 frozen / 72 re-evaluated of 120
+    frozen: 51PegSystem, AntaresSystem, ArcturusSystem, Arrokoth, CapellaSystem, Ceres, Charon, DarkStarSystem, Eris, Goldilocks_Zone, Haumea, HelixDwarfSystem, Hiiaka, Hydra_, Juno, KeidSystem, Kepler16System, Kerberos, M1PulsarSystem, M27DwarfSystem, M57DwarfSystem, Makemake, MilkyWay, NGC2392DwarfSystem, Namaka, Nix, Pallas, Pluto, ProximaSystem, Sedna, SiriusSystem, Solar_System, Styx, TolimanSystem, Trappist1System, Universe, VegaSystem, Vesta, baryEarthMoon, big_dipper, center_sun, galaxy_center, orbit_autour_lune, orbit_autour_point, orbit_autour_point (orbit centre), pleiades, sun_in_gal, un_point
+  A/B at ONE camera state (the offset is the only variable), viewOffsetEff 0.300000012:
+    C: rotation 27.000002 deg, axis vs Rv^T*x 0.000000 deg
+    positions: 72 moved (72 land on R'.p exactly, 0 do not), 48 frozen, of 120
+    [moved] sep_ab_deg          max 27.000005 (Amalthea) | median 14.948423 | n=71
+    [moved] sep_model_deg       max 0.000011 (Sycorax) | median 0.000005 | n=71
+    [moved] sep_M1_sign_deg     max 54.000006 (Amalthea) | median 29.306855 | n=71
+    [moved] sep_M2_swap_deg     max 7.564029 (Rhea) | median 7.509483 | n=71
+    [moved] sep_old_new_b_deg   max 27.000007 (Amalthea) | median 14.948432 | n=71
+    [frozen] sep_ab_deg          max 0.000000 (Vesta) | median 0.000000 | n=19
+    [frozen] sep_model_deg       max 26.943232 (Solar_System) | median 20.822077 | n=19
+    [frozen] sep_M1_sign_deg     max 26.943232 (Solar_System) | median 20.822077 | n=19
+    [frozen] sep_M2_swap_deg     max 26.365661 (Solar_System) | median 23.882223 | n=19
+    [frozen] sep_old_new_b_deg   max 170.694572 (Eris) | median 129.387309 | n=19
+=== leg cfg (pre)
+  table_startup: viewOffsetEff=0  bodies=90  model rotation 0.000000 deg
+    sep_old_new_deg    max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+    sep_model_deg      max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+    sep_M1_sign_deg    max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+    sep_M2_swap_deg    max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+  table_armed: viewOffsetEff=0.300000012  bodies=90  model rotation 27.000002 deg
+    axis(C) vs Rv^T*x : 0.000000 deg
+    sep_old_new_deg    max 170.694572 (Eris) | max non-Eris 170.156517 (Juno) | median 15.002332
+    sep_model_deg      max 170.870049 (Eris) | max non-Eris 170.096317 (Juno) | median 0.000014
+    sep_M1_sign_deg    max 170.885647 (Eris) | max non-Eris 170.316075 (Juno) | median 29.414295
+    sep_M2_swap_deg    max 172.405816 (Eris) | max non-Eris 169.910671 (Pallas) | median 7.557339
+=== leg descend (pre)
+
+
+0 FAIL(s), 0 NOTE(s); report -> /home/claude/sc-f96/legs/pre3/f96_result.json

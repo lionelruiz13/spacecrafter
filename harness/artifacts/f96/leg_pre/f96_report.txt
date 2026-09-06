@@ -1,0 +1,29 @@
+=== leg cmd (pre)
+  FRESHNESS across the camera move, offset 0 both sides: 48 frozen / 72 re-evaluated of 120
+    frozen: 51PegSystem, AntaresSystem, ArcturusSystem, Arrokoth, CapellaSystem, Ceres, Charon, DarkStarSystem, Eris, Goldilocks_Zone, Haumea, HelixDwarfSystem, Hiiaka, Hydra_, Juno, KeidSystem, Kepler16System, Kerberos, M1PulsarSystem, M27DwarfSystem, M57DwarfSystem, Makemake, MilkyWay, NGC2392DwarfSystem, Namaka, Nix, Pallas, Pluto, ProximaSystem, Sedna, SiriusSystem, Solar_System, Styx, TolimanSystem, Trappist1System, Universe, VegaSystem, Vesta, baryEarthMoon, big_dipper, center_sun, galaxy_center, orbit_autour_lune, orbit_autour_point, orbit_autour_point (orbit centre), pleiades, sun_in_gal, un_point
+  A/B at ONE camera state (the offset is the only variable), viewOffsetEff 0.300000012:
+    C: rotation 27.000002 deg, axis vs Rv^T*x 0.000000 deg
+    positions: 72 moved (72 land on R'.p exactly, 0 do not), 48 frozen, of 120
+    [moved] sep_ab_deg          max 27.000005 (Amalthea) | median 14.948423 | n=71
+    [moved] sep_model_deg       max 0.000011 (Sycorax) | median 0.000005 | n=71
+    [moved] sep_M1_sign_deg     max 54.000006 (Amalthea) | median 29.306855 | n=71
+    [moved] sep_M2_swap_deg     max 7.564029 (Rhea) | median 7.509483 | n=71
+    [moved] sep_old_new_b_deg   max 27.000007 (Amalthea) | median 14.948432 | n=71
+    [frozen] sep_ab_deg          max 0.000000 (Vesta) | median 0.000000 | n=19
+    [frozen] sep_model_deg       max 26.943232 (Solar_System) | median 20.822077 | n=19
+    [frozen] sep_M1_sign_deg     max 26.943232 (Solar_System) | median 20.822077 | n=19
+    [frozen] sep_M2_swap_deg     max 26.365661 (Solar_System) | median 23.882223 | n=19
+    [frozen] sep_old_new_b_deg   max 170.694572 (Eris) | median 129.387309 | n=19
+=== leg cfg (pre)
+  table_startup: viewOffsetEff=0  bodies=90  model rotation 0.000000 deg
+    sep_old_new_deg    max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+    sep_model_deg      max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+    sep_M1_sign_deg    max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+    sep_M2_swap_deg    max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+  table_armed: viewOffsetEff=0.300000012  bodies=90  model rotation 27.000002 deg
+    axis(C) vs Rv^T*x : 0.000000 deg
+    sep_old_new_deg    max 170.694572 (Eris) | max non-Eris 170.156517 (Juno) | median 15.002332
+    sep_model_deg      max 170.870049 (Eris) | max non-Eris 170.096317 (Juno) | median 0.000014
+    sep_M1_sign_deg    max 170.885647 (Eris) | max non-Eris 170.316075 (Juno) | median 29.414295
+    sep_M2_swap_deg    max 172.405816 (Eris) | max non-Eris 169.910671 (Pallas) | median 7.557339
+=== leg descend (pre)
