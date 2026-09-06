@@ -1,0 +1,15 @@
+=== F96 offset-frame probe (predictions in the header; every line can fail)
+  (1) C == rotation(offset*halfFov, Rv^T*x) over 243 camera states:
+      max |angle(C) - |offset|*halfFov|  = 0.000084852 deg
+      max angle(axis(C), Rv^T*x)         = 0.000014514 deg
+  (2) observedToLocalPos on an offset-carrying observed position, 64 dirs:
+      SHIPPED (Rv^T)              max error = 44.999997223 deg
+      FIX     ((R'.Rv)^T)         max error = 0.000013767 deg
+  (3) the mutated models, scored against the model on the same dirs:
+      M1 (rotation the other way) max sep  = 89.999984728 deg
+      M2 (conjugation swapped)    max sep  = 89.751869365 deg (min over states 0.084084306)
+  the shipped cell (fov 180, set zoom_offset 0.3): angle(C) = 27.000021918 deg
+  (4) the pole guard, direction (0,0,+-1):
+      z=+1 : SHIPPED RA  +90.000 DE   +0.000 | FIX RA   +0.000 DE  +90.000 | OLD RA   +0.000 DE  +90.000 | sibling alt  +90.000 az   +0.000
+      z=-1 : SHIPPED RA  -90.000 DE   +0.000 | FIX RA   +0.000 DE  -90.000 | OLD RA   +0.000 DE  -90.000 | sibling alt  -90.000 az   +0.000
+      branch condition (x==0 && y==0) on (0,0,1) : TAKEN

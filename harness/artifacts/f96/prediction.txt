@@ -1,0 +1,208 @@
+F96 -- PRE-REGISTERED PREDICTIONS (INTENT 11.216; row 5.138 + the 5.86 pole rider)
+Written 2026-09-06 by the F96 executor, code master-beta @ a2a880ef, binary
+404b9e89, BEFORE ANY LAUNCH OF THIS TASK.  The only engine-derived numbers below
+come from the OFFLINE algebra probe `harness/f96_frame.cpp` (no application, no
+display) and from reading the source; every number that needs the running
+application is predicted here as a FORMULA plus the program that evaluates it
+(`harness/f96_offset.py`, committed in the same commit as this file), so no
+per-body threshold can be chosen after seeing the data.
+
+================================================================================
+0. THE CONSUMER LIST, RE-DERIVED TREE-WIDE AT a2a880ef
+================================================================================
+`grep -rn observedToLocalPos src/` (verbatim, /home/claude/sc-f96/consumers_grep.txt):
+
+  src/experimentalModule/Camera.cpp:98    (comment)
+  src/experimentalModule/Camera.cpp:649   lookTo(observedToLocalPos(p), 5, true)
+  src/experimentalModule/Camera.hpp:144   moveRel(observedToLocalPos(position), duration)
+  src/experimentalModule/Camera.hpp:226   (comment -- the R'^T paragraph this task rewrites)
+  src/experimentalModule/Camera.hpp:260   THE DEFINITION
+  src/experimentalModule/Camera.hpp:324   observedPosToAltAz
+  src/experimentalModule/EnvironmentManager.cpp:114  sunLocal = ...
+
+FOUR call sites.  What each must read AFTER the fix, and why:
+
+  (1) Camera.hpp:324  observedPosToAltAz -- the alt/az readout of every composed
+      body (ModularObject::altAz -> getAltAz -> the TUI/dump/script surface).
+      MUST read the TRUE local direction, because old's Body::getAltAz carries
+      no eye-frame content at all (11.201: the old path's offset lives in the
+      draw and the aim).  Old-parity, 11.52(b): derived, not chosen.
+  (2) EnvironmentManager.cpp:114  sunLocal -> skyBrightness (:116-120) -- the
+      atmosphere's light direction, a PHOTOMETRIC surface.  Same requirement,
+      same reason; it is NOT edited: it inherits through the authority.
+  (3) Camera.hpp:144  moveEyeRel -> moveRel(observedToLocalPos(v)).  Its one
+      command-reachable caller is `camera action descend coef <c>`
+      (coreLink.hpp:959-961 cameraDescend -> Camera::descend;
+      app_command_interface.cpp:4539-4550; multAlt/moveRelAlt are UI-key-only,
+      11.71).  EVERY vector descend hands it is expressed in the RENDER eye
+      frame -- `sel->getObservedPosition()` (Camera.cpp:1139), the screen-centre
+      ray (0,0,-1) cast against `C = viewMat().getTranslation()`
+      (Camera.cpp:1159-1192), and `C` itself -- all of which carry R'.  So the
+      full inverse is the only one that undoes exactly what produced them.
+  (4) Camera.cpp:647-649  the tracking feedback -- the ONE consumer that undoes
+      R' TODAY, by hand: `p = viewOffsetEyeRotation()^T * getObservedPosition()`
+      then `lookTo(observedToLocalPos(p))`.  After the fix it must pass
+      `getObservedPosition()` straight in, or it undoes R' twice.
+
+================================================================================
+1. THE MODEL, AND THE TWO MUTATIONS COMMITTED BESIDE IT
+================================================================================
+  viewMat()            = R' . Rv . T(...) . placement      [Camera.cpp:184-197]
+  getObservedPosition()  is a per-frame copy of that action, so an observed
+                         position carries  R' . Rv . d     [Camera.cpp:157-172]
+  observedToLocalPos   = Rv^T . o                          [Camera.hpp:260-262]
+  =>  the readout direction is  C . d,  C = Rv^T . R' . Rv
+
+  R'  = xrotation(effectiveViewOffset * ModularBody::halfFov)  [Camera.cpp:139-145]
+  Rv  = zrotation(heading+pi).xrotation(pi/2-alt).zrotation(az-pi/2).fold()
+                                                                [Camera.cpp:93-104]
+  fold() = xrotation(pi/2 - foldLat)  (EQUATORIAL mount, anchored) [Camera.cpp:86-91]
+  halfFov = fov*pi/360, so halfFov = pi/2 at the shipped fov 180
+                                              [ModularBody.hpp:1868, projector.cpp:340]
+
+MUTATION M1 -- the rotation the other way:      C1 = Rv^T . R'^T . Rv
+MUTATION M2 -- the conjugation the other way:   C2 = Rv  . R'  . Rv^T
+
+P1 [OFFLINE, MEASURED BEFORE THE LEG -- f96_frame.cpp, artifacts/f96/f96_frame_pre.txt]
+   C is a rotation by exactly |offset|*halfFov about Rv^T*x_eye, whatever the
+   camera state: over 243 states x 3 offsets the probe reads
+     max |angle(C) - |offset|*halfFov| = 0.000084852 deg   (float32 residual)
+     max angle(axis(C), Rv^T*x)        = 0.000014514 deg
+   THE SHIPPED CELL (fov 180, `set zoom_offset 0.3`): angle(C) = 27.000021918 deg
+   -- i.e. 0.3 x 90 deg = 27 deg, to float32.
+   The same probe reads, on an offset-carrying observed position over 64
+   directions: SHIPPED (Rv^T) max error 44.999997 deg (that is the o = -0.5 cell,
+   0.5 x 90); THE FIX ((R'.Rv)^T) max error 0.000014 deg.
+   The mutations are DISTINGUISHABLE: max sep(C.d, C1.d) = 89.999985 deg,
+   max sep(C.d, C2.d) = 89.751869 deg (min over states 0.084084 deg).
+
+================================================================================
+2. THE LEG (pre-fix binary 404b9e89, farm, French locale, jd 2461233.5)
+================================================================================
+Arming recipe, from F81's measurement (harness/README.md F81): `select planet
+Jupiter` + `flag track_object on` is Core::setFlagTracking(true), the ONE arm
+site wired to BOTH paths (`zoom center on` arms old only, 11.102(b)(i)); then
+`set zoom_offset 0.3`.  Settle by MEASUREMENT, never by sleep.
+
+P2  viewOffsetEff reads exactly 0.3000000 in the dump after the arm+command,
+    with viewOffsetTransition == 1 on BOTH paths.
+    (REFUTED IF: the command channel does not reach effectiveViewOffset.)
+
+P3  THE PER-BODY TABLE, offset 0.3, every body carrying both altaz_old and
+    altaz_new (F91's set: 90 bodies).  With d_old built from OLD's alt/az
+    (az_raw = pi/2 - az_report, the 11.60 bridge) and d_new from the NEW path's:
+      sep(C . d_old, d_new)  <=  3e-5 deg  for at least 88 of 90 bodies.
+    3e-5 deg is NOT a new band: it is F91's own alt/az control floor
+    (11.213(h2), "88 of 90 within 3e-5 deg"), i.e. the float32 residual of the
+    same channel at offset 0.  The two bodies allowed out are the two that entry
+    names -- Earth (at the nadir) and Eris (a 1.198 deg body-position gap
+    between the trees, 11.158(f4)) -- and no others.
+    REFUTED IF: more than two bodies exceed 3e-5 deg, or the exceptions are not
+    those two.  A divergence the conjugated R' does not predict = STOP after the
+    leg, record at 5.138, deliver the pole rider alone (the mandate's own rule).
+
+P4  THE MUTATIONS ARE REFUTED ON THE SAME TABLE:
+      median sep(C1 . d_old, d_new)  >  1 deg
+      median sep(C2 . d_old, d_new)  >  1 deg
+    (M2 degenerates toward the model where Rv commutes with R'; if its median
+    lands under 1 deg the cell is NON-DISCRIMINATING and is reported as such
+    rather than counted as a refutation.)
+
+P5  THE FITTED ROTATION.  The least-squares rotation taking every d_old onto its
+    d_new (Kabsch over the 88 in-family bodies) has angle 27.00 +- 0.01 deg and
+    an axis within 0.05 deg of Rv^T*x_eye computed from the DUMPED camera state.
+    This is the check that tests `fold()` as well: foldLat is not dumped and the
+    model assumes update() left it equal to `latitude` (Camera.cpp:639).
+
+P6  THE BARE OLD-vs-NEW GAP AT OFFSET 0.3, i.e. what the row is about:
+      max sep(d_old, d_new) over the 88 in-family bodies is in [1 deg, 27 deg],
+      and at least one body exceeds 10 deg.
+    (At offset 0 the same statistic is <= 3e-5 deg -- the baseline dump of the
+    same launch is the control that says the instrument reads zero when zero is
+    true.)
+
+P7  THE SUN.  Its alt/az is in the table and moves with the others; the
+    atmosphere's own input is sin(alt) of the SAME expression
+    (EnvironmentManager.cpp:114-120), so the pre-fix skyBrightness is
+    f(sin(alt_readout)) and the post-fix one f(sin(alt_true)), with
+    f(z) = 0.01 if z < -1/15 else 0.01 + 1.5*(z + 1/15).  Reported, never gated:
+    no photometric claim is made from a readout.
+
+P8  RA/DE DOES NOT MOVE WITH THE OFFSET, ON THE PRE-FIX BINARY ALREADY --
+    observedPosToRaDe already rides renderViewRotation()^T since F91 (11.213(f)).
+    So on the pre-fix binary, comparing the offset-0 and offset-0.3 navstr
+    sidecars of the SAME launch: 0 bodies change their printed RA/DE string, and
+    88 of 90 print the same string as OLD in both.
+    REFUTED IF: any body's RA/DE string moves with the offset.
+
+P9  THE CONFIG CHANNEL (`[navigation] view_offset = 0.3` in the farm's
+    config.ini, fresh launch, no `set zoom_offset` at all).  BOTH readings are
+    stated here so the answer cannot be retrofitted:
+      READING A -- the scalar lands on the Camera at startup but the arming
+        transition is 0 there, so effectiveViewOffset() is 0.3 * 0 = 0 and the
+        readout is unaffected UNTIL a commanded view move arms it; after the
+        arm, viewOffsetEff becomes 0.3 with no command having been issued.
+        (This is what core.cpp:550 -> Core::setViewOffset -> Camera::setViewOffset
+        plus Camera::advanceViewOffset's ramp-from-0 predict, and it is the new
+        path's analogue of what F81 measured on old -- 11.201(e)(3): the config
+        key can only fire the sink at startup, where the transition is 0.)
+      READING B -- Camera::instance is null at core.cpp:550, so the config
+        channel never reaches the new path at all and the dumped camera
+        viewOffset is 0.0 at startup and stays 0 after the arm.
+    THE PREDICTION IS READING A.  The discriminator is the dumped camera
+    `viewOffset` at startup: 0.3 under A, 0.0 under B.
+
+P10 THE TRACKING DATUM (F81's shape).  With the offset armed at 0.3 and
+    `flag track_object on`, the tracked body's screen position is a FIXED POINT
+    of the feedback both before and after the fix, because pre-fix the site
+    composes Rv^T . R'^T and post-fix (R'.Rv)^T . I -- the same product.  So the
+    tracked body's dumped screen position at offset 0.3 is EQUAL pre and post
+    (to the dump's printed digits), and the new path keeps its aim at 0.300 dome
+    radii (F81's datum, 11.201(d)).
+    REFUTED IF: the fix moves the tracked body's screen position at offset 0.3.
+
+P11 THE DESCENT.  `camera action descend coef 0.9` in free flight at offset 0.3:
+    the observer's step direction MOVES between pre and post by ~27 deg, because
+    every vector descend passes to moveEyeRel is in the RENDER eye frame while
+    the pre-fix inverse treats it as offset-free.  This is a CHANGE the fix
+    makes on purpose and it is measured, not asserted: |step| stays the same
+    order and the direction turns.  At offset 0 the step is byte-identical.
+
+================================================================================
+3. THE POLE GUARD (the 5.86 rider, 11.213(i2)) -- OFFLINE, ALREADY MEASURED
+================================================================================
+P12 f96_frame.cpp, artifacts/f96/f96_frame_pre.txt, direction (0,0,+-1):
+      SHIPPED branch : RA +-90.000 deg, DE 0.000       [Camera.cpp:256-258]
+      THE FIX        : RA 0.000,        DE +-90.000
+      OLD (rectToSphe, no branch at all) : RA 0.000, DE +-90.000
+      the SIBLING observedPosToAltAz     : alt +-90.000, az 0.000, unchanged
+    So the fix lands on old and the shipped branch does not; the sibling is
+    correct with the same two lines because there `.first` is the altitude.
+    The branch IS taken on an exact-pole direction (measure-zero reach: exact
+    float equality of two coordinates).
+
+================================================================================
+4. THE FIX, AND WHAT MUST NOT MOVE
+================================================================================
+P13 AT OFFSET 0 THE FIX IS INERT, BY CONSTRUCTION (offset 0 => R' == identity,
+    Camera.cpp:142-143 returns Mat4f::identity() on the exact float compare):
+      (a) the F91 parity table pre/post is BYTE-IDENTICAL in BOTH locales
+          (f91_table_{pre,post}.txt, fr and en);
+      (b) the dumped camera fields are byte-identical at the same frame;
+      (c) `f90_rehearsal_run.sh` exits 0, step for step as 11.213(h4) records;
+      (d) the FULL canary (scene arm) exits 0 and its dwell frame md5 is
+          reported beside F79's 5215565b (recorded, never gated -- 0.5).
+    REFUTED IF: any offset-0 observable moves at all.  There is no band here.
+
+P14 AT OFFSET 0.3, POST-FIX: sep(d_old, d_new) <= 3e-5 deg for 88 of 90, the
+    exceptions Earth and Eris; the Sun among them; and the RA/DE strings
+    unchanged from the pre-fix run (P8).
+
+================================================================================
+5. WHAT WOULD MAKE THIS TASK STOP
+================================================================================
+A leg that contradicts the model -- P3 failing with a divergence the conjugated
+R' does not predict, or P5's fitted axis landing elsewhere -- is a STOP after the
+leg: record at 5.138 with the numbers, deliver the pole rider alone, report.  The
+fix is CONDITIONAL on the leg confirming the model; it is not conditional on the
+leg being convenient.
