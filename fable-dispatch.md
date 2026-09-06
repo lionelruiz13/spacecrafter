@@ -734,9 +734,51 @@ before the first launch; pre-fix **14/14** (rc −11, gdb frame) / post-fix **15
 §2(f) line per path, `"Loading body ProbeLocB"` **0 → 1** — the second site reachable only
 once the first stopped dying); sweep **1 of 9 → 0 of 9** by instrument, both trees; F91 table
 byte-identical at `c125adf0` (reproduced on the pre binary first), smoke suite rc 0, D14 PASS,
-frozen pair in==out on all eleven launches. §5.50 annotated (second member, same function,
+frozen pair in==out on all EIGHT launches ["eleven" here was the THIRD home of the number the executor corrected at the entry and README — aligned at acceptance]. §5.50 annotated (second member, same function,
 above its own guard); §11.217(h1) back-marked at both homes; README §F99; `DEPLOYMENT-MAP`
 `grep -c '5\.141'` = 0, unchanged. The STOP clause did not fire.
+**ACCEPTED 2026-09-06 — the verifying commands' `date` read 22:23:50–22:28:05 (supervisor, session
+26, Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.219 read in full;
+ONE code commit `1af7fa48` (Claude Opus 5; `protosystem.cpp` + `LocationOrbitLoader.hpp`, 48+/1−,
+the diff READ: one `if (!parent)` guard per site, an `L_ERROR` at each anchor naming what /
+consequence / fix, `return` and `return nullptr`, `findBodyOnce` — nothing else) and six harness
+commits `ad067a5 → 9c662bb` (Claude Opus 5; the predictions at `ad067a5` before the first launch at
+`adbc496`), both trees clean; binary `8e2c6ef3`, dry build 0 steps; §5.141 reads *FIXED 2026-09-06
+(F99, §11.219, code `1af7fa48`), at BOTH sites*; §5.50 annotated a second time; §11.217(h1) names
+§11.219 in the entry file AND the stub; README §F99 (`:4745`); `DEPLOYMENT-MAP` 0 hits, said not
+assumed; instruments to the digit of the entry's (l) close (scan 236/293/136 · pair-check
+235/210/25/116 · D 35 · D2 11 · I 89 · I2 37 · M 84 — +1 entry file/+1 live pair the entry, +2 raw
+lines the two new markers, the one uncredited pair disposed as citation-shaped at (l), M +1 the
+entry-only citations licensed by the header's entry-wins rule). **AND arm B run by my own hand on
+BOTH binaries with the delivered runner (`/home/claude/sc-f99/supervisor/{pre,post}`, 22:24:31 and
+22:25:26): pre `46849f69` — 14/14, `"rc": -11` recorded, the log ending at `Loading new Stellar
+System object... ProbeLocB` and nothing after; post `8e2c6ef3` — 15/15, rc 0, ProbeLocB on neither
+half with the `parent none` + `still_orbit` control on BOTH; AND the smoke suite on `8e2c6ef3`
+(22:26:26–22:28:05): rc 0, the nine step states of §11.211 (S1/S7 DIVERGENCE with citations, S4
+DEPRECATED, six PASS), S5's shape OK, exit 0 in 0.7 s, 2 frame stalls, frozen 4/4 in==out, `/proc`
+clear after every run.** Deviations ENDORSED with the executor's arguments: `findBodyOnce` (the
+sibling's call, inert by the 0/0/0 census, the byte-identical F91 table the measurement); the
+old-path guard INSIDE the branch rather than after the block (the fault precedes the block's end —
+an after-the-block guard is inert there); its own §2(f) wording rather than §5.50's (the
+coord_func is valid, the declaration incomplete); the lock-file guard recorded per leg (a reused
+pid would read as a result); the stub aligned to its entry (test I 90 → 89, the omission shown
+load-bearing). DISPATCHER-SIDE FINDING reported, ACCEPTED as mine with the counterfactual: the
+section's headline called the old-path half "a crash guard in the §5.50 shape" while §11.124(h)
+defines that shape by PLACEMENT (after the whole block) — a label asserted without re-reading its
+definition (Q-67's SIBLING class); the mandate's own words placed it correctly, and had a reader
+followed the headline the guard would have been inert and P2 post-fix would have stayed red — the
+check structure covered it. Round tally: **two dispatcher defects** (the keyed-loader count at the
+mint; the "§5.50 shape" label). EXECUTOR Q-67 instance, self-caught before delivery: "eleven
+launches" typed from the campaign's shape, eight counted from the pid lines — corrected at the
+entry and README, its THIRD home (this WIP line) aligned by me above. STANDING CONSEQUENCES:
+**`parent none` on a `location_orbit` is refused in words on both paths** (pre-fix it was a silent
+SIGSEGV on the OLD path, which masked the new path's identical dereference — `"Loading body
+ProbeLocB"` 0 → 1); `parent <unknown>` never reached either loader and still does not;
+`f99_sweep.py` audits the nine orbit loaders' parent handling on any tree in a second (UNGUARDED
+1/9 → 0/9; the old chain read by hand, no third site); the topology datum for every push-channel
+defect: `SSystemFactory::addBody` feeds OLD first, so the first path to die hides the second;
+`/home/claude/sc-f99/` holds the farms, the pre-fix binary (`bin/spacecrafter-pre`, `46849f69`)
+and my runs.
 
 ### F100 — §5.139's mechanism leg, then the fix INSIDE the barrier's own contract: the frozen readouts are the PARKED bodies' (`hidden = true` in the field's `ssystem.ini` — every dwarf planet and asteroid of the frozen set — and their subtrees) at a PINNED clock: `useNow()`'s memo `evaluatedJD == currentJD` (`ModularBody.cpp:459`) is the right key for the orbit position and the WRONG key for the camera-dependent `mat`, so after the first use at a given date no camera move ever reaches a parked body's eye-frame position again; the dump ALREADY calls `useNow()` per body (`ssystem_factory.cpp:1192`) and the SELECTION every frame (`ModularSystem.cpp:270`), which is why the instrument and the operator's `get status object` are predicted to freeze TOGETHER — the leg discriminates pinned vs running clock and parked vs walked bodies with predictions before the launch; the fix re-keys the memo on (date, parent frame) with the +4 iterations bound to a date change only, under D11's denominator; STOP if the leg refutes the memo [S–M, engine, new path]
 
@@ -846,10 +888,10 @@ it; §5.139's row reads OPEN, record-only.
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => 22499f04
+git rev-parse --short=8 HEAD => 1af7fa48
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 46849f69
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 219
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 8e2c6ef3
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 220
 grep -c '^### F' claude/fable-dispatch.md => 4
 # ledger states the work stands on
 grep -m1 '^139\. ' claude/INTENT.md | grep -c 'OPEN, record-only' => 1
