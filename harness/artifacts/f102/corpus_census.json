@@ -1,0 +1,82 @@
+{
+ "dir": "/home/claude/.spacecrafter/scripts/fscripts",
+ "shows": 8,
+ "per_show": {
+  "06.sts": {
+   "in_galaxy": 0,
+   "moon_texmap": 1013,
+   "texmap_other": 0,
+   "no_texmap": 0,
+   "bytes_eager": 1361472,
+   "bytes_new_only": 1037312
+  },
+  "06old.sts": {
+   "in_galaxy": 0,
+   "moon_texmap": 169,
+   "texmap_other": 0,
+   "no_texmap": 1,
+   "bytes_eager": 227136,
+   "bytes_new_only": 173056
+  },
+  "14.sts": {
+   "in_galaxy": 527,
+   "moon_texmap": 0,
+   "texmap_other": 0,
+   "no_texmap": 1,
+   "bytes_eager": 67456,
+   "bytes_new_only": 67456
+  },
+  "S05.sts": {
+   "in_galaxy": 0,
+   "moon_texmap": 0,
+   "texmap_other": 0,
+   "no_texmap": 2,
+   "bytes_eager": 0,
+   "bytes_new_only": 0
+  },
+  "S09.sts": {
+   "in_galaxy": 1,
+   "moon_texmap": 0,
+   "texmap_other": 0,
+   "no_texmap": 1,
+   "bytes_eager": 128,
+   "bytes_new_only": 128
+  },
+  "S10.sts": {
+   "in_galaxy": 2,
+   "moon_texmap": 0,
+   "texmap_other": 0,
+   "no_texmap": 0,
+   "bytes_eager": 256,
+   "bytes_new_only": 256
+  },
+  "S12old.sts": {
+   "in_galaxy": 1,
+   "moon_texmap": 0,
+   "texmap_other": 0,
+   "no_texmap": 0,
+   "bytes_eager": 128,
+   "bytes_new_only": 128
+  },
+  "S13.sts": {
+   "in_galaxy": 0,
+   "moon_texmap": 1,
+   "texmap_other": 0,
+   "no_texmap": 0,
+   "bytes_eager": 1344,
+   "bytes_new_only": 1024
+  }
+ },
+ "totals": {
+  "in_galaxy": 531,
+  "moon_texmap": 1183,
+  "texmap_other": 0,
+  "no_texmap": 5,
+  "bytes_eager": 1657920,
+  "bytes_new_only": 1279360,
+  "bytes_in_galaxy": 0
+ },
+ "pool": 1048576,
+ "pool_multiple_eager": 1.581,
+ "pool_multiple_new_only": 1.22
+}

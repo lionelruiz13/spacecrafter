@@ -713,7 +713,15 @@ direction (see T3).
    real-HOME md5s in == out. It also found what the first soak could not: **two of the
    tester's own shows (`06.sts` then `14.sts`) abort the application** — uniform buffer pool
    exhausted → `Device lost while waiting frame completion` → `terminate`, SIGABRT,
-   reproduced three ways — and **`14.sts` alone empties the OLD path's dump half** (246 → 1 →
+   reproduced three ways **[SHARPENED 2026-09-07, F102 → §11.222 / §5.142: it is ONE show that
+   empties the pool, not two. `06.sts` costs **1344 measured bytes per authored body** across the
+   two paths against a **1 MiB** pool created once and never grown, so the first refusal is its
+   **675th** body and `06.sts` alone accounts for 1355 of the 1557 errors; `14.sts` contributes
+   the last 200 and the death, because its stars are `mode in_galaxy` OJM models (128 B, neither
+   body path) whose refused allocation is reported as success and whose indeterminate offset is
+   handed to the GPU as a dynamic offset. Read-only, no policy chosen: the three prices —
+   grow to 2 MiB, refuse at the load authority, or shrink the 768-byte shadow-caster array — are
+   at §11.222(h) and the choice is the owner's.]** — and **`14.sts` alone empties the OLD path's dump half** (246 → 1 →
    0 bodies) for the rest of the session while `select`+`get status object` still answers a
    full readout for bodies `search` reports NOF. The LEAK rule says **LEAK** on this corpus
    (68.3 MB/h, 42.4 MB/cycle over 8 cycles) where it said NO LEAK on the eight shipped shows,

@@ -4986,3 +4986,82 @@ launches, all exit 0 and `shutdown action now` -> 0; **139/139 real-HOME md5s in
 the farm's copy of the tester's `14.sts` still `31503adb`; `/proc` clear and no
 `/tmp/spacecrafter.lock` at all 22 checks. Artifacts `artifacts/f101/` (~600 KB),
 including the five control dumps the self-test reads.
+
+## F102 — the uniform pool's arithmetic and the body index at the first refusal (`f102_sizes.cpp`, `f102_pool.py`, `f102_applog.py`, `f102_corpus.py`) — INTENT §11.222 / §5.142 / §5.60, 2026-09-07
+
+```
+g++ -O0 -std=c++20 -I../../../../src -I../../../../src/EntityCore \
+    -o <out>/f102_sizes artifacts/f102/f102_sizes.cpp && <out>/f102_sizes 64 [--tsv]
+python3 artifacts/f102/f102_pool.py --sizes <sizes.tsv> [--globals-bytes N]   # baseline + N
+python3 artifacts/f102/f102_applog.py <applog> --json OUT [--excerpt OUT]     # where it ran out
+python3 artifacts/f102/f102_corpus.py --sizes <sizes.tsv>                     # the whole corpus
+```
+
+**No launch.** The task's one allowed launch was not spent: F98's full arm-C
+applog had survived in the non-migrating scratch tree and was verified complete
+(the `terminate called` line at its end) before anything else was read. The
+canary is the preflight for a *measuring launch* and was therefore correctly
+not run — say so rather than run it for the look of it.
+
+### Read struct sizes with a compiler, not with your head
+
+`f102_sizes.cpp` includes the real interface header and prints `sizeof` beside
+the size `BufferMgr::acquireBuffer` actually carves (`((size-1)/A+1)*A`). The
+few declarations whose headers pull the whole engine in are copied verbatim
+with their `file:line` and re-grepped by the runner. `meshFrag` is **784 → 832**
+and 768 of those bytes are `shadowingBodies[8]`; a hand-computed 164/68/128 was
+right here, but the probe is what makes it evidence.
+
+### The alignment's source has to be NAMED
+
+The engine prints no device limit — `VulkanMgr.cpp:82` is the only read of
+`physicalDeviceProperties.limits` in `src/`. So the value comes from
+`vulkaninfo`, and `vulkaninfo` lists **two** devices: pin which one the engine
+picks (it prefers `eDiscreteGpu`) with the engine's own `Device :` line from
+ANY applog. RTX 5090 = `0x40`; llvmpipe = `0x10`. Quoting the wrong row changes
+every carved size.
+
+### Attribute a refusal to a PATH, not just to a body
+
+`ssystem_factory.cpp:828-836` pushes the same param map to both paths, old
+first, and each path opens with its own log line — `Loading new Stellar System
+object...` (`protosystem.cpp:517`) then `Loading body` (`ModularSystem.cpp:1061`).
+Segmenting on those two makes every `Can't allocate buffer` line attributable.
+That is how the per-body sequence 192, 128 | 192, 832 was read back out of the
+stream instead of assumed.
+
+### Gotchas measured here, each of which cost something first
+
+- **`body action load mode in_galaxy` is not a body push.** It short-circuits in
+  `commandBody` (`app_command_interface.cpp:4119-4126`) to `OjmMgr::load` — one
+  128-byte uniform (`ojm_mgr.cpp:77`), neither body path, no modules. Pricing
+  `14.sts`'s 527 stars as bodies overstates them by 10x and hides where the pool
+  actually goes.
+- **A key/value census must drop the command word before it pairs tokens.** The
+  first `f102_corpus.py` paired `(body,name) (X,parent) (Earth,type)...` and
+  reported 528 `type Moon` lines in a file whose 1013 lines all carry it, and
+  0 `mode in_galaxy` in a file where all 527 do. Both numbers looked plausible.
+  The fixed parser independently reproduces §11.218(i)'s 1719 bodies in 8 shows.
+- **Eager vs lazy is per class and it decides everything.** `Moon::selectShader`
+  runs in the CONSTRUCTOR (`body_moon.cpp:78`); `BigBody`'s and `SmallBody`'s run
+  from `drawBody` (`:299-302`, `:189-192`). A model that treats all three alike
+  gets the shipped-scene baseline wrong by the number of bodies never drawn.
+- **`dumpread`-style totals divide two different populations.** F98's
+  `body_action_load_executed` counts one word order (`f98_repro14.py:157`), so
+  "1557 errors / 202 loads = 7.7 per body" divides both shows' errors by one
+  show's loads. No body ever attempts 7.7 acquisitions; the real counts are 4
+  and 1.
+- **A refusal is silent at every consumer.** `SubBuffer` has no default
+  initialisers, `acquireBuffer` sets only `.buffer` on a miss, `SharedBuffer`
+  binds through the indeterminate offset with no check AND releases it back on
+  destruction. Any instrument that reads `getOffset()` after a refusal is
+  reading garbage, and so is the GPU (`ojm_mgr.cpp:196`).
+
+**Measured, binary `b5f08778`, code `474c595d` (unchanged by this task):** pool
+**1 048 576 B**, one block, no growth · alignment **64** · per `06.sts` body
+**1344 B** (old 320 + new 1024) · per in-galaxy model **128 B** · **N = 675**
+(`ZHONGXING-20A`) in BOTH the arm-C and the shakedown applogs, predicted 674 in
+a committed bracket of [662, 692] · 1557 = 1355 + 2 + 200 · launch-scene
+baseline **142 529–142 592 B** by inversion · corpus **1.581 MiB** (1.220 after
+B8) against a 1 MiB pool. Artifacts `artifacts/f102/` (~70 KB), including the
+cited applog lines copied out of the scratch tree that does not migrate.

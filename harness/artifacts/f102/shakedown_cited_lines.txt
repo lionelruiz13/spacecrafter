@@ -1,0 +1,53 @@
+# F102 - the lines cited from F98's SHAKEDOWN applog /home/claude/sc-f98/shake/soak.applog (166999 lines, 2122 refusals)
+# A DIFFERENT launch from arm C: five shows had already played before 06.sts.
+# The first refusal falls at the SAME body, the 675th solar push of 06.sts.
+# Refusals counted at each show's `script action play` line:
+#   at 06.sts    (line  21633):     0
+#   at 06old.sts (line  29913):  1355   <- 06.sts ALONE produced 1355
+#   at 07.sts    (line  31461):  1919
+#   at 14.sts    (line 165962):  1923
+#   end of run:                  2122
+
+# ===== the play of 06.sts =====
+  21633  (Info ): Execute_command script action play filename fscripts/06.sts
+  21634  (Info ): ScriptMgr: load scripts/fscripts/06.sts
+  21635  (Info ): ScriptMgr: load scripts/fscripts/06.sts
+  21636  (Info ): Execute_command body name "ATLAS CENTAUR 2" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.8,0.9,0.8 orbit_color 0.8,0.9,0.8 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.0712846542799519 orbit_visualization_period 0.0712846542799519 orbit_SemiMajorAxis 7257.16530772693 orbit_Eccentricity 0.0584803 orbit_Inclination 30.3557 orbit_AscendingNode 68.3508 orbit_LongOfPericenter 72.9841 orbit_MeanLongitude 74.7321 action load
+
+# ===== the FIRST refusal - 675th solar push, ZHONGXING-20A =====
+  26175  (Debug): Body 'SKYTERRA 1': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  26176  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  26177  (Info ): Execute_command body name "ZHONGXING-20A" parent Earth type Moon radius 0.1 oblateness 0.0 albedo 0.9 lighting false color 0.1,0.1,0.1 orbit_color 0.1,0.1,0.1 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2459377.75450 orbit_Period 0.997315187622313 orbit_visualization_period 0.997315187622313 orbit_SemiMajorAxis 42136.4495839099 orbit_Eccentricity 0.0003322 orbit_Inclination 1.7345 orbit_AscendingNode 92.744 orbit_LongOfPericenter 7.3736 orbit_MeanLongitude 229.1169 action load
+  26178  
+  26179  (Info ): Loading new Stellar System object... ZHONGXING-20A
+  26180  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  26181  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  26182  (Info ): Loading body ZHONGXING-20A
+  26183  (Debug): Body 'ZHONGXING-20A': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+  26184  (Info ): s_texture: already in cache scripts/fscripts/earth_sats/sattext001.png
+  26185  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+  26186  (Error): Can't allocate buffer in 'uniform BufferMgr' !
+
+# ===== the play of 06old.sts, with 1355 refusals already behind it =====
+  29908  (Debug): Audio::musicHalt scripts/fscripts/seasons/william_tell-overture.ogg
+  29909  (Debug): Created image support for 'scripts/fscripts/earth_sats/sattext001.png'
+  29910  (Info ): get tcp : get status position
+  29911  (Info ): Execute_command get status position
+  29912  (Info ): get tcp : script action play filename fscripts/06old.sts
+  29913  (Info ): Execute_command script action play filename fscripts/06old.sts
+  29914  (Info ): ScriptMgr: load scripts/fscripts/06old.sts
+  29915  (Info ): ScriptMgr: load scripts/fscripts/06old.sts
+  29916  (Info ): Execute_command body action load name "ALSAT 1" type Moon parent Earth radius 0.2 oblateness 0.0 albedo 0.9 lighting false color 0.8,0.9,0.8 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2454804.56951084 orbit_Period 0.0683531232257665 orbit_visualization_period 0.0683531232257665 orbit_SemiMajorAxis 7056.81219499864 orbit_Eccentricity 0.0010418 orbit_Inclination 97.969 orbit_AscendingNode 214.3671 orbit_LongOfPericenter 336.8124 orbit_MeanLongitude 574.4404 orbit_color 0.8,0.9,0.8 
+
+# ===== the play of 14.sts, with 1923 already behind it =====
+ 165958  (Info ): Execute_command script action end
+ 165959  (Info ): ScriptMgr: script end
+ 165960  (Debug): Audio::musicHalt scripts/fscripts/hubble/explosion.ogg
+ 165961  (Info ): get tcp : script action play filename fscripts/14.sts
+ 165962  (Info ): Execute_command script action play filename fscripts/14.sts
+ 165963  (Info ): ScriptMgr: load scripts/fscripts/14.sts
+ 165964  (Info ): ScriptMgr: load scripts/fscripts/14.sts
+ 165965  (Info ): Execute_command image name black filename dome/black.png coordinate_system viewport alpha 0 scale 1 action load
+ 165966  
+ 165967  (Debug): Created image support for 'scripts/fscripts/dome/black.png'
+ 165968  (Debug): No cmd given for 'scripts/fscripts/dome/black.png', creating uninitialized texture

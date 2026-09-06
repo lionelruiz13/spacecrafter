@@ -1258,7 +1258,24 @@ test -e /home/claude/sc-f102 ; echo $? => 1
 **DoD:** the reading with its citations; N predicted then measured; the chain; the three
 prices; §11 entry + stub; §5.142 and §5.60 annotated; back-markers; map; README; trees
 clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-07 01:02 — CHECKPOINT 1 (the READING + the PRE-REGISTRATION, committed BEFORE the
+**WIP:** DELIVERED 2026-09-07 → **§11.222** (`INTENT/11.222.md` + stub), harness `5a2c608` → `29f511a`
+→ this record; **code UNTOUCHED** (`474c595d` throughout, `src/EntityCore` read-only at `84f5d94b`,
+binary `b5f08778`, `git status` clean at every commit), **ZERO launches** — the kept arm-C applog was
+complete, so the one allowed launch was not spent and the canary was correctly not run (reported).
+Gate 22/22. **N predicted 674 (bracket 662–692) and committed at `5a2c608` before the log was
+opened; MEASURED 675** — `ZHONGXING-20A`, the 675th body of **`06.sts`**, in TWO different launches
+(arm C and F98's own shakedown); the one-path mutations (new-only 904, old-only no refusal at all)
+both miss. Pool 1 MiB, one block, no growth; alignment **64** (`vulkaninfo` on the device the
+engine's own log names). Per body **1344 B** = old 192+128 in `Moon`'s ctor + new 192+832 in
+`BasicMesh`'s; `14.sts` is not a body push at all (`mode in_galaxy` → `OjmMgr::load`, 128 B, neither
+path). 1557 = **1355 in `06.sts`** + 2 (the landscape at the system switch) + 200 of 201 in-galaxy;
+launch-scene baseline measured by inversion at **142 529–142 592 B**. "7.7/body" refuted as a
+division artifact. Chain cited site by site to the device loss, incl. `ojm_mgr.cpp:86` saying success
+200 times over a refused allocation and `:196` handing the indeterminate offset to
+`vkCmdBindDescriptorSets`. Three prices priced, **no policy chosen** (2 MiB / refuse at the load
+anchor / 768-byte caster array). §5.142 annotated with the reading AND the "alone" correction
+REVERSED (its original sentence was right); §5.60 and §5.116 annotated; §11.218(g) back-marked at
+BOTH homes; map, README, artifacts `harness/artifacts/f102/`. ~~2026-09-07 01:02 — CHECKPOINT 1 (the READING + the PRE-REGISTRATION, committed BEFORE the
 applog is opened). Gate 22/22 PASS; the kept arm-C applog VERIFIED complete (10226 lines, the
 `terminate called without an active exception` death line at its end) ⇒ NO LAUNCH. Alignment **64**
 (source: `vulkaninfo` GPU0 RTX 5090 `minUniformBufferOffsetAlignment = 0x40`, the device pinned by
@@ -1280,7 +1297,7 @@ model at baseline B in (142528, 142592] reproduces that histogram EXACTLY, so th
 scene's own draw on the pool is MEASURED by inversion at **142.5–142.6 KB**. `06.sts` alone is NOT
 clean — the row's mint-time correction is itself wrong, and both readings are now recorded. 201
 `Succesfull loading ojm` lines for 200 refused allocations (§5.116's class at `ojm_mgr.cpp:86`).
-NEXT: the chain write-up, the three prices, the §11.222 record.
+NEXT: the chain write-up, the three prices, the §11.222 record.~~ (checkpoint trail struck, kept.)
 
 ---
 

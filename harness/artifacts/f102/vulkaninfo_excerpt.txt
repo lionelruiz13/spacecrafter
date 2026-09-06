@@ -1,0 +1,76 @@
+# F102 - vulkaninfo excerpts (run 2026-09-07 00:47/01:11 on LovelyFoxDev, DISPLAY=:2)
+# The engine picks the DISCRETE gpu (VulkanMgr.cpp:330-346) and its own log names it:
+#   'Device : NVIDIA GeForce RTX 5090 (id = 11141)' / 'Device type : Discrete GPU'
+#   [/home/claude/sc-f99/f91_pre/f91.applog, an independent launch of this binary]
+
+## GPU0 header
+GPU id : 0 (NVIDIA GeForce RTX 5090):
+	Surface types: count = 2
+		VK_KHR_xcb_surface
+		VK_KHR_xlib_surface
+	Formats: count = 2
+		SurfaceFormat[0]:
+			format = FORMAT_B8G8R8A8_UNORM
+			colorSpace = COLOR_SPACE_SRGB_NONLINEAR_KHR
+		SurfaceFormat[1]:
+			format = FORMAT_B8G8R8A8_SRGB
+			colorSpace = COLOR_SPACE_SRGB_NONLINEAR_KHR
+	Present Modes: count = 3
+		PRESENT_MODE_FIFO_KHR
+		PRESENT_MODE_IMMEDIATE_KHR
+		PRESENT_MODE_FIFO_LATEST_READY_EXT
+	VkSurfaceCapabilitiesKHR:
+	-------------------------
+		minImageCount = 2
+		maxImageCount = 8
+		currentExtent:
+
+## GPU0 deviceName + the alignment the pool rounds to
+	deviceID          = 0x2b85
+	deviceType        = PHYSICAL_DEVICE_TYPE_DISCRETE_GPU
+	deviceName        = NVIDIA GeForce RTX 5090
+	pipelineCacheUUID = d0aeb136-0953-0fbf-727e-4392ab450f0c
+
+VkPhysicalDeviceLimits:
+	minMemoryMapAlignment                           = 64
+	minTexelBufferOffsetAlignment                   = 0x00000010
+	minUniformBufferOffsetAlignment                 = 0x00000040
+	minStorageBufferOffsetAlignment                 = 0x00000010
+	minTexelOffset                                  = -8
+
+## GPU0 memory heaps and the type the pool prefers (DEVICE_LOCAL|HOST_VISIBLE|HOST_COHERENT)
+VkPhysicalDeviceMemoryProperties:
+=================================
+memoryHeaps: count = 2
+	memoryHeaps[0]:
+		size   = 34190917632 (0x7f5f00000) (31.84 GiB)
+		budget = 33203814400 (0x7bb1a0000) (30.92 GiB)
+		usage  = 0 (0x00000000) (0.00 B)
+		flags: count = 1
+			MEMORY_HEAP_DEVICE_LOCAL_BIT
+	memoryHeaps[1]:
+		size   = 47687027712 (0xb1a5e4c00) (44.41 GiB)
+		budget = 47687027712 (0xb1a5e4c00) (44.41 GiB)
+		usage  = 0 (0x00000000) (0.00 B)
+		flags:
+			None
+		heapIndex     = 0
+		propertyFlags = 0x0007: count = 3
+			MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+			MEMORY_PROPERTY_HOST_VISIBLE_BIT
+			MEMORY_PROPERTY_HOST_COHERENT_BIT
+		usable for:
+			IMAGE_TILING_OPTIMAL:
+				None
+
+## the OTHER device, NOT selected (llvmpipe): alignment 16
+	deviceID          = 0x0000
+	deviceType        = PHYSICAL_DEVICE_TYPE_CPU
+	deviceName        = llvmpipe (LLVM 20.1.8, 256 bits)
+	pipelineCacheUUID = 32352e32-2e38-2d30-7562-756e7475302e
+
+	minMemoryMapAlignment                           = 64
+	minTexelBufferOffsetAlignment                   = 0x00000010
+	minUniformBufferOffsetAlignment                 = 0x00000010
+	minStorageBufferOffsetAlignment                 = 0x00000010
+	minTexelOffset                                  = -32
