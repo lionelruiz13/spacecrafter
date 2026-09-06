@@ -1070,8 +1070,16 @@ a lock) raises 0.** The driver now also records the TRACEBACK. LEG 1 IS EVIDENCE
 WASTE and is delivered: 2.735 h, **61 complete cycles, 328 samples, ZERO app flags**,
 quit **exit 0 in 0.65 s** with 0 teardown faults, frozen 11/11 in==out, LEAK verdict
 **NO LEAK BY THIS RULE** (25 of 59 steps non-positive), the 4-body pinned-clock finding
-stable at 61 dumps. Artifacts `harness/artifacts/f95/leg1/`. NEXT: leg 2, H = 3.0 h on
-the fixed driver, then the record.
+stable at 61 dumps. Artifacts `harness/artifacts/f95/leg1/`.
+2026-09-06 06:04 — CHECKPOINT 6 (LEG 2 HOUR 1 of 3, running; started 05:06:14, T+H
+08:06:14): at +3420 s, **22 cycles, 114 samples, flags NONE**, RSS plateaued at 7434388
+kB, probe 202-207 ms, screensaver `false` / lockedHint `no` throughout, `very long` 0.
+**THE PINNED-CLOCK FINDING REPRODUCES ACROSS LAUNCHES**: an independent launch on a
+fresh farm gives the SAME four bodies (Ananke, Neried, Setebos, Sycorax), the same
+two-value structure, and the same max |delta| **to the last digit** (9.437e-16 /
+3.977e-16 / 2.255e-16 / 1.388e-16 AU) — so the two doubles are specific landing points
+of the seeded solver, not noise. NEXT: leg-2 hours 2-3, the quit, the optional cycle
+campaign, then the record.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
