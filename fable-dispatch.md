@@ -1080,6 +1080,15 @@ two-value structure, and the same max |delta| **to the last digit** (9.437e-16 /
 3.977e-16 / 2.255e-16 / 1.388e-16 AU) — so the two doubles are specific landing points
 of the seeded solver, not noise. NEXT: leg-2 hours 2-3, the quit, the optional cycle
 campaign, then the record.
+2026-09-06 07:01 — CHECKPOINT 7 (LEG 2 HOUR 2 of 3, running): at +6820 s, **43 cycles,
+227 samples, flags NONE**, RSS 7434392 kB (flat since cycle ~15), probe 203-207 ms,
+`very long` 0, screensaver `false` / lockedHint `no` every sample. Leg 2 mirrors leg 1
+to within noise: stalls 84.4 then 80.7 per hour (leg 1: 83.4 / 75.1); script log
+**1.88 MB/h in both legs**, 83084 B per 8-show cycle (leg 1: 82895). NOTE for §5.115:
+each leg's farm is fresh, so this is PER-LAUNCH growth — ~5.6 MB for an unattended 3 h
+session, so R20's eight-launch window is ~45 MB, and on the shipped per-DAY file layout
+all eight land in ONE file, which is exactly the row's point that the cap's natural key
+is the launch boundary. NEXT: leg-2 hour 3, the quit, then the record.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
