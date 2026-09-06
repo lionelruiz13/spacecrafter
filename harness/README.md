@@ -1807,7 +1807,19 @@ declaration** — those harnesses' subject is the REAL geometry and every one of
 their committed baselines was measured with scaling off, so removing the line
 would silently change what they measure. `f39_d21.py` is the scaled twin.
 
-**`dumpread.py` is the dump channel's single reader** (§5.103). It now holds the
+**`dumpread.py` is the dump channel's single reader** (§5.103), and since F101
+it REFUSES A DUMP WITH AN EMPTY OLD HALF: `load_dump(path, *, require_old=True)`
+raises `EmptyOldHalf` when the file holds body records and `bodies_old == 0`.
+The parameter is KEYWORD-ONLY, so every existing
+`header, pairs, mn, mo = load_dump(p)` is unchanged. A reader whose JOB is to
+report the emptiness passes `require_old=False` **with its reason at the call**
+(four do: `f95_soak.py`'s authoring probe, `artifacts/f98/f98_repro14.py`,
+`f101_bisect.py`, `f101_table.py`). Proof at the contract:
+`python3 dumpread.py selftest` (17 PASS), and
+`python3 artifacts/f101/selftest_mutant.py` shows the suite can fail (13/4).
+NB two harnesses define their OWN record-level `load_dump`
+(`b24_equivalence.py:190`, `f89_p7.py:44`) and BYPASS the guard; they share the
+grammar, not this function. It also holds the
 grammar `b24_equivalence.sanitize_nonfinite` used to hold — that name is
 re-exported unchanged, so all fifteen importers are unaffected — plus two things
 F39 added: `unquote_nonfinite`, because the new path's emitters now QUOTE their
@@ -4911,3 +4923,66 @@ in == out on all **sixteen** launches. Cost: 0.0000 / 0.8226 / 5.0180 refreshes
 per frame (delivered held / delivered moving / no-memo held) against the 5.0000
 the shipped binary already pays at a running clock. Artifacts `artifacts/f100/`
 (1.1 MB).
+
+## F101 — which line of `14.sts` empties the old half, and the guard at the reader (`f101_bisect.py`, `f101_table.py`, `dumpread.py`) — INTENT §11.221 / §5.143, 2026-09-07
+
+```
+DISPLAY=:2 python3 f101_bisect.py <absOutdir> --leg p23|p25|p27|p31|p27nc|ctlmars|p25desc|p31desc \
+      [--then fscripts/<show>.sts] [--tag <name>] [--bin B]   # one launch per leg
+python3 f101_table.py <absRunDir>                             # the table, from the FINISHED artifacts
+python3 dumpread.py selftest                                  # the guard, both ways (17 PASS)
+python3 artifacts/f101/selftest_mutant.py                     # the guard's suite shown able to fail
+```
+
+### The altitude empties the old half, three lines before anything is loaded
+
+`moveto alt 1.1E+16` crosses `SolarSystemModule::maxAltToGoUp` (1E16,
+`solarSystemModule.cpp:54`); `onExit` calls `leaveSystem()`, which points
+`currentSystem` at `galacticSystem` — a `ProtoSystem` constructed at
+`ssystem_factory.cpp:143` and **never given a body** — and the dump enumerates
+`currentSystem` (`:1181`). Measured, eleven fresh launches, baseline 90 old /
+120 new on every pre-dump: **p23 0/120** (nothing loaded yet) · p25 **1/121**
+(the `parent none` push, into the GALACTIC system) · p27 = p31 = p27nc
+**1/121** — `set home_planet` moves no count, because `setAnchorPoint` does not
+touch `altitude` (`observer.cpp:445-459`) so no mode change happens.
+
+**What `set home_planet <authored>` buys is the galactic anchor**, and that
+decides the next descent: `inGalaxyModule.cpp:164` branches on
+`querySelectedAnchorName() == "Sun"`. Without line 27 the half comes back
+(**p25desc 90/121**, `->InSolarSystem`); with it the descent lands in a fresh
+`createSystem()` system whose seed name is empty (**p31desc 0/122**,
+`->InStellarSystem` + `can not add body with no name`), and every later
+`parent Earth` push is refused there — `06old.sts` after it gives **170
+`can't find parent for`, old still 0**, against the control's **246/277**.
+
+### Gotchas measured here, each of which cost something first
+
+- **A dual dump is only comparable INSIDE the loaded system, and the file does
+  not say which system it was taken in.** The header carries `jd`, `timeSpeed`,
+  `helioToEye`, the camera, the anchors, the gates and the big textures
+  (`ssystem_factory.cpp:1108-1164`) and no system identity. The cheapest witness
+  is the executor's own `std::cout` transitions — `->InSolarSystem`,
+  `->InStellarSystem`, `->InGalaxy`, `too high -> altitude = max` — which are on
+  the process's **stdout**, not in `spacecrafter.log`.
+- **Reading an applog while the process still runs undercounts it.** The child's
+  stdout is buffered: `p25desc06`'s `oldpath_add` reads 259 in `result.json` and
+  **261** in the finished file. That is why `f101_table.py` exists and why every
+  count in the record comes from its pass over the completed files; the per-leg
+  difference is reported (`witness_flush_lag`), never overwritten.
+- **`06old.sts` authors 170 lines and lands 156 bodies** — 13 names it writes
+  twice, plus `TDRS 3`, which declares no `coord_func` and is refused by BOTH
+  paths with its own actionable line. Start any census of that show from 156.
+- **8 of the 137 `fscripts/` shows carry `moveto ... alt` above 1e16** — `14`,
+  `S02`, `S07`, `S09`, `S10`, `S12`, `S12old`, `W15` — and `S02.sts` empties the
+  old half with **zero** `body action load`. The emptying is not about authoring.
+- **A census that stops at `harness/*.py` misses `artifacts/f98/f98_repro14.py`**,
+  which imports `dumpread` and calls `load_dump`; and a census anchored with `^`
+  misses the two files that `import dumpread` inside a function — which are two
+  of the four readers that had to opt out of the new guard.
+
+**Measured, binary `b5f08778`, code `474c595d` (unchanged by this task):** eleven
+launches, all exit 0 and `shutdown action now` -> 0; **139/139 real-HOME md5s in
+== out on every leg** (digest `a4b6ea4f`; `3995e501` over the 137 `.sts` alone);
+the farm's copy of the tester's `14.sts` still `31503adb`; `/proc` clear and no
+`/tmp/spacecrafter.lock` at all 22 checks. Artifacts `artifacts/f101/` (~600 KB),
+including the five control dumps the self-test reads.
