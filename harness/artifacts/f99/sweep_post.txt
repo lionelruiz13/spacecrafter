@@ -1,0 +1,15 @@
+registry: 8 keyed + 1 default = 9 loader(s)  [modules.cpp]
+
+coord_func      loader                   lookup@   test@     deref@      verdict
+------------------------------------------------------------------------------------------
+barycenter      BaryOrbitLoader          11,12     13        -           no dereference; miss tested at :13
+comet_orbit     CometOrbitLoader         3         9         13,16,17    GUARDED at :9
+earth_custom    EarthOrbitLoader         -         -         -           no lookup, no dereference
+ell_orbit       ElipticOrbitLoader       3         8         12,13,14    GUARDED at :8
+location_orbit  LocationOrbitLoader      23        38        72,73,74    GUARDED at :38
+lunar_custom    LunarOrbitLoader         -         -         -           no lookup, no dereference
+still_orbit     StillOrbitLoader         -         -         -           no lookup, no dereference
+surface_point   SurfacePointOrbitLoader  144       145       -           no dereference; miss tested at :145
+<default>       SpecialOrbitLoader       -         -         -           no lookup, no dereference
+
+UNGUARDED: 0 of 9 -- none

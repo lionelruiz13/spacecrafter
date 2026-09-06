@@ -723,16 +723,20 @@ test -e /home/claude/sc-f99 ; echo $? => 1
 the fix at both sites (code first); the post-fix proofs; the sweep; §11 entry + stub; §5.141
 flipped with the arm correction; §5.50 annotated; back-markers; map; README; trees clean;
 WIP cleared; baselines LAST.
-**WIP:** 2026-09-06 checkpoint 3 — FIX LANDED AND PROVED. Code `22499f04` → **`1af7fa48`**
-(the two files only), binary `46849f69` → **`8e2c6ef3`**, D14 PASS. Pre-fix leg 14/14 (arm B
-**rc −11**, gdb frame `ProtoSystem::addBody` at **`protosystem.cpp:599`**); post-fix leg
-**15/15** — arm B rc 0, one §2(f) line per path, the consumer's `:1246` refusal, ProbeLocB on
-neither half, the `parent none` control on both, and **both paths now entered** for ProbeLocB
-(pre-fix the new one never was). Controls: the F91 90-body table **byte-identical** pre/post
-binary, md5 **`c125adf0`** — the landed §11.216(g1)/§11.217(f) value reproduced on the pre
-binary FIRST; `f90_rehearsal_run.sh` **rc 0**. NEXT: the nine-loader sweep table, then the
-record (§11.219 + stub, §5.141 flip with the arm correction, §5.50 annotation, §11.217(h1)
-back-markers, map, README), baselines LAST.
+**WIP:** DELIVERED 2026-09-06 → **§11.219** (entry + stub). **§5.141 FIXED at BOTH sites**,
+its headline arm and its site count corrected at the row: `parent <unknown>` is refused
+before any loader runs (`ModularSystem.cpp:1067-1071`), the reaching arm is **`parent none`**
+— silent on both paths — and the FIRST dereference is the OLD path's `protosystem.cpp:599`
+(`ssystem_factory.cpp:829` before `:836`), which was masking the row's own site. Code
+`22499f04` → **`1af7fa48`** (the two named files only), binary `46849f69` → **`8e2c6ef3`**;
+harness `ad067a5` → `adbc496` → `ae6bcb5` → the record. Gate 24/24; predictions committed
+before the first launch; pre-fix **14/14** (rc −11, gdb frame) / post-fix **15/15** (rc 0, one
+§2(f) line per path, `"Loading body ProbeLocB"` **0 → 1** — the second site reachable only
+once the first stopped dying); sweep **1 of 9 → 0 of 9** by instrument, both trees; F91 table
+byte-identical at `c125adf0` (reproduced on the pre binary first), smoke suite rc 0, D14 PASS,
+frozen pair in==out on all eleven launches. §5.50 annotated (second member, same function,
+above its own guard); §11.217(h1) back-marked at both homes; README §F99; `DEPLOYMENT-MAP`
+`grep -c '5\.141'` = 0, unchanged. The STOP clause did not fire.
 
 ### F100 — §5.139's mechanism leg, then the fix INSIDE the barrier's own contract: the frozen readouts are the PARKED bodies' (`hidden = true` in the field's `ssystem.ini` — every dwarf planet and asteroid of the frozen set — and their subtrees) at a PINNED clock: `useNow()`'s memo `evaluatedJD == currentJD` (`ModularBody.cpp:459`) is the right key for the orbit position and the WRONG key for the camera-dependent `mat`, so after the first use at a given date no camera move ever reaches a parked body's eye-frame position again; the dump ALREADY calls `useNow()` per body (`ssystem_factory.cpp:1192`) and the SELECTION every frame (`ModularSystem.cpp:270`), which is why the instrument and the operator's `get status object` are predicted to freeze TOGETHER — the leg discriminates pinned vs running clock and parked vs walked bodies with predictions before the launch; the fix re-keys the memo on (date, parent frame) with the +4 iterations bound to a date change only, under D11's denominator; STOP if the leg refutes the memo [S–M, engine, new path]
 

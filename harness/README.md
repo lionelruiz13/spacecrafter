@@ -4741,3 +4741,68 @@ session** (F95: 1.88 MB/h). Pinned clock: the NEW half moves for 235 of 286 bodi
 up to 1.49e−07 AU because this corpus's shows move the simulation clock, where
 F95's did not and its new half was bit-stable 120/120; the OLD half cannot be
 compared at all, because one show empties it. Artifacts `artifacts/f98/` (596 KB).
+
+## F99 — the `location_orbit` null parent, on both paths (`f99_locguard.py`, `f99_run.sh`, `f99_gdb.sh`, `f99_sweep.py`) — INTENT §11.219 / §5.141 / §5.50, 2026-09-06
+
+```
+DISPLAY=:2 ./f99_run.sh <absOutdir> --bin <binary> --tag pre|post   # one command, one exit code
+DISPLAY=:2 ./f99_gdb.sh <absOutdir> <binary>                        # the faulting frame, launched under gdb
+python3 f99_sweep.py [--src <tree>/src]                             # the nine-loader parent audit, any tree
+```
+
+**The instrument that matters longest here is `f99_sweep.py`**, and it is three
+lines of policy rather than a test: it parses `modules.cpp`'s own
+`registerModule` calls (never a remembered list), it reports per loader the
+lookup line, the miss-test line and the dereference lines, and it **fails the run
+if a registered loader's file is missing** — a sweep that can report a clean table
+over a corpus it did not read is worse than none. Run it on `git archive`'d trees
+to get the both-ways column: **`location_orbit` UNGUARDED 1 of 9 at `22499f04`, 0
+of 9 at `1af7fa48`**. Its blind spot is named rather than papered over: it walks
+the NEW path's registry only, and the old path's own chain
+(`protosystem.cpp`'s if/else and `orbit_creator_cor.cpp`) has to be read by hand.
+
+### Attributing a crash to a SITE when the app takes the log with it
+
+- **The stdout capture is a lie on a signal; the log file is not.** `cLog` flushes
+  every write (`log.cpp:151-155`), so `<farm>/.spacecrafter/log/spacecrafter.log`
+  survives a SIGSEGV, while the child's C++ stdout — fully buffered because the
+  harness redirects it to a FILE — loses whatever was pending. Read the farm's
+  log, not the applog, whenever the leg's expected outcome is death.
+- **Two entry lines partition the two paths for one body**, and that pair is the
+  cheapest site attribution in this codebase:
+  `"Loading new Stellar System object... <name>"` (`protosystem.cpp:517`, OLD
+  entered) against `"Loading body <name>"` (`ModularSystem.cpp:1061`, NEW
+  entered). Old present + new absent says the app died inside the old path's
+  `addBody`. It cost nothing and it named the site before gdb was started.
+- **`ModularSystem.cpp:1061` is written BEFORE the parent is resolved** at
+  `:1063-1071`. `"Loading body X"` means the loader was entered, never that the
+  body exists — a count of that line is not a body count.
+- **gdb: launch under it** (`ptrace_scope` = 1 blocks attach) and
+  `handle SIGUSR1 nostop noprint pass` (the app's stall watchdog's signal, which
+  gdb otherwise stops on and which then looks exactly like the fault you are
+  hunting). `f99_gdb.sh` feeds the commands from a background subshell of itself,
+  so the whole leg is one foreground call (§11.98(h)).
+
+### Two farm-leg gotchas measured here
+
+- **A crashing leg leaves `/tmp/spacecrafter.lock` holding its own dead pid**, and
+  the next launch's `is_lock_file` shells out `kill -0` (`main.cpp:149-164`). A
+  dead pid lets the launch through; a REUSED pid makes it print one warning and
+  `return 0` (`:241-244`) — the next leg then dies before opening 7805 and an
+  environment accident reads as a result. `f99_locguard.lock_state()` records the
+  lock every time and removes it only when the pid is dead. (F90 deliberately
+  KEEPS stale locks, because it counts startup silences; nothing here does.)
+- **"the body is on neither dump half" needs a control in the same launch.** It is
+  equally consistent with a push channel that never worked. The control is the
+  same offending key — `parent none` — carried by a `coord_func` both paths know
+  (`still_orbit`): if it lands on both halves, the refusal is the guard's.
+
+**Measured, four legs on fresh private farms under `/home/claude/sc-f99/`:** pre
+`46849f69` **14/14** (arm A rc 0 with both refusal lines; arm B **rc −11**, gdb
+frame `ProtoSystem::addBody` at `protosystem.cpp:599`) · post `8e2c6ef3` **15/15**
+(arm B rc 0, one §2(f) line per path plus `ModularSystem.cpp:1246`'s, and
+`"Loading body ProbeLocB"` **0 → 1** — the second site reachable only once the
+first stopped dying). Controls: F91 table byte-identical pre/post binary at
+`c125adf0` (reproduced on the PRE binary first), `f90_rehearsal_run.sh` rc 0, D14
+PASS, frozen pair in == out on all eleven launches. Artifacts `artifacts/f99/`
+(320 KB).
