@@ -1029,7 +1029,21 @@ against the 45.0 s F19 bound**, then samples #7-#11 recovered at ~201 ms, quit *
 in 0.61 s**, 0 teardown faults. The HANG control also found a defect in MY OWN detector
 (the second F2 arm tested the CUMULATIVE `very long` count, so one stall latched the
 flag onto every later sample; `prediction.txt` says GAINS) — corrected to an increase
-test, `very_long_arm()` with six selftest cases. NEXT: the >= 3 h soak.
+test, `very_long_arm()` with six selftest cases.
+2026-09-06 03:14 — CHECKPOINT 3 (SOAK HOUR 1 of 3, running): launched 02:18:49, T+H
+05:18:49, outdir `/home/claude/sc-f95/soak`, H 3.0 S 30. At +3322 s: **20 COMPLETE
+cycles, 110 samples, flags NONE**. Cycle wall dead flat 157.9-159.7 s (8 shows, 39-40
+pauses resumed each). **VmRSS rose 7201128 -> 7427656 kB over cycles 1-16 and then went
+FLAT (16->17 step = 0)**, so the sign rule already reads NO LEAK and the naive
+last-vs-first would have said the opposite. Probe round trip 201-208 ms throughout;
+screensaver `false` / lockedHint `no` on every sample. `Frame stall detected` 84.8 then
+82.4 per hour, `very long` **0**. Script log +1.88 MB/h = 82969 B per 8-show cycle.
+ONE instrument finding, argued not fixed mid-run: `custom/diaporama.sts` SHOW-TIMEOUTs
+every cycle because F90's `show_own_duration` is loop-blind — the file wraps its single
+`wait duration 3.1` and its single `script action pause` in `struct loop 100` (:146), so
+its authored duration is ~100x what the parser reports. Kept: every cycle then gets an
+identical deterministic 63 s slice, which is BETTER for cross-cycle comparison, and the
+section itself provides for SHOW-TIMEOUT. NEXT: hours 2 and 3, then the record.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
