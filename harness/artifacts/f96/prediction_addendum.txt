@@ -1,0 +1,76 @@
+F96 -- PREDICTION ADDENDUM (P15-P20), written 2026-09-06 AFTER leg 1 on the
+pre-fix binary and BEFORE leg 2, code master-beta @ a2a880ef, binary 404b9e89.
+Nothing has been touched in src/.
+
+WHY THERE IS AN ADDENDUM.  Leg 1 (artifacts/f96/leg1_pre/) ran the A/B the way
+the section describes it -- the offset-0 table taken at the LAUNCH view and the
+offset-0.3 table taken after `select planet Jupiter` + `flag track_object on`
+had moved the camera -- and found a CONFOUND the section could not know about:
+19 of the 90 bodies have an eye-frame position (`mat` translation) that is
+BYTE-IDENTICAL before and after the camera move, i.e. their position was never
+re-evaluated, so their readout answers in a camera state that no longer exists.
+Those 19 are EXACTLY the 19 bodies that violated the model (>3e-5 deg), and the
+71 whose position did move satisfy it at max 0.000019262 deg -- but the leg
+cannot say so without a criterion for "was this body's position re-evaluated",
+because the model check and the confound were measured in the same difference.
+
+Leg 2 therefore takes the A/B AT ONE CAMERA STATE (the camera is moved and
+released FIRST, then the offset is the only thing that changes) and partitions
+the bodies by a criterion that is independent of the model.  P1-P14 stand
+unchanged; P3/P8/P14 are re-registered below in the partitioned form.  The leg-1
+numbers above are stated here so this addendum cannot be read as a threshold
+chosen after the fact -- they are the reason the criterion exists, and every
+prediction below can still fail.
+
+P15 THE FRESHNESS CRITERION, MEASURED AT OFFSET 0 ON BOTH SIDES.  Dump P0 at the
+    launch view, move the camera (`select planet Jupiter` + `flag track_object
+    on`, then release), dump A0 -- the offset is 0 in both.  Partition every
+    body by whether its NEW-path `mat` translation is byte-identical between the
+    two dumps.  PREDICTION: the FROZEN class is non-empty; every one of its
+    members disagrees with the OLD path's alt/az at A0 by more than 1 deg, while
+    every member of the re-evaluated class agrees with old to <= 3e-5 deg.  (At
+    P0 -- the state every body was last evaluated in -- ALL of them agree with
+    old to <= 3e-5 deg, which is the control that says the freeze is the camera
+    move's and not a permanent property of those bodies.)
+    REFUTED IF: the two classes do not sort the old-vs-new disagreement.
+
+P16 THE MODEL, ON THE PARTITION, AT ONE CAMERA STATE (A0 offset 0 -> A3 offset
+    0.3, nothing else changed -- asserted field by field on the dumped camera):
+      (a) a body whose position was re-evaluated between A0 and A3 has
+          p(A3) = R' . p(A0) to 1e-5 relative -- that is what says the two dumps
+          differ by the OFFSET and by nothing else;
+      (b) for those bodies the READOUT turns by exactly C:
+          sep(C . d(A0), d(A3)) <= 3e-5 deg, every one of them;
+      (c) a body whose position is FROZEN has d(A3) == d(A0) exactly: the offset
+          does not reach it at all;
+      (d) the two mutations are refuted on the same table: median
+          sep(C1 . d(A0), d(A3)) > 1 deg and median sep(C2 . d(A0), d(A3)) > 1 deg.
+    REFUTED IF: any re-evaluated body's readout misses C by more than 3e-5 deg,
+    or a frozen body's readout moves at all.
+
+P17 THE PARTITION IS EXHAUSTIVE: every body carrying a new-path position falls
+    in exactly one class, and no body is excluded by hand.
+
+P18 RA/DE DOES NOT MOVE WITH THE OFFSET (P8, re-registered without the camera
+    move): between A0 and A3, 0 of 90 printed RA/DE strings change.
+    (Leg 1's 20 movers were the 19 frozen bodies plus Puck -- the one-arcsecond
+    straddler 11.213(g) names -- and were measured across a camera MOVE, so that
+    reading is confounded and is superseded by this one.)
+
+P19 THE RETURN CONTROL: `set zoom_offset 0` after A3 returns every body's
+    new-path alt/az to its A0 value BYTE-IDENTICALLY, all 90.
+
+P20 POST-FIX, AND THIS ONE IS A PREDICTION ABOUT A COST, NOT ONLY A GAIN:
+      (a) on the RE-EVALUATED class at offset 0.3 the fix makes the readout land
+          on old -- sep(d_old, d_new) <= 3e-5 deg for every member but Eris,
+          the Sun included;
+      (b) on the FROZEN class the fix MOVES the answer by the same 27 deg
+          rotation, because it applies R'^T to a position that never carried R'.
+          A frozen body's readout is wrong before and after -- it answers in the
+          camera state it was last evaluated in -- and the fix changes WHICH
+          wrong answer it gives.  That is a consequence of the frozen position,
+          not of the fix: the fix is the exact inverse of what viewMat applies,
+          and a position that did not go through today's viewMat is outside the
+          contract either expression can honour.  MEASURED and RECORDED, never
+          absorbed and never gated.
+    REFUTED IF: (a) fails on any re-evaluated body but Eris.

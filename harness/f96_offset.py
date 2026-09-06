@@ -425,8 +425,76 @@ def kabsch(pairs):
 
 
 # ------------------------------------------------------------------ the stages
+def body_pos(rec):
+    """The NEW path's eye-frame position of a body: `mat`'s translation
+    [observed: ModularBody.cpp:897-910, the dumped `mat` is what
+    getObservedPosition() returns]."""
+    m = (rec.get("new") or {}).get("mat")
+    return None if not m or len(m) < 15 else [m[12], m[13], m[14]]
+
+
+def freshness(b_a, b_b, C_pos=None, rel=1e-5):
+    """Partition the bodies by whether their eye-frame position was RE-EVALUATED
+    between two dumps.  Measured, never assumed: a body whose `mat` translation
+    is BYTE-IDENTICAL across a change of camera state was not re-evaluated (its
+    readout answers in the state it was last evaluated in); one whose position
+    moved was.  When `C_pos` is given (the offset's own rotation R'), a
+    re-evaluated body must land on `C_pos . p_a` exactly -- which is what says
+    the two dumps differ by the OFFSET and by nothing else."""
+    out = {"frozen": [], "moved": [], "matches_R": [], "mismatch_R": [], "n": 0}
+    for name in sorted(set(b_a) & set(b_b)):
+        pa, pb = body_pos(b_a[name]), body_pos(b_b[name])
+        if pa is None or pb is None:
+            continue
+        out["n"] += 1
+        if pa == pb:
+            out["frozen"].append(name)
+            continue
+        out["moved"].append(name)
+        if C_pos is not None:
+            want = mat_vec(C_pos, pa)
+            err = math.sqrt(sum((x - y) ** 2 for x, y in zip(want, pb)))
+            scale = math.sqrt(sum(x * x for x in pa)) or 1.0
+            (out["matches_R"] if err / scale < rel else
+             out["mismatch_R"]).append([name, err / scale])
+    return out
+
+
+def ab_model(h_a, b_a, h_b, b_b):
+    """THE A/B THAT NEEDS NO OLD PATH: one camera state, the offset the only
+    thing that changes.  For a re-evaluated body the readout must turn by
+    C = Rv^T . R' . Rv exactly; for a frozen one it must not turn at all."""
+    cam = {k: cam_of(h_b)[k] for k in CAM_KEYS if k in cam_of(h_b)}
+    eff = cam["viewOffsetEff"]
+    C = conj(cam, eff)
+    C1 = conj(cam, eff, sign=-1)
+    C2 = conj(cam, eff, swap=True)
+    rp = rx(eff * cam["halfFov"])
+    fr = freshness(b_a, b_b, C_pos=rp)
+    rows = {}
+    for name in fr["moved"] + fr["frozen"]:
+        aa, ab = b_a[name].get("altaz_new"), b_b[name].get("altaz_new")
+        ao = b_b[name].get("altaz_old")
+        if not aa or not ab:
+            continue
+        da, db = dir_from_altaz(*aa), dir_from_altaz(*ab)
+        row = {"class": "frozen" if name in fr["frozen"] else "moved",
+               "sep_ab_deg": angle_between(da, db),
+               "sep_model_deg": angle_between(mat_vec(C, da), db),
+               "sep_M1_sign_deg": angle_between(mat_vec(C1, da), db),
+               "sep_M2_swap_deg": angle_between(mat_vec(C2, da), db)}
+        if ao:
+            row["sep_old_new_b_deg"] = angle_between(dir_from_altaz(*ao), db)
+        rows[name] = row
+    return {"camera": cam, "freshness": fr, "rows": rows,
+            "model_angle_deg": rot_angle_deg(C),
+            "model_axis": rot_axis(C) if eff else None,
+            "axis_Rv_T_x": mat_vec(mat_t(view_rotation(cam)), [1, 0, 0])}
+
+
 def stage_cmd(binp, out, rep, jd_sun=None):
-    """The COMMAND channel: `set zoom_offset 0.3` at runtime."""
+    """The COMMAND channel: `set zoom_offset 0.3` at runtime, with the camera
+    HELD -- the offset is the only thing that changes between A0 and A3."""
     farm = FARM_ROOT / "cmd"
     home = build_farm(farm)
     rep["cmd"] = leg = {"farm": str(farm), "channel": "command"}
@@ -436,66 +504,119 @@ def stage_cmd(binp, out, rep, jd_sun=None):
         readout_setup(app)
         app.settle_scale()
 
-        h, b, p = app.dump("off0")
-        leg["camera_off0"] = cam_fields(h)
-        leg["table_off0"] = score_table(h, b)
-        leg["dump_off0"] = str(p)
-        ok("offset 0 baseline: viewOffsetEff = %s, %d bodies carry both alt/az"
-           % (leg["camera_off0"]["viewOffsetEff"], leg["table_off0"]["n"]))
+        # --- P0: the launch state, before ANY camera move.  Its only role is
+        # the freshness control below: it is the last frame in which every
+        # body's eye-frame position was evaluated in the camera state the
+        # readout is then taken in.
+        hP, bP, pP = app.dump("p0_launch")
+        leg["camera_p0"] = cam_fields(hP)
+        leg["table_p0"] = score_table(hP, bP)
+        leg["dump_p0"] = str(pP)
+        ok("launch state: viewOffsetEff = %s, %d bodies carry both alt/az"
+           % (leg["camera_p0"]["viewOffsetEff"], leg["table_p0"]["n"]))
 
         # --- arm the offset the way F81 measured it (README F81): `select
         # planet` + `flag track_object on` is Core::setFlagTracking(true), the
         # ONE arm site wired to BOTH paths.  `zoom center on` arms old only.
+        # This is also a CAMERA MOVE, which is what the freshness control needs.
         app.send("select planet %s" % TARGET, 1.0)
         app.send("flag track_object on", 2.0)
         app.wait_until("arm", lambda H, B: (
             nav_of(H)["plans"]["flagAutoMove"] == 0
-            and abs(nav_of(H)["viewOffsetTransition"] - 1.0) < 1e-9
-            and abs(cam_of(H)["viewOffsetTransition"] - 1.0) < 1e-9),
+            and abs(nav_of(H)["viewOffsetTransition"] - 1.0) < 1e-6
+            and abs(cam_of(H)["viewOffsetTransition"] - 1.0) < 1e-6),
             "view_offset_transition == 1 on BOTH paths, auto-move complete")
         h, b, _p = app.dump("track_o0", keep=False)
         leg["track_o0"] = track_datum(h, b)
+        app.send("flag track_object off", 1.5)
+        app.wait_until("hold0", lambda H, B: nav_of(H)["flagTraking"] == 0
+                       and nav_of(H)["plans"]["flagAutoMove"] == 0,
+                       "tracking released, view held (offset still 0)")
 
-        # --- the offset itself
+        # --- A0: the SAME camera state the A/B is taken in, offset still 0
+        hA, bA, pA = app.dump("a0_off0")
+        leg["camera_a0"] = cam_fields(hA)
+        leg["table_a0"] = score_table(hA, bA)
+        leg["dump_a0"] = str(pA)
+        # THE FRESHNESS CONTROL, at offset 0 on BOTH sides: what a camera move
+        # alone does to a body's eye-frame position.
+        leg["freshness_move"] = freshness(bP, bA)
+        ok("freshness across the camera move (offset 0 both sides): %d frozen, "
+           "%d re-evaluated, of %d"
+           % (len(leg["freshness_move"]["frozen"]),
+              len(leg["freshness_move"]["moved"]), leg["freshness_move"]["n"]))
+
+        # --- A3: the offset, and nothing else
         app.send("set zoom_offset %g" % OFFSET, 1.5)
         got, _n, h, b = app.wait_until("o3", lambda H, B: (
-            abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-9
+            abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-6
             and nav_of(H)["plans"]["flagAutoMove"] == 0),
             "viewOffsetEff == %g and the aim settled" % OFFSET)
         leg["armed"] = got
-        h, b, _p = app.dump("track_o3", keep=False)
-        leg["track_o3"] = track_datum(h, b)
-
-        # --- release the tracking so the view HOLDS, then the table
-        app.send("flag track_object off", 1.5)
-        app.wait_until("hold", lambda H, B: nav_of(H)["flagTraking"] == 0
-                       and nav_of(H)["plans"]["flagAutoMove"] == 0,
-                       "tracking released, view held")
-        h1, b1, p1 = app.dump("table_o3_a")
-        h2, b2, p2 = app.dump("table_o3_b")
-        leg["camera_o3"] = cam_fields(h1)
+        h1, b1, p1 = app.dump("a3_off03_a")
+        h2, b2, p2 = app.dump("a3_off03_b")
+        leg["camera_a3"] = cam_fields(h1)
         leg["camera_stable"] = (cam_fields(h1) == cam_fields(h2))
         (ok if leg["camera_stable"] else fail)(
             "the camera state is IDENTICAL across two consecutive dumps "
             "(the model reads the state the readout was taken in)")
-        leg["table_o3"] = score_table(h1, b1)
-        leg["dump_o3"] = str(p1)
-        leg["dump_o3_b"] = str(p2)
+        held = {k: v for k, v in leg["camera_a0"].items()
+                if k not in ("viewOffset", "viewOffsetTransition", "viewOffsetEff")}
+        held3 = {k: v for k, v in leg["camera_a3"].items()
+                 if k not in ("viewOffset", "viewOffsetTransition", "viewOffsetEff")}
+        leg["camera_held_across_ab"] = (held == held3)
+        (ok if leg["camera_held_across_ab"] else fail)(
+            "the camera state is UNCHANGED between A0 and A3 except the three "
+            "offset fields -- the offset is the only variable in the A/B")
+        leg["table_a3"] = score_table(h1, b1)
+        leg["dump_a3"] = str(p1)
+        leg["dump_a3_b"] = str(p2)
+        leg["ab"] = ab_model(hA, bA, h1, b1)
+
+        # --- the tracking datum at offset 0.3 (F81's shape)
+        app.send("flag track_object on", 2.0)
+        _s, _n, h, b = app.wait_until("track3", lambda H, B: (
+            nav_of(H)["plans"]["flagAutoMove"] == 0
+            and abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-6),
+            "tracking re-armed at offset %g" % OFFSET)
+        h, b, _p = app.dump("track_o3", keep=False)
+        leg["track_o3"] = track_datum(h, b)
+        app.send("flag track_object off", 1.5)
+        app.wait_until("hold3", lambda H, B: nav_of(H)["flagTraking"] == 0
+                       and nav_of(H)["plans"]["flagAutoMove"] == 0,
+                       "tracking released again")
 
         # --- the RA/DE half: it already rides the full inverse (§11.213(f)),
-        # so it must NOT move with the offset.  Compared from the navstr
-        # sidecars of the offset-0 and offset-0.3 dumps.
-        leg["rade_o0_vs_o3"] = rade_compare(str(p), str(p1))
+        # so it must NOT move with the offset.  A0 vs A3, one camera state.
+        leg["rade_a0_vs_a3"] = rade_compare(str(pA), str(p1))
+        # and, for the record, what the camera MOVE alone does to it
+        leg["rade_p0_vs_a0"] = rade_compare(str(pP), str(pA))
+
+        # --- THE RETURN CONTROL: the offset is a render-only pitch, so putting
+        # it back to 0 must return every readout to A0 exactly.  Without this,
+        # "the offset moved the table" is consistent with "something else moved
+        # it at the same time".
+        app.send("set zoom_offset 0", 1.5)
+        _s, _n, h, b = app.wait_until(
+            "back0", lambda H, B: cam_of(H)["viewOffsetEff"] == 0,
+            "viewOffsetEff back to 0")
+        hR, bR, pR = app.dump("a0b_return")
+        leg["camera_a0b"] = cam_fields(hR)
+        leg["table_a0b"] = score_table(hR, bR)
+        leg["dump_a0b"] = str(pR)
+        same = [n for n in sorted(set(bA) & set(bR))
+                if bA[n].get("altaz_new") == bR[n].get("altaz_new")]
+        leg["return_identical_altaz"] = len(same)
+        leg["return_n"] = len(set(bA) & set(bR))
+        (ok if len(same) == leg["return_n"] else fail)(
+            "RETURN CONTROL: %d of %d bodies have a BYTE-IDENTICAL new-path "
+            "alt/az at A0 and after the offset went back to 0"
+            % (len(same), leg["return_n"]))
 
         # --- the frame pair for the owner's eye (no gate, no claim): the
-        # default scene with the Sun low, at offset 0 and at 0.3.
+        # default scene with the Sun low, at offset 0 and at 0.3.  LAST,
+        # because it moves the clock.
         leg["frames"] = stage_frames(app, leg, jd_sun)
-
-        # --- and back to 0: the offset is a render-only pitch, so the table
-        # must return to the baseline exactly.
-        app.send("set zoom_offset 0", 1.5)
-        app.wait_until("back0", lambda H, B: cam_of(H)["viewOffsetEff"] == 0,
-                       "viewOffsetEff back to 0")
     finally:
         leg["exit_code"] = app.stop()
     return leg
@@ -554,24 +675,49 @@ def stage_frames(app, leg, jd_sun):
     the canary is the only photometric instrument here)."""
     res = {}
     if jd_sun is None:
-        # find a Sun-low frame BY MEASUREMENT rather than by convention
-        best = None
-        for k in range(48):
-            jd = JD + k / 48.0
+        # find a Sun-low frame BY MEASUREMENT rather than by convention: a
+        # coarse hourly scan, then a secant on the Sun's own altitude toward
+        # +2 deg (a setting Sun, the atmosphere's interesting regime).
+        def sun_alt(jd):
             app.send("date jday %.9f" % jd, 0.8)
-            _h, b, _p = app.dump("sunscan%02d" % k, pause=0.6, keep=False)
+            _h, b, _p = app.dump("sunscan", pause=0.6, keep=False)
             aa = (b.get("Sun") or {}).get("altaz_old")
-            if not aa:
-                continue
-            alt = aa[0] * DEG
-            score = abs(alt - 2.0)
-            if best is None or score < best[0]:
-                best = (score, jd, alt)
-        if best is None:
+            return None if not aa else aa[0] * DEG
+
+        scan = []
+        for k in range(24):
+            jd = JD + k / 24.0
+            a = sun_alt(jd)
+            if a is not None:
+                scan.append((jd, a))
+        res["scan"] = scan
+        if not scan:
             fail("no Sun altitude found in the scan")
             return res
-        res["scan_best"] = {"jd": best[1], "sun_alt_deg": best[2]}
-        jd_sun = best[1]
+        # a DESCENDING crossing of +2 deg = sunset
+        pair = None
+        for i in range(len(scan) - 1):
+            if scan[i][1] > 2.0 >= scan[i + 1][1]:
+                pair = (scan[i], scan[i + 1])
+                break
+        if pair is None:
+            jd_sun = min(scan, key=lambda s: abs(s[1] - 2.0))[0]
+        else:
+            (j0, a0), (j1, a1) = pair
+            for _ in range(4):
+                j = j0 + (2.0 - a0) * (j1 - j0) / (a1 - a0)
+                a = sun_alt(j)
+                if a is None:
+                    break
+                if abs(a - 2.0) < 0.05:
+                    j0, a0 = j, a
+                    break
+                if a > 2.0:
+                    j0, a0 = j, a
+                else:
+                    j1, a1 = j, a
+            jd_sun = j0
+        res["scan_best"] = {"jd": jd_sun}
     res["jd_sun"] = jd_sun
     app.send("date jday %.9f" % jd_sun, 1.5)
     app.send("set zoom_offset 0", 1.2)
@@ -582,7 +728,7 @@ def stage_frames(app, leg, jd_sun):
     res["sun_altaz_new_o0"] = (b.get("Sun") or {}).get("altaz_new")
     p0 = app.shot("sun_low_offset0")
     app.send("set zoom_offset %g" % OFFSET, 1.5)
-    app.wait_until("frame3", lambda H, B: abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-9,
+    app.wait_until("frame3", lambda H, B: abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-6,
                    "offset 0.3 for the second frame")
     h, b, _p = app.dump("frame_o3", keep=False)
     res["sun_altaz_new_o3"] = (b.get("Sun") or {}).get("altaz_new")
@@ -640,7 +786,7 @@ def stage_cfg(binp, out, rep):
         app.send("flag track_object on", 2.0)
         got, _n, h, b = app.wait_until("cfgarm", lambda H, B: (
             nav_of(H)["plans"]["flagAutoMove"] == 0
-            and abs(cam_of(H)["viewOffsetTransition"] - 1.0) < 1e-9),
+            and abs(cam_of(H)["viewOffsetTransition"] - 1.0) < 1e-6),
             "the config-armed offset reaches transition 1 on the new path")
         leg["armed_camera"] = cam_fields(h)
         leg["armed_nav"] = {k: nav_of(h)[k] for k in
@@ -676,14 +822,14 @@ def stage_descend(binp, out, rep):
         app.send("select planet %s" % TARGET, 1.0)
         app.send("flag track_object on", 2.0)
         app.wait_until("darm", lambda H, B: (
-            abs(cam_of(H)["viewOffsetTransition"] - 1.0) < 1e-9
+            abs(cam_of(H)["viewOffsetTransition"] - 1.0) < 1e-6
             and nav_of(H)["plans"]["flagAutoMove"] == 0), "armed on the new path")
         app.send("flag track_object off", 1.5)
         app.send("camera action free_mode state on", 1.5)
         app.send("set zoom_offset %g" % OFFSET, 1.5)
         got, _n, h, b = app.wait_until("dfree", lambda H, B: (
             cam_of(H)["freeMode"] is True
-            and abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-9),
+            and abs(cam_of(H)["viewOffsetEff"] - OFFSET) < 1e-6),
             "free mode ON and viewOffsetEff == %g" % OFFSET)
         leg["before_camera"] = cam_fields(h)
         leg["before_position"] = cam_of(h)["position"]
@@ -713,6 +859,37 @@ def report(rep, out):
         if not leg:
             continue
         lines.append("=== leg %s (%s)" % (legname, rep.get("tag")))
+        fm = leg.get("freshness_move")
+        if fm:
+            lines.append("  FRESHNESS across the camera move, offset 0 both "
+                         "sides: %d frozen / %d re-evaluated of %d"
+                         % (len(fm["frozen"]), len(fm["moved"]), fm["n"]))
+            lines.append("    frozen: %s" % ", ".join(fm["frozen"]))
+        ab = leg.get("ab")
+        if ab:
+            lines.append("  A/B at ONE camera state (the offset is the only "
+                         "variable), viewOffsetEff %s:" % ab["camera"]["viewOffsetEff"])
+            lines.append("    C: rotation %.6f deg, axis vs Rv^T*x %.6f deg"
+                         % (ab["model_angle_deg"],
+                            angle_between(ab["model_axis"], ab["axis_Rv_T_x"])))
+            f = ab["freshness"]
+            lines.append("    positions: %d moved (%d land on R'.p exactly, %d "
+                         "do not), %d frozen, of %d"
+                         % (len(f["moved"]), len(f["matches_R"]),
+                            len(f["mismatch_R"]), len(f["frozen"]), f["n"]))
+            for cls in ("moved", "frozen"):
+                sel = {n: r for n, r in ab["rows"].items() if r["class"] == cls}
+                if not sel:
+                    continue
+                for key in ("sep_ab_deg", "sep_model_deg", "sep_M1_sign_deg",
+                            "sep_M2_swap_deg", "sep_old_new_b_deg"):
+                    xs = sorted([(r[key], n) for n, r in sel.items()
+                                 if key in r and math.isfinite(r[key])], reverse=True)
+                    if not xs:
+                        continue
+                    lines.append("    [%s] %-19s max %.6f (%s) | median %.6f | n=%d"
+                                 % (cls, key, xs[0][0], xs[0][1],
+                                    sorted(v for v, _ in xs)[len(xs) // 2], len(xs)))
         for tabkey in ("table_off0", "table_o3", "table_startup", "table_armed"):
             t = leg.get(tabkey)
             if not t:

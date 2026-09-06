@@ -1,0 +1,12 @@
+=== leg cmd (pre)
+  table_off0: viewOffsetEff=0  bodies=90  model rotation 0.000000 deg
+    sep_old_new_deg    max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+    sep_model_deg      max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+    sep_M1_sign_deg    max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+    sep_M2_swap_deg    max 1.198725 (Eris) | max non-Eris 0.000014 (Europa) | median 0.000011
+  table_o3: viewOffsetEff=0.300000012  bodies=90  model rotation 27.000002 deg
+    axis(C) vs Rv^T*x : 0.000000 deg
+    sep_old_new_deg    max 170.715618 (Eris) | max non-Eris 170.175216 (Juno) | median 15.008647
+    sep_model_deg      max 170.890884 (Eris) | max non-Eris 170.108981 (Juno) | median 0.000012
+    sep_M1_sign_deg    max 170.906655 (Eris) | max non-Eris 170.337132 (Juno) | median 29.426883
+    sep_M2_swap_deg    max 172.420359 (Eris) | max non-Eris 169.917184 (Pallas) | median 7.541095

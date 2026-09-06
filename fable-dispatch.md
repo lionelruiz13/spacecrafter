@@ -709,15 +709,17 @@ test -e /home/claude/sc-f96 ; echo $? => 1
 the fix (code first) + the pole guard; the four proofs incl. the full canary; §11 entry +
 stub; §5.138 flipped; the rider closed; back-markers; map; README; trees clean; WIP
 cleared; baselines LAST.
-**WIP:** 2026-09-06 CP1 — §0.7 gate PASS (`premise_check.py F96` 21/21; display `:2`
-2448x1332 `.5KBYU3`; canary `--no-scene` exit 0 `f56/canary/20260906-104328`; free -g 26
-avail ⇒ `-j24`; no `spacecrafter` in `/proc/*/comm`; md5 `03fbee59`/`545a51ef`; `cmake -n`
-0 steps). Instruments + PREDICTIONS committed BEFORE any launch: `harness/f96_frame.cpp`
-(offline algebra + pole probe, run: 27.000021918° for the shipped cell, the pole guard
-both ways), `harness/f96_offset.py`, `harness/f96_run.sh`,
-`artifacts/f96/prediction.txt` (P1–P14) + `f96_frame_pre.txt`. Pre-fix binary preserved
-at `/home/claude/sc-f96/bin/spacecrafter-pre` (`404b9e89`). NEXT: the LEG on the pre-fix
-binary (cmd + cfg + descend stages), no code touched yet.
+**WIP:** 2026-09-06 CP2 — §0.7 gate PASS (`premise_check.py F96` 21/21; canary `--no-scene`
+exit 0; display `:2`; md5 `03fbee59`/`545a51ef`; `cmake -n` 0 steps). Predictions P1–P14
+committed BEFORE the first launch (`b690e03`), P15–P20 addendum before leg 2. LEG 1 on the
+PRE-FIX binary `404b9e89` RAN (`artifacts/f96/leg1_pre/`): the model holds at max
+**0.000019262°** on the 71 bodies whose position is re-evaluated, both mutations refuted
+(median 29.32° / 7.49°), max old-vs-new gap **27.000008°** = the predicted 0.3×90°, C's
+axis vs `Rvᵀx` **0.000000°**; and a CONFOUND found and isolated — 19 of 90 bodies have a
+BYTE-IDENTICAL eye-frame `mat` across a camera move (frozen readout, up to 170.7° from
+old), exactly the 19 that violated the model. Leg 2 re-takes the A/B at ONE held camera
+state with a measured freshness partition. NO code touched yet. NEXT: leg 2 (cmd/cfg/
+descend) on the pre-fix binary, then the fix if the leg confirms.
 
 ### F97 — §5.21 — `LocationOrbit` made EXACT on both paths: the authored latitude converted like the longitude (degrees, the loader's documented unit — `orbit.cpp:1091` converts one and not the other on the same line), and the spin read from the parent's ONE rotation authority at evaluation time instead of a linear model anchored at JD 0 with the parent's period and phase frozen at construction (`orbit.cpp:1102`; on Earth `Body::getSiderealTime` is the APPARENT sidereal time, which no linear model follows — magnitude to be MEASURED); on the new path the class registered at `modules.cpp:49` lands where `surface_point` + the grounded fold lands for the same keys, the spin applied exactly once whichever spelling the author uses (§11.78(c)'s double-spin trap closed by construction); D9 excluded by round-3 R18 (*"No."* — nobody has authored one), zero shipped/loaded uses measured at the mint, so no baseline scene moves (§11.207(g) item 3; DEPLOYMENT-MAP T2) [M, engine, both paths]
 
