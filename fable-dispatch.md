@@ -1161,6 +1161,8 @@ bodies_new = 286** — after cycle 1 the OLD path's dump half is EMPTY and stays
 `14.sts` authors `Solsys … parent none`, i.e. a SYSTEM, and the old half then walks that
 system (1 body) until a later `body action clear` empties it. Attribution run prepared
 (`f98_repro14.py --dump-after-each`), to run after the quit.
+CHECKPOINT 6 (17:0x, hourly): **six complete cycles, 1914.5–1916.6 s, spread 2.1 s**,
+397 samples, still **no flag**; every boundary 0/286. Ends 18:12:26.
 
 ---
 
