@@ -750,6 +750,28 @@ def leak_verdict(series):
             "span_vs_floor": "span %s vs floor %s" % (span, floor)}
 
 
+def show_outcome(seen_end, elapsed, budget, will_cap, slack=0.25):
+    """THE FOUR THINGS A SHOW-PLAY CAN BE, as a pure function so the labels can
+    be tested both ways without an application.
+
+      ended         `ScriptMgr: script end` was seen.  The show finished.
+      CAPPED        it did not, its deadline arrived, and the MODEL had said
+                    the show is longer than the cap.  By design; not a finding.
+      SHOW-TIMEOUT  it did not, its deadline arrived, and the model had NOT
+                    said so - the show overran its own modelled duration plus
+                    the grace.  F95's meaning, and a FINDING.
+      INTERRUPTED   it did not and the deadline had NOT arrived: the RUN ended
+                    under it (stop file, terminal flag, or T+H mid-playlist).
+                    Neither label that means something about the show may be
+                    applied here - the DEATH control produced exactly this case
+                    and the first implementation called it CAPPED."""
+    if seen_end:
+        return "ended"
+    if elapsed < budget - slack:
+        return "INTERRUPTED"
+    return "CAPPED" if will_cap else "SHOW-TIMEOUT"
+
+
 def very_long_arm(prev, now, screensaver, locked_hint):
     """F2's SECOND arm, as `prediction.txt` words it: the vulkan log GAINS a
     `This frame stall is very long` in an UNLOCKED session.
@@ -1155,14 +1177,26 @@ class Driver:
             if seen_end:
                 break
             time.sleep(0.5)
-        wall = round(time.time() - t0, 1)
-        unfinished = not seen_end
-        capped = bool(unfinished and will_cap)
-        timed_out = unfinished and not capped
+        elapsed = time.time() - t0
+        wall = round(elapsed, 1)
+        # A show can also end because the RUN ended - the stop file, a terminal
+        # flag, or T+H arriving mid-playlist.  The DEATH control found this:
+        # `01.sts` was cut short at 47 s of a 60 s deadline by the `kill -9`
+        # and the first version labelled it CAPPED.  A show that never reached
+        # its deadline is INTERRUPTED, and neither of the two labels that mean
+        # something about the show itself may be applied to it - SHOW-TIMEOUT
+        # is a FINDING and a finding manufactured by the run's own end is
+        # exactly the kind of false positive this campaign must not produce.
+        outcome = show_outcome(seen_end, elapsed, budget, will_cap)
+        unfinished = outcome != "ended"
+        interrupted = outcome == "INTERRUPTED"
+        capped = outcome == "CAPPED"
+        timed_out = outcome == "SHOW-TIMEOUT"
         if unfinished:
             self.log("%s %s after %.1f s (deadline %.1f, own %.1f, expanded "
                      "%.1f, planned %.1f, %d pause(s) resumed, load seen %s)"
-                     % ("CAPPED" if capped else "SHOW-TIMEOUT", rel, wall,
+                     % ("INTERRUPTED" if interrupted else
+                        ("CAPPED" if capped else "SHOW-TIMEOUT"), rel, wall,
                         budget, own, expanded, planned, resumed, seen_load))
             with self.block:
                 # leave the engine in a known state for the next show
@@ -1174,9 +1208,8 @@ class Driver:
                 "deadline_s": round(budget, 1),
                 "declared_pauses": declared, "resumed": resumed,
                 "cmd_lines": cmd_lines, "seen_load": seen_load,
-                "outcome": "CAPPED" if capped else
-                           ("SHOW-TIMEOUT" if timed_out else "ended"),
-                "capped": capped, "timeout": timed_out}
+                "outcome": outcome, "capped": capped, "timeout": timed_out,
+                "interrupted": interrupted}
 
     def interlude(self, cycle):
         """select . read out . a dual dump at the PINNED clock . restore."""
@@ -1996,6 +2029,22 @@ def verb_selftest(a):
               "modelled+grace %s" % ("no cap at all (F95's default)", will_cap,
                                      deadline, "ok" if good else "MISMATCH"))
         ok &= good
+
+    print("\n(9b) THE FOUR OUTCOMES OF A SHOW-PLAY, each shown to be reachable")
+    ocases = [((True, 5.0, 65.0, False), "ended", "ended by itself"),
+              ((True, 61.0, 60.0, True), "ended",
+               "ended at the very cap - still `ended`"),
+              ((False, 60.0, 60.0, True), "CAPPED", "deadline, model said long"),
+              ((False, 65.0, 65.0, False), "SHOW-TIMEOUT",
+               "deadline, model did NOT say long -> a FINDING"),
+              ((False, 47.2, 60.0, True), "INTERRUPTED",
+               "the DEATH control's own case: killed at 47 s of a 60 s "
+               "deadline"),
+              ((False, 3.0, 65.0, False), "INTERRUPTED", "T+H arrived under it")]
+    for args, want, label in ocases:
+        got = show_outcome(*args)
+        print("    %-12s (want %-12s) %s" % (got, want, label))
+        ok &= (got == want)
 
     print("\n(10) THE AGGREGATE FROZEN DIGEST is per-file and order-free")
     m1 = {"/a": "11111111111111111111111111111111",

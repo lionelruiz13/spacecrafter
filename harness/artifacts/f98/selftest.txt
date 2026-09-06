@@ -57,6 +57,14 @@ F95 SELFTEST - the verdict functions, each shown BOTH ways
     exactly at the cap -> NOT capped       expanded    60.00  will_cap False (want False)  deadline  120.0 (want  120.0) ok
     no cap at all (F95's default)          cap=None -> will_cap False, deadline 1060.0 = F95's modelled+grace ok
 
+(9b) THE FOUR OUTCOMES OF A SHOW-PLAY, each shown to be reachable
+    ended        (want ended       ) ended by itself
+    ended        (want ended       ) ended at the very cap - still `ended`
+    CAPPED       (want CAPPED      ) deadline, model said long
+    SHOW-TIMEOUT (want SHOW-TIMEOUT) deadline, model did NOT say long -> a FINDING
+    INTERRUPTED  (want INTERRUPTED ) the DEATH control's own case: killed at 47 s of a 60 s deadline
+    INTERRUPTED  (want INTERRUPTED ) T+H arrived under it
+
 (10) THE AGGREGATE FROZEN DIGEST is per-file and order-free
     same files, other order -> True
     one file changed        -> True
