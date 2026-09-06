@@ -570,20 +570,16 @@ def catalogue(lang):
     return out
 
 
-def show_own_duration(path):
-    """The show's own wait total, parsed from the file - mechanical, not recalled."""
-    total, pauses, lines = 0.0, 0, 0
-    for line in Path(path).read_text(encoding="latin-1").splitlines():
-        s = line.strip()
-        if not s or s.startswith("#"):
-            continue
-        lines += 1
-        m = re.match(r"^wait\s+duration\s+([0-9.]+)", s)
-        if m:
-            total += float(m.group(1))
-        if re.match(r"^script\s+action\s+pause\b", s):
-            pauses += 1
-    return round(total, 2), pauses, lines
+# THE DURATION MODEL LIVES IN ONE PLACE (F98, Sec.11.218).  This file used to
+# carry the parser and `f95_soak.py` carried a copy of it, and BOTH were blind
+# to `struct loop` - which is what made one show SHOW-TIMEOUT on every cycle of
+# both F95 legs (Sec.11.215(k)(2)).  `sts_duration.show_own_duration` returns
+# exactly what the deleted copy returned - the UNEXPANDED triple - so this
+# suite's recorded baseline cannot move by the refactor; measured over all 145
+# `.sts` either instrument reads, 0 differences
+# (`artifacts/f98/model_equality.{py,txt}`).  `sts_duration.parse` is the
+# loop-aware reading, for a caller that turns the number into a timeout.
+from sts_duration import show_own_duration                 # noqa: E402
 
 
 ANSI = re.compile(r"\x1b\[[0-9;]*m")

@@ -1,0 +1,18 @@
+files compared: 145   DIFFERENCES: 0
+
+the shows whose LOOP-EXPANDED duration differs from the unexpanded one
+(i.e. exactly what the two blind copies could not see):
+  show                              own s     expanded s  loops                    breaks
+  fscripts/panorama0.sts             0.70      100000.60  [1000000]                1
+  fscripts/panorama5.sts             0.40        1440.00  [3600]                   0
+  fscripts/S03old.sts               10.13         530.00  [4000]                   0
+  fscripts/15.sts                    0.10         360.00  [3600]                   0
+  custom/diaporama.sts               3.10         310.00  [100]                    0
+  fscripts/05.sts                    4.50         135.95  [240, 240, 240, 240, 240] 0
+  fscripts/S11.sts                   6.60         106.50  [1000]                   1
+  fscripts/04.sts                   24.80          41.00  [10]                     0
+
+NEGATIVE CONTROL - the comparison CAN fail: a deliberately mutated
+expectation on one file, to show the loop above is not vacuous:
+  diaporama.sts own triple (3.1, 1, 153) ; mutated expectation (0.0, 0, 0) -> DIFFER
+  diaporama.sts loop-expanded: {'own': 3.1, 'expanded': 310.0, 'pauses': 1, 'pauses_expanded': 100, 'lines': 153, 'loops': [100], 'max_depth': 1, 'breaks': 0, 'unclosed': 0, 'stray_ends': 0}

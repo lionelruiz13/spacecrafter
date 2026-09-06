@@ -1,0 +1,159 @@
+==============================================================================
+F95 - THE MULTI-HOUR SOAK: FAIL CRITERIA, THE LEAK RULE, AND WHAT IS ONLY
+RECORDED.  Committed BEFORE the first launch.
+==============================================================================
+
+THE FOUR FAIL FLAGS.  Each names the NUMBER that fires it, so each can fail.
+
+  F1 DEATH   the application's pid is gone before T+H and before the driver
+             sent `shutdown action now`.  Observable: `/proc/<pid>` and the
+             child's exit status, read by the sampler every S seconds.
+             TERMINAL: the driver stops, records, and writes its verdict.
+             CONTROL: `kill -9` the app during a `wait` -> F1 within one
+             sample.
+
+  F2 HANG    the round trip of `get status position` exceeds 45.0 s (F19's
+             bound, Sec.5.59: every "HUNG" in the B7 record is "no exit in
+             45 s"), OR the farm's vulkan log gains `This frame stall is very
+             long` (fps.cpp:159, twenty consecutive same-frame ticks) while
+             the session is UNLOCKED.  The lock state is read beside every
+             sample precisely so a 1 Hz screen-lock throttle (F67) is
+             ATTRIBUTED and never counted as the application's fault.
+             NOT terminal: the driver keeps running so a recovery is visible.
+             CONTROL: `kill -STOP` for 60 s -> F2; `kill -CONT` -> a recovered
+             sample.
+
+  F3 QUIT    at the end: exit code != 0, OR wall-from-`shutdown action now`-to
+             -exit > 45.0 s, OR a teardown fault line in the process's own
+             stream (`terminate called`, `Segmentation fault`, `double free`,
+             `Assertion`, `core dumped`, `munmap_chunk`, `free(): `,
+             `stack smashing`).  A non-exit is Sec.5.59/A40's class and is
+             recorded WITH the kill that had to follow it, never masked.
+
+  F4 FROZEN FILE MOVED   any md5 of the eleven real-HOME files (config.ini,
+             ssystem.ini, the eight played shows, startup.sts) differs from
+             the value recorded before the launch.  Sampled every 20 samples
+             and at the end.  TERMINAL: the boundary is the task's, and
+             continuing would write more.
+
+THE LEAK RULE (sign-based; the magnitude is recorded either way).
+
+  VmRSS is read at every CYCLE BOUNDARY, immediately after the interlude - the
+  same playlist point every time, which is the only thing that makes two
+  readings comparable.  Over the boundaries of cycle 2 to the last COMPLETE
+  cycle:
+
+      strictly increasing at every step  ==>  LEAK
+          reported as MB/cycle and MB/h, with the whole series.
+      otherwise                          ==>  NO LEAK BY THIS RULE
+          and the report states the largest swing between two consecutive
+          boundaries as the FLOOR, and last-vs-first against that floor.  A
+          rise smaller than the floor is not evidence of anything.
+
+  Cycle 1 is excluded by construction: it carries first-touch allocation, lazy
+  texture upload and the first pass through every show, so it is not the same
+  state as any later cycle.  A partial final cycle is excluded from the series
+  for the same reason - it is not the same playlist point - and is recorded.
+
+RECORDED, NEVER GATING (a number with no threshold is still evidence):
+
+  - `Frame stall detected` and `This frame stall is very long` counts per
+    hour, WITH the screensaver GetActive and logind LockedHint reading beside
+    them.  BASELINE HANDED IN: on this binary the F90 smoke suite logged 2
+    stalls per ~92 s launch tonight where its 2026-09-05 runs logged 0.  This
+    campaign records the rate; it does not gate on it and does not chase it.
+  - the per-cycle WALL time and its slope (a show slowing cycle after cycle).
+  - log growth in bytes/hour on BOTH the script log (Sec.5.115's uncapped,
+    keepHistory=true channel) and the app log - which prices the eight-launch
+    retention window the tester chose at R20.
+  - the GPU MiB trend per pid (`nvidia-smi --query-compute-apps`).
+  - VmSize, thread count and open-fd count.
+  - THE DUMP DIFF ACROSS CYCLES at the pinned simulation clock J0 =
+    2460000.5 - the Sec.5.62 instrument.  EXPECTED BYTE-IDENTICAL (named here,
+    before cycle 2, because a set named afterwards is not a prediction):
+
+        the set of body names in the dump;
+        for every body, `old.ecl` and `new.ecl` (position relative to the
+            parent) and `old.rotLocalToParent`,
+            `old.rotLocalToParentUnprecessed`, `old.matLocalToParent`;
+        `old.parent`, `new.parent`, `new.bodyType`, `new.primary`;
+        the header's `jd` (pinned by the interlude itself), `timeSpeed`,
+            `timePaused`.
+
+    Every one of those is a pure function of the simulation date and the
+    loaded data, so at a pinned J0 it cannot legitimately move.  EXPECTED TO
+    MOVE, and therefore excluded: everything observer- or view-dependent -
+    `old.mat`/`eye`/`dist`/`screen`/`screenSz`/`visible`/`axisRot`,
+    `new.mat`/`dist`/`screen`/`attitude`/`surfaceLocked`, `altaz_old`,
+    `altaz_new`, and the header's `camera`, `helioToEye`, `oldLocalVision`,
+    `oldView`, `anchors`, `ramp`, `control`, `bigTextures`, `gates` - the
+    eight shows are image overlays and do not move the camera, but nothing in
+    this instrument depends on that and it is not asserted.
+
+    ANY difference inside the expected-constant set is reported WITH ITS
+    VALUES against Sec.5.62.  Zero differences is the prediction.
+
+WHAT THIS INSTRUMENT CANNOT SEE, stated here so a green is not over-read: it
+reads no pixel, so B30's frozen-scene micro-instability is outside it; it plays
+image-overlay shows, so it exercises the media path and the script engine but
+not body authoring; and one quit cannot see an intermittent shutdown fault -
+that is the ten-cycle secondary arm, run or owed.
+==============================================================================
+
+==============================================================================
+THE RUN'S PARAMETERS (F98 generalisation; F95's defaults are the
+no-argument case, and the criteria above are the same string in the
+same place for both - `criteria_sha` proves it).
+==============================================================================
+  playlist directories : basis, custom, deepsky
+  never played         : startup.sts (the app plays it at launch itself)
+  not played this run  : fscripts, internal, navigation, planets, shows
+  per-show CAP         : none (F95's behaviour)
+  show grace           : 60 s (SHOW-TIMEOUT = modelled + grace)
+  farm root default    : /home/claude/sc-f95
+
+  THREE SENTENCES IN THE CRITERIA ABOVE DESCRIBE F95's PLAYLIST AND NOT
+  NECESSARILY THIS ONE - re-stated here rather than edited there, because that
+  string is the committed criterion of a delivered campaign and its md5 is
+  recorded in F95's own `config.json`:
+    - "the eight shows are image overlays and do not move the camera": the
+      `fscripts/` corpus DOES move the camera, authors bodies and plays media.
+      Nothing in the instrument depended on that sentence and nothing asserts
+      it; the expected-constant set is observer-INdependent by construction.
+    - "it exercises the media path and the script engine but not body
+      authoring": on `--playlist-dir fscripts` it exercises body authoring -
+      706 uncommented `body action load` lines in 7 shows - which is the whole
+      reason this second run exists (Sec.11.215(m)).
+    - the handed-in stall baseline ("2 per ~92 s launch") was a two-run sample
+      (Sec.11.215(a)); the rate is recorded here too and gates nothing.
+
+THE DURATION MODEL, EVERY SHOW (`sts_duration.parse`, ONE home):
+  show                               own s    expand s  pauses pausesX  lines    loads verdict
+  basis/artificial_satellites.sts     12.50       12.50       3       3     28          
+  basis/moon_phases.sts              21.00       21.00       7       7     38          
+  basis/moon_reliefs.sts             23.00       23.00       8       8     67          
+  basis/zodiacal_light.sts            5.50        5.50       1       1      8          
+  custom/diaporama.sts                3.10      310.00       1     100    153          
+  deepsky/crux_flag.sts               6.00        6.00       1       1     11          
+  deepsky/hr_diagram.sts              6.00        6.00       1       1     11          
+  deepsky/subaru.sts                  6.00        6.00       1       1     11          
+  TOTAL                              83.10      390.00   (8 shows, 0 capped)
+
+PREDICTED WALL TIME OF ONE COMPLETE CYCLE (committed before the launch):
+  play 390.0 s + per-show overhead 14.4 s (8 x 1.8) + interlude 35.0 s
+  = BASE 439.4 s = 7.3 min, PLUS 60 s for every show that neither
+    ends nor is capped (K, the model's blind term)
+  => K=0: 7.3 min | K=5: 12.3 min | K=10: 17.3 min | K=20: 27.3 min
+
+FROZEN REAL-HOME FILES asserted md5 in == out (11), aggregate digest 41d2b2cb
+    03fbee59  /home/claude/.spacecrafter/config.ini
+    545a51ef  /home/claude/.spacecrafter/ssystem.ini
+    cea83254  /home/claude/.spacecrafter/scripts/fscripts/startup.sts
+    3bf842b7  /home/claude/.spacecrafter/scripts/basis/artificial_satellites.sts
+    fa6b769f  /home/claude/.spacecrafter/scripts/basis/moon_phases.sts
+    9241334a  /home/claude/.spacecrafter/scripts/basis/moon_reliefs.sts
+    61f95b82  /home/claude/.spacecrafter/scripts/basis/zodiacal_light.sts
+    67b8d551  /home/claude/.spacecrafter/scripts/custom/diaporama.sts
+    78e1e87f  /home/claude/.spacecrafter/scripts/deepsky/crux_flag.sts
+    0f8bee63  /home/claude/.spacecrafter/scripts/deepsky/hr_diagram.sts
+    dde9a2f7  /home/claude/.spacecrafter/scripts/deepsky/subaru.sts

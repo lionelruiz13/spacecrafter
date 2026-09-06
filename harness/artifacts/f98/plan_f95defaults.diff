@@ -1,0 +1,66 @@
+--- artifacts/f98/plan_f95defaults_before.txt	2026-09-06 13:06:59.327194145 +0200
++++ artifacts/f98/plan_f95defaults_after.txt	2026-09-06 13:06:59.327639666 +0200
+@@ -100,19 +100,52 @@
+ that is the ten-cycle secondary arm, run or owed.
+ ==============================================================================
+ 
+-PLAYLIST (mechanical, from ~/.spacecrafter/scripts):
+-    basis/artificial_satellites.sts           12.5 s authored waits   3 pause(s)   28 command lines
+-    basis/moon_phases.sts                     21.0 s authored waits   7 pause(s)   38 command lines
+-    basis/moon_reliefs.sts                    23.0 s authored waits   8 pause(s)   67 command lines
+-    basis/zodiacal_light.sts                   5.5 s authored waits   1 pause(s)    8 command lines
+-    custom/diaporama.sts                       3.1 s authored waits   1 pause(s)  153 command lines
+-    deepsky/crux_flag.sts                      6.0 s authored waits   1 pause(s)   11 command lines
+-    deepsky/hr_diagram.sts                     6.0 s authored waits   1 pause(s)   11 command lines
+-    deepsky/subaru.sts                         6.0 s authored waits   1 pause(s)   11 command lines
++==============================================================================
++THE RUN'S PARAMETERS (F98 generalisation; F95's defaults are the
++no-argument case, and the criteria above are the same string in the
++same place for both - `criteria_sha` proves it).
++==============================================================================
++  playlist directories : basis, custom, deepsky
++  never played         : startup.sts (the app plays it at launch itself)
++  not played this run  : fscripts, internal, navigation, planets, shows
++  per-show CAP         : none (F95's behaviour)
++  show grace           : 60 s (SHOW-TIMEOUT = modelled + grace)
++  farm root default    : /home/claude/sc-f95
++
++  THREE SENTENCES IN THE CRITERIA ABOVE DESCRIBE F95's PLAYLIST AND NOT
++  NECESSARILY THIS ONE - re-stated here rather than edited there, because that
++  string is the committed criterion of a delivered campaign and its md5 is
++  recorded in F95's own `config.json`:
++    - "the eight shows are image overlays and do not move the camera": the
++      `fscripts/` corpus DOES move the camera, authors bodies and plays media.
++      Nothing in the instrument depended on that sentence and nothing asserts
++      it; the expected-constant set is observer-INdependent by construction.
++    - "it exercises the media path and the script engine but not body
++      authoring": on `--playlist-dir fscripts` it exercises body authoring -
++      706 uncommented `body action load` lines in 7 shows - which is the whole
++      reason this second run exists (Sec.11.215(m)).
++    - the handed-in stall baseline ("2 per ~92 s launch") was a two-run sample
++      (Sec.11.215(a)); the rate is recorded here too and gates nothing.
++
++THE DURATION MODEL, EVERY SHOW (`sts_duration.parse`, ONE home):
++  show                               own s    expand s  pauses pausesX  lines    loads verdict
++  basis/artificial_satellites.sts     12.50       12.50       3       3     28          
++  basis/moon_phases.sts              21.00       21.00       7       7     38          
++  basis/moon_reliefs.sts             23.00       23.00       8       8     67          
++  basis/zodiacal_light.sts            5.50        5.50       1       1      8          
++  custom/diaporama.sts                3.10      310.00       1     100    153          
++  deepsky/crux_flag.sts               6.00        6.00       1       1     11          
++  deepsky/hr_diagram.sts              6.00        6.00       1       1     11          
++  deepsky/subaru.sts                  6.00        6.00       1       1     11          
++  TOTAL                              83.10      390.00   (8 shows, 0 capped)
+ 
+-EXCLUDED: scripts/fscripts (137 .sts) - they author bodies and run for minutes each
++PREDICTED WALL TIME OF ONE COMPLETE CYCLE (committed before the launch):
++  play 390.0 s + per-show overhead 14.4 s (8 x 1.8) + interlude 35.0 s
++  = BASE 439.4 s = 7.3 min, PLUS 60 s for every show that neither
++    ends nor is capped (K, the model's blind term)
++  => K=0: 7.3 min | K=5: 12.3 min | K=10: 17.3 min | K=20: 27.3 min
+ 
+-FROZEN REAL-HOME FILES asserted md5 in == out (11):
++FROZEN REAL-HOME FILES asserted md5 in == out (11), aggregate digest 41d2b2cb
+     03fbee59  /home/claude/.spacecrafter/config.ini
+     545a51ef  /home/claude/.spacecrafter/ssystem.ini
+     cea83254  /home/claude/.spacecrafter/scripts/fscripts/startup.sts

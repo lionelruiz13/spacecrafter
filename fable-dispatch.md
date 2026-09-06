@@ -1123,7 +1123,16 @@ grep -c '3000' claude/INTENT/11.211.md claude/INTENT/11.215.md claude/DEPLOYMENT
 the control red; the ≥ 4 h soak with its samples, tables and verdicts; the quit measured;
 the four corrections; §11 entry + stub; map; README; trees clean; WIP cleared; baselines
 LAST.
-**WIP:**
+**WIP:** 2026-09-06 13:2x — CHECKPOINT 1 (no launch yet): gate 26/26 PASS + prose premises
+(display `:2` 2448x1332, canary `--no-scene` exit 0 `f56/canary/20260906-124809`, `/proc`
+clear, md5 `03fbee59`/`545a51ef`, detached-child probe alive across calls). Driver
+GENERALISED (`--playlist-dir`/`--root`/`--cap`), duration model one home
+`harness/sts_duration.py` (F90+F95 copies deleted; 145 files 0 differences,
+`artifacts/f98/model_equality.*`; F90 `--plan` byte-identical), `criteria_sha` `f5e0d602`
+= F95's leg-2 value, plan diff at F95's defaults committed, selftest PASS incl. the new
+loop/cap/digest cases, `artifacts/f98/prediction.txt` committed (cap 60 s + reasons +
+136-show model table + cycle prediction 25–40 min + P1–P9). NEXT: the live DEATH control
+on the fscripts farm, then a short shakedown leg, then the ≥ 4 h soak.
 
 ---
 

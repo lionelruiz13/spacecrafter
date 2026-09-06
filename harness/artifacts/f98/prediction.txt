@@ -1,0 +1,428 @@
+==============================================================================
+F98 - THE SECOND SOAK, OVER THE TESTER'S OWN `fscripts/` CORPUS.
+WHAT IS CHOSEN, WHAT IS PREDICTED, AND WHAT WOULD REFUTE IT.
+Written and committed BEFORE the first launch of this campaign.
+==============================================================================
+Executor: Claude Opus 5, task F98, 2026-09-06.  Code `master-beta @ 22499f04`
+(binary md5 `46849f69`) - NO code change in this task, none is authorised.
+Driver: `harness/f95_soak.py`, GENERALISED (not copied), plus the one-home
+duration model `harness/sts_duration.py`.
+
+------------------------------------------------------------------------------
+0. THE CRITERIA ARE F95's, UNCHANGED, AND THE PROOF IS MECHANICAL
+------------------------------------------------------------------------------
+The FAIL flags F1-F4 and the LEAK rule below are the same string in the same
+module as F95's.  `criteria_sha` (md5 of `CRITERIA`) is **f5e0d602** here, and
+`f5e0d602` is what F95's own leg-2 `config.json` recorded
+(`artifacts/f95/leg2/config.json.gz`).  A criterion rewritten for this corpus
+would move that digest; it did not move.
+
+------------------------------------------------------------------------------
+1. THE CAP: 60 s.  A DESIGN PARAMETER, AND WHY THIS VALUE
+------------------------------------------------------------------------------
+`fscripts/panorama0.sts` is `struct loop 1000000` around its body: 100 000.6 s
+modelled, i.e. INFINITE BY DESIGN.  No run can wait for it, so a per-show cap
+is not a workaround - it is the parameter that makes an unbounded corpus
+playable.  60 s because:
+
+  (a) it leaves 123 of the 136 shows UNCAPPED - every show whose modelled
+      duration is under a minute plays to its own authored end;
+  (b) all SEVEN body-authoring shows model at <= 8.25 s (`14.sts` 6.79,
+      `06old.sts` 0.00, `S10` 8.25, `S09` 7.40, `S12old` 7.25, `S05` 0.03,
+      `S13` 0.00), so the corpus's authoring - the reason this soak exists -
+      is NEVER truncated by the cap at this value or anywhere near it;
+  (c) it is the same number as F95's grace, so a capped show's deadline is
+      exactly 2x one constant and no new magic number enters the driver;
+  (d) the modelled play sum is then 1237.5 s = 20.6 min, which leaves room for
+      >= 6 complete cycles in 4 hours - the LEAK rule needs at least four
+      complete cycle boundaries to say anything but INCONCLUSIVE.
+
+CAPPED vs SHOW-TIMEOUT, decided by the model BEFORE the run and never after:
+  CAPPED        modelled (loop-expanded) duration > cap.  The driver ends the
+                show with `script action end` AT the cap.  By design; NOT a
+                finding.  Predicted set, exactly these 13 and no others:
+                01, 02, 05, 07nosphere, 07old, 08, 12, 15, S03old, S11, W18,
+                panorama0, panorama5.
+  SHOW-TIMEOUT  the show did not signal `ScriptMgr: script end` within its OWN
+                modelled duration + 60 s grace.  F95's meaning, unchanged.  A
+                FINDING - and the first thing it can be a finding ABOUT is the
+                model, whose blind spots are enumerated in `sts_duration`:
+                `moveto/zoom/look_at ... duration`, audio, media upload and
+                `body action load` batches all take time no `wait duration`
+                line declares.  89 of the 136 shows model at 0.00 s.
+
+------------------------------------------------------------------------------
+2. THE PREDICTIONS.  EACH ONE CAN BE WRONG, AND THE WRONG ONES WILL BE
+   RECORDED AS WRONG RATHER THAN ADJUSTED
+------------------------------------------------------------------------------
+P1  CYCLE WALL TIME.  Base = play 1237.5 s + per-show overhead 244.8 s
+    (136 x 1.8 s) + interlude 35 s = 1517 s = 25.3 min, PLUS 60 s per
+    SHOW-TIMEOUT (K).  PREDICTED: K <= 15, cycle wall 25-40 min.
+    REFUTED IF: a complete cycle exceeds 45 min, or K > 15.
+P2  CYCLES AND SAMPLES at H = 4.0 h, S = 30 s: >= 480 sample rows and
+    6-9 complete cycles.  REFUTED IF fewer than 4 complete cycles - which
+    would leave the LEAK verdict INCONCLUSIVE by its own rule.
+P3  THE FAIL FLAGS: F1 DEATH none, F2 HANG none, F3 QUIT exit 0 within 45 s
+    with no teardown fault line, F4 FROZEN FILE none.  This is the F95 result
+    carried onto a heavier corpus; the corpus is what could refute it.
+P4  THE LEAK RULE: NO LEAK BY THIS RULE, with a warm-up phase in the series.
+    This corpus loads far more media than F95's eight shows, so the warm-up is
+    predicted LONGER (more cycles) and the plateau may not be reached inside
+    4 h.  If the series IS strictly increasing at every step from cycle 2, the
+    rule says LEAK and this delivery says LEAK, with the series.
+P5  THE PINNED-CLOCK DUMP DIFF (Sec.5.62's instrument, unchanged): ZERO
+    differences inside the expected-constant set from cycle 2 on - EXCEPT that
+    this corpus AUTHORS AND CLEARS BODIES, so the body-NAME set is no longer a
+    pure function of the date.  If a cycle's dump carries a body another
+    cycle's does not, the first thing to check is which show authored it and
+    whether a `body action clear` ran before the boundary; that is a corpus
+    fact, not Sec.5.62's class.  Sec.5.84's four movers (Ananke, Neried,
+    Setebos, Sycorax, OLD half only) are predicted to reappear here.
+P6  THE AUTHORING INSTRUMENT.
+    P6a AT THE CYCLE BOUNDARY the counts return to the shipped base (F95
+        measured 120 bodies in these dumps) and the three probes are ABSENT
+        from BOTH halves - because the LAST show of the playlist,
+        `panorama5old2.sts`, issues `body action clear`, which reaches
+        `removeSupplementalBodies` and drops every deleteable body in BOTH
+        trees [observed: core.cpp:1020-1029, protosystem.cpp:204-227].
+    P6b AFTER `06old.sts` (the snapshot taken where the bodies are supposed to
+        exist): bodies_old and bodies_new both up by ~170, and `ALSAT 1`
+        present on BOTH halves.  `body action load` reaches both paths
+        (Sec.11.211(h): `Core::addSolarSystemBody` -> `SSystemFactory::addBody`).
+    P6c AFTER `14.sts`: 528 loads, but most carry `mode in_galaxy` and a
+        `Star_*` filename, and it is NOT known here whether an in-galaxy body
+        appears in the solar-system dual dump at all.  BOTH outcomes are
+        informative and neither is a defect claim; this is the uncertain half
+        and it is named as uncertain before the run.
+    P6d THE FALSE-SUCCESS WATCH (Sec.5.137's class, the reason this soak was
+        asked for): IF a probe is absent from both dump halves while `search
+        name <X>` and `get status object` still answer for it, that is
+        Sec.5.137's shape reached through `body action clear` instead of `body
+        action reload` - the corpus has SIX `body action clear` shows and ZERO
+        `body action reload`.  It would be RECORDED as a Sec.5 candidate for
+        the row's holder, and NOTHING would be fixed here.
+        Sec.5.139 (minted today) says the readout can also be stale for a
+        different reason - a body outside the view cone keeps a frozen
+        eye-frame position - so THE DUMP HALVES ARE THE AUTHORITY and the
+        readout is evidence only about what the control surface claims.
+P7  THE BOUNDARY: 139 real-HOME md5s identical in and out (config.ini,
+    ssystem.ini and all 137 `.sts`), aggregate digest of the 137 `.sts`
+    = `3995e501` - the number the dispatch measured with
+    `md5sum ... | cut -c1-32 | LC_ALL=C sort | md5sum`, reproduced in-process
+    by the driver's own `frozen_digest`.  Never a concatenation digest: `cat
+    $(ls *.sts)` and `cat *.sts` over these same files hash differently under
+    `fr_FR.UTF-8`.
+P8  THE FARM's OWN `.sts` COPIES: `ScriptAnnotator::flush` rewrites the file it
+    played when a line earns a `#!` diagnostic.  F95 measured 0 of 8 rewritten.
+    Over 136 shows of a hand-written corpus I predict SOME rewrites (>= 1), and
+    every one of them is a datum about the corpus, never a fault of the
+    application - and it is why every played `.sts` is a COPY.
+P9  `Frame stall detected`: recorded, never gating.  F95 measured ~76-84/h on
+    the eight-show playlist; this corpus draws far more, so the rate is
+    predicted HIGHER.  No threshold, no chase.
+
+------------------------------------------------------------------------------
+3. WHAT THIS RUN STILL CANNOT SEE
+------------------------------------------------------------------------------
+No pixel is read (B30 stays outside).  `body action reload` - Sec.5.137's own
+trigger - is in ZERO shows of this corpus, so the row's exact command is still
+not exercised by a soak; what IS exercised is the sibling `body action clear`.
+One quit is not an intermittent class.  And the model is static: it cannot see
+a `struct if` skipping a wait inside a loop (upper bound) or a `struct loop
+break` (early exit).
+
+==============================================================================
+BELOW: the driver's own `plan` output at this run's parameters - the criteria
+verbatim, the parameter echo, THE MODEL'S TABLE FOR ALL 136 SHOWS, the cycle
+prediction, the authoring probes and the frozen set.  Produced by
+    ./f95_soak.py plan --playlist-dir fscripts --cap 60
+==============================================================================
+==============================================================================
+F95 - THE MULTI-HOUR SOAK: FAIL CRITERIA, THE LEAK RULE, AND WHAT IS ONLY
+RECORDED.  Committed BEFORE the first launch.
+==============================================================================
+
+THE FOUR FAIL FLAGS.  Each names the NUMBER that fires it, so each can fail.
+
+  F1 DEATH   the application's pid is gone before T+H and before the driver
+             sent `shutdown action now`.  Observable: `/proc/<pid>` and the
+             child's exit status, read by the sampler every S seconds.
+             TERMINAL: the driver stops, records, and writes its verdict.
+             CONTROL: `kill -9` the app during a `wait` -> F1 within one
+             sample.
+
+  F2 HANG    the round trip of `get status position` exceeds 45.0 s (F19's
+             bound, Sec.5.59: every "HUNG" in the B7 record is "no exit in
+             45 s"), OR the farm's vulkan log gains `This frame stall is very
+             long` (fps.cpp:159, twenty consecutive same-frame ticks) while
+             the session is UNLOCKED.  The lock state is read beside every
+             sample precisely so a 1 Hz screen-lock throttle (F67) is
+             ATTRIBUTED and never counted as the application's fault.
+             NOT terminal: the driver keeps running so a recovery is visible.
+             CONTROL: `kill -STOP` for 60 s -> F2; `kill -CONT` -> a recovered
+             sample.
+
+  F3 QUIT    at the end: exit code != 0, OR wall-from-`shutdown action now`-to
+             -exit > 45.0 s, OR a teardown fault line in the process's own
+             stream (`terminate called`, `Segmentation fault`, `double free`,
+             `Assertion`, `core dumped`, `munmap_chunk`, `free(): `,
+             `stack smashing`).  A non-exit is Sec.5.59/A40's class and is
+             recorded WITH the kill that had to follow it, never masked.
+
+  F4 FROZEN FILE MOVED   any md5 of the eleven real-HOME files (config.ini,
+             ssystem.ini, the eight played shows, startup.sts) differs from
+             the value recorded before the launch.  Sampled every 20 samples
+             and at the end.  TERMINAL: the boundary is the task's, and
+             continuing would write more.
+
+THE LEAK RULE (sign-based; the magnitude is recorded either way).
+
+  VmRSS is read at every CYCLE BOUNDARY, immediately after the interlude - the
+  same playlist point every time, which is the only thing that makes two
+  readings comparable.  Over the boundaries of cycle 2 to the last COMPLETE
+  cycle:
+
+      strictly increasing at every step  ==>  LEAK
+          reported as MB/cycle and MB/h, with the whole series.
+      otherwise                          ==>  NO LEAK BY THIS RULE
+          and the report states the largest swing between two consecutive
+          boundaries as the FLOOR, and last-vs-first against that floor.  A
+          rise smaller than the floor is not evidence of anything.
+
+  Cycle 1 is excluded by construction: it carries first-touch allocation, lazy
+  texture upload and the first pass through every show, so it is not the same
+  state as any later cycle.  A partial final cycle is excluded from the series
+  for the same reason - it is not the same playlist point - and is recorded.
+
+RECORDED, NEVER GATING (a number with no threshold is still evidence):
+
+  - `Frame stall detected` and `This frame stall is very long` counts per
+    hour, WITH the screensaver GetActive and logind LockedHint reading beside
+    them.  BASELINE HANDED IN: on this binary the F90 smoke suite logged 2
+    stalls per ~92 s launch tonight where its 2026-09-05 runs logged 0.  This
+    campaign records the rate; it does not gate on it and does not chase it.
+  - the per-cycle WALL time and its slope (a show slowing cycle after cycle).
+  - log growth in bytes/hour on BOTH the script log (Sec.5.115's uncapped,
+    keepHistory=true channel) and the app log - which prices the eight-launch
+    retention window the tester chose at R20.
+  - the GPU MiB trend per pid (`nvidia-smi --query-compute-apps`).
+  - VmSize, thread count and open-fd count.
+  - THE DUMP DIFF ACROSS CYCLES at the pinned simulation clock J0 =
+    2460000.5 - the Sec.5.62 instrument.  EXPECTED BYTE-IDENTICAL (named here,
+    before cycle 2, because a set named afterwards is not a prediction):
+
+        the set of body names in the dump;
+        for every body, `old.ecl` and `new.ecl` (position relative to the
+            parent) and `old.rotLocalToParent`,
+            `old.rotLocalToParentUnprecessed`, `old.matLocalToParent`;
+        `old.parent`, `new.parent`, `new.bodyType`, `new.primary`;
+        the header's `jd` (pinned by the interlude itself), `timeSpeed`,
+            `timePaused`.
+
+    Every one of those is a pure function of the simulation date and the
+    loaded data, so at a pinned J0 it cannot legitimately move.  EXPECTED TO
+    MOVE, and therefore excluded: everything observer- or view-dependent -
+    `old.mat`/`eye`/`dist`/`screen`/`screenSz`/`visible`/`axisRot`,
+    `new.mat`/`dist`/`screen`/`attitude`/`surfaceLocked`, `altaz_old`,
+    `altaz_new`, and the header's `camera`, `helioToEye`, `oldLocalVision`,
+    `oldView`, `anchors`, `ramp`, `control`, `bigTextures`, `gates` - the
+    eight shows are image overlays and do not move the camera, but nothing in
+    this instrument depends on that and it is not asserted.
+
+    ANY difference inside the expected-constant set is reported WITH ITS
+    VALUES against Sec.5.62.  Zero differences is the prediction.
+
+WHAT THIS INSTRUMENT CANNOT SEE, stated here so a green is not over-read: it
+reads no pixel, so B30's frozen-scene micro-instability is outside it; it plays
+image-overlay shows, so it exercises the media path and the script engine but
+not body authoring; and one quit cannot see an intermittent shutdown fault -
+that is the ten-cycle secondary arm, run or owed.
+==============================================================================
+
+==============================================================================
+THE RUN'S PARAMETERS (F98 generalisation; F95's defaults are the
+no-argument case, and the criteria above are the same string in the
+same place for both - `criteria_sha` proves it).
+==============================================================================
+  playlist directories : fscripts
+  never played         : startup.sts (the app plays it at launch itself)
+  not played this run  : basis, custom, deepsky, internal, navigation, planets, shows
+  per-show CAP         : 60 s
+  show grace           : 60 s (SHOW-TIMEOUT = modelled + grace)
+  farm root default    : /home/claude/sc-f95
+
+  THREE SENTENCES IN THE CRITERIA ABOVE DESCRIBE F95's PLAYLIST AND NOT
+  NECESSARILY THIS ONE - re-stated here rather than edited there, because that
+  string is the committed criterion of a delivered campaign and its md5 is
+  recorded in F95's own `config.json`:
+    - "the eight shows are image overlays and do not move the camera": the
+      `fscripts/` corpus DOES move the camera, authors bodies and plays media.
+      Nothing in the instrument depended on that sentence and nothing asserts
+      it; the expected-constant set is observer-INdependent by construction.
+    - "it exercises the media path and the script engine but not body
+      authoring": on `--playlist-dir fscripts` it exercises body authoring -
+      706 uncommented `body action load` lines in 7 shows - which is the whole
+      reason this second run exists (Sec.11.215(m)).
+    - the handed-in stall baseline ("2 per ~92 s launch") was a two-run sample
+      (Sec.11.215(a)); the rate is recorded here too and gates nothing.
+
+THE DURATION MODEL, EVERY SHOW (`sts_duration.parse`, ONE home):
+  show                               own s    expand s  pauses pausesX  lines    loads verdict
+  fscripts/01.sts                   101.00      101.00       4       4    226          CAPPED at 60 s
+  fscripts/02.sts                    66.00       66.00       2       2     21          CAPPED at 60 s
+  fscripts/03.sts                    51.45       51.45      11      11    433          
+  fscripts/04.sts                    24.80       41.00       3       3     55          
+  fscripts/05.sts                     4.50      135.95      15      15    237          CAPPED at 60 s
+  fscripts/06.sts                     0.00        0.00       0       0   1013          
+  fscripts/06old.sts                  0.00        0.00       0       0    172      170 
+  fscripts/07.sts                     0.00        0.00       0       0      5          
+  fscripts/07g.sts                    4.20        4.20       0       0    102          
+  fscripts/07isc.sts                  4.20        4.20       0       0    104          
+  fscripts/07nosphere.sts            97.60       97.60      12      12    439          CAPPED at 60 s
+  fscripts/07old.sts                 97.60       97.60      12      12    442          CAPPED at 60 s
+  fscripts/08.sts                   186.00      186.00      21      21    145          CAPPED at 60 s
+  fscripts/09.sts                     7.50        7.50       2       2     31          
+  fscripts/10.sts                     0.00        0.00       0       0    574          
+  fscripts/11.sts                    54.00       54.00       1       1     33          
+  fscripts/12.sts                    65.50       65.50       7       7    136          CAPPED at 60 s
+  fscripts/13.sts                    60.00       60.00       2       2     78          
+  fscripts/14.sts                     6.79        6.79       0       0    563      528 
+  fscripts/15.sts                     0.10      360.00       0       0    212          CAPPED at 60 s
+  fscripts/16.sts                    12.00       12.00       2       2     26          
+  fscripts/17.sts                    12.00       12.00       2       2     25          
+  fscripts/18.sts                    42.00       42.00      19      19    112          
+  fscripts/F01.sts                    0.00        0.00       0       0      1          
+  fscripts/F02.sts                    0.00        0.00       0       0      1          
+  fscripts/F03.sts                    0.00        0.00       0       0      1          
+  fscripts/F04.sts                    0.00        0.00       0       0      1          
+  fscripts/F05.sts                    0.00        0.00       0       0      1          
+  fscripts/F06.sts                    0.00        0.00       0       0      1          
+  fscripts/F07.sts                    0.00        0.00       0       0      1          
+  fscripts/F08.sts                    0.00        0.00       0       0      1          
+  fscripts/F09.sts                    0.00        0.00       0       0      1          
+  fscripts/F10.sts                    0.00        0.00       0       0      1          
+  fscripts/F11.sts                    0.00        0.00       0       0      1          
+  fscripts/F12.sts                    0.00        0.00       0       0      1          
+  fscripts/F13.sts                    0.00        0.00       0       0      1          
+  fscripts/F14.sts                    0.00        0.00       0       0      1          
+  fscripts/F15.sts                    0.00        0.00       0       0      1          
+  fscripts/F16.sts                    0.00        0.00       0       0      1          
+  fscripts/F17.sts                    0.00        0.00       0       0      1          
+  fscripts/F18.sts                    0.00        0.00       0       0      1          
+  fscripts/F19.sts                    0.00        0.00       0       0      1          
+  fscripts/F20.sts                    0.00        0.00       0       0      1          
+  fscripts/F21.sts                    0.00        0.00       0       0      1          
+  fscripts/F22.sts                    0.00        0.00       0       0      1          
+  fscripts/F23.sts                    0.00        0.00       0       0      1          
+  fscripts/F24.sts                    0.00        0.00       0       0      1          
+  fscripts/K0.sts                     0.00        0.00       0       0     11          
+  fscripts/K1.sts                     0.00        0.00       0       0     10          
+  fscripts/K2.sts                     0.00        0.00       0       0      5          
+  fscripts/K3.sts                     1.00        1.00       0       0     16          
+  fscripts/K4.sts                     0.00        0.00       0       0     10          
+  fscripts/K5.sts                     0.00        0.00       0       0     10          
+  fscripts/K6.sts                     0.00        0.00       0       0     10          
+  fscripts/K7.sts                     0.00        0.00       0       0      7          
+  fscripts/K8.sts                     0.00        0.00       0       0     12          
+  fscripts/K9.sts                     3.60        3.60       0       0     37          
+  fscripts/M00.sts                    0.00        0.00       0       0      9          
+  fscripts/M01.sts                    0.00        0.00       0       0      8          
+  fscripts/M02.sts                    0.00        0.00       0       0      8          
+  fscripts/M03.sts                    0.00        0.00       0       0      8          
+  fscripts/M04.sts                    0.00        0.00       0       0      8          
+  fscripts/M05.sts                    0.00        0.00       0       0      8          
+  fscripts/M06.sts                    0.00        0.00       0       0      8          
+  fscripts/M07.sts                    0.00        0.00       0       0      8          
+  fscripts/M08.sts                    0.00        0.00       0       0      8          
+  fscripts/M09.sts                    0.00        0.00       0       0      8          
+  fscripts/M10.sts                    0.00        0.00       0       0      8          
+  fscripts/M11.sts                    0.00        0.00       0       0      8          
+  fscripts/M12.sts                    0.00        0.00       0       0      8          
+  fscripts/M13.sts                    0.00        0.00       0       0      8          
+  fscripts/M14.sts                    0.00        0.00       0       0      8          
+  fscripts/M15.sts                    0.00        0.00       0       0      8          
+  fscripts/M16.sts                    0.00        0.00       0       0      8          
+  fscripts/M17.sts                    0.00        0.00       0       0      8          
+  fscripts/M18.sts                    0.00        0.00       0       0      8          
+  fscripts/M19.sts                    0.00        0.00       0       0      8          
+  fscripts/M20.sts                    3.00        3.00       1       1     39          
+  fscripts/M21.sts                    0.00        0.00       0       0      8          
+  fscripts/S01.sts                    0.00        0.00       0       0      1          
+  fscripts/S02.sts                    0.40        0.40       0       0     20          
+  fscripts/S03.sts                    0.10        0.10       0       0      3          
+  fscripts/S03old.sts                10.13      530.00       0       0     81          CAPPED at 60 s
+  fscripts/S04.sts                    0.00        0.00       0       0      1          
+  fscripts/S05.sts                    0.03        0.03       0       0     15        2 
+  fscripts/S06.sts                   43.00       43.00       4       4    139          
+  fscripts/S07.sts                   36.40       36.40       0       0     23          
+  fscripts/S08.sts                    0.00        0.00       0       0      2          
+  fscripts/S09.sts                    7.40        7.40       0       0     32        2 
+  fscripts/S10.sts                    8.25        8.25       2       2     32        2 
+  fscripts/S11.sts                    6.60      106.50       0       0     26          CAPPED at 60 s [1 break: upper bound]
+  fscripts/S11a.sts                   3.00        3.00       0       0     22          
+  fscripts/S11b.sts                   8.50        8.50       0       0     25          
+  fscripts/S12.sts                    0.51        0.51       1       1     38          
+  fscripts/S12old.sts                 7.25        7.25       0       0     28        1 
+  fscripts/S13.sts                    0.00        0.00       0       0      6        1 
+  fscripts/S14.sts                    0.00        0.00       0       0    172          
+  fscripts/S15.sts                    0.00        0.00       0       0      2          
+  fscripts/SF01.sts                   0.00        0.00       0       0      1          
+  fscripts/SF02.sts                   0.00        0.00       0       0      1          
+  fscripts/SF03.sts                   0.00        0.00       0       0      1          
+  fscripts/SF04.sts                   0.00        0.00       0       0      1          
+  fscripts/SF05.sts                   0.00        0.00       0       0      1          
+  fscripts/SF06.sts                   0.00        0.00       0       0      1          
+  fscripts/SF07.sts                   0.00        0.00       0       0      1          
+  fscripts/SF08.sts                   0.00        0.00       0       0      1          
+  fscripts/SF09.sts                   0.00        0.00       0       0      1          
+  fscripts/SF10.sts                   0.00        0.00       0       0      1          
+  fscripts/SF11.sts                   0.00        0.00       0       0      1          
+  fscripts/SF12.sts                   0.00        0.00       0       0      1          
+  fscripts/W01.sts                    0.00        0.00       0       0      1          
+  fscripts/W02.sts                    0.00        0.00       0       0      1          
+  fscripts/W03.sts                    0.00        0.00       0       0      1          
+  fscripts/W04.sts                    0.00        0.00       0       0      1          
+  fscripts/W05.sts                    0.00        0.00       0       0      1          
+  fscripts/W06.sts                    0.00        0.00       0       0      1          
+  fscripts/W07.sts                    0.00        0.00       0       0      1          
+  fscripts/W08.sts                    0.00        0.00       0       0      1          
+  fscripts/W09.sts                    0.00        0.00       0       0      1          
+  fscripts/W10.sts                    0.00        0.00       0       0      1          
+  fscripts/W11.sts                    0.00        0.00       0       0      1          
+  fscripts/W12.sts                    0.00        0.00       0       0      1          
+  fscripts/W13.sts                    0.00        0.00       0       0      5          
+  fscripts/W14.sts                    4.00        4.00       0       0     97          
+  fscripts/W15.sts                    0.70        0.70       0       0     24          
+  fscripts/W16.sts                   28.80       28.80       0       0    314          
+  fscripts/W17.sts                    0.00        0.00       0       0      7          
+  fscripts/W18.sts                   85.60       85.60       6       6    969          CAPPED at 60 s
+  fscripts/panorama0.sts              0.70   100000.60       0       0    271          CAPPED at 60 s [1 break: upper bound]
+  fscripts/panorama1.sts              1.10        1.10       0       0     19          
+  fscripts/panorama2.sts              1.10        1.10       0       0     12          
+  fscripts/panorama3.sts              1.10        1.10       0       0     18          
+  fscripts/panorama4.sts              1.10        1.10       0       0     19          
+  fscripts/panorama5.sts              0.40     1440.00       0       0     77          CAPPED at 60 s
+  fscripts/panorama5old.sts           1.00        1.00       0       0     16          
+  fscripts/panorama5old2.sts          1.00        1.00       0       0     16          
+  TOTAL                            1163.01   103729.83   (136 shows, 13 capped)
+
+PREDICTED WALL TIME OF ONE COMPLETE CYCLE (committed before the launch):
+  play 1237.5 s + per-show overhead 244.8 s (136 x 1.8) + interlude 35.0 s
+  = BASE 1517.3 s = 25.3 min, PLUS 60 s for every show that neither
+    ends nor is capped (K, the model's blind term)
+  => K=0: 25.3 min | K=5: 30.3 min | K=10: 35.3 min | K=20: 45.3 min
+
+BODY AUTHORING IN THIS PLAYLIST (uncommented `body action load`):
+  fscripts/14.sts                 528 load(s)  first Solsys             first Star_ Sol
+  fscripts/06old.sts              170 load(s)  first ALSAT 1            first Star_ -
+  fscripts/S05.sts                  2 load(s)  first iss                first Star_ -
+  fscripts/S09.sts                  2 load(s)  first Multiverse         first Star_ -
+  fscripts/S10.sts                  2 load(s)  first Spherical_grid     first Star_ -
+  fscripts/S12old.sts               1 load(s)  first Universe           first Star_ -
+  fscripts/S13.sts                  1 load(s)  first Magnetosphere      first Star_ -
+  probes armed at every cycle boundary: Solsys (fscripts/14.sts), Sol (fscripts/14.sts), ALSAT 1 (fscripts/06old.sts)
+
+FROZEN REAL-HOME FILES asserted md5 in == out (139), aggregate digest a4b6ea4f
+    03fbee59  /home/claude/.spacecrafter/config.ini
+    545a51ef  /home/claude/.spacecrafter/ssystem.ini
+    ... and 137 .sts files, their own aggregate digest 3995e501

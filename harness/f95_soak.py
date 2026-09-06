@@ -1,12 +1,24 @@
 #!/usr/bin/env python3
-"""F95 - THE MULTI-HOUR SOAK UNDER SHOW LOAD (DEPLOYMENT-MAP T5.2).
+"""F95/F98 - THE MULTI-HOUR SOAK UNDER SHOW LOAD (DEPLOYMENT-MAP T5.2).
 
-    ./f95_soak.py plan                                  # the criteria, no launch
+    ./f95_soak.py plan   [--playlist-dir D]... [--cap S]  # criteria+model, no launch
     ./f95_soak.py selftest                              # the verdict functions, both ways
     ./f95_soak.py start  <absOutdir> [--hours H] [--sample S] [--bin B]
+                         [--playlist-dir D]... [--root R] [--cap S]
     ./f95_soak.py status <absOutdir>                    # instant, foreground
     ./f95_soak.py wait   <absOutdir> <sec<=540>         # the executor's poll unit
     ./f95_soak.py stop   <absOutdir>                    # ask the driver to end now
+
+F98 GENERALISED THIS DRIVER RATHER THAN COPYING IT (I2).  The second soak runs
+the tester's own `fscripts/` corpus - 136 shows that AUTHOR BODIES, which is
+the load F95 could not put on the engine (Sec.11.215(m)) - and the only things
+that differ are parameters: WHICH script directories are the playlist
+(`--playlist-dir`, default F95's three), WHERE the farm lives (`--root`,
+default F95's) and whether a show may be cut short (`--cap`, default none =
+F95's behaviour exactly).  `startup.sts` is never a playlist member on either
+run.  The FAIL criteria and the LEAK rule are the same string in the same
+place, so `criteria_sha` in `config.json` is identical for an F95 run and an
+F98 run - which is the mechanical form of "the criteria did not change".
 
 WHAT THIS IS.  ONE launch of the application on a private farm, in the field's
 own French locale, with the eight shipped shows of `basis/` + `custom/` +
@@ -67,13 +79,18 @@ THE FARM - F90's shape, widened to three script directories
 `f55_farm.sh` makes `scripts/` and `scripts/fscripts/` real and leaves
 `scripts/basis/` a SYMLINK to the owner's directory, and it deliberately does
 NOT copy `startup.sts` (F94's gotcha - the app plays that one at launch with
-the annotator armed).  This driver plays EIGHT shipped shows in THREE
-directories, so all three are rebuilt real, every played `.sts` is a COPY, the
-asset sub-directories beside them stay symlinks (they are only read), and
-`startup.sts` is copied.  `sessions/` is rebuilt real because `session action
-save` writes there (`SessionFile.hpp:211`).  Fifteen farm-shape properties are
-asserted before the launch and `start` aborts if one fails; the real HOME's
-md5s are asserted in == out on eleven files.
+the annotator armed).  Every played directory is rebuilt real, every played
+`.sts` is a COPY, the asset sub-directories and media entries beside them stay
+symlinks (they are only read), and `startup.sts` is copied.  `sessions/` is
+rebuilt real because `session action save` writes there
+(`SessionFile.hpp:211`).  The farm-shape properties are asserted before the
+launch and `start` aborts if one fails; the real HOME's md5s are asserted in
+== out on every file of the frozen set - eleven at F95's defaults (config,
+ssystem, `startup.sts` and the eight played shows), 139 on the `fscripts/`
+corpus (config, ssystem and all 137 `.sts`).  The digest is PER FILE and never
+over a concatenation: `cat *.sts | md5sum` is locale-dependent, because `ls`
+and the shell glob collate differently under `fr_FR.UTF-8` (measured at F98's
+mint: `68c9b4ba` vs `e2123d2b` over the same 137 files).
 
 The texture cache is NOT isolated - `b3_farm.sh` symlinks it, which is a
 recorded property of this recipe (Sec.11.172(i)) and watched, not prevented, by
@@ -99,10 +116,13 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+from sts_duration import parse as show_model              # noqa: E402
+from sts_duration import show_own_duration                # noqa: E402,F401
+
 DEFAULT_BIN = HERE / ".." / ".." / "build-claude" / "src" / "spacecrafter"
 REAL_HOME = Path.home() / ".spacecrafter"
 PORT = 7805
-FARM_ROOT = Path("/home/claude/sc-f95")
+FARM_ROOT = Path("/home/claude/sc-f95")     # F95's root; `--root` overrides it
 
 # The pinned simulation clock of the cycle-boundary interlude.  ONE value for
 # every cycle of a run, so the dump diff across cycles is taken at the same
@@ -120,12 +140,38 @@ HUNG_S = 45.0
 # far past it the application went.
 PROBE_BUDGET_S = 90.0
 
-PLAYLIST_DIRS = ["basis", "custom", "deepsky"]
+PLAYLIST_DIRS = ["basis", "custom", "deepsky"]     # F95's default playlist
 
-# `fscripts/` is NOT played: 137 shows that author bodies (06old.sts authors
+# NEVER a playlist member, in any directory: the application plays this one
+# itself at launch (`ScriptMgr::playStartupScript`, script_mgr.cpp:384-388), so
+# queueing it would race the driver against the app's own script engine.  It IS
+# in the frozen set and it IS copied onto the farm (the annotator rewrites what
+# it plays).
+NEVER_PLAYED = {"startup.sts"}
+
+# The show grace: a show is given its MODELLED duration plus this before it is
+# called a SHOW-TIMEOUT.  F95's constant, kept so the label keeps its meaning
+# across both campaigns.
+SHOW_GRACE_S = 60.0
+
+# ~~`fscripts/` is NOT played: 137 shows that author bodies (06old.sts authors
 # 3000 satellites, Sec.5.137) and run for minutes each.  A second soak over
-# them is a named follow-up, not this one.
-EXCLUDED_DIRS = ["fscripts"]
+# them is a named follow-up, not this one.~~  [SUPERSEDED 2026-09-06, F98:
+# the follow-up RAN - `fscripts/` is a playlist directory like any other now,
+# named with `--playlist-dir fscripts`.  And the "3000" was never measured:
+# `06old.sts` carries 170 `body action load` lines, all 170 uncommented
+# (Sec.11.218).]  What is excluded is now DERIVED from what is played, so the
+# plan can never claim an exclusion the run does not have.
+
+
+def excluded_dirs(dirs, home=REAL_HOME):
+    """-> the script directories this run does NOT play, mechanically."""
+    root = Path(home) / "scripts"
+    if not root.is_dir():
+        return []
+    return sorted(d.name for d in root.iterdir()
+                  if d.is_dir() and d.name not in dirs
+                  and any(d.glob("*.sts")))
 
 
 # =========================================================================
@@ -264,41 +310,52 @@ def no_instance():
     return hits
 
 
-def playlist_shows(home=REAL_HOME):
-    """The eight shipped shows, mechanically - never a recalled list."""
+def playlist_shows(home=REAL_HOME, dirs=None):
+    """Every `.sts` of every playlist directory, mechanically - never a
+    recalled list, and never `startup.sts` (the app plays that one itself)."""
     out = []
-    for d in PLAYLIST_DIRS:
-        for p in sorted((home / "scripts" / d).glob("*.sts")):
+    for d in (dirs if dirs is not None else PLAYLIST_DIRS):
+        for p in sorted((Path(home) / "scripts" / d).glob("*.sts")):
+            if p.name in NEVER_PLAYED:
+                continue
             out.append("%s/%s" % (d, p.name))
     return out
 
 
-def frozen_set(home=REAL_HOME):
-    """The eleven real-HOME files whose md5 must be identical in and out."""
+def frozen_set(home=REAL_HOME, dirs=None):
+    """The real-HOME files whose md5 must be identical in and out.
+
+    config + ssystem + `startup.sts` + EVERY `.sts` of every playlist
+    directory - the played ones and the unplayed one alike, because the farm
+    holds a copy of each and a write that escaped the farm would land here.
+    Eleven files at F95's defaults; 139 on the `fscripts/` corpus."""
+    home = Path(home)
     files = [home / "config.ini", home / "ssystem.ini",
              home / "scripts" / "fscripts" / "startup.sts"]
-    files += [home / "scripts" / s for s in playlist_shows(home)]
-    return [f for f in files if f.is_file()]
+    for d in (dirs if dirs is not None else PLAYLIST_DIRS):
+        files += sorted((home / "scripts" / d).glob("*.sts"))
+    seen, uniq = set(), []
+    for f in files:
+        if str(f) not in seen and f.is_file():
+            seen.add(str(f))
+            uniq.append(f)
+    return uniq
 
 
-def frozen_md5s(home=REAL_HOME):
-    return {str(f): md5(f) for f in frozen_set(home)}
+def frozen_md5s(home=REAL_HOME, dirs=None):
+    return {str(f): md5(f) for f in frozen_set(home, dirs)}
 
 
-def show_own_duration(path):
-    """The show's own wait total, parsed from the file (F90's function)."""
-    total, pauses, lines = 0.0, 0, 0
-    for line in Path(path).read_text(encoding="latin-1").splitlines():
-        s = line.strip()
-        if not s or s.startswith("#"):
-            continue
-        lines += 1
-        m = re.match(r"^wait\s+duration\s+([0-9.]+)", s)
-        if m:
-            total += float(m.group(1))
-        if re.match(r"^script\s+action\s+pause\b", s):
-            pauses += 1
-    return round(total, 2), pauses, lines
+def frozen_digest(md5s):
+    """The aggregate fingerprint of a set of files: the PER-FILE md5s, sorted
+    in C order, one per line, hashed.  Never `cat *.sts | md5sum` - a
+    concatenation digest depends on the collation of the glob that built it
+    (`fr_FR.UTF-8` vs `LC_ALL=C` gave two different answers over the same 137
+    files, F98's mint).  This reproduces, in-process, exactly
+        md5sum <files> | cut -c1-32 | LC_ALL=C sort | md5sum
+    so the number is comparable with the one the dispatch measured."""
+    body = "".join(h + "\n" for h in sorted(md5s.values())).encode()
+    return hashlib.md5(body).hexdigest()
 
 
 TEARDOWN_FAULT = re.compile(
@@ -384,8 +441,15 @@ class LogTail:
 
 # ------------------------------------------------------------------- the farm
 
-def build_farm(farm, shows):
+def build_farm(farm, shows, copy_all_sts=True):
     """F90's `build_farm`, widened to every directory this playlist plays.
+
+    `copy_all_sts` copies EVERY `.sts` of a played directory, not only the
+    played ones: on the `fscripts/` corpus the unplayed member is
+    `startup.sts`, which the application plays by itself with the annotator
+    armed, and a symlink there would let `ScriptAnnotator::flush` rewrite the
+    owner's file.  The media entries beside them stay symlinks - they are only
+    read, and `fscripts/` holds 897 MB of them.
 
     Returns the assert dict, so the record says what the farm IS."""
     farm = Path(farm)
@@ -412,11 +476,20 @@ def build_farm(farm, shows):
         played.setdefault(d, set()).add(n)
     for d, names in played.items():
         src_dir = REAL_HOME / "scripts" / d
-        (dst / "scripts" / d).unlink(missing_ok=True)
-        (dst / "scripts" / d).mkdir(parents=True, exist_ok=True)
+        tgt_dir = dst / "scripts" / d
+        # f55_farm.sh leaves `scripts/fscripts` a REAL directory of symlinks
+        # and every other child of `scripts/` a symlink to the owner's
+        # directory: unlink() on the real one raises IsADirectoryError, so the
+        # two cases are handled apart instead of by exception.
+        if tgt_dir.is_symlink() or (tgt_dir.exists() and not tgt_dir.is_dir()):
+            tgt_dir.unlink()
+        if tgt_dir.is_dir():
+            shutil.rmtree(tgt_dir)
+        tgt_dir.mkdir(parents=True, exist_ok=True)
         for e in src_dir.iterdir():
-            tgt = dst / "scripts" / d / e.name
-            if e.name in names:
+            tgt = tgt_dir / e.name
+            if e.name in names or (copy_all_sts and e.is_file()
+                                   and e.name.endswith(".sts")):
                 shutil.copy2(e, tgt)
             else:
                 tgt.symlink_to(e)
@@ -446,8 +519,16 @@ def build_farm(farm, shows):
                            and not (dst / "log").is_symlink(),
     }
     for d in sorted(played):
-        asserts["scripts/%s.is_real_dir" % d] = \
-            (dst / "scripts" / d).is_dir() and not (dst / "scripts" / d).is_symlink()
+        fd = dst / "scripts" / d
+        asserts["scripts/%s.is_real_dir" % d] = fd.is_dir() and not fd.is_symlink()
+        sts = [e for e in fd.iterdir() if e.name.endswith(".sts")]
+        other = [e for e in fd.iterdir() if not e.name.endswith(".sts")]
+        asserts["scripts/%s.sts_count" % d] = len(sts)
+        asserts["scripts/%s.every_sts_is_a_copy" % d] = \
+            all(e.is_file() and not e.is_symlink() for e in sts)
+        asserts["scripts/%s.media_count" % d] = len(other)
+        asserts["scripts/%s.every_media_is_a_symlink" % d] = \
+            all(e.is_symlink() for e in other)
     for rel in shows:
         p = dst / "scripts" / rel
         asserts["%s.is_regular_file" % rel] = p.is_file() and not p.is_symlink()
@@ -455,6 +536,24 @@ def build_farm(farm, shows):
     if bad:
         raise RuntimeError("farm shape assert failed: %s" % bad)
     return asserts
+
+
+def farm_sts_md5s(farm, dirs):
+    """Every `.sts` COPY on the farm, by md5.
+
+    Compared in == out at the end: `ScriptAnnotator::flush` rewrites the file
+    it played when a line earns a `#!` diagnostic, so a farm copy that MOVED is
+    the annotator's signature (a datum about the corpus, never a fault of the
+    application), and a farm copy that moved on a REAL-HOME path would be the
+    boundary breach F4 exists for."""
+    dst = Path(farm) / ".spacecrafter"
+    out = {}
+    for d in dirs:
+        p = dst / "scripts" / d
+        if p.is_dir():
+            for e in sorted(p.glob("*.sts")):
+                out[str(e)] = md5(e)
+    return out
 
 
 # ------------------------------------------------------------------ the wire
@@ -734,9 +833,21 @@ SAMPLE_COLS = [
     "screensaver", "locked_hint", "loadavg1", "flags",
 ]
 
+# The finer, SECONDARY series: one row per SHOW boundary.  The LEAK verdict
+# stays on CYCLE boundaries (F95's rule, unchanged) because only there is the
+# playlist at the same point; this is recorded so a step inside a cycle can be
+# ATTRIBUTED to a show afterwards.
+SHOW_COLS = [
+    "cycle", "idx", "show", "t_start_iso", "wall_s", "own_s", "expanded_s",
+    "planned_s", "deadline_s", "outcome", "resumed", "declared_pauses",
+    "cmd_lines", "seen_load", "vmrss_kb", "vmsize_kb", "threads", "fds",
+    "scriptlog_b",
+]
+
 CYCLE_COLS = [
     "cycle", "complete", "t_start_iso", "t_end_iso", "wall_s",
-    "shows_played", "shows_timeout", "pauses_resumed",
+    "shows_played", "shows_timeout", "shows_capped", "pauses_resumed",
+    "bodies_old", "bodies_new", "bodies_both", "old_only", "new_only",
     "vmrss_kb", "vmsize_kb", "threads", "fds", "gpu_mib",
     "applog_b", "scriptlog_b", "stall_detected", "stall_very_long",
     "dump_file", "dump_bytes", "dump_diff_vs_cycle2", "jd_after",
@@ -755,6 +866,9 @@ class Driver:
         self.sample_s = float(self.cfg["sample"])
         self.shows = list(self.cfg["shows"])
         self.frozen_in = dict(self.cfg["frozen_in"])
+        self.dirs = list(self.cfg.get("playlist_dirs") or PLAYLIST_DIRS)
+        self.cap = self.cfg.get("cap")          # None = F95's behaviour
+        self.authored = list(self.cfg.get("authored_probes") or [])
         self.applog = self.out / "soak.applog"
 
         self.proc = None
@@ -779,6 +893,13 @@ class Driver:
         self.script_tail = None
 
         sp, cp = self.out / "samples.csv", self.out / "cycles.csv"
+        shp = self.out / "shows.csv"
+        sh_new = not (shp.exists() and shp.stat().st_size > 0)
+        self.shows_fh = open(shp, "a", buffering=1)
+        self.shows_w = csv.DictWriter(self.shows_fh, fieldnames=SHOW_COLS,
+                                      extrasaction="ignore", restval="")
+        if sh_new:
+            self.shows_w.writeheader()
         sp_new = not (sp.exists() and sp.stat().st_size > 0)
         cp_new = not (cp.exists() and cp.stat().st_size > 0)
         self.samples_fh = open(sp, "a", buffering=1)
@@ -979,10 +1100,35 @@ class Driver:
         return self.appfile_size("script")
 
     # ---- the playlist
+    def show_budget(self, path):
+        """-> (own, expanded, planned, deadline).  ONE place decides how long a
+        show is given, and the two labels that can come out of it:
+
+          CAPPED       the MODEL says the show is longer than the cap, so the
+                       driver ends it at the cap.  A DESIGN decision, declared
+                       before the launch, never a finding.  `panorama0.sts`
+                       loops 1 000 000 times - it is infinite by construction
+                       and no run can wait for it.
+          SHOW-TIMEOUT the show did not end within its OWN modelled duration
+                       plus the grace - F95's meaning, unchanged.  A finding,
+                       whether the fault is the application's or the model's;
+                       the model's blindness is enumerated in `sts_duration`
+                       and the predicted set is committed before the launch.
+        """
+        m = show_model(path)
+        own, exp = m["own"], m["expanded"]
+        will_cap = self.cap is not None and exp > self.cap
+        planned = min(exp, self.cap) if self.cap is not None else exp
+        # A show the cap will cut is ended AT the cap: the grace exists to let
+        # a show finish its own authored content, and a capped show has no
+        # "own end" to wait for.  Everything else keeps F95's deadline exactly.
+        deadline = planned if will_cap else planned + SHOW_GRACE_S
+        return own, exp, planned, deadline, will_cap, m
+
     def play_show(self, rel):
         path = self.home / "scripts" / rel
-        own, declared, cmd_lines = show_own_duration(path)
-        budget = own + 60.0
+        own, expanded, planned, budget, will_cap, m = self.show_budget(path)
+        declared, cmd_lines = m["pauses"], m["lines"]
         with self.block:
             self.script_tail.poll()
             before = self.script_tail.counts["ScriptMgr::script action pause"]
@@ -1010,20 +1156,27 @@ class Driver:
                 break
             time.sleep(0.5)
         wall = round(time.time() - t0, 1)
-        timed_out = not seen_end
-        if timed_out:
-            self.log("SHOW-TIMEOUT %s after %.1f s (budget %.1f, own %.1f, "
-                     "%d pause(s) resumed, load seen %s)"
-                     % (rel, wall, budget, own, resumed, seen_load))
+        unfinished = not seen_end
+        capped = bool(unfinished and will_cap)
+        timed_out = unfinished and not capped
+        if unfinished:
+            self.log("%s %s after %.1f s (deadline %.1f, own %.1f, expanded "
+                     "%.1f, planned %.1f, %d pause(s) resumed, load seen %s)"
+                     % ("CAPPED" if capped else "SHOW-TIMEOUT", rel, wall,
+                        budget, own, expanded, planned, resumed, seen_load))
             with self.block:
                 # leave the engine in a known state for the next show
                 self.a.send("script action end", 1.0)
                 time.sleep(1.0)
                 self.script_tail.poll()
         return {"show": rel, "wall_s": wall, "own_s": own,
+                "expanded_s": expanded, "planned_s": planned,
+                "deadline_s": round(budget, 1),
                 "declared_pauses": declared, "resumed": resumed,
                 "cmd_lines": cmd_lines, "seen_load": seen_load,
-                "timeout": timed_out}
+                "outcome": "CAPPED" if capped else
+                           ("SHOW-TIMEOUT" if timed_out else "ended"),
+                "capped": capped, "timeout": timed_out}
 
     def interlude(self, cycle):
         """select . read out . a dual dump at the PINNED clock . restore."""
@@ -1049,12 +1202,117 @@ class Driver:
                 time.sleep(0.8)
                 break
             time.sleep(0.4)
+        authoring = self.authoring_probe(f)
+        authoring["where"] = "boundary"
         with self.block:
             self.a.send("deselect", 0.6)
             self.a.send("timerate rate 1", 0.6)
         return {"dump": f, "dump_bytes": f.stat().st_size if f.exists() else 0,
                 "get_object": (obj or "")[:400], "get_object_rtt_s": round(obj_rtt, 2),
-                "get_position": (pos or ""), "get_position_rtt_s": round(pos_rtt, 2)}
+                "get_position": (pos or ""), "get_position_rtt_s": round(pos_rtt, 2),
+                "authoring": authoring}
+
+    # ---- the authoring instrument (F98)
+    def authoring_snapshot(self, cycle, rel):
+        """The SAME probe, taken immediately after an authoring show, because
+        at the cycle boundary the corpus has already undone its own work.
+
+        The playlist's LAST show is `panorama5old2.sts` and it issues `body
+        action clear` [observed: the corpus; 6 shows carry it], which reaches
+        `Core` -> `removeSupplementalBodies` and drops every deleteable body in
+        BOTH trees [observed: core.cpp:1029, protosystem.cpp:204-227, the B34
+        note at core.cpp:1020-1028].  So a boundary-only instrument would
+        measure an empty universe every cycle and could not see the authoring
+        at all.  The boundary probe is kept (it is the mandated one, and "the
+        corpus cleans up after itself" is itself a measurement); this one is
+        taken where the authored bodies are supposed to exist.  Cost: one dual
+        dump per authoring probe show per cycle, at a NON-pinned clock, named
+        so it can never be picked up by the Sec.5.62 cycle-dump comparison."""
+        tag = rel.split("/")[-1].replace(".sts", "")
+        f = self.out / ("authoring_c%03d_%s.json" % (cycle, tag))
+        with self.block:
+            self.a.send("body action dual_dump filename %s" % f, 1.5)
+        end = time.time() + 45.0
+        while time.time() < end:
+            if f.exists() and f.stat().st_size > 0 \
+                    and Path(str(f) + ".navstr").exists():
+                time.sleep(0.6)
+                break
+            time.sleep(0.4)
+        snap = self.authoring_probe(f, only_from=rel)
+        snap.update({"where": "after:%s" % rel, "cycle": cycle,
+                     "dump": str(f),
+                     "dump_bytes": f.stat().st_size if f.exists() else 0})
+        self.log("authoring after %s: bodies old/new %s/%s, probes %s"
+                 % (rel, snap.get("bodies_old"), snap.get("bodies_new"),
+                    [(p["name"], p["present_old"], p["present_new"])
+                     for p in snap["probes"]]))
+        return snap
+
+    def authoring_probe(self, dump_path, only_from=None):
+        """WHAT THE CORPUS AUTHORED, read on BOTH halves of the dump.
+
+        The soak's own reason: `fscripts/` authors bodies and F95's playlist
+        did not.  Two questions per cycle boundary.
+
+        (1) HOW MANY bodies does each path hold?  `dumpread.load_dump` returns
+            the records present on both halves and the two one-sided lists, so
+            a body the OLD path kept and the NEW path lost - Sec.5.137's exact
+            signature, and the new path is the one that DRAWS
+            (Sec.11.206(c)) - is counted rather than inferred.
+
+        (2) For one named body per authoring show: is it in the old half, the
+            new half, and what does the CONTROL SURFACE say?  The readout is
+            recorded but it is NOT the authority: Sec.5.139 (measured this same
+            day) says a body outside the view cone keeps a frozen eye-frame
+            position, so `get status object` can answer in a camera state that
+            no longer exists.  THE DUMP HALVES DECIDE; the readout is beside
+            them as the false-success channel Sec.5.137 is about."""
+        res = {"probes": []}
+        try:
+            import dumpread
+            _hdr, pairs, missing_new, missing_old = dumpread.load_dump(dump_path)
+            names = {r["name"] for r in pairs} | set(missing_new) | set(missing_old)
+            res.update({
+                "bodies_both": len(pairs),
+                "old_only": len(missing_new), "new_only": len(missing_old),
+                "bodies_old": len(pairs) + len(missing_new),
+                "bodies_new": len(pairs) + len(missing_old),
+                "old_only_names": sorted(missing_new)[:40],
+                "new_only_names": sorted(missing_old)[:40],
+            })
+        except Exception as e:                                    # noqa: BLE001
+            res["error"] = repr(e)
+            names, pairs, missing_new, missing_old = set(), [], [], []
+        by_name = {r["name"]: r for r in pairs}
+        for probe in self.authored:
+            if only_from is not None and probe["from"] != only_from:
+                continue
+            name, src = probe["name"], probe["from"]
+            with self.block:
+                srch, _, s_rtt = self.b.ask(
+                    "search name %s" % name,
+                    lambda b: (b.strip() or None) if b.strip() else None, 15.0)
+                self.a.send("select planet %s" % name, 1.0)
+                obj, _, o_rtt = self.b.ask(
+                    "get status object",
+                    lambda b: (b.strip() or None) if len(b.strip()) > 3 else None,
+                    15.0)
+            rec = by_name.get(name)
+            res["probes"].append({
+                "name": name, "from": src,
+                "present_old": name in names and name not in missing_old,
+                "present_new": name in names and name not in missing_new,
+                "in_dump": name in names,
+                "old_visible": (rec or {}).get("old", {}).get("visible")
+                               if rec else None,
+                "new_visible": (rec or {}).get("new", {}).get("visible")
+                               if rec else None,
+                "search_reply": (srch or "")[:160],
+                "search_rtt_s": round(s_rtt, 2),
+                "get_object": (obj or "")[:400], "get_object_rtt_s": round(o_rtt, 2),
+            })
+        return res
 
     # ---- the quit
     def quit_app(self):
@@ -1157,16 +1415,38 @@ class Driver:
                 self.cycle += 1
                 c0 = time.time()
                 c_start_iso = now_iso()
-                played, timeouts, resumed = 0, 0, 0
-                for rel in self.shows:
+                played, timeouts, capped, resumed = 0, 0, 0, 0
+                snaps = []
+                probe_shows = {p["from"] for p in self.authored}
+                for idx, rel in enumerate(self.shows, 1):
                     if time.time() >= t_end or self.stop_evt.is_set():
                         break
                     self.show = rel
+                    s_iso = now_iso()
                     r = self.play_show(rel)
                     played += 1
                     resumed += r["resumed"]
                     if r["timeout"]:
                         timeouts += 1
+                    if r["capped"]:
+                        capped += 1
+                    # the finer, secondary series: RSS at every SHOW boundary
+                    alive = self.proc.poll() is None
+                    stt = read_status(self.proc.pid) if alive else {}
+                    self.shows_w.writerow({
+                        "cycle": self.cycle, "idx": idx, "t_start_iso": s_iso,
+                        "vmrss_kb": stt.get("vmrss_kb", ""),
+                        "vmsize_kb": stt.get("vmsize_kb", ""),
+                        "threads": stt.get("threads", ""),
+                        "fds": read_fds(self.proc.pid) if alive else "",
+                        "scriptlog_b": self.script_size(), **r})
+                    if rel in probe_shows and not self.stop_evt.is_set() \
+                            and self.proc.poll() is None:
+                        try:
+                            snaps.append(self.authoring_snapshot(self.cycle, rel))
+                        except Exception as e:                    # noqa: BLE001
+                            self.log("authoring snapshot after %s raised %r\n%s"
+                                     % (rel, e, traceback.format_exc()))
                     self.write_state()
                 self.show = "(interlude)"
                 complete = (played == len(self.shows))
@@ -1180,11 +1460,17 @@ class Driver:
                         and self.proc.poll() is None:
                     il = self.interlude(self.cycle)
                 st = read_status(self.proc.pid) if self.proc.poll() is None else {}
+                au = (il.get("authoring") or {})
                 row = {"cycle": self.cycle, "complete": int(complete),
                        "t_start_iso": c_start_iso, "t_end_iso": now_iso(),
                        "wall_s": round(time.time() - c0, 1),
                        "shows_played": played, "shows_timeout": timeouts,
-                       "pauses_resumed": resumed,
+                       "shows_capped": capped, "pauses_resumed": resumed,
+                       "bodies_old": au.get("bodies_old", ""),
+                       "bodies_new": au.get("bodies_new", ""),
+                       "bodies_both": au.get("bodies_both", ""),
+                       "old_only": au.get("old_only", ""),
+                       "new_only": au.get("new_only", ""),
                        "vmrss_kb": st.get("vmrss_kb", ""),
                        "vmsize_kb": st.get("vmsize_kb", ""),
                        "threads": st.get("threads", ""),
@@ -1201,12 +1487,15 @@ class Driver:
                        "dump_bytes": il.get("dump_bytes", ""),
                        "dump_diff_vs_cycle2": "",
                        "jd_after": (il.get("get_position") or "")}
-                cycles.append({**row, "interlude": il})
+                cycles.append({**row, "interlude": il,
+                               "authoring_snapshots": snaps})
                 self.cycles_w.writerow(row)
-                self.log("cycle %d done: %s shows, %d timeout, %d pause(s) "
-                         "resumed, %.1f s wall, VmRSS %s kB"
-                         % (self.cycle, played, timeouts, resumed,
-                            row["wall_s"], row["vmrss_kb"]))
+                self.log("cycle %d done: %s shows, %d timeout, %d capped, %d "
+                         "pause(s) resumed, %.1f s wall, VmRSS %s kB, bodies "
+                         "old/new %s/%s"
+                         % (self.cycle, played, timeouts, capped, resumed,
+                            row["wall_s"], row["vmrss_kb"],
+                            row["bodies_old"], row["bodies_new"]))
                 self.write_state()
         except Exception as e:                                    # noqa: BLE001
             # WITH THE TRACEBACK.  Leg 1 recorded only the repr and the origin
@@ -1234,7 +1523,21 @@ class Driver:
         if moved and "F4" not in self.flags:
             self.raise_flag("F4", "a frozen real-HOME file moved: %s"
                             % [m["file"] for m in moved], moved=moved)
-        atomic_write_json(self.out / "frozen_out.json", frozen_md5s())
+        # OVER THE RUN'S OWN FROZEN SET, never a recomputed default one: the
+        # F95 code called `frozen_md5s()` with no argument, which would have
+        # written the eleven-file default set out of an F98 run and made the
+        # in/out comparison compare two different sets.
+        out_md5 = {}
+        for f in self.frozen_in:
+            try:
+                out_md5[f] = md5(f)
+            except OSError:
+                out_md5[f] = "MISSING"
+        atomic_write_json(self.out / "frozen_out.json", out_md5)
+        farm_out = farm_sts_md5s(self.farm, self.dirs)
+        atomic_write_json(self.out / "farm_sts_out.json", farm_out)
+        farm_in = dict(self.cfg.get("farm_sts_in") or {})
+        farm_moved = [k for k, v in farm_in.items() if farm_out.get(k) != v]
 
         # the dump diff, cycle 2 as the reference (cycle 1 is first-touch)
         diffs = {}
@@ -1271,6 +1574,11 @@ class Driver:
             "leak": leak, "leak_series_kb": series,
             "dump_diff_vs_cycle2": diffs,
             "frozen_moved": moved,
+            "frozen_count": len(self.frozen_in),
+            "frozen_digest_in": frozen_digest(self.frozen_in),
+            "frozen_digest_out": frozen_digest(out_md5),
+            "farm_sts_moved": farm_moved,
+            "playlist_dirs": self.dirs, "cap_s": self.cap,
             "shows": self.shows,
             **extra,
         }
@@ -1283,11 +1591,64 @@ class Driver:
 
 # ==================================================================== verbs
 
+LOAD_RE = re.compile(r"^body\s+action\s+load\b.*?\bname\s+(\"[^\"]+\"|\S+)")
+
+
+def authoring_shows(dirs, home=REAL_HOME):
+    """-> [(rel, uncommented `body action load` count, [first name, first
+    Star_ name]), ...] over the playlist, sorted by count.
+
+    A `#`-commented `body action load` is NOT an authored body: `14.sts` opens
+    with one (`#body action load mode in_galaxy name Solsys ...`), which is
+    also why the line COUNT of that token (529) is not the number of bodies
+    the show authors (528)."""
+    out = []
+    for d in dirs:
+        for p in sorted((Path(home) / "scripts" / d).glob("*.sts")):
+            n, first, first_star = 0, None, None
+            for raw in p.read_text(encoding="latin-1").splitlines():
+                s = raw.strip()
+                if s.startswith("#"):
+                    continue
+                m = LOAD_RE.match(s)
+                if not m:
+                    continue
+                n += 1
+                name = m.group(1).strip('"')
+                if first is None:
+                    first = name
+                if first_star is None and re.search(r"\bfilename\s+Star_", s):
+                    first_star = name
+            if n:
+                out.append(("%s/%s" % (d, p.name), n, first, first_star))
+    return sorted(out, key=lambda r: -r[1])
+
+
+def probe_bodies(dirs, home=REAL_HOME, limit=2):
+    """The authoring probes, DERIVED from the corpus and never recalled.
+
+    The two shows that author the most bodies, each contributing the FIRST
+    body it loads, plus that show's first STAR load when the show has one and
+    it is a different body (`14.sts` opens on a hidden `Sphere` and its first
+    star is the next line, so both are probed - the section asks for
+    `06old.sts`'s first satellite and `14.sts`'s first star)."""
+    probes, seen = [], set()
+    for rel, n, first, first_star in authoring_shows(dirs, home)[:limit]:
+        for name, kind in ((first, "first authored body"),
+                           (first_star, "first Star_ body")):
+            if name and name not in seen:
+                seen.add(name)
+                probes.append({"name": name, "from": rel, "kind": kind,
+                               "show_loads": n})
+    return probes
+
+
 def verb_start(a):
     out = Path(a.out).resolve()
-    if FARM_ROOT not in out.parents and out != FARM_ROOT:
-        raise SystemExit("REFUSED: the outdir must live under %s (boundary of "
-                         "this task); got %s" % (FARM_ROOT, out))
+    root = Path(a.root).resolve()
+    if root not in out.parents and out != root:
+        raise SystemExit("REFUSED: the outdir must live under %s (the task's "
+                         "farm root, --root); got %s" % (root, out))
     if (out / "state.json").exists():
         raise SystemExit("REFUSED: %s already carries a run (state.json). Use a "
                          "fresh outdir - a soak's evidence is never overwritten."
@@ -1309,20 +1670,28 @@ def verb_start(a):
                              % (r.returncode, out / "canary.txt"))
         print("canary --no-scene exit 0 -> %s" % (out / "canary.txt"))
 
-    shows = playlist_shows()
+    dirs = list(a.playlist_dir) if a.playlist_dir else list(PLAYLIST_DIRS)
+    shows = playlist_shows(dirs=dirs)
     if not shows:
         raise SystemExit("REFUSED: the playlist is empty")
-    frozen = frozen_md5s()
+    frozen = frozen_md5s(dirs=dirs)
     farm = out / "farm"
     asserts = build_farm(farm, shows)
+    farm_in = farm_sts_md5s(farm, dirs)
+    probes = probe_bodies(dirs)
     cfg = {"out": str(out), "farm": str(farm), "bin": str(Path(a.bin).resolve()),
            "bin_md5": md5(a.bin), "hours": a.hours, "sample": a.sample,
            "shows": shows, "frozen_in": frozen, "farm_asserts": asserts,
+           "playlist_dirs": dirs, "root": str(root), "cap": a.cap,
+           "grace_s": SHOW_GRACE_S, "authored_probes": probes,
+           "farm_sts_in": farm_in,
+           "frozen_digest_in": frozen_digest(frozen),
            "J0": J0, "display": os.environ.get("DISPLAY"),
            "started_iso": now_iso(), "criteria_sha": hashlib.md5(
                CRITERIA.encode()).hexdigest()[:8]}
     atomic_write_json(out / "config.json", cfg)
     atomic_write_json(out / "frozen_in.json", frozen)
+    atomic_write_json(out / "farm_sts_in.json", farm_in)
 
     driverlog = open(out / "driver.log", "a")
     p = subprocess.Popen(
@@ -1333,8 +1702,19 @@ def verb_start(a):
         cwd=str(HERE), env=dict(os.environ))
     print("farm     : %s (%d asserts, config.ini md5 %s)"
           % (farm, len(asserts), asserts["config.ini.md5"]))
-    print("playlist : %s" % ", ".join(shows))
-    print("frozen   : %d files recorded in" % len(frozen))
+    print("playlist : %d show(s) in %s%s"
+          % (len(shows), "/".join(dirs),
+             (": " + ", ".join(shows)) if len(shows) <= 12 else
+             (": %s ... %s" % (shows[0], shows[-1]))))
+    print("cap      : %s   grace %.0f s" % (("%.0f s" % a.cap) if a.cap
+                                            else "none (F95's behaviour)",
+                                            SHOW_GRACE_S))
+    print("probes   : %s" % ", ".join("%s (%s, %s)"
+                                      % (p["name"], p["from"], p["kind"])
+                                      for p in probes) or "none")
+    print("frozen   : %d files recorded in, digest %s"
+          % (len(frozen), frozen_digest(frozen)[:8]))
+    print("farm .sts: %d copies recorded in" % len(farm_in))
     print("driver   : launched detached (setsid), wrapper pid %d, log %s"
           % (p.pid, out / "driver.log"))
     print("poll with: f95_soak.py wait %s <sec<=540>" % out)
@@ -1542,27 +1922,231 @@ def verb_selftest(a):
           % (len(d), [x["where"] for x in d]))
     ok &= (len(d) == 3)
 
+    print("\n(8) THE LOOP-AWARE DURATION MODEL, both ways, on written files")
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        cases = [
+            ("no loop", "wait duration 2\nwait duration 3\n"
+                        "script action pause\n", 5.0, 5.0, 1, 1),
+            ("one loop x10", "struct loop 10\nwait duration 2\n"
+                             "script action pause\nstruct loop end\n",
+             2.0, 20.0, 1, 10),
+            ("nested 10x3", "struct loop 10\nstruct loop 3\n"
+                            "wait duration 1\nstruct loop end\n"
+                            "struct loop end\n", 1.0, 30.0, 0, 0),
+            ("wait AFTER the loop is not multiplied",
+             "struct loop 10\nwait duration 1\nstruct loop end\n"
+             "wait duration 7\n", 8.0, 17.0, 0, 0),
+            ("comments and blanks ignored",
+             "# struct loop 99\n\nwait duration 4\n", 4.0, 4.0, 0, 0),
+        ]
+        for label, txt, w_own, w_exp, w_p, w_pe in cases:
+            f = Path(td) / "c.sts"
+            f.write_text(txt)
+            m = show_model(f)
+            good = (m["own"] == w_own and m["expanded"] == w_exp
+                    and m["pauses"] == w_p and m["pauses_expanded"] == w_pe)
+            print("    %-42s own %7.2f (want %7.2f)  expanded %8.2f (want "
+                  "%8.2f)  %s" % (label, m["own"], w_own, m["expanded"],
+                                  w_exp, "ok" if good else "MISMATCH"))
+            ok &= good
+        # the real corpus file the whole fix is about, read from the real HOME
+        real = REAL_HOME / "scripts" / "fscripts" / "panorama0.sts"
+        if real.is_file():
+            m = show_model(real)
+            print("    %-42s own %7.2f  expanded %8.2f  loops %s breaks %d"
+                  % ("fscripts/panorama0.sts (the infinite one)", m["own"],
+                     m["expanded"], m["loops"], m["breaks"]))
+            ok &= (m["expanded"] > 1000 * m["own"])
+
+    print("\n(9) CAPPED vs SHOW-TIMEOUT - the two labels a show can earn, and")
+    print("    the decision shown BOTH ways at one cap")
+
+    class _FakeCap:
+        cap = 60.0
+        show_budget = Driver.show_budget
+    with tempfile.TemporaryDirectory() as td:
+        d = _FakeCap()
+        rows = [("short show, ends by itself", "wait duration 5\n",
+                 False, 65.0),
+                ("long by LOOP -> capped", "struct loop 1000\n"
+                 "wait duration 1\nstruct loop end\n", True, 60.0),
+                ("long by AUTHORED waits -> capped",
+                 "wait duration 100\n", True, 60.0),
+                ("exactly at the cap -> NOT capped",
+                 "wait duration 60\n", False, 120.0)]
+        for label, txt, want_cap, want_deadline in rows:
+            f = Path(td) / "c.sts"
+            f.write_text(txt)
+            own, exp, planned, deadline, will_cap, _m = d.show_budget(f)
+            good = (will_cap == want_cap
+                    and abs(deadline - want_deadline) < 1e-9)
+            print("    %-38s expanded %8.2f  will_cap %-5s (want %-5s)  "
+                  "deadline %6.1f (want %6.1f) %s"
+                  % (label, exp, will_cap, want_cap, deadline, want_deadline,
+                     "ok" if good else "MISMATCH"))
+            ok &= good
+        d2 = _FakeCap()
+        d2.cap = None
+        f = Path(td) / "c.sts"
+        f.write_text("struct loop 1000\nwait duration 1\nstruct loop end\n")
+        own, exp, planned, deadline, will_cap, _m = d2.show_budget(f)
+        good = (will_cap is False and deadline == 1000.0 + SHOW_GRACE_S)
+        print("    %-38s cap=None -> will_cap %s, deadline %.1f = F95's "
+              "modelled+grace %s" % ("no cap at all (F95's default)", will_cap,
+                                     deadline, "ok" if good else "MISMATCH"))
+        ok &= good
+
+    print("\n(10) THE AGGREGATE FROZEN DIGEST is per-file and order-free")
+    m1 = {"/a": "11111111111111111111111111111111",
+          "/b": "22222222222222222222222222222222"}
+    m2 = {"/b": "22222222222222222222222222222222",
+          "/a": "11111111111111111111111111111111"}
+    m3 = {"/a": "11111111111111111111111111111111",
+          "/b": "33333333333333333333333333333333"}
+    print("    same files, other order -> %s" % (frozen_digest(m1)[:8]
+                                                 == frozen_digest(m2)[:8]))
+    print("    one file changed        -> %s" % (frozen_digest(m1)[:8]
+                                                 != frozen_digest(m3)[:8]))
+    ok &= (frozen_digest(m1) == frozen_digest(m2)
+           and frozen_digest(m1) != frozen_digest(m3))
+
     print("\n" + "=" * 74)
     print("SELFTEST: %s" % ("PASS" if ok else "FAIL"))
     print("=" * 74)
     return 0 if ok else 1
 
 
+def predict_cycle_wall(shows, cap, home=REAL_HOME, per_show_overhead=1.8,
+                       interlude_s=35.0):
+    """The predicted wall time of ONE complete cycle, from the model alone.
+
+    Committed BEFORE the launch, with its terms visible, because a prediction
+    whose terms are not separable cannot be wrong in an informative way:
+
+      play   sum over shows of min(expanded, cap)  - what the model says the
+             shows themselves take.  It UNDERSTATES every show with no
+             authored `wait` (89 of the 136 `fscripts/` shows model as 0.0 s
+             and still take real time to load their media).
+      over   a fixed per-show cost: one `script action play` send with its
+             1.0 s drain, the 0.5 s poll granularity, and for an unfinished
+             show the `script action end` + 1.0 s settle.
+      inter  the cycle-boundary interlude: select, two `get`s, the pinned-clock
+             dual dump and the authoring probes.
+      K      THE UNKNOWN: every show that neither ends nor is capped costs its
+             grace on top.  The model cannot see it, so it is reported as a
+             per-timeout term instead of being folded into a single number."""
+    play = 0.0
+    capped = []
+    for rel in shows:
+        m = show_model(Path(home) / "scripts" / rel)
+        e = m["expanded"]
+        if cap is not None and e > cap:
+            capped.append(rel)
+            e = cap
+        play += e
+    over = per_show_overhead * len(shows)
+    base = play + over + interlude_s
+    return {"play_s": play, "overhead_s": over, "interlude_s": interlude_s,
+            "base_s": base, "capped": capped,
+            "per_timeout_s": SHOW_GRACE_S, "shows": len(shows)}
+
+
 def verb_plan(a):
+    dirs = list(a.playlist_dir) if a.playlist_dir else list(PLAYLIST_DIRS)
+    cap = a.cap
     print(CRITERIA)
-    print("PLAYLIST (mechanical, from ~/.spacecrafter/scripts):")
-    for s in playlist_shows():
-        own, pauses, lines = show_own_duration(REAL_HOME / "scripts" / s)
-        print("    %-38s  %6.1f s authored waits  %2d pause(s)  %3d command lines"
-              % (s, own, pauses, lines))
-    print("\nEXCLUDED: scripts/%s (%d .sts) - they author bodies and run for "
-          "minutes each" % ("/".join(EXCLUDED_DIRS),
-                            len(list((REAL_HOME / "scripts" / "fscripts")
-                                     .glob("*.sts")))))
-    print("\nFROZEN REAL-HOME FILES asserted md5 in == out (%d):"
-          % len(frozen_set()))
-    for f in frozen_set():
-        print("    %s  %s" % (md5(f)[:8], f))
+    print("=" * 78)
+    print("THE RUN'S PARAMETERS (F98 generalisation; F95's defaults are the")
+    print("no-argument case, and the criteria above are the same string in the")
+    print("same place for both - `criteria_sha` proves it).")
+    print("=" * 78)
+    print("  playlist directories : %s" % ", ".join(dirs))
+    print("  never played         : %s (the app plays it at launch itself)"
+          % ", ".join(sorted(NEVER_PLAYED)))
+    print("  not played this run  : %s" % (", ".join(excluded_dirs(dirs)) or "-"))
+    print("  per-show CAP         : %s" % (("%.0f s" % cap) if cap
+                                           else "none (F95's behaviour)"))
+    print("  show grace           : %.0f s (SHOW-TIMEOUT = modelled + grace)"
+          % SHOW_GRACE_S)
+    print("  farm root default    : %s" % FARM_ROOT)
+    print("""
+  THREE SENTENCES IN THE CRITERIA ABOVE DESCRIBE F95's PLAYLIST AND NOT
+  NECESSARILY THIS ONE - re-stated here rather than edited there, because that
+  string is the committed criterion of a delivered campaign and its md5 is
+  recorded in F95's own `config.json`:
+    - "the eight shows are image overlays and do not move the camera": the
+      `fscripts/` corpus DOES move the camera, authors bodies and plays media.
+      Nothing in the instrument depended on that sentence and nothing asserts
+      it; the expected-constant set is observer-INdependent by construction.
+    - "it exercises the media path and the script engine but not body
+      authoring": on `--playlist-dir fscripts` it exercises body authoring -
+      706 uncommented `body action load` lines in 7 shows - which is the whole
+      reason this second run exists (Sec.11.215(m)).
+    - the handed-in stall baseline ("2 per ~92 s launch") was a two-run sample
+      (Sec.11.215(a)); the rate is recorded here too and gates nothing.""")
+
+    shows = playlist_shows(dirs=dirs)
+    auth = {rel: (n, first, star)
+            for rel, n, first, star in authoring_shows(dirs)}
+    print("\nTHE DURATION MODEL, EVERY SHOW (`sts_duration.parse`, ONE home):")
+    print("  %-30s %9s %11s %7s %7s %6s %8s %s"
+          % ("show", "own s", "expand s", "pauses", "pausesX", "lines",
+             "loads", "verdict"))
+    tot_own = tot_exp = 0.0
+    ncap = 0
+    for s in shows:
+        m = show_model(REAL_HOME / "scripts" / s)
+        tot_own += m["own"]
+        tot_exp += m["expanded"]
+        will_cap = cap is not None and m["expanded"] > cap
+        ncap += 1 if will_cap else 0
+        note = "CAPPED at %.0f s" % cap if will_cap else ""
+        if m["breaks"]:
+            note += (" " if note else "") + "[%d break: upper bound]" % m["breaks"]
+        print("  %-30s %9.2f %11.2f %7d %7d %6d %8s %s"
+              % (s, m["own"], m["expanded"], m["pauses"],
+                 m["pauses_expanded"], m["lines"],
+                 auth.get(s, (0,))[0] or "", note))
+    print("  %-30s %9.2f %11.2f   (%d shows, %d capped)"
+          % ("TOTAL", tot_own, tot_exp, len(shows), ncap))
+
+    p = predict_cycle_wall(shows, cap)
+    print("\nPREDICTED WALL TIME OF ONE COMPLETE CYCLE (committed before the "
+          "launch):")
+    print("  play %.1f s + per-show overhead %.1f s (%d x %.1f) + interlude "
+          "%.1f s" % (p["play_s"], p["overhead_s"], p["shows"], 1.8,
+                      p["interlude_s"]))
+    print("  = BASE %.1f s = %.1f min, PLUS %.0f s for every show that neither"
+          % (p["base_s"], p["base_s"] / 60.0, p["per_timeout_s"]))
+    print("    ends nor is capped (K, the model's blind term)")
+    print("  => K=0: %.1f min | K=5: %.1f min | K=10: %.1f min | K=20: %.1f min"
+          % tuple((p["base_s"] + k * p["per_timeout_s"]) / 60.0
+                  for k in (0, 5, 10, 20)))
+
+    if auth:
+        print("\nBODY AUTHORING IN THIS PLAYLIST (uncommented `body action "
+              "load`):")
+        for rel, (n, first, star) in sorted(auth.items(), key=lambda kv: -kv[1][0]):
+            print("  %-30s %4d load(s)  first %-18s first Star_ %s"
+                  % (rel, n, first, star or "-"))
+        print("  probes armed at every cycle boundary: %s"
+              % ", ".join("%s (%s)" % (x["name"], x["from"])
+                          for x in probe_bodies(dirs)))
+
+    fs = frozen_set(dirs=dirs)
+    md5s = {str(f): md5(f) for f in fs}
+    print("\nFROZEN REAL-HOME FILES asserted md5 in == out (%d), aggregate "
+          "digest %s" % (len(fs), frozen_digest(md5s)[:8]))
+    if len(fs) <= 16:
+        for f in fs:
+            print("    %s  %s" % (md5s[str(f)][:8], f))
+    else:
+        sts = {k: v for k, v in md5s.items() if k.endswith(".sts")}
+        print("    %s  %s" % (md5s[str(fs[0])][:8], fs[0]))
+        print("    %s  %s" % (md5s[str(fs[1])][:8], fs[1]))
+        print("    ... and %d .sts files, their own aggregate digest %s"
+              % (len(sts), frozen_digest(sts)[:8]))
     return 0
 
 
@@ -1571,11 +2155,25 @@ def main():
     ap.add_argument("--driver", default=None, help=argparse.SUPPRESS)
     sub = ap.add_subparsers(dest="verb")
 
+    def playlist_args(p):
+        p.add_argument("--playlist-dir", action="append", default=None,
+                       metavar="D",
+                       help="a script directory to play, repeatable "
+                            "(default: %s)" % " ".join(PLAYLIST_DIRS))
+        p.add_argument("--cap", type=float, default=None, metavar="S",
+                       help="per-show cap in seconds: a show whose MODELLED "
+                            "duration exceeds it is ended at the cap and "
+                            "logged CAPPED (default: none, F95's behaviour)")
+
     p = sub.add_parser("start")
     p.add_argument("out")
     p.add_argument("--hours", type=float, default=3.0)
     p.add_argument("--sample", type=float, default=30.0)
     p.add_argument("--bin", default=str(DEFAULT_BIN))
+    p.add_argument("--root", default=str(FARM_ROOT), metavar="ABS",
+                   help="the farm root the outdir must live under "
+                        "(default: %s)" % FARM_ROOT)
+    playlist_args(p)
     p.add_argument("--skip-canary", action="store_true",
                    help="ONLY for a control run that follows a green canary in "
                         "the same minute; the soak never uses it")
@@ -1598,6 +2196,7 @@ def main():
     p.set_defaults(fn=verb_selftest)
 
     p = sub.add_parser("plan")
+    playlist_args(p)
     p.set_defaults(fn=verb_plan)
 
     a = ap.parse_args()

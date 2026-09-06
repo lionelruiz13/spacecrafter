@@ -98,8 +98,12 @@ def main():
     print("samples                 : %d rows (expected >= %d at S=%.0f over %.3f h)"
           % (len(rows), int(cfg["hours"] * 3600 / cfg["sample"]),
              cfg["sample"], cfg["hours"]))
-    print("cycles                  : %d recorded, %d COMPLETE (8/8 shows)"
-          % (len(cyc), sum(1 for c in cyc if c["complete"] == "1")))
+    print("cycles                  : %d recorded, %d COMPLETE (%d/%d shows)"
+          % (len(cyc), sum(1 for c in cyc if c["complete"] == "1"),
+             len(cfg["shows"]), len(cfg["shows"])))
+    print("playlist dirs / cap     : %s / %s"
+          % ("+".join(cfg.get("playlist_dirs") or ["basis", "custom", "deepsky"]),
+             ("%.0f s" % cfg["cap"]) if cfg.get("cap") else "none"))
     print("FLAGS                   : %s" % (vd.get("flags") or st.get("flags")
                                             or "none"))
 
@@ -178,8 +182,8 @@ def main():
         s0, s1 = fnum(comp[0]["scriptlog_b"]), fnum(comp[-1]["scriptlog_b"])
         n = len(comp)
         if s0 is not None and s1 is not None and n > 1:
-            print("  -> per COMPLETE cycle (8 shows): %.0f B/cycle over %d cycles"
-                  % ((s1 - s0) / (n - 1), n))
+            print("  -> per COMPLETE cycle (%d shows): %.0f B/cycle over %d "
+                  "cycles" % (len(cfg["shows"]), (s1 - s0) / (n - 1), n))
 
     # ---- 5. the cycle table
     print("\n--- 5. THE CYCLE TABLE ---")
@@ -199,6 +203,74 @@ def main():
               % (walls[0], walls[-1], min(walls), max(walls),
                  max(walls) - min(walls),
                  ("%+.4f s/cycle" % ((walls[-1] - walls[0]) / (len(walls) - 1)))))
+
+    # ---- 5b. the per-show table (F98: 136 shows make a cycle row too coarse)
+    shp = out / "shows.csv"
+    if shp.exists():
+        srows = list(csv.DictReader(open(shp)))
+        print("\n--- 5b. THE PER-SHOW TABLE (one row per show per cycle) ---")
+        print("  rows: %d" % len(srows))
+        by_show = {}
+        for r in srows:
+            by_show.setdefault(r["show"], []).append(r)
+        capped = sorted({r["show"] for r in srows if r["outcome"] == "CAPPED"})
+        touts = sorted({r["show"] for r in srows if r["outcome"] == "SHOW-TIMEOUT"})
+        print("  CAPPED  (by design, the model says longer than the cap): %d "
+              "show(s)" % len(capped))
+        for s in capped:
+            rs = by_show[s]
+            print("    %-32s %2d/%2d cycle(s)  wall %s"
+                  % (s, sum(1 for r in rs if r["outcome"] == "CAPPED"), len(rs),
+                     sorted({r["wall_s"] for r in rs})[:6]))
+        print("  SHOW-TIMEOUT (a FINDING: no `script end` within modelled + "
+              "grace): %d show(s)" % len(touts))
+        for s in touts:
+            rs = by_show[s]
+            r0 = rs[0]
+            print("    %-32s %2d/%2d cycle(s)  own %s expanded %s deadline %s "
+                  " wall %s" % (s, sum(1 for r in rs
+                                       if r["outcome"] == "SHOW-TIMEOUT"),
+                                len(rs), r0["own_s"], r0["expanded_s"],
+                                r0["deadline_s"],
+                                sorted({r["wall_s"] for r in rs})[:6]))
+        ended = [r for r in srows if r["outcome"] == "ended"]
+        print("  ENDED on their own: %d row(s) over %d distinct shows"
+              % (len(ended), len({r["show"] for r in ended})))
+        walls = sorted((fnum(r["wall_s"]) or 0, r["show"]) for r in srows)
+        print("  slowest ten show-plays: %s"
+              % ", ".join("%s %.1fs" % (s, w) for w, s in walls[-10:][::-1]))
+        tot = {}
+        for r in srows:
+            tot.setdefault(r["cycle"], 0.0)
+            tot[r["cycle"]] += fnum(r["wall_s"]) or 0.0
+        print("  play wall per cycle (s): %s"
+              % {k: round(v, 1) for k, v in sorted(tot.items(),
+                                                   key=lambda kv: int(kv[0]))})
+
+    # ---- 5c. the authoring instrument
+    vdc = vd.get("cycles") or []
+    if vdc:
+        print("\n--- 5c. THE AUTHORING INSTRUMENT (body counts per path half, "
+              "and the named probes) ---")
+        print("  %-6s %-26s %-10s %-10s %-9s %-9s"
+              % ("cycle", "where", "bodies_old", "bodies_new", "old_only",
+                 "new_only"))
+        for c in vdc:
+            for a in ([(c.get("interlude") or {}).get("authoring")]
+                      + list(c.get("authoring_snapshots") or [])):
+                if not a:
+                    continue
+                print("  %-6s %-26s %-10s %-10s %-9s %-9s"
+                      % (c["cycle"], a.get("where", "?"), a.get("bodies_old"),
+                         a.get("bodies_new"), a.get("old_only"),
+                         a.get("new_only")))
+                for p in a.get("probes") or []:
+                    print("      probe %-16s from %-18s old %-5s new %-5s  "
+                          "search %-22s readout %s"
+                          % (p["name"], p["from"], p["present_old"],
+                             p["present_new"],
+                             (p["search_reply"] or "").replace("\n", " ")[:22],
+                             (p["get_object"] or "").replace("\n", " | ")[:80]))
 
     # ---- 6. the leak verdict
     print("\n--- 6. THE LEAK RULE (committed before the launch) ---")
@@ -287,6 +359,18 @@ def main():
     moved = [k for k in fi if fi[k] != fo.get(k)]
     print("  %d files recorded in, %d out; MOVED: %s"
           % (len(fi), len(fo), moved or "none"))
+    print("  aggregate digest in %s  out %s  (per-file md5s sorted in C order "
+          "and hashed - never a concatenation, which is locale-dependent)"
+          % ((vd.get("frozen_digest_in") or "?")[:8],
+             (vd.get("frozen_digest_out") or "?")[:8]))
+    fmi = json.loads((out / "farm_sts_in.json").read_text()) \
+        if (out / "farm_sts_in.json").exists() else {}
+    fmo = json.loads((out / "farm_sts_out.json").read_text()) \
+        if (out / "farm_sts_out.json").exists() else {}
+    fmoved = [k for k in fmi if fmi[k] != fmo.get(k)]
+    print("  the FARM's own .sts copies: %d in, %d out; rewritten by "
+          "`ScriptAnnotator::flush`: %s"
+          % (len(fmi), len(fmo), fmoved or "none"))
     print("\n" + "=" * 96)
     return 0
 
