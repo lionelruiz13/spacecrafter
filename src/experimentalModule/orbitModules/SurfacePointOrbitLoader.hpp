@@ -18,6 +18,27 @@
 // `location_orbit` instead self-rotates with a degraded approximation (raw
 // JD, no epoch, offset frozen at construction) and silently DOUBLE-applies
 // spin if combined with a grounded body (the S11.78(c) trap).
+// [TRAP NOT CLOSED, AND ONE SENTENCE ABOVE NEEDS A NUMBER -- 2026-09-06,
+//  S11.217/F97.  (1) The trap now SIGNALS: LocationOrbitLoader writes an
+//  S2(f) warning when a body spells both, measured 51.32 deg apart on a live
+//  pair; the positions themselves are still both wrong and the row stays open.
+//  (2) "expressed in the parent's SURFACE frame" is true and is NOT the same
+//  thing as "at the authored planetographic longitude": the fold is
+//  Z(getAxisRotation()) and getAxisRotation() is `axisRotation + M_PI_2`
+//  [ModularBody.hpp:575-581], while the camera's own placement carries a
+//  compensating -pi/2 inside X(latitude - M_PI_2) [Camera.cpp:189-202].  So a
+//  body authored here at orbit_lon = L lands EXACTLY 90 deg east of an
+//  observer sent to lon = L, and of old's own AnchorPointBody point for L.
+//  Measured both ways in one run, observer at lon 0 and lon 90, angle at the
+//  parent's centre: 90.0000 / 0.0000 then 0.0000 / 90.0000
+//  (harness/f97_locorbit.py M3; the offline algebra is harness/f97_frame.cpp
+//  (4), 64 states, spread 0.000013 deg, and the fold WITHOUT the +pi/2 scores
+//  0.000000 deg -- the mutation that says the probe can tell them apart).
+//  This is S11.152(o)'s "exactly 90.0 deg in SURFACE mode ... a THIRD channel"
+//  and S11.4/S11.213's "-90.0003 deg zero point", one term, named at last.
+//  Whether `orbit_lon` here should keep meaning surface-frame azimuth or be
+//  respelled to the planetographic longitude the rest of the project uses is a
+//  RATIFIED-KEY question (D16-D19, S11.79(j)-(m)) and is recorded, not taken.]
 //
 // Keys (data, degrees/km like every legacy key):
 //   orbit_lon, orbit_lat        - planetographic position on the parent

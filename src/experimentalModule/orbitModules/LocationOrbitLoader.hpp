@@ -1,6 +1,44 @@
+#include "experimentalModule/OrbitLoader.hpp"
+#include "experimentalModule/ModularBody.hpp"
+#include "bodyModule/orbit.hpp"
+#include "tools/utility.hpp"
+#include "tools/log.hpp"
+
+// The LEGACY surface-point provider, registered on this path too
+// [modules.cpp:49, Vixy's da858612 2025-09-20] and building the very same
+// `LocationOrbit` the old path builds -- so every defect of that class is a
+// defect of both paths (INTENT S5.21, reach corrected at S11.163(e)).
+// One of them, `orbit_lat` reaching spheToRect as radians, is fixed at the
+// constructor (orbit.cpp, S11.217) and therefore fixed here.  The other two --
+// the missing equatorial->VSOP87 rotation and the frozen linear spin -- are
+// held at S11.217 with both readings recorded: making them exact forces a
+// choice about what `orbit_lon` means, and by measurement that choice also
+// decides where `surface_point`'s ratified key points (the two conventions
+// differ by exactly 90 deg; harness/f97_locorbit.py M3, both ways, live).
 class LocationOrbitLoader : public OrbitLoader {
     virtual std::unique_ptr<Orbit> load(std::map<std::string, std::string> &params) override {
         auto parent = ModularBody::findBody(params["parent"]);
+
+        // The DOUBLE-SPIN TRAP, said out loud at the one place that knows both
+        // sides -- the S2(f) anchor for this event is the loader, because it
+        // is the only site holding the coord_func AND the relation (S11.193).
+        // `LocationOrbit` carries the parent's rotation inside its own
+        // position (`lon + JD*JDToRotation`), while a GROUNDED body's position
+        // is additionally folded by the parent's spin
+        // [ModularBody.hpp:726-727], so the spin lands twice.  Measured on a
+        // live pair authored with the same keys, one spelled grounded and one
+        // not: 51.32 deg apart (harness/f97_locorbit.py M5, S11.217).  This is
+        // the S11.78(c) failure class -- internally coherent, situationally
+        // wrong, no error signal -- and until the position halves are exact the
+        // signal is what can honestly be given.  The sibling provider warns for
+        // the mirror-image mistake [SurfacePointOrbitLoader.hpp].
+        if (params["relation"] == "grounded" || Utility::isTrue(params["bound_to_surface"])) {
+            cLog::get()->write("Body '" + params["name"] + "' uses coord_func=location_orbit "
+                "WITH the grounded relation: location_orbit already turns with the parent, so "
+                "the grounded fold applies the parent's rotation a SECOND time and the body "
+                "will not stay where it was authored. To fix: drop relation = grounded / "
+                "bound_to_surface for this body.", LOG_TYPE::L_WARNING);
+        }
 
 		return std::make_unique<LocationOrbit>(
 			Utility::strToDouble(params["orbit_lon"]),

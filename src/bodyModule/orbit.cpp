@@ -1087,8 +1087,39 @@ void stillOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, doubl
 	v[2] = z;
 }
 
+// orbit_lat is in DEGREES, like orbit_lon and like every other angular data
+// key, and Utility::spheToRect below takes RADIANS (INTENT S5.21(b), fixed
+// S11.217).  The proof that the unit is degrees is inside the loader that
+// feeds this constructor: ProtoSystem builds the same body's rotation
+// elements out of the SAME two keys twelve lines further on and converts BOTH
+// of them, `M_PI_2 - strToDouble(param["orbit_lat"]) * (M_PI/180.)` and
+// `strToDouble(param["orbit_lon"]) * (M_PI/180.)` [protosystem.cpp:951-952];
+// the new path's own surface provider documents "degrees/km like every legacy
+// key" and converts both [SurfacePointOrbitLoader.hpp:22-24, :145].  Until
+// this line, `lat` reached spheToRect as RADIANS: an author writing
+// `orbit_lat 45` was placed at latitude 58.31008 deg, 13.31008 deg away, with
+// the vector still unit-length so that nothing downstream could see it
+// (measured both offline and in the running application, both paths --
+// harness/f97_frame.cpp (1) and harness/f97_locorbit.py M1).  D9 does not
+// object: no such body has ever been authored [stated: tester, round-3 R18].
+//
+// TWO DEFECTS OF THIS CLASS ARE NOT FIXED HERE AND ARE NOT HIDDEN.  The
+// output below is written straight into `ecliptic_pos`, which is a vector in
+// the ROOT (VSOP87 ecliptic) orientation centred on the parent -- so this
+// class's `lat` is an ECLIPTIC latitude and its `lon` runs about the ECLIPTIC
+// pole, where old's own authority for a planetographic point is
+// `P->getRotEquatorialToVsop87() . Z((P->getSiderealTime(jd)+lon)*pi/180)
+// . Y((90-lat)*pi/180)` [anchor_point_body.cpp:63-71].  Measured on Mars at
+// J2000: 86.31 deg away from that authority.  And the spin below is a frozen
+// linear extrapolation from JD 0 instead of the parent's own
+// getSiderealTime(JD) -- exact for a linear-`re` parent (measured -7e-06 deg
+// on Mars) but 8.86 deg out on Earth, whose law is the apparent sidereal
+// time, and an I2 duplicate of the parent's spin state either way.  Both are
+// held at INTENT S11.217: making them exact forces a choice about what
+// `orbit_lon` means that also decides where `surface_point`'s ratified key
+// points, and that choice is not this class's to take.
 LocationOrbit::LocationOrbit(double _lon, double _lat, double _alt, double parentRadius, double parentPeriod, double parentOffset) :
-	lon((_lon+parentOffset)*M_PI/180), lat(_lat), alt(_alt/AU+parentRadius), JDToRotation((2*M_PI)/parentPeriod)
+	lon((_lon+parentOffset)*M_PI/180), lat(_lat*M_PI/180), alt(_alt/AU+parentRadius), JDToRotation((2*M_PI)/parentPeriod)
 {
 }
 
