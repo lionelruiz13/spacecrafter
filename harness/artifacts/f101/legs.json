@@ -1275,5 +1275,106 @@
    "",
    "TDRS 3"
   ]
+ },
+ {
+  "leg": "ctl_S02",
+  "show_md5": "b28ca486",
+  "show_lines": 5,
+  "bin_md5": "b5f08778",
+  "exit_status": 0,
+  "quit_exit_code": 0,
+  "script_end_seen": true,
+  "frozen_ok": true,
+  "frozen_n": 139,
+  "frozen_digest_in": "a4b6ea4f",
+  "frozen_digest_out": "a4b6ea4f",
+  "farm_14sts_md5": "31503adb",
+  "lock_before": {
+   "present": false
+  },
+  "lock_after": {
+   "present": false
+  },
+  "proc_before": [],
+  "proc_after": [],
+  "witness_final": {
+   "swap_to_solar_up": 1,
+   "exit_solar": 2,
+   "enter_galaxy": 1,
+   "galaxy_too_high": 1,
+   "galaxy_too_low": 0,
+   "galaxy_mode": 0,
+   "exit_galaxy": 0,
+   "enter_stellar": 0,
+   "exit_stellar": 0,
+   "enter_solar": 2,
+   "swap_to_stellar_up": 0,
+   "altitude_change": 12,
+   "observer_change": 4,
+   "oldpath_add": 90,
+   "oldpath_no_parent": 0,
+   "oldpath_no_name": 0
+  },
+  "witness_flush_lag": {},
+  "witness_order": [
+   "enter_solar",
+   "exit_solar",
+   "enter_solar",
+   "observer_change",
+   "observer_change",
+   "observer_change",
+   "swap_to_solar_up",
+   "exit_solar",
+   "enter_galaxy",
+   "galaxy_too_high",
+   "observer_change"
+  ],
+  "altitude_lines": [
+   "Altitude change received 75.1043",
+   "Altitude change received 75.1043",
+   "Altitude change received 7.51043e+07",
+   "Altitude change received 75.1043",
+   "Altitude change received 75.1043",
+   "Altitude change received 9e+09",
+   "Altitude change received 9e+09",
+   "Altitude change received 1.1e+16",
+   "Altitude change received 1.1e+16",
+   "Altitude change received 1e+10",
+   "Altitude change received 4.2e+12",
+   "Altitude change received 4.2e+12"
+  ],
+  "oldpath_add_total": 90,
+  "oldpath_dup_refusals": 0,
+  "oldpath_noorbit_refusals": [],
+  "dump_pre": {
+   "bodies_old": 90,
+   "bodies_new": 120,
+   "both": 90,
+   "old_only": 0,
+   "new_only": 30,
+   "old_names_n": 90
+  },
+  "dump_post": {
+   "bodies_old": 90,
+   "bodies_new": 120,
+   "both": 90,
+   "old_only": 0,
+   "new_only": 30,
+   "old_names_n": 90
+  },
+  "dump_then": {
+   "bodies_old": 0,
+   "bodies_new": 121,
+   "both": 0,
+   "old_only": 0,
+   "new_only": 121,
+   "old_names_n": 0
+  },
+  "then_show": "fscripts/S02.sts",
+  "then_attempts": 0,
+  "then_distinct": 0,
+  "then_repeated_names": [],
+  "then_absent_from_old": [],
+  "then_absent_from_new": []
  }
 ]

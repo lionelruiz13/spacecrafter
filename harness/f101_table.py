@@ -35,7 +35,7 @@ DUP = re.compile(r"Can not add body named (.*?) because a body of that name")
 NOORBIT = re.compile(r"Body '(.*?)': could not build an orbit from coord_func")
 
 LEGS = ["p23", "p25", "p27", "p31", "p27nc", "ctlmars",
-        "p25desc", "p31desc", "p25desc06", "p31desc06"]
+        "p25desc", "p31desc", "p25desc06", "p31desc06", "ctl_S02"]
 
 
 def half_names(path):
@@ -101,7 +101,13 @@ def main():
                          if v else "-")
         # the `06old.sts` accounting, from the engine's own lines
         if r.get("then"):
-            after = adds[len(adds) - 1 - adds[::-1].index("Solsys") + 1:]
+            # the second show's own attempts start after the last add the
+            # FIRST show made; `Solsys` marks it when there is one, and when
+            # the first show authors nothing (ctl_S02) the mark is the 90
+            # startup adds.
+            mark = (len(adds) - adds[::-1].index("Solsys")
+                    if "Solsys" in adds else r["dump_post"]["bodies_old"])
+            after = adds[mark:]
             distinct = set(after)
             old_then, new_then = half_names(d / "dump_then.json")
             row["then_show"] = r["then"]
