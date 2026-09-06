@@ -4727,3 +4727,17 @@ that and prints its reason everywhere.
   other side. Pass the timeout; keep every call foreground.
 - **A dual dump of ~1700 bodies is 2.9 MB** and the whole `fscripts/` media
   tree is 897 MB — the farm symlinks the media and copies only the 137 `.sts`.
+
+**Measured, binary `46849f69`, code `22499f04` (unchanged by this task):** the DEATH
+control RED (F1 within one sample, exit −9) · a 17-min shakedown that ABORTED the
+app · three reproducer arms · the bisect · **the soak: 4.508 h, 8 complete cycles
+of 135 shows, 541 samples, no F1/F2/F3/F4, cycle wall 1913.3–1916.6 s (spread
+3.3 s, slope 0.0000), probe median 204.6 ms with 0 of 541 over the 45 s bound,
+quit exit 0 in 0.76 s, 139/139 real-HOME md5s in == out (digest `a4b6ea4f`)**.
+LEAK rule: **LEAK** — six positive steps, 42.4 MB/cycle, 68.3 MB/h, and the
+secondary per-show series has 135 of 135 shows rising every cycle (F95's playlist
+gave NO LEAK at 0.28–0.38 MB/h). §5.115's script log: **193.36 MB/h, 828 MB in one
+session** (F95: 1.88 MB/h). Pinned clock: the NEW half moves for 235 of 286 bodies
+up to 1.49e−07 AU because this corpus's shows move the simulation clock, where
+F95's did not and its new half was bit-stable 120/120; the OLD half cannot be
+compared at all, because one show empties it. Artifacts `artifacts/f98/` (596 KB).
