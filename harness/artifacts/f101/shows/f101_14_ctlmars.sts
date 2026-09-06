@@ -1,0 +1,5 @@
+### F101 shipped-scene control: `set home_planet` on a name the
+### CURRENT system carries.  No altitude move, so no executor
+### mode change is predicted and the old half must not move.
+set home_planet Mars
+wait duration 0.50

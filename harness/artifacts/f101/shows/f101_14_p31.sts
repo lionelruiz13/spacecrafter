@@ -1,0 +1,31 @@
+###
+### GAIA 10 parsecs - SpaceCrafter Script
+###
+### Copyright 2021 Lionel RUIZ - lionel.ruiz@live.fr
+###
+### License:
+###
+### For use with LSS systems only
+### The exploitation of this script is restricted to registered users only.
+### http://www.lss-planetariums.info
+###
+image name black filename dome/black.png coordinate_system viewport alpha 0 scale 1 action load
+wait duration 0.5
+image name black alpha 1 duration 0.5
+wait duration 0.5
+moveto lat 90 lon 0 duration 0
+wait duration 0.05
+moveto alt 0.9E+9 duration 0
+wait duration 0.05
+moveto alt 0.9E+10 duration 0
+wait duration 0.05
+moveto alt 1.1E+16 duration 0
+wait duration 0.05
+#body action load mode in_galaxy name Solsys type Observatory parent none filename Universe pos_x 0.00001 pos_y 0.00001 pos_z 0.00001 scale 100
+body action load name Solsys type Sphere filename Universe parent none hidden true color 0,0,0 halo false lighting false coord_func still_orbit radius 0.00001 scale 0.000001 albedo 0.0 orbit_x 0.00001 orbit_y 0.00001 orbit_z 0.00001 rot_periode 100000000000
+wait duration 0.01
+set home_planet Solsys
+wait duration 0.01
+select planet Solsys pointer off
+wait duration 0.01
+flag track_object on
