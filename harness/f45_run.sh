@@ -99,6 +99,7 @@ log "field stars.ini   md5 (in) = $STA_IN"
 # --- data root, as read (never written) -------------------------------------
 log "--- data root spectral/cids files, before the run ---"
 ls -la "$DATAROOT/stars/" | tee -a "$META"
+# NOTE 2026-09-06 (Q-69, INTENT §11.218(n)): `md5sum ./* | md5sum` hashes the per-file digests in GLOB order — consistent for this run's own in==out compare under one locale, but BANK-UNSAFE: the same files hash differently under another LC_COLLATE. A banked value must sort in C (LC_ALL=C sort) or hash per file.
 DR_IN=$(cd "$DATAROOT/stars" && md5sum ./* | md5sum | cut -d' ' -f1)
 log "data root stars/ aggregate md5 (in) = $DR_IN"
 log "requested spectral file present in data root: $([ -f "$DATAROOT/stars/$SPFILE" ] && echo YES || echo NO)"
@@ -183,6 +184,7 @@ ls -la "$FARM/.spacecrafter/log/" | tee -a "$META"
 CFG_OUT=$(md5sum "$CFG_F" | cut -d' ' -f1)
 SSY_OUT=$(md5sum "$SSY_F" | cut -d' ' -f1)
 STA_OUT=$(md5sum "$STA_F" | cut -d' ' -f1)
+# NOTE 2026-09-06 (Q-69, INTENT §11.218(n)): `md5sum ./* | md5sum` hashes the per-file digests in GLOB order — consistent for this run's own in==out compare under one locale, but BANK-UNSAFE: the same files hash differently under another LC_COLLATE. A banked value must sort in C (LC_ALL=C sort) or hash per file.
 DR_OUT=$(cd "$DATAROOT/stars" && md5sum ./* | md5sum | cut -d' ' -f1)
 log "field config.ini  md5 (out) = $CFG_OUT  MATCH=$([ "$CFG_IN" = "$CFG_OUT" ] && echo yes || echo NO)"
 log "field ssystem.ini md5 (out) = $SSY_OUT  MATCH=$([ "$SSY_IN" = "$SSY_OUT" ] && echo yes || echo NO)"

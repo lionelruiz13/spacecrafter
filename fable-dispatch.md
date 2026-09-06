@@ -186,8 +186,8 @@ number entered a section:** (a) **`06old.sts` authors 170 satellites, not 3000**
 (`LC_ALL=C /usr/bin/grep -c 'body action load'` = 170; 359 lines; no `struct loop`) —
 the number is the F90 executor's (§11.211(h)), written without its command (Q-67's
 class on the executor side) and propagated to §5.137 ("thousands of … lines"),
-§11.215(m), `DEPLOYMENT-MAP.md:687` and this file's session-24 §3 items; the corpus's
-largest authoring show is `14.sts` at 529 lines, the total 719 lines in 9 shows. F98
+§11.215(m), `DEPLOYMENT-MAP.md:687` and this file's session-24 §3 items; ~~the corpus's
+largest authoring show is `14.sts` at 529 lines, the total 719 lines in 9 shows~~ **[CORRECTED at F98's acceptance, §11.218(i): my census pattern assumed the command's word order — `06.sts` writes `body name "X" … action load` 1013 times; measured both ways, 1719 authored bodies in 8 shows (06.sts 1013 · 14.sts 528 · 06old.sts 170 …); the 170 stands, the rest were LINE counts of one order — dispatcher defect 4, the sibling class inside a measured number]**. F98
 corrects the four ledger homes with markers at both homes; this file's two are
 corrected at the close. (b) **a concatenation fingerprint is locale-dependent** — `cat
 $(ls *.sts)` and `cat *.sts` over the same 137 files hashed `68c9b4ba` vs `e2123d2b`
@@ -204,6 +204,75 @@ ONE full canary post-fix (the atmosphere's light direction rides the changed
 authority) + FUNCTIONAL readout legs; F97 FUNCTIONAL (farm, dual dump, `--no-scene`);
 F98 FUNCTIONAL (the soak — hours on `:2`, no photometric claim). Remotes: local contains
 origin on both; push impossible here — the owner's push is R5, unchanged.
+**Round outcome (session 25 close, 2026-09-06 — every time in this note is pasted `date` output;
+the close commit's own clock is the stamp):** F96 → **§11.216** + §5.138 FIXED + the §5.86 pole
+rider closed + **§5.139** minted at acceptance (ONE inverse of the render rotation; alt/az, the
+atmosphere's sun direction, the descent and the tracking aim are old's with the offset armed —
+27.000007° → 0.000017°; the config key a LATENT offset; the zero-vector guard question) · F97 →
+**§11.217 IN PART** + §5.21 PARTLY FIXED (the latitude landed; the STOP fired at the derivation:
+`surface_point`'s `orbit_lon` ninety degrees east → **§5.140**; the loader's null parent →
+**§5.141**; a third defect named, 86.306371° on Mars) · F98 → **§11.218** + **§5.142 / §5.143 /
+§5.144** minted at acceptance (4.508 h, 8 complete cycles, 541 samples, no FAIL flag; two of the
+tester's shows abort the app; one runtime system empties the old half; LEAK 68.3 MB/h; §5.115 at
+193 MB/h; the four "3000" homes corrected both ways) — **three for three delivered AND
+supervisor-verified same session**, every delivery re-verified by my own runs (the smoke suite on
+`eb3f5e50` and on `46849f69`; the F96 leg reports and guard answers read; the F97 scores read
+from the committed JSON; the F98 abort arm C, its negative arm and the old-path bisect
+reproduced, `f98_repro14.py`, 18:30–18:41). Code `a2a880ef → 24100461 → 22499f04` (two executor
+commits: `Camera.{hpp,cpp}`; `orbit.cpp` one token + two loader files — nothing else); binary
+`404b9e89 → eb3f5e50 → 46849f69`; harness `fa7104e →` this close. SUPERVISOR ACTS: archival pass
+17 (`5d94d3f`); three mints under the PREMISES rule (`b111c87`; 21 / 22 / 26 PASS at the mint);
+**six §5 mints at acceptances** (§5.139 – §5.144, all record-only, the F32/§5.79 precedent);
+F97's and F98's per-round premises refreshed by section-bounded replace with content asserts
+(`7d6395a`, `68efa44`); the §0b.1 ledger-instruments line (the miss-ledger item, two
+recurrences); `f45_run.sh:102/186` annotated (Q-69); in `~/shared`: Q-67 ×3 (a dispatcher
+instance, a sibling-class instance, the census-order instance), Q-68 (the tool's 120 s default
+timeout), **Q-69 NEW** (locale-dependent concatenation fingerprints, sweep done), one
+miss-ledger line. OWNER EVENTS IN-SESSION: none — the trigger line only; no question asked
+(Sunday). HOST: same boot throughout (`uptime -s` 2026-09-04 18:45:08); RAM 23 GiB available of 59 at the
+close; `:2` unlocked on all 541 soak samples; no HOST-EVENTS entry owed. SUPERVISOR TALLY: **six
+dispatcher defects**, all output-side, all corrected at their nodes — Q-67's class ×3 (the
+premise counts typed before the run, caught by pasting the instrument; the map line `:687`
+for a sentence at `:707`; §11.213(i2)'s measure-zero premise carried from my F91-acceptance
+disposal) and its SIBLING class ×3 (structure asserted without the read: "one used" at
+`protosystem.cpp:600`; the census pattern modelling one of the command's two word orders — the
+class hiding INSIDE a measured number, a PREMISES line pinning the pattern's blind spot with
+the count; the byte-identical-`plan` requirement inconsistent with the design's own change);
+plus instrument slips of my own hand, none in a record: one ugrep pattern past its complexity
+limit, the F97 result's structure guessed twice before it was listed. EXECUTOR REPORT DEFECTS:
+none this round. EXECUTOR criterion-integrity instances: **≥ 18** (F96: the leg re-taken with
+the addendum committed before the re-run; the freshness partition independent of the model;
+both mutations refuted; the offset-0 identity claimed only where a same-binary control licensed
+it; the measure-zero premise refuted on a shipped command. F97: the frame derived before one
+byte of code; the STOP at its own clause with both readings; only the separable half landed;
+three refuted predictions kept as refuted; the probe's Mars corrected by the live leg. F98: the
+criteria, cap and model table before any process; the shakedown; the DEATH control finding the
+instrument's own label defect; CAPPED / SHOW-TIMEOUT / INTERRUPTED discriminated; R1 refuted by
+its own instrument; the baseline re-measured from a `git archive`; the uncredited lists diffed
+with `comm`; the census taken both ways). BASELINES AT CLOSE (measured 18:47:01): scan
+**234/289/135** · pair-check **234/209/25/116** · D 35 · D2 11 · I 89 · **I2 37 · M 83** — over the
+open (226/279/135 · 231/206/25/110 · I2 36 · M 81): +8 raw event lines and +10 pairs (§11.216's
+four markers, §11.218's four spans; uncredited 135 → 133 → 135: F97 paid two §5.21 arrears,
+§11.218's two citation-shaped candidates disposed at its (q)); +3 entry files / +3 live pairs
+(the three entries); +6 inline stubs (§5.139 – §5.144); I2 +1 and M +2 are §11.218's entry-only
+markers at §11.211/§11.215, licensed by the section's own condition (neither stub carries the
+number, measured). Archival pass 18 (update-s24 + F96/F97/F98, live `### F` 3 → 0) DEFERRED to
+the next open. NEXT-ROUND QUEUE, in order: (1) archival pass 18 at open; (2) **§5.141's fix** (S,
+decision-free: the sibling's guard mirrored + the both-ways proof in §5.50's shape); (3)
+**§5.139's mechanism leg** (S–M, `ModularBody`'s update walk to the pruner; the fix decision-free
+once confirmed); (4) **§5.143's mechanism leg** (S: `14.sts` line-bisected to the `parent none`
+load) + `bodies_old > 0` asserts in every dual-dump instrument; (5) **§5.142's reading** (S: the
+uniform pool's bound and the per-body cost at `BufferMgr`, and `06.sts` alone for the first-error
+body count — the policy stays the owner's); (6) ON THE OWNER'S WORD: the `orbit_lon` ruling →
+§5.21's two halves + §5.140's fix (M); the 8–12 h cache-vs-leak leg (§5.144); the pool policy
+(§5.142); (7) the (g) tail: §5.115's retention design shown first, §5.66+§5.71 (feel/meaning
+owed), A15's residual; (8) instrument residues: `supervised-by.sh` B1 (owner-authorized),
+`f85_links.py` guard, `f89_p7.py margins`, the b4 `/proc` probe, the `dumpread.py` duplicate,
+the pinned-clock one-parameter experiment (dump later than 1.5 s after the jump, §11.218(l));
+(9) riders: `observedToBodyLocalPos` with no consumer (owner), the `[parallel-script]`
+question, scedit README `:43`, the tester's `panorama5.sts:102`; (10) owner items per §3.
+Remotes: **92 code / 760 harness** unpushed before this close's commit (measured 18:47:01); push
+from a keyed host — the supervisor never pushes.
 
 ---
 
@@ -449,7 +518,11 @@ session per claude/fable-dispatch.md §0b."*
    (2026-08-29, §11.161(g)):** `md5sum claude/agents/opus-xhigh.md
    .claude/agents/opus-xhigh.md` must MATCH — the tracked file is the authority, the
    `.claude` one its deployed projection; on mismatch, regenerate the projection from
-   the authority before any dispatch. The 2026-07-25 supersession-block-in-every-prompt
+   the authority before any dispatch. **Ledger instruments (2026-09-06, the miss-ledger item — two
+   supervisor sessions reached for them under `harness/` from memory of a note that omitted
+   the directory):** `cd /home/claude/spacecrafter/claude && python3 intent_backmarker_scan.py .
+   && python3 intent_pair_check.py .` — both live at the harness repo ROOT, not under
+   `harness/` (README §F78). The 2026-07-25 supersession-block-in-every-prompt
    era is CLOSED: prompts now carry only per-round variables (HEADs, date, next §11
    number, task pointer, live section count, task boundaries).
 2. **Pick the next 3 dispatchable tasks** by file position, honoring deferral/queue
@@ -556,7 +629,9 @@ pass 17). Live below: the session-25 mints **F96** (§5.138 + the §5.86 pole
 guard), **F97** (§5.21) and **F98** (the `fscripts/` soak). Remaining candidates
 next-round: the §11.207(g) tail (§5.66+§5.71 · §5.115 · A15's residual), the
 instrument residues, the riders. Still blocked: §5.100's fix (authorization
-unanswered).*
+unanswered).* **Session-25 round (2026-09-06): F96 §11.216 · F97 §11.217 (in part — the
+STOP endorsed) · F98 §11.218 — three for three DELIVERED and accepted; archival pass 18
+(update-s24 + F96/F97/F98) DEFERRED to the next open.**
 
 ---
 
@@ -1125,6 +1200,57 @@ the four corrections; §11 entry + stub; map; README; trees clean; WIP cleared; 
 LAST.
 **WIP:** **DELIVERED 2026-09-06 → §11.218** (entry `INTENT/11.218.md` + stub; four corrections with markers; DEPLOYMENT-MAP T5 item 2 discharged; README section; D14 PASS). ONE driver generalised (`--playlist-dir`/`--root`/`--cap`/`--skip-show`; `criteria_sha` `f5e0d602` = F95's; plan diff committed), duration model ONE home (`sts_duration.py`, loop-aware; F90's triple unmoved on 145 files). **Soak: 4.508 h, 8 complete cycles of 135 shows, 541 samples, NO F1/F2/F3/F4, quit exit 0 in 0.76 s, 139 real-HOME md5s in==out.** Cap 60 s and the 13-show CAPPED set predicted before the launch and measured exactly; the 7 SHOW-TIMEOUTs are exactly the 7 chaining shows. **TWO FINDINGS, both §5 candidates named for the row's holder, nothing fixed:** (1) `06.sts`+`14.sts` ABORT the application (uniform buffer pool → device lost → `terminate`, SIGABRT), reproduced three ways, `14.sts` alone clean; (2) `14.sts` alone empties the OLD path's dump half (246 → 1 → 0) for the rest of the session while `search` says NOF and `get status object` answers in full. LEAK verdict **LEAK** (68.3 MB/h, 135/135 shows rising); §5.115 priced at **193 MB/h** (828 MB in one session) against F95's 1.88. Census corrected: the corpus authors **1719** bodies in 8 shows (both word orders), `06old.sts` **170**. Baselines: scan 234/289/135 · pair-check 234/209/25/113 · D 35 · D2 11 · I 89 · I2 37 · M 83, every delta named at §11.218(q) against a same-tool re-measured baseline.
 
+**ACCEPTED 2026-09-06 — the verifying commands' `date` read 18:29:38 and 18:30:31–18:41:08
+(supervisor, session 25, Claude Fable 5.1).** Verified by my own runs and reads, not by the
+report: §11.218 read in full; NINE harness commits `1327ae4 → 9438c41` (Claude Opus 5; the
+criteria, the cap and the 136-show model table at `1327ae4` before any application process);
+code UNTOUCHED at `22499f04`, binary `46849f69` before and after, both trees clean; the four
+"3000" homes corrected with the command beside the number and markers at §5.137's row,
+`INTENT/11.211.md` (h), `INTENT/11.215.md` (m) and the map (`:709`); README §F98 (`:4639`); D14
+PASS; instruments to the digit (scan 234/289/135 · pair-check 234/209/25/113 · D 35 · D2 11 · I
+89 · I2 37 · M 83 — each delta disposed at (q), the two uncredited by `comm`, the entry-only
+markers licensed by the section's own "if the stub carries the number", both stubs measured not
+to). **AND THE TWO FINDINGS REPRODUCED BY MY OWN HAND** (`f98_repro14.py`, fresh farms under
+`/home/claude/sc-f98/supervisor-*`, 18:30:31–18:41:08): the NEGATIVE arm `panorama1.sts` — 0
+buffer errors, 0 device-lost, exit 0, quit 0.61 s; **ARM C** `06.sts` then `14.sts` at a 60 s gap —
+202 loads executed, **1557** `Can't allocate buffer in 'uniform BufferMgr'`, 1 device lost, 1
+terminate, **died unprompted at +75.5 s, exit −6** (the executor's +76.0); **THE BISECT**
+`06old.sts` → dump **246 old / 276 new**, then `14.sts` → **1 / 277**, 698 loads, 0 errors, exit 0;
+the real HOME `03fbee59`/`545a51ef` pristine after all three, no `spacecrafter` left in `/proc`.
+Deviations ENDORSED with the executor's arguments: `--skip-show fscripts/06.sts` for the long
+leg (a show measured to take the app down cannot also be the show that lets a soak measure
+anything else; `06.sts` rather than `14.sts` keeps both mandated probes and the safer body
+margin; recorded in five places); the 17-minute shakedown before the leg (F95's leg 1 lost 2 h
+44 min to an unshaken driver — this one found the abort); the authoring instrument also
+mid-cycle (the boundary alone measures an emptied universe, because the playlist's last show
+clears); the `plan` at F95's defaults NOT byte-identical because design (2) changes
+`diaporama.sts`'s modelled duration 3.10 → 310.00 s — the criteria block IS byte-identical and
+`criteria_sha` `f5e0d602` equals F95's leg-2 config; two instrument defects found by the DEATH
+control and fixed (INTERRUPTED vs CAPPED; `finish()` comparing 139 files against a default 11);
+a wrong revision recorded as wrong (R1 45–90 min vs 31.9 measured). THREE DISPATCHER DEFECTS
+reported, ACCEPTED as mine: (1) the census — `grep -c 'body action load'` counts ONE of the
+command's two word orders, so my "170 / 529 / 719 in 9" missed `06.sts`'s 1013 and the corpus's
+largest authoring show; the ledger's "3000" was wrong about `06old.sts` (170) and "thousands"
+true of the corpus (1719) — corrected in both directions at all four homes, and my open note
+struck above (Q-67's sibling class INSIDE a measured number — the gate passed 26/26 on a count
+true of the pattern and false of the corpus); (2) `DEPLOYMENT-MAP.md:687` quoted for a sentence
+at `:707` (a line number from a grep made before the day's inserts); (3) the byte-identical-`plan`
+requirement inconsistent with design (2). Round tally: **six dispatcher defects** (the typed
+premise counts; the measure-zero premise; "one used"; the census order; the stale map line; the
+plan requirement). SUPERVISOR ACTS at this acceptance: **§5.142 MINTED** (the abort — VIXY'S
+STRATUM, a D13-class policy at `BufferMgr`), **§5.143 MINTED** (the old half emptied by a runtime
+`parent none` system, reach stated by half — the drawn path keeps the bodies; a standing hazard
+for parity instruments), **§5.144 MINTED** (the LEAK verdict, cache-vs-leak undecided, the
+discriminating leg the owner's); (l) and (m) annotated at §5.62/§5.84 and §5.115 (one-home data
+pushed to their rows); markers at §11.218(g)(h)(k) both homes. STANDING CONSEQUENCES: **"ready"
+has a new fact against it — two of the tester's own shows, in directory order, abort the
+application on the reference binary**, and his corpus grows the process at 68 MB/h and the
+script log at 193 MB/h; `body action reload` is still in no soaked show; the soak driver is ONE
+instrument for both corpora (`--playlist-dir/--root/--cap/--skip-show`), its duration model has
+one home (`sts_duration.py`) and sees loops; every foreground poll longer than 120 s sets the
+tool's timeout explicitly (Q-68); `/home/claude/sc-f98/` (1.8 GB) holds the seven farms, the
+pristine tree and my three runs.
+
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
@@ -1151,6 +1277,103 @@ LAST.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-25 decision items (2026-09-06, the OFFSET-FRAME / LOCATION-ORBIT / SECOND-SOAK round —
+  F96 · F97 (in part) · F98; written Sunday evening on your stated capacity: nothing asked
+  in-session, every item one line to answer or to ignore; the first one is the round's headline):**
+  - **YOURS, and nothing here substitutes them:** (1) **"READY" HAS A NEW FACT AGAINST IT — §5.142:
+    two of your tester's own shipped shows, `fscripts/06.sts` (1013 authored bodies) then
+    `fscripts/14.sts` (528), played in the order the directory sorts them, exhaust the UNIFORM
+    buffer pool, lose the Vulkan device and ABORT the reference binary** (`Can't allocate buffer in
+    'uniform BufferMgr' !` ×1557, each one followed by `Succesfull loading ojm`, then a stall parked
+    in `App::draw`, device lost, SIGABRT at +76 s — reproduced three ways by the executor and by my
+    own hand; `14.sts` alone is clean, `06old.sts`+`14.sts` (698) is clean, 1156 bodies stand with
+    zero errors — it is the ACCUMULATED count). Your stratum (EntityCore `BufferMgr`), a D13-class
+    policy: grow the pool, refuse the load with a §2(f) line, or degrade — say which, or say
+    "read it first" and the reading is one S task. (2) **R5 — the PUSH**: `master-beta` (the count is
+    in the close note) and `CC-harness` from a keyed host — unchanged, still the one act that makes
+    any of this reach the developer. (3) **§5.144 — the RSS grows 68 MB/h under his corpus and did
+    not saturate in 4.5 h** (LEAK by F95's rule, the steps falling 68 → 32 MB — the shape of a cache
+    that has not filled; 897 MB of media in the corpus): ONE 8–12 h leg with the
+    `texture: already in cache` count beside the RSS separates a cache from a leak. Yes/no. This
+    subsumes session 24's item (3) on F95's 0.3 MB/h tail (180× smaller). (4) **§5.115 in
+    arithmetic: 193 MB/h, 828 MB in one 4.5 h session of his own shows** — one working day on the
+    shipped default crosses a gigabyte, in one dated file; R20's "8 launches" is ~6.6 GB on this
+    load. The retention half is decision-free; the per-launch key vs the per-day file layout is the
+    design you should see before it ships (§11.207(g)(5), not minted this round for that reason).
+    (5) **§5.140 — `orbit_lon` MEANS TWO THINGS**: `surface_point` + grounded lands a rover ninety
+    degrees EAST of the planetographic longitude the camera, `moveto lon` and old's
+    `AnchorPointBody` mean (measured both ways, live on Mars: the cells swap); it is the mesh
+    convention's `+π/2` (`getAxisRotation()`'s own *"TODO Fix ojml ?"*), the same term §11.152(o)
+    could not explain and F91 removed from RA/DE. `orbit_lon` is a RATIFIED key (D16–D19), so its
+    meaning is your ruling — Reading 1 (planetographic, one meaning per key across paths and
+    providers) costs NO content (census: 0 uses of `surface_point` in ssystem / scripts /
+    modularSystem / doc / data) and unblocks §5.21's remaining two halves (the frozen spin and the
+    missing `getRotEquatorialToVsop87()`, 86.3° on Mars); Reading 2 keeps today's landing and makes
+    one key mean two longitudes. One word. (6) **§5.139 — a body out of the view cone keeps a frozen
+    eye-frame position** after a camera move, so its alt/az and RA/DE answer in a camera state that
+    no longer exists (48 of 120 records, 109.9°–170.7° from old after one `select` + track; the
+    code's own comment says non-drawn bodies stay queryable): the update walk's pruner is unread —
+    an S–M leg in `ModularBody`, decision-free once the mechanism is confirmed; say if you know the
+    pruner. (7) **The pole guard at the ZERO vector** (§11.216(i)(j2)): 29 of 120 shipped records
+    (systems, anchors) have no direction at all and print `AD/DE : 00h00m00s / +90°00'00"` now where
+    they printed `06h00m00s / +00°00'00"` — both undefined; should "no direction" print differently
+    from "at the pole"? One line either way. (8) **Scratch trees, say the word to remove**
+    (`du -sh` at 18:35): `sc-f84` 4.2G · `sc-f86` 1.3G · `sc-f89` 1.5G · `sc-f98` 1.8G · `sc-f97`
+    340M · `sc-f96` 222M · `sc-f94` 189M · `sc-f95` 125M · `sc-f93` 64M · `sc-f90` 27M · `sc-f91`
+    6.4M · `sc-pass16` — every cited number resolves by commit without them.
+  - **ROUTED TO THE MAIN TESTER, not asked (§11.161(c)):** his `fscripts/panorama5.sts:102` carries
+    a `struct if end` that closes nothing (the engine's own annotator wrote the diagnostic onto
+    the farm's copy; his file is byte-identical) · the seven shows that chain another script
+    (`07`, `07g`, `07isc`, `S11a`, `S11b`, `S14`, `W14`) are the only SHOW-TIMEOUTs the soak
+    records — a duration model cannot see a chained script; not a fault · `06.sts` + `14.sts` in
+    directory order is a reproducible abort on this build (§5.142) — until the pool question is
+    answered, playing them in one session is the one thing his corpus does that the reference
+    binary cannot survive.
+  - **VETO POINTS taken this session (implemented-and-live, each cheap to reverse; silence =
+    endorsed):** (a) **F96's fix** (code `24100461`, `Camera.{hpp,cpp}` only): `observedToLocalPos`
+    is the inverse of the RENDER rotation, so the alt/az readout, the atmosphere's sun direction,
+    the view-directed descent and the tracking feedback read ONE expression — 27.000007° off old
+    with `set zoom_offset 0.3` armed before, 0.000017° after; byte-identical at every shipped
+    default (the F91 tables, the dwell frame `5215565b`); the tracking site no longer undoes the
+    offset by hand; the pole branch of `observedPosToRaDe` answers RA 0 / DE ±90° as old does.
+    (b) **F97's latitude** (code `22499f04`, `orbit.cpp` ONE token: `lat(_lat)` →
+    `lat(_lat*M_PI/180)` in a class no shipped or loaded scene reaches on either path — the
+    comparison baseline moves for no scene; plus a `L_WARNING` when a body spells both
+    `location_orbit` and the grounded relation, at the loader). (c) **Three §5 mints at F96's and
+    F97's acceptances** (§5.139 frozen positions · §5.140 the ninety degrees · §5.141 the loader's
+    null parent, §5.50's class, fix decision-free next round) and **three at F98's** (§5.142 the
+    abort · §5.143 the old half emptied by a runtime `parent none` system, a standing hazard for
+    parity instruments — assert `bodies_old > 0` before reading the old half · §5.144 the leak
+    verdict). (d) **The soak driver is ONE instrument for both corpora** (`f95_soak.py
+    --playlist-dir/--root/--cap/--skip-show`), its duration model has one home (`sts_duration.py`,
+    imported by the smoke suite too, proven equal on 145 files) and sees `struct loop`. (e) The
+    §0b.1 warm-up bullet now names the two ledger instruments' directory (the miss-ledger item,
+    two recurrences). (f) `f45_run.sh:102/186` annotated: its `md5sum ./* | md5sum` is a
+    glob-ordered digest — consistent in its own in==out use, bank-unsafe across locales (Q-69).
+    (g) archival pass 17.
+  - **HELD OPEN, not absorbed:** §5.21's two remaining halves (blocked on (5), not on effort);
+    §5.142's mechanism (your stratum); §5.143's mechanism (one launch, `14.sts` line-bisected to the
+    `parent none` load); §5.144's discriminating leg ((3)); `body action reload` — §5.137's own
+    trigger — is in NO soaked show yet; the pinned-clock drift on the NEW half when shows move the
+    clock (235/286 bodies, ≤ 1.49e-07 AU, annotated at §5.62/§5.84 — one-parameter experiment:
+    dump later than 1.5 s after the jump); the §11.207(g) tail (§5.66+§5.71, §5.115, A15's
+    residual) with the reasons they were not minted in the open note.
+  - **FACTS, no decision asked:** the F97 STOP clause fired exactly where it was written to —
+    the executor derived the frame before one byte of code, found the fork, delivered the
+    separable half with its own both-ways proof and recorded both readings; `re.period` is a
+    `float`, so on a linear-`re` parent §5.21's frozen spin is an I2 defect and not a numeric one
+    (−7e-6°), while on Earth it is +8.856° · the config key `[navigation] view_offset` is a LATENT
+    offset on the new path (stored at startup, armed by the first commanded view move) · the
+    tester's corpus cycle is 31.9 min of wall for 135 shows at a 60 s cap, 104–106 authored
+    pauses resumed per cycle, probe round trip ≤ 214 ms over 541 samples, thirteen shows capped
+    exactly as the model predicted · **six dispatcher defects this round, all mine, all
+    output-side, all caught via report-not-absorb or the instrument** — three of Q-67's class
+    (premise counts typed before the run; a map line number; a stale reachability premise carried
+    from an acceptance-time disposal) and three of its SIBLING class (structure asserted without
+    the read: "one used"; a census pattern that modelled one of two word orders; a `plan`
+    byte-identity requirement inconsistent with the design's own change) — the last is the class
+    hiding INSIDE a measured number, recorded at Q-67.
+
 - **Session-24 decision items (2026-09-06, the ENGINE-AND-SOAK round — F91 · F94 · F95, three
   for three; written Sunday morning on your stated capacity: nothing asked in-session, every
   item one line to answer or to ignore):**
@@ -1160,7 +1383,7 @@ LAST.
     WORD**: both gates the map put on it have run — T5.1 (F90, four identical runs) and T5.2
     (F95: 5 h 44 min of show load in two launches, 128 cycles, thirteen clean quits, no member
     of the stability class fired) — and what the soak CANNOT see is stated at §11.215(m): no
-    pixel (B30), no body authoring (the `fscripts/` corpus, `06old.sts`'s 3000 satellites —
+    pixel (B30), no body authoring (the `fscripts/` corpus, `06old.sts`'s ~~3000~~ **170** satellites [corrected 2026-09-06 at F98's acceptance, §11.218(i): `06.sts` is the 1013-body show; 1719 bodies in 8 shows] —
     a second soak, owed), an intermittent class at thirteen quits. The rename is §11.212(h) when
     you say so; **the PR-target sentence is still yours** (session 23's item 2). (3) **The RSS
     tail** — 0.28–0.38 MB/h, monotone, reproduced in both legs, 3–4 pages per cycle, ~3 MB over
@@ -1248,7 +1471,7 @@ LAST.
     logs the locale it then ignores; three shipped surfaces; D12): core architecture, §5.121's
     family — one map per translator, one translator, or an explicit order. (6) **§5.137** — a
     body an operator authors then `body action reload`s leaves the DRAWN universe while
-    `search`/`get status object` keep answering for it (your tester's `06old.sts` authors 3000
+    `search`/`get status object` keep answering for it (your tester's `06old.sts` authors ~~3000~~ **170** [corrected 2026-09-06 at F98's acceptance, §11.218(i); `06.sts` is the 1013-body show]
     satellites this way); the repair is inside §11.55(i)'s suspended question ("keep current
     state" across a reload). (7) **Routed to the main tester, not asked:** the shipped `basis/`
     shows all carry `script action pause` and `flag_skip_pause = false` — under UNATTENDED
