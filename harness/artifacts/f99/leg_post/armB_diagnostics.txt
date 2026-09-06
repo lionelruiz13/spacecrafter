@@ -1,0 +1,12 @@
+000000013488: (Info ): get tcp : body action load name ProbeCtlC parent none type Artificial radius 50 coord_func still_orbit orbit_x 0.001 orbit_y 0 orbit_z 0 tex_map bodies/generic.png
+000000013488: (Info ): Loading new Stellar System object... ProbeCtlC
+000000013488: (Info ): Loading body ProbeCtlC
+000000013488: (Debug): Body 'ProbeCtlC': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000013488: (Warn.): Body 'ProbeCtlC': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000018238: (Info ): get tcp : body action load name ProbeLocB parent none type Artificial radius 50 coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 orbit_alt 400000 tex_map bodies/generic.png
+000000018238: (Info ): Loading new Stellar System object... ProbeLocB
+000000018238: (Error): Body 'ProbeLocB': coord_func = location_orbit needs a parent body to sit on and turn with - the parent's radius, sidereal day and spin phase ARE this orbit's parameters - and parent = 'none' gives none. This body is NOT added to the old render path. To fix: declare parent = <a body already loaded in this system>.
+000000018238: (Info ): Loading body ProbeLocB
+000000018238: (Debug): Body 'ProbeLocB': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000018238: (Error): location_orbit orbit of 'ProbeLocB': parent 'none' is not a loaded body, so there is no radius, sidereal day or spin phase to build the orbit from. This body is NOT created on this path. To fix: declare parent = <a body loaded before this one> ('none' is not a body - a location_orbit must sit on something).
+000000018238: (Error): Invalid orbit 'location_orbit' for body 'ProbeLocB', skip loading this body.

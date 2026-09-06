@@ -723,13 +723,16 @@ test -e /home/claude/sc-f99 ; echo $? => 1
 the fix at both sites (code first); the post-fix proofs; the sweep; §11 entry + stub; §5.141
 flipped with the arm correction; §5.50 annotated; back-markers; map; README; trees clean;
 WIP cleared; baselines LAST.
-**WIP:** 2026-09-06 checkpoint 2 — PRE-FIX LEG DONE, P1 and P2 CONFIRMED, 14/14 checks
-(`harness/artifacts/f99/leg_pre/`): arm A rc 0 with both refusal lines and the body on
-neither half while the `parent none` `still_orbit` control keeps both; arm B **rc −11
-SIGSEGV**, old entered / new never entered, and under gdb the faulting frame is
-`ProtoSystem::addBody` at **`protosystem.cpp:599`** through `ssystem_factory.cpp:829`
-(`gdb_pre/faulting_frame.txt`). The STOP clause does NOT fire. NEXT: the fix at both sites
-(code first, one commit), rebuild, then the post-fix proofs.
+**WIP:** 2026-09-06 checkpoint 3 — FIX LANDED AND PROVED. Code `22499f04` → **`1af7fa48`**
+(the two files only), binary `46849f69` → **`8e2c6ef3`**, D14 PASS. Pre-fix leg 14/14 (arm B
+**rc −11**, gdb frame `ProtoSystem::addBody` at **`protosystem.cpp:599`**); post-fix leg
+**15/15** — arm B rc 0, one §2(f) line per path, the consumer's `:1246` refusal, ProbeLocB on
+neither half, the `parent none` control on both, and **both paths now entered** for ProbeLocB
+(pre-fix the new one never was). Controls: the F91 90-body table **byte-identical** pre/post
+binary, md5 **`c125adf0`** — the landed §11.216(g1)/§11.217(f) value reproduced on the pre
+binary FIRST; `f90_rehearsal_run.sh` **rc 0**. NEXT: the nine-loader sweep table, then the
+record (§11.219 + stub, §5.141 flip with the arm correction, §5.50 annotation, §11.217(h1)
+back-markers, map, README), baselines LAST.
 
 ### F100 — §5.139's mechanism leg, then the fix INSIDE the barrier's own contract: the frozen readouts are the PARKED bodies' (`hidden = true` in the field's `ssystem.ini` — every dwarf planet and asteroid of the frozen set — and their subtrees) at a PINNED clock: `useNow()`'s memo `evaluatedJD == currentJD` (`ModularBody.cpp:459`) is the right key for the orbit position and the WRONG key for the camera-dependent `mat`, so after the first use at a given date no camera move ever reaches a parked body's eye-frame position again; the dump ALREADY calls `useNow()` per body (`ssystem_factory.cpp:1192`) and the SELECTION every frame (`ModularSystem.cpp:270`), which is why the instrument and the operator's `get status object` are predicted to freeze TOGETHER — the leg discriminates pinned vs running clock and parked vs walked bodies with predictions before the launch; the fix re-keys the memo on (date, parent frame) with the +4 iterations bound to a date change only, under D11's denominator; STOP if the leg refutes the memo [S–M, engine, new path]
 

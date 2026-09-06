@@ -1,0 +1,49 @@
+F99 post leg -- binary /home/claude/spacecrafter/build-claude/src/spacecrafter
+  md5 8e2c6ef37f3470d0edc202f250ab8435
+    /tmp/spacecrafter.lock: {"present": true, "pid": "1432247", "pid_live": false, "removed": true}
+
+=== ARM armA (post) farm=/home/claude/sc-f99/farm_post_armA
+    farm shape: {"config_is_regular": true, "ssystem_is_regular": true, "log_is_real_dir": true, "app_locale": "fr", "sky_locale": "fr"}
+    tcp up in 12.0 s, pid 1436661
+    alive before any push: True
+    -> ctlC
+       alive after ctlC: True
+    -> armA
+       alive after armA: True
+    dump: /home/claude/sc-f99/leg_post/post_armA/dump_001.json
+    rc = 0  (expect_death=False)
+    /tmp/spacecrafter.lock: {"present": false}
+
+=== ARM armB (post) farm=/home/claude/sc-f99/farm_post_armB
+    farm shape: {"config_is_regular": true, "ssystem_is_regular": true, "log_is_real_dir": true, "app_locale": "fr", "sky_locale": "fr"}
+    tcp up in 12.0 s, pid 1436972
+    alive before any push: True
+    -> ctlC
+       alive after ctlC: True
+    -> armB
+       alive after armB: True
+    dump: /home/claude/sc-f99/leg_post/post_armB/dump_001.json
+    rc = 0  (expect_death=False)
+
+=== P1 -- ARM A unchanged post-fix
+  PASS P1.1 armA app alive after push                 got=True want=True
+  PASS P1.1 armA rc                                   got=0 want=0
+  PASS P1.2 old refusal line                          got=1 want=1
+  PASS P1.3 new refusal line                          got=1 want=1
+  ---- armA dump body records                         121
+  PASS P1.5 ProbeLocA on neither half                 got=(False, False) want=(False, False)
+  PASS armA control ProbeCtlC on BOTH halves          got=(True, True) want=(True, True)
+
+=== P3 -- ARM B: a diagnosed refusal on both paths
+  PASS P3.1 armB app ALIVE after push                 got=True want=True
+  PASS P3.1 armB rc                                   got=0 want=0
+  PASS P3.2 OLD path S2(f) line, once                 got=1 want=1   -- protosystem.cpp, before the :599 dereference
+  PASS P3.2 NEW path S2(f) line, once                 got=1 want=1   -- LocationOrbitLoader.hpp -- the S11.193 anchor
+  PASS P3.3 consumer refusal fires                    got=1 want=1   -- ModularSystem.cpp:1246 -- 'no orbit, no body' already existed
+  PASS P3.3b the loader did NOT throw into the default loader got=0 want=0   -- a throw is swallowed at ModuleLoaderMgr.cpp:106 into SpecialOrbitLoader, whose own miss line this is -- its absence + P3.3 present is the pair
+  PASS P3.2b both paths were entered for ProbeLocB    got=(1, 1) want=(1, 1)   -- old no longer dies, so the new path is reached at last
+  ---- armB dump body records                         121
+  PASS P3.4 ProbeLocB on neither half                 got=(False, False) want=(False, False)
+  PASS P3.5 control ProbeCtlC on BOTH halves          got=(True, True) want=(True, True)   -- the guard refused the class, not the push channel
+
+=== F99 post: 15 check(s), 0 FAIL -> /home/claude/sc-f99/leg_post/f99_post.json

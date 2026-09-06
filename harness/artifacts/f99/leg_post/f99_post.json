@@ -1,0 +1,207 @@
+{
+ "checks": [
+  {
+   "name": "P1.1 armA app alive after push",
+   "got": true,
+   "want": true,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P1.1 armA rc",
+   "got": 0,
+   "want": 0,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P1.2 old refusal line",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P1.3 new refusal line",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "armA dump body records",
+   "got": 121,
+   "want": null,
+   "pass": null,
+   "note": ""
+  },
+  {
+   "name": "P1.5 ProbeLocA on neither half",
+   "got": [
+    false,
+    false
+   ],
+   "want": [
+    false,
+    false
+   ],
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "armA control ProbeCtlC on BOTH halves",
+   "got": [
+    true,
+    true
+   ],
+   "want": [
+    true,
+    true
+   ],
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P3.1 armB app ALIVE after push",
+   "got": true,
+   "want": true,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P3.1 armB rc",
+   "got": 0,
+   "want": 0,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P3.2 OLD path S2(f) line, once",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": "protosystem.cpp, before the :599 dereference"
+  },
+  {
+   "name": "P3.2 NEW path S2(f) line, once",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": "LocationOrbitLoader.hpp -- the S11.193 anchor"
+  },
+  {
+   "name": "P3.3 consumer refusal fires",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": "ModularSystem.cpp:1246 -- 'no orbit, no body' already existed"
+  },
+  {
+   "name": "P3.3b the loader did NOT throw into the default loader",
+   "got": 0,
+   "want": 0,
+   "pass": true,
+   "note": "a throw is swallowed at ModuleLoaderMgr.cpp:106 into SpecialOrbitLoader, whose own miss line this is -- its absence + P3.3 present is the pair"
+  },
+  {
+   "name": "P3.2b both paths were entered for ProbeLocB",
+   "got": [
+    1,
+    1
+   ],
+   "want": [
+    1,
+    1
+   ],
+   "pass": true,
+   "note": "old no longer dies, so the new path is reached at last"
+  },
+  {
+   "name": "armB dump body records",
+   "got": 121,
+   "want": null,
+   "pass": null,
+   "note": ""
+  },
+  {
+   "name": "P3.4 ProbeLocB on neither half",
+   "got": [
+    false,
+    false
+   ],
+   "want": [
+    false,
+    false
+   ],
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P3.5 control ProbeCtlC on BOTH halves",
+   "got": [
+    true,
+    true
+   ],
+   "want": [
+    true,
+    true
+   ],
+   "pass": true,
+   "note": "the guard refused the class, not the push channel"
+  }
+ ],
+ "arms": {
+  "armA": {
+   "arm": "armA",
+   "tag": "post",
+   "farm": "/home/claude/sc-f99/farm_post_armA",
+   "tcp_s": 12.0,
+   "lock_before": {
+    "present": true,
+    "pid": "1432247",
+    "pid_live": false,
+    "removed": true
+   },
+   "sent": [
+    "timerate rate 0",
+    "meteors zhr 0",
+    "body action load name ProbeCtlC parent none type Artificial radius 50 coord_func still_orbit orbit_x 0.001 orbit_y 0 orbit_z 0 tex_map bodies/generic.png",
+    "body action load name ProbeLocA parent Nonexistent type Artificial radius 50 coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 orbit_alt 400000 tex_map bodies/generic.png"
+   ],
+   "alive_after": {
+    "before_push": true,
+    "ctlC": true,
+    "armA": true
+   },
+   "dump": "/home/claude/sc-f99/leg_post/post_armA/dump_001.json",
+   "rc": 0,
+   "log_path": "/home/claude/sc-f99/leg_post/post_armA/spacecrafter.log",
+   "log_bytes": 81600
+  },
+  "armB": {
+   "arm": "armB",
+   "tag": "post",
+   "farm": "/home/claude/sc-f99/farm_post_armB",
+   "tcp_s": 12.0,
+   "lock_before": {
+    "present": false
+   },
+   "sent": [
+    "timerate rate 0",
+    "meteors zhr 0",
+    "body action load name ProbeCtlC parent none type Artificial radius 50 coord_func still_orbit orbit_x 0.001 orbit_y 0 orbit_z 0 tex_map bodies/generic.png",
+    "body action load name ProbeLocB parent none type Artificial radius 50 coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 orbit_alt 400000 tex_map bodies/generic.png"
+   ],
+   "alive_after": {
+    "before_push": true,
+    "ctlC": true,
+    "armB": true
+   },
+   "dump": "/home/claude/sc-f99/leg_post/post_armB/dump_001.json",
+   "rc": 0,
+   "log_path": "/home/claude/sc-f99/leg_post/post_armB/spacecrafter.log",
+   "log_bytes": 82384
+  }
+ },
+ "nfail": 0
+}
