@@ -108,6 +108,7 @@ same place for both - `criteria_sha` proves it).
   playlist directories : basis, custom, deepsky
   never played         : startup.sts (the app plays it at launch itself)
   not played this run  : fscripts, internal, navigation, planets, shows
+  SHOWS SKIPPED        : -
   per-show CAP         : none (F95's behaviour)
   show grace           : 60 s (SHOW-TIMEOUT = modelled + grace)
   farm root default    : /home/claude/sc-f95

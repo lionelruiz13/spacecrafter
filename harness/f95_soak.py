@@ -310,15 +310,26 @@ def no_instance():
     return hits
 
 
-def playlist_shows(home=REAL_HOME, dirs=None):
+def playlist_shows(home=REAL_HOME, dirs=None, skip=None):
     """Every `.sts` of every playlist directory, mechanically - never a
-    recalled list, and never `startup.sts` (the app plays that one itself)."""
+    recalled list, and never `startup.sts` (the app plays that one itself).
+
+    `skip` names shows to leave out.  It exists for ONE reason and the reason
+    is recorded with every run that uses it: a show that MEASURABLY takes the
+    application down cannot also be the show that lets a multi-hour soak
+    measure anything else.  F98 skipped `fscripts/06.sts` after reproducing,
+    three ways, that `06.sts` followed by `14.sts` aborts the process in ~15 s
+    (Sec.11.218).  A skip is a FINDING made visible, never a green bought
+    quietly: it is echoed by `plan`, stored in `config.json` and printed in
+    the report."""
+    skip = set(skip or ())
     out = []
     for d in (dirs if dirs is not None else PLAYLIST_DIRS):
         for p in sorted((Path(home) / "scripts" / d).glob("*.sts")):
-            if p.name in NEVER_PLAYED:
+            rel = "%s/%s" % (d, p.name)
+            if p.name in NEVER_PLAYED or rel in skip or p.name in skip:
                 continue
-            out.append("%s/%s" % (d, p.name))
+            out.append(rel)
     return out
 
 
@@ -1322,6 +1333,13 @@ class Driver:
             if only_from is not None and probe["from"] != only_from:
                 continue
             name, src = probe["name"], probe["from"]
+            # BOTH SPELLINGS OF THE SELECT, because the shakedown measured the
+            # readout channel answering NOTHING for `select planet ALSAT 1`
+            # while `search name ALSAT 1` answered `ALSAT 1(P);` - a body whose
+            # authored name contains a space.  Which spelling the command
+            # surface takes is a measurement, not a thing to assume, and the
+            # false-success channel Sec.5.137 is about is exactly this readout,
+            # so it has to be reached before anything can be said about it.
             with self.block:
                 srch, _, s_rtt = self.b.ask(
                     "search name %s" % name,
@@ -1330,7 +1348,16 @@ class Driver:
                 obj, _, o_rtt = self.b.ask(
                     "get status object",
                     lambda b: (b.strip() or None) if len(b.strip()) > 3 else None,
-                    15.0)
+                    12.0)
+                quoted = None
+                if not obj and " " in name:
+                    self.a.send('select planet "%s"' % name, 1.0)
+                    quoted, _, q_rtt = self.b.ask(
+                        "get status object",
+                        lambda b: (b.strip() or None) if len(b.strip()) > 3
+                        else None, 12.0)
+                    if quoted:
+                        obj, o_rtt = quoted, q_rtt
             rec = by_name.get(name)
             res["probes"].append({
                 "name": name, "from": src,
@@ -1344,6 +1371,7 @@ class Driver:
                 "search_reply": (srch or "")[:160],
                 "search_rtt_s": round(s_rtt, 2),
                 "get_object": (obj or "")[:400], "get_object_rtt_s": round(o_rtt, 2),
+                "select_needed_quotes": bool(quoted),
             })
         return res
 
@@ -1624,7 +1652,14 @@ class Driver:
 
 # ==================================================================== verbs
 
-LOAD_RE = re.compile(r"^body\s+action\s+load\b.*?\bname\s+(\"[^\"]+\"|\S+)")
+# BOTH WORD ORDERS.  The command surface takes its arguments as key/value
+# pairs in any order, and the corpus uses both: `06.sts` writes 1013 lines of
+# `body name "<X>" ... action load` and `14.sts` writes 528 of
+# `body action load ... name <X>`.  A census that greps only `body action load`
+# - the one the F98 dispatch and the ledger's "3000" both used - misses the
+# larger of the two shows entirely (Sec.11.218).
+LOAD_RE = re.compile(
+    r"^body\s+(?=.*\baction\s+load\b)(?=.*?\bname\s+(\"[^\"]+\"|\S+))")
 
 
 def authoring_shows(dirs, home=REAL_HOME):
@@ -1657,7 +1692,7 @@ def authoring_shows(dirs, home=REAL_HOME):
     return sorted(out, key=lambda r: -r[1])
 
 
-def probe_bodies(dirs, home=REAL_HOME, limit=2):
+def probe_bodies(dirs, home=REAL_HOME, limit=2, played=None):
     """The authoring probes, DERIVED from the corpus and never recalled.
 
     The two shows that author the most bodies, each contributing the FIRST
@@ -1665,8 +1700,13 @@ def probe_bodies(dirs, home=REAL_HOME, limit=2):
     it is a different body (`14.sts` opens on a hidden `Sphere` and its first
     star is the next line, so both are probed - the section asks for
     `06old.sts`'s first satellite and `14.sts`'s first star)."""
+    # ONLY from shows this run actually PLAYS: a probe for a body no played
+    # show authors would report "absent from both halves" every cycle and read
+    # as a finding about the application instead of about the playlist.
+    cand = [r for r in authoring_shows(dirs, home)
+            if played is None or r[0] in set(played)]
     probes, seen = [], set()
-    for rel, n, first, first_star in authoring_shows(dirs, home)[:limit]:
+    for rel, n, first, first_star in cand[:limit]:
         for name, kind in ((first, "first authored body"),
                            (first_star, "first Star_ body")):
             if name and name not in seen:
@@ -1704,18 +1744,20 @@ def verb_start(a):
         print("canary --no-scene exit 0 -> %s" % (out / "canary.txt"))
 
     dirs = list(a.playlist_dir) if a.playlist_dir else list(PLAYLIST_DIRS)
-    shows = playlist_shows(dirs=dirs)
+    skip = list(a.skip_show or [])
+    shows = playlist_shows(dirs=dirs, skip=skip)
     if not shows:
         raise SystemExit("REFUSED: the playlist is empty")
     frozen = frozen_md5s(dirs=dirs)
     farm = out / "farm"
     asserts = build_farm(farm, shows)
     farm_in = farm_sts_md5s(farm, dirs)
-    probes = probe_bodies(dirs)
+    probes = probe_bodies(dirs, played=shows)
     cfg = {"out": str(out), "farm": str(farm), "bin": str(Path(a.bin).resolve()),
            "bin_md5": md5(a.bin), "hours": a.hours, "sample": a.sample,
            "shows": shows, "frozen_in": frozen, "farm_asserts": asserts,
            "playlist_dirs": dirs, "root": str(root), "cap": a.cap,
+           "skipped_shows": skip, "skip_reason": a.skip_reason,
            "grace_s": SHOW_GRACE_S, "authored_probes": probes,
            "farm_sts_in": farm_in,
            "frozen_digest_in": frozen_digest(frozen),
@@ -2104,6 +2146,7 @@ def predict_cycle_wall(shows, cap, home=REAL_HOME, per_show_overhead=1.8,
 def verb_plan(a):
     dirs = list(a.playlist_dir) if a.playlist_dir else list(PLAYLIST_DIRS)
     cap = a.cap
+    skip = list(a.skip_show or [])
     print(CRITERIA)
     print("=" * 78)
     print("THE RUN'S PARAMETERS (F98 generalisation; F95's defaults are the")
@@ -2114,6 +2157,9 @@ def verb_plan(a):
     print("  never played         : %s (the app plays it at launch itself)"
           % ", ".join(sorted(NEVER_PLAYED)))
     print("  not played this run  : %s" % (", ".join(excluded_dirs(dirs)) or "-"))
+    print("  SHOWS SKIPPED        : %s%s"
+          % (", ".join(skip) or "-",
+             ("  <- %s" % a.skip_reason) if a.skip_reason else ""))
     print("  per-show CAP         : %s" % (("%.0f s" % cap) if cap
                                            else "none (F95's behaviour)"))
     print("  show grace           : %.0f s (SHOW-TIMEOUT = modelled + grace)"
@@ -2135,7 +2181,7 @@ def verb_plan(a):
     - the handed-in stall baseline ("2 per ~92 s launch") was a two-run sample
       (Sec.11.215(a)); the rate is recorded here too and gates nothing.""")
 
-    shows = playlist_shows(dirs=dirs)
+    shows = playlist_shows(dirs=dirs, skip=skip)
     auth = {rel: (n, first, star)
             for rel, n, first, star in authoring_shows(dirs)}
     print("\nTHE DURATION MODEL, EVERY SHOW (`sts_duration.parse`, ONE home):")
@@ -2181,7 +2227,7 @@ def verb_plan(a):
                   % (rel, n, first, star or "-"))
         print("  probes armed at every cycle boundary: %s"
               % ", ".join("%s (%s)" % (x["name"], x["from"])
-                          for x in probe_bodies(dirs)))
+                          for x in probe_bodies(dirs, played=shows)))
 
     fs = frozen_set(dirs=dirs)
     md5s = {str(f): md5(f) for f in fs}
@@ -2213,6 +2259,14 @@ def main():
                        help="per-show cap in seconds: a show whose MODELLED "
                             "duration exceeds it is ended at the cap and "
                             "logged CAPPED (default: none, F95's behaviour)")
+        p.add_argument("--skip-show", action="append", default=None,
+                       metavar="REL",
+                       help="leave a show out of the playlist, repeatable. "
+                            "For a show measured to take the application "
+                            "down; always with --skip-reason")
+        p.add_argument("--skip-reason", default="", metavar="TEXT",
+                       help="why a show is skipped - stored in config.json "
+                            "and printed by the report")
 
     p = sub.add_parser("start")
     p.add_argument("out")

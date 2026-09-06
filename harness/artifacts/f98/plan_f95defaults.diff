@@ -1,6 +1,6 @@
 --- artifacts/f98/plan_f95defaults_before.txt	2026-09-06 13:06:59.327194145 +0200
-+++ artifacts/f98/plan_f95defaults_after.txt	2026-09-06 13:06:59.327639666 +0200
-@@ -100,19 +100,52 @@
++++ artifacts/f98/plan_f95defaults_after.txt	2026-09-06 13:41:46.075682491 +0200
+@@ -100,19 +100,53 @@
  that is the ten-cycle secondary arm, run or owed.
  ==============================================================================
  
@@ -21,6 +21,7 @@
 +  playlist directories : basis, custom, deepsky
 +  never played         : startup.sts (the app plays it at launch itself)
 +  not played this run  : fscripts, internal, navigation, planets, shows
++  SHOWS SKIPPED        : -
 +  per-show CAP         : none (F95's behaviour)
 +  show grace           : 60 s (SHOW-TIMEOUT = modelled + grace)
 +  farm root default    : /home/claude/sc-f95

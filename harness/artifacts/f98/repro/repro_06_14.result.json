@@ -1,0 +1,19 @@
+{
+ "shows": [
+  "fscripts/06.sts",
+  "fscripts/14.sts"
+ ],
+ "bin": "/home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter",
+ "bin_md5": "46849f69",
+ "body_action_load_executed": 202,
+ "buffer_allocation_errors": 1557,
+ "device_lost_lines": 1,
+ "terminate_lines": 1,
+ "died_unprompted_at_s": 16.00319004058838,
+ "exit_status": -6,
+ "quit_exit_code": null,
+ "quit_wall_s": null,
+ "frozen_moved": [],
+ "applog": "/home/claude/sc-f98/repro_06_14/repro.applog",
+ "proc_after": []
+}

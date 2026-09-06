@@ -1131,8 +1131,17 @@ GENERALISED (`--playlist-dir`/`--root`/`--cap`), duration model one home
 `artifacts/f98/model_equality.*`; F90 `--plan` byte-identical), `criteria_sha` `f5e0d602`
 = F95's leg-2 value, plan diff at F95's defaults committed, selftest PASS incl. the new
 loop/cap/digest cases, `artifacts/f98/prediction.txt` committed (cap 60 s + reasons +
-136-show model table + cycle prediction 25–40 min + P1–P9). NEXT: the live DEATH control
-on the fscripts farm, then a short shakedown leg, then the ≥ 4 h soak.
+136-show model table + cycle prediction 25–40 min + P1–P9). CHECKPOINT 3 (13:50): DEATH
+control RED on the fscripts farm (F1 within one sample, exit −9, 139 md5s in==out);
+**the 17-min shakedown CRASHED the application** — F2 (≥90 s no answer + a very-long
+stall) during `14.sts`'s 528 authored bodies, then F1 exit −6 (SIGABRT): `Can't allocate
+buffer in 'uniform BufferMgr'` ×1557 → `Device lost while waiting frame completion` →
+`terminate called`. REPRODUCED THREE WAYS on fresh launches (`artifacts/f98/repro/`):
+14.sts alone CLEAN (528 loads, 0 errors, exit 0); `06.sts`+`14.sts` 1 s apart and 60 s
+apart both abort identically (202/1557/1/1, +16.0 s / +76.0 s). Corpus census corrected
+again: the command takes both word orders — `06.sts` authors **1013** bodies as `body
+name … action load`, so the corpus authors **1719 in 8 shows**, not 719 in 9. NEXT: the
+≥ 4 h soak with `--skip-show fscripts/06.sts` (recorded, echoed, reported).
 
 ---
 

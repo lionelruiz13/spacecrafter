@@ -1,143 +1,4 @@
 ==============================================================================
-F98 - THE SECOND SOAK, OVER THE TESTER'S OWN `fscripts/` CORPUS.
-WHAT IS CHOSEN, WHAT IS PREDICTED, AND WHAT WOULD REFUTE IT.
-Written and committed BEFORE the first launch of this campaign.
-==============================================================================
-Executor: Claude Opus 5, task F98, 2026-09-06.  Code `master-beta @ 22499f04`
-(binary md5 `46849f69`) - NO code change in this task, none is authorised.
-Driver: `harness/f95_soak.py`, GENERALISED (not copied), plus the one-home
-duration model `harness/sts_duration.py`.
-
-------------------------------------------------------------------------------
-0. THE CRITERIA ARE F95's, UNCHANGED, AND THE PROOF IS MECHANICAL
-------------------------------------------------------------------------------
-The FAIL flags F1-F4 and the LEAK rule below are the same string in the same
-module as F95's.  `criteria_sha` (md5 of `CRITERIA`) is **f5e0d602** here, and
-`f5e0d602` is what F95's own leg-2 `config.json` recorded
-(`artifacts/f95/leg2/config.json.gz`).  A criterion rewritten for this corpus
-would move that digest; it did not move.
-
-------------------------------------------------------------------------------
-1. THE CAP: 60 s.  A DESIGN PARAMETER, AND WHY THIS VALUE
-------------------------------------------------------------------------------
-`fscripts/panorama0.sts` is `struct loop 1000000` around its body: 100 000.6 s
-modelled, i.e. INFINITE BY DESIGN.  No run can wait for it, so a per-show cap
-is not a workaround - it is the parameter that makes an unbounded corpus
-playable.  60 s because:
-
-  (a) it leaves 123 of the 136 shows UNCAPPED - every show whose modelled
-      duration is under a minute plays to its own authored end;
-  (b) all SEVEN body-authoring shows model at <= 8.25 s (`14.sts` 6.79,
-      `06old.sts` 0.00, `S10` 8.25, `S09` 7.40, `S12old` 7.25, `S05` 0.03,
-      `S13` 0.00), so the corpus's authoring - the reason this soak exists -
-      is NEVER truncated by the cap at this value or anywhere near it;
-  (c) it is the same number as F95's grace, so a capped show's deadline is
-      exactly 2x one constant and no new magic number enters the driver;
-  (d) the modelled play sum is then 1237.5 s = 20.6 min, which leaves room for
-      >= 6 complete cycles in 4 hours - the LEAK rule needs at least four
-      complete cycle boundaries to say anything but INCONCLUSIVE.
-
-CAPPED vs SHOW-TIMEOUT, decided by the model BEFORE the run and never after:
-  CAPPED        modelled (loop-expanded) duration > cap.  The driver ends the
-                show with `script action end` AT the cap.  By design; NOT a
-                finding.  Predicted set, exactly these 13 and no others:
-                01, 02, 05, 07nosphere, 07old, 08, 12, 15, S03old, S11, W18,
-                panorama0, panorama5.
-  SHOW-TIMEOUT  the show did not signal `ScriptMgr: script end` within its OWN
-                modelled duration + 60 s grace.  F95's meaning, unchanged.  A
-                FINDING - and the first thing it can be a finding ABOUT is the
-                model, whose blind spots are enumerated in `sts_duration`:
-                `moveto/zoom/look_at ... duration`, audio, media upload and
-                `body action load` batches all take time no `wait duration`
-                line declares.  89 of the 136 shows model at 0.00 s.
-
-------------------------------------------------------------------------------
-2. THE PREDICTIONS.  EACH ONE CAN BE WRONG, AND THE WRONG ONES WILL BE
-   RECORDED AS WRONG RATHER THAN ADJUSTED
-------------------------------------------------------------------------------
-P1  CYCLE WALL TIME.  Base = play 1237.5 s + per-show overhead 244.8 s
-    (136 x 1.8 s) + interlude 35 s = 1517 s = 25.3 min, PLUS 60 s per
-    SHOW-TIMEOUT (K).  PREDICTED: K <= 15, cycle wall 25-40 min.
-    REFUTED IF: a complete cycle exceeds 45 min, or K > 15.
-P2  CYCLES AND SAMPLES at H = 4.0 h, S = 30 s: >= 480 sample rows and
-    6-9 complete cycles.  REFUTED IF fewer than 4 complete cycles - which
-    would leave the LEAK verdict INCONCLUSIVE by its own rule.
-P3  THE FAIL FLAGS: F1 DEATH none, F2 HANG none, F3 QUIT exit 0 within 45 s
-    with no teardown fault line, F4 FROZEN FILE none.  This is the F95 result
-    carried onto a heavier corpus; the corpus is what could refute it.
-P4  THE LEAK RULE: NO LEAK BY THIS RULE, with a warm-up phase in the series.
-    This corpus loads far more media than F95's eight shows, so the warm-up is
-    predicted LONGER (more cycles) and the plateau may not be reached inside
-    4 h.  If the series IS strictly increasing at every step from cycle 2, the
-    rule says LEAK and this delivery says LEAK, with the series.
-P5  THE PINNED-CLOCK DUMP DIFF (Sec.5.62's instrument, unchanged): ZERO
-    differences inside the expected-constant set from cycle 2 on - EXCEPT that
-    this corpus AUTHORS AND CLEARS BODIES, so the body-NAME set is no longer a
-    pure function of the date.  If a cycle's dump carries a body another
-    cycle's does not, the first thing to check is which show authored it and
-    whether a `body action clear` ran before the boundary; that is a corpus
-    fact, not Sec.5.62's class.  Sec.5.84's four movers (Ananke, Neried,
-    Setebos, Sycorax, OLD half only) are predicted to reappear here.
-P6  THE AUTHORING INSTRUMENT.
-    P6a AT THE CYCLE BOUNDARY the counts return to the shipped base (F95
-        measured 120 bodies in these dumps) and the three probes are ABSENT
-        from BOTH halves - because the LAST show of the playlist,
-        `panorama5old2.sts`, issues `body action clear`, which reaches
-        `removeSupplementalBodies` and drops every deleteable body in BOTH
-        trees [observed: core.cpp:1020-1029, protosystem.cpp:204-227].
-    P6b AFTER `06old.sts` (the snapshot taken where the bodies are supposed to
-        exist): bodies_old and bodies_new both up by ~170, and `ALSAT 1`
-        present on BOTH halves.  `body action load` reaches both paths
-        (Sec.11.211(h): `Core::addSolarSystemBody` -> `SSystemFactory::addBody`).
-    P6c AFTER `14.sts`: 528 loads, but most carry `mode in_galaxy` and a
-        `Star_*` filename, and it is NOT known here whether an in-galaxy body
-        appears in the solar-system dual dump at all.  BOTH outcomes are
-        informative and neither is a defect claim; this is the uncertain half
-        and it is named as uncertain before the run.
-    P6d THE FALSE-SUCCESS WATCH (Sec.5.137's class, the reason this soak was
-        asked for): IF a probe is absent from both dump halves while `search
-        name <X>` and `get status object` still answer for it, that is
-        Sec.5.137's shape reached through `body action clear` instead of `body
-        action reload` - the corpus has SIX `body action clear` shows and ZERO
-        `body action reload`.  It would be RECORDED as a Sec.5 candidate for
-        the row's holder, and NOTHING would be fixed here.
-        Sec.5.139 (minted today) says the readout can also be stale for a
-        different reason - a body outside the view cone keeps a frozen
-        eye-frame position - so THE DUMP HALVES ARE THE AUTHORITY and the
-        readout is evidence only about what the control surface claims.
-P7  THE BOUNDARY: 139 real-HOME md5s identical in and out (config.ini,
-    ssystem.ini and all 137 `.sts`), aggregate digest of the 137 `.sts`
-    = `3995e501` - the number the dispatch measured with
-    `md5sum ... | cut -c1-32 | LC_ALL=C sort | md5sum`, reproduced in-process
-    by the driver's own `frozen_digest`.  Never a concatenation digest: `cat
-    $(ls *.sts)` and `cat *.sts` over these same files hash differently under
-    `fr_FR.UTF-8`.
-P8  THE FARM's OWN `.sts` COPIES: `ScriptAnnotator::flush` rewrites the file it
-    played when a line earns a `#!` diagnostic.  F95 measured 0 of 8 rewritten.
-    Over 136 shows of a hand-written corpus I predict SOME rewrites (>= 1), and
-    every one of them is a datum about the corpus, never a fault of the
-    application - and it is why every played `.sts` is a COPY.
-P9  `Frame stall detected`: recorded, never gating.  F95 measured ~76-84/h on
-    the eight-show playlist; this corpus draws far more, so the rate is
-    predicted HIGHER.  No threshold, no chase.
-
-------------------------------------------------------------------------------
-3. WHAT THIS RUN STILL CANNOT SEE
-------------------------------------------------------------------------------
-No pixel is read (B30 stays outside).  `body action reload` - Sec.5.137's own
-trigger - is in ZERO shows of this corpus, so the row's exact command is still
-not exercised by a soak; what IS exercised is the sibling `body action clear`.
-One quit is not an intermittent class.  And the model is static: it cannot see
-a `struct if` skipping a wait inside a loop (upper bound) or a `struct loop
-break` (early exit).
-
-==============================================================================
-BELOW: the driver's own `plan` output at this run's parameters - the criteria
-verbatim, the parameter echo, THE MODEL'S TABLE FOR ALL 136 SHOWS, the cycle
-prediction, the authoring probes and the frozen set.  Produced by
-    ./f95_soak.py plan --playlist-dir fscripts --cap 60
-==============================================================================
-==============================================================================
 F95 - THE MULTI-HOUR SOAK: FAIL CRITERIA, THE LEAK RULE, AND WHAT IS ONLY
 RECORDED.  Committed BEFORE the first launch.
 ==============================================================================
@@ -247,6 +108,7 @@ same place for both - `criteria_sha` proves it).
   playlist directories : fscripts
   never played         : startup.sts (the app plays it at launch itself)
   not played this run  : basis, custom, deepsky, internal, navigation, planets, shows
+  SHOWS SKIPPED        : fscripts/06.sts  <- measured: 06.sts followed by 14.sts aborts the application in ~15 s (uniform buffer pool exhausted -> device lost -> terminate); reproduced three ways, artifacts/f98/repro/
   per-show CAP         : 60 s
   show grace           : 60 s (SHOW-TIMEOUT = modelled + grace)
   farm root default    : /home/claude/sc-f95
@@ -273,7 +135,6 @@ THE DURATION MODEL, EVERY SHOW (`sts_duration.parse`, ONE home):
   fscripts/03.sts                    51.45       51.45      11      11    433          
   fscripts/04.sts                    24.80       41.00       3       3     55          
   fscripts/05.sts                     4.50      135.95      15      15    237          CAPPED at 60 s
-  fscripts/06.sts                     0.00        0.00       0       0   1013          
   fscripts/06old.sts                  0.00        0.00       0       0    172      170 
   fscripts/07.sts                     0.00        0.00       0       0      5          
   fscripts/07g.sts                    4.20        4.20       0       0    102          
@@ -404,15 +265,16 @@ THE DURATION MODEL, EVERY SHOW (`sts_duration.parse`, ONE home):
   fscripts/panorama5.sts              0.40     1440.00       0       0     77          CAPPED at 60 s
   fscripts/panorama5old.sts           1.00        1.00       0       0     16          
   fscripts/panorama5old2.sts          1.00        1.00       0       0     16          
-  TOTAL                            1163.01   103729.83   (136 shows, 13 capped)
+  TOTAL                            1163.01   103729.83   (135 shows, 13 capped)
 
 PREDICTED WALL TIME OF ONE COMPLETE CYCLE (committed before the launch):
-  play 1237.5 s + per-show overhead 244.8 s (136 x 1.8) + interlude 35.0 s
-  = BASE 1517.3 s = 25.3 min, PLUS 60 s for every show that neither
+  play 1237.5 s + per-show overhead 243.0 s (135 x 1.8) + interlude 35.0 s
+  = BASE 1515.5 s = 25.3 min, PLUS 60 s for every show that neither
     ends nor is capped (K, the model's blind term)
   => K=0: 25.3 min | K=5: 30.3 min | K=10: 35.3 min | K=20: 45.3 min
 
 BODY AUTHORING IN THIS PLAYLIST (uncommented `body action load`):
+  fscripts/06.sts                1013 load(s)  first ATLAS CENTAUR 2    first Star_ -
   fscripts/14.sts                 528 load(s)  first Solsys             first Star_ Sol
   fscripts/06old.sts              170 load(s)  first ALSAT 1            first Star_ -
   fscripts/S05.sts                  2 load(s)  first iss                first Star_ -
@@ -426,86 +288,3 @@ FROZEN REAL-HOME FILES asserted md5 in == out (139), aggregate digest a4b6ea4f
     03fbee59  /home/claude/.spacecrafter/config.ini
     545a51ef  /home/claude/.spacecrafter/ssystem.ini
     ... and 137 .sts files, their own aggregate digest 3995e501
-
-==============================================================================
-REVISION 1 - 2026-09-06 13:45, AFTER THE CONTROLS AND A 17-MINUTE SHAKEDOWN
-LEG, BEFORE THE >= 4 h SOAK.  APPENDED, NEVER EDITED IN PLACE: three of the
-predictions above are REFUTED and this says so with the numbers.
-==============================================================================
-WHAT RAN FIRST, and why a shakedown ran at all: F95's leg 1 lost 2 h 44 min to
-an unshaken driver (Sec.11.215(k)(1)), so this campaign spent 17 minutes
-shaking the generalised driver on the real corpus before committing four hours
-to it.  `/home/claude/sc-f98/shake`, H = 0.4 h, S = 30 s, cap 60 s.
-
-REFUTED - P1 (cycle wall 25-40 min).  MEASURED: 20 shows in 1009.7 s, i.e.
-~50 s per show over the numbered shows, which extrapolates to 55-120 min for
-136.  The model's blind term K is the cause and it is much bigger than the
-"<= 15" predicted: 4 of the first 20 shows SHOW-TIMEOUT'd, and the reason is
-that this corpus's real durations live in `moveto/zoom ... duration`, in media
-playback and in CHAINED sub-scripts (8 shows call `script ... action play`),
-none of which any `wait duration` model can see.
-REFUTED - P2 (6-9 complete cycles at H = 4 h): at the measured cycle wall,
-3-4.  The LEAK rule needs FOUR complete cycles to say anything but
-INCONCLUSIVE, so that risk is real and is stated here BEFORE the run rather
-than explained afterwards.  The per-SHOW RSS series (136 rows per cycle) is
-recorded for exactly this reason.
-REFUTED - P3 (no F1, no F2).  THE SHAKEDOWN CRASHED THE APPLICATION, and this
-is the finding of the campaign.
-
-  F2 HANG at sample #30 (+900 s): `get status position` did not answer inside
-  the 90 s probe budget (>= 90 s against the 45 s bound) AND the vulkan log
-  gained `This frame stall is very long` in an unlocked session - both arms of
-  F2 at once, while `fscripts/14.sts` was authoring its 528 bodies.
-  F1 DEATH at sample #31 (+1020 s): the process was gone, exit status -6
-  (SIGABRT), unprompted.  The application's own stream says why:
-      (Error): Can't allocate buffer in 'uniform BufferMgr' !   x1557
-      (Warn.): Frame stall detected  + the engine's own stack trace parked in
-               App::draw (app.cpp:831) inside __platform_wait
-      (Warn.): This frame stall is very long
-      (Error): CRITICAL : Device lost while waiting frame completion
-      terminate called without an active exception
-
-  REPRODUCED THREE WAYS, on fresh launches, before any of it entered a record
-  (`artifacts/f98/f98_repro14.py`, results in `artifacts/f98/repro/`):
-    A  `14.sts` ALONE            528 loads, 0 buffer errors, 0 device lost,
-                                 `shutdown action now` -> exit 0 in 0.66 s.
-                                 The show by itself is CLEAN.
-    B  `06.sts` then `14.sts`,   202 loads executed, 1557 buffer errors,
-       1 s apart                 1 device lost, 1 terminate, died at +16.0 s,
-                                 exit -6.
-    C  `06.sts`, 60 s gap,       identical to B to the digit (202/1557/1/1),
-       then `14.sts`             died at +76.0 s = 14 s into `14.sts`.
-                                 The 60 s gap is the arm that matches the
-                                 SOAK's condition - shows played sequentially,
-                                 the first one finished.
-  So it is not one show and it is not an overlap: it is the ACCUMULATED body
-  count.  `06.sts` authors 1013 bodies, `06old.sts` 170, `14.sts` 528; the
-  soak's own instrument measured 1156 bodies present with ZERO buffer errors
-  after `06.sts`+`06old.sts`, and the errors begin inside `14.sts`.
-
-THE ONE PARAMETER THIS CHANGES, and it is recorded rather than quietly used:
-`--skip-show fscripts/06.sts` for the >= 4 h leg.  A show measured to take the
-application down cannot also be the show that lets a soak measure anything
-else; the alternative - a 17-minute leg repeated 14 times - would measure
-neither.  `06.sts` is skipped rather than `14.sts` because (i) the mandated
-authoring probes are `06old.sts`'s first satellite and `14.sts`'s first star,
-and (ii) the remaining per-cycle body load is then ~700 against a measured-safe
-1156, while skipping `14.sts` would leave ~1183 - i.e. the safer margin is the
-one that also keeps the mandate.  The skip is in `config.json`, echoed by
-`plan`, printed by the report, and the crash is the delivery's headline.
-
-REVISED PREDICTIONS FOR THE >= 4 h LEG (H = 4.5 h, S = 30 s, cap 60 s,
-`06.sts` skipped, 135 shows):
-R1  cycle wall 45-90 min; 3-6 complete cycles; >= 540 sample rows.
-R2  NO further F1: the abort's measured trigger is out of the playlist.  If
-    the application aborts again WITHOUT `06.sts`, the trigger is wider than
-    the pair and this delivery says so.
-R3  F2 may still fire on `14.sts` alone: 528 authored bodies is the same work
-    that produced the very-long stall, minus the exhausted pool.  Recorded
-    either way; F2 is not terminal.
-R4  the LEAK verdict may be INCONCLUSIVE by its own rule at 3 cycles.  That is
-    the rule answering, not the instrument failing, and the per-show series is
-    reported beside it.
-R5  the authoring probes: `ALSAT 1` (06old.sts) and `Solsys`/`Sol` (14.sts)
-    present on both halves in the after-show snapshots, absent at the cycle
-    boundary (P6a's mechanism, `body action clear` in the last show).
