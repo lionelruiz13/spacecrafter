@@ -4804,5 +4804,6 @@ frame `ProtoSystem::addBody` at `protosystem.cpp:599`) · post `8e2c6ef3` **15/1
 `"Loading body ProbeLocB"` **0 → 1** — the second site reachable only once the
 first stopped dying). Controls: F91 table byte-identical pre/post binary at
 `c125adf0` (reproduced on the PRE binary first), `f90_rehearsal_run.sh` rc 0, D14
-PASS, frozen pair in == out on all eleven launches. Artifacts `artifacts/f99/`
-(320 KB).
+PASS, frozen pair in == out on all **eight** launches (one per farm: 2 pre-fix
+arms + 1 gdb + 2 post-fix arms + 2 F91 + 1 F90, counted from each farm's own
+`"My getpid() is"` line). Artifacts `artifacts/f99/` (320 KB).
