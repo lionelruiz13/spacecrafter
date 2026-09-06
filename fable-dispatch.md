@@ -1258,7 +1258,17 @@ test -e /home/claude/sc-f102 ; echo $? => 1
 **DoD:** the reading with its citations; N predicted then measured; the chain; the three
 prices; §11 entry + stub; §5.142 and §5.60 annotated; back-markers; map; README; trees
 clean; WIP cleared; baselines LAST.
-**WIP:**
+**WIP:** 2026-09-07 01:02 — CHECKPOINT 1 (the READING + the PRE-REGISTRATION, committed BEFORE the
+applog is opened). Gate 22/22 PASS; the kept arm-C applog VERIFIED complete (10226 lines, the
+`terminate called without an active exception` death line at its end) ⇒ NO LAUNCH. Alignment **64**
+(source: `vulkaninfo` GPU0 RTX 5090 `minUniformBufferOffsetAlignment = 0x40`, the device pinned by
+the engine's own `Device :` line in an independent applog — the engine prints no limit). Pool 1 MiB,
+one block, no growth. Per-body carved, MEASURED (`f102_sizes.cpp`): 06.sts body = 192+128 (old
+`Moon::selectShader` ctor) + 192+832 (new `BasicMesh` ctor) = **1344 B**; 14.sts body = **128 B**
+(`ojm_mgr.cpp:77`, `mode in_galaxy` — neither body path). Baseline (90 ssystem bodies) 123072 B +
+globals. PREDICTION committed: **N = 674, the first refusal INSIDE 06.sts** (bracket 662–692), the
+refused request the 832 B `meshFrag`; mutations: new-only 904, old-only never. NEXT: open the
+applog, measure N and the refusal structure, then the chain, the three prices, the record.
 
 ---
 

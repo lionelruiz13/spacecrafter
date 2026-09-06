@@ -1,0 +1,205 @@
+F102 - PRE-REGISTRATION (written 2026-09-07, before /home/claude/sc-f98/repro_06_gap60_14/repro.applog
+was opened for anything but its LAST 12 lines, which were read at the precondition gate to verify the
+file is complete - the death line at its end. Nothing below is read from that log.)
+
+Code master-beta @ 474c595d, submodule src/EntityCore @ 84f5d94b, binary md5 b5f08778.
+Every number below is either [measured: <instrument>] or [derived: <arithmetic>] from a [observed:
+file:line]. The log is opened only after this file is committed.
+
+================================================================================
+1. THE POOL AND THE ALIGNMENT
+================================================================================
+POOL  = 1*1024*1024 = 1048576 bytes, ONE VkBuffer, created once.
+        [observed: src/appModule/app.cpp:274] context.uniformMgr = BufferMgr(vkmgr,
+        UNIFORM_BUFFER, HOST_VISIBLE|HOST_COHERENT, prefers DEVICE_LOCAL, 1*1024*1024,
+        "uniform BufferMgr", uniformBuffer=true)
+        [observed: src/EntityCore/Core/BufferMgr.cpp:8] one master.createBuffer(bufferBlocSize,...)
+        [observed: BufferMgr.cpp:16-20] the free list is seeded with ONE SubBuffer spanning it
+        [measured: grep -c 'createBuffer' src/EntityCore/Core/BufferMgr.cpp = 1] no growth path.
+
+ALIGNMENT = 64 bytes (0x40).
+  SOURCE, stated as the mandate requires: the engine does NOT print the limit - the only
+  read of it in the tree is [observed: src/EntityCore/Core/VulkanMgr.cpp:82]
+  BufferMgr::setUniformOffsetAlignment(physicalDeviceProperties.limits.minUniformBufferOffsetAlignment),
+  and grep over src/ finds no other use of physicalDeviceProperties.limits. So the source is
+  `vulkaninfo`, pinned to the device the engine actually selects:
+    [measured: vulkaninfo, 2026-09-07 00:47:28] GPU0 = NVIDIA GeForce RTX 5090
+        (deviceID 0x2b85 = 11141, DISCRETE, driverVersion 580.159.3.0),
+        minUniformBufferOffsetAlignment = 0x00000040 = 64.
+        GPU1 = llvmpipe, 0x10 = 16 - NOT the selected device.
+    [observed: VulkanMgr.cpp:330-346] the picker prefers eDiscreteGpu and breaks on it.
+    [measured: /home/claude/sc-f99/f91_pre/f91.applog, an INDEPENDENT launch of this binary
+        on this host] "GPU selected" / "Device : NVIDIA GeForce RTX 5090 (id = 11141)" /
+        "Device type : Discrete GPU" - so the engine's own log pins WHICH device, and
+        vulkaninfo supplies that device's limit.
+  Rounding rule [observed: BufferMgr.cpp:39-41]: size = ((size-1)/64 + 1)*64.
+
+ALLOCATOR SHAPE [observed: BufferMgr.cpp:37-68]: acquireBuffer rounds, then find_if over
+availableSubBufferZones for the first zone whose blocks are >= size (zones are size-ordered
+by insert(), :70-90), pops one, splits the excess back. On a miss it leaves
+buffer.buffer == VK_NULL_HANDLE and logs "Can't allocate buffer in 'uniform BufferMgr' !"
+(:52-55). NOTHING is released while a show authors bodies, so the free list stays a single
+zone holding one shrinking block: the pool behaves as a BUMP allocator that REFUSES.
+
+================================================================================
+2. WHAT EACH BODY COSTS, PER PATH, MEASURED
+================================================================================
+[measured: harness/artifacts/f102/f102_sizes.cpp, built -I src, run with alignment 64;
+ raw sizeof -> carved]
+
+  06.sts's body class: `body name "X" parent Earth type Moon ... tex_map ... action load`
+  [measured: LC_ALL=C grep over ~/.spacecrafter/scripts/fscripts/06.sts - 1013 executable
+   load lines, ALL `type Moon`, ALL `halo true`, none with model_name / tex_norm / tex_night /
+   tex_heightmap / tex_ring]. Both word orders censused (F98's lesson): 06.sts = 1013 in the
+  `body name ... action load` order and 0 in the other; 14.sts = 528 executable in the
+  `body action load` order (529 matches minus the commented line :24); 06old.sts = 170.
+
+  SSystemFactory::addBody [observed: src/bodyModule/ssystem_factory.cpp:828-836] pushes the
+  SAME param map to BOTH paths, old first:
+    (a) OLD  currentSystem->addBody(param)  -> ProtoSystem::addBody -> type Moon -> Moon
+        [observed: protosystem.cpp:519+540, :802] ; Moon's CONSTRUCTOR calls selectShader()
+        [observed: body_moon.cpp:78] -> no heightmap/night/norm -> the last branch
+        [observed: body_moon.cpp:284-285]:
+            SharedBuffer<globalVertProj>  164 -> 192
+            SharedBuffer<globalFrag>       68 -> 128       OLD SUBTOTAL 320
+    (b) NEW  camera->getCurrentSystem()->loadBody(param, nullptr, true) ->
+        ModularSystem::loadBody -> deduceBodyModuleList [observed: ModularBody.cpp:824-923]
+        returns for this body: MESH (tex_map), AXIS (tex_map), HINT (named), ORBIT
+        (orbit_visualization_period > 0); TRAIL is excluded by isSatellite(); no RING /
+        ATMOSPHERE / OJM / TAIL / CUSTOM.  loadModule is called for each slot at LOAD
+        [observed: ModularSystem.cpp:1456-1458] and each module acquires in its CONSTRUCTOR.
+        MESH goes to BasicMeshLoader (bid 16; LayeredMeshLoader bids 0 without a layered
+        texture key [observed: LayeredMeshLoader.cpp:12-16], PhotosphereLoader 0 off a star):
+            SharedBuffer<globalVertProj>  164 -> 192   [observed: BasicMesh.cpp:20 / .hpp:47]
+            SharedBuffer<meshFrag>        784 -> 832   [observed: BasicMesh.hpp:48]
+        AXIS costs 0: AxisModule's uColor is a FUNCTION-LOCAL STATIC, one per process
+        [observed: AxisModule.cpp:68-80]. HINT / ORBIT / TRAIL / TAIL / GRID / STAR own no
+        uniformMgr site at all [measured: grep -rn uniformMgr over src/ = 121 lines; none in
+        those modules].                                    NEW SUBTOTAL 1024
+
+    => PER 06.sts BODY = 1344 bytes, requested in this order: 192, 128, 192, 832.
+
+  14.sts's body class: `body action load mode in_galaxy name X filename Star_* pos_* scale`.
+  This is NOT a solar-system push at all: `mode in_galaxy` short-circuits in
+  AppCommandInterface::commandBody [observed: app_command_interface.cpp:4119-4126] to
+  CoreLink::BodyOJMLoad -> OjmMgr::load, which allocates exactly ONE uniform per model
+  [observed: ojm_mgr.cpp:77] SharedBuffer<OjmContainer::uniformData> = 2 Mat4f = 128 -> 128,
+  and NOTHING on either body path.       => PER 14.sts BODY = 128 bytes.
+  [measured: 14.sts's 528 executable loads carry `mode in_galaxy` and a `filename`;
+   only line :25 (`name Solsys type Sphere ... parent none`) is a real body push.]
+
+  NOT COUNTED, and why: fastAcquireBuffer is the per-frame allocator [observed:
+  BufferMgr.cpp:157-165, a bump over maxOffset, no free list, returns {} instead of logging]
+  and it has exactly THREE call sites in the tree, none of them on uniformMgr
+  [measured: grep -rn fastAcquireBuffer src/]: ring.cpp:76 (asyncStagingBuffer),
+  video_player.cpp:651 (stagingBuffer), s_texture.cpp:1077 (asyncTexStagingMgr). So no
+  per-frame traffic reaches this pool, and the refusal count cannot be a frame count.
+
+================================================================================
+3. THE SHIPPED LAUNCH SCENE'S BASELINE
+================================================================================
+[measured: harness/artifacts/f102/f102_pool.py over ~/.spacecrafter/ssystem.ini,
+ 90 named bodies in 91 sections]
+    NEW path, eager at load, all 90 bodies ............ 100992 bytes
+    OLD path, eager (ctors: Moon / Artificial) ........  22080 bytes
+    ---------------------------------------------------------------
+    enumerated body baseline .......................... 123072 bytes
+    OLD path, LAZY (BigBody/SmallBody selectShader runs from drawBody, only for a body a
+      frame actually draws [observed: body_bigbody.cpp:299-302, body_smallbody.cpp:189-192]):
+      0 .. 9216 bytes depending on how many are drawn before 06.sts plays.
+    GLOBALS (skygrid/skyline/skyDisplay/landscape/oort/tully/dso3d/starNavigator/
+      starViewer/cloudNavigator/dsoNavigator/starLines/fog/vr360/viewport/draw_helper/
+      object_base/ubo_cam/constellation_mgr/volumObj3D/ShadowData[4]/ShadowService slots/
+      PipelineRegistry sun/the two static axis colors): ~60-90 acquisitions, mostly 64 B
+      [derived from the 121-line uniformMgr census] => NOT individually enumerated here;
+      taken as G in [4000, 25000] bytes.
+  => B (total carved before the first show) = 123072 + lazy + G, PREDICTED in [127000, 157000],
+     CENTRAL 143000.
+
+================================================================================
+4. THE PREDICTION - N, THE BODY INDEX AT THE FIRST REFUSAL
+================================================================================
+Model: free = 1048576 - B; each 06.sts body requests 192,128,192,832 in that order; a request
+larger than the single remaining free block is REFUSED and consumes nothing.
+  N = the 1-based index, in 06.sts's own executed load order, of the first body one of whose
+      four requests is refused;  N = floor((1048576 - B)/1344) + 1.
+
+  ** PRIMARY PREDICTION:  N = 674, and the first refusal is INSIDE 06.sts, not 14.sts. **
+     Bracket from the baseline's uncertainty:  N in [662, 692].
+     The refused request is the FOURTH one of that body - the NEW path's
+     SharedBuffer<meshFrag> (832 B) in BasicMesh's constructor - because it is the largest
+     of the four; the three smaller ones of that same body still succeed.
+     Two independent routes to the same number, both written before the log is opened:
+       (i)  forward, from the enumerated baseline: B = 123072 + lazy + G -> N in [662, 692];
+       (ii) inversion of the ONE datum the ledger already carries for this launch,
+            1557 refusals [stated: INTENT 5.142 / 11.218(g), F98]: the model reproduces 1557
+            only at B = 142848..144192, i.e. N = 673..674. (This leg is a POST-diction against
+            a known number and is labelled as such; N itself appears in no record.)
+
+  ** THIS CONTRADICTS TWO SENTENCES THAT ARE IN THE LEDGER TODAY **, and that is the point of
+  taking it as a prediction: 5.142's "06.sts alone for the number of bodies at which the first
+  error appears" was corrected AT THE MINT to "alone it is clean ... the errors begin inside
+  14.sts". The arithmetic says the opposite for THIS launch: 1013 x 1344 = 1361472 > 1048576,
+  so 06.sts cannot finish inside the pool even with a zero baseline (N <= 781 unconditionally).
+  If the measurement puts the first refusal inside 14.sts, THIS MODEL IS WRONG and I say so.
+
+  ** THE ONE-PATH MUTATION (the mandate's refutation target) **
+    (m1) new path only, 1024 B/body:  N = floor((1048576-123072)/1024)+1 = 904, total refusals
+         2*(1013-903) + 202 = 422.        -> MISSES the measured N by ~230 bodies.
+    (m2) old path only, 320 B/body:   1013 bodies cost 324160 B; 528 in-galaxy loads cost
+         67584 B; the pool is never exhausted -> N does not exist and there is NO abort.
+         -> refuted by the abort's existence alone.
+    A per-body cost that models only one path therefore MISSES the measured N, which is what
+    check (a) asks for.
+
+================================================================================
+5. THE PREDICTION - REFUSALS AFTER THE FIRST, AND WHAT 7.7/body REALLY IS
+================================================================================
+Once free < 832 the meshFrag request fails every body while the other three still fit; free
+then drops by 512/body until it is under 192, after which ALL FOUR fail and free stops moving.
+The simulated histogram at B = 142848: 673 bodies with 0 refusals, 1 with 2, 339 with 4;
+then 14.sts's 202 executed loads each ask for 128 with < 128 free -> 1 refusal each.
+  PREDICTED errors_06 = 1353, errors_14 = 202, total 1555 (vs the recorded 1557 - two
+  refusals, i.e. one boundary body, from the residual baseline).
+  PREDICTED steady-state rate: 4 refusals per further 06.sts body, 1 per further 14.sts body.
+
+  ** "1557 over 202 bodies = 7.7/body" IS AN ARTIFACT, and this is the explanation the
+  mandate asks for: 1557 counts the refusals of BOTH shows while 202 counts the executed
+  loads of ONE - `body_action_load_executed` is
+  txt.count("Execute_command body action load") [observed: artifacts/f98/f98_repro14.py:157],
+  which matches 14.sts's word order and CANNOT match 06.sts's `body name ... action load`.
+  No body ever attempts 7.7 acquisitions; the true per-body attempt counts are 4 (06.sts,
+  both paths) and 1 (14.sts, in-galaxy ojm).  If the measurement instead shows ~7.7
+  acquisitions attributable to single bodies, this reading is wrong.
+
+================================================================================
+6. THE CHAIN, PREDICTED (to be confirmed at the log and at the consumer)
+================================================================================
+ - SubBuffer is a bare aggregate with no default member initialiser [observed:
+   src/EntityCore/SubBuffer.hpp:6-10]; acquireBuffer declares `SubBuffer buffer;` and assigns
+   ONLY .buffer = VK_NULL_HANDLE [observed: BufferMgr.cpp:43-44], so a REFUSED SubBuffer
+   carries an INDETERMINATE offset and size.
+ - SharedBuffer's constructor binds its reference through that offset unconditionally:
+   ptr(*(T *) mgr.getPtr(buffer)) with getPtr = (char*)data + subBuffer.offset [observed:
+   SharedBuffer.hpp:9, BufferMgr.cpp:152-155]. No check of buffer.buffer anywhere in the class.
+ - ~SharedBuffer hands the refused SubBuffer back: mgr.releaseBuffer(buffer) [observed:
+   SharedBuffer.hpp:15-18], which inserts an indeterminate range into the free list
+   [observed: BufferMgr.cpp:92-99, :101-150] - predicted allocator corruption on teardown.
+ - The success line: OjmMgr::load allocates the uniform at :77 and then tests ONLY
+   Obj3D->getOk() before writing "Succesfull loading ojm <name>" [observed: ojm_mgr.cpp:77-87].
+   That is the site that says success on a refused allocation - 5.116's class - and it is why
+   every refusal in the log is followed by a success line for the same body. PREDICTED.
+ - The draw: App::draw waits at app.cpp:831; the log's stack trace parks there.
+
+================================================================================
+7. WHAT WOULD FALSIFY EACH CLAIM
+================================================================================
+ (a) N: a measured first refusal inside 14.sts, or an N outside [662, 692], refutes the
+     two-path 1344 B/body model. An N near 904 would confirm the new-path-only mutation
+     instead; an absence of refusals in 06.sts with the pool still dying refutes both.
+ (b) alignment: an applog or a probe showing the engine on llvmpipe would make it 16 and
+     change every carved size (192->176, 832->784, 128->128).
+ (c) 7.7/body: a per-body attempt count of ~7.7 read off the log refutes section 5.
+ (d) the chain: a null-handle check anywhere between acquireBuffer and the bind refutes 6.
+ (e) prices (section 4 of the mandate) are computed AFTER the measurement, from the
+     measured per-body cost, not from this file's predicted one.
