@@ -250,3 +250,39 @@ post dump with a third dump after it; nothing else changes.
   startup on every one).  So F98's numbers mean 156 of the 170 landed, not 170;
   the error was in the "all 170 land" assumption, not in the instrument, and
   C6 tests that reading directly by measuring n.
+
+
+=========================================================================
+ADDENDUM 2 - THE GENERALISATION ARM, committed 2026-09-07 00:35 CEST,
+BEFORE the launch it predicts.
+=========================================================================
+WHY.  Sec.5.143's headline says *"One runtime-authored SYSTEM empties the OLD
+path's dump half"*.  The ten legs above say the emptying is done by the ALTITUDE
+- `leaveSystem()` at `moveto alt 1.1E+16` - and that the authored `Solsys` only
+puts one body back.  If that is right, the row's headline names a coincidence of
+`14.sts` rather than a mechanism, and a shipped show that crosses the same
+threshold and authors NOTHING must empty the half just as completely.
+
+MEASURED FIRST, STATICALLY (the census command, run before this addendum):
+**8 of the tester's 137 `fscripts/` shows** carry an uncommented
+`moveto ... alt` above 1e16 - `14.sts:22`, `S02.sts:15`, `S07.sts:27`,
+`S09.sts:12`, `S10.sts:27`, `S12.sts:21`, `S12old.sts:12`, `W15.sts:19`.  Only
+three of the eight (`14`, `S09`, `S10`, `S12old`) are in Sec.11.218(i)'s
+authoring set at all.
+
+  C7  `--leg ctlmars --then fscripts/S02.sts` (tag `ctl_S02`).
+      `S02.sts` reads, in order: `moveto alt 0.9E+10`, `moveto alt 1.1E+16`,
+      `moveto ... alt 4.2E+12`, `camera action create name dipper type
+      observatory`, `set home_planet dipper` - the same shape as `14.sts` with
+      an ANCHOR where `14.sts` has a body, and **not one `body action load`**.
+      PREDICTED: dump_pre 90/120; dump_post 90/120 (the `ctlmars` leg is inert,
+      already measured); **dump_then bodies_old = 0**, bodies_new = 120 or 121
+      (121 if the created anchor's own body enters the new tree and the dump
+      reaches it - Sec.11.211(g)(2) records anchor bodies as new-path-only).
+      Witness: `Swapping to mode Solar System` -> `InSolarSystem->` ->
+      `->InGalaxy` -> `too high -> altitude = max` -> `Modification observer to
+      dipper`, and `Loading new Stellar System object...` **still at its 90
+      startup lines** - the show authors nothing.
+      IF bodies_old is 90 at dump_then, my whole reading is refuted and the
+      row's headline is right.  IF it is 0, the row's headline is wrong about
+      its own mechanism and the reach is 8 shipped shows, not one.
