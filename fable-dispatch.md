@@ -151,6 +151,62 @@ items per §3. Remotes: **90 code / 735 harness** unpushed before this close's c
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-06, supervising session 25 — LovelyFoxDev, the
+OFFSET-FRAME / LOCATION-ORBIT / SECOND-SOAK round: F96 · F97 · F98]:** trigger = the §0b
+verbatim line and nothing else (no in-line transmission). Open at **Sunday 10:20 CEST**,
+outside the owner's reliable window ⇒ this session asks NOTHING and closes with a compact
+decision list. Warm-up (every value `date`-measured 10:20:38–10:21:53, the command beside
+the claim — Q-67): both trees CLEAN at open, code `a2a880ef` / harness `fa7104e` (the
+session-24 close commit); definition-drift assert MATCH (`8e364a3a`); binary `404b9e89`
+current — `cmake -n` 0 steps, no `src/` file newer; same boot as sessions 21–24 (`uptime
+-s` 2026-09-04 18:45:08); `:2` 2448x1332 under `.5KBYU3`; canary `--no-scene` **exit 0**
+(30 members, artifacts `f56/canary/20260906-102151`); config/ssystem md5 pristine
+(`03fbee59`/`545a51ef`); no `spacecrafter` in `/proc/*/comm`; RAM **51 GiB available of
+59**, `-j24`; next free §11 **216** (live ∪ archive, `max+1`); unpushed **90 code / 736
+harness** (`rev-list --count`; 735 + the close commit). Live `### F` **3 → 0** by
+**archival pass 17** at OPEN (update-s23 + F91/F94/F95, 649 lines + the doubled-seam
+tidy, manifest `2026-09-06-pass17`, pre-md5 `7fcb0abd` reproduced in-process AND from
+disk, the archive files written before the live surface — Q-56's ordering; commit
+`5d94d3f`; **nothing carried**) **→ 3** by the mints below. Instrument baselines at open
+(run 10:28:5x): scan **226/279/135** · pair-check **231/206/25/110** · D 35 · D2 11 · I 89
+· I2 36 · M 81 — to the digit of the session-24 close. QUEUE CONSUMPTION (session-24
+close, in order): (1) pass 17 — DONE; (2) **the second soak over `fscripts/` → F98**
+(M–L); (3) **§5.138's leg + the §5.86 pole-guard rider → F96** (M — widened from the
+queue's S: the leg's fix is F91's own shape one member over, decision-free by old-parity
+and by the row's family, so the leg and the fix travel together, the fix CONDITIONAL on
+the leg confirming the model); (4) the §11.207(g) tail's next item **§5.21 → F97** (M);
+NOT minted from that tail, each with its reason: §5.66+§5.71 (each still owes a
+meaning/feel answer the round-3 replies did not give — §5.66's landing, §5.71's duration
+law); §5.115 (R20's "8 launches" needs a per-launch key the per-day file layout lacks —
+a layout the field's tooling and scedit read, so the owner sees the shape before it
+ships); A15's residual (a photometric tuning pass without the eye that judges it); (5)
+the 8–12 h RSS leg — owner's word only; (6) instrument residues, (7) riders, (8) owner
+items — carried. **TWO DISPATCHER-SIDE FINDINGS AT THE MINT, both measured before any
+number entered a section:** (a) **`06old.sts` authors 170 satellites, not 3000**
+(`LC_ALL=C /usr/bin/grep -c 'body action load'` = 170; 359 lines; no `struct loop`) —
+the number is the F90 executor's (§11.211(h)), written without its command (Q-67's
+class on the executor side) and propagated to §5.137 ("thousands of … lines"),
+§11.215(m), `DEPLOYMENT-MAP.md:687` and this file's session-24 §3 items; the corpus's
+largest authoring show is `14.sts` at 529 lines, the total 719 lines in 9 shows. F98
+corrects the four ledger homes with markers at both homes; this file's two are
+corrected at the close. (b) **a concatenation fingerprint is locale-dependent** — `cat
+$(ls *.sts)` and `cat *.sts` over the same 137 files hashed `68c9b4ba` vs `e2123d2b`
+under `fr_FR.UTF-8`, because `ls` and the shell glob collate differently (the writer
+set enumerated FIRST: newest `fscripts/` mtime 2026-07-11, no process); F98's premise
+carries a sorted per-file digest (`3995e501`) and the driver keeps per-file md5s.
+**All three mints PASS `premise_check.py` at the mint event (F96 21/21, F97 22/22, F98
+26/26, run 10:41:30 — and this sentence first carried three figures typed BEFORE the
+run, 24/21/25: caught by pasting the instrument's own output, tallied as dispatcher
+defect 1 of this round, Q-67's class at its smallest).** Picks: **F96 → F97 → F98** (the soak LAST so it soaks
+the binary the round leaves; three executors, §0b.2's sweet spot). Deliveries: all to
+the parent (§11.216+, refreshed at each dispatch). Launch classes: F96 PHOTOMETRIC for
+ONE full canary post-fix (the atmosphere's light direction rides the changed
+authority) + FUNCTIONAL readout legs; F97 FUNCTIONAL (farm, dual dump, `--no-scene`);
+F98 FUNCTIONAL (the soak — hours on `:2`, no photometric claim). Remotes: local contains
+origin on both; push impossible here — the owner's push is R5, unchanged.
+
+---
+
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
 
 1. `CLAUDE.md` auto-loads (the map). Read THIS file; locate your task's section; read
@@ -494,11 +550,460 @@ round — four for four DELIVERED and accepted; archived pass 14) · F83 §11.20
 F84 §11.204 · F86 §11.205 · F85 §11.206 · F88 §11.207 (session-22 round — five
 for five DELIVERED and accepted; archived pass 15) · F89 §11.208 · F87 §11.209 ·
 F93 §11.210 · F90 §11.211 · F92 §11.212 (session-23 round — five for five
-DELIVERED and accepted; archived pass 16). Live below: **F91** (carried from
-session 23, position 1) + the session-24 mints **F94** (§5.98) and **F95** (the
-T5.2 soak). Remaining candidates next-round: the §11.207(g) tail (§5.21 ·
-§5.66+§5.71 · §5.115 · A15's residual), the instrument residues, the riders.
-Still blocked: §5.100's fix (authorization unanswered).*
+DELIVERED and accepted; archived pass 16) · F91 §11.213 · F94 §11.214 · F95
+§11.215 (session-24 round — three for three DELIVERED and accepted; archived
+pass 17). Live below: the session-25 mints **F96** (§5.138 + the §5.86 pole
+guard), **F97** (§5.21) and **F98** (the `fscripts/` soak). Remaining candidates
+next-round: the §11.207(g) tail (§5.66+§5.71 · §5.115 · A15's residual), the
+instrument residues, the riders. Still blocked: §5.100's fix (authorization
+unanswered).*
+
+---
+
+### F96 — §5.138's leg AND its fix + the §5.86 pole-guard rider, ONE authority in `Camera`: `observedToLocalPos` made the exact inverse of the RENDER rotation (`renderViewRotation()ᵀ`, undoing the B17 offset pitch `R'` the way `observedToBodyEquPos` has since F91), so the new path's alt/az readout, the atmosphere's sun direction (`EnvironmentManager.cpp:114`), `moveEyeRel` and the tracking feedback (which today undoes `R'` by hand before calling it) all read one expression; `observedPosToRaDe`'s pole branch answering RA 0 / DE ±90° as old does; the LEG FIRST — `set zoom_offset 0.3` armed, the pitch PREDICTED from the model and committed before the launch, alt/az old vs new on the F91 body set pre/post; byte-identical at every shipped default (offset 0 ⇒ `R'` = identity), the FULL canary as the photometric regression gate (§5.138 minted at F91's acceptance; §11.213(i1)(i2); DEPLOYMENT-MAP T1.2's new-path member) [M, engine, new path]
+
+**Why now / mandate:** §5.138 [observed 2026-09-06 at code `5a1e5749`, minted at F91's
+acceptance]: `observedToLocalPos = viewRotation()ᵀ · observedPos` while
+`getObservedPosition()` = `R' · (offset-free eye position)` — the code's own note
+(`Camera.cpp:136-138`); F91 gave the RA/DE members `renderViewRotation()ᵀ` (§11.213(f)),
+so since `5a1e5749` the two readouts of one body answer in frames that differ by `R'`
+whenever `set zoom_offset` is armed — before, both agreed with each other and both
+diverged from old. Old's readouts carry no eye-frame content at all (§11.201: old's
+offset lives in the draw and the aim) ⇒ the target is old-parity (§11.52(b)), derived not
+chosen; R28 [stated: tester, via `6ffb017`]: *"The offset is screen dependant"* — a
+readout is not the screen. The row's owed item is the LEG; the fix is F91's shape in the
+same member (the row's family §5.128/B17/§11.201 says what the offset must not reach),
+so the two travel together with the fix CONDITIONAL on the leg confirming the model.
+The pole rider [§11.213(i2), suspended for the dispatcher; disposed decision-free at
+F91's acceptance by §11.52(b), recorded at §5.86's row]: at the exact pole
+`observedPosToRaDe` answers RA ±90° / DE 0 where old — `rectToSphe`, no branch —
+answers RA 0 / DE ±90°; `.first`/`.second` swapped, one line.
+
+**Measured at dispatch (supervisor, 2026-09-06 10:23–10:36, code `a2a880ef`; the PREMISES
+block re-runs what is a command):** `observedToLocalPos` `Camera.hpp:260-262`
+(`viewRotation().transpose().multiplyWithoutTranslation(observedPos)`); its consumers,
+tree-wide: `observedPosToAltAz` `Camera.hpp:323-324` (the alt/az readout of every
+composed body); `moveEyeRel` `Camera.hpp:143-145` (`moveRel(observedToLocalPos(position))`);
+the tracking feedback `Camera.cpp:647-649` (`p = viewOffsetEyeRotation().transpose() ·
+target->getObservedPosition()` then `lookTo(observedToLocalPos(p), 5, true)` — the ONE
+consumer that undoes `R'` today, by hand, with the comment that says why);
+`EnvironmentManager.cpp:114` (`sunLocal = camera.observedToLocalPos(star->getObservedPosition())`
+→ `skyBrightness`, `:114-120` — the atmosphere's light direction, a PHOTOMETRIC surface;
+old's formula is "sun z in the local zenith frame", `:109-112`). `viewOffsetEyeRotation()`
+`Camera.cpp:139-146` returns `Mat4f::identity()` when `effectiveViewOffset()` == 0 and
+`xrotation(o · ModularBody::halfFov)` otherwise; `renderViewRotation()` `Camera.cpp:152-155`
+= `viewOffsetEyeRotation().multiplyFast(viewRotation())`; `observedToBodyEquPos`
+`Camera.cpp:230-236` — the F91 shape to mirror (`renderViewRotation().transpose()`); the
+pole branch `Camera.cpp:256-258` (`ret.second = 0; ret.first = copysign(π/2, z)`, `.first`
+RA by `rectToSphe(&ret.first, &ret.second, …)` at `:260`); its sibling `Camera.hpp:326-328`
+CORRECT with the same two lines (`.first` is altitude there). The offset's ONE sink
+`Core::setViewOffset` `core.cpp:2524` fed by `core.cpp:550` (config `[navigation]
+view_offset` at startup) and `set zoom_offset` (R11, §11.70); the dump carries
+`viewOffset`/`viewOffsetTransition`/`viewOffsetEff` (`Camera.cpp:1436`);
+`effectiveViewOffset()` = `viewOffset × viewOffsetTransition` (`Camera.hpp:545-547`).
+Instruments: `harness/f81_offset.py` (arms the offset on both channels, reads the three
+dump fields, measures a body's screen position — F81's datum: the new path keeps its aim
+at 0.300 dome radii at every fov, §11.201); `harness/f91_parity.py` (the 90-body RA/DE +
+alt/az table in both locales, `artifacts/f91/run-{pre,post}-{en,fr}`; F91's alt/az
+control: 88 of 90 within 3e-5°, exceptions Earth at the nadir and Eris — §11.213, the
+alt/az control); `harness/f91_frame.cpp` (the offline algebra probe — extend it with
+`R'`); `f90_rehearsal_run.sh` (the 90-second regression gate). **The model [derived,
+§5.138]:** pre-fix a body's local direction reads `Rvᵀ · R' · Rv · d` — the true local
+direction `d` rotated by `o · halfFov` about the eye x-axis carried into the local frame
+— so at the shipped `fov 180` and `set zoom_offset 0.3` the predicted pitch is
+0.3 × 90° = **27°** (`ModularBody::halfFov` at fov 180); post-fix `d` itself.
+
+**Mandate:** (1) **PRE-REGISTER**, before the first launch (`artifacts/f96/prediction.txt`):
+the consumer list above re-derived tree-wide (`grep -rn observedToLocalPos src/`) with
+what each must read after the fix; the predicted pre-fix alt/az of every F91-table body
+under `set zoom_offset 0.3` computed from old's alt/az and the conjugated `R'` (the
+camera state from the dump); the MUTATED model (the rotation the other way) beside it, so
+the leg can refute one. (2) **THE LEG, pre-fix binary** (farm, French locale as F91):
+`set zoom_offset 0.3` at runtime — assert `viewOffsetEff` = 0.3 in the dump — then the
+F91 table: alt/az old vs new per body; the divergence must match the prediction and NOT
+the mutated model; the Sun's alt/az among the bodies (the atmosphere's input is the same
+expression); the CONFIG channel: `[navigation] view_offset = 0.3` in the farm's
+`config.ini`, a fresh launch, the dump's `viewOffsetEff` — does the config channel arm the
+new path's offset at startup? (§5.138's open sub-question; F81 §11.201 found the OLD
+path's config compensation multiplied by a zero transition — measure the new path's);
+the tracking datum (F81's shape): `select planet Jupiter`, tracking on, offset 0.3, the
+body's screen position — the pre-fix number, to be preserved. A leg that contradicts the
+model (a divergence the conjugated `R'` does not predict) = STOP after the leg: record at
+§5.138 with the numbers, deliver the pole rider alone, report. (3) **THE FIX**,
+`Camera.hpp`/`Camera.cpp` only: `observedToLocalPos` = `renderViewRotation().transpose()
+.multiplyWithoutTranslation(observedPos)` (the F91 expression, one hop over); the
+tracking site stops pre-applying `R'ᵀ` (else it undoes the offset twice); every consumer
+READS the one authority and none re-derives; `observedPosToRaDe`'s pole branch puts the
+±π/2 in `.second`; the R'ᵀ paragraph in `Camera.hpp` updated (it documents the split this
+task removes); every changed expression carries its derivation in a comment citing this
+entry. `EnvironmentManager.cpp` is NOT edited — it inherits through the authority, and
+the entry says so. (4) **PROVE:** (a) at offset 0 — the F91 table pre/post byte-identical
+in both locales (the format control), the dump's camera fields byte-identical, the smoke
+suite rc 0 step for step, and the **FULL canary** (scene arm, ~100 s) PASS post-fix with
+the dwell-frame md5 reported beside F79's `5215565b` (recorded, never gated — §0.5);
+(b) at offset 0.3 post-fix — alt/az new == old on the F91 control's own floor (≤ 3e-5°,
+the two named exceptions), the Sun included; RA/DE pre == post (they already rode the
+full inverse); (c) the tracking datum pre == post at offset 0.3 (the aim survives —
+same screen position, F81's number); `moveEyeRel`'s one caller exercised once at offset
+0.3 if a shipped verb reaches it (name the verb; if none, say so); (d) the pole guard —
+an offline probe (`f91_frame.cpp` shape) feeding an exact-pole direction: pre (RA ±90°,
+DE 0) vs post (RA 0, DE ±90°) with old's `rectToSphe` as the reference, and the alt/az
+sibling unchanged by construction; (e) ONE frame pair at offset 0.3, pre/post, same
+scene with the Sun low, RECORDED for the owner's eye — no gate, no photometric claim
+about it. (5) **RECORD:** §11.⟨next⟩ FIRST + stub (the model, the leg's table, the fix's
+consumer list, the config-channel answer); §5.138 flipped FIXED with the measured pitch
+(the row's derived 27° → measured); the pole rider closed at §5.86's row; back-markers at
+§11.213(i1)(i2) both homes; §11.201/§5.128 annotated (the new path's member of the
+family is fixed; the old path's stays the owner's §5.135); DEPLOYMENT-MAP wherever it
+names §5.138 or the alt/az half (grep); README section; WIP per §0.6; D14.
+
+**Boundaries:** `src/experimentalModule/Camera.hpp` + `Camera.cpp` only; NO old-path
+change; `EnvironmentManager.cpp` untouched; no data; no msgid; the farm only (real HOME
+md5 in==out); runs under `/home/claude/sc-f96/`; launch classes: the full canary ONCE
+post-fix (PHOTOMETRIC — a pre-fix full run too if the bank asks for a same-session
+control), every readout leg FUNCTIONAL (`--no-scene`); no `run_in_background`.
+
+**Discriminating checks:** (a) the prediction committed before the launch and matched
+pre-fix, the mutated model refuted; (b) alt/az old == new at offset 0.3 post-fix, ≤ 3e-5°,
+88/90; (c) byte-identity at offset 0 on both readouts, the dump fields and the smoke suite;
+(d) the full canary PASS post-fix, dwell md5 stated; (e) the tracking screen position
+pre == post at offset 0.3; (f) the pole probe both ways; (g) the config-channel answer
+with the dump line that carries it.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that
+are not commands: display per HOST-EVENTS (`:2`, the owner's RDP-created real session);
+canary `--no-scene` exit 0 before the first launch and the FULL canary exit 0 before the
+photometric claim; `free -g` ≥ 16 GiB before the build (else `-j6`); the harness HEAD as
+the prompt states it; §5.138's row reads OPEN, record-only.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => a2a880ef
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 404b9e89
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 216
+grep -c '^### F' claude/fable-dispatch.md => 3
+# ledger states the work stands on
+grep -m1 '^138\. ' claude/INTENT.md | grep -c 'OPEN, record-only' => 1
+grep -m1 '^86\. ' claude/INTENT.md | grep -c 'FIXED 2026-09-06' => 1
+grep -m1 '^86\. ' claude/INTENT.md | grep -c 'pole' => 1
+# sites, re-resolved at HEAD (content drift = abort)
+sed -n '260,261p' src/experimentalModule/Camera.hpp | grep -c 'observedToLocalPos\|viewRotation().transpose()' => 2
+sed -n '323,324p' src/experimentalModule/Camera.hpp | grep -c 'observedPosToAltAz\|observedToLocalPos' => 2
+sed -n '144p' src/experimentalModule/Camera.hpp | grep -c 'moveRel(observedToLocalPos' => 1
+sed -n '256,258p' src/experimentalModule/Camera.cpp | grep -c 'direction\[0\] == 0\|ret.first = std::copysign' => 2
+sed -n '647,649p' src/experimentalModule/Camera.cpp | grep -c 'viewOffsetEyeRotation().transpose()\|lookTo(observedToLocalPos(p)' => 2
+sed -n '114p' src/experimentalModule/EnvironmentManager.cpp | grep -c 'camera.observedToLocalPos' => 1
+sed -n '152,155p' src/experimentalModule/Camera.cpp | grep -c 'renderViewRotation\|viewOffsetEyeRotation().multiplyFast' => 2
+sed -n '2524p' src/coreModule/core.cpp | grep -c 'void Core::setViewOffset' => 1
+sed -n '550p' src/coreModule/core.cpp | grep -c 'setViewOffset(viewOffset)' => 1
+grep -c 'observedToLocalPos' src/experimentalModule/Camera.hpp src/experimentalModule/Camera.cpp src/experimentalModule/EnvironmentManager.cpp | tr '\n' ' ' => src/experimentalModule/Camera.hpp:4 src/experimentalModule/Camera.cpp:2 src/experimentalModule/EnvironmentManager.cpp:1
+# instruments and artifacts
+test -f claude/harness/f81_offset.py && test -f claude/harness/f91_parity.py && test -f claude/harness/f91_frame.cpp && test -f claude/harness/f90_rehearsal_run.sh && echo ok => ok
+test -d claude/harness/artifacts/f91/run-post-fr && echo ok => ok
+test -e /home/claude/sc-f96 ; echo $? => 1
+```
+
+**DoD:** predictions before the launch; the leg (both channels, the tracking datum);
+the fix (code first) + the pole guard; the four proofs incl. the full canary; §11 entry +
+stub; §5.138 flipped; the rider closed; back-markers; map; README; trees clean; WIP
+cleared; baselines LAST.
+**WIP:**
+
+### F97 — §5.21 — `LocationOrbit` made EXACT on both paths: the authored latitude converted like the longitude (degrees, the loader's documented unit — `orbit.cpp:1091` converts one and not the other on the same line), and the spin read from the parent's ONE rotation authority at evaluation time instead of a linear model anchored at JD 0 with the parent's period and phase frozen at construction (`orbit.cpp:1102`; on Earth `Body::getSiderealTime` is the APPARENT sidereal time, which no linear model follows — magnitude to be MEASURED); on the new path the class registered at `modules.cpp:49` lands where `surface_point` + the grounded fold lands for the same keys, the spin applied exactly once whichever spelling the author uses (§11.78(c)'s double-spin trap closed by construction); D9 excluded by round-3 R18 (*"No."* — nobody has authored one), zero shipped/loaded uses measured at the mint, so no baseline scene moves (§11.207(g) item 3; DEPLOYMENT-MAP T2) [M, engine, both paths]
+
+**Why now / mandate:** §5.21 (row + `INTENT/5.21.md`): (a) self-rotation `lon +
+JD·2π/period` — raw JD, the parent's period and phase frozen at construction, a DEGRADED
+duplicate of the parent's real spin state (I2), double-applied when combined with a
+grounded body; (b) `lat` passed to `spheToRect` unconverted while the loader feeds
+degrees. F47 §11.163(e): BOTH paths — the new path registers `LocationOrbitLoader`
+building the identical class. R18 [stated: tester (Lionel RUIZ), via owner commit
+`6ffb017`]: *"No."* ⇒ no authored `orbit_lat` exists that could have been tuned against
+the distortion — the D9 objection is EXCLUDED and the row is DECISION-FREE (§11.207(g)
+item 3, "S–M"; sized M here for the derivation it needs). The old-path half touches an
+old-path class; it is allowed because NO shipped or loaded scene reaches it on either
+path (the census below: 0 / 0 / 0) — the comparison baseline moves for no scene, said as
+a veto point in §3.
+
+**Measured at dispatch (supervisor, 2026-09-06 10:23–10:36, code `a2a880ef`; the PREMISES
+block re-runs what is a command):** the class `orbit.hpp:410-420`; constructor
+`orbit.cpp:1090-1093` `lon((_lon+parentOffset)*M_PI/180), lat(_lat), alt(_alt/AU+parentRadius),
+JDToRotation((2*M_PI)/parentPeriod)`; evaluation `:1099-1106` `spheToRect(lon+JD*JDToRotation,
+lat, tmp)` × `alt` into `v` — the child's position in the PARENT's frame (old:
+`Body::compute_position` writes `ecliptic_pos` from
+`orbit->positionAtTimevInVSOP87Coordinates(date, date, ecliptic_pos)`; `compute_trans_matrix`
+composes `mat_local_to_parent = translation(ecliptic_pos) · rot_local_to_parent` with
+`rot_local_to_parent = Z(ascendingNode − precessionRate·(jd−epoch)) · X(obliquity)`, and
+`getRotEquatorialToVsop87` chains `rot_local_to_parent` up the parents — so WHICH frame a
+child's `ecliptic_pos` is expressed in is the FIRST thing this task derives and cites,
+not a premise here); `saveOrbit` `:677-681` returns `"Pas encore complet"` (a data-surface
+gap of §5.32's class — recorded, fixed only if the check needs the round trip). Old loader
+`protosystem.cpp:598-608`: `parentOffset = parent->getSiderealTime(J2000)` at `:600` and
+then `parent->getSiderealTime(0)` passed at `:607` — two references computed, one used
+[observed]. `Body::getSiderealTime` `body.cpp:604-610`: Earth → `get_apparent_sidereal_time(jd)`;
+else `fmod((jd − re.epoch)/re.period·360 + re.offset, 360)`; `getSiderealDay()` =
+`re.period` (`body.hpp:240-242`). Consequence [derived]: for a linear-`re` parent,
+`getSiderealTime(0) + JD·360/period ≡ getSiderealTime(JD)` (mod 360), so defect (a)'s
+magnitude there is the float cost of a ~1e7-rad phase plus the FROZEN period/phase (a
+runtime `body name <parent> rot_periode …` seam no longer reaches the child — I2); on
+EARTH a linear extrapolation from JD 0 cannot follow the apparent sidereal time's
+non-linear terms (the quadratic and nutation terms accumulated since −4712), of order
+a degree today [derived; coefficient from knowledge — the task MEASURES it]. New loader
+`experimentalModule/orbitModules/LocationOrbitLoader.hpp:1-14` (`parent->getRadius()`,
+`getSiderealDay()`, `getSiderealTime(0)`); the new path's spin authority
+`ModularBody::getAxisRotation()` = `axisRotation + M_PI_2` (`ModularBody.hpp:575-577`),
+`computeBodyToSurface()` = `zrotation(getAxisRotation())` (`:579-581`); `surface_point`
+(`SurfacePointOrbitLoader.hpp`) emits the point in the parent's SURFACE frame and the
+grounded fold applies the spin — its header comment (`:12-20`) names `location_orbit` as
+the double-spin trap, its loader WARNS (`L_WARNING`) when the body is not grounded (the
+`relation == "grounded" || bound_to_surface` test); `ModularBodyPtr parent` is its I5
+form (destruction-notified). **Census** (LC_ALL=C `/usr/bin/grep`): `location_orbit` in
+`~/.spacecrafter/ssystem.ini` + `~/.spacecrafter/scripts/` = **0** files; in
+`doc/superscript.sts` = **0** lines ⇒ no shipped or loaded scene reaches the class on
+either path. Instruments: the dual dump (`dumpread.py`), `f90_rehearsal_run.sh`,
+`f91_parity.py` (the 90-body table — the no-shipped-body-moves control), `f91_frame.cpp`
+(offline probe shape).
+
+**Mandate:** (1) **DERIVE the target before touching code**, with citations: (i) the frame
+a child's `positionAtTimevInVSOP87Coordinates` fills on the old path (read
+`compute_position`/`compute_trans_matrix`/`getRotEquatorialToVsop87` and ONE existing
+provider a shipped moon uses; state whether a child's position is in the parent's
+EQUATORIAL frame, z = spin axis, or an ecliptic-parallel one — the fix's form follows
+from this and nothing else); (ii) the exact spin on each path = the parent's own
+authority at JD (`Body::getSiderealTime(jd)` / `ModularBody::getAxisRotation()`), read at
+EVALUATION through a non-owning reference the parent's lifetime guarantees (I5: state the
+guarantee `Body`'s shared `parent` gives on the old path; `ModularBodyPtr` on the new, as
+`SurfacePointOrbit` does); (iii) `orbit_lat` in degrees (`orbit_lon` already is). (2)
+**THE FIX**, the class and its two loaders: latitude converted; spin from the authority
+at evaluation (no frozen copy); on the new path `location_orbit` lands EXACTLY where
+`surface_point` + grounded lands for the same keys, the spin applied ONCE — a
+`location_orbit` body that is ALSO grounded gets no second spin, and the loader says so
+once in the log per §2(f) when the author spelled both; `surface_point`'s ascent-ramp
+keys are that provider's, not imported; `saveOrbit` recorded (fixed only if (3)(b)'s
+round trip needs it); every new expression carries its derivation in a comment citing
+this entry. (3) **PROVE:** (a) OFFLINE probe (`f91_frame.cpp` shape): the class's position
+for (lon, lat = 45°, alt = 0) on a linear-`re` parent vs the parent's surface point built
+from `getSiderealTime(jd)` directly — pre-fix the latitude error (45 taken as radians) and
+the phase, post-fix ≤ 1e-9 AU; on Earth the apparent-vs-linear angle at three dates,
+PRE-REGISTERED from the sidereal-time formulas the code carries, then measured; (b) LIVE
+on a farm (French locale): a probe body authored by `body action load … coord_func
+location_orbit orbit_lon L orbit_lat 45 orbit_alt 0 parent Mars` (a linear-`re` parent)
+and its `surface_point` + grounded TWIN with the same keys, a third pair on Earth; the
+dual dump at a pinned clock — post-fix the twins coincide on the new path (floor from a
+same-body A/A stated), the old half equals the surface point derived from the parent's
+dumped state; PRE-fix the same dump shows both defects; the pairs at TWO clocks 12 h
+apart show co-rotation by the parity-derived angle; a grounded + `location_orbit` body
+shows ONE spin post-fix; (c) no shipped body moves on either path: the F91 table
+(`f91_parity.py`) byte-identical pre/post and `f90_rehearsal_run.sh` rc 0 step for step;
+(d) D14. (4) **RECORD:** §11.⟨next⟩ FIRST + stub (the derivation with citations, the
+tables, the Earth angle measured); §5.21 (row + `INTENT/5.21.md`) FIXED with pointers;
+back-markers at §11.78(c), §11.163(e), §11.207(g)(3) — both homes each;
+`SurfacePointOrbitLoader.hpp`'s trap comment updated (the trap is closed);
+DEPLOYMENT-MAP T2's §5.21 row struck; README section; WIP per §0.6; D14.
+
+**Boundaries:** `src/bodyModule/orbit.{hpp,cpp}` (the class), `src/bodyModule/protosystem.cpp`
+(the `location_orbit` branch only), `src/experimentalModule/orbitModules/LocationOrbitLoader.hpp`
+(+ `SurfacePointOrbitLoader.hpp`'s comment) — nothing else; EntityCore read-only; every
+OTHER old-path provider untouched; no data; the farm only (real HOME md5 in==out);
+FUNCTIONAL (`--no-scene`); no `run_in_background`; runs under `/home/claude/sc-f97/`. If
+(1)(i) yields a frame the fix cannot land in without changing another provider, or a
+semantic fork appears (a non-grounded `location_orbit` on the new path whose meaning
+under `surface_point` semantics and under old's differ) → STOP at the derivation, record
+both readings, deliver the latitude half if it is separable, report.
+
+**Discriminating checks:** (a) the frame derivation with old's citations, written before
+the fix; (b) the offline probe pre/post, both defects shown then gone; (c) the twin
+coincidence on the new path and the old-half check, with the floor; (d) co-rotation at
+two clocks; (e) one spin for the doubly-spelled body; (f) the 90-body table byte-identical
+pre/post + the smoke suite; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that
+are not commands: display per HOST-EVENTS (`:2`); canary `--no-scene` exit 0 before the
+first launch; `free -g` ≥ 16 GiB before the build (else `-j6`); the harness HEAD as the
+prompt states it; §5.21's row reads DECISION-FREE and not FIXED.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => a2a880ef
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 404b9e89
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 216
+grep -c '^### F' claude/fable-dispatch.md => 3
+# ledger states the work stands on
+grep -m1 '^21\. ' claude/INTENT.md | grep -c 'DECISION-FREE' => 1
+grep -m1 '^21\. ' claude/INTENT.md | grep -c 'FIXED' => 0
+# sites, re-resolved at HEAD (content drift = abort)
+sed -n '1091p' src/bodyModule/orbit.cpp | grep -c 'lon((_lon+parentOffset)\*M_PI/180), lat(_lat)' => 1
+sed -n '1102p' src/bodyModule/orbit.cpp | grep -c 'spheToRect(lon+JD\*JDToRotation, lat, tmp)' => 1
+sed -n '49p' src/experimentalModule/modules.cpp | grep -c 'location_orbit' => 1
+sed -n '598,608p' src/bodyModule/protosystem.cpp | grep -c 'location_orbit\|getSiderealTime(0)' => 2
+grep -c 'getSiderealTime(0)' src/experimentalModule/orbitModules/LocationOrbitLoader.hpp => 1
+sed -n '609p' src/bodyModule/body.cpp | grep -c 'fmod((jd - re.epoch) / re.period \* 360. + re.offset, 360)' => 1
+sed -n '606,607p' src/bodyModule/body.cpp | grep -c 'Earth\|get_apparent_sidereal_time' => 2
+sed -n '240,242p' src/bodyModule/body.hpp | tr -d '\t' | tr '\n' ' ' => double getSiderealDay(void) const { return re.period; }
+sed -n '576p' src/experimentalModule/ModularBody.hpp | grep -c 'axisRotation + M_PI_2' => 1
+sed -n '580p' src/experimentalModule/ModularBody.hpp | grep -c 'zrotation(getAxisRotation())' => 1
+grep -c 'relation"\] == "grounded"' src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp => 1
+# the census (LC_ALL=C /usr/bin/grep: the wrapper skips non-UTF-8 files silently)
+/usr/bin/grep -rl 'location_orbit' ~/.spacecrafter/ssystem.ini ~/.spacecrafter/scripts/ 2>/dev/null | wc -l => 0
+LC_ALL=C /usr/bin/grep -c 'location_orbit' doc/superscript.sts => 0
+# instruments
+test -f claude/harness/f90_rehearsal_run.sh && test -f claude/harness/dumpread.py && test -f claude/harness/f91_parity.py && test -f claude/harness/f91_frame.cpp && echo ok => ok
+test -e /home/claude/sc-f97 ; echo $? => 1
+```
+
+**DoD:** derivation (code untouched) → fix (code first) → offline probe + live twins +
+the two controls; §11 entry + stub; §5.21 flipped (row + entry file); back-markers; map;
+README; trees clean; WIP cleared; baselines LAST.
+**WIP:**
+
+### F98 — the SECOND SOAK, over the tester's own `fscripts/` corpus (body authoring under show load — §5.137's class, the residue §11.215(m) names and DEPLOYMENT-MAP T5 item 2 carries): the F95 instrument GENERALISED (playlist directories + farm root as parameters, F95's own behaviour at its defaults unchanged — one driver, I2), the duration model made `struct loop`-aware with a per-show CAP stated before the launch (`panorama0.sts` loops 1 000 000×: infinite by design — a CAP is a design parameter, a SHOW-TIMEOUT stays a finding), every one of the 137 real-HOME `.sts` a COPY on the farm and md5-asserted in==out per file, ≥ 4 h on the binary the round leaves with the F95 criteria + LEAK rule unchanged, PLUS the authoring instrument (the dump's body count per boundary; for one authored body per authoring show, its presence in each path's dump half and on the control surface); and the "3000 satellites" claim corrected at its four ledger homes with the measured count (170 lines in `06old.sts`, 529 in `14.sts`, 719 in 9 shows) [M–L, instrument; display-bound, hours]
+
+**Why now / mandate:** §11.215(m): *"it plays image-overlay shows, so it exercises … but not
+body authoring — the tester's own `fscripts/` corpus … is a named second soak and is owed,
+not done"*; DEPLOYMENT-MAP T5 item 2's residue; session-24 close queue position 2. The
+class: §5.137 (an authored body leaves the drawn universe on `body action reload` while
+the readouts keep answering), and §5.61 / §5.59 / §11.15d / B30 under a load F95 never
+put on the engine — 719 `body action load`s, six `body action clear`s, 62 media shows,
+seven looping shows. What F95 could not see is exactly what this corpus does.
+
+**Measured at dispatch (supervisor, 2026-09-06 10:24–10:36; the PREMISES block re-runs what
+is a command; `LC_ALL=C /usr/bin/grep` throughout — the Bash-tool wrapper skips
+non-UTF-8 files silently and the corpus is Latin-1):** `~/.spacecrafter/scripts/fscripts/`
+= **137** `.sts` among **192** entries, **897 MB** (media); `startup.sts` is one of the
+137 (355 B, played by the app at launch — never in a playlist). **`body action load`: 719
+lines in 9 shows** — `14.sts` **529** (GAIA 10 pc: stars and planets by `filename
+Star_Brown|Star_Red|Star_White|Planet|…`), `06old.sts` **170** (one satellite per line,
+`type Moon parent Earth … coord_func ell_orbit`; 359 lines; no loop), `S10.sts` 10, then
+`S09`/`S05`/`S02`/`K9` 2 each, `S13`/`S12old` 1 each. **The ledger's "3000 satellites" /
+"thousands of `body action load` lines" for `06old.sts` (§5.137's row, §11.211(h),
+§11.215(m), `DEPLOYMENT-MAP.md:687`) is 17× the file's count** — an F90 executor number
+written without its command (Q-67's class), to be corrected by THIS task at those four
+homes, marker at both homes each (the two in `fable-dispatch.md` §3 are the supervisor's,
+corrected at the close). `body action reload`: **0** shows — §5.137's exact trigger is
+ABSENT from the corpus (its sibling `body action clear` is in **6**: `K3`, `panorama1`,
+`panorama3`, `panorama4`, `panorama5old2`, `panorama5old`); `shutdown`: 0; `position
+action save`: 5 shows (`05`, `07g`, `07isc`, `K9`, `M20` — read the handler, list what it
+writes on the farm); `struct loop`: **7 shows, 56 lines** — `panorama0.sts` `struct loop
+1000000`, `S03old.sts` 4000, `15.sts` and `panorama5.sts` 3600, `S11.sts` 1000, `05.sts` a
+chain of 240/365/30/31/34-count loops, `04.sts` 10; the grammar is `struct loop N` …
+`struct loop end` / `struct loop break` (`doc/superscript.sts:1414-1424`); `script action
+pause`: 21 shows, 130 lines; authored `wait duration` sum over the corpus **1100 s**
+WITHOUT loop expansion (largest `08.sts` 186 s) [measured by a French-locale awk — its
+decimals print with a comma; the executor's Python model is the authority]; media
+references in 62 shows. **Corpus fingerprint: per-file md5s sorted (C order) then hashed
+= `3995e501`** — a `cat *.sts | md5sum` is LOCALE-DEPENDENT (`ls` and the glob collate
+differently under `fr_FR.UTF-8`: `68c9b4ba` vs `e2123d2b` at the mint, writer set
+enumerated first — newest `fscripts/` mtime 2026-07-11, no process), so the frozen assert
+is PER FILE, never over a concatenation. F95's driver `harness/f95_soak.py`:
+`PLAYLIST_DIRS` at `:123`, `FARM_ROOT = /home/claude/sc-f95` at `:105`, `J0 = 2460000.5`
+at `:112`, `frozen_set` `:276-282` (config + ssystem + `startup.sts` + the played shows),
+`show_own_duration` at `:288` (F90's `:573` copy — TWO homes of one parser, both
+`struct loop`-blind, §11.215(k)(2)), `build_farm` `:387-455` (played shows COPIED,
+the rest symlinked, 19 shape asserts), `play_show` `:982-1026` (`budget = own + 60.0` at
+`:985`; `script action end` on timeout at `:1020`), `interlude` `:1028-1060` (Mars at J0);
+`start` refuses an outdir outside `FARM_ROOT` (`:1288`) and a reused one (`:1292`); the
+resume point `status`. `f55_farm.sh` makes `scripts/fscripts/` a real directory of
+symlinks (its own header, `:2-14`) — the annotator's rewrite (`script_annotator.cpp:163-179`,
+§11.211(c)) is why every PLAYED file must be a copy.
+
+**Design (the executor implements; every deviation argued at the entry):**
+(1) **ONE driver, generalised** (I2 — no `f98_soak.py` copy): `f95_soak.py` gains
+`--playlist-dir <name>` (repeatable; default the F95 three), `--root <abs>` (default
+F95's), `--cap <s>` (per-show cap; default = none, F95's behaviour); `startup.sts` is
+never a playlist member; the `plan` output at the defaults is byte-identical to F95's
+except the parameter echo (diff committed); `f95_report.py`/`f95_epoch.py` read the
+widened state unchanged or say what changed. (2) **The duration model**, ONE home
+(the second copy in `f90_rehearsal.py` either imports it or is annotated as the
+frozen F90 baseline's — say which): `struct loop N` … `struct loop end` multiplies the
+body's waits and pauses by N (nested loops multiply; `struct loop break` noted as an
+early exit the static model cannot see); a show whose modelled duration exceeds the CAP
+is ended by `script action end` at the cap and logged **CAPPED** (by design, not a
+finding); **SHOW-TIMEOUT keeps F95's meaning** — the show exceeded its OWN modelled
+duration + 60 s; the model's table for all 136 shows (own s / loop-expanded s / pauses /
+capped?) and the predicted cycle wall time are committed BEFORE the launch, with the
+cap value and the reason for it. (3) **The farm**: f55 + every `fscripts/*.sts` a COPY
+(137 small files), media entries symlinks, `sessions/` real, the F95 shape asserts kept;
+the frozen set = config + ssystem + ALL 137 real-HOME `.sts`, per-file md5 in==out at the
+end (the aggregate sorted digest printed beside it). (4) **The authoring instrument**, in
+the interlude at every cycle boundary: the dump's body count per path half; for
+`06old.sts`'s first satellite and `14.sts`'s first star (named from the files): `search
+name <X>`, `select`+`get status object`, and the two dump halves — present-old /
+present-new / drawn; the RSS at every SHOW boundary as a finer secondary series
+(recorded; the LEAK verdict stays on cycle boundaries, F95's rule). (5) **Criteria** =
+F95's F1–F4 + LEAK, UNCHANGED, committed before the first launch
+(`artifacts/f98/prediction.txt`) with the cap and the cycle-time prediction; `selftest` +
+ONE two-minute live DEATH control on the fscripts farm (the widened frozen set and farm
+shape exercised once, the flag shown red). (6) **The soak**: H ≥ 4 h (state the actual
+H), S = 30 s; ONE `wait` (≤ 540 s) per Bash call — never chained (§11.215(l)'s process
+deviation: the tool backgrounds an over-long call); the WIP line hourly; samples committed
+hourly (gz, `git add -f`). (7) **RECORD:** §11.⟨next⟩ FIRST + stub (criteria, the model
+table, the cycle table, the authoring table, the leak verdict with its series, the
+CAPPED and SHOW-TIMEOUT lists with attribution, the quit, what this corpus exercised that
+F95 could not, and what it still cannot — `body action reload` is not in it); the four
+"3000" homes corrected with markers; DEPLOYMENT-MAP T5 item 2's residue annotated;
+README section; WIP; D14.
+
+**Boundaries:** no engine code; the farm only (the 137 + 2 real-HOME files md5 in==out);
+FUNCTIONAL — `--no-scene` canary, no photometric claim; `run_in_background` NEVER — the
+driver is a `setsid` process, every executor call foreground and ≤ 9 min; never `flag
+skip_pause` (the pause item is the tester's, §3); NOTHING fixed in the application; the
+corpus never edited; runs under `/home/claude/sc-f98/`.
+
+**Discriminating checks:** (a) criteria + model table + cap + cycle-time prediction
+committed before the launch; (b) the DEATH control RED, artifacts kept; (c)
+`samples.csv` ≥ H×3600/S rows, the cycle table, the per-show table; (d) the leak verdict
+with its series; (e) the quit's exit code, wall-to-exit, teardown lines; (f) 139 md5s
+in==out; (g) the authoring table per cycle; (h) the `plan` diff at F95's defaults; (i)
+the four corrections with their markers.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that
+are not commands: display per HOST-EVENTS (`:2`, the owner's RDP-created real session,
+kept logged in); canary `--no-scene` exit 0 before the first launch; the harness HEAD as
+the prompt states it; the detached-process premise (Q-68) re-probed as the FIRST act —
+`setsid -f sleep 120` in one call, alive in the next; if it dies, STOP and report.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => a2a880ef
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 404b9e89
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 216
+grep -c '^### F' claude/fable-dispatch.md => 3
+# the corpus (LC_ALL=C /usr/bin/grep: the wrapper skips non-UTF-8 files silently)
+ls ~/.spacecrafter/scripts/fscripts/*.sts | wc -l => 137
+ls ~/.spacecrafter/scripts/fscripts/ | wc -l => 192
+md5sum ~/.spacecrafter/scripts/fscripts/*.sts | cut -c1-32 | LC_ALL=C sort | md5sum | cut -c1-8 => 3995e501
+LC_ALL=C /usr/bin/grep -c 'body action load' ~/.spacecrafter/scripts/fscripts/06old.sts => 170
+LC_ALL=C /usr/bin/grep -c 'body action load' ~/.spacecrafter/scripts/fscripts/14.sts => 529
+LC_ALL=C /usr/bin/grep -l 'body action load' ~/.spacecrafter/scripts/fscripts/*.sts | wc -l => 9
+LC_ALL=C /usr/bin/grep -h 'body action load' ~/.spacecrafter/scripts/fscripts/*.sts | wc -l => 719
+LC_ALL=C /usr/bin/grep -il 'shutdown\|body action reload' ~/.spacecrafter/scripts/fscripts/*.sts | wc -l => 0
+LC_ALL=C /usr/bin/grep -l 'body action clear' ~/.spacecrafter/scripts/fscripts/*.sts | wc -l => 6
+LC_ALL=C /usr/bin/grep -l 'struct loop' ~/.spacecrafter/scripts/fscripts/*.sts | wc -l => 7
+LC_ALL=C /usr/bin/grep -o 'struct loop [0-9]*' ~/.spacecrafter/scripts/fscripts/panorama0.sts | head -1 => struct loop 1000000
+LC_ALL=C /usr/bin/grep -l 'script action pause' ~/.spacecrafter/scripts/fscripts/*.sts | wc -l => 21
+LC_ALL=C /usr/bin/grep -c 'struct loop end' doc/superscript.sts => 2
+# the driver the design generalises
+grep -n '^PLAYLIST_DIRS' claude/harness/f95_soak.py | cut -d: -f1 => 123
+grep -n '^FARM_ROOT' claude/harness/f95_soak.py | cut -d: -f1 => 105
+grep -c 'budget = own + 60.0' claude/harness/f95_soak.py => 1
+grep -n 'def show_own_duration' claude/harness/f95_soak.py claude/harness/f90_rehearsal.py | cut -d: -f2 | tr '\n' ' ' => 288 573
+test -f claude/harness/f95_soak.py && test -f claude/harness/f95_report.py && test -f claude/harness/f95_epoch.py && test -f claude/harness/f55_farm.sh && echo ok => ok
+test -e /home/claude/sc-f98 ; echo $? => 1
+# output-side: the claim F98 corrects — a FAIL here means someone already did; report, never abort
+grep -m1 '^137\. ' claude/INTENT.md | grep -c 'thousands of' => 1
+grep -c '3000' claude/INTENT/11.211.md claude/INTENT/11.215.md claude/DEPLOYMENT-MAP.md | tr '\n' ' ' => claude/INTENT/11.211.md:1 claude/INTENT/11.215.md:1 claude/DEPLOYMENT-MAP.md:1
+```
+
+**DoD:** the generalised driver + the loop-aware model; predictions before the launch;
+the control red; the ≥ 4 h soak with its samples, tables and verdicts; the quit measured;
+the four corrections; §11 entry + stub; map; README; trees clean; WIP cleared; baselines
+LAST.
+**WIP:**
 
 ---
 
