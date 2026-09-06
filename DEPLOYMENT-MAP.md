@@ -649,9 +649,44 @@ direction (see T3).
    and this campaign says why that needs a different instrument rather than more of the same -
    five launches of ~91 s cannot see the stability class, and this suite's own quit measured
    0.6 s five times out of five.]**
-2. **Multi-hour soak under show load** (the stability class: §5.61 lost wakeup, §5.59/A40
+   **[THAT SENTENCE IS SPENT 2026-09-06, F95 → §11.215: T5.2 has now run, so "READY STILL
+   WAITS ON: T5.2 alone" is a past state, and what "ready" rests on is item 2's strike
+   below plus the two limits named there (B30 is outside the soak; the `fscripts/` corpus
+   is a second soak, owed). Two riders for this suite itself, both measured by F95: it is
+   step-for-step IDENTICAL over **ten** consecutive runs on `404b9e89`, a binary F90 never
+   saw (F90's three runs were on `407b3d1d`, since moved by F91 and F94), which extends its
+   zero-flake record across two binary changes; and its `show_own_duration` is blind to
+   `struct loop`, so any future caller that plays a looping show gets a budget that is a
+   slice rather than a duration (`harness/README.md`, F95 section).]**
+2. ~~**Multi-hour soak under show load** (the stability class: §5.61 lost wakeup, §5.59/A40
    teardown, B7's intermittent §11.15d segfault, B30 frozen-scene micro-instability,
-   §5.62's unattributed epoch shift) — never run. A planetarium session is hours.
+   §5.62's unattributed epoch shift) — never run. A planetarium session is hours.~~
+   **[RAN 2026-09-06, F95 → INTENT §11.215. It is `harness/f95_soak.py`: a DETACHED
+   `setsid` driver owns one launch for H hours while every supervising call stays a
+   foreground read, which is the only shape §0.5's no-`run_in_background` rule leaves —
+   and it makes the campaign survive an executor abort, `status` being the resume point.
+   TWO LEGS on binary `404b9e89`, **2.735 h + 3.004 h = 5 h 44 min**, the eight shipped
+   `basis`/`custom`/`deepsky` shows round-robin with every authored pause RESUMED, 128
+   complete cycles, 688 samples: **F1 DEATH, F2 HANG, F3 QUIT and F4 FROZEN FILE all
+   NONE, in both legs.** Both detectors were shown able to fail first, on live controls
+   (`kill -9` → F1 within one sample; `kill -STOP` → F2 at a measured 54.3 s against
+   F19's 45 s bound, then recovery). **Four of the five class members did not fire**:
+   the probe round trip never passed **208 ms** in 688 samples, `This frame stall is
+   very long` measured **0**, the quits were **0.65 s and 0.61 s, exit 0, no teardown
+   fault** — and with ten `f90_rehearsal_run.sh` launch/quit cycles that is **thirteen
+   clean quits**, so §11.15d did not fire either. RSS is bounded, not leaking: it rises
+   ~220 MB over ~14 cycles and then holds through 26 consecutive exactly-zero steps,
+   with a residual 0.28–0.38 MB/h tail that three hours cannot separate from a very slow
+   leak (named, not hidden). §5.62 did not recur at its own scale; what the pinned-clock
+   instrument found instead is §5.84's seeded solver caught happening — four bodies of
+   120, OLD path only, two values each, ≤ 9.437e-16 AU, with the NEW path bit-identical
+   120/120, which is also the first positive test of §11.76(b)'s D8 use-site barrier.
+   **THE FIFTH MEMBER, B30, IS OUTSIDE THIS INSTRUMENT AND STAYS UNMAPPED**: the soak
+   reads no pixel. Two further limits, stated so "ready" is not over-read: the playlist
+   is image-overlay shows, so it does NOT exercise body authoring — a second soak over
+   the tester's own `fscripts/` corpus (`06old.sts` authors 3000 satellites, §5.137) is
+   named and OWED — and thirteen clean quits is a rate, not a proof against an
+   intermittent class. **"Ready" is the owner's word from here.**]**
 3. ~~**B38's residual state** ⚠ (dead tokens + reachable-but-defective handlers) — the
    command-surface sweep's defect row; verify what remains open at the row.~~
    **[RESOLVED 2026-08-29, F47 §11.163(i) — NOT unmapped. State read: all EIGHT survivors

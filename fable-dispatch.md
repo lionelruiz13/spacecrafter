@@ -1013,82 +1013,27 @@ test -e /home/claude/sc-f95 ; echo $? => 1
 **DoD:** the driver + four verbs; predictions before the launch; both controls red;
 the ≥ 3 h soak with its samples, cycle table, dump diffs and verdicts; the quit measured;
 §11 entry + stub; map T5.2 struck; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-06 02:2x — CHECKPOINT 1 (instrument + criteria, before any launch):
-§0.7 gate PASS (premise_check 13/13; display `:2` 2448x1332; canary `--no-scene` exit 0
-`artifacts/f56/canary/20260906-015749`; no `spacecrafter` in `/proc/*/comm`; the
-detached-process re-probe HELD — `setsid -f nohup sleep 120` at 01:57:18 alive in the
-next call at 01:57:26). `harness/f95_soak.py` written (four verbs + detached driver);
-`selftest` PASS (leak rule both ways, teardown matcher 4+/3-, dump-diff 0/3, position
-matcher both ways); criteria + predictions committed to
-`harness/artifacts/f95/prediction.txt`; D14 gate PASS.
-2026-09-06 02:2x — CHECKPOINT 2 (both live controls RED, artifacts kept): DEATH — app
-`kill -9`ed at 02:13:01 during a `wait`, **F1 at sample #7 (+70.1 s), exit status -9**,
-within one 10 s sample, driver terminal, `/proc/*/comm` clear, frozen 11/11 identical.
-HANG — `kill -STOP` 02:14:49 / `-CONT` 02:15:49, **F2 at sample #6, round trip 54.3 s
-against the 45.0 s F19 bound**, then samples #7-#11 recovered at ~201 ms, quit **exit 0
-in 0.61 s**, 0 teardown faults. The HANG control also found a defect in MY OWN detector
-(the second F2 arm tested the CUMULATIVE `very long` count, so one stall latched the
-flag onto every later sample; `prediction.txt` says GAINS) — corrected to an increase
-test, `very_long_arm()` with six selftest cases.
-2026-09-06 03:14 — CHECKPOINT 3 (SOAK HOUR 1 of 3, running): launched 02:18:49, T+H
-05:18:49, outdir `/home/claude/sc-f95/soak`, H 3.0 S 30. At +3322 s: **20 COMPLETE
-cycles, 110 samples, flags NONE**. Cycle wall dead flat 157.9-159.7 s (8 shows, 39-40
-pauses resumed each). **VmRSS rose 7201128 -> 7427656 kB over cycles 1-16 and then went
-FLAT (16->17 step = 0)**, so the sign rule already reads NO LEAK and the naive
-last-vs-first would have said the opposite. Probe round trip 201-208 ms throughout;
-screensaver `false` / lockedHint `no` on every sample. `Frame stall detected` 84.8 then
-82.4 per hour, `very long` **0**. Script log +1.88 MB/h = 82969 B per 8-show cycle.
-ONE instrument finding, argued not fixed mid-run: `custom/diaporama.sts` SHOW-TIMEOUTs
-every cycle because F90's `show_own_duration` is loop-blind — the file wraps its single
-`wait duration 3.1` and its single `script action pause` in `struct loop 100` (:146), so
-its authored duration is ~100x what the parser reports. Kept: every cycle then gets an
-identical deterministic 63 s slice, which is BETTER for cross-cycle comparison, and the
-section itself provides for SHOW-TIMEOUT.
-2026-09-06 04:14 — CHECKPOINT 4 (SOAK HOUR 2 of 3, running): at +6823 s, **43 cycles,
-227 samples, flags STILL NONE**. VmRSS flat at 7429952 kB since cycle 28 (steady state
-from cycle ~16). Cycle wall 157.9-159.7 s with no slope over 42 complete cycles. Probe
-201-208 ms, screensaver `false` / lockedHint `no` every sample. Stalls 83.4 then 75.1
-per hour, `very long` **0**. Script log +1.88 MB/h = 82895 B per 8-show cycle. All 8
-played `.sts` in the farm byte-identical to the real ones (the annotator wrote nothing);
-2 `(Error)` lines in `spacecrafter.log`, both at startup. **THE §5.62 INSTRUMENT HAS A
-PAYLOAD, stable at 22 and at 42 dumps:** at the pinned J0 exactly **4 of 120 bodies**
-(Ananke, Neried, Setebos, Sycorax) take **two** distinct values, **on the OLD half
-only** — the NEW half is bit-identical on 120/120. Max |delta| **9.437e-16 AU** (136
-ulps), i.e. 2-4 orders BELOW §11.87(c)'s recorded Kepler float floor. Mechanism read at
-HEAD: `EllipticalOrbit::eccentricAnomaly` takes ONE step from a caller-persistent
-`lastE` (`orbit.cpp:515-562`) ⇒ **§5.84's magnitude, unmeasured on the row since
-2026-08-09, is measured here**. Eccentricity REFUTED as the selector (Sedna 0.859,
-Neso 0.630, Eris 0.437 do not move; Ananke does at 0.217).
-2026-09-06 05:10 — CHECKPOINT 5 (LEG 1 ENDED EARLY AT 2 h 44 min — MY BUG, not the
-app's; leg 2 relaunching for the full H): at +9840 s the driver loop raised
-`FileNotFoundError`. Root cause found and reproduced on demand: `atomic_write_json`
-used ONE temp name `state.json.tmp` while BOTH the sampler thread and the playlist
-thread call `write_state()`, so one `os.replace` consumed the temp the other was about
-to rename. **Shown both ways: the leg-1 implementation raises 1154 `FileNotFoundError`
-in 3200 concurrent writes from 8 threads; the fixed one (unique temp name per writer +
-a lock) raises 0.** The driver now also records the TRACEBACK. LEG 1 IS EVIDENCE, NOT
-WASTE and is delivered: 2.735 h, **61 complete cycles, 328 samples, ZERO app flags**,
-quit **exit 0 in 0.65 s** with 0 teardown faults, frozen 11/11 in==out, LEAK verdict
-**NO LEAK BY THIS RULE** (25 of 59 steps non-positive), the 4-body pinned-clock finding
-stable at 61 dumps. Artifacts `harness/artifacts/f95/leg1/`.
-2026-09-06 06:04 — CHECKPOINT 6 (LEG 2 HOUR 1 of 3, running; started 05:06:14, T+H
-08:06:14): at +3420 s, **22 cycles, 114 samples, flags NONE**, RSS plateaued at 7434388
-kB, probe 202-207 ms, screensaver `false` / lockedHint `no` throughout, `very long` 0.
-**THE PINNED-CLOCK FINDING REPRODUCES ACROSS LAUNCHES**: an independent launch on a
-fresh farm gives the SAME four bodies (Ananke, Neried, Setebos, Sycorax), the same
-two-value structure, and the same max |delta| **to the last digit** (9.437e-16 /
-3.977e-16 / 2.255e-16 / 1.388e-16 AU) — so the two doubles are specific landing points
-of the seeded solver, not noise. NEXT: leg-2 hours 2-3, the quit, the optional cycle
-campaign, then the record.
-2026-09-06 07:01 — CHECKPOINT 7 (LEG 2 HOUR 2 of 3, running): at +6820 s, **43 cycles,
-227 samples, flags NONE**, RSS 7434392 kB (flat since cycle ~15), probe 203-207 ms,
-`very long` 0, screensaver `false` / lockedHint `no` every sample. Leg 2 mirrors leg 1
-to within noise: stalls 84.4 then 80.7 per hour (leg 1: 83.4 / 75.1); script log
-**1.88 MB/h in both legs**, 83084 B per 8-show cycle (leg 1: 82895). NOTE for §5.115:
-each leg's farm is fresh, so this is PER-LAUNCH growth — ~5.6 MB for an unattended 3 h
-session, so R20's eight-launch window is ~45 MB, and on the shipped per-DAY file layout
-all eight land in ONE file, which is exactly the row's point that the cap's natural key
-is the launch boundary. NEXT: leg-2 hour 3, the quit, then the record.
+**WIP:** DELIVERED 2026-09-06 -> **§11.215** (entry + stub). T5.2 RAN: `harness/f95_soak.py`
+(detached `setsid` driver, four verbs, every executor call foreground) + `f95_report.py` + `f95_epoch.py`.
+Criteria and the §5.62 expected-constant set committed BEFORE the first launch
+(`artifacts/f95/prediction.txt`, harness `c4e5c9e` at 02:0x; first app process 02:11:54).
+Both detectors RED on live controls (F1 within one sample of `kill -9`; F2 at a measured
+54.3 s vs F19's 45.0 s bound, then recovery) + a `selftest` covering the leak rule and
+four matchers both ways. TWO LEGS, **2.735 h + 3.004 h = 5 h 44 min**, 128 complete
+cycles, 688 samples, **flags NONE in both**; quits **0.65 s / 0.61 s exit 0**, 0 teardown
+faults; 11/11 frozen md5s in==out on all fifteen launches; LEAK **NO LEAK BY THIS RULE**
+with the 0.28-0.38 MB/h tail named as the residue three hours cannot settle. Design (5)
+RAN: `f90_rehearsal_run.sh` x10 all exit 0 in 0.6-0.7 s, zero fails, step states identical
+- **thirteen clean quits on `404b9e89`**. FINDING: at the pinned J0, 4 of 120 bodies answer
+two doubles, **OLD half only, NEW bit-identical 120/120**, <= 9.437e-16 AU, reproduced to
+the last digit on the second launch => **§5.84's mechanism caught happening + its first
+measured magnitude**, and the first positive test of §11.76(b)'s D8 barrier. **NO new §5
+row** by §5.79's criterion (2-4 orders below §11.87(c)'s Kepler float floor); §5.84 and
+§5.62 ANNOTATED, §5.59/§5.61/§5.115 annotated with their rate/price data. Two HARNESS
+defects found by the soak and fixed (a shared temp filename in `atomic_write_json`, shown
+1154/3200 -> 0; F90's `show_own_duration` blind to `struct loop`). DEPLOYMENT-MAP T5 item
+2 struck + item 1's "T5.2 alone" annotated; `harness/README.md` F95 section; D14 PASS.
+Code UNTOUCHED at `a2a880ef`, binary `404b9e89` unchanged.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 

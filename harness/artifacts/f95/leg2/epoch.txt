@@ -1,0 +1,59 @@
+================================================================================================
+F95 - THE PINNED-CLOCK DUMP SERIES (Sec.5.62's class, at ulp scale)
+dumps 68   reference cycle 2   bodies in reference 120
+================================================================================================
+
+--- DUMP FILE SIZES (a changed printed digit changes the size) ---
+  285602 B : 1 dump(s)  cycles [2]
+  285604 B : 2 dump(s)  cycles [1, 3]
+  285606 B : 1 dump(s)  cycles [4]
+  285672 B : 3 dump(s)  cycles [5, 25, 33]
+  285674 B : 12 dump(s)  cycles [7, 12, 17, 18, 19, 23, 24, 26, 29, 30, 39, 42]
+  285676 B : 17 dump(s)  cycles [6, 9, 14, 15, 16, 20, 22, 27, 28, 32, 34, 35, 36, 38]
+  285678 B : 7 dump(s)  cycles [8, 10, 11, 13, 21, 31, 37]
+  285744 B : 2 dump(s)  cycles [56, 61]
+  285746 B : 10 dump(s)  cycles [44, 51, 52, 55, 57, 62, 63, 65, 67, 68]
+  285748 B : 9 dump(s)  cycles [47, 48, 50, 53, 54, 58, 60, 64, 66]
+  285750 B : 4 dump(s)  cycles [45, 46, 49, 59]
+
+--- WHICH BODIES MOVE, ON WHICH HALF, AND HOW FAR ---
+  body           half  max |delta| ulps        field[index]                 distinct values
+  Ananke         old   9.437e-16   136         ecl[1]                       2
+  Neried         old   3.977e-16   917         ecl[1]                       2
+  Sycorax        old   2.255e-16   65          ecl[0]                       2
+  Setebos        old   1.388e-16   20          ecl[0]                       2
+
+  OLD half moves for 4 body/ies: ['Ananke', 'Neried', 'Setebos', 'Sycorax']
+  NEW half moves for 0 body/ies: NONE
+  bodies compared: 120   so the NEW path is bit-stable on 120 of 120
+
+--- HOW MANY DISTINCT VALUES (a coin flip is not a drift) ---
+  Ananke         old.ecl                        2 distinct value(s), occurrences [47, 21]
+      value 1 on cycles [2, 3, 4, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 21, 27, 29, 31, 32, 34, 35, 36, 37, 39, 40, 41, 43, 45, 46, 47, 48, 49, 50, 51, 52, 54, 55, 57, 58, 59, 60, 62, 63, 64, 65, 67]
+      value 2 on cycles [1, 5, 12, 19, 20, 22, 23, 24, 25, 26, 28, 30, 33, 38, 42, 44, 53, 56, 61, 66, 68]
+  Ananke         old.matLocalToParent           2 distinct value(s), occurrences [47, 21]
+  Neried         old.ecl                        2 distinct value(s), occurrences [34, 34]
+      value 1 on cycles [1, 3, 4, 8, 10, 11, 12, 13, 19, 20, 21, 22, 23, 24, 28, 31, 32, 34, 35, 37, 38, 40, 42, 43, 45, 46, 48, 49, 50, 53, 58, 59, 60, 66]
+      value 2 on cycles [2, 5, 6, 7, 9, 14, 15, 16, 17, 18, 25, 26, 27, 29, 30, 33, 36, 39, 41, 44, 47, 51, 52, 54, 55, 56, 57, 61, 62, 63, 64, 65, 67, 68]
+  Neried         old.matLocalToParent           2 distinct value(s), occurrences [34, 34]
+  Setebos        old.ecl                        2 distinct value(s), occurrences [53, 15]
+      value 1 on cycles [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 20, 21, 22, 26, 27, 29, 30, 31, 32, 34, 35, 37, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 50, 51, 52, 53, 54, 55, 58, 59, 60, 61, 62, 63, 64, 65, 67]
+      value 2 on cycles [1, 12, 19, 23, 24, 25, 28, 33, 36, 38, 49, 56, 57, 66, 68]
+  Setebos        old.matLocalToParent           2 distinct value(s), occurrences [53, 15]
+  Sycorax        old.ecl                        2 distinct value(s), occurrences [34, 34]
+      value 1 on cycles [1, 4, 6, 8, 9, 10, 11, 13, 14, 15, 16, 20, 21, 22, 26, 27, 28, 30, 31, 36, 37, 38, 41, 44, 45, 46, 47, 49, 53, 54, 59, 64, 66, 68]
+      value 2 on cycles [2, 3, 5, 7, 12, 17, 18, 19, 23, 24, 25, 29, 32, 33, 34, 35, 39, 40, 42, 43, 48, 50, 51, 52, 55, 56, 57, 58, 60, 61, 62, 63, 65, 67]
+  Sycorax        old.matLocalToParent           2 distinct value(s), occurrences [34, 34]
+
+--- THE TWO VALUES, VERBATIM, FOR THE WIDEST MOVER ---
+  Ananke.old.ecl value 1 (47 cycles): [-0.14353394471532743, 0.03816712454786054, -0.07657486169463046]
+  Ananke.old.ecl value 2 (21 cycles): [-0.14353394471532724, 0.03816712454786148, -0.07657486169463075]
+
+--- WHAT DISTINGUISHES THEM: ORBITAL ECCENTRICITY ---
+  read from /home/claude/.spacecrafter/ssystem.ini - a cited fetch, never recall (Sec.11.51(d))
+  eccentricities parsed from the installed file: 60 bodies
+  MOVERS   (4): [('Neried', 0.7473678781920542), ('Setebos', 0.5613700935632252), ('Sycorax', 0.5099593095115899), ('Ananke', 0.2167681894364261)]
+  the eight most eccentric bodies that DID NOT move: [('Sedna', 0.8588315), ('Neso', 0.6299942939512408), ('Eris', 0.4373709923163567), ('Laomedeia', 0.3845786604193581), ('Prospero', 0.3311859462699863), ('Pasiphae', 0.2932152942598935), ('Halimede', 0.2619064927013259), ('Carme', 0.2602970868062183)]
+  -> movers' min eccentricity 0.2168 ; non-movers' max 0.8588
+
+================================================================================================

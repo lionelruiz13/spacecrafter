@@ -1,0 +1,15 @@
+F95 Design(5) CYCLE CAMPAIGN - ten launch/quit cycles of the F90 smoke suite
+binary 404b9e89 (the reference this round leaves); fresh farm each run
+run   exit  quit_s    hung      stalls S1 tcp_s  wall_s    step states
+1     0     0.6       False     1      12.6      91.2      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+2     0     0.6       False     1      12.6      91.2      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+3     0     0.7       False     2      12.6      91.3      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+4     0     0.6       False     1      12.6      91.2      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+5     0     0.7       False     2      12.6      91.3      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+6     0     0.6       False     2      12.6      91.2      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+7     0     0.6       False     2      12.6      91.2      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+8     0     0.7       False     2      12.6      91.3      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+9     0     0.7       False     1      12.6      91.2      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+10    0     0.7       False     2      12.6      91.3      DIVE,PASS,PASS,DEPR,PASS,PASS,DIVE,PASS,PASS
+
+fails across all ten runs: none
