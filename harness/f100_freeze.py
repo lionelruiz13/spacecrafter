@@ -323,6 +323,61 @@ def stage_operator(app, leg, rate):
     return out
 
 
+def stage_track(app, leg, rate):
+    """THE ONE OPERATOR SURFACE THE NEW PATH ACTUALLY DRIVES.  `flag
+    track_object on` hands the NEW body to the camera (core.cpp:2494) and the
+    aim reads its position every frame (Camera.cpp:653-664
+    `lookTo(observedToLocalPos(target->getObservedPosition()))`), so a body
+    whose eye-frame position is frozen aims the camera at where it was.
+
+    The order is the control: the WALKED body is tracked FIRST, from the same
+    moved camera state, so a wrecked aim after the hidden body cannot be blamed
+    on the move.  A hidden body's `screen` is never written (it is not visible,
+    ModularBody dumps 0), so the observable is the CAMERA's own state across the
+    polls -- does it converge, and where."""
+    out = {"clock": "running" if rate else "pinned", "arms": []}
+    app.send("flag track_object off", 1.0)
+    out["move"] = camera_move(app, "tk_mv")
+
+    def arm(name, label):
+        app.send("flag track_object off", 1.0)
+        app.send("select planet %s" % name, 1.0)
+        app.send("flag track_object on", 1.5)
+        polls = []
+        for i in range(7):
+            h, b, _p = app.dump("tk_%s_%02d" % (label, i), pause=0.7, keep=False)
+            c = cam_of(h)
+            rec = b.get(name, {})
+            polls.append({"alt": c.get("alt"), "az": c.get("az"),
+                          "heading": c.get("heading"),
+                          "tracked": c.get("tracked"),
+                          "new_screen": nh(rec).get("screen"),
+                          "old_screen": (rec.get("old") or {}).get("screen"),
+                          "altaz_old": rec.get("altaz_old"),
+                          "altaz_new": rec.get("altaz_new"),
+                          "sep_old_new_deg": altaz_sep(rec)})
+            time.sleep(0.5)
+        last, prev = polls[-1], polls[-2]
+        conv = (abs((last["alt"] or 0) - (prev["alt"] or 0)) < 1e-6
+                and abs((last["az"] or 0) - (prev["az"] or 0)) < 1e-6)
+        at_clamp = abs(abs(last["alt"] or 0) - math.pi / 2) < 1e-5
+        a = {"body": name, "label": label, "polls": polls, "converged": conv,
+             "alt_at_clamp": at_clamp, "final": last}
+        out["arms"].append(a)
+        ok("[%s clock] track %-6s (%s): final alt %.6f az %.6f, converged %s, "
+           "alt at +-pi/2 %s, new screen %s, old-vs-new alt/az %s deg"
+           % (out["clock"], name, label, last["alt"] or 0, last["az"] or 0,
+              conv, at_clamp, last["new_screen"], last["sep_old_new_deg"]))
+        return a
+
+    arm(CONTROL, "control_before")
+    arm(DWARF, "hidden")
+    arm(CONTROL, "control_after")
+    app.send("flag track_object off", 1.0)
+    leg["track"] = out
+    return out
+
+
 def stage_cost(app, leg, rate):
     """THE D11 NUMBER, and the mutation's discriminator.  Mars's own evalCount
     IS the frame counter for a body the walk always evaluates (11.117(f)), so
@@ -382,6 +437,8 @@ def run_clock(binp, out, rep, rate, stages):
             stage_freeze(app, leg, rate)
         if "operator" in stages:
             stage_operator(app, leg, rate)
+        if "track" in stages:
+            stage_track(app, leg, rate)
         if "cost" in stages:
             stage_cost(app, leg, rate)
     finally:
@@ -436,6 +493,17 @@ def report(rep, out):
                 lines.append("  track %-6s: new screen %s |r| %s settled %s polls %d"
                              % (nm, t["new_screen"], t["new_screen_radius"],
                                 t["settle"]["settled"], t["settle"]["polls"]))
+        if "track" in leg:
+            for a in leg["track"]["arms"]:
+                f = a["final"]
+                lines.append("  track %-6s (%-14s): alt %.6f az %.6f heading %s ; "
+                             "converged %s ; alt at +-pi/2 %s ; new screen %s ; "
+                             "old-vs-new alt/az %s deg"
+                             % (a["body"], a["label"], f["alt"] or 0, f["az"] or 0,
+                                f["heading"], a["converged"], a["alt_at_clamp"],
+                                f["new_screen"], f["sep_old_new_deg"]))
+                lines.append("      alt track: %s"
+                             % " ".join("%.5f" % (p["alt"] or 0) for p in a["polls"]))
         if "cost" in leg:
             for tag, a in leg["cost"]["arms"].items():
                 lines.append("  cost/%s: %d frames, %s +%d (%.4f/frame), "
@@ -456,6 +524,53 @@ def report(rep, out):
     print(txt)
 
 
+def parked_table(paths, out=None):
+    """THE TABLE THE ENTRY CITES: one row per parked body with a meaningful
+    position (P \\ I), old-vs-new alt/az at the launch state and after the move,
+    with the evalCount pair beside it -- across as many result files as are
+    given (`<label>=<path>/f100_result.json`).  The evalCount column is what
+    turns a number into a mechanism: a body whose position code never ran and
+    whose readout is 170 deg off is a memo, not an ephemeris."""
+    legs = []
+    for spec in paths:
+        label, _, p = spec.partition("=")
+        rep = json.load(open(p))
+        for clock in ("pinned", "running"):
+            if clock in rep and "altaz" in rep[clock]:
+                legs.append(("%s/%s" % (label, clock), rep[clock]))
+    if not legs:
+        return ""
+    names = sorted(legs[0][1]["partition"]["P_only"])
+    ctrl = ["Mars", "Jupiter", "Moon", "Neptune", "Belinda"]
+    w = 30
+    head = "%-18s | " % "body" + " | ".join(("%*s" % (w, l)) for l, _ in legs)
+    lines = [head,
+             "%-18s | " % "" + " | ".join(("%*s" % (w, "P0sep / A0sep / eval0,eval1"))
+                                          for _ in legs), "-" * len(head)]
+    for group, title in ((names, "PARKED, meaningful position (P \\ I)"),
+                         (ctrl, "WALKED controls")):
+        lines.append("== " + title)
+        for n in group:
+            cells = []
+            for _l, leg in legs:
+                a = leg["altaz"].get(n, {})
+                e = leg["evalcount"].get(n, [None, None])
+                cells.append("%*s" % (w, "%.6g / %.6g / %s,%s"
+                                      % (a.get("sep_p0_deg") or -1,
+                                         a.get("sep_a0_deg") or -1, e[0], e[1])))
+            lines.append("%-18s | " % n + " | ".join(cells))
+    for _l, leg in legs:
+        lines.append("%s: frames between the dumps = %d; frozen %d of %d; "
+                     "expected %s" % (_l, leg["frames_between_dumps"],
+                                      len(leg["freshness"]["frozen"]),
+                                      leg["freshness"]["n"], leg["expect"]))
+    txt = "\n".join(lines) + "\n"
+    if out:
+        Path(out).write_text(txt)
+    print(txt)
+    return txt
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("out")
@@ -464,7 +579,12 @@ def main():
     ap.add_argument("--clock", default="pinned,running")
     ap.add_argument("--stages", default="freeze,operator,cost")
     ap.add_argument("--score", action="store_true")
+    ap.add_argument("--parked-table", nargs="*", default=None,
+                    metavar="LABEL=RESULT.json")
     a = ap.parse_args()
+    if a.parked_table:
+        parked_table(a.parked_table, a.out)
+        return 0
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     rep = {"tag": a.tag, "bin": str(Path(a.bin).resolve()),

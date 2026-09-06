@@ -1,0 +1,14 @@
+ok:   scale settled: Moon scaling 5.00000000 == target 5.00000000 (2 probes)
+ok:   [pinned clock] frozen = 48 of 120; expected P u I = 48; frozen\expected (none) ; expected\frozen (none)
+ok:   [pinned clock] frames between the dumps (Mars evalCount delta) = 1875; parked bodies whose evalCount did NOT move: 19 of 19
+ok:   [pinned clock] old-vs-new alt/az after the move: walked max (1.7990127040434818e-05, 'Belinda') ; parked max (170.7156175122177, 'Eris') (parked max at the LAUNCH state, before the move: (1.198724892625928, 'Eris'))
+=== clock pinned (timerate rate 0)
+  freshness: 48 frozen / 72 re-evaluated of 120
+  partition: |P| 29  |I| 29  |PnI| 10  |PuI| 48  |P\I| 19
+  expected frozen = P u I ; frozen\expected (none) ; expected\frozen (none)
+  frames between the dumps = 1875 ; parked (P\I) with a STILL evalCount: 19 of 19  ['Arrokoth', 'Ceres', 'Charon', 'Eris', 'Goldilocks_Zone', 'Haumea', 'Hiiaka', 'Hydra_', 'Juno', 'Kerberos', 'Makemake', 'Namaka', 'Nix', 'Pallas', 'Pluto', 'Sedna', 'Solar_System', 'Styx', 'Vesta']
+  old-vs-new alt/az after the move: walked max (1.7990127040434818e-05, 'Belinda') ; parked max (170.7156175122177, 'Eris') ; parked max at P0 (1.198724892625928, 'Eris')
+  frozen: 51PegSystem, AntaresSystem, ArcturusSystem, Arrokoth, CapellaSystem, Ceres, Charon, DarkStarSystem, Eris, Goldilocks_Zone, Haumea, HelixDwarfSystem, Hiiaka, Hydra_, Juno, KeidSystem, Kepler16System, Kerberos, M1PulsarSystem, M27DwarfSystem, M57DwarfSystem, Makemake, MilkyWay, NGC2392DwarfSystem, Namaka, Nix, Pallas, Pluto, ProximaSystem, Sedna, SiriusSystem, Solar_System, Styx, TolimanSystem, Trappist1System, Universe, VegaSystem, Vesta, baryEarthMoon, big_dipper, center_sun, galaxy_center, orbit_autour_lune, orbit_autour_point, orbit_autour_point (orbit centre), pleiades, sun_in_gal, un_point
+  md5 in==out: True ; lock before {'present': False} after {'present': False} ; exit 0
+FAILS: 0  NOTES: 0
+

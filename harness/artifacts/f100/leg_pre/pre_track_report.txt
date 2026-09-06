@@ -1,0 +1,17 @@
+=== clock pinned (timerate rate 0)
+  track Mars   (control_before): alt -0.378373 az -0.739825 heading -6.28318501 ; converged True ; alt at +-pi/2 False ; new screen [3.66311745e-08, 3.89206214e-08] ; old-vs-new alt/az 8.706816964856289e-06 deg
+      alt track: -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837
+  track Ceres  (hidden        ): alt -1.570796 az 0.727063 heading -6.28318501 ; converged False ; alt at +-pi/2 True ; new screen [0, 0] ; old-vs-new alt/az 61.66836603512075 deg
+      alt track: -1.15628 -1.57080 -1.57080 -1.57080 -1.57080 -1.57080 -1.57080
+  track Mars   (control_after ): alt -0.378373 az -0.739825 heading -6.28318501 ; converged True ; alt at +-pi/2 False ; new screen [3.66311745e-08, 3.89206214e-08] ; old-vs-new alt/az 8.706816964856289e-06 deg
+      alt track: -1.57080 -1.57080 -1.57080 -0.36223 -0.37837 -0.37837 -0.37837
+  md5 in==out: True ; lock before {'present': False} after {'present': False} ; exit 0
+=== clock running (timerate rate 1)
+  track Mars   (control_before): alt -0.378373 az -0.737566 heading -6.28318501 ; converged False ; alt at +-pi/2 False ; new screen [2.01471622e-07, -2.28945023e-08] ; old-vs-new alt/az 2.091309789151873e-06 deg
+      alt track: -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837
+  track Ceres  (hidden        ): alt -0.369081 az -0.918095 heading -6.28318501 ; converged False ; alt at +-pi/2 False ; new screen [0, 0] ; old-vs-new alt/az 2.000455603180256e-05 deg
+      alt track: -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908 -0.36908
+  track Mars   (control_after ): alt -0.378374 az -0.735161 heading -6.28318501 ; converged False ; alt at +-pi/2 False ; new screen [5.3115275e-07, 2.06050643e-08] ; old-vs-new alt/az 2.0401438912201045e-05 deg
+      alt track: -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837 -0.37837
+  md5 in==out: True ; lock before {'present': False} after {'present': False} ; exit 0
+FAILS: 0  NOTES: 0
