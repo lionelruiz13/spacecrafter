@@ -1,0 +1,55 @@
+===== SIGNAL CAUGHT =====
+Last stopped for thread 1 (Thread 0x7fffec901140 (LWP 1432247)).
+	Using the running image of child process 1432247.
+Program stopped at 0x5555556d37fe.
+It stopped with signal SIGSEGV, Segmentation fault.
+
+===== BACKTRACE (10 innermost) =====
+#0  ProtoSystem::addBody (this=this@entry=0x555558fe88b0, param=std::map with 17 elements = {...}, deletable=<optimized out>) at /home/claude/spacecrafter/src/bodyModule/protosystem.cpp:599
+#1  0x00005555556e0763 in SolarSystem::addBody (this=0x555558fe88b0, param=Python Exception <class 'gdb.error'>: value has been optimized out
+, deletable=true) at /home/claude/spacecrafter/src/bodyModule/solarsystem.cpp:87
+#2  0x00005555556e984f in ProtoSystem::addBody (this=<optimized out>, param=std::map with 15 elements = {...}) at /usr/include/c++/15/bits/stl_tree.h:1353
+#3  SSystemFactory::addBody (this=0x555558ff8240, param=std::map with 15 elements = {...}) at /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp:829
+#4  0x00005555557162f0 in Core::addSolarSystemBody (this=<optimized out>, param=std::map with 15 elements = {...}) at /home/claude/spacecrafter/src/coreModule/core.cpp:834
+#5  0x00005555558ce002 in AppCommandInterface::commandBody (this=this@entry=0x5555640ed890) at /usr/include/c++/15/bits/shared_ptr_base.h:1672
+#6  0x00005555558d3ac2 in AppCommandInterface::executeCommand (this=0x5555640ed890, _commandline="body action load name ProbeLocB parent none type Artificial radius 50 coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 orbit_alt 400000 tex_map bodies/generic.png", wait=@0x7fffffffd6e8: 0, origin=...) at /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:388
+#7  0x0000555555667512 in App::updateFromSharedData (this=0x555558a9ce60) at /home/claude/spacecrafter/src/scriptModule/script_origin.hpp:100
+#8  0x00005555556677bd in App::update (this=0x555558a9ce60, delta_time=7) at /home/claude/spacecrafter/src/appModule/app.cpp:801
+#9  0x0000555555667a4b in App::startMainLoop (this=this@entry=0x555558a9ce60) at /home/claude/spacecrafter/src/appModule/app.cpp:1030
+
+===== FRAME 0 =====
+#0  ProtoSystem::addBody (this=this@entry=0x555558fe88b0, param=std::map with 17 elements = {...}, deletable=<optimized out>) at /home/claude/spacecrafter/src/bodyModule/protosystem.cpp:599
+599			parentSideralDay = parent->getSiderealDay();
+Stack level 0, frame at 0x7fffffffd0d0:
+ rip = 0x5555556d37fe in ProtoSystem::addBody (/home/claude/spacecrafter/src/bodyModule/protosystem.cpp:599); saved rip = 0x5555556e0763
+ called by frame at 0x7fffffffd1c0
+ source language c++.
+ Arglist at 0x7fffffffd0c0, args: this=this@entry=0x555558fe88b0, param=std::map with 17 elements = {...}, deletable=<optimized out>
+ Locals at 0x7fffffffd0c0, Previous frame's sp is 0x7fffffffd0d0
+ Saved registers:
+  rbx at 0x7fffffffd098, rbp at 0x7fffffffd0c0, r12 at 0x7fffffffd0a0, r13 at 0x7fffffffd0a8, r14 at 0x7fffffffd0b0, r15 at 0x7fffffffd0b8, rip at 0x7fffffffd0c8
+
+===== THE PARENT POINTER AT THE FAULT =====
+englishName = "ProbeLocB"
+str_parent = <optimized out>
+funcname = "location_orbit"
+p = std::shared_ptr<Body> (empty) = {get() = 0x0}
+parent = std::shared_ptr<Body> (empty) = {get() = 0x0}
+typePlanet = ARTIFICIAL
+orb = std::unique_ptr<Orbit> = {get() = 0x0}
+close_orbit = true
+bound_to_surface = false
+parentSideralDay = 1
+parentOffset = 0
+orbit_bounding_radius = -1
+bodyColor = <optimized out>
+solLocalDay = 0
+bodyTexture = {tex_map = "", tex_map_alternative = "", tex_norm = "", tex_night = "\000\000\000\000\000\000\000\000\001\000\000\000\000\000\000\000\320\356\025dUU", '\000' <repeats 42 times>, "\200u\263dUU", '\000' <repeats 26 times>, "\3006\256eUU\000\000\260\2218eUU\000\000 K\243\364\377\177\000\000 K\243\364\377\177\000\000\020'\375dUU\000\000\320\rydUU\000\000`\227idUU\000\000@\367-eUU\000\000\020\035\231dUU\000\000\220,\235dUU\000\000`K\243\364\377\177\000\000`K\243\364\377\177\000\000\300\3710VUU\000\000"..., tex_specular = <error: Cannot access memory at address 0x70>, tex_heightmap = <error: Cannot access memory at address 0x60>, tex_skin = "\000\000\000\000\000\000\000\000\001\000\000\000\000\000\000\000\320\356\025dUU", '\000' <repeats 42 times>, "\200u\263dUU", '\000' <repeats 26 times>, "\3006\256eUU\000\000\260\2218eUU\000\000 K\243\364\377\177\000\000 K\243\364\377\177\000\000\020'\375dUU\000\000\320\rydUU\000\000`\227idUU\000\000@\367-eUU\000\000\020\035\231dUU\000\000\220,\235dUU\000\000`K\243\364\377\177\000\000`K\243\364\377\177\000\000\300\3710VUU\000\000"...}
+currentOBJ = 0x555565196e10
+rot_obliquity = <optimized out>
+rot_asc_node = <optimized out>
+J2000_npole_ra = <optimized out>
+J2000_npole_de = <optimized out>
+isHidden = <optimized out>
+
+===== SOURCE AT THE FAULT =====

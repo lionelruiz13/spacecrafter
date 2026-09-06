@@ -1,0 +1,192 @@
+{
+ "checks": [
+  {
+   "name": "P1.1 armA app alive after push",
+   "got": true,
+   "want": true,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P1.1 armA rc",
+   "got": 0,
+   "want": 0,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P1.2 old refusal line",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": "protosystem.cpp:534"
+  },
+  {
+   "name": "P1.3 new refusal line",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": "ModularSystem.cpp:1069"
+  },
+  {
+   "name": "P1.4 new path entry line present",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": "written at :1061 BEFORE the parent is resolved"
+  },
+  {
+   "name": "P1.4b old path entry line present",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "armA dump body records",
+   "got": 121,
+   "want": null,
+   "pass": null,
+   "note": ""
+  },
+  {
+   "name": "P1.5 ProbeLocA on neither half",
+   "got": [
+    false,
+    false
+   ],
+   "want": [
+    false,
+    false
+   ],
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P3.5/pre control ProbeCtlC on BOTH halves",
+   "got": [
+    true,
+    true
+   ],
+   "want": [
+    true,
+    true
+   ],
+   "pass": true,
+   "note": "the same `parent none` through the same push channel"
+  },
+  {
+   "name": "P2.1 armB app DEAD after push",
+   "got": false,
+   "want": false,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P2.1 armB rc == -11 (SIGSEGV)",
+   "got": -11,
+   "want": -11,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "P2.2 OLD path entered",
+   "got": 1,
+   "want": 1,
+   "pass": true,
+   "note": "protosystem.cpp:517"
+  },
+  {
+   "name": "P2.2 NEW path NEVER entered",
+   "got": 0,
+   "want": 0,
+   "pass": true,
+   "note": "ModularSystem.cpp:1061 -- the site claim"
+  },
+  {
+   "name": "P2.4 no parent diagnostic for ProbeLocB",
+   "got": 0,
+   "want": 0,
+   "pass": true,
+   "note": "both paths are SILENT on `none`"
+  },
+  {
+   "name": "P2 control ProbeCtlC survived on both paths pre-crash",
+   "got": [
+    1,
+    1
+   ],
+   "want": [
+    1,
+    1
+   ],
+   "pass": true,
+   "note": ""
+  },
+  {
+   "name": "armB last 6 log lines",
+   "got": [
+    "000000014092: (Debug): big \"textures/bodies/earth_night.jpg\" is ready for use",
+    "000000014092: (Debug): Loading big textures/bodies/earth_specular.png...",
+    "000000014092: (Debug): Loading cached data for 'textures/bodies/earth_specular.png'",
+    "000000014143: (Debug): big \"textures/bodies/earth_specular.png\" is ready for use",
+    "000000018239: (Info ): get tcp : body action load name ProbeLocB parent none type Artificial radius 50 coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 orbit_alt 400000 tex_map bodies/generic.png",
+    "000000018239: (Info ): Loading new Stellar System object... ProbeLocB"
+   ],
+   "want": null,
+   "pass": null,
+   "note": ""
+  }
+ ],
+ "arms": {
+  "armA": {
+   "arm": "armA",
+   "tag": "pre",
+   "farm": "/home/claude/sc-f99/farm_pre_armA",
+   "tcp_s": 12.0,
+   "lock_before": {
+    "present": false
+   },
+   "sent": [
+    "timerate rate 0",
+    "meteors zhr 0",
+    "body action load name ProbeCtlC parent none type Artificial radius 50 coord_func still_orbit orbit_x 0.001 orbit_y 0 orbit_z 0 tex_map bodies/generic.png",
+    "body action load name ProbeLocA parent Nonexistent type Artificial radius 50 coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 orbit_alt 400000 tex_map bodies/generic.png"
+   ],
+   "alive_after": {
+    "before_push": true,
+    "ctlC": true,
+    "armA": true
+   },
+   "dump": "/home/claude/sc-f99/leg_pre/pre_armA/dump_001.json",
+   "rc": 0,
+   "log_path": "/home/claude/sc-f99/leg_pre/pre_armA/spacecrafter.log",
+   "log_bytes": 81597
+  },
+  "armB": {
+   "arm": "armB",
+   "tag": "pre",
+   "farm": "/home/claude/sc-f99/farm_pre_armB",
+   "tcp_s": 12.0,
+   "lock_before": {
+    "present": false
+   },
+   "sent": [
+    "timerate rate 0",
+    "meteors zhr 0",
+    "body action load name ProbeCtlC parent none type Artificial radius 50 coord_func still_orbit orbit_x 0.001 orbit_y 0 orbit_z 0 tex_map bodies/generic.png",
+    "body action load name ProbeLocB parent none type Artificial radius 50 coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 orbit_alt 400000 tex_map bodies/generic.png"
+   ],
+   "alive_after": {
+    "before_push": true,
+    "ctlC": true,
+    "armB": false
+   },
+   "dump": null,
+   "rc": -11,
+   "log_path": "/home/claude/sc-f99/leg_pre/pre_armB/spacecrafter.log",
+   "log_bytes": 78916
+  }
+ },
+ "nfail": 0
+}

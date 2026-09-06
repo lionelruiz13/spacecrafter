@@ -1,0 +1,47 @@
+F99 pre leg -- binary /home/claude/sc-f99/bin/spacecrafter-pre
+  md5 46849f694b0df0707e9ac69419991fa5
+    /tmp/spacecrafter.lock: {"present": false}
+
+=== ARM armA (pre) farm=/home/claude/sc-f99/farm_pre_armA
+    farm shape: {"config_is_regular": true, "ssystem_is_regular": true, "log_is_real_dir": true, "app_locale": "fr", "sky_locale": "fr"}
+    tcp up in 12.0 s, pid 1430215
+    alive before any push: True
+    -> ctlC
+       alive after ctlC: True
+    -> armA
+       alive after armA: True
+    dump: /home/claude/sc-f99/leg_pre/pre_armA/dump_001.json
+    rc = 0  (expect_death=False)
+    /tmp/spacecrafter.lock: {"present": false}
+
+=== ARM armB (pre) farm=/home/claude/sc-f99/farm_pre_armB
+    farm shape: {"config_is_regular": true, "ssystem_is_regular": true, "log_is_real_dir": true, "app_locale": "fr", "sky_locale": "fr"}
+    tcp up in 12.0 s, pid 1430530
+    alive before any push: True
+    -> ctlC
+       alive after ctlC: True
+    -> armB
+       alive after armB: False
+    rc = -11  (expect_death=True)
+
+=== P1 -- ARM A: no crash, both paths refuse by name
+  PASS P1.1 armA app alive after push                 got=True want=True
+  PASS P1.1 armA rc                                   got=0 want=0
+  PASS P1.2 old refusal line                          got=1 want=1   -- protosystem.cpp:534
+  PASS P1.3 new refusal line                          got=1 want=1   -- ModularSystem.cpp:1069
+  PASS P1.4 new path entry line present               got=1 want=1   -- written at :1061 BEFORE the parent is resolved
+  PASS P1.4b old path entry line present              got=1 want=1
+  ---- armA dump body records                         121
+  PASS P1.5 ProbeLocA on neither half                 got=(False, False) want=(False, False)
+  PASS P3.5/pre control ProbeCtlC on BOTH halves      got=(True, True) want=(True, True)   -- the same `parent none` through the same push channel
+
+=== P2 -- ARM B: SIGSEGV pre-fix, attributed to the OLD path
+  PASS P2.1 armB app DEAD after push                  got=False want=False
+  PASS P2.1 armB rc == -11 (SIGSEGV)                  got=-11 want=-11
+  PASS P2.2 OLD path entered                          got=1 want=1   -- protosystem.cpp:517
+  PASS P2.2 NEW path NEVER entered                    got=0 want=0   -- ModularSystem.cpp:1061 -- the site claim
+  PASS P2.4 no parent diagnostic for ProbeLocB        got=0 want=0   -- both paths are SILENT on `none`
+  PASS P2 control ProbeCtlC survived on both paths pre-crash got=(1, 1) want=(1, 1)
+  ---- armB last 6 log lines                          ['000000014092: (Debug): big "textures/bodies/earth_night.jpg" is ready for use', '000000014092: (Debug): Loading big textures/bodies/earth_specular.png...', "000000014092: (Debug): Loading cached data for 'textures/bodies/earth_specular.png'", '000000014143: (Debug): big "textures/bodies/earth_specular.png" is ready for use', '000000018239: (Info ): get tcp : body action load name ProbeLocB parent none type Artificial radius 50 coord_func location_orbit orbit_lon 5.3667 orbit_lat 43.3 orbit_alt 400000 tex_map bodies/generic.png', '000000018239: (Info ): Loading new Stellar System object... ProbeLocB']
+
+=== F99 pre: 14 check(s), 0 FAIL -> /home/claude/sc-f99/leg_pre/f99_pre.json
