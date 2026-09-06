@@ -4807,3 +4807,107 @@ first stopped dying). Controls: F91 table byte-identical pre/post binary at
 PASS, frozen pair in == out on all **eight** launches (one per farm: 2 pre-fix
 arms + 1 gdb + 2 post-fix arms + 2 F91 + 1 F90, counted from each farm's own
 `"My getpid() is"` line). Artifacts `artifacts/f99/` (320 KB).
+
+## F100 — the frozen readout is the barrier's memo (`f100_freeze.py`, `f100_partition.py`, `f100_identity.py`, `f100_run.sh`) — INTENT §11.220 / §5.139 / §11.216(j1), 2026-09-06
+
+```
+DISPLAY=:2 ./f100_run.sh <absOutdir> --tag pre|post [--bin PATH]
+        [--clock pinned,running] [--stages freeze,operator,track,cost]   # SC_BIN=…
+./f100_partition.py <dump.json[.gz]> [--against <F96-shaped report>] [--json OUT]
+./f100_identity.py <dumpA> <dumpB> --label "..." [--out FILE]
+./f100_freeze.py <outFile> --parked-table pre=<result.json> post=<result.json>
+./f100_freeze.py <absOutdir> --score                       # re-score on disk, no launch
+```
+
+**What it measures.** `useNow()` — the D8 use-site barrier — memoized on
+`evaluatedJD == currentJD`, which is a complete key for `eclipticPos` (a
+function of the date) and an incomplete one for `mat`'s translation, the eye-frame
+position `getObservedPosition()` returns, which follows the camera. At a pinned
+clock the first use at a date was therefore the last one that could reach a
+parked body. The driver takes F96's camera move **twice on the same binary**, at
+`timerate rate 0` and at `timerate rate 1`, and asks which bodies did not move.
+
+### THE ONE SHAPE TO CARRY OUT OF HERE
+
+**RUN THE SAME EXPERIMENT AT TWO CLOCKS BEFORE BLAMING A WALK.** A freeze that
+survives a running clock is a walk/gate problem; a freeze that a running clock
+dissolves, on a binary that was not rebuilt, is a DATE-KEYED CACHE. Here: 48
+records frozen at rate 0, 29 at rate 1, the update walk reaching those bodies at
+neither — which refuted the row's own candidate mechanism without any code
+change. The second clock cost one 50 s launch.
+
+### The four shapes worth reusing
+
+- **A PARTITION KEY MEASURED BEFORE THE THING IT SORTS.** `f100_partition.py`
+  builds class **P** (effective `renderHidden`, from the dump's own `relation`
+  plus the `parent` chain — that walk is how `propagateRenderHidden` ORs the
+  declared flag down) and class **I** (an eye-frame position never written,
+  `dist == 0`) without ever reading a second dump. On F96's landed artifact
+  `P u I` reproduces its frozen 48 **body for body**, which is what makes it
+  evidence rather than a restatement: it could have disagreed.
+- **`evalCount` IS THE MECHANISM, THE POSITION IS ONLY THE SYMPTOM.** A body
+  whose readout is 170 deg off AND whose `evalCount` is identical in both dumps
+  was REFUSED, not missed — the position code did not run, though two dumps and
+  the per-frame selection each called `useNow()` on it. Same instrument as the
+  cost number below; §11.117(f) is where it comes from.
+- **ONE INSTRUMENT READ TWICE.** `f100_freeze.py` scores BOTH hypotheses
+  (`frozen == P u I`, `frozen == I`) on the same table; `--tag` picks the one the
+  gate asks for and the pinned leg REQUIRES the other to fail. On the post binary
+  it prints the 19 names the pre-fix hypothesis fails on.
+- **A CONTROL TRACKED BEFORE *AND* AFTER THE SUBJECT, IN ONE RUN.** The tracking
+  arm tracks Mars, then the hidden dwarf, then Mars again from whatever state the
+  dwarf left. Pre-fix at a pinned clock the dwarf ran the camera to
+  `alt = -pi/2` and held it, and Mars centred to 3.7e-08 immediately before and
+  returned to the same state to the digit immediately after — so the camera move
+  is not what broke it, and the wreck is reversible.
+
+### Gotchas measured here, each of which cost a reading first
+
+- **`select planet <name>` is OLD-FIRST** (`core.cpp:1091-1097` ->
+  `SSystemFactory::searchObjectByEnglishName`, `ssystem_factory.cpp:909-915`), so
+  `get status object` prints the OLD path's info block for every name old's tree
+  carries — measured character for character against both halves of the dump's
+  own sidecar. Every hidden body old does NOT know is at `dist` 0 on the shipped
+  corpus. **A new-path readout cannot be measured through that command** unless
+  the name is new-only; read the `.navstr` sidecar instead.
+- **The sidecar's info blocks are multi-line with UNINDENTED continuation
+  lines.** `f100_freeze.navstr_blocks` closes each block on its own
+  `Distance :` line; a parser keyed on indentation silently swallows the next
+  body's name. (The nav blocks are one line for OLD and two for NEW — the
+  `std::endl` F91 documents.)
+- **A hidden body's `screen` is never written** (it is not visible, so
+  `screenPos` stays 0), and so is old's for the same body. "Is the tracked body
+  centred?" is unanswerable for a hidden body; use the CAMERA's own `alt`/`az`
+  across several polls, and read whether it converges and where.
+- **A DUMP IS A USE for 90 of the 120 records, not 120.** `nb->useNow()` is
+  called in the loop over the OLD system's bodies (`ssystem_factory.cpp:1192`);
+  the second loop, which emits the 30 new-only records (`:1223-1245`), does not.
+  That plus the isolation stop is the whole of class I.
+- **The frame cadence is SATURATED at the config cap** (143.4-144.1 fps in all
+  ten cost arms, `maximum_fps = 144`, §11.159(k7)), so fps cannot resolve a
+  per-frame cost of this size. `delta(evalCount) / delta(Mars.evalCount)` can:
+  it is exact, in-process and comparable across binaries without a clock.
+- **Eris's 1.198725 deg of old-vs-new alt/az is NOT a gap between the trees**
+  (§11.216(d2) said it was). It is the +4 under-converging: 5 evaluations ->
+  1.198725, 9 -> 1.09669e-05, 15 -> 2.20333e-05, at ONE date on ONE binary.
+  And OLD's own alt/az for Eris is not run-to-run reproducible (§11.215(g) on a
+  fifth body) — compare this statistic per body against its own baseline, never
+  as an absolute.
+- **`git checkout` after a mutation build**: the rebuild reproduced the delivered
+  binary md5 `b5f08778` bit for bit from the restored source, which is what makes
+  the mutant's numbers attributable. Re-run the build before quoting "0 steps"
+  (§11.210's mtime gotcha).
+
+**Measured, code `1af7fa48` -> `474c595d`, binaries `8e2c6ef3` / `b5f08778` /
+`0cf9cf28` (the no-memo mutant):** pinned clock 48 frozen = `P u I` with 19 of 19
+parked `evalCount` still over 1875 frames and old-vs-new to **170.715618 deg**;
+running clock, same binary, 29 frozen = `I` and everything back inside
+1.6222e-05 deg; post-fix 29 = `I` at both clocks and **1.2044e-05 deg** after the
+move, with the pre-fix hypothesis failing on exactly the 19. Inertness: at the
+un-moved launch state **120/120 `mat` translations, 90/90 `altaz_new` and the
+camera state byte-identical** across the binary change on both clocks; F91 table
+`c125adf0` 0 FAIL/0 NOTE; `f90_rehearsal_run.sh` rc 0; D14 PASS; frozen pair
+in == out on all **sixteen** launches. Cost: 0.0000 / 0.8226 / 5.0180 refreshes
+per frame (delivered held / delivered moving / no-memo held) against the 5.0000
+the shipped binary already pays at a running clock. Artifacts `artifacts/f100/`
+(1.1 MB).
