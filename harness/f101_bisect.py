@@ -136,7 +136,11 @@ def leg_lines(farm_show, leg):
 
 
 def read_dump(path):
-    header, pairs, missing_new, missing_old = dumpread.load_dump(path)
+    # require_old=False: the p23 and p31desc legs read an EMPTY old half BY
+    # DESIGN - that emptiness is the measurement - so this reader opts out of
+    # the guard it is itself the evidence for.
+    header, pairs, missing_new, missing_old = dumpread.load_dump(
+        path, require_old=False)
     old_names = sorted([r["name"] for r in pairs] + list(missing_new))
     new_names = sorted([r["name"] for r in pairs] + list(missing_old))
     row = {

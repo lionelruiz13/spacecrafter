@@ -113,7 +113,11 @@ def main():
                 time.sleep(0.4)
             time.sleep(0.6)
             try:
-                _h, pairs, missing_new, missing_old = dumpread.load_dump(f)
+                # require_old=False (added F101): this bisect EXISTS to report
+                # an old half that goes to 1 and then to 0 - Sec.5.143's own
+                # evidence - so the guard at the reader must not raise here.
+                _h, pairs, missing_new, missing_old = dumpread.load_dump(
+                    f, require_old=False)
                 row = {"after": rel, "both": len(pairs),
                        "old_only": len(missing_new),
                        "new_only": len(missing_old),

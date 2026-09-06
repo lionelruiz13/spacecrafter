@@ -1,0 +1,28 @@
+SHOWN ABLE TO FAIL.  The guard's criterion is mutated from `bodies_old == 0`
+to `bodies_old < 2` and the SAME self-test is re-run.  If the suite could not
+discriminate, this would still print 17 PASS.  It does not: the cases that carry
+exactly ONE old-path body go RED - the synthetic one-pair case, F98's own
+post-`14.sts` bisect dump (1/277), and F101's p25 (1/121).  That is the evidence
+that the threshold is a measured choice and not a number that happens to be in
+the file.  Run: python3 artifacts/f101/selftest_mutant.py (the source is this
+header plus the mutant below, reproduced verbatim in the entry).
+PASS  synthetic empty old half RAISES by default                 bodies_old=0 bodies_new=2
+PASS  the message names the fix (require_old=False)              
+PASS  the message names the path                                 
+PASS  the OPT-OUT returns the same four values                   pairs=0 missing_old=2
+FAIL  a dump with ONE paired body does not raise                 raised: EmptyOldHalf
+PASS  a header-only dump does not raise                          
+FAIL  an OLD-ONLY body keeps the half non-empty                  raised: EmptyOldHalf
+PASS  real data f98_bisect_pre14       is GREEN                  old=246 new=276
+PASS  real data f98_bisect_pre14       opt-out returns 246/276   old=246 new=276
+FAIL  real data f98_bisect_post14      is GREEN                  old=1 new=277
+PASS  real data f98_bisect_post14      opt-out returns 1/277     old=1 new=277
+PASS  real data f98_soak_c002_06old    is RED                    old=0 new=286
+PASS  real data f98_soak_c002_06old    opt-out returns 0/286     old=0 new=286
+PASS  real data f101_p23_post          is RED                    old=0 new=120
+PASS  real data f101_p23_post          opt-out returns 0/120     old=0 new=120
+FAIL  real data f101_p25_post          is GREEN                  old=1 new=121
+PASS  real data f101_p25_post          opt-out returns 1/121     old=1 new=121
+
+13 PASS, 4 FAIL
+mutant exit = 1 (non-zero is the point)

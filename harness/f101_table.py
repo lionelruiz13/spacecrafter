@@ -39,7 +39,10 @@ LEGS = ["p23", "p25", "p27", "p31", "p27nc", "ctlmars",
 
 
 def half_names(path):
-    _h, pairs, missing_new, missing_old = dumpread.load_dump(path)
+    # require_old=False: same reason as the driver's - this table's rows
+    # INCLUDE the empty-old legs and reporting them is the point.
+    _h, pairs, missing_new, missing_old = dumpread.load_dump(
+        path, require_old=False)
     both = {r["name"] for r in pairs}
     return both | set(missing_new), both | set(missing_old)
 

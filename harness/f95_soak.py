@@ -1315,7 +1315,12 @@ class Driver:
         res = {"probes": []}
         try:
             import dumpread
-            _hdr, pairs, missing_new, missing_old = dumpread.load_dump(dump_path)
+            # require_old=False: MEASURING the emptiness is this probe's job -
+            # `bodies_old` below is the number Sec.11.218(h) reported as 246 ->
+            # 1 -> 0 and Sec.5.143 was minted from, so the F101 guard must not
+            # turn this campaign's own finding into an exception.
+            _hdr, pairs, missing_new, missing_old = dumpread.load_dump(
+                dump_path, require_old=False)
             names = {r["name"] for r in pairs} | set(missing_new) | set(missing_old)
             res.update({
                 "bodies_both": len(pairs),
