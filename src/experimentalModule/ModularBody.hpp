@@ -1005,12 +1005,29 @@ public:
             return;
         parkedChildFrame = flat;
     }
+    // Exact equality of two frames, element for element (S11.220). Written here
+    // rather than as a Matrix4 operator== because it is the barrier's key and
+    // nothing else's, and because the semantics it needs are the conservative
+    // ones: NaN != NaN re-runs the refresh (a corrupted frame must not be
+    // memoized), -0.0 == 0.0 skips it (same product, same result). memcmp would
+    // give the opposite of both.
+    static inline bool sameFrame(const Mat4f &a, const Mat4f &b) {
+        for (int i = 0; i < 16; ++i) {
+            if (!(a.r[i] == b.r[i]))
+                return false;
+        }
+        return true;
+    }
     // The D8 USE-SITE BARRIER (S11.76(b), verbatim [vixy]: "As soon as the
     // position is used (fetched from script, warped to) it should be computed,
     // and if previously frozen, recomputed with 4 extra iterations").
-    // No-op for a body the walks still evaluate, and no-op twice in one frame -
-    // so a use every frame costs what the tick used to cost, and no use costs
-    // nothing, which is the whole point of the retirement.
+    // No-op for a body the walks still evaluate; no-op for a use that repeats a
+    // date AND a camera frame this body has already been computed in - so a use
+    // every frame costs what the tick used to cost, and a use that asks nothing
+    // new costs one frame comparison, which is the whole point of the
+    // retirement. The KEY IS BOTH HALVES (S11.220, row S5.139): the date alone
+    // is complete for eclipticPos and incomplete for `mat`, whose translation
+    // follows the camera - see useNow()'s own comment for the measurement.
     //
     // The +4 extra iterations are NOT decoration: EllipticalOrbit::
     // eccentricAnomaly and IterativeEll/IterativeHyp perform exactly ONE Newton
@@ -2142,6 +2159,16 @@ private:
     // at most once per frame, so uses every frame cost exactly what the retired
     // tick cost and no use costs nothing. -1 = never (never equals a real jd).
     double evaluatedJD = -1;
+    // The OTHER half of that key (S11.220, row S5.139): the parent frame the
+    // last barrier refresh consumed. `evaluatedJD` answers "was this body's
+    // ORBIT brought to this date"; this answers "and in the camera frame the
+    // caller is asking from". The pair is the memo, because the member the
+    // refresh writes - `mat`'s translation, i.e. getObservedPosition() - is a
+    // function of both. Written ONLY by useNow (the walks stamp evaluatedJD but
+    // never this: for a body the walks reach, useNow returns on its first line
+    // and the member is never read). Identity until the first barrier refresh,
+    // which is also the value a never-refreshed body's frame compares against.
+    Mat4f evaluatedFrame = Mat4f::identity();
     // Harness instrument (B39 S11.117, the `accumulateCount` class of S11.56):
     // entries into the two orbit-evaluation sites (transformParentToBodyPos /
     // transformBodyToParent - the only writers of eclipticPos+lastJD). It is the

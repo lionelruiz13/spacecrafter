@@ -456,12 +456,20 @@ void ModularBody::useNow()
 {
     if (!renderHidden || !parent)
         return; // the walks still evaluate this body: fresh by construction
-    if (evaluatedJD == currentJD)
-        return; // already brought up to this frame's date by an earlier use
+    // THE DATE HALF OF THE KEY, READ BEFORE THE CLIMB - deliberately (S11.220,
+    // row S5.139). parent->useNow()'s own refresh descends THROUGH this node and
+    // stamps evaluatedJD on the way, so a date test taken after the climb would
+    // silently drop this node's own +4 re-convergence whenever an ancestor
+    // resumed first. Read here, the date axis behaves exactly as it did before
+    // this fix: the change below is purely ADDITIVE, on the frame axis only.
+    const bool dateFresh = (evaluatedJD == currentJD);
     // Ancestors first: a parked subtree under a parked node has no published
     // frame of its own (publishParkedFrame runs only for nodes the walk visits),
     // and after the parent resumes, its matLocalToBodyPos IS its fresh flat
-    // position frame (recursiveTranslationUpdate's own contract).
+    // position frame (recursiveTranslationUpdate's own contract). Unconditional
+    // now, because the frame comparison below has to compare against a CURRENT
+    // parent frame; for the common case (a parked body under a walked parent)
+    // it returns on the line above, at the cost of one call.
     parent->useNow();
     const Mat4f &parentFlat = parent->renderHidden ? parent->matLocalToBodyPos
                                                    : parent->parkedChildFrame;
@@ -476,7 +484,33 @@ void ModularBody::useNow()
     const Mat4f frame = boundToSurface
         ? parentFlat.multiplyFast(parent->accumulatedBodyPosToBody(currentJD))
         : parentFlat;
-    for (int i = 0; i <= RESUME_EXTRA_ITERATIONS; ++i)
+    // THE MEMO'S SECOND HALF (S11.220, row S5.139). `evaluatedJD` alone is a
+    // complete key for eclipticPos - a function of the date - and an INCOMPLETE
+    // one for what this refresh actually writes: `mat`'s translation, which is
+    // this body's position in the EYE frame and therefore a function of the date
+    // AND of the camera (the frame above descends from Camera::viewMat, through
+    // the parent's published flat frame). At a pinned clock the date-only key
+    // made the first use at a date the last one that could ever reach a parked
+    // body, so every later camera move left its readout answering in a camera
+    // state that no longer existed: MEASURED at 48 of 120 dump records frozen
+    // and up to 170.7 deg from the old path's alt/az, with the SAME binary
+    // freezing nothing when the clock ran (S11.220's leg). Keying on both halves
+    // is what the D8 use-site barrier already promised - S11.76(b) [vixy]: "As
+    // soon as the position is used (fetched from script, warped to) it should be
+    // computed, and if previously frozen, recomputed with 4 extra iterations".
+    if (dateFresh && sameFrame(frame, evaluatedFrame))
+        return; // this date AND this camera frame: already computed, by a use
+    evaluatedFrame = frame;
+    // The +4 belong to a DATE change and to nothing else. They exist because
+    // EllipticalOrbit::eccentricAnomaly and IterativeEll/IterativeHyp advance
+    // ONE Newton step per call from the previous call's seed, so a body that
+    // stopped being evaluated needs its seed re-converged AT THE NEW DATE
+    // [S11.76(b), S11.117(c); the constant is vixy-specified]. A frame-only
+    // change re-expresses the SAME eclipticPos, at the same date, in a new
+    // frame: the solver's seed is already where it belongs and one translation
+    // refresh is the whole of the work.
+    const int extra = dateFresh ? 0 : RESUME_EXTRA_ITERATIONS;
+    for (int i = 0; i <= extra; ++i)
         recursiveTranslationUpdate(currentJD, frame);
 }
 
