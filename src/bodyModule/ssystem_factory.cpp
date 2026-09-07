@@ -1109,6 +1109,34 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
                                     const std::function<void(std::ostream &)> &extraHeader)
 {
     std::ofstream out(file.empty() ? "/tmp/dual_trace.json" : file);
+    // WHICH SYSTEM THE OLD COLUMN WAS TAKEN IN (S11.226, from S11.221(n1)).
+    // The old half below enumerates `currentSystem` (:1181) and every mode
+    // change repoints it - `leaveSystem` at 1.1e16 of altitude points it at the
+    // never-populated `galacticSystem`, so eight of the tester's shipped shows
+    // take a dump whose old column describes a system holding nothing. Until
+    // this field existed the file could not say so: the header carried jd,
+    // timeSpeed, helioToEye, the camera, the anchors, the gates and the big
+    // textures and NO system identity, and the cheapest witness was the
+    // executor's own stdout transitions - a witness OUTSIDE the artifact.
+    // Written here rather than in Core's `extraHeader` lambda because the three
+    // members this reads (`currentSystem`, `galacticSystem`, `systems`) are
+    // this class's own (I2: the field lands where its owner is).
+    // `inSystem` beside it is the factory's own bool (`enterSystem`/
+    // `leaveSystem`), i.e. whether a descent has put the observer back inside a
+    // system - the two answer different questions and both are one word.
+    std::string oldSystemName = "unknown";
+    if (currentSystem == ssystem.get())
+        oldSystemName = "SolarSystem";
+    else if (currentSystem == galacticSystem.get())
+        oldSystemName = "galactic";
+    else {
+        for (const auto &sys : systems) {
+            if (sys.second.get() == currentSystem) {
+                oldSystemName = sys.first;
+                break;
+            }
+        }
+    }
     out << std::setprecision(17) << "{\"type\":\"header\",\"jd\":"
         // The rest of S2 group A beside the date, so the session gate can
         // witness what it restores (b31-design S6.2 T2 asks for field-by-field
@@ -1118,6 +1146,8 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
         // set - and a session records what was set.
         << timeMgr->getJDay() << ",\"timeSpeed\":" << timeMgr->getTimeSpeedRaw()
         << ",\"timePaused\":" << (timeMgr->getTimePause() ? "true" : "false")
+        << ",\"oldSystem\":\"" << oldSystemName << "\",\"inSystem\":"
+        << (inSystem ? "true" : "false")
         << ",\"helioToEye\":[";
     {
         const Mat4d &h = navigation->getHelioToEyeMat();
