@@ -84,6 +84,84 @@ baselines F105 inherits; three executors, §0b.2's sweet spot). Deliveries: all 
 (§11.224+, refreshed at each dispatch). Launch classes: F103 NONE (no launch, no canary — said in
 its section); F104 and F105 FUNCTIONAL (`--no-scene`). Remotes: local contains origin on both;
 push impossible here — the owner's push is R5, Saturday/Sunday per §11.223(d).
+**Round outcome (session 27 close, 2026-09-07 — every time in this note is pasted `date` output; the
+close commit's own clock is the stamp):** F103 → **§11.224** + §11.212(g) B1 FIXED (no fallback: a STOP
+at the preview, `--branch-alias`, the maps persisted under `claude/sha-maps/`) + TWO pre-existing
+blocking defects of the tool found by its first end-to-end run and fixed with mutants (D1: `build_map`
+killed every run after the code rewrite and before rollback; D2: the repair map re-derived after the
+rewrite aborted every run on a pair with a dangling trailer — this pair has 2) + **§5.147 minted at
+acceptance** (the 13-commit collapse under `commit-tree`, the owner's decision before Saturday) · F104 →
+**§11.225** + §5.145 FIXED (two solver steps per call, both paths; Eris 1.1987° → 1.06e-05°; exactly one
+record of 120 moved; the F91 table `1fe630a4`) · F105 → **§11.226** + §11.221(n1)/§11.220(j3) DISCHARGED
+(the header's `oldSystem`/`inSystem`; a dump a use for 120/120) + the barrier's precondition (a
+never-published frame is REFUSED, one D12 line per body — the 8 anchors under `Universe` keep their
+honest zero; `useNow()` returns `bool`) + **§5.148 minted at acceptance** (tracking a zero-vector body
+writes 66 NaNs into the old path's view state, on the baseline binary too) — **three for three
+delivered AND supervisor-verified same session**, every delivery re-run by my own hand (F103: the
+live pair's `--dry-run` with HEADs asserted, D1's isolated case, D3's twins off the live repo, 883 map
+pairs re-checked, P1 → P2 → P3 reproduced on the scratch clone; F104: `seqcheck` 120/120, F100's freeze
+leg with Eris 1.066e-05° from my own dump, F91 `1fe630a4`, the smoke suite; F105: the dump stage's
+(20, 2, 8) by name with the 8 D12 lines, the `p23` header `galactic`/false, the operator arm, F91, the
+smoke suite's 10-line reload window). Code `474c595d → ead2d478 → a30b2c75 → 318c0c8b → 48cc3727`
+(four executor commits: the solver + comments; the header field; the barrier call + precondition;
+the refusal line); binary `b5f08778 → 0c61f1b5 → e411b838`; harness `805c157 →` this close. SUPERVISOR
+ACTS: archival pass 19 (`06eec39`); three mints under the PREMISES rule (`fe09601`; 39/31/27 PASS at the
+mint after three instrument catches — two grammar collisions and one count the mint commit itself
+would have falsified, rewritten as a floor); three acceptances (`2d21b13`, `65e2256`, this close) each
+after my own runs; **§5.147 and §5.148 minted** at acceptances with markers at their attributing nodes
+(§11.224(h), §11.226(f), §11.216(i) — entry and stub each); the per-round premises refreshed at each
+dispatch by content-located replace (F105's `:2121 → :2127` after F104's comment edit); `README.md`'s
+map sentence corrected (`purge-path.sh` writes no map); `DEPLOYMENT-MAP` R5 annotated; in `~/shared`:
+Q-67 ×3 (the mint-time set; F103's six; F104's assembly sub-class). OWNER EVENTS IN-SESSION: none —
+the trigger line only; nothing asked (Monday). HOST: same boot throughout (`uptime -s` 2026-09-04
+18:45:08); `loginctl` sessions 14/15 and `:2` 2448x1332 at open and at close (12:31); RAM 52 GiB
+available at both; 30 measuring launches by the executors + 11 by me, canary green and `/proc` clear
+before every one, no lock file at any check, the field pair `03fbee59`/`545a51ef` in==out throughout
+— **no HOST-EVENTS entry owed**. SUPERVISOR TALLY: **eleven dispatcher defects** (3 value-class, 8
+structure-class), all output-side, none reaching a delivery — F103's six (the whole-history trailer
+count where the tool consults the range's 138 pairs; "0 dangling" where the live pair has carried 2
+since July, the tool's own `--dry-run` unrun at the mint; the code preview "to the digit" under a
+fixture that empties the code range; "map lines = rewritten commits" with the repair append in my
+read; `README.md:129` called the repo contract; "validated at parse time"), F104's three (the 60/60
+double count against my own census line; Sedna in Eris's branch against my own paragraph; the F100
+result-file name), F105's two (the mass-ratio band for a barycentre declared `a = b = 1` — half the
+distance, 39× off; class I's membership 29 → 27 left unstated); plus the three the instrument caught
+at the mint. EXECUTOR REPORT DEFECTS: none reaching a record (F105's marker string and first driver
+self-caught; F105's one malformed `Code:` trailer, `5832b27`, left unrewritten by design). EXECUTOR
+criterion-integrity instances: **≥ 24** (F103: the predictions before any run with three section
+claims pre-registered as refuted; the fixture pinned at the dispatch HEAD; P6 as two scripts at one
+instant; both mutants; the maps fingerprint-verified; the "commit tracking" reading flagged. F104: the
+structural seqcheck shown able to fail both ways; the partition from the field file before the fix;
+the pre binary reproducing the defect first; the `altaz_old` instrument corrected when its own
+mutation leg beat its floor; the mutation kept as a null with its cause; the S5 refutation controlled.
+F105: eight values predicted numerically before the build; the reload window pre-registered as its own
+risk and caught by "exactly 8"; the message corrected, not the logic; a manufactured arrear removed
+rather than credited; the zero-vector consequence routed, not minted).
+Archival pass 20 (update-s26 + F103/F104/F105, live `### F` 3 → 0) DEFERRED to the next open.
+NEXT-ROUND QUEUE, in order: (1) archival pass 20 at open; (2) **BEFORE SATURDAY, the owner's:** §5.147's
+decision (accept-and-map / refuse-and-resolve) — the rewrite is his act, the tool is ready (`§3 [Y8]`);
+(3) **§11.225(j2)/(j3)'s leg** (S, decision-free: does the orbit-line sampler's walk through
+`iterativeLastE` leave the seed where Eris's +32 rad staleness says it was? `f104_solver.py`'s sweep +
+one launch with `flag orbits` on/off, predictions first); (4) **§5.146** on his word (EntityCore); (5)
+ON THE OWNER'S WORD: §5.148 + §11.216(i)'s zero-vector answer · §5.142's policy · the `orbit_lon` ruling
+→ §5.21's two halves + §5.140 · §5.144's 8–12 h leg; (6) the (g) tail: §5.115's retention design,
+§5.66+§5.71, A15's residual; (7) instrument residues: `purge-path.sh`'s own sha map (the README says
+it is owed); `list_code_trailers`'s silent skip of an unparseable `Code:` line (a warning line — S);
+the `dumpread` self-test's two synthetic cases (§11.226(c)); `f96_offset.parse_dump` as the fourth
+reader bypassing `dumpread` (§11.226(i1)); the scan's EVENT lexicon without `FIXED` (by ruling —
+name, do not change); a PREMISES line per cited pointer (Q-67's candidate); recursive importer
+censuses; `f99_sweep.py`'s old-chain blind spot; `f85_links.py` guard; `f89_p7.py margins`; the b4
+`/proc` probe; the `dumpread` duplicates (`b24_equivalence`/`f89_p7`); (8) riders: the guard's
+"outside the walk" vs "not walked yet" (needs the system's identity inside `ModularBody` — the owner's
+nested line), §5.84's own trigger, `observedToBodyLocalPos` with no consumer, the `[parallel-script]`
+question, scedit README `:43`, the tester's `panorama5.sts:102`, `TDRS 3` and the 13 duplicate names in
+`06old.sts`; (9) owner items per §3. Remotes: **98 code / 821 harness** unpushed before this close's
+commit (measured 12:31:33); push from a keyed host — the supervisor never pushes. BASELINES AT CLOSE
+(measured 12:34:12, after this close's mints and markers): scan **258/328/142** · pair-check
+**242/217/25/120** · D 35 · D2 12 · I 89 · I2 37 · M 89 — over F105's delivery (258/328/142 ·
+242/217/25/119): +1 inline stub = §5.148; the scan unchanged (a MINTED marker and a "MEASURED" marker
+are outside its event lexicon, the shape §11.220(k) and §11.226(m) record); no filter moved; the
+uncredited set diffed EMPTY against the delivery tree with the instrument's own lines.
 
 ---
 
@@ -585,7 +663,9 @@ DONE at open (`06eec39`); live below: the session-27 mints **F103** (`supervised
 loud + the SHA maps persisted — the tool the owner operates Saturday), **F104** (§5.145's fix on
 the corrected ruling: two solver steps per call), **F105** (the dump channel's two items: the
 header's system identity + the barrier for the 30 new-only records, with the never-published-frame
-precondition).**
+precondition).** **Session-27 round (2026-09-07): F103 §11.224 · F104 §11.225 · F105 §11.226 — three for
+three DELIVERED and accepted; §5.147/§5.148 minted at acceptances; archival pass 20 (update-s26 +
+F103–F105) DEFERRED to the next open.**
 
 ---
 
@@ -1151,6 +1231,60 @@ test -e /home/claude/sc-f105 ; echo $? => 1
 and reverted; (c) the guard; P1–P6; §11 entry + stub; the three back-markers; the README line;
 trees clean; WIP cleared; baselines LAST.
 **WIP:** DELIVERED 2026-09-07 → **§11.226** (`INTENT/11.226.md` + stub). Code `ead2d478` → `a30b2c75` (the header field) → `318c0c8b` (the barrier call + its precondition) → `48cc3727` (the refusal line corrected by the smoke suite's own finding); binary `0c61f1b5` → `f26d5ad7` → `ad7a4e47` (MUTATION, reverted, `f26d5ad7` bit-reproduced) → `3f19cb6b` → **`e411b838`**. Gate 27/27. Predictions committed before the first build (`80ee70a`): the (20, 2, 8) partition BY NAME and the 8 identity-frame values NUMERICALLY — **seven exact, the eighth inside its ±4e-06 band**. P1 (20, 2, 8) with the 8 at `dist` 0 · P2 `|bary−Earth|` 0.001205379178 vs predicted 0.001205379219 (the section's mass-ratio gloss refuted) · P3 `SolarSystem`/`galactic`/`SolarSystem` on three states with `EmptyOldHalf` naming it · P4 both ways with the `dist 0` control, and the hazard measured LIVE on the baseline binary through `select planet pleiades` · P5 exactly 8 D12 lines, no repeat · P6 camera + 72/72 + 27/27 + 90/90 + F91 `1fe630a4` 0 FAIL. Smoke rc 0 step for step as §11.220(i3) and it found the pre-registered reload window (10 lines). §11.221(n1) and §11.220(j3) DISCHARGED at both homes + two further homes each; §11.220(j4) answered with its 8 named; §5.139 and §11.220(f1) annotated at the barrier's contract; `f100_partition.py` docstring; README ×4. **A §5 candidate for the supervisor, not minted: tracking a zero-vector body writes 66 non-finite values into the OLD path's view matrices — measured on the PRE binary too.**
+**ACCEPTED 2026-09-07 — the verifying commands' `date` read 12:23:04 and 12:24:11–12:29:48 (supervisor,
+session 27, Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.226 read in
+full; THREE code commits `a30b2c75 → 318c0c8b → 48cc3727` (Claude Opus 5; `ssystem_factory.cpp` — the
+`oldSystem`/`inSystem` fields resolved from the factory's own three members and the ONE `nb.useNow()`
+call in the new-only loop; `ModularBody.{hpp,cpp}` — `parkedFramePublished` written on the line after
+the frame it describes, `useNow()` returning `bool` with the precondition BEFORE the memo test and the
+refusal propagating through a hidden parent, the once-per-body D12 line saying what is observed and
+naming both ways to be there; 139+/5−, the diff READ, nothing else) and eight harness commits `80ee70a
+→ 7003ffb` (Claude Opus 5; the predictions at `80ee70a` before any build), both trees clean; binary
+`e411b838`, dry build 0 steps; §11.221(n1) and §11.220(j3) DISCHARGED at both homes (+ §5.143's row and
+§11.218(l)); §11.220(j4) marked with its 8; §5.139 and §11.220(f1) annotated; `f100_partition.py`'s
+docstring; README ×4; `DEPLOYMENT-MAP` 0 hits, said not assumed; instruments to the digit of the
+entry's (m) successor value (258/328/142 · 242/217/25/119 · D 35 · D2 12 · I 89 · I2 37 · M 89). **AND by
+my own hand on `e411b838`** (`sc-f105/supervisor/`): the F105 driver's dump stage (12:24:14) — header
+`SolarSystem`/true, the 30 new-only records **20 / 2 / 8 by name**, the 2 at `evalCount` 5 with
+|bary − Earth| **0.00120537918** vs ½|Moon − Earth| 0.00120537922 and |oal − Moon| 0.0012205, the 8 at
+`dist` 0 / `evalCount` 0, exactly **8** D12 lines each naming its parent (the propagation case its
+orbit centre); F101's `p23` leg (12:24:47) — post-dump header **`galactic` / false** at 0/120, pre
+`SolarSystem` / true at 90/120, 139/139 frozen files in==out; the operator stage (12:25:49) —
+`pleiades` tracked to the SAME aim as the `51PegSystem` control, Mars before/after to the digit, the 8
+lines in both channels; `f91_run.sh --expect post --locale fr` (12:27:27) — rc 0, table **`1fe630a4`**
+byte-identical to F104's, Q2 89/90; the smoke suite (12:28:08–12:29:47) rc 0 with the **10** lines of
+the reload window; canary exit 0, `/proc` clear, no lock, the field pair `03fbee59`/`545a51ef` in==out.
+Deviations ENDORSED with the executor's arguments: the `dumpread` self-test left at 17 (real-data
+evidence on both branches committed; the alternative named and costed); the precondition BEFORE the
+memo test with the reload window pre-registered as the task's own risk and caught by its own "exactly
+8" check, the MESSAGE corrected rather than the logic (the line had asserted a cause it cannot know);
+everything re-measured on the delivered binary; the new `f105_dump.py` beside an unmodified
+`f101_bisect.py`; one manufactured arrear removed rather than credited (§11.218(q)). SUSPENSIONS ENDORSED
+and ROUTED: **the zero-vector second consequence → §5.148 MINTED at this acceptance** (record-only,
+§5.79's criterion: a shipped command, 66 non-finite values measured in the old path's view state on the
+baseline binary too; markers at §11.226(f) and §11.216(i); the decision the owner's with §11.216(i)'s
+question); the guard's "outside the walk" vs "not walked yet" left undistinguished (one flag, an honest
+message — the distinction needs the current system's identity inside `ModularBody`, the owner's
+nested-modular-bodies line); the malformed `Code:` trailer on `5832b27` (`… @ a30b2c75 (the mutation is
+not in it)`) NOT rewritten — right: four later commits are cited; F103's maps resolve exactly that pin
+after the rewrite, and `list_code_trailers`'s silent skip of an unparseable `Code:` line is an
+instrument residue (queued). DISPATCHER-SIDE FINDINGS, all ACCEPTED as mine, all output-side (the
+gate passed 27/27): (1) the P2 band "the Moon's distance × the mass ratio" — `anchor.ini:58-59` has
+`a = b = 1` and `BarycenterOrbit2` uses `b/(a+b)` with no mass anywhere: the offset is HALF the
+Earth–Moon distance, 39× the band I wrote (a physical quantity asserted without the read — the
+SIBLING class; had the task gated on it, a correct value would have read as a failure); (2) "the F100
+partition instrument's class I keeps its key" — right about the key, silent that |I| goes 29 → 27 and
+|P ∩ I| 10 → 8 on any post-F105 dump (a consequence left unstated); (3) "the applog carries exactly 8
+D12 lines" — an ambiguity between the process's stdout and the log file, resolved by measuring both
+(8/8); (4) not mine but marked: §11.220(j4)'s *"nothing uses those bodies (evalCount 0)"* is refuted
+by the selection channel. Round tally: **eleven dispatcher defects** (3 value-class, 8 structure-class).
+STANDING CONSEQUENCES: **a dual dump is a use for 120 of 120 records** (`48cc3727`); `useNow()` returns
+whether the use was served (callers today ignore it); the dump header carries `oldSystem` and
+`inSystem` and `EmptyOldHalf` names them (a pre-F105 dump says it predates the field); the 8 anchor
+bodies under `Universe` are REFUSED a frame with one D12 line each, and `select` + track on one of them
+now lands in the zero-vector class the 18 `dist 0` systems are already in — whose second consequence
+is §5.148; `f100_partition.py`'s class I is 27 on a post-F105 launch dump; `/home/claude/sc-f105/`
+holds the legs and my runs under `supervisor/`.
 
 ---
 
@@ -1177,6 +1311,120 @@ trees clean; WIP cleared; baselines LAST.
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-27 decision items (2026-09-07, the SATURDAY-TOOL / TWO-STEP-SOLVER / DUMP-CHANNEL round —
+  F103 · F104 · F105, three for three). Q-70's shape: one decision per node, its held set at the node,
+  anchors by ID and symbol, correlated items together. Nothing asked in-session (Monday). The first
+  node is the one Saturday's operation needs.**
+
+  ```
+  YOURS — nothing here substitutes them
+  [Y8] §5.147 · the rewrite COLLAPSES 13 commits ─ decide BEFORE Saturday's supervised-by.sh run;
+       irreversible after the force-push
+       fact    master-beta carries the same 13 commits TWICE: cebebf44 (GPG-signed by GitHub, Lionel's
+               "Update install_dependancies_ubuntu.sh", 2026-04-30) beside its unsigned twin b8dddd6c —
+               same tree, author, date, subject, same parent 1ddd32f0 — rejoining at c6784490;
+               `git commit-tree` drops gpgsig, so the rewrite rebuilds the signed chain INTO the
+               unsigned one: 3829 → 3816 commits, range 94 → 81, reproduced twice byte-identically,
+               while the tool's content assertion PASSES (the tip tree is unchanged); the 13 old
+               shas are cited in INTENT/11.203.md only, in 0 trailers, and are ABSENT from the map
+       (i)     ACCEPT AND MAP — widen build_map's twin search to the whole new history so the map
+               carries cebebf44 → b8dddd6c and the twelve, step E repoints them; the signature
+               stays lost; cheap, each has exactly one fingerprint twin
+       (ii)    REFUSE AND RESOLVE FIRST — the tool STOPs on any unpaired commit; the duplicated
+               chain is resolved deliberately before any rewrite (the tool's own philosophy)
+       today   the tool WARNS (a §2(f) block at the map, READ BEFORE PUBLISHING at the end, Undo
+               printed) and proceeds
+       ask     (i) or (ii) — one word
+       →       §11.224(h) · §5.147 · DEPLOYMENT-MAP R5
+
+  [Y4] the tool you operate Saturday ─ what changed, in the order you will meet it
+       state   RUNNABLE NOW, and was not before this round: build_map's `[ ] && printf` returned 1
+               on its last iteration and `set -e` killed every run AFTER the code rewrite and
+               BEFORE rollback (D1: 73 of 138 trailers left dangling, in silence); build_repair_map
+               re-derived "already dangling" AFTER the rewrite and aborted every run on a pair with
+               a pre-existing dangling trailer (D2) — this pair has 2 (5f68d374, 841175d3, twins
+               unique). Both fixed, each with a mutant on record
+       B1      a renamed branch now STOPs the preview (exit 1, `--dry-run` too) with a §2(f) block;
+               `--branch-alias=master-beta=<new-name>` is the one flag that proceeds; the rename
+               and the tool are now order-INDEPENDENT (F92's checklist needs no reordering)
+       maps    claude/sha-maps/<UTC>-<code8>-<harness8>/{code,harness,repair}.tsv + a written-once
+               README, committed by the closing commit (unconditional once a map exists) — your
+               "commit tracking" was READ as this map; your correction may differ
+       today   `--dry-run` on the live pair: 94 code / 805 harness selected, 138 distinct trailers,
+               2 already dangling, no STOP; deterministic (two runs, byte-identical maps)
+       skip    ONE pin the parser SKIPS silently: harness 5832b27's trailer reads
+               `Code: master-beta @ a30b2c75 (the mutation is not in it)` — outside the grammar; the
+               map resolves it after the run; the parser's silence is a residue (queue 7)
+       →       §11.224 · README.md §sha-maps · harness/README.md §supervised-by.sh · §11.212(g)
+
+  [Y2] §5.145 FIXED on your ruling as corrected ─ two veto points, each cheap to reverse
+       scope   read as the iterative CLASS (all four advancing branches of eccentricAnomaly + both
+               comet steps); Eris's branch alone was built as the MUTATION: indistinguishable on
+               the engine (120/120), so the two forms differ in COST only — 2.36 µs/frame worst
+               case = 0.24 % of D11 for the class form, the narrow form's share smaller
+       old     orbit.cpp is shared: the old path converges twice as fast per frame after a date
+               jump — strictly more exact on the comparison baseline (as-if)
+       count   still yours: two steps sufficed for Eris by four orders (1.1987° → 1.06e-05°); the
+               alternative shape — iterate to a criterion — already exists in the dead warp()
+               methods (§11.225(j1))
+       →       §11.225 · §5.145 · §11.223(b) · §11.76(b)
+
+  [Y9] §5.148 · tracking a ZERO-VECTOR body poisons the old path's view state ─ 66 NaNs, on the
+       baseline binary too
+       fact    `select` + `flag track_object on` on any of the 19 dist-0 records (18 star systems +
+               Universe; now also the 8 anchors under Universe, refused a frame by F105) writes nan
+               into helioToEye / matLocalToEye / matJ2000ToEye / matEarthEquToEye / headingVector /
+               moveAim; the navigator step that first produces it is not read
+       ask     with §11.216(i)'s question, one answer: what a body with no position answers to a
+               track — refuse with a §2(f) line at the tracking seam, or a defined aim
+       →       §11.226(f) · §5.148 · §11.216(i)
+
+  [Y3] §5.146 ─ carried: minted on your word "edit it" (SharedBuffer's bind/release guards + the
+       contract line at BufferMgr::releaseBuffer, EntityCore)              → §11.223(c) · §5.146
+  [Y1] §5.142 · the pool policy ─ carried (grow / refuse / degrade)          → §11.222(h)
+  [Y5] §5.144 · the 8–12 h leg ─ carried  ·  [Y6] §5.140 · orbit_lon ─ carried
+  [Y7] scratch trees ─ sc-f103 (959 M: the clone pair + the P4 maps' object store), sc-f104 (898 M:
+       the pre/post/mutant binaries), sc-f105 (955 M) join the list; sc-f98 (1.8 G) still holds the
+       only complete arm-C applog
+
+  VETO POINTS taken (implemented-and-live, each cheap to reverse; silence = endorsed)
+  [V1] F103  `--branch-alias` in the `--author-fix` shape; the STOP at step A'; the maps' location
+             and naming; the closing commit unconditional once a map exists; D1/D2 fixed under the
+             forced-expansion rule (both blocking for your run)
+  [V2] F104  the class scope ([Y2]); ITERATIVE_STEPS_PER_CALL = 2 in iterative_orbits.hpp, one home
+  [V3] F105  useNow() returns bool; a use in a NEVER-published frame is REFUSED with one D12 line
+             per body (the 8 keep their honest zero); the header's two fields; a dump a use for
+             120/120 (the 2 anchors under Earth/Moon now move with the frame)
+  [V4] two §5 mints at acceptances (§5.147 [Y8] under §5.131's precedent — a repository-state
+             property in the defect register; §5.148 [Y9])
+  [V5] archival pass 19; this block
+
+  HELD OPEN, not absorbed
+  [H1] §11.225(j2)/(j3): the new path's orbit-line sampler walks the position solver's own seed
+       (180 dates through iterativeLastE), and Eris's pre-fix staleness (+32 rad) is unattributed
+       — a leg, next round (S)
+  [H2] §11.226(h): after `body action reload` the two anchors under Earth/Moon are refused for
+       ONE frame (their creator uses them before the walk publishes) — measured self-healing; the
+       line names both ways to be there
+  [H3] the guard cannot tell "outside the walk" from "not walked yet" — needs the system's
+       identity inside ModularBody: your nested-modular-bodies line (§11.223(e))
+  [H4] instrument residues: purge-path.sh rewrites the same way and writes NO map (README corrected
+       at acceptance); list_code_trailers skips an unparseable `Code:` line silently; the scan's
+       EVENT lexicon carries no FIXED (by ruling), so B1's FIXED marker is invisible to it
+  [H5] §5.84's own trigger still unmeasured; §11.215(g)'s four bodies' ulps predicted to change,
+       not re-measured (a 3 h soak)
+
+  FACTS, no decision asked
+  [F1] three for three delivered AND supervisor-verified same session, every delivery re-run by my
+       own hand; code 474c595d → 48cc3727 (four executor commits); binary b5f08778 → e411b838
+  [F2] exactly ONE readout moved across the round at the un-moved launch state: Eris's parked
+       position (1.1987° → 1.06e-05°); the F91 table's md5 is now 1fe630a4 (c125adf0 retired)
+  [F3] eleven dispatcher defects this round (3 value-class, 8 structure-class), all output-side,
+       all caught before a delivery; three more caught AT THE MINT by the instrument
+  [F4] the host: same boot, `:2` alive with sessions 14/15, RAM 52 GiB at open and close; 41
+       launches, no HOST-EVENTS entry owed
+  ```
 
 - **Session-26 decision items (2026-09-07, the NULL-PARENT / PARKED-READOUT / SYSTEM-SWITCH /
   UNIFORM-POOL round — F99 · F100 · F101 · F102, four for four). THE FIRST BLOCK IN Q-70's SHAPE, on
