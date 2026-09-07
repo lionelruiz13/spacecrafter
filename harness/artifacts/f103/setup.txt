@@ -1,0 +1,41 @@
+F103 -- the scratch pair, how it was built and what it measures (2026-09-07)
+
+    /home/claude/sc-f103/origin/code.git      git clone --bare --no-hardlinks /home/claude/spacecrafter
+    /home/claude/sc-f103/origin/harness.git   git clone --bare --no-hardlinks /home/claude/spacecrafter/claude
+    /home/claude/sc-f103/pair/spacecrafter        cloned from origin/code.git
+    /home/claude/sc-f103/pair/spacecrafter/claude cloned from origin/harness.git   (NESTED)
+
+The harness bare was pinned back to the DISPATCH-STATED harness HEAD fe09601 before the
+pair was cloned: the first bare clone had already picked up this task's own checkpoint-1
+commit, and a fixture that moves every time the executor commits cannot be compared to a
+prediction.  The code bare needed no pin (this task makes no code commit).
+
+The scratch origins were then set BEHIND, to the LIVE upstream shas, and the pair's
+remote-tracking refs force-updated to follow, so the scratch distances equal the live
+pair's exactly:
+    origin/code.git    refs/heads/master-beta = 76ee38c7   pair: origin/master-beta..HEAD = 94   (live 94)
+    origin/harness.git refs/heads/CC-harness  = eb9af25c   pair: origin/CC-harness..HEAD  = 798  (live 798 at fe09601)
+
+`gc.auto 0` in both pair repos: the two pre-existing dangling commits (5f68d374,
+841175d3) are unreferenced by design and an auto-gc would delete exactly the objects the
+repair path is here to exercise.
+
+MEASURED CORRECTION to prediction.txt section 0: the planned transplant of those two
+objects by `git fetch --upload-pack='... allowAnySHA1InWant ...'` was a NO-OP -- both
+were ALREADY present in the clone.  `git clone` of a LOCAL path takes the --local route
+and copies the object store wholesale instead of negotiating a pack, so unreachable
+objects come along.  The fetch was run anyway and confirmed it (both shas PRESENT before
+and after, `git branch --all --contains` empty both times, live untouched).  The clone's
+object database is therefore object-faithful to live by construction, which is what makes
+P4's repair path the same one the owner's Saturday run will take.
+
+STATE R (P1, P2, P3):  git branch -m master-beta main ; git checkout 2023-master
+    `main` keeps upstream origin/master-beta -- F92 B2 confirmed on this fixture: the
+    config SECTION moves with the rename, its `merge` VALUE does not.
+    `2023-master` DWIMs to origin/2023-master, which in the clone equals 2023-master, so
+    the code range is empty -- the reason P3 cannot restore the CODE preview.
+    The code tree is `?? claude/` dirty in state R: 2023-master's .gitignore predates the
+    `claude` line (measured: 0 on 2023-master, 1 on main).  All three of P1/P2/P3 are
+    --dry-run, which skips the clean-tree precondition by design (:474), so it does not
+    block; recorded because it would block a real run from that checkout.
+STATE U (P4, P5):  git checkout main ; git branch -m main master-beta   -- the pristine state.
