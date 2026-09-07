@@ -971,6 +971,18 @@ arms** (`artifacts/f104/seqcheck.txt`; red controls at `seqcheck_red{,2}.txt`, 3
 73/120). **P4 measured**: one extra step = 11.93 / 20.94 / 29.27 ns (the three elliptic
 branches) and 20.05 / 34.70 (IterativeEll / IterativeHyp). NEXT: P6 then P1 (both binaries,
 both clocks), P2, P3, P5.
+2026-09-07 11:35 -- CP3 THE ENGINE PROOFS, six launches, every one canary-green, `/proc` 0,
+md5 in==out. **P6** pre binary reads Eris **1.1987248926268401** at P0 (F100's acceptance digit
+for digit). **P1** post P0/pinned: Eris **1.19872 -> 1.05951e-05**, the other 18 parked rows
+identical to every printed digit; `f100_identity.py` **119/120 byte-identical, Eris the ONLY
+record whose `mat` translation moved** (2.029 AU), 120/120 at the running clock, walked 72/72
++ 71/71 both clocks; `altaz_new` differs on 1 record of 120. The 20 `altaz_old` movers are
+scored against an A/A control (a SECOND pre-binary launch): **0 attributable**, every A/B
+difference 2-4x inside that body's own same-binary floor (`f104_aa.py`). **P2** exactly ONE
+diff line vs `c125adf0` and it is Eris's predicted row; Q2 88 -> **89 of 90**, Puck's row
+untouched; rc 0. **P3** rc 0, states as S11.220(i3) -- one refuted prediction, S5's distance,
+CONTROLLED to the wall clock by a pre-binary run the same hour. NEXT: P5 the mutation, then
+the record.
 
 ### F105 — the dump channel's two owed items, both at their anchor `SSystemFactory::dumpTracePaths`: (i) the header names the system the OLD column was taken in (§11.221(n1): `"oldSystem"` = `SolarSystem` / `galactic` / the `systems` key, plus `"inSystem"`; `dumpread`'s `EmptyOldHalf` message names it; every parity artifact becomes self-describing) and (ii) the new-only loop calls the barrier (§11.220(j3): `nb.useNow()` before `nb.dumpTrace(out)` at `:1227-1233`, so a dump is a use for 120 of 120 records, not 90) — with the consequence PREDICTED before the launch, record by record over the 30 new-only names: **20 unchanged** (the 18 `dist 0` systems and `Universe` return at `useNow`'s first line — not `renderHidden`; `SolarSystem` is walked), **2 refreshed into a REAL eye-frame position** (`baryEarthMoon` under the walked Earth, `orbit_autour_lune` under the walked Moon — parents that publish `parkedChildFrame`), and **8 that a use refreshes into the IDENTITY frame** — the seven hidden children of the never-walked `Universe` and `orbit_autour_point` under its hidden centre — because `parkedChildFrame` defaults to identity (`ModularBody.hpp:2121`) and `publishParkedFrame` runs only for walked nodes (`:1003-1007`): §11.220(j4)'s hazard, which the SELECTION channel already exercises for those 8 today (`ModularSystem.cpp:269-270`; new-only names answer the new path); so the barrier gains its missing PRECONDITION — a use in a frame that was NEVER published is not served (a `parkedFramePublished` flag set at `:1006`, `useNow` returning `false` without refreshing and propagating through hidden parents; ONE D12 line per body naming what / consequence / fix) — and the 8 keep their honest `dist 0` in the dump while the F100 partition instrument's class I keeps its key; the mutation (no guard) measured once for the 8 identity-frame values, (j4)'s magnitude on record; STOP before any fix if the leg's partition is not (20, 2, 8) [S–M, engine + instrument, new path only — veto point §3 on the guard's form]
 

@@ -1,0 +1,17 @@
+=== F104 P0 launch state, PINNED clock: pre b5f08778 vs post 0c61f1b5
+  A = /home/claude/sc-f104/leg_pre/dumps/pinned_p0_launch.json
+  B = /home/claude/sc-f104/leg_post/dumps/pinned_p0_launch.json
+  camera state identical: True
+  jd A 2461233.5  jd B 2461233.5
+  walked         n= 72  identical mat translation  72/ 72  identical altaz_new  71/ 71
+  parked (P)     n= 29  identical mat translation  28/ 29  identical altaz_new  18/ 19
+      moved: Eris
+  unreached (I)  n= 29  identical mat translation  29/ 29  identical altaz_new   0/  0
+=== F104 P0 launch state, RUNNING clock: pre vs post
+  A = /home/claude/sc-f104/leg_pre/dumps/running_p0_launch.json
+  B = /home/claude/sc-f104/leg_post/dumps/running_p0_launch.json
+  camera state identical: True
+  jd A 2461233.500041159  jd B 2461233.500041159
+  walked         n= 72  identical mat translation  72/ 72  identical altaz_new  71/ 71
+  parked (P)     n= 29  identical mat translation  29/ 29  identical altaz_new  19/ 19
+  unreached (I)  n= 29  identical mat translation  29/ 29  identical altaz_new   0/  0

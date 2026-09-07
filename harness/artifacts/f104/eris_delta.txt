@@ -1,0 +1,13 @@
+Eris eye-frame mat translation (AU)
+  pre  [-95.8729095, 1.34208274, 3.37097263]  |t|=95.941541673
+  post [-95.5259552, 3.24661517, 2.76221275]  |t|=95.621014668
+  delta [0.34695430000000727, 1.9045324300000002, -0.6087598799999996]  |delta|=2.029337245 AU
+  dist pre 95.9415436 post 95.6210098
+  altaz_new pre  [-0.0352415107190609, 1.5567004811626415]
+  altaz_new post [-0.028987640514969826, 1.5367250526931624]
+  altaz_old pre  [-0.028987804746661582, 1.5367249651501416]
+  altaz_old post [-0.028987804746661582, 1.5367249651501416]
+  evalCount pre 5 post 5
+
+records whose altaz_OLD differs pre vs post: 20  ['Ariel', 'Arrokoth', 'Callisto', 'Deimos', 'Dione', 'Enceladus', 'Europa', 'Ganymede', 'Hyperion', 'Iapetus', 'Io', 'Mimas', 'Miranda', 'Oberon', 'Phobos', 'Rhea', 'Tethys', 'Titan', 'Titania', 'Umbriel']
+records whose altaz_NEW differs pre vs post: 1  ['Eris']
