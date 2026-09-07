@@ -1,0 +1,30 @@
+STOP: a 'Code:' trailer names a branch this repository cannot resolve.
+
+  WHAT
+    138 distinct 'Code: master-beta @ <sha>' trailer(s) in the harness range
+    'origin/CC-harness..HEAD' name branch 'master-beta', and neither refs/heads/master-beta
+    nor any --branch-alias resolves it in /home/claude/sc-f103/pair/spacecrafter.
+
+  VALID STATE
+    Every branch named in a trailer resolves to refs/heads/<name> in the code
+    repo, or is given a replacement with --branch-alias. Names that resolve
+    there right now:
+      2023-master main 
+
+  CONSEQUENCE
+    Their reachability cannot be judged, so nothing downstream of it can be
+    trusted: the dangling count in the preview, the repair map, and the
+    post-rewrite assertion that every trailer still resolves. Until this
+    message existed the script answered by judging them against HEAD, which
+    is not verdict-preserving -- the same trailer reads reachable against
+    refs/heads/master-beta and dangling against refs/heads/2023-master -- so
+    the verdict depended on which branch was checked out, and a run from the
+    wrong checkout marked every trailer of the renamed branch UNREPAIRABLE.
+
+  FIX -- either one, before re-running
+    (a) judge them against the renamed branch -- it must already exist:
+        ./supervised-by.sh --branch-alias=master-beta=<the-new-name> ...
+    (b) or bring the old name back, if it is meant to keep existing:
+        git -C /home/claude/sc-f103/pair/spacecrafter branch master-beta <the-new-name>
+
+  Nothing has been touched.

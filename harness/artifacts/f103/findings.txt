@@ -1,0 +1,127 @@
+F103 -- TWO PRE-EXISTING DEFECTS FOUND BY RUNNING THE TOOL, both BLOCKING, both fixed
+under the forced-scope-expansion rule, both discriminated BOTH WAYS by a mutant.
+executor Claude Opus 5, 2026-09-07, on the throwaway pair /home/claude/sc-f103/pair.
+
+They were invisible until now for one reason: nobody had ever RUN this tool on a pair
+whose code range contains a duplicated chain and whose harness range contains an already
+dangling trailer.  Both conditions hold on the LIVE pair today, so both defects were
+waiting for the owner's Saturday run.
+
+=============================================================================
+D1 -- build_map returns 1 and `set -e` kills the run AFTER the code repo has been
+      rewritten and BEFORE rollback_all can be reached.
+=============================================================================
+SITE      build_map(), the last statement of its second loop, pre-fix text:
+              [ -n "${nf}" ] && printf '%s\t%s\n' "${os}" "${nf}" >> "${out}"
+MECHANISM An AND-list whose test fails returns non-zero.  When that is the last
+          statement of the last loop iteration it is the loop's status, the loop is
+          the function's last command, so it is the function's status -- and under
+          `set -euo pipefail` the caller dies on the spot.  Isolated:
+              bash -c 'set -euo pipefail; f(){ local x; while read -r a; do x="";
+                  [ -n "${x}" ] && echo hi; done <<< "1"; }; f; echo SURVIVED'
+              -> rc 1, "SURVIVED" never printed
+          The file's own comment at scan_range (":558-559" pre-fix) warns about exactly
+          this class in a different form; the same trap was live here.
+TRIGGER   `nf` is empty when an old commit has no fingerprint twin on the new history.
+          On this pair that is true for 13 commits (see D3) and, crucially, for the LAST
+          one `git rev-list` emits, so the death is certain, not probabilistic.
+MEASURED  MUTANT A' = the current file with build_map restored byte-exact from f3cec53.
+          Full run on the reset pair:  rc 1.  Output ends at
+              "VERIFIED <code>: content identical, selection now empty (78 rewritten...)"
+          "Code sha map:" never printed (0 occurrences).  "Rolled BOTH" never printed
+          (0 occurrences).  Left: code repo REWRITTEN (d40f4eb1, 3816 commits), harness
+          UNTOUCHED (fe096019, 799) -- and 73 of the 138 `Code:` trailers now dangling.
+          That is verbatim the state rewrite()'s own comment calls "the inconsistent pair
+          this script exists to prevent", reached silently, with exit code 1 and no
+          message of any kind.
+FIX       `if [ -n "${nf}" ]; then ... else UNPAIRED+=(...) fi`, plus an explicit
+          `return 0`, plus a §2(f) WARNING block naming the unpaired commits, the old and
+          new history lengths, the consequence, the measured cause and the check command;
+          plus a "READ BEFORE PUBLISHING" line in the closing summary, because the warning
+          scrolls past in a 6900-line run.
+AFTER     Same pair, same run: rc 0, the warning printed, 13 named, run completes.
+
+=============================================================================
+D2 -- build_repair_map re-derives "already dangling" AFTER the code rewrite, remaps
+      every trailer THIS run just invalidated, and the duplicate entries make
+      map_lookup call all of them AMBIG, so the run STOPs and rolls back.
+=============================================================================
+SITE      build_repair_map()'s input, pre-fix:  done < <(dangling_trailers "${range}")
+          called from step D, i.e. AFTER `rewrite <code>` and after build_map.
+MECHANISM Its own header comment says it heals "trailers ALREADY dangling when this run
+          started, i.e. damage left by an EARLIER rewrite".  That set is a property of
+          step A.  Re-derived at step D it also contains every trailer pointing into the
+          range the code rewrite has just re-shaed.  Those pairs are appended to CODE_MAP
+          (":815") which build_map has already filled with the same pairs; map_lookup
+          walks the file and returns AMBIG on the second identical hit, since it counts
+          matching LINES and not distinct answers.  Step D's ambiguity guard then fires.
+MEASURED  MUTANT B = the current file with only that one line reverted.  Full run on the
+          reset pair: rc 1, 73 "repair" lines instead of 2, "STOP: a Code: trailer sha
+          prefixes more than one rewritten commit." once, "Rolled BOTH repos back" once,
+          both repos returned to 474c595d / fe096019.  So the tool is UNRUNNABLE, by
+          construction, on any pair where at least one trailer was dangling beforehand
+          and the code rewrite touches at least one trailer.  The live pair has 2 such
+          trailers today, so this is every run.
+FIX       Capture the list at step A, where the count was already being taken:
+              BASELINE_DANGLING_LIST=$(dangling_trailers "${HARNESS_RANGE}")
+              BASELINE_DANGLING=$(printf '%s' "${BASELINE_DANGLING_LIST}" | grep -c '^' || true)
+          and have build_repair_map read it.  This restores the documented contract
+          rather than inventing one, and it also drops the number of full dangling scans
+          from three to two.  Signature becomes build_repair_map <outfile>.
+AFTER     Same pair, same run: 2 repair lines (5f68d374 -> e5f0889b, 841175d3 ->
+          5ad587af), no AMBIG, no rollback, rc 0.
+
+=============================================================================
+D3 -- NOT FIXED, RECORDED AND ROUTED: the rewrite silently removes 13 commits and one
+      GPG signature from master-beta.  This is the owner's decision, not the executor's.
+=============================================================================
+WHAT      `git commit-tree`, which filter-branch rebuilds every commit with, does not
+          carry the `gpgsig` header.  A signed commit therefore rebuilds as its unsigned
+          form.  On the live code repo exactly ONE commit in origin/master-beta..HEAD is
+          signed:
+              cebebf44  Lionel RUIZ  2026-04-30  "Update install_dependancies_ubuntu.sh"
+              (git cat-file commit cebebf44 -> gpgsig, committer GitHub)
+          and its unsigned twin ALREADY EXISTS in the history:
+              b8dddd6c  same tree e77a4151, same author date 1777575658, same author,
+              same subject, SAME PARENT 1ddd32f0 -- and reachable from origin/master-beta.
+          So 1ddd32f0 has two children and the branch carries the same 13 changes twice:
+          a signed chain (unpushed) and an unsigned chain (pushed).  The two rejoin at the
+          merge c6784490 "Merge the deployed line: `s_texture` can be a video ...".
+CONSEQUENCE Strip the signature and the signed chain becomes the unsigned chain commit by
+          commit; the merge's two parents converge; the branch loses 13 commits.
+          MEASURED, twice, byte-identically: 3829 -> 3816 commits, code range 94 -> 81.
+          The script's content assertion (`git diff --quiet <tip> HEAD`) PASSES throughout,
+          because the tip TREE is unchanged -- only the shape of the history is not.
+          The 13 old shas are absent from code.tsv, so a citation of one of them is not
+          resolvable through the map and is not repointed by step E.
+IMPACT    Measured on the live harness: those 13 shas are cited in exactly ONE tracked
+          file, INTENT/11.203.md, and in ZERO `Code:` trailers.  The affected commits are
+          authored by Kenan-Blasius, lionelruiz13 and Calvin Ruiz -- not by this project's
+          agents -- and the lost signature is GitHub's on Lionel's commit.
+WHY NOT FIXED HERE, and the two readings, both stated because neither is the executor's:
+   (i)  ACCEPT AND MAP: the collapse is a de-duplication of a history anomaly, the
+        content is unchanged, and the right repair is to widen build_map's twin search to
+        all commits reachable from the new HEAD, so the map would carry
+        cebebf44 -> b8dddd6c and the 12 others, and step E would repoint them.  Cheap,
+        unambiguous (each has exactly one fingerprint match), and it makes the map
+        complete again.  It does NOT bring the signature back.
+  (ii)  REFUSE AND RESOLVE FIRST: a force-push that silently shortens a shared branch by
+        13 commits and drops another contributor's GitHub signature is not what "record
+        the supervision chain" was asked to do; the duplicated chain should be resolved
+        deliberately, before any rewrite, and the tool should STOP when it detects one.
+        This is the reading the file's own philosophy ("refuse rather than produce
+        something indistinguishable from correct afterwards") points at.
+  Either way it is a user-visible, other-people-affecting, irreversible-after-push
+  decision about the owner's own repository, so this run REPORTS it as loudly as it can
+  and changes nothing.  The warning fires at the moment it is detected and again in the
+  closing summary, and `Undo:` is printed with both reset commands.
+
+=============================================================================
+REPRODUCIBILITY
+=============================================================================
+Two independent full runs from the same reset pre-state produced byte-identical maps
+    code.tsv    md5 6e7984e643b75a7396abead781609fd6   (83 lines)
+    harness.tsv md5 43834ed0b5cd9a573c4f5bba4e407c08   (798 lines)
+    repair.tsv  md5 6379ab862659c8063977d9579e5fd168   (2 lines)
+and the same rewritten code tip d40f4eb1.  The rewrite is deterministic; only the closing
+commit's own timestamp and the map directory name differ between runs.

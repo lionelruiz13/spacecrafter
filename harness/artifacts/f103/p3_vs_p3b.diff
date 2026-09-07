@@ -1,0 +1,88 @@
+2c2
+<     range origin/2023-master..HEAD  --  0 commit(s) in range
+---
+>     range origin/master-beta..HEAD  --  94 commit(s) in range
+4c4,84
+<     nothing selected (0 already carry Supervised-By, 0 not Claude-authored)
+---
+>   [ keep     ] 474c595d  Claude Opus 5   The barrier now asks which camera, as well as which day
+>   [ keep     ] 1af7fa48  Claude Opus 5   A location_orbit needs something to sit on, and now both paths say so
+>   [ keep     ] 22499f04  Claude Opus 5   The authored latitude, in the degrees the loader's own next lines convert
+>   [ keep     ] 24100461  Claude Opus 5   One inverse for the render rotation, and the pole answers RA 0 like old
+>   [ keep     ] a2a880ef  Claude Opus 5   Saturn and Ganymede, spelled the way the loaded bodies are spelled
+>   [ keep     ] 5a1e5749  Claude Opus 5   The new path's RA/DE answers in old's frame, because it now inverts the matrix it draws with
+>   [ keep     ] 0b46a63f  Claude Opus 5   The newcomer's first run of the app is now one line in the entry document
+>   [ keep     ] 1d839b9d  Claude Opus 5   Fourteen labels the port had un-translated, given back old's own msgids
+>   [ keep     ] a2fd3c5b  Claude Opus 5   D8-D13 each carry their own pointer, not one for the section
+>   [ keep     ] d260d89c  Claude Opus 5   A developer entry document, and the two INSTALL paragraphs that stopped being true
+>   [ drop     ] 32af2efb  Claude Fable .. EntityCore pin moved to the commit the owner pushed: 7ce58350 -> 84f5d94b, tree identical
+>   [ keep     ] a4a7c226  Claude Opus 5   The anchor owns its orbit, and a parentless comet is told instead of crashing
+>   [ keep     ] 9e0f1e93  Claude Opus 5   The first launch on a new account no longer aborts: one line, moved five down
+>   [ keep     ] 1cbd6780  Claude Opus 5   INSTALL now describes the thing that is here, including where it stops
+>   [ keep     ] 03c85734  Claude Opus 5   The anchor gate saw the merge, which is not what anyone predicted
+>   [ keep     ] c6784490  Claude Opus 5   Merge the deployed line: `s_texture` can be a video, and the four conflicts were all ours
+>   [ keep     ] 85cc2785  Claude Opus 5   The README says there are two contracts now, and where they disagree
+>   [ keep     ] befe7a5d  Claude Opus 5   `body nmae Earth` is not silent any more, and 3384 shipped lines came with it
+>   [ keep     ] ab212f0d  Claude Opus 5   C3's other half, at last: 630 findings over three stellar-system corpora, every one true
+>   [ keep     ] 3f3f7726  Claude Opus 5   --check reads stellar-system files too, in whichever regime the path says
+>   [ keep     ] 4b633b8a  Claude Opus 5   A second contract file: what the loader reads out of a stellar-system section
+>   [ keep     ] ba7a32a8  Claude Opus 5   A sixteenth gate: C3's other half, and it says so when it cannot run
+>   [ keep     ] 8eeffb9d  Claude Opus 5   The checker stops quoting words the engine stopped saying
+>   [ keep     ] e3afca8f  Claude Opus 5   The README says which commit a line number is a line number of
+>   [ keep     ] 7b227ed6  Claude Opus 5   A fifteenth gate: the anchors cannot go stale in silence again
+>   [ keep     ] b00abd11  Claude Opus 5   The anchors point at the code again: 6663 references re-resolved, both halves moved together
+>   [ keep     ] 54a2b844  Claude Opus 5   The tenth target has no font of ours: say so, and leave it alone
+>   [ keep     ] 9a3b7a55  Claude Opus 5   The log line becomes the line itself: one rendering, and the writer already owned it
+>   [ keep     ] 1014e5a5  Claude Opus 5   A file line names itself in the log too: one condition reverses, and nothing else does
+>   [ keep     ] 96cfc352  Claude Opus 5   The contract says what it now is, and the README stops describing the gap it closed
+>   [ keep     ] 94f2af65  Claude Opus 5   153 names that had no line of their own, and the font check that was waiting on one function
+>   [ keep     ] 50185663  Claude Opus 5   The default the editor may type, and the values it may not: both read, both gated
+>   [ keep     ] d64fd437  Claude Opus 5   The two shader sources my own exclusion table had called binary assets
+>   [ keep     ] 1012c643  Claude Opus 5   Every source file pure ASCII: the accents removed, the printed bytes untouched
+>   [ keep     ] 630b06fd  Claude Opus 5   scedit takes the dedicated link: a refusal comes back, and it is drawn red
+>   [ keep     ] be2ddd81  Claude Opus 5   A second wire nobody has to listen to: $DIAGON, and a TCP refusal comes back
+>   [ keep     ] 423cbe23  Claude Opus 5   A TCP line knows it is one: the origin gains a channel, and the socket says which connection
+>   [ keep     ] e2c8477b  Claude Opus 5   The live keys, pressed on a real terminal: gate 14 closes the seam nothing measured
+>   [ keep     ] 51cfc24d  Claude Opus 5   README: live mode, what the wire does not carry, and the two ways to lose something
+>   [ keep     ] 5d3d577f  Claude Opus 5   The forced-refusal leg edits through the editor's own two calls
+>   [ keep     ] 4bf3f6cb  Claude Opus 5   Live legs for the real engine: the same client, the same core calls, driven headlessly
+>   [ keep     ] 7b78229d  Claude Opus 5   MCP run_command: the fourth tool, and F66's seam held exactly as it was written
+>   [ keep     ] 917b0e2b  Claude Opus 5   Live mode: the engine at the other end of the editor, behind --tcp and behind a keystroke
+>   [ keep     ] 8a5c7ce3  Claude Opus 5   The engine rewrites the file under an open buffer, and now nothing is lost to it without somebody choosing
+>   [ keep     ] 584edade  Claude Opus 5   scedit talks to a running engine: the headless client, and a stand-in to gate it against
+>   [ keep     ] 116f6d19  Claude Opus 5   README: a section for machines, the fetched revision, and what is not implemented
+>   [ keep     ] fbdf1d48  Claude Opus 5   Three gates for the machine surface: the queries, the JSON findings, the protocol
+>   [ keep     ] 170ce615  Claude Opus 5   The documentation answers a machine too: --doc, --search, --check --json, --mcp
+>   [ keep     ] ac3e752e  Claude Opus 5   The build gains warnings, on scedit's own targets, and loses the one it had
+>   [ keep     ] 1ea75d0d  Claude Opus 5   README: the error pane, `--history`, and what "history" was taken to mean
+>   [ keep     ] a3e44b64  Claude Opus 5   The `#!` rule says which lines can carry one: only the lines that executed
+>   [ keep     ] 4c70f2aa  Claude Opus 5   The error pane: every #! line and every finding, listed, click-to-warp
+>   [ keep     ] 99260e28  Claude Opus 5   `scedit --history` prints the pane's list, so a harness can read it without a tty
+>   [ keep     ] cdda1ee4  Claude Opus 5   The editor knows every place its script is wrong, and can put the caret on one
+>   [ drop     ] 4a00cf31  Claude Fable 5  scedit reads the engine's `#!` verdict on a line and says whether its own agrees
+>   [ drop     ] 2b8ec034  Claude Fable 5  The engine writes the diagnosis on the faulty line: `#!` annotations, and a line knows where it came from
+>   [ drop     ] 7fd5ea75  Claude Fable 5  div, mul and mod become aliases, and scedit resolves an alias once instead of claiming a respelling
+>   [ drop     ] 3d9179d2  Claude Fable 5  A '#' outside quotes is a comment — scedit models it first, and parseCommand receives the identical block
+>   [ drop     ] a3437670  Claude Fable 5  std::stacktrace becomes a toolchain feature the build probes, not a platform the code assumes
+>   [ drop     ] 2fe14699  Claude Fable 5  Findings point at their bytes, and the checker reads the block structure
+>   [ drop     ] 6a4d184b  Claude Fable 5  The witness was rewritten, and the checker finally read it: 33 findings, one class of 24
+>   [ keep     ] d6aec251  Claude Opus 5   The configured scale is a starting state, not an animation
+>   [ keep     ] 742cdc82  Claude Opus 5   Display scaling gets an owner per format, and the twin carries it
+>   [ keep     ] 18b6f13f  Claude Opus 5   Entering free flight stops moving the observer
+>   [ keep     ] 7ef11aca  Claude Opus 5   The new path's dump stops emitting values no JSON reader can read
+>   [ keep     ] 8c2cbf61  Claude Opus 5   Display scaling becomes a presentation transform, and what stands on a surface rides it
+>   [ keep     ] fd98c8e9  Claude Opus 5   The display scaling factor stops being NaN before anything is built on it
+>   [ keep     ] b444d381  Claude Opus 5   The sky lock stops being two flags, and init stops overwriting what it should read
+>   [ drop     ] 70dee810  Claude Opus 5.. Build trees get ignored by shape, not one name at a time
+>   [ drop     ] 430b0e6a  Claude Opus 5.. scedit's citations follow their rows: the sweep's defects are §5.91-98, not §5.74-81
+>   [ drop     ] a0593aff  Claude Opus 5.. The two working trees become one line again: scedit and sessions 10-12 never touched the same file
+>   [ keep     ] 04ae1d3e  Claude Opus 5   An empty selection answers with nothing, not with whatever is in slot zero
+>   [ keep     ] c12ed803  Claude Opus 5   A body standing at the eye is at the centre of the screen, not nowhere
+>   [ keep     ] 204d402e  Claude Opus 5   A held placement re-bakes the fold it is held against
+>   [ keep     ] 2fc0ce64  Claude Opus 5   A scripted travel moves the place the camera stands on
+>   [ keep     ] 71be9145  Claude Opus 5   An assignment lets go of what it stops holding
+>   [ keep     ] bd3f7117  Claude Opus 5   The climb leaves the same frame behind as the descent
+>   [ keep     ] 5b86be0f  Claude Opus 5   A message the server sends is sized by itself, not by the receive buffer
+>     drop=11  drop+keep=0  keep=67  bare=0
+>     '*' = author ALSO rewritten, resolved from the wildcard (0)
+>     untouched: 0 already supervised, 16 non-Claude

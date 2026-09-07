@@ -1,0 +1,4 @@
+2eb06b58ed81164a77ceb2697ce5004350735a57
+Test Supervisor <test@example.invalid>
+Repoint tracker citations after the supervision-trailer rewrite
+

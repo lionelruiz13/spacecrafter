@@ -806,11 +806,14 @@ if [ -n "${HARNESS_REPO}" ]; then
         echo "    wrong checkout marked every trailer of the renamed branch UNREPAIRABLE."
         echo
         echo "  FIX -- either one, before re-running"
+        # One fix per line, its explanation on the NEXT line: the paths in these
+        # commands are as long as the repository path, so anything aligned to
+        # the right of them stops being aligned on somebody else's checkout.
         printf '%s\n' "${UNRES}" | while read -r br n; do
-            echo "    ./supervised-by.sh --branch-alias=${br}=<the-new-name> ...     (judge them"
-            echo "        against the renamed branch; <the-new-name> must exist)"
-            echo "    git -C ${CODE_REPO} branch ${br} <the-new-name>                (recreate the"
-            echo "        name, if the old one is meant to keep existing)"
+            echo "    (a) judge them against the renamed branch -- it must already exist:"
+            echo "        ./supervised-by.sh --branch-alias=${br}=<the-new-name> ..."
+            echo "    (b) or bring the old name back, if it is meant to keep existing:"
+            echo "        git -C ${CODE_REPO} branch ${br} <the-new-name>"
         done
         echo
         echo "  Nothing has been touched."
@@ -822,10 +825,20 @@ fi
 # The cross-repo consequence, stated BEFORE the confirmation rather than
 # discovered afterwards: this is the number that the old one-repo-at-a-time
 # script left dangling without ever mentioning it.
-N_TRAILER=0; BASELINE_DANGLING=0
+N_TRAILER=0; BASELINE_DANGLING=0; BASELINE_DANGLING_LIST=""
 if [ -n "${HARNESS_REPO}" ]; then
     N_TRAILER=$(list_code_trailers "${HARNESS_RANGE}" | wc -l)
-    BASELINE_DANGLING=$(dangling_trailers "${HARNESS_RANGE}" | wc -l)
+    # CAPTURED, not just counted, and captured HERE -- before anything is
+    # rewritten. "Already dangling when this run started" is a property of this
+    # moment, and re-deriving it after the code rewrite answers a different
+    # question: by then every trailer the rewrite just invalidated is dangling
+    # too. (Measured 2026-09-07: re-derived, build_repair_map mapped 73 trailers
+    # instead of 2, those 71 duplicated what build_map had already mapped, and
+    # map_lookup called every one of them AMBIG -- so the run STOPped and rolled
+    # back on damage it had itself created, in every case where a trailer was
+    # dangling beforehand. On this pair that is every run.)
+    BASELINE_DANGLING_LIST=$(dangling_trailers "${HARNESS_RANGE}")
+    BASELINE_DANGLING=$(printf '%s' "${BASELINE_DANGLING_LIST}" | grep -c '^' || true)
     echo "Cross-repo: ${N_TRAILER} distinct 'Code: ... @ <sha>' trailer(s) in the harness range;"
     echo "            those pointing into the rewritten code range are remapped in the SAME"
     echo "            harness pass. Harness *.md citing code shas is repointed in E."
@@ -834,7 +847,7 @@ if [ -n "${HARNESS_REPO}" ]; then
         echo "            ${BASELINE_DANGLING} of them ALREADY point at commits no branch reaches --"
         echo "            damage from an earlier rewrite that had no cross-repo step. This run"
         echo "            repairs each one whose twin is uniquely identifiable by fingerprint:"
-        dangling_trailers "${HARNESS_RANGE}" | while read -r br sha; do
+        printf '%s\n' "${BASELINE_DANGLING_LIST}" | while read -r br sha; do
             echo "              ${sha}  ($(git -C "${CODE_REPO}" log -1 --format='%s' "${sha}" 2>/dev/null | cut -c1-52))"
         done
     fi
@@ -936,8 +949,10 @@ rewrite() {
 # is correctly absent from the map. Pairing is by a fingerprint the rewrite
 # preserves -- tree + author-date + author + SUBJECT -- since only trailer LINES
 # changed and tree/author never do. That is what makes it 1:1 even across merges.
+UNPAIRED_TOTAL=0
 build_map() {
-    local repo=$1 tip=$2 out=$3 ns os nf
+    local repo=$1 tip=$2 out=$3 ns os nf u
+    local -a UNPAIRED=()
     : > "${out}"
     local -A BY_FP=()
     while read -r ns; do
@@ -947,13 +962,63 @@ build_map() {
     while read -r os; do
         [ -n "${os}" ] || continue
         nf="${BY_FP[$(git -C "${repo}" log -1 --format='%T|%at|%ae|%s' "${os}")]:-}"
-        [ -n "${nf}" ] && printf '%s\t%s\n' "${os}" "${nf}" >> "${out}"
+        # An `if`, not `[ ] && printf`: an AND-list whose test fails returns
+        # non-zero, and when that is the last statement of the last iteration
+        # the whole function returns non-zero -- which under `set -e` killed the
+        # run on the spot, after the code repo had been rewritten and before
+        # rollback_all could be reached. Measured 2026-09-07 on a clone of this
+        # pair: the run died silently between "VERIFIED <code>" and "Code sha
+        # map:", leaving exactly the half-rewritten pair this script exists to
+        # prevent. An empty result is DATA here, not an error.
+        if [ -n "${nf}" ]; then
+            printf '%s\t%s\n' "${os}" "${nf}" >> "${out}"
+        else
+            UNPAIRED+=("${os}")
+        fi
     done < <(git -C "${repo}" rev-list "${tip}" --not HEAD 2>/dev/null || true)
+
+    # An old commit with no new counterpart is a hole in the map, so it is said
+    # here rather than left to be inferred from a line count.
+    if [ "${#UNPAIRED[@]}" -gt 0 ]; then
+        UNPAIRED_TOTAL=$((UNPAIRED_TOTAL + ${#UNPAIRED[@]}))
+        echo
+        echo "  WARNING: ${#UNPAIRED[@]} rewritten commit(s) in ${repo} have NO counterpart in"
+        echo "  the new history, so they are ABSENT from the map:"
+        for u in "${UNPAIRED[@]}"; do
+            echo "      ${u:0:8}  $(git -C "${repo}" log -1 --format='%an  %s' "${u}" | cut -c1-64)"
+        done
+        echo "  WHAT IT MEANS: the branch is now that many commits SHORTER."
+        echo "    old history $(git -C "${repo}" rev-list --count "${tip}") commit(s)," \
+             "new history $(git -C "${repo}" rev-list --count HEAD)."
+        echo "  CONSEQUENCE: a citation of one of those shas resolves to nothing, and step E"
+        echo "    cannot repoint it either -- the map has no answer for it. The content"
+        echo "    assertion above still passes: the TIP TREE is unchanged, only the shape of"
+        echo "    the history is not."
+        echo "  KNOWN CAUSE, measured on this repository pair 2026-09-07: 'git commit-tree'"
+        echo "    DROPS the 'gpgsig' header, so a GPG-signed commit rebuilds as its unsigned"
+        echo "    form. Where an identical unsigned commit already exists elsewhere in the"
+        echo "    history, the rebuilt commit IS that commit: a duplicated chain collapses"
+        echo "    onto its twin and the merge that joined them loses a parent."
+        echo "    Check:  git -C ${repo} cat-file commit <old-sha> | grep -c gpgsig"
+        echo "    Find where one went:  git -C ${repo} log HEAD --format='%H %T' \\"
+        echo "        | awk -v t=\$(git -C ${repo} log -1 --format=%T <old-sha>) '\$2==t'"
+        echo "  THIS IS NOT DECIDED HERE. Whether to accept losing those signatures and that"
+        echo "    history, or to stop and resolve the duplication first, is the operator's"
+        echo "    call -- and it is much cheaper to make BEFORE the force-push than after."
+        echo "    Undo is printed at the end of this run."
+        echo
+    fi
+    return 0
 }
 
-# build_repair_map <harness-range> <outfile> -- heal trailers ALREADY dangling
-# when this run started, i.e. damage left by an EARLIER rewrite that had no
-# cross-repo step. Same fingerprint (tree + author-date + author + subject) as
+# build_repair_map <outfile> -- heal trailers ALREADY dangling when this run
+# started, i.e. damage left by an EARLIER rewrite that had no cross-repo step.
+# It reads ${BASELINE_DANGLING_LIST}, captured at step A BEFORE anything was
+# rewritten, and not a fresh dangling_trailers call: by the time this runs the
+# code repo has been re-shaed, so a fresh call also returns every trailer THIS
+# run just invalidated -- which build_map has already mapped, and mapping them
+# twice makes map_lookup report each one AMBIG and aborts the run.
+# Same fingerprint (tree + author-date + author + subject) as
 # build_map, for the same reason: a message-only rewrite preserves all four, so
 # the old sha's twin on the branch is identifiable without trusting anything the
 # rewrite itself wrote. A unique match is repaired; zero or several is REPORTED,
@@ -961,7 +1026,7 @@ build_map() {
 # afterwards, which is precisely the property that forbids guessing here.
 # Sets REPAIRED_N / UNREPAIRABLE_N.
 build_repair_map() {
-    local range=$1 out=$2 br sha fp tree c hits
+    local out=$1 br sha fp tree c hits
     : > "${out}"; REPAIRED_N=0; UNREPAIRABLE_N=0
     while read -r br sha; do
         [ -n "${sha}" ] || continue
@@ -996,7 +1061,7 @@ build_repair_map() {
             echo "    UNREPAIRABLE ${sha} (${#hits[@]} fingerprint matches on ${target}; repoint by hand)" >&2
             UNREPAIRABLE_N=$((UNREPAIRABLE_N + 1))
         fi
-    done < <(dangling_trailers "${range}")
+    done < <(printf '%s\n' "${BASELINE_DANGLING_LIST}")
 }
 
 # --- C. code repo first (the direction of the dependency) -------------------
@@ -1015,7 +1080,7 @@ if [ -n "${HARNESS_REPO}" ]; then
     # commit and not one this run is about to invalidate again.
     if [ "${BASELINE_DANGLING}" -gt 0 ]; then
         echo "Pre-existing dangling Code: trailers (from an earlier rewrite):"
-        build_repair_map "${HARNESS_RANGE}" "${WORK}/repair.map"
+        build_repair_map "${WORK}/repair.map"
         [ -s "${WORK}/repair.map" ] && cat "${WORK}/repair.map" >> "${CODE_MAP}"
     else
         REPAIRED_N=0; UNREPAIRABLE_N=0
@@ -1298,6 +1363,14 @@ fi
 echo "----------------------------------------------------------------------"
 
 echo
+if [ "${UNPAIRED_TOTAL}" -gt 0 ]; then
+    # Repeated at the end because the warning above scrolls past in a run this
+    # long, and the decision it asks for has to be made before the push.
+    echo "READ BEFORE PUBLISHING: ${UNPAIRED_TOTAL} rewritten commit(s) had no counterpart in"
+    echo "         the new history -- the branch is shorter and the map cannot resolve them."
+    echo "         Search this output for 'WARNING:' for the list and the cause."
+    echo
+fi
 echo "Undo:    git -C ${CODE_REPO} reset --hard ${CODE_TIP}"
 [ -n "${HARNESS_TIP}" ] && \
 echo "         git -C ${HARNESS_REPO} reset --hard ${HARNESS_TIP}"
