@@ -1,0 +1,340 @@
+F104 -- PREDICTIONS, COMMITTED BEFORE THE FIX IS WRITTEN AND BEFORE ANY BUILD
+=============================================================================
+Task F104 (claude/fable-dispatch.md), row 5.145 RESOLVED 2026-09-07 by
+11.223(b) [vixy verbatim]: "keeping the same iteration count but doubling each
+iteraton per cycle on the newton path (or the one Eris involves)".
+Executor: Claude Opus 5, dispatched by Claude Fable 5.1, supervising session 27.
+Written 2026-09-07, code master-beta @ 474c595d, harness CC-harness @ 2d21b13,
+PRE binary build-claude/src/spacecrafter md5 b5f08778 (F100's delivered post).
+
+Nothing below was measured on a binary carrying the fix.  The engine legs that
+score these predictions have not been run.  Two OFFLINE instruments were run
+first and are cited by number where they are used; both were built from the
+UNFIXED tree and their output is committed beside this file:
+  * f104_census.py       -> artifacts/f104/census.{txt,json}   (the field file)
+  * f104_solver.py       -> /home/claude/sc-f104/solver-pre/   (the tree's own
+                            eccentricAnomaly, sliced out of orbit.cpp at build
+                            time, slice md5 f348bd34, steps_per_call MEASURED 1)
+
+-----------------------------------------------------------------------------
+0.  THE FIX, STATED BEFORE IT IS WRITTEN (so the diff can be scored against it)
+-----------------------------------------------------------------------------
+ONE constant in ONE home:
+
+    src/bodyModule/iterative_orbits.hpp, beside WARP_PRECISION (`:4`)
+        constexpr int ITERATIVE_STEPS_PER_CALL = 2;
+
+applied as a loop of that count around
+
+  (a) each of the FOUR advancing statements of EllipticalOrbit::eccentricAnomaly
+      (orbit.cpp:524 fixed point, :531 Newton, :543 Laguerre-Conway elliptic,
+      :559 Laguerre-Conway hyperbolic).  The `if (lastE == 0)` SEEDING stays
+      OUTSIDE the loop -- it is not a step.  For the two Laguerre-Conway
+      branches the loop encloses the per-step temporaries `s`, `c`, `f`, `f1`
+      as well, because they are the step's own inputs: leaving them outside
+      would make the second pass recompute the SAME correction from stale
+      terms, which is not a second step.  The `eccentricity == 0.0` and
+      `eccentricity == 1.0` returns are untouched -- they do not iterate.
+  (b) the step of IterativeHyp::operator() (iterative_orbits.hpp:41-43) and of
+      IterativeEll::operator() (`:97-99`), each including its own cos/sin (resp.
+      cosh/sinh) refresh, which is the step's second half.  The `fmod`
+      normalisation of `M` and the `return` stay outside: `dt` does not change
+      inside a call.
+  (c) the five "ONE Newton step" comments (grep -rn 'ONE Newton|one Newton' src
+      = 5: ModularBody.hpp:1033, ModularBody.cpp:506, ModularBody.cpp:757,
+      CameraAnchors.cpp:484, TrailModule.cpp:219) updated to say two.
+      ModularBody.{hpp,cpp} are COMMENT-ONLY -- no logic, RESUME_EXTRA_ITERATIONS
+      stays 4 (ModularBody.hpp:338), useNow()'s 1 + 4 loop untouched
+      (ModularBody.cpp:512-514).
+Nothing else.  No data, no msgid, no EntityCore.
+
+-----------------------------------------------------------------------------
+1.  THE STRUCTURAL CLAIM THE WHOLE PREDICTION RESTS ON  (P0, checkable offline)
+-----------------------------------------------------------------------------
+At a PINNED clock the mean anomaly M handed to a solver is the same at every
+call, so each call applies the SAME map f to the seed.  Taking two steps per
+call therefore does not change the iterate sequence at all -- it changes which
+element of it a call returns:
+
+        post-fix state after k calls  ==  pre-fix state after 2k calls,
+        bit for bit, same arithmetic, same order.
+
+P0 PREDICTION: the post-fix harness's `--converge E N` value at call k is
+BYTE-IDENTICAL (printed %.17g) to the pre-fix harness's at call 2k, for every
+eccentricity tested.  If this fails, the loop was not placed around the step.
+
+Two consequences used below:
+  P0a  a PARKED body's one use (1 + RESUME_EXTRA_ITERATIONS = 5 calls) lands on
+       the SAME double the pre binary reaches at 10 calls.  11.220(j1) measured
+       the pre binary at 9 calls -> 1.09669e-05 deg and at 15 -> 2.20333e-05
+       deg, so 10 lies inside the band the corpus floor already occupies.
+  P0b  a WALKED body is evaluated ~2225 times before the launch-state dump
+       (Mars evalCount at P0, parked_table_prepost.txt), so pre sits at f^2225
+       and post at f^4450 of the same sequence.  Both are deep inside the map's
+       double-precision attractor.  If that attractor is a FIXED point the two
+       are the same double; if it is a 2-cycle they differ by the cycle's own
+       amplitude, which 11.215(g) measured on this corpus at <= 9.437e-16 AU
+       (136 ulps) -- 4 orders below the F91 alt/az floor.
+
+-----------------------------------------------------------------------------
+2.  P1 -- THE THREE-CLASS PARTITION OF THE 120 RECORDS, BY NAME
+-----------------------------------------------------------------------------
+Key (f104_census.py, artifacts/f104/census.txt): the SOLVER comes from the
+installed ~/.spacecrafter/ssystem.ini alone -- `coord_func` plus
+`orbit_eccentricity` decide which branch of eccentricAnomaly (or which
+Iterative* class) the body's orbit runs.  The PLACE (walked / parked /
+unreached) comes from F100's committed partition JSON.  The REACH is transitive:
+a record's eye-frame position composes its ANCESTORS' positions, so a body with
+a non-iterating orbit under an iterating parent moves too.  No dump value and
+no measurement enters the key.  The 120 record NAMES are an inventory read from
+F100's committed launch-state dump.
+
+RESOLVED FIRST, as the task section requires: `Hiiaka` and `Hydra_` are spelled
+otherwise in the field file -- section `[Hi'iaka]` carries `name = Hiiaka`,
+`orbit_eccentricity = 0.0`, `coord_func = ell_orbit`, `parent = Haumea`; section
+`[Hydra]` carries `name = Hydra_`, `orbit_eccentricity = 0.004288704`,
+`coord_func = ell_orbit`, `parent = Pluto`.  So HIIAKA DOES NOT ITERATE (e == 0
+takes orbit.cpp:517's `return M`) and HYDRA_ DOES (the e < 0.2 branch); and
+Hiiaka moves anyway, through its iterating parent Haumea.
+
+  CLASS A -- NON-ITERATIVE, 66 records.  No iterating solver in the record's own
+  orbit and none in its parent chain.  PREDICTION: BYTE-IDENTICAL across the
+  binary change -- `mat` translation, `altaz_new`, `altaz_old` and camera state,
+  at the un-moved launch state, on BOTH clocks.  Any member of this class moving
+  is a STOP (the change reached beyond its class).
+     the 30 new-only records with no field section (18 `*System` names,
+       MilkyWay, Universe, baryEarthMoon, big_dipper, center_sun, galaxy_center,
+       orbit_autour_lune, orbit_autour_point, "orbit_autour_point (orbit
+       centre)", pleiades, sun_in_gal, un_point, SolarSystem)
+     the 30 `*_special` / `*_custom` bodies: Sun Mercury Venus Earth Moon Mars
+       Phobos Deimos Jupiter Io Europa Ganymede Callisto Saturn Titan Mimas
+       Enceladus Dione Tethys Rhea Hyperion Iapetus Uranus Miranda Ariel
+       Umbriel Titania Oberon Neptune Pluto
+     the 6 `ell_orbit` bodies with e == 0 whose parent chain is closed-form:
+       Daphnis Pan (under Saturn) · Goldilocks_Zone Solar_System (under Sun) ·
+       Kerberos Styx (under the closed-form Pluto)
+
+  CLASS B -- WALKED-ITERATIVE, 40 records.  Evaluated by the update walk every
+  frame, so their seed is at the pinned date's attractor before the dump.
+  PREDICTION (P0b): `mat` translation (a Mat4f -- FLOAT, ~1e-7 relative)
+  IDENTICAL for all 40; `altaz_new` identical or differing only in its last
+  bits; every alt/az old-vs-new separation stays at the corpus floor,
+  <= 3e-05 deg (11.213(h2)'s F91 control floor).  The bodies most likely to show
+  a last-bit difference are 11.215(g)'s four -- Ananke, Neried, Setebos,
+  Sycorax, all in the e >= 0.2 Newton branch -- and any other body whose
+  attractor is a 2-cycle rather than a fixed point.  A walked body moving by
+  more than 3e-05 deg would REFUTE P0b and is reported, not absorbed.
+     ell<0.2, 29 walked (34 records run this branch; the other 5 are parked):
+       Adrastea Amalthea Belinda Caliban Despina Elara Epimetheus Galatea
+       Helene Himalia Janus Juliet Larissa Leda Lysithea Metis Naiad Pandora
+       Portia Prometheus Proteus Puck Rosalind Sao Sinope Telesto Thalassa
+       Thebe Triton
+     ell0.2-0.9, 11 walked (12 records run this branch; Eris is the 12th and is
+       parked): Ananke Carme Halimede Laomedeia Neried Neso Pasiphae Prospero
+       Psamathe Setebos Sycorax
+     cometEll, 0 walked (all 6 records of this branch are parked)
+
+  CLASS C -- PARKED-ITERATIVE, 14 records.  Never walked; their position is
+  written only by a use, and the dump IS a use for the 90 old-known records
+  (11.220(j3)).  At the launch state each has had exactly ONE use = 5 calls, so
+  the fix takes them from 5 steps to 10 (P0a).
+     ell<0.2   : Arrokoth Ceres Charon Hydra_ Nix
+     ell0.2-0.9: Eris
+     cometEll  : Haumea Juno Makemake Pallas Sedna Vesta
+     via an iterating parent (own e == 0, parent Haumea): Hiiaka Namaka
+  PREDICTION per body, from parked_table_prepost.txt's POST column (which is
+  this task's PRE binary, b5f08778) -- the P0sep value at the launch state:
+     Eris            1.19872  ->  <= 3e-05 deg, expected ~1.0e-05 to 2.2e-05
+                     (P0a: 10 steps sits between 11.220(j1)'s 9 -> 1.09669e-05
+                     and 15 -> 2.20333e-05).  Its `mat` translation MOVES, by
+                     about 2 AU: 1.19872 deg at Eris's ~96 AU.  THIS IS THE ONLY
+                     RECORD OF THE 120 WHOSE FLOAT `mat` TRANSLATION IS
+                     PREDICTED TO MOVE AT ALL.
+     Arrokoth        1.05951e-05 -> unchanged to the printed digits
+     Ceres           1.1262e-05  -> unchanged
+     Charon          8.79014e-06 -> unchanged
+     Haumea          9.62154e-06 -> unchanged
+     Hiiaka          1.10991e-05 -> unchanged
+     Hydra_          7.44303e-06 -> unchanged
+     Juno            8.95445e-06 -> unchanged
+     Makemake        1.13266e-05 -> unchanged
+     Namaka          9.88314e-06 -> unchanged
+     Nix             1.16126e-05 -> unchanged
+     Pallas          1.22837e-05 -> unchanged
+     Sedna           1.08668e-05 -> unchanged (its cometEll seed converges in 4
+                     calls from a HALF-REVOLUTION stale seed, measured offline)
+     Vesta           9.65935e-06 -> unchanged
+  WHY THIRTEEN OF THE FOURTEEN DO NOT MOVE, stated so the null is not read as
+  "the fix did not reach them": their five-step value is ALREADY converged well
+  below the floor of this statistic.  ~1e-05 deg is the float32 residual of the
+  new path's camera chain (11.213's Puck attribution) -- the WALKED controls
+  Mars/Jupiter/Moon/Neptune/Belinda read the same ~1e-05 in the same table.  The
+  offline solver measures the residual directly: from the WORST seed the map can
+  be given (half a revolution of eccentric anomaly), five one-step calls leave
+  Charon 5.4e-11, Nix 1.5e-10, Hydra_ 2.1e-13, Haumea 0, Juno 0 (<= 4 calls),
+  Makemake 0, Pallas 0, Sedna 2.2e-16, Vesta 0 rad -- all invisible at 1e-05
+  deg.  Only Ceres (3.2e-07) and Arrokoth (9.0e-09) are still moving at five,
+  and both are already three orders under the floor.
+  Eris is the exception BECAUSE its actual seed is far staler than half a
+  revolution: the sweep over seed offsets (f104_solver --sweep, e = 0.4374)
+  reproduces a five-call residual of 1.8e-02 rad at offsets -8 and +32 radians,
+  the order of the ~0.03 rad that 1.19872 deg at 96 AU implies -- and at BOTH
+  of those offsets the tenth iterate is exactly 0.
+
+  P1 SCORING: f100_freeze.py's freeze stage at the PINNED clock on both
+  binaries (the parked table), plus f100_identity.py at the un-moved launch
+  state on BOTH clocks, scored body by body against the class each name is
+  given ABOVE.  Any record outside its class ==> STOP and report.
+
+-----------------------------------------------------------------------------
+3.  P2 -- THE F91 TABLE: EXACTLY ONE ROW MOVES
+-----------------------------------------------------------------------------
+Baseline: artifacts/f100/controls/f91_table_post.txt, md5 c125adf0 (fr),
+byte-identical across F97, F99 and F100.
+PREDICTION -- row 22 changes and no other line of the 90 does:
+     was  Eris  27.820833  27.295833   0.280833  -0.797222  1.199089
+                dSA 1886.00 dGHA 1887.00 dLHA 1887.00 dLPA 1887.00
+     now  Eris  27.820833  27.820833   0.280833   0.280833  <= 0.000005
+                dSA 0.00 dGHA 0.00 dLHA 0.00 dLPA 0.00
+  i.e. RA_new becomes RA_old's printed string and DE_new becomes DE_old's, and
+  the four nav columns fall to 0.00 -- because 11.213(h)'s attribution of that
+  row was SUPERSEDED by 5.145: it is the new path's under-converged seed,
+  refreshed once per dump by this instrument's own date change (11.220(i2),
+  f91_parity.py:574-581).
+  Q2 goes 88 of 90 -> 89 of 90; the exception list goes [Eris, Puck] -> [Puck].
+  Q1's `over` list goes ["Eris"] -> [].  G2's alt/az exception list loses Eris
+  and keeps Earth.  Every gate is an "at most" or an "in ([], [Eris])", so
+  `f91_run.sh --expect post` stays rc 0 with 0 FAIL.
+PUCK'S ROW STAYS, and its cause is on the record, not unknown: RA identical,
+declination 20.833611 vs 20.833889 = EXACTLY one arcsecond, one DE print
+quantum -- the two true values straddle a rounding boundary, and the residual
+is the float32 precision of the new path's camera chain, not a frame term
+(11.213(h), the ~1 arcsec 11.198(b)(1) required be attributed).  Puck is
+WALKED and its e is 0.00037852, so P0b applies: nothing about its double
+changes by more than ulps.
+  NAMED RISK, pre-registered because it would trip a STOP: Puck's declination
+  sits ON a print quantum boundary.  A last-bit change could in principle flip
+  which side it rounds to, which would move a second row.  I predict it does
+  NOT (the ulp-scale change is ~9 orders below the 1-arcsec quantum and Puck's
+  own residual after 3 calls is already 2.2e-16 rad).  If it flips, that is the
+  STOP condition "the F91 table moving on any row but Eris's" and it is
+  reported with this paragraph, not absorbed.
+
+-----------------------------------------------------------------------------
+4.  P3 -- THE SMOKE SUITE
+-----------------------------------------------------------------------------
+f90_rehearsal_run.sh on the post binary: rc 0, step for step as 11.220(i3)
+records -- S1 DIVERGENCE 5.77 (3 silences) · S2 120 -> 121 · S3 two timings +
+1 pause · S4 DEPRECATED · S5 PASS (5 lines, magnitude 1.38, 1.81715679 UA,
+French msgstr) · S6 10894 B + 78394 B · S7 DIVERGENCE 11.117(k)(3) · S8 fov
+180.00001 -> 84.91497 -> 179.53135 · S9 exit 0.  Frame stalls are recorded and
+not gated (11.220(i3) logged 2 where F96 logged 0).
+The numeric readouts S5 prints (magnitude 1.38, distance 1.81715679 UA) are for
+bodies of class A or B and are predicted UNCHANGED to every printed digit.
+
+-----------------------------------------------------------------------------
+5.  P4 -- THE D11 NUMBER
+-----------------------------------------------------------------------------
+Measured PRE, on this host, from the tree's own sliced solver at -O2
+(f104_solver, slice md5 f348bd34, steps_per_call measured 1; median of three
+timed passes over 5e6 calls, spread printed):
+     eccentricAnomaly  e = 0.1     (ell<0.2 fixed point)      16.67 ns/call
+     eccentricAnomaly  e = 0.4374  (ell0.2-0.9 Newton, Eris)  25.50 ns/call
+     eccentricAnomaly  e = 0.95    (ell0.9-1 Laguerre-Conway) 31.79 ns/call
+     IterativeEll::operator()  e = 0.2568                     20.88 ns/call
+     IterativeHyp::operator()  e = 1.5                        34.78 ns/call
+PREDICTION: the post binary's same harness costs 1.6x to 2.0x per call (the
+loop's own overhead is one compare and one increment against a sin/cos pair and
+a division), so ONE EXTRA STEP is predicted at 12-25 ns depending on the branch;
+call it <= 30 ns.
+PER-FRAME BOUND, with the corpus's own counts (census.txt): 52 of the 90
+old-path bodies run an iterating solver and the old path evaluates every body
+every frame; 40 of the new path's records are walked-iterative.  Worst case
+per frame = 52 + 40 = 92 extra steps; the task section's upper bound of 60
+bodies x 2 paths = 120 extra steps is the number I score against.
+     120 steps x 30 ns  =  3.6 microseconds per frame  =  0.36 % of D11's 1 ms.
+PREDICTION: the measured per-frame bound is <= 5 us, i.e. <= 0.5 % of 1 ms.
+Named separately because it is NOT in that 120: the batch orbit-line path.
+`EllipticalOrbit::fastPositionAtTimevInVSOP87Coordinates` (orbit.cpp:447-458)
+runs 10 pre-iterations from a zero `batchLastE` plus one step per sample, and
+its ONLY consumer is the old path's orbit_plot.cpp (`:142-183`, 180 samples --
+the new path's OrbitModule.cpp:110 calls the non-fast entry).  A FULL orbit-line
+refresh of one body therefore goes from 190 to 380 steps, ~+3 us per refreshed
+line, and only while `flag orbits` is on and only when the line is not cached
+(orbit_plot.cpp:186-190).  No frame refreshes every line.
+
+-----------------------------------------------------------------------------
+6.  P5 -- THE MUTATION: CLASS vs INSTANCE
+-----------------------------------------------------------------------------
+Mutation = ITERATIVE_STEPS_PER_CALL applied to the `0.2 <= e < 0.9` branch
+ALONE (orbit.cpp:531, Eris's), every other branch back at one step.
+PREDICTION: the mutation ALSO fixes Eris -- same row, same value, because Eris's
+orbit runs exactly that branch -- and leaves every other body at its five-step
+state.
+THE BODIES THE CLASS FORM REACHES AND THE BRANCH FORM DOES NOT, by name.  Among
+the 14 PARKED-ITERATIVE records, 13:
+     ell<0.2 : Arrokoth Ceres Charon Hydra_ Nix
+     cometEll: Haumea Juno Makemake Pallas Sedna Vesta
+     via Haumea: Hiiaka Namaka
+Among the 40 walked: the 29 `ell<0.2` bodies (the 11 walked `ell0.2-0.9` --
+Ananke Carme Halimede Laomedeia Neried Neso Pasiphae Prospero Psamathe Setebos
+Sycorax -- are in the branch form too).
+  CORRECTION TO THE TASK SECTION'S OWN LIST, made before the measurement: the
+  section names "Sedna beside Eris", i.e. in the `0.2 <= e < 0.9` branch.  Sedna
+  is `coord_func = comet_orbit`, e = 0.8588315, so it is an EllCometOrbit and
+  runs IterativeEll::operator() -- the branch form does NOT reach it.  The
+  section's own "Measured at dispatch" paragraph says so ("6 comet_orbit, all
+  EllCometOrbit ... Sedna 0.859"), so the two halves of the section disagree and
+  the field file settles it.  The section also omits Hydra_ (unresolved at the
+  mint) and Hiiaka/Namaka (reached through their parent).
+  PREDICTION ON THE INSTRUMENT ITSELF: the parked table CANNOT tell the two
+  forms apart, and that is not a failure of the mutation -- it is section 2's
+  finding.  All 13 of those bodies are already converged below the table's
+  ~1e-05 deg floor at five steps, so class and instance produce the SAME printed
+  table.  The discrimination is therefore made where it exists: the OFFLINE
+  harness, rebuilt from the mutation tree, whose `--steps` probe reads 1 for the
+  fixed-point branch and 2 for the Newton branch, and whose `--converge` values
+  match the pre binary's at 2k calls for e = 0.4374 and at k calls for e = 0.1.
+  If the parked table DOES separate them, that refutes section 2 and is
+  reported as such.
+
+-----------------------------------------------------------------------------
+7.  P6 -- THE DEFECT IS SEEN BEFORE IT IS SHOWN FIXED
+-----------------------------------------------------------------------------
+The PRE binary (b5f08778, preserved as /home/claude/sc-f104/bin/spacecrafter-pre
+before any build) is run through the freeze stage at the pinned clock FIRST and
+must reproduce Eris's launch-state old-vs-new alt/az at 1.1987 deg -- the
+supervisor's own F100 acceptance run read 1.1987249 deg at that state
+(sc-f100/supervisor/post) and parked_table_prepost.txt's post column reads
+1.19872.  PREDICTION: 1.19872 to the printed digits, and the frozen set = I (29
+of 120) at that clock, since this binary already carries F100's memo fix.
+If the pre binary does NOT reproduce it, nothing downstream is attributable and
+the run stops there.
+
+-----------------------------------------------------------------------------
+8.  STOP CONDITIONS (the task section's, restated so they can fire)
+-----------------------------------------------------------------------------
+  S1  Eris after ONE use > 3e-05 deg post-fix.  Report; do NOT raise the count
+      further -- the count is the owner's (5.145, 11.76(b)).
+  S2  any CLASS A record moving (mat translation, altaz_new or altaz_old) at the
+      un-moved launch state on either clock.
+  S3  the F91 table moving on any row but Eris's.
+On any of them: checkpoint-commit what is green, report, deliver the record.
+
+-----------------------------------------------------------------------------
+9.  WHAT I EXPECT TO BE REFUTED, SAID IN ADVANCE
+-----------------------------------------------------------------------------
+  R1  I expect P0b to hold as "identical", but I would not be surprised to see
+      a handful of class B bodies show a last-bit `altaz_new` difference.  That
+      is NOT a STOP -- S2 is about class A.  It is recorded per body.
+  R2  The task section's headline partition ("60 iterative, 60 not") does not
+      survive the census and I say so before measuring: 8 of the 54 `ell_orbit`
+      sections carry `orbit_eccentricity = 0.0` and take orbit.cpp:517's
+      `return M`, so 52 records iterate, not 60.  The section's own body already
+      names those 8 ("the other 42 below 0.2, 8 of them e = 0"); the headline
+      counts them on both sides.  This is an output-side label the task
+      re-adjudicates by mandate (1), not an input the work stands on.
+  R3  I expect the D11 number to be dominated by the OLD path, not the new one,
+      because old evaluates all 52 of its iterating bodies every frame while the
+      new path walks 40 and parks 14.  If the measurement says otherwise the
+      model in section 5 is wrong and gets rewritten, not the number.

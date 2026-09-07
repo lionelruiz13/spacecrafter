@@ -955,7 +955,14 @@ test -e /home/claude/sc-f104 ; echo $? => 1
 **DoD:** predictions before the build; the fix (code first); P1–P6 measured with the mutation;
 §11 entry + stub; §5.145 flipped; §5.84, §11.76(b), §11.215(g) annotated; back-markers; map;
 README; trees clean; WIP cleared; baselines LAST.
-**WIP:**
+**WIP:** 2026-09-07 10:40 -- CP1 PREDICTION COMMITTED before any build (gate 31/31 PASS;
+canary/display/RAM prose premises verified). `artifacts/f104/prediction.txt` + the two offline
+instruments (`f104_census.py`, `f104_solver.py`, the tree's solver sliced at build time, slice
+md5 `f348bd34`, steps_per_call MEASURED 1). Partition BY NAME = **66 / 40 / 14** (not the
+section's 60/60 -- 8 `ell_orbit` sections carry e == 0); `Hiiaka` (`[Hi'iaka]`, e 0.0,
+NON-iterative, moves via its parent Haumea) and `Hydra_` (`[Hydra]`, e 0.004288704, iterative)
+RESOLVED from the field file. PRE binary `b5f08778` preserved at
+`/home/claude/sc-f104/bin/spacecrafter-pre`. NEXT: the fix + build.
 
 ### F105 — the dump channel's two owed items, both at their anchor `SSystemFactory::dumpTracePaths`: (i) the header names the system the OLD column was taken in (§11.221(n1): `"oldSystem"` = `SolarSystem` / `galactic` / the `systems` key, plus `"inSystem"`; `dumpread`'s `EmptyOldHalf` message names it; every parity artifact becomes self-describing) and (ii) the new-only loop calls the barrier (§11.220(j3): `nb.useNow()` before `nb.dumpTrace(out)` at `:1227-1233`, so a dump is a use for 120 of 120 records, not 90) — with the consequence PREDICTED before the launch, record by record over the 30 new-only names: **20 unchanged** (the 18 `dist 0` systems and `Universe` return at `useNow`'s first line — not `renderHidden`; `SolarSystem` is walked), **2 refreshed into a REAL eye-frame position** (`baryEarthMoon` under the walked Earth, `orbit_autour_lune` under the walked Moon — parents that publish `parkedChildFrame`), and **8 that a use refreshes into the IDENTITY frame** — the seven hidden children of the never-walked `Universe` and `orbit_autour_point` under its hidden centre — because `parkedChildFrame` defaults to identity (`ModularBody.hpp:2121`) and `publishParkedFrame` runs only for walked nodes (`:1003-1007`): §11.220(j4)'s hazard, which the SELECTION channel already exercises for those 8 today (`ModularSystem.cpp:269-270`; new-only names answer the new path); so the barrier gains its missing PRECONDITION — a use in a frame that was NEVER published is not served (a `parkedFramePublished` flag set at `:1006`, `useNow` returning `false` without refreshing and propagating through hidden parents; ONE D12 line per body naming what / consequence / fix) — and the 8 keep their honest `dist 0` in the dump while the F100 partition instrument's class I keeps its key; the mutation (no guard) measured once for the 8 identity-frame values, (j4)'s magnitude on record; STOP before any fix if the leg's partition is not (20, 2, 8) [S–M, engine + instrument, new path only — veto point §3 on the guard's form]
 

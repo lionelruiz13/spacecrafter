@@ -1,0 +1,134 @@
+field sections with a name : 90
+dump records               : 120
+records with NO section    : 30
+
+== NON-ITERATIVE  (66)
+   51PegSystem          unreached  (no ssystem.ini section)           e=n/a                      
+   AntaresSystem        unreached  (no ssystem.ini section)           e=n/a                      
+   ArcturusSystem       unreached  (no ssystem.ini section)           e=n/a                      
+   Ariel                walked     ariel_special                      e=nan                      
+   Callisto             walked     calisto_special                    e=nan                      
+   CapellaSystem        unreached  (no ssystem.ini section)           e=n/a                      
+   Daphnis              walked     ell e==0 (orbit.cpp:517 return M)  e=0.0                      
+   DarkStarSystem       unreached  (no ssystem.ini section)           e=n/a                      
+   Deimos               walked     deimos_special                     e=nan                      
+   Dione                walked     dione_special                      e=nan                      
+   Earth                walked     earth_custom                       e=nan                      
+   Enceladus            walked     enceladus_special                  e=nan                      
+   Europa               walked     europa_special                     e=nan                      
+   Ganymede             walked     ganymede_special                   e=nan                      
+   Goldilocks_Zone      parked     ell e==0 (orbit.cpp:517 return M)  e=0.0                      
+   HelixDwarfSystem     unreached  (no ssystem.ini section)           e=n/a                      
+   Hyperion             walked     hyperion_special                   e=nan                      
+   Iapetus              walked     iapetus_special                    e=nan                      
+   Io                   walked     io_special                         e=nan                      
+   Jupiter              walked     jupiter_special                    e=nan                      
+   KeidSystem           unreached  (no ssystem.ini section)           e=n/a                      
+   Kepler16System       unreached  (no ssystem.ini section)           e=n/a                      
+   Kerberos             parked     ell e==0 (orbit.cpp:517 return M)  e=0.0                      
+   M1PulsarSystem       unreached  (no ssystem.ini section)           e=n/a                      
+   M27DwarfSystem       unreached  (no ssystem.ini section)           e=n/a                      
+   M57DwarfSystem       unreached  (no ssystem.ini section)           e=n/a                      
+   Mars                 walked     mars_special                       e=nan                      
+   Mercury              walked     mercury_special                    e=nan                      
+   MilkyWay             unreached  (no ssystem.ini section)           e=n/a                      
+   Mimas                walked     mimas_special                      e=nan                      
+   Miranda              walked     miranda_special                    e=nan                      
+   Moon                 walked     lunar_custom                       e=nan                      
+   NGC2392DwarfSystem   unreached  (no ssystem.ini section)           e=n/a                      
+   Neptune              walked     neptune_special                    e=nan                      
+   Oberon               walked     oberon_special                     e=nan                      
+   Pan                  walked     ell e==0 (orbit.cpp:517 return M)  e=0.0                      
+   Phobos               walked     phobos_special                     e=nan                      
+   Pluto                parked     pluto_special                      e=nan                      
+   ProximaSystem        unreached  (no ssystem.ini section)           e=n/a                      
+   Rhea                 walked     rhea_special                       e=nan                      
+   Saturn               walked     saturn_special                     e=nan                      
+   SiriusSystem         unreached  (no ssystem.ini section)           e=n/a                      
+   SolarSystem          walked     (no ssystem.ini section)           e=n/a                      
+   Solar_System         parked     ell e==0 (orbit.cpp:517 return M)  e=0.0                      
+   Styx                 parked     ell e==0 (orbit.cpp:517 return M)  e=0.0                      
+   Sun                  walked     sun_special                        e=nan                      
+   Tethys               walked     tethys_special                     e=nan                      
+   Titan                walked     titan_special                      e=nan                      
+   Titania              walked     titania_special                    e=nan                      
+   TolimanSystem        unreached  (no ssystem.ini section)           e=n/a                      
+   Trappist1System      unreached  (no ssystem.ini section)           e=n/a                      
+   Umbriel              walked     umbriel_special                    e=nan                      
+   Universe             unreached  (no ssystem.ini section)           e=n/a                      
+   Uranus               walked     uranus_special                     e=nan                      
+   VegaSystem           unreached  (no ssystem.ini section)           e=n/a                      
+   Venus                walked     venus_special                      e=nan                      
+   baryEarthMoon        unreached  (no ssystem.ini section)           e=n/a                      
+   big_dipper           unreached  (no ssystem.ini section)           e=n/a                      
+   center_sun           unreached  (no ssystem.ini section)           e=n/a                      
+   galaxy_center        unreached  (no ssystem.ini section)           e=n/a                      
+   orbit_autour_lune    unreached  (no ssystem.ini section)           e=n/a                      
+   orbit_autour_point   unreached  (no ssystem.ini section)           e=n/a                      
+   orbit_autour_point (orbit centre) unreached  (no ssystem.ini section)           e=n/a                      
+   pleiades             unreached  (no ssystem.ini section)           e=n/a                      
+   sun_in_gal           unreached  (no ssystem.ini section)           e=n/a                      
+   un_point             unreached  (no ssystem.ini section)           e=n/a                      
+
+== WALKED-ITERATIVE  (40)
+   Adrastea             walked     ell<0.2                            e=0.006543120249224196     
+   Amalthea             walked     ell<0.2                            e=0.006175744402949701     
+   Ananke               walked     ell0.2-0.9                         e=0.2167681894364261       
+   Belinda              walked     ell<0.2                            e=0.0007962698822790324    
+   Caliban              walked     ell<0.2                            e=0.07811028458345994      
+   Carme                walked     ell0.2-0.9                         e=0.2602970868062183       
+   Despina              walked     ell<0.2                            e=0.001272032273930335     
+   Elara                walked     ell<0.2                            e=0.1961747274882456       
+   Epimetheus           walked     ell<0.2                            e=0.0098                   
+   Galatea              walked     ell<0.2                            e=0.0009319587984705302    
+   Halimede             walked     ell0.2-0.9                         e=0.2619064927013259       
+   Helene               walked     ell<0.2                            e=0.0071                   
+   Himalia              walked     ell<0.2                            e=0.134118673271083        
+   Janus                walked     ell<0.2                            e=0.007                    
+   Juliet               walked     ell<0.2                            e=0.0007351602896075278    
+   Laomedeia            walked     ell0.2-0.9                         e=0.3845786604193581       
+   Larissa              walked     ell<0.2                            e=0.001628627055845952     
+   Leda                 walked     ell<0.2                            e=0.184997206802934        
+   Lysithea             walked     ell<0.2                            e=0.1281232102397132       
+   Metis                walked     ell<0.2                            e=0.007934699878209682     
+   Naiad                walked     ell<0.2                            e=0.001713269683018113     
+   Neried               walked     ell0.2-0.9                         e=0.7473678781920542       
+   Neso                 walked     ell0.2-0.9                         e=0.6299942939512408       
+   Pandora              walked     ell<0.2                            e=0.0042                   
+   Pasiphae             walked     ell0.2-0.9                         e=0.2932152942598935       
+   Portia               walked     ell<0.2                            e=0.0007158996511522726    
+   Prometheus           walked     ell<0.2                            e=0.0022                   
+   Prospero             walked     ell0.2-0.9                         e=0.3311859462699863       
+   Proteus              walked     ell<0.2                            e=0.0002692747866371301    
+   Psamathe             walked     ell0.2-0.9                         e=0.2226171984343604       
+   Puck                 walked     ell<0.2                            e=0.0003785245791051552    
+   Rosalind             walked     ell<0.2                            e=0.0005021463725863556    
+   Sao                  walked     ell<0.2                            e=0.1428543008978792       
+   Setebos              walked     ell0.2-0.9                         e=0.5613700935632252       
+   Sinope               walked     ell<0.2                            e=0.1823445283881716       
+   Sycorax              walked     ell0.2-0.9                         e=0.5099593095115899       
+   Telesto              walked     ell<0.2                            e=0.0002                   
+   Thalassa             walked     ell<0.2                            e=0.001233476673632672     
+   Thebe                walked     ell<0.2                            e=0.01927638586266499      
+   Triton               walked     ell<0.2                            e=2.183768753212363e-05    
+
+== PARKED-ITERATIVE  (14)
+   Arrokoth             parked     ell<0.2                            e=0.03724573377361805      
+   Ceres                parked     ell<0.2                            e=0.07881961288316405      
+   Charon               parked     ell<0.2                            e=0.01317591383051692      
+   Eris                 parked     ell0.2-0.9                         e=0.4373709923163567       
+   Haumea               parked     cometEll                           e=0.19089                  
+   Hiiaka               parked     ell e==0 (orbit.cpp:517 return M)  e=0.0                      via Haumea
+   Hydra_               parked     ell<0.2                            e=0.004288704              
+   Juno                 parked     cometEll                           e=0.256821757166782        
+   Makemake             parked     cometEll                           e=0.15                     
+   Namaka               parked     ell e==0 (orbit.cpp:517 return M)  e=0.0                      via Haumea
+   Nix                  parked     ell<0.2                            e=0.016255202              
+   Pallas               parked     cometEll                           e=0.230798325389946        
+   Sedna                parked     cometEll                           e=0.8588315                
+   Vesta                parked     cometEll                           e=0.089174698455804        
+
+== iterative branch histogram (all records)
+   cometEll       6   iterative_orbits.hpp:97 IterativeEll
+   ell0.2-0.9    12   orbit.cpp:531 Newton (Eris's branch)
+   ell<0.2       34   orbit.cpp:524 fixed-point
