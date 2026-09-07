@@ -151,8 +151,8 @@ corpus parser's own defect caught by its output). BASELINES AT CLOSE: (measured 
 Archival pass 19 (update-s25 + F99/F100/F101/F102, live `### F` 4 → 0) DEFERRED to the next open.
 NEXT-ROUND QUEUE, in order **[RE-ORDERED 2026-09-07 08:4x on the owner's replies, §11.223]**: (1) archival
 pass 19 at open; (2) **`supervised-by.sh`'s silent fallback made LOUD** (S, decision-free — the tool he
-operates Saturday; + the SHA-map requirement stated at §11.223(d)); (3) **§5.145's fix** (S, decision-free: the
-iterative orbit types resume with 1 + 8, I4 — §11.223(b)); (4) **§5.146** on his word (EntityCore: the contract
+operates Saturday; + the SHA-map requirement stated at §11.223(d)); (3) **§5.145's fix** (S, decision-free: ~~the
+iterative orbit types resume with 1 + 8, I4~~ the Newton path of those types takes two steps per call, 2 + 8, the loop untouched — §11.223(b) as corrected); (4) **§5.146** on his word (EntityCore: the contract
 line + `SharedBuffer`'s bind/release guards, §11.223(c)); (5) **the dump channel's two items** (S, decision-free: a
 system-identity field in the header, §11.221(n1); the barrier for the 30 new-only records, §11.220(j3)); ~~(3) the
 dump channel~~ (6) ON THE OWNER'S WORD: §5.142's
@@ -1460,7 +1460,10 @@ launch (it holds the only complete arm-C log).
        →       §11.220(j1) · §5.145
        ANSWERED [vixy 2026-09-07] → §11.223(b): "double the iterations per cycle for those types of
        orbits only, otherwise it might became slightly noticeable at high simulation speed" — the
-       iterative types resume with 1+8, the rest keep 1+4; decision-free, next-round S
+       ~~iterative types resume with 1+8, the rest keep 1+4~~ CORRECTED on your second message
+       (08:5x): the NEWTON STEPS PER CALL double in the solver of those types — 2+8 at a use, the
+       barrier's loop unchanged, every per-frame evaluation twice as fast; §5.84 annotated at the
+       fix; orbit.cpp is shared — old converges faster after a date jump (veto point)
 
   [Y3] §5.146 · the allocator releases a REFUSED SubBuffer into its free list ─ read, not run
        fact    acquireBuffer leaves offset/size indeterminate on refusal; SharedBuffer binds
