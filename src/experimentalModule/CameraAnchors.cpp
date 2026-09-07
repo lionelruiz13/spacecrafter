@@ -481,7 +481,8 @@ CameraAnchors::Anchor *CameraAnchors::currentPlace(const Camera &camera)
 
 //! Evaluate a body's position at a date the frame is NOT at, and put the
 //! iterative solvers back where the frame left them. EllipticalOrbit's
-//! eccentricAnomaly performs ONE Newton step per call seeded from the previous
+//! eccentricAnomaly advances ITERATIVE_STEPS_PER_CALL Newton steps per call
+//! (two, iterative_orbits.hpp -- S5.145) seeded from the previous
 //! call's result, so a single off-cadence evaluation leaves the seed at the
 //! wrong date and the next frame's step starts from it (S11.117, which is why
 //! useNow re-runs 1+4 times). The old path's own moveToBody has this defect and

@@ -503,9 +503,10 @@ void ModularBody::useNow()
     evaluatedFrame = frame;
     // The +4 belong to a DATE change and to nothing else. They exist because
     // EllipticalOrbit::eccentricAnomaly and IterativeEll/IterativeHyp advance
-    // ONE Newton step per call from the previous call's seed, so a body that
-    // stopped being evaluated needs its seed re-converged AT THE NEW DATE
-    // [S11.76(b), S11.117(c); the constant is vixy-specified]. A frame-only
+    // ITERATIVE_STEPS_PER_CALL Newton steps per call from the previous call's
+    // seed (two since S5.145 / S11.223(b) - iterative_orbits.hpp), so a body
+    // that stopped being evaluated needs its seed re-converged AT THE NEW DATE
+    // [S11.76(b), S11.117(c); both counts are vixy-specified]. A frame-only
     // change re-expresses the SAME eclipticPos, at the same date, in a new
     // frame: the solver's seed is already where it belongs and one translation
     // refresh is the whole of the work.
@@ -754,8 +755,9 @@ bool ModularBody::show()
             parent->invalidateCachedState();
             // UNHIDE IS A USE [D23: "behave as if they never were hidden when
             // unhidden"], and it is the use the barrier exists for: the very
-            // next walk would otherwise take ONE Newton step from a seed left at
-            // hide time. Runs BEFORE the flag is cleared - useNow is a no-op for
+            // next walk would otherwise take a single call's worth of Newton
+            // steps (ITERATIVE_STEPS_PER_CALL, iterative_orbits.hpp) from a seed
+            // left at hide time. Runs BEFORE the flag is cleared - useNow is a no-op for
             // a body the walks evaluate, so the order is what arms it.
             useNow();
             // B39 (S11.117): re-enter the RENDERED universe. A descendant that

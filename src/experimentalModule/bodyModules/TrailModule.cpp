@@ -216,8 +216,9 @@ void TrailModule::resumeAfterHidden(ModularBody *body)
     // Re-evaluate the missed samples at the module's OWN declared cadence
     // (deltaTrail), oldest first, inserting at the front so `points` stays
     // newest-first. Each sample is evaluated 1 + RESUME_EXTRA_ITERATIONS times at
-    // its own date: EllipticalOrbit/IterativeEll advance ONE Newton step per
-    // call from the previous call's seed, so a single call at a jumped-to date
+    // its own date: EllipticalOrbit/IterativeEll advance ITERATIVE_STEPS_PER_CALL
+    // Newton steps per call (two since S5.145, iterative_orbits.hpp) from the
+    // previous call's seed, so a single call at a jumped-to date
     // would not be the position at that date - the same reason the S11.76(b)
     // barrier exists, applied per reconstructed sample.
     OsculatingFunctionType *osc = orbit->getOsculatingFunction();

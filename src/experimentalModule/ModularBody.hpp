@@ -1030,13 +1030,19 @@ public:
     // follows the camera - see useNow()'s own comment for the measurement.
     //
     // The +4 extra iterations are NOT decoration: EllipticalOrbit::
-    // eccentricAnomaly and IterativeEll/IterativeHyp perform exactly ONE Newton
-    // step per call, seeded from the previous call's result [observed:
-    // orbit.cpp:515-560, iterative_orbits.hpp:93-101]. A body that stopped being
-    // evaluated left that seed at its hide-time value, so one step from it is
-    // not the position at `jd`. Running the whole translation-only refresh
-    // 1+4 times re-converges the seed - and it does it for the SUBTREE, because
-    // every parked descendant carries its own seed.
+    // eccentricAnomaly and IterativeEll/IterativeHyp advance
+    // ITERATIVE_STEPS_PER_CALL (= 2) Newton steps per call, seeded from the
+    // previous call's result [observed: orbit.cpp:515-575,
+    // iterative_orbits.hpp:118-129]. A body that stopped being evaluated left
+    // that seed at its hide-time value, so one call from it is not the position
+    // at `jd`. Running the whole translation-only refresh 1+4 times therefore
+    // buys 10 steps of re-convergence - and it does it for the SUBTREE, because
+    // every parked descendant carries its own seed. The step count doubled at
+    // S5.145 / S11.223(b) [vixy]: five steps were measured SHORT for Eris
+    // (1.198725 deg, S11.220(j1)); the COUNT OF REFRESHES here is unchanged and
+    // deliberately so - at a running clock every frame is a new date, so a
+    // parked body's use re-converges every frame and raising this loop would
+    // have been "slightly noticeable at high simulation speed" [vixy].
     void useNow();
     //! Bring the per-frame DERIVED state (spin phase + reach) to `jd` for a
     //! consumer that is NOT the draw walk (S5.32).

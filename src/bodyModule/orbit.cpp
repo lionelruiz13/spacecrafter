@@ -521,26 +521,33 @@ double EllipticalOrbit::eccentricAnomaly(double M, double &lastE) const
 		if (lastE == 0)
 			lastE = M;
 		// Standard iteration for solving Kepler's Equation
-		lastE = M + eccentricity * sin(lastE);
+		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i)
+			lastE = M + eccentricity * sin(lastE);
 	} else if (eccentricity < 0.9) {
 		if (lastE == 0)
 			lastE = M;
 		// Faster converging iteration for Kepler's Equation; more efficient
 		// than above for orbits with eccentricities greater than 0.3.  This
 		// is from Jean Meeus's _Astronomical Algorithms_ (2nd ed), p. 199
-		lastE += (M + eccentricity * sin(lastE) - lastE) / (1 - eccentricity * cos(lastE));
+		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i)
+			lastE += (M + eccentricity * sin(lastE) - lastE) / (1 - eccentricity * cos(lastE));
 	} else if (eccentricity < 1.0) {
 		// Extremely stable Laguerre-Conway method for solving Kepler's
 		// equation.  Only use this for high-eccentricity orbits, as it
 		// requires more calcuation.
 		if (lastE == 0)
 			lastE = M + 0.85 * eccentricity * sign(sin(M));
-		// Standard iteration for solving Kepler's Equation
-		const double s = eccentricity * sin(lastE);
-		const double c = eccentricity * cos(lastE);
-		const double f = lastE - s - M;
-		const double f1 = 1 - c;
-		lastE += -5 * f / (f1 + sign(f1) * sqrt(abs(16 * f1 * f1 - 20 * f * s)));
+		// Standard iteration for solving Kepler's Equation.  s, c, f and f1 are
+		// the step's own inputs, not the seeding's, so they are INSIDE the loop:
+		// a second pass over a stale s/c would recompute the same correction
+		// and would not be a second step.
+		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i) {
+			const double s = eccentricity * sin(lastE);
+			const double c = eccentricity * cos(lastE);
+			const double f = lastE - s - M;
+			const double f1 = 1 - c;
+			lastE += -5 * f / (f1 + sign(f1) * sqrt(abs(16 * f1 * f1 - 20 * f * s)));
+		}
 	} else if (eccentricity == 1.0) {
 		// Nearly parabolic orbit; very common for comets
 		// TODO: handle this
@@ -551,12 +558,16 @@ double EllipticalOrbit::eccentricAnomaly(double M, double &lastE) const
 			lastE = log(2 * M / eccentricity + 1.85);
 		// Faster converging iteration for Kepler's Equation; more efficient
 		// than above for orbits with eccentricities greater than 0.3.  This
-		// is from Jean Meeus's _Astronomical Algorithms_ (2nd ed), p. 199
-		double s = eccentricity * sinh(lastE);
-		double c = eccentricity * cosh(lastE);
-		double f = s - lastE - M;
-		double f1 = c - 1;
-		lastE += -5 * f / (f1 + sign(f1) * sqrt(abs(16 * f1 * f1 - 20 * f * s)));
+		// is from Jean Meeus's _Astronomical Algorithms_ (2nd ed), p. 199.
+		// s, c, f and f1 are the step's inputs -- see the elliptic branch above
+		// for why they belong inside the loop.
+		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i) {
+			double s = eccentricity * sinh(lastE);
+			double c = eccentricity * cosh(lastE);
+			double f = s - lastE - M;
+			double f1 = c - 1;
+			lastE += -5 * f / (f1 + sign(f1) * sqrt(abs(16 * f1 * f1 - 20 * f * s)));
+		}
 	}
 	return lastE;
 }
