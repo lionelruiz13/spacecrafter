@@ -1,0 +1,22 @@
+=== F104 P4 -- THE D11 NUMBER
+  cost of ONE extra Newton step, measured on the tree's own solver at -O2
+  (f104_solver, median of three passes over 5e6 calls, post minus pre):
+     ell<0.2       16.66 ->  28.59 ns/call   extra step  11.93 ns   corpus bodies 34
+     ell0.2-0.9    25.48 ->  46.41 ns/call   extra step  20.94 ns   corpus bodies 12
+     ell0.9-1      31.80 ->  61.08 ns/call   extra step  29.27 ns   corpus bodies  0
+     cometEll      20.88 ->  40.93 ns/call   extra step  20.05 ns   corpus bodies  6
+     cometHyp      34.78 ->  69.47 ns/call   extra step  34.70 ns   corpus bodies  0
+
+  per FRAME, from the corpus's own composition:
+     OLD path, all 52 iterating bodies evaluated every frame :    777.1 ns
+     NEW path, the 40 WALKED iterating records               :    576.3 ns
+     NEW path, the 12 PARKED ones, worst case (a use every
+               frame = 1 + RESUME_EXTRA_ITERATIONS calls each):   1004.3 ns
+     ------------------------------------------------------------------
+     worst case, every channel firing in the same frame       :   2357.7 ns = 2.358 us
+
+  against D11's 1 ms/frame budget: 0.236 %
+  the realistic case (the clock still, so no parked body is re-used):
+       1353.4 ns = 1.353 us = 0.135 % of 1 ms
+
+  PREDICTED before the build: <= 5 us, <= 0.5 % of 1 ms.  HELD.

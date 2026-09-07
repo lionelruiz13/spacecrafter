@@ -1,0 +1,53 @@
+diff --git a/src/bodyModule/iterative_orbits.hpp b/src/bodyModule/iterative_orbits.hpp
+index 33d58397..d0739ff8 100644
+--- a/src/bodyModule/iterative_orbits.hpp
++++ b/src/bodyModule/iterative_orbits.hpp
+@@ -66,7 +66,7 @@ public:
+ 	//! depends on time step and on how stale the seed (H, ch, sh) is
+ 	Vec3d operator()(double dt, const Vec3d &d1, const Vec3d &d2)
+ 	{
+-		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i) {
++		for (int i = 0; i < 1; ++i) {
+ 			H -= (e*sh-H-n*dt)/(e*ch-1);
+ 			ch = cosh(H);
+ 			sh = sinh(H);
+@@ -125,7 +125,7 @@ public:
+ 		double M = fmod(n*dt,2*M_PI);
+ 		if (M < 0.0)
+ 			M += 2.0*M_PI;
+-		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i) {
++		for (int i = 0; i < 1; ++i) {
+ 			H -= (M-H+e*s)/(e*c-1);
+ 			c = cos(H);
+ 			s = sin(H);
+diff --git a/src/bodyModule/orbit.cpp b/src/bodyModule/orbit.cpp
+index f18c62cb..38309fd9 100644
+--- a/src/bodyModule/orbit.cpp
++++ b/src/bodyModule/orbit.cpp
+@@ -521,7 +521,7 @@ double EllipticalOrbit::eccentricAnomaly(double M, double &lastE) const
+ 		if (lastE == 0)
+ 			lastE = M;
+ 		// Standard iteration for solving Kepler's Equation
+-		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i)
++		for (int i = 0; i < 1; ++i)
+ 			lastE = M + eccentricity * sin(lastE);
+ 	} else if (eccentricity < 0.9) {
+ 		if (lastE == 0)
+@@ -541,7 +541,7 @@ double EllipticalOrbit::eccentricAnomaly(double M, double &lastE) const
+ 		// the step's own inputs, not the seeding's, so they are INSIDE the loop:
+ 		// a second pass over a stale s/c would recompute the same correction
+ 		// and would not be a second step.
+-		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i) {
++		for (int i = 0; i < 1; ++i) {
+ 			const double s = eccentricity * sin(lastE);
+ 			const double c = eccentricity * cos(lastE);
+ 			const double f = lastE - s - M;
+@@ -561,7 +561,7 @@ double EllipticalOrbit::eccentricAnomaly(double M, double &lastE) const
+ 		// is from Jean Meeus's _Astronomical Algorithms_ (2nd ed), p. 199.
+ 		// s, c, f and f1 are the step's inputs -- see the elliptic branch above
+ 		// for why they belong inside the loop.
+-		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i) {
++		for (int i = 0; i < 1; ++i) {
+ 			double s = eccentricity * sinh(lastE);
+ 			double c = eccentricity * cosh(lastE);
+ 			double f = s - lastE - M;

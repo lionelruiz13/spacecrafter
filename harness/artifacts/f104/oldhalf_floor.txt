@@ -1,0 +1,13 @@
+=== F104 pairwise floor on `altaz_old`
+  bodies: 29 closed-form records (own orbit AND every ancestor's), excluding ['Earth']
+  no binary under test can reach them, so every number below is the channel, not the change.
+  pair               max |d|       max |d| deg   n moved   worst body
+  mut vs post        7.976e-13     4.57e-11      29        Io
+  mut vs pre1        9.13e-13      5.231e-11     29        Io
+  mut vs pre2        5.613e-13     3.216e-11     19        Io
+  post vs pre1       1.155e-13     6.616e-12     19        Io
+  post vs pre2       2.363e-13     1.354e-11     29        Io
+  pre1 vs pre2       3.517e-13     2.015e-11     29        Io  <-- SAME BINARY
+  A/A (same binary): 3.517e-13 to 3.517e-13
+  A/B (different)  : 1.155e-13 to 9.13e-13
+  SEPARABLE: no -- the A/B range straddles the A/A range, so this channel is not evidence either way

@@ -983,6 +983,19 @@ diff line vs `c125adf0` and it is Eris's predicted row; Q2 88 -> **89 of 90**, P
 untouched; rc 0. **P3** rc 0, states as S11.220(i3) -- one refuted prediction, S5's distance,
 CONTROLLED to the wall clock by a pre-binary run the same hour. NEXT: P5 the mutation, then
 the record.
+2026-09-07 10:58 -- CP4 THE MUTATION, and the D11 number. Mutant `6b8085cb` (Eris's branch
+alone; `artifacts/f104/mutation.diff`, 5 anchored sites, exactly ONE doubled loop left at
+`orbit.cpp:532`), reverted, and the post binary **bit-reproduced `0c61f1b5`** from the restored
+source. **P5 exactly as pre-registered**: the mutation also fixes Eris (1.06294e-05) and the
+parked table CANNOT separate the two forms -- `f100_identity.py` mut vs post is **120/120
+byte-identical** and `altaz_new` differs on **0 of 120**. The discrimination is where the
+prediction put it: the offline harness (only the Newton branch's ns/call doubles, 46.36 vs
+16.72/20.85 unchanged; only `ell0.2-0.9` bodies' converge counts halve). **P4 = 2.358 us/frame
+worst case = 0.236 % of D11's 1 ms** (predicted <= 5 us / <= 0.5 %). The `altaz_old` reading is
+CORRECTED at its own instrument: a one-pair A/A floor is a weak estimator (a third launch beat
+it on 18 unreachable bodies), so `f104_aa.py --pairwise` scores all six pairs on the 29 bodies
+no binary here can reach -- A/B 1.155e-13..9.13e-13 rad straddles A/A 3.517e-13: NOT SEPARABLE,
+not evidence either way. NEXT: the record.
 
 ### F105 — the dump channel's two owed items, both at their anchor `SSystemFactory::dumpTracePaths`: (i) the header names the system the OLD column was taken in (§11.221(n1): `"oldSystem"` = `SolarSystem` / `galactic` / the `systems` key, plus `"inSystem"`; `dumpread`'s `EmptyOldHalf` message names it; every parity artifact becomes self-describing) and (ii) the new-only loop calls the barrier (§11.220(j3): `nb.useNow()` before `nb.dumpTrace(out)` at `:1227-1233`, so a dump is a use for 120 of 120 records, not 90) — with the consequence PREDICTED before the launch, record by record over the 30 new-only names: **20 unchanged** (the 18 `dist 0` systems and `Universe` return at `useNow`'s first line — not `renderHidden`; `SolarSystem` is walked), **2 refreshed into a REAL eye-frame position** (`baryEarthMoon` under the walked Earth, `orbit_autour_lune` under the walked Moon — parents that publish `parkedChildFrame`), and **8 that a use refreshes into the IDENTITY frame** — the seven hidden children of the never-walked `Universe` and `orbit_autour_point` under its hidden centre — because `parkedChildFrame` defaults to identity (`ModularBody.hpp:2121`) and `publishParkedFrame` runs only for walked nodes (`:1003-1007`): §11.220(j4)'s hazard, which the SELECTION channel already exercises for those 8 today (`ModularSystem.cpp:269-270`; new-only names answer the new path); so the barrier gains its missing PRECONDITION — a use in a frame that was NEVER published is not served (a `parkedFramePublished` flag set at `:1006`, `useNow` returning `false` without refreshing and propagating through hidden parents; ONE D12 line per body naming what / consequence / fix) — and the 8 keep their honest `dist 0` in the dump while the F100 partition instrument's class I keeps its key; the mutation (no guard) measured once for the 8 identity-frame values, (j4)'s magnitude on record; STOP before any fix if the leg's partition is not (20, 2, 8) [S–M, engine + instrument, new path only — veto point §3 on the guard's form]
 
