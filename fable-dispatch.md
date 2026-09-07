@@ -956,8 +956,53 @@ test -e /home/claude/sc-f104 ; echo $? => 1
 §11 entry + stub; §5.145 flipped; §5.84, §11.76(b), §11.215(g) annotated; back-markers; map;
 README; trees clean; WIP cleared; baselines LAST.
 **WIP:** DELIVERED 2026-09-07 -> **§11.225** (+ stub); §5.145 **FIXED** (code `ead2d478`, binary `b5f08778` -> **`0c61f1b5`**, the post value listed per parked body). `ITERATIVE_STEPS_PER_CALL = 2` in `iterative_orbits.hpp`, looped around the four advancing branches of `eccentricAnomaly` and each `operator()` step (seeding outside, Laguerre-Conway temporaries inside); `useNow()`'s 1 + 4 and `RESUME_EXTRA_ITERATIONS` untouched; `src/experimentalModule/` COMMENT-ONLY (0 non-comment lines); `ONE Newton` 5 -> 0. Predictions committed one commit BEFORE the code (`5bb9b03`). **P0** post call k == pre call 2k, 120/120 bit-identical, red controls 35/120 + 73/120. **P1** partition 66/40/14 predicted from the field file, held body for body; Eris **1.1987248926268401 -> 1.05951e-05** and the ONLY record of 120 whose `mat` moved (2.029 AU); 120/120 at the running clock. **P2** one diff line vs `c125adf0`, Eris's, Q2 88 -> 89 of 90, new md5 `1fe630a4`. **P3** rc 0 (S5's distance refuted and controlled to the wall clock). **P4** 2.358 us/frame = **0.236 % of D11**. **P5** mutation `6b8085cb` fixes Eris too and is 120/120 indistinguishable on the engine -- the pre-registered null; discrimination on the sliced solver; reverted with `0c61f1b5` bit-reproduced. **P6** the pre binary showed the defect first. No STOP fired. Eight launches, canary green, `/proc` 0, md5 in==out on all eight; D14 PASS. Annotated: §11.220(j1)(i2), §11.223(b), §5.84, §11.76(b), §11.215(g), both homes each; `DEPLOYMENT-MAP.md` names §5.145 0 times. Three dispatcher-side findings, all output-side, all reported before the measurement (§11.225(k)). New instruments: `f104_census.py`, `f104_solver.{py,cpp}`, `f104_seqcheck.py`, `f104_aa.py`; README section added.
+**ACCEPTED 2026-09-07 — the verifying commands' `date` read 11:10:38 and 11:11:55–11:15:07 (supervisor,
+session 27, Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.225 read in
+full; ONE code commit `ead2d478` (Claude Opus 5; `iterative_orbits.hpp` + `orbit.cpp` + four comment
+sites, 91+/37−, the diff READ: `ITERATIVE_STEPS_PER_CALL = 2` beside `WARP_PRECISION` with its reason,
+the loop around each of the four advancing branches with the seeding outside and the Laguerre-Conway
+temporaries inside, the loop around each `operator()` step, and in `experimentalModule/` comment lines
+only) and six harness commits `5bb9b03 → 43e9b37` (Claude Opus 5; the predictions at `5bb9b03` before
+the code), both trees clean; binary `0c61f1b5`, dry build 0 steps; §5.145 reads *FIXED 2026-09-07,
+§11.225 (task F104), code `ead2d478`, binary `0c61f1b5`* with the post value per parked body; §5.84
+annotated; §11.220(j1)(i2), §11.223(b), §11.76(b), §11.215(g) name §11.225 in the entry AND the stub;
+`DEPLOYMENT-MAP` 0 hits, said not assumed; README §F104; instruments as the entry's (m) states them
+(257/327/142 · 241/216/25/119 · D 35 · D2 12 · I 89 · I2 37 · M 89). **AND by my own hand on
+`0c61f1b5`:** canary `--no-scene` exit 0; `f104_seqcheck.py solver-pre solver-post` — **120 of 120
+bit-identical across 12 arms** (post[k] == pre[2k]); F100's freeze leg at the pinned clock
+(`sc-f104/supervisor/post`, 11:11:59) — frozen **29 = I** exactly, 0 FAIL, and from its launch dump
+Eris after ONE use (`evalCount` 5) **1.06636e-05°** old-vs-new alt/az (was 1.1987249° on `b5f08778`
+at my F100 acceptance), Ceres 1.13e-05, Haumea 9.6e-06, Sedna 1.09e-05, Mars walked; `f91_run.sh
+--expect post --locale fr` (11:12:48) — rc 0, 0 FAIL / 0 NOTE, table md5 **`1fe630a4`**, Q2 **89 of 90**
+with Puck the only exception; the smoke suite (11:13:28–11:15:06) rc 0, driver exit 0, four frozen
+files MATCH; `/proc` clear, no lock, the field pair `03fbee59`/`545a51ef` in==out. Deviations ENDORSED
+with the executor's arguments: the `altaz_old` instrument corrected when the mutation leg beat its
+one-pair floor (`--pairwise` over 29 unreachable records: NOT separable — the conclusion "not
+evidence either way" is the honest one and matches §11.215(g)'s reason F100 skipped the channel); the
+scope as the CLASS with the narrow form as the mutation — indistinguishable on the engine, discriminated
+on the sliced solver, so the veto point is a COST question (2.36 µs worst case vs the branch form's
+smaller share), not a correctness one; the P3 S5-distance refutation controlled by a same-hour pre
+run rather than explained; (j1) the dead `warp()` methods and (j2) the orbit-line sampler moving the
+position seed recorded and NOT minted (bounded by the barrier, unmeasured — a leg for the next round,
+queued at the close with (j3)'s unattributed +32 rad staleness as its question). DISPATCHER-SIDE
+FINDINGS, all ACCEPTED as mine, all output-side (mandate (1) had the executor rebuild the partition
+from the field file, which is what re-adjudicated them; the gate passed 31/31): (1) the headline's
+"60 iterative / 60 non-iterative" double-counts the 8 `e = 0` `ell_orbit` bodies my own census line
+named — a value computed from a listing without its own subtraction (Q-67's class); (2) the P5 list
+puts Sedna in Eris's branch where my dispatch paragraph says `comet_orbit` 0.859 — a wrong-set
+placement against my own read (the SIBLING class); (3) the F100 result-file name implied by the
+section (`<tag>_<clock>_result.json`) is `f100_result.json` — a pointer typed from expectation.
+Round tally so far: **nine dispatcher defects** (3 value-class, 6 structure-class). STANDING
+CONSEQUENCES: **every iterative solver takes two steps per call on BOTH paths** (`ead2d478`); a parked
+body's one use now buys ten steps and Eris reads 1.06e-05° where it read 1.1987°; the F91 table's
+current md5 is **`1fe630a4`** (`c125adf0` retired to the pre-F104 record, one row apart); the old
+path's post-jump convergence is twice as fast per frame (the as-if veto point, §3); `altaz_old` is not
+an inertness channel — 90 of 120 records move between two launches of one binary at one pinned
+instant (§11.225(e)); the solver can be measured without a launch (`f104_solver.py`, `f104_seqcheck.py`);
+the count is still the owner's; `/home/claude/sc-f104/` holds the farms, the pre/post/mutant binaries
+and my runs under `supervisor/`.
 
-### F105 — the dump channel's two owed items, both at their anchor `SSystemFactory::dumpTracePaths`: (i) the header names the system the OLD column was taken in (§11.221(n1): `"oldSystem"` = `SolarSystem` / `galactic` / the `systems` key, plus `"inSystem"`; `dumpread`'s `EmptyOldHalf` message names it; every parity artifact becomes self-describing) and (ii) the new-only loop calls the barrier (§11.220(j3): `nb.useNow()` before `nb.dumpTrace(out)` at `:1227-1233`, so a dump is a use for 120 of 120 records, not 90) — with the consequence PREDICTED before the launch, record by record over the 30 new-only names: **20 unchanged** (the 18 `dist 0` systems and `Universe` return at `useNow`'s first line — not `renderHidden`; `SolarSystem` is walked), **2 refreshed into a REAL eye-frame position** (`baryEarthMoon` under the walked Earth, `orbit_autour_lune` under the walked Moon — parents that publish `parkedChildFrame`), and **8 that a use refreshes into the IDENTITY frame** — the seven hidden children of the never-walked `Universe` and `orbit_autour_point` under its hidden centre — because `parkedChildFrame` defaults to identity (`ModularBody.hpp:2121`) and `publishParkedFrame` runs only for walked nodes (`:1003-1007`): §11.220(j4)'s hazard, which the SELECTION channel already exercises for those 8 today (`ModularSystem.cpp:269-270`; new-only names answer the new path); so the barrier gains its missing PRECONDITION — a use in a frame that was NEVER published is not served (a `parkedFramePublished` flag set at `:1006`, `useNow` returning `false` without refreshing and propagating through hidden parents; ONE D12 line per body naming what / consequence / fix) — and the 8 keep their honest `dist 0` in the dump while the F100 partition instrument's class I keeps its key; the mutation (no guard) measured once for the 8 identity-frame values, (j4)'s magnitude on record; STOP before any fix if the leg's partition is not (20, 2, 8) [S–M, engine + instrument, new path only — veto point §3 on the guard's form]
+### F105 — the dump channel's two owed items, both at their anchor `SSystemFactory::dumpTracePaths`: (i) the header names the system the OLD column was taken in (§11.221(n1): `"oldSystem"` = `SolarSystem` / `galactic` / the `systems` key, plus `"inSystem"`; `dumpread`'s `EmptyOldHalf` message names it; every parity artifact becomes self-describing) and (ii) the new-only loop calls the barrier (§11.220(j3): `nb.useNow()` before `nb.dumpTrace(out)` at `:1227-1233`, so a dump is a use for 120 of 120 records, not 90) — with the consequence PREDICTED before the launch, record by record over the 30 new-only names: **20 unchanged** (the 18 `dist 0` systems and `Universe` return at `useNow`'s first line — not `renderHidden`; `SolarSystem` is walked), **2 refreshed into a REAL eye-frame position** (`baryEarthMoon` under the walked Earth, `orbit_autour_lune` under the walked Moon — parents that publish `parkedChildFrame`), and **8 that a use refreshes into the IDENTITY frame** — the seven hidden children of the never-walked `Universe` and `orbit_autour_point` under its hidden centre — because `parkedChildFrame` defaults to identity (`ModularBody.hpp:2127` — `:2121` at the mint, +6 by F104's comment edit above it, refreshed at dispatch) and `publishParkedFrame` runs only for walked nodes (`:1003-1007`): §11.220(j4)'s hazard, which the SELECTION channel already exercises for those 8 today (`ModularSystem.cpp:269-270`; new-only names answer the new path); so the barrier gains its missing PRECONDITION — a use in a frame that was NEVER published is not served (a `parkedFramePublished` flag set at `:1006`, `useNow` returning `false` without refreshing and propagating through hidden parents; ONE D12 line per body naming what / consequence / fix) — and the 8 keep their honest `dist 0` in the dump while the F100 partition instrument's class I keeps its key; the mutation (no guard) measured once for the 8 identity-frame values, (j4)'s magnitude on record; STOP before any fix if the leg's partition is not (20, 2, 8) [S–M, engine + instrument, new path only — veto point §3 on the guard's form]
 
 **Why now / mandate:** the session-26 close queue position 5 (*"the dump channel's two items
 (S, decision-free: a system-identity field in the header, §11.221(n1); the barrier for the 30
@@ -1000,7 +1045,7 @@ Earth), `orbit_autour_lune` (Moon), `big_dipper`, `center_sun`, `galaxy_center`,
 frame (`matLocalToBodyPos` for a hidden parent, `parkedChildFrame` otherwise), `:501` the memo
 key; `publishParkedFrame` (`ModularBody.hpp:1003-1007`) writes `parkedChildFrame` only when
 `hiddenBodies` is non-empty, from the walk's two call sites (`:944`, `:971`); the member defaults
-to `Mat4f::identity()` (`:2121`). The header writer `:1108-1172` (`"type":"header"` at `:1112`,
+to `Mat4f::identity()` (`:2127` at dispatch; `:2121` at the mint). The header writer `:1108-1172` (`"type":"header"` at `:1112`,
 the `extraHeader` lambda at `:1170` for Core-owned keys — the executor MODE is Core's, not the
 factory's: the field lands where its owner is, I2/I9, and the mode is NOT added here unless Core
 already holds an accessor, say which); the factory's identity: `currentSystem == ssystem.get()`
@@ -1070,10 +1115,10 @@ in the tree as the prompt states it (this task's baseline binary is F104's).
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => 474c595d
+git rev-parse --short=8 HEAD => ead2d478
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => b5f08778
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 224
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 0c61f1b5
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 226
 grep -c '^### F' claude/fable-dispatch.md => 3
 # sites, re-resolved at HEAD (content drift = abort)
 sed -n '1181p' src/bodyModule/ssystem_factory.cpp | grep -c 'currentSystem..begin()' => 1
@@ -1085,7 +1130,7 @@ sed -n '1170,1172p' src/bodyModule/ssystem_factory.cpp | grep -c 'extraHeader(ou
 sed -n '1154p;1160p;1179p' src/bodyModule/ssystem_factory.hpp | grep -c 'galacticSystem;\|systems;\|bool inSystem = true;' => 3
 sed -n '294,297p;772,778p' src/bodyModule/ssystem_factory.cpp | grep -c 'currentSystem = ssystem.get()\|currentSystem = galacticSystem.get()' => 2
 sed -n '1003,1007p' src/experimentalModule/ModularBody.hpp | grep -c 'publishParkedFrame\|hiddenBodies.empty()\|parkedChildFrame = flat' => 3
-sed -n '2121p' src/experimentalModule/ModularBody.hpp | grep -c 'Mat4f parkedChildFrame = Mat4f::identity();' => 1
+sed -n '2127p' src/experimentalModule/ModularBody.hpp | grep -c 'Mat4f parkedChildFrame = Mat4f::identity();' => 1
 sed -n '457p;473p;475p;501p' src/experimentalModule/ModularBody.cpp | grep -c '!renderHidden || !parent\|parent..useNow()\|parent..parkedChildFrame\|sameFrame(frame, evaluatedFrame)' => 4
 sed -n '269,270p' src/experimentalModule/ModularSystem.cpp | grep -c 'getSelected()\|sel..useNow()' => 2
 sed -n '838,840p' src/coreModule/core.cpp | grep -c 'ssystemDualDump\|dumpTracePaths(file' => 2
