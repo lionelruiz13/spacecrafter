@@ -150,3 +150,15 @@ the archive drawer uses for moved documents. The maps are append-only and are
 never edited: a map that has been corrected has stopped being evidence of what a
 particular run did, which is the only thing it is for. (Landed F103, 2026-09-07;
 reasons and the measurements behind them in INTENT 11.224.)
+
+**What is IN a map, corrected 2026-09-07 (F106, INTENT 11.228).** The rule used to
+be read as *"a commit that rebuilt byte-identical kept its sha and appears in no
+file"*. Since F106 nothing rebuilds byte-identical, because an unselected commit
+whose parents did not change **is not rebuilt at all**: `supervised-by.sh` runs a
+`--commit-filter` that emits the ORIGINAL commit id when the five fields a
+signature signs (tree, parents, author, committer, message) are unchanged, so
+that commit keeps its object -- its sha AND its `gpgsig` -- and appears in no
+file. Measured on the F103 clone pair: 79 of 94 code commits in the map, the
+15-commit side chain untouched, `cebebf44` still signed. The one commit a map
+CANNOT keep whole is a signed one whose parent this run rewrote; the run names it
+in a section-2(f) block and again in its closing summary.

@@ -1424,16 +1424,17 @@ test -e /home/claude/sc-f106 ; echo $? => 1
 
 **DoD:** predictions before any run; the fix; P1–P6; §11 entry + stub; §5.147 FIXED; the
 back-markers; the README homes + the heredoc line; R5; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-07 checkpoint 3 — predictions pre-registered (`acee76b`); P1 GREEN (`80ee9d7`, the
-collapse to the digit incl. §11.224(i)'s three map md5s; §11.224(h)'s "parents converge" clause
-REFUTED). **THE FIX IS IN** (`--commit-filter`, five fields compared, `signatures-dropped` →
-§2(f) + summary) and **P2/P3 GREEN**: 3829 unchanged, `cebebf44` keeps sha AND `gpgsig`, all 15
-keep their shas, the merge keeps both parents (second = the ORIGINAL `6ec2f43f`), UNPAIRED 0, map
-membership predicted sha-for-sha (79 code / 798 harness, `diff` empty both sides), 543/282/286,
-idempotent. **P5/P6 GREEN**: the unavoidable case (a signed non-Claude commit on top of a selected
-one) rebuilt, its signature gone, NAMED twice — while `cebebf44` keeps its own in the same run; the
-reporting mutant silent; the equality mutant returns P1 exactly (3816, `d40f4eb1`, the three md5s).
-Pair reset. Next: P4 (live pair `--dry-run`, both scripts at one instant), then the record.
+**WIP:** — **DELIVERED 2026-09-07 → §11.228** (entry + stub; §5.147 FIXED; §11.224(f)(h) and
+§11.227(c) marked at both homes; `harness/README.md` new `supervised-by.sh` section, `README.md`
+§sha-maps, `DEPLOYMENT-MAP.md` R5). The `--commit-filter` is in the tool: the ORIGINAL commit id is
+emitted when the five fields a signature signs are unchanged. P1–P6 all green on the F103 clone pair
+(reset+asserted before and after every run), predictions committed BEFORE any run (`acee76b`):
+pre-fix 3829→3816 / post-fix **3829→3829** with `cebebf44` keeping sha AND `gpgsig`, the 15-commit
+side chain intact, the merge keeping two parents, UNPAIRED 0, map membership predicted **sha for
+sha** (79/798, `diff` empty); the unavoidable case built on a throwaway key, lost, NAMED twice, its
+reporting mutant silent; the equality mutant returns P1 exactly; live pair `--dry-run`
+BYTE-IDENTICAL pre/post (944 lines, `3f2e421e`), never rewritten. §11.224(h)'s *"the merge's parents
+converge"* REFUTED by its own re-run. No engine code, no build, no launch, no display, no canary.
 
 ---
 

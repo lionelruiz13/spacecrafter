@@ -4273,12 +4273,67 @@ closing commit now happens whenever a map was written, even with nothing to repo
      rollback. The tool was unrunnable on any pair carrying a pre-existing dangling trailer.
      The list is now captured at step A, which is what the function's own header already said.
 
-**Open, and the OWNER's to decide before any rewrite (INTENT 11.224(h)):** `git commit-tree`
+~~**Open, and the OWNER's to decide before any rewrite (INTENT 11.224(h)):**~~ **[CLOSED
+2026-09-07, F106 -> INTENT/11.228.md; original text kept per the maintenance invariant.]**
+`git commit-tree`
 drops the `gpgsig` header. Exactly one commit in the live code range is signed (`cebebf44`),
 its unsigned twin `b8dddd6c` already exists under the same parent, and stripping the signature
 collapses a 13-commit duplicate chain: `master-beta` goes 3829 -> 3816 commits while
 `git diff --quiet <tip> HEAD` keeps passing, because the tip tree is unchanged. Those 13 old
 shas are absent from the map. The run warns at detection and again in the closing summary.
+
+## supervised-by.sh -- the rewrite touches only what it was asked to (F106, 2026-09-07)
+
+**An unselected commit is no longer REBUILT, it is LEFT ALONE.** `filter-branch` rebuilds every
+commit in its range through `git commit-tree`, which cannot write a `gpgsig` header -- that, and
+nothing else, was 5.147. The `filter-branch` call now carries a `--commit-filter` (this script
+re-invoked as `supervised-by.sh --commit-filter "$@"`), which emits the ORIGINAL commit id when
+the five fields a signature signs are unchanged -- tree, parents in order, author ident,
+committer ident, message byte-exact -- and `git commit-tree "$@"` otherwise. filter-branch takes
+an existing id from a commit filter without complaint (its stdout is written straight into
+`map/<sha>`), so "leave this one alone" is one line.
+
+Five fields and not three: a signature signs the whole object, and comparing a subset would let a
+`--tree-filter` or a committer rewrite emit the original id for a commit that is NOT the original
+-- a silently wrong history instead of a silently shortened one. The two extra fields are inert
+under this caller and that is measured, not assumed.
+
+**The one loss that cannot be avoided is named, never dropped:** a SIGNED commit whose mapped
+parent changed (it sits downstream of a rewritten Claude commit) must be rebuilt, so its
+signature goes. Each one is appended to `${WORK}/signatures-dropped` by the filter and reported
+twice by name -- a section-2(f) block at the end of that repo's rewrite, and a
+`READ BEFORE PUBLISHING` repeat on the last screen before the push. A run that says nothing about
+signatures lost none.
+
+**Measured, on the F103 clone pair reset to state U before and after every run
+(`harness/f106_pair.sh reset`, which asserts the state rather than assuming it):**
+
+  * pre-fix: `master-beta` 3829 -> 3816, 13 UNPAIRED, `cebebf44` gone -- 11.224(h) reproduced
+    with its three map md5s (`6e7984e6` / `43834ed0` / `6379ab86`);
+  * post-fix: 3829 -> 3829, `cebebf44` keeps its sha AND its `gpgsig`, all 15 side-chain commits
+    keep theirs, the merge keeps two parents with the second still the original `6ec2f43f`,
+    UNPAIRED 0, and the map holds exactly the 79 code commits predicted from the graph before the
+    run (`harness/f106_predict.py`), sha for sha, 798 on the harness side;
+  * both mutants: with the message comparison disabled the collapse returns as P1 exactly (same
+    tip `d40f4eb1`, same md5s); with the recording disabled a signature is lost in silence;
+  * the live pair's `--dry-run` is BYTE-IDENTICAL before and after (944 lines, md5 `3f2e421e`).
+
+**What the tool will do to the live pair** (read-only, `f106_predict.py code . 'origin/master-beta..HEAD'`):
+83 of the 98 range commits change sha, 15 keep their object -- the whole `1ddd32f0..c6784490^2`
+side chain, `cebebf44` included.
+
+`harness/f106_extract_check.sh <repo> <range>` proves the two extractions the filter uses (the
+message split at the first truly empty line; the parents read from the object's `parent` lines)
+equal to git's own over a whole range, and is shown able to fail: `F106_MUTATE=1` splits at the
+first blank-OR-empty line and lands inside the PGP armour, disagreeing on the signed commit and
+on no other. **A `gpgsig` continuation line that looks blank is a single SPACE, not an empty
+line** -- that is the whole reason the header split works, and the reason a naive one does not.
+
+**Not added, and the reason is on record (11.228(j)):** the PREVIEW does not name signatures that
+would be rebuilt. It would have to predict the rebuild closure -- a second implementation of the
+filter's own rule -- and this script's header says why two copies of a rule are two rules. The
+consequence is stated rather than hidden: the operator learns of a lost signature after the y/N,
+not before it, and `Undo:` is printed.
 
 ## premise_check.py — every checkable premise of a dispatch section, re-run at three events — fable-dispatch.md §0b.3 / §0.7, 2026-09-05
 
