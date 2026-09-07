@@ -493,17 +493,30 @@ bool ModularBody::useNow()
     if (!(parent->renderHidden ? parentServed : parent->parkedFramePublished)) {
         if (!unservedLogged) {
             unservedLogged = true;
+            // The message says what is OBSERVED and not why: the flag cannot
+            // tell "outside the walk" from "not walked YET", and both reach
+            // here - measured, the second one on every `body action reload`,
+            // which rebuilds the tree and re-creates the anchor bodies whose
+            // own creator uses them before the next frame's walk publishes
+            // (S11.226(h)). A line that asserted the first cause would be
+            // false advice for the second, so both fixes are named.
             cLog::get()->write("Position of '" + englishName + "' was used, but "
-                "its parent '" + parent->englishName + "' has never published a "
-                "position frame for its parked children: '" + parent->englishName
-                + "' is outside the update walk of the system currently loaded "
-                "(the walk stops at the system node), so there is no frame to "
-                "compute '" + englishName + "' in. This use is REFUSED: '"
-                + englishName + "' keeps its unevaluated position (the zero "
-                "vector), so its distance, RA/DE, alt/az and magnitude stay the "
-                "degenerate readout instead of becoming a plausible-looking "
-                "wrong one. To fix: declare '" + englishName + "' under a body "
-                "the loaded system walks.", LOG_TYPE::L_WARNING);
+                "its parent '" + parent->englishName + "' has not published a "
+                "position frame for its parked children: the loaded system's "
+                "update walk has not visited '" + parent->englishName
+                + "' since '" + englishName + "' was parked under it, so there "
+                "is no frame to compute '" + englishName + "' in. This use is "
+                "REFUSED: '" + englishName + "' keeps its unevaluated position "
+                "(the zero vector), so its distance, RA/DE, alt/az and magnitude "
+                "stay the degenerate readout instead of becoming a "
+                "plausible-looking wrong one. Two ways to be here: '"
+                + parent->englishName + "' is OUTSIDE that walk and always will "
+                "be (the walk stops at the system node, so anything under the "
+                "universe root is) - then declare '" + englishName + "' under a "
+                "body the loaded system walks; or '" + englishName + "' was "
+                "created or reloaded just now - then the next frame's walk "
+                "publishes and the use after it is served.",
+                LOG_TYPE::L_WARNING);
         }
         return false;
     }
