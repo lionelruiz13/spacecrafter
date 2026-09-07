@@ -1174,7 +1174,14 @@ partition holds BY NAME**; the 8 identity-frame values match the pre-registered 
 mutation for the 2, **P5 exactly 8 D12 lines, delta 0 on the second dump and after the operator
 stage**, P4 post-guard `pleiades` == the `51PegSystem` control to every digit, **P6** camera +
 72/72 walked + 27/27 unreached + 90/90 `altaz_new` identical to the PRE binary and the F91 table
-byte-identical (`1fe630a4`, 0 FAIL / 0 NOTE). Next: the smoke control, then the §11.226 record.
+byte-identical (`1fe630a4`, 0 FAIL / 0 NOTE). CHECKPOINT 6: the smoke suite found the SECOND way
+to reach the guard — the one this task pre-registered as its own risk: `body action reload`
+re-creates the anchor bodies and uses them before the next walk publishes, so `baryEarthMoon` and
+`orbit_autour_lune` each logged one line whose stated CAUSE was false for them. Message corrected
+to state the observation and name both ways (code `318c0c8b → 48cc3727`, binary `e411b838`);
+behaviour unchanged and measured self-healing. On the DELIVERED binary: smoke rc 0 step for step
+as §11.220(i3), 8 D12 lines in the measuring leg / 10 in the smoke run, P6 re-taken (72/72 · 27/27 ·
+90/90 · F91 `1fe630a4` 0 FAIL). Next: the §11.226 record + the back-markers.
 
 ---
 

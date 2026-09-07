@@ -1,6 +1,6 @@
-=== mutation ad7a4e47 vs guard 3f19cb6b
+=== mutation ad7a4e47 vs DELIVERED e411b838
   A = /home/claude/sc-f105/legs/b_mutation_ad7a4e47/dumps/b_mutation_ad7a4e47_p0_launch.json
-  B = /home/claude/sc-f105/legs/c_guard_3f19cb6b/dumps/c_guard_3f19cb6b_p0_launch.json
+  B = /home/claude/sc-f105/legs/c_guard_e411b838/dumps/c_guard_e411b838_p0_launch.json
   camera state identical: True
   jd A 2461233.5  jd B 2461233.5
   walked         n= 72  identical mat translation  72/ 72  identical altaz_new  71/ 71

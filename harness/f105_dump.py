@@ -57,9 +57,14 @@ CLASS_C = ["big_dipper", "center_sun", "galaxy_center", "pleiades",
 CLASS_B = ["baryEarthMoon", "orbit_autour_lune"]
 PARENTS = {"baryEarthMoon": "Earth", "orbit_autour_lune": "Moon"}
 
-# The guard's own line, matched on the invariant part of the message (the part
-# that names the mechanism, not the body).  0 on any binary without the guard.
-D12_MARK = "has never published a position frame"
+# The guard's own line, matched on the part of the message that names the
+# MECHANISM and not the body.  0 on any binary without the guard.  Measured
+# gotcha (S11.226): the first version of this marker quoted the message
+# verbatim ("has never published"), and when the message itself was corrected to
+# "has not published" the count silently read 0 on a leg whose log carried 8 -
+# a marker is a copy of a string that lives somewhere else (I2), so it matches
+# the stable clause only, and the count is re-derivable from the log file.
+D12_MARK = "published a position frame for its parked children"
 
 SUBJECT = "pleiades"        # one of the eight: the largest identity-frame value
 ZERO_CTL = "51PegSystem"    # a `dist 0` record the barrier returns early for

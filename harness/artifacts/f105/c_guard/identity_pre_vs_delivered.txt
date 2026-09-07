@@ -1,6 +1,6 @@
-=== pre 0c61f1b5 vs guard 3f19cb6b, un-moved launch state
+=== pre 0c61f1b5 vs DELIVERED e411b838, un-moved launch state
   A = /home/claude/sc-f105/legs/pre_0c61f1b5/dumps/pre_0c61f1b5_p0_launch.json
-  B = /home/claude/sc-f105/legs/c_guard_3f19cb6b/dumps/c_guard_3f19cb6b_p0_launch.json
+  B = /home/claude/sc-f105/legs/c_guard_e411b838/dumps/c_guard_e411b838_p0_launch.json
   camera state identical: True
   jd A 2461233.5  jd B 2461233.5
   walked         n= 72  identical mat translation  72/ 72  identical altaz_new  71/ 71

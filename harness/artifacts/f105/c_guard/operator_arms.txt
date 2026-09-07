@@ -16,19 +16,19 @@ seven camera polls per arm, the WALKED control (Mars) tracked before AND after.
       alt over 7 polls : -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252
       the body`s own record while SELECTED: dist 2.0717597  mat [1.1920929e-07, 1.2665987e-07, -2.0717597]  evalCount 12123
 
-=== POST-GUARD, binary 3f19cb6b   (3f19cb6b)
-  walked_before  Mars         final alt -0.37837255    az -0.739825368   converged True 
-      alt over 7 polls : -0.877661347 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255
-      the body`s own record while SELECTED: dist 2.0717597  mat [1.1920929e-07, -8.94069672e-08, -2.0717597]  evalCount 4738
-  subject        pleiades     final alt -0.37837255    az -0.739825368   converged True 
-      alt over 7 polls : -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255
+=== POST-GUARD, the delivered binary e411b838   (e411b838)
+  walked_before  Mars         final alt -0.37837252    az -0.739825428   converged True 
+      alt over 7 polls : -0.877653062 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252
+      the body`s own record while SELECTED: dist 2.0717597  mat [1.1920929e-07, 1.2665987e-07, -2.0717597]  evalCount 4751
+  subject        pleiades     final alt -0.37837252    az -0.739825428   converged True 
+      alt over 7 polls : -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252
       the body`s own record while SELECTED: dist 0  mat [0, 0, 0]  evalCount 0
-  zero_control   51PegSystem  final alt -0.37837255    az -0.739825368   converged True 
-      alt over 7 polls : -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255
+  zero_control   51PegSystem  final alt -0.37837252    az -0.739825428   converged True 
+      alt over 7 polls : -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252
       the body`s own record while SELECTED: dist 0  mat [0, 0, 0]  evalCount 0
-  walked_after   Mars         final alt -0.37837255    az -0.739825368   converged True 
-      alt over 7 polls : -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255
-      the body`s own record while SELECTED: dist 2.0717597  mat [1.1920929e-07, -8.94069672e-08, -2.0717597]  evalCount 12225
+  walked_after   Mars         final alt -0.37837252    az -0.739825428   converged True 
+      alt over 7 polls : -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252
+      the body`s own record while SELECTED: dist 2.0717597  mat [1.1920929e-07, 1.2665987e-07, -2.0717597]  evalCount 12237
 
 READ:
  * PRE-GUARD the selection channel ALONE refreshes `pleiades` into the identity
@@ -46,7 +46,10 @@ READ:
    tracking a zero-vector body puts `nan` into the OLD path's view state - 66
    non-finite values across helioToEye, matLocalToEye, matJ2000ToEye,
    matEarthEquToEye, headingVector and the plan's moveAim - in the 51PegSystem arm
-   of the PRE leg (binary 0c61f1b5) exactly as in both arms of the guard leg.
-   So the guard moves the 8 INTO a pre-existing class; it does not create it.
-   S11.216(i)'s open zero-vector question now has this second consequence beside
-   the printed readout, and it is the supervisor's to mint or not.
+   of the PRE leg (binary 0c61f1b5, dumps/pre_0c61f1b5_tk_zero_control_06.json)
+   exactly as in both arms of the guard leg. So the guard moves the 8 INTO a
+   pre-existing class; it does not create it. S11.216(i)'s open zero-vector
+   question now has this second consequence beside the printed readout, and it is
+   the supervisor's to mint or not.
+ * The walked control returns to the same camera state before and after, to every
+   printed digit, on both binaries - so none of the above is the camera move.
