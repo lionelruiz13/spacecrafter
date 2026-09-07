@@ -1,0 +1,201 @@
+F103 -- PRE-REGISTERED PREDICTIONS (written and committed BEFORE any run of supervised-by.sh)
+executor: Claude Opus 5, task F103, dispatched by Claude Fable 5.1, 2026-09-07
+code master-beta @ 474c595d   harness CC-harness @ fe09601   supervised-by.sh md5 4a55d463 (976 lines)
+
+Every number below is derived from the LIVE repositories with plain git + a python
+re-implementation of the script's own selection rule (scan_range) BEFORE the clone pair
+exists and before any invocation of the tool.  A prediction that the run refutes is a
+refutation, kept and reported -- not adjusted afterwards.
+
+=============================================================================
+0.  THE SCRATCH PAIR (built with plain git; not a run of the tool)
+=============================================================================
+/home/claude/sc-f103/origin/code.git     bare clone of /home/claude/spacecrafter
+/home/claude/sc-f103/origin/harness.git  bare clone of /home/claude/spacecrafter/claude
+tips then set BEHIND, to the live upstream shas, so the scratch pair's distances equal
+the live pair's exactly:
+    origin/code.git    refs/heads/master-beta -> 76ee38c7ed24edf3a7872693339375925a4b3b8e
+    origin/harness.git refs/heads/CC-harness  -> eb9af25c3857f871cae49a3917c96f2936c906ff
+pair: /home/claude/sc-f103/pair/spacecrafter (+ /claude nested), upstreams set, both clean.
+PREDICTED distances in the pair: code origin/master-beta..HEAD = 94 ; harness
+origin/CC-harness..HEAD = 798  (live-measured 2026-09-07: 94 / 798).
+
+TRANSPLANT, stated because it changes what P4 exercises: two `Code:` trailer shas in the
+harness range point at commits that NO branch of the live code repo reaches --
+    5f68d374  "Ignore root CLAUDE.md symlink ..."      (Wed Jul 22 21:08:50 2026)
+    841175d3  "B24 composed-system authoring ..."      (Wed Jul 22 23:03:31 2026)
+-- damage from a 2026-07-22 rewrite that had no cross-repo step.  Their OBJECTS still
+exist in the live repo (git rev-parse --verify succeeds), which is exactly the state
+build_repair_map is written for; a `git clone --bare` copies only REACHABLE objects, so a
+naive clone would report them "object gone -- gc'd" and exercise the UNREPAIRABLE branch
+instead of the repair branch.  They are therefore fetched into the scratch origin by sha
+(`git fetch --upload-pack='git -c uploadpack.allowAnySHA1InWant=true upload-pack'`), a
+READ-ONLY operation on the live repo, so the clone's object database matches live and P4
+exercises the repair path the owner's Saturday run will take.
+PREDICTED unique fingerprint twins on refs/heads/master-beta (%T|%at|%ae|%s), measured live:
+    5f68d374 -> e5f0889b        841175d3 -> 5ad587af
+so REPAIRED_N = 2, UNREPAIRABLE_N = 0.
+
+=============================================================================
+1.  THE TRAILER CENSUS THE TOOL ACTUALLY CONSULTS
+=============================================================================
+list_code_trailers works on the harness RANGE and yields DISTINCT <branch> <sha> pairs.
+    distinct pairs in origin/CC-harness..HEAD  = 138   (NOT 788/789: that is the count of
+    trailer LINES over the WHOLE harness history; the dispatch section's "788 trailers"
+    is the history figure, and the STOP block below reports the RANGE figure because that
+    is the set whose reachability the run judges)
+    branches named                            = master-beta only (138/138)
+    sha length                                = 8 for all 138
+    trailer shas whose object does not resolve in the live code repo = 0
+
+Reachability verdicts, computed by set membership in `git rev-list <ref>` (the same
+relation `merge-base --is-ancestor` decides):
+    NOT ancestor of refs/heads/master-beta ..... 2    (the two above)
+    NOT ancestor of refs/heads/2023-master .....138   (all of them)
+That 2 -> 138 flip IS the §11.212(g) B1 defect, at range scale.
+
+=============================================================================
+2.  SELECTION COUNTS (scan_range's rule, re-implemented and run on live)
+=============================================================================
+CODE   range origin/master-beta..HEAD : 94 in range, 78 SELECTED
+       drop=11  drop+keep=0  keep=67  bare=0 ; untouched 0 supervised, 16 non-Claude
+       '*' author-also-rewritten = 0 ; MANUAL (bare Claude, unresolvable) = 0
+HARNESS range origin/CC-harness..HEAD : 798 in range, 786 SELECTED
+       drop=276 drop+keep=0 keep=461 bare=49 ; untouched 0 supervised, 4 non-Claude
+       '*' author-also-rewritten = 10 ; MANUAL = 8
+
+Commits whose SHA changes (selected, plus every in-range descendant of one):
+    CODE    79 of 94  (15 keep their sha -- the run of commits older than the oldest
+                       selected one; 2 merges in range, kept as merges by --msg-filter)
+    HARNESS 798 of 798 (the oldest commit in range is selected, so nothing survives)
+
+=============================================================================
+3.  P1 -- PRE-FIX, clone state R (refs/heads/master-beta renamed to `main`, HEAD on
+    2023-master), `--dry-run`.  Script = the UNCHANGED live copy, md5 4a55d463.
+=============================================================================
+PREDICT: proceeds SILENTLY -- not one word about `master-beta` naming no ref -- exit 0.
+  CODE preview    : range origin/2023-master..HEAD  ->  0 commit(s) in range,
+                    "nothing selected (0 already carry Supervised-By, 0 not Claude-authored)"
+                    [default_range is @{upstream}..HEAD and HEAD is 2023-master, whose
+                     upstream in the clone is origin/2023-master == 2023-master]
+  HARNESS preview : 798 in range, 786 selected, drop=276 keep=461 both=0 bare=49,
+                    10 author-rewrites, 4 non-Claude, 8 MANUAL
+  Cross-repo      : 138 distinct trailers
+                    BASELINE_DANGLING = 138  <-- the silent fallback's verdict
+  last line       : "(--dry-run: stopping here.)"   rc 0
+DISCRIMINATOR: grep the P1 log for `master-beta`-unresolvable wording -> 0 hits.
+
+=============================================================================
+4.  P2 -- POST-FIX, the SAME clone state R, `--dry-run`, no alias.
+=============================================================================
+PREDICT: rc 1, a single §2(f)-shaped STOP block printed after the two previews and
+BEFORE the "Cross-repo:" line, before "Nothing to do", before any prompt.  It states:
+  WHAT        : 138 distinct `Code: <branch> @ <sha>` trailer(s) in the harness range name
+                branch `master-beta`, and no local ref and no --branch-alias resolves it
+  VALID STATE : the name must resolve to refs/heads/<name> in the code repo, or be aliased
+  CONSEQUENCE : their reachability cannot be judged; the previous code judged them against
+                HEAD, which is not verdict-preserving (§11.212(g): the same trailer reads
+                reachable against refs/heads/master-beta and dangling against
+                refs/heads/2023-master), so the preview, the repair map and the
+                post-rewrite assertion would all be computed from a substituted target
+  FIX         : --branch-alias=master-beta=<new-name>   (or `git branch master-beta <new>`)
+PREDICT ALSO: no `Cross-repo:` line, no `BASELINE_DANGLING` line, no y/N prompt reached,
+and NOTHING written in either clone repo (HEADs and `git status` identical before/after).
+
+=============================================================================
+5.  P3 -- POST-FIX, clone state R, `--dry-run --branch-alias=master-beta=main`.
+=============================================================================
+PREDICT: rc 0, no STOP.
+  Cross-repo    : 138 distinct trailers, BASELINE_DANGLING = 2, and the two lines
+                  "5f68d374 (Ignore root CLAUDE.md symlink ...)" and
+                  "841175d3 (B24 composed-system authoring ...)"
+  HARNESS preview: byte-identical to the un-renamed clone's (798/786/276/461/0/49/10/4/8)
+  CODE preview   : NOT identical to the un-renamed clone's -- 0 in range vs 94/78 --
+                  because HEAD is on 2023-master in state R by construction and
+                  default_range is @{upstream}..HEAD.  The section's P3 wording
+                  ("the preview counts identical to the un-renamed clone's, to the digit")
+                  is PREDICTED to hold for the harness preview and the cross-repo block --
+                  the parts the fix governs -- and to be refuted for the code preview, for
+                  a reason that is the branch checkout and not the alias.  Recorded here
+                  BEFORE the run so the refutation cannot be a post-hoc excuse.
+  The section's "0 dangling" for P3 is PREDICTED REFUTED: 2, the pre-existing damage of
+  §0 above, which the alias cannot and must not hide.  2 is also the un-renamed clone's
+  and the live pair's value, so the "identical to the digit" claim holds on that number.
+
+=============================================================================
+6.  P4 -- POST-FIX, FULL run on the UN-RENAMED clone pair (state U), pty-driven
+    (/usr/bin/script), --supervisor='Test Supervisor <test@example.invalid>', answers y,y
+=============================================================================
+PREDICT, in order:
+  CODE preview 94/78 (drop=11 keep=67), HARNESS preview 798/786 (drop=276 keep=461 bare=49)
+  Cross-repo: 138 trailers, BASELINE_DANGLING = 2, both listed with their subjects
+  "Rewrite 78 code + 786 harness commit(s)? [y/N]"  -> y
+  VERIFIED <code>:   content identical, selection now empty (78 rewritten, 0 unresolvable)
+  "Code sha map: 79 commit(s) changed sha."
+  "Pre-existing dangling Code: trailers (from an earlier rewrite):"
+      repair 5f68d374 -> e5f0889b   /   repair 841175d3 -> 5ad587af
+  VERIFIED <harness>: content identical, selection now empty (786 rewritten, 8 left as
+                      unresolvable wildcards)
+  VERIFIED harness: every 'Code: ... @ <sha>' trailer reachable (2 pre-existing repaired,
+                    0 left for hand repair)
+  == three VERIFIED lines ==
+  MAPS written to claude/sha-maps/<UTC stamp>-<code-tip8>-<harness-tip8>/ :
+      code.tsv     81 lines  = 79 rewritten + 2 repair pairs
+                   (the script APPENDS repair.map to CODE_MAP at :815 so the msg-filter
+                    consults ONE file; the persisted copy is that file verbatim -- nothing
+                    re-rendered.  The dispatch section's "line count = that repo's
+                    rewritten-commit count" therefore holds as 79 + REPAIRED_N for the
+                    code map and exactly for the harness map; stated here in advance.)
+      harness.tsv 798 lines  = 798 rewritten
+      repair.tsv    2 lines
+      sha-maps/README.md  (written ONCE, this run creates it)
+  every map pair fingerprint-equal on %T|%at|%ae|%s, old side vs new side, 0 mismatches
+  step E: "These ... .md references point at rewritten (now-dangling) commits:"
+      TOK_NEW  = 543 citations      TOK_AMBIG = 0      files touched = 282
+      (computed live over the 438 tracked harness *.md, 1251 distinct 7-40 hex tokens,
+       against the 879-entry merged old-side map 79+2+798)
+  "Repoint these ... ? [y/N]" -> y  -> "Repointed 543 citation(s) across 282 file(s)."
+  closing commit MADE, author `Test Supervisor <test@example.invalid>`, capturing
+  282 .md + 4 map files = 286 paths, EXPECTED == ACTUAL
+  after it: both clone trees CLEAN.
+
+=============================================================================
+7.  P5 -- a SECOND run on the rewritten clone pair, same arguments
+=============================================================================
+PREDICT: both previews report nothing selected, then the exact line
+    "Nothing to do in either repo."
+and rc 0, reached at :652 -- before the supervisor prompt, before any rewrite, before any
+map.  No new commit, no new sha-maps directory, trees clean.
+(The closing commit of P4 is authored "Test Supervisor", which identity() does not match,
+so it is counted non-Claude and never selected -- checked, not assumed.)
+
+=============================================================================
+8.  P6 -- the LIVE pair, `--dry-run` ONLY, before and after the change
+=============================================================================
+PREDICT identical output before and after the fix (the fix is inert while
+refs/heads/master-beta resolves), namely:
+  CODE preview 94 in range / 78 selected / drop=11 keep=67 / 16 non-Claude
+  HARNESS preview 798 in range / 786 selected / drop=276 keep=461 bare=49 / 10 author
+  rewrites / 4 non-Claude / 8 MANUAL
+  Cross-repo: 138 distinct trailers, BASELINE_DANGLING = 2 (the two shas of §0)
+  "(--dry-run: stopping here.)"  rc 0
+The section's P6 wording says "0 dangling": PREDICTED REFUTED, the value is 2, and the
+two are named above.  This is a fact about the live pair the owner will meet on Saturday,
+not about the fix.
+ASSERTED before and after EACH of the two dry-runs: code HEAD 474c595d, harness HEAD
+unchanged, `git status --porcelain` empty in both.
+
+=============================================================================
+9.  THE DIFF (check (f)) and D14 (check (g))
+=============================================================================
+PREDICT the change to supervised-by.sh confined to: the header comment (the map paragraph
++ the --branch-alias usage line + the --help sed range that must follow it), the argument
+parser (--branch-alias beside --author-fix), one new resolver function consulted by BOTH
+former fallback sites, reachable_in_code (three outcomes), one new
+unresolvable_trailers sibling + its STOP at step A, build_repair_map's :781 turned into an
+assertion, and the map-persistence block after :844 with the closing commit made
+unconditional-when-a-map-was-written.  UNTOUCHED, asserted by reading the diff: the
+selection rule (scan_range), the msg-filter, the identity grammar / MODEL_RE / wildcard
+resolution, the clean-tree precondition, rollback_all, build_map's fingerprint.
+PREDICT `python3 claude/harness/f70_ascii.py gate` PASS with the new files
+(sha-maps/README.md, artifacts/f103/*) pure ASCII.
