@@ -955,47 +955,7 @@ test -e /home/claude/sc-f104 ; echo $? => 1
 **DoD:** predictions before the build; the fix (code first); P1–P6 measured with the mutation;
 §11 entry + stub; §5.145 flipped; §5.84, §11.76(b), §11.215(g) annotated; back-markers; map;
 README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-07 10:40 -- CP1 PREDICTION COMMITTED before any build (gate 31/31 PASS;
-canary/display/RAM prose premises verified). `artifacts/f104/prediction.txt` + the two offline
-instruments (`f104_census.py`, `f104_solver.py`, the tree's solver sliced at build time, slice
-md5 `f348bd34`, steps_per_call MEASURED 1). Partition BY NAME = **66 / 40 / 14** (not the
-section's 60/60 -- 8 `ell_orbit` sections carry e == 0); `Hiiaka` (`[Hi'iaka]`, e 0.0,
-NON-iterative, moves via its parent Haumea) and `Hydra_` (`[Hydra]`, e 0.004288704, iterative)
-RESOLVED from the field file. PRE binary `b5f08778` preserved at
-`/home/claude/sc-f104/bin/spacecrafter-pre`. NEXT: the fix + build.
-2026-09-07 10:52 -- CP2 FIX LANDED + BUILT, code `ead2d478`, binary **`0c61f1b5`** (mtime
-advanced, `-j24`, rc 0). `src/experimentalModule/` diff is COMMENT-ONLY (0 non-comment lines);
-`grep -rn 'ONE Newton|one Newton' src` = 0. **P0 PASS**: the sliced solver reads
-`steps_per_call` 2 (measured), and post call k == pre call 2k **bit-identical 120/120 across 12
-arms** (`artifacts/f104/seqcheck.txt`; red controls at `seqcheck_red{,2}.txt`, 35/120 and
-73/120). **P4 measured**: one extra step = 11.93 / 20.94 / 29.27 ns (the three elliptic
-branches) and 20.05 / 34.70 (IterativeEll / IterativeHyp). NEXT: P6 then P1 (both binaries,
-both clocks), P2, P3, P5.
-2026-09-07 11:35 -- CP3 THE ENGINE PROOFS, six launches, every one canary-green, `/proc` 0,
-md5 in==out. **P6** pre binary reads Eris **1.1987248926268401** at P0 (F100's acceptance digit
-for digit). **P1** post P0/pinned: Eris **1.19872 -> 1.05951e-05**, the other 18 parked rows
-identical to every printed digit; `f100_identity.py` **119/120 byte-identical, Eris the ONLY
-record whose `mat` translation moved** (2.029 AU), 120/120 at the running clock, walked 72/72
-+ 71/71 both clocks; `altaz_new` differs on 1 record of 120. The 20 `altaz_old` movers are
-scored against an A/A control (a SECOND pre-binary launch): **0 attributable**, every A/B
-difference 2-4x inside that body's own same-binary floor (`f104_aa.py`). **P2** exactly ONE
-diff line vs `c125adf0` and it is Eris's predicted row; Q2 88 -> **89 of 90**, Puck's row
-untouched; rc 0. **P3** rc 0, states as S11.220(i3) -- one refuted prediction, S5's distance,
-CONTROLLED to the wall clock by a pre-binary run the same hour. NEXT: P5 the mutation, then
-the record.
-2026-09-07 10:58 -- CP4 THE MUTATION, and the D11 number. Mutant `6b8085cb` (Eris's branch
-alone; `artifacts/f104/mutation.diff`, 5 anchored sites, exactly ONE doubled loop left at
-`orbit.cpp:532`), reverted, and the post binary **bit-reproduced `0c61f1b5`** from the restored
-source. **P5 exactly as pre-registered**: the mutation also fixes Eris (1.06294e-05) and the
-parked table CANNOT separate the two forms -- `f100_identity.py` mut vs post is **120/120
-byte-identical** and `altaz_new` differs on **0 of 120**. The discrimination is where the
-prediction put it: the offline harness (only the Newton branch's ns/call doubles, 46.36 vs
-16.72/20.85 unchanged; only `ell0.2-0.9` bodies' converge counts halve). **P4 = 2.358 us/frame
-worst case = 0.236 % of D11's 1 ms** (predicted <= 5 us / <= 0.5 %). The `altaz_old` reading is
-CORRECTED at its own instrument: a one-pair A/A floor is a weak estimator (a third launch beat
-it on 18 unreachable bodies), so `f104_aa.py --pairwise` scores all six pairs on the 29 bodies
-no binary here can reach -- A/B 1.155e-13..9.13e-13 rad straddles A/A 3.517e-13: NOT SEPARABLE,
-not evidence either way. NEXT: the record.
+**WIP:** DELIVERED 2026-09-07 -> **§11.225** (+ stub); §5.145 **FIXED** (code `ead2d478`, binary `b5f08778` -> **`0c61f1b5`**, the post value listed per parked body). `ITERATIVE_STEPS_PER_CALL = 2` in `iterative_orbits.hpp`, looped around the four advancing branches of `eccentricAnomaly` and each `operator()` step (seeding outside, Laguerre-Conway temporaries inside); `useNow()`'s 1 + 4 and `RESUME_EXTRA_ITERATIONS` untouched; `src/experimentalModule/` COMMENT-ONLY (0 non-comment lines); `ONE Newton` 5 -> 0. Predictions committed one commit BEFORE the code (`5bb9b03`). **P0** post call k == pre call 2k, 120/120 bit-identical, red controls 35/120 + 73/120. **P1** partition 66/40/14 predicted from the field file, held body for body; Eris **1.1987248926268401 -> 1.05951e-05** and the ONLY record of 120 whose `mat` moved (2.029 AU); 120/120 at the running clock. **P2** one diff line vs `c125adf0`, Eris's, Q2 88 -> 89 of 90, new md5 `1fe630a4`. **P3** rc 0 (S5's distance refuted and controlled to the wall clock). **P4** 2.358 us/frame = **0.236 % of D11**. **P5** mutation `6b8085cb` fixes Eris too and is 120/120 indistinguishable on the engine -- the pre-registered null; discrimination on the sliced solver; reverted with `0c61f1b5` bit-reproduced. **P6** the pre binary showed the defect first. No STOP fired. Eight launches, canary green, `/proc` 0, md5 in==out on all eight; D14 PASS. Annotated: §11.220(j1)(i2), §11.223(b), §5.84, §11.76(b), §11.215(g), both homes each; `DEPLOYMENT-MAP.md` names §5.145 0 times. Three dispatcher-side findings, all output-side, all reported before the measurement (§11.225(k)). New instruments: `f104_census.py`, `f104_solver.{py,cpp}`, `f104_seqcheck.py`, `f104_aa.py`; README section added.
 
 ### F105 — the dump channel's two owed items, both at their anchor `SSystemFactory::dumpTracePaths`: (i) the header names the system the OLD column was taken in (§11.221(n1): `"oldSystem"` = `SolarSystem` / `galactic` / the `systems` key, plus `"inSystem"`; `dumpread`'s `EmptyOldHalf` message names it; every parity artifact becomes self-describing) and (ii) the new-only loop calls the barrier (§11.220(j3): `nb.useNow()` before `nb.dumpTrace(out)` at `:1227-1233`, so a dump is a use for 120 of 120 records, not 90) — with the consequence PREDICTED before the launch, record by record over the 30 new-only names: **20 unchanged** (the 18 `dist 0` systems and `Universe` return at `useNow`'s first line — not `renderHidden`; `SolarSystem` is walked), **2 refreshed into a REAL eye-frame position** (`baryEarthMoon` under the walked Earth, `orbit_autour_lune` under the walked Moon — parents that publish `parkedChildFrame`), and **8 that a use refreshes into the IDENTITY frame** — the seven hidden children of the never-walked `Universe` and `orbit_autour_point` under its hidden centre — because `parkedChildFrame` defaults to identity (`ModularBody.hpp:2121`) and `publishParkedFrame` runs only for walked nodes (`:1003-1007`): §11.220(j4)'s hazard, which the SELECTION channel already exercises for those 8 today (`ModularSystem.cpp:269-270`; new-only names answer the new path); so the barrier gains its missing PRECONDITION — a use in a frame that was NEVER published is not served (a `parkedFramePublished` flag set at `:1006`, `useNow` returning `false` without refreshing and propagating through hidden parents; ONE D12 line per body naming what / consequence / fix) — and the 8 keep their honest `dist 0` in the dump while the F100 partition instrument's class I keeps its key; the mutation (no guard) measured once for the 8 identity-frame values, (j4)'s magnitude on record; STOP before any fix if the leg's partition is not (20, 2, 8) [S–M, engine + instrument, new path only — veto point §3 on the guard's form]
 

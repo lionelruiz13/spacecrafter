@@ -5115,3 +5115,92 @@ a committed bracket of [662, 692] · 1557 = 1355 + 2 + 200 · launch-scene
 baseline **142 529–142 592 B** by inversion · corpus **1.581 MiB** (1.220 after
 B8) against a 1 MiB pool. Artifacts `artifacts/f102/` (~70 KB), including the
 cited applog lines copied out of the scratch tree that does not migrate.
+
+## F104 — two Newton steps per call (`f104_census.py`, `f104_solver.{py,cpp}`, `f104_seqcheck.py`, `f104_aa.py`) — INTENT §11.225 / §5.145 / §11.223(b), 2026-09-07
+
+```
+./f104_census.py [--ini PATH] [--partition JSON] [--dump DUMP] [--json OUT]
+./f104_solver.py build|time|corpus|all <outdir> [--src ROOT] [--n 20000000]
+./f104_seqcheck.py <preOutdir> <postOutdir> [--calls 10] [--out FILE]
+./f104_aa.py <dumpA1> <dumpA2> <dumpB> [--key altaz_old] [--out FILE]
+./f104_aa.py --pairwise <label=dump> ... --same a,b [--exclude Earth] [--key K]
+```
+
+**What it measures.** `ITERATIVE_STEPS_PER_CALL = 2` (`iterative_orbits.hpp`)
+makes `EllipticalOrbit::eccentricAnomaly`'s four advancing branches and both
+comet `operator()` steps advance twice per call, so the D8 barrier's unchanged
+`1 + RESUME_EXTRA_ITERATIONS` refreshes buy ten Newton steps instead of five.
+Eris's parked readout goes 1.198725 deg -> 1.05951e-05 deg and of the 120 dump
+records it is the ONLY one whose position moves.
+
+### THE ONE SHAPE TO CARRY OUT OF HERE
+
+**IF THE CHANGE IS A LOOP COUNT, THE ITERATE SEQUENCE IS THE INVARIANT — CHECK
+IT BEFORE YOU LAUNCH ANYTHING.** Doubling a step per call does not change which
+numbers the map visits, only which one a call returns: post state after k calls
+== pre state after 2k calls, bit for bit. That check is seconds long, needs no
+display, and is the ONLY instrument here that can catch the loop being put in
+the wrong place — a loop around the seeding, or one leaving Laguerre-Conway's
+s/c outside itself, still halves every convergence count in the corpus and
+still looks like a fix. It also turns an already-landed measurement (F100's "9
+evaluations -> 1.09669e-05 deg") into a prediction of what the new binary will
+read, with no second convergence measurement.
+
+### The four shapes worth reusing
+
+- **SLICE THE FUNCTION OUT OF THE TREE, DO NOT MIRROR IT.** `orbit.cpp` pulls
+  in body.hpp, protosystem.hpp and ModularBody.hpp, so linking it standalone
+  means stubbing the engine; copying it (F102's shape) drifts. `f104_solver.py`
+  brace-matches the function out of the source at BUILD time, hashes the slice,
+  and the binary prints that md5 at every run — so a number always names the
+  source text that produced it. It also prints its own MEASURED steps per call
+  rather than trusting the constant.
+- **A PARTITION KEY FROM THE DATA, INCLUDING THE PARENT CHAIN.** `coord_func`
+  plus `orbit_eccentricity` decide the solver branch; the eye-frame position
+  composes the ANCESTORS' positions, so the class is transitive. Skipping that
+  loses Hiiaka and Namaka, which do not iterate (e == 0) and move anyway under
+  a `comet_orbit` parent.
+- **AN A/A FLOOR FROM ONE PAIR IS A WEAK ESTIMATOR, AND THIS TASK CAUGHT ITS
+  OWN.** `f104_aa.py`'s three-dump mode said "0 of 20 attributable"; a third
+  launch then beat that floor on 18 bodies no binary in the set can reach. Use
+  `--pairwise`: restrict to records whose orbit AND whole ancestor chain are
+  closed-form, print every pair, and read whether the A/B range STRADDLES the
+  A/A one. Here it does, so the channel is not evidence in either direction.
+- **BUILD THE NARROW READING OF A RULING AS A MUTATION, EVEN WHEN YOU EXPECT A
+  NULL.** Eris's branch alone is 120/120 indistinguishable from the class form
+  on the engine, which is the pre-registered result and which is what turns the
+  scope question from a correctness argument into a cost one.
+
+### Gotchas measured here, each of which cost a reading first
+
+- **`f100_run.sh --tag` selects the HYPOTHESIS, not the binary's age.** Both
+  F104 binaries carry F100's memo fix, so BOTH legs run `--tag post`; `--tag
+  pre` would demand `P u I` and fail on either.
+- **The result file is `<outdir>/f100_result.json`**, not `<tag>_<clock>_result
+  .json` — that naming lives inside F100's own scratch tree, not in the wrapper.
+- **`eval1` is not reproducible across launches** (5,8 here where §11.220's
+  table reads 5,9; Mars 2227 / 2231 / 2222 over three legs): the camera move's
+  duration in frames varies. Only the `eval0` column at the un-moved launch
+  state is a controlled comparison.
+- **`mat` is a Mat4f.** The identity control compares FLOATS, so an ulp-scale
+  double change is invisible there by construction; `altaz_new` is the sharper
+  channel and `altaz_old` is noise (above).
+- **The smoke suite's S5 distance moves with the WALL CLOCK.** It read
+  1.81437206 UA against §11.220(i3)'s 1.81715679 — a day of Mars's motion. A
+  pre-binary run in the same hour (1.81436396) is what attributes it; do not
+  quote S5's distance across days.
+- **`grep -c '^### F'` before every `fable-dispatch.md` commit**, and Earth is
+  excluded from any alt/az floor: its azimuth is undefined at the nadir and it
+  moves 19.58 deg between launches for that reason alone (§11.158(f3)).
+
+**Measured, code `474c595d` -> `ead2d478`, binaries `b5f08778` / `0c61f1b5` /
+`6b8085cb` (the branch-only mutation, reverted with `0c61f1b5` bit-reproduced):**
+sequence identity 120/120 across 12 arms (red controls 35/120, 73/120) ·
+partition 66/40/14 of 120 predicted from the field file before the fix and held
+body for body · Eris 1.1987248926268401 -> 1.05951e-05 deg, 2.029 AU of
+eye-frame position, the only record of 120 that moved (120/120 at a running
+clock) · F91 table one diff line, md5 `c125adf0` -> `1fe630a4`, Q2 88 -> 89 of
+90 · smoke suite rc 0 · D11 2.358 us/frame worst case, 0.236 % of 1 ms, from
+11.93 / 20.94 / 20.05 ns per extra step and the corpus's own composition · eight
+launches, canary green and frozen pair in == out on every one. Artifacts
+`artifacts/f104/` (~0.9 MB).
