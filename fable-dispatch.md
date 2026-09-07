@@ -1150,7 +1150,12 @@ test -e /home/claude/sc-f105 ; echo $? => 1
 **DoD:** predictions before the build; the pre leg; (a) the field; (b) the mutation measured
 and reverted; (c) the guard; P1–P6; §11 entry + stub; the three back-markers; the README line;
 trees clean; WIP cleared; baselines LAST.
-**WIP:**
+**WIP:** 2026-09-07 11:2x — gate 27/27 PASS + prose premises verified (display `:2` 2448x1332,
+`free -g` 52, `uptime -s` 2026-09-04 18:45:08, no proc, no lock, field md5 pristine, harness
+`65e2256`). CHECKPOINT 1: predictions committed (`artifacts/f105/prediction.txt`) BEFORE any
+build — the (20,2,8) partition by name, the 8 identity-frame values numerically, P2's two
+bands, P3's three states, P4's operator arm, P5's 8 lines, P6. Next: the canary, then the PRE
+leg on `0c61f1b5` (launch dump + the operator arm on the baseline binary).
 
 ---
 

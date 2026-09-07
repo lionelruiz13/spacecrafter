@@ -1,0 +1,287 @@
+F105 -- PREDICTIONS, COMMITTED BEFORE ANY BUILD AND BEFORE THE PRE LEG.
+Claude Opus 5 executor, task F105, dispatched by Claude Fable 5.1 (session 27).
+Written 2026-09-07 at code master-beta @ ead2d478, binary 0c61f1b5, harness
+65e2256, from the source read at that HEAD and from the tree's own declarations
+(anchor.ini, the F96 landed dump).  Nothing below is measured; every number is
+derived from a cited site or from a cited landed artifact, and every one of
+them can be wrong -- which is the point.
+
+===========================================================================
+0.  THE MODEL, STATED SO ITS FAILURE IS VISIBLE
+===========================================================================
+
+(i)  The dump's SECOND loop (ssystem_factory.cpp:1223-1245) emits the 30
+     new-only records and does NOT call the D8 barrier, so a dump is a use for
+     90 of 120 records (S11.220(j3)).  Adding `nb.useNow()` there makes it 120.
+
+(ii) `useNow()` (ModularBody.cpp:455-516) returns on its first line for a body
+     that is not `renderHidden` or has no parent (:457), so a record that is
+     not HIDDEN_* cannot be touched by the added call at all.
+
+(iii)For a hidden body the refresh happens IN A FRAME TAKEN FROM THE PARENT
+     (:474-475): `parent->matLocalToBodyPos` if the parent is itself hidden,
+     `parent->parkedChildFrame` otherwise.  `parkedChildFrame` is written ONLY
+     by `publishParkedFrame` (ModularBody.hpp:1003-1007), which runs only at
+     the walk's own sites (:944, :971, and dispatchUpdate's up-chain loop), and
+     it defaults to `Mat4f::identity()` (:2127).
+
+(iv) THE WALK CANNOT LEAVE THE CURRENT SYSTEM.  dispatchUpdate's up-chain loop
+     is `while (body->isNotIsolated)` and `ModularSystem`'s ctor sets
+     `isNotIsolated = false` (ModularSystem.cpp:196), so the climb stops AT
+     `SolarSystem` and `MilkyWay` / `Universe` are never visited.  Landed
+     evidence at the same site: both carry `dist` 0 and `evalCount` 0 in
+     artifacts/f96/leg_pre/cmd_p0_launch.json.gz.
+
+  ==> a use of a body parked under `Universe` computes in the IDENTITY frame,
+      which is S11.220(j4)'s hazard, and it is not a residue: it is 8 of the 30.
+
+===========================================================================
+P1.  THE (20, 2, 8) PARTITION OF THE 30 NEW-ONLY RECORDS, BY NAME
+===========================================================================
+Key built from the TREE (relation + parent chain + whether the walk visits the
+parent), never from a second dump.  Counts of the three classes: 20 / 2 / 8.
+
+CLASS A -- 20 UNCHANGED (useNow returns at :457, `!renderHidden`).  Neither the
+  added call nor the guard can touch these; every dumped field stays as the pre
+  leg records it, `evalCount` stays 0 (except SolarSystem's own walk state).
+    relation 4 : Universe
+    relation 5 : MilkyWay  SolarSystem  51PegSystem  AntaresSystem
+                 ArcturusSystem  CapellaSystem  DarkStarSystem  HelixDwarfSystem
+                 KeidSystem  Kepler16System  M1PulsarSystem  M27DwarfSystem
+                 M57DwarfSystem  NGC2392DwarfSystem  ProximaSystem  SiriusSystem
+                 TolimanSystem  Trappist1System  VegaSystem
+  (19 of the 20 carry `dist` 0; `SolarSystem` is the one the walk positions,
+   `dist` 1.01659262.)
+
+CLASS B -- 2 REFRESHED INTO A REAL EYE-FRAME POSITION (hidden, parent WALKED
+  and therefore publishing `parkedChildFrame`):
+    baryEarthMoon      parent Earth (walked; hiddenBodies = {baryEarthMoon})
+    orbit_autour_lune  parent Moon  (walked; hiddenBodies = {orbit_autour_lune})
+  These two are served by the barrier BOTH with the mutation and with the
+  guard: the guard changes nothing for them.  Values: P2.
+
+CLASS C -- 8 REFRESHED INTO THE IDENTITY FRAME (hidden, parent NEVER walked):
+    big_dipper                          parent Universe
+    center_sun                          parent Universe
+    galaxy_center                       parent Universe
+    pleiades                            parent Universe
+    sun_in_gal                          parent Universe
+    un_point                            parent Universe
+    orbit_autour_point (orbit centre)   parent Universe
+    orbit_autour_point                  parent "orbit_autour_point (orbit
+                                        centre)" -- a HIDDEN parent that is
+                                        itself unserved: the propagation case
+  With the MUTATION (no guard) these 8 take the identity frame and the dump
+  prints the numbers below as if they were eye-frame positions.  With the
+  GUARD they are NOT served, nothing is refreshed, and they keep `dist` 0,
+  `mat` translation (0,0,0), `evalCount` 0, `lastJD` 0.
+
+THE 8 IDENTITY-FRAME VALUES, PREDICTED NUMERICALLY (what the MUTATION's dump
+must print).  Derivation: with `frame` = identity and `boundToSurface` false
+(relation 1 = HIDDEN_ORBITING, ModularBody.hpp:323-330), transformParentToBodyPos
+does `mat_local_to_body.multiplyTranslation(getDisplayEclipticPos())` on an
+identity rotation, so mat.r[12..14] == the body's own eclipticPos, in float32,
+and `dist` == |eclipticPos|.  Seven of the eight are `still_orbit` anchors
+(CameraAnchors.cpp:230-235, 267-272), so the orbit RE-EVALUATED at any date
+returns the declared constant -- these are exact predictions, not bands:
+
+  name                              mat.r[12..14]                          dist
+  big_dipper                (-14.8249998, 7.86000013, 22.4869995)     28.0575367
+  center_sun                (0, 0, 0)                                 0
+  galaxy_center             (0, 0, 0)                                 0
+  pleiades                  (62.6399994, 108.129997, 10.9899998)     125.445789
+  sun_in_gal                (0.00499999989, -0.00100000005, 9.99999975e-05)
+                                                                       0.0050999999
+  un_point                  (10, 10, 10)                              17.3205081
+  orbit_autour_point (orbit centre)
+                            (1, 1, 1)                                  1.73205081
+  orbit_autour_point        (1,1,1) + phobos_special(jd - 0.0100 d)
+                            = (0.99998475, 0.99993965, 1.00000276) +- 4e-06
+                                                                       1.7320088 +- 4e-06
+
+  The declared sources: anchor.ini lines 9-13 (un_point 10/10/10), 43-48
+  (orbit_autour_point, coord_func phobos_special, orbit_center 1/1/1), 64-68
+  (pleiades), 71-75 (big_dipper), 78-82 (center_sun), 85-89 (galaxy_center),
+  92-96 (sun_in_gal).  The eighth is the only date-dependent one: its offset is
+  the SAME phobos_special ephemeris the body `Phobos` uses, so it is predicted
+  from Phobos's own record in the same dump (F96 landed: ecl =
+  (-1.52492667e-05, -6.03516492e-05, 2.75950288e-06), |ecl| = 6.23095e-05 AU)
+  with the light-travel difference named: Phobos is retarded by its own eye
+  distance 2.07169795 AU = 0.011964 d and the anchor by 1.7320508 AU =
+  0.010002 d, a 0.00196 d difference = 0.61 % of Phobos's 0.3189 d period =
+  2.2 deg of orbit = a 2.4e-06 AU chord.  Hence the +- 4e-06 band.
+
+  TWO OF THE EIGHT ARE PREDICTED TO PRINT AN UNCHANGED POSITION (center_sun and
+  galaxy_center are declared at 0/0/0), and that is a prediction and not an
+  escape: the class is defined by the MECHANISM, so those two must show the
+  mechanism in the fields the position cannot hide it in -- `evalCount` 0 -> 5
+  and `lastJD` 0 -> the frame's jd.  If the eight are read off the position
+  column alone, six move.
+
+  `evalCount` UNDER THE MUTATION: 5 for every one of the 8 and of the 2
+  (1 + RESUME_EXTRA_ITERATIONS with `dateFresh` false, ModularBody.cpp:513-515;
+  `evaluatedJD` is 0 for a never-evaluated body).  For the pair
+  "orbit_autour_point (orbit centre)" / "orbit_autour_point" the centre ends at
+  5 whichever of the two `forEach` reaches first (the second visit finds
+  dateFresh && sameFrame and returns).
+  `evalCount` UNDER THE GUARD: 5 for the 2, and 0 for the 8.
+
+STOP CONDITION (the mandate's): if the pre leg + the mutation do not give this
+(20, 2, 8) partition BY NAME, the guard's precondition is not what the mint
+read -- deliver (a) only, record the measured partition, report.
+
+===========================================================================
+P2.  THE 2 REFRESHED INTO A REAL FRAME -- BANDS, WITH THEIR ARITHMETIC
+===========================================================================
+Both bands are stated against the SAME dump's own Earth/Moon records, so they
+do not depend on the run's camera state or on the launch date.
+
+baryEarthMoon.  coord_func = barycenter with a = b = 1, body_A = Earth,
+  body_B = Moon (anchor.ini:54-61).  BarycenterOrbit2::positionAtTimev...
+  (orbit.cpp) returns J2000toVsop87 * (Moon-relative-to-Earth) * b/(a+b), i.e.
+  a ROTATED HALF of the Earth->Moon vector -- a rotation preserves length, so:
+      |pos(baryEarthMoon) - pos(Earth)| == 0.5 * |pos(Moon) - pos(Earth)|
+  to float32.  On the F96 landed launch state that is 0.5 * 0.002410758 =
+  0.00120538 AU, and `dist` lands in [0.00116274, 0.00124801] (the band is
+  Earth's own eye distance 4.26357e-05 either side of it).
+  PREDICTED TO DIFFER FROM THE LOADED VALUE: the record's `ecl` before any use
+  is 0.00125656 AU (the half-distance at the LOAD date, ctor site
+  ModularBody.cpp:120-128 evaluating at `parent->lastJD`), so a refresh at the
+  pinned JD 2461233.5 must move it to 0.00120538.  A measurement that returns
+  the loaded number is a refresh that did not happen.
+  NOT PREDICTED: the direction.  The J2000->VSOP87 rotation means the point is
+  NOT the midpoint of the two dumped positions; the angle between
+  (bary - Earth) and 0.5*(Moon - Earth) is bounded by 23.4393 deg and depends
+  on the Moon offset's own direction.
+
+orbit_autour_lune.  ell_orbit around the Moon, a = 1.819948658358799e5 km =
+  0.00121656 AU, e = 0.0061757 (anchor.ini:28-39).  So
+      |pos(orbit_autour_lune) - pos(Moon)| in [0.00120905, 0.00122407] AU
+  (perihelion..aphelion), and `dist` in [0.00119411, 0.00364227] (the Moon's
+  own eye distance 0.00241819 either side of the radius band).
+
+===========================================================================
+P3.  THE HEADER FIELD ON THREE SYSTEM STATES
+===========================================================================
+The field: `"oldSystem"` (SolarSystem | galactic | the `systems` map key) plus
+`"inSystem"` (the factory's own bool, ssystem_factory.hpp:1179), written by the
+FACTORY beside jd/timeSpeed/timePaused -- not in Core's `extraHeader` lambda,
+which carries Core-owned keys only (I2: `currentSystem`, `galacticSystem` and
+the `systems` map are the factory's members).
+
+  state 1  the launch scene            -> "oldSystem":"SolarSystem" "inSystem":true
+  state 2  after F101's `p23` prefix   -> "oldSystem":"galactic"    "inSystem":false
+           (`moveto alt 1.1E+16` -> leaveSystem(), ssystem_factory.cpp:772-778)
+           and the dump's old half is 0/120, so `dumpread.load_dump` RAISES
+           `EmptyOldHalf` and the message NAMES `galactic`.
+  state 3  after F101's `p25desc`      -> "oldSystem":"SolarSystem" "inSystem":true
+           (the descent re-enters, `changeSystem` -> :294-297), old half back at
+           90 (F101 measured 90/121 for that leg).
+
+  A dump written before this change carries NO `oldSystem` key: the reader must
+  say so rather than print `None`, and the five committed control dumps under
+  artifacts/f101/controls/ are exactly that case.
+
+===========================================================================
+P4.  THE OPERATOR ARM ON ONE OF THE 8, WITH THE `dist 0` CONTROL
+===========================================================================
+`select planet pleiades` + `flag track_object on` at a PINNED clock.  The
+selection is a use every frame (ModularSystem.cpp:269-270) and `select planet`
+resolves a NEW-ONLY name through the ModularObject bridge (S11.216(i)), so this
+channel exercises (j4) on the ROUND'S OWN BASELINE BINARY 0c61f1b5, with no
+code change at all -- which is why the pre arm is run there and not on a
+mutation build.
+
+  PRE-GUARD (binary 0c61f1b5, and unchanged by (a) and (b)):
+   a) the dumped record for `pleiades` while it is SELECTED reads
+      dist 125.445789 and mat translation (62.6399994, 108.129997, 10.9899998)
+      -- P1's class-C value -- where the same launch's first dump, taken before
+      the selection, reads dist 0.  The selection channel alone produces it.
+   b) the camera aim CONVERGES (the target is fixed, so the plan finishes) to a
+      state A_pleiades.
+   c) the control `select planet 51PegSystem` (a `dist 0` system, class A) +
+      track in the SAME launch converges to a state A_zero, and
+      A_pleiades != A_zero, separation > 10 deg.
+   d) the walked control `select planet Mars` + track, run before and after
+      each subject arm, returns to the same camera state to < 1e-06 rad -- so
+      a difference between (b) and (c) cannot be blamed on the camera move.
+
+  POST-GUARD (the (c) binary):
+   e) the same `pleiades` arm now aims at the ZERO-VECTOR class: A_pleiades ==
+      A_zero within 1e-06 rad, measured against the 51PegSystem control in the
+      same launch.  One wrong readout replaced by a known one (S11.216(i)'s
+      zero-vector question, which stays the owner's).
+   f) the dumped record for `pleiades` while SELECTED stays dist 0.
+
+===========================================================================
+P5.  THE D12 LINES -- EXACTLY 8, ONCE
+===========================================================================
+The guard logs ONE line per body, the first time a use is refused, with the
+D12 three parts (what / consequence / fix) and the S2(f) "To fix:" shape.
+  * exactly 8 lines after the first dump on the (c) binary, one per class-C
+    name, none for the 2 of class B and none for the 90 both-tree records
+    (every hidden body of the field corpus hangs off a WALKED parent inside
+    SolarSystem, so all 48 are served);
+  * a SECOND dump in the same launch adds ZERO lines (a once-per-body flag);
+  * CHANNEL, stated because the word "applog" is ambiguous here: `cLog::write`
+    goes to the log FILE (log/spacecrafter.log in the farm), and only to the
+    console when `isDebug` (log.cpp).  F101's "applog" is the process's stdout.
+    Both are captured and both counts are reported; the prediction is 8 in the
+    log file.
+
+===========================================================================
+P6.  WHAT MUST NOT MOVE
+===========================================================================
+  * the 90 both-tree records: byte-identical between the pre leg (0c61f1b5) and
+    the (c) binary at the same pinned JD and the same un-moved launch state --
+    the change touches no walked body, and the added call is in the loop that
+    runs AFTER those records are written;
+  * the 20 class-A records: byte-identical too;
+  * the F91 parity table: md5 1fe630a4 (F104's delivered value; c125adf0 is the
+    pre-F104 record), `f91_run.sh --expect post` 0 FAIL / 0 NOTE;
+  * `f100_partition.py`'s CLASS I KEY is unchanged (`dist == 0` still means "a
+    position no walk and no use ever wrote"), but its MEMBERSHIP on a post-F105
+    launch dump drops from 29 to 27: baryEarthMoon and orbit_autour_lune leave
+    it because a use now reaches them.  Predicted here so a later F100-shaped
+    run reads 27 and does not call it a regression.
+
+===========================================================================
+7.  THE FIX SHAPE, STATED IN ADVANCE
+===========================================================================
+(a) ssystem_factory.cpp: the two header keys (above) + dumpread.py's message.
+(b) THE MUTATION, built first and reverted: `nb.useNow();` before
+    `nb.dumpTrace(out)` in the second loop, NO guard -- the only build in which
+    the 8 identity-frame values of P1 are observable at all.
+(c) THE GUARD, in ModularBody.{hpp,cpp} only:
+      - `bool parkedFramePublished = false;` beside `parkedChildFrame`, set in
+        `publishParkedFrame` (the one writer, so the two members cannot desync);
+      - `useNow()` returns `bool`: true = served.  `!renderHidden || !parent`
+        returns true (fresh by construction).  A hidden body is served iff its
+        parent is: a HIDDEN parent iff `parent->useNow()` said so, a non-hidden
+        parent iff `parent->parkedFramePublished`.  Unserved => LOG ONCE and
+        return false BEFORE any refresh, so the readout keeps its unevaluated
+        value instead of gaining a wrong one;
+      - `bool unservedLogged` beside it, the once-per-body flag;
+      - the dump's call stays.
+    Callers ignore the new return value, so the widening is invisible to them
+    (I1).
+RISK NAMED IN ADVANCE: the guard is placed BEFORE the memo test, so a body
+parked in the CURRENT frame whose parent has not published yet would be refused
+where the old code returned "fresh" at the memo.  On this corpus that window
+does not exist (every parent is walked every frame before any dump), and P5's
+"exactly 8" is the check that would catch it: a 9th line would name the body it
+happened to.
+
+===========================================================================
+8.  PREDICTIONS I EXPECT TO BE REFUTED, STATED SO THE REFUTATION IS VISIBLE
+===========================================================================
+R1. The task section's P2 band for baryEarthMoon is "Earth's own record +- the
+    Moon's distance x the mass ratio".  I predict that is WRONG and that the
+    right band is HALF the Earth-Moon distance: the anchor is declared a = b =
+    1 (anchor.ini:58-59) and its own comment says "a mi-chemin entre la terre
+    et la lune", and BarycenterOrbit2 uses b/(a+b) with no mass anywhere.  If
+    the measurement lands at a mass-ratio offset (4670 km = 3.1e-05 AU) instead
+    of 0.00120538 AU, this prediction is the one that failed.
+R2. I predict the D12 lines land in log/spacecrafter.log and NOT in the
+    process's stdout (P5's channel note).  If the section's "applog" is read as
+    stdout, the count there is 0 and that is not a missing line.
