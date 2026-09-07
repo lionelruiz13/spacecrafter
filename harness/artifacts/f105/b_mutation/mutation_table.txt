@@ -1,0 +1,53 @@
+F105 (b) -- THE MUTATION: `nb.useNow()` in the new-only loop with NO guard.
+binary ad7a4e47 (code a30b2c75 + the one call), against the PRE leg's 0c61f1b5,
+both at jd 2461233.5, timeSpeed 0, the un-moved launch state, fresh farms.
+Predictions committed at harness 80ee70a BEFORE any build.
+
+CLASS C -- THE EIGHT, PREDICTED (from anchor.ini + the parent chain) vs MEASURED
+name                               predicted mat.r[12..14]                      measured mat.r[12..14]                       dist pred     dist meas     evalCount pre->mut
+big_dipper                         (-14.8249998, 7.86000013, 22.4869995)        (-14.8249998, 7.86000013, 22.4869995)        28.0575367    28.0575371    0 -> 5   maxdiff 0
+center_sun                         (0, 0, 0)                                    (0, 0, 0)                                    0             0             0 -> 5   maxdiff 0
+galaxy_center                      (0, 0, 0)                                    (0, 0, 0)                                    0             0             0 -> 5   maxdiff 0
+pleiades                           (62.6399994, 108.129997, 10.9899998)         (62.6399994, 108.129997, 10.9899998)         125.445789    125.445793    0 -> 5   maxdiff 0
+sun_in_gal                         (0.00499999989, -0.00100000005, 9.99999975e-05) (0.00499999989, -0.00100000005, 9.99999975e-05) 0.0050999999  0.00510000018 0 -> 5   maxdiff 0
+un_point                           (10, 10, 10)                                 (10, 10, 10)                                 17.3205081    17.320509     0 -> 5   maxdiff 0
+orbit_autour_point (orbit centre)  (1, 1, 1)                                    (1, 1, 1)                                    1.73205081    1.73205078    0 -> 5   maxdiff 0
+orbit_autour_point                 (0.99998475, 0.99993965, 1.00000276)         (0.999986887, 0.999939144, 1.00000167)       1.7320088     1.73200905    0 -> 5   maxdiff 2.14e-06
+
+Seven of the eight are EXACT (maxdiff 0, float32 for float32); the eighth is the
+only date-dependent one and lands 2.14e-06 AU from the predicted point, inside the
+pre-registered +-4e-06 band, whose width was derived from the light-travel
+difference between its own eye distance and Phobos's.  Its measured offset from
+(1,1,1) is (-1.3112999999953523e-05, -6.0856000000053534e-05, 1.6700000000646753e-06), |offset| = 6.22751347e-05 AU, against Phobos's own ecl (-1.52492967e-05, -6.03516419e-05, 2.75951766e-06) (|.| = 6.23095231e-05).
+
+center_sun and galaxy_center are declared at 0/0/0, so their POSITION does not move
+and the mechanism shows where the position cannot hide it: evalCount 0 -> 5 and
+lastJD 0 -> the retarded frame date.  Predicted in the same words before the run.
+
+CLASS B -- THE TWO, whose parent the walk DOES visit
+  baryEarthMoon      mat [-0.000759782153, 0.000714097521, 0.00064739614]  dist 0.00122732471  evalCount 5
+      |bary - Earth| = 0.00120537917811
+      0.5*|Moon-Earth| (the prediction) = 0.00120537921915   -- agreement 4.1e-11 AU
+      its `ecl` moved from the LOADED [-0.000575621729, 0.00105479709, -0.000367436704] to [0.000297056045, 0.00110900833, -0.000367147441]: the refresh happened.
+  orbit_autour_lune  mat [-0.00133181189, 0.000694334623, 0.000406995678]  dist 0.00155610708  evalCount 5
+      |oal - Moon|   = 0.00122049141295   band [0.00120905, 0.00122407] (a(1+-e), anchor.ini:32-39)
+
+THE PARTITION MOVES EXACTLY WHERE PREDICTED (f100_partition on each dump):
+  pre  |P| 29  |I| 29  |PnI| 10
+  mut  |P| 29  |I| 21  |PnI| 2
+  I loses 8: the 6 class-C bodies with a non-zero declared position and the 2 of
+  class B.  center_sun and galaxy_center STAY in class I with evalCount 5, which is
+  the sharpest statement of why `dist == 0` is a key about the position and not
+  about the barrier.
+
+SECOND DUMP IN THE SAME LAUNCH: every one of the 10 unchanged, evalCount still 5 --
+the memo (date, parent frame) holds for these bodies too.
+
+THE READOUT THE MUTATION PRODUCES, from the dump's own navstr sidecar (pleiades):
+  pre binary : NEW nav AD/DE : 00h00m00s / +90d00'00"  Magnitude : -nan   (the
+               degenerate zero-vector readout S11.216(i) already names)
+  mutation   : NEW nav AD/DE : 10h10m26s / +34d33'43"  Az/Alt +329d54'38"/-05d01'05"
+               Magnitude : inf
+  i.e. the instrument stops saying `I have no position for this body` and starts
+  printing a sky position that is a fiction of the identity frame.  That is the
+  argument for the precondition, in the channel an operator reads.

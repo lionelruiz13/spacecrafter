@@ -1,0 +1,9 @@
+=== pre 0c61f1b5 vs mutation ad7a4e47, un-moved launch state
+  A = /home/claude/sc-f105/legs/pre_0c61f1b5/dumps/pre_0c61f1b5_p0_launch.json
+  B = /home/claude/sc-f105/legs/b_mutation_ad7a4e47/dumps/b_mutation_ad7a4e47_p0_launch.json
+  camera state identical: True
+  jd A 2461233.5  jd B 2461233.5
+  walked         n= 72  identical mat translation  72/ 72  identical altaz_new  71/ 71
+  parked (P)     n= 29  identical mat translation  21/ 29  identical altaz_new  19/ 19
+      moved: baryEarthMoon, big_dipper, orbit_autour_lune, orbit_autour_point, orbit_autour_point (orbit centre), pleiades, sun_in_gal, un_point
+  unreached (I)  n= 21  identical mat translation  21/ 21  identical altaz_new   0/  0

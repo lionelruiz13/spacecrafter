@@ -1163,8 +1163,13 @@ refreshes `pleiades` into the identity frame (`mat` = 62.6399994, 108.129997, 10
 (a) DONE — code `ead2d478 → a30b2c75` (`ssystem_factory.cpp`, +30 lines: `oldSystem` + `inSystem`),
 binary `0c61f1b5 → f26d5ad7`; **P3 confirmed on all three states** (launch `SolarSystem`/true ·
 `p23` `galactic`/false with the `EmptyOldHalf` message naming it · `p25desc` `SolarSystem`/true,
-90/121), `dumpread` self-test still 17 PASS. Next: (b), the MUTATION (`nb.useNow()` with no
-guard) — the 8 identity-frame values against the pre-registered numbers, then revert.
+90/121), `dumpread` self-test still 17 PASS. CHECKPOINT 4: (b) the MUTATION built (`ad7a4e47`),
+measured and REVERTED (`f26d5ad7` bit-reproduced from the restored source) — **the (20, 2, 8)
+partition holds BY NAME**; the 8 identity-frame values match the pre-registered numbers exactly
+(maxdiff 0 for 7 of 8; the date-dependent 8th 2.14e-06 inside its +-4e-06 band), `evalCount`
+0 → 5 on all ten, `|bary − Earth|` = 0.001205379178 against the predicted 0.5·|Moon−Earth| =
+0.001205379219; inertness 72/72 walked + 21/21 unreached, exactly 8 records moved. Next: (c),
+the guard.
 
 ---
 

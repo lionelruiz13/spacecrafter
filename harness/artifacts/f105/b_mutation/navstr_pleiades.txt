@@ -1,0 +1,14 @@
+=== /home/claude/sc-f105/legs/pre_0c61f1b5/dumps/pre_0c61f1b5_p0_launch.json.navstr
+pleiades
+  NEW nav: AD/DE : 00h00m00s / +90°00'00"
+SA +360°00'00" GHA +289°54'19" LHA +295°16'19"@ Az/Alt/coA: +90°00'00"/+90°00'00"/-00°00'00" LPA +64°43'41"
+  NEW inf: pleiades
+Magnitude : -nan
+AD/DE : 00h00m00s / +90°00'00"
+=== /home/claude/sc-f105/legs/b_mutation_ad7a4e47/dumps/b_mutation_ad7a4e47_p0_launch.json.navstr
+pleiades
+  NEW nav: AD/DE : 10h10m26s / +34°33'43"
+SA +207°23'30" GHA +137°17'48" LHA +142°39'48"@ Az/Alt/coA: +329°54'38"/-05°01'05"/+95°01'05" LPA +142°39'48"
+  NEW inf: pleiades
+Magnitude : inf
+AD/DE : 10h10m26s / +34°33'43"
