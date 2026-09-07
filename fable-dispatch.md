@@ -1424,11 +1424,13 @@ test -e /home/claude/sc-f106 ; echo $? => 1
 
 **DoD:** predictions before any run; the fix; P1–P6; §11 entry + stub; §5.147 FIXED; the
 back-markers; the README homes + the heredoc line; R5; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-07 checkpoint 2 — predictions pre-registered (`acee76b`, before any run); **P1
-GREEN**: the pre-fix collapse reproduced to the digit on the reset pair (3829→3816, 94→81, 13
-UNPAIRED by name, `cebebf44` gone, maps 83/798/2 with §11.224(i)'s three md5s, tip `d40f4eb1`,
-545/282/286) — one prediction of mine and one clause of §11.224(h) REFUTED: the rewritten merge
-keeps TWO parents (the top 2 of the side chain have no twin). Pair reset to state U. Next: the fix.
+**WIP:** 2026-09-07 checkpoint 3 — predictions pre-registered (`acee76b`); P1 GREEN (`80ee9d7`, the
+collapse to the digit incl. §11.224(i)'s three map md5s; §11.224(h)'s "parents converge" clause
+REFUTED). **THE FIX IS IN** (`--commit-filter`, five fields compared, `signatures-dropped` →
+§2(f) + summary) and **P2/P3 GREEN**: 3829 unchanged, `cebebf44` keeps sha AND `gpgsig`, all 15
+keep their shas, the merge keeps both parents (second = the ORIGINAL `6ec2f43f`), UNPAIRED 0, map
+membership predicted sha-for-sha (79 code / 798 harness, `diff` empty both sides), 543/282/286,
+idempotent. Pair reset. Next: P5 (the signed negative case + its mutant), P6, P4.
 
 ---
 

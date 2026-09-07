@@ -1,0 +1,42 @@
+Script started on 2026-09-07 18:23:38+02:00 [COMMAND="/home/claude/spacecrafter/claude/supervised-by.sh --supervisor='Test Supervisor <test@example.invalid>'" <not executed on terminal>]
+y
+y
+=== CODE   : /home/claude/sc-f103/pair/spacecrafter
+    range origin/master-beta..HEAD  --  94 commit(s) in range
+    new commits authored: 'Claude' -- wildcard, resolved from the co-author trailer  [file:/home/claude/.gitconfig]
+    nothing selected (78 already carry Supervised-By, 16 not Claude-authored)
+
+=== HARNESS: /home/claude/sc-f103/pair/spacecrafter/claude
+    range origin/CC-harness..HEAD  --  799 commit(s) in range
+    new commits authored: 'Claude' -- wildcard, resolved from the co-author trailer  [file:/home/claude/.gitconfig]
+    nothing selected (786 already carry Supervised-By, 5 not Claude-authored)
+
+    8 commit(s) have the bare 'Claude' author and NO single
+    Co-Authored-By identity to resolve it from. They are left entirely
+    untouched -- no author, no trailer -- so they stay visible. Name the
+    model yourself and re-run:
+  [ MANUAL   ] 07c0a7e  11.117: record the evidence-hygiene re-run (byte-identical on the delivered binary)
+  [ MANUAL   ] 6112d88  B39 DELIVERED: 11.117 entry, 5.31 closed, 5.46 + D37 opened, F11 flipped
+  [ MANUAL   ] ca9e258  F11 WIP: checkpoint 2, behaviour landed and green
+  [ MANUAL   ] 17d0693  B39 gate GREEN; b11 hidden column INVERTED; b19 re-verified through the barrier
+  [ MANUAL   ] 825b81e  F11 WIP: checkpoint 1, RED baseline recorded
+  [ MANUAL   ] 9464657  B39 gate + the RED baseline it must invert (b39_hidden.py)
+  [ MANUAL   ] 6f160d9  B40 DELIVERED: galactic path + one .ini line grammar (INTENT 11.115)
+  [ MANUAL   ] 9480799  B40 checkpoint 1: the galactic gate runs through the production names
+
+        --author-fix=07c0a7ed='Claude <Model> <version>' \
+        --author-fix=6112d885='Claude <Model> <version>' \
+        --author-fix=ca9e2589='Claude <Model> <version>' \
+        --author-fix=17d06932='Claude <Model> <version>' \
+        --author-fix=825b81e9='Claude <Model> <version>' \
+        --author-fix=9464657b='Claude <Model> <version>' \
+        --author-fix=6f160d93='Claude <Model> <version>' \
+        --author-fix=94807995='Claude <Model> <version>' \
+
+Cross-repo: 138 distinct 'Code: ... @ <sha>' trailer(s) in the harness range;
+            those pointing into the rewritten code range are remapped in the SAME
+            harness pass. Harness *.md citing code shas is repointed in E.
+
+Nothing to do in either repo.
+
+Script done on 2026-09-07 18:23:40+02:00 [COMMAND_EXIT_CODE="0"]

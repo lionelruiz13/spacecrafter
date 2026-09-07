@@ -54,3 +54,66 @@ merge's second parent is one of those two, so it stays distinct from the first.
     parent"* (supervised-by.sh:1001).  Both are corrected at their homes.
   Nothing about the DECISION changes: the 13 lost commits and the lost signature
   are the reason F106 exists, and they are measured, not inferred.
+
+
+THE TWO EXTRACTIONS, PROVED EQUAL TO GIT'S OWN (harness/f106_extract_check.sh)
+------------------------------------------------------------------------------
+The commit filter compares the ORIGINAL object, and two of its five fields come
+out of an extraction of mine rather than out of a git plumbing call:
+
+  * the MESSAGE, split at the first TRULY EMPTY line of the raw object
+    (`${OBJ%%$'\n\n'*}`) -- filter-branch does the same split with a
+    read-until-empty-line loop (/usr/lib/git-core/git-filter-branch:465-474);
+  * the PARENTS, read from the object's own `parent` header lines -- the mandate
+    named `git rev-parse "$GIT_COMMIT"^@`.
+
+  code range     94 commits, 1 signed : 0 message disagreements, 0 parent ones
+  harness range 798 commits, 0 signed : 0 message disagreements, 0 parent ones
+
+ABLE TO FAIL, and the failure is the one the armour invites: with F106_MUTATE=1
+the header is split at the first line that is empty OR BLANK, which lands inside
+the PGP armour, because a gpgsig continuation line that is "blank" is a single
+SPACE, not an empty line.  On the code range that mutant disagrees on exactly
+one commit -- cebebf44, 824 bytes against git's 37 -- and on no other.
+
+
+P2 -- THE POST-FIX SCRIPT ON THE SAME RESET PAIR.  Log p2.log.gz, 3369 lines.
+-----------------------------------------------------------------------------
+  predicted                    measured
+  3829 -> 3829, range 94       3829 and 94                            P2.1 ok
+  cebebf44 keeps sha+gpgsig    reachable from the new HEAD; `cat-file -p
+                               cebebf44 | grep -c '^gpgsig'` = 1      P2.2 ok
+  all 15 keep their shas       all 15 reachable from the new HEAD     P2.3 ok
+  merge has TWO parents, the   7c4b0243  parents = e782b6ff 6ec2f43f
+  second one UNCHANGED         -- the second is the ORIGINAL sha      P2.4 ok
+  UNPAIRED 0, no warnings      0 'WARNING:', 0 'READ BEFORE PUBLISHING' P2.5 ok
+  code map 79 pairs, code.tsv  "Code sha map: 79 commit(s) changed sha.",
+  81 lines, repair 2           code.tsv 81, repair.tsv 2              P2.6 ok
+  THE MEMBERSHIP, sha for sha  `diff` of the predicted 79 against the map's
+                               own old side: EMPTY.  78 selected + f0c8ef83
+                               (unselected, parent 70dee810 rewritten), and
+                               the 15 side-chain commits kept.        P2.6 ok
+  harness 798 rebuilt, 0 kept  harness.tsv 798; `diff` of the predicted set
+                               against the map's old side: EMPTY      P2.7 ok
+  3 VERIFIED lines, same text  78/0, 786/8, trailers 2/0              P2.8 ok
+  tree unchanged               HEAD^{tree} == 474c595d^{tree} == 2d4dff35 P2.9 ok
+  543 citations / 282 files    "Repointed 543 citation(s) across 282
+                               file(s)"; closing commit 286 files     P2.10 ok
+  tip != d40f4eb1              79eeaa23                               P2.11 ok
+  no signature report          0 lines matching 'GPG signature'       P2.12 ok
+
+  The gpgsig census over the post-rewrite range finds exactly ONE signed commit,
+  cebebf44 -- the same object, not a rebuilt one.
+
+  The two repair pairs come out identical to P1's (5f68d374 -> e5f0889b,
+  841175d3 -> 5ad587af): the twins they resolve to sit below the side chain in
+  topological order, so nothing the fix changes reaches them.
+
+
+P3 -- IDEMPOTENCE.  Log p3.log.
+-------------------------------
+Second run on the pair P2 left behind, same arguments: rc 0,
+"Nothing to do in either repo.", both previews "nothing selected"
+(code 78 already supervised / 16 not Claude; harness 786 / 5 / 8 MANUAL = 799),
+HEADs unmoved (79eeaa23 / 42b06795), no second sha-maps directory,
+master-beta still 3829, cebebf44 still signed and still reachable.  P3.1-2 ok

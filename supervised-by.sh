@@ -93,8 +93,8 @@
 # original PARENTS verbatim. Therefore:
 #   * merges keep both parents -- nothing is re-merged, no conflicts possible
 #   * content cannot change    -- we assert this at the end rather than trust it
-#   * a commit whose message is untouched rebuilds byte-identical and keeps its
-#     SHA; only rewritten commits and their descendants get new SHAs
+#   * a commit nothing changes about is not rebuilt AT ALL -- see the next
+#     section; only rewritten commits and their descendants get new SHAs
 #
 # The filter is THIS SCRIPT re-invoked as `supervised-by.sh --msg-filter`, so
 # the selection shown in the preview and the selection actually applied are the
@@ -102,6 +102,58 @@
 #
 # (Modern alternative: `git filter-repo --message-callback`, which is faster but
 #  is a separate install. filter-branch is used here because it ships with git.)
+#
+# ---------------------------------------------------------------------------
+# THE COMMIT FILTER: THE OTHER COMMITS ARE NOT REWRITTEN, THEY ARE LEFT ALONE
+# ---------------------------------------------------------------------------
+# [vixy 2026-09-07, INTENT 11.227(a), verbatim]:
+#
+#     "the rewrite should only rewrite the commit message (and author) on
+#      commit Claude is the author, from the last pushed change to the HEAD.
+#      I don't know much about how verified commit works, though, but the
+#      commit themselves shouldn't be affected, so their signature shouldn't
+#      move."
+#
+# filter-branch does NOT do that on its own. It rebuilds every commit in the
+# range: its default commit filter is `git commit-tree "$@"`, which mints a new
+# object out of tree + parents + the ident environment + the filtered message.
+# For an unselected UNSIGNED commit that object comes out byte-identical, so the
+# sha does not move and the rebuild is invisible -- which is why nobody noticed.
+# For a SIGNED one it does not: `commit-tree` cannot write a `gpgsig` header, so
+# the signature is dropped, and the sha moves with it. Worse, where the unsigned
+# object that results ALREADY EXISTS in the history, the "rebuilt" commit IS
+# that pre-existing commit, and a duplicated chain collapses onto its twin.
+# Measured on a clone of this very pair (11.224(h), reproduced three times):
+# master-beta 3829 -> 3816 commits, thirteen gone and one contributor's GitHub
+# signature with them, while `git diff --quiet` kept passing because the tip
+# TREE was untouched.
+#
+# So the rewrite is given a `--commit-filter`, and it answers one question per
+# commit: is ANYTHING about this commit different? A GPG signature signs the
+# WHOLE object -- tree, parents, author, committer, message -- so it survives
+# exactly when all five are unchanged, and those five are what is compared:
+#
+#     all five equal  ->  print $GIT_COMMIT: the original object stays, sha and
+#                         gpgsig and all. filter-branch accepts an existing id.
+#     otherwise       ->  `git commit-tree "$@"`, exactly as before.
+#
+# Three of the five would not do. Comparing only message, parents and author
+# would let a --tree-filter or a committer rewrite through, and emitting the
+# original id for a commit that is NOT the original produces a silently WRONG
+# history instead of a silently shortened one. Today the other two are inert by
+# construction -- no tree/index/subdirectory filter is passed, so filter-branch
+# hands the commit's own tree over verbatim, and the env-filter above exports
+# GIT_AUTHOR_NAME and nothing else -- but a validation belongs on the value, not
+# on the caller's promise to have validated it.
+#
+# THE ONE CASE THAT CANNOT BE SAVED, and it is named rather than hidden: a
+# signed commit whose MAPPED PARENT changed, i.e. one sitting downstream of a
+# rewritten Claude commit inside the range. Its object must change, so its
+# signature cannot survive, by construction and not by any choice made here.
+# Each one is recorded and reported by name -- a section-2(f) block at the
+# rewrite and again in the closing summary. In the live pair that set is empty
+# (the single signed commit hangs off an already-pushed parent), and a run that
+# prints nothing about signatures is a run in which nothing was lost.
 #
 # ---------------------------------------------------------------------------
 # WHY IDENTITIES ARE MATCHED BY NAME AND NOT BY EMAIL
@@ -489,6 +541,97 @@ if [ "${1:-}" = "--msg-filter" ]; then
     fi
 
     printf '%s' "${NEW}"
+    exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# THE COMMIT-FILTER MODE
+# ---------------------------------------------------------------------------
+# filter-branch runs this once per commit, INSTEAD of `git commit-tree "$@"`,
+# with: the filtered message on stdin, `<tree> -p <mapped parent>...` in "$@",
+# $GIT_COMMIT set to the ORIGINAL sha, the author/committer environment as the
+# env-filter left it -- and whatever this prints on stdout is taken as the new
+# commit id, INCLUDING an id that already exists. The rule is in the header
+# section "THE COMMIT FILTER"; this is its implementation.
+#
+# The five fields a signature signs are compared against the ORIGINAL OBJECT,
+# read here rather than asked of git a field at a time: `git cat-file commit`
+# once per commit is the whole cost. The header ends at the first TRULY EMPTY
+# line -- a `gpgsig` block's own blank lines are indented by one space, so they
+# are not it, which is what makes this the same split filter-branch itself makes
+# when it feeds the message to the msg-filter.
+# ---------------------------------------------------------------------------
+if [ "${1:-}" = "--commit-filter" ]; then
+    shift
+    CF_ARGS=("$@")                     # kept verbatim for `git commit-tree "$@"`
+
+    # The message as filter-branch will store it. Same sentinel as the
+    # msg-filter, for the same reason: $(...) strips trailing newlines and a
+    # commit message's are part of it.
+    CF_MSG=$(cat; printf X); CF_MSG=${CF_MSG%X}
+
+    CF_OBJ=$(git cat-file commit "${GIT_COMMIT}"; printf X); CF_OBJ=${CF_OBJ%X}
+    CF_HEAD=${CF_OBJ%%$'\n\n'*}
+    CF_ORIG_MSG=${CF_OBJ#"${CF_HEAD}"$'\n\n'}
+
+    # One pass over the header. `case` and not `[ ] &&`: an AND-list whose test
+    # fails returns non-zero, and as a loop body's last statement that becomes
+    # the loop's status under `set -e` (the trap measured at 11.224(f)).
+    # Continuation lines of a multi-line header start with a space, so none of
+    # these patterns can match one.
+    CF_TREE=""; CF_PARENTS=""; CF_AUTHOR=""; CF_COMMITTER=""; CF_SIGNED=0
+    while IFS= read -r CF_L; do
+        case "${CF_L}" in
+            "tree "*)      CF_TREE=${CF_L#tree } ;;
+            "parent "*)    CF_PARENTS="${CF_PARENTS}${CF_L#parent }"$'\n' ;;
+            "author "*)    CF_AUTHOR=${CF_L#author } ;;
+            "committer "*) CF_COMMITTER=${CF_L#committer } ;;
+            gpgsig*)       CF_SIGNED=1 ;;
+        esac
+    done <<< "${CF_HEAD}"
+
+    # What "$@" is asking for, in the same two shapes.
+    CF_NEW_TREE=${CF_ARGS[0]:-}; CF_NEW_PARENTS=""; CF_I=1
+    while [ "${CF_I}" -lt "${#CF_ARGS[@]}" ]; do
+        if [ "${CF_ARGS[${CF_I}]}" = "-p" ] && [ $((CF_I + 1)) -lt "${#CF_ARGS[@]}" ]; then
+            CF_NEW_PARENTS="${CF_NEW_PARENTS}${CF_ARGS[$((CF_I + 1))]}"$'\n'
+            CF_I=$((CF_I + 2))
+        else
+            # A shape this comparison does not understand. Do not claim equality
+            # for something unread: fall through to the rebuild.
+            CF_NEW_PARENTS="?unparsed"; break
+        fi
+    done
+
+    # The ident lines `git commit-tree` would write, rebuilt from the
+    # environment filter-branch exported. set_ident writes GIT_*_DATE as
+    # `@<seconds> <tz>`; the object stores it without the `@`.
+    CF_AD=${GIT_AUTHOR_DATE:-};    CF_AD=${CF_AD#@}
+    CF_CD=${GIT_COMMITTER_DATE:-}; CF_CD=${CF_CD#@}
+    CF_A_ENV="${GIT_AUTHOR_NAME:-} <${GIT_AUTHOR_EMAIL:-}> ${CF_AD}"
+    CF_C_ENV="${GIT_COMMITTER_NAME:-} <${GIT_COMMITTER_EMAIL:-}> ${CF_CD}"
+
+    CF_SAME=1
+    [ "${CF_NEW_TREE}"    = "${CF_TREE}"      ] || CF_SAME=0
+    [ "${CF_NEW_PARENTS}" = "${CF_PARENTS}"   ] || CF_SAME=0
+    [ "${CF_MSG}"         = "${CF_ORIG_MSG}"  ] || CF_SAME=0
+    [ "${CF_A_ENV}"       = "${CF_AUTHOR}"    ] || CF_SAME=0
+    [ "${CF_C_ENV}"       = "${CF_COMMITTER}" ] || CF_SAME=0
+
+    if [ "${CF_SAME}" = 1 ]; then
+        printf '%s' "${GIT_COMMIT}"
+        exit 0
+    fi
+
+    # Rebuilt. If the original carried a signature, this is where it is lost --
+    # `commit-tree` has no way to write a `gpgsig` header. Record it so rewrite()
+    # can name it; a signature that disappears without being named is the whole
+    # failure this mode exists to end.
+    if [ "${CF_SIGNED}" = 1 ] && [ -n "${SIG_DROPPED:-}" ]; then
+        printf '%s\t%s\n' "${GIT_COMMIT}" \
+            "$(git log -1 --format='%an  %s' "${GIT_COMMIT}")" >> "${SIG_DROPPED}"
+    fi
+    printf '%s' "${CF_MSG}" | git commit-tree "${CF_ARGS[@]}"
     exit 0
 fi
 
@@ -880,6 +1023,10 @@ case "${CONFIRM}" in [yY]*) ;; *) echo "aborted."; exit 0 ;; esac
 
 WORK=$(mktemp -d); trap 'rm -rf "${WORK}" "${AUTHOR_FIX_MAP}"' EXIT   # one trap: a
                     # second `trap ... EXIT` REPLACES the first, it does not add.
+# Where --commit-filter records a signature it could not carry over. Exported
+# for the same reason CODE_MAP is: the filter is a separate process, and this is
+# the only channel back from it. One line per commit, `<sha> TAB <who>  <subject>`.
+SIG_DROPPED="${WORK}/signatures-dropped"; export SIG_DROPPED
 CODE_TIP=$(git -C "${CODE_REPO}" rev-parse HEAD)
 HARNESS_TIP=""
 [ -n "${HARNESS_REPO}" ] && HARNESS_TIP=$(git -C "${HARNESS_REPO}" rev-parse HEAD)
@@ -911,10 +1058,16 @@ rewrite() {
     # in place. Harmless when the code repo fails first (filter-branch does not
     # move the ref on abort), fatal when the harness fails AFTER the code repo
     # succeeded -- the inconsistent pair this script exists to prevent.
+    # Where the signature losses of THIS repo's pass start in the file: the two
+    # passes share one file, and each must report only its own.
+    local sig_before=0 sig_after=0
+    if [ -s "${SIG_DROPPED:-/dev/null}" ]; then sig_before=$(wc -l < "${SIG_DROPPED}"); fi
     if ! FILTER_BRANCH_SQUELCH_WARNING=1 \
          git -C "${repo}" filter-branch -f \
             --env-filter "eval \"\$($(printf '%q' "${SELF}") --emit-env)\"" \
-            --msg-filter "$(printf '%q --msg-filter' "${SELF}")" -- "${range}"; then
+            --msg-filter "$(printf '%q --msg-filter' "${SELF}")" \
+            --commit-filter "$(printf '%q --commit-filter' "${SELF}") \"\$@\"" \
+            -- "${range}"; then
         echo "STOP: filter-branch failed in ${repo}." >&2; rollback_all; exit 1
     fi
     if ! git -C "${repo}" diff --quiet "${tip}" HEAD; then
@@ -939,6 +1092,32 @@ rewrite() {
     fi
     echo "VERIFIED ${repo}: content identical, selection now empty (${expected} rewritten," \
          "${expected_manual} left as unresolvable wildcards)."
+
+    # A signature that could not be carried over is REPORTED, here and again in
+    # the closing summary. It is the one loss this rewrite can still cause, it is
+    # somebody else's signature, and it is irreversible once published.
+    if [ -s "${SIG_DROPPED:-/dev/null}" ]; then sig_after=$(wc -l < "${SIG_DROPPED}"); fi
+    if [ "${sig_after}" -gt "${sig_before}" ]; then
+        echo
+        echo "  WARNING: $((sig_after - sig_before)) commit(s) in ${repo} carried a GPG signature"
+        echo "  that could NOT be carried over, and were rebuilt WITHOUT it:"
+        tail -n +$((sig_before + 1)) "${SIG_DROPPED}" | while IFS=$'\t' read -r s d; do
+            echo "      ${s:0:8}  ${d}"
+        done
+        echo "  WHAT: each of these is a SIGNED commit that had to be rebuilt because one of"
+        echo "    its MAPPED PARENTS changed -- it sits downstream of a rewritten commit"
+        echo "    inside the range. Every other commit this run did not select keeps its"
+        echo "    object untouched, sha and signature included; these cannot."
+        echo "  CONSEQUENCE: a signature signs the WHOLE object -- tree, parents, author,"
+        echo "    committer, message -- so a parent's new sha invalidates it by construction,"
+        echo "    and 'git commit-tree' cannot write a 'gpgsig' header in any case. The"
+        echo "    rebuilt commit is content-identical and UNSIGNED; its old sha is in the map."
+        echo "    Check:  git -C ${repo} log --format='%G? %h %an %s' ${range} | grep -v '^N '"
+        echo "  THIS IS NOT DECIDED HERE. It is the signer's commit, not this script's, and"
+        echo "    it is cheaper to decide before the force-push than after. Undo is printed"
+        echo "    at the end of this run."
+        echo
+    fi
 }
 
 # build_map <repo> <original-tip> <outfile> -- old full sha -> new full sha.
@@ -998,7 +1177,10 @@ build_map() {
         echo "    DROPS the 'gpgsig' header, so a GPG-signed commit rebuilds as its unsigned"
         echo "    form. Where an identical unsigned commit already exists elsewhere in the"
         echo "    history, the rebuilt commit IS that commit: a duplicated chain collapses"
-        echo "    onto its twin and the merge that joined them loses a parent."
+        echo "    onto its twin, one commit per twin, and stops where the twins run out."
+        echo "    Since the --commit-filter was added an unselected commit is no longer"
+        echo "    rebuilt at all, so reaching this warning means something else changed the"
+        echo "    commit -- read the list above before believing the count."
         echo "    Check:  git -C ${repo} cat-file commit <old-sha> | grep -c gpgsig"
         echo "    Find where one went:  git -C ${repo} log HEAD --format='%H %T' \\"
         echo "        | awk -v t=\$(git -C ${repo} log -1 --format=%T <old-sha>) '\$2==t'"
@@ -1155,8 +1337,9 @@ after the PRE-rewrite tips of the two repositories: the state the map maps FROM.
     repair.tsv    trailers that were ALREADY dangling when the run started,
                   mapped to the fingerprint twin the run repaired them to
 
-Each line is `<old-full-sha> TAB <new-full-sha>`. A commit that rebuilt
-byte-identical kept its sha and appears in no file.
+Each line is `<old-full-sha> TAB <new-full-sha>`. An unselected commit whose
+parents did not change keeps its object -- sha and signature -- and appears in
+no file.
 
 `repair.tsv` is a verbatim SUBSET of `code.tsv` for the same run: the script
 appends the repair pairs to the code map so the message filter consults one
@@ -1369,6 +1552,18 @@ if [ "${UNPAIRED_TOTAL}" -gt 0 ]; then
     echo "READ BEFORE PUBLISHING: ${UNPAIRED_TOTAL} rewritten commit(s) had no counterpart in"
     echo "         the new history -- the branch is shorter and the map cannot resolve them."
     echo "         Search this output for 'WARNING:' for the list and the cause."
+    echo
+fi
+if [ -s "${SIG_DROPPED:-/dev/null}" ]; then
+    # Same reason as above: the block at the rewrite scrolls past, and this is
+    # the last screen before the operator decides whether to push.
+    echo "READ BEFORE PUBLISHING: $(wc -l < "${SIG_DROPPED}") commit(s) carried a GPG signature that"
+    echo "         could NOT be carried over -- each had a parent rewritten by this run, and a"
+    echo "         signature signs the parents too. They are content-identical and now UNSIGNED:"
+    while IFS=$'\t' read -r s d; do
+        echo "             ${s:0:8}  ${d}"
+    done < "${SIG_DROPPED}"
+    echo "         Every other unselected commit kept its object, its sha and its signature."
     echo
 fi
 echo "Undo:    git -C ${CODE_REPO} reset --hard ${CODE_TIP}"
