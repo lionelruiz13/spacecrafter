@@ -36,6 +36,57 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-07, supervising session 27 — LovelyFoxDev, the SATURDAY-TOOL /
+TWO-STEP-SOLVER / DUMP-CHANNEL round: F103 · F104 · F105]:** trigger = the §0b verbatim line and
+nothing else. Open at **Monday 08:57 CEST** — a weekday morning; the owner replied to the session-26
+close at 08:4x (§11.223, recorded by the previous session before it closed at `805c157`), so this
+session asks NOTHING in-line and writes its decisions to §3 in Q-70's shape. Warm-up (every value
+`date`-measured 08:57:10–08:58:40, the command beside the claim — Q-67): both trees CLEAN at open,
+code `474c595d` / harness `805c157` (the four post-close commits of session 26: the close, its
+M-delta correction, §11.223, the Y2 site correction); definition-drift assert MATCH (`8e364a3a`);
+binary `b5f08778` current (mtime 2026-09-06 23:21, 0 `src/` files newer); same boot as sessions
+21–26 (`uptime -s` 2026-09-04 18:45:08); `:2` 2448x1332 under `.5KBYU3`, `loginctl` sessions 14/15
+alive (the owner's own seat0 sessions listed beside them — since boot, not new); canary `--no-scene`
+**exit 0** (30 members, `f56/canary/20260907-085838`); config/ssystem md5 pristine
+(`03fbee59`/`545a51ef`); no `spacecrafter` in `/proc/*/comm`; no lock file; RAM **52 GiB available
+of 59**, `-j24`; next free §11 **224** (live ∪ archive, `max+1` — my first one-liner printed the
+max, 223, and was corrected by the premise-block command before it reached a section); unpushed
+**94 code / 796 harness** at open. Live `### F` **4 → 0** by **archival pass 19** at OPEN (update-s25 +
+F99/F100/F101/F102, 867 lines + two seam tidies = 871 removed, 2986 → 2115; manifest
+`2026-09-07-pass19`, pre-md5 `9dbab0d0` reproduced in-process AND from disk, archive files written
+before the live surface — Q-56; commit `06eec39`; **nothing carried**) **→ 3** by the mints below.
+Instrument baselines at open (run 08:58:34): scan **254/322/144** · pair-check **239/214/25/118** ·
+D 35 · **D2 12** · I 89 · I2 37 · **M 89** — over the session-26 close (252/319/143 · 238/213/25/118 ·
+D2 11 · M 88) every delta is §11.223's two commits: +1 entry file/+1 live pair, +2 raw lines/+3
+pairs/+1 uncredited, D2 +1 = §11.223's stub strike (the Y2 correction), M +1 = `11.223 [entry_only
+11.215, 11.220, 5.145, 5.84]` (entry-wins, licensed) — recorded, not chased. QUEUE CONSUMPTION
+(the session-26 close's re-ordered list, in order): (1) pass 19 — DONE; (2) **`supervised-by.sh`'s
+silent fallback made LOUD → F103** (S–M — widened by the read: B1's fix is the one line §11.212(g)
+priced, but the tool the owner operates Saturday also DISCARDS the maps it builds — `build_map` writes
+into a `mktemp -d` the EXIT trap deletes — and §11.223(d)'s requirement that the old→new map be
+committed is the same tool's change; his phrase "commit tracking" is read as that map — a veto
+point; exercised on a throwaway nested clone pair whose scratch origins are set behind by the live
+counts, the live pair `--dry-run` only); (3) **§5.145's fix → F104** (S–M — the corrected ruling as
+written: two solver steps per call, the loop untouched; the SCOPE read as the iterative CLASS — all
+four advancing branches of `eccentricAnomaly` + both comet steps — with Eris's branch alone built as
+the MUTATION so the two forms are measured side by side, a veto point; the three-class partition of
+the 120 records predicted from the field census: 60 iterative (the six `comet_orbit` bodies are ALL
+parked), 60 not); (4) **§5.146** — on his word, NOT minted (§11.223(c): the contract stated, "edit
+it" not yet said); (5) **the dump channel's two items → F105** (S–M — widened by the read: §11.220(j4)
+is not a residue beside (j3), it is 8 of the 30 new-only records — the seven hidden children of the
+never-walked `Universe` and `orbit_autour_point` — that the barrier call would refresh into the
+IDENTITY frame; so the call lands WITH the barrier's missing precondition (a never-published frame
+is not served, one D12 line per body) and the mutation measures (j4)'s magnitude once; the partition
+(20, 2, 8) predicted by name); (6) owner-word items (§5.142's policy, `orbit_lon`, §5.144's leg),
+(7) the (g) tail, (8) instrument residues, (9) riders — carried, not minted. Picks: **F103 → F104 →
+F105** (the Saturday tool first — no engine change, independent; then the engine change whose
+baselines F105 inherits; three executors, §0b.2's sweet spot). Deliveries: all to the parent
+(§11.224+, refreshed at each dispatch). Launch classes: F103 NONE (no launch, no canary — said in
+its section); F104 and F105 FUNCTIONAL (`--no-scene`). Remotes: local contains origin on both;
+push impossible here — the owner's push is R5, Saturday/Sunday per §11.223(d).
+
+---
+
 **Update [Claude Fable 5.1 2026-09-06, supervising session 26 — LovelyFoxDev over SSH from the
 laptop, the NULL-PARENT / PARKED-READOUT / SYSTEM-SWITCH / UNIFORM-POOL round: F99 · F100 · F101 ·
 F102]:** trigger = the §0b verbatim line PLUS one environment note [vixy 2026-09-06, verbatim]:
@@ -529,7 +580,478 @@ session-26 mints **F99** (§5.141's fix, both sites), **F100** (§5.139's leg + 
 fix), **F101** (§5.143's leg + the old-half assert at the one reader), **F102** (§5.142's
 reading, priced).** **Session-26 round (2026-09-07): F99 §11.219 · F100 §11.220 · F101 §11.221 · F102
 §11.222 — four for four DELIVERED and accepted; §5.145/§5.146 minted at acceptances; archival pass
-19 (update-s25 + F99–F102) DEFERRED to the next open.**
+19 (update-s25 + F99–F102) DEFERRED to the next open.** **Session-27 (2026-09-07): archival pass 19
+DONE at open (`06eec39`); live below: the session-27 mints **F103** (`supervised-by.sh` B1 made
+loud + the SHA maps persisted — the tool the owner operates Saturday), **F104** (§5.145's fix on
+the corrected ruling: two solver steps per call), **F105** (the dump channel's two items: the
+header's system identity + the barrier for the 30 new-only records, with the never-published-frame
+precondition).**
+
+---
+
+### F103 — `supervised-by.sh`'s SILENT fallback made LOUD (B1, §11.212(g)) and the rewrite's old→new SHA maps PERSISTED beside the ledger: `reachable_in_code` (`:233-240`) and `build_repair_map` (`:781`) take the branch name out of a historical `Code:` trailer and, when `refs/heads/<name>` no longer resolves, judge reachability against `HEAD` with no message — measured non-verdict-preserving (§11.212(g): `is-ancestor … master-beta` rc 0, `… 2023-master` rc 1; the same flip reproduced on today's HEAD at the mint); after the owner's rename every one of the 788 trailers naming `master-beta` takes that fallback, and he operates this tool Saturday/Sunday (§11.223(d)). The fix: an unresolvable trailer branch is a STOP at the preview (step A, before any prompt, `--dry-run` included) naming the branch, its trailer count and the fix — a `--branch-alias=<old>=<new>` channel in the `--author-fix` shape — never a substitute target; `:781` becomes an assertion. The maps `build_map` writes into the `mktemp -d` the EXIT trap deletes (`:674`, `:802`, `:844`) are copied under `claude/sha-maps/` and committed by the closing commit, so the ledger's pins and trailers resolve through them by convention (the archival rule's resolution-by-insertion, never a search-and-replace over the record) — the owner's "commit tracking" [derived reading, veto point §3]. Exercised on a THROWAWAY nested clone pair under `/home/claude/sc-f103/` whose scratch origins sit behind exactly as the live pair's do; the live pair sees `--dry-run` only [S–M, harness tooling; no engine code; no launch; veto points §3 on the two forms]
+
+**Why now / mandate:** §11.223(d) [vixy 2026-09-07 verbatim: *"Y4 - will be operated on saturday
+or sunday, along with supervised_by.sh patching of commit history with commit tracking"*] on top of
+§11.212(g) B1 (F92's breakage scan: the fallback *"is not verdict-preserving"*, *"the fix is one
+line: warn (or refuse) when the branch named in a trailer is gone"*) and the session-25/26 queues
+(*"`supervised-by.sh` B1 (owner-authorized)"*; *"S, decision-free — the tool he operates Saturday;
++ the SHA-map requirement stated at §11.223(d)"*). Why the maps [derived at §11.223(d), the
+reason restated here so it is challengeable]: a history rewrite re-hashes every commit it touches;
+step E (`:848-905`) repoints TRACKED `*.md` tokens in the working tree — which reaches neither the
+git history of those files nor any foreign surface (`~/shared/QUEUE.md` bodies and HOST-EVENTS
+copies, the owner's notes, scratch trees, this file's archive) — the untracked spaces
+`~/shared/QUEUE.md`'s header names as the reason IDs are never renumbered ("a kind of
+use-after-free"). A committed map is the resolver for those spaces, the archive drawer's
+convention one axis over: a cited sha that resolves to no reachable commit is looked up as a
+PREFIX in the maps (the `map_lookup` rule the script already has, `:263-274`). What the owner's
+"commit tracking" means is READ as this and said so in §3 — his correction may differ.
+
+**Measured at dispatch (supervisor, 2026-09-07 09:11, code `474c595d`, harness `06eec39`; the
+PREMISES block re-runs what is a command):** the script is 976 lines, md5 `4a55d463`; the two
+sites: `:233-240` (`target=HEAD`, the `refs/heads/${br}` test, `merge-base --is-ancestor`) and
+`:781` (the same test inside `build_repair_map`); `reachable_in_code`'s only caller is
+`dangling_trailers` (`:250-256`), itself called at `:634` (the preview count, BEFORE the y/N),
+`:643`, `:795` (`build_repair_map`'s input), `:835` and `:839` (the post-rewrite assertion) —
+the task re-reads and confirms the caller set; `--author-fix` is the existing hand-repair channel
+(5 occurrences: parsing `:401-409`, `resolve_author` `:205-217`); `--branch-alias` appears 0
+times; `claude/sha-maps` does not exist; the harness history carries **788** `Code:` trailers,
+every one naming `master-beta`; upstreams `origin/master-beta` (94 behind) / `origin/CC-harness`
+(797 behind at the mint — refreshed at dispatch); `refs/heads/master-beta` = `474c595d` EXISTS
+today, so the fallback is LATENT — and the flip is reproducible on today's tip: `rev-list --count
+refs/heads/master-beta..474c595d` = **0** (reachable), `refs/heads/2023-master..474c595d` = **490**
+(not — `194c6074` is the deployed line's tip); `git branch --contains 474c595d` names `master-beta`
+alone; the `merge-base --is-ancestor` form the script uses is what these count (the instrument
+refuses `git merge…` as a mutating token, so the premise carries the read-only twin);
+`git config user.name` = `Claude` at every scope — the WILDCARD the script resolves from the
+`Co-Authored-By: Claude Fable 5.1` trailer (present on the last commit of both repos); `.gitignore:85`
+= `claude` is TRACKED, so a clone of the code repo ignores the nested harness clone as the live
+pair does; `/usr/bin/script` exists (the pty driver — `:887 if [ -t 0 ]` makes the repoint prompt
+proposal-only on a pipe); git 2.51.0, `filter-branch` present behind its deprecation banner. The
+tool's homes: `README.md:129` (the repo contract), `harness/README.md:4220` (F92's note),
+`DEPLOYMENT-MAP.md:269`, §11.212(g).
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f103/prediction.txt`, committed before any run):
+P1 PRE-fix on the clone pair with `refs/heads/master-beta` renamed to `main` and HEAD on
+`2023-master`: `--dry-run` proceeds SILENTLY and reports N dangling trailers — predict N from
+`git rev-list 2023-master..master-beta` intersected with the trailer set, state the number; P2
+POST-fix, the same clone state: `--dry-run` STOPs at step A with one §2(f) block — what (788
+trailers name `master-beta`, which no local ref resolves), consequence (their reachability cannot
+be judged; the old code judged them against HEAD, which flips the verdict — §11.212(g)), fix
+(`--branch-alias=master-beta=main`, or `git branch master-beta main`) — exit 1, no prompt reached;
+P3 POST-fix with `--branch-alias=master-beta=main`: 0 dangling and the preview counts identical to
+the un-renamed clone's, to the digit; P4 the FULL run on the un-renamed clone pair (pty-driven
+`y`/`y`, `--supervisor='Test Supervisor <test@example.invalid>'`): both repos rewritten, the three
+`VERIFIED` lines, `claude/sha-maps/<stamp>/code.tsv` + `harness.tsv` (+ `repair.tsv` when
+non-empty) committed by the closing commit, each map's line count = that repo's rewritten-commit
+count, every pair fingerprint-equal (`%T|%at|%ae|%s`) old vs new, the `.md` repoint as before;
+P5 a second run on the rewritten clone: *"Nothing to do in either repo."*; P6 the LIVE pair:
+`--dry-run` before and after the change prints the same preview (N code / N harness selected, 0
+dangling) and both live trees stay clean with HEADs unmoved — asserted before and after each of
+the two dry-runs. (2) **THE FIX** in `supervised-by.sh`: (a) `reachable_in_code` returns three
+outcomes and never substitutes: reachable (0), unreachable (1), branch-unresolvable (2: `br`
+non-empty, no `refs/heads/${br}`, no alias); an alias map `--branch-alias=<old>=<new>`
+(repeatable; parsed beside `--author-fix` at `:394-417`; `<new>` must resolve as a local branch at
+parse time, else `error:` + exit 1) consulted before the ref test; (b) `dangling_trailers` (or a
+sibling `unresolvable_trailers`) separates the two failure classes so step A can STOP — printed
+BEFORE the confirmation, BEFORE *"Nothing to do"*, and under `--dry-run` too (exit 1: a preview
+that would lie must not exit 0); the block §2(f)-shaped, one line per unresolvable branch with its
+trailer count, then the two fixes; (c) `:781` — the same alias lookup, and an unresolvable branch
+there is `STOP … rollback_all; exit 1` (unreachable by construction after (b): an assertion, not a
+fallback); (d) THE MAPS: after `:844`, copy `${WORK}/code.map`, `harness.map` and `repair.map`
+(each when non-empty) to `${HARNESS_REPO}/sha-maps/<UTC yyyymmddThhmmssZ>-<code-tip8>-<harness-tip8>/`
+as `code.tsv` / `harness.tsv` / `repair.tsv` (the TSV the script already writes — `<old-full-sha>
+TAB <new-full-sha>`, one line per commit whose sha changed — nothing re-rendered, I9), plus
+`sha-maps/README.md` written ONCE (the contract: a line's meaning, the files never edited, the
+prefix-resolution rule, newest map first); `git add` them; the closing commit (step E) becomes
+UNCONDITIONAL whenever a map was written — `EXPECTED` (`:912`) = the touched `.md` set ∪ the new
+map files, and every NOT-COMMITTED branch (`:916-930`) and `--no-commit` name the map files, so
+nothing is left uncommitted in silence; (e) the header comment (`:123-133`) gains the map
+paragraph — the file documents its own rule (I1). NOTHING else moves: the selection rule, the
+msg-filter, the identity grammar, the clean-tree check and the rollback are untouched — asserted
+by the diff. (3) **THE PROOF** on the clone pair: `/home/claude/sc-f103/origin/{code,harness}.git`
+as bare clones of the LIVE repos (reads only), their tips then `update-ref`'d to the live
+`origin/master-beta` / `origin/CC-harness` shas so the scratch upstreams are behind by exactly the
+live counts (a premise); the pair cloned NESTED (`sc-f103/pair/spacecrafter` +
+`…/spacecrafter/claude`, upstreams set, `git status` clean in both); P1–P5 there; explicit
+timeouts on every call (Q-68: `filter-branch` over ~900 commits is minutes). The live pair: P6
+only. (4) **RECORD:** §11.⟨next⟩ FIRST + stub; §11.212(g) B1 back-marker at BOTH homes (FIXED,
+the form); `harness/README.md:4220` annotated + a `supervised-by.sh` section stating the alias
+channel and the map convention; `README.md:129` gains the `sha-maps/` line (the repo contract);
+`DEPLOYMENT-MAP.md:269` annotated; the §3 `[Y4]` node is the supervisor's at acceptance; WIP per
+§0.6; D14.
+
+**Boundaries:** `claude/supervised-by.sh`, `claude/sha-maps/README.md` (new), the three README/
+map homes, the ledger; NO engine code; NO edit of any tracked `.md` beyond the record files; the
+LIVE pair is NEVER rewritten and never invoked without `--dry-run`; every rewrite under
+`/home/claude/sc-f103/`; no `run_in_background`; nothing under `/tmp` carries (the script's own
+`mktemp` is its own — the persisted maps are the proof they left it). No launch, no display, no
+canary — a task that needs none says so.
+
+**Discriminating checks:** (a) P1 vs P2 on the SAME clone state — silent pre-fix / STOP post-fix
+(both ways); (b) P3 — the alias restores the un-renamed preview to the digit; (c) P4 — the maps
+committed, fingerprint-verified pair by pair, counts equal to the rewritten sets; (d) P5
+idempotence; (e) P6 — the live pair unmoved (HEADs, status) and its preview identical pre/post;
+(f) the script diff confined to the four sites + the arg parser + the header; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that are not
+commands: the harness HEAD as the prompt states it; the live pair clean at every check; the
+executor never types `y` at a prompt of the LIVE pair (there is none to reach under `--dry-run`).
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 474c595d
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => b5f08778
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 224
+grep -c '^### F' claude/fable-dispatch.md => 3
+git rev-list --count origin/master-beta..HEAD => 94
+test $(git -C claude rev-list --count origin/CC-harness..HEAD) -ge 797 && echo ok => ok
+test $(git -C claude log --format='%B' | grep -cE '^Code:[[:space:]]+[^[:space:]]+[[:space:]]+@[[:space:]]+[0-9a-f]{7,40}[[:space:]]*$') -ge 788 && echo ok => ok
+# the tool, re-resolved at HEAD (content drift = abort)
+md5sum claude/supervised-by.sh | cut -c1-8 => 4a55d463
+wc -l < claude/supervised-by.sh => 976
+sed -n '233,240p' claude/supervised-by.sh | grep -c 'target=HEAD\|refs/heads/\${br}\|merge-base --is-ancestor' => 4
+sed -n '781p' claude/supervised-by.sh | grep -c 'refs/heads/\${br}' => 1
+sed -n '250,256p' claude/supervised-by.sh | grep -c 'dangling_trailers()\|reachable_in_code' => 2
+sed -n '634p' claude/supervised-by.sh | grep -c 'BASELINE_DANGLING=\$(dangling_trailers' => 1
+sed -n '674p' claude/supervised-by.sh | grep -c 'WORK=\$(mktemp -d); trap' => 1
+sed -n '802p;844p' claude/supervised-by.sh | grep -c 'build_map' => 2
+sed -n '887p' claude/supervised-by.sh | grep -c 'if \[ -t 0 \]' => 1
+sed -n '912,913p' claude/supervised-by.sh | grep -c 'EXPECTED=\|ACTUAL=' => 2
+grep -c -- '--author-fix' claude/supervised-by.sh => 5
+grep -c -- '--branch-alias' claude/supervised-by.sh => 0
+test -e claude/sha-maps ; echo $? => 1
+# the repo pair as the tool will see it
+git -C claude log --format='%B' | grep -E '^Code:[[:space:]]+[^[:space:]]+[[:space:]]+@' | awk '{print $2}' | sort -u => master-beta
+git rev-parse --abbrev-ref '@{upstream}' => origin/master-beta
+git -C claude rev-parse --abbrev-ref '@{upstream}' => origin/CC-harness
+git rev-parse --verify -q refs/heads/master-beta | cut -c1-8 => 474c595d
+git rev-parse --verify -q refs/heads/2023-master | cut -c1-8 => 194c6074
+git rev-list --count refs/heads/master-beta..474c595d => 0
+git rev-list --count refs/heads/2023-master..474c595d => 490
+git branch --contains 474c595d --format='%(refname:short)' | tr '\n' ' ' => master-beta
+git config user.name => Claude
+git log -1 --format='%B' | grep -c 'Co-Authored-By: Claude Fable 5.1' => 1
+git -C claude log -1 --format='%B' | grep -c 'Co-Authored-By: Claude Fable 5.1' => 1
+grep -c '^claude$' .gitignore => 1
+which script | head -1 => /usr/bin/script
+git --version => git version 2.51.0
+# the record homes
+grep -n 'supervised-by.sh:236-238' claude/harness/README.md | cut -d: -f1 => 4220
+sed -n '51p' claude/INTENT/11.212.md | grep -c 'B1 .*supervised-by.sh:236-238' => 1
+grep -c 'supervised-by' claude/DEPLOYMENT-MAP.md => 1
+test -e /home/claude/sc-f103 ; echo $? => 1
+```
+
+**DoD:** predictions before any run; the fix at the four sites + the alias channel + the map
+persistence; P1–P6 measured; §11 entry + stub; §11.212(g) marker; the README/map homes; trees
+clean; WIP cleared; baselines LAST.
+**WIP:**
+
+### F104 — §5.145's fix on the owner's CORRECTED ruling (§11.223(b), [vixy verbatim]: *"keeping the same iteration count but doubling each iteraton per cycle on the newton path (or the one Eris involves)"*): the ITERATIVE solvers take TWO steps per call where they took one — `EllipticalOrbit::eccentricAnomaly`'s four advancing statements (`orbit.cpp:524`, `:531`, `:543`, `:559`; the `e == 0` and `e == 1` returns untouched) and `IterativeEll::operator()` / `IterativeHyp::operator()` (`iterative_orbits.hpp:97`, `:41`) — ONE constant in ONE home; the barrier's `1 + RESUME_EXTRA_ITERATIONS` loop untouched (`ModularBody.cpp:512-514`; `ModularBody.hpp:338` stays 4), so a parked body's use gives 2 + 8 = 10 steps where F100 measured 9 → 1.1e-05° (§11.220(j1)); `orbit.cpp` is SHARED, so the OLD path converges twice as fast per frame after a date jump — an as-if change on the comparison baseline, strictly more exact (veto point §3) — and §5.84's residual changes shape (annotated at the fix); the three-class partition PREDICTED from the field census before any build: 60 iterative bodies (54 `ell_orbit` + 6 `comet_orbit`, the six comets ALL parked), of which the PARKED ones move toward old by their own 5-step residual (Eris by 1.1987°) and the WALKED ones by ulps, while the 60 non-iterative records (`*_special`, `*_custom`, `e == 0`) stay byte-identical; the MUTATION (Eris's branch alone) discriminates the class from the instance; the cost under D11 measured on the solver itself [S–M, engine, BOTH paths — the veto point above]
+
+**Why now / mandate:** §5.145 [measured 2026-09-06, §11.220(j1) (F100); minted at F100's
+acceptance; **RESOLVED 2026-09-07 → §11.223(b)** on two owner messages, the second correcting
+the first reading: *"Y2 - double the iterations per cycle for those types of orbits only,
+otherwise it might became slightly noticeable at high simulation speed"* then *"Wait, why 1+8 ?
+shouldn't it be 2+8 then, by keeping the same iteration count but doubling each iteraton per cycle
+on the newton path (or the one Eris involves) ?"*]; session-26 close queue position 3 (*"S,
+decision-free: the Newton path of those types takes two steps per call, 2 + 8, the loop
+untouched"*). **The scope of "those types" is READ here and said so, because the two forms
+differ in what they fix [derived]:** the mechanism is *one step per call from a stale seed*
+(§5.145's own row, `ModularBody.hpp:1033`), which every ITERATING branch of `eccentricAnomaly`
+shares — the `e < 0.2` fixed-point iteration (`:524`, LINEAR convergence, factor e), the
+`0.2 ≤ e < 0.9` Newton step (`:531`, Eris's), the two Laguerre-Conway steps (`:543` elliptic,
+`:559` hyperbolic) — and both comet solvers' Newton step; so the CLASS form doubles all six, and
+the INSTANCE form (Eris's branch alone) is the row's symptom. The owner's parenthesis *"(or the one
+Eris involves)"* locates the change, it does not restrict it to one band [derived reading; the
+narrower form is a veto point in §3 with this argument, and the task builds it as the MUTATION so
+the two are measured side by side]. Cost bound [derived, the task measures]: one extra solver step
+per iterative body per evaluation — 60 bodies × two paths per frame ≈ 120 steps of one
+`sin`/`cos` pair and a division — the order of microseconds against D11's 1 ms; the barrier's
+loop, which the first reading would have doubled at 5 full subtree refreshes per parked body per
+frame at a running clock, is what his first sentence priced.
+
+**Measured at dispatch (supervisor, 2026-09-07 09:11, code `474c595d`):** the sites above,
+each a premise line; the field file: **54 `ell_orbit`** (12 with e ≥ 0.2 — neried 0.747, neso
+0.630, setebos 0.561, sycorax 0.510, **Eris 0.437 (hidden)**, laomedeia 0.385, prospero 0.331,
+pasiphae 0.293, halimede 0.262, carme 0.260, psamathe 0.223, ananke 0.217 — the other 42 below
+0.2, 8 of them e = 0) and **6 `comet_orbit`**, all `EllCometOrbit` (e < 1) and ALL hidden:
+Pallas 0.231, Juno 0.257, Vesta 0.089, Haumea 0.191, Makemake 0.15, Sedna 0.859; F100's parked
+set `P \ I` (19, `artifacts/f100/partition_f96_leg_pre.json`) by solver: **11 iterative**
+(Arrokoth 0.037, Ceres 0.080, Charon 0.013, Eris 0.437, Nix 0.016 — `ell_orbit`; Haumea, Juno,
+Makemake, Pallas, Sedna, Vesta — `comet_orbit`), **5 with e = 0** (`return M`, no iteration:
+Goldilocks_Zone, Kerberos, Namaka, Solar_System, Styx), Pluto `pluto_special`, and Hiiaka /
+Hydra_ — both-tree bodies whose `ssystem.ini` sections the exact-key census did not match (spelled
+otherwise in the file): the task resolves them from the dump's names against the file's sections.
+The batch path `EllipticalOrbit::fastPositionAtTimevInVSOP87Coordinates` (`orbit.cpp:447-458`:
+10 pre-iterations from a zero `batchLastE`, then one step per sample) goes through the same
+function and doubles with it — its consumers (trails, orbit lines) and cost are the task's to
+name. Comments that become false: `ModularBody.hpp:1033-1034` (*"exactly ONE Newton step"*),
+`ModularBody.cpp:505-507`, `CameraAnchors.cpp:484`, `TrailModule.cpp:219` — `grep -rn 'ONE
+Newton\|one Newton' src` = **5** lines, each updated. F100's record for Eris
+(`parked_table_prepost.txt`): `Eris | 1.19872 / 170.716 / 5,5 | 1.19872 / 1.09669e-05 / 5,9`;
+the F91 table at `c125adf0` (fr) with Q2's two exceptions (§11.220(i2): Eris 1.199089259, Puck
+0.000277777); instruments `f100_freeze.py` (`--stages freeze --clock pinned`, the parked table),
+`f100_partition.py`, `f100_identity.py`, `f91_run.sh --expect post` + `f91_parity.py`,
+`f90_rehearsal_run.sh`, `dumpread.py`; the supervisor's F100 acceptance runs at
+`/home/claude/sc-f100/supervisor/post` (Eris 1.1987249° reproduced there); `artifacts/f102/
+f102_sizes.cpp` as the shape of a standalone harness compiled against the tree.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f104/prediction.txt`, before any build): P1 the
+THREE-CLASS partition of the 120 records from the field census + F100's partition JSON,
+independent of any dump: NON-ITERATIVE (byte-identical `mat` translation and altaz at the
+un-moved launch state on both clocks), WALKED-ITERATIVE (differences of ulps — state the bound and
+its reason: one extra step on a converged seed), PARKED-ITERATIVE (each named body moves toward
+old by its own residual — Eris from 1.1987° to ≤ 3e-05° (the band of F100's 9- and 15-step
+values), the others from their F100 launch-state values, read per body from
+`parked_table_prepost.txt`'s pre column); P2 the F91 table: exactly ONE row changes — Eris's
+RA/DE string becomes old's and the Q2 exception count goes 2 → 1; Puck's stays (say from the
+record what Puck's cause is, or say unknown); P3 the smoke suite rc 0 with §11.211's step states;
+P4 D11: ns per solver step from a standalone timing harness against the tree's `orbit.cpp` ⇒
+the per-frame bound for 60 bodies × 2 paths against 1 ms; P5 the MUTATION (Eris's `0.2 ≤ e < 0.9`
+branch doubled ALONE) also fixes Eris and leaves every OTHER parked iterative body at its 5-step
+residual — name which bodies the class form moves that the branch form does not (Ceres, Vesta,
+Arrokoth, Charon, Nix in the `e < 0.2` branch; Sedna beside Eris; Haumea, Juno, Makemake, Pallas
+in `IterativeEll`); P6 the pre binary reproduces F100's Eris 1.1987249° FIRST (the instrument
+sees the defect before it is shown fixed). (2) **THE FIX:** `constexpr int
+ITERATIVE_STEPS_PER_CALL = 2` in `iterative_orbits.hpp` beside `WARP_PRECISION` (the header both
+solvers include — one home, I2), applied as a loop of that count around each of the four
+advancing statements of `eccentricAnomaly` (the `if (lastE == 0)` seeding stays OUTSIDE the loop)
+and around the step of each `operator()`; the constant's comment cites §11.223(b) and §5.145 and
+states the reason (a stale seed converges in steps, and a use buys 1 + 4 calls); the five
+comments updated; NOTHING else — `RESUME_EXTRA_ITERATIONS`, `useNow`, data untouched. (3)
+**PROVE:** build (memory-bounded, `-j` per the hook's number), binary md5 recorded, the pre
+binary preserved as `bin/spacecrafter-pre`; P6 then P1 through F100's freeze stage at the PINNED
+clock (the parked table, both binaries) and through `f100_identity.py` at the un-moved launch
+state, both clocks — scored BODY BY BODY against the pre-registered class of each; any body
+outside its class ⇒ STOP and report; P2 `f91_run.sh --expect post` on the post binary, the table
+diffed line by line against the `c125adf0` record; P3; P4; P5 the mutation binary built, run
+through the same parked table, reverted, the post binary bit-reproduced after the revert (F100's
+shape); canary `--no-scene`; D14; the frozen pair in==out. (4) **RECORD:** §11.⟨next⟩ FIRST +
+stub; §5.145 FIXED (the code sha, the post value per parked body); §5.84 annotated (the shared
+solver now takes two steps per call — the old path's post-jump residual halves in step count;
+its own trigger's magnitude still unmeasured, say so); §11.220(j1)+(i2) and §11.223(b)
+back-markers both homes; §11.76(b) annotated (the constant unchanged, the solver doubled: *"4
+extra iterations"* now buy 8 steps); §11.215(g) annotated (the four bodies' run-to-run ulps are
+PREDICTED to change and NOT re-measured — a 3 h soak); the map (`grep -c '5\.145'`); README; WIP
+per §0.6; D14.
+
+**Boundaries:** `src/bodyModule/iterative_orbits.hpp` (the constant + two loops) +
+`src/bodyModule/orbit.cpp` (four loops) + the four comment sites in `experimentalModule/` —
+comments only there; NO change to `ModularBody.{hpp,cpp}` logic; no data; no msgid; the farm only
+(real HOME md5 in==out); FUNCTIONAL (`--no-scene`); no `run_in_background`; runs under
+`/home/claude/sc-f104/`. **STOP conditions:** Eris after one use > 3e-05° post-fix (the doubling
+insufficient — report, do not raise further: the count is the owner's); any NON-ITERATIVE body
+moving (the change reached beyond its class); the F91 table moving on any row but Eris's.
+
+**Discriminating checks:** (a) P1 body by body, the partition key from the field file, not from
+the measurement; (b) P2 exactly one row; (c) P5 the mutation separates class from instance on the
+same table; (d) P4 the number against 1 ms; (e) the smoke suite + canary; (f) P6 the defect seen
+first on the pre binary; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that are not
+commands: display per HOST-EVENTS (`:2`, the RDP-created real session — `xdpyinfo` 2448x1332 at
+08:57); canary `--no-scene` exit 0 before the first launch (08:58 at the open); `free -g` ≥ 16 GiB
+before the build (52 GiB at open ⇒ `-j24`); the harness HEAD as the prompt states it; §5.145's row
+reads RESOLVED and not FIXED.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 474c595d
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => b5f08778
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 224
+grep -c '^### F' claude/fable-dispatch.md => 3
+# ledger states the work stands on
+grep -m1 '^145\. ' claude/INTENT.md | grep -c 'RESOLVED 2026-09-07' => 1
+grep -m1 '^145\. ' claude/INTENT.md | grep -c 'FIXED' => 0
+grep -m1 '^84\. ' claude/INTENT.md | grep -c 'OPEN (old-path only' => 1
+# sites, re-resolved at HEAD (content drift = abort)
+sed -n '515p' src/bodyModule/orbit.cpp | grep -c 'double EllipticalOrbit::eccentricAnomaly(double M, double &lastE) const' => 1
+sed -n '517,562p' src/bodyModule/orbit.cpp | grep -c 'lastE = M + eccentricity \* sin(lastE);\|lastE += ' => 4
+sed -n '519p;525p;532p;544p;548p' src/bodyModule/orbit.cpp | tr -d '\t' | tr '\n' ' ' => if (eccentricity < 0.2) { } else if (eccentricity < 0.9) { } else if (eccentricity < 1.0) { } else if (eccentricity == 1.0) { } else {
+sed -n '566,573p' src/bodyModule/orbit.cpp | grep -c 'eccentricAnomaly(meanAnomaly, iterativeLastE)' => 1
+sed -n '448,458p' src/bodyModule/orbit.cpp | grep -c 'batchLastE' => 3
+sed -n '39,45p;93,101p' src/bodyModule/iterative_orbits.hpp | grep -c 'H -= ' => 2
+sed -n '4p' src/bodyModule/iterative_orbits.hpp | grep -c 'WARP_PRECISION = 1e-8' => 1
+sed -n '316p;346p' src/bodyModule/orbit.cpp | grep -c 'return orbit(JD - t0, d1, d2);' => 2
+sed -n '338p' src/experimentalModule/ModularBody.hpp | grep -c 'RESUME_EXTRA_ITERATIONS = 4' => 1
+sed -n '512,514p' src/experimentalModule/ModularBody.cpp | grep -c 'RESUME_EXTRA_ITERATIONS\|recursiveTranslationUpdate(currentJD, frame)' => 2
+sed -n '1033,1034p' src/experimentalModule/ModularBody.hpp | grep -c 'exactly ONE Newton' => 1
+sed -n '484p' src/experimentalModule/CameraAnchors.cpp | grep -c 'ONE Newton step' => 1
+sed -n '219p' src/experimentalModule/bodyModules/TrailModule.cpp | grep -c 'ONE Newton step' => 1
+grep -rn 'ONE Newton\|one Newton' src --include=*.cpp --include=*.hpp | wc -l => 5
+# the field census (LC_ALL=C /usr/bin/grep: the wrapper skips the Latin-1 file silently)
+LC_ALL=C /usr/bin/grep -ic '^[[:space:]]*coord_func[[:space:]]*=[[:space:]]*ell_orbit' ~/.spacecrafter/ssystem.ini => 54
+LC_ALL=C /usr/bin/grep -ic '^[[:space:]]*coord_func[[:space:]]*=[[:space:]]*comet_orbit' ~/.spacecrafter/ssystem.ini => 6
+# F100's record and instruments
+grep -m1 'Eris' claude/harness/artifacts/f100/parked_table_prepost.txt | tr -s ' ' | cut -c1-100 => Eris | 1.19872 / 170.716 / 5,5 | 1.19872 / 1.09669e-05 / 5,9
+test -f claude/harness/artifacts/f100/partition_f96_leg_pre.json && python3 -c "import json;j=json.load(open('claude/harness/artifacts/f100/partition_f96_leg_pre.json'));print(len(j['P']),len(j['I']),len(j['both']),j['n'])" => 29 29 10 120
+grep -rl c125adf0 claude/harness/artifacts/f100/ | wc -l => 1
+test -d /home/claude/sc-f100/supervisor/post ; echo $? => 0
+test -f claude/harness/f100_freeze.py && test -f claude/harness/f100_partition.py && test -f claude/harness/f100_identity.py && test -f claude/harness/f91_run.sh && test -f claude/harness/f91_parity.py && test -f claude/harness/f90_rehearsal_run.sh && test -f claude/harness/dumpread.py && echo ok => ok
+test -f claude/harness/artifacts/f102/f102_sizes.cpp && echo ok => ok
+test -e /home/claude/sc-f104 ; echo $? => 1
+```
+
+**DoD:** predictions before the build; the fix (code first); P1–P6 measured with the mutation;
+§11 entry + stub; §5.145 flipped; §5.84, §11.76(b), §11.215(g) annotated; back-markers; map;
+README; trees clean; WIP cleared; baselines LAST.
+**WIP:**
+
+### F105 — the dump channel's two owed items, both at their anchor `SSystemFactory::dumpTracePaths`: (i) the header names the system the OLD column was taken in (§11.221(n1): `"oldSystem"` = `SolarSystem` / `galactic` / the `systems` key, plus `"inSystem"`; `dumpread`'s `EmptyOldHalf` message names it; every parity artifact becomes self-describing) and (ii) the new-only loop calls the barrier (§11.220(j3): `nb.useNow()` before `nb.dumpTrace(out)` at `:1227-1233`, so a dump is a use for 120 of 120 records, not 90) — with the consequence PREDICTED before the launch, record by record over the 30 new-only names: **20 unchanged** (the 18 `dist 0` systems and `Universe` return at `useNow`'s first line — not `renderHidden`; `SolarSystem` is walked), **2 refreshed into a REAL eye-frame position** (`baryEarthMoon` under the walked Earth, `orbit_autour_lune` under the walked Moon — parents that publish `parkedChildFrame`), and **8 that a use refreshes into the IDENTITY frame** — the seven hidden children of the never-walked `Universe` and `orbit_autour_point` under its hidden centre — because `parkedChildFrame` defaults to identity (`ModularBody.hpp:2121`) and `publishParkedFrame` runs only for walked nodes (`:1003-1007`): §11.220(j4)'s hazard, which the SELECTION channel already exercises for those 8 today (`ModularSystem.cpp:269-270`; new-only names answer the new path); so the barrier gains its missing PRECONDITION — a use in a frame that was NEVER published is not served (a `parkedFramePublished` flag set at `:1006`, `useNow` returning `false` without refreshing and propagating through hidden parents; ONE D12 line per body naming what / consequence / fix) — and the 8 keep their honest `dist 0` in the dump while the F100 partition instrument's class I keeps its key; the mutation (no guard) measured once for the 8 identity-frame values, (j4)'s magnitude on record; STOP before any fix if the leg's partition is not (20, 2, 8) [S–M, engine + instrument, new path only — veto point §3 on the guard's form]
+
+**Why now / mandate:** the session-26 close queue position 5 (*"the dump channel's two items
+(S, decision-free: a system-identity field in the header, §11.221(n1); the barrier for the 30
+new-only records, §11.220(j3))"*), §3 `[H1]`/`[H2]` of the session-26 block. §11.221(n1)
+[executor, F101]: the dual dump *"presents the two paths side by side without ever saying which
+system the old column was taken in … no system identity at all. A one-field header addition
+would make every parity artifact self-describing; it is a dump-channel change"* (the reason the
+field is owed: F101 read the system off the process's stdout transitions — a witness outside the
+artifact). §11.220(j3) [executor, F100]: *"the second loop, which emits the 30 new-only records
+`[:1223-1245]`, does not call it … Not fixed here: adding the call would change what the
+instrument reports for 30 records and belongs to whoever holds the dump channel."* §11.220(j4)
+[executor, F100, the hazard the call meets]: *"`parkedChildFrame` can be permanently unpublished
+… a hidden body whose parent is outside the current system's walk (`big_dipper` under `Universe`)
+would therefore be refreshed into the IDENTITY frame if anything ever used it … Recorded because
+a future task that makes the dump use them, or that selects one, meets it."* **The mint READ
+(j4) against the 30 names and it is not a residue, it is 8 of the 30 [derived, the leg
+confirms]:** the guard is therefore part of (ii), not a separate design — a barrier that computes
+in a frame nobody published is not the D8 contract (*"as soon as the position is used … it
+should be computed"* [vixy, §11.76(b)] presupposes a frame to compute in), and the alternative —
+the dump printing identity-frame numbers as if they were eye-frame positions for 8 records — is an
+instrument that lies (the F100 class-I key `dist == 0` would then misclassify them). What the
+guard changes on the OPERATOR channel [derived, measured by the leg]: `select` + `flag
+track_object on` on one of the 8 aims today at an identity-frame point; with the guard it aims at
+the zero vector — the class the 18 `dist 0` systems are already in (§11.216(i)'s zero-vector guard
+question, session-25 §3, still the owner's) — one wrong replaced by a known one, not a new class.
+The real fix of (j4) — publishing frames for parked children of unwalked ancestors — is a design
+the owner paces (nested modular bodies, §11.223(e)); said in §3.
+
+**Measured at dispatch (supervisor, 2026-09-07 09:11, code `474c595d`):** the sites, each a
+premise line; the 30 new-only records of F96's launch dump (`artifacts/f96/leg_pre/
+cmd_p0_launch.json.gz`) by (`relation`, `dist == 0`): **(1, true) × 10 · (4, true) × 1 · (5,
+true) × 18 · (5, false) × 1** — the ten `relation 1` (HIDDEN) records: `baryEarthMoon` (parent
+Earth), `orbit_autour_lune` (Moon), `big_dipper`, `center_sun`, `galaxy_center`, `pleiades`,
+`sun_in_gal`, `un_point`, `orbit_autour_point (orbit centre)` (Universe), `orbit_autour_point`
+(parent = that centre) — owned anchor bodies, `anchor.ini`'s (§11.200; the dump's own comment at
+`:1136-1139`); `Universe` relation 4; the 19 systems relation 5, `SolarSystem` the only one with
+`dist ≠ 0`. F100's partition JSON: |P| 29 · |I| 29 · |P ∩ I| 10 — the ten above are exactly
+`P ∩ I`. `useNow()` as landed by F100 (`ModularBody.cpp:455-515`): `:457` the first-line return
+(`!renderHidden || !parent`), `:473` `parent->useNow()` unconditional, `:474-475` the parent
+frame (`matLocalToBodyPos` for a hidden parent, `parkedChildFrame` otherwise), `:501` the memo
+key; `publishParkedFrame` (`ModularBody.hpp:1003-1007`) writes `parkedChildFrame` only when
+`hiddenBodies` is non-empty, from the walk's two call sites (`:944`, `:971`); the member defaults
+to `Mat4f::identity()` (`:2121`). The header writer `:1108-1172` (`"type":"header"` at `:1112`,
+the `extraHeader` lambda at `:1170` for Core-owned keys — the executor MODE is Core's, not the
+factory's: the field lands where its owner is, I2/I9, and the mode is NOT added here unless Core
+already holds an accessor, say which); the factory's identity: `currentSystem == ssystem.get()`
+(`SolarSystem`), `== galacticSystem.get()` (`galactic`, `leaveSystem` `:772-778`), else the
+`systems` map key (`:1160`), `inSystem` (`:1179`). The reader: `dumpread.py` returns the header
+dict unchanged (additive key invisible to every `header[...]` consumer — 28 key reads over 12
+readers, none enumerating keys); `EmptyOldHalf` at `:84`; `f100_partition.py:78-80` keys class I
+on `dist == 0`. Readers: 24 importers flat / 27 recursive (F101's census). Instruments: F101's
+`f101_bisect.py` + the prefix shows in `artifacts/f101/shows/` (`p23` = the galactic state,
+`ctlmars` = the solar one), F100's `f100_freeze.py` (`--stages operator` for the track arm),
+`dumpread.py`, `f90_rehearsal_run.sh`, `b3_farm.sh`.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f105/prediction.txt`, before any build): P1 the
+(20, 2, 8) partition of the 30 by NAME from the tree (parent chain + `relation` + which parents
+the walk visits), the 8 with their predicted identity-frame values (each body's declared local
+position in `anchor.ini` / its orbit — the number the mutation must print); P2 the 2 with bands
+(`baryEarthMoon`'s eye distance within Earth's own record ± the Moon's distance × the mass ratio;
+`orbit_autour_lune` within the Moon's ± its declared offset); P3 the header field on three
+states: the launch scene (`SolarSystem`, `inSystem` true), after F101's `p23` prefix (`galactic`,
+false — and `EmptyOldHalf`'s message carrying the name), after `p25desc` (`SolarSystem` again);
+P4 the operator arm on ONE of the 8 (`select planet pleiades` + `flag track_object on`, pinned
+clock): pre-guard the camera aims at the identity-frame point (predict the alt/az from P1's value
+and the launch camera), post-guard at the zero-vector class — the SAME aim as tracking a `dist 0`
+system (`51PegSystem`) measured in the same launch as the control; P5 the applog carries exactly
+8 D12 lines at the first dump (one per body, none repeated across a second dump in the same
+launch); P6 the 90 both-tree records and the F91 table byte-identical pre/post (the change touches
+no walked body). (2) **THE LEG, pre-change binary** (the round's current one — the per-round
+md5): the launch-scene dump: the 30 records' `dist` and `mat` as the baseline (30 × dist 0 but
+`SolarSystem`; the header without the field). (3) **THE FIX, in this order and each built:** (a)
+the header field + the `EmptyOldHalf` message (`ssystem_factory.cpp` + `dumpread.py`), P3
+measured; (b) the MUTATION first — `nb.useNow()` in the new-only loop with NO guard: P1's 8
+identity-frame values measured (the (j4) magnitude on record), then the binary reverted; (c) the
+guard — `bool parkedFramePublished` set in `publishParkedFrame`, `useNow()` returning `bool`
+(true = served; a walked body is served by construction; a hidden body whose non-hidden parent
+never published, or whose hidden parent was not served, returns false BEFORE any refresh and
+logs ONCE per body: what (a use of `<name>` in a frame `<parent>` never published), consequence
+(the readout stays at its unevaluated value), fix (declare the body under a body the current
+system walks) — the once-per-body flag beside it), the dump's call kept; P1 (20, 2, 8 with the 8
+at `dist 0`), P2, P4, P5, P6 measured post. **If the leg's partition is not (20, 2, 8) as
+predicted** → STOP after (a): record the measured partition and what it implicates, deliver (a)
+only, report — the guard's precondition is then not what the mint read. (4) **RECORD:**
+§11.⟨next⟩ FIRST + stub; §11.221(n1) and §11.220(j3) back-markers both homes (DISCHARGED);
+§11.220(j4) back-marker (its 8 members named, the magnitude measured, the guard — and the
+selection-channel reach measured: a §5 candidate for the supervisor at acceptance, not minted by
+the task); §5.139/§11.220 annotated at the barrier's contract (the third half of the key: a frame
+must exist); `f100_partition.py`'s docstring (class I's key unchanged, and why); `harness/README.md`
+(the header field in the dump contract line beside F101's); the map (`grep -c '11\.221\|11\.220'`
+— say what it names); WIP per §0.6; D14.
+
+**Boundaries:** `src/bodyModule/ssystem_factory.cpp` (the header + the one call),
+`src/experimentalModule/ModularBody.{hpp,cpp}` (the flag, the `bool` return, the once-log),
+`claude/harness/dumpread.py` (the message), `f100_partition.py` (docstring only); NO old-path
+change; no data; no msgid; the farm only (real HOME md5 in==out; F101's prefix shows are
+COPIES); FUNCTIONAL (`--no-scene`); no `run_in_background`; runs under `/home/claude/sc-f105/`.
+
+**Discriminating checks:** (a) P1 by name, the partition key from the tree, not the dump; (b)
+the mutation's 8 values equal to the pre-registered identity-frame numbers (the (j4) mechanism
+measured, not inferred); (c) P4 the operator arm both ways, with the `dist 0` control in the same
+launch; (d) P3 on three system states, the message naming the name; (e) P5 exactly 8 lines,
+once; (f) P6 byte-identity of the 90 + the F91 table; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that are not
+commands: display per HOST-EVENTS (`:2`); canary `--no-scene` exit 0 before the first launch;
+`free -g` ≥ 16 GiB before each build; the harness HEAD as the prompt states it; F104's delivery
+in the tree as the prompt states it (this task's baseline binary is F104's).
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 474c595d
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => b5f08778
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 224
+grep -c '^### F' claude/fable-dispatch.md => 3
+# sites, re-resolved at HEAD (content drift = abort)
+sed -n '1181p' src/bodyModule/ssystem_factory.cpp | grep -c 'currentSystem..begin()' => 1
+sed -n '1192p' src/bodyModule/ssystem_factory.cpp | grep -c 'nb..useNow()' => 1
+sed -n '1223,1245p' src/bodyModule/ssystem_factory.cpp | grep -c 'useNow' => 0
+sed -n '1227p;1232p' src/bodyModule/ssystem_factory.cpp | grep -c 'ModularBody::forEach\|nb.dumpTrace(out)' => 2
+sed -n '1112p' src/bodyModule/ssystem_factory.cpp | grep -c 'type.*header.*jd' => 1
+sed -n '1170,1172p' src/bodyModule/ssystem_factory.cpp | grep -c 'extraHeader(out)\|out << "}' => 2
+sed -n '1154p;1160p;1179p' src/bodyModule/ssystem_factory.hpp | grep -c 'galacticSystem;\|systems;\|bool inSystem = true;' => 3
+sed -n '294,297p;772,778p' src/bodyModule/ssystem_factory.cpp | grep -c 'currentSystem = ssystem.get()\|currentSystem = galacticSystem.get()' => 2
+sed -n '1003,1007p' src/experimentalModule/ModularBody.hpp | grep -c 'publishParkedFrame\|hiddenBodies.empty()\|parkedChildFrame = flat' => 3
+sed -n '2121p' src/experimentalModule/ModularBody.hpp | grep -c 'Mat4f parkedChildFrame = Mat4f::identity();' => 1
+sed -n '457p;473p;475p;501p' src/experimentalModule/ModularBody.cpp | grep -c '!renderHidden || !parent\|parent..useNow()\|parent..parkedChildFrame\|sameFrame(frame, evaluatedFrame)' => 4
+sed -n '269,270p' src/experimentalModule/ModularSystem.cpp | grep -c 'getSelected()\|sel..useNow()' => 2
+sed -n '838,840p' src/coreModule/core.cpp | grep -c 'ssystemDualDump\|dumpTracePaths(file' => 2
+grep -c 'oldSystem' claude/harness/dumpread.py src/bodyModule/ssystem_factory.cpp | tr '\n' ' ' => claude/harness/dumpread.py:0 src/bodyModule/ssystem_factory.cpp:0
+grep -n 'class EmptyOldHalf' claude/harness/dumpread.py | cut -d: -f1 => 84
+sed -n '78,80p' claude/harness/f100_partition.py | grep -c 'dist") == 0' => 1
+grep -l -E 'import dumpread|from dumpread' claude/harness/*.py | wc -l => 24
+grep -rl -E 'import dumpread|from dumpread' claude/harness/ --include=*.py | wc -l => 27
+# the 30 new-only records of F96's launch dump, by (relation, dist == 0)
+python3 -c "import gzip,sys,collections;sys.path.insert(0,'claude/harness');import dumpread;rs=[dumpread.loads(l.strip().rstrip(',')) for l in gzip.open('claude/harness/artifacts/f96/leg_pre/cmd_p0_launch.json.gz','rt') if l.strip().startswith('{')];nn=[r for r in rs if r.get('type')=='body' and r.get('old') is None];print(len(nn),sorted(collections.Counter((r['new'].get('relation'),r['new'].get('dist')==0) for r in nn).items()))" => 30 [((1, True), 10), ((4, True), 1), ((5, False), 1), ((5, True), 18)]
+test -f claude/harness/artifacts/f100/partition_f96_leg_pre.json && python3 -c "import json;j=json.load(open('claude/harness/artifacts/f100/partition_f96_leg_pre.json'));print(len(j['P']),len(j['I']),len(j['both']),j['n'])" => 29 29 10 120
+# instruments
+test -f claude/harness/f101_bisect.py && test -d claude/harness/artifacts/f101/shows && test -f claude/harness/f100_freeze.py && test -f claude/harness/dumpread.py && test -f claude/harness/f90_rehearsal_run.sh && test -f claude/harness/b3_farm.sh && echo ok => ok
+test -e /home/claude/sc-f105 ; echo $? => 1
+```
+
+**DoD:** predictions before the build; the pre leg; (a) the field; (b) the mutation measured
+and reverted; (c) the guard; P1–P6; §11 entry + stub; the three back-markers; the README line;
+trees clean; WIP cleared; baselines LAST.
+**WIP:**
 
 ---
 
