@@ -1150,38 +1150,7 @@ test -e /home/claude/sc-f105 ; echo $? => 1
 **DoD:** predictions before the build; the pre leg; (a) the field; (b) the mutation measured
 and reverted; (c) the guard; P1–P6; §11 entry + stub; the three back-markers; the README line;
 trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-07 11:2x — gate 27/27 PASS + prose premises verified (display `:2` 2448x1332,
-`free -g` 52, `uptime -s` 2026-09-04 18:45:08, no proc, no lock, field md5 pristine, harness
-`65e2256`). CHECKPOINT 1: predictions committed (`artifacts/f105/prediction.txt`) BEFORE any
-build — the (20,2,8) partition by name, the 8 identity-frame values numerically, P2's two
-bands, P3's three states, P4's operator arm, P5's 8 lines, P6. CHECKPOINT 2: canary `--no-scene`
-exit 0 (11:34:45); the PRE leg on `0c61f1b5` DONE (`f105_dump.py`, farm under `/home/claude/sc-f105/`)
-— 120 records, 30 new-only ALL at `dist` 0 / `evalCount` 0, header WITHOUT the field, partition
-|P| 29 · |I| 29 · |P∩I| 10 reproduced; and the OPERATOR arm on the baseline binary already
-refreshes `pleiades` into the identity frame (`mat` = 62.6399994, 108.129997, 10.9899998, `dist`
-125.445793, `evalCount` 5 — P1's predicted value, measured with NO code change). CHECKPOINT 3:
-(a) DONE — code `ead2d478 → a30b2c75` (`ssystem_factory.cpp`, +30 lines: `oldSystem` + `inSystem`),
-binary `0c61f1b5 → f26d5ad7`; **P3 confirmed on all three states** (launch `SolarSystem`/true ·
-`p23` `galactic`/false with the `EmptyOldHalf` message naming it · `p25desc` `SolarSystem`/true,
-90/121), `dumpread` self-test still 17 PASS. CHECKPOINT 4: (b) the MUTATION built (`ad7a4e47`),
-measured and REVERTED (`f26d5ad7` bit-reproduced from the restored source) — **the (20, 2, 8)
-partition holds BY NAME**; the 8 identity-frame values match the pre-registered numbers exactly
-(maxdiff 0 for 7 of 8; the date-dependent 8th 2.14e-06 inside its +-4e-06 band), `evalCount`
-0 → 5 on all ten, `|bary − Earth|` = 0.001205379178 against the predicted 0.5·|Moon−Earth| =
-0.001205379219; inertness 72/72 walked + 21/21 unreached, exactly 8 records moved. CHECKPOINT 5:
-(c) the GUARD DONE — code `a30b2c75 → 318c0c8b` (`ModularBody.{hpp,cpp}` + the one call), binary
-`3f19cb6b`; **P1 (20, 2, 8) with the 8 at `dist` 0 / `evalCount` 0**, P2 bit-identical to the
-mutation for the 2, **P5 exactly 8 D12 lines, delta 0 on the second dump and after the operator
-stage**, P4 post-guard `pleiades` == the `51PegSystem` control to every digit, **P6** camera +
-72/72 walked + 27/27 unreached + 90/90 `altaz_new` identical to the PRE binary and the F91 table
-byte-identical (`1fe630a4`, 0 FAIL / 0 NOTE). CHECKPOINT 6: the smoke suite found the SECOND way
-to reach the guard — the one this task pre-registered as its own risk: `body action reload`
-re-creates the anchor bodies and uses them before the next walk publishes, so `baryEarthMoon` and
-`orbit_autour_lune` each logged one line whose stated CAUSE was false for them. Message corrected
-to state the observation and name both ways (code `318c0c8b → 48cc3727`, binary `e411b838`);
-behaviour unchanged and measured self-healing. On the DELIVERED binary: smoke rc 0 step for step
-as §11.220(i3), 8 D12 lines in the measuring leg / 10 in the smoke run, P6 re-taken (72/72 · 27/27 ·
-90/90 · F91 `1fe630a4` 0 FAIL). Next: the §11.226 record + the back-markers.
+**WIP:** DELIVERED 2026-09-07 → **§11.226** (`INTENT/11.226.md` + stub). Code `ead2d478` → `a30b2c75` (the header field) → `318c0c8b` (the barrier call + its precondition) → `48cc3727` (the refusal line corrected by the smoke suite's own finding); binary `0c61f1b5` → `f26d5ad7` → `ad7a4e47` (MUTATION, reverted, `f26d5ad7` bit-reproduced) → `3f19cb6b` → **`e411b838`**. Gate 27/27. Predictions committed before the first build (`80ee70a`): the (20, 2, 8) partition BY NAME and the 8 identity-frame values NUMERICALLY — **seven exact, the eighth inside its ±4e-06 band**. P1 (20, 2, 8) with the 8 at `dist` 0 · P2 `|bary−Earth|` 0.001205379178 vs predicted 0.001205379219 (the section's mass-ratio gloss refuted) · P3 `SolarSystem`/`galactic`/`SolarSystem` on three states with `EmptyOldHalf` naming it · P4 both ways with the `dist 0` control, and the hazard measured LIVE on the baseline binary through `select planet pleiades` · P5 exactly 8 D12 lines, no repeat · P6 camera + 72/72 + 27/27 + 90/90 + F91 `1fe630a4` 0 FAIL. Smoke rc 0 step for step as §11.220(i3) and it found the pre-registered reload window (10 lines). §11.221(n1) and §11.220(j3) DISCHARGED at both homes + two further homes each; §11.220(j4) answered with its 8 named; §5.139 and §11.220(f1) annotated at the barrier's contract; `f100_partition.py` docstring; README ×4. **A §5 candidate for the supervisor, not minted: tracking a zero-vector body writes 66 non-finite values into the OLD path's view matrices — measured on the PRE binary too.**
 
 ---
 

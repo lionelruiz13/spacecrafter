@@ -1810,6 +1810,13 @@ would silently change what they measure. `f39_d21.py` is the scaled twin.
 **`dumpread.py` is the dump channel's single reader** (§5.103), and since F101
 it REFUSES A DUMP WITH AN EMPTY OLD HALF: `load_dump(path, *, require_old=True)`
 raises `EmptyOldHalf` when the file holds body records and `bodies_old == 0`.
+**Since F105 (§11.226) the dump's HEADER says which system the old column was
+taken in** — `"oldSystem"` (`SolarSystem` / `galactic` / the `systems` map key)
+and `"inSystem"`, written by `SSystemFactory::dumpTracePaths` — and the
+`EmptyOldHalf` message quotes it, so "empty against what" is answered out of the
+file instead of out of the process's stdout. A dump gzipped before 2026-09-07
+has neither key and the message says THAT ("predates F105"), which is the case
+for the five controls the self-test reads.
 The parameter is KEYWORD-ONLY, so every existing
 `header, pairs, mn, mo = load_dump(p)` is unchanged. A reader whose JOB is to
 report the emptiness passes `require_old=False` **with its reason at the call**
@@ -4945,6 +4952,11 @@ change. The second clock cost one 50 s launch.
   called in the loop over the OLD system's bodies (`ssystem_factory.cpp:1192`);
   the second loop, which emits the 30 new-only records (`:1223-1245`), does not.
   That plus the isolation stop is the whole of class I.
+  **[SUPERSEDED 2026-09-07 by F105 (§11.226), code `318c0c8b`: the second loop
+  calls it too, so a dump is a use for 120 of 120. Of the 30, 20 return on the
+  barrier's first line, 2 refresh into a real eye-frame position and 8 are
+  REFUSED for want of a published frame — so class I is 27 on a post-F105 dump,
+  and `dist == 0` still means "never written" for the 8 that remain.]**
 - **The frame cadence is SATURATED at the config cap** (143.4-144.1 fps in all
   ten cost arms, `maximum_fps = 144`, §11.159(k7)), so fps cannot resolve a
   per-frame cost of this size. `delta(evalCount) / delta(Mars.evalCount)` can:
@@ -5007,10 +5019,12 @@ decides the next descent: `inGalaxyModule.cpp:164` branches on
 
 ### Gotchas measured here, each of which cost something first
 
-- **A dual dump is only comparable INSIDE the loaded system, and the file does
+- **A dual dump is only comparable INSIDE the loaded system, and the file did
   not say which system it was taken in.** The header carries `jd`, `timeSpeed`,
   `helioToEye`, the camera, the anchors, the gates and the big textures
-  (`ssystem_factory.cpp:1108-1164`) and no system identity. The cheapest witness
+  (`ssystem_factory.cpp:1108-1164`) and, **until F105 (§11.226), no system
+  identity — it now carries `oldSystem` and `inSystem`, so a dump taken from
+  2026-09-07 on answers this out of its own header**. The cheapest witness
   is the executor's own `std::cout` transitions — `->InSolarSystem`,
   `->InStellarSystem`, `->InGalaxy`, `too high -> altitude = max` — which are on
   the process's **stdout**, not in `spacecrafter.log`.
@@ -5204,3 +5218,83 @@ clock) · F91 table one diff line, md5 `c125adf0` -> `1fe630a4`, Q2 88 -> 89 of
 11.93 / 20.94 / 20.05 ns per extra step and the corpus's own composition · eight
 launches, canary green and frozen pair in == out on every one. Artifacts
 `artifacts/f104/` (~0.9 MB).
+
+## F105 — a dump is a use for all 120 records, and the barrier needs a frame (`f105_dump.py`, `dumpread.py`, `f100_partition.py`) — INTENT §11.226 / §11.220(j3)(j4) / §11.221(n1), 2026-09-07
+
+```
+DISPLAY=:2 python3 f105_dump.py <absOutdir> --tag <name> --bin <path> \
+      [--stages dump,operator] [--jd 2461233.5]          # one launch per binary
+DISPLAY=:2 python3 f101_bisect.py <absOutdir> --leg p23|p25desc --bin <path>
+                                                         # the header field's 3 states
+python3 f100_identity.py <dumpA> <dumpB> --label "..."   # the inertness control
+```
+
+### The one shape to carry out of here
+
+**PREDICT THE VALUE, NOT THE CLASS.** The eight records a use was about to move
+were predicted BY NAME from the tree (relation + parent chain + whether the walk
+visits the parent) and their eight positions were predicted AS NUMBERS from
+`anchor.ini`, committed before the first build. Seven came out exact — float32
+for float32 — and the eighth, the only date-dependent one, landed 2.14e-06 AU
+away inside a ±4e-06 band whose width had been derived from the light-travel
+difference between its own eye distance and Phobos's. A class prediction ("these
+eight will move") would have been satisfied by any wrong mechanism; eight numbers
+could only be satisfied by the right one.
+
+### The shapes worth reusing
+
+- **THE PARTITION KEY COMES FROM THE TREE, NOT FROM A DUMP.** `Universe` is
+  never walked because `dispatchUpdate`'s up-chain loop is
+  `while (body->isNotIsolated)` and a `ModularSystem` sets that false — so the
+  climb stops at the system node. That one line predicts which anchor bodies have
+  no frame, and `dist`/`evalCount` in the landed dump only confirm it.
+- **TWO OF THE EIGHT PRINT AN UNCHANGED POSITION** (`center_sun`,
+  `galaxy_center` are declared at 0/0/0), so a class read off the position column
+  alone counts six. The mechanism shows in `evalCount` 0 -> 5 and `lastJD` 0 ->
+  the retarded frame date. Say that in the prediction, or the measurement looks
+  like a partial hit.
+- **MEASURE THE CHANNEL THE OPERATOR HAS, ON THE BASELINE BINARY.** The selection
+  calls the barrier every frame, so `select planet pleiades` exhibits the whole
+  hazard with no code change at all — which is what turned "a future task that
+  selects one meets it" into "it is live today".
+- **NAME YOUR OWN DESIGN'S RISK IN THE PREDICTION FILE.** The guard sits before
+  the memo test, so a body parked in the current frame whose parent has not
+  published YET is refused too. That was written down as the risk, with "a 9th
+  log line would name the body it happened to" as the check — and the smoke suite
+  produced exactly two more lines, for exactly that reason.
+
+### Gotchas measured here, each of which cost a reading first
+
+- **`f96_offset.parse_dump` does not go through `dumpread`'s grammar.** It uses a
+  plain `json.loads`, so a header line carrying a bare `nan` is silently skipped
+  and the camera reads as ABSENT. Tracking a body whose eye-frame position is the
+  ZERO VECTOR produces exactly that (66 non-finite values in `helioToEye`,
+  `matLocalToEye`, `matJ2000ToEye`, `matEarthEquToEye`, `headingVector`,
+  `moveAim`), i.e. in the one arm that matters. It joins
+  `b24_equivalence.load_dump` and `f89_p7.load_dump` on the list of readers that
+  bypass the single reader; `f105_dump.parse` does not.
+- **A MARKER IS A COPY OF A STRING THAT LIVES SOMEWHERE ELSE.** This driver's D12
+  marker quoted the log message verbatim; correcting the message made the count
+  read 0 on a leg whose log carried 8. Match the stable clause, and re-derive
+  counts from the log file when a message changes.
+- **`cLog::write` reaches BOTH channels here.** It writes the log file and, with
+  `isDebug`, the console — so the 8 lines are in `log/spacecrafter.log` AND in the
+  applog. F101's "applog" reading and the log-file reading agree; do not predict
+  one and check the other.
+- **The D12 lines are once per BODY OBJECT.** `body action reload` rebuilds the
+  tree, so a reload logs again for a body that logged before it — bounded by
+  (bodies x reloads), not per frame, and the selection channel proves the per-frame
+  guard works (one line while a body stays selected).
+
+**Measured, code `ead2d478` -> `a30b2c75` -> `318c0c8b` -> `48cc3727`, binaries
+`0c61f1b5` / `f26d5ad7` / `ad7a4e47` (the mutation, reverted with `f26d5ad7`
+bit-reproduced) / `e411b838`:** the (20, 2, 8) partition of the 30 new-only
+records held by name; seven of eight identity-frame values exact and the eighth
+inside its band; `|bary - Earth|` 0.001205379178 against a predicted
+0.001205379219; the header field on three system states
+(`SolarSystem`/`galactic`/`SolarSystem`); exactly 8 D12 lines with no repeat
+across a second dump or an operator stage, 10 in the smoke run (the reload
+window); camera + 72/72 walked + 27/27 unreached + 90/90 `altaz_new` identical to
+the pre binary; F91 table byte-identical `1fe630a4`, 0 FAIL / 0 NOTE; smoke rc 0
+step for step as §11.220(i3); eleven launches, canary green, frozen files in ==
+out on every one. Artifacts `artifacts/f105/` (~0.3 MB).

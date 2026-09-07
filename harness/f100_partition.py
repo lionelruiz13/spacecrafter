@@ -22,6 +22,22 @@ no freshness computation touches:
                           the isolation stop (ModularSystem.cpp:196) keeps the
                           walk out of them.
 
+THE KEY IS UNCHANGED SINCE F105 AND ITS MEMBERSHIP IS NOT (INTENT 11.226).  That
+second loop DOES call useNow() as of code 318c0c8b, so a dump is a use for 120
+of 120 records.  Two of the anchor bodies -- baryEarthMoon (under the walked
+Earth) and orbit_autour_lune (under the walked Moon) -- are served by it and
+LEAVE class I: on a post-F105 launch dump |I| is 27 where 11.220(c) recorded 29,
+and |P n I| is 8 where it recorded 10.  That is the instrument reporting a real
+change, not drifting: `dist == 0` still means exactly "a position no walk and no
+use ever wrote", and it still means it for the eight that remain, because the
+barrier REFUSES a use it has no frame for (a parent the loaded system's walk
+never visits has never published one) instead of refreshing them into the
+identity frame.  Had the call landed without that precondition, six of the eight
+would have left class I with a plausible-looking wrong position and the key
+would have stopped meaning what it says -- which is why the two changes are one
+delivery.  Scoring an F96-era report against a post-F105 dump therefore compares
+29 against 27 BY CONSTRUCTION; use the dump that belongs to the run.
+
 Neither key reads a second dump.  `python3 f100_partition.py <dump.json[.gz]>`
 prints the two classes; `--against <report>` scores them against an F96-shaped
 "frozen: a, b, c" line, which is the only place the freshness measurement is
