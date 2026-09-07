@@ -1,0 +1,4 @@
+630c630
+<     if [ "${CF_SIGNED}" = 1 ] && [ -n "${SIG_DROPPED:-}" ]; then
+---
+>     if [ "${CF_SIGNED}" = 99 ] && [ -n "${SIG_DROPPED:-}" ]; then

@@ -1,0 +1,20 @@
+  WARNING: 1 commit(s) in /home/claude/sc-f103/pair/spacecrafter carried a GPG signature
+  that could NOT be carried over, and were rebuilt WITHOUT it:
+      72f5edc5  Field Contributor  Field note, signed by somebody who is not Claude
+  WHAT: each of these is a SIGNED commit that had to be rebuilt because one of
+    its MAPPED PARENTS changed -- it sits downstream of a rewritten commit
+    inside the range. Every other commit this run did not select keeps its
+    object untouched, sha and signature included; these cannot.
+  CONSEQUENCE: a signature signs the WHOLE object -- tree, parents, author,
+    committer, message -- so a parent's new sha invalidates it by construction,
+    and 'git commit-tree' cannot write a 'gpgsig' header in any case. The
+    rebuilt commit is content-identical and UNSIGNED; its old sha is in the map.
+    Check:  git -C /home/claude/sc-f103/pair/spacecrafter log --format='%G? %h %an %s' origin/master-beta..HEAD | grep -v '^N '
+  THIS IS NOT DECIDED HERE. It is the signer's commit, not this script's, and
+    it is cheaper to decide before the force-push than after. Undo is printed
+    at the end of this run.
+READ BEFORE PUBLISHING: 1 commit(s) carried a GPG signature that
+         could NOT be carried over -- each had a parent rewritten by this run, and a
+         signature signs the parents too. They are content-identical and now UNSIGNED:
+             72f5edc5  Field Contributor  Field note, signed by somebody who is not Claude
+         Every other unselected commit kept its object, its sha and its signature.

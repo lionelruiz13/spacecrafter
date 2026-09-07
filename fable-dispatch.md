@@ -1430,7 +1430,10 @@ REFUTED). **THE FIX IS IN** (`--commit-filter`, five fields compared, `signature
 §2(f) + summary) and **P2/P3 GREEN**: 3829 unchanged, `cebebf44` keeps sha AND `gpgsig`, all 15
 keep their shas, the merge keeps both parents (second = the ORIGINAL `6ec2f43f`), UNPAIRED 0, map
 membership predicted sha-for-sha (79 code / 798 harness, `diff` empty both sides), 543/282/286,
-idempotent. Pair reset. Next: P5 (the signed negative case + its mutant), P6, P4.
+idempotent. **P5/P6 GREEN**: the unavoidable case (a signed non-Claude commit on top of a selected
+one) rebuilt, its signature gone, NAMED twice — while `cebebf44` keeps its own in the same run; the
+reporting mutant silent; the equality mutant returns P1 exactly (3816, `d40f4eb1`, the three md5s).
+Pair reset. Next: P4 (live pair `--dry-run`, both scripts at one instant), then the record.
 
 ---
 

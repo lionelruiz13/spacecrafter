@@ -1,0 +1,4 @@
+617c617
+<     [ "${CF_MSG}"         = "${CF_ORIG_MSG}"  ] || CF_SAME=0
+---
+>     CF_SAME=0   # P6 MUTANT: the message comparison disabled (never equal)

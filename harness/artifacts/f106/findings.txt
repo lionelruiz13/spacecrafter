@@ -117,3 +117,52 @@ Second run on the pair P2 left behind, same arguments: rc 0,
 (code 78 already supervised / 16 not Claude; harness 786 / 5 / 8 MANUAL = 799),
 HEADs unmoved (79eeaa23 / 42b06795), no second sha-maps directory,
 master-beta still 3829, cebebf44 still signed and still reachable.  P3.1-2 ok
+
+
+P5 -- THE NEGATIVE CASE: A SIGNATURE THAT CANNOT SURVIVE.  Log p5.log.gz.
+--------------------------------------------------------------------------
+Throwaway ed25519 key `Field Contributor <field@example.invalid>`
+(EB8961F31C6CA7B7) generated with GNUPGHOME=/home/claude/sc-f103/gnupg and used
+only from there; `gpg --homedir ~/.gnupg --list-keys | grep -c field@example`
+= 0, before and after.  One commit signed with it, authored by that same
+non-Claude identity, on top of the code HEAD 474c595d -- a SELECTED Claude
+commit, so the new commit's parent is rewritten by construction.
+
+  predicted                    measured
+  not selected, rebuilt        72f5edc5 -> 4df311c1, parent 79eeaa23 (the
+  anyway (parent changed)      rewritten 474c595d)                     P5.1 ok
+  signature gone               gpgsig lines 0 on the rebuilt object, %G? = N,
+                               tree and message and author identical   P5.2 ok
+  named twice, by name         the section-2(f) block at the rewrite AND the
+                               READ BEFORE PUBLISHING repeat, both naming
+                               "72f5edc5  Field Contributor  Field note..."
+                               (p5_sig_block.txt)                      P5.3 ok
+  THE DISCRIMINATOR            in the SAME run, cebebf44 keeps its sha and its
+                               gpgsig, and is the only signed commit left in the
+                               range.  One signed commit survives, one cannot,
+                               and only the second is reported.        P5.4 ok
+  3830 -> 3830, map 80,        3830 and 3830; "Code sha map: 80"; code.tsv 82
+  UNPAIRED 0                   (80 + 2 repair); 0 UNPAIRED warnings    P5.5 ok
+
+P5.6 THE MUTANT (p5_mutant.diff -- ONE token, `CF_SIGNED = 1` -> `= 99`, so the
+recording never fires).  Same setup, fresh signed commit 9fdec706:
+  * the signature is lost exactly as before: 9fdec706 -> c57a1104, gpgsig 0, N;
+  * and the run is SILENT: 0 hits for 'carried a GPG signature', 0 for
+    'READ BEFORE PUBLISHING'.  The only three lines matching /signature/i in the
+    whole log are commit SUBJECTS in the preview ("...its signature moves from
+    bre", "the throughput signature is in coverage", "both signatures are
+    written dow") -- nothing about this one.
+  * cebebf44 still keeps its sha and gpgsig, so the mutant breaks the REPORTING
+    and nothing else.  The reporting is what reports.
+
+
+P6 -- THE EQUALITY MUTANT: THE FIX SHOWN ABLE TO FAIL.  Log p6.log.gz.
+-----------------------------------------------------------------------
+p6_mutant.diff: ONE line, the message comparison replaced by `CF_SAME=0` --
+"the message is never equal", which is what the pre-fix tool effectively said
+about every commit.  On the reset pair the collapse comes straight back, and it
+comes back as P1 and not merely as something like it:
+  master-beta 3816, range 81, tip d40f4eb1, cebebf44 unreachable and absent from
+  code.tsv, 13 UNPAIRED + the READ BEFORE PUBLISHING line, "Code sha map: 81",
+  "Repointed 545 citation(s) across 282 file(s)", and the three map md5s
+  6e7984e6 / 43834ed0 / 6379ab86 -- P1's, to the byte.          P6.1-2 ok
