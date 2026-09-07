@@ -132,11 +132,68 @@
 # ONLY tracked *.md, and never applies without your y/N.
 # (Requires bash 4+ for associative arrays.)
 #
+# ---------------------------------------------------------------------------
+# THE PERSISTED SHA MAPS (written by step D, committed by step E)
+# ---------------------------------------------------------------------------
+# Step E reaches tracked *.md in the harness repo. That is not everything that
+# cites these commits. It reaches neither the git HISTORY of those files nor any
+# surface outside the pair -- the shared queue and host-event notes, the owner's
+# own notes, scratch trees, the dispatch archive. Those spaces are exactly the
+# ones that cannot be search-and-replaced, and a sha that resolves to nothing
+# reachable is a dangling reference with no way back.
+#
+# So the old->new maps this run builds are no longer thrown away with the temp
+# directory. They are copied to
+#
+#     <harness>/sha-maps/<UTC yyyymmddThhmmssZ>-<code-tip8>-<harness-tip8>/
+#         code.tsv      old-full-sha <TAB> new-full-sha, per code commit re-shaed
+#         harness.tsv   the same for the harness repo
+#         repair.tsv    trailers that were ALREADY dangling, mapped to their twin
+#
+# and committed by the closing commit. The two tips in the directory name are the
+# PRE-rewrite tips: they name the state the map maps FROM, which is the state a
+# reader holding a stale sha is trying to escape. A stale citation is then
+# resolved by CONVENTION -- look the token up as a PREFIX in the maps, newest
+# first -- the same shape the archive drawer uses for moved documents, and never
+# a rewrite of the record. The maps are append-only files that are never edited:
+# a map that is corrected is a map that has stopped being evidence.
+#
+# The consequence for the closing commit: it now happens whenever a map was
+# written, even if there was nothing to repoint in *.md, because leaving the maps
+# uncommitted would leave the run's own resolver in the working tree only. Its
+# EXPECTED set is the touched *.md UNION the map files, so `commit -a` is still
+# proved equal to the intended set rather than assumed to be.
+#
+# ---------------------------------------------------------------------------
+# WHEN A TRAILER NAMES A BRANCH THAT NO LONGER RESOLVES (--branch-alias)
+# ---------------------------------------------------------------------------
+# A `Code:` trailer records the branch name as it was when the commit was made.
+# Rename the branch and every historical trailer names a ref that is gone. This
+# script used to answer that by judging the trailer against HEAD instead, with no
+# message. That substitution is NOT verdict-preserving and it was measured: one
+# and the same trailer reads reachable against `refs/heads/master-beta` and
+# dangling against `refs/heads/2023-master`, so merely having a different branch
+# checked out -- an ordinary act -- turned every trailer of the renamed branch
+# into "dangling", which build_repair_map then calls UNREPAIRABLE, which is this
+# script's own word for "repoint by hand".
+#
+# A verdict computed against a target nobody asked for is worse than no verdict,
+# so there is no fallback any more: an unresolvable trailer branch is a STOP at
+# the preview, before any prompt and under --dry-run as well (a preview that
+# would lie must not exit 0). The repair channel is
+#
+#     --branch-alias=<old-name>=<new-name>        (repeatable)
+#
+# which says "judge trailers naming <old-name> against refs/heads/<new-name>".
+# <new-name> must resolve at startup, so a typo fails immediately instead of
+# quietly reintroducing the substitution this replaced.
+#
 # Usage:
 #   ./supervised-by.sh                        # both repos, @{upstream}..HEAD each
 #   ./supervised-by.sh --code=93a14377..HEAD  # override one side explicitly
 #   ./supervised-by.sh --harness=HEAD~20..HEAD
 #   ./supervised-by.sh --dry-run              # preview only, never prompts
+#   ./supervised-by.sh --branch-alias=master-beta=main   # after a branch rename
 # ---------------------------------------------------------------------------
 
 set -euo pipefail
@@ -221,8 +278,43 @@ has_supervisor() {
     [[ $'\n'${1}$'\n' == *$'\n'Supervised-By:* ]]
 }
 
-# reachable_in_code <sha> [branch] -> 0 if that commit is on the branch's
-# history. NOT `rev-parse --verify`, and this distinction is the whole point:
+# --branch-alias=<old>=<new>: `<old>` -> `<new>`. Empty until MAIN parses the
+# arguments; every consultation happens after that, and `${A[k]:-}` on an empty
+# associative array is well defined, so the declaration here is documentation as
+# much as initialisation.
+declare -A BRANCH_ALIAS=()
+
+# resolve_branch_target <branch> -> the ref a trailer naming <branch> is judged
+# against: its --branch-alias target if one was given, else `refs/heads/<branch>`.
+# Returns 1, printing nothing, when the name is non-empty and NEITHER resolves.
+#
+# That third answer is the whole point of this function existing. The previous
+# code answered it with `target=HEAD` and no message, which is not
+# verdict-preserving: measured, one trailer reads reachable against
+# `refs/heads/master-beta` and dangling against `refs/heads/2023-master`, so the
+# answer depended on which branch happened to be checked out. Substituting a
+# target nobody named produces a verdict that looks like every other verdict.
+# The callers must be able to tell "I judged it" from "I could not judge it",
+# which means this has to be able to say so.
+#
+# An EMPTY branch is not that case: it is "no branch was named", which is what
+# a one-argument call means, and HEAD is then the only thing there is to ask.
+resolve_branch_target() {
+    local br=${1:-} tgt
+    [ -n "${br}" ] || { printf 'HEAD'; return 0; }
+    tgt=${BRANCH_ALIAS[${br}]:-}
+    if [ -n "${tgt}" ]; then printf 'refs/heads/%s' "${tgt}"; return 0; fi
+    if git -C "${CODE_REPO}" rev-parse --verify -q "refs/heads/${br}" >/dev/null 2>&1; then
+        printf 'refs/heads/%s' "${br}"; return 0
+    fi
+    return 1
+}
+
+# reachable_in_code <sha> [branch] -> THREE outcomes, never a substitution:
+#     0  reachable      -- <sha> is an ancestor of the branch's tip
+#     1  unreachable    -- it is not, or its object is gone entirely
+#     2  unjudgeable    -- <branch> resolves to no ref and to no --branch-alias
+# NOT `rev-parse --verify`, and this distinction is the whole point:
 # filter-branch leaves the pre-rewrite objects in the database (that is exactly
 # how build_map below reads the OLD side of a rewrite), so `rev-parse`,
 # `cat-file -e` and friends SUCCEED on a sha that no branch can reach any more.
@@ -230,12 +322,13 @@ has_supervisor() {
 # `git show` still works for whoever runs it today, and resolves to nothing at
 # all once the objects are gc'd. Reachability is the property; existence is a
 # proxy that fails silently in the exact case being tested for.
+#
+# The target is resolved FIRST, before the object test: whether we can judge at
+# all is prior to what the answer would be.
 reachable_in_code() {
-    local sha=$1 br=${2:-} target=HEAD
+    local sha=$1 br=${2:-} target
+    target=$(resolve_branch_target "${br}") || return 2
     git -C "${CODE_REPO}" rev-parse --verify -q "${sha}^{commit}" >/dev/null 2>&1 || return 1
-    if [ -n "${br}" ] && git -C "${CODE_REPO}" rev-parse --verify -q "refs/heads/${br}" >/dev/null 2>&1; then
-        target="refs/heads/${br}"
-    fi
     git -C "${CODE_REPO}" merge-base --is-ancestor "${sha}" "${target}" 2>/dev/null
 }
 
@@ -247,12 +340,31 @@ list_code_trailers() {
 }
 
 # dangling_trailers <harness-range> -> the subset whose sha no branch reaches.
+# Deliberately unchanged by the three-outcome split: anything that is not a
+# proven 0 belongs on this list. An unjudgeable trailer is not silently promoted
+# to "fine" -- it is refused outright, by the step-A guard below, long before
+# this count is used for anything.
 dangling_trailers() {
     local br sha
     while read -r br sha; do
         [ -n "${sha}" ] || continue
         reachable_in_code "${sha}" "${br}" || printf '%s %s\n' "${br}" "${sha}"
     done < <(list_code_trailers "$1")
+}
+
+# unresolvable_trailers <harness-range> -> `<branch> <count>` per DISTINCT branch
+# name that resolve_branch_target refuses, with the number of distinct trailers
+# naming it. Per branch and not per trailer: the branch is the thing that is
+# broken and the thing the reader has to fix, and one ref test per name costs
+# one git call instead of one per trailer.
+unresolvable_trailers() {
+    local n br
+    while read -r n br; do
+        [ -n "${br}" ] || continue
+        if ! resolve_branch_target "${br}" >/dev/null; then
+            printf '%s %s\n' "${br}" "${n}"
+        fi
+    done < <(list_code_trailers "$1" | awk '{print $1}' | sort | uniq -c)
 }
 
 # map_lookup <mapfile> <short-or-full-sha> -> new sha truncated to the same
@@ -407,7 +519,26 @@ for arg in "$@"; do
                             exit 1
                         fi
                         printf '%s %s\n' "${AFS}" "${AFI}" >> "${AUTHOR_FIX_MAP}" ;;
-        -h|--help)      sed -n '2,140p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        # --branch-alias=<old>=<new> : the repair channel for a `Code:` trailer
+        # whose branch was renamed away. Repeatable. The SHAPE is checked here;
+        # that <new> actually resolves is checked once the code repo is known,
+        # a few lines below -- it cannot be checked before that, because the
+        # repo pair is discovered after this loop and the branch lives in the
+        # CODE repo, not in whatever repo the caller happens to be standing in.
+        --branch-alias=*) BA="${arg#*=}"
+                        BAO="${BA%%=*}"; BAN="${BA#*=}"
+                        if [ -z "${BAO}" ] || [ "${BAO}" = "${BA}" ] || [ -z "${BAN}" ]; then
+                            echo "error: --branch-alias wants <old-branch>=<new-branch>, got '${BA}'." >&2
+                            exit 1
+                        fi
+                        BRANCH_ALIAS["${BAO}"]="${BAN}" ;;
+        # Printed from the file itself so the help cannot drift from the header.
+        # The end of the header is FOUND, not counted: a line number here is a
+        # magic constant that truncates the help silently the next time the
+        # header grows, which is the failure mode this file argues against
+        # everywhere else.
+        -h|--help)      awk 'NR>=2 { if ($0 == "set -euo pipefail") exit; print }' "$0" \
+                          | sed 's/^# \{0,1\}//'; exit 0 ;;
         *) echo "error: unrecognised argument '${arg}'." >&2
            echo "       A bare range is no longer accepted: this script now acts on BOTH" >&2
            echo "       repos, so a range must say which one. Use --code=<range> and/or" >&2
@@ -430,6 +561,19 @@ elif [ "$(basename "${HERE}")" = "claude" ] && git -C "$(dirname "${HERE}")" rev
 else
     CODE_REPO="${HERE}"; HARNESS_REPO=""
 fi
+
+# --- validate every --branch-alias target, now that the code repo is known ---
+# Before anything is read, previewed or rewritten. An alias pointing at a branch
+# that does not exist would put the substitution this option replaced straight
+# back in, one indirection further away from the reader.
+for BAO in "${!BRANCH_ALIAS[@]}"; do
+    BAN="${BRANCH_ALIAS[${BAO}]}"
+    if ! git -C "${CODE_REPO}" rev-parse --verify -q "refs/heads/${BAN}" >/dev/null 2>&1; then
+        echo "error: --branch-alias=${BAO}=${BAN} names no local branch in ${CODE_REPO}." >&2
+        echo "       Local branches there: $(git -C "${CODE_REPO}" for-each-ref --format='%(refname:short)' refs/heads | tr '\n' ' ')" >&2
+        exit 1
+    fi
+done
 
 # default_range <repo> -> `@{upstream}..HEAD`, or an error naming the fix.
 default_range() {
@@ -625,6 +769,56 @@ if [ -n "${HARNESS_REPO}" ]; then
     N_HARNESS=${#SEL_SHAS[@]}; M_HARNESS=${#MANUAL_SHAS[@]}; A_HARNESS=${N_AUTHORFIX}
 fi
 
+# --- A'. refuse to guess: a trailer branch that resolves to nothing -----------
+# Placed here, after the previews and before EVERYTHING that consumes a
+# reachability verdict -- the cross-repo count, the repair map, the "Nothing to
+# do" exit, the confirmation prompt -- because each of those would otherwise be
+# computed against a substituted target and would look exactly like a good one.
+# It fires under --dry-run too, and exits 1 there: a preview that would lie must
+# not exit 0, or the lie is what gets believed.
+if [ -n "${HARNESS_REPO}" ]; then
+    UNRES=$(unresolvable_trailers "${HARNESS_RANGE}")
+    if [ -n "${UNRES}" ]; then
+        {
+        echo "STOP: a 'Code:' trailer names a branch this repository cannot resolve."
+        echo
+        echo "  WHAT"
+        printf '%s\n' "${UNRES}" | while read -r br n; do
+            echo "    ${n} distinct 'Code: ${br} @ <sha>' trailer(s) in the harness range"
+            echo "    '${HARNESS_RANGE}' name branch '${br}', and neither refs/heads/${br}"
+            echo "    nor any --branch-alias resolves it in ${CODE_REPO}."
+        done
+        echo
+        echo "  VALID STATE"
+        echo "    Every branch named in a trailer resolves to refs/heads/<name> in the code"
+        echo "    repo, or is given a replacement with --branch-alias. Names that resolve"
+        echo "    there right now:"
+        echo "      $(git -C "${CODE_REPO}" for-each-ref --format='%(refname:short)' refs/heads | tr '\n' ' ')"
+        echo
+        echo "  CONSEQUENCE"
+        echo "    Their reachability cannot be judged, so nothing downstream of it can be"
+        echo "    trusted: the dangling count in the preview, the repair map, and the"
+        echo "    post-rewrite assertion that every trailer still resolves. Until this"
+        echo "    message existed the script answered by judging them against HEAD, which"
+        echo "    is not verdict-preserving -- the same trailer reads reachable against"
+        echo "    refs/heads/master-beta and dangling against refs/heads/2023-master -- so"
+        echo "    the verdict depended on which branch was checked out, and a run from the"
+        echo "    wrong checkout marked every trailer of the renamed branch UNREPAIRABLE."
+        echo
+        echo "  FIX -- either one, before re-running"
+        printf '%s\n' "${UNRES}" | while read -r br n; do
+            echo "    ./supervised-by.sh --branch-alias=${br}=<the-new-name> ...     (judge them"
+            echo "        against the renamed branch; <the-new-name> must exist)"
+            echo "    git -C ${CODE_REPO} branch ${br} <the-new-name>                (recreate the"
+            echo "        name, if the old one is meant to keep existing)"
+        done
+        echo
+        echo "  Nothing has been touched."
+        } >&2
+        exit 1
+    fi
+fi
+
 # The cross-repo consequence, stated BEFORE the confirmation rather than
 # discovered afterwards: this is the number that the old one-repo-at-a-time
 # script left dangling without ever mentioning it.
@@ -777,8 +971,18 @@ build_repair_map() {
         fi
         fp=$(git -C "${CODE_REPO}" log -1 --format='%T|%at|%ae|%s' "${sha}")
         tree=${fp%%|*}
-        local target=HEAD
-        git -C "${CODE_REPO}" rev-parse --verify -q "refs/heads/${br}" >/dev/null 2>&1 && target="refs/heads/${br}"
+        # An ASSERTION, not a fallback: step A' refuses an unresolvable trailer
+        # branch before any prompt, so reaching this is a broken guard, not a
+        # case to cope with. Coping here is what produced the defect -- the twin
+        # search would run over whatever HEAD points at and its single hit would
+        # be indistinguishable from a correct repair afterwards.
+        local target
+        if ! target=$(resolve_branch_target "${br}"); then
+            echo "STOP: trailer branch '${br}' resolves to no ref and no --branch-alias," >&2
+            echo "      so ${sha} cannot be searched for a twin. Step A' should have" >&2
+            echo "      refused this run before it started; that guard is broken." >&2
+            rollback_all; exit 1
+        fi
         hits=()
         while read -r c; do
             [ -n "${c}" ] || continue
@@ -844,6 +1048,94 @@ if [ -n "${HARNESS_REPO}" ]; then
     build_map "${HARNESS_REPO}" "${HARNESS_TIP}" "${WORK}/harness.map"
 fi
 
+# --- D'. persist the maps beside the ledger ---------------------------------
+# The maps built above are this run's only record of old sha -> new sha, and
+# until now they died with ${WORK}. Step E repoints tracked *.md; everything
+# else that cites these commits -- the git history of those same files, the
+# shared notes, the archive, the owner's own trees -- cannot be reached by any
+# rewrite and can only be resolved by LOOKING THE TOKEN UP. So the maps are
+# copied out verbatim (no reformatting: the file the filter consulted is the
+# file that is kept) and committed by step E.
+MAP_FILES=(); MAP_DIR=""
+if [ -n "${HARNESS_REPO}" ]; then
+    # The two tips are the PRE-rewrite ones -- the state the map maps FROM,
+    # which is the state a reader holding a stale sha is standing in.
+    MAP_DIR="sha-maps/$(date -u +%Y%m%dT%H%M%SZ)-${CODE_TIP:0:8}-${HARNESS_TIP:0:8}"
+    mkdir -p "${HARNESS_REPO}/${MAP_DIR}"
+    for m in code harness repair; do
+        if [ -s "${WORK}/${m}.map" ]; then
+            cp "${WORK}/${m}.map" "${HARNESS_REPO}/${MAP_DIR}/${m}.tsv"
+            MAP_FILES+=("${MAP_DIR}/${m}.tsv")
+        fi
+    done
+    if [ "${#MAP_FILES[@]}" -eq 0 ]; then
+        rmdir "${HARNESS_REPO}/${MAP_DIR}" 2>/dev/null || true
+        MAP_DIR=""
+    else
+        # The contract, written ONCE. It is not regenerated per run: a file that
+        # is rewritten every time is a file whose content is nobody's decision.
+        if [ ! -e "${HARNESS_REPO}/sha-maps/README.md" ]; then
+            cat > "${HARNESS_REPO}/sha-maps/README.md" <<'SHAMAPREADME'
+# sha-maps/ -- old sha -> new sha, one directory per history rewrite
+
+Written by `claude/supervised-by.sh`. Every directory here is the record of ONE
+run that re-hashed commits, named
+
+    <UTC yyyymmddThhmmssZ>-<code-tip8>-<harness-tip8>
+
+after the PRE-rewrite tips of the two repositories: the state the map maps FROM.
+
+    code.tsv      one line per code-repo commit whose sha changed
+    harness.tsv   one line per harness-repo commit whose sha changed
+    repair.tsv    trailers that were ALREADY dangling when the run started,
+                  mapped to the fingerprint twin the run repaired them to
+
+Each line is `<old-full-sha> TAB <new-full-sha>`. A commit that rebuilt
+byte-identical kept its sha and appears in no file.
+
+`repair.tsv` is a verbatim SUBSET of `code.tsv` for the same run: the script
+appends the repair pairs to the code map so the message filter consults one
+file, and the copy kept here is that file, unedited. The two are not two
+sources of one fact -- `repair.tsv` says which of those pairs were pre-existing
+damage rather than this run's own work.
+
+## Why the files exist
+
+A rewrite gives every touched commit a new sha. The script repoints citations in
+tracked `*.md`, and that is all it can reach. It does not reach the git history
+of those same files, the shared notes, this repository's archive drawer, or
+anything in the owner's own trees. Those citations stay valid only if the old
+sha remains RESOLVABLE, and after a garbage collection nothing but a map can
+resolve it.
+
+## How to resolve a sha that no longer exists
+
+Look the token up as a PREFIX of the old side, newest directory first, and take
+the new side truncated to the same length. That is the same rule the script uses
+internally, and the same shape as the archive drawer's resolution-by-convention
+for moved documents: a reference is never rewritten in the record, it is
+resolved through the map. A token that prefixes more than one old sha is
+ambiguous and must be lengthened, not guessed.
+
+## The rule these files live by
+
+They are append-only and are NEVER edited, not to tidy them, not to merge them,
+not to drop entries that look obsolete. A map that has been corrected has
+stopped being evidence of what a particular run did, which is the only thing it
+is for. If a run was wrong, the next run's map records the correction as its own
+line, and both stay.
+SHAMAPREADME
+            MAP_FILES+=("sha-maps/README.md")
+        fi
+        # Staged now: `commit -a` in step E stages tracked modifications and
+        # ignores untracked files, so a map left unstaged would be written and
+        # then silently left behind.
+        git -C "${HARNESS_REPO}" add -- "${MAP_FILES[@]}"
+        echo "Sha maps written to ${HARNESS_REPO}/${MAP_DIR}/ :" \
+             "$(for f in "${MAP_FILES[@]}"; do printf '%s(%s) ' "${f##*/}" "$(wc -l < "${HARNESS_REPO}/${f}")"; done)"
+    fi
+fi
+
 
 # --- E. repoint harness .md (both maps) -------------------------------------
 # Only tracked .md is scanned: those are the tracing docs. Code is never edited
@@ -856,6 +1148,10 @@ MERGED="${WORK}/merged.map"; : > "${MERGED}"
 
 MD_REPO="${HARNESS_REPO:-${CODE_REPO}}"
 declare -A TOK_NEW=(); declare -A TOK_AMBIG=()
+# Declared here, not inside the `y` branch: the closing commit below is reached
+# whether or not anything was repointed (the sha maps alone can be the reason),
+# so its expected-set test must be able to read an EMPTY touched set.
+declare -A TOUCHED_FILES=()
 MD_FILES=(); mapfile -t MD_FILES < <(git -C "${MD_REPO}" ls-files -- '*.md' 2>/dev/null || true)
 if [ -s "${MERGED}" ] && [ "${#MD_FILES[@]}" -gt 0 ]; then
     while IFS= read -r tok; do
@@ -891,7 +1187,6 @@ else
     fi
     case "${APPLY}" in
         [yY]*)
-            declare -A TOUCHED_FILES=()
             for tok in "${!TOK_NEW[@]}"; do
                 new="${TOK_NEW[${tok}]}"
                 while IFS= read -r f; do
@@ -902,39 +1197,73 @@ else
             done
             echo
             echo "Repointed ${#TOK_NEW[@]} citation(s) across ${#TOUCHED_FILES[@]} file(s)."
+            ;;
+        *)  echo "Not applied. Re-run and answer y, or repoint by hand from the list above." ;;
+    esac
+fi
 
-            # --- the closing commit ------------------------------------------
-            # `-a` is used as asked, but it is only CORRECT because the tree was
-            # verified clean at step 0: everything dirty now was written by this
-            # script. That is asserted here rather than inherited from the
-            # earlier check -- the gap between the two is the whole run, and an
-            # assumption that held at the start is not evidence about the end.
-            EXPECTED=$(printf '%s\n' "${!TOUCHED_FILES[@]}" | sort)
-            ACTUAL=$(git -C "${MD_REPO}" status --porcelain --untracked-files=all | cut -c4- | sort)
-            if [ "${NO_COMMIT}" = 1 ]; then
-                echo "(--no-commit: left uncommitted.)  git -C ${MD_REPO} diff -- '*.md'"
-            elif [ "${EXPECTED}" != "${ACTUAL}" ]; then
-                echo "NOT COMMITTED: the dirty set is not the set this script wrote." >&2
-                echo "  expected:" >&2; printf '%s\n' "${EXPECTED}" | sed 's/^/      /' >&2
-                echo "  actual:"   >&2; printf '%s\n' "${ACTUAL}"   | sed 's/^/      /' >&2
-                echo "  'commit -a' would capture the wrong set. Review and commit by hand." >&2
-            elif ! [[ ${SUPERVISOR} =~ ^.+\ \<[^\>]+\>$ ]]; then
-                # The commit is authored by the SUPERVISOR: this consolidation is
-                # their act, not a model's. It also sidesteps a trap -- committing
-                # under the bare `Claude` wildcard with no co-author to resolve it
-                # would produce a commit THIS SCRIPT flags as unrepairable on its
-                # next run. Refuse rather than create that.
-                echo "NOT COMMITTED: the Supervised-By string is not a git identity" >&2
-                echo "  ('Name <email>'), so it cannot author the commit, and the configured" >&2
-                echo "  identity may be the bare wildcard -- which this script would flag as" >&2
-                echo "  unrepairable next run. Commit by hand." >&2
-            else
-                CODE_TRAILER=""
-                if [ "${MD_REPO}" = "${HARNESS_REPO:-}" ]; then
-                    CODE_TRAILER="Code: $(git -C "${CODE_REPO}" branch --show-current) @ $(git -C "${CODE_REPO}" rev-parse --short=8 HEAD)"
-                fi
-                git -C "${MD_REPO}" commit -q -a --author="${SUPERVISOR}" -F - <<COMMITMSG
-Repoint tracker citations after the supervision-trailer rewrite
+# --- the closing commit -----------------------------------------------------
+# Reached whenever this run WROTE something into the harness working tree: the
+# repointed *.md, the persisted sha maps, or both. The maps alone are reason
+# enough -- a run that rewrote history and left its only old->new record
+# uncommitted in a working tree has produced the dangling references it exists
+# to prevent, and has hidden that behind a clean-looking summary.
+#
+# `-a` is used as asked, but it is only CORRECT because the tree was verified
+# clean at step 0: everything dirty now was written by this script. That is
+# asserted here rather than inherited from the earlier check -- the gap between
+# the two is the whole run, and an assumption that held at the start is not
+# evidence about the end. The map files are part of the expected set, and they
+# are already staged, so `-a` captures them with the rest.
+if [ "${#TOUCHED_FILES[@]}" -gt 0 ] || [ "${#MAP_FILES[@]}" -gt 0 ]; then
+    EXPECTED=$(printf '%s\n' "${!TOUCHED_FILES[@]}" "${MAP_FILES[@]}" | sort -u)
+    ACTUAL=$(git -C "${MD_REPO}" status --porcelain --untracked-files=all | cut -c4- | sort)
+    # The subject says what the commit actually is. A run that repointed nothing
+    # and only recorded its maps must not claim a repoint it did not do.
+    SUBJECT="Repoint tracker citations after the supervision-trailer rewrite"
+    [ "${#TOUCHED_FILES[@]}" -gt 0 ] || \
+        SUBJECT="Record the old->new sha maps of the supervision-trailer rewrite"
+    MAPLINE="no sha maps were written (nothing changed sha)."
+    if [ "${#MAP_FILES[@]}" -gt 0 ]; then
+        MAPLINE="the sha maps of this run: ${MAP_FILES[*]}"
+    fi
+    if [ "${NO_COMMIT}" = 1 ]; then
+        echo "(--no-commit: left uncommitted.)  git -C ${MD_REPO} diff -- '*.md'"
+        if [ "${#MAP_FILES[@]}" -gt 0 ]; then
+            echo "  The sha maps are written and STAGED but NOT committed. They are this"
+            echo "  run's only record of old sha -> new sha; commit them, or the rewrite"
+            echo "  has no resolver: ${MAP_FILES[*]}"
+        fi
+    elif [ "${EXPECTED}" != "${ACTUAL}" ]; then
+        echo "NOT COMMITTED: the dirty set is not the set this script wrote." >&2
+        echo "  expected:" >&2; printf '%s\n' "${EXPECTED}" | sed 's/^/      /' >&2
+        echo "  actual:"   >&2; printf '%s\n' "${ACTUAL}"   | sed 's/^/      /' >&2
+        echo "  'commit -a' would capture the wrong set. Review and commit by hand." >&2
+        if [ "${#MAP_FILES[@]}" -gt 0 ]; then
+            echo "  The sha maps are part of the expected set and must be committed with the" >&2
+            echo "  rest: ${MAP_FILES[*]}" >&2
+        fi
+    elif ! [[ ${SUPERVISOR} =~ ^.+\ \<[^\>]+\>$ ]]; then
+        # The commit is authored by the SUPERVISOR: this consolidation is
+        # their act, not a model's. It also sidesteps a trap -- committing
+        # under the bare `Claude` wildcard with no co-author to resolve it
+        # would produce a commit THIS SCRIPT flags as unrepairable on its
+        # next run. Refuse rather than create that.
+        echo "NOT COMMITTED: the Supervised-By string is not a git identity" >&2
+        echo "  ('Name <email>'), so it cannot author the commit, and the configured" >&2
+        echo "  identity may be the bare wildcard -- which this script would flag as" >&2
+        echo "  unrepairable next run. Commit by hand." >&2
+        if [ "${#MAP_FILES[@]}" -gt 0 ]; then
+            echo "  The sha maps are written and STAGED and are part of that commit:" >&2
+            echo "  ${MAP_FILES[*]}" >&2
+        fi
+    else
+        CODE_TRAILER=""
+        if [ "${MD_REPO}" = "${HARNESS_REPO:-}" ]; then
+            CODE_TRAILER="Code: $(git -C "${CODE_REPO}" branch --show-current) @ $(git -C "${CODE_REPO}" rev-parse --short=8 HEAD)"
+        fi
+        git -C "${MD_REPO}" commit -q -a --author="${SUPERVISOR}" -F - <<COMMITMSG
+${SUBJECT}
 
 ${N_CODE} code and ${N_HARNESS} harness commit(s) were rewritten to record the
 supervision chain: Supervised-By recorded, redundant self co-authors dropped,
@@ -942,8 +1271,13 @@ $((A_CODE + A_HARNESS)) author field(s) resolved from the bare-Claude wildcard.
 Rewriting a message changes the commit's sha, so every tracker line citing one
 of them by sha was left pointing at an object no branch reaches.
 
-This commit carries ONLY that repoint: ${#TOK_NEW[@]} citation(s) across
-${#TOUCHED_FILES[@]} file(s), old sha -> new sha, no prose changed.
+This commit carries the repoint -- ${#TOK_NEW[@]} citation(s) across
+${#TOUCHED_FILES[@]} file(s), old sha -> new sha, no prose changed -- and
+${MAPLINE}
+The maps are what resolves a stale sha in every surface a rewrite cannot reach:
+the git history of these same files, notes outside this pair, the archive. Look
+a token up as a PREFIX of the old side, newest directory first; the record is
+never rewritten. sha-maps/README.md carries the rule.
 
 The 'Code: <branch> @ <sha>' trailers in harness commit messages are NOT part of
 this commit -- they are remapped inside the rewrite pass itself, since they live
@@ -957,12 +1291,9 @@ what makes 'commit -a' equal to the intended set rather than merely close to it.
 
 ${CODE_TRAILER}
 COMMITMSG
-                echo "Committed in ${MD_REPO}:"
-                git -C "${MD_REPO}" log -1 --format='    %h  %s  (author %an)'
-            fi
-            ;;
-        *)  echo "Not applied. Re-run and answer y, or repoint by hand from the list above." ;;
-    esac
+        echo "Committed in ${MD_REPO}:"
+        git -C "${MD_REPO}" log -1 --format='    %h  %s  (author %an)'
+    fi
 fi
 echo "----------------------------------------------------------------------"
 
