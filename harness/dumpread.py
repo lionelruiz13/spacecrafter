@@ -38,6 +38,14 @@ and deliberately not a small number: `pairs` is the set a comparison is defined
 on, and "defined on nothing" is a property, where "defined on few" would be a
 magic constant.  A one-body old half is a real state (F98's own post-`14.sts`
 bisect dump reads 1) and passes.
+
+**AND SINCE F105 (INTENT S11.226) THE MESSAGE NAMES THE SYSTEM.**  The dump's
+header now carries `oldSystem` (`SolarSystem` / `galactic` / the `systems` map
+key) and `inSystem`, written by the enumerator's own class
+(`ssystem_factory.cpp`), so the reader answers "empty against what" out of the
+FILE instead of sending its caller to the process's stdout.  A dump written
+before that field exists carries no such key; the message says so rather than
+printing `None`, because an absent field dates the file.
 """
 import json
 import re
@@ -87,14 +95,33 @@ class EmptyOldHalf(Exception):
     Carries the path and both counts, because the first question anyone asks of
     this is "how empty, and empty against what" (INTENT S5.143 / S11.221)."""
 
-    def __init__(self, path, bodies_old, bodies_new, records):
+    def __init__(self, path, bodies_old, bodies_new, records, header=None):
         self.path = str(path)
         self.bodies_old = bodies_old
         self.bodies_new = bodies_new
         self.records = records
+        header = header or {}
+        self.old_system = header.get("oldSystem")
+        self.in_system = header.get("inSystem")
+        # THE HEADER NOW SAYS WHICH SYSTEM (F105, INTENT S11.226): the reader
+        # reports the file's OWN answer instead of sending its caller to the
+        # process's stdout for it.  A dump written before that field existed -
+        # every landed artifact, including the controls this module's self-test
+        # reads - carries no such key, and saying so is part of the answer: an
+        # absent field is not `None`, it dates the file.
+        if self.old_system is None:
+            where = ("This dump's header carries no `oldSystem` field, so it "
+                     "predates F105 and cannot say which system its old column "
+                     "was taken in; the process's own stdout transitions "
+                     "(`->InSolarSystem`, `->InGalaxy`) are the only witness "
+                     "for it. ")
+        else:
+            where = ("The header says the old column was taken in system "
+                     "'%s' (inSystem = %s). " % (self.old_system,
+                                                 self.in_system))
         super().__init__(
             "%s: the dual dump holds %d body records and NOT ONE of them has an "
-            "old-path half (bodies_old = %d, bodies_new = %d). Every per-body "
+            "old-path half (bodies_old = %d, bodies_new = %d). %sEvery per-body "
             "comparison this file supports is vacuous - `pairs` is empty, so a "
             "gate that counts differences counts 0 and PASSES. This is the "
             "INTENT S5.143 state: a scene that has left the loaded system takes "
@@ -104,7 +131,7 @@ class EmptyOldHalf(Exception):
             "is INSIDE the loaded system - the executor prints `->InSolarSystem` "
             "on its own stdout when it enters one - or, if MEASURING the "
             "emptiness is the point, call load_dump(path, require_old=False)."
-            % (self.path, records, bodies_old, bodies_new))
+            % (self.path, records, bodies_old, bodies_new, where))
 
 
 def load_dump(path, *, require_old=True):
@@ -142,7 +169,7 @@ def load_dump(path, *, require_old=True):
     records = bodies_old + len(missing_old)
     if require_old and records and bodies_old == 0:
         raise EmptyOldHalf(path, bodies_old, len(pairs) + len(missing_old),
-                           records)
+                           records, header)
     return header, pairs, missing_new, missing_old
 
 

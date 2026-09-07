@@ -1159,8 +1159,12 @@ exit 0 (11:34:45); the PRE leg on `0c61f1b5` DONE (`f105_dump.py`, farm under `/
 — 120 records, 30 new-only ALL at `dist` 0 / `evalCount` 0, header WITHOUT the field, partition
 |P| 29 · |I| 29 · |P∩I| 10 reproduced; and the OPERATOR arm on the baseline binary already
 refreshes `pleiades` into the identity frame (`mat` = 62.6399994, 108.129997, 10.9899998, `dist`
-125.445793, `evalCount` 5 — P1's predicted value, measured with NO code change). Next: build (a),
-the header field + the `EmptyOldHalf` message.
+125.445793, `evalCount` 5 — P1's predicted value, measured with NO code change). CHECKPOINT 3:
+(a) DONE — code `ead2d478 → a30b2c75` (`ssystem_factory.cpp`, +30 lines: `oldSystem` + `inSystem`),
+binary `0c61f1b5 → f26d5ad7`; **P3 confirmed on all three states** (launch `SolarSystem`/true ·
+`p23` `galactic`/false with the `EmptyOldHalf` message naming it · `p25desc` `SolarSystem`/true,
+90/121), `dumpread` self-test still 17 PASS. Next: (b), the MUTATION (`nb.useNow()` with no
+guard) — the 8 identity-frame values against the pre-registered numbers, then revert.
 
 ---
 

@@ -1,0 +1,18 @@
+F105 (a) -- THE HEADER FIELD ON THREE SYSTEM STATES, binary f26d5ad7
+code master-beta @ <the (a) commit>, measured 2026-09-07 11:42-11:43,
+two fresh launches under /home/claude/sc-f105/legs/ (f101_bisect.py, unmodified).
+
+state 1  launch scene (a_p23 PRE)                          oldSystem='SolarSystem' inSystem=True    old/new = 90/120
+    header first 220 chars: {"type":"header","jd":2461290.9047196894,"timeSpeed":1.1574074074074073e-05,"timePaused":false,"oldSystem":"SolarSystem","inSystem":true,"helioToEye":[0.67912463260499645,0.50526848491057608,0.5324410686125739,0,0.672725
+state 2  after 14.sts:22 moveto alt 1.1E+16 (a_p23 POST)   oldSystem='galactic'    inSystem=False   old/new = 0/120
+    header first 220 chars: {"type":"header","jd":2461290.9047880946,"timeSpeed":1.1574074074074073e-05,"timePaused":false,"oldSystem":"galactic","inSystem":false,"helioToEye":[0.73304499055150762,0.68015366012237366,0.0060033698435763066,0,0.68018
+state 1b launch scene (a_p25desc PRE)                      oldSystem='SolarSystem' inSystem=True    old/new = 90/120
+    header first 220 chars: {"type":"header","jd":2461290.905275974,"timeSpeed":1.1574074074074073e-05,"timePaused":false,"oldSystem":"SolarSystem","inSystem":true,"helioToEye":[0.67654787433901997,0.5068974664302518,0.53417032139004639,0,0.6749077
+state 3  after the descent moveto alt 0.9E+9 (a_p25desc POST) oldSystem='SolarSystem' inSystem=True    old/new = 90/121
+    header first 220 chars: {"type":"header","jd":2461290.9053501664,"timeSpeed":1.1574074074074073e-05,"timePaused":false,"oldSystem":"SolarSystem","inSystem":true,"helioToEye":[0.0054837818629723681,-0.99991993117916744,-0.011404357374658641,0,-0
+
+THE READER'S MESSAGE, on the state-2 dump (the field is NAMED in it):
+  /home/claude/sc-f105/legs/a_p23/dump_post.json: the dual dump holds 120 body records and NOT ONE of them has an old-path half (bodies_old = 0, bodies_new = 120). The header says the old column was taken in system 'galactic' (inSystem = False). Every per-body comparison this file supports is vacuous - `pairs` is empty, so a gate that counts differences counts 0 and PASSES. This is the INTENT S5.143 state: a scene that has left the loaded system takes the old half with it, because the dump enumerates `currentSystem` (ssystem_factory.cpp:1181) and `leaveSystem` points that at a system holding no bodies. To fix: take the dump from a scene that is INSIDE the loaded system - the executor prints `->InSolarSystem` on its own stdout when it enters one - or, if MEASURING the emptiness is the point, call load_dump(path, require_old=False).
+
+THE SAME MESSAGE ON A PRE-F105 DUMP (artifacts/f101/controls/f101_p23_post.json.gz):
+  <the F101 control dump>: the dual dump holds 120 body records and NOT ONE of them has an old-path half (bodies_old = 0, bodies_new = 120). This dump's header carries no `oldSystem` field, so it predates F105 and cannot say which system its old column was taken in; the process's own stdout transitions (`->InSolarSystem`, `->InGalaxy`) are the only witness for it. Every per-body comparison this file supports is vacuous - `pairs` is empty, so a gate that counts differences counts 0 and PASSES. This is the INTENT S5.143 state: a scene that has left the loaded system takes the old half with it, because the dump enumerates `currentSystem` (ssystem_factory.cpp:1181) and `leaveSystem` points that at a system holding no bodies. To fix: take the dump from a scene that is INSIDE the loaded system - the executor prints `->InSolarSystem` on its own stdout when it enters one - or, if MEASURING the emptiness is the point, call load_dump(path, require_old=False).
