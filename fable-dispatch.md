@@ -138,8 +138,10 @@ F105: eight values predicted numerically before the build; the reload window pre
 risk and caught by "exactly 8"; the message corrected, not the logic; a manufactured arrear removed
 rather than credited; the zero-vector consequence routed, not minted).
 Archival pass 20 (update-s26 + F103/F104/F105, live `### F` 3 → 0) DEFERRED to the next open.
-NEXT-ROUND QUEUE, in order: (1) archival pass 20 at open; (2) **BEFORE SATURDAY, the owner's:** §5.147's
-decision (accept-and-map / refuse-and-resolve) — the rewrite is his act, the tool is ready (`§3 [Y8]`);
+NEXT-ROUND QUEUE, in order: (1) archival pass 20 at open; (2) ~~**BEFORE SATURDAY, the owner's:** §5.147's
+decision (accept-and-map / refuse-and-resolve) — the rewrite is his act, the tool is ready (`§3 [Y8]`)~~
+**[ANSWERED 17:5x, §11.227: neither — the collapse is the tool's defect; F106 minted and dispatched
+in this session, post-close; the queue's (2) is then whatever F106 leaves owed]**;
 (3) **§11.225(j2)/(j3)'s leg** (S, decision-free: does the orbit-line sampler's walk through
 `iterativeLastE` leave the seed where Eris's +32 rad staleness says it was? `f104_solver.py`'s sweep +
 one launch with `flag orbits` on/off, predictions first); (4) **§5.146** on his word (EntityCore); (5)
@@ -1286,6 +1288,144 @@ now lands in the zero-vector class the 18 `dist 0` systems are already in — wh
 is §5.148; `f100_partition.py`'s class I is 27 on a post-F105 launch dump; `/home/claude/sc-f105/`
 holds the legs and my runs under `supervisor/`.
 
+### F106 — the rewrite touches ONLY the selected commits (§11.227(a), [vixy verbatim]: *"the rewrite should only rewrite the commit message (and author) on commit Claude is the author, from the last pushed change to the HEAD … the commit themselves shouldn't be affected, so their signature shouldn't move"*): a `--commit-filter` mode in `supervised-by.sh` that emits the ORIGINAL commit id when nothing about a commit changes — not selected (its author after the env-filter is not a Claude identity), message byte-identical to the original, mapped parents identical to the original parents — and `git commit-tree "$@"` otherwise, as today; so an unselected commit keeps its object AND its `gpgsig`, and §5.147's collapse (`cebebf44` rebuilt without its signature onto its twin `b8dddd6c`, 13 commits lost, §11.224(h)) is PREVENTED rather than decided: the 15-commit side chain keeps its shas, the merge keeps both parents, the branch count is unchanged, `code.tsv` lists only what changed; the one case a signature cannot survive — a signed commit whose mapped PARENT changed (the signature signs the parent sha) — is named in a §2(f) block and the closing summary, never dropped silently, and is shown on a throwaway GPG key; exercised on the F103 clone pair, the live pair `--dry-run` only [S, harness tooling; no engine code; no launch]
+
+**Why now / mandate:** §11.227 (the owner's reply, 17:5x, five hours after the close — the tool
+he operates Saturday must embody it, and no round is certain before then); §5.147 as resolved
+(a tool defect, reading (iii)); §11.224(h) (the measurement: `git commit-tree` drops `gpgsig`,
+3829 → 3816 on the clone pair, reproduced twice). **The reading the mint stands on [derived;
+each fact a premise line]:** `filter-branch --env-filter --msg-filter` (`supervised-by.sh:915-917`)
+rebuilds EVERY commit in the range; its default commit filter is `git commit-tree "$@"`, and
+`--commit-filter` replaces it with a command that receives the (filtered) message on stdin,
+`<tree> -p <mapped-parent>…` in `$@`, `$GIT_COMMIT` = the original id, and the author/committer
+env AFTER the env-filter — and whose stdout is the new commit id, which MAY be an existing one.
+So "leave it alone" is one line: `echo "$GIT_COMMIT"` when nothing changed. A signature is over
+the whole object (tree, parents, author, committer, message): it survives exactly when the
+object is byte-untouched, hence when the mapped parents equal the originals — a signed commit
+downstream of a rewritten Claude commit cannot keep it, by construction, and must be REPORTED.
+In the live range that case is empty: the one signed commit (`cebebf44`, `%G?` ≠ N once in 98)
+hangs off `1ddd32f0`, 0 commits ahead of `origin/master-beta`; the 15 of `1ddd32f0..c6784490^2`
+are all non-Claude; `c6784490` is Claude Opus 5's and is rebuilt with its two mapped parents; the
+harness range has 0 signed commits. On the F103 clone pair (state U, 94/798, the same signed
+commit present with its header) the pre-fix collapse is reproducible (§11.224(f)(h)) and the
+post-fix invariants are checkable by sha.
+
+**Measured at dispatch (supervisor, 2026-09-07 17:56–17:58, code `48cc3727`, harness at the mint
+commit):** the script md5 `6816c210`, 1380 lines; `--commit-filter` absent (0); the `filter-branch
+-f` call at `:915` with `--env-filter`/`--msg-filter` at `:916-917`; the two filter modes at `:415`
+(`--emit-env`) and `:426` (`--msg-filter`); `rewrite()` `:660`, `build_map()` `:907` with `UNPAIRED+=`
+at `:976`, `scan_range()` `:953`; `git filter-branch -h` names `commit-filter`; the live history as
+above (3833 on `master-beta`; 82 Claude / 16 non-Claude in the range); F103's `code.tsv` lacks
+`cebebf44` (0) — the collapse's signature; the clone pair reset at `474c595d` / `fe096019`, clean,
+94/798 behind its scratch origins, `cebebf44` present there with `gpgsig` 1; `/usr/bin/gpg` present
+(the negative case's key).
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f106/prediction.txt`, committed before any run): P1
+PRE-fix (the delivered script, md5 `6816c210`) on the reset pair: the collapse — `rev-list --count`
+3829 → 3816, `cebebf44` absent from the new history and from the map, 13 UNPAIRED (§11.224's
+numbers); P2 POST-fix, same reset pair: `cebebf44` keeps its sha with `gpgsig` 1 (`cat-file -p |
+grep -c '^gpgsig'`), all 15 of `1ddd32f0..c6784490^2` keep their shas, the rewritten `c6784490` has
+TWO parents (the mapped first, the unchanged second), `rev-list --count` unchanged at 3829,
+UNPAIRED 0, `code.tsv` = exactly the commits whose sha changed = the selected ones ∪ every
+unselected commit with a rewritten ancestor inside the range — PREDICT that number from the graph
+(`git rev-list --topo-order` + the selection rule) before the run and state which unselected
+commits are rebuilt and why; the harness side unchanged in behaviour (0 signed; predict its map
+count from F103's 798); both content assertions and both `VERIFIED` lines; P3 idempotence; P4 the
+LIVE pair `--dry-run` before and after (identical unless you add a preview line for
+signed-to-be-rebuilt commits — say which, and it prints 0 today); P5 the NEGATIVE case on the
+clone: a throwaway key (`GNUPGHOME` under the scratch, `gpg --batch --quick-gen-key`), a commit
+authored by a non-Claude identity and SIGNED with it, placed ON TOP of a selected Claude commit
+in the clone's range; the tool must rebuild it (its parent changed), its signature is gone, and
+BOTH the §2(f) block at the rewrite and the closing summary name it — with the reporting
+disabled as a mutant shown silent; P6 the equality mutant: the message comparison disabled ⇒
+every unselected commit rebuilt ⇒ the collapse returns (P1's numbers) — the fix shown able to
+fail. (2) **THE FIX** in `claude/supervised-by.sh`: a `--commit-filter` mode beside `--emit-env`
+and `--msg-filter` (the same self-invocation pattern, `$SELF` absolute); it reads the message from
+stdin exactly as the msg-filter does (`cat; printf X` — the sentinel), compares BYTE-EXACT against
+the original message (`git cat-file commit "$GIT_COMMIT"` after the header — say which extraction
+and prove it on one unselected and one selected commit by the emitted id), compares the mapped
+parents in `$@` against `git rev-parse "$GIT_COMMIT"^@` in order, compares the post-env-filter
+author (`$GIT_AUTHOR_NAME`/`EMAIL`) against the original's; ALL equal ⇒ `printf '%s' "$GIT_COMMIT"`;
+else `git commit-tree "$@"` with the message on stdin — and if the original object carried
+`gpgsig`, append `<sha>	<subject>` to `${WORK}/signatures-dropped` (a path exported to the filter,
+`CODE_MAP`'s shape), which `rewrite()` turns into a §2(f) block (what: the commit, whose parent
+changed; consequence: its signature cannot survive a parent's rewrite; the check command) and
+the closing summary repeats by name; the `rewrite()` call gains `--commit-filter`; the header
+comment states the rule with §11.227(a) verbatim; `build_map`'s UNPAIRED block is left as the
+assertion it now is; the heredoc `sha-maps/README.md` line *"A commit that rebuilt byte-identical
+kept its sha and appears in no file"* becomes *"an unselected commit whose parents did not change
+keeps its object — sha and signature — and appears in no file"*. NOTHING else moves — assert by
+diff. (3) **THE PROOF** on `/home/claude/sc-f103/pair` (reset to state U before AND after every run
+— `reset --hard` to `474c595d` / `fe096019`, the scratch origins untouched; `gc.auto 0` stays): P1,
+P2, P3, P5, P6; explicit timeouts (Q-68); P4 on the live pair with HEADs + `git status` asserted
+around each dry-run. (4) **RECORD:** §11.⟨next⟩ FIRST + stub; §5.147 FIXED (the tool; the P2
+numbers); §11.224(f)(h) and §11.227(c) back-markers both homes; `harness/README.md`
+§supervised-by.sh and `README.md` §sha-maps (the "kept its sha" sentence); `DEPLOYMENT-MAP.md` R5;
+WIP per §0.6; D14.
+
+**Boundaries:** `claude/supervised-by.sh` + the record files; NO engine code; the LIVE pair never
+rewritten and never invoked without `--dry-run`; every rewrite and the throwaway key under
+`/home/claude/sc-f103/` (the key never enters `~/.gnupg`); no `run_in_background`; nothing under
+`/tmp` carries; no launch, no display, no canary (say so).
+
+**Discriminating checks:** (a) P1 vs P2 on the same reset pair — the collapse present pre-fix,
+absent post-fix, by sha; (b) `cebebf44`'s `gpgsig` header present after the rewrite (byte-identical
+object); (c) P5 both ways — the unavoidable case reported by name, its mutant silent; (d) P6 the
+fix shown able to fail; (e) P3 idempotence; (f) P4 the live pair unmoved; (g) the diff confined to
+the new mode, the `rewrite()` argument, the header, the heredoc line; (h) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises that are not
+commands: the harness HEAD as the prompt states it; the live pair clean at every check; the
+executor never types `y` at a prompt of the LIVE pair.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 48cc3727
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => e411b838
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 228
+grep -c '^### F' claude/fable-dispatch.md => 4
+# the tool, re-resolved at HEAD (content drift = abort)
+md5sum claude/supervised-by.sh | cut -c1-8 => 6816c210
+wc -l < claude/supervised-by.sh => 1380
+grep -c -- '--commit-filter' claude/supervised-by.sh => 0
+grep -n 'filter-branch -f' claude/supervised-by.sh | cut -d: -f1 => 915
+sed -n '915,917p' claude/supervised-by.sh | grep -c 'filter-branch -f\|--env-filter\|--msg-filter' => 3
+grep -n 'if \[ "${1:-}" = "--msg-filter" \]\|if \[ "${1:-}" = "--emit-env" \]' claude/supervised-by.sh | cut -d: -f1 | tr '\n' ' ' => 415 426
+grep -n '^rewrite() {\|^build_map() {\|^scan_range() {\|UNPAIRED+=' claude/supervised-by.sh | cut -d: -f1 | tr '\n' ' ' => 660 907 953 976
+git filter-branch -h 2>&1 | grep -c 'commit-filter' => 1
+# the history: the one signed commit and its chain, on the LIVE repo
+git cat-file -p cebebf44 | grep -c '^gpgsig' => 1
+git cat-file -p b8dddd6c | grep -c '^gpgsig' => 0
+git log -1 --format='%P' cebebf44 | cut -c1-8 => 1ddd32f0
+git rev-list --count refs/remotes/origin/master-beta..1ddd32f0 => 0
+git log --format='%G?' origin/master-beta..HEAD | grep -cv '^N$' => 1
+git -C claude log --format='%G?' origin/CC-harness..HEAD | grep -cv '^N$' => 0
+git log --format='%an' origin/master-beta..HEAD | grep -vc '^Claude' => 16
+git log --format='%an' origin/master-beta..HEAD | grep -c '^Claude' => 82
+git rev-list --count master-beta => 3833
+git rev-list --count 1ddd32f0..c6784490^2 => 15
+git log --format='%an' 1ddd32f0..c6784490^2 | sort -u | tr '\n' ' ' => Calvin Ruiz Kenan-Blasius Lionel RUIZ lionelruiz13
+git log -1 --format='%an' c6784490 => Claude Opus 5
+grep -c '^cebebf44' claude/harness/artifacts/f103/p4_maps/code.tsv => 0
+# the F103 clone pair, the fixture (its range is the F103-time state: 94 / 798)
+test -d /home/claude/sc-f103/pair/spacecrafter/claude && echo ok => ok
+git -C /home/claude/sc-f103/pair/spacecrafter rev-parse --short=8 HEAD => 474c595d
+git -C /home/claude/sc-f103/pair/spacecrafter/claude rev-parse --short=8 HEAD => fe096019
+git -C /home/claude/sc-f103/pair/spacecrafter status --porcelain | wc -l => 0
+git -C /home/claude/sc-f103/pair/spacecrafter rev-list --count '@{upstream}..HEAD' => 94
+git -C /home/claude/sc-f103/pair/spacecrafter/claude rev-list --count '@{upstream}..HEAD' => 798
+git -C /home/claude/sc-f103/pair/spacecrafter log --format='%G?' '@{upstream}..HEAD' | grep -cv '^N$' => 1
+git -C /home/claude/sc-f103/pair/spacecrafter cat-file -p cebebf44 | grep -c '^gpgsig' => 1
+which gpg | head -1 => /usr/bin/gpg
+test -e /home/claude/sc-f106 ; echo $? => 1
+```
+
+**DoD:** predictions before any run; the fix; P1–P6; §11 entry + stub; §5.147 FIXED; the
+back-markers; the README homes + the heredoc line; R5; trees clean; WIP cleared; baselines LAST.
+**WIP:**
+
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
@@ -1337,6 +1477,14 @@ holds the legs and my runs under `supervisor/`.
                printed) and proceeds
        ask     (i) or (ii) — one word
        →       §11.224(h) · §5.147 · DEPLOYMENT-MAP R5
+       ANSWERED [vixy 2026-09-07, ~17:50] → §11.227: "the rewrite should only rewrite the commit
+       message (and author) on commit Claude is the author, from the last pushed change to the
+       HEAD … the commit themselves shouldn't be affected, so their signature shouldn't move" —
+       NEITHER (i) nor (ii): the collapse is the TOOL's defect (filter-branch rebuilds every
+       commit in the range; commit-tree drops gpgsig); a commit-filter that leaves unselected
+       commits untouched keeps cebebf44's signature and the 13 shas (its parent 1ddd32f0 is
+       already pushed) — F106, dispatched the same session; the one unavoidable case (a signed
+       commit DOWNSTREAM of a rewritten one) is empty here and will be reported by name
 
   [Y4] the tool you operate Saturday ─ what changed, in the order you will meet it
        state   RUNNABLE NOW, and was not before this round: build_map's `[ ] && printf` returned 1

@@ -64,7 +64,7 @@ they move this head on both criteria. Previous head kept above, struck where sup
   persisted under `claude/sha-maps/`), and ONE decision precedes the rewrite and is irreversible
   after the force-push: **§5.147** — `git commit-tree` drops `gpgsig`, so the rewrite collapses a
   13-commit duplicate chain on `master-beta` (3829 → 3816) and drops a contributor's signature;
-  accept-and-map or refuse-and-resolve, his word.]** · ~~**R6 the branch policy** (Vixy, one
+  accept-and-map or refuse-and-resolve, his word.]** **[AMENDED 2026-09-07 17:5x, §11.227: his word was NEITHER — the tool must not touch unselected commits at all, so the collapse is a tool defect and F106 fixes it before Saturday (a `--commit-filter` that keeps an unchanged commit's object and signature); no decision remains before the rewrite.]** · ~~**R6 the branch policy** (Vixy, one
   sentence)~~ **[ANNOTATED 2026-09-05: the policy half is ANSWERED — *"The master-beta will
   became the reference and get renamed main once ready"* [vixy, verbatim] = RENAME, not
   redirect. What is left of R6 for R0 is the owner's ACT (the rename, footprint measured by
