@@ -1,0 +1,77 @@
+{
+ "pass": "pass19",
+ "date": "2026-09-07",
+ "source": "fable-dispatch.md",
+ "pre_md5": "9dbab0d0561e2fcc9f13bd68cc2dd7c7",
+ "pre_commit": "805c157",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [
+  {
+   "removed_after_unit": "update-s25",
+   "lines": [
+    "---",
+    ""
+   ],
+   "positions_pre": [
+    294,
+    295
+   ],
+   "reason": "the moved note sat between two --- separators; removing it leaves them doubled (pass-13..18 precedent)."
+  },
+  {
+   "removed_before_unit": "F99",
+   "lines": [
+    "---",
+    ""
+   ],
+   "positions_pre": [
+    659,
+    660
+   ],
+   "reason": "the session-26 mint (cb6009f) inserted its own --- before F99 ahead of the --- that precedes '## 2.'; with F99-F102 gone the two would be doubled - the post-pass-18 shape (fcfdd04: index paragraph, blank, ---, blank, '## 2.') is restored exactly."
+  }
+ ],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "update-s25",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s25.md",
+   "line_start": 171,
+   "line_count": 123,
+   "payload_md5": "d4e08d54186c39eb00ade843608fb822"
+  },
+  {
+   "id": "F99",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F99.md",
+   "line_start": 661,
+   "line_count": 189,
+   "payload_md5": "93c366b5396f3d1935ff6ac08b45906e"
+  },
+  {
+   "id": "F100",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F100.md",
+   "line_start": 850,
+   "line_count": 187,
+   "payload_md5": "f450d16c688b4183715cc39adba8c0f1"
+  },
+  {
+   "id": "F101",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F101.md",
+   "line_start": 1037,
+   "line_count": 180,
+   "payload_md5": "338330d8f1324b051777d2ce4b2f3bca"
+  },
+  {
+   "id": "F102",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F102.md",
+   "line_start": 1217,
+   "line_count": 188,
+   "payload_md5": "753f5251a81b7e9c155e03f7f03c4c43"
+  }
+ ]
+}
