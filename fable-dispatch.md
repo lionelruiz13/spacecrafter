@@ -749,6 +749,60 @@ test -e /home/claude/sc-f103 ; echo $? => 1
 persistence; P1–P6 measured; §11 entry + stub; §11.212(g) marker; the README/map homes; trees
 clean; WIP cleared; baselines LAST.
 **WIP:** DELIVERED 2026-09-07 -> **§11.224** (`INTENT/11.224.md` + stub). B1 FIXED: no fallback at all (`resolve_branch_target` as the one home, a third `unjudgeable` outcome, a §2(f) STOP at step A' that exits 1 under `--dry-run`, `--branch-alias=<old>=<new>`, `:781` an assertion) -- reproduced at RANGE scale first (138 dangling reported against a true 2, silently), discriminated both ways on one clone state, and provably inert on the live pair (pre- and post-fix scripts at the SAME instant: byte-identical, 915 lines, md5 `9852fa64`). Maps PERSISTED to `sha-maps/<stamp>/{code,harness,repair}.tsv` + a written-once contract README, closing commit unconditional when a map was written (P4 rc 0: 83/798/2 lines, 883/883 pairs fingerprint-equal, 286 paths = 282 `.md` + 4 maps; P5 "Nothing to do in either repo."; two runs byte-identical). P1-P6 all measured. **TWO PRE-EXISTING BLOCKING DEFECTS found and fixed** under the forced-expansion rule, each with a faithful mutant (§11.224(f)(g)): `build_map`'s `set -e` death after the code rewrite and before `rollback_all`, and `build_repair_map` re-deriving the dangling set after the rewrite -- together they made the tool UNRUNNABLE on this pair. **ONE ITEM IS THE OWNER'S AND IS OWED A §3 NODE + a §5 mint at acceptance:** `git commit-tree` drops `gpgsig`, so the rewrite silently removes `cebebf44`'s signature and collapses a 13-commit duplicate chain, `master-beta` 3829 -> 3816, content assertion still passing (§11.224(h), both readings). Markers at §11.212(g) BOTH homes; `harness/README.md` (F92 note + a new `supervised-by.sh` section), `README.md` (`sha-maps/` in the repo contract), `DEPLOYMENT-MAP.md` R6. Harness `fe09601` -> `9775af8` -> `06dc311` -> `f3cec53` -> `55b6fc8` -> `deef236` -> this record; code `474c595d` byte-untouched. Scratch pair `/home/claude/sc-f103/` (959 MiB) left reset, nothing in it uncommitted that is cited.
+**ACCEPTED 2026-09-07 — the verifying commands' `date` read 10:10:04–10:12:16 (supervisor, session 27,
+Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.224 read in full; the
+`supervised-by.sh` diff (`fe09601..366a8077`, +526/−65, 976 → 1380 lines) READ end to end —
+`resolve_branch_target` the one home with three outcomes, `unresolvable_trailers`, step A' placed before
+every consumer of a verdict and firing under `--dry-run` at exit 1, the alias parsed beside
+`--author-fix` and validated after pair discovery, `:781` an assertion with rollback, D1's `if/else` +
+`return 0` + WARNING + `READ BEFORE PUBLISHING`, D2's `BASELINE_DANGLING_LIST` captured at step A, step
+D' copying the three maps verbatim + the once-written README + `git add`, the closing commit
+unconditional with `EXPECTED` widened and every NOT-COMMITTED branch naming the maps; code UNTOUCHED at
+`474c595d`; seven harness commits `9775af8 → 366a807` (Claude Opus 5; the predictions at `9775af8`
+before any run), both trees clean; §11.212(g) `[B1 FIXED … → §11.224]` at both homes; `README.md`
+§sha-maps, `harness/README.md:4230` + the F92 note, `DEPLOYMENT-MAP.md` R6; instruments to the digit of
+the report (scan 254/322/144 · pair-check 240/215/25/118 · D 35 · D2 12 · I 89 · I2 37 · M 89). **AND by
+my own hand:** the delivered script `--dry-run` on the LIVE pair (10:10:51) — rc 0, HEADs and both
+statuses unmoved before and after, 94/805 in range, 138 distinct trailers, **2** already dangling, no
+STOP; D1's isolated `set -e` case rc 1; D3's twins read off the live repo (`cebebf44` gpgsig 1 /
+`b8dddd6c` 0, same tree `e77a4151`, author, date, subject, parent `1ddd32f0`; `master-beta` 3829; ONE
+signed commit in the range; the 13 old shas cited in `INTENT/11.203.md` alone); all **883** map pairs
+re-checked fingerprint-equal in the clone's object store, 0 unresolvable; P1 → P2 → P3 REPRODUCED on
+the scratch clone in state R (10:12:09–16): pre-fix rc 0 / **138** dangling / 0 warning words, post-fix
+STOP rc 1 with no prompt, alias rc 0 / **2** dangling, P1-vs-P3 = 138 diff lines, the clone restored to
+state U (`474c595d`, clean, upstream `origin/master-beta`), the live pair untouched. Deviations ENDORSED
+with the executor's arguments: the two forced-scope expansions D1/D2 (blocking for P4 AND for the
+owner's Saturday run; each discriminated by a mutant with committed logs; the untouched functions
+block-md5-verified — check (f) PARTIAL by that scope, endorsed); the alias validated after pair
+discovery (the branch lives in the CODE repo, discovered after the arg loop — the mandate's "at parse
+time" was mine); the `--help` awk (arg parser, in scope; a magic line number truncates the help the
+moment the header grows — which this change did); `code.tsv` verbatim at 83 (I9); P6 in the
+two-scripts-one-instant form (stronger than asked); the fixture pinned at `fe09601`; a WARNING rather
+than a STOP for unpaired commits (D3 is the owner's; the tool says so and prints Undo). ONE delivery
+defect corrected here: `README.md`'s new section said `purge-path.sh` writes maps too — it does not (0
+mentions; it shares the rewrite mechanism, not the map step): sentence corrected with a marker,
+`purge-path.sh`'s own map owed as an instrument residue. SUSPENSIONS ENDORSED and ROUTED: **D3 → §5.147
+MINTED at this acceptance** (record-only, the §5.131 precedent — a repository-history property that
+makes the owner's planned operation lossy; markers at §11.224(h) both homes; the decision his, §3); the
+scan's half-1 EVENT lexicon lacking `FIXED` (instrument residue, queue item 8). DISPATCHER-SIDE
+FINDINGS, all ACCEPTED as mine, all output-side (the gate passed 39/39; none was an input the task
+stood on): (1) "788 trailers take the fallback" — a whole-history LINE count where the tool consults
+138 distinct in-range pairs (a measured number modelling the wrong set — Q-67's sibling); (2) "0
+dangling" at P3/P6 — written from expectation where the live pair has carried 2 since 2026-07-22, and
+the tool's own `--dry-run` (read-only, seconds) would have shown it at the mint — Q-67's class: the
+measuring command existed and was not run; (3) "preview identical to the digit" for the CODE preview
+in state R — structure asserted without the read (HEAD on `2023-master` makes the code range empty by
+the fixture); (4) "line count = rewritten-commit count" — the `:815` repair append was in my read and
+not in the relation; (5) "`README.md:129` is the repo contract" — a pointer inside "History before
+this repo"; (6) "validated at parse time" — the pair is discovered after the loop. Round tally so far:
+**six dispatcher defects** (2 value-class, 4 structure-class). STANDING CONSEQUENCES: **the tool is
+runnable on this pair and was not before this round** (D1 killed every run after the code rewrite, D2
+rolled back every run on a pair with a pre-existing dangling trailer — this pair has two); before
+Saturday's rewrite the owner decides D3 (§5.147); the rewrite is deterministic (two runs,
+byte-identical maps, tip `d40f4eb1`); `claude/sha-maps/` is created by the first real run; a renamed
+branch now STOPs the tool until `--branch-alias` names the new one; the census the tool consults is the
+RANGE's distinct `<branch> <sha>` pairs (138 today), never the history's trailer lines;
+`/home/claude/sc-f103/` (959 MiB) holds the pair and my runs under `logs/supervisor/`.
 
 ### F104 — §5.145's fix on the owner's CORRECTED ruling (§11.223(b), [vixy verbatim]: *"keeping the same iteration count but doubling each iteraton per cycle on the newton path (or the one Eris involves)"*): the ITERATIVE solvers take TWO steps per call where they took one — `EllipticalOrbit::eccentricAnomaly`'s four advancing statements (`orbit.cpp:524`, `:531`, `:543`, `:559`; the `e == 0` and `e == 1` returns untouched) and `IterativeEll::operator()` / `IterativeHyp::operator()` (`iterative_orbits.hpp:97`, `:41`) — ONE constant in ONE home; the barrier's `1 + RESUME_EXTRA_ITERATIONS` loop untouched (`ModularBody.cpp:512-514`; `ModularBody.hpp:338` stays 4), so a parked body's use gives 2 + 8 = 10 steps where F100 measured 9 → 1.1e-05° (§11.220(j1)); `orbit.cpp` is SHARED, so the OLD path converges twice as fast per frame after a date jump — an as-if change on the comparison baseline, strictly more exact (veto point §3) — and §5.84's residual changes shape (annotated at the fix); the three-class partition PREDICTED from the field census before any build: 60 iterative bodies (54 `ell_orbit` + 6 `comet_orbit`, the six comets ALL parked), of which the PARKED ones move toward old by their own 5-step residual (Eris by 1.1987°) and the WALKED ones by ulps, while the 60 non-iterative records (`*_special`, `*_custom`, `e == 0`) stay byte-identical; the MUTATION (Eris's branch alone) discriminates the class from the instance; the cost under D11 measured on the solver itself [S–M, engine, BOTH paths — the veto point above]
 
@@ -864,7 +918,7 @@ PREMISES
 git rev-parse --short=8 HEAD => 474c595d
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => b5f08778
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 224
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 225
 grep -c '^### F' claude/fable-dispatch.md => 3
 # ledger states the work stands on
 grep -m1 '^145\. ' claude/INTENT.md | grep -c 'RESOLVED 2026-09-07' => 1

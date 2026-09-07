@@ -57,7 +57,14 @@ tester, decision-paced — the tiers that follow). **What is NECESSARY, and only
 they move this head on both criteria. Previous head kept above, struck where superseded.]**
 **What is NECESSARY, and only that, as of 2026-09-05 evening:**
 - **For R0 (the developer, one week):** **R5 the PUSH** (Vixy; `master-beta` + `CC-harness`
-  from a keyed host — nothing here substitutes it) · ~~**R6 the branch policy** (Vixy, one
+  from a keyed host — nothing here substitutes it) **[ANNOTATED 2026-09-07, F103's acceptance:
+  R5 is scheduled Saturday/Sunday 2026-09-12/13 *"along with supervised_by.sh patching of commit
+  history with commit tracking"* [vixy, §11.223(d)]; the tool was made runnable this round
+  (§11.224 — B1's fallback gone, two pre-existing blocking defects fixed, the old→new maps
+  persisted under `claude/sha-maps/`), and ONE decision precedes the rewrite and is irreversible
+  after the force-push: **§5.147** — `git commit-tree` drops `gpgsig`, so the rewrite collapses a
+  13-commit duplicate chain on `master-beta` (3829 → 3816) and drops a contributor's signature;
+  accept-and-map or refuse-and-resolve, his word.]** · ~~**R6 the branch policy** (Vixy, one
   sentence)~~ **[ANNOTATED 2026-09-05: the policy half is ANSWERED — *"The master-beta will
   became the reference and get renamed main once ready"* [vixy, verbatim] = RENAME, not
   redirect. What is left of R6 for R0 is the owner's ACT (the rename, footprint measured by

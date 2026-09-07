@@ -130,8 +130,11 @@ code repo's log against those paths. (`DECISIONS_PENDING.md` and
 
 ## sha-maps/ -- resolving a commit sha a rewrite invalidated
 
-`supervised-by.sh` and `purge-path.sh` re-hash every commit they touch, and they
-repoint citations only in tracked `*.md` of this repository. Everything else that
+`supervised-by.sh` re-hashes every commit it touches and repoints citations only
+in tracked `*.md` of this repository **[CORRECTED 2026-09-07 at F103's acceptance
+(supervisor): this sentence first named `purge-path.sh` beside it — that script
+rewrites the same way and does NOT write a map (0 mentions of `sha-maps` in it);
+its map is OWED as an instrument residue, not claimed here]**. Everything else that
 cites a commit by sha -- the git history of those same files, notes outside this
 pair, the archive drawer, the owner's own trees -- cannot be reached by any
 rewrite. So every run that changes a sha now writes its old->new map to
