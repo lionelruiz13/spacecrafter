@@ -1,0 +1,208 @@
+F106 -- PREDICTIONS, committed BEFORE the tool is invoked once (2026-09-07)
+==========================================================================
+Task F106, Claude Opus 5 executor, dispatched by Claude Fable 5.1 (session 27),
+on INTENT 11.227(a)(c).  Code master-beta @ 48cc3727, harness @ 93cc947.
+Every number below is derived from the GRAPH of the fixture with plain git plus
+harness/f106_predict.py (a re-implementation of scan_range's selection rule and
+of the rebuild closure), or is quoted from 11.224 as that entry measured it.
+Nothing here is copied from a run of the tool: no run has happened yet.
+
+0. THE FIXTURE, AND THE PROTOCOL AROUND IT
+------------------------------------------
+/home/claude/sc-f103/pair -- the throwaway nested clone pair F103 built
+(harness/artifacts/f103/setup.txt).  STATE U = code 474c595d, harness fe096019,
+both clean, 94 / 798 behind their scratch origins.  Reset to state U with
+`git reset --hard` in BOTH repos BEFORE and AFTER every run; the scratch origins
+(/home/claude/sc-f103/origin/*.git) are never touched; `gc.auto 0` stays, because
+the two pre-existing dangling objects 5f68d374 / 841175d3 are what the repair
+path exercises.  The LIVE pair is invoked with --dry-run and nothing else, HEADs
+and `git status` asserted around each invocation.  The throwaway GPG key of P5
+lives under GNUPGHOME=/home/claude/sc-f103/gnupg and never enters ~/.gnupg.
+
+Measured on the fixture at prediction time (read-only):
+  * code range origin/master-beta..HEAD = 94 commits, 78 selected by scan_range's
+    rule, 16 non-Claude (15 = the side chain 1ddd32f0..c6784490^2, plus f0c8ef83
+    "Update superscript.sts", Lionel RUIZ);
+  * harness range origin/CC-harness..HEAD = 798 commits, 786 selected, 12 not
+    (8 bare-`Claude` wildcards with no resolvable co-author = MANUAL, 4 non-Claude);
+  * 138 distinct `Code: <branch> @ <sha>` trailers in the harness range, all
+    naming master-beta, of which exactly 2 dangling: 5f68d374, 841175d3;
+  * of the 15 side-chain commits, 13 have a fingerprint twin reachable from
+    origin/master-beta and 2 do NOT (c69687bc, 6ec2f43f).  That 13/2 split is
+    what makes the pre-fix collapse 13 commits and still leave 81 map pairs.
+
+1. P1 -- THE PRE-FIX SCRIPT (md5 6816c210) ON THE RESET PAIR: THE COLLAPSE
+--------------------------------------------------------------------------
+Full pty-driven run (/usr/bin/script), --supervisor='Test Supervisor
+<test@example.invalid>', answers y / y.  This is F103's P4 re-run from the same
+pre-state, so it must reproduce it to the byte.
+  P1.1  rc 0.
+  P1.2  code: `git rev-list --count master-beta` 3829 BEFORE -> 3816 AFTER.
+  P1.3  code range origin/master-beta..HEAD 94 -> 81.
+  P1.4  build_map WARNING: 13 unpaired commits in the CODE repo, 0 in the harness;
+        UNPAIRED_TOTAL 13; one `READ BEFORE PUBLISHING:` line naming 13.
+  P1.5  the 13 unpaired are EXACTLY, oldest first:
+          cebebf44 7386bd1f 1fd3be38 ae164c8b fa9798ae fc1aa1ec 1fc255bd
+          eb351f20 966ab8dc fcc34253 30f6655d f791293c bdd945b3
+        and c69687bc / 6ec2f43f are NOT among them (no twin -> they pair).
+  P1.6  cebebf44 is absent from the new history (`merge-base --is-ancestor
+        cebebf44 HEAD` rc 1) and absent from code.tsv (`grep -c '^cebebf44'` 0).
+  P1.7  code.tsv 83 lines (81 pairs + the 2 repair pairs appended at :1084),
+        harness.tsv 798, repair.tsv 2; md5s 6e7984e6 / 43834ed0 / 6379ab86
+        (11.224(i): two independent runs produced byte-identical maps).
+  P1.8  new code tip d40f4eb1.
+  P1.9  three VERIFIED lines: code 78 rewritten / 0 unresolvable wildcards;
+        harness trailers 2 repaired / 0 for hand repair; harness 786 rewritten /
+        8 unresolvable wildcards.
+  P1.10 `Code sha map: 81 commit(s) changed sha.` (printed at :1073, BEFORE the
+        repair pairs are appended).
+  P1.11 `Repointed 545 citation(s) across 282 file(s)`; closing commit 286 paths.
+  P1.12 the merge c6784490 rebuilt with ONE parent (its two parents converge:
+        the second parent's chain collapses onto the first parent's history).
+
+2. P2 -- THE POST-FIX SCRIPT ON THE SAME RESET PAIR: NO COLLAPSE
+----------------------------------------------------------------
+Same invocation, same pre-state.  Predicted BY SHA:
+  P2.1  rc 0; `git rev-list --count master-beta` 3829 BEFORE and 3829 AFTER;
+        code range 94 -> 94.
+  P2.2  cebebf44 KEEPS ITS SHA: still reachable from HEAD, and
+        `git cat-file -p cebebf44 | grep -c '^gpgsig'` = 1 after the rewrite.
+  P2.3  ALL FIFTEEN of 1ddd32f0..c6784490^2 keep their shas -- the same 15
+        objects, reachable from the new HEAD:
+          cebebf44 7386bd1f 1fd3be38 ae164c8b fa9798ae fc1aa1ec 1fc255bd
+          eb351f20 966ab8dc fcc34253 30f6655d f791293c bdd945b3 c69687bc 6ec2f43f
+  P2.4  the merge c6784490 is rebuilt (it is Claude Opus 5's, hence selected) and
+        its rebuilt form has TWO parents: the mapped first parent (85cc2785's new
+        sha) and the UNCHANGED second parent 6ec2f43f.
+  P2.5  UNPAIRED 0 in both repos: no `WARNING:` block from build_map, no
+        `READ BEFORE PUBLISHING:` line (0 grep hits for each).
+  P2.6  THE MAP'S MEMBERSHIP, predicted from the graph before the run.
+        REBUILT on the code side = 79 = the 78 selected commits UNION exactly one
+        unselected commit:
+            f0c8ef83  Lionel RUIZ  "Update superscript.sts"
+        -- rebuilt because its parent 70dee810 is a selected Claude commit inside
+        the range, so its mapped parent changed and its object must change.
+        KEPT = the 15 side-chain commits: every one is unselected AND its parents
+        are unchanged, because the chain hangs off 1ddd32f0, which
+        origin/master-beta already reaches (0 commits ahead), so no rewritten
+        commit is an ancestor of any of them inside the range.
+        Therefore `Code sha map:` prints 79, and code.tsv is 81 lines = 79 pairs
+        + the 2 repair pairs.  repair.tsv 2.
+  P2.7  the HARNESS side is unchanged in behaviour: 798 in range, 786 selected,
+        540 more carry a `Code:` trailer that the map remaps (transform (1) is
+        independent of selection), and the 12 unselected commits are all
+        downstream of a rebuilt one -- so REBUILT = 798, KEPT = 0 and
+        harness.tsv = 798 lines, the same count as pre-fix.  0 AMBIG tokens.
+  P2.8  three VERIFIED lines, identical text to P1.9 (78 / 2-0 / 786-8).
+  P2.9  content assertions: `git diff --quiet <old tip> HEAD` passes in both
+        repos, and the new code tip's TREE equals 474c595d's tree.
+  P2.10 `Repointed 543 citation(s) across 282 file(s)` -- two fewer than P1
+        because the code map loses exactly c69687bc and 6ec2f43f, whose tokens
+        occur in the trackers; closing commit 286 paths (282 .md + 4 map files).
+  P2.11 the new code tip is NOT d40f4eb1 (the ancestry below it differs from P1's).
+  P2.12 `signatures-dropped` is never created: no signed commit is rebuilt.  The
+        section-2(f) signature block and its closing-summary repeat print 0 times.
+
+3. P3 -- IDEMPOTENCE
+--------------------
+  P3.1  a second post-fix run on the pair P2 left behind, same arguments:
+        `Nothing to do in either repo.`, rc 0, no new sha-maps directory,
+        both HEADs unmoved.
+  P3.2  cebebf44 still present with gpgsig 1 after the second run.
+
+4. P4 -- THE LIVE PAIR, --dry-run ONLY
+--------------------------------------
+  P4.1  the PRE-fix copy (md5 6816c210) and the POST-fix script, both run
+        `--dry-run` on the LIVE pair AT THE SAME INSTANT (11.224(i)'s shape --
+        this executor's own checkpoint commits move the harness range between
+        two instants, so one script at two times cannot answer the question):
+        output BYTE-IDENTICAL, same line count, same md5.
+        No preview line for signed-to-be-rebuilt commits is added, and the
+        reason is stated in the entry: the preview would have to predict the
+        rebuild closure, i.e. a SECOND implementation of the filter's rule
+        (":99-101", two copies of a rule are two rules waiting to drift apart),
+        and it would print 0 today.  The loss is reported at the rewrite and
+        again in the closing summary, both before any push.
+  P4.2  live code HEAD 48cc3727 and the live harness HEAD unmoved, `git status`
+        empty in both, before and after each invocation.
+
+5. P5 -- THE NEGATIVE CASE: A SIGNATURE THAT CANNOT SURVIVE, ON A THROWAWAY KEY
+-------------------------------------------------------------------------------
+Setup on the reset pair: GNUPGHOME=/home/claude/sc-f103/gnupg, a throwaway key
+`Field Contributor <field@example.invalid>`, and ONE commit signed with it,
+authored by that same non-Claude identity, committed ON TOP of the code HEAD
+474c595d -- which is a SELECTED Claude commit, so the new commit's parent is
+rewritten by construction.
+  P5.1  the new commit is NOT selected (author not a Claude identity) and is
+        REBUILT anyway: its mapped parent changed.  Its sha moves.
+  P5.2  `git cat-file -p <new sha> | grep -c '^gpgsig'` = 0 -- the signature is
+        gone, and `%G?` on it reads N.
+  P5.3  the run says so BY NAME, twice: one section-2(f) block at the rewrite of
+        the code repo (naming the commit, the cause -- a parent's rewrite -- the
+        consequence, and a check command) and one `READ BEFORE PUBLISHING` repeat
+        in the closing summary.  `signatures-dropped` holds exactly 1 line.
+  P5.4  THE DISCRIMINATOR, in the same run: cebebf44 keeps its sha AND its
+        gpgsig (it has no rewritten ancestor), while the new commit cannot.  One
+        signed commit survives and one does not, and only the second is reported.
+  P5.5  UNPAIRED 0 (the rebuilt commit pairs by fingerprint); code map 80 pairs
+        (79 + the new commit); `rev-list --count master-beta` 3830 -> 3830.
+  P5.6  THE MUTANT: the same run with the recording line disabled -> the
+        signature is still lost, the commit is still rebuilt, and the run is
+        SILENT about it (0 grep hits for the block and for the summary line).
+        This is the both-ways proof that the reporting is what reports.
+
+6. P6 -- THE EQUALITY MUTANT: THE FIX SHOWN ABLE TO FAIL
+--------------------------------------------------------
+The message comparison in --commit-filter forced to "different" (the one
+conjunct disabled), everything else unchanged, on the reset pair:
+  P6.1  every commit is rebuilt again, so the run reproduces P1 EXACTLY:
+        3829 -> 3816, code range 94 -> 81, 13 UNPAIRED, cebebf44 absent from the
+        new history and from code.tsv, code.tsv 83 / harness.tsv 798 /
+        repair.tsv 2, new code tip d40f4eb1, `Repointed 545 ... 282 file(s)`.
+  P6.2  the map md5s equal P1's (6e7984e6 / 43834ed0 / 6379ab86): the mutant is
+        the pre-fix tool, not merely something that looks like it.
+
+7. WHAT I EXPECT THE DISPATCH SECTION TO GET WRONG (pre-registered as refuted,
+   so a refutation cannot become a post-hoc excuse)
+-----------------------------------------------------------------------------
+  R1  "`code.tsv` lists only what changed" -- NOT strictly true and not a
+      regression: build_repair_map's pairs are appended to the code map at
+      :1084, so code.tsv carries 2 lines that are PRE-EXISTING damage rather
+      than this run's work.  sha-maps/README.md already states that relation
+      ("repair.tsv is a verbatim SUBSET of code.tsv").  Predicted 81 lines for
+      79 changed commits.
+  R2  P2's "both content assertions and both `VERIFIED` lines" -- there are
+      THREE VERIFIED lines, not two (code, harness trailers, harness), as
+      11.224(i) records.  An output-side undercount, re-adjudicated here.
+  R3  "the harness side unchanged in behaviour (0 signed; predict its map count
+      from F103's 798)" -- the count is indeed 798, but not because the harness
+      is untouched by the fix: every one of its 798 commits is rebuilt, 12 of
+      them only because they are downstream of a rebuilt one.  The fix is inert
+      there by the GRAPH, not by the harness being exempt.
+
+8. THE FIX'S SHAPE, FIXED BEFORE IT IS WRITTEN
+----------------------------------------------
+A `--commit-filter` mode beside --emit-env and --msg-filter, same self-invocation
+pattern, $SELF absolute.  It reads the filtered message from stdin with the
+`cat; printf X` sentinel, reads the ORIGINAL object with `git cat-file commit
+$GIT_COMMIT`, splits it at the FIRST truly empty line (a gpgsig block's own blank
+lines are indented by one space -- verified on cebebf44 -- so they are not that
+line; this is the same split filter-branch itself makes at :465-474), and emits
+`printf '%s' "$GIT_COMMIT"` when ALL FIVE of the fields a signature signs are
+unchanged: tree, parents (in order), author ident, committer ident, message
+(byte-exact).  Otherwise `git commit-tree "$@"` with the message on stdin, as
+today -- and if the original object carried a `gpgsig` header, one line is
+appended to $SIG_DROPPED first.
+  Deliberate departures from the mandate's letter, both strictly conservative:
+  (a) FIVE fields, not three.  11.227(b) says a signature signs "the whole
+      commit object -- tree, parents, author, committer, message"; comparing
+      three of the five would let a --tree-filter or a committer rewrite emit
+      the original id for a commit that is NOT the original -- a silently WRONG
+      history instead of a silently shortened one.  Today both extra fields are
+      inert by construction (no tree/index/subdirectory filter is passed, so
+      filter-branch hands over $commit^{tree} verbatim -- git-filter-branch:373
+      and :490; the env-filter exports GIT_AUTHOR_NAME only), which P2 measures.
+  (b) the parents are read from the ORIGINAL OBJECT's `parent` lines rather than
+      from `git rev-parse "$GIT_COMMIT"^@` -- the same information from the same
+      bytes, one subprocess fewer per commit, and no root-commit edge case.
+      Proved equivalent over the whole fixture range offline.
