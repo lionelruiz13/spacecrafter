@@ -452,10 +452,10 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
 
 // The D8 use-site barrier (S11.76(b)) - see the header for why +4 and why the
 // frame comes from the parent rather than from this body.
-void ModularBody::useNow()
+bool ModularBody::useNow()
 {
     if (!renderHidden || !parent)
-        return; // the walks still evaluate this body: fresh by construction
+        return true; // the walks still evaluate this body: fresh by construction
     // THE DATE HALF OF THE KEY, READ BEFORE THE CLIMB - deliberately (S11.220,
     // row S5.139). parent->useNow()'s own refresh descends THROUGH this node and
     // stamps evaluatedJD on the way, so a date test taken after the climb would
@@ -470,7 +470,43 @@ void ModularBody::useNow()
     // now, because the frame comparison below has to compare against a CURRENT
     // parent frame; for the common case (a parked body under a walked parent)
     // it returns on the line above, at the cost of one call.
-    parent->useNow();
+    // THE PRECONDITION: A FRAME MUST EXIST (S11.226, from S11.220(j4)). The
+    // refresh below computes THIS body's position in the frame the line after
+    // takes from the parent, and a parent the current system's walk never
+    // visits has never published one - `parkedChildFrame` is then still
+    // `Mat4f::identity()` and the refresh would express this body's own LOCAL
+    // position as an EYE-frame position. Measured before the guard existed
+    // (S11.226(b)): eight of the corpus's anchor bodies, `pleiades` among them,
+    // landing at 125.445793 AU and printing AD/DE 10h10m26s / +34d33'43" where
+    // their honest readout is the degenerate zero-vector one. D8's own words
+    // presuppose a frame ("as soon as the position is used ... it should be
+    // computed"), so the barrier REFUSES rather than computing in a frame
+    // nobody published, and says so once (D12).
+    // Two ways to be served, one per branch of the frame read below:
+    //   hidden parent     -> served iff the PARENT was served (its
+    //                        matLocalToBodyPos is fresh only if it refreshed),
+    //                        which is how the refusal propagates down a parked
+    //                        chain: the orbit centre of `orbit_autour_point` is
+    //                        itself unserved, so its child is too;
+    //   non-hidden parent -> served iff it has ever published a parked frame.
+    const bool parentServed = parent->useNow();
+    if (!(parent->renderHidden ? parentServed : parent->parkedFramePublished)) {
+        if (!unservedLogged) {
+            unservedLogged = true;
+            cLog::get()->write("Position of '" + englishName + "' was used, but "
+                "its parent '" + parent->englishName + "' has never published a "
+                "position frame for its parked children: '" + parent->englishName
+                + "' is outside the update walk of the system currently loaded "
+                "(the walk stops at the system node), so there is no frame to "
+                "compute '" + englishName + "' in. This use is REFUSED: '"
+                + englishName + "' keeps its unevaluated position (the zero "
+                "vector), so its distance, RA/DE, alt/az and magnitude stay the "
+                "degenerate readout instead of becoming a plausible-looking "
+                "wrong one. To fix: declare '" + englishName + "' under a body "
+                "the loaded system walks.", LOG_TYPE::L_WARNING);
+        }
+        return false;
+    }
     const Mat4f &parentFlat = parent->renderHidden ? parent->matLocalToBodyPos
                                                    : parent->parkedChildFrame;
     // A GROUNDED parked child rides the parent's accumulated SURFACE frame, the
@@ -499,7 +535,7 @@ void ModularBody::useNow()
     // soon as the position is used (fetched from script, warped to) it should be
     // computed, and if previously frozen, recomputed with 4 extra iterations".
     if (dateFresh && sameFrame(frame, evaluatedFrame))
-        return; // this date AND this camera frame: already computed, by a use
+        return true; // this date AND this camera frame: already computed, by a use
     evaluatedFrame = frame;
     // The +4 belong to a DATE change and to nothing else. They exist because
     // EllipticalOrbit::eccentricAnomaly and IterativeEll/IterativeHyp advance
@@ -513,6 +549,7 @@ void ModularBody::useNow()
     const int extra = dateFresh ? 0 : RESUME_EXTRA_ITERATIONS;
     for (int i = 0; i <= extra; ++i)
         recursiveTranslationUpdate(currentJD, frame);
+    return true;
 }
 
 // Hand every module of this subtree the "you were out of the frame, come back as

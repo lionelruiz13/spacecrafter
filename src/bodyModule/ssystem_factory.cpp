@@ -1259,6 +1259,19 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
                 return;
             out << "{\"type\":\"body\",\"name\":\"" << nb.getEnglishName()
                 << "\",\"old\":null,\"new\":";
+            // A DUMP IS A USE FOR THESE 30 RECORDS TOO (S11.226, discharging
+            // S11.220(j3)). The loop above calls the D8 barrier for the 90
+            // names the old tree carries; without this call the instrument
+            // reported a new-only body's LAST-EVALUATED position and called it
+            // "now" - for the two anchor bodies under a walked parent that is a
+            // stale readout, and for the never-walked ones it is the value they
+            // have carried since load. The barrier itself decides what a use
+            // means for each of them: it returns on its first line for the 20
+            // records that are not parked, refreshes the 2 whose parent
+            // publishes a frame, and REFUSES the 8 whose parent the walk never
+            // visits (its own precondition - see ModularBody::useNow), which is
+            // what keeps their honest `dist` 0 in this file.
+            nb.useNow();
             nb.dumpTrace(out);
             out << "}\n";
             // The nav-string sidecar for new-only bodies too (B24-select,

@@ -1004,6 +1004,11 @@ public:
         if (hiddenBodies.empty())
             return;
         parkedChildFrame = flat;
+        // ...and the fact that it HAS been published, which is what useNow's
+        // precondition reads (S11.226). Written here and nowhere else, on the
+        // same line pair as the frame itself, so the two cannot desync - the
+        // same argument the member above makes about `matLocalToBodyPos`.
+        parkedFramePublished = true;
     }
     // Exact equality of two frames, element for element (S11.220). Written here
     // rather than as a Matrix4 operator== because it is the barrier's key and
@@ -1043,7 +1048,23 @@ public:
     // deliberately so - at a running clock every frame is a new date, so a
     // parked body's use re-converges every frame and raising this loop would
     // have been "slightly noticeable at high simulation speed" [vixy].
-    void useNow();
+    //
+    // THE THIRD HALF OF THE KEY IS THAT A FRAME MUST EXIST (S11.226, from
+    // S11.220(j4)). The refresh computes in the PARENT's published frame, and a
+    // parent the current system's walk never visits has never published one -
+    // `parkedChildFrame` is then still `Mat4f::identity()`, so the refresh puts
+    // the body at its own LOCAL position expressed as an EYE-frame position.
+    // Measured, not argued (S11.226(b)): `pleiades` reads 125.445793 AU and
+    // prints AD/DE 10h10m26s where its honest readout is the degenerate
+    // zero-vector one. D8 presupposes a frame to compute in, so this is a
+    // PRECONDITION and not an option: RETURNS whether the use was SERVED.
+    // true  = this body's position is current for (date, frame) - which is
+    //         unconditional for a body the walks evaluate.
+    // false = there is no frame to compute in; nothing was refreshed and the
+    //         body keeps its unevaluated value. Logged once per body (D12).
+    // Callers that do not care may ignore it: every existing call site does,
+    // and the widening is invisible to them (I1).
+    bool useNow();
     //! Bring the per-frame DERIVED state (spin phase + reach) to `jd` for a
     //! consumer that is NOT the draw walk (S5.32).
     //!
@@ -2124,7 +2145,27 @@ private:
     // identity until then, and a body parked THIS frame is stamped current by the
     // walk that evaluated it moments earlier (evaluatedJD), so no use can reach
     // the identity value before the first publish.
+    // **THAT LAST CLAUSE WAS TRUE ONLY OF A NODE THE WALK VISITS** (S11.226,
+    // measured; the hazard was named at S11.220(j4)). A node OUTSIDE the current
+    // system's walk is never handed a frame at all - dispatchUpdate's up-chain
+    // loop is `while (body->isNotIsolated)` and a ModularSystem sets that false,
+    // so the climb stops at the system node and `Universe` is never visited -
+    // and its seven hidden children (plus one grandchild) would be refreshed
+    // into the IDENTITY frame by any use. `parkedFramePublished` below is the
+    // observable that separates "identity because nothing is parked here" from
+    // "identity because nobody ever came".
     Mat4f parkedChildFrame = Mat4f::identity();
+    // Has publishParkedFrame ever run on this node? The D8 barrier's
+    // precondition (S11.226): a use of a parked child computes in the frame
+    // above, so a child of a node this is false for CANNOT be served. False
+    // until the first publish and never cleared - a node the walk has visited
+    // once keeps a frame that useNow's own (date, frame) memo then re-checks.
+    bool parkedFramePublished = false;
+    // Has this body already reported an unserved use? D12 acting-default lines
+    // are for the operator, not for the frame loop: the selection channel calls
+    // useNow EVERY FRAME (ModularSystem.cpp:269-270), so an unguarded log would
+    // write 144 identical lines a second for as long as the body stays selected.
+    bool unservedLogged = false;
     Vec3f eclipticPos;
     std::pair<float, float> screenPos;
     float halfAngularSize = 0; // 0 until first update (uninit class, INTENT 5.16/11.28c/11.32)
