@@ -1168,8 +1168,13 @@ measured and REVERTED (`f26d5ad7` bit-reproduced from the restored source) — *
 partition holds BY NAME**; the 8 identity-frame values match the pre-registered numbers exactly
 (maxdiff 0 for 7 of 8; the date-dependent 8th 2.14e-06 inside its +-4e-06 band), `evalCount`
 0 → 5 on all ten, `|bary − Earth|` = 0.001205379178 against the predicted 0.5·|Moon−Earth| =
-0.001205379219; inertness 72/72 walked + 21/21 unreached, exactly 8 records moved. Next: (c),
-the guard.
+0.001205379219; inertness 72/72 walked + 21/21 unreached, exactly 8 records moved. CHECKPOINT 5:
+(c) the GUARD DONE — code `a30b2c75 → 318c0c8b` (`ModularBody.{hpp,cpp}` + the one call), binary
+`3f19cb6b`; **P1 (20, 2, 8) with the 8 at `dist` 0 / `evalCount` 0**, P2 bit-identical to the
+mutation for the 2, **P5 exactly 8 D12 lines, delta 0 on the second dump and after the operator
+stage**, P4 post-guard `pleiades` == the `51PegSystem` control to every digit, **P6** camera +
+72/72 walked + 27/27 unreached + 90/90 `altaz_new` identical to the PRE binary and the F91 table
+byte-identical (`1fe630a4`, 0 FAIL / 0 NOTE). Next: the smoke control, then the §11.226 record.
 
 ---
 

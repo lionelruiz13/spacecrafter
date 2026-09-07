@@ -1,0 +1,52 @@
+F105 P4 -- THE OPERATOR ARM, BOTH WAYS, WITH THE dist-0 CONTROL IN THE SAME LAUNCH
+`select planet <name>` + `flag track_object on`, pinned clock (jd 2461233.5),
+seven camera polls per arm, the WALKED control (Mars) tracked before AND after.
+
+=== PRE-GUARD, the round baseline binary 0c61f1b5 -- NO code change   (0c61f1b5)
+  walked_before  Mars         final alt -0.37837252    az -0.739825428   converged True 
+      alt over 7 polls : -0.877657592 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252
+      the body`s own record while SELECTED: dist 2.0717597  mat [1.1920929e-07, 1.2665987e-07, -2.0717597]  evalCount 4634
+  subject        pleiades     final alt -1.57079637    az -2.58827329    converged False
+      alt over 7 polls : -1.29471314 -1.57079637 -1.57079637 -1.57079637 -1.30576575 -1.57079637 -1.57079637
+      the body`s own record while SELECTED: dist 125.445793  mat [62.6399994, 108.129997, 10.9899998]  evalCount 5
+  zero_control   51PegSystem  final alt 0.087720111    az -0.251357287   converged True 
+      alt over 7 polls : 0.087720111 0.087720111 0.087720111 0.087720111 0.087720111 0.087720111 0.087720111
+      the body`s own record while SELECTED: dist 0  mat [0, 0, 0]  evalCount 0
+  walked_after   Mars         final alt -0.37837252    az -0.739825428   converged True 
+      alt over 7 polls : -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252 -0.37837252
+      the body`s own record while SELECTED: dist 2.0717597  mat [1.1920929e-07, 1.2665987e-07, -2.0717597]  evalCount 12123
+
+=== POST-GUARD, binary 3f19cb6b   (3f19cb6b)
+  walked_before  Mars         final alt -0.37837255    az -0.739825368   converged True 
+      alt over 7 polls : -0.877661347 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255
+      the body`s own record while SELECTED: dist 2.0717597  mat [1.1920929e-07, -8.94069672e-08, -2.0717597]  evalCount 4738
+  subject        pleiades     final alt -0.37837255    az -0.739825368   converged True 
+      alt over 7 polls : -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255
+      the body`s own record while SELECTED: dist 0  mat [0, 0, 0]  evalCount 0
+  zero_control   51PegSystem  final alt -0.37837255    az -0.739825368   converged True 
+      alt over 7 polls : -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255
+      the body`s own record while SELECTED: dist 0  mat [0, 0, 0]  evalCount 0
+  walked_after   Mars         final alt -0.37837255    az -0.739825368   converged True 
+      alt over 7 polls : -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255 -0.37837255
+      the body`s own record while SELECTED: dist 2.0717597  mat [1.1920929e-07, -8.94069672e-08, -2.0717597]  evalCount 12225
+
+READ:
+ * PRE-GUARD the selection channel ALONE refreshes `pleiades` into the identity
+   frame - dist 125.445793, mat (62.6399994, 108.129997, 10.9899998), evalCount 5 -
+   on the ROUND'S OWN BASELINE BINARY, with no code change: 11.220(j4) is live
+   today on a shipped command, not a hazard waiting for the dump call.
+ * PRE-GUARD the aim is thrown onto the -pi/2 clamp and does NOT converge
+   (-1.295, -1.571, -1.571, -1.571, -1.306, -1.571, -1.571) - F100's Ceres wreck
+   on a second body, and a refutation of this task's own P4(b), which predicted
+   convergence because the target is fixed.
+ * POST-GUARD `pleiades` and the `dist 0` system 51PegSystem produce the SAME
+   camera state to every printed digit, and it is the state the walked control
+   left - i.e. the aim does not move at all. One wrong replaced by a known one.
+ * THE KNOWN ONE IS NOT HARMLESS AND THIS IS MEASURED ON THE BASELINE BINARY TOO:
+   tracking a zero-vector body puts `nan` into the OLD path's view state - 66
+   non-finite values across helioToEye, matLocalToEye, matJ2000ToEye,
+   matEarthEquToEye, headingVector and the plan's moveAim - in the 51PegSystem arm
+   of the PRE leg (binary 0c61f1b5) exactly as in both arms of the guard leg.
+   So the guard moves the 8 INTO a pre-existing class; it does not create it.
+   S11.216(i)'s open zero-vector question now has this second consequence beside
+   the printed readout, and it is the supervisor's to mint or not.
