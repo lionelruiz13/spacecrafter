@@ -164,6 +164,39 @@ commit (measured 12:31:33); push from a keyed host — the supervisor never push
 242/217/25/119): +1 inline stub = §5.148; the scan unchanged (a MINTED marker and a "MEASURED" marker
 are outside its event lexicon, the shape §11.220(k) and §11.226(m) record); no filter moved; the
 uncredited set diffed EMPTY against the delivery tree with the instrument's own lines.
+**POST-CLOSE (same day, 17:5x–18:4x): the owner's [Y8] reply → §11.227 → F106 → §11.228, §5.147
+FIXED.** His word — *"the rewrite should only rewrite the commit message (and author) on commit
+Claude is the author … the commit themselves shouldn't be affected, so their signature shouldn't
+move"* — was neither of the two readings I offered: the collapse is the TOOL's defect
+(`filter-branch` rebuilds every commit in the range; `commit-tree` drops `gpgsig`), and F106's
+`--commit-filter` (the original id emitted when tree, parents, author, committer and message are
+all unchanged) prevents it rather than deciding it: on the scratch pair `master-beta` stays 3829,
+`cebebf44` keeps its sha AND its signature, the 15-commit side chain and the merge's two parents
+are kept, the map holds exactly the 79 code commits predicted from the graph; the one unavoidable
+case (a signed commit downstream of a rewritten one) built on a throwaway key, lost, named twice,
+its reporting mutant shown silent; the live pair's preview byte-identical pre/post. Accepted at
+18:40–18:42 by my own pty-driven run from state U (3829; `cebebf44` reachable with `gpgsig` 1;
+15/15; parents `e782b6ff` + `6ec2f43f`; 0 warnings) and the live `--dry-run` (HEADs unmoved). Code
+UNTOUCHED (`48cc3727`); harness `8ece796 → 93cc947` (§11.227 + the mint, 36/36 at the mint) `→ …
+→ 8e1cd39` (seven executor commits) `→` this close. Three more dispatcher defects, all output-side
+(the repair-append relation RE-WRITTEN after F103's acceptance had corrected it in my own text — a
+correction landed without its same-class sweep; "both `VERIFIED` lines" for three; "the harness
+side unchanged" where all 798 are rebuilt by the graph): **fourteen this session** (4 value-class,
+10 structure-class). One executor prediction refuted and one clause of §11.224(h) refuted by its
+own re-run (the merge's parents do NOT converge — the collapse stops where the twins run out, 13
+of 15), both marked. Two `I` flags aligned at acceptance in the licensed direction (§11.227's stub
+gains its entry's `ANSWERED`; §11.228's stub its entry's provenance — placed OUTSIDE the bold span,
+because a date beside the title's `REFUTED` had turned the whole title into a marker span for test
+M: 90 → 89). **BASELINES AT THE POST-CLOSE (measured 18:46:06): scan 263/332/144 · pair-check
+244/219/25/120 · D 35 · D2 12 · I 89 · I2 37 · M 89** — over the 12:34 close (258/328/142 ·
+242/217/25/120): +2 entry files/+2 live pairs (§11.227, §11.228); +5 raw lines/+4 pairs/+2 uncredited
+= §11.228's markers at §11.224 and their bracket-mates (`§11.224 → §11.227`, `§11.224 → §5.147` —
+the reason and the consequence sharing a supersession bracket, disposed not credited, §11.228(o));
+every filter at its 12:34 value. **Saturday's expectation on the LIVE pair, computed: 83 of 98
+commits change sha (the 82 Claude-authored + `f0c8ef83` on top of one of them), 15 keep their
+object, `cebebf44` with its GitHub signature; nothing left for the owner to decide before the
+run.** Archival pass 20 = update-s26 + F103–F106. Unpushed **98 code / 830 harness** before this
+commit (measured 18:46:08).
 
 ---
 
@@ -667,7 +700,9 @@ the corrected ruling: two solver steps per call), **F105** (the dump channel's t
 header's system identity + the barrier for the 30 new-only records, with the never-published-frame
 precondition).** **Session-27 round (2026-09-07): F103 §11.224 · F104 §11.225 · F105 §11.226 — three for
 three DELIVERED and accepted; §5.147/§5.148 minted at acceptances; archival pass 20 (update-s26 +
-F103–F105) DEFERRED to the next open.**
+F103–F105) DEFERRED to the next open.** **Post-close, same day: the owner's [Y8] reply (§11.227) →
+F106 §11.228 minted, delivered and accepted (§5.147 FIXED — the rewrite leaves unselected commits
+untouched); archival pass 20 = update-s26 + F103–F106.**
 
 ---
 
@@ -1435,6 +1470,55 @@ sha** (79/798, `diff` empty); the unavoidable case built on a throwaway key, los
 reporting mutant silent; the equality mutant returns P1 exactly; live pair `--dry-run`
 BYTE-IDENTICAL pre/post (944 lines, `3f2e421e`), never rewritten. §11.224(h)'s *"the merge's parents
 converge"* REFUTED by its own re-run. No engine code, no build, no launch, no display, no canary.
+**ACCEPTED 2026-09-07 — the verifying commands' `date` read 18:40:18–18:42:41 (supervisor, session 27,
+post-close, Claude Fable 5.1).** Verified by my own runs and reads, not by the report: §11.228 read in
+full; the script diff (`93cc947..8e1cd39`, 1380 → 1575 lines, md5 `6816c210 → c4b02bf8`) READ end to end
+— the header section carrying §11.227(a) verbatim, the `--commit-filter` mode (one `cat-file commit`
+per commit, the header split at the first truly EMPTY line, five fields compared — tree, parents in
+order, author ident, committer ident, message byte-exact — `printf '%s' "$GIT_COMMIT"` when all equal,
+`git commit-tree "$@"` otherwise, the `SIG_DROPPED` line for a rebuilt commit that carried `gpgsig`),
+the `--commit-filter` argument on the `filter-branch` call, the §2(f) block in `rewrite()` and the
+`READ BEFORE PUBLISHING` repeat, the heredoc README line, and the one declared hunk beyond the letter
+(`build_map`'s *"loses a parent"* sentence, refuted by the run, corrected); seven harness commits
+`acee76b → 8e1cd39` (Claude Opus 5; the predictions at `acee76b` before any run; every `Code:` trailer
+of the seven well-formed), code UNTOUCHED at `48cc3727`, both trees clean; §5.147 reads *FIXED
+2026-09-07 → §11.228 (F106)* with the P2 numbers; §11.224(f)(h) and §11.227(c) name §11.228 in the
+entry AND the stub; README ×2, R5; `### F` 4. **AND by my own hand:** the delivered tool run
+pty-driven from STATE U on the scratch pair (18:40:53, `sc-f103/logs/supervisor/f106_full.log`) —
+rc 0, three `VERIFIED` lines (78/0, 786/8, trailers 2/0), `Code sha map: 79`, maps `code.tsv(81)
+harness.tsv(798)`, `Repointed 543 … 282 file(s)`; by sha: `master-beta` **3829**, `cebebf44` reachable
+with `gpgsig` **1**, the side chain **15 of 15** kept, the merge twin `7c4b0243` with parents
+`e782b6ff` + `6ec2f43f` (the ORIGINAL object), one signed commit in the new range (the survivor),
+`cebebf44` absent from the map (nothing to map), 0 signature warnings; the pair reset and ASSERTED
+(state U, 94/798, 3829, `cebebf44` signed); the live pair `--dry-run` (18:42:38) rc 0 with HEADs
+`48cc3727`/`8e1cd390` and both statuses unmoved, 98/830 in range, 2 already dangling, no STOP block.
+Deviations ENDORSED with the executor's arguments: five fields, not three (§11.227(b)'s own sentence
+names five; three would let a tree or committer rewrite emit the original id for a changed commit —
+a silently WRONG history; both extra fields proved inert here); the parents read off the object's own
+`parent` lines (equal to git's own over 892 commits, the check shown able to fail on exactly
+`cebebf44`'s armour); no preview line for signed-to-be-rebuilt commits (a second implementation of
+the filter's closure rule — the residue named: the operator learns of a lost signature after the
+y/N, before the push, with `Undo:` printed); the `KNOWN CAUSE` sentence corrected under the task's
+own measurement. REFUTATIONS kept: the executor's P1.12 (one parent → two: the collapse stops where
+the fingerprint twins run out, 13 of 15) and §11.224(h)'s *"the merge's parents converge"* clause,
+marked at both homes. DISPATCHER-SIDE FINDINGS, all ACCEPTED as mine, all output-side (the gate
+passed 36/36; the map's membership was derived by the executor from the graph, which is what
+re-adjudicated them): (1) *"`code.tsv` lists only what changed"* — the 2 repair pairs are appended to
+it (`:1084`), a relation F103's acceptance had ALREADY corrected once in MY OWN text (F103 finding
+(4)) and which I re-wrote here: a correction landed without its same-class sweep over my next
+section — the SIBLING class, recurrent; (2) *"both `VERIFIED` lines"* — three, as §11.224(i) records
+(a count typed from expectation, Q-67's class); (3) *"the harness side unchanged in behaviour"* — all
+798 are rebuilt, 12 by inheritance; the fix is inert there by the graph, not by exemption (structure
+asserted without the derivation). Round tally: **fourteen dispatcher defects** (4 value-class, 10
+structure-class). SUSPENSIONS ENDORSED: none needing a ruling; F106's own PREMISES block is now
+self-falsifying against the delivered tool (md5, the `--commit-filter` count) — expected for a
+delivered section awaiting archival, as F103's is. STANDING CONSEQUENCES: **the tool now does what
+§11.227(a) says and nothing more** — on the live pair 83 of 98 commits change sha (82 Claude-authored
++ `f0c8ef83`, which inherits a rewritten parent) and 15 keep their object, `cebebf44` with its GitHub
+signature; nothing collapses; a signed commit downstream of a Claude commit would be named twice and
+the range holds none; `--branch-alias`, the `sha-maps/` convention and the run order are unchanged
+from §11.224(k); `f106_pair.sh reset` is the fixture's assertion; the throwaway key lives under
+`sc-f103/gnupg` only.
 
 ---
 
@@ -1495,6 +1579,11 @@ converge"* REFUTED by its own re-run. No engine code, no build, no launch, no di
        commits untouched keeps cebebf44's signature and the 13 shas (its parent 1ddd32f0 is
        already pushed) — F106, dispatched the same session; the one unavoidable case (a signed
        commit DOWNSTREAM of a rewritten one) is empty here and will be reported by name
+       DELIVERED 18:4x → §11.228 (F106), accepted by my own run on the scratch pair: 3829 stays 3829,
+       cebebf44 keeps its sha and its gpgsig, 15 of 15 side-chain shas kept, the merge keeps both
+       parents, 0 signature warnings; on the live pair 83 of 98 commits will change sha (82 yours as
+       Claude + f0c8ef83 on top of one of them), 15 keep their object — NOTHING is left for you to
+       decide before the run; §5.147 FIXED
 
   [Y4] the tool you operate Saturday ─ what changed, in the order you will meet it
        state   RUNNABLE NOW, and was not before this round: build_map's `[ ] && printf` returned 1
