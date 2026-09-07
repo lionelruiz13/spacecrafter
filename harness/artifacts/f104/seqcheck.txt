@@ -1,0 +1,16 @@
+=== F104 sequence-identity check (5.145 / 11.223(b))
+  pre  = /home/claude/sc-f104/solver-pre/f104_solver
+  post = /home/claude/sc-f104/solver-post/f104_solver
+  e=0.1                    off=3.0    pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell<0.2 fixed point
+  e=0.1                    off=-8     pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell<0.2 fixed point
+  e=0.1                    off=32     pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell<0.2 fixed point
+  e=0.43737099231635668    off=3.0    pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell0.2-0.9 Newton (Eris's own e)
+  e=0.43737099231635668    off=-8     pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell0.2-0.9 Newton (Eris's own e)
+  e=0.43737099231635668    off=32     pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell0.2-0.9 Newton (Eris's own e)
+  e=0.95                   off=3.0    pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell0.9-1 Laguerre-Conway elliptic
+  e=0.95                   off=-8     pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell0.9-1 Laguerre-Conway elliptic
+  e=0.95                   off=32     pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell0.9-1 Laguerre-Conway elliptic
+  e=1.5                    off=3.0    pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell>1 Laguerre-Conway hyperbolic
+  e=1.5                    off=-8     pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell>1 Laguerre-Conway hyperbolic
+  e=1.5                    off=32     pre(slice f348bd34, 1 step/call) vs post(slice 547b79d3, 2 step/call): 10/10 post[k]==pre[2k]   # ell>1 Laguerre-Conway hyperbolic
+  PASS: 120 of 120 values bit-identical across 12 arms
