@@ -1,0 +1,56 @@
+F106 -- MEASURED, against harness/artifacts/f106/prediction.txt
+================================================================
+Fixture: /home/claude/sc-f103/pair, reset to STATE U by harness/f106_pair.sh
+before AND after every run; every reset asserted (HEADs, clean, 94/798,
+master-beta 3829, cebebf44 signed and reachable).  No launch, no display, no
+canary, no build, no engine code -- this task needs none.
+
+
+P1 -- THE PRE-FIX SCRIPT (md5 6816c210, copied to /home/claude/sc-f103/
+f106_prefix.sh before the edit) ON THE RESET PAIR.  Log p1.log.gz, 3434 lines.
+------------------------------------------------------------------------------
+  predicted            measured
+  rc 0                 rc 0
+  3829 -> 3816         3829 -> 3816                                    P1.2 ok
+  range 94 -> 81       94 -> 81                                        P1.3 ok
+  13 UNPAIRED, 1       "WARNING: 13 rewritten commit(s) ... have NO
+  READ BEFORE line     counterpart" x1, "READ BEFORE PUBLISHING: 13" x1 P1.4 ok
+  the 13 by name       the same 13 shas, newest first: bdd945b3 f791293c
+                       30f6655d fcc34253 966ab8dc eb351f20 1fc255bd fc1aa1ec
+                       fa9798ae ae164c8b 1fd3be38 7386bd1f cebebf44     P1.5 ok
+  cebebf44 gone        merge-base --is-ancestor cebebf44 HEAD rc 1;
+                       grep -c '^cebebf44' code.tsv = 0                 P1.6 ok
+  83 / 798 / 2 lines   83 / 798 / 2                                     P1.7 ok
+  md5 6e7984e6 /       6e7984e6 / 43834ed0 / 6379ab86 -- the three md5s
+  43834ed0 / 6379ab86  11.224(i) recorded, reproduced a third time      P1.7 ok
+  tip d40f4eb1         d40f4eb1                                        P1.8 ok
+  3 VERIFIED lines     78 rewritten/0 wildcards; 786/8; trailers 2/0    P1.9 ok
+  "Code sha map: 81"   "Code sha map: 81 commit(s) changed sha."        P1.10 ok
+  545 / 282 / 286      "Repointed 545 citation(s) across 282 file(s)",
+                       closing commit 286 files changed                 P1.11 ok
+  merge loses a        REFUTED -- see below                            P1.12 NO
+  parent
+
+P1.12 IS REFUTED, AND SO IS A CLAUSE OF 11.224(h).
+--------------------------------------------------
+I predicted (following 11.224(h)'s *"the merge's parents converge"*) that the
+rewritten merge would come out with ONE parent.  It comes out with TWO:
+
+    c6784490 85cc2785 6ec2f43f      ->      9dc3c869 e782b6ff 62e14f35
+
+The reason is in the fingerprint census taken before the run and recorded in
+prediction.txt section 0: of the 15 side-chain commits, THIRTEEN have a twin
+reachable from origin/master-beta and TWO do not -- c69687bc and 6ec2f43f, the
+newest two.  The collapse therefore eats the chain from the bottom and stops:
+the 13 twinned commits map onto their twins, and the last two are rebuilt onto
+that collapsed base as NEW objects (c69687bc -> a96ccd95, 6ec2f43f -> 62e14f35),
+which is also why the pre-fix map holds 81 pairs for 94 changed commits.  The
+merge's second parent is one of those two, so it stays distinct from the first.
+
+  * the branch DOES lose 13 commits (3829 -> 3816): that half of 11.224(h) holds
+    and is reproduced here for the third time;
+  * *"the merge's parents converge"* does NOT hold on this pair, and neither does
+    build_map's own KNOWN CAUSE sentence *"the merge that joined them loses a
+    parent"* (supervised-by.sh:1001).  Both are corrected at their homes.
+  Nothing about the DECISION changes: the 13 lost commits and the lost signature
+  are the reason F106 exists, and they are measured, not inferred.

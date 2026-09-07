@@ -1424,10 +1424,11 @@ test -e /home/claude/sc-f106 ; echo $? => 1
 
 **DoD:** predictions before any run; the fix; P1–P6; §11 entry + stub; §5.147 FIXED; the
 back-markers; the README homes + the heredoc line; R5; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-07 checkpoint 1 — §0.7 gate 36/36 PASS; predictions PRE-REGISTERED and committed
-(`harness/artifacts/f106/prediction.txt` + `harness/f106_predict.py`, the graph-derived P2
-membership: code 79 rebuilt / 15 kept incl. `cebebf44`, harness 798/0) BEFORE any run of the tool.
-Next: P1 (pre-fix collapse on the reset F103 pair).
+**WIP:** 2026-09-07 checkpoint 2 — predictions pre-registered (`acee76b`, before any run); **P1
+GREEN**: the pre-fix collapse reproduced to the digit on the reset pair (3829→3816, 94→81, 13
+UNPAIRED by name, `cebebf44` gone, maps 83/798/2 with §11.224(i)'s three md5s, tip `d40f4eb1`,
+545/282/286) — one prediction of mine and one clause of §11.224(h) REFUTED: the rewritten merge
+keeps TWO parents (the top 2 of the side chain have no twin). Pair reset to state U. Next: the fix.
 
 ---
 
