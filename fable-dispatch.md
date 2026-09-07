@@ -149,17 +149,20 @@ forced; a flush-lag lower bound named. F102: N predicted before the log was open
 the alignment pinned to the device the engine picks; the 7.7/body artefact explained; the
 corpus parser's own defect caught by its output). BASELINES AT CLOSE: (measured 01:32:37 after this close's mint and alignments) scan **252/319/143** · pair-check **238/213/25/118** · **D 35** · D2 11 · I 89 · I2 37 · **M 88** — over F102's close (252/319/143 · 238/213/25/117 · D 36 · M 87): +1 inline stub = §5.146; D −1 = the `D8` token dropped from my §11.213 stub marker (the §5.145 mint's own flag, closed at its cause); M +1 = §11.222's pair, which the instrument lists as `stub_only 11.113, 11.218, 5.142, 5.50, 5.60` once my (i) marker cited §5.116 in the entry with no §5.116 in the stub's marker — the entry-wins shape, licensed; and §11.220's flag (`entry_only 11.158, 11.213, 5.145`) did NOT clear when its stub marker was realigned to name those nodes — the instrument's reading of that stub marker is unexplained and is left named, not forced **[this clause first attributed M +1 to a `§5.146` count difference typed from expectation, in the close commit `86ce0e5`; corrected one commit later to the instrument's own line — dispatcher defect 10 of the round, the close's own, Q-67's class]**; the scan unchanged: a MINTED marker is not in its event lexicon.
 Archival pass 19 (update-s25 + F99/F100/F101/F102, live `### F` 4 → 0) DEFERRED to the next open.
-NEXT-ROUND QUEUE, in order: (1) archival pass 19 at open; (2) **§5.146's discriminating launch** (S:
-refuse, destroy, re-acquire, read the free list — on the owner's "read it first", else as a leg);
-(3) **the dump channel's two items** (S, decision-free: a system-identity field in the header,
-§11.221(n1); the barrier for the 30 new-only records, §11.220(j3)); (4) ON THE OWNER'S WORD: §5.142's
-policy · §5.145's constant · the `orbit_lon` ruling → §5.21's two halves + §5.140 · §5.144's 8–12 h
-leg; (5) the (g) tail: §5.115's retention design, §5.66+§5.71, A15's residual; (6) instrument
+NEXT-ROUND QUEUE, in order **[RE-ORDERED 2026-09-07 08:4x on the owner's replies, §11.223]**: (1) archival
+pass 19 at open; (2) **`supervised-by.sh`'s silent fallback made LOUD** (S, decision-free — the tool he
+operates Saturday; + the SHA-map requirement stated at §11.223(d)); (3) **§5.145's fix** (S, decision-free: the
+iterative orbit types resume with 1 + 8, I4 — §11.223(b)); (4) **§5.146** on his word (EntityCore: the contract
+line + `SharedBuffer`'s bind/release guards, §11.223(c)); (5) **the dump channel's two items** (S, decision-free: a
+system-identity field in the header, §11.221(n1); the barrier for the 30 new-only records, §11.220(j3)); ~~(3) the
+dump channel~~ (6) ON THE OWNER'S WORD: §5.142's
+policy · ~~§5.145's constant~~ (resolved, §11.223(b)) · the `orbit_lon` ruling → §5.21's two halves + §5.140 · §5.144's 8–12 h
+leg; (7) the (g) tail: §5.115's retention design, §5.66+§5.71, A15's residual; (8) instrument
 residues: a PREMISES line per cited pointer (Q-67's candidate), recursive importer censuses,
 `f99_sweep.py`'s old-chain blind spot, `supervised-by.sh` B1, `f85_links.py` guard, `f89_p7.py
-margins`, the b4 `/proc` probe, the `dumpread` duplicates (`b24_equivalence`/`f89_p7`); (7) riders:
+margins`, the b4 `/proc` probe, the `dumpread` duplicates (`b24_equivalence`/`f89_p7`); (9) riders:
 `observedToBodyLocalPos` with no consumer, the `[parallel-script]` question, scedit README `:43`, the
-tester's `panorama5.sts:102`, `TDRS 3` and the 13 duplicate names in `06old.sts`; (8) owner items
+tester's `panorama5.sts:102`, `TDRS 3` and the 13 duplicate names in `06old.sts`; (10) owner items
 per §3. Remotes: **94 code / 792 harness** unpushed before this close's commit (measured 01:29:13);
 push from a keyed host — the supervisor never pushes.
 
@@ -1455,6 +1458,9 @@ launch (it holds the only complete arm-C log).
        ask     raise it (9 suffices today; a slower converger moves it again), or a
                convergence criterion at the use (cost priced by F100's evalCount instrument)
        →       §11.220(j1) · §5.145
+       ANSWERED [vixy 2026-09-07] → §11.223(b): "double the iterations per cycle for those types of
+       orbits only, otherwise it might became slightly noticeable at high simulation speed" — the
+       iterative types resume with 1+8, the rest keep 1+4; decision-free, next-round S
 
   [Y3] §5.146 · the allocator releases a REFUSED SubBuffer into its free list ─ read, not run
        fact    acquireBuffer leaves offset/size indeterminate on refusal; SharedBuffer binds
@@ -1463,8 +1469,15 @@ launch (it holds the only complete arm-C log).
                a phantom grant from the landscape's legitimate release
        ask     "read it first" = one discriminating launch (S, next round), or yours
        →       §11.222(g)(6) · §5.146
+       ANSWERED [vixy 2026-09-07] → §11.223(c): free's contract, no assertion — "the application must
+       ensure only valid allocations are freed"; the fix site is SharedBuffer (the caller) + the
+       contract line at BufferMgr::releaseBuffer; EntityCore — minted on your one word "edit it"
 
   [Y4] R5 · the PUSH ─ master-beta 94 / CC-harness 792 unpushed at 01:29 (before this close)
+       ANSWERED [vixy 2026-09-07] → §11.223(d): Saturday/Sunday, "along with supervised_by.sh patching
+       of commit history with commit tracking" — B1's silent fallback is fixed FIRST (next round, S);
+       ONE LINE THE REWRITE NEEDS: emit and commit the old→new SHA map — 133 pins / 695 trailers
+       resolve through it, never by search-and-replace over the record (§11.212)
   [Y5] §5.144 · the 8–12 h cache-vs-leak leg ─ yes / no  (carried from s25, unchanged)
   [Y6] §5.140 · what `orbit_lon` MEANS ─ one word; unblocks §5.21's two halves  (carried)
   [Y7] scratch trees ─ say the word: sc-f99 · sc-f100 · sc-f101 · sc-f102 join s25's list;
@@ -1474,6 +1487,9 @@ launch (it holds the only complete arm-C log).
   [T1] eight of his shows fly above 1e16 (14 · S02 · S07 · S09 · S10 · S12 · S12old · W15):
        is leaving the solar system for good MEANT? a home planet set out there decides
        whether the descent comes home or lands in a fresh empty system   → §11.221(n3)
+       ANSWERED BY YOU, not the tester [vixy 2026-09-07] → §11.223(e): 1e16 is the designed inGalaxy
+       entry; the mode is to be REMOVED by nested modular bodies (a system = a body seen from
+       outside as inGalaxy shows it) — question withdrawn; §5.143 retires with that design
   [T2] 06old.sts lands 156 of 170: 13 duplicate names + TDRS 3 with no coord_func
        (both paths refuse it and say why)                                  → §11.221(g)
   [T3] 06.sts alone aborts the reference binary at its 675th body — one show, not two → [Y1]
