@@ -1154,8 +1154,13 @@ trees clean; WIP cleared; baselines LAST.
 `free -g` 52, `uptime -s` 2026-09-04 18:45:08, no proc, no lock, field md5 pristine, harness
 `65e2256`). CHECKPOINT 1: predictions committed (`artifacts/f105/prediction.txt`) BEFORE any
 build — the (20,2,8) partition by name, the 8 identity-frame values numerically, P2's two
-bands, P3's three states, P4's operator arm, P5's 8 lines, P6. Next: the canary, then the PRE
-leg on `0c61f1b5` (launch dump + the operator arm on the baseline binary).
+bands, P3's three states, P4's operator arm, P5's 8 lines, P6. CHECKPOINT 2: canary `--no-scene`
+exit 0 (11:34:45); the PRE leg on `0c61f1b5` DONE (`f105_dump.py`, farm under `/home/claude/sc-f105/`)
+— 120 records, 30 new-only ALL at `dist` 0 / `evalCount` 0, header WITHOUT the field, partition
+|P| 29 · |I| 29 · |P∩I| 10 reproduced; and the OPERATOR arm on the baseline binary already
+refreshes `pleiades` into the identity frame (`mat` = 62.6399994, 108.129997, 10.9899998, `dist`
+125.445793, `evalCount` 5 — P1's predicted value, measured with NO code change). Next: build (a),
+the header field + the `EmptyOldHalf` message.
 
 ---
 
