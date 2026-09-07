@@ -267,7 +267,18 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    live class (`harness/artifacts/f92/rename-live-pointers.patch`, `git apply --check` rc 0
    in a scratch worktree of each repo, post-apply LIVE 0), an ordered eleven-act checklist
    with a check per act, and a breakage scan whose one finding is `supervised-by.sh`'s silent
-   branch→HEAD fallback. **The gate the sentence names, *"once ready"*, is the map's own:
+   branch→HEAD fallback. **[THAT FINDING IS CLOSED 2026-09-07, F103 → §11.224:
+   the fallback is gone — an unresolvable trailer branch is now a §2(f) STOP at the preview,
+   exit 1 even under `--dry-run`, with `--branch-alias=<old>=<new>` as the repair channel; so
+   act 1 (`git branch -m`) and the tool are now order-INDEPENDENT instead of silently
+   order-dependent, and the checklist needs no reordering. Measured cost of the old behaviour
+   at range scale: 138 dangling trailers reported against a true 2, in silence. TWO FURTHER
+   pre-existing defects, found by running the tool end to end for the first time, had made it
+   UNRUNNABLE on this pair in either order and are fixed (§11.224(f)(g)). ONE ITEM IS NOW THE
+   OWNER'S, BEFORE the rewrite and irreversible after the push: `git commit-tree` drops
+   `gpgsig`, so the rewrite removes `cebebf44`'s signature and collapses a 13-commit duplicate
+   chain — `master-beta` 3829 → 3816 commits, while the script's content assertion keeps
+   passing because the tip tree is unchanged (§11.224(h), two readings written out).]** **The gate the sentence names, *"once ready"*, is the map's own:
    T5.1 ran 2026-09-05 (F90, §11.211), so it is T5.2 alone.** **RESIDUAL, still Vixy's and
    NOT answered by the line:** the PR target. `doc/developer-entry.md` says pull requests
    target `2023-master`; the rename makes the branch's NAME false there and says nothing

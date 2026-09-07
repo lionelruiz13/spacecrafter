@@ -127,3 +127,23 @@ repository** (branch `master-beta`, up to `c523e3b1`) under former paths:
 `git log` in this repo only reaches 2026-07-22; for anything older, use the
 code repo's log against those paths. (`DECISIONS_PENDING.md` and
 `supervised-by.sh` were never tracked code-side; their history starts here.)
+
+## sha-maps/ -- resolving a commit sha a rewrite invalidated
+
+`supervised-by.sh` and `purge-path.sh` re-hash every commit they touch, and they
+repoint citations only in tracked `*.md` of this repository. Everything else that
+cites a commit by sha -- the git history of those same files, notes outside this
+pair, the archive drawer, the owner's own trees -- cannot be reached by any
+rewrite. So every run that changes a sha now writes its old->new map to
+
+    sha-maps/<UTC yyyymmddThhmmssZ>-<code-tip8>-<harness-tip8>/
+        code.tsv  harness.tsv  repair.tsv        # <old-full-sha> TAB <new-full-sha>
+
+and the closing commit carries it. The directory is created by the first run that
+needs it; `sha-maps/README.md` is written once beside the maps and carries the
+contract. A sha that resolves to nothing reachable is looked up as a PREFIX in
+those files, newest directory first -- resolution by convention, the same shape
+the archive drawer uses for moved documents. The maps are append-only and are
+never edited: a map that has been corrected has stopped being evidence of what a
+particular run did, which is the only thing it is for. (Landed F103, 2026-09-07;
+reasons and the measurements behind them in INTENT 11.224.)

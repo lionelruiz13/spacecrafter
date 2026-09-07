@@ -4223,6 +4223,56 @@ measured non-verdict-preserving on one commit against two targets (rc 0 vs rc 1)
 `githooks/` pair, which the dispatch believed to be a trailer check, parses no trailer
 and reads no branch at all.
 
+**[FIXED 2026-09-07, F103 -> INTENT/11.224.md.]** See the `supervised-by.sh` section below:
+the fallback is gone, the run STOPs instead, and two further pre-existing defects that had
+made the tool unrunnable on this pair were found by actually running it end to end.
+
+## supervised-by.sh -- what changed at F103, and what to know before operating it
+
+    ./supervised-by.sh --dry-run                          # preview, never prompts, changes nothing
+    ./supervised-by.sh --branch-alias=master-beta=main    # after the branch has been renamed
+    ./supervised-by.sh --supervisor='Name <mail>'         # skips the first prompt only
+
+**A trailer branch that no longer resolves is a STOP, not a guess.** `resolve_branch_target`
+is the single home for "what ref is a trailer naming this branch judged against?", and it
+FAILS rather than substituting `HEAD`. `reachable_in_code` has three outcomes -- reachable,
+unreachable, unjudgeable -- and step A' prints a section-2(f) block and exits 1 before any
+prompt, before "Nothing to do", and under `--dry-run` as well, because a preview that would
+lie must not exit 0. `--branch-alias=<old>=<new>` is repeatable and its target must resolve at
+startup. Measured cost of the old fallback, on a throwaway clone with `master-beta` renamed
+and HEAD on `2023-master`: **138 dangling trailers reported where the truth is 2**, in silence.
+
+**The sha maps are committed, and they are how a stale sha is resolved.** After a run,
+`claude/sha-maps/<UTC stamp>-<code-tip8>-<harness-tip8>/{code,harness,repair}.tsv` holds
+`<old-full-sha> TAB <new-full-sha>` per commit whose sha changed; the two tips in the name are
+the PRE-rewrite ones. `sha-maps/README.md` (written once) carries the contract. Resolve a
+dangling citation by looking the token up as a PREFIX, newest directory first -- never by
+rewriting the record. `repair.tsv` is a verbatim subset of `code.tsv` by construction. The
+closing commit now happens whenever a map was written, even with nothing to repoint.
+
+**Two traps, both measured 2026-09-07, both fixed, each with a mutant run
+(`artifacts/f103/findings.txt`, `mutantA_defect1.log.gz`, `mutantB_defect2.log.gz`):**
+
+  1. `build_map`'s loop ended on `[ -n "$nf" ] && printf ...`. An AND-list whose test fails
+     returns non-zero; as the last statement of the last iteration that becomes the function's
+     status and `set -euo pipefail` kills the caller. It fired between "VERIFIED <code>" and
+     "Code sha map:" -- after the code repo was rewritten and before `rollback_all` -- leaving
+     the half-rewritten pair with 73 of 138 trailers dangling, rc 1, no message. This is a
+     general bash trap worth carrying: **never end a loop body with `[ ] && cmd` under
+     `set -e`**; use `if/fi`, and give the function an explicit `return 0`.
+  2. `build_repair_map` re-derived "already dangling" AFTER the code rewrite, so it remapped
+     73 trailers instead of 2; those duplicated `build_map`'s pairs and `map_lookup` -- which
+     counts matching LINES, not distinct answers -- returned AMBIG for each, ending in STOP +
+     rollback. The tool was unrunnable on any pair carrying a pre-existing dangling trailer.
+     The list is now captured at step A, which is what the function's own header already said.
+
+**Open, and the OWNER's to decide before any rewrite (INTENT 11.224(h)):** `git commit-tree`
+drops the `gpgsig` header. Exactly one commit in the live code range is signed (`cebebf44`),
+its unsigned twin `b8dddd6c` already exists under the same parent, and stripping the signature
+collapses a 13-commit duplicate chain: `master-beta` goes 3829 -> 3816 commits while
+`git diff --quiet <tip> HEAD` keeps passing, because the tip tree is unchanged. Those 13 old
+shas are absent from the map. The run warns at detection and again in the closing summary.
+
 ## premise_check.py — every checkable premise of a dispatch section, re-run at three events — fable-dispatch.md §0b.3 / §0.7, 2026-09-05
 
     python3 claude/harness/premise_check.py F91        # one section: every line PASS, or the FAILs in observed-vs-stated form
