@@ -1,0 +1,273 @@
+F107 -- PREDICTIONS, COMMITTED BEFORE THE RUNS THAT SCORE THEM
+==============================================================
+Task F107 (claude/fable-dispatch.md), INTENT 11.225(j2)(j3) + 5.84's F104
+annotation.  Executor: Claude Opus 5, 2026-09-11.  Code HEAD 48cc3727 (UNMOVED
+by this task), harness at the commit that carries this file.  Every number
+below comes from `f107_model.py` -- a PYTHON re-derivation of the mechanism from
+the tree's text and the installed field file, independent of the sliced engine
+text that will score it.  The model's own artifacts are committed beside this
+file (`model_replay.txt`, `model_sampler.txt`, `model_validate.txt`) and are
+part of the prediction, not of the measurement.
+
+WHAT WOULD MAKE EACH PREDICTION FALSE IS STATED WITH IT.  Where a number is a
+CLASS rather than a value, it says so.
+
+0. THE MODEL'S OWN GATE (already run, since it scores nothing of the mandate)
+----------------------------------------------------------------------------
+`f107_model.py validate` computes, for each of the 52 ITERATING records of
+F104's census, the position a CONVERGED solver would hold at that record's own
+dumped `lastJD`, and compares it with the landed F104 pre-fix dump.  Result
+(`model_validate.txt`): **51 of 52 match to <= 5.2e-08 relative, and the single
+mismatch is Eris** (2.02941 AU, 2.1e-02 relative) -- which is the phenomenon
+under study.  Two model corrections were forced by that gate BEFORE any
+prediction was written, and both are findings in their own right:
+
+  (i)  the field file's keys are read CASE-SENSITIVELY by the engine
+       (`IniLine::read` does not fold case; the loaders index
+       `params["orbit_period"]`), so `[Sedna] orbit_Period = 4501297.2` is
+       INVISIBLE to CometOrbitLoader and Sedna's mean motion comes from Gauss's
+       constant instead (CometOrbitLoader.hpp:69).  Measured, not assumed: with
+       2pi/period the model misses Sedna's landed eccentric anomaly by 2.2e-03
+       rad; with the Gauss value it hits it to 8.7e-08 rad.
+  (ii) `orbit_pericenterdistance = 76,0616` (comma decimal) is parsed by
+       `std::stod` as **76.0** (utility.cpp:399-406), not 76.0616, and 76.0 is
+       the value that closes Sedna's c^2+s^2 to 1.2e-08 of unity.
+
+1. P1 -- THE REPLAY
+-------------------
+MODEL: the constructor evaluates every body once at `parent->lastJD`
+(ModularBody.cpp:121-128), which is **JD 0** before the first frame; the first
+use then runs 5 solver calls (1 + RESUME_EXTRA_ITERATIONS), each RETARDED by the
+light trip of the CURRENT `distance` and each REWRITING that distance
+(ModularBody.hpp:698-702, :961) -- a coupled iteration.
+
+P1.1  The replay reproduces the LANDED PRE-FIX DUMP for Eris, exactly, at the
+      dump's own float32 width:
+         ecl32   [85.8409882, 38.323143, -18.7250576]     (landed: identical)
+         lastJD  2461233.000422555   (landed 2461233.0004225136, |d| 4.2e-08 d)
+         dist    95.9415388          (landed 95.9415436,          |d| 4.8e-06 AU)
+      and the LANDED POST-FIX dump likewise:
+         ecl32   [85.1671219, 39.6249275, -17.3216801]     (landed: identical)
+         lastJD  2461232.947739129   (landed 2461232.9477391075, |d| 2.2e-08 d)
+         dist    95.6210061          (landed 95.6210098,          |d| 3.7e-06 AU)
+      The two |d| are the OBSERVER approximation: the model takes the observer
+      at Earth's dumped `ecl` and ignores the camera's 4.26e-05 AU surface
+      offset.  FALSE IF: any float32 component differs, or a lastJD is off by
+      more than 1e-06 d.
+
+P1.2  Eris's displacement, pre vs post: **2.029337543 AU** against F104's landed
+      eye-frame |delta| **2.029337245 AU** -- 1.5e-07 relative, i.e. equal at
+      float32 print precision (the landed vector is a float32 difference).
+      FALSE IF: the relative difference exceeds 1e-05.
+
+P1.3  The angular readout: **1.190223 deg** against the landed alt/az separation
+      **1.1987248926268401 deg**, i.e. 0.71 % LOW, and the 0.71 % is NAMED IN
+      ADVANCE as the model's parallax approximation (it takes the line of sight
+      as Eris's heliocentric direction; the observer sits 1.0166 AU off the Sun,
+      0.61 deg of parallax at 95.94 AU).  This is a CLASS prediction with a
+      stated band: |model - landed| / landed <= 2 %.  FALSE IF: outside 2 %.
+
+P1.4  Per parked iterating body, the residual in eccentric anomaly after the 5
+      calls (`model_replay.txt`).  pre = 1 step/call (code 474c595d),
+      post = 2 (HEAD), mut = pre with the constructor's evaluation skipped:
+
+        body      branch        res5 pre      res5 post     res5 mut
+        Arrokoth  ell<0.2       4.75806e-09   8.88178e-16   6.11524e-10
+        Ceres     ell<0.2       5.55104e-10   3.55271e-15   2.80558e-11
+        Charon    ell<0.2       4.46562e-10   9.09495e-13   1.57343e-10
+        Eris      ell0.2-0.9    3.28048e-02   0             0
+        Haumea    cometEll      4.44089e-16   4.44089e-16   4.44089e-16
+        Hydra_    ell<0.2       6.82121e-13   1.13687e-13   4.54747e-13
+        Juno      cometEll      4.44089e-16   4.44089e-16   4.44089e-16
+        Makemake  cometEll      4.44089e-16   4.44089e-16   4.44089e-16
+        Nix       ell<0.2       6.81212e-10   0             3.54703e-11
+        Pallas    cometEll      4.44089e-16   4.44089e-16   4.44089e-16
+        Sedna     cometEll      3.64153e-14   2.66454e-15   2.73577e-01
+        Vesta     cometEll      4.44089e-16   4.44089e-16   4.44089e-16
+      The census's PLACE/SOLVER keys give TWELVE such bodies, not fourteen: the
+      task section's "14 parked iterating bodies" is F104's PARKED-ITERATIVE
+      CLASS, which also holds `Hiiaka` and `Namaka` -- both `e == 0`, both
+      taking `orbit.cpp:517`'s `return M`, i.e. carrying NO seed of their own
+      and moving only through their `comet_orbit` parent Haumea (11.225(c)).
+      A residual is predicted for the twelve that have a seed; for those two the
+      prediction is that they hold NO state and move exactly as Haumea does.
+      FALSE IF: the sliced engine text disagrees with any of these by more than
+      1e-09 relative (both are IEEE doubles running the same formulas).
+
+P1.5  `f104_solver.cpp --sweep 0.4373709923163567 12` on the PRE slice is
+      **byte-identical** to `artifacts/f104/sweep_eris_pre.txt`, including its
+      `slice=f348bd34  steps_per_call=1` header.  FALSE IF: `diff` reports
+      anything.  (The harness change ADDS a mode; this is its boundary.)
+
+2. P2 -- WHY ERIS AND NOT THE OTHER ELEVEN, AS A MECHANISM
+----------------------------------------------------------
+The prediction is NOT "Eris is the unlucky one"; it is that the selection is
+STRUCTURAL and predictable from the branch alone:
+
+  (a) `ell<0.2` (Arrokoth, Ceres, Charon, Hydra_, Nix) is the FIXED-POINT
+      branch `lastE = M + e*sin(lastE)` (orbit.cpp:524-525).  Its error after
+      ONE step is `|e*(sin a - sin b)| <= 2e` for ANY seed, however stale --
+      the map is a contraction with a bounded first step -- so a 75-radian-stale
+      seed is gone in one call and the five calls finish at 1e-09 or below.
+  (b) `cometEll` (Haumea, Juno, Makemake, Pallas, Sedna, Vesta) WRAPS its mean
+      anomaly into [0, 2pi) (`fmod`, iterative_orbits.hpp:125-127), so its seed
+      staleness is bounded by one revolution BY CONSTRUCTION and no unwrapped
+      75-radian offset can exist on that branch.
+  (c) `ell0.2-0.9` -- Eris's Newton branch (orbit.cpp:532-533) -- is the only
+      one that sees the UNWRAPPED offset, because `positionAtTime` computes
+      `meanAnomalyAtEpoch + (JD-epoch)*n` without any wrap (orbit.cpp:581), and
+      **Eris is its only PARKED member** (the other 11 bodies of that branch are
+      all walked satellites).
+  Consequence predicted: **exactly one of the twelve is slow, and it is the one
+  whose branch cannot wrap and whose place denies it a second use.**
+  FALSE IF: any `ell<0.2` or `cometEll` parked body shows a res5 above 1e-06 on
+  the pre arm (which would refute the boundedness argument), or if Eris's
+  branch-mates were parked too.
+
+3. P2b -- WHAT THE MUTATION WILL MOVE, BY NAME AND BY VALUE
+-----------------------------------------------------------
+The mutation (the constructor's evaluation skipped when `parent->lastJD == 0`)
+changes EVERY body's initial seed, so the prediction must cover every body it
+touches.  A WALKED body is re-evaluated every frame and has thousands of
+evaluations by the P0 dump, so it is converged in both arms; only the PARKED
+iterating records (evalCount 5 at P0) can still carry the difference.
+
+  PREDICTED: **exactly TWO of the 120 records move, Eris and Sedna**, and they
+  move in OPPOSITE directions (`model_replay.txt`, the float32 identity table):
+      Eris  control [85.8409882, 38.323143, -18.7250576]
+            mutant  [85.1671219, 39.6249275, -17.3216801]   (= the CONVERGED
+            value, i.e. the mutant FIXES Eris: res5 0, P0 sep in the 1e-05 deg
+            float floor class, `evalCount` still 5)
+      Sedna control [39.3564529, 70.9922104, -17.0377331]    (converged)
+            mutant  [-35.3826714, 69.4490356, -7.60469437]   (75.35 AU off:
+            res5 0.273577 rad)
+  MECHANISM of the Sedna half, stated so the direction is not a coincidence:
+  `IterativeEll`'s state starts at (H, c, s) = (0, 1, 0) and its first step from
+  that state is `H = M/(1-e)` -- for e = 0.8588315 a jump to 44 radians -- so
+  for a comet-family body the constructor's JD-0 call is what BURNS that bad
+  first step; removing it hands the bad step to the first real use instead.
+  **This is why the mutation is a measurement and not a fix**: one line moves
+  one body onto its answer and another off it.
+  The other ten parked iterating records are predicted IDENTICAL on all three
+  arms at float32, and the 40 walked iterating records identical as well (named
+  risk: a 1-ulp difference in a walked body's converged double would print the
+  same float32, so this arm cannot see one -- if a walked record DOES move, that
+  is the finding).
+  FALSE IF: a third record moves, or either named record does not.
+
+4. P3 -- THE SAMPLER CANNOT REACH A PARKED BODY, AND `planets_orbits` CANNOT
+   REACH AN ITERATING ONE AT ALL
+---------------------------------------------------------------------------
+Two gates, both structural:
+  (a) `propagateRenderHidden` -> `ModularSystem::unregisterBody` ERASES a parked
+      body from `sortedSystemBodies` (ModularSystem.hpp:260-267), and
+      `ModularSystem::drawOrbits` -- the ONLY caller of `OrbitModule::update`
+      for a far body -- walks exactly that list and additionally breaks at
+      `distance == 0` (ModularSystem.cpp:630-655).  So no parked body's ORBIT
+      module is ever updated and `sampleOrbit` never runs for Eris.
+  (b) the field's `flag_planets_orbits = false` (config.ini:280), so the flag is
+      OFF at launch even for the bodies the walk does reach.
+  NEW PRECISION, and it corrects the task section's own wording: `wantShown`
+  routes `body->isSatellite() ? showSatellites : showPlanets`
+  (OrbitModule.cpp:91) and `isSatellite()` is "the parent is neither primary nor
+  a system" (ModularBody.hpp:1128-1130).  **Every one of F104's 40
+  walked-iterative records is a satellite**, and every Sun-parented iterating
+  body is PARKED -- so `flag planets_orbits on` samples only closed-form
+  (*_special/custom) orbits and reaches NO iterating solver seed.  The flag that
+  reaches one is `flag satellites_orbits on`.  Predicted counts: under
+  `planets_orbits` **0** iterating bodies sampled; under `satellites_orbits`
+  **31** (the 40 walked iterating records minus the **9** whose section carries
+  no `orbit_visualization_period` -- Despina, Galatea, Helene, Janus, Naiad,
+  Pandora, Prometheus, Telesto, Thalassa -- for which `re.sidereal_period` is 0
+  and `OrbitModule::update` takes its `still orbit` branch, :134-136).
+  FALSE IF: the walk reaches a parked body, or a non-satellite iterating body
+  turns out to be walked.
+
+5. P4 -- THE ONE-FRAME TRANSIENT PER RESAMPLE
+---------------------------------------------
+`sampleOrbit` walks d = 0..179 ascending with `calc_date = date + (d-90)*inc`,
+`inc = orbit_visualization_period/180`, through the SAME `iterativeLastE`
+(OrbitModule.cpp:105-110), so it leaves the seed at the LAST sample's date =
+date + 89*inc, ~ +pi of mean anomaly.  The body's next evaluation is ONE call.
+Worst WALKED iterating body, by name and number (`model_sampler.txt`):
+
+    body       branch      visPeriod_d  steps  res_rad     poserr_AU   arcsec
+    Pasiphae   ell0.2-0.9      709.053    2     0.167429    0.0246316    834.41
+    Pasiphae   ell0.2-0.9      709.053    1     1.13097     0.162111    5490.33
+    Carme      ell0.2-0.9      691.655    2     0.0882858   0.0132989    448.20
+    Neso       ell0.2-0.9     9358.591    2     1.50785     0.370601    2612.34
+    Laomedeia  ell0.2-0.9     3185.069    2     0.808955    0.115463     799.46
+    Neried     ell0.2-0.9      360.482    2     2.63994     0.0707158    492.50
+
+  So **the worst one-frame transient at HEAD is Pasiphae's 0.0246 AU = 834
+  arcsec = 0.23 deg**; at the pre-F104 one step per call it was 5490 arcsec.
+  (Neso's 2612 arcsec is larger in ANGLE but smaller in the ordering the model
+  prints because it sits further away; both are reported.)
+  REACH BOUND, predicted and load-bearing for the 5 candidate: the resample
+  fires only when the SIMULATION date has advanced `inc` since the last one
+  (OrbitModule.cpp:132), i.e. **709/180 = 3.94 days of simulation time for
+  Pasiphae**.  At `timerate rate 1` that is 3.94 days of wall clock; the
+  transient is therefore a once-per-flag-on event in normal operation and a
+  per-frame event only at high time rates or after a date jump.
+  FALSE IF: the sliced engine text gives a different residual for Pasiphae's
+  seed and date (tolerance 1e-09 relative).
+
+6. P5 -- THE IN-ENGINE LEG: A NEGATIVE PREDICTION WITH ITS OWN BLIND SPOT NAMED
+-------------------------------------------------------------------------------
+On the DELIVERED binary e411b838, pinned clock (`timerate rate 0`, `date jday
+2461233.5`), one launch with `flag satellites_orbits on` (and one with
+`flag planets_orbits on`) against one with both off, dumps at F100's cadence:
+
+  P5   PREDICTED BIT-IDENTICAL on all 120 records, `mat` translation and
+       `altaz_new` alike.  REASON: at a pinned clock `sampleOrbit` runs ONCE
+       (the `|date - lastSampleJD| >= inc` test never fires again at a frozen
+       date), the walked body is re-evaluated EVERY frame at 2 steps per call,
+       and the dump arrives hundreds of frames later -- so the transient has
+       decayed to the fixed point long before the dump reads it.
+       BLIND SPOT, NAMED IN ADVANCE: the transient lives for ~1 frame (7 ms at
+       the config's 144 fps cap) and the TCP command channel cannot place a dump
+       inside a named frame, so THIS CHANNEL CANNOT SEE IT even where it
+       happens.  A null here is therefore NOT evidence that the transient is
+       absent -- P4's slice measurement is the evidence, and this leg's own
+       positive content is (i) the reach/flag structure of P3 and (ii) the
+       existence check below.
+  P5b  A second arm sends `flag satellites_orbits on` IMMEDIATELY before the
+       dump (no settle).  If the dump lands in the frame right after the first
+       sample, the walked iterating records WILL differ, by up to P4's
+       magnitudes.  Either outcome is informative and both are pre-registered:
+       a difference REFUTES P5's "bit-identical" as a general statement and
+       measures the transient in the engine; no difference is the timing blind
+       spot above.
+  P5c  EXISTENCE CHECK (so that a null is not read as "the sampler did not
+       run"): one screenshot per arm, non-photometric -- the count of pixels
+       that differ between the flag-on and flag-off frames must be NON-ZERO
+       (orbit lines drawn).  Predicted: non-zero for both flags.
+  CONTROL that shows the comparison ABLE to fail: the same dump at two
+  DIFFERENT pinned dates (2461233.5 and 2461234.5) must differ on many records.
+  Predicted: differs on >= 100 of the 120.
+
+7. STOP CONDITIONS (declared before the runs)
+---------------------------------------------
+  S1  the unchanged worktree control does NOT reproduce Eris 1.198725 deg at P0
+      -> STOP and report: the pre state is not what the record says.
+  S2  the replay cannot reproduce F104's landed numbers within float32 print
+      precision -> report the residual, do NOT tune the model.
+  S3  `--sweep` is not byte-identical on the pre slice -> STOP: the harness
+      change is not additive.
+  S4  the control binary does not bit-reproduce after the revert -> the mutant's
+      numbers are not attributable; report.
+  S5  anything that would require a delivered engine change -> STOP.
+
+8. WHAT I EXPECT TO BE WRONG
+----------------------------
+Stated so that being wrong is visible rather than absorbed:
+  R1  P1.3's angle is an approximation and will be ~0.7 % low; I am NOT going to
+      improve it by fitting -- if it lands within 2 % the mechanism is confirmed
+      and the residual is the parallax term.
+  R2  P5 is a null by construction and the most likely refutation is P5b landing
+      in the transient frame by luck.  If it does, P5's general form is refuted
+      and I keep it refuted.
+  R3  The `f100_identity.py` control-vs-mutant arm may show a 1-ulp `altaz_new`
+      difference on a walked record; the float32 `mat` channel cannot see one
+      (F104's own gotcha), so a difference there would be a finding about the
+      instrument's width, not about the seed.

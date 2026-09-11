@@ -690,7 +690,7 @@ test -e /home/claude/sc-f107 ; echo $? => 1
 ```
 
 **DoD:** predictions before any run; the replay mode (sweep byte-identical); P1–P5; the mutation on the scratch worktree with its control bit-reproduced; §11 entry + stub; the (j2)/(j3) and §5.84 markers; the two candidates written with the criterion applied; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-11 20:4x §0.7 gate 32/32 PASS, both HEADs as stated. CP1: predictions COMMITTED (`artifacts/f107/prediction.txt` + `f107_model.py` + its three model artifacts) — the model reproduces the landed pre AND post Eris `ecl` float32 triples exactly and 51/52 iterating records' converged positions; two model corrections forced by its own gate (field keys are case-SENSITIVE, so `[Sedna] orbit_Period` is invisible; `76,0616` parses as 76.0). Next: CP2 = `--replay` mode in `f104_solver.cpp` + `f107_replay.py`, `--sweep` byte-identity on the pre slice.
 
 ---
 

@@ -1,0 +1,58 @@
+# F107 model gate: converged position vs the landed dump's ecl
+# dump = /home/claude/spacecrafter/claude/harness/artifacts/f104/leg_pre/pinned_p0_launch.json.gz
+
+body           place      branch            err_AU        err_rel verdict
+Adrastea       walked     ell<0.2      2.34968e-11    2.69937e-08 ok [|.| only: rotated frame]
+Amalthea       walked     ell<0.2      1.28508e-11    1.05436e-08 ok [|.| only: rotated frame]
+Ananke         walked     ell0.2-0.9    1.03363e-09    5.91214e-09 ok [|.| only: rotated frame]
+Arrokoth       parked     ell<0.2      9.95045e-07    2.17931e-08 ok
+Belinda        walked     ell<0.2      1.25194e-11    2.48896e-08 ok [|.| only: rotated frame]
+Caliban        walked     ell<0.2      1.32548e-09    2.99404e-08 ok [|.| only: rotated frame]
+Carme          walked     ell0.2-0.9     2.7737e-10    1.82951e-09 ok [|.| only: rotated frame]
+Ceres          parked     ell<0.2       1.2831e-08    4.69634e-09 ok
+Charon         parked     ell<0.2      1.29735e-12    1.10905e-08 ok [|.| only: rotated frame]
+Despina        walked     ell<0.2      7.33227e-12    2.08794e-08 ok [|.| only: rotated frame]
+Elara          walked     ell<0.2      1.22414e-09    1.47186e-08 ok [|.| only: rotated frame]
+Epimetheus     walked     ell<0.2      1.59732e-11    1.58838e-08 ok [|.| only: rotated frame]
+Eris           parked     ell0.2-0.9        2.02941      0.0211719 MISMATCH
+Galatea        walked     ell<0.2      1.80372e-11    4.35432e-08 ok [|.| only: rotated frame]
+Halimede       walked     ell0.2-0.9    3.77941e-09    3.20785e-08 ok [|.| only: rotated frame]
+Haumea         parked     cometEll     1.62377e-06    3.23946e-08 ok
+Helene         walked     ell<0.2      1.09225e-10    4.35589e-08 ok [|.| only: rotated frame]
+Himalia        walked     ell<0.2      2.08782e-09    3.11928e-08 ok [|.| only: rotated frame]
+Hydra_         parked     ell<0.2      8.44306e-12    1.95911e-08 ok [|.| only: rotated frame]
+Janus          walked     ell<0.2      5.33887e-12    5.24189e-09 ok [|.| only: rotated frame]
+Juliet         walked     ell<0.2      1.20286e-11    2.79302e-08 ok [|.| only: rotated frame]
+Juno           parked     cometEll     1.19859e-07    3.58205e-08 ok
+Laomedeia      walked     ell0.2-0.9    1.02949e-09    4.72255e-09 ok [|.| only: rotated frame]
+Larissa        walked     ell<0.2      1.23982e-11    2.51643e-08 ok [|.| only: rotated frame]
+Leda           walked     ell<0.2      5.68965e-10    6.99805e-09 ok [|.| only: rotated frame]
+Lysithea       walked     ell<0.2      1.45077e-09    1.82271e-08 ok [|.| only: rotated frame]
+Makemake       parked     cometEll     6.56417e-07    1.29994e-08 ok
+Metis          walked     ell<0.2       2.4098e-11     2.7739e-08 ok [|.| only: rotated frame]
+Naiad          walked     ell<0.2      1.23059e-11    3.81784e-08 ok [|.| only: rotated frame]
+Neried         walked     ell0.2-0.9    1.43538e-09    2.22891e-08 ok [|.| only: rotated frame]
+Neso           walked     ell0.2-0.9    3.28906e-11    8.58564e-11 ok [|.| only: rotated frame]
+Nix            parked     ell<0.2      6.95489e-12    2.10801e-08 ok [|.| only: rotated frame]
+Pallas         parked     cometEll        4.31e-08    1.36084e-08 ok
+Pandora        walked     ell<0.2      1.72916e-11    1.82224e-08 ok [|.| only: rotated frame]
+Pasiphae       walked     ell0.2-0.9    5.10073e-10    2.62884e-09 ok [|.| only: rotated frame]
+Portia         walked     ell<0.2      5.24103e-12    1.18502e-08 ok [|.| only: rotated frame]
+Prometheus     walked     ell<0.2      1.07257e-11    1.14961e-08 ok [|.| only: rotated frame]
+Prospero       walked     ell0.2-0.9    2.24749e-09    2.44719e-08 ok [|.| only: rotated frame]
+Proteus        walked     ell<0.2      2.05261e-11    2.60897e-08 ok [|.| only: rotated frame]
+Psamathe       walked     ell0.2-0.9    5.83264e-10    2.28216e-09 ok [|.| only: rotated frame]
+Puck           walked     ell<0.2      1.84302e-11    3.20465e-08 ok [|.| only: rotated frame]
+Rosalind       walked     ell<0.2      9.23396e-12    1.97432e-08 ok [|.| only: rotated frame]
+Sao            walked     ell<0.2       1.1805e-09    7.19844e-09 ok [|.| only: rotated frame]
+Sedna          parked     cometEll     3.41986e-06    4.12327e-08 ok
+Setebos        walked     ell0.2-0.9    1.30871e-09    1.75406e-08 ok [|.| only: rotated frame]
+Sinope         walked     ell<0.2      5.60221e-09    3.96572e-08 ok [|.| only: rotated frame]
+Sycorax        walked     ell0.2-0.9    4.01395e-10    9.99414e-09 ok [|.| only: rotated frame]
+Telesto        walked     ell<0.2      9.58241e-11     4.8648e-08 ok [|.| only: rotated frame]
+Thalassa       walked     ell<0.2      6.66432e-12    1.98857e-08 ok [|.| only: rotated frame]
+Thebe          walked     ell<0.2      3.84297e-11    2.58311e-08 ok [|.| only: rotated frame]
+Triton         walked     ell<0.2      5.84642e-11    2.46528e-08 ok [|.| only: rotated frame]
+Vesta          parked     cometEll     1.29291e-07    5.15489e-08 ok
+
+1 of 52 iterating records mismatch (Eris pre-fix is the EXPECTED one)
