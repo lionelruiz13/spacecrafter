@@ -89,6 +89,73 @@ launches are cheapest; then the photometric one). Deliveries: all to the parent 
 dispatch). Launch classes: F107 FUNCTIONAL (`--no-scene`), F108 FUNCTIONAL (`--no-scene`), F109
 PHOTOMETRIC (full canary — green at 20:28:03). Remotes: local contains origin on both; push impossible here —
 the owner's push is R5, Saturday.
+**Round outcome (session 28 close, 2026-09-12 01:1x — every time in this note is pasted `date` output; the
+close commit's own clock is the stamp):** F107 → **§11.229** + §11.225(j3) ATTRIBUTED (the constructor seeds every
+body at JD 0, 75.765 rad before Eris's first use; the replay on the tree's own sliced text reproduces the landed
+pre AND post dumps float32 for float32; one line on the pre tree buys what two steps per call bought) + (j2)
+ANSWERED (a channel on exactly one record, Europa 3.5e-08 AU; the sixteen larger movers are the OLD path's plot)
++ **§5.149/§5.150/§5.151 minted at acceptance** · F108 → **§11.230** + §5.115's RETENTION half FIXED (every
+channel keeps eight launches by numbered rotation, the current file keeping its name; a compiled constant; six
+D12 lines per launch; `logread.py` the ONE reader of any cLog channel; the section's own mutant a no-op —
+`rename` replaces its destination — and the cap broken a real way) + **§5.152 minted at acceptance** (a refused
+second instance aborts with SIGABRT and is silent on the console, both binaries) · F109 → **§11.231**, a STOP
+endorsed: the ~10 % residual L1 was asked to judge is the INSTRUMENT's (an offline px axis 1.3–1.7 % low, the
+dot's own brightening, 8-bit clipping); the interior emits 0.12 % of the swing at the lowest in-band px, the
+collapse is continuous, §11.82(b)'s attribution REFUTED, no engine line moved — **three for three delivered AND
+supervisor-verified same session**, every delivery re-run by my own hand (F107: the pre slice rebuilt from the
+scratch worktree, `--sweep` md5 `f6c8f70f`, the replay call for call; F108: the full canary on `6d63e6c1` green
+to the digit, a real-home launch with the inode chain and the deleted file's size by my own `stat`; F109: the
+analyzer of record, the decomposition, the interior fit and the edge bracket on the committed sweeps). Code
+`48cc3727 → 71b6fe51` (ONE executor commit: F108's three files); binary `e411b838 → 6d63e6c1`; harness
+`8ccaca2 →` this close. SUPERVISOR ACTS: the canary re-bank + HOST-EVENTS (`1ad2a1a`); archival pass 20 +
+`fd_archive_pass.py` (`1ae644f`); three mints under the PREMISES rule (`f4e0415`; 32/34/20 after three
+instrument catches); three acceptances (`681cc36`+`0aff5db`, `40cf244`, this close) each after my own runs;
+**§5.149–§5.152 minted** at acceptances with markers at their attributing nodes (entry and stub each); the
+per-round premises refreshed at each dispatch by content-located replace (F108's next-free; F109's HEAD, binary
+and next-free); §0.5's concurrent-instance bullet corrected (blind to staging binaries); in `~/shared`: Q-67 ×4
+(the mint-time set with the two-range-`sed` sub-class; F107's three; F108's five; F109's two with the
+prose-escapes-refresh sub-class), **Q-71 NEW** (an instrument artifact transmitted as a product fact through the
+tester channel and returned as a mandate — four hops, none re-verifying the number's height). OWNER EVENTS
+IN-SESSION: none — the trigger line only; nothing asked (Friday night). HOST: rebooted 20:06:16 (the entry at
+open); same boot through the close; sessions 5/6 and `:2` 2448x1332 at open and close; RAM 53–54 GiB; **17
+canary runs** (one red by design, then green on every run), ~50 measuring launches by the executors + 4 by me,
+no lock file at any check, the field pair `03fbee59`/`545a51ef` in == out throughout; **HOST-EVENTS entry
+written at open (the reboot), none owed at close**. SUPERVISOR TALLY: **thirteen dispatcher defects** (5
+value-class, 8 structure-class), all output-side, none reaching a delivery — the mint's three (a line number
+mislabelled by a two-range `sed`; a pattern matching a comment; a REFRESH line where a measurement was one
+command away), F107's three (14 vs 12 by the census keys; `planets_orbits` reaching no iterating body; the
+token form), F108's five (`min(k,8)` on a non-empty directory; a log stamp that does not exist; a pattern census
+that missed six readers; a mutant that cannot fail; the console flush order), F109's two (a per-round md5 baked
+into prose; a README section asserted). EXECUTOR REPORT DEFECTS: none reaching a record (§11.230(n) carried a
+duplicated D14 sentence from a later edit — struck at acceptance). EXECUTOR criterion-integrity instances:
+**≥ 30** (F107: predictions by name before any run with a self-refutation kept; a mutation refuted and
+root-caused, then narrowed; a third mutation to attribute rather than argue; the control bit-reproduced three
+times; the within-launch comparison chosen for its measured floor. F108: the dispatch's counts corrected in
+writing before the build; the field's five files archived before the campaign deleted them; the identification
+method replaced by three keys; the mutant predicted a no-op before it was built; the reader given a selftest
+shown able to fail. F109: the baseline first and its shape reproduced; the floor census from the dump before a
+line was compiled; one env-gated build with the A/A free; the decisive arm's refutation split by a
+pre-registered ladder; the lever priced, not pulled; two instrument defects fixed at the root, a third
+recorded). Archival pass 21 (update-s27 + F107/F108/F109, live `### F` 3 → 0) DEFERRED to the next open.
+NEXT-ROUND QUEUE, in order: (1) archival pass 21 at open; (2) **the exe-identity concurrent-instance probe**
+(S, instrument, three homes — the standing assert is blind to staging binaries, §11.231(j2)); (3) **§5.150's
+fix** (S, new path: a separate plot seed in `OrbitModule`, the old path's own shape; the slice as its proof);
+(4) ON THE OWNER'S WORD: §5.149's shape · §5.152 · F108's four veto points · the fade profile (§11.231) ·
+§5.142's policy · the `orbit_lon` ruling → §5.21's two halves + §5.140 · §5.144's 8–12 h leg; (5) the tester:
+the F109 question (does he SEE a step?) + Sedna (§5.151) + the §11.207(i) list; (6) the (g) tail RE-CUT (§5.66
+and §5.71 owe answers; item 6 closed by measurement; §5.115's density half); (7) instrument residues:
+`purge-path.sh`'s own sha map and `list_code_trailers`' silent skip (AFTER the owner's Saturday run);
+`dumpread.load_dump` vs F100's `pinned_*.json.gz` (AttributeError at `dumpread.py:157`, my own probe at the
+mint); `f96_offset.parse_dump` bypassing `dumpread` (§11.226(i1)); the D14 gate's partition not covering
+`claude/harness`; the `dumpread` self-test's two synthetic cases; a PREMISES line per cited pointer; the scan's
+EVENT lexicon (by ruling); `f99_sweep.py`; `f85_links.py`; `f89_p7.py margins`; the b4 `/proc` probe; (8)
+riders: the guard's "outside the walk" vs "not walked yet" (§11.223(e)); §5.84's own trigger;
+`observedToBodyLocalPos`; the `[parallel-script]` question; scedit README `:43`; `panorama5.sts:102`; `TDRS 3`
+and the 13 duplicate names; (9) owner items per §3. Remotes: **99 code / 857 harness** unpushed before this
+close's commit (measured 01:11:13); push from a keyed host — the supervisor never pushes. BASELINES AT CLOSE:
+this close edits `fable-dispatch.md` only (outside both instruments' read set), so the values are F109's —
+scan **271/339/144** · pair-check **247/222/25/124** · D 35 · D2 12 · I 89 · I2 37 · M 91 — re-run after the
+edit and printed by the close commit's own call.
 
 ---
 
@@ -331,7 +398,7 @@ commit (measured 18:46:08).
      to out-of-tree binaries AND any `pgrep -f <path>` self-matches the wrapper
      (measured: 3 reported with nothing running). Use the `/proc/<pid>/comm` probe
      (`f26_epoch.sh`; Python port in `f27_reply.py`) — covers every account,
-     positively mapped both ways (decoy 1 / without 0).
+     positively mapped both ways (decoy 1 / without 0). **[BLIND TO STAGING BINARIES — measured 2026-09-12, F109 §11.231(j2): all three homes of the probe (`f26_epoch.sh:46`, `f27_reply.py:107`, `f56_canary.sh:470`) test `comm == "spacecrafter"` EXACTLY, and a staging binary's `comm` is its own basename (`sc_f109_iso`, `spacecrafter-pre`…), so the probe read 0 with two staging instances live and holding port 7805; every task that measured a `sc_f*` binary ran it blind. Until the exe-identity probe lands (next round, S): before a launch ALSO assert that no process holds port 7805 (`ss -ltnp`) and that no `/proc/<pid>/exe` resolves under a `sc-f*`/`sc_*` path.]**
    - **Session-environment hazards (2026-08-09, F28/F30, §11.138/§11.140(i)):**
      (a) the inherited `XAUTHORITY` belongs to another uid — every display refuses;
      ~~`export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)`~~
@@ -630,7 +697,7 @@ untouched); archival pass 20 = update-s26 + F103–F106.** **Session-28 (2026-09
 at open (`1ae644f`); live below: the session-28 mints **F107** (§11.225(j2)/(j3)'s seed-staleness leg — the
 constructor seeds every body at JD 0; no delivered engine change), **F108** (§5.115's fix: uniform bounded
 retention, eight launches, every channel, a compiled constant), **F109** (A15's residual step removed on
-L1's word — the attributed halo floor α-scaled).**
+L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-09-11/12): F107 §11.229 · F108 §11.230 · F109 §11.231 (a STOP, endorsed — the residual is the instrument's) — three for three DELIVERED and accepted; §5.149–§5.152 minted at acceptances; archival pass 21 (update-s27 + F107–F109) DEFERRED to the next open.**
 
 ---
 
@@ -801,7 +868,7 @@ test -e /home/claude/sc-f109 ; echo $? => 1
 ```
 
 **DoD:** the baseline on today's stack; predictions before any build; the attribution by isolation; the change with its inertness set; §11 entry + stub; the §11.82 / A15 / §11.207 markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** DELIVERED 2026-09-12 (§11.231)  **CLASS B: the ~10 % residual is the INSTRUMENT's and no engine line changed**, per F109's own stop boundary. Gate 20/20 PASS; FULL canary exit 0 before (`20260911-232429`) and after (`20260912-005315`), 12/12 deltas 0.0. Baseline reproduced §11.82(b)'s shape (pop **3961 = 10.8 %**, α-share 91.3 %, reversible pair 14/14 maxCh 0). Floor census from the dump: `32.f` 13/13, `screenR*2` 0/13, `drawHaloCore screen_r` 0/13. A12 (both dead floors α-scaled) **bit-identical, max |Δ| = 0 at 14 points**. A4 (dot suppressed) gave an affine intercept +2257, and the **edge ladder** showed it is the offline px axis (**app T = 16 px at offline px ∈ (15.7266, 15.7963]**, axis 1.29–1.74 % low): at the lowest px the app calls in-band the interior emits **43.8 counts = 0.12 % of the swing**. A3 priced the named lever (pop **−4726 = −12.9 %**, energy ∝ α³). §11.82(b) attribution REFUTED at both homes; §11.64(a) marked; A15 annotated (no constant moved, the appearance question ROUTED to the tester, the profile decision the owner's); §11.207(g) item 6 refuted at both halves, entry + stub; `harness/README.md` F109 section. THREE harness defects: the b22 driver's `goto` (fixed), `b22_live_run.sh`'s caller-killing `pkill -f "/sc_"` + a config-restore trap (fixed), the `comm == "spacecrafter"` staging-binary blind spot in `f26_epoch.sh`/`f27_reply.py`/`f56_canary.sh` (RECORDED, not fixed  next round's item). Code UNCHANGED at `71b6fe51`, binary `6d63e6c1` bit-reproduced from the reverted tree; scratch `543a851e` under `/home/claude/sc-f109/`.
+**WIP:** DELIVERED 2026-09-12 (§11.231)  **CLASS B: the ~10 % residual is the INSTRUMENT's and no engine line changed**, per F109's own stop boundary. Gate 20/20 PASS; FULL canary exit 0 before (`20260911-232429`) and after (`20260912-005315`), 12/12 deltas 0.0. Baseline reproduced §11.82(b)'s shape (pop **3961 = 10.8 %**, α-share 91.3 %, reversible pair 14/14 maxCh 0). Floor census from the dump: `32.f` 13/13, `screenR*2` 0/13, `drawHaloCore screen_r` 0/13. A12 (both dead floors α-scaled) **bit-identical, max |Δ| = 0 at 14 points**. A4 (dot suppressed) gave an affine intercept +2257, and the **edge ladder** showed it is the offline px axis (**app T = 16 px at offline px ∈ (15.7266, 15.7963]**, axis 1.29–1.74 % low): at the lowest px the app calls in-band the interior emits **43.8 counts = 0.12 % of the swing**. A3 priced the named lever (pop **−4726 = −12.9 %**, energy ∝ α³). §11.82(b) attribution REFUTED at both homes; §11.64(a) marked; A15 annotated (no constant moved, the appearance question ROUTED to the tester, the profile decision the owner's); §11.207(g) item 6 refuted at both halves, entry + stub; `harness/README.md` F109 section. THREE harness defects: the b22 driver's `goto` (fixed), `b22_live_run.sh`'s caller-killing `pkill -f "/sc_"` + a config-restore trap (fixed), the `comm == "spacecrafter"` staging-binary blind spot in `f26_epoch.sh`/`f27_reply.py`/`f56_canary.sh` (RECORDED, not fixed  next round's item). Code UNCHANGED at `71b6fe51`, binary `6d63e6c1` bit-reproduced from the reverted tree; scratch `543a851e` under `/home/claude/sc-f109/`. **ACCEPTED 2026-09-12 — verifying commands' `date` 01:09:57–01:11:13 (supervisor, session 28, Claude Fable 5.1); THE STOP ENDORSED.** Verified by my own runs and reads: §11.231 read in full; seven harness commits `131a325 → af282fb` (Claude Opus 5; the predictions at `056554b` and the addendum at `2b1a911` before the runs they bind; every trailer `Code: master-beta @ 71b6fe51`, every footer the supervising identity); code UNMOVED at `71b6fe51`, binary `6d63e6c1` bit-reproduced from the reverted tree, both trees clean; the stub at `INTENT.md:1096`; markers at §11.64(a), §11.82(b)(e), §11.207(g) item 6 (entry files and stubs) and A15's row; README F109 section; `### F` 3; instruments 271/339/144 · 247/222/25/124 · D 35 · D2 12 · I 89 · I2 37 · M 91 to the digit. **By my own hand, on the committed sweeps:** `b22_live_analyze.py base2` → fit `56418 + 33451·aRes`, pop **3961 = 11 %**, α-share 91 %, no hysteresis (px32 = 0), the gate all-MilkyWay; `f109_decomp.py a12` → **3961**, base2's digit (the two dead floors inert); `a3` → **−4726 = −12.9 %** (the live floor α-scaled makes it WORSE); `a4 --interior-fit` → **F = +2257, G = 104035** over the four unclipped low-t points; `edge_result.txt` → the dot present at offline px 15.7266 and absent from 15.7963, the app's T in **(15.7266, 15.7963]** — R1's window, R2 refuted. The launches accepted on their committed both-ways records (base1's navigation defect caught by the analyzer's own gate; A12's Δ = 0 as the A/A floor; the ladder pre-registered as ADDENDUM 1). THE STOP: mandate (4) was correctly NOT executed — the section's own boundary (*"the attribution finds C0 in neither candidate floor … change nothing"*) applies verbatim, and the lever §11.82(b) named is measured to move the fade's mass to the top of the band (energy ∝ α³). DEVIATIONS ENDORSED with the executor's arguments: one env-gated build (the arms differ by a variable, the OFF arm is the delivered arithmetic, the A/A free); the revert before the arms; the two b22 instrument fixes at the root (`goto` convergence under a body reference; the kill by `/proc/<pid>/exe` + the config restore as an EXIT trap — the runner's `pkill -f "/sc_"` had killed its own caller once); `f109_decomp.py` beside the analyzer of record; the fifth measurement (the ladder) pre-registered; the in-run `config.ini` md5 excursion read as the runner's own `sed`, restored at exit. DISPATCHER-SIDE FINDINGS, all ACCEPTED as mine, all output-side: (1) mandate (1) names *"the delivered binary `e411b838`"* — F108 had delivered `6d63e6c1`; the PREMISES line was refreshed at dispatch, the PROSE was not (value class, a NEW sub-class: a per-round value baked into prose escapes the per-round refresh); (2) mandate (6)'s *"README b22 section"* — none existed (structure: asserted without the read; the executor created it); (3) the `[S, engine]` sizing assumed the lever attached — not a defect: the premise the STOP exists for. Session tally: **thirteen** (5 value, 8 structure). NO §5 MINT: nothing product-side is reachable with consequence — the collapse is continuous; §11.82(b)'s attribution is REFUTED at its node; the tester question (does he SEE a step?) and the fade-profile decision → §3. STANDING: the concurrent-instance probe (`f26_epoch.sh:46`, `f27_reply.py:107`, `f56_canary.sh:470`) is BLIND to a running STAGING binary (`comm` = its own basename) — measured with two `sc_f109_iso` live and the probe at 0; §0.5's bullet corrected at this close; the exe-identity probe is next round's first instrument item.
 
 ---
 
@@ -828,6 +895,124 @@ test -e /home/claude/sc-f109 ; echo $? => 1
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-28 decision items (2026-09-11/12, the SEED-STALENESS / LOG-RETENTION / RESIDUAL-STEP round —
+  F107 · F108 · F109, three for three; F109 a STOP endorsed). Q-70's shape: one decision per node, its held
+  set at the node, anchors by ID and symbol, correlated items together. Nothing asked in-session (Friday
+  night). Your Saturday run meets `supervised-by.sh` EXACTLY as the session-27 [Y4] below describes it —
+  nothing in this round touched it.**
+
+  ```
+  YOURS — nothing here substitutes them
+  [Y1] §5.149 · every iterative solver is SEEDED AT JD 0 by the constructor ─ the CAUSE of §5.145's
+       1.198725°; the two-step fix PAYS for it (all ten steps a use buys spent walking back 75.765 rad)
+       fact    ModularBody.cpp:121 lastJD = parent->lastJD (0 before the first frame), :126 the
+               evaluation; the replay on the sliced text reproduces F104's pre AND post dumps float32
+               for float32; a one-line seed reset on the pre tree reads 1.06e-05° at ONE step per call
+       shapes  (i) skip the ctor evaluation — measured UNAVAILABLE: isSystemCentered() answers by
+               POSITION and both orbit loaders read it at LOAD time (49 records move)
+               (ii) reset the seed after the ctor's call — fixes Eris, breaks Sedna by 55° (the comet
+               family's first step from (H,c,s) = (0,1,0) is 44 rad; the ctor's call is what burns it)
+               (iii) evaluate the ctor at a date the body will be used at (the loader has no date)
+               (iv) iterate to a criterion — already written and dead in warp() (§11.225(j1))
+       ask     which shape, or none: today the post-fix arm has 10 steps and this seed needs 8; a
+               slower converger in an authored system re-exposes it
+       →       §11.229(b)(c)(d)(h1) · §5.149 · §5.145 · §11.76(b)
+
+  [Y2] F108 · the log window ─ four veto points, implemented-and-live, each cheap to reverse
+       V1      a COMPILED constant (LOG_RETENTION_LAUNCHES = 8, src/tools/log.hpp), NOT a config key: a
+               key through checkConfigIni writes into the field's config.ini (the 03fbee59 precondition
+               every task asserts) and D13 would have an older build read a key it does not know; so
+               D12's self-contained action is "change that line and rebuild", which the log line says.
+               If you want it operator-settable, say so — the key lands in checkConfigIni and the
+               precondition is re-banked once
+       V2      the depth is UNIFORM: four channels that used to truncate now keep 8 launches — the field
+               dir went 5 files / 194 KB → 40 files / 1.46 MB, bounded there forever (vulkan ~100 KB +
+               spacecrafter ~82 KB per launch are almost all of it); per-channel depth is yours to rule
+       V3      six D12 lines per launch, 2203 B, every line self-contained
+       V4      a REFUSED second instance consumes one slot of eight (the opens sit 30 lines above the
+               lock check); moving them below it is a main.cpp ordering change — yours
+       legacy  the 34 dated script-*.log (5.8 MB on this host) are NEVER touched by the app: one line
+               names them; delete by hand
+       →       §11.230(c)(d)(m) · §5.115 (retention FIXED, density OPEN) · §11.173(b)
+
+  [Y3] §5.152 · a SECOND instance ABORTS ─ exit −6 (SIGABRT): a joinable LinuxExecutor thread is
+       destroyed at main.cpp:250's `return 0`; and the refusal line never reaches the console
+       (setDebug runs 19 lines lower). Both binaries, pre-existing. Fix shape: join/detach before
+       the early return, or route it through the normal shutdown (:399 already waits for it)
+       →       §11.230(l) · §5.152 · main.cpp:248-251
+
+  [Y4] §11.231 · the "~10 % residual step" L1 judged IS NOT ON THE SCREEN ─ two items
+       fact    the number was b22_live_analyze.py's own (an offline px axis 1.3–1.7 % low, the
+               dot's own brightening, 8-bit clipping); with the dot suppressed the interior emits
+               0.12 % of the swing at the lowest in-band px; the collapse is continuous at T
+       tester  ONE question to transmit: does he SEE a brightness step at the collapse, or was he
+               answering the 10 % we quoted him? (his L1 answer addressed our number)
+       you     whether to change the fade's PROFILE at all (linear in α, measured 91–95 %; perceived
+               brightness is not) — user-visible appearance; §11.82(b)'s named lever is measured to
+               make it WORSE (energy ∝ α³: a dip near T and a late rush)
+       →       §11.231(f)(g)(h)(l) · §11.82(b) REFUTED · A15 · §11.207(g) item 6 refuted
+
+  [Y5] §5.151 · Sedna's shipped orbit is not the authored one ─ data, the tester's: three malformed
+       keys in one [Sedna] section (orbit_Period with a capital P → Gauss mean motion; 76,0616 with
+       a comma → 76.0; orbit_LongOfPericenter without '='); forward-only (D9)
+       →       §11.229(i1) · §5.151
+
+  [Y6] isSystemCentered() answers by POSITION and both orbit loaders read it at LOAD time
+       (ModularBody.hpp:1788-1800, ElipticOrbitLoader.hpp:12, CometOrbitLoader.hpp:14) — was a
+       declared flag the intent? a body's JD-0 position decides which frame its children's orbits
+       are built in                                                        → §11.229(d)(l2)
+
+  [Y7] the re-bank ─ the host rebooted 20:06:16; you re-provisioned the same real session on :2 at
+       20:13:30; the three per-boot members re-banked with the argument; green on 17 runs since.
+       Your correction may differ (another display to bank on) — one edit
+       →       HOST-EVENTS 2026-09-11 · f56_canary.sh VALUES block
+
+  [Y8] scratch trees ─ sc-f107 (1.9 G: a git worktree at 474c595d + the control and three mutant
+       binaries), sc-f108 (937 M), sc-f109 (365 M) join the list; `git worktree list` now carries
+       sc-f107/tree beside sc-f89/tree
+
+  VETO POINTS taken (implemented-and-live, each cheap to reverse; silence = endorsed)
+  [V1] the canary re-bank (the block's own prescription for a per-boot red)
+  [V2] archival pass 20, and the pass instrument written down (harness/fd_archive_pass.py)
+  [V3] F108's shape under the fixed invariants: numbered rotation, the constant, the six lines,
+       logread.py as the ONE reader of any cLog channel (ten drivers routed through it)
+  [V4] four §5 rows at acceptances: §5.149 [Y1]; §5.150 (the orbit-line sampler perturbs the
+       position seed — new path; the old path's batchLastE shape named as the fix, S); §5.151 [Y5];
+       §5.152 [Y3]
+  [V5] F109's STOP endorsed: no engine line moved; §11.82(b)'s attribution marked REFUTED
+  [V6] two b22 instrument fixes at the root (goto convergence under a body reference; the kill by
+       /proc/<pid>/exe + the config restore as an EXIT trap — the runner had killed its own caller)
+  [V7] this block; supervised-by.sh and purge-path.sh UNTOUCHED by decision
+
+  HELD OPEN, not absorbed
+  [H1] the concurrent-instance probe is BLIND to staging binaries (comm == "spacecrafter" exactly,
+       in f26_epoch.sh / f27_reply.py / f56_canary.sh) — measured with two live; the exe-identity
+       probe is next round's first item (S); §0.5 corrected meanwhile
+  [H2] §5.150's fix (a separate plot seed in OrbitModule) — S; the predicted one-frame transient
+       (834 arcsec, Pasiphae, high time rates) still uncaught in the engine
+  [H3] with orbit lines ON the OLD path's own moons move by up to 1.87e-07 AU through the static
+       ephemeris cache — an instrument caveat at §5.84 for any parity run with the lines on
+  [H4] §11.207(g)'s list carries three "decision-free" labels refuted at their rows this session
+       (§5.66, §5.71, item 6) — the list is re-cut before anything is dispatched from it again
+  [H5] §5.115's density half; EntityCore's own uncapped EntityCore-logs-<epoch>.txt pile (387
+       files from unclean exits, read-only submodule) — yours
+  [H6] dumpread.load_dump cannot read F100's pinned_*.json.gz (AttributeError, dumpread.py:157; my
+       own probe at the mint) — the fourth-reader family, instrument residue
+  [H7] the M flags 11.229 / 11.196 (the entry-wins shape, named)
+
+  FACTS, no decision asked
+  [F1] three for three delivered AND supervisor-verified same session, every delivery re-run by my
+       own hand; code 48cc3727 → 71b6fe51 (ONE executor commit, F108's three files); binary
+       e411b838 → 6d63e6c1
+  [F2] the host: rebooted 20:06:16, same boot since; sessions 5/6 and :2 at open and close; RAM
+       53–54 GiB; 17 canary runs (one red by design, then green throughout); ~54 launches; no lock
+       file at any check; the field pair in == out throughout
+  [F3] thirteen dispatcher defects (5 value, 8 structure), all output-side, all caught before a
+       delivery — two new sub-classes named in Q-67 (a two-range sed; a per-round value in prose)
+  [F4] unpushed at close: 99 code / 857 harness (measured 01:11:13); the push is yours, Saturday
+  ```
+
 
 - **Session-27 decision items (2026-09-07, the SATURDAY-TOOL / TWO-STEP-SOLVER / DUMP-CHANNEL round —
   F103 · F104 · F105, three for three). Q-70's shape: one decision per node, its held set at the node,
