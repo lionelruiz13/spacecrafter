@@ -211,12 +211,19 @@ int main(int argc, const char *argv[])
 
 	Log->setDirectory("log/");
 
-	// Open log files
+	// Open log files.  Each open rotates that channel's previous launches
+	// (LOG_RETENTION_LAUNCHES in log.hpp) and records what it did; the report
+	// is written here, as soon as all five channels exist, because the first
+	// rotation happens before there is any log file to write into.  It is
+	// written at THIS point and not after the config is parsed so that a
+	// launch which stops earlier - the second-instance refusal below returns
+	// at :250 - still leaves the deletion on record (Sec.2.0 D12).
 	Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
-	Log->openLog(LOG_FILE::SCRIPT, "script", true);
+	Log->openLog(LOG_FILE::SCRIPT, "script");
 	Log->openLog(LOG_FILE::TCP, "tcp");
 	Log->openLog(LOG_FILE::SHADER,"shader");
 	Log->openLog(LOG_FILE::VULKAN,"vulkan");
+	Log->reportOpenLog();
 
 	// Write the console logo & Uname Information...
 	writeGeneralInfo();
