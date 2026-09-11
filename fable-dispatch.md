@@ -801,7 +801,7 @@ test -e /home/claude/sc-f109 ; echo $? => 1
 ```
 
 **DoD:** the baseline on today's stack; predictions before any build; the attribution by isolation; the change with its inertness set; §11 entry + stub; the §11.82 / A15 / §11.207 markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-11 23:5x — CP1: gate 20/20 PASS, full canary exit 0 (`f56/canary/20260911-232429`, 12/12 deltas 0.0); BASELINE `b22_live` run on the delivered `6d63e6c1` (`artifacts/f109/base1`) reproduces §11.82(b)'s shape (pop **10.0 %**, alpha-share 92.0 %, fit 56418+33368*aRes, dot 52790 / resolved 89069) ONCE one off-reference point is excluded; found+fixed a `b22_live.py` nav defect (the approach now ends at reference=Sun 0.00517 AU, `Camera::descend`'s coef is altitude-multiplicative under a BODY reference, so the first sweep point landed at 175.76 AU in the above-band set); FLOOR CENSUS from the dump: `32.f` fires 13/13, `screenR*2` 0/13, `drawHaloCore screen_r` 0/13; clipping-robust re-read: 64 % of the pop is carried by the 123 channels that clip at 255. NEXT: base2 (clean gate) → `artifacts/f109/prediction.txt` → the env-gated isolation build.
 
 ---
 

@@ -1,0 +1,63 @@
+== F109 decomposition [base1]  artifacts/f109/base1
+subsystemRadius=36.1553 AU   band px=[16.0,24.0)   crop 90x90
+
+!! EXCLUDED 1 off-reference point(s) - the sweep must stay referenced to MilkyWay (a capture into SolarSystem is a different scene):
+     dn00 reference=Sun refDist=175.757 px=143.013
+   13 of 14 descend points retained
+
+[floors] which candidate floor CAN fire, from the dump's own numbers
+  px      d(AU)    screenR(px)  rmag_raw  2*screenR  32f   maxDisc(px)      C:rmag>=1.2 vs screen_r
+  15.126  1649.96   1.946e-03    2.4619    -        FIRES  1.946e-03 (Sun      )    -  
+  15.687  1591.00   2.018e-03    2.5071    -        FIRES  2.018e-03 (Sun      )    -  
+  16.420  1520.00   2.113e-03    2.5649    -        FIRES  2.113e-03 (Sun      )    -  
+  17.213  1450.00   2.215e-03    2.6261    -        FIRES  2.215e-03 (Sun      )    -  
+  17.828  1400.00   2.294e-03    2.6726    -        FIRES  2.294e-03 (Sun      )    -  
+  18.626  1340.00   2.397e-03    2.7318    -        FIRES  2.397e-03 (Sun      )    -  
+  19.499  1280.00   2.509e-03    2.7951    -        FIRES  2.509e-03 (Sun      )    -  
+  20.800  1200.00   2.676e-03    2.8868    -        FIRES  2.676e-03 (Sun      )    -  
+  22.286  1120.00   2.867e-03    2.9881    -        FIRES  2.867e-03 (Sun      )    -  
+  23.526  1061.00   3.027e-03    3.0700    -        FIRES  3.027e-03 (Sun      )    -  
+  24.714  1010.00   3.180e-03    3.1466    -        FIRES  3.180e-03 (Sun      )    -  
+  26.002   960.00   3.345e-03    3.2275    -        FIRES  3.345e-03 (Sun      )    -  
+  27.431   910.00   3.529e-03    3.3150    -        FIRES  3.529e-03 (Sun      )    -  
+  -> firing counts over 13 points: screenR*2 0   32.f 13   drawHaloCore screen_r 0
+
+[A] linear-fit metric (same form as b22_live_analyze.py (C))
+  px      aRes     addI      sat255
+  16.420  0.0525     56870     22
+  17.213  0.1516     61274     31
+  17.828  0.2285     64484     42
+  18.626  0.3283     68041     59
+  19.499  0.4374     71862     69
+  20.800  0.6000     76953     77
+  22.286  0.7858     82565    100
+  23.526  0.9407     86911    105
+  monotone non-decreasing: True
+  pure-dot mean (px<T, n=2)       = 52790
+  pure-resolved mean (px>=T+B, n=3) = 89069
+  IN-BAND fit: addI = 56418 + 33368*aRes
+  swing = 36278;  ALPHA-INDEPENDENT pop at T = 3628 = 10.0% of swing
+  alpha-linear share = 92.0%
+
+[B] endpoint-anchored model  addI = D(px)*(1-t) + I(px)*t   (no free parameter)
+  D(px) = 22250.2*px^0.3159   (pure dot, fitted below band)
+  I(px) = 46267.7*px^0.2010   (pure resolved, fitted above band)
+  px      t       measured   model     resid    resid/swing
+  16.420  0.0525      56870     55300    +1570     +4.3%
+  17.213  0.1516      61274     58811    +2463     +6.8%
+  17.828  0.2285      64484     61512    +2972     +8.2%
+  18.626  0.3283      68041     64990    +3051     +8.4%
+  19.499  0.4374      71862     68758    +3104     +8.6%
+  20.800  0.6000      76953     74303    +2650     +7.3%
+  22.286  0.7858      82565     80546    +2019     +5.6%
+  23.526  0.9407      86911     85680    +1231     +3.4%
+  D(T)=53426 vs pure-dot mean 52790  -> the dot's own brightening below->T accounts for +636 = +1.8% of the swing
+  residual hump, quadratic in t: peak +3104 at t=0.437; extrapolated to t=0: +1459 = +4.0% of swing
+  => LINEAR-FIT pop 3628 = dot-brightening +636 + curvature/step +2992 (the part a floor could own)
+
+[C] clipping-robust re-read: 123 of 24300 channels reach 255 somewhere in the sweep (0.51%)
+  unclipped-only: dot=27986 resolved=57721 swing=29735 fit=29059+28263*aRes
+  unclipped-only pop = 1073 = 3.6% of swing (all-channel pop was 3628 = 10.0%)
+  => 64% of the linear-fit pop is carried by the 123 clipped channels
+
+json -> artifacts/f109/base1_decomp.json

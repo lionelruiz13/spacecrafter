@@ -76,14 +76,44 @@ send(s, "camera action descend coef 0.005", 3)
 send(s, "camera action descend coef 0.005", 3)
 send(s, "camera action descend coef 0.01675", 3)
 dump(s, "band0"); c0 = cam(f"{OUT}/band0.json")
-print(f"AT BAND ref={c0.get('reference')} refDist={c0.get('refDist')} selDist={c0.get('selDist')}", flush=True)
+# NB the approach above no longer lands IN the band: measured 2026-09-11 (F109)
+# it ends at reference=Sun refDist=0.00517 AU. Harmless - the sweep's goto()
+# re-measures and converges from wherever the approach stops - but the label is
+# what it is, an approach endpoint, not a band position.
+print(f"AFTER APPROACH ref={c0.get('reference')} refDist={c0.get('refDist')} selDist={c0.get('selDist')}", flush=True)
 
 # below-band -> band -> above-band. px=K/refDist ~ px16@1560AU px24@1040AU at fov340.
 SEQ = [1750, 1650, 1591, 1520, 1450, 1400, 1340, 1280, 1200, 1120, 1061, 1010, 960, 910]
 
-def goto(sock, target):                          # descend/ascend aims Sun; selDist scales *coef exactly
-    dump(sock, "_g"); sel = cam(f"{OUT}/_g.json").get("selDist") or target
-    send(sock, f"camera action descend coef {target/sel:.6f}", 2.5)
+def goto(sock, target, tol=0.002, tries=8):
+    """Move until selDist is within tol of target, RE-MEASURING each shot.
+
+    `camera action descend coef` is multiplicative on the distance to the
+    SELECTED body only while the reference IS A SYSTEM (Camera.cpp:1152
+    `reference->isSystem()` branch); under a BODY reference it is
+    multiplicative on the ALTITUDE ABOVE THAT BODY'S GROUND
+    (Camera.cpp:1186-1191, the view-ray/radial branch). The single-shot form
+    this function used assumed the first semantics unconditionally.
+    MEASURED 2026-09-11 (F109, INTENT 11.231, artifacts/f109/base1): the
+    approach sequence above now ends at reference=Sun refDist=0.00517 AU (not
+    in the band), so the first sweep point's coef 338367 stepped
+    (coef-1)*alt = 338367*5.2e-4 AU = 175.76 AU instead of 1750 AU, and dn00
+    was captured in a DIFFERENT SCENE (reference Sun, px 143) - it landed in
+    b22_live_analyze.py's above-band set and moved the swing denominator
+    (pure-resolved 89069 -> 79521, pop 10.0% -> 14%), and its mismatch with
+    up00 made (A) report HYSTERESIS on 13 bit-identical matched points.
+    Iterating is semantics-agnostic (every shot re-measures the achieved
+    distance) and converges in 2-3 shots even from the body-reference state.
+    """
+    for _ in range(tries):
+        dump(sock, "_g"); sel = cam(f"{OUT}/_g.json").get("selDist") or target
+        if abs(sel - target) / target < tol:
+            return True
+        send(sock, f"camera action descend coef {target/sel:.6f}", 2.5)
+    dump(sock, "_g"); c = cam(f"{OUT}/_g.json")
+    print(f"  !! goto({target}) NOT CONVERGED after {tries}: selDist={c.get('selDist')} "
+          f"reference={c.get('reference')}", flush=True)
+    return False
 
 rows = []
 def capture(sock, tag, direction, target, phases):
