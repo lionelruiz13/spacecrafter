@@ -1,0 +1,59 @@
+F108 -- PREDICTIONS FOR THE MUTANT LEG, COMMITTED BEFORE THE MUTANT BUILDS
+==========================================================================
+Written 2026-09-11 22:4x CEST, after the 10-launch real-home campaign (0 FAIL)
+and the write_log legs, BEFORE any mutant is compiled.  Delivered binary md5
+6d63e6c1, code master-beta @ 71b6fe51.
+
+WHY THIS FILE EXISTS: THE DISPATCH'S MUTANT IS PREDICTED TO BE A NO-OP
+----------------------------------------------------------------------
+The section asks for "a MUTANT (the delete step disabled) shown to leave 10
+files after 10 launches".  Reading my own code back says that mutant cannot do
+that, and the reason is in POSIX rather than in the code: the shift loop is
+
+    for (int k = LOG_RETENTION_LAUNCHES - 2; k >= 1; --k)
+        std::filesystem::rename(archiveName(base, k), archiveName(base, k+1), ec);
+
+and `rename` REPLACES an existing destination ([fs.op.rename] follows POSIX
+rename(2): "if new_p is an existing non-directory file, it is removed").  So
+with the explicit `remove` gone, `rename(X.6.log, X.7.log)` unlinks the old
+X.7.log anyway.  WHAT BOUNDS THE FILE COUNT IS THE FIXED INDEX RANGE 1 ..
+LOG_RETENTION_LAUNCHES-1, not the delete call.  The delete call exists to make
+the deletion EXPLICIT and REPORTABLE (its size is read while the file is still
+there, which is what D12's CONTENT part needs) -- and a mutant that drops it
+should therefore produce the same file set with a D12 line that LIES.
+
+So the leg runs three arms, and the discrimination is done at the boundary
+rather than by counting to ten: a farm whose log dir is SEEDED with the steady
+state (8 files per channel, `<c>.log` + `<c>.1.log` .. `<c>.7.log`, each
+carrying a line that names its slot and each with a distinct byte size) needs
+ONE launch to answer.
+
+  ARM A -- the delivered binary, seeded dir, 1 launch
+  [P] 8 files per channel, indices 1..7 contiguous
+  [P] the seeded `.7` tag is GONE from the whole directory
+  [P] `.7.log` now carries the seeded `.6` tag, `.6` the seeded `.5`, and
+      `.1` the seeded live tag
+  [P] the D12 line names `log/<c>.7.log` with the SEEDED `.7` byte size
+
+  ARM B -- the delete step disabled (`remove` commented out), seeded, 1 launch
+  [P] 8 files per channel -- THE SAME AS ARM A, because rename replaces
+  [P] the seeded `.7` tag is GONE anyway: the file was unlinked by the rename
+  [P] the D12 line reads `deleted nothing` -> the report is now FALSE about the
+      file system, which is the actual consequence of dropping the remove
+      (a silent deletion, i.e. the D12 violation the fix was written to avoid)
+
+  ARM C -- the cap itself broken: the shift made UNBOUNDED (no delete, and the
+  loop starts from the highest index present instead of W-2), seeded, 1 launch
+  [P] 9 files per channel, `<c>.8.log` appears -- an index the delivered binary
+      can never create
+  [P] every seeded tag survives, none is lost
+  ARM C, clean farm, 10 launches (the section's own shape)
+  [P] 10 files per channel after 10 launches, indices 1..9
+
+  AFTER THE LEG
+  [P] the sources are restored and the rebuild reproduces md5 6d63e6c1 bit for
+      bit (already demonstrated once today in the other direction: the baseline
+      sources rebuilt to e411b838, the round's own binary).
+
+If ARM B comes out at 10 files, this file is wrong and the dispatch was right;
+the prediction stays here either way.

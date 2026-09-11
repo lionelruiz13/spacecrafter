@@ -1,0 +1,174 @@
+{
+ "pre": {
+  "bin": "/home/claude/sc-f108/bin/pre",
+  "md5": "e411b838ebceec75f30ce165d1d3780a",
+  "rc": 0,
+  "port_s": 0.0,
+  "files": [
+   [
+    "script-26.09.11.log",
+    13
+   ],
+   [
+    "shader.log",
+    13
+   ],
+   [
+    "spacecrafter.log",
+    1774
+   ],
+   [
+    "tcp.log",
+    13
+   ],
+   [
+    "vulkan.log",
+    13
+   ]
+  ],
+  "channels": {
+   "spacecrafter": {
+    "live": "spacecrafter.log",
+    "bytes": 1774,
+    "lines": 49,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 1,
+    "eof_last": true,
+    "has_anchor": true
+   },
+   "script": {
+    "live": "script-26.09.11.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "tcp": {
+    "live": "tcp.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "shader": {
+    "live": "shader.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "vulkan": {
+    "live": "vulkan.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   }
+  },
+  "applog_d12": 0
+ },
+ "post": {
+  "bin": "/home/claude/sc-f108/bin/delivered",
+  "md5": "6d63e6c157cebd9b79846876befafb9f",
+  "rc": 0,
+  "port_s": 0.0,
+  "files": [
+   [
+    "script.log",
+    13
+   ],
+   [
+    "shader.log",
+    13
+   ],
+   [
+    "spacecrafter.log",
+    3308
+   ],
+   [
+    "tcp.log",
+    13
+   ],
+   [
+    "vulkan.log",
+    13
+   ]
+  ],
+  "channels": {
+   "spacecrafter": {
+    "live": "spacecrafter.log",
+    "bytes": 3308,
+    "lines": 54,
+    "d12": 5,
+    "last": "(Info ): EOF",
+    "after_gate": 1,
+    "eof_last": true,
+    "has_anchor": true
+   },
+   "script": {
+    "live": "script.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "tcp": {
+    "live": "tcp.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "shader": {
+    "live": "shader.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "vulkan": {
+    "live": "vulkan.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   }
+  },
+  "applog_d12": 5
+ },
+ "diff": {
+  "added": [
+   "Info ): Log retention (spacecrafter.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.",
+   "Info ): Log retention (script.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.",
+   "Info ): Log retention (tcp.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.",
+   "Info ): Log retention (shader.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.",
+   "Info ): Log retention (vulkan.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding."
+  ],
+  "removed": []
+ }
+}

@@ -1,0 +1,30 @@
+--- the mutant's own run of the 25 checks ---
+PASS  empty: live                                                None
+PASS  empty: text                                                
+PASS  empty: history                                             []
+PASS  empty: archives                                            []
+PASS  empty: legacy                                              []
+PASS  missing dir: live                                          None
+PASS  missing dir: text                                          
+PASS  pre-era: live is the newest dated                          script-26.08.30.log
+PASS  pre-era: text                                              newer
+PASS  pre-era: legacy count                                      2
+PASS  pre-era: legacy is name-sorted                             ['script-26.08.29.log', 'script-26.08.30.log']
+PASS  pre-era: history is just the live file                     ['script-26.08.30.log']
+FAIL  post-era: live is script.log                               got 'script-26.08.30.log' want 'script.log'
+FAIL  post-era: text                                             got 'newer' want 'running'
+PASS  post-era: an archive is never live                         True
+FAIL  post-era: history order                                    got ['script-26.08.30.log', 'script.1.log', 'script.7.log'] want ['script.log', 'script.1.log', 'script.7.log']
+PASS  post-era: archives are index-sorted, not name-sorted       ['script.1.log', 'script.7.log']
+PASS  post-era: the pile is still outside the window             ['script-26.08.29.log', 'script-26.08.30.log']
+PASS  downgrade: live is the dated file again                    script-26.09.12.log
+FAIL  other channel: live                                        got None want 'spacecrafter.log'
+PASS  other channel: no legacy                                   []
+FAIL  other channel: history                                     got ['spacecrafter.3.log'] want ['spacecrafter.log', 'spacecrafter.3.log']
+PASS  channel names do not leak into each other                  []
+PASS  a directory named like an archive is skipped               ['script.1.log', 'script.7.log']
+PASS  window() reads the constant                                True
+
+20 PASS, 5 FAIL
+
+ok: the mutant fails the suite, so the suite discriminates.
