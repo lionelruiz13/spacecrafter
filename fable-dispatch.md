@@ -753,7 +753,7 @@ test -e /home/claude/sc-f108 ; echo $? => 1
 ```
 
 **DoD:** predictions before any build; the constant + the rotation + the D12 lines; the readers; P-legs (a)–(h); §11 entry + stub; §5.115 FIXED (retention half) with the density half kept OPEN in the marker; the four markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-11 22:2x — §0.7 gate 34/34 PASS; prose premises verified (harness `0aff5db`, `:2` per HOST-EVENTS 2026-09-11, field pair `03fbee59`/`545a51ef`). CHECKPOINT 1: predictions committed (`artifacts/f108/prediction.txt`, 8 sections, + `prestate_logs.tar.gz` because the design deletes the field's five current log files at launch 8) BEFORE any build; src/ untouched, `cmake --build -- -n` 0 steps. Next: the fix (`log.hpp` constant + `openLog` rotation + `main.cpp` open sequence), then `logread.py` + the 9 real readers, then the build.
 
 ---
 

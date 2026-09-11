@@ -1,0 +1,243 @@
+F108 -- PREDICTIONS, COMMITTED BEFORE THE FIRST BUILD THAT SCORES THEM
+======================================================================
+Written 2026-09-11 22:1x CEST by the F108 executor (Claude Opus 5), on code
+master-beta @ 48cc3727 (binary md5 e411b838, the round's baseline) and harness
+CC-harness @ 0aff5db.  Section: claude/fable-dispatch.md ### F108.  Every number
+below is either MEASURED NOW (marked [pre-state]) or PREDICTED [P].  A line that
+turns out wrong stays here wrong; the record says refuted, never rewritten.
+
+Nothing in src/ has been touched at the time of this commit: `git -C
+/home/claude/spacecrafter status --porcelain` is empty and `cmake --build
+build-claude -- -n` reports 0 compile steps.
+
+
+0. THE PRE-STATE THE PREDICTIONS ARE RELATIVE TO  [pre-state, measured]
+-----------------------------------------------------------------------
+`~/.spacecrafter/log/` holds 432 directory entries (`ls -a | wc -l`), of which:
+
+  name              size B    inode      mtime
+  spacecrafter.log   87877   22428043   2026-08-30 09:15:41
+  script.log          3834   22429251   2026-04-04 11:47:01   (an older binary's
+                                                              name; its head
+                                                              names /home/foxy)
+  tcp.log               13   22429311   2026-08-30 09:15:41
+  shader.log            13   22429312   2026-08-30 09:15:41
+  vulkan.log        102710   22428144   2026-08-30 09:15:41
+
+  `ls *.[0-9].log | wc -l` = 0            (no numbered archive exists yet)
+  `ls | grep -c '^script-'` = 34          the legacy dated pile
+  `du -cb script-*.log | tail -1` = 5802574 B
+  the rest: 2 CPU/GPU csv, statistics.dat, 390 EntityCore-logs-*.txt
+
+All five channels therefore start with EXACTLY ONE file each.  This is why the
+counts below are min(k+1, 8) and not the dispatch's min(k, 8): the pre-existing
+file occupies one slot of the window from launch 1 on.  On a CLEAN log dir (a
+b3_farm.sh farm) the dispatch's min(k, 8) is what I predict instead.
+
+A byte-exact copy of the five files above is committed beside this file
+(`prestate_logs.tar.gz`, 19062 B) because the design DELETES them: the rotation
+carries each one out of the window at launch 8.
+
+
+1. THE FILE SET PER CHANNEL, 10 LAUNCHES ON THE REAL ~/.spacecrafter   [P]
+--------------------------------------------------------------------------
+After launch k, each channel X in {spacecrafter, script, tcp, shader, vulkan}
+has exactly min(k+1, 8) files: `X.log` (the launch that just ran) plus
+`X.1.log` ... `X.<min(k+1,8)-1>.log`, contiguous, no gaps:
+
+  k      1  2  3  4  5  6  7  8  9  10
+  files  2  3  4  5  6  7  8  8  8  8
+
+and `ls ~/.spacecrafter/log/*.[0-9].log | wc -l` = 5 * (min(k+1,8) - 1), i.e.
+5, 10, 15, 20, 25, 30, 35, 35, 35, 35.  No `X.8.log` is ever created (the index
+range is 1..7 = LOG_RETENTION_LAUNCHES-1).
+
+
+2. WHICH LAUNCH EACH ROTATED FILE HOLDS, AND HOW IT IS READ OFF THE FILE
+------------------------------------------------------------------------
+REFUTED IN ADVANCE -- the dispatch's stated method cannot work.  The section
+says "its first line's own stamp -- the log's opening line carries the launch
+date".  NO LOG LINE CARRIES A WALL-CLOCK DATE [observed]: spacecrafter.log
+opens with `=====...` then `(Info ): Welcome to spacecrafter` (main.cpp:222 ->
+log.cpp:163, :104-ish) with no prefix at all, and the only prefix any line ever
+gets is `%012d: ` from SDL_GetTicks (log.cpp:124-126) -- milliseconds since SDL
+init, and only when isDebug is on.  [P] `grep -c` for a 4- or 2-digit
+date stamp in any of the five live files = 0.  Three keys replace it:
+
+  (a) INODE CONTINUITY -- exact, all five channels, no content needed.
+      std::filesystem::rename preserves the inode, so for every channel and
+      every k >= 2: inode(X.1.log after launch k) == inode(X.log after launch
+      k-1), and inode(X.j.log after launch k) == inode(X.(j-1).log after launch
+      k-1) for j = 2..min(k,7).  [P] the chain holds for all 5 channels at
+      every k in 2..10 (5 * 44 = 220 individual inode equalities).
+      [P] the PRE-STATE inodes above travel down the chain and are the ones the
+      window drops: 22428043/22429251/22429311/22429312/22428144 appear at index
+      k for k = 1..7 and are GONE from the directory after launch 8.
+  (b) THE PID LINE -- INTERNAL channel, content.  main.cpp:239 writes
+      `My getpid() is <pid>` once per launch.  [P] spacecrafter.j.log contains
+      the pid of launch k-j, for j = 1..min(k-1,7), and the driver knows every
+      pid because it spawned them (subprocess.Popen.pid).
+  (c) A PER-LAUNCH TOKEN -- SCRIPT channel, content.  The driver sends
+      `f108_launch_<k>` over TCP (port 7805); app_command_interface.cpp:210
+      echoes every executed command into LOG_FILE::SCRIPT as `Execute_command
+      f108_launch_<k>` (the command then fails, which is fine and expected --
+      the refusal line lands on the same channel, Sec.5.117).  [P] script.j.log
+      contains `f108_launch_<k-j>` and no other token.
+  [P] tcp.log, shader.log and vulkan.log carry NOTHING launch-unique (the TCP
+  channel has exactly one writer, mkfifo.cpp, and mkfifo is off in this field
+  config: the pre-state tcp.log is 13 B = `(Info ): EOF` + newline, written by
+  close() directly at log.cpp:104 and therefore WITHOUT the ticks prefix).  For
+  those three, (a) is the only key -- said here so the measurement is not read
+  as a partial hit.
+
+
+3. THE D12 LINES, AND EXACTLY WHEN EACH APPEARS                        [P]
+--------------------------------------------------------------------------
+Grep key: every line begins `Log retention (`.  All of them are L_INFO (a
+rotation is an act, not a fault) and all go to LOG_FILE::INTERNAL, i.e. into
+`spacecrafter.log` -- including the four that are about another channel.
+
+  [P] 6 lines per launch, at every launch: 5 rotation lines (one per channel,
+      in main.cpp's open order: spacecrafter, script, tcp, shader, vulkan) and
+      1 legacy-pile line (the script channel is the only one with a pile).
+      `grep -c 'Log retention (' log/spacecrafter.log` = 6 after every launch.
+  [P] the rotation line carries: the channel's live file name, the archive it
+      became, how many files of the window are now in use, what was deleted
+      (name + size in bytes) or `deleted nothing`, and where the number lives
+      (LOG_RETENTION_LAUNCHES in src/tools/log.hpp, "no config.ini key sets
+      it") -- D12's CAUSE + CONTENT + self-contained ACTION.
+  [P] a deletion clause appears at launches 8, 9 and 10 and NOT at 1..7.  This
+      is one launch EARLIER than the dispatch's "the 9th and 10th launch",
+      because of the pre-existing file of section 0 (on a clean dir the first
+      deletion is indeed at launch 9; that arm is the mutant's farm, section 5).
+  [P] the five files deleted at launch 8 are the PRE-STATE files themselves,
+      with the sizes measured above, to the byte:
+        spacecrafter.7.log  87877 B
+        script.7.log         3834 B
+        tcp.7.log              13 B
+        shader.7.log           13 B
+        vulkan.7.log       102710 B
+  [P] at launches 9 and 10 the deleted files are launch 1's and launch 2's own
+      files; of those, tcp.7.log and shader.7.log are deleted at EXACTLY 13 B
+      (the EOF line and nothing else, on a clean shutdown), and the three others
+      are non-empty.
+  [P] the legacy-pile line reads `34 legacy dated log file(s)` and `5802574
+      bytes` at EVERY one of the 10 launches -- the pile is never read, written
+      or deleted; after launch 10, `ls | grep -c '^script-'` = 34 and
+      `du -cb script-*.log` = 5802574 still.
+  [P] THE CONSOLE HALF DOES NOT APPEAR, and this is a measurement I commit to
+      before the run: the report is flushed from main.cpp right after the five
+      opens (:219), and `Log->setDebug(print_log)` is only reached at :268, so
+      isDebug is false when the lines are written and log.cpp:122 does not route
+      them to the console.  The same is already true of every startup line
+      before :268 (spacecrafter.log's first lines carry no ticks prefix, which
+      is that fact's fingerprint).  I therefore ALSO flush the console half from
+      setDebug(true) itself (once, guarded), so `print_log = true` DOES show the
+      six lines -- [P] the 6 lines appear in the process's own stdout capture
+      (.applog) of every launch, AFTER the `LOCALE DIR:` line, exactly once
+      each: `grep -c 'Log retention (' <applog>` = 6.
+
+
+4. write_log = false                                                   [P]
+--------------------------------------------------------------------------
+Measured on a b3_farm.sh farm (NOT the real home: the real config.ini md5
+03fbee59 is a precondition every later task asserts, and the leg has to change
+that exact byte), on BOTH binaries -- the round's baseline e411b838 (pre) and
+the delivered one (post), so "keeps today's meaning" is a comparison and not an
+assumption.
+
+  [P] the five files are still CREATED and still ROTATED: openLog is
+      unconditional and runs at :215-219, 50 lines before the config is read.
+  [P] nothing is written to them AFTER main.cpp:269 -- on both binaries.
+  [P] on both binaries spacecrafter.log is NON-EMPTY under write_log=false,
+      because isWritingLog defaults true (log.hpp:139) and the whole startup
+      preamble (:222-:268: the mark, Welcome, version, copyright, uname, RAM,
+      dirResult, the lock lines, CONFIG/ROOT/LOCALE DIR) is written before the
+      key is applied.  This is today's behaviour, unchanged.  [P] the last line
+      of spacecrafter.log under write_log=false is the `LOCALE DIR: ` one on the
+      pre binary, and on the post binary the 6 `Log retention (` lines sit
+      BEFORE the preamble (they are flushed at :220) with the same `LOCALE DIR:`
+      line last.
+  [P] script.log = 13 B, tcp.log = 13 B, shader.log = 13 B, vulkan.log = 13 B
+      under write_log=false on both binaries (the EOF line only; writeECLog
+      goes through write() and is gated too).
+  [P] config.ini md5 in == out on the farm leg for the modified value, and the
+      REAL ~/.spacecrafter/config.ini md5 stays 03fbee59 throughout the task.
+
+
+5. THE MUTANT (the delete step disabled)                               [P]
+--------------------------------------------------------------------------
+Built from the delivered source with the single `remove` call commented out,
+measured, reverted, rebuilt -- [P] the rebuild reproduces the delivered md5 bit
+for bit.  Run on a CLEAN b3_farm.sh farm, 10 launches:
+
+  [P] mutant, after launch k: min(k, 10) files per channel -> 10 after 10
+      launches, with X.8.log and X.9.log present (indices the delivered binary
+      can never create).
+  [P] delivered binary, same clean-farm shape, would give min(k, 8) -> 8; the
+      real-home campaign of section 1 gives 8 as well (the cap binds in both,
+      which is why the seeding difference does not weaken the comparison).
+  [P] the mutant writes the same 6 `Log retention (` lines but its deletion
+      clause reads `deleted nothing` at every launch.
+
+
+6. THE SMOKE SUITE AND F91                                             [P]
+--------------------------------------------------------------------------
+  [P] `f90_rehearsal_run.sh` rc 0, step for step as Sec.11.226(g) records it:
+      S1 DIVERGENCE Sec.5.77 (3 silences) . S2 120 -> 121 . S3 ~5.9 s against
+      5.5 s of authored waits + 1 pause . S4 DEPRECATED . S5 PASS (5 lines,
+      magnitude 1.38, French labels) . S6 10894 B + 78394 B . S7 DIVERGENCE
+      Sec.11.117(k)(3) . S8 fov 180.00001 -> 84.91497 -> 179.53135 . S9 exit 0.
+      Two values are expected to MOVE and are not criteria: S5's Mars distance
+      (it reads the wall clock -- 1.81407452 UA on 2026-09-07, five days of
+      Mars's motion ago) and the frame-stall count (0/1/2 in the three landed
+      runs).
+  [P] its farm's log dir after its single launch holds exactly 5 files, one per
+      channel, named `<channel>.log`, and ZERO `script-*.log`; step S3 (which
+      needs `ScriptMgr: load` and `script end` FROM the script log) passes
+      through the new reader, so a green S3 is the reader's own test.
+  [P] `f91_run.sh --expect post --locale fr` rc 0, 0 FAIL, 0 NOTE, and the
+      parity table BYTE-IDENTICAL at md5 1fe630a4 -- the log system is not the
+      render path and this is the check that says so.
+
+
+7. THE COST (D11)                                                      [P]
+--------------------------------------------------------------------------
+The rotation is O(1) syscalls per channel at open and ZERO per frame: nothing
+in the change is reachable from the frame loop (cLog::write is untouched).  Per
+channel at open: 1 is_regular_file + <= 1 file_size + <= 1 remove + 7 rename
+attempts + 7 is_regular_file (the count) + ONE directory scan of log/ for the
+legacy pile (432 entries here).  The directory scan is the dominant term and it
+is the reason to predict a number rather than "negligible":
+
+  [P] total added open-time cost, five channels + the report, on the real home
+      with a warm dentry cache: < 25 ms, and > 0.5 ms (432 dirents scanned five
+      times).  Measured once with a throwaway timing build (SDL_GetPerformance-
+      Counter around the five openLog calls in main.cpp), which is then
+      reverted; against D11's 1 ms/frame denominator this is a one-off at
+      startup, not a per-frame cost.
+  [P] 0 added syscalls and 0 added instructions per frame.
+
+
+8. WHAT I EXPECT TO BREAK IN THE HARNESS, AND WHAT I EXPECT NOT TO     [P]
+--------------------------------------------------------------------------
+  [P] the six drivers whose `script_log()` is `sorted(glob("script-*.log"))[-1]`
+      (f61, f62, f63, f67, f68, f69) would return "" for every launch after the
+      change and then hang on their own wait loop for 60-120 s before failing:
+      the glob requires a DASH.  They are routed through the new single reader.
+  [P] `f4_scriptspeed.sh` would silently read the newest LEGACY file
+      (script-26.08.30.log) instead of the live one -- a stale answer, no error.
+  [P] `f50_selvars.py:203` and `f53_guards.py:351` glob `script*.log`, which
+      already matches `script.log`, so they work at one launch per farm and
+      FAIL their own "expected exactly one script log" assertion from the
+      second launch in the same farm on (the archives match too).
+  [P] the `sorted(prefix + "*.log")[-1]` readers (f90:515, f94:285, f95_soak:421
+      and :1126, f41:228, f39_farm.sh:90) keep working by ASCII luck: '1' (0x31)
+      < 'l' (0x6c), so `X.1.log` sorts BEFORE `X.log` and `[-1]` still picks the
+      live file.  [P] verified by sort, not by assertion, and written into the
+      README because it is luck and not design.
+  [P] f36_class.py:95 ("script-time") and f80_corpus.py:326 ("script-corpus")
+      are not readers at all -- they match the census pattern on prose.  The
+      section's "twelve harness readers of script-*" is therefore a file count
+      of pattern matches (true, and the premise line that asserts 12 PASSES);
+      the number of files that actually READ a log file is 9.
