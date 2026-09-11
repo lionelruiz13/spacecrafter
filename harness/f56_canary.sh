@@ -57,10 +57,25 @@ set -u
 # The only banked state in this instrument.  Every number here is [measured] and dated;
 # re-banking is an explicit act with an argument, never a tolerance widened to fit.
 #
-# DISPLAY STACK -- RE-BANKED 2026-09-04 (F79, INTENT §11.199) on claude's REAL logind
-# session (14 user + 15 manager, seatless = remote-desktop; gnome-remote-desktop under
-# /run/user/1003): /usr/bin/gnome-shell pid 43595 -> Xwayland :2 pid 43800, both started
-# 2026-09-04 19:50:17 [measured: artifacts/f79/start-epoch-probe.txt].
+# DISPLAY STACK -- RE-BANKED 2026-09-11 (supervisor, session 28; HOST-EVENTS 2026-09-11
+# entry) on the SAME class of display the 2026-09-04 bank named: claude's REAL logind
+# session, now 5 (user, Type=wayland, Service=gdm-password, Remote=yes) + 6 (manager),
+# re-provisioned by the owner at 20:13:30 after the host booted 2026-09-11 20:06:16;
+# /usr/bin/gnome-shell pid 12247 -> Xwayland :2 pid 12735, kernel starts 1789150410 /
+# 1789150411 (20:13:30 / 20:13:31) [measured: artifacts/f56/canary/20260911-201947/
+# fingerprint.json, the red run; the ps -o lstart= cross-check agrees to the second].
+#   WHY: the three per-boot members moved and NOTHING else did -- the red run measured
+#   display :2, dims 2448x1332, runtime dir, cookie glob and owner uid all EQUAL to the
+#   bank, and the one FAIL was compositor.restarted (xserver.restarted the NOTE). That is
+#   the PER-BOOT paragraph below firing as written, on the display the owner ruled; the
+#   response it prescribes is this edit. The photometric band is NOT edited (the full
+#   canary re-run on this boot is the check, recorded in HOST-EVENTS).
+# ~~RE-BANKED 2026-09-04 (F79, INTENT §11.199) on claude's REAL logind session (14 user +
+# 15 manager, seatless = remote-desktop; gnome-remote-desktop under /run/user/1003):
+# /usr/bin/gnome-shell pid 43595 -> Xwayland :2 pid 43800, both started 2026-09-04
+# 19:50:17 [measured: artifacts/f79/start-epoch-probe.txt].~~ (struck 2026-09-11: that
+# boot ended; the argument F79 recorded below stands and is why the 2026-08-30 values
+# stay struck rather than restored.)
 #   WHY, and it is not a tolerance moved to fit: the retired values below named F43's
 #   hand-built substitute stack under /tmp/rt-claude, born 2026-08-29 14:51:01.  /tmp is
 #   wiped at every boot; this host booted 2026-09-04 18:45:08 and nobody rebuilt the
@@ -101,10 +116,14 @@ BANK_DIMS="2448x1332"
 BANK_XDG_RUNTIME_DIR="/run/user/1003"
 BANK_XAUTH_GLOB="/run/user/1003/.mutter-Xwaylandauth.*"
 BANK_COMPOSITOR_CMD="/usr/bin/gnome-shell"
-BANK_COMPOSITOR_START=1788544217          # kernel start of pid 43595 = 2026-09-04 19:50:17
+# RETIRED 2026-09-11 (the 2026-09-04 18:45:08 boot ended 2026-09-11; per-boot by design):
+#   ~~BANK_COMPOSITOR_START=1788544217~~   # kernel start of pid 43595 = 2026-09-04 19:50:17
+#   ~~BANK_XSERVER_START=1788544217~~      # kernel start of pid 43800 = 2026-09-04 19:50:17
+#   ~~BANK_HOST_BOOT="2026-09-04 18:45:08"~~
+BANK_COMPOSITOR_START=1789150410          # kernel start of pid 12247 = 2026-09-11 20:13:30
 BANK_XSERVER_MATCH="Xwayland :2"
-BANK_XSERVER_START=1788544217             # kernel start of pid 43800 = 2026-09-04 19:50:17
-BANK_HOST_BOOT="2026-09-04 18:45:08"
+BANK_XSERVER_START=1789150411             # kernel start of pid 12735 = 2026-09-11 20:13:31
+BANK_HOST_BOOT="2026-09-11 20:06:16"
 #
 # PHOTOMETRIC BAND -- the reference scene is `f51_run.sh`'s (§11.174(e) names it): the
 # Moon `base` scene at fov 10, the app's own 2048^2 readback, metric = §11.164(c)'s

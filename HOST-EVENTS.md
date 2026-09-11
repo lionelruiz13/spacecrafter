@@ -257,3 +257,31 @@ never rewrite (maintenance invariant). Archival per the standing convention
   green, `/proc/*/comm` clear and **no `/tmp/spacecrafter.lock` at any check** — Q-61(3) holds as
   stated: the display lives with the logged-in session, not with the owner's seat. Nothing
   re-banked; nothing re-provisioned; no HOST-EVENTS entry was owed by any executor.
+- 2026-09-11 20:15–20:28 [measured: supervisor, session 28 (Claude Fable 5.1), warm-up —
+  every value from the command beside it, Q-67] **THE HOST REBOOTED 9 MINUTES BEFORE THE
+  ROUND OPENED, THE OWNER RE-PROVISIONED THE SAME CLASS OF DISPLAY, AND THE CANARY DID
+  EXACTLY WHAT ITS BLOCK SAYS: RED BY DESIGN, THEN RE-BANKED, THEN GREEN ON BOTH ARMS.**
+  `uptime -s` **2026-09-11 20:06:16** (the 2026-09-04 18:45:08 boot of sessions 21–27
+  ended; `/tmp` wiped with it — nothing carried there). At 20:13:30 `loginctl` shows
+  claude's sessions **5** (user, `Type=wayland`, `Service=gdm-password`, `Remote=yes`) +
+  **6** (manager) — the RDP-created REAL logind session the owner ruled on 2026-09-04,
+  re-provisioned by him two minutes before the trigger line; `/run/user/1003` with the new
+  cookie `.mutter-Xwaylandauth.AF5BV3`; `/usr/bin/gnome-shell` pid **12247** (kernel start
+  1789150410 = 20:13:30) → Xwayland **`:2`** pid **12735** (1789150411 = 20:13:31), the
+  inherited `DISPLAY=:2` / `XAUTHORITY` already pointing at them; `xdpyinfo` **2448x1332**.
+  Canary `--no-scene` at 20:19:47: **exit 2, 1 fail 1 note** — FAIL `compositor.restarted`
+  (the gating member), NOTE `xserver.restarted`; display, dims, runtime dir, cookie glob
+  and owner uid all EQUAL to the bank (`artifacts/f56/canary/20260911-201947`). RE-BANKED
+  in one VALUES-block edit with its argument (`f56_canary.sh`, the three per-boot members
+  only — `BANK_COMPOSITOR_START` 1789150410, `BANK_XSERVER_START` 1789150411,
+  `BANK_HOST_BOOT` 2026-09-11 20:06:16 — the 2026-09-04 values struck not deleted; the
+  band untouched). Then `--no-scene` **exit 0** (30 members, `20260911-202614`) and the
+  FULL canary **exit 0, 0 fail 0 note** (`20260911-202616`): 165.258/6.644 new and
+  160.142/6.603 old, every delta **0.0** — the band reproduced on a THIRD boot and a third
+  session generation. Config/ssystem md5 `03fbee59`/`545a51ef` in == out; no
+  `spacecrafter` in `/proc/*/comm` before either launch; no lock file. GPU RTX 5090,
+  driver 580.159.03, 730 MiB used; RAM 53 GiB available of 59; `-j24`. Decision flag per
+  §11.174(h): the re-bank is the response the block prescribes for a per-boot red on the
+  ruled display class — your correction may differ (e.g. a display you would rather bank
+  on) — say the word and the block is one edit again. The scratch trees under
+  `/home/claude/sc-f*` (18, `sc-f84` 4.2 G … `sc-f91` 6.4 M) survived the boot.
