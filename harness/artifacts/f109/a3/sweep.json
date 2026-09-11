@@ -1,0 +1,549 @@
+{
+ "sys_sub": 36.155286341682874,
+ "band0": {
+  "reference": "Sun",
+  "tracked": "",
+  "freeMode": true,
+  "boundToSurface": false,
+  "mount": "equatorial",
+  "skyLocked": false,
+  "viewOffset": 0,
+  "viewOffsetTransition": 1,
+  "viewOffsetEff": 0,
+  "longitude": 0.0410152376,
+  "latitude": 0.852593362,
+  "distance": 4.26359038e-05,
+  "alt": 0.978136182,
+  "az": 4.57604074,
+  "heading": -6.10871792,
+  "absFwd": [
+   0.254527479,
+   -0.606813431,
+   -0.752989531
+  ],
+  "position": [
+   0.00131643424,
+   -0.00313827395,
+   -0.00389442965
+  ],
+  "rootPos": [
+   0.0019929688423871994,
+   -0.002152774715796113,
+   0.004259340465068817
+  ],
+  "refAoI": 533.30249,
+  "refDist": 0.00517188059,
+  "refCached": true,
+  "refParent": "SolarSystem",
+  "selected": "Sun",
+  "selDist": 0.00517188059,
+  "halfFov": 2.96705961,
+  "cullHalfFov": 2.96705961,
+  "lockedSkyRot": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   1
+  ],
+  "plans": {
+   "viewT": 0,
+   "hdgT": 0,
+   "zoomDuration": 0,
+   "moveDuration": 0
+  },
+  "mat": [
+   0.995249689,
+   0.0609392971,
+   0.0759241655,
+   0,
+   -0.00878146291,
+   0.832879066,
+   -0.553385377,
+   0,
+   -0.0969585702,
+   0.550089896,
+   0.82945776,
+   0,
+   0.00171533774,
+   -0.00467586657,
+   -0.00139364076,
+   1
+  ]
+ },
+ "rows": [
+  {
+   "tag": "dn00",
+   "dir": "descend",
+   "target": 1750,
+   "reference": "MilkyWay",
+   "refDist": 1749.95837,
+   "selDist": 1749.95837,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758569862,
+    -0.437461108
+   ],
+   "shots": {
+    "new": "dn00_new.png",
+    "old": "dn00_old.png"
+   }
+  },
+  {
+   "tag": "dn01",
+   "dir": "descend",
+   "target": 1650,
+   "reference": "MilkyWay",
+   "refDist": 1650.00073,
+   "selDist": 1650.00073,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758574868,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "dn01_new.png",
+    "old": "dn01_old.png"
+   }
+  },
+  {
+   "tag": "dn02",
+   "dir": "descend",
+   "target": 1591,
+   "reference": "MilkyWay",
+   "refDist": 1591,
+   "selDist": 1591,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758570211,
+    -0.437461108
+   ],
+   "shots": {
+    "new": "dn02_new.png",
+    "old": "dn02_old.png"
+   }
+  },
+  {
+   "tag": "dn03",
+   "dir": "descend",
+   "target": 1520,
+   "reference": "MilkyWay",
+   "refDist": 1520.00012,
+   "selDist": 1520.00012,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758573122,
+    -0.437461197
+   ],
+   "shots": {
+    "new": "dn03_new.png",
+    "old": "dn03_old.png"
+   }
+  },
+  {
+   "tag": "dn04",
+   "dir": "descend",
+   "target": 1450,
+   "reference": "MilkyWay",
+   "refDist": 1449.99951,
+   "selDist": 1449.99951,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758581329,
+    -0.437461138
+   ],
+   "shots": {
+    "new": "dn04_new.png",
+    "old": "dn04_old.png"
+   }
+  },
+  {
+   "tag": "dn05",
+   "dir": "descend",
+   "target": 1400,
+   "reference": "MilkyWay",
+   "refDist": 1400.00061,
+   "selDist": 1400.00061,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758580689,
+    -0.437461108
+   ],
+   "shots": {
+    "new": "dn05_new.png",
+    "old": "dn05_old.png"
+   }
+  },
+  {
+   "tag": "dn06",
+   "dir": "descend",
+   "target": 1340,
+   "reference": "MilkyWay",
+   "refDist": 1339.99951,
+   "selDist": 1339.99951,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758583308,
+    -0.437461138
+   ],
+   "shots": {
+    "new": "dn06_new.png",
+    "old": "dn06_old.png"
+   }
+  },
+  {
+   "tag": "dn07",
+   "dir": "descend",
+   "target": 1280,
+   "reference": "MilkyWay",
+   "refDist": 1279.99963,
+   "selDist": 1279.99963,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758588139,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "dn07_new.png",
+    "old": "dn07_old.png"
+   }
+  },
+  {
+   "tag": "dn08",
+   "dir": "descend",
+   "target": 1200,
+   "reference": "MilkyWay",
+   "refDist": 1199.99963,
+   "selDist": 1199.99963,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758586684,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "dn08_new.png",
+    "old": "dn08_old.png"
+   }
+  },
+  {
+   "tag": "dn09",
+   "dir": "descend",
+   "target": 1120,
+   "reference": "MilkyWay",
+   "refDist": 1120.00049,
+   "selDist": 1120.00049,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758584472,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "dn09_new.png",
+    "old": "dn09_old.png"
+   }
+  },
+  {
+   "tag": "dn10",
+   "dir": "descend",
+   "target": 1061,
+   "reference": "MilkyWay",
+   "refDist": 1061,
+   "selDist": 1061,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758584705,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "dn10_new.png",
+    "old": "dn10_old.png"
+   }
+  },
+  {
+   "tag": "dn11",
+   "dir": "descend",
+   "target": 1010,
+   "reference": "MilkyWay",
+   "refDist": 1009.99982,
+   "selDist": 1009.99982,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758591224,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "dn11_new.png",
+    "old": "dn11_old.png"
+   }
+  },
+  {
+   "tag": "dn12",
+   "dir": "descend",
+   "target": 960,
+   "reference": "MilkyWay",
+   "refDist": 959.999756,
+   "selDist": 959.999756,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758588023,
+    -0.437461138
+   ],
+   "shots": {
+    "new": "dn12_new.png",
+    "old": "dn12_old.png"
+   }
+  },
+  {
+   "tag": "dn13",
+   "dir": "descend",
+   "target": 910,
+   "reference": "MilkyWay",
+   "refDist": 910.000061,
+   "selDist": 910.000061,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758595648,
+    -0.437461138
+   ],
+   "shots": {
+    "new": "dn13_new.png",
+    "old": "dn13_old.png"
+   }
+  },
+  {
+   "tag": "up13",
+   "dir": "ascend",
+   "target": 910,
+   "reference": "MilkyWay",
+   "refDist": 910.000061,
+   "selDist": 910.000061,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758595648,
+    -0.437461138
+   ],
+   "shots": {
+    "new": "up13_new.png"
+   }
+  },
+  {
+   "tag": "up12",
+   "dir": "ascend",
+   "target": 960,
+   "reference": "MilkyWay",
+   "refDist": 960,
+   "selDist": 960,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758598733,
+    -0.437461197
+   ],
+   "shots": {
+    "new": "up12_new.png"
+   }
+  },
+  {
+   "tag": "up11",
+   "dir": "ascend",
+   "target": 1010,
+   "reference": "MilkyWay",
+   "refDist": 1009.99969,
+   "selDist": 1009.99969,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758598326,
+    -0.437461227
+   ],
+   "shots": {
+    "new": "up11_new.png"
+   }
+  },
+  {
+   "tag": "up10",
+   "dir": "ascend",
+   "target": 1061,
+   "reference": "MilkyWay",
+   "refDist": 1060.99963,
+   "selDist": 1060.99963,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758598035,
+    -0.437461197
+   ],
+   "shots": {
+    "new": "up10_new.png"
+   }
+  },
+  {
+   "tag": "up09",
+   "dir": "ascend",
+   "target": 1120,
+   "reference": "MilkyWay",
+   "refDist": 1119.99963,
+   "selDist": 1119.99963,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758603564,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "up09_new.png"
+   }
+  },
+  {
+   "tag": "up08",
+   "dir": "ascend",
+   "target": 1200,
+   "reference": "MilkyWay",
+   "refDist": 1200.00012,
+   "selDist": 1200.00012,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758600887,
+    -0.437461227
+   ],
+   "shots": {
+    "new": "up08_new.png"
+   }
+  },
+  {
+   "tag": "up07",
+   "dir": "ascend",
+   "target": 1280,
+   "reference": "MilkyWay",
+   "refDist": 1280.00061,
+   "selDist": 1280.00061,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758598326,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "up07_new.png"
+   }
+  },
+  {
+   "tag": "up06",
+   "dir": "ascend",
+   "target": 1340,
+   "reference": "MilkyWay",
+   "refDist": 1340.00061,
+   "selDist": 1340.00061,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758598268,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "up06_new.png"
+   }
+  },
+  {
+   "tag": "up05",
+   "dir": "ascend",
+   "target": 1400,
+   "reference": "MilkyWay",
+   "refDist": 1400.00049,
+   "selDist": 1400.00049,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758593203,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "up05_new.png"
+   }
+  },
+  {
+   "tag": "up04",
+   "dir": "ascend",
+   "target": 1450,
+   "reference": "MilkyWay",
+   "refDist": 1450,
+   "selDist": 1450,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758590701,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "up04_new.png"
+   }
+  },
+  {
+   "tag": "up03",
+   "dir": "ascend",
+   "target": 1520,
+   "reference": "MilkyWay",
+   "refDist": 1520.00037,
+   "selDist": 1520.00037,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758591224,
+    -0.437461168
+   ],
+   "shots": {
+    "new": "up03_new.png"
+   }
+  },
+  {
+   "tag": "up02",
+   "dir": "ascend",
+   "target": 1591,
+   "reference": "MilkyWay",
+   "refDist": 1590.99939,
+   "selDist": 1590.99939,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758587965,
+    -0.437461138
+   ],
+   "shots": {
+    "new": "up02_new.png"
+   }
+  },
+  {
+   "tag": "up01",
+   "dir": "ascend",
+   "target": 1650,
+   "reference": "MilkyWay",
+   "refDist": 1650.00012,
+   "selDist": 1650.00012,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758587674,
+    -0.437461138
+   ],
+   "shots": {
+    "new": "up01_new.png"
+   }
+  },
+  {
+   "tag": "up00",
+   "dir": "ascend",
+   "target": 1750,
+   "reference": "MilkyWay",
+   "refDist": 1749.99988,
+   "selDist": 1749.99988,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000758595474,
+    -0.437461138
+   ],
+   "shots": {
+    "new": "up00_new.png"
+   }
+  }
+ ]
+}

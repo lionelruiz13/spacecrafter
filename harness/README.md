@@ -5567,3 +5567,105 @@ the five launch-8 deletions at 87877/3834/13/13/102710 B; `write_log=false` +5
 lines -0 normalised against the baseline; `f90_rehearsal_run.sh` rc 0 FAIL
 none; `f91_run.sh --expect post --locale fr` table `1fe630a4` byte-identical.
 Artifacts `artifacts/f108/` (172 KB).
+
+---
+
+## F109 - the b22 residual is the instrument's, and three b22 instrument defects (`f109_decomp.py`, `f109_edge.py`, `b22_live.py`, `b22_live_run.sh`) - INTENT 11.231 / 11.82(b)(e) / A15 / 11.207(g) item 6, 2026-09-12
+
+```
+DISPLAY=:2 ./b22_live_run.sh b22_live.py <absOutdir>              # the sweep (SC_BIN=...)
+python3 b22_live_analyze.py <absOutdir>                           # the VERDICT of record, unchanged
+python3 f109_decomp.py <absOutdir> [--label L] [--json J] [--interior-fit]
+DISPLAY=:2 ./b22_live_run.sh f109_edge.py <absOutdir>             # the app's own T, needs the dot suppressed
+```
+
+**Read this before quoting a b22 "pop %" again.** `b22_live_analyze.py`'s (C)
+reports the alpha-independent term as the INTERCEPT of a straight line fitted to
+the 8 in-band points, minus the MEAN of the below-band points. F109 measured that
+all three of its ingredients are the instrument's own, and that the term is not an
+emission:
+
+1. **The offline px axis is 1.29-1.74 % LOW.** `px = atan(S/sqrt(d^2-S^2))/halfFov
+   *2*viewportRadius` with `S` transcribed in `b22_live.py` as
+   `1.1*(1.1*(|Neptune.ecl| + 1.1*Neptune.boundingRadius))`. The app's own reach is
+   a DIFFERENT expression - `ModularBody::updateReach` (ModularBody.cpp:652-665)
+   takes `max(boundingRadius, max over VISIBLE children of (|ecl| +
+   child.subsystemRadius))` and multiplies by 1.1. Measured with `f109_edge.py`
+   (11 rungs, the in-band dot suppressed so its presence is a ~53000-count step at
+   the app's own threshold): **the app's T = 16 px sits at offline px in (15.7266,
+   15.7963]**, i.e. `S_app` = 36.62-36.78 AU against the offline 36.1553. So a fit
+   evaluated at offline px 16 is read **2.6-3.5 % INTO the fade**, where the
+   interior already emits ~2600-3400 counts. Anyone re-fitting a b22 sweep should
+   either use `t_app = (1.0129..1.0174)*px_offline` or re-measure the edge.
+2. **The below-band mean is not the dot at T.** `addI_dot ~ px^0.27`, so the mean
+   over px ~14.3-15.7 sits **918 counts** below the dot's value at T - 2.5 % of the
+   swing, before any fade effect.
+3. **`addI` is concave in alpha because it sums 8-bit channels.**
+   `S(a) = sum(min(a*V,255))` is exact at a = 1 and linear as a -> 0, so a straight
+   line through it lands its intercept high. `f109_decomp.py`'s `[C]` masks the
+   channels that ever reach 255 (**123 of 24300** in the reference sweep, 0.51 %)
+   and the pop drops **3961 -> 1375**. The endpoint-anchored model in `[B]` shows
+   the same thing as a residual HUMP peaking mid-band (+3373 at t = 0.437) and
+   falling at both ends - the shape clipping predicts, not the shape a floor does.
+
+**The measurement that settles it** (`--interior-fit` on a sweep taken with
+`SC_F109_G4`-style dot suppression, the SS11.82(a) diagnostic): with the dot gone
+the in-band `addI` IS the interior's emission at `drawAlpha = t`. At the LOWEST px
+the app itself calls in-band it is **43.8 counts = 0.12 % of the swing** (background
+measured from the r >= 12 px annulus, every rung unclipped) - so the collapse is
+CONTINUOUS at the threshold and there is no disc-floor step to remove. Against the
+offline axis the same data fit `addI = 2257 + 104035*t` to +-14 counts, which is
+what a t-offset of 0.0217 looks like: the axis, not the render.
+
+**Floor census, from the dump alone, no build** (`f109_decomp.py`'s `[floors]`): over
+a reference sweep the `32.f` hard floor (StarModule.cpp:39) fires **13/13**, while
+`screenR*2.f` (:35) fires **0/13** (it needs d < 0.0041 AU) and `drawHaloCore`'s
+`rmag < screen_r` (ModularBody.hpp:1936) fires **0/13** (`rmag >= 1.2 px` leaves both
+branches above the test; the largest body disc in the band is the Sun's at 3.5e-3 px).
+Alpha-scaling either dead floor leaves the sweep **bit-identical** (measured, 14/14
+points, max |delta| = 0). Alpha-scaling the live one gives pop **-4726 = -12.9 %**:
+the big halo's energy goes as `alpha*rmag^2 ~ alpha^3`, which moves the fade's mass
+to the top of the band - a price, not a fix.
+
+**Two runner defects fixed at the root, and one recorded:**
+
+- `b22_live.py`'s `goto()` was single-shot on the assumption that `camera action
+  descend coef` scales the distance to the selected body. It does that only while
+  the reference IS A SYSTEM (Camera.cpp:1152); under a BODY reference it scales the
+  **altitude above that body's ground** (Camera.cpp:1186-1191). The approach
+  sequence now ends AT the Sun (refDist 0.00517 AU), so `coef = 338367` moved the
+  observer to **175.76 AU instead of 1750** and that point was captured in a
+  different scene (reference Sun, px 143). It landed in the analyzer's above-band
+  set: swing 89069 -> 79521, pop 10.0 % -> 14 %, and (A) reported HYSTERESIS over 13
+  bit-identical matched points. `goto()` now re-measures each shot and iterates
+  (2-3 shots from either state); the reference gate is what caught it, so run
+  `b22_live_analyze.py` and READ ITS `[gate]` LINE before believing any (B)/(C).
+- `b22_live_run.sh`'s `pkill -9 -f "/sc_"` matched **the shell that invoked the
+  runner** whenever SC_BIN is a staging binary (they are named `sc_*`) - the
+  documented way to use SC_BIN. It killed this task's caller; a kill one loop-turn
+  later would have skipped the config restore and left the field's `init_fov` at
+  340. The kill is now by `/proc/<pid>/exe` (a real file, so no shell can match it -
+  the F26 /proc-identity probe in kill form) and the config restore is an
+  EXIT/INT/TERM **trap** rather than two lines on two code paths.
+- **NOT fixed, and it affects every task that measures a staging binary:**
+  `f26_epoch.sh:46`, `f27_reply.py:107` and `f56_canary.sh:470` assert
+  `comm == "spacecrafter"` EXACTLY. A staging binary's `comm` is its own basename,
+  so the standing concurrent-instance probe and the canary's own check are BLIND to
+  it (measured: the comm probe returned 0 with two `sc_f109_iso` processes live and
+  port 7805 held). Until they are fixed, probe with the exe form:
+  `for p in /proc/[0-9]*; do e=$(readlink $p/exe 2>/dev/null); case "${e##*/}" in
+  spacecrafter|sc_*) echo "LEFTOVER ${p#/proc/} $e";; esac; done`
+
+**Determinism, and its one exception.** With the iterative `goto` the sweep is
+bit-reproducible: an inert code change gives `max |delta addI| = 0` at all 14 points
+across binaries, so there is NO A/A noise floor to allow for. But arms whose change
+alters the rendering of the APPROACH differ by **21-37 counts outside the band**, at
+identical camera positions and on a code path the change does not touch - the
+approach crosses the band twice before the first sweep point, and the tone
+reproductor's adaptation (`renderer.adaptLuminance`, which sets the dot's `rmag`)
+carries that history. Budget **+-40 counts** for cross-binary comparisons whose
+binaries render the approach differently; none otherwise.
+
+Artifacts `artifacts/f109/` (prediction.txt with its addendum, six sweeps'
+`sweep.json` + `drive.log`, the decompositions, `edge_result.txt`; the 2048x2048
+frames are gitignored, ~23 MB per sweep).
