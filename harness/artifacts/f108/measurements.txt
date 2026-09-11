@@ -1,0 +1,89 @@
+F108 -- THE MEASUREMENTS, ASSEMBLED FROM THE ARTIFACTS ON DISK
+==============================================================
+
+binaries (all built in build-claude, -j24, gated on exit code):
+  pre        e411b838ebceec75f30ce165d1d3780a
+  delivered  6d63e6c157cebd9b79846876befafb9f
+  mutantB    9c7c74ce67aef8c3ab03dcc815d52dad
+  mutantC    4b779b16589dc188fb753aa5e16220ec
+  timing     11cc2c7ccb52d45dd65bf5a5d01ef2a3
+
+-- the 10-launch real-home campaign (f108_rotate.py, real HOME) --
+  window 8, pre-existing files per channel 1, launches 10, FAILS 0
+  legacy pile through all 10: 34 files / 5802574 bytes
+  k  files/channel  pid     rc  port_s  D12  del  script.log B
+  1  2              68090   0   19.0    6    0    842
+  2  3              68188   0   20.0    6    0    842
+  3  4              68283   0   20.0    6    0    842
+  4  5              68378   0   20.0    6    0    842
+  5  6              68474   0   20.0    6    0    842
+  6  7              68585   0   20.0    6    0    842
+  7  8              68680   0   20.0    6    0    842
+  8  8              68777   0   20.0    6    5    842
+  9  8              68873   0   20.0    6    5    842
+  10 8              68973   0   20.0    6    5    845
+  the five deletion clauses at launch 8 (the pre-state files, to the byte):
+    deleted log/spacecrafter.7.log (87877 bytes, the launch that fell outside the window)
+    deleted log/script.7.log (3834 bytes, the launch that fell outside the window)
+    deleted log/tcp.7.log (13 bytes, the launch that fell outside the window)
+    deleted log/shader.7.log (13 bytes, the launch that fell outside the window)
+    deleted log/vulkan.7.log (102710 bytes, the launch that fell outside the window)
+
+-- write_log = false, both binaries (f108_writelog.py, farms) --
+  pre  spacecrafter  live=spacecrafter.log           1774 B   49 lines  D12 0
+  pre  script        live=script-26.09.11.log          13 B    1 lines  D12 0
+  pre  tcp           live=tcp.log                      13 B    1 lines  D12 0
+  pre  shader        live=shader.log                   13 B    1 lines  D12 0
+  pre  vulkan        live=vulkan.log                   13 B    1 lines  D12 0
+  post spacecrafter  live=spacecrafter.log           3308 B   54 lines  D12 5
+  post script        live=script.log                   13 B    1 lines  D12 0
+  post tcp           live=tcp.log                      13 B    1 lines  D12 0
+  post shader        live=shader.log                   13 B    1 lines  D12 0
+  post vulkan        live=vulkan.log                   13 B    1 lines  D12 0
+  normalised pre -> post: 5 added, 0 removed
+
+-- the mutant arms, one launch each on a SEEDED steady state --
+  arm A (6d63e6c1): 8 files/channel, seed slots alive ['1', '2', '3', '4', '5', '6', 'live']
+      deletion clauses: 5  e.g. deleted log/spacecrafter.7.log (5700 bytes, the launch that fell outside the window)
+  arm B (9c7c74ce): 8 files/channel, seed slots alive ['1', '2', '3', '4', '5', '6', 'live']
+      deletion clauses: 0  (all say 'deleted nothing')
+  arm C (4b779b16): 9 files/channel, seed slots alive ['1', '2', '3', '4', '5', '6', '7', 'live']
+      deletion clauses: 0  (all say 'deleted nothing')
+
+-- the open-time cost --
+  == timing, real home (467 dirents, 8 files/channel):
+  F108TIMING spacecrafter 0.333612 ms
+  F108TIMING script 0.265926 ms
+  F108TIMING tcp 0.194292 ms
+  F108TIMING shader 0.189003 ms
+  F108TIMING vulkan 0.20393 ms
+  F108TIMING report 0.009027 ms
+  == timing, fresh farm (8 dirents):
+  F108TIMING spacecrafter 0.060613 ms
+  F108TIMING script 0.052518 ms
+  F108TIMING tcp 0.020288 ms
+  F108TIMING shader 0.017563 ms
+  F108TIMING vulkan 0.01647 ms
+  F108TIMING report 0.008697 ms
+
+-- the refused second instance (artifacts/f108/lockrefusal.py) --
+  baseline e411b838: exit -6 (SIGABRT) after 1.12 s, console's last line
+    'terminate called without an active exception'; the refusal warning is
+    in the LOG (1 line) and not on the console; the seeded slot 7 SURVIVES
+    and spacecrafter.log (the previous launch's own log) is TRUNCATED.
+  delivered 6d63e6c1: exit -6 after 1.12 s, identically - the abort is
+    PRE-EXISTING - but the rotation ran: 8 files/channel, slot 7 gone,
+    5 D12 lines each carrying the 5700-byte deletion clause, and the
+    previous launch's log PRESERVED at .1.log instead of overwritten.
+
+-- the suites --
+  f90_rehearsal_run.sh: rc 0, FAIL none; S1 DIVERGENCE 5.77 (3 silences,
+    TCP 13.6 s) . S2 120->121 . S3 5.9 s/5.5 s/1 pause . S4 DEPRECATED .
+    S5 PASS (5 lines, magnitude 1.36, distance 1.78806317 UA - the wall
+    clock, 1.81407452 five days ago) . S6 10894 B + 78394 B . S7
+    DIVERGENCE 11.117(k)(3) . S8 fov 180.00001->84.91497->179.53135 .
+    S9 exit 0 in 0.7 s, 2 frame stalls; 4 frozen real-home files unmoved.
+  f91_run.sh --expect post --locale fr: rc 0, 0 FAIL, 0 NOTE, Q2 89 of 90
+    ([Puck]); f91_table_post.txt md5 1fe630a4 - BYTE-IDENTICAL to the
+    F104/F105 landed record.
+  logread.py selftest: 25 PASS 0 FAIL; the mutant (old rule) 20 PASS 5 FAIL.

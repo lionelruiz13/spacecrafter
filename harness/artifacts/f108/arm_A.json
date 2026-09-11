@@ -1,0 +1,192 @@
+{
+ "arm": "A",
+ "bin": "/home/claude/sc-f108/bin/delivered",
+ "md5": "6d63e6c157cebd9b79846876befafb9f",
+ "rc": 0,
+ "port_s": 20.0,
+ "window": 8,
+ "channels": {
+  "spacecrafter": {
+   "count": 8,
+   "names": [
+    "spacecrafter.log",
+    "spacecrafter.1.log",
+    "spacecrafter.2.log",
+    "spacecrafter.3.log",
+    "spacecrafter.4.log",
+    "spacecrafter.5.log",
+    "spacecrafter.6.log",
+    "spacecrafter.7.log"
+   ],
+   "slots": {
+    "spacecrafter.log": "(written by the launch)",
+    "spacecrafter.1.log": "live",
+    "spacecrafter.2.log": "1",
+    "spacecrafter.3.log": "2",
+    "spacecrafter.4.log": "3",
+    "spacecrafter.5.log": "4",
+    "spacecrafter.6.log": "5",
+    "spacecrafter.7.log": "6"
+   },
+   "sizes": {
+    "spacecrafter.log": 81848,
+    "spacecrafter.1.log": 5000,
+    "spacecrafter.2.log": 5100,
+    "spacecrafter.3.log": 5200,
+    "spacecrafter.4.log": 5300,
+    "spacecrafter.5.log": 5400,
+    "spacecrafter.6.log": 5500,
+    "spacecrafter.7.log": 5600
+   }
+  },
+  "script": {
+   "count": 8,
+   "names": [
+    "script.log",
+    "script.1.log",
+    "script.2.log",
+    "script.3.log",
+    "script.4.log",
+    "script.5.log",
+    "script.6.log",
+    "script.7.log"
+   ],
+   "slots": {
+    "script.log": "(written by the launch)",
+    "script.1.log": "live",
+    "script.2.log": "1",
+    "script.3.log": "2",
+    "script.4.log": "3",
+    "script.5.log": "4",
+    "script.6.log": "5",
+    "script.7.log": "6"
+   },
+   "sizes": {
+    "script.log": 618,
+    "script.1.log": 5000,
+    "script.2.log": 5100,
+    "script.3.log": 5200,
+    "script.4.log": 5300,
+    "script.5.log": 5400,
+    "script.6.log": 5500,
+    "script.7.log": 5600
+   }
+  },
+  "tcp": {
+   "count": 8,
+   "names": [
+    "tcp.log",
+    "tcp.1.log",
+    "tcp.2.log",
+    "tcp.3.log",
+    "tcp.4.log",
+    "tcp.5.log",
+    "tcp.6.log",
+    "tcp.7.log"
+   ],
+   "slots": {
+    "tcp.log": "(written by the launch)",
+    "tcp.1.log": "live",
+    "tcp.2.log": "1",
+    "tcp.3.log": "2",
+    "tcp.4.log": "3",
+    "tcp.5.log": "4",
+    "tcp.6.log": "5",
+    "tcp.7.log": "6"
+   },
+   "sizes": {
+    "tcp.log": 13,
+    "tcp.1.log": 5000,
+    "tcp.2.log": 5100,
+    "tcp.3.log": 5200,
+    "tcp.4.log": 5300,
+    "tcp.5.log": 5400,
+    "tcp.6.log": 5500,
+    "tcp.7.log": 5600
+   }
+  },
+  "shader": {
+   "count": 8,
+   "names": [
+    "shader.log",
+    "shader.1.log",
+    "shader.2.log",
+    "shader.3.log",
+    "shader.4.log",
+    "shader.5.log",
+    "shader.6.log",
+    "shader.7.log"
+   ],
+   "slots": {
+    "shader.log": "(written by the launch)",
+    "shader.1.log": "live",
+    "shader.2.log": "1",
+    "shader.3.log": "2",
+    "shader.4.log": "3",
+    "shader.5.log": "4",
+    "shader.6.log": "5",
+    "shader.7.log": "6"
+   },
+   "sizes": {
+    "shader.log": 13,
+    "shader.1.log": 5000,
+    "shader.2.log": 5100,
+    "shader.3.log": 5200,
+    "shader.4.log": 5300,
+    "shader.5.log": 5400,
+    "shader.6.log": 5500,
+    "shader.7.log": 5600
+   }
+  },
+  "vulkan": {
+   "count": 8,
+   "names": [
+    "vulkan.log",
+    "vulkan.1.log",
+    "vulkan.2.log",
+    "vulkan.3.log",
+    "vulkan.4.log",
+    "vulkan.5.log",
+    "vulkan.6.log",
+    "vulkan.7.log"
+   ],
+   "slots": {
+    "vulkan.log": "(written by the launch)",
+    "vulkan.1.log": "live",
+    "vulkan.2.log": "1",
+    "vulkan.3.log": "2",
+    "vulkan.4.log": "3",
+    "vulkan.5.log": "4",
+    "vulkan.6.log": "5",
+    "vulkan.7.log": "6"
+   },
+   "sizes": {
+    "vulkan.log": 99099,
+    "vulkan.1.log": 5000,
+    "vulkan.2.log": 5100,
+    "vulkan.3.log": 5200,
+    "vulkan.4.log": 5300,
+    "vulkan.5.log": 5400,
+    "vulkan.6.log": 5500,
+    "vulkan.7.log": 5600
+   }
+  }
+ },
+ "d12": [
+  "(Info ): Log retention (spacecrafter.log): the previous launch is now spacecrafter.1.log, now using 8 of the last 8 launches, deleted log/spacecrafter.7.log (5700 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.",
+  "(Info ): Log retention (script.log): the previous launch is now script.1.log, now using 8 of the last 8 launches, deleted log/script.7.log (5700 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.",
+  "(Info ): Log retention (tcp.log): the previous launch is now tcp.1.log, now using 8 of the last 8 launches, deleted log/tcp.7.log (5700 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.",
+  "(Info ): Log retention (shader.log): the previous launch is now shader.1.log, now using 8 of the last 8 launches, deleted log/shader.7.log (5700 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.",
+  "(Info ): Log retention (vulkan.log): the previous launch is now vulkan.1.log, now using 8 of the last 8 launches, deleted log/vulkan.7.log (5700 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding."
+ ],
+ "seed_slots_alive": [
+  "(written by the launch)",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "live"
+ ]
+}

@@ -1,0 +1,74 @@
+binary  = /home/claude/spacecrafter/build-claude/src/spacecrafter  md5 6d63e6c157cebd9b79846876befafb9f
+home    = /home/claude/sc-f108/farm_mutC10  (real=False)
+logdir  = /home/claude/sc-f108/farm_mutC10/.spacecrafter/log  window = 8  pre-existing files per channel = 0
+legacy  = 0 file(s), 0 bytes
+
+--- file count per channel, after each launch (window 8) ---
+  k   spacecrafter   script         tcp            shader         vulkan         expected
+  1   1              1              1              1              1              1
+ok:   launch 1: every channel holds 1 file(s)
+  2   2              2              2              2              2              2
+ok:   launch 2: every channel holds 2 file(s)
+  3   3              3              3              3              3              3
+ok:   launch 3: every channel holds 3 file(s)
+  4   4              4              4              4              4              4
+ok:   launch 4: every channel holds 4 file(s)
+  5   5              5              5              5              5              5
+ok:   launch 5: every channel holds 5 file(s)
+  6   6              6              6              6              6              6
+ok:   launch 6: every channel holds 6 file(s)
+  7   7              7              7              7              7              7
+ok:   launch 7: every channel holds 7 file(s)
+  8   8              8              8              8              8              8
+ok:   launch 8: every channel holds 8 file(s)
+  9   9              9              9              9              9              8
+FAIL: launch 9: counts [9, 9, 9, 9, 9], expected 8 everywhere
+FAIL: launch 9 channel spacecrafter: ['spacecrafter.log', 'spacecrafter.1.log', 'spacecrafter.2.log', 'spacecrafter.3.log', 'spacecrafter.4.log', 'spacecrafter.5.log', 'spacecrafter.6.log', 'spacecrafter.7.log', 'spacecrafter.8.log'], expected ['spacecrafter.log', 'spacecrafter.1.log', 'spacecrafter.2.log', 'spacecrafter.3.log', 'spacecrafter.4.log', 'spacecrafter.5.log', 'spacecrafter.6.log', 'spacecrafter.7.log']
+FAIL: launch 9 channel spacecrafter: index 8 beyond the window
+FAIL: launch 9 channel script: ['script.log', 'script.1.log', 'script.2.log', 'script.3.log', 'script.4.log', 'script.5.log', 'script.6.log', 'script.7.log', 'script.8.log'], expected ['script.log', 'script.1.log', 'script.2.log', 'script.3.log', 'script.4.log', 'script.5.log', 'script.6.log', 'script.7.log']
+FAIL: launch 9 channel script: index 8 beyond the window
+FAIL: launch 9 channel tcp: ['tcp.log', 'tcp.1.log', 'tcp.2.log', 'tcp.3.log', 'tcp.4.log', 'tcp.5.log', 'tcp.6.log', 'tcp.7.log', 'tcp.8.log'], expected ['tcp.log', 'tcp.1.log', 'tcp.2.log', 'tcp.3.log', 'tcp.4.log', 'tcp.5.log', 'tcp.6.log', 'tcp.7.log']
+FAIL: launch 9 channel tcp: index 8 beyond the window
+FAIL: launch 9 channel shader: ['shader.log', 'shader.1.log', 'shader.2.log', 'shader.3.log', 'shader.4.log', 'shader.5.log', 'shader.6.log', 'shader.7.log', 'shader.8.log'], expected ['shader.log', 'shader.1.log', 'shader.2.log', 'shader.3.log', 'shader.4.log', 'shader.5.log', 'shader.6.log', 'shader.7.log']
+FAIL: launch 9 channel shader: index 8 beyond the window
+FAIL: launch 9 channel vulkan: ['vulkan.log', 'vulkan.1.log', 'vulkan.2.log', 'vulkan.3.log', 'vulkan.4.log', 'vulkan.5.log', 'vulkan.6.log', 'vulkan.7.log', 'vulkan.8.log'], expected ['vulkan.log', 'vulkan.1.log', 'vulkan.2.log', 'vulkan.3.log', 'vulkan.4.log', 'vulkan.5.log', 'vulkan.6.log', 'vulkan.7.log']
+FAIL: launch 9 channel vulkan: index 8 beyond the window
+  10  10             10             10             10             10             8
+FAIL: launch 10: counts [10, 10, 10, 10, 10], expected 8 everywhere
+FAIL: launch 10 channel spacecrafter: ['spacecrafter.log', 'spacecrafter.1.log', 'spacecrafter.2.log', 'spacecrafter.3.log', 'spacecrafter.4.log', 'spacecrafter.5.log', 'spacecrafter.6.log', 'spacecrafter.7.log', 'spacecrafter.8.log', 'spacecrafter.9.log'], expected ['spacecrafter.log', 'spacecrafter.1.log', 'spacecrafter.2.log', 'spacecrafter.3.log', 'spacecrafter.4.log', 'spacecrafter.5.log', 'spacecrafter.6.log', 'spacecrafter.7.log']
+FAIL: launch 10 channel spacecrafter: index 9 beyond the window
+FAIL: launch 10 channel script: ['script.log', 'script.1.log', 'script.2.log', 'script.3.log', 'script.4.log', 'script.5.log', 'script.6.log', 'script.7.log', 'script.8.log', 'script.9.log'], expected ['script.log', 'script.1.log', 'script.2.log', 'script.3.log', 'script.4.log', 'script.5.log', 'script.6.log', 'script.7.log']
+FAIL: launch 10 channel script: index 9 beyond the window
+FAIL: launch 10 channel tcp: ['tcp.log', 'tcp.1.log', 'tcp.2.log', 'tcp.3.log', 'tcp.4.log', 'tcp.5.log', 'tcp.6.log', 'tcp.7.log', 'tcp.8.log', 'tcp.9.log'], expected ['tcp.log', 'tcp.1.log', 'tcp.2.log', 'tcp.3.log', 'tcp.4.log', 'tcp.5.log', 'tcp.6.log', 'tcp.7.log']
+FAIL: launch 10 channel tcp: index 9 beyond the window
+FAIL: launch 10 channel shader: ['shader.log', 'shader.1.log', 'shader.2.log', 'shader.3.log', 'shader.4.log', 'shader.5.log', 'shader.6.log', 'shader.7.log', 'shader.8.log', 'shader.9.log'], expected ['shader.log', 'shader.1.log', 'shader.2.log', 'shader.3.log', 'shader.4.log', 'shader.5.log', 'shader.6.log', 'shader.7.log']
+FAIL: launch 10 channel shader: index 9 beyond the window
+FAIL: launch 10 channel vulkan: ['vulkan.log', 'vulkan.1.log', 'vulkan.2.log', 'vulkan.3.log', 'vulkan.4.log', 'vulkan.5.log', 'vulkan.6.log', 'vulkan.7.log', 'vulkan.8.log', 'vulkan.9.log'], expected ['vulkan.log', 'vulkan.1.log', 'vulkan.2.log', 'vulkan.3.log', 'vulkan.4.log', 'vulkan.5.log', 'vulkan.6.log', 'vulkan.7.log']
+FAIL: launch 10 channel vulkan: index 9 beyond the window
+
+--- inode chain: X.j.log after launch k IS X.(j-1).log after k-1 ---
+ok:   225 inode identities hold, 0 broken
+
+--- content keys: the pid line and the per-launch token ---
+ok:   20 content keys hit, 0 missed
+
+--- D12 lines ---
+  expecting 5 line(s) per launch (5 channels + 0 legacy pile(s))
+  k=1   5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 0)
+  k=2   5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 0)
+  k=3   5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 0)
+  k=4   5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 0)
+  k=5   5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 0)
+  k=6   5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 0)
+  k=7   5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 0)
+  k=8   5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 0)
+  k=9   5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 5)
+FAIL: launch 9: 0 deletion clauses, expected 5
+  k=10  5 line(s) in spacecrafter.log, 5 in the applog, 0 with a deletion (expected 5)
+FAIL: launch 10: 0 deletion clauses, expected 5
+
+--- the legacy pile, and the frozen pair ---
+ok:   legacy pile 0 files / 0 bytes across 10 launches
+ok:   config.ini and ssystem.ini md5 in == out on every launch
+
+24 FAIL, 0 NOTE

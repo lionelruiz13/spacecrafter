@@ -1,0 +1,14 @@
+== timing, real home (467 dirents, 8 files/channel):
+F108TIMING spacecrafter 0.333612 ms
+F108TIMING script 0.265926 ms
+F108TIMING tcp 0.194292 ms
+F108TIMING shader 0.189003 ms
+F108TIMING vulkan 0.20393 ms
+F108TIMING report 0.009027 ms
+== timing, fresh farm (8 dirents):
+F108TIMING spacecrafter 0.060613 ms
+F108TIMING script 0.052518 ms
+F108TIMING tcp 0.020288 ms
+F108TIMING shader 0.017563 ms
+F108TIMING vulkan 0.01647 ms
+F108TIMING report 0.008697 ms
