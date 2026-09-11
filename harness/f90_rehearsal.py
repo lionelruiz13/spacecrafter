@@ -97,7 +97,6 @@ text (I2: the header does not restate it).
 """
 
 import argparse
-import glob
 import hashlib
 import json
 import os
@@ -108,6 +107,8 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+
+import logread
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -512,8 +513,10 @@ class App:
         return self.applog.read_bytes().decode("latin-1") if self.applog.exists() else ""
 
     def _logfile(self, prefix):
-        g = sorted(glob.glob(str(self.home / "log" / (prefix + "*.log"))))
-        return Path(g[-1]) if g else None
+        # F108: `<prefix>*.log` now also matches the rotation's archives
+        # (`spacecrafter.1.log`), which sort before the live file only by
+        # ASCII luck ('1' 0x31 < 'l' 0x6c).  logread owns the rule instead.
+        return logread.live(self.home / "log", prefix)
 
     def app_log_text(self):
         p = self._logfile("spacecrafter")

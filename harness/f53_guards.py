@@ -134,6 +134,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import f27_reply as f27
 import f32_object_leak as f32
 import dumpread
+import logread
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_BIN = str(HERE.parents[1] / "build-claude/src/spacecrafter")
@@ -348,10 +349,13 @@ def script_log_text(sess):
     [app_command_interface.cpp:1979-1980], so a reader that concatenates the log
     directory doubles every reading (F50's recorded hazard)."""
     logdir = sess.farm / ".spacecrafter" / "log"
-    hits = sorted(logdir.glob("script*.log"))
-    if len(hits) != 1:
-        fail(f"expected exactly one script log in {logdir}, found {[h.name for h in hits]}")
-    return "".join(h.read_text(errors="replace") for h in hits)
+    # F108: see f50_selvars.script_log_text - `script*.log` now matches the
+    # rotation's archives too, so the live file is asked for by name.
+    live = logread.live(logdir, "script")
+    if live is None:
+        fail(f"no script log in {logdir}")
+        return ""
+    return live.read_text(errors="replace")
 
 
 def parse_legs(text):

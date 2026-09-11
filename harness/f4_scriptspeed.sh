@@ -7,8 +7,10 @@
 # `executeCommandStatus()` skips `recordCommand`, so the command is DROPPED
 # from a recorded show (app_command_interface.cpp, executeCommandStatus).
 #
-# The observable is the SCRIPT log. Bounded to this run by byte offset, since
-# the file is appended across launches.
+# The observable is the SCRIPT log. Bounded to this run by byte offset when the
+# file is one of the pre-F108 dated ones (appended across launches); since F108
+# (INTENT 11.230) the live `script.log` is truncated at every open, so this run
+# IS the file and the offset is 0.
 #
 # usage: f4_scriptspeed.sh <outdir>      SC_BIN=<path> to test another binary.
 set -u
@@ -16,7 +18,8 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 OUT=${1:-$HERE/artifacts/f4/scriptspeed}
 mkdir -p "$OUT"
-LOG=$(ls -t ~/.spacecrafter/log/script-*.log 2>/dev/null | head -1)
+LOGDIR=~/.spacecrafter/log
+LOG=$(python3 "$HERE/logread.py" --live "$LOGDIR" script || true)
 [ -n "$LOG" ] || { echo "no script log yet - it is created at first launch"; LOG=/dev/null; }
 CFG=~/.spacecrafter/config.ini
 MD5_IN=$(md5sum "$CFG" | cut -d' ' -f1)
@@ -34,7 +37,11 @@ for i in $(seq 1 40); do
     kill -0 $APPPID 2>/dev/null || { echo "app died before tcp"; tail -20 "$OUT/app.log"; exit 1; }
 done
 sleep 6
-LOG=$(ls -t ~/.spacecrafter/log/script-*.log 2>/dev/null | head -1)   # may have rotated in
+LOG=$(python3 "$HERE/logread.py" --live "$LOGDIR" script || true)   # may have rotated in
+# F108: a live `script.log` was truncated by this launch's own open, so every
+# byte in it is this run's; only a dated file keeps the pre-run bytes.
+case "$LOG" in */script.log) OFF=0 ;; esac
+echo "log = $LOG   slice from byte $((OFF+1))"
 python3 - "$OUT" <<'PY'
 import socket, time, sys
 s = socket.create_connection(("127.0.0.1", 7805), timeout=10)

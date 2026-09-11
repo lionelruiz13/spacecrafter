@@ -102,6 +102,7 @@ Exit 0 all green, 1 a check failed, 2 no run.
 import gzip, hashlib, json, os, re, socket, subprocess, sys, threading, time
 from pathlib import Path
 from f73_line import error_lines, rendered, script_line
+import logread
 
 HARNESS = Path(__file__).resolve().parent
 REPO = HARNESS.parents[1]
@@ -343,8 +344,10 @@ def battery(phase, binary):
     print("port up after %.1f s" % (time.time() - t0), flush=True)
 
     def script_log():
-        logs = sorted((sc / "log").glob("script-*.log"))
-        return logs[-1].read_text(encoding="latin-1", errors="replace") if logs else ""
+        # F108: the live script channel is `script.log` (numbered rotation at
+        # open); a pre-F108 landed dir still has its dated names.  One rule,
+        # in logread.py, which is selftested both ways.
+        return logread.text(sc / "log", "script")
 
     t = time.time()
     while "ScriptMgr: script end" not in script_log() and time.time() - t < 120:

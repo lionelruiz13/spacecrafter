@@ -105,6 +105,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import f27_reply as f27
 import f32_object_leak as f32
 import b24_select as b24s
+import logread
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_BIN = str(HERE.parents[1] / "build-claude/src/spacecrafter")
@@ -200,10 +201,16 @@ def script_log_text(sess):
     log files would double every reading and silently corrupt the leg
     partition."""
     logdir = sess.farm / ".spacecrafter" / "log"
-    hits = sorted(logdir.glob("script*.log"))
-    if len(hits) != 1:
-        fail(f"expected exactly one script log in {logdir}, found {[h.name for h in hits]}")
-    return "".join(h.read_text(errors="replace") for h in hits)
+    # F108: `script*.log` also matches the numbered archives of earlier
+    # launches (`script.1.log`), so "exactly one" is no longer the right
+    # question - ONE LIVE FILE is, and logread answers it for both layouts.
+    # The doubling hazard the old assertion guarded against is now structural:
+    # exactly one file is ever read.
+    live = logread.live(logdir, "script")
+    if live is None:
+        fail(f"no script log in {logdir}")
+        return ""
+    return live.read_text(errors="replace")
 
 
 def parse_legs(text):

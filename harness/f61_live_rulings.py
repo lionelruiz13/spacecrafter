@@ -69,6 +69,8 @@ Exit 0 = every assertion holds; 1 = at least one failed (the table says which);
 import hashlib, json, os, re, signal, socket, subprocess, sys, time
 from pathlib import Path
 
+import logread
+
 HARNESS = Path(__file__).resolve().parent
 REPO = HARNESS.parents[1]
 BIN = os.environ.get("SC_BIN", str(REPO / "build-claude/src/spacecrafter"))
@@ -167,8 +169,10 @@ if sock is None: die("port %d never opened" % PORT)
 print("port up after %.1f s" % (time.time() - t0))
 
 def script_log():
-    logs = sorted((sc / "log").glob("script-*.log"))
-    return logs[-1].read_text(encoding="latin-1", errors="replace") if logs else ""
+    # F108: the live script channel is `script.log` (numbered rotation at
+    # open); a pre-F108 landed dir still has its dated names.  One rule,
+    # in logread.py, which is selftested both ways.
+    return logread.text(sc / "log", "script")
 
 def wait_log(pattern, timeout, after=""):
     """Poll the script log (a file: no notification channel exists — bounded 5 Hz)."""

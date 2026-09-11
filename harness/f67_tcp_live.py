@@ -55,6 +55,8 @@ field), the frozen config/ssystem md5 asserted in == out. Exit 0 all green,
 import hashlib, json, os, re, socket, subprocess, sys, threading, time
 from pathlib import Path
 
+import logread
+
 HARNESS = Path(__file__).resolve().parent
 REPO = HARNESS.parents[1]
 BIN = os.environ.get("SC_BIN", str(REPO / "build-claude/src/spacecrafter"))
@@ -221,8 +223,10 @@ print("port up after %.1f s" % (time.time() - t0), flush=True)
 
 
 def script_log():
-    logs = sorted((sc / "log").glob("script-*.log"))
-    return logs[-1].read_text(encoding="latin-1", errors="replace") if logs else ""
+    # F108: the live script channel is `script.log` (numbered rotation at
+    # open); a pre-F108 landed dir still has its dated names.  One rule,
+    # in logread.py, which is selftested both ways.
+    return logread.text(sc / "log", "script")
 
 
 # The shipped startup.sts autoplays; wait for its end rather than sleeping.

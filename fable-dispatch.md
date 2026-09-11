@@ -753,7 +753,7 @@ test -e /home/claude/sc-f108 ; echo $? => 1
 ```
 
 **DoD:** predictions before any build; the constant + the rotation + the D12 lines; the readers; P-legs (a)–(h); §11 entry + stub; §5.115 FIXED (retention half) with the density half kept OPEN in the marker; the four markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-11 22:2x — §0.7 gate 34/34 PASS; prose premises verified (harness `0aff5db`, `:2` per HOST-EVENTS 2026-09-11, field pair `03fbee59`/`545a51ef`). CHECKPOINT 1: predictions committed (`artifacts/f108/prediction.txt`, 8 sections, + `prestate_logs.tar.gz` because the design deletes the field's five current log files at launch 8) BEFORE any build; src/ untouched, `cmake --build -- -n` 0 steps. Next: the fix (`log.hpp` constant + `openLog` rotation + `main.cpp` open sequence), then `logread.py` + the 9 real readers, then the build.
+**WIP:** 2026-09-11 22:3x — §0.7 gate 34/34 PASS; prose premises verified (harness `0aff5db`, `:2` per HOST-EVENTS 2026-09-11, field pair `03fbee59`/`545a51ef`). CHECKPOINT 1: predictions committed (`artifacts/f108/prediction.txt`, 8 sections, + `prestate_logs.tar.gz` because the design deletes the field's five current log files at launch 8) BEFORE any build; `b23b445`. CHECKPOINT 2: the fix built and smoke-green — code `71b6fe51`, binary md5 `6d63e6c1` (98 TUs, 0 pending steps); `logread.py` (the log channel's single reader, 25-check selftest + a mutant that fails 5 of them) and 10 readers routed through it; 2-launch farm run **0 FAIL** (counts 1→2, 5 inode identities, 4 content keys, 5 D12 lines in the log AND on the console, tcp/shader 13 B). Next: the 10-launch REAL-home campaign (`f108_rotate.py`), then the mutant, write_log=false pre/post, the timing build, f90 + f91.
 
 ---
 

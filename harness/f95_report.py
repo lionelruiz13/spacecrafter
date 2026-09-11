@@ -165,8 +165,14 @@ def main():
 
     # ---- 4. log growth
     print("\n--- 4. LOG GROWTH (Sec.5.115's price for R20's eight-launch window) ---")
+    # The layout named here is the one the ROWS were measured on: this report
+    # reads landed soak runs, and every one of them predates F108.  Since F108
+    # (INTENT 11.230) the same channel is `script.log`, truncated at open and
+    # rotated 8 launches deep - so a future soak's slope is per-launch bounded
+    # and this label would be wrong for it.
     for nm, label in [("scriptlog_b", "script-YY.MM.DD.log (keepHistory=true, "
-                                      "APPENDED across launches, uncapped)"),
+                                      "APPENDED across launches, uncapped; "
+                                      "pre-F108 layout)"),
                       ("scapplog_b", "spacecrafter.log (truncates per launch)"),
                       ("vulkanlog_b", "vulkan log"),
                       ("applog_b", "the process's own stdout+stderr capture")]:
