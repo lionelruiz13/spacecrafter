@@ -1,0 +1,51 @@
+F109 EDGE LADDER - the app's own collapse threshold, read through the
+dot-suppression arm (SC_F109_G4=1, binary 543a851e). S_offline=36.1553 AU
+ tag  refDist     offline_px    crop sum (new)   max   sat255   dot?
+ e00   1606.958     15.5313            53320    255      2   DOT
+ e01   1597.000     15.6282            53435    255      4   DOT
+ e02   1587.000     15.7266            53551    255      2   DOT
+ e03   1580.000     15.7963              482     48      0    - 
+ e04   1575.000     15.8465             1034     48      0    - 
+ e05   1570.000     15.8970             1629     48      0    - 
+ e06   1565.000     15.9478             2194     48      0    - 
+ e07   1560.000     15.9989             2854     48      0    - 
+ e08   1555.000     16.0503             3511     48      0    - 
+ e09   1548.000     16.1229             4359     48      0    - 
+ e10   1530.000     16.3126             6773     48      0    - 
+
+ dot PRESENT up to offline px 15.7266 (refDist 1587.000)
+ dot ABSENT  from offline px 15.7963 (refDist 1580.000)
+ => the app's T = 16 px sits in offline px (15.7266, 15.7963]
+ => px_app/px_offline in [1.01289, 1.01738]  i.e. the offline axis is
+    low by 1.29% .. 1.74%  =>  t offset c in [0.0258, 0.0348]
+ PRE-REGISTERED: R1 (calibration) predicted the step in offline px (15.79, 15.86];
+                 R2 (emission) predicted it in (15.97, 16.03]; A4 measured c = 0.0217
+                 which needs the app's T at offline px 15.826.
+ S_app implied = 36.6214 .. 36.7837 AU  (offline S = 36.1553)
+
+== the interior's emission at the app's own t, with NO extrapolation ==
+ the 8 dot-absent rungs are the interior ALONE (G4) and all have sat255 = 0.
+ the crop splits into r<12 px (where the glow lives, measured in A4) and
+ r>=12 px (background only), so the background is measured, not assumed.
+ tag  offline_px   sum(r<12)  sum(r>=12)  bg-scaled   interior = inner - bg
+ e00    15.5313       52903         417       24.4     +52878.6 DOT
+ e01    15.6282       53018         417       24.4     +52993.6 DOT
+ e02    15.7266       53134         417       24.4     +53109.6 DOT
+ e03    15.7963          68         414       24.2        +43.8 
+ e04    15.8465         620         414       24.2       +595.8 
+ e05    15.8970        1215         414       24.2      +1190.8 
+ e06    15.9478        1780         414       24.2      +1755.8 
+ e07    15.9989        2440         414       24.2      +2415.8 
+ e08    16.0503        3097         414       24.2      +3072.8 
+ e09    16.1229        3945         414       24.2      +3920.8 
+ e10    16.3126        6359         414       24.2      +6334.8 
+
+ k=1.01289 (app T at offline 15.7963)
+   t_app range +0.00000 .. +0.06537
+   interior = -30 + 96501*t_app     rms 44 counts
+   F = -30 counts = -0.08% of the base2 swing 36623
+
+ k=1.01738 (app T at offline 15.7266)
+   t_app range +0.00885 .. +0.07451
+   interior = -880 + 96076*t_app     rms 44 counts
+   F = -880 counts = -2.40% of the base2 swing 36623

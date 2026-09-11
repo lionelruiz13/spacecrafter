@@ -1,0 +1,92 @@
+>> flag experimental_path on
+>> zoom fov 340 duration 0
+>> date jday 2461234.0
+>> timerate rate 0
+>> meteors zhr 0
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/base.json
+>> select planet Sun
+>> flag track_object on
+>> flag atmosphere off
+>> camera action free_mode state on
+>> moveto altitude 103848073944279 duration 0
+>> flag track_object off
+>> moveto altitude 12000000000000000 duration 0
+>> camera action descend coef 0.005
+>> camera action descend coef 0.005
+>> moveto altitude 185700000000000 duration 0
+>> moveto altitude 185700000000000 duration 0
+>> camera action descend coef 0.005
+>> camera action descend coef 0.005
+>> camera action descend coef 0.01675
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/band0.json
+AFTER APPROACH ref=Sun refDist=0.0051718764 selDist=0.0051718764
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 310718.94912260
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 9.95728128
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e00.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e00_new.png
+  e00 target=1607 ref=MilkyWay refDist=1606.95813
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.99380312
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e01.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e01_new.png
+  e01 target=1597 ref=MilkyWay refDist=1597.00012
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.99373818
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e02.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e02_new.png
+  e02 target=1587 ref=MilkyWay refDist=1586.99988
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.99558924
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e03.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e03_new.png
+  e03 target=1580 ref=MilkyWay refDist=1580
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.99683544
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e04.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e04_new.png
+  e04 target=1575 ref=MilkyWay refDist=1574.99988
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.99682547
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e05.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e05_new.png
+  e05 target=1570 ref=MilkyWay refDist=1570
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.99681529
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e06.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e06_new.png
+  e06 target=1565 ref=MilkyWay refDist=1565
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.99680511
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e07.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e07_new.png
+  e07 target=1560 ref=MilkyWay refDist=1560.00012
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.99679480
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e08.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e08_new.png
+  e08 target=1555 ref=MilkyWay refDist=1555
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.99549839
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e09.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e09_new.png
+  e09 target=1548 ref=MilkyWay refDist=1548.00012
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> camera action descend coef 0.98837202
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/_g.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e10.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f109/edge/e10_new.png
+  e10 target=1530 ref=MilkyWay refDist=1530
+DONE

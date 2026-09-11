@@ -1,0 +1,252 @@
+{
+ "sys_sub": 36.155286341682874,
+ "band0": {
+  "reference": "Sun",
+  "tracked": "",
+  "freeMode": true,
+  "boundToSurface": false,
+  "mount": "equatorial",
+  "skyLocked": false,
+  "viewOffset": 0,
+  "viewOffsetTransition": 1,
+  "viewOffsetEff": 0,
+  "longitude": 0.0410152376,
+  "latitude": 0.852593362,
+  "distance": 4.26359038e-05,
+  "alt": 0.978136301,
+  "az": 4.57604122,
+  "heading": -6.10871887,
+  "absFwd": [
+   0.254527181,
+   -0.606813431,
+   -0.75298959
+  ],
+  "position": [
+   0.00131628942,
+   -0.00313837267,
+   -0.00389439426
+  ],
+  "rootPos": [
+   0.001992858247831464,
+   -0.0021529134828597307,
+   0.004259317647665739
+  ],
+  "refAoI": 533.30249,
+  "refDist": 0.0051718764,
+  "refCached": true,
+  "refParent": "SolarSystem",
+  "selected": "Sun",
+  "selDist": 0.0051718764,
+  "halfFov": 2.96705961,
+  "cullHalfFov": 2.96705961,
+  "lockedSkyRot": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   1
+  ],
+  "plans": {
+   "viewT": 0,
+   "hdgT": 0,
+   "zoomDuration": 0,
+   "moveDuration": 0
+  },
+  "mat": [
+   0.995249748,
+   0.0609387383,
+   0.0759238824,
+   0,
+   -0.00878116488,
+   0.832879066,
+   -0.553385317,
+   0,
+   -0.0969580263,
+   0.550089896,
+   0.829457819,
+   0,
+   0.00171518803,
+   -0.00467593875,
+   -0.00139356859,
+   1
+  ]
+ },
+ "rows": [
+  {
+   "tag": "e00",
+   "target": 1607,
+   "reference": "MilkyWay",
+   "refDist": 1606.95813,
+   "selDist": 1606.95813,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759021204,
+    -0.437460989
+   ],
+   "shots": {
+    "new": "e00_new.png"
+   }
+  },
+  {
+   "tag": "e01",
+   "target": 1597,
+   "reference": "MilkyWay",
+   "refDist": 1597.00012,
+   "selDist": 1597.00012,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759023067,
+    -0.437460989
+   ],
+   "shots": {
+    "new": "e01_new.png"
+   }
+  },
+  {
+   "tag": "e02",
+   "target": 1587,
+   "reference": "MilkyWay",
+   "refDist": 1586.99988,
+   "selDist": 1586.99988,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759027665,
+    -0.437460959
+   ],
+   "shots": {
+    "new": "e02_new.png"
+   }
+  },
+  {
+   "tag": "e03",
+   "target": 1580,
+   "reference": "MilkyWay",
+   "refDist": 1580,
+   "selDist": 1580,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.00075902557,
+    -0.437460989
+   ],
+   "shots": {
+    "new": "e03_new.png"
+   }
+  },
+  {
+   "tag": "e04",
+   "target": 1575,
+   "reference": "MilkyWay",
+   "refDist": 1574.99988,
+   "selDist": 1574.99988,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759027898,
+    -0.437460989
+   ],
+   "shots": {
+    "new": "e04_new.png"
+   }
+  },
+  {
+   "tag": "e05",
+   "target": 1570,
+   "reference": "MilkyWay",
+   "refDist": 1570,
+   "selDist": 1570,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759023591,
+    -0.437460989
+   ],
+   "shots": {
+    "new": "e05_new.png"
+   }
+  },
+  {
+   "tag": "e06",
+   "target": 1565,
+   "reference": "MilkyWay",
+   "refDist": 1565,
+   "selDist": 1565,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759030285,
+    -0.437461019
+   ],
+   "shots": {
+    "new": "e06_new.png"
+   }
+  },
+  {
+   "tag": "e07",
+   "target": 1560,
+   "reference": "MilkyWay",
+   "refDist": 1560.00012,
+   "selDist": 1560.00012,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759028131,
+    -0.437461019
+   ],
+   "shots": {
+    "new": "e07_new.png"
+   }
+  },
+  {
+   "tag": "e08",
+   "target": 1555,
+   "reference": "MilkyWay",
+   "refDist": 1555,
+   "selDist": 1555,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759028364,
+    -0.437461048
+   ],
+   "shots": {
+    "new": "e08_new.png"
+   }
+  },
+  {
+   "tag": "e09",
+   "target": 1548,
+   "reference": "MilkyWay",
+   "refDist": 1548.00012,
+   "selDist": 1548.00012,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759026036,
+    -0.437460989
+   ],
+   "shots": {
+    "new": "e09_new.png"
+   }
+  },
+  {
+   "tag": "e10",
+   "target": 1530,
+   "reference": "MilkyWay",
+   "refDist": 1530,
+   "selDist": 1530,
+   "halfFov": 2.96705961,
+   "solsys_screen": [
+    -0.000759026443,
+    -0.437460959
+   ],
+   "shots": {
+    "new": "e10_new.png"
+   }
+  }
+ ]
+}
