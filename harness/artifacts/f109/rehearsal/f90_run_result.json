@@ -1,0 +1,301 @@
+{
+ "tag": "run",
+ "binary": "/home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter",
+ "binary_md5": "6d63e6c157cebd9b79846876befafb9f",
+ "display": ":2",
+ "show": "basis/zodiacal_light.sts",
+ "inject_fault": false,
+ "farm": "/home/claude/spacecrafter/claude/harness/artifacts/f109/rehearsal/farm",
+ "farm_asserts": {
+  "config.ini.is_regular_file": true,
+  "config.ini.md5": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini.is_regular_file": true,
+  "sessions.is_real_dir": true,
+  "scripts.is_real_dir": true,
+  "show_dir.is_real_dir": true,
+  "show.is_regular_file": true,
+  "startup.is_regular_file": true,
+  "modularSystem.is_real_dir": true,
+  "log.is_real_dir": true
+ },
+ "wall_s": 92.4,
+ "steps": [
+  {
+   "id": "S1",
+   "step": "launch",
+   "state": "DIVERGENCE",
+   "why": "the app is up (TCP after 13.6 s) and 3 raw-stream failure line(s) never reach spacecrafter.log: (InfZoneArray::create(stars_2_0v0_8.cat): fopen failed; ZoneArray::create(stars_3_1v0_4.cat): fopen failed; Invalid sky culture directory: western-spacecrafter",
+   "rows": [
+    "Sec.5.77",
+    "Sec.11.146"
+   ],
+   "detail": {
+    "tcp_wait_s": 13.6,
+    "launch_wall_s": 13.6,
+    "pid": 126086,
+    "screensaver_GetActive": "(false,)",
+    "stale_lock_file": false,
+    "stale_lock_pid": null,
+    "applog_lines": 959,
+    "app_log_error_lines": 122,
+    "app_log_error_sample": [
+     "000000000231: (Warn.): Init_parser def_str video:projection",
+     "000000000231: (Warn.): Init_parser def_str video:rear_projection",
+     "000000000799: (Warn.): Body 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).",
+     "000000000800: (Warn.): Body 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).",
+     "000000000800: (Warn.): Body 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).",
+     "000000000816: (Warn.): Performance Issue : Too many vertices for 'model3D/Vesta/Vesta_1L.ojm' (Keep Below 4 000)",
+     "000000000817: (Warn.): Ignoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.",
+     "000000002450: (Warn.): Init_parser can't find the configuration key \"info:name\", default empty string returned",
+     "000000002450: (Warn.): Init_parser can't find the configuration key \"info:name\", default empty string returned",
+     "000000002450: (Warn.): Init_parser can't find the configuration key \"info:name\", default empty string returned",
+     "000000002450: (Warn.): Init_parser can't find the configuration key \"info:name\", default empty string returned",
+     "000000002450: (Warn.): Init_parser can't find the configuration key \"info:name\", default empty string returned"
+    ],
+    "clog_console_echo_lines": 1845,
+    "stderr_silence_count": 3,
+    "stderr_silences": [
+     "(InfZoneArray::create(stars_2_0v0_8.cat): fopen failed",
+     "ZoneArray::create(stars_3_1v0_4.cat): fopen failed",
+     "Invalid sky culture directory: western-spacecrafter"
+    ],
+    "proc_comm_hits_after": 2
+   }
+  },
+  {
+   "id": "S2",
+   "step": "author a body",
+   "state": "PASS",
+   "why": "'F90ProbeSat' absent from 120 bodies before the load, present among 121 after",
+   "rows": [],
+   "detail": {
+    "name_sent": "F90ProbeSat",
+    "name_expected": "F90ProbeSat",
+    "bodies_before": 120,
+    "bodies_after": 121,
+    "control_absent_before": true,
+    "present_after": true,
+    "wire_echo": ""
+   }
+  },
+  {
+   "id": "S3",
+   "step": "run a shipped show",
+   "state": "PASS",
+   "why": "loaded and ended: 5.9 s wall against 5.5 s of authored waits + 1 operator pause(s) this suite resumed",
+   "rows": [],
+   "detail": {
+    "show": "basis/zodiacal_light.sts",
+    "own_wait_total_s": 5.5,
+    "pauses_declared": 1,
+    "pauses_resumed": 1,
+    "command_lines": 8,
+    "wall_s": 5.9,
+    "script_log_load": true,
+    "script_log_end": true,
+    "annotation_tails": 0,
+    "show_md5_after": "61f95b823fa0308d3af2e2da30ec5ba4",
+    "script_log_new_lines": 19
+   }
+  },
+  {
+   "id": "S4",
+   "step": "search  [DEPRECATED - R22]",
+   "state": "DEPRECATED",
+   "why": "R22 retires the search family; the answer is a datum, never a gate. `search name Mars` -> 'Mars(P);'",
+   "rows": [],
+   "detail": {
+    "needle": "Mars",
+    "reply": "Mars(P);",
+    "latency_s": 0.4,
+    "raw": "Mars(P);\n"
+   }
+  },
+  {
+   "id": "S5",
+   "step": "select + read out",
+   "state": "PASS",
+   "why": "shape OK (5 lines, magnitude 1.36, ['07h28m06s', '+22\u00b036\\'09\"'] / ['-09\u00b013\\'01\"', '+46\u00b032\\'05\"'], distance 1.78748214 UA); labels are french (every label is a fr.txt msgstr)",
+   "rows": [],
+   "detail": {
+    "body": "Mars",
+    "get_status_object": "Mars\nMagnitude : 1.36\nAD/DE : 07h28m06s / +22\u00c2\u00b036'09\"\nAlt/Az\u00c2\u00a0: -09\u00c2\u00b013'07\" / +46\u00c2\u00b031'55\"\nDistance : 1.78748233 UA\n",
+    "get_status_object_latency_s": 0.4,
+    "get_status_position": "43.30;5.37;     75.10;2461295.462705;  0.000017;\n",
+    "get_status_position_latency_s": 0.4,
+    "navstr_blocks": 121,
+    "shape": {
+     "lines": 5,
+     "name": "Mars",
+     "labels": [
+      "Magnitude :",
+      "AD/DE :",
+      "Alt/Az\u00a0:",
+      "Distance :"
+     ],
+     "magnitude": 1.36,
+     "radec": [
+      "07h28m06s",
+      "+22\u00b036'09\""
+     ],
+     "altaz": [
+      "-09\u00b013'01\"",
+      "+46\u00b032'05\""
+     ],
+     "distance": 1.78748214,
+     "unit": "UA"
+    },
+    "shape_raw": [
+     "  NEW inf: Mars",
+     "Magnitude : 1.36",
+     "AD/DE : 07h28m06s / +22\u00b036'09\"",
+     "Alt/Az\u00a0: -09\u00b013'01\" / +46\u00b032'05\"",
+     "Distance : 1.78748214 UA"
+    ],
+    "labels": [
+     {
+      "label": "Magnitude :",
+      "label_escaped": "Magnitude :",
+      "verdict": "fr",
+      "catalogue_msgid": "Magnitude: "
+     },
+     {
+      "label": "AD/DE :",
+      "label_escaped": "AD/DE :",
+      "verdict": "fr",
+      "catalogue_msgid": "RA/DE: "
+     },
+     {
+      "label": "Alt/Az\u00a0:",
+      "label_escaped": "Alt/Az\\xa0:",
+      "verdict": "fr",
+      "catalogue_msgid": "Alt/Az: "
+     },
+     {
+      "label": "Distance :",
+      "label_escaped": "Distance :",
+      "verdict": "fr",
+      "catalogue_msgid": "Distance: "
+     }
+    ],
+    "has_U00A0": true
+   }
+  },
+  {
+   "id": "S6",
+   "step": "save",
+   "state": "PASS",
+   "why": "sessions/f90.ini (10894 B) and modularSystem/f90sys.ini (78394 B) written under the FARM, the system file names 'F90ProbeSat', and the real home's two directories are untouched",
+   "rows": [],
+   "detail": {
+    "session_file": "/home/claude/spacecrafter/claude/harness/artifacts/f109/rehearsal/farm/.spacecrafter/sessions/f90.ini",
+    "session_exists": true,
+    "session_bytes": 10894,
+    "system_file": "/home/claude/spacecrafter/claude/harness/artifacts/f109/rehearsal/farm/.spacecrafter/modularSystem/f90sys.ini",
+    "system_exists": true,
+    "system_bytes": 78394,
+    "system_names_probe": true,
+    "real_sessions_unchanged": true,
+    "real_modular_unchanged": true
+   }
+  },
+  {
+   "id": "S7",
+   "step": "reload",
+   "state": "DIVERGENCE",
+   "why": "T4 byte-identical (10894 B); `body action reload` logged no error; 121 -> 119 dump records; the authored body after the reload: old-half True / NEW(drawn)-half False, and the plan's prediction (it leaves the drawn path) HELD; the reload SILENTLY dropped ['baryEarthMoon', 'orbit_autour_lune']; the anchor NAME surface went {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} -> {'baryEarthMoon': 'resolves', 'orbit_autour_lune': 'resolves'} and the owned body came back on USE: {'baryEarthMoon': True, 'orbit_autour_lune': True}; with the authored body off the drawn path, `search` answers 'F90ProbeSat(P);' and `get status object` answers 'F90ProbeSat\\nMagnitude : 4.19\\nAD/DE : 11h48m31s / +14\u00c2\u00b033\\'11\"\\nAlt/Az\u00c2\\xa0: -30\u00c2\u00b042\\'07\" / +343\u00c2\u00b058\\'17\"\\nDistance : 0.00005141 UA'",
+   "rows": [
+    "Sec.11.117(k)(3)",
+    "Sec.11.111(g)",
+    "Sec.11.55(i)",
+    "Sec.11.55(j)"
+   ],
+   "detail": {
+    "t4_byte_identical": true,
+    "first_bytes": 10894,
+    "second_bytes": 10894,
+    "bodies_after_session_load": 121,
+    "bodies_after_body_reload": 119,
+    "bodies_lost": [
+     "baryEarthMoon",
+     "orbit_autour_lune"
+    ],
+    "bodies_gained": [],
+    "probe_present_before_reload": true,
+    "probe_survived_body_reload": true,
+    "probe_after_reload_by_path": {
+     "in_dump": true,
+     "old_half": true,
+     "new_half": false,
+     "search_answers": "F90ProbeSat(P);",
+     "get_status_object_answers": "F90ProbeSat\nMagnitude : 4.19\nAD/DE : 11h48m31s / +14\u00c2\u00b033'11\"\nAlt/Az\u00c2\u00a0: -30\u00c2\u00b042'07\" / +343\u00c2\u00b058'17\"\nDistance : 0.00005141 UA"
+    },
+    "prediction_probe_survives": false,
+    "prediction_held": true,
+    "anchor_surface_before": {
+     "baryEarthMoon": "resolves",
+     "orbit_autour_lune": "resolves"
+    },
+    "anchor_surface_after": {
+     "baryEarthMoon": "resolves",
+     "orbit_autour_lune": "resolves"
+    },
+    "anchor_rebuilt_on_use": {
+     "baryEarthMoon": {
+      "body_back_in_dump": true,
+      "errors": []
+     },
+     "orbit_autour_lune": {
+      "body_back_in_dump": true,
+      "errors": []
+     }
+    },
+    "reload_error_lines": []
+   }
+  },
+  {
+   "id": "S8",
+   "step": "one keyboard ramp",
+   "state": "PASS",
+   "why": "held Prior then Next: fov 180.00001 -> 84.91497 -> 179.53135 deg (-95.08504 then +94.61639); drawn halfFov 1.5707964 -> 0.7410229 -> 1.5667067 rad",
+   "rows": [],
+   "detail": {
+    "fov_start": 180.00000500895632,
+    "fov_after_zoom_in": 84.91496528189356,
+    "fov_after_zoom_out": 179.53135330987146,
+    "halfFov_start": 1.57079637,
+    "halfFov_after_zoom_in": 0.741022885,
+    "halfFov_after_zoom_out": 1.56670666,
+    "xkey_in": {
+     "key": "Prior",
+     "ms": 1500,
+     "rc": 0,
+     "out": "held Prior (1 key) for 1500 ms on window 0xc00002"
+    },
+    "xkey_out": {
+     "key": "Next",
+     "ms": 1500,
+     "rc": 0,
+     "out": "held Next (1 key) for 1500 ms on window 0xc00002"
+    }
+   }
+  },
+  {
+   "id": "S9",
+   "step": "quit",
+   "state": "PASS",
+   "why": "`shutdown action now` -> exit 0 after 0.8 s; 1 frame stall(s) logged over the whole run",
+   "rows": [],
+   "detail": {
+    "exit_code": 0,
+    "quit_wall_s": 0.8,
+    "hung": false,
+    "frame_stall_detected": 1,
+    "frame_stall_very_long": 0,
+    "frame_stall_before_quit": 1,
+    "proc_comm_hits_after": 0
+   }
+  }
+ ],
+ "fails": []
+}
