@@ -1,0 +1,87 @@
+# F107 replay SCORED on the sliced engine text
+# pre  slice: f348bd34   (/home/claude/sc-f107/tree/src)
+#   # f104_solver  slice=f348bd34  steps_per_call=1
+# post slice: 547b79d3   (/home/claude/spacecrafter/src)
+#   # f104_solver  slice=547b79d3  steps_per_call=2
+# observer (Earth `ecl`, landed dump) = [0.336381882, -0.959307969, 5.28283599e-05]
+
+== ARM pre (slice pre, 1, ctor at JD 0)
+body             res5 slice     res5 model |dE| slice-model      |dpos| AU
+Arrokoth        4.75806e-09    4.75806e-09              0              0
+Ceres           5.55104e-10    5.55104e-10              0              0
+Charon          4.46562e-10    4.46562e-10              0              0
+Eris              0.0328048      0.0328048              0              0
+Haumea          2.44929e-16    4.44089e-16    4.44089e-16            nan
+Hydra_          6.82121e-13    6.82121e-13              0              0
+Juno            4.44089e-16    4.44089e-16              0            nan
+Makemake        6.43249e-16    4.44089e-16              0            nan
+Nix             6.81212e-10    6.81212e-10              0              0
+Pallas          4.44089e-16    4.44089e-16              0            nan
+Sedna           3.61704e-14    3.64153e-14              0            nan
+Vesta           4.44089e-16    4.44089e-16              0            nan
+
+== ARM post (slice post, 2, ctor at JD 0)
+body             res5 slice     res5 model |dE| slice-model      |dpos| AU
+Arrokoth        8.88178e-16    8.88178e-16              0              0
+Ceres           3.55271e-15    3.55271e-15              0              0
+Charon          9.09495e-13    9.09495e-13              0              0
+Eris                      0              0              0              0
+Haumea          2.44929e-16    4.44089e-16    4.44089e-16            nan
+Hydra_          1.13687e-13    1.13687e-13              0              0
+Juno            4.44089e-16    4.44089e-16              0            nan
+Makemake        6.43249e-16    4.44089e-16              0            nan
+Nix                       0              0              0              0
+Pallas          4.44089e-16    4.44089e-16              0            nan
+Sedna           2.41961e-15    2.66454e-15              0            nan
+Vesta           4.44089e-16    4.44089e-16              0            nan
+
+== ARM mut (slice pre, 1, ctor SKIPPED)
+body             res5 slice     res5 model |dE| slice-model      |dpos| AU
+Arrokoth        6.11524e-10    6.11524e-10              0              0
+Ceres           2.80558e-11    2.80558e-11              0              0
+Charon          1.57343e-10    1.57343e-10              0              0
+Eris                      0              0              0              0
+Haumea          2.44929e-16    4.44089e-16    4.44089e-16            nan
+Hydra_          4.54747e-13    4.54747e-13              0              0
+Juno            4.44089e-16    4.44089e-16              0            nan
+Makemake        6.43249e-16    4.44089e-16              0            nan
+Nix             3.54703e-11    3.54703e-11              0              0
+Pallas          4.44089e-16    4.44089e-16              0            nan
+Sedna              0.273577       0.273577              0            nan
+Vesta           4.44089e-16    4.44089e-16              0            nan
+
+== THE LANDED DUMP, AGAINST THE SLICE (float32, the dump's width)
+Arrokoth   pre  slice32 [40.9588242, 20.12603, -1.42904007]  landed [40.9588242, 20.12603, -1.42904007]  IDENTICAL (F104 leg_pre)
+Ceres      pre  slice32 [1.0438956, 2.52227235, -0.113642469]  landed [1.0438956, 2.52227235, -0.113642469]  IDENTICAL (F104 leg_pre)
+Eris       pre  slice32 [85.8409882, 38.323143, -18.7250576]  landed [85.8409882, 38.323143, -18.7250576]  IDENTICAL (F104 leg_pre)
+Arrokoth   post slice32 [40.9588242, 20.12603, -1.42904007]  landed [40.9588242, 20.12603, -1.42904007]  IDENTICAL (F104 leg_post)
+Ceres      post slice32 [1.0438956, 2.52227235, -0.113642469]  landed [1.0438956, 2.52227235, -0.113642469]  IDENTICAL (F104 leg_post)
+Eris       post slice32 [85.1671219, 39.6249275, -17.3216801]  landed [85.1671219, 39.6249275, -17.3216801]  IDENTICAL (F104 leg_post)
+
+== ERIS DISPLACEMENT from the sliced positionAtE
+   |pre - post| = 2.029337543 AU   (F104 landed eye-frame 2.029337245 AU)
+   |mut - post| = 0.000000000 AU   (0 = the mutant lands where the fix does)
+
+== P4, THE SAMPLER'S ONE-FRAME TRANSIENT, ON THE SLICED TEXT
+# a `seed` row hands the slice the CONVERGED anomaly at the last
+# sampled date (date + 89*visPeriod/180) and then ONE call at the
+# body's own date -- 1 step on the pre slice, 2 on the post one.
+# poserr is against the model's converged position (itself scored
+# against the landed dump to <= 5.2e-08 relative in model_validate).
+body         branch     steps       res_rad     poserr_AU   ang_arcsec
+Pasiphae     ell0.2-0.9      1       1.13097      0.162111    5490.3277
+Carme        ell0.2-0.9      1      0.804849      0.117499    3959.4894
+Neso         ell0.2-0.9      1       1.99278      0.496342    3498.5315
+Ananke       ell0.2-0.9      1      0.687022      0.094976    3055.1504
+Neso         ell0.2-0.9      2       1.50785      0.370601    2612.3405
+Laomedeia    ell0.2-0.9      1       1.97158      0.258418    1789.2210
+Psamathe     ell0.2-0.9      1      0.717943      0.217982    1529.2367
+Sinope       ell<0.2        1      0.220832     0.0355542    1195.4171
+Elara        ell<0.2        1      0.381283     0.0296534     976.1574
+Leda         ell<0.2        1      0.346256     0.0257591     852.5484
+Pasiphae     ell0.2-0.9      2      0.167429     0.0246316     834.4071
+Laomedeia    ell0.2-0.9      2      0.808955      0.115463     799.4550
+Sycorax      ell0.2-0.9      1       1.00004     0.0708871     726.8693
+Lysithea     ell<0.2        1      0.253555     0.0198017     647.5747
+
+worst slice-vs-model position disagreement: 0 AU on Nix/pre

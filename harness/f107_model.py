@@ -310,6 +310,13 @@ def mean_anomaly(el, jd):
     return el["n"] * (jd - el["t0"])                          # orbit.cpp:346
 
 
+def wrapE(x):
+    """The eccentric anomaly folded into (-pi, pi] the way `atan2(s, c)` folds
+    it -- the comet family's state is (H, c, s) and only (c, s) survives into
+    the returned point, so a recovered H can only ever be the folded one."""
+    return math.atan2(math.sin(x), math.cos(x))
+
+
 def norm(v):
     return math.sqrt(sum(x * x for x in v))
 

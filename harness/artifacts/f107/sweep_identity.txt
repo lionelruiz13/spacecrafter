@@ -1,0 +1,7 @@
+F107 boundary check: the landed --sweep output is byte-identical after --replay was added.
+command: f104_solver --sweep 0.4373709923163567 12   (pre slice from /home/claude/sc-f107/tree/src)
+f6c8f70f957588076a30df94e0131c0f  /home/claude/sc-f107/sweep_final.txt
+f6c8f70f957588076a30df94e0131c0f  artifacts/f104/sweep_eris_pre.txt
+diff rc: 0 (empty)
+
+slice md5s: ecc f348bd34 (steps_per_call 1) ; positionAtE 0645185a
