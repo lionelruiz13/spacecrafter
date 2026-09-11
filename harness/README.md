@@ -5353,3 +5353,105 @@ window); camera + 72/72 walked + 27/27 unreached + 90/90 `altaz_new` identical t
 the pre binary; F91 table byte-identical `1fe630a4`, 0 FAIL / 0 NOTE; smoke rc 0
 step for step as §11.220(i3); eleven launches, canary green, frozen files in ==
 out on every one. Artifacts `artifacts/f105/` (~0.3 MB).
+
+## F107 — where a parked body's Newton seed comes from (`f107_model.py`, `f107_replay.py`, `f107_orbitflag.py`, `f104_solver.cpp --replay`) — INTENT §11.229 / §11.225(j2)(j3) / §5.84, 2026-09-11
+
+```
+./f107_model.py validate|replay|sampler [--out FILE]     # the PREDICTION side
+./f107_replay.py <absOutdir> --pre-src <root> [--post-src <root>]
+./f104_solver --replay <rows.tsv>                        # the SCORING side
+DISPLAY=:2 ./f107_orbitflag.py <absOutdir> --tag T --bin PATH \
+        --flag satellites_orbits|planets_orbits|none [--jd 2461233.5] [--jd2 ...]
+```
+
+**What it measures.** `ModularBody`'s constructor evaluates EVERY body once at
+`parent->lastJD` (ModularBody.cpp:121-128), which is JD 0 before the first
+frame, and `positionAtTime` computes the mean anomaly UNWRAPPED
+(orbit.cpp:581) - so a parked body's solver seed meets its first use 75.765 rad
+behind (Eris). That is where S5.145's 1.198725 deg came from. The orbit-line
+sampler (S11.225(j2)) is a second walker of the same seed: it cannot reach a
+parked body, and in the engine it is a channel on exactly ONE record of 120.
+
+### THE ONE SHAPE TO CARRY OUT OF HERE
+
+**WHEN A DEFECT IS "A STALE SEED", FIND THE FIRST WRITER AND REPLAY FROM IT -
+THE DATES ARE PART OF THE MECHANISM.** The first use's five calls are not five
+calls at one date: each is RETARDED by the light trip of the CURRENT `distance`
+and then REWRITES that distance from the position it just computed
+(ModularBody.hpp:698-702, :961), so they are a coupled position -> distance ->
+date iteration. Replaying that coupling reproduces the landed dump's float32
+`ecl`, its `lastJD` to 4e-08 d and its `dist` to 5e-06 AU - which is what turns
+"the seed was stale" into "the seed was written here, at this date". Modelling
+the solver alone would have given the right order and the wrong number.
+
+### The four shapes worth reusing
+
+- **PREDICT WITH ONE IMPLEMENTATION, SCORE WITH ANOTHER, ARBITRATE WITH THE
+  LANDED BYTES.** `f107_model.py` is an independent Python re-derivation;
+  `f104_solver.py`'s slice compiles the tree's own text. Agreement between them
+  is evidence about the READING (which dates, which seed, which branch), not
+  about arithmetic - and both are checked against a committed dump. The model
+  carries its own gate (`validate`): 51 of the 52 iterating records' converged
+  positions must match the landed dump, and the ONE that must not is the body
+  under study. A gate that can only pass is not a gate.
+- **A MUTATION CAN HAVE A SECOND EFFECT, AND THE WAY TO FIND OUT IS TO PREDICT
+  THE RECORDS BY NAME.** "Skip the constructor's evaluation" moved 49 records
+  where the prediction said two; the extra 47 included bodies whose solver never
+  reads a seed (`orbit_eccentricity = 0`), which is what pointed at
+  `isSystemCentered()` - a POSITION test (ModularBody.hpp:1788-1800) that both
+  orbit loaders ask at LOAD time. The narrow mutation (evaluation kept, seed
+  reset) then moved exactly the two predicted records.
+- **COMPARE DUMP TO DUMP INSIDE ONE LAUNCH.** Across launches, 90 of 120
+  records move (S11.225(e)); within one launch, two dumps with nothing changed
+  between them moved 0 of 120 in four launches out of four. Anything below
+  1e-06 AU needs the within-launch form, and the first thing each leg should
+  print is that control.
+- **ATTRIBUTE A BOTH-PATHS FLAG WITH A MUTATION, NOT WITH A READING.**
+  `flag satellites_orbits` reaches the old path's plot AND the new path's
+  sampler through one seam (ssystem_factory.hpp:442). Disabling
+  `OrbitModule::sampleOrbit` left 16 of 17 movers in place and exactly one
+  gone - which is the new path's whole share.
+
+### Gotchas measured here, each of which cost something first
+
+- **THE FIELD FILE'S KEYS ARE CASE-SENSITIVE TO THE ENGINE.** `IniLine::read`
+  does not fold case and the loaders index `params["orbit_period"]`, so
+  `[Sedna] orbit_Period = 4501297.2` is INVISIBLE and its mean motion falls
+  through to Gauss's constant (measured: the authored period misses the landed
+  eccentric anomaly by 2.2e-03 rad, Gauss hits it to 8.7e-08).
+  `f104_census.read_ini` LOWER-CASES keys - safe for `coord_func` /
+  `orbit_eccentricity`, wrong for any element read through it.
+  `f107_model.read_ini_cased` is the reader that mirrors the engine.
+- **`orbit_pericenterdistance = 76,0616` IS 76.0.** `Utility::strToDouble` is
+  `std::stod` in a try/catch: it takes the longest numeric prefix, and the
+  field file's comma decimal is not the C locale's.
+- **A DUMPED float32 PARSES BACK AS A DOUBLE.** Comparing a computed float32
+  against `json.loads`'s value reports "differs" on every identical record;
+  round the landed value to float32 first (`struct.pack('f', ...)`).
+- **`rotate_to_vsop87` IS THE IDENTITY ONLY FOR A SYSTEM-CENTRED PARENT.** A
+  moon's dumped `ecl` cannot be checked component-wise against an element
+  model without the parent's rotation; check |.| there (rotation-invariant)
+  and say which check ran.
+- **ONE MINIMUM COLUMN COUNT FOR TWO ROW GRAMMARS** turned a filler column
+  into an extra solver call at dt = 0, and an UNFOLDED comet residual reports
+  2*pi for a converged body (only `(c, s)` survive into the returned point).
+  Both were caught by the model disagreeing, not by inspection.
+- **A `git worktree` + `submodule update --init` is the cheap pre-tree** (F26's
+  recipe): 248 compile steps, 46 s at -j24, and the binary md5 differs from the
+  same source built in `build-claude` (build path) - so the control is the one
+  you built, not the one the record names.
+
+**Measured, code `48cc3727` UNMOVED (no delivered change), binaries `31a39eb5`
+(control at 474c595d) / `cea14026` / `cc72e0e0` / `ee7c120d` (three mutations,
+each reverted with the control bit-reproduced):** the replay reproduces the
+landed pre AND post dumps float32 for float32, |pre-post| 2.029337543 AU
+against the landed 2.029337245, 1.190223 deg against 1.198725 (0.71 % low,
+inside a band declared in advance); `--sweep` byte-identical `f6c8f70f`; the
+narrow mutation moves EXACTLY Eris and Sedna of 120, Eris to
+1.0629396175241108e-05 deg at ONE step per call; `flag planets_orbits on` moves
+0 of 120 while changing 91774 pixels; `flag satellites_orbits on` moves 0 of 40
+walked-iterative records and 17 `*_special` ones (Mimas 1.8726e-07 AU), of
+which exactly one (Europa, 3.475e-08 AU) is the new path's sampler; P4 on the
+slice 0.0246 AU = 834 arcsec on Pasiphae, once per 3.94 days of simulation
+time. Seven launches, canary green, frozen pair in == out on every one.
+Artifacts `artifacts/f107/` (~0.33 MB).
