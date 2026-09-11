@@ -1,0 +1,9 @@
+=== clock pinned (timerate rate 0)
+  freshness: 29 frozen / 91 re-evaluated of 120
+  partition: |P| 29  |I| 29  |PnI| 10  |PuI| 48  |P\I| 19
+  expected frozen = I ; frozen\expected (none) ; expected\frozen (none)
+  frames between the dumps = 1875 ; parked (P\I) with a STILL evalCount: 0 of 19  []
+  old-vs-new alt/az after the move: walked max (1.7969856468318e-05, 'Belinda') ; parked max (1.9299817184270054e-05, 'Ceres') ; parked max at P0 (1.1987248926314011, 'Eris')
+  frozen: 51PegSystem, AntaresSystem, ArcturusSystem, CapellaSystem, DarkStarSystem, HelixDwarfSystem, KeidSystem, Kepler16System, M1PulsarSystem, M27DwarfSystem, M57DwarfSystem, MilkyWay, NGC2392DwarfSystem, ProximaSystem, SiriusSystem, TolimanSystem, Trappist1System, Universe, VegaSystem, baryEarthMoon, big_dipper, center_sun, galaxy_center, orbit_autour_lune, orbit_autour_point, orbit_autour_point (orbit centre), pleiades, sun_in_gal, un_point
+  md5 in==out: True ; lock before {'present': False} after {'present': False} ; exit 0
+FAILS: 0  NOTES: 0

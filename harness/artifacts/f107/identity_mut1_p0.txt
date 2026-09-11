@@ -1,0 +1,10 @@
+=== F107 P0 launch state, PINNED: control 31a39eb5 vs mutant cea14026
+  A = /home/claude/sc-f107/leg_control/dumps/pinned_p0_launch.json
+  B = /home/claude/sc-f107/leg_mut/dumps/pinned_p0_launch.json
+  camera state identical: True
+  jd A 2461233.5  jd B 2461233.5
+  walked         n= 72  identical mat translation  30/ 72  identical altaz_new  29/ 71
+      moved: Adrastea, Amalthea, Ananke, Belinda, Caliban, Carme, Daphnis, Despina, Elara, Epimetheus, Galatea, Halimede, Helene, Himalia, Janus, Juliet, Laomedeia, Larissa, Leda, Lysithea, Metis, Naiad, Neried, Neso, Pan, Pandora, Pasiphae, Portia, Prometheus, Prospero, Proteus, Psamathe, Puck, Rosalind, Sao, Setebos, Sinope, Sycorax, Telesto, Thalassa, Thebe, Triton
+  parked (P)     n= 29  identical mat translation  22/ 29  identical altaz_new  12/ 19
+      moved: Charon, Eris, Hydra_, Kerberos, Nix, Sedna, Styx
+  unreached (I)  n= 29  identical mat translation  29/ 29  identical altaz_new   0/  0

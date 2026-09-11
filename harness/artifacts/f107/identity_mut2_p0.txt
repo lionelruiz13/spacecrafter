@@ -1,0 +1,9 @@
+=== F107 P0 launch state, PINNED: control 31a39eb5 vs NARROW mutant cc72e0e0 (seed reset only)
+  A = /home/claude/sc-f107/leg_control/dumps/pinned_p0_launch.json
+  B = /home/claude/sc-f107/leg_mut2/dumps/pinned_p0_launch.json
+  camera state identical: True
+  jd A 2461233.5  jd B 2461233.5
+  walked         n= 72  identical mat translation  72/ 72  identical altaz_new  71/ 71
+  parked (P)     n= 29  identical mat translation  27/ 29  identical altaz_new  17/ 19
+      moved: Eris, Sedna
+  unreached (I)  n= 29  identical mat translation  29/ 29  identical altaz_new   0/  0

@@ -1,0 +1,87 @@
+diff --git a/src/bodyModule/iterative_orbits.hpp b/src/bodyModule/iterative_orbits.hpp
+index 4d71035d..2881c251 100644
+--- a/src/bodyModule/iterative_orbits.hpp
++++ b/src/bodyModule/iterative_orbits.hpp
+@@ -35,6 +35,9 @@ public:
+ 		sh = sinh(H);
+ 	}
+ 
++	// F107 MUTATION ONLY -- NEVER DELIVERED: back to the declared state.
++	void f107Reset() { H = 0; ch = 1; sh = 0; }
++
+ 	//! Update the position with a single iteration - Precision depends on time step
+ 	Vec3d operator()(double dt, const Vec3d &d1, const Vec3d &d2)
+ 	{
+@@ -89,6 +92,9 @@ public:
+ 		s = sin(H);
+ 	}
+ 
++	// F107 MUTATION ONLY -- NEVER DELIVERED: back to the declared state.
++	void f107Reset() { H = 0; c = 1; s = 0; }
++
+ 	//! Update the position with a single iteration - Precision depends on time step
+ 	Vec3d operator()(double dt, const Vec3d &d1, const Vec3d &d2) {
+ 		double M = fmod(n*dt,2*M_PI);
+diff --git a/src/bodyModule/orbit.hpp b/src/bodyModule/orbit.hpp
+index 1c440bf8..24d68aaf 100644
+--- a/src/bodyModule/orbit.hpp
++++ b/src/bodyModule/orbit.hpp
+@@ -53,6 +53,13 @@ public:
+ 		return nullptr;
+ 	};
+ 
++	// F107 MUTATION ONLY -- NEVER DELIVERED.  Put the ITERATIVE solver's seed
++	// back to its declared zero, so that the constructor's JD-0 evaluation can
++	// keep its OTHER effect (eclipticPos, which isSystemCentered() reads at
++	// load time) while the seed arrives at the first use as if that evaluation
++	// had never happened.  Default: nothing to reset.
++	virtual void f107ResetSeed() {}
++
+ 	virtual double getBoundingRadius() const {
+ 		return 0;
+ 	}
+@@ -112,6 +119,9 @@ public:
+ 
+ 	virtual std::string saveOrbit() const;
+ 
++	// F107 MUTATION ONLY (see Orbit::f107ResetSeed).
++	virtual void f107ResetSeed() override { iterativeLastE = 0; batchLastE = 0; }
++
+ private:
+ 	double eccentricAnomaly(double m, double &lastE) const;
+ 	Vec3d positionAtE(double) const;
+@@ -194,6 +204,8 @@ public:
+    // Compute the orbit for a specified Julian date and return an "application compliant" function
+    	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+    	Vec3d positionAtTime(double) const;
++	// F107 MUTATION ONLY (see Orbit::f107ResetSeed).
++	virtual void f107ResetSeed() override { orbit.f107Reset(); }
+ private:
+ 	mutable IterativeHyp orbit; // Mitigation - mutable car positionAtTimevInVSOP87Coordinates ne devrais pas etre const...
+ };
+@@ -215,6 +227,8 @@ public:
+    // Compute the orbit for a specified Julian date and return an "application compliant" function
+    	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+    	Vec3d positionAtTime(double) const;
++	// F107 MUTATION ONLY (see Orbit::f107ResetSeed).
++	virtual void f107ResetSeed() override { orbit.f107Reset(); }
+ private:
+ 	mutable IterativeEll orbit; // Mitigation - mutable car positionAtTimevInVSOP87Coordinates ne devrais pas etre const...
+ };
+diff --git a/src/experimentalModule/ModularBody.cpp b/src/experimentalModule/ModularBody.cpp
+index b0d5af8d..ddc37cdc 100644
+--- a/src/experimentalModule/ModularBody.cpp
++++ b/src/experimentalModule/ModularBody.cpp
+@@ -126,6 +126,12 @@ ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
+             orbit->positionAtTimevInVSOP87Coordinates(lastJD,lastJD,tmp);
+         }
+         eclipticPos = tmp;
++        // F107 MUTATION 2 -- MEASUREMENT ONLY, NEVER DELIVERED.  The JD-0
++        // evaluation above stays (its eclipticPos is read at load time by the
++        // child orbit loaders through isSystemCentered()); only the SOLVER
++        // SEED it left behind is undone, which is the one effect under test.
++        if (lastJD == 0)
++            orbit->f107ResetSeed();
+     }
+ }
+ 

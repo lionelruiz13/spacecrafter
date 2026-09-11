@@ -1,0 +1,95 @@
+F107 CP3 -- THE ENGINE LEG: ONE CONTROL, TWO MUTANTS, ONE FINDING NOBODY ASKED FOR
+==================================================================================
+Scratch worktree /home/claude/sc-f107/tree = code `474c595d` (F104's pre state),
+submodule `84f5d94b` (the pin at BOTH 474c595d and 48cc3727).  Build
+/home/claude/sc-f107/build, RelWithDebInfo, -j24, 52 GiB available at each build.
+The code repo's HEAD never moved (`48cc3727`) and its tree never changed.
+
+BINARIES
+  control   31a39eb5   the worktree UNCHANGED.  NOT equal to F104's `b5f08778`
+                       (same source, different build path); it is the control
+                       the mutants are compared against, and it reproduces
+                       F104's landed pre-fix leg digit for digit (below).
+  mutant 1  cea14026   the dispatched mutation: the constructor's evaluation
+                       SKIPPED when `parent->lastJD == 0` (mutation1.diff).
+  mutant 2  cc72e0e0   the NARROW mutation: the evaluation KEPT, only the solver
+                       SEED it left behind reset (mutation2.diff).
+  reverted  31a39eb5   BIT-REPRODUCED after BOTH reverts (build-revert1.log,
+                       build-revert2.log) -- which is what makes either mutant's
+                       numbers attributable.
+
+WHAT THE CONTROL SAYS (S1, the stop condition: it held)
+  `f100_run.sh --tag post --stages freeze --clock pinned`, canary exit 0, frozen
+  pair md5 in == out, /proc clear, no lock file:
+    parked max at P0 = (1.1987248926314011, 'Eris')
+  F104's landed value is 1.1987248926268401 -- the same number to ELEVEN
+  significant digits.  The 4.6e-12 deg tail is the OLD half: `altaz_old` is not
+  reproducible across launches (S11.225(e) measured 90 of 120 records moving
+  between two launches of ONE binary), and this statistic is old-vs-new.
+  The control's Eris record reproduces the landed pre dump EXACTLY:
+    ecl [85.8409882, 38.323143, -18.7250576]  lastJD 2461233.0004225136
+    dist 95.9415436  evalCount 5
+  (F104 `artifacts/f104/leg_pre/pinned_p0_launch.json.gz`: identical.)
+
+WHAT MUTANT 1 SAYS, AND WHY IT IS NOT THE ISOLATION IT LOOKS LIKE
+  P0 parked max: (55.01824508255541, 'Sedna'); Eris 1.0629396175241108e-05 deg.
+  `f100_identity.py` control vs mutant 1 (identity_mut1_p0.txt): **49 records
+  moved** -- 42 walked + 7 parked -- where the committed prediction said TWO.
+  The prediction is kept REFUTED, and the cause is measured, not guessed:
+  bodies with `orbit_eccentricity = 0` moved (Daphnis, Pan, Kerberos, Styx),
+  and their solver returns `M` without ever reading the seed
+  (orbit.cpp:517), so the seed cannot be what moved them.  Their mutant
+  positions come back with `z` exactly 0 and `x` sign-flipped -- the signature of
+  `rotate_to_vsop87` being the IDENTITY instead of the parent's frame.
+  THE MECHANISM: `ModularBody::isSystemCentered()` (ModularBody.hpp:1788-1800)
+  answers by POSITION -- it walks up the chain and returns false only if some
+  ancestor's `eclipticPos` has a non-zero component -- and BOTH orbit loaders
+  ask it at LOAD TIME to decide whether to fold the parent's rotation into the
+  orbit (ElipticOrbitLoader.hpp:12, CometOrbitLoader.hpp:14).  Mutant 1 leaves
+  every body's `eclipticPos` at (0,0,0) during the load, so every parent reads
+  as system-centred and every child's orbit is built in the WRONG FRAME.
+  **So the constructor's JD-0 evaluation has a SECOND consumer: it is what makes
+  `isSystemCentered()` answer correctly while the system is still loading.**
+  That is a fact about the code the task did not set out to find, and it is what
+  makes "skip the evaluation at JD 0" unusable as a fix shape.
+
+WHAT MUTANT 2 SAYS -- THE ISOLATION, AND THE PREDICTION HELD BY NAME
+  `f100_identity.py` control vs mutant 2 (identity_mut2_p0.txt), P0, un-moved
+  launch state, camera state identical, same jd:
+    walked   72/72 mat  71/71 altaz_new
+    parked   27/29 mat  17/19 altaz_new   moved: **Eris, Sedna**
+    unreached 29/29
+  EXACTLY the two records the replay named, and no third -- the committed
+  false-if was "a third record moves, or either named record does not".
+    Eris  control [85.8409882, 38.323143, -18.7250576]   sep_p0 1.1987248926314011
+          mutant  [85.1671219, 39.6249275, -17.3216801]  sep_p0 1.0629396175241108e-05
+          predicted (model_replay.txt) [85.1671219, 39.6249275, -17.3216801] -- EXACT,
+          and equal to the POST-FIX binary's landed value float32 for float32,
+          with lastJD 2461232.9477391075 and dist 95.6210098 also equal to it;
+          `altaz_new` [-0.028987640514969826, 1.5367250526931624] is F104's post
+          value digit for digit.  ONE LINE on the PRE tree, at ONE step per call,
+          buys exactly what two steps per call bought.
+    Sedna control [39.3564529, 70.9922104, -17.0377331]   sep_p0 1.0866764427531615e-05
+          mutant  [-35.3826904, 69.449028, -7.60469103]   sep_p0 55.01824508255541
+          predicted [-35.3826714, 69.4490356, -7.60469437]: the NAME, the
+          direction and 7 significant digits (|d| 2.1e-05 AU on a 79 AU vector,
+          2.6e-07 relative), NOT float32 identity.  Cause of the tail, named:
+          the model puts the observer at Earth's dumped `ecl` and ignores the
+          camera's 4.26e-05 AU surface offset, and Sedna's mutant arm is in a
+          NON-CONVERGED regime where the retarded-date coupling amplifies it
+          (predicted dist 79.3159342 vs measured 79.3159561).
+  Ceres and Pluto read 1.129436371961277e-05 and 9.659346157805877e-06 in ALL
+  THREE legs, to the last digit -- the comparison is not insensitive.
+
+THE DIRECTION IS THE POINT: one line moves Eris ONTO its answer and Sedna 75 AU
+OFF it, because `IterativeEll`'s state starts (0, 1, 0) and its first step from
+there is `H = M/(1-e)` -- 44 radians at Sedna's e = 0.8588315 -- so for the comet
+family the constructor's JD-0 call is what BURNS that bad first step, while for
+Eris's unwrapped Newton branch it is what CREATES the 75.765-radian staleness.
+A fix for one is a defect for the other, which is why this stays a measurement.
+
+GATES, all three legs: canary `--no-scene` exit 0 before each launch; `/proc`
+comm probe 0; `/tmp/spacecrafter.lock` absent before and after; the real
+`~/.spacecrafter` md5 `03fbee59` / `545a51ef` in == out; f100_freeze FAILS 0
+NOTES 0 with frozen = I = 29 and the other hypothesis (P u I) shown to FAIL on
+each binary; 1875 frames between the dumps on the control.

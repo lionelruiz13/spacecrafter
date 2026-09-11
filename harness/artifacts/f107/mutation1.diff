@@ -1,0 +1,15 @@
+diff --git a/src/experimentalModule/ModularBody.cpp b/src/experimentalModule/ModularBody.cpp
+index b0d5af8d..b437870e 100644
+--- a/src/experimentalModule/ModularBody.cpp
++++ b/src/experimentalModule/ModularBody.cpp
+@@ -120,7 +120,9 @@ ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
+     if (parent) {
+         lastJD = parent->lastJD;
+         Vec3d tmp;
+-        if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
++        if (lastJD == 0) {          // F107 MUTATION -- MEASUREMENT ONLY, NEVER DELIVERED
++            tmp = Vec3d(0, 0, 0);   // no evaluation at JD 0: the solver seed stays declared-zero
++        } else if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
+             (*oscFunc)(lastJD,lastJD,tmp);
+         } else {
+             orbit->positionAtTimevInVSOP87Coordinates(lastJD,lastJD,tmp);
