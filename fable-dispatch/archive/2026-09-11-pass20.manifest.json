@@ -1,0 +1,66 @@
+{
+ "pass": "pass20",
+ "date": "2026-09-11",
+ "source": "fable-dispatch.md",
+ "pre_md5": "635c369fe8dd90953fb5c3ca2c6434f9",
+ "pre_commit": "8ccaca2",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [
+  {
+   "removed_after_unit": "update-s26",
+   "lines": [
+    "---",
+    ""
+   ],
+   "positions_pre": [
+    333,
+    334
+   ],
+   "reason": "the moved unit sat between two --- separators; removing it leaves them doubled (pass-13..19 precedent)."
+  }
+ ],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "update-s26",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s26.md",
+   "line_start": 203,
+   "line_count": 130,
+   "payload_md5": "07b512a68d8f977f0f7f1ff701d7fa04"
+  },
+  {
+   "id": "F103",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F103.md",
+   "line_start": 709,
+   "line_count": 215,
+   "payload_md5": "aee001e64d22a890cc973389f0b0aa5d"
+  },
+  {
+   "id": "F104",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F104.md",
+   "line_start": 924,
+   "line_count": 198,
+   "payload_md5": "ce967efbaff613ff77a0bf0b16f611f7"
+  },
+  {
+   "id": "F105",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F105.md",
+   "line_start": 1122,
+   "line_count": 204,
+   "payload_md5": "88ea41d35f4eaa1d389f6ca7b6615ea8"
+  },
+  {
+   "id": "F106",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F106.md",
+   "line_start": 1326,
+   "line_count": 199,
+   "payload_md5": "2c1acfc7ba29c199014508341ed5b919"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}
