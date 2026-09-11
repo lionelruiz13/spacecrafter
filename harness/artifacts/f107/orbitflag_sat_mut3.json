@@ -1,0 +1,122 @@
+{
+ "tag": "sat_mut3",
+ "bin": "/home/claude/sc-f107/bin/spacecrafter-mut3",
+ "flag": "satellites_orbits",
+ "jd": 2461233.5,
+ "jd2": 2461234.5,
+ "bin_md5": "ee7c120d",
+ "started": "2026-09-11T21:34:52",
+ "walked_iterating_n": 40,
+ "proc_before": [],
+ "lock_before": {
+  "present": false
+ },
+ "md5_in": {
+  "config.ini": "03fbee59",
+  "ssystem.ini": "545a51ef"
+ },
+ "tcp_seconds": 19.0,
+ "jd_d0": 2461233.5,
+ "camera_d0": {
+  "reference": "Earth",
+  "tracked": "",
+  "freeMode": false,
+  "boundToSurface": true,
+  "mount": "equatorial",
+  "skyLocked": false,
+  "viewOffset": 0,
+  "viewOffsetTransition": 0,
+  "viewOffsetEff": 0,
+  "longitude": 0.0936660022,
+  "latitude": 0.755727589,
+  "distance": 4.26357365e-05,
+  "alt": -0.755627334,
+  "az": 1.57065892,
+  "heading": -6.28318501,
+  "halfFov": 1.57079637
+ },
+ "n_records": 120,
+ "partition": {
+  "P": 29,
+  "I": 29,
+  "n": 120
+ },
+ "ctl_d0_vs_d0b": {
+  "moved": [],
+  "max_AU": 0.0,
+  "worst": null,
+  "n": 120
+ },
+ "d1_immediate": {
+  "moved": [
+   "Ariel",
+   "Callisto",
+   "Dione",
+   "Enceladus",
+   "Ganymede",
+   "Hyperion",
+   "Iapetus",
+   "Mimas",
+   "Miranda",
+   "Moon",
+   "Oberon",
+   "Rhea",
+   "Tethys",
+   "Titan",
+   "Titania",
+   "Umbriel"
+  ],
+  "max_AU": 1.8725989541003773e-07,
+  "worst": "Mimas",
+  "moved_walked_iter": []
+ },
+ "d2_settled": {
+  "moved": [
+   "Ariel",
+   "Callisto",
+   "Dione",
+   "Enceladus",
+   "Ganymede",
+   "Hyperion",
+   "Iapetus",
+   "Mimas",
+   "Miranda",
+   "Moon",
+   "Oberon",
+   "Rhea",
+   "Tethys",
+   "Titan",
+   "Titania",
+   "Umbriel"
+  ],
+  "max_AU": 1.8725989541003773e-07,
+  "worst": "Mimas",
+  "moved_walked_iter": []
+ },
+ "pixels": {
+  "shape": [
+   2048,
+   2048,
+   3
+  ],
+  "pixels_differing": 91236,
+  "max_abs_channel_delta": 89
+ },
+ "ctl_other_date": {
+  "jd": 2461234.5,
+  "moved_n": 88,
+  "max_AU": 2.0306907698707595,
+  "worst": "Eris",
+  "n": 120
+ },
+ "log_lines": [],
+ "exit_code": 0,
+ "lock_after": {
+  "present": false
+ },
+ "md5_out": {
+  "config.ini": "03fbee59",
+  "ssystem.ini": "545a51ef"
+ },
+ "proc_after": []
+}

@@ -1,0 +1,17 @@
+diff --git a/src/experimentalModule/bodyModules/OrbitModule.cpp b/src/experimentalModule/bodyModules/OrbitModule.cpp
+index ff4e5cd5..61463694 100644
+--- a/src/experimentalModule/bodyModules/OrbitModule.cpp
++++ b/src/experimentalModule/bodyModules/OrbitModule.cpp
+@@ -93,6 +93,12 @@ bool OrbitModule::wantShown(ModularBody *body) const
+ 
+ void OrbitModule::sampleOrbit(ModularBody *body)
+ {
++    // F107 MUTATION 3 -- MEASUREMENT ONLY, NEVER DELIVERED.  The NEW path's
++    // sampler does nothing, so whatever still moves when `flag
++    // satellites_orbits on` is drawn belongs to another walker (the OLD path's
++    // OrbitPlot::computeOrbit, orbit_plot.cpp:100-183, goes through the same
++    // ephemeris state for the same bodies).
++    return;
+     const Orbit *orbit = body->getOrbit();
+     if (!orbit)
+         return;

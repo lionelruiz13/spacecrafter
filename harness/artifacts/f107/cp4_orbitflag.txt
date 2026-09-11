@@ -1,0 +1,79 @@
+F107 CP4 -- THE (j2) LEG IN THE ENGINE: P5 HELD WHERE IT WAS AIMED AND A LARGER
+CHANNEL WAS SITTING NEXT TO IT
+===============================================================================
+Driver `f107_orbitflag.py`, four launches, all gated (canary `--no-scene` exit 0,
+`/proc` comm probe 0, no lock file, real `~/.spacecrafter` md5 `03fbee59` /
+`545a51ef` in == out on every one).  Binaries: the DELIVERED `e411b838`, the
+F107 control `31a39eb5` (474c595d, unchanged), and the attribution mutant
+`ee7c120d` (474c595d with `OrbitModule::sampleOrbit` returning immediately).
+
+THE DESIGN THAT MAKES IT READABLE: every comparison is dump-to-dump INSIDE ONE
+LAUNCH.  `11.225(e)` measured 90 of 120 records moving between two launches of
+one binary, so a cross-launch comparison could not have resolved anything at
+this magnitude.  The within-launch control is the first thing each leg prints:
+  **D0 vs D0b, nothing changed between them: 0 of 120 records moved, max 0 AU,
+  in ALL FOUR launches.**  The channel is exactly stable frame to frame.
+And the control that shows the comparison ABLE to fail: the same dump after
+`date jday 2461234.5` moves **90 of 120** records (max 0.0235 AU) on the
+delivered binary and 88 of 120 (max 2.03 AU -- Eris's own, on a pre-F104 binary)
+on the control.
+
+P5, AS COMMITTED: "walked ITERATING bodies bit-identical between the flag on and
+off at dump cadence".  **HELD: 0 of the 40 walked-iterative records moved in any
+arm**, immediate or settled, on either binary (`moved_walked_iter` is empty in
+all four JSONs).  The predicted reason held too: at a pinned clock
+`sampleOrbit` runs ONCE (OrbitModule.cpp:132's `|date - lastSampleJD| >= inc`
+never fires again at a frozen date), the walked body is re-evaluated every
+frame, and the dump arrives hundreds of frames later.  The BLIND SPOT was named
+in advance and remains: a ~1-frame transient cannot be placed inside a dump by
+the TCP channel, so this null is not evidence that the transient is absent --
+P4's slice measurement is that evidence (Pasiphae 0.0246 AU = 834 arcsec at
+HEAD's two steps per call).
+
+P3, AS COMMITTED, CONFIRMED IN THE ENGINE AND IT IS THE FLAG THAT DECIDES:
+  `flag planets_orbits on`   -> **0 of 120 records move**, with 91774 pixels of
+                               the frame changed (the lines ARE drawn).  Every
+                               walked Sun-child is closed-form and every
+                               iterating Sun-child is PARKED, hence erased from
+                               `sortedSystemBodies` and never sampled.
+  `flag satellites_orbits on`-> 91563 pixels changed AND **17 records move**.
+  So the section's `flag planets orbits on` cannot reach a solver seed at all;
+  the satellite flag is the one that reaches anything.
+
+THE 17, AND WHAT THEY ARE: Ariel, Callisto, Dione, Enceladus, Europa, Ganymede,
+Hyperion, Iapetus, Mimas, Miranda, Moon, Oberon, Rhea, Tethys, Titan, Titania,
+Umbriel -- every one a `*_special` / `lunar_custom` orbit, NOT ONE of them
+iterative.  The difference is PERSISTENT, not transient: D1 (immediate) and D2
+(settled) give the same set and the same magnitudes.  Largest: **Mimas
+1.8726e-07 AU (28 km, 0.0041 arcsec at its 9.32 AU)**; then Miranda 1.469e-07,
+Enceladus 1.311e-07, Tethys 6.96e-08, Ariel 5.90e-08, Titania 4.01e-08.
+MECHANISM, at source: these moons have a `positionFunction` and NO
+`osculatingFunction` (orbit.cpp:818-899 -- only the PLANETS get one,
+:797-903), so the sampler asks their ephemeris for 180 DIFFERENT dates through
+`SpecialOrbit::positionAtTimevInVSOP87Coordinates`, and those ephemerides
+(l1.c, tass17.c, gust86.c, elp82b.c) evaluate through
+`CalcInterpolatedElements` -- a STATIC three-epoch interpolation cache
+(`static double t_0/t_1/t_2` + element vectors, tass17.c:3146-3151) whose
+contents depend on the HISTORY of requested dates.  Moving that cache moves the
+next evaluation's interpolation.  The planets are inert for the same reason
+read the other way: their osculating form is asked for elements at ONE date
+(the body's own `jd0`) 180 times, so nothing moves.
+
+ATTRIBUTION, BY MUTATION, BECAUSE THE FLAG REACHES BOTH PATHS: the seam
+`ssystem_factory.hpp:442/:491` is a both-paths seam, and the OLD path's
+`OrbitPlot::computeOrbit` (orbit_plot.cpp:100-183) walks the SAME ephemeris
+state for the same bodies (`(*oscFunc)` when there is one, else
+`fastPositionAtTimevInVSOP87Coordinates`, which for a SpecialOrbit is the base
+`Orbit`'s forward to the cached `positionFunction`).  With the NEW path's
+sampler disabled (`ee7c120d`):
+  **16 of the 17 still move, with identical magnitudes, and EXACTLY ONE stops:
+  Europa, 3.4750326422777565e-08 AU (5.2 km, 0.0011 arcsec at 6.26 AU).**
+So on this corpus the new path's sampler (j2) IS a measurable channel in the
+engine -- on one record of 120 -- and the other sixteen belong to the OLD path's
+plot, which is the comparison baseline and unchanged by construction.  The
+mutant was reverted and the control binary BIT-REPRODUCED (`31a39eb5`).
+
+WHAT THIS DOES NOT SAY: nothing here measures the ITERATIVE seed in the engine.
+The iterative walked bodies are satellites whose lines the same flag draws, and
+they came back bit-identical -- because their seed re-converges within a frame
+or two and the dump cannot see the frames in between.
