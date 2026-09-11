@@ -83,7 +83,9 @@ they move this head on both criteria. Previous head kept above, struck where sup
   layer half · **§5.53(b)** (T1.9, one token) · ~~the **T5.1 rehearsal**~~ **[RAN 2026-09-05, F90 §11.211 — "ready" now waits on T5.2 alone]** · and the
   **decision-free queue R27/R28/R18/R19/R20/L1 just created** (§11.207(g): ~~§5.86+§5.19~~
   **[DELIVERED 2026-09-06, F91 §11.213]**, ~~§5.98~~ **[DELIVERED 2026-09-06, F94 §11.214]**,
-  §5.21, §5.66+§5.71, §5.115, A15's residual). The final-pass SEND is no longer on
+  §5.21, §5.66+§5.71, ~~§5.115~~ **[RETENTION HALF DELIVERED 2026-09-11, F108 §11.230 — eight
+  launches per channel by numbered rotation; the DENSITY half stays open at the row]**, A15's
+  residual). The final-pass SEND is no longer on
   this list: it fired, and came back — **nineteen of twenty answered, L2 alone open**.
 - **Newly NOT necessary, so the shrinkage is visible**: A43's data regeneration
   (**cancelled** — R29 says it is design, and doing it would destroy the effect) · the
@@ -744,6 +746,9 @@ direction (see T3).
    full readout for bodies `search` reports NOF. The LEAK rule says **LEAK** on this corpus
    (68.3 MB/h, 42.4 MB/cycle over 8 cycles) where it said NO LEAK on the eight shipped shows,
    and §5.115's script log costs **193 MB/h** here against 1.88 MB/h there — 828 MB in one
+   **[CAPPED 2026-09-11, F108 §11.230: the rate stands, the accumulation does not — every
+   channel keeps eight launches and the live file truncates at open, so this session's
+   828 MB can no longer land in one file. §5.115's density half is still open.]**
    session, which is the field's "gigabyte-large script logs" made arithmetic. What is STILL
    unmapped: B30 (no pixel is read) and §5.137's own trigger `body action reload`, which
    appears in ZERO shows of this corpus.]** **"Ready" is the owner's word from here.**]**

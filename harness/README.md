@@ -5455,3 +5455,115 @@ which exactly one (Europa, 3.475e-08 AU) is the new path's sampler; P4 on the
 slice 0.0246 AU = 834 arcsec on Pasiphae, once per 3.94 days of simulation
 time. Seven launches, canary green, frozen pair in == out on every one.
 Artifacts `artifacts/f107/` (~0.33 MB).
+
+## F108 — the log channels' retention window and their single reader (`logread.py`, `f108_rotate.py`, `f108_writelog.py`, `f108_mutant.py`) — INTENT §11.230 / §5.115 / §11.173(b), 2026-09-11
+
+```
+python3 logread.py selftest                              # 25 checks, both ways
+python3 logread.py <logdir> [channel]                    # what a dir holds now
+python3 logread.py --live <logdir> [channel]             # the path, for sh callers
+DISPLAY=:2 python3 f108_rotate.py <absOut> --home real|<farm> --launches N
+python3 f108_rotate.py <absOut> --report                 # score, no launch
+DISPLAY=:2 python3 f108_writelog.py <absOut> --pre <binA> --post <binB>
+DISPLAY=:2 python3 f108_mutant.py <absOut> --tag A --bin <path>
+python3 artifacts/f108/selftest_mutant.py                # the reader shown able to fail
+python3 artifacts/f108/lockrefusal.py <absOut> <bin>     # the refused second instance
+```
+
+### THE FIVE CHANNEL NAMES, AND WHAT A LOG DIRECTORY LOOKS LIKE NOW
+
+`main.cpp:215-220` opens five channels and each keeps the last
+`LOG_RETENTION_LAUNCHES` = 8 launches: **`spacecrafter.log`** (INTERNAL, the
+default sink of `cLog::write`), **`script.log`**, **`tcp.log`**,
+**`shader.log`**, **`vulkan.log`** — the RUNNING launch always has the bare
+name, the previous ones are `<channel>.1.log` … `<channel>.7.log` (`.1` =
+the launch before this one), and `<channel>.8.log` cannot exist. Before F108
+the script channel alone wrote a per-DAY `script-YY.MM.DD.log` in append mode;
+those files are LEGACY, the application never touches them again, and the
+field home here still holds 34 of them (5 802 574 B).
+
+**Use `logread.py`, never a glob.** `live()` is `<channel>.log` unless a legacy
+dated file is strictly NEWER (a directory last written by a pre-F108 binary, or
+a downgrade), `history()` is the live file then the archives newest first,
+`legacy()` is the dated pile, `text()` is the two-line idiom the nine old
+readers had, and `window()` reads the constant out of `src/tools/log.hpp` so an
+instrument cannot hard-code 8.
+
+### The expansion path the readers took, and the one class left documented
+
+Ten harness files now call `logread`: `f61`, `f62`, `f63`, `f67`, `f68`, `f69`
+(all six had `sorted(glob("script-*.log"))[-1]`, which returns **nothing** in
+the new layout — the glob needs a dash — and they would have waited out their
+own 60-120 s loop and then read `""`), `f50_selvars` and `f53_guards` (both
+asserted *"exactly one script log"* against `script*.log`, which the archives
+match from the second launch in a farm on), `f90_rehearsal` and
+`f4_scriptspeed.sh` (through `--live`). `f4` also lost its byte offset: the
+live file is truncated at open, so this run IS the file, and only a dated file
+needs the offset the append layout forced.
+
+- **THE `[-1]`-OF-SORTED-PREFIX-GLOB READERS SURVIVE BY ASCII LUCK, AND THAT IS
+  RECORDED RATHER THAN RELIED ON.** `f94_bodyselect.py:285`, `f95_soak.py:421`
+  and `:1126`, `f41_ownership.py:228`, `f39_farm.sh:90` glob `<prefix>*.log`
+  and take the last: `'1'` is 0x31 and `'l'` is 0x6c, so `X.1.log` sorts BEFORE
+  `X.log` and `[-1]` still lands on the live file. Measured, not assumed
+  (`sorted(['spacecrafter.log','spacecrafter.1.log','spacecrafter.7.log'])`).
+  They also run one launch per farm, so no archive exists for them to trip on.
+  A sixth file, `f95_report.py:168`, is a LABEL on landed rows and says so now.
+  Three of the twelve files the F108 dispatch counted (`f36_class.py:95`,
+  `f80_corpus.py:326`, `f95_report.py:168`) are not readers at all.
+
+### Gotchas measured here, each of which cost a reading first
+
+- **NO LOG LINE CARRIES A WALL-CLOCK DATE.** The only prefix any line gets is
+  `%012d: ` from `SDL_GetTicks` (`log.cpp:124-126`) and only when `print_log`
+  is on; `spacecrafter.log`'s first lines have no prefix at all. To say WHICH
+  launch a rotated file holds, use the **inode** (`rename` preserves it, so
+  `X.1.log` after launch k is the file `X.log` was after k-1 — 240 identities
+  held over the F108 campaign) and, where there is content, `My getpid() is
+  <pid>` (`main.cpp:239`) or a token sent over TCP and echoed onto the script
+  channel (`app_command_interface.cpp:210`). mtime runs opposite to the index
+  and is a third, weaker key.
+- **`rename` REPLACES ITS DESTINATION, so "disable the delete" is not a mutant
+  of the cap.** [fs.op.rename] follows POSIX `rename(2)`: `rename(X.6.log,
+  X.7.log)` unlinks the old `X.7.log` by itself. The file count is bounded by
+  the fixed index range; the explicit `remove` buys the SIZE (read while the
+  file exists) and a D12 line that is true. Measured: with `remove` disabled
+  the file set is identical and the line says *"deleted nothing"* while five
+  files die. To break the CAP, make the shift unbounded.
+- **SEED THE LOG DIR TO PUT THE BOUNDARY AT LAUNCH ONE.** `f108_mutant.seed()`
+  writes 8 files per channel, each naming its slot and each a distinct size
+  (5000 + 100k), so one launch says which seeded file moved where AND which one
+  was deleted (from the byte count in its own D12 line). Counting to ten only
+  tests a cap of eight if the run gets there.
+- **`tcp.log` and `shader.log` are 13 bytes on a clean quit and that is their
+  whole content**: `(Info ): EOF` is written by `close()` STRAIGHT to the
+  stream (`log.cpp:104`), bypassing `write()` and therefore bypassing
+  `write_log` — which is why even a dead channel has a file with one line.
+- **A pre-config log line is file-only.** `Log->setDebug(print_log)` runs at
+  `main.cpp:268`, so everything written before it (the banner, the RAM line,
+  the lock lines, the second-instance refusal, and F108's own rotation report)
+  reaches the log file and NOT the console. F108 pushes its report to the
+  console from `setDebug(true)` itself for that reason; the refusal warning at
+  `main.cpp:249` still does not (§11.230(l)).
+- **A REFUSED SECOND INSTANCE HAS ALREADY ROTATED THE LOGS, AND IT ABORTS.**
+  The single-instance check is at `main.cpp:241-250`, thirty lines below the
+  opens, so a refused launch consumes one window slot — and it exits **-6
+  (SIGABRT)** with `terminate called without an active exception` on the
+  BASELINE binary too (a joinable `LinuxExecutor` thread destroyed at
+  `return 0`). `artifacts/f108/lockrefusal.py` makes the lock valid with a live
+  process of its own; it never starts a second application.
+- **The per-channel legacy-pile scan is the whole open-time cost.** One
+  `directory_iterator` pass per channel: 1.196 ms total on the field's
+  467-entry directory against 0.176 ms on an 8-entry farm (~0.44 us/entry).
+  Zero per frame.
+
+**Measured, code `48cc3727 -> 71b6fe51`, binary `e411b838 -> 6d63e6c1`
+(bit-reproduced in both directions; mutants `9c7c74ce`, `4b779b16`, timing
+build `11cc2c7c`, all reverted):** 37 launches, canary green and `/proc` clear
+before every one, the field pair `03fbee59`/`545a51ef` plus
+`scripts/fscripts/startup.sts` `cea83254` in == out on every one; ten launches
+on the real `~/.spacecrafter` giving 2,3,4,5,6,7,8,8,8,8 files per channel with
+the five launch-8 deletions at 87877/3834/13/13/102710 B; `write_log=false` +5
+lines -0 normalised against the baseline; `f90_rehearsal_run.sh` rc 0 FAIL
+none; `f91_run.sh --expect post --locale fr` table `1fe630a4` byte-identical.
+Artifacts `artifacts/f108/` (172 KB).
