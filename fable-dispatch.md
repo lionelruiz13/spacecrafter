@@ -36,6 +36,62 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-11, supervising session 28 — LovelyFoxDev, the SEED-STALENESS /
+LOG-RETENTION / RESIDUAL-STEP round: F107 · F108 · F109]:** trigger = the §0b verbatim line and nothing
+else. Open at **Friday 20:15 CEST** — a weekday evening, the eve of the owner's Saturday `supervised-by.sh`
+run (§11.223(d)); this session asks NOTHING in-line, writes its decisions to §3 in Q-70's shape, and touches
+NEITHER `supervised-by.sh` NOR `purge-path.sh`: the tool he runs tomorrow is FROZEN at the F106 acceptance
+state, and the two instrument residues that name it (`purge-path.sh`'s own map, `list_code_trailers`' silent
+skip) stay queued BY DECISION, not by effort — a change the evening before his run would make the §3 [Y4]
+model he already read stale. Warm-up (every value from the command beside it, Q-67; `date` 20:15:08 at the
+first probe): both trees CLEAN at open, code `48cc3727` / harness `8ccaca2` (session 27's post-close commit
+— no owner write since); definition-drift assert MATCH (`8e364a3a`); binary `e411b838` current (0 `src/`
+files newer). **THE HOST REBOOTED AT 20:06:16, nine minutes before the trigger** (`uptime -s`; the
+2026-09-04 18:45:08 boot of sessions 21–27 ended, `/tmp` with it): `loginctl` claude sessions **5/6** (the
+bank named 14/15), Xwayland `:2` pid 12735 under the new cookie `.AF5BV3`, `xdpyinfo` 2448x1332, the
+inherited `DISPLAY`/`XAUTHORITY` already correct — the owner re-provisioned the RULED display class at
+20:13:30, two minutes before the line; canary `--no-scene` **exit 2** at 20:19:47 (FAIL `compositor.restarted`,
+NOTE `xserver.restarted`, every other member EQUAL to the bank — the VALUES block's per-boot paragraph
+firing as written), RE-BANKED in one VALUES-block edit with its argument (the three per-boot members; the
+2026-09-04 values struck not deleted; the band untouched), then **exit 0** at 20:26:14 and the FULL canary
+**exit 0** at 20:28:03 (165.258/6.644 · 160.142/6.603, every delta 0.0 — the band on a THIRD boot);
+HOST-EVENTS entry + the §11.174(h) decision flag (`1ad2a1a`). Config/ssystem md5 pristine
+(`03fbee59`/`545a51ef`) in == out; no `spacecrafter` in `/proc/*/comm`; no lock file; RAM **53 GiB available
+of 59**, `-j24`; next free §11 **229** (live ∪ archive, `max+1`); unpushed **98 code / 831 harness** at
+open, origin refs UNMOVED since session 27 ⇒ the Saturday rewrite has NOT run yet. Live `### F` **4 → 0**
+by **archival pass 20** at OPEN (update-s26 + F103/F104/F105/F106, 948 lines = 130 + 215 + 198 + 204 + 199
++ the doubled separator after the moved note; manifest `2026-09-11-pass20`, pre-md5 `635c369f` at `8ccaca2`
+reproduced in-process AND from disk, archive files written before the live surface — Q-56; the in-process
+instrument every pass used is now a FILE, `harness/fd_archive_pass.py`, same manifest schema; commit
+`1ae644f`; **nothing carried**) **→ 3** by the mints below. Instrument baselines at open (run 20:15): scan
+**263/332/144** · pair-check **244/219/25/120** · D 35 · D2 12 · I 89 · I2 37 · M 89 — to the digit of the
+session-27 post-close. QUEUE CONSUMPTION (the session-27 close's list, in order): (1) pass 20 — DONE; (2)
+what F106 left owed — nothing for the owner (§11.228); (3) **§11.225(j2)/(j3)'s leg → F107** (S — WIDENED
+by the read: (j3)'s "+32 or −8 rad" are coincidences of a non-monotonic residual map; the seed's FIRST
+writer is the CONSTRUCTOR, `ModularBody.cpp:121/:126`, which evaluates every body at `parent->lastJD` = **0**
+before the first frame, so Eris's first use meets a seed **75.765 rad** behind (2π · 2461233.5 / 204109.40 d);
+the sampler (j2) cannot reach a parked body — `flag_planets_orbits = false` in the field and parked subtrees
+are not walked; predictions first, one mutation on a scratch worktree at `474c595d`, NO delivered engine
+change; two §5 candidates reported, minted at acceptance if at all); (4) §5.146 on his word — NOT said,
+not minted; (5) owner-word items — carried; (6) the (g) tail: **§5.115's retention → F108** (S–M — the fork
+collapsed at §11.173(b) and the scalar paid by R20, so the mechanism is the executor's under FIXED
+invariants: numbered rotation at open, every channel, the current file keeps its name; a COMPILED constant,
+NOT a config key — `checkConfigIni` would write a new key into the field's `config.ini` and break the
+`03fbee59` precondition every later task asserts; the key is a veto point); **§5.66 + §5.71 — NOT minted:
+the (g) list's "decision-free" is REFUTED at both rows** (§5.66 owes which landing `look_at azimuth X
+altitude Y` means; §5.71 owes the duration-branch feel answer — each row's own R28 annotation says so);
+**A15's residual step → F109** (S — the (g) list's "tuning pass over B22's constants" is imprecise: §11.82(b)
+names a MECHANISM lever, the α-scaling of the halo disc floors; L1 authorises the direction; the attribution
+among the candidate floors is measured before the change; photometric, on a canary green on both arms
+tonight); (7) instrument residues — carried (the two tool items by decision, above); (8) riders, (9) owner
+items per §3 — carried. Picks: **F107 → F108 → F109** (no engine change first; then the engine change whose
+launches are cheapest; then the photometric one). Deliveries: all to the parent (§11.229+, refreshed at each
+dispatch). Launch classes: F107 FUNCTIONAL (`--no-scene`), F108 FUNCTIONAL (`--no-scene`), F109
+PHOTOMETRIC (full canary — green at 20:28:03). Remotes: local contains origin on both; push impossible here —
+the owner's push is R5, Saturday.
+
+---
+
 **Update [Claude Fable 5.1 2026-09-07, supervising session 27 — LovelyFoxDev, the SATURDAY-TOOL /
 TWO-STEP-SOLVER / DUMP-CHANNEL round: F103 · F104 · F105]:** trigger = the §0b verbatim line and
 nothing else. Open at **Monday 08:57 CEST** — a weekday morning; the owner replied to the session-26
@@ -570,7 +626,182 @@ precondition).** **Session-27 round (2026-09-07): F103 §11.224 · F104 §11.225
 three DELIVERED and accepted; §5.147/§5.148 minted at acceptances; archival pass 20 (update-s26 +
 F103–F105) DEFERRED to the next open.** **Post-close, same day: the owner's [Y8] reply (§11.227) →
 F106 §11.228 minted, delivered and accepted (§5.147 FIXED — the rewrite leaves unselected commits
-untouched); archival pass 20 = update-s26 + F103–F106.**
+untouched); archival pass 20 = update-s26 + F103–F106.** **Session-28 (2026-09-11): archival pass 20 DONE
+at open (`1ae644f`); live below: the session-28 mints **F107** (§11.225(j2)/(j3)'s seed-staleness leg — the
+constructor seeds every body at JD 0; no delivered engine change), **F108** (§5.115's fix: uniform bounded
+retention, eight launches, every channel, a compiled constant), **F109** (A15's residual step removed on
+L1's word — the attributed halo floor α-scaled).**
+
+---
+
+### F107 — WHERE ERIS'S STALE SEED CAME FROM (§11.225(j3)) AND WHETHER THE ORBIT-LINE SAMPLER IS A CHANNEL (§11.225(j2)): the seed's FIRST writer is the constructor — `ModularBody.cpp:121` `lastJD = parent->lastJD` and `:126` `orbit->positionAtTimevInVSOP87Coordinates(lastJD,lastJD,tmp)` → `orbit.cpp:466` → `positionAtTime` `:577` → `eccentricAnomaly(meanAnomaly, iterativeLastE)` `:582` — and before the first frame every node's `lastJD` is **0** (F105's unevaluated records print `lastJD 0`), so the first thing Eris's seed ever sees is M(JD 0), seeded by the `lastE == 0` branch (`:527-528`) and advanced ONE step (pre-F104); at the first use (jd 2461233.5, §11.226(g)) the mean anomaly is **75.765 rad** further on (2π · 2461233.5 / 204109.40 d, the field's `orbit_period`; `orbit_epoch` cancels) — so the seed is ~76 rad BEHIND, and (j3)'s "+32 or −8" are coincidences of a non-monotonic map (the sweep's `-64` row already reads err5 = 0.0100569 beside `-8`'s 0.0176901 and `+32`'s 0.0182553); PREDICTED before any run: the exact replay (ctor step at M(0), then 5 one-step calls at M(launch)) reproduces F104's 2.029 AU / 1.198725°, and with two steps per call the 1.06e-05°; CONFIRMED by ONE mutation on the pre tree (the ctor's evaluation skipped when `parent->lastJD == 0` ⇒ Eris converged at 5 calls on a one-step solver, exactly one record moving at P0). The sampler (j2) — `OrbitModule.cpp:94-114`, 180 dates through the SAME seed (`:110` → `:466` → `:582`), gated by `wantShown` `:83-91` (`showPlanets` for non-satellites: `flag_planets_orbits = false` in the field, so OFF at launch) and by the module's `update` (parked subtrees ride `hiddenBodies`, `ModularBody.cpp:215`, and are not walked) — CANNOT reach Eris [derived; the executor verifies at the walk]; for a WALKED iterating body with the flag on, each resample (`:132-133`, once per period/180 of simulation time) leaves the seed at E(date + 89·period/180) ≈ +π of mean anomaly and the next frame's evaluation starts there — the sweep's `+2`/`+4` rows (err2 8.2e-03 / 0.566 rad) bound the ONE-FRAME error; the OLD path's plot never touches the position seed because `fastPositionAtTimevInVSOP87Coordinates` uses its OWN `batchLastE` (`orbit.cpp:442-458`) — a generality the port to `OrbitModule` dropped (the rewrite monitor); `TrailModule.cpp:229-233` is a third walker of the same seed, named. Two §5 CANDIDATES reported with §5.79's criterion applied, minted by the supervisor if at all; NO fix in this task [S, harness + one scratch mutation; NO delivered engine change; FUNCTIONAL launches on `:2`, `--no-scene` canary]
+
+**Why now / mandate:** §11.225(j2) (*"a question for the next task in this area, not an assertion"*) and (j3) (*"where that staleness comes from is unattributed"*), §5.84's F104 annotation (the new-path member *"recorded not minted"*), the session-27 close's queue item (3). It is decision-free: nothing user-visible changes, the delivered binary is untouched, and the product is an attribution plus two priced candidates.
+
+**The reading the mint stands on [derived; each fact a premise line]:** the constructor evaluates EVERY body once at construction, at `parent->lastJD`, through the position solver's own seed; at load no frame has run, so that date is JD 0 (year −4712) for every body — the 8 refused bodies of F105 print `lastJD 0` because nothing ever evaluated them AFTER that. For Eris (e 0.4374, the Newton branch `0.2 ≤ e < 0.9`, period 204109.40 d, `hidden = true`, parked under the walked Sun) the seed then meets, at the first `useNow()`, a mean anomaly 12.058 revolutions further on: Newton from a seed 75.8 rad behind converges in more than the 5 steps the barrier bought pre-F104 (the sweep's `-64` row needs 8) — which is §5.145's whole magnitude, now with its cause. The 13 other parked iterating bodies had shorter periods relative to... NO — they have `lastJD 0` too and offsets of their own (each = 2π · 2461233.5 / its period, modulo the branch's convergence radius); F104's table shows them converged at 5 calls, so the prediction per body is a NUMBER the replay gives, not a class claim — Eris is the one whose offset lands in a slow basin, and the replay says whether that is so for each of the 14. **The sampler's reach**: `wantShown` reads a GLOBAL flag per class (planets / satellites); the field config carries `flag_planets_orbits = false`; a parked body's modules are not updated (its subtree is in `hiddenBodies`); so (j2) is a WALKED-bodies channel, off by default, on under `flag planets orbits on` / `flag satellites orbits on` — a shipped command — with a one-frame transient per resample whose size the slice predicts per body. The old path's `orbit_plot.cpp` uses the batch entry with `batchLastE`, i.e. the port dropped the separate seed.
+
+**Measured at dispatch (supervisor, 2026-09-11 20:3x–20:4x, code `48cc3727`, harness `1ad2a1a`):** the sites above at their quoted lines; `if (lastE == 0)` at `orbit.cpp:521 527 538 557`; the two seeds `orbit.hpp:120/:122`; the sampler's five lines `94 106 110 112 133`; the trail's `:233`; `hiddenBodies` walk `ModularBody.cpp:215`; the field: `[Eris]` at `ssystem.ini:2265` with `coord_func=ell_orbit`, `orbit_period=2.041094018647349E+05`, `orbit_eccentricity=4.373709923163567E-01`, `orbit_epoch=2454619.5`, `hidden=true`; `flag_planets_orbits = false` (`config.ini:280`); F104's binaries under `/home/claude/sc-f104/bin/` — `spacecrafter-pre` md5 `b5f08778` (code `474c595d`, one step per call), `spacecrafter-post` `0c61f1b5`; F104's instruments present (`f104_solver.cpp` with `--sweep` at `:222`, no `--replay`; `f104_solver.py`, `f104_seqcheck.py`, `f100_run.sh`, `f100_identity.py`); the landed records `artifacts/f104/leg_pre/f100_report.txt` (*parked max at P0 (1.1987248926268401, 'Eris')*), `eris_delta.txt` (*records whose altaz_NEW differs pre vs post: 1 ['Eris']*, the 2.029 AU displacement), `sweep_eris_pre.txt`; `/home/claude/sc-f107` absent. Display: the re-banked `:2` (HOST-EVENTS 2026-09-11), canary green both arms at 20:26–20:28.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f107/prediction.txt`, committed before any run): P1 the REPLAY — a `--replay` mode in `f104_solver.cpp` (the existing `--sweep` output must stay BYTE-IDENTICAL to the landed `sweep_eris_pre.txt` when re-run on the pre slice — assert by diff) that starts from `lastE = 0`, evaluates at M(JD 0) once (the seeding branch + the step count of the slice), then N calls at M(launch); for EACH of the 14 parked iterating bodies (the census's PLACE/SOLVER keys, `artifacts/f104/census.json`) predict the 5-call residual on the pre slice and the 5-call residual on the post slice, convert Eris's to a heliocentric displacement through `positionAtE` (the slice may need that function added — say so) and PREDICT F104's 2.029 AU and the 1.198725° class within float32 print precision, and the post value 1.06e-05° class; P2 that only Eris's offset lands in a slow basin (the other 13 converge at 5 one-step calls — F104's table) — if the replay says otherwise for any body, that is a finding, not an error; P3 (j2) cannot reach a parked body (the walk) and is OFF at launch in the field (the flag); P4 the one-frame transient per resample for the worst WALKED iterating body under `flag planets orbits on` (by name from the census; predicted from the slice: seed at E(M + 89·2π/180), then `ITERATIVE_STEPS_PER_CALL` steps at M); P5 the in-engine (j2) leg at a PINNED clock shows walked iterating bodies BIT-IDENTICAL at dump cadence between `flag planets orbits on` and `off` (the transient lives inside one frame and the dump is a use) — a NEGATIVE prediction whose refutation is the finding; state the control that shows the comparison able to fail (two different pinned dates ⇒ not identical). (2) **THE MUTATION, on a scratch worktree of the code repo at `474c595d` under `/home/claude/sc-f107/`** (the F104 pre state): build it UNCHANGED first (its md5 may differ from `b5f08778` by build path — then IT is the control, and it must reproduce Eris 1.198725° at P0 with F100's freeze leg, `f100_run.sh --tag pre --stages freeze --bin <path>`); then ONE change — the constructor's evaluation (`ModularBody.cpp:121-128`) skipped when `parent->lastJD == 0` — built as the mutant; freeze leg again: PREDICTED Eris ≈ 1e-05° at P0 with `evalCount` 5, and `f100_identity.py` control-vs-mutant at the un-moved launch state moving EXACTLY the records the replay predicts (Eris; and any other the replay names); revert, rebuild, the control's md5 bit-reproduced. The mutation is NEVER committed as code; the code repo's HEAD stays `48cc3727`. (3) **THE (j2) LEG on the delivered binary `e411b838`**: two launches at the pinned clock (F100's `pinned` clock), `flag planets orbits on` in one, off in the other, dumps at F100's cadence; the comparison per P5; then the control of P5. (4) **RECORD:** §11.⟨next⟩ FIRST + stub; §11.225(j2) and (j3) marked at both homes (attributed / classified); §5.84's F104 annotation marked (the new-path member now has its reach and its bound); **two §5 CANDIDATES in the entry, NOT minted**: (a) *the constructor seeds every body at JD 0* — reach: every parked body's first use; consequence: §5.145's magnitude, now masked by the two-step fix at the cost of the full 10 steps (a slower converger in an authored system re-exposes it); (b) *the orbit-line sampler perturbs the position seed once per resample* — reach: walked iterating bodies under a shipped flag; consequence: P4's one-frame transient; fix candidate: the old path's own shape (`batchLastE`), named not taken; each with §5.79's criterion applied in writing. `harness/README.md` F107 section; WIP per §0.6; D14.
+
+**Boundaries:** NO delivered engine change (code HEAD unmoved; the mutation lives and dies under `/home/claude/sc-f107/`); harness: `f104_solver.cpp` gains a mode (existing outputs byte-identical), new `f107_*` drivers + artifacts; ~6 FUNCTIONAL launches (`--no-scene` canary before the first; `/proc/<pid>/comm` probe at 0; config/ssystem md5 in == out per leg); explicit timeouts on every call that could exceed 120 s (Q-68); no `run_in_background`; nothing under `/tmp` carries; EntityCore read-only; the old path untouched by construction.
+
+**Discriminating checks:** (a) P1 numerically — the replay reproduces the LANDED 2.029 AU / 1.198725° (pre) and the 1.06e-05° class (post) from first principles, no launch; (b) the mutant moves Eris to ~1e-05° at P0 while the unchanged worktree control reproduces 1.198725° — one line, one binary, predicted; (c) `f100_identity.py` control-vs-mutant: exactly the predicted records move; (d) `--sweep` re-run byte-identical to `sweep_eris_pre.txt` (the harness change adds, changes nothing); (e) P5 both ways (the negative result AND its control); (f) the control binary bit-reproduced after the revert; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose premises: harness HEAD as the prompt states; `DISPLAY=:2` answering `xdpyinfo` at 2448x1332 under `/run/user/1003/.mutter-Xwaylandauth.*`; canary `--no-scene` exit 0 before the first launch (HOST-EVENTS 2026-09-11 is the display authority); the census's Eris row present.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 48cc3727
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => e411b838
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 229
+grep -c '^### F' claude/fable-dispatch.md => 3
+# the seed's writers and readers, re-resolved at HEAD (content drift = abort)
+grep -n 'lastJD = parent..lastJD;' src/experimentalModule/ModularBody.cpp | cut -d: -f1 => 121
+grep -n 'orbit..positionAtTimevInVSOP87Coordinates(lastJD,lastJD,tmp);' src/experimentalModule/ModularBody.cpp | cut -d: -f1 => 126
+grep -n '^void EllipticalOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double \*v) const' src/bodyModule/orbit.cpp | cut -d: -f1 => 466
+grep -n '^Vec3d EllipticalOrbit::positionAtTime(double t) const' src/bodyModule/orbit.cpp | cut -d: -f1 => 577
+grep -n 'eccentricAnomaly(meanAnomaly, iterativeLastE)' src/bodyModule/orbit.cpp | cut -d: -f1 => 582
+grep -n 'batchLastE = 0;' src/bodyModule/orbit.cpp | cut -d: -f1 => 442
+grep -c 'eccentricAnomaly(meanAnomaly, batchLastE)' src/bodyModule/orbit.cpp => 2
+grep -n 'if (lastE == 0)' src/bodyModule/orbit.cpp | cut -d: -f1 | tr '\n' ' ' => 521 527 538 557
+grep -n 'mutable double iterativeLastE = 0;\|mutable double batchLastE = 0;' src/bodyModule/orbit.hpp | cut -d: -f1 | tr '\n' ' ' => 120 122
+grep -n '^void OrbitModule::sampleOrbit\|calc_date = date + (d - ORBIT_POINTS/2) \* increment;\|orbit..positionAtTimevInVSOP87Coordinates(date, calc_date, orbitPoint\[d\]);\|lastSampleJD = date;\|                sampleOrbit(body);' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 | tr '\n' ' ' => 94 106 110 112 133
+grep -n 'return body..isSatellite() ? showSatellites : showPlanets;' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 91
+grep -n 'orbit..positionAtTimevInVSOP87Coordinates(date, sampleJD, tmp);' src/experimentalModule/bodyModules/TrailModule.cpp | cut -d: -f1 => 233
+grep -n '^    for (auto &child : hiddenBodies)' src/experimentalModule/ModularBody.cpp | cut -d: -f1 => 215
+grep -n 'flag_planets_orbits' ~/.spacecrafter/config.ini | cut -d= -f2 | tr -d ' ' => false
+LC_ALL=C grep -n '^\[Eris\]' ~/.spacecrafter/ssystem.ini | cut -d: -f1 => 2265
+LC_ALL=C sed -n '2265,2292p' ~/.spacecrafter/ssystem.ini | tr -d '\r' | grep -E '^(coord_func|orbit_period|orbit_eccentricity|orbit_epoch|hidden) ' | tr -d ' ' | tr '\n' ' ' => coord_func=ell_orbit orbit_period=2.041094018647349E+05 orbit_eccentricity=4.373709923163567E-01 orbit_epoch=2454619.500000000 hidden=true
+python3 -c "import math;print('%.3f'%(2*math.pi*2461233.5/2.041094018647349E+05))" => 75.765
+# F104's instruments, records and binaries
+md5sum /home/claude/sc-f104/bin/spacecrafter-pre | cut -c1-8 => b5f08778
+md5sum /home/claude/sc-f104/bin/spacecrafter-post | cut -c1-8 => 0c61f1b5
+test -f claude/harness/f104_solver.cpp -a -f claude/harness/f104_solver.py -a -f claude/harness/f104_seqcheck.py -a -f claude/harness/f100_run.sh -a -f claude/harness/f100_identity.py && echo ok => ok
+grep -n 'if (mode == "--sweep")' claude/harness/f104_solver.cpp | cut -d: -f1 => 222
+grep -c -- '--replay' claude/harness/f104_solver.cpp => 0
+awk '$1=="+32"{print $6} $1=="-8"{print $6} $1=="-64"{print $6}' claude/harness/artifacts/f104/sweep_eris_pre.txt | tr '\n' ' ' => 0.0176901 0.0182553 0.0100569
+grep -c "parked max at P0 (1.1987248926268401, 'Eris')" claude/harness/artifacts/f104/leg_pre/f100_report.txt => 1
+grep -c "^records whose altaz_NEW differs pre vs post: 1  \['Eris'\]" claude/harness/artifacts/f104/eris_delta.txt => 1
+python3 -c "import json;c=json.load(open('claude/harness/artifacts/f104/census.json'));print(len([x for x in c['rows'] if 'Eris' in json.dumps(x)]))" => 1
+test -e /home/claude/sc-f107 ; echo $? => 1
+```
+
+**DoD:** predictions before any run; the replay mode (sweep byte-identical); P1–P5; the mutation on the scratch worktree with its control bit-reproduced; §11 entry + stub; the (j2)/(j3) and §5.84 markers; the two candidates written with the criterion applied; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+---
+
+### F108 — §5.115's FIX ON THE COLLAPSED FORK (§11.173(b)) AND THE PAID SCALAR (round-3 R20, [stated: tester]: *"8 launches"*): UNIFORM BOUNDED RETENTION — every log channel keeps the last **EIGHT launches** by numbered rotation at open, and the current launch's file keeps its name on every channel (`spacecrafter.log`, `script.log`, `tcp.log`, `shader.log`, `vulkan.log`): at `cLog::openLog` (`log.cpp:85`) the previous `<name>.log` becomes `<name>.1.log`, `<name>.k.log` shifts to `k+1`, everything at `k ≥ 8` is deleted, then the fresh file opens truncated — so `keepHistory` (`:89-90`, the ONLY `true` in the tree at `main.cpp:216`) and the per-day `script-YY.MM.DD.log` layout (`getDate()` `:237-242`) go away, because a window expressed in launches needs the launch boundary the dated layout does not carry (the row's own sentence; F95 measured 1.88 MB/h and F98 828 MB in one dated file); the window is a COMPILED CONSTANT in `log.hpp` (one home, the tester's number, `LOG_RETENTION_LAUNCHES = 8`) and NOT a config key — `checkConfigIni` (`main.cpp:258`) would write a new key into the field's `config.ini` and break the `03fbee59` precondition every later task asserts, and a key is the owner's veto point (§3); D12: ONE line per channel at open naming what the rotation deleted and where the number lives, and ONE line naming the legacy `script-*.log` pile if present (count + bytes; on this host 34 files, 5.8 MB) — NEVER deleted by the app (this binary never wrote them; corrections propagate forward, D9); `write_log=false` keeps its meaning (`:128`, the channel dead); the twelve harness readers of `script-*` accept `script.log` too, the smoke suite green after; ~14 FUNCTIONAL launches [S–M, engine (`src/tools/log.{hpp,cpp}`, `src/main.cpp`) + harness readers; no render-path code; veto points §3]
+
+**Why now / mandate:** §5.115 (OPEN, *"Decision-free from here"* at its R20 annotation); §11.173(b) (the fork collapsed: *"UNIFORM BOUNDED RETENTION across all log channels … Remaining: ONE tester scalar … + the density layer beneath it"*); §11.207(g) item 5 (*"§5.115 — the script-log retention cap, window = 8 launches (R20). S–M."*); the field cost §11.215(i) / §11.218(m). The density half (§5.115's (2)) is NOT this task — the retention half *"stops the field pain"* and is *"decidable independently of format"* (the row).
+
+**The reading the mint stands on [derived; each fact a premise line]:** `cLog::openLog(fichier, path, keepHistory)` opens `logDirectory + path + "-" + getDate() + ".log"` in APPEND when `keepHistory` (`:89-90`) and `path + ".log"` TRUNCATED otherwise (`:92`); `main.cpp:212` sets `log/`, `:215-219` opens the five channels, `:216` alone passes `true`; `close()` writes an `EOF` line per file (`:104`) only on a clean shutdown, so it is NOT a launch boundary; `write()` returns before any file write when `!isWritingLog` (`:128`), set from `[debug] write_log` at `:269` (default `"true"`, `checkConfig.cpp:66`; the field's `config.ini:312`). The config is parsed AFTER the channels open (`:258` … `:269` vs `:215-219`), which is a second reason the window is compiled: a rotation needs its number at open. The doc tree names `write_log` nowhere (`grep -rl write_log doc` = 0). The field dir on this host holds 34 `script-*.log` (5 802 574 B) and a `script.log` of 2026-04-04 (3834 B — an older binary's name; recorded, not chased). Twelve harness files read `script-*` by pattern (`f36_class.py f50_selvars.py f61_live_rulings.py f62_aliases.py f63_annotations.py f67_tcp_live.py f68_provenance.py f69_feedback.py f80_corpus.py f90_rehearsal.py f95_report.py f4_scriptspeed.sh`) — the RIDER at the row: any format change ships with the readers' expansion path; landed artifacts keep their dated names, so the readers accept BOTH.
+
+**Measured at dispatch (supervisor, 2026-09-11 20:3x–20:4x, code `48cc3727`):** the sites at the lines quoted; `keepHistory` on exactly 3 lines of the tree; `config.ini` md5 `03fbee59`; the pile and reader counts above; `/home/claude/sc-f108` absent. Display: the re-banked `:2`, canary green both arms.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f108/prediction.txt`, before any build): the file set per channel after launch k of 10 (`min(k, 8)` files: `<name>.log` + `<name>.1.log … <name>.7.log`), which launch each rotated file holds (its first line's own stamp — the log's opening line carries the launch date; say which line you key on), the D12 lines (one per channel at the 9th and 10th launch naming the deleted file; the legacy-pile line at every launch on this host: 34 files), the smoke suite's expected reading, `write_log=false`'s behaviour (files still opened and rotated, nothing written — say so), and the cost (at open only; zero per frame). (2) **THE FIX:** `LOG_RETENTION_LAUNCHES` in `log.hpp` beside the class (the reason in its comment: R20 verbatim, §5.115, §11.173(b)); `openLog` loses `keepHistory` (signature, the three sites) and gains the rotation — shift descending (`7→delete`, `6→7`, … `1→2`, `.log→1`), then open truncated; the rotation report is written to the INTERNAL channel once ALL channels are open (buffer until then, or write from `main.cpp` after `:219` — say which and why) and to the console under `print_log`; the legacy-pile line likewise; `getDate()` stays if anything else uses it, else goes; NOTHING else moves — assert by diff. (3) **THE PROOF** on the delivered binary, real `~/.spacecrafter` (the app's own dir — the rotation must act where the field's does; config/ssystem md5 in == out asserted every launch — the fix writes NO config key), an immediate-quit script per launch: 10 launches, the file set and the first-line stamps after each; a MUTANT (the delete step disabled) shown to leave 10 files after 10 launches; `write_log=false` once (config restored, md5 in == out asserted — if the app rewrites `config.ini` on shutdown for THIS key the way `b22_live_run.sh`'s note records for `init_fov`, use a copied HOME as F101's farm does and say so); the smoke suite (`f90_rehearsal_run.sh`) green with the readers updated; `f91_run.sh --expect post --locale fr` untouched at `1fe630a4` (the log is not the render path); D11: the open-time cost measured once (ms), 0 per frame. (4) **RECORD:** §11.⟨next⟩ FIRST + stub; **§5.115 → FIXED (retention half) — the density half (2) stays OPEN at the row, said in the marker**; §11.173(b), §11.207(g) item 5, §11.215(i), §11.218(m) marked at both homes; `harness/README.md` (the log channels' names, the readers' expansion); `DEPLOYMENT-MAP.md` if it names §5.115 (`grep -c` first); the new §3 veto points in the report; WIP per §0.6; D14 (new source pure ASCII, strings by `\xNN` if ever non-ASCII).
+
+**Boundaries:** `src/tools/log.{hpp,cpp}`, `src/main.cpp` (the open sequence only), the harness readers, README, the record files; NO config key, NO `checkConfig.cpp` / `define_key.hpp` change, NO render-path code, NO data, NO EntityCore; the field's legacy `script-*.log` files are never deleted (by the app or by you); the density layer untouched; ~14 FUNCTIONAL launches (`--no-scene` canary before the first; `/proc/<pid>/comm` probe; md5 in == out); explicit timeouts (Q-68); no `run_in_background`; nothing under `/tmp` carries.
+
+**Discriminating checks:** (a) after 10 launches exactly 8 files per channel, and the mutant leaves 10 — the cap shown able to fail; (b) the rotated files ARE the previous launches in order (first-line stamps monotone); (c) the D12 lines present exactly when a file was deleted, and the pile line with the count 34; (d) `write_log=false` writes nothing, as today; (e) the smoke suite green, F91 byte-identical; (f) the diff confined to the three files + readers; (g) config/ssystem md5 in == out on every launch; (h) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; `:2` per HOST-EVENTS 2026-09-11; canary `--no-scene` exit 0 before the first launch.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 48cc3727
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => e411b838
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 229
+grep -c '^### F' claude/fable-dispatch.md => 3
+# the log system, re-resolved at HEAD (content drift = abort)
+grep -n '^void cLog::openLog' src/tools/log.cpp | cut -d: -f1 => 85
+grep -n 'if (keepHistory)' src/tools/log.cpp | cut -d: -f1 => 89
+grep -n 'std::ofstream::app' src/tools/log.cpp | cut -d: -f1 => 90
+grep -n 'std::ofstream::trunc' src/tools/log.cpp | cut -d: -f1 => 92
+grep -n '"EOF"' src/tools/log.cpp | cut -d: -f1 => 104
+grep -n 'if (!isWritingLog)' src/tools/log.cpp | cut -d: -f1 => 128
+grep -n '^std::string cLog::getDate' src/tools/log.cpp | cut -d: -f1 => 237
+grep -n 'strftime' src/tools/log.cpp | cut -d: -f1 => 242
+grep -n 'void openLog' src/tools/log.hpp | cut -d: -f1 => 121
+grep -n 'bool isWritingLog = true;' src/tools/log.hpp | cut -d: -f1 => 139
+grep -rn 'keepHistory' src --include=*.cpp --include=*.hpp | wc -l => 3
+grep -rn 'LOG_RETENTION' src --include=*.cpp --include=*.hpp | wc -l => 0
+grep -n 'setDirectory("log/");' src/main.cpp | cut -d: -f1 => 212
+grep -n 'openLog(LOG_FILE' src/main.cpp | cut -d: -f1 | tr '\n' ' ' => 215 216 217 218 219
+grep -c 'openLog(LOG_FILE::SCRIPT, "script", true);' src/main.cpp => 1
+grep -n 'checkConfigIni("config.ini"' src/main.cpp | cut -d: -f1 => 258
+grep -n 'setWriteLog(conf.getBoolean(SCS_DEBUG, SCK_WRITE_LOG))' src/main.cpp | cut -d: -f1 => 269
+grep -n 'tmpSettings\[SCK_WRITE_LOG\]="true";' src/mainModule/checkConfig.cpp | cut -d: -f1 => 66
+grep -n '#define SCK_WRITE_LOG' src/mainModule/define_key.hpp | cut -d: -f1 => 64
+grep -rl 'write_log' doc | wc -l => 0
+# the field on this host
+grep -n '^write_log' ~/.spacecrafter/config.ini | tr -s ' ' => 312:write_log = true
+md5sum ~/.spacecrafter/config.ini | cut -c1-8 => 03fbee59
+md5sum ~/.spacecrafter/ssystem.ini | cut -c1-8 => 545a51ef
+ls ~/.spacecrafter/log/ | grep -c '^script-' => 34
+ls ~/.spacecrafter/log/ | grep -c '^script\.log$' => 1
+# the readers and the fixtures
+grep -rln 'script-\*\|script-[0-9]\|script-%\|script-\${\|"script-' claude/harness/*.py claude/harness/*.sh | wc -l => 12
+test -f claude/harness/f90_rehearsal_run.sh -a -f claude/harness/f91_run.sh && echo ok => ok
+grep -c '5\.115' claude/DEPLOYMENT-MAP.md => 2
+test -e /home/claude/sc-f108 ; echo $? => 1
+```
+
+**DoD:** predictions before any build; the constant + the rotation + the D12 lines; the readers; P-legs (a)–(h); §11 entry + stub; §5.115 FIXED (retention half) with the density half kept OPEN in the marker; the four markers; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+---
+
+### F109 — A15's RESIDUAL STEP REMOVED ON THE TESTER'S WORD (round-3 L1, [stated: tester (Lionel RUIZ), via owner commit 6ffb017]: *"It would be better to have no residual threshold"*): the α-INDEPENDENT ~10 % of the dot→resolved swing the B22 fix left at the collapse threshold (§11.82(b): in-band addI = 55926 + 32238·aRes, pop share 80 % → 10 %) is *"the §11.64(a)-anticipated disc-floor step … discs not size-α-scaled"*, and the lever §11.82(b) named — *"size-α-scaling the halo disc floors — a separate mechanism decision, NOT improvised here"* — is now authorised in DIRECTION by L1; the candidate floors at HEAD are `drawHaloCore`'s `if (rmag < screen_r) { cmag *= rmag/screen_r; rmag = screen_r; }` (`ModularBody.hpp:1936-1938`, after `cmag *= 0.5f*rmag/screen_r` `:1933`) and the star's big halo (`StarModule.cpp:35-37` the `screenR * 2.f` floor, `:39-40` the `32.f` hard floor), under the band's `drawAlpha = savedAlpha * t` (`ModularSystem.cpp:782`, t over [T, T+B) with `SYSTEM_COLLAPSE_CROSSFADE_BAND` `ModularBody.hpp:192`); WHICH floor carries the α-independent term is NOT known from the reading — it is ATTRIBUTED by isolation builds on `b22_live_analyze.py`'s decomposition BEFORE the change, then the attributed floor(s) are scaled by `drawAlpha` in the B22 fix's own shape (×1.0 is the identity outside the band ⇒ inert by construction), predicted pop share ≤ the instrument's floor; the collapse THRESHOLD (16 px) and BAND (8 px) — A15's open constants — untouched; PHOTOMETRIC class: full canary green before the first launch [S, engine, new path only; veto points §3]
+
+**Why now / mandate:** §11.82(b)(e) (the residual named, the lever named, *"part of what the tester will judge"*); §11.207(g) item 6 (*"A15's residual step — remove the ~10 % floor at the faint end (L1) … S."* — its *"tuning pass over B22's constants"* is imprecise: §11.82(b) says MECHANISM lever, and this section stands on §11.82(b)); §5.53/A30's flag on the discs. A15 itself is a §13.A row (Vixy's): this task changes the mechanism the tester judged, and NOT the row's constants (128/16/0.6/16 px) — said at the row.
+
+**The reading the mint stands on [derived; each fact a premise line]:** the cross-fade fades the INTERIOR in by `drawAlpha` (`ModularSystem.cpp:778-782`) and the B22 fix scales the big halo's `color` by `drawAlpha` (§11.82(a), `StarModule.cpp` below `:40`); what neither scales is the FLOOR each halo puts under its own disc size — `drawHaloCore` raises `rmag` to `screen_r` (`:1936-1938`) and the big halo raises it to `screenR * 2.f` then to `32.f` (`StarModule.cpp:35-40`) — so at t → 0 a disc of floor size is still drawn at α-scaled colour, and `b22_live_analyze.py`'s C0 term (the α-independent intercept) measures whatever survives at t = 0 beyond the pure-dot state. Scaling a floor by `drawAlpha` (the SIZE, not only the colour) makes the disc vanish with the interior; at `drawAlpha == 1` (everywhere outside the band, every near-observer scene) `×1.0f` is an IEEE identity, which is exactly the inertness argument §11.82(c) measured for the colour scaling. The instrument: `b22_live_run.sh <driver> <out>` + `b22_live.py` (fresh launch, FISHEYE, `init_fov=340`, descend/ascend sweep over refDist (1040, 1560) AU = px [16, 24); the three hard-won launch rules in the runner's header — stale instances, the §11.15d crash retry, the `config.ini` rewrite of `init_fov` with a pristine bak) + `b22_live_analyze.py` (A no-hysteresis, B monotone, C the pop %). Its last live run was F43's era (§11.157) on a stack that no longer exists; a first baseline run on TODAY's binary and stack is the precondition of everything after it, and an instrument that cannot reach the band is an ABORT-and-report, never a widened band.
+
+**Measured at dispatch (supervisor, 2026-09-11 20:3x–20:4x, code `48cc3727`):** the floor sites at the lines quoted; the six `b22_*` instruments present; landed artifacts `artifacts/b22/b22_ramp.json`, `artifacts/b22_drive/app.log` (2026-08-30); the L1 verbatim in `USER_QUESTIONS_ROUND3.md`; §11.82's title carries `pop 80%→10%`; the full canary green at 20:28:03 (`artifacts/f56/canary/20260911-202616`, 165.258/6.644 · 160.142/6.603, deltas 0.0); `/home/claude/sc-f109` absent.
+
+**Mandate:** (1) **BASELINE FIRST**: `b22_live` on the delivered binary `e411b838` and today's `:2`; the decomposition must reproduce §11.82(b)'s shape (a C0 near 10 % of the swing; the reversible pair maxCh 0) — if the instrument does not reach the band or the shape differs, STOP and report with the numbers (the stack changed twice since it last ran); commit the baseline. (2) **PRE-REGISTER** (`artifacts/f109/prediction.txt`): which floor carries C0 (from the geometry at px = 16: the dot's `screen_r` vs `rmag` at that distance, the big halo's `32.f`) and the C0 each isolation build will leave; the post-change C0 (≤ the instrument's floor — state it from the baseline's A/A); the inertness set (outside-band crops bit-identical; `b5_drawhalf` 14/14; F91 `1fe630a4`; the canary band unchanged — the Moon scene is far above the band); the cost (one multiply per halo per frame — priced against D11). (3) **THE ATTRIBUTION**: one isolation build per candidate floor (`drawAlpha`-scaled alone), `b22_live` + analyze each, the C0 per build against the prediction; reverted, the delivered md5 bit-reproduced. (4) **THE CHANGE**: scale the attributed floor(s) by `drawAlpha` — the floor value, so the disc vanishes with the interior — with the attribution in the comment (§11.82(b), L1 verbatim, this entry); if the term turns out to live in the shader (`sun_big_halo.frag`'s `max(1, cmag+0.1)` / procedural `nearHalo`, §11.82(a)), that is a shader edit under the compile+install sediment and a NAMED veto point, not a silent widening. (5) **THE PROOF**: `b22_live` post-change (C0, A, B); the reversible pair; `b5_drawhalf.py`; `f91_run.sh --expect post --locale fr` at `1fe630a4`; the full canary after (band unchanged); the smoke suite. (6) **RECORD:** §11.⟨next⟩ FIRST + stub; §11.82(b)(e) marked at both homes; A15's row annotated (the residual step removed on L1; thresholds untouched, still the tester's three unanswered questions); §11.207(g) item 6 marked; `harness/README.md` b22 section; WIP per §0.6; D14.
+
+**Boundaries:** new path only — `ModularBody.hpp` (`drawHaloCore`) and/or `StarModule.cpp`, the shader only per (4)'s veto point; the OLD path untouched by construction; NO change to `SYSTEM_VISIBILITY_SUBSYSTEM_SIZE` / `SYSTEM_COLLAPSE_CROSSFADE_BAND` or any A15 constant; no data; no EntityCore; PHOTOMETRIC launches on `:2` (full canary exit 0 before the first, the `/proc/<pid>/comm` probe, config/ssystem md5 in == out per launch — `b22_live_run.sh` restores `config.ini` from its pristine bak, assert `03fbee59` after every run); explicit timeouts (Q-68); no `run_in_background`; nothing under `/tmp` carries; every scratch binary under `/home/claude/sc-f109/`.
+
+**Discriminating checks:** (a) the baseline reproduces §11.82(b)'s decomposition shape on today's stack BEFORE any change; (b) the isolation builds attribute C0 to a floor, predicted first; (c) post-change C0 ≤ the stated floor while A (no hysteresis) and B (monotone) hold; (d) inertness: outside-band crops bit-identical pre/post, `b5_drawhalf` 14/14, F91 `1fe630a4`, the canary band to the digit; (e) the delivered md5 bit-reproduced after each isolation revert; (f) the diff confined to the attributed floor(s) + comments; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; `:2` per HOST-EVENTS 2026-09-11; the FULL canary exit 0 before the first launch (photometric class).
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 48cc3727
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => e411b838
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 229
+grep -c '^### F' claude/fable-dispatch.md => 3
+# the floors and the band, re-resolved at HEAD (content drift = abort)
+grep -n 'inline void drawHaloCore' src/experimentalModule/ModularBody.hpp | cut -d: -f1 => 1911
+grep -n 'cmag \*= 0.5f\*rmag/screen_r;' src/experimentalModule/ModularBody.hpp | cut -d: -f1 => 1933
+grep -n 'if (rmag < screen_r) {' src/experimentalModule/ModularBody.hpp | cut -d: -f1 => 1936
+grep -n 'constexpr float SYSTEM_COLLAPSE_CROSSFADE_BAND' src/experimentalModule/ModularBody.hpp | cut -d: -f1 => 192
+grep -n 'const float screenR = body..getScreenSize() \* 2.f \* ModularBody::getViewportRadius();' src/experimentalModule/bodyModules/StarModule.cpp | cut -d: -f1 => 29
+grep -n 'if (rmag < screenR \* 2.f) {\|if (rmag < 32.f)' src/experimentalModule/bodyModules/StarModule.cpp | cut -d: -f1 | tr '\n' ' ' => 35 39
+grep -n 'drawAlpha = savedAlpha \* t;' src/experimentalModule/ModularSystem.cpp | cut -d: -f1 => 782
+grep -n 'const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAND);' src/experimentalModule/ModularSystem.cpp | cut -d: -f1 => 778
+# the instruments, the records, the tester's word
+test -f claude/harness/b22_live_run.sh -a -f claude/harness/b22_live.py -a -f claude/harness/b22_live_analyze.py -a -f claude/harness/b5_drawhalf.py -a -f claude/harness/f91_run.sh && echo ok => ok
+ls claude/harness/artifacts/b22_drive/app.log claude/harness/artifacts/b22/b22_ramp.json | wc -l => 2
+grep -c 'It would be better to have no residual threshold' claude/USER_QUESTIONS_ROUND3.md => 1
+grep -c 'pop 80%→10%' claude/INTENT/11.82.md => 1
+grep -c '^| A15 ' claude/INTENT.md => 1
+test -d claude/harness/artifacts/f56/canary/20260911-202616 && echo ok => ok
+test -e /home/claude/sc-f109 ; echo $? => 1
+```
+
+**DoD:** the baseline on today's stack; predictions before any build; the attribution by isolation; the change with its inertness set; §11 entry + stub; the §11.82 / A15 / §11.207 markers; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
 
 ---
 
