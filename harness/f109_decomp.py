@@ -192,6 +192,29 @@ if pd_ and pi_:
 else:
     print("  (need >=2 below-band and >=2 above-band points)")
 
+# ---- [D] INTERIOR-ONLY arm: is there an alpha-independent EMISSION? -----------
+# Run this on a sweep taken with the in-band proxy dot SUPPRESSED (the
+# SS11.82(a) dot-suppression diagnostic). Then the in-band addI IS the
+# interior's own emission at drawAlpha = t, with the dot's brightening and the
+# (1-t) mixing both out of the measurement, and the question the linear fit
+# cannot answer becomes a two-parameter fit: addI_interior = F + G*t, with F the
+# alpha-INDEPENDENT term. Fitted over the LOW-t half, where the metric's own
+# clipping is weakest (see [C]); F ~ 0 means no floor emits at t -> 0.
+if "--interior-fit" in args:
+    print("\n[D] interior-only fit  addI = F + G*t  (dot-suppression arm)")
+    print("  px      t       addI      addI/t")
+    for p in band:
+        t = (p["px"]-T)/B
+        print(f"  {p['px']:6.3f}  {t:.4f}  {p['addI']:8d}  {p['addI']/t:9.0f}")
+    for lab, sel in (("low-t half (t<=0.35)", [p for p in band if (p["px"]-T)/B <= 0.35]),
+                     ("all in-band", band)):
+        if len(sel) < 2: continue
+        M = np.array([[(p["px"]-T)/B, 1.0] for p in sel])
+        v = np.array([p["addI"] for p in sel], float)
+        (G, F), _, _, _ = np.linalg.lstsq(M, v, rcond=None)
+        print(f"  {lab:22s} n={len(sel)}  F = {F:+8.0f}   G = {G:8.0f}"
+              f"   F/swing = {100*F/swing:+.1f}%")
+
 # ---- [C] the metric's own 8-bit clipping --------------------------------------
 # addI sums 8-bit channel values. A channel whose unclipped value exceeds 255 is
 # recorded as 255, so S(a) = sum(min(a*V,255)) is CONCAVE in a: at small a

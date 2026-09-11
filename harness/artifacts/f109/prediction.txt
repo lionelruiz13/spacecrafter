@@ -202,3 +202,85 @@ in-band (the SS11.82(a)-precedented dot-suppression diagnostic).
   * the /proc/<pid>/comm probe reads 0 before every launch, and
     config.ini 03fbee59 / ssystem.ini 545a51ef / startup.sts cea83254 are
     asserted after every run.
+
+
+=========================================================================
+ADDENDUM 1 - written 2026-09-12 00:4x, AFTER arms A12 and A4, BEFORE the
+edge run. P3 is REFUTED as stated and this addendum pre-registers the
+measurement that splits the two readings of the refutation.
+=========================================================================
+
+WHAT THE ARMS MEASURED
+  A12 (G1+G2, the two DEAD floors alpha-scaled, also the platform control):
+    every one of the 14 points BIT-IDENTICAL to base2 (max |delta| = 0
+    counts), fit 56418 + 33451*aRes, pop 3961 - identical to the digit.
+    P2.1 CONFIRMED in a stronger form than predicted (0, not <400), and with
+    it: the `* 1.f` identity, the env-gated platform, and the fact that the
+    sweep is DETERMINISTIC - the A/A floor is not 134 counts but ZERO when
+    both runs land on the same targets (base1's 134 was its navigation
+    defect, not noise).
+  A4 (G4, the in-band proxy dot suppressed - interior alone):
+    in-band addI 7723 / 18015 / 26040 / 36405 / 48085 / 62513 / 76249 / 86435,
+    with sat255 = 0 at the first FIVE points (so the metric's clipping plays
+    no part at low t). The four unclipped low-t points fit
+        addI = F + G*t   with F = +2257, G = 104035
+    to +-14 counts, and the SAME fit done PER PIXEL over those four frames has
+    an rms residual of 0.022 counts per channel (max 1.85). So the interior's
+    in-band response is affine in t with a nonzero intercept:
+    F = +2257 = 6.2% of the swing >> the +800 refutation threshold.
+    P3 REFUTED.
+  WHERE the intercept sits: extrapolated to t=0 per pixel it is a smooth
+  centred glow of the big halo's own radial profile (39% of it at r in
+  [2,4) px, 37% in [4,8), nothing beyond r=12 px), NOT at any planet's screen
+  position (Neptune sits 8.61 px off centre, Saturn 2.66, and neither shows a
+  feature). Per pixel F/G = 0.0217 overall and 0.027/0.026/0.021 at r
+  [0,2)/[2,4)/[4,6): one emitter, one profile, scaled by (t + 0.0217).
+
+THE TWO READINGS - and they are not distinguishable by anything measured yet
+  R1 CALIBRATION: the app's own t is t_offline + 0.0217, i.e. the app's px is
+     0.174 px (1.06%) higher than the offline formula's. Then the interior's
+     emission is EXACTLY proportional to the app's t, there is NO
+     alpha-independent term, and the collapse is continuous at T.
+     Mechanism, and it is concrete: the offline S is transcribed as
+     1.1*(1.1*(|Neptune.ecl| + 1.1*Neptune.boundingRadius)), while
+     ModularBody::updateReach (ModularBody.cpp:652-665) computes
+     subsystem = max(boundingRadius, max over VISIBLE children of
+     (|child.ecl| + child.subsystemRadius)) and S = subsystem*1.1 - a
+     DIFFERENT expression, so agreement to 1% would be luck, not design.
+  R2 EMISSION: the offline axis is exact and the interior really emits
+     G*0.0217 = 2255 counts at t = 0 - an alpha-independent floor, F109 class
+     A, and the mandate's (4) applies.
+     Against R2: no term in the path can do it. drawBigHalo passes
+     `getHaloColor() * ModularBody::drawAlpha` and sun_big_halo.frag:36 is
+     `FragColor = color * (farHalo*max(1,cmag+0.1) + nearHalo)` - colour
+     multiplies BOTH components, so at drawAlpha = 0 the fragment is 0 and
+     BLEND_ADD adds nothing. For R2 to hold, something outside that
+     expression must add 2.2% of full brightness at t = 0.
+
+THE MEASUREMENT THAT SPLITS THEM (f109_edge.py, one run, G4 on)
+  With the in-band dot suppressed, the dot is drawn IFF the app computes
+  px < 16. Its presence is therefore a STEP of ~45000 counts in the crop as a
+  function of the app's own px, and an 11-point refDist ladder from 1607 to
+  1530 AU (offline px 15.54 .. 16.32) brackets the app's threshold in
+  OFFLINE-px units to the ladder's own spacing (~0.05 px, five times finer
+  than the offset under test). No differencing needed.
+  PREDICTED, and this is the whole prediction:
+    R1 => the step falls between offline px 15.79 and 15.86 (the app's T at
+          offline px 15.826 = 16/1.0106), i.e. between refDist 1580 and 1575.
+    R2 => the step falls between offline px 15.97 and 16.03, i.e. between
+          refDist 1565 and 1560.
+    The two windows are 0.17 px apart and the ladder has four points between
+    them, so this cannot come out ambiguous unless the step itself is not
+    sharp.
+  PREDICTED further, as a consistency check that can fail on its own: the
+  crop sum at the points BELOW the app's threshold must be flat to within a
+  few hundred counts (the pure dot, brightening slowly with px), and the
+  points ABOVE it must be small (the interior alone at t -> 0, i.e. of order
+  2000-8000 counts).
+  A third outcome is possible and is named now so it cannot be claimed later
+  as either: R3, the step falls BETWEEN the two windows (e.g. offline px
+  15.90), in which case the offset is PART calibration and part emission, and
+  the emission is G*(0.0217 - c_measured) with c_measured from the step.
+  PREDICTED: R1.  [derived: the transcription mismatch above is real and
+  unbounded at the 1% level, and R2 has no mechanism in the shader or the
+  call. A prediction, not a conclusion - the ladder decides.]

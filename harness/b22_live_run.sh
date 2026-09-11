@@ -8,7 +8,10 @@
 #     prior instance keeps owning port 7805, and a "fresh" driver then connects to
 #     the OLD session's galactic state (moveto lat/lon lands at the 3.2e9 datum,
 #     select fails). The app FORKS, so killing the captured pid is insufficient -
-#     kill by command-line match + fuser the port, and assert the port is free.
+#     kill every instance + fuser the port, and assert the port is free.
+#     [CORRECTED 2026-09-12, F109: this line used to say "kill by command-line
+#     match", and that is exactly what broke - see kill_instances() below. The
+#     match is on /proc/<pid>/exe now, which no shell can ever satisfy.]
 #  2. INTERMITTENT STARTUP CRASH (§11.15d class): the async texture loader crashes
 #     during nebulae/dso streaming under host contention (a concurrent Minecraft
 #     JVM was hammering this box). Retry the launch until one survives to TCP.
@@ -27,17 +30,44 @@ CFG=~/.spacecrafter/config.ini
 mkdir -p "$OUT" "$OUT/log"
 rm -f "$OUT"/*.png "$OUT"/*.json "$OUT"/statistics.dat "$OUT"/app.log
 
+# Kill any running spacecrafter instance by /proc IDENTITY, never by
+# command-line text. MEASURED 2026-09-12 (F109, INTENT 11.231): the previous
+# form, `pkill -9 -f "/sc_"`, matches EVERY process whose command line contains
+# that string - including the shell that invoked this runner as
+# `SC_BIN=/home/claude/sc-f109/sc_f109_iso ./b22_live_run.sh ...`, which is the
+# documented way to drive a staging binary (they are named sc_*). It killed the
+# caller at attempt 1 of an F109 arm; the sweep survived only because this
+# script was already orphaned by then, and a kill one loop-turn later would
+# have skipped the config restore below and left the field's init_fov at 340.
+# /proc/<pid>/exe is a real file, so a shell can never match it: the F26
+# /proc-identity probe (INTENT 11.134(b), 11.121(m)) in kill form. NB the same
+# blind spot in the OTHER direction lives in f26_epoch.sh:46, f27_reply.py:107
+# and f56_canary.sh:470, which assert `comm == "spacecrafter"` exactly and so
+# do NOT see a running staging binary at all (its comm is its own basename).
+kill_instances() {
+    for p in /proc/[0-9]*; do
+        exe=$(readlink "$p/exe" 2>/dev/null) || continue
+        case "${exe##*/}" in
+            spacecrafter|sc_*) kill -9 "${p#/proc/}" 2>/dev/null ;;
+        esac
+    done
+}
+
 MD5_CFG_IN=$(md5sum "$CFG" | cut -d' ' -f1)
 MD5_SS_IN=$(md5sum ~/.spacecrafter/ssystem.ini | cut -d' ' -f1)
 cp "$CFG" "$OUT/config.ini.bak"
+# The field's config.ini comes back on EVERY exit path, not just the two the
+# happy path and the no-tcp path cover: an interrupted or killed run used to
+# leave init_fov=340 in the field, and every later task asserts md5 03fbee59
+# (F109; the explicit restores below stay, the trap is idempotent).
+trap 'cp "$OUT/config.ini.bak" "$CFG" 2>/dev/null' EXIT INT TERM
 sed -i 's/^init_fov *=.*/init_fov                        = 340/' "$CFG"
 sed -i "s/^query_statistics *=.*/query_statistics               = $STATS/" "$CFG"
 
 echo "binary: $BIN"; ls -l --time-style=full-iso "$BIN"; echo "STATS=$STATS"
 UP=0
 for attempt in $(seq 1 8); do
-    pkill -9 -f "build-claude/src/spacecrafter" 2>/dev/null
-    pkill -9 -f "/sc_" 2>/dev/null; fuser -k 7805/tcp 2>/dev/null; sleep 2
+    kill_instances; fuser -k 7805/tcp 2>/dev/null; sleep 2
     ss -ltn 2>/dev/null | grep -q ':7805 ' && { echo "port still held, waiting"; sleep 3; }
     ( cd "$OUT" && DISPLAY=${DISPLAY:-:2} "$BIN" > "$OUT/app.log" 2>&1 & echo $! > "$OUT/app.pid" )
     APPPID=$(cat "$OUT/app.pid"); echo "launch attempt $attempt pid=$APPPID"
@@ -55,7 +85,7 @@ python3 "$HERE/$DRIVER" "$OUT" > "$OUT/drive.log" 2>&1
 DRC=$?; echo "driver exit=$DRC"
 sleep 2
 kill -INT $APPPID 2>/dev/null; sleep 4
-pkill -9 -f "build-claude/src/spacecrafter" 2>/dev/null; pkill -9 -f "/sc_" 2>/dev/null; sleep 2
+kill_instances; sleep 2
 # query_statistics writes ~/.spacecrafter/log/statistics.dat (fixed path, not cwd)
 [ -f ~/.spacecrafter/log/statistics.dat ] && cp ~/.spacecrafter/log/statistics.dat "$OUT/statistics.dat"
 
