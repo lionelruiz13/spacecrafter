@@ -1,0 +1,42 @@
+subsystemRadius=36.155 AU  band px=[16.0,24.0)
+
+[gate] references across whole sweep: {'MilkyWay'}  OK (all MilkyWay)
+
+(A) NO HYSTERESIS  (descend-new vs ascend-new at matched refDist)
+  refDist  1750.0 px  14.26  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1650.0 px  15.13  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1591.0 px  15.69  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1520.0 px  16.42  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1450.0 px  17.21  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1400.0 px  17.83  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1340.0 px  18.63  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1280.0 px  19.50  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1200.0 px  20.80  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1120.0 px  22.29  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1061.0 px  23.53  full-image px32(dn,up)=0  crop maxCh=0
+  refDist  1010.0 px  24.71  full-image px32(dn,up)=0  crop maxCh=0
+  refDist   960.0 px  26.00  full-image px32(dn,up)=0  crop maxCh=0
+  refDist   910.0 px  27.43  full-image px32(dn,up)=0  crop maxCh=0
+  MATCHED (opp dir, same refDist): max px32=0  -> NO HYSTERESIS
+  DISCRIMINATOR mismatch dn02(px15.7) vs up03(px16.4) across T: crop maxCh=23 (>> 0 -> instrument can fail)
+
+(B) MONOTONE cross-fade signal + (C) BIG-HALO POP decomposition
+  px      aRes    addI(new-old)
+  16.420  0.052   56887
+  17.213  0.152   61359
+  17.828  0.228   64425
+  18.626  0.328   68046
+  19.499  0.437   71839
+  20.800  0.600   77087
+  22.286  0.786   82639
+  23.526  0.941   86970
+  in-band addI monotone non-decreasing: True
+
+  pure-dot addI (px<T)        mean=52457
+  pure-resolved addI (px>=T+B) mean=89080
+  IN-BAND fit: addI = 56418 + 33451*aRes
+  dot->resolved swing = 36623;  ALPHA-INDEPENDENT pop at T = 3961 = 11% of the swing
+  cross-fade (alpha-linear) share = 91% of the swing
+
+  => (C) VERDICT: big-halo PARTICIPATES in the fade (pop 11% <= 20%) -
+     the collapse is a genuine cross-dissolve; residual = 11.64(a) disc-floor step.

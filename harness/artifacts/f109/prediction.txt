@@ -1,0 +1,204 @@
+F109 PRE-REGISTRATION - written and committed BEFORE any isolation build
+=========================================================================
+Author: Claude Opus 5 executor, 2026-09-12 00:1x CEST (date beside each claim)
+Code master-beta @ 71b6fe51, binary 6d63e6c1; harness CC-harness @ 131a325
+Baseline of record: artifacts/f109/base2 (clean reference gate, 3 below-band
+points); artifacts/f109/base1 is the run that found the navigation defect.
+
+Every number below is either [measured] with its artifact, [derived] with its
+argument, or a PREDICTION with the value that would refute it. Nothing here is
+adjusted after a run: a refuted line stays, marked REFUTED.
+
+
+0. THE BASELINE THE PREDICTIONS STAND ON  [measured: base2_decomp.txt]
+----------------------------------------------------------------------
+  pure dot (px<16, n=3)        52457
+  pure resolved (px>=24, n=3)  89080
+  swing                        36623
+  in-band fit                  addI = 56418 + 33451*aRes
+  ALPHA-INDEPENDENT pop at T   3961 = 10.8% of the swing   (SS11.82(b): 10%)
+  alpha-linear share           91.3%                       (SS11.82(b): 91%)
+  monotone                     True;  reversible pair 14/14 px32=0, maxCh=0
+  A/A FLOOR (base1 vs base2, same binary, same targets): max per-point
+  |delta addI| = 134 counts = 0.37% of the swing; fit C0 56418 in BOTH runs
+  (the pop differs by 333 only because base1 lost its lowest below-band point
+  to the navigation defect - a point-set difference, not noise).
+  => THE INSTRUMENT'S OWN FLOOR, used by every prediction below:
+     +-150 counts on C0 / on the pop  (+-0.4 pp of the pop share),
+     +-134 counts on any single point.
+
+
+1. WHICH FLOOR CARRIES C0  [derived at the source + measured from the dump]
+---------------------------------------------------------------------------
+The firing condition of each candidate floor is decidable from the dump alone,
+so it is measured, not assumed (f109_decomp.py "[floors]" block, 13 points):
+
+ (a) ModularBody.hpp:1936  `if (rmag < screen_r) { cmag *= rmag/screen_r;
+     rmag = screen_r; }`                                    DEAD, 0/13 firings
+     Argument: leaving BOTH branches above the test rmag >= 1.2 px - the
+     anti-blink branch (:1921-1926) assigns rmag = 1.2 exactly, and the else
+     branch is entered only when rmag >= 1.2 and its size-limit compression
+     maps rmag > limit = haloSizeLimit/1.8 = 5 to limit + sqrt(rmag-limit)/
+     (limit+1) >= 5. screen_r is the body's OWN disc: for the proxy dot
+     starScreenR = (R_sun/(d*halfFov))*2*1024 = 1.9e-3 .. 3.5e-3 px over the
+     sweep, and no interior body's disc exceeds the Sun's. The test needs a
+     disc > 1.2 px, i.e. ~600x closer than the band. MEASURED: 0/13.
+ (b) StarModule.cpp:35  `if (rmag < screenR * 2.f)`          DEAD, 0/13 firings
+     rmag_raw = sunHaloSize/2/sqrt(d) = 2.46 .. 3.32 px; 2*screenR =
+     3.9e-3 .. 7.1e-3 px. Fires only for d < 0.0041 AU (inside the Sun).
+ (c) StarModule.cpp:39  `if (rmag < 32.f) rmag = 32.f`       LIVE, 13/13
+     2.46 .. 3.32 px < 32 at every point; fires for every observer beyond
+     d = (100/32)^2 = 9.77 AU, i.e. in every galactic/universe scene.
+
+PREDICTION P1: only (c) is a live candidate. The mandate's three-floor
+attribution therefore has a measured answer before any build.
+
+
+2. THE C0 EACH ISOLATION BUILD LEAVES
+-------------------------------------
+One env-gated scratch build carries all arms so they differ ONLY by an
+environment variable (same compiler output, same binary md5; the OFF arm is
+the platform control). Gates: G1 = (a)'s floor * drawAlpha, G2 = (b)'s floor
+* drawAlpha, G3 = (c)'s floor * drawAlpha, G4 = drawStarProxy suppressed
+in-band (the SS11.82(a)-precedented dot-suppression diagnostic).
+
+ P2.1  ARM A12 (G1+G2 on, the two DEAD floors alpha-scaled; serves ALSO as
+       the platform control - if it matches base2, both the platform and both
+       floors are inert, and a mismatch is informative because it splits with
+       one further arm):
+       PREDICTED every in-band point within +-134 of base2, pop 3961 +- 150,
+       i.e. 10.8% +- 0.4 pp UNCHANGED.
+       Argument: an alpha-scaled floor of a branch that is never taken cannot
+       change an emitted photon - and `x * 1.f` is an exact IEEE identity, so
+       the OFF arm is the delivered arithmetic.
+       REFUTED IF any in-band point moves by more than 400 counts.
+
+ P2.2  ARM A3 (G3 on, the LIVE floor alpha-scaled) - the mandate's isolation
+       build for the attributed floor. rmag becomes max(rmag_raw, 32*alpha),
+       so for alpha > rmag_raw/32 = 0.080 .. 0.096 the disc is 32*alpha and
+       below it reverts to the raw 2.5 .. 3.3 px. The big halo's emitted
+       energy is colour x (texture integral over a quad of half-size rmag),
+       i.e. ~ alpha*rmag^2, so it becomes ~ 1024*alpha^3 instead of
+       1024*alpha: a CUBIC fade-in.
+       PREDICTED: the lowest in-band point (t = 0.0525) falls from 56887 to
+       51000 +- 1500 - BELOW the pure-dot mean 52457, because the dot is
+       faded by (1-t) while the interior has not arrived; the top of the band
+       (t = 0.941) falls from 86970 to 71600 +- 3000; the ramp becomes CONVEX
+       and the fitted pop goes NEGATIVE, in the range -9000 .. -4000.
+       REFUTED IF the pop stays within +-150 of 3961 (the floor is then not
+       even shaping the band), or if it lands in [0, +3811] (the linear
+       reading would then be that the floor carried exactly the pop).
+
+ P2.3  CRITICAL DISTINCTION, registered before the numbers exist: A3 moving
+       the fitted C0 does NOT show that floor "carried the alpha-independent
+       term". A concave ramp fitted by a line has a positive intercept and a
+       convex one a negative intercept, whatever the emission at t = 0 is.
+       The attribution question "is there an alpha-independent EMISSION at
+       t -> 0" is answered ONLY by P3.
+
+ P2.4  DERIVED CONSEQUENCE of the lever itself, whatever the attribution:
+       alpha-scaling a SIZE floor makes the energy cubic in alpha, so it does
+       not remove a step - it moves the fade's mass to the top of the band
+       (at t = 0.5 the big halo would sit at 12.5% of full instead of 50%).
+       If a step existed at T, this lever would trade it for a late, abrupt
+       profile. Recorded now so the trade is not discovered after the fact.
+
+
+3. THE DECISIVE TEST - IS THERE AN ALPHA-INDEPENDENT EMISSION AT ALL?
+---------------------------------------------------------------------
+ P3  ARM A4 (G4 on: drawStarProxy suppressed while inBand) measures the
+     INTERIOR ALONE across the band, so the dot's own brightening and the
+     (1-t) mixing both leave the measurement. SS11.82(a) used exactly this
+     instrument (env-gated dot-suppression, throwaway) to attribute the
+     pre-fix floor C ~ 43167.
+     PREDICTION FROM THE CODE: the interior emits EXACTLY ZERO at
+     drawAlpha = 0 -
+       * the big halo passes `getHaloColor() * ModularBody::drawAlpha` and
+         sun_big_halo.frag:36 is `FragColor = color * (farHalo*max(1,cmag+0.1)
+         + nearHalo)` - colour multiplies BOTH components, so colour 0 emits 0
+         under BLEND_ADD;
+       * every drawHaloCore halo passes `color * cmag` with cmag *= drawAlpha
+         (:1961), and the `rmag < 1.21f && cmag < 0.05f` skip rule (:1962)
+         drops the sub-pixel ones outright;
+       * no non-halo channel is reached: every body in the band is halo-only
+         (largest disc 3.5e-3 px << the 0.008 screenSize mesh threshold),
+         drawNested calls drawSystemBodies (no trails/orbits/pointer pass),
+         and flag_experimental_oort is off in the field.
+     So: fit addI_interior(t) = F + G*t over the LOW-t half (t = 0.0525,
+     0.1516, 0.2285, 0.3283, where the metric's clipping is weakest).
+     PREDICTED  F in [-400, +400]  (zero within the instrument's floor)
+     and G ~ 60000 .. 100000.
+     REFUTED IF F > +800 (2% of the swing): something in the interior is then
+     alpha-independent, the mandate's (4) applies, and A3 vs A12 says which
+     floor owns it.
+
+
+4. WHAT THE LINEAR-FIT POP IS MADE OF, IF P3 HOLDS  [measured, no build]
+------------------------------------------------------------------------
+ base2's pop 3961 (10.8% of the swing) decomposes as
+   +918  ( 2.5%)  the proxy dot's own brightening between the below-band mean
+                  (px 15.0 mean) and the fit's intercept at px 16.0 - the
+                  endpoint-anchored model's D(T) - mean(below)
+   +3043 ( 8.3%)  curvature: the measured residual over the endpoint-anchored
+                  model is a HUMP that peaks mid-band (+3373 at t = 0.437) and
+                  falls at BOTH ends - the shape 8-bit clipping predicts
+                  (S(a) = sum(min(a*V,255)) is concave, exact at a = 1, linear
+                  at a -> 0), not the shape a constant floor predicts.
+   Masking the 123 of 24300 crop channels (0.51%) that ever reach 255 drops
+   the pop to 1375 = 4.6% of the swing: 58% of the number L1 was asked about
+   is carried by the clipped core.
+ PREDICTION P4: A4's F ~ 0 plus this decomposition means the "residual ~10%
+ brightness step at the faint end" is NOT an emission at the threshold. The
+ collapse is continuous at BOTH band edges by construction (at t = 0 the
+ interior emits 0 and the dot is bit-identical to the pure-dot branch; at
+ t -> 1 the dot's cmag -> 0 and above T+B it is not drawn).
+
+
+5. THE TWO OUTCOME CLASSES, named before the runs
+-------------------------------------------------
+ CLASS A (P3 refuted, F > +800): a floor emits alpha-independently. A3/A12
+   attribute it; the mandate's (4) lands the alpha-scaling on the attributed
+   floor with P2.4's profile consequence stated; post-change pop predicted
+   <= +-150 (the instrument's floor) with A monotone and B hysteresis-free.
+ CLASS B (P3 holds, F ~ 0): C0 is in NEITHER candidate floor - it is the
+   linear fit's response to the metric's clipping (58%) and the dot's own
+   brightening (23%). The F109 stop boundary then applies verbatim: "the
+   lever SS11.82(b) named is not the mechanism - a finding, report it with the
+   numbers, change nothing". SS11.82(b)'s attribution of the residual to the
+   disc floors is REFUTED at its node, A15's row records what was measured,
+   and the tester's L1 answer is routed back with the one question only he can
+   settle: does he SEE a step at the threshold, or was he answering our
+   number?
+ PREDICTED: CLASS B.  [derived: the code reading of section 3 + the clipping
+ measurement of section 4; a prediction, not a conclusion - A4 decides.]
+
+
+6. IF A CHANGE LANDS (Class A only) - the inertness set and the cost
+--------------------------------------------------------------------
+  * outside-band crops bit-identical pre/post (drawAlpha == 1 everywhere
+    outside drawNested's band; `32.f * 1.0f` and `screen_r * 1.0f` are exact
+    IEEE identities) - the below-band and above-band sweep points of the
+    post-change run vs base2, expected within the A/A floor of 134 counts,
+    and the px>32 full-image floor 0;
+  * b5_drawhalf.py 14/14;
+  * f91_run.sh --expect post --locale fr: table md5 1fe630a4;
+  * the FULL canary after: every band member's delta 0.0 to the digit
+    (165.258/6.644 new, 160.142/6.603 old) - the Moon scene sits far above
+    the band, so drawAlpha == 1 throughout it;
+  * f90_rehearsal_run.sh rc 0;
+  * cost: ONE float multiply per big-halo draw per frame (one per star), on a
+    1 ms/frame denominator (D11) = ~0.3 ns = 3e-5% of the budget; zero added
+    draw calls.
+
+
+7. THE BUILD DISCIPLINE THIS PRE-REGISTRATION BINDS
+---------------------------------------------------
+  * the delivered binary is preserved byte-exact at
+    /home/claude/sc-f109/sc_delivered_6d63e6c1 before the first build;
+  * the isolation build lives at /home/claude/sc-f109/sc_f109_iso (nothing
+    under /tmp carries);
+  * after the arms the code is reverted and rebuilt, and md5 6d63e6c1 must be
+    bit-reproduced before any further change;
+  * the /proc/<pid>/comm probe reads 0 before every launch, and
+    config.ini 03fbee59 / ssystem.ini 545a51ef / startup.sts cea83254 are
+    asserted after every run.
