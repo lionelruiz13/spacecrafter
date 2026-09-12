@@ -249,6 +249,12 @@ void cLog::reportOpenLogConsole()
 	writeMutex.lock();
 	for (const auto& line : openReport)
 		writeConsole(line, LOG_TYPE::L_INFO);
+	// Then whatever the size budget did before this answer existed; the buffer
+	// is released with the same act, because from here on writeLocked puts
+	// every further rotation line on the console as it writes it.
+	for (const auto& line : budgetReport)
+		writeConsole(line, LOG_TYPE::L_INFO);
+	std::vector<std::string>().swap(budgetReport);
 	writeMutex.unlock();
 }
 
@@ -342,6 +348,15 @@ void cLog::rotateForBudget()
 		line += " WARNING: reopening the file FAILED, so this channel writes"
 		        " nothing further - check the permissions of the log directory.";
 	writeLocked(line, LOG_TYPE::L_INFO, LOG_FILE::INTERNAL);
+	// writeLocked serves the console itself once the console is known to be a
+	// sink, and setDebug only learns that at main.cpp:268 - thirty lines after
+	// the first writes of the process.  A rotation before that point would be
+	// invisible to an operator watching stdout, and that is precisely the state
+	// an UPGRADE lands in: a directory left above the budget by a build that
+	// had none rotates during startup, deleting files nobody is told about.  So
+	// it is kept until the question is answered, and never after.
+	if (!debugDecided)
+		budgetReport.push_back(line);
 }
 
 void cLog::writeLocked(const std::string& texte, const LOG_TYPE& type, const LOG_FILE& fichier)

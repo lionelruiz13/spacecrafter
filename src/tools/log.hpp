@@ -176,11 +176,16 @@ public:
 	//! Turning the console on is the moment the console becomes a reachable
 	//! sink for the open-time rotation report, which was written to the log
 	//! file long before this value was known (main.cpp:220 vs :268), so the
-	//! report is pushed here - once, whoever turns it on and whenever.
+	//! report is pushed here - once, whoever turns it on and whenever.  This is
+	//! also where the console's fate stops being unknown, which is what lets
+	//! rotateForBudget stop buffering for it.
 	void setDebug(bool debugging) {
+		debugDecided = true;
 		isDebug = debugging;
 		if (debugging)
 			reportOpenLogConsole();
+		else
+			std::vector<std::string>().swap(budgetReport);
 	}
 
 	void setWriteLog(bool writelog) {
@@ -273,8 +278,16 @@ private:
 	//! One line per channel opened (plus one per legacy pile found), kept for
 	//! the lifetime of the process: both sinks are served from this one text.
 	std::vector<std::string> openReport;
+	//! The same service for an in-session rotation that happens BEFORE the
+	//! config says whether the console is a sink - the state an upgrade lands
+	//! in, when an older build left the directory over the budget.  It is a
+	//! separate vector because openReport is being iterated at that moment
+	//! (reportOpenLog's own lines are the first writes of the process) and it
+	//! stops growing the instant setDebug answers the question.
+	std::vector<std::string> budgetReport;
 	bool openReportLogged = false;
 	bool openReportOnConsole = false;
+	bool debugDecided = false;
 	bool isDebug = false;
 	bool isWritingLog = true;
 };
