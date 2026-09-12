@@ -1,0 +1,260 @@
+F116 -- PRE-REGISTERED PREDICTIONS, WRITTEN BEFORE ANY EDIT OR BUILD
+=====================================================================
+Author: Claude Opus 5 executor, task F116, 2026-09-12 14:4x CEST.
+Code read at master-beta d0e0c51e (src/tools/log.{hpp,cpp}, src/main.cpp:195-280,
+src/scriptModule/script_mgr.cpp:285-330), harness at CC-harness b65bee6.
+Binary under test (PRE): build-claude/src/spacecrafter md5 d607cfdc (F114's).
+Nothing in the tree is mutated at the moment this file is written.
+
+Scoring rule: every numbered claim below is either HIT or MISS against a
+measurement named beside it.  A claim I cannot measure is marked NOT-SCORED and
+says why.  Numbers taken from the ledger are cited; numbers I derive say so.
+
+
+0.  THE ONE OPEN CHOICE THE SECTION LEFT, AND WHAT I PICK
+-----------------------------------------------------------------------
+The section states the choice as: at the bound, rotate (a) the channel being
+written, or (b) all five channels.  I pick NEITHER verbatim: I pick
+
+    (c) ROTATE THE CHANNEL THAT HOLDS THE MOST BYTES (live + its archives).
+
+Why not (a), the argument being the reason this task exists at all.  The budget
+is a TOTAL over five channels, so the channel that is over it and the channel
+being written need not be the same one.  Take the state this very task is built
+for -- a session that has already written ~1 GiB into script.log -- and let the
+scripting stop while a quiet channel keeps writing (tcp: a connect line; the
+internal channel: a warning per minute).  Under (a) EVERY such line finds the
+total over the budget and rotates the TINY channel, which frees its 13-byte
+oldest archive, i.e. nothing; after eight such lines that channel's whole window
+is empty and each further line rotates it for zero bytes freed while appending
+one ~450-byte D12 line to the internal channel.  That is a rotation per line
+forever and an internal log that grows without bound: the very defect Sec.5.115
+records, recreated by its own fix.  Under (c) the big channel is the one that
+rotates, so the excess is always the thing being shed, and the total falls by
+construction within at most LOG_RETENTION_LAUNCHES rotations.
+Why not (b): a chatty channel would consume a retention slot on four channels
+that wrote nothing, so one busy session erases the launch history of every other
+channel for no space gained.  (c) consumes exactly one slot, on the channel that
+grew.
+In the field case the three rules agree: the channel being written IS the
+largest (script under the tester's shows, Sec.11.218(m)).  (c) differs from (a)
+only in the pathological state above -- and that difference is MEASURED here,
+not argued: prediction 8.
+Both (c)'s own consequences are named as veto points in the entry: an in-session
+rotation consumes one of the eight launch slots, and at the bound a channel
+whose single live file is comparable to the whole budget loses its history
+within a few rotations (prediction 5).
+
+1.  THE RULE AS IMPLEMENTED (what the diff will say)
+-----------------------------------------------------------------------
+1.1  log.hpp gains, beside LOG_RETENTION_LAUNCHES:
+         constexpr std::uintmax_t LOG_RETENTION_BYTES = 1024u*1024u*1024u;
+     = 1073741824 B, the owner's number [vixy 2026-09-12, Sec.11.233(b)
+     correction: "1 GiB TOTAL across channels; rotate within a session at the
+     bound"], with its reason in the comment (a year-long run; F108's window
+     counts launches and bounds no bytes) and NO config.ini key (F108's
+     argument, Sec.11.230(d)).
+1.2  Denominator of the total: the five channels' LIVE files plus their numbered
+     archives <channel>.1.log .. <channel>.7.log -- 40 files at the field's
+     steady state.  NOT in it: the legacy dated pile script-*.log (the build
+     never writes, reads or deletes it, Sec.11.230; counting bytes that cannot
+     be freed would rotate forever), EntityCore-logs-*.txt (the submodule's
+     pile, outside the five channels), and everything else in log/ (CPUlog.csv,
+     GPUlog.csv).
+1.3  The counter: cLog::write is the one place every byte of every channel
+     passes, so each channel carries `live` (bytes written into its live file
+     since it was opened) and `archived` (the sum of its archives' sizes,
+     measured by file_size ONLY at open and at each rotation), and the process
+     carries their running sum.  Per line: one add to the channel, one add to
+     the sum, one compare -- no stat, no file_size, nothing per frame (D11).
+1.4  At the bound: the largest channel's stream is closed, cLog::rotate (the
+     F108 function, unchanged in behaviour) renames live -> .1, shifts, deletes
+     index LOG_RETENTION_LAUNCHES-1, a fresh live file is opened truncated, the
+     channel's live counter goes to 0 and its archived counter is re-measured.
+1.5  ONE D12 line per in-session rotation, L_INFO on LOG_FILE::INTERNAL -- the
+     same channel and severity F108's open-time report uses, so one grep on
+     spacecrafter.log still answers the whole retention question -- naming: the
+     budget, the total that crossed it, the channel, the file deleted with its
+     size, the total left in use, and "change that line and rebuild".  It keeps
+     the "Log retention (" prefix F108's readers key on.
+1.6  main.cpp is NOT touched: every in-session rotation happens strictly after
+     all five channels are open (the first write() in the process is at
+     main.cpp:230, the opens are :221-225), so the D12 line has a sink at the
+     moment it is produced -- which is exactly what forced F108 to buffer its
+     own report.  MEASURED BY: the diff, and the D12 lines appearing in the live
+     spacecrafter.log of the mutant run.
+1.7  Nothing else moves: `git diff --stat` names src/tools/log.hpp and
+     src/tools/log.cpp and nothing else.
+
+2.  THE PER-LINE COST (D11)
+-----------------------------------------------------------------------
+2.1  The added work per logged line is one map lookup the code already does
+     (the counter lives IN the channel record that holds the ofstream, so no
+     second lookup), two integer adds and one compare.  I predict the added
+     cost is BELOW 200 ns per line and below 2 % of what one cLog::write
+     already costs, because every line already does an std::endl flush plus an
+     explicit flush() -- two write(2) syscalls -- which is a microsecond-scale
+     operation.  MEASURED BY: an instrumented build accumulating
+     steady_clock brackets around (i) the whole write() body and (ii) the
+     counter+check block, dumped at close; band checked against the numbers.
+2.2  Zero per frame when nothing is logged: the frame loop calls no log
+     function (F108 (i) measured the same for its open-time work).  NOT-SCORED
+     beyond the diff: no new call site is reachable from the frame loop.
+2.3  Cost at a rotation: <= 7 renames + <= 8 exists() + <= 7 file_size() +
+     one close/open, i.e. the same order as F108's open-time rotation, measured
+     there at 0.06-0.33 ms per channel (Sec.11.230(i)) WITHOUT the legacy-pile
+     directory scan, which the in-session path does not run (that scan was the
+     dominant term, ~0.2 ms).  I predict an in-session rotation costs LESS THAN
+     0.5 ms, against a 1 ms frame budget, and happens at most once per logged
+     line.  MEASURED BY: the same instrumented build, rotation bracket.
+
+3.  THE DELIVERED BUILD, AT 1 GiB (the "never rotates in-session" arm)
+-----------------------------------------------------------------------
+3.1  On the chatty show below, with the field's own log directory or a farm, the
+     delivered binary performs ZERO in-session rotations: the total after a
+     launch is ~1.5 MB (the field's 40-file steady state was measured at
+     1 463 458 B, Sec.11.230(m)), three orders of magnitude below 2^30.
+     MEASURED BY: 0 D12 lines whose text carries the size-budget wording, in
+     spacecrafter.log and in the applog; the 40-file window unchanged in shape.
+3.2  The open-time D12 lines of F108 are unchanged, word for word: 6 lines on
+     the field home (5 channels + 1 legacy pile), 5 on a fresh farm.
+     MEASURED BY: f108_rotate.py, which asserts the count and the phrasing.
+3.3  The launch window still behaves exactly as Sec.11.230 measured it.
+     MEASURED BY: f108_rotate.py green (0 FAIL) on a multi-launch farm run.
+
+4.  THE MUTATED BUILD (budget a few MiB, scratch only, never the delivered one)
+-----------------------------------------------------------------------
+The mutation is in log.cpp (the comparison constant), so log.hpp -- the shipped
+constant -- is untouched by it and the delivered binary is rebuilt bit-for-bit
+afterwards (F108's arm-A/arm-B precedent, Sec.11.230(g)).  Budget for the
+mutant: 4 MiB = 4194304 B.  The show is a struct loop of a cheap valid command
+with no wait, played from a farm copy; ScriptMgr::update executes commands in a
+while loop bounded by a 400 ms deadline (script_mgr.cpp:304), so the script
+channel grows at thousands of lines per second and the bound is crossed in
+seconds.  Exact byte counts are calibrated on the delivered run first and
+committed as prediction_mutant.txt BEFORE the mutant is built (F108's shape).
+
+4.1  The first in-session rotation fires on the first logged line that takes the
+     total strictly above 4194304 B, and the D12 line's own "total" figure is
+     therefore in [4194305, 4194304 + one line's length] -- i.e. within ~600 B
+     of the budget.  MEASURED BY: parsing the number out of the first
+     size-budget D12 line.
+4.2  The channel it names is `script` -- by rule (c) the largest, which on this
+     show is also the one being written.  MEASURED BY: the line's channel name.
+4.3  On a FRESH farm (no archives at open) the first crossing produces a BURST:
+     the rotation moves the big live file to .1 and deletes index 7, which does
+     not exist, so it frees nothing and the total stays above the budget; the
+     next logged line rotates again.  I predict EXACTLY LOG_RETENTION_LAUNCHES
+     = 8 rotations in the first burst -- 7 of them saying "deleted nothing"
+     while the big file walks .1 -> .7, and the 8th deleting it with its size in
+     the line -- after which the total drops to roughly the four other channels'
+     bytes and the cycle repeats.  The whole burst takes under a second.
+     MEASURED BY: the sequence of size-budget D12 lines, their deleted-file
+     clauses and the sizes they name.
+4.4  At NO point does any channel hold more than 8 files, and no <channel>.8.log
+     is ever created.  MEASURED BY: a directory snapshot taken by the driver
+     while the app runs (polled), and after exit.
+4.5  The run crosses the bound at least twice (the mandate's requirement): with
+     a 4 MiB budget and a show that writes tens of MiB, I predict at least 3
+     bursts, i.e. >= 24 in-session rotations.  MEASURED BY: the D12 line count.
+4.6  The total never exceeds the budget by more than one burst's worth of live
+     bytes: the on-disk sum of the 40 channel files, sampled while the app runs,
+     stays below 4194304 + (bytes written during one burst) < 4.5 MiB.
+     MEASURED BY: polled directory snapshots.
+4.7  THE COUNTER IS EXACT TO THE BYTE.  The instrumented build dumps its final
+     counter (total and per channel) to stderr at close, before close() writes
+     its own "(Info ): EOF" line straight to each stream.  I predict
+     on-disk sum of the five live files and their archives, measured after the
+     process exits, MINUS 5 * 13 bytes (the EOF line per channel, written by
+     cLog::close outside write()) == the dumped total, exactly.
+     MEASURED BY: that comparison.  A mismatch of any size is a MISS.
+
+5.  WHAT THE BOUND COSTS IN HISTORY (the honest consequence, stated up front)
+-----------------------------------------------------------------------
+5.1  An in-session rotation consumes one of the eight launch slots: after it the
+     channel reaches fewer LAUNCHES back.  The owner's "1 GiB TOTAL" accepts
+     this by construction; it is a veto point in the entry.
+5.2  When ONE live file is comparable to the whole budget, the window collapses:
+     the burst of 4.3 deletes the big file within LOG_RETENTION_LAUNCHES
+     rotations, so after a crossing the channel keeps only the fresh file.  In
+     the FIELD (1 GiB, script at 193 MB/h, Sec.11.218(m)) I derive: the first
+     crossing comes after ~5.5 h, frees only the oldest previous-launch archive
+     (~10^5 B), so the next crossing follows ~2-10 s later, and after 7 such the
+     1 GiB file itself leaves -- i.e. a ~40 s grace, then the session's own
+     history is gone and it starts again from ~0.  Bounded and correct against
+     the owner's sentence, but it is the shape a reviewer must see; the
+     alternative (rotate the live file at budget/LOG_RETENTION_LAUNCHES so the
+     window holds 8 slices) is named in the entry as the veto-open refinement.
+     MEASURED BY: the mutant run's file sizes, scaled -- the mutant reproduces
+     the same shape at 4 MiB.
+
+6.  THE READERS
+-----------------------------------------------------------------------
+6.1  logread.py's rule (live = <channel>.log, archives = numbered, legacy =
+     dated) needs NO change to keep working across an in-session rotation: the
+     names are the same names.  What changes is the MEANING of an archive --
+     `.1.log` may now hold an earlier slice of the SAME launch -- so the module's
+     documentation is wrong where it says "earlier launches" and is corrected,
+     and a reader that must see the whole session gains one function
+     (the window read oldest-first) plus selftest cases for the in-session
+     shape.  MEASURED BY: `python3 logread.py selftest` green with MORE checks
+     than the 25 F108 left, and the new checks failing against a mutant rule.
+6.2  f108_rotate.py needs no change and stays green on the delivered binary: at
+     1 GiB no in-session rotation can fire in a harness-length launch, so its
+     per-launch file counts, inode chains, content keys and D12 counts hold as
+     Sec.11.230(e) recorded them.  MEASURED BY: a fresh multi-launch run, 0 FAIL.
+6.3  A harness reader that read the live file only would MISS content that moved
+     to .1 mid-session.  No harness instrument is affected in practice (no
+     harness launch approaches 1 GiB), and that is stated rather than assumed:
+     the check is that no instrument in the suites below fails.
+
+7.  THE SUITES
+-----------------------------------------------------------------------
+7.1  f90_rehearsal_run.sh: rc 0, FAIL none, S1..S9 as Sec.11.230(k) /
+     Sec.11.235 record them (S5's Mars distance is wall-clock dependent).
+7.2  f91_run.sh <outdir> --expect post --locale fr: rc 0, 0 FAIL, 0 NOTE, and
+     the parity table md5 1fe630a4 -- byte-identical to the F104/F105/F108
+     landed record.  The log system is not the render path; that is the check
+     which says so.
+7.3  f70_ascii.py gate: PASS, and the two edited engine files pure ASCII by a
+     Python byte census.
+
+8.  THE DISCRIMINATION BETWEEN RULE (c) AND RULE (a) -- the storm, measured
+-----------------------------------------------------------------------
+A second mutant, identical except that it rotates THE CHANNEL BEING WRITTEN
+(the section's option (a)), runs on a farm whose log directory is SEEDED with
+one 6 MiB shader.1.log -- a channel the show never writes -- and the same 4 MiB
+budget.  Predictions:
+8.1  Rule (c): the shader channel is the largest, so it rotates; the seeded file
+     walks up the indices one rotation per logged line and is deleted when it
+     reaches index 7.  I predict at most 8 in-session rotations, ALL naming
+     `shader`, within the first few dozen logged lines, after which the run
+     behaves exactly like 4.x above.  MISS if any rotation names another channel
+     before the shader file is gone.
+8.2  Rule (a): the seeded 6 MiB is never touched because nothing writes to the
+     shader channel, so the total stays above the budget forever and EVERY
+     logged line rotates whatever channel it was written to.  I predict
+     >= 500 in-session rotations in a 10 s run (vs <= 8 under rule (c)), none of
+     them naming `shader`, the seeded file still present at 6 MiB at exit, and
+     spacecrafter.log growing by ~450 B per rotation -- growth without bound,
+     which is the defect.  MEASURED BY: the D12 line count and the seeded file's
+     survival.  A ratio below 10x between the two arms is a MISS and the rule
+     choice goes back to the section's (a).
+
+9.  WHAT I EXPECT TO BE SURPRISED BY (named so a surprise is scored, not
+    absorbed)
+-----------------------------------------------------------------------
+9.1  The burst count in 4.3 assumes the fresh farm has no archives at open.  If
+     the farm's log directory is not empty (b3_farm.sh creates an empty log/),
+     the first burst is shorter.  Stated so a different number is a
+     premise difference and not a rule difference.
+9.2  The script channel may not be the largest at the FIRST crossing if the
+     vulkan channel's startup traffic (~100 KB, Sec.11.230(m)) dominates a very
+     small budget.  With 4 MiB it will not; if the observed first rotation names
+     `vulkan`, rule (c) is still what the code does and the prediction is a MISS
+     on the channel name only.
+9.3  The engine may log more per executed command than the one Execute_command
+     echo (a refusal line at L_DEBUG, Sec.11.178, and the script annotator may
+     rewrite the played .sts -- F90's farm hazard).  The show therefore uses a
+     VALID command and the farm's own copy of the script; the byte-per-iteration
+     figure is calibrated, not assumed.
