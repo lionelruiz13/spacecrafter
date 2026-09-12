@@ -1,0 +1,371 @@
+F111 -- PREDICTIONS, COMMITTED BEFORE ANY BUILD AND BEFORE ANY RUN THAT SCORES THEM
+====================================================================================
+Task    F111, Sec.5.150's fix: OrbitModule::sampleOrbit gets its own seed.
+Code    master-beta @ f3316fea (UNTOUCHED at the time this file is committed)
+Binary  build-claude/src/spacecrafter md5 95087b68 = the PRE binary
+        (copy kept at /home/claude/sc-f111/sc_f111_pre, md5 asserted equal)
+Harness 1b31005 + this file + f111_predict.py
+Model   claude/harness/f111_predict.py, which IMPORTS f107_model.py's solvers
+        (I2: one model of the solver, not two).  Tables: model_tables.txt,
+        regenerable by `python3 f111_predict.py all`.
+Written 2026-09-12 by the F111 executor (Claude Opus 5), dispatched by
+        Claude Fable 5.1, supervising session 29.
+
+READ THIS FIRST -- TWO OF THE MANDATE'S OWN EXPECTATIONS ARE PREDICTED **FALSE**
+here (P4 Europa, P5 the line).  Both are stated with the mechanism and with the
+observation that would refute MY reading instead.  They are registered before
+the runs precisely so that the scoring cannot be a story told afterwards.
+
+
+-------------------------------------------------------------------------------
+0.  THE MECHANISM, RE-READ AT HEAD (each fact with its site)
+-------------------------------------------------------------------------------
+PRE  (OrbitModule.cpp:105-110): 180 points, each
+     `orbit->positionAtTimevInVSOP87Coordinates(date, calc_date, p[d])`
+     -> EllipticalOrbit::positionAtTimev (orbit.cpp:466) -> positionAtTime
+     (:577-585) -> eccentricAnomaly(M, iterativeLastE) (:582), i.e. the POSITION
+     solver's own mutable seed (orbit.hpp:120), 2 Newton steps per call
+     (ITERATIVE_STEPS_PER_CALL, iterative_orbits.hpp:31).  The walk is ascending
+     d, so the seed is LEFT at E(date + 89*vis/180).
+POST (the old plot's shape, orbit_plot.cpp:142/:174 + :153/:167/:182):
+     one `prepairFastPositionAtTimevInVSOP87Coordinates(date, incr)` -- which on
+     EllipticalOrbit sets `batchLastE = 0` and returns {-incr, +incr}
+     (orbit.cpp:440-444) -- then 180
+     `fastPositionAtTimevInVSOP87Coordinates(date, calc_date, p[d])`
+     (orbit.cpp:447-463), which run TEN warm-up calls at the FIRST point because
+     `batchLastE == 0` (:453-456) and then one scoring call (:458), all through
+     `batchLastE` (orbit.hpp:122).  `iterativeLastE` is never touched.
+
+WHO OVERRIDES THE PAIR: `EllipticalOrbit` and NOBODY ELSE.  Census of
+src/bodyModule/orbit.{hpp,cpp}: 14 Orbit subclasses, one override of each half
+(orbit.hpp:100-101).  Every other type falls through to the base defaults
+(orbit.hpp:40-42, :45-47), whose `fastPositionAtTimev(JD0, JD, v)` calls
+`positionAtTimev(JD, JD, v)` -- i.e. JD0 becomes calc_date instead of date.
+MEASURED over orbit.cpp: only FOUR implementations read JD0 at all --
+SpecialOrbit (:920-924, and only to forward to an osculatingFunction),
+MixedOrbit (:1010-1017, forwarding), BinaryOrbit (:1057-1072, forwarding) and
+linearOrbit (:1166-1185, which uses JD0 and IGNORES JD).  In the shipped field
+(~/.spacecrafter/ssystem.ini, 91 sections) there are **0 linear_orbit bodies**
+and every `*_special` section reaching the sampler's else-branch has a
+`positionFunction` and NO osculatingFunction (Sec.11.229(f4)), for which
+`positionAtTimev(JD0,JD,v)` ignores JD0 (:923).  So on the shipped corpus the
+JD0 respelling is a NO-OP and the only behavioural change is the seed.
+
+THE TWO PATHS DO **NOT** SHARE ONE Orbit OBJECT -- the task section says they do
+and that reading is wrong; see finding F-1 in section 9 below.
+
+
+-------------------------------------------------------------------------------
+P1.  THE PER-BODY ONE-FRAME TRANSIENT AT HEAD
+-------------------------------------------------------------------------------
+From the slice/model at HEAD's 2 steps per call, seed left at +89 increments
+(= 3.106686 rad of mean anomaly at rate 1).  f107_model.py's own table names
+Pasiphae 0.167429 rad -> 0.0246316 AU -> 834.41 arcsec, Neso 2612.34 arcsec,
+Laomedeia 799.46, Neried 492.50, Carme 448.20 (artifacts/f107/model_sampler.txt,
+reproduced unchanged today).
+
+THIS FILE ADDS WHAT A LEG AT A RUNNING CLOCK NEEDS: the magnitude is a function
+of WHERE the body is, and a running clock sweeps the whole orbit, so a single
+number is not a prediction.  model_tables.txt section P1/P3 gives, per body, the
+p10/p50/p90/max of the error over 360 mean anomalies, in two forms:
+  err3d = |pos - pos_exact|            (the physical displacement)
+  errR  = ||pos| - |pos_exact||        (the RADIAL part, which is what a |ecl|
+                                        comparison against the model can see,
+                                        Sec.11.229(i3): a moon's dumped ecl is in a
+                                        rotated frame and only its length is
+                                        comparable)
+At rate 1 (offset 3.1067 rad), worst first by errR_p50:
+
+  body        e       vis_d    err3d_p50  errR_p10   errR_p50   errR_max
+  Neso      0.6300   9358.591    0.0916   9.717e-04  2.356e-02  4.053e-01
+  Setebos   0.5614   2234.351    0.0267   2.793e-04  6.534e-03  1.320e-01
+  Sycorax   0.5100   1288.850    0.0151   1.376e-04  3.429e-03  8.323e-02
+  Laomedeia 0.3846   3185.069    0.0136   1.167e-04  2.170e-03  1.898e-02
+  Neried    0.7474    360.482    0.0122   1.083e-04  3.261e-03  5.474e-02
+  Prospero  0.3312   1973.430    0.0059   5.226e-05  7.279e-04  7.103e-03
+  Pasiphae  0.2932    709.053    0.0057   5.324e-05  6.209e-04  6.044e-03
+  Psamathe  0.2226   9130.624    0.0050   3.634e-05  4.009e-04  3.943e-03
+  Carme     0.2603    691.655    0.0039   3.626e-05  3.513e-04  3.607e-03
+  Sinope    0.1823    778.644    0.0038   3.513e-05  4.357e-04  8.277e-04
+  ... 21 more, down to Triton at errR_p50 = 1.1e-17 (e = 0).
+THE MODEL'S OWN FLOOR on this corpus is 5.6e-09 AU / 5.2e-08 relative on every
+walked record (f107_model.py validate against F104's landed pre dump, re-run
+today: 1 of 52 mismatch and it is pre-fix Eris, the expected one).
+
+
+-------------------------------------------------------------------------------
+P2.  THE EVERY-FRAME-RESAMPLE RATE, AND WHETHER `timerate` REACHES IT
+-------------------------------------------------------------------------------
+`timerate rate R` -> `timeSetSpeed(R * JD_SECOND)` (app_command_interface.cpp:3479)
+-> `TimeMgr::setTimeSpeed` (time_mgr.hpp:53-55), which stores the double with
+**NO CLAMP**; `TimeMgr::update` adds `time_speed * dt_seconds` to JDay
+(time_mgr.cpp:42).  So per frame dJD = R/(86400*fps), and the resample gate
+(OrbitModule.cpp:132) fires EVERY frame when
+
+        R >= 86400 * fps * vis/180 = 69120 * vis   (at the config cap fps = 144,
+                                                    config.ini:28; a slower frame
+                                                    rate only makes dJD larger,
+                                                    so this bound is conservative)
+
+  Metis      vis 0.299 d  -> R >=   2.07e4     Caliban   579.6 -> 4.01e7
+  Proteus        1.123    ->        7.76e4     Ananke    648.6 -> 4.48e7
+  Triton         5.877    ->        4.06e5     Carme     691.7 -> 4.78e7
+  Leda         242.257    ->        1.67e7     Pasiphae  709.1 -> 4.90e7
+  Himalia      248.316    ->        1.72e7     Sinope    778.6 -> 5.38e7
+  Elara        258.884    ->        1.79e7     Sycorax  1288.9 -> 8.91e7
+  Lysithea     259.047    ->        1.79e7     Halimede 1875.2 -> 1.30e8
+  Neried       360.482    ->        2.49e7     Prospero 1973.4 -> 1.36e8
+  Setebos     2234.4 -> 1.54e8   Sao   2908.4 -> 2.01e8   Laomedeia 3185.1 -> 2.20e8
+  Psamathe    9130.6 -> 6.31e8   Neso  9358.6 -> 6.47e8
+  (full table: model_tables.txt section P2)
+
+**PREDICTION P2a: `timerate` REACHES IT.**  There is no clamp in the engine; the
+argument goes through the expression evaluator (`evalDouble`,
+app_command_interface.cpp:4631) and a double carries 6.5e8 exactly.  The
+REACHABLE MAXIMUM is therefore not an engine limit but an arithmetic one: at
+R = 7e8 the date advances 56.3 days per frame and 8103 days (22 years) per wall
+second, and JDay ~ 2.46e6 keeps 9 significant decimals of a day at double
+precision, so thousands of years of sweep cost no precision that matters here.
+I predict the engine accepts `timerate rate 700000000` and the dump header's
+`timeSpeed` reads 8101.85185... (= 7e8/86400) to the printed precision.
+  FALSIFIER: the header reads a different timeSpeed, or the app refuses, or the
+  frame rate collapses below ~20 fps (which would still resample every frame but
+  would make the dump's own date uncertain) -- any of these and P2a is refuted
+  and the STOP of mandate (2) applies with the numbers above.
+
+**THE TWO STAGES THE LEG WILL USE, and their PARTITION -- this is the
+discriminating check, because it predicts which bodies move AND which do not:**
+  STAGE 1  R = 1.0e8  -> dJD = 8.038 d/frame at 144 fps.  EVERY-FRAME for the 24
+           bodies with vis <= 1447 d (Sycorax and everything below it), NOT for
+           Halimede, Prospero, Setebos, Sao, Laomedeia, Psamathe, Neso (7).
+  STAGE 2  R = 7.0e8  -> dJD = 56.27 d/frame.  EVERY-FRAME for ALL 31.
+  At stage 1 the offsets are 2.91-3.10 rad (model_tables.txt), i.e. within 7% of
+  the nominal, so the P1 magnitudes carry over.
+
+
+-------------------------------------------------------------------------------
+P3.  THE DUMP DELTA, PRE-FIX AND POST-FIX
+-------------------------------------------------------------------------------
+INSTRUMENT: `f111_predict.py score <dump> --rate R` computes, per sampling
+walked-iterating record, resid = ||ecl_dumped| - |model converged at the
+record's OWN dumped lastJD||.  A dump is a use for parked bodies only --
+`ModularBody::useNow` returns on its first line for a body the walk evaluates
+(`!renderHidden`, ModularBody.cpp:457), so the dump reads the WALK's own
+position and cannot re-converge the transient away.  That is why this catch is
+possible at all and it is a premise worth naming.
+
+THRESHOLD, fixed here and not after: **PERTURBED means resid >= 5.6e-07 AU**,
+100x the model's measured floor.
+
+  PRE-FIX, flag ON, stage 1 (R = 1e8):  I predict PERTURBED for at least
+        Sycorax, Neried, Pasiphae, Sinope, Carme, Elara, Leda, Lysithea,
+        Himalia, Ananke, Caliban        (11 bodies, errR_p50 >= 1.0e-05)
+    and converged for Neso, Psamathe, Laomedeia, Sao, Setebos, Prospero,
+        Halimede (the 7 the rate does not reach) and for the 13 inner moons
+        whose errR_p50 is below the threshold (Triton, Proteus, Puck, Rosalind,
+        Portia, Juliet, Belinda, Larissa, Adrastea, Amalthea, Metis,
+        Epimetheus, Thebe).
+  PRE-FIX, flag ON, stage 2 (R = 7e8):  the same 11 PLUS Neso, Setebos,
+        Laomedeia, Prospero, Psamathe, Sao, Halimede = **18 PERTURBED**.
+  PRE-FIX, flag OFF, either stage:  **0 PERTURBED** -- the body re-converges
+        every frame from a seed one frame behind.
+  POST-FIX, flag ON, either stage:  **0 PERTURBED**, every resid at the model
+        floor, i.e. equal to the flag-OFF arm to within it.  This is the "0 of
+        40" of Sec.11.229(f3) measured at a rate where the null MEANS something.
+  FALSIFIER of the fix: any record reading PERTURBED post-fix with the flag on.
+  FALSIFIER of the catch: fewer than 8 PERTURBED pre-fix at stage 1, or any
+  record PERTURBED with the flag OFF.
+
+WORST-BY-NAME, pre-fix, as the mandate asks: the leg runs several dumps per
+stage (different mean anomalies), and the prediction is that the WORST record by
+resid is one of **Neso, Setebos, Sycorax, Neried** at stage 2 and one of
+**Sycorax, Neried, Pasiphae** at stage 1, at 1e-3 .. 1e-1 AU.  (Pasiphae is the
+worst in ARCSEC because it is near, and Sec.11.229 names it; in AU it is 7th.)
+
+
+-------------------------------------------------------------------------------
+P4.  EUROPA -- THE MANDATE SAYS 3.475e-08 AU -> 0.  I PREDICT IT **STAYS**.
+-------------------------------------------------------------------------------
+Europa's orbit is a `SpecialOrbit` with a `positionFunction` and NO
+`osculatingFunction` (Sec.11.229(f4)).  In `sampleOrbit` it takes the else-branch.
+  PRE :  positionAtTimev(date, calc_date, v) -> SpecialOrbit::positionAtTimev
+         (orbit.cpp:920-924) -> osculatingFunction is null -> positionFunction(calc_date, v)
+  POST:  fastPositionAtTimev(date, calc_date, v) -> the BASE default
+         (orbit.hpp:45-47), SpecialOrbit overriding neither half ->
+         positionAtTimev(calc_date, calc_date, v) -> positionFunction(calc_date, v)
+The ephemeris is called at the SAME 180 dates in the SAME order, so
+`CalcInterpolatedElements`' static three-epoch cache (tass17.c:3146-3151 and its
+siblings) is walked identically.  The 3.475e-08 AU Sec.11.229(f5) attributed to the
+new path by MUTATION 3 was attributed by DISABLING the sampler; this fix does not
+disable it -- it changes which seed the ELLIPTICAL branch uses, and Europa has no
+elliptical branch.
+
+**PREDICTION P4: Europa still moves by 3.475e-08 AU (+- the float floor) with
+the flag on, post-fix.  Sec.5.150's special-orbit half is NOT closed by this fix.**
+  FALSIFIER: Europa reads 0 post-fix.  If it does, my reading of the base-class
+  fallback is wrong and I will say so at the entry rather than explain it away.
+  CONSEQUENCE IF I AM RIGHT: Sec.5.150 becomes FIXED on its ITERATIVE half only; its
+  special-orbit half is a different defect (a shared static ephemeris cache, which
+  the OLD path walks too -- Sec.11.229(f5)'s 16 of 17), and it must be recorded as
+  still open rather than closed by association.  That is a scope finding for the
+  supervisor, not a decision I take.
+
+
+-------------------------------------------------------------------------------
+P5.  THE SAMPLED LINE -- THE MANDATE EXPECTS IT UNCHANGED.  IT IS **NOT**.
+-------------------------------------------------------------------------------
+The mandate's reasoning ("ten warm-up steps from 0 converge for every e in the
+field") is right about the POST line and says nothing about the PRE one.  The PRE
+line's FIRST point is computed from `iterativeLastE` as the frame left it -- at
+the body's own date -- while the point asks for date - 90*incr, i.e. HALF A
+VISUALISATION PERIOD away, and it gets 2 Newton steps.  So the pre-fix line's
+first points are wrong by the same order as the transient.
+
+model_tables.txt section P5, max |orbitPoint_pre - orbitPoint_post| over 180
+points and 24 starting anomalies, with the index it occurs at, and each line's
+own error against the converged line:
+
+  body        e      max|pre-post| at_d  pre_vs_exact  post_vs_exact
+  Neso      0.6300      0.58723      1      0.58723      4.18e-07
+  Setebos   0.5614      0.23454      0      0.23454      5.03e-08
+  Sycorax   0.5100      0.16316      5      0.16316      1.62e-08
+  Laomedeia 0.3846      0.11449      0      0.11449      5.39e-09
+  Neried    0.7474      0.06569      0      0.06569      4.79e-07
+  Prospero  0.3312      0.03994      0      0.03994      1.75e-09
+  Pasiphae  0.2932      0.03289      0      0.03289      1.43e-09
+  Psamathe  0.2226      0.02234      0      0.02234      9.73e-10
+  Carme     0.2603      0.01939      0      0.01939      8.51e-10
+  Halimede  0.2619      0.01462      0      0.01462      6.41e-10
+  Ananke    0.2168      0.00925      0      0.00925      4.00e-10
+  Sinope    0.1823      0.00533      0      0.00533      2.35e-04
+  ... down to Triton 1.1e-12.
+`pre_vs_exact` EQUALS `max|pre-post|` in every row: the whole difference is the
+PRE line's own error, and the POST line is the converged one to 4e-07 AU or
+better on the Newton branch (the `ell<0.2` rows' 1e-4 post error is the
+fixed-point branch's per-point residual, which the OLD path's line carries too --
+the same algorithm, so it is parity, not a defect this task introduces).
+
+**PREDICTION P5: the line CHANGES, at its first point(s), by up to 0.587 AU
+(Neso) / 0.033 AU (Pasiphae), and the change is a CORRECTION -- the post-fix line
+is the old path's own line.**
+  WHAT A SCREENSHOT CAN SEE: Neso's first point moves 0.587 AU at ~30 AU from
+  the observer = 1.1 deg; Pasiphae's 0.033 AU at 23 AU = 0.08 deg = 3.5 px at
+  fov 60 deg over 2448 px.  At the F100 pinned camera these orbits are small on
+  screen, so I predict the DEFAULT-view screenshot pair differs in a SMALL but
+  NON-ZERO number of pixels (order 10^1..10^3), not zero and not the whole
+  frame.  A zero would mean the affected lines are sub-pixel at that view, which
+  is possible; the leg therefore also takes a pair at a view aimed at the
+  Jupiter/Neptune irregular satellites, where a zero WOULD refute P5.
+  FALSIFIER: both screenshot pairs byte-identical AND the model wrong, i.e. the
+  first sampled point does not move.
+
+
+-------------------------------------------------------------------------------
+P6.  THE TRAIL WALKER (TrailModule.cpp:227-234) -- RIDER OR THIS TASK?
+-------------------------------------------------------------------------------
+`resumeAfterHidden` re-evaluates `missed` samples at `lastJD + k*deltaTrail`,
+each 1+RESUME_EXTRA_ITERATIONS = 5 times AT ITS OWN DATE (TrailModule.cpp:229),
+so the seed ends CONVERGED at the last reconstructed sample's date -- and that
+date is within ONE `deltaTrail` of the frame's own date, because `missed` is the
+floor of the quotient (:190).  `deltaTrail` is 1 simulation day
+(TrailModule.hpp:193).  So the seed the body's next evaluation starts from is at
+most `deltaTrail * n` rad of mean anomaly stale, where the sampler's is
+`89*2pi/180`.
+
+model_tables.txt section P6, worst first (err3d = the physical displacement of
+the ONE frame after an unhide):
+  Elara    8.92e-05 AU    Leda     8.01e-05    Sinope   5.26e-05
+  Himalia  3.96e-05       Lysithea 3.55e-05    Sao      7.55e-06
+  Caliban  3.43e-06       Thebe    5.94e-07    ... Psamathe 5.7e-16
+The Newton-branch bodies (Pasiphae, Neso, Sycorax...) read 1e-12 .. 1e-16: their
+branch converges quadratically from a seed 0.009 rad away.  The table is
+dominated by the `ell<0.2` FIXED-POINT branch, whose error after 2 steps is
+~e^2 * dE and therefore linear in the staleness.
+
+**PREDICTION P6 / THE DISPOSITION: A RIDER, NOT THIS TASK.**  Worst 8.92e-05 AU
+is **3.9 orders below** the sampler's worst (0.645 AU on Neso) and 2.5 below
+Pasiphae's; it fires once per UNHIDE EDGE, not once per resample; and -- the
+decisive difference -- its fix is NOT this fix.  There is no "batch seed" for a
+trail: the old path has no trail reconstruction at all (D23 clause iv is
+new-path), so no old shape is being restored, and the available shapes
+(re-converge after the walk / give the walker its own seed / evaluate the samples
+through the batch pair) are a DESIGN CHOICE with no precedent to copy.  Recorded
+at its own line with this magnitude; NOT changed here, per the task boundary.
+  At Elara's ~5.5 AU that 8.92e-05 AU is 3.3 arcsec, i.e. above arcsecond
+  readout -- so whether it meets Sec.5.79's "with consequence" is a MINT decision
+  for the supervisor, and I route it rather than take it.
+
+
+-------------------------------------------------------------------------------
+P7.  COST, AGAINST D11 (1 ms/frame)
+-------------------------------------------------------------------------------
+  PRE  per resample: 180 solver calls = 360 Newton steps.
+  POST per resample: 190 solver calls = 380 Newton steps (10 warm-up calls at
+       d = 0, orbit.cpp:454, each of ITERATIVE_STEPS_PER_CALL steps) + 1 prepair
+       call that assigns a double and returns a pair -- **+5.6% Newton steps**.
+A resample fires once per vis/180 of SIMULATION time (OrbitModule.cpp:132): at
+rate 1 that is once per 0.0017 d for Metis and once per 52.0 d for Neso -- i.e.
+for the irregular satellites this is a once-per-flag-on event, not a per-frame
+one.  Per-frame only at the P2 rates.
+**PREDICTION P7: the measured cost of one resample is O(10 us) and the post/pre
+ratio is 1.00 .. 1.15; at rate 1 with all 31 lines on, resamples per second is
+below 1 for the 18 outer bodies and at most ~14 for Metis (0.00166 d per
+resample at 0.0000116 d/s of sim time = one resample per 143 s -- so below 1 for
+EVERY body at rate 1).  The D11 denominator is therefore not approached at rate
+1 either before or after.**
+  FALSIFIER: a resample measured above 100 us, or a post/pre ratio above 1.3.
+
+
+-------------------------------------------------------------------------------
+8.  WHAT I EXPECT TO BE WRONG (stated in advance, Sec.11.229's shape)
+-------------------------------------------------------------------------------
+R1  The stage-1/stage-2 PARTITION of P3 assumes fps = 144.  With 31 orbit lines
+    drawn and the clock sweeping, the frame rate will be LOWER, which moves
+    bodies INTO the every-frame set, never out of it.  So I expect the measured
+    PERTURBED count to be >= my predicted count, and a count BELOW it is the
+    refutation.  I expect stage 1 to overshoot 11 slightly.
+R2  The `errR` percentiles assume the dumps land at independent mean anomalies.
+    A body whose dump happens to land near E where dr/dE ~ 0 will read low.  With
+    4 dumps per stage the chance that a given body reads below threshold at all
+    four is real for the bodies near the threshold (Caliban, Ananke, Himalia,
+    Lysithea).  I therefore score on the MAX over the stage's dumps and predict
+    the partition on that statistic, not on any single dump.
+R3  P5's pixel counts are the weakest number in this file -- the screen size of
+    these orbits at a given camera is not modelled, only estimated from the
+    angular displacement.  I would not be surprised by an order of magnitude.
+
+
+-------------------------------------------------------------------------------
+9.  DISPATCHER-SIDE FINDINGS (reported, not absorbed; none is an input this work
+    stands on, so none is an abort trigger -- Sec.11.179(a))
+-------------------------------------------------------------------------------
+F-1 THE TASK SECTION'S "ONE `EllipticalOrbit` OBJECT THAT BOTH PATHS SHARE" IS
+    FALSE.  The new path's body is built by `ModularSystem::loadBody`, whose
+    createInfo takes `.orbit = ModuleLoaderMgr::instance.loadOrbit(param)`
+    (ModularSystem.cpp:1199) -- a FRESH `std::unique_ptr<Orbit>` per call
+    (ModuleLoaderMgr.cpp:101-110).  The old path's body is built by
+    `ProtoSystem::addBody`, which builds its own orbit (`orbitCreator->handle`,
+    protosystem.cpp:634, or a direct `make_unique` at :587/:595/:623) and moves
+    it into the `Body` (`std::unique_ptr<Orbit> orbit`, body.hpp:634).  Two
+    unique_ptrs, two objects; `Orbit`'s copy constructor is private (orbit.hpp:73).
+    WHY IT IS OUTPUT-SIDE: the section uses the sharing to argue that the new
+    sampler and the old plot reusing `batchLastE` is "sequential reuse, never
+    interleaving" -- a SAFETY argument for the fix.  If they do not share, the
+    safety is unconditional instead of conditional, so the fix's premise is
+    strengthened, not weakened, and no step of this task consumes the sharing.
+    COUNTERFACTUAL, as the rule requires: had the task been "measure the old
+    path's reaction to the new sampler's seed walk", the sharing would have been
+    an INPUT and this would be an abort under Sec.0.7 rather than a report.
+    THE LEG WILL TEST IT ANYWAY, because a read is not a measurement: if the two
+    shared one object, the OLD half of the dump would carry the same transient
+    (Body::compute_position goes through positionAtTime -> iterativeLastE).  So
+    **PREDICTION F-1a: at stage 2 with the flag on, pre-fix, the old half's
+    `altaz_old`/position for the perturbed records does NOT show the
+    transient beyond its own known cross-dump noise.**
+F-2 The mandate's Europa clause (P4) and its line clause (P5) are predicted
+    false above, each with its mechanism.  Both are output-side: they are
+    expectations about this task's RESULT, not premises it consumes.
+F-3 The dispatch prompt's own correction of the launch precondition
+    (`f116_assert.sh` instead of a `used <= 4000` line) is what this task obeys;
+    the section's prose precondition list does not mention it.  Recorded so the
+    section's text is known to be one revision behind its prompt.

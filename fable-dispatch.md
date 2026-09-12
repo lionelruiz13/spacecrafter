@@ -880,7 +880,7 @@ test -e /home/claude/sc-f111 ; echo $? => 1
 ```
 
 **DoD:** predictions before any build; the pre-fix catch (or the reachable-rate STOP); the fix in `sampleOrbit` alone; the proof legs (a)–(g); §11 entry + stub; §5.150 FIXED; the §11.229 / §11.225 markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-12 16:5x — CHECKPOINT 1: gate PASS (premise_check 25/0; both HEADs as stated; baselines at open scan 283/356/145 · pair 254/229/25/125 · D36 D2 12 I93 I2 37 M95). PREDICTIONS COMMITTED before any build/run: `harness/artifacts/f111/prediction.txt` + `model_tables.txt` + the instrument `harness/f111_predict.py` (imports f107_model, I2). TWO MANDATE EXPECTATIONS PREDICTED FALSE with mechanism: P4 Europa does NOT go to 0 (SpecialOrbit takes the base-class fallback to the SAME positionFunction at the SAME 180 dates), P5 the LINE is NOT unchanged (the PRE line's first point is half a visualisation period from its seed — up to 0.587 AU on Neso; the POST line is the converged/old-path one). Finding F-1: the section's "ONE EllipticalOrbit both paths share" is FALSE (two unique_ptrs, ModularSystem.cpp:1199 vs protosystem.cpp:634) — output-side, reported. NEXT: the pre-fix catch leg (`f111_rate.py`, stages R=1e8 and 7e8) on the PRE binary `95087b68`; no engine code touched yet.
 
 ---
 

@@ -1,0 +1,293 @@
+P1/P3  THE STEADY-STATE PERTURBATION AT AN EVERY-FRAME-RESAMPLE RATE
+       seed = converged E at M + offset; then ONE call of 2 Newton
+       steps at the body's own M.  offset = 2pi*(89/180 - dJD/vis),
+       dJD = rate/(86400*fps); at rate 1 (dJD ~ 0) it is 3.106686 rad.
+       stage: rate = 1 (nominal), fps = 144
+       Distribution over 360 mean anomalies -- a leg at a running clock
+       sweeps the orbit, so a single number would not be a prediction.
+       err3d = |pos - pos_exact| AU;  errR = ||pos| - |pos_exact|| AU,
+       and errR is what a |ecl| comparison against the model measures.
+       MODEL FLOOR on this corpus: 5.6e-09 AU / 5.2e-08 relative.
+       every = does this rate resample this body EVERY frame?
+
+body         branch           e      vis_d  offs_rad every   err3d_p50    errR_p10    errR_p50    errR_max
+Neso         ell0.2-0.9  0.6300   9358.591    3.1067   yes      0.0916   0.0009717     0.02356      0.4053
+Setebos      ell0.2-0.9  0.5614   2234.351    3.1067   yes     0.02671   0.0002793    0.006534       0.132
+Sycorax      ell0.2-0.9  0.5100   1288.850    3.1067   yes     0.01508   0.0001376    0.003429     0.08323
+Neried       ell0.2-0.9  0.7474    360.482    3.1067   yes     0.01216   0.0001083    0.003261     0.05474
+Laomedeia    ell0.2-0.9  0.3846   3185.069    3.1067   yes     0.01361   0.0001167     0.00217     0.01898
+Prospero     ell0.2-0.9  0.3312   1973.430    3.1067   yes     0.00591   5.226e-05   0.0007279    0.007103
+Pasiphae     ell0.2-0.9  0.2932    709.053    3.1067   yes      0.0057   5.324e-05   0.0006209    0.006044
+Sinope       ell<0.2     0.1823    778.644    3.1067   yes    0.003782   3.513e-05   0.0004357   0.0008277
+Psamathe     ell0.2-0.9  0.2226   9130.624    3.1067   yes    0.004962   3.634e-05   0.0004009    0.003943
+Carme        ell0.2-0.9  0.2603    691.655    3.1067   yes    0.003871   3.626e-05   0.0003513    0.003607
+Halimede     ell0.2-0.9  0.2619   1875.169    3.1067   yes    0.002897   2.673e-05   0.0002643    0.002719
+Elara        ell<0.2     0.1962    258.884    3.1067   yes    0.002091    2.07e-05   0.0002585    0.000496
+Leda         ell<0.2     0.1850    242.257    3.1067   yes    0.001788    1.68e-05   0.0002086   0.0003971
+Sao          ell<0.2     0.1429   2908.416    3.1067   yes    0.002118     1.6e-05   0.0001936   0.0003586
+Ananke       ell0.2-0.9  0.2168    648.641    3.1067   yes     0.00206   1.565e-05   0.0001654      0.0016
+Himalia      ell<0.2     0.1341    248.316    3.1067   yes   0.0009578   6.857e-06   8.257e-05   0.0001519
+Lysithea     ell<0.2     0.1281    259.047    3.1067   yes   0.0009003   6.187e-06   7.418e-05    0.000136
+Caliban      ell<0.2     0.0781    579.586    3.1067   yes   0.0002065   8.249e-07   1.035e-05   1.851e-05
+Thebe        ell<0.2     0.0193      0.678    3.1067   yes   3.939e-07   3.712e-10   4.844e-09   8.389e-09
+Epimetheus   ell<0.2     0.0098      0.694    3.1067   yes   6.935e-08   3.322e-11   4.344e-10   7.464e-10
+Metis        ell<0.2     0.0079      0.299    3.1067   yes   3.873e-08   1.502e-11   1.965e-10   3.371e-10
+Amalthea     ell<0.2     0.0062      0.502    3.1067   yes   3.311e-08   9.996e-12   1.308e-10    2.24e-10
+Adrastea     ell<0.2     0.0065      0.302    3.1067   yes   2.652e-08   8.483e-12    1.11e-10   1.902e-10
+Larissa      ell<0.2     0.0016      0.555    3.1067   yes   9.313e-10   7.415e-14   9.715e-13   1.657e-12
+Belinda      ell<0.2     0.0008      0.624    3.1067   yes   2.278e-10   8.868e-15   1.162e-13   1.981e-13
+Juliet       ell<0.2     0.0007      0.494    3.1067   yes   1.661e-10   5.969e-15   7.823e-14   1.333e-13
+Portia       ell<0.2     0.0007      0.514    3.1067   yes   1.618e-10   5.661e-15   7.419e-14   1.264e-13
+Rosalind     ell<0.2     0.0005      0.559    3.1067   yes   8.419e-11   2.067e-15   2.708e-14   4.615e-14
+Puck         ell<0.2     0.0004      0.763    3.1067   yes   5.883e-11   1.089e-15   1.427e-14    2.43e-14
+Proteus      ell<0.2     0.0003      1.123    3.1067   yes   4.071e-11   5.359e-16   7.024e-15   1.197e-14
+Triton       ell<0.2     0.0000      5.877    3.1067   yes   8.072e-13   8.674e-19   1.128e-17   1.952e-17
+
+P1/P3  THE STEADY-STATE PERTURBATION AT AN EVERY-FRAME-RESAMPLE RATE
+       seed = converged E at M + offset; then ONE call of 2 Newton
+       steps at the body's own M.  offset = 2pi*(89/180 - dJD/vis),
+       dJD = rate/(86400*fps); at rate 1 (dJD ~ 0) it is 3.106686 rad.
+       stage: rate = 100000000.0, fps = 144
+       Distribution over 360 mean anomalies -- a leg at a running clock
+       sweeps the orbit, so a single number would not be a prediction.
+       err3d = |pos - pos_exact| AU;  errR = ||pos| - |pos_exact|| AU,
+       and errR is what a |ecl| comparison against the model measures.
+       MODEL FLOOR on this corpus: 5.6e-09 AU / 5.2e-08 relative.
+       every = does this rate resample this body EVERY frame?
+
+body         branch           e      vis_d  offs_rad every   err3d_p50    errR_p10    errR_p50    errR_max
+Neso         ell0.2-0.9  0.6300   9358.591    3.1013    no     0.08922   0.0007976     0.02311      0.4012
+Setebos      ell0.2-0.9  0.5614   2234.351    3.0841    no     0.02677   0.0002408    0.006193      0.1319
+Sycorax      ell0.2-0.9  0.5100   1288.850    3.0675   yes     0.01454   0.0001117    0.003171     0.08321
+Neried       ell0.2-0.9  0.7474    360.482    2.9666   yes     0.01007   0.0001049     0.00308     0.05495
+Laomedeia    ell0.2-0.9  0.3846   3185.069    3.0908    no     0.01339   0.0001292    0.002135     0.01881
+Prospero     ell0.2-0.9  0.3312   1973.430    3.0811    no    0.005832   5.706e-05   0.0007307    0.006968
+Pasiphae     ell0.2-0.9  0.2932    709.053    3.0355   yes    0.005464   5.154e-05   0.0006208    0.005679
+Sinope       ell<0.2     0.1823    778.644    3.0418   yes    0.003748   3.519e-05   0.0004274   0.0008513
+Psamathe     ell0.2-0.9  0.2226   9130.624    3.1012    no    0.004954   3.643e-05   0.0004031     0.00392
+Carme        ell0.2-0.9  0.2603    691.655    3.0337   yes    0.003711   3.242e-05   0.0003468    0.003361
+Halimede     ell0.2-0.9  0.2619   1875.169    3.0798    no    0.002861   2.742e-05   0.0002629    0.002651
+Elara        ell<0.2     0.1962    258.884    2.9116   yes    0.002057   1.981e-05   0.0002515   0.0005369
+Leda         ell<0.2     0.1850    242.257    2.8982   yes    0.001737   1.483e-05   0.0002028   0.0004314
+Sao          ell<0.2     0.1429   2908.416    3.0893    no    0.002112   1.495e-05   0.0001928   0.0003613
+Ananke       ell0.2-0.9  0.2168    648.641    3.0288   yes    0.001961    1.48e-05   0.0001578     0.00147
+Himalia      ell<0.2     0.1341    248.316    2.9033   yes   0.0009394   6.171e-06   8.133e-05   0.0001638
+Lysithea     ell<0.2     0.1281    259.047    2.9117   yes   0.0008873   5.558e-06   7.295e-05   0.0001461
+Caliban      ell<0.2     0.0781    579.586    3.0196   yes   0.0002052   7.964e-07   1.016e-05   1.911e-05
+Thebe        ell<0.2     0.0193      0.678  -71.4117   yes   2.903e-07   4.674e-10    3.68e-09    9.41e-09
+Metis        ell<0.2     0.0079      0.299 -165.6666   yes   2.872e-08   1.874e-11   1.519e-10   3.759e-10
+Amalthea     ell<0.2     0.0062      0.502  -97.5666   yes   3.276e-08    9.94e-12   1.287e-10   2.339e-10
+Epimetheus   ell<0.2     0.0098      0.694  -69.6270   yes   2.399e-08   7.301e-12   1.034e-10   2.174e-10
+Adrastea     ell<0.2     0.0065      0.302 -163.9086   yes   9.646e-09   2.167e-12   2.795e-11   5.931e-11
+Belinda      ell<0.2     0.0008      0.624  -77.7859   yes   1.792e-10   1.056e-14    9.46e-14    2.21e-13
+Larissa      ell<0.2     0.0016      0.555  -87.8371   yes   8.333e-11   4.733e-15   6.174e-14   1.089e-13
+Juliet       ell<0.2     0.0007      0.494  -99.1488   yes   1.152e-10   6.738e-15   2.976e-14   1.088e-13
+Portia       ell<0.2     0.0007      0.514  -95.1467   yes   8.903e-11   3.609e-15   2.651e-14   6.741e-14
+Rosalind     ell<0.2     0.0005      0.559  -87.1946   yes   4.109e-11   9.762e-16    8.87e-15   2.085e-14
+Proteus      ell<0.2     0.0003      1.123  -41.8693   yes   2.523e-11   7.939e-16   4.682e-15   1.299e-14
+Puck         ell<0.2     0.0004      0.763  -63.1188   yes   1.171e-11   1.535e-16   1.978e-15    3.76e-15
+Triton       ell<0.2     0.0000      5.877   -5.4863   yes   4.107e-13   4.337e-19   3.903e-18   9.975e-18
+
+P1/P3  THE STEADY-STATE PERTURBATION AT AN EVERY-FRAME-RESAMPLE RATE
+       seed = converged E at M + offset; then ONE call of 2 Newton
+       steps at the body's own M.  offset = 2pi*(89/180 - dJD/vis),
+       dJD = rate/(86400*fps); at rate 1 (dJD ~ 0) it is 3.106686 rad.
+       stage: rate = 700000000.0, fps = 144
+       Distribution over 360 mean anomalies -- a leg at a running clock
+       sweeps the orbit, so a single number would not be a prediction.
+       err3d = |pos - pos_exact| AU;  errR = ||pos| - |pos_exact|| AU,
+       and errR is what a |ecl| comparison against the model measures.
+       MODEL FLOOR on this corpus: 5.6e-09 AU / 5.2e-08 relative.
+       every = does this rate resample this body EVERY frame?
+
+body         branch           e      vis_d  offs_rad every   err3d_p50    errR_p10    errR_p50    errR_max
+Neso         ell0.2-0.9  0.6300   9358.591    3.0689   yes      0.0884   0.0008409     0.02188       0.406
+Setebos      ell0.2-0.9  0.5614   2234.351    2.9485   yes     0.02275   0.0002057    0.005159      0.1319
+Sycorax      ell0.2-0.9  0.5100   1288.850    2.8324   yes     0.01089   0.0001173      0.0022     0.08286
+Laomedeia    ell0.2-0.9  0.3846   3185.069    2.9957   yes     0.01226   0.0001263    0.001954     0.01771
+Neried       ell0.2-0.9  0.7474    360.482    2.1260   yes    0.001646   1.078e-05   0.0007428     0.05147
+Prospero     ell0.2-0.9  0.3312   1973.430    2.9276   yes    0.005011    5.32e-05   0.0006847    0.006142
+Psamathe     ell0.2-0.9  0.2226   9130.624    3.0680   yes    0.004889   3.671e-05   0.0003981    0.003785
+Sinope       ell<0.2     0.1823    778.644    2.6527   yes    0.003433   2.791e-05   0.0003973   0.0009643
+Pasiphae     ell0.2-0.9  0.2932    709.053    2.6081   yes    0.003084   3.598e-05   0.0003513    0.003562
+Halimede     ell0.2-0.9  0.2619   1875.169    2.9182   yes     0.00249   2.681e-05   0.0002516    0.002247
+Carme        ell0.2-0.9  0.2603    691.655    2.5956   yes    0.002051   2.311e-05   0.0002225    0.001987
+Sao          ell<0.2     0.1429   2908.416    2.9851   yes    0.002098   1.469e-05   0.0001919   0.0003763
+Elara        ell<0.2     0.1962    258.884    1.7412   yes    0.001485   2.933e-05   0.0001183   0.0005739
+Ananke       ell0.2-0.9  0.2168    648.641    2.5617   yes     0.00102   1.054e-05   0.0001009   0.0007795
+Leda         ell<0.2     0.1850    242.257    1.6474   yes    0.001284    2.29e-05   9.135e-05   0.0004409
+Himalia      ell<0.2     0.1341    248.316    1.6831   yes   0.0006815   8.593e-06   3.546e-05    0.000163
+Lysithea     ell<0.2     0.1281    259.047    1.7420   yes    0.000634   8.098e-06   3.331e-05   0.0001482
+Caliban      ell<0.2     0.0781    579.586    2.4968   yes   0.0001753   8.447e-07    8.92e-06   2.133e-05
+Thebe        ell<0.2     0.0193      0.678 -518.5219   yes   3.876e-07   3.714e-10   4.814e-09   8.724e-09
+Epimetheus   ell<0.2     0.0098      0.694 -506.0290   yes   6.742e-08   3.301e-11   4.257e-10   7.906e-10
+Metis        ell<0.2     0.0079      0.299 -1178.3061   yes   3.798e-08   1.473e-11   1.939e-10   3.549e-10
+Adrastea     ell<0.2     0.0065      0.302 -1166.0005   yes    2.42e-08   6.348e-12   1.034e-10     2.1e-10
+Amalthea     ell<0.2     0.0062      0.502 -701.6060   yes   2.048e-08   1.452e-11   8.685e-11    2.44e-10
+Larissa      ell<0.2     0.0016      0.555 -633.5001   yes   5.859e-10    6.48e-14   3.715e-13    1.09e-12
+Belinda      ell<0.2     0.0008      0.624 -563.1413   yes   1.745e-10   1.066e-14   9.212e-14   2.206e-13
+Juliet       ell<0.2     0.0007      0.494 -712.6820   yes   1.535e-10   4.325e-15     7.3e-14   1.468e-13
+Rosalind     ell<0.2     0.0005      0.559 -629.0021   yes   3.751e-11   7.965e-16   8.123e-15   1.833e-14
+Portia       ell<0.2     0.0007      0.514 -684.6669   yes   2.263e-11   5.629e-16    7.44e-15   1.333e-14
+Puck         ell<0.2     0.0004      0.763 -460.4719   yes   4.062e-11   1.498e-15   6.951e-15   2.431e-14
+Proteus      ell<0.2     0.0003      1.123 -311.7254   yes   3.304e-11   5.949e-16   5.798e-15   1.336e-14
+Triton       ell<0.2     0.0000      5.877  -57.0443   yes   2.699e-13   4.337e-19   2.602e-18   6.072e-18
+
+P2  THE EVERY-FRAME-RESAMPLE RATE, PER BODY
+    `timerate rate R` sets time_speed = R * JD_SECOND
+    (app_command_interface.cpp:3479) and TimeMgr::update adds
+    time_speed * dt_seconds to JDay (time_mgr.cpp:42).
+    `TimeMgr::setTimeSpeed` (time_mgr.hpp:53-55) stores the value with
+    NO clamp, so nothing in the engine bounds the rate from above.
+    Per frame dJD = R / (86400 * fps), and the resample gate
+    (OrbitModule.cpp:132, |date - lastSampleJD| >= vis/180) fires every
+    frame at
+
+        R >= 86400 * fps * vis / 180 = 69120 * vis   [sim seconds per wall second]
+
+    at the config cap fps = 144 (config.ini:28).  A SLOWER frame rate
+    makes dJD LARGER, so this is the conservative (upper) bound.
+
+body              vis_d       incr_d    rate_needed sim_days/wall_s
+Metis             0.299      0.00166      2.068e+04         0.2394
+Adrastea          0.302      0.00168       2.09e+04         0.2419
+Juliet            0.494      0.00274      3.414e+04         0.3951
+Amalthea          0.502      0.00279      3.467e+04         0.4013
+Portia            0.514      0.00286      3.553e+04         0.4112
+Larissa           0.555      0.00309      3.838e+04         0.4442
+Rosalind          0.559      0.00311      3.866e+04         0.4474
+Belinda           0.624      0.00347      4.315e+04         0.4994
+Thebe             0.678      0.00377      4.684e+04         0.5422
+Epimetheus        0.694      0.00386      4.799e+04         0.5555
+Puck              0.763      0.00424      5.271e+04         0.6101
+Proteus           1.123      0.00624      7.761e+04         0.8983
+Triton            5.877      0.03265      4.062e+05          4.702
+Leda            242.257      1.34587      1.674e+07          193.8
+Himalia         248.316      1.37953      1.716e+07          198.7
+Elara           258.884      1.43824      1.789e+07          207.1
+Lysithea        259.047      1.43915      1.791e+07          207.2
+Neried          360.482      2.00268      2.492e+07          288.4
+Caliban         579.586      3.21992      4.006e+07          463.7
+Ananke          648.641      3.60356      4.483e+07          518.9
+Carme           691.655      3.84253      4.781e+07          553.3
+Pasiphae        709.053      3.93918      4.901e+07          567.2
+Sinope          778.644      4.32580      5.382e+07          622.9
+Sycorax        1288.850      7.16028      8.909e+07           1031
+Halimede       1875.169     10.41761      1.296e+08           1500
+Prospero       1973.430     10.96350      1.364e+08           1579
+Setebos        2234.351     12.41306      1.544e+08           1787
+Sao            2908.416     16.15787       2.01e+08           2327
+Laomedeia      3185.069     17.69483      2.202e+08           2548
+Psamathe       9130.624     50.72569      6.311e+08           7304
+Neso           9358.591     51.99217      6.469e+08           7487
+
+P5: |orbitPoint[d]_pre - orbitPoint[d]_post| for the 180 sampled points.
+
+PRE  : seed = iterativeLastE as the frame leaves it.  Two cases are modelled:
+       (A) rate 1, the flag has just come on -- the seed is the CONVERGED E
+           at the body's own date;
+       (B) the every-frame-resample steady state -- the seed is the
+           PERTURBED E the previous frame's sampler left (offset 89 incr).
+       Then 180 calls of 2 steps, ascending d.
+POST : batchLastE = 0 at the prepair (orbit.cpp:442), then d=0 gets
+       10 warm-up calls + 1 scoring call = 22 steps, d>0 get 2 steps.
+EXACT: the converged line (what both should approximate).
+
+body         branch           e      vis_d max|pre-post|  at_d    steadymax  at_d pre_vs_exact post_vs_exact
+Neso         ell0.2-0.9  0.6300   9358.591      0.58723     1      0.61566     2      0.58723   4.1781e-07
+Setebos      ell0.2-0.9  0.5614   2234.351      0.23454     0      0.23552     0      0.23454   5.0274e-08
+Sycorax      ell0.2-0.9  0.5100   1288.850      0.16316     5      0.16289     0      0.16316   1.6211e-08
+Laomedeia    ell0.2-0.9  0.3846   3185.069      0.11449     0      0.13041     0      0.11449   5.3882e-09
+Neried       ell0.2-0.9  0.7474    360.482     0.065688     0     0.072655     0     0.065688   4.7886e-07
+Prospero     ell0.2-0.9  0.3312   1973.430     0.039938     0     0.042717     0     0.039938   1.7521e-09
+Pasiphae     ell0.2-0.9  0.2932    709.053     0.032889     0     0.034107     0     0.032889    1.427e-09
+Psamathe     ell0.2-0.9  0.2226   9130.624     0.022344     0     0.021854     0     0.022344   9.7342e-10
+Carme        ell0.2-0.9  0.2603    691.655     0.019387     0     0.019762     0     0.019387   8.5101e-10
+Halimede     ell0.2-0.9  0.2619   1875.169     0.014621     0     0.014913     0     0.014621    6.412e-10
+Ananke       ell0.2-0.9  0.2168    648.641    0.0092455     0    0.0090526     0    0.0092455   3.9973e-10
+Sinope       ell<0.2     0.1823    778.644    0.0053256     0    0.0052395     0    0.0053256   0.00023538
+Sao          ell<0.2     0.1429   2908.416    0.0029939     0    0.0029641     0    0.0029939   0.00012454
+Elara        ell<0.2     0.1962    258.884      0.00295     0    0.0028949     0      0.00295   0.00013336
+Leda         ell<0.2     0.1850    242.257    0.0025156     0    0.0024738     0    0.0025156   0.00011166
+Himalia      ell<0.2     0.1341    248.316    0.0013559     0     0.001344     0    0.0013559   5.5693e-05
+Lysithea     ell<0.2     0.1281    259.047    0.0012739     0    0.0012636     0    0.0012739   5.1878e-05
+Caliban      ell<0.2     0.0781    579.586   0.00029127     0    0.0002904     0   0.00029127   1.1098e-05
+Thebe        ell<0.2     0.0193      0.678   5.5232e-07     0   5.5222e-07     0   5.5232e-07   1.9662e-08
+Epimetheus   ell<0.2     0.0098      0.694   9.7198e-08     0   9.7193e-08     0   9.7198e-08   3.4261e-09
+Metis        ell<0.2     0.0079      0.299   5.4273e-08     0   5.4272e-08     0   5.4273e-08   1.9094e-09
+Amalthea     ell<0.2     0.0062      0.502   4.6398e-08     0   4.6398e-08     0   4.6398e-08   1.6294e-09
+Adrastea     ell<0.2     0.0065      0.302   3.7165e-08     0   3.7164e-08     0   3.7165e-08   1.3056e-09
+Larissa      ell<0.2     0.0016      0.555   1.3048e-09     0   1.3048e-09     0   1.3048e-09   4.5611e-11
+Belinda      ell<0.2     0.0008      0.624   3.1916e-10     0   3.1916e-10     0   3.1916e-10   1.1147e-11
+Juliet       ell<0.2     0.0007      0.494    2.327e-10     0    2.327e-10     0    2.327e-10   8.1271e-12
+Portia       ell<0.2     0.0007      0.514   2.2662e-10     0   2.2662e-10     0   2.2662e-10   7.9146e-12
+Rosalind     ell<0.2     0.0005      0.559   1.1795e-10     0   1.1795e-10     0   1.1795e-10   4.1184e-12
+Puck         ell<0.2     0.0004      0.763   8.2413e-11     0   8.2413e-11     0   8.2413e-11   2.8773e-12
+Proteus      ell<0.2     0.0003      1.123   5.7036e-11     0   5.7036e-11     0   5.7036e-11   1.9911e-12
+Triton       ell<0.2     0.0000      5.877   1.1309e-12     0   1.1309e-12     0   1.1309e-12    3.947e-14
+
+P6: TrailModule::resumeAfterHidden's own walk (TrailModule.cpp:227-234).
+
+`missed = (date - lastJD)/deltaTrail` samples are re-evaluated at
+`lastJD + k*deltaTrail`, each 1+RESUME_EXTRA_ITERATIONS = 5 times at ITS OWN
+date, so the seed ends CONVERGED at the LAST reconstructed sample's date --
+which is within ONE deltaTrail of the frame's own date by construction
+(`missed` is the floor of the quotient).  The body's next evaluation is one
+call at `date`, i.e. a seed at most deltaTrail*n rad of mean anomaly stale.
+
+This is the whole magnitude: the walker's staleness is bounded by the
+module's own cadence, where the sampler's is half a VISUALISATION PERIOD.
+
+deltaTrail = 1 sim day(s) (TrailModule.hpp:193)
+
+body         branch           e     period_d   offset_rad    err3d_max     errR_max
+Elara        ell<0.2     0.1962     258.8836      0.02427   8.9167e-05   6.6661e-06
+Leda         ell<0.2     0.1850     242.2567     0.025936   8.0133e-05   5.6552e-06
+Sinope       ell<0.2     0.1823    -778.6442   -0.0080694   5.2618e-05   3.6272e-06
+Himalia      ell<0.2     0.1341     248.3162     0.025303   3.9648e-05   2.0333e-06
+Lysithea     ell<0.2     0.1281     259.0470     0.024255    3.546e-05   1.7368e-06
+Sao          ell<0.2     0.1429    2908.4158    0.0021603   7.5526e-06   4.0781e-07
+Caliban      ell<0.2     0.0781    -579.5862    -0.010841   3.4263e-06   1.0221e-07
+Thebe        ell<0.2     0.0193       0.6777       9.2713   5.9355e-07   8.7103e-09
+Helene       ell<0.2     0.0071       2.7369       2.2957   1.6397e-07   7.8708e-10
+Epimetheus   ell<0.2     0.0098       0.6943       9.0492   1.1347e-07   8.1396e-10
+Metis        ell<0.2     0.0079       0.2992       20.998    7.068e-08   3.6966e-10
+Janus        ell<0.2     0.0070       0.6946       9.0459   5.7955e-08   2.9623e-10
+Adrastea     ell<0.2     0.0065       0.3024       20.779   4.8104e-08   1.9903e-10
+Neried       ell0.2-0.9  0.7474     360.4819      0.01743   2.8406e-08   1.3248e-08
+Pandora      ell<0.2     0.0042       0.6285        9.997   2.0576e-08    6.105e-11
+Prometheus   ell<0.2     0.0022       0.6130        10.25   5.7917e-09   8.6113e-12
+Amalthea     ell<0.2     0.0062       0.5016       12.525   1.9142e-09   4.6115e-12
+Larissa      ell<0.2     0.0016       0.5553       11.315   1.3854e-09   1.2348e-12
+Naiad        ell<0.2     0.0017       0.2952       21.284   1.1974e-09   1.4143e-12
+Thalassa     ell<0.2     0.0012       0.3123       20.119   5.4648e-10   3.7035e-13
+Galatea      ell<0.2     0.0009       0.4295        14.63    4.677e-10   2.8131e-13
+Belinda      ell<0.2     0.0008       0.6243       10.064    3.983e-10   2.2096e-13
+Rosalind     ell<0.2     0.0005       0.5593       11.235   1.3019e-10   3.6393e-14
+Puck         ell<0.2     0.0004       0.7626       8.2395   1.0656e-10   2.5504e-14
+Telesto      ell<0.2     0.0002       1.8878       3.3283   8.5767e-11   1.2842e-14
+Portia       ell<0.2     0.0007       0.5140       12.224   7.6635e-11   2.3631e-14
+Despina      ell<0.2     0.0013       0.3355        18.73   6.7727e-11   3.4545e-14
+Proteus      ell<0.2     0.0003       1.1229       5.5957   3.7327e-11   4.7821e-15
+Juliet       ell<0.2     0.0007       0.4939       12.722   3.6201e-11   1.0803e-14
+Sycorax      ell0.2-0.9  0.5100   -1288.8499    -0.004875   6.0146e-12   2.2448e-12
+Pasiphae     ell0.2-0.9  0.2932    -709.0533   -0.0088614   5.8781e-12   1.5035e-12
+Carme        ell0.2-0.9  0.2603    -691.6549   -0.0090843   3.8777e-12   9.0233e-13
+Ananke       ell0.2-0.9  0.2168    -648.6407   -0.0096867   2.3584e-12   4.7115e-13
+Setebos      ell0.2-0.9  0.5614   -2234.3514   -0.0028121   2.0463e-12   8.0629e-13
+Triton       ell<0.2     0.0000       5.8770       1.0691   1.0719e-12    1.301e-17
+Prospero     ell0.2-0.9  0.3312   -1973.4300   -0.0031839   1.1984e-13    3.357e-14
+Neso         ell0.2-0.9  0.6300   -9358.5911  -0.00067138   5.4677e-14   2.2787e-14
+Laomedeia    ell0.2-0.9  0.3846    3185.0688    0.0019727   5.4191e-14   1.6875e-14
+Halimede     ell0.2-0.9  0.2619   -1875.1695   -0.0033507   5.3987e-14   1.2615e-14
+Psamathe     ell0.2-0.9  0.2226   -9130.6241  -0.00068814   5.7488e-16   2.2204e-16
+
+P7  COST PER RESAMPLE (D11: 1 ms/frame is the denominator)
+    PRE : 180 solver calls, 360 Newton steps (180 points x 2 steps)
+    POST: 190 solver calls, 380 Newton steps (10 warm-up calls at d=0
+          + 180 scoring calls), plus ONE prepair call that writes a
+          double (orbit.cpp:442) -- +5.6% Newton steps per resample.
+    A resample fires once per vis/180 of SIMULATION time
+    (OrbitModule.cpp:132), i.e. at rate 1 once per 0.00 days for the
+    shortest-period sampling body and once per 51.99 days for the
+    longest -- not per frame.  Per-frame only at the rates of P2.
