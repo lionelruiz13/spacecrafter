@@ -611,10 +611,10 @@ L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-0
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d67833cd
+git rev-parse --short=8 HEAD => d0e0c51e
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 236
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the document, re-resolved at HEAD (content drift = abort)
 wc -l < doc/developer-entry.md => 431
@@ -666,10 +666,10 @@ test -e /home/claude/sc-f110 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d67833cd
+git rev-parse --short=8 HEAD => d0e0c51e
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 236
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the pool's one creation and the allocator's silent return, re-resolved at HEAD (content drift = abort)
 grep -n 'context.uniformMgr = std::make_unique.BufferMgr.(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1\*1024\*1024, "uniform BufferMgr", true);' src/appModule/app.cpp | cut -d: -f1 => 274
@@ -712,10 +712,10 @@ test -e /home/claude/sc-f113 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d67833cd
+git rev-parse --short=8 HEAD => d0e0c51e
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 236
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the two sites, the mirrors beside them and the Camera API, re-resolved at HEAD (content drift = abort)
 grep -n '^void Core::autoZoomIn' src/coreModule/core.cpp | cut -d: -f1 => 1386
@@ -735,7 +735,7 @@ test -e /home/claude/sc-f114 ; echo $? => 1
 ```
 
 **DoD:** predictions before any build; the two sites (+ the one-home conversion); `f38_gaps.py` pre/post; the ramp leg; F38's sites, F91, the smoke suite; §11 entry + stub; §5.100 + §5.101 FIXED; the §11.150 marker; T1.1 struck-with-record; the preload signal recorded; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** — DELIVERED 2026-09-12 → **§11.235** (+ stub). Code `d67833cd → d0e0c51e` (ONE commit, three files: `core.cpp` the two sites, `Camera.hpp` the conversion helper `oldLocalToLocal`, `ssystem_factory.cpp` rerouted to it — one home, I2); binary `6d63e6c1 → d607cfdc`. Harness `c9a8764 → 2a2c432` (gate + predictions before any build) `→ a95c193` (the pre leg) `→ f041fbc` (post + ramp) `→ 47450bc` (regressions + the farm leg) `→` this delivery. **§5.100 + §5.101 FIXED** at their inline rows with closing blocks; §11.150(k) marked at BOTH homes with its own correction; DEPLOYMENT-MAP **T1.1 struck-with-record at four homes** (+ B18's row and the §11.162 line annotated by the row-flip rule); `harness/README.md` F114 section. RESULTS: `f38_gaps.py` UNCHANGED pre/post — `camera.tracked` `'' → 'Mars'`, **99.0336° → 8.00911e-06°**; `zoom auto initial` **99.0318° → 1.0102e-05°**; the drawn path's Mars unfreezes (`visible false → true`) and rides centre across the 0.05 d advance; old's Mars still pinned at (1024.0000, 1024.0000), the old side byte-identical on five of six scenes. The RAMP predicted in closed form BEFORE the build and measured at `duration 1` AND `10`: max divergence **57.667°** vs **57.596°** predicted, end state **1.0e-05°**, old's only residual its own one-frame start quantization; `f25_ramp.py` does NOT reach this ramp (said, with the guard that proves it). The conversion tested where the field config cannot test it (farm at `init_view_pos = 1,0,0`, three candidates 90° apart): **7.19e-06°**, the camera's (alt,az) back to `loadCamera`'s exact startup pair. The OTHER `autoZoomOut` branch reached by its own leg (20 fov doublings under `manual_zoom`). `f38_mirror.py` ALL PASS 6/6 (S4 passes THROUGH the changed branch), F91 table `1fe630a4` byte-identical, smoke rc 0 FAIL none, D14 PASS at every commit, field pair in == out around all seven launches. REPORTED, not absorbed: the section's *"F113 DELIVERED"* precondition is FALSE (withdrawn) — reclassified non-input per §11.179(a) with the counterfactual; §5.100/§11.150(k)'s *"coherent by accident"* for `core.cpp:399` is CORRECTED to by-construction; one prediction REFUTED and corrected at its first re-statement (the frozen `screen` is `ModularBody::update` not running for a culled body — the `lastJD` lag is Mars's light time, identical on both binaries). TWO RESIDUALS recorded not fixed, §5 candidates for the supervisor: the camera's **0.2 s view-plan floor** (a commanded `duration 0.1` dumps `viewT = 0.2000`; the paths are **38.35°** apart when old lands) and **tracking is body-only on the drawn path** (the star leg is inconclusive on this host, said so). The PRELOAD signal's anticipation points are enumerated in §11.235(l) with the anchor-first reading: the anchor is `Camera::trackBody(ModularBody *)` itself, not its callers.
+**WIP:** — DELIVERED 2026-09-12 → **§11.235** (+ stub). Code `d67833cd → d0e0c51e` (ONE commit, three files: `core.cpp` the two sites, `Camera.hpp` the conversion helper `oldLocalToLocal`, `ssystem_factory.cpp` rerouted to it — one home, I2); binary `6d63e6c1 → d607cfdc`. Harness `c9a8764 → 2a2c432` (gate + predictions before any build) `→ a95c193` (the pre leg) `→ f041fbc` (post + ramp) `→ 47450bc` (regressions + the farm leg) `→` this delivery. **§5.100 + §5.101 FIXED** at their inline rows with closing blocks; §11.150(k) marked at BOTH homes with its own correction; DEPLOYMENT-MAP **T1.1 struck-with-record at four homes** (+ B18's row and the §11.162 line annotated by the row-flip rule); `harness/README.md` F114 section. RESULTS: `f38_gaps.py` UNCHANGED pre/post — `camera.tracked` `'' → 'Mars'`, **99.0336° → 8.00911e-06°**; `zoom auto initial` **99.0318° → 1.0102e-05°**; the drawn path's Mars unfreezes (`visible false → true`) and rides centre across the 0.05 d advance; old's Mars still pinned at (1024.0000, 1024.0000), the old side byte-identical on five of six scenes. The RAMP predicted in closed form BEFORE the build and measured at `duration 1` AND `10`: max divergence **57.667°** vs **57.596°** predicted, end state **1.0e-05°**, old's only residual its own one-frame start quantization; `f25_ramp.py` does NOT reach this ramp (said, with the guard that proves it). The conversion tested where the field config cannot test it (farm at `init_view_pos = 1,0,0`, three candidates 90° apart): **7.19e-06°**, the camera's (alt,az) back to `loadCamera`'s exact startup pair. The OTHER `autoZoomOut` branch reached by its own leg (20 fov doublings under `manual_zoom`). `f38_mirror.py` ALL PASS 6/6 (S4 passes THROUGH the changed branch), F91 table `1fe630a4` byte-identical, smoke rc 0 FAIL none, D14 PASS at every commit, field pair in == out around all seven launches. REPORTED, not absorbed: the section's *"F113 DELIVERED"* precondition is FALSE (withdrawn) — reclassified non-input per §11.179(a) with the counterfactual; §5.100/§11.150(k)'s *"coherent by accident"* for `core.cpp:399` is CORRECTED to by-construction; one prediction REFUTED and corrected at its first re-statement (the frozen `screen` is `ModularBody::update` not running for a culled body — the `lastJD` lag is Mars's light time, identical on both binaries). TWO RESIDUALS recorded not fixed, §5 candidates for the supervisor: the camera's **0.2 s view-plan floor** (a commanded `duration 0.1` dumps `viewT = 0.2000`; the paths are **38.35°** apart when old lands) and **tracking is body-only on the drawn path** (the star leg is inconclusive on this host, said so). The PRELOAD signal's anticipation points are enumerated in §11.235(l) with the anchor-first reading: the anchor is `Camera::trackBody(ModularBody *)` itself, not its callers. **ACCEPTED 2026-09-12 — verifying commands' `date` 13:51–13:53 (supervisor, session 29, Claude Fable 5.1).** Verified by my own runs and reads: §11.235 read in full; code `d0e0c51e` (Claude Opus 5, ONE commit, three files +61/−4, the supervising footer) — the diff READ line by line: zero changed lines holding `navigation->`, `ssystem_factory.cpp`'s one line is `camera->lookTo(Camera::oldLocalToLocal(v), 0)` (new-path code, the same vector), both sites inside the existing `if (Camera::instance)` guards; seven harness commits `2a2c432 → c0ae9bf` (the predictions at 12:59, before the first compile), the delivery's trailer `Code: master-beta @ d0e0c51e`; binary `6d63e6c1 → d607cfdc`, 0 `src/` files newer, the pre kept at `/home/claude/sc-f114/spacecrafter-pre-6d63e6c1` (md5 re-measured `6d63e6c1`); the stub at `INTENT.md:1104`; §5.100/§5.101 FIXED at their inline rows; §11.150(k) marked (entry + stub); DEPLOYMENT-MAP T1.1 struck-with-record; README F114; `### F` 7. **By my own hand:** `f91_run.sh <outdir> --expect post --locale fr` on `d607cfdc` at 13:52 — **0 FAIL 0 NOTE, table `1fe630a4`**, the pair `03fbee59`/`545a51ef` in == out, canary `--no-scene` exit 0 before it (my first invocation passed `--expect` as the outdir and read the script's own usage refusal as a red — an instrument mis-use of mine, corrected by reading its usage line); instruments **273/342/144 · 251/226/25/124 · D 35 · D2 12 · I 92 · I2 37 · M 95** to the digit of (o). The gaps / ramp / farm / mirror / smoke legs accepted on their committed both-ways records (the pre run reproducing 2026-08-26's 99.0336 / 99.0318 to four decimals; the ramp's two laws committed before the build and measured 57.667 against 57.596; the farm leg at a non-zenith init direction able to fail three distinguishable ways). DEVIATIONS ENDORSED with the executor's arguments: `ssystem_factory.cpp` rerouted through the helper (the mandate's own "one home", I2; new-path code, the STOP condition does not fire); the three extra legs (read-only on the delivered binary); the artifact policy; the digit-exact / band split. THE REFUTED PREDICTION KEPT (`lastJD` lags by Mars's light time in BOTH binaries; what freezes is `screenPos` inside the culled body's skipped `update`) — the commit message stands, the entry corrects it. DISPATCHER-SIDE FINDINGS, ACCEPTED as mine, output-side: (1) the prose precondition *"F113 DELIVERED (its binary is this task's pre)"* was STALE — F113 was withdrawn at 12:3x and the withdrawal's same-class sweep missed the section that cited it (structure class; the executor's non-input reclassification is correct, the binary being pinned by the PREMISES md5 line); (2) the scan baseline stated as *"measured at `c9a8764` 12:48"* was measured at `758b4fd` before my two commits added event lines — a MEASURED label on a value my own later writes had moved, the Q-67 sub-class recorded in this very session and not executed at the next dispatch (value class); (3) `core.cpp:399` *"coherent by accident"* → by construction, corrected by the executor at three homes (structure class, from the mint's reading of §5.100). Round tally: **seven** (2 value, 4 structure, 1 intent). MINTED AT ACCEPTANCE: **§5.153** (the drawn path's 0.2 s view-plan floor, from (j)1 — new-path-only, reachable from `duration` in (0, 0.2) s, 38.35° apart at old's landing; the owner's perceptual call); (j)2 (body-only tracking on the drawn path) recorded as a CANDIDATE at §5.100's row, its measurement blocked on this host's catalogue state; the PRELOAD signal → `FEATURE_REQUESTS.md` 2026-09-12 + **B41** in §13.B, carrying (l)'s anchor-first reading (`Camera::trackBody` is the tracked half's anchor; the zoom half has none). STANDING: the delivered binary is **`d607cfdc`** (F116's pre; F115 is read-only); `harness/f114_run.sh` carries the exe/port/VRAM launch asserts for any launch before F112 lands.
 
 ---
 
@@ -758,10 +758,10 @@ test -e /home/claude/sc-f114 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d67833cd
+git rev-parse --short=8 HEAD => d0e0c51e
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 236
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the consumers, the shader array and F102's instrument, re-resolved at HEAD (content drift = abort)
 grep -rl 'SharedBuffer<' src --include=*.cpp --include=*.hpp | grep -vc '^src/EntityCore' => 74
@@ -802,10 +802,10 @@ test -e /home/claude/sc-f115 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d67833cd
+git rev-parse --short=8 HEAD => d0e0c51e
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 236
 grep -c '^### F' claude/fable-dispatch.md => 7
 # F108's mechanism, re-resolved at HEAD (content drift = abort)
 grep -n '^constexpr int LOG_RETENTION_LAUNCHES = 8;' src/tools/log.hpp | cut -d: -f1 => 88
@@ -848,10 +848,10 @@ test -e /home/claude/sc-f116 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d67833cd
+git rev-parse --short=8 HEAD => d0e0c51e
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 236
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the sampler, the two seeds and the old plot, re-resolved at HEAD (content drift = abort)
 grep -n '^void OrbitModule::sampleOrbit' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 94
@@ -901,10 +901,10 @@ test -e /home/claude/sc-f111 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d67833cd
+git rev-parse --short=8 HEAD => d0e0c51e
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 236
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the probe's homes and the canary's VRAM member, re-resolved at HEAD (content drift = abort)
 grep -lE '= "spacecrafter"|== "spacecrafter"|-x .spacecrafter. /proc' claude/harness/*.sh claude/harness/*.py | wc -l => 42

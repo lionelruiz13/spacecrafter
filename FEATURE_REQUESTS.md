@@ -633,3 +633,14 @@ fixed at 8 launches). Those survive on their own arguments. → INTENT §11.207
   not get: script lifecycle events, success acknowledgements, and feedback for
   a refusal produced INSIDE another command (that one carries no origin, so it
   reaches nobody — the sharpest remaining gap, recorded at §11.188(h)).
+
+### [2026-09-12] Implicit preload signal on anticipated visibility (owner-stated)
+
+**Source:** the owner, in-session 2026-09-12, answering the §5.100/§5.101 authorization (INTENT §11.233(d)), verbatim: *"Also, you can implicitly send a preload signal to the body whenever you know it will became visible very soon (for instance, when a body is tracked, when a zoom operation start on a body, or when you have any other opportunity to know about it)."*
+
+**What exists:** the mesh module already carries a two-phase `preload` / `isLoaded` for its mesh and texture (INTENT §11.222(h)(3)); today nothing calls `preload` ahead of the first draw, so a body that becomes tracked or zoomed to loads its big texture at the moment it is needed.
+
+**Where the signal would come from (INTENT §11.235(l), read from inside the F114 fix):** the tracked half has one responsibility anchor — `Camera::trackBody(ModularBody *)` is the one place that knows a body became the tracked one (two live callers after F114: `Core::autoZoomIn`, `Core::setFlagTracking(true)`); the zoom half has none — `zoomToBothPaths` does not know the body — so the design must choose its anchor; the selection path is the earliest signal a script gives; `Camera::warpToBody` / `switchToBody` and `loadCamera`'s home planet are the other opportunities.
+
+**Status:** recorded as §13.B B41; not built inside F114 by its mandate; decision-free once the zoom-half anchor is chosen; residency cost is D5/D6's (the big texture resident earlier) and is priced at the design.
+
