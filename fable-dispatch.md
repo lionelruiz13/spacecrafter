@@ -88,6 +88,44 @@ spot, said here on purpose). Deliveries: all to the parent (§11.234+, refreshed
 classes: all FUNCTIONAL (`--no-scene`; F113 adds one FULL canary after); F110 builds from a clone (no install);
 F112 launches one decoy. Remotes: 0 unpushed at open on both; the owner pushes at the end of each week [vixy
 2026-09-12].
+**Round outcome (session 29 close, 2026-09-12 18:0x — every time in this note is pasted `date` output; the close commit's own
+clock is the stamp):** F110 → **§11.234** (the entry document followed by hand from a plain clone: eleven hunks corrected,
+`f85_links.py` gains the commit-sha class, `claude/intent_resolve.py` born from the owner's own unresolvable pointers; the
+`-O2`/`-Ofast` finding; `c5be42b` ABSENT for a network clone) · **F113 WITHDRAWN before dispatch** (§11.233(b) correction — the
+1 GiB was the LOG budget, my misread) · F114 → **§11.235** + §5.100/§5.101 FIXED (99.03° → 8e-06° and 1e-05°; the ramp
+predicted in closed form) + **§5.153 minted** at acceptance · F115 → **§11.236** (88 of 1344 bytes are a per-body
+requirement; four decisions his) · F116 → **§11.237** + §5.115's SIZE bound FIXED (the rule chosen by 11 987 rotations
+against 6; the startup replay) · F112 → **§11.238** (ONE probe home for 44 copy-pasted sites, the residual cross-account;
+`gpu.headroom` a gate at 6144 MiB free; the live map taken after my precondition was corrected) · F111 → **§11.239** +
+§5.150 FIXED on its iterative half (NESO 0.335 AU caught at rate 7e8; 71 of 75 improved, 0 worse) — **six for six
+delivered AND supervisor-verified same session**, every engine binary F91'd by my own hand (`1fe630a4` each time). Code
+`fcc277c9 → 87d429bd` (five executor commits), binary `6d63e6c1 → 42d7982c`, harness `16c68276 →` this close. SUPERVISOR
+ACTS: the re-bank + HOST-EVENTS (`49de8d2`); §11.232 (`22a6728`); pass 21 (`1d07413`); the mints (`67b6a2b`, `b85dc60`,
+`bf36530`+`c9a8764`, `e799aeb`); §11.233 with its correction (`d0a6fca`, `b615595`); six acceptances; §5.153 and B41; §0.5
+rewritten; in `~/shared`: Q-70 (the reader's working set — a pointer that resolves only from the writer's side), Q-04 (the
+misread, the second instance in five days), Q-67 ×2, Q-56 (the commit-chain shape). OWNER EVENTS IN-SESSION: five messages
+(§11.232's three answers, §11.233, its correction) — the round re-cut twice on them; his rewrite + push at 11:03; his model
+unloaded at 11:32 on my ask. HOST: rebooted 09:51:57 (the second boot in 14 h); sessions 10/11 and `:2` 2448x1332 at open and
+close; a 27B model then a 21 GiB `java`; 25+ canary runs (one red by design, one red by VRAM, green throughout after 11:34);
+~90 measuring launches by the executors + 8 by me; the field pair `03fbee59`/`545a51ef` in == out throughout; HOST-EVENTS
+carries the boot, the rewrite, the VRAM red and the retired precondition. SUPERVISOR TALLY: **sixteen dispatcher defects**
+(5 value, 10 structure, 1 intent), all output-side, none reaching a delivery, each accepted at its acceptance with its
+class and its Q-home. EXECUTOR REPORT DEFECTS: none reaching a record (every executor re-measured its own baselines; two
+refused mine). EXECUTOR criterion-integrity instances: **≥ 40** (predictions before every build, two of MY expectations
+pre-registered FALSE and confirmed; a stated precondition obeyed for 33 minutes rather than re-decided; refutations
+root-caused — the frame-rate floor, the local-clone transport, the one-burst model; every instrument shown able to fail by
+a mutant; status words named, never quoted; a 901-line regex deletion caught by `git diff --stat` before `git add`).
+Archival pass 22 (update-s28 + F110/F113/F114/F115/F116/F112/F111, live `### F` 7 → 0) DEFERRED to the next open.
+NEXT-ROUND QUEUE, in order: (1) pass 22 at open; (2) whatever the owner's week answers unlock, the DSO design pass first
+among design items (§11.233(c), M–L); (3) B41 after its zoom-half anchor; (4) the trail walker's engine leg (S); (5) the tool
+residues now dispatchable: the rewrite's CODE-tree citations (`developer-entry.md`'s harness shas, scedit's `anchor_pin`),
+`purge-path.sh`'s map, `list_code_trailers`' skip; (6) ON THE OWNER'S WORD: [Y10] the uniform options · [Y11] V3 the bound's
+history shape · [Y12] §5.153 · [Y13] §5.149's shape · [Y14] §5.146's push · [Y5]–[Y7] the intern's gaps (this week) ·
+[Y8] the build type · [Y9] the row convention; (7) the (g) tail re-cut; (8) riders. Remotes: unpushed at this close printed
+by the close commit's own call; the owner pushes at the end of each week. BASELINES AT CLOSE: the pre-close values are
+F111's — 284/357/145 · 255/230/25/125 · D 36 · D2 12 · I 93 · I2 37 · M 95; this close edits `INTENT.md` (one marker at
+§5.150) and `HOST-EVENTS.md` besides this file — re-run after the edits and printed by the close commit's own call.
+
 
 ---
 
@@ -588,7 +626,7 @@ untouched); archival pass 20 = update-s26 + F103–F106.** **Session-28 (2026-09
 at open (`3c38b05`); live below: the session-28 mints **F107** (§11.225(j2)/(j3)'s seed-staleness leg — the
 constructor seeds every body at JD 0; no delivered engine change), **F108** (§5.115's fix: uniform bounded
 retention, eight launches, every channel, a compiled constant), **F109** (A15's residual step removed on
-L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-09-11/12): F107 §11.229 · F108 §11.230 · F109 §11.231 (a STOP, endorsed — the residual is the instrument's) — three for three DELIVERED and accepted; §5.149–§5.152 minted at acceptances; archival pass 21 (update-s27 + F107–F109) DEFERRED to the next open.** **Session-29 (2026-09-12, Saturday, the owner present): archival pass 21 DONE at open (`1d07413`); the owner's rewrite + push ran mid-warm-up and his replies are §11.232 (a part-time intern without an LLM starts on `master-beta` THIS WEEK — "consolidated first"); live below, dispatch order **F110 → F113 → F114 → F112 → F111** (his second message, §11.233, re-cut the round): **F110** (the intern's first day rehearsed by hand — `doc/developer-entry.md` followed literally from a plain clone on Linux), **F113** (§5.142's fix on his word — the uniform pool to 1 GiB, the D13 reading measured), **F114** (§5.100 + §5.101 on his word — `zoom auto in` tracks and `zoom auto initial` re-aims on the drawn path), **F112** (launch preconditions that see what they guard — the exe-identity instance probe in ONE home for 42 copy-pasted sites, and a GPU-headroom gate derived from the app's init sequence after the 2026-09-12 VRAM red), **F111** (§5.150's fix — the orbit-line sampler gets its own seed, the old path's `batchLastE` shape).** **[12:5x: F113 WITHDRAWN before dispatch (§11.233(b) correction); **F115** (§5.142's ROOT — the uniform consumers censused field by field on both paths, redundancy on three axes, the per-body requirement derived, a proposal with arithmetic; no engine change) and **F116** (§5.115's SIZE bound — 1 GiB total across the five channels, within-session rotation reusing F108's window) minted; order **F110 → F114 → F115 → F116 → F112 → F111**.]**
+L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-09-11/12): F107 §11.229 · F108 §11.230 · F109 §11.231 (a STOP, endorsed — the residual is the instrument's) — three for three DELIVERED and accepted; §5.149–§5.152 minted at acceptances; archival pass 21 (update-s27 + F107–F109) DEFERRED to the next open.** **Session-29 (2026-09-12, Saturday, the owner present): archival pass 21 DONE at open (`1d07413`); the owner's rewrite + push ran mid-warm-up and his replies are §11.232 (a part-time intern without an LLM starts on `master-beta` THIS WEEK — "consolidated first"); live below, dispatch order **F110 → F113 → F114 → F112 → F111** (his second message, §11.233, re-cut the round): **F110** (the intern's first day rehearsed by hand — `doc/developer-entry.md` followed literally from a plain clone on Linux), **F113** (§5.142's fix on his word — the uniform pool to 1 GiB, the D13 reading measured), **F114** (§5.100 + §5.101 on his word — `zoom auto in` tracks and `zoom auto initial` re-aims on the drawn path), **F112** (launch preconditions that see what they guard — the exe-identity instance probe in ONE home for 42 copy-pasted sites, and a GPU-headroom gate derived from the app's init sequence after the 2026-09-12 VRAM red), **F111** (§5.150's fix — the orbit-line sampler gets its own seed, the old path's `batchLastE` shape).** **[12:5x: F113 WITHDRAWN before dispatch (§11.233(b) correction); **F115** (§5.142's ROOT — the uniform consumers censused field by field on both paths, redundancy on three axes, the per-body requirement derived, a proposal with arithmetic; no engine change) and **F116** (§5.115's SIZE bound — 1 GiB total across the five channels, within-session rotation reusing F108's window) minted; order **F110 → F114 → F115 → F116 → F112 → F111**.]** **Session-29 round (2026-09-12): F110 §11.234 · F114 §11.235 · F115 §11.236 · F116 §11.237 · F112 §11.238 · F111 §11.239 — six for six DELIVERED and accepted; F113 WITHDRAWN before dispatch (record kept); §5.153 minted, B41 opened; archival pass 22 (update-s28 + F110/F113/F114/F115/F116/F112/F111) DEFERRED to the next open.**
 
 ---
 
@@ -880,7 +918,7 @@ test -e /home/claude/sc-f111 ; echo $? => 1
 ```
 
 **DoD:** predictions before any build; the pre-fix catch (or the reachable-rate STOP); the fix in `sampleOrbit` alone; the proof legs (a)–(g); §11 entry + stub; §5.150 FIXED; the §11.229 / §11.225 markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** — DELIVERED 2026-09-12 17:5x → **§11.239** (+ stub). Code `f3316fea → 87d429bd` (ONE commit, ONE file, ONE function — `OrbitModule::sampleOrbit`; 45+/2−; `orbit.{hpp,cpp}`, `orbit_plot.cpp`, `TrailModule.cpp`, data and EntityCore untouched, asserted by diff at every commit). Binary `95087b68 → 42d7982c`, one build, `-j24` at 23 GiB, exit 0, mtime advanced. Harness `1b31005 → 4e3d0ea` (the predictions, BEFORE any build) `→` the catch `→` the proof `→` this delivery. **THIRTEEN measuring launches**, `f116_assert.sh` clear on every one, home md5 `03fbee59`/`545a51ef` in == out on every one, `proc_after` empty on every one; canary `--no-scene` exit 0 at 16:51 and again at 17:5x (DEVIATION reported: that brackets the thirteen, it is not the per-launch gate). **THE TRANSIENT IS CAUGHT IN THE ENGINE, WHICH F107 COULD NOT DO**: `timerate` reaches the every-frame-resample rate (no clamp; header `timeSpeed` = rate/86400 to the digit) and `useNow` is a no-op for a WALKED body, so the dump reads the walk's own position — **18 of 31 walked iterating records perturbed on `95087b68`, worst NESO 0.33503 AU (0.16623 AU = 1171.80 arcsec at rate 1e8)**; pinned-clock arms 0 of 31 both ways (F107 reproduced); two-date control 31/31. **MY OWN "flag off reads 0" PREDICTION REFUTED AND ROOT-CAUSED**: drawing the lines costs 144 → ~15.5 fps (`evalCount` deltas), so the flag-ON arm's per-frame date jump is 9× larger and the walk's own two Newton steps under-converge — the control is a measured FLOOR, not a zero, and the driver now measures `dJD_per_frame` per arm. PROOF, jump held fixed: same stage PRE vs POST **71 of 75 rows improved >2×, 4 unchanged, ZERO worse** (Setebos 0.13054 → 4.17e-09 AU, 3.13e+07); matched-jump ON vs OFF **PRE 23 of 24 above 10× worst 1.77e+07 → POST 0 of 11 worst 3.77**. **TWO MANDATE EXPECTATIONS PREDICTED FALSE BEFORE THE BUILD AND BOTH CONFIRMED**: (P4) **Europa 3.4750326422777565e-08 AU on BOTH binaries, all 17 `*_special` records equal pre/post** ⇒ §5.150 flipped FIXED on its **ITERATIVE half only**, its special-orbit half named still open (scope finding ROUTED, not decided); (P5) the LINE changes (pre-fix first point up to 0.587 AU off on Neso; the post-fix line is the converged/old-path one) — modelled, NOT screenshotted: the screen channel failed in five configurations and the file states each, and the same measurement CORRECTS §11.229(f2)'s 91774-pixel parenthetical (that scene's A/A floor is 91533 px between two launches of one binary). Trail walker MEASURED and disposed a **RIDER** (Elara 8.92e-05 AU, 3.9 orders below, and its fix is a design choice with no old-path shape to restore) — routed for a mint decision with its own engine leg named as owed. D11: +0.288–0.467 µs per resample (ten warm-up calls at 28.77/46.68 ns on slice `547b79d3`), 0.03–0.05 % of a frame. **F91 `1fe630a4` 0 FAIL 0 NOTE; smoke rc 0 FAIL none, S1/S7 as recorded.** THREE DISPATCHER-SIDE FINDINGS, all output-side with counterfactuals: the section's "ONE `EllipticalOrbit` both paths share" is FALSE (two `unique_ptr`s — and TESTED LIVE: Neso's old half 2.9e-05 against the new half's 0.0154), plus the two mandate expectations above. Baselines LAST, both ends, every delta named: scan **283/356/145 → 284/357/145** (+1 event line, +1 pair, CREDITED — the one new event line is deliberate: every other marker here is discharge-class, which the lexicon excludes by design) · pair **254/229/25/125 → 255/230/25/125** · D 36 · D2 12 · I 93 · I2 37 · M 95 (D and I each rose by one while (m) was written and both were closed at their cause; ZERO flags remain on `11.239`). D14 PASS at every commit; new harness files 0 non-ASCII by their own census. Artifacts `harness/artifacts/f111/` (0.26 MB), instruments `f111_predict.py` · `f111_rate.py` · `f111_report.py` · `f111_curve.py` · `f111_line.py`.
+**WIP:** — DELIVERED 2026-09-12 17:5x → **§11.239** (+ stub). Code `f3316fea → 87d429bd` (ONE commit, ONE file, ONE function — `OrbitModule::sampleOrbit`; 45+/2−; `orbit.{hpp,cpp}`, `orbit_plot.cpp`, `TrailModule.cpp`, data and EntityCore untouched, asserted by diff at every commit). Binary `95087b68 → 42d7982c`, one build, `-j24` at 23 GiB, exit 0, mtime advanced. Harness `1b31005 → 4e3d0ea` (the predictions, BEFORE any build) `→` the catch `→` the proof `→` this delivery. **THIRTEEN measuring launches**, `f116_assert.sh` clear on every one, home md5 `03fbee59`/`545a51ef` in == out on every one, `proc_after` empty on every one; canary `--no-scene` exit 0 at 16:51 and again at 17:5x (DEVIATION reported: that brackets the thirteen, it is not the per-launch gate). **THE TRANSIENT IS CAUGHT IN THE ENGINE, WHICH F107 COULD NOT DO**: `timerate` reaches the every-frame-resample rate (no clamp; header `timeSpeed` = rate/86400 to the digit) and `useNow` is a no-op for a WALKED body, so the dump reads the walk's own position — **18 of 31 walked iterating records perturbed on `95087b68`, worst NESO 0.33503 AU (0.16623 AU = 1171.80 arcsec at rate 1e8)**; pinned-clock arms 0 of 31 both ways (F107 reproduced); two-date control 31/31. **MY OWN "flag off reads 0" PREDICTION REFUTED AND ROOT-CAUSED**: drawing the lines costs 144 → ~15.5 fps (`evalCount` deltas), so the flag-ON arm's per-frame date jump is 9× larger and the walk's own two Newton steps under-converge — the control is a measured FLOOR, not a zero, and the driver now measures `dJD_per_frame` per arm. PROOF, jump held fixed: same stage PRE vs POST **71 of 75 rows improved >2×, 4 unchanged, ZERO worse** (Setebos 0.13054 → 4.17e-09 AU, 3.13e+07); matched-jump ON vs OFF **PRE 23 of 24 above 10× worst 1.77e+07 → POST 0 of 11 worst 3.77**. **TWO MANDATE EXPECTATIONS PREDICTED FALSE BEFORE THE BUILD AND BOTH CONFIRMED**: (P4) **Europa 3.4750326422777565e-08 AU on BOTH binaries, all 17 `*_special` records equal pre/post** ⇒ §5.150 flipped FIXED on its **ITERATIVE half only**, its special-orbit half named still open (scope finding ROUTED, not decided); (P5) the LINE changes (pre-fix first point up to 0.587 AU off on Neso; the post-fix line is the converged/old-path one) — modelled, NOT screenshotted: the screen channel failed in five configurations and the file states each, and the same measurement CORRECTS §11.229(f2)'s 91774-pixel parenthetical (that scene's A/A floor is 91533 px between two launches of one binary). Trail walker MEASURED and disposed a **RIDER** (Elara 8.92e-05 AU, 3.9 orders below, and its fix is a design choice with no old-path shape to restore) — routed for a mint decision with its own engine leg named as owed. D11: +0.288–0.467 µs per resample (ten warm-up calls at 28.77/46.68 ns on slice `547b79d3`), 0.03–0.05 % of a frame. **F91 `1fe630a4` 0 FAIL 0 NOTE; smoke rc 0 FAIL none, S1/S7 as recorded.** THREE DISPATCHER-SIDE FINDINGS, all output-side with counterfactuals: the section's "ONE `EllipticalOrbit` both paths share" is FALSE (two `unique_ptr`s — and TESTED LIVE: Neso's old half 2.9e-05 against the new half's 0.0154), plus the two mandate expectations above. Baselines LAST, both ends, every delta named: scan **283/356/145 → 284/357/145** (+1 event line, +1 pair, CREDITED — the one new event line is deliberate: every other marker here is discharge-class, which the lexicon excludes by design) · pair **254/229/25/125 → 255/230/25/125** · D 36 · D2 12 · I 93 · I2 37 · M 95 (D and I each rose by one while (m) was written and both were closed at their cause; ZERO flags remain on `11.239`). D14 PASS at every commit; new harness files 0 non-ASCII by their own census. Artifacts `harness/artifacts/f111/` (0.26 MB), instruments `f111_predict.py` · `f111_rate.py` · `f111_report.py` · `f111_curve.py` · `f111_line.py`. **ACCEPTED 2026-09-12 — verifying commands' `date` 17:50–17:51 (supervisor, session 29, Claude Fable 5.1).** Verified by my own runs and reads: §11.239 read in full; code `87d429bd` (Claude Opus 5, ONE file ONE function, +45/−2 — the diff READ: `const_cast<Orbit *>(orbit)->prepairFast…(date, increment)` then `fastPositionAtTimev…` per point, the osculating branch untouched; the supervising footer); five harness commits `4e3d0ea → a92ae2b` (the predictions at 16:51 before any build — two of MY expectations registered there as predicted FALSE, both confirmed); the delivery's trailer `Code: master-beta @ 87d429bd`; binary `95087b68 → 42d7982c`, 0 `src/` files newer, the pre kept under `/home/claude/sc-f111/`; the stub at `INTENT.md:1113`; §5.150 FIXED ON ITS ITERATIVE HALF at its row with the special half named open; §11.229(f2)(h2) and §11.225(j2) marked (entry + stub); §5.84 re-stated; README F111; `### F` 7. **By my own hand:** `f116_assert.sh` clear, canary `--no-scene` exit 0, `f91_run.sh <outdir> --expect post --locale fr` on `42d7982c` — **0 FAIL 0 NOTE, table `1fe630a4`**, the pair in == out; instruments **284/357/145 · 255/230/25/125 · D 36 · D2 12 · I 93 · I2 37 · M 95** to the digit of (m); D14 PASS. The catch and the proof accepted on their committed both-ways records: NESO 0.335 AU at rate 7e8 on the pre binary against a two-date control that moved 31 of 31; post-fix 71 of 75 rows improved more than 2×, 0 worse, the matched-jump ON/OFF worst 1.77e+07 → 3.77; Europa 3.4750326e-08 AU on BOTH binaries to seventeen digits; cost ratio 1.056 (+0.29–0.47 µs per resample). DEVIATIONS ENDORSED with the executor's arguments: the `const_cast` (well defined; both clean spellings touch forbidden files; named at (d)); the pair's return value ignored (the new path owns the window at `:132`; every `prepair` returns the same symmetric pair — I2); the farm-copy colour edit; the canary bracketing thirteen launches (the §11.229(j) deviation — endorsed as a bracket again, not a rule change); the line claim resting on the model after five screenshot configurations could not discriminate (the drawn line has no observable — recorded at (l)4). DISPATCHER-SIDE FINDINGS, ACCEPTED as mine, output-side: (1) *"ONE `EllipticalOrbit` object that both paths share"* — FALSE, two `unique_ptr`s (a safety argument asserted from the dual-path recollection without reading the two loaders; the truth strengthens the fix); (2) *"Europa's persistent 3.475e-08 AU → 0"* — FALSE: a `SpecialOrbit` overrides neither half of the pair, so the static-ephemeris channel is untouched (an expectation carried from F107's attribution without re-deriving the mechanism); (3) *"the sampled LINE unchanged pre/post"* — FALSE: the PRE line's first points were wrong (two steps from the body's own date toward −90 increments), the POST line is the converged one — the fix also corrects the drawn line, by up to 0.587 AU on Neso (model). All three structure class. Round tally: **sixteen** (5 value, 10 structure, 1 intent). MINT DECISIONS: §5.150's SPECIAL-ORBIT half — NOT its own row (the static ephemeris cache walked identically by the OLD path, §11.229(f5); both-paths; 3.5e-08 AU; it stays the instrument caveat at §5.84 and is named at §5.150's marker); the TRAIL WALKER (Elara 8.92e-05 AU = 3.3 arcsec one frame after one unhide; new-path-only; no old shape to restore) — NOT minted: a rider at §5.150, its ENGINE LEG OWED (next round, S). STANDING: the delivered binary is **`42d7982c`**; `useNow` is a no-op for a walked body (§11.239(l)2); a treatment that costs frame rate changes the sampling of what it measures — `evalCount` deltas are the frame count.
 
 ---
 
@@ -955,6 +993,8 @@ test -e /home/claude/sc-f112 ; echo $? => 1
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-29 decision items (2026-09-12, Saturday — the INTERN'S-FIRST-DAY / ZOOM-TRACKING / UNIFORM-ROOT / LOG-BOUND / LAUNCH-PRECONDITIONS / SAMPLER-SEED round: F110 · F114 · F115 · F116 · F112 · F111, six for six delivered and supervisor-verified same session; F113 WITHDRAWN before dispatch on your correction). You were present: your messages are §11.232 (three answers) and §11.233 (with its correction block), and the round was re-cut twice on them. Q-70's shape: one decision per node, its held set at the node, anchors by ID and symbol. The F110 executor opened this block with [Y5]–[Y9]; [Y10]–[Y16] and the three lists after them are the supervisor's at close.**
+
 - **F110 — THE INTERN'S ENTRY PATH, FOLLOWED BY HAND. Three gaps only you can fill, quoted from
   the document's own lines, and one finding that is a decision rather than a defect.** The
   rehearsal ran the whole path from a plain clone (§11.234): the clone, the build, the D14 gate,
@@ -1022,6 +1062,118 @@ test -e /home/claude/sc-f112 ; echo $? => 1
        change §11.233(h) raised. The RESOLVER now exists either way
        (claude/intent_resolve.py, and the entry document tells him to use it), so this is a
        preference about the file's shape, not a blocker. → §11.233(h) · §11.234(k)
+  ```
+
+
+  ```
+  YOURS — from the later deliveries (supervisor, at close)
+  [Y10] §5.142 · the ROOT you asked for has numbers, and four decisions are yours (§11.236(k))
+        fact    1344 B per 06.sts body = 320 old-eager + 1024 new-at-load; only 88 B is a per-body
+                requirement (128 carved → 8192 bodies/MiB); 768 B is ONE shadow-receive array
+                embedded in FOUR blocks (a ringed ray-capable body carries it three times); 448 B
+                are matrices derivable from their neighbour field; a body nobody draws holds 1344
+                carved bytes containing 4 written ones — 06.sts's 1013 all do
+        ask     (O2) cap the shadow-caster array — VISIBLE (the weakest occluder dropped), not
+                as-if; (O2') the receive array out of the per-body block — an arena in your
+                EntityCore; (O1) carve at first draw — moves the wall from load to camera;
+                (O5) a NAMED refusal after any of them. The options table with its arithmetic is
+                §11.236(i); the pool stays 1 MiB, by your word
+        facts   shaders/src/receivedShadowsDecl.glsl:20 re-declares MAX_SHADOW_CASTERS = 8 with
+                nothing tying it to bodyShaderInterface.hpp:47 (an I2 double — live the day O2
+                edits one of them); the field's max_shadow_cast = 8 against the code default 4
+                (context.hpp:194) leaves half of every receive array unfillable on a default config
+        →       §11.236(g)(h)(i)(k) · §5.142 · §11.233(b) correction
+
+  [Y11] §5.115 · the 1 GiB bound is LIVE ─ five veto points, each cheap to reverse (§11.237(m))
+        V1      the RULE: the channel holding the MOST bytes rotates — neither "the channel being
+                written" (11 987 rotations for 11 987 lines with the excess intact) nor "all five";
+                measured, one line to revert
+        V2      an in-session rotation spends one of the eight launch slots
+        V3      WHAT THE BOUND COSTS IN HISTORY — built as your words, "never hold more than
+                1 GiB": at 193 MB/h the first crossing comes after ~5.5 h and the gigabyte is gone
+                in ~40 s. "Keep the LAST 1 GiB" is a different shape (a 128 MiB live-file bound
+                per channel), named and NOT built — say the word if that is what you meant
+        V4      no config key (F108's argument)  ·  V5 the number
+        also    a directory left over budget by the OLD build rotates during startup before the
+                console exists — the lines are now replayed to it (the second commit, unasked,
+                measured 0/6 → 6/6)
+        →       §11.237(d)(e)(i)(m) · §5.115 (size bound FIXED, density half OPEN)
+
+  [Y12] §5.153 · a commanded view duration UNDER 0.2 s is not honoured by the drawn path ─ minted
+        at F114's acceptance: Camera::lookTo floors every plan at 0.2 s (Camera.cpp:932); at
+        `duration 0.1` old lands at 0.105 s and the two paths are 38.35° apart at that instant.
+        Snap, clamp as today, or run the plan at the commanded time — perceptual, yours
+        →       §11.235(j)1 · §5.153
+
+  [Y13] §5.149 · the constructor's JD-0 seed ─ carried: the pointer you could not resolve this
+        morning is the inline row INTENT.md:515 (python3 claude/intent_resolve.py 5.149); the
+        shapes (i)–(iv) are at §11.229(h1); today the two-step fix pays for it
+  [Y14] §5.146 · SharedBuffer THROWS on a refused allocation ─ your shape is recorded; the edit is
+        EntityCore, and a pin naming an unpushed submodule commit breaks the intern's
+        --recurse-submodules clone THIS WEEK (§11.204(b)) — your one line, or dispatched in the
+        same act as your EntityCore push                                    → §11.233(f)
+  [Y15] §5.150 · two halves NOT minted at F111's acceptance ─ the special-orbit half (Europa
+        3.5e-08 AU through the static ephemeris cache, walked identically by the OLD path) stays
+        a caveat at §5.84; the trail walker (3.3 arcsec one frame after an unhide, new-path-only,
+        no old shape to restore) is a rider with its engine leg owed. Say the word if either
+        deserves its own row                                                → §11.239(f)(h)
+  [Y16] scratch trees ─ sc-f110 2.6 G · sc-f116 557 M · sc-f112 532 M · sc-f114 185 M ·
+        sc-f111 276M · sc-f115 176 K join the list (21 G across all sc-* before sc-f111); the
+        two registered worktrees sc-f89/tree and sc-f107/tree still stand
+
+  VETO POINTS taken (implemented-and-live, each cheap to reverse; silence = endorsed)
+  [V1] the canary re-bank on the 09:51:57 boot (the block's own prescription); the full band
+       reproduced on a FOURTH boot
+  [V2] archival pass 21 at open; F113 kept as the WITHDRAWN record of my misread (ids never reused)
+  [V3] F110: eleven doc hunks (+98/−24, each traced to a rehearsal step); f85_links.py's commit-sha
+       class; claude/intent_resolve.py as the ledger's resolver (the doc names it)
+  [V4] F114: the two sites; Camera::oldLocalToLocal as the ONE home of the init-view conversion,
+       ssystem_factory.cpp rerouted through it (outside the section's file list — I2)
+  [V5] F116: the rule (V1 of [Y11]) and the startup replay
+  [V6] F112: ONE implementation with two entry points; sc_gpu.py as a third home with the NUMBER
+       banked in the canary; gpu.headroom a GATE on both arms at 6144 MiB FREE; b22_live_run.sh's
+       kill routed; F90_SKIP_CANARY=1 now leaves a trace; the doc's §5 item 2 corrected
+  [V7] F111: the const_cast (a named compromise); the pair's return value ignored; §5.150 flipped
+       on its iterative half only
+  [V8] §5.153 minted; B41 (the preload signal) opened in §13.B from your words; the §3 nodes of
+       sessions 26–28 answered by §11.232/§11.233; §0.5's instance bullet rewritten from §11.238(l)
+  [V9] this block
+
+  HELD OPEN, not absorbed
+  [H1] the DSO design pass — dso3d + ojmMgr as ModularBody, tully a Milky Way BodyModule, the
+       as-if rule the reach/visibility criterion (§11.233(c)) — dispatchable, M–L, first among the
+       design items
+  [H2] B41 the preload signal — the zoom half has no anchor (zoomToBothPaths does not know the
+       body); decision-free once one is chosen (§11.235(l))
+  [H3] the trail walker's engine leg (it fires on an edge; S) · §5.150's special half as a caveat
+  [H4] the rewrite tool's class gap: citations in the CODE tree (developer-entry.md's harness shas,
+       scedit's anchor_pin 54a2b844 in four grammar fragments) are not repointed; with your Saturday
+       run done, the (7) tool items are dispatchable (purge-path.sh's map, list_code_trailers' skip)
+  [H5] [Y8] the build type — every D11 number on -O2 while the documented build ships -Ofast
+  [H6] the intern's three gaps [Y5]–[Y7] — the only items with a clock (this week)
+  [H7] §5.115's density half; the EntityCore log pile (395 files today); the drawn orbit line has
+       no observable (a readout of orbitPoint[] first, §11.239(l)4)
+
+  FACTS, no decision asked
+  [F1] six for six delivered AND supervisor-verified same session, every delivery re-run by my own
+       hand (F91 on every engine binary — d607cfdc, 95087b68, 42d7982c — table 1fe630a4 each time);
+       code fcc277c9 → 87d429bd (five executor commits: the doc, the zoom pair, the log bound ×2,
+       the sampler); binary 6d63e6c1 → 42d7982c
+  [F2] the host: rebooted 09:51:57; your rewrite + push at 11:03 (0 unpushed then); a resident 27B
+       model until 11:32, then your java (21 GiB RSS, up to 2.9 GiB VRAM) — its 15:48–16:21 VRAM
+       crossing cost F112 33 minutes and one resume, and the precondition that refused it was MINE
+       (used ≤ 4000: the wrong shape; the derived gate reads FREE ≥ 6144); 25+ canary runs, green
+       after the 11:34 re-bank throughout
+  [F3] SIXTEEN dispatcher defects (5 value, 10 structure, 1 intent), all output-side, none reaching a
+       delivery: the intent one is the §5.142 misread (Q-04's second instance in five days; the
+       prevention: every clause of an incoming ruling located in the inferred structure before the
+       first propagating edit); two values quoted after my own writes had moved them (Q-67's new
+       sub-class); one commit whose message described edits its tree lacked (Q-56's third); the rest
+       structure asserted without the read (a grep read as a census, twice; a shared object that was
+       two; a launch precondition typed instead of derived)
+  [F4] for the intern: his plain clone shows none of claude/; c5be42b is ABSENT for him (a network
+       clone carries no unreachable objects); the resolver exists; the canary's per-host trap is
+       now said in the document; PRs target 2023-master as the doc says, on your "as is"
   ```
 
 - **Session-28 decision items (2026-09-11/12, the SEED-STALENESS / LOG-RETENTION / RESIDUAL-STEP round —

@@ -342,3 +342,17 @@ never rewrite (maintenance invariant). Archival per the standing convention
   assert (4519 MiB used at 15:48, the owner's java) and PASSES the new gate (27648 free
   vs 6144 needed). Never unloaded, never widened: a refusal reports the holder.]** Decision flag per §11.174(h): the re-bank is the block's prescription;
   the VRAM release was the owner's act on his own service — nothing improvised here.
+- 2026-09-12 15:48–16:21 [measured: F112 executor, §11.238(g); supervisor at close] **THE OWNER'S OWN
+  `java` (pid 121858, uid 1000) HELD 21 GiB OF HOST RAM ALL AFTERNOON AND GREW TO 2.9 GiB OF VRAM,
+  CROSSING THE DISPATCH'S `used <= 4000` LAUNCH LINE FOR 33 MINUTES — AND THAT LINE WAS THE WRONG
+  SHAPE (27.6 GB free) AND IS RETIRED.** The launch precondition is now `harness/f116_assert.sh
+  <label>` = `sc_instances.sh --assert` (ONE probe home: comm ∪ `/proc/<pid>/exe` ∪ TCP 7805; the
+  residual is a renamed engine of ANOTHER uid — `exe` is EACCES across accounts under
+  `ptrace_scope=1`, measured 0 of 578) + `sc_gpu.py --need bank` (FREE ≥ `BANK_GPU_NEED_MIB` =
+  6144, derived from the app's own init log — 1717 floor + 5323 peak + 444 unit gap; holders named
+  through `nvidia-smi -q -d PIDS`, since `--query-compute-apps` is blind to graphics-only holders),
+  and `f56_canary.sh` carries `gpu.headroom` as a FAIL (exit 3) on BOTH arms. Same boot as the
+  09:51:57 entry throughout; 25+ canary runs green after the 11:34 re-bank; six engine binaries
+  launched today (`6d63e6c1` → `42d7982c`), the field pair in == out on every launch; nothing
+  re-provisioned, nothing unloaded by anyone but the owner, no entry owed by any executor.
+
