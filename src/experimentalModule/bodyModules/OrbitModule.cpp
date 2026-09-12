@@ -99,15 +99,58 @@ void OrbitModule::sampleOrbit(ModularBody *body)
     const double date = body->getLastJD();
     const double period = body->getSiderealPeriod();
     const double increment = period / ORBIT_POINTS;
+    // A PLOT IS NOT A USE (INTENT S5.150, S11.229(h2); fixed here, S11.239).
+    // These 180 points used to go through positionAtTimevInVSOP87Coordinates,
+    // i.e. through the POSITION solver's own Newton seed (orbit.hpp:120), and
+    // they left it at the LAST sample's date - half a visualization period from
+    // the body's own - so the next frame's evaluation started from there.
+    // MEASURED in the engine at a time rate where every frame resamples:
+    // 18 of 31 walked iterating records perturbed, worst Neso 0.16623 AU =
+    // 1172 arcsec, against a flag-off floor of 5.2e-05 AU (S11.239).
+    // The OLD path's plot never did this: it calls the BATCH pair, whose seed
+    // is a SEPARATE member (batchLastE, orbit.hpp:122; orbit.cpp:442 resets it,
+    // :453-458 runs ten warm-up calls then one per point), precisely so that
+    // drawing an orbit cannot disturb the position it is drawn around
+    // (orbit_plot.cpp:142/:174 for the prepair, :153/:167/:182 for the points).
+    // This is that same pair, called the same way - the generality the port
+    // dropped, restored rather than re-invented (S11.52(b)).
+    //
+    // The prepair is UNCONDITIONAL because the old site's is: orbit_plot.cpp:142
+    // sits above the osc/plain split, not inside it.  It is a no-op for every
+    // orbit type but EllipticalOrbit, which is also the only type in this tree
+    // that overrides either half of the pair (orbit.hpp:100-101); all the others
+    // fall back to the base defaults (orbit.hpp:40-47), which is exactly what
+    // the old path gets on them.
+    //
+    // ITS RETURN VALUE IS IGNORED, and that is a decision with a reason. The
+    // pair is the old plot's own incremental-cache window (consumed at
+    // orbit_plot.cpp:107-111, :120 and :124-127). The new path owns that window
+    // itself, in update(): `|date - lastSampleJD| >= period/ORBIT_POINTS` (:132)
+    // IS the symmetric window {-increment, +increment} that EVERY implementation
+    // of prepair in this tree returns (orbit.hpp:41, orbit.cpp:443). Consuming
+    // it here would put a second authority on one fact (I2) and change no
+    // behaviour; an orbit type that returned an ASYMMETRIC pair would have to be
+    // learned by that gate, not by this loop. Recorded at S11.239.
+    //
+    // The const_cast is well defined and is NOT hiding a mutation of a const
+    // object: the orbit is owned by a non-const `std::unique_ptr<Orbit>`
+    // (ModularBody.hpp:119) and only the accessor is const (`getOrbit`,
+    // :1134). prepairFast is non-const merely because the fast half is const
+    // and needed somewhere to cache (orbit.hpp:39) - batchLastE is already
+    // `mutable`. The two clean spellings (const-qualify prepairFast, or add a
+    // non-const getOrbit) both change files this task may not touch; the choice
+    // is recorded at S11.239, not taken here.
+    const_cast<Orbit *>(orbit)
+        ->prepairFastPositionAtTimevInVSOP87Coordinates(date, increment);
     // Osculating orbits (comets) sample through their own function; the rest
-    // through positionAtTimev (old computeOrbit's osc-vs-plain split).
+    // through the batch call (old computeOrbit's osc-vs-plain split).
     OsculatingFunctionType *osc = orbit->getOsculatingFunction();
     for (int d = 0; d < ORBIT_POINTS; ++d) {
         const double calc_date = date + (d - ORBIT_POINTS/2) * increment;
         if (osc)
             (*osc)(date, calc_date, orbitPoint[d]);
         else
-            orbit->positionAtTimevInVSOP87Coordinates(date, calc_date, orbitPoint[d]);
+            orbit->fastPositionAtTimevInVSOP87Coordinates(date, calc_date, orbitPoint[d]);
     }
     lastSampleJD = date;
     sampled = true;
