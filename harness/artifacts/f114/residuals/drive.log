@@ -1,0 +1,56 @@
+1789212890.834 >> timerate rate 0
+1789212891.635 >> flag atmosphere off
+1789212892.435 >> flag fog off
+1789212893.235 >> flag landscape off
+1789212894.036 >> flag show_fps off
+1789212897.236 >> set home_planet Earth
+1789212899.436 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1789212900.237 >> flag stars on
+1789212901.037 >> flag star_names off
+1789212901.837 >> flag planet_names off
+1789212902.638 >> flag manual_zoom off
+1789212903.138 >> timerate rate 1
+1789212904.339 >> date jday 2461233.500000
+1789212906.539 >> timerate rate 0
+1789212907.339 >> flag track_object off
+1789212908.140 >> deselect
+1789212909.840 >> zoom auto initial duration 0
+1789212910.340 >> timerate rate 1
+1789212915.041 >> timerate rate 0
+1789212915.541 >> timerate rate 1
+1789212916.741 >> date jday 2461233.500000
+1789212918.942 >> timerate rate 0
+1789212920.142 >> select star Sirius
+1789212922.842 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/star_selected.json
+1789212924.543 >> zoom auto in duration 0
+1789212925.043 >> timerate rate 1
+1789212933.744 >> timerate rate 0
+1789212936.444 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/star_zoomed.json
+1789212938.144 >> zoom auto initial duration 0
+1789212938.645 >> timerate rate 1
+1789212943.345 >> timerate rate 0
+1789212943.846 >> timerate rate 1
+1789212945.046 >> date jday 2461233.500000
+1789212947.246 >> timerate rate 0
+1789212948.447 >> select planet Mars
+1789212950.147 >> zoom auto in duration 0
+1789212950.647 >> timerate rate 1
+1789212959.348 >> timerate rate 0
+1789212962.048 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/planet_zoomed.json
+1789212962.548 >> timerate rate 1
+1789212962.559 >> zoom auto initial duration 0.1
+1789212962.609 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_00.json
+1789212962.659 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_01.json
+1789212962.709 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_02.json
+1789212962.759 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_03.json
+1789212962.809 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_04.json
+1789212962.860 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_05.json
+1789212962.910 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_06.json
+1789212962.960 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_07.json
+1789212963.010 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_08.json
+1789212963.061 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_09.json
+1789212964.761 >> timerate rate 0
+1789212965.261 >> timerate rate 1
+1789212969.962 >> timerate rate 0
+1789212972.662 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/residuals/d01_after.json
+f114 residuals done

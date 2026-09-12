@@ -39,7 +39,7 @@ tester, decision-paced — the tiers that follow). **What is NECESSARY, and only
   (**F86** for the two old-core members; §5.48 is EntityCore = Vixy's) · **R5 the PUSH (Vixy —
   nothing here reaches the developer without it)** · R6 the branch policy (Vixy, one sentence).
 - **For T0**, after §11.163(h)'s test (*does the NEW path behave differently here? else backlog*):
-  T1.1 the zoom pair (Vixy, one line — §5.100's authorization asked 2026-08-26, unanswered) ·
+  ~~T1.1 the zoom pair (Vixy, one line — §5.100's authorization asked 2026-08-26, unanswered)~~ **[T1.1 CLOSED 2026-09-12: answered §11.233(d), BUILT and DELIVERED the same day — F114 → §11.235; §5.100 + §5.101 FIXED, the gaps 99.0336/99.0318 deg → 8.0e-06/1.0e-05 deg]** ·
   §5.111 (**F87**) · §5.86 + the RA zero point (§11.198(b) resolved decision (1); dispatchable
   next round with the origin held old-as-spec until R27) · §5.53(b) (Vixy, one token) · the
   final-pass SEND (Vixy; R21/R27/R28/R29 travel inside it) · ~~the T5.1 rehearsal (next round)~~ **[RAN 2026-09-05, F90 §11.211; T5.1 struck at T5]** ·
@@ -77,7 +77,7 @@ they move this head on both criteria. Previous head kept above, struck where sup
 - **For T0 (the tester, decision-paced):** the shape changed more than the length. **Two
   T1 gates CLOSE** — T1.2 (the dome-geometry call, R28) and T1.4 (§11.4's pair, R27) — and
   what they were blocking becomes WORK, not decisions. So T0's necessary set is now:
-  **T1.1** the zoom pair (Vixy, one line, §5.100's authorization still unanswered since
+  ~~**T1.1** the zoom pair~~ **[CLOSED 2026-09-12 — answered AND built: §11.233(d) → F114 → §11.235; the last operator-basics decision has left the decision tier AND the work tier in one day]** (Vixy, one line, §5.100's authorization still unanswered since
   2026-08-26 — with T1.2 and T1.4 gone this is **the last operator-basics decision
   standing**) · **T1.3** the reach/visibility batch (DSO content) · **T1.5** §5.109's
   layer half · **§5.53(b)** (T1.9, one token) · ~~the **T5.1 rehearsal**~~ **[RAN 2026-09-05, F90 §11.211 — "ready" now waits on T5.2 alone]** · and the
@@ -330,7 +330,7 @@ his data, forward-corrected delivery (D9).
 
 Ordered by operational weight for the tester, not by age:
 
-1. **§5.100 + §5.101 — `zoom auto in` / `zoom auto initial`** (asked 2026-08-26, **[GATE OPENED 2026-09-12, §11.233(d) — [vixy]: *"yes, same as for any kind of tracking in spacecrafter"*, plus the implicit PRELOAD signal on anticipated visibility (recorded as a follow-on); the fix is F114 this round. **T1.1 leaves the decision tier.**]**
+1. **§5.100 + §5.101 — `zoom auto in` / `zoom auto initial`** (asked 2026-08-26, **[GATE OPENED 2026-09-12, §11.233(d) — [vixy]: *"yes, same as for any kind of tracking in spacecrafter"*, plus the implicit PRELOAD signal on anticipated visibility (recorded as a follow-on); the fix is F114 this round. **T1.1 leaves the decision tier.**]** **[AND THE WORK TIER, 2026-09-12 — F114 DELIVERED → §11.235: code `d67833cd → d0e0c51e`, `Camera::trackBody` beside old's `setFlagTraking(true)` and `Camera::lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration)` at both `autoZoomOut` branches; the two paths' look-direction gap **99.0336 deg → 8.00911e-06** and **99.0318 deg → 1.0102e-05**, F38's own driver unchanged on both binaries, the old path unmoved. **T1.1 is CLOSED** — this row's *"single largest transparency hole"* is shut, and its *"one-line-class fix"* estimate held (two calls plus a conversion helper that gave the frame conversion its one home).]**
    unanswered): the two paths end **99° apart** after a shipped unzoom; `zoom auto in`
    starts tracking on the OLD path only. These are bread-and-butter operator commands —
    the single largest transparency hole with a one-line-class fix already scoped.
@@ -808,7 +808,7 @@ direction (see T3).
 
 ## The critical path, compressed
 
-Vixy answers T1.1 + T1.2 + T1.3 (operator basics · dome geometry · DSO content) and the
+~~Vixy answers T1.1~~ **[T1.1 CLOSED 2026-09-12, answered AND built — §11.233(d) → F114 → §11.235]** + T1.2 + T1.3 (operator basics · dome geometry · DSO content) and the
 T1.4 pair → two or three dispatch rounds burn T2 → the final pass fires carrying T3+T4
 (one batch, state-stamped, now including the content census and the field-content
 questions) → ~~the T5.1 rehearsal~~ **[RAN 2026-09-05, F90 §11.211]** + a T5.2 soak gate the word "ready". The decision batches
@@ -838,7 +838,7 @@ next delivery carry" for the tester.
 **[2026-09-05 EVENING — THE DECISION BATCHES STOPPED BEING THE LONG POLE (F88 → §11.207).]**
 The critical path above was written when *"the decision batches are the long pole"* was
 true. Twenty round-3 replies changed that: **T1.2 and T1.4 CLOSED**, and what they gated
-became work. The path now reads: **Vixy answers T1.1** (§5.100's authorization, unanswered
+became work. The path now reads: ~~**Vixy answers T1.1**~~ **[T1.1 ANSWERED AND BUILT 2026-09-12 — §11.233(d) → F114 → §11.235; the critical path below drops it]** (§5.100's authorization, unanswered
 since 2026-08-26 — now the LAST operator-basics decision standing) **+ T1.3** (the DSO
 content batch) **+ T1.5** → the decision-free queue R18/R19/R20/R27/R28/L1 created burns in
 two or three dispatch rounds (**§5.86 + §5.19** first: RA/DE, both decisions closed) → the

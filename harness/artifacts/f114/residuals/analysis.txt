@@ -1,0 +1,27 @@
+R1 -- is the drawn path's tracking body-only? (`select star` + `zoom auto in`)
+  star_selected   oldFlagTraking=0 camera.tracked=''       camera.selected=''       halfFov=1.5708 angle(old,new)=1.28917e-05 deg
+  star_zoomed     oldFlagTraking=0 camera.tracked=''       camera.selected=''       halfFov=1.5708 angle(old,new)=1.56033e-05 deg
+  planet_zoomed   oldFlagTraking=1 camera.tracked='Mars'   camera.selected='Mars'   halfFov=2.27979e-05 angle(old,new)=8.00911e-06 deg
+  NOTE: on THIS host the star leg is inconclusive -- nothing was selected
+  (camera.selected = '' and old flagTraking stayed 0, i.e. autoZoomIn took
+  its `if (!selected_object) return;`). name.fab carries Bayer designations
+  (first line `   677|alpha_And`), 0 occurrences of 'Sirius', and the app
+  reads its catalogues from /usr/local/share/spacecrafter/stars where the
+  config's v0.8 zone files are absent (the smoke suite's S1 row, S5.77).
+
+R2 -- a commanded duration under the camera's 0.2 s view-plan floor
+  asked: `zoom auto initial duration 0.1`
+  t (s)    old prog   new prog   oldAutoMove newViewT  angle(o,n)
+  0.000    0.0000     0.0000     1          0.2000    0.2426    
+  0.056    9.7393     19.4103    1          0.2000    9.9136    
+  0.105    99.0325    60.4444    0          0.2000    38.3455   
+  0.153    99.0324    90.8671    0          0.2000    7.9226    
+  0.202    99.0323    98.7897    0          0.0000    0.0000    
+  0.257    99.0322    98.7896    0          0.0000    0.0000    
+  0.306    99.0321    98.7895    0          0.0000    0.0000    
+  0.355    99.0320    98.7894    0          0.0000    0.0000    
+  0.403    99.0319    98.7893    0          0.0000    0.0000    
+  0.459    99.0318    98.7892    0          0.0000    0.0000    
+  after : angle(old,new)=1.17685e-05 deg  viewT=0  autoMove=0
+  the plan's own duration is dumped as camera.plans.viewT = 0.2000 for a
+  commanded 0.1 -- the floor, read off the app rather than off the source.

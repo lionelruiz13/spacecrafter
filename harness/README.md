@@ -5755,3 +5755,80 @@ the way through and **leaves no trace**: no `canary.log`, and the header's
 `canary --no-scene exit = N` line simply does not appear, so an unverified run reads
 exactly like a verified one. Both arms were run here from the clone's harness on the
 clone's binary, exit 0 each, frozen four md5 in == out.
+
+## F114 - `zoom auto in` tracks and `zoom auto initial` re-aims, on the drawn path too (`f114_run.sh`, `f114_gaps.py`, `f114_ramp.py`, `f114_ramp_analyze.py`, `f114_initview.py`, `f114_residuals.py`, `f114_residuals_analyze.py`) - INTENT 11.235 / 5.100 / 5.101 / 11.150(k) / 11.233(d), 2026-09-12
+
+```
+cd claude/harness
+DISPLAY=:2 ./f114_run.sh <label> <driver.py> [binary] [config-sed-expr]
+DISPLAY=:2 ./f114_run.sh gaps_pre  f38_gaps.py /home/claude/sc-f114/spacecrafter-pre-6d63e6c1
+DISPLAY=:2 ./f114_run.sh gaps_post f38_gaps.py            # the delivered binary
+DISPLAY=:2 ./f114_run.sh ramp_post f114_ramp.py
+DISPLAY=:2 ./f114_run.sh initview_farm f114_initview.py "" 's/^init_view_pos .*/init_view_pos = 1,0,0/'
+python3 f114_gaps.py <dir> [<dir2>]        # one run, or a pre/post table
+python3 f114_ramp_analyze.py <dir>
+python3 f114_residuals_analyze.py <dir>
+```
+
+**`f114_run.sh` is `f38_run.sh` plus the asserts the standing probe cannot make.**
+The `/proc/<pid>/comm` probe is blind to a staging or renamed binary (11.231(j2)),
+so this runner ALSO refuses to launch when any `/proc/<pid>/exe` resolves under
+`/home/claude/sc-*/` or `*/build*/src/`, when anything holds TCP 7805, or when
+`nvidia-smi` reports more than 4000 MiB of VRAM in use (the 2026-09-12 red, where a
+resident 27B model made the host launch-incapable). Its fourth argument turns the
+launch into a temp-HOME FARM run: the field `config.ini` is COPIED and `sed`-ed,
+never written, and the md5 pair is asserted in == out around the launch anyway.
+
+**The parity observable, and its floor.** The dual dump's header carries BOTH paths'
+look direction in ONE frame: old's `helioToEye` forward is `-(m[2], m[6], m[10])`
+and the camera's `absFwd` is the eye forward in root coords (`Camera.cpp:730-732`).
+They are the same frame - measured, not assumed: in the one state where both paths
+hold the same body through the DUAL setter (`flag track_object on`), the angle
+between them is **1.707547e-06 deg** on F38's landed record and **1.8371e-05 deg**
+on the pre run here. Every "within the float floor" claim about this pair is stated
+against that number, and both fixed gaps land an order of magnitude below it
+(8.0e-06 and 1.0e-05 deg) only because the tracking servo is what is being asked.
+
+**Do not read `screen` as "where the drawn path thinks the body is" for a culled
+body.** `screenPos` is written inside `ModularBody::update` (`ModularBody.hpp:476-531`),
+which does not run for a body the drawn path culls, so the field holds the value from
+the last frame in which the body WAS visible - frozen at `[0.475649, -0.158587]`
+across four dumps in the pre run while the body's own `mat`, `dist` and `lastJD` all
+advanced. The `lastJD` lag against the header `jd` is NOT staleness either: it is the
+light time (Mars at 2.0717 AU -> 0.01197 d, measured 1.197e-02 d on BOTH binaries).
+Read `visible` first; F114's prediction file got this wrong and the entry corrects it.
+
+**The ramp is scored against closed-form laws, twice, the second time without a
+clock.** Old's `zoom auto initial` rides `c = coef^4` (`navigator.cpp:71-73`, the
+`zooming_mode == -1` branch) so its progress is `A*u^4`; `Camera::lookTo` with
+`v0 = 0` rides two quadratic phases with `t1 = T/2` and `a = 4A/T^2`
+(`Camera.cpp:365-372`), so its progress is `2A*u^2` then `A - 2A*(1-u)^2`. Both were
+committed before the build. The sample clock is the app's own (`jd` at `timerate
+rate 1` = one day per wall second), and `f114_ramp_analyze.py` recovers its ORIGIN
+from the driver's log, because jd starts advancing when `timerate rate 1` is
+processed, half a second BEFORE the ramp command. It then scores a second way that
+needs no clock at all: old's law is exact and invertible, so old's own progress IS
+the ramp fraction. Measured: duration 10, new vs predicted 0.2022/0.2028 ...
+82.8864/82.8860, origin-free error mean 0.139 deg over 20 samples; max divergence
+**57.667 deg at u = 0.6834 against 57.596 predicted**; end state 1.0e-05 deg apart.
+The one residual is old's own start quantization - one frame, 0.8 ms at 144 fps.
+
+**`f25_ramp.py` does not reach this ramp.** Its per-step `ramp` rows are emitted only
+for frames in which `Core::updateMove` has an ACTIVE interactive step (`core.cpp`,
+the `vzm.deltaAz/deltaAlt/joypad` guard), which a view PLAN issued by a command never
+sets. Use `f114_ramp.py`'s dump cadence for a commanded ramp, `f25_ramp.py` for a key
+or joypad one.
+
+**Two legs the field config cannot run, and one this host cannot.** (1) The
+`init_view_pos` frame conversion is a 90 deg roll ABOUT the zenith and the field's
+`init_view_pos` IS the zenith, so on the field config a correct conversion and no
+conversion differ by 0.0115 deg; `f114_initview.py` runs on a farm at `1,0,0` where
+the three candidates (correct / dropped / unsigned) are 90 deg apart, and takes its
+first dump BEFORE any command so that `loadCamera`'s own call is witnessed.
+(2) `zoom auto initial` maps to `autoZoomOut(duration, full=1, ...)` and can never
+enter the manual branch - `f114_ramp.py`'s third leg reaches it with `flag
+manual_zoom on` + 20 `zoom auto out manual true`. (3) `f114_residuals.py`'s star leg
+is INCONCLUSIVE here: `select star Sirius` selects nothing, because
+`~/.spacecrafter/stars/name.fab` carries Bayer designations (`677|alpha_And`, zero
+"Sirius") and the app loads catalogues from `/usr/local/share/spacecrafter/stars`,
+where the config's v0.8 zone files are absent (the smoke suite's S1 row, 5.77).
