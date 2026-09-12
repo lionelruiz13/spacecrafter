@@ -779,7 +779,7 @@ test -e /home/claude/sc-f115 ; echo $? => 1
 ```
 
 **DoD:** predictions first; the census with lifetimes and field classes, the 28 rows reproduced; the three redundancy axes with homes and bytes; the per-body minimum; the proposal with arithmetic and no enacted option; §11 entry + stub; §5.142 / §11.222 / §11.233 markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-12 14:0x — CHECKPOINT 1. §0.7 gate PASSED: `premise_check.py F115` **17 PASS / 0 FAIL** (13:57); harness HEAD `1890e47` clean, code `d0e0c51e` clean, binary `d607cfdc`; definition md5 `8e364a3a` MATCH; live `### F` 7. Ledger baselines measured AT MY OPEN HEAD (not quoted): scan **273/342/144**, pair **D 36 · D2 12 · I 92 · I2 37 · M 95**. Check (a) HALF DONE: F102's `f102_sizes.cpp` recompiled UNCHANGED at `d0e0c51e` → 28 rows **byte-identical** to `artifacts/f102/sizes.tsv` (md5 `58e63b9e`), and 192+128+192+832 = **1344 B** reproduced as a sum before any extension. Predictions PRE-REGISTERED (`artifacts/f115/prediction.txt`, 13227 B, 0 non-ASCII) naming what was read before them. NEXT: the census (mandate (2)) — the new path's four module files + `bodyShaderInterface.hpp`, then the old path's 15 `src/bodyModule/` files, field by field. No launch spent (the criterion is written in the prediction, §5).
 
 ---
 

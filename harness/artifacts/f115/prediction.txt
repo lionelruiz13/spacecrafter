@@ -1,0 +1,184 @@
+F115 - PRE-REGISTRATION (mandate (1)), written BEFORE the census extends F102's instrument
+and BEFORE any of the struct bodies below were read at their headers.
+Written 2026-09-12 ~14:0x CEST by the F115 executor (Claude Opus 5), code master-beta @ d0e0c51e
+(READ-ONLY on the engine), harness CC-harness @ 1890e47.
+
+=====================================================================
+0. WHAT WAS READ BEFORE THIS FILE WAS WRITTEN (the prediction's whole input)
+=====================================================================
+  - claude/fable-dispatch.md sections 0, 0b and ### F115 (the mandate + "the reading the
+    mint stands on").
+  - claude/INTENT/11.222.md in full (F102: the pool, the 1344 B, (h)(1)(2)(3)).
+  - claude/INTENT.md:508 (the SS5.142 inline row, including today's RETRACTED marker).
+  - claude/INTENT/11.233.md in full (the owner's two messages + the correction).
+  - claude/INTENT/11.218.md paragraphs (g) and (i) (the abort; 1719 authored bodies in 8 shows).
+  - claude/harness/artifacts/f102/{f102_sizes.cpp,sizes.tsv} - the instrument and its 28 rows.
+  NOT yet read at this point: bodyShaderInterface.hpp, BasicMesh.*, LayeredMesh.*,
+  meshShadowFill.*, OjmModule.*, ModularSystem.cpp, any src/bodyModule/*.{cpp,hpp},
+  SharedBuffer.hpp, BufferMgr.cpp. Every field-level claim below is therefore a PREDICTION,
+  not a lookup - except where it quotes f102_sizes.cpp's own mirrored declarations
+  (artGeom, RingUniform, atmExtUBO, ShadowVert, ShadowFragHead, moonFrag, LightInfo,
+  artVert, ojmContainerUniformData), which are already in this transcript and are marked
+  [from f102 mirror] where used.
+
+=====================================================================
+1. THE 1344 B REPRODUCED AS A SUM, BEFORE ANY EXTENSION (check (a))
+=====================================================================
+  F102's instrument recompiled UNCHANGED at code d0e0c51e:
+    g++ -O0 -std=c++20 -I src -I src/EntityCore -o f102_sizes f102_sizes.cpp   (rc 0)
+    ./f102_sizes 64 --tsv  ->  28 lines, md5 58e63b9e8500aaff1da82cfc0d9fdacb
+    diff against claude/harness/artifacts/f102/sizes.tsv : IDENTICAL (0 bytes differ)
+  The sum, from those rows only:
+    OLD path, Moon ctor  : globalVertProj 164 -> 192  +  globalFrag 68 -> 128   =  320
+    NEW path, BasicMesh  : globalVertProj 164 -> 192  +  meshFrag  784 -> 832   = 1024
+    per 06.sts body                                                             = 1344 B
+  1048576 / 1344 = 780.2  -> 780 bodies per MiB, which is F102's (h)(1) number.
+  PREDICTION: this sum is unchanged by the census (the census ADDS body classes and
+  optional modules, it does not change what a plain tex_map+type Moon body of 06.sts costs).
+  FALSIFIED IF: the extended census finds a further UNCONDITIONAL per-body acquire on
+  context.uniformMgr on either path for a 06.sts-class body (then 1344 was incomplete and
+  F102's N=675 arithmetic, which reproduced the measured histogram exactly, would be wrong -
+  so I predict it is NOT falsified, and the agreement with 675 is the independent check).
+
+=====================================================================
+2. THE CENSUS'S EXPECTED SHAPE
+=====================================================================
+P2.1 FILES.
+  NEW path, per-body acquires on context.uniformMgr, 4 module files + 1 struct home:
+    experimentalModule/meshModules/BasicMesh.hpp:47-48        (2 SharedBuffer members)
+    experimentalModule/meshModules/LayeredMesh.hpp:122-126    (5 members)
+    experimentalModule/meshModules/meshShadowFill.hpp:45,:78  (2 members, 2 classes)
+    experimentalModule/bodyModules/OjmModule.hpp:100-103      (4 members)
+    struct home: experimentalModule/meshModules/bodyShaderInterface.hpp
+  OLD path: 15 files under src/bodyModule/ hold a SharedBuffer (premise line, measured);
+  PREDICT the split ~8 .cpp + ~7 .hpp, and that the PER-BODY subset is
+    body_moon, body_bigbody, body_smallbody, body_artificial, body_sun, ring, axis, atm_ext
+  (the 8 the section names), i.e. every remaining hit is a header declaration of one of those.
+  FALSIFIED IF: a 16th file, or a per-body acquire in a src/bodyModule file the section
+  does not name (e.g. halo, orbit, trail, hints, tail).
+
+P2.2 ROW COUNT. F102's table has 28 lines (2 header lines ALIGNMENT/POOL + 26 struct rows).
+  PREDICT the extended table at 34 +/- 6 lines total: the 26 struct rows kept byte-identical,
+  plus 6-12 new rows - the ShadowFrag family at more than one maxShadowCast, the meshShadowFill
+  blocks, a hypothetical capped meshFrag, and the derived per-body TOTALS per class.
+  PREDICT every one of the 26 landed rows reproduces byte for byte (already measured above).
+
+P2.3 LIFETIME.
+  PREDICT three lifetime classes and no fourth:
+    (L1) carved in the CONSTRUCTOR / at load, released at destruction:
+         old Moon (body_moon.cpp:78), new BasicMesh (BasicMesh.cpp:20) via
+         ModularSystem::loadBody -> loadModule (ModularSystem.cpp:1456-1458).
+    (L2) carved at FIRST DRAW (lazy), released at destruction: old BigBody
+         (body_bigbody.cpp:299-302) and old SmallBody (body_smallbody.cpp:189-192).
+    (L3) never carved for a body that is never authored.
+  PREDICT NO per-frame acquire on this pool at all: F102 measured fastAcquireBuffer at
+  exactly 3 sites, all on staging managers (ring.cpp:76, video_player.cpp:651,
+  s_texture.cpp:1077) - so the pool is carve-once, and D11 cost of every option below is
+  a WRITE cost, never an allocation cost.
+  PREDICT release is by ~SharedBuffer -> BufferMgr::releaseBuffer (SharedBuffer.hpp:15-18),
+  i.e. only at body destruction, i.e. never during a show that only authors.
+
+P2.4 FIELD VARIABILITY CLASSES. PREDICT the five classes partition as:
+    per body per frame   : the ModelView matrix (and its inverse / normal form), the body's
+                           position and radius in the camera frame.
+    per body constant    : radius, oblateness, texture/heightmap scalars, colour.
+    per system           : the light (sun position + intensity), the umbra colour.
+    per launch           : nothing, or near nothing (tessellation parameters from config).
+    identical all bodies : the camera's clipping/fov triple, the shadow-caster array's
+                           unused tail, the sun half-angle.
+  PREDICT that the largest single field of the largest block (meshFrag's
+  shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER=8], 768 B) is per body per frame in TYPE
+  but "identical for all bodies" in CONTENT for the overwhelming majority of bodies, because
+  a satellite of 06.sts receives no shadow at all -> its array is entirely unused.
+
+=====================================================================
+3. PREDICTED REDUNDANCY PER AXIS (bytes per 06.sts body unless said otherwise)
+=====================================================================
+P3.1 CROSS-PATH.  PREDICT 320 B per body is pure duplication while both paths live:
+  the OLD path's eager pair (globalVertProj 192 + globalFrag 128) is carved for a body the
+  DRAWN path draws through its own blocks. Of that, the 192 B globalVertProj is the LITERALLY
+  SAME struct type carved twice for one body (old Moon ctor and new BasicMesh ctor), so at
+  least 192 B is same-type duplication and the remaining 128 B is same-purpose duplication
+  (globalFrag vs the fragment half of meshFrag).
+  PREDICT B8 (the old path's retirement) removes exactly 320 B/body -> 1024 B/body,
+  1048576/1024 = 1024 bodies per MiB.
+  PREDICT ALSO: something IS carved for a body the drawn path never draws - on 06.sts all
+  1013 satellites are authored and (F102 (h)(3)) never drawn, so 100 % of the carve on that
+  show is for never-drawn bodies on BOTH paths.
+
+P3.2 CROSS-MODULE.  PREDICT the ModelView matrix (Mat4f, 64 B) is carried in EVERY block a
+  body owns that needs geometry, and that a fully-equipped old-path body (ringed + atmosphere
+  + shadow) carries it 4-6 times:
+    [from f102 mirror] artGeom.ModelViewMatrix, RingUniform.ModelViewMatrix AND
+    RingUniform.ModelViewMatrixInverse, atmExtUBO.ModelViewMatrix, ShadowVert.ModelViewMatrix,
+    ojmContainerUniformData.ModelViewMatrix + .NormalMatrix.
+  PREDICT the clipping/fov triple (Vec3f, 12 B) is carried 3-4 times per equipped body
+    [from f102 mirror] artGeom.clipping_fov, RingUniform.clipping_fov, atmExtUBO.clipping_fov.
+  PREDICT the body's own radius appears 2-4 times (atmExtUBO.planetRadius,
+  RingUniform.PlanetRadius, ShadowVert.radius, and one in globalVertProj).
+  PREDICTED BYTES for a plain 06.sts body (no ring, no atmosphere, no shadow module):
+  cross-module duplication is SMALL - 64 to 128 B - because such a body owns only two blocks
+  per path; the cross-module axis is expensive only for the handful of equipped bodies.
+  FALSIFIED IF: a plain body's two new-path blocks share more than ~128 B of content.
+
+P3.3 CROSS-BODY.  PREDICT the dominant axis:
+    shadowingBodies[8]            768 B  identical (all-zero/unused) for every satellite
+    the light (sun pos+intensity)  ~28 B  identical for every body of one system
+    clipping/fov triple            ~12 B  identical for every body at a frame (camera state)
+    sun half-angle / umbra colour  ~16 B  identical for every body of one system
+  PREDICT cross-body >= 800 B per 06.sts body, i.e. >= 59 % of the 1344 and >= 78 % of the
+  new path's 1024 - and that this is the axis the owner's "let make sure there is no
+  redundancy" is actually about.
+  PREDICT carving it once needs ONE of: a per-system uniform block bound at the same set
+  (cheap, no shader array change for the light; a shader DESCRIPTOR change), a push constant
+  (fov/clipping - smallest), or an indexed/dynamic-offset shared buffer for the caster array
+  (needs the shader's array length to follow a runtime value, which F102 (h)(3) already
+  measured as NOT in the tree).
+
+=====================================================================
+4. PREDICTED PER-BODY MINIMUM
+=====================================================================
+P4.1 What a body must own per frame, predicted BEFORE reading globalVertProj's fields:
+    ModelViewMatrix (or a compact model transform)      64 B
+    body radius + oblateness (or scale)                  8 B
+    a per-body constant colour/texture scalar pair       8 B
+    -> payload 76-100 B, carved at alignment 64 -> 128 B.
+  PREDICTION: per-body minimum = 128 B carved (payload in [76, 100]).
+  BRACKET: [64, 192] carved. A minimum of 64 requires the model matrix alone and nothing else;
+  192 means globalVertProj's 164 B is already near-minimal and only meshFrag is compressible.
+P4.2 Bodies per MiB at that minimum: 1048576/128 = 8192.
+  Against today's 1344 -> 780. Predicted improvement factor 10.5x.
+P4.3 The corpus wall (F102/11.218(i): 1719 authored bodies in 8 shows, 1183 solar + 531
+  in-galaxy + 5 free):
+    today   : 1183*1344 + 531*128 = 1 589 952 + 67 968 = 1 657 920 B = 1.581 MiB  -> over 1 MiB
+    at 128 B/body + 128 in-galaxy : 1183*128 + 531*128 = 219 392 B = 0.209 MiB    -> fits 1 MiB
+  PREDICT the per-body minimum makes the whole 8-show corpus fit in 1 MiB with the launch
+  scene's own ~142.5 KB baseline still on top (0.209 + 0.136 = 0.345 MiB).
+
+=====================================================================
+5. THE LAUNCH DECISION (mandate (2)), CRITERION STATED IN ADVANCE
+=====================================================================
+  DEFAULT = ZERO launches (the section's own default). A launch is spent ONLY if, after the
+  static census, the question "which bodies carve what" has a residue that the source and the
+  landed artifacts cannot answer. PRIOR: no launch will be needed, because
+    (i) which modules a body gets is decided in the load path by the authored parameters,
+        readable at ModularSystem::loadBody / ProtoSystem::addBody;
+    (ii) the drawn-vs-authored question on 06.sts is already answered by F102 (h)(3) - the
+        1013 satellites were authored and never drawn - and a launch that plays 06.sts IS
+        the abort, so it would not produce a clean census anyway;
+    (iii) the field's 120 records are the default scene, whose pool draw F102 already
+        measured by inversion at 142 529-142 592 B.
+  If a launch IS spent, the reason is written here before it and the three asserts run.
+
+=====================================================================
+6. PREDICTED PROPOSAL OPTIONS (named before the numbers, so the ranking cannot drive them)
+=====================================================================
+  O1 carve at first draw (new path + Moon adopt what BigBody/SmallBody already do)
+  O2 cap MAX_SHADOW_CASTERS_PER_RECEIVER (shader array length follows)
+  O3 move all-bodies-identical fields to a per-system / per-frame block
+  O4 retire the old path's eager pair with B8
+  O5 refuse at the load authority with a Sec.2(f) line (F102 (h)(2), already priced)
+  O6 grow the pool - EXCLUDED by the owner: "should stay very small ... 1 MiB is sufficient"
+  PREDICT O2+O3 together take a body below 128 B of NEW-path uniform and make O1 unnecessary
+  for the corpus; PREDICT O1 alone moves the wall to the camera rather than removing it
+  (F102 (h)(3)'s own argument), and that this is why it is stated and not recommended.
