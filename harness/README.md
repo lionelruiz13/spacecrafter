@@ -5832,3 +5832,70 @@ is INCONCLUSIVE here: `select star Sirius` selects nothing, because
 `~/.spacecrafter/stars/name.fab` carries Bayer designations (`677|alpha_And`, zero
 "Sirius") and the app loads catalogues from `/usr/local/share/spacecrafter/stars`,
 where the config's v0.8 zone files are absent (the smoke suite's S1 row, 5.77).
+
+## F115 - what a body's uniform bytes actually are, field by field (`f115_sizes.cpp`, `f115_mirrors.py`, `f115_corpus.py`, `f115_redundancy.py`) - INTENT 11.236 / 5.142 / 11.222 / 11.233(b), 2026-09-12
+
+Read-only. No engine change, no app build, no launch. Everything lives under
+`artifacts/f115/` and every number here comes from one of the four instruments.
+
+**`f115_sizes.cpp`** - the size table, extended from F102's. Build and run from
+`artifacts/f115/`:
+
+    g++ -O0 -std=c++20 -I../../../../src -I../../../../src/EntityCore -o /tmp/f115_sizes f115_sizes.cpp
+    /tmp/f115_sizes 64 --tsv | head -28 | diff - ../f102/sizes.tsv    # must be EMPTY
+
+That diff is the contract: the first 28 `--tsv` lines ARE F102's landed table,
+keys and order included, so a change to the engine's structs shows up as a
+failing diff rather than as two tables that disagree quietly. Rows 29-74 are
+F115's: the old-path blocks F102 never priced, the receive array per entry and
+per cap, and 25 per-body CARVED totals by body class and path. Unlike F102 this
+one includes the REAL `src/bodyModule/bodyShader.hpp` - measured, it pulls only
+`<list> <string> <memory>`, `vecmath.hpp` and `bodyShaderInterface.hpp`, so it
+compiles standalone and F102's hand-copied declarations get checked by the
+agreement. Three structs still cannot be included (`ring.hpp`, `atm_ext.hpp`,
+`ojm_mgr.hpp` reach vulkan through `SharedBuffer.hpp`).
+
+**`f115_mirrors.py`** - the I2 guard on those three. It regreps each field list
+out of its header and compares with the mirror in `f115_sizes.cpp`. Run it
+before trusting any size:
+
+    python3 f115_mirrors.py               # 4 mirrors, exit 0
+    python3 f115_mirrors.py --self-test   # mutates one field, must be rejected
+
+It also checks the OLD `AtmExt::_uniform` and the NEW `AtmExtModule::atmExtUBO`
+against the same mirror, so the day they diverge the instrument says so.
+
+**`f115_corpus.py`** - the field shows, priced. Reads `~/.spacecrafter/scripts/fscripts`
+by default and reproduces INTENT 11.218(i)'s 1719 authored bodies and 11.222(h)'s
+1183/531/5 split independently. Its parser is deliberately the ENGINE's:
+`AppCommandInterface::parseCommand` pairs `>> key >> value` by strict index with
+no key whitelist and no resynchronisation, and a census that "helpfully" skips
+unknown tokens reports a corpus the engine does not read. Two things that cost
+me a wrong answer first and are worth knowing before writing any script over
+these files:
+  - the OJM short-circuit takes THREE modes, not one (`app_command_interface.cpp:4119`:
+    `in_universe || in_galaxy || in_sandbox`), and `S10.sts:42-43` uses `in_universe`;
+  - `06old.sts:286` writes `color0.5,0.5,0.5` with the space missing, so the
+    engine pairs every token after it one slot over and loads that satellite
+    with no `tex_map`. It is frozen field data (D9). A parser that resyncs will
+    disagree with the engine by one body, in that file, forever.
+
+**`f115_redundancy.py`** - the three axes and the per-body minimum, computed
+from `f115_fields.tsv` (78 field rows over 20 blocks, each with the `file:line`
+that WRITES it and a variability class). Step 0 is a gate that can fail: the
+field rows of each block must sum to that block's compiled `sizeof`. It caught a
+real error in the table it was checking (`bodyRingVert` given a `PlanetRadius`
+slot only the old `RingUniform` has), which is the whole reason to write it. If
+you add a field row, the gate tells you whether you added it correctly.
+
+Headline numbers, for the record: a `06.sts` body carves **1344 B** on the two
+paths; **884 of its 1180 `sizeof` bytes** are cross-path, derived-from-a-neighbour,
+or identical across bodies; the per-body requirement is **88 B of payload, 128 B
+carved, 8192 bodies per MiB**; and because every acquire is in a constructor
+while every fill is in `draw`, a body nobody draws holds 1344 carved bytes
+containing 4 written ones.
+
+**No launch was spent and the reason was written first** (`artifacts/f115/prediction.txt`
+section 5): which bodies carve what is decided by `ModularBody::deduceBodyModuleList`
+and the module loaders' bids, both readable; and a launch that plays `06.sts` is
+the abort itself, so it would not produce a clean census anyway.
