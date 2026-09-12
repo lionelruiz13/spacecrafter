@@ -58,6 +58,13 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import f44_parity as F44                      # noqa: E402  (parsing primitives)
+# F112, Sec.11.238: the ONE home of the concurrent-instance criterion.  The
+# harness directory is inserted rather than assumed -- every importer of this
+# module already does the same (measured), and this makes the module work when
+# it is run directly too.
+import os as _f112o, sys as _f112s                                # noqa: E402
+_f112s.path.insert(0, _f112o.path.dirname(_f112o.path.abspath(__file__)))
+import sc_instances                                               # noqa: E402
 
 DEG = 180.0 / math.pi
 PORT = 7805
@@ -193,14 +200,17 @@ def reconstruct(cam, body, ref_axis_rot):
 
 # ------------------------------------------------------------------ the farm
 def no_instance():
-    hits = []
-    for p in Path("/proc").glob("[0-9]*/comm"):
-        try:
-            if p.read_text().strip() == "spacecrafter":
-                hits.append(str(p.parent))
-        except OSError:
-            pass
-    return hits
+    """ROUTED 2026-09-12 to the ONE home of the instance criterion
+    (F112, Sec.11.238): comm | /proc/<pid>/exe | TCP 7805, union.
+
+    The inline `comm == "spacecrafter"` test this replaced was measured
+    BLIND to a renamed or copied engine (Sec.11.231(j2): 0 with two
+    staging instances live and holding the port).  The name and the
+    return shape are unchanged -- a list, empty when the host is clear --
+    so every caller keeps working and now gets a message that says which
+    channel fired.  The F108 `logread.py` precedent: one home, many
+    callers, and the callers do not have to know."""
+    return sc_instances.no_instance()
 
 
 def build_farm(farm, locale):

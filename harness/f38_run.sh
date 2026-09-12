@@ -36,6 +36,12 @@ log "binary mtime     : $(stat -c %y "$BIN")"
 
 # Concurrent-instance probe: ANY account, by /proc/<pid>/comm, never by
 # command-line text (a `pgrep -f <path>` self-matches the wrapper).
+# FROZEN 2026-09-12 (F112, Sec.11.238): this driver's artifacts are landed, so its
+# bytes stay as they were when they were produced.  The instance probe below is the
+# pre-F112 `comm == "spacecrafter"` form and is BLIND to a renamed or copied engine
+# (Sec.11.231(j2)).  If you re-run this driver, assert with the one home instead:
+# bash harness/sc_instances.sh --assert <label>  (or `from sc_instances import
+# no_instance`), which also covers /proc/<pid>/exe and TCP 7805.
 n=0
 for p in /proc/[0-9]*; do
     [ "$(cat "$p/comm" 2>/dev/null)" = "spacecrafter" ] && { n=$((n+1)); log "  running: $p"; }

@@ -43,14 +43,17 @@ log "binary mtime     : $(stat -c %y "$BIN")"
 # measured: it reported 3 with nothing running. So the probe reads
 # /proc/<pid>/comm, which is the executable's own name (world-readable, so it
 # covers every account) and carries no command-line text at all.
-CONC=$(/usr/bin/grep -l -x 'spacecrafter' /proc/[0-9]*/comm 2>/dev/null | wc -l)
-if [ "$CONC" != "0" ]; then
-    for c in $(/usr/bin/grep -l -x 'spacecrafter' /proc/[0-9]*/comm 2>/dev/null); do
-        log "  running: $c  cmdline=[$(tr '\0' ' ' < "$(dirname "$c")/cmdline")]"
-    done
-fi
-log "concurrent insts : ${CONC:-0}"
-if [ "${CONC:-0}" != "0" ]; then log "ABORT: concurrent instance"; exit 2; fi
+# [ROUTED 2026-09-12, F112 / Sec.11.238 - the paragraph above is kept as the
+# record of why the comm probe replaced `pgrep -f`, and it is still true; what it
+# did not know is that `comm` is the basename TRUNCATED TO 15 BYTES, so a staging
+# binary (sc_f109_iso, spacecrafter-pre) never equals "spacecrafter" and this
+# probe read 0 with two such engines live and holding port 7805 (Sec.11.231(j2)).
+# The criterion now lives in ONE home and is the union of comm, /proc/<pid>/exe
+# and TCP 7805.  F26's own decoy map is retaken in artifacts/f112/ with a decoy
+# that can tell the criterion from its blind spot.]
+INST=$(bash "$HERE/sc_instances.sh" --assert f26 2>&1); CONC=$?
+log "$INST"
+if [ "$CONC" != "0" ]; then log "ABORT: concurrent instance (sc_instances exit $CONC)"; exit 2; fi
 
 CFG=~/.spacecrafter/config.ini
 SSY=~/.spacecrafter/ssystem.ini

@@ -44,13 +44,16 @@ rm -f "$OUT"/*.png "$OUT"/*.json "$OUT"/statistics.dat "$OUT"/app.log
 # blind spot in the OTHER direction lives in f26_epoch.sh:46, f27_reply.py:107
 # and f56_canary.sh:470, which assert `comm == "spacecrafter"` exactly and so
 # do NOT see a running staging binary at all (its comm is its own basename).
+# [ROUTED 2026-09-12, F112 / Sec.11.238.  The paragraph above is kept: its reading
+# of the `pkill -f` hazard is right and is now the home's rule.  What it got wrong
+# was the WIDTH of its own basename test -- `spacecrafter|sc_*` does not match
+# `spacecrafter-pre`, one of the names this corpus actually uses, so the kill was
+# narrower than the probe it cites.  A kill and a probe that disagree about what an
+# engine IS are the desync I2 forbids, so both now read one criterion:
+# sc_instances --kill signals every hit BY PID (SIGTERM, then SIGKILL after a
+# timeout), never by command-line pattern.]
 kill_instances() {
-    for p in /proc/[0-9]*; do
-        exe=$(readlink "$p/exe" 2>/dev/null) || continue
-        case "${exe##*/}" in
-            spacecrafter|sc_*) kill -9 "${p#/proc/}" 2>/dev/null ;;
-        esac
-    done
+    python3 "$HERE/sc_instances.py" --kill --timeout 10 --quiet 2>/dev/null || true
 }
 
 MD5_CFG_IN=$(md5sum "$CFG" | cut -d' ' -f1)

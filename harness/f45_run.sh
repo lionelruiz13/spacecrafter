@@ -113,9 +113,13 @@ log "XAUTHORITY       : ${XAUTHORITY:-<NONE>}"
 DPY=$(xdpyinfo 2>&1 | head -1); log "xdpyinfo         : $DPY"
 echo "$DPY" | grep -q 'name of display' || { log "ABORT: display not reachable"; exit 3; }
 
-n=0; for p in /proc/[0-9]*; do [ "$(cat "$p/comm" 2>/dev/null)" = "spacecrafter" ] && n=$((n+1)); done
-log "concurrent spacecrafter instances (pre) : $n"
-[ "$n" -eq 0 ] || { log "ABORT: another spacecrafter is running"; exit 2; }
+# ROUTED 2026-09-12 through the ONE home of the instance criterion (F112,
+# Sec.11.238): comm | /proc/<pid>/exe | TCP 7805, union.  The inline
+# `comm == "spacecrafter"` form this replaced was measured BLIND to a renamed or
+# copied engine (Sec.11.231(j2)).
+INST=$(bash "$HERE/sc_instances.sh" --assert f45 2>&1); IRC=$?
+log "$INST"
+[ "$IRC" -eq 0 ] || { log "ABORT: another engine is live (sc_instances exit $IRC)"; exit 2; }
 
 # --- build the farm ---------------------------------------------------------
 rm -rf "$FARM"; mkdir -p "$FARM/.spacecrafter"

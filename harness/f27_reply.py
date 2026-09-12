@@ -66,6 +66,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import b25_galactic as b25g
 import b24_equivalence as b24   # the NaN-tolerant dump reader (I2)
 import dumpread              # the dump's NaN grammar lives HERE (I2)
+# F112, Sec.11.238: the ONE home of the concurrent-instance criterion.  The
+# harness directory is inserted rather than assumed -- every importer of this
+# module already does the same (measured), and this makes the module work when
+# it is run directly too.
+import os as _f112o, sys as _f112s                                # noqa: E402
+_f112s.path.insert(0, _f112o.path.dirname(_f112o.path.abspath(__file__)))
+import sc_instances                                               # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_BIN = str(HERE.parents[1] / "build-claude/src/spacecrafter")
@@ -99,17 +106,17 @@ def md5(p):
 
 
 def concurrent_instances():
-    """§11.121(m), F26's replacement probe: the executable's own name from
-    /proc/<pid>/comm — world-readable (so it covers every account) and carrying
-    no command-line text (so it cannot match this script)."""
-    out = []
-    for c in glob.glob("/proc/[0-9]*/comm"):
-        try:
-            if open(c).read().strip() == "spacecrafter":
-                out.append(c)
-        except OSError:
-            pass
-    return out
+    """ROUTED 2026-09-12 to the ONE home of the instance criterion
+    (F112, Sec.11.238): comm | /proc/<pid>/exe | TCP 7805, union.
+
+    The inline `comm == "spacecrafter"` test this replaced was measured
+    BLIND to a renamed or copied engine (Sec.11.231(j2): 0 with two
+    staging instances live and holding the port).  The name and the
+    return shape are unchanged -- a list, empty when the host is clear --
+    so every caller keeps working and now gets a message that says which
+    channel fired.  The F108 `logread.py` precedent: one home, many
+    callers, and the callers do not have to know."""
+    return sc_instances.no_instance()
 
 
 # --------------------------------------------------------------- the wire

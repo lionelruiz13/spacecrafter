@@ -23,10 +23,12 @@ BIN=${2:?usage: f99_gdb.sh <absOutdir> <binary>}
 FARM=${F99_GDB_FARM:-/home/claude/sc-f99/farm_gdb}
 mkdir -p "$OUT"
 
-for p in /proc/[0-9]*/comm; do
-    [ -r "$p" ] || continue
-    [ "$(cat "$p" 2>/dev/null)" = "spacecrafter" ] && { echo "ABORT: instance running"; exit 2; }
-done
+# ROUTED 2026-09-12 through the ONE home of the instance criterion (F112,
+# Sec.11.238): comm | /proc/<pid>/exe | TCP 7805, union.  The inline
+# `comm == "spacecrafter"` form this replaced was measured BLIND to a renamed or
+# copied engine (Sec.11.231(j2)) -- and this driver runs a binary passed as $2,
+# which is exactly the staging-binary case that blindness covers.
+bash "$HERE/sc_instances.sh" --assert f99-gdb || exit 2
 [ -f /tmp/spacecrafter.lock ] && {
     LP=$(cat /tmp/spacecrafter.lock); [ -d "/proc/$LP" ] || rm -f /tmp/spacecrafter.lock; }
 

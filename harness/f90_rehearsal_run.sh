@@ -47,18 +47,23 @@ ls -l --time-style=+%H:%M:%S "$BIN"; md5sum "$BIN"
 echo "    display = ${DISPLAY:-<unset>}"
 echo "    outdir  = $OUT"
 
-# --- concurrent instance, any account, /proc/<pid>/comm (§11.134(b))
-HITS=""
-for p in /proc/[0-9]*/comm; do
-    [ -r "$p" ] || continue
-    if [ "$(cat "$p" 2>/dev/null)" = "spacecrafter" ]; then HITS="$HITS ${p%/comm}"; fi
-done
-if [ -n "$HITS" ]; then
-    echo "ABORT: another spacecrafter process exists:$HITS"; exit 2
-fi
-echo "    /proc comm assert: no spacecrafter running"
+# ROUTED 2026-09-12 through the ONE home of the instance criterion (F112,
+# Sec.11.238): comm | /proc/<pid>/exe | TCP 7805, union.  The inline
+# `comm == "spacecrafter"` form this replaced was measured BLIND to a renamed or
+# copied engine (Sec.11.231(j2): it read 0 with two staging instances live and
+# holding port 7805), and it was copy-pasted into 44 files, so no single edit
+# could fix it.  sc_instances.sh --assert prints pid . uid . comm . exe . port
+# per hit and exits 0 clear / 2 engine live / 4 the probe could not run.
+bash "$HERE/sc_instances.sh" --assert f90-smoke || exit 2
 
 # --- environment canary (§11.176)
+# [F112 2026-09-12, §11.238, on F110's finding (§11.234): F90_SKIP_CANARY=1 used to
+# leave NO TRACE -- no canary.log, no line in this output -- so an UNVERIFIED run read
+# exactly like a verified one, which is the one thing a suite whose whole value is
+# "one command, one exit code" must not do.  The skip is now stated, in the output AND
+# in a file beside the canary.log that is not there, with what it costs.  This is the
+# same class as the §11.174(h) rule it serves: an environment fault (or a deliberate
+# bypass of the check for one) is RECORDED, never silent.]
 if [ "${F90_SKIP_CANARY:-0}" != "1" ]; then
     bash "$HERE/f56_canary.sh" --no-scene > "$OUT/canary.log" 2>&1
     CRC=$?
@@ -66,6 +71,26 @@ if [ "${F90_SKIP_CANARY:-0}" != "1" ]; then
     if [ "$CRC" != "0" ]; then
         echo "ABORT: the environment canary is RED. Report it; do not widen it."; exit 3
     fi
+else
+    echo "    canary --no-scene SKIPPED  (F90_SKIP_CANARY=1)"
+    echo "    *** THIS RUN IS UNVERIFIED AGAINST THE BANKED STACK.  The canary is the"
+    echo "    *** member that would have caught the 2026-08-29 dim era (§11.176), and"
+    echo "    *** it is the member this run did not take.  Any number it produces is a"
+    echo "    *** number from an unchecked stack: say so wherever it is used."
+    echo "    *** Legitimate reason to skip: the bank is THIS host's process epochs,"
+    echo "    *** display and GPU band, so on any other machine the canary is red"
+    echo "    *** before it has measured anything (§11.234).  That is a missing bank,"
+    echo "    *** not a stopped measurement -- and it is still not a verified stack."
+    {
+        echo "CANARY SKIPPED -- F90_SKIP_CANARY=1"
+        echo "run          : $(date '+%F %T %Z')"
+        echo "binary       : $BIN  ($(md5sum "$BIN" | cut -d' ' -f1))"
+        echo "display      : ${DISPLAY:-<unset>}"
+        echo "host         : $(uname -n)"
+        echo "why this file exists: the skip used to leave no trace at all, so an"
+        echo "unverified run was indistinguishable from a verified one (F110 finding,"
+        echo "§11.234; fixed by F112, §11.238).  This file IS the trace."
+    } > "$OUT/canary.SKIPPED"
 fi
 
 # --- frozen files, in

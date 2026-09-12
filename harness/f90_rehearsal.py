@@ -282,15 +282,17 @@ def md5(p):
 
 
 def no_instance():
-    """The Sec.11.134(b) probe: /proc/<pid>/comm, every account, no self-match."""
-    hits = []
-    for p in Path("/proc").glob("[0-9]*"):
-        try:
-            if (p / "comm").read_text().strip() == "spacecrafter":
-                hits.append(p.name)
-        except OSError:
-            pass
-    return hits
+    """ROUTED 2026-09-12 to the ONE home of the instance criterion
+    (F112, Sec.11.238): comm | /proc/<pid>/exe | TCP 7805, union.
+
+    The inline `comm == "spacecrafter"` test this replaced was measured
+    BLIND to a renamed or copied engine (Sec.11.231(j2): 0 with two
+    staging instances live and holding the port).  The name and the
+    return shape are unchanged -- a list, empty when the host is clear --
+    so every caller keeps working and now gets a message that says which
+    channel fired.  The F108 `logread.py` precedent: one home, many
+    callers, and the callers do not have to know."""
+    return sc_instances.no_instance()
 
 
 def screensaver_active():
@@ -583,6 +585,13 @@ def catalogue(lang):
 # (`artifacts/f98/model_equality.{py,txt}`).  `sts_duration.parse` is the
 # loop-aware reading, for a caller that turns the number into a timeout.
 from sts_duration import show_own_duration                 # noqa: E402
+# F112, Sec.11.238: the ONE home of the concurrent-instance criterion.  The
+# harness directory is inserted rather than assumed -- every importer of this
+# module already does the same (measured), and this makes the module work when
+# it is run directly too.
+import os as _f112o, sys as _f112s                                # noqa: E402
+_f112s.path.insert(0, _f112o.path.dirname(_f112o.path.abspath(__file__)))
+import sc_instances                                               # noqa: E402
 
 
 ANSI = re.compile(r"\x1b\[[0-9;]*m")

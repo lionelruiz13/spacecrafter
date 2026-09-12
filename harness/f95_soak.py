@@ -118,6 +118,13 @@ sys.path.insert(0, str(HERE))
 
 from sts_duration import parse as show_model              # noqa: E402
 from sts_duration import show_own_duration                # noqa: E402,F401
+# F112, Sec.11.238: the ONE home of the concurrent-instance criterion.  The
+# harness directory is inserted rather than assumed -- every importer of this
+# module already does the same (measured), and this makes the module work when
+# it is run directly too.
+import os as _f112o, sys as _f112s                                # noqa: E402
+_f112s.path.insert(0, _f112o.path.dirname(_f112o.path.abspath(__file__)))
+import sc_instances                                               # noqa: E402
 
 DEFAULT_BIN = HERE / ".." / ".." / "build-claude" / "src" / "spacecrafter"
 REAL_HOME = Path.home() / ".spacecrafter"
@@ -296,18 +303,17 @@ def now_iso():
 
 
 def no_instance():
-    """The Sec.11.134(b) probe: /proc/<pid>/comm, every account, no self-match.
+    """ROUTED 2026-09-12 to the ONE home of the instance criterion
+    (F112, Sec.11.238): comm | /proc/<pid>/exe | TCP 7805, union.
 
-    The stock `pgrep -f <path>` pattern is blind to an out-of-tree binary and
-    self-matches its own wrapper (measured: 3 reported with nothing running)."""
-    hits = []
-    for p in Path("/proc").glob("[0-9]*"):
-        try:
-            if (p / "comm").read_text().strip() == "spacecrafter":
-                hits.append(p.name)
-        except OSError:
-            pass
-    return hits
+    The inline `comm == "spacecrafter"` test this replaced was measured
+    BLIND to a renamed or copied engine (Sec.11.231(j2): 0 with two
+    staging instances live and holding the port).  The name and the
+    return shape are unchanged -- a list, empty when the host is clear --
+    so every caller keeps working and now gets a message that says which
+    channel fired.  The F108 `logread.py` precedent: one home, many
+    callers, and the callers do not have to know."""
+    return sc_instances.no_instance()
 
 
 def playlist_shows(home=REAL_HOME, dirs=None, skip=None):

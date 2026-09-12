@@ -45,16 +45,14 @@ ls -l --time-style=+%H:%M:%S "$BIN"; md5sum "$BIN"
 echo "    display = ${DISPLAY:-<unset>}"
 echo "    outdir  = $OUT"
 
-# --- concurrent instance, any account, /proc/<pid>/comm (§11.134(b))
-HITS=""
-for p in /proc/[0-9]*/comm; do
-    [ -r "$p" ] || continue
-    if [ "$(cat "$p" 2>/dev/null)" = "spacecrafter" ]; then HITS="$HITS ${p%/comm}"; fi
-done
-if [ -n "$HITS" ]; then
-    echo "ABORT: another spacecrafter process exists:$HITS"; exit 2
-fi
-echo "    /proc comm assert: no spacecrafter running"
+# ROUTED 2026-09-12 through the ONE home of the instance criterion (F112,
+# Sec.11.238): comm | /proc/<pid>/exe | TCP 7805, union.  The inline
+# `comm == "spacecrafter"` form this replaced was measured BLIND to a renamed or
+# copied engine (Sec.11.231(j2): it read 0 with two staging instances live and
+# holding port 7805), and it was copy-pasted into 44 files, so no single edit
+# could fix it.  sc_instances.sh --assert prints pid . uid . comm . exe . port
+# per hit and exits 0 clear / 2 engine live / 4 the probe could not run.
+bash "$HERE/sc_instances.sh" --assert f94 || exit 2
 
 # --- environment canary (§11.176)
 if [ "${F94_SKIP_CANARY:-0}" != "1" ]; then

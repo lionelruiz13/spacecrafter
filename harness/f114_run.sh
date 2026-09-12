@@ -37,21 +37,23 @@ log "binary           : $BIN"
 log "binary md5       : $(md5sum "$BIN" | cut -d' ' -f1)"
 log "binary mtime     : $(stat -c %y "$BIN")"
 
-n=0
-for p in /proc/[0-9]*; do
-    [ "$(cat "$p/comm" 2>/dev/null)" = "spacecrafter" ] && { n=$((n+1)); log "  comm hit : $p"; }
-    e=$(readlink "$p/exe" 2>/dev/null || true)
-    case "$e" in
-        /home/claude/sc-*/*|*/build*/src/*) n=$((n+1)); log "  exe hit  : $p -> $e";;
-    esac
-done
-port=$(ss -ltn 2>/dev/null | grep -c ':7805 ')
-log "concurrent instances (comm+exe) : $n ; port 7805 holders : $port"
-[ "$n" -eq 0 ] && [ "$port" -eq 0 ] || { log "ABORT: another engine is live"; exit 2; }
+# [ROUTED 2026-09-12, F112 / Sec.11.238.  This block was written inline here and in
+# f116_assert.sh -- two copies of one criterion, which is the desync I2 forbids and
+# the reason 44 files carried a blind `comm` test.  Both halves now have a home:
+# the identity probe in sc_instances (comm | /proc/<pid>/exe | TCP 7805, union,
+# cross-account on comm because exe is EACCES across uids) and the headroom gate in
+# sc_gpu against BANK_GPU_NEED_MIB in f56_canary.sh's VALUES block.  Three measured
+# reasons the inline form had to go: its exe arm matched `*/build*/src/*`, which is
+# the DELIVERED binary's own path; `used <= 4000` refused a host with 27.6 GiB free
+# (2026-09-12 15:48, the owner's java at 2.9 GiB); and --query-compute-apps named
+# 240 MiB of the 3293 in use, missing the largest holder.]
+INST=$(bash "$HERE/sc_instances.sh" --assert "$LABEL" 2>&1); IRC=$?
+log "$INST"
+[ "$IRC" -eq 0 ] || { log "ABORT: another engine is live"; exit 2; }
 
-vram=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits)
-log "gpu used (MiB)   : $vram"
-[ "$vram" -le 4000 ] || { log "ABORT: VRAM used $vram MiB > 4000"; nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv | tee -a "$META"; exit 3; }
+GPU=$(python3 "$HERE/sc_gpu.py" --need bank --label "$LABEL" 2>&1); GRC=$?
+log "$GPU"
+[ "$GRC" -eq 0 ] || { log "ABORT: not enough GPU headroom to launch"; exit 3; }
 
 CFG=~/.spacecrafter/config.ini
 SSY=~/.spacecrafter/ssystem.ini

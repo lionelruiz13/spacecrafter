@@ -32,6 +32,12 @@ DBUS = "unix:path=/tmp/dbus-nfWAoZGoXc"   # gnome-shell 147372's own, from /proc
 PROBE_STS = "timerate rate 0\nflag atmosphere off\n"
 
 
+# FROZEN 2026-09-12 (F112, Sec.11.238): this driver's artifacts are landed, so its
+# bytes stay as they were when they were produced.  The instance probe below is the
+# pre-F112 `comm == "spacecrafter"` form and is BLIND to a renamed or copied engine
+# (Sec.11.231(j2)).  If you re-run this driver, assert with the one home instead:
+# bash harness/sc_instances.sh --assert <label>  (or `from sc_instances import
+# no_instance`), which also covers /proc/<pid>/exe and TCP 7805.
 def comm_probe():
     out = []
     for c in glob.glob("/proc/[0-9]*/comm"):
