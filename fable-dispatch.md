@@ -817,7 +817,7 @@ grep -c 'Log retention' src/tools/log.cpp => 2
 grep -n 'openLog(LOG_FILE' src/main.cpp | cut -d: -f1 | tr '\n' ' ' => 221 222 223 224 225
 # the field's log directory, the readers, the ledger
 ls ~/.spacecrafter/log/ | grep -cE '^(spacecrafter|script|tcp|shader|vulkan)(\.[0-9]+)?\.log$' => 40
-ls ~/.spacecrafter/log/ | grep -c '^EntityCore-logs-' => 392
+ls ~/.spacecrafter/log/ | grep -c '^EntityCore-logs-' => 395
 test -f claude/harness/f108_rotate.py -a -f claude/harness/logread.py && echo ok => ok
 grep -c 'FIXED' claude/INTENT/11.230.md => 3
 grep -n '^115\. \*\*' claude/INTENT.md | head -1 | cut -d: -f1 => 454
@@ -907,7 +907,7 @@ md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
 python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 236
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the probe's homes and the canary's VRAM member, re-resolved at HEAD (content drift = abort)
-grep -lE '= "spacecrafter"|== "spacecrafter"|-x .spacecrafter. /proc' claude/harness/*.sh claude/harness/*.py | wc -l => 42
+grep -lE '= "spacecrafter"|== "spacecrafter"|-x .spacecrafter. /proc' claude/harness/*.sh claude/harness/*.py | wc -l => 43
 grep -n "grep -l -x 'spacecrafter' /proc" claude/harness/f26_epoch.sh | head -1 | cut -d: -f1 => 46
 grep -n 'read().strip() == "spacecrafter"' claude/harness/f27_reply.py | cut -d: -f1 => 108
 grep -n '= "spacecrafter" \] && n=' claude/harness/f56_canary.sh | cut -d: -f1 => 476
