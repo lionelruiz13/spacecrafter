@@ -1,0 +1,61 @@
+1789211231.055 >> timerate rate 0
+1789211231.855 >> flag atmosphere off
+1789211232.655 >> flag fog off
+1789211233.456 >> flag landscape off
+1789211234.256 >> flag show_fps off
+1789211237.457 >> set home_planet Earth
+1789211239.657 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1789211240.457 >> flag stars on
+1789211241.258 >> flag star_names off
+1789211242.058 >> flag planet_names off
+1789211242.558 >> timerate rate 1
+1789211243.759 >> date jday 2461233.500000
+1789211245.959 >> timerate rate 0
+1789211246.759 >> flag track_object off
+1789211247.560 >> flag lock_sky_position off
+1789211248.360 >> deselect
+1789211250.060 >> zoom auto initial duration 0
+1789211250.561 >> timerate rate 1
+1789211255.261 >> timerate rate 0
+1789211255.762 >> timerate rate 1
+1789211256.962 >> date jday 2461233.500000
+1789211259.162 >> timerate rate 0
+1789211260.363 >> select planet Mars
+1789211263.063 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g1_selected.json
+1789211264.763 >> zoom auto in duration 0
+1789211265.264 >> timerate rate 1
+1789211273.964 >> timerate rate 0
+1789211276.665 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g1_after_zoom_in.json
+1789211277.165 >> timerate rate 1
+1789211278.365 >> date jday 2461233.500000
+1789211280.566 >> timerate rate 0
+1789211283.266 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g1_t0.png
+1789211285.966 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g1_t0.json
+1789211286.467 >> timerate rate 1
+1789211287.667 >> date jday 2461233.550000
+1789211289.867 >> timerate rate 0
+1789211292.568 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g1_t1.png
+1789211295.268 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g1_t1.json
+1789211296.068 >> flag track_object off
+1789211296.869 >> flag lock_sky_position off
+1789211298.569 >> zoom auto initial duration 0
+1789211299.070 >> timerate rate 1
+1789211303.770 >> timerate rate 0
+1789211304.271 >> timerate rate 1
+1789211305.471 >> date jday 2461233.500000
+1789211307.671 >> timerate rate 0
+1789211308.872 >> select planet Mars
+1789211310.072 >> flag track_object on
+1789211310.573 >> timerate rate 1
+1789211320.273 >> timerate rate 0
+1789211321.473 >> flag track_object off
+1789211321.974 >> timerate rate 1
+1789211326.674 >> timerate rate 0
+1789211329.374 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g2_before.png
+1789211332.075 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g2_before.json
+1789211333.775 >> zoom auto initial duration 0
+1789211334.275 >> timerate rate 1
+1789211340.976 >> timerate rate 0
+1789211343.676 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g2_after.png
+1789211346.377 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/gaps_post/g2_after.json
+f38 gaps done

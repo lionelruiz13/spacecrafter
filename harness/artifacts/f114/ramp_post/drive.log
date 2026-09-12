@@ -1,0 +1,127 @@
+1789211534.348 >> timerate rate 0
+1789211535.148 >> flag atmosphere off
+1789211535.949 >> flag fog off
+1789211536.749 >> flag landscape off
+1789211537.549 >> flag show_fps off
+1789211540.750 >> set home_planet Earth
+1789211542.950 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1789211543.750 >> flag stars on
+1789211544.551 >> flag star_names off
+1789211545.351 >> flag planet_names off
+1789211546.152 >> flag manual_zoom off
+1789211546.652 >> timerate rate 1
+1789211547.852 >> date jday 2461233.500000
+1789211550.053 >> timerate rate 0
+1789211550.853 >> flag track_object off
+1789211551.654 >> flag lock_sky_position off
+1789211553.354 >> zoom auto initial duration 0
+1789211553.854 >> timerate rate 1
+1789211558.555 >> timerate rate 0
+1789211559.055 >> timerate rate 1
+1789211560.255 >> date jday 2461233.500000
+1789211562.456 >> timerate rate 0
+1789211563.656 >> select planet Mars
+1789211565.356 >> zoom auto in duration 0
+1789211565.857 >> timerate rate 1
+1789211574.557 >> timerate rate 0
+1789211577.258 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_before.json
+1789211577.758 >> timerate rate 1
+1789211577.768 >> zoom auto initial duration 1
+1789211577.838 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_00.json
+1789211577.909 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_01.json
+1789211577.979 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_02.json
+1789211578.049 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_03.json
+1789211578.119 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_04.json
+1789211578.190 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_05.json
+1789211578.260 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_06.json
+1789211578.330 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_07.json
+1789211578.400 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_08.json
+1789211578.470 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_09.json
+1789211578.540 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_10.json
+1789211578.611 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_11.json
+1789211580.311 >> timerate rate 0
+1789211580.811 >> timerate rate 1
+1789211585.512 >> timerate rate 0
+1789211588.212 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r1_after.json
+1789211589.012 >> flag track_object off
+1789211589.813 >> flag lock_sky_position off
+1789211591.513 >> zoom auto initial duration 0
+1789211592.014 >> timerate rate 1
+1789211596.714 >> timerate rate 0
+1789211597.214 >> timerate rate 1
+1789211598.415 >> date jday 2461233.500000
+1789211600.615 >> timerate rate 0
+1789211601.815 >> select planet Mars
+1789211603.516 >> zoom auto in duration 0
+1789211604.016 >> timerate rate 1
+1789211612.716 >> timerate rate 0
+1789211615.417 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_before.json
+1789211615.917 >> timerate rate 1
+1789211615.927 >> zoom auto initial duration 10
+1789211616.237 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_00.json
+1789211616.548 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_01.json
+1789211616.858 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_02.json
+1789211617.168 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_03.json
+1789211617.478 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_04.json
+1789211617.788 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_05.json
+1789211618.099 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_06.json
+1789211618.409 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_07.json
+1789211618.719 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_08.json
+1789211619.029 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_09.json
+1789211619.339 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_10.json
+1789211619.649 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_11.json
+1789211619.960 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_12.json
+1789211620.270 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_13.json
+1789211620.580 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_14.json
+1789211620.890 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_15.json
+1789211621.200 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_16.json
+1789211621.511 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_17.json
+1789211621.821 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_18.json
+1789211622.131 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_19.json
+1789211622.441 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_20.json
+1789211622.751 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_21.json
+1789211623.061 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_22.json
+1789211623.372 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_23.json
+1789211625.072 >> timerate rate 0
+1789211625.572 >> timerate rate 1
+1789211630.273 >> timerate rate 0
+1789211632.973 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/r10_after.json
+1789211633.773 >> flag track_object off
+1789211634.574 >> flag lock_sky_position off
+1789211636.274 >> zoom auto initial duration 0
+1789211636.774 >> timerate rate 1
+1789211641.475 >> timerate rate 0
+1789211641.975 >> timerate rate 1
+1789211643.175 >> date jday 2461233.500000
+1789211645.376 >> timerate rate 0
+1789211646.576 >> select planet Mars
+1789211648.276 >> zoom auto in duration 0
+1789211648.777 >> timerate rate 1
+1789211657.477 >> timerate rate 0
+1789211658.178 >> flag manual_zoom on
+1789211660.878 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/m_before.json
+1789211661.138 >> zoom auto out manual true duration 0
+1789211661.399 >> zoom auto out manual true duration 0
+1789211661.659 >> zoom auto out manual true duration 0
+1789211661.919 >> zoom auto out manual true duration 0
+1789211662.179 >> zoom auto out manual true duration 0
+1789211662.439 >> zoom auto out manual true duration 0
+1789211662.700 >> zoom auto out manual true duration 0
+1789211662.960 >> zoom auto out manual true duration 0
+1789211663.220 >> zoom auto out manual true duration 0
+1789211663.480 >> zoom auto out manual true duration 0
+1789211663.740 >> zoom auto out manual true duration 0
+1789211664.001 >> zoom auto out manual true duration 0
+1789211664.261 >> zoom auto out manual true duration 0
+1789211664.521 >> zoom auto out manual true duration 0
+1789211664.781 >> zoom auto out manual true duration 0
+1789211665.042 >> zoom auto out manual true duration 0
+1789211665.302 >> zoom auto out manual true duration 0
+1789211665.562 >> zoom auto out manual true duration 0
+1789211665.822 >> zoom auto out manual true duration 0
+1789211666.083 >> zoom auto out manual true duration 0
+1789211666.583 >> timerate rate 1
+1789211671.283 >> timerate rate 0
+1789211673.984 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/ramp_post/m_after.json
+1789211674.684 >> flag manual_zoom off
+f114 ramp done

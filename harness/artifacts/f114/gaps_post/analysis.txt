@@ -1,0 +1,34 @@
+== artifacts/f114/gaps_pre
+scene              tracked  oldTrk skyL  angle(deg)  halfFov      old Mars screen px       new Mars screen       
+g1_selected        ''       0      False 2.32878e-05 1.5708       [279.2307, 1869.7573]    [0.475649, -0.158587] 
+g1_after_zoom_in   ''       1      False 99.0336     2.27979e-05  [1024.0000, 1024.0000]   [0.475649, -0.158587] 
+g1_t0              ''       1      False 99.0472     2.27979e-05  [1024.0000, 1024.0000]   [0.475649, -0.158587] 
+g1_t1              ''       1      False 90.1734     2.27979e-05  [1024.0000, 1024.0000]   [0.475649, -0.158587] 
+g2_before          ''       0      False 1.8371e-05  1.5708       [1024.1543, 1024.0001]   [0, 0]                
+g2_after           ''       0      False 99.0318     1.5708       [278.5751, 1868.6979]    [0.000310849, 1.6708e-07]
+
+== artifacts/f114/gaps_post
+scene              tracked  oldTrk skyL  angle(deg)  halfFov      old Mars screen px       new Mars screen       
+g1_selected        ''       0      False 1.28917e-05 1.5708       [279.2307, 1869.7573]    [0.489887, -0.149485] 
+g1_after_zoom_in   'Mars'   1      False 8.00911e-06 2.27979e-05  [1024.0000, 1024.0000]   [-0.00757178, 0.000315491]
+g1_t0              'Mars'   1      False 1.43373e-05 2.27979e-05  [1024.0000, 1024.0000]   [0.00757178, -0.00252393]
+g1_t1              'Mars'   1      False 6.77662e-06 2.27979e-05  [1024.0000, 1024.0000]   [-0.00126207, -0.00220862]
+g2_before          ''       0      False 1.19528e-05 1.5708       [1024.1543, 1024.0001]   [0, 0]                
+g2_after           ''       0      False 1.0102e-05  1.5708       [278.5753, 1868.6970]    [0, 0]                
+
+== PRE artifacts/f114/gaps_pre  ->  POST artifacts/f114/gaps_post
+scene              tracked pre->post      angle pre->post (deg)  new Mars screen pre->post
+g1_selected        '' -> ''               2.32878e-05 -> 1.28917e-05 [0.47565,-0.15859] -> [0.48989,-0.14948]
+g1_after_zoom_in   '' -> 'Mars'           99.0336 -> 8.00911e-06 [0.47565,-0.15859] -> [-0.0075718,0.00031549]
+g1_t0              '' -> 'Mars'           99.0472 -> 1.43373e-05 [0.47565,-0.15859] -> [0.0075718,-0.0025239]
+g1_t1              '' -> 'Mars'           90.1734 -> 6.77662e-06 [0.47565,-0.15859] -> [-0.0012621,-0.0022086]
+g2_before          '' -> ''               1.8371e-05 -> 1.19528e-05 [0,0] -> [0,0]          
+g2_after           '' -> ''               99.0318 -> 1.0102e-05  [0.00031085,1.6708e-07] -> [0,0]
+
+old-side identity (must not move): old Mars screen, old flagTraking
+  g1_selected        old screen [279.230712890625, 1869.75732421875] -> [279.230712890625, 1869.75732421875]  max|d| = 0 px ; flagTraking 0 -> 0
+  g1_after_zoom_in   old screen [1024, 1024]               -> [1024, 1024]                max|d| = 0 px ; flagTraking 1 -> 1
+  g1_t0              old screen [1024, 1024]               -> [1024, 1024]                max|d| = 0 px ; flagTraking 1 -> 1
+  g1_t1              old screen [1024, 1024]               -> [1024, 1024]                max|d| = 0 px ; flagTraking 1 -> 1
+  g2_before          old screen [1024.154296875, 1024.0001220703125] -> [1024.154296875, 1024.0001220703125]  max|d| = 0 px ; flagTraking 0 -> 0
+  g2_after           old screen [278.57513427734375, 1868.6978759765625] -> [278.57525634765625, 1868.697021484375]  max|d| = 0.000854492 px ; flagTraking 0 -> 0
