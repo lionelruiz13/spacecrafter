@@ -641,7 +641,7 @@ test -e /home/claude/sc-f110 ; echo $? => 1
 ```
 
 **DoD:** predictions before the first clone; the rehearsal table (prediction / outcome per step, exit codes); the sha-reachability measurement; the doc corrections with their measurements; `f85_links.py`'s new check shown able to fail; the resolver with its self-test and the six measured ids; §11 entry + stub; the §11.204 / §11.232(c)4 markers; the §3 routing of the owner's three gaps; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-12 12:29 — checkpoint 3. Doc corrections COMMITTED (code `d67833cd`, 11 hunks, `doc/developer-entry.md` only; INSTALL untouched — no sentence measured false). `f85_links.py` TAUGHT THE SHA CLASS: green on the corrected doc (136 paths / 29 continuations / 19 ids / **3 shas**, DANGLING 0), **exit 1 on the pre-correction doc naming `c5be42b`**, `--no-sha` reproduces the old blindness (DANGLING 0 on the same doc) — shown able to fail three ways; also fixed a crash (a continuation after a directory path raised IsADirectoryError) and, per I2, it now IMPORTS `intent_resolve.py` for the inline-row leg (the two copies had already diverged on section 11's end). RESOLVER `claude/intent_resolve.py` built: the six §11.233(h) ids re-measured at HEAD → 508/426/428/515/512/506 (unchanged), all spellings, exit 1 when nowhere, `--self-test` PASS and `--self-test --break-scoping` **FAIL (exit 1)** on §11.7/§11.9. D14 green on every new file. NEXT (checkpoint 3 commit): §11.234 entry + stub, the §11.204 / §11.232(c)4 markers, §3 routing, README, baselines LAST.  — [superseded checkpoint 2 note] — Gate PASSED (25/25). Predictions pre-registered (`artifacts/f110/prediction.txt`). REHEARSAL RUN, steps S1–S6b + S9–S12: clone rc 0 (EntityCore `84f5d94b` from the REAL remote — §11.204(b) discharged over the network); build half rc 0, clone binary `2dd6a35a`; D14 gate PASS; **`f85_links.py` exits 1 on a fresh clone** (`build-claude/src/spacecrafter` — the documented build makes `build/`); hook install rc 0 (sets `core.hooksPath` in BOTH repos); README "Run" command rc **127** (`xvfb-run` absent); smoke suite rc 0 BOTH arms (armed 12:12:52, `F90_SKIP_CANARY=1` 12:14:44), frozen four in==out, canary `--no-scene` exit 0 12:12:41; `c5be42b` ABSENT as an object in a network-shaped clone, `1e6ca60` reachable; 10/10 cited lines TRUE but `orbit.cpp:600/:606` (doc :376) drifted — the site is `:611`/`:617`. **FINDING: the delivered binary is `RelWithDebInfo` (`-O2 -g`) while the documented build is `Release` (`-Ofast -O3`).** NEXT: S7/S8 scedit cmake+ctest, then the corrections, `f85_links.py`'s sha class, the resolver.
+**WIP:** — DELIVERED 2026-09-12 → **§11.234** (+ stub). Code `fcc277c9 → d67833cd` (ONE file, `doc/developer-entry.md`, 11 hunks, no engine line; INSTALL untouched — no sentence measured false). Harness `b85dc60 → 6d1aad0` (predictions, pre-clone) `→ 0aed1dc` (the rehearsal) `→ a54f976` (`f85_links.py`'s sha class + `intent_resolve.py`) `→` this delivery. Rehearsal 9/13 rows matched, every mismatch worse for him than predicted; smoke suite exit 0 on BOTH arms from the clone; `f85_links.py` exit 1 on a fresh clone and `ctest` 18/19 are the two that stop him; `c5be42b` → `1e6ca60`; the §11.233(h) six → 508/426/428/515/512/506. Routed to §3 as **[Y5]–[Y9]**: R23, §9, the remote form, the `-O2`-vs-`-Ofast` build finding, the inline-row convention. Gate PASSED (25/25). Predictions pre-registered (`artifacts/f110/prediction.txt`). REHEARSAL RUN, steps S1–S6b + S9–S12: clone rc 0 (EntityCore `84f5d94b` from the REAL remote — §11.204(b) discharged over the network); build half rc 0, clone binary `2dd6a35a`; D14 gate PASS; **`f85_links.py` exits 1 on a fresh clone** (`build-claude/src/spacecrafter` — the documented build makes `build/`); hook install rc 0 (sets `core.hooksPath` in BOTH repos); README "Run" command rc **127** (`xvfb-run` absent); smoke suite rc 0 BOTH arms (armed 12:12:52, `F90_SKIP_CANARY=1` 12:14:44), frozen four in==out, canary `--no-scene` exit 0 12:12:41; `c5be42b` ABSENT as an object in a network-shaped clone, `1e6ca60` reachable; 10/10 cited lines TRUE but `orbit.cpp:600/:606` (doc :376) drifted — the site is `:611`/`:617`. **FINDING: the delivered binary is `RelWithDebInfo` (`-O2 -g`) while the documented build is `Release` (`-Ofast -O3`).** NEXT: S7/S8 scedit cmake+ctest, then the corrections, `f85_links.py`'s sha class, the resolver.
 
 ---
 
@@ -860,6 +860,75 @@ test -e /home/claude/sc-f112 ; echo $? => 1
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **F110 — THE INTERN'S ENTRY PATH, FOLLOWED BY HAND. Three gaps only you can fill, quoted from
+  the document's own lines, and one finding that is a decision rather than a defect.** The
+  rehearsal ran the whole path from a plain clone (§11.234): the clone, the build, the D14 gate,
+  the smoke suite on both arms, scedit's `cmake`/`ctest`, the hook, the harness README's first
+  command. Everything measurable was measured and corrected in `doc/developer-entry.md`; these
+  four were NOT written, because they are yours.
+
+  ```
+  YOURS — nothing here substitutes them
+  [Y5] R23 · the content-installation procedure ─ his clone runs EMPTY and nothing tells him why
+       doc says  "by default only limited catalogues are loaded, and the correct ones are loaded
+                 by 'an outside installation procedure' [owner, R23]" and, next sentence,
+                 "This repository does not document that procedure, and where it lives and who
+                 owns it is the one thing still to ask the owner."  INSTALL sec.5 agrees: the
+                 tree ships NO content.
+       measured  a tree install is the binary, the shaders and eleven metadata files
+                 (§11.204(f)); a first launch then prints ten "Completed copy of ..." lines over
+                 ten EMPTY directories (§11.204(i), §5.132) — so the log cannot tell him either
+       ask       where the procedure lives, who owns it, and whether it may be named in the code
+                 repo. One sentence in INSTALL sec.5 closes it. Until then his first run is a
+                 program with no sky and no way to find out that this is expected.
+       →         §11.232(c)4(i) · §11.234(l) · R23 · §5.74
+
+  [Y6] §9 · "Engineering principles" is a placeholder addressed to you, and he meets I1-I7 in week 1
+       doc says  "**Placeholder -- to be written by Calvin Ruiz, the project owner.** ... The
+                 ledger argues from a set of engineering invariants it cites by number, I1 to I7
+                 ... **Neither repository states what they say.** The text is the owner's and
+                 lives outside both, so it is not restated here: a paraphrase of a principle you
+                 cannot check against its author is worse than an empty section. Until he fills
+                 this in, read an I<n> citation as a pointer to him."
+       ask       the text, or permission to reconstruct it from the ledger's uses FOR YOUR
+                 CORRECTION (I2 alone appears 33 times, so the uses are dense enough to draft
+                 from — but a drafted principle is exactly the thing the section refuses to do
+                 unchecked). Either answer closes it; silence leaves him citing a pointer.
+       →         §11.232(c)4(ii) · §11.234(l)
+
+  [Y7] the remote form ─ he cannot run the document's second clone at all
+       doc says  "git clone -b CC-harness <same-remote-url> claude", the remote being
+                 git@github.com:lionelruiz13/spacecrafter.git [observed: git remote -v]
+       measured  the rehearsal substituted a LOCAL path and says so at the step; it is not a
+                 substitute he has. An SSH form needs a key on that account.
+       ask       a deploy key / collaborator access, or the HTTPS form written into the document.
+                 NB the choice is not cosmetic: the rehearsal measured that a clone over the git
+                 transport does NOT carry unreachable objects, which is why the stale sha in this
+                 document read "bad object" for him and "exists" for me (§11.234(e)).
+       →         §11.232(c)4(iii) · §11.234(l)
+
+  [Y8] THE BUILD EVERY MEASUREMENT USES IS NOT THE BUILD THE DOCUMENT SHIPS — your call, not a defect
+       measured  build-claude (the binary every number in this ledger is taken on, 6d63e6c1) is
+                 configured RelWithDebInfo and compiles `-O2 -g -DNDEBUG`; install_src.sh's
+                 documented path configures Release and compiles `-ggdb3 -Ofast -Wall -O3`.
+                 CMakeLists.txt branches on Debug (:101), Release (:118) and LocalRelease (:134,
+                 :142) ONLY, so RelWithDebInfo takes none of them, CMAKE_CXX_FLAGS stays empty
+                 and CMake's own RELWITHDEBINFO default applies. Both read from each build's own
+                 flags.make; sizes 191 022 536 B against 218 127 672 B.
+       why it    §2.0 D11 prices everything in 1 ms/frame. Every cost number this project has
+       matters   published was measured on -O2 while a user runs -Ofast -O3.
+       ask       re-point build-claude at Release and re-bank, or keep -O2 and state it as the
+                 measurement platform. NOT touched here: re-configuring build-claude would
+                 invalidate the canary's photometric band and every baseline standing on it.
+       →         §11.234(g)
+
+  ALSO YOURS, one line each, no answer needed today
+  [Y9] whether every inline §5 row should carry its own "§5.N" on its line — the convention
+       change §11.233(h) raised. The RESOLVER now exists either way
+       (claude/intent_resolve.py, and the entry document tells him to use it), so this is a
+       preference about the file's shape, not a blocker. → §11.233(h) · §11.234(k)
+  ```
 
 - **Session-28 decision items (2026-09-11/12, the SEED-STALENESS / LOG-RETENTION / RESIDUAL-STEP round —
   F107 · F108 · F109, three for three; F109 a STOP endorsed). Q-70's shape: one decision per node, its held

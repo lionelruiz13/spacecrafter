@@ -210,7 +210,17 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    gains one line pointing at it; `claude/harness/f85_links.py` holds its citations to
    **129 paths / 25 continuations / 15 ledger ids, 0 dangling**, shown able to fail on one
    injected fault per class — so the document cannot rot silently, which is the property that
-   makes it a REFERENCE rather than a snapshot. Three residuals, all recorded not guessed:
+   makes it a REFERENCE rather than a snapshot.
+   **[QUALIFIED 2026-09-12, F110 → §11.234(e)(f)(j): "cannot rot silently" was true of the
+   classes the checker had. It had no COMMIT class, and by the time the document was first
+   followed by hand its three `c5be42b` citations had been amended away (2026-09-05) and
+   rewritten again (2026-09-12) while the checker still printed 0 dangling; nor does existence
+   equal truth — `orbit.cpp:600`/`:606` both EXIST and neither is the line the sentence
+   describes. The sha class is now checked by reachability and shown able to fail three ways,
+   and the counts at code `d67833cd` are **136 paths / 29 continuations / 19 ledger ids /
+   3 commit shas, 0 dangling**. The document was ALSO followed end to end for the first time:
+   the first harness command it names exits 1 on a fresh clone and its "Run" pointer exits 127
+   — §11.234(c).]** Three residuals, all recorded not guessed:
    the **I1–I7 principles are the owner's text and exist in neither repo** (§9 is a
    placeholder naming him — the one thing here he must still write), no human authorship
    convention is stated anywhere, and R23's outside installation procedure is undocumented.

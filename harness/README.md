@@ -5669,3 +5669,89 @@ binaries render the approach differently; none otherwise.
 Artifacts `artifacts/f109/` (prediction.txt with its addendum, six sweeps'
 `sweep.json` + `drive.log`, the decompositions, `edge_result.txt`; the 2048x2048
 frames are gitignored, ~23 MB per sweep).
+
+## F110 - the entry document, followed by hand from a plain clone (and two new instruments)
+
+`doc/developer-entry.md` is the intern's entry (`INTENT/11.232.md` (a)2). F110 ran
+it as a reader does: a clone under `/home/claude/sc-f110/`, the build half, and
+every command of sections 1, 5 and 8. Full record `INTENT/11.234.md`; the table
+with exit codes is `artifacts/f110/rehearsal-table.txt`, the classes committed
+before the first clone are `artifacts/f110/prediction.txt`.
+
+**`intent_resolve.py` - where a ledger id lives, one place.** New, at the harness
+root (not under `harness/`), because it is the ledger's tool and the entry document
+sends a human to it:
+
+    python3 claude/intent_resolve.py 5.142        # -> INTENT.md:508
+    python3 claude/intent_resolve.py Sec.11.233   # -> INTENT/11.233.md
+    python3 claude/intent_resolve.py --self-test
+    python3 claude/intent_resolve.py --self-test --break-scoping   # must FAIL
+
+Accepts `5.142`, `Sec.5.142`, `sec.5.142`, `S5.142` and the section-sign form;
+resolves entry file, then archived entry file, then the inline row scoped to its
+own section; exit 1 when it resolves nowhere. **The gotcha it exists for**: an
+inline row is written `142. **...**` and carries the section number nowhere on its
+line, so grepping for `5.142` finds only the sentences that CITE the row. The owner
+hit this with four of his own pointers (`INTENT/11.233.md` (h)). **The gotcha in the
+tool itself**: section scoping is not decoration - `^142\. ` matches a line in
+section 5 AND a line in section 11. An unscoped search happens to answer section 5
+ids correctly (the section 5 row comes first in the file), so a self-test built on
+those ids passes even with scoping disabled and proves nothing. The legs that
+discriminate are `11.7` and `11.9`, the only two section 11 ids with no entry file
+whose number also names a section 5 row; `--break-scoping` fails on exactly those.
+If either is ever split into `INTENT/11.7.md`, that leg goes vacuous and the
+self-test says so instead of passing quietly.
+
+**`f85_links.py` gains commit shas, and loses a duplicate.** Every backticked 7-8
+hex token is now checked by reachability - `git merge-base --is-ancestor` in the
+repository the sentence names - and is dangling both when unreachable AND when the
+object is absent. `--no-sha` drops the class (for a tree with no git, or to
+reproduce the pre-2026-09-12 behaviour).
+
+- **Why the class was needed**: three `c5be42b` citations had been amended away on
+  2026-09-05 and rewritten again on 2026-09-12 while the checker printed
+  `DANGLING : 0`. A sha is the only citation form that rots with nothing on disk
+  changing.
+- **MEASURED GOTCHA, and it is the one to carry**: `git clone` **from a local path
+  copies the whole objects directory, unreachable objects included**, so a stale sha
+  reads `exists` in a local-path clone and `absent` in a real one. Any rehearsal
+  that stands in a local path for a remote must use `--no-local` before concluding
+  anything about what a newcomer's clone contains. This is how F110's own prediction
+  looked refuted when it was right.
+- **Repository selection** reads the word next to the sha (`code` / `harness`)
+  before falling back to the paragraph's paths, because a sentence naming both
+  repositories - "code `X` / harness `Y`" - is exactly where a paragraph rule picks
+  one repo for both. That failure was produced by this task's own correction, one
+  run after the class was added.
+- **Crash repaired**: a bare continuation (`` [`:6`] ``) following a DIRECTORY path
+  raised `IsADirectoryError` out of `count_lines` instead of reporting a broken
+  citation. The full-path branch had that guard; the continuation branch did not.
+  Also note the continuation resolves against the last FULL path in the file, so
+  citing `f56_canary.sh` and then writing `` [`:6`] `` for a different file silently
+  checks the wrong one - write the full path.
+- **I2**: the inline-row lookup now lives in `intent_resolve.py` and this file
+  imports it. The two copies had already diverged before either was used in anger -
+  this one ended a section at the next `## `, the resolver also ends section 11 at
+  its maintenance marker, which is where section 11's list actually stops. The
+  HEADER match (`## 5.142`) is deliberately NOT delegated: this checker asks "does
+  it resolve to something", the resolver asks "where is it".
+
+**What the rehearsal found that no reading would have.** `f85_links.py` exits 1 on
+a fresh clone (`build-claude/src/spacecrafter` is the harness default; the
+documented build makes `build/`). The harness README's own "Run" block exits 127 -
+`xvfb-run` is not a build dependency. `util/scedit` ctest is 18/19, exit 8:
+`anchor_gate` reports the engine moved under the contracts' citations, and one of
+its at-pin breaks is `54a2b844`, a sha today's CODE rewrite map moved - the same
+class as `c5be42b`, one repository over. **And `build-claude` is configured
+`RelWithDebInfo` (`-O2 -g`) while `install_src.sh`'s documented Release compiles
+`-ggdb3 -Ofast -O3`**: every cost number in this ledger is taken on the first and
+every user runs the second. Reported, not acted on - re-configuring `build-claude`
+would invalidate the canary's photometric band.
+
+**Running the smoke suite off this desktop.** `f90_rehearsal_run.sh` aborts on a red
+canary (`:62-68`) and `f56_canary.sh`'s bank is one host and one boot (`:129-132`,
+band `:158-165`), so it is red anywhere else by construction. `F90_SKIP_CANARY=1` is
+the way through and **leaves no trace**: no `canary.log`, and the header's
+`canary --no-scene exit = N` line simply does not appear, so an unverified run reads
+exactly like a verified one. Both arms were run here from the clone's harness on the
+clone's binary, exit 0 each, frozen four md5 in == out.
