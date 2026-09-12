@@ -1,0 +1,71 @@
+
+==============NVSMI LOG==============
+
+Timestamp                                              : Sat Sep 12 15:54:22 2026
+Driver Version                                         : 580.159.03
+CUDA Version                                           : 13.0
+
+Attached GPUs                                          : 1
+GPU 00000000:01:00.0
+    Processes
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 5455
+            Type                          : G
+            Name                          : /usr/bin/gnome-shell
+            Used GPU Memory               : 521 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 6008
+            Type                          : G
+            Name                          : /usr/bin/Xwayland
+            Used GPU Memory               : 12 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 6556
+            Type                          : G
+            Name                          : /snap/discord/307/usr/share/discord/Discord --type=gpu-process --disable-seccomp-filter-sandbox --no-sandbox --ozone-platform=x11 --crashpad-handler-pid=6501 --enable-crash-reporter=a617c34e-4021-4f27-81fe-4895cd728989,no_channel --user-data-dir=/home/foxy/snap/discord/307/.config/discord --gpu-preferences=UAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAQAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAYAAAAAAAAABgAAAAAAAAAAQAAAAAAAAAIAAAAAAAAAAgAAAAAAAAA --shared-files --field-trial-handle=3,i,17012868132926982737,2159713896646158272,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports --disable-features=AllowAggressiveThrottlingWithWebSocket,DropInputEventsWhilePaintHolding,HardwareMediaKeyHandling,IntensiveWakeUpThrottling,LocalNetworkAccessChecks,MediaSessionService,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation,UseEcoQoSForBackgroundProcess,WaylandWpColorManagerV1,WinRetrieveSuggestionsOnlyOnDemand --variations-seed-version --pseudonymization-salt-handle=7,i,8734716415586919576,5713222658203983857,4 --trace-process-track-uuid=3190708988185955192
+            Used GPU Memory               : 102 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 7793
+            Type                          : G
+            Name                          : /snap/firefox/8863/usr/lib/firefox/firefox
+            Used GPU Memory               : 91 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 10920
+            Type                          : G
+            Name                          : /usr/bin/gnome-shell
+            Used GPU Memory               : 162 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 12520
+            Type                          : C+G
+            Name                          : /usr/bin/nautilus
+            Used GPU Memory               : 102 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 14470
+            Type                          : C+G
+            Name                          : /usr/bin/gnome-text-editor
+            Used GPU Memory               : 68 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 103770
+            Type                          : G
+            Name                          : /opt/Pulsar/pulsar --type=gpu-process --field-trial-handle=2036105296001101770,16724604961447036226,131072 --enable-features=WebComponentsV0Enabled --disable-features=CertVerifierService,CookiesWithoutSameSiteMustBeSecure,SameSiteByDefaultCookies,SpareRendererForSitePerProcess --no-sandbox --gpu-preferences=UAAAAAAAAAAgAAAQAAAAAAAAAAAAAAAAAABgAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --shared-files
+            Used GPU Memory               : 158 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 121858
+            Type                          : G
+            Name                          : /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+            Used GPU Memory               : 2883 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 172519
+            Type                          : C+G
+            Name                          : /usr/bin/gnome-system-monitor
+            Used GPU Memory               : 70 MiB
+

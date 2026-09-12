@@ -1,0 +1,14 @@
+[canary] gpu: free 27648 MiB / used 4459 / total 32607 ; need 31000 MiB (Sec.11.238)
+[canary] NOT ENOUGH GPU MEMORY TO LAUNCH -- free 27648 MiB against a need of 31000 MiB
+[canary] the holders, NOT unloaded (Sec.11.174(h) -- an environment fault is reported, never mitigated here):
+    121858   G        2883 MiB  uid 1000  foxy       /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+    5455     G         521 MiB  uid 1000  foxy       /usr/bin/gnome-shell
+    10920    G         162 MiB  uid 1003  claude     /usr/bin/gnome-shell
+    103770   G         158 MiB  uid 1000  foxy       /opt/Pulsar/pulsar --type=gpu-process --field-trial-handle=2036105296001101770
+    6556     G         102 MiB  uid 1000  foxy       /snap/discord/307/usr/share/discord/Discord --type=gpu-process --disable-secco
+    12520    C+G       102 MiB  uid 1000  foxy       /usr/bin/nautilus
+    7793     G          91 MiB  uid 1000  foxy       /snap/firefox/8863/usr/lib/firefox/firefox
+    172519   C+G        70 MiB  uid 1000  foxy       /usr/bin/gnome-system-monitor
+    14470    C+G        68 MiB  uid 1000  foxy       /usr/bin/gnome-text-editor
+    6008     G          12 MiB  uid 1000  foxy       /usr/bin/Xwayland
+[canary] the application allocates 512 + 160 + 1280 MiB dedicated and then a 256 MiB chunk before any window exists; on 2026-09-12 it died at that chunk with 1591 MiB available (HOST-EVENTS 2026-09-12).

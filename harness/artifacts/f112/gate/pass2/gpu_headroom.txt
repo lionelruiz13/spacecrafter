@@ -1,0 +1,1 @@
+[canary] gpu: free 27648 MiB / used 4459 / total 32607 ; need 6144 MiB (Sec.11.238)

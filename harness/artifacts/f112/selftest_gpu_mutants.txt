@@ -1,0 +1,42 @@
+===== mutant compute_only =====
+sc_gpu.py --self-test  --mutant compute_only
+  PASS g1   the wide call parses 4 processes summing 33118 MiB (G and C+G and C)
+  PASS g2   the narrow call sees 2 of the same 4 -- java and gnome-shell are invisible to --query-compute-apps
+  PASS g3   THE DEFECT, as a case: the 2943 MiB holder is named by the wide call and missed by the narrow one
+  PASS g4   an empty nvidia-smi output parses to no holders rather than throwing
+  FAIL g11  the gate SELECTS the wide call: the 2943 MiB holder is in the table the refusal prints, and the table sums to the whole card
+  PASS g5   2026-09-12 15:49 (owner's java at 2943): 27589 free -> PASS at 6144
+  PASS g6   2026-09-12 11:26 (the red: the app died at init): 2130 free -> FAIL
+  PASS g7   exactly at the need is enough (>=, not >)
+  PASS g8   one MiB below the need is not
+  PASS g9   2026-09-12 15:35, the state this task opened on -> PASS
+  PASS g10  the bank is read from f56_canary.sh's VALUES block and is 6144
+  10 PASS 1 FAIL
+===== mutant used_not_free =====
+sc_gpu.py --self-test  --mutant used_not_free
+  PASS g1   the wide call parses 4 processes summing 33118 MiB (G and C+G and C)
+  PASS g2   the narrow call sees 2 of the same 4 -- java and gnome-shell are invisible to --query-compute-apps
+  PASS g3   THE DEFECT, as a case: the 2943 MiB holder is named by the wide call and missed by the narrow one
+  PASS g4   an empty nvidia-smi output parses to no holders rather than throwing
+  PASS g11  the gate SELECTS the wide call: the 2943 MiB holder is in the table the refusal prints, and the table sums to the whole card
+  FAIL g5   2026-09-12 15:49 (owner's java at 2943): 27589 free -> PASS at 6144
+  PASS g6   2026-09-12 11:26 (the red: the app died at init): 2130 free -> FAIL
+  FAIL g7   exactly at the need is enough (>=, not >)
+  PASS g8   one MiB below the need is not
+  PASS g9   2026-09-12 15:35, the state this task opened on -> PASS
+  PASS g10  the bank is read from f56_canary.sh's VALUES block and is 6144
+  9 PASS 2 FAIL
+===== mutant no_gate =====
+sc_gpu.py --self-test  --mutant no_gate
+  PASS g1   the wide call parses 4 processes summing 33118 MiB (G and C+G and C)
+  PASS g2   the narrow call sees 2 of the same 4 -- java and gnome-shell are invisible to --query-compute-apps
+  PASS g3   THE DEFECT, as a case: the 2943 MiB holder is named by the wide call and missed by the narrow one
+  PASS g4   an empty nvidia-smi output parses to no holders rather than throwing
+  PASS g11  the gate SELECTS the wide call: the 2943 MiB holder is in the table the refusal prints, and the table sums to the whole card
+  PASS g5   2026-09-12 15:49 (owner's java at 2943): 27589 free -> PASS at 6144
+  FAIL g6   2026-09-12 11:26 (the red: the app died at init): 2130 free -> FAIL
+  PASS g7   exactly at the need is enough (>=, not >)
+  FAIL g8   one MiB below the need is not
+  PASS g9   2026-09-12 15:35, the state this task opened on -> PASS
+  PASS g10  the bank is read from f56_canary.sh's VALUES block and is 6144
+  9 PASS 2 FAIL

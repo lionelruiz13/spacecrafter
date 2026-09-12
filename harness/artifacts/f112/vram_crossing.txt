@@ -1,0 +1,38 @@
+F112 -- VRAM PRECONDITION CROSSING, recorded not mitigated (Sec.11.174(h))
+measured 2026-09-12 15:50:01 CEST
+
+The dispatch prompt's binding precondition for the decoy launch:
+  nvidia-smi --query-gpu=memory.used <= 4000 MiB   (stated value at 15:30: 3330)
+
+MEASURED, six samples five seconds apart:
+  15:50:01  4520 MiB, 27587 MiB, 32607 MiB
+  15:50:03  4520 MiB, 27587 MiB, 32607 MiB
+  15:50:05  4520 MiB, 27587 MiB, 32607 MiB
+
+HOLDERS, by nvidia-smi -q -d PIDS (NOT --query-compute-apps, which sees only C/C+G
+and would have named 240 MiB of the 4519 -- prediction 5.2 of artifacts/f112/prediction.txt):
+  5455     G        521 MiB  1000/foxy    /usr/bin/gnome-shell
+  6008     G         12 MiB  1000/foxy    /usr/bin/Xwayland
+  6556     G        102 MiB  1000/foxy    /snap/discord/307/usr/share/discord/Discord --type=gpu-process -
+  7793     G         91 MiB  1000/foxy    /snap/firefox/8863/usr/lib/firefox/firefox
+  10920    G        162 MiB  1003/claude  /usr/bin/gnome-shell
+  12520    C+G      102 MiB  1000/foxy    /usr/bin/nautilus
+  14470    C+G       68 MiB  1000/foxy    /usr/bin/gnome-text-editor
+  103770   G        158 MiB  1000/foxy    /opt/Pulsar/pulsar --type=gpu-process --field-trial-handle=20361
+  121858   G       2943 MiB  1000/foxy    /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+  172519   C+G       70 MiB  1000/foxy    /usr/bin/gnome-system-monitor
+
+THE HOLDER THAT MOVED: pid 121858, /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java,
+uid 1000 (foxy, the owner), 1385 MiB at 15:35 -> 2943 MiB at 15:49.  NOT unloaded,
+not asked about, not mitigated: it is the owner's own process on his own desktop.
+
+CONSEQUENCE, and the divergence this task exists to fix:
+  the inherited line is on memory USED (<= 4000 of 32607).  Right now 27589 MiB are
+  FREE -- 4.5x the 6144 MiB this task derives as the app's actual need from its own
+  init log.  So the inherited assert refuses a host on which every launch in this
+  corpus would succeed, while on 2026-09-12 11:26 it would have PASSED at the moment
+  the app died: used was 30477 there, which is > 4000 -- it would have caught that one,
+  but only because the holder was enormous.  A 'used' line on a 32 GiB card cannot
+  express 'enough room to launch'; a 'free' line against a derived need can.
+  The prompt's line is nonetheless the STATED precondition and is obeyed here: no
+  launch happens above it.

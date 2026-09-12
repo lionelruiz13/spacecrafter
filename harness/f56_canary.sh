@@ -169,6 +169,60 @@ BANK_FRAME_MD5="5215565b11d24328a9bb01198c875b25"
 # would encode a refuted hypothesis.  It is recorded, and a large resident consumer is
 # NOTED because the ledger's chase would have been shorter with the number in hand.
 BANK_VRAM_NOTE_MIB=8192
+#
+# GPU LAUNCH HEADROOM -- A GATE, added 2026-09-12 (F112, §11.238), and it is a different
+# question from the note above.  The note asks "is something big resident?", which is a
+# HYPOTHESIS about a fault; this asks "can the application reach its window at all?",
+# which is a PRECONDITION of every measuring launch and has nothing to do with H-VRAM.
+# On 2026-09-12 11:26 the --no-scene arm passed with the note while no launch on this host
+# could start: the photometric arm was the only member that caught it, by failing to
+# launch (HOST-EVENTS 2026-09-12, §11.232(d)).  So this member gates on BOTH arms.
+#
+# THE NUMBER IS DERIVED FROM THE APPLICATION'S OWN INIT LOG, never guessed (§11.193: the
+# app states its need in its own log; the gate is a proxy for that statement).
+#
+#   (i) THE FLOOR, from the launch that died.  artifacts/f56/canary/20260912-112628/
+#       scene/dwell.applog, the app's own lines in order:
+#         GPU memory  total 32607  available 1591  used 12  free 1578
+#         Dedicated allocation of 512 MiB  -> used 12  (local memory 5 -> 517: under
+#                                                       pressure the 512 fell back to HOST
+#                                                       memory, so it is not device-resident)
+#         Allocate chunk of 1 MiB          -> used 13
+#         Dedicated allocation of 160 MiB  -> used 173
+#         Dedicated allocation of 1280 MiB -> used 1453   free 130
+#         Warn: Low GPU memory detected - release unused memory
+#         Dedicated allocation of 7 MiB    -> used 1461   free 122
+#         ERROR: Failed to allocate chunk of 256 MiB in GPU memory   (twice, then no window)
+#       So merely getting PAST the allocation that killed it needs 1461 + 256 = 1717 MiB
+#       device-resident.  That is a floor, not the need.
+#
+#  (ii) THE NEED, from launches that lived.  F116's kept applogs, the same binary family:
+#       six full-scene launches (artifacts/f116/f91, realhome/L01-L03, smoke/L01-L02) run
+#       22 dedicated allocations and 4 chunks and peak at the app's own tally
+#         used = 5323 MiB,  6 of 6 launches, identical to the MiB;
+#       four lighter farm launches (delivered, m1, m1_seeded, smoke90) peak at 2871 MiB,
+#       4 of 4.  A launch that actually loads the scene needs ~3.1x the floor.
+#
+# (iii) THE UNIT CONVERSION, measured not assumed.  The app's "available" sits BELOW what
+#       nvidia-smi calls free: on the f91 green launch the app read available 28984 while
+#       nvidia-smi's free was 32607 - 3179 = 29428 -- a 444 MiB driver/context reservation
+#       that the gate's units cannot see.
+#
+#   BANK_GPU_NEED_MIB = 5323 (measured peak) + 444 (the reservation) = 5767, rounded up to
+#   the next GiB as the margin for scene content this corpus has not yet loaded.
+#
+#   NOT the floor (1717): a gate there passes a host on which the app starts, opens no
+#   window and dies at the next allocation -- which costs a launch to discover.
+#   NOT `used <= N`: `used` on a 32 GiB card says nothing about whether 6 GiB remain.
+#   MEASURED 2026-09-12 15:49: the owner's java at 2943 MiB put used at 4519, which the
+#   inherited `used <= 4000` line refuses, while 27589 MiB were free -- 4.5x this need.
+#   The gate reads memory.FREE.
+#   Separation, on the two states it exists to tell apart:
+#       2026-09-12 11:26 (the red)  free = 32607 - 30477 = 2130 MiB  -> FAIL
+#       2026-09-12 15:49 (today)    free =                  27589 MiB -> PASS
+#   Re-banking is one edit of this line WITH an argument, exactly like the photometric
+#   band.  sc_gpu.py reads THIS line (`--need bank`) so the number has one home.
+BANK_GPU_NEED_MIB=6144
 # =====================================================================================
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -416,6 +470,27 @@ if command -v nvidia-smi > /dev/null 2>&1; then
                note "gpu.vram_pressure" "$USED MiB of VRAM in use (> $BANK_VRAM_NOTE_MIB MiB note threshold). NOT a gate: H-VRAM was posed and refuted (§11.174(h)). Recorded because the dim-era chase spent a round-trip reconstructing this number after the fact; the process list is in nvidia_procs.csv."
            fi ;;
     esac
+    # --- gpu.headroom: THE GATE (F112, §11.238).  Both arms: a --no-scene preflight is
+    # asked "can this host launch?" before a task's own launches, and on 2026-09-12 it
+    # answered yes while the answer was no.  The number and its derivation are in the
+    # VALUES block; sc_gpu.py reads that line, measures memory.FREE, and names every
+    # holder -- GRAPHICS processes included, which --query-compute-apps does not see.
+    nvidia-smi -q -d PIDS > "$OUT/nvidia_pids.txt" 2>&1
+    python3 "$HERE/sc_gpu.py" --need bank --label canary \
+        --json "$OUT/gpu_headroom.json" > "$OUT/gpu_headroom.txt" 2>&1
+    HRC=$?
+    GFREE=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['free_mib'])" \
+            "$OUT/gpu_headroom.json" 2>/dev/null)
+    kv gpu.free_mib "${GFREE:-<unknown>}"
+    kv gpu.need_mib "$BANK_GPU_NEED_MIB"
+    if [ "$HRC" -eq 3 ]; then
+        fail 3 "gpu.headroom" \
+          "only ${GFREE:-?} MiB of GPU memory are free; the application needs $BANK_GPU_NEED_MIB MiB (VALUES block, derived from its own init log). The holders, by pid / type / MiB / uid / exe: $(awk '/^ +[0-9]+ +(C|G|C\+G) /' "$OUT/gpu_headroom.txt" | tr -s ' ' | sed 's/^ //' | tr '\n' ';')" \
+          "no launch can start: the app allocates 512 + 160 + 1280 MiB dedicated and then a 256 MiB chunk BEFORE any window exists, and dies at that chunk when the room is not there (HOST-EVENTS 2026-09-12, §11.232(d)) -- and it dies AFTER the canary has said green, so the measurement is lost, not refused." \
+          "report the holder to the dispatcher and wait for the owner's word; NEVER unload another account's process and never widen this line to make a run pass (§11.174(h)). Re-banking is one VALUES-block edit WITH an argument. Full holder table: $OUT/gpu_headroom.txt and $OUT/nvidia_pids.txt."
+    elif [ "$HRC" -ne 0 ]; then
+        note "gpu.headroom_unmeasured" "sc_gpu.py exited $HRC -- the headroom could NOT be measured (see $OUT/gpu_headroom.txt). Recorded as unmeasured rather than passed: a gate that cannot read its input has not said green."
+    fi
 else
     note "gpu.absent" "nvidia-smi not on PATH; the GPU member of the fingerprint is EMPTY for this run (recorded as absent rather than silently skipped)."
 fi
@@ -473,11 +548,20 @@ fi
 # ---------------------------------------------------------------- (e) THE SCENE
 say ""
 say "--- (e) reference scene (f51_run.sh, the §11.174(e) scene) ---"
-n=0; for p in /proc/[0-9]*; do [ "$(cat "$p/comm" 2>/dev/null)" = "spacecrafter" ] && n=$((n+1)); done
-kv concurrency.spacecrafter_pre "$n"
+# ROUTED 2026-09-12 through the one home (F112, §11.238).  This member stays in the SCENE
+# arm and is not moved to --no-scene: it guards the canary's OWN launch, and --no-scene
+# launches nothing.  (gpu.headroom above is the opposite case and is on both arms, because
+# it is a proxy for "this host can launch at all", which is what a --no-scene preflight is
+# asked before a task's own launches.)  The probe it used to spell inline read
+# `comm == "spacecrafter"` and was measured BLIND to a renamed or copied engine
+# (§11.231(j2): 0 with two staging instances live and holding port 7805).
+bash "$HERE/sc_instances.sh" --assert canary > "$OUT/instances.txt" 2>&1
+n=$?
+[ "$n" -eq 4 ] && { cat "$OUT/instances.txt" >> "$LOG"; }
+kv concurrency.spacecrafter_pre "$([ "$n" -eq 0 ] && echo 0 || sed -n '1p' "$OUT/instances.txt")"
 if [ "$n" -ne 0 ]; then
     fail 4 "concurrency" \
-      "$n spacecrafter process(es) already running (/proc/<pid>/comm probe, §11.134(b))." \
+      "$(cat "$OUT/instances.txt") -- probe: sc_instances (comm | /proc/<pid>/exe | TCP 7805, §11.238; the comm-only form this member used to spell is blind to a renamed engine, §11.231(j2))." \
       "concurrent instances share the real ~/.spacecrafter (cache, screenshots, logs), which is the confound §11.121(m) recorded; a reference measurement taken now is not a reference." \
       "wait for the other instance to exit, then re-run. If it is not yours, report it -- another account's launcher is a host-state fact the dispatcher needs."
     emit_json

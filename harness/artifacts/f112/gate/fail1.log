@@ -1,0 +1,54 @@
+=== F56 ENVIRONMENT CANARY  2026-09-12 15:54:21 CEST  out=artifacts/f112/gate/fail1
+    banked stack: DISPLAY :2 2448x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+
+--- (a) display stack ---
+  host.boot = 2026-09-12 09:51:57
+  host.now_epoch = 1789221261
+  display.target = :2
+  display.expected = :2
+  xauthority.inherited = /run/user/1003/.mutter-Xwaylandauth.8TBXV3
+  xauthority = /run/user/1003/.mutter-Xwaylandauth.8TBXV3
+  display.dimensions = 2448x1332
+  display.screens = 1
+  xdg_runtime_dir = /run/user/1003
+  x11.sockets = X0 X1 X2 X3 
+
+--- (a2) compositor identity ---
+  compositor.cmd_banked = /usr/bin/gnome-shell
+  compositor.owner_uid = 1003
+  compositor.match_cmdline_only = 2
+  compositor.match_owned = 1
+  compositor.pid = 10920
+  compositor.start_epoch = 1789201776
+  compositor.start_iso = 2026-09-12 10:29:36
+  compositor.start_banked = 1789201776
+  xserver.pid = 11060
+  xserver.start_epoch = 1789201776
+  xserver.start_banked = 1789201776
+
+--- (b) GPU ---
+  gpu.query = NVIDIA GeForce RTX 5090, 580.159.03, 4459 MiB, 32607 MiB, 13 %
+  gpu.used_mib = 4459
+  gpu.free_mib = 27648
+  gpu.need_mib = 31000
+
+CANARY FAIL [gpu.headroom]
+  WHAT        : only 27648 MiB of GPU memory are free; the application needs 31000 MiB (VALUES block, derived from its own init log). The holders, by pid / type / MiB / uid / exe: 121858 G 2883 MiB uid 1000 foxy /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java;5455 G 521 MiB uid 1000 foxy /usr/bin/gnome-shell;10920 G 162 MiB uid 1003 claude /usr/bin/gnome-shell;103770 G 158 MiB uid 1000 foxy /opt/Pulsar/pulsar --type=gpu-process --field-trial-handle=2036105296001101770;6556 G 102 MiB uid 1000 foxy /snap/discord/307/usr/share/discord/Discord --type=gpu-process --disable-secco;12520 C+G 102 MiB uid 1000 foxy /usr/bin/nautilus;7793 G 91 MiB uid 1000 foxy /snap/firefox/8863/usr/lib/firefox/firefox;172519 C+G 70 MiB uid 1000 foxy /usr/bin/gnome-system-monitor;14470 C+G 68 MiB uid 1000 foxy /usr/bin/gnome-text-editor;6008 G 12 MiB uid 1000 foxy /usr/bin/Xwayland;
+  CONSEQUENCES: no launch can start: the app allocates 512 + 160 + 1280 MiB dedicated and then a 256 MiB chunk BEFORE any window exists, and dies at that chunk when the room is not there (HOST-EVENTS 2026-09-12, §11.232(d)) -- and it dies AFTER the canary has said green, so the measurement is lost, not refused.
+  PREVENTION  : report the holder to the dispatcher and wait for the owner's word; NEVER unload another account's process and never widen this line to make a run pass (§11.174(h)). Re-banking is one VALUES-block edit WITH an argument. Full holder table: artifacts/f112/gate/fail1/gpu_headroom.txt and artifacts/f112/gate/fail1/nvidia_pids.txt.
+
+--- (c) RDP connection state / (d) dispatch method ---
+  rdp.estab_3389 = 2
+  rdp.note = count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+  logind.claude_sessions = 10 11 
+  dispatch.has_logind_session = yes
+  dispatch.wayland_display = wayland-0
+  dispatch.dbus = unix:path=/run/user/1003/bus
+  dispatch.inherited_display = :2
+fingerprint: 32 members -> artifacts/f112/gate/fail1/fingerprint.json
+
+--- cache manifest (standalone) ---
+manifest: 40 files, 687889148 B, aggregate md5 b7d7445ea12dd4da6bafae7dd71c9c0a  -> artifacts/f112/gate/fail1/cache_manifest.json
+fingerprint: 32 members -> artifacts/f112/gate/fail1/fingerprint.json
+
+=== CANARY VERDICT: exit 3  (1 fail, 0 note; scene arm NOT run)

@@ -1,0 +1,32 @@
+host.boot	2026-09-12 09:51:57
+host.now_epoch	1789221270
+display.target	:2
+display.expected	:2
+xauthority.inherited	/run/user/1003/.mutter-Xwaylandauth.8TBXV3
+xauthority	/run/user/1003/.mutter-Xwaylandauth.8TBXV3
+display.dimensions	2448x1332
+display.screens	1
+xdg_runtime_dir	/run/user/1003
+x11.sockets	X0 X1 X2 X3 
+compositor.cmd_banked	/usr/bin/gnome-shell
+compositor.owner_uid	1003
+compositor.match_cmdline_only	2
+compositor.match_owned	1
+compositor.pid	10920
+compositor.start_epoch	1789201776
+compositor.start_iso	2026-09-12 10:29:36
+compositor.start_banked	1789201776
+xserver.pid	11060
+xserver.start_epoch	1789201776
+xserver.start_banked	1789201776
+gpu.query	NVIDIA GeForce RTX 5090, 580.159.03, 4459 MiB, 32607 MiB, 15 %
+gpu.used_mib	4459
+gpu.free_mib	27648
+gpu.need_mib	6144
+rdp.estab_3389	2
+rdp.note	count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+logind.claude_sessions	10 11 
+dispatch.has_logind_session	yes
+dispatch.wayland_display	wayland-0
+dispatch.dbus	unix:path=/run/user/1003/bus
+dispatch.inherited_display	:2
