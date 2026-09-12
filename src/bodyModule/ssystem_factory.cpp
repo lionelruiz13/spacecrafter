@@ -182,8 +182,11 @@ void SSystemFactory::loadCamera(const InitParser &conf)
         // both frames = a 90deg roll about the zenith - measured as the
         // 89.9943deg init-view differential (harness 2026-07-12). Convert at
         // the seam, like the longitude sign: (x,y,z)_old -> (y,-x,z)_camera.
+        // The conversion itself moved INTO the Camera at F114 (S5.101): the
+        // same vector is re-aimed by `zoom auto initial` (Core::autoZoomOut),
+        // so the two sites now read one home -- Camera::oldLocalToLocal.
         const Vec3f v = Utility::strToVec3f(conf.getStr(SCS_NAVIGATION, SCK_INIT_VIEW_POS));
-        camera->lookTo(Vec3f(v[1], -v[0], v[2]), 0);
+        camera->lookTo(Camera::oldLocalToLocal(v), 0);
     }
 }
 

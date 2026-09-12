@@ -82,6 +82,22 @@ public:
     // isMaxDuration scales the duration with angle/pi (old Rotator semantics).
     void lookTo(const Vec3f &direction, float duration = 1, bool isMaxDuration = false);
     void lookTo(float _alt, float _az, float duration = 1, bool isMaxDuration = false);
+    // The `init_view_pos` FRAME CONVERSION, and the ONE home of it (I2, S5.101).
+    // old expresses a local direction as x=South, y=East, z=Up (the observer's
+    // getRotLocalToEquatorialFixed = Z(-lon)*Y(90-lat)); this camera's local
+    // frame is x=East, y=North, z=Up (the placement fold in Camera::update puts
+    // the pole at +y). The same components in the two frames are a 90 deg roll
+    // about the zenith -- measured as the 89.9943 deg init-view differential
+    // (harness 2026-07-12) -- so a direction crossing the seam is converted:
+    // (x,y,z)_old -> (y,-x,z)_camera.
+    // TWO callers, and that is the whole reason this is a function rather than
+    // the expression it was: SSystemFactory::loadCamera (init_view_pos, read
+    // from config at startup) and Core::autoZoomOut (the SAME vector, held as
+    // Core::InitViewPos, re-aimed by `zoom auto initial` -- S5.101). A second
+    // written copy is a pending silent desync, not a duplication of style.
+    static inline Vec3f oldLocalToLocal(const Vec3f &v) {
+        return Vec3f(v[1], -v[0], v[2]);
+    }
     // The exact counterpart of `Navigator::updateMove(deltaAz, deltaAlt, fov)`,
     // and its parameters are OLD'S convention, not this class's: +deltaAlt
     // raises the VIEW and deltaAz turns it the way old's `azVision -= deltaAz`

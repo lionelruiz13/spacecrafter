@@ -1398,8 +1398,26 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 		// arm (old's per-frame tracking holds equ_vision without a moveTo), so
 		// the arm is these discrete moveTo sites only -- the offset stays armed
 		// (sticky) until a zoom-out-to-init disarms it (autoZoomOut, below).
-		if (Camera::instance)
+		if (Camera::instance) {
 			Camera::instance->armViewOffset(true);
+			// NEW path (S5.100; AUTHORISED S11.233(d) [vixy]: *"yes, same as
+			// for any kind of tracking in spacecrafter"*): this command starts
+			// the DRAWN path's tracking beside old's setFlagTraking(true)
+			// above. The dual setter Core::setFlagTracking cannot be used at
+			// this site -- it moves old with getAutoMoveDuration() where this
+			// site passes its own move_duration, and changing the OLD path's
+			// move duration is forbidden by construction (S11.52(b)) -- so the
+			// Camera call is made here, with the SAME expression the dual
+			// setter uses (Core::setFlagTracking, below) so the two tracking
+			// entries cannot drift apart (I2).
+			// D15(c) [vixy]: *"Continual tracking must be preserved and smooth
+			// - it replicate the body tracking function of advanced
+			// telescopes"*. Before this line the path that DRAWS zoomed to a
+			// 0.0023 deg field aimed at empty sky while old followed the body:
+			// 99.0336 deg apart, the drawn path's Mars frozen and not even
+			// evaluated (MEASURED on the pre binary, artifacts/f114/gaps_pre).
+			Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
+		}
 		manual_move_duration = move_duration;
 	} else {
 		// faster zoom in manual zoom mode once object is centered
@@ -1450,8 +1468,23 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 				// NEW path (B17): zoom-out-to-init disarms the view offset -- the
 				// old view_offset_transition ramp-to-0 (navigator.cpp:76-77, the
 				// zooming_mode==-1 branch this -1 move sets).
-				if (Camera::instance)
+				if (Camera::instance) {
 					Camera::instance->armViewOffset(false);
+					// NEW path (S5.101; AUTHORISED S11.233(d), the same word): re-aim
+					// the DRAWN view to the init direction, as old's moveTo above
+					// does -- same vector (Core::InitViewPos), same duration. The
+					// frame conversion is the one loadCamera performs for
+					// init_view_pos at startup, REUSED at its one home
+					// (Camera::oldLocalToLocal, ssystem_factory.cpp the other
+					// caller). Eased over move_duration by the dome-comfort law
+					// instead of old's c = coef^4 (navigator.cpp:73): the END state
+					// is the parity target, the ramp is the perceptual class (B34,
+					// S11.92). Placed AFTER setFlagTracking(false) on purpose --
+					// while Camera::target is set, update() re-plans the aim every
+					// frame (Camera.cpp, the tracking lookTo) and would overwrite
+					// this plan on the next frame.
+					Camera::instance->lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration);
+				}
 				return;
 			} else {
 				// faster zoom in manual zoom with object centered
@@ -1488,8 +1521,13 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 	setFlagLockSkyPosition(false);
 	// NEW path (B17): zoom-out-to-init disarms the view offset (old
 	// view_offset_transition ramp-to-0, navigator.cpp:76-77).
-	if (Camera::instance)
+	if (Camera::instance) {
 		Camera::instance->armViewOffset(false);
+		// NEW path (S5.101) -- the same re-aim as the manual branch above,
+		// at the branch old re-aims from with the same InitViewPos and the
+		// same move_duration. One conversion home (Camera::oldLocalToLocal).
+		Camera::instance->lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration);
+	}
 }
 
 //! Set the current sky culture according to passed name
