@@ -289,7 +289,7 @@ edit and printed by the close commit's own call.
      to out-of-tree binaries AND any `pgrep -f <path>` self-matches the wrapper
      (measured: 3 reported with nothing running). Use the `/proc/<pid>/comm` probe
      (`f26_epoch.sh`; Python port in `f27_reply.py`) — covers every account,
-     positively mapped both ways (decoy 1 / without 0). **[BLIND TO STAGING BINARIES — measured 2026-09-12, F109 §11.231(j2): all three homes of the probe (`f26_epoch.sh:46`, `f27_reply.py:107`, `f56_canary.sh:470`) test `comm == "spacecrafter"` EXACTLY, and a staging binary's `comm` is its own basename (`sc_f109_iso`, `spacecrafter-pre`…), so the probe read 0 with two staging instances live and holding port 7805; every task that measured a `sc_f*` binary ran it blind. Until the exe-identity probe lands (next round, S): before a launch ALSO assert that no process holds port 7805 (`ss -ltnp`) and that no `/proc/<pid>/exe` resolves under a `sc-f*`/`sc_*` path.]**
+     positively mapped both ways (decoy 1 / without 0). **[BLIND TO STAGING BINARIES — measured 2026-09-12, F109 §11.231(j2): all three homes of the probe (`f26_epoch.sh:46`, `f27_reply.py:107`, `f56_canary.sh:470`) test `comm == "spacecrafter"` EXACTLY, and a staging binary's `comm` is its own basename (`sc_f109_iso`, `spacecrafter-pre`…), so the probe read 0 with two staging instances live and holding port 7805; every task that measured a `sc_f*` binary ran it blind. Until the exe-identity probe lands (next round, S): before a launch ALSO assert that no process holds port 7805 (`ss -ltnp`) and that no `/proc/<pid>/exe` resolves under a `sc-f*`/`sc_*` path.]** **[LANDED 2026-09-12, F112 §11.238 — the probe has ONE home, and the bracket before this one is history: before each measurement launch run `bash claude/harness/sc_instances.sh --assert <label>` (exit 2 = an engine is live; exit 4 = the probe could not run, a STOP) or `harness/f116_assert.sh <label>`, which adds the GPU gate `python3 claude/harness/sc_gpu.py --need bank` (exit 3 = not enough room; it reads `BANK_GPU_NEED_MIB` = 6144 MiB of FREE memory from `f56_canary.sh`'s VALUES block, derived from the app's own init log, and names every holder through `nvidia-smi -q -d PIDS` — `--query-compute-apps` is blind to graphics-only holders). In Python `from sc_instances import no_instance`, or nothing: `f96_offset.no_instance()` and five sibling functions already delegate. The criterion is the UNION of three channels, each covering the others' blind spot: `comm` (world-readable — the only cross-ACCOUNT channel — blind to any rename), `/proc/<pid>/exe` (sees copies and renames, never a command line; EACCES across accounts under `ptrace_scope=1`, measured 0 of 578), TCP 7805 (an engine that answers whatever its file is called). THE RESIDUAL is a renamed engine of ANOTHER uid with no server up — say so rather than claim coverage. Never `pkill -f` (§11.231(j)); `sc_instances.py --kill` signals by pid. The 2026-09-12 VRAM red is a GATE on BOTH canary arms now (`gpu.headroom`, FAIL exit 3 below the need); a `used <= N` line is the wrong shape — it refused a host with 27 GB free. The live map: a renamed engine read 0 by the old form and 2 by the probe (the engine is a two-process tree) — §11.238(n).]**
    - **Session-environment hazards (2026-08-09, F28/F30, §11.138/§11.140(i)):**
      (a) the inherited `XAUTHORITY` belongs to another uid — every display refuses;
      ~~`export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)`~~
@@ -611,10 +611,10 @@ L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-0
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => e922235a
+git rev-parse --short=8 HEAD => f3316fea
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 239
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the document, re-resolved at HEAD (content drift = abort)
 wc -l < doc/developer-entry.md => 431
@@ -666,10 +666,10 @@ test -e /home/claude/sc-f110 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => e922235a
+git rev-parse --short=8 HEAD => f3316fea
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 239
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the pool's one creation and the allocator's silent return, re-resolved at HEAD (content drift = abort)
 grep -n 'context.uniformMgr = std::make_unique.BufferMgr.(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1\*1024\*1024, "uniform BufferMgr", true);' src/appModule/app.cpp | cut -d: -f1 => 274
@@ -712,10 +712,10 @@ test -e /home/claude/sc-f113 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => e922235a
+git rev-parse --short=8 HEAD => f3316fea
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 239
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the two sites, the mirrors beside them and the Camera API, re-resolved at HEAD (content drift = abort)
 grep -n '^void Core::autoZoomIn' src/coreModule/core.cpp | cut -d: -f1 => 1386
@@ -758,10 +758,10 @@ test -e /home/claude/sc-f114 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => e922235a
+git rev-parse --short=8 HEAD => f3316fea
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 239
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the consumers, the shader array and F102's instrument, re-resolved at HEAD (content drift = abort)
 grep -rl 'SharedBuffer<' src --include=*.cpp --include=*.hpp | grep -vc '^src/EntityCore' => 74
@@ -804,10 +804,10 @@ test -e /home/claude/sc-f115 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => e922235a
+git rev-parse --short=8 HEAD => f3316fea
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 239
 grep -c '^### F' claude/fable-dispatch.md => 7
 # F108's mechanism, re-resolved at HEAD (content drift = abort)
 grep -n '^constexpr int LOG_RETENTION_LAUNCHES = 8;' src/tools/log.hpp | cut -d: -f1 => 88
@@ -850,10 +850,10 @@ test -e /home/claude/sc-f116 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => e922235a
+git rev-parse --short=8 HEAD => f3316fea
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 239
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the sampler, the two seeds and the old plot, re-resolved at HEAD (content drift = abort)
 grep -n '^void OrbitModule::sampleOrbit' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 94
@@ -903,10 +903,10 @@ test -e /home/claude/sc-f111 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => e922235a
+git rev-parse --short=8 HEAD => f3316fea
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 239
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the probe's homes and the canary's VRAM member, re-resolved at HEAD (content drift = abort)
 grep -lE '= "spacecrafter"|== "spacecrafter"|-x .spacecrafter. /proc' claude/harness/*.sh claude/harness/*.py | wc -l => 44
@@ -927,7 +927,7 @@ test -e /home/claude/sc-f112 ; echo $? => 1
 ```
 
 **DoD:** predictions (criterion, residual, partition rule, threshold derivation) before any code; the one-home probe in both languages with self-tests; the decoy map both ways; every live caller routed; the headroom gate shown able to fail and passing at the derived value; §11 entry + stub; the §11.231(j2) / HOST-EVENTS / §11.232(d) markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** — DELIVERED 2026-09-12 16:1x → **§11.238** (+ stub). Code `e922235a → f3316fea` (ONE commit, ONE file, one item of `doc/developer-entry.md`; NO engine code; binary `95087b68` untouched, never rebuilt). Harness `5bf9f85 → 983f31e` (the pre-registration, before any code) `→ e8603a5` (the probe) `→ 26f365c` (the gate) `→ 43daf46` (the routing) `→` this delivery. **ZERO application launches.** THE PROBE: `harness/sc_instances.py` is the sole authority (comm | `/proc/<pid>/exe` E1–E5 | LISTEN 7805 from `/proc/net/tcp{,6}` with its owner uid), `sc_instances.sh` delegates and owns no criterion — two implementations of one rule is the I2 desync this task removes. Suites: **18/0** and **8/0**, four + one mutants each failing named cases; negative arm 0 over 671 pids. THE RESIDUAL IS THE **CROSS-ACCOUNT** ONE, not the section's guess: `readlink /proc/<pid>/exe` resolved on **0 of 578** other-uid processes under `ptrace_scope=1`, so comm is kept beside exe, never replaced. THE GATE: `gpu.headroom` on BOTH arms, exit 3, vs **`BANK_GPU_NEED_MIB=6144`** in the canary's VALUES block (1717 floor + 5323 measured peak on 6/6 green launches + 444 reservation); shown able to fail at a mutated 31000 naming all ten holders, canary restored md5-identical, PASS at 6144 twice; `harness/sc_gpu.py` 11/0 with three mutants. `--query-compute-apps` MEASURED blind to graphics processes (240 MiB of 3293; java at 1385 missed). PARTITION: **20 routed / 21 annotated / 3 not-probes**, LIVE 22 FROZEN 22, sum 44; `f112_census.py` reads PROBE 21 / ROUTED 20 / MENTION 3 / HOME 5 — no live file decides on its own. F110's two residues paid. **THE THREE LAUNCH LEGS ARE TAKEN (addendum clause (n), 16:2x)**, after the dispatcher accepted (k)(1) and replaced the binding launch precondition with `f116_assert.sh` (the gate this task derived). **Decoy map 10 checks 0 FAIL**: with a renamed byte copy live and holding 7805 the pre-F112 comm form reads **0** in both spellings and the new probe reads **2** (exe 2, port 1, comm 0), both implementations agreeing at all four readings, **0** before and after a kill by pid, field pair in == out; my prediction of exactly ONE hit is REFUTED — the engine is a two-process tree; the decoy's own footprint **5135 MiB** confirms the 6144 bank to 3.5 % from a different instrument. **Smoke rc 0, FAIL none**, S1/S7 as recorded, the routing visible in its own output, (h)(1)'s canary header line present. **F91 rc 0, 0 FAIL 0 NOTE, table `1fe630a4`.** At every one of those gates `used` was 4441–4558 (above the inherited 4000) while free was 27549–27666 against a need of 6144 — (k)(1)'s own evidence. Clause (g) stands as the record of why they could not be taken at 16:0x. `artifacts/f112/vram_crossing.txt`, `artifacts/f112/legs/`. Two predictions of mine REFUTED and both fixed at the root (a mutant a suite cannot see is a hole in the suite). Baselines LAST, lists DIFFED: pair **254/229/25/125**, D 36 · D2 12 · I 93 · I2 37 · M 95 — **byte-identical** flag lists, +1 entry +1 pair, inline stubs +0; scan 277/347/144 → 282/356/145, the one new uncredited pair being §11.165(b)'s inversion family, three others opened by my own writing and paid at their cause. D14 PASS at every commit.
+**WIP:** — DELIVERED 2026-09-12 16:1x → **§11.238** (+ stub). Code `e922235a → f3316fea` (ONE commit, ONE file, one item of `doc/developer-entry.md`; NO engine code; binary `95087b68` untouched, never rebuilt). Harness `5bf9f85 → 983f31e` (the pre-registration, before any code) `→ e8603a5` (the probe) `→ 26f365c` (the gate) `→ 43daf46` (the routing) `→` this delivery. **ZERO application launches.** THE PROBE: `harness/sc_instances.py` is the sole authority (comm | `/proc/<pid>/exe` E1–E5 | LISTEN 7805 from `/proc/net/tcp{,6}` with its owner uid), `sc_instances.sh` delegates and owns no criterion — two implementations of one rule is the I2 desync this task removes. Suites: **18/0** and **8/0**, four + one mutants each failing named cases; negative arm 0 over 671 pids. THE RESIDUAL IS THE **CROSS-ACCOUNT** ONE, not the section's guess: `readlink /proc/<pid>/exe` resolved on **0 of 578** other-uid processes under `ptrace_scope=1`, so comm is kept beside exe, never replaced. THE GATE: `gpu.headroom` on BOTH arms, exit 3, vs **`BANK_GPU_NEED_MIB=6144`** in the canary's VALUES block (1717 floor + 5323 measured peak on 6/6 green launches + 444 reservation); shown able to fail at a mutated 31000 naming all ten holders, canary restored md5-identical, PASS at 6144 twice; `harness/sc_gpu.py` 11/0 with three mutants. `--query-compute-apps` MEASURED blind to graphics processes (240 MiB of 3293; java at 1385 missed). PARTITION: **20 routed / 21 annotated / 3 not-probes**, LIVE 22 FROZEN 22, sum 44; `f112_census.py` reads PROBE 21 / ROUTED 20 / MENTION 3 / HOME 5 — no live file decides on its own. F110's two residues paid. **THE THREE LAUNCH LEGS ARE TAKEN (addendum clause (n), 16:2x)**, after the dispatcher accepted (k)(1) and replaced the binding launch precondition with `f116_assert.sh` (the gate this task derived). **Decoy map 10 checks 0 FAIL**: with a renamed byte copy live and holding 7805 the pre-F112 comm form reads **0** in both spellings and the new probe reads **2** (exe 2, port 1, comm 0), both implementations agreeing at all four readings, **0** before and after a kill by pid, field pair in == out; my prediction of exactly ONE hit is REFUTED — the engine is a two-process tree; the decoy's own footprint **5135 MiB** confirms the 6144 bank to 3.5 % from a different instrument. **Smoke rc 0, FAIL none**, S1/S7 as recorded, the routing visible in its own output, (h)(1)'s canary header line present. **F91 rc 0, 0 FAIL 0 NOTE, table `1fe630a4`.** At every one of those gates `used` was 4441–4558 (above the inherited 4000) while free was 27549–27666 against a need of 6144 — (k)(1)'s own evidence. Clause (g) stands as the record of why they could not be taken at 16:0x. `artifacts/f112/vram_crossing.txt`, `artifacts/f112/legs/`. Two predictions of mine REFUTED and both fixed at the root (a mutant a suite cannot see is a hole in the suite). Baselines LAST, lists DIFFED: pair **254/229/25/125**, D 36 · D2 12 · I 93 · I2 37 · M 95 — **byte-identical** flag lists, +1 entry +1 pair, inline stubs +0; scan 277/347/144 → 282/356/145, the one new uncredited pair being §11.165(b)'s inversion family, three others opened by my own writing and paid at their cause. D14 PASS at every commit. **ACCEPTED 2026-09-12 — verifying commands' `date` 16:2x–16:31 (supervisor, session 29, Claude Fable 5.1).** Verified by my own runs and reads: §11.238 read in full including the (n) addendum; code `f3316fea` (Claude Opus 5, ONE file — the doc's §5 item 2 — the supervising footer); six harness commits `983f31e → 2588f5e` (the predictions at 15:42 before the first line of the probe; the addendum's trailer `Code: master-beta @ f3316fea`); binary `95087b68` untouched; the stub at `INTENT.md:1111` with the state change named; markers at §11.231(j2), §11.232(d), §11.134(b), §11.176, §11.234 (entry and stub each) and HOST-EVENTS 2026-09-12; README F112; `### F` 7; the partition table (22 LIVE / 22 FROZEN, 20 routed / 21 annotated / 3 mentions). **By my own hand:** `sc_instances.py --self-test` **18 PASS 0 FAIL**, `sc_instances.sh --self-test` **8 PASS 0 FAIL**, `--mutant basename_eq` **16/2** (able to fail); `sc_gpu.py --need bank` → free 27616 / need 6144, exit 0; `f116_assert.sh` clear; canary `--no-scene` exit 0 with `gpu.headroom` in it; **F91 through the ROUTED runner** on `95087b68` at 16:30 — its own line *"no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)"*, **0 FAIL 0 NOTE, table `1fe630a4`**, the pair in == out; instruments **283/356/145 · 254/229/25/125 · D 36 · D2 12 · I 93 · I2 37 · M 95** to the digit of (m)/(n) (the one uncredited residue `§11.134 → §11.231` is §11.165(b)'s inversion family, adjudicated at (m)); D14 PASS. The decoy map accepted on its committed record (`legs/decoymap/map.json`: a byte copy of `95087b68` renamed, comm 0 / 0, probe 2 / 2 live — a two-process tree — 0 after the kill by pid; the engine's own VRAM footprint 5135 MiB against the 6144 banked). DEVIATIONS ENDORSED with the executor's arguments: two entry points over one implementation (I2 — the disease this task removes); the third home `sc_gpu.py` with the number still banked in the canary; `concurrency.spacecrafter_pre` left on the scene arm (it guards the canary's own launch); `b22_live_run.sh`'s kill routed; `f112_census.py` beside the section's grep; the six-line frozen annotation; the addendum after the supervisor replaced the launch precondition. THE NOT-TAKEN-THEN-TAKEN shape endorsed as the protocol working: a stated precondition obeyed rather than re-decided mid-task, its wrong shape reported, corrected by the dispatcher, the legs then run under the derived gate — clause (g) kept as the record. DISPATCHER-SIDE FINDINGS, ACCEPTED as mine, output-side: (1) the binding `used <= 4000` precondition was the wrong shape — a crude proxy typed from the morning's red instead of the derivation the task itself was mandated to produce (structure class; it cost the round 33 minutes and one resume); (2) the section's prose census (42) two behind its own premise line (the same-class sweep after a re-paste, value class); (3) the section's residual named the same-account rename while the one that bites is cross-account (`exe` EACCES under `ptrace_scope=1`) and its criterion sketch omitted `comm`, the only cross-account channel (structure: a criterion asserted without measuring each channel's blindness); (4) `b22_live_run.sh:45`'s two line citations stale at the mint (value). Round tally: **thirteen** (5 value, 7 structure, 1 intent). Hazard noted for every future outdir commit: the pre-commit hook refuses `f90_rehearsal_run.sh`'s compiled `xkey` (correctly). §0.5's concurrent-instance bullet rewritten at this acceptance from (l). STANDING for F111: assert with `harness/f116_assert.sh <label>` — nothing else is a launch precondition; the delivered binary is `95087b68`.
 
 ---
 
