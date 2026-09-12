@@ -1,0 +1,218 @@
+1789211961.319 >> timerate rate 0
+1789211962.120 >> flag atmosphere off
+1789211962.920 >> flag fog off
+1789211963.720 >> flag landscape off
+1789211964.521 >> flag show_fps off
+1789211967.721 >> set home_planet Earth
+1789211969.922 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1789211970.722 >> flag stars on
+1789211971.522 >> flag star_names off
+1789211972.323 >> flag constellation_drawing on
+1789211973.123 >> flag constellation_art off
+1789211973.923 >> flag equatorial_grid on
+1789211974.724 >> flag planet_names off
+1789211975.524 >> flag object_trails off
+1789211976.024 >> timerate rate 1
+1789211977.225 >> date jday 2461233.500000
+1789211979.425 >> timerate rate 0
+1789211982.125 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/ctrl_a.png
+1789211984.826 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/ctrl_a.json
+1789211987.526 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/ctrl_b.png
+1789211990.226 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/ctrl_b.json
+1789211991.027 >> flag track_object off
+1789211991.827 >> flag lock_sky_position off
+1789211992.627 >> deselect
+1789211994.328 >> zoom auto initial duration 0
+1789211994.828 >> timerate rate 1
+1789211999.528 >> timerate rate 0
+1789212000.029 >> timerate rate 1
+1789212001.229 >> date jday 2461233.500000
+1789212003.429 >> timerate rate 0
+1789212004.630 >> flag lock_sky_position on
+1789212005.130 >> timerate rate 1
+1789212009.830 >> timerate rate 0
+1789212012.531 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_locked.json
+1789212013.031 >> timerate rate 1
+1789212014.231 >> date jday 2461233.500000
+1789212016.432 >> timerate rate 0
+1789212019.132 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_held_t0.png
+1789212021.832 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_held_t0.json
+1789212022.333 >> timerate rate 1
+1789212023.533 >> date jday 2461233.550000
+1789212025.733 >> timerate rate 0
+1789212028.434 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_held_t1.png
+1789212031.134 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_held_t1.json
+1789212031.634 >> timerate rate 1
+1789212032.835 >> date jday 2461233.500000
+1789212035.035 >> timerate rate 0
+1789212036.735 >> zoom auto initial duration 0
+1789212037.235 >> timerate rate 1
+1789212043.936 >> timerate rate 0
+1789212046.636 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_after.json
+1789212047.137 >> timerate rate 1
+1789212048.337 >> date jday 2461233.500000
+1789212050.537 >> timerate rate 0
+1789212053.238 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_rel_t0.png
+1789212055.938 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_rel_t0.json
+1789212056.439 >> timerate rate 1
+1789212057.639 >> date jday 2461233.550000
+1789212059.839 >> timerate rate 0
+1789212062.540 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_rel_t1.png
+1789212065.240 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r1_rel_t1.json
+1789212066.040 >> flag track_object off
+1789212066.841 >> flag lock_sky_position off
+1789212067.641 >> deselect
+1789212069.341 >> zoom auto initial duration 0
+1789212069.842 >> timerate rate 1
+1789212074.542 >> timerate rate 0
+1789212075.042 >> timerate rate 1
+1789212076.243 >> date jday 2461233.500000
+1789212078.443 >> timerate rate 0
+1789212079.643 >> select planet Mars
+1789212082.344 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r1_sel1.json
+1789212083.544 >> flag track_object on
+1789212084.044 >> timerate rate 1
+1789212092.745 >> timerate rate 0
+1789212095.445 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r1_tracking.json
+1789212096.646 >> select planet Jupiter
+1789212099.346 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r1_after.json
+1789212099.846 >> timerate rate 1
+1789212108.547 >> timerate rate 0
+1789212109.047 >> timerate rate 1
+1789212110.248 >> date jday 2461233.500000
+1789212112.448 >> timerate rate 0
+1789212115.148 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r1_t0.png
+1789212117.849 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r1_t0.json
+1789212118.349 >> timerate rate 1
+1789212119.549 >> date jday 2461233.550000
+1789212121.750 >> timerate rate 0
+1789212124.450 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r1_t1.png
+1789212127.150 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r1_t1.json
+1789212127.951 >> flag track_object off
+1789212128.751 >> flag lock_sky_position off
+1789212129.551 >> deselect
+1789212131.252 >> zoom auto initial duration 0
+1789212131.752 >> timerate rate 1
+1789212136.452 >> timerate rate 0
+1789212136.953 >> timerate rate 1
+1789212138.153 >> date jday 2461233.500000
+1789212140.354 >> timerate rate 0
+1789212141.554 >> select planet Mars
+1789212142.754 >> flag track_object on
+1789212143.255 >> timerate rate 1
+1789212151.955 >> timerate rate 0
+1789212154.655 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s3_tracking.json
+1789212155.856 >> select planet Mars
+1789212158.556 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s3_after.json
+1789212159.056 >> timerate rate 1
+1789212167.757 >> timerate rate 0
+1789212168.257 >> timerate rate 1
+1789212169.458 >> date jday 2461233.500000
+1789212171.658 >> timerate rate 0
+1789212174.358 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s3_t0.png
+1789212177.059 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s3_t0.json
+1789212177.559 >> timerate rate 1
+1789212178.760 >> date jday 2461233.550000
+1789212180.960 >> timerate rate 0
+1789212183.660 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s3_t1.png
+1789212186.361 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s3_t1.json
+1789212187.161 >> flag track_object off
+1789212187.961 >> flag lock_sky_position off
+1789212188.762 >> deselect
+1789212190.462 >> zoom auto initial duration 0
+1789212190.962 >> timerate rate 1
+1789212195.663 >> timerate rate 0
+1789212196.163 >> timerate rate 1
+1789212197.363 >> date jday 2461233.500000
+1789212199.564 >> timerate rate 0
+1789212200.764 >> flag manual_zoom on
+1789212201.965 >> select planet Mars
+1789212203.165 >> flag lock_sky_position on
+1789212203.665 >> timerate rate 1
+1789212208.366 >> timerate rate 0
+1789212211.066 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s4_locked.json
+1789212212.767 >> zoom auto out manual 1 duration 0
+1789212213.267 >> timerate rate 1
+1789212219.967 >> timerate rate 0
+1789212222.668 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s4_after.json
+1789212223.168 >> timerate rate 1
+1789212224.369 >> date jday 2461233.500000
+1789212226.569 >> timerate rate 0
+1789212229.269 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s4_rel_t0.png
+1789212231.970 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s4_rel_t0.json
+1789212232.470 >> timerate rate 1
+1789212233.670 >> date jday 2461233.550000
+1789212235.871 >> timerate rate 0
+1789212238.571 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s4_rel_t1.png
+1789212241.272 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s4_rel_t1.json
+1789212242.472 >> flag manual_zoom off
+1789212243.272 >> flag track_object off
+1789212244.073 >> flag lock_sky_position off
+1789212244.873 >> deselect
+1789212246.574 >> zoom auto initial duration 0
+1789212247.074 >> timerate rate 1
+1789212251.774 >> timerate rate 0
+1789212252.275 >> timerate rate 1
+1789212253.475 >> date jday 2461233.500000
+1789212255.675 >> timerate rate 0
+1789212256.876 >> flag lock_sky_position on
+1789212257.376 >> timerate rate 1
+1789212262.077 >> timerate rate 0
+1789212264.777 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_locked.json
+1789212265.277 >> timerate rate 1
+1789212266.478 >> date jday 2461233.500000
+1789212268.678 >> timerate rate 0
+1789212271.378 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_held_t0.png
+1789212274.079 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_held_t0.json
+1789212274.579 >> timerate rate 1
+1789212275.780 >> date jday 2461233.550000
+1789212277.980 >> timerate rate 0
+1789212280.680 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_held_t1.png
+1789212283.381 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_held_t1.json
+1789212283.881 >> timerate rate 1
+1789212285.081 >> date jday 2461233.500000
+1789212287.282 >> timerate rate 0
+1789212288.982 >> zoom auto initial duration 0
+1789212289.482 >> timerate rate 1
+1789212296.183 >> timerate rate 0
+1789212298.883 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_after.json
+1789212299.384 >> timerate rate 1
+1789212300.584 >> date jday 2461233.500000
+1789212302.784 >> timerate rate 0
+1789212305.485 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_rel_t0.png
+1789212308.185 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_rel_t0.json
+1789212308.685 >> timerate rate 1
+1789212309.886 >> date jday 2461233.550000
+1789212312.086 >> timerate rate 0
+1789212314.786 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_rel_t1.png
+1789212317.487 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s1r2_rel_t1.json
+1789212318.287 >> flag track_object off
+1789212319.087 >> flag lock_sky_position off
+1789212319.887 >> deselect
+1789212321.588 >> zoom auto initial duration 0
+1789212322.088 >> timerate rate 1
+1789212326.789 >> timerate rate 0
+1789212327.289 >> timerate rate 1
+1789212328.489 >> date jday 2461233.500000
+1789212330.690 >> timerate rate 0
+1789212331.890 >> select planet Mars
+1789212334.590 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r2_sel1.json
+1789212335.791 >> flag track_object on
+1789212336.291 >> timerate rate 1
+1789212344.991 >> timerate rate 0
+1789212347.692 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r2_tracking.json
+1789212348.892 >> select planet Jupiter
+1789212351.592 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r2_after.json
+1789212352.093 >> timerate rate 1
+1789212360.793 >> timerate rate 0
+1789212361.293 >> timerate rate 1
+1789212362.494 >> date jday 2461233.500000
+1789212364.694 >> timerate rate 0
+1789212367.394 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r2_t0.png
+1789212370.095 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r2_t0.json
+1789212370.595 >> timerate rate 1
+1789212371.795 >> date jday 2461233.550000
+1789212373.996 >> timerate rate 0
+1789212376.696 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r2_t1.png
+1789212379.396 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/mirror_post/s2r2_t1.json
+f38 done

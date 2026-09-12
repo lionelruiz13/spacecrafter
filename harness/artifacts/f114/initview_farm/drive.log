@@ -1,0 +1,23 @@
+1789212448.823 >> timerate rate 0
+1789212451.523 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/initview_farm/startup.json
+1789212452.323 >> flag atmosphere off
+1789212453.124 >> flag fog off
+1789212453.924 >> flag landscape off
+1789212454.725 >> flag show_fps off
+1789212455.525 >> flag stars on
+1789212456.325 >> flag star_names off
+1789212457.126 >> flag planet_names off
+1789212457.626 >> timerate rate 1
+1789212458.827 >> date jday 2461233.500000
+1789212461.027 >> timerate rate 0
+1789212463.727 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/initview_farm/before_zoom.json
+1789212464.928 >> select planet Mars
+1789212466.628 >> zoom auto in duration 0
+1789212467.128 >> timerate rate 1
+1789212475.829 >> timerate rate 0
+1789212478.529 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/initview_farm/tracked.json
+1789212480.230 >> zoom auto initial duration 0
+1789212480.730 >> timerate rate 1
+1789212487.430 >> timerate rate 0
+1789212490.131 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f114/initview_farm/after.json
+f114 initview done

@@ -1,0 +1,20 @@
+=== F114 run 'initview_farm' ===
+wall clock start : 2026-09-12 13:27:05 CEST
+driver           : f114_initview.py
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : d607cfdc17f6eea08786958732ce26fe
+binary mtime     : 2026-09-12 13:06:35.159695005 +0200
+concurrent instances (comm+exe) : 0 ; port 7805 holders : 0
+gpu used (MiB)   : 1601
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+farm             : /home/claude/sc-f114/farm
+farm sed         : s/^init_view_pos .*/init_view_pos                  = 1,0,0/
+farm init_view_pos: init_view_pos                  = 1,0,0
+farm config md5  : 46c76dac1ae8f1fce3dc85b6bdb15cd1
+gdb pid=138412
+tcp up after 6x2s
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+wall clock end   : 2026-09-12 13:28:16 CEST

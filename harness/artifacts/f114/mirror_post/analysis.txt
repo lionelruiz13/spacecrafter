@@ -1,0 +1,46 @@
+=== F38 sky-lock mirror analysis === (artifacts/f114/mirror_post)
+  screen noise floor (ctrl_a/ctrl_b): px>32=0 max|d|=0
+
+-- S1 round 1: DISABLE @ core.cpp:1410 (`zoom auto initial`) --
+  locked (before)        lock old=1 new=True  reported=True  [AGREE]   track old=0 new=''  sel=''
+  held pair              new_equ=  0.0000(    held)  old_equ=  0.0000(    held)  altaz=11.8504  old_lv=11.8504  px>32=      0  [OK]
+  after unzoom-to-init   lock old=0 new=False reported=False [AGREE]   track old=0 new=''  sel=''
+  released pair          new_equ= 18.0493(released)  old_equ= 18.0493(released)  altaz= 0.0000  old_lv= 0.0000  px>32= 142563  [OK]
+
+-- S1 round 2: DISABLE @ core.cpp:1410 (`zoom auto initial`) --
+  locked (before)        lock old=1 new=True  reported=True  [AGREE]   track old=0 new=''  sel=''
+  held pair              new_equ=  0.0000(    held)  old_equ=  0.0000(    held)  altaz=11.8504  old_lv=11.8504  px>32=      0  [OK]
+  after unzoom-to-init   lock old=0 new=False reported=False [AGREE]   track old=0 new=''  sel=''
+  released pair          new_equ= 18.0493(released)  old_equ= 18.0493(released)  altaz= 0.0000  old_lv= 0.0000  px>32= 142571  [OK]
+
+-- S2 round 1: ENABLE @ core.cpp:2313 (select while tracking) --
+  tracking               lock old=0 new=False reported=False [AGREE]   track old=1 new='Mars'  sel='Mars'
+    precondition tracking-on: old=1 new='Mars' -> OK
+  after select           lock old=1 new=True  reported=True  [AGREE]   track old=0 new=''  sel='Jupiter'
+  hold pair              new_equ=  0.0000(    held)  old_equ=  0.0000(    held)  altaz=16.7630  old_lv=16.7630  px>32=    201  [OK]
+
+-- S2 round 2: ENABLE @ core.cpp:2313 (select while tracking) --
+  tracking               lock old=0 new=False reported=False [AGREE]   track old=1 new='Mars'  sel='Mars'
+    precondition tracking-on: old=1 new='Mars' -> OK
+  after select           lock old=1 new=True  reported=True  [AGREE]   track old=0 new=''  sel='Jupiter'
+  hold pair              new_equ=  0.0245(    held)  old_equ=  0.0000(    held)  altaz=16.7631  old_lv=16.7631  px>32=    216  [OK]
+
+-- S3: ENABLE @ core.cpp:1083 (re-select the tracked body) --
+  tracking               lock old=0 new=False reported=False [AGREE]   track old=1 new='Mars'  sel='Mars'
+    precondition tracking-on: old=1 new='Mars' -> OK
+  after re-select        lock old=1 new=True  reported=True  [AGREE]   track old=0 new=''  sel='Mars'
+  hold pair              new_equ=  0.0161(    held)  old_equ=  0.0000(    held)  altaz=16.7631  old_lv=16.7631  px>32=    242  [OK]
+
+-- S4: DISABLE @ core.cpp:1372 (`zoom auto out manual`) --
+  locked (before)        lock old=1 new=True  reported=True  [AGREE]   track old=0 new=''  sel='Mars'
+  after manual unzoom    lock old=0 new=False reported=False [AGREE]   track old=0 new=''  sel='Mars'
+  released pair          new_equ= 18.0493(released)  old_equ= 18.0493(released)  altaz= 0.0000  old_lv= 0.0000  px>32= 142571  [OK]
+
+=== verdicts (post-change expectation: all PASS) ===
+  S1r1   PASS
+  S1r2   PASS
+  S2r1   PASS
+  S2r2   PASS
+  S3     PASS
+  S4     PASS
+ALL PASS
