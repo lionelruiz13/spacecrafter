@@ -321,6 +321,80 @@ def cmd_trail(a):
     return "\n".join(lines) + "\n"
 
 
+def chain(el, vis, dJD, frames=400, sampler=None, M0=0.0, steps=STEPS):
+    """THE FRAME CHAIN -- written AFTER the pre-fix leg refuted the flat
+    "flag off reads zero" prediction, and written at its cause rather than
+    around it (artifacts/f111/prediction.txt P3 / R1).
+
+    Each frame the walk evaluates the body ONCE (`recursiveTranslationUpdate`,
+    one solver call = `steps` Newton steps, ModularBody.hpp:707) from the seed
+    the previous frame left, at a date `dJD` later.  That alone leaves a
+    residual when dJD is large, which is WHY a rate high enough to resample
+    every frame has a floor of its own.  Then, if the orbit line is shown and
+    the resample gate has fired (OrbitModule.cpp:132), the PRE-fix sampler walks
+    the SAME seed through 180 dates and leaves it at +89 increments; the
+    POST-fix one does not touch it at all, so `sampler=None` models BOTH the
+    flag-off arm and the post-fix flag-on arm.
+
+    Returns (resid_rad, err3d_AU, errR_AU) of the LAST walk evaluation -- the
+    value a dump taken at that frame reads.
+    """
+    e = el["e"]
+    n = el["n"]
+    incrM = (vis / ORBIT_POINTS) * n        # one sample increment, in mean anomaly
+    M = M0
+    E = kepler_exact(e, M)
+    since = 0.0
+    last = (0.0, 0.0, 0.0)
+    for _ in range(frames):
+        M += dJD * n
+        since += abs(dJD)
+        _, E = ecc_anomaly(e, M, E, steps)  # the walk's own call
+        Eex = kepler_exact(e, M)
+        p, pe = position_at_E(el, E), position_at_E(el, Eex)
+        last = (abs(E - Eex), norm(sub(p, pe)),
+                abs(norm(p) - norm(pe)))
+        if sampler == "pre" and since >= vis / ORBIT_POINTS:
+            since = 0.0
+            seed = E
+            for d in range(ORBIT_POINTS):
+                seed, _x = ecc_anomaly(e, M + (d - ORBIT_POINTS // 2) * incrM,
+                                       seed, steps)
+            E = seed
+        elif sampler is None and since >= vis / ORBIT_POINTS:
+            since = 0.0                      # the post-fix sampler runs, and
+                                             # leaves `iterativeLastE` alone
+    return last
+
+
+def cmd_chain(a):
+    """Score the chain model at the MEASURED per-frame date jump of each arm."""
+    djd_off = getattr(a, "djd_off", 8.04)
+    djd_on = getattr(a, "djd_on", 75.4)
+    lines = [cmd_chain.__doc__.strip(),
+             "dJD/frame measured from consecutive dumps' evalCount deltas",
+             "  flag OFF arm: %.4f d/frame     flag ON arm: %.4f d/frame"
+             % (djd_off, djd_on),
+             "errR = ||pos| - |pos_exact||, the quantity the leg scores.",
+             "PRE_on models the pre-fix sampler; POST_on = OFF_chain at the ON",
+             "arm's own dJD, because the post-fix sampler leaves the seed alone.",
+             "",
+             "%-12s %10s %12s %12s %12s" %
+             ("body", "vis_d", "OFF@off_dJD", "POST@on_dJD", "PRE@on_dJD")]
+    for n, el, vis, branch, e in sampling_bodies():
+        if vis <= 0.0:
+            continue
+        worst = [0.0, 0.0, 0.0]
+        for k in range(8):                   # eight starting anomalies
+            M0 = 2.0 * math.pi * k / 8.0
+            worst[0] = max(worst[0], chain(el, vis, djd_off, 200, None, M0)[2])
+            worst[1] = max(worst[1], chain(el, vis, djd_on, 200, None, M0)[2])
+            worst[2] = max(worst[2], chain(el, vis, djd_on, 200, "pre", M0)[2])
+        lines.append("%-12s %10.3f %12.5g %12.5g %12.5g"
+                     % (n, vis, worst[0], worst[1], worst[2]))
+    return "\n".join(lines) + "\n"
+
+
 def cmd_score(a):
     """Score a landed dump: for every sampling walked-iterating record, the
     RADIAL residual between its dumped |ecl| and the model's CONVERGED position
@@ -398,13 +472,15 @@ def cmd_cost(a):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("mode", choices=["transient", "rate", "line", "trail",
-                                     "cost", "score", "all"])
+                                     "cost", "score", "chain", "all"])
     ap.add_argument("dump", nargs="?", default=str(DEFAULT_DUMP))
     ap.add_argument("--out")
     ap.add_argument("--rate", type=float, default=None,
                     help="timerate rate of the stage (sim seconds per wall second)")
     ap.add_argument("--fps", type=float, default=FPS)
     ap.add_argument("--threshold", type=float, default=5.6e-7)
+    ap.add_argument("--djd-off", type=float, default=8.04, dest="djd_off")
+    ap.add_argument("--djd-on", type=float, default=75.4, dest="djd_on")
     a = ap.parse_args()
     if a.mode == "all":
         stages = []
@@ -416,7 +492,8 @@ def main():
                                   cmd_cost(a)])
     else:
         txt = {"transient": cmd_transient, "rate": cmd_rate, "line": cmd_line,
-               "trail": cmd_trail, "cost": cmd_cost, "score": cmd_score}[a.mode](a)
+               "trail": cmd_trail, "cost": cmd_cost, "score": cmd_score,
+               "chain": cmd_chain}[a.mode](a)
     if a.out:
         open(a.out, "w").write(txt)
     print(txt)

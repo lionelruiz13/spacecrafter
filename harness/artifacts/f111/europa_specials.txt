@@ -1,0 +1,50 @@
+F111 / P4 -- DOES THE FIX CLOSE Sec.5.150's SPECIAL-ORBIT HALF?  MEASURED: NO.
+
+f107_orbitflag.py, satellites leg, F100's pinned clock, run on BOTH binaries.
+Prediction P4 (artifacts/f111/prediction.txt, committed before the build):
+  Europa's 3.475e-08 AU STAYS, because a SpecialOrbit overrides neither half
+  of the batch pair (orbit.hpp:100-101 is EllipticalOrbit's and nobody else's),
+  so the base-class fallback (orbit.hpp:45-47) asks the SAME positionFunction
+  at the SAME 180 dates and walks the same CalcInterpolatedElements static
+  cache.  The mandate expected 0.
+
+f107sat_pre   binary 95087b68  exit 0  home md5 in==out True
+   within-launch control D0 vs D0b : 0 of 120 records moved
+   control at another date          : 90 of 120 moved (max 0.02348 AU)
+   flag on, settled                 : 17 moved; WALKED ITERATING moved: NONE (0 of 40)
+
+f107sat_post  binary 42d7982c  exit 0  home md5 in==out True
+   within-launch control D0 vs D0b : 0 of 120 records moved
+   control at another date          : 90 of 120 moved (max 0.02348 AU)
+   flag on, settled                 : 17 moved; WALKED ITERATING moved: NONE (0 of 40)
+
+PER-RECORD |delta ecl| WITH THE FLAG ON (settled), both binaries:
+
+   body           PRE (95087b68)  POST (42d7982c) equal?
+   Mimas             1.88686e-07      1.88686e-07 YES
+   Miranda            1.4708e-07       1.4708e-07 YES
+   Enceladus         1.32069e-07      1.32069e-07 YES
+   Tethys            7.01226e-08      7.01226e-08 YES
+   Ariel             5.90158e-08      5.90158e-08 YES
+   Titania           4.00744e-08      4.00744e-08 YES
+   Europa            3.47503e-08      3.47503e-08 YES
+   Umbriel           2.80844e-08      2.80844e-08 YES
+   Dione             2.53134e-08      2.53134e-08 YES
+   Oberon            1.34714e-08      1.34714e-08 YES
+   Iapetus           5.48051e-09      5.48051e-09 YES
+   Rhea              4.42268e-09      4.42268e-09 YES
+   Ganymede             1.28e-09         1.28e-09 YES
+   Callisto            1.033e-09        1.033e-09 YES
+   Hyperion          9.81463e-10      9.81463e-10 YES
+   Titan             5.20557e-10      5.20557e-10 YES
+   Moon              5.96657e-11      5.96657e-11 YES
+
+EUROPA: 3.4750326422777565e-08 AU pre, 3.4750326422777565e-08 AU post -- EQUAL to every printed digit.
+All 17 special-orbit records are equal pre/post.  P4 CONFIRMED.
+
+CONSEQUENCE, and it is a SCOPE finding routed to the supervisor, not a
+decision taken here: Sec.5.150 is fixed on its ITERATIVE half.  Its
+special-orbit half is a DIFFERENT mechanism -- a shared static ephemeris
+cache that the OLD path walks identically (Sec.11.229(f5): 16 of the 17 keep
+moving with the new sampler disabled) -- and closing the row as a whole
+would record a fix that was not made.

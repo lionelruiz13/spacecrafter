@@ -1,0 +1,76 @@
+F111 / P5 -- THE DRAWN ORBIT LINE: WHAT THE MODEL SAYS, AND WHY THE SCREENSHOT
+              COULD NOT BE MADE TO SAY IT
+===============================================================================
+
+THE CLAIM (prediction.txt P5, committed before the build).  The pre-fix line's
+FIRST sampled point is computed from `iterativeLastE` as the frame left it -- at
+the body's own date -- while the point asks for date - 90*increment, i.e. HALF a
+visualisation period away, and it gets two Newton steps.  So the pre-fix line's
+first points are wrong by the same order as the transient, and the post-fix line
+is the converged one (which is also the OLD path's line, same algorithm):
+
+  body        max|pre-post|  at_d   pre_vs_exact   post_vs_exact
+  Neso           0.58723 AU    1       0.58723 AU     4.18e-07 AU
+  Setebos        0.23454       0       0.23454        5.03e-08
+  Sycorax        0.16316       5       0.16316        1.62e-08
+  Laomedeia      0.11449       0       0.11449        5.39e-09
+  Neried         0.06569       0       0.06569        4.79e-07
+  Pasiphae       0.03289       0       0.03289        1.43e-09
+  (full table: artifacts/f111/model_tables.txt section P5)
+
+THE INSTRUMENT, FIVE CONFIGURATIONS, AND WHAT EACH MEASURED.  All frames
+2048x2048, compared as (count of differing pixels, max absolute channel delta).
+
+ 1. DEFAULT camera, shipped scene, PRE vs POST with the flag ON:
+        92590 differing, max 89
+    A/A floor from two launches of the SAME binary, same flag state:
+        PRE vs PRE   91533   POST vs POST   91689
+    and the flag OFF vs ON difference INSIDE one launch: 91505.
+    => the floor is the whole of the signal; nothing can be read here.
+
+ 2. QUIET scene (stars, constellations, milky way, nebulae, atmosphere,
+    landscape, grids, hints, trails, meteors all off), camera tracking
+    Jupiter, fov 2 deg, selection pointer ON:
+        A/A flag OFF 975, A/A flag ON 820, flag OFF vs ON 748, max 232
+    => the pointer ANIMATES; the A/A floor still exceeds the signal.
+
+ 3. Same, pointer OFF, tracking RELEASED after the aim:
+        A/A flag OFF 0, A/A flag ON 0, flag OFF vs ON 0,
+        non-black pixels in the whole frame 210
+    => the aim drifted back; nothing of the Jupiter system is on screen.
+
+ 4. Same, pointer OFF, tracking KEPT ON, fov 2:
+        A/A flag OFF 449, A/A flag ON 366, flag OFF vs ON 375, max 6
+    => the lines reach a MAX CHANNEL DELTA OF SIX at the shipped
+       `planet_orbits_color = 0.2,0.2,0.2`; the floor (449) still wins.
+
+ 5. Same, with `planet_orbits_color = 1.0,1.0,1.0` written into the FARM COPY of
+    config.ini only (the real ~/.spacecrafter md5-asserted in == out, and the
+    change is identical in both arms so it cannot bias a pre/post comparison):
+        A/A flag ON 0 (BYTE-IDENTICAL frames -- the floor is finally gone)
+        but flag OFF vs ON 0 as well, and at the DEFAULT camera in the same
+        quiet scene all four frames are byte-identical.
+    => the floor was removed and the SIGNAL turned out to be zero: no satellite
+       orbit line reaches the frame at either camera in that scene.
+
+CONCLUSION, stated as a limit and not as a result.  The screenshot channel is
+NOT a discriminating instrument for this claim on this scene set: either its A/A
+floor exceeds the predicted signal, or the signal is absent.  The line claim
+therefore rests on the model (P5), which is labelled as such.  A body-space
+readout of `orbitPoint[]` -- which does not exist: the dump's `modules` key
+carries only the module NAMES -- is what would settle it, and it is recorded as
+owed rather than improvised.
+
+A SECOND FINDING, ABOUT AN EXISTING LEDGER NUMBER.  Sec.11.229(f2) reads *"with
+`flag planets_orbits on` the frame changes by 91774 pixels (the lines are
+drawn)"*, and its sibling leg recorded 91563 for the satellites flag
+(artifacts/f107/orbitflag_{planets,sat}.json).  Measured today on the same
+scene: two launches of ONE binary, same flag state, differ by 91533 pixels.  So
+those two numbers sit AT the A/A floor of their own scene and cannot support the
+parenthetical -- the differing pixels are the star field, which animates
+(twinkle) between any two frames.  The claim they were offered for ("the lines
+are drawn") may well be true, but that measurement does not show it.  Recorded
+at Sec.11.229(f2) as an annotation, not as a refutation of (f2)'s substance: its
+load-bearing result there is the 0-of-120 record comparison, which is
+independent of the pixel count and which BOTH binaries reproduce today
+(artifacts/f111/europa_specials.txt).

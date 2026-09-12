@@ -90,11 +90,22 @@ def score(bodies, rate, fps, sampling):
 
 def arm(app, tag, n, rate, fps, sampling, res):
     """N dumps in one arm; the arm's statistic is the MAX resid per record
-    (pre-registered in prediction.txt R2: one dump can land where dr/dE ~ 0)."""
-    per, jds = {}, []
+    (pre-registered in prediction.txt R2: one dump can land where dr/dE ~ 0).
+
+    THE PER-FRAME DATE JUMP IS MEASURED, NOT ASSUMED.  `evalCount` counts solver
+    calls (ModularBody.hpp:709) and the walk makes exactly one per frame for a
+    walked body, so the delta between two dumps IS the frame count between them
+    and (jd delta)/(evalCount delta) is the jump the solver actually saw.  This
+    matters because drawing 31 orbit lines costs frame rate, so the flag-ON arm
+    runs at a DIFFERENT jump from the flag-OFF arm at the same rate -- the
+    confound the pre-fix leg measured (artifacts/f111/prediction.txt R1).
+    """
+    per, jds, ev = {}, [], []
     for k in range(n):
         h, b, _ = take(app, "%s_%d" % (tag, k))
         jds.append(h.get("jd"))
+        probe = (b.get("Neried") or b.get("Pasiphae") or {}).get("new") or {}
+        ev.append(probe.get("evalCount"))
         s = score(b, rate, fps, sampling)
         for name, v in s.items():
             cur = per.setdefault(name, dict(v))
@@ -104,15 +115,22 @@ def arm(app, tag, n, rate, fps, sampling, res):
             cur["pred_max"] = max(cur.get("pred_max", 0.0), v["pred"])
     pert = sorted((n_ for n_, v in per.items() if v["resid"] >= THRESHOLD),
                   key=lambda x: -per[x]["resid"])
-    res[tag] = {"jds": jds, "n_dumps": n, "perturbed": pert,
+    steps_d = [((jds[i] - jds[i - 1]) / (ev[i] - ev[i - 1]))
+               for i in range(1, len(jds))
+               if ev[i] is not None and ev[i - 1] is not None
+               and ev[i] != ev[i - 1]]
+    res[tag] = {"jds": jds, "evalCount": ev, "n_dumps": n, "perturbed": pert,
+                "dJD_per_frame": steps_d,
+                "frames_between": [ev[i] - ev[i - 1] for i in range(1, len(ev))
+                                   if ev[i] is not None and ev[i - 1] is not None],
                 "n_perturbed": len(pert), "n_scored": len(per),
                 "every_frame": sorted(n_ for n_, v in per.items() if v["every"]),
                 "worst": (pert[0] if pert else None),
                 "worst_resid": (per[pert[0]]["resid"] if pert else 0.0),
                 "per_body": {k: {kk: vv for kk, vv in v.items()}
                              for k, v in sorted(per.items())}}
-    print("  %-14s %d dumps: %2d PERTURBED of %d scored%s"
-          % (tag, n, len(pert), len(per),
+    print("  %-14s %d dumps: dJD/frame %s : %2d PERTURBED of %d scored%s"
+          % (tag, n, " ".join("%.3f" % x for x in steps_d), len(pert), len(per),
              ("  worst %s %.4g AU" % (pert[0], per[pert[0]]["resid"]))
              if pert else ""), flush=True)
     return per
