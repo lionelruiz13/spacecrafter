@@ -827,7 +827,7 @@ test -e /home/claude/sc-f116 ; echo $? => 1
 ```
 
 **DoD:** predictions first; the constant + counters + in-session rotation + the D12 line; the mutated-budget proof both ways; the readers green; §11 entry + stub; §5.115's size bound FIXED in the marker; the §11.230 / §11.233 markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-12 14:4x — §0.7 gate PASS (18/18 + prose: canary `--no-scene` exit 0 at 14:38:19, VRAM 3179 MiB, `:2` 2448x1332, both trees clean at `d0e0c51e`/`b65bee6`); baselines at open: scan 277/347/144, pair 252/227/25/125, D 36 D2 12 I 93 I2 37 M 95; predictions committed (`artifacts/f116/prediction.txt`, rule (c) = rotate the LARGEST channel, with the storm argument against (a) and its measurement pre-registered). NEXT: the fix in `src/tools/log.{hpp,cpp}`.
+**WIP:** 2026-09-12 14:5x — gate PASS (18/18 + prose; canary exit 0 14:38:19); baselines at open scan 277/347/144, pair 252/227/25/125 (D36 D2 12 I93 I2 37 M95); predictions committed; THE FIX IS IN at code `8cca5ddf` (binary `fada7b10`), `f108_rotate.py` 2 launches 0 FAIL on a farm, delivered arm measured (17.3 MiB written, ZERO in-session rotations at 1 GiB), `prediction_mutant.txt` committed with the exact numbers. NEXT: build M1 (budget 4 MiB + instrumentation, `log.cpp` only) and M2 (rule (a)) and run them.
 
 ---
 

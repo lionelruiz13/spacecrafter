@@ -1,0 +1,124 @@
+{
+ "label": "delivered",
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "bin_md5": "fada7b10bd43487825a9c1063db056d1",
+ "rc": 0,
+ "budget_scored": 1073741824,
+ "iters": 60000,
+ "per_line": 299,
+ "window": 8,
+ "seed": "",
+ "pre": {
+  "channels": {
+   "spacecrafter": [
+    [
+     "spacecrafter.log",
+     79090
+    ]
+   ],
+   "script": [
+    [
+     "script.log",
+     546
+    ]
+   ],
+   "tcp": [
+    [
+     "tcp.log",
+     0
+    ]
+   ],
+   "shader": [
+    [
+     "shader.log",
+     0
+    ]
+   ],
+   "vulkan": [
+    [
+     "vulkan.log",
+     98631
+    ]
+   ]
+  },
+  "total": 178267
+ },
+ "post": {
+  "channels": {
+   "spacecrafter": [
+    [
+     "spacecrafter.log",
+     81781
+    ]
+   ],
+   "script": [
+    [
+     "script.log",
+     17941312
+    ]
+   ],
+   "tcp": [
+    [
+     "tcp.log",
+     13
+    ]
+   ],
+   "shader": [
+    [
+     "shader.log",
+     13
+    ]
+   ],
+   "vulkan": [
+    [
+     "vulkan.log",
+     98740
+    ]
+   ]
+  },
+  "total": 18121859
+ },
+ "peak": {
+  "channels": {
+   "spacecrafter": [
+    [
+     "spacecrafter.log",
+     79354
+    ]
+   ],
+   "script": [
+    [
+     "script.log",
+     17941002
+    ]
+   ],
+   "tcp": [
+    [
+     "tcp.log",
+     0
+    ]
+   ],
+   "shader": [
+    [
+     "shader.log",
+     0
+    ]
+   ],
+   "vulkan": [
+    [
+     "vulkan.log",
+     98631
+    ]
+   ]
+  },
+  "total": 18118987,
+  "t": 0.143
+ },
+ "console_rotations": [],
+ "infile_rotations": 0,
+ "open_lines": 5,
+ "instr": [],
+ "polls": 99,
+ "fails": [],
+ "notes": []
+}

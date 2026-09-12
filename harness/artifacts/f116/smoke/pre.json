@@ -1,0 +1,37 @@
+{
+ "pre": 0,
+ "snap": {
+  "channels": {
+   "spacecrafter": {
+    "files": [],
+    "legacy_count": 0,
+    "legacy_bytes": 0
+   },
+   "script": {
+    "files": [],
+    "legacy_count": 0,
+    "legacy_bytes": 0
+   },
+   "tcp": {
+    "files": [],
+    "legacy_count": 0,
+    "legacy_bytes": 0
+   },
+   "shader": {
+    "files": [],
+    "legacy_count": 0,
+    "legacy_bytes": 0
+   },
+   "vulkan": {
+    "files": [],
+    "legacy_count": 0,
+    "legacy_bytes": 0
+   }
+  },
+  "dirents": 0
+ },
+ "legacy": [
+  0,
+  0
+ ]
+}

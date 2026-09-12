@@ -1,0 +1,97 @@
+F116 -- THE MUTANT PREDICTIONS, COMMITTED BEFORE THE MUTANT BUILDS EXIST
+========================================================================
+Written 2026-09-12 14:5x CEST, after the DELIVERED arm ran and before any
+mutation is applied to the tree.  It refines prediction.txt section 4 with the
+numbers that arm measured; prediction.txt itself is unchanged and still scores.
+
+CALIBRATION, from the delivered run (artifacts/f116/delivered/, binary
+fada7b10, 0 FAIL, 0 in-session rotations at the shipped 1 GiB):
+  total of the five channels at rest, on a fresh farm   T0 = 178 267 B
+    (spacecrafter 81 6xx, vulkan 98 740, script 8xx, tcp 13, shader 13)
+  one generated show line costs, on the SCRIPT channel  299 B exactly
+    (echo 140 = 14 ticks + 9 severity + 16 "Execute_command " + 100 + NL,
+     skip 159 = 14 + 9 + 35 "this command has not been executed " + 100 + NL)
+  60 000 lines wrote 17 941 312 B into script.log against 17 940 000 predicted
+    by arithmetic: the 1 312 B difference is the preamble (the `comment` echo,
+    the play command's own echo+skip, the ScriptMgr load/end lines) and the end
+    marker.  Call the preamble P = 1 400 B (+- 200).
+  the show played in ~2 s; the peak total was 17 118 987 B, i.e. 17.3 MiB with
+  NOTHING rotated in-session, which is arm 3.1 of prediction.txt: HIT.
+
+MUTANT M1: the comparison constant in log.cpp only (log.hpp, the shipped
+constant, is NOT touched), budget B = 4 194 304 B (4 MiB), plus an
+instrumentation dump at cLog::close (stderr, "[f116-instr]") carrying the final
+counter, the per-channel figures, and steady_clock accumulators for the whole
+write() body, for the counter+check block alone, and for the rotations.
+Same farm shape, same show, same 60 000 lines.
+
+M1.1  THE FIRST CROSSING IS AT SHOW LINE (B - T0 - P)/299 = 13 427, and I
+      predict the filler index named by the last `Execute_command
+      f116_filler_XXXXXXX` line standing before the first budget line in the
+      process's own stdout is in [13 400, 13 450].
+M1.2  The first line names channel `script` (the largest by far: ~4.0 MB against
+      vulkan's 98 740 and spacecrafter's ~82 000).
+M1.3  Its "bytes in use" figure is in (4 194 304, 4 194 304 + 600].
+M1.4  THE FIRST BURST IS EXACTLY 8 ROTATIONS.  The farm's log directory has no
+      archives, so the first rotation moves the ~4.0 MB live file to .1 and
+      deletes index 7, which does not exist: it frees NOTHING and the total
+      stays above the budget, so the next logged line rotates again.  The big
+      file walks .1 -> .7 on rotations 1..7, each of them saying "deleted
+      nothing (this channel had no older file to drop)", and rotation 8 deletes
+      it, naming a size in [4 000 000, 4 100 000] B.  After it the total falls
+      to ~190 000 B.
+M1.5  EXACTLY 4 BURSTS, i.e. 32 in-session rotations, ALL naming `script`, with
+      exactly 4 deletion clauses.  Arithmetic: the first burst consumes
+      B - T0 = 4.016 MB of show traffic and each later one B - T1 = 4.007 MB
+      (T1 ~ 190 000 B, the four other channels plus the 8 tiny script files),
+      so the crossings fall at show lines ~13 427, ~26 830, ~40 233, ~53 636 and
+      the fifth would need line ~67 000, which the 60 000-line show never
+      reaches.  Scored with a tolerance of +-1 burst and +-50 lines per crossing.
+M1.6  No channel ever holds more than 8 files at any poll and no <channel>.8.log
+      is ever created -- the same invariant the delivered arm showed, now with
+      the rotation actually firing.
+M1.7  The peak total seen by the 20 ms polls is below 4.25 MiB; the total at
+      exit is below 4.25 MiB.  (The polls can miss the true peak: a burst takes
+      milliseconds.  The peak the CODE allows is B + one burst's own writes,
+      ~6 KB.)
+M1.8  THE COUNTER IS EXACT: the on-disk sum of the five channels' files after
+      the process exits equals the dumped counter total + 5 x 13 bytes (the
+      "(Info ): EOF" line cLog::close writes to each stream outside write()).
+      Delta 0, not "small".
+M1.9  COST.  Per logged line, the counter+check block costs less than 200 ns and
+      less than 2 % of the whole write() body, which is dominated by two flushes
+      (std::endl then flush()).  Per rotation, less than 0.5 ms -- the same work
+      F108 measured at open (0.06-0.33 ms per channel, Sec.11.230(i)) MINUS the
+      legacy-pile directory scan, which the in-session path does not run.
+      ~130 000 lines at ~9 MB/s in this run make the per-line figure a mean over
+      a large N, which is the point of measuring it here rather than in a
+      micro-benchmark.
+
+MUTANT M2: identical to M1 except that rotateForBudget rotates THE CHANNEL
+LAST WRITTEN (the section's option (a)) instead of the channel holding the most.
+Both run on a farm whose log directory is SEEDED with shader.1.log = 6 291 456 B
+(6 MiB, above the 4 MiB budget) -- a channel the show never writes.  The show is
+cut to 5 000 lines because M2 is predicted to be pathological.
+
+M2.1  M1 on the seeded farm: the seeded file is moved to .2 by the open-time
+      rotation, so the total is over budget before the first line is written.
+      The largest channel is `shader`, so shader rotates; it frees nothing until
+      the 6 MiB file reaches index 7.  I predict EXACTLY 6 rotations naming
+      `shader` (the file walks .2 -> .7 on five of them and is deleted by the
+      sixth, whose clause names 6 291 456 bytes), all of them during STARTUP
+      (the ~1 000 preamble lines of spacecrafter.log, before the show plays),
+      and the seeded file ABSENT at exit.  Tolerance +-1 rotation.
+M2.2  M2 on the same seeded farm: nothing writes to the shader channel, so the
+      6 MiB is never touched, the total is over budget for the whole run, and
+      EVERY logged line rotates whatever channel it landed on.  I predict more
+      than 2 000 in-session rotations (>= 300x M1's 6), NONE of them naming
+      `shader`, the seeded file still 6 291 456 B at exit, and the internal
+      channel growing by one ~600-byte line per rotation -- growth without
+      bound, on a build whose whole purpose is to bound growth.
+M2.3  THE DISCRIMINATION.  M1/M2 rotation-count ratio >= 10 confirms rule (c);
+      a ratio below 10, or a seeded file that leaves under M2 as well, refutes
+      my argument and the rule goes back to the section's option (a).  This is
+      the check that can fail.
+
+AFTERWARDS: both mutations are reverted and the delivered binary is rebuilt; its
+md5 must come back to fada7b10 bit for bit (F108's round-trip, Sec.11.230(g)).
