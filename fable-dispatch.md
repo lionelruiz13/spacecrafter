@@ -1011,6 +1011,7 @@ test -e /home/claude/sc-f109 ; echo $? => 1
   [F3] thirteen dispatcher defects (5 value, 8 structure), all output-side, all caught before a
        delivery — two new sub-classes named in Q-67 (a two-range sed; a per-round value in prose)
   [F4] unpushed at close: 99 code / 857 harness (measured 01:11:13); the push is yours, Saturday
+       → PUSHED 2026-09-12 11:03–11:04 by you, 0 / 0 at 11:13:30 (§11.232(b))
   ```
 
 
@@ -1412,7 +1413,10 @@ test -e /home/claude/sc-f109 ; echo $? => 1
   - **YOURS, and nothing here substitutes them:** (1) **R5 — the PUSH**: `master-beta` (88
     commits) and `CC-harness` (708 before this close's commit) from a keyed host — unchanged,
     still the one act that makes any of this reach the developer. (2) **R6's remaining half,
-    one sentence: after the rename, do pull requests still target `2023-master`?** Your line
+    one sentence: after the rename, do pull requests still target `2023-master`?** **[2026-09-12,
+    §11.232(a)2: *"master-beta as is; no rename now"* — the rename waits on your "ready"; the
+    intern starting this week reads the doc's `2023-master` sentence as it stands; the PR-target
+    half is still unstated.]** Your line
     answers the policy (rename, not redirect) and not this; `doc/developer-entry.md` §1 says
     they do; the patch changes the branch's NAME and leaves that half alone. **The rename
     itself is §11.212(h): eleven ordered acts, each with a check that can fail, and a patch
@@ -1518,7 +1522,9 @@ test -e /home/claude/sc-f109 ; echo $? => 1
     repository? (§11.204(f): a tree install ships NO content; the entry document names
     this as the one thing it cannot tell the developer.) (4) The developer's platform
     (if Windows, the vcpkg path entered untested) and whether the harness repo is meant
-    to be readable by him (the entry document points at it either way).
+    to be readable by him (the entry document points at it either way). **[ANSWERED
+    2026-09-12, §11.232(a)2: *"Linux"*; *"developer-entry.md is his entry, harness readable"* —
+    the developer is a part-time intern without an LLM, starting this week.]**
   - **VETO POINTS taken this session (implemented-and-live, each cheap to reverse;
     silence = endorsed):** (a) the EntityCore pin bump `f4ceb208` — the completing half
     of your own push (tree-identical); (b) §5.130's one-line move folded into F86 as

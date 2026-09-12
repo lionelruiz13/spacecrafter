@@ -257,7 +257,12 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    not hold; the owner's hand or his other session) and the pin bump followed (`f4ceb208`);
    the clone probe passes. R5 is back to ONE act: push `master-beta` (~~81~~ **86** code commits at the session-22 close, measured) and
    `CC-harness` from a keyed host — or from here, since a key evidently exists on this
-   machine for some session; the supervisor never pushes.]**
+   machine for some session; the supervisor never pushes.]** **[DONE 2026-09-12 11:03–11:04,
+   §11.232(b): the owner ran `supervised-by.sh` and pushed BOTH branches from this tree —
+   `origin/master-beta` = `fcc277c9`, `origin/CC-harness` = `16c68276`, **0 unpushed on each**
+   (measured 11:13:30); 83 code / 846 harness commits rewritten, 605 citations in 296 files
+   repointed, maps under `claude/sha-maps/`. R5 is CLOSED as an act. Standing cadence from here
+   [vixy 2026-09-12]: *"The work done will be pushed as well, at the end of the week."*]**
 6. **R6 — Branch policy.** Three developers committed to `2023-master` in 2026 (Kenan-Blasius,
    Lionel, Calvin). For `master-beta` to be the reference, either it becomes the PR target /
    main, or the others are redirected to it. → **Vixy**, one sentence; nothing here can decide
@@ -293,7 +298,12 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    target `2023-master`; the rename makes the branch's NAME false there and says nothing
    about that half, so the patch changes the name and leaves the target — one sentence, his.
    The two riders above (the developer's platform, whether the harness repo is his to read)
-   are untouched by the line as well.]**
+   are untouched by the line as well.]** **[2026-09-12, §11.232(a)2 — the two riders ANSWERED
+   and the rename DEFERRED by the owner in-session: *"master-beta as is; no rename now"*;
+   platform *"Linux"*; *"developer-entry.md is his entry, harness readable"*. The developer is
+   now NAMED: a part-time intern, no LLM, starting this week, the main tester testing his
+   features; he clones `master-beta` and reads the doc's `2023-master` sentence as it stands.
+   The PR-target half stays unstated; the rename stays "once ready" (T5.2).]**
 
 Not required for R0 (challengeable): tester transparency (T0's tiers), the final pass, any T1
 decision — a developer can work on a branch whose tester-facing divergences are still open,
