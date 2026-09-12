@@ -1,0 +1,356 @@
+F112 -- PRE-REGISTRATION, written and committed BEFORE the first line of the probe,
+the first edit of any caller and the first launch.
+Author: Claude Opus 5 executor (xhigh), task F112, supervising session 29.
+Date: 2026-09-12, ~15:40 CEST.  Code master-beta @ e922235a, harness @ 5bf9f85, both clean.
+Binary under test: build-claude/src/spacecrafter md5 95087b68 (F116's build), NOT rebuilt here.
+
+Everything below is a claim that can be measured wrong.  Each section names what would
+REFUTE it.  Nothing here is scored after the fact; the entry records hits AND misses.
+
+
+=====================================================================================
+1.  THE IDENTITY CRITERION
+=====================================================================================
+
+A running process P is a SPACECRAFTER ENGINE, for the purposes of a launch precondition,
+iff at least one of three channels fires:
+
+  C (comm)  /proc/<P>/comm == "spacecrafter"
+            -- world-readable, so it covers EVERY ACCOUNT; blind to any rename, because
+               comm is the executable's basename truncated to 15 bytes.
+
+  E (exe)   readlink /proc/<P>/exe resolves (after stripping a trailing " (deleted)")
+            to a path X with ANY of:
+              E1  basename(X) == "spacecrafter"  or  basename(X) startswith "spacecrafter"
+              E2  basename(X) matches  sc_*  or  sc-*        (the staging convention:
+                  sc_f109_iso, sc_post_95087b68, sc_pre_d607cfdc, sc_m1b_budget4M)
+              E3  X is under /home/claude/sc-*/                (the staging-tree convention)
+              E4  X contains a component matching build* immediately followed by /src/
+                  (the build-tree convention: build-claude/src/spacecrafter,
+                   sc-f110/tree/build/src/spacecrafter)
+              E5  X == realpath($SC_BIN) when SC_BIN is set (the binary under test, exact)
+            -- a real file, so no shell command line can ever match it (the F109 §11.231(j)
+               self-match hazard in its other direction); covers copies and renames.
+
+  P (port)  the process holds a LISTEN socket on TCP 7805 (the engine's server port).
+            -- an engine that answers is an engine whatever its file is called.
+
+A hit is reported as:  pid . uid . comm . exe . port . channels-that-fired.
+The criterion is the UNION.  Exit 0 = no hit; exit 2 = at least one hit; exit 4 = the
+probe could not run (which is a STOP, never a silent pass).
+
+WHY THREE AND NOT ONE -- each covers the others' blind spot, and this is MEASURED, not
+assumed:
+  [measured 2026-09-12 15:35] `readlink /proc/121858/exe` on the owner's java (uid foxy)
+  returns EMPTY, rc 1 -- /proc/<pid>/exe is NOT readable across accounts under
+  yama/ptrace_scope=1 (measured: 1), while /proc/121858/comm reads "java" fine.
+  So E alone cannot cover another account, and C alone cannot cover a rename.
+  P covers both -- but only while the server is up.
+
+PREDICTION 1.1: on this host, with ptrace_scope=1 and uid claude, E resolves for every
+process of uid 1003 and for NO process of another uid.  REFUTED IF any other-uid pid
+yields a non-empty exe here.
+
+PREDICTION 1.2: the criterion's NEGATIVE arm is clean -- run right now, with no engine
+live, the probe reports 0 hits.  REFUTED IF any of the ~600 live processes matches E2/E3/E4
+by accident (the E2 `sc_*`/`sc-*` basename rule is the one at risk).  If it fires, the rule
+is narrowed to E3+E4+E1 and the narrowing is recorded here, not hidden.
+
+
+=====================================================================================
+2.  THE POSITIVE MAP, PER CHANNEL (F26 §11.134(b)'s precedent: decoy 1 / without 0)
+=====================================================================================
+
+The decoy: a COPY of the delivered binary 95087b68 at
+/home/claude/sc-f112/sc_f112_decoy, launched on DISPLAY=:2 with HOME pointed at a FARM
+(b3_farm.sh via f96_offset.build_farm) so the real ~/.spacecrafter is never opened, held
+for >= 10 s, then killed BY PID from its own recorded pid (never pkill -f, §11.231(j)).
+
+                                       decoy LIVE     decoy DEAD
+  old comm form (the standing probe)        0              0        <- the blind spot
+  new probe, channel C                      0              0
+  new probe, channel E                      1              0
+  new probe, channel P                      1              0
+  new probe, total hits (pids)              1              0
+
+PREDICTION 2.1: the OLD form reads 0 with the decoy live.  Its comm is "sc_f112_decoy"
+(14 bytes, under the 15-byte truncation, so not even truncation saves it).
+REFUTED IF the old form reads non-zero.
+
+PREDICTION 2.2: the NEW probe reads exactly 1 pid, with channels E and P both fired,
+because f96_offset.App.start waits for TCP 7805 and will not return until the server is up.
+REFUTED IF the count is not 1, or if P does not fire within 180 s of launch (then the
+decoy is a --no-scene-class launch and the map records P as not exercised, said so).
+
+PREDICTION 2.3: both implementations (the python authority and the shell front-end) return
+the SAME count and the SAME pid on every one of the four readings.  REFUTED IF they differ
+anywhere -- which is the whole reason the criterion exists once and not twice.
+
+PREDICTION 2.4: after `kill <pid>` and the process reaped, all channels read 0 within 10 s.
+
+
+=====================================================================================
+3.  THE RESIDUAL -- what this criterion CANNOT see, stated before it is built
+=====================================================================================
+
+R1  An engine of ANOTHER UID whose binary is renamed out of the comm match AND which has
+    not opened 7805 (a --no-scene / farm launch with no server, or a launch still inside
+    its first ~10 s of init).  Reason: /proc/<pid>/exe is unreadable across accounts
+    (measured above); comm is the only cross-account channel and it is name-exact.
+    This is the true residual and it is NOT the one the task section guessed.
+
+R2  Same account, but the binary is renamed outside ALL of E1-E5 (basename neither
+    spacecrafter* nor sc_*/sc-*), living outside /home/claude/sc-*/ and outside any
+    */build*/src/*, with no server up.  Reachable in practice only by deliberately
+    breaking the naming convention this corpus has used since F26.
+
+R3  A process that has rewritten its own comm via prctl(PR_SET_NAME) while also satisfying
+    R2's path conditions.  Not reachable by the engine, which never calls prctl.
+
+R4  A LISTENING socket on 7805 held by a NON-engine (a stale socat, another project).  This
+    is a FALSE POSITIVE of channel P, not a blind spot -- and it is the right behaviour:
+    the port is the resource the launch needs, so "someone holds 7805" is a stop whoever
+    they are.  The hit line names the holder so the reader can tell.
+
+R5  The window between fork and exec, and the window between exec and the server's listen:
+    a hit that exists but is not yet visible on E (exe already correct -- so this window is
+    only P's).
+
+NOT residual, contrary to the section's guess: "a renamed copy ... in an unlisted directory,
+with no server up" is R2 and is same-account; the cross-account half (R1) is the one the
+section did not name, and it is the one that actually bites, because the 2026-08-02 F26
+requirement was explicitly "ANY account".
+
+
+=====================================================================================
+4.  THE LIVE / FROZEN PARTITION RULE, and the counts it predicts
+=====================================================================================
+
+The census pattern of the task section
+  grep -lE '= "spacecrafter"|== "spacecrafter"|-x .spacecrafter. /proc' harness/*.sh harness/*.py
+returns 44 FILES today (24 shell, 20 python) -- the section's prose says 42 (22/18); the two
+new ones are F114's f114_run.sh and F116's f116_assert.sh, and the PREMISES line (44) is the
+right one.  BUT: the pattern counts FILES, not probe SITES, and it is not specific.
+
+PREDICTION 4.1: of the 44, some hits are NOT concurrent-instance probes at all.  Named in
+advance, before the partition is written:
+    b22_live_run.sh:45          a COMMENT (F109's note about the blind spot)
+    f116_assert.sh:8            a COMMENT (F116's note about the same)
+    b24_select.py:80            WIN_NAME = "spacecrafter", an SDL WINDOW TITLE
+    f108_writelog.py:152        a LOG CHANNEL name comparison
+    f67_tcp_live.py:331         a `scedit --history` row's process column
+    f76_live.py:380             the same
+    f68_provenance.py:471       a precondition that the binary be NAMED spacecrafter
+    f69_feedback.py:468         the same
+So the number of files carrying a real /proc probe is 44 - (files whose ONLY hits are the
+above).  REFUTED IF any of those eight is in fact a process probe.
+
+THE RULE (applied to the 44):
+
+  LIVE  -- a future task can RUN it to take a NEW measurement.  Any of:
+    (a) it is reached from a STANDING ENTRY POINT: the environment canary f56_canary.sh
+        (§0.5's enumerated precondition), the smoke suite f90_rehearsal_run.sh
+        (doc/developer-entry.md §5's one command), the standing parity gate f91_run.sh
+        (re-run by F104/F105/F108/F114/F116), or the shared python library f96_offset.py
+        (imported by 8 drivers);
+    (b) a §11 entry NUMBERED AFTER its own delivering entry records it being run
+        (measured: f45_run.sh 159->176, b22_live_run.sh 81->231, f26_epoch.sh 134->231,
+         f27_reply.py 135->231, f95_soak.py 215->230, f108_writelog.py 230->237);
+    (c) it belongs to the CURRENT era -- delivered at §11.213 (F91) or later -- in which
+        every task measurably re-runs its predecessors' drivers.
+
+  FROZEN -- running it again would only reproduce a LANDED artifact: a one-shot campaign
+    driver of the July/August era, outside (a)(b)(c).  Its bytes stay as they were when its
+    artifacts were produced, so the landed record stays reproducible; it gains exactly ONE
+    comment line naming the home, and nothing else.
+
+PREDICTION 4.2, the counts, committed before the edits:
+    LIVE, carrying a real probe to ROUTE          20 files  (+/- 2)
+    FROZEN, annotated with one comment line       22 files  (+/- 2)
+    census hits that are NOT probes (no edit)      2 files   (b24_select.py,
+                                                             f108_writelog.py)
+    sum                                           44
+REFUTED IF the delivered partition's live count is outside 18-22 or the sum is not 44.
+
+PREDICTION 4.3: every LIVE file's diff is ONE CALL to the home plus the removal of the
+inline probe body (and, where the file carried F114/F116's exe+port+vram block inline, that
+block too).  REFUTED IF any live file needs logic the home does not provide.
+
+PREDICTION 4.4: routing f96_offset.py routes SIX python drivers transitively in one edit
+(f100_freeze.py, f105_dump.py, f107_orbitflag.py, f108_mutant.py, f108_rotate.py,
+f108_writelog.py, f116_budget.py -- the F108 `logread.py` precedent: one reader, many
+callers).  The dispatch's named gap -- f108_rotate.py routes through f96_offset.no_instance()
+and was therefore comm-only blind -- closes with that one edit and no edit of its own.
+
+
+=====================================================================================
+5.  THE HEADROOM GATE: the number, and where every digit comes from
+=====================================================================================
+
+The canary's present VRAM member is a NOTE at f56_canary.sh:416 against
+BANK_VRAM_NOTE_MIB=8192 (:171), "NOT a gate" by its own text.  On 2026-09-12 it passed
+with a note while NO launch could start (HOST-EVENTS 2026-09-12; §11.232(d)).
+
+THE APP'S OWN STATEMENT OF ITS NEED (§11.193's anchor rule: the app states it in its own
+log at init; the gate is a proxy DERIVED from that statement).
+
+  (i) THE RED LAUNCH, artifacts/f56/canary/20260912-112628/scene/dwell.applog, the app's
+      own lines in order:
+        GPU memory total 32607  available 1591  used 12   free 1578
+        Dedicated allocation of 512 MiB   -> used 12   (local memory 5 -> 517: the 512
+                                                        fell back to HOST memory)
+        Allocate chunk of 1 MiB           -> used 13
+        Dedicated allocation of 160 MiB   -> used 173
+        Dedicated allocation of 1280 MiB  -> used 1453 free 130
+        Warn: Low GPU memory detected - release unused memory
+        Dedicated allocation of 7 MiB     -> used 1461 free 122
+        ERROR: Failed to allocate chunk of 256 MiB in GPU memory   (twice)
+      So the INIT FLOOR -- what the app must have device-resident merely to get past the
+      allocation that killed it -- is 1461 + 256 = 1717 MiB.
+
+ (ii) THE SAME SEQUENCE ON A GREEN LAUNCH, F116's kept applogs.  Six launches of the full
+      reference/real-home shape (f116/f91, f116/realhome/L01-L03, f116/smoke/L01-L02) run
+      the same 22 dedicated allocations and 4 chunks and peak at the app's own
+        used = 5323 MiB, 6 of 6 launches, identical to the MiB.
+      Four lighter farm launches (delivered, m1, m1_seeded, smoke90) peak at 2871 MiB,
+      4 of 4.  So a launch that actually loads the scene needs ~3.6x the init floor.
+
+(iii) THE UNIT CONVERSION, measured not assumed.  The app's "available" is systematically
+      BELOW what nvidia-smi calls free: on the f91 green launch the app read
+      available 28984 while nvidia-smi's free was 32607 - 3179 = 29428 -- a 444 MiB
+      driver/context reservation the gate's units cannot see.
+
+  THE BANK:  BANK_GPU_NEED_MIB = 6144 MiB (6 GiB)
+             = 5323 (largest measured app-resident peak)
+             + 444  (the reservation of (iii))
+             + ~377 rounding up to the next GiB, as the margin for scene content this
+               corpus has not yet loaded.
+  The gate compares nvidia-smi FREE against it and FAILS below it, on BOTH arms.
+
+  WHY NOT the init floor (1717): a gate there would PASS a host on which the app starts,
+  opens no window and dies at the next allocation -- which is a worse failure than the one
+  being fixed, because it costs a launch to discover.
+  WHY NOT the note threshold's complement (32607 - 8192 = 24415): that number is a guess
+  from 2026-08-30 with a refuted hypothesis behind it (H-VRAM), and it would refuse this
+  very host on an ordinary desktop day.
+
+PREDICTION 5.1: on the two states the gate must separate --
+      2026-09-12 11:26 (the red):  free = 32607 - 30477 = 2130 MiB  ->  FAIL (2130 < 6144)
+      2026-09-12 15:35 (now):      free = 32607 - 3293  = 29314 MiB ->  PASS
+   and it passes NOW even though the owner's own java holds 1385 MiB of VRAM and the
+   desktop (gnome-shell x2, Xwayland, firefox, discord, pulsar, nautilus, ...) holds the
+   rest of the 3293.  REFUTED IF the gate fails on this host today.
+
+PREDICTION 5.2, and this one is a DEFECT CLAIM about the instruments already shipped:
+   `nvidia-smi --query-compute-apps=pid,process_name,used_memory` -- the holder-naming
+   call in f116_assert.sh:36 and f114_run.sh -- lists ONLY compute (C / C+G) processes.
+   [measured 15:35] it returns nautilus 102 + gnome-text-editor 68 + gnome-system-monitor
+   70 = 240 MiB of the 3293 in use, and does NOT list the largest holder, java at
+   1385 MiB, nor gnome-shell 486+162, nor firefox 238.  So a refusal that "names the
+   holder" through that call would name three small holders and miss the big one.
+   The gate must use a call that sees GRAPHICS processes too -- `nvidia-smi -q -d PIDS`
+   (measured: lists all ten, untruncated) -- and resolve each pid's uid and exe from /proc.
+   REFUTED IF --query-compute-apps does list java on a re-measurement.
+   NB the 2026-09-12 red is not a counter-example: llama-server WAS a compute process, so
+   that day's holder happened to be visible to the narrow call.
+
+PREDICTION 5.3: shown able to fail -- with BANK_GPU_NEED_MIB mutated above the free amount
+(31000 on a scratch copy), the canary exits NON-ZERO on the --no-scene arm with a
+gpu.headroom FAIL naming the holders; with the derived 6144 it exits 0.  The exit code will
+be 3 (environment MISSING), because what is missing is the memory the launch needs, and 3
+is the canary's documented code for a missing environment resource.
+REFUTED IF the mutated run exits 0, or the real-value run exits non-zero for this member.
+
+PREDICTION 5.4: the members that change in f56_canary.sh are exactly:
+   ADDED   gpu.headroom          (gating, both arms)
+   ADDED   gpu.free_mib          (recorded)
+   ADDED   gpu.holders           (recorded; named on a refusal)
+   KEPT    gpu.vram_pressure     (the NOTE, unchanged, still against 8192)
+   KEPT    gpu.query, gpu.used_mib, gpu.absent
+   CHANGED concurrency.spacecrafter_pre -> routed through the home (same member name, the
+           value becomes the home's hit count, and it stays where it is: in the SCENE arm,
+           because it guards the canary's OWN launch and the --no-scene arm launches
+           nothing.  The headroom gate is the opposite case and therefore goes on BOTH
+           arms: it is a proxy for "this host can launch at all", which is exactly what
+           a --no-scene preflight is asked before a task's own launches.)
+REFUTED IF the delivered diff touches any other member.
+
+
+=====================================================================================
+6.  THE SELF-TESTS, AND HOW THEY ARE SHOWN ABLE TO FAIL
+=====================================================================================
+
+sc_instances.py --self-test runs the criterion against a SYNTHETIC /proc fixture (a temp
+tree of comm/exe entries) plus a synthetic listener table, so every case is exact:
+   t1  comm=spacecrafter, exe=/usr/local/bin/spacecrafter      -> HIT (C,E)
+   t2  comm=sc_f109_iso,  exe=/home/claude/sc-f109/sc_f109_iso -> HIT (E)   <- the blind spot
+   t3  comm=spacecrafter-pr (comm truncated at 15 bytes),
+       exe=/home/claude/sc-f116/spacecrafter-pre               -> HIT (E)
+   t4  comm=spacecrafter, exe unreadable (other uid)           -> HIT (C)   <- cross-account
+   t5  comm=java, exe unreadable (other uid)                   -> MISS
+   t6  comm=bash, exe=/usr/bin/bash, cmdline carries
+       "/home/claude/sc-f116/sc_post_95087b68"                 -> MISS      <- F109 §11.231(j)
+   t7  comm=spacecrafter, exe=/home/claude/spacecrafter/build-claude/src/spacecrafter
+                                                               -> HIT (C,E)
+   t8  comm=firefox, exe=/snap/firefox/8863/usr/lib/firefox/firefox -> MISS
+   t9  a pid holding LISTEN :7805, comm=socat, exe=/usr/bin/socat -> HIT (P)
+   t10 exe=/home/claude/sc-f112/sc_f112_decoy (deleted)        -> HIT (E)
+   ... plus the uid/port/format cases.
+
+--mutant <name> injects ONE defect and the SAME suite must then FAIL, on named cases only:
+   comm_only   drop channel E and P      -> t2,t3,t9,t10 FAIL, the rest PASS
+   cmdline     match cmdline not exe     -> t6 FAILs (the self-match that killed a caller)
+   no_port     drop channel P            -> t9 FAILs
+   basename_eq E1 tightened to == only   -> t3 FAILs
+
+sc_instances.sh --self-test tests the FRONT END, not a second copy of the criterion (I2:
+one criterion, one home; a second implementation is a pending silent desync).  Its cases:
+   s1  delegation reaches the authority and returns its verdict verbatim
+   s2  exit-code mapping 0 / 2 / 4
+   s3  SC_INSTANCES_PY=/nonexistent  -> exit 4, NOT 0 (a probe that cannot run must STOP)
+   s4  --assert, --list and --kill argument handling
+   s5  the front end never matches ITSELF (its own exe is /bin/bash)
+Shown able to fail by s3's own inverse and by a mutant front end that swallows the
+authority's exit code.
+
+PREDICTION 6.1: both suites report 0 FAIL on the delivered files, and each named mutant
+fails exactly the named cases and no others.  REFUTED IF a mutant fails a case not named,
+or passes one that is.
+
+
+=====================================================================================
+7.  WHAT ELSE IS EXPECTED TO HOLD, so that a silent regression is visible
+=====================================================================================
+
+PREDICTION 7.1  After the routing, the smoke suite f90_rehearsal_run.sh exits 0 with the
+same step verdicts §11.237(l) records (S1 DIVERGENCE, S2 120->121, S3 PASS, S4 DEPRECATED,
+S5 PASS, S6, S7 DIVERGENCE, S8, S9) and the four frozen real-home files unmoved.
+
+PREDICTION 7.2  f91_run.sh --expect post --locale fr exits 0, 0 FAIL 0 NOTE, and the parity
+table md5 is 1fe630a4 -- byte-identical to the F104/F105/F108/F114/F116 landed record.
+This is the check that says the routing did not reach the render path.
+
+PREDICTION 7.3  config.ini 03fbee59 / ssystem.ini 545a51ef are md5-identical in == out
+around the decoy launch; the decoy never opens the real home (farm HOME).
+
+PREDICTION 7.4  The ledger instruments move by exactly the entry-first signature
+§11.156(f) predicts: pair-check entry files +1 and live pairs +1 (this entry and its stub),
+inline stubs +0 (no §5 row is minted by this task), archived-in-place +0; the backmarker
+scan's three numbers move only by this delivery's own markers.  Open baseline, measured at
+5bf9f85 before any write: scan 277/347/144, pair-check 253/228/25/125, D 36, D2 12, I 93,
+I2 37, M 95.
+
+PREDICTION 7.5  D14: every new harness file is pure ASCII by its own byte census, and
+f70_ascii.py gate PASSes before every commit (the gate covers the CODE tree; the harness
+files are censused per file, §11.237(n)'s method).
+
+
+=====================================================================================
+8.  THE ONE DECISION THIS TASK WILL NOT TAKE
+=====================================================================================
+
+Whether the canary's concurrency member should ALSO gate the --no-scene arm is decided
+above on an argument (it guards the canary's own launch; --no-scene launches nothing), not
+avoided -- but if the reading is wrong it is a one-line move and the argument is written
+where it can be overturned.  Nothing here changes the photometric band, any banked epoch,
+any engine line, or the frozen drivers' measurements.
