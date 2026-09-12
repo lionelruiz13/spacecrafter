@@ -735,7 +735,7 @@ test -e /home/claude/sc-f114 ; echo $? => 1
 ```
 
 **DoD:** predictions before any build; the two sites (+ the one-home conversion); `f38_gaps.py` pre/post; the ramp leg; F38's sites, F91, the smoke suite; §11 entry + stub; §5.100 + §5.101 FIXED; the §11.150 marker; T1.1 struck-with-record; the preload signal recorded; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-12 13:0x [F114 executor] CHECKPOINT 1 — gate PASSED (`premise_check.py F114` 18/18; canary `--no-scene` exit 0 at 12:53:56; VRAM 1358 MiB; no instance, 7805 free; field pair `03fbee59`/`545a51ef`). Pre binary copied to `/home/claude/sc-f114/spacecrafter-pre-6d63e6c1` (`6d63e6c1`, md5 asserted). PREDICTIONS committed BEFORE any build: `harness/artifacts/f114/prediction.txt` (the diff predicted, the `setFlagTraking` census with each of the four write sites classified, the pre/post legs with the digit-exact vs band split, the ramp's two laws in closed form with the divergence curve, the conversion's own farm leg, the regressions). DISPATCHER-SIDE FINDING: the section's prose precondition *"F113 DELIVERED"* is FALSE (F113 was withdrawn at 12:3x) — reclassified as non-input per §11.179(a) and reported, the binary being pinned directly by the PREMISES md5 line which PASSES. NEXT: `f38_gaps.py` PRE leg on `6d63e6c1`, then the fix.
 
 ---
 

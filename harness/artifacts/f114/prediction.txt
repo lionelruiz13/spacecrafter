@@ -1,0 +1,241 @@
+F114 -- PREDICTIONS, committed BEFORE the fix is written and BEFORE any build.
+================================================================================
+Author : Claude Opus 5 (executor), 2026-09-12, supervising session 29.
+Task   : claude/fable-dispatch.md "### F114" (S5.100 + S5.101 fixed on the
+         owner's word, S11.233(d): "yes, same as for any kind of tracking in
+         spacecrafter").
+State at writing:
+  code   master-beta d67833cd, clean          harness CC-harness c9a8764, clean
+  binary build-claude/src/spacecrafter md5 6d63e6c1  (the PRE binary; a copy is
+         kept at /home/claude/sc-f114/spacecrafter-pre-6d63e6c1, md5 asserted
+         equal before this file was written)
+  gate   premise_check.py F114 -> 18 PASS 0 FAIL ; f56_canary.sh --no-scene
+         exit 0 (0 fail 0 note) ; VRAM used 1358 MiB ; no instance ; 7805 free.
+
+Every number below is either PASTED from a landed artifact (marked [landed]) or
+DERIVED in closed form from the two ramp laws (marked [derived]) -- none is
+recalled. A leg whose outcome contradicts its prediction is reported as written,
+never re-labelled.
+
+--------------------------------------------------------------------------------
+0. THE CHANGE PREDICTED (what the diff will be)
+--------------------------------------------------------------------------------
+0a. src/coreModule/core.cpp:1393-1402 (Core::autoZoomIn, the !getFlagTraking
+    branch): Camera::instance->trackBody(ModularBody::findBody(selected_object
+    .getEnglishName())) added inside the existing `if (Camera::instance)` guard
+    that already carries armViewOffset(true) -- the SAME expression the dual
+    setter Core::setFlagTracking uses at core.cpp:2494, so the two tracking
+    entries cannot drift apart (I2).
+0b. src/coreModule/core.cpp:1439/1485 (Core::autoZoomOut, both branches):
+    Camera::instance->lookTo(<init direction in the camera's frame>,
+    move_duration) added inside the existing `if (Camera::instance)` guards that
+    already carry armViewOffset(false), i.e. AFTER setFlagTracking(false) has
+    cleared Camera::target -- otherwise the per-frame tracking re-plan
+    (Camera.cpp:664) would overwrite the aim plan on the next frame.
+0c. The frame conversion is NOT callable today: ssystem_factory.cpp:185-186
+    performs it as an inline expression, `camera->lookTo(Vec3f(v[1],-v[0],v[2]),0)`,
+    with no named function. PREDICTION: a helper is required (the mandate's
+    "a helper only if the conversion is not callable today"), it lands in
+    Camera.hpp as a static inline, and ssystem_factory.cpp:186 is REROUTED
+    through it so there is ONE home (I2). Rerouting loadCamera touches a file
+    outside the section's boundary list; it is NEW-path code (it calls
+    camera->lookTo), not old-path, so the section's STOP condition ("not
+    reusable without changing old-path code") does NOT fire. Reported as a
+    deviation with this argument.
+0d. NOTHING on the old side moves: `git diff` will show zero changed lines
+    containing `navigation->`. Asserted by diff, both ways (the two
+    navigation->moveTo(InitViewPos,...) lines and the navigation->setFlagTraking
+    (true) line appear as CONTEXT only).
+
+--------------------------------------------------------------------------------
+1. THE CENSUS (S5.100 owes it) -- MEASURED at d67833cd before the fix
+--------------------------------------------------------------------------------
+/usr/bin/grep -rn 'setFlagTraking' src/ gives exactly four WRITE sites (plus one
+declaration and three comment mentions):
+  navigator.hpp:65   the setter itself (declaration).
+  core.cpp:399       INIT RESET, old-only -- COHERENT BY CONSTRUCTION, not by
+                     accident: Core::init calls ssystemFactory->loadCamera(conf)
+                     at core.cpp:393, six lines above, and loadCamera clears the
+                     new path's tracking unconditionally at
+                     ssystem_factory.cpp:170 (`camera->trackBody(nullptr)`).
+                     Both paths are cleared in the same init, in a fixed order.
+                     NOT changed by this task. (S5.100's own note called it
+                     "coherent by accident"; the call at :393 makes it coherent
+                     by construction -- stated as a correction, with the lines.)
+  core.cpp:1393      autoZoomIn -- THE GAP (S5.100). Fixed here.
+  core.cpp:2488      inside Core::setFlagTracking(false) -- already dual
+                     (Camera::instance->trackBody(nullptr) at :2490).
+  core.cpp:2493      inside Core::setFlagTracking(true)  -- already dual
+                     (trackBody(findBody(...)) at :2494).
+PREDICTION: after the fix the census is unchanged in COUNT (the old-path lines
+are not touched) and every one of the four sites has a new-path counterpart in
+the same basic block. The post-fix re-run of this grep must print the same five
+line numbers.
+
+--------------------------------------------------------------------------------
+2. PRE LEG -- f38_gaps.py UNCHANGED on 6d63e6c1 (artifacts/f114/gaps_pre)
+--------------------------------------------------------------------------------
+The landed F38 record (artifacts/f38/gaps, binary 497181da, 2026-08-26) is the
+comparison. NOTE ON "to the digit": that record was taken on a DIFFERENT binary
+and every leg contains real-time settles, so only the quantities that are
+STRUCTURALLY pinned can be digit-exact. Split committed here, before the run:
+
+  DIGIT-EXACT expected (a difference is a finding):
+    g1_after_zoom_in : oldView.nav.flagTraking          = 1
+    g1_after_zoom_in : camera.tracked                   = ""      (the gap)
+    g1_after_zoom_in : old Mars screen                  = [1024, 1024]
+    g1_t0, g1_t1     : old Mars screen                  = [1024, 1024]
+    g1_*             : camera.tracked                   = ""
+    g2_before        : camera.tracked                   = ""      (track_object off)
+    g2_after         : camera.tracked                   = ""
+    g1_selected      : oldView.nav.flagTraking          = 0
+  BAND-EXPECTED (scene drift; the CLASS is the claim):
+    g1_after_zoom_in : angle(old helio forward, camera absFwd) = 99.03 +/- 0.10 deg
+                       [landed 99.0336]
+    g1_*             : new Mars screen frozen at the pre-zoom value, identical
+                       across g1_selected/g1_after_zoom_in/g1_t0/g1_t1
+                       [landed [0.205600187,-0.25803113] in all four] -- the body
+                       is not evaluated by the drawn path (new.lastJD < header jd)
+    g1_after_zoom_in : camera.halfFov = 2.28e-05 +/- 2e-07 rad [landed 2.27978835e-05]
+                       (the fov mirror S11.40 already reaches the Camera)
+    g2_before        : angle(old, new) <= 1.0e-04 deg  [landed 1.707547e-06 deg]
+                       -- this is the FLOOR of the parity observable: the state
+                       where both paths hold the same body through the dual
+                       setter. Every "within the float floor" claim below is
+                       against this number.
+    g2_after         : angle(old, new) = 99.03 +/- 0.10 deg [landed 99.0318]
+                       old helio forward = [0.2485, -0.2606, 0.9329] +/- 1e-03
+                       (the init direction; config init_view_pos = 1e-04,1e-04,1)
+                       new Mars screen still ~[0, 0] (the new path keeps the body
+                       centred through a command whose purpose is to leave it)
+  A PRE run that does NOT reproduce the two 99-degree gaps REFUTES the premise
+  this task stands on and is reported as an abort-class finding, not worked
+  around.
+
+--------------------------------------------------------------------------------
+3. POST LEG -- the same f38_gaps.py, unchanged, on the POST binary
+--------------------------------------------------------------------------------
+  g1_after_zoom_in : camera.tracked = "Mars"                    (was "")
+  g1_after_zoom_in : oldView.nav.flagTraking = 1                (unchanged)
+  g1_after_zoom_in : old Mars screen = [1024, 1024]             (unchanged --
+                     the old path must not move; any other value is a REGRESSION)
+  g1_after_zoom_in : angle(old, new) <= 1.0e-03 deg  (from 99.03; the settle is
+                     7.0 s of wall clock and the tracking servo re-plans every
+                     frame with T = max(0.2, 5*angle/pi), so it has converged;
+                     the floor measured in g2_before is 1.7e-06 deg and the
+                     bound above is 500x it -- deliberately loose, because the
+                     G1 state is reached through a ZOOM (halfFov 2.28e-05) and
+                     the servo residual has never been measured at that fov)
+  g1_t0, g1_t1     : new Mars screen within 1.0e-02 rect units of [0,0] on both
+                     samples (the drawn path now FOLLOWS Mars across the 0.05 d
+                     advance; pre-fix it was frozen at [0.2056,-0.2580])
+                     and new.lastJD == header jd to 1e-06 d (the body is now
+                     evaluated because it is in view)
+  g1_*             : camera.halfFov unchanged vs the PRE run within 2e-07 rad
+                     (the fov halves are NOT touched by this task, S11.40)
+  g2_before        : unchanged vs PRE within the floor (this leg never reaches
+                     either changed site: track_object on/off is the dual setter)
+  g2_after         : camera.tracked = ""                        (unchanged: the
+                     DISABLE half is already dual, Core::setFlagTracking(false))
+                     angle(old, new) <= 1.0e-03 deg             (was 99.0318)
+                     new absFwd within 1e-03 of old helio forward componentwise
+                     old Mars screen unchanged vs PRE within 1 px
+  A POST run in which g1 closes and g2 does not (or vice versa) means one of the
+  two sites is wrong; each leg is attributed to its own site.
+
+--------------------------------------------------------------------------------
+4. THE RAMP LEG -- `zoom auto initial duration 1` (new driver f114_ramp.py)
+--------------------------------------------------------------------------------
+The two laws are known in closed form, so the ramp is PREDICTED, not just
+measured. Let A = the total angle (~99.03 deg in this scene) and u = t/T.
+  OLD  [derived from navigator.cpp:71-73 + :108, zooming_mode == -1]:
+       c = coef^4 with coef advancing linearly (move.speed = 1/(duration*1000)),
+       and the aim is a slerp at fraction c, so the angular progress is
+       p_old(u) = A * u^4.
+  NEW  [derived from Camera.cpp:365-372 (solvePlan, v0 ~ 0 branch) + :396-402]:
+       t1 = T/2, a = 4A/T^2, so
+       p_new(u) = 2*A*u^2            for u <= 0.5
+                = A - 2*A*(1-u)^2    for u >  0.5.
+       v0 is NOT exactly 0 when a plan is in flight, but at the command instant
+       the camera is idle (viewT = 0) in this leg, so v0 = 0 exactly.
+       T is floored at 0.2 s (Camera.cpp:932) -- inert at duration 1.
+  PREDICTED DIVERGENCE (p_new - p_old), A = 99.03 deg:
+       u = 0.25 :  old   0.387  new  12.379  div  11.992 deg
+       u = 0.50 :  old   6.189  new  49.516  div  43.326 deg
+       u = 0.75 :  old  31.334  new  86.653  div  55.319 deg
+       u = 0.90 :  old  64.975  new  97.051  div  32.076 deg
+       MAXIMUM  :  57.578 deg at u = 0.6823
+  This is MEASURED AND STATED, NOT GATED (the mandate's own words; the B34/
+  S11.92 precedent: the END state is the parity target, the ramp is the
+  perceptual class). The end state:
+       at u >= 1 : angle(old, new) <= 1.0e-03 deg, camera.plans.viewT = 0,
+       oldView.nav.plans.flagAutoMove = 0.
+  Both paths land on the SAME direction; they get there on different curves,
+  new leading old over the whole interior of the ramp.
+  SAMPLING: the ramp is 1 s and one dual_dump costs ~0.1 s of app time, so the
+  per-frame claim is sampled, not exhaustive: >= 4 interior samples with each
+  sample's own clock read from the dump header (jd at timerate 1: seconds =
+  (jd - jd0)*86400). The prediction is scored as "measured points lie on the two
+  predicted curves within the sampling uncertainty", and the uncertainty is
+  stated from the samples' own jd spacing.
+  f25_ramp.py IS NOT REUSED: its per-step `ramp` rows are emitted only for
+  frames in which Core::updateMove has an ACTIVE interactive step
+  (core.cpp:1978-1982, vzm.deltaAz/deltaAlt/joypad), which a view PLAN issued by
+  `zoom auto initial` never sets. Stated here before the run, as the mandate asks.
+
+--------------------------------------------------------------------------------
+5. THE CONVERSION'S OWN DISCRIMINATING LEG (the field config cannot do it)
+--------------------------------------------------------------------------------
+The field's init_view_pos is `1e-04,1e-04,1` -- the ZENITH. The conversion
+(x,y,z)_old -> (y,-x,z)_camera is a 90 deg ROLL ABOUT THE ZENITH, so on this
+config a correct conversion and NO conversion at all differ by only
+  angle((1e-4,1e-4,1),(1e-4,-1e-4,1)) = 2.0e-04 rad = 0.0115 deg
+-- 6700x the 1.7e-06 deg floor, hence detectable, but a weak criterion for a
+frame error. So one extra leg on a temp-HOME FARM (the f38_scenes.sh pattern,
+field config pristine, md5 asserted in == out) with
+  init_view_pos = 1,0,0        (old-frame x = SOUTH)
+PREDICTION: after `zoom auto initial duration 0` the two paths agree within the
+floor (<= 1.0e-03 deg). With the conversion DROPPED the new path would aim at
+old's (1,0,0) read as camera-frame EAST, i.e. 90.0 deg away; with the sign
+dropped ((y,x,z)) it would be 180 deg away in azimuth. The leg can therefore
+fail three distinguishable ways, which is why it is run.
+Startup control in the same launch: the FIRST dump, before any command, must
+already show the two paths in agreement at that init direction (loadCamera's own
+call through the same helper) -- if the helper were wrong, startup would break
+too, and that is the cheapest witness that the two sites share one home.
+
+--------------------------------------------------------------------------------
+6. REGRESSIONS (each predicted, each able to fail)
+--------------------------------------------------------------------------------
+  f38_mirror.py (F38's four sky-lock sites) : green, the four scenes' characters
+      unchanged -- the changed sites are not among the four, but autoZoomOut is
+      f38_mirror.py's own state reset, so a wrong lookTo would derail its scenes.
+  f91_run.sh --expect post --locale fr      : table byte-identical, md5 1fe630a4
+      (the RA/DE readout does not depend on where the view points... in the
+      sense that F91's legs set their own view; predicted unchanged).
+  f90_rehearsal_run.sh (the smoke suite)    : rc 0, including its keyboard-ramp
+      step (which goes through Core::updateMove, a different ramp).
+  f56_canary.sh --no-scene                  : exit 0 before every launch.
+  f70_ascii.py gate                         : PASS (new source pure ASCII).
+  config.ini / ssystem.ini                  : 03fbee59 / 545a51ef in == out on
+      every launch.
+  D11 cost: zero per frame in steady state (both additions are one call each on
+      a COMMAND edge; the tracking servo's per-frame lookTo already existed and
+      is not made more frequent).
+
+--------------------------------------------------------------------------------
+7. WHAT WOULD REFUTE THE WHOLE DESIGN
+--------------------------------------------------------------------------------
+  (a) `Camera::lookTo` being overwritten on the next frame by something else
+      (a tracking re-plan, a sky-lock recapture) -- visible as g2_after's angle
+      NOT closing, or closing and then re-opening between two dumps. Guarded by
+      placing the call after setFlagTracking(false); if it fires anyway, the
+      ordering assumption is wrong and is reported, not patched around.
+  (b) The old path moving at all: any changed `navigation->` line, any old Mars
+      screen value other than [1024,1024] in g1, any old angle differing from
+      the PRE run by more than the scene drift. That is a construction
+      violation (S11.52(b)) and aborts the delivery.
+  (c) The init direction being read from a DIFFERENT source than old's
+      InitViewPos (e.g. re-reading the config at the site): the fix must use
+      Core's own member, so that a future `set init_view_pos`-class command
+      moves both paths together.
