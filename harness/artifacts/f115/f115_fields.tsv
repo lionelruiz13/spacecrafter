@@ -1,0 +1,87 @@
+# F115 - every FIELD of every uniform block a per-BODY object holds on
+# context.uniformMgr, with the site that WRITES it and its variability class.
+# Sizes are sizeof in bytes (the carved size is per BLOCK, see f115_sizes.tsv).
+# Classes: FRAME = per body per frame | CONST = per body, constant after load
+#          SYSTEM = one value per planetary system | LAUNCH = per launch/config
+#          ALL = identical for every body at a frame | DEAD = never written
+#          DERIVED = a pure function of another field of the SAME block
+# Every fill site is file:line at code master-beta @ d0e0c51e.
+block	field	bytes	fill_site	class	note
+globalVertProj	ModelViewMatrix	64	BasicMesh.cpp:79 (new) / body_moon.cpp:334 (old)	FRAME	the body's placement; the one irreducible per-body quantity
+globalVertProj	NormalMatrix	64	BasicMesh.cpp:80 / body_moon.cpp:335	DERIVED	= mat.inverseUntranslated().transpose() of the field above, in the same block
+globalVertProj	clipping_fov.v[0..1]	8	BasicMesh.cpp:81 <- Renderer.cpp:174-175,:199-200	FRAME	the depth bracket; per bucket, and per BODY in the mid band (Renderer.hpp:150)
+globalVertProj	clipping_fov.v[2]	4	BasicMesh.cpp:81 <- Renderer.cpp:107,:118	ALL	= ModularBody::halfFov, one camera value for every body
+globalVertProj	planetRadius	4	BasicMesh.cpp:82 <- body->getRadius()	CONST	06.sts: radius 0.1 for all 1013 -> ALL on that show
+globalVertProj	LightPosition	12	BasicMesh.cpp:83 <- ModularBody::getLightPosition()	ALL	a STATIC (ModularBody.hpp:1827-1829) - byte-identical in every body's block
+globalVertProj	planetScaledRadius	4	BasicMesh.cpp:84 / LayeredMesh.cpp:183	CONST	06.sts: identical for all 1013
+globalVertProj	planetOneMinusOblateness	4	BasicMesh.cpp:85 <- getOneMinusOblateness()	CONST	06.sts: oblateness 0.0 for all 1013 -> ALL on that show
+meshFrag	nbShadowingBodies	4	meshShadowFill.hpp:72 / :74 (else 0); ctor BasicMesh.cpp:22	FRAME	0 for every body that receives nothing
+meshFrag	_pad[3]	12	(none)	DEAD	std140 padding; no C++ site writes it, no shader reads it
+meshFrag	shadowingBodies[8]	768	meshShadowFill.hpp:62-71	FRAME	96 B x 8; written only for a DRAWN body with entries; untouched when nb==0
+globalFrag	MoonPosition1	12	body_moon.cpp:329	FRAME	the parent's eye-frame position
+globalFrag	MoonRadius1	4	body_moon.cpp:330	CONST	the parent's radius
+globalFrag	MoonPosition2..4 + MoonRadius2..4	48	(none for Moon; body_smallbody.cpp:178-181 zeroes the radii)	DEAD	read only by shaders/src/body_ringed.frag:72-91, a shader no Moon uses
+globalFrag	SunHalfAngle	4	body_moon.cpp:331 <- body.cpp:1035	FRAME	atan(sunRadius/|body-sun|) - per body, but equal to many digits within one system
+meshTescGeom	TesParam	12	LayeredMesh.cpp:195-197 <- BodyTesselation	LAUNCH	config tessellation levels; the same triple for every tessellated body
+meshTescGeom	_pad	4	(none)	DEAD	std140 padding
+rayMarchVert	ModelViewMatrix	64	LayeredMesh.cpp:262	FRAME	the SAME placement as globalVertProj.ModelViewMatrix, re-derived with the oblateness scale
+rayMarchVert	WorldToModelMatrix	48	LayeredMesh.cpp:263-264	DERIVED	std140 mat3 = transpose of the linear part of the field above
+rayMarchVert	zNear,zRange,fov	12	LayeredMesh.cpp:266-269 <- renderer.getClippingFov()	FRAME/ALL	the clipping_fov triple UNPACKED - the same three floats globalVertProj already carries
+rayMarchVert	radius	4	LayeredMesh.cpp:265	FRAME	finalRadius
+rayMarchFrag	lightDirection	12	LayeredMesh.cpp:271-275	FRAME	body-local sun direction
+rayMarchFrag	sinSunAngle	4	LayeredMesh.cpp:283-284	FRAME	the same quantity globalFrag calls SunHalfAngle, in another form
+rayMarchFrag	heightMapDepthLevel..squared	12	LayeredMesh.cpp:286-289	CONST	altimetry coefficients
+rayMarchFrag	sunDeviation,atmColor,atmDeviation	20	LayeredMesh.cpp:290-292	CONST	atmosphere_* keys, constant after load
+rayMarchFrag	nbShadowingBodies + _pad	16	LayeredMesh.cpp:66 + meshShadowFill.hpp:84	FRAME/DEAD	4 written, 12 pad
+rayMarchFrag	shadowingBodies[8]	768	LayeredMesh.cpp:293 -> meshShadowFill.hpp:78-110	FRAME	the SAME entries as meshFrag's array, folded instead of plain
+bodyRingVert	ModelViewMatrix	64	RingModule.cpp:132	FRAME	a THIRD copy of the same body's placement
+bodyRingVert	ModelViewMatrixInverse	64	RingModule.cpp:133	DERIVED	the inverse of the field above it
+bodyRingVert	clipping_fov	12	RingModule.cpp:134	FRAME/ALL	a second copy of the triple
+bodyRingVert	RingScale,SunnySideUp,fadingFactor	12	RingModule.cpp:135-146	FRAME/CONST	NB: unlike the old RingUniform this block has NO PlanetRadius slot
+bodyRingVert	PlanetPosition	12	RingModule.cpp:135-146	FRAME	derivable from ModelViewMatrix's translation
+bodyRingVert	LightDirection	12	RingModule.cpp:135-146	SYSTEM	eye-space body->sun
+bodyRingFrag	nbShadowingBodies + _pad	16	RingModule.cpp:147	FRAME/DEAD
+bodyRingFrag	shadowingBodies[8]	768	RingModule.cpp:147 -> meshShadowFill.hpp:45-75	FRAME	a THIRD array on ONE body
+atmExtUBO	ModelViewMatrix	64	AtmExtModule.cpp:131 (new) / atm_ext.cpp (old)	FRAME	a FOURTH copy of the placement
+atmExtUBO	sunPos	12	AtmExtModule.cpp:132	SYSTEM
+atmExtUBO	planetRadius	4	AtmExtModule.cpp:133	CONST	a second copy of globalVertProj.planetRadius
+atmExtUBO	bodyPos	12	AtmExtModule.cpp:134	FRAME	the ModelViewMatrix translation again
+atmExtUBO	planetOneMinusOblateness	4	AtmExtModule.cpp:135	CONST	a second copy
+atmExtUBO	clipping_fov	12	AtmExtModule.cpp:136	FRAME/ALL	a third copy of the triple
+atmExtUBO	atmRadius,TesParam,atmAlpha	16	AtmExtModule.cpp:137-145	CONST/LAUNCH
+ojmVert	NormalMatrix	48	OjmModule.cpp:151	DERIVED	std140 mat3 of ojmGeom.ModelViewMatrix's rotation part
+ojmGeom	ModelViewMatrix	64	OjmModule.cpp:152	FRAME
+ojmGeom	clipping_fov + _pad	16	OjmModule.cpp:153	FRAME/ALL
+ojmLight	Position	12	OjmModule.cpp:173	ALL	the light, again - identical for every body of the system
+ojmLight	Intensity	12	OjmModule.cpp:174	LAUNCH	hardcoded {1,1,1} on the old path (bodyShaderInterface.hpp:179)
+ojmLight	_p0,_p1	8	(none)	DEAD	std140 padding
+ojmShadowBlock	ShadowMatrix	48	OjmModule.cpp:155-168	FRAME
+ojmShadowBlock	ModelMatrix	48	OjmModule.cpp:155-168	DERIVED	model->eye, i.e. ojmGeom.ModelViewMatrix's linear part again
+ojmShadowBlock	ModelPosition	12	OjmModule.cpp:155-168	FRAME	its translation
+ojmShadowBlock	lightDirection,LightIntensity	24	OjmModule.cpp:155-168	SYSTEM	the same light ojmLight already carries
+ojmShadowBlock	selfShadowOn,nbShadowingBodies	8	OjmModule.cpp:100-101,:169	FRAME
+ojmShadowBlock	_p0,_p1,_pad[3]	20	(none)	DEAD	std140 padding
+ojmShadowBlock	shadowingBodies[8]	768	OjmModule.cpp:169 -> meshShadowFill.hpp:78-110	FRAME	the array again, on a body that also holds ojmLight
+ojmContainerUniformData	ModelViewMatrix	64	ojm_mgr.cpp:167-169	FRAME	the in-galaxy model (14.sts)
+ojmContainerUniformData	NormalMatrix	64	ojm_mgr.cpp:167-169	DERIVED	of the field above
+RingUniform	ModelViewMatrix	64	ring.cpp (Ring::draw)	FRAME	OLD path's ring block - the same job as bodyRingVert+bodyRingFrag
+RingUniform	ModelViewMatrixInverse	64	ring.cpp	DERIVED	the inverse of the field above it
+RingUniform	clipping_fov	12	ring.cpp	FRAME/ALL
+RingUniform	RingScale	4	ring.cpp	CONST
+RingUniform	PlanetPosition	12	ring.cpp	FRAME	the ModelViewMatrix translation again
+RingUniform	PlanetRadius	4	ring.cpp	CONST	a slot the NEW bodyRingVert dropped
+RingUniform	LightDirection	12	ring.cpp	SYSTEM
+RingUniform	SunnySideUp	4	ring.cpp	FRAME
+RingUniform	fadingFactor	4	ring.cpp	FRAME
+artGeom	ModelViewMatrix	64	body_artificial.cpp (drawBody)	FRAME	OLD path's artificial body
+artGeom	clipping_fov	12	body_artificial.cpp	FRAME/ALL
+artVert	normal[12]	48	body_artificial.cpp	DERIVED	std140 mat3 of artGeom.ModelViewMatrix's rotation part
+artVert	radius	4	body_artificial.cpp	CONST
+LightInfo	Position	12	body_artificial.cpp	ALL	the light again, one value for every body
+LightInfo	fixAlignment	4	(none)	DEAD	std140 alignment slot
+LightInfo	Intensity	12	body_artificial.cpp	LAUNCH	hardcoded {1,1,1}
+moonFrag	MoonPosition1	12	body_moon.cpp:317	FRAME	OLD heightmap row
+moonFrag	MoonRadius1	4	body_moon.cpp:318	CONST
+moonFrag	UmbraColor	12	body_moon.cpp:319	LAUNCH	one of two hardcoded triples (isEarthMoon)
+moonFrag	SunHalfAngle	4	body_moon.cpp:320	FRAME
+globalTescGeom	TesParam	12	body_moon.cpp:321 <- BodyTesselation	LAUNCH	the same triple for every tessellated body

@@ -30,6 +30,17 @@
   },
   {
    "06sts_authored": 1013,
+   "06sts_fits": false,
+   "06sts_wall_at_body": 944,
+   "bodies_per_free_MiB": 943,
+   "bytes_per_solar_body": 960,
+   "corpus_MiB": 1.148,
+   "corpus_bytes": 1203648,
+   "corpus_fits_1MiB": false,
+   "label": "O2  cap the receive array at 4, both paths"
+  },
+  {
+   "06sts_authored": 1013,
    "06sts_fits": true,
    "06sts_wall_at_body": null,
    "bodies_per_free_MiB": 1415,
@@ -48,7 +59,7 @@
    "corpus_MiB": 0.426,
    "corpus_bytes": 446528,
    "corpus_fits_1MiB": true,
-   "label": "O2  cap at 1 AND O4 (new only)"
+   "label": "O2+O4  cap at 1, new only"
   },
   {
    "06sts_authored": 1013,
@@ -81,7 +92,7 @@
    "corpus_MiB": 0.209,
    "corpus_bytes": 219392,
    "corpus_fits_1MiB": true,
-   "label": "O3  + all-bodies-identical fields shared (see the entry)"
+   "label": "O2'+O3+O4  the measured per-body MINIMUM (88 B payload)"
   },
   {
    "06sts_authored": 1013,
@@ -92,7 +103,7 @@
    "corpus_MiB": 0.137,
    "corpus_bytes": 143680,
    "corpus_fits_1MiB": true,
-   "label": "O3' the per-body minimum (model matrix only)"
+   "label": "   the alignment floor (payload <= 64 B: nothing but the matrix)"
   }
  ],
  "pool": 1048576,

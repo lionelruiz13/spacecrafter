@@ -1,0 +1,105 @@
+== step 0: the field table against the compiled sizeof ==
+  LightInfo                  fields    28   sizeof    28   OK
+  RingUniform                fields   180   sizeof   180   OK
+  artGeom                    fields    76   sizeof    76   OK
+  artVert                    fields    52   sizeof    52   OK
+  atmExtUBO                  fields   124   sizeof   124   OK
+  bodyRingFrag               fields   784   sizeof   784   OK
+  bodyRingVert               fields   176   sizeof   176   OK
+  globalFrag                 fields    68   sizeof    68   OK
+  globalTescGeom             fields    12   sizeof    12   OK
+  globalVertProj             fields   164   sizeof   164   OK
+  meshFrag                   fields   784   sizeof   784   OK
+  meshTescGeom               fields    16   sizeof    16   OK
+  moonFrag                   fields    32   sizeof    32   OK
+  ojmContainerUniformData    fields   128   sizeof   128   OK
+  ojmGeom                    fields    80   sizeof    80   OK
+  ojmLight                   fields    32   sizeof    32   OK
+  ojmShadowBlock             fields   928   sizeof   928   OK
+  ojmVert                    fields    48   sizeof    48   OK
+  rayMarchFrag               fields   832   sizeof   832   OK
+  rayMarchVert               fields   128   sizeof   128   OK
+  GATE PASSED: 20 blocks, every field sum equals its sizeof
+
+== AXIS 1  CROSS-PATH (one authored body, both paths live) ==
+    192 B  globalVertProj carved TWICE for one body - same struct, same seven fields, same values
+           OLD body_moon.cpp:284 (fill :334-340)
+           NEW BasicMesh.cpp:20 (fill :79-85)
+    128 B  the shadow-receive feed, two generations of the same job
+           OLD globalFrag body_moon.cpp:285 (fill :329-331)
+           NEW meshFrag BasicMesh.cpp:20 (fill :86)
+    128 B  the atmosphere shell block - FIELD-IDENTICAL declarations (f115_mirrors.py proves it)
+           OLD atm_ext.hpp:20-30, acquired atm_ext.cpp:78
+           NEW AtmExtModule.hpp:76-86, acquired AtmExtModule.cpp:73
+    192 B  the ring
+           OLD ring.cpp:146 RingUniform
+           NEW RingModule.cpp:74-75 bodyRingVert+bodyRingFrag
+    256 B  the artificial body
+           OLD body_artificial.cpp:84 artGeom+LightInfo+artVert
+           NEW OjmModule.cpp:97-98 ojmVert+ojmGeom+ojmLight+ojmShadowBlock
+  -> a 06.sts body: the OLD path's whole eager carve is 320 B, and B8 retires all of it
+     (of which 192 B is the LITERALLY identical struct, 128 B the superseded receive feed)
+
+== AXIS 2  CROSS-MODULE (two blocks of ONE body) ==
+  DERIVED fields - a pure function of another field already in the SAME block, 448 B over 8 fields:
+        64 B  globalVertProj             NormalMatrix               BasicMesh.cpp:80 / body_moon.cpp:335
+        48 B  rayMarchVert               WorldToModelMatrix         LayeredMesh.cpp:263-264
+        64 B  bodyRingVert               ModelViewMatrixInverse     RingModule.cpp:133
+        48 B  ojmVert                    NormalMatrix               OjmModule.cpp:151
+        48 B  ojmShadowBlock             ModelMatrix                OjmModule.cpp:155-168
+        64 B  ojmContainerUniformData    NormalMatrix               ojm_mgr.cpp:167-169
+        64 B  RingUniform                ModelViewMatrixInverse     ring.cpp
+        48 B  artVert                    normal[12]                 body_artificial.cpp
+
+  the SAME receive array embedded in 4 different blocks (bodyShaderInterface.hpp:71,:125,:149,:199), 768 B each:
+     meshFrag         meshShadowFill.hpp:62-71
+     rayMarchFrag     LayeredMesh.cpp:293 -> meshShadowFill.hpp:78-110
+     bodyRingFrag     RingModule.cpp:147 -> meshShadowFill.hpp:45-75
+     ojmShadowBlock   OjmModule.cpp:169 -> meshShadowFill.hpp:78-110
+
+  array bytes carried by ONE body, filled from ONE source (body->getReceivedShadows(), meshShadowFill.hpp:47 and :84):
+       768 B  a plain body (06.sts): meshFrag only
+      1536 B  a ray-capable layered body: meshFrag + rayMarchFrag
+      2304 B  + rings: also bodyRingFrag
+
+  the placement matrix, 64 B, appears in 8 distinct per-body blocks:
+     globalVertProj             BasicMesh.cpp:79 (new) / body_moon.cpp:334 (old)
+     rayMarchVert               LayeredMesh.cpp:262
+     bodyRingVert               RingModule.cpp:132
+     atmExtUBO                  AtmExtModule.cpp:131 (new) / atm_ext.cpp (old)
+     ojmGeom                    OjmModule.cpp:152
+     ojmContainerUniformData    ojm_mgr.cpp:167-169
+     RingUniform                ring.cpp (Ring::draw)
+     artGeom                    body_artificial.cpp (drawBody)
+
+  the clipping/fov triple: 88 B over 8 slots in 7 blocks
+
+== AXIS 3  CROSS-BODY (identical content, carved once per body) ==
+    768 B  meshFrag.shadowingBodies[8] - unwritten for a body that receives nothing, and NEVER written for a body that is never drawn
+           bodyShaderInterface.hpp:71  |  meshShadowFill.hpp:62-71
+     12 B  meshFrag._pad[3] - no writer in the tree, no shader reader
+           bodyShaderInterface.hpp:55  |  (no site)
+     12 B  globalVertProj.LightPosition - a STATIC, byte-identical in every body's block
+           ModularBody.hpp:1827-1829  |  BasicMesh.cpp:83
+      4 B  globalVertProj.clipping_fov.v[2] = ModularBody::halfFov
+           Renderer.cpp:107,:118  |  BasicMesh.cpp:81
+     12 B  globalVertProj planetRadius+planetScaledRadius+oneMinusOblateness - per-body CONST in general, but IDENTICAL for all 1013 bodies of 06.sts (radius 0.1, oblateness 0.0, measured)
+           BasicMesh.cpp:82,:84,:85  |  fscripts/06.sts (field data)
+  -> NEW path, one 06.sts body: 808 of 948 sizeof bytes (85 %) hold content no other body's block would differ in
+     OLD path, same body: 76 of 232 sizeof bytes (33 %) - globalFrag.MoonPosition2..4/MoonRadius2..4 are 48 B no site writes for a Moon (bodyShaderInterface.hpp:33-38 | body_moon.cpp:329-331)
+     BOTH: 884 of 1180 sizeof bytes
+
+== THE REQUIREMENT: what a body must own per frame ==
+   64 B  ModelViewMatrix            the body's placement - nothing else can carry it
+    8 B  clipping_fov.v[0..1]       the body's own depth bracket (Renderer.hpp:150)
+    4 B  nbShadowingBodies          how many entries this body receives
+  ---- per body per FRAME: 76 B
+    4 B  planetRadius               per body, constant after load
+    4 B  planetScaledRadius         per body, constant after load
+    4 B  planetOneMinusOblateness   per body, constant after load
+  ---- plus per-body CONSTANT: 12 B   TOTAL PAYLOAD 88 B
+  carved at alignment 64 -> 128 B per body
+  (+64 B, i.e. 192 carved, if NormalMatrix stays on the CPU side instead of being derived in the shader)
+  bodies per MiB at that minimum: 8192  (of the free 906047 B after the launch scene's own 142529 B: 7078 bodies)
+
+wrote redundancy.json

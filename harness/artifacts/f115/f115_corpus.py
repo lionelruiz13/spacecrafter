@@ -177,15 +177,19 @@ def main():
     def corpus_bytes(per_solar, per_ingal=128, per_arti=CARVED["OLD_artificial"] + CARVED["NEW_ojm"]):
         return solar * per_solar + ingal * per_ingal + arti * per_arti
 
+    # O1 (carve at first draw) does NOT change bytes per body - it changes WHICH
+    # bodies hold one, so it has no row here; its arithmetic is the drawn count,
+    # stated in the entry.
     options = [
         ("today (both paths, 06.sts body = 1344 B)", 1344),
         ("O4  B8 retires the old path (new only)", CARVED["NEW_basicmesh"]),
+        ("O2  cap the receive array at 4, both paths", 320 + 192 + 448),
         ("O2  cap the receive array at 1, both paths", 320 + CARVED["NEW_basicmesh_cap1"]),
-        ("O2  cap at 1 AND O4 (new only)", CARVED["NEW_basicmesh_cap1"]),
+        ("O2+O4  cap at 1, new only", CARVED["NEW_basicmesh_cap1"]),
         ("O2' array out of the block, both paths", 320 + CARVED["NEW_basicmesh_cap0"]),
         ("O2'+O4  array out, new only", CARVED["NEW_basicmesh_cap0"]),
-        ("O3  + all-bodies-identical fields shared (see the entry)", 128),
-        ("O3' the per-body minimum (model matrix only)", 64),
+        ("O2'+O3+O4  the measured per-body MINIMUM (88 B payload)", 128),
+        ("   the alignment floor (payload <= 64 B: nothing but the matrix)", 64),
     ]
     report = {"shows": per_show, "classes": dict(classes), "total_authored": total,
               "pool": POOL, "launch_baseline": BASELINE, "options": []}

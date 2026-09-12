@@ -1,0 +1,12 @@
+{
+ "array_blocks": 4,
+ "blocks_checked": 20,
+ "bodies_per_MiB_at_minimum": 8192,
+ "cross_body_both_bytes": 884,
+ "cross_body_new_bytes": 808,
+ "cross_path_06sts_bytes": 320,
+ "cross_path_same_struct_bytes": 192,
+ "derived_bytes": 448,
+ "per_body_minimum_carved": 128,
+ "per_body_minimum_payload": 88
+}
