@@ -9,10 +9,26 @@ correct for reasons you can check.
 where the line is the point), or an entry in the project's reasoning ledger
 written `Sec.N.M`, which you resolve in `claude/INTENT.md` or in
 `claude/INTENT/<id>.md` where the entry has its own file. Nothing here is
-asserted on memory, and every path and `Sec.` id in this file is checked
-mechanically by `claude/harness/f85_links.py`. Where a question has no answer
-yet, this file says so and names who can answer it: an invented answer costs
-more than a gap.
+asserted on memory, and every path, `Sec.` id and commit sha in this file is
+checked mechanically by `claude/harness/f85_links.py`. Where a question has no
+answer yet, this file says so and names who can answer it: an invented answer
+costs more than a gap.
+
+A `Sec.N.M` resolves to a file when one exists and to a line of `claude/INTENT.md`
+when it does not, and `python3 claude/intent_resolve.py Sec.5.142` prints
+which; by hand it is `grep -n '^142\. ' claude/INTENT.md`, because an inline
+row is written `142. **...**` and carries the `5.` nowhere on its own line --
+which is why searching for the printed form of the id finds only the places
+that cite it [`Sec.11.233`, clause (h)].
+
+A commit sha cited here is a sha of the **harness** repository unless the
+sentence names a code file, and it is checked for reachability, not just for
+shape. Those shas can be rewritten under this file: the tool that rewrites
+harness history repoints citations inside the harness repository, and this
+document lives in the code one, so a sha here can go dangling without anything
+failing. If one does not resolve, look it up in `claude/sha-maps/` -- each
+rewrite leaves a dated directory mapping every old sha to its new one
+[measured 2026-09-12].
 
 ## 1. Two repositories, one working tree
 
@@ -31,7 +47,12 @@ it beside the code:
 
 The layout is a precondition, not a preference: harness scripts resolve the
 binary at `../../build-claude/src/spacecrafter`, overridable with `SC_BIN`
-[`claude/README.md:21-23`].
+[`claude/README.md:21-23`]. **That default is not what section 5's build
+produces**: `install_src.sh` builds into `<spacecrafter>/build/`, so on a clone
+built as documented the harness default resolves to nothing and every script
+needs `SC_BIN=<spacecrafter>/build/src/spacecrafter` (or a build directory
+named `build-claude`) [measured 2026-09-12, a plain clone built and every
+section 5 command run from it].
 
 **The dependency is one-way.** The harness reasons about a code state; the
 code never depends on the harness [`:3-7`]. That is why this file is here and
@@ -258,7 +279,7 @@ textures" whether the copy worked or not [`INSTALL`, section 5], so an empty
 Where the content comes from is **not** an open question about whether it
 exists: by default only limited catalogues are loaded, and the correct ones
 are loaded by "an outside installation procedure" [owner,
-`claude/USER_QUESTIONS_ROUND3.md` R23, committed at `c5be42b` 2026-09-05; the
+`claude/USER_QUESTIONS_ROUND3.md` R23, committed at `1e6ca60` 2026-09-05; the
 commit does not record whether he was relaying the main tester].
 **This repository does not document that procedure**, and where it lives and
 who owns it is the one thing still to ask the owner. Same source:
@@ -266,18 +287,47 @@ who owns it is the one thing still to ask the owner. Same source:
 they are today ("We should but for now it is in another directory", R24), so
 it is not a search path you can rely on.
 
-**The harness:** `claude/harness/README.md`, whose "Run" section is the entry
-point [`:40-49`]; scripts default their binary to
-`build-claude/src/spacecrafter` and take an `SC_BIN` override
-[`claude/README.md:21-23`]. The per-task sections below it document each
-instrument and, more usefully, the gotchas each one cost a measurement.
+**The harness:** `claude/harness/README.md`. Its per-task sections document
+each instrument and, more usefully, the gotchas each one cost a measurement --
+that is what to read. Its "Run" section [`:40-49`] is **not** a first command:
+it needs `xvfb-run` (not a build dependency, so following `INSTALL` does not
+install it -- the line exits 127 without it), it names `spacecrafter` on your
+PATH rather than the binary you just built, and it carries the precondition
+"with dual-dump.sts installed as startup.sts", which no document in either
+repository tells you how to do [measured 2026-09-12, run as written from a
+plain clone]. The scripts default their binary to
+`<spacecrafter>/build-claude/src/spacecrafter` and take an `SC_BIN` override
+[`claude/README.md:21-23`] -- see section 1 on why you will need it.
 
 **The smoke suite** is one command and one exit code --
-`DISPLAY=:2 claude/harness/f90_rehearsal_run.sh <absOutdir>` drives a launch on
-a private farm through the shipped command surface (launch, author a body, run
-a shipped show, search, select and read out, save, reload, one keyboard ramp,
-quit), prints every step's observable and pass criterion *before* it runs, and
-exits non-zero on any failed step [`Sec.11.211`].
+`DISPLAY=<your display> claude/harness/f90_rehearsal_run.sh <absOutdir>` drives
+a launch on a private farm through the shipped command surface (launch, author
+a body, run a shipped show, search, select and read out, save, reload, one
+keyboard ramp, quit), prints every step's observable and pass criterion
+*before* it runs, and exits non-zero on any failed step [`Sec.11.211`]. The
+`:2` you will see written in the ledger is the dispatch desktop's display, not
+a project constant; use yours.
+
+**On your machine that command will stop before it starts, and it is not your
+fault.** The wrapper runs the environment canary first and aborts on a
+non-zero exit [`claude/harness/f90_rehearsal_run.sh:62-68`]. The canary is a
+fingerprint of ONE host and ONE boot -- the kernel start times of that
+desktop's compositor and X server, its display, and a photometric band
+measured on its GPU [`claude/harness/f56_canary.sh:129-132`, band at
+`:158-165`] -- so on any other machine it is red by construction and a red
+after a reboot is the protocol rather than a fault [`Sec.11.199`]. The
+documented way through is the wrapper's own escape, `F90_SKIP_CANARY=1`
+[`claude/harness/f90_rehearsal_run.sh:6`], and what it costs is stated rather
+than hidden: with the canary
+skipped the suite still drives all nine steps and still asserts the frozen
+files, but nothing has checked that the display stack, the GPU and the shared
+texture cache are in the state any measurement would need, and **the skip
+leaves no trace in the output** -- the canary line simply does not appear
+[measured 2026-09-12, both arms run from a plain clone, exit 0 each]. So: use
+the skip to run the suite, and do not report a number measured under it as a
+measurement. The canary itself becomes yours to use only once its values are
+re-banked for your host, which is a deliberate edit with an argument and not
+something to widen away [`Sec.11.176`].
 
 **scedit** (`util/scedit/`) is a standalone script and stellar-system-file
 editor and checker, deliberately not wired into the spacecrafter build, C++17
@@ -294,6 +344,20 @@ installed script package, the tracked stellar-system files and the field ones
 the machine [`:767-772`]. Exit codes: 0 clean, 1 findings, 2 usage or
 unreadable input [`:297-303`].
 
+**Expect one red, and read it before you chase it.** At this commit the run is
+18 passed / 1 failed and `ctest` exits non-zero; the failure is `anchor_gate`,
+which resolves every engine `file:line` the two contracts cite, both at the
+commit each fragment pins and against the working tree, and reports a count
+rather than a yes/no [`util/scedit/README.md:789`]. It is red because the
+engine moved under those citations -- 321 references moved, one no longer
+resolves, four do not resolve at their own pin -- so a red there is a
+measurement about the engine, not about your build, and the recorded counts
+are deliberately not regenerated to silence it [measured 2026-09-12 from a
+plain clone: `ctest --output-on-failure` exit 8, the other eighteen green].
+The two corpus gates skip only where their input is absent, so on a machine
+with the content installed you will see nineteen run and on a fresh one
+seventeen run and two skip.
+
 **Measurement discipline**, in five lines -- each one exists because ignoring
 it produced a wrong number at least once:
 
@@ -306,7 +370,9 @@ it produced a wrong number at least once:
 3. **Run the environment canary first** (`claude/harness/f56_canary.sh`;
    `--no-scene` for functional work, full for photometric). A non-zero exit
    stops the measurement and gets reported -- never mitigated silently, never
-   widened away [`Sec.11.176`].
+   widened away [`Sec.11.176`]. On a host whose values are not banked the
+   canary is red before it has measured anything -- see the smoke-suite
+   paragraph above; that red is a missing bank, not a stopped measurement.
 4. **No absolute photometry across stacks.** Trust counter ratios and in-run
    A/B; a display-stack change invalidates cross-session absolutes
    [`Sec.11.123`].
@@ -359,7 +425,7 @@ Read these before touching the code they live in.
 
 - **`search` is deprecated.** The owner's word, verbatim: *"Search is
   deprecated."* [`claude/USER_QUESTIONS_ROUND3.md` R22, committed at
-  `c5be42b`]. The open search-related defects are therefore not fix targets
+  `1e6ca60`]. The open search-related defects are therefore not fix targets
   -- confirm the disposition before spending anything on them.
 - **One script line can kill the app** [`Sec.5.92`]. `dso3d action restart
   maxobject 2` with no `depth` key runs `std::stoi` on an absent argument
@@ -373,8 +439,11 @@ Read these before touching the code they live in.
   data-grammar fact rather than a patchable bug: `orbit_semimajoraxis` is
   KILOMETRES under `ell_orbit` and ASTRONOMICAL UNITS under `comet_orbit`, on
   both paths. Also open: `EllipticalOrbit::saveOrbit` applies AU twice, so a
-  saved section reloaded is wrong by 1.496e8 [`src/bodyModule/orbit.cpp:600`,
-  `:606`]; and the chain's end logs the wrong class name
+  saved section reloaded is wrong by 1.496e8 -- once building the axis and
+  again printing it [`src/bodyModule/orbit.cpp:611`, `:617`; this document
+  cited `:600` and `:606` until 2026-09-12, which are the function's opening
+  brace and its `orbit_epoch` line -- both exist, so nothing reported it]; and
+  the chain's end logs the wrong class name
   [`src/bodyModule/orbit_creator_cor.cpp:283`; the row records `:260`].
 - **A NaN at startup on a cold `$HOME`** [`Sec.5.48`]. Body scaling is
   intermittently left non-finite at init, on whichever body the config scales;
@@ -395,7 +464,7 @@ Read these before touching the code they live in.
 Every content class in the list above is in real field use, with one caveat
 from the owner worth carrying: *"All have been tested, but sometimes long ago,
 so maybe some features could have altered the way it shall work."*
-[`claude/USER_QUESTIONS_ROUND3.md` R21, committed at `c5be42b`]. Read it as:
+[`claude/USER_QUESTIONS_ROUND3.md` R21, committed at `1e6ca60`]. Read it as:
 a feature being shipped is not evidence it still works.
 
 ## 8. Conventions for your own commits
@@ -414,9 +483,14 @@ a feature being shipped is not evidence it still works.
   so a fresh clone runs no hook until you install it [`claude/README.md`].
 - **Authorship**, observed rather than prescribed: the history carries both
   human and automated authors, the machine-authored commits under a model name
-  with a `Co-Authored-By` trailer [observed: `git log --format='%an'`, both
-  repos, 2026-09-05]. No document states a rule for human contributors, so use
-  your own git identity.
+  with a `Co-Authored-By` trailer and, since the owner's 2026-09-12 history
+  rewrite, a `Supervised-By` trailer naming the session that dispatched them
+  [observed: `git log --format='%an'` and the trailers of the newest commits,
+  both repos, re-observed 2026-09-12 at code `fcc277c9` / harness `16c6827`;
+  21 author names in the code repository, 9 in the harness]. That rewrite
+  changed every affected sha: a commit you noted before it will not resolve
+  after it, and `claude/sha-maps/` is where the old one maps to the new. No
+  document states a rule for human contributors, so use your own git identity.
 
 ## 9. Engineering principles
 
