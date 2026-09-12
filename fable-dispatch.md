@@ -36,6 +36,61 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-12, supervising session 29 — LovelyFoxDev, the INTERN'S-FIRST-DAY /
+SAMPLER-SEED / LAUNCH-PRECONDITIONS round: F110 · F111 · F112]:** trigger = the §0b verbatim line PLUS one
+owner sentence: *"Just before starting the dispatch, reminds me where I should focus in priority in order to
+unlock the most work"* — answered in-line before the first mint (the list is in this session's transcript; its
+ledger form is the §3 block at close). Open at **Saturday 10:55 CEST** — the owner's deep window, and he was
+PRESENT: three questions asked in-line, three answered (§11.232). Warm-up (every value from the command beside
+it, Q-67; `date` 10:55:56 at the first probe): both trees CLEAN at open, code `71b6fe51` / harness `aaef2d12`;
+definition-drift MATCH (`8e364a3a`); binary `6d63e6c1` current. **THE HOST REBOOTED AGAIN AT 09:51:57** (the
+second boot in 14 h; `loginctl` 5/6 → **10/11**, cookie `.8TBXV3`, `:2` 2448x1332 — HOST-EVENTS 2026-09-12);
+canary `--no-scene` exit 2 by design (the three per-boot members), RE-BANKED with the argument. **THE OWNER'S
+HISTORY REWRITE RAN MID-WARM-UP (11:03) AND BOTH BRANCHES ARE PUSHED**: code `71b6fe51 → fcc277c9`, harness
+`aaef2d12 → 16c68276`, 0 unpushed on each, 83 + 846 commits rewritten, 605 citations repointed (the PREMISES
+blocks of the live sections included), maps under `sha-maps/`; every open-time value re-measured at 11:13:30
+before any write. **THEN A RED THE BANK CANNOT PREDICT**: the FULL canary failed `photometric.empty` — the app
+died at *"Failed to allocate chunk of 256 MiB"* with 1591 MiB of VRAM available, because `qwen3.8:UD-Q6_K`
+(27.3B) sat resident in the owner's ollama under `KEEP_ALIVE=-1` holding 29.5 GB; NOT mitigated (uid 997,
+§11.174(h)); asked; released on his word; FULL canary **exit 0** at 11:34:15, 12/12 in band, every delta 0.0 —
+the band on a FOURTH boot. HIS REPLIES (§11.232, verbatim): a part-time intern WITHOUT an LLM starts on
+`master-beta` THIS WEEK on Linux, the main tester will test his features, pushes at the end of each week, no
+rename, `doc/developer-entry.md` is his entry and the harness readable, *"the new version shall be equally
+capable as the old one … it must be consolidated first"*. Config/ssystem md5 pristine (`03fbee59`/`545a51ef`) in
+== out; no instance, port 7805 free; RAM **52 GiB available of 59**, `-j24`; next free §11 **233** after §11.232
+(live ∪ archive, `max+1`). Live `### F` **3 → 0** by **archival pass 21** at OPEN (update-s27 + F107/F108/F109,
+335 lines = 162 + 60 + 63 + 48 + the doubled separator; manifest `2026-09-12-pass21`, pre-md5 `4ee97677`
+reproduced in-process AND from disk by an independent script; `1d07413`; **nothing carried**) **→ 3** by the
+mints below. Instrument baselines at open (run 10:58, unchanged by the rewrite): scan **271/339/144** ·
+pair-check **247/222/25/124** · D 35 · D2 12 · I 89 · I2 37 · M 91 — to the digit of the session-28 close.
+QUEUE CONSUMPTION (the session-28 close's list, RE-ORDERED on the owner's *"consolidated first"* + *"this
+week"*): (0) NEW, ahead of everything — **the intern's entry path → F110** (S–M — the doc followed by hand from
+a plain clone; measured at the mint: a plain clone shows him none of `claude/`; line 276 hardcodes `DISPLAY=:2`
+and line 306 sends him to a canary banked on THIS host, so `f90_rehearsal_run.sh` STOPS on his machine by
+construction; `c5be42b`, cited three times, has been unreachable since its 2026-09-05 amend and today's rewrite
+moved its successor again — `f85_links.py` checks no sha; the owner's three gaps (R23, §9, the remote form)
+routed, not written); (1) pass 21 — DONE; (2) **the exe-identity probe → F112** (M, not S — the census at the
+mint found **42** copy-pasted `comm` sites, not three; widened to ONE home + a GPU-headroom GATE after today's
+red, derived from the app's own init log); (3) **§5.150's fix → F111** (S–M — the old path's `batchLastE` pair
+called from `sampleOrbit`; the one-frame transient caught in the engine first at an every-frame-resample rate,
+or the reachable-rate STOP); (4)–(9) carried; the (7) tool residues (`purge-path.sh`'s map, `list_code_trailers`'
+skip) are now dispatchable — the Saturday run has happened. **THEN HIS SECOND MESSAGE (§11.233, ~12:0x, while
+F110–F112 were being minted) DECIDED FOUR ITEMS OF THE PRIORITY LIST AT ONCE**: §5.142 → 1 GiB → **F113** (S —
+one constant at `app.cpp:274` + the D13 reading measured as the veto point on his number); §5.100/§5.101
+AUTHORISED → **F114** (S–M — `trackBody`/`lookTo` exist, two sites; the preload signal he named recorded as a
+follow-on); T1.3 answered in DIRECTION (the B5 remainder is a DESIGN PASS, queued, not this round); §5.140 → the
+tester; §5.146's shape (throw) coupled to his EntityCore push; [Y4] closed; and four of my §5 pointers were
+unresolvable for him (inline rows carry no `§5.` — the fix rides F110). Picks, RE-CUT on *"consolidated first"*
+and his answers: **F110 → F113 → F114 → F112 → F111** — the doc first (the intern's clock), then the abort his
+corpus reproduces, then the last operator-basics hole, then the probe every later launch stands on, then the
+sampler's seed; the last two carried to the next round if capacity runs out (§0b.2: five is past the sweet
+spot, said here on purpose). Deliveries: all to the parent (§11.234+, refreshed at each dispatch). Launch
+classes: all FUNCTIONAL (`--no-scene`; F113 adds one FULL canary after); F110 builds from a clone (no install);
+F112 launches one decoy. Remotes: 0 unpushed at open on both; the owner pushes at the end of each week [vixy
+2026-09-12].
+
+---
+
 **Update [Claude Fable 5.1 2026-09-11, supervising session 28 — LovelyFoxDev, the SEED-STALENESS /
 LOG-RETENTION / RESIDUAL-STEP round: F107 · F108 · F109]:** trigger = the §0b verbatim line and nothing
 else. Open at **Friday 20:15 CEST** — a weekday evening, the eve of the owner's Saturday `supervised-by.sh`
@@ -533,7 +588,252 @@ untouched); archival pass 20 = update-s26 + F103–F106.** **Session-28 (2026-09
 at open (`3c38b05`); live below: the session-28 mints **F107** (§11.225(j2)/(j3)'s seed-staleness leg — the
 constructor seeds every body at JD 0; no delivered engine change), **F108** (§5.115's fix: uniform bounded
 retention, eight launches, every channel, a compiled constant), **F109** (A15's residual step removed on
-L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-09-11/12): F107 §11.229 · F108 §11.230 · F109 §11.231 (a STOP, endorsed — the residual is the instrument's) — three for three DELIVERED and accepted; §5.149–§5.152 minted at acceptances; archival pass 21 (update-s27 + F107–F109) DEFERRED to the next open.**
+L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-09-11/12): F107 §11.229 · F108 §11.230 · F109 §11.231 (a STOP, endorsed — the residual is the instrument's) — three for three DELIVERED and accepted; §5.149–§5.152 minted at acceptances; archival pass 21 (update-s27 + F107–F109) DEFERRED to the next open.** **Session-29 (2026-09-12, Saturday, the owner present): archival pass 21 DONE at open (`1d07413`); the owner's rewrite + push ran mid-warm-up and his replies are §11.232 (a part-time intern without an LLM starts on `master-beta` THIS WEEK — "consolidated first"); live below, dispatch order **F110 → F113 → F114 → F112 → F111** (his second message, §11.233, re-cut the round): **F110** (the intern's first day rehearsed by hand — `doc/developer-entry.md` followed literally from a plain clone on Linux), **F113** (§5.142's fix on his word — the uniform pool to 1 GiB, the D13 reading measured), **F114** (§5.100 + §5.101 on his word — `zoom auto in` tracks and `zoom auto initial` re-aims on the drawn path), **F112** (launch preconditions that see what they guard — the exe-identity instance probe in ONE home for 42 copy-pasted sites, and a GPU-headroom gate derived from the app's init sequence after the 2026-09-12 VRAM red), **F111** (§5.150's fix — the orbit-line sampler gets its own seed, the old path's `batchLastE` shape).**
+
+---
+
+### F110 — THE INTERN'S FIRST DAY, REHEARSED BY HAND: `doc/developer-entry.md` followed LITERALLY from a plain clone of `master-beta` on Linux by a reader with no LLM — every command run as written, every cited path AND every cited commit sha resolved (paths by existence, shas by REACHABILITY in the repository they belong to), the document corrected where the rehearsal measures it misleading him (the smoke-suite/canary paragraph that STOPS on any host but this one; the `c5be42b` citations unreachable since 2026-09-05; the authorship sentence observed before the rewrite), `f85_links.py` taught the class it could not see (a commit citation), and the gaps only the owner can fill (R23's content procedure, §9's placeholder, the SSH remote form) ROUTED to §3 with the doc's own sentences — nothing invented [S–M, code-tree doc + harness (`f85_links.py`, README, `f110_*`); ONE full build from a clone under `/home/claude/sc-f110/` (no install, no `sudo`); the smoke suite on `:2`; FUNCTIONAL, `--no-scene` canary; veto points §3]
+
+**Why now / mandate:** §11.232(a)2 — *"Yes: developer-entry.md is his entry, harness readable"*, *"Linux"*, *"it must be consolidated first"*, and the intern *"will start this week"*; §11.232(c)1 (the channel shift: a human without an LLM writes nothing into this ledger — every answer he needs must be in his reading path) and (c)4 (the four gaps named from the doc's own declared gaps); §11.204 (the doc's genesis, tier R, *"newcomer's 90-second smoke suite"*); the session-22 §3 item (4), ANSWERED today. Decision-free: every claim in the doc is checkable, a correction restores a measured truth, and anything that needs the owner's word is routed, not written.
+
+**The reading the mint stands on [derived; each fact a premise line]:** a plain clone of `master-beta` carries none of `claude/`, `CLAUDE.md`, `.claude/` (`git ls-files` 0 hits); the doc prescribes the second clone at line 30 (`git clone -b CC-harness <same-remote-url> claude`) and the remote is SSH (`git@github.com:lionelruiz13/spacecrafter.git`) — a key or the HTTPS form is the owner's to hand over; line 241 sends him to `sh install_src.sh -j<n>`, which runs `sudo cmake --install` into `/usr/local` (1 hit in the script) — the owner's install lives there (4 entries under `/usr/local/share/spacecrafter`) and the executor NEVER runs that half; line 276 hardcodes `DISPLAY=:2` (this host's display, HOST-EVENTS 2026-09-12) into the smoke-suite command, and `f90_rehearsal_run.sh` runs the canary FIRST and stops on red unless `F90_SKIP_CANARY=1` (its header, line 6) — the canary's bank is PER HOST (`BANK_HOST_BOOT` at `f56_canary.sh:132`, the process epochs beside it), red by construction on his machine, while line 306 tells him *"never mitigated silently, never widened away"*: a reader who cannot bank it meets a STOP with an instruction not to work around it; `c5be42b` is cited three times (lines 261, 362, 398) and is NOT reachable from `CC-harness` (`merge-base --is-ancestor` exit 1) — it was AMENDED into `6ffb017` on 2026-09-05 (session-22 §3, "SHA map in the open note") and that commit was rewritten today into `1e6ca60e` (`sha-maps/…/harness.tsv`); neither event reached the code tree's doc, and `f85_links.py` (129 paths, 25 continuations, 16 ledger ids, 0 dangling) checks no commit sha — a class it cannot see; §9 is a placeholder (line 423) he meets in week 1; the content-installation procedure is undocumented (line 263) and INSTALL §5 says the tree ships NO content — his clone runs EMPTY, which is EXPECTED and must be said to him as such; the PR-target sentence (line 47) stands on the owner's *"master-beta as is"*; the authorship paragraph (lines 415–419) was *"observed 2026-09-05"* — before today's rewrite recorded `Supervised-By` trailers and dropped self co-authors, so it is re-observed, not assumed.
+
+**Measured at dispatch (supervisor, 2026-09-12 11:4x–12:0x, code `fcc277c9`, harness `1d07413`):** the lines above by the PREMISES block; `f85_links.py` green; INSTALL's six sections at lines 11/26/37/47/74/90; `src/CMakeLists.txt:3` `CONFIGURE_DEPENDS`; `/home/claude/sc-f110` absent; canary `--no-scene` exit 0 at 11:26:26 and FULL exit 0 at 11:34:15 on the re-banked boot (`20260912-113229`); VRAM 980 MiB used after the owner unloaded his model — the app needs ≥ ~2.2 GB at init (HOST-EVENTS 2026-09-12).
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f110/prediction.txt`, committed before the first clone): for every numbered step the doc's §1, §5 and §8 put a first-day reader through — the two clones, INSTALL §3–4 (build half), `f70_ascii.py gate`, `f85_links.py`, the smoke suite, scedit's `cmake`/`ctest` (nineteen gates, SKIPs expected where inputs are absent — say which), `githooks/install.sh`, the harness README "Run" section's first command — a predicted class: PASSES-as-written / MISLEADS (what he sees, what is true) / BLOCKS (and whether the block is DESIGNED, e.g. no content); plus the reachability of every commit sha the doc cites (`grep -oE` the 7–8-hex tokens), predicted per sha and per repository. (2) **THE REHEARSAL**, under `/home/claude/sc-f110/`, as HE would do it except where his machine differs (each difference stated at the step): `git clone -b master-beta --recurse-submodules /home/claude/spacecrafter code` (the local path stands in for the remote — the SSH form is his key; say so), then the doc's §1 second clone from `/home/claude/spacecrafter/claude`; INSTALL §3–4 through the BUILD only (configure Release, compile with the hook's `-j` after `free -g`; NO `sudo cmake --install`, NO write under `/usr/local`, NO write to `~/.spacecrafter`); every §5 command run AS WRITTEN from the clone with `SC_BIN` = the clone's binary — the smoke suite on `:2` once with the canary (green here) and once as he would have to on his host (`F90_SKIP_CANARY=1`, recording what the skip loses); the scedit block at lines 286–288; the hook install; the README "Run" command; each with its exit code and the first line of what he sees. (3) **MEASURE** what `f85_links.py` cannot: every cited sha's reachability in the clone it belongs to (`git merge-base --is-ancestor`), and the TRUTH (not existence) of the ten `[path:line]` claims a first-day reader acts on — §1 clone, §5 build/smoke, §7's sharp-edge line numbers, §8's hook — by reading the cited lines. (4) **THE CORRECTIONS** — `doc/developer-entry.md` in the code tree, minimal, each with its measurement in the commit message, veto-open: the smoke-suite/canary paragraph for a reader on ANOTHER host (the bank is per host; `F90_SKIP_CANARY=1` and what it loses; `DISPLAY` is his own; the canary is the dispatch desktop's instrument — said plainly); `c5be42b` → the reachable sha, plus ONE sentence that commit citations in this file are not repointed by the harness rewrite tool (`supervised-by.sh` repoints inside the harness repo only — F103/F106) so a reader who finds a dangling sha looks it up in `claude/sha-maps/`; the authorship paragraph re-observed at `fcc277c9`/`16c68276`; anything else the rehearsal measures false. NOT written: R23's procedure, §9's text, the remote form — these are the owner's and go to §3 quoting the doc's own lines. (5) **`f85_links.py` gains the class**: every 7–8-hex commit token in the doc checked by `git merge-base --is-ancestor <sha> <branch>` in the repository the sentence names (harness by default; the code repo when the sentence says so), shown able to fail on the PRE-correction doc (exit 1, `c5be42b` named) and green after; usage line updated. (6) **RECORD:** §11.⟨next⟩ FIRST + stub; §11.204 marked at both homes (the first human rehearsal of the doc — what held, what misled); §11.232(c)4 marked with the measured outcome per gap; the session-22 §3 item (4) and the doc's genesis row in `DEPLOYMENT-MAP.md` R1/R3 if they name the smoke suite or the doc (`grep -c` first); `harness/README.md` F110 section; WIP per §0.6; D14.
+
+**Boundaries:** code tree: `doc/developer-entry.md` only (`INSTALL` only if a sentence is measured false — say so, one line); harness: `f85_links.py`, `harness/README.md`, `f110_*` drivers and `artifacts/f110/` (the per-step table with its prediction column, the exit codes, the smoke-suite outputs); NO engine code, NO `sudo`, NO write under `/usr/local` or `~/.spacecrafter` (the smoke suite's farm is private by design — its frozen-four assert stands); the build under `/home/claude/sc-f110/`; FUNCTIONAL launches on `:2` (`--no-scene` canary before the first; the instance assert by `/proc/<pid>/exe` + `ss -ltnp` 7805 — the `comm` probe is blind, §0.5, F112 lands after this task); config/ssystem md5 in == out asserted; explicit timeouts on every call that could exceed 120 s (Q-68); no `run_in_background`; nothing under `/tmp` carries; the intern's identity is not in the tree — the doc addresses "you".
+
+**Discriminating checks:** (a) the local-remote clone + build succeeds; the clone binary's md5 vs `6d63e6c1` stated (a build-path difference is expected — say what differs); (b) the smoke suite exit 0 from the CLONE's harness with `SC_BIN` = the clone's binary, both with the canary and with `F90_SKIP_CANARY=1`; (c) the per-step table's prediction column committed BEFORE the rehearsal, the outcome column after, every mismatch a finding; (d) `c5be42b` unreachable (exit 1) in the harness clone before the correction, the corrected sha reachable (exit 0) after; `f85_links.py`'s new check FAILS on the pre-correction doc and PASSES after — shown able to fail; (e) `git diff` of the doc confined to the measured corrections, each traceable to a rehearsal step; (f) D14 gate green; (g) every command in the doc's §5 has a recorded exit code from the clone.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; `:2` per HOST-EVENTS 2026-09-12; canary `--no-scene` exit 0 before the smoke suite; `free -g` available ≥ 16 GiB before the build; VRAM free ≥ 4 GB (`nvidia-smi`) before any launch — the 2026-09-12 red.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => fcc277c9
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
+grep -c '^### F' claude/fable-dispatch.md => 5
+# the document, re-resolved at HEAD (content drift = abort)
+wc -l < doc/developer-entry.md => 431
+python3 claude/harness/f85_links.py | tail -1 => DANGLING : 0
+git ls-files | grep -cE '^(CLAUDE\.md|\.claude/|claude/)' => 0
+grep -n 'git clone -b CC-harness .same-remote-url. claude' doc/developer-entry.md | cut -d: -f1 => 30
+grep -n 'DISPLAY=:2 claude/harness/f90_rehearsal_run.sh .absOutdir.' doc/developer-entry.md | cut -d: -f1 => 276
+grep -n 'Run the environment canary first' doc/developer-entry.md | cut -d: -f1 => 306
+grep -n 'Placeholder -- to be written by Calvin Ruiz' doc/developer-entry.md | cut -d: -f1 => 423
+grep -n 'This repository does not document that procedure' doc/developer-entry.md | cut -d: -f1 => 263
+grep -n 'pull requests target .2023-master.' doc/developer-entry.md | cut -d: -f1 => 47
+grep -n 'sh install_src.sh' doc/developer-entry.md | cut -d: -f1 => 241
+grep -c 'c5be42b' doc/developer-entry.md => 3
+git -C claude merge-base --is-ancestor c5be42b CC-harness; echo $? => 1
+# the instruments and the field around him
+grep -n 'F90_SKIP_CANARY=1' claude/harness/f90_rehearsal_run.sh | head -1 | cut -d: -f1 => 6
+grep -n '^BANK_HOST_BOOT=' claude/harness/f56_canary.sh | cut -d: -f1 => 132
+grep -n '^[0-9]\. ' INSTALL | tr '\n' ' ' => 11:1. What the build needs 26:2. Install the dependencies 37:3. Get the source, WITH the submodule 47:4. Build and install 74:5. The data the repository does NOT contain 90:6. First run
+git remote get-url origin => git@github.com:lionelruiz13/spacecrafter.git
+grep -c 'sudo cmake --install' install_src.sh => 1
+grep -n 'CONFIGURE_DEPENDS' src/CMakeLists.txt | cut -d: -f1 => 3
+ls /usr/local/share/spacecrafter 2>/dev/null | wc -l => 4
+test -e /home/claude/sc-f110 ; echo $? => 1
+```
+
+**DoD:** predictions before the first clone; the rehearsal table (prediction / outcome per step, exit codes); the sha-reachability measurement; the doc corrections with their measurements; `f85_links.py`'s new check shown able to fail; §11 entry + stub; the §11.204 / §11.232(c)4 markers; the §3 routing of the owner's three gaps; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+---
+
+### F113 — §5.142's FIX ON THE OWNER'S WORD (§11.233(b): *"a pool of 1 Gio is fairly generous and won't be critical either, but it should apply on single-session as well"*): THE UNIFORM POOL GROWS FROM 1 MiB TO 1 GiB, FIXED — `app.cpp:274` `1*1024*1024` → `1024*1024*1024` — because the tester's own `06.sts` exhausts 1 MiB at its 675th body and the reference binary then loses the device and ABORTS (§5.142; F98 reproduced it three ways, §11.222 priced the pool), and because the "number of sessions" proxy fails on a year-long run [vixy]; D12: the creation site logs the size, the per-body cost and the reason (one line, the F108 pattern — *"change this constant and rebuild"*); the D13 consequence MEASURED, not argued — `BufferMgr`'s constructor RETURNS on `createBuffer` failure (`BufferMgr.cpp:9`, §5.60's shape), so on a device whose `HOST_VISIBLE|DEVICE_LOCAL` heap is smaller than the pool (no resizable BAR) the outcome is whatever `VulkanMgr::createBuffer` (`VulkanMgr.cpp:706`) does with the PREFERRED flag — read it, state fallback-or-failure with the code lines, and the memory type chosen on THIS device from the app's own log; the proof: F98's arm C (`06.sts` then `14.sts`, 1541 authored bodies) exits 0 with ZERO `Can't allocate buffer` lines on the post binary and aborts on the pre binary, both by the reproduction instrument `artifacts/f98/f98_repro14.py` [S, engine (`app.cpp`: one constant + one log line); FUNCTIONAL launches on `:2`, `--no-scene` canary; the FULL canary after (the pool's memory type must not move on this device — the band to the digit); veto point §3: the NUMBER, if the D13 reading changes it]
+
+**Why now / mandate:** §5.142 (OPEN — a hard abort from shipped content, above §5.79's bar in every direction); §11.222(h)(1) (GROW's arithmetic: 2 MiB holds today's corpus with 14 % headroom; the owner chose 1 GiB against the unbounded run, not the corpus); §11.233(b) (the decision, verbatim); §11.232(c)2 (consolidation first — with the intern starting this week, the one thing the tester's corpus does that the reference binary cannot survive). Decision-free now: the number is his; the task changes one constant and measures what the number costs where it costs.
+
+**The reading the mint stands on [derived; each fact a premise line]:** `app.cpp:274` is the ONE creation of the uniform pool (`createBuffer` count 1, §11.222(h)(1)) — `BufferMgr(vkmgr, UNIFORM_BUFFER_BIT, HOST_VISIBLE|HOST_COHERENT, preferred DEVICE_LOCAL, 1*1024*1024, "uniform BufferMgr", uniformBuffer=true)` per the constructor at `BufferMgr.hpp:23`; the constructor calls `master.createBuffer(...)` and on `false` logs *"Failed to create buffer bloc"* and RETURNS with no buffer, no free space and no mapping (`BufferMgr.cpp:8-11`) — the same unguarded shape §5.60 records; when it succeeds the whole block is `mapMemory`'d at creation (`:20`), so a 1 GiB pool is a 1 GiB host-visible MAPPING (virtual; resident only where touched — the RSS and the app's own `GPU memory … used` lines measure the real cost); alignment 64, so a body costs 1344 B on the two paths together ⇒ 1 GiB ≈ 799 000 bodies; the field carries `fscripts/06.sts` and `fscripts/14.sts`; F98's reproduction instrument and its seven result dirs are landed (`artifacts/f98/repro/`); the negative arm is `panorama1.sts` (0/0/exit 0); §5.146 (a refused `SubBuffer` released into the free list) is a DIFFERENT row — a bigger pool makes refusal rarer, it does not fix the allocator (EntityCore, the owner's shape given, §11.233(f)). D13's question is not the size, it is the FAILURE MODE the size reaches on a smaller device (§11.222(h)(1)'s own sentence).
+
+**Measured at dispatch (supervisor, 2026-09-12 12:1x, code `fcc277c9`, harness `1d07413`):** the sites at the lines quoted; EntityCore pinned at `84f5d94b`, read-only; `/home/claude/sc-f113` absent; VRAM 980 MiB used after the owner's unload (32607 MiB total); canary green both arms on the re-banked boot.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f113/prediction.txt`, before any build): pre binary, arm C → 202 loads executed / 1557 buffer errors / 1 device lost / exit −6 (§5.142's numbers, same instrument); post binary → all 1541 loads, 0 `Can't allocate buffer` lines, exit 0 on `shutdown action now`; the applog's `GPU memory … used` delta at the pool's creation ≈ +1024 MiB and the memory-type index it lands on (from `vulkaninfo`'s table, §11.222's artifact); the RSS delta predicted from the mapping's touch pattern (state the model: mapped-not-touched vs touched); the D13 reading's PREDICTION from `VulkanMgr::createBuffer`'s code — fallback to a non-device-local `HOST_VISIBLE` type, or creation failure — BEFORE any run; F91 `1fe630a4` unchanged; the canary band unchanged (uniform memory is not photometry; the type unchanged on this device). (2) **THE FIX:** the constant, plus ONE D12 line at creation naming the size, the per-body cost (1344 B) and the reason (§5.142, the owner's 1 GiB, *change this constant and rebuild*); `BufferMgr`'s silent return is NOT touched (EntityCore; §5.60 stays OPEN and is marked with the widened reach). NOTHING else moves — assert by diff. (3) **THE PROOF:** arm C on the pre binary (the delivered `6d63e6c1`, kept under `/home/claude/sc-f113/`) and on the post binary — the F98 shape: the played shows COPIED to a farm (the annotator rewrites a played `.sts` in place; the frozen four in == out asserted), `f98_repro14.py` as the driver; the negative arm; the smoke suite; `f91_run.sh --expect post --locale fr` at `1fe630a4`; the FULL canary after (band to the digit, memory type asserted from the applog); the D11 cost: 0 per frame, the creation-time ms measured once. (4) **THE D13 READING:** `VulkanMgr::createBuffer` at `:706` — what happens when the preferred `DEVICE_LOCAL` type's heap cannot hold 1 GiB: a fallback to a non-device-local host type (then uniform reads cross PCIe — a D11 note, not a failure) or a creation failure (then the app runs with NO uniform pool and every body fails to load — §5.142's abort at body ONE): stated with the code lines; if it is FAILURE, the §3 veto point says so with the number that would fit a 256 MiB BAR heap (e.g. 128 MiB ≈ 100 000 bodies) — the OWNER's call, not the executor's; if it is fallback, the veto point says what the fallback costs. (5) **RECORD:** §11.⟨next⟩ FIRST + stub; §5.142 → FIXED (the pool) with the D13 reading in the marker; §11.222(h) marked at both homes (GROW chosen, the number, the reading); §11.218(g)/(m) marked; §5.60 annotated (the same unguarded return, reach widened by the grown pool); §5.146 cross-referenced (unchanged); the §3 veto point; `harness/README.md` F113 section; WIP per §0.6; D14.
+
+**Boundaries:** `src/appModule/app.cpp` (`:274` + the log line); NO EntityCore change (read-only — §5.146 and §5.60 stay open); no data; FUNCTIONAL launches on `:2` (`--no-scene` canary before the first; the instance assert by `/proc/<pid>/exe` + `ss -ltnp` 7805; config/ssystem md5 in == out; the shows played from a farm copy); the FULL canary once, after; explicit timeouts on every call that could exceed 120 s (Q-68); no `run_in_background`; nothing under `/tmp` carries; scratch under `/home/claude/sc-f113/`.
+
+**Discriminating checks:** (a) pre ABORTS (202/1557/−6) and post SURVIVES (1541/0/0) on the same shows through the same instrument — the fix shown able to fail; (b) the applog's creation-time memory delta ≈ 1 GiB and the memory type's heap stated; (c) the negative arm unchanged; (d) the FULL canary band to the digit, F91 byte-identical, the smoke suite green; (e) the D13 reading with code lines, predicted before any run; (f) the diff = one constant + one log line; (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; `:2` per HOST-EVENTS 2026-09-12; canary `--no-scene` exit 0 before the first launch; VRAM free ≥ 4 GB (`nvidia-smi`) before any launch; F110 DELIVERED (its smoke suite ran on the pre binary).
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => fcc277c9
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
+grep -c '^### F' claude/fable-dispatch.md => 5
+# the pool's one creation and the allocator's silent return, re-resolved at HEAD (content drift = abort)
+grep -n 'context.uniformMgr = std::make_unique.BufferMgr.(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1\*1024\*1024, "uniform BufferMgr", true);' src/appModule/app.cpp | cut -d: -f1 => 274
+grep -c '1\*1024\*1024, "uniform BufferMgr"' src/appModule/app.cpp => 1
+grep -n 'Failed to create buffer bloc' src/EntityCore/Core/BufferMgr.cpp | cut -d: -f1 => 9
+grep -n 'bool uniformBuffer = false' src/EntityCore/Core/BufferMgr.hpp | cut -d: -f1 => 23
+grep -n 'bool VulkanMgr::createBuffer' src/EntityCore/Core/VulkanMgr.cpp | cut -d: -f1 => 706
+git -C src/EntityCore rev-parse --short=8 HEAD => 84f5d94b
+# the reproduction instrument, the field's two shows, the ledger
+test -f claude/harness/artifacts/f98/f98_repro14.py && echo ok => ok
+ls claude/harness/artifacts/f98/repro | wc -l => 7
+ls ~/.spacecrafter/scripts/fscripts/06.sts ~/.spacecrafter/scripts/fscripts/14.sts | wc -l => 2
+grep -n '^142\. \*\*' claude/INTENT.md | head -1 | cut -d: -f1 => 508
+grep -c 'GROW' claude/INTENT/11.222.md => 2
+nvidia-smi --query-gpu=memory.total --format=csv,noheader => 32607 MiB
+test -e /home/claude/sc-f113 ; echo $? => 1
+```
+
+**DoD:** predictions before any build; the constant + the D12 line; arm C pre/post through the landed instrument; the D13 reading with its code lines and the §3 veto point; F91, the smoke suite, the full canary; §11 entry + stub; §5.142 FIXED; the §11.222 / §11.218 / §5.60 markers; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+---
+
+### F114 — §5.100 + §5.101's FIX ON THE OWNER'S WORD (§11.233(d): *"yes, same as for any kind of tracking in spacecrafter"*): `zoom auto in` STARTS THE NEW PATH'S TRACKING beside old's — `Camera::instance->trackBody(…)` (the API at `Camera.hpp:386`) at the site of `navigation->setFlagTraking(true)` (`core.cpp:1393`), next to the B17 `armViewOffset(true)` mirror already there (`:1402`) — and `zoom auto initial` RE-AIMS THE DRAWN VIEW where old calls `navigation->moveTo(InitViewPos, move_duration, true, -1)` (`:1439`, `:1485`): `Camera::instance->lookTo(<init direction in the camera's frame>, move_duration)` (the API at `Camera.hpp:83`, eased over `duration`, so the snapped-vs-eased question §5.101 raised has its answer in the existing ramp — the END state is the parity target, the ramp the perceptual class, the §11.92/B34 precedent), the frame conversion being the one `SSystemFactory::loadCamera` (`ssystem_factory.cpp:154`) performs for `init_view_pos` at startup, REUSED not re-derived; the census of the remaining old-only `setFlagTraking` writes (§5.100 owes it: `core.cpp:399` the init reset) done with the fix; the PRELOAD signal the owner named (§11.233(d)) recorded as a follow-on row at acceptance, not built here [S–M, engine (`core.cpp` two sites; `Camera.{hpp,cpp}` only if the init direction needs a callable conversion), FUNCTIONAL launches on `:2`, `--no-scene` canary; F38's `f38_gaps.py` re-run pre/post as the proof; veto points §3]
+
+**Why now / mandate:** §5.100 and §5.101 (OPEN since 2026-08-26 — *"Recommendation carried, decision not taken"*, the authorization asked at session 13 and unanswered until today); DEPLOYMENT-MAP T1.1 — *"bread-and-butter operator commands — the single largest transparency hole with a one-line-class fix already scoped"*, the LAST operator-basics decision on the map; §11.233(d) (the word, verbatim); D15(c) (*"continual tracking must be preserved"*); §11.232(c)2 (consolidation first). Decision-free now: the owner's word is the semantics (tracking like any tracking); the code is the existing Camera API at two sites.
+
+**The reading the mint stands on [derived; each fact a premise line]:** `Core::autoZoomIn` (`core.cpp:1386`) writes `navigation->setFlagTraking(true)` at `:1393` and moves old's view with old's OWN `move_duration`; the dual setter `Core::setFlagTracking(true)` cannot be used there because it takes `getAutoMoveDuration()` — changing old's duration is forbidden by construction (§11.52(b); §5.100's own sentence); the B17 mirror `Camera::instance->armViewOffset(true)` at `:1402` proves the seam is already a dual site. `Core::autoZoomOut` (`:1429`) re-aims old with `navigation->moveTo(InitViewPos, move_duration, true, -1)` at BOTH branches (`:1439` manual, `:1485` full) and already mirrors the DISABLE halves (`setFlagTracking(false)`, `setFlagLockSkyPosition(false)`, `armViewOffset(false)`) — F38's work; only the AIM half is old-only. The Camera API: `trackBody(ModularBody *)` `:386` / `trackBody(nullptr_t)` `:383`; `lookTo(const Vec3f &direction, float duration, bool isMaxDuration)` `:83` and `lookTo(alt, az, duration, …)` `:84` — a ramp exists. F38's instrument `f38_gaps.py` measured the two gaps on `select planet Mars` + `zoom auto in duration 0` (old `flagTraking = 1`, `camera.tracked = ''`, old Mars at (1024, 1024), the new path aimed 0.2056 rect units off at a 0.0023° field) and `zoom auto initial duration 0` from a tracked Mars (old moves 99.0318°, new 0.0214° = sidereal drift) — its 20 landed artifacts are the pre-fix record; re-run on the post binary it is the proof both ways. `InitViewPos` is Core's member in old's frame; §5.101 records the conversion `(x, y, z)_old → (y, −x, z)_camera` at `loadCamera` — the executor re-reads `ssystem_factory.cpp:154+` for the exact form and makes it ONE home if it is not already callable (I2).
+
+**Measured at dispatch (supervisor, 2026-09-12 12:1x, code `fcc277c9`, harness `1d07413`):** the sites at the lines quoted; `core.cpp` holds 4 `trackBody|lookTo` mentions today (the executor classifies them — none at the two sites); `f38_gaps.py` present, 20 artifacts under `artifacts/f38/gaps/`; `/home/claude/sc-f114` absent; canary green both arms.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f114/prediction.txt`, before any build): on the post binary, `f38_gaps.py`'s two legs — after `zoom auto in duration 0`: `camera.tracked = 'Mars'`, Mars at the new path's screen centre within the A/A floor while old still reads (1024, 1024); after `zoom auto initial duration 0` from a tracked Mars: the NEW look direction moves by old's angle (the 99.03° class in that scene) and the two paths' Mars screen positions agree within the float floor; `camera.tracked` cleared by the unzoom-to-init (the DISABLE half is already dual — assert it); the fov halves unchanged (§11.40's mirror); with `duration 1`, the END state after the ramp agrees within the same floor and the per-frame divergence along the ramp is MEASURED and stated, not gated (the B34 shape); the census of old-only `setFlagTraking` writes (grep) with each site classified (`:399` the init reset, coherent by `loadCamera`'s clear). (2) **THE FIX:** the two sites; the init direction's conversion read at `loadCamera` and REUSED — a helper only if the conversion is not callable today (one home, I2); comments cite §5.100/§5.101, §11.233(d), D15(c). NOTHING on the old side moves (`navigation->…` lines untouched by construction) — assert by diff. (3) **THE PROOF:** `f38_gaps.py` on the pre binary (the gaps reproduced to the digit) and on the post binary (closed); the ramp leg at `duration 1`; F38's four sky-lock sites unchanged (`f38_mirror.py` green); `f91_run.sh --expect post --locale fr` at `1fe630a4`; the smoke suite (its keyboard-ramp step included); the per-step parity instrument (`f25_ramp.py`) reused if it reaches this ramp — say if not. (4) **RECORD:** §11.⟨next⟩ FIRST + stub; §5.100 and §5.101 → FIXED; §11.150(k) marked at both homes; DEPLOYMENT-MAP T1.1 struck-with-record; the PRELOAD signal → `FEATURE_REQUESTS.md` (the owner's words, §11.233(d)) and a §13.B candidate line, both at acceptance by the supervisor from the entry; `harness/README.md` F114 section; WIP per §0.6; D14.
+
+**Boundaries:** `src/coreModule/core.cpp` (the two sites), `src/experimentalModule/Camera.{hpp,cpp}` only for a conversion helper; NO old-path change; no data, no EntityCore; FUNCTIONAL launches on `:2` (`--no-scene` canary before the first; the instance assert by `/proc/<pid>/exe` + `ss -ltnp` 7805; config/ssystem md5 in == out); explicit timeouts (Q-68); no `run_in_background`; nothing under `/tmp` carries; scratch under `/home/claude/sc-f114/`.
+
+**Discriminating checks:** (a) `f38_gaps.py` pre (gaps) / post (closed) — the fix shown able to fail; (b) `camera.tracked` set by `zoom auto in` and cleared by `zoom auto initial`; (c) end-state parity within the float floor after the eased ramp, the ramp's divergence stated; (d) F38's four sites green, F91 byte-identical, the smoke suite green; (e) the diff confined to the two sites (+ the helper if any); (f) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; `:2` per HOST-EVENTS 2026-09-12; canary `--no-scene` exit 0 before the first launch; VRAM free ≥ 4 GB before any launch; F113 DELIVERED (its binary is this task's pre — the pool change is inert for this scene, say so with the applog).
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => fcc277c9
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
+grep -c '^### F' claude/fable-dispatch.md => 5
+# the two sites, the mirrors beside them and the Camera API, re-resolved at HEAD (content drift = abort)
+grep -n '^void Core::autoZoomIn' src/coreModule/core.cpp | cut -d: -f1 => 1386
+grep -n '^void Core::autoZoomOut' src/coreModule/core.cpp | cut -d: -f1 => 1429
+grep -n 'navigation-.setFlagTraking(true);' src/coreModule/core.cpp | cut -d: -f1 | tr '\n' ' ' => 1393
+grep -n 'navigation-.moveTo(InitViewPos, move_duration, true, -1);' src/coreModule/core.cpp | cut -d: -f1 | tr '\n' ' ' => 1439 1485
+grep -n 'Camera::instance-.armViewOffset' src/coreModule/core.cpp | cut -d: -f1 | tr '\n' ' ' => 1402 1454 1492 2497 2639
+grep -n 'void trackBody\|void lookTo\|void lookAt\|void track(' src/experimentalModule/Camera.hpp | cut -d: -f1 | tr '\n' ' ' => 83 84 383 386
+grep -c 'trackBody\|lookTo' src/coreModule/core.cpp => 4
+grep -n 'void SSystemFactory::loadCamera' src/bodyModule/ssystem_factory.cpp | cut -d: -f1 => 154
+# F38's instrument and record; the ledger rows
+test -f claude/harness/f38_gaps.py && echo ok => ok
+ls claude/harness/artifacts/f38/gaps | wc -l => 20
+grep -n '^100\. \*\*' claude/INTENT.md | head -1 | cut -d: -f1 => 426
+grep -n '^101\. \*\*' claude/INTENT.md | head -1 | cut -d: -f1 => 428
+test -e /home/claude/sc-f114 ; echo $? => 1
+```
+
+**DoD:** predictions before any build; the two sites (+ the one-home conversion); `f38_gaps.py` pre/post; the ramp leg; F38's sites, F91, the smoke suite; §11 entry + stub; §5.100 + §5.101 FIXED; the §11.150 marker; T1.1 struck-with-record; the preload signal recorded; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+---
+
+### F111 — §5.150's FIX: THE ORBIT-LINE SAMPLER GETS ITS OWN SEED — `OrbitModule::sampleOrbit` (`OrbitModule.cpp:94-114`) samples 180 dates through `positionAtTimevInVSOP87Coordinates` (`:110`), i.e. through the POSITION solver's `iterativeLastE` (`orbit.hpp:120`), leaving the seed ~π of mean anomaly off for the next frame's use (§11.229(h2): 0.0246 AU / 834 arcsec on Pasiphae at HEAD for one frame, once per `period/180` of simulation time; Europa 3.475e-08 AU measured PERSISTENTLY by mutation 3); the OLD path's plot (`orbit_plot.cpp:142/:174`) uses the batch pair `prepairFastPositionAtTimevInVSOP87Coordinates` + `fastPositionAtTimevInVSOP87Coordinates` with its OWN `batchLastE` (`orbit.hpp:122`; `orbit.cpp:442` reset, `:447` ten warm-up steps then one step per point) — *"a plot is not a use"*, the generality the port dropped (§11.52(b)'s rewrite monitor); the fix is the sampler calling the SAME pair (the base-class defaults at `orbit.hpp:40/:45` fall back to the position call for orbit types without a batch seed — exactly the old path's behaviour on those types); the trail walker (`TrailModule.cpp:233`, RESUME_EXTRA_ITERATIONS+1 calls per missed sample) is the third walker — measured, named, changed only if its own measurement says so [S–M, engine (`OrbitModule.cpp`, `sampleOrbit` only) + harness; FUNCTIONAL launches on `:2`, `--no-scene` canary; new path only, the old path untouched by construction; veto points §3]
+
+**Why now / mandate:** §5.150 (OPEN, *"the fix shape named not taken"*); §11.229(h2) (site, reach, consequence measured and predicted, the old path's shape named); §11.232(c)2 — consolidation first: a defect the NEW path has and the old does not (§11.163(h)'s test passes in the disqualifying direction); the session-28 queue item (3). Decision-free: the old path's own shape, no constant, no policy.
+
+**The reading the mint stands on [derived; each fact a premise line]:** `sampleOrbit` is called from `update` when `!sampled || |date − lastSampleJD| ≥ period/ORBIT_POINTS` (`:132`); the sampler's 180 calls at `calc_date = date + (d − 90)·increment` leave `iterativeLastE` at E(date + 89·increment) ≈ +π of mean anomaly; the next frame's `useNow()` runs `ITERATIVE_STEPS_PER_CALL = 2` Newton steps (`iterative_orbits.hpp:31`) from there — the transient the slice priced (§11.229(h2), P4). The two seeds are `mutable` members of ONE `EllipticalOrbit` object that BOTH paths share (the old plot runs while the new path draws — F107 measured 16 old-plot movers with the flag on): each `prepairFast…` resets `batchLastE` and the 180 `fast…` calls complete inside one call of one thread [derived — the executor asserts no yield inside `sampleOrbit`/`computeOrbit`], so the two plots sharing `batchLastE` is sequential reuse, never interleaving; `orbit_plot.cpp:142/:174` are the two old call sites. `wantShown` (`:91`) gives the flag its reach: `flag satellites_orbits on` reaches the 40 walked iterating records (all satellites), `flag planets_orbits on` reaches none (F107). The transient lives in ONE frame: catching it in the engine needs a dump on the frame after a resample — at a time rate where every frame advances ≥ `period/180` for the sampled body, EVERY frame resamples and every dump carries it; the rate per body follows from `getSiderealPeriod()` (`ModularBody.hpp:1204`) and the frame cadence (144 fps, §11.159(k7)); whether `timerate` reaches it is the executor's first computation. F107's instruments: `f107_orbitflag.py` (the flag leg at F100's pinned clock with the within-launch control), `f107_model.py` (the slice model; `model_sampler.txt` names Pasiphae twice), `f107_replay.py`, `f100_run.sh`/`f100_identity.py`.
+
+**Measured at dispatch (supervisor, 2026-09-12 11:4x–12:0x, code `fcc277c9`, harness `1d07413`):** the sites at the lines quoted; `OrbitModule.cpp` holds 0 `FastPositionAtTimevInVSOP87Coordinates` calls; the field: `flag_planets_orbits = false` (`flag_satellites_orbits` absent from `config.ini`, the one hit is the planets key); F107's artifacts present (`artifacts/f107/`); `/home/claude/sc-f111` absent; canary green both arms on the re-banked boot; F112's probe lands BEFORE this task — use it (until then: `/proc/<pid>/exe` + `ss -ltnp` 7805).
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f111/prediction.txt`, before any build): the per-body one-frame transient at HEAD for the walked iterating records from the slice (`f107_model.py`), the every-frame-resample rate per body and whether `timerate` reaches it (state the maximum reachable and the model's prediction AT that rate), the expected dump delta pre-fix (≥ the transient for the bodies the rate reaches) and post-fix (0 to the float floor — F107's 0 of 40 at rate 1 is the floor's measurement), Europa's persistent 3.475e-08 AU → 0 post-fix (mutation 3's attribution), the sampled LINE unchanged pre/post (ten warm-up steps from 0 converge for every e in the field — predict max |Δ orbitPoint| per body from the slice), the trail walker's own perturbation from the slice (its last sample's E vs the frame's — its magnitude decides rider vs this task), the cost (ten warm-up + 180 single steps per resample vs today's 180 two-step calls; per resample, not per frame; against D11 at rate 1 and at show-load rates). (2) **THE PRE-FIX CATCH** on `6d63e6c1`: `flag satellites_orbits on` at the pinned clock, the rate from (1), dumps at F100's cadence, the within-launch control (same launch, flag off — F107's shape) and the two-date control that shows the comparison able to fail; the transient CAUGHT by name and magnitude (Pasiphae the worst) — if the engine cannot reach the rate, STOP at that step and report the reachable maximum with the model's prediction there; only then the fallback mutation on a scratch tree (sample at +π every frame) that makes the channel frame-persistent on the pre binary and absent on the post. (3) **THE FIX:** `sampleOrbit` — `orbit->prepairFastPositionAtTimevInVSOP87Coordinates(date, increment)` once, then `fastPositionAtTimevInVSOP87Coordinates(date, calc_date, orbitPoint[d])` per point; the osculating branch unchanged; the pair's return value read at the old plot (`:142-153`) before it is used or ignored — say which and why; the comment cites §5.150, §11.229(h2) and the old site: *a plot is not a use*. NOTHING else moves — assert by diff. (4) **THE PROOF:** the same leg on the post binary — 0 of 40 move (the float floor), Europa 0; the sampled line pre/post at the pinned clock with the flag on (a screenshot pair, byte-identical or within the A/A floor stated from two same-binary runs); `f91_run.sh --expect post --locale fr` at `1fe630a4` (the readout is not the plot); the smoke suite; the D11 cost measured once (a resample's µs and resamples per second at rate 1 and at the show-load rate). (5) **RECORD:** §11.⟨next⟩ FIRST + stub; §5.150 → FIXED with the marker; §11.229(h2) marked at both homes; §11.225(j2) marked (the channel closed); §5.84's instrument caveat (the 16 old-plot movers) re-stated unchanged; the trail walker's measurement recorded at its own line; `harness/README.md` F111 section; WIP per §0.6; D14.
+
+**Boundaries:** `src/experimentalModule/bodyModules/OrbitModule.cpp` (`sampleOrbit` only); NO change to `orbit.{hpp,cpp}`, `orbit_plot.cpp`, `TrailModule.cpp` (measured, named; a rider if its own measurement says so — reported, not fixed here), no data, no EntityCore; FUNCTIONAL launches on `:2` (`--no-scene` canary before the first; the instance assert; config/ssystem md5 in == out per launch); explicit timeouts (Q-68); no `run_in_background`; nothing under `/tmp` carries; every scratch binary under `/home/claude/sc-f111/`.
+
+**Discriminating checks:** (a) the transient caught pre-fix by name and magnitude as predicted (or the reachable-rate STOP with its number); (b) gone post-fix — 0 of 40, Europa 0; (c) the line unchanged within the stated floor; (d) F91 byte-identical, the smoke suite green; (e) the diff confined to `sampleOrbit`; (f) the control able to fail (two pinned dates ⇒ not identical); (g) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; `:2` per HOST-EVENTS 2026-09-12; canary `--no-scene` exit 0 before the first launch; VRAM free ≥ 4 GB before any launch; F112 DELIVERED (its probe is this task's instance assert) — if the prompt says otherwise, the `/proc/<pid>/exe` + port form stands.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => fcc277c9
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
+grep -c '^### F' claude/fable-dispatch.md => 5
+# the sampler, the two seeds and the old plot, re-resolved at HEAD (content drift = abort)
+grep -n '^void OrbitModule::sampleOrbit' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 94
+grep -n 'orbit-.positionAtTimevInVSOP87Coordinates(date, calc_date, orbitPoint\[d\]);' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 110
+grep -c 'FastPositionAtTimevInVSOP87Coordinates' src/experimentalModule/bodyModules/OrbitModule.cpp => 0
+grep -n 'if (!sampled || std::abs(date - lastSampleJD) .= period / ORBIT_POINTS)' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 132
+grep -n 'return body-.isSatellite() ? showSatellites : showPlanets;' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 91
+grep -n 'batchLastE = 0;' src/bodyModule/orbit.cpp | cut -d: -f1 => 442
+grep -n '^void EllipticalOrbit::fastPositionAtTimevInVSOP87Coordinates' src/bodyModule/orbit.cpp | cut -d: -f1 => 447
+grep -c 'eccentricAnomaly(meanAnomaly, batchLastE)' src/bodyModule/orbit.cpp => 2
+grep -n 'mutable double iterativeLastE = 0;\|mutable double batchLastE = 0;' src/bodyModule/orbit.hpp | cut -d: -f1 | tr '\n' ' ' => 120 122
+grep -n 'virtual std::pair.double, double. prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD) {' src/bodyModule/orbit.hpp | cut -d: -f1 => 40
+grep -n 'virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double \*v) const {' src/bodyModule/orbit.hpp | cut -d: -f1 => 45
+grep -n 'FastPositionAtTimevInVSOP87Coordinates' src/bodyModule/orbit_plot.cpp | cut -d: -f1 | tr '\n' ' ' => 142 174
+grep -n 'orbit-.positionAtTimevInVSOP87Coordinates(date, sampleJD, tmp);' src/experimentalModule/bodyModules/TrailModule.cpp | cut -d: -f1 => 233
+grep -n 'constexpr int ITERATIVE_STEPS_PER_CALL = 2;' src/bodyModule/iterative_orbits.hpp | cut -d: -f1 => 31
+# F107's instruments and records; the field; the ledger row
+test -f claude/harness/f107_orbitflag.py -a -f claude/harness/f107_model.py -a -f claude/harness/f107_replay.py -a -f claude/harness/f100_run.sh -a -f claude/harness/f100_identity.py && echo ok => ok
+grep -c 'Pasiphae' claude/harness/artifacts/f107/model_sampler.txt => 2
+grep -c '§5.150' claude/INTENT.md => 1
+grep -c 'batchLastE' claude/INTENT/11.229.md => 1
+grep -n 'flag_satellites_orbits\|flag_planets_orbits' ~/.spacecrafter/config.ini | cut -d= -f2 | tr -d ' ' | tr '\n' ' ' => false
+test -e /home/claude/sc-f111 ; echo $? => 1
+```
+
+**DoD:** predictions before any build; the pre-fix catch (or the reachable-rate STOP); the fix in `sampleOrbit` alone; the proof legs (a)–(g); §11 entry + stub; §5.150 FIXED; the §11.229 / §11.225 markers; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+---
+
+### F112 — LAUNCH PRECONDITIONS THAT SEE WHAT THEY GUARD: (i) the concurrent-instance probe identifies an engine by what it IS — `/proc/<pid>/exe` (a copied or renamed binary keeps nothing else) and the port it holds — in ONE home that every LIVE caller routes through, the **42** copy-pasted `comm == "spacecrafter"` sites (22 shell, 18 Python by census — not the three §11.231(j2) named) partitioned live/frozen by rule; (ii) the canary's `--no-scene` arm GATES on GPU headroom DERIVED from the app's own init sequence (512 + 160 + 1280 MiB dedicated, then a 256 MiB chunk, before any window — `available : 1591 MiB` killed it on 2026-09-12) instead of noting at a guessed 8192 MiB, and names the holder [M, harness only; launches: one decoy (a copy of `6d63e6c1` renamed) for the probe's positive map + the canary twice; `--no-scene`; veto points §3]
+
+**Why now / mandate:** §11.231(j2) and the session-28 §3 [H1] (*"the exe-identity probe is next round's first item"*, measured blind with two `sc_f109_iso` live and the probe at 0); HOST-EVENTS 2026-09-12 and §11.232(d) — the `--no-scene` arm passed with a NOTE while no launch could start, and only the photometric arm caught it by failing to launch; F111 and every later measuring task stand on this probe; the session-28 queue item (2). Decision-free: an instrument that answers the question it is asked; the anchor rule (§11.193): the app STATES its need in its own log at init — the gate is a proxy for that statement and is derived from it, banked with its argument like the band.
+
+**The reading the mint stands on [derived; each fact a premise line]:** `comm` is the executable's basename truncated to 15 bytes — a staging binary named `sc_f109_iso` or `spacecrafter-pre` never equals `spacecrafter`; `/proc/<pid>/exe` is the real file (F109's `b22_live_run.sh` fix matches on it — *"which no shell can ever satisfy"*), so identity by exe covers copies and renames; the engine holds TCP 7805 when its server is up — a second, independent channel (`ss -ltnp`) with its own residual (`--no-scene`/farm launches without the server); the census by the grep pattern is 42 files, the three named sites at `f26_epoch.sh:46`, `f27_reply.py:108`, `f56_canary.sh:476` (F109 wrote `:107` — the pasted value wins), the smoke suite's own at `f90_rehearsal_run.sh:52-54`; the canary's VRAM member is a NOTE at `:416` against `BANK_VRAM_NOTE_MIB=8192` (`:171`), *"NOT a gate"* by its own text; the failed launch's applog shows four `Dedicated allocation of` lines and two `Failed to allocate chunk of 256 MiB` with `available : 1591 MiB` at init; the GPU total is 32607 MiB. The identity CRITERION must be a positive map (decoy 1 / without 0 on each channel, F26's precedent) with its residual stated (a renamed copy outside the naming convention, in an unlisted directory, with no server up) — never a criterion that cannot fail.
+
+**Measured at dispatch (supervisor, 2026-09-12 11:4x–12:0x, code `fcc277c9`, harness `1d07413`):** the census and sites by the PREMISES block; one `sc_f109*` staging binary under `/home/claude/sc-f109/`; port 7805 free; `/home/claude/sc-f112` absent; VRAM 980 MiB used after the owner's unload; canary green both arms.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f112/prediction.txt`): the identity criterion (exe basename ∈ {`spacecrafter*`, `sc_*`, `sc-*`} OR exe path under `/home/claude/sc-*/` or `*/build*/src/` OR the pid holds TCP 7805 — or a better one, argued) and its positive map per channel with the decoy; the residual the criterion cannot see, stated; the live/frozen partition RULE (live = reached by the smoke suite, the canary, `f91_run.sh`, `f100_run.sh`, the F107 drivers, `f95_soak.py`, and any driver a live README section names as runnable; frozen = a one-shot campaign driver whose artifacts are landed — annotated in place, bytes otherwise untouched); the headroom threshold: the number and its derivation from the applog's init sequence on `6d63e6c1` (dedicated allocations + the first chunk + the reference scene's textures, read from a GREEN run's applog too), and the canary members that change. (2) **THE PROBE, ONE HOME:** `harness/sc_instances.sh` and `harness/sc_instances.py` (one criterion, two languages, each with a `--self-test` shown able to fail), printing pid · uid · exe · port per hit; the decoy = a COPY of the delivered binary as `/home/claude/sc-f112/sc_f112_decoy` run on `:2` for ≥ 10 s then killed (the app quits on its own if it must — say how the process was held) — the old `comm` form reads 0 with it live (the blind spot reproduced), the new probe reads 1 by exe and, if the server came up, 1 by port; 0 after; every LIVE caller routed through the home (the F108 precedent — `logread.py` as the one reader), the frozen ones annotated with one comment line pointing at the home; `f56_canary.sh`'s `concurrency.spacecrafter_pre` member and `f90_rehearsal_run.sh`'s assert among the live; §0.5's bullet rewritten at acceptance by the supervisor from the entry. (3) **THE GATE:** `f56_canary.sh` gains `gpu.headroom` — `nvidia-smi` free MiB vs `BANK_GPU_NEED_MIB` in the VALUES block with its derivation comment — FAIL below it on BOTH arms, the message naming the holder(s) from `nvidia-smi --query-compute-apps` (pid, name, MiB) so the report says WHO; shown able to fail without the owner's model: the bank mutated above the free amount ⇒ exit non-zero with the holder line; the real value ⇒ PASS; the NOTE member kept as a note. (4) **RECORD:** §11.⟨next⟩ FIRST + stub; §11.231(j2) marked at both homes (landed); HOST-EVENTS 2026-09-12's routing line marked; §11.232(d) marked; `harness/README.md` F112 section (the probe's contract, the criterion, the residual, the gate's derivation); WIP per §0.6; D14.
+
+**Boundaries:** harness only — NO engine code, NO data; the decoy is a copy under `/home/claude/sc-f112/`, launched at most twice, killed by pid (never `pkill -f` — §11.231(j)); the frozen drivers' bytes untouched except the one annotation line each (or none — say which); NO change to the photometric band or any banked epoch; canary runs `--no-scene` plus the mutated-bank run; explicit timeouts (Q-68); no `run_in_background`; nothing under `/tmp` carries.
+
+**Discriminating checks:** (a) with the decoy live: old `comm` form 0, new probe 1 by exe (and by port if the server is up), both implementations; 0 after — the positive map both ways; (b) the headroom gate FAILS under the mutated bank naming the holder, PASSES at the derived value; the derived value stated with its applog lines; (c) the census partition committed with its rule, every live caller's diff = one call to the home; (d) the smoke suite and F91 green after the routing; the canary `--no-scene` green with the new member; (e) `--self-test` of both homes shown able to fail; (f) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; `:2` per HOST-EVENTS 2026-09-12; VRAM free ≥ 4 GB before the decoy launch; F110 DELIVERED (its rehearsal ran the smoke suite with the old assert — this task changes that assert after).
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => fcc277c9
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
+grep -c '^### F' claude/fable-dispatch.md => 5
+# the probe's homes and the canary's VRAM member, re-resolved at HEAD (content drift = abort)
+grep -lE '= "spacecrafter"|== "spacecrafter"|-x .spacecrafter. /proc' claude/harness/*.sh claude/harness/*.py | wc -l => 42
+grep -n "grep -l -x 'spacecrafter' /proc" claude/harness/f26_epoch.sh | head -1 | cut -d: -f1 => 46
+grep -n 'read().strip() == "spacecrafter"' claude/harness/f27_reply.py | cut -d: -f1 => 108
+grep -n '= "spacecrafter" \] && n=' claude/harness/f56_canary.sh | cut -d: -f1 => 476
+grep -n '^BANK_VRAM_NOTE_MIB=' claude/harness/f56_canary.sh | cut -d: -f1 => 171
+grep -n 'note "gpu.vram_pressure"' claude/harness/f56_canary.sh | cut -d: -f1 => 416
+# the 2026-09-12 failed launch's own account of what the app needs
+grep -c 'Dedicated allocation of' claude/harness/artifacts/f56/canary/20260912-112628/scene/dwell.applog => 4
+grep -c 'Failed to allocate chunk of 256 MiB in GPU memory' claude/harness/artifacts/f56/canary/20260912-112628/scene/dwell.applog => 2
+grep -o 'available : [0-9]* MiB' claude/harness/artifacts/f56/canary/20260912-112628/scene/dwell.applog | head -1 => available : 1591 MiB
+nvidia-smi --query-gpu=memory.total --format=csv,noheader => 32607 MiB
+# a staging binary to reproduce the blind spot with; the port; the scratch dir
+find /home/claude/sc-f109 -maxdepth 3 -type f -name 'sc_f109*' | wc -l => 1
+ss -ltnp | grep -c 7805 => 0
+test -e /home/claude/sc-f112 ; echo $? => 1
+```
+
+**DoD:** predictions (criterion, residual, partition rule, threshold derivation) before any code; the one-home probe in both languages with self-tests; the decoy map both ways; every live caller routed; the headroom gate shown able to fail and passing at the derived value; §11 entry + stub; the §11.231(j2) / HOST-EVENTS / §11.232(d) markers; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
 
 ---
 
@@ -570,6 +870,8 @@ L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-0
   ```
   YOURS — nothing here substitutes them
   [Y1] §5.149 · every iterative solver is SEEDED AT JD 0 by the constructor ─ the CAUSE of §5.145's
+       [2026-09-12: the pointer was UNRESOLVABLE for you (§11.233(h)) — §5.149 is the inline row
+       `149. **…**` at INTENT.md:515, no entry file; the shape question (i)–(iv) still stands]
        1.198725°; the two-step fix PAYS for it (all ten steps a use buys spent walking back 75.765 rad)
        fact    ModularBody.cpp:121 lastJD = parent->lastJD (0 before the first frame), :126 the
                evaluation; the replay on the sliced text reproduces F104's pre AND post dumps float32
@@ -608,6 +910,9 @@ L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-0
        →       §11.230(l) · §5.152 · main.cpp:248-251
 
   [Y4] §11.231 · the "~10 % residual step" L1 judged IS NOT ON THE SCREEN ─ two items
+       ANSWERED [vixy 2026-09-12] → §11.233(g): "he was answering our 10%, if it's not visible the tester
+       won't care - because he care about what the public will see" — CLOSED, no profile change, the
+       tester question withdrawn
        fact    the number was b22_live_analyze.py's own (an offline px axis 1.3–1.7 % low, the
                dot's own brightening, 8-bit clipping); with the dot suppressed the interior emits
                0.12 % of the swing at the lowest in-band px; the collapse is continuous at T
@@ -761,7 +1066,9 @@ L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-0
                track — refuse with a §2(f) line at the tracking seam, or a defined aim
        →       §11.226(f) · §5.148 · §11.216(i)
 
-  [Y3] §5.146 ─ carried: minted on your word "edit it" (SharedBuffer's bind/release guards + the
+  [Y3] §5.146 ─ ANSWERED [vixy 2026-09-12] → §11.233(f): "it should throw whenever it can't allocate" —
+       the shape; EntityCore, coupled to your submodule push before the intern's clone (§11.204(b));
+       was: carried: minted on your word "edit it" (SharedBuffer's bind/release guards + the
        contract line at BufferMgr::releaseBuffer, EntityCore)              → §11.223(c) · §5.146
   [Y1] §5.142 · the pool policy ─ carried (grow / refuse / degrade)          → §11.222(h)
   [Y5] §5.144 · the 8–12 h leg ─ carried  ·  [Y6] §5.140 · orbit_lon ─ carried
@@ -815,6 +1122,9 @@ L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-0
   ```
   YOURS — nothing here substitutes them
   [Y1] §5.142 · the uniform pool ─ a D13 POLICY in EntityCore
+       ANSWERED [vixy 2026-09-12] → §11.233(b): GROW to 1 GiB, fixed, single-session too ("a pool of
+       1 Gio is fairly generous and won't be critical either") — F113, session 29; the D13 reading on a
+       smaller BAR heap measured there as the veto point on the number
        fact    1 MiB, created once, never grows; a 06.sts body costs 1344 B on both paths
                (320 old-eager + 1024 new-at-load, alignment 64); the pool runs out at the
                675th body of 06.sts ALONE (reproduced in two launches); 14.sts adds nothing —
@@ -862,6 +1172,8 @@ L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-0
        resolve through it, never by search-and-replace over the record (§11.212)
   [Y5] §5.144 · the 8–12 h cache-vs-leak leg ─ yes / no  (carried from s25, unchanged)
   [Y6] §5.140 · what `orbit_lon` MEANS ─ one word; unblocks §5.21's two halves  (carried)
+       ANSWERED [vixy 2026-09-12] → §11.233(e): "that's for the main user/tester, no ?" — ROUTED to the
+       tester (§11.207(i)); §5.21's halves stay behind his answer
   [Y7] scratch trees ─ say the word: sc-f99 · sc-f100 · sc-f101 · sc-f102 join s25's list;
        sc-f98 (1.8 G) holds the ONLY complete arm-C applog — keep until [Y3]'s launch
 
