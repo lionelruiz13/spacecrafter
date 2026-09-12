@@ -927,7 +927,7 @@ test -e /home/claude/sc-f112 ; echo $? => 1
 ```
 
 **DoD:** predictions (criterion, residual, partition rule, threshold derivation) before any code; the one-home probe in both languages with self-tests; the decoy map both ways; every live caller routed; the headroom gate shown able to fail and passing at the derived value; §11 entry + stub; the §11.231(j2) / HOST-EVENTS / §11.232(d) markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-12 15:4x — CP1: §0.7 gate PASSED (18/18 premise lines; prose premises verified: display `:2` 2448x1332, VRAM 3293 MiB used, port 7805 free, field pair `03fbee59`/`545a51ef`, decoys present, F110 delivered). Baselines at open `5bf9f85`: scan **277/347/144** · pair **253/228/25/125** · D 36 · D2 12 · I 93 · I2 37 · M 95. `artifacts/f112/prediction.txt` committed BEFORE any code. NEXT: CP2 = `sc_instances.py` + `sc_instances.sh` with self-tests and mutants.
+**WIP:** 2026-09-12 16:0x - CP2: the ONE HOME lands. `harness/sc_instances.py` (the criterion's sole authority: comm | exe | port 7805, union; 18 PASS 0 FAIL, four mutants each failing named cases) + `harness/sc_instances.sh` (front end, delegates, 8 PASS 0 FAIL, mutant front end refused). MEASURED: `/proc/<pid>/exe` readable on 0 of 578 other-uid processes and 84 of 93 own (ptrace_scope=1) - the residual is the CROSS-ACCOUNT one, not the section's guess. Negative arm 0 hits over 671 live pids. PREDICTION MISS kept: `--mutant basename_eq` scored 17/0 until the discriminating case t18 was added. CP1: gate 18/18, baselines scan 277/347/144 - pair 253/228/25/125 - D 36 D2 12 I 93 I2 37 M 95, `artifacts/f112/prediction.txt` before any code. NEXT: CP3 = the decoy map both ways on `:2`.
 
 ---
 

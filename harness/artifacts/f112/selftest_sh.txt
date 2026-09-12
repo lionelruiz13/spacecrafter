@@ -1,0 +1,10 @@
+sc_instances.sh --self-test
+  PASS s0  the authority's own criterion suite is green ( 18 PASS 0 FAIL)
+  PASS s1  front end and authority agree, text and exit code (0)
+  PASS s2  no engine live on this host -> exit 0
+  PASS s3  a missing authority exits 4 (a probe that cannot run STOPS)
+  PASS s4  a broken authority propagates 4
+  PASS s5  a hit propagates 2
+  PASS s6  the mutant front end (exit code swallowed) is refused by s3 and s5 -- this suite can fail
+  PASS s7  this wrapper's own exe is bash, which no rule matches
+  8 PASS 0 FAIL

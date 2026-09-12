@@ -29,7 +29,7 @@ iff at least one of three channels fires:
                   (the build-tree convention: build-claude/src/spacecrafter,
                    sc-f110/tree/build/src/spacecrafter)
               E5  X == realpath($SC_BIN) when SC_BIN is set (the binary under test, exact)
-            -- a real file, so no shell command line can ever match it (the F109 §11.231(j)
+            -- a real file, so no shell command line can ever match it (the F109 Sec.11.231(j)
                self-match hazard in its other direction); covers copies and renames.
 
   P (port)  the process holds a LISTEN socket on TCP 7805 (the engine's server port).
@@ -58,13 +58,13 @@ is narrowed to E3+E4+E1 and the narrowing is recorded here, not hidden.
 
 
 =====================================================================================
-2.  THE POSITIVE MAP, PER CHANNEL (F26 §11.134(b)'s precedent: decoy 1 / without 0)
+2.  THE POSITIVE MAP, PER CHANNEL (F26 Sec.11.134(b)'s precedent: decoy 1 / without 0)
 =====================================================================================
 
 The decoy: a COPY of the delivered binary 95087b68 at
 /home/claude/sc-f112/sc_f112_decoy, launched on DISPLAY=:2 with HOME pointed at a FARM
 (b3_farm.sh via f96_offset.build_farm) so the real ~/.spacecrafter is never opened, held
-for >= 10 s, then killed BY PID from its own recorded pid (never pkill -f, §11.231(j)).
+for >= 10 s, then killed BY PID from its own recorded pid (never pkill -f, Sec.11.231(j)).
 
                                        decoy LIVE     decoy DEAD
   old comm form (the standing probe)        0              0        <- the blind spot
@@ -149,14 +149,14 @@ THE RULE (applied to the 44):
 
   LIVE  -- a future task can RUN it to take a NEW measurement.  Any of:
     (a) it is reached from a STANDING ENTRY POINT: the environment canary f56_canary.sh
-        (§0.5's enumerated precondition), the smoke suite f90_rehearsal_run.sh
-        (doc/developer-entry.md §5's one command), the standing parity gate f91_run.sh
+        (Sec.0.5's enumerated precondition), the smoke suite f90_rehearsal_run.sh
+        (doc/developer-entry.md Sec.5's one command), the standing parity gate f91_run.sh
         (re-run by F104/F105/F108/F114/F116), or the shared python library f96_offset.py
         (imported by 8 drivers);
-    (b) a §11 entry NUMBERED AFTER its own delivering entry records it being run
+    (b) a Sec.11 entry NUMBERED AFTER its own delivering entry records it being run
         (measured: f45_run.sh 159->176, b22_live_run.sh 81->231, f26_epoch.sh 134->231,
          f27_reply.py 135->231, f95_soak.py 215->230, f108_writelog.py 230->237);
-    (c) it belongs to the CURRENT era -- delivered at §11.213 (F91) or later -- in which
+    (c) it belongs to the CURRENT era -- delivered at Sec.11.213 (F91) or later -- in which
         every task measurably re-runs its predecessors' drivers.
 
   FROZEN -- running it again would only reproduce a LANDED artifact: a one-shot campaign
@@ -189,9 +189,9 @@ and was therefore comm-only blind -- closes with that one edit and no edit of it
 
 The canary's present VRAM member is a NOTE at f56_canary.sh:416 against
 BANK_VRAM_NOTE_MIB=8192 (:171), "NOT a gate" by its own text.  On 2026-09-12 it passed
-with a note while NO launch could start (HOST-EVENTS 2026-09-12; §11.232(d)).
+with a note while NO launch could start (HOST-EVENTS 2026-09-12; Sec.11.232(d)).
 
-THE APP'S OWN STATEMENT OF ITS NEED (§11.193's anchor rule: the app states it in its own
+THE APP'S OWN STATEMENT OF ITS NEED (Sec.11.193's anchor rule: the app states it in its own
 log at init; the gate is a proxy DERIVED from that statement).
 
   (i) THE RED LAUNCH, artifacts/f56/canary/20260912-112628/scene/dwell.applog, the app's
@@ -289,7 +289,7 @@ tree of comm/exe entries) plus a synthetic listener table, so every case is exac
    t4  comm=spacecrafter, exe unreadable (other uid)           -> HIT (C)   <- cross-account
    t5  comm=java, exe unreadable (other uid)                   -> MISS
    t6  comm=bash, exe=/usr/bin/bash, cmdline carries
-       "/home/claude/sc-f116/sc_post_95087b68"                 -> MISS      <- F109 §11.231(j)
+       "/home/claude/sc-f116/sc_post_95087b68"                 -> MISS      <- F109 Sec.11.231(j)
    t7  comm=spacecrafter, exe=/home/claude/spacecrafter/build-claude/src/spacecrafter
                                                                -> HIT (C,E)
    t8  comm=firefox, exe=/snap/firefox/8863/usr/lib/firefox/firefox -> MISS
@@ -323,7 +323,7 @@ or passes one that is.
 =====================================================================================
 
 PREDICTION 7.1  After the routing, the smoke suite f90_rehearsal_run.sh exits 0 with the
-same step verdicts §11.237(l) records (S1 DIVERGENCE, S2 120->121, S3 PASS, S4 DEPRECATED,
+same step verdicts Sec.11.237(l) records (S1 DIVERGENCE, S2 120->121, S3 PASS, S4 DEPRECATED,
 S5 PASS, S6, S7 DIVERGENCE, S8, S9) and the four frozen real-home files unmoved.
 
 PREDICTION 7.2  f91_run.sh --expect post --locale fr exits 0, 0 FAIL 0 NOTE, and the parity
@@ -334,15 +334,15 @@ PREDICTION 7.3  config.ini 03fbee59 / ssystem.ini 545a51ef are md5-identical in 
 around the decoy launch; the decoy never opens the real home (farm HOME).
 
 PREDICTION 7.4  The ledger instruments move by exactly the entry-first signature
-§11.156(f) predicts: pair-check entry files +1 and live pairs +1 (this entry and its stub),
-inline stubs +0 (no §5 row is minted by this task), archived-in-place +0; the backmarker
+Sec.11.156(f) predicts: pair-check entry files +1 and live pairs +1 (this entry and its stub),
+inline stubs +0 (no Sec.5 row is minted by this task), archived-in-place +0; the backmarker
 scan's three numbers move only by this delivery's own markers.  Open baseline, measured at
 5bf9f85 before any write: scan 277/347/144, pair-check 253/228/25/125, D 36, D2 12, I 93,
 I2 37, M 95.
 
 PREDICTION 7.5  D14: every new harness file is pure ASCII by its own byte census, and
 f70_ascii.py gate PASSes before every commit (the gate covers the CODE tree; the harness
-files are censused per file, §11.237(n)'s method).
+files are censused per file, Sec.11.237(n)'s method).
 
 
 =====================================================================================

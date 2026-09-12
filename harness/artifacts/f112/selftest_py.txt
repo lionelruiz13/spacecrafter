@@ -1,0 +1,20 @@
+sc_instances.py --self-test
+  PASS t1   an engine installed under its own name: both channels fire
+  PASS t2   THE BLIND SPOT: a staging binary; comm is sc_f109_iso, not spacecrafter
+  PASS t3   comm truncated at 15 bytes (spacecrafter-pr) is still not a match
+  PASS t4   ANOTHER ACCOUNT: exe unreadable under ptrace_scope=1, comm carries it
+  PASS t5   another account's java is not an engine
+  PASS t6   Sec.11.231(j)(1): a shell whose COMMAND LINE holds the binary path is NOT a hit -- the probe reads exe, a real file
+  PASS t7   the delivered build tree
+  PASS t8   firefox is not an engine
+  PASS t9   a stranger holding LISTEN 7805 is a stop whoever it is (R4)
+  PASS t10  a DELETED binary still resolves: ' (deleted)' is stripped
+  PASS t11  gnome-shell is not an engine
+  PASS t12  a build tree under a staging root, binary named anything (E3/E4)
+  PASS t13  R2 stated as a test: renamed outside every rule, no server -> MISSED, and the miss is the documented residual rather than a surprise
+  PASS t14  the probe's own python process does not match itself
+  PASS t15  a LISTEN 7805 of ANOTHER uid, pid not attributable, still reported
+  PASS t18  E1 ALONE: spacecrafter-pre installed outside every staging and build path -- the only case that can see a basename rule tightened to ==
+  PASS t16  the hit COUNT is exactly the expected one (10) -- no silent extra
+  PASS t17  a hit line carries pid . uid . comm . exe . port . channels
+  18 PASS 0 FAIL
