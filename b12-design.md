@@ -2,7 +2,7 @@
 
 Task F9 (`claude/fable-dispatch.md` §1 F9), row **B12** (§13.B), unblocked by **Q21**.
 Written 2026-07-31 by the F9 executor (Opus 5), against code `master-beta @ 1e44b639`
-and harness `CC-harness @ cfb79d4`.
+and harness `CC-harness @ 9959e0f`.
 
 Precedent for the form: `claude/b31-design.md` (F6). Provenance grammar per INTENT.md
 header: `[observed: file:line]` `[measured: instrument → value]` `[derived: argument]`

@@ -3,7 +3,7 @@ OFFSET-FRAME / LOCATION-ORBIT / SECOND-SOAK round: F96 · F97 · F98]:** trigger
 verbatim line and nothing else (no in-line transmission). Open at **Sunday 10:20 CEST**,
 outside the owner's reliable window ⇒ this session asks NOTHING and closes with a compact
 decision list. Warm-up (every value `date`-measured 10:20:38–10:21:53, the command beside
-the claim — Q-67): both trees CLEAN at open, code `a2a880ef` / harness `fa7104e` (the
+the claim — Q-67): both trees CLEAN at open, code `7509c809` / harness `256ed2d` (the
 session-24 close commit); definition-drift assert MATCH (`8e364a3a`); binary `404b9e89`
 current — `cmake -n` 0 steps, no `src/` file newer; same boot as sessions 21–24 (`uptime
 -s` 2026-09-04 18:45:08); `:2` 2448x1332 under `.5KBYU3`; canary `--no-scene` **exit 0**
@@ -14,7 +14,7 @@ harness** (`rev-list --count`; 735 + the close commit). Live `### F` **3 → 0**
 **archival pass 17** at OPEN (update-s23 + F91/F94/F95, 649 lines + the doubled-seam
 tidy, manifest `2026-09-06-pass17`, pre-md5 `7fcb0abd` reproduced in-process AND from
 disk, the archive files written before the live surface — Q-56's ordering; commit
-`5d94d3f`; **nothing carried**) **→ 3** by the mints below. Instrument baselines at open
+`a9ddcf5`; **nothing carried**) **→ 3** by the mints below. Instrument baselines at open
 (run 10:28:5x): scan **226/279/135** · pair-check **231/206/25/110** · D 35 · D2 11 · I 89
 · I2 36 · M 81 — to the digit of the session-24 close. QUEUE CONSUMPTION (session-24
 close, in order): (1) pass 17 — DONE; (2) **the second soak over `fscripts/` → F98**
@@ -65,13 +65,13 @@ tester's shows abort the app; one runtime system empties the old half; LEAK 68.3
 supervisor-verified same session**, every delivery re-verified by my own runs (the smoke suite on
 `eb3f5e50` and on `46849f69`; the F96 leg reports and guard answers read; the F97 scores read
 from the committed JSON; the F98 abort arm C, its negative arm and the old-path bisect
-reproduced, `f98_repro14.py`, 18:30–18:41). Code `a2a880ef → 24100461 → 22499f04` (two executor
+reproduced, `f98_repro14.py`, 18:30–18:41). Code `7509c809 → 58655d7a → 61da4edc` (two executor
 commits: `Camera.{hpp,cpp}`; `orbit.cpp` one token + two loader files — nothing else); binary
-`404b9e89 → eb3f5e50 → 46849f69`; harness `fa7104e →` this close. SUPERVISOR ACTS: archival pass
-17 (`5d94d3f`); three mints under the PREMISES rule (`b111c87`; 21 / 22 / 26 PASS at the mint);
+`404b9e89 → eb3f5e50 → 46849f69`; harness `256ed2d →` this close. SUPERVISOR ACTS: archival pass
+17 (`a9ddcf5`); three mints under the PREMISES rule (`7e82fff`; 21 / 22 / 26 PASS at the mint);
 **six §5 mints at acceptances** (§5.139 – §5.144, all record-only, the F32/§5.79 precedent);
 F97's and F98's per-round premises refreshed by section-bounded replace with content asserts
-(`7d6395a`, `68efa44`); the §0b.1 ledger-instruments line (the miss-ledger item, two
+(`60ce7bb`, `dccd607`); the §0b.1 ledger-instruments line (the miss-ledger item, two
 recurrences); `f45_run.sh:102/186` annotated (Q-69); in `~/shared`: Q-67 ×3 (a dispatcher
 instance, a sibling-class instance, the census-order instance), Q-68 (the tool's 120 s default
 timeout), **Q-69 NEW** (locale-dependent concatenation fingerprints, sweep done), one

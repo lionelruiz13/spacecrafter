@@ -130,7 +130,7 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
 
 ### [2026-08-26] Parallel scripts — run and control more than one script at a time
 - **From:** Vixy (`claude/vixy-side-ideas.txt` `[parallel-script]`, written
-  with the D15 answer, harness `2b24a1b`)
+  with the D15 answer, harness `8b5d914`)
 - **Request:** POINTER ENTRY — **`claude/vixy-side-ideas.txt` is the authority
   for the request's own text and stays so**; this entry exists only so the idea
   is reachable from the triage channel (I2: one authority, one index). In one
@@ -149,7 +149,7 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   bounds what a policy may do to a script already playing.
 - **DECLINED by the main tester 2026-09-05** — round-3 **R25**, verbatim and
   entire: ***"No need for that."*** `[stated: tester (Lionel RUIZ), via owner
-  commit 6ffb017]`. The requester is the OWNER, so both voices are recorded and
+  commit 1e6ca60]`. The requester is the OWNER, so both voices are recorded and
   the entry is NOT retired. The full reading, the consequence for the
   `[script-binding]` → `[script-trigger]` chain, and the two parts that survive
   the decline on their own arguments are at the end of this entry's refinement
@@ -157,7 +157,7 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
 
 ### [2026-08-26] Script-bound key/joystick bindings — override a binding to launch a script
 - **From:** Vixy (`claude/vixy-side-ideas.txt` `[script-binding]`, harness
-  `2b24a1b`)
+  `8b5d914`)
 - **Request:** POINTER ENTRY — text authority stays `vixy-side-ideas.txt`.
   Shape only: `script action bind on <keybind> launch <script_path>`, with the
   binding's lifetime defaulting to global and settable to script-lifetime.
@@ -182,7 +182,7 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   with what it enables/simplifies/removes, never with its own defense) — R25
   reframed under it the same day.
 - **THE PREREQUISITE WAS DECLINED 2026-09-05** — round-3 **R25**: ***"No need
-  for that."*** `[stated: tester (Lionel RUIZ), via owner commit 6ffb017]`. The
+  for that."*** `[stated: tester (Lionel RUIZ), via owner commit 1e6ca60]`. The
   dependency note above founds this request on tester interest (*"dynamic
   binding is where it may interest him, because joystick button are severely
   limited"*), and the decline removes exactly that footing. **The PREMISE
@@ -194,7 +194,7 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
 
 ### [2026-08-26] Script triggers — run a script when a condition is met
 - **From:** Vixy (`claude/vixy-side-ideas.txt` `[script-trigger]`, harness
-  `2b24a1b`; the file marks it `@requires [script-binding]`)
+  `8b5d914`; the file marks it `@requires [script-binding]`)
 - **Request:** POINTER ENTRY — text authority stays `vixy-side-ideas.txt`.
   Shape only: bind a script to a condition — camera attach/detach to a named
   body, crossing an altitude threshold (optionally while attached to a named
@@ -257,19 +257,19 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   the annotation lands on the OPENER line; message content follows the
   three-part log schema (§11.169: cause + content + self-contained action).
 - **Status:** ~~accepted — engine change pending~~ **LANDED 2026-08-31 (code
-  `2b8ec034`, §11.184; gate `harness/f63_annotations.py` 34/34)** for the
+  `c589d1b2`, §11.184; gate `harness/f63_annotations.py` 34/34)** for the
   RULED class — unclosed `struct if`/`struct loop` annotated at their OPENER,
   `end`/`else` without `if` and `loop end` without `loop` at their line —
   through `ScriptAnnotator` (contract in `scriptModule/script_annotator.hpp`:
   batch per file at script end, sibling temp + rename, no write when the tails
   already say this, stale tails cleared at a natural end, unwritable file →
   log only, CRLF/ISO-8859 preserved). Of the consequences below: (1) met
-  earlier by `3d9179d2`; (3) IMPLEMENTED as stated (fixed ⇒ cleared at the next
+  earlier by `6626466f`; (3) IMPLEMENTED as stated (fixed ⇒ cleared at the next
   natural end); (4) IMPLEMENTED (read-only degrades to the log with the count);
   (5) confined to `addScriptFirst`'s engine-synthesised lines — a script played
   BY another keeps its own file and line (gate leg H+I); (2) the parse_model
   clause is scedit's half, with item 15(a)/(b), ~~still owed~~ **[2026-08-31
-  later: (2) LANDED — `parse_model.comments.machine_tail`, code `4a00cf31`,
+  later: (2) LANDED — `parse_model.comments.machine_tail`, code `6d8fe6c9`,
   with 15(a-i) (the tail recognised on the bar and RELATED to scedit's own
   finding); 15(b) holds by construction (the editor writes bytes back, never
   composes a `#!`); 15(a-ii), the error-history pane, minted as dispatch task
@@ -292,7 +292,7 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   (1) **ordering**: a trailing `#!` comment is only a comment if mid-line
   `#` is real — this REQUIRES the same-day mid-line-# ruling to land first
   or together, else the engine would write junk args into scripts;
-  **[2026-08-31] SATISFIED: mid-line `#` landed in the tree (`3d9179d2`,
+  **[2026-08-31] SATISFIED: mid-line `#` landed in the tree (`6626466f`,
   parseCommand: a `#` outside a `"…"` run ends the command); a `#!` tail is
   a comment by that rule.**
   (2) `#!` becomes RESERVED machine-owned syntax — a third comment class
@@ -323,7 +323,7 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   those exists."*
 - **Status:** ~~accepted — engine change pending (registration-table addition;
   no build on this laptop to verify, so recorded not implemented)~~ **LANDED
-  2026-08-31 (code `7fd5ea75`; live: harness `f62_aliases.py` 11/11 — `mod x 3`
+  2026-08-31 (code `4141317a`; live: harness `f62_aliases.py` 11/11 — `mod x 3`
   → 1, `div`/`mul` → 12, canonical forms beside them, no "Unrecognized"; scedit
   models the aliases with `alias_of` resolved once at load, corpus record
   `mod a 2` cleared, SS-22 resolved in-tree).** Facts
@@ -526,7 +526,7 @@ script-local resource scoping attacks the stale-slot defect class at its root
 parallelism; `[script-trigger]` is the root-level answer to the poll-loop
 log-storm amplifier §5.115 records at the symptom layer.
 
-**Refinement [vixy 2026-08-30, harness `a501eb4` — the txt stays the
+**Refinement [vixy 2026-08-30, harness `7375cbe` — the txt stays the
 authority]:** `[parallel-script]` gains two policies and changes its default —
 `exec` now defaults to **`legacy`** (names today's nesting behavior as a
 contract: whatever `script action stop` and `struct if` do when nested, even
@@ -564,12 +564,12 @@ authored design, not a data slip — regenerating would destroy it):
 routed as round-3 question **R29**, A43's fix direction gated on its
 answer; the ledger-row flip itself is the supervising session's.
 **[R29 ANSWERED 2026-09-05 — *"It's a design."* `[stated: tester (Lionel
-RUIZ), via owner commit 6ffb017]` ⇒ the reframing is confirmed by its own
+RUIZ), via owner commit 1e6ca60]` ⇒ the reframing is confirmed by its own
 subject: A43 CLOSED as design, regeneration cancelled → INTENT §11.207.]**
 
 **DECLINED BY THE TESTER 2026-09-05 — `[parallel-script]`, and with it the
 resubmission this file spent three refinements preparing.** Round-3 **R25**,
-`[stated: tester (Lionel RUIZ), via owner commit 6ffb017]`, verbatim and
+`[stated: tester (Lionel RUIZ), via owner commit 1e6ca60]`, verbatim and
 entire: ***"No need for that."*** The resubmission was built exactly as the
 triage note above specified — interest first, both recovered objections
 answered against the current text, the `*` global-stop and the two concrete
@@ -610,14 +610,14 @@ fixed at 8 launches). Those survive on their own arguments. → INTENT §11.207
   §11.185(d)(1) ruling in specific form; (d)(2)/(d)(3) stay open.
 - **Status:** accepted — tracked as §11.186(b)(c); dispatched 2026-08-31 as
   tasks F68 (provenance) and F69 (dedicated feedback link).
-  **Half (1) DELIVERED 2026-08-31 → §11.187** (engine `423cbe23`): a command
+  **Half (1) DELIVERED 2026-08-31 → §11.187** (engine `dd815ab3`): a command
   read on the control socket carries `tcp#<connection id>` and its
   diagnostics say so; the file half is §11.184's, unchanged; HTTP/mkfifo/UI
   are mapped and reported, not wired. ~~Half (2) is F69, still open — and the frozen-wire
   requirement it must meet is now MEASURED as a baseline (an unsubscribed
   connection's bytes, pre and post, byte-identical).~~
-  **Half (2) DELIVERED 2026-08-31 → §11.188** (engine `be2ddd81`, scedit
-  `630b06fd`): a connection opts in with `$DIAGON` and receives one
+  **Half (2) DELIVERED 2026-08-31 → §11.188** (engine `c807d695`, scedit
+  `d117870c`): a connection opts in with `$DIAGON` and receives one
   `$DIAG|<origin>|<message>|<subject>` record per diagnostic about a
   TCP-origin command; scedit subscribes on connect and draws a refusal red,
   and its `run_command` MCP tool returns them as a second list. **The freeze

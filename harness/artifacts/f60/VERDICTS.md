@@ -65,7 +65,7 @@ references are stale**, and every one of them names a row that DELIVERED.
    no later block. What is owed is the delta, not the closure: B15's *invisible-children*
    half is what remains.
 2. **B39 → §5.46** — *"`publishParkedFrame` keeping the parent frame the up-chain never
-   caches (→ §5.46)"*. §5.46 **FIXED 2026-08-09** (F29, §11.139, code `bd3f7117`): the
+   caches (→ §5.46)"*. §5.46 **FIXED 2026-08-09** (F29, §11.139, code `b78d6549`): the
    up-chain now assigns `matLocalToBodyPos` at both sites, so the relative clause is
    false at HEAD.
 

@@ -6,8 +6,8 @@ background process + claude code), so no interference with your runs."* — no i
 transmission beyond it. Open at **Sunday 00:01 CEST**, outside the owner's reliable
 window (weekend = cache-hit + retrace only) ⇒ this session asks NOTHING and closes
 with a compact decision list. Warm-up (every value `date`-measured 00:01:06–00:02:27,
-the command beside the claim — Q-67): both trees CLEAN at open, code `0b46a63f` /
-harness `ebae1aa` (one commit past the session-23 close `ce378c9`: the PREMISES
+the command beside the claim — Q-67): both trees CLEAN at open, code `e3e6d346` /
+harness `bebf298` (one commit past the session-23 close `a811127`: the PREMISES
 instrument); definition-drift assert MATCH (`8e364a3a`); binary `407b3d1d` current —
 `cmake -n` 0 steps, no `src/` file newer; same boot as sessions 21–23 (`uptime -s`
 2026-09-04 18:45:08); `:2` 2448x1332 under `.5KBYU3`; canary `--no-scene` **exit 0**
@@ -19,7 +19,7 @@ difference and the number agrees), `-j24`; next free §11 **213** (live ∪ arch
 by **archival pass 16** at OPEN (update-s22 + F87/F89/F90/F92/F93, 845 lines incl. the
 pass-13/14/15-shape seam tidy, manifest `2026-09-06-pass16`, pre-md5 `56eee5a3`
 reproduced in-process AND from disk, the archive files written before the live surface
-— Q-56's ordering; commit `f327191`; **F91 KEPT LIVE — carried, not delivered**) **→ 3**
+— Q-56's ordering; commit `ecdfbd4`; **F91 KEPT LIVE — carried, not delivered**) **→ 3**
 by the mints below. Instrument baselines at open (run 00:1x): scan **223/274/131** ·
 pair-check **228/203/25/109** · D 35 · D2 11 · I 89 · I2 36 · M 81 — to the digit of the
 session-23 close. QUEUE CONSUMPTION (session-23 close, in order): (1) pass 16 — DONE;
@@ -55,12 +55,12 @@ the NEW path bit-stable 120/120; §5.115 priced at 1.88 MB/h; the RSS tail 0.28�
 named; DEPLOYMENT-MAP T5 item 2 struck) — **three for three delivered AND supervisor-verified
 same session**, every delivery re-verified by my own runs (the smoke suite on F91's binary;
 F94's instrument on BOTH binaries; a 9-minute soak leg on the reference; the tables re-counted
-with awk; the RSS step signs recomputed; the epoch diff re-run). Code `0b46a63f → 5a1e5749 →
-a2a880ef` (two executor commits: F91's three `experimentalModule` files, F94's `core.cpp` two
-literals — nothing else); binary `407b3d1d → f7112cb9 → 404b9e89`; harness `ebae1aa →` this
-close. SUPERVISOR ACTS: archival pass 16 (`f327191`); the two mints under the PREMISES rule
-(`8faab9b`, the first sections minted under it — every line PASS at the mint); §5.138 minted +
-the §5.86 rider (`7fe6d04`); F94's and F95's per-round premises refreshed by line-targeted
+with awk; the RSS step signs recomputed; the epoch diff re-run). Code `e3e6d346 → 012105d6 →
+7509c809` (two executor commits: F91's three `experimentalModule` files, F94's `core.cpp` two
+literals — nothing else); binary `407b3d1d → f7112cb9 → 404b9e89`; harness `bebf298 →` this
+close. SUPERVISOR ACTS: archival pass 16 (`ecdfbd4`); the two mints under the PREMISES rule
+(`2bdd392`, the first sections minted under it — every line PASS at the mint); §5.138 minted +
+the §5.86 rider (`277beac`); F94's and F95's per-round premises refreshed by line-targeted
 `sed` with content assertions at each dispatch; the §11.215 marker's second home at the §11.76
 stub (this close — the executor wrote the entry's only; the first paraphrase then tripped the
 pair-check's D/M tests on two citations and was aligned to the entry's, both measured); Q-68 +

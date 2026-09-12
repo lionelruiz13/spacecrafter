@@ -1,7 +1,7 @@
 **Update [Fable 2026-08-01, supervising session 7]:** round of 3: **F18 → F20 → F21**
 (F20/F21 minted this session — the two remaining B31 slices). Warm-up found the F18
 `###` header DESTROYED by session 6's own acceptance edit — the SECOND F13-class
-edit-truncation, both supervisor WIP-tail edits; restored verbatim from `e5693f1`,
+edit-truncation, both supervisor WIP-tail edits; restored verbatim from `fbcd19a`,
 and §0b.4 now carries a next-header guard for exactly this.
 **Round outcome (session 7 close, 2026-08-01):** F18 → §11.127, F20 → §11.128,
 F21 → §11.129 — all three delivered AND supervisor-verified same session. **§5.52,

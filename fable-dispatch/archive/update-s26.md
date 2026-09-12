@@ -10,7 +10,7 @@ nothing that reaches a launch — the owner's RDP-created real logind session su
 under `.5KBYU3` exactly as HOST-EVENTS 2026-09-04 banks it, and the canary is green (Q-61's
 (3): the display lives with that session, not with his seat). Warm-up (every value
 `date`-measured 21:24:37–21:26:29, the command beside the claim — Q-67): both trees CLEAN at
-open, code `22499f04` / harness `d9b911e` (the session-25 close commit); definition-drift assert
+open, code `61da4edc` / harness `9df8e31` (the session-25 close commit); definition-drift assert
 MATCH (`8e364a3a`); binary `46849f69` current — dry build 0 steps, no `src/` file newer; same
 boot as sessions 21–25 (`uptime -s` 2026-09-04 18:45:08); canary `--no-scene` **exit 0** (30
 members, artifacts `f56/canary/20260906-212529`); config/ssystem md5 pristine
@@ -18,10 +18,10 @@ members, artifacts `f56/canary/20260906-212529`); config/ssystem md5 pristine
 `-j24`; next free §11 **219** (live ∪ archive, `max+1`); unpushed **92 code / 761 harness**
 (`rev-list --count`). Live `### F` **3 → 0** by **archival pass 18** at OPEN (update-s24 +
 F96/F97/F98, 733 lines = 113 + 212 + 207 + 197 + two seam tidies — the doubled `---` after the
-moved note and the session-25 mint's own `---` before F96, restoring 5d94d3f's exact seam;
+moved note and the session-25 mint's own `---` before F96, restoring a9ddcf5's exact seam;
 manifest `2026-09-06-pass18`, pre-md5 `96ea375c` reproduced in-process AND from disk, the
-archive files written before the live surface — Q-56's ordering; commit `fcfdd04`; **nothing
-carried**) **→ 4** by the mints below (`cb6009f`). Instrument baselines at open (run 21:25:28–21:26:27):
+archive files written before the live surface — Q-56's ordering; commit `e1d6c8c`; **nothing
+carried**) **→ 4** by the mints below (`4929f66`). Instrument baselines at open (run 21:25:28–21:26:27):
 scan **234/289/135** · pair-check **234/209/25/116** · D 35 · D2 11 · I 89 · I2 37 · M 83 — to
 the digit of the session-25 close. QUEUE CONSUMPTION (session-25 close, in order): (1) pass 18
 — DONE; (2) **§5.141's fix → F99** (S — WIDENED by the read: the row's `parent <unknown>` arm
@@ -76,12 +76,12 @@ the three prices) + **§5.146** minted at acceptance (the refused `SubBuffer` re
 list, Vixy's stratum) — **four for four delivered AND supervisor-verified same session**, every
 delivery re-verified by my own runs (F99: arm B on both binaries + the smoke suite; F100: the leg at
 both clocks + the smoke suite; F101: the self-test, its mutant, legs `p23` and `ctl_S02`; F102:
-`vulkaninfo` and the applog count to the body). Code `22499f04 → 1af7fa48 → 474c595d` (two executor
+`vulkaninfo` and the applog count to the body). Code `61da4edc → 01adbb30 → 4cd00139` (two executor
 commits: F99's two guard sites, F100's `ModularBody.{hpp,cpp}` — nothing else); binary `46849f69 →
-8e2c6ef3 → b5f08778`; harness `d9b911e → a67e6d0 →` this close. SUPERVISOR ACTS: archival pass 18
-(`fcfdd04`); four mints under the PREMISES rule (`cb6009f`, 95/95 PASS at the mint after nine
-first-run FAILs the instrument caught); the open note (`50cf583`); four acceptances (`776a59c`,
-`253cf1b`, `e4a3b0c`, this close) each after my own runs; **§5.145 and §5.146 minted** at
+8e2c6ef3 → b5f08778`; harness `9df8e31 → 88a7b01 →` this close. SUPERVISOR ACTS: archival pass 18
+(`e1d6c8c`); four mints under the PREMISES rule (`4929f66`, 95/95 PASS at the mint after nine
+first-run FAILs the instrument caught); the open note (`3c4ed63`); four acceptances (`6e830e9`,
+`26070c9`, `0882001`, this close) each after my own runs; **§5.145 and §5.146 minted** at
 acceptances with markers at every attributing node (§11.158(f4), §11.213(g), §11.220(j1),
 §11.222(g6)(i), both homes each); two instrument flags of my own mint aligned at this close (a `D8`
 token at §11.213's stub, §11.220's stub citation set); the per-round premises refreshed at each
@@ -109,7 +109,7 @@ saturated; three predictions kept refuted. F101: the `p23` leg the section lacke
 diffed with the instrument's own grammar; the red control that could not be red reported, not
 forced; a flush-lag lower bound named. F102: N predicted before the log was opened, one body off;
 the alignment pinned to the device the engine picks; the 7.7/body artefact explained; the
-corpus parser's own defect caught by its output). BASELINES AT CLOSE: (measured 01:32:37 after this close's mint and alignments) scan **252/319/143** · pair-check **238/213/25/118** · **D 35** · D2 11 · I 89 · I2 37 · **M 88** — over F102's close (252/319/143 · 238/213/25/117 · D 36 · M 87): +1 inline stub = §5.146; D −1 = the `D8` token dropped from my §11.213 stub marker (the §5.145 mint's own flag, closed at its cause); M +1 = §11.222's pair, which the instrument lists as `stub_only 11.113, 11.218, 5.142, 5.50, 5.60` once my (i) marker cited §5.116 in the entry with no §5.116 in the stub's marker — the entry-wins shape, licensed; and §11.220's flag (`entry_only 11.158, 11.213, 5.145`) did NOT clear when its stub marker was realigned to name those nodes — the instrument's reading of that stub marker is unexplained and is left named, not forced **[this clause first attributed M +1 to a `§5.146` count difference typed from expectation, in the close commit `86ce0e5`; corrected one commit later to the instrument's own line — dispatcher defect 10 of the round, the close's own, Q-67's class]**; the scan unchanged: a MINTED marker is not in its event lexicon.
+corpus parser's own defect caught by its output). BASELINES AT CLOSE: (measured 01:32:37 after this close's mint and alignments) scan **252/319/143** · pair-check **238/213/25/118** · **D 35** · D2 11 · I 89 · I2 37 · **M 88** — over F102's close (252/319/143 · 238/213/25/117 · D 36 · M 87): +1 inline stub = §5.146; D −1 = the `D8` token dropped from my §11.213 stub marker (the §5.145 mint's own flag, closed at its cause); M +1 = §11.222's pair, which the instrument lists as `stub_only 11.113, 11.218, 5.142, 5.50, 5.60` once my (i) marker cited §5.116 in the entry with no §5.116 in the stub's marker — the entry-wins shape, licensed; and §11.220's flag (`entry_only 11.158, 11.213, 5.145`) did NOT clear when its stub marker was realigned to name those nodes — the instrument's reading of that stub marker is unexplained and is left named, not forced **[this clause first attributed M +1 to a `§5.146` count difference typed from expectation, in the close commit `b6b118c`; corrected one commit later to the instrument's own line — dispatcher defect 10 of the round, the close's own, Q-67's class]**; the scan unchanged: a MINTED marker is not in its event lexicon.
 Archival pass 19 (update-s25 + F99/F100/F101/F102, live `### F` 4 → 0) DEFERRED to the next open.
 NEXT-ROUND QUEUE, in order **[RE-ORDERED 2026-09-07 08:4x on the owner's replies, §11.223]**: (1) archival
 pass 19 at open; (2) **`supervised-by.sh`'s silent fallback made LOUD** (S, decision-free — the tool he

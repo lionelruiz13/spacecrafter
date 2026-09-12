@@ -1,7 +1,7 @@
 **Update [Fable 2026-08-09, supervising session 12]:** round of 3: **F34 → F35 →
 F36** — likely the LAST decision-free round: after it the remaining set is
-entirely decision-gated. Warm-up: both trees clean, code `204d402e` / harness
-`c8fd86d`, binary confirmed current by no-op rebuild, `free -g` = 52 GiB ⇒ -j12;
+entirely decision-gated. Warm-up: both trees clean, code `7a44af3e` / harness
+`6753748`, binary confirmed current by no-op rebuild, `free -g` = 52 GiB ⇒ -j12;
 NO Vixy commit since session 11's close ⇒ the blocked/decision-gated set stands
 unchanged (D15/D21 late-Aug, D37, A40–A43, C4 open; §5.64/§5.65/§5.69/§5.70/
 §5.72/§5.75/§5.76 fixes stay Vixy's). **B4-row residual re-check DONE at
@@ -23,7 +23,7 @@ F35 = `ModularBody.hpp` + `constellation_mgr.cpp`/callers; F36 = startup
 logging sites — disjoint; sequential dispatch removes the residual risk.
 **Round outcome (session 12 close, 2026-08-09):** F34 → §11.144, F35 →
 §11.145, F36 → §11.146 — all three delivered AND supervisor-verified same
-session; code moved `204d402e → c12ed803 → 04ae1d3e` (F35 only; F34 and F36
+session; code moved `7a44af3e → 26fec653 → eb11432e` (F35 only; F34 and F36
 are record-only, code clean at open and close). **§5.80's owed datum PAID**
 (F34): the teleport lives on the CONVERTER — (A) is used by exactly the three
 triple↔cartesian conversion sites and by nothing else; `descend`/`moveEyeRel`

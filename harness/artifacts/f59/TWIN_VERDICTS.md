@@ -1,8 +1,8 @@
 # F59 scope 2 — the §5-side twin: verdict table
 
-Universe and method: `METHOD.md` (committed first, commit `3f6c5fc`). Every pair below was
+Universe and method: `METHOD.md` (committed first, commit `76f2686`). Every pair below was
 adjudicated **by reading both ends**; the enumerator's mechanical `mech` column was an
-input, never the verdict. Tree: harness `f345b33`, code `d6aec251`, 2026-08-30.
+input, never the verdict. Tree: harness `c146ed5`, code `3ccfc6d8`, 2026-08-30.
 
 **RESULT: 44 primary pairs — MARKED 15 · FALSE-POSITIVE 15 · OFF-AXIS 8 · MINT-ROUTE 6 ·
 AMBIGUOUS 0 · UNMARKED-REAL 0.** All 13 of §11.165(c)'s third-bucket pairs are present and
@@ -39,13 +39,13 @@ foot (§ "why this zero can fail").
 | 24 | §11.134 → §5.62 | **MARKED** | `INTENT.md:349`, inside `[EXTENDED 2026-08-02 by F26 … (§11.134; …)`: *"ONE OF THIS ROW'S OWN STATEMENTS IS REFUTED: `active.lock` does NOT explain the 45-byte `app.log` …"*. Textbook §11.113(p). |
 | 25 | §11.129 → §5.63 | **MARKED** | `INTENT.md:351` `[EXTENDED 2026-08-01 by F21's bounded attribution attempt (§11.129(b) …) … (1) the row's own characterisation is CORRECTED …]`. |
 | 26 | §5.89 → §5.79 | OFF-AXIS | `INTENT.md:400`. Source is a §5 row's stub; the `CORRECTED` belongs to §5.89's **own** reach claim and §5.79 is cited as the mint criterion. |
-| 27 | §11.144 → §5.80 | **MARKED** | `INTENT.md:384` *"EXTENSION 2026-08-09 (F34, §11.144; code UNCHANGED at `204d402e`): THE OWED DATUM IS ANSWERED, and the row's own text is corrected on one point."* Instrument misses it: unbracketed **and** the keyword is lowercase (finding M1). `[F49-13]` |
+| 27 | §11.144 → §5.80 | **MARKED** | `INTENT.md:384` *"EXTENSION 2026-08-09 (F34, §11.144; code UNCHANGED at `7a44af3e`): THE OWED DATUM IS ANSWERED, and the row's own text is corrected on one point."* Instrument misses it: unbracketed **and** the keyword is lowercase (finding M1). `[F49-13]` |
 | 28 | §11.153 → §5.80 | **MARKED** | `INTENT.md:384` *"FIXED AND CLOSED 2026-08-26 (F40, §11.153 …) … the site count in this row is corrected: there are FOUR, not three"*. Same invisibility (finding M1). `[F49-13]` |
 | 29 | §11.157 → §5.80 | FALSE-POSITIVE | `INTENT/11.157.md:33`. The `AFFECTED, SUPERSEDED` verdict is about the **harness** `f34_convention.py` whose C3 gates assert the convention F40 removed — not about the row. `[F49-13]` |
 | 30 | §11.160 → §5.89 | **MARKED** | `INTENT.md:400` *"OWED SWEEP DISCHARGED 2026-08-29 (F46 → §11.160)"* + *"THE ROW'S OWN REACH CLAIM IS CORRECTED AND WIDENED"*. Both present at the node; >160 chars apart and unbracketed, so both instrument forms miss (finding M1). |
 | 31 | §11.101 → §5.104 | MINT-ROUTE | `INTENT/11.101.md:23` — the citation sits **inside F49's own back-marker** at §11.101(f): *"NEW §5.104"*. `[F49-13]` |
 | 32 | §11.152 → §5.104 | MINT-ROUTE | `INTENT/11.152.md:35` *"NEW §5.104"*; §5.104's stub cites §11.152(i) as its measurement provenance. `[F49-13]` |
-| 33 | §11.155 → §5.104 | **MARKED** | `INTENT.md:430` *"FIXED AND CLOSED 2026-08-26 (F41, §11.155; code `18b6f13f → 742cdc82 → d6aec251`)"* with the row's own measurement both ways. The flagged `SUPERSEDED` belongs to §11.152(p)(5)'s warning. Instrument misses the marker (finding M1). `[F49-13]` |
+| 33 | §11.155 → §5.104 | **MARKED** | `INTENT.md:430` *"FIXED AND CLOSED 2026-08-26 (F41, §11.155; code `cf478893 → bc3f2cbb → 3ccfc6d8`)"* with the row's own measurement both ways. The flagged `SUPERSEDED` belongs to §11.152(p)(5)'s warning. Instrument misses the marker (finding M1). `[F49-13]` |
 | 34 | §11.156 → §5.104 | FALSE-POSITIVE | `INTENT/11.156.md:87` — §11.156(g)'s table quoting §11.152's assertion. Catalogue. |
 | 35 | §11.165 → §5.104 | FALSE-POSITIVE | `INTENT/11.165.md:10` — §11.165(a)'s table + its summary, quoting the same. Catalogue. |
 | 36 | §5.27 → §5.104 | OFF-AXIS | `INTENT/5.27.md:31`. Source is a §5 entry file; the relation is *"NEW §5.104"*, a mint. `[F49-13]` |
@@ -125,7 +125,7 @@ correction phrased without a row-referring phrase *and* without a lexicon word.
   is *"B14 `rot_pole_w0` conversion targets an axis 90° from the texture convention"*
   (archived 2026-07-31, the referent of decision **A33** and of §11.101(b)/§11.114);
   `INTENT/5.28.md` + register row 28 are *"`Translator::getAvailableLanguagesCodes` —
-  `pop_back()` on the empty join ⇒ UB"*, minted 2026-08-04 (commit `250cf1e`). **Two
+  `pop_back()` on the empty join ⇒ UB"*, minted 2026-08-04 (commit `6d4d41a`). **Two
   defects, one id, both with live citations** — an I2 violation in the ledger's own id
   space, and every §5.28 citation now needs its date to disambiguate. NOT a §5 mint (§5.79
   is about shipped-surface defects); **ROUTED** — renumbering or aliasing is a ledger

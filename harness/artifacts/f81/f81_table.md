@@ -1,6 +1,6 @@
 # F81 - the view offset's two couplings, measured
 
-binary `c8e12950` - code master-beta @ 85cc2785 (engine = ba7a32a8), target `Sun`, offset 0.3, viewportRadius 1024 px (projector's own dump), render 2048x2048.
+binary `c8e12950` - code master-beta @ d33bc14f (engine = 8d41fbe3), target `Sun`, offset 0.3, viewportRadius 1024 px (projector's own dump), render 2048x2048.
 
 Scene: shipped default config, time FROZEN at jd 2461288.9841951793, target at MERIDIAN transit (off-meridian 0.00002 deg, altitude 53.400 deg), atmosphere/landscape/stars off, farm `init_view_pos` = the target's measured local-frame direction.
 

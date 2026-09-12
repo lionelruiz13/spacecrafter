@@ -1,6 +1,6 @@
 # F82 - the portrait leg: one launch per aspect, both paths, both readback channels
 
-binary `c8e12950` - code master-beta @ 85cc2785 (engine sources ba7a32a8), target `Sun`, jd 2461288.9841951793 (F81's measured meridian transit), view_offset 0 everywhere.
+binary `c8e12950` - code master-beta @ d33bc14f (engine sources 8d41fbe3), target `Sun`, jd 2461288.9841951793 (F81's measured meridian transit), view_offset 0 everywhere.
 
 Channel A = the app's own readback (`body action screenshot`); channel B = `x11grab -window_id <client>` of the app's window (11.172(c)).
 

@@ -1,13 +1,13 @@
 **Update [Fable 2026-09-01, supervising session 20 — TravellingFoxDev, the
 anchors / corpus / bad-script round]:** trigger = the §0b verbatim line, no
-in-line transmission. Warm-up: both trees clean at open, code `54a2b844` /
-harness `e6f9c8c`; binary current (`cmake --build build-claude -- -n` → zero
+in-line transmission. Warm-up: both trees clean at open, code `b45d3b58` /
+harness `3e91ed1`; binary current (`cmake --build build-claude -- -n` → zero
 compile/link steps; no `src/` file newer than the binary; the F74 executor's
 build at 09:31:08 precedes its commit by 32 s — consistent); definition-drift
 assert md5 MATCH (`a5a54d94`); next free §11 number **196** (live ∪ archive);
 live `### F` count **7 → 0** by **archival pass 12** (F68–F74 + update-s18, 8
 units, byte-exact, manifest `2026-09-01-pass12`, reconstruction md5 `e3cae1d8`
-proven in-process AND from disk, commit `6ea07be`) — done at OPEN this time: the
+proven in-process AND from disk, commit `2809162`) — done at OPEN this time: the
 s19 deferral's cost is every executor's warm-up read of ~830 dead lines —
 **→ 4** by the mints below; RAM 9 GiB avail ⇒ `-j6`; display `:0` 1920x1080
 answers `xdpyinfo` under `/run/user/1003/.mutter-Xwaylandauth.ZA0TU3`, logind
@@ -47,9 +47,9 @@ struck and resolved from recorded rules) · F76 -> journal `2026-09-01b` +
 for four** delivered AND supervisor-verified same session (every delivery
 re-verified by my own runs: anchor_gate 6663→6667/2/69, ctest 14→15→16/16,
 shipped-corpus gate, both instruments to the digit, canary exit reproduced,
-wires/artifacts by cat-file). Code `54a2b844 -> ba7a32a8` (5 executor commits:
-anchors `b00abd11`+`7b227ed6`+`e3afca8f`; corpus `8eeffb9d`+`ba7a32a8`; F77/F78
-shipped NO code byte); harness `e6f9c8c ->` this close. HEADLINES: the
+wires/artifacts by cat-file). Code `b45d3b58 -> 8d41fbe3` (5 executor commits:
+anchors `a8d4aeb8`+`83ae4e91`+`0a1cb3e7`; corpus `41088a54`+`8d41fbe3`; F77/F78
+shipped NO code byte); harness `3e91ed1 ->` this close. HEADLINES: the
 grammar's 6663 engine anchors resolve at ONE stated pin with a gate that reds
 on drift (population **6734**, not "324"); the shipped corpus is FULLY
 dispositioned (1661 findings, ALL true, 0 false positives, 13 authored defects
@@ -63,7 +63,7 @@ caught via report-not-absorb or the §0.7 gate (FROZEN-fragments [the abort] ·
 S2's `_meta.code` clause · the stale dry-run premise post-F75 · the unmeetable
 generator boundary · the §5.118 "owed" gloss · the §11.165-veto-(2) citation)
 + **two instrument slips of mine**, both caught same-minute (an edit-commit
-chain ungated on the edit's success — amended `9e4b1a1`->`e211d1a`; a commit
+chain ungated on the edit's success — amended `9e4b1a1`->`5016b09`; a commit
 referencing a message file never written) + **three single-line/stub-collision
 grep misreads** (F78 member 1's class, live at the supervision layer — its fix
 now shipped). EXECUTOR criterion-integrity instances this round: **6** (F75's

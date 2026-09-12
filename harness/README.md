@@ -728,7 +728,7 @@ the loader normalizes `nan` -> `NaN` rather than losing the file.
 
 **Read this before you read a b4 run.** On the reference binary
 `b4_anchors_run.sh` **exits 0, every check green** — measured twice, 2026-09-05,
-binary `407b3d1d` at code `1d839b9d`. On the pre-`§5.133` binary
+binary `407b3d1d` at code `d467740d`. On the pre-`§5.133` binary
 (`/home/claude/sc-f89/bin/sc-scratch-pre`, `9471f2fc`) it **exits 1 with nine
 failures, all of them the new P1b assert**. Until F93 it was the other way
 round, and this section said so; §11.208(i) is where that inversion is
@@ -1528,7 +1528,7 @@ at the same `strcpy` is silent - so pre/post claims are presence vs absence.
     ./f29_compare.py <pre_outdir> <post_outdir>                      # exit 0/1
 
 `f29_upchain.py`'s header IS the prediction (committed before the first run,
-harness `2af2ee1`); `f29_compare.py` evaluates the cross-binary halves. Five
+harness `9ffca41`); `f29_compare.py` evaluates the cross-binary halves. Five
 legs in one launch: **E** observer on Earth · **S** system centre · **X** on
 Mars with the Sun tracked (the FREEZE SOURCE) · **M** on the Moon at fov 340 ·
 **N** the same instant at fov 140 with the subject tracked.
@@ -1765,7 +1765,7 @@ Two habits worth copying:
 row's number. `logged = PARTIAL` is the interesting bucket: the log records the
 ATTEMPT and never the outcome, so it does not merely omit — it implies success.
 
-Result on `04ae1d3e`: 214 live sites (186 project) in 76 functions; 25 functions
+Result on `eb11432e`: 214 live sites (186 project) in 76 functions; 25 functions
 entered during startup; **37 startup failure reports the app log does not carry**;
 and every one of the 37 carries a blocker, so the uniform additive `cLog` routing
 §5.77 expected does not exist. See §11.146(f) for the five blocker kinds and (j)
@@ -2064,7 +2064,7 @@ above §11.104(d)'s committed post-fix numbers (lift20 29.2/28.8, b30 30.8/30.3,
 b45 59.1/58.3, b90 127.0/125.3), b250 **−6.4 %** (316.0/337.5), the b20 shadow
 witness **−17 %** (2313/2790), and the one remaining failure is b250's own
 `site_luma = 20.97` against the `>= 30` gate that has been in the file since its
-first commit (`8a294d8`) and passed in F1. The site is bit-identical by
+first commit (`e4fdff0`) and passed in F1. The site is bit-identical by
 construction, so this is NOT the correction; ~~it is unattributed drift across
 five sessions of product change~~. Do not read the ladder as green.
 
@@ -2209,7 +2209,7 @@ whose harness committed no APPLOG cannot be dated this way (F43's `run.log`s
 carry no `Driver Version` line).
 
 Artifacts: `artifacts/f51/` — `f51_predictions.json` (committed BEFORE the
-launch, commit `0354ba0`), `f51_adjudication.json`, `f51_baseline_census.json`,
+launch, commit `6667cdb`), `f51_adjudication.json`, `f51_baseline_census.json`,
 `f51_driver_census.json` + `f51_driver_census_rows.txt.gz`,
 `f51_gate_census.json`, `dwell/` (the 72-sample series `f51_dwell.json`, the
 applog, the three dumps, the settle trace, and only the two frames that are
@@ -2267,7 +2267,7 @@ out** alongside `config.ini`/`ssystem.ini`.
   (median − min) its uncertainty — **0.025 s** measured, 2195 lines.
 
 **The scene** is F51's under a similarity of factor 5: `moon_scaled` left at
-the configured `moon_scale = 5` (an init STATE, not a ramp, since `d6aec251`,
+the configured `moon_scale = 5` (an init STATE, not a ramp, since `3ccfc6d8`,
 so there is no §5.109 settle to wait for) and `alt` 5× F51's, giving observer
 radius 48687.006 km = 5 × 9737.4 and every angle F51's. Phase 2 then reaches
 F51's scene EXACTLY over TCP with the settle waited BY MEASUREMENT. The two
@@ -2355,8 +2355,8 @@ pass** — that is the failure mode the whole instrument exists to prevent.
 spread **0.000** — so the substitute → real-session compositor change is
 photometrically INERT. `BANK_FRAME_MD5` was NOT re-banked either, because it
 did not move: the dwell frame is byte-identical to 2026-08-30's across that
-compositor change AND a different binary (`fa00deae` at `d6aec251` →
-`c8e12950` at `ba7a32a8`). It stays recorded and ungated all the same — a
+compositor change AND a different binary (`fa00deae` at `3ccfc6d8` →
+`c8e12950` at `8d41fbe3`). It stays recorded and ungated all the same — a
 cache or driver change can move bytes without moving luminance — but if a
 future stack question needs more resolution than ±1.0 on a mean, this scene
 answers at the byte.
@@ -2424,7 +2424,7 @@ the pre-run commitments.
     cd claude/harness && DISPLAY=:2 ./f61_live_rulings.py [absOutdir]     # default artifacts/f61
     SC_BIN=/abs/pre-fix/binary ./f61_live_rulings.py /abs/outdir           # the RED control
 
-Both commits (`a3437670` stacktrace probe, `3d9179d2` comment rule) were compiled
+Both commits (`02bc028e` stacktrace probe, `6626466f` comment rule) were compiled
 on GCC 11 and never run when they landed (no display session for this user then).
 One fresh launch on a temp-HOME farm pays the owed confirmation:
 
@@ -2447,7 +2447,7 @@ One fresh launch on a temp-HOME farm pays the owed confirmation:
   SURVIVE the signal (SIGUSR1's default disposition is termination — survival
   is the proof the handler is installed).
 
-Measured 2026-08-31 on `build-claude` @ `3d9179d2`: **16/16**. The two things
+Measured 2026-08-31 on `build-claude` @ `6626466f`: **16/16**. The two things
 the first version got wrong, kept as record: the "X is unknown. Did you
 mean…?" line is printed by BOTH lookups (command and flag), so the did-you-mean
 count is the three controls, and the flag-specific count is "Unrecognized or
@@ -2456,7 +2456,7 @@ the next run wipes — they are copied into the artifact dir now. The farm's
 `sessions/` must be a REAL dir (b3_farm.sh symlinks it into the field, and a
 session save would then write the real tree). The only foreign pre-fix binaries
 on this laptop do not load here (`build-asan`: `libavcodec.so.61` missing —
-a desktop link), so the RED control is a staging build of `a3437670` (probe
+a desktop link), so the RED control is a staging build of `02bc028e` (probe
 landed, comment rule not yet — the only pre-fix tree GCC 11 compiles; a git
 worktree whose EntityCore submodule had to be copied in AND configured after
 the copy, or the link fails on `Set::~Set()` — CMake globbed an empty dir),
@@ -2469,7 +2469,7 @@ to know about: P3 (on→off) passes on the pre binary only because P1 had alread
 failed to turn the flag on — the P1+P3 pair discriminates, P3 alone does not.
 
 **2026-08-31, later (11:44–12:03), four more runs — the leg that could not be
-"exactly once":** re-run on `2b8ec034` with the claude session's screen LOCKED →
+"exactly once":** re-run on `c589d1b2` with the claude session's screen LOCKED →
 **15/16**, the SIGUSR1 count leg RED at count=3 — and the mechanism is the
 watchdog's own: fps.cpp:150-156 sends the process SIGUSR1 on every frame stall,
 so the same WARNING is written once per stall, 50 ms after each `Frame stall
@@ -2505,7 +2505,7 @@ file must carry `div y 2` AS TYPED (ScriptMgr::recordCommand writes the raw
 line; the enum-to-name map has no consumer), and the control `flag stars
 toggle` must be re-serialised as `flag stars 0|1` (the one rewrite site,
 `m_flags_ToString`) — the measurement behind retiring scedit's
-`alias-respelled` seed. Measured 2026-08-31 on `7fd5ea75`: **11/11**.
+`alias-respelled` seed. Measured 2026-08-31 on `4141317a`: **11/11**.
 Instrument lesson, recorded in the file: a recorded line must SUCCEED to be
 written, and three `camera`/`flyto` forms tried blind failed for camera-state
 reasons — read `families.commands.camera.args` in the grammar before choosing
@@ -2533,7 +2533,7 @@ script waits → skipped with the "changed since the script was loaded"
 warning, the edit intact; H+I: a fault in a script played BY another →
 annotated in ITS file, the caller untouched; J: a fault inside a `struct loop
 2` body → two log lines (first pass + replay, the replayed line keeps its
-origin), one tail. Measured 2026-08-31 on `2b8ec034`: **34/34**.
+origin), one tail. Measured 2026-08-31 on `c589d1b2`: **34/34**.
 
 ## F63 × scedit — does scedit's reading of a line agree with the `#!` verdict the engine wrote on it? (`f63_scedit_agree.py`) — scedit INTENT §5 item 15, 2026-08-31 (rewritten onto `--history` at F65, same day)
 
@@ -2553,7 +2553,7 @@ nothing on both sides. The script carries the LEG TABLE — all ten of F63's
 artifacts and what each puts in front of it — and refuses an artifact directory
 holding a file it does not know, so a stale or half-written `artifacts/f63` is a
 loud failure rather than a smaller pass. **Measured 2026-08-31 (F63 on
-`2b8ec034`, scedit `4a00cf31`): 12 tails / 12 agree / 0 disagreements / 6
+`c589d1b2`, scedit `6d8fe6c9`): 12 tails / 12 agree / 0 disagreements / 6
 expected findings in E+G — and the same four numbers after the F65 rewrite, on
 the same artifacts.**
 
@@ -2568,7 +2568,7 @@ a THIRD reading of the rule after the engine's and scedit's, and it applied the
 grammar sentence ("the first `#!` at or after the first `#` outside quotes")
 without the clause the sentence omitted — the annotator only holds notes for
 lines that EXECUTE (a comment-only line is dropped at `script.cpp:117` before
-`executeCommand`; `:114` before engine `2b8ec034` moved it), so a `#!` inside a
+`executeCommand`; `:114` before engine `c589d1b2` moved it), so a `#!` inside a
 column-0 comment (leg F's line 1) is neither written nor cleared by the engine,
 and scedit's `machineTail` ignores it by construction. F65 wrote the rule where
 it belongs — `parse_model.comments.machine_tail`, EXECUTES-ONLY clause, with its
@@ -2610,7 +2610,7 @@ the move removes. This is the check that the move changed nothing: question by
 question over F64's 340 witness pairs, scedit's top-ranked command page must be
 the command the baseline picks. **340/340 agree; both sides 80/340 = 23.5%**,
 F64's recorded number reproduced at the authority (2026-08-31, code
-`fbdf1d48`). Rows: `artifacts/f66/search_parity.json` (`.gz` committed).
+`2ffb69ed`). Rows: `artifacts/f66/search_parity.json` (`.gz` committed).
 
 The pairs and the scorer are IMPORTED from `f64_doc_router.py` — which was
 refactored the same day so that importing it has no side effects (everything
@@ -2648,8 +2648,8 @@ DISPLAY=:2 ./f67_tcp_live.py [absOutdir]      # default artifacts/f67
 
 One fresh launch on a temp-HOME farm (`b3_farm.sh`), the `/proc/<pid>/comm`
 instance probe, frozen config/ssystem md5 asserted in == out, and seven legs
-over port 7805. **28/28, twice** (2026-08-31, code `master-beta @ 5d3d577f`,
-engine sources unmoved since `2b8ec034`). Predictions are printed before the run
+over port 7805. **28/28, twice** (2026-08-31, code `master-beta @ 3ee4fb9a`,
+engine sources unmoved since `c589d1b2`). Predictions are printed before the run
 AND written into `artifacts/f67/f67_result.json` before a leg executes; each
 leg's observable is read through a channel scedit's client never touches.
 
@@ -2725,7 +2725,7 @@ SC_BIN=<delivered binary>  SC_BIN_PRE=<pre-change binary, named `spacecrafter`>
 twice and on the delivered one once. The A/A pair is not ceremony: leg (iv)
 claims a wire did not change, and that sentence is empty until something says
 this battery's wire is deterministic at all. **43/43** (2026-08-31, pre
-`fc651978` = `master-beta @ e2c8477b`, post `444db012` = `423cbe23`).
+`fc651978` = `master-beta @ 97378bfe`, post `444db012` = `dd815ab3`).
 
 One run sends the SAME fault (`struct if end`, nothing open) five ways:
 
@@ -2771,7 +2771,7 @@ The other legs, each with what it could have found instead:
 Instrument facts worth carrying:
 
 - **A staging binary must be named `spacecrafter`.** `/proc/<pid>/comm` is
-  truncated to 15 bytes, so a copy called `spacecrafter-e2c8477b` reports
+  truncated to 15 bytes, so a copy called `spacecrafter-97378bfe` reports
   `spacecrafter-e2` and the concurrent-instance probe (§11.134(b)) goes blind on
   exactly the binary the run depends on. The script refuses to start if either
   binary has another name.
@@ -2835,7 +2835,7 @@ Instrument facts worth carrying:
 
 - **The canary's `xserver.restarted` NOTE ~~is~~ WAS the instrument, not the
   host.** **[FIXED 2026-09-04, F79 §11.199 — the line number below is a line
-  number of `f56_canary.sh` at harness `d2cc023` and no longer resolves: both
+  number of `f56_canary.sh` at harness `1da5d4a` and no longer resolves: both
   start members now call `pid_start_epoch`, and both banked epochs were
   re-measured with it. The paragraph is kept because the measurement in it is
   the evidence.]**
@@ -2944,7 +2944,7 @@ unexplained byte in it is not reviewable.
 
 ## F72 — the file line names itself: the reversal, and two instruments that can no longer be falsely red — INTENT §11.192, 2026-09-01
 
-**The change (engine, `1014e5a5`).** `originTag()` returns its prefix for EVERY
+**The change (engine, `92c81df7`).** `originTag()` returns its prefix for EVERY
 origin that has something to name, so a FILE-origin refusal logs `<file>:<line>:
 Could not execute: <line>` exactly as a control one logs `tcp#<id>: …`. Both
 consumers (the funnel `executeCommandStatus` and the emitter that BYPASSES it)
@@ -2982,8 +2982,8 @@ for a gating instrument, so:
 
 | variable | values | what it names |
 |---|---|---|
-| `SC_PRE_TAGS` (f68) | `none` \| **`tcp`** | which origins the pre binary tags: `none` = before `423cbe23`, `tcp` = `423cbe23`..`96cfc352` |
-| `SC_PRE_ERA` (f69) | `f68` \| **`f69`** | whether the pre binary has the `$DIAG` channel: `f68` = `423cbe23` or older, `f69` = `be2ddd81`..`96cfc352` |
+| `SC_PRE_TAGS` (f68) | `none` \| **`tcp`** | which origins the pre binary tags: `none` = before `dd815ab3`, `tcp` = `dd815ab3`..`9620a758` |
+| `SC_PRE_ERA` (f69) | `f68` \| **`f69`** | whether the pre binary has the `$DIAG` channel: `f68` = `dd815ab3` or older, `f69` = `c807d695`..`9620a758` |
 
 Declared, never inferred — an instrument that read its own pre phase to decide
 what to expect would assert whatever it measured. A WRONG declaration turns the
@@ -3000,7 +3000,7 @@ against `artifacts/f68/wire.pre.*` and the fifth against
 
 **A staging binary must be called `spacecrafter`** (F68's rule, still enforced by
 both instruments): `/proc/<pid>/comm` truncates at 15 bytes, so a name like
-`spacecrafter-96cfc352` reads as `spacecrafter-96` and the concurrent-instance
+`spacecrafter-9620a758` reads as `spacecrafter-96` and the concurrent-instance
 probe goes blind to the very binary the run depends on. Copy, do not rename:
 `mkdir -p /tmp/<task>-pre && cp build-claude/src/spacecrafter /tmp/<task>-pre/`
 BEFORE the rebuild.
@@ -3021,7 +3021,7 @@ section below; the survivors are f61 and f62, which match the MESSAGE.]**
 
 ## F73 — the log line IS the line: one rendering, and four neighbours that were wrong about it — INTENT §11.194, 2026-09-01
 
-**The change (engine, `9a3b7a55`).** The funnel's TWO lines collapse into ONE:
+**The change (engine, `02cafb97`).** The funnel's TWO lines collapse into ONE:
 `Error executing <origin>: <the raw line, author comment kept> #! <message>` —
 the **intent-modified line**, with any `#!` tail already on the line REPLACED.
 The composition is `ScriptAnnotator::withAnnotation`, the `#!` writer's own
@@ -3057,9 +3057,9 @@ SC_BIN_PRE=/tmp/<task>-pre/spacecrafter SC_PRE_ERA=f72 \
 python3 f63_annotations.py $PWD/artifacts/<task>/f63       # 34/34
 ```
 
-`SC_PRE_TAGS=all` / `SC_PRE_ERA=f72` are the NEW DEFAULTS and name a `1014e5a5`
+`SC_PRE_TAGS=all` / `SC_PRE_ERA=f72` are the NEW DEFAULTS and name a `92c81df7`
 pre binary (both origins tagged, funnel still writing the legacy pair). A pre
-binary at `9a3b7a55` or later needs a further era value in each: since F73 the
+binary at `02cafb97` or later needs a further era value in each: since F73 the
 funnel's SHAPE is part of what an era names, not just which origins it tags.
 Everything F72's section says about passing an outdir and about copying the pre
 binary under the name `spacecrafter` still holds and still matters.
@@ -3114,7 +3114,7 @@ git-rev argument it extracts that revision's `fontFactory.{hpp,cpp}` into an
 overlay ahead of `src/` on the include path — that is how a PRE-fix column is
 reproduced after the fix has landed:
 
-    OUT_DIR=/tmp/pre  claude/harness/f74_repro/f74_build_run.sh 9a3b7a55
+    OUT_DIR=/tmp/pre  claude/harness/f74_repro/f74_build_run.sh 02cafb97
     OUT_DIR=/tmp/post claude/harness/f74_repro/f74_build_run.sh
     diff /tmp/pre/plain.run.log /tmp/post/plain.run.log
 
@@ -3215,7 +3215,7 @@ summary beside it). Shape is `f70_dispositions.py`'s on purpose: a MECHANICAL
 census — `scedit --check` itself, never a second reading of the scripts —
 joined to HAND-MADE traces, where a finding matching no trace is an ERROR and
 not a default. `--strict` exits 1 on any UNADJUDICATED row; the universe was
-committed with all 1661 unjudged (`d49b13c`) before one of them was decided.
+committed with all 1661 unjudged (`747d9eb`) before one of them was decided.
 
 **`f76_live.py`** puts every id class to the running engine, both ways, in one
 fresh `f27_reply.Session` launch. Predictions are in the file and the file was
@@ -3289,7 +3289,7 @@ One fresh `f27_reply.Session` launch. A deliberately bad script — one mechanis
 per line — is played **as a FILE** by absolute path, while five things are
 watched: the script log, the `$DIAGON` link, the `#!` the annotator writes into
 the played file, the state each line leaves, and the console. Predictions are
-`artifacts/f77/predictions.md`, committed at `3f0dc5d` **before this driver
+`artifacts/f77/predictions.md`, committed at `b7f6789` **before this driver
 existed**, and the run itself re-reads their md5 into its result JSON.
 
 **Four techniques worth reusing, in order of how much they save.**
@@ -3370,7 +3370,7 @@ required nothing until F78, and §11.168(m)'s closing clause — *"`intent_pair_
 cwd-relative and has no such trap"* — was **false at the source**: it defaulted to
 `os.path.dirname(os.path.abspath(__file__))`, the SCRIPT's own directory, so a run
 launched from an extracted pre-tree without an explicit root silently measured the LIVE
-tree. Unchanged since `89b83cc`. Both now fail loudly instead; §11.168(m) carries the
+tree. Unchanged since `6f231cf`. Both now fail loudly instead; §11.168(m) carries the
 back-marker. **If you compare two trees, pass each root positionally — that is the whole
 point of the change.**
 
@@ -3470,7 +3470,7 @@ that scans `ModularSystem.cpp` alone under-reports the composed regime badly --
 811 keys looked legacy-only on the first run. The directories that matter are
 `experimentalModule/moduleLoader/` and `orbitModules/` (plus `ModularBody.cpp`
 and `modules.cpp`), which is exactly the list `capability-surface.md` base D
-names. Final split at `ba7a32a8`: **142 keys / 422 read sites**, 4 legacy-only,
+names. Final split at `8d41fbe3`: **142 keys / 422 read sites**, 4 legacy-only,
 33 composed-only, 105 both.
 
 **The generator gates itself in both directions** — a census key with no
@@ -3673,8 +3673,8 @@ F83 added no script. It ran existing gates against a merge, and the value is in
 which of them were capable of failing. Recorded here so the next merge does not
 have to rediscover it.
 
-**Reproduce the state**: code merge `c6784490` (parents `85cc2785` + `6ec2f43f`),
-delivered HEAD `03c85734`, binary md5 `225f0d93`. Predictions committed before the
+**Reproduce the state**: code merge `ba9df31f` (parents `d33bc14f` + `6ec2f43f`),
+delivered HEAD `1270c8e9`, binary md5 `225f0d93`. Predictions committed before the
 runs: `artifacts/f83/prediction.txt`. Gate logs: `artifacts/f83/ctest_19of19.log.gz`,
 `artifacts/f83/corpus_strict.log.gz`; canary run
 `artifacts/f56/canary/20260905-105517/`.
@@ -3877,7 +3877,7 @@ tail; the applog's first N lines **with their md5** — that is the as-if contro
   ASan's label. Reports are DISTINCT-PC counts (the F17 note below applies).
 - **`build-asan` needs `cmake .` before the build** whenever the file list moved
   (F17's note, still true: F84's `CONFIGURE_DEPENDS` covers `build-claude` only if
-  that dir was configured after `1cbd6780`). Build ASan at `-j12`, not the host's
+  that dir was configured after `33be7cb6`). Build ASan at `-j12`, not the host's
   `-j24`: memory is the binding constraint, not cores.
 - **A star-field frame grab is NOT a cross-run instrument.** F86 spent two launches
   learning this: with the atmosphere and landscape off, two launches of the SAME
@@ -4043,7 +4043,7 @@ printed strings themselves contain newlines, so the tail of each record's
   one**, so its count going 0 -> 90 cannot be produced by any code path other
   than the lookup.
 - ~~**`b24_select.py:861-864` matches the NEW block's ENGLISH labels** and runs on
-  a French farm, so since code `1d839b9d` its I1 check reds on a readout that is
+  a French farm, so since code `d467740d` its I1 check reds on a readout that is
   more correct than before. Known cause, not a regression; the repair is to
   assert the block's SHAPE (five lines, a numeric magnitude, two angle pairs, a
   distance plus a unit token) instead of its spelling.~~ **[REPAIRED 2026-09-05,
@@ -4143,7 +4143,7 @@ script.**
   authored body's dump record has an old half and no new half, and the record count
   moves by the wrong amount as a result. Read the halves.
 
-**Measured, three runs on fresh farms at code `1d839b9d` (binary `407b3d1d`), all
+**Measured, three runs on fresh farms at code `d467740d` (binary `407b3d1d`), all
 step-for-step identical, ZERO flakes, 91.2 s each:** S1 DIVERGENCE §5.77/§11.146 (3
 silences, TCP up in 12.6 s) · S2 PASS 120 → 121 bodies · S3 PASS 5.9 s / 5.5 s
 authored / 1 pause / 0 `#!` · S4 DEPRECATED (R22) `Mars(P);` · S5 PASS shape 5 lines,
@@ -4170,8 +4170,8 @@ RECORD (annotated at the rename, never rewritten). No, it is worded branch-agnos
     python3 harness/f92_census.py patch --out harness/artifacts/f92/rename-live-pointers.patch
     python3 harness/f92_census.py verify --code-root W1 --harness-root W2   # LIVE must be 0
 
-**Re-take it before acting on it.** The census is STAMPED at a commit (code `0b46a63f`
-/ harness `58f10f6`: code 9 files / 18 hits = LIVE 1 · PIN 17; harness 125 / 208 = LIVE
+**Re-take it before acting on it.** The census is STAMPED at a commit (code `e3e6d346`
+/ harness `c7307b2`: code 9 files / 18 hits = LIVE 1 · PIN 17; harness 125 / 208 = LIVE
 3 · PIN 116 · HIST 89), and both repositories grow records that name the branch every
 round — every one of them lands in PIN or HISTORICAL by construction, but the totals
 move. `census` re-measures in a second; the reproducibility is the deliverable, not the
@@ -4319,7 +4319,7 @@ signatures lost none.
   * the live pair's `--dry-run` is BYTE-IDENTICAL before and after (944 lines, md5 `3f2e421e`).
 
 **What the tool will do to the live pair** (read-only, `f106_predict.py code . 'origin/master-beta..HEAD'`):
-83 of the 98 range commits change sha, 15 keep their object -- the whole `1ddd32f0..c6784490^2`
+83 of the 98 range commits change sha, 15 keep their object -- the whole `1ddd32f0..ba9df31f^2`
 side chain, `cebebf44` included.
 
 `harness/f106_extract_check.sh <repo> <range>` proves the two extractions the filter uses (the
@@ -4425,7 +4425,7 @@ are committed as artifacts (`artifacts/f91/discrimination_*.txt`, 10 and 5 FAILs
 - **A format control needs its own control.** `f91_format.py` finds 0 shape
   differences pre→post in both locales — and 420 between the English and French legs,
   which is what says it could have seen one.
-- **`f44_parity.py`'s `reconstruct()` is now wrong for a post-`5a1e5749` binary** by
+- **`f44_parity.py`'s `reconstruct()` is now wrong for a post-`012105d6` binary** by
   construction (pre-fix arithmetic, and it folds by the raw `axisRot`). It still
   replays F44's own archive correctly, and its `RADE` regex still accepts both label
   spellings. Reuse `f91_parity.py` instead.
@@ -4472,7 +4472,7 @@ identifies none.
 D if/if · A Saturn `equal 600` **else → if** · B Ganymede `equal 503` **else → if**
 · C Titan `equal 604` if/if · E the shipped consumer's own `equal 0` on Saturn
 else/else. Five predictions committed to `artifacts/f94/prediction.txt` at harness
-`0b619b7`, 01:28, before any binary started at 01:29.
+`821a599`, 01:28, before any binary started at 01:29.
 
 ### Gotchas measured here
 
@@ -4751,7 +4751,7 @@ question about a ratified key.
 - **`f91_parity.py`'s `F91_FARM_ROOT` (F96) is what lets a later task run the
   90-body control inside its own scratch root** — used here for both legs.
 
-**Measured, code `24100461` → `22499f04`, binaries `eb3f5e50` / `46849f69`:**
+**Measured, code `58655d7a` → `61da4edc`, binaries `eb3f5e50` / `46849f69`:**
 M1 emitted latitude for `orbit_lat 45` **58.31008° → 45.00000°** on BOTH halves
 (lat-0 control 0.00000 both) · M2 vs old's own authority **86.306371°**,
 unchanged · M3 **90.0000/0.0000** then **0.0000/90.0000**, unchanged · M4
@@ -4852,7 +4852,7 @@ that and prints its reason everywhere.
 - **A dual dump of ~1700 bodies is 2.9 MB** and the whole `fscripts/` media
   tree is 897 MB — the farm symlinks the media and copies only the 137 `.sts`.
 
-**Measured, binary `46849f69`, code `22499f04` (unchanged by this task):** the DEATH
+**Measured, binary `46849f69`, code `61da4edc` (unchanged by this task):** the DEATH
 control RED (F1 within one sample, exit −9) · a 17-min shakedown that ABORTED the
 app · three reproducer arms · the bisect · **the soak: 4.508 h, 8 complete cycles
 of 135 shows, 541 samples, no F1/F2/F3/F4, cycle wall 1913.3–1916.6 s (spread
@@ -4880,8 +4880,8 @@ lines of policy rather than a test: it parses `modules.cpp`'s own
 lookup line, the miss-test line and the dereference lines, and it **fails the run
 if a registered loader's file is missing** — a sweep that can report a clean table
 over a corpus it did not read is worse than none. Run it on `git archive`'d trees
-to get the both-ways column: **`location_orbit` UNGUARDED 1 of 9 at `22499f04`, 0
-of 9 at `1af7fa48`**. Its blind spot is named rather than papered over: it walks
+to get the both-ways column: **`location_orbit` UNGUARDED 1 of 9 at `61da4edc`, 0
+of 9 at `01adbb30`**. Its blind spot is named rather than papered over: it walks
 the NEW path's registry only, and the old path's own chain
 (`protosystem.cpp`'s if/else and `orbit_creator_cor.cpp`) has to be read by hand.
 
@@ -5007,7 +5007,7 @@ change. The second clock cost one 50 s launch.
   called in the loop over the OLD system's bodies (`ssystem_factory.cpp:1192`);
   the second loop, which emits the 30 new-only records (`:1223-1245`), does not.
   That plus the isolation stop is the whole of class I.
-  **[SUPERSEDED 2026-09-07 by F105 (§11.226), code `318c0c8b`: the second loop
+  **[SUPERSEDED 2026-09-07 by F105 (§11.226), code `28533598`: the second loop
   calls it too, so a dump is a use for 120 of 120. Of the 30, 20 return on the
   barrier's first line, 2 refresh into a real eye-frame position and 8 are
   REFUSED for want of a published frame — so class I is 27 on a post-F105 dump,
@@ -5027,7 +5027,7 @@ change. The second clock cost one 50 s launch.
   the mutant's numbers attributable. Re-run the build before quoting "0 steps"
   (§11.210's mtime gotcha).
 
-**Measured, code `1af7fa48` -> `474c595d`, binaries `8e2c6ef3` / `b5f08778` /
+**Measured, code `01adbb30` -> `4cd00139`, binaries `8e2c6ef3` / `b5f08778` /
 `0cf9cf28` (the no-memo mutant):** pinned clock 48 frozen = `P u I` with 19 of 19
 parked `evalCount` still over 1875 frames and old-vs-new to **170.715618 deg**;
 running clock, same binary, 29 frozen = `I` and everything back inside
@@ -5099,7 +5099,7 @@ decides the next descent: `inGalaxyModule.cpp:164` branches on
   misses the two files that `import dumpread` inside a function — which are two
   of the four readers that had to opt out of the new guard.
 
-**Measured, binary `b5f08778`, code `474c595d` (unchanged by this task):** eleven
+**Measured, binary `b5f08778`, code `4cd00139` (unchanged by this task):** eleven
 launches, all exit 0 and `shutdown action now` -> 0; **139/139 real-HOME md5s in
 == out on every leg** (digest `a4b6ea4f`; `3995e501` over the 137 `.sts` alone);
 the farm's copy of the tester's `14.sts` still `31503adb`; `/proc` clear and no
@@ -5176,7 +5176,7 @@ stream instead of assumed.
   destruction. Any instrument that reads `getOffset()` after a refusal is
   reading garbage, and so is the GPU (`ojm_mgr.cpp:196`).
 
-**Measured, binary `b5f08778`, code `474c595d` (unchanged by this task):** pool
+**Measured, binary `b5f08778`, code `4cd00139` (unchanged by this task):** pool
 **1 048 576 B**, one block, no growth · alignment **64** · per `06.sts` body
 **1344 B** (old 320 + new 1024) · per in-galaxy model **128 B** · **N = 675**
 (`ZHONGXING-20A`) in BOTH the arm-C and the shakedown applogs, predicted 674 in
@@ -5262,7 +5262,7 @@ read, with no second convergence measurement.
   excluded from any alt/az floor: its azimuth is undefined at the nadir and it
   moves 19.58 deg between launches for that reason alone (§11.158(f3)).
 
-**Measured, code `474c595d` -> `ead2d478`, binaries `b5f08778` / `0c61f1b5` /
+**Measured, code `4cd00139` -> `e1186d3a`, binaries `b5f08778` / `0c61f1b5` /
 `6b8085cb` (the branch-only mutation, reverted with `0c61f1b5` bit-reproduced):**
 sequence identity 120/120 across 12 arms (red controls 35/120, 73/120) ·
 partition 66/40/14 of 120 predicted from the field file before the fix and held
@@ -5341,7 +5341,7 @@ could only be satisfied by the right one.
   (bodies x reloads), not per frame, and the selection channel proves the per-frame
   guard works (one line while a body stays selected).
 
-**Measured, code `ead2d478` -> `a30b2c75` -> `318c0c8b` -> `48cc3727`, binaries
+**Measured, code `e1186d3a` -> `3ffea018` -> `28533598` -> `7ceea976`, binaries
 `0c61f1b5` / `f26d5ad7` / `ad7a4e47` (the mutation, reverted with `f26d5ad7`
 bit-reproduced) / `e411b838`:** the (20, 2, 8) partition of the 30 new-only
 records held by name; seven of eight identity-frame values exact and the eighth
@@ -5441,8 +5441,8 @@ the solver alone would have given the right order and the wrong number.
   same source built in `build-claude` (build path) - so the control is the one
   you built, not the one the record names.
 
-**Measured, code `48cc3727` UNMOVED (no delivered change), binaries `31a39eb5`
-(control at 474c595d) / `cea14026` / `cc72e0e0` / `ee7c120d` (three mutations,
+**Measured, code `7ceea976` UNMOVED (no delivered change), binaries `31a39eb5`
+(control at 4cd00139) / `cea14026` / `cc72e0e0` / `ee7c120d` (three mutations,
 each reverted with the control bit-reproduced):** the replay reproduces the
 landed pre AND post dumps float32 for float32, |pre-post| 2.029337543 AU
 against the landed 2.029337245, 1.190223 deg against 1.198725 (0.71 % low,
@@ -5557,7 +5557,7 @@ needs the offset the append layout forced.
   467-entry directory against 0.176 ms on an 8-entry farm (~0.44 us/entry).
   Zero per frame.
 
-**Measured, code `48cc3727 -> 71b6fe51`, binary `e411b838 -> 6d63e6c1`
+**Measured, code `7ceea976 -> fcc277c9`, binary `e411b838 -> 6d63e6c1`
 (bit-reproduced in both directions; mutants `9c7c74ce`, `4b779b16`, timing
 build `11cc2c7c`, all reverted):** 37 launches, canary green and `/proc` clear
 before every one, the field pair `03fbee59`/`545a51ef` plus

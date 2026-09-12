@@ -8,9 +8,9 @@ named-not-run audits · the §5.5-class row↔row staleness sweep · F52(k)'s
 two git-only checks · the scan strict-credit v2 re-baseline) are
 extension candidates if health permits, minted then per §0b.2; item 8
 (§5.100's fix) stays blocked — NO Vixy commit since the session-13
-authorization question (every commit through `3703e54` is
+authorization question (every commit through `5f1580b` is
 Claude-authored), D-set verified still EMPTY at the file. Warm-up: both
-trees clean at open, code `d6aec251` / harness `3703e54`; binary current
+trees clean at open, code `3ccfc6d8` / harness `5f1580b`; binary current
 (code HEAD unmoved since 2026-08-26, binary mtime 2026-08-26); `free -g`
 = 23 GiB ⇒ -j12 OK, though NO build is expected — the fourth
 all-record/instrument round in a row if it holds; **definition-drift
@@ -27,7 +27,7 @@ recorded queue order; surfaces disjoint (harness instruments + INTENT
 annotations / read-only corpus analysis / read-only code census); NO
 mandate touches product code. Round-open events: **archival pass 10**
 (update-s15 + F53–F55 moved byte-exact, manifest `2026-08-30-pass10`,
-commit `28ca553`). Instrument baselines at open, re-derived from the
+commit `4b23ee1`). Instrument baselines at open, re-derived from the
 committed instruments on this tree: pair-check **191/166/25/87**
 (+1/+1/0/0 from §11.175 vs the recorded post-close 190/165/25/87);
 back-marker scan **106/137/84** — unchanged to the digit, the 84th
@@ -54,7 +54,7 @@ own gloss; see the F59 acceptance.]**
 §11.177 · F58 → §11.178 · F59 → §11.179 · F60 → §11.180 — five executor
 tasks, all delivered AND supervisor-verified same session; round extended
 3→5 per §0b.2 (the session-15 precedent). **CODE TREE CLEAN THROUGHOUT** —
-`d6aec251` at open and close, the fourth all-record/instrument round in a
+`3ccfc6d8` at open and close, the fourth all-record/instrument round in a
 row. NEW rows: **§5.116**/**§5.117** (F58) · **§5.118** (supervisor-minted
 at F58 acceptance, F32 precedent). HEADLINE FINDINGS: **b3_ladder was
 never red** — the four-task residual was the two wrongly-dispatched

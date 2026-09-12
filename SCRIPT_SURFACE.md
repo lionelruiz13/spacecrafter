@@ -28,12 +28,12 @@ Each: what the line looks like it means → what actually happens today →
 the decision owed (fix the line / the engine should honor it / keep and
 document).
 
-> **THE FILE CHANGED on 2026-08-26 — you rewrote it (`f0c8ef83`, +267/−67,
+> **THE FILE CHANGED on 2026-08-26 — you rewrote it (`30ea1f8d`, +267/−67,
 > 1407 → 1606 lines), and eleven of the thirteen lines listed below are
 > already gone.** We checked every one, byte by byte, against the version
 > before your edit; nothing was changed by us. Line numbers in the entries
 > below are the OLD ones — the pre-edit file is still readable in the
-> project's history if you ever want it (`70dee810:doc/superscript.sts`),
+> project's history if you ever want it (`ff3d1d94:doc/superscript.sts`),
 > which matters because it is the record of what the script taught for
 > years. Per-entry results are marked **[2026-08-26]** in each Status.
 > **Still standing:** the landscape `spacecraft on` line (SS-9), which is
@@ -173,7 +173,7 @@ document).
   BY ACTION — you fixed it in place**, which is a clear answer and needs no
   reply. One consequence recorded so nobody trips on it later: the "what
   the script taught for years" evidence now lives in the project's history
-  rather than in the file, at `70dee810:doc/superscript.sts`. Any future
+  rather than in the file, at `ff3d1d94:doc/superscript.sts`. Any future
   entry citing an old line number means that version, not the current one.
 
 ## 3. Full divergence pass — landed 2026-08-04
@@ -213,7 +213,7 @@ New entries:
   while the actual body names are `Ganymede` and `Saturn`.
   **ANSWERED 2026-09-05 — round-3 R19, your words: *"Satun must be corrected
   to Saturn and Ganymed to Ganymede."*** `[stated: tester (Lionel RUIZ), via
-  owner commit 6ffb017]`. **Status: ANSWERED — the fix is authorised**, two
+  owner commit 1e6ca60]`. **Status: ANSWERED — the fix is authorised**, two
   spellings in the engine (`core.cpp:2173` and `:2177`), and §5.98 is now
   decision-free. One thing we did not learn, and are recording rather than
   assuming: the question asked whether any of your shows *test* 600/503 or
@@ -296,7 +296,7 @@ things are not:
   words are ignored), which is now understood as the reason the pattern
   survived. [2026-08-31] scedit briefly named these eight lines with ONE
   finding each (`inline-comment`); **later the same day the engine change
-  LANDED in the code tree (`3d9179d2`): a `#` outside quotes is a comment,
+  LANDED in the code tree (`6626466f`): a `#` outside quotes is a comment,
   to the end of the line, on every channel — your eight lines are correct
   as written and scedit reports nothing on them.** Two things to know:
   a `#` inside `"…"` stays text (so a quoted title may contain one), and an

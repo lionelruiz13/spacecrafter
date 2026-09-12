@@ -8,7 +8,7 @@ instrument-load-bearing (the ONLY side-effect-free read of observer position + h
 its silence forces every heading pin through a write-after-read channel at two launches
 per pin, §11.118(f)). Lateral search live ∪ archive found no deferral record ⇒ the
 omission is view staleness, same class as session 8's F23/F24. Warm-up: both trees
-clean (code `d88f5be2`, harness `16eab5b`), binary confirmed current by no-op rebuild;
+clean (code `d88f5be2`, harness `feaf1a3`), binary confirmed current by no-op rebuild;
 `free -g` = 13 GiB available ⇒ **-j6 this session**; NO Vixy commit since session 8's
 close ⇒ A40–A43/D15/D21/D28-residue/D37/C4 all open — B7-hunt-5, B12-content,
 §5.64/§5.65 stay blocked; B35/B37/B38 decision-gated, B36 per-member (pin/unpin rides

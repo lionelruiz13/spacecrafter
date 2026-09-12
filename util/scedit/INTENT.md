@@ -56,7 +56,7 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   exact form the engine receives), scedit is measured against it, and the
   engine gets the identical code — the copy is verbatim again the moment
   the engine commit lands (first instance: the comment rule, code
-  `3d9179d2`, same day). Target = HEAD only, no version ranges [vixy
+  `6626466f`, same day). Target = HEAD only, no version ranges [vixy
   2026-08-31, "scedit target HEAD only, yes"].
 - **C2 — identified knowledge only.** No grammar entry, doc line or
   default without a source anchor (handler code, ledger, or Vixy). A doc
@@ -187,7 +187,7 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
 - ~~Future live legs (TCP) inherit the parent harness disciplines
   (fresh-launch, md5 in==out); no build exists on this laptop yet —
   rebuild is a prerequisite recorded, not done.~~ **SUPERSEDED 2026-08-31: the
-  engine builds (GCC 11, `a3437670`) and RUNS here (display session for
+  engine builds (GCC 11, `02bc028e`) and RUNS here (display session for
   `claude`; F61–F63 over port 7805). Live legs keep the parent disciplines
   (`f27_reply.Session`: fresh temp-HOME launch, concurrent-instance probe,
   md5 in==out) plus this host's own precondition — a LOCKED screen throttles
@@ -299,8 +299,8 @@ notes.*
    `ssystem.ini` key set (loader grammar, base-D census residual) +
    composed/new-format B24 grammar (`type=`/`relation=`/`compose=`),
    two-regime lint per C4, ISO-8859 handling at the file boundary.~~
-   **DONE 2026-09-04 (F80, journal `2026-09-04a`; code `4b633b8a` +
-   `3f3f7726` + `ab212f0d` + `befe7a5d`; parent **§11.200**).**
+   **DONE 2026-09-04 (F80, journal `2026-09-04a`; code `962774d1` +
+   `e1bdafa9` + `fa6c77bb` + `c43070db`; parent **§11.200**).**
    `grammar/ss-grammar.json` — **142 keys over 422 read sites**, taken FROM
    THE LOADER and generated (`claude/harness/f80_census.py` +
    `f80_ssgrammar.py`), so every anchor and every count is mechanical and only
@@ -323,7 +323,7 @@ notes.*
 5. **`app_command_eval.cpp`** (376 lines) — `$`-variable substitution
    semantics for the reserved_variables family (currently UNEXTRACTED).
 6. ~~**TCP client mode** — line protocol + `$LOGON` feed pane~~ **DONE
-   2026-08-31 (F67; journal 2026-08-31h; code `584edade` -> `51cfc24d`).**
+   2026-08-31 (F67; journal 2026-08-31h; code `d90f5909` -> `a5ad3fe6`).**
    `--tcp [[host:]port]`, `sc_tcpclient` (connect/$LOGON/send/$LOGOFF, bounded
    500-line feed, latin-1 both ways), the feed pane with its five keys, the
    `#!` write-back rule that loses neither the author's edits nor the engine's
@@ -356,7 +356,7 @@ notes.*
     column from the bytes (display fact, not a rule copy). Small,
     contract-level, next sc_check touch.
 11. ~~**`default_value` backfill**~~ **DONE 2026-08-31 (journal
-    2026-08-31j; code `50185663`): 60 literals landed as DATA, each with its
+    2026-08-31j; code `fd8fdd91`): 60 literals landed as DATA, each with its
     own `default_value_source` anchor, in the merged contract AND the four
     fragments. The slice's 35 reproduce exactly (29 zeros, 4 ones, `no`, 180)
     and **34 survive the code**; `camera value`'s `no` does not — the handler
@@ -376,7 +376,7 @@ notes.*
     pass writes them as DATA, each source-anchored, never regexed from
     prose (C2).
 12. ~~**`completable` marker on values[]**~~ **DONE 2026-08-31 (journal
-    2026-08-31j; code `50185663`): `completable` + `completable_excluded` on
+    2026-08-31j; code `fd8fdd91`): `completable` + `completable_excluded` on
     all 120 specs with a value domain — 304 value slots offered, 11 excluded
     with a stated reason. **FIVE false positives, not one**: `xRRGGBB` (7
     specs) plus `bat`/`swf`/`png` in `external_viewer.filename` (value_docs
@@ -393,10 +393,10 @@ notes.*
     one known false positive (`xRRGGBB`). Schema marker + validator
     check at next grammar touch.
 13. ~~**`inline-comment` seed**~~ **DONE 2026-08-31, in two steps the same
-    day: MINTED for the HEAD defect (code `2fe14699`), then RETIRED when the
+    day: MINTED for the HEAD defect (code `44222509`), then RETIRED when the
     rule flipped to the ruled behaviour under the amended C1 — tokenizer
     step 0 + oracle target copy + `indented-comment` retired too + the
-    engine's parseCommand given the identical block (code `3d9179d2`;
+    engine's parseCommand given the identical block (code `6626466f`;
     journal 2026-08-31b; derivation-diff §1 new row, §5.10 superseded,
     §7.5). Witness :37-46 correct as written; SS-20 resolved in-tree.**
     [flagged by the 2026-08-30 corpus run] — a
@@ -435,7 +435,7 @@ notes.*
     script-in-script splice), and nested `script action stop` is messy —
     cleaned up in the non-legacy exec policies while `legacy` preserves
     old behavior under old syntax (`[parallel-script]` refinement,
-    harness `a501eb4`). The seed is UNAFFECTED: an unclosed `if` is a
+    harness `7375cbe`). The seed is UNAFFECTED: an unclosed `if` is a
     defect under every policy; scoping only bounds its blast radius to
     the script's own tail — which is exactly the witness's damage.
     **RULED [vixy 2026-08-30]: the engine must LOG the unclosed if**, per
@@ -467,14 +467,14 @@ notes.*
     `inverted` (SGR 7); the ui_selftest now prints an `inv` mask per frame
     and the record pins one inverted cell at the caret in all 10 frames.
     ~~(a)/(b) wait for the `#!` format to exist engine-side.~~ ENGINE HALF
-    LANDED 2026-08-31 (code `2b8ec034`, parent §11.184, gate F63 34/34). The
+    LANDED 2026-08-31 (code `c589d1b2`, parent §11.184, gate F63 34/34). The
     format scedit must recognise: the tail from the first `#!` at or after
     the first `#` outside quotes (the parser's own toggle — ScriptAnnotator::
     annotationBegin), written as ` #! <one ASCII sentence>` after the
     command or the author's own comment; several diagnostics on one line join
     with `; `. (a)/(b) are now unblocked; (b) holds by construction today
     (the editor writes bytes back and never composes a `#!`).**
-    **(a-i) DONE 2026-08-31 (code `4a00cf31`): the tail is recognised
+    **(a-i) DONE 2026-08-31 (code `6d8fe6c9`): the tail is recognised
     (`EditCore::machineTail`, `Context::MachineTail`), shown on the bar's
     findings row with the caret anywhere on the line, and RELATED to scedit's
     own finding — agree / finds-nothing-now (fixed or disagree) / not a class
@@ -486,9 +486,9 @@ notes.*
     dispatch task F65 (2026-08-31e); the agreement scedit↔engine measured on
     F63's files: 12/12 (`harness/f63_scedit_agree.py`).**~~
     **ITEM 15 CLOSED WHOLE 2026-08-31 (F65; journal 2026-08-31f). (a-ii) DONE:
-    `EditCore::errorHistory()` + `warpTo()` (code `cdda1ee4`), the pane with
-    F5/F3/F4 and click-to-warp (`4c70f2aa`), the `--history` CLI twin over the
-    same reader (`99260e28`). (a) and (b) therefore both discharged; (c) was
+    `EditCore::errorHistory()` + `warpTo()` (code `437144be`), the pane with
+    F5/F3/F4 and click-to-warp (`a1bd6579`), the `--history` CLI twin over the
+    same reader (`7507c175`). (a) and (b) therefore both discharged; (c) was
     done 2026-08-31 above. ONE READING FLAGGED FOR VIXY, NOT A DECISION I OWN:
     "history" is taken as the CURRENT BUFFER'S SET, not a log of past editing
     sessions — the argument is that the engine's `#!` channel already IS the
@@ -511,7 +511,7 @@ notes.*
     route to SCRIPT_SURFACE (SS-n) per C2's ownership split; a data-package
     fact to carry: 43 md5-identical script pairs (`navigation/fscripts/`
     mirrors `fscripts/`), so every fix lands twice.~~ **DONE 2026-09-01
-    (F76, journal `2026-09-01b`; code `8eeffb9d` + `ba7a32a8`).** 1661
+    (F76, journal `2026-09-01b`; code `41088a54` + `8d41fbe3`).** 1661
     findings (the 1757 was pre-`indented-comment`-retirement) in 26 files,
     **all 1661 dispositioned TRUE-shipped — zero false positives**, thirteen
     authored defects behind them, table at
@@ -524,7 +524,7 @@ notes.*
     findings and to have hidden the two things worth knowing: which THIRTEEN
     authored slips they are, and that the engine says nothing about 1647 of
     them. The one defect the sweep found was scedit's own — three messages
-    quoting engine log text the engine stopped writing at `2b8ec034`.
+    quoting engine log text the engine stopped writing at `c589d1b2`.
 17. ~~**SUSPENDED FOR VIXY — engine-version targeting.**~~ **RESOLVED
     [vixy 2026-08-31, verbatim: "scedit target HEAD only, yes."] — C1
     stands as written; a retiring seed simply retires (no `since:`/
@@ -544,7 +544,7 @@ notes.*
     tree until its build result is read:**~~ **DISCHARGED 2026-08-31: build
     log `EXIT=0` read (208 objects, 0 errors, the 2 warnings pre-existing
     in Camera.cpp:1009/1171), binary answers `--version`; committed
-    `a3437670`; parent §11.181 written; journal 2026-08-31b.** `std::stacktrace` guarded by a
+    `02bc028e`; parent §11.181 written; journal 2026-08-31b.** `std::stacktrace` guarded by a
     CMake feature probe (`SPACECRAFTER_HAVE_STACKTRACE` + the matching
     link library: `stdc++exp` / `stdc++_libbacktrace` / none) instead of
     `__linux__` [vixy 2026-08-31, verbatim: "test a macro which tell if
@@ -595,7 +595,7 @@ notes.*
     warned. "0 warnings" can now be false.** [measured 2026-08-31, F65] — so
     "clean build, 0 warnings" has been a criterion that cannot fail. Under
     `-Wall -Wextra` the whole tree yields exactly ONE: `cmdSpan` set but not
-    used, `src/sc_check.cpp:341` (there since `7fd5ea75`; no file F65 touched
+    used, `src/sc_check.cpp:341` (there since `4141317a`; no file F65 touched
     warns). The fix is two lines — an `add_compile_options(-Wall -Wextra)` in
     `CMakeLists.txt` and that variable's deletion — and it is left undone
     deliberately: it belongs to whoever can also decide whether the vendored
@@ -621,8 +621,8 @@ notes.*
   found that 8% of the field data reaches nothing.** Dispatch task F80
   (`claude/fable-dispatch.md`), executor run, after one §0.7 ABORT the same day
   on four false dispatcher premises (recorded in that section's WIP);
-  code `4b633b8a` (census + contract) + `3f3f7726` (the checker) + `ab212f0d`
-  (C3 + gates) + `befe7a5d` (part 5), harness `6135736` -> this entry. Parent
+  code `962774d1` (census + contract) + `e1bdafa9` (the checker) + `fa6c77bb`
+  (C3 + gates) + `c43070db` (part 5), harness `26d1f42` -> this entry. Parent
   **§11.200** with **§5.124/§5.125/§5.126/§5.127**. Mandate: **§5 item 4**,
   **C2** (identified knowledge only), **C3** (zero false positives) and **C4**
   (the two regimes, and D13's downgrade rule). Item 4 is struck by this entry
@@ -728,8 +728,8 @@ notes.*
 - **[2026-09-01b] 1661 findings over the shipped shows, judged one by one:
   every one TRUE, thirteen authored defects behind them, and the engine says
   nothing about 1647.** Dispatch task F76 (`claude/fable-dispatch.md`),
-  executor run; code `8eeffb9d` (the message fix) + `ba7a32a8` (the gate),
-  harness `d49b13c` -> this entry. Mandate: **§5 item 16**, **C3** (zero false
+  executor run; code `41088a54` (the message fix) + `8d41fbe3` (the gate),
+  harness `747d9eb` -> this entry. Mandate: **§5 item 16**, **C3** (zero false
   positives; true findings recorded upstream, never silenced) and **C2**'s
   ownership routing. Item 16 is struck by this entry.
 
@@ -747,7 +747,7 @@ notes.*
   never per-name. The disposition table measures the groups at run time and
   carries them in a TWINS column rather than trusting a sentence.
 
-  **(a) The universe was committed before the judging** (`d49b13c`: 1661 rows,
+  **(a) The universe was committed before the judging** (`747d9eb`: 1661 rows,
   every one UNADJUDICATED, `--strict` exiting 1) -- the F58/F70 pattern, so
   that no finding could quietly not be there at the end. Final state: 1661
   rows, **1661 TRUE-shipped**, zero false positives, zero UNADJUDICATED,
@@ -821,8 +821,8 @@ notes.*
   the id living in the grammar's `engine_tail` (f63_scedit_agree's mapping).
 
   **(f) One scedit defect found and fixed, and it is not a false positive**
-  (code `8eeffb9d`). Three block-structure messages described the engine as it
-  was before code `2b8ec034` (2026-08-31): two QUOTED its log text ("end
+  (code `41088a54`). Three block-structure messages described the engine as it
+  was before code `c589d1b2` (2026-08-31): two QUOTED its log text ("end
   without if", "else without if") and one said the loop form logs nothing. That
   commit moved those writes out of `if_swap.cpp` into the caller and gave them
   new words, so the checker had been telling a reader to look for a string the
@@ -851,7 +851,7 @@ notes.*
   clean: the citations moved because this task moved them, each new one
   verified by reading the lines it names).
 
-  **(g) C3's shipped half is ARMED** (code `ba7a32a8`): a sixteenth ctest gate,
+  **(g) C3's shipped half is ARMED** (code `8d41fbe3`): a sixteenth ctest gate,
   `shipped_corpus_gate`, over the installed package. It is a gate of its own
   rather than more files in `SCEDIT_CORPUS` because the two corpora are not the
   same kind of thing -- one is tracked here and recorded line for line, the
@@ -889,7 +889,7 @@ notes.*
 - **[2026-09-01a] The anchors resolve again, and a gate now says so: 6663
   references re-dated, re-read and re-pointed, both halves moving together.**
   Dispatch task F75 (`claude/fable-dispatch.md`), executor run; code
-  `b00abd11` (the sweep) + `7b227ed6` (the gate), harness `5db3966`+. Parent
+  `a8d4aeb8` (the sweep) + `83ae4e91` (the gate), harness `2a928c5`+. Parent
   back-marker at **INTENT §11.190(e)**, which is where this was left open.
   Mandate: that clause, this journal's own "Open after this", and **C2** --
   no entry without a source anchor, which an anchor that does not resolve
@@ -924,7 +924,7 @@ notes.*
   JSON path dates `lint_seeds[11]` to a later commit, because a seed was
   inserted ahead of it and every index shifted -- its anchors
   (`commandStruct :4604-4661 / :4675-4699`) land exactly on the if-block and
-  the loop-block at 2fe14699 and nowhere else. The method that survives is
+  the loop-block at 44222509 and nowhere else. The method that survives is
   the anchor's own LINE-NUMBER IDENTITY, matched anywhere in the revision
   with a similarity floor: what a rewrite must change and an accent removal
   must not. Validated where it could fail -- 286 of 330 arg `source` anchors
@@ -934,8 +934,8 @@ notes.*
   **The stated check was refuted, and the refutation is the finding.** "The
   60 pre-pinned strings recover their written pin" is **0/60**, and it is
   false BY CONSTRUCTION: a pin names the engine HEAD its author READ, which
-  is the PARENT of the grammar commit that records it (`d64fd437` is
-  `50185663`'s parent). The property that decides resolution is tree equality
+  is the PARENT of the grammar commit that records it (`71ef30ac` is
+  `fd8fdd91`'s parent). The property that decides resolution is tree equality
   on the anchored files, and that is **60/60**.
 
   **951 references name no file at all, and the answer was measured rather
@@ -971,7 +971,7 @@ notes.*
   **The 60 F71 self-pins fold in**, including the 51 whose numbers never
   moved: a pin the file states once has no business being restated per
   string. Two strings state theirs in PROSE ("Read-only trace at HEAD
-  d64fd437") where the `@ <sha>` form does not reach; without that they would
+  71ef30ac") where the `@ <sha>` form does not reach; without that they would
   have kept the old tree's name over freshly-moved numbers.
 
   **Four references keep `[NOT AT HEAD]` rather than a number**, which is
@@ -1023,8 +1023,8 @@ notes.*
 
 - **[2026-08-31j] The documentation extracted: 60 defaults, 153 names, and the
   one function that was blocking a check.** Dispatch task F71
-  (`claude/fable-dispatch.md`), executor run; code `50185663` + `94f2af65`,
-  harness `fd25fa4`. The parent half — four engine facts, the stale-anchor
+  (`claude/fable-dispatch.md`), executor run; code `fd8fdd91` + `51cd2eaa`,
+  harness `60e22d6`. The parent half — four engine facts, the stale-anchor
   finding, the tester's channel — is at **INTENT §11.190**. Cross-cited both
   ways. Mandate [vixy §11.186(e)]: *"extract the missing documentation from the
   current version of superscript.sts (and dig the code where needed)"*. The
@@ -1110,8 +1110,8 @@ notes.*
 - **[2026-08-31i] The dedicated link, consumed: scedit asks for refusals and
   gets them, and the wire the closed-source client speaks did not move.**
   Dispatch task F69 (`claude/fable-dispatch.md`), executor run; the ENGINE half
-  is parent territory and is recorded at **INTENT §11.188** (code `be2ddd81`),
-  this entry is the scedit half (code `630b06fd`). Cross-cited both ways.
+  is parent territory and is recorded at **INTENT §11.188** (code `c807d695`),
+  this entry is the scedit half (code `d117870c`). Cross-cited both ways.
 
   **What the engine now offers.** Vixy's mandate [2026-08-31, §11.186(c)]:
   *"feedback about tcp sent back … through the tcp link dedicated for scedit"*,
@@ -1124,7 +1124,7 @@ notes.*
   **What scedit does with it.** `TcpClient::connect` sends `$DIAGON` after
   `$LOGON` (two subscriptions, one connection); `disconnect` unsubscribes from
   both. A `$DIAGON` failure is **NOT fatal**: against an engine older than
-  `be2ddd81` it is an unrecognised command, and a working connection must not
+  `c807d695` it is an unrecognised command, and a working connection must not
   be discarded because the newer half of the protocol is absent — the feed is
   then simply as quiet as it always was. `FeedKind` gains `Diagnostic`,
   classified on the ENGINE's own `$DIAG|` label rather than on content scedit
@@ -1205,7 +1205,7 @@ notes.*
   cannot wait on an event, and `run_command`'s description has to say all of this
   to the model reading it. Parent **§11.185** records the gap with both readings
   and routes it; §5.72 and §5.117 carry back-markers to it in the same commit.
-  **The client (`584edade`).** `sc_tcpclient`: connect + `$LOGON`, one line out,
+  **The client (`d90f5909`).** `sc_tcpclient`: connect + `$LOGON`, one line out,
   non-blocking read, `$LOGOFF` + close, state as data, ISO-8859 bytes untouched
   in both directions, a 500-line feed that COUNTS what its bound discards. The
   framing is the server's own — `ServerSocket::send` writes `strlen+1`, so a
@@ -1215,7 +1215,7 @@ notes.*
   `tests/tcp_gate.py` runs one leg per process and then asserts what the stand-in
   RECEIVED — a leg cannot pass by agreeing with itself. 23 gate checks over 65
   leg checks.
-  **The write-back, as a rule rather than a feature (`8a5c7ce3`).**
+  **The write-back, as a rule rather than a feature (`b6c806e3`).**
   `EditCore::diskState()` compares the file with `diskImage()`, the bytes this
   buffer was read from or last wrote — byte comparison, not a digest: it is a
   script, the cost is one read, and there is then no collision to reason about.
@@ -1223,7 +1223,7 @@ notes.*
   neither; `reloadFromDisk()` and `saveOverwriting()` are the two ways out. A
   clean buffer is refused too, because a clean buffer holds the bytes from
   BEFORE the run. editcore **223 → 266**.
-  **The editor (`917b0e2b`).** `--tcp [[host:]port]`, F6 connect, F7 send the
+  **The editor (`64d628a0`).** `--tcp [[host:]port]`, F6 connect, F7 send the
   caret's line, F8 play the file, F9 the feed, F11/F12 and the wheel to scroll
   it, Ctrl-U reload; control twins for all of them; **bound only when `--tcp` was
   given**, and the way that claim is checked rather than asserted is that all
@@ -1234,7 +1234,7 @@ notes.*
   4×/s while connected (reading what the peer pushed), and the played FILE is
   re-read **≤1 Hz, for ≤5 minutes, only after a play** — I3's admitted
   external-writer case, a convenience whose guarantee lives in `save()`.
-  **`run_command` (`7b78229d`), and F66's seam held to the letter**: one entry in
+  **`run_command` (`a2a020d9`), and F66's seam held to the letter**: one entry in
   `registeredTools()` and one field on `ToolContext`, **no protocol code
   touched**. Its description carries the three things a model cannot work out —
   live dome, no undo; silence is neither success nor failure; a reply may be
@@ -1281,7 +1281,7 @@ notes.*
   LOCKED at the first live run; the instrument read that, recorded it, woke the
   session and recorded that too. 1 and 2 frame stalls per run against 105/run
   locked (§11.183). No claim here is a timing claim.
-  **The seam nothing measured, closed in the same round (`e2c8477b`).** Between
+  **The seam nothing measured, closed in the same round (`97378bfe`).** Between
   what the editor DRAWS (20 rendered frames) and what its core and client DO
   (the live legs) sat a claim read from `sc_tui.cpp` and believed: that F8 is
   bound to the play sequence. Gate 14 `pty_keys` runs the real binary on a
@@ -1307,7 +1307,7 @@ notes.*
   corpus 15), lint_seeds 15, `--history`'s seven fields, and — by measurement,
   not by reading — f64_doc_router.py's recorded baseline **80/340 reproduced**.
   No abort.
-  **The surface (`170ce615`):** `--doc <cmd> [<key>|<family name>]` prints one
+  **The surface (`a0dd6023`):** `--doc <cmd> [<key>|<family name>]` prints one
   page and `--doc` alone the two-level catalogue; `--search <words>` ranks pages;
   `--check --json` prints the findings as objects beside the untouched D6 text;
   `--mcp` serves all three as MCP tools on stdio. New module `sc_docjson`
@@ -1319,7 +1319,7 @@ notes.*
   vocabulary AND the nearest name — the CHECKER's `cappedSuggestion`, moved out
   of sc_check.cpp's anonymous namespace rather than written a second time, so
   `--doc` and `--check` cannot disagree about the engine's nearest name.
-  **The ranking is F64's baseline, ported and measured (`3e28c92`):** the score
+  **The ranking is F64's baseline, ported and measured (`cacf576`):** the score
   is published in the header and in the README
   (`|words(Q) & words(P)| / (1 + sqrt(|words(P)|))`), and
   `harness/f66_search_parity.py` asks scedit all 340 witness questions and
@@ -1354,7 +1354,7 @@ notes.*
   pagination, caching, subscriptions/list-changed, progress, cancellation,
   multi-round-trip + the client features it needs, outputSchema, icons, batches,
   extensions, authorization).
-  **Gates 9 → 12 (`fbdf1d48`):** `check_json` (the same comparator, `--json` in
+  **Gates 9 → 12 (`2ffb69ed`):** `check_json` (the same comparator, `--json` in
   its MODE — one finding set, two printers), `doc_queries` (ten recorded
   arguments → stdout + exit code, through a new comparator that says why it is
   not `check_gate.cmake`: many invocations, arguments that are not files, and an
@@ -1364,7 +1364,7 @@ notes.*
   md5-verified: an accept-any-tool-name and a wrong error code → exactly two red
   checks in `mcp_protocol`; one recorded `did_you_mean` and one recorded severity
   → `doc_queries` and `check_json` red.
-  **The warning bar (`ac3e752e`, item 20 struck):** `-Wall -Wextra` on scedit's
+  **The warning bar (`650e2810`, item 20 struck):** `-Wall -Wextra` on scedit's
   seven own targets only, with the argument in the file (the vendored trees
   compile as their authors ship them; measured after configuring: our objects
   carry the flags, ftxui's carry `-O3 -DNDEBUG -fPIC -std=gnu++17` and no more).
@@ -1406,21 +1406,21 @@ notes.*
   run, all six scopes delivered. Preconditions verified live before anything
   moved (§0.7): both HEADs, the nine stated counts, F63's ten artifacts in
   their stated shapes — all as dispatched, no abort.
-  **Headless first (`cdda1ee4`):** `EditCore::errorHistory()` lists every `#!`
+  **Headless first (`437144be`):** `EditCore::errorHistory()` lists every `#!`
   tail and every finding in line order, rebuilt with the diagnostics after each
   edit; `warpTo()` moves the caret to one, at the byte its span begins on.
   A line carrying BOTH gives TWO entries, the engine's first — they are two
   claims by two authors about one line (what happened when it RAN vs what the
   bytes say NOW) and the case where they differ IS the C1 signal item 15 names;
   merging them would hide it. editcore **193 → 223** checks.
-  **`--history` (`99260e28`):** the same list printed, seven TAB-separated
+  **`--history` (`7507c175`):** the same list printed, seven TAB-separated
   fields (file, line, source, id, severity, message, relation), so a harness
   reads what an author sees. New gate `history_list`, **8 → 9**, through the
   same comparator as the two `--check` records (`check_gate.cmake` gained a
   MODE rather than being copied a third time). Its fixture
   `tests/history_cases.sts` is F63-SHAPED — every `#!` in it is a sentence the
   engine wrote — and three of its ten cases are deliberate ABSENCES.
-  **The pane (`4c70f2aa`):** F5/Ctrl-E show-hide, F3/Ctrl-N next, F4/Ctrl-P
+  **The pane (`a1bd6579`):** F5/Ctrl-E show-hide, F3/Ctrl-N next, F4/Ctrl-P
   previous, click a row to go there; `>` + inversion mark the row the caret is
   on; ui_selftest **13 → 17** frames. Off by default with the COUNT always on
   the status line — the count is what makes it findable. **A design fault
@@ -1432,7 +1432,7 @@ notes.*
   The stepper now walks the LIST, and the pane keeps exactly one piece of
   state — the row the last warp landed on — trusted only while the caret still
   stands where that row begins.
-  **The rule, written where it belongs (`a3e44b64`):**
+  **The rule, written where it belongs (`f3773bda`):**
   `parse_model.comments.machine_tail` gains its EXECUTES-ONLY clause with three
   anchors — the script layer drops a line whose first byte is `#` before it is
   dispatched (`script.cpp:117`), so `ScriptAnnotator::saw`/`note` are never
@@ -1441,7 +1441,7 @@ notes.*
   written NOR CLEARED; scedit reads it that way by construction
   (`sc_editcore.cpp:306`). Families, counts, seeds and the argument-token
   vocabulary md5-identical; the whole diff is 7 prose lines.
-  **The third reader deleted (harness `1bd49f6`):** `f63_scedit_agree.py`
+  **The third reader deleted (harness `ca7163e`):** `f63_scedit_agree.py`
   carried its own copy of the `#!` locating rule — written from the grammar
   sentence, which lacked the clause, so the copy lacked it too and mis-read
   F.sts:1. It now consumes `--history`; result unchanged on the same artifacts,
@@ -1458,7 +1458,7 @@ notes.*
   committed artifacts md5-untouched) → agree 11 / disagreements 2, one per
   direction.
   **[measured 2026-08-31] A citation-staleness instance, three copies of one
-  line number:** engine `2b8ec034` inserted the annotator's line-provenance
+  line number:** engine `c589d1b2` inserted the annotator's line-provenance
   counter above `script.cpp`'s drop filter and moved it **114 → 117**. Three
   scedit-side citations of `:114` went stale in that one commit and none was
   updated with it — `parse_model.comments.script_layer`, `derivation-diff.md`
@@ -1470,7 +1470,7 @@ notes.*
   project sets NO warning flags, so a green build proves only that it compiles.
   Rebuilt with `-Wall -Wextra`: **one** warning in the whole tree, a
   pre-existing `cmdSpan` set-but-unused in `sc_check.cpp:341` (last touched at
-  `7fd5ea75`, before this task) — **none** in any file F65 changed. Left as
+  `4141317a`, before this task) — **none** in any file F65 changed. Left as
   found, out of this task's scope; a `-Wall -Wextra` line in `CMakeLists.txt`
   plus that one deletion is the whole fix, and is worth a future item.
   **State:** 9/9 gates green in a FRESH build dir (`build-f65`, Release) and in
@@ -1486,13 +1486,13 @@ notes.*
   script engine. Use one agent per feature to implement."* Verified (every
   number read from a log or a tool result, never from a notification): engine
   binary at HEAD (`cmake --build -n` lists nothing; last engine commit
-  `2b8ec034`); scedit **8/8** on a rebuild (tokenizer 189, editcore 193, oracle
-  119 337/0, 13 selftest frames); **F62 11/11, F63 34/34** on `2b8ec034`;
+  `c589d1b2`); scedit **8/8** on a rebuild (tokenizer 189, editcore 193, oracle
+  119 337/0, 13 selftest frames); **F62 11/11, F63 34/34** on `c589d1b2`;
   **F61 15/16** at first — the one RED leg an INSTRUMENT defect, traced rather
   than explained away: the watchdog sends the process its own SIGUSR1 on every
   frame stall (fps.cpp:150-156), so "the WARNING exactly once" presupposed a
   stall-free window; the host was stalling at exactly 1000 ms for whole runs
-  (105/run) on HEAD AND on the pre-fix control `a3437670` (which reproduced its
+  (105/run) on HEAD AND on the pre-fix control `02bc028e` (which reproduced its
   8/16, the eight comment-rule legs) — cause: the claude session's SCREEN LOCK
   (compositor throttling; `HOST-EVENTS.md` 2026-08-31); criterion refined
   (quiescence wait + watchdog pairing, degrades LOUDLY when attribution is
@@ -1510,7 +1510,7 @@ notes.*
   — reported, not re-banked. Remotes: local CONTAINS origin on both repos (push
   = fast-forward; `git fetch` itself refused — auth); the 2026-08-30b non-ff
   note is superseded by measurement. FEATURE_REQUESTS `#!` entry: the stale
-  "(2) still owed" annotated (landed `4a00cf31`). Round minted in
+  "(2) still owed" annotated (landed `6d8fe6c9`). Round minted in
   `claude/fable-dispatch.md` (§0b: a task without a section is not
   dispatchable; scedit tasks deliver to THIS ledger, stated in F65's header):
   **F65** = item 15(a-ii) error-history pane + `--history` CLI twin + the
@@ -1524,7 +1524,7 @@ notes.*
   Vixy in fable-dispatch §3. Order F65 → F66 → F67 (smallest and ruled first;
   the display-needing one last, while the display exists).
 - **[2026-08-31d] The `#!` channel exists — engine half of item 15 landed
-  (code `2b8ec034`, parent §11.184, harness `f63_annotations.py` 34/34).**
+  (code `c589d1b2`, parent §11.184, harness `f63_annotations.py` 34/34).**
   Design, from the session's reading: provenance threaded (Token → LoopStep →
   executeCommand's origin overload with an RAII scope → IfSwap openers; loop
   opener tracked in the interface), the natural end (`terminateScript`, sole
@@ -1542,7 +1542,7 @@ notes.*
   in F62 that could not succeed (dropped; the claim rides on `div`), and an
   F63 check that searched the log for a path the `Execute_command` line
   legitimately contains. **Item 15's scedit half, part one, same evening
-  (code `4a00cf31`)**: the tail recognised and related to scedit's own finding
+  (code `6d8fe6c9`)**: the tail recognised and related to scedit's own finding
   (the C1 signal as a sentence on the bar: agree / finds-nothing-now /
   unknown class), `parse_model.comments.machine_tail`, `engine_tail` data on
   the four block seeds, two selftest frames, E4f; 8/8. Left for the next
@@ -1559,15 +1559,15 @@ notes.*
   TRANSITIONS through `session action save`, quoted `#` proven by the engine
   echoing the value it parsed, comment-only lines by the count of
   "Unrecognized" equalling the positive controls; SIGUSR1 → the watchdog's
-  WARNING once, process alive. **16/16 on `3d9179d2`**; RED control on a
-  staging build of `a3437670` (worktree; EntityCore submodule copied in, then
+  WARNING once, process alive. **16/16 on `6626466f`**; RED control on a
+  staging build of `02bc028e` (worktree; EntityCore submodule copied in, then
   RE-configured — the first link failed on `Set::~Set()` because CMake had
   globbed the empty dir): **8/16, the eight comment legs exactly**, SIGUSR1
   and quoted legs green on both. Driver slips kept as record: the
   "X is unknown" regex matched the command-lookup's did-you-mean too (fixed
   to the truthful shape); the session files lived only in the farm (copied to
   the artifact dir now); the foreign asan/tsan binaries do not load here
-  (`libavcodec.so.61`). (2) **Aliases** (code `7fd5ea75`; F62 11/11): engine
+  (`libavcodec.so.61`). (2) **Aliases** (code `4141317a`; F62 11/11): engine
   `div`/`mul`/`mod`, reverse map canonical-first with aliases added after;
   scedit alias entries resolved ONCE at load in both readers (Grammar,
   DocIndex), validator rule, C4b test, commands 60 → 63, corpus 16 → 15
@@ -1595,7 +1595,7 @@ notes.*
 - **[2026-08-31b] The engine builds here; the comment rule flips to the
   ruled behaviour, scedit first, engine in phase — C1 amended.** Two
   engine commits, both compiled on GCC 11 into the probe-built tree, not
-  run (no display): (1) `a3437670` — `std::stacktrace` becomes a CMake
+  run (no display): (1) `02bc028e` — `std::stacktrace` becomes a CMake
   feature probe (`stdc++exp` → `stdc++_libbacktrace` → none; one answer
   drives the compile guard AND the link line; `__linux__` keeps the signal
   half; without stack support the SIGUSR1 handler logs WHY no stack
@@ -1603,7 +1603,7 @@ notes.*
   instead"]; full build `EXIT=0`, 208 objects, 0 errors — the tree had NO
   other GCC-15-only dependency, so the toolchain blocker of 2026-08-30e is
   gone for BUILDING (running still needs the display session). (2)
-  `3d9179d2` — the comment rule. Vixy on the morning's `inline-comment`
+  `6626466f` — the comment rule. Vixy on the morning's `inline-comment`
   seed: *"# loop on is a comment, not to be parsed as syntax"*, then the
   order ruling: *"make scedit track what the HEAD would be after the
   behavior get corrected, then we correct spacecrafter to be in face"* →
@@ -1646,7 +1646,7 @@ notes.*
   probe); item 16 (shipped sweep, now 1661); the D6 column micro-decision;
   the mod/div/mul aliases (engine, with the trap above); item 4 next.
 - **[2026-08-31] The sc_check touch: spans, five seeds, the block structure
-  read — items 10, 13 (HEAD half), 14, 15(c) closed.** Code `2fe14699`.
+  read — items 10, 13 (HEAD half), 14, 15(c) closed.** Code `44222509`.
   Gates 8/8 on a clean build (0 warnings); tokenizer 150 → 171 and editcore
   154 → 171 checks; both record gates falsification-tested (a tampered
   record line → FATAL, lint and frames). What landed: (a) item 10 —
@@ -1817,22 +1817,22 @@ notes.*
   match — measured against the grammar: `mod` is AMBIGUOUS
   (`mode`/`modulo`, the motivating line stays dead), and exact-match-
   wins is a mandatory clause (`body`→`body_trace`, `dso`→`dso2d/3d`);
-  (4) `[parallel-script]` refined by Vixy (harness `a501eb4`, txt is
+  (4) `[parallel-script]` refined by Vixy (harness `7375cbe`, txt is
   authority): `legacy` default policy + `inline` policy — legacy
   nesting ≈ inline already (addScriptFirst splice + global ifSwap
   leak). **Repo-state finding, next push is NOT fast-forward:** both
   GitHub remotes hold desktop-side commits absent from this migrated
   tree — code `master-beta` @ `76ee38c7` (*"empty locale dir no longer
   detonates two calls later"*, translator.cpp pop_back guard, sits on
-  `0745dc34` — so the remote also LACKS this tree's f0c8ef83..6a4d184b
+  `0745dc34` — so the remote also LACKS this tree's 30ea1f8d..1d312825
   series), harness `CC-harness` @ `eb9af25c` (*"Reorganize files…"*).
   Reconciliation owed before any push, from whichever machine holds
   both lines. Probe-method note, honest: the grammar's three family
   shapes bit a second probe today (commands = name-keyed dict with
   `_meta` keys); accessor now verified against all three shapes.
 - **[2026-08-30] Third corpus run — the rewritten witness read by the
-  checker; §11.149(e)'s stated residue discharged.** Code `6a4d184b`.
-  Context: upstream rewrote `doc/superscript.sts` 2026-08-26 (`f0c8ef83`,
+  checker; §11.149(e)'s stated residue discharged.** Code `1d312825`.
+  Context: upstream rewrote `doc/superscript.sts` 2026-08-26 (`30ea1f8d`,
   1407 → 1606 lines, ISO-8859 + CRLF preserved); the desktop probe
   (parent §11.149(e)) verified the old findings byte-wise but named two
   gaps — 267 added lines unexamined, checker not re-runnable there. Both
@@ -1986,7 +1986,7 @@ notes.*
   independent clean build (5/5 ctest). Corpus found shipped-content
   defects → §5.97 upstream (0xA0 eats `albedo 1`; the dead
   `set home_planet … duration 5` line = §5.96(a) materialized).
-  Upstream batch executed (harness `46ee672`): NEW §5.94 (configuration
+  Upstream batch executed (harness `04ca405`): NEW §5.94 (configuration
   fall-through — verified fully: star-catalogue save also runs §5.42's
   config writer; unknown module re-runs App::init before reporting),
   §5.95 (date W_PRESET||W_PRESET + no-effect `_()` statement), §5.96
@@ -2024,8 +2024,8 @@ notes.*
   grade, not engine-defect grade. Incident, named per house honesty: a
   python slice reordering §5 rows TRUNCATED the parent ledger (515
   lines) and the post-edit check verified row order, not file integrity
-  — committed truncated (a105e22), caught by the diffstat, restored
-  from HEAD~1 with an only-insertion diff gate (231a149). Root: a
+  — committed truncated (fa7f82d), caught by the diffstat, restored
+  from HEAD~1 with an only-insertion diff gate (3eda2ea). Root: a
   relocation executed as a hand-rolled rebuild — the pure-move rule
   exists for exactly this; gate for any future ledger restructuring =
   diff-against-baseline, not spot-checks of the intended change.

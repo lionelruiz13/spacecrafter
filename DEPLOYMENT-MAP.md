@@ -1,12 +1,12 @@
 # DEPLOYMENT-MAP — the space between HERE and "the main tester operates the new path, fully transparently"
 
 **Status**: DERIVED VIEW over the ledger (compiled 2026-08-29 by Claude Fable 5 at harness
-`4cebcd0`, code `d6aec251`, on Vixy's request — §11.162 records the compilation). On any
+`64d67d4`, code `3ccfc6d8`, on Vixy's request — §11.162 records the compilation). On any
 divergence the ledger (§5 rows, §13 rows, INTENT/<id>.md entries) wins and the divergence is
 a staleness bug HERE. Statuses were re-extracted mechanically from the ledger at compile time
 + this session's row reads; ~~rows marked ⚠ were NOT re-read in full at compile time — triage
 them before relying.~~ **[⚠ SET DISCHARGED 2026-08-29 by F47 (§11.163), Vixy-ordered: all
-twelve §5 rows + B38 read at source against `d6aec251`, each ⚠ struck in place below with its
+twelve §5 rows + B38 read at source against `3ccfc6d8`, each ⚠ struck in place below with its
 verdict. Headline: NO mechanism had disappeared — the rows were right, only their citations
 had drifted. Three deltas (§5.5 fixed en route and never updated · §5.56's stated ground
 refuted and measured · §5.21's reach understated), one new row (§5.112), and one structural
@@ -25,12 +25,12 @@ criteria with different clocks: **R0** (the developer, ONE WEEK — tier R below
 tester, decision-paced — the tiers that follow). **What is NECESSARY, and only that, as of
 2026-09-05** — the rest of this file is the derivation and stays challengeable:
 - **For R0:** ~~R1 reconcile the deployed line (**F83**)~~ **[DONE 2026-09-05, §11.203 —
-  merged at `c6784490`; R1's residual collapsed into R5]** · ~~R2 the newcomer's first hour + the
+  merged at `ba9df31f`; R1's residual collapsed into R5]** · ~~R2 the newcomer's first hour + the
   deployment manifest (**F84**)~~ **[MEASURED 2026-09-05, §11.204 — NOT MET, and what remains is
   the OWNER's twice over: ~~**§5.131** the EntityCore push (a DIFFERENT repository from R5's, so
   R5 does not cover it) and **§5.130** one line moved in `main.cpp`~~ **[BOTH GONE by 14:30:
-  §5.131 DISCHARGED — the owner's 12:23 push (§11.205(i)) + the pin bump `32af2efb` (supervisor
-  act) + a clone probe rc 0; §5.130 FIXED by F86 (§11.205(b), code `9e0f1e93`). What R2 still
+  §5.131 DISCHARGED — the owner's 12:23 push (§11.205(i)) + the pin bump `f4ceb208` (supervisor
+  act) + a clone probe rc 0; §5.130 FIXED by F86 (§11.205(b), code `b223ef56`). What R2 still
   owes: F85 deletes INSTALL's two now-obsolete paragraphs and re-verifies the clone line; the
   CONTENT question (a tree install ships none, no document says where it comes from —
   §11.204(f)) is the owner's, R6's sibling]**. F84 shipped the docs and
@@ -64,7 +64,7 @@ they move this head on both criteria. Previous head kept above, struck where sup
   persisted under `claude/sha-maps/`), and ONE decision precedes the rewrite and is irreversible
   after the force-push: **§5.147** — `git commit-tree` drops `gpgsig`, so the rewrite collapses a
   13-commit duplicate chain on `master-beta` (3829 → 3816) and drops a contributor's signature;
-  accept-and-map or refuse-and-resolve, his word.]** **[AMENDED 2026-09-07 17:5x, §11.227: his word was NEITHER — the tool must not touch unselected commits at all, so the collapse is a tool defect and F106 fixes it before Saturday (a `--commit-filter` that keeps an unchanged commit's object and signature); no decision remains before the rewrite.]** **[DONE 2026-09-07, F106 → §11.228: the fix is in the tool and measured. R5's rewrite leg now has a computed expectation instead of a hazard — of the 98 commits in `origin/master-beta..HEAD`, **83 change sha** (the 82 Claude-authored ones plus `f0c8ef83`, which inherits a rewritten parent) and **15 keep their object untouched**, the whole `1ddd32f0..c6784490^2` side chain including `cebebf44` **with its GitHub signature**; `master-beta` stays 3833 and nothing collapses. The live pair's `--dry-run` is byte-identical before and after the fix (944 lines, md5 `3f2e421e`), and the live pair was never rewritten. R5 remains ONE act, the owner's: the push, from a keyed host.]** · ~~**R6 the branch policy** (Vixy, one
+  accept-and-map or refuse-and-resolve, his word.]** **[AMENDED 2026-09-07 17:5x, §11.227: his word was NEITHER — the tool must not touch unselected commits at all, so the collapse is a tool defect and F106 fixes it before Saturday (a `--commit-filter` that keeps an unchanged commit's object and signature); no decision remains before the rewrite.]** **[DONE 2026-09-07, F106 → §11.228: the fix is in the tool and measured. R5's rewrite leg now has a computed expectation instead of a hazard — of the 98 commits in `origin/master-beta..HEAD`, **83 change sha** (the 82 Claude-authored ones plus `30ea1f8d`, which inherits a rewritten parent) and **15 keep their object untouched**, the whole `1ddd32f0..ba9df31f^2` side chain including `cebebf44` **with its GitHub signature**; `master-beta` stays 3833 and nothing collapses. The live pair's `--dry-run` is byte-identical before and after the fix (944 lines, md5 `3f2e421e`), and the live pair was never rewritten. R5 remains ONE act, the owner's: the push, from a keyed host.]** · ~~**R6 the branch policy** (Vixy, one
   sentence)~~ **[ANNOTATED 2026-09-05: the policy half is ANSWERED — *"The master-beta will
   became the reference and get renamed main once ready"* [vixy, verbatim] = RENAME, not
   redirect. What is left of R6 for R0 is the owner's ACT (the rename, footprint measured by
@@ -110,10 +110,10 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    "keep ours" (F70 ASCII ×2, B31 `SC_SESSION`, F62 `div/mul/mod`); version strings equal
    (2026.07.11 — §5.112 silent); submodule pin ours-advanced only. → **F83**. Residual, Vixy's:
    the fetch is a month stale — re-fetch + re-merge from a keyed host before the developer
-   clones.~~ **[MET 2026-09-05 by F83 → §11.203; code merge `c6784490`, HEAD `03c85734`,
+   clones.~~ **[MET 2026-09-05 by F83 → §11.203; code merge `ba9df31f`, HEAD `1270c8e9`,
    binary `225f0d93`.** The four hunks resolved to ours exactly as measured, and proven so by
    a check that could have failed (markers deleted, not `git checkout --ours`, so the three
-   files' `git diff 85cc2785` being empty is a result about the AUTO-merged remainder too);
+   files' `git diff d33bc14f` being empty is a result about the AUTO-merged remainder too);
    `git cherry` after the merge is ~~empty in both directions~~ **[supervisor correction at
    acceptance: empty in the FORWARD direction — 0 `+`, 0 `−`; the reverse direction lists
    `master-beta`'s own 260 patches by construction, §11.203(b)'s table has it right]**; the merge's stat is 4 files /
@@ -154,8 +154,8 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    override was being clobbered); `src/CMakeLists.txt:3` gains `CONFIGURE_DEPENDS` (arm A 0
    steps/0 refs/0 objects, arm B 1/13/1, cost +0.05 s per build); `INSTALL` rewritten
    Linux-first and `README` §2/§3 refreshed, including the two blockers, the sudo, the
-   compile-time data root, and what the repository does not contain. Code `03c85734` →
-   **`1cbd6780`**.
+   compile-time data root, and what the repository does not contain. Code `1270c8e9` →
+   **`33be7cb6`**.
    **The manifest, which is R2's other half:** a tree install is **227 files** — binary, 214
    shaders whose aggregate md5 `e5043cf7` is IDENTICAL to the field's, 11 `data/` files all
    md5-equal — **and no content**: `stars/`, `textures/`, `icon.bmp` and nine class
@@ -168,7 +168,7 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    that fires (row still OPEN; its fix is Vixy's, and the binary measured has the ASmooth fix
    a newcomer's clone cannot reach). §5.112 priced — see T3.
    ~~**R2 therefore reduces to: the EntityCore push (Vixy) + the `main.cpp` line (Vixy).**~~
-   **[2026-09-05, F86 → §11.205: the `main.cpp` HALF IS PAID.** Code `9e0f1e93`: the line moved
+   **[2026-09-05, F86 → §11.205: the `main.cpp` HALF IS PAID.** Code `b223ef56`: the line moved
    below the two `checkUser*` calls, and the launch F84 could not make — a `$HOME` with nothing
    in it — now exits **0**, builds **19 directories and 7 files**, prints ten "Completed copy"
    lines and writes `log/spacecrafter.log` inside the new directory; the as-if control on an
@@ -180,17 +180,17 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    (§5.131, §11.205(i)). **R2 therefore reduces to: bump the submodule pin (Vixy), and
    nothing else.** `INSTALL` section 6's `mkdir -p ~/.spacecrafter` paragraph is now obsolete
    and is named for F85 to delete, not edited by F86.]**]**
-   **[R2's DOCUMENTATION HALF IS CLOSED 2026-09-05 by F85 → §11.206(d), code `d260d89c`:
+   **[R2's DOCUMENTATION HALF IS CLOSED 2026-09-05 by F85 → §11.206(d), code `c4117d51`:
    BOTH obsolete paragraphs are deleted — §6's `mkdir` AND §3's KNOWN ISSUE (§5.131's) — and
    neither was deleted on the strength of its row's flip: the clone probe was re-run (rc 0,
    submodule `84f5d94b`, header present) and an empty-`$HOME` launch was re-run (exit 0,
    19 directories + 7 files, real HOME md5 in==out). `INSTALL` §5, the "what the repository
    does NOT contain" section, is measured and kept. **Nothing of R2 remains on the
-   documentation side; its pin-bump residual was discharged at code `32af2efb`.**]**
+   documentation side; its pin-bump residual was discharged at code `f4ceb208`.**]**
    **[R2's CONTENT QUESTION IS ANSWERED, AND THE ANSWER OPENS AN OWNER ITEM — 2026-09-05,
    round-3 **R23** (F88 → §11.207): *"By default, only limited catalogs are loaded. Correct
    catalogs are loaded in an outside installation procedure."* `[stated: tester (Lionel
-   RUIZ), via owner commit 6ffb017]`. F84's manifest found that a tree install ships no
+   RUIZ), via owner commit 1e6ca60]`. F84's manifest found that a tree install ships no
    content and that **no repository document names where content comes from** (§11.204(f));
    R23 says where: an **installation procedure outside both repositories**. So the gap is
    not that the loader is wrong or that the install is broken — it is that the procedure
@@ -201,7 +201,7 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
 3. ~~**R3 — An entry document exists in the code repo.** None does (`doc/` is user-facing; no
    `*.md` under `src/experimentalModule/`); `claude/README.md`'s own filing criterion states the
    promotion obligation and nothing was ever promoted under it. → **F85**.~~
-   **[MET 2026-09-05 by F85 → §11.206; code `d260d89c` + `a2fd3c5b`. `doc/developer-entry.md` — 424 lines,
+   **[MET 2026-09-05 by F85 → §11.206; code `c4117d51` + `4cb2e298`. `doc/developer-entry.md` — 424 lines,
    pure ASCII, nine sections, **78 claim-bearing sentence groups / 78 sourced** (source table
    §11.206(b)) — is the FIRST thing ever promoted under that filing criterion. It points and
    never duplicates: the harness README, INTENT.md's header, `INSTALL` and
@@ -218,7 +218,7 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    absorbed (§11.206(i)).]**
 4. ~~**R4 — No memory-unsafety reachable from the shipped data at startup.** §5.127(2) the UAF
    from `anchor.ini`, §5.127(1) the comet null deref (old core) → **F86**; §5.48 (EntityCore)
-   → Vixy.~~ **[MET FOR THE OLD-CORE HALF 2026-09-05 by F86 → §11.205; code `a4a7c226`.**
+   → Vixy.~~ **[MET FOR THE OLD-CORE HALF 2026-09-05 by F86 → §11.205; code `e864a4b6`.**
    **§5.133** (the UAF, minted from §5.127(2) before being touched): REPRODUCED under ASan at
    the predicted read — `orbit.hpp:36` ← `AnchorPointOrbit::update:44` ← `AnchorManager::update:306`,
    after one shipped command `camera action switch name orbit_autour_lune` — and CLEAN on the
@@ -254,7 +254,7 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    at F84 acceptance: the `main.cpp` half of R2's residual is NOT the owner's — §5.130's
    one-line move is decision-free (§5.79/F35 precedent) and goes to F86.]** **[2026-09-05
    14:30: the EntityCore push HAPPENED (from this checkout, 12:23 — a key this session does
-   not hold; the owner's hand or his other session) and the pin bump followed (`32af2efb`);
+   not hold; the owner's hand or his other session) and the pin bump followed (`f4ceb208`);
    the clone probe passes. R5 is back to ONE act: push `master-beta` (~~81~~ **86** code commits at the session-22 close, measured) and
    `CC-harness` from a keyed host — or from here, since a key evidently exists on this
    machine for some session; the supervisor never pushes.]**
@@ -271,8 +271,8 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    Kenan-Blasius, Lionel and Calvin are **not** redirected. The rename is the OWNER's act and
    nothing here prepares it beyond a measured footprint — **F92 → §11.212**: all 226
    occurrences of `master-beta` in both repositories partitioned (**4 LIVE POINTERS · 133
-   PINS · 89 HISTORICAL RECORDS · 0 CONVENTION**, stamped at code `0b46a63f` / harness
-   `58f10f6`, instrument `harness/f92_census.py`), an unapplied patch covering exactly the
+   PINS · 89 HISTORICAL RECORDS · 0 CONVENTION**, stamped at code `e3e6d346` / harness
+   `c7307b2`, instrument `harness/f92_census.py`), an unapplied patch covering exactly the
    live class (`harness/artifacts/f92/rename-live-pointers.patch`, `git apply --check` rc 0
    in a scratch worktree of each repo, post-apply LIVE 0), an ordered eleven-act checklist
    with a check per act, and a breakage scan whose one finding is `supervised-by.sh`'s silent
@@ -318,7 +318,7 @@ Ordered by operational weight for the tester, not by age:
    question)**: old rolls the view offset with the heading, the new path keeps it
    dome-fixed. Planetarium-geometry-central (tilted domes are the deployment reality);
    blocks the §5.66 `look_at` family and §5.71's `panView` port. NOTE: per §11.161(c) the
-   *expectation* half ("what should a tilted-dome operator see") may be tester-routable. **[2026-09-02, §11.198(d): expectation half ROUTED — round-3 R28, NARROWED to the heading×offset combination (heading = one of the owner's two named under-exercised configurations); plain-offset behavior stays old-parity by the owner's silent-population bounding; aim/draw coupling defect candidate recorded, not minted.]** **[2026-09-04, F81 §11.201: the candidate is MEASURED and **§5.128 is MINTED** (record-only) — old's aim site compensates a FIXED 90° while its draw applies fov/2, so a mid-show `set zoom_offset` lands the aimed body 0.0000°/13.5000°/21.0000° off the drawn centre at fov 180/90/40 and throws the old view 29.4474° onto `init_view_pos` while the new path keeps its aim. R28 gains the question it could not yet ask: does a show that sets the offset mid-show EXPECT the view to return to `init_view_pos`? — the answer decides whether only the scaling is wrong or the whole aim half is.]** **[GATE CLOSED 2026-09-05 by round-3 R28 (F88 → §11.207) — [stated: tester (Lionel RUIZ), via owner commit 6ffb017]: *"The offset is screen dependant. The change of heading shouldn't shift the offset position. I saw that it does now but it shouldn't."* **The decision this tier existed to extract is made, and it is made in favour of the NEW path**: the offset is screen/dome-fixed, so the delivered shape was right and old's heading coupling is a defect — minted **§5.135** (old-path only; mechanism re-read at `navigator.cpp:324` then `:329`). **§5.66 and §5.71 UNBLOCK and move to work.** Two things stay: (i) §5.128's snap-back question — R28 does not mention it, so the fork it names is still undecided; (ii) §5.135's FIX is not decision-free, because correcting the old path means touching the comparison baseline (§11.52(b)) — an owner call, not a gate on the tester's transparency. **This row leaves the decision tier.**]**
+   *expectation* half ("what should a tilted-dome operator see") may be tester-routable. **[2026-09-02, §11.198(d): expectation half ROUTED — round-3 R28, NARROWED to the heading×offset combination (heading = one of the owner's two named under-exercised configurations); plain-offset behavior stays old-parity by the owner's silent-population bounding; aim/draw coupling defect candidate recorded, not minted.]** **[2026-09-04, F81 §11.201: the candidate is MEASURED and **§5.128 is MINTED** (record-only) — old's aim site compensates a FIXED 90° while its draw applies fov/2, so a mid-show `set zoom_offset` lands the aimed body 0.0000°/13.5000°/21.0000° off the drawn centre at fov 180/90/40 and throws the old view 29.4474° onto `init_view_pos` while the new path keeps its aim. R28 gains the question it could not yet ask: does a show that sets the offset mid-show EXPECT the view to return to `init_view_pos`? — the answer decides whether only the scaling is wrong or the whole aim half is.]** **[GATE CLOSED 2026-09-05 by round-3 R28 (F88 → §11.207) — [stated: tester (Lionel RUIZ), via owner commit 1e6ca60]: *"The offset is screen dependant. The change of heading shouldn't shift the offset position. I saw that it does now but it shouldn't."* **The decision this tier existed to extract is made, and it is made in favour of the NEW path**: the offset is screen/dome-fixed, so the delivered shape was right and old's heading coupling is a defect — minted **§5.135** (old-path only; mechanism re-read at `navigator.cpp:324` then `:329`). **§5.66 and §5.71 UNBLOCK and move to work.** Two things stay: (i) §5.128's snap-back question — R28 does not mention it, so the fork it names is still undecided; (ii) §5.135's FIX is not decision-free, because correcting the old path means touching the comparison baseline (§11.52(b)) — an owner call, not a gate on the tester's transparency. **This row leaves the decision tier.**]**
 3. **§11.96(e)(1–6) + §11.98(f)(i–iii) — the reach/visibility decoupling batch**: gates
    the B5 remainder = dso3d/tully/ojmMgr floors — i.e. the DEEP-SKY content classes on
    the new path. A planetarium show without its DSO layer is not transparent.
@@ -330,14 +330,14 @@ Ordered by operational weight for the tester, not by age:
    until R27 — the parity target §11.158(f) states (≤ 0.002° for 89/90 bodies); next round's
    first engine candidate, deferred behind tier R this round.]** **[GATE CLOSED
    2026-09-05 by round-3 R27 (F88 → §11.207) — [stated: tester (Lionel RUIZ), via owner
-   commit 6ffb017]: *"The RA/DE must be the value from our position."* ⇒ decision (2)'s
+   commit 1e6ca60]: *"The RA/DE must be the value from our position."* ⇒ decision (2)'s
    origin is **OBSERVER-CENTRED (topocentric)**, which is what old already computes — so
    the old-as-spec hold becomes a tester-STATED requirement rather than a default, and it
    is the strongest form this answer could take: he reads coordinates professionally, as
    this row's own sentence says. With (1) resolved by definition (§11.198(b)), **BOTH
    numbered decisions are answered and this row LEAVES the decision tier.** §5.86 + §5.19
    are fully decision-free and dispatchable at the stated parity target. **T1.4 CLOSED.**]**
-   **[WORK ITEM STRUCK 2026-09-06 — DELIVERED by F91 §11.213, code `5a1e5749`. The fix this
+   **[WORK ITEM STRUCK 2026-09-06 — DELIVERED by F91 §11.213, code `012105d6`. The fix this
    entry unlocked is landed and measured: **88 of 90 both-tree bodies print the same RA/DE
    string on both paths, byte for byte**, the two exceptions named (Eris, the trees' own
    1.198deg position gap; Puck, one arcsecond of declination = float32), and scored the way
@@ -354,7 +354,7 @@ Ordered by operational weight for the tester, not by age:
    LATITUDE, and a bare `fmod` printed all three hour angles negative at any pre-J2000 date.
    §5.86 and §5.19 both FIXED. Left NAMED, not chased: `observedToLocalPos` still divides by
    the offset-free rotation while its input carries the B17 pitch (the alt/az half; a
-   photometric surface, out of F91's canary). **[PAID 2026-09-06, F96 §11.216, code `24100461`: `observedToLocalPos` is
+   photometric surface, out of F91's canary). **[PAID 2026-09-06, F96 §11.216, code `58655d7a`: `observedToLocalPos` is
    `renderViewRotation()ᵀ` now, so the alt/az readout, the atmosphere's sun direction,
    `moveEyeRel` and the tracking feedback read ONE expression. Measured with
    `set zoom_offset 0.3` armed: old-vs-new alt/az **27.000006873°** before, **0.000017139°**
@@ -377,7 +377,7 @@ Ordered by operational weight for the tester, not by age:
    cover the mid-session route), §5.90 (stars.ini pairing + is `~/.spacecrafter/stars/`
    a search path — tester-routable per §11.161(c1)), A40 (quit vs incomplete frame),
    A41/A42/A43 (early-visibility gate px / texture-level switch / preview-asset data —
-   A43 is a DATA regeneration, i.e. the paid product) **[A43 GATED on R29, 2026-09-02 — §11.198(c): regeneration may destroy the tester's authored two-skin design]** **[~~A43~~ **CLOSED AS DESIGN 2026-09-05** by round-3 R29 (F88 → §11.207) — [stated: tester (Lionel RUIZ), via owner commit 6ffb017]: *"It's a design."* ⇒ the Sun/Moon preview mismatch is the tester's AUTHORED two-appearance mechanism, so **the regeneration is CANCELLED, not deferred** — the paid `spacecrafter-data` product loses this item, and doing it would destroy an effect he uses. A43 leaves §13.A (17 → 16). **A42 does NOT close with it**: R29's own text said the answer would decide at what distance the swap should engage, and that number was not given — A42 is re-shaped from an align-or-leave engineering call into a DESIGN PARAMETER the tester still owes. **§5.90 also moves here** by R23/R24 — see T3; its loader half stops being the question and the undocumented outside procedure becomes it.]**, A44 (ring shadow contract),
+   A43 is a DATA regeneration, i.e. the paid product) **[A43 GATED on R29, 2026-09-02 — §11.198(c): regeneration may destroy the tester's authored two-skin design]** **[~~A43~~ **CLOSED AS DESIGN 2026-09-05** by round-3 R29 (F88 → §11.207) — [stated: tester (Lionel RUIZ), via owner commit 1e6ca60]: *"It's a design."* ⇒ the Sun/Moon preview mismatch is the tester's AUTHORED two-appearance mechanism, so **the regeneration is CANCELLED, not deferred** — the paid `spacecrafter-data` product loses this item, and doing it would destroy an effect he uses. A43 leaves §13.A (17 → 16). **A42 does NOT close with it**: R29's own text said the answer would decide at what distance the swap should engage, and that number was not given — A42 is re-shaped from an align-or-leave engineering call into a DESIGN PARAMETER the tester still owes. **§5.90 also moves here** by R23/R24 — see T3; its loader half stops being the question and the undocumented outside procedure becomes it.]**, A44 (ring shadow contract),
    §5.106 (free-flight environment: close-as-accepted vs design question), the two
    §11.144 riders (free-flight `moveto` meaning + `get status position` — defaults live,
    confirm or redirect), §5.108 (`flag_sun_scaled` dead — reviving it is a behavior
@@ -398,7 +398,7 @@ Ordered by operational weight for the tester, not by age:
    decision — two shipped previews are photometrically inconsistent with their
    full-resolution partners — riding `spacecrafter-data` forward propagation (D9).
    **[(a) RE-GRADED, (b) SHARPENED, 2026-09-05 by round-3 R29 (F88 → §11.207) — *"It's a
-   design."* `[stated: tester (Lionel RUIZ), via owner commit 6ffb017]`. **(a) is no
+   design."* `[stated: tester (Lionel RUIZ), via owner commit 1e6ca60]`. **(a) is no
    longer a data decision**: the two previews differ from their partners because he
    AUTHORED them that way, so the D9 forward-propagation item is withdrawn. **(b) is
    unchanged in substance and stronger in argument**: the gate is still the
@@ -414,12 +414,12 @@ Ordered by operational weight for the tester, not by age:
    `camera action save`, gated on B31's re-expression decision.
    **[§5.98's GATE IS OPEN 2026-09-05 — round-3 R19 (F88 → §11.207): *"Satun must be
    corrected to Saturn and Ganymed to Ganymede."* `[stated: tester (Lionel RUIZ), via
-   owner commit 6ffb017]` ⇒ the routing worked and the fix is AUTHORISED, two spellings,
+   owner commit 1e6ca60]` ⇒ the routing worked and the fix is AUTHORISED, two spellings,
    decision-free; SS-17 answered in `SCRIPT_SURFACE.md`. **He answered with the
    instruction, not with the asked question** — whether any show depends on today's 999
    is still unknown, and is recorded as unknown rather than assumed absent. `day_key_mode`
    (§5.35) and `camera action save` (§5.41) are untouched by round 3.]**
-   **[§5.98 IS STRUCK FROM THIS ITEM 2026-09-06 — FIXED by F94 §11.214, code `a2a880ef`,
+   **[§5.98 IS STRUCK FROM THIS ITEM 2026-09-06 — FIXED by F94 §11.214, code `7509c809`,
    binary `404b9e89`: `"Ganymed"` → `"Ganymede"` (`core.cpp:2251`) and `"Satun"` →
    `"Saturn"` (`:2255`). `$body_selected` answers **503** and **600**, measured pre/post on
    the shipped command surface with the predictions committed before the first launch and a
@@ -462,7 +462,7 @@ Ordered by operational weight for the tester, not by age:
   cannot reach composed bodies while `select planet <english>` can — measure the
   consequence for a French-locale operator, then route.
 - ~~**§5.41/§5.42** ⚠ — … Rows not re-read this session — triage first.~~
-  **[TRIAGED 2026-08-29, F47 §11.163: both mechanisms present at `d6aec251`. **§5.41 → T1,
+  **[TRIAGED 2026-08-29, F47 §11.163: both mechanisms present at `3ccfc6d8`. **§5.41 → T1,
   B31-gated** (B31 §3.4(d) wants the surface re-expressed on the session serializer, not the
   prefix patched; `~/.spacecrafter/anchors` still absent ⇒ still always fails). **§5.42 → T1 ×2,
   unchanged — plus a SCOPE CORRECTION that spawned NEW §5.112**: its "unknown key preserved"
@@ -479,10 +479,10 @@ Ordered by operational weight for the tester, not by age:
   new-path-superseded. Fix NOT decision-free (D9: authored `orbit_lat` may compensate);
   QUESTION ROUTED TO THE TESTER, joins the final-pass batch.]**
   **[ANSWERED 2026-09-05 — round-3 R18 (F88 → §11.207): *"No."* `[stated: tester (Lionel
-  RUIZ), via owner commit 6ffb017]` ⇒ no `location_orbit` body was ever authored, so the
+  RUIZ), via owner commit 1e6ca60]` ⇒ no `location_orbit` body was ever authored, so the
   D9 objection that made this fix non-decision-free is EXCLUDED and **§5.21 is
   decision-free**. Its both-paths reach is unchanged, so one fix serves both.]**
-  **[PARTLY DELIVERED 2026-09-06, F97 §11.217 (code `24100461` → `22499f04`): the
+  **[PARTLY DELIVERED 2026-09-06, F97 §11.217 (code `58655d7a` → `61da4edc`): the
   LATITUDE half is fixed on both paths at the one constructor both loaders call
   (`lat(_lat*M_PI/180)`; measured 58.31008° → 45.00000° on both halves of a live dump),
   and the double-spin trap now carries an §2(f) signal (0 lines pre / 1 post). **§5.21
@@ -522,7 +522,7 @@ Ordered by operational weight for the tester, not by age:
   our 2922×0-byte field), stellar_systems, the full star catalogues (§5.90 — our install
   silently runs 26 561 stars instead of millions; his stars.ini↔catalogue pairing)?
   **[ANSWERED IN THREE PARTS 2026-09-05 (F88 → §11.207), `[stated: tester (Lionel RUIZ),
-  via owner commit 6ffb017]` — and the answers MOVE the question rather than close it.
+  via owner commit 1e6ca60]` — and the answers MOVE the question rather than close it.
   **R22** *"Search is deprecated."* ⇒ the sky-culture/search half is **DE-PRIORITIZED**:
   §5.74 and §5.78 stay OPEN with no fix owed, and leave every deployment path. He answered
   a larger question than the one asked — whether search works on HIS install is still
@@ -544,7 +544,7 @@ Ordered by operational weight for the tester, not by age:
   **[ANSWERED 2026-09-05, AND IT BOUNDS NOTHING AWAY — round-3 R21 (F88 → §11.207):
   *"All have been tested, but sometimes long ago, so maybe some features could have
   altered the way it shall work."* `[stated: tester (Lionel RUIZ), via owner commit
-  6ffb017]`. **ONE sentence for the whole nine-line census** — nine lines were sent, one
+  1e6ca60]`. **ONE sentence for the whole nine-line census** — nine lines were sent, one
   answer came back, and it is propagated as one answer and never as nine ticks. **Every
   class is IN**: sky cultures, deep-sky 3D, full catalogues, other star systems, videos,
   large body populations, runtime images/audio, joystick/hardware, AND the portrait
@@ -600,7 +600,7 @@ Ordered by operational weight for the tester, not by age:
   for "his actual config version"; the mechanism is measured.]**
   **[AND HE ANSWERED WITH A FIX DIRECTION 2026-09-05 — round-3 **N7** (F88 → §11.207):
   *"Put a # in front of the deprecated lines would be better"* `[stated: tester (Lionel
-  RUIZ), via owner commit 6ffb017]`. Shown the two numbers, he does not acknowledge the
+  RUIZ), via owner commit 1e6ca60]`. Shown the two numbers, he does not acknowledge the
   hazard — he **exercises the revise/revert offer** and states how the mechanism should
   behave: **comment out, never delete**. That is the migration writer's spec (§5.42's
   writer rides the same change), and this clause's own measurement is its discriminator —
@@ -628,12 +628,12 @@ a QUESTION to the tester — *has anyone authored `location_orbit`, and was `orb
 in degrees or tuned by eye?* (the fix is blocked on the answer, D9) · ~~**§5.98** as a QUESTION
 to the tester — *do your shows test `body_selected` against 999 for Saturn/Ganymede?* (SS-17;
 the fix is two spellings, free once given)~~ **[OFF T4's CARGO 2026-09-06: asked, answered
-with an instruction (R19), and DELIVERED — F94 §11.214, code `a2a880ef`. The question itself
+with an instruction (R19), and DELIVERED — F94 §11.214, code `7509c809`. The question itself
 was answered by measurement for this field (1 of 408 scripts, same arm on both binaries) and
 what goes to him instead is a one-character doc fix, routed at SS-17]**.
 
 **[THE BATCH CAME BACK 2026-09-05 — F88 → §11.207; `[stated: tester (Lionel RUIZ), via owner
-commit 6ffb017]`. This tier is DISCHARGED EXCEPT ONE MEMBER.]** Member by member:
+commit 1e6ca60]`. This tier is DISCHARGED EXCEPT ONE MEMBER.]** Member by member:
 **D15(a)–(d) INFORM ×4** — N1, N3, N4 drew no reply, which under this batch's own contract
 (*silence = accepted*) means they stand as built; **D15(b) CONFIRM** — round-3 **R26**:
 *"Stable heading when switching or at least change of camera orientation smoothly."* ⇒
@@ -651,7 +651,7 @@ stands, and the accumulating-tilt price is accepted because his shows set the fr
 script · **§5.83 INFORM** — silent, therefore accepted · **§5.21** — **R18** *"No."* ⇒
 answered, D9 risk excluded · ~~**§5.98** — **R19** *"Satun must be corrected to Saturn and
 Ganymed to Ganymede."* ⇒ answered, fix authorised~~ **[CARGO DISCHARGED 2026-09-06, F94
-§11.214: authorised AND landed, code `a2a880ef`; nothing of §5.98 rides T4 any more. The
+§11.214: authorised AND landed, code `7509c809`; nothing of §5.98 rides T4 any more. The
 one thing that does go to him is a doc token, `superscript.sts:1529` `Ganymed` →
 `Ganymede`, routed at SS-17]** · **the field-content questions and the
 content census** — R22/R23/R24 and R21, see T3 · **§11.4's origin sub-question** — **R27**
@@ -674,7 +674,7 @@ direction (see T3).
    `f90_rehearsal_run.sh`: one command, one launch on a private farm in the field's own
    French locale, nine operator steps, every step's observable and pass criterion printed
    BEFORE the launch, exit non-zero on any failure - and it is the line
-   `doc/developer-entry.md` §5 now hands the newcomer (code `0b46a63f`). WHAT IT FOUND, in
+   `doc/developer-entry.md` §5 now hands the newcomer (code `e3e6d346`). WHAT IT FOUND, in
    three runs that are step-for-step identical (zero flakes, 91.2 s each) plus one injected
    operator typo that reds two steps and exits 1: THREE divergences, every one pre-existing
    and none fixed. §5.77/§11.146's startup silences, reproduced exactly. §11.117(k)(3)'s two
@@ -755,7 +755,7 @@ direction (see T3).
 3. ~~**B38's residual state** ⚠ (dead tokens + reachable-but-defective handlers) — the
    command-surface sweep's defect row; verify what remains open at the row.~~
    **[RESOLVED 2026-08-29, F47 §11.163(i) — NOT unmapped. State read: all EIGHT survivors
-   present at `d6aec251`, the one closed member stayed closed, line drift only (plus `m_flags`
+   present at `3ccfc6d8`, the one closed member stayed closed, line drift only (plus `m_flags`
    and the obsolete list relocating to `app_command_init.cpp:111`/`:14-23`). It is an
    ENUMERATED eight-member batch, every member both-paths and every member behind a
    semantics-or-message decision ⇒ **moves to T1.6**, the script-semantics batch, and being

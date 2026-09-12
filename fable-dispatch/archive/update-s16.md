@@ -1,6 +1,6 @@
 **Update [Fable 2026-08-30, supervising session 16]:** trigger = the §0b
 verbatim line, PLUS an in-conversation Vixy transmission recorded BEFORE
-anything else moved (→ **§11.169**, commit `32066fa`: the log-content
+anything else moved (→ **§11.169**, commit `26cb5f2`: the log-content
 schema — each proactive/implicit decision logs its CAUSE + CONTENT + a
 self-contained OVERRIDE action; each user-facing error logs WHAT +
 CONSEQUENCES + PREVENTION; valid values enumerated or their SHAPE stated;
@@ -10,11 +10,11 @@ items 4–6 (F49's two named-not-run audits · the §5.5-class staleness
 sweep · F52(k)'s two git-only checks) plus the NEW §11.169 schema audit
 are extension candidates if health permits, minted then per §0b.2; item 7
 (§5.100's fix) stays blocked — NO Vixy commit since session 15's close
-(harness HEAD at open = `ea30749`, my own close commit; every commit
+(harness HEAD at open = `05437a2`, my own close commit; every commit
 since session 13's authorization question is Claude-authored), so the §3
 authorization stands unanswered and the decision-gated set is unchanged
 (D-set verified EMPTY at the file, 2026-08-26 note stands). Warm-up: both
-trees clean at open, code `d6aec251` / harness `ea30749`; binary current
+trees clean at open, code `3ccfc6d8` / harness `05437a2`; binary current
 (code HEAD unmoved since the 2026-08-26 rebuild, binary mtime
 2026-08-26); `free -g` = 47 GiB ⇒ -j12 OK; **definition-drift assert:
 md5 MATCH** (`f9446618`). Next free §11 number verified **170** (§11.169
@@ -32,7 +32,7 @@ F54's delivery state. NO mandate touches product code — the code tree
 should be clean at every point, the third all-record/instrument round in
 a row. Round-open events: **§11.169 recorded** (above); **archival
 pass 9** (update-s14 + F48–F52 moved byte-exact, manifest
-`2026-08-30-pass9`, commit `febc8fd`). Instrument baselines at open,
+`2026-08-30-pass9`, commit `db3a1bd`). Instrument baselines at open,
 re-derived from the committed instruments on this tree: pair-check
 **185/160/25/85** (+1/+1/0/0 from §11.169, four test counters unchanged);
 back-marker scan **90/125/83** — §11.169 added NO event lines and the
@@ -42,7 +42,7 @@ unmarked count is the F52-acceptance invariant to the digit.
 supervisor-verified same day; round closed at 3 per the recorded plan (the
 CONVERSATION was this round's extension: §11.169 at open + §11.173 at close +
 §5.114/§5.115 minted + Q-50–Q-55 discharged — the largest owner-testimony
-harvest of any session). **CODE TREE CLEAN THROUGHOUT** — `d6aec251` at open
+harvest of any session). **CODE TREE CLEAN THROUGHOUT** — `3ccfc6d8` at open
 and close, the third all-record/instrument round in a row. HEADLINE
 FINDINGS: **the dim Moon does not reproduce** (F51's driver returns July's
 165.258 from a bit-identical dump, same driver/binary/boot — the driver
@@ -72,7 +72,7 @@ queued as a deliberate re-baselining act. Stable baselines at close:
 pair-check **188/163/25/87** · scan **106/136/83** with TWO named
 exceptions (`§11.171→§11.165` benign-in · `§11.164→§11.167`
 proximity-out; 83 real, twice attributed). **[Post-close state at
-`c193a62`: pair-check 190/165/25/87 · scan 106/137/84 — the 84th is
+`b8e5ec5`: pair-check 190/165/25/87 · scan 106/137/84 — the 84th is
 `§11.172→§11.174`, a THIRD co-occurrence exception (the §11.174
 annotation's citation inside the window of the paragraph's pre-existing
 CORRECTED; direction inverse, the annotation IS the marker). 83 real,

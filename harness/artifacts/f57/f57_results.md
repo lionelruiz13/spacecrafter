@@ -3,8 +3,8 @@
 All numbers reproduce from `python3 harness/f57_score.py` (per-part judgments in
 `f57_coverage.tsv`, markers in `f57_markers.tsv`) plus the two git re-measurements
 recorded in §3 and §4 below. Predictions: `f57_predictions.json`, md5
-**`4d5b2486f35490c1a080f5bf2ded3ead`**, committed `09b5e80` BEFORE any of this existed.
-Partition labels: `f57_partition.md`, committed `cf2cd5e` before the predictions.
+**`4d5b2486f35490c1a080f5bf2ded3ead`**, committed `efc497c` BEFORE any of this existed.
+Partition labels: `f57_partition.md`, committed `4c1a605` before the predictions.
 
 ---
 
@@ -64,7 +64,7 @@ RULE was, the per-entry assignment was not; recorded as the weaker form it is):
 
 - **P2.1 PASS** — zero written replies across all 19 entries.
 - **P2.2 PASS, re-measured independently rather than re-read.** Both blobs fetched from the code
-  repo (`70dee810:doc/superscript.sts` 44 067 B / 1 408 lines → `f0c8ef83:doc/superscript.sts`
+  repo (`ff3d1d94:doc/superscript.sts` 44 067 B / 1 408 lines → `30ea1f8d:doc/superscript.sts`
   53 915 B / 1 607 lines) and each witness spelling counted by regex: **11 of 13 gone, 2 survive**
   — exactly the figure §11.149(e) and Q-55 carry. **The counting unit matters and is recorded so
   the number is unambiguous**: one witness per distinct SPELLING, with SS-4 (`movetocity` +
@@ -79,7 +79,7 @@ RULE was, the per-entry assignment was not; recorded as the weaker form it is):
 - **P2.3 PASS** — actionable 1.0 ≥ 0.75, word-only 0.0. The contrast is what makes the action an
   ANSWER rather than silence: where an edit could discharge the entry, every one was discharged;
   where only a sentence could, none was.
-- **P2.4 PASS** — `f0c8ef83` subject *"Update superscript.sts"* = **2 words**, body **empty**,
+- **P2.4 PASS** — `30ea1f8d` subject *"Update superscript.sts"* = **2 words**, body **empty**,
   author Lionel RUIZ, 2026-08-26 08:59:50 +0200. 199 lines added and 11 witnesses fixed, with no
   sentence anywhere saying so.
 

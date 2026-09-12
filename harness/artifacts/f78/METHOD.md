@@ -17,8 +17,8 @@ count of a v2 output exists yet, and none was computed.
 
 | premise | stated | observed |
 |---|---|---|
-| code HEAD / tree | `ba7a32a8`, clean | `ba7a32a8`, clean — **no code is touched by this task** |
-| harness HEAD / tree | `971df5b`, clean | `971df5b`, clean |
+| code HEAD / tree | `8d41fbe3`, clean | `8d41fbe3`, clean — **no code is touched by this task** |
+| harness HEAD / tree | `011bbeb`, clean | `011bbeb`, clean |
 | live `### F` count | 4 | 4 |
 | next free §11 | 197 | free over live ∪ archive (`grep -rn '11\.197'` → 0 hits) |
 | pair-check v1 | 212/187/25/95, D/D2/I/I2 35/11/87/34 | reproduced to the digit |
@@ -47,7 +47,7 @@ the gate PASSES. Counterfactual stated: had either been an input, the gate says 
    i.e. it defaults to the **script's own directory**, so a run launched from an extracted
    pre-tree without an explicit root silently measures the LIVE tree: **exactly** the trap
    §11.168(m) measured on the scan, present in the other instrument, unchanged since the
-   instrument's first commit (`89b83cc`, verified at `git show`). This is not a new member;
+   instrument's first commit (`6f231cf`, verified at `git show`). This is not a new member;
    it is the re-verification the mandate asks for, and it decides §7 below.
 
 ---

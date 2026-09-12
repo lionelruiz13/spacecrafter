@@ -1,6 +1,6 @@
 # F58 scope 1 — the audit universe, stated and bounded BEFORE any classification
 
-Code repo at `master-beta @ d6aec251`. Every `file:line` in this audit resolves at that
+Code repo at `master-beta @ 3ccfc6d8`. Every `file:line` in this audit resolves at that
 commit. Product code is READ-ONLY throughout; nothing here proposes or applies a fix.
 
 ## 1. What §11.169 makes auditable

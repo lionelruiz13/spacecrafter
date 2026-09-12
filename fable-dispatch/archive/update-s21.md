@@ -1,20 +1,20 @@
 **Update [Fable 2026-09-04, supervising session 21 — LovelyFoxDev, the DESKTOP
 round: canary / stellar grammar / view offset]:** trigger = the §0b verbatim line,
-no in-line transmission. Warm-up: both trees clean at open, code `ba7a32a8` /
-harness `d79180b` (one commit landed after session 20's close — **§11.198**, the
+no in-line transmission. Warm-up: both trees clean at open, code `8d41fbe3` /
+harness `5ca35fe` (one commit landed after session 20's close — **§11.198**, the
 round-3 conversation, 2026-09-02); definition-drift assert md5 MATCH (`a5a54d94`);
 next free §11 number **199** (live ∪ archive); live `### F` count **4 → 0** by
 **archival pass 13** at OPEN (update-s19 + F75–F78, 842 lines, manifest
 `2026-09-04-pass13`, pre-md5 `d351a644` reproduced in-process AND from disk,
-commit `db0dc57`; one recorded seam tidy) **→ 4** by the mints below. HOST: this is
+commit `a1a6192`; one recorded seam tidy) **→ 4** by the mints below. HOST: this is
 **LovelyFoxDev, the desktop** — the first desktop round since session 17; booted
 18:45 today; claude's REAL logind session (14/15, remote-desktop shape) serves
 **`:2`** at 2448x1332 under `/run/user/1003`; F43's `/tmp` substitute is gone and
 unrebuilt ⇒ **the §11.174(f) fork has one branch left**; canary `--no-scene`
 **exit 2 `compositor.absent`** + note `xserver.restarted` (the refuted mtime
 probe) — REPORTED, not mitigated (§11.174(h)); full record HOST-EVENTS 2026-09-04,
-commit `17dd50f`. Binary was STALE (Aug 26 — the laptop rounds never reached this
-build dir) ⇒ rebuilt at `ba7a32a8` (-j24 per the session hook; affinity is 0-23
+commit `91f957c`. Binary was STALE (Aug 26 — the laptop rounds never reached this
+build dir) ⇒ rebuilt at `8d41fbe3` (-j24 per the session hook; affinity is 0-23
 here, so the §0.5 "12-core affinity" line is not this host's state today; RAM 52
 GiB avail), md5 `c8e12950`, `cmake --build -- -n` empty after. GitHub SSH refused
 from this host (publickey) — push impossible here; local contains origin on both
@@ -24,12 +24,12 @@ pristine; no spacecrafter process; ASCII gate PASS. Instrument baselines at open
 scan **203/252/125** · pair-check **214/189/25/95** D 35 · D2 11 · I 88 · I2 36 ·
 M 81 — every delta over the session-20 close (+1/+1/+1 · +1/+1/0/0 · I+1 · M+1)
 attributes to §11.198 (its `entry_only 11.4` pair visible in test I). SUPERVISOR
-ACTS AT OPEN (commit `17dd50f`): the F60 routed flips — §5.24 CLOSED as FIXED by
+ACTS AT OPEN (commit `91f957c`): the F60 routed flips — §5.24 CLOSED as FIXED by
 B32 (its harness-exclusion claim refuted at `b24_equivalence.py`); B15's reference
 half recorded closed by §5.32; B39's "never caches" clause recorded false since
 §5.46's fix ((j)(4), which the session-20 re-queue had omitted without a reason —
 taken with the other two). **Dispatcher defect #1, mine:** the re-queue's third
-member (B14's §5.28 citer note) was ALREADY enacted at F60 acceptance (`df97965`,
+member (B14's §5.28 citer note) was ALREADY enacted at F60 acceptance (`0e3831d`,
 2026-08-30) — a stale re-queue entry. QUEUE CONSUMPTION (session-20 close, in
 order): (1) desktop position 1 → **F79** (the canary: probe root-fix + fingerprint
 re-bank + the band by measurement; the re-bank TARGET is an OWNER DECISION per
@@ -58,9 +58,9 @@ executor) · F81 → **§11.201** + **§5.128** · F82 → **§11.202** + **§5.
 re-verified by my own runs or recomputation (canary both arms; a fresh scedit
 build + ctest 19/19 + the strict corpus run reproducing 4014/0/0; the F81 command
 leg re-launched and reproduced on all six cells; F82's 368-blob `verify` and the
-`VulkanMgr.cpp` site read). Code `ba7a32a8 → 85cc2785` (five executor commits, all
+`VulkanMgr.cpp` site read). Code `8d41fbe3 → d33bc14f` (five executor commits, all
 `util/scedit/`; NO ENGINE BYTE this round — every engine finding record-only);
-harness `d79180b →` this close. IN-SESSION OWNER TRANSMISSIONS, all homed: `/tmp` is
+harness `5ca35fe →` this close. IN-SESSION OWNER TRANSMISSIONS, all homed: `/tmp` is
 session-lifetime; three carried trees; the ssh era keeps `:2` open (SDL2 → X11 →
 DISPLAY); the Q-59 collision cause (two concurrent sessions — Fable-5 head → Q-62);
 `CLAUDE_CODE_THRIFTY_SONIC=0` verified at the 2.1.260 bundle and ENACTED at the
@@ -79,7 +79,7 @@ set, root: an unmarked answered node §11.78(e), marker now placed; twelve
 report-only/output-side — the stale B14 re-queue member, "6734", "24 members",
 the harness CONVERT-class gloss, "`cmake -n` empty", the 19:50:18 echo of the
 refuted probe, the base-D pointer, method-dependent bounds, "arm `camera`",
-"10.5°", the `setLocalVision` aim command, F82's stale `ba7a32a8`), all caught via
+"10.5°", the `setLocalVision` aim command, F82's stale `8d41fbe3`), all caught via
 report-not-absorb or the §0.7 gate and corrected at their nodes; **four
 instrument slips of mine**, all caught before they became findings (the archival
 reconstruction assert firing on my own proof — nothing written; the §5.104/§11.104

@@ -1,7 +1,7 @@
 **Update [Fable 2026-08-31, supervising session 19 — TravellingFoxDev, the
 provenance/ASCII round]:** trigger = the §0b verbatim line PLUS four in-line
 transmissions, recorded BEFORE anything else moved (→ **§11.186**, commit
-`a3a03e1`, the §11.169 precedent): (a) auto lock-screen disabled —
+`6434127`, the §11.169 precedent): (a) auto lock-screen disabled —
 CONFIRMED at the setting (`lock-enabled false` [measured]) with a NAMED
 residual (idle-delay still 300, blank still fires, and the 1 Hz attribution
 keys on the BLANK — F67's wake mitigation stays in every live-launch prompt
@@ -14,7 +14,7 @@ unknowable ⇒ control-leg proof, `$LOGON` reuse excluded); (d) every source
 file ASCII, accents removed — new §2.0 constraint **D14**; (e) superscript.sts
 missing-doc extraction proposed ("could") — coincides with the session-18
 queue's own position 1 (scedit items 11/12). Warm-up: both trees clean at
-open, code `e2c8477b` / harness `8c92006`; binary current (`cmake --build -n`
+open, code `97378bfe` / harness `be8b8ca`; binary current (`cmake --build -n`
 empty; mtime 2026-08-31 08:20) **[CORRECTED at F68 acceptance: that check was
 a FALSE GREEN — `-n` is not a `cmake --build` option; with stderr piped away
 its help-text failure read as empty output. The real form is
@@ -50,9 +50,9 @@ four for four delivered AND supervisor-verified same session (every proof
 re-run by me: wire cmp ×2, scedit ctest ×3, ASCII gate + derivation verify +
 27/27 ELF sections; extension 3→4 per §0b.2, F71 being the owner's own
 "could"). **THE FIRST PRODUCT-CODE ROUND IN FIVE SESSIONS**: code
-`e2c8477b → 96cfc352` (7 executor commits — provenance `423cbe23`, the
-dedicated link `be2ddd81`+`630b06fd`, the ASCII sweep `1012c643`+`d64fd437`,
-the doc data `50185663`+`94f2af65`+`96cfc352`); harness → this close.
+`97378bfe → 9620a758` (7 executor commits — provenance `dd815ab3`, the
+dedicated link `c807d695`+`d117870c`, the ASCII sweep `cb521cf1`+`71ef30ac`,
+the doc data `fd8fdd91`+`51cd2eaa`+`9620a758`); harness → this close.
 MID-ROUND EVENTS: idle-delay 0 owner-enacted (the 1 Hz hazard's second arm;
 lock-vs-blank closed as moot); a scheduled shutdown NOBODY DISARMED rebooted
 the host mid-F70 — the discontinuity cost measured ZERO (CP1 discipline +

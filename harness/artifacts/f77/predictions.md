@@ -1,12 +1,12 @@
 # F77 predictions -- committed BEFORE the launch (INTENT 11.159(c) template)
 
-Task F77, 2026-09-01, code `master-beta @ ba7a32a8`, harness `e211d1a`, host
+Task F77, 2026-09-01, code `master-beta @ 8d41fbe3`, harness `5016b09`, host
 TravellingFoxDev, `DISPLAY=:0`. Driver: `claude/harness/f77_badscript.py`
 (written after this file; this file's md5 is asserted unchanged at delivery).
 
 Every prediction below is a relation between things this run measures, and every
 one of them can fail. Where a prediction is DERIVED from source read at
-`ba7a32a8`, the read is cited: the launch is what turns it into a measurement,
+`8d41fbe3`, the read is cited: the launch is what turns it into a measurement,
 and a disagreement is the finding, not a bug in the run.
 
 ## The four channels, and what each is

@@ -1,5 +1,5 @@
 **Update [Fable 2026-08-09, supervising session 11]:** round of 3: **F31 → F32 →
-F33**. Warm-up: both trees clean, code `bd3f7117` / harness `6839633`, binary
+F33**. Warm-up: both trees clean, code `b78d6549` / harness `637aa3d`, binary
 confirmed current by no-op rebuild, `free -g` = 52 GiB ⇒ -j12; NO Vixy commit
 since session 10's close ⇒ the whole blocked/decision-gated set stands unchanged
 (D15/D21 late-Aug, D37, A40–A43, C4 open; §5.64/§5.65/§5.69/§5.70/§5.72/§5.75/

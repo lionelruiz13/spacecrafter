@@ -4,7 +4,7 @@ hunt — §5.51 masks the instrument; B7-hunt-4 after F16; G4 batch). Third slot
 the G4 batch over the next B31 slice: the session file carries two carve-outs behind
 late-August decisions (D28/D21) and takes a revisit wave regardless, while §5.52 is a
 user-visible hole in D3's common case. Warm-up: both trees clean (code `a958c05e`,
-harness `fe7e2dc` — the harness moved past session-5 close: cadence corrections
+harness `e006927` — the harness moved past session-5 close: cadence corrections
 §11.122(o)/§11.123(o)(o2) + INTENT archival pass 1, all verified, no code change);
 binary present (mtime 03:22, consistent with F9's build order; first executor rebuilds
 regardless). DECISIONS_PENDING open set at session start: **D15, D21 (both SCHEDULED

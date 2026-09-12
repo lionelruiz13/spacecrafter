@@ -15,13 +15,13 @@ closes with a compact decision list. Signing identity: this session signs
 **`Claude Fable 5.1`** (the Bash tool's Git section is the identity authority per
 `~/shared/QUEUE.md`'s header rule); prior sessions' `Claude Fable 5` signatures
 are theirs, untouched (the QUEUE's over-claim lesson). Warm-up: both trees clean at
-open, code `85cc2785` / harness `34b6cae` (nothing landed since the session-21
+open, code `d33bc14f` / harness `66ac6c2` (nothing landed since the session-21
 close; +63/+638 unpushed; GitHub still refuses publickey from this host);
 definition-drift assert MATCH (`a5a54d94`); binary current (`c8e12950`, `cmake -n`
 zero steps, no `src/` file newer); next free §11 number **203** (live ∪ archive);
 live `### F` count **4 → 0** by **archival pass 14** at OPEN (update-s20 + F79–F82,
 654 lines incl. one pass-13-style seam tidy, manifest `2026-09-05-pass14`, pre-md5
-`388deb00` reproduced in-process AND from disk, commit `dadf6b2`) **→ 5** by the
+`388deb00` reproduced in-process AND from disk, commit `0e2e55f`) **→ 5** by the
 mints below; same boot as session 21 (`uptime -s` 2026-09-04 18:45:08), `:2`
 2448x1332 under `.5KBYU3`, canary `--no-scene` **exit 0** (30 members, artifacts
 `f56/canary/20260905-095822`, ignored path); config/ssystem md5 pristine
@@ -70,7 +70,7 @@ earlier "~HH:MM" in this session's prompts was an ESTIMATE, ~1 h fast, dispatche
 defect):** (1) 12:23:23 — the EntityCore submodule commit `7ce58350` was amended
 (tree-identical `84f5d94b`) and pushed to `origin/main` FROM THIS CHECKOUT by a hand
 with a key this session lacks (writer set: the owner or his other session); the pin was
-bumped on `master-beta` as a supervisor act (`32af2efb`, veto point §3) and a clone probe
+bumped on `master-beta` as a supervisor act (`f4ceb208`, veto point §3) and a clone probe
 passed ⇒ §5.131 DISCHARGED. (2) 13:33:40 — `USER_QUESTIONS_ROUND3.md` STAGED with
 sixteen round-3 replies by the same external hand; 13:36 — the F85 executor ABORTED at
 the §0.7 gate on that staged file (correct on both its grounds; 0 mutations); 13:38:30 —
@@ -80,14 +80,14 @@ reply; the file flipped to ANSWERED; **F88 minted** (the propagation, ledger-onl
 F85 re-dispatched with the replies as facts (live `### F` 5 → 6). (4) [vixy, in-session]:
 the replies are the MAIN TESTER's (Lionel RUIZ), transmitted by the owner; on his word
 the commit's author was amended to the tester's code-history identity at the
-quiescent point after F85's delivery: **`c5be42b` → `6ffb017`** (`Lionel RUIZ
+quiescent point after F85's delivery: **`c5be42b` → `1e6ca60`** (`Lionel RUIZ
 <lionel.ruiz@live.fr>`, committer = this session), the four later harness commits
-replayed byte-identical — **SHA MAP: `741b4a8→367f2d1` · `c4686fc→4fb22f1` ·
-`72aa116→0ee6ab7` · `c0efd3c→190ced4`** (any citation of the old SHAs in this file,
+replayed byte-identical — **SHA MAP: `741b4a8→7768fb8` · `c4686fc→6dbca5c` ·
+`72aa116→da413be` · `c0efd3c→54e75c8`** (any citation of the old SHAs in this file,
 §11.206 or the F85 prompt resolves through this map; nothing was on the remote).
 Picks after the events: **F83 ✓ → F84 ✓ → F86 ✓ → F85 ✓ → F88** (the propagation
 outranks F87 now: sixteen decisions the map waited on), F87 if health permits.
-**Round outcome (session 22 close, 2026-09-05 — the close commit `7852ce5` reads 14:52:16 by its own clock; this line first said "~15:00 `date`-measured" and was NOT measured, the twenty-third dispatcher defect and the one that makes the class visible: a label that CLAIMS measurement without the command beside it is worse than an estimate, because it disarms the reader's check):** F83 → **§11.203**
+**Round outcome (session 22 close, 2026-09-05 — the close commit `714c094` reads 14:52:16 by its own clock; this line first said "~15:00 `date`-measured" and was NOT measured, the twenty-third dispatcher defect and the one that makes the class visible: a label that CLAIMS measurement without the command beside it is worse than an estimate, because it disarms the reader's check):** F83 → **§11.203**
 (the deployed line in; 4 keep-ours hunks proven byte-identical; canary band to the digit
 on a third binary; the anchor gate red and right) · F84 → **§11.204** + §5.130–§5.132 (R2
 measured NOT MET: the submodule pin on no remote, the first launch aborting; INSTALL
@@ -100,11 +100,11 @@ gate's design case, 0 mutations) (`doc/developer-entry.md`, INSTALL −26, `f85_
 closed, the map re-cut) — **five for five delivered AND supervisor-verified same session**
 (every delivery re-verified by my own runs: cherry/diff/build/gates, the clone probe, the
 bootstrapped HOMEs, the ASan artifacts, the link checker, the instruments); F87 CARRIED
-(context budget — seven executor runs). SUPERVISOR ACTS: the pin bump `32af2efb`; the
-author amend `c5be42b → 6ffb017` (+ SHA map); the N7 restore; CLAUDE.md hazard (5); §5.130
-folded into F86. Code `85cc2785 → a2fd3c5b` (9 executor commits + 1 supervisor: the
+(context budget — seven executor runs). SUPERVISOR ACTS: the pin bump `f4ceb208`; the
+author amend `c5be42b → 1e6ca60` (+ SHA map); the N7 restore; CLAUDE.md hazard (5); §5.130
+folded into F86. Code `d33bc14f → 4cb2e298` (9 executor commits + 1 supervisor: the
 merge, the anchor record, the docs + two one-liners, the three startup fixes, the entry
-document — NO engine behaviour designed, three crash sites closed); harness `34b6cae →`
+document — NO engine behaviour designed, three crash sites closed); harness `66ac6c2 →`
 this close. OWNER EVENTS IN-SESSION: the EntityCore push (12:23), the replies committed
 (13:38), the provenance ruling. SUPERVISOR TALLY: **twenty-two dispatcher defects**
 (root: coordinates/counts/times written from memory of a listing — prevention: `grep -n`

@@ -12,8 +12,8 @@ replies below are the MAIN TESTER's (Lionel RUIZ), transmitted by the owner
 the main tester/user"*]; committed inline 13:38:30 under the owner's git identity and,
 on his word, the commit's AUTHOR was amended to the tester's history identity
 (`Lionel RUIZ <lionel.ruiz@live.fr>`, 151 commits in the code repo): `c5be42b` →
-**`6ffb017`**, committer = the supervising session (the transport). Provenance tag for
-every reply: `[stated: tester, via owner commit 6ffb017]`. ~~Propagation into the
+**`1e6ca60`**, committer = the supervising session (the transport). Provenance tag for
+every reply: `[stated: tester, via owner commit 1e6ca60]`. ~~Propagation into the
 ledger (§13/§5/DECISIONS rows, DEPLOYMENT-MAP, back-markers) = F88; until it lands,
 the replies are authoritative and the rows are STALE.~~ **[LANDED 2026-09-05, F88 →
 §11.207: sixteen §5 rows (fifteen marked + §5.135 minted), five §13.A rows with A43

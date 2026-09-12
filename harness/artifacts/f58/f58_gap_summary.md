@@ -2,7 +2,7 @@
 
 Universe + method: `f58_universe.md`. Table: `f58_gap_table.tsv`. Verdicts and element tests: `f58_gaptable.py` (self-asserting against the census — it exits non-zero if the verdict set and the site set differ).
 
-Code `master-beta @ d6aec251`, product code read-only.
+Code `master-beta @ 3ccfc6d8`, product code read-only.
 
 ## Sites by class
 

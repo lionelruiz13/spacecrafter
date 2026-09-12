@@ -1,6 +1,6 @@
 # F57 scope item 1 — the out-of-sample partition, written BEFORE any prediction and BEFORE any scoring
 
-Task F57 (§11.173(d) / Q-55). Written 2026-08-30, code `d6aec251`, harness `c561489`.
+Task F57 (§11.173(d) / Q-55). Written 2026-08-30, code `3ccfc6d8`, harness `47f4bc8`.
 This file is the anti-circularity act: the model under test was built partly ON the
 corpus it is about to be scored against, so what the model already saw must be named
 before anything is counted. Re-scoring training data as confirmation is the failure

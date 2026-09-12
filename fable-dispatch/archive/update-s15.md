@@ -4,10 +4,10 @@ order; queue item 4 (§11.161(f) INT-7 validation) + the F47-acceptance
 member (the §5.5-class row↔row staleness sweep) are extension candidates
 if health permits, minted then per §0b.2; item 5 (§5.100's fix) stays
 blocked — NO Vixy commit since session 14's close (harness HEAD at open =
-`75f8b30`, my own F47 acceptance), so the §3 authorization question is
+`35fcdc1`, my own F47 acceptance), so the §3 authorization question is
 still unanswered and the whole decision-gated set stands unchanged (D-set
-still EMPTY). Warm-up: both trees clean at open, code `d6aec251` / harness
-`75f8b30`; binary current (code HEAD unmoved since the 2026-08-26 no-op
+still EMPTY). Warm-up: both trees clean at open, code `3ccfc6d8` / harness
+`35fcdc1`; binary current (code HEAD unmoved since the 2026-08-26 no-op
 rebuild confirmation, binary mtime 2026-08-26); `free -g` = 24 GiB ⇒ -j12
 OK for F48's out-of-tree build; **definition-drift assert: md5 MATCH**
 (first live use of the §0b.1 guard — the RA-reprojected definition's
@@ -25,7 +25,7 @@ files / one new harness script + row annotation); NO mandate touches
 product code — the code tree should be clean at every point, the second
 all-record/instrument round in a row. Round-open events: **archival
 pass 8** (update-s13 + F42–F47 moved byte-exact, manifest
-`2026-08-29-pass8`, commit `523f384`); the stale supersession-block
+`2026-08-29-pass8`, commit `8e62409`); the stale supersession-block
 TEMPLATE in §0b struck with its §11.161(g) pointer (it survived
 session 14's close unstruck — a staleness bug in this file, caught at
 warm-up re-read).
@@ -34,7 +34,7 @@ warm-up re-read).
 tasks, all delivered AND supervisor-verified same session; round extended
 3→5 per the recorded plan (F51 argued ahead of INT-7 at F48's acceptance,
 F52 completing the session-14 queue entirely). **CODE TREE CLEAN
-THROUGHOUT** — `d6aec251` at open and close, the second all-record/
+THROUGHOUT** — `3ccfc6d8` at open and close, the second all-record/
 instrument round in a row (F48's old-sha build via worktree, main tree
 never moved). NEW row: **§5.113** (F50). NO-MINT restraint held three
 times at the criterion (F48's unattributed carrier · F51's closed product

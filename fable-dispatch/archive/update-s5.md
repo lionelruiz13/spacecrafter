@@ -2,7 +2,7 @@
 **F15 → F8 → F9**. F15 minted below (B31 slice 2 = persistent-body serialization §4.1 +
 live annotation wiring — the section session 4's close said to mint at its dispatch),
 positioned ahead of F8/F9 like F10–F14 were (mandated product line beats opportunistic
-hunt + design-first). Warm-up: both trees clean (code `f11f6a4e`, harness `2068afb`);
+hunt + design-first). Warm-up: both trees clean (code `f11f6a4e`, harness `81f24ed`);
 binary present, mtime 16 min before the F14 delivery commit — consistent with F14's own
 build-verify-commit order, and the first executor rebuilds regardless. DECISIONS_PENDING
 open set at session start: **D15, D21 (both SCHEDULED last week of August, §11.116(a)),

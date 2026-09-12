@@ -1,6 +1,6 @@
 # F59 scope 3 — the multi-claim walk: results
 
-Rule and corpus: `MULTICLAIM_BOUNDARY.md` (committed first, `d03f1cd`). **23 pairs walked
+Rule and corpus: `MULTICLAIM_BOUNDARY.md` (committed first, `8601e09`). **23 pairs walked
 exhaustively, no sampling.** Claims were enumerated **from the superseder, independently of
 the marker** — every superseder file grepped for its target's id and every mentioning line
 read — precisely so the count could exceed what the marker records.

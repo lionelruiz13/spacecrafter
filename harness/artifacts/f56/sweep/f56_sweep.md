@@ -235,7 +235,7 @@ instrument is separately mapped both ways on a control: 4 of 4 mutation classes 
 
 ---
 
-## The follow-up, RUN: b3_ladder on the healthy stack (P9, committed at `5fc4200` before the launch)
+## The follow-up, RUN: b3_ladder on the healthy stack (P9, committed at `a2a7b87` before the launch)
 
 `b3_ladder_run.sh terrain --site moon`, the file UNCHANGED, no gate constant touched,
 one launch, comm probe 0, md5 in == out. **LADDER GREEN — 0 FAILURES.**

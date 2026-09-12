@@ -41,7 +41,7 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   at F70 acceptance — the pre-F70 wording lived here through 2026-08-31):
   (1) the Bash-tool `grep` wrapper is ugrep with `-I`: any file holding
   non-UTF-8-decodable bytes is classed BINARY and skipped SILENTLY. Since F70
-  (code `1012c643`+`d64fd437`) every tracked CONVERT-set file is pure ASCII —
+  (code `cb521cf1`+`71ef30ac`) every tracked CONVERT-set file is pure ASCII —
   the hazard now lives ONLY in: `~/.spacecrafter/ssystem.ini` (untracked),
   `doc/superscript.sts`, and the EXCLUDE-listed files of
   `claude/harness/f70_partition.tsv` (witness fixtures, expected-output

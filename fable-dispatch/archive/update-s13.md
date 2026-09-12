@@ -3,11 +3,11 @@ replied to D15, D21 and D37 … run a dispatch session with opus xhigh."* Betwee
 sessions: §11.147 (scedit-fork folder merge, ids §5.91–98/§11.138–146 renumbered)
 + §11.148 (the 67-artifact divergence root-traced to per-evaluation satellite
 drift) landed Vixy-directed; next free §11 number is **149**. Warm-up: both trees
-clean; code `f0c8ef83` / harness `2b24a1b`; code HEAD is **Lionel RUIZ's**
+clean; code `30ea1f8d` / harness `8b5d914`; code HEAD is **Lionel RUIZ's**
 (tester) doc-only commit — `doc/superscript.sts` +267/−67 + `debug.sh`, NO `src/`
 change ⇒ the 2026-08-23 binary is current (F38 confirms by no-op rebuild).
-Answers verified at the file: D15 (a)–(d) + inform-tester line (`2b24a1b`,
-2026-08-26), D21 + D37 `[Vixy reply]` lines (`d521807a`, 2026-08-22). **Round of
+Answers verified at the file: D15 (a)–(d) + inform-tester line (`8b5d914`,
+2026-08-26), D21 + D37 `[Vixy reply]` lines (`e78e2940`, 2026-08-22). **Round of
 3, the answers' own unblocked set** (the decision-free S-candidates §5.86-data /
 §5.88-datum / §5.89-sweep stay queued next round): **F37 → F38 → F39** below.
 Order: record first (F37 baselines nothing, but its premise probe reads the
@@ -20,8 +20,8 @@ mirror; these four still poke `setFlagLockEquPos` directly).
 **Round outcome (session 13 close, 2026-08-26):** F37 → §11.149 · F38 → §11.150
 · F39 → §11.152 · F40 → §11.153, plus the supervisor entry §11.151 (Vixy's two
 mid-round ratifications) — all four delivered AND supervisor-verified same
-session; round extended 3→4 per §11.151(a)'s recorded plan. Code `f0c8ef83 →
-b444d381 → fd98c8e9 → 8c2cbf61 → 7ef11aca → 18b6f13f` (+ submodule `EntityCore
+session; round extended 3→4 per §11.151(a)'s recorded plan. Code `30ea1f8d →
+29465185 → c7563efa → eb36fcc0 → d1a6be7c → cf478893` (+ submodule `EntityCore
 224eba7 → 7ce5835`, the ASmooth phase-timer fix, precedent = Vixy's own
 `f28c555`). **DECISIONS_PENDING's open set is EMPTY — first time since the file
 was compiled**; D37 rides the final tester pass WITH its premise fact (the
@@ -54,7 +54,7 @@ probe) · §5.108 (`flag_sun_scaled` never acted, either path — `ui.cpp:239`
 hardcode + uninitialized `SunScale`) · D30's DELTA branch located unimplemented
 for this key (B31's). Instrument corrections: F26's `/proc` comm probe counts
 2/instance (liveness test, not instance count); §11.152(p)(5)'s reload warning
-superseded from `d6aec251`. Supervisor-error tally this session, all caught by
+superseded from `3ccfc6d8`. Supervisor-error tally this session, all caught by
 the defense layers: a phantom outcome block (self-caught pre-commit), a wrong
 census parenthetical (F38), a wrong discriminator target (F40), a mis-homed
 stub (F41) — three of four caught by executor verification, the layer working

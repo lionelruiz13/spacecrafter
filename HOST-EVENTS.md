@@ -56,7 +56,7 @@ never rewrite (maintenance invariant). Archival per the standing convention
   CLOCK.** With the claude session's screensaver ACTIVE (`org.gnome.ScreenSaver.GetActive`
   true, `LockedHint=yes`, `lock-enabled true`, `idle-delay 300`) the engine logs `Frame
   stall detected` every **1000 ms** for the whole run (105 stalls/run; 101 of 104
-  intervals exactly 1000 ms) on HEAD `2b8ec034` AND on the pre-fix control `a3437670`
+  intervals exactly 1000 ms) on HEAD `c589d1b2` AND on the pre-fix control `02bc028e`
   alike — the compositor throttling a blanked output, not the binary; each stall makes
   the watchdog send itself SIGUSR1 (fps.cpp:150-156). Screensaver deactivated: **1 stall
   in the whole run**, F61 16/16 (prediction stated before the run, held). Instrument
@@ -116,7 +116,7 @@ never rewrite (maintenance invariant). Archival per the standing convention
 - 2026-08-31 20:57 [stated: vixy ("I forgot to disarm the scheduled shutdown");
   boot measured 20:57:30] **SCHEDULED SHUTDOWN mid-round, host rebooted** —
   killed the supervising session AND the F70 executor mid-sweep (CP1 was
-  committed `df39166`; the conversion diff survived UNCOMMITTED in the code
+  committed `a55e28a`; the conversion diff survived UNCOMMITTED in the code
   tree; loss bounded per §0.6). `/tmp` WIPED: all staging binaries gone
   (`/tmp/f70-pre`, `/tmp/f68-pre`) — pre binaries are rebuildable from their
   named commits. Persisted across the boot: `idle-delay` 0, `lock-enabled`
@@ -168,7 +168,7 @@ never rewrite (maintenance invariant). Archival per the standing convention
   (+58 code / +604 harness commits over the stale origin refs). The working tree carries
   sessions 19–20's LAPTOP commits with no sync daemon running (reflog lists them as local
   commits ⇒ the home was file-synced by the owner's hand before this session; `build-claude/`
-  was NOT: binary dated Aug 26, 209 compile steps pending ⇒ rebuilt at `ba7a32a8`, -j24,
+  was NOT: binary dated Aug 26, 209 compile steps pending ⇒ rebuilt at `8d41fbe3`, -j24,
   20:11, md5 `c8e12950`). Config/ssystem md5 pristine (`03fbee59`/`545a51ef`); no
   spacecrafter process. `lock-enabled`/`idle-delay` not re-measured here (the 2026-08-31
   settings were the laptop's; executors keep the GetActive check-and-record).
@@ -187,7 +187,7 @@ never rewrite (maintenance invariant). Archival per the standing convention
   gated members to the last printed digit, spread **0.000**, so the substitute ->
   real-session compositor change is photometrically INERT. The dwell frame is
   BYTE-IDENTICAL (md5 `5215565b`) to 2026-08-30's, across both that compositor change
-  AND a different binary (`fa00deae` at `d6aec251` -> `c8e12950` at `ba7a32a8`).
+  AND a different binary (`fa00deae` at `3ccfc6d8` -> `c8e12950` at `8d41fbe3`).
   **CORRECTION TO THIS FILE'S 2026-09-04 20:08 ENTRY ABOVE:** Xwayland `:2` pid 43800
   was born **19:50:17**, not 19:50:18 — ":18" is the `/proc`-directory-mtime probe's
   reading, and that probe is the very thing §11.188(j) refuted and F79 replaced

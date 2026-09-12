@@ -9,13 +9,13 @@ path already defines as **the T5.1 rehearsal + a T5.2 soak** (*"gate the word
 capacity this week, 2026-09-05); the rename itself is his act and is not prepared
 beyond a measured footprint (F92). Warm-up (every value `date`-measured 15:16–15:20,
 the command beside the claim — Q-67's rule): both trees CLEAN at open, code
-`a2fd3c5b` / harness `3a5ce8f` (one commit past the session-22 close `7852ce5`: the
+`4cb2e298` / harness `edef741` (one commit past the session-22 close `714c094`: the
 stamp correction); definition-drift assert MATCH (`a5a54d94`); binary `2815d182`
 (F86's) current — `cmake -n` 0 steps, no `src/` file newer; next free §11 number
 **208** (live ∪ archive, `max+1`); §5 max 135; live `### F` count **6 → 1** by
 **archival pass 15** at OPEN (update-s21 + F83/F84/F85/F88/F86, 974 lines incl. the
 pass-13/14-shape seam tidy, manifest `2026-09-05-pass15`, pre-md5 `673303e0`
-reproduced in-process AND from disk, commit `6045ea4`; **F87 KEPT LIVE — carried,
+reproduced in-process AND from disk, commit `14ef888`; **F87 KEPT LIVE — carried,
 not delivered**) **→ 5** by the mints below. Same boot as sessions 21–22 (`uptime -s`
 2026-09-04 18:45:08), `:2` 2448x1332 under `.5KBYU3`, canary `--no-scene` **exit 0**
 (30 members, artifacts `f56/canary/20260905-151723`); config/ssystem md5 pristine
@@ -33,7 +33,7 @@ commit and the stamp correction). **DISPATCHER DEFECTS FOUND AT OPEN, both sessi
 pass 15 (update-s21 + F83–F88, live `### F` 6 → 0)"* — F87 was never delivered; the
 pass moved five sections, not six; (2) F87's *"`body.cpp` wraps 12 labels"* and its
 precondition *"= 12"* — measured **15** lines match `_(` at HEAD and `git log
-85cc2785..HEAD -- src/bodyModule/body.cpp` is EMPTY, so the 12 was written from
+d33bc14f..HEAD -- src/bodyModule/body.cpp` is EMPTY, so the 12 was written from
 memory at the mint (Q-67's class, a §0.7 abort had it been dispatched as written);
 corrected at the section with the command. QUEUE CONSUMPTION (session-22 close, in
 order): (1) pass 15 — DONE; (2) the `b4_anchors` P7 discriminator → **F89** (S,
@@ -79,17 +79,17 @@ F92 none. Remotes: local contains origin on both; push impossible from this sess
 **Round outcome (session 23 close, 2026-09-05 — the close commit's own clock is the stamp;
 every time in this note is pasted `date` output):** F89 → **§11.208** (the P7 red is the
 PRODUCT's — the pre-fix binary drew its sky 76° from its bodies, the gate green on that;
-twinkle refuted 845×) · F87 → **§11.209** + **§5.136** (fourteen labels, code `1d839b9d`; the
+twinkle refuted 845×) · F87 → **§11.209** + **§5.136** (fourteen labels, code `d467740d`; the
 catalogue is a frozen field `.txt`; `app_locale` inert) · F93 → **§11.210** (both instrument
 reds on the reference GREEN, the corrupt build REDS; verified by my own b4 run) · F90 →
 **§11.211** + **§5.137** (T5.1 RAN — three identical runs + mine; the newcomer's 90-second
-smoke suite in the entry document, code `0b46a63f`; the reload that makes an authored body
+smoke suite in the entry document, code `e3e6d346`; the reload that makes an authored body
 invisible) · F92 → **§11.212** (the rename is four lines; eleven-act checklist + patch; the
 PR-target question surfaced) — **FIVE FOR FIVE delivered AND supervisor-verified same
 session**, every delivery re-verified by my own runs (b4 on the reference; the smoke suite;
 the patch `--check` on both real trees; the census; the instruments after each). **F91
-CARRIED** with its reason in the picks line. Code `a2fd3c5b → 0b46a63f` (two executor
-commits: the wraps, the doc paragraph — ONE engine file this round); harness `3a5ce8f →`
+CARRIED** with its reason in the picks line. Code `4cb2e298 → e3e6d346` (two executor
+commits: the wraps, the doc paragraph — ONE engine file this round); harness `edef741 →`
 this close. Binary `407b3d1d`. IN-SESSION OWNER TRANSMISSION: the trigger line only; no
 question asked of him. HOST: no event; same boot throughout; RAM 19–20 GiB available (his
 `java`); no HOST-EVENTS entry owed. SUPERVISOR TALLY: **seventeen dispatcher defects**
@@ -109,7 +109,7 @@ owner's line does not answer). BASELINES AT CLOSE (v2): scan **223/274/131** · 
 261→274 / 131 · 223→228 / 198→203 / 25 / 107→109) attributed per task in its acceptance.
 Archival pass 16 (update-s22 + F87/F89/F90/F92/F93; **F91 stays live**, carried) DEFERRED to
 the next open. NEXT-ROUND QUEUE, in order: (1) archival pass 16 at open; (2) **F91** (§5.86+
-§5.19, minted, position 1 — refresh its preconditions: code `0b46a63f`, binary `407b3d1d`,
+§5.19, minted, position 1 — refresh its preconditions: code `e3e6d346`, binary `407b3d1d`,
 the F90 baseline `artifacts/f90/navstr_mars_run1.txt` as its pre-change reading,
 `f90_rehearsal_run.sh` as its 90-second regression gate); (3) **T5.2 the soak** — mint with a
 foreground-poll design (the last "ready" member); (4) the §11.207(g) tail: §5.98 (S) ·

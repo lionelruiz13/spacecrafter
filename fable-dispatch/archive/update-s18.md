@@ -2,9 +2,9 @@
 round]:** trigger = Vixy's line *"Sequential dispatch: Continue the work on scedit
 … test the previous changes landed properly before working on the next
 FEATURE_REQUEST.md entries related to scedit and script engine. Use one agent per
-feature to implement."* Warm-up: both trees clean, code `4a00cf31` / harness
-`f157778`; engine binary at HEAD (`cmake --build -n` empty; last engine commit
-`2b8ec034`); definition-drift assert md5 MATCH (`a5a54d94`); next free §11
+feature to implement."* Warm-up: both trees clean, code `6d8fe6c9` / harness
+`16d7af6`; engine binary at HEAD (`cmake --build -n` empty; last engine commit
+`c589d1b2`); definition-drift assert md5 MATCH (`a5a54d94`); next free §11
 **185** (live ∪ archive); display `:2` answers with the F28 recipe (this laptop
 has a REAL claude login session — §0.5's `/tmp/rt-claude` note is the desktop's);
 canary `--no-scene` **2 FAIL by construction** (the desktop's bank: geometry
@@ -30,8 +30,8 @@ delivery mints one.
 three for three delivered AND supervisor-verified same session (every delivery
 re-run by me: gates in both build dirs, `--history`/`--doc`/parity/agreement
 instruments reproduced to the digit; F67's live legs accepted on their records +
-the forced control, not re-launched). Code `4a00cf31 → e2c8477b` (17 executor
-commits, no engine source touched), harness `f157778 → 1402dc5` + this close.
+the forced control, not re-launched). Code `6d8fe6c9 → 97378bfe` (17 executor
+commits, no engine source touched), harness `16d7af6 → bf21b37` + this close.
 scedit: gates **8 → 14** (history_list · check_json · doc_queries · mcp_protocol
 · tcp_client · pty_keys), editcore 193 → 266, ui_selftest 13 → 20 frames,
 `-Wall -Wextra` real (0 warnings can now fail), the grammar's executes-only

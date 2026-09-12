@@ -1,7 +1,7 @@
 **Update [Fable 2026-08-29, supervising session 14]:** round of 3: **F42 → F43 →
 F44** — the session-13 queue in order; queue item 4 (§5.100's fix) stays blocked,
 its authorization question unanswered at this open. Warm-up: both trees clean at
-open, code `d6aec251` / harness `631d0c8`, binary confirmed current by no-op
+open, code `3ccfc6d8` / harness `7db8d53`, binary confirmed current by no-op
 rebuild, `free -g` = 30 GiB ⇒ -j12; NO Vixy commit since session 13's close ⇒
 the decision-gated set stands unchanged (D-set still EMPTY; A40–A44,
 §11.146(j), the two §11.144 riders, §5.106's close-vs-annotate, and the
@@ -18,7 +18,7 @@ mandate touches product code: the code tree should be clean at every point of
 this round, a first. Extension to F45 (§5.88's draw-cost datum) + F46 (§5.89's
 assert sweep) only if session health permits after F44's verification, minted
 then per §0b.2. Round-open events: **archival pass 7** (update-s12 + F37–F41
-moved byte-exact, manifest `2026-08-29-pass7`, commit `4f9685f`); **host
+moved byte-exact, manifest `2026-08-29-pass7`, commit `21eb251`); **host
 incident, resolved**: Vixy's 2026-08-26 morning harness commits from the foxy
 account left two foxy-owned fan-out dirs in the harness `.git/objects` (`29/`,
 `e4/`) — this round's first commit FAILED on exactly that; the local repair was
@@ -35,7 +35,7 @@ entry **§11.161** (RA-MODEL propagation + the code's stratigraphy, owner
 testimony mid-round) — five executor tasks + one record entry, all delivered
 AND supervisor-verified same session; round extended 3→5 per the recorded
 plan. **CODE TREE CLEAN THROUGHOUT — the first all-record/instrument round**;
-code `d6aec251` at open and at close. NEW rows: **§5.109** (F43) ·
+code `3ccfc6d8` at open and at close. NEW rows: **§5.109** (F43) ·
 **§5.110/§5.111** (F44); F45/F46 minted NOTHING, each restraint argued at the
 criterion. OWED-PAID: §11.149(h)'s sweep (13 one-home corrections, 4
 authority inversions repaired; entry-first write order ratified + enacted);
