@@ -611,10 +611,10 @@ L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-0
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d0e0c51e
+git rev-parse --short=8 HEAD => e922235a
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 237
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the document, re-resolved at HEAD (content drift = abort)
 wc -l < doc/developer-entry.md => 431
@@ -666,10 +666,10 @@ test -e /home/claude/sc-f110 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d0e0c51e
+git rev-parse --short=8 HEAD => e922235a
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 237
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the pool's one creation and the allocator's silent return, re-resolved at HEAD (content drift = abort)
 grep -n 'context.uniformMgr = std::make_unique.BufferMgr.(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1\*1024\*1024, "uniform BufferMgr", true);' src/appModule/app.cpp | cut -d: -f1 => 274
@@ -712,10 +712,10 @@ test -e /home/claude/sc-f113 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d0e0c51e
+git rev-parse --short=8 HEAD => e922235a
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 237
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the two sites, the mirrors beside them and the Camera API, re-resolved at HEAD (content drift = abort)
 grep -n '^void Core::autoZoomIn' src/coreModule/core.cpp | cut -d: -f1 => 1386
@@ -758,10 +758,10 @@ test -e /home/claude/sc-f114 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d0e0c51e
+git rev-parse --short=8 HEAD => e922235a
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 237
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the consumers, the shader array and F102's instrument, re-resolved at HEAD (content drift = abort)
 grep -rl 'SharedBuffer<' src --include=*.cpp --include=*.hpp | grep -vc '^src/EntityCore' => 74
@@ -804,10 +804,10 @@ test -e /home/claude/sc-f115 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d0e0c51e
+git rev-parse --short=8 HEAD => e922235a
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 237
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
 grep -c '^### F' claude/fable-dispatch.md => 7
 # F108's mechanism, re-resolved at HEAD (content drift = abort)
 grep -n '^constexpr int LOG_RETENTION_LAUNCHES = 8;' src/tools/log.hpp | cut -d: -f1 => 88
@@ -827,7 +827,7 @@ test -e /home/claude/sc-f116 ; echo $? => 1
 ```
 
 **DoD:** predictions first; the constant + counters + in-session rotation + the D12 line; the mutated-budget proof both ways; the readers green; §11 entry + stub; §5.115's size bound FIXED in the marker; the §11.230 / §11.233 markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** — DELIVERED 2026-09-12 15:3x → §11.237 (+ stub; §5.115's SIZE bound FIXED with the density half (2) left open; §11.230 both homes, §11.233(b), §11.173(b), §11.218(m) marked; `harness/README.md` F116). Code `d0e0c51e → 8cca5ddf → e922235a`, binary `95087b68` (reproduced bit-for-bit after every mutant); harness through this commit. The rule shipped is NEITHER of the two the section offered — the channel holding the MOST bytes rotates — decided by measurement, 6 rotations against 11 987 on one seeded farm; veto-open at §11.237(m) with two more prices named there. Baselines LAST, lists diffed: scan 277/347/144 unmoved (list byte-identical), pair 253/228/25/125, D 36 · D2 12 · I 93 · I2 37 · M 95 — D/D2/I/I2 byte-identical, M's one moved item is a pre-existing arrear paid.
+**WIP:** — DELIVERED 2026-09-12 15:3x → §11.237 (+ stub; §5.115's SIZE bound FIXED with the density half (2) left open; §11.230 both homes, §11.233(b), §11.173(b), §11.218(m) marked; `harness/README.md` F116). Code `d0e0c51e → 8cca5ddf → e922235a`, binary `95087b68` (reproduced bit-for-bit after every mutant); harness through this commit. The rule shipped is NEITHER of the two the section offered — the channel holding the MOST bytes rotates — decided by measurement, 6 rotations against 11 987 on one seeded farm; veto-open at §11.237(m) with two more prices named there. Baselines LAST, lists diffed: scan 277/347/144 unmoved (list byte-identical), pair 253/228/25/125, D 36 · D2 12 · I 93 · I2 37 · M 95 — D/D2/I/I2 byte-identical, M's one moved item is a pre-existing arrear paid. **ACCEPTED 2026-09-12 — verifying commands' `date` 15:28–15:3x (supervisor, session 29, Claude Fable 5.1).** Verified by my own runs and reads: §11.237 read in full; code `8cca5ddf` + `e922235a` (Claude Opus 5; two files `log.{hpp,cpp}` +262/−37, the supervising footer) — the second commit's diff READ: a `budgetReport` vector replayed to the console once `setDebug` answers, its own vector because `openReport` is under iteration at that moment, released with the answer; seven harness commits `4396d34 → c148453` (the predictions at 14:42 before the first edit, the mutant predictions at 14:54 before any mutant existed), the delivery's trailer `Code: master-beta @ e922235a`; binary `d607cfdc → 95087b68`, 0 `src/` files newer; the stub at `INTENT.md:1109`; §5.115's row carrying the size-bound marker with the density half OPEN; §11.230 (2), §11.233(b), §11.173(b), §11.218(m) marked; README F116; `### F` 7. **By my own hand:** `logread.py selftest` **32 PASS 0 FAIL**; `f116_assert.sh` clear (0 instances by comm+exe, port free, VRAM 3328 MiB); canary `--no-scene` exit 0 then `f91_run.sh <outdir> --expect post --locale fr` on `95087b68` — **0 FAIL 0 NOTE, table `1fe630a4`**, the pair in == out; the field's window 40 files with F108's D12 lines intact; instruments **277/347/144 · 253/228/25/125 · D 36 · D2 12 · I 93 · I2 37 · M 95** to the digit of (n); D14 PASS. The mutant legs (32 rotations in 4 bursts of 8 at 4 MiB, the crossing lines to the line, the counter's zero delta three times, 6 vs 11 987 on the seeded farm) accepted on their committed both-ways records with the refutation threshold pre-registered. DEVIATIONS ENDORSED with the executor's arguments: **the rule is a THIRD one** — the channel holding the most bytes rotates — chosen by a pre-registered measurement rather than between the two the section offered (11 987 rotations per 11 987 lines under "the channel being written" with the excess intact; 6 under the shipped rule) — endorsed, and it is the owner's veto point V1; the second commit (the startup replay — the UPGRADE case: a directory left over budget rotates six times before the console exists) — a scope extension inside the mandate's two files, measured 0/6 → 6/6, endorsed; `f108_writelog.py`'s two era-bound FAILs left unedited and read at the entry; the `Channel` struct (I4 — the channel owns its file family and its size). DISPATCHER-SIDE FINDINGS, ACCEPTED as mine: the section's prose said "392 `EntityCore-logs-*.txt`" twice while its PREMISES line said 395 — I re-pasted the premise line at 13:5x and did not sweep the prose (value class; the same-class sweep after a correction). Round tally: **nine** (3 value, 5 structure, 1 intent). VETO POINTS → §3 [Y11]: V1 the rule; V2 an in-session rotation spends one of the eight launch slots; **V3 what the bound costs in history — "never hold more than 1 GiB" (built, your words) against "keep the last 1 GiB" (a per-channel 128 MiB live-file bound, named, deliberately NOT built)**; V4 no config key; V5 the number. A second instance of §11.230(n)'s class recorded by the executor (a status word quoted in its ordinary sense manufactures a scan event — in this ledger a status word is named, never quoted). STANDING: the delivered binary is **`95087b68`** (F112's and F111's pre); `harness/f116_assert.sh` carries the three launch asserts + the headroom gate in one file — F112's seed; three renamed-binary decoys under `/home/claude/sc-f116/`; `f108_rotate.py` routes through `f96_offset.no_instance()` (comm-only) — a live caller F112's census must catch.
 
 ---
 
@@ -850,10 +850,10 @@ test -e /home/claude/sc-f116 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d0e0c51e
+git rev-parse --short=8 HEAD => e922235a
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 237
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the sampler, the two seeds and the old plot, re-resolved at HEAD (content drift = abort)
 grep -n '^void OrbitModule::sampleOrbit' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 94
@@ -903,13 +903,13 @@ test -e /home/claude/sc-f111 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => d0e0c51e
+git rev-parse --short=8 HEAD => e922235a
 git status --porcelain | wc -l => 0
-md5sum build-claude/src/spacecrafter | cut -c1-8 => d607cfdc
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 237
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 95087b68
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 238
 grep -c '^### F' claude/fable-dispatch.md => 7
 # the probe's homes and the canary's VRAM member, re-resolved at HEAD (content drift = abort)
-grep -lE '= "spacecrafter"|== "spacecrafter"|-x .spacecrafter. /proc' claude/harness/*.sh claude/harness/*.py | wc -l => 43
+grep -lE '= "spacecrafter"|== "spacecrafter"|-x .spacecrafter. /proc' claude/harness/*.sh claude/harness/*.py | wc -l => 44
 grep -n "grep -l -x 'spacecrafter' /proc" claude/harness/f26_epoch.sh | head -1 | cut -d: -f1 => 46
 grep -n 'read().strip() == "spacecrafter"' claude/harness/f27_reply.py | cut -d: -f1 => 108
 grep -n '= "spacecrafter" \] && n=' claude/harness/f56_canary.sh | cut -d: -f1 => 476
