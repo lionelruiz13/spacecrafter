@@ -364,9 +364,18 @@ it produced a wrong number at least once:
 1. **Fresh launch**, started for the measurement, with `~/.spacecrafter`'s
    `config.ini` and `ssystem.ini` md5s asserted equal before and after
    [`claude/fable-dispatch.md` section 0.5].
-2. **No concurrent instance**, asserted via `/proc/<pid>/comm` on any account
-   -- concurrent sessions share `~/.spacecrafter`, and the older
-   `pgrep -f <path>` pattern self-matches its own wrapper [`Sec.11.134` (b)].
+2. **No concurrent instance**, asserted by `claude/harness/sc_instances.sh
+   --assert <label>` (or `from sc_instances import no_instance` in Python), which
+   is the one place the question is answered. It reports a process as an engine if
+   ANY of three things is true, because each covers the others' blind spot:
+   `/proc/<pid>/comm` is `spacecrafter` (world-readable, so it sees every
+   account, but blind to any rename -- `comm` is the basename truncated to 15
+   bytes); `/proc/<pid>/exe` resolves under a known engine name or tree (this
+   sees a copied or renamed binary, but is unreadable across accounts under
+   `ptrace_scope=1`); or the process holds TCP 7805. Concurrent sessions share
+   `~/.spacecrafter`, a `pgrep -f <path>` pattern self-matches its own wrapper
+   [`Sec.11.134` (b)], and the `comm`-only form this replaced was measured
+   reading zero with two renamed engines live [`Sec.11.231` (j2), `Sec.11.238`].
 3. **Run the environment canary first** (`claude/harness/f56_canary.sh`;
    `--no-scene` for functional work, full for photometric). A non-zero exit
    stops the measurement and gets reported -- never mitigated silently, never
