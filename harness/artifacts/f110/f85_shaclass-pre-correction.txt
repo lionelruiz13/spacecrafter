@@ -1,0 +1,19 @@
+document : ../sc-f110/doc-precorrection.md
+root     : /home/claude/spacecrafter
+checked  : 129 paths, 25 continuations, 16 ledger ids, 1 commit shas
+skipped  : 14 non-repo tokens (absolute/home/placeholder/remote)
+    skip ../../build-claude/src/spacecrafter
+    skip /proc/<pid>/comm
+    skip /usr/local
+    skip <spacecrafter>/claude/
+    skip DISPLAY=:2 claude/harness/f90_rehearsal_run.sh <absOutdir>
+    skip claude/INTENT/<id>.md
+    skip git@github.com:lionelruiz13/spacecrafter.git
+    skip python3 claude/harness/f70_ascii.py gate
+    skip ~/.spacecrafter
+    skip ~/.spacecrafter/config.ini
+    skip ~/.spacecrafter/stars/
+    skip ~/.spacecrafter/textures/
+    sha  c5be42b  claude @ CC-harness    unreachable
+DANGLING : 1
+    `c5be42b` -> exists but is not an ancestor of claude @ CC-harness (amended or rewritten away); look it up in claude/sha-maps/

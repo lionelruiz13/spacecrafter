@@ -1,0 +1,25 @@
+document : doc/developer-entry.md
+root     : /home/claude/spacecrafter
+checked  : 136 paths, 29 continuations, 19 ledger ids, 3 commit shas
+skipped  : 19 non-repo tokens (absolute/home/placeholder/remote)
+    skip ../../build-claude/src/spacecrafter
+    skip /proc/<pid>/comm
+    skip /usr/local
+    skip <spacecrafter>/build-claude/src/spacecrafter
+    skip <spacecrafter>/build/
+    skip <spacecrafter>/claude/
+    skip DISPLAY=<your display> claude/harness/f90_rehearsal_run.sh <absOutdir>
+    skip SC_BIN=<spacecrafter>/build/src/spacecrafter
+    skip claude/INTENT/<id>.md
+    skip git@github.com:lionelruiz13/spacecrafter.git
+    skip grep -n '^142\. ' claude/INTENT.md
+    skip python3 claude/harness/f70_ascii.py gate
+    skip python3 claude/intent_resolve.py Sec.5.142
+    skip ~/.spacecrafter
+    skip ~/.spacecrafter/config.ini
+    skip ~/.spacecrafter/stars/
+    skip ~/.spacecrafter/textures/
+    sha  1e6ca60  claude @ CC-harness    ok
+    sha  fcc277c9  <code> @ master-beta   ok
+    sha  16c6827  claude @ CC-harness    ok
+DANGLING : 0

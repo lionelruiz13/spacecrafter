@@ -1,0 +1,241 @@
+F110 -- THE REHEARSAL TABLE
+The intern's first day, followed by hand from a plain clone of master-beta.
+2026-09-12, code fcc277c9 (-> d67833cd), harness b85dc60 (-> this).
+Clone: /home/claude/sc-f110/code (code) + /home/claude/sc-f110/code/claude (harness).
+Nothing installed; no sudo; /usr/local and ~/.spacecrafter never written.
+The prediction column was committed at harness 6d1aad0, BEFORE the first clone
+(artifacts/f110/prediction.txt).
+
+LEGEND  PASSES / MISLEADS / BLOCKS as defined in prediction.txt.
+        "=" outcome matched the committed prediction; "X" it did not.
+
++----+-------------------------------------+------------+------------+---+
+| id | step                                | predicted  | measured   |   |
++----+-------------------------------------+------------+------------+---+
+| S1 | INSTALL 3: clone --recurse-submod.  | PASSES     | PASSES     | = |
+| S2 | doc:29-30 second clone, CC-harness  | MISLEADS   | MISLEADS   | = |
+| S3 | INSTALL 4 build half, -j24          | PASSES     | PASSES     | = |
+| S4 | f70_ascii.py gate                   | PASSES     | PASSES     | = |
+| S5 | f85_links.py                        | MISLEADS   | BLOCKS     | X |
+| S6 | smoke suite, canary armed           | PASSES     | PASSES     | = |
+| S6b| smoke suite, F90_SKIP_CANARY=1      | MISLEADS   | MISLEADS   | = |
+| S7 | scedit cmake -B build && --build    | PASSES     | PASSES     | = |
+| S8 | scedit ctest --output-on-failure    | MISLEADS   | BLOCKS     | X |
+| S9 | githooks/install.sh                 | PASSES     | PASSES     | = |
+| S10| harness README "Run" first command  | BLOCKS     | BLOCKS     | = |
+| S11| sha reachability                    | (see below)| (see below)| X |
+| S12| truth of ten [path:line] claims     | 9 true     | 10 true    | X |
++----+-------------------------------------+------------+------------+---+
+  matched 9 of 13 rows.  Four mismatches, all in the same direction: the
+  document is worse for him than I predicted, not better.  Predicted aggregate
+  6 PASSES / 4 MISLEADS / 1 BLOCKS; measured 6 / 2 / 3.
+
+-------------------------------------------------------------------------------
+PER STEP, WITH THE EXIT CODE AND THE FIRST THING HE SEES
+-------------------------------------------------------------------------------
+
+S1  git clone -b master-beta --recurse-submodules <remote> code        exit 0
+    Local path stands in for git@github.com:lionelruiz13/spacecrafter.git; the
+    SSH form needs a key that is the owner's to hand over (routed, gap 3).
+    The submodule came from the REAL remote:
+      "Sous-module 'src/EntityCore' (https://github.com/Calvin-Ruiz/EntityCore.git)"
+      "'84f5d94bddfb04d22b3c037104bd784810d658a2' extrait"
+    src/EntityCore/Core/VulkanMgr.hpp present.  INTENT/11.204.md (b)'s blocker
+    -- the pin on no remote -- is confirmed discharged over the network, which
+    is the first time that has been measured rather than inferred from the
+    owner's push.
+    K2 re-verified IN the clone: claude/ .claude/ CLAUDE.md all absent,
+    `git ls-files | grep -cE '^(CLAUDE\.md|\.claude/|claude/)'` = 0.
+
+S2  cd <spacecrafter> ; git clone -b CC-harness <same-remote-url> claude  exit 0
+    MISLEADS, and the misleading is the URL, not the command: the document
+    writes `<same-remote-url>` and names the SSH form two paragraphs earlier.
+    A reader without a key on that account gets a publickey refusal and no
+    instruction.  Routed to the owner, not written.
+
+S3  INSTALL 4's build half, by hand (line 42 `sudo cmake --install` NOT run)
+      git submodule update --init                                       rc 0
+      cmake .. -DCMAKE_BUILD_TYPE=Release                               exit 0
+      chrt --batch 0 cmake --build . -j24 --config Release              exit 0
+    free -g available 53 GiB before the build; 248 compile steps; 56 s wall
+    (12:09:59 -> 12:10:55).  "Build type Release", C++ flags
+    -ggdb3 -Ofast -Wall -fconcepts.  install_src.sh:25's `-z` guard (the
+    INTENT/11.204.md (e) fix) holds: BUILD unset configures Release, not Debug.
+    Binary: build/src/spacecrafter, md5 2dd6a35a6a4f8b2bdcf63314cadde5b8,
+    218 127 672 B.
+    DISCRIMINATOR (a), stated as the section asks: this is NOT the delivered
+    binary 6d63e6c1 (191 022 536 B), and the difference is NOT the build path.
+    The delivered one is configured RelWithDebInfo and compiles
+    `-O2 -g -DNDEBUG -std=gnu++23`; CMakeLists.txt has branches for Debug,
+    Release and LocalRelease only (:101, :118, :134), so RelWithDebInfo takes
+    none of them, CMAKE_CXX_FLAGS stays empty and CMake's own
+    CMAKE_CXX_FLAGS_RELWITHDEBINFO applies.  The documented build compiles
+    `-ggdb3 -Ofast -Wall -fconcepts -O3 -DNDEBUG -std=gnu++23`.  Both read from
+    the two builds' own flags.make.  So the binary the ledger measures on and
+    the binary the documented path ships differ in optimization level.  Not a
+    document defect and not touched here -- reported.
+
+S4  python3 claude/harness/f70_ascii.py gate                           exit 0
+    "PASS: 0 non-ASCII bytes across the CONVERT set (972 files ...); 278
+    EXCLUDE files carry non-ASCII by design."  The risk named in advance (a
+    build directory inside the tree turning it red) did not materialise: the
+    gate walks the partition table, not the working tree.
+
+S5  python3 claude/harness/f85_links.py                                exit 1
+    PREDICTED MISLEADS, MEASURED BLOCKS -- mismatch 1.
+    "DANGLING : 1 / build-claude/src/spacecrafter -> no such path".
+    The document's first paragraph tells him every path in the file is checked
+    by this script; the script is RED on his first run, and not because of any
+    claim about the tree: `build-claude/` is the harness's build directory
+    convention and the documented build makes `build/`.  So he must set SC_BIN
+    for every harness script, which nothing told him.
+    The prediction's reasoning was right and its class was too kind: I expected
+    a green whose coverage the document overstates, and the reader gets a red
+    he cannot interpret.  Both defects are real; only the second stops him.
+
+S6  DISPLAY=:2 claude/harness/f90_rehearsal_run.sh <out>, canary armed  exit 0
+    SC_BIN=/home/claude/sc-f110/code/build/src/spacecrafter (the clone's).
+    12:12:52 -> 12:14:31.  canary --no-scene exit 0 (also run standalone at
+    12:12:41, artifacts/f56/canary/20260912-121241).
+    Step states, all nine as predicted:
+      S1 DIVERGENCE Sec.5.77,Sec.11.146 (3 raw-stream lines, TCP after 13.6 s)
+      S2 PASS 120 -> 121 bodies      S3 PASS 5.9 s / 5.5 s authored, 1 pause
+      S4 DEPRECATED (R22)            S5 PASS shape 5 lines, mag 1.36, UA, fr
+      S6 PASS session 10893 B / system 78394 B
+      S7 DIVERGENCE Sec.11.117(k)(3),Sec.11.111(g),Sec.11.55(i),(j); 121 -> 119
+      S8 PASS fov 180.00001 -> 84.61776 -> 178.90299
+      S9 PASS exit 0 in 0.7 s, 2 frame stalls logged
+    FAIL: none.  Frozen four md5 in == out (03fbee59, 545a51ef, 61f95b82,
+    cea83254).  DISCRIMINATOR (b) first half: green from the CLONE's harness on
+    the CLONE's binary.
+
+S6b Same command, F90_SKIP_CANARY=1 -- as he must run it                exit 0
+    12:14:44 -> 12:16:21.  Identical step states, FAIL none, frozen four
+    in == out.  DISCRIMINATOR (b) second half.
+    WHAT THE SKIP LOSES, measured rather than argued: no canary.log is written
+    and the header's "canary --no-scene exit = N" line simply does not appear.
+    A run with the stack unverified is indistinguishable from a verified one by
+    reading its output.  That is now said in the document.
+
+S7  cd util/scedit ; cmake -B build && cmake --build build              exit 0
+    12:17:09 -> 12:17:42.  build/scedit, 3 850 408 B.  Nothing outside the
+    tree needed, as the README's "everything vendored" claims.
+
+S8  cd build ; ctest --output-on-failure                                exit 8
+    PREDICTED MISLEADS, MEASURED BLOCKS -- mismatch 2.
+    18 passed, 1 failed of 19; 36.42 s.  The failure is anchor_gate, and it is
+    the gate I named in advance as the red candidate:
+      FAIL sc-grammar.json ... src/EntityCore/Executor/AsyncLoaderMgr.cpp:177
+           does not exist at the pin 54a2b844 (out-of-range)      [and 3 more]
+      FAIL ss-grammar.json ... orbitModules/LocationOrbitLoader.hpp:3 no longer
+           exists at HEAD and carries no [NOT AT HEAD] marker
+      FAIL counts differ from tests/anchor-expected.txt
+        recorded  clean 7194  moved 2    not-at-head 2  skipped 86
+        got       clean 6870  moved 321  not-at-head 2  skipped 86
+                  AT-PIN-BROKEN 4  GONE 1
+    RIDER, and it is the same class this task exists for: the pin 54a2b844 is
+    line 32 of the code half of today's rewrite map
+    (sha-maps/20260912T090341Z-71b6fe51-aaef2d12/code.tsv,
+    54a2b844... -> b45d3b58...), declared as "anchor_pin" in four
+    util/scedit/grammar/args/*.json fragments.  So a commit citation inside the
+    CODE tree was moved by the owner's rewrite as well, and the repoint did not
+    reach these fragments.  NOT FIXED here: regenerating the record would
+    silence a signal whose whole purpose (README:789) is that somebody looks at
+    what moved.  Reported.
+    Both corpus gates RAN here (installed script package and ~/.spacecrafter
+    present) and would SKIP on his machine -- so his count is 17 run / 2 skip,
+    not the 19 the README's "all green on a clean build" implies.
+    ~/.spacecrafter config.ini and ssystem.ini md5 in == out across the run.
+
+S9  claude/githooks/install.sh                                          exit 0
+    Both repos, four positives and the negative control each:
+    "8-byte ELF refused, Java class refused, .pyc refused (file(1) channel
+    live), 9 MiB text refused by the residue layer, ordinary file passed."
+    SUB-PREDICTION CONFIRMED: it sets core.hooksPath in the CODE repo too, at
+    `claude/githooks`.  A reader who later removes his claude/ clone leaves the
+    code repo pointing at a hooks directory that does not exist, and git then
+    runs no hook and says nothing.  Recorded; the document's own sentence is
+    about the harness repo and is not false, so nothing was written.
+
+S10 xvfb-run -a spacecrafter        (harness README:40-49, doc:269)   exit 127
+    "timeout: failed to execute process: No such file or directory".
+    ./analyze.py /tmp/dual_trace.json                                   exit 1
+    (traceback: the trace file the blocked first line would have written).
+    BLOCKS, not designed.  Three independent causes, any one sufficient:
+    xvfb-run is not a build dependency and INSTALL does not install it; the
+    command names `spacecrafter` on PATH rather than the binary just built; and
+    "with dual-dump.sts installed as startup.sts" is a precondition no document
+    in either repository explains.  Frozen files unchanged (nothing ran).
+
+-------------------------------------------------------------------------------
+S11  SHA REACHABILITY -- mismatch 3, and the stand-in was the confound
+-------------------------------------------------------------------------------
+The document cites exactly three 7-8-hex tokens, all `c5be42b`, at lines 261,
+362 and 398 (`/usr/bin/grep -noE '\b[0-9a-f]{7,8}\b'`).  All three sentences
+name claude/USER_QUESTIONS_ROUND3.md, so the repository is the harness.
+
+  repository                              c5be42b   6ffb017   1e6ca60
+  ----------------------------------------------------------------------
+  this host's harness tree                exists,   exists,   exists,
+                                          rc 1      rc 1      rc 0
+  the harness clone taken from a LOCAL     exists,   exists,   exists,
+  path (what this rehearsal first did)     rc 1      rc 1      rc 0
+  a clone taken the way HE takes one       ABSENT    ABSENT    exists,
+  (--no-local, i.e. upload-pack)                               rc 0
+  the CODE clone (unrelated history)       ABSENT      --        ABSENT
+
+I predicted the object would be ABSENT in a fresh clone and the first clone
+said EXISTS, because git's local transport copies the whole objects directory,
+unreachable objects included.  The prediction was about his clone and the
+stand-in does not reproduce it; re-measured with --no-local, which forces the
+git transport over the same path, the object is not there at all.  So what he
+actually gets from `git show c5be42b` is "bad object", not a diff -- and the
+stand-in had to be corrected before it could measure that.  Recorded as a
+limit of the local-path stand-in for any future rehearsal.
+
+The correct successor is `1e6ca60`, reachable (rc 0), Lionel RUIZ, 2026-09-05
+13:38:30, "User question replies round 3", one file
+(USER_QUESTIONS_ROUND3.md, +42/-6) carrying R21 R22 R23 R24 -- the three
+citations' subjects.  Chain: c5be42b -amended 2026-09-05-> 6ffb017 -rewritten
+2026-09-12-> 1e6ca60 (sha-maps/20260912T090341Z-71b6fe51-aaef2d12/harness.tsv
+line 197).
+
+-------------------------------------------------------------------------------
+S12  THE TRUTH OF THE TEN [path:line] CLAIMS -- mismatch 4
+-------------------------------------------------------------------------------
+Existence is what f85_links.py measures.  These were read.
+
+  T1  .gitignore:84-85                     TRUE  `.claude` / `claude`
+  T2  claude/README.md:20-24               TRUE  the nesting precondition
+  T3  claude/README.md:21-23               TRUE  ../../build-claude + SC_BIN
+  T4  claude/README.md:34-41               TRUE  `Code: <branch> @ <short-sha>`
+  T5  src/CMakeLists.txt:3                 TRUE  GLOB_RECURSE CONFIGURE_DEPENDS
+  T6  claude/harness/README.md:40-49       TRUE  it IS the "Run" section
+  T7  util/scedit/README.md:767            TRUE  "Nineteen ctest gates"
+  T8  app_command_interface.cpp:1688       TRUE  std::stoi(args["depth"])
+  T9  app.cpp:823 / :831                   TRUE  App::draw / helper->waitFrame
+      + draw_helper.cpp:405-418            TRUE  hasCompleted.wait(0), untimed
+  T10 orbit_creator_cor.cpp:283            TRUE  logs "OrbitCreatorComet::" from
+                                                 OrbitCreatorSpecial::handle
+
+10 of 10 true; I predicted 9 and named T9 as the likely drifter.  Wrong, and in
+the safe direction -- but the drift channel my argument named DID fire, on the
+one section 7 citation that was not in my ten:
+
+  doc:376  src/bodyModule/orbit.cpp:600, :606   FALSE as coordinates
+           :600 is saveOrbit's opening brace, :606 is its `orbit_epoch` line.
+           The double AU is real and sits at :611 (`... * AU`) and :617
+           (`semi_major_axis * AU`).  Both cited lines EXIST, so f85_links.py
+           passed them -- which is the whole point of measuring truth rather
+           than existence.  Corrected in the document, with the old coordinates
+           kept so the drift is visible rather than erased.
+
+-------------------------------------------------------------------------------
+WHAT THE REHEARSAL DID NOT DO
+-------------------------------------------------------------------------------
+`sh install_src.sh -j<n>` was never run as written: line 42 is
+`sudo cmake --install` into /usr/local and this task may not.  Lines 16-26 and
+41 were run by hand instead, which is the same build and not the same
+installation -- so nothing here measures INSTALL section 4's install half,
+section 5's content claims, or section 6's first run.  INSTALL is unchanged:
+no sentence in it was measured false.
