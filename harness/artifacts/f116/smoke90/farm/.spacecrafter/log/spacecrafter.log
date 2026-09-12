@@ -1,0 +1,1389 @@
+(Info ): Log retention (spacecrafter.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (script.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (tcp.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (shader.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (vulkan.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+=================================================================
+(Info ): Welcome to spacecrafter
+(Info ): Version : spacecrafter 2026.07.11 - Vulkan Edition 2026
+(Info ):  Copyright (c) 2014-2020 Association Sirius, LSS team et al.
+ Copyright (c) 2012-2014 LSS team et al.
+ Copyright (c) 2003-2011 Digitalis Education Solutions, Inc. et al.
+ Copyright (c) 2000-2008 Fabien Chereau et al.
+ http://lss-planetariums.info
+=================================================================
+(Info ): system name = Linux
+node name   = LovelyFoxDev
+release     = 6.17.0-41-generic
+version     = #41-Ubuntu SMP PREEMPT_DYNAMIC Sat Jun 20 18:01:40 UTC 2026
+machine     = x86_64
+=================================================================
+(Info ): Memory information
+Total ram 63582703616
+Free  ram 18321125376
+Shared ram 380489728
+Buffer ram 207446016
+Total swap 0
+Free  swap 0
+=================================================================
+(Info ): Check home directory ok
+Check audio subdirectory ok
+Check fonts subdirectory ok
+Check ftp subdirectory ok
+Check landscapes subdirectory ok
+Check log subdirectory ok
+Check screenshot subdirectory ok
+Check scripts subdirectory ok
+Check pictures subdirectory ok
+Check textures subdirectory ok
+Check vframes subdirectory ok
+Check videos subdirectory ok
+Check media subdirectory ok
+Check vr360 subdirectory ok
+Check www subdirectory ok
+Check sky_cultures subdirectory ok
+Check model3D subdirectory ok
+Check language subdirectory ok
+
+(Info ): Lock file is /tmp/spacecrafter.lock
+(Info ): My getpid() is 227180
+(Info ): CONFIG DIR: /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/farm/.spacecrafter/
+(Info ): ROOT   DIR: /usr/local/share/spacecrafter/
+(Info ): LOCALE DIR: /usr/local/share/locale/
+(Info ): config.ini is up to date
+000000000000: =================================================================
+000000000024: (Info ): SDL init oki !
+000000000097: (Info ): Windows size is 1024x1024px
+000000000097: (Info ): Video driver is  x11
+000000000097: (Info ): SDL_GetNumVideoDisplays(): 1
+000000000097: (Info ): SDL_GetNumDisplayModes:  32
+000000000097: (Info ): Mode 0 bpp 24 SDL_PIXELFORMAT_RGB888 2448 1332
+000000000097: (Info ): Mode 1 bpp 24 SDL_PIXELFORMAT_RGB888 2048 1152
+000000000097: (Info ): Mode 2 bpp 24 SDL_PIXELFORMAT_RGB888 1920 1200
+000000000097: (Info ): Mode 3 bpp 24 SDL_PIXELFORMAT_RGB888 1920 1080
+000000000097: (Info ): Mode 4 bpp 24 SDL_PIXELFORMAT_RGB888 1680 1050
+000000000097: (Info ): Mode 5 bpp 24 SDL_PIXELFORMAT_RGB888 1600 1200
+000000000097: (Info ): Mode 6 bpp 24 SDL_PIXELFORMAT_RGB888 1600 900
+000000000097: (Info ): Mode 7 bpp 24 SDL_PIXELFORMAT_RGB888 1440 1080
+000000000097: (Info ): Mode 8 bpp 24 SDL_PIXELFORMAT_RGB888 1440 900
+000000000097: (Info ): Mode 9 bpp 24 SDL_PIXELFORMAT_RGB888 1400 1050
+000000000097: (Info ): Mode 10 bpp 24 SDL_PIXELFORMAT_RGB888 1368 768
+000000000097: (Info ): Mode 11 bpp 24 SDL_PIXELFORMAT_RGB888 1280 1024
+000000000097: (Info ): Mode 12 bpp 24 SDL_PIXELFORMAT_RGB888 1280 960
+000000000097: (Info ): Mode 13 bpp 24 SDL_PIXELFORMAT_RGB888 1280 800
+000000000097: (Info ): Mode 14 bpp 24 SDL_PIXELFORMAT_RGB888 1280 720
+000000000097: (Info ): Mode 15 bpp 24 SDL_PIXELFORMAT_RGB888 1152 864
+000000000097: (Info ): Mode 16 bpp 24 SDL_PIXELFORMAT_RGB888 1152 720
+000000000097: (Info ): Mode 17 bpp 24 SDL_PIXELFORMAT_RGB888 1024 768
+000000000097: (Info ): Mode 18 bpp 24 SDL_PIXELFORMAT_RGB888 1024 576
+000000000097: (Info ): Mode 19 bpp 24 SDL_PIXELFORMAT_RGB888 960 600
+000000000097: (Info ): Mode 20 bpp 24 SDL_PIXELFORMAT_RGB888 928 580
+000000000097: (Info ): Mode 21 bpp 24 SDL_PIXELFORMAT_RGB888 864 486
+000000000097: (Info ): Mode 22 bpp 24 SDL_PIXELFORMAT_RGB888 800 600
+000000000097: (Info ): Mode 23 bpp 24 SDL_PIXELFORMAT_RGB888 800 500
+000000000097: (Info ): Mode 24 bpp 24 SDL_PIXELFORMAT_RGB888 768 480
+000000000097: (Info ): Mode 25 bpp 24 SDL_PIXELFORMAT_RGB888 720 480
+000000000097: (Info ): Mode 26 bpp 24 SDL_PIXELFORMAT_RGB888 720 400
+000000000097: (Info ): Mode 27 bpp 24 SDL_PIXELFORMAT_RGB888 640 480
+000000000097: (Info ): Mode 28 bpp 24 SDL_PIXELFORMAT_RGB888 640 400
+000000000097: (Info ): Mode 29 bpp 24 SDL_PIXELFORMAT_RGB888 640 350
+000000000097: (Info ): Mode 30 bpp 24 SDL_PIXELFORMAT_RGB888 320 240
+000000000097: (Info ): Mode 31 bpp 24 SDL_PIXELFORMAT_RGB888 320 200
+000000000098: =================================================================
+000000000265: (Warn.): Init_parser def_str video:projection
+000000000265: (Info ): Projection mode: FISHEYE (type=0)
+000000000265: (Warn.): Init_parser def_str video:rear_projection
+000000000265: (Info ): Rear projection: false (enabled=0)
+000000000265: (Info ): Initializing Vulkan...
+000000000353: (Info ): Finalizing Vulkan initialization...
+000000000646: (Info ): Vulkan initialization completed
+000000000660: (Info ): Audio initialization successful
+000000000722: (Info ): Generating EquiSphere took : 33ms
+000000000829: (Info ): System 'MilkyWay' uses centre-relative navigation by class default (datum_radius = ground_radius = 0): free-mode altitude is measured from its centre and free descent reaches the centre. To override, set datum_radius/ground_radius in data or run 'body name MilkyWay datum_radius <km>'.
+000000000832: (Info ): Loading body Sun
+000000000832: (Debug): Body 'Sun': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000839: (Info ): Loading body Mercury
+000000000839: (Debug): Body 'Mercury': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000842: (Info ): Loading body Venus
+000000000842: (Debug): Body 'Venus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000847: (Info ): Loading body Earth
+000000000847: (Debug): Body 'Earth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000865: (Info ): Loading body Moon
+000000000865: (Debug): Body 'Moon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000866: (Info ): Adding Moon to Earth binary orbit.
+000000000866: (Info ): Loading body Mars
+000000000866: (Debug): Body 'Mars': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000869: (Info ): Loading body Phobos
+000000000869: (Debug): Body 'Phobos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000872: (Info ): Loading object Phobos
+000000000872: (Info ): Succesfull loading model3D Phobos
+000000000872: (Info ): Loading body Deimos
+000000000872: (Debug): Body 'Deimos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000874: (Info ): Loading object Deimos
+000000000874: (Info ): Succesfull loading model3D Deimos
+000000000874: (Info ): Loading body Jupiter
+000000000874: (Debug): Body 'Jupiter': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000878: (Info ): Loading body Metis
+000000000878: (Debug): Body 'Metis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): Loading body Adrastea
+000000000879: (Debug): Body 'Adrastea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Amalthea
+000000000879: (Debug): Body 'Amalthea': rot_pole_w0 (IAU W0=231.67 deg, from the ICRF-equator node) converted to rot_rotation_offset 258.121552 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000879: (Info ): Loading body Thebe
+000000000879: (Debug): Body 'Thebe': rot_pole_w0 (IAU W0=8.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 29.457403 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Io
+000000000879: (Debug): Body 'Io': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): Loading body Europa
+000000000879: (Debug): Body 'Europa': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): Loading body Ganymede
+000000000879: (Debug): Body 'Ganymede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): Loading body Callisto
+000000000879: (Debug): Body 'Callisto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): Loading body Himalia
+000000000879: (Debug): Body 'Himalia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Elara
+000000000879: (Debug): Body 'Elara': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Carme
+000000000879: (Debug): Body 'Carme': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Pasiphae
+000000000879: (Debug): Body 'Pasiphae': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Lysithea
+000000000879: (Debug): Body 'Lysithea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Ananke
+000000000879: (Debug): Body 'Ananke': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Sinope
+000000000879: (Debug): Body 'Sinope': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Leda
+000000000879: (Debug): Body 'Leda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000879: (Info ): Loading body Saturn
+000000000879: (Debug): Body 'Saturn': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000879: (Info ): Loading body Pan
+000000000879: (Debug): Body 'Pan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000000879: (Info ): Loading body Daphnis
+000000000879: (Debug): Body 'Daphnis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000879: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000000879: (Info ): Loading body Prometheus
+000000000879: (Debug): Body 'Prometheus': rot_pole_w0 (IAU W0=296.14 deg, from the ICRF-equator node) converted to rot_rotation_offset 256.175446 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000880: (Info ): Loading body Pandora
+000000000880: (Debug): Body 'Pandora': rot_pole_w0 (IAU W0=162.92 deg, from the ICRF-equator node) converted to rot_rotation_offset 122.955437 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): Loading body Epimetheus
+000000000880: (Debug): Body 'Epimetheus': rot_pole_w0 (IAU W0=293.87 deg, from the ICRF-equator node) converted to rot_rotation_offset 254.618652 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/asteroid.png
+000000000880: (Info ): Loading body Janus
+000000000880: (Debug): Body 'Janus': rot_pole_w0 (IAU W0=58.83 deg, from the ICRF-equator node) converted to rot_rotation_offset 18.439495 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000880: (Info ): Loading body Titan
+000000000880: (Debug): Body 'Titan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): s_texture: already in cache textures/bodies/atm_gradient3.png
+000000000880: (Info ): Loading body Mimas
+000000000880: (Debug): Body 'Mimas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Enceladus
+000000000880: (Debug): Body 'Enceladus': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Dione
+000000000880: (Debug): Body 'Dione': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Tethys
+000000000880: (Debug): Body 'Tethys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Rhea
+000000000880: (Debug): Body 'Rhea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Hyperion
+000000000880: (Debug): Body 'Hyperion': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Warn.): Body 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000000880: (Info ): Loading body Iapetus
+000000000880: (Debug): Body 'Iapetus': rot_pole_w0 (IAU W0=355.2 deg, from the ICRF-equator node) converted to rot_rotation_offset 261.467072 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): Loading body Telesto
+000000000880: (Debug): Body 'Telesto': rot_pole_w0 (IAU W0=56.88 deg, from the ICRF-equator node) converted to rot_rotation_offset 24.588358 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000880: (Info ): Loading body Helene
+000000000880: (Debug): Body 'Helene': rot_pole_w0 (IAU W0=245.12 deg, from the ICRF-equator node) converted to rot_rotation_offset 205.606384 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000880: (Info ): Loading body Uranus
+000000000880: (Debug): Body 'Uranus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Juliet
+000000000880: (Debug): Body 'Juliet': rot_pole_w0 (IAU W0=302.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 307.635773 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000880: (Info ): Loading body Portia
+000000000880: (Debug): Body 'Portia': rot_pole_w0 (IAU W0=25.03 deg, from the ICRF-equator node) converted to rot_rotation_offset 30.123623 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000880: (Info ): Loading body Rosalind
+000000000880: (Debug): Body 'Rosalind': rot_pole_w0 (IAU W0=314.90 deg, from the ICRF-equator node) converted to rot_rotation_offset 319.999634 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000880: (Info ): Loading body Belinda
+000000000880: (Debug): Body 'Belinda': rot_pole_w0 (IAU W0=297.46 deg, from the ICRF-equator node) converted to rot_rotation_offset 302.530396 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000880: (Info ): Loading body Puck
+000000000880: (Debug): Body 'Puck': rot_pole_w0 (IAU W0=91.24 deg, from the ICRF-equator node) converted to rot_rotation_offset 96.381638 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000880: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000880: (Info ): Loading body Miranda
+000000000880: (Debug): Body 'Miranda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Ariel
+000000000880: (Debug): Body 'Ariel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Umbriel
+000000000880: (Debug): Body 'Umbriel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Titania
+000000000880: (Debug): Body 'Titania': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000880: (Info ): Loading body Oberon
+000000000881: (Debug): Body 'Oberon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): Loading body Caliban
+000000000881: (Debug): Body 'Caliban': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Sycorax
+000000000881: (Debug): Body 'Sycorax': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Prospero
+000000000881: (Debug): Body 'Prospero': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Setebos
+000000000881: (Debug): Body 'Setebos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Neptune
+000000000881: (Debug): Body 'Neptune': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000881: (Info ): Loading body Naiad
+000000000881: (Debug): Body 'Naiad': rot_pole_w0 (IAU W0=254.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 230.775604 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Thalassa
+000000000881: (Debug): Body 'Thalassa': rot_pole_w0 (IAU W0=102.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 77.728737 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Despina
+000000000881: (Debug): Body 'Despina': rot_pole_w0 (IAU W0=306.51 deg, from the ICRF-equator node) converted to rot_rotation_offset 282.446777 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Galatea
+000000000881: (Debug): Body 'Galatea': rot_pole_w0 (IAU W0=258.09 deg, from the ICRF-equator node) converted to rot_rotation_offset 234.041214 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Larissa
+000000000881: (Debug): Body 'Larissa': rot_pole_w0 (IAU W0=179.41 deg, from the ICRF-equator node) converted to rot_rotation_offset 155.537094 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Proteus
+000000000881: (Debug): Body 'Proteus': rot_pole_w0 (IAU W0=93.38 deg, from the ICRF-equator node) converted to rot_rotation_offset 69.711334 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000881: (Info ): Loading body Triton
+000000000881: (Debug): Body 'Triton': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): Loading body Neried
+000000000881: (Debug): Body 'Neried': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Halimede
+000000000881: (Debug): Body 'Halimede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Sao
+000000000881: (Debug): Body 'Sao': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Laomedeia
+000000000881: (Debug): Body 'Laomedeia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Psamathe
+000000000881: (Debug): Body 'Psamathe': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Neso
+000000000881: (Debug): Body 'Neso': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Ceres
+000000000881: (Debug): Body 'Ceres': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): Loading body Pallas
+000000000881: (Debug): Body 'Pallas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Juno
+000000000881: (Debug): Body 'Juno': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Warn.): Body 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000000881: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000881: (Info ): Loading body Vesta
+000000000881: (Debug): Body 'Vesta': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000881: (Warn.): Body 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000000894: (Info ): Loading object Vesta
+000000000894: (Warn.): Performance Issue : Too many vertices for 'model3D/Vesta/Vesta_1L.ojm' (Keep Below 4 000)
+000000000894: (Info ): Succesfull loading model3D Vesta
+000000000894: (Info ): Loading body Pluto
+000000000894: (Debug): Body 'Pluto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): Loading body Charon
+000000000894: (Debug): Body 'Charon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): Loading body Nix
+000000000894: (Debug): Body 'Nix': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000894: (Info ): Loading body Hydra_
+000000000894: (Debug): Body 'Hydra_': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000894: (Info ): Loading body Styx
+000000000894: (Debug): Body 'Styx': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000894: (Info ): Loading body Kerberos
+000000000894: (Debug): Body 'Kerberos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000894: (Info ): Loading body Eris
+000000000894: (Debug): Body 'Eris': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000894: (Info ): Loading body Haumea
+000000000894: (Debug): Body 'Haumea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000894: (Info ): Loading body Namaka
+000000000894: (Debug): Body 'Namaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000894: (Info ): Loading body Hiiaka
+000000000894: (Debug): Body 'Hiiaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000894: (Info ): Loading body Makemake
+000000000894: (Debug): Body 'Makemake': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000894: (Warn.): Ignoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.
+000000000894: (Info ): Loading body Sedna
+000000000895: (Debug): Body 'Sedna': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000895: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000895: (Info ): Loading body Arrokoth
+000000000895: (Debug): Body 'Arrokoth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000901: (Info ): Loading object Arrokoth
+000000000901: (Info ): Succesfull loading model3D Arrokoth
+000000000901: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000901: (Info ): Loading body Solar_System
+000000000901: (Debug): Body 'Solar_System': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000901: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000901: (Info ): Loading body Goldilocks_Zone
+000000000901: (Debug): Body 'Goldilocks_Zone': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000901: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000901: (Info ): (system SolarSystem loaded)
+000000000901: =================================================================
+000000001114: (Info ): s_texture: already in cache textures/volum_cloud.png
+000000002524: (Info ): SkyGridMgr creating GRID_EQUATORIAL
+000000002524: (Info ): SkyGridMgr creating GRID_ECLIPTIC
+000000002524: (Info ): SkyGridMgr creating GRID_GALACTIC
+000000002524: (Info ): SkyGridMgr creating GRID_ALTAZIMUTAL
+000000002526: (Info ): SkyLineMgr creating LINE_CIRCLE_POLAR
+000000002526: (Info ): SkyLineMgr creating LINE_POINT_POLAR
+000000002526: (Info ): SkyLineMgr creating LINE LINE_ECLIPTIC_POLE
+000000002526: (Info ): SkyLineMgr creating LINE LINE_GALACTIC_POLE
+000000002526: (Info ): SkyLineMgr creating LINE_ANALEMMA
+000000002526: (Info ): SkyLineMgr creating LINE_ANALEMMALINE
+000000002526: (Info ): SkyLineMgr creating LINE_CIRCUMPOLAR
+000000002526: (Info ): SkyLineMgr creating LINE LINE_GALACTIC_CENTER
+000000002526: (Info ): SkyLineMgr creating LINE_VERNAL
+000000002526: (Info ): SkyLineMgr creating LINE_GREENWICH
+000000002526: (Info ): SkyLineMgr creating LINE_ARIES
+000000002526: (Info ): SkyLineMgr creating LINE_EQUATOR
+000000002526: (Info ): SkyLineMgr creating LINE_GALACTIC_EQUATOR
+000000002526: (Info ): SkyLineMgr creating LINE_MERIDIAN
+000000002526: (Info ): SkyLineMgr creating LINE_TROPIC
+000000002526: (Info ): SkyLineMgr creating LINE_MERIDIAN
+000000002526: (Info ): SkyLineMgr creating LINE_PRECESSION
+000000002526: (Info ): SkyLineMgr creating LINE_VERTICAL
+000000002527: (Info ): SkyLineMgr creating LINE_ZODIAC
+000000002527: (Info ): SkyLineMgr creating LINE_ZENITH
+000000002529: (Info ): SkyDisplayMgr creating SkyPersonAL
+000000002529: (Info ): SkyDisplayMgr creating SkyPersonEQ
+000000002529: (Info ): SkyDisplayMgr creating SkyNauticAL
+000000002529: (Info ): SkyDisplayMgr creating SkyNauticEQ
+000000002529: (Info ): SkyDisplayMgr creating SkyObjCoords
+000000002529: (Info ): SkyDisplayMgr creating SkyMouseCoords
+000000002529: (Info ): SkyDisplayMgr creating SkyAngDist
+000000002529: (Info ): SkyDisplayMgr creating SkyLoxodromy
+000000002529: (Info ): SkyDisplayMgr creating SkyOrthodromy
+000000002529: (Info ): Landscape generic created
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002530: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002577: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSansMono-Bold.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSans.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002578: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002579: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002579: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002579: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002579: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002579: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002583: (Info ): s_texture: already in cache textures/planethalo.png
+000000002583: (Info ): (solar system) default textures loaded
+000000002583: (Info ): Loading new Stellar System object... Sun
+000000002583: (Info ): s_texture: already in cache textures/bodies/sun.jpg
+000000002590: (Info ): s_texture: already in cache textures/big_halo.png
+000000002590: (Info ): Loading new Stellar System object... Mercury
+000000002590: (Info ): s_texture: already in cache textures/bodies/mercury.jpg
+000000002590: (Info ): Loading new Stellar System object... Venus
+000000002590: (Info ): s_texture: already in cache textures/bodies/venus.jpg
+000000002590: (Info ): Loading new Stellar System object... Earth
+000000002590: (Info ): Creating Earth orbit...
+000000002590: (Info ): s_texture: already in cache textures/bodies/earth.jpg
+000000002590: (Info ): s_texture: already in cache textures/bodies/earth_normal.jpg
+000000002590: (Info ): s_texture: already in cache textures/bodies/earth_alti.png
+000000002590: (Info ): s_texture: already in cache textures/bodies/earth_night.jpg
+000000002590: (Info ): s_texture: already in cache textures/bodies/earth_specular.png
+000000002590: (Info ): Loading new Stellar System object... Moon
+000000002591: (Info ): s_texture: already in cache textures/bodies/moon.jpg
+000000002591: (Info ): s_texture: already in cache textures/bodies/moon_normal.jpg
+000000002591: (Info ): s_texture: already in cache textures/bodies/moon_alti.jpg
+000000002591: (Info ): Adding Moon to Earth binary orbit.
+000000002591: (Info ): Loading new Stellar System object... Mars
+000000002591: (Info ): s_texture: already in cache textures/bodies/mars.jpg
+000000002591: (Info ): s_texture: already in cache textures/bodies/mars_normal.jpg
+000000002591: (Info ): s_texture: already in cache textures/bodies/mars_alti.jpg
+000000002591: (Info ): Loading new Stellar System object... Phobos
+000000002591: (Info ): s_texture: already in cache textures/bodies/phobos.jpg
+000000002591: (Info ): Loading new Stellar System object... Deimos
+000000002591: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000002591: (Info ): Loading new Stellar System object... Jupiter
+000000002591: (Info ): s_texture: already in cache textures/bodies/jupiter.png
+000000002591: (Info ): s_texture: already in cache textures/bodies/jupiter_rings.png
+000000002591: (Info ): Loading new Stellar System object... Metis
+000000002591: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002591: (Info ): Loading new Stellar System object... Adrastea
+000000002591: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002591: (Info ): Loading new Stellar System object... Amalthea
+000000002591: (Info ): s_texture: already in cache textures/bodies/amalthea.png
+000000002591: (Info ): Loading new Stellar System object... Thebe
+000000002591: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002591: (Info ): Loading new Stellar System object... Io
+000000002591: (Info ): s_texture: already in cache textures/bodies/io.png
+000000002591: (Info ): s_texture: already in cache textures/bodies/io_night.png
+000000002591: (Info ): Loading new Stellar System object... Europa
+000000002591: (Info ): s_texture: already in cache textures/bodies/europa.png
+000000002591: (Info ): Loading new Stellar System object... Ganymede
+000000002591: (Info ): s_texture: already in cache textures/bodies/ganymede.png
+000000002591: (Info ): Loading new Stellar System object... Callisto
+000000002592: (Info ): s_texture: already in cache textures/bodies/callisto.png
+000000002592: (Info ): Loading new Stellar System object... Himalia
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Elara
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Carme
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Pasiphae
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Lysithea
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Ananke
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Sinope
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Leda
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Saturn
+000000002592: (Info ): s_texture: already in cache textures/bodies/saturn.jpg
+000000002592: (Info ): s_texture: already in cache textures/bodies/saturn_rings_radial.png
+000000002592: (Info ): Loading new Stellar System object... Pan
+000000002592: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000002592: (Info ): Loading new Stellar System object... Daphnis
+000000002592: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000002592: (Info ): Loading new Stellar System object... Prometheus
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Pandora
+000000002592: (Info ): s_texture: already in cache textures/bodies/asteroid.png
+000000002592: (Info ): Loading new Stellar System object... Epimetheus
+000000002592: (Info ): s_texture: already in cache textures/bodies/asteroid.png
+000000002592: (Info ): Loading new Stellar System object... Janus
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Titan
+000000002592: (Info ): s_texture: already in cache textures/bodies/titan.png
+000000002592: (Info ): Loading new Stellar System object... Mimas
+000000002592: (Info ): s_texture: already in cache textures/bodies/mimas.png
+000000002592: (Info ): Loading new Stellar System object... Enceladus
+000000002592: (Info ): s_texture: already in cache textures/bodies/enceladus.png
+000000002592: (Info ): Loading new Stellar System object... Dione
+000000002592: (Info ): s_texture: already in cache textures/bodies/dione.png
+000000002592: (Info ): Loading new Stellar System object... Tethys
+000000002592: (Info ): s_texture: already in cache textures/bodies/tethys.png
+000000002592: (Info ): Loading new Stellar System object... Rhea
+000000002592: (Info ): s_texture: already in cache textures/bodies/rhea.png
+000000002592: (Info ): Loading new Stellar System object... Hyperion
+000000002592: (Info ): s_texture: already in cache textures/bodies/hyperion.png
+000000002592: (Info ): Loading new Stellar System object... Iapetus
+000000002592: (Info ): s_texture: already in cache textures/bodies/iapetus.png
+000000002592: (Info ): s_texture: already in cache textures/bodies/moon_normal.png
+000000002592: (Info ): s_texture: already in cache textures/bodies/iapetus_alti.png
+000000002592: (Info ): Loading new Stellar System object... Telesto
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002592: (Info ): Loading new Stellar System object... Helene
+000000002592: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Uranus
+000000002593: (Info ): s_texture: already in cache textures/bodies/uranus.png
+000000002593: (Info ): s_texture: already in cache textures/bodies/uranusring.png
+000000002593: (Info ): Loading new Stellar System object... Juliet
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Portia
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Rosalind
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Belinda
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Puck
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Miranda
+000000002593: (Info ): s_texture: already in cache textures/bodies/miranda.png
+000000002593: (Info ): Loading new Stellar System object... Ariel
+000000002593: (Info ): s_texture: already in cache textures/bodies/ariel.png
+000000002593: (Info ): Loading new Stellar System object... Umbriel
+000000002593: (Info ): s_texture: already in cache textures/bodies/umbriel.png
+000000002593: (Info ): Loading new Stellar System object... Titania
+000000002593: (Info ): s_texture: already in cache textures/bodies/titania.png
+000000002593: (Info ): Loading new Stellar System object... Oberon
+000000002593: (Info ): s_texture: already in cache textures/bodies/oberon.png
+000000002593: (Info ): Loading new Stellar System object... Caliban
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Sycorax
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Prospero
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Setebos
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Neptune
+000000002593: (Info ): s_texture: already in cache textures/bodies/neptune.png
+000000002593: (Info ): s_texture: already in cache textures/bodies/neptune_rings.png
+000000002593: (Info ): Loading new Stellar System object... Naiad
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Thalassa
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Despina
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Galatea
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Larissa
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Proteus
+000000002593: (Info ): s_texture: already in cache textures/bodies/proteus.png
+000000002593: (Info ): Loading new Stellar System object... Triton
+000000002593: (Info ): s_texture: already in cache textures/bodies/triton.png
+000000002593: (Info ): Loading new Stellar System object... Neried
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Halimede
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Sao
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Laomedeia
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Psamathe
+000000002593: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002593: (Info ): Loading new Stellar System object... Neso
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Ceres
+000000002594: (Info ): s_texture: already in cache textures/bodies/ceres.jpg
+000000002594: (Info ): Loading new Stellar System object... Pallas
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Juno
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Vesta
+000000002594: (Info ): s_texture: already in cache textures/bodies/vesta.jpg
+000000002594: (Info ): Loading new Stellar System object... Pluto
+000000002594: (Info ): s_texture: already in cache textures/bodies/pluto.png
+000000002594: (Info ): Loading new Stellar System object... Charon
+000000002594: (Info ): s_texture: already in cache textures/bodies/charon.png
+000000002594: (Info ): Loading new Stellar System object... Nix
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Hydra_
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Styx
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Kerberos
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Eris
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Haumea
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Namaka
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Hiiaka
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Makemake
+000000002594: (Info ): s_texture: already in cache textures/bodies/makemake.jpg
+000000002594: (Info ): Loading new Stellar System object... Sedna
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Arrokoth
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Solar_System
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): Loading new Stellar System object... Goldilocks_Zone
+000000002594: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002594: (Info ): s_texture: already in cache textures/bodies/goldilocks_zone.png
+000000002594: (Info ): (solar system loaded)
+000000002594: =================================================================
+000000002594: (Info ): Reading fileAnchor anchor.ini
+000000002594: (Info ): CameraAnchors: reading anchor file anchor.ini
+000000002594: (Info ): CameraAnchors: 10 anchor(s) declared from anchor.ini
+000000002594: (Info ): AnchorManager:: initFirtAnchor to Earth
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system DarkStarSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system ProximaSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system TolimanSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system SiriusSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system 51PegSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system KeidSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system Trappist1System loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system Kepler16System loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system HelixDwarfSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system M57DwarfSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system M1PulsarSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system M27DwarfSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system NGC2392DwarfSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system CapellaSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system VegaSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system ArcturusSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): (solar system loaded)
+000000002595: =================================================================
+000000002595: (Info ): (system AntaresSystem loaded)
+000000002595: =================================================================
+000000002595: (Info ): Loading star data...
+000000002595: (Info ): Loading catalog stars_0_0v0_5.cat
+000000002595: (Info ): stars_0_0v0_5.cat:0:0:0:2
+000000002595: (Info ): stars:  4964
+000000002595: (Info ): Loading catalog stars_1_0v0_5.cat
+000000002595: (Info ): stars_1_0v0_5.cat:1:0:0:2
+000000002595: (Info ): stars:  21597
+000000002595: (Info ): Loading catalog stars_2_0v0_8.cat
+000000002595: (Info ): Loading catalog stars_3_1v0_4.cat
+000000002595: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_04", default empty string returned
+000000002595: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_05", default empty string returned
+000000002595: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_06", default empty string returned
+000000002595: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_07", default empty string returned
+000000002595: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_08", default empty string returned
+000000002596: (Info ): finished, max_geodesic_level: 1
+000000002596: =================================================================
+000000002596: (Info ): s_texture: already in cache textures/star16x16.png
+000000002596: (Info ): Loading NGC data... 
+000000002738: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000002738: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000002738: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003007: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003088: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003148: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003269: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003269: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003591: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003793: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000004015: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000004460: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000004763: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005309: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005309: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005309: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005309: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005349: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006036: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006177: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006299: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006299: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006319: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006340: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006360: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006380: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006441: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006441: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006663: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006703: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006703: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006703: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006703: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000007289: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000007349: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008299: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008380: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008481: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008521: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008663: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008663: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008966: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000009167: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000009309: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000010080: (Info ): Nebula: 407 items loaded, 1 dropped
+000000010108: (Info ): Landscape generic created
+000000010109: (Warn.): Init_parser def_double observatory:fog_alt_angle
+000000010109: (Warn.): Init_parser def_double observatory:fog_angle_shift
+000000010109: (Warn.): Init_parser def_str observatory:night_texture
+000000010109: (Warn.): Init_parser can't find the configuration key "observatory:limited_shade", default empty string returned
+000000010109: (Warn.): Init_parser def_bool observatory:texture
+000000010109: (Warn.): Init_parser def_double observatory:rotate_z
+000000010109: (Warn.): Init_parser def_double observatory:top_altitude
+000000010109: (Warn.): Init_parser def_double observatory:base_altitude
+000000010109: (Info ): Landscape Spherical observatory created
+000000010170: (Info ): Starmanager, loading text catalogue hip2007.txt
+000000010272: (Info ): HyperCubes : 2366
+Cubes      : 12451
+Stars      : 117957
+000000010274: (Debug): StarLines cat asterism.txt
+000000010274: (Debug): StarLines stars readed 5044
+000000010275: (Info ): s_texture: already in cache textures/milkyway.png
+000000010275: (Debug): Milkyway: no irisMilky define
+000000010358: (Warn.): Init_parser def_bool rendering:flag_experimental_oort
+000000010478: (Info ): Tully catalog successfully loaded: number of items 30432
+000000010659: (Info ): s_texture: already in cache textures/pointer_planet.png
+000000010663: (Info ): Sky locale is fr
+000000010663: (Info ): s_font: rebuild font succes
+000000010663: (Info ): s_font: rebuild font succes
+000000010663: (Info ): s_font: rebuild font succes
+000000010663: (Info ): s_font: rebuild font succes
+000000010663: (Info ): s_font: rebuild font succes
+000000010663: (Info ): s_font: rebuild font succes
+000000010663: (Info ): s_font: rebuild font succes
+000000010663: (Info ): s_font: rebuild font succes
+000000010663: (Info ): s_font: rebuild font succes
+000000010664: (Info ): s_font: rebuild font succes
+000000010664: (Info ): s_font: rebuild font succes
+000000010664: (Info ): s_font: rebuild font succes
+000000010664: (Info ): s_font: rebuild font succes
+000000010664: (Info ): s_font: rebuild font succes
+000000010664: (Info ): s_font: rebuild font succes
+000000010664: (Info ): s_font: rebuild font succes
+000000010667: (Info ): Composed twin of ssystem.ini generated at modularSystem/SolarSystem.ini.disabled
+000000010667: (Info ): Composed twin of ./stellar_systems/system_starwobble.ini generated at modularSystem/DarkStarSystem.ini.disabled
+000000010667: (Info ): Composed twin of ./stellar_systems/system_proxima.ini generated at modularSystem/ProximaSystem.ini.disabled
+000000010667: (Info ): Composed twin of ./stellar_systems/system_alphacen.ini generated at modularSystem/TolimanSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_sirius.ini generated at modularSystem/SiriusSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_51peg.ini generated at modularSystem/51PegSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_40eri.ini generated at modularSystem/KeidSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_trappist1.ini generated at modularSystem/Trappist1System.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_kepler16.ini generated at modularSystem/Kepler16System.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/HelixDwarfSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M57DwarfSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M1PulsarSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M27DwarfSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/NGC2392DwarfSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_capella.ini generated at modularSystem/CapellaSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_vega.ini generated at modularSystem/VegaSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_arcturus.ini generated at modularSystem/ArcturusSystem.ini.disabled
+000000010668: (Info ): Composed twin of ./stellar_systems/system_antares.ini generated at modularSystem/AntaresSystem.ini.disabled
+000000010677: (Error): UI: ERROR - Failed to acquire texture data for icons
+000000010677: (Info ): Landscape : observatory
+000000010679: (Info ): StarLines read Data scripts/internal/asterism_all.fab
+000000010679: (Info ): Sky locale is fr
+000000010706: (Info ): Localizing TUI for locale: system
+000000010707: (Info ): Localizing TUI for locale: system
+000000010728: (Info ): VR360 loading ojml sphere
+000000010728: (Info ): VR360 actived
+000000010728: (Info ): VR360 loading ojml cube
+000000010728: (Info ): VR360 actived
+000000011052: (Info ): buffer TCP size 1024
+000000011052: (Info ): Memory information
+Total ram 63582703616
+Free  ram 10665893888
+Shared ram 390209536
+Buffer ram 207511552
+Total swap 0
+Free  swap 0
+000000011052: =================================================================
+000000011052: (Info ): End of loading SC
+000000011052: =================================================================
+000000011053: (Info ): Application locale is fr
+000000011053: (Info ): Localizing TUI for locale: fr
+000000011054: (Info ): s_texture: already in cache textures/milkyway.png
+000000011054: (Info ): Sky locale is fr
+000000011054: (Info ): Read daykeymode as <calendar>
+000000011054: (Error): UI: ERROR - Failed to acquire texture data for icons
+000000011054: (Info ): Landscape : observatory
+000000011056: (Info ): StarLines read Data scripts/internal/asterism_all.fab
+000000011056: (Info ): Sky locale is fr
+000000011082: (Info ): Localizing TUI for locale: fr
+000000011082: (Info ): Media::playerPlayStop
+000000011082: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA
+000000011082: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000011082: (Info ): s_font: rebuild font succes
+000000011082: (Info ): s_font: rebuild font succes
+000000011082: (Info ): s_font: rebuild font succes
+000000011082: (Info ): s_font: rebuild font succes
+000000011082: (Info ): s_font: rebuild font succes
+000000011082: (Info ): s_font: rebuild font succes
+000000011082: (Info ): s_font: rebuild font succes
+000000011083: (Info ): s_font: rebuild font succes
+000000011083: (Info ): s_font: rebuild font succes
+000000011083: (Info ): s_font: rebuild font succes
+000000011083: (Info ): s_font: rebuild font succes
+000000011083: (Info ): s_font: rebuild font succes
+000000011083: (Info ): s_font: rebuild font succes
+000000011083: (Info ): s_font: rebuild font succes
+000000011083: (Info ): s_font: rebuild font succes
+000000011083: (Info ): s_font: rebuild font succes
+000000011083: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000011084: (Debug): Asynchronously loaded OjmL "model3D/Arrokoth/Arrokoth_2M.ojm"
+000000011084: (Debug): Asynchronously loaded OjmL "model3D/Arrokoth/Arrokoth_3H.ojm"
+000000011084: (Debug): Asynchronously loaded OjmL "model3D/Vesta/Vesta_2M.ojm"
+000000011084: (Debug): Asynchronously loaded OjmL "model3D/Vesta/Vesta_3H.ojm"
+000000011084: (Debug): Asynchronously loaded OjmL "model3D/Deimos/Deimos_2M.ojm"
+000000011084: (Debug): Asynchronously loaded OjmL "model3D/Phobos/Phobos_2M.ojm"
+000000011092: (Debug): Loading big textures/bodies/earth_alti.png...
+000000011092: (Debug): Loading cached data for 'textures/bodies/earth_alti.png'
+000000011117: (Debug): big "textures/bodies/earth_alti.png" is ready for use
+000000011117: (Debug): Loading big textures/bodies/earth_normal.jpg...
+000000011117: (Debug): Loading cached data for 'textures/bodies/earth_normal.jpg'
+000000011323: (Debug): Asynchronously loaded OjmL "model3D/Deimos/Deimos_3H.ojm"
+000000011323: (Debug): Asynchronously loaded OjmL "model3D/Phobos/Phobos_3H.ojm"
+000000011472: (Debug): big "textures/bodies/earth_normal.jpg" is ready for use
+000000011472: (Debug): Loading big textures/bodies/earth.jpg...
+000000011473: (Debug): Loading cached data for 'textures/bodies/earth.jpg'
+000000013608: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_01_pre_author.json
+000000013613: (Warn.): Position of 'big_dipper' was used, but its parent 'Universe' has not published a position frame for its parked children: the loaded system's update walk has not visited 'Universe' since 'big_dipper' was parked under it, so there is no frame to compute 'big_dipper' in. This use is REFUSED: 'big_dipper' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'Universe' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'big_dipper' under a body the loaded system walks; or 'big_dipper' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000013613: (Warn.): Position of 'center_sun' was used, but its parent 'Universe' has not published a position frame for its parked children: the loaded system's update walk has not visited 'Universe' since 'center_sun' was parked under it, so there is no frame to compute 'center_sun' in. This use is REFUSED: 'center_sun' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'Universe' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'center_sun' under a body the loaded system walks; or 'center_sun' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000013613: (Warn.): Position of 'galaxy_center' was used, but its parent 'Universe' has not published a position frame for its parked children: the loaded system's update walk has not visited 'Universe' since 'galaxy_center' was parked under it, so there is no frame to compute 'galaxy_center' in. This use is REFUSED: 'galaxy_center' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'Universe' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'galaxy_center' under a body the loaded system walks; or 'galaxy_center' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000013613: (Warn.): Position of 'orbit_autour_point (orbit centre)' was used, but its parent 'Universe' has not published a position frame for its parked children: the loaded system's update walk has not visited 'Universe' since 'orbit_autour_point (orbit centre)' was parked under it, so there is no frame to compute 'orbit_autour_point (orbit centre)' in. This use is REFUSED: 'orbit_autour_point (orbit centre)' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'Universe' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'orbit_autour_point (orbit centre)' under a body the loaded system walks; or 'orbit_autour_point (orbit centre)' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000013613: (Warn.): Position of 'orbit_autour_point' was used, but its parent 'orbit_autour_point (orbit centre)' has not published a position frame for its parked children: the loaded system's update walk has not visited 'orbit_autour_point (orbit centre)' since 'orbit_autour_point' was parked under it, so there is no frame to compute 'orbit_autour_point' in. This use is REFUSED: 'orbit_autour_point' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'orbit_autour_point (orbit centre)' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'orbit_autour_point' under a body the loaded system walks; or 'orbit_autour_point' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000013613: (Warn.): Position of 'pleiades' was used, but its parent 'Universe' has not published a position frame for its parked children: the loaded system's update walk has not visited 'Universe' since 'pleiades' was parked under it, so there is no frame to compute 'pleiades' in. This use is REFUSED: 'pleiades' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'Universe' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'pleiades' under a body the loaded system walks; or 'pleiades' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000013613: (Warn.): Position of 'sun_in_gal' was used, but its parent 'Universe' has not published a position frame for its parked children: the loaded system's update walk has not visited 'Universe' since 'sun_in_gal' was parked under it, so there is no frame to compute 'sun_in_gal' in. This use is REFUSED: 'sun_in_gal' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'Universe' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'sun_in_gal' under a body the loaded system walks; or 'sun_in_gal' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000013613: (Warn.): Position of 'un_point' was used, but its parent 'Universe' has not published a position frame for its parked children: the loaded system's update walk has not visited 'Universe' since 'un_point' was parked under it, so there is no frame to compute 'un_point' in. This use is REFUSED: 'un_point' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'Universe' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'un_point' under a body the loaded system walks; or 'un_point' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000013673: (Debug): big "textures/bodies/earth.jpg" is ready for use
+000000013673: (Debug): Loading big textures/bodies/earth_night.jpg...
+000000013674: (Debug): Loading cached data for 'textures/bodies/earth_night.jpg'
+000000013930: (Debug): big "textures/bodies/earth_night.jpg" is ready for use
+000000013930: (Debug): Loading big textures/bodies/earth_specular.png...
+000000013930: (Debug): Loading cached data for 'textures/bodies/earth_specular.png'
+000000013982: (Debug): big "textures/bodies/earth_specular.png" is ready for use
+000000015824: (Info ): get tcp : body action load name F90ProbeSat type Moon parent Earth radius 0.2 oblateness 0.0 albedo 0.9 lighting false color 0.8,0.9,0.8 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2454804.56951084 orbit_Period 0.0683531232257665 orbit_visualization_period 0.0683531232257665 orbit_SemiMajorAxis 7056.81219499864 orbit_Eccentricity 0.0010418 orbit_Inclination 97.969 orbit_AscendingNode 214.3671 orbit_LongOfPericenter 336.8124 orbit_MeanLongitude 574.4404 orbit_color 0.8,0.9,0.8
+000000015824: (Info ): Loading new Stellar System object... F90ProbeSat
+000000015824: (Info ): Loading body F90ProbeSat
+000000015824: (Debug): Body 'F90ProbeSat': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000018428: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_02_post_author.json
+000000020636: (Info ): get tcp : script action play filename basis/zodiacal_light.sts
+000000020636: (Info ): ScriptMgr: load scripts/basis/zodiacal_light.sts
+000000023739: (Info ): get tcp : script action resume
+000000026537: (Info ): get tcp : search name Mars
+000000026940: (Info ): get tcp : select planet Mars
+000000028544: (Info ): get tcp : get status object
+000000028947: (Info ): get tcp : get status position
+000000029350: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_03_selected.json
+000000031565: (Info ): get tcp : timerate rate 0
+000000032767: (Info ): get tcp : session action save filename f90
+000000032767: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000032767: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA
+000000032767: (Warn.): SkyLineMgr error : getColor not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000032767: (Warn.): SkyLineMgr error : getColor not found LINE_LUNAR_ECLIPSE_UMBRA
+000000032767: (Info ): Session save: the override ledger carries 2 body/bodies
+000000032767: (Info ): Session saved to sessions/f90.ini (18 system(s) in the manifest)
+000000035364: (Info ): get tcp : body action save filename f90sys
+000000035368: (Info ): System 'SolarSystem' saved to modularSystem/f90sys.ini (91 declarations added, 0 already declared, 2 engine-owned bodies skipped) - a new file. It is read instead of this system's source at the next launch.
+000000038371: (Info ): get tcp : session action load filename f90
+000000038371: (Warn.): SkyLineMgr error : setFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000038371: (Warn.): SkyLineMgr error : setFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA
+000000038372: (Info ): Sky locale is fr
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): s_font: rebuild font succes
+000000038372: (Info ): Application locale is fr
+000000038372: (Info ): Localizing TUI for locale: fr
+000000038373: (Warn.): SkyLineMgr error : setColor not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000038373: (Warn.): SkyLineMgr error : setColor not found LINE_LUNAR_ECLIPSE_UMBRA
+000000038373: (Info ): Session restored from sessions/f90.ini
+000000044378: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_04_restored.json
+000000046579: (Info ): get tcp : session action save filename f902
+000000046580: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000046580: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA
+000000046580: (Warn.): SkyLineMgr error : getColor not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000046580: (Warn.): SkyLineMgr error : getColor not found LINE_LUNAR_ECLIPSE_UMBRA
+000000046581: (Info ): Session save: the override ledger carries 2 body/bodies
+000000046581: (Info ): Session saved to sessions/f902.ini (18 system(s) in the manifest)
+000000049190: (Info ): get tcp : camera action follow_rotation name baryEarthMoon value true
+000000050392: (Info ): get tcp : camera action follow_rotation name orbit_autour_lune value true
+000000051593: (Info ): get tcp : body action reload
+000000051594: (Info ): Loading body Sun
+000000051594: (Debug): Body 'Sun': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051594: (Info ): s_texture: already in cache textures/bodies/sun.jpg
+000000051594: (Info ): s_texture: already in cache textures/big_halo.png
+000000051594: (Info ): Loading body Mercury
+000000051594: (Debug): Body 'Mercury': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000051595: (Info ): s_texture: already in cache textures/bodies/mercury.jpg
+000000051595: (Info ): Loading body Venus
+000000051595: (Debug): Body 'Venus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000051595: (Info ): s_texture: already in cache textures/bodies/venus.jpg
+000000051595: (Info ): Loading body Earth
+000000051595: (Debug): Body 'Earth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051595: (Info ): s_texture: already in cache textures/bodies/earth.jpg
+000000051595: (Info ): s_texture: already in cache textures/bodies/earth_night.jpg
+000000051595: (Info ): s_texture: already in cache textures/bodies/earth_specular.png
+000000051595: (Info ): s_texture: already in cache textures/bodies/earth_normal.jpg
+000000051595: (Info ): s_texture: already in cache textures/bodies/earth_alti.png
+000000051595: (Info ): Loading body Moon
+000000051595: (Debug): Body 'Moon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): Adding Moon to Earth binary orbit.
+000000051596: (Info ): s_texture: already in cache textures/bodies/moon.jpg
+000000051596: (Info ): s_texture: already in cache textures/bodies/moon_normal.jpg
+000000051596: (Info ): s_texture: already in cache textures/bodies/moon_alti.jpg
+000000051596: (Info ): Loading body Mars
+000000051596: (Debug): Body 'Mars': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/mars.jpg
+000000051596: (Info ): s_texture: already in cache textures/bodies/mars_normal.jpg
+000000051596: (Info ): s_texture: already in cache textures/bodies/mars_alti.jpg
+000000051596: (Info ): Loading body Phobos
+000000051596: (Debug): Body 'Phobos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/phobos.jpg
+000000051596: (Info ): Loading body Deimos
+000000051596: (Debug): Body 'Deimos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000051596: (Info ): Loading body Jupiter
+000000051596: (Debug): Body 'Jupiter': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/jupiter_rings.png
+000000051596: (Info ): s_texture: already in cache textures/bodies/jupiter.png
+000000051596: (Info ): Loading body Metis
+000000051596: (Debug): Body 'Metis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051596: (Info ): Loading body Adrastea
+000000051596: (Debug): Body 'Adrastea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051596: (Info ): Loading body Amalthea
+000000051596: (Debug): Body 'Amalthea': rot_pole_w0 (IAU W0=231.67 deg, from the ICRF-equator node) converted to rot_rotation_offset 258.121552 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051596: (Info ): s_texture: already in cache textures/bodies/amalthea.png
+000000051596: (Info ): Loading body Thebe
+000000051596: (Debug): Body 'Thebe': rot_pole_w0 (IAU W0=8.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 29.457403 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051596: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051596: (Info ): Loading body Io
+000000051596: (Debug): Body 'Io': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/io.png
+000000051596: (Info ): s_texture: already in cache textures/bodies/io_night.png
+000000051596: (Info ): Loading body Europa
+000000051596: (Debug): Body 'Europa': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/europa.png
+000000051596: (Info ): Loading body Ganymede
+000000051596: (Debug): Body 'Ganymede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/ganymede.png
+000000051596: (Info ): Loading body Callisto
+000000051596: (Debug): Body 'Callisto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/callisto.png
+000000051596: (Info ): Loading body Himalia
+000000051596: (Debug): Body 'Himalia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051596: (Info ): Loading body Elara
+000000051596: (Debug): Body 'Elara': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051596: (Info ): Loading body Carme
+000000051596: (Debug): Body 'Carme': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051596: (Info ): Loading body Pasiphae
+000000051596: (Debug): Body 'Pasiphae': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051596: (Info ): Loading body Lysithea
+000000051596: (Debug): Body 'Lysithea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051596: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Ananke
+000000051597: (Debug): Body 'Ananke': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Sinope
+000000051597: (Debug): Body 'Sinope': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Leda
+000000051597: (Debug): Body 'Leda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Saturn
+000000051597: (Debug): Body 'Saturn': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/saturn_rings_radial.png
+000000051597: (Info ): s_texture: already in cache textures/bodies/saturn.jpg
+000000051597: (Info ): Loading body Pan
+000000051597: (Debug): Body 'Pan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000051597: (Info ): Loading body Daphnis
+000000051597: (Debug): Body 'Daphnis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000051597: (Info ): Loading body Prometheus
+000000051597: (Debug): Body 'Prometheus': rot_pole_w0 (IAU W0=296.14 deg, from the ICRF-equator node) converted to rot_rotation_offset 256.175446 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Pandora
+000000051597: (Debug): Body 'Pandora': rot_pole_w0 (IAU W0=162.92 deg, from the ICRF-equator node) converted to rot_rotation_offset 122.955437 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/asteroid.png
+000000051597: (Info ): Loading body Epimetheus
+000000051597: (Debug): Body 'Epimetheus': rot_pole_w0 (IAU W0=293.87 deg, from the ICRF-equator node) converted to rot_rotation_offset 254.618652 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/asteroid.png
+000000051597: (Info ): Loading body Janus
+000000051597: (Debug): Body 'Janus': rot_pole_w0 (IAU W0=58.83 deg, from the ICRF-equator node) converted to rot_rotation_offset 18.439495 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Titan
+000000051597: (Debug): Body 'Titan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/titan.png
+000000051597: (Info ): s_texture: already in cache textures/bodies/atm_gradient3.png
+000000051597: (Info ): Loading body Mimas
+000000051597: (Debug): Body 'Mimas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/mimas.png
+000000051597: (Info ): Loading body Enceladus
+000000051597: (Debug): Body 'Enceladus': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/enceladus.png
+000000051597: (Info ): Loading body Dione
+000000051597: (Debug): Body 'Dione': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/dione.png
+000000051597: (Info ): Loading body Tethys
+000000051597: (Debug): Body 'Tethys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/tethys.png
+000000051597: (Info ): Loading body Rhea
+000000051597: (Debug): Body 'Rhea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/rhea.png
+000000051597: (Info ): Loading body Hyperion
+000000051597: (Debug): Body 'Hyperion': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051597: (Warn.): Body 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000051597: (Info ): s_texture: already in cache textures/bodies/hyperion.png
+000000051597: (Info ): Loading body Iapetus
+000000051597: (Debug): Body 'Iapetus': rot_pole_w0 (IAU W0=355.2 deg, from the ICRF-equator node) converted to rot_rotation_offset 261.467072 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/iapetus.png
+000000051597: (Info ): s_texture: already in cache textures/bodies/moon_normal.png
+000000051597: (Info ): s_texture: already in cache textures/bodies/iapetus_alti.png
+000000051597: (Info ): Loading body Telesto
+000000051597: (Debug): Body 'Telesto': rot_pole_w0 (IAU W0=56.88 deg, from the ICRF-equator node) converted to rot_rotation_offset 24.588358 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Helene
+000000051597: (Debug): Body 'Helene': rot_pole_w0 (IAU W0=245.12 deg, from the ICRF-equator node) converted to rot_rotation_offset 205.606384 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Uranus
+000000051597: (Debug): Body 'Uranus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000051597: (Info ): s_texture: already in cache textures/bodies/uranusring.png
+000000051597: (Info ): s_texture: already in cache textures/bodies/uranus.png
+000000051597: (Info ): Loading body Juliet
+000000051597: (Debug): Body 'Juliet': rot_pole_w0 (IAU W0=302.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 307.635773 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Portia
+000000051597: (Debug): Body 'Portia': rot_pole_w0 (IAU W0=25.03 deg, from the ICRF-equator node) converted to rot_rotation_offset 30.123623 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Rosalind
+000000051597: (Debug): Body 'Rosalind': rot_pole_w0 (IAU W0=314.90 deg, from the ICRF-equator node) converted to rot_rotation_offset 319.999634 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051597: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051597: (Info ): Loading body Belinda
+000000051597: (Debug): Body 'Belinda': rot_pole_w0 (IAU W0=297.46 deg, from the ICRF-equator node) converted to rot_rotation_offset 302.530396 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Puck
+000000051598: (Debug): Body 'Puck': rot_pole_w0 (IAU W0=91.24 deg, from the ICRF-equator node) converted to rot_rotation_offset 96.381638 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Miranda
+000000051598: (Debug): Body 'Miranda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/miranda.png
+000000051598: (Info ): Loading body Ariel
+000000051598: (Debug): Body 'Ariel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/ariel.png
+000000051598: (Info ): Loading body Umbriel
+000000051598: (Debug): Body 'Umbriel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/umbriel.png
+000000051598: (Info ): Loading body Titania
+000000051598: (Debug): Body 'Titania': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/titania.png
+000000051598: (Info ): Loading body Oberon
+000000051598: (Debug): Body 'Oberon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/oberon.png
+000000051598: (Info ): Loading body Caliban
+000000051598: (Debug): Body 'Caliban': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Sycorax
+000000051598: (Debug): Body 'Sycorax': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Prospero
+000000051598: (Debug): Body 'Prospero': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Setebos
+000000051598: (Debug): Body 'Setebos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Neptune
+000000051598: (Debug): Body 'Neptune': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/neptune_rings.png
+000000051598: (Info ): s_texture: already in cache textures/bodies/neptune.png
+000000051598: (Info ): Loading body Naiad
+000000051598: (Debug): Body 'Naiad': rot_pole_w0 (IAU W0=254.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 230.775604 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Thalassa
+000000051598: (Debug): Body 'Thalassa': rot_pole_w0 (IAU W0=102.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 77.728737 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Despina
+000000051598: (Debug): Body 'Despina': rot_pole_w0 (IAU W0=306.51 deg, from the ICRF-equator node) converted to rot_rotation_offset 282.446777 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Galatea
+000000051598: (Debug): Body 'Galatea': rot_pole_w0 (IAU W0=258.09 deg, from the ICRF-equator node) converted to rot_rotation_offset 234.041214 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Larissa
+000000051598: (Debug): Body 'Larissa': rot_pole_w0 (IAU W0=179.41 deg, from the ICRF-equator node) converted to rot_rotation_offset 155.537094 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Proteus
+000000051598: (Debug): Body 'Proteus': rot_pole_w0 (IAU W0=93.38 deg, from the ICRF-equator node) converted to rot_rotation_offset 69.711334 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000051598: (Info ): s_texture: already in cache textures/bodies/proteus.png
+000000051598: (Info ): Loading body Triton
+000000051598: (Debug): Body 'Triton': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/triton.png
+000000051598: (Info ): Loading body Neried
+000000051598: (Debug): Body 'Neried': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Halimede
+000000051598: (Debug): Body 'Halimede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Sao
+000000051598: (Debug): Body 'Sao': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Laomedeia
+000000051598: (Debug): Body 'Laomedeia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Psamathe
+000000051598: (Debug): Body 'Psamathe': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Neso
+000000051598: (Debug): Body 'Neso': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Ceres
+000000051598: (Debug): Body 'Ceres': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/ceres.jpg
+000000051598: (Info ): Loading body Pallas
+000000051598: (Debug): Body 'Pallas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Juno
+000000051598: (Debug): Body 'Juno': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Warn.): Body 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000051598: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051598: (Info ): Loading body Vesta
+000000051598: (Debug): Body 'Vesta': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Warn.): Body 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000051598: (Info ): s_texture: already in cache textures/bodies/vesta.jpg
+000000051598: (Info ): Loading body Pluto
+000000051598: (Debug): Body 'Pluto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051598: (Info ): s_texture: already in cache textures/bodies/pluto.png
+000000051598: (Info ): Loading body Charon
+000000051598: (Debug): Body 'Charon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/charon.png
+000000051599: (Info ): Loading body Nix
+000000051599: (Debug): Body 'Nix': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Hydra_
+000000051599: (Debug): Body 'Hydra_': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Styx
+000000051599: (Debug): Body 'Styx': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Kerberos
+000000051599: (Debug): Body 'Kerberos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Eris
+000000051599: (Debug): Body 'Eris': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Haumea
+000000051599: (Debug): Body 'Haumea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Namaka
+000000051599: (Debug): Body 'Namaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Hiiaka
+000000051599: (Debug): Body 'Hiiaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Makemake
+000000051599: (Debug): Body 'Makemake': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/makemake.jpg
+000000051599: (Warn.): Ignoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.
+000000051599: (Info ): Loading body Sedna
+000000051599: (Debug): Body 'Sedna': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Arrokoth
+000000051599: (Debug): Body 'Arrokoth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Solar_System
+000000051599: (Debug): Body 'Solar_System': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): Loading body Goldilocks_Zone
+000000051599: (Debug): Body 'Goldilocks_Zone': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000051599: (Info ): s_texture: already in cache textures/bodies/goldilocks_zone.png
+000000051599: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000051599: (Info ): (system SolarSystem loaded)
+000000051599: =================================================================
+000000051599: (Info ): System 'SolarSystem' reloaded (observer state kept)
+000000057600: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_05_post_reload.json
+000000059823: (Info ): get tcp : camera action follow_rotation name baryEarthMoon value true
+000000061024: (Info ): get tcp : camera action follow_rotation name orbit_autour_lune value true
+000000062225: (Info ): get tcp : camera action switch name baryEarthMoon
+000000062225: (Info ): Anchor 'baryEarthMoon': its body is gone (system reload?) - rebuilding it from the anchor declaration.
+000000062225: (Warn.): Position of 'baryEarthMoon' was used, but its parent 'Earth' has not published a position frame for its parked children: the loaded system's update walk has not visited 'Earth' since 'baryEarthMoon' was parked under it, so there is no frame to compute 'baryEarthMoon' in. This use is REFUSED: 'baryEarthMoon' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'Earth' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'baryEarthMoon' under a body the loaded system walks; or 'baryEarthMoon' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000064830: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_06_after_switch_baryEarthMoon.json
+000000067038: (Info ): get tcp : camera action switch name orbit_autour_lune
+000000067038: (Info ): Anchor 'orbit_autour_lune': its body is gone (system reload?) - rebuilding it from the anchor declaration.
+000000067038: (Warn.): Position of 'orbit_autour_lune' was used, but its parent 'Moon' has not published a position frame for its parked children: the loaded system's update walk has not visited 'Moon' since 'orbit_autour_lune' was parked under it, so there is no frame to compute 'orbit_autour_lune' in. This use is REFUSED: 'orbit_autour_lune' keeps its unevaluated position (the zero vector), so its distance, RA/DE, alt/az and magnitude stay the degenerate readout instead of becoming a plausible-looking wrong one. Two ways to be here: 'Moon' is OUTSIDE that walk and always will be (the walk stops at the system node, so anything under the universe root is) - then declare 'orbit_autour_lune' under a body the loaded system walks; or 'orbit_autour_lune' was created or reloaded just now - then the next frame's walk publishes and the use after it is served.
+000000069642: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_07_after_switch_orbit_autour_lune.json
+000000071850: (Info ): get tcp : camera action switch name Earth
+000000074455: (Info ): get tcp : search name F90ProbeSat
+000000074857: (Info ): get tcp : select planet F90ProbeSat
+000000076462: (Info ): get tcp : get status object
+000000076864: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_08_fov.json
+000000082121: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_09_fov.json
+000000087378: (Info ): get tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_10_fov.json
+000000089587: (Info ): get tcp : shutdown action now
+000000089624: (Info ): File file.lock successfully deleted
+000000089633: (Info ): Stopping frame encoding stream
+000000089692: (Info ): SkyDisplayMgr : delete SkyPersonAL
+000000089692: (Info ): SkyDisplayMgr : delete SkyPersonEQ
+000000089692: (Info ): SkyDisplayMgr : delete SkyNauticAL
+000000089692: (Info ): SkyDisplayMgr : delete SkyNauticEQ
+000000089692: (Info ): SkyDisplayMgr : delete SkyOrthodromy
+000000089692: (Info ): SkyDisplayMgr : delete SkyLoxodromy
+000000089692: (Info ): SkyDisplayMgr : delete SkyObjCoords
+000000089692: (Info ): SkyDisplayMgr : delete SkyMouseCoords
+000000089692: (Info ): SkyDisplayMgr : delete SkyAngDist
+000000089692: (Info ): SkyLineMgr : delete LINE_CIRCLE_POLAR
+000000089692: (Info ): SkyLineMgr : delete LINE_POINT_POLAR
+000000089692: (Info ): SkyLineMgr : delete LINE_ECLIPTIC_POLE
+000000089692: (Info ): SkyLineMgr : delete LINE_GALACTIC_POLE
+000000089692: (Info ): SkyLineMgr : delete LINE_ANALEMMA
+000000089692: (Info ): SkyLineMgr : delete LINE_ANALEMMALINE
+000000089692: (Info ): SkyLineMgr : delete LINE_CIRCUMPOLAR
+000000089692: (Info ): SkyLineMgr : delete LINE_GALACTIC_CENTER
+000000089692: (Info ): SkyLineMgr : delete LINE_VERNAL
+000000089692: (Info ): SkyLineMgr : delete LINE_GREENWICH
+000000089692: (Info ): SkyLineMgr : delete LINE_ARIES
+000000089692: (Info ): SkyLineMgr : delete LINE_EQUATOR
+000000089692: (Info ): SkyLineMgr : delete LINE_GALACTIC_EQUATOR
+000000089692: (Info ): SkyLineMgr : delete LINE_MERIDIAN
+000000089692: (Info ): SkyLineMgr : delete LINE_TROPIC
+000000089692: (Info ): SkyLineMgr : delete LINE_ECLIPTIC
+000000089692: (Info ): SkyLineMgr : delete LINE_PRECESSION
+000000089692: (Info ): SkyLineMgr : delete LINE_VERTICAL
+000000089692: (Info ): SkyLineMgr : delete LINE_ZODIAC
+000000089692: (Info ): SkyLineMgr : delete LINE_ZENITH
+000000089692: (Info ): SkyGridMgr : delete GRID_EQUATORIAL
+000000089692: (Info ): SkyGridMgr : delete GRID_ECLIPTIC
+000000089692: (Info ): SkyGridMgr : delete GRID_GALACTIC
+000000089692: (Info ): SkyGridMgr : delete GRID_ALTAZIMUTAL
+000000089932: (Info ): Audio support end
+000000089953: (Warn.): Force unloading of textures/star16x16.png used 1 times
+000000089953: (Warn.): Force unloading of textures/tex_nebulaes.png used 1 times
+000000089956: (Info ): Total blocking texture loading time : 9412ms
+(Info ): EOF

@@ -827,7 +827,7 @@ test -e /home/claude/sc-f116 ; echo $? => 1
 ```
 
 **DoD:** predictions first; the constant + counters + in-session rotation + the D12 line; the mutated-budget proof both ways; the readers green; §11 entry + stub; §5.115's size bound FIXED in the marker; the §11.230 / §11.233 markers; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-12 14:5x — gate PASS (18/18 + prose; canary exit 0 14:38:19); baselines at open scan 277/347/144, pair 252/227/25/125 (D36 D2 12 I93 I2 37 M95); predictions committed; THE FIX IS IN at code `8cca5ddf` (binary `fada7b10`), `f108_rotate.py` 2 launches 0 FAIL on a farm, delivered arm measured (17.3 MiB written, ZERO in-session rotations at 1 GiB), `prediction_mutant.txt` committed with the exact numbers. NEXT: build M1 (budget 4 MiB + instrumentation, `log.cpp` only) and M2 (rule (a)) and run them.
+**WIP:** 2026-09-12 15:1x — ALL MEASUREMENT DONE, records left. Code `8cca5ddf` + `e922235a` (the console replay for a rotation that fires before `setDebug`), binary **`95087b68`**, reproduced bit-for-bit twice after reverting the mutants. Arms: delivered 17.3 MiB written / 0 in-session rotations; M1 (4 MiB) 32 rotations = 4 bursts of 8, every pre-registered number hit, counter exact to the byte (delta 0); M1 seeded 6 rotations vs M2 (rule (a)) **11 987** — the storm measured, rule (c) confirmed; `f108_rotate.py` 3 launches on the REAL home 0 FAIL; `logread.py` 32 PASS + its own mutant 31/1; smoke rc 0 FAIL none; F91 0 FAIL, table md5 `1fe630a4`. NEXT: `INTENT/11.237.md` + stub, §5.115 / §11.230 / §11.233 markers, README, baselines LAST.
 
 ---
 

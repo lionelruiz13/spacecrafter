@@ -21,6 +21,18 @@ real; `sorted(glob("script-*.log"))[-1]` is what six of those nine had, and it
 returns NOTHING in the new layout (the glob needs a dash).  The rule lives here
 once instead:
 
+SINCE Sec.11.237 AN ARCHIVE IS NOT ALWAYS AN EARLIER LAUNCH.  The channels now
+also have a TOTAL size budget (LOG_RETENTION_BYTES, 1 GiB), and when it is
+crossed the channel holding the most bytes rotates IN SESSION: its live file
+becomes `.1.log` while the same process keeps running.  The file names and the
+selection rule are unchanged -- which is why nothing here had to move -- but the
+MEANING of `.1.log` widened: it is "the previous file of this channel", which is
+the previous launch until a session rotates, and an earlier slice of the RUNNING
+launch after that.  A reader that wants everything this session wrote must
+therefore read the window, not the live file alone: `window_text` does that, and
+`text` keeps the old two-line idiom for the nine readers that want the file the
+launch is writing NOW.
+
   * `live(logdir, channel)` is the file THIS launch wrote.  It is
     `<channel>.log`, except in a directory written by a pre-Sec.11.230 binary,
     where the newest dated file is newer -- landed artifacts keep working
@@ -62,7 +74,9 @@ def legacy(logdir, channel="script"):
 
 
 def archives(logdir, channel="script"):
-    """The numbered archives, NEWEST FIRST (`.1.log` is the previous launch)."""
+    """The numbered archives, NEWEST FIRST (`.1.log` is the channel's previous
+    file: the previous LAUNCH, or -- since Sec.11.237's size budget -- an earlier
+    slice of the running one)."""
     d = Path(logdir)
     if not d.is_dir():
         return []
@@ -113,6 +127,38 @@ def text(logdir, channel="script", encoding="latin-1"):
     if p is None:
         return ""
     return p.read_bytes().decode(encoding, errors="replace")
+
+
+def window_text(logdir, channel="script", encoding="latin-1"):
+    """The whole retention window as ONE text, OLDEST FIRST -- what the channel
+    holds, in the order it was written.
+
+    This is the reader an in-session rotation needs (Sec.11.237): a line written
+    before the size budget was reached is no longer in the live file, it is in
+    `.1.log`, and `text()` would not see it.  Same latin-1 rule as `text`."""
+    parts = []
+    for p in reversed(history(logdir, channel)):
+        parts.append(p.read_bytes().decode(encoding, errors="replace"))
+    return "".join(parts)
+
+
+def budget(hpp=None):
+    """LOG_RETENTION_BYTES, read from the source rather than recalled -- the
+    same reason as `window`: an instrument that hard-codes 1 GiB cannot notice
+    the constant moving, and a scratch build may carry another number."""
+    if hpp is None:
+        hpp = Path(__file__).resolve().parent.parent.parent / "src/tools/log.hpp"
+    m = re.search(r"LOG_RETENTION_BYTES\s*=\s*([^;]+);",
+                  Path(hpp).read_text(encoding="latin-1"))
+    if not m:
+        raise RuntimeError("LOG_RETENTION_BYTES not found in %s" % hpp)
+    # The constant is written as a product of decimal literals
+    # ("1024u * 1024u * 1024u"), so multiply what is there rather than
+    # evaluating source text.
+    value = 1
+    for n in re.findall(r"\d+", m.group(1)):
+        value *= int(n)
+    return value
 
 
 def window(hpp=None):
@@ -221,6 +267,31 @@ def selftest():
 
         # (7) the window comes from the source, not from here
         check("window() reads the constant", window() >= 2, True)
+        check("budget() reads the constant", budget() >= 1024 * 1024, True)
+
+    # (8) AN IN-SESSION ROTATION (Sec.11.237): ONE launch whose channel was
+    # rotated by the size budget, so `.1.log` holds the SAME launch's earlier
+    # bytes.  The rule must still answer "what is this launch writing now" with
+    # the live file, and a reader that wants the whole session must get the
+    # window in writing order -- which is the check that fails if window_text
+    # ever returns newest-first or drops the archives.
+    with tempfile.TemporaryDirectory() as td:
+        d = Path(td)
+        _touch(d / "script.2.log", "slice one\n", 1000)     # oldest slice
+        _touch(d / "script.1.log", "slice two\n", 2000)
+        _touch(d / "script.log", "slice three\n", 3000)     # the running file
+        check("in-session: live is still the live name", nm(live(d)), "script.log")
+        check("in-session: text is only what is being written now",
+              text(d).strip(), "slice three")
+        check("in-session: the earlier slice is NOT in text",
+              "slice one" in text(d), False)
+        check("in-session: window_text is the whole session, oldest first",
+              window_text(d).split(), ["slice", "one", "slice", "two", "slice", "three"])
+        check("in-session: history is newest first",
+              [p.name for p in history(d)],
+              ["script.log", "script.1.log", "script.2.log"])
+        check("in-session: an empty channel's window_text is empty",
+              window_text(d, "tcp"), "")
 
     print("\n%d PASS, %d FAIL" % (ok, fail))
     return 1 if fail else 0

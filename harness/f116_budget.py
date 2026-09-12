@@ -180,6 +180,8 @@ def main():
           % (show, a.iters, per_line))
     print("budget the binary was built with (scoring) = %d B" % a.budget)
 
+    before_launch = snapshot(logdir)
+    print("total the app will FIND in the directory = %d B" % before_launch["total"])
     app = App(a.bin, a.farm, out, a.label)
     t_port = app.start()
     pre = snapshot(logdir)
@@ -255,8 +257,19 @@ def main():
         over = first["total_before"] - a.budget if first["total_before"] else None
         (ok if first["budget"] == a.budget else fail)(
             "the line names the budget the binary carries (%s)" % first["budget"])
-        (ok if over is not None and 0 < over <= 600 else fail)(
-            "the first crossing is at most one line above the budget (+%s B)" % over)
+        # `pre` is taken once the app is up, i.e. AFTER any startup rotation has
+        # already shed what the directory held; the state the app FOUND is the
+        # one measured before the launch.
+        if max(pre["total"], before_launch["total"]) > a.budget:
+            # The directory was ALREADY over the budget when the app opened it
+            # (the seeded arm, and the field's own upgrade case): the first
+            # crossing is then the state found, not a line that crossed it.
+            note("the directory opened %d B above the budget, so the first "
+                 "line's total (+%s B) measures the state found, not a crossing"
+                 % (max(pre["total"], before_launch["total"]) - a.budget, over))
+        else:
+            (ok if over is not None and 0 < over <= 600 else fail)(
+                "the first crossing is at most one line above the budget (+%s B)" % over)
         for rec in console:
             if rec["kept"] is None or rec["kept"] > window:
                 fail("a line claims %s slots of %d" % (rec["kept"], window))
@@ -283,7 +296,7 @@ def main():
             "the counter is exact: %d on disk == %d counted + 5x13 EOF (delta %d)"
             % (disk, counters["total"], disk - expect))
 
-    res = {"label": a.label, "bin": a.bin, "bin_md5": md5(a.bin), "rc": rc,
+    res = {"before_launch": before_launch, "label": a.label, "bin": a.bin, "bin_md5": md5(a.bin), "rc": rc,
            "budget_scored": a.budget, "iters": a.iters, "per_line": per_line,
            "window": window, "seed": a.seed,
            "pre": pre, "post": post, "peak": worst,

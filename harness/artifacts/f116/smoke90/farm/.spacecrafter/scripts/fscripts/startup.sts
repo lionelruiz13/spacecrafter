@@ -1,0 +1,6 @@
+#star_lines load asterism_all.fab
+#font target cardinal_points filename Cyberbit.ttf size 32
+### Video play Loop - SpaceCrafter script
+#media action play keycolor off videoname ../../vr360/santa_claus_village-rendershade360.mp4 type VR360 audioname ../../vr360/santa_claus_village-rendershade360.ogg keycolor off loop on
+timerate rate 1
+flag subtitle off

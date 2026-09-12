@@ -1,0 +1,63 @@
+000000010706: (Info ): ScriptMgr: script end
+000000011052: (Info ): End of loading SC
+000000011082: (Info ): ScriptMgr: script end
+000000011083: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000011083: (Info ): Execute_command deselect
+000000011083: (Info ): Execute_command deselect
+000000011084: (Info ): Execute_command timerate rate 1
+000000011084: (Info ): Execute_command flag subtitle off
+000000011084: (Info ): End of script
+000000011084: (Info ): Execute_command script action end
+000000011084: (Info ): ScriptMgr: script end
+000000013608: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_01_pre_author.json
+000000015824: (Info ): Execute_command body action load name F90ProbeSat type Moon parent Earth radius 0.2 oblateness 0.0 albedo 0.9 lighting false color 0.8,0.9,0.8 tex_map earth_sats/sattext001.png halo true tex_halo earth_sats/NULLw.png big_halo false big_halo_size 8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2454804.56951084 orbit_Period 0.0683531232257665 orbit_visualization_period 0.0683531232257665 orbit_SemiMajorAxis 7056.81219499864 orbit_Eccentricity 0.0010418 orbit_Inclination 97.969 orbit_AscendingNode 214.3671 orbit_LongOfPericenter 336.8124 orbit_MeanLongitude 574.4404 orbit_color 0.8,0.9,0.8
+000000018428: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_02_post_author.json
+000000020636: (Info ): Execute_command script action play filename basis/zodiacal_light.sts
+000000020636: (Info ): ScriptMgr: load scripts/basis/zodiacal_light.sts
+000000020643: (Info ): Execute_command image name 01 filename zodiacal_light/zodiacale.png coordinate_system viewport alpha 0 scale 1 action load
+000000020724: (Info ): Execute_command wait duration 0.5
+000000021148: (Info ): Execute_command image name 01 alpha 1 duration 2
+000000021149: (Info ): Execute_command wait duration 2.5
+000000023649: (Info ): Execute_command script action pause
+000000023649: (Info ): Execute_command timerate action pause
+000000023649: (Info ): ScriptMgr::script action pause
+000000023739: (Info ): Execute_command script action resume
+000000023739: (Info ): Execute_command timerate action resume
+000000023739: (Info ): ScriptMgr::script action resume
+000000023746: (Info ): Execute_command image name 01 alpha 0 duration 2
+000000023746: (Info ): Execute_command wait duration 2.5
+000000026246: (Info ): Execute_command script action end
+000000026246: (Info ): ScriptMgr: script end
+000000026246: (Info ): End of script
+000000026246: (Info ): Execute_command script action end
+000000026246: (Info ): ScriptMgr: script end
+000000026537: (Info ): Execute_command search name Mars
+000000026940: (Info ): Execute_command select planet Mars
+000000028544: (Info ): Execute_command get status object
+000000028947: (Info ): Execute_command get status position
+000000029350: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_03_selected.json
+000000031565: (Info ): Execute_command timerate rate 0
+000000032767: (Info ): Execute_command session action save filename f90
+000000035364: (Info ): Execute_command body action save filename f90sys
+000000038371: (Info ): Execute_command session action load filename f90
+000000044378: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_04_restored.json
+000000046579: (Info ): Execute_command session action save filename f902
+000000049190: (Info ): Execute_command camera action follow_rotation name baryEarthMoon value true
+000000050392: (Info ): Execute_command camera action follow_rotation name orbit_autour_lune value true
+000000051593: (Info ): Execute_command body action reload
+000000057600: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_05_post_reload.json
+000000059823: (Info ): Execute_command camera action follow_rotation name baryEarthMoon value true
+000000061024: (Info ): Execute_command camera action follow_rotation name orbit_autour_lune value true
+000000062225: (Info ): Execute_command camera action switch name baryEarthMoon
+000000064830: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_06_after_switch_baryEarthMoon.json
+000000067038: (Info ): Execute_command camera action switch name orbit_autour_lune
+000000069642: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_07_after_switch_orbit_autour_lune.json
+000000071851: (Info ): Execute_command camera action switch name Earth
+000000074455: (Info ): Execute_command search name F90ProbeSat
+000000074857: (Info ): Execute_command select planet F90ProbeSat
+000000076462: (Info ): Execute_command get status object
+000000076864: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_08_fov.json
+000000082121: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_09_fov.json
+000000087378: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f116/smoke90/run_10_fov.json
+000000089587: (Info ): Execute_command shutdown action now
+(Info ): EOF

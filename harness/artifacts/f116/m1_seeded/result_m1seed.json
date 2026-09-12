@@ -1,0 +1,276 @@
+{
+ "before_launch": {
+  "channels": {
+   "spacecrafter": [],
+   "script": [],
+   "tcp": [],
+   "shader": [
+    [
+     "shader.1.log",
+     6291456
+    ]
+   ],
+   "vulkan": []
+  },
+  "total": 6291456
+ },
+ "label": "m1seed",
+ "bin": "/home/claude/sc-f116/sc_m1b_budget4M",
+ "bin_md5": "d71a7e82820c5cb9ba94931d7e706f98",
+ "rc": 0,
+ "budget_scored": 4194304,
+ "iters": 5000,
+ "per_line": 299,
+ "window": 8,
+ "seed": "shader:6291456",
+ "pre": {
+  "channels": {
+   "spacecrafter": [
+    [
+     "spacecrafter.log",
+     82602
+    ]
+   ],
+   "script": [
+    [
+     "script.log",
+     546
+    ]
+   ],
+   "tcp": [
+    [
+     "tcp.log",
+     0
+    ]
+   ],
+   "shader": [
+    [
+     "shader.log",
+     0
+    ],
+    [
+     "shader.1.log",
+     0
+    ],
+    [
+     "shader.2.log",
+     0
+    ],
+    [
+     "shader.3.log",
+     0
+    ],
+    [
+     "shader.4.log",
+     0
+    ],
+    [
+     "shader.5.log",
+     0
+    ],
+    [
+     "shader.6.log",
+     0
+    ]
+   ],
+   "vulkan": [
+    [
+     "vulkan.log",
+     100310
+    ]
+   ]
+  },
+  "total": 183458
+ },
+ "post": {
+  "channels": {
+   "spacecrafter": [
+    [
+     "spacecrafter.log",
+     85293
+    ]
+   ],
+   "script": [
+    [
+     "script.log",
+     1496312
+    ]
+   ],
+   "tcp": [
+    [
+     "tcp.log",
+     13
+    ]
+   ],
+   "shader": [
+    [
+     "shader.log",
+     13
+    ],
+    [
+     "shader.1.log",
+     0
+    ],
+    [
+     "shader.2.log",
+     0
+    ],
+    [
+     "shader.3.log",
+     0
+    ],
+    [
+     "shader.4.log",
+     0
+    ],
+    [
+     "shader.5.log",
+     0
+    ],
+    [
+     "shader.6.log",
+     0
+    ]
+   ],
+   "vulkan": [
+    [
+     "vulkan.log",
+     100419
+    ]
+   ]
+  },
+  "total": 1682050
+ },
+ "peak": {
+  "channels": {
+   "spacecrafter": [
+    [
+     "spacecrafter.log",
+     82866
+    ]
+   ],
+   "script": [
+    [
+     "script.log",
+     1496002
+    ]
+   ],
+   "tcp": [
+    [
+     "tcp.log",
+     0
+    ]
+   ],
+   "shader": [
+    [
+     "shader.log",
+     0
+    ],
+    [
+     "shader.1.log",
+     0
+    ],
+    [
+     "shader.2.log",
+     0
+    ],
+    [
+     "shader.3.log",
+     0
+    ],
+    [
+     "shader.4.log",
+     0
+    ],
+    [
+     "shader.5.log",
+     0
+    ],
+    [
+     "shader.6.log",
+     0
+    ]
+   ],
+   "vulkan": [
+    [
+     "vulkan.log",
+     100310
+    ]
+   ]
+  },
+  "total": 1679178,
+  "t": 0.041
+ },
+ "console_rotations": [
+  {
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (shader.log): the 4194304-byte budget for all log files together was reached (6291768 bytes in use), so this launch's own shader.log is now shader.1.log and a fresh one is open - it is the channel holding the most, and it now uses 3 of the last 8 slots, one fewer for earlier launches. Deleted nothing (this channel had no older file to drop), 6291768 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "channel": "shader",
+   "budget": 4194304,
+   "total_before": 6291768,
+   "deleted": null,
+   "deleted_size": 0,
+   "kept": 3,
+   "total_after": 6291768
+  },
+  {
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (shader.log): the 4194304-byte budget for all log files together was reached (6292657 bytes in use), so this launch's own shader.log is now shader.1.log and a fresh one is open - it is the channel holding the most, and it now uses 4 of the last 8 slots, one fewer for earlier launches. Deleted nothing (this channel had no older file to drop), 6292657 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "channel": "shader",
+   "budget": 4194304,
+   "total_before": 6292657,
+   "deleted": null,
+   "deleted_size": 0,
+   "kept": 4,
+   "total_after": 6292657
+  },
+  {
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (shader.log): the 4194304-byte budget for all log files together was reached (6293543 bytes in use), so this launch's own shader.log is now shader.1.log and a fresh one is open - it is the channel holding the most, and it now uses 5 of the last 8 slots, one fewer for earlier launches. Deleted nothing (this channel had no older file to drop), 6293543 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "channel": "shader",
+   "budget": 4194304,
+   "total_before": 6293543,
+   "deleted": null,
+   "deleted_size": 0,
+   "kept": 5,
+   "total_after": 6293543
+  },
+  {
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (shader.log): the 4194304-byte budget for all log files together was reached (6294432 bytes in use), so this launch's own shader.log is now shader.1.log and a fresh one is open - it is the channel holding the most, and it now uses 6 of the last 8 slots, one fewer for earlier launches. Deleted nothing (this channel had no older file to drop), 6294432 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "channel": "shader",
+   "budget": 4194304,
+   "total_before": 6294432,
+   "deleted": null,
+   "deleted_size": 0,
+   "kept": 6,
+   "total_after": 6294432
+  },
+  {
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (shader.log): the 4194304-byte budget for all log files together was reached (6295321 bytes in use), so this launch's own shader.log is now shader.1.log and a fresh one is open - it is the channel holding the most, and it now uses 7 of the last 8 slots, one fewer for earlier launches. Deleted nothing (this channel had no older file to drop), 6295321 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "channel": "shader",
+   "budget": 4194304,
+   "total_before": 6295321,
+   "deleted": null,
+   "deleted_size": 0,
+   "kept": 7,
+   "total_after": 6295321
+  },
+  {
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (shader.log): the 4194304-byte budget for all log files together was reached (6295970 bytes in use), so this launch's own shader.log is now shader.1.log and a fresh one is open - it is the channel holding the most, and it now uses 7 of the last 8 slots, one fewer for earlier launches. Deleted log/shader.7.log (6291456 bytes, the oldest file of this channel), 4514 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "channel": "shader",
+   "budget": 4194304,
+   "total_before": 6295970,
+   "deleted": "log/shader.7.log",
+   "deleted_size": 6291456,
+   "kept": 7,
+   "total_after": 4514
+  }
+ ],
+ "infile_rotations": 6,
+ "open_lines": 5,
+ "instr": [
+  "[f116-instr] total=1681985 spacecrafter=85280/0 script=1496299/0 shader=0/0 tcp=0/0 vulkan=100406/0 writes=11989 ns_write=17144288 ns_count=272296 ns_check=262804 rot=6 ns_rot=406427 clock_pair_ns=20.1878"
+ ],
+ "polls": 98,
+ "fails": [],
+ "notes": [
+  "the directory opened -4010846 B above the budget, so the first line's total (+2097464 B) measures the state found, not a crossing"
+ ]
+}

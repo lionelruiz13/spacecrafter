@@ -1,7 +1,7 @@
 {
  "label": "delivered",
  "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
- "bin_md5": "fada7b10bd43487825a9c1063db056d1",
+ "bin_md5": "95087b686af8e3354b279fc5ea43abf1",
  "rc": 0,
  "budget_scored": 1073741824,
  "iters": 60000,
@@ -72,11 +72,11 @@
    "vulkan": [
     [
      "vulkan.log",
-     98740
+     101969
     ]
    ]
   },
-  "total": 18121859
+  "total": 18125088
  },
  "peak": {
   "channels": {
@@ -107,12 +107,12 @@
    "vulkan": [
     [
      "vulkan.log",
-     98631
+     101860
     ]
    ]
   },
-  "total": 18118987,
-  "t": 0.143
+  "total": 18122216,
+  "t": 0.386
  },
  "console_rotations": [],
  "infile_rotations": 0,

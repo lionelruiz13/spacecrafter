@@ -1,0 +1,282 @@
+{
+ "pre": 8,
+ "snap": {
+  "channels": {
+   "spacecrafter": {
+    "files": [
+     {
+      "name": "spacecrafter.log",
+      "size": 91266,
+      "inode": 22424549,
+      "mtime": 1789212969.9684143
+     },
+     {
+      "name": "spacecrafter.1.log",
+      "size": 102823,
+      "inode": 22414681,
+      "mtime": 1789212376.7021942
+     },
+     {
+      "name": "spacecrafter.2.log",
+      "size": 97890,
+      "inode": 22414039,
+      "mtime": 1789211673.9843307
+     },
+     {
+      "name": "spacecrafter.3.log",
+      "size": 91213,
+      "inode": 22414032,
+      "mtime": 1789211343.6777196
+     },
+     {
+      "name": "spacecrafter.4.log",
+      "size": 90733,
+      "inode": 22414031,
+      "mtime": 1789210971.7856696
+     },
+     {
+      "name": "spacecrafter.5.log",
+      "size": 111124,
+      "inode": 22419542,
+      "mtime": 1789167101.6185968
+     },
+     {
+      "name": "spacecrafter.6.log",
+      "size": 95141,
+      "inode": 22419433,
+      "mtime": 1789166322.9095993
+     },
+     {
+      "name": "spacecrafter.7.log",
+      "size": 111124,
+      "inode": 22427271,
+      "mtime": 1789165477.3330965
+     }
+    ],
+    "legacy_count": 0,
+    "legacy_bytes": 0
+   },
+   "script": {
+    "files": [
+     {
+      "name": "script.log",
+      "size": 5235,
+      "inode": 22424550,
+      "mtime": 1789212969.9684143
+     },
+     {
+      "name": "script.1.log",
+      "size": 18167,
+      "inode": 22420718,
+      "mtime": 1789212376.7021942
+     },
+     {
+      "name": "script.2.log",
+      "size": 12251,
+      "inode": 22414687,
+      "mtime": 1789211673.9843307
+     },
+     {
+      "name": "script.3.log",
+      "size": 5179,
+      "inode": 22414040,
+      "mtime": 1789211343.6777196
+     },
+     {
+      "name": "script.4.log",
+      "size": 5169,
+      "inode": 22414034,
+      "mtime": 1789210971.7856696
+     },
+     {
+      "name": "script.5.log",
+      "size": 26444,
+      "inode": 22424461,
+      "mtime": 1789167101.6185968
+     },
+     {
+      "name": "script.6.log",
+      "size": 9459,
+      "inode": 22419592,
+      "mtime": 1789166322.9095993
+     },
+     {
+      "name": "script.7.log",
+      "size": 26444,
+      "inode": 22427404,
+      "mtime": 1789165477.3330965
+     }
+    ],
+    "legacy_count": 34,
+    "legacy_bytes": 5802574
+   },
+   "tcp": {
+    "files": [
+     {
+      "name": "tcp.log",
+      "size": 0,
+      "inode": 22424551,
+      "mtime": 1789212869.8998263
+     },
+     {
+      "name": "tcp.1.log",
+      "size": 0,
+      "inode": 22420721,
+      "mtime": 1789211940.3799145
+     },
+     {
+      "name": "tcp.2.log",
+      "size": 0,
+      "inode": 22414693,
+      "mtime": 1789211513.42953
+     },
+     {
+      "name": "tcp.3.log",
+      "size": 0,
+      "inode": 22414041,
+      "mtime": 1789211210.1770985
+     },
+     {
+      "name": "tcp.4.log",
+      "size": 0,
+      "inode": 22414035,
+      "mtime": 1789210838.272256
+     },
+     {
+      "name": "tcp.5.log",
+      "size": 0,
+      "inode": 22424529,
+      "mtime": 1789166525.3358982
+     },
+     {
+      "name": "tcp.6.log",
+      "size": 0,
+      "inode": 22420722,
+      "mtime": 1789166111.1248834
+     },
+     {
+      "name": "tcp.7.log",
+      "size": 0,
+      "inode": 22427415,
+      "mtime": 1789164901.0576773
+     }
+    ],
+    "legacy_count": 0,
+    "legacy_bytes": 0
+   },
+   "shader": {
+    "files": [
+     {
+      "name": "shader.log",
+      "size": 0,
+      "inode": 22424553,
+      "mtime": 1789212869.9000187
+     },
+     {
+      "name": "shader.1.log",
+      "size": 0,
+      "inode": 22420793,
+      "mtime": 1789211940.3801224
+     },
+     {
+      "name": "shader.2.log",
+      "size": 0,
+      "inode": 22414695,
+      "mtime": 1789211513.42973
+     },
+     {
+      "name": "shader.3.log",
+      "size": 0,
+      "inode": 22414054,
+      "mtime": 1789211210.1772923
+     },
+     {
+      "name": "shader.4.log",
+      "size": 0,
+      "inode": 22414036,
+      "mtime": 1789210838.2724504
+     },
+     {
+      "name": "shader.5.log",
+      "size": 0,
+      "inode": 22424542,
+      "mtime": 1789166525.336184
+     },
+     {
+      "name": "shader.6.log",
+      "size": 0,
+      "inode": 22420723,
+      "mtime": 1789166111.1251712
+     },
+     {
+      "name": "shader.7.log",
+      "size": 0,
+      "inode": 22427417,
+      "mtime": 1789164901.0579653
+     }
+    ],
+    "legacy_count": 0,
+    "legacy_bytes": 0
+   },
+   "vulkan": {
+    "files": [
+     {
+      "name": "vulkan.log",
+      "size": 98631,
+      "inode": 22424558,
+      "mtime": 1789212883.6735494
+     },
+     {
+      "name": "vulkan.1.log",
+      "size": 98631,
+      "inode": 22422449,
+      "mtime": 1789211954.1266708
+     },
+     {
+      "name": "vulkan.2.log",
+      "size": 100398,
+      "inode": 22414696,
+      "mtime": 1789211527.0732822
+     },
+     {
+      "name": "vulkan.3.log",
+      "size": 100398,
+      "inode": 22414560,
+      "mtime": 1789211224.4643052
+     },
+     {
+      "name": "vulkan.4.log",
+      "size": 99397,
+      "inode": 22414037,
+      "mtime": 1789210852.0092666
+     },
+     {
+      "name": "vulkan.5.log",
+      "size": 99397,
+      "inode": 22424546,
+      "mtime": 1789166539.2225506
+     },
+     {
+      "name": "vulkan.6.log",
+      "size": 99397,
+      "inode": 22420724,
+      "mtime": 1789166124.9555194
+     },
+     {
+      "name": "vulkan.7.log",
+      "size": 99397,
+      "inode": 22427418,
+      "mtime": 1789164914.97649
+     }
+    ],
+    "legacy_count": 0,
+    "legacy_bytes": 0
+   }
+  },
+  "dirents": 473
+ },
+ "legacy": [
+  34,
+  5802574
+ ]
+}

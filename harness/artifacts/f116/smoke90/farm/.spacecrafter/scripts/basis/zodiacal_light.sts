@@ -1,0 +1,20 @@
+###
+### fullview - SpaceCrafter Script
+###
+### Copyright 2009 Lionel RUIZ - lionel.ruiz@live.fr
+###
+### License:
+###
+### For use with LSS systems only
+### The exploitation of this script is restricted to registered users only.
+### http://lss-planetarium.ovh.org
+###
+# INIT
+image name 01 filename zodiacal_light/zodiacale.png coordinate_system viewport alpha 0 scale 1 action load
+wait duration 0.5
+image name 01 alpha 1 duration 2
+wait duration 2.5
+script action pause
+image name 01 alpha 0 duration 2
+wait duration 2.5
+script action end
