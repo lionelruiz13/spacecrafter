@@ -5984,3 +5984,120 @@ this writes ~9 MB/s and why the tester's corpus reaches 193 MB/h.
   directory can hold eight files of the SAME launch. `logread.window_text`
   reads them oldest-first; `logread.budget()` reads the constant from the source
   rather than hard-coding 1 GiB.
+
+---
+
+## F112 - launch preconditions that see what they guard (`sc_instances.py`, `sc_instances.sh`, `sc_gpu.py`, `f112_census.py`, `f112_decoymap.py`) - INTENT 11.238 / 11.231(j2) / 11.232(d) / 11.134(b) / 11.176, 2026-09-12
+
+Two preconditions stand in front of every measuring launch in this corpus: is
+another engine already running, and is there room on the GPU to run at all. Both
+were being answered by copies. The instance probe was `comm == "spacecrafter"`
+copy-pasted into 44 files, and F109 measured it reading **0 with two renamed
+engines live and holding port 7805** (11.231(j2)). The GPU member was a NOTE
+against a guessed 8192 MiB, and on 2026-09-12 it passed while no launch on this
+host could start (HOST-EVENTS 2026-09-12, 11.232(d)). Each question now has one
+home, and the homes are shown able to fail.
+
+### THE ONE SHAPE TO CARRY OUT OF HERE
+
+**A probe's channels are chosen by what each one is blind to, and the blindness
+is measured, not assumed.** The criterion is the UNION of three, and dropping any
+one loses a case this host actually produces:
+
+| channel | sees | blind to | measured |
+|---|---|---|---|
+| `comm` | every account | any rename (`comm` is the basename truncated to 15 bytes) | 0 with two `sc_f109_iso` live, 11.231(j2) |
+| `exe` | copies and renames; no command line can match a real file | **other accounts** | `readlink /proc/<pid>/exe` resolved on **0 of 578** other-uid processes and 84 of 93 of my own, ptrace_scope=1 |
+| port 7805 | an engine that answers, whatever its file is called; `/proc/net/tcp{,6}` carries the socket's owner uid, so another account's listener is still a hit | an engine that has not opened its server yet, or never will (`--no-scene`, farm) | -- |
+
+So the residual is the CROSS-ACCOUNT one: a renamed engine of another uid with no
+server up. That is not the residual the obvious reading gives (a same-account
+rename in an unlisted directory), and it is the one that matters, because the
+2026-08-02 requirement was explicitly "ANY account".
+
+### The instruments
+
+    bash sc_instances.sh --assert <label>        # 0 clear / 2 engine live / 4 cannot run
+    python3 sc_instances.py --json F --quiet     # same criterion, python callers
+    python3 sc_instances.py --kill --timeout 10  # SIGTERM then SIGKILL, BY PID
+    python3 sc_gpu.py --need bank --label <l>    # 0 enough room / 3 not / 4 cannot measure
+    python3 sc_gpu.py --holders                  # name every holder, uid and exe
+    python3 f112_census.py [--tsv]               # who still decides on their own
+    python3 f112_decoymap.py <outdir> [--hold S] # retake the positive map with a decoy
+
+    from sc_instances import no_instance, assert_clear, hits   # python callers
+
+Self-tests, each shown able to fail by named mutants (`--list-mutants`):
+
+    python3 sc_instances.py --self-test                  18 PASS 0 FAIL
+        --mutant comm_only     the pre-F112 probe        fails t2 t3 t10 t12 t18 ...
+        --mutant cmdline       match the command line    fails t6 t14 (the self-match)
+        --mutant no_port                                 fails t9 t15
+        --mutant basename_eq   E1 tightened to ==        fails t18
+    bash sc_instances.sh --self-test                      8 PASS 0 FAIL
+    python3 sc_gpu.py --self-test                        11 PASS 0 FAIL
+        --mutant compute_only  the narrow holder call    fails g11
+        --mutant used_not_free the inherited 4000 line   fails g5 g7
+        --mutant no_gate       the pre-F112 NOTE         fails g6 g8
+    python3 f112_census.py --self-test                    6 PASS 0 FAIL
+
+### The criterion, in full, so it can be argued with
+
+A process is an engine if ANY of: `comm == "spacecrafter"`; or `/proc/<pid>/exe`
+(trailing `" (deleted)"` stripped) matches **E1** basename starts with
+`spacecrafter`, **E2** basename starts with `sc_` or `sc-`, **E3** the path is
+under `/home/claude/sc-*/`, **E4** the path holds a `/build*/src/` component,
+**E5** the path equals `realpath($SC_BIN)`; or the process holds a LISTEN socket
+on TCP 7805. Negative arm on this host: **0 hits over 671 live processes**.
+
+### The headroom gate, and why the number is where it is
+
+`BANK_GPU_NEED_MIB = 6144` lives in **f56_canary.sh's VALUES block**, with its
+derivation, because that is the instrument whose re-banking discipline the corpus
+trusts: one edit, with an argument, never a tolerance widened to fit. `sc_gpu.py
+--need bank` reads that line, so the number has exactly one home and every caller
+asks the same file. The derivation is the app's own init log, never a guess:
+
+    1717 MiB  floor  1461 used + the 256 MiB chunk it died on, 2026-09-12 11:26
+    5323 MiB  need   the app's own peak tally, 6 of 6 green full-scene launches
+     444 MiB  units  the app's "available" sits that far below nvidia-smi's free
+    -> 5767, rounded up to the next GiB
+
+It gates on **memory.FREE**, not `used <= N`. Measured 2026-09-12 15:48: the
+owner's java grew to 2943 MiB, `used` crossed 4519, and the inherited `used <=
+4000` line refuses a host with **27.6 GiB free** -- 4.5x the need. The same line
+would have caught the 11:26 red, but only because that holder was enormous.
+
+### Gotchas measured here, each of which cost something first
+
+* **`--query-compute-apps` does not see graphics processes.** The holder-naming
+  call f114_run.sh and f116_assert.sh inherited returned nautilus + text-editor +
+  system-monitor = **240 MiB of the 3293** in use and did not name java at 1385,
+  nor gnome-shell, nor firefox. Use `nvidia-smi -q -d PIDS`, which is
+  untruncated and lists G as well as C/C+G, and resolve each pid's uid and exe
+  from `/proc` so the report says WHOSE it is. The 2026-09-12 red is not a
+  counter-example: `llama-server` happened to be a compute process.
+* **`/proc/<pid>/exe` is EACCES across accounts** under `ptrace_scope=1`, and
+  absent for zombies even in your own account (9 of my 93). Any probe that reads
+  only `exe` has silently stopped covering "any account".
+* **The census pattern cannot measure its own success.** A routed file carries a
+  comment quoting the test it no longer performs, so `grep -l` returns the same
+  44 afterwards. Count probe SITES with comments stripped (`f112_census.py`),
+  never files matched.
+* **A mutant your suite cannot see is a hole in the suite, not a harmless
+  mutant.** Two of mine scored a clean pass first: `basename_eq`, because the
+  case that should have caught it lived under `/home/claude/sc-f116/` and a
+  different rule fired; and `compute_only`, because the choice of nvidia-smi call
+  sat inside the function the suite never reached. Both are now seams with a
+  case each (t18, g11). If a mutant passes, add the case; do not shrug.
+* **Read a python block by its indentation, never with a regex.** The first
+  routing pass used a non-greedy regex with a lookahead and deleted **901 lines**
+  of `f96_offset.py`. The diffstat is what caught it -- check `git diff --stat`
+  after any mechanical edit, before `git add`.
+* **The exe rule `*/build*/src/*` matches the delivered binary's own path.** An
+  assert written that way reports the app under test as a concurrent instance of
+  itself. The home distinguishes the running process from the path you are about
+  to run.
+* **`F90_SKIP_CANARY=1` left no trace** (F110, 11.234), so an unverified smoke
+  run was indistinguishable from a verified one. It now prints what was not
+  checked and writes `canary.SKIPPED` into the outdir.

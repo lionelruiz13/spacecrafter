@@ -329,5 +329,16 @@ never rewrite (maintenance invariant). Archival per the standing convention
   a NOTE (`BANK_VRAM_NOTE_MIB=8192`, never gated) while every functional launch would die at
   Vulkan init; only the photometric arm caught it, by failing to launch. Routed to this round's
   instrument task (F112): a launch-headroom GATE derived from the app's own allocation sequence,
-  not a guessed threshold. Decision flag per §11.174(h): the re-bank is the block's prescription;
+  not a guessed threshold. **[DELIVERED 2026-09-12, F112 -> INTENT/11.238.md: `f56_canary.sh` gains
+  `gpu.headroom`, a GATE on BOTH arms (exit 3) against `BANK_GPU_NEED_MIB = 6144` in its
+  VALUES block, derived from the sequence recorded above -- 1461 used + the 256 MiB chunk
+  that died = 1717 MiB floor; 5323 MiB the app's own peak on six green launches; 444 MiB
+  of driver reservation between the app's `available` and nvidia-smi's free. It reads
+  memory.FREE, not `used`, and names every holder by pid/type/MiB/uid/exe with
+  `nvidia-smi -q -d PIDS`, because `--query-compute-apps` is MEASURED blind to GRAPHICS
+  processes (240 MiB of 3293 named on this host at 15:35, the 1385 MiB holder missed) --
+  and on 2026-09-12 the holder happened to be a compute process, which is why the narrow
+  call looked adequate. This boot's own state would have FAILED the old `used <= 4000`
+  assert (4519 MiB used at 15:48, the owner's java) and PASSES the new gate (27648 free
+  vs 6144 needed). Never unloaded, never widened: a refusal reports the holder.]** Decision flag per §11.174(h): the re-bank is the block's prescription;
   the VRAM release was the owner's act on his own service — nothing improvised here.
