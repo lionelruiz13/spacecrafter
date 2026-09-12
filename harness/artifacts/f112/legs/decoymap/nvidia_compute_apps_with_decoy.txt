@@ -1,0 +1,4 @@
+12520, /usr/bin/nautilus, 102 MiB
+14470, /usr/bin/gnome-text-editor, 68 MiB
+172519, /usr/bin/gnome-system-monitor, 70 MiB
+322744, /home/claude/sc-f112/sc_f112_decoy, 5135 MiB

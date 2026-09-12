@@ -1,0 +1,101 @@
+{
+ "basis": "free 27666 MiB against a need of 6144 MiB",
+ "free_mib": 27666,
+ "holders": [
+  {
+   "exe": null,
+   "mib": 2882,
+   "name": "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+   "pid": 121858,
+   "type": "G",
+   "uid": 1000,
+   "user": "foxy"
+  },
+  {
+   "exe": null,
+   "mib": 521,
+   "name": "/usr/bin/gnome-shell",
+   "pid": 5455,
+   "type": "G",
+   "uid": 1000,
+   "user": "foxy"
+  },
+  {
+   "exe": "/usr/bin/gnome-shell",
+   "mib": 162,
+   "name": "/usr/bin/gnome-shell",
+   "pid": 10920,
+   "type": "G",
+   "uid": 1003,
+   "user": "claude"
+  },
+  {
+   "exe": null,
+   "mib": 158,
+   "name": "/opt/Pulsar/pulsar --type=gpu-process --field-trial-handle=2036105296001101770,16724604961447036226,131072 --enable-features=WebComponentsV0Enabled --disable-features=CertVerifierService,CookiesWithoutSameSiteMustBeSecure,SameSiteByDefaultCookies,SpareRendererForSitePerProcess --no-sandbox --gpu-preferences=UAAAAAAAAAAgAAAQAAAAAAAAAAAAAAAAAABgAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --shared-files",
+   "pid": 103770,
+   "type": "G",
+   "uid": 1000,
+   "user": "foxy"
+  },
+  {
+   "exe": null,
+   "mib": 102,
+   "name": "/usr/bin/nautilus",
+   "pid": 12520,
+   "type": "C+G",
+   "uid": 1000,
+   "user": "foxy"
+  },
+  {
+   "exe": null,
+   "mib": 91,
+   "name": "/snap/firefox/8863/usr/lib/firefox/firefox",
+   "pid": 7793,
+   "type": "G",
+   "uid": 1000,
+   "user": "foxy"
+  },
+  {
+   "exe": null,
+   "mib": 85,
+   "name": "/snap/discord/307/usr/share/discord/Discord --type=gpu-process --disable-seccomp-filter-sandbox --no-sandbox --ozone-platform=x11 --crashpad-handler-pid=6501 --enable-crash-reporter=a617c34e-4021-4f27-81fe-4895cd728989,no_channel --user-data-dir=/home/foxy/snap/discord/307/.config/discord --gpu-preferences=UAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAQAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAYAAAAAAAAABgAAAAAAAAAAQAAAAAAAAAIAAAAAAAAAAgAAAAAAAAA --shared-files --field-trial-handle=3,i,17012868132926982737,2159713896646158272,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports --disable-features=AllowAggressiveThrottlingWithWebSocket,DropInputEventsWhilePaintHolding,HardwareMediaKeyHandling,IntensiveWakeUpThrottling,LocalNetworkAccessChecks,MediaSessionService,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation,UseEcoQoSForBackgroundProcess,WaylandWpColorManagerV1,WinRetrieveSuggestionsOnlyOnDemand --variations-seed-version --pseudonymization-salt-handle=7,i,8734716415586919576,5713222658203983857,4 --trace-process-track-uuid=3190708988185955192",
+   "pid": 6556,
+   "type": "G",
+   "uid": 1000,
+   "user": "foxy"
+  },
+  {
+   "exe": null,
+   "mib": 70,
+   "name": "/usr/bin/gnome-system-monitor",
+   "pid": 172519,
+   "type": "C+G",
+   "uid": 1000,
+   "user": "foxy"
+  },
+  {
+   "exe": null,
+   "mib": 68,
+   "name": "/usr/bin/gnome-text-editor",
+   "pid": 14470,
+   "type": "C+G",
+   "uid": 1000,
+   "user": "foxy"
+  },
+  {
+   "exe": null,
+   "mib": 12,
+   "name": "/usr/bin/Xwayland",
+   "pid": 6008,
+   "type": "G",
+   "uid": 1000,
+   "user": "foxy"
+  }
+ ],
+ "label": "canary",
+ "need_mib": 6144,
+ "pass": true,
+ "total_mib": 32607,
+ "used_mib": 4441
+}

@@ -1,0 +1,87 @@
+{
+ "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "binary_md5": "95087b686af8e3354b279fc5ea43abf1",
+ "decoy": "/home/claude/sc-f112/sc_f112_decoy",
+ "decoy_comm_would_be": "sc_f112_decoy",
+ "decoy_gpu_mib": "5135 MiB",
+ "decoy_md5": "95087b686af8e3354b279fc5ea43abf1",
+ "decoy_pid": 322744,
+ "field_md5_in": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "field_md5_ok": true,
+ "field_md5_out": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "port_came_up": true,
+ "readings": [
+  {
+   "channels": {},
+   "label": "before -- nothing launched",
+   "lines": [],
+   "new_probe_python": 0,
+   "new_probe_shell": 0,
+   "new_probe_shell_rc": 0,
+   "old_comm_python": 0,
+   "old_comm_shell": 0,
+   "pids": [],
+   "when": "2026-09-12 16:22:42 CEST"
+  },
+  {
+   "channels": {
+    "exe": 2,
+    "port": 1
+   },
+   "label": "DECOY LIVE",
+   "lines": [
+    "  pid 322744  uid 1003 claude     comm=sc_f112_decoy    exe=/home/claude/sc-f112/sc_f112_decoy                   port=7805  [exe+port/E2]",
+    "  pid 322748  uid 1003 claude     comm=sc_f112_decoy    exe=/home/claude/sc-f112/sc_f112_decoy                   port=-     [exe/E2]"
+   ],
+   "new_probe_python": 2,
+   "new_probe_shell": 2,
+   "new_probe_shell_rc": 2,
+   "old_comm_python": 0,
+   "old_comm_shell": 0,
+   "pids": [
+    322744,
+    322748
+   ],
+   "when": "2026-09-12 16:22:55 CEST"
+  },
+  {
+   "channels": {
+    "exe": 2,
+    "port": 1
+   },
+   "label": "DECOY LIVE, after the hold",
+   "lines": [
+    "  pid 322744  uid 1003 claude     comm=sc_f112_decoy    exe=/home/claude/sc-f112/sc_f112_decoy                   port=7805  [exe+port/E2]",
+    "  pid 322748  uid 1003 claude     comm=sc_f112_decoy    exe=/home/claude/sc-f112/sc_f112_decoy                   port=-     [exe/E2]"
+   ],
+   "new_probe_python": 2,
+   "new_probe_shell": 2,
+   "new_probe_shell_rc": 2,
+   "old_comm_python": 0,
+   "old_comm_shell": 0,
+   "pids": [
+    322744,
+    322748
+   ],
+   "when": "2026-09-12 16:23:08 CEST"
+  },
+  {
+   "channels": {},
+   "label": "after -- killed by pid",
+   "lines": [],
+   "new_probe_python": 0,
+   "new_probe_shell": 0,
+   "new_probe_shell_rc": 0,
+   "old_comm_python": 0,
+   "old_comm_shell": 0,
+   "pids": [],
+   "when": "2026-09-12 16:23:13 CEST"
+  }
+ ]
+}

@@ -6011,7 +6011,31 @@ one loses a case this host actually produces:
 | port 7805 | an engine that answers, whatever its file is called; `/proc/net/tcp{,6}` carries the socket's owner uid, so another account's listener is still a hit | an engine that has not opened its server yet, or never will (`--no-scene`, farm) | -- |
 
 So the residual is the CROSS-ACCOUNT one: a renamed engine of another uid with no
-server up. That is not the residual the obvious reading gives (a same-account
+server up.
+
+### The positive map, taken with a decoy that can fail the criterion
+
+F26's map used a decoy NAMED `spacecrafter`, which cannot tell the criterion from
+its blind spot. This one is a byte copy of the delivered binary renamed
+`sc_f112_decoy`, on a farm HOME, killed by pid
+[measured 2026-09-12 16:22, `artifacts/f112/legs/decoymap/map.json`]:
+
+| reading | old comm (py) | old comm (sh) | new probe (py) | new probe (sh) |
+|---|---|---|---|---|
+| before | 0 | 0 | 0 | 0 |
+| decoy LIVE | **0** | **0** | **2** | **2** |
+| LIVE after a 12 s hold | **0** | **0** | **2** | **2** |
+| after the kill by pid | 0 | 0 | 0 | 0 |
+
+Channels while live: exe 2, port 1, comm 0. **Two hits, not one: the engine is a
+two-process tree** -- one pid holds 7805, the other shares the exe and holds no
+port. An assert of the form `n == 0` is unaffected; a probe written to expect a
+single hit would have been wrong. The decoy's own GPU footprint read **5135 MiB**
+by `nvidia-smi`, against the 5323 the app's own tally peaks at and the 6144
+banked -- the gate's derivation confirmed to 3.5 % by a different instrument.
+And a refinement: the engine is a **C+G** process, so `--query-compute-apps` does
+see the ENGINE; what it misses are the graphics-only holders that make the room
+scarce, which is the list a refusal has to print. That is not the residual the obvious reading gives (a same-account
 rename in an unlisted directory), and it is the one that matters, because the
 2026-08-02 requirement was explicitly "ANY account".
 

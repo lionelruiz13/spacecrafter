@@ -1,0 +1,7 @@
+total 0
+drwxrwxrwt  2 root   root    120 Sep 12 10:29 .
+drwxrwxrwt 22 root   root   2560 Sep 12 16:22 ..
+srwxrwxr-x  1 foxy   foxy      0 Sep 12 09:52 X0
+srwxrwxr-x  1 foxy   foxy      0 Sep 12 09:52 X1
+srwxrwxr-x  1 claude claude    0 Sep 12 10:29 X2
+srwxrwxr-x  1 claude claude    0 Sep 12 10:29 X3
