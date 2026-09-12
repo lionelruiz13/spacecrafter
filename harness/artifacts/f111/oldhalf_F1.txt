@@ -1,0 +1,63 @@
+F-1 LIVE TEST: do the two paths share ONE EllipticalOrbit object?
+If they did, Body::compute_position -> positionAtTime -> iterativeLastE
+would read the SAME seed the new sampler walks, and the OLD half of the
+dump would carry the same transient.  resid = ||ecl| - |model converged
+at the dump header's jd||; the old half has no per-body lastJD, so its
+column carries the light-time offset as a constant floor -- what matters
+is that the floor does NOT move when the flag goes on.
+
+R1e+08_off_0     jd=2465182.5741
+    body         old_resid_AU  new_resid_AU    new/old
+    Sycorax        2.4981e-05    2.4982e-05          1
+    Setebos        2.0386e-05    2.0389e-05          1
+    Neso           1.8128e-05    1.8136e-05          1
+    Sinope         1.8056e-05    1.8058e-05          1
+    Laomedeia      1.5563e-05    1.5556e-05     0.9996
+    Elara          1.4865e-05    1.4862e-05     0.9998
+    Prospero       1.3181e-05    1.3181e-05          1
+    Himalia        1.2139e-05     1.214e-05          1
+
+R1e+08_on_0      jd=2473105.0278
+    body         old_resid_AU  new_resid_AU    new/old
+    Neso           2.9213e-05      0.015392      526.9
+    Setebos        6.3725e-06     0.0041511      651.4
+    Ananke         1.4994e-05    0.00059558      39.72
+    Sinope         0.00022969    0.00055343      2.409
+    Psamathe       7.7703e-06    0.00032213      41.46
+    Pasiphae       3.3725e-05    0.00025382      7.526
+    Prospero       1.2587e-05    0.00019818      15.75
+    Himalia        3.1576e-05    0.00012033      3.811
+
+R1e+08_on_1      jd=2474449.9352
+    body         old_resid_AU  new_resid_AU    new/old
+    Prospero       1.2835e-05     0.0057763        450
+    Psamathe       4.0554e-06      0.001894        467
+    Setebos        1.3795e-05     0.0010735      77.82
+    Sinope         9.7824e-05    0.00096885      9.904
+    Carme          2.7533e-05    0.00091921      33.39
+    Pasiphae       7.3796e-06    0.00059689      80.88
+    Neso           1.9062e-05    0.00051029      26.77
+    Halimede        1.315e-05    0.00027492      20.91
+
+R7e+08_off_0     jd=2515512.4352
+    body         old_resid_AU  new_resid_AU    new/old
+    Neried          0.0087948     0.0087947          1
+    Sinope         0.00016898    0.00016903          1
+    Elara          0.00011771    0.00011771          1
+    Himalia        0.00010295    0.00010296          1
+    Leda           4.0939e-05     4.105e-05      1.003
+    Halimede       1.7354e-05    1.7354e-05          1
+    Sao            1.4941e-05    1.4942e-05          1
+    Pasiphae       8.6465e-06    8.6966e-06      1.006
+
+R7e+08_on_0      jd=2570953.4074
+    body         old_resid_AU  new_resid_AU    new/old
+    Neso           1.2163e-06      0.029736  2.445e+04
+    Laomedeia      0.00040233     0.0011115      2.763
+    Prospero       1.8811e-05    0.00060893      32.37
+    Setebos         0.0001798    0.00038279      2.129
+    Elara          0.00014417    0.00023698      1.644
+    Halimede       3.7551e-05    0.00021903      5.833
+    Neried          0.0038523    0.00018834    0.04889
+    Himalia        4.1851e-05    0.00013135      3.139
+
