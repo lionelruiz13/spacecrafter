@@ -611,11 +611,11 @@ L1's word — the attributed halo floor α-scaled).** **Session-28 round (2026-0
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => fcc277c9
+git rev-parse --short=8 HEAD => d67833cd
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
-grep -c '^### F' claude/fable-dispatch.md => 5
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+grep -c '^### F' claude/fable-dispatch.md => 7
 # the document, re-resolved at HEAD (content drift = abort)
 wc -l < doc/developer-entry.md => 431
 python3 claude/harness/f85_links.py | tail -1 => DANGLING : 0
@@ -664,11 +664,11 @@ test -e /home/claude/sc-f110 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => fcc277c9
+git rev-parse --short=8 HEAD => d67833cd
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
-grep -c '^### F' claude/fable-dispatch.md => 5
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+grep -c '^### F' claude/fable-dispatch.md => 7
 # the pool's one creation and the allocator's silent return, re-resolved at HEAD (content drift = abort)
 grep -n 'context.uniformMgr = std::make_unique.BufferMgr.(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1\*1024\*1024, "uniform BufferMgr", true);' src/appModule/app.cpp | cut -d: -f1 => 274
 grep -c '1\*1024\*1024, "uniform BufferMgr"' src/appModule/app.cpp => 1
@@ -710,11 +710,11 @@ test -e /home/claude/sc-f113 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => fcc277c9
+git rev-parse --short=8 HEAD => d67833cd
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
-grep -c '^### F' claude/fable-dispatch.md => 5
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+grep -c '^### F' claude/fable-dispatch.md => 7
 # the two sites, the mirrors beside them and the Camera API, re-resolved at HEAD (content drift = abort)
 grep -n '^void Core::autoZoomIn' src/coreModule/core.cpp | cut -d: -f1 => 1386
 grep -n '^void Core::autoZoomOut' src/coreModule/core.cpp | cut -d: -f1 => 1429
@@ -733,6 +733,96 @@ test -e /home/claude/sc-f114 ; echo $? => 1
 ```
 
 **DoD:** predictions before any build; the two sites (+ the one-home conversion); `f38_gaps.py` pre/post; the ramp leg; F38's sites, F91, the smoke suite; §11 entry + stub; §5.100 + §5.101 FIXED; the §11.150 marker; T1.1 struck-with-record; the preload signal recorded; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+---
+
+### F115 — §5.142's ROOT, ON THE OWNER'S QUESTION (§11.233(b) correction, verbatim: *"First - why does the problem exists in the first place ? Two aspects, why 1344 B allocated (which is not small, let make sure there is no redundancy), why so many are required ? Increasing it blindly to 16 Mio can work, but it would break again with 16 times as many bodies."*): THE UNIFORM CONSUMERS CENSUSED FIELD BY FIELD ON BOTH PATHS — every persistent `SharedBuffer<T>` a BODY holds on `context.uniformMgr`, per body class and per module (old path: `body_moon/bigbody/smallbody/artificial/sun`, `ring`, `axis`, `atm_ext`; new path: `BasicMesh.hpp:47-48`, `LayeredMesh.hpp:122-126`, `meshShadowFill.hpp:45/:78`, `OjmModule.hpp:100-103`; F102's 28-row table `artifacts/f102/sizes.tsv` with sizeof and the carved size at alignment 64 — `meshFrag` 784 → 832, `globalVertProj` 164 → 192, `ojmShadowBlock` 928 → 960 …) — REDUNDANCY measured on three axes: cross-PATH (one authored body carries the OLD path's eager 320 B AND the NEW path's 1024 B while both paths live, §11.222(h) — a cost B8 retires, or one to retire now?), cross-MODULE (one quantity carved in two blocks of the same body — a ModelView matrix, a clipping/fov triple), cross-BODY (content identical for every body yet carved per body — `shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER=8]` is 768 of `meshFrag`'s 784 B, `bodyShaderInterface.hpp:47/:71`; light info; per-system values); the per-body REQUIREMENT derived from what actually varies per body per frame (a model matrix, a few floats) against what is per-draw-constant, per-system or per-launch; WHY every AUTHORED body needs a block at all (carved at load on the new path; two of the old path's three classes carve at first draw); and a PROPOSAL with arithmetic — bytes per body under each option × the corpus (1719 authored bodies in 8 shows, §11.218(i)) and the body count 1 MiB then holds — for the owner to choose from; NO engine change, the pool STAYS 1 MiB, no option enacted [S–M, read-only + one compile-time size instrument (F102's `f102_sizes.cpp` extended to the full set); ZERO launches unless a live dump is the cheapest census of which bodies carve what — then FUNCTIONAL, `--no-scene`, one launch, said so; veto points §3]
+
+**Why now / mandate:** the owner's question verbatim (§11.233(b) correction, 2026-09-12 12:4x) — asked instead of a shape, so a shape chosen without it is exactly what he refused (*"Increasing it blindly to 16 Mio can work, but it would break again with 16 times as many bodies"*); §5.142 (OPEN — the abort at the 675th body of `06.sts`); §11.222(h) (GROW / REFUSE / DEGRADE priced; the 1344 B measured; DEGRADE's own analysis names `shadowingBodies[8]` as 98 % of one block); §11.232(c)2 (consolidation first — the reference binary must survive the tester's corpus before the intern builds on it). Decision-free as a reading: it produces numbers and options; the choice stays his.
+
+**The reading the mint stands on [derived; each fact a premise line]:** 74 files outside EntityCore acquire a `SharedBuffer<T>` (the census pattern); the per-BODY ones are the old path's body classes and `ring`/`axis`/`atm_ext` (15 files under `src/bodyModule/`), and the new path's mesh modules (`BasicMesh.hpp:47-48`, `LayeredMesh.hpp:122-126` + `.cpp:53/:64/:65`, `meshShadowFill.hpp:45/:78`) and `OjmModule.hpp:100-103` (in-galaxy models: `ojmVert/ojmGeom/ojmLight/ojmShadowBlock`) — everything else on the pool is per-system or per-feature (fog, landscape, sky grids, tully, oort, the sun's halo scalars, the shadow service) and counts once, not per body; F102 measured 1344 B per `06.sts` body on the two paths together (320 old-eager + 1024 new-at-load) and the alignment (64) that turns 784 B into 832 carved; `bodyShaderInterface.hpp` declares `shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER]` (5 mentions) with the constant shared by the fragment shaders — so a per-body cap is a shader array-length change, not a C++ edit alone; the old path carves at first draw for `BigBody`/`SmallBody` and at construction for `Moon` (§11.222(h)(3), `body_moon.cpp:78`); F102's `f102_sizes.cpp` links nothing and prints sizeof + carved size for its 28 structs — the instrument to extend.
+
+**Measured at dispatch (supervisor, 2026-09-12 12:5x, code `d67833cd`, harness after F110's acceptance):** the sites at the lines quoted; §5.142 at `INTENT.md:508` (the resolver agrees); `/home/claude/sc-f115` absent; no launch class unless (2)'s dump is chosen.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f115/prediction.txt`): the census's expected shape (files, row count per path, the 1344 B reproduced as a sum BEFORE the census is extended), the predicted redundancy per axis from the reading — which quantities are duplicated cross-path, cross-module, cross-body — and the predicted per-body minimum in bytes. (2) **THE CENSUS:** every `SharedBuffer<T>` acquired on `context.uniformMgr` by a per-body object on either path — `file:line`, `T`, `sizeof(T)`, carved size (the F102 instrument extended, numbers pasted, the 28 landed rows reproduced byte for byte), LIFETIME (carved at load / at first draw / per frame; released when), and for every FIELD of `T` its variability class: per body per frame · per body constant · per system · per launch · identical for all bodies; if a live dump is the cheapest way to see which bodies carve what on the field's 120 records and on `06.sts`, ONE functional launch. (3) **REDUNDANCY, three axes, each claim with its two `file:line` homes:** cross-path (which fields the old and new blocks of the same body both carry; the bytes B8 retires; whether anything is carved for a body the drawn path never draws), cross-module (the same quantity in two of one body's blocks), cross-body (fields whose content is identical across bodies at a frame — `shadowingBodies[8]` first — and what carving them once would need: a per-system block, a push constant, an indexed buffer). (4) **THE REQUIREMENT:** the minimum a body must own per frame, in bytes, with its fields; the body count 1 MiB holds at that minimum; what the owner's *"why so many are required"* answers to — the count of bodies that hold a block at load vs the count drawn in a frame (measured on `06.sts` if the dump is run: authored 1013, drawn N). (5) **THE PROPOSAL:** options with arithmetic — bytes per body, bodies per MiB, the wall on `06.sts` + `14.sts` (1541), what changes in shaders, what changes in EntityCore (his stratum, named not touched), what each costs per frame under D11 — e.g. carve at first draw (the old path's own shape), cap the receiver array with the shader following it, move all-bodies-identical fields to a per-system block, retire the cross-path double with B8; NO recommendation ranked without the numbers, and the numbers before the ranking. (6) **RECORD:** §11.⟨next⟩ FIRST + stub; §5.142 annotated with the root's numbers (no state change — OPEN, the choice his); §11.222(h) marked at both homes; §11.233(b) marked; `harness/README.md` F115 section; WIP per §0.6; D14.
+
+**Boundaries:** READ-ONLY on the engine (no code change, no build of the app); the size instrument is a standalone `g++` compile under `artifacts/f115/` in F102's style; at most ONE functional launch (`--no-scene` canary before it; the exe+port instance assert; the frozen pair in == out; the played show from a farm copy) and only if said why; no EntityCore change; no option enacted; explicit timeouts; no `run_in_background`; nothing under `/tmp` carries; scratch under `/home/claude/sc-f115/`.
+
+**Discriminating checks:** (a) the extended instrument reproduces F102's 28 rows byte for byte and the 1344 B sum before any new row is trusted; (b) every redundancy claim carries two `file:line` homes and a byte count; (c) the per-body minimum stated with its fields, and the body count 1 MiB holds at it; (d) the proposal's arithmetic reproduces today's wall (675th body of `06.sts`) and states each option's wall; (e) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; if a launch is chosen: `:2` per HOST-EVENTS 2026-09-12, canary `--no-scene` exit 0, VRAM free ≥ 4 GB.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => d67833cd
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+grep -c '^### F' claude/fable-dispatch.md => 7
+# the consumers, the shader array and F102's instrument, re-resolved at HEAD (content drift = abort)
+grep -rl 'SharedBuffer<' src --include=*.cpp --include=*.hpp | grep -vc '^src/EntityCore' => 74
+grep -n 'SharedBuffer<' src/experimentalModule/bodyModules/OjmModule.hpp | cut -d: -f1 | tr '\n' ' ' => 100 101 102 103
+grep -rn 'SharedBuffer<' src/experimentalModule/meshModules/*.hpp src/experimentalModule/meshModules/*.cpp 2>/dev/null | cut -d: -f1,2 | tr '\n' ' ' => src/experimentalModule/meshModules/BasicMesh.hpp:47 src/experimentalModule/meshModules/BasicMesh.hpp:48 src/experimentalModule/meshModules/LayeredMesh.hpp:122 src/experimentalModule/meshModules/LayeredMesh.hpp:123 src/experimentalModule/meshModules/LayeredMesh.hpp:124 src/experimentalModule/meshModules/LayeredMesh.hpp:125 src/experimentalModule/meshModules/LayeredMesh.hpp:126 src/experimentalModule/meshModules/meshShadowFill.hpp:45 src/experimentalModule/meshModules/meshShadowFill.hpp:78 src/experimentalModule/meshModules/LayeredMesh.cpp:53 src/experimentalModule/meshModules/LayeredMesh.cpp:64 src/experimentalModule/meshModules/LayeredMesh.cpp:65
+grep -rln 'SharedBuffer<' src/bodyModule/*.cpp src/bodyModule/*.hpp | wc -l => 15
+grep -n 'MAX_SHADOW_CASTERS_PER_RECEIVER' src/experimentalModule/meshModules/bodyShaderInterface.hpp | head -2 | cut -d: -f1 | tr '\n' ' ' => 47 71
+grep -c 'shadowingBodies' src/experimentalModule/meshModules/bodyShaderInterface.hpp => 5
+test -f claude/harness/artifacts/f102/sizes.tsv -a -f claude/harness/artifacts/f102/f102_sizes.cpp -a -f claude/harness/artifacts/f102/pool_baseline.json && echo ok => ok
+wc -l < claude/harness/artifacts/f102/sizes.tsv => 28
+grep -c '1344' claude/INTENT/11.222.md => 5
+grep -c 'DEGRADE' claude/INTENT/11.222.md => 1
+grep -n '^142\. \*\*' claude/INTENT.md | head -1 | cut -d: -f1 => 508
+test -e /home/claude/sc-f115 ; echo $? => 1
+```
+
+**DoD:** predictions first; the census with lifetimes and field classes, the 28 rows reproduced; the three redundancy axes with homes and bytes; the per-body minimum; the proposal with arithmetic and no enacted option; §11 entry + stub; §5.142 / §11.222 / §11.233 markers; README; trees clean; WIP cleared; baselines LAST.
+**WIP:** —
+
+---
+
+### F116 — §5.115's SIZE BOUND ON THE OWNER'S WORD (§11.233(b) correction, verbatim: *"1 GiB TOTAL across channels; rotate within a session at the bound"*): F108's numbered window bounds the number of LAUNCHES a channel keeps, not the bytes ONE launch writes — a session that runs for a year (his instance: the pre-Vulkan version, over a year non-stop) grows `script.log` at 193 MB/h under his shows (§11.218(m)) with nothing to stop it, which is why *"the proxy the tester said (number of sessions) may fail"*; the bound: `LOG_RETENTION_BYTES = 1 GiB` beside `LOG_RETENTION_LAUNCHES` (`log.hpp:88`), the TOTAL over the five channels' live and archived files; when the total crosses it the channel being written rotates as `openLog` would — `rotate()` at `log.cpp:93` reused: the live file becomes `.1`, the oldest archive is deleted, the window stays ≤ 8 files — and a fresh live file opens; the check sits in `write()` (`log.cpp:247`) on a per-channel byte counter kept by `write()` itself plus the archives' sizes read at open and at each rotation (never `file_size` per line — D11); ONE D12 line at each in-session rotation naming the budget, the total, the channel and the file deleted; `write_log=false` untouched; the 392 `EntityCore-logs-*.txt` are the submodule's pile, outside the five channels — named, never touched [S, engine (`src/tools/log.{hpp,cpp}`) + the readers if a mid-session rotation changes what they read (`logread.py`, `f108_rotate.py`); FUNCTIONAL launches on `:2`; the proof under a MUTATED budget so the rotation fires in seconds; veto points §3: the rotating-channel rule and the slot an in-session rotation consumes]
+
+**Why now / mandate:** the owner's answer verbatim (§11.233(b) correction, 12:4x); §5.115 (retention half FIXED by F108 in launches; the byte dimension left open by construction — §11.230's window counts launches); §11.173(b) (uniform bounded retention across all channels — the size bound is the same principle on the other axis); §11.218(m) (193 MB/h measured). Decision-free on F108's mechanism: the budget is his number, the rule states its one open choice as a veto point.
+
+**The reading the mint stands on [derived; each fact a premise line]:** `cLog::rotate(LogfilePath)` (`log.cpp:93`) deletes `<base>.7.log`, shifts `.6 → .7 … .1 → .2`, renames the live file to `.1`, and pushes its report line into `openReport` (flushed once all channels are open — F108's shape at `main.cpp:2xx`); `openLog` (`:185`) calls it then opens the live file truncated; `write()` (`:247`) takes `writeMutex`, formats, and streams to `logFile.at(fichier)` — the one place every byte of every channel passes, so a counter there is exact and free; the five channels open at `main.cpp:221-225`; `LOG_RETENTION_LAUNCHES` appears 9 times in `log.cpp` (the rotation and its two report lines); the field's `log/` holds 40 channel files today (8 × 5, F108's steady state) and 392 EntityCore files; `f108_rotate.py` proves the launch-window semantics and `logread.py` is the ONE reader of any channel (§11.230) — both must stay green, and `logread.py` must read across an in-session rotation (the live file's history continues in `.1`). The ONE open choice: at the bound, rotate the channel being written (keeps the other channels' history; the writing channel is the one that grew) or rotate ALL five (uniform window semantics) — the executor states both consequences and picks one, veto-open. An in-session rotation consumes one slot of the eight: after it the channel keeps fewer LAUNCHES — the owner's *"1 GiB total"* accepts this by construction, said in the entry as a veto point.
+
+**Measured at dispatch (supervisor, 2026-09-12 12:5x, code `d67833cd`):** the sites at the lines quoted; the field's log directory as above; `/home/claude/sc-f116` absent; canary green both arms on this boot.
+
+**Mandate:** (1) **PRE-REGISTER** (`artifacts/f116/prediction.txt`): the rule (which channel rotates; the total's denominator = live + archives of the five channels, measured at open and maintained by the counters); the predicted file set and D12 lines after a MUTATED-budget launch (budget a few MiB: the rotation count, the files deleted, the window ≤ 8 throughout); the per-line cost (one add, one compare); the interaction with F108's open-time rotation (the slot consumed); `logread.py`'s reading across the rotation. (2) **THE FIX:** the constant with its reason (§5.115, the owner's 1 GiB, *"change this constant and rebuild"* — the F108 pattern, NO config key); the per-channel counters + the total; the in-session rotation reusing `rotate()`; the report line through the same channel F108 used (the internal channel + the console under `print_log`); NOTHING else moves — assert by diff. (3) **THE PROOF:** a scratch build with the budget MUTATED (env-gated or a scratch tree under `/home/claude/sc-f116/`, the delivered constant never launched to its bound — a 1 GiB log is not a test) playing a chatty show (a `struct loop` show or F98's driver) until the rotation fires at least twice; the file set and D12 lines as predicted; the DELIVERED build on the same show never rotates in-session (the bound not reached) — both ways; `f108_rotate.py` green on the launch window; `logread.py` across the rotation; the smoke suite; `f91_run.sh --expect post --locale fr` at `1fe630a4`; the counter's cost measured once. (4) **RECORD:** §11.⟨next⟩ FIRST + stub; §5.115 → the SIZE bound FIXED in the marker (the density half (2) still OPEN); §11.230 marked at both homes; §11.233(b) marked; `harness/README.md` F116 section; WIP per §0.6; D14.
+
+**Boundaries:** `src/tools/log.{hpp,cpp}` (+ `main.cpp` only if the report's flush point needs it — say why); the readers; NO config key, NO `checkConfig.cpp`; NO data; NO EntityCore (the pile is named, not touched); FUNCTIONAL launches on `:2` (`--no-scene` canary before the first; the exe+port instance assert; config/ssystem md5 in == out; the played show from a farm copy — the annotator rewrites played `.sts`); explicit timeouts (Q-68); no `run_in_background`; nothing under `/tmp` carries.
+
+**Discriminating checks:** (a) under the mutated budget the rotation fires at the predicted byte count and the file set matches; the unmutated build never rotates in-session on the same show — shown both ways; (b) the D12 line names budget, total, channel, deleted file; (c) `logread.py` reads across the rotation; (d) `f108_rotate.py`, the smoke suite, F91 green; (e) the diff confined to `log.{hpp,cpp}` (+ readers); (f) D14.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; `:2` per HOST-EVENTS 2026-09-12; canary `--no-scene` exit 0 before the first launch; VRAM free ≥ 4 GB; F114 DELIVERED (its binary is this task's pre).
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => d67833cd
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+grep -c '^### F' claude/fable-dispatch.md => 7
+# F108's mechanism, re-resolved at HEAD (content drift = abort)
+grep -n '^constexpr int LOG_RETENTION_LAUNCHES = 8;' src/tools/log.hpp | cut -d: -f1 => 88
+grep -n '^void cLog::rotate' src/tools/log.cpp | cut -d: -f1 => 93
+grep -n '^void cLog::openLog' src/tools/log.cpp | cut -d: -f1 => 185
+grep -n '^void cLog::write(const std::string& texte' src/tools/log.cpp | cut -d: -f1 => 247
+grep -c 'LOG_RETENTION_LAUNCHES' src/tools/log.cpp => 9
+grep -c 'Log retention' src/tools/log.cpp => 2
+grep -n 'openLog(LOG_FILE' src/main.cpp | cut -d: -f1 | tr '\n' ' ' => 221 222 223 224 225
+# the field's log directory, the readers, the ledger
+ls ~/.spacecrafter/log/ | grep -cE '^(spacecrafter|script|tcp|shader|vulkan)(\.[0-9]+)?\.log$' => 40
+ls ~/.spacecrafter/log/ | grep -c '^EntityCore-logs-' => 392
+test -f claude/harness/f108_rotate.py -a -f claude/harness/logread.py && echo ok => ok
+grep -c 'FIXED' claude/INTENT/11.230.md => 3
+grep -n '^115\. \*\*' claude/INTENT.md | head -1 | cut -d: -f1 => 454
+test -e /home/claude/sc-f116 ; echo $? => 1
+```
+
+**DoD:** predictions first; the constant + counters + in-session rotation + the D12 line; the mutated-budget proof both ways; the readers green; §11 entry + stub; §5.115's size bound FIXED in the marker; the §11.230 / §11.233 markers; README; trees clean; WIP cleared; baselines LAST.
 **WIP:** —
 
 ---
@@ -756,11 +846,11 @@ test -e /home/claude/sc-f114 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => fcc277c9
+git rev-parse --short=8 HEAD => d67833cd
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
-grep -c '^### F' claude/fable-dispatch.md => 5
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+grep -c '^### F' claude/fable-dispatch.md => 7
 # the sampler, the two seeds and the old plot, re-resolved at HEAD (content drift = abort)
 grep -n '^void OrbitModule::sampleOrbit' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 94
 grep -n 'orbit-.positionAtTimevInVSOP87Coordinates(date, calc_date, orbitPoint\[d\]);' src/experimentalModule/bodyModules/OrbitModule.cpp | cut -d: -f1 => 110
@@ -809,11 +899,11 @@ test -e /home/claude/sc-f111 ; echo $? => 1
 ```
 PREMISES
 # per-round variables — refreshed by the dispatcher at dispatch, never at mint
-git rev-parse --short=8 HEAD => fcc277c9
+git rev-parse --short=8 HEAD => d67833cd
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 6d63e6c1
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 234
-grep -c '^### F' claude/fable-dispatch.md => 5
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 235
+grep -c '^### F' claude/fable-dispatch.md => 7
 # the probe's homes and the canary's VRAM member, re-resolved at HEAD (content drift = abort)
 grep -lE '= "spacecrafter"|== "spacecrafter"|-x .spacecrafter. /proc' claude/harness/*.sh claude/harness/*.py | wc -l => 42
 grep -n "grep -l -x 'spacecrafter' /proc" claude/harness/f26_epoch.sh | head -1 | cut -d: -f1 => 46
