@@ -1,0 +1,22 @@
+== F115 corpus census (/home/claude/.spacecrafter/scripts/fscripts) ==
+shows with authored bodies : 8
+   06.sts         1013  {'plain_moon': 1013}
+   14.sts          528  {'no_tex_map': 1, 'in_galaxy': 527}
+   06old.sts       170  {'plain_moon': 169, 'no_tex_map': 1}
+   S05.sts           2  {'no_tex_map': 2}
+   S09.sts           2  {'in_galaxy': 1, 'no_tex_map': 1}
+   S10.sts           2  {'in_galaxy': 2}
+   S12old.sts        1  {'in_galaxy': 1}
+   S13.sts           1  {'plain_moon': 1}
+TOTAL authored bodies      : 1719   {'plain_moon': 1183, 'no_tex_map': 5, 'in_galaxy': 531}
+
+pool 1048576 B, launch-scene baseline 142529 B (11.222(e)), free 906047 B
+option                                                B/body   corpus B      MiB     holds 06.sts wall
+today (both paths, 06.sts body = 1344 B)                1344    1657920    1.581       674 body 675
+O4  B8 retires the old path (new only)                  1024    1279360    1.220       884 body 885
+O2  cap the receive array at 1, both paths               640     825088    0.787      1415 none
+O2  cap at 1 AND O4 (new only)                           320     446528    0.426      2831 none
+O2' array out of the block, both paths                   576     749376    0.715      1572 none
+O2'+O4  array out, new only                              256     370816    0.354      3539 none
+O3  + all-bodies-identical fields shared (see the entry)     128     219392    0.209      7078 none
+O3' the per-body minimum (model matrix only)              64     143680    0.137     14156 none

@@ -1,0 +1,97 @@
+alignment (minUniformBufferOffsetAlignment) = 64
+pool bufferBlocSize (app.cpp:274)           = 1048576
+  struct                     acquire site                               sizeof carved
+
+-- NEW path, per body, eager at load (ModularSystem::loadBody :1458)
+  globalVertProj             BasicMesh.cpp:20 / LayeredMesh.cpp:45 vert    164    192
+  meshFrag                   BasicMesh.cpp:20 / LayeredMesh.cpp:45 frag    784    832
+  meshTescGeom               LayeredMesh.cpp:53 tescGeom (tessellated)      16     64
+  rayMarchVert               LayeredMesh.cpp:64 rayVert (rayCapable)       128    128
+  rayMarchFrag               LayeredMesh.cpp:65 rayFrag (rayCapable)       832    832
+  bodyRingVert               RingModule.cpp:74 uVert                       176    192
+  bodyRingFrag               RingModule.cpp:75 uFrag                       784    832
+  atmExtUBO                  AtmExtModule.cpp:73 uniform                   124    128
+  ojmVert                    OjmModule.cpp:97 uVert                         48     64
+  ojmGeom                    OjmModule.cpp:97 uGeom                         80    128
+  ojmLight                   OjmModule.cpp:98 uLight                        32     64
+  ojmShadowBlock             OjmModule.cpp:98 uShadow                      928    960
+  oortMat                    OortModule.cpp:76 uMat (Mat4f)                 64     64
+  oortFrag                   OortModule.cpp:77 uFrag                        16     64
+
+-- OLD path, per body
+  globalFrag                 body_*.cpp uGlobalFrag                         68    128
+  moonFrag                   body_moon.cpp:257 uMoonFrag (heightmap row)     32     64
+  Vec3f                      uUmbraColor / uColor                           12     64
+  Mat4f                      uModelViewMatrixInverse / uModelViewMatrix     64     64
+  floatUniform               body_sun uRmag/uCmag/uRadius                    4     64
+  RingUniform                ring.cpp:146 uniform (per ringed body)        180    192
+  artGeom                    body_artificial.cpp:84 uProj                   76    128
+  LightInfo                  body_artificial.cpp:84 uLight                  28     64
+  artVert                    body_artificial.cpp:84 uVert                   52     64
+  ShadowVert                 body_*.cpp uShadowVert                        128    128
+  ShadowFrag_mc4             body_*.cpp uShadowFrag (maxShadowCast=4)      176    192
+
+-- the in-galaxy OJM body (14.sts), ojm_mgr.cpp:77
+  ojmContainerUniformData    ojm_mgr.cpp:77 uniform                        128    128
+
+-- F115 - OLD path blocks absent from F102's table
+  globalTescGeom             body_moon.cpp:258 / body_bigbody.cpp:149       12     64
+  ringFrag                   body_bigbody.cpp:229 uRingFrag                  8     64
+  ShadowFrag_mc8             body_moon.cpp:445 (FIELD config: 8)           240    256
+  OjmShadowFrag_mc4          body_artificial.cpp:45 (default 4)            208    256
+  OjmShadowFrag_mc8          body_artificial.cpp:45 (FIELD config: 8)      272    320
+
+-- F115 - NEW path, the same struct reused by a second module
+  photosphereVert            PhotosphereModule.cpp:58 vert = globalVertProj    164    192
+
+-- F115 - the receive array (MAX_SHADOW_CASTERS_PER_RECEIVER = 8)
+  ShadowingBody_entry        bodyShaderInterface.hpp:56-71 (one entry)      96    128
+  newArray_x8                8 entries, in EVERY new-path receive block    768    768
+  UShadowingBody_entry       bodyShader.hpp:252-255 (old, one entry)        16     64
+
+-- F115 - the four new-path blocks that each embed the SAME array
+  meshFrag_cap1              cap 1                                         112    128
+  meshFrag_cap2              cap 2                                         208    256
+  meshFrag_cap4              cap 4                                         400    448
+  meshFrag_cap0              cap 0 (array out of the block entirely)        16     64
+  rayMarchFrag_cap1          cap 1                                         160    192
+  bodyRingFrag_cap1          cap 1                                         112    128
+  ojmShadowBlock_cap1        cap 1                                         256    256
+
+-- F115 - CARVED per body, OLD path (eager unless said lazy)
+  OLD_moon_plain             body_moon.cpp:284-285 (06.sts body)                  320
+  OLD_moon_night             body_moon.cpp:266-267                                320
+  OLD_moon_bump              body_moon.cpp:275-277                                384
+  OLD_moon_tes               body_moon.cpp:256-258 (heightmap)                    320
+  OLD_moon_shadowext         body_moon.cpp:443,445 LAZY at first draw             384
+  OLD_bigbody_plain          body_bigbody.cpp:260-263 LAZY                        320
+  OLD_bigbody_ringed         body_bigbody.cpp:220-229 LAZY                        448
+  OLD_bigbody_shadowext      body_bigbody.cpp:126-128/186-188 LAZY                384
+  OLD_smallbody_plain        body_smallbody.cpp:176-177 LAZY                      320
+  OLD_smallbody_bump         body_smallbody.cpp:169,176-177 LAZY                  384
+  OLD_sun_eager              body_sun.cpp:146-152 ctor                            256
+  OLD_sun_lazy               body_sun.cpp:282-284 first draw                      192
+  OLD_artificial             body_artificial.cpp:84 ctor                          256
+  OLD_artificial_shadowext   body_artificial.cpp:45,171 LAZY                      320
+  OLD_ring                   ring.cpp:146 (per ringed body)                       192
+  OLD_atmext                 atm_ext.cpp:78 ctor (per atmosphere body)            128
+
+-- F115 - CARVED per body, NEW path (all eager at load)
+  NEW_basicmesh              BasicMesh.cpp:20 (06.sts body)                      1024
+  NEW_layered_mid            LayeredMesh.cpp:45                                  1024
+  NEW_layered_tes            LayeredMesh.cpp:45,53                               1088
+  NEW_layered_ray            LayeredMesh.cpp:45,64,65                            1984
+  NEW_layered_tes_ray        LayeredMesh.cpp:45,53,64,65                         2048
+  NEW_photosphere            PhotosphereModule.cpp:58 (per star)                  192
+  NEW_ring                   RingModule.cpp:74-75 (per ringed body)              1024
+  NEW_atmext                 AtmExtModule.cpp:73 (per atmosphere body)            128
+  NEW_ojm                    OjmModule.cpp:97-98 (per artificial body)           1216
+
+-- F115 - the both-paths sum the owner asked about
+  BOTH_06sts_body            OLD_moon_plain + NEW_basicmesh                      1344
+  INGALAXY_14sts_body        ojm_mgr.cpp:77 (neither path)                        128
+
+-- F115 - the same bodies with the array capped at 1 (option O2)
+  NEW_basicmesh_cap1         globalVertProj + meshFrag_cap1                       320
+  BOTH_06sts_body_cap1       OLD_moon_plain + the above                           640
+  NEW_basicmesh_cap0         globalVertProj + meshFrag_cap0 (array shared)           256
