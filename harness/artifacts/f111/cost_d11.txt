@@ -1,0 +1,58 @@
+P7  COST PER RESAMPLE (D11: 1 ms/frame is the denominator)
+    PRE : 180 solver calls, 360 Newton steps (180 points x 2 steps)
+    POST: 190 solver calls, 380 Newton steps (10 warm-up calls at d=0
+          + 180 scoring calls), plus ONE prepair call that writes a
+          double (orbit.cpp:442) -- +5.6% Newton steps per resample.
+    A resample fires once per vis/180 of SIMULATION time
+    (OrbitModule.cpp:132), i.e. at rate 1 once per 0.00 days for the
+    shortest-period sampling body and once per 51.99 days for the
+    longest -- not per frame.  Per-frame only at the rates of P2.
+
+
+MEASURED, on the tree's OWN sliced solver (f104_solver.py, slice md5 547b79d3,
+`--time`, 20 000 000 calls, three passes, spread under 0.3 %):
+
+    branch                         ns per eccentricAnomaly call (2 steps)
+    ell<0.2      fixed point                      28.77
+    ell0.2-0.9   Newton                           46.68
+    ell0.9-1     Laguerre-Conway                  61.43
+    IterativeEll (the comet family)               41.26
+
+THE DELTA THE FIX COSTS IS EXACTLY TEN CALLS, because the warm-up loop
+(orbit.cpp:453-456) is ten calls of `eccentricAnomaly` and nothing else --
+`positionAtE` and the rotate_to_vsop87 product run 180 times in both the pre-
+and the post-fix loop.  So per resample:
+
+    +0.288 us on the fixed-point branch   (10 x 28.77 ns)
+    +0.467 us on the Newton branch        (10 x 46.68 ns)
+
+against D11's 1 ms/frame denominator: **0.029 % to 0.047 % of one frame's whole
+budget, on the frames where a resample happens**.  All 31 sampling bodies
+resampling in the SAME frame -- which only happens at the P2 rates -- costs
+at most 31 x 0.467 us = 14.5 us, i.e. 1.5 % of the budget.
+
+HOW OFTEN A RESAMPLE HAPPENS.  `OrbitModule::update` resamples when the
+SIMULATION date has advanced vis/180 (`:132`), so
+
+    resamples per wall second, per body = rate / (86400 * vis/180)
+
+At `timerate rate 1` that is 1/(86400 * incr): one resample every 143 s for the
+most frequent sampler in the corpus (Metis, incr 0.00166 d) and one every
+4.5e6 s for the least (Neso, incr 52.0 d).  Summed over all 31 sampling bodies
+at rate 1 the whole corpus resamples about 0.12 times per second, so the
+measured delta is 5.6e-08 of a frame's budget on average -- three orders below
+anything D11 can see.
+
+AT SHOW-LOAD RATES.  The shipped shows run the clock from rate 1 to a few
+thousand (the fastest authored `timerate rate` in the shipped scripts is what
+sets this; not re-measured here).  At rate 1e4 the corpus resamples about 1200
+times per second, i.e. 8 per frame at 144 fps: 8 x 0.467 us = 3.7 us, 0.37 % of
+the budget.  The rate at which the delta reaches 10 % of one frame is about
+2.9e5 resamples per second, which needs `timerate rate` of order 2.4e6 -- above
+any authored show and inside the band this task used to make the defect visible.
+
+PREDICTION P7 SCORED: "O(10 us) per resample and a post/pre ratio of 1.00..1.15"
+-- the RATIO is 190/180 = 1.056 in calls and 1.056 in measured solver time
+(the ten extra calls are the same function), inside the predicted band; the
+ABSOLUTE per-resample solver cost is 180 x 46.68 ns = 8.4 us on the Newton
+branch and 5.2 us on the fixed-point one, i.e. O(10 us) as predicted.

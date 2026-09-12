@@ -1,0 +1,100 @@
+P6: TrailModule::resumeAfterHidden's own walk (TrailModule.cpp:227-234).
+
+`missed = (date - lastJD)/deltaTrail` samples are re-evaluated at
+`lastJD + k*deltaTrail`, each 1+RESUME_EXTRA_ITERATIONS = 5 times at ITS OWN
+date, so the seed ends CONVERGED at the LAST reconstructed sample's date --
+which is within ONE deltaTrail of the frame's own date by construction
+(`missed` is the floor of the quotient).  The body's next evaluation is one
+call at `date`, i.e. a seed at most deltaTrail*n rad of mean anomaly stale.
+
+This is the whole magnitude: the walker's staleness is bounded by the
+module's own cadence, where the sampler's is half a VISUALISATION PERIOD.
+
+deltaTrail = 1 sim day(s) (TrailModule.hpp:193)
+
+body         branch           e     period_d   offset_rad    err3d_max     errR_max
+Elara        ell<0.2     0.1962     258.8836      0.02427   8.9167e-05   6.6661e-06
+Leda         ell<0.2     0.1850     242.2567     0.025936   8.0133e-05   5.6552e-06
+Sinope       ell<0.2     0.1823    -778.6442   -0.0080694   5.2618e-05   3.6272e-06
+Himalia      ell<0.2     0.1341     248.3162     0.025303   3.9648e-05   2.0333e-06
+Lysithea     ell<0.2     0.1281     259.0470     0.024255    3.546e-05   1.7368e-06
+Sao          ell<0.2     0.1429    2908.4158    0.0021603   7.5526e-06   4.0781e-07
+Caliban      ell<0.2     0.0781    -579.5862    -0.010841   3.4263e-06   1.0221e-07
+Thebe        ell<0.2     0.0193       0.6777       9.2713   5.9355e-07   8.7103e-09
+Helene       ell<0.2     0.0071       2.7369       2.2957   1.6397e-07   7.8708e-10
+Epimetheus   ell<0.2     0.0098       0.6943       9.0492   1.1347e-07   8.1396e-10
+Metis        ell<0.2     0.0079       0.2992       20.998    7.068e-08   3.6966e-10
+Janus        ell<0.2     0.0070       0.6946       9.0459   5.7955e-08   2.9623e-10
+Adrastea     ell<0.2     0.0065       0.3024       20.779   4.8104e-08   1.9903e-10
+Neried       ell0.2-0.9  0.7474     360.4819      0.01743   2.8406e-08   1.3248e-08
+Pandora      ell<0.2     0.0042       0.6285        9.997   2.0576e-08    6.105e-11
+Prometheus   ell<0.2     0.0022       0.6130        10.25   5.7917e-09   8.6113e-12
+Amalthea     ell<0.2     0.0062       0.5016       12.525   1.9142e-09   4.6115e-12
+Larissa      ell<0.2     0.0016       0.5553       11.315   1.3854e-09   1.2348e-12
+Naiad        ell<0.2     0.0017       0.2952       21.284   1.1974e-09   1.4143e-12
+Thalassa     ell<0.2     0.0012       0.3123       20.119   5.4648e-10   3.7035e-13
+Galatea      ell<0.2     0.0009       0.4295        14.63    4.677e-10   2.8131e-13
+Belinda      ell<0.2     0.0008       0.6243       10.064    3.983e-10   2.2096e-13
+Rosalind     ell<0.2     0.0005       0.5593       11.235   1.3019e-10   3.6393e-14
+Puck         ell<0.2     0.0004       0.7626       8.2395   1.0656e-10   2.5504e-14
+Telesto      ell<0.2     0.0002       1.8878       3.3283   8.5767e-11   1.2842e-14
+Portia       ell<0.2     0.0007       0.5140       12.224   7.6635e-11   2.3631e-14
+Despina      ell<0.2     0.0013       0.3355        18.73   6.7727e-11   3.4545e-14
+Proteus      ell<0.2     0.0003       1.1229       5.5957   3.7327e-11   4.7821e-15
+Juliet       ell<0.2     0.0007       0.4939       12.722   3.6201e-11   1.0803e-14
+Sycorax      ell0.2-0.9  0.5100   -1288.8499    -0.004875   6.0146e-12   2.2448e-12
+Pasiphae     ell0.2-0.9  0.2932    -709.0533   -0.0088614   5.8781e-12   1.5035e-12
+Carme        ell0.2-0.9  0.2603    -691.6549   -0.0090843   3.8777e-12   9.0233e-13
+Ananke       ell0.2-0.9  0.2168    -648.6407   -0.0096867   2.3584e-12   4.7115e-13
+Setebos      ell0.2-0.9  0.5614   -2234.3514   -0.0028121   2.0463e-12   8.0629e-13
+Triton       ell<0.2     0.0000       5.8770       1.0691   1.0719e-12    1.301e-17
+Prospero     ell0.2-0.9  0.3312   -1973.4300   -0.0031839   1.1984e-13    3.357e-14
+Neso         ell0.2-0.9  0.6300   -9358.5911  -0.00067138   5.4677e-14   2.2787e-14
+Laomedeia    ell0.2-0.9  0.3846    3185.0688    0.0019727   5.4191e-14   1.6875e-14
+Halimede     ell0.2-0.9  0.2619   -1875.1695   -0.0033507   5.3987e-14   1.2615e-14
+Psamathe     ell0.2-0.9  0.2226   -9130.6241  -0.00068814   5.7488e-16   2.2204e-16
+
+
+DISPOSITION: A RIDER, NOT THIS TASK.  Three reasons, in order of weight.
+
+1. MAGNITUDE.  The worst record is Elara at 8.92e-05 AU of 3D displacement
+   (6.67e-06 AU radial), 3.9 orders below the sampler's worst (0.645 AU on Neso
+   from the same model, confirmed in the engine at 0.335 AU) and 2.5 below
+   Pasiphae's.  At Elara's ~5.5 AU that is 3.3 arcsec, so it is NOT below
+   readout -- which is why it is recorded rather than dismissed.
+
+2. FREQUENCY AND BOUND.  The sampler fires once per vis/180 of simulation time,
+   for every shown line, forever.  `resumeAfterHidden` fires once per UNHIDE
+   EDGE, and its staleness is bounded by the module's own cadence (`deltaTrail`,
+   one simulation day, TrailModule.hpp:193) because `missed` is the floor of
+   (date - lastJD)/deltaTrail (TrailModule.cpp:190) and each reconstructed
+   sample is evaluated 1 + RESUME_EXTRA_ITERATIONS = 5 times AT ITS OWN DATE
+   (:229).  The sampler's staleness is half a VISUALISATION PERIOD and is not
+   bounded by anything the module owns.
+
+3. THE FIX IS NOT THE SAME FIX, and this is the decisive one.  F111's fix
+   RESTORES a shape the old path already has: the batch pair with its own seed,
+   in the tree, called from the old plot, with the requirement it encodes
+   readable at its own site.  The trail walker has NO old-path counterpart --
+   trail reconstruction across a hide is new-path-only (D23 clause iv,
+   Sec.11.113(b)(iv)) -- so there is no shape to restore and any change is a
+   DESIGN CHOICE among at least three: re-converge the body after the walk;
+   give the walker its own seed (a third `mutable` member, i.e. the same
+   question the batch seed answered, asked again); or evaluate the
+   reconstructed samples through the batch pair (which would be the closest
+   analogue, and which would silently change what a trail point MEANS for a
+   body whose orbit type has no batch seed).  Choosing among those is not
+   decision-free and is not this task's (Sec.11.161(b) stratum: the
+   experimentalModule is the owner's).
+
+ROUTED, NOT MINTED.  Whether 8.92e-05 AU / 3.3 arcsec on one frame after one
+unhide meets Sec.5.79's "with consequence" is a MINT decision for the supervisor.
+The reach is `flag object_trails on` plus any hide/unhide of a body with a trail
+(the shows do this), so the shipped-surface half of the criterion is met.
+
+WHAT IS NOT MEASURED HERE, said rather than glossed: this is a SLICE
+measurement, on the tree's own solver text through f107_model's re-derivation,
+not an engine one.  An engine measurement needs a hide/unhide leg with a dump on
+the frame after the unhide -- the same one-frame-capture problem this task
+solved for the sampler by running the clock, and the trail walker has no
+equivalent "every frame" regime because it fires on an edge.  That leg is owed.

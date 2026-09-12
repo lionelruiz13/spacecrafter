@@ -6125,3 +6125,116 @@ would have caught the 11:26 red, but only because that holder was enormous.
 * **`F90_SKIP_CANARY=1` left no trace** (F110, 11.234), so an unverified smoke
   run was indistinguishable from a verified one. It now prints what was not
   checked and writes `canary.SKIPPED` into the outdir.
+
+## F111 - the orbit-line sampler gets its own seed, and the transient caught by running the clock (`f111_predict.py`, `f111_rate.py`, `f111_report.py`, `f111_curve.py`, `f111_line.py`) - INTENT 11.239 / 5.150 / 11.229(g)(h2) / 11.225(j2) / 5.84, 2026-09-12
+
+**What this task changed in the engine.** One function:
+`OrbitModule::sampleOrbit` now calls the OLD path's batch pair -- one
+`prepairFastPositionAtTimevInVSOP87Coordinates` above the osculating split (as
+`orbit_plot.cpp:142/:174` has it), then `fastPositionAtTimevInVSOP87Coordinates`
+per point -- so the 180 sampled dates go through `batchLastE` and not through the
+POSITION solver's own `iterativeLastE`. Code `f3316fea -> 87d429bd`, binary
+`95087b68 -> 42d7982c`.
+
+### THE INSTRUMENT YOU WILL WANT: how to see a one-frame transient in a dump
+
+`OrbitModule::update` resamples when the SIMULATION date has advanced
+`visPeriod/180` (`:132`). At a pinned clock that fires ONCE, and the body
+re-converges long before a dump arrives -- F107 measured that null and correctly
+refused to read it as absence. **Run the clock instead.** At
+
+    timerate rate R   with   R >= 86400 * fps * vis/180 = 69120 * vis   (fps = 144)
+
+every frame resamples and the transient is the steady state. Nothing in the
+engine clamps the rate (`TimeMgr::setTimeSpeed`, `time_mgr.hpp:53-55`); the dump
+header's `timeSpeed` reads `R/86400` exactly, which is the cheapest check that
+the rate took.
+
+The dump can read it because **`ModularBody::useNow` returns on its first line
+for a body the walk evaluates** (`!renderHidden`, `ModularBody.cpp:456-457`), so
+"a dump is a use" does NOT re-converge a walked record. That is the opposite of
+the parked case (11.226) and it is what makes this measurable at all.
+
+### THE TRAP, AND THE NUMBER THAT DEFUSES IT
+
+**Drawing orbit lines costs frame rate: 144 fps -> about 15.5 with 31 lines on.**
+At one `timerate` the flag-ON arm therefore advances the clock NINE TIMES
+further per frame than the flag-OFF arm, and the walk buys only ONE solver call
+per frame (two Newton steps), so the flag-OFF arm is a **measured floor, not a
+zero** -- 5.2e-05 AU on Elara at 8 simulated days per frame, 5.9e-04 at 75. Any
+flag-on/flag-off comparison at one rate is comparing two different experiments.
+
+Measure the jump, never assume it: **`evalCount` counts solver calls**
+(`ModularBody.hpp:709`) and the walk makes exactly one per frame for a walked
+body, so `(jd delta)/(evalCount delta)` between two dumps IS the per-frame date
+jump and the delta itself is the frame count. `f111_rate.py` records
+`dJD_per_frame` and `frames_between` for every arm, and `f111_curve.py` uses only
+comparisons in which that number is matched.
+
+### THE FILES
+
+* `f111_predict.py` -- the model, importing `f107_model`'s solvers rather than
+  re-deriving them (I2). Modes: `transient` (the steady-state perturbation per
+  body, with `--rate`/`--fps`), `rate` (the every-frame-resample rate per body),
+  `line` (max |orbitPoint_pre - orbitPoint_post| over the 180 points),
+  `trail` (the trail walker's own staleness), `chain` (**the frame chain**: the
+  walk's one call per frame, the resample gate, and the pre-fix sampler's walk,
+  at a given `--djd-on`/`--djd-off`), `cost`, `score DUMP`, `all`.
+* `f111_rate.py <outdir> --tag T --bin B [--stages R1,R2] [--dumps N]` -- the leg.
+  Arms inside ONE launch: two pinned-clock dumps at two dates (the control that
+  must fail), F107's pinned flag-on arm, then per stage flag OFF / ON / OFF again
+  with N dumps each. Scores each record against the model's CONVERGED position at
+  the record's own dumped `lastJD`; PERTURBED is >= 5.6e-07 AU, 100x the model's
+  measured floor.
+* `f111_report.py <leg> [<leg2>]` -- the arm table, with the angle each residual
+  subtends at the record's own `dist`, and the PRE/POST column pair.
+* `f111_curve.py <leg_pre> <leg_post>` -- the proof: (A) same stage, flag ON, pre
+  vs post (same lines, same frame rate, only the seed differs); (B) each flag-ON
+  arm against the flag-OFF arm of whatever stage shares its measured jump within
+  `--tol`. **It does NOT interpolate**: an earlier version fitted the flag-OFF
+  curve in log-log and had to EXTRAPOLATE nearly every point, which projected a
+  2.5e-14 floor into a meaningless reference. Removed rather than clamped.
+* `f111_line.py <outdir> --tag T --bin B [--body X|none] [--fov F]` -- the
+  screenshot leg, with an A/A pair in each flag state. See the warning below
+  before trusting any orbit-line pixel count.
+
+### WARNING: THE DRAWN ORBIT LINE HAS NO WORKING SCREEN OBSERVABLE
+
+Five configurations, all measured (`artifacts/f111/line_screens.txt`):
+
+| scene | A/A floor | flag ON/OFF signal |
+|---|---|---|
+| default camera, shipped scene | 91533 px (two launches, one binary) | 91505 px |
+| quiet scene, track Jupiter fov 2, pointer ON | 975 px | 748 px |
+| same, pointer off, tracking released | 0 px | 0 px (aim drifted back) |
+| same, pointer off, tracking held | 449 px | 375 px, **max channel delta 6** |
+| same, farm `planet_orbits_color = 1,1,1` | **0 px** (byte-identical) | **0 px** |
+
+Driving the floor to zero drove the signal to zero as well. At the shipped
+`planet_orbits_color = 0.2,0.2,0.2` the lines reach a max channel delta of six.
+**Consequence for an existing number: 11.229(f2)'s "the frame changes by 91774
+pixels (the lines are drawn)" sits AT its own scene's A/A floor** -- the
+differing pixels are the star field, which animates between any two frames.
+Annotated at that clause; its load-bearing 0-of-120 result is independent of it.
+The selection pointer ANIMATES: `select planet X pointer off` (the spelling
+`b11_trail_gate.py:160` already uses) or your A/A floor is the marker.
+
+### WHAT THE NUMBERS CAME OUT AT
+
+Pre-fix, delivered binary, rate 1e8: **18 of 31 walked iterating records
+perturbed, worst Neso 0.16623 AU = 1172 arcsec** (flag off: 7, worst Elara
+5.2e-05); rate 7e8: 18, worst Neso 0.33503 AU. Pinned clock: 0 of 31 both flag
+states (F107 reproduced). Post-fix, jump held fixed: **71 of 75 rows improved by
+more than 2x, 4 unchanged, none worse**, best ratio 3.13e+07 (Setebos); the
+matched-jump ON/OFF worst falls from 1.77e+07 to 3.77.
+
+**Europa does NOT change, and that was registered before the build.** A
+`SpecialOrbit` overrides neither half of the batch pair, so the fallback asks the
+same `positionFunction` at the same 180 dates: all 17 `*_special` records read
+identically on both binaries, Europa's 3.4750326422777565e-08 AU to seventeen
+digits. 5.150 closes on its ITERATIVE half only.
+
+Cost: the delta is exactly ten extra `eccentricAnomaly` calls (the warm-up loop),
+measured at 28.77 / 46.68 / 61.43 ns on slice `547b79d3` -- **+0.29 to +0.47 us
+per resample**, 0.03-0.05 % of D11's 1 ms frame, and the whole corpus resamples
+about 0.12 times per second at `timerate rate 1`.
