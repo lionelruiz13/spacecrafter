@@ -285,3 +285,49 @@ never rewrite (maintenance invariant). Archival per the standing convention
   ruled display class — your correction may differ (e.g. a display you would rather bank
   on) — say the word and the block is one edit again. The scratch trees under
   `/home/claude/sc-f*` (18, `sc-f84` 4.2 G … `sc-f91` 6.4 M) survived the boot.
+- 2026-09-12 09:51–11:34 [measured: supervisor, session 29 (Claude Fable 5.1), warm-up —
+  every value from the command beside it, Q-67; the owner PRESENT and answering in-session
+  (Saturday)] **A SECOND REBOOT IN 14 HOURS, THE RE-BANK AGAIN, THEN A RED THE BANK COULD NOT
+  PREDICT: A RESIDENT 27B MODEL HELD 29.5 GB OF VRAM AND NO LAUNCH COULD START — RELEASED ON THE
+  OWNER'S WORD, THE BAND THEN REPRODUCED ON A FOURTH BOOT. AND THE HISTORY REWRITE RAN MID-WARM-UP.**
+  `uptime -s` **2026-09-12 09:51:57** (the 2026-09-11 20:06:16 boot of session 28 ended; `/tmp`
+  wiped). At 10:29:36 the owner re-provisioned the same real logind session: `loginctl` claude
+  **10** (user) + **11** (manager), cookie `/run/user/1003/.mutter-Xwaylandauth.8TBXV3`,
+  `/usr/bin/gnome-shell` pid **10920** and `Xwayland :2` pid **11060**, both kernel start
+  **1789201776**; `xdpyinfo` **2448x1332**; the inherited `DISPLAY=:2`/`XAUTHORITY` already correct.
+  Trigger line 10:55. Canary `--no-scene` 10:56:55 **exit 2, 1 fail 2 note** — FAIL
+  `compositor.restarted` (start_epoch 1789201776 vs banked 1789150410), NOTE `xserver.restarted`,
+  NOTE `gpu.vram_pressure` (30477 MiB used — new since session 28's 599); every other member EQUAL
+  (`artifacts/f56/canary/20260912-105655`). **11:03:41Z the owner ran `supervised-by.sh` + pushed
+  BOTH branches from this tree** (his answer to my first question: *"I forgot about it, done now"*):
+  code `71b6fe51 → fcc277c9`, harness `aaef2d12 → 16c68276` (his closing commit "Repoint tracker
+  citations after the supervision-trailer rewrite": 83 code / 846 harness commits rewritten, 605
+  citations in 296 files repointed, 2 dangling repaired, 0 unresolved; maps
+  `sha-maps/20260912T090341Z-71b6fe51-aaef2d12/`); `origin/master-beta` = `fcc277c9`,
+  `origin/CC-harness` = `16c68276`, **0 unpushed on each** at 11:13:30; the worktrees
+  `sc-f107/tree` (`474c595d` → map `4cd00139`) and `sc-f89/tree` hold their old detached shas; the
+  binary `6d63e6c1` still current (same trees, 0 `src/` files newer); projection md5 MATCH
+  (`8e364a3a`); ledger instruments unchanged to the digit. RE-BANKED the three per-boot members in
+  one VALUES-block edit with the argument (`f56_canary.sh`; the 2026-09-11 values struck not
+  deleted; the band untouched): `--no-scene` **exit 0** at 11:26:26 (1 note, `gpu.vram_pressure`),
+  then the FULL canary **exit 1** 11:26:28–11:28:32: **FAIL `photometric.empty`** — `f51_run.sh` rc
+  1, *"port 7805 never opened"*; the app's own log (`scene/dwell.applog`): GPU memory *available
+  1591 MiB* at init, dedicated allocations 512 + 160 + 1280 MiB, then **`Failed to allocate chunk
+  of 256 MiB in GPU memory`** twice and no window. Holder, by `nvidia-smi`: `/usr/local/lib/ollama/
+  llama-server` pid **13091**, uid **997** (ollama), **29552 MiB**, `qwen3.8:UD-Q6_K` (27.3B, Q6_K,
+  context 114688, KV f16) loaded **10:34:45**, service env `OLLAMA_KEEP_ALIVE=-1` ⇒ `/api/ps`
+  `expires_at 2318-12-23` — never unloads by itself; no client connected at 11:29. NOT mitigated
+  (uid 997, §11.174(h)); asked; the owner: *"I unload it now (ollama stop qwen3.8:UD-Q6_K)"* —
+  11:32:29 VRAM **980 MiB**, `/api/ps` `models: []`; FULL canary **exit 0, 0 fail 1 note**
+  11:32:29–11:34:15 (`20260912-113229`): 165.258/6.644 new · 160.142/6.603 old, **12/12 in band,
+  every delta 0.0** — the band on a FOURTH boot. Config/ssystem `03fbee59`/`545a51ef` in == out
+  on every run; no `spacecrafter` in `/proc/*/comm`, no `/proc/<pid>/exe` under `sc[-_]*`, port
+  7805 free before every launch; no lock file; RAM 52 GiB available of 59, `-j24`; GPU driver
+  580.159.03. **STANDING COUPLING, new:** a model resident in ollama under `KEEP_ALIVE=-1` makes
+  this host launch-incapable for spacecrafter (the app needs ≥ ~2.2 GB of dedicated GPU memory at
+  init from the sequence above), and the canary's `--no-scene` arm is BLIND to it — it passes with
+  a NOTE (`BANK_VRAM_NOTE_MIB=8192`, never gated) while every functional launch would die at
+  Vulkan init; only the photometric arm caught it, by failing to launch. Routed to this round's
+  instrument task (F112): a launch-headroom GATE derived from the app's own allocation sequence,
+  not a guessed threshold. Decision flag per §11.174(h): the re-bank is the block's prescription;
+  the VRAM release was the owner's act on his own service — nothing improvised here.

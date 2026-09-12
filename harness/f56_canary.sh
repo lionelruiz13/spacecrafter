@@ -120,10 +120,16 @@ BANK_COMPOSITOR_CMD="/usr/bin/gnome-shell"
 #   ~~BANK_COMPOSITOR_START=1788544217~~   # kernel start of pid 43595 = 2026-09-04 19:50:17
 #   ~~BANK_XSERVER_START=1788544217~~      # kernel start of pid 43800 = 2026-09-04 19:50:17
 #   ~~BANK_HOST_BOOT="2026-09-04 18:45:08"~~
-BANK_COMPOSITOR_START=1789150410          # kernel start of pid 12247 = 2026-09-11 20:13:30
+# RETIRED 2026-09-12 (the 2026-09-11 20:06:16 boot ended 2026-09-12 09:51:57; per-boot by design —
+#   the owner re-provisioned the same real logind session on :2 at 10:29:36; sessions 10/11, cookie
+#   .8TBXV3; canary 20260912-105655 red on exactly the three members below, every other member EQUAL):
+#   ~~BANK_COMPOSITOR_START=1789150410~~   # kernel start of pid 12247 = 2026-09-11 20:13:30
+#   ~~BANK_XSERVER_START=1789150411~~      # kernel start of pid 12735 = 2026-09-11 20:13:31
+#   ~~BANK_HOST_BOOT="2026-09-11 20:06:16"~~
+BANK_COMPOSITOR_START=1789201776          # kernel start of pid 10920 = 2026-09-12 10:29:36
 BANK_XSERVER_MATCH="Xwayland :2"
-BANK_XSERVER_START=1789150411             # kernel start of pid 12735 = 2026-09-11 20:13:31
-BANK_HOST_BOOT="2026-09-11 20:06:16"
+BANK_XSERVER_START=1789201776             # kernel start of pid 11060 = 2026-09-12 10:29:36
+BANK_HOST_BOOT="2026-09-12 09:51:57"
 #
 # PHOTOMETRIC BAND -- the reference scene is `f51_run.sh`'s (§11.174(e) names it): the
 # Moon `base` scene at fov 10, the app's own 2048^2 readback, metric = §11.164(c)'s
