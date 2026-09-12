@@ -218,6 +218,24 @@ def main():
     infile = parse_budget_lines(infile_text)
     open_lines = [l for l in applog.splitlines() if D12_KEY in l and BUDGET_KEY not in l]
 
+    # WHICH show line crossed the bound: the console stream carries the echoes
+    # and the rotation lines in one order, so the last filler seen before a
+    # rotation line is the line whose bytes crossed it.  This is the number the
+    # pre-registration predicted from arithmetic, so it is computed here rather
+    # than by hand afterwards.
+    crossings, last_filler = [], None
+    for ln in applog.splitlines():
+        m = re.search(r"Execute_command f116_filler_(\d+)", ln)
+        if m:
+            last_filler = int(m.group(1))
+        elif D12_KEY in ln and BUDGET_KEY in ln:
+            crossings.append(last_filler)
+    bursts = [c for i, c in enumerate(crossings)
+              if i == 0 or c is None or crossings[i - 1] is None
+              or c - crossings[i - 1] > 100]
+    print("\n--- show line at each rotation ---")
+    print("  bursts start at show line(s): %s" % bursts)
+
     print("\n--- in-session rotations ---")
     print("  %d on the console, %d still in the log files, %d open-time lines"
           % (len(console), len(infile), len(open_lines)))
@@ -300,6 +318,7 @@ def main():
            "budget_scored": a.budget, "iters": a.iters, "per_line": per_line,
            "window": window, "seed": a.seed,
            "pre": pre, "post": post, "peak": worst,
+           "crossing_lines": crossings, "burst_lines": bursts,
            "console_rotations": console, "infile_rotations": len(infile),
            "open_lines": len(open_lines), "instr": instr,
            "polls": len(polls), "fails": FAILS, "notes": NOTES}

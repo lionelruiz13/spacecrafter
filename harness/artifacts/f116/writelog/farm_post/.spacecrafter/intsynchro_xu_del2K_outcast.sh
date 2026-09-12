@@ -1,0 +1,1 @@
+/home/claude/.spacecrafter/intsynchro_xu_del2K_outcast.sh

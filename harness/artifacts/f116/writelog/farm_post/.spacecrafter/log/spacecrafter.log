@@ -1,0 +1,54 @@
+(Info ): Log retention (spacecrafter.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (script.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (tcp.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (shader.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (vulkan.log): no earlier launch to rotate, now using 1 of the last 8 launches, deleted nothing. The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+=================================================================
+(Info ): Welcome to spacecrafter
+(Info ): Version : spacecrafter 2026.07.11 - Vulkan Edition 2026
+(Info ):  Copyright (c) 2014-2020 Association Sirius, LSS team et al.
+ Copyright (c) 2012-2014 LSS team et al.
+ Copyright (c) 2003-2011 Digitalis Education Solutions, Inc. et al.
+ Copyright (c) 2000-2008 Fabien Chereau et al.
+ http://lss-planetariums.info
+=================================================================
+(Info ): system name = Linux
+node name   = LovelyFoxDev
+release     = 6.17.0-41-generic
+version     = #41-Ubuntu SMP PREEMPT_DYNAMIC Sat Jun 20 18:01:40 UTC 2026
+machine     = x86_64
+=================================================================
+(Info ): Memory information
+Total ram 63582703616
+Free  ram 18371579904
+Shared ram 376291328
+Buffer ram 211197952
+Total swap 0
+Free  swap 0
+=================================================================
+(Info ): Check home directory ok
+Check audio subdirectory ok
+Check fonts subdirectory ok
+Check ftp subdirectory ok
+Check landscapes subdirectory ok
+Check log subdirectory ok
+Check screenshot subdirectory ok
+Check scripts subdirectory ok
+Check pictures subdirectory ok
+Check textures subdirectory ok
+Check vframes subdirectory ok
+Check videos subdirectory ok
+Check media subdirectory ok
+Check vr360 subdirectory ok
+Check www subdirectory ok
+Check sky_cultures subdirectory ok
+Check model3D subdirectory ok
+Check language subdirectory ok
+
+(Info ): Lock file is /tmp/spacecrafter.lock
+(Info ): My getpid() is 253961
+(Info ): CONFIG DIR: /home/claude/spacecrafter/claude/harness/artifacts/f116/writelog/farm_post/.spacecrafter/
+(Info ): ROOT   DIR: /usr/local/share/spacecrafter/
+(Info ): LOCALE DIR: /usr/local/share/locale/
+(Info ): config.ini is up to date
+(Info ): EOF

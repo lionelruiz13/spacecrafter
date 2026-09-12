@@ -1,0 +1,1 @@
+/home/claude/.spacecrafter/extsynchro_xu_del2K.sh

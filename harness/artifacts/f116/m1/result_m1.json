@@ -1,4 +1,14 @@
 {
+ "before_launch": {
+  "channels": {
+   "spacecrafter": [],
+   "script": [],
+   "tcp": [],
+   "shader": [],
+   "vulkan": []
+  },
+  "total": 0
+ },
  "label": "m1",
  "bin": "/home/claude/sc-f116/sc_m1b_budget4M",
  "bin_md5": "d71a7e82820c5cb9ba94931d7e706f98",
@@ -100,24 +110,52 @@
    "vulkan": [
     [
      "vulkan.log",
-     101604
+     101305
     ]
    ]
   },
-  "total": 2107475
+  "total": 2107176
  },
  "peak": {
   "channels": {
    "spacecrafter": [
     [
      "spacecrafter.log",
-     79337
+     93895
     ]
    ],
    "script": [
     [
      "script.log",
-     3683034
+     3466008
+    ],
+    [
+     "script.1.log",
+     159
+    ],
+    [
+     "script.2.log",
+     140
+    ],
+    [
+     "script.3.log",
+     159
+    ],
+    [
+     "script.4.log",
+     140
+    ],
+    [
+     "script.5.log",
+     159
+    ],
+    [
+     "script.6.log",
+     140
+    ],
+    [
+     "script.7.log",
+     159
     ]
    ],
    "tcp": [
@@ -139,9 +177,49 @@
     ]
    ]
   },
-  "total": 3861002,
-  "t": 0.041
+  "total": 3659590,
+  "t": 0.123
  },
+ "crossing_lines": [
+  13429,
+  13430,
+  13430,
+  13431,
+  13431,
+  13432,
+  13432,
+  13433,
+  26846,
+  26847,
+  26847,
+  26848,
+  26848,
+  26849,
+  26849,
+  26850,
+  40247,
+  40247,
+  40248,
+  40248,
+  40249,
+  40249,
+  40250,
+  40250,
+  53631,
+  53631,
+  53632,
+  53632,
+  53633,
+  53633,
+  53634,
+  53634
+ ],
+ "burst_lines": [
+  13429,
+  26846,
+  40247,
+  53631
+ ],
  "console_rotations": [
   {
    "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4194387 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 2 of the last 8 slots, one fewer for earlier launches. Deleted nothing (this channel had no older file to drop), 4194387 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
@@ -384,90 +462,90 @@
    "total_after": 192969
   },
   {
-   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4194386 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (159 bytes, the oldest file of this channel), 4194227 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4194342 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (159 bytes, the oldest file of this channel), 4194183 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
    "channel": "script",
    "budget": 4194304,
-   "total_before": 4194386,
+   "total_before": 4194342,
    "deleted": "log/script.7.log",
    "deleted_size": 159,
    "kept": 8,
-   "total_after": 4194227
+   "total_after": 4194183
   },
   {
-   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4194996 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (140 bytes, the oldest file of this channel), 4194856 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4194952 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (140 bytes, the oldest file of this channel), 4194812 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
    "channel": "script",
    "budget": 4194304,
-   "total_before": 4194996,
+   "total_before": 4194952,
    "deleted": "log/script.7.log",
    "deleted_size": 140,
    "kept": 8,
-   "total_after": 4194856
+   "total_after": 4194812
   },
   {
-   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4195606 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (159 bytes, the oldest file of this channel), 4195447 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4195562 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (159 bytes, the oldest file of this channel), 4195403 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
    "channel": "script",
    "budget": 4194304,
-   "total_before": 4195606,
+   "total_before": 4195562,
    "deleted": "log/script.7.log",
    "deleted_size": 159,
    "kept": 8,
-   "total_after": 4195447
+   "total_after": 4195403
   },
   {
-   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4196216 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (140 bytes, the oldest file of this channel), 4196076 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4196172 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (140 bytes, the oldest file of this channel), 4196032 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
    "channel": "script",
    "budget": 4194304,
-   "total_before": 4196216,
+   "total_before": 4196172,
    "deleted": "log/script.7.log",
    "deleted_size": 140,
    "kept": 8,
-   "total_after": 4196076
+   "total_after": 4196032
   },
   {
-   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4196826 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (159 bytes, the oldest file of this channel), 4196667 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4196782 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (159 bytes, the oldest file of this channel), 4196623 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
    "channel": "script",
    "budget": 4194304,
-   "total_before": 4196826,
+   "total_before": 4196782,
    "deleted": "log/script.7.log",
    "deleted_size": 159,
    "kept": 8,
-   "total_after": 4196667
+   "total_after": 4196623
   },
   {
-   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4197436 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (140 bytes, the oldest file of this channel), 4197296 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4197392 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (140 bytes, the oldest file of this channel), 4197252 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
    "channel": "script",
    "budget": 4194304,
-   "total_before": 4197436,
+   "total_before": 4197392,
    "deleted": "log/script.7.log",
    "deleted_size": 140,
    "kept": 8,
-   "total_after": 4197296
+   "total_after": 4197252
   },
   {
-   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4198046 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (159 bytes, the oldest file of this channel), 4197887 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4198002 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (159 bytes, the oldest file of this channel), 4197843 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
    "channel": "script",
    "budget": 4194304,
-   "total_before": 4198046,
+   "total_before": 4198002,
    "deleted": "log/script.7.log",
    "deleted_size": 159,
    "kept": 8,
-   "total_after": 4197887
+   "total_after": 4197843
   },
   {
-   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4198656 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (4000760 bytes, the oldest file of this channel), 197896 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
+   "raw": "\u001b[1m\u001b[32m(Info ): \u001b[0m\u001b[37mLog retention (script.log): the 4194304-byte budget for all log files together was reached (4198612 bytes in use), so this launch's own script.log is now script.1.log and a fresh one is open - it is the channel holding the most, and it now uses 8 of the last 8 slots, one fewer for earlier launches. Deleted log/script.7.log (4000760 bytes, the oldest file of this channel), 197852 bytes in use now. The budget is the compiled constant LOG_RETENTION_BYTES = 4194304 in src/tools/log.hpp: no config.ini key sets it, so a larger or smaller log budget means changing that line and rebuilding.\u001b[0m",
    "channel": "script",
    "budget": 4194304,
-   "total_before": 4198656,
+   "total_before": 4198612,
    "deleted": "log/script.7.log",
    "deleted_size": 4000760,
    "kept": 8,
-   "total_after": 197896
+   "total_after": 197852
   }
  ],
  "infile_rotations": 32,
  "open_lines": 5,
  "instr": [
-  "[f116-instr] total=2107410 spacecrafter=101192/0 script=1903571/1056 shader=0/0 tcp=0/0 vulkan=101591/0 writes=121989 ns_write=93221923 ns_count=2632133 ns_check=2610018 rot=32 ns_rot=6032505 clock_pair_ns=20.294"
+  "[f116-instr] total=2107111 spacecrafter=101192/0 script=1903571/1056 shader=0/0 tcp=0/0 vulkan=101292/0 writes=121989 ns_write=89096316 ns_count=2609580 ns_check=2582081 rot=32 ns_rot=5541388 clock_pair_ns=20.1619"
  ],
  "polls": 98,
  "fails": [],

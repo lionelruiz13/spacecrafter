@@ -1,0 +1,1 @@
+/home/claude/.spacecrafter/variable_stars_old.txt

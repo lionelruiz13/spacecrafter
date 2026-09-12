@@ -5899,3 +5899,88 @@ containing 4 written ones.
 section 5): which bodies carve what is decided by `ModularBody::deduceBodyModuleList`
 and the module loaders' bids, both readable; and a launch that plays `06.sts` is
 the abort itself, so it would not produce a clean census anyway.
+
+## F116 - the log channels' TOTAL SIZE budget, and the rule chosen by measurement (`f116_budget.py`, `f116_assert.sh`, `artifacts/f116/mutate.py`, `logread.window_text`) - INTENT 11.237 / 5.115 / 11.230 / 11.233(b), 2026-09-12
+
+F108 bounded how many LAUNCHES each channel keeps. This bounds the BYTES, which
+that window does not: `LOG_RETENTION_BYTES` (`src/tools/log.hpp`, 1 GiB) is the
+TOTAL the five channels' live files and numbered archives may occupy, and when a
+line takes the total past it the channel holding the MOST bytes rotates exactly
+as it does at open. The counter lives in `cLog::write` - one add per line, the
+archives' sizes read only at open and at each rotation, never a `file_size` per
+line.
+
+### THE ONE SHAPE TO CARRY OUT OF HERE
+
+**A budget that is a TOTAL cannot be paid by whoever happens to be writing.**
+The obvious rule - "rotate the channel this line went to" - is the one that
+fails, and it fails in the state the feature exists for: once one channel has
+filled the budget and gone quiet, every line on any other channel finds the
+total over the bound, rotates a 13-byte channel, frees nothing, and writes a
+report line. Measured, both builds on one seeded farm (a 6 MiB file on a channel
+the show never writes, 4 MiB budget, 5 000 lines): **6 rotations** under the
+rule that sheds from the largest, **11 987** under the rule that sheds from the
+writer - one per logged line - with the 6 MiB still there at exit and the total
+at 2.96x the budget it was supposed to enforce. If you are ever tempted by
+"whoever is writing pays", `artifacts/f116/m2_seeded/` is what it looks like.
+
+### The instruments
+
+    DISPLAY=:2 python3 f116_budget.py <absOutdir> --bin <binary> --iters 60000
+    DISPLAY=:2 python3 f116_budget.py <absOutdir> --bin <mutant> --iters 5000 \
+        --budget 4194304 --seed shader:6291456 --label m2seed
+    ./f116_assert.sh <label>                 # the three instance asserts + VRAM
+    python3 artifacts/f116/mutate.py budget 4194304 | instr | rule_written
+    python3 artifacts/f116/selftest_mutant.py # the new reader checks, able to fail
+
+`--budget` tells the DRIVER what the binary was built with so it can score the
+crossing; it sets nothing in the application. `--seed` puts the excess on a
+channel the show never writes, which is the only state in which the two rules
+differ.
+
+**THE CHATTY SHOW IS THE REUSABLE PART.** To fill a log channel fast without
+touching anything else, use the script surface's own `comment` command: it sets
+`swapCommand`, so every following line is echoed by
+`AppCommandInterface::executeCommand` (`app_command_interface.cpp:346`), logged
+as *"this command has not been executed"* (`:361-363`) and dropped. No refusal,
+so the script annotator never rewrites the file it played (F90's farm hazard);
+no engine state touched; and the cost is arithmetic, **299 B per generated line**
+at 100 characters (14 ticks + 9 severity + 16 + line + newline, then 14 + 9 + 35
++ line + newline). 60 000 lines predicted 17 940 000 B and wrote 17 941 312.
+`ScriptMgr::update` runs commands in a `while` loop bounded by a 400 ms deadline
+(`script_mgr.cpp:304`), NOT one per frame as its own comment says - which is why
+this writes ~9 MB/s and why the tester's corpus reaches 193 MB/h.
+
+### Gotchas measured here, each of which cost a reading first
+
+* **A mutation in `log.hpp` costs a near-full rebuild; the same mutation in
+  `log.cpp` costs one TU.** Every scratch build here mutates `log.cpp` only -
+  `#undef` then `#define LOG_RETENTION_BYTES` AFTER the header is included, so
+  the shipped constexpr is untouched and the comparison, the D12 line's two
+  figures and the scoring all move together. The delivered binary rebuilt to the
+  same md5 (`95087b68`) after every mutant, three times.
+* **`git checkout <file>` to revert a mutation also reverts the uncommitted fix
+  you just wrote into that file.** It happened here between a build and its
+  commit. Commit the fix BEFORE applying a scratch mutation to the same file, or
+  keep the mutation in a file the fix does not touch.
+* **A rotation before `main.cpp:268` is invisible on the console** - `setDebug`
+  runs thirty lines after the process's first writes, so `isDebug` is false while
+  a startup rotation happens. Same mechanism as F108's report (which buffers for
+  the same reason) and the second-instance refusal. If you add anything that can
+  write during startup, decide what its console half does.
+* **Do not append to `openReport` from anything reachable by `write()`**:
+  `reportOpenLog` is ITERATING that vector while its lines are being written, so
+  a rotation triggered by one of them would invalidate the iterator. The size
+  budget's console buffer is a separate vector for exactly that reason.
+* **`f108_writelog.py` was written with a PRE-F108 binary as its "pre"** and
+  reports 2 FAIL when both binaries are post-F108: *"the baseline binary printed
+  a retention line"* is then true by construction. Read its normalised diff (0
+  added / 0 removed) rather than its exit code, or give it an older binary.
+* **The polls miss the peak.** A burst of rotations takes milliseconds; a 20 ms
+  poll of the directory will show a total BELOW the budget while the D12 lines
+  record a true peak of budget + one burst's writes (4 199 603 B against
+  4 194 304 here). Score the bound from the lines, not from the samples.
+* **An in-session rotation spends one of the eight launch slots**, so a log
+  directory can hold eight files of the SAME launch. `logread.window_text`
+  reads them oldest-first; `logread.budget()` reads the constant from the source
+  rather than hard-coding 1 GiB.

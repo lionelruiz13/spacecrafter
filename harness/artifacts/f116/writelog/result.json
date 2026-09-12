@@ -1,0 +1,168 @@
+{
+ "pre": {
+  "bin": "/home/claude/sc-f116/sc_pre_d607cfdc",
+  "md5": "d607cfdc17f6eea08786958732ce26fe",
+  "rc": 0,
+  "port_s": 20.0,
+  "files": [
+   [
+    "script.log",
+    13
+   ],
+   [
+    "shader.log",
+    13
+   ],
+   [
+    "spacecrafter.log",
+    3342
+   ],
+   [
+    "tcp.log",
+    13
+   ],
+   [
+    "vulkan.log",
+    13
+   ]
+  ],
+  "channels": {
+   "spacecrafter": {
+    "live": "spacecrafter.log",
+    "bytes": 3342,
+    "lines": 54,
+    "d12": 5,
+    "last": "(Info ): EOF",
+    "after_gate": 1,
+    "eof_last": true,
+    "has_anchor": true
+   },
+   "script": {
+    "live": "script.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "tcp": {
+    "live": "tcp.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "shader": {
+    "live": "shader.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "vulkan": {
+    "live": "vulkan.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   }
+  },
+  "applog_d12": 5
+ },
+ "post": {
+  "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+  "md5": "95087b686af8e3354b279fc5ea43abf1",
+  "rc": 0,
+  "port_s": 20.0,
+  "files": [
+   [
+    "script.log",
+    13
+   ],
+   [
+    "shader.log",
+    13
+   ],
+   [
+    "spacecrafter.log",
+    3343
+   ],
+   [
+    "tcp.log",
+    13
+   ],
+   [
+    "vulkan.log",
+    13
+   ]
+  ],
+  "channels": {
+   "spacecrafter": {
+    "live": "spacecrafter.log",
+    "bytes": 3343,
+    "lines": 54,
+    "d12": 5,
+    "last": "(Info ): EOF",
+    "after_gate": 1,
+    "eof_last": true,
+    "has_anchor": true
+   },
+   "script": {
+    "live": "script.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "tcp": {
+    "live": "tcp.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "shader": {
+    "live": "shader.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   },
+   "vulkan": {
+    "live": "vulkan.log",
+    "bytes": 13,
+    "lines": 1,
+    "d12": 0,
+    "last": "(Info ): EOF",
+    "after_gate": 0,
+    "eof_last": true,
+    "has_anchor": false
+   }
+  },
+  "applog_d12": 5
+ },
+ "diff": {
+  "added": [],
+  "removed": []
+ }
+}
