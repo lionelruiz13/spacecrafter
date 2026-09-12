@@ -641,7 +641,7 @@ test -e /home/claude/sc-f110 ; echo $? => 1
 ```
 
 **DoD:** predictions before the first clone; the rehearsal table (prediction / outcome per step, exit codes); the sha-reachability measurement; the doc corrections with their measurements; `f85_links.py`'s new check shown able to fail; the resolver with its self-test and the six measured ids; §11 entry + stub; the §11.204 / §11.232(c)4 markers; the §3 routing of the owner's three gaps; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-12 12:1x — §0.7 gate PASSED (premise_check 25/25; both HEADs `fcc277c9`/`b85dc60`, trees clean; VRAM 766 MiB; RAM 53 GiB `-j24`; `:2` 2448x1332; no instance, 7805 free). Checkpoint 1: predictions PRE-REGISTERED (`harness/artifacts/f110/prediction.txt`, 12 steps S1–S12 with classes + the aggregate). NEXT: the clone under `/home/claude/sc-f110/` and the rehearsal.
 
 ---
 

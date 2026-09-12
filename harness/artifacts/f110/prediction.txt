@@ -1,0 +1,235 @@
+F110 -- PRE-REGISTERED PREDICTIONS
+Written 2026-09-12 12:0x CEST, BEFORE the first clone, at code fcc277c9 / harness b85dc60.
+Executor: Claude Opus 5 (opus-xhigh), task F110, dispatched by Claude Fable 5.1 (session 29).
+
+WHY THIS FILE EXISTS
+  The rehearsal is a green that must be able to go red at each step.  A step whose
+  outcome I would have accepted either way measures nothing.  So each step below
+  carries a CLASS committed before the step runs, and the argument for it.  A
+  mismatch between this column and the measured one is a finding and is reported as
+  such -- including when the mismatch is mine.
+
+CLASSES
+  PASSES   the step does what the document says it does, for a reader who types it
+           exactly as written, on a machine that is not this one.
+  MISLEADS the step completes but what the reader sees is not what the document led
+           him to expect (or what he must conclude from it is false).
+  BLOCKS   the step cannot complete.  A block is DESIGNED when the document (or
+           INSTALL) says in advance that it will happen and why.
+
+WHAT I ALREADY KNOW AND THEREFORE DO NOT PREDICT
+  Three facts are stated in the task section and verified at the gate; predicting
+  them would be theatre.  They are listed so the difference is visible:
+    K1  `c5be42b` is not an ancestor of CC-harness (merge-base --is-ancestor rc 1).
+    K2  a plain clone of master-beta carries none of claude/, CLAUDE.md, .claude/.
+    K3  doc line 276 hardcodes DISPLAY=:2 and line 306 sends the reader to a canary
+        whose bank is this host's.
+  What I DO predict about them is the CONSEQUENCE a reader meets, which is not
+  stated anywhere: see S11, S6b, S12.
+
+-------------------------------------------------------------------------------
+THE STEPS
+-------------------------------------------------------------------------------
+
+S1  INSTALL Sec.3: `git clone --recurse-submodules <url> spacecrafter`, -b master-beta
+    PREDICT: PASSES.
+    Argument: Sec.11.204(b)'s blocker (the submodule pin on no remote) was
+    DISCHARGED 2026-09-05 -- the owner pushed 84f5d94b and the pin moved.  A local
+    path stands in for the remote here; the difference is stated at the step and
+    does not touch the submodule, which is fetched from its own remote URL either
+    way (or, from a local clone, from the local objects -- which I will say).
+    Discriminator: rc 0 AND src/EntityCore/Core/VulkanMgr.hpp present.
+
+S2  doc Sec.1 line 29-30: `cd <spacecrafter>` ; `git clone -b CC-harness <same-remote-url> claude`
+    PREDICT: MISLEADS.
+    Argument: the command is correct and will succeed, but `<same-remote-url>` is a
+    placeholder for the SSH form the doc names at :22 (git@github.com:...).  A
+    reader with no key on that account cannot run it, and the document does not say
+    an HTTPS form exists or that a key must be requested.  What he sees is
+    "Permission denied (publickey)" with no instruction attached.  This is one of
+    the three owner gaps and is ROUTED, not repaired.
+    Discriminator: the clone succeeds here (local stand-in) -- so the MISLEADS class
+    is claimed on the REMOTE FORM, not on the command's shape, and I will say so.
+
+S3  INSTALL Sec.4 BUILD HALF ONLY: configure Release + compile with -j24
+    (`sh install_src.sh -j<n>` as written is NOT run: it sudo-installs into
+    /usr/local, which this task is forbidden.  The deviation is stated.)
+    PREDICT: PASSES.
+    Argument: the same tree builds here every round; Sec.11.204(e) fixed
+    install_src.sh:25's -n/-z so BUILD unset now configures Release rather than
+    silently forcing Debug.
+    Discriminator: rc 0, a binary at build/src/spacecrafter, and its md5.
+    SUB-PREDICTION: the clone's binary md5 will NOT equal 6d63e6c1.  Argument: the
+    build path is baked in (absolute paths in __FILE__-bearing objects and in the
+    cmake-generated config), so two builds of identical sources under different
+    directories differ.  If it DOES equal 6d63e6c1 that is a finding about the
+    build's path-independence and I report it.
+
+S4  doc Sec.4 line 234 / Sec.8 line 410: `python3 claude/harness/f70_ascii.py gate`
+    PREDICT: PASSES.
+    Argument: the D14 gate is green at HEAD (asserted every round) and the clone is
+    a byte copy of the same tracked tree.
+    RISK I NAME IN ADVANCE: the gate's partition table classifies paths; a clone
+    whose build directory sits INSIDE the tree could present unclassified binary
+    paths.  If the gate reads the working tree rather than the index, the build
+    directory could turn it red.  Predicted outcome still PASSES (I expect it to
+    walk tracked files), but this is the way it could go red and I say so first.
+
+S5  doc opening paragraph line 13: `python3 claude/harness/f85_links.py`
+    PREDICT: MISLEADS.
+    Argument: it will exit 0 and print "DANGLING : 0", and the document's own
+    sentence at :12-13 tells the reader that "every path and `Sec.` id in this file
+    is checked mechanically" by it.  Both halves are true and the conjunction the
+    reader draws is false: three commit citations (`c5be42b`) are checked by
+    nothing, and one of them is dangling.  A green from a checker whose coverage
+    the document overstates is exactly the "green that could not have gone red" the
+    document itself warns about at :313-315.
+    Discriminator: rc 0 with DANGLING : 0 while `git merge-base --is-ancestor
+    c5be42b CC-harness` in the SAME clone is rc 1 (or the object is absent
+    entirely).  This is what mandate (5) makes the checker able to see.
+
+S6  doc Sec.5 line 276: `DISPLAY=:2 claude/harness/f90_rehearsal_run.sh <absOutdir>`
+    with SC_BIN = the clone's binary, ON THIS HOST, canary armed.
+    PREDICT: PASSES.
+    Argument: the canary is green on both arms on this boot (re-banked 11:26/11:34),
+    the suite was green 3/3 at F90 and is run every round; SC_BIN is the documented
+    override.  I expect exit 0 and the nine steps in the Sec.11.211(e) shape --
+    S1 DIVERGENCE, S2 PASS, S3 PASS, S4 DEPRECATED, S5 PASS, S6 PASS,
+    S7 DIVERGENCE, S8 PASS, S9 PASS.
+    SUB-PREDICTION: the run's body counts and byte sizes may differ from F90's
+    (120->121 bodies, 78394 B) because the field data has moved since 2026-09-05.
+    I do not predict those numbers; I predict the step STATES.
+
+S6b The same command as the intern must run it: `F90_SKIP_CANARY=1`.
+    PREDICT: PASSES here, and MISLEADS as documentation.
+    Argument: the wrapper's own header (:6) offers the escape, but the DOCUMENT
+    does not mention it -- line 306 tells the reader the canary's red "stops the
+    measurement and gets reported -- never mitigated silently, never widened away".
+    On his host the canary is red BY CONSTRUCTION (the bank is this desktop's
+    process epochs and display -- f56_canary.sh:132 BANK_HOST_BOOT), so the
+    document hands him a STOP with an instruction not to work around it, for a
+    fault that is not his and not a fault at all.  That is the single sharpest
+    misleading in the file and is mandate (4)'s first correction.
+    Discriminator: exit 0 with the canary skipped, and the canary's absence visible
+    in the run's own output -- i.e. what the skip LOSES is recorded, not waved.
+
+S7  doc Sec.5 lines 286-287: `cd util/scedit` ; `cmake -B build && cmake --build build`
+    PREDICT: PASSES.
+    Argument: scedit is deliberately unwired from the spacecrafter build, C++17,
+    everything vendored (util/scedit/README.md:35-43), so it has no dependency the
+    main build did not already prove present.
+    Discriminator: rc 0 and a `scedit` binary under util/scedit/build.
+
+S8  doc Sec.5 line 288: `cd build && ctest --output-on-failure` -- nineteen gates
+    PREDICT: PASSES on this host, MISLEADS for him.
+    Argument, per gate: seventeen gates are self-contained (fixtures tracked in the
+    tree).  TWO read machine state the tree does not carry --
+      `shipped_corpus_gate`  the INSTALLED script package (408 scripts)
+      `field_corpus_gate`    ~/.spacecrafter/ssystem.ini and its composed twins
+    and report exit 77 -> a ctest SKIP when absent (README:767-772).  ON THIS HOST
+    BOTH INPUTS ARE PRESENT (~/.spacecrafter/scripts/ has 8 subdirectories;
+    ~/.spacecrafter/ssystem.ini is 59105 B), so I predict those two gates RUN here
+    and SKIP on his machine -- the opposite of what the doc's sentence
+    ("two of those report a SKIP") leads him to expect on a fresh Linux box, where
+    the count of skips is what he sees and the doc says it is normal.  So: 19/19
+    pass here with 0 skips predicted; 17 pass + 2 skips predicted for him.
+    RISK NAMED FIRST: if either corpus gate is not byte-stable against the CURRENT
+    field data (the records were pinned at F76/F80), it goes RED here rather than
+    skipping -- which would be a finding about the gate, not about the doc.
+    `anchor_gate` is the other candidate for red: it resolves every file:line the
+    contract cites into the engine against the WORKING TREE, and the engine has
+    moved since its record was written.
+
+S9  doc Sec.8 line 413: `claude/githooks/install.sh`
+    PREDICT: PASSES.
+    Argument: the script is idempotent by construction and proves itself with four
+    positives and a negative control against a throwaway index.
+    SUB-PREDICTION, and this is the one worth committing: it will set
+    core.hooksPath in BOTH repos -- including the CODE repo, at `claude/githooks`
+    -- and the document does not say that.  A reader who installs the hook and
+    later deletes his `claude/` clone leaves the code repo with a hooksPath
+    pointing at nothing, and git then runs NO hook and says nothing.  If the
+    install output shows both repos, that consequence is real and I record it as a
+    measured observation (not necessarily a doc correction -- the doc's sentence is
+    about the harness repo and is not false).
+
+S10 harness README "Run" section's first command (doc Sec.5 line 269, pointing at
+    `claude/harness/README.md:40-49`): `xvfb-run -a spacecrafter`
+    PREDICT: BLOCKS, and the block is NOT designed.
+    Argument, three independent reasons, any one sufficient:
+      (i)  `xvfb-run` is not in INSTALL's dependency list and is not a build
+           dependency, so a reader who followed INSTALL does not have it;
+      (ii) the command names `spacecrafter` from PATH -- the INSTALLED binary --
+           not the clone's build, so it is not the thing he just built, and the
+           harness's own SC_BIN convention (README:21-23, cited two lines earlier
+           in the doc) does not apply to it;
+      (iii) it carries the precondition "with dual-dump.sts installed as
+           startup.sts" in a trailing comment, and NO document in either repository
+           says how to install a startup.sts.
+    And `./analyze.py` on the next line is relative to a cwd the section never
+    states.  So the doc's "the 'Run' section is the entry point" sends a first-day
+    reader to a four-line block of which the first line cannot run and the rest
+    depend on it.
+    Discriminator: the exact exit code of the command as written.
+
+S11 SHA REACHABILITY (mandate 3) -- per sha, per repository.
+    The doc cites exactly three 7-8-hex tokens, all `c5be42b`, at :261, :362, :398.
+    The sentences name `claude/USER_QUESTIONS_ROUND3.md`, a HARNESS file, so the
+    repository is the harness clone.
+    PREDICT, harness clone:  `git cat-file -e c5be42b^{commit}` FAILS -- the object
+      is not merely unreachable there, it does not EXIST in a fresh clone, because
+      a clone transfers only reachable objects.  (On THIS tree the object survives
+      in the reflog/loose objects, which is why the gate's `merge-base` returns 1
+      rather than erroring.  A reader's clone is the stricter case and is the one
+      that matters.)  This is a real prediction: the two repositories disagree
+      about whether the sha is even a name.
+    PREDICT, code clone: absent likewise (different repository entirely, unrelated
+      history; the token was never a code-repo sha).
+    PREDICT, the CORRECT sha: `1e6ca60` -- from
+      sha-maps/20260912T090341Z-71b6fe51-aaef2d12/harness.tsv line 197, which maps
+      6ffb0175... -> 1e6ca60e..., and 6ffb017 is c5be42b's 2026-09-05 amend.  I
+      predict `git merge-base --is-ancestor 1e6ca60 CC-harness` rc 0 in the fresh
+      harness clone AND that the commit touches USER_QUESTIONS_ROUND3.md and
+      carries R21/R22/R23/R24.  If the fresh clone disagrees with this tree, the
+      map is wrong and that is the finding.
+
+S12 THE TRUTH (not the existence) of the ten [path:line] claims a first-day reader
+    ACTS on.  Existence is what f85_links.py already measures; truth is what it
+    cannot.  The ten, chosen because acting on a false one costs him something:
+      T1  `.gitignore:84-85` excludes claude and .claude            (doc :25)
+      T2  `claude/README.md:20-24` the layout                       (doc :21)
+      T3  `claude/README.md:21-23` SC_BIN + the default binary path (doc :33)
+      T4  `claude/README.md:34-41` the Code: trailer + code-first   (doc :43)
+      T5  `src/CMakeLists.txt:3` CONFIGURE_DEPENDS                  (doc :244)
+      T6  `claude/harness/README.md:40-49` the "Run" section        (doc :270)
+      T7  `util/scedit/README.md:767` nineteen gates                (doc :290)
+      T8  `src/interfaceModule/app_command_interface.cpp:1688` the stoi site (doc :366)
+      T9  `src/appModule/app.cpp:823` App::draw, `:831` the wait    (doc :384-385)
+      T10 `src/bodyModule/orbit_creator_cor.cpp:283` wrong class name (doc :378)
+    PREDICT: 9 of 10 TRUE, 1 at risk.
+    Argument: T1-T7 are structural and were re-derived at F85/F93.  T8-T10 are line
+    numbers into engine files that the ledger itself records as having MOVED once
+    already (the doc says so in its own parentheses: "the row records :1525, which
+    the code has since moved past", "the row records :260", "that call at line
+    795").  A document that records one drift has a live drift channel, and the
+    engine has moved since 2026-09-05 (F86, F98, F103, F108 all touched src/).  The
+    single most likely to have drifted is T9, because app.cpp is the file this
+    project edits most.  If all ten are true, I say the channel did not fire this
+    time and that the prediction was wrong in the safe direction.
+
+-------------------------------------------------------------------------------
+AGGREGATE PREDICTION (the number, so the table cannot be read selectively)
+-------------------------------------------------------------------------------
+  PASSES   S1 S3 S4 S6 S7 S9                        6
+  MISLEADS S2 S5 S6b S8                             4   (S6b and S8 pass here and
+                                                         mislead him -- the split is
+                                                         the point of the rehearsal)
+  BLOCKS   S10                                      1   (not designed)
+  shas     3 citations, 1 distinct, 0 reachable, correct successor 1e6ca60
+  truths   10 claims, 9 predicted true, T9 predicted drifted
+
+WHAT WOULD MAKE THIS REHEARSAL WORTHLESS, SAID FIRST
+  If every step passes and no correction follows, the rehearsal measured nothing
+  that reading could not have given.  The steps that can produce that outcome are
+  S1, S3, S4, S7, S9 -- and they are in the table precisely so the ones that
+  cannot (S5, S6b, S8, S10, S11) are not the only ones reported.
