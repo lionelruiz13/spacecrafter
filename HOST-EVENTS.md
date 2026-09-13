@@ -355,4 +355,29 @@ never rewrite (maintenance invariant). Archival per the standing convention
   09:51:57 entry throughout; 25+ canary runs green after the 11:34 re-bank; six engine binaries
   launched today (`6d63e6c1` → `42d7982c`), the field pair in == out on every launch; nothing
   re-provisioned, nothing unloaded by anyone but the owner, no entry owed by any executor.
+- 2026-09-13 09:40–19:02 [measured: supervisor, session 30 (Claude Fable 5.1), warm-up — every
+  value from the command beside it, Q-67; Sunday, the owner's not-reliable window: nothing asked
+  in-session] **A THIRD BOOT IN 38 HOURS, THE RE-BANK A THIRD TIME, AND THE BAND ON A FIFTH BOOT
+  WITH NOTHING ELSE IN THE WAY.** `uptime -s` **2026-09-13 09:40:06** (the 2026-09-12 09:51:57
+  boot of session 29 ended; `/tmp` wiped). At 12:56:24 the owner re-provisioned the same real
+  logind session on `:2`: `loginctl` claude **31** + **32** (5 sessions on the host, 2 of them
+  claude's), cookie `/run/user/1003/.mutter-Xwaylandauth.R3GVV3`, `/usr/bin/gnome-shell` pid
+  **18192** and `Xwayland :2` pid **18364**, both kernel start **1789296984**; `xdpyinfo`
+  **2448x1332**; the inherited `DISPLAY=:2`/`XAUTHORITY` already correct. Trigger line 18:53.
+  Canary `--no-scene` 18:54:34 **exit 2, 1 fail 1 note** — FAIL `compositor.restarted`
+  (start_epoch 1789296984 vs banked 1789201776), NOTE `xserver.restarted`, every other member
+  EQUAL; GPU **255 MiB used / 31855 free** (no model resident, no java — `gpu.headroom` PASS at
+  need 6144), port 7805 free, no engine by comm/exe/port (`sc_instances.sh --assert`);
+  `artifacts/f56/canary/20260913-185434`. RE-BANKED the three per-boot members in one
+  VALUES-block edit with the argument (`f56_canary.sh`; the 2026-09-12 values struck not deleted;
+  the band untouched): `--no-scene` **exit 0** at 19:00:29 (0 fail 0 note), then the FULL canary
+  **exit 0, 0 fail 0 note** 19:00:31–19:02:17 (`20260913-190031`): 165.258/6.644 new ·
+  160.142/6.603 old, **12/12 in band, every delta 0.0** — the band on a FIFTH boot.
+  Config/ssystem `03fbee59`/`545a51ef` in == out; RAM 52 GiB available of 59, `-j24`; both trees
+  CLEAN at open, code `87d429bd` / harness `8a7bcd1` (session 29's close commit — no owner write
+  since; unpushed **6 code / 48 harness**, `origin` UNMOVED since his 2026-09-12 11:03 push);
+  binary `42d7982c` current (0 `src/` files newer); projection md5 MATCH (`8e364a3a`). Decision
+  flag per §11.174(h): the re-bank is the block's prescription for a per-boot red on the ruled
+  display class; nothing improvised, nothing unloaded, no owner act needed — say the word if the
+  display you want banked differs.
 

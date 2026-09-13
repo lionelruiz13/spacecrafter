@@ -126,10 +126,17 @@ BANK_COMPOSITOR_CMD="/usr/bin/gnome-shell"
 #   ~~BANK_COMPOSITOR_START=1789150410~~   # kernel start of pid 12247 = 2026-09-11 20:13:30
 #   ~~BANK_XSERVER_START=1789150411~~      # kernel start of pid 12735 = 2026-09-11 20:13:31
 #   ~~BANK_HOST_BOOT="2026-09-11 20:06:16"~~
-BANK_COMPOSITOR_START=1789201776          # kernel start of pid 10920 = 2026-09-12 10:29:36
+# RETIRED 2026-09-13 (the 2026-09-12 09:51:57 boot ended 2026-09-13 09:40:06 — the third boot in 38 h;
+#   per-boot by design — the owner re-provisioned the same real logind session on :2 at 12:56:24;
+#   sessions 31/32, cookie .R3GVV3; canary 20260913-185434 red on compositor.restarted ALONE, NOTE
+#   xserver.restarted, every other member EQUAL, GPU 31855 MiB free; supervisor, session 30, Sunday):
+#   ~~BANK_COMPOSITOR_START=1789201776~~   # kernel start of pid 10920 = 2026-09-12 10:29:36
+#   ~~BANK_XSERVER_START=1789201776~~      # kernel start of pid 11060 = 2026-09-12 10:29:36
+#   ~~BANK_HOST_BOOT="2026-09-12 09:51:57"~~
+BANK_COMPOSITOR_START=1789296984          # kernel start of pid 18192 = 2026-09-13 12:56:24
 BANK_XSERVER_MATCH="Xwayland :2"
-BANK_XSERVER_START=1789201776             # kernel start of pid 11060 = 2026-09-12 10:29:36
-BANK_HOST_BOOT="2026-09-12 09:51:57"
+BANK_XSERVER_START=1789296984             # kernel start of pid 18364 = 2026-09-13 12:56:24
+BANK_HOST_BOOT="2026-09-13 09:40:06"
 #
 # PHOTOMETRIC BAND -- the reference scene is `f51_run.sh`'s (§11.174(e) names it): the
 # Moon `base` scene at fov 10, the app's own 2048^2 readback, metric = §11.164(c)'s
