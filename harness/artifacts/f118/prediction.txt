@@ -1,0 +1,224 @@
+F118 -- PRE-REGISTRATION.  Written and committed BEFORE any launch of this task,
+before the leg driver existed, and before any run that scores it.
+INTENT Sec.11.239(h) / Sec.11.239(l)7 / Sec.5.150's rider / task F118 mandate (1).
+
+Author: Claude Opus 5 executor, 2026-09-13, code master-beta @ 87d429bd, binary
+42d7982c (F111's delivered one).  Model tables: artifacts/f118/model_tables.txt,
+produced by claude/harness/f118_predict.py, which imports f107_model's solver
+text and re-derives nothing (I2).
+
+=============================================================================
+0.  THE MECHANISM THIS TASK MEASURES, re-resolved at HEAD (every line checked)
+=============================================================================
+
+`ssystem_factory.hpp:359-370` is the DUAL-PATH MIRROR of `body name X hidden
+true|false`: after the old path's `ProtoSystem::setPlanetHidden`, it calls
+`ModularBody::hide()` / `show()` on the new path's body.  (Verified at HEAD:
+without this mirror the new-path walker would be unreachable from the command
+surface and this task would have no channel at all.)
+
+`ModularBody::show()` (ModularBody.cpp:794-826), in this order:
+   1. relation restored, parent list re-entered, cached state invalidated;
+   2. `useNow()` (:812) -- renderHidden is STILL SET here, deliberately, so the
+      D8 barrier does its full work: 1 + RESUME_EXTRA_ITERATIONS = 5 calls of
+      `recursiveTranslationUpdate` at the current date (ModularBody.cpp:562-564),
+      i.e. 10 solver steps.  THE SEED ENDS CONVERGED AT THE FRAME'S DATE.
+   3. `propagateRenderHidden` (:817) -- the flag clears;
+   4. `resumeModulesAfterHidden()` (:821) -- every module of the subtree.
+
+Of the three modules that override `resumeAfterHidden`, TWO only snap a fader
+(`OrbitModule.hpp:101-108`, `HintModule.hpp:78-80`).  EXACTLY ONE touches the
+solver: `TrailModule::resumeAfterHidden` (TrailModule.cpp:169).  Its
+reconstruction loop (:227-237) calls
+`orbit->positionAtTimevInVSOP87Coordinates(date, sampleJD, tmp)`, which for an
+`EllipticalOrbit` is `positionAtTime(JD)` (orbit.cpp:466-468) and therefore
+`eccentricAnomaly(meanAnomaly, iterativeLastE)` (orbit.cpp:582) -- THE BODY'S
+OWN POSITION SEED, not the batch seed F111 gave the sampler.  So the walk drags
+the just-converged seed BACK to the last reconstructed sample's date,
+`lastJD + missed*deltaTrail`, and leaves it there.
+
+The body's next evaluation is `transformParentToBodyPos` (ModularBody.hpp:674-711,
+`++evalCount` at :709), one call = ITERATIVE_STEPS_PER_CALL = 2 steps
+(iterative_orbits.hpp:31).  AT A PINNED CLOCK every later frame asks for the same
+mean anomaly from wherever the previous call left the seed, so the residual
+CONTRACTS geometrically.  On the `e < 0.2` fixed-point branch (orbit.cpp:519-525)
+the per-step factor is `e*cos(E)`; per FRAME it is that squared.
+
+FRAME ORDER, which is what makes k meaningful.  `App::update` runs
+`scriptMgr->update` (app.cpp:796), then `updateFromSharedData` (:801, which
+drains the WHOLE tcp queue in a do/while), then `executor->update` (:817) -- the
+walk.  `App::draw` runs afterwards, and `ModularSystem::drawTrails`
+(ModularSystem.cpp:658) is where `TrailModule::update`/`accumulate` live.
+Therefore:
+  * a dump command in the SAME frame as the unhide runs BEFORE that frame's
+    walk and reads `useNow`'s CONVERGED position -- k = 0 carries nothing;
+  * the first dump AFTER one intervening walk carries the full transient.
+k is defined here as the dumped `evalCount` delta from the last pre-unhide dump,
+and is MEASURED, never assumed (discriminating check (b)).
+
+=============================================================================
+1.  P1 -- residual(k) FOR THE WALKED BODIES AT THE PINNED CLOCK
+=============================================================================
+
+Design fixed here, before any run:
+  JD0 = 2461233.5   (f96_offset.JD == f107_model.LAUNCH_JD, F100/F91's clock)
+  N   = 30.99 sim days   =>   missed = 30 (<= maxTrail = 1460, so no reset)
+                         =>   STALENESS = 0.99 sim day (the fractional part)
+The staleness is not assumed either: the dump reports it as
+`new.lastJD - new.trail[0].headJD` (TrailModule::dumpState writes `headJD` =
+the newest point's date = the last reconstructed sample, TrailModule.cpp:331,
+set at :235-238).  The prediction is scored against the MEASURED staleness.
+
+SIGN.  Sec.11.239(h)'s slice used `off = +deltaTrail*n` and maxed over 360
+anomalies (f111_predict.py:308-318), where sign is invisible.  The seed sits at
+an EARLIER date, so at a NAMED date the offset is NEGATIVE.  This model uses
+`-staleness*n`.  A convention corrected, not a number.
+
+PREDICTED (artifacts/f118/model_tables.txt, P1 block), AU:
+
+  body       err3d(k=1)  err3d(k=2)  err3d(k=3)   errR(k=1)   errR(k=2)
+  Elara       6.741e-06   2.651e-08   1.043e-10   1.2555e-06   4.938e-09
+  Leda        1.317e-05   9.644e-08   7.063e-10   2.1672e-06   1.588e-08
+  Sinope      2.657e-05   4.761e-07   8.532e-09   3.3196e-06   5.948e-08
+  Himalia     3.165e-05   4.613e-07   6.722e-09   1.8618e-06   2.715e-08
+  Lysithea    4.625e-07   1.269e-10   3.783e-14   5.8771e-08   1.612e-11
+  Thebe       3.367e-07   1.626e-11   0           6.0529e-09   2.923e-13
+  Neried      3.464e-16   3.543e-16   3.543e-16   1.3878e-17   1.388e-17
+
+NOTE, registered as a difference from the slice: at THIS date Elara is NOT the
+worst body.  Sec.11.239(h)'s 8.9167e-05 AU is a MAX over 360 anomalies; at
+JD0 Elara's eccentric anomaly puts it at about 7.5 % of its own maximum, and
+Himalia/Sinope/Leda are larger.  The task's headline number is therefore
+predicted to be HIMALIA 3.2e-05 AU at k = 1, not Elara -- and the slice's
+8.9e-05 remains the corpus maximum over dates, unrefuted.
+
+P1 scored against the F111 threshold (5.6e-07 AU, 100x the model floor):
+  RADIAL statistic:  PERTURBED at k=1 = {Elara, Leda, Sinope, Himalia};
+                     at k=2 = {} ;  at k>=3 = {}.
+  3-D statistic:     same four at k=1; at k=2 = {} on 5.6e-07.
+  NEVER perturbed at any k: Lysithea, Thebe (below by construction at this
+  date) and NERIED, which is the ell0.2-0.9 Newton-branch control and is
+  predicted at 3.5e-16 AU -- a WITHIN-CORPUS NULL that must stay null.
+
+=============================================================================
+2.  P2 -- THE DUMP CHANNEL'S OWN LATENCY k, AND THE STOP RULE
+=============================================================================
+
+k(TCP), the channel F111 used: PREDICTED 100-200 frames, most likely 135-175.
+SOURCE, not recall: Sec.11.239(c) and artifacts/f111/legs -- `frames_between`
+measured 167-168 between two consecutive `App.dump()` calls with the orbit flag
+off at 144 fps.  `App.dump` (f96_offset.py:313-333) is `send(cmd, pause=1.0 or
+0.6)` + a 0.2 s existence poll + `sleep(0.3)`, and `App.send` (:281-290) adds a
+blocking `recv` with `settimeout(0.25)`.  An unhide sent through the same helper
+costs its own >= 0.95 s before the dump is even sent.
+
+k(SCRIPT): PREDICTED 1 per `wait duration 0.001`, range [1, 3].
+SOURCE: `ScriptMgr::update` (script_mgr.cpp:294-339) executes script commands in
+a `while (wait_time == 0)` loop until one returns a non-zero wait;
+`commandWait` (app_command_interface.cpp:1562) sets `wait = max(int(0.001*1000),
+1) = 1` ms; the next frame does `wait_time -= delta_time` with delta_time about
+7 ms at 144 fps, clamps to 0, and runs the next command.  One command per frame,
+deterministically.  The range's upper end allows for a `dual_dump` write that
+spans more than one frame and for the re-shown body being re-listed by the walk
+one frame later than the unhide.
+
+THEREFORE, THE OBSERVABLE PREDICTED FOR EACH CHANNEL:
+  * through TCP at k ~ 150: residual = err3d(k=1) * (e*cos E)^(2*(k-1)), i.e.
+    BELOW DOUBLE PRECISION for every body.  The channel is BLIND to this
+    transient by construction, and that is the first number this task owns.
+  * through the SCRIPT at k = 1: the P1 table above, four bodies PERTURBED.
+
+STOP RULE, as the mandate words it: if residual(k) is below the threshold for
+every body at the LOW end of the k range, leg (2) is predicted blind and the
+scratch-tree mutant (3) is entered.  I REGISTER THE OPPOSITE PREDICTION: the
+script channel's low end is k = 1, where four bodies are 3x to 6x the threshold
+on the radial statistic and up to 56x on the 3-D one, so leg (2) is predicted to
+CATCH the transient and leg (3) is predicted NOT TO BE ENTERED.  If the measured
+k is >= 3 on every channel I can reach, the STOP fires and the mutant is built.
+
+=============================================================================
+3.  P3 -- THE CONTROLS, AND ONE OF THEM CONTRADICTS THE MANDATE
+=============================================================================
+
+C1 -- THE WITHIN-LAUNCH FLAG CONTROL (the one that isolates the walk).  Same
+launch, same JD0, same N, same k, same commands -- `flag object_trails off`
+instead of on.  `resumeAfterHidden` then returns at `!want` (TrailModule.cpp:185)
+BEFORE the reconstruction loop, so the seed stays exactly where `useNow` left it:
+converged.  PREDICTED: residual at the model floor (< 1e-8 AU) for every body at
+every k, and the ARM-TO-ARM 3-D difference |ecl_ON(k) - ecl_OFF(k)| equal to the
+P1 err3d column.  This is the primary observable, and it needs no model frame:
+`rotate_to_vsop87` is a rotation, so |a - b| is invariant under it.
+
+C2 -- THE MANDATE'S within-launch control ("jump without hide") IS NOT A FLOOR,
+AND I REGISTER THAT AS A PREDICTED-FALSE EXPECTATION BEFORE MEASURING IT.  The
+task section says this arm reads "the D8 barrier's own post-jump residual, F111
+(c)'s floor".  But `useNow` returns TRUE ON ITS FIRST LINE for a body the walk
+evaluates (`!renderHidden`, ModularBody.cpp:457) -- Sec.11.239(l)2's own finding --
+so a `date jday` jump of N days on a NON-hidden body gets NO barrier at all: the
+body meets the jump with a seed N days stale and 2 steps per frame.  PREDICTED
+(model_tables.txt, P2 block), at N = 30.99 and k = 1: Himalia 1.09e-03 AU,
+Sinope 6.91e-04, Leda 5.51e-04, Elara 3.85e-05, i.e. 30-35x LARGER than the
+walker's transient, not smaller.  Consequence, stated in advance: hiding and
+unhiding a body across a date jump makes its next frame MORE accurate than not
+hiding it, because the barrier converges the seed at the new date and the walker
+then only spoils it by at most one deltaTrail.  The walker's cost is measured
+against the barrier, not against a raw jump.
+
+C3 -- THE TWO-DATE CONTROL THAT MUST FAIL (F111's shape): two dumps at two
+different pinned dates, scored the same way.  PREDICTED: essentially every
+scored record moves by orders above the threshold.  If it does not, the
+comparison cannot fail and no green from it is evidence.
+
+C4 -- THE A/A FLOOR OF THE ARM-TO-ARM COMPARISON: the flag-OFF arm run TWICE.
+PREDICTED: |ecl_OFF1(k) - ecl_OFF2(k)| below 1e-11 AU for every body (the only
+things that can differ are the light-travel retardation through a changed
+cached `distance`, and float noise).  If this floor is not far below the P1
+column, the arm-to-arm statistic is refused and only the model-scored radial
+statistic is reported.
+
+C5 -- THE HIDDEN-SPAN NULL: `evalCount` must be FROZEN across the hidden span
+(the walk does not reach a renderHidden body).  If it advances, the body was
+never parked and the whole leg is void.
+
+=============================================================================
+4.  P4 -- WHAT WOULD FALSIFY EACH CLAIM (the checks that can fail)
+=============================================================================
+
+ (a) k is read from `evalCount` deltas.  If the script channel does not give
+     k <= 2, P2's mechanism reading is wrong and the STOP fires.
+ (b) If the ON arm and the OFF arm agree to the A/A floor at k = 1, the walker
+     does not reach the body's seed and Sec.11.239(h)'s slice premise is refuted
+     in the engine -- a bigger finding than the one predicted here.
+ (c) If the measured residual at k = 1 exceeds P1 by more than ~2x on the
+     `ell<0.2` bodies, the staleness is not what `lastJD - headJD` says, or the
+     walk ran more than once.
+ (d) If Neried moves at all above 1e-12 AU, the Newton-branch null is wrong and
+     the branch classification in the slice is wrong with it.
+ (e) If `points` after the unhide is not 1 + missed (31), the reconstruction did
+     not run the number of samples the model assumes.
+
+=============================================================================
+5.  A DISPATCHER-SIDE FINDING, REGISTERED BEFORE THE LAUNCH RATHER THAN AFTER
+=============================================================================
+
+The task section's reading says "the trail flag is `body_trace`
+(`commandBodyTrace`, `app_command_interface.cpp:1748` ...)" and mandate step (2)
+says "`body_trace` on for the named bodies".  MEASURED AT HEAD: `commandBodyTrace`
+reaches `coreLink->bodyPenDown()` / `bodyTraceBodyChange()` (coreLink.cpp:1111 and
+siblings) -- the old path's BodyTrace PEN, a different feature, which never
+touches `TrailModule`.  The command that drives `TrailModule::show` is
+`flag object_trails on|off`: `FN_OBJECT_TRAILS`
+(app_command_interface.cpp:722/1187) -> `CoreLink::planetsSetFlagTrails`
+(coreLink.cpp:1385) -> `SSystemFactory::setFlagTrails` (ssystem_factory.hpp:384)
+-> `TrailModule::setGlobalShow` (TrailModule.hpp:154).  There is NO per-body
+trail command on the surface (`W_TRAIL` is a colour token only,
+base_command_interface.hpp:130), so the per-name `nameOverride` the section
+names is reachable only through the session file and the selection focus filter.
+This leg therefore uses `flag object_trails on`.  Classification and the
+counterfactual are in the delivery entry.
+
+CONSEQUENCE OF THE FOCUS FILTER, which the corrected path brings with it:
+`setFlagTrails(true)` with a NON-STAR body selected overrides every other body's
+trail OFF (ssystem_factory.hpp:394-399).  The leg therefore asserts that nothing
+is selected, and reads `recording`/`points` from the dump rather than assuming
+the flag took.

@@ -663,7 +663,7 @@ test -e /home/claude/sc-f118 ; echo $? => 1
 ```
 
 **DoD:** predictions before any launch; the edge leg with k measured; the catch or the STOP-then-mutant with both controls; the number's height; §11 entry + stub; the §11.239 / §5.150 markers; README; no delivered diff; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-13 20:2x — CP1 PRE-REGISTERED (`artifacts/f118/prediction.txt` + `model_tables.txt` + the instrument `f118_predict.py`, own commit, BEFORE any launch). Gate 23/23 PASS at 20:03. Predicted: the TCP dump channel is BLIND (k 100-200 frames, from §11.239(c)'s 167-168), the SCRIPT channel reaches k=1 (`wait duration 0.001`), four bodies PERTURBED at k=1 only (Himalia 3.2e-05 AU worst at this date, NOT Elara — the slice's 8.9e-05 is a max over anomalies); the mandate's "jump without hide = a floor" registered PREDICTED FALSE (no barrier for a walked body: 30x LARGER). Dispatcher defect registered pre-launch: `body_trace` is the old BodyTrace PEN, not the trail flag — `flag object_trails on` is the seam. NEXT: the edge leg driver + the launch.
 
 ---
 
