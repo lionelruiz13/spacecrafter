@@ -1,0 +1,313 @@
+F118 EDGE LEG -- edge2, binary 42d7982c, 2026-09-13T20:35:24
+jd0 2461233.500000000  ->  jd1 2461591.490000000   (N = 357.990000 sim days, missed = 357)
+
+=== THE CHANNEL'S OWN LATENCY (evalCount deltas, never assumed) ===
+tcp: two consecutive App.dump() calls are [0, 166] frames apart
+tcp: the SAME edge driven through App.send/App.dump reaches the
+     post-unhide dump at k = {'Ceres': 714, 'Arrokoth': 649, 'Eris': 584, 'Juno': 519, 'Pallas': 454, 'Vesta': 389, 'Haumea': 325, 'Makemake': 260, 'Sedna': 195}
+script: k measured per arm (every body agrees; first listed) = {'jump_k1': [2], 'off2_k1': [1], 'off_k1': [1], 'off_k1_b': [1], 'on2_k1': [1], 'on_k1': [1], 'on_k2': [2], 'on_k3': [3]}
+script: frames (frameref Jupiter) mid->post = {'jump_k1': 2, 'off2_k1': 2, 'off_k1': 2, 'off_k1_b': 2, 'on2_k1': 2, 'on_k1': 2, 'on_k2': 3, 'on_k3': 4}
+
+=== THE RECONSTRUCTION ACTUALLY RAN (the arm's own dumps) ===
+arm         body       pre_pts post_pts recording  staleness_d  lastJD-headJD
+jump_k1     Ceres            1        2      True     0.000000 2461591.469470494
+jump_k1     Arrokoth         1        2      True     0.000000 2461591.225533217
+jump_k1     Eris             1        2      True     0.000000 2461590.937739108
+jump_k1     Juno             1        1      True     0.000000 2461591.472815946
+jump_k1     Pallas           1        1      True     0.000000 2461591.475375588
+jump_k1     Vesta            1        1      True     0.000000 2461591.473248763
+jump_k1     Haumea           1        2      True     0.000000 2461591.201323008
+jump_k1     Makemake         1        2      True     0.000000 2461591.197216204
+jump_k1     Sedna            1        2      True     0.000000 2461591.007134997
+jump_k1     Pluto         None     None      None            -              -
+jump_k1     Mars          None     None      None            -              -
+
+off2_k1     Ceres            0        0     False            -              -
+off2_k1     Arrokoth         0        0     False            -              -
+off2_k1     Eris             0        0     False            -              -
+off2_k1     Juno             0        0     False            -              -
+off2_k1     Pallas           0        0     False            -              -
+off2_k1     Vesta            0        0     False            -              -
+off2_k1     Haumea           0        0     False            -              -
+off2_k1     Makemake         0        0     False            -              -
+off2_k1     Sedna            0        0     False            -              -
+off2_k1     Pluto         None     None      None            -              -
+off2_k1     Mars          None     None      None            -              -
+
+off_k1      Ceres            0        0     False            -              -
+off_k1      Arrokoth         0        0     False            -              -
+off_k1      Eris             0        0     False            -              -
+off_k1      Juno             0        0     False            -              -
+off_k1      Pallas           0        0     False            -              -
+off_k1      Vesta            0        0     False            -              -
+off_k1      Haumea           0        0     False            -              -
+off_k1      Makemake         0        0     False            -              -
+off_k1      Sedna            0        0     False            -              -
+off_k1      Pluto         None     None      None            -              -
+off_k1      Mars          None     None      None            -              -
+
+off_k1_b    Ceres            0        0     False            -              -
+off_k1_b    Arrokoth         0        0     False            -              -
+off_k1_b    Eris             0        0     False            -              -
+off_k1_b    Juno             0        0     False            -              -
+off_k1_b    Pallas           0        0     False            -              -
+off_k1_b    Vesta            0        0     False            -              -
+off_k1_b    Haumea           0        0     False            -              -
+off_k1_b    Makemake         0        0     False            -              -
+off_k1_b    Sedna            0        0     False            -              -
+off_k1_b    Pluto         None     None      None            -              -
+off_k1_b    Mars          None     None      None            -              -
+
+on2_k1      Ceres            1       31      True     0.991637 2461263.479470494
+on2_k1      Arrokoth         1       31      True     0.992969 2461263.235533217
+on2_k1      Eris             1       31      True     0.992952 2461262.947739108
+on2_k1      Juno             1       31      True     0.987444 2461263.482815946
+on2_k1      Pallas           1       31      True     0.988212 2461263.485375587
+on2_k1      Vesta            1       31      True     0.991972 2461263.483248763
+on2_k1      Haumea           1       31      True     0.987424 2461263.211323008
+on2_k1      Makemake         1       31      True     0.987711 2461263.207216204
+on2_k1      Sedna            1       31      True     0.992734 2461263.017134997
+on2_k1      Pluto         None     None      None            -              -
+on2_k1      Mars          None     None      None            -              -
+
+on_k1       Ceres            1      358      True     0.991563 2461590.479470494
+on_k1       Arrokoth         1      358      True     0.989255 2461590.235533217
+on_k1       Eris             1      358      True     0.989780 2461589.947739108
+on_k1       Juno             1        1      True     0.000000 2461591.478057643
+on_k1       Pallas           1        1      True     0.000000 2461591.474319569
+on_k1       Vesta            1        1      True     0.000000 2461591.469715931
+on_k1       Haumea           1      358      True     0.991207 2461590.211323008
+on_k1       Makemake         1      358      True     0.991228 2461590.207216204
+on_k1       Sedna            1      358      True     0.990936 2461590.017134997
+on_k1       Pluto         None     None      None            -              -
+on_k1       Mars          None     None      None            -              -
+
+on_k2       Ceres            1      358      True     0.991563 2461590.479470494
+on_k2       Arrokoth         1      358      True     0.989255 2461590.235533217
+on_k2       Eris             1      358      True     0.989780 2461589.947739108
+on_k2       Juno             1        1      True     0.000000 2461591.478057643
+on_k2       Pallas           1        1      True     0.000000 2461591.474319569
+on_k2       Vesta            1        1      True     0.000000 2461591.469715931
+on_k2       Haumea           1      358      True     0.991207 2461590.211323008
+on_k2       Makemake         1      358      True     0.991228 2461590.207216204
+on_k2       Sedna            1      358      True     0.990936 2461590.017134997
+on_k2       Pluto         None     None      None            -              -
+on_k2       Mars          None     None      None            -              -
+
+on_k3       Ceres            1      358      True     0.991563 2461590.479470494
+on_k3       Arrokoth         1      358      True     0.989255 2461590.235533217
+on_k3       Eris             1      358      True     0.989780 2461589.947739108
+on_k3       Juno             1        1      True     0.000000 2461591.478057643
+on_k3       Pallas           1        1      True     0.000000 2461591.474319569
+on_k3       Vesta            1        1      True     0.000000 2461591.469715931
+on_k3       Haumea           1      358      True     0.991207 2461590.211323008
+on_k3       Makemake         1      358      True     0.991228 2461590.207216204
+on_k3       Sedna            1      358      True     0.990936 2461590.017134997
+on_k3       Pluto         None     None      None            -              -
+on_k3       Mars          None     None      None            -              -
+
+=== A: ARM-TO-ARM 3-D, |ecl(on) - ecl(off)| AU, and the A/A floor ===
+body            A/A floor         on_k1         on_k2         on_k3
+Ceres                   0    6.8877e-05    4.7096e-07             0
+Arrokoth                0    4.2502e-06             0             0
+Eris                    0             0             0             0
+Juno                    0             0             0             0
+Pallas                  0             0             0             0
+Vesta                   0             0             0             0
+Haumea                  0             0             0             0
+Makemake                0             0             0             0
+Sedna                   0             0             0             0
+Pluto                 nan             0             0             0
+Mars                  nan             0             0             0
+
+=== B: MODEL-SCORED RADIAL (F111's statistic), AU ===
+arm         body                 errR     threshold PERTURBED
+jump_k1     Ceres          2.2471e-06       5.6e-07       YES
+jump_k1     Arrokoth       1.4449e-05       5.6e-07       YES
+jump_k1     Eris            1.002e-06       5.6e-07       YES
+jump_k1     Juno           3.9525e-05       5.6e-07       YES
+jump_k1     Pallas         1.0842e-05       5.6e-07       YES
+jump_k1     Vesta          3.1934e-06       5.6e-07       YES
+jump_k1     Haumea         9.3256e-07       5.6e-07       YES
+jump_k1     Makemake       1.0733e-06       5.6e-07       YES
+jump_k1     Sedna          6.7233e-07       5.6e-07       YES
+
+off2_k1     Ceres           5.529e-08       5.6e-07        no
+off2_k1     Arrokoth       9.0295e-07       5.6e-07       YES
+off2_k1     Eris           3.3472e-06       5.6e-07       YES
+off2_k1     Juno           1.0956e-08       5.6e-07        no
+off2_k1     Pallas         5.8854e-08       5.6e-07        no
+off2_k1     Vesta          1.6734e-08       5.6e-07        no
+off2_k1     Haumea         8.9782e-08       5.6e-07        no
+off2_k1     Makemake       1.4922e-06       5.6e-07       YES
+off2_k1     Sedna           2.219e-06       5.6e-07       YES
+
+off_k1      Ceres          1.2531e-07       5.6e-07        no
+off_k1      Arrokoth       1.9813e-06       5.6e-07       YES
+off_k1      Eris           1.0547e-06       5.6e-07       YES
+off_k1      Juno           7.0154e-08       5.6e-07        no
+off_k1      Pallas         6.4147e-08       5.6e-07        no
+off_k1      Vesta          7.3768e-08       5.6e-07        no
+off_k1      Haumea         8.2415e-07       5.6e-07       YES
+off_k1      Makemake       3.9907e-07       5.6e-07        no
+off_k1      Sedna           1.444e-08       5.6e-07        no
+
+off_k1_b    Ceres          1.2531e-07       5.6e-07        no
+off_k1_b    Arrokoth       1.9813e-06       5.6e-07       YES
+off_k1_b    Eris           1.0547e-06       5.6e-07       YES
+off_k1_b    Juno           7.0154e-08       5.6e-07        no
+off_k1_b    Pallas         6.4147e-08       5.6e-07        no
+off_k1_b    Vesta          7.3768e-08       5.6e-07        no
+off_k1_b    Haumea         8.2415e-07       5.6e-07       YES
+off_k1_b    Makemake       3.9907e-07       5.6e-07        no
+off_k1_b    Sedna           1.444e-08       5.6e-07        no
+
+on2_k1      Ceres          3.8743e-07       5.6e-07        no
+on2_k1      Arrokoth       1.7043e-06       5.6e-07       YES
+on2_k1      Eris           3.3472e-06       5.6e-07       YES
+on2_k1      Juno           1.0956e-08       5.6e-07        no
+on2_k1      Pallas         5.8854e-08       5.6e-07        no
+on2_k1      Vesta          1.6734e-08       5.6e-07        no
+on2_k1      Haumea         8.9782e-08       5.6e-07        no
+on2_k1      Makemake       1.4922e-06       5.6e-07       YES
+on2_k1      Sedna           2.219e-06       5.6e-07       YES
+
+on_k1       Ceres          8.4743e-08       5.6e-07        no
+on_k1       Arrokoth       5.1943e-07       5.6e-07        no
+on_k1       Eris           1.0547e-06       5.6e-07       YES
+on_k1       Juno           7.0154e-08       5.6e-07        no
+on_k1       Pallas         6.4147e-08       5.6e-07        no
+on_k1       Vesta          7.3768e-08       5.6e-07        no
+on_k1       Haumea         8.2415e-07       5.6e-07       YES
+on_k1       Makemake       3.9907e-07       5.6e-07        no
+on_k1       Sedna           1.444e-08       5.6e-07        no
+
+on_k2       Ceres          8.1715e-08       5.6e-07        no
+on_k2       Arrokoth       1.9813e-06       5.6e-07       YES
+on_k2       Eris           1.0547e-06       5.6e-07       YES
+on_k2       Juno           7.0154e-08       5.6e-07        no
+on_k2       Pallas         6.4147e-08       5.6e-07        no
+on_k2       Vesta          7.3768e-08       5.6e-07        no
+on_k2       Haumea         8.2415e-07       5.6e-07       YES
+on_k2       Makemake       3.9907e-07       5.6e-07        no
+on_k2       Sedna           1.444e-08       5.6e-07        no
+
+on_k3       Ceres          1.2531e-07       5.6e-07        no
+on_k3       Arrokoth       1.9813e-06       5.6e-07       YES
+on_k3       Eris           1.0547e-06       5.6e-07       YES
+on_k3       Juno           7.0154e-08       5.6e-07        no
+on_k3       Pallas         6.4147e-08       5.6e-07        no
+on_k3       Vesta          7.3768e-08       5.6e-07        no
+on_k3       Haumea         8.2415e-07       5.6e-07       YES
+on_k3       Makemake       3.9907e-07       5.6e-07        no
+on_k3       Sedna           1.444e-08       5.6e-07        no
+
+PERTURBED count per arm: {'jump_k1': 9, 'off2_k1': 4, 'off_k1': 3, 'off_k1_b': 3, 'on2_k1': 4, 'on_k1': 2, 'on_k2': 3, 'on_k3': 3}
+
+=== C: THE HEIGHT OF THE NUMBER (arcsec at the observer) ===
+body          3D AU (k=1)       dist AU        arcsec vs threshold
+Ceres          6.8877e-05       3.28389        4.3262     123.0x
+Arrokoth       4.2502e-06       45.9201      0.019091       7.6x
+Eris                    0       95.6592             0       0.0x
+Juno                    0       2.06775             0       0.0x
+Pallas                  0       2.71498             0       0.0x
+Vesta                   0       3.51208             0       0.0x
+Haumea                  0       49.7738             0       0.0x
+Makemake                0       50.4814             0       0.0x
+Sedna                   0       83.4433             0       0.0x
+Pluto                   0             0             0       0.0x
+Mars                    0             0             0       0.0x
+
+=== D: PREDICTED vs MEASURED, at the arm's OWN measured staleness ===
+(prediction2.txt P1'; the model is seeded at `lastJD - (lastJD-headJD)`,
+ both read from the same dump, so nothing here is a nominal value)
+body         k    stale_d    predicted3D     measured3D    ratio
+Ceres        1   0.991563     6.8954e-05     6.8877e-05    0.999
+Arrokoth     1   0.989255     3.0742e-06     4.2502e-06    1.383
+Eris         1   0.989780     3.3327e-14              0    0.000
+Haumea       1   0.991207              0              0        -
+Makemake     1   0.991228     2.2748e-14              0    0.000
+Sedna        1   0.990936     1.0002e-12              0    0.000
+
+Ceres        2   0.991563     4.2838e-07     4.7096e-07    1.099
+Arrokoth     2   0.989255     3.8202e-09              0    0.000
+Eris         2   0.989780     3.3327e-14              0    0.000
+Haumea       2   0.991207              0              0        -
+Makemake     2   0.991228     2.2748e-14              0    0.000
+Sedna        2   0.990936     1.0002e-12              0    0.000
+
+Ceres        3   0.991563     2.6613e-09              0    0.000
+Arrokoth     3   0.989255     4.7763e-12              0    0.000
+Eris         3   0.989780     3.3327e-14              0    0.000
+Haumea       3   0.991207              0              0        -
+Makemake     3   0.991228     2.2748e-14              0    0.000
+Sedna        3   0.990936     1.0002e-12              0    0.000
+
+Ceres        1   0.991637     4.7078e-06     4.7085e-06    1.000
+Arrokoth     1   0.992969     3.1232e-06     4.3846e-06    1.404
+Eris         1   0.992952     2.2748e-14              0    0.000
+Juno         1   0.987444      9.992e-16              0    0.000
+Pallas       1   0.988212     1.0302e-13              0    0.000
+Vesta        1   0.991972     1.4496e-14              0    0.000
+Haumea       1   0.987424              0              0        -
+Makemake     1   0.987711              0              0        -
+Sedna        1   0.992734     1.0071e-12              0    0.000
+
+=== E: THE NO-HIDE CONTROL, and it is NOT a floor ===
+|ecl(bare `date jday` jump) - ecl(hide+unhide, trails off)| at the
+SAME date and the SAME k: the hidden arm got the D8 barrier in
+`show()`, the no-hide arm got nothing, because `useNow` returns on
+its first line for a body the walk evaluates (ModularBody.cpp:457).
+body             walker3D         jump3D  jump/walk
+Ceres          6.8877e-05       0.016948      246.1
+Arrokoth       4.2502e-06      0.0011149      262.3
+Eris                    0              0          -
+Juno                    0     0.00023068          -
+Pallas                  0     0.00022044          -
+Vesta                   0     1.2902e-05          -
+Haumea                  0     4.2485e-06          -
+Makemake                0       2.86e-06          -
+Sedna                   0              0          -
+
+=== F: THE NULLS THAT ARE NOT MODELLED BUT MEASURED ===
+Every body carrying a TrailModule, read straight from the dump files
+(no elements, no model): a `*_special` orbit has NO iterative state
+(orbit.cpp:920 -> positionFunction), so the walker cannot leave one.
+body       relation   points       walker3D      A/A floor         jump3D
+Arrokoth          4      358     4.2502e-06              0      0.0011149
+Ceres             4      358     6.8877e-05              0       0.016948
+Earth             4        2              0              0              0
+Eris              4      358              0              0              0
+Haumea            4      358              0              0     4.2485e-06
+Juno              4        1              0              0     0.00023068
+Jupiter           4        2              0              0      7.691e-06
+Makemake          4      358              0              0       2.86e-06
+Mars              4      358              0              0     3.6576e-05
+Mercury           4        2              0              0     1.1721e-05
+Neptune           4        2              0              0     2.6307e-06
+Pallas            4        1              0              0     0.00022044
+Pluto             4      358              0              0      4.526e-06
+Saturn            4        2              0              0     7.7008e-06
+Sedna             4      358              0              0              0
+Uranus            4        2              0              0     1.4301e-06
+Venus             4        2              0              0     8.6513e-05
+Vesta             4        1              0              0     1.2902e-05
+
+=== THE TCP ARM: the same edge through the channel F111 used ===
+body         errR (model)  3D vs off_k1        k
+Ceres          1.2531e-07             0      714
+Arrokoth       1.9813e-06             0      649
+Eris           1.0547e-06             0      584
+Juno           7.0154e-08             0      519
+Pallas         6.4147e-08             0      454
+Vesta          7.3768e-08             0      389
+Haumea         8.2415e-07             0      325
+Makemake       3.9907e-07             0      260
+Sedna           1.444e-08             0      195
+Pluto                 nan           nan     None
+Mars                  nan           nan     None
+
+=== CONTROLS ===
+two dates: 9 of 9 target records moved (the comparison can fail)
+md5 of the real ~/.spacecrafter: in {'config.ini': '03fbee59', 'ssystem.ini': '545a51ef'}  out {'config.ini': '03fbee59', 'ssystem.ini': '545a51ef'}
+proc before [] / after [] ; exit 0

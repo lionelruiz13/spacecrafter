@@ -78,8 +78,8 @@ def main():
     L.append("     post-unhide dump at k = %s"
              % {k: v for k, v in sorted(res["tcp_arm"]["k_by_evalcount"].items(),
                                         key=lambda x: -x[1])})
-    L.append("script: k measured per arm = %s"
-             % {t: arms[t].get("k_by_evalcount", {}).get("Elara")
+    L.append("script: k measured per arm (every body agrees; first listed) = %s"
+             % {t: sorted(set((arms[t].get("k_by_evalcount") or {}).values()))
                 for t in sorted(arms)})
     L.append("script: frames (frameref %s) mid->post = %s"
              % (res["frameref"],
@@ -152,6 +152,82 @@ def main():
         L.append("%-11s %13.5g %13.6g %13.5g %10s"
                  % (n, v or 0.0, dist or 0.0, arc or 0.0,
                     "%.1fx" % ((v or 0) / a.threshold)))
+    L.append("")
+    L.append("=== D: PREDICTED vs MEASURED, at the arm's OWN measured staleness ===")
+    L.append("(prediction2.txt P1'; the model is seeded at `lastJD - (lastJD-headJD)`,")
+    L.append(" both read from the same dump, so nothing here is a nominal value)")
+    L.append("%-10s %3s %10s %14s %14s %8s"
+             % ("body", "k", "stale_d", "predicted3D", "measured3D", "ratio"))
+    for t, k in (("on_k1", 1), ("on_k2", 2), ("on_k3", 3), ("on2_k1", 1)):
+        arm = (arms.get(t) or {}).get("post", {}).get("bodies", {})
+        ref = (arms.get("off2_k1" if t.startswith("on2") else "off_k1")
+               or {}).get("post", {}).get("bodies", {})
+        for n in bodies:
+            r, o = arm.get(n), ref.get(n)
+            if not r or not o or not r.get("trail_headJD") or els.get(n) is None:
+                continue
+            st = r["lastJD"] - r["trail_headJD"]
+            if st <= 0:
+                continue
+            el = els[n]
+            if el["family"] == "ell":
+                rr, _p, _q = Q.chain(el, M.mean_anomaly(el, r["lastJD"]),
+                                     -st * el["n"], k)
+            else:
+                dt = r["lastJD"] - el["t0"]
+                rr, _p, _q = Q.chain_comet(el, dt, dt - st, k)
+            pred = rr[k - 1][1]
+            meas = d3(r["ecl"], o["ecl"])
+            L.append("%-10s %3d %10.6f %14.5g %14.5g %8s"
+                     % (n, k, st, pred, meas,
+                        ("%.3f" % (meas / pred)) if pred > 0 else "-"))
+        L.append("")
+    L.append("=== E: THE NO-HIDE CONTROL, and it is NOT a floor ===")
+    L.append("|ecl(bare `date jday` jump) - ecl(hide+unhide, trails off)| at the")
+    L.append("SAME date and the SAME k: the hidden arm got the D8 barrier in")
+    L.append("`show()`, the no-hide arm got nothing, because `useNow` returns on")
+    L.append("its first line for a body the walk evaluates (ModularBody.cpp:457).")
+    L.append("%-10s %14s %14s %10s" % ("body", "walker3D", "jump3D", "jump/walk"))
+    jmp = (arms.get("jump_k1") or {}).get("post", {}).get("bodies", {})
+    onk = (arms.get("on_k1") or {}).get("post", {}).get("bodies", {})
+    for n in bodies:
+        o, j, w = off.get(n), jmp.get(n), onk.get(n)
+        if not (o and j and w):
+            continue
+        dw, dj = d3(w["ecl"], o["ecl"]), d3(j["ecl"], o["ecl"])
+        L.append("%-10s %14.5g %14.5g %10s"
+                 % (n, dw, dj, ("%.1f" % (dj / dw)) if dw else "-"))
+    L.append("")
+    L.append("=== F: THE NULLS THAT ARE NOT MODELLED BUT MEASURED ===")
+    L.append("Every body carrying a TrailModule, read straight from the dump files")
+    L.append("(no elements, no model): a `*_special` orbit has NO iterative state")
+    L.append("(orbit.cpp:920 -> positionFunction), so the walker cannot leave one.")
+    L.append("%-10s %8s %8s %14s %14s %14s"
+             % ("body", "relation", "points", "walker3D", "A/A floor", "jump3D"))
+    import f105_dump
+    dd = Path(a.leg) / "dumps"
+    try:
+        _h1, bon = f105_dump.parse(dd / "on_k1_post.json")
+        _h2, bof = f105_dump.parse(dd / "off_k1_post.json")
+        _h3, bob = f105_dump.parse(dd / "off_k1_b_post.json")
+        _h4, bjp = f105_dump.parse(dd / "jump_k1_post.json")
+    except Exception as exc:                                     # noqa: BLE001
+        L.append("  (dumps unreadable: %s)" % exc)
+        bon = bof = bob = bjp = {}
+    for n in sorted(bon):
+        r = (bon.get(n) or {}).get("new") or {}
+        if not r.get("trail"):
+            continue
+        o = (bof.get(n) or {}).get("new") or {}
+        c = (bob.get(n) or {}).get("new") or {}
+        j = (bjp.get(n) or {}).get("new") or {}
+        if not (r.get("ecl") and o.get("ecl")):
+            continue
+        L.append("%-10s %8s %8s %14.5g %14.5g %14.5g"
+                 % (n, r.get("relation"), r["trail"][0].get("points"),
+                    d3(r["ecl"], o["ecl"]) or 0.0,
+                    d3(o["ecl"], c.get("ecl")) or 0.0,
+                    d3(j.get("ecl"), o["ecl"]) or 0.0))
     L.append("")
     L.append("=== THE TCP ARM: the same edge through the channel F111 used ===")
     L.append("%-11s %13s %13s %8s" % ("body", "errR (model)", "3D vs off_k1", "k"))
