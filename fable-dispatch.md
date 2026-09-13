@@ -638,7 +638,7 @@ PREMISES
 git rev-parse --short=8 HEAD => 87d429bd
 git status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 42d7982c
-python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 240
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 241
 grep -c '^### F' claude/fable-dispatch.md => 3
 # the walker, its constants, the hide and trace commands, re-resolved at HEAD (content drift = abort)
 grep -n '^void TrailModule::resumeAfterHidden' src/experimentalModule/bodyModules/TrailModule.cpp | cut -d: -f1 => 169
