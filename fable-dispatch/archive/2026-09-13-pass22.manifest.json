@@ -1,0 +1,90 @@
+{
+ "pass": "pass22",
+ "date": "2026-09-13",
+ "source": "fable-dispatch.md",
+ "pre_md5": "64824b892696734996a40dc6dc9b14eb",
+ "pre_commit": "98dad6f",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [
+  {
+   "removed_after_unit": "update-s28",
+   "lines": [
+    "---",
+    ""
+   ],
+   "positions_pre": [
+    253,
+    254
+   ],
+   "reason": "the moved unit sat between two --- separators; removing it leaves them doubled (pass-13..19 precedent)."
+  }
+ ],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "update-s28",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s28.md",
+   "line_start": 132,
+   "line_count": 121,
+   "payload_md5": "9ccaa359131fcc65f8d502a5e2aa6189"
+  },
+  {
+   "id": "F110",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F110.md",
+   "line_start": 633,
+   "line_count": 53,
+   "payload_md5": "b3fea21d50d7a3434d7a622922c72766"
+  },
+  {
+   "id": "F113",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F113.md",
+   "line_start": 686,
+   "line_count": 48,
+   "payload_md5": "a36910430cc33aa075663307f3515379"
+  },
+  {
+   "id": "F114",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F114.md",
+   "line_start": 734,
+   "line_count": 46,
+   "payload_md5": "af6359c91b62da00f254bea66c42216d"
+  },
+  {
+   "id": "F115",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F115.md",
+   "line_start": 780,
+   "line_count": 46,
+   "payload_md5": "5501618e766465a79e578cc9c3284cf8"
+  },
+  {
+   "id": "F116",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F116.md",
+   "line_start": 826,
+   "line_count": 46,
+   "payload_md5": "f2446183cee7e490187dcc2e53f86ab3"
+  },
+  {
+   "id": "F111",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F111.md",
+   "line_start": 872,
+   "line_count": 53,
+   "payload_md5": "db5ac0df0eb2630075ca1e44abe8e1dc"
+  },
+  {
+   "id": "F112",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F112.md",
+   "line_start": 925,
+   "line_count": 47,
+   "payload_md5": "a36a2acee59e2742349a81ac8e5605a2"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}
