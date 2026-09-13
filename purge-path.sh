@@ -252,10 +252,24 @@ fi
 # The range default is derived from the data, not asked for: the first commit
 # that ADDS any purged path, back one, through HEAD. Asking the caller for a
 # range they would have to compute is asking them to be the tool.
+#
+# NO `| head -1` HERE, and the reason is measured (F119, 2026-09-13). `git log
+# --reverse` emits its whole result at once; `head -1` takes the first line and
+# closes the pipe, git gets SIGPIPE, and `set -o pipefail` makes the command
+# substitution exit 141, which `set -e` turns into an immediate exit of the
+# whole script -- after the assignment has already succeeded, so the trace shows
+# the value being set and then nothing at all. Measured on the F103 scratch
+# pair: 5 runs out of 5 died this way, exit 141 with ZERO bytes of output, on
+# the UNMODIFIED script (md5 86be032b), while the same pipeline run by hand in a
+# subshell exited 0 three times out of three -- a race, which is worse than a
+# constant failure because it fails somewhere else tomorrow.
+#
+# The shell takes the first line instead. No pipe, no producer to signal.
 declare -A PATH_FIRST=()
 FIRST_ALL=""
 for p in "${PATHS[@]}"; do
-    f=$(G log --all --format='%H' --diff-filter=A --reverse -- "${p}" | head -1)
+    adds=$(G log --all --format='%H' --diff-filter=A --reverse -- "${p}")
+    f=${adds%%$'\n'*}
     if [ -z "${f}" ]; then echo "error: '${p}' was never added in ${REPO}." >&2; exit 1; fi
     PATH_FIRST["${p}"]="${f}"
     if [ -z "${FIRST_ALL}" ] || G merge-base --is-ancestor "${f}" "${FIRST_ALL}"; then FIRST_ALL="${f}"; fi
@@ -364,16 +378,35 @@ while read -r c t r; do
     # "resolves to", not "->": at preview time the NEW sha does not exist yet.
     # An arrow here would read as a promise about a value nothing has computed.
     printf '      %s cites %s  %s\n' "${c:0:8}" "${t}" "$([ "${r}" = AMBIG ] && echo '** AMBIGUOUS -- left alone **' || echo "= commit ${r:0:8}, which this run re-shas")"
-    G log -1 --format='%B' "${c}" | grep -nF "${t}" | head -2 | sed 's/^/          /'
+    # `|| true` for the same SIGPIPE class as the range derivation above: this
+    # is a DISPLAY line, and a display line that can kill the run is worse than
+    # no display at all. (`grep` exiting 1 on no match would do it too.)
+    G log -1 --format='%B' "${c}" | grep -nF "${t}" | head -2 | sed 's/^/          /' || true
 done < "${WORK}/msg.tokens"
 
-G grep -hoIE '\b[0-9a-f]{7,40}\b' -- . 2>/dev/null | sort -u > "${WORK}/file.uniq" || true
+# THE DRAWER IS NOT A TRACKER, AND MUST NOT BE REPOINTED. `sha-maps/*/*.tsv` is
+# the old->new record of PAST rewrites -- including, since F119, the ones this
+# script writes itself. Its own README says it in as many words: "They are
+# append-only and are NEVER edited ... A map that has been corrected has stopped
+# being evidence of what a particular run did, which is the only thing it is
+# for." A repoint pass over those files rewrites the OLD side of every pair, so
+# a token a reader arrives with stops matching the very row that would have
+# resolved it -- and the map still looks perfectly well-formed. Measured on the
+# F103 pair, 2026-09-13: an unexcluded scan proposed exactly that, on the map
+# this script's sibling had written minutes earlier.
+#
+# `harness/artifacts/**` is the same KIND of thing -- dated measurement records
+# whose shas are part of what was recorded -- and it is deliberately NOT
+# excluded here: that is a wider call about what counts as evidence, it belongs
+# to the owner, and it is written up rather than taken. (F119 veto point.)
+SCAN_SPEC=(-- . ':(exclude)sha-maps/**')
+G grep -hoIE '\b[0-9a-f]{7,40}\b' "${SCAN_SPEC[@]}" 2>/dev/null | sort -u > "${WORK}/file.uniq" || true
 resolve_tokens "${WORK}/file.uniq" > "${WORK}/file.tokens"
 N_FILE=$(grep -c . "${WORK}/file.tokens" 2>/dev/null || true)
 echo "  tracked files:   ${N_FILE} distinct token(s)"
 while read -r t r; do
     printf '      %s  %s\n' "${t}" "$([ "${r}" = AMBIG ] && echo '** AMBIGUOUS -- left alone **' || echo "= commit ${r:0:8}  $(G log -1 --format='%s' "${r}" | cut -c1-52)")"
-    G grep -nwIF "${t}" -- . 2>/dev/null | cut -c1-150 | head -3 | sed 's/^/          /' || true
+    G grep -nwIF "${t}" "${SCAN_SPEC[@]}" 2>/dev/null | cut -c1-150 | head -3 | sed 's/^/          /' || true
 done < "${WORK}/file.tokens" 2>/dev/null || true
 if grep -q ' AMBIG$' "${WORK}/file.tokens" "${WORK}/msg.tokens" 2>/dev/null; then
     echo "STOP: a citation token prefixes more than one commit in the range. Repoint it by hand" >&2
@@ -610,11 +643,24 @@ else
     while read -r t r; do
         nn=$(awk -v o="${r}" '$1==o {print $2}' "${WORK}/map")
         [ -n "${nn}" ] || { echo "      ${t}: no mapping (commit rebuilt identical) -- left alone"; continue; }
+        # A commit whose sha did not change needs no repoint, and saying so here
+        # is not an optimisation -- it is what keeps the closing commit possible.
+        # ${WORK}/map is `paste old.shas new.shas` over the WHOLE range, so an
+        # unchanged commit maps to ITSELF; the sed below then rewrites the token
+        # to the identical string, changes no byte, and yet the file is recorded
+        # in TOUCHED. The expected-set assertion afterwards compares TOUCHED
+        # against the dirty set, finds the file listed and not dirty, declares
+        # "the dirty set is not the set this script wrote", and REFUSES to
+        # commit -- leaving the repoint applied and uncommitted, which is the
+        # state this script exists to avoid. Measured on the F103 pair
+        # 2026-09-13, purging one artifact: 13 of 100 commits re-shaed, 33 files
+        # listed as touched that no byte had changed in, closing commit refused.
+        [ "${nn}" = "${r}" ] && continue
         n=${#t}
         while IFS= read -r f; do
             (cd "${REPO}" && sed -i -E "s/\\b${t}\\b/${nn:0:${n}}/g" "${f}")
             TOUCHED["${f}"]=1
-        done < <(G grep -lwIF "${t}" -- . 2>/dev/null || true)
+        done < <(G grep -lwIF "${t}" "${SCAN_SPEC[@]}" 2>/dev/null || true)
         N_SUB=$((N_SUB + 1))
         printf '      %s -> %s\n' "${t}" "${nn:0:${n}}"
     done < "${WORK}/file.tokens"
@@ -713,7 +759,16 @@ fi
 LEFT=0
 while read -r t r; do
     [ "${r}" = AMBIG ] && continue
-    if G grep -qwIF "${t}" -- . 2>/dev/null; then
+    # A token naming a commit whose sha SURVIVED the rewrite is still valid and
+    # is still there on purpose -- it was never this run's to repoint. Asserting
+    # its absence asserts that a correct citation was destroyed. Same root as
+    # the skip in the repoint loop above: ${WORK}/map covers the whole range and
+    # maps an unchanged commit to itself. (Measured on the F103 pair 2026-09-13:
+    # 67 such tokens, every one of them correct, reported as "still present ...
+    # unrepointed" and the whole purge rolled back on them.)
+    nnc=$(awk -v o="${r}" '$1==o {print $2}' "${WORK}/map")
+    [ "${nnc}" = "${r}" ] && continue
+    if G grep -qwIF "${t}" "${SCAN_SPEC[@]}" 2>/dev/null; then
         echo "      still present in a tracked file, unrepointed: ${t}"; LEFT=$((LEFT + 1)); continue
     fi
     nn=$(awk -v o="${r}" '$1==o {print $2}' "${WORK}/map"); [ -n "${nn}" ] || continue

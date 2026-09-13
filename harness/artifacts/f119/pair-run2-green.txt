@@ -1,0 +1,51 @@
+STATE U ok: code 474c595d / harness fe096019, clean, 94/798, master-beta 3829, cebebf44 signed.
+== CHECK (c) GREEN half: the FIXED tool on the same F106 pair ==
+   pair before: code aa55251c / harness fe096019
+   the three code-tree citations, BEFORE:
+     54a2b844   REACHABLE   in 5 file(s)
+     ba7a32a8   REACHABLE   in 1 file(s)
+     e3afca8f   REACHABLE   in 3 file(s)
+
+   --harness=HEAD~100..HEAD, because the pair's full harness range contains a
+   malformed 'Code:' trailer and the new step A'' STOPs on it -- see check (e);
+   this is the tool's own documented fix (b) for that STOP.
+   run exit: 0
+
+   AFTER -- the old tokens are gone from the code tree and the new ones resolve:
+     grammar/args/unit-1.json                       cites b12c8cdd  REACHABLE
+     grammar/ss-grammar.json                        cites ab661be0  REACHABLE
+     tests/f119_planted.txt                         cites 7ae470e8  REACHABLE
+   old tokens still anywhere in the code tree:
+     54a2b844   0 hit(s)
+     ba7a32a8   0 hit(s)
+     e3afca8f   0 hit(s)
+
+   the CODE closing commit (made FIRST, its expected set proved):
+     b7d0bb17  Vixy  Repoint tracker citations after the supervision-trailer rewrite
+      util/scedit/tests/fake_engine.py     |  2 +-
+      util/scedit/tests/history_cases.sts  |  2 +-
+      14 files changed, 41 insertions(+), 41 deletions(-)
+   files it touched, by extension:       1 cpp       2 hpp       6 json       2 md       1 py       1 sts       1 txt 
+   the HARNESS closing commit's trailer names it:
+     Code: master-beta @ b7d0bb17
+   both trees clean: code 0 / harness 0
+
+   the anchor gate in the pair (the ctest the whole task serves):
+     AT-PIN-BROKEN            4
+     GONE                     1
+     clean                    6878
+     moved                    313
+     not-at-head(declared)    2
+     skipped(_meta)           86
+
+   NOTE ON THE GATE NUMBERS ABOVE. They are the PAIR's, and the pair's code tree
+   is a 2026-09-07 snapshot that does not carry F119's ACT 1 commit. AT-PIN-BROKEN 4
+   is the EntityCore submodule (that clone has none), GONE 1 is the
+   LocationOrbitLoader rot ACT 1 declared on the real tree. Neither is what this
+   run was asked to change: the repoint's own result is the three REACHABLE
+   verdicts and the three zero-hit counts above, judged by merge-base.
+
+   THE RED HALF of this check is pair-run1-red.txt, measured the same way, on the
+   same pair, from the same STATE U, with the pre-F119 tool (md5 c4b02bf8): the
+   same three citations DANGLING, in the same 9 files, with the code repo's
+   porcelain at 0 because that tool never reaches it.

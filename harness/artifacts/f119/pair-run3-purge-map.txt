@@ -1,0 +1,24 @@
+== CHECK (d): purge-path.sh persists its map ==
+   directory: sha-maps/20260913T195204Z-474c595d-fe096019/
+   (named after the PRE-rewrite tips: code 474c595d / harness fe096019 = STATE U)
+
+   files, all three present, empty where the run had nothing:
+        0 sha-maps/20260913T195204Z-474c595d-fe096019/code.tsv
+       13 sha-maps/20260913T195204Z-474c595d-fe096019/harness.tsv
+        0 sha-maps/20260913T195204Z-474c595d-fe096019/repair.tsv
+       13 total
+
+   commits re-shaed by the run   : VERIFIED: 13/100 commit
+   lines in harness.tsv          : 13
+
+   format (map_lookup wants <old-full-sha> TAB <new-full-sha>):
+     fe0960193ed05e83d61d3f071f52f998dd6fff4f^I5cff08f7ad5de59dffc51739a7fc0179c5a54049
+     06eec392be636b341c305afba081b9c3b854bca3^Iae6a7eb12b865f8b0324bc1987fb64acded401f7
+     fields per line: 2    sha lengths: 40 40 
+
+   every old side is a real pre-rewrite object, every new side is REACHABLE:
+     new side reachable from HEAD: 13   not reachable: 0
+
+   committed by the closing act:
+     1907b9a  Claude  Repoint tracker citations after the ctl_S02.applog.gz purge
+   tree after the run: porcelain 0

@@ -1,0 +1,44 @@
+== CHECK (e): a 'Code:' line the grammar refuses STOPs the run ==
+   pair at STATE U: code 474c595d / harness fe096019
+   NOT PLANTED: the pair's own harness history already carries one, which is
+   how this defect was found. Default ranges, the fixed tool:
+
+   STOP: a 'Code:' line in the harness range does not match the trailer grammar.
+   
+     WHAT
+       d5c47164  Code: master-beta @ a62ad5d7 (+ uncommitted predecessor diff, see F12 WIP)
+                 read it:  git -C /home/claude/sc-f103/pair/spacecrafter/claude show d5c47164
+   
+     VALID STATE
+       A trailer is exactly 'Code: <branch> @ <7-40 lowercase hex>' and nothing
+       else on the line -- no parenthetical, no second sha, no trailing note.
+       The grammar is one string in this script (CODE_TRAILER_RE).
+   
+     CONSEQUENCE
+       The reader is a sed filter: a line it refuses emits NOTHING, so the
+       trailer disappears from list_code_trailers, and with it from the
+       dangling count, from the pre-existing-damage repair, and from the
+       post-rewrite assertion that every trailer still resolves. That
+       assertion then PASSES because the broken trailer was never counted.
+       Measured on this repository 2026-09-13: of 919 'Code:' lines in the
+       whole history two are refused, and one of the two (a30b2c75) is
+       reachable from no branch today while the rewrite map holds its twin.
+       It was never repaired because it was never seen.
+   
+     FIX -- either one, before re-running
+       (a) move the remark off the trailer line, leaving the bare form:
+           git -C /home/claude/sc-f103/pair/spacecrafter/claude rebase -i   (reword), or a filter-branch
+           --msg-filter for a commit already deep in the history;
+       (b) or narrow the range so the offending commit is outside it,
+           if its trailer is not this run's business:
+           ./supervised-by.sh --harness=<newer-base>..HEAD ...
+   
+     Nothing has been touched.
+
+   AFTER THE STOP -- nothing was touched:
+     code    HEAD 474c595d  porcelain 0
+     harness HEAD fe096019  porcelain 0
+     (STATE U is code 474c595d / harness fe096019)
+
+   the offending line, read at its commit:
+     Code: master-beta @ a62ad5d7 (+ uncommitted predecessor diff, see F12 WIP)

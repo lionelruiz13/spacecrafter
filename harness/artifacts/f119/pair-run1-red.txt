@@ -1,0 +1,26 @@
+== RUN 1: the PRE-F119 tool (md5 c4b02bf8) on the F106 pair ==
+   pair code HEAD after the run: 4b61d2a2   porcelain: 0
+   harness: 1167c5a3  'Repoint tracker citations after the supervision-trailer rewrite'
+   it repointed: Repointed 543 citation(s) across 282 file(s) -- all of them in the HARNESS repo
+
+   THE CODE TREE IT DID NOT REACH (merge-base --is-ancestor is the judge):
+     54a2b844  DANGLING
+         util/scedit/grammar/args/unit-1.json
+         util/scedit/grammar/args/unit-2.json
+         util/scedit/grammar/args/unit-3.json
+         util/scedit/grammar/args/unit-4.json
+         util/scedit/grammar/sc-grammar.json
+     ba7a32a8  DANGLING
+         util/scedit/grammar/ss-grammar.json
+     e3afca8f  DANGLING
+         util/scedit/src/sc_check.cpp
+         util/scedit/src/sc_tokenizer.hpp
+         util/scedit/tests/f119_planted.txt
+
+   util/scedit/tests/anchor_gate.py (the ctest built to fail exactly there):
+     AT-PIN-BROKEN            4
+     GONE                     1
+     clean                    6878
+     moved                    313
+     not-at-head(declared)    2
+     skipped(_meta)           86
