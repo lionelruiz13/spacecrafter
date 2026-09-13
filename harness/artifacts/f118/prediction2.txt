@@ -1,0 +1,164 @@
+F118 -- PRE-REGISTRATION 2, THE CORRECTED CORPUS.  Written and committed AFTER
+leg `edge1` refuted the corpus of prediction.txt and BEFORE the leg that scores
+this one.  INTENT Sec.11.239(h) / task F118 mandate (1).
+
+Author: Claude Opus 5 executor, 2026-09-13, code master-beta @ 87d429bd, binary
+42d7982c.  Model tables: artifacts/f118/corpus_tables.txt, from
+`f118_predict.py corpus`, whose census is READ FROM THE ENGINE'S OWN DUMP.
+
+=============================================================================
+0.  WHAT LEG `edge1` MEASURED, AND WHY IT ENDS PREDICTION 1
+=============================================================================
+
+`edge1` ran exactly as pre-registered and its FIRST assertion failed, in the
+one way that cannot be argued with: the dump's `trail` array
+(ModularBody.cpp:1093-1106, "an empty list -> [] ... is itself the finding
+'this body has no trail module'") is EMPTY on every body prediction.txt named.
+
+    Elara, Leda, Sinope, Himalia, Lysithea, Thebe, Neried  ->  "trail":[]
+
+THE CAUSE IS ONE CLAUSE OF THE MODULE DEDUCTION, and it is deliberate:
+
+    ModularBody.cpp:940-946
+      orbit_visualization_period > 0  AND  !isSatellite()  AND  type != "Arti"
+
+with `isSatellite()` = "the parent is neither primary nor a system"
+(ModularBody.hpp:1128-1130).  The comment at the site states the requirement it
+encodes: the OLD path's class dispatch gave a Trail to BigBody+SmallBody and
+NONE to Moon/Sun/Star/Center/Artificial (protosystem.cpp:645-801).
+
+EVERY ONE of the 40 rows of Sec.11.239(h)'s slice table is a satellite of
+Jupiter, Saturn, Uranus or Neptune.  NOT ONE of them can run the walker.  The
+slice's 8.9167e-05 AU (Elara) is therefore not the walker's magnitude in the
+shipped field; it is the magnitude the walker WOULD have had on a corpus the
+walker does not reach.  Measured, not inferred: the engine's own dump, leg
+`edge1`, `dumps/on_k1_pre.json`.
+
+WHAT LEG `edge1` DID ESTABLISH, and it is kept:
+  * THE SCRIPT CHANNEL GIVES k EXACTLY. Measured `evalCount` deltas: arms
+    on_k1/on_k2/on_k3/on_k5 read k = 1/2/3/5, frames (Jupiter) = 2/3/4/6.
+    One `wait duration 0.001` is one frame, as predicted from ScriptMgr's own
+    loop.  P2's mechanism reading is CONFIRMED.
+  * THE TCP CHANNEL IS BLIND, measured rather than inferred: two consecutive
+    `App.dump()` calls are 166 frames apart (prediction.txt said 167-168 from
+    Sec.11.239(c); the same number on this leg), and the same edge driven
+    through `App.send`/`App.dump` reaches the post-unhide dump at k = 65 to 454
+    frames depending on the body's place in the unhide loop.
+  * The two-date control moved 7 of 7 records: the comparison can fail.
+
+=============================================================================
+1.  THE CORRECTED CORPUS -- 18 BODIES, READ FROM THE ENGINE
+=============================================================================
+
+Bodies carrying a TrailModule (leg edge1's dump, complete):
+
+  Earth  Jupiter  Mars  Mercury  Neptune  Pluto  Saturn  Uranus  Venus
+      -- coord_func `*_special` / `earth_custom` -> SpecialOrbit, which has a
+         `positionFunction` and NO iterative state at all: no `iterativeLastE`
+         (orbit.hpp:120), no `IterativeEll` (orbit.hpp:219).  THE WALKER CANNOT
+         LEAVE A STALE SEED ON THEM.  Predicted residual: exactly 0.
+  Ceres  Arrokoth  Eris            -- coord_func `ell_orbit` -> EllipticalOrbit,
+         `iterativeLastE`, the branch chosen by e (orbit.cpp:517-534).
+  Juno  Pallas  Vesta  Haumea  Makemake  Sedna  -- `comet_orbit` ->
+         EllCometOrbit, the persistent `IterativeEll` (H,c,s) member.
+
+TEN of the eighteen -- Arrokoth Ceres Eris Haumea Juno Makemake Pallas Pluto
+Sedna Vesta -- are DECLARED HIDDEN in the shipped field (`hidden = true`,
+applied by ModularSystem.cpp:1400).  Measured in edge1: `relation` 1 where a
+shown body reads 4, and `evalCount` advancing by 5 per dump (the D8 barrier's
+1+RESUME_EXTRA_ITERATIONS) instead of once per frame.  A parked body is not in
+`sortedSystemBodies`, so `ModularSystem::drawTrails` never reaches it and its
+trail records nothing: measured `points 0, recording false, accumulateCount 0`
+on all ten, against `points 1, recording true, accumulateCount 173` on the eight
+shown planets.  THE WALKER IS THEREFORE REACHABLE ON THEM ONLY AFTER AN
+OPERATOR SHOWS THEM -- `body name Ceres hidden false` -- which is a shipped
+surface and is what leg 2 does first in every arm.
+
+RETENTION IS NOT UNIFORM, measured in the same dump: `maxTrail` is 1460 on
+fifteen bodies and 60 on the three Asteroid-class ones (Juno, Pallas, Vesta) --
+`trailLength` from the old per-class dispatch.  `missed > maxTrail` RESETS the
+trail instead of reconstructing (TrailModule.cpp:193-199), so a 357-day jump
+reconstructs nothing on those three.  Leg 2 therefore runs a second, 30.99-day
+jump for them.
+
+=============================================================================
+2.  P1' -- residual(k), CORRECTED.  THE DESIGN, FIXED BEFORE THE RUN
+=============================================================================
+
+  JD0 = 2461233.5 (unchanged), N = 357.99 -> missed = 357, STALENESS = 0.99 d.
+  N's integer part is CHOSEN, and the choice is stated rather than hidden: 357
+  puts Ceres at its own maximum-sensitivity anomaly, so the engine number this
+  task reports is the corpus's reachable MAXIMUM and not an accident of a date.
+  Second jump N2 = 30.99 -> missed = 30, for the 60-sample class.
+
+PREDICTED at N = 357.99 (corpus_tables.txt, first block), AU:
+
+  body       family  coord_func      err3d(k=1)  err3d(k=2)  err3d(k=3)  errR(k=1)
+  Ceres      ell     ell_orbit        6.8845e-05  4.2770e-07  2.6571e-09  2.0662e-06
+  Arrokoth   ell     ell_orbit        3.0765e-06  3.8230e-09  4.7573e-12  3.1e-08
+  Sedna      comet   comet_orbit      7.68e-13    7.68e-13    7.68e-13    1.7e-13
+  Pallas     comet   comet_orbit      ~1e-13      0           0           ~1e-14
+  Makemake   comet   comet_orbit      ~2e-14      ~2e-14      ~2e-14      ~7e-15
+  Vesta      comet   comet_orbit      ~1e-14      ~1e-15      ~1e-15      ~1e-15
+  Eris       ell     ell_orbit        0           0           0           0
+  Haumea     comet   comet_orbit      0           0           0           0
+  Juno       comet   comet_orbit      0           0           0           0
+  Pluto      -       pluto_special    0 by construction (no iterative state)
+  Mars       -       mars_special     0 by construction (no iterative state)
+
+MAX OVER 360 ANOMALIES -- the number of the same shape as Sec.11.239(h)'s
+8.9167e-05: Ceres 6.8845e-05 AU 3-D / 2.0662e-06 radial; Arrokoth 3.6929e-06 /
+5.2606e-08; Eris 1.2455e-13; every comet-family body below 2.3e-12 (the
+non-wrapping cells -- see section 4).
+
+SCORED AGAINST F111's 5.6e-07 AU THRESHOLD:
+  3-D statistic:    PERTURBED at k=1 = {Ceres, Arrokoth}; at k=2 = {} (Ceres
+                    4.28e-07 falls just under); at k>=3 = {}.
+  RADIAL statistic: PERTURBED at k=1 = {Ceres} (2.07e-06, 3.7x); nothing else,
+                    at any k.  Arrokoth's 3.1e-08 is 18x BELOW it.
+  NEVER, on either statistic, at any k: the six comet-family bodies, Eris, and
+  the two SpecialOrbit nulls.
+
+THE HEADLINE NUMBER THIS TASK IS PREDICTED TO REPORT: **Ceres, 6.9e-05 AU of
+3-D displacement on the frame after one unhide**, 1.3x BELOW Sec.11.239(h)'s
+Elara figure in magnitude and on a completely different body -- and it is the
+corpus MAXIMUM, not a typical value.
+
+=============================================================================
+3.  THE CONTROLS, UNCHANGED IN SHAPE
+=============================================================================
+
+C1  trails OFF, same commands, same k: `resumeAfterHidden` returns at `!want`
+    (TrailModule.cpp:185) before the loop.  PREDICTED at the A/A floor.
+C1' PREDICTED SPECIFICALLY: the OFF arm is NOT merely small, it is CONVERGED --
+    the D8 barrier in `show()` (ModularBody.cpp:812) gives the body 5 calls =
+    10 steps at the new date before the flag clears.
+C2  the no-hide jump: PREDICTED NOT A FLOOR (prediction.txt section 3), and now
+    with the corrected corpus: at N = 357.99 the seed is 357.99 days stale, so
+    at k = 1 Ceres is predicted ORDERS above its walker transient.
+C3  two dates: predicted every record moves (already measured: 7 of 7).
+C4  A/A floor off/off: predicted below 1e-11 AU.
+C5  `evalCount` frozen across the hidden span; `points` = 1 + missed = 358 on
+    the 1460-class and RESET to 1 on Juno/Pallas/Vesta (missed 357 > 60), then
+    31 on all of them in the N2 = 30.99 arm.
+
+=============================================================================
+4.  A SECOND MECHANISM FOUND WHILE MODELLING, RECORDED AND NOT CHASED
+=============================================================================
+
+`IterativeEll::operator()` FOLDS the mean anomaly into [0,2pi) every call
+(iterative_orbits.hpp:125-127) while its `H` accumulates unfolded.  So on the
+one cell per orbit where the fold wraps between the seed's date and the
+evaluation's, the seed is a full turn from the root and two Newton steps do not
+recover: modelled at Sedna 731.9 AU, Haumea 7.13, Makemake 2.91, Juno 1.18,
+Pallas 0.89, Vesta 0.017.  `EllipticalOrbit::eccentricAnomaly` does NOT fold
+(orbit.cpp:579-581), so the `ell` family cannot show this.
+
+SAID PLAINLY: this is a property of the SHARED solver, not of the trail walker,
+and it does not need a hide at all -- a running clock crosses the same fold.
+It is MODELLED, NOT MEASURED, and this task cannot measure it: the wrap window
+is `staleness/period` of the orbit (2.2e-07 to 7.5e-04), and a search over every
+(missed, staleness) pair the retention bound allows from JD0 -- 60 samples for
+the three Asteroid-class bodies, 1460 for the others -- finds NO reachable
+combination (f118_predict, the reachability scan, no hit on any of the six).
+Recorded for the supervisor as a candidate of its own; not chased here.

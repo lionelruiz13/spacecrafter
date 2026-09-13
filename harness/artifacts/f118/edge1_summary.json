@@ -1,0 +1,218 @@
+{
+ "tag": "edge1",
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "jd0": 2461233.5,
+ "jd1": 2461264.49,
+ "days": 30.99,
+ "kwaits": [
+  1,
+  2,
+  3,
+  5
+ ],
+ "bodies": [
+  "Elara",
+  "Leda",
+  "Sinope",
+  "Himalia",
+  "Lysithea",
+  "Thebe",
+  "Neried"
+ ],
+ "frameref": "Jupiter",
+ "bin_md5": "42d7982c",
+ "started": "2026-09-13T20:23:03",
+ "elements_found": [
+  "Elara",
+  "Himalia",
+  "Leda",
+  "Lysithea",
+  "Neried",
+  "Sinope",
+  "Thebe"
+ ],
+ "proc_before": [],
+ "lock_before": {
+  "present": false
+ },
+ "md5_in": {
+  "config.ini": "03fbee59",
+  "ssystem.ini": "545a51ef"
+ },
+ "tcp_seconds": 20.0,
+ "camera": {
+  "reference": "Earth",
+  "tracked": "",
+  "freeMode": false,
+  "boundToSurface": true,
+  "mount": "equatorial",
+  "skyLocked": false,
+  "viewOffset": 0,
+  "viewOffsetTransition": 0,
+  "viewOffsetEff": 0,
+  "longitude": 0.0936660022,
+  "latitude": 0.755727589,
+  "distance": 4.26357365e-05,
+  "alt": -0.755627334,
+  "az": 1.57065892,
+  "heading": -6.28318501,
+  "halfFov": 1.57079637
+ },
+ "n_records": 120,
+ "tcp_latency_frames": {
+  "Jupiter": 166,
+  "Elara": 166,
+  "Leda": 166,
+  "Sinope": 166,
+  "Himalia": 166,
+  "Lysithea": 166,
+  "Thebe": 166,
+  "Neried": 166
+ },
+ "ctl_two_dates": {
+  "jd0": 2461233.5,
+  "jd1": 2461234.5,
+  "moved": [
+   "Elara",
+   "Leda",
+   "Sinope",
+   "Himalia",
+   "Lysithea",
+   "Thebe",
+   "Neried"
+  ],
+  "of": 7
+ },
+ "exit_code": 0,
+ "lock_after": {
+  "present": false
+ },
+ "md5_out": {
+  "config.ini": "03fbee59",
+  "ssystem.ini": "545a51ef"
+ },
+ "proc_after": [],
+ "arms": {
+  "on_k1": {
+   "nwait": 1,
+   "trail_on": true,
+   "hide": true,
+   "script_seconds": 6.9,
+   "k_by_evalcount": {
+    "Elara": 1,
+    "Leda": 1,
+    "Sinope": 1,
+    "Himalia": 1,
+    "Lysithea": 1,
+    "Thebe": 1,
+    "Neried": 1
+   },
+   "frames_mid_to_post": 2
+  },
+  "on_k2": {
+   "nwait": 2,
+   "trail_on": true,
+   "hide": true,
+   "script_seconds": 6.9,
+   "k_by_evalcount": {
+    "Elara": 2,
+    "Leda": 2,
+    "Sinope": 2,
+    "Himalia": 2,
+    "Lysithea": 2,
+    "Thebe": 2,
+    "Neried": 2
+   },
+   "frames_mid_to_post": 3
+  },
+  "on_k3": {
+   "nwait": 3,
+   "trail_on": true,
+   "hide": true,
+   "script_seconds": 6.9,
+   "k_by_evalcount": {
+    "Elara": 3,
+    "Leda": 3,
+    "Sinope": 3,
+    "Himalia": 3,
+    "Lysithea": 3,
+    "Thebe": 3,
+    "Neried": 3
+   },
+   "frames_mid_to_post": 4
+  },
+  "on_k5": {
+   "nwait": 5,
+   "trail_on": true,
+   "hide": true,
+   "script_seconds": 6.9,
+   "k_by_evalcount": {
+    "Elara": 5,
+    "Leda": 5,
+    "Sinope": 5,
+    "Himalia": 5,
+    "Lysithea": 5,
+    "Thebe": 5,
+    "Neried": 5
+   },
+   "frames_mid_to_post": 6
+  },
+  "off_k1": {
+   "nwait": 1,
+   "trail_on": false,
+   "hide": true,
+   "script_seconds": 6.9,
+   "k_by_evalcount": {
+    "Elara": 1,
+    "Leda": 1,
+    "Sinope": 1,
+    "Himalia": 1,
+    "Lysithea": 1,
+    "Thebe": 1,
+    "Neried": 1
+   },
+   "frames_mid_to_post": 2
+  },
+  "off_k1_b": {
+   "nwait": 1,
+   "trail_on": false,
+   "hide": true,
+   "script_seconds": 6.9,
+   "k_by_evalcount": {
+    "Elara": 1,
+    "Leda": 1,
+    "Sinope": 1,
+    "Himalia": 1,
+    "Lysithea": 1,
+    "Thebe": 1,
+    "Neried": 1
+   },
+   "frames_mid_to_post": 2
+  },
+  "jump_k1": {
+   "nwait": 1,
+   "trail_on": true,
+   "hide": false,
+   "script_seconds": 5.7,
+   "k_by_evalcount": {
+    "Elara": 2,
+    "Leda": 2,
+    "Sinope": 2,
+    "Himalia": 2,
+    "Lysithea": 2,
+    "Thebe": 2,
+    "Neried": 2
+   },
+   "frames_mid_to_post": 2
+  }
+ },
+ "tcp_arm_k": {
+  "Elara": 454,
+  "Leda": 389,
+  "Sinope": 324,
+  "Himalia": 259,
+  "Lysithea": 194,
+  "Thebe": 129,
+  "Neried": 65
+ }
+}

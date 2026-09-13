@@ -59,6 +59,9 @@ sys.path.insert(0, str(HERE))
 
 from f107_model import (                                          # noqa: E402
     ecc_anomaly, kepler_exact, position_at_E, mean_anomaly, norm, sub,
+    position_comet as M_position_comet, iter_ell_call as M_iter_ell_call,
+    by_name_sections as M_by_name_sections, elements as M_elements,
+    DEFAULT_INI as M_DEFAULT_INI,
 )
 import f111_predict as P                                          # noqa: E402
 
@@ -148,6 +151,144 @@ def table(jd, offset_days, frames, title, note):
     return "\n".join(lines) + "\n", data
 
 
+def fold(x):
+    y = math.fmod(x, 2 * math.pi)
+    return y + 2 * math.pi if y < 0.0 else y
+
+
+def chain_comet(el, dt_target, dt_seed, frames):
+    """The same frame chain for the COMET family: `EllCometOrbit::positionAtTime`
+    (orbit.cpp:344-347) hands `JD - t0` to the persistent `IterativeEll orbit`
+    member (orbit.hpp:219), whose (H, c, s) the trail walk leaves converged at
+    the last reconstructed sample's date.  The update is Newton's
+    (iterative_orbits.hpp:128-132), so the error is SQUARED per step, not
+    multiplied by e -- which is why this family is predicted invisible and the
+    `ell < 0.2` fixed-point one is not."""
+    e = el["e"]
+    Hs = kepler_exact(e, fold(el["n"] * dt_seed))
+    state = (Hs, math.cos(Hs), math.sin(Hs))
+    Ht = kepler_exact(e, fold(el["n"] * dt_target))
+    pe = M_position_comet(el, Ht)
+    re_ = norm(pe)
+    rows = []
+    for k in range(1, frames + 1):
+        state, _ = M_iter_ell_call(el, state, dt_target, STEPS)
+        p = M_position_comet(el, state[0])
+        rows.append((k, norm(sub(p, pe)), abs(norm(p) - re_)))
+    return rows, pe, re_
+
+
+def trail_census(dump):
+    """WHICH BODIES CAN RUN THE WALKER AT ALL -- read from the ENGINE's own
+    dump, not deduced: `trailComponents` is dumped as an array and an empty one
+    IS the finding "this body has no trail module" (ModularBody.cpp:1093-1106).
+
+    The gate that produces it is `deduceBodyModuleList` (ModularBody.cpp:940-946):
+    orbit_visualization_period > 0 AND **not isSatellite()** AND type != Arti.
+    """
+    import f105_dump
+    _h, b = f105_dump.parse(dump)
+    out = {}
+    for n, v in b.items():
+        new = v.get("new") or {}
+        t = new.get("trail")
+        if t:
+            out[n] = {"trail": t[0], "relation": new.get("relation"),
+                      "dist": new.get("dist"), "evalCount": new.get("evalCount")}
+    return out
+
+
+def cmd_corpus(a):
+    """The corrected corpus, and residual(k) on it."""
+    secs = M_by_name_sections(M_DEFAULT_INI)
+    cen = trail_census(a.dump)
+    lines = [cmd_corpus.__doc__.strip(), "",
+             "census read from %s : %d bodies carry a TrailModule"
+             % (a.dump, len(cen)), "",
+             "%-11s %-16s %-7s %9s %11s %9s %s"
+             % ("body", "coord_func", "family", "e", "n_rad/day", "relation",
+                "  ".join("err3d(k=%d)" % k for k in range(1, a.frames + 1)))]
+    rows = []
+    for n in sorted(cen):
+        sec = secs.get(n) or {}
+        cf = (sec.get("coord_func") or "").strip()
+        el = None
+        try:
+            el = M_elements(sec)
+        except Exception:                                        # noqa: BLE001
+            el = None
+        if el is None:
+            lines.append("%-11s %-16s %-7s %9s %11s %9s  no iterative seed "
+                         "(SpecialOrbit / custom: no lastE, no (H,c,s))"
+                         % (n, cf, "-", "-", "-", cen[n]["relation"]))
+            continue
+        fam = el["family"]
+        if fam == "ell":
+            Mt = mean_anomaly(el, a.jd)
+            r, _pe, _re = chain(el, Mt, -a.stale * el["n"], a.frames)
+        else:
+            dt = a.jd - el["t0"]
+            r, _pe, _re = chain_comet(el, dt, dt - a.stale, a.frames)
+        rows.append((n, cf, fam, el["e"], el["n"], cen[n]["relation"], r))
+    for n, cf, fam, e, nn, rel, r in sorted(rows, key=lambda x: -x[6][0][1]):
+        lines.append("%-11s %-16s %-7s %9.4f %11.6g %9s %s"
+                     % (n, cf, fam, e, nn, rel,
+                        "  ".join("%11.5g" % x[1] for x in r)))
+    lines.append("")
+    lines.append("%-11s %-16s %-7s %9s %11s %9s %s"
+                 % ("body", "coord_func", "family", "e", "n_rad/day", "relation",
+                    "  ".join(" errR(k=%d)" % k for k in range(1, a.frames + 1))))
+    for n, cf, fam, e, nn, rel, r in sorted(rows, key=lambda x: -x[6][0][2]):
+        lines.append("%-11s %-16s %-7s %9.4f %11.6g %9s %s"
+                     % (n, cf, fam, e, nn, rel,
+                        "  ".join("%11.5g" % x[2] for x in r)))
+    lines.append("")
+    lines.append("MAX OVER 360 ANOMALIES at k=1 -- the number directly comparable")
+    lines.append("to Sec.11.239(h)'s 8.9167e-05 AU, which is a max of the same shape.")
+    lines.append("THE COMET FAMILY IS SPLIT IN TWO, and the split is the tree's own:")
+    lines.append("`IterativeEll::operator()` FOLDS the mean anomaly into [0,2pi)")
+    lines.append("(iterative_orbits.hpp:125-127) while `H` accumulates unfolded, so on")
+    lines.append("the one cell per orbit where the fold WRAPS between the seed's date and")
+    lines.append("the evaluation's, the seed is a whole turn away and two Newton steps")
+    lines.append("do not recover.  `EllipticalOrbit::eccentricAnomaly` has NO fold")
+    lines.append("(orbit.cpp:579-581), so the `ell` family cannot show this.  The wrap")
+    lines.append("window is staleness/period of the orbit, printed per body.")
+    lines.append("%-11s %-7s %13s %13s %13s %11s"
+                 % ("body", "family", "err3d_max", "errR_max", "wrap_err3d",
+                    "wrap_window"))
+    for n, cf, fam, e, nn, rel, r in rows:
+        el = M_elements(secs[n])
+        d3m = drm = wrapm = 0.0
+        for i in range(360):
+            wrapped = False
+            if fam == "ell":
+                rr, _p, _q = chain(el, 2 * math.pi * i / 360.0,
+                                   -a.stale * el["n"], 1)
+            else:
+                dt = (2 * math.pi * i / 360.0) / el["n"]
+                # the fold wraps iff the target's folded M is below n*staleness
+                wrapped = fold(el["n"] * dt) < abs(el["n"]) * a.stale
+                rr, _p, _q = chain_comet(el, dt, dt - a.stale, 1)
+            if wrapped:
+                wrapm = max(wrapm, rr[0][1])
+                continue
+            d3m = max(d3m, rr[0][1])
+            drm = max(drm, rr[0][2])
+        win = (abs(el["n"]) * a.stale / (2 * math.pi)) if fam != "ell" else 0.0
+        lines.append("%-11s %-7s %13.5g %13.5g %13.5g %11.3g"
+                     % (n, fam, d3m, drm, wrapm, win))
+    lines.append("")
+    lines.append("PERTURBED (>= %.1e AU) by k, RADIAL:" % THRESHOLD)
+    for n, cf, fam, e, nn, rel, r in rows:
+        ks = [str(x[0]) for x in r if x[2] >= THRESHOLD]
+        lines.append("  %-11s %s" % (n, ",".join(ks) if ks else "(none)"))
+    lines.append("PERTURBED (>= %.1e AU) by k, 3-D:" % THRESHOLD)
+    for n, cf, fam, e, nn, rel, r in rows:
+        ks = [str(x[0]) for x in r if x[1] >= THRESHOLD]
+        lines.append("  %-11s %s" % (n, ",".join(ks) if ks else "(none)"))
+    return "\n".join(lines) + "\n"
+
+
 def cmd_trail(a):
     txt, _ = table(
         a.jd, a.stale, a.frames,
@@ -206,6 +347,11 @@ def main():
     j.add_argument("--jd", type=float, default=JD)
     j.add_argument("--days", type=float, default=30.99)
     j.add_argument("--frames", type=int, default=6)
+    c = sub.add_parser("corpus")
+    c.add_argument("dump")
+    c.add_argument("--jd", type=float, default=JD)
+    c.add_argument("--stale", type=float, default=0.99)
+    c.add_argument("--frames", type=int, default=6)
     s = sub.add_parser("all")
     s.add_argument("--jd", type=float, default=JD)
     s.add_argument("--stale", type=float, default=0.99)
@@ -214,6 +360,8 @@ def main():
     a = ap.parse_args()
     if a.cmd == "trail":
         sys.stdout.write(cmd_trail(a))
+    elif a.cmd == "corpus":
+        sys.stdout.write(cmd_corpus(a))
     elif a.cmd == "jump":
         sys.stdout.write(cmd_jump(a))
     else:
