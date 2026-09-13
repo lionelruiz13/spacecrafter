@@ -4335,6 +4335,91 @@ filter's own rule -- and this script's header says why two copies of a rule are 
 consequence is stated rather than hidden: the operator learns of a lost signature after the y/N,
 not before it, and `Undo:` is printed.
 
+## supervised-by.sh + purge-path.sh -- BOTH repos, the map drawer's one writer, and a trailer that can no longer be dropped (F119, 2026-09-13)
+
+**Step E reaches the CODE repo now, and the two repos have different file-set rules on purpose.**
+Before F119 it repointed tracked `*.md` in the harness and nothing else, so the 2026-09-12 rewrite
+left six `_meta.anchor_pin` fields in `util/scedit/grammar/*.json` naming objects no branch
+reaches -- and `util/scedit/tests/anchor_gate.py`, a ctest, is built to fail exactly there. From a
+transport clone that read **AT-PIN-BROKEN 5888 + UNRESOLVED 1286**; after the repoint, 4.
+
+    harness   tracked *.md, UNCHANGED, and now with a reason. Measured 2026-09-13: the
+              harness's tracked non-.md text files hold 1715 tokens a rewrite map would
+              rewrite, and they are sha-maps/*/*.tsv (944 -- THE MAPS THEMSELVES), the
+              recorded p4_maps of the scratch-pair runs, dated prediction.txt files,
+              recorded diffs. Evidence a later run edits has stopped being evidence.
+              `*.md` is what keeps the drawer out of the rewrite's reach. Widen it only
+              WITH an explicit `sha-maps/**` and `harness/artifacts/**` exclusion.
+    code      every tracked TEXT file (`git grep -I`). Its carriers are nine files over
+              SIX extensions -- .hpp .cpp .py .sts .md .json, including src/tools/log.hpp
+              citing a HARNESS commit -- so an extension filter reaches two of nine.
+              Across 102 772 distinct hex tokens the map resolved 19 rows, every one a
+              real citation: zero false positives. The guard against the next one is that
+              EVERY code hit is printed WITH ITS LINE before the single y/N.
+
+One y/N covers both repos. The code repoint lands as its own commit **in the code repo, first**,
+so the harness closing commit's `Code:` trailer names a commit that already exists; its expected
+set is proved the same way the harness one is (tree clean at step 0, so everything dirty now was
+written by the script, re-asserted at the commit). One file to look twice at in the preview:
+`util/scedit/tests/history_cases.sts`, a fixture whose own header says "read as bytes".
+
+**Step A-triple-prime says what a run would strand BEFORE it strands it**, in both repos, and
+under `--dry-run` -- which stops before anything is touched, so it is the only place that question
+gets asked there at all. It names which citations break, never what they will become: the new shas
+do not exist until step C, so "resolves to", never an arrow.
+
+**A `Code:` line the grammar refuses is a STOP.** The reader is a `sed` filter and a filter that
+does not match emits NOTHING, so a trailer one character off vanished from `list_code_trailers`,
+and with it from the dangling count, the repair map, and the post-rewrite assertion that every
+trailer resolves -- which then PASSED because the broken one was never counted. Of all 919
+`Code:` lines in this history two are refused, both `... @ <sha> (a parenthetical)`, and one of
+the two (`a30b2c75`) is reachable from no branch today while the 2026-09-12 map holds its twin
+`3ffea018`: never repaired because never seen. `CODE_TRAILER_RE` is the one grammar both the
+reader and the refusal use. It does NOT fire on the default range (68 lines, 0 refusals).
+
+**`sha_map_lib.sh` is the drawer's one writer, sourced by both tools.** `purge-path.sh` re-shas
+commits exactly as `supervised-by.sh` does and until F119 persisted nothing -- the 2026-09-07
+purge (harness `9116a6a`) left a rewrite with no resolver. A copied function would have been two
+conventions that look alike; the library holds the layout, the names, the README, and the rule
+that ALL THREE files are written, empty where the run had nothing (a reader never distinguishes
+"nothing of that kind" from "the writer omitted it"); a run that changed no sha writes no
+directory. It also holds the prefix resolver, moved verbatim out of `purge-path.sh`, because step
+E hit the same wall at the same size: a per-token `map_lookup` is a full read of the map per
+token, unusable over the code tree's 102 772.
+
+**`purge-path.sh` could not complete a run, and three defects had to come out before the map
+could be proved.** All pre-existing (md5 `86be032b`), all found by running it: (1) `git log ... |
+head -1` takes SIGPIPE, `pipefail` makes the substitution 141 and `set -e` exits AFTER the
+assignment succeeded -- 5 runs of 5, exit 141, zero bytes of output, while the same pipeline by
+hand exited 0 three times of three: a race, worse than a constant; (2) the run's own old/new map
+pairs an unchanged commit with ITSELF, so the repoint sed'd tokens to themselves, changed no byte,
+and still recorded the file as touched -- the expected-set assertion then correctly refused the
+closing commit and left the repoint uncommitted; (3) G10 reported 67 correct citations as "still
+present ... unrepointed" and rolled the purge back on them. With the three fixed the same purge
+runs end to end, exit 0. **And `sha-maps/**` is excluded from its repoint**: it scans every
+tracked text file, so once it writes the drawer it would rewrite the OLD side of every pair, after
+which a reader's stale token stops matching the row that would have resolved it -- and the map
+still looks well-formed. `harness/artifacts/**` is the same kind of thing and is NOT excluded:
+that is an owner call, written up rather than taken.
+
+**Proving any of this runs on the F106 scratch pair (`harness/f106_pair.sh reset|assert`), never
+on the real trees.** The pair is a pre-rewrite snapshot that carries `54a2b844` and `ba7a32a8`
+themselves, so the incident reproduces instead of being simulated, and its own harness history
+already carries a malformed trailer. `supervised-by.sh`'s step E prompt tests `[ -t 0 ]`, so a
+piped `y` proposes and applies nothing -- drive it under a pty (`script -qec "..." /dev/null` with
+the answers on stdin) or the repoint half is never exercised. `purge-path.sh` needs no pty.
+Artifacts: `harness/artifacts/f119/pair-run{1,2,3,4}-*` and `clone-readings.txt`.
+
+**Reading the anchor gate's `moved` rows: `harness/f119_moved.py`.** `anchor_gate` prints totals,
+and `tests/anchor-expected.txt` may only be re-recorded after somebody looks at what moved
+(`util/scedit/README.md:789`). This is the instrument for that look. It imports the gate's own
+functions rather than re-implementing them, and SELF-CHECKS -- its per-verdict counts are compared
+against `anchor_gate.run()` in the same process and it exits 2 on disagreement. It attributes each
+moved reference to the first commit in the `pin..HEAD` window at which that line's number changes,
+and reports what it cannot attribute instead of guessing. NB a dangling pin silently WIDENS that
+window: a range whose left end no branch reaches excludes nothing, so before the pins were
+repointed it attributed 56 references to a commit predating the pin.
+
 ## premise_check.py — every checkable premise of a dispatch section, re-run at three events — fable-dispatch.md §0b.3 / §0.7, 2026-09-05
 
     python3 claude/harness/premise_check.py F91        # one section: every line PASS, or the FAILs in observed-vs-stated form
