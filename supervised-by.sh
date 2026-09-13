@@ -172,27 +172,54 @@
 # is a substring of `Claude Fable 50`, and would one day be a false match.
 #
 # ---------------------------------------------------------------------------
-# THE .md RE-POINT (step E)
+# THE CITATION RE-POINT (step E) -- BOTH REPOS
 # ---------------------------------------------------------------------------
-# The rewrite gives every touched commit a NEW sha, and the harness .md trackers
-# (INTENT.md, the dispatch logs, ...) cite commits BY sha to trace work -- both
-# harness commits AND code commits. After a rewrite those citations point at
-# dangling objects and the traceability they exist for silently rots. Step E
-# builds the old->new map for BOTH repos, merges them, and offers to repoint
-# every abbreviated hash it finds. A token that prefixes rewritten commits in
-# both maps at once is flagged ambiguous and never auto-replaced. It touches
-# ONLY tracked *.md, and never applies without your y/N.
+# The rewrite gives every touched commit a NEW sha, and the trackers cite
+# commits BY sha to trace work -- both harness commits AND code commits. After a
+# rewrite those citations point at dangling objects and the traceability they
+# exist for silently rots. Step E builds the old->new map for BOTH repos,
+# merges them, and offers to repoint every abbreviated hash it finds. A token
+# that prefixes rewritten commits in both maps at once is flagged ambiguous and
+# never auto-replaced. Nothing is applied without your y/N -- ONE y/N for both
+# repos, because "repoint this rewrite's citations" is one decision.
+#
+# WHAT EACH REPO OFFERS UP, and the two rules are different on purpose:
+#   harness  tracked *.md. Not a gap: measured 2026-09-13, the harness's
+#            tracked non-.md text files hold 1715 tokens a map would rewrite,
+#            and they are sha-maps/*/*.tsv (the maps themselves), the recorded
+#            p4_maps of the scratch-pair runs, dated predictions and diffs --
+#            EVIDENCE, worthless once a later run edits it. *.md is what keeps
+#            the drawer out of the rewrite's reach.
+#   code     every tracked TEXT file (git grep -I). Its carriers span six
+#            extensions -- .hpp .cpp .py .sts .md .json -- so an extension
+#            filter reaches two of nine. Every code hit is printed WITH ITS
+#            LINE, because a 7-8 hex token can also be an md5 prefix and only
+#            the surrounding text tells them apart.
+#
+# Before F119 this step reached the harness only. The 2026-09-12 rewrite
+# therefore left six `_meta.anchor_pin` fields in util/scedit/grammar/*.json
+# naming objects no branch reaches, and util/scedit/tests/anchor_gate.py -- a
+# ctest -- is built to fail exactly there: from a fresh clone it read 5888
+# broken references. A rewrite tool that reaches one half of the pair does not
+# keep traceability, it relocates the rot.
+#
+# The code repoint is its own commit in the code repo, made FIRST (code before
+# harness, so the harness commit's `Code:` trailer names a commit that exists);
+# its expected set is proved the same way the harness one is.
 # (Requires bash 4+ for associative arrays.)
 #
 # ---------------------------------------------------------------------------
 # THE PERSISTED SHA MAPS (written by step D, committed by step E)
 # ---------------------------------------------------------------------------
-# Step E reaches tracked *.md in the harness repo. That is not everything that
-# cites these commits. It reaches neither the git HISTORY of those files nor any
+# Step E reaches tracked files in both repos. That is not everything that cites
+# these commits. It reaches neither the git HISTORY of those files nor any
 # surface outside the pair -- the shared queue and host-event notes, the owner's
-# own notes, scratch trees, the dispatch archive. Those spaces are exactly the
-# ones that cannot be search-and-replaced, and a sha that resolves to nothing
-# reachable is a dangling reference with no way back.
+# own notes, scratch trees, the dispatch archive. Nor does it reach the
+# harness's own evidence drawer, deliberately: sha-maps/ and harness/artifacts/
+# are dated records, and a record a later run edits has stopped being one.
+# Those spaces are exactly the ones that cannot be search-and-replaced, and a
+# sha that resolves to nothing reachable is a dangling reference with no way
+# back.
 #
 # So the old->new maps this run builds are no longer thrown away with the temp
 # directory. They are copied to
@@ -201,6 +228,12 @@
 #         code.tsv      old-full-sha <TAB> new-full-sha, per code commit re-shaed
 #         harness.tsv   the same for the harness repo
 #         repair.tsv    trailers that were ALREADY dangling, mapped to their twin
+#
+# All three are always present, empty where this run had nothing of that kind:
+# a reader never has to tell "no harness commit moved" from "the writer omitted
+# the file". The writing is sha_map_lib.sh's, shared with purge-path.sh, which
+# re-shas commits the same way and until F119 persisted nothing at all -- one
+# convention with two implementations is two conventions that look like one.
 #
 # and committed by the closing commit. The two tips in the directory name are the
 # PRE-rewrite tips: they name the state the map maps FROM, which is the state a
@@ -249,6 +282,15 @@
 # ---------------------------------------------------------------------------
 
 set -euo pipefail
+
+# The sha-map drawer's writer and the prefix resolver, shared with
+# purge-path.sh: one convention, one implementation (see that file's header for
+# why a second copy is the thing being avoided). Sourced by absolute path from
+# THIS file's own location, because filter-branch runs the msg-filter mode from
+# a temporary cwd where a relative path resolves to nothing.
+SHA_MAP_LIB="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/sha_map_lib.sh"
+# shellcheck source=sha_map_lib.sh
+. "${SHA_MAP_LIB}"
 
 # ---------------------------------------------------------------------------
 # The identity grammar. `Claude <Model> <version>`, model left open ([A-Za-z]+)
@@ -384,11 +426,58 @@ reachable_in_code() {
     git -C "${CODE_REPO}" merge-base --is-ancestor "${sha}" "${target}" 2>/dev/null
 }
 
+# The ONE grammar of a `Code:` trailer, written once and used by both the
+# reader below and the refusal beside it. Two spellings of the same rule drift,
+# and the drift is invisible: the reader would go on dropping exactly the lines
+# the refusal has stopped calling malformed.
+CODE_TRAILER_RE='^Code:[[:space:]]+[^[:space:]]+[[:space:]]+@[[:space:]]+[0-9a-f]{7,40}[[:space:]]*$'
+
 # list_code_trailers <harness-range> -> `<branch> <sha>` per distinct trailer.
+# The `sort -u` output contract is unchanged; what changed is that a `Code:`
+# line this grammar REFUSES is no longer dropped in silence -- see
+# malformed_code_trailers, and the step-A'' refusal that consumes it.
 list_code_trailers() {
     git -C "${HARNESS_REPO}" log --format='%B' "$1" \
       | sed -nE 's/^Code:[[:space:]]+([^[:space:]]+)[[:space:]]+@[[:space:]]+([0-9a-f]{7,40})[[:space:]]*$/\1 \2/p' \
       | sort -u
+}
+
+# malformed_code_trailers <harness-range> -> `<commit-sha> TAB <line>` for every
+# line that BEGINS `Code:` and that list_code_trailers' grammar refuses.
+#
+# WHY THIS IS A STOP AND NOT A WARNING. The sed above is a filter, and a filter
+# that does not match simply emits nothing: a `Code:` line one character off the
+# grammar disappears from list_code_trailers, therefore from dangling_trailers,
+# therefore from build_repair_map, therefore from the post-rewrite assertion
+# that every trailer still resolves -- and that assertion then passes BECAUSE
+# the broken one was never counted. The tool reports full coverage of a set it
+# quietly shrank.
+#
+# This is not hypothetical. Measured on this harness repository 2026-09-13 (all
+# 919 `Code:` lines of the whole history): exactly two are refused, both of the
+# shape `Code: master-beta @ <sha> (a parenthetical remark)` --
+#
+#     d1f8fea5  Code: master-beta @ a30b2c75 (the mutation is not in it)
+#     7fe1bce8  Code: master-beta @ a62ad5d7 (+ uncommitted predecessor diff, ...)
+#
+# -- and a30b2c75 is TODAY reachable from no branch, while the 2026-09-12
+# rewrite map holds its twin (3ffea018). It was never repaired because it was
+# never seen. That is one silently-lost trailer, found only by asking the
+# question this function exists to ask.
+#
+# The commit is reported with the line because a line alone is unfindable: the
+# operator's next act is to read that message, and `git show <sha>` is what
+# does it.
+malformed_code_trailers() {
+    local REC SHA BODY LINE
+    while IFS= read -r -d '' REC || [ -n "${REC}" ]; do
+        SHA=${REC%%$'\x02'*}; BODY=${REC#*$'\x02'}
+        while IFS= read -r LINE; do
+            [[ ${LINE} == Code:* ]] || continue
+            [[ ${LINE} =~ ${CODE_TRAILER_RE} ]] && continue
+            printf '%s\t%s\n' "${SHA}" "${LINE}"
+        done <<< "${BODY}"
+    done < <(git -C "${HARNESS_REPO}" log -z --format="%H%x02%B" "$1")
 }
 
 # dangling_trailers <harness-range> -> the subset whose sha no branch reaches.
@@ -906,10 +995,12 @@ preview() {                        # preview <label> <repo> <range>
 # --- A. preview both --------------------------------------------------------
 preview "CODE   " "${CODE_REPO}" "${CODE_RANGE}"
 N_CODE=${#SEL_SHAS[@]}; M_CODE=${#MANUAL_SHAS[@]}; A_CODE=${N_AUTHORFIX}
-N_HARNESS=0
+SEL_CODE=("${SEL_SHAS[@]}")
+N_HARNESS=0; SEL_HARNESS=()
 if [ -n "${HARNESS_REPO}" ]; then
     preview "HARNESS" "${HARNESS_REPO}" "${HARNESS_RANGE}"
     N_HARNESS=${#SEL_SHAS[@]}; M_HARNESS=${#MANUAL_SHAS[@]}; A_HARNESS=${N_AUTHORFIX}
+    SEL_HARNESS=("${SEL_SHAS[@]}")
 fi
 
 # --- A'. refuse to guess: a trailer branch that resolves to nothing -----------
@@ -964,6 +1055,109 @@ if [ -n "${HARNESS_REPO}" ]; then
         exit 1
     fi
 fi
+
+# --- A''. refuse to under-count: a `Code:` line the grammar cannot read -------
+# Placed with A' and for the same reason: every consumer of a trailer verdict --
+# the cross-repo count, the repair map, the post-rewrite reachability assertion
+# -- reads list_code_trailers, and a line that filter drops is invisible to all
+# of them AT ONCE. A run that proceeds here reports "every trailer reachable"
+# about a set it silently shrank. Under --dry-run too, and exit 1 there as well:
+# a preview that would lie must not exit 0.
+if [ -n "${HARNESS_REPO}" ]; then
+    MALFORMED=$(malformed_code_trailers "${HARNESS_RANGE}")
+    if [ -n "${MALFORMED}" ]; then
+        {
+        echo "STOP: a 'Code:' line in the harness range does not match the trailer grammar."
+        echo
+        echo "  WHAT"
+        printf '%s\n' "${MALFORMED}" | while IFS=$'\t' read -r sha line; do
+            echo "    ${sha:0:8}  ${line}"
+            echo "              read it:  git -C ${HARNESS_REPO} show ${sha:0:8}"
+        done
+        echo
+        echo "  VALID STATE"
+        echo "    A trailer is exactly 'Code: <branch> @ <7-40 lowercase hex>' and nothing"
+        echo "    else on the line -- no parenthetical, no second sha, no trailing note."
+        echo "    The grammar is one string in this script (CODE_TRAILER_RE)."
+        echo
+        echo "  CONSEQUENCE"
+        echo "    The reader is a sed filter: a line it refuses emits NOTHING, so the"
+        echo "    trailer disappears from list_code_trailers, and with it from the"
+        echo "    dangling count, from the pre-existing-damage repair, and from the"
+        echo "    post-rewrite assertion that every trailer still resolves. That"
+        echo "    assertion then PASSES because the broken trailer was never counted."
+        echo "    Measured on this repository 2026-09-13: of 919 'Code:' lines in the"
+        echo "    whole history two are refused, and one of the two (a30b2c75) is"
+        echo "    reachable from no branch today while the rewrite map holds its twin."
+        echo "    It was never repaired because it was never seen."
+        echo
+        echo "  FIX -- either one, before re-running"
+        echo "    (a) move the remark off the trailer line, leaving the bare form:"
+        echo "        git -C ${HARNESS_REPO} rebase -i   (reword), or a filter-branch"
+        echo "        --msg-filter for a commit already deep in the history;"
+        echo "    (b) or narrow the range so the offending commit is outside it,"
+        echo "        if its trailer is not this run's business:"
+        echo "        ./supervised-by.sh --harness=<newer-base>..HEAD ..."
+        echo
+        echo "  Nothing has been touched."
+        } >&2
+        exit 1
+    fi
+fi
+
+# --- A'''. the citations this run WOULD strand, before it strands them --------
+# Step E repoints citations AFTER the rewrite, which is the right moment to fix
+# them and the wrong moment to find out about them: by then the decision to
+# rewrite has been taken and the y/N that mattered is behind you. This block
+# asks the same question at preview time, when the answer can still change the
+# range -- and under --dry-run, which stops before anything is touched, it is
+# the ONLY place the question gets asked at all.
+#
+# It can say WHICH citations will break but not what they will become: the new
+# shas do not exist until step C. "resolves to", never "->", for that reason --
+# an arrow here would read as a promise about a value nothing has computed yet.
+# (The wording is purge-path.sh's, which had this preview from the start.)
+PLAN_SHAS=$(mktemp); PLAN_TBL=$(mktemp); PLAN_TOK=$(mktemp); PLAN_RES=$(mktemp)
+printf '%s\n' "${SEL_CODE[@]+"${SEL_CODE[@]}"}" "${SEL_HARNESS[@]+"${SEL_HARNESS[@]}"}" \
+    | grep -E '^[0-9a-f]{40}$' > "${PLAN_SHAS}" || true
+if [ -s "${PLAN_SHAS}" ]; then
+    sha_prefix_table "${PLAN_SHAS}" "${PLAN_TBL}"
+    echo "--- citations this run would strand ------------------------------------"
+    PLAN_TOTAL=0
+    for pr in "${CODE_REPO}" ${HARNESS_REPO:+"${HARNESS_REPO}"}; do
+        if [ "${pr}" = "${HARNESS_REPO:-}" ]; then
+            # the same *.md rule step E applies there, and for the same measured
+            # reason: sha-maps/ and harness/artifacts/ are evidence, not trackers.
+            (cd "${pr}" && git ls-files -- '*.md' | tr '\n' '\0' \
+                | xargs -0 grep -hoE '\b[0-9a-f]{7,40}\b' 2>/dev/null | sort -u) > "${PLAN_TOK}" || true
+            WHAT="tracked *.md"
+        else
+            git -C "${pr}" grep -hoIE '\b[0-9a-f]{7,40}\b' -- . 2>/dev/null | sort -u > "${PLAN_TOK}" || true
+            WHAT="every tracked text file"
+        fi
+        sha_resolve_tokens "${PLAN_TBL}" "${PLAN_TOK}" > "${PLAN_RES}" || true
+        N_PLAN=$(grep -c . "${PLAN_RES}" || true)
+        PLAN_TOTAL=$((PLAN_TOTAL + N_PLAN))
+        echo "  ${pr}  (${WHAT}): ${N_PLAN} distinct token(s)"
+        while read -r t r; do
+            [ -n "${t}" ] || continue
+            if [ "${r}" = "AMBIG" ]; then
+                echo "      ${t}  ** AMBIGUOUS -- left alone **"
+            else
+                echo "      ${t}  resolves to ${r:0:8}, which this run re-shas"
+            fi
+            git -C "${pr}" grep -nwIF "${t}" -- . 2>/dev/null | cut -c1-130 | head -3 | sed 's/^/          /' || true
+        done < "${PLAN_RES}"
+    done
+    if [ "${PLAN_TOTAL}" = 0 ]; then
+        echo "  Nothing cites the commits this run would re-sha."
+    else
+        echo "  Step E offers to repoint these, in BOTH repos, under one y/N."
+    fi
+    echo "-----------------------------------------------------------------------"
+    echo
+fi
+rm -f "${PLAN_SHAS}" "${PLAN_TBL}" "${PLAN_TOK}" "${PLAN_RES}"
 
 # The cross-repo consequence, stated BEFORE the confirmation rather than
 # discovered afterwards: this is the number that the old one-repo-at-a-time
@@ -1297,99 +1491,69 @@ fi
 
 # --- D'. persist the maps beside the ledger ---------------------------------
 # The maps built above are this run's only record of old sha -> new sha, and
-# until now they died with ${WORK}. Step E repoints tracked *.md; everything
-# else that cites these commits -- the git history of those same files, the
-# shared notes, the archive, the owner's own trees -- cannot be reached by any
-# rewrite and can only be resolved by LOOKING THE TOKEN UP. So the maps are
-# copied out verbatim (no reformatting: the file the filter consulted is the
-# file that is kept) and committed by step E.
+# until F119 they died with ${WORK} in purge-path.sh and were written by a
+# private copy of this block here. Step E repoints tracked files in both repos;
+# everything else that cites these commits -- the git history of those same
+# files, the shared notes, the archive, the owner's own trees -- cannot be
+# reached by any rewrite and can only be resolved by LOOKING THE TOKEN UP.
+#
+# The writing itself now lives in sha_map_lib.sh, shared with purge-path.sh:
+# the directory layout, the file names, the "empty rather than missing" rule and
+# the README are ONE convention, and one convention with two implementations is
+# two conventions that look like one.
 MAP_FILES=(); MAP_DIR=""
 if [ -n "${HARNESS_REPO}" ]; then
     # The two tips are the PRE-rewrite ones -- the state the map maps FROM,
     # which is the state a reader holding a stale sha is standing in.
-    MAP_DIR="sha-maps/$(date -u +%Y%m%dT%H%M%SZ)-${CODE_TIP:0:8}-${HARNESS_TIP:0:8}"
-    mkdir -p "${HARNESS_REPO}/${MAP_DIR}"
-    for m in code harness repair; do
-        if [ -s "${WORK}/${m}.map" ]; then
-            cp "${WORK}/${m}.map" "${HARNESS_REPO}/${MAP_DIR}/${m}.tsv"
-            MAP_FILES+=("${MAP_DIR}/${m}.tsv")
-        fi
-    done
-    if [ "${#MAP_FILES[@]}" -eq 0 ]; then
-        rmdir "${HARNESS_REPO}/${MAP_DIR}" 2>/dev/null || true
-        MAP_DIR=""
-    else
-        # The contract, written ONCE. It is not regenerated per run: a file that
-        # is rewritten every time is a file whose content is nobody's decision.
-        if [ ! -e "${HARNESS_REPO}/sha-maps/README.md" ]; then
-            cat > "${HARNESS_REPO}/sha-maps/README.md" <<'SHAMAPREADME'
-# sha-maps/ -- old sha -> new sha, one directory per history rewrite
-
-Written by `claude/supervised-by.sh`. Every directory here is the record of ONE
-run that re-hashed commits, named
-
-    <UTC yyyymmddThhmmssZ>-<code-tip8>-<harness-tip8>
-
-after the PRE-rewrite tips of the two repositories: the state the map maps FROM.
-
-    code.tsv      one line per code-repo commit whose sha changed
-    harness.tsv   one line per harness-repo commit whose sha changed
-    repair.tsv    trailers that were ALREADY dangling when the run started,
-                  mapped to the fingerprint twin the run repaired them to
-
-Each line is `<old-full-sha> TAB <new-full-sha>`. An unselected commit whose
-parents did not change keeps its object -- sha and signature -- and appears in
-no file.
-
-`repair.tsv` is a verbatim SUBSET of `code.tsv` for the same run: the script
-appends the repair pairs to the code map so the message filter consults one
-file, and the copy kept here is that file, unedited. The two are not two
-sources of one fact -- `repair.tsv` says which of those pairs were pre-existing
-damage rather than this run's own work.
-
-## Why the files exist
-
-A rewrite gives every touched commit a new sha. The script repoints citations in
-tracked `*.md`, and that is all it can reach. It does not reach the git history
-of those same files, the shared notes, this repository's archive drawer, or
-anything in the owner's own trees. Those citations stay valid only if the old
-sha remains RESOLVABLE, and after a garbage collection nothing but a map can
-resolve it.
-
-## How to resolve a sha that no longer exists
-
-Look the token up as a PREFIX of the old side, newest directory first, and take
-the new side truncated to the same length. That is the same rule the script uses
-internally, and the same shape as the archive drawer's resolution-by-convention
-for moved documents: a reference is never rewritten in the record, it is
-resolved through the map. A token that prefixes more than one old sha is
-ambiguous and must be lengthened, not guessed.
-
-## The rule these files live by
-
-They are append-only and are NEVER edited, not to tidy them, not to merge them,
-not to drop entries that look obsolete. A map that has been corrected has
-stopped being evidence of what a particular run did, which is the only thing it
-is for. If a run was wrong, the next run's map records the correction as its own
-line, and both stay.
-SHAMAPREADME
-            MAP_FILES+=("sha-maps/README.md")
-        fi
-        # Staged now: `commit -a` in step E stages tracked modifications and
-        # ignores untracked files, so a map left unstaged would be written and
-        # then silently left behind.
-        git -C "${HARNESS_REPO}" add -- "${MAP_FILES[@]}"
-        echo "Sha maps written to ${HARNESS_REPO}/${MAP_DIR}/ :" \
-             "$(for f in "${MAP_FILES[@]}"; do printf '%s(%s) ' "${f##*/}" "$(wc -l < "${HARNESS_REPO}/${f}")"; done)"
+    sha_map_write "${HARNESS_REPO}" \
+        "$(sha_map_dir_name "${CODE_TIP:0:8}" "${HARNESS_TIP:0:8}")" \
+        "${WORK}/code.map" "${WORK}/harness.map" "${WORK}/repair.map"
+    MAP_FILES=("${SHA_MAP_FILES[@]}"); MAP_DIR="${SHA_MAP_DIR}"
+    if [ -n "${MAP_DIR}" ]; then
+        echo "Sha maps written to ${HARNESS_REPO}/${MAP_DIR}/ : $(sha_map_summary "${HARNESS_REPO}")"
     fi
 fi
-
-
-# --- E. repoint harness .md (both maps) -------------------------------------
-# Only tracked .md is scanned: those are the tracing docs. Code is never edited
-# here, and nothing is written without an explicit y/N.
+# --- E. repoint tracker citations, BOTH repos -------------------------------
+# WHAT IS SCANNED, AND WHY THE TWO REPOS DIFFER. This is one rule per repo, and
+# the difference is measured rather than inherited:
+#
+#   HARNESS: tracked `*.md` only -- the tracing docs. Widening it was tried on
+#     paper and refused on the measurement (F119, 2026-09-13): the harness's
+#     tracked NON-.md text files hold 1715 tokens this very map would rewrite,
+#     and they are `sha-maps/*/*.tsv` (944 of them -- THE MAPS THEMSELVES),
+#     `harness/artifacts/f103/p4_maps/code.tsv`, recorded predictions, recorded
+#     diffs. Every one of those is EVIDENCE: dated, append-only, and worthless
+#     the moment a later run edits it. `*.md` is not a gap here, it is what
+#     keeps the drawer out of the rewrite's reach. Anyone widening it must
+#     exclude `sha-maps/**` and `harness/artifacts/**` first.
+#
+#   CODE: every tracked TEXT file (`git grep -I`, so binaries are skipped).
+#     Measured at the same moment: the code tree's citation carriers are nine
+#     files spanning SIX extensions -- .hpp .cpp .py .sts .md .json -- with
+#     `src/tools/log.hpp:75` citing a harness commit and
+#     `util/scedit/grammar/*.json` citing code commits. An extension filter
+#     would have reached two of the nine. The code tree has no evidence drawer
+#     of the harness's kind, so there is nothing there to protect from a
+#     repoint; what it does have is source files, which is why every code hit
+#     below is printed WITH ITS LINE. That is purge-path.sh's rule
+#     (its "a 7-8 hex token can also be an md5 prefix, and only the surrounding
+#     text can tell them apart"), and the one file to look twice at is
+#     `util/scedit/tests/history_cases.sts`, a fixture whose own header says
+#     "read as bytes".
+#
+# WHY IT EXISTS AT ALL: before F119 this step reached the harness repo only, so
+# the owner's 2026-09-12 rewrite left six `_meta.anchor_pin` fields in
+# `util/scedit/grammar/*.json` naming objects no branch reaches -- and
+# `util/scedit/tests/anchor_gate.py`, a ctest, is built to fail exactly there.
+# From a fresh clone it read 5888 broken references. A rewrite tool that cannot
+# reach one half of the pair does not keep traceability, it relocates the rot.
+#
+# Nothing is written without an explicit y/N, and it is ONE prompt for both
+# repos: the operator is answering "repoint this rewrite's citations", which is
+# a single decision, and splitting it into two invites answering one and
+# forgetting the other.
 echo
-echo "--- .md tracker commit references -------------------------------------"
+echo "--- tracker commit references -----------------------------------------"
 MERGED="${WORK}/merged.map"; : > "${MERGED}"
 [ -s "${WORK}/code.map" ]    && cat "${WORK}/code.map"    >> "${MERGED}"
 [ -s "${WORK}/harness.map" ] && cat "${WORK}/harness.map" >> "${MERGED}"
@@ -1399,37 +1563,84 @@ declare -A TOK_NEW=(); declare -A TOK_AMBIG=()
 # Declared here, not inside the `y` branch: the closing commit below is reached
 # whether or not anything was repointed (the sha maps alone can be the reason),
 # so its expected-set test must be able to read an EMPTY touched set.
-declare -A TOUCHED_FILES=()
+declare -A TOUCHED_FILES=(); declare -A TOUCHED_CODE=()
 MD_FILES=(); mapfile -t MD_FILES < <(git -C "${MD_REPO}" ls-files -- '*.md' 2>/dev/null || true)
-if [ -s "${MERGED}" ] && [ "${#MD_FILES[@]}" -gt 0 ]; then
-    while IFS= read -r tok; do
+
+# The token table, built ONCE from the map's old side. The per-token bash
+# `map_lookup` this step used to call is a full read of the map file per token:
+# fine over a few hundred .md tokens, unusable over the code tree's 102 772
+# (measured: it had not finished after ten minutes). sha_prefix_table is
+# purge-path.sh's answer to the same problem, now shared.
+cut -f1 "${MERGED}" > "${WORK}/merged.old"
+sha_prefix_table "${WORK}/merged.old" "${WORK}/merged.tbl"
+declare -A OLD_NEW=()
+while IFS=$'\t' read -r o n; do [ -n "${o}" ] && OLD_NEW["${o}"]="${n}"; done < "${MERGED}"
+
+# resolve_file_tokens <repo> <token-source-command...> : fills TOK_NEW/TOK_AMBIG
+resolve_tokens_from() {                 # reads tokens on stdin
+    local tok full
+    while read -r tok full; do
         [ -n "${tok}" ] || continue
-        r=$(map_lookup "${MERGED}" "${tok}")
-        if   [ "${r}" = "AMBIG" ]; then TOK_AMBIG["${tok}"]=1
-        elif [ -n "${r}" ];        then TOK_NEW["${tok}"]="${r}"
-        fi
-    done < <(cd "${MD_REPO}" && grep -hoE '\b[0-9a-f]{7,40}\b' "${MD_FILES[@]}" 2>/dev/null | sort -u || true)
+        if [ "${full}" = "AMBIG" ]; then TOK_AMBIG["${tok}"]=1; continue; fi
+        [ -n "${OLD_NEW[${full}]:-}" ] || continue
+        TOK_NEW["${tok}"]="${OLD_NEW[${full}]:0:${#tok}}"
+    done
+}
+
+if [ -s "${MERGED}" ]; then
+    if [ "${#MD_FILES[@]}" -gt 0 ]; then
+        (cd "${MD_REPO}" && grep -hoE '\b[0-9a-f]{7,40}\b' "${MD_FILES[@]}" 2>/dev/null | sort -u || true) \
+            > "${WORK}/md.tokens"
+        sha_resolve_tokens "${WORK}/merged.tbl" "${WORK}/md.tokens" > "${WORK}/md.resolved"
+        resolve_tokens_from < "${WORK}/md.resolved"
+    fi
+fi
+# The code side gets its OWN token map, because a token has to be repointed in
+# the repo it was found in and the two sets are not the same.
+declare -A CODE_TOK_NEW=(); declare -A CODE_TOK_AMBIG=()
+if [ -s "${MERGED}" ] && [ -n "${HARNESS_REPO}" ]; then
+    git -C "${CODE_REPO}" grep -hoIE '\b[0-9a-f]{7,40}\b' -- . 2>/dev/null | sort -u \
+        > "${WORK}/code.tokens" || true
+    sha_resolve_tokens "${WORK}/merged.tbl" "${WORK}/code.tokens" > "${WORK}/code.resolved"
+    while read -r tok full; do
+        [ -n "${tok}" ] || continue
+        if [ "${full}" = "AMBIG" ]; then CODE_TOK_AMBIG["${tok}"]=1; continue; fi
+        [ -n "${OLD_NEW[${full}]:-}" ] || continue
+        CODE_TOK_NEW["${tok}"]="${OLD_NEW[${full}]:0:${#tok}}"
+    done < "${WORK}/code.resolved"
 fi
 
-if [ "${#TOK_NEW[@]}" -eq 0 ]; then
-    echo "No .md references to rewritten commits -- trackers are already consistent."
+if [ "${#TOK_NEW[@]}" -eq 0 ] && [ "${#CODE_TOK_NEW[@]}" -eq 0 ]; then
+    echo "No tracked-file reference to a rewritten commit -- both repos are consistent."
 else
-    echo "These ${MD_REPO} .md references point at rewritten (now-dangling) commits:"
-    echo
-    for tok in "${!TOK_NEW[@]}"; do
-        while IFS= read -r loc; do
-            echo "    ${loc}  (${tok} -> ${TOK_NEW[${tok}]})"
-        done < <(cd "${MD_REPO}" && grep -nwF "${tok}" "${MD_FILES[@]}" 2>/dev/null | cut -d: -f1,2 || true)
-    done
-    echo
-    if [ "${#TOK_AMBIG[@]}" -gt 0 ]; then
-        echo "  (${#TOK_AMBIG[@]} token(s) prefix more than one rewritten commit -- skipped,"
+    if [ "${#TOK_NEW[@]}" -gt 0 ]; then
+        echo "HARNESS ${MD_REPO} -- tracked *.md:"
+        for tok in "${!TOK_NEW[@]}"; do
+            while IFS= read -r loc; do
+                echo "    ${loc}  (${tok} -> ${TOK_NEW[${tok}]})"
+            done < <(cd "${MD_REPO}" && grep -nwF "${tok}" "${MD_FILES[@]}" 2>/dev/null | cut -d: -f1,2 || true)
+        done
+        echo
+    fi
+    if [ "${#CODE_TOK_NEW[@]}" -gt 0 ]; then
+        echo "CODE ${CODE_REPO} -- every tracked text file, each hit with its line:"
+        for tok in "${!CODE_TOK_NEW[@]}"; do
+            while IFS= read -r loc; do
+                echo "    ${loc}"
+            done < <(git -C "${CODE_REPO}" grep -nwIF "${tok}" -- . 2>/dev/null | cut -c1-140 || true)
+            echo "        ^ ${tok} -> ${CODE_TOK_NEW[${tok}]}"
+        done
+        echo
+    fi
+    NAMBIG=$(( ${#TOK_AMBIG[@]} + ${#CODE_TOK_AMBIG[@]} ))
+    if [ "${NAMBIG}" -gt 0 ]; then
+        echo "  (${NAMBIG} token(s) prefix more than one rewritten commit -- skipped,"
         echo "   repoint those by hand.)"
         echo
     fi
     APPLY=n
     if [ -t 0 ]; then
-        read -r -p "Repoint these in the working tree (uncommitted, review before commit)? [y/N] " APPLY
+        read -r -p "Repoint these in BOTH working trees (uncommitted, review before commit)? [y/N] " APPLY
     else
         echo "  (non-interactive shell: proposing only, nothing applied.)"
     fi
@@ -1443,11 +1654,65 @@ else
                     TOUCHED_FILES["${f}"]=1
                 done < <(cd "${MD_REPO}" && grep -lwF "${tok}" "${MD_FILES[@]}" 2>/dev/null || true)
             done
+            for tok in "${!CODE_TOK_NEW[@]}"; do
+                new="${CODE_TOK_NEW[${tok}]}"
+                while IFS= read -r f; do
+                    sed -i -E "s/\\b${tok}\\b/${new}/g" "${CODE_REPO}/${f}"
+                    TOUCHED_CODE["${f}"]=1
+                done < <(git -C "${CODE_REPO}" grep -lwIF "${tok}" -- . 2>/dev/null || true)
+            done
             echo
-            echo "Repointed ${#TOK_NEW[@]} citation(s) across ${#TOUCHED_FILES[@]} file(s)."
+            echo "Repointed ${#TOK_NEW[@]} harness citation(s) across ${#TOUCHED_FILES[@]} file(s)" \
+                 "and ${#CODE_TOK_NEW[@]} code citation(s) across ${#TOUCHED_CODE[@]} file(s)."
             ;;
         *)  echo "Not applied. Re-run and answer y, or repoint by hand from the list above." ;;
     esac
+fi
+
+# --- E'. the CODE repo's closing commit -------------------------------------
+# The code repoint is a NEW commit on top of the rewritten branch, never a
+# rewrite of the record, and it lands FIRST: when a change spans both repos the
+# code side is committed first, so the harness closing commit's own
+# `Code: <branch> @ <sha>` trailer names a commit that already exists.
+#
+# Its EXPECTED set is proved exactly as the harness one is: the tree was
+# verified clean at step 0, so everything dirty in the code repo now was written
+# by this script, and the assertion re-derives that here rather than inheriting
+# it from a check taken before the whole run.
+if [ "${#TOUCHED_CODE[@]}" -gt 0 ]; then
+    EXPECTED_CODE=$(printf '%s\n' "${!TOUCHED_CODE[@]}" | sort -u)
+    ACTUAL_CODE=$(git -C "${CODE_REPO}" status --porcelain --untracked-files=all | cut -c4- | sort)
+    if [ "${NO_COMMIT}" = 1 ]; then
+        echo "(--no-commit: the code repoint is left uncommitted.)  git -C ${CODE_REPO} diff"
+    elif [ "${EXPECTED_CODE}" != "${ACTUAL_CODE}" ]; then
+        echo "NOT COMMITTED (code): the dirty set is not the set this script wrote." >&2
+        echo "  expected:" >&2; printf '%s\n' "${EXPECTED_CODE}" | sed 's/^/      /' >&2
+        echo "  actual:"   >&2; printf '%s\n' "${ACTUAL_CODE}"   | sed 's/^/      /' >&2
+        echo "  'commit -a' would capture the wrong set. Review and commit by hand." >&2
+    elif ! [[ ${SUPERVISOR} =~ ^.+\ \<[^\>]+\>$ ]]; then
+        echo "NOT COMMITTED (code): the Supervised-By string is not a git identity" >&2
+        echo "  ('Name <email>'), so it cannot author the commit. Commit by hand." >&2
+    else
+        git -C "${CODE_REPO}" commit -q -a --author="${SUPERVISOR}" -F - <<CODEMSG
+Repoint tracker citations after the supervision-trailer rewrite
+
+${N_CODE} code and ${N_HARNESS} harness commit(s) were rewritten to record the
+supervision chain. Rewriting a message changes the commit's sha, so every
+citation of one of them by sha was left pointing at an object no branch
+reaches -- and git validates no sha written inside a file, so the rot is silent.
+
+This commit carries that repoint on the CODE side: ${#CODE_TOK_NEW[@]} citation(s)
+across ${#TOUCHED_CODE[@]} file(s), old sha -> new sha, no prose changed. The
+harness side is a separate commit in claude/, and the sha maps that resolve
+these tokens in every surface no rewrite can reach are recorded there.
+
+Generated by claude/supervised-by.sh; both trees were verified clean before the
+run and the code tree verified to contain only these files before this commit,
+which is what makes 'commit -a' equal to the intended set rather than close to it.
+CODEMSG
+        echo "Committed in ${CODE_REPO}:"
+        git -C "${CODE_REPO}" log -1 --format='    %h  %s  (author %an)'
+    fi
 fi
 
 # --- the closing commit -----------------------------------------------------

@@ -66,6 +66,31 @@
 # meant to be deleted rather than kept.
 #
 # ---------------------------------------------------------------------------
+# THE PERSISTED SHA MAP (added 2026-09-13, F119)
+# ---------------------------------------------------------------------------
+# The repoint below reaches THIS repository's tracked files and nothing else:
+# not the git history of those same files, not the sibling repository, not the
+# shared notes, not the archive drawer, not the owner's own trees. In every one
+# of those a stale sha can only be resolved by LOOKING THE TOKEN UP, and until
+# F119 this script's old->new map died with its temp directory -- so the
+# 2026-09-07 purge (harness 9116a6a) left a rewrite with no resolver at all,
+# and nothing but this sentence records that it happened.
+#
+# The map is now written into the same drawer supervised-by.sh writes, in the
+# same format, by the same code (sha_map_lib.sh):
+#
+#     <harness>/sha-maps/<UTC>-<code-tip8>-<harness-tip8>/{code,harness,repair}.tsv
+#
+# one line per commit whose sha CHANGED, `<old-full-sha> TAB <new-full-sha>`.
+# The drawer is a harness-side convention, so it is found from whichever side
+# this run was pointed at; a run with no harness repo in reach says so loudly
+# instead of inventing a drawer in the code tree. The map is committed by the
+# closing act -- which therefore now happens when a map was written even if
+# nothing was repointed, because a rewrite whose only record sits uncommitted
+# in a working tree has produced the dangling references this script exists to
+# prevent.
+#
+# ---------------------------------------------------------------------------
 # WHAT IS VERIFIED, AND WHY EACH GATE EXISTS
 # ---------------------------------------------------------------------------
 # Two independent classes of assertion, because they fail differently:
@@ -106,6 +131,16 @@
 # ---------------------------------------------------------------------------
 
 set -euo pipefail
+
+# The sha-map drawer's writer and the prefix resolver, shared with
+# supervised-by.sh. The resolver below USED to live here, inline; it was moved
+# out when this script gained the drawer, so that the two rewrite tools write
+# one convention rather than two that look alike. Sourced by absolute path from
+# THIS file's own location: filter-branch runs the msg-filter mode from a
+# temporary cwd, where a relative path resolves to nothing.
+SHA_MAP_LIB="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/sha_map_lib.sh"
+# shellcheck source=sha_map_lib.sh
+. "${SHA_MAP_LIB}"
 
 # ---------------------------------------------------------------------------
 # THE MSG-FILTER MODE
@@ -300,12 +335,13 @@ fi
 # first version of this scan timed out at 2 minutes. So the table is built ONCE,
 # every prefix length 7..40 of every in-range sha, collisions marked AMBIG, and
 # every token is then a single hash lookup in one awk pass.
-cut -c1-40 "${WORK}/range.shas" > "${WORK}/shas40"
-awk '{ for (n = 7; n <= length($0); n++) { pfx = substr($0, 1, n)
-         if (pfx in seen && seen[pfx] != $0) seen[pfx] = "AMBIG"; else seen[pfx] = $0 } }
-     END { for (pfx in seen) print pfx, seen[pfx] }' "${WORK}/shas40" > "${WORK}/prefix.tbl"
+#
+# The two awk programs that do it now live in sha_map_lib.sh, unchanged, because
+# supervised-by.sh's step E hit the same wall at the same size and a second copy
+# would have been the third place this repository pair writes the same rule.
+sha_prefix_table "${WORK}/range.shas" "${WORK}/prefix.tbl"
 resolve_tokens() {                     # resolve_tokens <file of tokens, one per line> -> "<token> <sha|AMBIG>"
-    awk 'NR==FNR { m[$1] = $2; next } ($1 in m) { print $1, m[$1] }' "${WORK}/prefix.tbl" "$1"
+    sha_resolve_tokens "${WORK}/prefix.tbl" "$1"
 }
 
 echo
@@ -509,14 +545,68 @@ echo "          identity/dates/parents preserved; messages == expected remap; pa
 echo "          every message citation reachable from ${BRANCH}."
 echo "          ${TIP:0:8} -> ${NEWTIP:0:8}"
 
+# --- persist the map beside the ledger --------------------------------------
+# Until F119 this script's old->new map died with ${WORK}. The repoint below
+# reaches this repository's tracked files and NOTHING ELSE: not the git history
+# of those same files, not the sibling repo, not the shared notes, not the
+# archive drawer, not the owner's own trees. For every one of those a stale sha
+# is resolvable only by LOOKING THE TOKEN UP, and the map is the only thing that
+# can answer. The 2026-09-07 purge (harness 9116a6a) ran without one, which is
+# why that rewrite has no resolver at all.
+#
+# Only CHANGED pairs are recorded: a commit whose sha survived keeps its object
+# and belongs in no map, which is the drawer's stated rule.
+#
+# The drawer lives in the HARNESS repo -- it is a harness-side convention and
+# `sha-maps/` is a harness path -- so it is found from whichever side this run
+# was pointed at, and a run with no harness repo in reach SAYS SO rather than
+# inventing a drawer in the code tree.
+MAP_FILES=(); MAP_DIR=""
+awk -F'\t' '$1!=$2' "${WORK}/map" > "${WORK}/changed.map"
+DRAWER=""; DRAWER_CODE_TIP=""; DRAWER_HARNESS_TIP=""
+if [ "$(basename "${REPO}")" = "claude" ]; then
+    DRAWER="${REPO}"; DRAWER_HARNESS_TIP="${TIP:0:8}"
+    PARENT=$(dirname "${REPO}")
+    git -C "${PARENT}" rev-parse --git-dir >/dev/null 2>&1 && \
+        DRAWER_CODE_TIP=$(git -C "${PARENT}" rev-parse --short=8 HEAD)
+elif [ -d "${REPO}/claude/.git" ] || [ -f "${REPO}/claude/.git" ]; then
+    DRAWER="${REPO}/claude"; DRAWER_CODE_TIP="${TIP:0:8}"
+    DRAWER_HARNESS_TIP=$(git -C "${DRAWER}" rev-parse --short=8 HEAD)
+fi
+if [ ! -s "${WORK}/changed.map" ]; then
+    echo "No sha changed, so no map is written."
+elif [ -z "${DRAWER}" ]; then
+    echo "NOTE: no harness repository is in reach of ${REPO}, so this run's old->new" >&2
+    echo "      map has nowhere conventional to live and is NOT persisted. ${N_CHANGED} commit(s)" >&2
+    echo "      changed sha and only this terminal knows the pairs. Keep them:" >&2
+    sed 's/^/          /' "${WORK}/changed.map" >&2
+else
+    if [ "${DRAWER}" = "${REPO}" ]; then
+        sha_map_write "${DRAWER}" \
+            "$(sha_map_dir_name "${DRAWER_CODE_TIP}" "${DRAWER_HARNESS_TIP}")" \
+            "" "${WORK}/changed.map" ""
+    else
+        sha_map_write "${DRAWER}" \
+            "$(sha_map_dir_name "${DRAWER_CODE_TIP}" "${DRAWER_HARNESS_TIP}")" \
+            "${WORK}/changed.map" "" ""
+    fi
+    MAP_FILES=("${SHA_MAP_FILES[@]}"); MAP_DIR="${SHA_MAP_DIR}"
+    echo "Sha map written to ${DRAWER}/${MAP_DIR}/ : $(sha_map_summary "${DRAWER}")"
+    if [ "${DRAWER}" != "${REPO}" ]; then
+        echo "  It is STAGED in ${DRAWER}, which this run does not commit: that repo was"
+        echo "  not the one rewritten. Commit it there -- an unpersisted map is a rewrite"
+        echo "  with no resolver."
+    fi
+fi
+
 # --- repoint the tracked files ----------------------------------------------
 echo
 echo "--- tracker citations --------------------------------------------------"
+declare -A TOUCHED=()
+N_SUB=0
 if [ ! -s "${WORK}/file.tokens" ]; then
     echo "No tracked-file citation points into the rewritten range."
 else
-    declare -A TOUCHED=()
-    N_SUB=0
     while read -r t r; do
         nn=$(awk -v o="${r}" '$1==o {print $2}' "${WORK}/map")
         [ -n "${nn}" ] || { echo "      ${t}: no mapping (commit rebuilt identical) -- left alone"; continue; }
@@ -529,34 +619,76 @@ else
         printf '      %s -> %s\n' "${t}" "${nn:0:${n}}"
     done < "${WORK}/file.tokens"
     echo "Repointed ${N_SUB} citation(s) across ${#TOUCHED[@]} file(s)."
+fi
 
+# --- the closing commit -----------------------------------------------------
+# Reached whenever this run WROTE something into THIS repository's working tree:
+# the repointed trackers, the persisted map, or both. The map alone is reason
+# enough -- a run that re-shaed commits and left its only old->new record
+# uncommitted in a working tree has produced exactly the dangling references it
+# exists to prevent, and has hidden that behind a clean-looking summary. (Same
+# rule, same words, as supervised-by.sh's closing commit; before F119 this
+# script had no map to keep, so it committed only when something was repointed.)
+#
+# A map written into the SIBLING repo is staged there and is not this commit's
+# business: this run rewrote one repository, and committing in the other one
+# under this message would claim work in a tree it did not verify.
+MAP_HERE=()
+if [ -n "${MAP_DIR}" ] && [ "${DRAWER}" = "${REPO}" ]; then MAP_HERE=("${MAP_FILES[@]}"); fi
+if [ "${#TOUCHED[@]}" -gt 0 ] || [ "${#MAP_HERE[@]}" -gt 0 ]; then
+    # ONE list, built once and used for both the assertion and `git add`: two
+    # expansions of "the files this run wrote" is two chances to write it
+    # differently, and the assertion would then certify a set the add did not
+    # stage. `git add --` with an empty pathspec is a no-op that still exits 0,
+    # so that divergence would commit nothing and say nothing.
+    ADD_LIST=()
+    [ "${#TOUCHED[@]}" -gt 0 ] && ADD_LIST+=("${!TOUCHED[@]}")
+    [ "${#MAP_HERE[@]}" -gt 0 ] && ADD_LIST+=("${MAP_HERE[@]}")
     # The dirty set must be exactly what this script wrote -- asserted now, not
     # inherited from the clean-tree check at the top: the gap between the two is
     # the whole run, and an assumption that held at the start is not evidence
     # about the end.
-    EXPECTED=$(printf '%s\n' "${!TOUCHED[@]}" | sort)
-    ACTUAL=$(G status --porcelain --untracked-files=no | cut -c4- | sort)
+    EXPECTED=$(printf '%s\n' "${ADD_LIST[@]}" | sort -u)
+    ACTUAL=$(G status --porcelain --untracked-files=all | cut -c4- | sort)
     if [ "${EXPECTED}" != "${ACTUAL}" ]; then
         echo "NOT COMMITTED: the dirty set is not the set this script wrote." >&2
         diff <(printf '%s\n' "${EXPECTED}") <(printf '%s\n' "${ACTUAL}") | sed 's/^/      /' >&2
         echo "  Review and commit by hand." >&2
+        if [ "${#MAP_HERE[@]}" -gt 0 ]; then
+            echo "  The sha map is part of the expected set and must be committed with the" >&2
+            echo "  rest: ${MAP_HERE[*]}" >&2
+        fi
     elif [ "${NO_COMMIT}" = 1 ]; then
         echo "(--no-commit: left uncommitted.)"
+        if [ "${#MAP_HERE[@]}" -gt 0 ]; then
+            echo "  The sha map is written and STAGED but NOT committed. It is this run's"
+            echo "  only record of old sha -> new sha: ${MAP_HERE[*]}"
+        fi
     else
         CODE_TRAILER=""
         CODE_REPO=$(dirname "${REPO}")
         if git -C "${CODE_REPO}" rev-parse --git-dir >/dev/null 2>&1; then
             CODE_TRAILER="Code: $(git -C "${CODE_REPO}" branch --show-current) @ $(git -C "${CODE_REPO}" rev-parse --short=8 HEAD)"
         fi
-        (cd "${REPO}" && git add -- "${!TOUCHED[@]}" && git commit -q -F - <<COMMITMSG
-Repoint tracker citations after the ${PATHS[0]##*/} purge
+        SUBJECT="Repoint tracker citations after the ${PATHS[0]##*/} purge"
+        [ "${#TOUCHED[@]}" -gt 0 ] || \
+            SUBJECT="Record the old->new sha map of the ${PATHS[0]##*/} purge"
+        MAPLINE="no sha map was written (nothing changed sha)."
+        [ "${#MAP_HERE[@]}" -gt 0 ] && MAPLINE="this run's sha map: ${MAP_HERE[*]}"
+        (cd "${REPO}" && git add -- "${ADD_LIST[@]}" && git commit -q -F - <<COMMITMSG
+${SUBJECT}
 
 $(printf '%s\n' "${PATHS[@]}" | sed 's/^/    /')
 was removed from ${N_RANGE} commit(s) of ${RANGE}, which re-shaed ${N_CHANGED} of
 them. Every sha those commits are cited by would otherwise point at an object no
 branch reaches -- and git validates no sha written inside a file, so the rot is
-silent. This commit carries ONLY that repoint: ${N_SUB} citation(s) across
-${#TOUCHED[@]} file(s), old sha -> new sha, no prose changed.
+silent. This commit carries that repoint -- ${N_SUB} citation(s) across
+${#TOUCHED[@]} file(s), old sha -> new sha, no prose changed -- and
+${MAPLINE}
+The map is what resolves a stale sha in every surface this rewrite cannot reach:
+the git history of these same files, the sibling repository, notes outside the
+pair, the archive. Look a token up as a PREFIX of the old side, newest directory
+first; the record is never rewritten. sha-maps/README.md carries the rule.
 
 Citations inside the rewritten COMMIT MESSAGES are not part of this commit --
 they are remapped inside the rewrite pass itself, since they live in the
