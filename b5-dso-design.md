@@ -478,6 +478,8 @@ That is S3.2.
 | K5 | no config key exists for Tully's or Dso3d's show state | **visible as an absence** | `tully.cpp:47`, `dso3d.cpp:35` | a port that adds one adds product surface (D9) |
 | U1 | Ctrl+F toggles the oort flag and runs `internal/comet.sts` | **visible** | `ui.cpp:1411,1432-1436` | unchanged |
 | U2 | startup clears all three OJM modes | **visible** | `ui.cpp:245-247` | the port owes the same clear, whatever it is called then |
+| C6 | the tokens the census found and this design does NOT touch: `dso3d ...` (3 field lines, reaches `DsoNavigator`) and `dso ...` (544 field lines, reaches the 2-D `NebulaMgr` layer) | **visible**, both | `app_command_interface.cpp:1676` and `:1599` | listed so no token the census found is left without a row: both keep their present meaning, and a port of THIS layer must not change either - which is also why the `dso3d`/`dso2D` inversion is not repaired in passing (S6, F117-f) |
+| C7 | `flag milky_way` (25 field lines) drives the old `MilkyWay` sky engine, which `MilkyWayEnv` wraps | **visible** | `app_command_interface.cpp:1172-1174`; `MilkyWayEnv.hpp:27-35` | after the port the word still drives the BACKDROP and NOT the Tully module hanging off the same node - an operator could expect otherwise, so it is named here rather than discovered; changing it would be a new coupling, not a restoration |
 
 ### 2.5 What the table classifies as NEVER-visible (free to change)
 

@@ -6285,7 +6285,7 @@ binds to the LAST file named before it. An ambiguous basename is REPORTED, never
 guessed - it caught `Camera.cpp`, which exists in `src/experimentalModule/` and
 in `util/Atmosphere1/src/`.
 
-**What it found on its own note** (F117, 269 citations, 0 unresolved after the
+**What it found on its own note** (F117, 272 citations, 0 unresolved after the
 fixes): eight wrong line numbers, and **two `[:line]` shorthands bound to the
 wrong file** - the shorthand is unsafe whenever the previous citation names a
 different file. Use it on any note before delivery; it is 100 lines and needs
