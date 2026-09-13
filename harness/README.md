@@ -6290,3 +6290,98 @@ fixes): eight wrong line numbers, and **two `[:line]` shorthands bound to the
 wrong file** - the shorthand is unsafe whenever the previous citation names a
 different file. Use it on any note before delivery; it is 100 lines and needs
 nothing built.
+
+## F118 - the trail walker measured on an EDGE, and a command channel that answers in one frame (`f118_predict.py`, `f118_edge.py`, `f118_report.py`) - INTENT 11.241 / 11.239(h) / 5.150's rider, 2026-09-13
+
+**No engine change.** Two measuring launches, binary `42d7982c`, code `87d429bd`
+throughout.
+
+### THE INSTRUMENT YOU WILL WANT: a one-frame command channel
+
+`App.dump` cannot see a transient shorter than about 150 frames: its own pauses
+plus a blocking `recv` put two consecutive dumps **166 frames** apart (measured
+here; 11.239(c) measured 167-168 by another route), and the same edge driven
+through `App.send`/`App.dump` reaches its dump at **k = 65 to 714** frames.
+
+A `.sts` SCRIPT DOES NOT HAVE THAT PROBLEM. `ScriptMgr::update`
+(script_mgr.cpp:294-339) runs commands in a `while (wait_time == 0)` loop until
+one returns a non-zero wait; `commandWait` (app_command_interface.cpp:1562)
+turns `wait duration 0.001` into `max(int(0.001*1000),1) = 1` ms; the next
+frame's `wait_time -= delta_time` (about 7 ms at 144 fps) clamps to 0 and runs
+the next command. **One command per frame, deterministically.** Write the arm as
+a script, play it with `script action play filename <abs path>`, wait on its last
+dump's file. Measured k = 1, 2, 3, 5 on demand, twice, by `evalCount` deltas.
+
+FRAME ORDER decides what k means (app.cpp:796-817): script commands, then the tcp
+drain, then `executor->update` (the walk); `App::draw` and `drawTrails` after. A
+dump in the SAME frame as its event runs BEFORE that frame's walk, so k = 0
+carries nothing and k = 1 carries the full transient.
+
+### WHAT A MODULE CENSUS COSTS: one dump field
+
+`"trail":[]` in a dump record IS the finding "this body has no trail module"
+(ModularBody.cpp:1093-1098). `deduceBodyModuleList` (ModularBody.cpp:876-976) is
+the single place that decides, and its TRAIL clause (:940-946) requires
+`orbit_visualization_period > 0` AND **`!isSatellite()`** AND a non-`Arti` type.
+**No satellite has a trail.** 11.239(h)'s slice priced the walker on forty
+satellites; none of them can run it. Read the field before quoting a magnitude
+over a corpus - `f118_predict.py corpus <dump>` does exactly that and then models
+residual(k) per orbit family.
+
+Two more facts about trails that cost a relaunch to learn: **ten of the eighteen
+trail-carrying bodies ship declared hidden** (`hidden = true` ->
+ModularSystem.cpp:1400; `relation` 1, out of `sortedSystemBodies`, recording
+nothing until `body name X hidden false`), and **`maxTrail` is 60 on the
+Asteroid class and 1460 elsewhere**, with `missed > maxTrail` resetting rather
+than reconstructing (TrailModule.cpp:193-199).
+
+### THE FILES
+
+* `f118_predict.py trail|jump|corpus|all` - the model, importing f107_model's
+  solver text (I2). `corpus <dump>` takes the census from the engine and models
+  both families: `ell` (fixed point for e<0.2, error x e^2 per frame) and
+  `comet` (IterativeEll, Newton, error squared per step). No launch.
+* `f118_edge.py <absOutdir> --tag T --bin B [--days N] [--days2 N2] [--kwaits ...]`
+  - the leg. Generates one .sts per arm, shows the shipped-hidden bodies first,
+  toggles the trail flag, hides, jumps, unhides, and dumps at the requested frame
+  latency. Arms: trails ON at several k, trails OFF (the control that isolates
+  the WALK - `resumeAfterHidden` returns at `!want`, TrailModule.cpp:185), OFF
+  again (the A/A floor), a bare date jump, and the same edge over tcp.
+* `f118_report.py <legdir>` - six tables, including the arm-to-arm 3-D statistic
+  (model-free: `rotate_to_vsop87` is a rotation, so |a-b| survives it) and
+  predicted-vs-measured at the arm's OWN dumped staleness.
+
+### WHAT THE NUMBERS CAME OUT AT
+
+**Ceres 6.8877e-05 AU = 4.33 arcsec on exactly one frame** (k=1), predicted
+6.8954e-05, ratio 0.999; 4.71e-07 at k=2; below the dump's print at k=3.
+Arrokoth 4.25e-06. Everything else 0, including **Mars and Pluto, whose walker
+reconstructed 358 samples each** (1790 solver calls at past dates) and whose next
+position was bit-identical to the control - a `SpecialOrbit` has no iterative
+state to leave stale (orbit.cpp:920).
+
+**The A/A floor is exactly zero**: two runs of the control arm dump bit-identical
+`ecl` on all eighteen bodies, so the statistic's resolution is the dump's
+9-significant-digit print.
+
+**A bare `date jday` jump is 246x LARGER than the walker** (Ceres 0.0169 AU),
+because `useNow` returns on its first line for a body the walk evaluates
+(ModularBody.cpp:457): hiding and unhiding across a jump leaves the next frame
+MORE accurate than not hiding, since `show()`'s barrier converges the seed and
+the walker then spoils it by at most one `deltaTrail`.
+
+**F111's 5.6e-07 AU threshold does not transfer to this corpus.** It is 100x a
+model floor measured on satellites; on the 3-96 AU trail-carrying corpus the same
+model floor is 1e-06 to 3e-06 AU (the converged control arms score that against
+the model). Use the arm-to-arm statistic, or re-derive the floor.
+
+### RECORDED, NOT CHASED
+
+`IterativeEll::operator()` folds the mean anomaly into [0,2pi)
+(iterative_orbits.hpp:125-127) while its `H` accumulates unfolded, so on the one
+cell per orbit where the fold wraps between a stale seed's date and the
+evaluation's, two Newton steps do not recover: modelled at Sedna 731.9 AU,
+Haumea 7.13, Juno 1.18. `EllipticalOrbit::eccentricAnomaly` does not fold
+(orbit.cpp:579-581). Shared solver, both render paths, no hide needed - and
+MODELLED ONLY: no (missed, staleness) pair the retention bound allows from the
+harness JD lands in the window.
