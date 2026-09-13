@@ -612,7 +612,7 @@ test -e /home/claude/sc-f117 ; echo $? => 1
 ```
 
 **DoD:** the note with its five sections; the census by command; the as-if table complete over the census; every suspended item dispositioned; the slices with checks that can fail; §11 entry + stub; B5 / T1.3 / §11.96(e) / §11.98(f) annotated; zero engine diff; trees clean; WIP cleared; baselines LAST.
-**WIP:** 2026-09-13 19:3x — CP1: field census instrument + artifact committed (`harness/f117_census.py`, `artifacts/f117/field-census.txt.gz`). Gate 32/32 PASS at open; baselines at open 284/357/145 · 255/230/25/125 · D36 D2-12 I93 I2-37 M95. Next: write `b5-dso-design.md` §0-§1 (census prose).
+**WIP:** 2026-09-13 19:4x — CP2: `claude/b5-dso-design.md` written (937 lines, pure ASCII, §0–§7: census by command, as-if table, design, nine dispositions, five slices, six out-of-scope findings) + `harness/f117_cites.py` and `artifacts/f117/citation-table.txt.gz` — **240 citations, 0 unresolved**, each line's text read. Gate 32/32 PASS at open; baselines at open 284/357/145 · 255/230/25/125 · D36 D2-12 I93 I2-37 M95. Next: §11.240 entry file, stub, ledger annotations (B5 / T1.3 / §11.96(e) / §11.98(f) both homes).
 
 ---
 
