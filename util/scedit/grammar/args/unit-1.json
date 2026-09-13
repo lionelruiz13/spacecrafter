@@ -3,7 +3,7 @@
   "_meta": {
     "unit": 1,
     "code": "master-beta @ b12c8cdd",
-    "anchor_pin": "master-beta @ 54a2b844 -- every `file:line` anchor in this fragment OUTSIDE `_meta` resolves at this commit; `code` above stays the pin of this `_meta` block's own measurements (handler_range, args_bracket, accounting), which are NOT swept.",
+    "anchor_pin": "master-beta @ b45d3b58 -- every `file:line` anchor in this fragment OUTSIDE `_meta` resolves at this commit; `code` above stays the pin of this `_meta` block's own measurements (handler_range, args_bracket, accounting), which are NOT swept.",
     "handler_range": "app_command_interface.cpp:1180-2109",
     "commands_in_unit": 16,
     "args_bracket_expected": 68,
