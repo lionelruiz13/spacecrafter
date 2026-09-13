@@ -1,0 +1,14 @@
+F118 (m)'s discrimination record: the UNCREDITED back-marker set, pre-delivery vs delivered.
+pre  = git archive HEAD (harness 8b068b9) INTENT.md INTENT/ | scan
+post = the delivered tree
+
+lines: pre 145  post 145
+
+diff pre post:
+(empty -- IDENTICAL line for line)
+
+AND THE CHECK IS SHOWN ABLE TO FAIL: the same diff taken against the
+intermediate tree (before the two flags were closed) printed exactly one
+added row, and it is recorded here so the null above is not vacuous:
+113a114
+>    §11.239   -> §5.84    
