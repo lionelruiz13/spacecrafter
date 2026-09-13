@@ -79,7 +79,7 @@ they move this head on both criteria. Previous head kept above, struck where sup
   what they were blocking becomes WORK, not decisions. So T0's necessary set is now:
   ~~**T1.1** the zoom pair~~ **[CLOSED 2026-09-12 — answered AND built: §11.233(d) → F114 → §11.235; the last operator-basics decision has left the decision tier AND the work tier in one day]** (Vixy, one line, §5.100's authorization still unanswered since
   2026-08-26 — with T1.2 and T1.4 gone this is **the last operator-basics decision
-  standing**) · **T1.3** the reach/visibility batch (DSO content) · **T1.5** §5.109's
+  standing**) · ~~**T1.3** the reach/visibility batch (DSO content)~~ **[DESIGNED 2026-09-13 — §11.233(c) gave the direction, F117 → §11.240 turned it into `claude/b5-dso-design.md`: the as-if criterion applied per observable channel REQUIRES the reach/visibility split (`BMT_NO_REACH` + `reachRadius`, inert by construction), the nodes are named, and **5 of the 9 suspended items are answered, 1 in part**. T1.3 LEAVES THE DECISION TIER for everything except the three appearance questions that remain his — §11.96(e)(4), §11.98(f)(i)(iii) — and NONE of the five slices waits on them. The first slice is decision-free and dispatchable]** · **T1.5** §5.109's
   layer half · **§5.53(b)** (T1.9, one token) · ~~the **T5.1 rehearsal**~~ **[RAN 2026-09-05, F90 §11.211 — "ready" now waits on T5.2 alone]** · and the
   **decision-free queue R27/R28/R18/R19/R20/L1 just created** (§11.207(g): ~~§5.86+§5.19~~
   **[DELIVERED 2026-09-06, F91 §11.213]**, ~~§5.98~~ **[DELIVERED 2026-09-06, F94 §11.214]**,

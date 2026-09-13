@@ -6238,3 +6238,55 @@ Cost: the delta is exactly ten extra `eccentricAnomaly` calls (the warm-up loop)
 measured at 28.77 / 46.68 / 61.43 ns on slice `547b79d3` -- **+0.29 to +0.47 us
 per resample**, 0.03-0.05 % of D11's 1 ms frame, and the whole corpus resamples
 about 0.12 times per second at `timerate rate 1`.
+
+## F117 - the field census by COMMAND, and every citation resolved at HEAD (`f117_census.py`, `f117_cites.py`) - INTENT 11.240 / B5 / 11.96(e) / 11.98(f) / 11.233(c), 2026-09-13
+
+Two read-only instruments written for the B5/T1.3 design pass
+(`claude/b5-dso-design.md`). Neither launches anything; both are usable on any
+task.
+
+### `f117_census.py` - what the FIELD commands, not what a token matches
+
+    python3 claude/harness/f117_census.py [--root DIR] [--files] [--lines]
+
+Default root `~/.spacecrafter/scripts`. Walks the tree, SKIPS binary files (a
+NUL byte in the first 8 KiB), decodes the rest as ISO-8859-1 (total, never
+raises; ASCII command words decode identically either way), and attributes each
+line to the engine object its command actually reaches:
+
+| command | reaches |
+|---|---|
+| `dso3d <action>` | `DsoNavigator` (volumetric DSO) |
+| `dso2D <action>` | `Dso3d` (the 32-nebula point cloud) |
+| `dso <action\|hidden>` | `NebulaMgr` (the 2-D nebula layer) |
+| `body ... mode in_galaxy\|in_universe\|in_sandbox` | `OjmMgr` |
+| `flag <name>` | the show/label channels |
+
+**Why it exists.** `grep -rl <token> ~/.spacecrafter/scripts | wc -l` counts
+BINARY matches: that tree is 2772 files of which **2230 are png/mp4/avi**, and
+`ojm` matched 96 of them. Measured at 2026-09-13: OjmMgr **560 lines in 10
+files** (527 in `fscripts/14.sts`), DsoNavigator 3 lines in 2 files, `Dso3d`
+**0**, `flag tully` **0**, `flag oort` **0** - and the two `tully` token hits in
+text scripts are an image path. The output feeds the design note's field table;
+`artifacts/f117/field-census.txt.gz` is the run of record.
+
+### `f117_cites.py` - the resolution table that makes "the citation holds" checkable
+
+    python3 claude/harness/f117_cites.py <note.md> [--code DIR] [--harness DIR]
+
+Exit 0 = every citation resolved, 1 = at least one did not. For each `file:line`
+it prints the NOTE's own line number, the citation, and the SOURCE LINE at that
+position, so a reader compares the claim with the text rather than trusting it.
+
+It understands the ledger's own citation grammar: a bare basename plus a line
+(`core.cpp:366`), a tail path (`inGalaxyModule/dso3d.hpp:40`), a range
+(`:613-617`, both ends resolved), and the bare `[:line]` shorthand, which it
+binds to the LAST file named before it. An ambiguous basename is REPORTED, never
+guessed - it caught `Camera.cpp`, which exists in `src/experimentalModule/` and
+in `util/Atmosphere1/src/`.
+
+**What it found on its own note** (F117, 240 citations, 0 unresolved after the
+fixes): eight wrong line numbers, and **two `[:line]` shorthands bound to the
+wrong file** - the shorthand is unsafe whenever the previous citation names a
+different file. Use it on any note before delivery; it is 100 lines and needs
+nothing built.
