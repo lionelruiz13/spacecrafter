@@ -220,6 +220,13 @@ the volumetric Milky Way, which `Tully::build` takes as an argument and whose
   `[observed: ojm_mgr.cpp:70]`.
 - **UI hook**: the inline `initial.sts` block of `UI::init` clears all three
   modes at startup `[observed: ui.cpp:184, :245-247]`.
+- **ONE MODEL IS LOADED BY THE ENGINE, NOT BY A SCRIPT** - and it is the Milky
+  Way: when the volumetric galaxy is absent, `Core::init` loads
+  `Milkyway/Milkyway.ojm` into the `in_universe` state at scale 0.01
+  `[observed: core.cpp:486]`, as the `else` arm of `volumGalaxy->loaded()`
+  `[observed: core.cpp:479-486]`. So the in-universe OJM content is
+  data-dependent: with the volumetric galaxy present the model is not loaded at
+  all. A port that only re-routes the COMMAND would silently drop it.
 - **Uniform cost**: 128 bytes per loaded model, and it is the class that walks
   into an exhausted pool in the field (S11.222(d): 200 of `14.sts`'s 201
   executed in-galaxy loads were refused and reported successful).
@@ -307,7 +314,7 @@ The two `tully` token hits in text scripts are an image path
 (`tully_jump/none.png`) `[measured: f117_census.py --lines]`. The 527 in-galaxy
 loads of `14.sts` are S11.222(d)'s stars, reproduced here independently.
 
-**Three premise corrections, reported as dispatcher-side findings** (S11.179(a):
+**Four premise corrections, reported as dispatcher-side findings** (S11.179(a):
 none of them is an input this task stands on - the task re-adjudicates the
 census by construction - so none is an abort trigger):
 
@@ -321,6 +328,77 @@ census by construction - so none is an abort trigger):
    `Dso3d` class has **no field user at all**.
 3. `oort = 1` and `tully = 2` are binary/path matches; the field commands
    neither.
+4. **Code-side, and of a different kind** (S1.8): the premise
+   `grep -rl 'OjmMgr\|ojmMan' src ... | wc -l => 7` reproduces exactly, but its
+   second alternative is a TYPO - the member is spelled `ojmMgr`, not `ojmMan`
+   `[observed: core.hpp:727]` - so the set it enumerates is the files naming the
+   TYPE, and it excludes `coreModule/coreLink.cpp`, which holds the manager's
+   entire command surface `[observed: coreLink.cpp:635-646]`. With the intended
+   pattern the reader set is **8 files, not 7**. A count that reproduces is not
+   the same fact as a set that is right.
+
+### 1.8 The reader set, file by file - every file of the premise counts explained
+
+Check (b)'s obligation. The counts below are the case-insensitive sets (the
+premises' own patterns are narrower and are noted where they differ). "caller" =
+the file calls into the class; "surface" = it declares the operator-visible
+word; "include only" = it includes the header and never calls; "mention" = the
+name appears in a comment.
+
+**`OjmMgr` - 8 files** (`grep -rli` over `OjmMgr|ojmMgr`; the premise's 7 is the
+same set minus `coreLink.cpp`, see correction 4):
+
+| file | role |
+|---|---|
+| `ojmModule/ojm_mgr.{hpp,cpp}` | the class itself |
+| `coreModule/core.hpp:727` | owns it (`std::unique_ptr<OjmMgr> ojmMgr`) |
+| `coreModule/core.cpp:118, :477, :485` | constructs, `init()`s, and LOADS the Milky Way model itself |
+| `coreModule/coreLink.cpp:635-646` | the whole command surface (`BodyOJMLoad/Remove/RemoveAll`) |
+| `executorModule/inGalaxyModule.cpp:142` | caller, `STATE_POSITION::IN_GALAXY` |
+| `executorModule/inUniverseModule.cpp:121` | caller, `STATE_POSITION::IN_UNIVERSE` |
+| `executorModule/inSandBoxModule.cpp:133` | caller, **commented out** |
+
+Not in the set and reaching it anyway: `interfaceModule/app_command_interface.cpp:4119-4135`
+and `uiModule/ui.cpp:245-247`, which go through `CoreLink`'s `BodyOJM*` spelling.
+
+**`Dso3d` - 15 files case-insensitively, of which only 7 touch the class**:
+`inGalaxyModule/dso3d.{hpp,cpp}` (the class), `core.{hpp,cpp}` (owns,
+constructs, catalogue, fonts, label colour, `loadDso2d`), `coreLink.{cpp,hpp}`
+(the show/label/duration surface), `executorModule/inGalaxyModule.cpp:101,:141`
+(the only live caller: update + draw). **`interfaceModule/app_command_init.cpp`,
+`app_command_interface.{cpp,hpp}` and `base_command_interface.hpp` carry the
+token `dso3d`, which reaches `DsoNavigator`** (S1.1) - four files, not three. `inGalaxyModule/dsoNavigator.hpp:55` mentions it in a
+comment (*"the subtexture of the texture to use (like dso3d)"*).
+**`executorModule/solarSystemModule.cpp:33` and `stellarSystemModule.cpp:34`
+INCLUDE `dso3d.hpp` and never call it** - dead includes, recorded not fixed.
+`inSandBoxModule.cpp:96, :132` are commented-out calls.
+
+**`Tully` - 13 files**: `coreModule/tully.{hpp,cpp}` (the class),
+`coreModule/TullyWrapper.hpp` + `tullyWrapper.cpp` (the selection object),
+`core.{hpp,cpp}` (owns, constructs, catalogues, font, the `searchAround` gate),
+`coreLink.{cpp,hpp}` (show / white-colour / names / duration),
+`executorModule/inUniverseModule.cpp` (update + the build/draw pair),
+`interfaceModule/app_command_{init,interface}.cpp` and
+`base_command_interface.hpp` (the `tully` and `tully_color_mode` flag tokens and
+their readback), and `tools/object.hpp:48` - a **comment** naming `TullyWrapper`
+as one of the four `ObjectBase` wrappers, which is where the selection channel's
+type discipline is documented.
+
+**`Oort` - 24 files**, the largest set because the pilot doubled it:
+old path `coreModule/oort.{hpp,cpp}`, `core.{hpp,cpp}`, `coreLink.{cpp,hpp}`,
+`executorModule/solarSystemModule.cpp` (update + the dual seam);
+new path `experimentalModule/bodyModules/OortModule.{hpp,cpp}`,
+`moduleLoader/OortLoader.{hpp,cpp}`, `modules.cpp:68` (the registration),
+`bodyModule/ssystem_factory.{hpp,cpp}` (`createExperimentalOort`);
+surface `interfaceModule/app_command_{init,interface}.cpp`,
+`base_command_interface.hpp`, `mainModule/define_key.hpp`,
+`mainModule/checkConfig.cpp` (the three config keys and their defaults),
+`uiModule/ui.cpp:1433` (Ctrl+F);
+and four **mentions only**: `experimentalModule/ModularBody.hpp:1991, :2011`,
+`ModularSystem.{hpp,cpp}` - comments naming the pilot oort as the example of an
+engine-minted body that is not system content.
+`executorModule/stellarSystemModule.cpp:37` INCLUDES `oort.hpp` and never calls
+it - the same dead include as `dso3d.hpp` above.
 
 ---
 
@@ -351,6 +429,7 @@ owes**, and it is what S5's checks test.
 | D5 | the far edge: old hard-cuts at 1e16 m, the module fades physically | Oort | **visible**, and the two paths already DIFFER | `oort.cpp:159` vs the regime ladder | **owner's** (S11.96(e)(4)); a port must not silently pick one |
 | D6 | OjmMgr clears the whole depth attachment every frame it draws | OjmMgr | **visible** (anything drawn before it in `PASS_MULTISAMPLE_DEPTH` loses its depth) | `ojm_mgr.cpp:187-189` + unconditional execute `:171` | a port that draws the same meshes through the tree's depth slices will NOT reproduce this; it is a rendering-order effect with a visible consequence -> S5 slice 3's check |
 | D7 | Tully's two half-catalogues swap order when the camera crosses the volumetric galaxy | Tully | **visible** | `tully.cpp:516-529` | preserved or consciously retired; it is a depth-order effect, not a content effect |
+| D8 | the Milky Way's own OJM model, loaded IN_UNIVERSE by the engine as the `else` arm of `volumGalaxy->loaded()` | OjmMgr | **visible when the volumetric galaxy is absent** - i.e. data-dependent, and neither arm is a command | `core.cpp:479-486` | the port owes BOTH arms: re-routing the command alone drops this model silently, on exactly the installs that have no volumetric galaxy |
 
 ### 2.2 Selection and navigation reach
 
@@ -608,7 +687,12 @@ This is the cheapest of the three and the highest-traffic (row C3, 560 lines).
      occlusion ordering against everything else drawn in the same pass. This is
      the one place where a faithful port and a correct port may differ, and S5
      slice 3 makes the difference measurable before anything is decided.
-  4. The `getOk()`-only success test and its 200 measured false successes
+  4. **Row D8, the engine's own model**: `Core::init` loads `Milkyway.ojm`
+     into `in_universe` when the volumetric galaxy is absent
+     `[observed: core.cpp:479-486]`. The port owes an equivalent engine-side
+     creation under the Universe node, gated on the same condition - and it is
+     the one piece of this class that is NOT reached by re-routing the command.
+  5. The `getOk()`-only success test and its 200 measured false successes
      (S11.222(g3)) must NOT be reproduced: the new path's load authority is
      `ModularSystem::loadBody`, and S11.222(h)(2) already names it as the
      responsibility anchor for a refusal.
