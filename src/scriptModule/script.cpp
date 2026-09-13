@@ -28,6 +28,37 @@
 #include "scriptModule/script.hpp"
 #include "tools/log.hpp"
 
+namespace {
+bool hasLineContinuation(std::string &line)
+{
+	if (!line.empty() && line.back() == '\r')
+		line.pop_back();
+
+	const std::size_t last = line.find_last_not_of(" \t");
+	if (last == std::string::npos || line[last] != '\\')
+		return false;
+
+	line.erase(last);
+	return true;
+}
+
+void appendCommandLine(std::string &command, const std::string &line)
+{
+	const std::size_t first = line.find_first_not_of(" \t");
+	if (first == std::string::npos)
+		return;
+	if (!command.empty())
+		command += ' ';
+	command += line.substr(first);
+}
+
+bool isCommentOrEmptyLine(const std::string &line)
+{
+	const std::size_t first = line.find_first_not_of(" \t\r");
+	return first == std::string::npos || line[first] == '#';
+}
+}
+
 
 Token::Token(const std::string &s, const std::string &p)
 {
@@ -107,19 +138,35 @@ int Script::loadInternal(const std::string &script_file,const std::string & scri
 
 	bool is_script_empty=true;
 	std::string line;
+	std::string command;
 	Token *token=nullptr;
-	while (! input_file->eof() ) {
-		getline(*input_file,line);
+	while (getline(*input_file, line)) {
+		if (isCommentOrEmptyLine(line))
+			continue;
 
-		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
-			//cout << "[script.cpp => Line is: " << line << "]"<< endl;
-			token=new Token(line, script_path);
+		const bool continued = hasLineContinuation(line);
+		appendCommandLine(command, line);
+		if (continued)
+			continue;
+
+		if (!command.empty() && command[0] != '#') {
+			//cout << "[script.cpp => Line is: " << command << "]"<< endl;
+			token=new Token(command, script_path);
 			is_script_empty=false;
 			if (wp==ListPosition::first)
 				addFirst(token);
 			else
 				addSecond(token);
 		}
+		command.clear();
+	}
+	if (!command.empty() && command[0] != '#') {
+		token = new Token(command, script_path);
+		is_script_empty = false;
+		if (wp == ListPosition::first)
+			addFirst(token);
+		else
+			addSecond(token);
 	}
 	input_file->close();
 	if ((! is_script_empty) && (wp==ListPosition::second)) {
