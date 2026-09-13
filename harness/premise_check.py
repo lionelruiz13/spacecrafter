@@ -52,9 +52,15 @@ CODE_ROOT = os.path.dirname(HARNESS_ROOT)         # .../spacecrafter
 DEFAULT_FILE = os.path.join(HARNESS_ROOT, "fable-dispatch.md")
 TIMEOUT_S = 120
 REFRESH = "REFRESH-AT-DISPATCH"
+# Two read-only forms the first cut refused (2026-09-13, session 30: eleven lines of three
+# freshly minted blocks, every one a legitimate premise): the C++ arrow operator inside a
+# grep pattern (`core->draw` -- a `>` preceded by `-` is never a redirect) and
+# `git merge-base` (a reachability query, not a merge). Both are exempted BY SHAPE, not by
+# widening the list: `>` still refuses `cmd >file` and `echo x>file`, and `git merge` still
+# refuses. The self-test carries one accepted case of each and one refused `git merge`.
 DENY = re.compile(r"(^|[\s;&|(])(rm|mv|cp|dd|tee|truncate|chmod|chown|sed\s+-i)\b"
-                  r"|git\s+(commit|push|reset|checkout|switch|rebase|merge|branch\s+-[mdD]|apply(?!\s+--check)|worktree\s+(add|remove)|clean|stash)\b"
-                  r"|(?<![0-9&])>(?!>?\s*/dev/null)")
+                  r"|git\s+(commit|push|reset|checkout|switch|rebase|merge(?!-base)|branch\s+-[mdD]|apply(?!\s+--check)|worktree\s+(add|remove)|clean|stash)\b"
+                  r"|(?<![0-9&-])>(?!>?\s*/dev/null)")
 
 
 def sections(text):
@@ -121,10 +127,13 @@ def self_test():
     lines = [("echo alpha", "alpha"),
              ("echo beta", "gamma"),                       # must FAIL: mismatch
              ("rm -rf /tmp/never-run-me", "whatever"),     # must FAIL: refused, never executed
-             ("printf x", REFRESH)]                        # must FAIL: unrefreshed marker
+             ("printf x", REFRESH),                        # must FAIL: unrefreshed marker
+             ("echo 'a->b' | grep -c 'a->b'", "1"),        # must PASS: the arrow operator is not a redirect
+             ("git merge-base --is-ancestor HEAD HEAD; echo $?", "0"),  # must PASS: a reachability query
+             ("git merge never-run-me", "whatever")]       # must FAIL: refused, never executed
     fails = check(lines, "self-test")
-    ok = fails == 3
-    print("self-test:", "PASS (3 expected failures reported)" if ok else "FAIL (%d failures reported, 3 expected)" % fails)
+    ok = fails == 4
+    print("self-test:", "PASS (4 expected failures reported, 3 accepted)" if ok else "FAIL (%d failures reported, 4 expected)" % fails)
     return 0 if ok else 2
 
 
