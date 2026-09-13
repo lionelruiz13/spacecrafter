@@ -6218,7 +6218,7 @@ would have caught the 11:26 red, but only because that holder was enormous.
 `prepairFastPositionAtTimevInVSOP87Coordinates` above the osculating split (as
 `orbit_plot.cpp:142/:174` has it), then `fastPositionAtTimevInVSOP87Coordinates`
 per point -- so the 180 sampled dates go through `batchLastE` and not through the
-POSITION solver's own `iterativeLastE`. Code `f3316fea -> 87d429bd`, binary
+POSITION solver's own `iterativeLastE`. Code `733e75a3 -> 7be23468`, binary
 `95087b68 -> 42d7982c`.
 
 ### THE INSTRUMENT YOU WILL WANT: how to see a one-frame transient in a dump
@@ -6378,7 +6378,7 @@ nothing built.
 
 ## F118 - the trail walker measured on an EDGE, and a command channel that answers in one frame (`f118_predict.py`, `f118_edge.py`, `f118_report.py`) - INTENT 11.241 / 11.239(h) / 5.150's rider, 2026-09-13
 
-**No engine change.** Two measuring launches, binary `42d7982c`, code `87d429bd`
+**No engine change.** Two measuring launches, binary `42d7982c`, code `7be23468`
 throughout.
 
 ### THE INSTRUMENT YOU WILL WANT: a one-frame command channel

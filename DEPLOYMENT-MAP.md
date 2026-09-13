@@ -217,7 +217,7 @@ porting. Derived requirements, each with its state MEASURED on 2026-09-05:
    rewritten again (2026-09-12) while the checker still printed 0 dangling; nor does existence
    equal truth — `orbit.cpp:600`/`:606` both EXIST and neither is the line the sentence
    describes. The sha class is now checked by reachability and shown able to fail three ways,
-   and the counts at code `d67833cd` are **136 paths / 29 continuations / 19 ledger ids /
+   and the counts at code `56ac23c3` are **136 paths / 29 continuations / 19 ledger ids /
    3 commit shas, 0 dangling**. The document was ALSO followed end to end for the first time:
    the first harness command it names exits 1 on a fresh clone and its "Run" pointer exits 127
    — §11.234(c).]** Three residuals, all recorded not guessed:
@@ -330,7 +330,7 @@ his data, forward-corrected delivery (D9).
 
 Ordered by operational weight for the tester, not by age:
 
-1. **§5.100 + §5.101 — `zoom auto in` / `zoom auto initial`** (asked 2026-08-26, **[GATE OPENED 2026-09-12, §11.233(d) — [vixy]: *"yes, same as for any kind of tracking in spacecrafter"*, plus the implicit PRELOAD signal on anticipated visibility (recorded as a follow-on); the fix is F114 this round. **T1.1 leaves the decision tier.**]** **[AND THE WORK TIER, 2026-09-12 — F114 DELIVERED → §11.235: code `d67833cd → d0e0c51e`, `Camera::trackBody` beside old's `setFlagTraking(true)` and `Camera::lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration)` at both `autoZoomOut` branches; the two paths' look-direction gap **99.0336 deg → 8.00911e-06** and **99.0318 deg → 1.0102e-05**, F38's own driver unchanged on both binaries, the old path unmoved. **T1.1 is CLOSED** — this row's *"single largest transparency hole"* is shut, and its *"one-line-class fix"* estimate held (two calls plus a conversion helper that gave the frame conversion its one home).]**
+1. **§5.100 + §5.101 — `zoom auto in` / `zoom auto initial`** (asked 2026-08-26, **[GATE OPENED 2026-09-12, §11.233(d) — [vixy]: *"yes, same as for any kind of tracking in spacecrafter"*, plus the implicit PRELOAD signal on anticipated visibility (recorded as a follow-on); the fix is F114 this round. **T1.1 leaves the decision tier.**]** **[AND THE WORK TIER, 2026-09-12 — F114 DELIVERED → §11.235: code `56ac23c3 → 35a025a6`, `Camera::trackBody` beside old's `setFlagTraking(true)` and `Camera::lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration)` at both `autoZoomOut` branches; the two paths' look-direction gap **99.0336 deg → 8.00911e-06** and **99.0318 deg → 1.0102e-05**, F38's own driver unchanged on both binaries, the old path unmoved. **T1.1 is CLOSED** — this row's *"single largest transparency hole"* is shut, and its *"one-line-class fix"* estimate held (two calls plus a conversion helper that gave the frame conversion its one home).]**
    unanswered): the two paths end **99° apart** after a shipped unzoom; `zoom auto in`
    starts tracking on the OLD path only. These are bread-and-butter operator commands —
    the single largest transparency hole with a one-line-class fix already scoped.

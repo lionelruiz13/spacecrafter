@@ -11,7 +11,7 @@ on the owner's direction **S11.233(c)** [vixy 2026-09-12]:
 > milkyway ?"*
 
 Written 2026-09-13 by the F117 executor (Opus 5) against code `master-beta @
-87d429bd` and harness `CC-harness @ 385fe60`. **No engine line is changed by this
+7be23468` and harness `CC-harness @ c359f28`. **No engine line is changed by this
 note.** Precedent for the form: `claude/b12-design.md` (F9), `claude/b31-design.md`
 (F6).
 
@@ -1016,8 +1016,8 @@ the same content.
 
 ## 7. Citation resolution (the proof of check (a))
 
-Every `file:line` in this note was resolved against code `master-beta @ 87d429bd`
-and harness `CC-harness @ 385fe60` by `harness/f117_cites.py`, whose output is
+Every `file:line` in this note was resolved against code `master-beta @ 7be23468`
+and harness `CC-harness @ c359f28` by `harness/f117_cites.py`, whose output is
 `artifacts/f117/citation-table.txt.gz`: for each citation, the file, the line, and
 the line's text at HEAD. A citation that does not hold the text this note claims
 is a defect of this note.

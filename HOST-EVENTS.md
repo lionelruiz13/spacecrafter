@@ -374,7 +374,7 @@ never rewrite (maintenance invariant). Archival per the standing convention
   **exit 0, 0 fail 0 note** 19:00:31–19:02:17 (`20260913-190031`): 165.258/6.644 new ·
   160.142/6.603 old, **12/12 in band, every delta 0.0** — the band on a FIFTH boot.
   Config/ssystem `03fbee59`/`545a51ef` in == out; RAM 52 GiB available of 59, `-j24`; both trees
-  CLEAN at open, code `87d429bd` / harness `8a7bcd1` (session 29's close commit — no owner write
+  CLEAN at open, code `7be23468` / harness `4f7a06d` (session 29's close commit — no owner write
   since; unpushed **6 code / 48 harness**, `origin` UNMOVED since his 2026-09-12 11:03 push);
   binary `42d7982c` current (0 `src/` files newer); projection md5 MATCH (`8e364a3a`). Decision
   flag per §11.174(h): the re-bank is the block's prescription for a per-boot red on the ruled
