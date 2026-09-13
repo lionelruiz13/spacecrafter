@@ -1,0 +1,95 @@
+== f119_moved: the gate's tally, reproduced by this reading ==
+   clean                    6836
+   moved                    359
+   not-at-head(declared)    3
+   skipped(_meta)           86
+   (self-check: identical to anchor_gate.run() in the same process)
+
+== 359 moved references, by the SOURCE FILE they cite (13 files) ==
+
+   ss-grammar.json                                 263
+   sc-grammar.json                                  53
+   unit-4.json                                      22
+   unit-3.json                                      10
+   unit-2.json                                       6
+   unit-1.json                                       5
+
+== the cited source files, with the commit window each was read against ==
+
+   src/bodyModule/protosystem.cpp                             moved  180
+      01adbb30 2026-09-06  A location_orbit needs something to sit on, and now both paths say so
+
+   src/coreModule/core.cpp                                    moved   56
+      7509c809 2026-09-06  Saturn and Ganymede, spelled the way the loaded bodies are spelled
+      d0e0c51e 2026-09-12  The drawn path follows the body it was told to zoom to, and comes home with the old on
+
+   src/bodyModule/orbit_creator_cor.cpp                       moved   40
+      e864a4b6 2026-09-05  The anchor owns its orbit, and a parentless comet is told instead of crashing
+
+   src/experimentalModule/ModularBody.cpp                     moved   26
+      4cd00139 2026-09-06  The barrier now asks which camera, as well as which day
+      e1186d3a 2026-09-07  Two Newton steps per call, so five refreshes buy the ten Eris needed
+      28533598 2026-09-07  A dump is a use for all 120 records, and the barrier now needs a frame to use
+      7ceea976 2026-09-07  The refusal line says what is observed, not the cause it cannot know
+
+   src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp moved   18
+      61da4edc 2026-09-06  The authored latitude, in the degrees the loader's own next lines convert
+
+   src/bodyModule/ssystem_factory.cpp                         moved   13
+      3ffea018 2026-09-07  The dual dump now says which system its old column was taken in
+      28533598 2026-09-07  A dump is a use for all 120 records, and the barrier now needs a frame to use
+      d0e0c51e 2026-09-12  The drawn path follows the body it was told to zoom to, and comes home with the old on
+
+   src/navModule/anchor_creator_cor.cpp                       moved    8
+      e864a4b6 2026-09-05  The anchor owns its orbit, and a parentless comet is told instead of crashing
+
+   src/bodyModule/orbit.cpp                                   moved    6
+      61da4edc 2026-09-06  The authored latitude, in the degrees the loader's own next lines convert
+      e1186d3a 2026-09-07  Two Newton steps per call, so five refreshes buy the ten Eris needed
+
+   src/experimentalModule/Camera.cpp                          moved    4
+      012105d6 2026-09-06  The new path's RA/DE answers in old's frame, because it now inverts the matrix it draw
+      58655d7a 2026-09-06  One inverse for the render rotation, and the pole answers RA 0 like old
+
+   src/experimentalModule/orbitModules/LocationOrbitLoader.hpp moved    3
+      61da4edc 2026-09-06  The authored latitude, in the degrees the loader's own next lines convert
+      01adbb30 2026-09-06  A location_orbit needs something to sit on, and now both paths say so
+
+   src/tools/s_texture.hpp                                    moved    2
+      c69687bc 2026-08-02  s_texture can now be a video texture
+      ba9df31f 2026-09-05  Merge the deployed line: `s_texture` can be a video, and the four conflicts were all o
+
+   src/tools/log.cpp                                          moved    2
+      fcc277c9 2026-09-11  Eight launches is a window, so every channel now numbers its own past
+      8cca5ddf 2026-09-12  The logs now have a size they cannot pass, not only a number of launches
+      e922235a 2026-09-12  A rotation that happens before the console exists is remembered until it does
+
+   src/tools/log.hpp                                          moved    1
+      fcc277c9 2026-09-11  Eight launches is a window, so every channel now numbers its own past
+      8cca5ddf 2026-09-12  The logs now have a size they cannot pass, not only a number of launches
+      e922235a 2026-09-12  A rotation that happens before the console exists is remembered until it does
+
+== EXACT attribution: the commit at which each moved line first moved ==
+
+   01adbb30  2026-09-06  moved  180  A location_orbit needs something to sit on, and now both paths say
+             cited by: INTENT/11.217.md, INTENT/11.219.md, INTENT/11.220.md
+   e864a4b6  2026-09-05  moved   48  The anchor owns its orbit, and a parentless comet is told instead 
+             cited by: INTENT/11.205.md, DEPLOYMENT-MAP.md, INTENT.md
+   d0e0c51e  2026-09-12  moved   38  The drawn path follows the body it was told to zoom to, and comes 
+             cited by: INTENT/11.150.md, INTENT/11.235.md, INTENT/11.236.md
+   7509c809  2026-09-06  moved   31  Saturn and Ganymede, spelled the way the loaded bodies are spelled
+             cited by: INTENT/11.149.md, INTENT/11.163.md, INTENT/11.207.md
+   4cd00139  2026-09-06  moved   26  The barrier now asks which camera, as well as which day
+             cited by: INTENT/11.117.md, INTENT/11.216.md, INTENT/11.218.md
+   61da4edc  2026-09-06  moved   22  The authored latitude, in the degrees the loader's own next lines 
+             cited by: INTENT/11.207.md, INTENT/11.217.md, INTENT/11.218.md
+   e1186d3a  2026-09-07  moved    5  Two Newton steps per call, so five refreshes buy the ten Eris need
+             cited by: INTENT/11.215.md, INTENT/11.220.md, INTENT/11.223.md
+   012105d6  2026-09-06  moved    4  The new path's RA/DE answers in old's frame, because it now invert
+             cited by: INTENT/11.144.md, INTENT/11.158.md, INTENT/11.207.md
+   fcc277c9  2026-09-11  moved    3  Eight launches is a window, so every channel now numbers its own p
+             cited by: INTENT/11.230.md, INTENT/11.231.md, INTENT/11.232.md
+   c69687bc  2026-08-02  moved    2  s_texture can now be a video texture
+             cited by: INTENT/11.203.md, INTENT/11.224.md, INTENT/11.228.md
+
+   attributed 359 of 359 moved references; unattributed 0

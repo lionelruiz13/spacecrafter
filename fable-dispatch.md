@@ -723,7 +723,7 @@ test -e /home/claude/sc-f119 ; echo $? => 1
 ```
 
 **DoD:** ACT 1 landed as one code commit with the look in its message and `ctest` green; ACT 2(a)(b)(c) landed with the pair proofs (c)(d)(e); the real trees untouched by any tool run; §11 entry + stub; §11.234 marked; README; trees clean; WIP cleared; baselines LAST.
-**WIP:** —
+**WIP:** 2026-09-13 21:1x — **ACT 1 DONE, code `87d429bd` -> `d2fe86c7`** (six pins repointed by the map, `54a2b844 -> b45d3b58` code.tsv:32 and `ba7a32a8 -> 8d41fbe3` code.tsv:27; trees IDENTICAL both ways so the repoint is content-preserving; the 359 moved rows looked at and 359/359 attributed to 10 commits by `harness/f119_moved.py`; the one GONE row declared `[NOT AT HEAD]` — THE ONE EDIT BEYOND THE PINS, said in the commit message, reversible in one line; `--record` only after the look; ctest 19/19 from a fresh `build-f119`, `anchor_gate` #14 Passed, 19 run / 0 skipped). MEASURED ON A TRANSPORT CLONE (the intern's real view): 7174 broken references (AT-PIN-BROKEN 5888 + UNRESOLVED 1286) -> **4**; the residual four are EntityCore anchors pinned at gitlink `7ce58350`, reachable from NO ref of the submodule (twin = main's tip `84f5d94b`, same tree) — NOT fixable in this tree, an owner item. NEXT: ACT 2(a) step E's code-tree census, then (b) the map writer, then (c) the trailer STOP; proofs on the F106 pair only (asserted STATE U at open).
 
 ---
 

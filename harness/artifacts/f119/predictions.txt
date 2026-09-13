@@ -1,0 +1,33 @@
+F119 ACT 1 -- predictions registered BEFORE the clone experiment
+(2026-09-13, executor Claude Opus 5; code HEAD 87d429bd, nothing mutated yet)
+
+MEASURED ALREADY (real tree /home/claude/spacecrafter, gate run read-only):
+  AT-PIN-BROKEN 0 | GONE 1 | clean 6836 | moved 359 | not-at-head 2 | skipped 86 | exit 1
+  F110 rehearsal from its clone (2026-09-12, artifacts/f110/rehearsal-table.txt:132-146):
+  AT-PIN-BROKEN 4 | GONE 1 | clean 6870 | moved 321 | not-at-head 2 | skipped 86
+
+P1  The 359-vs-321 `moved` gap is the CODE HEAD moving between 2026-09-12 and today
+    (F114/F116/F111 landed engine commits), NOT the pin: the pin's tree and the new
+    sha's tree are byte-identical (42819e60 both), so a repoint cannot move a count.
+    Check: re-run the gate at the rehearsal's code HEAD -> moved 321.
+
+P2  A TRANSPORT clone (objects by protocol, no unreachable objects) of the code repo
+    at HEAD, BEFORE the repoint, reads AT-PIN-BROKEN on EVERY anchor element
+    (>= 7000), not 4: `git show 54a2b844:<path>` fails for all of them when the pin
+    object is absent. Corollary: F110's clone DID carry the unreachable objects
+    (a hardlinked local clone), so its 4 came from somewhere else -- the submodule.
+
+P3  AFTER the repoint, a transport clone still reads AT-PIN-BROKEN 4: the two
+    EntityCore anchor lines (sc-grammar.json:7071, args/unit-1.json:295) carry two
+    elements each (AsyncLoaderMgr.cpp:177-188, AsyncBase.hpp:14-22) and resolve at
+    the submodule commit the pin's gitlink names, 7ce58350, which is reachable from
+    NO ref of the EntityCore repo (measured: for-each-ref x merge-base --is-ancestor,
+    all 5 refs, none) -- so a fresh EntityCore clone cannot carry it and the pin
+    repoint cannot reach it. If P3 holds, ACT 1 alone does NOT turn the intern's
+    ctest green, and that is a finding, not a thing to fix inside this boundary.
+
+P4  The GONE 1 (ss-grammar.json .keys.parent.source[6], LocationOrbitLoader.hpp:3)
+    is INDEPENDENT of both pins: the construct is alive at HEAD line 23 but its text
+    changed (`auto parent = ModularBody::findBody` -> `ModularBody *parent =
+    ModularBody::findBodyOnce`) in 01adbb30/61da4edc. A pin repoint cannot clear it;
+    only a re-anchor by reading can, and a re-anchor is a grammar edit.

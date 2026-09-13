@@ -1,0 +1,123 @@
+== f119_moved: the gate's tally, reproduced by this reading ==
+   GONE                     1
+   clean                    6836
+   moved                    359
+   not-at-head(declared)    2
+   skipped(_meta)           86
+   (self-check: identical to anchor_gate.run() in the same process)
+
+== 359 moved references, by the SOURCE FILE they cite (13 files) ==
+
+   ss-grammar.json                                 263
+   sc-grammar.json                                  53
+   unit-4.json                                      22
+   unit-3.json                                      10
+   unit-2.json                                       6
+   unit-1.json                                       5
+
+== the cited source files, with the commit window each was read against ==
+
+   src/bodyModule/protosystem.cpp                             moved  180
+      cb521cf1 2026-08-31  Every source file pure ASCII: the accents removed, the printed bytes untouched
+      01adbb30 2026-09-06  A location_orbit needs something to sit on, and now both paths say so
+
+   src/coreModule/core.cpp                                    moved   56
+      29465185 2026-08-26  The sky lock stops being two flags, and init stops overwriting what it should read
+      bc3f2cbb 2026-08-26  Display scaling gets an owner per format, and the twin carries it
+      cb521cf1 2026-08-31  Every source file pure ASCII: the accents removed, the printed bytes untouched
+      7509c809 2026-09-06  Saturn and Ganymede, spelled the way the loaded bodies are spelled
+      d0e0c51e 2026-09-12  The drawn path follows the body it was told to zoom to, and comes home with the old on
+
+   src/bodyModule/orbit_creator_cor.cpp                       moved   40
+      e864a4b6 2026-09-05  The anchor owns its orbit, and a parentless comet is told instead of crashing
+
+   src/experimentalModule/ModularBody.cpp                     moved   26
+      b78d6549 2026-08-09  The climb leaves the same frame behind as the descent
+      2884d57c 2026-08-09  A scripted travel moves the place the camera stands on
+      eb36fcc0 2026-08-26  Display scaling becomes a presentation transform, and what stands on a surface rides i
+      d1a6be7c 2026-08-26  The new path's dump stops emitting values no JSON reader can read
+      cb521cf1 2026-08-31  Every source file pure ASCII: the accents removed, the printed bytes untouched
+      4cd00139 2026-09-06  The barrier now asks which camera, as well as which day
+      e1186d3a 2026-09-07  Two Newton steps per call, so five refreshes buy the ten Eris needed
+      28533598 2026-09-07  A dump is a use for all 120 records, and the barrier now needs a frame to use
+      7ceea976 2026-09-07  The refusal line says what is observed, not the cause it cannot know
+
+   src/experimentalModule/orbitModules/SurfacePointOrbitLoader.hpp moved   18
+      eb36fcc0 2026-08-26  Display scaling becomes a presentation transform, and what stands on a surface rides i
+      cb521cf1 2026-08-31  Every source file pure ASCII: the accents removed, the printed bytes untouched
+      61da4edc 2026-09-06  The authored latitude, in the degrees the loader's own next lines convert
+
+   src/bodyModule/ssystem_factory.cpp                         moved   13
+      bc3f2cbb 2026-08-26  Display scaling gets an owner per format, and the twin carries it
+      3ccfc6d8 2026-08-26  The configured scale is a starting state, not an animation
+      cb521cf1 2026-08-31  Every source file pure ASCII: the accents removed, the printed bytes untouched
+      3ffea018 2026-09-07  The dual dump now says which system its old column was taken in
+      28533598 2026-09-07  A dump is a use for all 120 records, and the barrier now needs a frame to use
+      d0e0c51e 2026-09-12  The drawn path follows the body it was told to zoom to, and comes home with the old on
+
+   src/navModule/anchor_creator_cor.cpp                       moved    8
+      e864a4b6 2026-09-05  The anchor owns its orbit, and a parentless comet is told instead of crashing
+
+   src/bodyModule/orbit.cpp                                   moved    6
+      61da4edc 2026-09-06  The authored latitude, in the degrees the loader's own next lines convert
+      e1186d3a 2026-09-07  Two Newton steps per call, so five refreshes buy the ten Eris needed
+
+   src/experimentalModule/Camera.cpp                          moved    4
+      2884d57c 2026-08-09  A scripted travel moves the place the camera stands on
+      7a44af3e 2026-08-09  A held placement re-bakes the fold it is held against
+      d1a6be7c 2026-08-26  The new path's dump stops emitting values no JSON reader can read
+      cf478893 2026-08-26  Entering free flight stops moving the observer
+      cb521cf1 2026-08-31  Every source file pure ASCII: the accents removed, the printed bytes untouched
+      012105d6 2026-09-06  The new path's RA/DE answers in old's frame, because it now inverts the matrix it draw
+      58655d7a 2026-09-06  One inverse for the render rotation, and the pole answers RA 0 like old
+
+   src/experimentalModule/orbitModules/LocationOrbitLoader.hpp moved    3
+      61da4edc 2026-09-06  The authored latitude, in the degrees the loader's own next lines convert
+      01adbb30 2026-09-06  A location_orbit needs something to sit on, and now both paths say so
+
+   src/tools/s_texture.hpp                                    moved    2
+      c69687bc 2026-08-02  s_texture can now be a video texture
+      cb521cf1 2026-08-31  Every source file pure ASCII: the accents removed, the printed bytes untouched
+      ba9df31f 2026-09-05  Merge the deployed line: `s_texture` can be a video, and the four conflicts were all o
+
+   src/tools/log.cpp                                          moved    2
+      fcc277c9 2026-09-11  Eight launches is a window, so every channel now numbers its own past
+      8cca5ddf 2026-09-12  The logs now have a size they cannot pass, not only a number of launches
+      e922235a 2026-09-12  A rotation that happens before the console exists is remembered until it does
+
+   src/tools/log.hpp                                          moved    1
+      fcc277c9 2026-09-11  Eight launches is a window, so every channel now numbers its own past
+      8cca5ddf 2026-09-12  The logs now have a size they cannot pass, not only a number of launches
+      e922235a 2026-09-12  A rotation that happens before the console exists is remembered until it does
+
+== EXACT attribution: the commit at which each moved line first moved ==
+
+   01adbb30  2026-09-06  moved  180  A location_orbit needs something to sit on, and now both paths say
+             cited by: INTENT/11.217.md, INTENT/11.219.md, INTENT/11.220.md
+   29465185  2026-08-26  moved   56  The sky lock stops being two flags, and init stops overwriting wha
+             cited by: INTENT/11.149.md, INTENT/11.150.md, INTENT/11.152.md
+   e864a4b6  2026-09-05  moved   48  The anchor owns its orbit, and a parentless comet is told instead 
+             cited by: INTENT/11.205.md, DEPLOYMENT-MAP.md, INTENT.md
+   b78d6549  2026-08-09  moved   26  The climb leaves the same frame behind as the descent
+             cited by: INTENT/11.139.md, INTENT/11.140.md, INTENT/11.141.md
+   61da4edc  2026-09-06  moved   22  The authored latitude, in the degrees the loader's own next lines 
+             cited by: INTENT/11.207.md, INTENT/11.217.md, INTENT/11.218.md
+   d0e0c51e  2026-09-12  moved    9  The drawn path follows the body it was told to zoom to, and comes 
+             cited by: INTENT/11.150.md, INTENT/11.235.md, INTENT/11.236.md
+   e1186d3a  2026-09-07  moved    5  Two Newton steps per call, so five refreshes buy the ten Eris need
+             cited by: INTENT/11.215.md, INTENT/11.220.md, INTENT/11.223.md
+   bc3f2cbb  2026-08-26  moved    4  Display scaling gets an owner per format, and the twin carries it
+             cited by: INTENT/11.155.md, INTENT/11.178.md, INTENT.md
+   2884d57c  2026-08-09  moved    4  A scripted travel moves the place the camera stands on
+             cited by: INTENT/11.143.md, INTENT.md, fable-dispatch/archive/F33.md
+   fcc277c9  2026-09-11  moved    3  Eight launches is a window, so every channel now numbers its own p
+             cited by: INTENT/11.230.md, INTENT/11.231.md, INTENT/11.232.md
+   c69687bc  2026-08-02  moved    2  s_texture can now be a video texture
+             cited by: INTENT/11.203.md, INTENT/11.224.md, INTENT/11.228.md
+
+   attributed 359 of 359 moved references; unattributed 0
+== the rows that are NOT moved and need a human ==
+
+   GONE     ss-grammar.json .keys.parent.source[6]
+      src/experimentalModule/orbitModules/LocationOrbitLoader.hpp:3 at pin ba7a32a8
+      text at pin: auto parent = ModularBody::findBody(params["parent"]);

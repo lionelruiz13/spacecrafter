@@ -1,0 +1,20 @@
+== F119: anchor_gate from a transport clone, by state ==
+   clone: /home/claude/sc-f119/clone-before   objects: 54a2b844=absent ba7a32a8=absent 
+
+A) code 87d429bd, pins as shipped (the state F119 found)
+   AT-PIN-BROKEN 5888 UNRESOLVED 1286 not-at-head(declared) 24 skipped(_meta) 86 
+
+B) code fcc277c9 (F110's rehearsal HEAD), pins repointed -- the control for
+   'why 321 there and 359 here': same pins, older engine.
+   AT-PIN-BROKEN 4 GONE 1 clean 6870 moved 321 not-at-head(declared) 2 skipped(_meta) 86 
+
+C) code d2fe86c7 (this task's ACT 1 commit, pins + the declared row)
+   AT-PIN-BROKEN 4 clean 6832 moved 359 not-at-head(declared) 3 skipped(_meta) 86 
+
+   The residual 4 at C are the two EntityCore anchor elements of
+   sc-grammar.json:7071 and args/unit-1.json:295.  They resolve at the
+   submodule commit the pin's gitlink names, 7ce58350, reachable from no
+   ref of the EntityCore repository -- so a fresh clone cannot read it and
+   no edit in THIS tree can reach it.  Its twin is main's tip 84f5d94b,
+   same tree 6ee9f6a7; this repository bumped its gitlink there at
+   f4ceb208 (2026-09-05), after these pins were written.
