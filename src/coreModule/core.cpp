@@ -2107,6 +2107,16 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaFov != 0 ) {
 		projection->changeFov(vzm.deltaFov);
+		// ~~DUAL SEAM (B34's zoom ramp, INTENT S11.133)~~ [SUPERSEDED BY THE
+		// UNCONDITIONAL FOLLOW AT THE END OF THIS FUNCTION, 2026-09-18, F121
+		// S11.245: this mirror was right and it was PARTIAL -- it fired only
+		// on the frames an interactive ramp was active, so every OTHER fov
+		// transition (zoom auto in/out, zoom fov, zoom delta_fov, the mouse
+		// wheel, position action load) still ran two interpolators of two
+		// different FAMILIES against each other, measured up to 59.8 deg
+		// apart. The general rule below does what this line did, on every
+		// frame, so the line is removed rather than left as a second writer
+		// of one value (I2). Its argument survives at the new site.]
 		// DUAL SEAM (B34's zoom ramp, INTENT S11.133). The drawn fov authority
 		// is ModularBody::halfFov, not the projector's, and the ramp reached
 		// only the projector - MEASURED on the instrument commit: 215 steps
@@ -2119,8 +2129,6 @@ void Core::updateMove(int delta_time)
 		// re-implemented beside a camera range that is not the same (B35: the
 		// new path's fov clamps have no setter, 9.97e-5 .. 349.5 deg against
 		// old's 1e-4 .. 350) - so the two agree everywhere inside old's range.
-		if (Camera::instance)
-			Camera::instance->setHalfFovNow(projection->getFov() * M_PI / 360);
 		std::ostringstream oss;
 		oss << "zoom delta_fov " << vzm.deltaFov;
 		if (!recordActionCallback.empty()) recordActionCallback(oss.str());
@@ -2176,6 +2184,44 @@ void Core::updateMove(int delta_time)
 		++rampTotal;
 	}
 	rampWasActive = rampActive;
+
+	// ---- IDENTICAL-FIRST, THE FOV: ONE AUTHORITY, EVERY FRAME -----------
+	// (F121, INTENT S11.245; the owner's method S11.244(b)(3): identical to
+	// the old path FIRST, clean AFTER.)
+	//
+	// THIS IS THE LAST LINE OF THE OLD PATH'S FRAME. By the time it runs, the
+	// executor mode has called `projection->updateAutoZoom` (the auto-zoom
+	// ramp) and this function has applied the interactive `changeFov`, so
+	// `projection->getFov()` is the fov the star field will be drawn at this
+	// frame and it will not change again. `Camera::update` -- which draws the
+	// bodies -- runs AFTER this, and `followFov` drops its zoom plan, so the
+	// value written here is the one both paths draw.
+	//
+	// WHY A FOLLOW AND NOT A MATCHED EASING [derived, I2]: the two fov ramps
+	// are two FAMILIES, not two easings. Old is LINEAR in the fov with a
+	// one-sided cubic ease; the camera is GEOMETRIC with a symmetric
+	// two-phase ease. They agree at the endpoints and nowhere between --
+	// MEASURED, before this line existed, on a binary whose only difference
+	// from this one is this line: `zoom auto in duration 4` 38.7 deg apart,
+	// `zoom fov 30 duration 3` 49.2 deg, `zoom fov 180 duration 3` 52.1 deg,
+	// and `zoom delta_fov -60` 59.8 deg -- the whole commanded step, because
+	// there old snaps and the camera ramps over the 0.5 s C++ DEFAULT of
+	// `Camera::setHalfFov` that `CoreLink::setFov` leaves unstated.
+	// (harness/artifacts/f121/census_pre). That is the tester's *"everything
+	// doesn't move at the same speed, on zoom ... the bodies and the star"*
+	// [vixy, S11.244(a)3] as a number.
+	//
+	// THE FLOOR IS NOT ZERO AND SAYING SO IS PART OF THE FIX: the camera
+	// stores a float32 HALF-angle where the projector holds a double FULL
+	// angle, so the round trip costs one float32 ulp -- 5.009e-06 deg at the
+	// shipped 180 deg field, which is what the seam recorder reads at rest
+	// both before and after this line. "Identical" for this channel means
+	// that quantum, and the recorder's own at-rest reading is its witness.
+	//
+	// THE OLD PATH IS NOT TOUCHED (S11.52(b)): this reads `getFov()` and
+	// writes only the new path's authority.
+	if (Camera::instance)
+		Camera::instance->followFov(projection->getFov() * M_PI / 360);
 }
 
 // The ring, chronological. `dropped` is what a hold longer than the ring lost,

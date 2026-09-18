@@ -1111,6 +1111,23 @@ void Camera::setHalfFovNow(float halfFov)
     ModularBody::setHalfFov(halfFov); // maintains cullHalfFov (INTENT 11.33)
 }
 
+// IDENTICAL-FIRST, THE FOV. See the header for the reason this is a follow
+// and not a matched easing. Two things happen here and both are needed:
+// the value lands NOW (setHalfFovNow's semantics, which keeps cullHalfFov,
+// INTENT 11.33), and any zoom plan this class is holding is DROPPED -- with
+// the plan alive, update() would overwrite this value on the same frame
+// (Camera::update's zoom block runs after Core::updateMove) and the follow
+// would be inert. Dropping it is what makes every existing caller of
+// setHalfFov(x, duration) harmless without touching one of them: their plan
+// is created and then abandoned on the next frame, and the fov they asked
+// for still arrives, because the OLD projector was given the same target and
+// the same duration at the same seam.
+void Camera::followFov(float halfFov)
+{
+    zoomDuration = 0;
+    setHalfFovNow(halfFov);
+}
+
 void Camera::setAltitude(double altitude)
 {
     distance = altitude/(1000*AU)+reference->getAltitudeReference();

@@ -486,6 +486,27 @@ public:
     // frame; this reproduces that -- the value lands now, any plan keeps its own
     // schedule. Same clamp as setHalfFov (the two share the class's fov range).
     void setHalfFovNow(float halfFov);
+    // IDENTICAL-FIRST, THE FOV (INTENT S11.245, F121): the OLD projector is
+    // the SINGLE AUTHORITY on the field of view while the two paths run side
+    // by side, and this is how the drawn fov consumes it -- once per frame,
+    // from `Projector::fov`, with any in-flight zoom plan of this class
+    // DROPPED rather than raced.
+    //
+    // Why a single authority and not two matched easings [derived, I2]: the
+    // two are not two easings of one law but two FAMILIES. Old interpolates
+    // the fov LINEARLY with a one-sided cubic ease
+    // (Projector::updateAutoZoom); this class interpolates it GEOMETRICALLY
+    // with a symmetric two-phase ease (setHalfFov + update). They agree at
+    // both endpoints and nowhere between: MEASURED on `zoom fov 30 duration
+    // 3`, the two fields are up to 49.2 deg apart mid-ramp, and on `zoom
+    // delta_fov -60` -- where old snaps and this class ramps over its own
+    // 0.5 s DEFAULT -- 59.8 deg, i.e. the whole commanded step. Two
+    // interpolators made equal by care would be a resynchronisation awaiting
+    // the next divergence; one authority cannot drift.
+    //
+    // The CLEAN phase (the authority moving INTO this class, and this call
+    // disappearing with the old projector) is not this: it is the owner's.
+    void followFov(float halfFov);
 
     // ---- WHERE THE OBSERVER IS, as a vector (B4(iv), S11.141) -------------
     // The scripted transitions ask a question the spherical triple cannot
