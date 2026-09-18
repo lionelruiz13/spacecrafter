@@ -83,3 +83,21 @@ CP:queue	the decision-free queue R27/R28/R18/R19/R20/L1 created 2026-09-05	11.20
 CP:5.86+5.19	"first: RA/DE, both decisions closed"	DELIVERED 2026-09-06 (F91 11.213)	CLOSED	-
 CP:5.112	"the one genuinely new item F47 adds to the path"	5.112 OPEN; the datum is paid, the fix direction is the tester's N7, the schedule is the owner's	LIVE	owner
 CP:5.135	"the one row this round added ... the OLD path that is wrong"	5.135 OPEN, both readings recorded	LIVE, now T1.13	owner
+# --- ids MINTED BY THIS REGENERATION (max+1 in their own tier over live U archive).
+# They are not predecessor items; they are here because the id-conservation check
+# requires every live label of the new map to have a row.
+R10 (new, max+1)	not carried - [Y8] of fable-dispatch section 3, session 29, never in the map	11.234(g) MEASURED: build-claude is RelWithDebInfo (-O2 -g -DNDEBUG), install_src.sh configures Release (-ggdb3 -Ofast -Wall -O3)	LIVE - every D11 cost number was taken on a build the documents do not ship	owner
+R11 (new, max+1)	not carried - the intern's own clone readings, 11.242 and section 3 [F4]/[H7]	ctest 19/19 from a fresh configure at 564ec489; a transport clone reads 4 AT-PIN-BROKEN; anchor_gate.py has twelve duplicated definitions and an out-of-range misdiagnosis; one ss-grammar row carries [NOT AT HEAD]	LIVE - all of it in the CODE tree, so it is the intern's surface	owner + dispatchable
+T1.12 (new, max+1)	carried as a head bullet only (5.142 named in the T5 annotation), no id	5.142 OPEN; the root measured, four options priced at 11.236(i)(k); the pool stays 1 MiB by the owner's word	LIVE	owner
+T1.13 (new, max+1)	T1.2's two residues, carried in the head as "newly necessary, and small"	5.135 OPEN (both readings recorded); 5.128 OPEN, record-only	LIVE	owner
+T1.14 (new, max+1)	5.111's remainder was a T2 bullet; 5.121 and 5.136 were never carried	5.111 matched set FIXED, unmatched set OPEN; 5.121 OPEN; 5.136 OPEN	LIVE	owner
+T1.15 (new, max+1)	none of the five was carried (all minted after the 2026-09-05 rework)	5.153 OPEN; 5.154 OPEN; 5.148 OPEN; 5.149 OPEN; 5.152 OPEN; plus 11.216(j2)'s readout question	LIVE	owner
+T1.16 (new, max+1)	not carried	5.146 OPEN, the shape given [vixy 2026-09-12]; EntityCore, coupled to the submodule push	LIVE	owner
+T1.17 (new, max+1)	not carried	5.115 retention FIXED and size bound FIXED; the density half OPEN	LIVE	owner
+T1.18 (new, max+1)	not carried	5.126 OPEN; 5.125 OPEN	LIVE	owner
+T5.6 (new, max+1)	carried inside T5.2's annotation as "OUTSIDE THIS INSTRUMENT AND STAYS UNMAPPED", no id	B30 OPEN, fix suspended for Vixy (11.94(d)); the soak reads no pixel	LIVE - re-derived as its own unmapped edge	owner
+T5.7 (new, max+1)	not carried	11.232(c)1: a human without an LLM writes nothing into this ledger; his findings arrive through git history and the main tester only	LIVE - the entry path was rehearsed by an LLM, never followed by the reader it is for	owner (the channel)
+T5.8 (new, max+1)	not carried - the map ASSERTED the exclusion instead	11.163(h) was derived from T0's "adapt to"; 11.232(a)2's R0 criterion is "workable ... could disrupt work there"; no ruling exists	LIVE - question Q2 of the new head	owner
+T5.9 (new, max+1)	carried inside T3's census answer as a caveat, no id	round-3 R21 bounds the SET of content classes and explicitly not the STATE ("tested, but sometimes long ago")	LIVE - no class may be called healthy, and nothing here can measure his install	tester
+T5.10 (new, max+1)	not carried	5.137's trigger `body action reload` appears in ZERO shows of the shipped playlist and ZERO of the tester's corpus (11.218)	LIVE - the one measured false success on the new path is outside both soaks by construction	dispatchable (a soak that issues it)
+T5.11 (new, max+1)	not carried	11.240 / b5-dso-design.md: the field has 527 lines of `body ... mode in_galaxy` in 14.sts alone; how much more of his corpus authors DSO content is unmeasured	LIVE - the migration's field scope is unknown under either reading of [Y17]	owner, then dispatchable

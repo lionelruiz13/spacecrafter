@@ -1,0 +1,10 @@
+archive  : 22 tier ids  R1 R2 R3 R4 R5 R6 T1.1 T1.2 T1.3 T1.4 T1.5 T1.6 T1.7 T1.8 T1.9 T1.10 T1.11 T5.1 T5.2 T5.3 T5.4 T5.5
+live map : 31 tier ids  R2 R3 R4 R6 R7 R8 R9 R10 R11 T1.3 T1.5 T1.6 T1.7 T1.8 T1.9 T1.10 T1.11 T1.12 T1.13 T1.14 T1.15 T1.16 T1.17 T1.18 T5.4 T5.6 T5.7 T5.8 T5.9 T5.10 T5.11
+table    : 85 rows, 39 of them tier ids, 18 marked NEW
+C1 OK  every table row unique
+C4 OK  9 closed/excluded ids leave a gap
+C5 OK  18 new ids all above their tier's archived maximum
+
+== FAIL ==
+  C2 archive-not-in-table: ['T1.9'] ; table-not-in-archive(and not NEW): []
+  C3 table-LIVE-not-in-map: [] ; map-label-not-LIVE-in-table: ['T1.9']
