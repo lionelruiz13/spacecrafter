@@ -415,4 +415,36 @@ never rewrite (maintenance invariant). Archival per the standing convention
   and carried to §3 at close whatever he answers: restore 2448x1332 from your client, or say the
   word to re-bank on 2444x1332 (one VALUES-block edit, then the FULL canary says whether the band
   moved); nothing improvised, nothing launched.
+- 2026-09-18 21:3x–22:25 [stated: vixy, in-session, verbatim in INTENT/11.244.md (a)1–2; measured:
+  supervisor, session 31] **THE FOUR PIXELS WERE A RELEASE UPGRADE: UBUNTU 25.10 → 26.04.1 LTS
+  (`/var/log/dist-upgrade/` mtime 20:56; the 20:59:16 boot closed it). THE ENTRY ABOVE IS CORRECTED
+  ON TWO POINTS, THE BINARY HAD STOPPED LOADING, AND THE BAND HELD.** (1) CAUSE, corrected: the
+  entry above attributes the width to *"the owner's client geometry"* — the proximate writer, right,
+  and one level short: Remmina is always launched maximized, and the new release's desktop chrome
+  leaves it four pixels less [vixy]. The writer-set enumeration stopped at the first sufficient
+  writer (Q-83). (2) **"every other member EQUAL" in the entry above is FALSE** — copied from the
+  shape of the 2026-09-13 entry, never measured. The fingerprint diff (`20260913-190031` vs
+  `20260918-212206`) shows two non-per-boot members moved: `gpu.query` — NVIDIA driver
+  **580.159.03 → 580.178.04** — and `dispatch.wayland_display` `<unset>` → `wayland-0`; both are
+  RECORDED and neither is GATED, which is why the canary was silent on them. The fingerprint has NO
+  member for the release, the kernel (now 7.0.0-31), the toolchain (gcc 15.2.0 unchanged; cmake
+  3.31.6 → 4.2.3), the interpreter (python 3.14.4), gnome-shell (50.1) or a library soname: the
+  upgrade reached the probe through one side effect. INSTRUMENT GAP, queued: those members, and the
+  driver gated. (3) **THE ENGINE BINARY `42d7982c` NO LONGER LOADED** (`ldd`: `libSDL2_net-2.0.so.0`,
+  `libavcodec.so.61`, `libavformat.so.61`, `libavutil.so.59`, `libswscale.so.8` not found); the
+  upgrade had removed `libsdl2-dev`, `-mixer-dev`, `-ttf-dev`, `-net-dev` and the `-net` runtime. The
+  OWNER installed them (classic SDL2 2.32.10, not the SDL3-based compat — his stack, his act, on a
+  one-line list the supervisor measured); the old build directory MOVED to
+  `/home/claude/sc-build-pre-26.04`; fresh configure + `make -j24` 21:55:10–21:56:42, 0 errors, no
+  source change: **binary `3cb11f0e`**, `ldd` clean, `libSDL2-2.0.so.0` → `sdl2-classic/…3200.10`.
+  (4) RE-BANK on the owner's ruling — **ONE geometry, 2444x1332** (*"keep only the new resolution,
+  so that another change could get caught as well"*), the old value struck, plus the three per-boot
+  members, in one VALUES-block edit: `--no-scene` 22:22:52 **exit 0**; FULL canary 22:23:08–22:25:18
+  **exit 0, 12/12 in band, every delta 0.0** (165.258/6.644 new · 160.142/6.603 old;
+  `20260918-222308`; NOTE `cache.mutated`, expected) — **the band on a SIXTH boot, across a release,
+  a driver, a compositor generation, a narrower display and a rebuilt binary**. Field pair
+  `03fbee59`/`545a51ef` in == out. Decision flag per §11.174(h): the geometry re-bank is the owner's
+  ruling, not the supervisor's prescription; the rebuild is the protocol's own step (§0.4) on a tree
+  the owner's install made buildable — nothing improvised; say the word if the SDL3-based compat
+  stack is the one you want banked instead.
 

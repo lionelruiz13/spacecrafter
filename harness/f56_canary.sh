@@ -112,7 +112,14 @@ set -u
 #   ~~BANK_XSERVER_START=1788007886~~      # = 2026-08-29 14:51:26, same refuted proxy
 #   ~~BANK_HOST_BOOT="2026-08-27 07:32:05"~~
 BANK_DISPLAY=":2"
-BANK_DIMS="2448x1332"
+# RETIRED 2026-09-18 (supervisor, session 31 -- NOT a per-boot member, so NOT re-banked on the
+#   supervisor's own word: canary 20260918-212206 red on display.geometry, reported, and the owner
+#   ruled. Cause [vixy 2026-09-18, verbatim in INTENT/11.244.md (a)1]: the host went from Ubuntu
+#   25.10 to 26.04 LTS and Remmina, always launched maximized, now asks for a desktop four pixels
+#   narrower. Ruling [(a)2]: "keep only the new resolution, so that another change could get caught
+#   as well" -- ONE accepted value; the old one is history here, never an alternative):
+#   ~~BANK_DIMS="2448x1332"~~
+BANK_DIMS="2444x1332"
 BANK_XDG_RUNTIME_DIR="/run/user/1003"
 BANK_XAUTH_GLOB="/run/user/1003/.mutter-Xwaylandauth.*"
 BANK_COMPOSITOR_CMD="/usr/bin/gnome-shell"
@@ -133,10 +140,20 @@ BANK_COMPOSITOR_CMD="/usr/bin/gnome-shell"
 #   ~~BANK_COMPOSITOR_START=1789201776~~   # kernel start of pid 10920 = 2026-09-12 10:29:36
 #   ~~BANK_XSERVER_START=1789201776~~      # kernel start of pid 11060 = 2026-09-12 10:29:36
 #   ~~BANK_HOST_BOOT="2026-09-12 09:51:57"~~
-BANK_COMPOSITOR_START=1789296984          # kernel start of pid 18192 = 2026-09-13 12:56:24
+# RETIRED 2026-09-18 (the 2026-09-13 09:40:06 boot ended 2026-09-18 20:59:16 -- the reboot that
+#   closed a RELEASE UPGRADE, 25.10 -> 26.04 LTS; per-boot by design -- the owner re-provisioned the
+#   real logind session on :2 at 21:05:03; sessions 5/6, cookie .RQNGV3; canary 20260918-212206 red
+#   on compositor.restarted AND display.geometry, NOTE xserver.restarted. NOT "every other member
+#   EQUAL" this time: gpu.query shows the driver moved 580.159.03 -> 580.178.04 and
+#   dispatch.wayland_display went <unset> -> wayland-0, both recorded and neither gated; the binary
+#   was rebuilt on the new release, 42d7982c -> 3cb11f0e; supervisor, session 31, Friday):
+#   ~~BANK_COMPOSITOR_START=1789296984~~   # kernel start of pid 18192 = 2026-09-13 12:56:24
+#   ~~BANK_XSERVER_START=1789296984~~      # kernel start of pid 18364 = 2026-09-13 12:56:24
+#   ~~BANK_HOST_BOOT="2026-09-13 09:40:06"~~
+BANK_COMPOSITOR_START=1789758303          # kernel start of pid 30679 = 2026-09-18 21:05:03
 BANK_XSERVER_MATCH="Xwayland :2"
-BANK_XSERVER_START=1789296984             # kernel start of pid 18364 = 2026-09-13 12:56:24
-BANK_HOST_BOOT="2026-09-13 09:40:06"
+BANK_XSERVER_START=1789758304             # kernel start of pid 31200 = 2026-09-18 21:05:04
+BANK_HOST_BOOT="2026-09-18 20:59:16"
 #
 # PHOTOMETRIC BAND -- the reference scene is `f51_run.sh`'s (§11.174(e) names it): the
 # Moon `base` scene at fov 10, the app's own 2048^2 readback, metric = §11.164(c)'s
