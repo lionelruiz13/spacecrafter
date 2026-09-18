@@ -1,0 +1,394 @@
+set	id	state_read_at_source_2026-09-18	verdict	argument_one_clause
+# F120 REVERSE SWEEP: the ledger's own open surfaces tested against the criteria, so the map
+# carries what the predecessor could not supply. Verdicts: IN = stands between the current state
+# and deployment under at least one reading of the criteria; OUT = closed at its source, or
+# excluded with the argument; BOTH = the criteria do not decide it, so it is carried with BOTH
+# readings (completeness over certitude, the map's own rule).
+# THE OPEN READING that produces every BOTH (map head, question Q-B): section 11.163(h)'s test
+# ("does the NEW path behave differently here? else backlog") was derived for T0, whose criterion
+# is "observes nothing he must ADAPT to". R0's criterion is different in kind - "it must be
+# workable. If there is unfinished or bugged aspects, it could disrupt work there" [vixy
+# 11.232(a)2] - and a BOTH-PATHS defect disrupts a developer exactly as much as a new-path one.
+# Nobody has ruled whether R0 inherits T0's exclusion. Until he does, every open both-paths row
+# is BOTH, not OUT.
+#
+# SET 1 - section 5 defect rows, ALL live rows swept (a superset of "not closed", so no closure
+#   judgement can silently drop a member).
+#   command: sed -n '/^## 5\. /,/^## 6\. /p' claude/INTENT.md | /usr/bin/grep -cE '^[0-9]+\. '
+#   => 131 ; members: 1 2 5 7 8 9 18 19 20 21 25 26 27 28 32 34 35 36 41 42 43 44 46 47 48 49 50
+#   51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81
+#   82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109
+#   110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132
+#   133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154
+sec5	5.1	FIXED by Vixy, verified in tree	OUT	closed at the row
+sec5	5.2	literal bug FIXED; live remainder = the multAlt consumer assignment wants sign-off, implementation on B10	BOTH	B10 landed bit-identical (11.71) so no observable divergence; the remainder is an owner sign-off swept at B10
+sec5	5.5	CLOSED at F47 acceptance (retire-with-old)	OUT	closed at the row
+sec5	5.7	RESOLVED (removed, Phase B)	OUT	closed at the row
+sec5	5.8	RESOLVED (removed from the base)	OUT	closed at the row
+sec5	5.9	RESOLVED (ordering contract)	OUT	closed at the row
+sec5	5.18	mechanism FIXED; the anti-stuck floor VALUE suspended for Vixy	OUT	a tuning value behind a feel test, no divergence either criterion names; carried at B10(a)
+sec5	5.19	FIXED 2026-09-06 (F91, 11.213)	OUT	closed at the row
+sec5	5.20	OPEN, no construction site on EITHER path	OUT	unreachable from both paths (11.163(b)); explicitly not deployment-blocking
+sec5	5.21	PARTLY FIXED (latitude); (a) frozen spin + the missing getRotEquatorialToVsop87 OPEN, no longer decision-free	IN	the new path REGISTERS the defective class (modules.cpp:49) so it is a new-path authoring trap too - one of the only three transparency-bearing members of F47's set; blocked on 5.140
+sec5	5.25	OPEN - re.period is float32, <=0.13 deg/decade drift	BOTH	both paths and parity-neutral (T0 OUT); a data-exactness limit a developer meets (R0 reading open); Vixy's eye
+sec5	5.26	OPEN on two halves: 11.92(d)'s coupling (now 5.135) and the READOUT (B33)	IN	getHeading answers the OLD path while the NEW path draws - a query-vs-drawn divergence the tester reads; swept again at B33
+sec5	5.27	CLOSED 2026-08-26 (F39, 11.152)	OUT	closed at the row
+sec5	5.28	FIXED at source 2026-08-04	OUT	closed at the row
+sec5	5.32	CLOSED 2026-08-01 (F20, 11.128)	OUT	closed at the row
+sec5	5.34	FIXED (the Object rep leak)	OUT	closed at the row
+sec5	5.35	OPEN - day_key_mode inert end to end; T1 decision	BOTH	both-paths (T0 OUT by 11.163(h)); an inert control surface a developer meets (R0 reading open); carried at T1.10
+sec5	5.36	OPEN - blocked on an ASSET not a decision	BOTH	both-paths; rides T3 (his field carries media)
+sec5	5.41	OPEN - camera action save cannot succeed as shipped; B31-gated	BOTH	both-paths; carried at T1.10
+sec5	5.42	OPEN - config writer destroys comments; T1 x2	BOTH	both-paths, but its automatic sibling 5.112 arms on the DELIVERY mechanism and is IN
+sec5	5.43	FIXED 2026-07-25	OUT	closed at the row
+sec5	5.44	OPEN as an OLD-path record; B39 made it impossible on the new path	OUT	old path = frozen comparison baseline (11.52(b)); tracked-not-reproduced
+sec5	5.46	FIXED	OUT	closed at the row
+sec5	5.47	FIXED	OUT	closed at the row
+sec5	5.48	OPEN - ASmooth NaN on a cold HOME, ~15% startup race, rated 0/6 with a control that fires	IN	R4's only residual; EntityCore, the owner's; a newcomer's clone builds WITHOUT the guard
+sec5	5.49	OPEN - the observer's longitude origin; the owed render measurement untouched	IN	data-author-central (he places content by lon/lat); the measurement is S and unblocked
+sec5	5.50	FIXED	OUT	closed at the row
+sec5	5.51	FIXED	OUT	closed at the row
+sec5	5.52	FIXED (the mid-band surface)	OUT	closed at the row
+sec5	5.53	(a) WITHDRAWN as a defect by R29; (b) OPEN, sharper	IN	(b) is the set's only new-path-specific VISIBLE divergence, on the two bodies he shows most; T1.9
+sec5	5.54	the dead-spelling half landed (px constants are the authority); the VALUE (2 px vs 3.07 px) is a veto point	BOTH	an as-if-preserved shipped value; carried at A41, not a divergence either path shows today
+sec5	5.55	FIXED	OUT	closed at the row
+sec5	5.56	OPEN, state unchanged, GROUND REFUTED and re-stated	OUT	the one destructor that exists writes a variable nothing reads; explicitly not deployment-blocking at the row
+sec5	5.57	FIXED	OUT	closed at the row
+sec5	5.58	FIXED	OUT	closed at the row
+sec5	5.59	OPEN, SUSPENDED on A40's fork	IN	a planetarium session that will not quit is a stability-class member; 0 HUNG/13 unstressed is a rate, not a proof
+sec5	5.60	OPEN - a single 2.68 GB device allocation	IN	T3: his GPU's limit is not ours; and the pool's silent-return branch is 5.142's own shape
+sec5	5.61	OPEN - a lost wakeup in the work queue the frame pacing rides	IN	stability class; the soaks supplied a large stall population and attributed none of it here
+sec5	5.62	OPEN - an unattributed same-binary rendering shift between two epochs	IN	an unattributed measurement transient invalidates cross-epoch appearance claims, his included
+sec5	5.63	CLOSED (session restore composed-screen difference)	OUT	closed at the row
+sec5	5.64	OPEN - timerate action pause does not stop the clock; semantics undecided	BOTH	both-paths; T1.6
+sec5	5.65	OPEN - sky-lock latches the previous frame's view	BOTH	both-paths; T1.6
+sec5	5.66	OPEN - look_at's two halves; the port is unblocked but the row's OWN owed item is not answered	IN	the predecessor's T2 says both "neither waits on a decision any more" - REFUTED at the row and at session-28 [H4]
+sec5	5.67	OPEN - old runs with vision vectors of length 2 after any look_at	OUT	old-path render behaviour, unchanged by construction (11.52(b))
+sec5	5.68	OPEN - the place setters are dual but NOT equivalent: old clamps, the camera does not	IN	a NEW-vs-OLD divergence at a shipped seam (moveto alt 0.05 lands the two paths 0.05 m apart); NEVER CARRIED by the predecessor
+sec5	5.69	OPEN - keep_time truncated to 8 bits, the default included	BOTH	both-paths; T1.6
+sec5	5.70	OPEN - the turn ramp records an unreplayable action	BOTH	both-paths; T1.6
+sec5	5.71	OPEN - panView still moves the old navigator alone; the port is dispatchable, the feel answer owed	IN	an operator command that does not reach the drawn path is a transparency hole
+sec5	5.72	OPEN - $LOGON carries other clients' answers	BOTH	both-paths; T1.6
+sec5	5.73	FIXED at the buffer; the truncation POLICY is still Vixy's	BOTH	both-paths; the >=1023 B marker policy is already a T1.6 member
+sec5	5.74	OPEN, no fix owed - "Search is deprecated" (R22)	OUT	de-prioritized by the tester; leaves every deployment path
+sec5	5.75	OPEN - a trail drops a sample on a date-stepping show	BOTH	both-paths at the mechanism; trail-sampling policy, T1.6
+sec5	5.76	OPEN - a slowed PAUSED clock runs backward	BOTH	both-paths; T1.6
+sec5	5.77	OPEN - a failed sky culture is invisible in the log	BOTH	both-paths; startup silences, reproduced by the rehearsal
+sec5	5.78	OPEN, no fix owed (R22)	OUT	de-prioritized with 5.74
+sec5	5.79	FIXED (ConstellationMgr::getSelected)	OUT	closed at the row
+sec5	5.80	FIXED (free-flight teleport); residuals homed at 5.106 and 5.49	OUT	closed at the row
+sec5	5.81	CLOSED (NaN screenPos at the eye)	OUT	closed at the row
+sec5	5.82	OPEN - transition_to point name is dropped	BOTH	both-paths; T1.6
+sec5	5.83	OPEN as an old-path record; the T4 INFORM was accepted by silence	OUT	a deliberate divergence, informed and accepted
+sec5	5.84	OPEN - the Newton seed left at the queried date	OUT	old-path only, invisible to a new-path operator; an INSTRUMENT caveat, carried as such
+sec5	5.85	OPEN - align_with does not align	BOTH	both-paths; T1.6; a first documented use now exists (5.97)
+sec5	5.86	FIXED 2026-09-06 (F91) and 2026-09-06 (F96); one interface question left open at 11.216(j2)	OUT	closed; the pole-vs-no-direction question is carried at 5.148's node
+sec5	5.87	OPEN - constellation_star acts on the previous selection	BOTH	both-paths; T1.6
+sec5	5.88	OPEN - a missing star catalogue is reported NOWHERE	IN	R23 makes a limited catalogue NORMAL, so nothing tells an operator which of the two he is running; the cheapest of three fixes
+sec5	5.89	OPEN - "Unknown viewing mode type" then carries on (assert(0) is a no-op in the shipped build)	BOTH	both-paths; a one-site fork
+sec5	5.90	OPEN in its MECHANISM (list from the user dir, files from the data root, mismatch silent)	IN	the headline reading is withdrawn by R23 but the silent mismatch survives and lands on the intern's empty clone
+sec5	5.91	OPEN - suntrace pen reads the VALUE of a key	BOTH	both-paths; SS-11, the script-surface owner's
+sec5	5.92	FIXED	OUT	closed at the row
+sec5	5.93	OPEN - a failed color line reports success	BOTH	both-paths; T1.6
+sec5	5.94	OPEN - configuration's module block falls through	BOTH	both-paths; T1.6
+sec5	5.95	OPEN - date's two smallest branches both lie	BOTH	both-paths; T1.6
+sec5	5.96	OPEN - a recording diverges from what the author wrote	BOTH	both-paths; SS-12 decides an entire defect class
+sec5	5.97	OPEN - the owner rewrote superscript.sts; the +267 added lines are UNEXAMINED and the corpus gate was not re-run	IN	the reference script is the tester's documentation AND the project's only functional test; NEVER CARRIED by the predecessor
+sec5	5.98	FIXED 2026-09-06 (F94)	OUT	closed at the row
+sec5	5.99	OPEN - b39_star.py's whole-frame illumination criterion	OUT	a harness instrument, not a product surface; needs a launch
+sec5	5.100	FIXED (F114); one residual mint blocked on a host that can select a star	OUT	closed at the row
+sec5	5.101	FIXED (F114); the Camera::lookTo 0.2 s floor spun out as 5.153	OUT	closed at the row
+sec5	5.102	FIXED (timer = 0 in the fresh ASmooth branch); post-fix zero non-finite values	OUT	closed at the row
+sec5	5.103	FIXED (nan in the dump)	OUT	closed at the row
+sec5	5.104	FIXED for scaling; THE WIDER-SEAM CLASS QUESTION STAYS OPEN	IN	"state-preserving" commands that do not preserve state reach the operator; the other seams Core::init sets and reloadSystem rebuilds are unenumerated
+sec5	5.105	OPEN - the OLD path dumps uninitialized dist	OUT	instrument-facing, retire-with-old class
+sec5	5.106	OPEN - free flight changes what the ENVIRONMENT draws	IN	T4 cargo NEVER SENT; the atmosphere-flood sub-question is owed either way
+sec5	5.107	OPEN - extent cache is a load-time latch; the owed count not taken	IN	new-path-specific (the cache is the new path's); the fix shape exists
+sec5	5.108	OPEN - flag_sun_scaled has never had any effect	BOTH	both-paths; reviving it is a behaviour change, Vixy's
+sec5	5.109	OPEN - altitude counted from the DISPLAY-scaled datum, read ONCE	IN	T1.5; he authors scenes on scaled bodies, and it is a standing hazard for every harness
+sec5	5.110	OPEN - six #selected_* variables answer out of the uninitialized object	IN	a shipped script surface answers plausible fiction; T1.11
+sec5	5.111	matched set FIXED (F87); the UNMATCHED set OPEN (the type slot, the body NAME, " (orbit centre)")	IN	the tester operates in FRENCH and the drawn readout's first line is still English; T1.14
+sec5	5.112	OPEN - a version bump silently rewrites config.ini	IN	it arms on the DELIVERY mechanism itself; the tester's fix direction is stated (N7), the schedule is the owner's
+sec5	5.113	OPEN - the uninitialized Object singleton at five call sites	IN	unaffected by F91/F96; T1.11
+sec5	5.114	OPEN - every illuminate has GREEN and BLUE exchanged at the loader	BOTH	both-paths at the loader, but it is a VISIBLE colour defect on a shipped script surface; NEVER CARRIED; one discriminating launch owed
+sec5	5.115	size bound + retention FIXED (F108/F116); the DENSITY half OPEN	IN	193 MB/h under his own corpus; the per-command echo design should be seen before it ships
+sec5	5.116	OPEN - the script surface has no invalid state	BOTH	both-paths; a silent-success class a developer meets on day one
+sec5	5.117	OPEN - 157 user-facing refusals written at L_DEBUG	BOTH	both-paths; the severity-vs-channel fork is Vixy's
+sec5	5.118	OPEN - set stall_radius_unit filters instead of refusing	BOTH	both-paths; composed with 5.116's class decision
+sec5	5.119	FIXED (the past-the-end iterator); the BEHAVIOUR question and the hardcoded font-path rider OPEN	BOTH	the rider hardcodes /home/planetarium/... paths - an installation fact a newcomer meets
+sec5	5.120	OPEN - two colour names and two flags registered, routed, never built	BOTH	both-paths; retiring four registered names breaks any show that sets them (D9)
+sec5	5.121	OPEN - ONE static translation table serves BOTH locales	BOTH	both-paths; the tester runs French, so the locale layer is his daily surface; unmeasured
+sec5	5.122	OPEN - an argument KEY the handler never reads is unobservable	BOTH	both-paths; the authoring-silence class
+sec5	5.123	OPEN - "did you mean" names the wrong argument	BOTH	both-paths; a census of searchSimilar* call sites is owed
+sec5	5.124	OPEN - the DATA surface has the same silent-drop class, 189 lines of the field ssystem.ini	BOTH	data surface; forward-only (D9); routed SS-40/SS-41
+sec5	5.125	OPEN - adopting the composed format silently drops four keys	IN	the composed format is the NEW path's authoring surface: adopting it loses a star's big halo and a body's skin with no diagnostic; NEVER CARRIED
+sec5	5.126	OPEN - one authored value, two meanings: `halo = on` draws NOTHING on old and a halo on the new path	IN	a DATA-ONLY route to a two-path divergence that 11.52(b) parity work assumes cannot happen; NEVER CARRIED
+sec5	5.127	OPEN for members (3)(4)(5) - the two-unit orbit_semimajoraxis, saveOrbit's double AU, the wrong class name	BOTH	orbit/anchor creator chain, both paths; (1)(2) fixed as 5.133/5.134
+sec5	5.128	OPEN, record-only - the aim compensation undoes a FIXED offset x 90 deg while the draw applies fov/2	IN	the snap-back fork R28 did not touch; the config key view_offset is LATENT on the new path (armed by the first commanded move)
+sec5	5.129	OPEN, record-only - a portrait window draws the dome 128 px low with a dead band above	IN	R21 puts the portrait window IN scope, so this is a cost the field may be paying
+sec5	5.130	FIXED (F86)	OUT	closed at the row
+sec5	5.131	CLOSED for the clone (pin bumped f4ceb208); the two install_src.sh:24 riders OPEN and unowned	IN	R2's residual: the install script's fallback has no `|| exit`, so cmake returns 0 and the build dies later
+sec5	5.132	OPEN - a failed class copy prints "Completed copy of X" anyway	IN	on every install that lacks a class, ten empty directories are created silently - the intern's first launch
+sec5	5.133	FIXED (F86/F93/F95 chain)	OUT	closed at the row
+sec5	5.134	FIXED (F86)	OUT	closed at the row
+sec5	5.135	OPEN - the OLD path rolls the view offset with the heading; the tester says it should not	IN	the tester has SEEN it; the fix lands on the comparison baseline, so it is an owner call
+sec5	5.136	OPEN - app_locale does nothing whenever it differs from sky_locale	BOTH	both-paths; core architecture, 5.121's family; the app logs the locale it discards (D12)
+sec5	5.137	OPEN, record-only, SUSPENDED on 11.55(i)	IN	a body an operator authors leaves the DRAWN path on reload while every readout still answers for it - a false success on the new path
+sec5	5.138	FIXED (F96)	OUT	closed at the row
+sec5	5.139	FIXED (F100)	OUT	closed at the row
+sec5	5.140	OPEN - surface_point's orbit_lon is ninety degrees EAST; ROUTED to the tester	IN	a RATIFIED authoring key means two longitudes; blocks 5.21's two halves; the tester's word
+sec5	5.141	FIXED (F99)	OUT	closed at the row
+sec5	5.142	OPEN - two of the tester's own shows exhaust the uniform pool and ABORT the process; four decisions at 11.236(k)	IN	the sharpest fact against "ready": his own corpus kills the reference binary
+sec5	5.143	OPEN - 14.sts empties the OLD path's dump half; retires with B8 and with the nested-modular-body design	OUT	an instrument hazard on the comparison baseline, not a user-facing divergence
+sec5	5.144	OPEN - RSS +68.3 MB/h under his corpus, not saturating in 4.5 h	IN	a planetarium session is hours; the discriminating 8-12 h leg needs one yes/no
+sec5	5.145	FIXED (F104, two solver steps per call)	OUT	closed at the row
+sec5	5.146	OPEN - ~SharedBuffer hands a REFUSED SubBuffer back to the pool; the shape is given	IN	EntityCore; an indeterminate offset reaches vkCmdBindDescriptorSets; coupled to the owner's submodule push before the intern's clone
+sec5	5.147	CLOSED (F106 fixed the rewrite tool)	OUT	closed at the row
+sec5	5.148	OPEN - tracking a ZERO-VECTOR body writes 66 NaNs into the old path's view state	IN	reachable from two shipped commands on 19 launch-state records; the owner's call with 11.216(i)
+sec5	5.149	OPEN - the constructor seeds every iterative solver at JD 0	IN	the CAUSE of 5.145's 1.198 deg; today's two-step fix pays for it rather than removing it
+sec5	5.150	iterative half FIXED (F111); the SPECIAL-ORBIT half OPEN with a measured null	OUT	measured bit-identical on Mars and Pluto over 1790 calls; carried as a caveat, not a gate
+sec5	5.151	OPEN - [Sedna]'s shipped orbit is not the authored one	IN	shipped DATA the tester owns; forward-only (D9); one body's orbit is wrong in the field
+sec5	5.152	OPEN - a SECOND instance ABORTS instead of refusing cleanly	IN	the intern will run two instances in week one; the refusal line never reaches the console
+sec5	5.153	OPEN - a commanded view duration under 0.2 s is not honoured by the DRAWN path	IN	new-path-specific: at duration 0.1 the two paths are 38.35 deg apart at the instant old lands; NEVER CARRIED
+sec5	5.154	OPEN - the trail walker leaves the unhidden body's seed one deltaTrail stale	IN	new-path-only, no old shape to restore; 4.33 arcsec on one frame after an unhide; NEVER CARRIED
+# SET 2 - section 13.A rows (Vixy's suspended decisions). The table's own rule: "An item leaves
+#   this table only by resolution", so every row present is by construction not closed.
+#   command: awk '/^### 13\.A/,/^### 13\.B/' claude/INTENT.md | /usr/bin/grep -cE '^\| *[A-Z]+[0-9]+ *\|'
+#   => 16 ; members: A4 A7 A15 A16 A17 A18 A21 A22 A26 A27 A28 A30 A40 A41 A42 A44
+sec13A	A4	NARROWED; the suspended half RESOLVED [R7]; the remaining items are implementation detail	OUT	no suspended decision left; the parallels set and the Sun-grid gap are work, not gates
+sec13A	A7	NARROWED; ANSWERED by round-3 R16/R17 to the reachable configuration	OUT	multi-star per-instance halo colour is unreachable on shipped content
+sec13A	A15	OPEN - the milkyway/AoI constants; L1 judged one of four axes	IN	the fade threshold and band are a user-visible appearance the audience sees; T4's live member
+sec13A	A16	OPEN - UNIVERSE BodyType enum, add or drop	OUT	structural isSystem() makes it non-load-bearing; no user surface
+sec13A	A17	OPEN residual (i) - the disambiguation rule for nested-subsystem selection	BOTH	selection is an operator surface; unexercised on shipped content today
+sec13A	A18	NARROWED; residual RESOLVED [R6]	OUT	no suspended decision left
+sec13A	A21	OPEN - section 6.2 inline policy	OUT	internal drafting policy, no user or developer surface
+sec13A	A22	OPEN - section 6.3 BodyType collapse sign-off	OUT	zero consumers/producers measured; internal
+sec13A	A26	NARROWED; the big-texture threshold ratified at 20%	OUT	the remainder is internal (regime gate constants, tesselation tick)
+sec13A	A27	NARROWED; residual RESOLVED [R9]	OUT	no suspended decision left
+sec13A	A28	RE-ASK; RESOLVED [R1] - ring + planet-on-rings shadows ALWAYS ON	OUT	answered; the dev/test toggle retires with the old path
+sec13A	A30	(i) RESOLVED; (ii)(iii) open - star-system reachability and identity	BOTH	R17 keeps the multi-star case live inside one system; no shipped content reaches it
+sec13A	A40	OPEN - teardown vs an incomplete frame; 5.59's fork	IN	the app does not quit; three launches decide it, and a planetarium operator quits every night
+sec13A	A41	OPEN - the G4 EARLY-visibility gate: 2 px or 3.07 px	IN	a one-token value that decides when a body starts drawing; shipped behaviour preserved as-if, the value is the owner's
+sec13A	A42	OPEN, with a different question since R29 - the swap distance is the tester's number	IN	it GATES T1.9 (5.53(b)), the only new-path-specific visible divergence on the two bodies he shows most
+sec13A	A44	OPEN - the RING shadow caster is the one SCALED shadow radius	BOTH	unexercised on shipped content (no scaled body has rings), so it can wait for an answer rather than a guess
+# SET 3 - section 13.B rows (Fable territory). Same table rule: present => not closed.
+#   command: awk '/^### 13\.B/,/^### 13\.C/' claude/INTENT.md | /usr/bin/grep -cE '^\| *[A-Z]+[0-9]+ *\|'
+#   => 26 ; members: B1 B2 B3 B4 B5 B7 B8 B10 B12 B14 B15 B17 B18 B31 B21 B24 B30 B33 B34 B35 B36
+#   B37 B38 B27 B39 B41
+sec13B	B1	OPEN - S4/G5 handoff implementation	OUT	Vixy-paced architectural line; the NOT-blocking list's own member
+sec13B	B2	OPEN - D4 surface streaming + RING asteroid	OUT	same exclusion as B1; A6's decision untouched
+sec13B	B3	OPEN - H4 shadow remainder	OUT	beyond-shipped-content; needs counterfactual scenes
+sec13B	B4	OPEN - CameraAnchors design	BOTH	anchors are hand-edited AND script-created (both channels live); no measured divergence today
+sec13B	B5	OPEN - executor-mode dissolution; the DSO remainder now has a design (11.240)	IN	the DSO layer is content the tester's shows load; five slices, the first decision-free
+sec13B	B7	OPEN - the 11.15d shutdown segfault	IN	an intermittent teardown class; thirteen clean quits is a rate, not a proof
+sec13B	B8	OPEN by definition - old-path relocation at removal	OUT	transparent operation KEEPS old present; the NOT-blocking list's own member
+sec13B	B10	DONE (11.71); the anti-stuck floor VALUE stays suspended	OUT	swept at 5.18
+sec13B	B12	OPEN - the Sun/star near-surface family	BOTH	content-slice work gated on A41 and A42; not a divergence today
+sec13B	B14	OPEN - W0/drift/loaded-6 SUSPENDED	IN	T3's data package: his baselines shift with the next spacecrafter-data delivery (D9 forward-only)
+sec13B	B15	OPEN on the invisible-CHILDREN half	BOTH	a freshness bound on a value nothing visibly reads today
+sec13B	B17	OPEN - the view_offset port; R28 closed the frame question	IN	5.128's snap-back fork and 5.135's old-path roll both live here; T1.13
+sec13B	B18	the SKY-LOCK half closed end to end; (a) dissolved, (b) freeMode transparency stated not implemented	BOTH	a stated requirement with no implementation and no measured divergence
+sec13B	B21	DONE (11.72)	OUT	the step FEEL is Vixy's, carried at fable-dispatch section 2
+sec13B	B24	CORE LANDED; spellings answered	OUT	the authoring path exists; its residues are 5.125/5.126, swept there
+sec13B	B27	STEPS 1-2 DONE; the tail LANDED 2026-07-25	OUT	5.5 closed on it
+sec13B	B30	OPEN - new-path frozen-scene micro-instability; FIX SUSPENDED for Vixy	IN	the one member of the stability class NO instrument here reads (the soak reads no pixel) - the map's own unmapped edge
+sec13B	B31	OPEN on the session file and the ledger	IN	T1.8's decision residue; save/restore is an operator workflow
+sec13B	B33	OPEN - the QUERY half of the control surface reads the OLD path	IN	getHeading/getViewOffset/getMountMode answer old while the new path draws - a readout-vs-drawn divergence
+sec13B	B34	OPEN - operator actions that land on the OLD path only; the interactive view ramp is measured	IN	arrow-key look-around does not move the drawn camera - the largest measured dual-seam
+sec13B	B35	OPEN - config-only capabilities	IN	they BOUND what "the new path" can express; T2
+sec13B	B36	OPEN - declared new-path capabilities with NO driver	IN	same denominator argument; T2
+sec13B	B37	OPEN - UI-only capabilities, unscriptable	IN	a show cannot replay what an operator does live; T2 and T5's joystick edge
+sec13B	B38	OPEN - eight command-surface members, every one both-paths	BOTH	resolved into T1.6 by F47; both-paths, so T0 excludes them and R0's reading is open
+sec13B	B39	DONE 2026-07-30; the residue is a user-visible semantic change whose scheduling is the owner's	BOTH	R17 makes the multi-star case reachable as a want, not as content
+sec13B	B41	OPEN - the implicit PRELOAD signal on anticipated visibility	IN	owner-stated 11.233(d); decision-free once the zoom-half anchor is chosen; S-M
+# SET 4 - DECISIONS_PENDING.md open items.
+#   command: /usr/bin/grep -ohE '^\*\*D[0-9]+' claude/DECISIONS_PENDING.md | sort -u -V | wc -l => 37
+#   ids D1..D37, every one carrying a resolution arrow; the file's own last update line
+#   (2026-09-05, F88) states "The open set remains EMPTY", and D37 - the last non-terminal item -
+#   CLOSED on round-3 R14+R15.
+decpend	(none)	THE OPEN SET IS EMPTY, measured: 37 of 37 ids carry a propagated answer	OUT	nothing here reaches the map; the file stays live as a channel, not a backlog
+# SET 5 - FEATURE_REQUESTS.md entries.
+#   command: /usr/bin/grep -c '^### \[' claude/FEATURE_REQUESTS.md => 13, minus the
+#   "### [YYYY-MM-DD] Short title" template = 12 real entries.
+featreq	2026-07-21 fly-to-another-star	accepted - tracked as 13.A A30	OUT	swept at A30
+featreq	2026-07-21 save-camera-to-anchor.ini	under consideration - folded into 13.B B4	OUT	swept at B4
+featreq	2026-07-29 scedit TUI	accepted - tracked in util/scedit/INTENT.md	OUT	tooling for the script-surface owner, not a deployment gate
+featreq	2026-08-26 parallel scripts	new, untriaged; the tester replied "no need" (round-3 R25)	OUT	the tester declined it; whether the owner keeps it as his own is a one-line call, carried in the map's YOURS list
+featreq	2026-08-26 script-bound key/joystick bindings	new, untriaged	OUT	a capability request, not a divergence
+featreq	2026-08-26 script triggers	new, untriaged	OUT	a capability request
+featreq	2026-08-30 truncated keywords	new, untriaged	OUT	a capability request
+featreq	2026-08-30 `#!` in-place annotation	LANDED 2026-08-31	OUT	delivered
+featreq	2026-08-30 mod/div/mul aliases	accepted, landed	OUT	delivered
+featreq	2026-08-31 LLM assistance over the docs	new, untriaged for two decisions	OUT	scedit tooling
+featreq	2026-08-31 command provenance + scedit TCP link	accepted, tracked as 11.186(b)(c)	OUT	scedit tooling
+featreq	2026-09-12 implicit preload signal	owner-stated; opened as 13.B B41	OUT	swept at B41
+# SET 6 - SCRIPT_SURFACE.md entries (the script-surface owner's channel).
+#   command: /usr/bin/grep -ohE 'SS-[0-9]+' claude/SCRIPT_SURFACE.md | sort -u -V | wc -l => 43
+#   ids SS-1..SS-43. Sixteen carry a terminal status (DONE by you / ANSWERED / RESOLVED /
+#   REMOVED); the rest are OPEN and every one of them is the TESTER'S to answer.
+scriptsurf	SS-1	DONE by you (the no-break space)	OUT	closed in the channel
+scriptsurf	SS-2	line FIXED by you; the QUESTION is not - a 2020 reference attests the spelling	IN	the only evidence about a capability that may have gone away; the tester's
+scriptsurf	SS-3	DONE by you (datetime_display_* respelled)	OUT	closed in the channel
+scriptsurf	SS-4	both lines REMOVED; question still open, same reason as SS-2	IN	same class as SS-2
+scriptsurf	SS-5	both lines REMOVED; the QUESTION is still the open one	IN	same class as SS-2
+scriptsurf	SS-6	the `=` is GONE; the second half (does a value <=1.0 take effect) rides 5.118	IN	swept also at 5.118
+scriptsurf	SS-7	DONE by you (no indented # left)	OUT	closed in the channel
+scriptsurf	SS-8	line FIXED by you; the history question stands	IN	same class as SS-2
+scriptsurf	SS-9	HALF and HALF - `landscape ... spacecraft on` survives byte-identical	IN	a documented parameter no code reads, on a line still in his reference file
+scriptsurf	SS-10	line REMOVED; the question is still the valuable one	IN	same class as SS-2
+scriptsurf	SS-11	OPEN - suntrace/sun_trace's intent	IN	swept also at 5.91; the script surface is his
+scriptsurf	SS-12	OPEN - what a recording should CONTAIN	IN	decides an entire defect class (5.96)
+scriptsurf	SS-13	OPEN - media subtitle toggle, the workflow half	IN	swept also at 5.36
+scriptsurf	SS-14	OPEN - does any show write `configuration module ...`	IN	swept also at 5.94
+scriptsurf	SS-15	OPEN - is the startup date mode ever written `Preset`	IN	swept also at 5.95
+scriptsurf	SS-16	ANSWERED BY ACTION - he fixed the file in place	OUT	closed in the channel
+scriptsurf	SS-17	ANSWERED - the fix is authorised and landed (F94)	OUT	closed; one doc token (superscript.sts:1529) is his to apply
+scriptsurf	SS-18	OPEN - 15 more teach-vs-do divergences, bulk-answerable	IN	the reference script is the project's only functional test
+scriptsurf	SS-19	OPEN, FYI - the file never exercises 12 of the 62 commands	OUT	a coverage fact, no decision owed
+scriptsurf	SS-20	RESOLVED in the tree; live confirmation still owed	OUT	closed in the channel
+scriptsurf	SS-21	OPEN - two advice lines with no `#` execute	IN	his file; two lines the engine runs as commands
+scriptsurf	SS-22	ANSWERED by the owner - mod/div/mul become real aliases	OUT	closed in the channel
+scriptsurf	SS-23	OPEN - the language examples `text "..."`	IN	his file
+scriptsurf	SS-24	OPEN, AMENDED - a `struct if` with no `struct if end`, and the catalogue under # STRUCT is worse	IN	his file; a structural error in the reference script
+scriptsurf	SS-25	OPEN, confirmed on a running engine - panorama5.sts's `struct if end` closes nothing	IN	his shipped show
+scriptsurf	SS-26	OPEN - `media action play ... pause on` does not start the video paused	IN	question (a) decides documentation fix vs compatibility problem
+scriptsurf	SS-27	OPEN - `transition action skip duration 1`	IN	his file
+scriptsurf	SS-28	OPEN - the spelling `in_stellar_system`	IN	his file; an authoring-grammar question
+scriptsurf	SS-29	OPEN - `flag datetime_display_number` names no flag	IN	his file; accepted and inert
+scriptsurf	SS-30	OPEN - a REMOVAL to double-check (`set line_width 1.5`)	IN	his file
+scriptsurf	SS-31	OPEN, no action required - the missing-documentation menu	OUT	a menu, not a bug list
+scriptsurf	SS-32	OPEN - five deep-sky drawings dimmer than the file asks, and they lose their credit	IN	shipped content draws differently from what the data says
+scriptsurf	SS-33	OPEN - three lines of fscripts/06old.sts are not what they look like	IN	his shipped show package
+scriptsurf	SS-34	OPEN - four spellings the command ignores, on 39 lines	IN	swept also at 5.122; the shipped package
+scriptsurf	SS-35	OPEN - `set home_planet Earth duration 0` does not set the home planet	IN	a shipped command with a visible consequence
+scriptsurf	SS-36	OPEN - four switch names that do not exist, on 5 lines	IN	the shipped package
+scriptsurf	SS-37	OPEN - three images that never appear (`nebula action load`)	IN	the shipped package
+scriptsurf	SS-38	OPEN - `flag stars ofn`, a harmless typo, and the general behaviour question	IN	swept also at 5.116's coercion class
+scriptsurf	SS-39	OPEN, FYI - `halo true` written twice on the same line, 1595 times	OUT	harmless, no decision owed
+scriptsurf	SS-40	OPEN, needs his word - two dead keys on EVERY body, 189 lines of his ssystem.ini	IN	swept also at 5.124; the DATA is the product (D9)
+scriptsurf	SS-41	OPEN, needs his word - three misspelled keys over 3365 lines of the shipped package	IN	swept also at 5.124
+scriptsurf	SS-42	OPEN, needs his word - [Sedna] loses three orbital elements	IN	swept also at 5.151
+scriptsurf	SS-43	OPEN, FYI - adopting the composed format stops four keys working	IN	swept also at 5.125; FYI in the channel but it is a new-path authoring loss
+# SET 7 - fable-dispatch.md section 3, the rounds SINCE 2026-09-05 (sessions 22-30).
+#   command: the section-3 block heads, /usr/bin/grep -nE '^- \*\*Session-(2[2-9]|30) decision'
+#   claude/fable-dispatch.md => 9 blocks (s30 :635, s29 :740, s28 :923, s27 :1047, s26 :1176,
+#   s25 :1280, s24 :1377, s23 :1449, s22 :1553).
+#   MEASURED CORRECTION TO THE MANDATE'S PREMISE: the [Y]/[H] id grammar exists for sessions
+#   26-30 ONLY (Q-70's shape began at session 26). Sessions 22-25 carry the same content as
+#   numbered "YOURS" items and a "HELD OPEN, not absorbed" paragraph, with no ids. Both forms
+#   are swept below.
+#   [Y] per block (own ids): s30 Y17-Y29 =13, s29 Y5-Y16 =12, s28 Y1-Y8 =8, s27 Y1-Y9 =9,
+#   s26 Y1-Y7 =7  => 49. [H] per block: s30 8, s29 7, s28 7, s27 5, s26 4 => 31.
+#   Sessions 22-25 "YOURS": s25 (1)-(8)=8, s24 (1)-(6)=6, s23 (1)-(7)=7, s22 (1)-(4)=4 => 25.
+fd3	s30 [Y17]	OPEN - V-D1 engine-instantiated or AUTHORED DSO content	IN	D9 product surface either way; 527 lines of the field to migrate under either reading
+fd3	s30 [Y18]	OPEN - V-D2 the catalogue-to-AU factors; GATES slices 2 and 4	IN	a measurement to ratify; two of five DSO slices wait on it
+fd3	s30 [Y19]	OPEN - V-D3 `mode in_sandbox`	OUT	no node, no behaviour to preserve
+fd3	s30 [Y20]	OPEN - V-D4 Tully's SELECTION after the port	IN	selectable today; three readings priced; a user-visible capability
+fd3	s30 [Y21]	OPEN - V-D5 OjmMgr's full-screen depth clear	IN	a faithful port keeps a visible rendering-order effect; slice 3 measures it
+fd3	s30 [Y22]	OPEN - V-D6 the far edge, the peg's appearance, the onset ramp	IN	three appearance questions routed to him and the tester; T1.3's residue
+fd3	s30 [Y23]	OPEN - V-D7 Dso3d's labels read two operator words for one state	IN	an operator-surface inconsistency on the DSO layer
+fd3	s30 [Y24]	OPEN - 5.154's FIX SHAPE	IN	swept at 5.154
+fd3	s30 [Y25]	OPEN - the IterativeEll FOLD, modelled only	IN	the SHARED solver, BOTH render paths; a running clock crosses it; the leg is queued
+fd3	s30 [Y26]	OPEN - the EntityCore ORPHAN GITLINK 7ce58350	IN	every code commit older than f4ceb208 names a submodule commit a fresh recursive clone cannot check out
+fd3	s30 [Y27]	OPEN - one ss-grammar.json row carries a [NOT AT HEAD] marker	IN	the intern's ctest reads the scedit gate; R0 surface
+fd3	s30 [Y28]	OPEN - the rewrite tools' FILE-SET rules	OUT	tooling policy; no product or developer surface
+fd3	s30 [Y29]	OPEN - sha_map_lib.sh sourced by both tools, the trailer STOP, step A'''	OUT	tooling
+fd3	s30 [H1]	HELD - the DSO SLICES; slice 1 dispatchable on his reading	IN	swept at B5/T1.3
+fd3	s30 [H2]	HELD - 5.154's fix (S) on shape 1	IN	swept at 5.154
+fd3	s30 [H3]	HELD - the fold leg (S)	IN	swept at s30 [Y25]
+fd3	s30 [H4]	HELD - B41 after the consolidation items	IN	swept at B41
+fd3	s30 [H5]	HELD - the CANARY-PER-LAUNCH rule stands	OUT	verification protocol, not a deployment gate
+fd3	s30 [H6]	HELD - the intern's gaps [Y5]-[Y7] and [Y8], this week's clock	IN	swept at R7/R8/R9 and at s29 [Y8]
+fd3	s30 [H7]	HELD - F117-a..f recorded not minted; anchor_gate.py's twelve duplicated definitions and its out-of-range misdiagnosis	IN	anchor_gate.py lives at util/scedit/tests/ in the CODE tree, which the intern's ctest runs - an R0 surface, NEVER CARRIED by the predecessor
+fd3	s30 [H8]	HELD - Q-72, a batched Bash call without its leading cd	OUT	a harness-discipline item in ~/shared
+fd3	s29 [Y5]	OPEN - R23's content-installation procedure	IN	promoted to R7
+fd3	s29 [Y6]	OPEN - section 9's engineering principles placeholder	IN	promoted to R8
+fd3	s29 [Y7]	OPEN - the remote form / key for the second clone	IN	promoted to R9
+fd3	s29 [Y8]	OPEN - the build every measurement uses is not the build the document ships	IN	every D11 cost number was taken on -O2 while the documented build ships -Ofast -O3; NEVER CARRIED
+fd3	s29 [Y9]	OPEN, no answer needed today - whether every inline section 5 row should carry its own id	OUT	a ledger-shape preference; the resolver exists either way
+fd3	s29 [Y10]	OPEN - 5.142's root, four decisions at 11.236(k)	IN	swept at 5.142
+fd3	s29 [Y11]	OPEN - 5.115's 1 GiB bound, five veto points	IN	swept at 5.115
+fd3	s29 [Y12]	OPEN - 5.153	IN	swept at 5.153
+fd3	s29 [Y13]	OPEN - 5.149	IN	swept at 5.149
+fd3	s29 [Y14]	OPEN - 5.146	IN	swept at 5.146
+fd3	s29 [Y15]	OPEN - 5.150's two halves not minted	OUT	swept at 5.150; measured null
+fd3	s29 [Y16]	OPEN - scratch trees	OUT	housekeeping
+fd3	s29 [H1]	HELD - the DSO design pass	OUT	RAN (F117, 11.240)
+fd3	s29 [H2]	HELD - B41's zoom-half anchor	IN	swept at B41
+fd3	s29 [H3]	HELD - the trail walker's engine leg	OUT	RAN (F118, 11.241) - 5.154 minted from it
+fd3	s29 [H4]	HELD - the rewrite tool's class gap, code-tree citations	OUT	DELIVERED (F119, 11.242)
+fd3	s29 [H5]	HELD - [Y8] the build type	IN	swept at s29 [Y8]
+fd3	s29 [H6]	HELD - the intern's three gaps, the only items with a clock	IN	swept at R7/R8/R9
+fd3	s29 [H7]	HELD - 5.115's density half; the EntityCore log pile; the drawn orbit line has no observable	IN	5.115's density half swept there; the EntityCore log pile (395 files) is an install-footprint fact on the intern's machine
+fd3	s28 [Y1]	OPEN - 5.149's shape	IN	swept at 5.149
+fd3	s28 [Y2]	the log window's four veto points	OUT	implemented-and-live, silence = endorsed
+fd3	s28 [Y3]	OPEN - 5.152	IN	swept at 5.152
+fd3	s28 [Y4]	ANSWERED 2026-09-12 (11.233(g)) - [Y4] CLOSED	OUT	answered
+fd3	s28 [Y5]	OPEN - 5.151 Sedna's data	IN	swept at 5.151
+fd3	s28 [Y6]	OPEN - isSystemCentered() answers by POSITION, read at LOAD time by both orbit loaders	IN	a body's JD-0 position decides which frame its children's orbits are built in - an authoring-surface fact; NEVER CARRIED
+fd3	s28 [Y7]	the 2026-09-11 canary re-bank	OUT	environment, superseded by later boots
+fd3	s28 [Y8]	scratch trees	OUT	housekeeping
+fd3	s28 [H1]	HELD - the instance probe blind to staging binaries	OUT	LANDED (F112, 11.238)
+fd3	s28 [H2]	HELD - 5.150's fix	OUT	DELIVERED (F111, 11.239)
+fd3	s28 [H3]	HELD - orbit lines ON move the OLD path's moons through the static ephemeris cache	OUT	an instrument caveat at 5.84
+fd3	s28 [H4]	HELD - 11.207(g)'s list carries three "decision-free" labels REFUTED at their rows	IN	the predecessor's own decision-free queue is stale; 5.66, 5.71 and item 6 must be re-cut before dispatch
+fd3	s28 [H5]	HELD - 5.115's density half; EntityCore's uncapped log pile	IN	swept at 5.115 and s29 [H7]
+fd3	s28 [H6]	HELD - dumpread.load_dump cannot read F100's pinned dumps	OUT	harness instrument residue
+fd3	s28 [H7]	HELD - the M flags 11.229 / 11.196	OUT	ledger-shape residue
+fd3	s27 [Y8]	ANSWERED and DELIVERED (11.227, F106); 5.147 FIXED	OUT	closed
+fd3	s27 [Y4]	the rewrite tool's state before the owner's Saturday run	OUT	the run happened 2026-09-12; nothing left to decide
+fd3	s27 [Y2]	5.145 FIXED on his ruling; two veto points	OUT	implemented-and-live
+fd3	s27 [Y9]	OPEN - 5.148	IN	swept at 5.148
+fd3	s27 [Y3]	ANSWERED (11.233(f)) - 5.146's shape	IN	swept at 5.146
+fd3	s27 [Y1]	carried - 5.142's pool policy	IN	swept at 5.142
+fd3	s27 [Y5]	carried - 5.144's 8-12 h leg	IN	swept at 5.144
+fd3	s27 [Y6]	carried - 5.140's meaning	IN	swept at 5.140
+fd3	s27 [Y7]	scratch trees	OUT	housekeeping
+fd3	s27 [H1]	HELD - the orbit-line sampler walks the position seed	OUT	DELIVERED (F111); 5.150
+fd3	s27 [H2]	HELD - two anchors refused for ONE frame after a reload	OUT	measured self-healing, the line names both ways
+fd3	s27 [H3]	HELD - the guard cannot tell "outside the walk" from "not walked yet"	IN	needs the system's identity inside ModularBody - the owner's nested-modular-bodies line (11.223(e))
+fd3	s27 [H4]	HELD - instrument residues (purge-path.sh's map, list_code_trailers' skip, the scan's EVENT lexicon)	OUT	two of three DELIVERED by F119; the EVENT lexicon is a ledger-instrument residue
+fd3	s27 [H5]	HELD - 5.84's own trigger unmeasured; 11.215(g)'s four bodies' ulps not re-measured	OUT	instrument caveats on the comparison baseline
+fd3	s26 [Y1]	5.142 - ANSWERED then CORRECTED; the pool stays 1 MiB	IN	swept at 5.142
+fd3	s26 [Y2]	5.145 - ANSWERED, delivered	OUT	closed
+fd3	s26 [Y3]	5.146 - ANSWERED, the shape given	IN	swept at 5.146
+fd3	s26 [Y4]	R5 the PUSH - ANSWERED and DONE	OUT	closed
+fd3	s26 [Y5]	5.144's leg - carried	IN	swept at 5.144
+fd3	s26 [Y6]	5.140 - ROUTED to the tester	IN	swept at 5.140
+fd3	s26 [Y7]	scratch trees	OUT	housekeeping
+fd3	s26 [T1]	ROUTED to the tester, then ANSWERED BY THE OWNER (11.223(e))	OUT	1e16 is the designed inGalaxy entry; the question was withdrawn
+fd3	s26 [T2]	06old.sts lands 156 of 170: 13 duplicate names + TDRS 3 with no coord_func	IN	the tester's own data; both paths refuse and say why - a data fix he owns
+fd3	s26 [T3]	06.sts aborts the reference binary at its 675th body	IN	swept at 5.142
+fd3	s26 [H1]	HELD - the dump header names no system	OUT	dump-channel instrument
+fd3	s26 [H2]	HELD - the dump calls the barrier for 90 of 120 records	OUT	instrument; delivered in part by F105
+fd3	s26 [H3]	HELD - 5.143 stays OPEN; `search` NOF outside the system	OUT	swept at 5.143 and 5.74
+fd3	s26 [H4]	HELD - an F98 executor claim its own log refutes	OUT	corrected by F102
+fd3	s25 YOURS (1)	5.142 - "READY" HAS A NEW FACT AGAINST IT	IN	swept at 5.142
+fd3	s25 YOURS (2)	R5 the PUSH	OUT	done 2026-09-12
+fd3	s25 YOURS (3)	5.144 - the 8-12 h leg	IN	swept at 5.144
+fd3	s25 YOURS (4)	5.115 in arithmetic - the per-launch key vs the per-day file layout	IN	swept at 5.115 (the density half)
+fd3	s25 YOURS (5)	5.140 - orbit_lon means two things	IN	swept at 5.140
+fd3	s25 YOURS (6)	5.139 - frozen eye-frame position	OUT	FIXED (F100)
+fd3	s25 YOURS (7)	the pole guard at the ZERO vector - should "no direction" print differently from "at the pole"	IN	an interface question on a shipped readout, named at 11.216(j2); carried with 5.148
+fd3	s25 YOURS (8)	scratch trees	OUT	housekeeping
+fd3	s25 HELD	5.21's two halves; 5.142/5.143/5.144's mechanisms; body action reload in NO soaked show; the pinned-clock drift; the 11.207(g) tail	IN	each swept at its row; "body action reload is in NO soaked show" is a COVERAGE gap carried into the new T5
+fd3	s24 YOURS (1)	R5 the PUSH	OUT	done
+fd3	s24 YOURS (2)	"READY" IS NOW YOUR WORD - both gates have run	IN	the map's own "ready" gate is spent; what the soak cannot see is the new T5
+fd3	s24 YOURS (3)	the RSS tail 0.28-0.38 MB/h	OUT	subsumed by 5.144
+fd3	s24 YOURS (4)	the four-body selector, LEAVE recommended	OUT	2-4 orders below the accepted float floor
+fd3	s24 YOURS (5)	Camera::observedToBodyLocalPos has no in-tree consumer	OUT	an interface tidy-up
+fd3	s24 YOURS (6)	scratch trees	OUT	housekeeping
+fd3	s24 HELD	the second soak (RAN); 5.138's leg (DELIVERED); f44_parity's reconstruct is wrong post-F91; pre-012105d6 recorded values are pre-fix records; f90's show_own_duration is struct-loop blind; the Frame stall rate unattributed	OUT	instrument residues, all recorded; none is a product surface
+fd3	s23 YOURS (1)	R5 the PUSH	OUT	done
+fd3	s23 YOURS (2)	R6's remaining half - after the rename, do PRs still target 2023-master	IN	swept at R6
+fd3	s23 YOURS (3)	R23's procedure	IN	promoted to R7
+fd3	s23 YOURS (4)	5.111's unmatched set	IN	swept at 5.111
+fd3	s23 YOURS (5)	5.136 - app_locale inert	BOTH	swept at 5.136
+fd3	s23 YOURS (6)	5.137 - an authored body leaves the drawn universe on reload	IN	swept at 5.137
+fd3	s23 YOURS (7)	routed to the tester - honour or skip authored pauses under UNATTENDED play	IN	old-behaviour intent; the tester's; it decides what an unattended show does every night
+fd3	s23 HELD	T5.2 (RAN); instrument residues (supervised-by.sh's fallback FIXED; f85_links' IsADirectoryError; f89_p7 margins; b4_anchors has no instance probe; b4_anchors duplicates dumpread's grammar)	OUT	harness residues; the supervised-by.sh half is closed
+fd3	s22 YOURS (1)	R5 the PUSH	OUT	done
+fd3	s22 YOURS (2)	R6 the branch policy	OUT	answered (rename once ready); the act and the PR-target half are R6's, swept there
+fd3	s22 YOURS (3)	R23's procedure	IN	promoted to R7
+fd3	s22 YOURS (4)	the developer's platform and whether the harness is readable	OUT	ANSWERED 2026-09-12 - Linux; harness readable
+fd3	s22 HELD	b4_anchors P7's screen-witness control; 5.48; 5.59's sender arm; the tester's unanswered halves (5.128's snap-back, A42's number, R19's 999-dependence, L2)	IN	5.48, 5.128, A42 and L2 each swept at their node; the P7 control was resolved by F93

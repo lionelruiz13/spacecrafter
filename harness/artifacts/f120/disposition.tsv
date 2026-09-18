@@ -1,0 +1,85 @@
+id	predecessor_last_stated_status	ledger_state_read_2026-09-18	disposition	who_acts
+# F120 FORWARD CENSUS: every item of DEPLOYMENT-MAP.md @ 3c7350ce (855 lines, archived at
+# DEPLOYMENT-MAP/archive/2026-09-18-predecessor.md) gets one row. Column 3 is READ AT THE LEDGER
+# (INTENT.md section 5 / section 13 row, or INTENT/<id>.md), never the map's own annotation.
+# Resolving commands for the predecessor's item sets:
+#   tier R   : sed -n '99,328p' <pred> | /usr/bin/grep -cE '^[0-9]+\. '            => 6
+#   T1       : sed -n '329,465p' <pred> | /usr/bin/grep -cE '^[0-9]+\. '           => 11
+#   T2       : sed -n '466,537p' <pred> | /usr/bin/grep -cE '^- |^~~'              => 10 bullets
+#   T3       : sed -n '538,634p' <pred> | /usr/bin/grep -cE '^- \*\*'              => 6 bullets
+#   T4       : the one enumerating paragraph at :637-642 + the :643-653 addendum   => 14 members
+#   T5       : sed -n '685,800p' <pred> | /usr/bin/grep -cE '^[0-9]+\. '           => 5
+#   NOT-block: sed -n '801,808p' <pred> | /usr/bin/grep -cE '^- \*\*'              => 3
+#   crit path: the three closing paragraphs :809-855, members named inline         => 13 named
+# Ledger pointers resolve with: python3 claude/intent_resolve.py <id>
+R1	MET 2026-09-05 by F83 (merge ba9df31f); residual DISCHARGED	INTENT 11.203 delivered+accepted; origin/2023-master fully in	CLOSED (11.203)	-
+R2	MEASURED NOT MET then both blockers gone; documentation half CLOSED (11.206); pin-bump discharged at f4ceb208; CONTENT question is the owner's	5.130 FIXED; 5.131 CLOSED for the clone but "the two install_src.sh:24 riders stay OPEN and unowned"; the content question unanswered	LIVE (narrowed to the two install_src.sh:24 riders); the content question promoted to R7	dispatchable (riders) / owner (R7)
+R3	MET 2026-09-05 by F85 (11.206); three residuals recorded	11.206 delivered; 11.234(e)(f)(j) QUALIFIED "cannot rot silently"; residual (i) I1-I7 unwritten, (ii) no authorship convention, (iii) R23's procedure	LIVE (the authorship-convention residual); (i) promoted to R8, (iii) is R7; the remote-form gap promoted to R9	owner
+R4	MET for the old-core half 2026-09-05 by F86 (11.205); 5.48 is EntityCore = Vixy's	5.48 OPEN, rated 0/6 with a control that fires; the binary measured carried an EntityCore fix a fresh clone could not reach until f4ceb208	LIVE (5.48 alone)	owner (EntityCore)
+R5	DONE 2026-09-12 11:03-11:04 (11.232(b)); 0 unpushed on each; CLOSED as an act	11.232(b); measured again at this round's open: 0 unpushed on both branches	CLOSED (11.232(b)); standing weekly cadence [vixy 2026-09-12]	owner (cadence only)
+R6	policy ANSWERED (rename, not redirect); ACT not done; PR-target sentence unstated; two riders answered	11.232(a)2 "master-beta as is; no rename now"; the rename waits on "once ready"; 11.212(h) is the eleven-act checklist + patch	LIVE (two halves: the rename act, gated on his word; the PR-target sentence)	owner
+R7 (new, max+1)	carried inside R2's row and the R0 head, with no id	R23 [tester, via owner commit 1e6ca60] "loaded in an outside installation procedure"; 11.204(f) a tree install ships no content; 11.234(l) UNCHANGED, nothing written	LIVE - the intern's clone runs empty and no document says why	owner
+R8 (new, max+1)	carried as R3's residual (i), no id	11.232(c)4(ii); doc/developer-entry.md section 9 is a placeholder "to be written by Calvin Ruiz"; 11.234(l) UNCHANGED	LIVE - I1-I7 are cited by number in both repos and exist in neither	owner
+R9 (new, max+1)	carried as 11.232(c)4(iii), no id, never in the map	11.234(l) UNCHANGED; the rehearsal substituted a local path and said so; a network clone carries no unreachable objects (11.234(e))	LIVE - the intern cannot run the entry document's second clone	owner
+T1.1	CLOSED 2026-09-12 (answered 11.233(d), built F114 -> 11.235)	5.100 + 5.101 FIXED; gaps 99.0336/99.0318 deg -> 8.0e-06/1.0e-05 deg; one residual mint blocked on a host that can select a star	CLOSED (11.235)	-
+T1.2	GATE CLOSED 2026-09-05 by round-3 R28; 5.135 minted; 5.128's snap-back undecided	5.135 OPEN (both readings recorded, neither taken); 5.128 OPEN (record-only, the snap-back fork untouched by R28)	CLOSED as a gate; its two residues become T1.13	owner (T1.13)
+T1.3	DESIGNED 2026-09-13 (11.233(c) direction, F117 -> 11.240); leaves the decision tier except three appearance questions	11.240: 5 of 9 suspended items answered, 1 in part, 3 his; five slices, slice 1 decision-free; seven owner nodes [Y17]-[Y23]	LIVE as a decision node (the owner's reading of b5-dso-design.md + [Y17]-[Y23]); the WORK is T2's five slices	owner, then dispatchable
+T1.4	CLOSED 2026-09-05 by round-3 R27; work delivered F91	5.86 + 5.19 FIXED (11.213); decision (1) was never a decision (the +M_PI_2 of getAxisRotation)	CLOSED (11.213)	-
+T1.5	LIVE - 5.109's layer half	5.109 OPEN; the display-scaled-datum hazard is a standing harness rule (fable-dispatch section 0.5)	LIVE	owner
+T1.6	LIVE - the script-semantics batch; B38's eight folded in by F47	every named member OPEN at its row; membership WIDENED by this census (see the map's T1.6)	LIVE, membership refreshed	owner (mostly), tester where the semantics are his
+T1.7	LIVE - forks whose owed data is PAID	A43 CLOSED AS DESIGN (round-3 R29); A40/A41/A42/A44 still 13.A rows; 5.88/5.89/5.90/5.106/5.108 OPEN; the two 11.144 riders open	LIVE minus A43	owner
+T1.8	LIVE - B31 completeness residue (C4's non-body catalogue key + D30's DELTA branch)	B31 row OPEN on the session file and the ledger; slice 3 landed (11.128)	LIVE	dispatchable after the decision
+T1.9	LIVE - 5.53(b), the big-texture level gate, one token	5.53 (a) WITHDRAWN as a defect (R29 "It's a design"), (b) unchanged and sharper; waits also on A42's unnamed number	LIVE	owner + tester (A42's number)
+T1.10	LIVE - 5.35 day_key_mode + 5.41 camera action save (5.98 struck, FIXED F94)	5.35 OPEN, 5.41 OPEN (B31-gated)	LIVE	owner
+T1.11	LIVE - 5.113 + 5.110's fix routing	5.113 OPEN and explicitly unaffected by F91; 5.110 OPEN, its mechanism is the TYPE FILTER upstream	LIVE	owner
+T2:5.111	MINTED as F87	matched set DELIVERED (11.209, 14 msgids); the UNMATCHED set is an owner decision, not T2 work	CLOSED as T2 work; the remainder moves to T1.14	owner (T1.14)
+T2:5.110	PAID 2026-08-29 (F50 11.166); fix routing -> T1	5.110 OPEN at its row; routing home is T1.11	CLOSED as T2 work	owner (T1.11)
+T2:5.49	LIVE - the owed render measurement (f14_meridian.py u_sub), S and unblocked	5.49 OPEN; 11.217(d) annotated the POSITION level only, "the render half this row owes is untouched by that datum"	LIVE	dispatchable (S)
+T2:i18n-asym	LIVE - composed-body i18n selection asymmetry (11.158(d5))	recorded at 11.158(d5); no section 5 row; not re-measured since; F87/11.209 covered the readout, not selection	LIVE	dispatchable (S, measure then route)
+T2:5.41/5.42	TRIAGED 2026-08-29 (F47) -> both to T1	5.41 OPEN (T1.10), 5.42 OPEN (T1.6) + the 5.112 scope pointer	CLOSED as T2 work	owner (T1)
+T2:5.20/5.21	5.20 NOT blocking; 5.21 -> T2, reach corrected	5.20 OPEN, no construction site on either path; 5.21 PARTLY FIXED (latitude), (a) + the third defect OPEN and NO LONGER decision-free (blocked on 5.140)	5.20 EXCLUDED (not blocking); 5.21 LIVE, blocked on 5.140	tester (5.140), then dispatchable
+T2:5.107	LIVE - extent-cache latch, the fix shape exists	5.107 OPEN; the owed count (bodies whose isVisible never went true in a shipped show) has not been taken	LIVE	dispatchable (S)
+T2:5.71+5.66	UNBLOCKED 2026-09-05 by R28; both port under the new convention	5.71 port dispatchable, its feel answer still owed; 5.66's OWN owed item OPEN (which landing "look_at azimuth X altitude Y" means) - the "decision-free" label was REFUTED at its row (session-28 [H4])	LIVE, and the predecessor's "neither waits on a decision any more" is STALE	5.71 dispatchable; 5.66 owner
+T2:B35/B36/B37	LIVE - capability audits that bound the transparency denominator	all three 13.B rows OPEN	LIVE	dispatchable (M)
+T2:hygiene	ALL THREE DISCHARGED 2026-08-29/30	11.164, 11.165, 11.168 delivered	CLOSED	-
+T3:field-content	ANSWERED IN THREE PARTS (R22/R23/R24); the answers move the question	5.74 + 5.78 OPEN, de-prioritized, off every path; 5.90's mechanism OPEN; 5.88 gains weight; the PROCEDURE is R7	LIVE (narrowed: 5.88's diagnostic + 5.90's mechanism + R7)	owner (R7), dispatchable (5.88)
+T3:census	ANSWERED 2026-09-05 (R21) - nothing retired, every class IN	11.162 closing marker; the staleness caveat travels with it	CLOSED as a question; its consequence is carried in the map's head	-
+T3:hardware	LIVE - 5.60, his dome/projector vs our headless :2, his maximum_fps; appearance is (binary, driver) jointly	5.60 OPEN; 11.167(i) the driver census; 11.159(k7) cadence is stack-local	LIVE	tester/owner at his field
+T3:config-migration	5.112's datum PAID (F84 11.204(j)); N7 gives the fix direction; open for "his actual config version"	5.112 OPEN; the tester's EXPECTATION recorded (comment out, never delete); the stratum ruling and schedule stay the owner's	LIVE (two halves: his version, and the fix's schedule)	owner (schedule), tester (his file)
+T3:B14-data	LIVE - the poles/W0/periods package rides the next spacecrafter-data delivery	B14 row OPEN: W0/drift/loaded-6 SUSPENDED	LIVE	owner
+T3:script-corpus	LIVE - "the shipped 434 are our proxy; HIS files are the real test"	F98 soaked the tester's own fscripts corpus (4.508 h, 135 shows, 8 cycles) and found 5.142/5.143/5.144; what remains is HIS install and any file newer than the copy soaked	LIVE, narrowed	tester
+T4:D15(a)-(d)	INFORM x4 with the revise/revert offer	silence = accepted under the batch's own contract; they stand as built	CLOSED	-
+T4:D15(b)-CONFIRM	CONFIRM the heading-stability default	round-3 R26 confirmed, plus a fallback clause the question did not offer	CLOSED	-
+T4:D37	a QUESTION with its premise fact	round-3 R14 + R15: hidden star goes dark, ambient-valued; DECISIONS_PENDING D37 CLOSED	CLOSED as a decision; the IMPLEMENTATION is unscheduled	owner (schedule)
+T4:A15	A15's fade thresholds	L1 judged one of four axes (remove the residual step, delivered F109); the threshold and band stay open at A15	LIVE (at A15)	owner
+T4:oort-shadow	the oort-SHADOW onset item, state-stamped	round-3 L2 "I didn't test it yet" - THE ONE MEMBER STILL OPEN of the whole batch	LIVE	tester
+T4:D28/A38	transition_to body keeps whole orientation	round-3 N5 "Just switch to the planet, keeping the old values" - no revert, option (a) stands	CLOSED	-
+T4:freeflight-defaults	the free-flight defaults (riders, if Vixy confirms)	NEVER SENT - waits on Vixy (11.207's own record)	LIVE	owner
+T4:5.106	5.106's environment semantics (if closed-as-accepted)	NEVER SENT; 5.106 OPEN, de-urgented (interactive-only); the atmosphere-flood sub-question owed either way	LIVE	owner
+T4:field-content	the field-content questions (T3)	answered R22/R23/R24 - see T3:field-content	CLOSED as T4 cargo	-
+T4:census	the content census (T3)	answered R21 - see T3:census	CLOSED as T4 cargo	-
+T4:11.4-origin	possibly 11.4's origin sub-question	round-3 R27 "The RA/DE must be the value from our position" - observer-centred	CLOSED	-
+T4:5.83	ADDED by F47 as an INFORM	silent, therefore accepted	CLOSED	-
+T4:5.21	ADDED by F47 as a QUESTION to the tester	round-3 R18 "No." - the D9 compensation risk is excluded	CLOSED as T4 cargo (the row is LIVE at T2)	-
+T4:5.98	ADDED by F47 as a QUESTION; then struck	R19 authorised, F94 DELIVERED (code 7509c809); one doc token routed at SS-17	CLOSED	tester (the doc token)
+T5.1	RAN 2026-09-05 (F90 -> 11.211)	f90_rehearsal.py is the newcomer's smoke suite; zero flakes over 13 runs across two binary changes	CLOSED	-
+T5.2	RAN 2026-09-06 (F95 -> 11.215) and again on the tester's corpus (F98 -> 11.218)	5 h 44 min + 4.508 h; no F1/F2/F3/F4; "ready" is the owner's word from here	CLOSED; what it CANNOT see is re-derived into the new T5	-
+T5.3	RESOLVED 2026-08-29 (F47 11.163(i)) - not unmapped, an enumerated eight-member batch	B38 row OPEN; the eight members are T1.6's	CLOSED as an unmapped edge	-
+T5.4	LIVE - joystick/hardware UI path, no hardware here	B37 row OPEN	LIVE, carried into the new T5	tester at his field
+T5.5	TRIAGED 2026-08-29 (F47) - all eight read at source	the eight dispositions are recorded at 11.163(b)	CLOSED	-
+NB1	B8 old-path removal - transparent operation KEEPS old present	B8 row OPEN by definition (waits for old-path removal)	LIVE as an exclusion, argument unchanged	-
+NB2	B1/B2/B3 architectural lines - Vixy-paced by design	B1/B2/B3 rows OPEN; R21 removed the "unless the census says otherwise" escape, so the exclusion rests on the Vixy-paced argument alone	LIVE as an exclusion, argument WEAKER than the one it replaced	owner (pace)
+NB3	perfect parity on interactive free-flight residuals - <=2.3 m/toggle accepted	11.154(a); the usage-path model covers the tester's interactive use	LIVE as an exclusion	-
+CP:T1.1	critical-path member	CLOSED - see T1.1	CLOSED	-
+CP:T1.2	critical-path member	CLOSED - see T1.2	CLOSED	-
+CP:T1.3	critical-path member	LIVE as a reading + [Y17]-[Y23] - see T1.3	LIVE	owner
+CP:T1.4	critical-path member (the pair)	CLOSED - see T1.4	CLOSED	-
+CP:T1.5	critical-path member (added by the 2026-09-05 evening re-cut)	LIVE - see T1.5	LIVE	owner
+CP:T2-burn	"two or three dispatch rounds burn T2"	partly burnt: 5.86+5.19, 5.98, 5.111's matched set, 5.115's retention+size, 5.100/5.101, 5.150's iterative half all delivered since	LIVE, shorter	dispatchable
+CP:final-pass	"the final pass fires carrying T3+T4"	FIRED and came back: nineteen of twenty answered, L2 alone open	CLOSED as an act; a SECOND pass is not scheduled	owner/tester
+CP:T5.1	rehearsal gates "ready"	RAN - see T5.1	CLOSED	-
+CP:T5.2	soak gates "ready"	RAN - see T5.2; "ready" is the owner's word	CLOSED	owner (the word)
+CP:queue	the decision-free queue R27/R28/R18/R19/R20/L1 created 2026-09-05	11.207(g)'s list carries three "decision-free" labels REFUTED at their rows (5.66, 5.71, item 6) - session-28 [H4]: the list is re-cut before anything is dispatched from it again	LIVE, and the label is stale	dispatchable after the re-cut
+CP:5.86+5.19	"first: RA/DE, both decisions closed"	DELIVERED 2026-09-06 (F91 11.213)	CLOSED	-
+CP:5.112	"the one genuinely new item F47 adds to the path"	5.112 OPEN; the datum is paid, the fix direction is the tester's N7, the schedule is the owner's	LIVE	owner
+CP:5.135	"the one row this round added ... the OLD path that is wrong"	5.135 OPEN, both readings recorded	LIVE, now T1.13	owner

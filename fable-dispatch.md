@@ -600,7 +600,7 @@ test -e claude/harness/artifacts/f120 ; echo $? => 1
 ```
 
 **DoD:** the predecessor in the archive drawer, md5-proved, in its own commit; the map regenerated in the form of (5) with the criteria verbatim at its head; `disposition.tsv` complete over the predecessor's ids and `sweep.tsv` complete over the stated sets, both by command; `f120_ids.py` green on the delivery and red on both mutants; the external-citation table; the entry document's citation by section in ONE code commit, its rider counted; §11 entry + stub with the FINDINGS list (items the predecessor never carried; ledger rows read stale; anything the criteria leave open, as questions for the owner in Q-70's shape); instruments at baseline with deltas explained; both trees clean.
-**WIP:** —
+**WIP:** 2026-09-18 22:0x — CHECKPOINT 1: premise gate 23/23 PASS; `harness/artifacts/f120/{disposition.tsv,sweep.tsv}` written (71 forward rows over the predecessor's 6+11+10+6+14+5+3+13 items; 306 reverse rows over 131 §5 · 16 §13.A · 26 §13.B · 0 DECISIONS_PENDING · 12 FEATURE_REQUESTS · 43 SS · 112 §3 nodes, each set by its resolving command) + `harness/f120_ids.py`. NEXT: the archive copy (its own commit), then the regenerated map.
 
 ---
 
