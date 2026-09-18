@@ -132,6 +132,30 @@ elif LEG == "script":
     shot(s, "end_newpath.png")
     mark(s, "end")
 
+elif LEG == "point":
+    # THE ATTRIBUTION LEG for the 1.0038 AU jump the `script` leg measured at
+    # `camera action transition_to target point` (mandate step 5: a non-zero
+    # delta AT REST is a state error, and it has to be attributed to a site
+    # and not only to a command). Two full dumps, one either side of that ONE
+    # command: the camera's own `rootPos` is in the header, and old's observer
+    # heliocentric position is recoverable from `helioToEye` by the same
+    # -R^T*t the camera uses, so one dump holds BOTH eyes in ONE frame.
+    send(s, "select planet Moon pointer off", 1.5)
+    time.sleep(2)
+    mark(s, "before_point")
+    dumpto(s, "%s/before_point.json" % OUT, 4.0)
+    send(s, "camera action transition_to target point name Space", 1.0)
+    time.sleep(3)
+    mark(s, "after_point")
+    dumpto(s, "%s/after_point.json" % OUT, 4.0)
+    # ... and then the body transition, which is where the 93.52 deg of
+    # longitude appears.
+    send(s, "camera action transition_to target body name selected", 1.0)
+    time.sleep(3)
+    mark(s, "after_body")
+    dumpto(s, "%s/after_body.json" % OUT, 4.0)
+    mark(s, "end")
+
 elif LEG == "mutant":
     # THE INSTRUMENT'S OWN POSITIVE CONTROL. The place channel is PREDICTED to
     # sit at its float32 floor on an unperturbed binary (prediction.txt P2/L4:

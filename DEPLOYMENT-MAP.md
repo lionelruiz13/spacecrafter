@@ -523,7 +523,9 @@ comments flag. §5.121 **OPEN** (one static table serves both locales; unmeasure
 locale it discards). The tester operates in French, so this is his daily surface.
 
 **T1.15** — the new path's fix-shape calls. *(new this pass)* Decider: **owner**.
-State: §5.153 **OPEN** · §5.154 **OPEN** · §5.148 **OPEN** · §5.149 **OPEN** · §5.152 **OPEN**,
+State: §5.153 **OPEN** (its 0.2 s floor is untouched; F121 measured the sibling view ramps at
+49.6–65.4° mid-transition, §11.245(h)) · §5.154 **OPEN** · §5.148 **OPEN** · §5.149 **OPEN** ·
+§5.152 **OPEN**,
 plus the readout question at §11.216(j2). Each is one word and each has its shapes priced. Y-7.
 
 **T1.16** — `SharedBuffer` throws on a refused allocation. *(new this pass)* Decider: **owner**
@@ -566,9 +568,17 @@ slice 3 (M, the OJM models — the field's real DSO layer), then slices 2 and 4 
 `[Y18]`), then slice 5 (S, retiring the old draw sites one class at a time).
 **B41** — the implicit preload signal (D-10).
 **B33 / B34** — the QUERY half of the control surface reads the OLD path (`getHeading`,
-`getViewOffset`, the observatory getters, `getMountMode`), and the interactive view ramp is
-MEASURED to move the old navigator alone while the new camera stays bit-identical. Both are
+`getViewOffset`, the observatory getters, `getMountMode`), and ~~the interactive view ramp is
+MEASURED to move the old navigator alone while the new camera stays bit-identical~~. Both are
 transparency holes of the readout-versus-drawn kind; neither has been scheduled.
+State (2026-09-19, §11.245, F121): the struck clause is STALE — §11.133 mirrored the view ramp
+on 2026-08-02 and F121's per-frame recorder confirms it at HEAD. What the class still costs,
+measured per frame for the first time: `look_at` **107.66°** apart AT REST (§5.155), the
+tracking entry a **56–65°** transient (§5.156, a veto point — the fix costs D15(c)), the two
+travel registries **156 000 km** at the end of the shipped `fly_to_selected.sts` (§5.157), five
+OLD-ONLY transitions found and unmeasured (§5.158), `Core::panView` **+31°** (§5.71), `moveto`
+**55.3 m** (§5.68). The FOV half of the class is CLOSED: one authority, code `2f9e6da7`,
+59.83° → 6.8e-06°.
 **§5.131's riders** — the `|| exit` (D-6).
 **§5.88** — the catalogue-load diagnostic (D-5).
 **§5.144** — the 8–12 h discriminating leg (a cache that has not filled, or a leak: +68.3 MB/h

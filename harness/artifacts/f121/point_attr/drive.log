@@ -1,0 +1,19 @@
+leg=point out=/home/claude/spacecrafter/claude/harness/artifacts/f121/point_attr
+1789765828.081 >> timerate rate 0
+1789765828.781 >> deselect
+1789765832.482 >> select planet Moon pointer off
+1789765837.682 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 956 before_point
+1789765841.889 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/point_attr/before_point.json
+1789765843.090 >> camera action transition_to target point name Space
+1789765849.290 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 1652 after_point
+1789765853.499 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/point_attr/after_point.json
+1789765854.699 >> camera action transition_to target body name selected
+1789765860.900 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 2346 after_body
+1789765865.113 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/point_attr/after_body.json
+1789765868.313 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 2791 end
+1789765875.527 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/point_attr/final.json
+done
