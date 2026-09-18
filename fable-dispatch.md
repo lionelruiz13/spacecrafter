@@ -154,7 +154,14 @@ interpreter, the binary's own `ldd`; the driver GATED; (6) the locale sweep of t
 `premise_check.py` refusing a zero-expectation line without its control (Q-67); (7) `intent_pair_check.py`'s
 invalid escapes (a future Python makes them errors), `f121_seam.py --diff`, `FindFFmpeg`'s "3.3"; (8) the
 session-30 queue, unchanged behind these: the DSO slices on his reading, §5.154's fix, the fold leg, B41, the (g)
-tail. BASELINES AT CLOSE: printed by the close commit's own call.
+tail. BASELINES AT CLOSE: printed by the close commit's own call. **[READ AFTER THE COMMIT (`38fc21f`, 23:31:08): scan
+298/369/148 · pair-check 261/236/25/130 · D 36 · D2 12 · I 93 · I2 **38** · M **98**. Against F121's own close
+(I2 37 · M 97) the +1/+1 is MINE: the date-correction marker at §11.245 lives in the ENTRY file only, and an
+entry-only bracket is what tests I2 and M flag. Its stub twin is OWED — it joins rider (3) of the queue above.
+NO THIRD DISPATCH this session, said rather than implied: the owner's mandate was *"fix everything you can"*, and
+what the session CAN do includes verifying what it lands — the supervisor's capacity for one more engine-changing
+delivery, verified to tonight's standard, is spent, and an unverified engine change landing overnight would sit
+in the code he reads in the morning. Item (2) of the queue is ready to mint at the next trigger.]**
 
 ---
 
