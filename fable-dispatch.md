@@ -36,6 +36,56 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-18, supervising session 31 — LovelyFoxDev, the DEPLOYMENT-MAP round: F120
+first]:** trigger = the §0b verbatim line PLUS one owner sentence: *"Update or rewrite the DEPLOYMENT-MAP.md to
+keep it focused on what remains now for deployment."* Open at **Friday 21:19 CEST** — a weekday evening, the
+owner present at the trigger (prompt part 06: cache-hit-to-moderate depth — ONE question put to him, in the
+session's text, non-blocking). Warm-up (every value from the command beside it, Q-67; `date` 21:19:45 at the
+first probe): both trees CLEAN at open, code `564ec489` / harness `7de7baf` — **the owner's rewrite tool ran
+2026-09-13 23:01:54, after the session-30 close** (his closing commit `7de7baf`; map
+`sha-maps/20260913T210137Z-d2fe86c7-96d96ce8`: `code.tsv` 7 lines, `harness.tsv` 72, `repair.tsv` 0), both
+branches PUSHED (0 unpushed on each); the six scedit pins F119 repointed are still ancestors of HEAD (exit 0
+six times) — the first run of his tool since F119 taught it the code tree, and it stranded nothing;
+definition-drift MATCH (`8e364a3a`); binary `42d7982c` current (0 `src/` files newer). **THE HOST REBOOTED AT
+20:59:16, TWENTY MINUTES BEFORE THE TRIGGER, AND `:2` CAME UP 2444x1332 AGAINST A BANK OF 2448x1332**
+(`loginctl` claude 5/6, cookie `.RQNGV3`, gnome-shell pid 30679 / Xwayland pid 31200, kernel starts
+1789758303/04; `xrandr`: `Meta-0 2444x1332 59.94`): canary `--no-scene` **exit 2, 2 fail 1 note** at 21:22:06 —
+`compositor.restarted` (the per-boot red) AND `display.geometry`, which the VALUES block's re-bank
+prescription does NOT cover (the canary's own text: *"an unexplained mode change is exactly the class this
+canary exists to catch"*). **NOT re-banked, nothing launched; every measuring launch of the round waits on
+the owner's word** (restore 2448 from his client, or re-bank on 2444 and let the FULL canary say whether the
+band moved) — HOST-EVENTS entry + the §11.174(h) flag (`d878924`). Config/ssystem md5 pristine
+(`03fbee59`/`545a51ef`); no engine by comm/exe/port (`sc_instances.sh --assert`), port 7805 free; GPU 1213 MiB
+used / 30894 free; RAM **54 GiB available of 59**, `-j24`; next free §11 **243** after §11.242 (live ∪ archive,
+`max+1`, the premise block's python line). Live `### F` **3 → 0** by **archival pass 23** at OPEN (update-s29 +
+F117/F118/F119, 264 lines = 91 + 60 + 51 + 60 + the doubled separator; manifest `2026-09-18-pass23`, pre-md5
+`1e0e6b1e` at `7de7baf` reproduced in-process, from disk by the tool, AND from disk by an independent
+reconstruction script; `00e12b8`; **nothing carried**) **→ 1** by the mint below. Instrument baselines at open
+(run 21:22): scan **291/361/145** · pair-check **258/233/25/126** · D 36 · D2 12 · I 93 · I2 37 · M 96 — to the
+digit of the session-30 pre-close values; his repoint moved no structure. QUEUE CONSUMPTION (the session-30
+close's list): (1) pass 23 — DONE; (0) NEW, ahead of everything, the owner's sentence → **F120** (M, ZERO
+launches — the map REGENERATED FROM THE LEDGER in both directions, the predecessor archived byte-exact first,
+the tier ids made explicit because `T1.n`/`T5.n` are markdown list POSITIONS cited from outside the map, the
+intern's entry document repointed from a line range that was ALREADY false — `:383-398` called "section T4"
+while T4 opens at `:635`; an EXECUTOR and not the supervisor, by INT-8: the map is the coverage assessor the
+queue is read against, and the supervisor is the director that consumes it); (2) the DSO slices — STILL behind
+his reading of `b5-dso-design.md` (no word since 09-13; his Saturday window is tomorrow) AND behind the canary;
+(3) §5.154's fix and (4) the fold leg — both need launches, both behind the canary. **Tasks 2–3 are minted
+AFTER F120's acceptance, on the state of the display by then**: launch-class ((3), (4), slice 1 on his word) if
+the canary is green; zero-launch otherwise (queue item (7): `anchor_gate.py`'s duplicated definitions and its
+out-of-range misdiagnosis; `f117_cites.py` over the older design notes). DISPATCHER DEFECTS BEFORE THE FIRST
+DISPATCH, all caught before a commit: (i) a PROBE — `sort -t. -k2 -n` read the max §11 as 11.99; caught at the
+prediction delta (the session-30 note said 242), attributed by a four-arm control to the KEY FORM and not the
+locale I first suspected (`sort --debug`: *"field separator '.' is treated as a decimal point in numbers"*);
+(ii) a PREMISE WHOSE REACH WAS NARROWER THAN ITS CLAIM — the mint said tier R's ids collide with nothing on a
+line that probed round 3 alone; round 2 carries `R1`…`R13` and the ledger's roots are `R1`/`R2`, three
+meanings for `R1`; caught by testing whether the probe could match at all (Q-67's "a count that reproduces is
+not a set that is right", the zero variant); (iii) a HOST-EVENTS line said *"asked in-session"* before the
+asking — reworded before its commit. Remotes: 0 / 0 unpushed at open; the owner pushes at the end of each
+week [vixy 2026-09-12].
+
+---
+
 **Update [Claude Fable 5.1 2026-09-13, supervising session 30 — LovelyFoxDev, the DSO-DESIGN /
 TRAIL-WALKER / REWRITE-CLASS round: F117 · F118 · F119]:** trigger = the §0b verbatim line and nothing
 else. Open at **Sunday 18:53 CEST** — the owner's not-reliable window (prompt part 06): this session asks
@@ -501,6 +551,56 @@ at open (`3c38b05`); live below: the session-28 mints **F107** (§11.225(j2)/(j3
 constructor seeds every body at JD 0; no delivered engine change), **F108** (§5.115's fix: uniform bounded
 retention, eight launches, every channel, a compiled constant), **F109** (A15's residual step removed on
 L1's word — the attributed halo floor α-scaled).** **Session-29 round (2026-09-12): F110 §11.234 · F113 WITHDRAWN (§11.233(b) correction; ids never reused) · F114 §11.235 · F115 §11.236 · F116 §11.237 · F112 §11.238 · F111 §11.239 — archival pass 22 (update-s28 + the seven) DONE at the session-30 open (`a0b18a7`); live below: the session-30 mints **F117** (the DSO layer on the new path — a design note on the owner's direction, no engine line), **F118** (the trail walker's engine leg — a latency measurement, no delivered engine change), **F119** (the rewrite's code-tree citation class — the scedit pins first, then the tool).** **Session-28 round (2026-09-11/12): F107 §11.229 · F108 §11.230 · F109 §11.231 (a STOP, endorsed — the residual is the instrument's) — three for three DELIVERED and accepted; §5.149–§5.152 minted at acceptances; archival pass 21 (update-s27 + F107–F109) DEFERRED to the next open.** **Session-29 (2026-09-12, Saturday, the owner present): archival pass 21 DONE at open (`43b0ffc`); the owner's rewrite + push ran mid-warm-up and his replies are §11.232 (a part-time intern without an LLM starts on `master-beta` THIS WEEK — "consolidated first"); live below, dispatch order **F110 → F113 → F114 → F112 → F111** (his second message, §11.233, re-cut the round): **F110** (the intern's first day rehearsed by hand — `doc/developer-entry.md` followed literally from a plain clone on Linux), **F113** (§5.142's fix on his word — the uniform pool to 1 GiB, the D13 reading measured), **F114** (§5.100 + §5.101 on his word — `zoom auto in` tracks and `zoom auto initial` re-aims on the drawn path), **F112** (launch preconditions that see what they guard — the exe-identity instance probe in ONE home for 42 copy-pasted sites, and a GPU-headroom gate derived from the app's init sequence after the 2026-09-12 VRAM red), **F111** (§5.150's fix — the orbit-line sampler gets its own seed, the old path's `batchLastE` shape).** **[12:5x: F113 WITHDRAWN before dispatch (§11.233(b) correction); **F115** (§5.142's ROOT — the uniform consumers censused field by field on both paths, redundancy on three axes, the per-body requirement derived, a proposal with arithmetic; no engine change) and **F116** (§5.115's SIZE bound — 1 GiB total across the five channels, within-session rotation reusing F108's window) minted; order **F110 → F114 → F115 → F116 → F112 → F111**.]** **Session-29 round (2026-09-12): F110 §11.234 · F114 §11.235 · F115 §11.236 · F116 §11.237 · F112 §11.238 · F111 §11.239 — six for six DELIVERED and accepted; F113 WITHDRAWN before dispatch (record kept); §5.153 minted, B41 opened; archival pass 22 (update-s28 + F110/F113/F114/F115/F116/F112/F111) DEFERRED to the next open.**
+
+---
+
+### F120 — THE DEPLOYMENT MAP REGENERATED FROM THE LEDGER, ON THE OWNER'S WORD (2026-09-18, in the trigger message, verbatim: *"Update or rewrite the DEPLOYMENT-MAP.md to keep it focused on what remains now for deployment."*) — the map's own maintenance clause names the act (`DEPLOYMENT-MAP.md:13-15`: *"correct in place with dated strikes; regenerate wholesale when the drift exceeds reading comfort"*) and the drift has exceeded it: 855 lines, a head that is struck text inside annotations inside amendments, statuses that are the map's OWN cached annotations rather than reads of the ledger. NOT a tidy-up: (i) what remains is re-derived FROM THE LEDGER in both directions (the old map's items forward, the ledger's open rows backward — the half the old map cannot supply); (ii) the predecessor is archived byte-exact BEFORE the live file changes; (iii) the items get EXPLICIT stable ids — `T1.n`/`T5.n` are markdown list POSITIONS today, cited from outside the map, and a list that loses a member silently retargets every citation after it; (iv) the intern's entry document cites the map BY LINE RANGE and that range is already false [M, harness + ONE code line in `doc/developer-entry.md` (NOTHING under `src/`); ZERO launches — the canary is RED on `display.geometry` this boot (HOST-EVENTS 2026-09-18), so a launch is forbidden, not merely unneeded; this task READS ledger states and flips none; veto points §3 — the map is the owner's reading surface, its form is his to refuse]
+
+**Why now / mandate:** the owner's sentence above is the mandate [stated]. Why an executor and not the supervisor [derived, INT-8]: the map is the COVERAGE ASSESSOR the dispatch queue is read against, and the supervisor is the search director that consumes it — a director writing its own assessor shapes "what remains" by what it has been dispatching. The supervisor verifies by derivation-diff at acceptance instead. The criterion the map serves is the owner's, in his words only: §11.162 (the compile request, 2026-08-29), the map head's 2026-09-05 sentence (*"I would prefer this branch to became the stable reference for development"*), §11.232(a)1–2 (*"The new version shall be equally capable as the old one, so that work can start transparently without inheriting the legacy engine, but it must be workable … it must be consolidated first"*; the intern HAS started — the week of 2026-09-14) and §11.232(c)2's reading of them (T0's sentence restated for a developer, with a date), §11.233.
+
+**The reading the mint stands on [measured at the mint, each a premise line]:** the map is 855 lines, md5 `3c7350ce`, eight `## ` heads at 99/329/466/538/635/685/801/809; T1 holds 11 numbered items and T5 holds 5, numbered BY MARKDOWN POSITION; eleven distinct tier ids are cited OUTSIDE the map in the ledger (`T1.1 T1.2 T1.3 T1.4 T1.6 T1.7 T1.9 T1.10 T5.1 T5.2 T5.3`); no `claude/DEPLOYMENT-MAP/` drawer exists; `doc/developer-entry.md:202` cites `claude/DEPLOYMENT-MAP.md:383-398` as *"section T4"* while T4 opens at `:635` and lines 383–398 are T1's items 5–7 — false BEFORE this task, and any line range is false after it. Tier R's `R1`–`R6` COLLIDE with two other live namespaces [measured, premise lines; corrected at the mint — the first draft of this sentence probed round 3 alone and said "no number collides"]: the round-2 REPLY ids (`USER_QUESTIONS_ROUND2.md` carries `R1`…`R13`; round 3 runs `R14`…`R29` and does not collide) and the ledger's own root requirements `R1`/`R2` (`INTENT.md`) — three meanings for `R1`, Q-64's collision class.
+
+**Mandate:** (1) **THE CRITERIA**, from the owner's verbatim sentences only (the five sources above), stated at the map's head. Where they leave a reading open, the head carries the QUESTION with both readings and what each adds to the remaining set — never a silent choice (the anchor is the owner's cognition: ask, in the map and in §3). (2) **FORWARD CENSUS (old map → ledger)** — every item of the predecessor (tier R's six, T1's eleven, every T2/T3/T4 bullet, T5's five, the NOT-blocking list, the critical path's members) gets ONE row in `harness/artifacts/f120/disposition.tsv`: id · the predecessor's last stated status · the state READ AT THE LEDGER TODAY (the §5/§13 row or the `INTENT/<id>.md` entry, resolved with `claude/intent_resolve.py` — never the map's own annotation, which is a cached conclusion) · disposition `LIVE` / `CLOSED` (with the closing ledger pointer) / `EXCLUDED` (with the argument) · who acts (`owner` / `tester` / `dispatchable` / `waits-on <id>`). (3) **REVERSE SWEEP (ledger → map)** — every §5 row not closed, every §13 row not closed (13.A and 13.B), every open item of `DECISIONS_PENDING.md`, `FEATURE_REQUESTS.md`, `SCRIPT_SURFACE.md`, and the open `[Y]`/`[H]` items of `fable-dispatch.md` §3 for the rounds since 2026-09-05 (live ∪ `fable-dispatch/archive/`), each tested against the criterion — §11.163(h)'s test for the tester (*does the NEW path behave differently here? else backlog*), §11.232's for the developer (equally capable, workable) — one row each in `harness/artifacts/f120/sweep.tsv`: id · IN/OUT · the argument in one clause. The SET swept is stated by its resolving command and its members counted by that command (a count that reproduces is not a set that is right — list the members). An item IN that the predecessor never carried is a FINDING of this task. States are read at the ledger; NO source re-triage (that was F47's act, §11.163) — a row whose ledger state looks stale against a later entry is REPORTED, not repaired. (4) **THE ACT, two operations never combined** (the archival rule; destructive step last, Q-56): (a) the predecessor copied byte-exact to `claude/DEPLOYMENT-MAP/archive/2026-09-18-predecessor.md` with a manifest beside it (md5 equal to `git show <pre-commit>:DEPLOYMENT-MAP.md`'s) — ONE harness commit holding nothing else; (b) the live file regenerated wholesale from (1)–(3) in the form of (5) — a SEPARATE commit. Whole-file, not per-id [derived, the supervisor's choice, a veto point]: the predecessor's head and critical path entangle several ids per sentence, so per-id byte-exact units do not exist in it; a whole-file copy also keeps every historical `DEPLOYMENT-MAP.md:<line>` citation of its last state resolvable. From the NEW form on, a closed item leaves as `DEPLOYMENT-MAP/archive/<id>.md` by pure move. (5) **THE FORM** — the reader is the owner on a weekday evening (Q-70: the reader's WORKING SET, not density — one decision per node, its held set AT the node, anchors by id and symbol): **head** = the criteria verbatim, then WHAT REMAINS in three lists by WHO ACTS — YOURS (each a node: the question, what it unlocks, the anchor; ordered by what unlocks the most work), THE TESTER'S, DISPATCHABLE NOW (decision-free, sized, in dispatch order) — then the critical path in one paragraph; **body** = the tiers KEEP their names and their ids (tier R · T1 decision gates · T2 work · T3 verify at his field · T4 informed divergences · T5 unmapped · the NOT-blocking list with its arguments); every surviving item under its EXISTING id written as an EXPLICIT label (`**T1.5**`), never a list position; T2/T3/T4 items keyed as today by their ledger id; a closed id leaves a GAP (the tombstone, zero live cost); a new item takes max+1 over live ∪ archive in its tier, never a reused number; a REPLY id is written QUALIFIED by its round wherever the map cites one (`round-3 R21`), tier-R ids stay as they are under their tier, and the collision itself (three meanings of `R1`) goes to the owner as a question — a rename is his, ids are never renumbered by an executor; each item ONE contiguous self-contained unit stating what it is · its state as of the compile date with the ledger pointer · who acts · what it blocks or unlocks; NO struck text and NO dated annotation chain on the live surface (the history is the ledger's and the archive's); **T5 is RE-DERIVED, not carried** — what this regeneration could not map and what the sweep showed has no home; the **maintenance note** rewritten: derived view, the ledger wins; a closure = the item moves out at the next archival pass; a state change = the item's state line replaced, its ledger pointer beside it; the archive convention declared in one line (drawer inside the namespace, resolution-by-insertion, search spans live ∪ archive); the compile stamp (date, both HEADs). (6) **THE INTERN'S POINTER** — ONE code commit in `doc/developer-entry.md`: the `:383-398` citation names the SECTION (T4, by its heading) and carries no line range; report as a RIDER, without fixing, how many other `path:line` citations that document carries into harness files that are edited in place (by command, members listed). (7) **PROPAGATION, same commits**: the §11 entry + stub; a ledger sentence that states a CURRENT property of the map made false by this task gets its back-marker (the historical records among `INTENT.md`'s 19 mentions are never rewritten); `README.md`/`CLAUDE.md` if they describe the map's form.
+
+**Boundaries:** harness, plus the ONE line of `doc/developer-entry.md` (code commit FIRST, then the harness commit carrying its sha); `git -C /home/claude/spacecrafter status --porcelain` shows nothing under `src/` at any commit; ZERO launches, no canary run, no build; no §5/§13/DECISIONS_PENDING state flips and no §5 mint — findings go to the entry's list for the supervisor's acceptance; ids never renumbered, never reused; nothing deleted that is not first in the archive copy.
+
+**Discriminating checks:** (a) **ID CONSERVATION, mechanical and shown able to fail** — `harness/f120_ids.py` extracts the predecessor's id set from the ARCHIVE copy and proves it equals live-ids ∪ `CLOSED` ∪ `EXCLUDED` of `disposition.tsv`, no id in two classes, no live id absent from the table; two mutants (one table row deleted; one live id renumbered) must FAIL it — all three runs in the artifacts; (b) every ledger pointer on the live surface RESOLVES (`intent_resolve.py`, 0 unresolved), and each live item's state line carries the ledger's OWN status word for the row (the supervisor re-reads a sample the executor did not choose); (c) the archive copy's md5 equals the predecessor's from `git show`; (d) every tier id cited outside the map (the premise line's eleven) is live under the SAME id or `CLOSED` in the table with its archive location — a table in the entry; (e) the form: `grep -c '~~' claude/DEPLOYMENT-MAP.md` = 0, and no `^[0-9]+\. ` list item inside a tier; (f) scan / pair-check at the prompt's baseline, every delta explained; (g) the entry document's own instruments green after the code commit (`harness/f85_links.py`; the D14 gate `python3 claude/harness/f70_ascii.py gate`).
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; both trees clean; NO launch of any kind (the canary is red on `display.geometry` — HOST-EVENTS 2026-09-18; this task does not need it green and must not try to make it so).
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 564ec489
+git status --porcelain | wc -l => 0
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 243
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md => 1
+# the predecessor, as measured at the mint (content drift = abort)
+md5sum claude/DEPLOYMENT-MAP.md | cut -c1-8 => 3c7350ce
+wc -l < claude/DEPLOYMENT-MAP.md => 855
+/usr/bin/grep -n '^## ' claude/DEPLOYMENT-MAP.md | cut -d: -f1 | tr '\n' ' ' => 99 329 466 538 635 685 801 809 
+/usr/bin/grep -c 'regenerate wholesale when the drift exceeds reading' claude/DEPLOYMENT-MAP.md => 1
+sed -n '329,465p' claude/DEPLOYMENT-MAP.md | /usr/bin/grep -cE '^[0-9]+\. ' => 11
+sed -n '685,800p' claude/DEPLOYMENT-MAP.md | /usr/bin/grep -cE '^[0-9]+\. ' => 5
+test -e claude/DEPLOYMENT-MAP ; echo $? => 1
+# the consumers: tier ids cited outside the map, and the intern's line-range citation
+/usr/bin/grep -ohE '\bT[1-5]\.[0-9]+\b' claude/INTENT.md claude/DECISIONS_PENDING.md claude/INTENT/*.md | sort -u | sort -V | tr '\n' ' ' => T1.1 T1.2 T1.3 T1.4 T1.6 T1.7 T1.9 T1.10 T5.1 T5.2 T5.3 
+/usr/bin/grep -n 'DEPLOYMENT-MAP.md:383-398' doc/developer-entry.md | cut -d: -f1 => 202
+/usr/bin/grep -c 'DEPLOYMENT-MAP' doc/developer-entry.md => 1
+/usr/bin/grep -n '^## T4 ' claude/DEPLOYMENT-MAP.md | cut -d: -f1 => 635
+sed -n '383,398p' claude/DEPLOYMENT-MAP.md | /usr/bin/grep -c '^## T4\|INFORMED' => 0
+/usr/bin/grep -ohE '\bR[0-9]+\b' claude/USER_QUESTIONS_ROUND2.md | sort -u | sort -V | tr '\n' ' ' => R1 R2 R3 R4 R5 R6 R7 R8 R9 R10 R11 R12 R13 
+/usr/bin/grep -ohE '\*\*R[0-9]+\b' claude/USER_QUESTIONS_ROUND3.md | sort -u | sort -V | head -1 => **R14
+# the owner's sentences, the instruments, the clean slate
+test -f claude/INTENT/11.162.md -a -f claude/INTENT/11.163.md -a -f claude/INTENT/11.232.md -a -f claude/INTENT/11.233.md && echo ok => ok
+/usr/bin/grep -c 'equally capable as the old one' claude/INTENT/11.232.md => 1
+test -x claude/intent_resolve.py -a -f claude/harness/fd_archive_pass.py -a -f claude/harness/f85_links.py -a -f claude/harness/f70_ascii.py && echo ok => ok
+test -e claude/harness/f120_ids.py ; echo $? => 1
+test -e claude/harness/artifacts/f120 ; echo $? => 1
+```
+
+**DoD:** the predecessor in the archive drawer, md5-proved, in its own commit; the map regenerated in the form of (5) with the criteria verbatim at its head; `disposition.tsv` complete over the predecessor's ids and `sweep.tsv` complete over the stated sets, both by command; `f120_ids.py` green on the delivery and red on both mutants; the external-citation table; the entry document's citation by section in ONE code commit, its rider counted; §11 entry + stub with the FINDINGS list (items the predecessor never carried; ledger rows read stale; anything the criteria leave open, as questions for the owner in Q-70's shape); instruments at baseline with deltas explained; both trees clean.
+**WIP:** —
 
 ---
 
