@@ -380,4 +380,39 @@ never rewrite (maintenance invariant). Archival per the standing convention
   flag per §11.174(h): the re-bank is the block's prescription for a per-boot red on the ruled
   display class; nothing improvised, nothing unloaded, no owner act needed — say the word if the
   display you want banked differs.
+- 2026-09-18 20:59–21:23 [measured: supervisor, session 31 (Claude Fable 5.1), warm-up — every
+  value from the command beside it, Q-67; Friday evening, the owner present: he typed the trigger]
+  **A NEW BOOT, AND THIS TIME THE RED IS NOT ONLY THE PER-BOOT ONE: `:2` CAME UP 2444x1332, THE
+  BANK SAYS 2448x1332. NOT RE-BANKED — HELD FOR THE OWNER'S WORD.** `uptime -s` **2026-09-18
+  20:59:16** (the 2026-09-13 09:40:06 boot ended; `/tmp` wiped). The real logind session on `:2`
+  was re-provisioned at 21:05:03: `loginctl` claude **5** + **6** (4 sessions on the host, 2 of
+  them claude's), cookie `/run/user/1003/.mutter-Xwaylandauth.RQNGV3`, `/usr/bin/gnome-shell` pid
+  **30679** kernel start **1789758303**, `Xwayland :2` pid **31200** kernel start **1789758304**;
+  the inherited `DISPLAY=:2`/`XAUTHORITY` already correct. `xdpyinfo` **2444x1332**; `xrandr
+  --current`: `Meta-0 connected primary 2444x1332+0+0`, mode `2444x1332 59.94*+` (the banked
+  stack: 2448x1332, 59.96 per §0.5); the user journal's one line: `gnome-shell[30679]: Added
+  virtual monitor Meta-0` at 21:05:04 — the virtual monitor is sized by the RDP client's request,
+  so the WRITER of the four pixels is the owner's client geometry [derived; his act, not
+  observable from this account]. Trigger line 21:1x; first probe `date` 21:19:45. Canary
+  `--no-scene` 21:22:06 **exit 2, 2 fail 1 note** — FAIL `display.geometry` (*":2 reports
+  2444x1332, banked 2448x1332"*), FAIL `compositor.restarted` (1789758303 vs banked 1789296984),
+  NOTE `xserver.restarted`, every other member EQUAL; GPU **1213 MiB used / 30894 free**
+  (`gpu.headroom` not raised at need 6144), port 7805 free, no engine by comm/exe/port
+  (`sc_instances.sh --assert s31-open`, exit 0); `artifacts/f56/canary/20260918-212206`.
+  Config/ssystem `03fbee59`/`545a51ef`; RAM 54 GiB available of 59, `-j24`; both trees CLEAN at
+  open, code `564ec489` / harness `7de7baf` — the owner's rewrite tool ran 2026-09-13 23:01:54
+  after the session-30 close (map `sha-maps/20260913T210137Z-d2fe86c7-96d96ce8`: `code.tsv` 7
+  lines, `harness.tsv` 72, `repair.tsv` 0) and both branches are pushed (0 unpushed on each); the
+  six scedit pins F119 repointed are still ancestors of HEAD (`git merge-base --is-ancestor`
+  exit 0 six times); binary `42d7982c` current (0 `src/` files newer); projection md5 MATCH
+  (`8e364a3a`). **WHY NO RE-BANK:** the VALUES block prescribes a re-bank for the three per-boot
+  members; `BANK_DIMS` is not one of them, and the canary's own text for it is *"an unexplained
+  mode change is exactly the class this canary exists to catch"* — the geometry is part of the
+  photometric instrument (§11.106, §11.157(f)). The per-boot members are held with it: if the
+  owner reconnects to restore 2448 the compositor restarts and they move again. CONSEQUENCE:
+  every MEASURING launch of this round is blocked (FULL and `--no-scene` arms alike); zero-launch
+  work is not. Decision flag per §11.174(h), put to the owner in the session's text (non-blocking)
+  and carried to §3 at close whatever he answers: restore 2448x1332 from your client, or say the
+  word to re-bank on 2444x1332 (one VALUES-block edit, then the FULL canary says whether the band
+  moved); nothing improvised, nothing launched.
 
