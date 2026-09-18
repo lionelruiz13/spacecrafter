@@ -90,6 +90,72 @@ not a set that is right", the zero variant); (iii) a HOST-EVENTS line said *"ask
 asking — reworded before its commit. Remotes: 0 / 0 unpushed at open; the owner pushes at the end of each
 week [vixy 2026-09-12].
 
+**THE ROUND WAS RE-CUT THREE TIMES BY THE OWNER, IN-SESSION (§11.244, four messages verbatim):** (1) the four
+pixels were a RELEASE UPGRADE, 25.10 → 26.04 LTS — and what that yield made cheap: the binary `42d7982c` no
+longer LOADED (5 sonames), the upgrade had removed every SDL2 development package; he installed them, a fresh
+build gave `3cb11f0e` with no source change; (2) his ruling: the bank keeps ONE geometry (2444x1332) — re-banked,
+`--no-scene` exit 0, FULL canary 12/12, every delta 0.0 at 22:25:18, **the band on a SIXTH boot across a release,
+a driver, a compositor generation, a narrower display and a rebuilt binary**; (3) **the main tester's first
+report on the new path** (layers not moving at the same speed; the Moon after WIN+^; the camera frame against
+the world; a body disappearing when too close) with a METHOD (*"identical at first, then … clean"*) and a
+MANDATE (*"Fix everything you can with this dispatch session"*) → **F121** minted in place of the queued
+dangling-citation sweep.
+
+**Round outcome (session 31 close, 2026-09-18 — times in this note are pasted `date` output or a commit's clock
+read AFTER the commit; the close commit's own clock is the stamp):** F120 → **§11.243** + code **`52efbfa1`**
+(the deployment map REGENERATED from the ledger in both directions: 855 → 732 lines, the predecessor archived
+byte-exact in its own commit, explicit ids, the owner's criteria verbatim with FOUR open questions at the head —
+Q2, whether the developer's criterion inherits the tester's both-paths exclusion, carries **48 rows**; the sweep
+found 15 §5 rows + 3 §13 rows the old map never carried; the intern's line-range citation, already false,
+repointed to a section; ACCEPTED with **16 of 16 PRE-REGISTERED expectations** holding) · F121 → **§11.245** +
+code **`7d27c513`** + **`2f9e6da7`** (**PARTIAL, as its section allows**: a per-frame in-process seam recorder,
+red on its mutant; the tester's own script replayed BY NAME; **the zoom has ONE owner — five fov routes from
+38–60° of disagreement to the float floor, recomputed by the supervisor from the raw steps: 59.8314° →
+6.78817e-06°**; the go-to ATTRIBUTED: the Moon is on screen on BOTH paths against skies **91.79° apart**, because
+the two engines stand **156 000 km** apart after `camera action move_to target body` — a PLACE error, not a frame
+conversion; §5.155–§5.158 minted; three STOPs that are the owner's; **the near-body disappearance NOT REACHED**;
+FULL canary 12/12 at 23:14 on `9e545fef`) — **two for two delivered AND supervisor-verified same session**. Code
+`564ec489 → 2f9e6da7` (three commits), binary `42d7982c` (dead) `→ 3cb11f0e → 9e545fef`, harness `7de7baf →`
+this close. SUPERVISOR ACTS: pass 23 (`00e12b8`); HOST-EVENTS ×2 (`d878924`, `c546c2d`); the mints (`3d44396`,
+`3407009`); the rebuild; the re-bank; §11.244 (`c546c2d`); two acceptances (`b668a67`, `838337a`); this close;
+in `~/shared`: **Q-83 NEW** (probe → report → the responsible: *"information maximisation"*, owner-stated),
+**Q-84 NEW** (*identical first, then clean* — the order that keeps the oracle alive), Q-67 ×2 (the zero variant;
+its prevention fires only where it is bound into the artifact), Q-69 (*"never assume anything means not assuming
+the language"*). OWNER EVENTS IN-SESSION: four messages, one package install. HOST: release-upgraded and
+rebooted 20:59:16; re-banked on his ruling; ~10 engine launches in the round (F121's seven + three canary arms),
+the field pair `03fbee59`/`545a51ef` in == out on each. SUPERVISOR TALLY: **thirteen dispatcher defects** (4
+value, 9 structure), none reaching a delivery: a sort key form; a premise probing one file of three; *"asked"*
+before asking; *"every other member EQUAL"* copied from the previous entry (FALSE — the driver had moved);
+*"stranded nothing"* from six pins; a line range quoted from a listing taken before an insert; an id grammar
+assumed for nine rounds that exists for five; an instrument's reach quoted from its name; a premise's reach
+narrower than its claim, forty minutes after writing that lesson down; a zero-expectation premise grepping a
+word its tool never prints (caught by its control, which now sits IN the block); **an estimated time written as
+a time, THREE times — the third one as *"23:4x by the acceptance commit's own clock"* when that clock, read after
+the commit, said 23:29:05: a record cannot state its own commit's time, so a time enters a record only as
+pasted `date` output from BEFORE the edit**; two dates in one prompt; a dump parsed six keys deep. EXECUTOR
+REPORT DEFECTS reaching a record: two (F121: twelve marks dated the 19th — one correction marker at §11.245;
+`f121_seam.py --diff` crashes on `.gz`). EXECUTOR criterion-integrity instances: **≥ 20** (F120: a superset
+swept so that no closure judgement could drop a member, `BOTH` held where the criteria cannot decide, four
+dispatcher premises reported narrower than their claims, its own mutant's fake id caught polluting the census it
+was checking; F121: predictions committed before the first launch INCLUDING what it expected to be wrong in the
+mint — two of the mint's readings refuted at HEAD; the obvious reading of its own trace CORRECTED by a three-dump
+isolation leg; a redundant second view channel that is what made the place/frame attribution possible; a DoD
+item declared NOT MET *"and it could not be"* rather than claimed; the near-body leg called *"a hole, not a
+null"*). Archival pass 24 (update-s30 + F120/F121, live `### F` 2 → 0) DEFERRED to the next open. **NEXT-ROUND
+QUEUE, in order:** (1) pass 24 at open; (2) **the seam, continued — everything F121 left red, most visible
+first**: §5.157 (the go-to's place divergence — the single-authority shape of `followFov` applied to the travel,
+if the owner's reading does not rule otherwise) · the near-body disappearance (attribute BY ISOLATION first) ·
+the unmeasured inputs (keys, mouse, joypad — the TCP channel carries commands, not SDL events) · §5.158's five
+old-only transitions · the heading ramp's unresolved interval; ON HIS WORD: §5.156 · §5.155; (3) the four stale
+back-markers F120 found (§11.212(j), §11.211(l), §11.232(c)2, §11.207(g)) + §11.242(m)(3)'s (its prediction
+falsified) — one S rider; (4) the 37 dangling code-tree citations + a standing "0 dangling" gate (NO change to
+`supervised-by.sh` without his reading); (5) the canary's coverage: members for the release, kernel, toolchain,
+interpreter, the binary's own `ldd`; the driver GATED; (6) the locale sweep of the harness (Q-69) and
+`premise_check.py` refusing a zero-expectation line without its control (Q-67); (7) `intent_pair_check.py`'s
+invalid escapes (a future Python makes them errors), `f121_seam.py --diff`, `FindFFmpeg`'s "3.3"; (8) the
+session-30 queue, unchanged behind these: the DSO slices on his reading, §5.154's fix, the fold leg, B41, the (g)
+tail. BASELINES AT CLOSE: printed by the close commit's own call.
+
 ---
 
 **Update [Claude Fable 5.1 2026-09-13, supervising session 30 — LovelyFoxDev, the DSO-DESIGN /
@@ -657,7 +723,7 @@ test -e claude/harness/artifacts/f121 ; echo $? => 1
 ```
 
 **DoD:** the recorder, red on its mutant; the predictions committed before the runs; the tester's script measured on both paths with its two end frames; `transitions.tsv` complete over its stated sets; every fix its own commit with before/after in the message and RED → ZERO in the artifacts; the frame-at-rest and near-body symptoms each ATTRIBUTED with numbers, fixed or STOPPED; the FULL canary 12/12 after the last engine commit; §11.245 entry + stub, the flips, the mints for what stays red, the map's state lines; both trees clean. **A PARTIAL DELIVERY IS A DELIVERY**: whatever is fixed and proved by the time capacity runs out is committed and reported as such, with the unfixed rows named by their measured delta — the owner's Saturday reading starts from the table, not from a promise.
-**WIP:** — DELIVERED 2026-09-19 (§11.245): recorder `7d27c513`, predictions `3e5ef4c`, mutant+5 legs `7cce012`, FOV single authority `2f9e6da7` (59.83° → 6.8e-06°, every other channel unchanged), attribution leg + §11.245 + §5.155–158 + the map. FULL canary 12/12, every delta 0.0. PARTIAL by design: the near-body disappearance (mandate step 6) was NOT reached, and `look_at` / tracking / the travels / five old-only transitions stay red with their numbers. **ACCEPTED AS THE PARTIAL DELIVERY IT SAYS IT IS, 2026-09-18 23:4x by the acceptance commit's own clock (supervisor, Claude Fable 5.1).** BY MY OWN HAND: two code commits + four harness commits all authored `Claude Opus 5`; files touched = the boundary + the two argued; **`src/navModule`: 0 removed lines, three const getters added** (the old path unchanged by diff, and the FULL canary's old-path legs in band by artifact `20260918-231406`, 12/12); the `executor.cpp` line is one gated read-only call whose placement argument (the one instant both engines have advanced for the same frame) I ENDORSE — a recorder called a frame early on one side would measure its own staleness; the fix `2f9e6da7` is one authority (the old projector, `followFov` every frame, the Camera's zoom interpolator bypassed) replacing a mirror that ran only while a ramp was active; **THE HEADLINE NUMBERS RECOMPUTED FROM THE RAW RECORDER STEPS by an independent script** (9440 / 9433 frames, 0 dropped): whole-run max fov disagreement **59.8314° before → 6.78817e-06° after**, the five after-values to the digit of the report; §5.155–§5.158 resolve (positive control beside the zero); `f120_ids.py` 5/5; binary `9e545fef` = HEAD, both trees clean. THE THREE STOPS ENDORSED, each the owner's: §5.156 (snap like old vs D15(c)'s smoothing — two of his own sentences point opposite ways), §5.155 (which azimuth convention `look_at` means — arithmetic cannot decide), §5.157 (the go-to's 156 000 km: the two travel registries, through the anchor layer). NOT READ IN FULL: §11.245 — clause heads, the mechanical checks and the raw recomputation only; supervisor capacity, said rather than implied. **TWO EXECUTOR DEFECTS REACHING THE RECORD:** (1) **twelve ledger marks and this line's own first words are dated 2026-09-19; every commit of the delivery is stamped 2026-09-18 22:50–23:23** — corrected by ONE marker at §11.245 naming the sites by command, the text left in place; contributing cause on the dispatcher's side: the prompt carried two dates (today's, and "tomorrow morning (Saturday 2026-09-19)"), and the freshest one won; (2) `harness/f121_seam.py --diff` CRASHES on the committed `.gz` dumps (`load()` does not go through its own `openmaybegz`) — the mode was run on uncompressed files before they were archived; a rider. ONE SUPERVISOR PROBE DEFECT: my first parse of the dumps printed six header keys and missed the `seam` member behind them — four probes spent looking for evidence that was committed all along (the twelfth dispatcher defect).
+**WIP:** — DELIVERED 2026-09-19 (§11.245): recorder `7d27c513`, predictions `3e5ef4c`, mutant+5 legs `7cce012`, FOV single authority `2f9e6da7` (59.83° → 6.8e-06°, every other channel unchanged), attribution leg + §11.245 + §5.155–158 + the map. FULL canary 12/12, every delta 0.0. PARTIAL by design: the near-body disappearance (mandate step 6) was NOT reached, and `look_at` / tracking / the travels / five old-only transitions stay red with their numbers. **ACCEPTED AS THE PARTIAL DELIVERY IT SAYS IT IS, 2026-09-18 23:4x by the acceptance commit's own clock (supervisor, Claude Fable 5.1).** **[TIME CORRECTED: that commit (`838337a`) is stamped 23:29:05 — the line claimed the commit's clock as its source BEFORE the commit existed, so the "23:4x" was an estimate wearing a provenance; the round's thirteenth dispatcher defect and the third of its kind tonight. A record cannot state its own commit's time.]** BY MY OWN HAND: two code commits + four harness commits all authored `Claude Opus 5`; files touched = the boundary + the two argued; **`src/navModule`: 0 removed lines, three const getters added** (the old path unchanged by diff, and the FULL canary's old-path legs in band by artifact `20260918-231406`, 12/12); the `executor.cpp` line is one gated read-only call whose placement argument (the one instant both engines have advanced for the same frame) I ENDORSE — a recorder called a frame early on one side would measure its own staleness; the fix `2f9e6da7` is one authority (the old projector, `followFov` every frame, the Camera's zoom interpolator bypassed) replacing a mirror that ran only while a ramp was active; **THE HEADLINE NUMBERS RECOMPUTED FROM THE RAW RECORDER STEPS by an independent script** (9440 / 9433 frames, 0 dropped): whole-run max fov disagreement **59.8314° before → 6.78817e-06° after**, the five after-values to the digit of the report; §5.155–§5.158 resolve (positive control beside the zero); `f120_ids.py` 5/5; binary `9e545fef` = HEAD, both trees clean. THE THREE STOPS ENDORSED, each the owner's: §5.156 (snap like old vs D15(c)'s smoothing — two of his own sentences point opposite ways), §5.155 (which azimuth convention `look_at` means — arithmetic cannot decide), §5.157 (the go-to's 156 000 km: the two travel registries, through the anchor layer). NOT READ IN FULL: §11.245 — clause heads, the mechanical checks and the raw recomputation only; supervisor capacity, said rather than implied. **TWO EXECUTOR DEFECTS REACHING THE RECORD:** (1) **twelve ledger marks and this line's own first words are dated 2026-09-19; every commit of the delivery is stamped 2026-09-18 22:50–23:23** — corrected by ONE marker at §11.245 naming the sites by command, the text left in place; contributing cause on the dispatcher's side: the prompt carried two dates (today's, and "tomorrow morning (Saturday 2026-09-19)"), and the freshest one won; (2) `harness/f121_seam.py --diff` CRASHES on the committed `.gz` dumps (`load()` does not go through its own `openmaybegz`) — the mode was run on uncompressed files before they were archived; a rider. ONE SUPERVISOR PROBE DEFECT: my first parse of the dumps printed six header keys and missed the `seam` member behind them — four probes spent looking for evidence that was committed all along (the twelfth dispatcher defect).
 
 ---
 
@@ -688,6 +754,100 @@ test -e claude/harness/artifacts/f121 ; echo $? => 1
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-31 decision items (2026-09-18, Friday evening — the DEPLOYMENT-MAP / DUAL-CAMERA-SEAM round: F120 · F121, two for two delivered and supervisor-verified same session; you were PRESENT: four messages, verbatim at §11.244, and the round was re-cut three times on them). Q-70's shape: one decision per node, its held set at the node, anchors by id and symbol. The executors' own veto lists are §11.243(k) and §11.245(k); read order for Saturday is [F1].**
+
+  ```
+  YOURS — the seam (F121 → §11.245; what your tester saw, measured per frame for the first time)
+  [Y30] §5.157 · THE GO-TO ─ after `internal/fly_to_selected.sts` (WIN+^) the two engines stand 156 000 km apart
+        (93.52 deg of longitude around the Moon): the Moon is on screen on BOTH paths, against skies 91.79 deg
+        apart. A PLACE error, attributed by elimination to `camera action move_to target body` — the two travel
+        registries; neither `transition_to` moves an eye (they move the READOUT: +90.000000 deg at a point
+        anchor). NOT fixed: it crosses the anchor layer. My candidate, next round on your silence: the shape of
+        the fov fix — the Camera's place FOLLOWS the old observer during old-driven travels  → §11.245(e)(f)
+  [Y31] §5.156 · TRACKING ─ `flag track_object on`: old SNAPS, the Camera eases — a 56–65 deg transient over
+        ~1.4 s. Identical-first says snap (one token); your D15(c) says *"Continual tracking must be preserved
+        and smooth"*. Two of your sentences, opposite ways. Snap now and smooth in the CLEAN phase, or keep the
+        transient as a named divergence                                                        → §11.245(h)
+  [Y32] §5.155 · `look_at azimuth` ─ 107.66 deg apart AT REST, never recovered: two azimuth conventions (old:
+        (-1,0,0) turned by Z(-az); Camera: az = -lng of its forward). Which one `look_at` MEANS is yours; the fix
+        is then one conversion with one home (the §5.101 precedent)                            → §11.245(h)
+  [Y33] §11.52(b) AGAINST "identical first" ─ reported at §11.244(f), applied by F121 as proposed: an ALREADY
+        accepted divergence is NOT reverted, it enters the identity test as a PREDICTED residual (old's 5 s
+        heading ramp after `transition_to target body`, §11.141). Say if accepted divergences should instead be
+        reverted for the identical phase                                                       → §11.244(f)
+  [Y34] the fov fix's shape (`2f9e6da7`) ─ the OLD projector is the single fov authority, the Camera's zoom
+        interpolator bypassed, not deleted. The CLEAN phase — authority moving INTO `Camera` — is yours, untouched
+  [Y35] the recorder (`7d27c513`) ─ armed by the environment variable `SC_SEAM_RECORD`, read through the existing
+        `body action dual_dump`; no command, no config key; ONE line in `executor.cpp` (outside the task's
+        listed files, argued: the only instant both engines have advanced for the same frame — I endorsed it)
+  [Y36] `camera action transition_to target point` IGNORES its `name` (hard-coded `temp_point`) — your shipped
+        script passes `name Space`, which does nothing. Honour it, or document that the command owns the name
+
+  YOURS — the map (F120 → §11.243; claude/DEPLOYMENT-MAP.md — its §0–§4, about 340 lines, are the acting surface)
+  [Y37] Q2 · does the DEVELOPER's criterion (*"workable … could disrupt work there"*) inherit the TESTER's
+        both-paths exclusion (§11.163(h), derived from *"nothing he must ADAPT to"*)? Never ruled. 48 open rows
+        are carried under BOTH readings until you say                                          → map §0 · §11.243(b)
+  [Y38] Q1 (which criterion "deployment" names today: R0 / T0 / both, R0 first — the file is written for the
+        third) · Q3 (*"once ready"*: both gates the map set have RUN; nothing instrument-shaped is in front of
+        the word) · Q4 (`R1` has THREE meanings — the map's tier R, the round-2 replies, the ledger's roots —
+        and minting R7–R11 widened the overlap; a rename is yours, priced at eleven citations)
+  [Y39] [V1] the map is 732 lines, not shorter ─ the executor argues the tiers are the derivation that keeps the
+        three WHO-ACTS lists challengeable. *"Focused"* was your word: say if the tiers should leave the file
+
+  YOURS — the environment (you are its owner; each of these reached you as a report, none was absorbed)
+  [Y40] the canary's COVERAGE ─ a release upgrade reached it through four pixels of Remmina's chrome; it has no
+        member for the release, kernel, toolchain, interpreter or a soname, and the driver move
+        (580.159.03 → 580.178.04) is recorded and never gated. Queued: those members + the driver gate. Veto if
+        you would rather keep the fingerprint small and the side effects sharp (your message 2 can be read so)
+  [Y41] the STACK ─ classic SDL2 2.32.10 (your install), NOT the SDL3-based `libsdl2-compat`; the band held on it
+        12/12. Say the word if the compat stack is the one to bank
+  [Y42] Q-83 / Q-84 (~/shared) ─ two questions back each, premise-shaped: is *"information maximisation"* your
+        name for the generator behind several recorded practices or for this loop; is *"the oracle is spent by
+        the first deliberate divergence in its region"* YOUR reason for identical-first, or mine
+
+  VETO POINTS taken (implemented-and-live, each cheap to reverse; silence = endorsed)
+  [V1] the REBUILD on 26.04 (fresh configure, the old build directory MOVED to /home/claude/sc-build-pre-26.04,
+       not deleted); the re-bank on your ruling, the old geometry struck
+  [V2] archival pass 23 at open (update-s29 + F117/F118/F119, byte-exact)
+  [V3] F120 to an EXECUTOR and not the supervisor (INT-8: the map is the assessor the queue is read against);
+       the predecessor archived WHOLE-FILE once, per-id from the new form on
+  [V4] F121's two engine commits; three const getters on the old navigator (0 removed lines); the three STOPs
+  [V5] the four stale entries F120 found are QUEUED, not repaired (the round was re-cut under them)
+  [V6] this block
+
+  HELD OPEN, not absorbed
+  [H9]  THE NEAR-BODY DISAPPEARANCE ─ NOT REACHED. No leg, no lever, no attribution: a hole, not a null
+  [H10] every key, mouse and joypad input is UNMEASURED by the recorder's legs (the TCP channel carries
+        commands, not SDL events) — and your tester drives with them. The fov fix covers the wheel and
+        CTRL+Up/Down BY CONSTRUCTION (same authority), not by measurement
+  [H11] §5.158 ─ five OLD-ONLY transitions (`camera action rotate`/`flyto`, `align_with`, `camera action load`,
+        `set heading default`, `mode jump`'s 10 s quaternion): found, unmeasured
+  [H12] one transient UNATTRIBUTED: position jumps to 1.0038 AU for ~0.9 s at `transition_to target point`
+        inside the script, and reads 8.8e-08 AU when the same command is isolated — state-dependent
+  [H13] the session-30 list, unchanged: [H1] the DSO slices on your reading · [H2] §5.154's fix · [H3] the fold
+        leg · [H4] B41 · [Y17]–[Y29]
+
+  FACTS, no decision asked
+  [F1] SATURDAY READING ORDER, by commit: `2f9e6da7` (the smallest commit, the biggest before/after) → the two
+       frames `claude/harness/artifacts/f121/script_pre/end_oldpath.png` + `end_newpath.png` side by side (your
+       tester's report as an image) → `7d27c513` (`struct SeamStep` in `core.hpp` first) → §11.245 (e)(f) →
+       `harness/artifacts/f121/transitions.tsv` (18 of its 30 rows say "not measured": the map of what is left)
+  [F2] the engine BUILDS AND RUNS ON 26.04 LTS with no source change (ffmpeg 8, cmake 4.2.3, gcc 15.2.0) — the
+       intern is on Linux; `glslangValidator` is an optional missing component; `FindFFmpeg` prints "3.3"
+  [F3] the class your tester reported in seconds was ALREADY in the ledger as four separate rows (B34, §5.153,
+       §5.68, §5.26/B33) that no map carried until F120's sweep, the same hour. Every parity instrument here
+       measured states AT REST; the canary DWELLS. Q-84 holds the guard: enumerate TRANSITIONS, at the dispatch
+       anchor, not only states
+  [F4] THIRTEEN dispatcher defects, none reaching a delivery (the list is in the session note). The pattern of
+       the round: a prevention fired exactly where it had become a LINE THE GATE RE-RUNS (the control beside a
+       zero-expectation premise) and nowhere it was a thing I meant to remember — including forty minutes after
+       writing it down. Two executor defects reached the record (twelve marks dated the 19th; an analyzer mode
+       that crashes on the committed dumps); both corrected or queued at acceptance
+  [F5] executors' commits carry `Co-Authored-By: Claude Fable 5.1` under author `Claude Opus 5` (the harness's
+       attribution line reaches the subagent); mine carry the author field alone. Your tool dropped "redundant
+       self co-authors" on its last run — say if the executors' line is one of those
+  ```
 
 - **Session-30 decision items (2026-09-13, Sunday — the DSO-DESIGN / TRAIL-WALKER / REWRITE-CLASS round: F117 · F118 · F119, three for three delivered and supervisor-verified same session; ZERO engine lines — F119's one code commit is six grammar pins and the gate's record). You were absent by design (your Sunday window): nothing was asked in-session, every open choice is here in Q-70's shape — one decision per node, its held set at the node, anchors by ID and symbol. The executors' own veto lists are §11.240(m), §11.241(h), §11.242(n); the supervisor's mint decisions are in each acceptance.**
 
