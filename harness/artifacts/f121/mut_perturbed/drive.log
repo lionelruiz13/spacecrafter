@@ -1,0 +1,20 @@
+leg=mutant out=/home/claude/spacecrafter/claude/harness/artifacts/f121/mut_perturbed
+1789764825.677 >> timerate rate 0
+1789764826.377 >> deselect
+1789764830.078 >> select planet Mars pointer off
+1789764835.278 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 947 base
+1789764838.485 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 1139 moveto_up_d3
+1789764838.891 >> moveto altitude 20000000 duration 3
+1789764847.092 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 1655 moveto_up_done
+1789764850.301 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 1848 moveto_down_d3
+1789764850.711 >> moveto altitude 100 duration 3
+1789764858.912 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 2365 moveto_down_done
+1789764862.126 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 2557 end
+1789764869.341 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/mut_perturbed/final.json
+done

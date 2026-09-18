@@ -132,7 +132,28 @@ elif LEG == "script":
     shot(s, "end_newpath.png")
     mark(s, "end")
 
-elif LEG in ("census", "mutant"):
+elif LEG == "mutant":
+    # THE INSTRUMENT'S OWN POSITIVE CONTROL. The place channel is PREDICTED to
+    # sit at its float32 floor on an unperturbed binary (prediction.txt P2/L4:
+    # both observer-move laws are linear over the same wall time). This leg is
+    # run TWICE -- on the delivered binary and on one whose Camera::update
+    # integrates the move at 1.3x -- and the instrument is only trusted if the
+    # same leg reads floor on the first and RED on the second. A channel that
+    # cannot be made to fail has not been shown to be reading anything.
+    send(s, "select planet Mars pointer off", 1.5)
+    time.sleep(2)
+    mark(s, "base")
+    mark(s, "moveto_up_d3")
+    send(s, "moveto altitude 20000000 duration 3", 0.2)
+    time.sleep(5)
+    mark(s, "moveto_up_done")
+    mark(s, "moveto_down_d3")
+    send(s, "moveto altitude 100 duration 3", 0.2)
+    time.sleep(5)
+    mark(s, "moveto_down_done")
+    mark(s, "end")
+
+elif LEG == "census":
     send(s, "select planet Mars pointer off", 1.5)
     time.sleep(2)
     mark(s, "base")
@@ -165,7 +186,7 @@ elif LEG in ("census", "mutant"):
     mark(s, "zoom_delta_fov_done")
     send(s, "zoom fov 180 duration 0", 1.0)
 
-    if LEG == "census":
+    if True:
         # --- TRACKING: old snaps, the camera eases ------------------------
         mark(s, "track_on")
         send(s, "flag track_object on", 0.2)

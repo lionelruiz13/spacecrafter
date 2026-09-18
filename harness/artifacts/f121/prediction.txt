@@ -1,0 +1,246 @@
+F121 PREDICTIONS -- registered from the CODE READING, before any engine run
+===========================================================================
+Written 2026-09-18 by the F121 executor (Claude Opus 5), at code 7d27c513
+(the seam recorder's own commit) and harness 3407009+. NOTHING below was
+measured in a running engine at the time it was written; every number is
+[derived] from the sources cited beside it. The point of the file is that a
+surprise be visible as one -- including the places where the DISPATCH's own
+reading is predicted wrong (section 6).
+
+The instrument is Core::recordSeamStep (core.cpp), armed by SC_SEAM_RECORD,
+read through `body action dual_dump` as the "seam" member. Channels:
+  fovOld (deg, full)   vs halfFovNew (rad, half)   -> dFovDeg = fovOld - halfFovNew*360/pi
+  viewAngleAbs   (deg) -- old -(matHelioToEye row 2) against Camera::lastAbsFwd
+  viewAngleLocal (deg) -- oldLocalToLocal(local_vision) against Camera acting forward
+  posDelta       (AU)  -- |navigator observer helio pos - Camera::getRootPosition|
+  headingOldDeg / headingNewRad
+  dLonDeg / dLatDeg / dAltMetres -- the two control surfaces' place
+  flags, plan timers
+
+
+1. THE FLOORS (what "identical" can mean on this instrument)
+------------------------------------------------------------
+F1  viewAngleAbs at rest, both paths holding the same body through the dual
+    setter: 1.7e-06 deg was F114's landed floor and 1.8e-05 deg its pre run
+    [S11.235(d)]. PREDICT: this run's at-rest floor is in [1e-06, 5e-05] deg.
+F2  posDelta at rest: 2.6e-08 AU was S11.141's measured agreement (the float32
+    floor of a 1 AU subtraction). PREDICT: [1e-09, 1e-07] AU.
+F3  viewAngleLocal at rest: NO PRIOR EXISTS -- this channel is new. PREDICT it
+    is of the same order as F1 when the camera's reference == old's home
+    planet and the camera is anchored; PREDICT it is MEANINGLESS (large, up to
+    180 deg) whenever the two references differ or the camera is in free mode,
+    because the two "local" frames are then two different frames. If it is
+    large AT REST with the references EQUAL, the channel has a frame bug and
+    the finding is mine, not the engine's.
+F4  dFovDeg at rest: exactly 0 or one float32 ulp of the fov -- both paths are
+    written from the same number at the endpoints.
+
+
+2. THE LAWS, READ FROM THE SOURCE, AND WHAT THEY IMPLY
+-------------------------------------------------------
+L1  FOV, auto-zoom. OLD (Projector::updateAutoZoom, projector.cpp):
+      fov = start + (aim-start)*c,  c = 1-(1-k)^3 if start>aim or manual_zoom,
+                                    c = k^3       otherwise;   k += speed*dt
+    i.e. LINEAR IN FOV with a one-sided cubic ease.
+    NEW (Camera::setHalfFov + Camera::update, Camera.cpp:668-676, 1058-1099):
+      halfFov = src * (dst/src)^q,  q = 2k^2 (k<=0.5), 1-2(1-k)^2 (k>0.5)
+    i.e. GEOMETRIC (log-linear) in fov with a SYMMETRIC two-phase ease.
+    Same endpoints, same duration, different family AND different easing.
+
+L2  VIEW, auto-move. OLD (Navigator::updateVisionVector, navigator.cpp:53-142):
+    slerp of the vision vector at c(move.coef) with
+      zooming_mode==1  : c = 1-(1-1.11k)^3 for k<=0.9, then 1
+      zooming_mode==-1 : c = k^4
+      otherwise        : c = atan(4(2k-1))/atan(4)/2 + 0.5
+    NEW: Camera::lookTo plans a two-phase constant-|a| great-circle move with
+    T floored at 0.2 s (Camera.cpp:932), and while Camera::target is set
+    update() RE-PLANS every frame with (5, isMaxDuration=true), i.e.
+    T = 5*(angle/pi) floored at 0.2 (Camera.cpp:664).
+
+L3  TRACKING. OLD is a SNAP: with flag_traking set and no auto-move,
+    equ_vision = selected.getEarthEquPos() every frame, no interpolation
+    (navigator.cpp:127-129). NEW is a SERVO: lookTo(..., 5, true) re-planned
+    each frame, so it eases in over >= 0.2 s.
+
+L4  OBSERVER MOVE. OLD (Observer::update): mult += coef*dt, lat/alt written
+    ABSOLUTELY from mult, lon accumulated -- LINEAR, no easing. NEW
+    (Camera::moveRel + update): deltaPosition integrated -- also LINEAR.
+    Same family.
+
+L5  HEADING after `camera action transition_to target body`. OLD
+    (AnchorManager::transitionToBody, anchor_manager.cpp) ends with
+    setHeading(-axisAngle) then changeHeading(0, 5000) -- a 5 SECOND linear
+    heading ramp. NEW (CameraAnchors::transitionToBody) has NO heading tail at
+    all, deliberately (S11.141, A38/D28). ALREADY-ACCEPTED DELIBERATE
+    DIVERGENCE -> enters the identity test as a PREDICTED RESIDUAL with its
+    ledger pointer, per the F121 boundary; it is NOT reverted here.
+
+
+3. THE TESTER'S ACT (internal/fly_to_selected.sts, Moon selected), PREDICTED
+-----------------------------------------------------------------------------
+Script lines that matter, in order, with the predicted delta on each:
+
+  P1 `flag track_object on`  -> Core::setFlagTracking(true): old flag +
+     Camera::trackBody. By L3 the two disagree for the settle: old centres the
+     Moon on the FIRST frame, the camera eases.
+     PREDICT viewAngleAbs jumps to the initial view-to-Moon separation on the
+     first frame after the command and decays to the F1 floor over 0.2 s to
+     5 s. MAGNITUDE: the separation at the script's start. If the view is at
+     the init direction and the Moon is anywhere but there, tens of degrees.
+     Registered bound: max viewAngleAbs in the 2 s after this line > 1 deg.
+
+  P2 `moveto altitude 20000000 duration 3` -> CoreLink::observerMoveTo:
+     old Observer::moveTo(.., 3000 ms) and Camera::moveTo(.., 3.0 s). By L4
+     both are linear over the same wall time with the same per-frame dt.
+     PREDICT |dAltMetres| stays SMALL throughout: bound 1000 m at any frame of
+     the ramp, and < 10 m at rest. The residual is float32: the camera holds
+     `distance` in AU (float), whose ulp near 1.8e-04 AU is ~1.2e-11 AU
+     = 1.8 mm, accumulated over ~430 frames.
+     PREDICT |dLonDeg|, |dLatDeg| < 1e-4 deg throughout (this line moves
+     neither).
+     COUNTER-PREDICTION, registered because it is the interesting failure: if
+     dAltMetres is instead of order the altitude itself (1e7 m), the camera's
+     altitude ramp is not running at all and the finding is a missing mirror,
+     not an easing difference.
+
+  P3 `camera action transition_to target point name Space`
+     -> CoreLink::cameraTransitionToPoint IGNORES the name: the handler passes
+     the literal "temp_point" (app_command_interface.cpp:4406). Both paths get
+     the same point, so this is a SURFACE defect (the command's documented
+     `name` argument does nothing), not a seam defect. PREDICT no delta is
+     attributable to this line beyond the reference-change transient, and
+     PREDICT flags bit 32 (old home planet == camera reference) goes to 0 here
+     and stays 0: old's anchor becomes "temp_point" while the camera's
+     reference becomes the new point body.
+     PREDICT viewAngleLocal becomes meaningless from this line on (F3).
+
+  P4 `camera action move_to target body body_name selected duration 3
+      altitude 100000` -> CoreLink::cameraMoveToBody resolves "selected" to
+     the selected planet's english name (coreLink.cpp:1163). OLD
+     AnchorManager::moveToBody moves the ANCHOR BODY along a straight line
+     over 3 SIMULATION days-equivalent (seconds/86400), NEW
+     CameraAnchors::travelToBody installs a TravelOrbit over the same
+     travelDays. Both move the same point body, and the camera is anchored to
+     it, so PREDICT posDelta stays at/near the F2 floor through this line --
+     this is the one transition of the script that IS single-authority by
+     construction (the two registries drive two copies of the same body, and
+     the camera rides the body).
+     COUNTER-PREDICTION: if posDelta goes to 1e-3 AU or more here, the two
+     registries' travel laws differ and that is the finding.
+     PREDICT the standoff differs: old stops at `alt` above the body using
+     Body::getRadius(), new uses ModularBody::getScaledRadius() -- same value
+     on the shipped scale, so 0 unless a scale is set.
+
+  P5 `camera action transition_to target body name selected` (the last line)
+     -> by L5, old starts a 5 s heading ramp to 0 from -axisAngle; the camera
+     does not move its heading at all.
+     PREDICT headingOldDeg ramps linearly for 5 s after this line while
+     headingNewRad is CONSTANT, and flags bit 2 (old heading ramp) is 1 for
+     ~5 s and bit-equal to 0 on the camera side.
+     PREDICT the consequence the tester sees: old's heading is a ROLL applied
+     to mat_local_to_eye (navigator.cpp:329), so THE STAR FIELD ROLLS FOR FIVE
+     SECONDS AND THE BODIES DO NOT. Magnitude = the Moon's axis angle in
+     degrees, whatever it is on the date; bound registered: |headingOldDeg|
+     moves by more than 1 deg over the 5 s and headingNewRad moves by 0.
+     PREDICTED RESIDUAL (S11.141), not a new defect and not reverted here.
+
+  P6 THE MOON ON SCREEN AT THE END. Not predictable from the reading with
+     confidence. Registered as a question with three candidate answers, so
+     that whichever lands is scored: (a) the camera ends anchored on the Moon
+     itself, so the Moon fills or overfills the field and "not visible" is the
+     near-body disappearance of mandate step 6; (b) the aim diverged (P1/P5)
+     and the Moon is off-screen on the new path only; (c) both paths lose it.
+     PREDICT (a) is the most likely, because `transition_to target body` puts
+     the observer AT the body's surface-relative place and the last commanded
+     fov is the auto-zoom's close fov.
+
+
+4. THE OTHER CENSUS MEMBERS, PREDICTED
+---------------------------------------
+  C1 `zoom auto in` / `zoom auto out` (Core::autoZoomIn/Out): by L1 the fov
+     ramps diverge. PREDICT for a zoom from the shipped 180 deg field to a
+     close fov of ~1 deg over 1 s: at k=0.25 old fov 76.5 deg vs new 94.1 deg
+     (NEW WIDER); at k=0.5 old 23.4 deg vs new 13.4 deg (NEW NARROWER); at
+     k=0.75 old 5.5 deg vs new 1.9 deg. SO: THE SIGN OF dFovDeg CHANGES ONCE
+     DURING A ZOOM-IN, crossing zero near k=0.33. Registered as the sharpest
+     discriminating prediction of this file: an instrument that shows a
+     monotone fov gap has measured something else.
+     Max |dFovDeg| over such a ramp: PREDICT between 10 and 25 deg.
+  C2 `zoom fov X duration D` (CoreLink::zoomTo): same two laws, same result.
+  C3 Interactive zoom keys (Core::updateMove, core.cpp:2098): old's POST-clamp
+     fov is mirrored into Camera::setHalfFovNow EVERY frame the ramp is
+     active. PREDICT dFovDeg == 0 to the float during a held zoom key. This is
+     a NEGATIVE CONTROL: it is the one fov channel already single-authority,
+     and if it reds the instrument is wrong.
+  C4 Interactive look keys / drag (core.cpp:2123, :1990): Camera::lookRel with
+     duration 0, old's convention and clamp reproduced. PREDICT
+     viewAngleAbs <= F1 floor during a held arrow key -- the second NEGATIVE
+     CONTROL. (B34's row says the ramp "moves the old navigator alone"; that
+     was TRUE before S11.133 landed the mirror and is predicted FALSE now.)
+  C5 `moveto lat/lon/alt duration` (observerMoveTo): as P2.
+  C6 Interactive altitude keys (core.cpp:2081, Camera::multAlt): old
+     multAltitude vs the camera's view-directed descend(). DIFFERENT GEOMETRY
+     BY DESIGN (B21, S11.72). PREDICT dAltMetres diverges while held; this is
+     a deliberate divergence, reported, not fixed here.
+  C7 `set heading` / heading ramp: CoreLink::moveHeadingRelative mirrors, but
+     old's changeHeading duration ramp has no camera counterpart in the
+     anchor tail (L5). PREDICT the heading channel is the second-largest
+     offender after fov.
+
+
+5. THE FIX, PREDICTED IN SHAPE (so that what lands can be scored)
+------------------------------------------------------------------
+S1 FOV: single authority is FEASIBLE and cheap -- the old projector's fov is
+   final for the frame at the end of Core::updateMove, and the camera's zoom
+   plan is the only writer of ModularBody::halfFov after it. PREDICT the fix
+   is one per-frame follow call plus killing the camera's in-flight zoom plan,
+   and that it takes dFovDeg to exactly 0 on every frame of every fov
+   transition, C1 included.
+S2 VIEW: single authority is feasible ONLY where the two frames coincide
+   (camera anchored, reference == old's home planet). PREDICT it is NOT
+   feasible after `transition_to target point`, and that this is where the
+   "match the interpolation at that site" carve-out has to be taken.
+S3 TRACKING: making the camera SNAP like old (duration 0 in the tracking
+   lookTo) is a one-token change and is predicted to take the tracking
+   transient to the floor. It costs the dome-comfort smoothing D15(c) values,
+   so it is predicted to be a VETO POINT rather than a free fix.
+S4 HEADING: not fixable under identical-first without either reverting
+   S11.141's accepted divergence or answering D28. PREDICT it STAYS RED and
+   is reported.
+
+
+6. WHERE THE DISPATCH'S OWN READING IS PREDICTED WRONG
+--------------------------------------------------------
+W1 The section says, of the interactive zoom: *"how the Camera follows
+   interactive ZOOM (no forwarded call was found for it)"*. PREDICTED FALSE:
+   core.cpp:2098-2099 mirrors old's post-clamp fov into
+   Camera::setHalfFovNow on every frame the zoom ramp is active, landed by
+   S11.133. C3 is the check.
+W2 The section's B34 row says *"arrow-key look-around moves the old navigator
+   alone"*. PREDICTED FALSE AT HEAD: core.cpp:2122-2123 hands the same two
+   numbers to Camera::lookRel. C4 is the check. (The row is a cached
+   conclusion from before S11.133, not a defect of the dispatch's arithmetic.)
+W3 The section's premise that the dual dump is blind by 195-714 frames is
+   TRUE of the dump AS A SAMPLER and is NOT a limit on this task: a ring
+   filled in-process makes the latency bound only when the history is read.
+   Recorded, not a defect.
+W4 PREDICTED that the largest single visible divergence of the tester's act is
+   NOT the one the mint leads with (the forwarded durations) but the FOV LAW
+   (L1/C1), because it moves every body's apparent size against the star field
+   continuously through every zoom, which is exactly *"the bodies and the star
+   mostly"*.
+
+
+7. WHAT THIS FILE CANNOT PREDICT, STATED
+-----------------------------------------
+- The near-body disappearance (mandate step 6). The candidate levers are named
+  in the mandate (near plane, culling extent / boundingRadius, the
+  reach/visibility coupling of S11.96(c), a module's own distance rule, depth
+  range) and Q-71 forbids pulling one before isolation. NO prediction is
+  registered beyond this: whatever is found must be attributed by a leg that
+  could have named a different lever.
+- The frame-at-rest discrepancy (mandate step 5). posDelta and viewAngleAbs
+  at rest are the channels; no magnitude is predicted, because the mint's
+  "severe discrepancy in the repere camera" is a report about a scene this
+  file has not reached.
+- Whether the Moon is on screen at the end (P6 gives three candidates).

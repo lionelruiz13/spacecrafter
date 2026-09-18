@@ -1,0 +1,6 @@
+947 base
+1139 moveto_up_d3
+1655 moveto_up_done
+1848 moveto_down_d3
+2365 moveto_down_done
+2557 end

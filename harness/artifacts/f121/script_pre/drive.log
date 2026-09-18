@@ -1,0 +1,22 @@
+leg=script out=/home/claude/spacecrafter/claude/harness/artifacts/f121/script_pre
+1789765178.889 >> timerate rate 0
+1789765179.589 >> deselect
+1789765183.290 >> select planet Moon pointer off
+1789765188.490 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 952 moon_selected
+1789765191.697 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f121/script_pre/before.png
+1789765192.897 >> script action play filename internal/fly_to_selected.sts
+1789765196.098 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 1409 script_started
+1789765221.303 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 2920 script_done
+1789765230.519 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 3473 after_heading_tail
+1789765232.738 >> flag experimental_path off
+1789765235.938 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f121/script_pre/end_oldpath.png
+1789765238.139 >> flag experimental_path on
+1789765241.339 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f121/script_pre/end_newpath.png
+1789765244.539 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 4314 end
+1789765251.762 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/script_pre/final.json
+done

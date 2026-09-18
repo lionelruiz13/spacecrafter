@@ -60,7 +60,15 @@ def derive(step):
     conversion is written once, here, and the record stays raw."""
     d = dict(step)
     d["dFovDeg"] = step["fovOld"] - step["halfFovNew"] * 360.0 / math.pi
-    d["dHeadingDeg"] = step["headingOldDeg"] - step["headingNewRad"] * 180.0 / math.pi
+    # WRAPPED into (-180, 180]. Old's getHeading() already wraps to that
+    # branch (navigator.hpp) and the camera's `heading` is a raw radian
+    # parameter that is never wrapped, so the RAW difference reads 360 deg for
+    # two headings that are the same angle -- measured on the first control
+    # leg. The record keeps both raw, which is right; the wrap is a reader's
+    # job because it is a statement about what the two numbers MEAN.
+    h = step["headingOldDeg"] - step["headingNewRad"] * 180.0 / math.pi
+    h -= math.floor((h + 180.0) / 360.0) * 360.0
+    d["dHeadingDeg"] = h
     return d
 
 
