@@ -727,6 +727,7 @@ and harness `CC-harness @ 4cfa64d`. The predecessor — 855 lines, md5 `3c7350ce
 `claude/DEPLOYMENT-MAP/archive/2026-09-18-predecessor.md`. The item-by-item correspondence between
 the two files is `claude/harness/artifacts/f120/disposition.tsv` (71 rows, one per predecessor
 item) and it is proved mechanically by `claude/harness/f120_ids.py`; the ledger-side sweep that
-produced everything marked *new this pass* is `claude/harness/artifacts/f120/sweep.tsv` (306 rows
-over seven sets, each named by its resolving command). **ZERO ledger states were changed by this
-regeneration** — it reads rows, it does not flip them.
+produced everything marked *new this pass* is `claude/harness/artifacts/f120/sweep.tsv` (341 rows
+over seven sets — 131 §5 · 16 §13.A · 26 §13.B · DECISIONS_PENDING (measured empty) · 12
+FEATURE_REQUESTS · 43 SS · 112 §3 nodes — each set named by its resolving command). **ZERO ledger
+states were changed by this regeneration** — it reads rows, it does not flip them.
