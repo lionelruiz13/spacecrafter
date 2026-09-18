@@ -507,6 +507,86 @@ public:
 	};
 	//! The ring, chronological, as one JSON object.
 	void dumpRampTrace(std::ostream &out) const;
+
+	//! ---- THE SEAM RECORDER (INTENT S11.245, F121) ------------------------
+	//! READBACK ONLY. ONE record per frame, at the ONE point in the frame
+	//! where BOTH engines have advanced for that frame: the end of
+	//! `Executor::update`, after `SSystemFactory::updateExperimental` has run
+	//! `Camera::update` and after the executor mode has run the whole old
+	//! path. Everything else in the frame sees one of the two halves stale.
+	//!
+	//! WHAT IT IS FOR. Every camera transition in this engine is implemented
+	//! TWICE -- the old navigator/observer/projector interpolates and the star
+	//! field follows it, the same command is forwarded to
+	//! `experimentalModule/Camera`, which interpolates on its own and the
+	//! bodies follow that. The two agree AT REST, and every parity instrument
+	//! of this project has measured states at rest, so the whole class was
+	//! invisible: the tester's report (*"everything doesn't move at the same
+	//! speed, on zoom, on movement"*, S11.244(a)3) is about the INTERVAL
+	//! between two rests. "Identical" here means delta zero ON EVERY FRAME of
+	//! the transition, not only at its end, and that is a per-frame question.
+	//!
+	//! WHY NOT THE EXISTING DUMP CHANNEL. `body action dual_dump` is
+	//! per-REQUEST and its latency was measured at 195-714 frames (S11.241(d));
+	//! it cannot sample a ramp. What it CAN do is carry a ring that was filled
+	//! in-process -- which is exactly what the `RampStep` member above already
+	//! does for the interactive ramps (S11.133). This is that instrument
+	//! generalised from "the frames a key is held" to "every frame", and read
+	//! out through the same command, so the dump's latency bounds only WHEN
+	//! the history is read, never WHAT it saw.
+	//!
+	//! COST WHEN OFF (D11, 1 ms/frame): one `bool` test per frame and nothing
+	//! else -- the ring is not even allocated. Armed by the environment
+	//! variable `SC_SEAM_RECORD` (any non-empty value other than "0"), read
+	//! once in `Core::init`, and LOGGED when it arms (D12: an acting
+	//! non-default is never silent). There is no command to arm it: the
+	//! recorder must be running BEFORE the first frame of a transition, and a
+	//! command that arms it would itself be a frame late.
+	struct SeamStep {
+		unsigned int frame;		//!< recorder call index (gaps are visible)
+		int deltaTime;			//!< ms the frame advanced
+		double jd;				//!< the frame's simulation date
+		//! FOV. Old owns `Projector::fov` (DEGREES, full angle) and the star
+		//! field is drawn at it; the new path owns `ModularBody::halfFov`
+		//! (RADIANS, half angle) and every body is drawn at it. `aimFov` is
+		//! old's in-flight target, `zoomSrc`/`zoomDst` the camera's, so a
+		//! divergence can be attributed to the LAW rather than to the target.
+		double fovOld, aimFovOld, halfFovNew, zoomSrcNew, zoomDstNew;
+		//! VIEW DIRECTION, two independent channels (see Camera::getAbsFwd /
+		//! getForwardLocal). `viewAngleAbs` is the angle between old's eye
+		//! forward and the camera's, both in the root-aligned inertial frame;
+		//! `viewAngleLocal` is the same comparison in the acting/zenith frame,
+		//! which does not pass through the placement. Degrees.
+		double viewAngleAbs, viewAngleLocal;
+		//! WHERE THE EYE IS. |old's observer heliocentric position - the
+		//! camera's root position|, AU. The two were measured to agree to
+		//! 2.6e-08 AU at rest (S11.141), which is this channel's floor.
+		double posDelta;
+		//! HEADING. Old's in degrees (its own unit), the camera's in radians.
+		//! Reported raw and not differenced: across a reference switch the two
+		//! are not the same parameter (B13 rewrites the camera's), so a
+		//! subtraction would invent a divergence. A reader differences them.
+		double headingOldDeg, headingNewRad;
+		//! THE PLACE, as the two control surfaces express it: old's observer
+		//! (degrees, degrees, metres) minus the camera's `getPlace()` in the
+		//! same units. S5.68's channel.
+		double dLonDeg, dLatDeg, dAltMetres;
+		//! IN-FLIGHT PLANS. Old: auto-move flag and its coefficient, the
+		//! heading-ramp flag. New: the four plan timers. The interval this
+		//! instrument exists for is exactly the interval in which these
+		//! disagree.
+		double moveCoefOld;
+		float viewTNew, hdgTNew, zoomTNew, moveTNew;
+		//! STATE IDENTITY, as bits, so one frame is one small record:
+		//! 1 old auto-move, 2 old heading ramp, 4 old tracking flag,
+		//! 8 camera has a tracked body, 16 tracked bodies NAME-equal,
+		//! 32 old home planet == camera reference (name-equal),
+		//! 64 camera in free mode.
+		unsigned int flags;
+	};
+	//! The ring, chronological, as one JSON object -- written into the
+	//! dual-path dump beside `ramp`.
+	void dumpSeamTrace(std::ostream &out) const;
 	//! Pin the rendered body path (flag experimental_path): old/new selection
 	//! replacing the A/B auto-toggle once used.
 	void setExperimentalPath(bool newPath);
@@ -663,6 +743,22 @@ private:
 	unsigned int rampTotal = 0;		//!< records ever written
 	unsigned int rampFrame = 0;		//!< `updateMove` call index
 	bool rampWasActive = false;		//!< to emit the release row
+
+	//! Seam-recorder storage (see SeamStep above). Same ring shape as the ramp
+	//! instrument's, sized for a whole scripted transition: 16384 frames is
+	//! 113 s at the config's 144 fps cap, and `seamTotal` says how many a
+	//! longer capture dropped. Allocated on the FIRST record, so an unarmed
+	//! run carries the vector's 24 empty bytes and nothing else.
+	static constexpr unsigned int SEAM_TRACE_CAPACITY = 16384;
+	std::vector<SeamStep> seamTrace;
+	unsigned int seamWrite = 0;		//!< next slot
+	unsigned int seamTotal = 0;		//!< records ever written
+	unsigned int seamFrame = 0;		//!< recorder call index
+	bool seamRecording = false;		//!< armed by SC_SEAM_RECORD at init
+	//! Write one record for this frame. Called from `Executor::update` (a
+	//! friend) after BOTH engines have advanced; returns immediately when the
+	//! recorder is not armed.
+	void recordSeamStep(int delta_time);
 
 	// initialize CoreFont class
 	void registerCoreFont() const;

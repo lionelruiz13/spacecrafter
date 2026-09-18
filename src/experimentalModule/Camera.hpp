@@ -149,6 +149,54 @@ public:
         return Vec3f(alt, az, heading);
     }
 
+    // ---- READBACK ONLY, the F121 seam recorder's half (INTENT S11.245) -----
+    // Five const, side-effect-free members consumed by ONE caller,
+    // `Core::recordSeamStep`, which compares this camera against the old
+    // navigator/observer/projector once per frame. They expose state the class
+    // already maintains; none of them computes anything the class did not
+    // already compute, and removing them changes no behaviour.
+    //
+    // `getAbsFwd` is the eye's forward (screen-centre) direction in the
+    // ROOT-aligned common-inertial frame, refreshed by update() every frame
+    // (`lastAbsFwd`, INTENT 11.61). It is the SAME frame old's
+    // `-(matHelioToEye row 2)` lands in -- that pairing is what F114 measured
+    // the two paths against at a 1.7e-06 deg floor (S11.235(d)) -- so the angle
+    // between them is the view-direction identity observable, frame-free and
+    // comparable across a reference switch, which (alt, az) is not.
+    inline const Vec3f &getAbsFwd() const {
+        return lastAbsFwd;
+    }
+    // The forward direction in the ACTING frame (zenith frame when anchored,
+    // body frame in free flight) -- the fold undone, so it is directly
+    // comparable with `oldLocalToLocal(navigator local_vision)`. The second,
+    // INDEPENDENT view channel: `getAbsFwd` composes the placement and the
+    // reference chain, this one does not, so a disagreement between the two
+    // deltas separates a view error from a placement error instead of summing
+    // them into one number (the positive-control discipline: a single channel
+    // that reads zero cannot say WHICH zero it read).
+    inline Vec3f getForwardLocal() const {
+        return fold().transpose().multiplyWithoutTranslation(paramForward());
+    }
+    // The four in-flight plan timers, as one vector: (view, heading, zoom,
+    // move). A plan timer is what says "this path is still interpolating",
+    // and the seam's whole subject is the interval in which one path is and
+    // the other is not -- an end-state comparison cannot see it.
+    inline Vec4f getPlanTimers() const {
+        return Vec4f(viewT, hdgT, zoomDuration, moveDuration);
+    }
+    // The zoom plan's endpoints, for attributing a fov divergence to the LAW
+    // rather than to the target (both paths can hold the same aim and still be
+    // far apart mid-ramp -- which is the measured case, S11.245).
+    // Meaningful only while `getPlanTimers()[2]` (zoomDuration) is non-zero;
+    // stale otherwise, and the recorder reports the timer beside them so a
+    // reader can tell which.
+    inline float getZoomSrcHalfFov() const {
+        return srcHalfFov;
+    }
+    inline float getZoomDstHalfFov() const {
+        return dstHalfFov;
+    }
+
     void moveHeading(float deltaHeading);
     void setHeading(float heading, float duration = 0);
     inline float getHeading() const {

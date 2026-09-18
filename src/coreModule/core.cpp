@@ -281,6 +281,22 @@ void Core::setFlagAstronomical(bool a)
 //! Load core data and initialize with default values
 void Core::init(const InitParser& conf)
 {
+	// The seam recorder's arming, read ONCE and LOGGED (D12: an acting
+	// non-default is never silent). Environment and not config, and not a
+	// command: the instrument has to be running before the FIRST frame of the
+	// transition it measures, and a command that armed it would itself be one
+	// frame late; a config key would put a measurement-only switch into the
+	// operator's surface. Contract in core.hpp above `struct SeamStep`.
+	if (firstTime) {
+		const char *seamEnv = std::getenv("SC_SEAM_RECORD");
+		seamRecording = (seamEnv && *seamEnv && std::string(seamEnv) != "0");
+		if (seamRecording)
+			cLog::get()->write("SC_SEAM_RECORD is set: the per-frame dual-camera seam "
+				"recorder is ARMED (INTENT S11.245). It writes one record per frame into "
+				"a ring of 16384 and costs nothing else; read it with 'body action "
+				"dual_dump filename <f>' (the \"seam\" member). Unset SC_SEAM_RECORD to "
+				"disarm.", LOG_TYPE::L_INFO);
+	}
 	if (firstTime) {
 		//s_font::initBaseFont(AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME));
 		txcache::TextureLoader::setLoadInLowResolution(conf.getBoolean(SCS_RENDERING, SCK_LOW_RES), conf.getInt(SCS_RENDERING, SCK_LOW_RES_MAX) );
@@ -849,6 +865,14 @@ void Core::ssystemDualDump(const std::string& file)
 		// computed and where both paths' authorities are in scope at once.
 		out << ",\"ramp\":";
 		dumpRampTrace(out);
+		// F121 (S11.245): the PER-FRAME record of BOTH engines' shared state,
+		// filled in-process at the one point in the frame where both have
+		// advanced. Same home and same reason as `ramp` above -- Core is where
+		// both paths' authorities are in scope at once -- and read through this
+		// same command because a ring makes the dump's own 195-714 frame
+		// latency (S11.241(d)) bound only WHEN the history is read.
+		out << ",\"seam\":";
+		dumpSeamTrace(out);
 	});
 }
 
@@ -2182,6 +2206,186 @@ void Core::dumpRampTrace(std::ostream &out) const
 		    << ",\"oldAzAfter\":" << s.oldAzAfter << ",\"oldAltAfter\":" << s.oldAltAfter
 		    << ",\"newAz\":" << s.newAz << ",\"newAlt\":" << s.newAlt
 		    << ",\"newAzAfter\":" << s.newAzAfter << ",\"newAltAfter\":" << s.newAltAfter
+		    << '}';
+	}
+	out << "]}";
+	out.precision(prec);
+}
+
+// ---------------------------------------------------------------------------
+// THE SEAM RECORDER (INTENT S11.245, F121). Contract, anchor and cost in
+// core.hpp above `struct SeamStep`. READBACK ONLY: this function reads both
+// engines and writes nothing but its own ring.
+// ---------------------------------------------------------------------------
+
+//! The angle between two directions, in degrees, on the branch [0, 180].
+//! Written from the normalised dot product rather than from atan2(|a^b|, a.b)
+//! because the quantity of interest here is a NEAR-ZERO angle and both forms
+//! have the same conditioning there, while this one needs no cross product;
+//! the clamp is what keeps acos defined when the two are the same vector to
+//! the last bit, which is the case this instrument is built to report.
+static double seamAngleDeg(const Vec3d &a, const Vec3d &b)
+{
+	const double la = a.length(), lb = b.length();
+	if (!(la > 0.) || !(lb > 0.))
+		return -1.; // degenerate: say so rather than report a 0 or a 90
+	double c = a.dot(b) / (la * lb);
+	if (c > 1.) c = 1.;
+	if (c < -1.) c = -1.;
+	return std::acos(c) * (180. / M_PI);
+}
+
+void Core::recordSeamStep(int delta_time)
+{
+	if (!seamRecording)
+		return;
+	SeamStep s{};
+	s.frame = seamFrame++;
+	s.deltaTime = delta_time;
+	s.jd = timeMgr->getJDay();
+
+	// ---- FOV: the two authorities, in their own units -------------------
+	s.fovOld = projection->getFov();          // degrees, full angle
+	s.aimFovOld = projection->getAimFov();    // degrees; == fov when not zooming
+	s.halfFovNew = ModularBody::halfFov;      // radians, half angle
+	s.zoomSrcNew = s.zoomDstNew = 0.;
+
+	Camera *cam = Camera::instance;
+	if (!cam) {
+		// No camera: the record still goes in, with the old half filled and
+		// every new-path field zero. An absent row would be indistinguishable
+		// from a frame the recorder did not run (S11.132(a)'s fiction).
+		s.viewAngleAbs = s.viewAngleLocal = -1.;
+		s.headingOldDeg = navigation->getHeading();
+		s.flags = (navigation->getFlagAutoMove() ? 1u : 0u)
+		        | (navigation->getFlagChangeHeading() ? 2u : 0u)
+		        | (navigation->getFlagTraking() ? 4u : 0u);
+		s.moveCoefOld = navigation->getMoveCoef();
+		if (seamTrace.empty())
+			seamTrace.resize(SEAM_TRACE_CAPACITY);
+		seamTrace[seamWrite] = s;
+		seamWrite = (seamWrite + 1) % SEAM_TRACE_CAPACITY;
+		++seamTotal;
+		return;
+	}
+	s.zoomSrcNew = cam->getZoomSrcHalfFov();
+	s.zoomDstNew = cam->getZoomDstHalfFov();
+
+	// ---- VIEW DIRECTION, channel 1: the root-aligned inertial frame -----
+	// Old's eye forward is -(row 2 of mat_helio_to_eye): for a rotation R
+	// mapping helio -> eye, the vector R sends to the eye's -z is -(R row 2).
+	// The camera publishes exactly that quantity in the same frame
+	// (Camera::update -> lastAbsFwd), which is the pairing F114 measured at a
+	// 1.7e-06 deg floor (S11.235(d)).
+	{
+		const Mat4d &he = navigation->getHelioToEyeMat();
+		const Vec3d oldFwd(-he.r[2], -he.r[6], -he.r[10]);
+		const Vec3f &nf = cam->getAbsFwd();
+		s.viewAngleAbs = seamAngleDeg(oldFwd, Vec3d(nf[0], nf[1], nf[2]));
+	}
+	// ---- VIEW DIRECTION, channel 2: the acting (zenith) frame -----------
+	// Old's `local_vision` is x=South, y=East, z=Up; the camera's acting frame
+	// is x=East, y=North, z=Up, and the ONE home of that conversion is
+	// Camera::oldLocalToLocal (S5.101). Independent of channel 1 because it
+	// does not pass through the placement or the reference chain -- so the two
+	// together separate a view error from a placement error.
+	{
+		const Vec3f ol = Camera::oldLocalToLocal(Vec3f(navigation->getLocalVision()));
+		const Vec3f nl = cam->getForwardLocal();
+		s.viewAngleLocal = seamAngleDeg(Vec3d(ol[0], ol[1], ol[2]),
+		                                Vec3d(nl[0], nl[1], nl[2]));
+	}
+
+	// ---- WHERE THE EYE IS ------------------------------------------------
+	{
+		const Vec3d oldPos = navigation->getObserverHelioPos();
+		const Vec3d newPos = cam->getRootPosition();
+		s.posDelta = (oldPos - newPos).length();
+	}
+
+	// ---- HEADING and THE PLACE ------------------------------------------
+	s.headingOldDeg = navigation->getHeading();
+	s.headingNewRad = cam->getHeading();
+	{
+		const Vec3f place = cam->getPlace(); // (lon rad, lat rad, altitude AU)
+		s.dLonDeg = observatory->getLongitude() - place[0] * (180. / M_PI);
+		s.dLatDeg = observatory->getLatitude() - place[1] * (180. / M_PI);
+		s.dAltMetres = observatory->getAltitude()
+		             - static_cast<double>(place[2]) * 1000.0 * AU;
+	}
+
+	// ---- IN-FLIGHT PLANS and STATE IDENTITY ------------------------------
+	s.moveCoefOld = navigation->getMoveCoef();
+	{
+		const Vec4f t = cam->getPlanTimers();
+		s.viewTNew = t[0];
+		s.hdgTNew = t[1];
+		s.zoomTNew = t[2];
+		s.moveTNew = t[3];
+	}
+	{
+		const ModularBody *tracked = cam->getTrackedBody();
+		const ModularBody *ref = cam->getReferenceBody();
+		const bool trackNameEq = tracked && selected_object
+			&& tracked->getEnglishName() == selected_object.getEnglishName();
+		const bool refNameEq = ref
+			&& ref->getEnglishName() == observatory->getHomePlanetEnglishName();
+		s.flags = (navigation->getFlagAutoMove() ? 1u : 0u)
+		        | (navigation->getFlagChangeHeading() ? 2u : 0u)
+		        | (navigation->getFlagTraking() ? 4u : 0u)
+		        | (tracked ? 8u : 0u)
+		        | (trackNameEq ? 16u : 0u)
+		        | (refNameEq ? 32u : 0u)
+		        | (cam->isFreeMode() ? 64u : 0u);
+	}
+
+	if (seamTrace.empty())
+		seamTrace.resize(SEAM_TRACE_CAPACITY);
+	seamTrace[seamWrite] = s;
+	seamWrite = (seamWrite + 1) % SEAM_TRACE_CAPACITY;
+	++seamTotal;
+}
+
+// The ring, chronological. `dropped` is what a capture longer than the ring
+// lost, so a truncated trace says so instead of looking like a short one --
+// the ramp instrument's own convention, for the same reason.
+void Core::dumpSeamTrace(std::ostream &out) const
+{
+	const auto prec = out.precision();
+	const unsigned int n = (seamTotal < SEAM_TRACE_CAPACITY) ? seamTotal : SEAM_TRACE_CAPACITY;
+	const unsigned int first = (seamTotal < SEAM_TRACE_CAPACITY)
+		? 0 : (seamWrite % SEAM_TRACE_CAPACITY);
+	out << std::setprecision(17) << "{\"armed\":" << (seamRecording ? "true" : "false")
+	    << ",\"capacity\":" << SEAM_TRACE_CAPACITY
+	    << ",\"total\":" << seamTotal
+	    << ",\"dropped\":" << (seamTotal > SEAM_TRACE_CAPACITY ? seamTotal - SEAM_TRACE_CAPACITY : 0)
+	    << ",\"frames\":" << seamFrame
+	    << ",\"steps\":[";
+	for (unsigned int i = 0; i < n; ++i) {
+		const SeamStep &s = seamTrace[(first + i) % SEAM_TRACE_CAPACITY];
+		out << (i ? "," : "")
+		    << "{\"frame\":" << s.frame
+		    << ",\"dt\":" << s.deltaTime
+		    << ",\"jd\":" << s.jd
+		    << ",\"fovOld\":" << s.fovOld
+		    << ",\"aimFovOld\":" << s.aimFovOld
+		    << ",\"halfFovNew\":" << s.halfFovNew
+		    << ",\"zoomSrcNew\":" << s.zoomSrcNew
+		    << ",\"zoomDstNew\":" << s.zoomDstNew
+		    << ",\"viewAngleAbs\":" << s.viewAngleAbs
+		    << ",\"viewAngleLocal\":" << s.viewAngleLocal
+		    << ",\"posDelta\":" << s.posDelta
+		    << ",\"headingOldDeg\":" << s.headingOldDeg
+		    << ",\"headingNewRad\":" << s.headingNewRad
+		    << ",\"dLonDeg\":" << s.dLonDeg
+		    << ",\"dLatDeg\":" << s.dLatDeg
+		    << ",\"dAltMetres\":" << s.dAltMetres
+		    << ",\"moveCoefOld\":" << s.moveCoefOld
+		    << ",\"viewTNew\":" << s.viewTNew
+		    << ",\"hdgTNew\":" << s.hdgTNew
+		    << ",\"zoomTNew\":" << s.zoomTNew
+		    << ",\"moveTNew\":" << s.moveTNew
+		    << ",\"flags\":" << s.flags
 		    << '}';
 	}
 	out << "]}";
