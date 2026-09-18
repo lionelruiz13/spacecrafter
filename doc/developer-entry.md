@@ -199,7 +199,7 @@ reliably represent reality, the new path must **not** reproduce it, and the
 defect is tracked as one [`Sec.11.52`, clause (b)]. So a divergence is not
 automatically a bug: it is either a defect of the new path or a deliberate
 correction of an old one, and the ledger says which. The deliberate, accepted
-ones are a tier of their own -- `claude/DEPLOYMENT-MAP.md:383-398`, section
+ones are a tier of their own -- `claude/DEPLOYMENT-MAP.md`, section
 T4, things a user is INFORMED about rather than fixes [`Sec.11.116` (c)].
 
 **Before you call something a new-path problem, check whether it is a
