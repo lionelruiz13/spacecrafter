@@ -657,7 +657,7 @@ test -e claude/harness/artifacts/f121 ; echo $? => 1
 ```
 
 **DoD:** the recorder, red on its mutant; the predictions committed before the runs; the tester's script measured on both paths with its two end frames; `transitions.tsv` complete over its stated sets; every fix its own commit with before/after in the message and RED → ZERO in the artifacts; the frame-at-rest and near-body symptoms each ATTRIBUTED with numbers, fixed or STOPPED; the FULL canary 12/12 after the last engine commit; §11.245 entry + stub, the flips, the mints for what stays red, the map's state lines; both trees clean. **A PARTIAL DELIVERY IS A DELIVERY**: whatever is fixed and proved by the time capacity runs out is committed and reported as such, with the unfixed rows named by their measured delta — the owner's Saturday reading starts from the table, not from a promise.
-**WIP:** —
+**WIP:** 2026-09-18 23:0x — gate 25/25 PASS; instruments re-measured (scan 296/368/148, pair-check 260/235/25/126, D36 D2-12 I93 I2-37 M97, to the digit of the prompt). CHECKPOINT 1: the per-frame seam recorder landed, code `7d27c513` (binary `3cb11f0e`→`c2e4680c`, build exit 0, D14 PASS); predictions + runner + analyzer + driver written. NEXT: commit the harness, then the mutant leg, then the measuring legs (rest, the tester's script, census).
 
 ---
 
