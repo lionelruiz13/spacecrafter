@@ -8,21 +8,9 @@
 #include "experimentalModule/ModularBody.hpp"
 #include <cmath>
 
-// GRID line family - port of the old PlanetGrid friend (planet_grid.cpp) onto
-// the registry. planet_grid.{vert,frag} REUSED VERBATIM (parity by
-// construction): the vert declares push_constant {mat4 ModelViewMatrix; vec3
-// clipping_fov} + custom_project spec-8 (the AXIS/ORBIT push contract, NOT
-// TRAIL's UBO), and per-vertex color (location 1) - so the family carries an
-// interleaved pos+color vertex and NO descriptor set. Spec-const 8 is
-// registry-injected (S11.33). Fourth line-class family (AXIS S11.31, ORBIT
-// S11.39, TRAIL S11.41 were the first three).
-
 // Grid resolution (old planet_grid.cpp DEFAULT_NB_MERIDIAN / SEGMENTS_PER_LINE).
 static constexpr int NB_MERIDIAN = 24;
 static constexpr int SEGMENTS = 64;
-// Generic lat/lon parallels (the equator, lat 0, overlays old's equator exactly;
-// the rest are the lat/lon grid the header names). The astronomically-meaningful
-// tropic/polar circles are RESTORED separately below, at the body's obliquity.
 static constexpr float PARALLEL_LAT_DEG[] = {-60.f, -30.f, 0.f, 30.f, 60.f};
 static constexpr int NB_PARALLEL = sizeof(PARALLEL_LAT_DEG) / sizeof(float);
 // Non-indexed LINE_LIST: 2 verts per segment.
@@ -39,9 +27,6 @@ bool PlanetGridModule::showTropics = false;       // old LINE_TROPIC show init
 bool PlanetGridModule::showPolarCircles = false;  // old LINE_CIRCLE_POLAR show init
 
 namespace {
-// Global grid colors (old observable: sky-manager colors shared by every body -
-// body.cpp:1261-1264 reads them from CoreLink each draw). Default white matches
-// old computeGridVertices' pre-color base; the seam feeds the real values.
 Vec3f g_meridianColor{1.f, 1.f, 1.f};
 Vec3f g_parallelColor{1.f, 1.f, 1.f};
 Vec3f g_tropicColor{1.f, 1.f, 1.f};   // old tropicColor = LINE_TROPIC color
@@ -74,10 +59,6 @@ GridFamilyData &gridFamily()
         color.pass = PassKind::COLOR;
         color.shaderTable = {{0, {.vert = "planet_grid.vert.spv",
                                   .frag = "planet_grid.frag.spv"}}};
-        // Old fixed state (planet_grid.cpp:382-390): LINE_LIST, line width 1.5,
-        // default depth (test+write on - the grid hides behind its own disc
-        // through the shared bucket depth mapping) + default blend NONE (the
-        // frag outputs opaque vec4(color,1)). Lines: no face culling.
         color.state.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
         color.state.lineWidth = 1.5f;
         color.state.cull = false;
@@ -109,19 +90,10 @@ GridVertex *fillLatCircle(GridVertex *v, double lat, const Vec3f &color)
     return v;
 }
 
-// Write the whole line buffer for THIS body: unit-sphere positions (the scale is
-// folded into the pushed matrix) + baked per-vertex colors. Meridians +
-// parallels are body-independent; the tropic (+/-axialTilt) and polar
-// (+/-(90-axialTilt)) circles use this body's obliquity. `hasTropics` = old's
-// !isSatellite() && !=Sun gate. Layout: [meridians][parallels]([tropics])[polar]
-// - the tropic block is present only when hasTropics.
 void fillGrid(GridVertex *v, double axialTiltRad, bool hasTropics,
               const Vec3f &meridian, const Vec3f &parallel,
               const Vec3f &tropic, const Vec3f &polar)
 {
-    // Meridians: NB_MERIDIAN longitude lines, pole to pole (old
-    // computeGridVertices, planet_grid.cpp:49-71). LINE_LIST: each of SEGMENTS
-    // segments emits both endpoints.
     for (int m = 0; m < NB_MERIDIAN; ++m) {
         const double lon = 2.0 * M_PI * m / NB_MERIDIAN;
         for (int i = 0; i < SEGMENTS; ++i) {
@@ -178,20 +150,12 @@ void PlanetGridModule::setTropicPolar(bool showT, bool showP,
 
 bool PlanetGridModule::update(ModularBody *, float scaledRadius)
 {
-    // Grid sits at 1.05 * scaledRadius: the traced bounding radius must enclose
-    // it (BodyModule::boundingRadius contract) so the grid's near cap fits this
-    // body's depth slice (else the front grid is znear-clipped by the bucket).
-    // Only inflate when the grid actually draws (show): an installed-but-hidden
-    // grid must not perturb the body's AoI / depth partitioning.
     boundingRadius = show ? scaledRadius * 1.05f : scaledRadius;
     return true;
 }
 
 void PlanetGridModule::dumpState(std::ostream &out) const
 {
-    // Measured-from-process readout of what this body's grid actually bakes:
-    // the tropic/polar latitudes track the body's obliquity (DoD-2). Latitudes
-    // in degrees; tropicLat present only when hasTropics (else the pair is 0).
     out << "{\"axialTilt\":" << bodyAxialTilt
         << ",\"hasTropics\":" << (hasTropics ? "true" : "false")
         << ",\"tropicLat\":" << (hasTropics ? bodyAxialTilt : 0.f)
@@ -212,15 +176,6 @@ void PlanetGridModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &
     const FamilyBound bound = renderer.bind(gridFamily().family);
     if (!bound.layout)
         return; // pass unavailable (shader not deployed) - C3 degrade
-    // This body's tropic gate + obliquity: tropics only on non-satellite
-    // non-star bodies (old planet_grid.cpp:104, the isSatellite()/!="Sun" gate -
-    // the name-sniff replaced by the clean isStar() type test, I4). The tropic/
-    // polar latitudes are this body's axial_tilt (getAxialTilt, degrees).
-    // D27 split (S11.113(f)): the two halves land on DIFFERENT keys and both
-    // are correct. A tropic is defined by the ILLUMINATOR's apparent path, so
-    // the self-exclusion is luminosity (`light_source`, isStar) - a dark
-    // primary lit by its companion does have tropics; while isSatellite() is
-    // structural and now reads the parent's `primary`.
     hasTropics = !body->isSatellite() && !body->isStar();
     bodyAxialTilt = body->getAxialTilt();
     const double axialTiltRad = bodyAxialTilt * M_PI / 180.0;
@@ -236,9 +191,6 @@ void PlanetGridModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &
         buffer = gridFamily().vertexModel->createBuffer(0, vertexCount,
                                                         Context::instance->globalBuffer.get());
     }
-    // (Re)bake positions + colors on first build and on any global color change
-    // (rare: a color command / the per-frame poll on an actual change). Static
-    // geometry otherwise persists GPU-side.
     if (!built || syncedColorGen != g_colorGeneration) {
         meridianColor = g_meridianColor;
         parallelColor = g_parallelColor;
@@ -251,13 +203,6 @@ void PlanetGridModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &
         syncedColorGen = g_colorGeneration;
         built = true;
     }
-    // The passed mat is the surface-spin-folded body frame (ModularBody::draw:
-    // mat.multiplyFast(computeBodyToSurface)); the grid is rotationally
-    // symmetric so the exact spin offset is visually invisible. Fold the unit
-    // -> 1.05*scaledRadius scale into the pushed ModelViewMatrix (old
-    // planet_grid.cpp:273-281 used radius*1.03; spec = scaledRadius*1.05, the
-    // moon_scale AXIS parity). clipping_fov = the CURRENT depth slice (the same
-    // bucket range the disc wrote, so grid-vs-disc occlusion stays exact).
     const float s = body->getScaledRadius() * 1.05f;
     struct {
         Mat4f ModelViewMatrix;

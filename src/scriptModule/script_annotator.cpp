@@ -110,9 +110,6 @@ void ScriptAnnotator::flush(bool naturalEnd)
 			ss << in.rdbuf();
 			content = ss.str();
 		}
-		// Split on LF, keeping every piece; a CR of a CRLF ending stays on its
-		// piece so the comparison with the loaded text is exact, and the tail
-		// is inserted before it.
 		std::vector<std::string> pieces;
 		{
 			std::size_t start = 0;

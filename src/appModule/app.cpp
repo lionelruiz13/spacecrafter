@@ -212,14 +212,6 @@ App::App( SDLFacade* const sdl )
 
 App::~App()
 {
-	// Stop the drawing worker FIRST. It may still be RECORDING the last frame
-	// the main loop submitted - waitFrame only ever waited for the frame
-	// BEFORE the current one, so leaving the loop always left one in flight,
-	// and since INTENT 5.59 a teardown can also end that wait with the frame
-	// deliberately unfinished. Everything this destructor destroys is
-	// referenced by those commands (bodies, modules, media, fonts), which is
-	// INTENT 5.58's precondition at the shutdown site: the release must not
-	// overtake the recording. Idempotent - ~Context stops it again.
 	if (context.helper)
 		context.helper->stop();
 	eventHandler->remove(Event::E_VIDEO);
@@ -272,10 +264,6 @@ void App::initVulkan(InitParser &conf)
 	}
 	context.stagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 512*1024*1024, "Staging BufferMgr");
 	context.uniformMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "uniform BufferMgr", true);
-	// Last parameter (maxSampledImageSet=32): shadowLayout binding 1 is
-	// SAMPLED_IMAGE (ShadowData sets allocate here) - the pool table lacked
-	// the type entirely, one vkAllocateDescriptorSets validation error per
-	// run (INTENT.md 11.1; SetMgr fix authorized at plan approval 2026-07-12).
 	if (conf.getBoolean(SCS_MAIN, SCK_LOW_MEMORY))
 		context.setMgr = std::make_unique<SetMgr>(vkmgr, 1024, 512, 1024, 1, 64, true, 16, 32);
 	else
@@ -315,11 +303,6 @@ void App::initVulkan(InitParser &conf)
 		.name = "Shadow Stencil Buffer",
 	});
 	context.shadowTrace->use();
-	// New-path typed silhouette target (G7): R8 coverage COLOR attachment -
-	// graded light transmission (opaque mesh writes 1, ring writes alpha),
-	// which the binary stencil above cannot carry. Note the stencil was
-	// itself the fallback for the unsupported R8 STORAGE form (comments
-	// above); as a color attachment R8_UNORM is universally supported.
 	context.shadowShape = std::make_unique<Texture>(vkmgr, TextureInfo{
 		.width=(int) context.shadowRes, .height=(int) context.shadowRes,
 		.nbChannels = 1,
@@ -405,11 +388,6 @@ void App::initVulkan(InitParser &conf)
 	context.renderShadow->addDependency(VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, false);
 	context.renderShadow->build(1);
 
-	// New-path typed silhouette pass (PassKind::SHADOW_SHAPE): R8 coverage
-	// color target, cleared to 0 each begin, handed to the blur compute in
-	// SHADER_READ_ONLY. Dependencies mirror renderShadow's with the stages
-	// moved from depth/stencil to color-attachment output (same serial
-	// silhouette->blur->silhouette chain within the pre-color window).
 	context.renderShadowShape = std::make_unique<RenderMgr>(vkmgr);
 	int shapeShadowID = context.renderShadowShape->attach(VK_FORMAT_R8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, true);
 	context.renderShadowShape->setupClear(shapeShadowID, {0.f, 0.f, 0.f, 0.f});
@@ -607,9 +585,6 @@ void App::init()
 	// (plain-toggle semantics at the flag command - shadow-paths.md B1/D3).
 	ShadowService::enabled = Context::experimental_shadows;
 
-	// Experimental settings (optional file; absent == every default).
-	// Read here, with the rest of the configuration, so there is ONE place
-	// where the app's startup state comes from files.
 	{
 		InitParser betaConf;
 		if (AppSettings::Instance()->loadBetaFeatures(&betaConf)) {
@@ -768,11 +743,6 @@ void App::updateFromSharedData()
 			out = tcp->getInput();
 			if (!out.empty()) {
 				cLog::get()->write("get tcp : " + out);
-				// The line's provenance, from the only layer that knows it
-				// (io.hpp's own doctrine): the connection it was read on. An
-				// HTTP `?command=` query shares this queue and its connection
-				// is already closed - it is not a control origin and carries
-				// none, exactly as before (INTENT 11.187).
 				const unsigned int connection =
 					tcp->servingIsHttp() ? 0 : tcp->servingConnection();
 				if (connection) {

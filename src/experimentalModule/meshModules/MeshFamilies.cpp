@@ -28,10 +28,6 @@ const PipelineFamily &MeshFamilies::meshNormal()
         desc.specValues = {{7, Context::instance->isFloat64Supported}};
         PassDesc color;
         color.pass = PassKind::COLOR;
-        // Vertex REUSED (its outputs are shadow-sufficient: Position is the
-        // eye-space surface point the projection rows consume); fragment is
-        // the Gen-2 receiver port - LUT loop replaced by projected-shadow
-        // sampling with per-caster absorbtion (shadow-paths.md B4).
         color.shaderTable = {{0, {.vert = "body_normal.vert.spv", .frag = "bodyMesh.frag.spv"}}};
         // color.state: FixedState defaults == old shaderNormal (cull on,
         // BLEND_NONE, triangle list, depth test+write on).
@@ -67,11 +63,6 @@ const PipelineFamily &MeshFamilies::meshTes()
         desc.sets.push_back(renderer.allocateSetContract(std::move(contract)));
         desc.sets.push_back(renderer.globalUboContract()); // cam_block: vert/tese fisheye + frag ambient
         desc.specValues = {{7, Context::instance->isFloat64Supported}};
-        // One tese PER ROW (exact interfaces - a superset tese fires
-        // WARNING-Shader-OutputNotConsumed; the zero-validation-messages bar
-        // forces the same three-tese structure the old path had).
-        // NIGHT|BUMP combined is not a live class and not in the table - the
-        // higher dropPriority (BUMP) falls off first.
         desc.axes = {
             {"night", VARIANT_NIGHT, VariantEffect::SHADER_SWAP, 1},
             {"bump", VARIANT_BUMP, VariantEffect::SHADER_SWAP, 2},
@@ -122,10 +113,6 @@ const PipelineFamily &MeshFamilies::meshLayered()
         };
         PassDesc color;
         color.pass = PassKind::COLOR;
-        // body_night.vert reused for ALL rows (its varyings are the superset;
-        // the BUMP frag is interface-adapted from body_bump.frag - the old
-        // body_bump.vert pairing differed only by the Ambient varying, read
-        // from cam_block instead). Old state: triangle, cull, normal winding.
         color.shaderTable = {
             {0,             {.vert = "body_night.vert.spv", .frag = "bodyLayeredDay.frag.spv"}},
             {VARIANT_NIGHT, {.vert = "body_night.vert.spv", .frag = "bodyLayeredNight.frag.spv"}},
@@ -146,11 +133,6 @@ const PipelineFamily &MeshFamilies::meshRayMarch()
         SetContractDesc contract;
         contract.name = "bodyRayMarch";
         contract.bindings = {
-            // rayMarchVert (old ShadowVert). FRAGMENT too since the 5.29 fix:
-            // BOTH ray frags write the TRUE ray-hit depth (5.29 base row,
-            // 5.30 NIGHT row) and need the same ModelViewMatrix / zNear /
-            // zRange / radius the vertex stage projects with - read from the
-            // one block instead of duplicating them into rayMarchFrag (I2).
             {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT},
             {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT},         // rayMarchFrag (old ShadowFrag, S5 rows)
             {2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1, mapSampler}, // heightMap
@@ -165,10 +147,6 @@ const PipelineFamily &MeshFamilies::meshRayMarch()
         desc.name = "MESH_RAYMARCH";
         desc.vertex = Context::instance->ojmVertexArray.get();
         desc.sets.push_back(renderer.allocateSetContract(std::move(contract)));
-        // Set 1 = global UBO: the base row's frag reads cam_block.ambient
-        // (my_moon_shadow parity); the NIGHT row's shaders don't reference it
-        // - one layout for both rows is the 10.3 decision-4 normalization of
-        // the old myEarthShadowed/shaderShadowedTes set-count divergence.
         desc.sets.push_back(renderer.globalUboContract());
         desc.axes = {
             {"night", VARIANT_NIGHT, VariantEffect::SHADER_SWAP, 1},
@@ -179,11 +157,6 @@ const PipelineFamily &MeshFamilies::meshRayMarch()
             {0,             {.vert = "body_tes_shadow.vert.spv", .frag = "bodyRayMarch.frag.spv"}},
             {VARIANT_NIGHT, {.vert = "body_tes_shadow.vert.spv", .frag = "bodyRayMarchNight.frag.spv"}},
         };
-        // Old state (bodyShader.cpp myEarthShadowed/shaderShadowedTes):
-        // triangle, cull, BLEND_NONE, normal-attr entry stripped. Depth is ON
-        // in the base pass state (shaderShadowedTes) and BOTH rows bind it
-        // (INTENT 5.30 - the old myEarthShadowed depth-OFF quirk is retired
-        // with its premise; derivation at LayeredMesh::drawRay's bind site).
         color.state.removedVertexEntries = 1 << 2;
         desc.passes.push_back(std::move(color));
         return renderer.allocateFamily(std::move(desc));

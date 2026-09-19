@@ -1337,11 +1337,6 @@ void Body::drawShadow(VkCommandBuffer drawCmd, int idx)
     currentObj->draw(drawCmd, Context::instance->shadowRes);
 }
 
-// Dual-path trace harness (experimentalModule/INTENT.md 11.14).
-// One JSON object with the full OLD-path per-body transform state:
-// parent-relative position (ecl), body-local->parent matrix, body-local->eye
-// matrix (double, pre-convert), eye-space position, distance, screen
-// position, axis rotation. Precision 17 = round-trip-exact double.
 void Body::dumpTrace(std::ostream &out) const
 {
 	out << std::setprecision(17) << "{\"parent\":\""

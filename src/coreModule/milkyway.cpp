@@ -84,10 +84,6 @@ void MilkyWay::createSC_context()
 		pipelineMilky[i].removeVertexEntry(2);
 		pipelineMilky[i].bindShader("milkyway.vert.spv");
 		pipelineMilky[i].setSpecializedConstant(7, context.isFloat64Supported);
-		// milkyway.vert projects through custom_project (spec-const 8) since
-		// the 2023-master merge, but this build never set the mode: the sky
-		// sphere rendered FISHEYE under every projection_type (INTENT 11.33
-		// mainline-gap inventory; shared engine - fix serves both paths).
 		pipelineMilky[i].setSpecializedConstant(8, Context::projectionType);
 		pipelineMilky[i].bindShader("milkyway.geom.spv");
 		pipelineMilky[i].bindShader(i == 0 ? "milkywayTwoTex.frag.spv" : "milkywayOneTex.frag.spv");
@@ -190,12 +186,6 @@ void MilkyWay::endTexTransition()
 
 void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay)
 {
-	// Old-path zodiacal inputs (theirs' D5 formula, navigator+ephemeris
-	// authority - this wrapper IS old-path surface, so CoreLink/nav belong
-	// here, never in drawEnv): ecliptic normal from the home body's
-	// heliocentric trajectory sampled at jd +- 10 min, sun direction from
-	// the observer's heliocentric position; both rotated helio->eye here so
-	// the shared core stays frame-local.
 	ZodiacalInput zi;
 	auto body = CoreLink::instance ? CoreLink::instance->getObserverHomeBody() : nullptr;
 	if (body) {
@@ -277,14 +267,6 @@ void MilkyWay::drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double ju
 		pipelineZodiacal->bind(cmd);
 		frag.cmag = ad_lum * zodiacal.intensity * zodiacalFader.getInterstate();
 
-		// [D5 re-fix 2026-07-17] Ecliptic-normal zodiacal (theirs' physically-
-		// correct placement), on path-supplied DATA only: the first D5 form
-		// read CoreLink/navigator state here, which put old-path frames
-		// inside the shared core the new path draws through (MilkyWayEnv
-		// calls this same function - the borrow class INTENT 10.3(7)
-		// dissolved) and broke at old-path retirement. The basis is built
-		// directly in the eye frame: rotation-equivariance makes it equal to
-		// theirs' helio-frame construction rotated by helioToEye.
 		if (zodiacalIn.valid) {
 			const Vec3d &forward = zodiacalIn.sunDirEye;
 			Vec3d up = zodiacalIn.eclipticNormalEye
@@ -347,9 +329,6 @@ void MilkyWay::buildZodiacal()
 	sphere->bind(*pipelineZodiacal);
 	pipelineZodiacal->removeVertexEntry(2);
 	pipelineZodiacal->bindShader("milkyway.vert.spv");
-	// Same 11.33 gap as pipelineMilky (note: this build also never set spec
-	// 7/float64 - my_atan.glsl defaults usingDouble=true; pre-existing,
-	// recorded in the mainline-gap inventory, not changed here).
 	pipelineZodiacal->setSpecializedConstant(8, Context::projectionType);
 	pipelineZodiacal->bindShader("milkyway.geom.spv");
 	pipelineZodiacal->bindShader("zodiacal.frag.spv");

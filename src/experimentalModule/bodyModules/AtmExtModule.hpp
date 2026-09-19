@@ -50,29 +50,16 @@ public:
     AtmExtModule(ObjL *mesh, const std::string &gradientPath, float radiusFactor);
     virtual ~AtmExtModule();
     virtual uint32_t getTraits() const override {
-        // TRANSLUCENT: the shell blends (SRC_ALPHA + MAX) over the disc - the
-        // after-opaque ordering was previously implicit in deduction order
-        // ("Positioned after MESH/OJM" comment), now declared (routing
-        // partition, ModuleLoader::addNearComponent).
         return BMT_USE_DEPTH | BMT_TRANSLUCENT;
     }
     virtual bool isLoaded() override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
-    // boundingRadius = scaledRadius * radiusFactor: the inclusive-radius
-    // contract (BodyModule.hpp) is what reserves depth-slice room for the
-    // shell - the contract, not a renderer guard, carries the safety.
-    // Consequence (convergence point, plan 2026-07-15): body boundingRadius
-    // grows <=3% on shell bodies, shifting screenSize-derived visuals by the
-    // same factor (old hid the shell inside its 1.1 depth margin).
     virtual bool update(ModularBody *body, float scaledRadius) override {
         boundingRadius = scaledRadius * radiusFactor;
         return true;
     }
 
-    // std140 mirror of atm.vert/tesc/tese/frag binding 0 - exact copy of the
-    // old AtmExt::_uniform (atm_ext.hpp:20-30). Field order and types are the
-    // GPU-visible layout (verified offsets: Vec2i @112, atmAlpha @120).
     struct atmExtUBO {
         Mat4f ModelViewMatrix;
         Vec3f sunPos;

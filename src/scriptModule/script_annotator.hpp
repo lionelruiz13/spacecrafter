@@ -28,33 +28,6 @@
 #include <string>
 #include "scriptModule/script_origin.hpp"
 
-//! The `#!` channel: error feedback written INTO the script, at the end of
-//! the faulty line, so an author reading the file in any text editor sees the
-//! problem where it is [vixy 2026-08-30, FEATURE_REQUESTS "`#!` - the engine
-//! annotates the faulty script line in place"].
-//!
-//! Contract:
-//!  - `#!` is RESERVED machine syntax inside a comment: the tail of a line
-//!    from its first `#!` (at or after the first `#` outside quotes) to the end
-//!    of the line belongs to the engine. Everything before it - the command,
-//!    an author's own `# comment` - is never touched.
-//!  - A tail is written once and REPLACED when what the engine would emit
-//!    differs; a file whose tails already say what this run found is not
-//!    rewritten at all (byte comparison before any write).
-//!  - A line that carried a tail when it was dispatched and got no diagnostic
-//!    in a run that reached the natural end of the script has its tail
-//!    REMOVED: a fixed fault does not keep a dead annotation. Only a natural
-//!    end may clear, because structure faults (an opener never closed) are
-//!    only known there.
-//!  - Writes are batched per file at script end, through a sibling temp file
-//!    and rename (same discipline as ModularSystemFormat). A line whose text
-//!    no longer matches what was loaded (the file was edited while the script
-//!    ran) is skipped with a warning; a file that cannot be written degrades
-//!    to the log - the diagnostic is in the log in every case, the file is
-//!    the better channel, never the only one.
-//!  - Bytes are preserved: the file's own line endings (a CRLF file stays
-//!    CRLF, the tail goes before the CR), ISO-8859 content untouched, and the
-//!    tail itself is ASCII.
 class ScriptAnnotator {
 public:
 	//! Record a diagnostic for the line `at` names. Several diagnostics for
@@ -67,9 +40,6 @@ public:
 	//! clear stale tails when `naturalEnd`, then forget everything.
 	void flush(bool naturalEnd);
 
-	//! Byte offset where the machine tail of a raw line starts: the first
-	//! `#!` at or after the first `#` outside a "..." run (the same quote
-	//! toggle as the parser's comment cut); std::string::npos when none.
 	static std::size_t annotationBegin(const std::string &line);
 	static bool hasAnnotation(const std::string &line) { return annotationBegin(line) != std::string::npos; }
 	//! The line with its machine tail (and the blanks before it) removed.

@@ -44,13 +44,6 @@
 #define SCS_ASTRO                            "astro"
 #define SCS_INIT_LOCATION                    "init_location"
 
-// Sections/keys of beta_features.ini ONLY - the optional experimental-settings
-// file. Kept apart from the SCS_/SCK_ blocks above on purpose: those belong to
-// config.ini, whose key set is a migration contract (CheckConfig injects every
-// schema key into user configs on a version bump). A key below is expected to
-// DISAPPEAR when its experiment ends, so it must never enter that contract.
-// A flag lands here only when the choice is actually relevant to someone
-// [vixy 2026-07-21] - not one flag per experiment by reflex.
 #define SCS_BETA_DUAL_PATH                   "dual_path"
 #define SCK_BETA_RENDER_PATH                 "render_path"
 
@@ -310,29 +303,7 @@
 #define SCK_VIEWING_MODE                    "viewing_mode"
 #define SCK_ZOOM_SPEED                      "zoom_speed"
 #define SCK_STALL_RADIUS_UNIT               "stall_radius_unit"
-// D15(d) [vixy 2026-08-26, INTENT S11.150]: *"init/reinit must initialize the
-// state, which now include the freeMode and config.ini must enable to configure
-// it. The default config.ini value is attached=True, I think it's more
-// understandable to most user than freeMode=False - you can veto if the
-// inferred meaning contrast with the observed ones."*
-// SPELLING, recorded as the veto point B28 asks for. `attached` = the observer
-// is ATTACHED TO A PLACE on the reference body (the legacy lon/lat/alt triple
-// parametrizes it) -- the exact negation of Camera::freeMode, whose observed
-// semantics are "the observer's position is a free cartesian vector in the
-// reference's frame". ADOPTED. The named hazard is the SECOND attachment the
-// class carries: `Camera::boundToSurface` (does the observer ride the SPINNING
-// surface, or stay in the body's non-rotating equatorial frame). The two are
-// independent booleans, both default true, and "attached" reads onto either --
-// so the collision is real but it is an AMBIGUITY, not a contradiction: nothing
-// about `attached = true` misdescribes freeMode = false. The consequence is
-// recorded rather than left implicit: whoever gives `boundToSurface` a config
-// key may NOT call it `attached`, and must disambiguate both spellings then.
 #define SCK_ATTACHED                        "attached"
-// The sky-lock half of the same answer. Old had no config channel for
-// flag_lock_equ_pos -- not a decision to have none, but the absence of the state
-// (S11.149(a4)); the new path holds `skyLocked` + `lockedSkyRot`, so init reads
-// it. Spelled like the command that reaches the same mirror
-// (`flag lock_sky_position`), prefixed like the other [navigation] flags.
 #define SCK_FLAG_LOCK_SKY_POSITION          "flag_lock_sky_position"
 #define SCK_FLAG_STARS                      "flag_stars"
 #define SCK_FLAG_STAR_NAME                  "flag_star_name"

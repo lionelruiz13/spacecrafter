@@ -126,9 +126,6 @@ int AppCommandInterface::parseCommand(const std::string &command_line, std::stri
 {
   	std::string str = command_line;
 
-	// A '#' outside a "..." run starts a comment: it and everything after it are
-	// dropped before parsing. Quotes are counted by a plain toggle from the first
-	// byte, so a '#' inside quotes - closed or not - is ordinary text.
 	{
 		bool inQuote = false;
 		for (std::size_t i = 0; i < str.size(); ++i) {
@@ -191,10 +188,6 @@ int AppCommandInterface::parseCommand(const std::string &command_line, std::stri
 	return 1;  // no error checking yet
 }
 
-// The block-structure diagnostics, one sentence each carrying the three parts
-// INTENT S11.169 requires of a user-facing script error: WHAT it is, what it
-// DOES, and the self-contained ACTION. ASCII only: they are written into
-// ISO-8859 script files as `#!` tails.
 static const char MSG_UNCLOSED_IF[] =
 	"this 'struct if' is never closed: no 'struct if end' follows before the end of the script, "
 	"so whenever its test is false every line after it is skipped silently - add 'struct if end' "
@@ -214,22 +207,9 @@ static const char MSG_LOOP_END_WITHOUT_LOOP[] =
 
 void AppCommandInterface::reportScriptError(const ScriptOrigin &at, const std::string &what)
 {
-	// `where()` names a file line AND a control connection; `valid()` still
-	// means "a file line the annotator may write into", and only that
-	// (INTENT 11.187).
 	const std::string origin = at.where();
 	std::string line = origin.empty() ? "script: " + what : "script " + origin + ": " + what;
-	// Hoisted out of the `if` so the routed copy below quotes the same text the
-	// log does (the gate is still `at.text` non-empty, not `quoted` non-empty -
-	// a line that is only a line ending still logs its empty brackets, as it
-	// always did). The WIRE's subject stays this raw text, byte for byte.
 	std::string quoted = at.lineText();
-	// The LOG quotes the line WITHOUT the machine tail, and that is the fix for
-	// an instability the owner named [vixy 2026-09-01, INTENT 11.193]: this
-	// class of fault IS annotated, so on the second run of the same script the
-	// line carries the tail THIS line wrote, and the same error was logged
-	// differently the second time. Stripping it with the writer's own function
-	// makes the diagnostic byte-identical on every execution.
 	if (!at.text.empty())
 		line += " [" + ScriptAnnotator::withoutAnnotation(quoted) + "]";
 	cLog::get()->write(line, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
@@ -241,14 +221,6 @@ void AppCommandInterface::reportScriptError(const ScriptOrigin &at, const std::s
 
 std::string AppCommandInterface::originTag() const
 {
-	// EVERY origin that has something to name, now: a FILE line prefixes
-	// `<file>:<line>: ` exactly as a control line prefixes `tcp#<id>: `. F68
-	// shipped the TCP half alone and recorded the file half as one condition
-	// to reverse: taking it then would have prejudged the ~1661-annotations-
-	// into-35-shipped-scripts decision (INTENT 11.184, still OPEN), and the
-	// owner has since severed the two and given this half - the LOG half,
-	// and only it - his word (INTENT 11.191(b), F72). Gating on `where()` is
-	// the header's own rule: the tag exists when there is a name, never `: `.
 	const std::string where = currentOrigin.where();
 	if (where.empty())
 		return std::string();
@@ -257,14 +229,6 @@ std::string AppCommandInterface::originTag() const
 
 std::string AppCommandInterface::errorLine(const std::string &message) const
 {
-	// The contract is in the header. The composition is the `#!` writer's OWN
-	// function, called and not copied: a second copy of it would BE the defect
-	// this shape exists to remove (I2, INTENT 11.193(a)).
-	// Two questions are asked and they are not the same one: `where()` says the
-	// origin has a NAME, `lineText()` says it has a LINE to show. Every origin
-	// this engine produces answers both or neither, so a producer that one day
-	// has only one falls back to the two-line form instead of logging
-	// `Error executing : ` or a tail with no line in front of it.
 	const std::string where = currentOrigin.where();
 	const std::string raw = currentOrigin.lineText();
 	if (where.empty() || raw.empty())
@@ -275,14 +239,6 @@ std::string AppCommandInterface::errorLine(const std::string &message) const
 void AppCommandInterface::sendFeedback(const ScriptOrigin &at, const std::string &message,
                                        const std::string &subject)
 {
-	// The routing key is the ORIGIN, and only TCP routes. HTTP shares the input
-	// queue but carries no origin at all and its connection is closed before the
-	// application sees the command, so it routes nowhere by construction; a FILE
-	// line reports at its own line, in the log tag (11.191(b)) and through the
-	// `#!` tail; whether its refusals should ALSO go on a socket is a separate
-	// decision, still open (11.184, 11.187(c)(d)). `!tcp` is no server: with
-	// `io:enable_tcp` false there is no origin of this kind either, and this
-	// guard is what makes that true rather than assumed.
 	if (!tcp || at.channel != ScriptChannel::TCP)
 		return;
 	tcp->sendDiagnostic("$DIAG|" + at.where() + "|" + message + "|" + subject);
@@ -290,10 +246,6 @@ void AppCommandInterface::sendFeedback(const ScriptOrigin &at, const std::string
 
 int AppCommandInterface::terminateScript()
 {
-	// The queue ran out (the only caller is ScriptMgr::update's script-done
-	// branch): an opener still open now was never closed. Report each at ITS
-	// line - the root, not the end of the file where the damage surfaces -
-	// BEFORE `script action end` discards the structure [vixy 2026-08-30].
 	for (const ScriptOrigin &opener : ifSwap->openers())
 		reportScriptError(opener, MSG_UNCLOSED_IF);
 	if (loopOpen)
@@ -316,9 +268,6 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 
 int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_t &wait, const ScriptOrigin &origin)
 {
-	// `currentOrigin` holds for exactly this command: a nested executeCommand
-	// (the two-argument overloads pass no origin) sees its own, and the outer
-	// line's origin is back when it returns, whatever path returned.
 	struct OriginScope {
 		ScriptOrigin &slot;
 		ScriptOrigin saved;
@@ -372,9 +321,6 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 		const std::string rendered = errorLine(debug_message);
 		cLog::get()->write( rendered.empty() ? originTag() + debug_message : rendered,
 		                    LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-		// This site never reaches executeCommandStatus (11.187(d)), so it routes
-		// its own copy or an unknown command name would be the one refusal a
-		// subscriber never hears about.
 		sendFeedback(currentOrigin, debug_message, commandline);
 		appInit->searchSimilarCommand(command);
 		return 0;
@@ -481,16 +427,6 @@ void AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value)
 	executeCommandStatus();
 }
 
-//! The READ half of the flag surface - the one place that answers "what is
-//! this flag now?" (b31-design S2 row E3; INTENT S11.128(e)).
-//! `setFlag`'s toggle branch is its first consumer and the session save is its
-//! second, so the value a toggle computes and the value a session records are
-//! the same answer from the same authority (I2).
-//! Returns false when the flag name is unknown; every registered flag has a
-//! readback. Where the command drives SEVERAL underlying states (star names
-//! also drives the star-navigator's and Tully's; nebula names also drives
-//! dso3d's), this reports the PRIMARY one - the others keep their own read,
-//! because they are different state, not a second copy of this one.
 bool AppCommandInterface::readFlag(FLAG_NAMES flagName, bool &value) const
 {
 	switch(flagName) {
@@ -762,13 +698,6 @@ bool AppCommandInterface::readFlag(FLAG_NAMES flagName, bool &value) const
 			value = coreLink->starLinesSelectedGetFlag();
 			return true;
 		case FLAG_NAMES::FN_SATELLITES :
-			// The stored flag is HIDE-satellites and the command's flag is
-			// SHOW-satellites: `toggleHideSatellites` inverts its argument
-			// before storing it (protosystem.cpp:261). Reading the stored bit
-			// as if it were the command's - which the old toggle branch did -
-			// makes `flag satellites toggle` a NO-OP in one direction (from
-			// shown: !false = true -> stored !true = false = still shown) and
-			// makes a save record the opposite of what it would restore.
 			value = !coreLink->hideSatellitesFlag();
 			return true;
 		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
@@ -799,21 +728,6 @@ bool AppCommandInterface::readFlag(FLAG_NAMES flagName, bool &value) const
 
 bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval)
 {
-	// A TOGGLE IS A READ FOLLOWED BY A WRITE, and the read is `readFlag`'s - not
-	// a second copy living inside every case (I2). Before this, the only code in
-	// the tree that knew a flag's current value was this switch, and it knew it
-	// only while mutating it: nothing could ask "what is this flag now?", which
-	// is why b31-design S2's row E3 had no save half (INTENT S11.128(e)).
-	// Two properties came out of the extraction and are behaviour, not cleanup:
-	//  * `newval` now reports the value the flag ENDS AT for every flag. 26 of
-	//    them (the sky grids and sky lines) used to read their value WITHOUT
-	//    negating it and then flip, so a toggle reported the value the flag had
-	//    BEFORE it - which is what the recorded command line and the status
-	//    readout carried.
-	//  * 6 more (the App/Ui-owned ones) did not write `newval` on a toggle at
-	//    all, so the caller read an UNINITIALISED bool.
-	// A flag whose value cannot be read is refused rather than half-applied: it
-	// would be a toggle with no defined direction.
 	if (flag_value == FLAG_VALUES::FV_TOGGLE) {
 		bool current;
 		if (!readFlag(flagName, current)) {
@@ -1278,11 +1192,6 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			break;
 
 		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS :
-			// New path: PLAIN on/off - the old XOR-against-default is a defect
-			// (no-op when the config default is false), not reproduced
-			// (shadow-paths.md A3.2/B1). Assignment and the old XOR agree for
-			// every reachable value, since the only values the old branch could
-			// produce are 0 and the default itself.
 			Context::instance->experimental_shadows =
 				newval ? Context::instance->default_experimental_shadows : 0;
 			ShadowService::enabled = newval;
@@ -1313,14 +1222,6 @@ int AppCommandInterface::executeCommandStatus()
 		//cLog::get()->write( "have execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		return true;
 	} else {
-		// ONE line per error, and it is the line the user will find at that
-		// place in the file: the two lines this funnel used to write were the
-		// subject and the message of a single error, which is the duplication
-		// the unified rendering removes [vixy 2026-09-01, INTENT 11.193(a)].
-		// An origin with no line to show - a nested call, a UI key, an HTTP
-		// query - keeps those two lines exactly as they were: 11.184's nesting
-		// rule is untouched here, and the tag is still theirs when they have
-		// one.
 		const std::string rendered = errorLine(debug_message);
 		if (!rendered.empty())
 			cLog::get()->write( rendered ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
@@ -1329,11 +1230,6 @@ int AppCommandInterface::executeCommandStatus()
 			cLog::get()->write( tag + "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 			cLog::get()->write( tag + debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		}
-		// The wire is UNMOVED by the rendering above: a machine consumer wants
-		// the fields split, and `$DIAG|origin|message|subject` is what it was
-		// accepted as (11.188). Its two fields are still the engine's own
-		// message and the command line, unrendered - a subscriber gets a copy
-		// of the fact, never the log's arrangement of it.
 		sendFeedback(currentOrigin, debug_message, commandline);
 		return false;
 	}
@@ -1400,15 +1296,6 @@ int AppCommandInterface::commandGet()
 
 // Contract + the veto point on its spelling: app_command_interface.hpp.
 
-// ---------------------------------------------------------------------------
-// SessionFile::CommandSurface - this class IS the inventory of flag, `set` and
-// colour names, so the session asks it rather than keeping a list of its own.
-// Every walk is over the name maps themselves: a name added to
-// `app_command_init.cpp` tomorrow is carried by the next session with no edit
-// anywhere else (I2). A name whose read half does not exist is not emitted -
-// the session then says so in the file, which is the only honest thing a save
-// can do about a value nothing can read.
-// ---------------------------------------------------------------------------
 void AppCommandInterface::forEachFlag(const std::function<void(const std::string &, bool)> &emit) const
 {
 	for (const auto &kv : m_flags) {
@@ -1472,9 +1359,6 @@ void AppCommandInterface::countNames(int &flags, int &values, int &colors) const
 int AppCommandInterface::commandSession()
 {
 	const std::string argAction = args[W_ACTION];
-	// `filename` is optional on save (absent = the default session name) and on
-	// load, for the same reason: an operator who keeps one preset should not
-	// have to name it twice.
 	const std::string &name = args[W_FILENAME];
 	if (argAction == W_SAVE) {
 		if (!coreLink->sessionSave(name, this))
@@ -1817,9 +1701,6 @@ int AppCommandInterface::commandSuntrace()
 }
 
 
-//! Apply one colour by name. Extracted from `commandColor` so the session
-//! restore drives the SAME write the command does rather than a second copy of
-//! it (I2, b31-design S2 row E5).
 void AppCommandInterface::applyColor(COLORCOMMAND_NAMES name, const Vec3f &Vcolor, int index)
 {
 	switch(name) {
@@ -1874,10 +1755,6 @@ void AppCommandInterface::applyColor(COLORCOMMAND_NAMES name, const Vec3f &Vcolo
 	}
 }
 
-//! What is this colour NOW? The read half of `applyColor`, and the session's
-//! only way to record S2 row E5. Two of the 46 have no getter at ANY level -
-//! the on-dome text colour and the star colour table - and they say so by
-//! returning false rather than by reporting a guess.
 bool AppCommandInterface::readColor(COLORCOMMAND_NAMES name, Vec3f &value) const
 {
 	switch(name) {
@@ -2146,13 +2023,6 @@ int AppCommandInterface::commandPrint()
 }
 
 
-//! What is this `set` value NOW? The read half of `evalCommandSet` (b31-design
-//! S2 row E4, whose readback S11.108(k) recorded as "NOT established").
-//! 30 of the 43 registered names can answer; the other 13 are listed together
-//! at the bottom of the switch and return false, because each writes into a
-//! sink nothing in the tree can read back - `set mode` writes nothing at all.
-//! Numbers are rendered at full double precision: a session that loses digits
-//! is a session that does not restore what it saved.
 bool AppCommandInterface::readValue(SCD_NAMES name, std::string &value) const
 {
 	auto num = [](double v) {
@@ -4167,26 +4037,9 @@ int AppCommandInterface::commandBody()
 		} else if (argAction == W_INITIAL  ) {
 			coreLink->initialSolarSystemBodies();
 		} else if (argAction == W_RELOAD) {
-			// Re-read the observer's current system from its data file,
-			// keeping the observation state (camera + date) - the system-scope
-			// sibling of `initial` (per-body parameter reset) and `clear`
-			// (drop the script-added bodies), which already live in this slot.
-			// CoreLink::reloadSolarSystem -> SSystemFactory::reloadCurrentSystem
-			// carries the contract and traces its own failures.
 			if (!coreLink->reloadSolarSystem())
 				debug_message = _("Command 'body': the current system has no data file to reload");
 		} else if (argAction == W_SAVE) {
-			// Write the observer's current system to a composed system file
-			// (B31 slice 2, INTENT S11.51(a): "save a system on-the-fly as well
-			// by targeting without the .disabled or under a different name from
-			// scripts"). The system-scope sibling of `reload`, which already
-			// lives in this slot: `reload` re-reads this system's file, `save`
-			// writes it - and a body this session pushed with `body action load`
-			// is ordinary authored data from the next launch on, which is the
-			// whole point (script-pushed bodies that survive sessions).
-			// `filename` is optional: absent = this system's own composed file.
-			// SPELLING RECORDED AS A VETO POINT (B28 protocol, F7 precedent):
-			// `body action save [filename <name>]` - landed, awaiting sign-off.
 			if (!coreLink->saveSolarSystem(args[W_FILENAME]))
 				debug_message = _("Command 'body': the current system could not be saved");
 		} else if (argAction == W_PRELOAD) {
@@ -4197,10 +4050,6 @@ int AppCommandInterface::commandBody()
 			// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
 			stcore->ssystemDualDump(args[W_FILENAME]);
 		} else if (argAction == "screenshot") {
-			// Harness A/B visual comparison (INTENT.md 11.19a): the offscreen
-			// render (render_size) never reaches the window on headless X
-			// (swapchain acquire timeout) - external grabs see black; this
-			// rides the app's own readback. Written ~1 frame later, async.
 			stapp->takeScreenshot(args[W_FILENAME]);
 		} else {
 			debug_message = "command 'body' : unknown action argument";
@@ -4259,15 +4108,6 @@ int AppCommandInterface::commandBody()
 			return executeCommandStatus();
 		}
 
-		// Runtime navigation-radius seam (B10 S5.2, S11.79(e) D9key): set a
-		// body's datum_radius / ground_radius scalar at runtime, in km (the
-		// data-key unit). The COMMAND word order matches the DATA keys
-		// (datum/ground FIRST) - Q12's `radius datum`/`radius ground` word order
-		// was rejected by D9key. Routes through the SAME per-body scalar the
-		// loader feeds (scaling stays the single updateCache authority, I2);
-		// new-path concept only, so no old-path mirror. S2(f) diagnostics: a
-		// negative value or an unknown body logs the valid domain + fallback
-		// (value unchanged) + fix action, and does NOT reach the setter.
 		std::string argDatumRadius = args[W_DATUM_RADIUS];
 		if (!argDatumRadius.empty()) {
 			double km = evalDouble(argDatumRadius);
@@ -4524,9 +4364,6 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 	}
 
 	if (argAction == W_FREE_MODE) {
-		// camera action free_mode state on|off - new-path free flight
-		// (INTENT S2(c): every capability dynamically reachable; the
-		// reference-transition layer rides on it).
 		std::string argState = args[W_STATE];
 		if (argState.empty()) {
 			debug_message = "command 'camera free_mode' : missing state";
@@ -4537,10 +4374,6 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 	}
 
 	if (argAction == W_DESCEND) {
-		// camera action descend coef <c> - view-directed free descent (B21,
-		// INTENT S11.72). coef<1 descends, coef>1 ascends (multAlt semantics).
-		// Sole command-reachable driver of the view-ray / last-selected descent
-		// geometry (multAlt/moveRelAlt are UI-key-only, B10 S11.71).
 		std::string argCoef = args[W_COEF];
 		if (argCoef.empty()) {
 			debug_message = "command 'camera descend' : missing coef";

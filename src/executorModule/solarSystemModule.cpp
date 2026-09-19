@@ -159,9 +159,6 @@ void SolarSystemModule::update(int delta_time)
 	moonPos.normalize();
 
 	if (core->ssystemFactory->drawModularSystem) {
-		// Modular phase: the EnvironmentManager computed the same formula
-		// from the camera chain (EnvironmentManager.cpp step 3) - the value
-		// must not rest on the old navigator (S8 independence criterion).
 		core->sky_brightness = core->ssystemFactory->getEnvironmentState().skyBrightness;
 	} else {
 	// compute global sky brightness TODO : make this more "scientifically"
@@ -183,9 +180,6 @@ void SolarSystemModule::draw(int delta_time)
     Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]); // multisample print
     asyncUpdateEnd();
 	core->applyClippingPlanes(0.000001 ,200);
-	// Dual-path (S8): in the modular phase the milkyway backdrop (+zodiacal)
-	// is drawn by the environment layer with the camera-chain matrix - same
-	// engine, same frame position (before every other sky layer).
 	if (core->ssystemFactory->drawModularSystem)
 		core->ssystemFactory->drawEnvironmentBackdrop();
 	else
@@ -193,12 +187,6 @@ void SolarSystemModule::draw(int delta_time)
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->nebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
-	// Dual-path (S8, B5 S6.9): the OLD altitude-gated oort is REPLACED in the
-	// modular phase by the OortModule at the SolarSystem floor (regime-gated,
-	// ssystemFactory->draw below) - but ONLY when that modular oort was actually
-	// instantiated (the pilot flag). Without it the old oort still draws in both
-	// phases, so the DEFAULT tree is byte-unchanged by this seam (one oort per
-	// path, the I2 form of the milkyway/pointer seams above/below).
 	if (!(core->ssystemFactory->drawModularSystem && core->ssystemFactory->hasExperimentalOort()))
 		core->oort->draw(observer->getAltitude(), core->navigation);
 	core->illuminates->draw(core->projection, core->navigation);
@@ -284,10 +272,6 @@ void SolarSystemModule::asyncUpdateLoop()
     threadQueue.acquire();
     while (threadQueue.pop(data)) {
         core->ssystemFactory->computePreDraw(core->projection, core->navigation);
-        // Dual-path (S8): same sky-table computation, same work thread -
-        // only the INPUT SOURCE follows the active path (camera-chain
-        // snapshot, built on the main thread before asyncUpdateBegin;
-        // ordered by the queue push/pop).
         if (core->ssystemFactory->drawModularSystem)
             core->atmosphere->computeColor(core->ssystemFactory->getEnvironmentAtmosphereInput(), core->tone_converter);
         else

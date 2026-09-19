@@ -22,28 +22,14 @@ float ModularBody::lightSize;
 ModularBody *ModularBody::lastFit = nullptr;
 std::map<std::string, ModularBody *> ModularBody::bodyReference;
 float ModularBody::halfFov = M_PI_2;
-// Projection transfer (INTENT 11.33): FISHEYE default matches the config
-// default; SSystemFactory ctor mirrors Context::projectionType (post-config).
-// cullHalfFov init == halfFov init (edgeAngleNorm(FISHEYE) == 1).
 int ModularBody::projectionMode = ProjectionTransfer::FISHEYE;
 float ModularBody::cullHalfFov = M_PI_2;
 bool ModularBody::flagLightTravelTime = false; // set from config via SSystemFactory
 Vec3f ModularBody::defaultHaloColor{};
 float ModularBody::haloScale = 1;
 float ModularBody::haloSizeLimit = 9;
-// System-collapse cross-fade brightness multiplier (B22, INTENT 11.64). 1.0
-// everywhere except INSIDE ModularSystem::drawNested's transition band, where
-// it ramps a nested system's halo output resolved<->dot. Default 1.0 makes
-// every EXERCISED halo (drawHalo/drawStarProxy) byte-identical (x1.0f is an
-// exact IEEE-754 identity): the collapse path itself is runtime-unexercised
-// until the executor dissolution (S6.9), so in every shipped scene this stays 1.
 float ModularBody::drawAlpha = 1.f;
 float ModularBody::viewportRadius = 1;
-// The G4 gates in screenSize units, derived from the px authority and the
-// viewport by setViewportRadius (INTENT S5.54). Seeded here from the
-// viewportRadius seed above so a gate read before the first
-// setViewportRadius is consistent with the radius read there - not
-// meaningful, but not a different kind of not-meaningful.
 float ModularBody::earlyVisibilityScreenSize = BODY_EARLY_VISIBILITY_BOUNDING_SIZE / 2.f;
 float ModularBody::fullVisibilityScreenSize = BODY_FULL_VISIBILITY_BOUNDING_SIZE / 2.f;
 float ModularBody::bigTextureScreenSize = BODY_BIG_TEXTURE_BOUNDING_SIZE / 2.f;
@@ -62,12 +48,6 @@ void ModularBody::unpin()
         RenderChain::instance.onPinDrained(this);
 }
 
-// BodyModule's default caster descriptor (BodyModule.hpp hook 2b) - defined
-// here because it needs the ModularBody definition: a solid whole-body caster
-// (the G1 mesh case). radius = body radius, NOT the module's boundingRadius:
-// a shell-inflated bounding radius would shrink the silhouette in its layer
-// for no coverage gain. Clip: degenerate (always applies) - selection's
-// light-corridor test already carries a solid caster's z-order.
 ShadowCaster BodyModule::getShadowCaster(ModularBody *body, const Vec3f &) const
 {
     return {body->getRadius(), body->getShadowAbsorbtion(), Vec4f(0, 0, 0, -1)};
@@ -82,15 +62,6 @@ void BodyModule::dumpState(std::ostream &out) const
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), siderealTimeModel(info.siderealTimeModel), surfaceModel(info.surfaceModel), trailLength(info.trailLength), composedDeclaration(info.composedDeclaration), primary(info.primary), isHaloEnabled(info.isHaloEnabled)
 {
-    // Nav-radius class default (B10-datum0, S11.75(a)): an UNSET (sentinel)
-    // datum/ground resolves to `radius` here - the plain-body default (altitude
-    // measured from the surface, free descent stopped at it), bit-identical to a
-    // single-reference body. A ModularSystem OVERRIDES this to 0 in its own ctor
-    // (a system is navigated INTO). An explicit value (>= 0, from a data key or a
-    // runtime command) is never the sentinel and is kept unchanged. The loader
-    // already defaults the key to `radius`, so this branch never fires for a
-    // scripted/shipped body; it is the type-level completion so no future
-    // omitting caller can silently leave a body at the negative sentinel.
     if (datumRadius < 0.f) datumRadius = radius;
     if (groundRadius < 0.f) groundRadius = radius;
     if (translator)
@@ -128,11 +99,6 @@ ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     }
 }
 
-// Register FIRST, then propagate: a body born under a parked node (or one that
-// inherited parked children through the name-replacement path in the ctor) is
-// taken back out by the walk, and the same walk fixes every inherited child.
-// Doing it in this order keeps ONE registration entry point (I2) instead of a
-// second, conditional one here.
 ModularBody *ModularBody::createChild(ModularBodyCreateInfo &info, BodyRelation rel)
 {
     auto owned = std::make_unique<ModularBody>(this, info);
@@ -175,24 +141,6 @@ ModularSystem *ModularBody::owningSystem() const
     return static_cast<ModularSystem *>(p);
 }
 
-// THE root fix of S5.31 (B39 S11.117). The defect the row names is that a
-// hidden body still reaches the system-level sweeps, and the reason it does is
-// structural: `sortedSystemBodies` is a FLAT per-system list that hide() never
-// edited (removeBody was destruction-only). Guarding each sweep would have been
-// one guard per sweep, forever, plus the ancestor case each of them would have
-// to re-derive; taking the parked subtree OUT of the list makes "a hidden body
-// contributes nothing to the frame" true of the orbit line, the trail DRAW and
-// its RECORDING, the tail, the body draw (with its hints/labels/axis/grid/halo
-// and its depth trace, i.e. occlusion), the shadow caster scan, the shadow
-// receiver scan, the self-shadow nomination and click-picking in ONE edit, with
-// nothing left to forget (I6: rework the structure, not the instances).
-//
-// `ancestorHidden` carries D23's nesting clause down; each node ORs it with its
-// OWN declared relation, so:
-//   - a descendant declared hidden independently stays out when the ancestor is
-//     shown again (the old path re-shows it - S5.44, tracked not reproduced);
-//   - no descendant's declared `relation` is ever written here, which is the
-//     clause "mustn't change the exposed hidden attribute/flag".
 void ModularBody::propagateRenderHidden(bool ancestorHidden)
 {
     const bool nowHidden = ancestorHidden || (relation < BodyRelation::GROUNDED);
@@ -208,17 +156,10 @@ void ModularBody::propagateRenderHidden(bool ancestorHidden)
     forEachVisibleChild([nowHidden](ModularBody &child) {
         child.propagateRenderHidden(nowHidden);
     });
-    // Parked descendants ride the same walk: their own relation forces them
-    // hidden, but their SUBTREES need the flag too (a grandchild under a
-    // doubly-parked node).
     for (auto &child : hiddenBodies)
         child->propagateRenderHidden(nowHidden);
 }
 
-// The motion law is re-declared, not written around (see the header). Same I5
-// guard as the destructor: the outgoing orbit may be the parent BinaryOrbit's
-// unowned secondary, and it must stop being referenced there before it stops
-// being this body's.
 std::unique_ptr<Orbit> ModularBody::setOrbit(std::unique_ptr<Orbit> newOrbit)
 {
     if (parent && orbit) {
@@ -227,21 +168,10 @@ std::unique_ptr<Orbit> ModularBody::setOrbit(std::unique_ptr<Orbit> newOrbit)
     }
     std::unique_ptr<Orbit> previous = std::move(orbit);
     orbit = std::move(newOrbit);
-    // The cached position was produced by the law that just stopped applying,
-    // so it is stale by definition. Clearing the D8 barrier's idempotency stamp
-    // is what says so: useNow() re-evaluates instead of returning "already
-    // brought up to this frame's date" (S11.117 - without this a place given a
-    // new law inside a frame keeps the old law's position until the next one).
     evaluatedJD = -std::numeric_limits<double>::infinity();
     return previous;
 }
 
-// The old path's Body::getPositionAtDate (body.cpp:1291) on this tree: the sum
-// of the parent-relative orbit of every hop. Old stops at the first body with
-// no orbit (its Sun has none); here every node carries one, so the walk stops
-// at the ROOT instead - the same set of hops on the shipped data, and the same
-// answer, because the root's own "orbit" is what its position WOULD add and the
-// root is the frame we are answering in.
 Vec3d ModularBody::getPositionAtDate(double jd) const
 {
     Vec3d pos{};
@@ -257,18 +187,10 @@ Vec3d ModularBody::getPositionAtDate(double jd) const
 
 ModularBody::~ModularBody()
 {
-    // I5 guard: if this body's orbit is wired as the secondary of the parent's
-    // BinaryOrbit (EMB class, see ModularSystem::loadBody), unwire before the
-    // orbit is destroyed - the BinaryOrbit references it without ownership.
     if (parent && orbit) {
         if (auto *binary = dynamic_cast<BinaryOrbit *>(parent->orbit.get()))
             binary->clearSecondaryOrbit(orbit.get());
     }
-    // Deregistration symmetric with createChild's registerToSystem: every
-    // PARENTED body was registered in the parent-side owning system, whatever
-    // its OWN isolation - the previous isNotIsolated gate skipped nested
-    // ModularSystem children, dangling their sorted-list entry (INTENT 5.22).
-    // Parentless roots (universe) were never registered.
     if (parent) {
         auto p = parent;
         while (p->isNotIsolated)
@@ -284,18 +206,11 @@ ModularBody::~ModularBody()
     bodyReference.erase(englishName);
     if (lastFit == this)
         lastFit = nullptr;
-    // I5: every cross-frame NON-OWNING holder of this body is either a
-    // ModularBodyPtr (redirected below) or destruction-notified here. The
-    // environment aggregation caches the previous frame's reference chain as
-    // raw pointers to compute enter/leave edges - it is the second kind.
     EnvironmentManager::notifyBodyDestroyed(this);
     if (pointerCount)
         ModularBodyPtr::redirect(this, parent);
 }
 
-// Contract in the header (startTrail). One line per TRAIL module, and the whole
-// decision of WHAT a restart does lives in TrailModule::resetTrail (I2: the same
-// authority the display flag's rising edge and the per-name enable already use).
 void ModularBody::startTrail(bool record)
 {
     for (auto *m : trailComponents)
@@ -304,19 +219,8 @@ void ModularBody::startTrail(bool record)
 
 bool ModularBody::remove(bool recursive)
 {
-    // The mid-session release precondition (INTENT 5.58, contract in
-    // context.hpp): this body's modules own GPU resources that a frame still
-    // being recorded or executed may reference, and unlike the shutdown path
-    // nothing here has waited for those frames. Every commanded removal comes
-    // through this function, so the wait belongs here rather than at each
-    // caller; it is a no-op cost when the pipeline is already quiet, which is
-    // the case for the removals a system load performs.
     if (Context::instance)
         Context::instance->quiesceFrames();
-    // Non-recursive removal refuses while ANY child is owned, hidden included
-    // (hidden children are parent-owned now - destroying them silently on a
-    // non-recursive remove would be an unasked cascade; old-path removeBody
-    // refuses on satellites, same class).
     if (recursive || !ownsAnyChild()) {
         auto &src = parent->listOf(relation);
         const auto end = src.end();
@@ -332,15 +236,6 @@ bool ModularBody::remove(bool recursive)
     }
 }
 
-// Receives this body's POSITION frame (root-aligned - frame contract in the
-// header): the ACCUMULATED equatorial frame goes into `mat` only, children
-// receive the flat frame (bound children `mat`, their offsets live in the
-// surface frame = accumulated + spin). Single authority (I2): this is the
-// same frame the camera declares the observer in - routing the render
-// through the own tilt instead was the 23.44deg Moon render/observer
-// contradiction (INTENT 11.34; measured live, orientation_check.py P-d).
-// For the reference body the fold cancels the dispatchUpdate exit exactly:
-// mat = C . A^-1 . A = C (same uniform jd both sides).
 void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBodyPos)
 {
     // Cache the position frame (the reference-body path reaches here directly
@@ -363,35 +258,14 @@ void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBodyPos)
 
 ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f mat_local_to_body)
 {
-    // Produce/consume boundary of notableBody: cleared at update start (runs
-    // every frame, whichever path draws - the dual-path bridge made a
-    // draw-side-only drain unbounded during old-path phases), refilled by
-    // update(), read by the Renderer between this update and the next.
     notableBody.clear();
-    // The frame's SIM date, published for the D8 use-site barrier (B39): this is
-    // the one entry point of the whole update walk and the place the value
-    // arrives from TimeMgr, so it is the only honest write site for "now".
     currentJD = jd;
     body->preUpdate(jd, mat_local_to_body);
-    // The camera mat is the reference's ACCUMULATED equatorial frame (its
-    // surface/spin composition and the body's lat/lon grid are defined there -
-    // see accumulatedBodyToBodyPos); the chain works in root-aligned frames -
-    // leave the accumulated frame exactly once, here (frame contract above).
     Mat4f flat = mat_local_to_body.multiplyFast(body->accumulatedBodyToBodyPos(jd));
     if (body->isVisible) {
         body->recursiveUpdate(jd, flat);
     } else {
         body->mat = mat_local_to_body;
-        // The matLocalToBodyPos contract (member doc: "Set on EVERY position
-        // update, visible or not") - INTENT S5.46, second site. This branch is
-        // a position update of the REFERENCE that skips update() (S5.32: the
-        // one node dispatchUpdate can skip, when the observer looks away from
-        // it or it is too far to subtend the cull cone), and it left the frame
-        // at whatever the last VISIBLE frame cached. `flat` is this body's own
-        // flat position frame by construction (built one line above as
-        // mat_local_to_body . accumulatedBodyToBodyPos), i.e. exactly what
-        // recursiveUpdate caches on the visible side, so the two branches now
-        // leave the same member in the same state.
         body->matLocalToBodyPos = flat;
         for (auto &c : body->groundedBodies)
             c->recursiveTranslationUpdate(jd, mat_local_to_body);
@@ -399,18 +273,11 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
             c->recursiveTranslationUpdate(jd, flat);
         for (auto &c : body->innerBodies)
             c->recursiveTranslationUpdate(jd, flat);
-        // mat_local_to_body == flat . accumulatedBodyPosToBody(jd) exactly
-        // (flat was built as its inverse fold above) - the surface frame the
-        // grounded loop uses, handed over instead of recomputed.
         body->publishParkedFrame(jd, flat);
     }
     while (body->isNotIsolated) {
         body->transformBodyToParent(jd, flat);
         ModularBody *parent = body->parent;
-        // Accumulated, not own tilt (I2 single authority): the up-chain
-        // ancestors' `mat` and their bound children's surface frame follow
-        // the same convention as the descent - an own-tilt fold here would
-        // desynchronize a moon-referenced camera's ancestor orientations.
         const Mat4f parentTilted = flat.multiplyFast(parent->accumulatedBodyPosToBody(jd));
         for (auto &b : parent->groundedBodies) {
             if (b.get() != body)
@@ -424,24 +291,9 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
             if (b.get() != body)
                 b->selectiveUpdate(jd, flat);
         }
-        // No exclusion needed any more: publishParkedFrame writes a frame, it
-        // does not walk the parked children, so the node the walk came up from
-        // (which CAN itself be hidden - nothing forbids hiding the camera
-        // reference) cannot be double-updated.
         parent->publishParkedFrame(jd, flat);
         body = parent;
         body->mat = parentTilted; // assign BEFORE update: update() reads the member
-        // The matLocalToBodyPos contract (member doc: "Set on EVERY position
-        // update, visible or not") - INTENT S5.46. `flat` has just climbed one
-        // level (transformBodyToParent above is the exact inverse of the
-        // descent hop), so it IS this node's own flat position frame, and
-        // `parentTilted` was formed from it by the very product recursiveUpdate
-        // uses - the climb now leaves the same two members in the same state as
-        // the descent. Without this the ORBIT/TRAIL/TAIL passes, which build a
-        // body's parent frame from getMatLocalToBodyPos(), drew an up-chain
-        // ancestor's own line in the frame of the last descent through it
-        // (measured: an observer on the Moon put Earth's trail 366 px from
-        // Earth and 3.6 px from where the frame had been left, S11.137).
         body->matLocalToBodyPos = flat;
         body->preUpdate(jd, flat);
         body->update(jd, parentTilted);
@@ -455,50 +307,11 @@ bool ModularBody::useNow()
 {
     if (!renderHidden || !parent)
         return true; // the walks still evaluate this body: fresh by construction
-    // THE DATE HALF OF THE KEY, READ BEFORE THE CLIMB - deliberately (S11.220,
-    // row S5.139). parent->useNow()'s own refresh descends THROUGH this node and
-    // stamps evaluatedJD on the way, so a date test taken after the climb would
-    // silently drop this node's own +4 re-convergence whenever an ancestor
-    // resumed first. Read here, the date axis behaves exactly as it did before
-    // this fix: the change below is purely ADDITIVE, on the frame axis only.
     const bool dateFresh = (evaluatedJD == currentJD);
-    // Ancestors first: a parked subtree under a parked node has no published
-    // frame of its own (publishParkedFrame runs only for nodes the walk visits),
-    // and after the parent resumes, its matLocalToBodyPos IS its fresh flat
-    // position frame (recursiveTranslationUpdate's own contract). Unconditional
-    // now, because the frame comparison below has to compare against a CURRENT
-    // parent frame; for the common case (a parked body under a walked parent)
-    // it returns on the line above, at the cost of one call.
-    // THE PRECONDITION: A FRAME MUST EXIST (S11.226, from S11.220(j4)). The
-    // refresh below computes THIS body's position in the frame the line after
-    // takes from the parent, and a parent the current system's walk never
-    // visits has never published one - `parkedChildFrame` is then still
-    // `Mat4f::identity()` and the refresh would express this body's own LOCAL
-    // position as an EYE-frame position. Measured before the guard existed
-    // (S11.226(b)): eight of the corpus's anchor bodies, `pleiades` among them,
-    // landing at 125.445793 AU and printing AD/DE 10h10m26s / +34d33'43" where
-    // their honest readout is the degenerate zero-vector one. D8's own words
-    // presuppose a frame ("as soon as the position is used ... it should be
-    // computed"), so the barrier REFUSES rather than computing in a frame
-    // nobody published, and says so once (D12).
-    // Two ways to be served, one per branch of the frame read below:
-    //   hidden parent     -> served iff the PARENT was served (its
-    //                        matLocalToBodyPos is fresh only if it refreshed),
-    //                        which is how the refusal propagates down a parked
-    //                        chain: the orbit centre of `orbit_autour_point` is
-    //                        itself unserved, so its child is too;
-    //   non-hidden parent -> served iff it has ever published a parked frame.
     const bool parentServed = parent->useNow();
     if (!(parent->renderHidden ? parentServed : parent->parkedFramePublished)) {
         if (!unservedLogged) {
             unservedLogged = true;
-            // The message says what is OBSERVED and not why: the flag cannot
-            // tell "outside the walk" from "not walked YET", and both reach
-            // here - measured, the second one on every `body action reload`,
-            // which rebuilds the tree and re-creates the anchor bodies whose
-            // own creator uses them before the next frame's walk publishes
-            // (S11.226(h)). A line that asserted the first cause would be
-            // false advice for the second, so both fixes are named.
             cLog::get()->write("Position of '" + englishName + "' was used, but "
                 "its parent '" + parent->englishName + "' has not published a "
                 "position frame for its parked children: the loaded system's "
@@ -521,54 +334,18 @@ bool ModularBody::useNow()
     }
     const Mat4f &parentFlat = parent->renderHidden ? parent->matLocalToBodyPos
                                                    : parent->parkedChildFrame;
-    // A GROUNDED parked child rides the parent's accumulated SURFACE frame, the
-    // ORBITING/INNER variants the flat one - the same per-relation dispatch the
-    // retired updateHiddenBodies did, and the same identity its callers relied on
-    // (surface == flat . accumulatedBodyPosToBody(jd)). The test is
-    // `boundToSurface`, not `relation == HIDDEN_GROUNDED`: it is the same fact
-    // cached, and it is invariant under hide()/show()'s +-3 translation, so this
-    // reads correctly whichever side of the restore calls it (show() calls it
-    // BEFORE clearing the flag but AFTER translating the relation back).
     const Mat4f frame = boundToSurface
         ? parentFlat.multiplyFast(parent->accumulatedBodyPosToBody(currentJD))
         : parentFlat;
-    // THE MEMO'S SECOND HALF (S11.220, row S5.139). `evaluatedJD` alone is a
-    // complete key for eclipticPos - a function of the date - and an INCOMPLETE
-    // one for what this refresh actually writes: `mat`'s translation, which is
-    // this body's position in the EYE frame and therefore a function of the date
-    // AND of the camera (the frame above descends from Camera::viewMat, through
-    // the parent's published flat frame). At a pinned clock the date-only key
-    // made the first use at a date the last one that could ever reach a parked
-    // body, so every later camera move left its readout answering in a camera
-    // state that no longer existed: MEASURED at 48 of 120 dump records frozen
-    // and up to 170.7 deg from the old path's alt/az, with the SAME binary
-    // freezing nothing when the clock ran (S11.220's leg). Keying on both halves
-    // is what the D8 use-site barrier already promised - S11.76(b) [vixy]: "As
-    // soon as the position is used (fetched from script, warped to) it should be
-    // computed, and if previously frozen, recomputed with 4 extra iterations".
     if (dateFresh && sameFrame(frame, evaluatedFrame))
         return true; // this date AND this camera frame: already computed, by a use
     evaluatedFrame = frame;
-    // The +4 belong to a DATE change and to nothing else. They exist because
-    // EllipticalOrbit::eccentricAnomaly and IterativeEll/IterativeHyp advance
-    // ITERATIVE_STEPS_PER_CALL Newton steps per call from the previous call's
-    // seed (two since S5.145 / S11.223(b) - iterative_orbits.hpp), so a body
-    // that stopped being evaluated needs its seed re-converged AT THE NEW DATE
-    // [S11.76(b), S11.117(c); both counts are vixy-specified]. A frame-only
-    // change re-expresses the SAME eclipticPos, at the same date, in a new
-    // frame: the solver's seed is already where it belongs and one translation
-    // refresh is the whole of the work.
     const int extra = dateFresh ? 0 : RESUME_EXTRA_ITERATIONS;
     for (int i = 0; i <= extra; ++i)
         recursiveTranslationUpdate(currentJD, frame);
     return true;
 }
 
-// Hand every module of this subtree the "you were out of the frame, come back as
-// if you never left" edge (D23 clause iv / S11.113(b)(iv)). The module decides
-// what that means for its own state (I4): a fader snaps to the target it would
-// have reached, the trail reconstructs the samples it did not take - or gives up
-// and LOGS (D12) where the past is not computable. Default is a no-op.
 void ModularBody::resumeModulesAfterHidden()
 {
     for (auto &module : components) {
@@ -596,17 +373,8 @@ void ModularBody::deselect()
 void ModularBody::updateCache()
 {
     bool cached = !scaling.isTransiting();
-    // THE display factor, once (I2): own display scale x the dilation inherited
-    // from the parent this body stands on (D21 [vixy 2026-08-22], S11.149(c3)
-    // ratified S11.151(b)). == `scaling` for every body that is not a grounded
-    // child, so nothing shipped changes by a bit; for a grounded child it is
-    // the EXTENT half of the uniform dilation whose PLACEMENT half is
-    // getDisplayEclipticPos().
     const float display = getDisplayScaling();
     scaledRadius = radius * display;
-    // Navigation radii scale with the same visual scaling as the render radius
-    // (B10 S5.2): datum defaults to radius => scaledDatumRadius == scaledRadius
-    // for every shipped body, bit-identical.
     scaledDatumRadius = datumRadius * display;
     scaledGroundRadius = groundRadius * display;
     boundingRadius = scaledRadius;
@@ -618,17 +386,6 @@ void ModularBody::updateCache()
     for (auto &module : inComponents) {
         cached &= module->update(this, scaledRadius);
     }
-    // D21 PRESENTATION PUSH (I3, S11.149(c2)): a GROUNDED child rides this
-    // body's DISPLAYED surface, so it inherits this body's display factor -
-    // and it must inherit it LIVE, because `scaling` is a 5 s ASmooth ramp and
-    // a baked constant cannot inherit a ramp (that was the load-time latch,
-    // the fourth instance of the closed B15/B19/B32 class). This function
-    // re-runs every frame for as long as the ramp transits (`uncached` stays
-    // set while isTransiting()), so the push IS the ramp reaching the child.
-    // Hidden grounded children are pushed too: `boundToSurface` survives
-    // hide()/show() (it is the same fact as the relation, see hide()), so a
-    // body shown mid-ramp is already carrying the right factor instead of
-    // catching up one frame later.
     for (auto &c : groundedBodies)
         c->setInheritedScaling(display);
     for (auto &c : hiddenBodies)
@@ -636,13 +393,6 @@ void ModularBody::updateCache()
             c->setInheritedScaling(display);
     if (parent)
         parent->invalidateCachedState();
-    // Position-derived reach (subsystemRadius + areaOfInfluence) is computed
-    // here for the first-cache / load-time path (ModularSystem.cpp:807), AND
-    // recomputed every frame from update() (INTENT 11.62, B15): it tracks jd
-    // because eclipticPos moves, whereas the module/radius part above only
-    // changes on a radius/scaling/module event. Splitting it out is what stops
-    // the AoI freezing at the launch-jd cache (stale transition thresholds
-    // after a date jump - measured 10.28% at the scene jd).
     updateReach();
     if (cached)
         uncached = false;
@@ -650,10 +400,6 @@ void ModularBody::updateCache()
 
 void ModularBody::updateReach()
 {
-    // Subtree extent = |child offset| + the child's OWN subsystem reach.
-    // Direct |ecl| alone collapsed nested systems to zero extent (a system
-    // node's only direct child can sit at its center - the whole subsystem
-    // was invisible to the AoI heuristic; INTENT 5.19).
     float subsystem = boundingRadius;
     forEachVisibleChild([&subsystem](ModularBody &c) {
         const float tmp = c.eclipticPos.length() + c.subsystemRadius;
@@ -662,20 +408,6 @@ void ModularBody::updateReach()
     });
     // Take some extra margin for the system radius
     subsystemRadius = subsystem * 1.1f;
-    // The area of influence is an heuristic. The sibling-separation cap
-    // (|ecl|*0.6) only applies off-center: a system-centered or parentless
-    // body's influence IS its system's space - at ecl==0 the cap collapsed
-    // AoI to zero (the Sun, system nodes at their host's origin; INTENT 5.18),
-    // making every reference transition escalate and none descend.
-    // `/ getDisplayScaling()` and not `/ scaling`: the intent of the division is
-    // that the AoI is the UNSCALED extent times 128 (display size must not move
-    // a navigation threshold), and boundingRadius is now `radius * display`.
-    // Dividing by the same factor keeps every body's AoI - grounded children
-    // included - bit-identical to what it was before D21's inheritance existed,
-    // which is deliberate: the REACH half of the scaled-bounding coupling is
-    // S11.96(e)'s promotion-grade item and D21 does NOT decide it (S11.149(c6)).
-    // A grounded child's reach must not change as a side effect of the display
-    // fix, so it does not.
     float aoi = std::max(boundingRadius * 128 / getDisplayScaling(), subsystemRadius * 16);
     const float sibCap = eclipticPos.length() * 0.6f;
     if (sibCap > 0)
@@ -683,48 +415,8 @@ void ModularBody::updateReach()
     areaOfInfluence = aoi;
 }
 
-// THE close-range regime selection - one manager, two consumers (draw() in the
-// header and drawLoaded() below). It used to be two managers of one decision,
-// and the hole was the VALUE of their disagreement (INTENT S5.161, S11.248):
-// draw() sent the band [scaledRadius, 2*scaledRadius) to groundedComponents,
-// which NO legacy loader ever fills - addGroundedComponent has exactly one
-// caller, ModuleLoader::reroute's composed-format `relation =` key - so every
-// shipped body drew NOTHING there (measured: the Moon gone below 17 374 km at
-// the shipped x5 scale, Earth gone below 12 756 km, S11.97(e), S11.105
-// BLOCKER 1, S11.131(g)1), while drawLoaded() sent the same band to
-// nearComponents and drew it, which is why a body drawn for the first time is
-// visible for its texture-load frames and then vanishes in one.
-//
-// THE RULE IS THE OWNER'S, quoted [vixy 2026-07-26, S11.113(c)]: the surface
-// is used "when loaded and relevant by altitude or zooming, the outer version
-// otherwise", and "Outer always drawn if no grounded module" - "a defect to
-// close". "No grounded module" and "not loaded yet" take the same branch, and
-// the load state is read LIVE here, never latched at load or at first use
-// ((c)(iv)); the loop below is over an EMPTY vector for every shipped body, so
-// today it costs nothing and the day a SurfaceModule exists it is already
-// right.
-//
-// nullptr = this body draws no surface at all in the close range. That is the
-// HOME BODY under its own landscape, and it is the old path's rule verbatim:
-// Body::skipDrawingThisBody = !drawHomePlanet && observatory->isOnBody(this)
-// (body.cpp:1223-1226) with drawHomePlanet = BodyDecor::canDrawBody(), i.e.
-// altitude >= limLandscape (body_decor.cpp:28-39). The new path's answer to
-// that same question ALREADY EXISTS at its own anchor - EnvironmentState::
-// drawBody, produced by EnvironmentManager::update (:107) from the landscape
-// member's own altitude test - so it is CONSUMED here and NOT re-derived: one
-// producer, one stored copy, a second consumer beside the picker's
-// (core.cpp:1295). Re-deriving it from envParams.limLandscape and `distance`
-// would have been three lines and a SECOND manager of a decision that already
-// has one. Without this clause, closing the hole would put the home body's
-// mesh into the DEFAULT view, where an observer standing on Earth sits at
-// 6378.215 km - inside the band - and where the two paths agree today only
-// because two different rules both hide it.
 const std::vector<BodyModule *> *ModularBody::closeRangeComponents()
 {
-    // Camera INSIDE the body: deliberately untouched - the ruling's words do
-    // not cover it, and inComponents is empty for every shipped body too (the
-    // old path draws the body there, ModularBody draws nothing: recorded, not
-    // fixed here).
     if (distance < scaledRadius)
         return &inComponents;
     if (EnvironmentManager::instance && Camera::instance
@@ -770,9 +462,6 @@ void ModularBody::drawLoaded(Renderer &renderer)
                         loaded = false;
                 }
             }
-            // `loaded` means "every module of this body is ready", so the near
-            // list still gates it when this regime did not draw it (the in list
-            // is polled by the tail below, for every branch).
             if (components != &nearComponents) {
                 for (auto *module : nearComponents)
                     loaded &= module->isLoaded();
@@ -802,9 +491,6 @@ void ModularBody::setChildNoLongerVisible()
         if (c.isChildVisible)
             c.setChildNoLongerVisible();
         c.distance = 0;
-        // Clear the visibility flag too: with the translation-only subtree
-        // refresh, distance becomes non-zero again next frame, so a stale
-        // isVisible=true would let drawSystem draw a chimera state.
         c.isVisible = false;
     });
     isChildVisible = false;
@@ -819,9 +505,6 @@ ModularBody *ModularBody::findBodyNameI18n(const std::string &nameI18)
     return nullptr;
 }
 
-// Hide = move ownership to the parent's hiddenBodies (still parent-owned -
-// no global list, no parent-tracking workaround; the relation remembers the
-// origin list so show() restores exactly). Return true iff it was shown.
 bool ModularBody::hide()
 {
     if (!parent || relation < BodyRelation::GROUNDED)
@@ -858,21 +541,8 @@ bool ModularBody::show()
             parent->listOf(relation).push_back(std::move(*it));
             hid.erase(it);
             parent->invalidateCachedState();
-            // UNHIDE IS A USE [D23: "behave as if they never were hidden when
-            // unhidden"], and it is the use the barrier exists for: the very
-            // next walk would otherwise take a single call's worth of Newton
-            // steps (ITERATIVE_STEPS_PER_CALL, iterative_orbits.hpp) from a seed
-            // left at hide time. Runs BEFORE the flag is cleared - useNow is a no-op for
-            // a body the walks evaluate, so the order is what arms it.
             useNow();
-            // B39 (S11.117): re-enter the RENDERED universe. A descendant that
-            // is itself declared hidden stays out - propagateRenderHidden ORs
-            // each node's own relation, which is where the old path's S5.44
-            // ("show re-shows everything") cannot happen here.
             propagateRenderHidden(parent->renderHidden);
-            // ... and only THEN the modules, on a position that is already the
-            // one they would have seen (the trail reconstructs its missed
-            // samples from the orbit - BodyModule::resumeAfterHidden).
             resumeModulesAfterHidden();
             return true;
         }
@@ -882,11 +552,6 @@ bool ModularBody::show()
 
 Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
 {
-    // Maps `to`-equatorial coordinates to this-equatorial coordinates (both
-    // references hold their ACCUMULATED equatorial frame - see
-    // accumulatedBodyToBodyPos): comp = acc(this)^-1 . [flat translations via
-    // the common parent] . acc(to).
-    // Left-to-right build = reverse of right-to-left application order.
     const ModularBody *common = findCommonParent(to);
     Mat4f diff = accumulatedBodyToBodyPos(lastJD);
     // this -> common (applied last: common -> this descent, -ecl each)
@@ -903,12 +568,6 @@ Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
     return diff.multiplyFast(to->accumulatedBodyPosToBody());
 }
 
-// The px->screenSize conversion of the G4 gates, in ONE place (INTENT S5.54).
-// screenSize is the bounding DIAMETER as a fraction of the render width under
-// the fisheye transfer, and viewportRadius is half that width, so dividing the
-// px gate by 2*viewportRadius is the whole conversion. Nothing else may write
-// viewportRadius: the gates would go stale, and stale gates are silent - a body
-// would simply be drawn in the wrong regime.
 void ModularBody::setViewportRadius(float halfRenderWidthPx)
 {
     viewportRadius = halfRenderWidthPx;
@@ -929,67 +588,25 @@ void ModularBody::setTranslator(Translator &_translator)
 std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::string, std::string> &param)
 {
     std::vector<BodyModuleType> ret;
-    // rings gate = old parse parity (protosystem.cpp:777 strToBool(rings, 0)):
-    // tex_ring alone doesn't create rings. Deliberate suppression lives HERE,
-    // not in RingLoader::isLikely - a 0 bid on a deduced module fires the
-    // missing-loader warning (the hint=false lesson, 11.19).
     if (param.count("tex_ring") && Utility::strToBool(param["rings"], false))
         ret.push_back(BodyModuleType::RING);
     if (param.count("tex_map"))
         ret.push_back(BodyModuleType::MESH);
-    // model_name has TWO consumers in the old parse (protosystem.cpp:634-641
-    // vs 727-739): type=artificial -> an Ojm model (materials, phong,
-    // self-shadow - the OJM module); any other type -> a NAMED ObjL drawn by
-    // the MESH family (Phobos/Deimos class - BasicMeshLoader carries it).
-    // Gating here keeps the deliberate non-OJM case out of the missing-loader
-    // warning channel (the rings/hint=false lesson above). Match = the old
-    // parse's exact discriminator: the 4-byte prefix switch on "Artificial"
-    // (protosystem.cpp:478-487 setBodyTypeFromString).
     if (param.count("model_name")) {
         const std::string &type = param["type"];
         if (type.size() >= 4 && std::memcmp(type.data(), "Arti", 4) == 0)
             ret.push_back(BodyModuleType::OJM);
     }
-    // From-space atmosphere shell (row 13). The compound gate mirrors the old
-    // parse precondition EXACTLY (protosystem.cpp:865-871): the params block
-    // is only read when has_atmosphere or atmosphere_lim_landscape is
-    // present, and the shell exists iff atmosphere_ext_model is non-empty.
-    // Positioned after MESH/OJM: nearComponent order = record order, the
-    // shell draws AFTER the disc (old same-command-buffer parity).
     if ((param.count("has_atmosphere") || param.count("atmosphere_lim_landscape"))
         && !param["atmosphere_ext_model"].empty())
         ret.push_back(BodyModuleType::ATMOSPHERE);
-    // Rotation-axis line (row 10): default for every body with a mesh (the
-    // landing-zone rule; the old path carried an Axis member on EVERY body -
-    // model-only artificial bodies losing theirs is a documented divergence,
-    // visible only under `flag axis on`). Positioned after MESH: record order
-    // = near-list order, the depth test resolves axis-vs-disc either way.
     if (param.count("tex_map"))
         ret.push_back(BodyModuleType::AXIS);
-    // Every named body gets a HINT module by default; hint=false suppresses it
-    // HERE (not in HintLoader::isLikely - a 0 there would fire the missing-
-    // loader warning for a deliberate suppression).
     if (!englishName.empty() && !Utility::isFalse(param["hint"]))
         ret.push_back(BodyModuleType::HINT);
-    // Orbit line (row 8): default for a body with a NON-STILL orbit. The gate
-    // is orbit_visualization_period > 0 - EXACTLY the old draw gate
-    // (re.sidereal_period, OrbitPlot::doDraw): the Sun/anchors carry no such
-    // key and get no orbit, planets/moons do. param orbit=false suppresses the
-    // module entirely (deduce gate, not a runtime flag - the hint=false lesson,
-    // 11.19: a 0 bid on a deduced module fires the missing-loader warning).
     if (Utility::strToDouble(param["orbit_visualization_period"], 0.0) > 0.0
         && !Utility::isFalse(param["orbit"]))
         ret.push_back(BodyModuleType::ORBIT);
-    // Trail line (row 9): position accumulation over sim time. The old trail set
-    // was the CLASS dispatch BigBody+SmallBody (types Planet/Dwarf/Asteroid/KBO/
-    // Comet); Moon/Sun/Star/Center/Artificial carry NO Trail (Moon has no Trail
-    // member + a no-op drawTrail; the others never construct one -
-    // protosystem.cpp:645-801). Gate = a non-still orbit (the same "moving" gate
-    // as ORBIT, orbit_visualization_period>0) AND not a satellite (Moon
-    // exclusion, isSatellite) AND type != Artificial (the new BodyType enum
-    // lumps Planet/Moon/Artificial as CUSTOM_BODY, so the discriminators are the
-    // parent relation + the raw type string, same "Arti" 4-byte prefix as OJM
-    // above). MaxTrail per class is set by the loader from the type.
     {
         const std::string &type = param["type"];
         const bool artificial = type.size() >= 4 && std::memcmp(type.data(), "Arti", 4) == 0;
@@ -997,16 +614,6 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
             && !isSatellite() && !artificial)
             ret.push_back(BodyModuleType::TRAIL);
     }
-    // Comet tail (row 12): the old SmallBody bound tails ONLY for a comet
-    // carrying an apparent_magnitude AND slope (protosystem.cpp:802) - the
-    // coma/tail-size formula needs the absolute magnitude H + activity slope G.
-    // Deduce for type=Comet with apparent_magnitude present (the "type=Comet"
-    // landing-zone rule, gated by the old data precondition - a comet without
-    // photometry drew no tail, so the module would draw nothing/garbage), OR an
-    // explicit tail=true (the "or explicit" half). tail=false suppresses HERE
-    // (deduce gate, not a runtime flag - a 0 bid on a deduced module fires the
-    // missing-loader warning, the hint=false lesson S11.19). Magnitude coupling
-    // (the landing zone's albedo/radius vs the old H/G) SUSPENDED for Vixy, S11.43.
     {
         const std::string &type = param["type"];
         const bool comet = type.size() >= 4 && std::memcmp(type.data(), "Come", 4) == 0;
@@ -1015,24 +622,11 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
             && (Utility::isTrue(param["tail"]) || (comet && hasMag)))
             ret.push_back(BodyModuleType::TAIL);
     }
-    // Star big-halo glow (row 14): the old Sun/BodyStar bound a tex_big_halo
-    // (protosystem.cpp:687-691) only on STAR-typed bodies. Gate = STAR bit
-    // (strToBodyType maps type=Sun/Star -> STAR) AND a non-empty tex_big_halo -
-    // exactly the old setBigHalo precondition. Deduced as CUSTOM: StarLoader
-    // (co-registered with GridLoader) outbids on stars, so it lands in the
-    // default "CUSTOM" slot; the Sun carries no planet_grid, so no slot clash
-    // (INTENT S11.44). The disc itself stays MESH (S11.19a "bare disc"); this
-    // module is only the additive screen-space halo.
     if (isStar() && !param["tex_big_halo"].empty())
         ret.push_back(BodyModuleType::CUSTOM);
     return ret;
 }
 
-// Dual-path trace harness (INTENT.md 11.14).
-// One JSON object with the NEW-path per-body transform state: parent-relative
-// position (ecl, float - the post-downcast value actually used), observer
-// matrix, distance, screen position, axis rotation, last evaluation jd.
-// Precision 9 = round-trip-exact float; lastJD at 17 (double).
 void ModularBody::dumpTrace(std::ostream &out) const
 {
     out << std::setprecision(9) << "{\"parent\":\""
@@ -1043,111 +637,31 @@ void ModularBody::dumpTrace(std::ostream &out) const
         out << jn(mat.r[i]) << ((i < 15) ? "," : "");
     out << "],\"dist\":" << jn(distance)
         << ",\"screen\":[" << jn(screenPos.first) << ',' << jn(screenPos.second)
-        // B32 RECOMPUTE-AT-USE (D20 S11.79(n), the D8 S11.76 barrier): a dump is
-        // a USE, so the spin phase is recomputed here from the ROOT-fresh lastJD
-        // (translation tick keeps lastJD current on EVERY body, visible or not,
-        // B19) through the ONE authority computeAxisRotation (I2) - NOT read from
-        // the visibility-gated axisRotation cache. The cache is a per-frame
-        // memoization the tick maintains ONLY for visible bodies (update()); it
-        // is fresh-by-construction exactly where the draw path reads it (a body
-        // is drawn iff visible iff updated this frame), and STALE everywhere the
-        // tick genuinely froze the spin (invisible / frozen-under-invisible-
-        // parent). Reading the cache in the dump leaked the LAUNCH wall-clock
-        // spin phase of the last visible update - measured up to 4.49 rad of
-        // cross-launch scatter on Moon/Deimos/Phobos/Mars/Mercury (S5.24; the
-        // ~20 pole-bearing moons in a scene where they are invisible). The
-        // recompute is a closed-form evaluation (computeAxisRotation is a
-        // polynomial+fmod, or the finite nutation series for EARTH_APPARENT - no
-        // convergence loop), so the S11.76 +4-iterations restoration does NOT
-        // apply to spin (that clause is the ITERATIVE Kepler position solve,
-        // S11.76 territory, untouched here). Deterministic: a function of the
-        // bit-identical lastJD, so two fresh launches now agree exactly.
         << "],\"axisRot\":" << jn(computeAxisRotation(lastJD))
-        // `attitude` == axisRot since the B32 fix (both = computeAxisRotation
-        // (lastJD)); retained as the B24-att-named channel the b24_compose /
-        // b25 harnesses read (S11.90/S11.91) - not removed to avoid a dump-
-        // format break in landed evidence.
         << ",\"attitude\":" << jn(computeAxisRotation(lastJD))
         << ",\"surfaceLocked\":" << (surfaceLockedAttitude ? "true" : "false")
-        // B27-tail capability instrument (S11.107): the capabilities that used
-        // to be derived from the `type` data string, read at the body where they
-        // now live. `bodyType` as its integer so the STAR (0x40) / MINOR_BODY (4)
-        // / CUSTOM_BODY (7) distinction is exact-comparable - it is the ONLY
-        // externally observable of the Tier-B resolution, and legacy-vs-composed
-        // equality on it IS the co-delivery proof for `light_source` /
-        // `shadow_exempt`. `composedDecl` reports WHICH format declared the body
-        // (D14 scope), so a composed leg can be shown to have actually taken the
-        // composed resolution rather than silently re-running the legacy one -
-        // it is the one field here that legitimately DIFFERS between the two
-        // legs, and is therefore deliberately excluded from the equality gate.
         << ",\"bodyType\":" << static_cast<int>(bodyType)
-        // The OTHER half of the D27 split (S11.113(f)): `primary` is deliberately
-        // not a BodyType bit, so `bodyType` alone can no longer witness the
-        // Tier-B resolution - both fields together can, and legacy-vs-composed
-        // equality on BOTH is what makes the two-key co-delivery observable.
         << ",\"primary\":" << (primary ? "true" : "false")
         << ",\"surfaceModel\":" << static_cast<int>(surfaceModel)
         << ",\"trailLength\":" << jn(trailLength)
         << ",\"composedDecl\":" << (composedDeclaration ? "true" : "false")
         << ",\"boundingRadius\":" << jn(boundingRadius)
-        // Navigation radii, scaled, in AU (B10 S5.2 / B10-cmd instrument): the
-        // ONLY numeric observable of the datum_radius/ground_radius scalars, so
-        // the harness can read the runtime `body name X datum_radius|ground_radius`
-        // command taking effect (the behavioral discriminators - moveto altitude
-        // 0 -> centre, free-descent hold at ground - ride these two values).
         << ",\"scaledDatumRadius\":" << jn(scaledDatumRadius)
         << ",\"scaledGroundRadius\":" << jn(scaledGroundRadius)
-        // THE DISPLAY FACTOR ITSELF (S11.150(n)(5)): the three scaled radii
-        // above are all `X * display`, so when one of them is wrong the dump
-        // could not say whether the radius or the factor was - F38 measured a
-        // NaN in all three and could not name the root from this channel
-        // (S5.102). Three fields, because they answer three questions: `scaling`
-        // is the live ASmooth read (mid-ramp value included), `scalingTarget` is
-        // what an operator commanded (D32's settled value), `inheritedScaling`
-        // is the dilation a grounded child rides from its parent (D21). Their
-        // product `scaling * inheritedScaling` is what every scaled quantity
-        // here was multiplied by.
         << ",\"scaling\":" << jn(static_cast<float>(scaling))
         << ",\"scalingTarget\":" << jn(scalingTarget)
         << ",\"inheritedScaling\":" << jn(inheritedScaling)
-        // The MODEL offset's display twin (D21): `ecl` above is the unscaled
-        // truth the orbit produced, this is where the drawn chain put it. They
-        // differ only for a grounded child of a display-scaled parent, and the
-        // pair is the observable of the two-layer split.
         << ",\"eclDisplay\":[" << jn(getDisplayEclipticPos()[0]) << ','
         << jn(getDisplayEclipticPos()[1]) << ',' << jn(getDisplayEclipticPos()[2]) << "]"
         << ",\"visible\":" << ((isVisible & isBodyVisible) ? "true" : "false")
         << ",\"screenSize\":" << jn(screenSize)
-        // Halo color (B29 runtime-color instrument, INTENT S11.65): the
-        // body-owned color channel (haloColor, consumed by drawHalo). The
-        // LABEL/ORBIT/TRAIL channels live on their modules; trail's is in its
-        // dumpState below, orbit/label are measured on screen. Lets the harness
-        // read the runtime recolor + its reload behaviour numerically.
         << ",\"haloColor\":[" << jn(haloColor[0]) << ',' << jn(haloColor[1]) << ','
         << jn(haloColor[2]) << "]"
-        // relation = the membership authority (which parent list owns this
-        // body); makes hide/show structurally observable from the harness -
-        // dump PRESENCE never tracks it (the dump iterates the name registry,
-        // which includes hidden bodies). INTENT 11.36 rare-path instrument.
         << ",\"relation\":" << static_cast<int>(relation)
-        // Provenance (B34 S11.108(f), F24): TRUE iff this body was pushed at
-        // runtime, i.e. iff `body action clear` removes it. Without it the
-        // clear-mirror's mark is unobservable and a mistyped mark would pass
-        // vacuously - the clear itself only shows the bodies it TOOK, never
-        // the ones it correctly left, so the RED half of "no declared body is
-        // removed" would have nothing to read. See the member's comment.
         << ",\"supplemental\":" << (supplemental ? "true" : "false")
         // Preload seam counter (B34, S11.132) - see the member's comment.
         << ",\"preloadCount\":" << preloadCount
-        // evalCount (B39 S11.117): orbit-evaluation counter - the observable
-        // under which the hidden-body tick retirement is a measured fact (see
-        // the member's own comment). Read as a DELTA over an interval.
         << ",\"evalCount\":" << evalCount
-        // Trail recording state (B11 instrument, INTENT 11.56): the ONLY
-        // externally observable of the recording gate. Written by the module
-        // itself (BodyModule::dumpState - no type sniffing here, I4). An
-        // ARRAY because trailComponents is a list; empty list -> `[]`, which
-        // is itself the finding "this body has no trail module".
         << ",\"trail\":[";
     {
         const char *sep = "";
@@ -1157,11 +671,6 @@ void ModularBody::dumpTrace(std::ostream &out) const
             sep = ",";
         }
     }
-    // Near-component state (B23 GRID instrument, INTENT S11.57): the planet-grid
-    // module lives here (addNearComponent). Its dumpState reports the tropic/
-    // polar latitudes actually baked for this body (obliquity readout, DoD-2);
-    // every other near module keeps the "null" default, so the non-null entry
-    // is the grid.
     out << "],\"near\":[";
     {
         const char *sep = "";
@@ -1171,21 +680,8 @@ void ModularBody::dumpTrace(std::ostream &out) const
             sep = ",";
         }
     }
-    // eclRoot (B24 grounded instrument, INTENT S11.78): the parent-relative
-    // position AFTER the surface fold - matLocalToBodyPos's translation, the
-    // offset actually composed into the world. For orbiting bodies == ecl;
-    // for grounded bodies it exposes what the fold DID (ecl is the fold's
-    // INPUT, constant in the surface frame, and cannot show co-rotation).
-    // Kept fresh for every body by the translation tick (B19 mechanism) -
-    // unlike `mat`, which is chimeric on invisible bodies (INTENT 11.14b);
-    // spin freshness is the parent's (stale-spin finding, S11.78).
     out << "],\"eclRoot\":[" << jn(matLocalToBodyPos.r[12]) << ','
         << jn(matLocalToBodyPos.r[13]) << ',' << jn(matLocalToBodyPos.r[14]) << "]";
-    // Slot inventory + routing counts (B24 equivalence instrument, INTENT
-    // S11.78): `modules` = the filled slot names (module-set identity per
-    // body - what the legacy-vs-composed equivalence compares); `routing` =
-    // per-list module counts (the relation= override's observable: a reroute
-    // moves a module between lists without changing the slot inventory).
     out << ",\"modules\":[";
     {
         const char *sep = "";
@@ -1206,9 +702,6 @@ void ModularBody::dumpTrace(std::ostream &out) const
         << "},\"lastJD\":" << std::setprecision(17) << jn(lastJD) << '}';
 }
 
-// Harness (INTENT.md 11.14a): per-hop construction pieces, this body -> root.
-// Since the flat-chain rework, up/down are pure-translation hops (+ bound
-// folds); tilt/spin are dumped separately and exact mutual inverses hold.
 void ModularBody::dumpHops(std::ostream &out) const
 {
     out << '[';
@@ -1219,38 +712,13 @@ void ModularBody::dumpHops(std::ostream &out) const
         b->transformBodyToParent(up);
         b->transformParentToBody(down);
         const Mat4f tilt = b->computeBodyPosToBody(b->lastJD);
-        // B32 recompute-at-use (D20 S11.79(n)): the dumped spin matrix is a USE,
-        // recomputed from the fresh lastJD through the ONE authority (I2), not
-        // read from the visibility-gated axisRotation cache computeBodyToSurface
-        // reads. Fixes the S11.54(j) stale-spin: Pluto/Charon are hidden, so
-        // their cached spin was frozen at JD 0 and every dumpHops spin matrix for
-        // them was evaluated stale; now it tracks lastJD like `tilt` above. The
-        // +M_PI_2 mirrors getAxisRotation()'s convention exactly.
         const Mat4f spin = Mat4f::zrotation(b->computeAxisRotation(b->lastJD) + M_PI_2);
         out << std::setprecision(9) << "{\"name\":\"" << b->englishName
             << "\",\"ecl\":[" << jn(b->eclipticPos[0]) << ',' << jn(b->eclipticPos[1]) << ',' << jn(b->eclipticPos[2])
             << "],\"lastJD\":" << std::setprecision(17) << jn(b->lastJD) << std::setprecision(9)
-            // Raw rotation-frame readout (B28 bit-identical gate, INTENT 11.67):
-            // the loader-resolved obliquity/ascendingNode and the declared frame
-            // flag. These are projection-free and jd-only-through-precession, so
-            // the frame conversion is measurable to float-ulp independent of the
-            // B30 render jitter that perturbs the composed `mat`.
             << ",\"obliquity\":" << jn(b->re.obliquity)
             << ",\"ascendingNode\":" << jn(b->re.ascendingNode)
-            // re.offset (rot_rotation_offset, DEGREES) - the prime-meridian phase
-            // at epoch. Projection-free, load-time readout of the rot_pole_w0 ->
-            // offset conversion (B14-W0, S11.79(a)); the DIRECT observable the
-            // W0-conversion discriminator reads (visibility-independent, unlike
-            // the live axisRotation which only refreshes on visible bodies).
             << ",\"offset\":" << jn(b->re.offset)
-            // re.period (rot_periode/24, DAYS, float32 as loaded) - the sidereal
-            // rotation rate the spin formula (ModularBody.hpp:350) divides into.
-            // Projection-free, load-time, deterministic (no jd/visibility jitter,
-            // unlike the cached axisRotation/spin) => the DIRECT commutator-class
-            // observable of the rot_periode data channel (B14-periode, S11.86(d)/
-            // S11.87(e)): a body's row moves iff its rot_periode was edited. Sign
-            // encodes spin direction (negative = retrograde, the Venus -5832 h /
-            // Uranus-moon W_dot<0 convention).
             << ",\"period\":" << jn(b->re.period)
             << ",\"absoluteTiltFrame\":" << (b->re.absoluteTiltFrame ? "true" : "false");
         const char *names[4] = {"up", "down", "tilt", "spin"};

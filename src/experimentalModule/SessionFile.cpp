@@ -36,10 +36,6 @@ std::string f2s(float v)
     return s.str();
 }
 
-// The file a name denotes, and the refusals that stand between a name and a
-// path. Both live HERE because this is the level that owns where sessions go -
-// the same argument that put `body action save`'s refusals at the SSystemFactory
-// seam (S11.121(e)).
 bool resolve(const std::string &name, std::string &path, const char *verb)
 {
     const std::string n = name.empty() ? DEFAULT_NAME : name;
@@ -58,16 +54,6 @@ bool resolve(const std::string &name, std::string &path, const char *verb)
     return true;
 }
 
-// The D8 use-site barrier at this save's own use sites (S6.1). A body the
-// engine froze (hidden - and a hidden body is a legal observer reference,
-// S11.113(b)(vi)) holds its position at its freeze date until something asks;
-// a save that named it without asking would describe a scene at a date that has
-// passed, and the restore would make that permanent. `useNow` is a no-op for a
-// body the walks still evaluate, so this costs nothing in the ordinary case.
-// SCOPE, stated rather than implied: this slice names three bodies (the
-// reference, the tracked one and the selection). The obligation S6.1 calls
-// "the first consumer that touches EVERY body" arrives with the per-body
-// override ledger, which walks the whole tree.
 void useNow(const std::string &name)
 {
     if (name.empty())
@@ -76,10 +62,6 @@ void useNow(const std::string &name)
         b->useNow();
 }
 
-// Every system in this tree that came from a file. `ModularBody::forEach` walks
-// the global registry, which is the one place that knows every body there is -
-// asking the render lists instead would miss a hidden one, and a hidden system
-// is still loaded content (S11.121(b)'s lesson, from the other side).
 void collectSystems(std::vector<ModularSystem *> &out)
 {
     ModularBody::forEach([&out](ModularBody &b) {
@@ -96,13 +78,6 @@ std::string v2s(const Vec3f &c)
     return d2s(c[0]) + "," + d2s(c[1]) + "," + d2s(c[2]);
 }
 
-// THE MISS REPORT'S CONTEXT, and the reason it is not the key (D34,
-// S11.113(m)): the key is the plain englishName, because that is the identifier
-// users already know and the one the engine enforces uniqueness on. The
-// system-qualified tree path is what makes a MISS legible - which tree the
-// override belonged to, so "the data renamed it" reads differently from "that
-// system is not loaded" - and it is written for the report alone. Nothing
-// resolves by it.
 std::string qualifiedPath(ModularBody *b)
 {
     std::string chain = b->getEnglishName();
@@ -118,9 +93,6 @@ std::string qualifiedPath(ModularBody *b)
     return (file.empty() ? std::string("<no file>") : file) + "::" + chain;
 }
 
-// A flag or a value another S2 row owns. The list is short and each entry
-// names the row that owns it, because "why is this not in the file" must be
-// answerable from the file (S2(f)).
 bool excludedFlag(const std::string &n)
 {
     return n == "track_object"          // S2 row C5 - [selection] owns it
@@ -183,21 +155,9 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
     Section observer;
     observer.setHeader("observer");
     camera->saveSession(observer);
-    // S2 row B19's twin, and the one field of it that is NOT derivable from the
-    // camera: the direction the OLD path draws the sky from. See Host for the
-    // measurement that put it here rather than leaving it to B19's clause.
     {
         double sx = 0, sy = 0, sz = 0;
         host.getSkyVision(sx, sy, sz);
-        // FLOAT precision, and it is a REQUIREMENT rather than a saving. Under a
-        // live sky lock the old navigator round-trips this vector through the
-        // local<->equatorial pair every frame, and that round trip has a fixed
-        // point one double-ulp away from wherever it started - so a value
-        // written with all 17 digits comes back one ulp different and the SECOND
-        // save is not byte-identical to the first (measured: 10993 vs 11010 B,
-        // T4). Nine significant digits absorb that drift and are still three
-        // orders finer than a pixel: at fov 45 on a 2048 dome one pixel is
-        // 3.8e-4 rad. Same class as the fov-in-degrees rider, S11.128(c).
         observer.appendEntry("sky_vision",
                              f2s(static_cast<float>(sx)) + "," +
                              f2s(static_cast<float>(sy)) + "," +
@@ -219,15 +179,6 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
     }
     sections.push_back(std::move(selection));
 
-    // THE BULK VALUE ROWS (S2 E3/E4/E5). Each is written from the command
-    // surface's own inventory, so this code names no flag and no colour: what
-    // the surface can read, the session carries.
-    //
-    // WHAT IS DELIBERATELY LEFT OUT, and it is per-ROW rather than per-group,
-    // because S2 classifies rows: a name another section of this file already
-    // owns is not written twice (I2 - two answers to one question is how a
-    // file starts contradicting itself), and a name whose S2 row excludes it
-    // stays out with its reason.
     if (cmds) {
         int nFlags = 0, nValues = 0, nColors = 0;
         cmds->countNames(nFlags, nValues, nColors);
@@ -291,16 +242,6 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
         sections.push_back(std::move(colors));
     }
 
-    // THE PER-BODY OVERRIDE LEDGER (S2 group D). One section per body that
-    // carries at least one override, keyed by plain englishName (D34).
-    //
-    // IT IS A DELTA, NOT A SNAPSHOT, and that is the whole point (D30): each
-    // field is written only when it DIFFERS from what the data gave the body at
-    // load. A body nobody touched contributes nothing, so a correction that
-    // lands in the data underneath a session reaches a session restored on top
-    // of it - and an operator's override still applies on top of the corrected
-    // value. A snapshot would pin the old authored value forever and there
-    // would be no way to tell which of the two the operator meant.
     {
         int ledgerBodies = 0;
         std::vector<Section> bodySections;
@@ -335,12 +276,6 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
                 put("orbit", b.getOrbitOverride() ? "true" : "false");
             if (b.getTrailOverride() >= 0)                              // D8
                 put("trail", b.getTrailOverride() ? "true" : "false");
-            // D10: the accumulated trail. D32 carves trail points OUT of
-            // "transients snap to their settled target" - a trail is drawn
-            // content, not a motion, and "as-if continued" says it is still
-            // there. Written whole rather than re-derived, because
-            // re-derivation needs an orbit and a body without one would come
-            // back empty with nothing to explain it.
             for (BodyModule *m : b.getTrailComponents()) {
                 TrailModule *t = static_cast<TrailModule *>(m);
                 const auto &pts = t->getPoints();
@@ -368,10 +303,6 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
         for (Section &s : bodySections)
             sections.push_back(std::move(s));
 
-        // S2 row D5: the runtime colour DEFAULTS. They are not per-body and
-        // they are invisible in any per-body snapshot - they change what FUTURE
-        // bodies get - so they are their own section, and they are a snapshot
-        // rather than a delta because no body authored them.
         Section defs;
         defs.setHeader("body_defaults");
         defs.appendEntry("halo_color", v2s(ModularBody::getDefaultHaloColor()));
@@ -385,9 +316,6 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
             "their own place here (b31-design \xc2\xa7" "2 row D5).");
         sections.push_back(std::move(defs));
 
-        // S2 row D9: tesselation. The values are shared by both render paths
-        // through one object, so there is nothing per-body to record and the
-        // section is global.
         if (const auto &tes = ModularBody::getTesselation()) {
             Section ts;
             ts.setHeader("tesselation");
@@ -402,10 +330,6 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
             std::to_string(ledgerBodies) + " body/bodies", LOG_TYPE::L_INFO);
     }
 
-    // THE MANIFEST (S3.3): what this session assumed was loaded. It is what
-    // makes the file readable on another install - D32 turned the artifact into
-    // a diagnostic one, and a diagnostic that does not say what it assumed is a
-    // guess.
     std::vector<ModularSystem *> systems;
     collectSystems(systems);
     for (ModularSystem *sys : systems) {
@@ -426,10 +350,6 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
         return false;
     }
 
-    // The banner carries NO date and NO run identity, and that is a
-    // requirement rather than an omission: a save of an unchanged state must be
-    // byte-identical to the one before it (b31-design S6.2 T4), and a
-    // timestamp would give the file no fixed point at all.
     const std::vector<std::string> banner = {
         " spacecrafter SESSION - machine-owned, disposable.",
         " Written by `session action save`; read by `session action load filename <name>`.",
@@ -470,9 +390,6 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
         else if (h.compare(0, 7, "system:") == 0) systems.push_back(&s);
     }
 
-    // S9(1): a file from a version this build does not know is REFUSED whole.
-    // Half-applying a future file is the worst failure available here - the
-    // operator gets a scene that is neither the saved one nor the running one.
     if (!header || !header->find("format")) {
         cLog::get()->write("Command 'session action load': " + path + " carries no "
             "[session] format key, so it is not a session file this build wrote. Nothing "
@@ -489,12 +406,6 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
         return false;
     }
 
-    // The manifest is CHECKED, not enacted. Loading a system this session names
-    // and this app does not have is the in-session load/unload half of S3.3 and
-    // it needs more than the manifest carries (where the system node sits, and
-    // the galactic load surface, which is S5.37's own suspended question). So a
-    // divergence is REPORTED and the rest of the restore proceeds - the
-    // operator is told which file the session expected.
     for (const Section *s : systems) {
         const std::string *n = s->find("name");
         const std::string *f = s->find("file");
@@ -516,12 +427,6 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
                 "session names if the scene does not look right.", LOG_TYPE::L_WARNING);
     }
 
-    // ORDER IS THE CONTRACT, and it was MEASURED rather than assumed.
-    // TIME FIRST: warping to a body computes a compensation from the two
-    // bodies' positions AT THE CURRENT DATE, so a warp performed before the
-    // date is restored lands on a view derived from whatever date the app
-    // happened to be showing. (Measured as a restored scene whose whole view
-    // was rolled, because the warp's recoverParams ran at the launch date.)
     if (time) {
         if (const std::string *v = time->find("jday"))
             host.setJDay(Utility::strToDouble(*v, host.getJDay()));
@@ -531,11 +436,6 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
             host.setTimePaused(*v == "true" || *v == "1");
     }
 
-    // THEN the reference body, because the warp recomputes the camera's own
-    // parameters to hold the view across the change (recoverParams) - so it
-    // must not run after the values that describe the restored view have been
-    // assigned. Everything after it is an assignment, which is what makes a
-    // second load land in the same place.
     if (observer) {
         if (const std::string *ref = observer->find("reference")) {
             if (!ref->empty() && !host.warpToBody(*ref))
@@ -545,12 +445,6 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
                     "applied. To fix: load the system that declares '" + *ref +
                     "' before restoring.", LOG_TYPE::L_WARNING);
         }
-        // THE PLACE, through the dual seam, BEFORE the camera's own members:
-        // it moves the old Observer too, and the old Observer is what the star
-        // field, the milky way and the nebulae are still drawn from. Restoring
-        // the camera alone put the right body in front of the wrong sky
-        // (measured: every camera field identical, 111001 px>8 of dome still
-        // differing against an in-scene A/A floor of 0).
         const std::string *lonS = observer->find("longitude");
         const std::string *latS = observer->find("latitude");
         const std::string *altS = observer->find("altitude");
@@ -559,35 +453,13 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
                                 Utility::strToDouble(*lonS, 0) * (180.0 / M_PI),
                                 Utility::strToDouble(*altS, 0));
         }
-        // The other three DUAL values, before the camera's own members. The sky
-        // lock is set FIRST because engaging it CAPTURES the current view -
-        // restoreSession then overwrites that capture with the matrix the
-        // session actually held, which is the value S2 row B9 calls state.
         if (const std::string *v = observer->find("fov"))
             host.setFov(Utility::strToDouble(*v, 0));
-        // THE VIEW OFFSET AND ITS LATCH (S2 row B10), before the direction:
-        // the one sink re-aims the old navigator to the config's initial view,
-        // so anything that puts the direction back has to run after it.
         if (const std::string *v = observer->find("view_offset")) {
             const std::string *a = observer->find("view_offset_armed");
             host.setViewOffset(Utility::strToDouble(*v, 0),
                                a && (*a == "true" || *a == "1"));
         }
-        // THE OLD PATH'S VIEW DIRECTION, and it goes BEFORE the sky lock
-        // because the lock is what makes its absence permanent. The whole
-        // restore runs inside ONE command with no frame between its steps, so
-        // the old navigator's transforms and its equatorial vision vector are
-        // still the ones the previous FRAME computed - on the launch body, at
-        // the launch date (which is the system clock), at the launch place.
-        // Turning the lock on there freezes that stale pair and every later
-        // frame re-derives the local direction from it. Measured before the fix
-        // (INTENT S11.130, artifacts/f22view): the camera's alt/az identical to
-        // the digit on both sides, the OLD view direction 107.634 deg apart
-        // against an in-scene A/A floor of 1e-6 deg, 392 stars drawn against
-        // 689, and a residual that moved every restore because the launch date
-        // moved. `setSkyVision` refreshes the transforms from the place and
-        // date just restored and then puts the direction back, so the pair the
-        // lock latches is the one the session describes.
         {
             const std::string *v = observer->find("sky_vision");
             double sx = 0, sy = 0, sz = 0;
@@ -614,11 +486,6 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
             host.setTracking(*t == "true" || *t == "1");
     }
 
-    // THE BULK ROWS, applied through the command surface's own write halves -
-    // the same code `flag`, `set` and `color` run, so a restored value goes
-    // through whatever those setters also do (I2). A name this build does not
-    // know is REPORTED and the rest still applies: a session from another build
-    // is exactly what a diagnostic artefact looks like when it arrives (D32).
     if (cmds) {
         int unknown = 0, applied = 0;
         for (const Section &s : sections) {
@@ -652,18 +519,6 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
                 LOG_TYPE::L_WARNING);
     }
 
-    // THE PER-BODY OVERRIDE LEDGER, applied on top of whatever the data now
-    // says. Every entry is a field an operator changed, so applying it leaves
-    // every field it does NOT name at its current authored value - which is
-    // what makes a data correction reach a session restored on top of it.
-    //
-    // A KEY THAT DOES NOT RESOLVE IS REPORTED AND KEPT (D34, S11.113(m)): never
-    // dropped, never bound to a near match. Dropping it silently is a show that
-    // looks wrong with no trace of why, and binding it to a same-named body
-    // another system loaded is precisely the A29 hazard the plain-name key had
-    // to answer for. The report carries the system-qualified path the save
-    // recorded, because "the data renamed it" and "that system is not loaded"
-    // are different problems with the same symptom.
     bool ledgerAnnotated = false;
     for (Section &s : sections) {
         const std::string &h = s.getHeader();
@@ -734,10 +589,6 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
             }
         }
     }
-    // S4.2: the session file is written by the same writer, so an unresolved
-    // key is annotated IN PLACE, above its own section. Idempotent by the F13
-    // rule - the same (key, reason) REPLACES - so a second restore of the same
-    // file produces the same bytes.
     if (ledgerAnnotated)
         ModularSystemFormat::write(path, sections, {});
 

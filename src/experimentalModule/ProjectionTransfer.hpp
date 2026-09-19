@@ -27,9 +27,6 @@ namespace ProjectionTransfer {
 // projector.hpp ProjectionType values (== Context::projectionType).
 enum : int { FISHEYE = 0, ALLSPHERE = 1, EKISOLID = 2, ASPHERIC = 3 };
 
-// Allsphere distortion polynomial + derivative, coefficients VERBATIM from
-// custom_project.glsl / projector.cpp:275/390 (one authority per language;
-// x = thn*1200, output = r*1200).
 inline double allspherePoly(double x) {
 	return (((((((((-1.553958085e-26*x + 1.430207232e-22)*x -4.958391394e-19)*x + 8.938737084e-16)*x -9.39081162e-13)*x + 5.979121144e-10)*x -2.293161246e-7)*x + 4.995598119e-5)*x -5.508786926e-3)*x + 1.665135788)*x + 6.526610628e-2;
 }
@@ -49,10 +46,6 @@ inline float radius(int mode, float thn, float halfFov) {
 	}
 }
 
-//! dr/dthn at thn=0: the small-angle limit slope for the center-singularity
-//! guard (ModularBody::update screenPos). Note ALLSPHERE also carries a
-//! constant term c0/1200 = 5.44e-5 NDC (~0.06 px at 2048) which the guard
-//! branch drops - the GPU keeps it; sub-0.1px inside the guard radius only.
 inline float slope0(int mode, float halfFov) {
 	switch (mode) {
 		case ALLSPHERE:
@@ -64,9 +57,6 @@ inline float slope0(int mode, float halfFov) {
 	}
 }
 
-//! Inverse transfer: normalized angle whose radius is r (atmosphere grid
-//! directions). ALLSPHERE inverts by Newton-Raphson - projector.cpp:373
-//! invertAllspherePolynomial mirrored (10 iterations, 1e-10 tolerance).
 inline double angleNorm(int mode, double r, double halfFov) {
 	switch (mode) {
 		case ALLSPHERE: {
@@ -86,12 +76,6 @@ inline double angleNorm(int mode, double r, double halfFov) {
 	}
 }
 
-//! Normalized angle of the screen-disc edge (r == 1): the visibility-cone
-//! bound. Exactly 1 for FISHEYE/EKISOLID (identity transfer) and ASPHERIC
-//! (its transfer reaches 1 at halfFov by construction); 0.96735 for
-//! ALLSPHERE (the polynomial overshoots the edge: r(1) = 1.0225 - INTENT
-//! 11.33 derivation). Never BELOW the visible edge for any mode, which is
-//! what keeps the angular cone tests safe to tighten with this factor.
 inline float edgeAngleNorm(int mode, float halfFov) {
 	return (mode == ALLSPHERE)
 		? static_cast<float>(angleNorm(ALLSPHERE, 1., halfFov)) : 1.f;

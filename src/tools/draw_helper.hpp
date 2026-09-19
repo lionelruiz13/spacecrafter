@@ -101,11 +101,6 @@ public:
     DrawHelper();
     ~DrawHelper();
 
-    //! Stop and join the worker thread, draining any queued draws while their
-    //! resources are still alive. MUST run before the registry pipelines those
-    //! queued draws bind (and the ShadowService preFrameRecorder they invoke)
-    //! are destroyed: ~Context calls it before releaseRegistry(), ~DrawHelper
-    //! calls it again (idempotent) before freeing the helper's own resources.
     void stop();
 
     template <typename T>
@@ -122,22 +117,7 @@ public:
     void endNebulaDraw();
     void nextFrame();
     VkResult acquireNextFrame();
-    //! Wait until the worker has finished compiling and submitting the frame
-    //! recorded under `frameIdx`. The wait has no timeout and no cancellation,
-    //! which is INTENT 5.59: a teardown request is serviced by the very main
-    //! loop this parks, so a frame the worker has not completed stops the
-    //! process from exiting. Ending the wait early was MEASURED not to be a
-    //! free fix - see 5.59's row for the fork.
     void waitFrame(unsigned char frameIdx);
-    //! Wait until the worker has consumed every queued command AND really
-    //! completed every frame it was given. Observing only: it leaves the
-    //! per-frame bookkeeping alone, so a following waitFrame() behaves exactly
-    //! as it would have. Half of the mid-session release precondition
-    //! (Context::quiesceFrames - the other half is the device wait).
-    //! It waits for REAL completion, never for a frame merely given up on:
-    //! the caller is about to destroy what the frame references, and "nobody
-    //! wants the result any more" is not the same statement as "the recording
-    //! is over" (the distinction cost a SIGSEGV to learn - INTENT 5.59).
     void waitAllFrames();
     void submitFrame(unsigned char frameIdx, unsigned char lastFrameIdx);
     void setPlayer(VideoPlayer *_player) {player = _player;}
@@ -157,11 +137,6 @@ public:
     }
     //! Sumbit shadowing body
     uint8_t drawShadower(Body *target, float radius);
-    //! Pre-color recording hook (new-path ShadowService): invoked in submit()
-    //! right after the old-path shadow recording, on the helper thread, with
-    //! the frame's primary cmd outside any render pass - the same window the
-    //! old shadow passes record in. One consumer by design (the service);
-    //! nullptr clears. Set from the registration domain before first use.
     void setPreFrameRecorder(std::function<void(VkCommandBuffer, unsigned char)> recorder) {
         preFrameRecorder = std::move(recorder);
     }

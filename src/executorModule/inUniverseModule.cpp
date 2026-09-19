@@ -121,15 +121,9 @@ void InUniverseModule::draw(int delta_time)
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	core->starGalaxy->draw(core->navigation, core->projection);
-	// Dual-path (S2b): the rule (which selections the old pointer still owns
-	// in the modular phase) is Core::needOldSelectionPointer - one authority
-	// for the four executor draw sites (I2).
 	if (core->needOldSelectionPointer())
 		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 	core->dsoNav->draw(core->navigation, core->projection);
-	// Draw twin of the Executor::update fix (6.9 draw-half): the new path
-	// draws in EVERY executor mode - see inGalaxyModule.cpp / the
-	// drawExperimental contract (ssystem_factory.hpp).
 	core->ssystemFactory->drawExperimental();
 	//core->postDraw();
 }

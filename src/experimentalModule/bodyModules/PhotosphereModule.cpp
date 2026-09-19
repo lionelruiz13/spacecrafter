@@ -8,15 +8,6 @@
 #include "ojmModule/objl.hpp"
 
 namespace {
-// The STAR_SURFACE pipeline family. Registration-domain accessor, lazily
-// allocated on first module construction (the MeshFamilies pattern).
-//
-// Set contract: ONE set - {0: globalVertProj, 1: the colour map}. It carries
-// neither the receive-shadow block nor the shadow layer array (this family
-// receives no shadows - header) and no global UBO: a self-lit surface reads
-// neither `ambient` nor `time`, so cam_block is not included by either stage,
-// and declaring a set no shader reads would be a contract with no reader
-// (TraceFamily precedent: a family may declare fewer sets).
 const PipelineFamily &starSurfaceFamily()
 {
     static PipelineFamily family = []() -> PipelineFamily {
@@ -40,9 +31,6 @@ const PipelineFamily &starSurfaceFamily()
         PassDesc color;
         color.pass = PassKind::COLOR;
         color.shaderTable = {{0, {.vert = "bodyStarSurface.vert.spv", .frag = "bodyStarSurface.frag.spv"}}};
-        // color.state: FixedState defaults == the old sun pipeline
-        // (body_sun.cpp createSunShader: cull on, BLEND_NONE, triangle list,
-        // depth test+write on).
         desc.passes.push_back(std::move(color));
         return renderer.allocateFamily(std::move(desc));
     }();
@@ -137,11 +125,6 @@ void PhotosphereModule::drawNoDepth(Renderer &renderer, ModularBody *body, const
 
 void PhotosphereModule::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Row-8 TRACE prepass, identical to BasicMesh's: a star with an orbit (a
-    // script-loaded companion star) must cut its own orbit line's hole. The
-    // shipped Sun carries no orbit_visualization_period, so this is unexercised
-    // on shipped data - present because dropping it would silently foreclose
-    // the case, not because it fires today.
     const FamilyBound bound = renderer.bind(TraceFamily::sphere());
     if (!bound.layout)
         return; // trace shader not deployed - C3 degrade (orbits draw depth-free)

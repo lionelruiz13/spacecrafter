@@ -371,9 +371,6 @@ void DrawHelper::drawHint(DrawData::s_hint &data)
     vkCmdDraw(cmd, drawCount, 1, drawIdx * 3, 0);
     drawIdx += (drawCount + 2) / 3;
 }
-// The DRAW_HINT_POS variant (new-path seam borrow) is dissolved: the new
-// path's hint circles ride the Renderer HINT batched service family
-// (experimentalModule/PipelineRegistry.cpp, 2026-07-12 row 6 completion).
 
 void DrawHelper::drawNebula(DrawData::s_nebula &data)
 {
@@ -419,19 +416,12 @@ void DrawHelper::waitFrame(unsigned char frameIdx)
 
 void DrawHelper::waitAllFrames()
 {
-    // Every queued command consumed by the worker. waitIdle() re-notifies
-    // until the queue is empty, so it is also robust to a notification the
-    // worker missed - which a single flush() is not.
     queue.waitIdle();
     for (auto &d : drawer) {
         // A drawer with no submit outstanding was never given a frame to
         // complete; waiting on it would wait for a frame that never comes.
         if (d.submitData.frameIdx == UINT8_MAX)
             continue;
-        // Only REAL completion ends this wait - the caller is about to destroy
-        // what the frame references (INTENT 5.58). Written as a loop over the
-        // observed value rather than wait(0) so that a future cancellation
-        // mechanism cannot silently satisfy it (INTENT 5.59's fork).
         int completion = d.hasCompleted.load(std::memory_order_acquire);
         while (completion != 1) {
             d.hasCompleted.wait(completion, std::memory_order_acquire);

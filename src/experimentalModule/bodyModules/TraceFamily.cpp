@@ -4,9 +4,6 @@
 #include "EntityCore/Resource/VertexArray.hpp"
 
 namespace {
-// Common description of a trace family: one vertex-only depth pipeline in the
-// body subpass, position-only, spec-const 8 registry-injected. Only vertex +
-// topology differ between the sphere and ring variants.
 PipelineFamily buildTrace(const char *name, VertexArray *vertex,
                           VkPrimitiveTopology topology, uint8_t removedEntries)
 {
@@ -18,9 +15,6 @@ PipelineFamily buildTrace(const char *name, VertexArray *vertex,
     // (bodyShader.cpp:371). One block, offset 0.
     desc.pushConstants = {{VK_SHADER_STAGE_VERTEX_BIT, 0,
                            static_cast<uint16_t>(sizeof(TraceInfo))}};
-    // my_atan in custom_project.glsl reads float64 support at spec 7 (old
-    // depthTrace set it, bodyShader.cpp:383). Spec 8 (projection mode) is
-    // registry-injected (INTENT S11.33) - no per-family declaration.
     desc.specValues = {{7, Context::instance->isFloat64Supported}};
     PassDesc trace;
     trace.pass = PassKind::TRACE;
@@ -48,9 +42,6 @@ const PipelineFamily &TraceFamily::sphere()
 
 const PipelineFamily &TraceFamily::ring(VertexArray *ringVertex)
 {
-    // First caller (RingModule::drawTrace) supplies the ring VertexArray; the
-    // family dedups by name so later callers get the same one (the arg is
-    // ignored after the first build - the ring vertex is application-lifetime).
     static PipelineFamily family = buildTrace(
         "TRACE_RING", ringVertex,
         // Old ring depth trace: TRIANGLE_STRIP, removeVertexEntry(1) (drop the

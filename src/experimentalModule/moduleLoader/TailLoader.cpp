@@ -14,10 +14,6 @@ bool TailLoader::isLoaderOf(BodyModule *module) const
 
 std::unique_ptr<BodyModule> TailLoader::load(ModularBody *target, std::map<std::string, std::string> &params)
 {
-    // Faithful port of the SmallBody comet-tail construction (protosystem.cpp:
-    // 802-851): the gas tail, the dust tail, and an optional extra tail, each
-    // with the same defaults. The Tail ctor arg order was (deltaTraceJD,
-    // ejectionForce, ejectionLinearity, coefRadius{xx,x,base}, color{r,g,b}).
     std::vector<TailModule::SubTail> subTails;
     // Gas tail (blue, straight - high ejection force, short trace window).
     subTails.push_back({
@@ -69,11 +65,6 @@ std::unique_ptr<BodyModule> TailLoader::load(ModularBody *target, std::map<std::
             },
         });
     }
-    // Comet photometry: apparent_magnitude is the absolute magnitude H fed to
-    // the coma/tail-size formula (misnamed in the old data), slope is G. Old
-    // SmallBody defaults were -99 / -10 (setAbsoluteMagnitudeAndSlope never
-    // called), but the deduce gate guarantees apparent_magnitude is present;
-    // keep the old defaults for the degenerate case.
     auto module = std::make_unique<TailModule>(
         std::move(subTails),
         Utility::strToFloat(params["apparent_magnitude"], -99.f),

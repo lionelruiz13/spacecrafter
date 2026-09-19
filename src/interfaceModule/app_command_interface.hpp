@@ -65,12 +65,6 @@ public:
 	void deleteVar();
 	int executeCommand(const std::string &commandline);
 	int executeCommand(const std::string &command, uint64_t &wait);
-	//! The same, knowing where the line came from (ScriptMgr passes the token's
-	//! origin): a diagnostic raised while it runs is reported at that line and
-	//! handed to the `#!` channel. The two overloads above pass NO origin - a
-	//! TCP/HTTP/UI line, or a command nested inside another (`clear`, `media`,
-	//! `lift_off`'s splice) - and their diagnostics go to the log only; the
-	//! outer line's origin is restored when a nested call returns.
 	int executeCommand(const std::string &command, uint64_t &wait, const ScriptOrigin &origin);
 
 	void initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::shared_ptr<SpaceDate> _spaceDate, std::shared_ptr<SaveScreenInterface> _saveScreenInterface);
@@ -127,15 +121,6 @@ protected:
 	int commandRandom();
 	int commandScript(uint64_t &wait);
 	int commandSearch();
-	//! `session action save|load [filename <name>]` -- b31-design S3.5. ONE
-	//! registration serves all of S11.55(h)'s command channels, so the operator
-	//! reaches it from a script, the TCP line, the HTTP query, the pipe and a
-	//! joypad binding without a second artefact. EXPLICIT ONLY (D33): nothing
-	//! here is ever called by a startup or a shutdown path.
-	//! SPELLING IS A VETO POINT (B28 protocol; `body action save` S11.121(e) and
-	//! `follow_rotation` S11.111 are the precedents): the grammar is the
-	//! `<noun> action <verb>` one the surface already uses, and reversing it is
-	//! one `else if`.
 	int commandSession();
 	int commandSelect();
 	int commandSet();
@@ -160,14 +145,6 @@ private:
 	SCD_NAMES parseCommandSet(const std::string& setName);
 	int executeCommandStatus();
 
-	//! What is this flag NOW? The READ half of the flag surface, and the only
-	//! authority for it: `setFlag`'s toggle branch and the session save are
-	//! both its consumers rather than two independent readers (I2,
-	//! b31-design S2 row E3, INTENT S11.128(e)). false = unknown flag.
-	//! The session's view of this surface: what names exist, what they read,
-	//! and how to write them (SessionFile::CommandSurface). Implemented here
-	//! because this class IS the inventory - a second list would be a second
-	//! authority (I2).
 	void forEachFlag(const std::function<void(const std::string &, bool)> &emit) const override;
 	void forEachValue(const std::function<void(const std::string &, const std::string &)> &emit) const override;
 	void forEachColor(const std::function<void(const std::string &, const Vec3f &)> &emit) const override;
@@ -177,9 +154,6 @@ private:
 	void countNames(int &flags, int &values, int &colors) const override;
 
 	bool readFlag(FLAG_NAMES flagName, bool &value) const;
-	//! The same question for the `set` surface and the `color` surface. False =
-	//! this name has no read half in the tree (13 of the 43 `set` names, 2 of
-	//! the 46 colours) - said rather than guessed (S2(f)).
 	bool readValue(SCD_NAMES name, std::string &value) const;
 	bool readColor(COLORCOMMAND_NAMES name, Vec3f &value) const;
 	//! The write half of `color`, extracted so a restore drives the same code
@@ -220,49 +194,9 @@ private:
 	ScriptOrigin currentOrigin;			//!< where the command being executed came from; invalid off-script
 	bool loopOpen = false;				//!< a `struct loop <n>` is open, whatever n made it do
 	ScriptOrigin loopOpener;			//!< where that loop was opened
-	//! A script error, said the three-part way (what it is / what it does /
-	//! the action that prevents it - INTENT S11.169): to the script log with
-	//! the line quoted, and to the `#!` channel when `at` names a file line.
 	void reportScriptError(const ScriptOrigin &at, const std::string &what);
-	//! How a diagnostic log line names the origin of the command being
-	//! executed: "<file>:<line>: " for a line of a script file, "tcp#<id>: "
-	//! for one read on the control socket, "" for every other origin (the UI,
-	//! the pipe, an HTTP query, a command nested inside another - nothing to
-	//! name). The file half was deliberately absent until the owner gave it
-	//! his word: INTENT 11.191(b), task F72, and the LOG channel only. What
-	//! it does NOT widen: the `#!` annotator still gates on
-	//! ScriptOrigin::valid(), and sendFeedback below still sends for a TCP
-	//! origin alone, so a file-origin refusal still reaches no socket.
 	std::string originTag() const;
-	//! THE INTENT-MODIFIED LINE, origin-prefixed: the one rendering of an
-	//! error [vixy 2026-09-01, INTENT 11.193(a)] - the line as it reads where
-	//! it came from, the author's own comment kept so the line is recognisable
-	//! without ambiguity, with the machine's ` #! <message>` tail appended and
-	//! any tail already there REPLACED. The composition is ScriptAnnotator's
-	//! own function, not a copy of it: what this log line shows is byte for
-	//! byte what the `#!` writer would land on that line, so the two views
-	//! cannot disagree - and the log shows it even when the write never lands
-	//! (a read-only file, or the generic-channel decision still open).
-	//! Empty when the origin names no line: a nested call, a UI key, an HTTP
-	//! query. Those keep the two-line form the funnel always had.
 	std::string errorLine(const std::string &message) const;
-	//! The same diagnostic, sent BACK on the dedicated link - and only for a
-	//! command that arrived on the control socket, which is the whole of what
-	//! was mandated [vixy 2026-08-31: "feedback about tcp sent back ... through
-	//! the tcp link dedicated for scedit"]. Recipients are the connections that
-	//! subscribed with $DIAGON and nobody else, so an unsubscribed connection -
-	//! masterput's, for all anyone here can know - sees not one byte of this
-	//! (INTENT 11.186(c), 11.188).
-	//!
-	//! `at` is the origin of the command being REPORTED ON, which is not always
-	//! `currentOrigin`: an unclosed block is reported at its opener, and that
-	//! opener may have come from a different line than the one executing now.
-	//! `message` is the engine's own text (the log gets the same string) and
-	//! `subject` is the line it is about; the record is
-	//! `$DIAG|<origin>|<message>|<subject>`, engine-controlled fields first so
-	//! that a subject containing the separator still splits correctly.
-	//!
-	//! Nothing is REMOVED from the log by this: the wire gets a copy.
 	void sendFeedback(const ScriptOrigin &at, const std::string &message,
 	                  const std::string &subject);
 

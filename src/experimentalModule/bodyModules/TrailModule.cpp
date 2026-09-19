@@ -18,19 +18,6 @@ uint32_t TrailModule::flagGeneration = 0; // bumped by every global toggle
 int TrailModule::activeCount = 0;         // modules with a live fader (phase gate)
 Vec3f TrailModule::defaultColor{1.f, 0.5f, 0.f}; // config object_trails_color (checkConfig default)
 
-// TRAIL line family - third line-class family (AXIS S11.31, ORBIT S11.39 were
-// the first two). body_trail.{vert,geom,frag} REUSED VERBATIM (parity by
-// construction). Its own push-constant contract (INTENT S10.1 "orbit/trail/
-// axis/grid as separate families where push contracts differ"): a FRAGMENT
-// color at 0 (old uColor) and the VERTEX {int nbPoints, mat4 ModelViewMatrix,
-// float fader} at 12 (old layoutTrail, trail.cpp:192-193). The shaders read
-// main_clipping_fov from cam_block (context.uboSet) - the family binds the
-// global UBO set (the SAME camera-block authority the new-path body shaders
-// use, I2), NOT a pushed clipping_fov (unlike AXIS/ORBIT, whose shaders were
-// converted to push in the 2023-master merge; body_trail was not). LINE_STRIP
-// fed to the geometry shader (segment wrap-cull + subdivision), BLEND_SRC_ALPHA
-// carries the per-vertex fade alpha, NO depth (old setDepthStencilMode() =
-// test+write off). Spec-const 8 registry-injected (S11.33).
 namespace {
 struct TrailFamilyData {
     std::unique_ptr<VertexArray> vertexModel; // 1 binding, vec3 pos (m_dataGL parity)
@@ -94,21 +81,12 @@ bool TrailModule::wantShown(ModularBody *body) const
 
 void TrailModule::resetTrail()
 {
-    // THE fresh start, single authority (I2) for every path that re-enables
-    // recording. Vixy Q14 [2026-07-21, INTENT 11.48(a) A1 -> 11.56] is explicit
-    // that re-enabling starts FRESH, so a fresh start DISCARDS the recorded
-    // history outright: the buffer is emptied (not merely marked stale), which
-    // makes it impossible for pre-off history to be revealed later and frees
-    // the memory the gate stopped paying CPU for.
     points.clear();
     firstPoint = true;
 }
 
 void TrailModule::startTrail(bool record)
 {
-    // Old Trail::startTrail (trail.cpp:165-174): enable => fresh restart;
-    // disable => stop. Old-path seam only (startTrails, INTENT 11.41(d)); the
-    // new path drives the gate from the display flag through update().
     recording = record;
     if (record)
         resetTrail();
@@ -116,26 +94,16 @@ void TrailModule::startTrail(bool record)
 
 void TrailModule::setShown(bool b)
 {
-    // Old Body::setFlagTrail -> Trail::setFlagTrail (fader target + startTrail):
-    // set the override AND reset on enable (first_point). Same Q14 rule as the
-    // global flag - a per-name enable is a re-enable, so it starts fresh too.
     nameOverride = b ? 1 : 0;
     overrideGen = flagGeneration;
     if (b)
         resetTrail();
-    // Kick the system-level trail phase so this module's update() runs and its
-    // fader can rise even when the global master is off (the phase is gated on
-    // anyActive() - OrbitModule precedent).
     if (b && !live) { live = true; ++activeCount; }
 }
 
 void TrailModule::accumulate(ModularBody *body)
 {
     ++accumulateCount; // instrument (INTENT 11.56): "the work actually ran"
-    // Faithful port of Trail::updateTrail (trail.cpp:120-163). Sampled at the
-    // body's SIM time (getLastJD - fresh even when invisible), parent-relative
-    // position (getEclipticPos - old get_heliocentric_ecliptic_pos for the trail
-    // set, whose parent is the ~fixed system root). points NEWEST FIRST.
     const double date = body->getLastJD();
     int dt = 0;
     // First point, or a time jump bigger than the whole window: clear + restart.
@@ -153,9 +121,6 @@ void TrailModule::accumulate(ModularBody *body)
         if (static_cast<int>(points.size()) > maxTrail)
             points.pop_back(); // drop the oldest
     }
-    // Prune points beyond the time window (old trail.cpp:157-162; |.|/DeltaTrail
-    // handles retrograde time + jumps in either direction). points newest-first,
-    // so the stale ones are at the tail.
     for (size_t i = 0; i < points.size(); ++i) {
         if (std::fabs(points[i].jd - date) / deltaTrail > maxTrail) {
             points.erase(points.begin() + i, points.end());
@@ -169,11 +134,6 @@ void TrailModule::accumulate(ModularBody *body)
 void TrailModule::resumeAfterHidden(ModularBody *body)
 {
     const bool want = wantShown(body);
-    // (1) The DISPLAY fader advances in WALL time and stopped with the sweep.
-    // Snapping it to its target is the as-if answer: a fade lasts under a second
-    // and the body was gone for at least a frame, so by the time it is back the
-    // ramp is over. Without this, a trail switched OFF while the body was hidden
-    // fades out AFTER the body reappears - visible, and visibly wrong.
     fader.reset(want);
     // Keep the phase-gate counter consistent with the snapped fader: update()
     // maintains this pairing, and it did not run while the body was parked.
@@ -191,19 +151,11 @@ void TrailModule::resumeAfterHidden(ModularBody *body)
     if (missed <= 0)
         return; // less than one sampling period was missed
     if (missed > maxTrail) {
-        // The hidden span is longer than the whole time window: every surviving
-        // sample would have been pruned anyway, so the honest state is a fresh
-        // start - and it is accumulate()'s OWN answer to the same situation
-        // (time jump bigger than the window), reused rather than re-decided.
         resetTrail();
         return;
     }
     const Orbit *orbit = body->getOrbit();
     if (!orbit) {
-        // THE ONE NAMED RESIDUAL of D23 (S11.113(b)(iv)): a past that is not a
-        // function of time cannot be reconstructed. Degrade to a fresh start and
-        // SAY SO (S2.0 D12 - a behaviour the author did not write must be
-        // visible; S2(f) shape: what happened, why, what was done, what to do).
         cLog::get()->write("Trail of '" + body->getEnglishName() + "': the "
             + std::to_string(missed) + " sample(s) missed while the body was hidden "
             "cannot be reconstructed, because this body has no orbit to evaluate at a "
@@ -213,14 +165,6 @@ void TrailModule::resumeAfterHidden(ModularBody *body)
         resetTrail();
         return;
     }
-    // Re-evaluate the missed samples at the module's OWN declared cadence
-    // (deltaTrail), oldest first, inserting at the front so `points` stays
-    // newest-first. Each sample is evaluated 1 + RESUME_EXTRA_ITERATIONS times at
-    // its own date: EllipticalOrbit/IterativeEll advance ITERATIVE_STEPS_PER_CALL
-    // Newton steps per call (two since S5.145, iterative_orbits.hpp) from the
-    // previous call's seed, so a single call at a jumped-to date
-    // would not be the position at that date - the same reason the S11.76(b)
-    // barrier exists, applied per reconstructed sample.
     OsculatingFunctionType *osc = orbit->getOsculatingFunction();
     Vec3d tmp;
     double sampleJD = lastJD;
@@ -262,22 +206,6 @@ bool TrailModule::update(ModularBody *body, float scaledRadius)
         live = nowLive;
         activeCount += nowLive ? 1 : -1;
     }
-    // ---- THE RECORDING GATE (INTENT 11.56; closes the 11.41 suspension) ----
-    // Vixy Q14 [2026-07-21, INTENT 11.48(a) A1]: the DISPLAY FLAG gates
-    // RECORDING - `flag object_trails off` STOPS the accumulation, and
-    // re-enabling starts FRESH. The stated reason is cost: nobody should pay
-    // for accumulating a trail nobody sees.
-    // The gate is `want` (the flag / per-name override), NOT the fader
-    // interstate: a toggle inside the ~1 s fade window is still a re-enable and
-    // must still start fresh, and an `off` must stop the work AT ONCE rather
-    // than one fade-length later. (The fader remains the DISPLAY gate - draw()
-    // reads it - so the fade-out is unchanged.)
-    // This gate is INDEPENDENT of the body's visibility. A HIDDEN body keeps
-    // recording [vixy Q13 / A10, INTENT 11.54]: drawTrails sweeps every
-    // EVALUATED body, hidden ones included (their eclipticPos/lastJD/distance
-    // ride recursiveTranslationUpdate), so `want` is the only thing that can
-    // stop accumulation. Two conditions, two observables - reading them as one
-    // gate produces a wrong implementation (S13.B B11).
     if (want) {
         if (!recording) { // rising edge of the flag = fresh restart
             recording = true;
@@ -286,29 +214,13 @@ bool TrailModule::update(ModularBody *body, float scaledRadius)
         accumulate(body);
     } else {
         recording = false; // falling edge: the work stops on this very frame
-        // The points are kept while the fader is still up so the fade-out
-        // draws the trail it was showing (old fade parity), then DISCARDED the
-        // moment nothing can display them any more - after which this module
-        // holds no history at all until the next re-enable.
         if (!live)
             resetTrail();
     }
-    // TRAIL never inflates the body's boundingRadius (it is not in a regime
-    // list): this return is consumed by nobody - kept for the interface. The
-    // trail needs the per-frame tick, so it never self-deregisters (returns false).
     boundingRadius = scaledRadius;
     return false;
 }
 
-// Harness instrument (INTENT 11.56) - the recording gate's observable.
-// `accumulateCount` is what separates "the gate stopped the WORK" from "the
-// gate only stopped the DRAWING": it counts entries into accumulate(), so a
-// frozen counter over an interval in which simulated time advanced is direct
-// evidence from the running process that the accumulation code did not run.
-// `points`/`head` carry the discard evidence (0 while off, and the first point
-// after a re-enable sits at the body's CURRENT position, not at pre-off
-// history). `fader` is the DISPLAY state, deliberately dumped next to
-// `recording` so the two gates can be read apart.
 void TrailModule::dumpState(std::ostream &out) const
 {
     out << std::setprecision(9)
@@ -319,9 +231,6 @@ void TrailModule::dumpState(std::ostream &out) const
         << ",\"accumulateCount\":" << accumulateCount
         << ",\"maxTrail\":" << maxTrail
         << ",\"deltaTrail\":" << deltaTrail
-        // Trail color (B29 runtime-color instrument, INTENT S11.65): the
-        // per-instance TRAIL channel drawn by this module (old BodyColor::trail).
-        // Lets the harness read the runtime recolor + reload behaviour.
         << ",\"color\":[" << color[0] << ',' << color[1] << ',' << color[2] << "]"
         << ",\"head\":";
     if (points.empty()) {
@@ -330,14 +239,6 @@ void TrailModule::dumpState(std::ostream &out) const
         out << '[' << points.front().pos[0] << ',' << points.front().pos[1]
             << ',' << points.front().pos[2] << "],\"headJD\":"
             << std::setprecision(17) << points.front().jd
-            // Oldest sample's date + the POLYLINE LENGTH (B39 S11.117): together
-            // with `points` they make the recorded history's GEOMETRY observable,
-            // not just its size. That is what separates "n samples appeared" from
-            // "n samples that trace this body's actual orbit": length/span is the
-            // body's mean orbital speed, so a reconstruction placed anywhere else
-            // fails by orders of magnitude, and a reconstruction that left a GAP
-            // shows up as a chord shortcut. AU, parent-relative (the frame the
-            // samples live in).
             << ",\"tailJD\":" << points.back().jd << std::setprecision(9);
         double len = 0;
         for (size_t i = 1; i < points.size(); ++i)

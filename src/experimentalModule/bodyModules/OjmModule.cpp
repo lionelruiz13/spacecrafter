@@ -11,10 +11,6 @@
 #include "EntityCore/Resource/Texture.hpp"
 #include <cstring>
 
-// SHADER_SWAP axes of the OJM family (file-local: no other client).
-// TEXLESS switches per SHAPE (Ojm::record pointer-pair, peek'd - INTENT
-// 10.3 rule 4); SHADOWED switches per DRAW (self-shadow nominated or
-// received entries).
 static constexpr VariantKey VARIANT_TEXLESS = 0x0001;
 static constexpr VariantKey VARIANT_SHADOWED = 0x0002;
 
@@ -25,15 +21,6 @@ static uint32_t floatBits(float v)
     return bits; // SpecConstant carries raw bytes (PipelineRegistry applies &value, sizeof)
 }
 
-// The OJM family - old shaderArtificial + shaderArtificialShadowed dissolved
-// into ONE family / ONE layout (INTENT 10.3 rule 4) with 4 shader rows on
-// two SHADER_SWAP axes. State = the old pipelines exactly (bodyShader.cpp
-// 239-305): cull on, no blend, triangle list, ojmVertexArray, depth on
-// (NO_DEPTH = the reserved bit, replacing the old pipeline[2..3] pair).
-// Spec constants: 7 = float64 fisheye (the old SHADOWED pipelines omitted it
-// - an old-path oversight, not intent; family-wide here = plain-row parity
-// everywhere, divergence documented shadow-paths.md G), 0 = self-shadow
-// resolution as float bits (selfShadow.glsl depthTextureSize).
 static const PipelineFamily &ojmFamily()
 {
     static PipelineFamily family = []() -> PipelineFamily {
@@ -145,9 +132,6 @@ void OjmModule::drawInternal(Renderer &renderer, ModularBody *body, const Mat4f 
     }
     const bool shadowed = bnd.got & VARIANT_SHADOWED;
     const float radius = body->getScaledRadius();
-    // Old drawBody parity (body_artificial.cpp:132-136): the near-component
-    // mat already carries zrot(axisRotation + 90) (ModularBody
-    // computeBodyToSurface); normals from the UNSCALED rotation.
     mat.setMat3(uVert->NormalMatrix);
     uGeom->ModelViewMatrix = mat * Mat4f::scaling(radius);
     uGeom->clipping_fov = renderer.getClippingFov();
@@ -157,9 +141,6 @@ void OjmModule::drawInternal(Renderer &renderer, ModularBody *body, const Mat4f 
         // Production/consumption consistency: the SAME matrix value the
         // nomination handed to produceSelfDepth (BodyModule.hpp contract).
         selfShadowMat.setMat3(f.ShadowMatrix);
-        // Frame reconciliation (documented divergence, shadow-paths.md G):
-        // everything eye-space - the old shadowed frag mixed heliocentric
-        // ModelMatrix with eye-space normals (body_artificial.cpp:138 vs 133).
         mat.setMat3(f.ModelMatrix);
         f.ModelPosition = Vec3f(mat.r[12], mat.r[13], mat.r[14]);
         f.lightDirection = body->getObservedPosition() - L;
@@ -205,9 +186,6 @@ void OjmModule::drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &m
 
 void OjmModule::drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Nomination hook (BodyModule.hpp contract): declare the depth job and
-    // keep the SAME matrix for the color fill (single-computation
-    // consistency, ShadowService.hpp header).
     selfShadowMat = mat;
     selfShadowActive = true;
     renderer.shadow.produceSelfDepth(mat, model.get());
@@ -215,25 +193,12 @@ void OjmModule::drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4
 
 void OjmModule::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Row-8 TRACE consumer (INTENT S11.40): the OJM model's own silhouette
-    // into the orbit-union depth range so an artificial body's orbit line is
-    // cut where the body hides it. Old Artificial::drawOrbit(cmdBodyDepth,...):
-    // push depthTraceInfo(mat.convert, clippingFov, radius, oblateness), then
-    // obj3D->drawShadow(cmdBodyDepth) (body_artificial.cpp:186-191). The shared
-    // sphere-trace family is the SAME depth pipeline the old path used for both
-    // sphere and OJM (getShaderDepthTrace: ojmVertexArray, TRIANGLE_LIST,
-    // position-only) - only the geometry drawn differs (the model, not the
-    // sphere).
     if (!model || !model->getOk())
         return; // load failed - never drawable (old radius-zeroed parity)
     const FamilyBound bound = renderer.bind(TraceFamily::sphere());
     if (!bound.layout)
         return; // trace shader not deployed - C3 degrade (orbits draw depth-free)
     TraceInfo info;
-    // mat = the surface matrix (drawOrbits passes mat . computeBodyToSurface,
-    // the same the OJM COLOR draw receives), so the depth silhouette matches
-    // the drawn model INCLUDING its spin. The shader scales unit geometry by
-    // planetScaledRadius, exactly as drawInternal scales by getScaledRadius().
     info.ModelViewMatrix = mat;
     info.clipping_fov = renderer.getClippingFov();      // the ORBIT range this frame
     info.planetScaledRadius = body->getScaledRadius();  // == the COLOR draw's radius

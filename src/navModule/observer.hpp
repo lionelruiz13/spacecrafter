@@ -211,13 +211,6 @@ public:
 		this->mat_altitude_to_earth_equ = mat_altitude_to_earth_equ;
 	}
 
-	//! READBACK ONLY (INTENT S5.63 / S11.130) -- this observer's whole place
-	//! state as one JSON object on the dual-path dump channel.
-	//! What it is FOR: the navigator's local->equatorial transform is built from
-	//! THIS object every frame (`getRotLocalToEquatorial`), so a sky that
-	//! differs while the camera agrees is answered here or in the navigator and
-	//! nowhere else. Const and side-effect-free; the old render path is
-	//! unchanged by construction (S11.52(b)).
 	void dumpTrace(std::ostream &out) const;
 
 private:

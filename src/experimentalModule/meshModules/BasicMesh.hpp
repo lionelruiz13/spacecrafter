@@ -26,11 +26,6 @@ public:
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) override;
     virtual void drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
-    // Skin seam (old Body::createTexSkin/switchMapSkin - contract at
-    // BodyModule.hpp): swaps the color map at binding 2, never the big-texture
-    // path (a script skin has no big texture; old binds tex_current the same way).
-    // The RULES live in SkinnableColorMap (I2 - shared with the star
-    // photosphere since B12); this module only binds what it is told to bind.
     virtual void createTexSkin(const std::string &texName) override;
     virtual void switchTexSkin(bool use) override;
     bool getSkinUse(bool &out) const override { out = colorMap.isSkinUsed(); return true; }

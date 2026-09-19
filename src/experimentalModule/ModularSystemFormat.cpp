@@ -11,9 +11,6 @@ namespace ModularSystemFormat {
 
 namespace {
 
-// What the grammar says this line is, in this layer's own vocabulary. The
-// grammar stays in ini_line.hpp; the mapping lives here, once, so parse and
-// every mutator classify identically (I2).
 IniLine::Kind classify(Line &line)
 {
     IniLine::Span span;
@@ -28,9 +25,6 @@ IniLine::Kind classify(Line &line)
                 ? Line::Kind::BLANK : Line::Kind::COMMENT;
             break;
         case IniLine::Kind::SECTION:
-            // A header is not a line OF a section, it opens one: the caller
-            // that cares (parse) reads the header text out of `key`, and
-            // Section::append clears it for anything that is stored as a line.
             line.kind = Line::Kind::RAW;
             break;
         case IniLine::Kind::MALFORMED:
@@ -43,17 +37,6 @@ IniLine::Kind classify(Line &line)
     return kind;
 }
 
-// Does `candidate` read back as exactly the entry it was built to be? This is
-// the representability test, and it is a round-trip through the grammar rather
-// than a list of forbidden characters: whatever the grammar would do to the
-// text - swallow it into a comment, split it at the wrong '=', trim blanks off
-// it - shows up here (I6: the class, not the instance).
-// A line terminator is the one thing the round-trip cannot see, because it does
-// not survive to be re-read: the grammar is given one line at a time, so text
-// carrying a terminator reads back intact and then becomes two lines at emission
-// - the second of them something nobody asked for. Only the text being INSERTED
-// is tested for it; the rest of the line is the author's and is already one line
-// (a CRLF file's '\r' must keep working).
 bool readsBackAs(Line &candidate, const std::string &key, const std::string &value)
 {
     if (key.find_first_of("\r\n") != std::string::npos
@@ -70,9 +53,6 @@ bool isMachineAnnotation(const std::string &raw)
         && raw.compare(i, std::strlen(ANNOTATION_MARKER), ANNOTATION_MARKER) == 0;
 }
 
-// Append one line of file text, putting back the newline a previous
-// unterminated line still owes (a file that ends without one round-trips
-// exactly, and stops doing so the moment something is appended after it).
 void putLine(std::string &out, bool &pending, const std::string &text, bool eol = true)
 {
     if (pending) {
@@ -171,9 +151,6 @@ bool Section::appendEntry(const std::string &key, const std::string &value)
             "single-line value without those.", LOG_TYPE::L_ERROR);
         return false;
     }
-    // At the end of the section's DECLARATIONS, not after the blank line or the
-    // trailing comment that separates it from the next section - a key placed
-    // there reads as belonging to whatever follows.
     std::size_t at = lines.size();
     while (at > 0 && lines[at - 1].kind != Line::Kind::KEY)
         --at;
@@ -190,9 +167,6 @@ bool Section::set(const std::string &key, const std::string &value)
     Line &line = lines[it->second];
     if (line.value == value)
         return true; // it already says that: a rewrite of nothing is not a rewrite
-    // Splice the new text into the value's own span. Everything else on the
-    // line - the key as the author spelled it, the blanks around the '=', a
-    // trailing comment - is untouched by construction.
     Line candidate = line;
     candidate.raw = line.raw.substr(0, line.valueSpan.begin);
     if (line.valueSpan.begin == line.valueSpan.end && !candidate.raw.empty()
@@ -276,10 +250,6 @@ bool Section::emit(std::string &out) const
         // one blank line ahead of each header.
         putLine(out, pending, "\n[" + header + "]");
     }
-    // A diagnosis about a key this section does not carry has no datum to sit
-    // above. It goes after the section's last declaration - not after the blank
-    // line or the trailing comment that ends the section, where it would read as
-    // belonging to whatever comes next (same rule as a new key).
     std::size_t lastKey = std::string::npos;
     for (std::size_t i = 0; i < lines.size(); ++i) {
         if (lines[i].kind == Line::Kind::KEY)

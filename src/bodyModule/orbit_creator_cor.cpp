@@ -121,14 +121,6 @@ std::unique_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 	double parent_rot_asc_node = 0.0;
 	double parent_rot_J2000_longitude = 0.0;
 
-	// "Is this orbit centred on the centre of the system?" is the ONE question
-	// the mean-motion branch below actually asks.  It used to ask it as
-	// `parent->get_parent()`, which dereferences the very case the next three
-	// lines declare legal (ledger Sec.5.134).  The experimental reader already
-	// carries the answer as a flag (experimentalModule/orbitModules/
-	// CometOrbitLoader.hpp:4,13-14,61-64) and this is that semantics ported: a
-	// parent that was not found is NOT the system centre, because nothing here
-	// can know that it is.
 	bool isNotSystemCentered = true;
 
 	if(!parent) {

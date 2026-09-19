@@ -17,15 +17,6 @@ EnvironmentManager::EnvironmentManager(MilkyWay *milky, Atmosphere *atmosphere) 
 
 EnvironmentManager::~EnvironmentManager()
 {
-    // `instance` is a NON-OWNING back-reference that outlives nothing: the
-    // notifyBodyDestroyed guard below already states the invariant "no manager
-    // => nothing to notify", but nothing ever re-established it at the other
-    // end of the lifetime. SSystemFactory destroys its `environment` member
-    // BEFORE the modular system whose bodies notify it, so every ModularBody
-    // destroyed during shutdown read a FREED manager. I5: a non-owning
-    // reference is legal only if lifetime-guaranteed or destruction-notified;
-    // this one is now destruction-notified, by its owner, at the only moment
-    // that can know.
     if (instance == this)
         instance = nullptr;
 }
@@ -74,17 +65,10 @@ void EnvironmentManager::update(Camera &camera, double jd, float deltaTime, bool
     }
     activeChain = newChain;
 
-    // 2. State production. onBody = the old observatory->isOnBody(): the
-    // camera is anchored on a landable body (system references and free
-    // flight are the old anchor-point case -> anchorAssign branch =
-    // EnvironmentState defaults + iris texture).
     onBody = !camera.isFreeMode() && !reference->isSystem();
     state = EnvironmentState{};
     state.atmosphereUserFlag = atmosphereUserFlag;
     if (onBody) {
-        // Camera distance from the body CENTER in AU (distanceToReference
-        // is relative to the altitude reference - re-add it; members
-        // subtract it back per their own body's convention).
         const Vec3f refPos(0, 0, camera.distanceToReference() + reference->getAltitudeReference());
         for (auto &m : reference->groundedEnvironment)
             m->update(reference, refPos, deltaTime, state);
@@ -95,9 +79,6 @@ void EnvironmentManager::update(Camera &camera, double jd, float deltaTime, bool
                 m->update(b, pos, deltaTime, state);
         }
     } else {
-        // Anchor branch: InAoI members of the chain still update (the
-        // milkyway backdrop; an atmosphere member's gates all collapse to
-        // false above limSup anyway) - grounded members don't.
         for (ModularBody *b : activeChain) {
             const Vec3f pos(0, 0, b->getDistanceToObserver());
             for (auto &m : b->environment)
@@ -106,10 +87,6 @@ void EnvironmentManager::update(Camera &camera, double jd, float deltaTime, bool
     }
     state.drawBody = !state.drawLandscape; // fixed combination rule
 
-    // 3. Sky brightness - port of the executor formula (solarSystemModule
-    // update: sun z in the local zenith frame + the eclipse-dimming term
-    // from the PREVIOUS frame's atmosphere intensity, same phase
-    // relationship as the old flow).
     if (ModularBody *star = system->getSystemStar()) {
         Vec3f sunLocal = camera.observedToLocalPos(star->getObservedPosition());
         sunLocal.normalize();
@@ -123,14 +100,6 @@ void EnvironmentManager::update(Camera &camera, double jd, float deltaTime, bool
     // 4. Atmosphere compute input snapshot (new-path sources).
     buildAtmosphereInput(camera, reference);
 
-    // 4b. Zodiacal placement inputs (theirs' D5 ecliptic-normal formula,
-    // chain-sourced - INTENT 11.32): heliocentric trajectory of the
-    // reference body sampled at jd +- 10 min by summing orbit positions up
-    // the chain (the old Body::getPositionAtDate form; stop at system-
-    // centered bodies, the 11.16 accumulation precedent), normal = r0 x
-    // (rP - rM) in the root-aligned frame; sun direction = the star's
-    // observed (eye-frame) position. Same inputs the old wrapper derives
-    // from navigator+ephemeris - parity by same-formula, not same-instance.
     zodiacalValid = false;
     if (ModularBody *star = system->getSystemStar()) {
         Vec3f sunEye = star->getObservedPosition();
@@ -203,13 +172,6 @@ void EnvironmentManager::buildAtmosphereInput(Camera &camera, ModularBody *refer
         const Vec3f v = atmInput.eyeToLocal.multiplyWithoutTranslation(sunEye);
         atmInput.sunPos.set(v[0], v[1], v[2]);
     }
-    // "Moon" generalized to the reference body's largest satellite (the old
-    // getMoon() hardcode dissolves - INTENT 11.23). Earth: the Moon, same
-    // by construction; bodies without satellites get a below-horizon null
-    // moon (no skybright contribution, no eclipse term).
-    // Satellites = the ORBITING list (grounded/inner children are not moon
-    // candidates; hidden excluded by construction). Behavior-equal on shipped
-    // data - no shipped body has grounded or inner children below system level.
     ModularBody *moon = nullptr;
     for (auto &c : reference->orbitingBodies) {
         if (!moon || c->getRadius() > moon->getRadius())
@@ -220,9 +182,6 @@ void EnvironmentManager::buildAtmosphereInput(Camera &camera, ModularBody *refer
         const Vec3f v = atmInput.eyeToLocal.multiplyWithoutTranslation(moonEye);
         atmInput.moonPos.set(v[0], v[1], v[2]);
         atmInput.moonRadiusKm = moon->getRadius() * AU; // physical, unscaled (old parity)
-        // Illuminated fraction - Body::get_phase ported to eye-frame
-        // vectors (angles are frame-invariant; obs = the reference body
-        // CENTER, the old call used Earth's heliocentric position).
         const Vec3f refEye = reference->getObservedPosition();
         const double sq = (double)(refEye - sunEye).lengthSquared();
         const double Rq = (double)(moonEye - sunEye).lengthSquared();
@@ -244,9 +203,6 @@ void EnvironmentManager::drawBackdrop(Renderer &renderer)
     bool aboveSystem = true;
     for (auto it = activeChain.rbegin(); it != activeChain.rend(); ++it) {
         ModularBody *b = *it;
-        // Mats above the current system are not maintained by
-        // dispatchUpdate - substitute the system's (flat-chain contract:
-        // same orientation, EnvironmentModule.hpp drawBackdrop note).
         const Mat4f &mat = aboveSystem ? system->getMat() : b->getMat();
         for (auto &m : b->environment)
             m->drawBackdrop(renderer, b, mat);
@@ -257,9 +213,6 @@ void EnvironmentManager::drawBackdrop(Renderer &renderer)
 
 void EnvironmentManager::drawSky(Renderer &renderer)
 {
-    // InAoI members first (atmosphere - additive over the multisample
-    // content), then the reference's grounded members (landscape+fog,
-    // PASS_FOREGROUND) - the old executor order, with its gate.
     bool aboveSystem = false; // walking ref->root this time
     for (ModularBody *b : activeChain) {
         const Mat4f &mat = aboveSystem ? system->getMat() : b->getMat();

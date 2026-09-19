@@ -166,10 +166,6 @@ void Navigator::setLocalVision(const Vec3d& _pos)
 }
 
 
-// See the header. `setLocalVision` minus the view-offset compensation: the two
-// derived vectors are rebuilt from the CURRENT transforms, which is the half
-// that matters - a restore that runs between two frames would otherwise latch
-// an equatorial direction computed at the previous frame's place and date.
 void Navigator::restoreVision(const Vec3d& _localVision)
 {
 	local_vision = _localVision;
@@ -479,10 +475,6 @@ void Navigator::alignUpVectorTo(const Mat4d& rotlocalToVsop87, double duration){
 	changeHeading(angle * 180/M_PI, (int)(duration*1000));
 }
 
-// ---------------------------------------------------------------------------
-// READBACK ONLY (INTENT S5.63 / S11.130). See the header for what it is for.
-// Const, side-effect-free, called only from the dump channel.
-// ---------------------------------------------------------------------------
 static void dumpMat(std::ostream &out, const char *name, const Mat4d &m)
 {
 	out << ",\"" << name << "\":[";
@@ -492,11 +484,6 @@ static void dumpMat(std::ostream &out, const char *name, const Mat4d &m)
 }
 
 
-// A JSON-legal number: the plan coefficients are legitimately infinite when a
-// duration is 0 (speed = 1/0), and a dump that emits bare `inf` is not JSON at
-// all - every consumer of this channel fails on the whole line. The value is
-// PRESERVED as a quoted token rather than nulled, because "this plan is
-// instantaneous" is exactly the state a restore has to get right.
 static void jnum(std::ostream &out, double v)
 {
 	if (std::isfinite(v))
@@ -517,19 +504,11 @@ void Navigator::dumpTrace(std::ostream &out) const
 	const auto flags = out.flags();
 	const auto prec = out.precision();
 	out << std::setprecision(17);
-	// The three vision vectors the row names by hand. local_vision is what
-	// updateViewMat consumes; equ_vision is what a sky lock HOLDS; and
-	// prec_equ_vision is what the nebula grid and the constellation art
-	// intersect their view cone against (nebula_mgr.cpp:176,
-	// illuminate_mgr.cpp:201, constellation.cpp:180).
 	out << "{\"localVision\":[" << local_vision[0] << ',' << local_vision[1]
 	    << ',' << local_vision[2] << ']';
 	dumpVec(out, "equVision", equ_vision);
 	dumpVec(out, "precEquVision", prec_equ_vision);
 	dumpVec(out, "headingVector", heading_vector);
-	// The scalars updateViewMat folds into mat_local_to_eye AFTER the vision
-	// vector: a difference here moves the whole sky without moving any vision
-	// vector at all, which no camera-side dump can see.
 	out << ",\"heading\":" << heading
 	    << ",\"headingWrapped\":" << getHeading()
 	    << ",\"defaultHeading\":" << defaultHeading
@@ -538,11 +517,6 @@ void Navigator::dumpTrace(std::ostream &out) const
 	    << ",\"viewingMode\":" << static_cast<int>(viewing_mode)
 	    << ",\"flagTraking\":" << flag_traking
 	    << ",\"flagLockEquPos\":" << flag_lock_equ_pos;
-	// The in-flight plans. A restore lands in a scene whose old navigator may
-	// still be mid-transition (an anchor switch starts a 5 s heading ramp,
-	// anchor_manager.cpp:669), and a transition caught at a different phase is
-	// exactly the shape of a difference that VARIES from restore to restore
-	// (S5.63 exclusion 7).
 	out << ",\"plans\":{\"flagAutoMove\":" << flag_auto_move
 	    << ",\"moveCoef\":";
 	jnum(out, move.coef);
@@ -560,9 +534,6 @@ void Navigator::dumpTrace(std::ostream &out) const
 	out << ",\"moveAim\":[" << move.aim[0] << ',' << move.aim[1] << ',' << move.aim[2]
 	    << "],\"moveStart\":[" << move.start[0] << ',' << move.start[1] << ',' << move.start[2]
 	    << "]}";
-	// The frame transforms themselves. mat_local_to_earth_equ is the one the
-	// row names; the other four are what the sky content actually consumes
-	// through Projector::setModelViewMatrices.
 	dumpMat(out, "matLocalToEarthEqu", mat_local_to_earth_equ);
 	dumpMat(out, "matEarthEquToJ2000", mat_earth_equ_to_j2000);
 	dumpMat(out, "matLocalToEye", mat_local_to_eye);

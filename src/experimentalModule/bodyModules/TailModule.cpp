@@ -7,15 +7,6 @@
 
 int TailModule::activeCount = 0;
 
-// TAIL instanced batch - row 12 (INTENT S11.43). Faithful port of the old
-// Tail (tail.cpp) + SmallBody comet-tail machinery (body_smallbody.cpp), with
-// the global singleton Tail::global dissolved into the Renderer batching
-// service (submitTail/flushTails). The update()/draw() split maps the old
-// draw-time work onto the system-phase sweep (ModularSystem::drawTails):
-// update() computes the coma/tail size + the PARENT-frame expansion vectors
-// (frame-independent, JD-cached); draw() rotates them into eye space with the
-// parent position frame the sweep hands in (the old nav->getHelioToEyeMat()).
-
 TailModule::TailModule(std::vector<SubTail> &&subTails,
                        float absoluteMagnitude, float slopeParameter)
     : BodyModule(BodyModuleType::TAIL), subTails(std::move(subTails)),
@@ -32,9 +23,6 @@ TailModule::~TailModule()
 
 Vec2f TailModule::comaDiameterAndTailLengthAU(float r)
 {
-    // Faithful port of SmallBody::getComaDiameterAndTailLengthAU
-    // (body_smallbody.hpp:64-78, projectpluto comet_tail_formula), incl. the
-    // lastR skip cache and the draw-site "/ AU" folded in (tail.cpp:150).
     if (std::abs(lastR / r - 1.f) > 0.0001f) { // avoid recomputing if ~same
         const float mhelio = absoluteMagnitude + slopeParameter * log10f(r);
         float tmp = powf(10.f, -r);
@@ -52,10 +40,6 @@ Vec2f TailModule::comaDiameterAndTailLengthAU(float r)
 
 Vec3f TailModule::orbitPositionAtDate(ModularBody *body, double jd)
 {
-    // The comet's own orbit position at jd, root-aligned VSOP87 (parent-
-    // relative) - the same frame the parent position frame (drawTails) maps to
-    // eye, so the expansion vectors transform consistently. Shipped comets are
-    // sun-parented, so this equals the old heliocentric Body::getPositionAtDate.
     double v[3] = {0, 0, 0};
     if (const Orbit *o = body->getOrbit())
         o->positionAtTimevInVSOP87Coordinates(jd, v);
@@ -65,9 +49,6 @@ Vec3f TailModule::orbitPositionAtDate(ModularBody *body, double jd)
 bool TailModule::update(ModularBody *body, float scaledRadius)
 {
     boundingRadius = scaledRadius; // the tail never inflates the body bound (it
-                                   // is a screen overlay, not in a regime list)
-    // Heliocentric distance r (AU): |comet - sun| in observer space (the old
-    // distToSun = |eye_planet - eye_sun|, tail.cpp:148-149). Both statics/public.
     const float r = (body->getObservedPosition() - ModularBody::getLightPosition()).length();
     const Vec2f comaTail = comaDiameterAndTailLengthAU(r);
     // Old gate (tail.cpp:151): coma wider than the tail is long -> no tail.
@@ -98,9 +79,6 @@ bool TailModule::update(ModularBody *body, float scaledRadius)
 
 void TailModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // mat = the PARENT position frame (drawTails) = root-aligned VSOP87 -> eye,
-    // the new-path nav->getHelioToEyeMat(). Faithful port of Tail::draw's eye
-    // transform + instance push (tail.cpp:172-178).
     if (!drawThisFrame)
         return;
     const Vec3f offset = body->getObservedPosition(); // eye_planet

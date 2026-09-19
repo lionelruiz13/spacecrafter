@@ -195,13 +195,6 @@ int main(int argc, const char *argv[])
 	CallSystem::checkUserDirectory(appDir, dirResult);
 	CallSystem::checkUserSubDirectory(appDir, dirResult);
 
-	// Set .spacecrafter as current directory - AFTER the two calls above, which
-	// create and populate it (ledger Sec.5.130).  The setter overload of
-	// current_path throws filesystem_error on a missing path and nothing catches
-	// it, so doing this first aborted the very first launch of every account
-	// that had no ~/.spacecrafter yet (exit 134, before the log system exists).
-	// It must still stay ABOVE Log->setDirectory("log/") below: that is the
-	// first consumer of a path relative to this directory.
 	std::filesystem::current_path(appDir);
 
 	//-------------------------------------------
@@ -211,13 +204,6 @@ int main(int argc, const char *argv[])
 
 	Log->setDirectory("log/");
 
-	// Open log files.  Each open rotates that channel's previous launches
-	// (LOG_RETENTION_LAUNCHES in log.hpp) and records what it did; the report
-	// is written here, as soon as all five channels exist, because the first
-	// rotation happens before there is any log file to write into.  It is
-	// written at THIS point and not after the config is parsed so that a
-	// launch which stops earlier - the second-instance refusal below returns
-	// at :250 - still leaves the deletion on record (Sec.2.0 D12).
 	Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
 	Log->openLog(LOG_FILE::SCRIPT, "script");
 	Log->openLog(LOG_FILE::TCP, "tcp");
@@ -373,11 +359,6 @@ int main(int argc, const char *argv[])
 		cpuInfo->stop();
 	}
 
-	// Quiesce the async big-texture loader BEFORE tearing down App: its final
-	// upload copies into Context staging buffers that app.reset() destroys, so
-	// joining it only at forceUnload() (below, after app.reset) races the loader
-	// against freed memory (shutdown SIGSEGV in s_texture::bigTextureLoader).
-	// Idempotent with the forceUnload() join.
 	s_texture::stopBigTextureLoader();
 
 	app.reset();

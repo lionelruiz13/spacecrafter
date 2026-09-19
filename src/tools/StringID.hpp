@@ -30,13 +30,6 @@ class StringIDCluster
 public:
     const StringID &operator[](std::string_view name)
     {
-        // Lookup with the caller's live bytes (safe: comparisons only read
-        // STORED entries, which are owned below), then intern a COPY on miss.
-        // The original stored name.data() directly - a caller passing a
-        // temporary std::string (explicit slot names: the GRID call,
-        // composed-format slot=) left a DANGLING pointer that every future
-        // same-size insert memcmp'd against (latent UB, found at the B24
-        // composed-slot extension; fixed at the class - I6).
         const StringID probe{name.data(), static_cast<uint32_t>(name.size()),
                              static_cast<uint32_t>(entries.size())};
         const auto it = entries.find(probe);

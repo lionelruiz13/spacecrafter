@@ -5,10 +5,6 @@
 
 uint8_t PhotosphereLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const
 {
-    // 200 > BasicMeshLoader's 16 and > LayeredMeshLoader's layered bids: a star
-    // draws its own surface whatever texture layers it also carries (a night
-    // side or a specular map on a light source is meaningless). No 255
-    // short-circuit - leave headroom, as StarLoader does.
     return (target->isStar() && !params["tex_map"].empty()) ? 200 : 0;
 }
 

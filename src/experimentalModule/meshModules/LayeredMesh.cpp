@@ -16,14 +16,6 @@
 // Regime gate constants (header comment carries the derivation; convergence
 // point - tunable one-liners).
 constexpr float RAYMARCH_MAX_DISTANCE_RADII = 64.f;
-// The one screenSize threshold left in FRACTION units after S5.54 respelled the
-// G4 family in px. Deliberately not converted with them: it is a single-site
-// named constant (no I2 duplication to close) and it is a raymarch CAPABILITY
-// gate, not a G4 regime boundary, so converting it is a behaviour change at
-// non-2048 widths that this task had no mandate for. The px-intent argument
-// does apply to it - 0.025 is ~51 px at 2048, and this file's own comments
-// reason in px - so it is recorded with the S5.54 veto point rather than
-// silently left in a second unit.
 constexpr float RAYMARCH_MIN_SCREEN_SIZE = 0.025f;
 
 static std::unique_ptr<s_texture> makeTex(const std::string &path)
@@ -81,9 +73,6 @@ float LayeredMesh::altimetryLevel() const
 
 void LayeredMesh::rebind(bool ray, Texture *const *big)
 {
-    // Slot resolution: absent slots AND the day slot itself route through
-    // dayTex() - old binds tex_current at exactly those bindings (the skin
-    // replaces day everywhere day would be sampled or placeheld).
     if (ray) {
         raySet->uninit();
         raySet->bindUniform(rayVert, 0);
@@ -177,9 +166,6 @@ void LayeredMesh::fillVert(Renderer &renderer, ModularBody *body, const Mat4f &m
     vert->clipping_fov = renderer.getClippingFov();
     vert->planetRadius = body->getRadius();
     vert->LightPosition = ModularBody::getLightPosition();
-    // Old parity: planetScaledRadius = the body's scaled radius (the tese
-    // adds the altimetry displacement on top; module boundingRadius is the
-    // depth-slice value, deliberately NOT this one).
     vert->planetScaledRadius = body->getScaledRadius();
     vert->planetOneMinusOblateness = body->getOneMinusOblateness();
 }
@@ -230,19 +216,6 @@ void LayeredMesh::drawMid(Renderer &renderer, ModularBody *body, const Mat4f &ma
 
 void LayeredMesh::drawRay(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // DEPTH ON for BOTH ray rows (INTENT 5.30). The old myEarthShadowed
-    // depth-OFF quirk this used to reproduce was never Earth-specific and its
-    // requirement is dead at source: `13d846c8` turned depth off on BOTH ray
-    // rows in the same commit that made body_tes_shadow.vert emit a CONSTANT
-    // gl_Position.z = 0 (the shell became a pure rasterization carrier, so a
-    // stage emitting no depth must not write depth); `39a8f235` restored depth
-    // to the moon-class row when planet_grid needed the disc to occlude its
-    // far-side lines, touching only that row; and `b323db09` gave the vertex
-    // stage a real projected depth again (custom_projectNoMV), retiring the
-    // premise for both rows - the Earth row simply never got the two updates.
-    // The fragment now overrides that depth with the TRUE ray hit anyway
-    // (bodyRayMarchNight.frag, same commit - without it this line would swap
-    // Earth's "no depth" for the SHELL depth, i.e. defect 5.29 on Earth).
     const uint16_t wanted = cfg.rayVariant;
     const FamilyBound bound = renderer.bind(rayFamily, wanted);
     if (!bound.layout)
@@ -254,9 +227,6 @@ void LayeredMesh::drawRay(Renderer &renderer, ModularBody *body, const Mat4f &ma
     const float distance = body->getDistanceToObserver();
     // Old drawCenterOfInterest math, verbatim (body_bigbody.cpp:655-680):
     const float finalRadius = std::min(scaledRadius * (1.f + altimetryFactor), distance - scaledRadius / 64.f);
-    // The near-component matrix carries computeBodyToSurface()'s +PI/2 (mesh
-    // texcoord convention); the ray-march reconstructs texture longitude from
-    // atan(y,x) - the old CoI convention without the +90: remove it.
     const Mat4f m = mat * Mat4f::zrotation(-M_PI_2);
     auto &rv = **rayVert;
     rv.ModelViewMatrix = m * Mat4f::scaling(Vec3f(1.f, 1.f, body->getOneMinusOblateness()));
@@ -274,9 +244,6 @@ void LayeredMesh::drawRay(Renderer &renderer, ModularBody *body, const Mat4f &ma
         rf.lightDirection = tmp; // body-local, sun -> body (old: m2*(eye_planet-eye_sun))
     }
     {
-        // sinSunAngle = 2*sin(sun half-angle at the receiver): the terrain
-        // self-shadow penumbra scale. Star of the body's system (valid since
-        // the S5 star-assignment fix); guard the degenerate cases.
         ModularSystem *system = ModularSystem::systemOf(body);
         ModularBody *star = system ? system->getSystemStar() : nullptr;
         const float lightDist = (mat.getTranslation() - ModularBody::getLightPosition()).length();
@@ -291,9 +258,6 @@ void LayeredMesh::drawRay(Renderer &renderer, ModularBody *body, const Mat4f &ma
     rf.atmColor = cfg.atmColor;
     rf.atmDeviation = cfg.atmDeviation;
     fillFoldedShadows(*rayFrag, body, rv.ModelViewMatrix, finalRadius, this);
-    // Big textures: the close-range regime is exactly where they engage
-    // (old getSet >= 180px; the ray gate's 0.025 floor ~ 51px keeps the
-    // 0.2 threshold check meaningful).
     if (body->getScreenSize() > ModularBody::bigTextureGate()) {
         Texture *big[5] = {};
         uint16_t map = 0;
@@ -342,9 +306,6 @@ void LayeredMesh::drawShadow(Renderer &renderer, ModularBody *body, const Mat4f 
 
 void LayeredMesh::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Row-8 TRACE prepass: identical shape to BasicMesh::drawTrace (the shared
-    // sphere-trace family). The heightmap headroom in boundingRadius is <1% -
-    // the base scaled radius is the parity value with the old sphere trace.
     const FamilyBound bound = renderer.bind(TraceFamily::sphere());
     if (!bound.layout)
         return;

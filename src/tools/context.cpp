@@ -8,10 +8,6 @@
 #include <atomic>
 
 namespace {
-// Manager-teardown hooks (contract: context.hpp onManagerTeardown). Kept off
-// the Context instance on purpose: the clients are process-lifetime statics
-// that register on FIRST USE, which may precede or follow any particular
-// Context, and a hook must survive being registered before instance exists.
 std::vector<std::function<void()>> &managerTeardownHooks()
 {
     static std::vector<std::function<void()>> hooks;
@@ -119,33 +115,14 @@ void Context::buildShadowPipeline(uint32_t begin, uint32_t end)
 
 Context::~Context()
 {
-    // Stop the DrawHelper worker FIRST: its queued draws bind registry
-    // pipelines and run the ShadowService preFrameRecorder, both of which
-    // releaseRegistry() destroys. Draining it here, while every resource it
-    // touches is still alive, closes the teardown race (worker mid-submit vs a
-    // freed pipeline). helper.reset() below only frees the helper's own
-    // resources - stop() is idempotent.
     if (helper)
         helper->stop();
-    // Every holder that outlives the body tree gives its manager-owned
-    // resources back HERE, while the managers and the registry are alive
-    // (contract + why: context.hpp onManagerTeardown). Reverse registration
-    // order: a later registrant may have been built on an earlier one.
     auto &hooks = managerTeardownHooks();
     while (!hooks.empty()) {
         hooks.back()();
         hooks.pop_back();
     }
     renderer.releaseRegistry(); // pipeline-family registry teardown needs live
-                                // managers (stagingMgr, device)
-    // The deferred texture rings are the TERMINAL sink of this teardown -
-    // every release above feeds them (~texRecap pushes its Texture into the
-    // ring, and releaseRegistry() drops the pointer/sun-halo textures), so
-    // they are drained last, and HERE rather than from main() after
-    // app.reset(): a Texture returns its staging sub-allocation to a BufferMgr
-    // and its mipmap Sets to the SetMgr, both destroyed with this object
-    // (INTENT 5.57 - `body action reload` then quit, SIGSEGV in
-    // BufferMgr::releaseBuffer under s_texture::forceUnload).
     s_texture::forceUnload();
     instance = nullptr;
     helper.reset();
@@ -167,9 +144,6 @@ Context::~Context()
 
 void Context::quiesceFrames()
 {
-    // Contract + why: context.hpp. Two halves, both needed: the helper thread
-    // may still be RECORDING commands that reference the resource (CPU), and
-    // the GPU may still be EXECUTING a frame that does (device).
     if (helper)
         helper->waitAllFrames();
     if (VulkanMgr::instance)

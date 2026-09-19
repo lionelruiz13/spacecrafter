@@ -19,16 +19,6 @@ void RingModule::setLodSlices(int low, int medium, int high)
     lodSlices = Vec3i(low, medium, high);
 }
 
-// RING family - port of the old Ring::createSC_context color pipeline
-// (ring.cpp:106-148) onto the registry. Fixed state verbatim: TRIANGLE_STRIP,
-// cull ON, BLEND_SRC_ALPHA (the EntityCore Pipeline DEFAULT the old code
-// relied on implicitly - the registry default is BLEND_NONE, so it must be
-// explicit here). Spec 7 = float64; 8 = projection (registry-injected,
-// INTENT 11.33). NO NO_DEPTH variant: bit-drop fallback = the old ringed
-// forced-depth behavior (10.3 rule 1, body.cpp:1055-1059).
-// Family-scoped vertex array (file-static: buildGeometry constructs Ring2D
-// buffers against it; the family - hence this array - outlives every module
-// instance, I5).
 static std::unique_ptr<VertexArray> ringVertexArray;
 
 static const PipelineFamily &ringColorFamily()
@@ -96,12 +86,6 @@ bool RingModule::isLoaded()
 
 void RingModule::buildGeometry()
 {
-    // Old Ring::initialize strip set (ring.cpp:93-100): three LODs x two
-    // halves; slice counts from config (setLodSlices), stacks 4/8/16.
-    // Ring2D plans its vertex upload through Context::transfer at build -
-    // one-time cost at first loaded call (old lazy-initialize parity; S4
-    // work-domain candidate). ringVertexArray exists: the ctor ran
-    // ringColorFamily().
     for (int lod = 0; lod < 3; ++lod) {
         const int slices = lodSlices[lod];
         const int stacks = 4 << lod; // 4/8/16, old initialize
@@ -112,9 +96,6 @@ void RingModule::buildGeometry()
 
 bool RingModule::update(ModularBody *body, float scaledRadius)
 {
-    // Extent contract (header): drawn extent = scaled outer radius; the
-    // ring-inclusive body screenSize this produces is old-path behavior
-    // (BigBody::getOnScreenSize, body_bigbody.cpp:270-279).
     const float bodyRadius = body->getRadius();
     mc = (bodyRadius > 0) ? scaledRadius / bodyRadius : 1.f;
     boundingRadius = outerRadius * mc;
@@ -156,14 +137,6 @@ void RingModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 
 void RingModule::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Row-8 TRACE consumer (INTENT S11.40): the ring annulus into the orbit-
-    // union depth range so an orbit line is cut behind the ring. Old
-    // Ring::drawDepthTrace (ring.cpp:300-304): push mc into the depthTrace
-    // ModelViewMatrix's radius slot, draw lowUP. The new-path ring-trace
-    // family is a distinct pipeline+layout (not the body's), so push the FULL
-    // TraceInfo here (the old path shared one layout across sphere+ring, hence
-    // it re-pushed only mc). Geometry: the LOW-LOD up half (old lowUP) - a
-    // coarse silhouette suffices for a depth cut.
     if (!loaded)
         return; // strips not built yet (C3; the color draw guards the same way)
     Ring2D *strip = strips[0].get(); // low, up half (buildGeometry: lod0 h=true)
@@ -183,9 +156,6 @@ void RingModule::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &m
 
 void RingModule::drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx)
 {
-    // TEXTURED_ANNULUS job (typed vocabulary, ShadowService). The set is
-    // created lazily HERE because the service initializes at its first
-    // enabled use - drawShadow only runs once it is up (computeShadows gate).
     if (!texSet) {
         texSet = renderer.shadow.makeAnnulusTexSet(tex->getTexture());
         if (!texSet)
@@ -196,12 +166,6 @@ void RingModule::drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &
 
 ShadowCaster RingModule::getShadowCaster(ModularBody *body, const Vec3f &lightPos) const
 {
-    // Silhouette extent = SCALED outer radius (the unscaled form was a latent
-    // defect: under body scaling the drawn ring and its shadow diverged -
-    // closed 2026-07-18 with the extent contract). Absorbtion = the material
-    // transmission (D8 key or the derived old-parity {0.7} - the selection
-    // maps it to (aT, gR=0), ShadowProjection.hpp). Clip half-space: ring
-    // plane through the body center, normal = spin axis toward the sun.
     const Vec3f center = body->getObservedPosition();
     const Mat4f &m = body->getMat();
     Vec3f n(m.r[8], m.r[9], m.r[10]);

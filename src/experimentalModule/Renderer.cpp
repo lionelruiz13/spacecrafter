@@ -23,28 +23,13 @@ void Renderer::init(ToneReproductor *_eye)
 {
     allocateCommands();
     eye = _eye;
-    // Service families whose resources exist at startup: build now
-    // (base-sync off the frame path - C3; the in-frame ensure calls are
-    // first-use fallbacks only).
     ensurePointerFamily();
     ensureHintFamily();
-    // Shadow service: UNCONDITIONAL init (independent of the enabled flag) -
-    // every MESH Set binds the layer array at slot 3, so the texture must
-    // exist even when shadows are off (ShadowService.hpp).
     shadow.ensureInit(*this);
 }
 
 void Renderer::beginDraw(uint8_t _frameIdx)
 {
-    // ---- Depth-range partitioning build (S3) --------------------------------
-    // Input: ModularBody::drainNotableBodies() - filled by this frame's update
-    // (which runs before draw, SSystemFactory::update/draw), cleared at the
-    // next update start. Old-path parity: computePreDraw's bucket merge
-    // (solarsystem_display.cpp:136-176), with two resolved differences:
-    // - no 1.1 margin (boundingRadius is inclusive by definition, decision 6);
-    // - no znear clamp at build (the old 1e-10 fed a Projector needing
-    //   positive planes; the new shaders consume the raw range - landed
-    //   scenes run znear < 0 today, measured parity S11.27).
     sliceScratch.clear();
     orbitBucket = {0, 0};
     // Old needOrbitDepth gate is 10 px full diameter (absolute); px =
@@ -81,9 +66,6 @@ void Renderer::beginDraw(uint8_t _frameIdx)
         const float znear = e.first - e.second;
         const float zfar = e.first + e.second;
         if (open && db.znear < zfar) {
-            // Overlaps the current (farther) bucket: merge. Both edges may
-            // extend - "artificial planets may cover real planets" (old
-            // comment): a nearer body's range can still reach farther out.
             if (db.znear > znear)
                 db.znear = znear;
             if (db.zfar < zfar)
@@ -122,9 +104,6 @@ void Renderer::beginBodyDraw()
 void Renderer::endBodyDraw()
 {
     batchFlush(); // trailing batched content into the last cmd: drawn after
-                  // every body = on top, per the occlusion contract (the old
-                  // path needed a dedicated trailing command buffer for this;
-                  // recording before ending the frame cmd replaces it)
     recordPointer(); // after the trailing flush: the selection pointer draws
                      // on top of everything (old path drew it after the whole
                      // system, depth-less - same final order)
@@ -134,19 +113,9 @@ void Renderer::endBodyDraw()
 
 void Renderer::clearDepth(float zCenter, float boundingRadius)
 {
-    // Helper segment BEFORE the body's own command buffer: screen-space
-    // content queued during this body's draw (its hint circle) must execute
-    // before its geometry - hint BEHIND the disc, like the old path
-    // (PipelineFamily.hpp occlusion contract; measured: the Moon's hint drew
-    // in FRONT of the disc with the previous order [vixy: 2026-07-12]).
     Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
     nextCommandBuffer();
     batchFlush(); // per-body boundary: previous bodies' batched content lands
-                  // at the START of this body's cmd (Halo::nextDraw parity -
-                  // over its own body's disc, behind this nearer body's)
-    // ---- Bucket-entry actions (S3 partitioning - contract in the header) ---
-    // Locate this body's bucket: draw order (far->near) equals build order,
-    // so the cursor only ever advances - O(buckets) per frame total.
     while (bucketIdx + 1 < depthBuckets.size() && zCenter < depthBuckets[bucketIdx].znear)
         ++bucketIdx;
     if (bucketIdx < depthBuckets.size()
@@ -160,34 +129,9 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
             VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
             vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
         }
-        // The SHARED depth mapping, re-established on EVERY call and not only
-        // at bucket entry: same-bucket bodies must write comparable depth
-        // values, which is why the range is the BUCKET's and never per-body -
-        // and the bucket is the authority, so reading it again costs two loads
-        // and removes an assumption. The assumption was that nothing writes
-        // clippingFov between two same-bucket bodies; enterDepthlessSlice
-        // (INTENT S5.52) is exactly such a writer, and a mid-band body can sort
-        // between two members of one bucket. Re-establishing here means the
-        // depth-less override cannot outlive the body that asked for it,
-        // without that body having to save/restore renderer state (I2: one
-        // authority for the range, consulted, not cached in a caller).
         clippingFov.v[0] = depthBuckets[bucketIdx].znear;
         clippingFov.v[1] = depthBuckets[bucketIdx].zfar;
     } else {
-        // Out-of-coverage slice. Two known producers:
-        // - out-of-ORDER: a body attached between this frame's sort and its
-        //   draw (events-thread interim, INTENT S8.4.1 precondition; the S4
-        //   publish-task handoff closes it structurally) draws at the sorted
-        //   tail - its range may lie in an already-passed bucket. Measured
-        //   live at every `body action load` (INTENT S11.30): one frame,
-        //   self-healing.
-        // - out-of-LIST: a body drawing without a notable entry (a real
-        //   contract breach - no known producer).
-        // Both degrade to the per-body clear + range: correct in isolation,
-        // and optimal even for the in-passed-bucket case - that bucket's
-        // depth content was already wiped by later buckets' clears, so there
-        // is nothing left to merge with. Self-names once per frame with the
-        // values needed to attribute the producer.
         if (!bucketMissLogged) {
             bucketMissLogged = true;
             VulkanMgr::instance->putLog("Renderer: depth slice outside bucket coverage - per-body fallback (out-of-order attach or notable-list breach): zCenter=" + std::to_string(zCenter) + " r=" + std::to_string(boundingRadius) + " buckets=" + std::to_string(depthBuckets.size()) + " idx=" + std::to_string(bucketIdx) + (depthBuckets.empty() ? "" : " cur=[" + std::to_string(depthBuckets[bucketIdx].znear) + "," + std::to_string(depthBuckets[bucketIdx].zfar) + "]"), LogType::WARNING);
@@ -210,9 +154,6 @@ void Renderer::beginOrbitTrace()
     // Flush any pending batched content (the last body's halos) BEFORE the
     // orbit lines - old Halo::endDraw ran before the orbit phase.
     batchFlush();
-    // Orbit-union range: clear + set only when a body reserved a slice; {0,0}
-    // means nothing on-screen is large enough (old backup-plane path) and the
-    // orbit modules draw depth-free (they read the same {0,0} and drop depth).
     if (orbitBucket.znear != 0.f || orbitBucket.zfar != 0.f) {
         VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
         VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
@@ -233,11 +174,6 @@ void Renderer::beginOrbitLines()
 
 void Renderer::beginTrailDraw()
 {
-    // Fresh command buffer for the trail pass. Mirrors beginOrbitTrace MINUS the
-    // depth clear/range: the trail is depthless (its pipelines have depth
-    // test+write off), so no bucket is needed and the depth buffer is left
-    // untouched. Flush pending batched content (the last body's halos) BEFORE
-    // the trails, matching the old body-pass order.
     Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
     nextCommandBuffer();
     batchFlush();
@@ -264,11 +200,6 @@ void Renderer::printGravity(s_font *font, const std::pair<float, float> &pos,
     // Too far outside the disk to be visible (old early-out, verbatim rule)
     if (sqrtf(dx*dx + dy*dy) > radius + font->getStrLen(str))
         return;
-    // Faithful port of printGravity180's math (projector.cpp:393-415):
-    // tangential orientation from the viewport center; the '- 1' pixel bias
-    // is kept verbatim - it desingularizes atan2 at the exact center at the
-    // cost of an angle bias that vanishes with distance, and pixel parity
-    // with the old path matters more than the cleaner atan2(dx, dy) form.
     const float theta = M_PI + atan2f(dx, dy - 1.f);
     Mat4f mvp = Mat4f::ortho2D(rect.offset.x, rect.offset.x + rect.extent.width,
                                rect.offset.y, rect.offset.y + rect.extent.height);

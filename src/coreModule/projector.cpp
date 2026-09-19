@@ -746,16 +746,6 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 	font->print(0, 0, str, Color, MVP*TRANSFO ,0);
 }
 
-// ---------------------------------------------------------------------------
-// READBACK ONLY (INTENT S5.63 / S11.130). See the header for what it is for.
-// Const, side-effect-free, called only from the dump channel.
-// ---------------------------------------------------------------------------
-
-// A JSON-legal number: the plan coefficients are legitimately infinite when a
-// duration is 0 (speed = 1/0), and a dump that emits bare `inf` is not JSON at
-// all - every consumer of this channel fails on the whole line. The value is
-// PRESERVED as a quoted token rather than nulled, because "this plan is
-// instantaneous" is exactly the state a restore has to get right.
 static void jnum(std::ostream &out, double v)
 {
 	if (std::isfinite(v))
@@ -787,10 +777,6 @@ void Projector::dumpTrace(std::ostream &out) const
 	    << ",\"viewportFovDiameter\":" << viewport_fov_diameter
 	    << ",\"fisheyeScaleFactor\":" << fisheye_scale_factor
 	    << ",\"projectionType\":\"" << projectionTypeToString(static_cast<ProjectionType>(Context::projectionType)) << '"';
-	// The geodesic-zone SELECTOR itself, exactly as HipStarMgr::preDraw asks
-	// for it: a convex region of half-spaces in J2000. Two runs that differ
-	// here draw DIFFERENT STARS, which is a disjoint lit set rather than a
-	// displaced one -- the shape S5.63's own correction reports.
 	const StelGeom::ConvexS cv = unprojectViewport();
 	out << ",\"unprojectViewport\":[";
 	for (size_t i = 0; i < cv.size(); ++i) {

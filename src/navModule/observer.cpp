@@ -458,16 +458,6 @@ void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
 		anchor = std::move(_anchor);
 }
 
-// ---------------------------------------------------------------------------
-// READBACK ONLY (INTENT S5.63 / S11.130). See the header for what it is for.
-// Const, side-effect-free, called only from the dump channel.
-// ---------------------------------------------------------------------------
-
-// A JSON-legal number: the plan coefficients are legitimately infinite when a
-// duration is 0 (speed = 1/0), and a dump that emits bare `inf` is not JSON at
-// all - every consumer of this channel fails on the whole line. The value is
-// PRESERVED as a quoted token rather than nulled, because "this plan is
-// instantaneous" is exactly the state a restore has to get right.
 static void jnum(std::ostream &out, double v)
 {
 	if (std::isfinite(v))
@@ -491,18 +481,12 @@ void Observer::dumpTrace(std::ostream &out) const
 	    << ",\"onBody\":" << (isOnBody() ? "true" : "false")
 	    << ",\"quaternionMode\":" << (flag_quaternion_mode ? "true" : "false")
 	    << ",\"eyeRelativeMode\":" << (flag_eye_relative_mode ? "true" : "false")
-	// The place plan. `moveto ... duration 0` and a session restore both claim
-	// to land settled; a non-zero flag here says the observer is still on its
-	// way, which moves the sky between two dumps that describe "the same" place.
 	    << ",\"flagMoveTo\":" << (flag_move_to ? "true" : "false")
 	    << ",\"moveToMult\":";
 	jnum(out, move_to_mult);
 	out << ",\"moveToCoef\":";
 	jnum(out, move_to_coef);
 	out
-	// The quaternion rotator multiplies getRotEquatorialToVsop87 (observer.cpp
-	// :115), i.e. it sits INSIDE the equatorial frame the star field is drawn
-	// in and outside everything the camera dump can see.
 	    << ",\"rotatorQuat\":[";
 	const Vec4d &q = rotator.getCachedQuaternion();
 	out << q[0] << ',' << q[1] << ',' << q[2] << ',' << q[3] << ']';

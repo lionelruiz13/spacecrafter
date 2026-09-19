@@ -138,16 +138,10 @@ public:
 	void flag(APP_FLAG layerValue, bool _value);
 	//! modify a flag via a toggle
 	void toggle(APP_FLAG layerValue);
-	//! Read a flag given by APP_FLAG. The read half of flag()/toggle(): a
-	//! toggle is a read followed by a write, and before this the value was
-	//! knowable only by performing the write (INTENT S11.129).
 	bool asBool(APP_FLAG layerValue) const;
 
 	void switchMode(const std::string setValue);
 
-	//! Script/TCP-triggered screenshot (harness A/B visual comparison,
-	//! experimentalModule/INTENT.md 11.19a): same readback as the UI key,
-	//! but filename-addressable. Written asynchronously ~1 frame later.
 	void takeScreenshot(const std::string &filename);
 
 private:

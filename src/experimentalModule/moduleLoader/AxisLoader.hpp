@@ -3,10 +3,6 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
-// Loader of the AXIS slot. Deduction lives in deduceBodyModuleList (default
-// for every body with a mesh - the old Body carried an Axis member
-// unconditionally; the mesh gate follows the landing-zone rule and keeps
-// axis lines off model-only artificial bodies, a documented divergence).
 class AxisLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

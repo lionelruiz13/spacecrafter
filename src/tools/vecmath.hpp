@@ -2312,9 +2312,6 @@ template<class T> constexpr Vector4<T> Matrix4<T>::toQuaternion() const
 constexpr Vec3f v3fNull{};
 constexpr Vec3f v3dNull{};
 
-// [merge D6] The combine, build-verified: experimental's constexpr + theirs'
-// requires(!is_same) constraints on the templated converters keep the vector/
-// matrix types trivially copyable (theirs' memcpy optimization depends on it).
 static_assert(std::is_trivially_copyable_v<Vec2f> && std::is_trivially_copyable_v<Vec2d> && std::is_trivially_copyable_v<Vec2i>, "Vector2 must remain trivially copyable");
 static_assert(std::is_trivially_copyable_v<Vec3f> && std::is_trivially_copyable_v<Vec3d> && std::is_trivially_copyable_v<Vec3i>, "Vector3 must remain trivially copyable");
 static_assert(std::is_trivially_copyable_v<Vec4f> && std::is_trivially_copyable_v<Vec4d> && std::is_trivially_copyable_v<Vec4i>, "Vector4 must remain trivially copyable");

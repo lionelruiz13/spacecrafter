@@ -9,50 +9,6 @@
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
 
-// B24 composition provider (INTENT S11.78; spelling `surface_point` +
-// ramp keys pending Vixy sign-off, the B28 protocol): a point ON a body's
-// surface, expressed in the parent's SURFACE frame - the co-rotation comes
-// from the GROUNDED fold (ModularBody::computeBodyToSurface, the parent's
-// exact spin state: epoch, offset, precession - one authority), never from
-// this provider. This is the structural rover/launchpad form; the legacy
-// `location_orbit` instead self-rotates with a degraded approximation (raw
-// JD, no epoch, offset frozen at construction) and silently DOUBLE-applies
-// spin if combined with a grounded body (the S11.78(c) trap).
-// [TRAP NOT CLOSED, AND ONE SENTENCE ABOVE NEEDS A NUMBER -- 2026-09-06,
-//  S11.217/F97.  (1) The trap now SIGNALS: LocationOrbitLoader writes an
-//  S2(f) warning when a body spells both, measured 51.32 deg apart on a live
-//  pair; the positions themselves are still both wrong and the row stays open.
-//  (2) "expressed in the parent's SURFACE frame" is true and is NOT the same
-//  thing as "at the authored planetographic longitude": the fold is
-//  Z(getAxisRotation()) and getAxisRotation() is `axisRotation + M_PI_2`
-//  [ModularBody.hpp:575-581], while the camera's own placement carries a
-//  compensating -pi/2 inside X(latitude - M_PI_2) [Camera.cpp:189-202].  So a
-//  body authored here at orbit_lon = L lands EXACTLY 90 deg east of an
-//  observer sent to lon = L, and of old's own AnchorPointBody point for L.
-//  Measured both ways in one run, observer at lon 0 and lon 90, angle at the
-//  parent's centre: 90.0000 / 0.0000 then 0.0000 / 90.0000
-//  (harness/f97_locorbit.py M3; the offline algebra is harness/f97_frame.cpp
-//  (4), 64 states, spread 0.000013 deg, and the fold WITHOUT the +pi/2 scores
-//  0.000000 deg -- the mutation that says the probe can tell them apart).
-//  This is S11.152(o)'s "exactly 90.0 deg in SURFACE mode ... a THIRD channel"
-//  and S11.4/S11.213's "-90.0003 deg zero point", one term, named at last.
-//  Whether `orbit_lon` here should keep meaning surface-frame azimuth or be
-//  respelled to the planetographic longitude the rest of the project uses is a
-//  RATIFIED-KEY question (D16-D19, S11.79(j)-(m)) and is recorded, not taken.]
-//
-// Keys (data, degrees/km like every legacy key):
-//   orbit_lon, orbit_lat        - planetographic position on the parent
-//   orbit_alt                   - km above the parent's DATUM surface (B10:
-//                                 datum_radius is the altitude zero-point)
-// Optional linear ascent ramp (the "rocket going up" of the mandate) - all
-// three required together:
-//   orbit_alt_end               - km, altitude at the end of the ramp
-//   orbit_ascent_start          - JD at which the ascent begins
-//   orbit_ascent_duration       - days; alt ramps orbit_alt -> orbit_alt_end
-//                                 over [start, start+duration], clamped both
-//                                 sides. (The dead legacy `linearOrbit` has
-//                                 its lerp weights SWAPPED - defect recorded,
-//                                 NOT reproduced here, S11.52(b).)
 class SurfacePointOrbit : public Orbit {
 public:
     SurfacePointOrbit(ModularBody *parent, Vec3d direction,
@@ -81,34 +37,6 @@ public:
         return os.str();
     }
 
-    // THE MODEL LAYER (D21 [vixy 2026-08-22] via S11.149(c1)/(c2); S2(a)'s
-    // two-layer rule): the parent's UNSCALED datum, read AT EVERY EVALUATION.
-    //
-    // It used to be `datum + altKm/AU` folded into a `const double` at LOAD
-    // from `parent->getAltitudeReference()` - the SCALED datum - and replayed
-    // every frame. That was wrong twice over. (i) It is a closed load-time
-    // latch, the fourth instance of the class B15/B19/B32 already closed, and
-    // the one thing "grounded children inherit scaling" cannot mean: `scaling`
-    // is a 5 s ASmooth ramp and a baked constant cannot inherit a ramp - which
-    // is also why the same scene had DIFFERENT geometry by load route
-    // (`body action reload` MOVED a composed rover by up to
-    // radius x (scale-1) = 6949.6 km on the shipped Moon, S11.101(f)).
-    // (ii) It put a DISPLAY flag inside a PHYSICAL position: the position the
-    // orbit, the shadow geometry and every model-position consumer read
-    // depended on `flag moon_scaled` - the D8 leak S11.101(f)(iii) recorded
-    // against `ModularBody.hpp`'s own "Just visual scaling" contract.
-    //
-    // Reading the RAW datum live fixes both, and it costs one float load: the
-    // display half now lives where it belongs, in
-    // ModularBody::getDisplayEclipticPos(), which dilates THIS output for the
-    // drawn chain only. Reading it live also makes the runtime
-    // `body name <parent> datum_radius <km>` seam (B10) reach the bodies
-    // standing on that parent, which a baked value silently ignored.
-    //
-    // The ascent ramp now lerps the ALTITUDE (what the data keys mean) rather
-    // than the datum-inclusive radius; algebraically identical, since the datum
-    // is a constant of the lerp: datum + (a(1-f) + b f) == (datum+a)(1-f) +
-    // (datum+b) f.
     virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const override
     {
         ModularBody *p = parent;
@@ -127,11 +55,6 @@ public:
         v[2] = direction[2] * r;
     }
 private:
-    // Lifetime (I5): a non-owning reference to a body this orbit outlives only
-    // if nothing destroys the parent - ModularBodyPtr is the project's
-    // destruction-notified form, and it is also what makes a body REPLACED by
-    // name (the loader's replace path) redirect this orbit to the replacement
-    // instead of leaving it on freed memory.
     const ModularBodyPtr parent;
     const Vec3d direction; // unit vector in the parent's surface frame
     const double tStart;   // JD
@@ -148,12 +71,6 @@ class SurfacePointOrbitLoader : public OrbitLoader {
                 "0 instead of the parent's datum surface. Declare the parent before this body.",
                 LOG_TYPE::L_WARNING);
         }
-        // The co-rotation precondition, checked at the one place that knows
-        // both sides (S2(f)): this provider emits a surface-frame point, so a
-        // body that is NOT grounded would sit frozen in the parent's
-        // non-spinning frame - the inverse of the location_orbit double-spin
-        // trap. Load proceeds (the position is still well-defined); the log
-        // names the fix.
         if (!(params["relation"] == "grounded" || Utility::isTrue(params["bound_to_surface"]))) {
             cLog::get()->write("Body '" + params["name"] + "' uses coord_func=surface_point "
                 "without the grounded relation: the point will NOT co-rotate with the parent's "

@@ -537,10 +537,6 @@ double EllipticalOrbit::eccentricAnomaly(double M, double &lastE) const
 		// requires more calcuation.
 		if (lastE == 0)
 			lastE = M + 0.85 * eccentricity * sign(sin(M));
-		// Standard iteration for solving Kepler's Equation.  s, c, f and f1 are
-		// the step's own inputs, not the seeding's, so they are INSIDE the loop:
-		// a second pass over a stale s/c would recompute the same correction
-		// and would not be a second step.
 		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i) {
 			const double s = eccentricity * sin(lastE);
 			const double c = eccentricity * cos(lastE);

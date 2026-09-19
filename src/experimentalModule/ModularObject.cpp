@@ -31,12 +31,6 @@
 // `"00h00m00s"`, `"24h00m00s"` - because old does not wrap them either.
 
 namespace {
-// Old normalises its hour angles with `while (x >= 360) x -= 360; while (x < 0)
-// x += 360;` before printing them [body.cpp]. This is the same map, in radians:
-// fmod puts the value in (-2pi, 2pi) and one conditional lifts it into
-// [0, 2pi). It is not the loop because at a 1968 date the loop would run about
-// eleven thousand times; it is not a bare fmod because a bare fmod is exactly
-// what S11.213 measured printing negative hour angles there.
 inline double wrap2pi(double a)
 {
     a = std::fmod(a, 2 * M_PI);
@@ -93,17 +87,6 @@ std::string ModularObject::getShortInfoNavString(const Navigator *nav, const Tim
 	const double T = jd / 36525.0;
 	/* calc mean angle */
 	const double sidereal = (280.46061837 + (360.98564736629 * jd) + (0.000387933 * T * T) - (T * T * T / 38710000.0)) * (M_PI/180.);
-    // Old's own arithmetic, term for term [body.cpp]: the LOCAL hour angle is
-    // the Greenwich one plus the observer's LONGITUDE (`Le = observatory->
-    // getLongitude()`), and BOTH angles are normalised into [0, 2pi) before
-    // they are printed and before PA is taken from HA.  Until S11.213 this line
-    // read `getLatitude()` and took a bare fmod, and both were measured on the
-    // dual dump's own sidecar: `LHA - GHA` printed the observer's LATITUDE
-    // (43.300000 deg) where old prints its LONGITUDE (5.366667 deg), constant
-    // over all 90 both-tree bodies; and at a pre-J2000 date, where `sidereal`
-    // is negative, the bare fmod printed GHA, LHA and LPA negative for 90
-    // bodies of 90 where old printed none.  SA and GHA are frame quantities and
-    // ride tmp.first; this line is the one term that is NOT the frame.
     const double HA = wrap2pi(sidereal + Camera::instance->getLongitude() - tmp.first);
     const double GHA = wrap2pi(sidereal - tmp.first);
     const double PA = (HA < M_PI) ? HA : (2*M_PI - HA);
@@ -113,25 +96,9 @@ std::string ModularObject::getShortInfoNavString(const Navigator *nav, const Tim
     oss << _("SA ") << Utility::printAngleDMS(2*M_PI-tmp.first)
 	    << _(" GHA ") << Utility::printAngleDMS(GHA)
 	    << _(" LHA ") << Utility::printAngleDMS(HA);
-	// calculate alt az. Old path prints az/alt/coAlt (coAlt = 90deg-alt) under
-	// the "Az/Alt/coA" label [body.cpp:433]; the new path had swapped alt<->az
-	// (raw az too) - a port defect flagged at S11.4. Reproduce the old order +
-	// convention exactly via the single authority (I2/parity, S11.60).
     const auto aa = altAz();  // (alt, az) in the old-path convention
 	oss << "@" << _(" Az/Alt/coA: ") << Utility::printAngleDMS(aa.second) << "/" << Utility::printAngleDMS(aa.first) << "/" << Utility::printAngleDMS(M_PI_2-aa.first) << " LPA " << Utility::printAngleDMS(PA);
 
-    // B27 A5 (S11.73(b), 2026-07-25): the day-length line was keyed on the name
-    // "Sun" (old body.cpp:434). RESOLVED to the CAPABILITY isStar(), not the
-    // system star: `daytime` above is computed from THIS body's declination and
-    // the observer's latitude, i.e. the length of the day this body makes when
-    // it is the one lighting the sky - a property of any light source, and the
-    // same structural answer getSatellitesFov() already gives ("the old path
-    // excluded the Sun by name; the structural equivalent is excluding stars",
-    // :162). `getSystemStar()` would have been the WRONG predicate twice over: it
-    // would print nothing for a star that is not its system's designated star,
-    // and it asks about the SYSTEM's state where the line is about the SELECTED
-    // body. Shipped corpus: `type = Sun` is the only STAR-tagged body, so the
-    // truth set is unchanged [measured: ssystem.ini, 1 star / 91 sections].
 	if (body->isStar()) {
 		oss << _(" Day length: ");
 		if (daytime<-1) {
@@ -163,16 +130,6 @@ std::string ModularObject::getNameI18n() const
 
 Vec3d ModularObject::getEarthEquPos(const Navigator *nav) const
 {
-    // observedToBodyEquPos, not observedToBodyLocalPos (S11.213): the override
-    // must honour the contract `Body::getEarthEquPos` sets, and that contract is
-    // OBSERVER-CENTRED -- `nav->helioToEarthPosEqu(...)`, whose own doc says
-    // "equatorial coordinate but centered on the observer position"
-    // [navigator.hpp, body.cpp]. The literal inverse of a view matrix is
-    // body-centred, and this value's consumers need old's origin, not the
-    // matrix's: `set home_planet selected` feeds it straight back through
-    // `earthPosEquToHelio` [anchor_manager.cpp], which is the exact inverse of
-    // the observer-centred map, and the old path's view aiming reads it as a
-    // direction from the observer [navigator.cpp, core.cpp].
     Vec3f ret = Camera::instance->observedToBodyEquPos(body->getObservedPosition());
     return Vec3d(ret[0], ret[1], ret[2]);
 }
@@ -192,9 +149,6 @@ std::pair<double, double> ModularObject::altAz() const
     // observedPosToAltAz returns (alt, az_raw): rectToSphe(&ret.second,
     // &ret.first, ...) puts latitude(alt) in .first, longitude(az) in .second.
     const auto tmp = Camera::instance->observedPosToAltAz(body->getObservedPosition());
-    // Old-path azimuth convention (N=0, E=90). The new raw az zero is offset
-    // -pi/2 from the old raw frame [measured, S11.60], so pi/2 - az_raw
-    // reproduces Body::getAltAz's az exactly (float32 residual <=3e-5deg).
     double az = std::fmod(M_PI_2 - tmp.second, 2 * M_PI);
     if (az < 0)
         az += 2 * M_PI;
@@ -228,11 +182,6 @@ double ModularObject::getCloseFov(const Navigator *nav) const
 
 double ModularObject::getSatellitesFov(const Navigator *nav) const
 {
-    // Old path excluded the Sun by name; the structural equivalent is excluding
-    // the system's PRIMARY (its "satellites" span the whole system). D27 split
-    // (S11.113(f)): primacy, not luminosity - a dark primary's children span the
-    // system just as widely, and a companion star that orbits something else has
-    // an ordinary subsystem worth fitting.
     if (body->hasChildren() && !body->isPrimary()) {
         const float rad = body->getSubsystemRadius();
         if (rad > 0)
@@ -255,8 +204,5 @@ double ModularObject::getParentSatellitesFov(const Navigator *nav) const
 
 float ModularObject::getOnScreenSize(const Projector *prj, const Navigator *nav, bool orb_only)
 {
-    // screenSize is the ratio of the screen taken by the body; the pointer
-    // path wants pixels. Viewport radius matches ModularBody::setTranslator's
-    // definition (screen width / 2).
     return body->getScreenSize() * ModularBody::getViewportRadius();
 }

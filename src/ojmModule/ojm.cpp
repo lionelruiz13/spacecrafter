@@ -126,11 +126,6 @@ int Ojm::record(VkCommandBuffer cmd, Pipeline *pipelines, PipelineLayout *layout
 
 int Ojm::record(VkCommandBuffer cmd, Pipeline *const *pipelines, PipelineLayout *layout, int selectedPipeline, bool firstRecorded)
 {
-	// Pointer-pair port of record() above (new-path registry pipelines are
-	// not contiguous). nullptr pipeline = skip those shapes (C3). Skipping
-	// breaks the pushAttr delta chain (pushAttr = "differs from previous
-	// SHAPE", not "from previous DRAW"), so the latest skipped attr is
-	// carried and pushed before the next drawn shape.
 	Texture *boundTex = nullptr;
 	const ShapeAttributes *pendingAttr = nullptr;
 

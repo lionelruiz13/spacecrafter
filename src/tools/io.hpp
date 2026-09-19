@@ -81,31 +81,11 @@ Updated on 17/05/2016
 #define DEBUG_SEPARATOR3 				" | " //Third error in the debug
 
 
-//! A line of protocol together with the connection it belongs to.
-//! INTENT S5.47: `setOutput` names no addressee, and the addressee used to be
-//! dropped at the first hop - `computeNormalString` knows which connection a
-//! command arrived on and pushed the bare string - so a `get`'s reply had
-//! nowhere to go but the feedback subscription ($LOGON), and with nobody
-//! subscribed it was popped off the queue and lost. The socket layer is the
-//! only place that knows the origin of a request, so it is the place that has
-//! to carry it. A connection is named by its SLOT **and** by the id that slot
-//! held when the line was read: slots are reused, so the id is what makes a
-//! reply follow the connection rather than the number (I5).
 struct ClientMessage {
 	unsigned int client = 0;	//!< index in clientSocketTab
 	unsigned int id = 0;		//!< connection id, 0 = no connection asked for this
 	std::string data;
-	//! Which door an incoming line came in by. An HTTP `?command=` query is
-	//! queued through the same path as a control line (computeHttp), and the
-	//! connection it arrived on is CLOSED before the application ever sees the
-	//! command - so it is not a control connection and must not be reported as
-	//! one. Unused on the output side. INTENT 11.187.
 	bool http = false;
-	//! OUTPUT side only: this record is a DIAGNOSTIC, not an answer. It goes to
-	//! the connections that asked for diagnostics with $DIAGON and to nobody
-	//! else - never to the addressee, never to the $LOGON subscribers. It rides
-	//! the same queue as an answer so that a client subscribed to both sees the
-	//! two in the order the application produced them. INTENT 11.188.
 	bool diag = false;
 };
 
@@ -123,56 +103,10 @@ public:
 	/* Function to display non-zero statistics */
 	void stats();
 
-	//! Transfer incoming data from TCP/IP inside the program.
-	//! Also latches WHICH connection this line came from, so that whatever the
-	//! application produces while serving it can be sent back there. An empty
-	//! return clears that latch: the caller has drained its batch, and output
-	//! produced afterwards (a script, the TUI, a keypress) was asked for by
-	//! nobody. So `getInput` and `setOutput` must be called from the SAME
-	//! thread, which is the application's update thread - the server thread
-	//! never touches either.
 	std::string getInput();
-	//! WHO sent the line `getInput` just returned: the never-reused connection
-	//! id (io.hpp `clientIdTab`), 0 when nothing is being served - the batch is
-	//! drained, and what the application does now was asked for by nobody.
-	//! This layer is the only one that knows it, so it is the one that says so
-	//! (the same argument that put the addressee in ClientMessage, INTENT
-	//! 5.47); the application turns it into the command's provenance
-	//! (ScriptOrigin::fromTcp, INTENT 11.187). Reads the same latch as
-	//! `setOutput`, so it belongs to the same thread as `getInput`.
 	unsigned int servingConnection() const { return servingId; }
-	//! ... and whether that line came in through the HTTP `?command=` door
-	//! rather than as a control line. HTTP shares this queue and its connection
-	//! is already closed: it is NOT a TCP control origin.
 	bool servingIsHttp() const { return servingHttp; }
-	//! Transfer of internal data outside the program: to the connection that
-	//! asked for it if there is one, and to the clients that subscribed to the
-	//! feedback channel with $LOGON in any case (they were the only recipients
-	//! before S5.47 and they keep receiving exactly what they received).
 	void setOutput(std::string data);
-	//! Send ONE diagnostic line to the connections that subscribed with
-	//! $DIAGON, and to NO other connection.
-	//!
-	//! WHY A SECOND CHANNEL AND NOT $LOGON. The existing subscription is
-	//! spoken by a shipped closed-source client (masterput) whose tolerance for
-	//! unexpected records cannot be established from here, so the rule is to
-	//! bound ALL of its possible behaviours at once: a connection that did not
-	//! ask for diagnostics must see BYTE-IDENTICAL traffic before and after
-	//! this change [vixy 2026-08-31: "an existing tcp path exists, used by
-	//! masterput (which is closed-source), do not modify this channel"].
-	//! Whether masterput subscribes with $LOGON is exactly the thing that is
-	//! unknowable, so reusing $LOGON is excluded rather than weighed
-	//! (INTENT 11.186(c), 11.188).
-	//!
-	//! CALLED FROM THE APPLICATION THREAD, like `setOutput` and for the same
-	//! reason: the record is composed by whoever produced the diagnostic and
-	//! handed to the server thread through the output queue. This function
-	//! never reads the subscription table - that table belongs to the server
-	//! thread, which is the only one that writes it.
-	//!
-	//! The message is clamped like an answer (MAX_BUFFER) and its line breaks
-	//! are folded to spaces, because one diagnostic is one record and a client
-	//! frames on them.
 	void sendDiagnostic(const std::string &data);
 
 private:
@@ -208,12 +142,6 @@ private:
 	SDLNet_SocketSet socketSet; //Socket monitoring table
 	TCPsocket* clientSocketTab; //Client sockets table
 	bool* clientBroadcastTab; //Feedback request table ($LOGON: the log/answer feed)
-	//! Diagnostic-channel subscription per slot ($DIAGON). A SECOND and
-	//! separate table on purpose: `clientBroadcastTab` is the wire masterput
-	//! may be speaking and it does not move, so a subscription that did not
-	//! exist before cannot be expressed by changing what that one means.
-	//! Cleared on disconnect (`close`) like its neighbour, so the next tenant
-	//! of a slot inherits no subscription (I5). INTENT 11.188.
 	bool* clientDiagTab;
 	unsigned int* clientIdTab; //Connection id per slot (0 = free); never reused
 	unsigned int lastClientId; //Last id handed out
@@ -226,11 +154,6 @@ private:
 	int unlock(SDL_mutex *mutex);
 	SDL_mutex *running; //Mutex of active server
 	int activeSocketsCount; //Number of active sockets
-	//! The RECEIVE buffer, and only that (S5.73): `tcp_buffer_in_size` bytes,
-	//! filled by `SDLNet_TCP_Recv` and read back by `computeNewData`. The HTTP
-	//! branch also streams a file through it, in `bufferSize` chunks - bounded
-	//! by the buffer by construction. Nothing that the server SENDS is copied
-	//! into it any more: an answer's length is the answer's business.
 	char* buffer;
 
 	/* Data storage variables */
@@ -238,9 +161,6 @@ private:
 	std::queue<ClientMessage> outputQueue; //Output queue
 	SDL_mutex *inputting; //Input queue mutex
 	SDL_mutex *outputting; //Mutex of the output queue
-	//! The request currently being served, latched by getInput: the answer
-	//! goes back to this connection. Written and read by the application
-	//! thread only (see getInput).
 	unsigned int servingClient;
 	unsigned int servingId;
 	bool servingHttp;			//!< that request came in through the HTTP door
@@ -261,15 +181,7 @@ private:
 	void pushRequest(unsigned int client, const std::string &data, bool http = false); //Queues a request with the connection it came from, and the door it came in by
 	void checkDataToSend(); //Sending function of data received from the application
 	void deliver(const ClientMessage &out); //Sends one answer where it belongs
-	//! Sends one diagnostic to the $DIAGON subscribers and to nobody else.
-	//! No fallback and no warning when there is no subscriber: an opt-in
-	//! channel with nobody listening is its normal state, not a fault, and the
-	//! diagnostic is in the log either way - the wire adds a copy for
-	//! subscribers, it never diverts one. INTENT 11.188.
 	void deliverDiagnostic(const ClientMessage &out);
-	//! Broadcast to the feedback subscribers. `excludeClient` is the slot that
-	//! has already been served as the addressee, so that a client which is both
-	//! the issuer and a subscriber gets one copy and not two.
 	int broadcast(const std::string &data, int excludeClient = -1);
 	int close(unsigned int client); //Function to close the client socket
 

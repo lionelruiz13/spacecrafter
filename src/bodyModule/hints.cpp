@@ -25,9 +25,6 @@
 std::unique_ptr<VertexArray> Hints::m_HintsGL;
 Pipeline *Hints::pipeline;
 PipelineLayout *Hints::layout;
-// [merge D3] nbrFacets: ODR definition only (value lives in the header, so it stays
-// a constant expression for the new-path service's fixed buffers).
-// hintCircleRadius: theirs' mutable float, defined here with its default value.
 const int Hints::nbrFacets;
 float Hints::hintCircleRadius = 8.0f;
 

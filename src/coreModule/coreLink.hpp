@@ -374,9 +374,6 @@ public:
 
 	bool lookAt(double az, double alt, double time = 1.){
 		Camera::instance->lookTo(alt*M_PI/180, az*M_PI/180, time);
-		// NEW path (B17): the look_at command arms the view offset -- mirrors old,
-		// where navigation->lookAt -> moveTo arms view_offset_transition
-		// (navigator.cpp:151,73-78). Discrete arm site (not the per-frame track).
 		Camera::instance->armViewOffset(true);
 		return core->navigation->lookAt(az, alt, time);
 	}
@@ -513,31 +510,10 @@ public:
 
 	void initialSolarSystemBodies();
 
-	//! Re-read the observer's current system from its data file, keeping the
-	//! current observation state (camera + date). Contract and what "keeping
-	//! state" covers: SSystemFactory::reloadCurrentSystem.
-	//! \return false when the current system has no data file behind it.
 	bool reloadSolarSystem();
 
-	//! Write the observer's current system to a composed system file, so what a
-	//! script pushed into it this session is there at the next launch as
-	//! ordinary authored data (B31 slice 2). Contract, naming rules and what a
-	//! save preserves: SSystemFactory::saveCurrentSystem.
-	//! \param filename a file NAME (empty = this system's own composed file).
-	//! \return false when nothing was written (the reason is logged).
 	bool saveSolarSystem(const std::string &filename);
 
-	//! B31 slice 3 - the session file (experimentalModule/SessionFile.hpp).
-	//! It lives HERE and not on Core because a restore has to move the observer
-	//! through the DUAL seam this class owns (observerMoveTo): the old
-	//! Observer still draws the whole sky, and S2 row B19 excludes it from the
-	//! file only on the grounds that "setters are dual so it follows".
-	//! EXPLICIT ONLY (D33): nothing calls either of these at startup or at
-	//! shutdown, and no config key selects one.
-	//! `cmds` is the command surface, which owns the names, read halves and
-	//! write halves of the bulk value rows (S2 E3/E4/E5). It is passed in
-	//! rather than reached for: this facade has no business knowing what a
-	//! flag is called.
 	bool sessionSave(const std::string &filename, SessionFile::CommandSurface *cmds);
 	bool sessionLoad(const std::string &filename, SessionFile::CommandSurface *cmds);
 
@@ -568,11 +544,6 @@ public:
 	//! Get flag for displaying Planets Axis
 	bool planetsGetFlagAxis() const;
 
-	//! Mirror the planet-grid colors onto the new path from the sky-manager
-	//! sources the OLD planet grid reads every draw (GRID_EQUATORIAL = meridian,
-	//! LINE_EQUATOR = parallel; body.cpp:1261-1264). Both-paths grid COLOR seam
-	//! (INTENT S11.42): keeps the new grid's colors identical to what the old
-	//! grid renders. The color-authority structural choice is suspended for Vixy.
 	void planetsSyncGridColor();
 
 
@@ -610,9 +581,6 @@ public:
 
 	void planetSetColor(const std::string& englishName, const std::string& color, Vec3f c) const;
 
-	//! Runtime navigation-radius seam (B10 S5.2, S11.79(e) D9key): set a body's
-	//! datum_radius / ground_radius (in km, the data-key unit) at runtime.
-	//! Returns false when no such body exists (the S2(f) diagnostic hook).
 	bool planetSetDatumRadius(const std::string& englishName, double km) const;
 	bool planetSetGroundRadius(const std::string& englishName, double km) const;
 
@@ -795,9 +763,6 @@ public:
 
 	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v);
 
-	//! The read half of skyDisplayMgrSetColor. The manager has had the getter
-	//! all along (skydisplay_mgr.hpp:61); only this facade lacked it, so nine
-	//! `color` names had no readback at all (INTENT S11.129).
 	const Vec3f &skyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj);
 
 	void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj);
@@ -834,22 +799,6 @@ public:
 		return true;
 	}
 
-	//! B33 (S11.108(f), the F12 template S11.118(f)): the observer place
-	//! readouts ask WHICH PATH DRAWS. Their setters have been dual since the
-	//! camera existed (observerMoveTo / observatorySetLatitude & co), so the two
-	//! authorities agree until something moves ONE of them -- and one shipped
-	//! command does exactly that: `camera action descend` is new-path-only by
-	//! design (the old path's free navigation is the anchor-point observatory,
-	//! there is nothing to mirror), as is free flight. Measured: two
-	//! `camera action descend coef 0.5` leave the old observer at 75 m and the
-	//! camera at 18.50 m. Everything that derives a target from these getters --
-	//! `moveto` with any absent component, `moveto multiply_alt`/`delta_alt`,
-	//! `mode jump ... altitude +-x`, the joypad height axis, the TUI location
-	//! callback -- then computes it from a place nothing is drawing from, and
-	//! writes it to BOTH paths, i.e. teleports the drawn observer.
-	//! No clamp is added here: old's +-90deg latitude clamp and its 0.1 m altitude
-	//! floor live in its SETTER, and a readout that clamps would report a place
-	//! the camera is not at (the setter asymmetry is recorded, not fixed).
 	double observatoryGetLatitude() const {
 		double lat, lon, alt;
 		if (drawnPlace(lat, lon, alt))
@@ -864,9 +813,6 @@ public:
 		return core->observatory->getLongitude();
 	}
 
-	//! Same readout, with the old getter's own [-180,180) display
-	//! normalisation preserved (observer.cpp) -- it is the TUI's convention and
-	//! it is what makes this a separate name.
 	double observatoryGetLongitudeForDisplay() const {
 		double lat, lon, alt;
 		if (drawnPlace(lat, lon, alt))
@@ -940,22 +886,10 @@ public:
 	}
 	void starGalaxyLoadCatalog(const std::string &filename); // defined in coreLink.cpp (StarGalaxy incomplete in this header)
 
-	//! New-path camera free-flight mode. Closes the INTENT S2(c)/S11.19c
-	//! reachability defect (setFreeMode had no command route - the whole
-	//! reference-transition layer was unreachable dynamically). New-path
-	//! capability: the old path's free navigation is the anchor-point
-	//! observatory, there is nothing to mirror.
 	void cameraSetFreeMode(bool b) {
 		Camera::instance->setFreeMode(b);
 	}
 
-	//! View-directed free descent (B21, S11.72): drive Camera::descend, the
-	//! altitude-geometry authority (view ray near / last-selected body far).
-	//! coef<1 descends, coef>1 ascends. New-path only -- the old-path free
-	//! navigation is the anchor-point observatory, there is nothing to mirror
-	//! (same seam as cameraSetFreeMode). This is the ONLY command-reachable
-	//! driver of the view-directed descent: multAlt/moveRelAlt are UI-key-only
-	//! (B10 finding, S11.71).
 	void cameraDescend(float coef) {
 		Camera::instance->multAlt(coef);
 	}
@@ -1085,22 +1019,6 @@ public:
 		core->navigation->setDefaultHeading();
 	}
 
-	//! The environment roll around the observer, in degrees, normalised to
-	//! [-180, 180] (the old getter's own TUI-compatibility convention).
-	//! B33 (S11.108(f)) + the D28 rider (S11.113(g)): this READS THE PATH THAT
-	//! DRAWS. The setter above has always written both authorities; the getter
-	//! read only the old Navigator, so under the new path it reported a number
-	//! that was not the roll on screen - measured -6.16 deg drawn vs 0 reported
-	//! after a reference switch - and `heading delta_azimuth d`
-	//! (app_command_interface.cpp) computes its ABSOLUTE target from it.
-	//! D28 chose "the new path holds the whole orientation across a reference
-	//! switch", which makes the divergence permanent by design and this readout
-	//! the thing that makes the choice operable: the operator must be able to
-	//! see and command the roll the choice produces. `set heading 0` stays the
-	//! standing remedy for the accumulating tilt and is unaffected - it writes
-	//! both paths, as before.
-	//! Which path draws is asked, not assumed: under `flag experimental_path
-	//! off` the old Navigator IS the drawn roll and is what must be reported.
 	double getHeading() const {
 		if (!core->getExperimentalPath())
 			return core->navigation->getHeading();
@@ -1122,21 +1040,6 @@ public:
 		return (core->getFlagTracking());
 	}
 
-	//! B33 READBACK ONLY (INTENT S11.108(f), delivered S11.131) -- what the
-	//! CONTROL SURFACE answers for each member of the query half, beside the
-	//! value EACH path holds for the same readout, in one frame.
-	//! What it is FOR: the rule is that a getter reports the path that DRAWS,
-	//! and until this existed no member of the class could be MEASURED against
-	//! it on either binary -- `get status position` never replies (S5.47), the
-	//! view-offset readout has one live reader and it is the TUI, and the mount
-	//! readout has no live reader at all. Each row is
-	//! `{"reported": ..., "old": ..., "new": ...}` in the GETTER's own units, so one
-	//! dump discriminates by itself: a binary that reads the old authority has
-	//! `reported == old` whatever draws; a binary that reads the drawn path has
-	//! `reported == new` while the new path draws and `reported == old` under
-	//! `flag experimental_path off`.
-	//! Const, side-effect-free, dump-channel only (`body action dual_dump`) --
-	//! the old render path is unchanged by construction (S11.52(b)).
 	void dumpControlSurface(std::ostream &out) const;
 
     CoreLink(std::shared_ptr<Core> _core) {

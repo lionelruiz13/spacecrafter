@@ -13,40 +13,6 @@ class Landscape;
 class Renderer;
 class ToneReproductor;
 
-// ============================================================================
-// Aggregation authority of the environment layer (EnvironmentModule.hpp) -
-// the BodyDecor replacement on the new path. Owned by SSystemFactory during
-// migration (it needs only the Camera and the frame clock; it slides into
-// the frame task at the S4 inversion, where "aggregated by the system"
-// becomes literal).
-//
-// Per frame (update):
-//   1. Resolve the active chain (reference -> isolated root) and fire
-//      enter()/leave() member edges on the chain DIFF (single edge
-//      authority - see ModularBody::enterEnvironment note).
-//   2. Seed EnvironmentState (defaults + broadcast inputs: the atmosphere
-//      user flag - old BodyDecor::atmState, mirrored from its three write
-//      sites), then run member update()s: grounded members only while the
-//      camera is anchored on the reference (onBody), InAoI members for every
-//      chain body. Fixed combination rules applied here (drawBody =
-//      !drawLandscape).
-//   3. Compute skyBrightness (the old executor formula, camera-sourced sun).
-//   4. Snapshot the atmosphere compute input (consumed by the executor's
-//      async job through the work queue's happens-before - the compute
-//      itself stays on the old path's work thread, same thread parity).
-//   5. driveEngines (modular phase only): write the shared engines exactly
-//      where the old BodyDecor branches wrote them (atmosphere fader target,
-//      milkyway iris selection, atmosphere model on reference change).
-//      Fader writes are change-gated by AFader::operator= itself.
-//
-// Draw dispatch (called from the executor at the exact frame positions the
-// old calls occupied - frame-sequencing input during migration):
-//   drawBackdrop: chain InAoI members, root-most first (milkyway 2D behind
-//                 everything; old call position = before nebulas/stars).
-//   drawSky:      chain InAoI members (atmosphere - after the bodies), then
-//                 the reference's grounded members (landscape+fog) gated by
-//                 state.drawLandscape - the old executor order and gate.
-// ============================================================================
 class EnvironmentManager {
 public:
     EnvironmentManager(MilkyWay *milky, Atmosphere *atmosphere);
@@ -70,9 +36,6 @@ public:
     // Landscape engine re-seat (Core::setLandscape/loadLandscape swap the
     // object - I5: the owner re-seats every dependent reference).
     void setLandscape(Landscape *landscape);
-    // New-path input snapshot for Atmosphere::computeColor - built in
-    // update() on the main thread, read by the executor's async job (ordered
-    // by the work queue push/pop).
     inline const AtmosphereComputeInput &getAtmosphereInput() const {
         return atmInput;
     }
@@ -80,25 +43,9 @@ public:
     inline Atmosphere *getAtmosphereEngine() const {
         return atmosphere;
     }
-    // I5 - destruction notification for the two NON-OWNING body references
-    // this class keeps ACROSS frames (activeChain, lastReference). Pushed by
-    // ModularBody's destructor (I3: the owner notifies, this side never
-    // polls). Without it any body destruction between two frames leaves a
-    // freed pointer in the diff base, and the next update dereferences it to
-    // fire leave() edges - which is what a system reload (every content body
-    // destroyed and rebuilt) does to the whole chain at once. A destroyed
-    // body's members die with it, so dropping the entry IS the correct edge:
-    // there is nothing left to leave().
     static void notifyBodyDestroyed(ModularBody *body);
     // Frame clock for members needing absolute time (zodiacal rotation).
     double julianDay = 0;
-    // Zodiacal placement inputs (MilkyWay::ZodiacalInput supplier, new-path
-    // authority - INTENT 11.32): sun direction already in the eye frame
-    // (star observed position); the home-body orbit-plane normal stays in
-    // the ROOT-ALIGNED frame - MilkyWayEnv rotates it with its own chain
-    // rotation at draw (flat-chain contract: all root-aligned frames share
-    // one orientation). valid=false -> engine falls back to the simple
-    // time-rotation placement.
     Vec3d zodiacalSunDirEye;
     Vec3d zodiacalEclipticNormalRoot;
     bool zodiacalValid = false;

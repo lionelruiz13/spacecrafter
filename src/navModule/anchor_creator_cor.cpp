@@ -127,13 +127,6 @@ std::shared_ptr<AnchorPoint> AnchorPointOrbitCreator::handle(stringHash_t params
 		}
 	}
 
-	// The creator chain hands ownership out (every handle() returns a
-	// unique_ptr), and this anchor is the only thing that will ever use the
-	// orbit - so this is where the ownership must be held until it is moved
-	// into the AnchorPointOrbit below.  Taking .get() off the returned
-	// temporary left the pointer dangling from the next statement on: the
-	// orbit died at the end of that expression and every update() of the
-	// anchor read recycled heap (ledger Sec.5.133).
 	std::unique_ptr<Orbit> orbit = orbitCreator->handle(params);
 
 	if(orbit == nullptr) {

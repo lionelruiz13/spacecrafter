@@ -224,10 +224,6 @@ public:
 	//! Set whether sky position is to be locked. Both-paths mirror (defined in
 	//! core.cpp): old navigation flag + new-path Camera sky-lock (INTENT 11.58).
 	void setFlagLockSkyPosition(bool b);
-	//! Whether the sky position is locked ON THE PATH THAT DRAWS -- B33
-	//! (S11.108(f), the F12 template S11.118(f)). Defined in core.cpp: this
-	//! header does not see the Camera, and the answer is the Camera's whenever
-	//! the new path is the one drawing.
 	bool getFlagLockSkyPosition(void);
 
 	//! Set current mount type, on both paths (defined in core.cpp: this header does not see the Camera)
@@ -336,15 +332,6 @@ public:
 		return selected_object;
 	}
 
-	//! Whether the OLD path must draw the selection pointer this frame.
-	//! Dual-path rule (S2b), previously copy-pasted at the four executor draw
-	//! sites: in the modular phase BODY pointers are drawn by the new path's
-	//! pointer service (Renderer::drawPointer, ModularSystem::drawSystem) and
-	//! the old pointer would double-draw at the old path's projected position.
-	//! That holds for old-tree bodies (OBJECT_BODY) and for new-only composed
-	//! bodies (OBJECT_MODULAR) alike - both are driven by
-	//! ModularBody::getSelected() there (B24-select, INTENT S11.106).
-	//! Non-body pointers (star/nebula) have no new-path counterpart and stay.
 	bool needOldSelectionPointer() const {
 		if (!selected_object || !object_pointer_visibility)
 			return false;
@@ -427,56 +414,14 @@ public:
 	// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
 	void ssystemDualDump(const std::string& file);
 
-	//! The direction the OLD path draws the sky from (S2 row B19's twin).
-	//! The star field, the milky way and the nebulae are aimed by this vector
-	//! and by nothing the camera holds -- measured 107.634 deg away from the
-	//! camera in a scene where nothing aimed either path (INTENT S11.130).
 	const Vec3d& getSkyVision() const;
 
-	//! Put that direction back where a session recorded it, and make it MEAN
-	//! something: the transforms are recomputed from the observer and the date
-	//! FIRST, because a restore runs between two frames and the navigator's
-	//! matrices are otherwise still the previous frame's -- on the launch body,
-	//! at the launch date. Same two calls Core::init makes after it moves the
-	//! observer; no existing caller of the old path changes.
 	void restoreSkyVision(const Vec3d& localVision);
 
-	//! S2 row B10 on BOTH paths. `setViewOffset` is already the one sink the
-	//! two S2(c) channels funnel into, so the scalar is its business; what it
-	//! cannot do is assert the ARMING LATCH, which D32 saves as a condition and
-	//! snaps. The old navigator's latch is otherwise only reachable through an
-	//! aim, and a restore must not aim. Session-restore use only.
 	void restoreViewOffset(double offset, bool armed);
 
-	//! READBACK ONLY (INTENT S5.63 / S11.130) -- the OLD path's view state, as
-	//! one JSON object, written into the dual-path dump's header.
-	//! What it is FOR: the composed screen of a restored session differs from
-	//! the saved one ONLY in old-path sky content (stars / milky way /
-	//! nebulae), while every field of the camera dump agrees. The state those
-	//! three are drawn from lives in the navigator, the observer, the projector
-	//! and the star pipeline, and none of it was observable -- so the difference
-	//! could be measured but not attributed. Each owner writes its own part;
-	//! this method only composes them and adds what Core itself owns.
-	//! Const, side-effect-free, dump-channel only: the old render path is
-	//! unchanged by construction (S11.52(b)).
 	void dumpOldViewState(std::ostream &out) const;
 
-	//! ---- THE INTERACTIVE-RAMP INSTRUMENT (INTENT S11.133, B34) -----------
-	//! READBACK ONLY. One record per `Core::updateMove` frame in which an
-	//! interactive ramp is active, plus the FIRST frame after it stops (so a
-	//! key RELEASE has a row of its own and is not read off an absence).
-	//! Written by `Core::updateMove`, read only by the dump channel
-	//! (`Core::ssystemDualDump`); nothing in the app consumes it and removing
-	//! it changes no behaviour.
-	//! What it is FOR: the parity claim B34's ramp member makes is a PER-STEP
-	//! one. A `body action dual_dump` before and after a 2.5 s key hold gives
-	//! two ABSOLUTE states -- it cannot say whether the two paths took the same
-	//! step, the same number of steps, or the same law; and on a binary with no
-	//! mirror it cannot tell "the ramp did not reach the camera" from "the
-	//! readout does not exist" (S11.132(a)'s fiction, the reason instruments
-	//! come first and in their own commit). Each row therefore carries the
-	//! frame's INPUTS (delta_time, both fov authorities, the scaled steps) and
-	//! BOTH paths' view parameters before and after the step.
 	struct RampStep {
 		unsigned int frame;			//!< `Core::updateMove` call index (gaps are visible)
 		int deltaTime;				//!< ms handed to `Core::updateMove`
@@ -495,99 +440,19 @@ public:
 	//! The ring, chronological, as one JSON object.
 	void dumpRampTrace(std::ostream &out) const;
 
-	//! ---- THE SEAM RECORDER (INTENT S11.245, F121) ------------------------
-	//! READBACK ONLY. ONE record per frame, at the ONE point in the frame
-	//! where BOTH engines have advanced for that frame: the end of
-	//! `Executor::update`, after `SSystemFactory::updateExperimental` has run
-	//! `Camera::update` and after the executor mode has run the whole old
-	//! path. Everything else in the frame sees one of the two halves stale.
-	//!
-	//! WHAT IT IS FOR. Every camera transition in this engine is implemented
-	//! TWICE -- the old navigator/observer/projector interpolates and the star
-	//! field follows it, the same command is forwarded to
-	//! `experimentalModule/Camera`, which interpolates on its own and the
-	//! bodies follow that. The two agree AT REST, and every parity instrument
-	//! of this project has measured states at rest, so the whole class was
-	//! invisible: the tester's report (*"everything doesn't move at the same
-	//! speed, on zoom, on movement"*, S11.244(a)3) is about the INTERVAL
-	//! between two rests. "Identical" here means delta zero ON EVERY FRAME of
-	//! the transition, not only at its end, and that is a per-frame question.
-	//!
-	//! WHY NOT THE EXISTING DUMP CHANNEL. `body action dual_dump` is
-	//! per-REQUEST and its latency was measured at 195-714 frames (S11.241(d));
-	//! it cannot sample a ramp. What it CAN do is carry a ring that was filled
-	//! in-process -- which is exactly what the `RampStep` member above already
-	//! does for the interactive ramps (S11.133). This is that instrument
-	//! generalised from "the frames a key is held" to "every frame", and read
-	//! out through the same command, so the dump's latency bounds only WHEN
-	//! the history is read, never WHAT it saw.
-	//!
-	//! COST WHEN OFF (D11, 1 ms/frame): one `bool` test per frame and nothing
-	//! else -- the ring is not even allocated. Armed by the environment
-	//! variable `SC_SEAM_RECORD` (any non-empty value other than "0"), read
-	//! once in `Core::init`, and LOGGED when it arms (D12: an acting
-	//! non-default is never silent). There is no command to arm it: the
-	//! recorder must be running BEFORE the first frame of a transition, and a
-	//! command that arms it would itself be a frame late.
 	struct SeamStep {
 		unsigned int frame;		//!< recorder call index (gaps are visible)
 		int deltaTime;			//!< ms the frame advanced
 		double jd;				//!< the frame's simulation date
-		//! FOV. Old owns `Projector::fov` (DEGREES, full angle) and the star
-		//! field is drawn at it; the new path owns `ModularBody::halfFov`
-		//! (RADIANS, half angle) and every body is drawn at it. `aimFov` is
-		//! old's in-flight target, `zoomSrc`/`zoomDst` the camera's, so a
-		//! divergence can be attributed to the LAW rather than to the target.
 		double fovOld, aimFovOld, halfFovNew, zoomSrcNew, zoomDstNew;
-		//! VIEW DIRECTION, two independent channels (see Camera::getAbsFwd /
-		//! getForwardLocal). `viewAngleAbs` is the angle between old's eye
-		//! forward and the camera's, both in the root-aligned inertial frame;
-		//! `viewAngleLocal` is the same comparison in the acting/zenith frame,
-		//! which does not pass through the placement. Degrees.
 		double viewAngleAbs, viewAngleLocal;
-		//! WHERE THE EYE IS. |old's observer heliocentric position - the
-		//! camera's root position|, AU. The two were measured to agree to
-		//! 2.6e-08 AU at rest (S11.141), which is this channel's floor.
 		double posDelta;
-		//! HEADING. Old's in degrees (its own unit), the camera's in radians.
-		//! Reported raw and not differenced: across a reference switch the two
-		//! are not the same parameter (B13 rewrites the camera's), so a
-		//! subtraction would invent a divergence. A reader differences them.
 		double headingOldDeg, headingNewRad;
-		//! THE PLACE, as the two control surfaces express it: old's observer
-		//! (degrees, degrees, metres) minus the camera's `getPlace()` in the
-		//! same units. S5.68's channel.
 		double dLonDeg, dLatDeg, dAltMetres;
-		//! IN-FLIGHT PLANS. Old: auto-move flag and its coefficient, the
-		//! heading-ramp flag. New: the four plan timers. The interval this
-		//! instrument exists for is exactly the interval in which these
-		//! disagree.
 		double moveCoefOld;
 		float viewTNew, hdgTNew, zoomTNew, moveTNew;
-		//! STATE IDENTITY, as bits, so one frame is one small record:
-		//! 1 old auto-move, 2 old heading ramp, 4 old tracking flag,
-		//! 8 camera has a tracked body, 16 tracked bodies NAME-equal,
-		//! 32 old home planet == camera reference (name-equal),
-		//! 64 camera in free mode.
 		unsigned int flags;
 	};
-	//! ONE TRAVEL INSTALL, as the registry that installed it was handed it.
-	//! The per-frame record above says WHERE the two engines are; this says
-	//! WHAT EACH WAS TOLD, and the pair is what separates "the two travel laws
-	//! disagree" from "the two laws were given different inputs" (S11.246).
-	//! The five members are the same five on both sides by construction --
-	//! old keeps them in `AnchorManager` (startPosition, direction,
-	//! distanceToTavel, startTime, arrivalTime) and the new registry now keeps
-	//! the same five (CameraAnchors::getTravelStart and siblings) -- so a
-	//! reader differences them term for term with no frame conversion: both
-	//! are ROOT/heliocentric AU, both dates are JD.
-	//! Captured by `recordSeamStep` on the install EDGE, which keeps the
-	//! recorder READBACK-ONLY: it polls the new registry's install counter and
-	//! the old one's `moving` flag and copies what it finds. The old side has
-	//! no counter (adding one would be a write to the comparison baseline), so
-	//! a zero-duration old install -- which never raises `moving` -- is not
-	//! seen; the new side's counter sees every install, and the asymmetry is
-	//! reported rather than papered over.
 	struct SeamTravel {
 		unsigned int frame;		//!< recorder call index of the edge
 		int engine;				//!< 0 = old AnchorManager, 1 = new CameraAnchors
@@ -605,10 +470,6 @@ public:
 	//! replacing the A/B auto-toggle once used.
 	void setExperimentalPath(bool newPath);
 	bool getExperimentalPath() const;
-	//! Startup path selection from beta_features.ini (see SSystemFactory).
-	//! Call once at init; "new"/"old"/"alternate", anything else is refused
-	//! with a log line rather than silently falling back - an unrecognised
-	//! value is a user error that must be visible, not absorbed.
 	void setRenderPathMode(const std::string &mode);
 
 	//! set flag to display generic Hint or specific DSO type
@@ -701,9 +562,6 @@ public:
 
 	void setPredictibleRendering(bool enable, int framerate);
 private:
-	//! Zoom the OLD projection to aim_fov AND mirror it to the new-path
-	//! Camera (ModularBody::halfFov -> Renderer clipping_fov.z). Both-paths
-	//! seam for the auto-zoom fov targets (INTENT 11.40 / 11.15c residual).
 	void zoomToBothPaths(double aim_fov, float move_duration);
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
@@ -713,11 +571,6 @@ private:
 
 	void applyClippingPlanes(float clipping_min, float clipping_max);
 
-	//! Push the current sky-line tropic / polar-circle state (show flags +
-	//! colors) to the new-path planet grid, once per frame before the modular
-	//! system draws. Reproduces old Body::drawPlanetGrid's per-frame poll of the
-	//! sky managers (body.cpp:1257-1258): the planet-grid tropic circles ride
-	//! LINE_TROPIC, the polar circles LINE_CIRCLE_POLAR (INTENT S11.57, B23).
 	void syncPlanetGridSkyState();
 
 	//! Callback to record actions
@@ -748,9 +601,6 @@ private:
 	// Increment/decrement smoothly the vision field and position
 	void updateMove(int delta_time);
 
-	//! Ramp-instrument storage (see RampStep above). A fixed-size ring, filled
-	//! only while a ramp is active, so a hold longer than the ring keeps its
-	//! LAST frames and `rampTotal` says how many were dropped.
 	static constexpr unsigned int RAMP_TRACE_CAPACITY = 2048;
 	std::vector<RampStep> rampTrace;
 	unsigned int rampWrite = 0;		//!< next slot
@@ -758,21 +608,12 @@ private:
 	unsigned int rampFrame = 0;		//!< `updateMove` call index
 	bool rampWasActive = false;		//!< to emit the release row
 
-	//! Seam-recorder storage (see SeamStep above). Same ring shape as the ramp
-	//! instrument's, sized for a whole scripted transition: 16384 frames is
-	//! 113 s at the config's 144 fps cap, and `seamTotal` says how many a
-	//! longer capture dropped. Allocated on the FIRST record, so an unarmed
-	//! run carries the vector's 24 empty bytes and nothing else.
 	static constexpr unsigned int SEAM_TRACE_CAPACITY = 16384;
 	std::vector<SeamStep> seamTrace;
 	unsigned int seamWrite = 0;		//!< next slot
 	unsigned int seamTotal = 0;		//!< records ever written
 	unsigned int seamFrame = 0;		//!< recorder call index
 	bool seamRecording = false;		//!< armed by SC_SEAM_RECORD at init
-	//! Travel installs (see SeamTravel above). A LIST, not a ring: a show
-	//! performs a handful of travels, and the first ones are the interesting
-	//! ones, so an overflow drops the LATEST and says how many -- the opposite
-	//! of the frame ring's policy, and deliberately so.
 	static constexpr unsigned int SEAM_TRAVEL_CAPACITY = 64;
 	std::vector<SeamTravel> seamTravels;
 	unsigned int seamTravelTotal = 0;	//!< installs seen, kept or dropped
@@ -781,9 +622,6 @@ private:
 	//! Copy one registry's install record into `seamTravels`.
 	void recordSeamTravel(int engine, double jd, const Vec3d &start,
 	                      const Vec3d &dir, double distance, double t0, double t1);
-	//! Write one record for this frame. Called from `Executor::update` (a
-	//! friend) after BOTH engines have advanced; returns immediately when the
-	//! recorder is not armed.
 	void recordSeamStep(int delta_time);
 
 	// initialize CoreFont class

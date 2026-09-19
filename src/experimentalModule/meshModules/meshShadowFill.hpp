@@ -6,39 +6,6 @@
 #include "bodyShaderInterface.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
-// ============================================================================
-// Shared receiver-side fills of the generalized shadow block - single
-// authority (I2) for every receiver family. Two idioms only (consolidated
-// 2026-07-18 when the per-entry-rows restructure touched every fill at once;
-// fillRayMarchShadows and fillOjmShadows had byte-identical bodies - the
-// GLSL-include lesson applied to the CPU side before the ring made a 4th
-// copy):
-//
-//  - fillPlainShadows: receivers whose fragment works in EYE SPACE (disc
-//    families - meshFrag; the RING block at row 4). Entry rows/clip are
-//    consumed UNFOLDED.
-//  - fillFoldedShadows: receivers whose fragment works in MODEL space
-//    (ray-march samplePos, OJM raw vertices). Entry rows AND clip fold
-//    through the same model->eye map MV = mat * scaling(radius) (they are
-//    affine forms over the same P - folding both through one map is what
-//    keeps caller consistency by construction).
-//
-// Since 2026-07-18 the rows live PER ENTRY (ShadowProjection.hpp,
-// [vixy: 2026-07-18]): every entry is self-contained, so multi-light lands
-// in the selection alone - these fills and every receiver stay untouched.
-//
-// `self` = the RECEIVING module (pass `this`): entries are per (caster body,
-// PROJECTING module), and a surface must skip the entries it produced itself
-// (caster == its own body && source == itself) - the mesh layer of a planet
-// is exactly its own disc centered on itself; sampling it would darken the
-// whole surface. Cross-body entries and the OTHER modules' within-body
-// entries (ring -> planet) pass through.
-//
-// Both fill ONLY the receive members of the block (nbShadowingBodies +
-// shadowingBodies); sibling fields are the module's own. Gate on the service
-// flag too: entries may be stale from the frame the flag switched off.
-// ============================================================================
-
 // Eye-space receivers: entries copied verbatim (rows already receiver-folded
 // by the selection - ModularSystem::computeShadows).
 template <typename Block>
@@ -65,15 +32,6 @@ inline void fillPlainShadows(SharedBuffer<Block> &frag, ModularBody *body, const
     }
 }
 
-// Model-space receivers: rows and clip folded per entry through
-// MV = model->eye (including any radius/oblateness scale), radius = the span
-// of the fragment's model-space unit (finalRadius for the ray-march unit
-// sphere, body radius for OJM's normalized vertices):
-//   rowL.xyz[j] = radius * dot(row.xyz, MV.column[j])   (j = 0..2)
-//   rowL.w      = row.w + dot(row.xyz, MV.translation)
-// The clip plane is an affine form over eye-space P exactly like the rows,
-// so it folds through the SAME map (degenerate planes stay degenerate:
-// xyz = 0 folds to 0, w unchanged).
 template <typename Block>
 inline void fillFoldedShadows(SharedBuffer<Block> &frag, ModularBody *body,
                               const Mat4f &MV, float radius, const BodyModule *self)

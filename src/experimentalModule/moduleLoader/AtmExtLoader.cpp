@@ -32,15 +32,9 @@ std::unique_ptr<BodyModule> AtmExtLoader::load(ModularBody *target, std::map<std
         }
     }
     if (obj) {
-        // Old parse parity (protosystem.cpp:871): factor default 1.05; the
-        // gradient path is passed RAW to s_texture (old AtmExt ctor did the
-        // same with tableAtmosphere - s_texture resolves internally).
         const float radiusFactor = params["atmosphere_radius_factor"].empty()
             ? 1.05f : static_cast<float>(Utility::strToDouble(params["atmosphere_radius_factor"]));
         auto shell = std::make_unique<AtmExtModule>(obj, params["atmosphere_ext_model"], radiusFactor);
-        // nearComponent, loaded AFTER the MESH module (deduction order) so
-        // the shell records after the disc in the body's command buffer -
-        // old drawBody/drawAtmExt order, same depth slice.
         addNearComponent(target, shell.get());
         return shell;
     }

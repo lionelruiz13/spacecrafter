@@ -52,11 +52,6 @@
 * m_ifSwapCommand[i] = false indicates that the if ndegi is in the part where it accepts the following instructions, they must be executed
 */
 
-//! Pure state: this class keeps the stack and says what happened; the CALLER
-//! (AppCommandInterface::commandStruct / terminateScript) reports, because it
-//! is the one holding the origin of the current line and the log/annotation
-//! channels (2026-08-31: "end without if"/"else without if" moved out of here
-//! for that reason, unchanged in meaning).
 class IfSwap : public NoCopy {
 public:
     IfSwap();

@@ -97,10 +97,6 @@ cLog::RotationRecord cLog::rotate(const std::string& LogfilePath)
 	std::error_code ec;
 	RotationRecord rec;
 
-	// What falls out of the window goes FIRST, so the shift below never has to
-	// overwrite a file it was supposed to keep.  Its size is read while it
-	// still exists: a D12 line has to say what was thrown away, not only that
-	// something was (Sec.2.0 D12's CONTENT part).
 	const std::string oldest = archiveName(base, LOG_RETENTION_LAUNCHES - 1);
 	if (std::filesystem::exists(oldest, ec)) {
 		rec.deletedSize = std::filesystem::file_size(oldest, ec);
@@ -118,10 +114,6 @@ cLog::RotationRecord cLog::rotate(const std::string& LogfilePath)
 	if (rec.rotated)
 		std::filesystem::rename(live, archiveName(base, 1), ec);
 
-	// How much of the window is in use once the fresh file below is opened,
-	// and how many bytes the archives hold - the archived half of this
-	// channel's share of LOG_RETENTION_BYTES, measured HERE because here is
-	// the only place it changes (Sec.11.237: never a file_size per line).
 	rec.kept = 1;
 	for (int k = 1; k < LOG_RETENTION_LAUNCHES; ++k) {
 		const std::string archive = archiveName(base, k);
@@ -162,11 +154,6 @@ void cLog::reportOpen(const std::string& LogfilePath, const RotationRecord& rec)
 	     +  " changing that line and rebuilding.";
 	openReport.push_back(line);
 
-	// The layout before Sec.11.230 wrote one dated file per DAY on the script
-	// channel (<path>-YY.MM.DD.log, appended across launches) and nothing ever
-	// deleted one.  Such files are outside this window by construction: this
-	// build neither writes nor removes them, so the only way they leave the
-	// disk is by hand - which is exactly what the line must say.
 	std::uintmax_t legacyBytes = 0;
 	int legacyCount = 0;
 	const std::string prefix = LogfilePath + "-";
@@ -202,12 +189,6 @@ void cLog::reportOpen(const std::string& LogfilePath, const RotationRecord& rec)
 
 void cLog::openLog(const LOG_FILE& fichier, const std::string& LogfilePath)
 {
-	// Every channel keeps the last LOG_RETENTION_LAUNCHES launches and the
-	// CURRENT launch keeps the channel's own name, so this open is always
-	// <LogfilePath>.log, truncated, with the previous launches numbered behind
-	// it.  Until Sec.11.230 the script channel alone opened a per-day
-	// <LogfilePath>-YY.MM.DD.log in APPEND mode and nothing ever capped it
-	// (Sec.5.115: gigabyte-scale logs at clients).
 	const RotationRecord rec = rotate(LogfilePath);
 	reportOpen(LogfilePath, rec);
 
@@ -231,10 +212,6 @@ void cLog::reportOpenLog()
 	if (openReportLogged)
 		return;
 	openReportLogged = true;
-	// write() puts each line on the console itself when the console is already
-	// on, so the console half is served either here or by setDebug, never
-	// twice.  The report cannot be written from openLog: the first channel
-	// rotates before any log file exists to receive it.
 	if (isDebug)
 		openReportOnConsole = true;
 	for (const auto& line : openReport)
@@ -249,9 +226,6 @@ void cLog::reportOpenLogConsole()
 	writeMutex.lock();
 	for (const auto& line : openReport)
 		writeConsole(line, LOG_TYPE::L_INFO);
-	// Then whatever the size budget did before this answer existed; the buffer
-	// is released with the same act, because from here on writeLocked puts
-	// every further rotation line on the console as it writes it.
 	for (const auto& line : budgetReport)
 		writeConsole(line, LOG_TYPE::L_INFO);
 	std::vector<std::string>().swap(budgetReport);
@@ -278,10 +252,6 @@ void cLog::write(const std::string& texte, const LOG_TYPE& type, const LOG_FILE&
 {
 	writeMutex.lock();
 	writeLocked(texte, type, fichier);
-	// The size bound, checked where every byte of every channel passes and
-	// nowhere else: one compare per line, against a total kept by writeLocked
-	// (Sec.2.0 D11).  It is checked HERE and not inside writeLocked so that the
-	// D12 line a rotation writes cannot start another rotation.
 	if (budgetUsed > LOG_RETENTION_BYTES)
 		rotateForBudget();
 	writeMutex.unlock();
@@ -289,10 +259,6 @@ void cLog::write(const std::string& texte, const LOG_TYPE& type, const LOG_FILE&
 
 void cLog::rotateForBudget()
 {
-	// The channel that is over the budget pays for it: the one holding the
-	// most bytes, which under any real load IS the channel being written (the
-	// script channel at 193 MB/h, Sec.11.218(m)).  The reason it is not simply
-	// "the channel being written" is in log.hpp beside LOG_RETENTION_BYTES.
 	auto biggest = logFile.end();
 	std::uintmax_t most = 0;
 	for (auto it = logFile.begin(); it != logFile.end(); ++it) {
@@ -314,17 +280,10 @@ void cLog::rotateForBudget()
 		std::ofstream::out | std::ofstream::trunc);
 	channel.live = 0;
 	channel.archived = rec.archived;
-	// Re-summed rather than adjusted: the rotation is the moment the archives
-	// were measured, so this is the one place the total can be made exact
-	// again at no per-line cost.
 	budgetUsed = 0;
 	for (const auto& c : logFile)
 		budgetUsed += c.second.live + c.second.archived;
 
-	// ONE line per in-session rotation, L_INFO on the INTERNAL channel - the
-	// same sink and severity the open-time report uses, so one grep on
-	// spacecrafter.log still answers the whole retention question.  A rotation
-	// is an act, not a fault.
 	std::string line = "Log retention (" + channel.path + LOG_EXTENSION + "): the "
 	     +  std::to_string(LOG_RETENTION_BYTES) + "-byte budget for all log files"
 	        " together was reached (" + std::to_string(before)
@@ -348,13 +307,6 @@ void cLog::rotateForBudget()
 		line += " WARNING: reopening the file FAILED, so this channel writes"
 		        " nothing further - check the permissions of the log directory.";
 	writeLocked(line, LOG_TYPE::L_INFO, LOG_FILE::INTERNAL);
-	// writeLocked serves the console itself once the console is known to be a
-	// sink, and setDebug only learns that at main.cpp:268 - thirty lines after
-	// the first writes of the process.  A rotation before that point would be
-	// invisible to an operator watching stdout, and that is precisely the state
-	// an UPGRADE lands in: a directory left above the budget by a build that
-	// had none rotates during startup, deleting files nobody is told about.  So
-	// it is kept until the question is answered, and never after.
 	if (!debugDecided)
 		budgetReport.push_back(line);
 }
@@ -399,11 +351,6 @@ void cLog::writeLocked(const std::string& texte, const LOG_TYPE& type, const LOG
 	target->second.file << ligne << texte << std::endl;
 	target->second.file.flush();
 
-	// Every byte of every channel passes here, which is why the size bound's
-	// counter is here and nowhere else: one add, no syscall, exact - std::endl
-	// writes the one newline that is not in either string.  What cLog::close
-	// writes at exit bypasses this and is not counted; nothing is written after
-	// it, so the bound cannot be reached by it.
 	const std::uintmax_t written = ligne.size() + texte.size() + 1;
 	target->second.live += written;
 	budgetUsed += written;

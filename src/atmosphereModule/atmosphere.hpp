@@ -54,15 +54,6 @@ class Pipeline;
 #define NB_LUM ((SKY_RESOLUTION+1) * (SKY_RESOLUTION+1))
 #define NB_INDEX (((SKY_RESOLUTION+1) * 2 + 1) * SKY_RESOLUTION)
 
-//! Path-neutral input of the sky-table computation (dual-path migration,
-//! 2026-07-16). The skylight/skybright models consume only angles between
-//! (view direction, sun, moon, zenith), so any right-handed local frame with
-//! z = zenith is valid: the old path fills this from navigator/projector
-//! (helioToLocal positions + unprojectNormalizedLocal grid), the new path
-//! from the camera chain (observed positions rotated by eyeToLocal + the
-//! same inverse-fisheye formula the projector applies).
-//! Grid direction source selection: prj != nullptr -> old projector
-//! unproject; otherwise eyeToLocal/halfFov (Camera::viewRotation transpose).
 struct AtmosphereComputeInput {
 	double jd = 0;
 	Vec3d sunPos;         //!< sun position, observer-local frame, AU (length used for angular size)

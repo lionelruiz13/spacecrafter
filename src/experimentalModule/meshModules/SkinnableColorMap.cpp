@@ -11,9 +11,6 @@ void SkinnableColorMap::preload(int keepFrames)
 
 void SkinnableColorMap::createSkin(const std::string &texName)
 {
-    // Old parity (Body::createTexSkin): creating or replacing a skin resets the
-    // drawn texture to the map; activation is switchSkin's job. Load
-    // type/flags mirror old exactly (PNG_SOLID_REPEAT, mipmap, resolution).
     skinUse = false;
     skinTexture = std::make_unique<s_texture>(FilePath(texName, FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true, true);
 }
@@ -32,9 +29,6 @@ s_texture *SkinnableColorMap::activeColorTex()
 
 Texture *SkinnableColorMap::resolve(bool allowBigTexture)
 {
-    // One compare per transition (skin on/off, skin load completion, big
-    // texture appear/drop) - the exact branch structure BasicMesh carried
-    // before this type existed, moved unchanged.
     if (s_texture *color = activeColorTex(); color != &mapTexture) {
         if (texBinding != BIND_SKIN) {
             texBinding = BIND_SKIN;

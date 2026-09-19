@@ -132,10 +132,6 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_HP                        "hp"
 #define W_COLOR               		"color"
 #define W_COLOR_VALUE               "color_value"
-// B10 S5.2 / S11.79(e) D9key: the runtime command tokens for the two per-body
-// navigation scalars. The COMMAND matches the DATA word order (datum/ground
-// first, then radius) - the data keys stay datum_radius/ground_radius, and the
-// command uses the SAME word, NOT Q12's rejected `radius datum`/`radius ground`.
 #define W_DATUM_RADIUS              "datum_radius"
 #define W_GROUND_RADIUS             "ground_radius"
 #define W_FADER                     "fader"
@@ -361,12 +357,6 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_CN_MULTIPLY                             "multiply"
 #define ACP_CN_DIVIDE                             	"divide"
 #define ACP_CN_MODULO                             	"modulo"
-// Short aliases of the three long arithmetic commands [vixy 2026-08-30,
-// FEATURE_REQUESTS "Short aliases for the long math commands"]: `add` and `sub`
-// are already the short forms; these give `divide`/`multiply`/`modulo` theirs.
-// Exact-match names, so nothing ages when a new command registers (the
-// property the declined unique-prefix expansion lacked). A recording writes
-// the LONG form back: AppCommandInit::initialiseCommandsName.
 #define ACP_CN_DIV                                  "div"
 #define ACP_CN_MUL                                  "mul"
 #define ACP_CN_MOD                                  "mod"

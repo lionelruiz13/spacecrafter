@@ -54,10 +54,6 @@
 SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr) :
     observatory(observatory), navigation(navigation), timeMgr(timeMgr)
 {
-    // Projection mode mirror (INTENT 11.33): Context::projectionType is
-    // parsed from config at App init, before Core builds this factory -
-    // launch-constant, same precondition as the old path's per-pipeline
-    // spec constants.
     ModularBody::setProjectionMode(Context::projectionType);
 
     // creation of 3D models for planets
@@ -78,12 +74,6 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
 
-    // The nesting spine (G2, INTENT 11.36): universe > milkyway > systems.
-    // The universe is the tree root and only eternal node (INTENT 6.6);
-    // the milkyway is its INNER child - a galaxy is a body like any other,
-    // and its 2D backdrop (MilkyWayEnv, wired in wireEnvironment) shows only
-    // while the camera's reference chain includes it: leaving the galaxy
-    // drops the backdrop as a natural consequence of chain membership.
     std::map<std::string, std::string> params;
     params["coord_func"] = "still_orbit";
     params["orbit_x"] = "0";
@@ -96,23 +86,12 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
         .haloColor = {},
         .albedo = 0,
         .radius = 0,
-        // datum/ground OMITTED => the NAV_RADIUS_UNSET sentinel => the ModularSystem
-        // ctor's system class default (0) fires (B10-datum0, S11.75(a)). Realizes
-        // the node's authored altitudeRelativeToRadius=false (centre-relative)
-        // intent that the inert ctor never ran. Behaviourally moot here (radius 0
-        // => 0 either way), but expressed via the class rule keyed off system
-        // nature (I4), NOT a hardcoded value - MilkyWay (radius 3.2e9) is where it
-        // bites, and it must bite off the same rule, not a per-name edit.
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::SYSTEM,
         .isHaloEnabled = false,
     };
     universe = std::make_unique<ModularSystem>(nullptr, universeInfo);
-    // Galactic disc radius ~15.5 kpc in AU - placeholder constant until the
-    // galaxy gets a data home (suspended: galaxy data model). Bounds the
-    // galaxy body (bounding/screen size from outside) and feeds the AoI
-    // heuristic; AoI tuning at galaxy scale is suspended with it.
     constexpr float MILKYWAY_RADIUS_AU = 3.2e9f;
     ModularBodyCreateInfo milkywayInfo{
         .orbit = ModuleLoaderMgr::instance.loadOrbit(params),
@@ -121,16 +100,6 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
         .haloColor = {},
         .albedo = 0,
         .radius = MILKYWAY_RADIUS_AU,
-        // datum/ground OMITTED => NAV_RADIUS_UNSET sentinel => system class default
-        // 0 (B10-datum0, S11.75(a) [vixy 2026-07-22], resolved off the node's
-        // SYSTEM nature in the ModularSystem ctor - never a per-name MilkyWay
-        // edit). This REALIZES the node's authored altitudeRelativeToRadius=false
-        // intent (measure galaxy-scale altitude from the galactic CENTRE) that the
-        // inert ctor never ran. USER-VISIBLE CHANGE, DECIDED knowingly: free-mode
-        // getAltitudeReference() drops 3.2e9 AU -> 0, so `moveto altitude X` at a
-        // MilkyWay reference lands at X, not 3.2e9 AU + X (S11.80 measured the old
-        // value live). Override with the datum_radius/ground_radius data key or
-        // the S11.84 runtime command if 3.2e9 is ever wanted back.
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::GALAXY,
@@ -175,16 +144,6 @@ void SSystemFactory::loadCamera(const InitParser &conf)
     camera->setHeading(conf.getDouble(SCS_NAVIGATION, SCK_HEADING) * (M_PI/180));
     camera->setHalfFov(conf.getDouble(SCS_NAVIGATION, SCK_INIT_FOV) * (M_PI/360), 0);
     {
-        // init_view_pos is an OLD-path local-frame vector (x=South, y=East,
-        // z=Up: observer getRotLocalToEquatorialFixed = Z(-lon)*Y(90-lat)).
-        // The camera's local frame is x=East, y=North, z=Up (the placement
-        // fold in Camera::update puts the pole at +y). Same components in
-        // both frames = a 90deg roll about the zenith - measured as the
-        // 89.9943deg init-view differential (harness 2026-07-12). Convert at
-        // the seam, like the longitude sign: (x,y,z)_old -> (y,-x,z)_camera.
-        // The conversion itself moved INTO the Camera at F114 (S5.101): the
-        // same vector is re-aimed by `zoom auto initial` (Core::autoZoomOut),
-        // so the two sites now read one home -- Camera::oldLocalToLocal.
         const Vec3f v = Utility::strToVec3f(conf.getStr(SCS_NAVIGATION, SCK_INIT_VIEW_POS));
         camera->lookTo(Camera::oldLocalToLocal(v), 0);
     }
@@ -344,31 +303,13 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
         .haloColor = {},
         .albedo = 0,
         .radius = 0,
-        // datum/ground OMITTED => NAV_RADIUS_UNSET sentinel => system class default
-        // 0 (B10-datum0, S11.75(a)), same class rule as Universe/MilkyWay. Moot
-        // here (radius 0 => 0 either way); expressed off system nature (I4), not a
-        // hardcoded value - a per-system node given a non-zero radius would take
-        // the same centre-relative default.
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::SYSTEM,
         .isHaloEnabled = false,
     };
-    // Systems nest IN the tree as the milkyway's INNER children (G2):
-    // shown while the camera is inside the galaxy, isolated roots for their
-    // own content, registered in the milkyway's sorted body list.
     ModularSystem *system = milkyway->createChildSystem(info, BodyRelation::INNER);
     modularSystemOf[name] = system;
-    // B24 candidacy (INTENT S11.51(a), S11.78(d)): an enabled composed file
-    // (~/.spacecrafter/modularSystem/<node>.ini - cwd is ~/.spacecrafter,
-    // main.cpp chdir, same convention as the legacy "ssystem.ini") always
-    // wins over the legacy source. Shadowing self-names on every launch so a
-    // user editing the legacy file never gets silence [S11.51(a) derived].
-    // The .ini.disabled twin below is machine-owned and regenerated at every
-    // legacy load; the extension-dropped copy is user-owned, never touched.
-    // NB: keyed on the node name expression, NOT info.englishName - the
-    // createChildSystem ctor above moved that string out (fired live: the
-    // twin generated as ".ini.disabled", INTENT S11.78(f)).
     const std::string composedPath = composedPathOf(name + "System");
     if (std::filesystem::exists(composedPath)) {
         cLog::get()->write("Composed system file " + composedPath + " wins over "
@@ -400,10 +341,6 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
         system->loadBody(bodyParams);
     } else {
         system->loadSystem(filename);
-        // B25 generation half: the machine-owned twin. RECORDED here, WRITTEN by
-        // generatePendingTwins - the load is not the whole of what a twin must
-        // reproduce, because this system's display scaling is config.ini's and
-        // has not been applied yet (S11.154(c); the contract is at the header).
         pendingTwins.emplace_back(filename, composedTwinPathOf(name + "System"));
         if (twinsUnblocked)
             generatePendingTwins();
@@ -443,12 +380,6 @@ void SSystemFactory::generatePendingTwins()
 void SSystemFactory::initDisplayScaling(bool flagMoonScale, double moonScale,
                                         bool flagSunScale, double sunScale)
 {
-    // THE OLD PATH takes the config value whatever serves the new one - it reads
-    // the legacy file and only the legacy file (S11.52(b), untouched). These are
-    // the very calls the four command seams make, in their own order: the halo
-    // mirror sits between the Sun's flag and its value exactly where
-    // setFlagSunScale puts it, so it keeps reading the SunScale of that moment
-    // (see S11.155 on what that value is when flag_sun_scaled is true).
     ssystem->setFlagMoonScale(flagMoonScale);
     ssystem->setMoonScale(moonScale, true);
     ssystem->setFlagSunScale(flagSunScale);
@@ -470,30 +401,9 @@ void SSystemFactory::initBodyDisplayScale(const char *bodyName, const char *conf
         // The modular file owns this body's display scale and has already
         // applied it; config.ini's value is deprecated for it, and said so.
         announceDeprecatedScale(bodyName, configKey, flag, value);
-        // The value is settled, the DERIVED extents are not: the file's load
-        // ran before the config-time inputs the extent cache reads (iniTess's
-        // altimetry levels, core.cpp:307 - a body loaded earlier caches the
-        // level-1 default and a body never evaluated keeps it), so the cache is
-        // re-settled here, at the same point of init as the legacy branch's
-        // restoreScaling below. Both formats therefore leave this function in
-        // the same state, which is what makes the two loads comparable at all
-        // (b24_equivalence). The LATCH ITSELF is wider than these two bodies and
-        // is recorded rather than closed here - S11.155, S5.107.
         body->updateCache();
         return;
     }
-    // RESTORED, not commanded, and that is a parity fix as much as a choice:
-    // the OLD path applies the config scale INSTANTLY (Body::setSphereScale is
-    // `radius = initialRadius * s`, body.cpp:484), so the new path's 5 s ASmooth
-    // ramp at startup was a new-path-only animation of a value that is the
-    // INITIAL STATE, not a change of it. Three more things follow from making it
-    // immediate, each independent: the twin can reproduce the legacy load (the
-    // composed format states a scale, it has no way to state a transition, and
-    // reproducing that load is the twin's whole contract, S11.154(c)); init and
-    // reload now say the same thing ("the owner's value stands"); and the ramp
-    // stops depending on frames the body may never get (restoreScaling's note).
-    // The COMMAND ramp is untouched - an operator changing the size mid-show is
-    // the case the ASmooth exists for.
     body->restoreScaling(flag ? static_cast<float>(value) : 1.f);
 }
 
@@ -503,9 +413,6 @@ void SSystemFactory::announceDeprecatedScale(const char *bodyName, const char *c
 {
     if (!flag)
         return;
-    // Which file overrode it, by name: "the modular format" is not something a
-    // user can open and edit. The pairing comes from the system that holds the
-    // body, which is also what makes the message right for a foreign system.
     std::string source = "the modular system file that declares it";
     const ModularBody *body = ModularBody::findBody(bodyName);
     for (const auto &[systemName, system] : modularSystemOf) {
@@ -548,9 +455,6 @@ void SSystemFactory::createExperimentalOort(unsigned int nbr, const Vec3f &color
     // heliocentric); other created systems (createSystem) are foreign stars.
     auto it = modularSystemOf.find("Solar");
     if (it == modularSystemOf.end() || it->second == nullptr) {
-        // D12 (F0, S11.102(e4)): the flag ACTS here - by failing - so it says so.
-        // Silence made an enabled pilot indistinguishable from a disabled one at
-        // the only place the difference is decided.
         cLog::get()->write("B5 \xc2\xa7" "6.9 pilot: flag_experimental_oort is set, but there is no "
             "\"Solar\" modular system node to attach the cloud to - the experimental oort "
             "was NOT instantiated (the old oort cloud is unaffected).", LOG_TYPE::L_WARNING);
@@ -558,14 +462,6 @@ void SSystemFactory::createExperimentalOort(unsigned int nbr, const Vec3f &color
     }
     ModularSystem *system = it->second;
 
-    // ---- Regime low-edge peg (PROVISIONAL, B5) -----------------------------
-    // scaledRadius*BODY_SURFACE_HEIGHT (=*2) is the near/grounded->near regime
-    // boundary in ModularBody::draw: the cloud (a NEAR component) is hidden for
-    // observer distance < this, shown beyond. The old altitude gate turns the
-    // cloud on around 1e13 m ~= 67 AU (measured: off at refDist 66.8 AU, full by
-    // 133.7 AU). Radius 50 AU => boundary 100 AU, inside that ramp. This is a
-    // BODY-DATA value feeding the regime, NOT a distance test in the draw path
-    // (the S2(a2) foreclosure the pilot avoids). Value TUNED empirically, flagged.
     constexpr float OORT_REGIME_RADIUS_AU = 50.f;
 
     std::map<std::string, std::string> orbitParams;
@@ -604,15 +500,6 @@ void SSystemFactory::createExperimentalOort(unsigned int nbr, const Vec3f &color
 
 void SSystemFactory::loadGalacticSystem(const std::string &path, const std::string &name)
 {
-    // `path` is a DIRECTORY, and the separator that joins it to a file name
-    // belongs HERE - one authority for the join, used by this open and by the
-    // per-system open in loadSystem (INTENT S5.37). It was split between caller
-    // and callee until `da858612c` (2025-09-20) replaced the caller's
-    // `getUserDir()` - a path WITH its trailing '/' - by "." in a batch where
-    // every other call had dropped its prefix entirely: from then on this
-    // opened ".galactic.ini" and ".stellar_systems/<file>", so on EVERY install
-    // no galactic entry was read, no foreign system created, no galactic anchor
-    // added (measured 0/66 applogs carry a "Params :" block, S11.109(a)).
     std::string dir = path;
     if (!dir.empty() && dir.back() != '/')
         dir += '/';
@@ -621,18 +508,7 @@ void SSystemFactory::loadGalacticSystem(const std::string &path, const std::stri
 
     std::ifstream file(dir + name);
     if (file) {
-        // ONE line grammar for the whole .ini family (tools/ini_line.hpp,
-        // INTENT S5.38/S5.39/D29). The substr arithmetic this replaces assumed
-        // exactly one space on each side of the '=', and the shipped
-        // galactic.ini does not oblige: `z =-2.371937` lost its minus sign and
-        // `y =1988.889006` its leading digit, putting six of seventeen systems
-        // at wrong galactic coordinates the moment the path above is repaired.
-        // That is why the two repairs are one commit and never two.
         std::string line, key, value;
-        // The header of the section whose params are currently accumulating -
-        // carried so a rejected section can be named by the name the AUTHOR
-        // wrote, which is the only identifier left when the missing key is
-        // `name` itself (S5.45 / S2(f)).
         std::string section;
 		while(getline(file , line)) {
             switch (IniLine::read(line, key, value)) {
@@ -661,48 +537,18 @@ void SSystemFactory::loadGalacticSystem(const std::string &path, const std::stri
     }
 }
 
-// "The author declared nothing" is ABSENT-OR-EMPTY, once: stringHash_t is a
-// std::map and operator[] INSERTS an empty entry for an absent key, so a
-// find()-only test is true for keys nobody wrote (the S11.103(b) trap).
 static const std::string *declaredParam(const stringHash_t &params, const char *key)
 {
     const auto it = params.find(key);
     return (it == params.end() || it->second.empty()) ? nullptr : &it->second;
 }
 
-// `path` is the directory prefix ALREADY terminated by its separator - the one
-// caller (loadGalacticSystem, above) owns that normalization (INTENT S5.37).
-//
-// S5.45 (found by B40 S11.115(i), fixed 2026-07-30): a section missing `name`,
-// `x`, `y` or `z` used to KILL THE APP AT STARTUP - `std::stod("")` throws
-// std::invalid_argument and neither main.cpp nor core.cpp has a catch, so the
-// process died before opening its port (returncode -6, measured). The shipped
-// corpus is well-formed, so this cost nothing today; a paid galactic delivery
-// with ONE malformed section refused to start the product.
-// The shape is not invented: the addAnchor call below already DECLINES such a
-// section and says so (AnchorPointCreator::handle, "x y or z parameter
-// missing") - this is that same decision, taken once, at the top, with a
-// diagnostic that names the section, the key and the fix (S2(f)) and logs the
-// acting default (SKIP - S2.0 D12).
-// Guarded on PARSEABILITY, not merely on presence: `x = ,5` (a decimal comma,
-// the same author's likely next mistake) and `x = 1e999` throw from that same
-// line - invalid_argument and out_of_range - so guarding presence alone would
-// fix the instance and leave the class alive (I6). [measured 2026-07-30:
-// stod("") / ("abc") / (",5") throw invalid_argument, stod("1e999") throws
-// out_of_range; hence catching std::exception, not one of the two.]
-// What this deliberately does NOT change: a value stod PARSES is accepted
-// exactly as before, partial parses included (`x = 1,5` has always meant 1.0
-// here, `x = 1.5 ly` 1.5). Rejecting those would be a new semantic on data
-// that loads today - out of scope, recorded at S5.45.
 void SSystemFactory::loadSystem(const std::string &path, stringHash_t &params, const std::string &section)
 {
     std::cout << "Params :\n";
     for (auto &p : params) {
         std::cout << p.first << " : " << p.second << '\n';
     }
-    // Name the section the way its author wrote it; fall back to the `name` key
-    // and then to a positional label, so the message is actionable even when
-    // the header itself is what is missing.
     const std::string *nameKey = declaredParam(params, "name");
     const std::string label = !section.empty() ? ("[" + section + "]")
                             : nameKey ? ("section '" + *nameKey + "'")
@@ -805,9 +651,6 @@ void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr*
     ssystemTex->updateTesselation(delta_time);
     currentSystem->update(delta_time, nav, timeMgr);
     bodytrace->update(delta_time);
-    // camera/environment updates live in updateExperimental (executor-mode
-    // independent - see the header note); this method remains the OLD-path
-    // update, reached only through the solar/stellar executor modules.
 
     static int downCounter = 1000;
     downCounter -= delta_time;
@@ -830,32 +673,14 @@ void SSystemFactory::updateExperimental(int delta_time, const TimeMgr* timeMgr)
 void SSystemFactory::addBody(stringHash_t &param)
 {
     currentSystem->addBody(param);
-    // `true` = the RUNTIME push route, the bit `body action clear` selects on
-    // (B34 S11.108(f)). Old marks the same bit one layer down, in its own
-    // addBody's `deletable` argument, and this public overload is old's
-    // "always adds bodies as deletable" (protosystem.hpp) - the two paths take
-    // their provenance from the same call, so they cannot disagree about which
-    // bodies a clear owns.
     camera->getCurrentSystem()->loadBody(param, nullptr, true);
 }
 
 // Contract + rationale: ssystem_factory.hpp (removeSupplementalBodies).
 bool SSystemFactory::removeSupplementalBodies(const std::string &name)
 {
-    // ONE decision, taken by the old path (I2). Old refuses the whole clear
-    // when the observer stands on a supplemental body ("Can't destroy
-    // suplementary bodies if attached to one") and when the named body is not
-    // there at all; reading its answer rather than re-deriving one means the two
-    // trees can never disagree about whether a clear happened - and it leaves
-    // old's behaviour untouched by construction (S11.52(b)).
     if (!currentSystem->removeSupplementalBodies(name))
         return false;
-    // The camera's own reference/selection may be inside what this removes: they
-    // are ModularBodyPtr holders and are redirected to the surviving ancestor by
-    // the I5 destruction contract, which is exactly the case that contract
-    // exists for. Old's guard is about the OLD home planet, so it does not cover
-    // a camera that has since taken a pushed body as its reference - stated,
-    // because adding a second guard here would be a new user-visible rule.
     camera->getCurrentSystem()->removeSupplementalBodies();
     return true;
 }
@@ -864,10 +689,6 @@ bool SSystemFactory::removeSupplementalBodies(const std::string &name)
 void SSystemFactory::startTrails(bool b)
 {
     currentSystem->startTrails(b);
-    // Both-paths mirror (B34 S11.108(k)): the RESTART semantic, which is not the
-    // display flag setFlagTrails already mirrors. Same per-system scope as old
-    // (ProtoSystem::startTrails walks its own `systemBodies`). The camera guard
-    // is real: this runs from the config-init block too.
     if (camera)
         if (ModularSystem *system = camera->getCurrentSystem())
             system->startTrails(b);
@@ -877,16 +698,6 @@ void SSystemFactory::startTrails(bool b)
 void SSystemFactory::preloadBody(stringHash_t &param)
 {
     currentSystem->preloadBody(param);
-    // The PURGE half is already both-paths: `s_texture`'s memory pools are
-    // static and the two paths' s_texture instances share one texRecap per file
-    // name (texCache), so old's releaseAllMemory/releaseUnusedMemory above is
-    // the whole engine's. Only the per-body half was old-only (B34 S11.108(f);
-    // ModularBody::preload had no caller at all, B36).
-    // keep_time is the CALLER's own value, in frames, exactly as old passes it
-    // to s_texture::setBigTextureLifetime - the command multiplies its seconds
-    // by the target fps before this point. It is threaded through rather than
-    // dropped: the modules used to hardcode a lifetime of 100, which would have
-    // made `keep_time` a silently ignored argument on the drawn path (S2.0 D12).
     if (ModularBody *body = ModularBody::findBodyOnce(param[W_NAME]))
         body->preload(Utility::strToInt(param[W_KEEPTIME], 1));
 }
@@ -896,10 +707,6 @@ void SSystemFactory::preloadBody(stringHash_t &param)
 void SSystemFactory::setSelected(const Object &obj)
 {
     ssystemSelected->setSelected(obj);
-    // A ModularObject already HOLDS the body it was resolved from: use it
-    // instead of a second lookup by name (I2 - one resolution, so a name
-    // carried by two trees can never resolve to a different body here than
-    // the one the selection was actually made on).
     if (ModularObject *bridge = obj.as<ModularObject>())
         newSelectedBody = bridge->body;
     else
@@ -926,12 +733,6 @@ Object SSystemFactory::searchNewOnlyObjectAt(int x, int y) const
     ModularSystem *system = camera->getCurrentSystem();
     if (!system)
         return Object();
-    // Window pixel -> ScreenRect, through the app's own authority (I2:
-    // VulkanMgr::screenToRect is what the UI already uses for the mouse).
-    // The rect's y grows DOWNWARD (window row 0 maps to -1) while
-    // ModularBody::screenPos is the view-space up component, +1 at the TOP,
-    // so the pick position is the rect with y negated. This is the only site
-    // where the two conventions meet.
     auto rect = VulkanMgr::instance->screenToRect(
         {static_cast<uint16_t>(x), static_cast<uint16_t>(y)});
     ModularBody *hit = system->findBodyAt({rect.first, -rect.second});
@@ -961,9 +762,6 @@ bool SSystemFactory::reloadCurrentSystem()
         return false;
     }
 
-    // Re-seat the camera-side references by name (see the header: valid is
-    // not the same as preserved). Losing one is a data-content change, so it
-    // is traced as an error naming what was lost and what it fell back to.
     if (ModularBody *body = ModularBody::findBodyOnce(referenceName)) {
         camera->rebindReference(body);
     } else {
@@ -973,12 +771,6 @@ bool SSystemFactory::reloadCurrentSystem()
             + "'. Restore that body in the data file, or move the observer with "
               "'set home_planet <body>'.", LOG_TYPE::L_ERROR);
     }
-    // S5.104 / S11.154(b)(i): the rebuilt bodies come back at the constructor's
-    // scaling(1), because the file this system was re-read from is a LEGACY one
-    // and the legacy format never held a scale - its owner is config.ini, and
-    // the owner's value must stand across a re-read of a file that never held
-    // it. A modular-served system needs nothing here: its file holds
-    // display_scale and the rebuild has just read it (D31, by construction).
     restoreDisplayScaling();
     if (!trackedName.empty())
         camera->trackBody(ModularBody::findBodyOnce(trackedName));
@@ -1012,9 +804,6 @@ bool SSystemFactory::saveCurrentSystem(const std::string &filename)
                 "or pick another name.", LOG_TYPE::L_ERROR);
             return false;
         }
-        // A name with no extension is a system name, not a file name: give it
-        // the one every system file has, so `filename Mars` does what it reads
-        // like instead of writing a file nothing will ever open.
         target = "modularSystem/" + filename
                + ((filename.find('.') == std::string::npos) ? ".ini" : "");
     }
@@ -1028,19 +817,9 @@ bool SSystemFactory::saveCurrentSystem(const std::string &filename)
     return system->saveSystem(target);
 }
 
-// Dual-path trace harness (experimentalModule/INTENT.md 11.14).
-// JSON lines: one header (jd, camera state), then one line per old-path body
-// of the CURRENT system with the matching new-path body (by english name,
-// null when absent - itself a finding, cf INTENT 11.3 hardcoded-flag case).
 void SSystemFactory::wireEnvironment(MilkyWay *milky, Atmosphere *atmosphere, ToneReproductor *eye)
 {
     environment = std::make_unique<EnvironmentManager>(milky, atmosphere);
-    // The galaxy node's InAoI milkyway member: active from anywhere IN the
-    // galaxy - i.e. while the camera's reference chain includes the milkyway.
-    // With the universe above it (INTENT 11.36), leaving the galaxy drops the
-    // backdrop as a natural consequence of the chain diff - the mandate's
-    // "outer milkyway only shown while in the milkyway". The 2D/3D regime
-    // switch is post-parity (EnvironmentModule.hpp convergence note).
     milkyway->addEnvironment(std::make_unique<MilkyWayEnv>(milky, eye), false);
 }
 
@@ -1112,21 +891,6 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
                                     const std::function<void(std::ostream &)> &extraHeader)
 {
     std::ofstream out(file.empty() ? "/tmp/dual_trace.json" : file);
-    // WHICH SYSTEM THE OLD COLUMN WAS TAKEN IN (S11.226, from S11.221(n1)).
-    // The old half below enumerates `currentSystem` (:1181) and every mode
-    // change repoints it - `leaveSystem` at 1.1e16 of altitude points it at the
-    // never-populated `galacticSystem`, so eight of the tester's shipped shows
-    // take a dump whose old column describes a system holding nothing. Until
-    // this field existed the file could not say so: the header carried jd,
-    // timeSpeed, helioToEye, the camera, the anchors, the gates and the big
-    // textures and NO system identity, and the cheapest witness was the
-    // executor's own stdout transitions - a witness OUTSIDE the artifact.
-    // Written here rather than in Core's `extraHeader` lambda because the three
-    // members this reads (`currentSystem`, `galacticSystem`, `systems`) are
-    // this class's own (I2: the field lands where its owner is).
-    // `inSystem` beside it is the factory's own bool (`enterSystem`/
-    // `leaveSystem`), i.e. whether a descent has put the observer back inside a
-    // system - the two answer different questions and both are one word.
     std::string oldSystemName = "unknown";
     if (currentSystem == ssystem.get())
         oldSystemName = "SolarSystem";
@@ -1141,12 +905,6 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
         }
     }
     out << std::setprecision(17) << "{\"type\":\"header\",\"jd\":"
-        // The rest of S2 group A beside the date, so the session gate can
-        // witness what it restores (b31-design S6.2 T2 asks for field-by-field
-        // equality and a dump that carries only the date cannot give it).
-        // getTimeSpeedRaw, not getTimeSpeed: the latter reports 0 while a lock
-        // is held, which is the rate time IS running at, not the one that was
-        // set - and a session records what was set.
         << timeMgr->getJDay() << ",\"timeSpeed\":" << timeMgr->getTimeSpeedRaw()
         << ",\"timePaused\":" << (timeMgr->getTimePause() ? "true" : "false")
         << ",\"oldSystem\":\"" << oldSystemName << "\",\"inSystem\":"
@@ -1157,28 +915,14 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
         for (int i = 0; i < 16; ++i)
             out << h.r[i] << ((i < 15) ? "," : "");
     }
-    // Old-path view state (initial-view seam investigation, 2026-07-12):
-    // local_vision is what updateViewMat actually consumes - dumped to compare
-    // against the value the seams believe they set (init_view_pos & co).
     {
         const Vec3d &lv = navigation->getLocalVision();
         out << "],\"oldLocalVision\":[" << lv[0] << ',' << lv[1] << ',' << lv[2];
     }
     out << "],\"camera\":";
     camera->dumpTrace(out);
-    // New-path anchor state (B4 S11.111): which named anchor the camera is
-    // attached to, its kind and follow-rotation state, and the declared set.
-    // The anchor BODY's own position/frame is in the per-body section below
-    // (owned anchor bodies are new-path-only, so they come out with "old":null).
     out << ",\"anchors\":";
     cameraAnchors->dumpState(out);
-    // The G4 regime gates as the app itself resolved them this frame (INTENT
-    // S5.54). Both forms: the px authority (constants) and the screenSize form
-    // the draw path compares in, plus the viewportRadius they were derived
-    // from. Without this a harness measuring a regime boundary has to
-    // reconstruct the conversion, i.e. assume the thing under test - and the
-    // whole point of the px respelling is that the screenSize gates now MOVE
-    // with the render width, which is a claim only an observable can carry.
     out << ",\"gates\":{\"viewportRadius\":" << ModularBody::getViewportRadius()
         << ",\"px\":{\"early\":" << BODY_EARLY_VISIBILITY_BOUNDING_SIZE
         << ",\"full\":" << BODY_FULL_VISIBILITY_BOUNDING_SIZE
@@ -1187,24 +931,11 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
         << ",\"full\":" << ModularBody::fullVisibilityGate()
         << ",\"bigTexture\":" << ModularBody::bigTextureGate()
         << "}}";
-    // The big-texture table (B34 preload, S11.132): what `body action preload`
-    // actually DOES, read from the engine's own record rather than inferred
-    // from a frame. Read-only (s_texture.hpp states why that matters here).
     out << ",\"bigTextures\":";
     s_texture::dumpBigTextures(out);
-    // The readbacks whose OWNER is outside this class, each writing its own
-    // member(s) under its own key: `oldView` (the old path's own view state,
-    // S5.63 asked for exactly it and it did not exist) and `control` (what the
-    // control surface answers, B33 / S11.131).
     if (extraHeader)
         extraHeader(out);
     out << "}\n";
-    // B9 az-convention observability (INTENT S11.4/S11.60): the alt/az the two
-    // paths expose to the UI/scripting surface, per body, at the SAME frame.
-    // altaz_old = Body::getAltAz (old convention, az = 3pi-az); altaz_new = the
-    // REAL ModularObject::getAltAz (the D2 bridge method getSelectedAZ would
-    // call once wired). The nav-string sidecar (<file>.navstr) captures the
-    // caller-visible strings both paths print. Locked by harness/b9_azconv.py.
     std::ofstream navout(file.empty() ? "/tmp/dual_trace.json.navstr"
                                       : (file + ".navstr"));
     for (auto it = currentSystem->begin(); it != currentSystem->end(); ++it) {
@@ -1213,11 +944,6 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
         out << ",\"new\":";
         ModularBody *nb = ModularBody::findBodyOnce(it->first);
         if (nb) {
-            // A DUMP IS A USE (D8 S11.76(b); B32/S11.93 established this for the
-            // spin phase, B39/S11.117 extends it to the position of a body that
-            // no longer ticks). Without this the instrument would report a hidden
-            // body's hide-time position and call it "now" - i.e. it would measure
-            // the freeze instead of the barrier.
             nb->useNow();
             nb->dumpTrace(out);
         }
@@ -1245,10 +971,6 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
         }
         out << "}\n";
     }
-    // B24 (INTENT 11.78): bodies that exist ONLY in the new path - composed
-    // declarations (rover class) have no old-path twin, so the old-system
-    // loop above never reaches them. Emitted with "old":null - the mirror of
-    // the "new":null finding channel (11.3 class, both directions observable).
     {
         std::set<std::string> dumped;
         for (auto it = currentSystem->begin(); it != currentSystem->end(); ++it)
@@ -1258,26 +980,9 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
                 return;
             out << "{\"type\":\"body\",\"name\":\"" << nb.getEnglishName()
                 << "\",\"old\":null,\"new\":";
-            // A DUMP IS A USE FOR THESE 30 RECORDS TOO (S11.226, discharging
-            // S11.220(j3)). The loop above calls the D8 barrier for the 90
-            // names the old tree carries; without this call the instrument
-            // reported a new-only body's LAST-EVALUATED position and called it
-            // "now" - for the two anchor bodies under a walked parent that is a
-            // stale readout, and for the never-walked ones it is the value they
-            // have carried since load. The barrier itself decides what a use
-            // means for each of them: it returns on its first line for the 20
-            // records that are not parked, refreshes the 2 whose parent
-            // publishes a frame, and REFUSES the 8 whose parent the walk never
-            // visits (its own precondition - see ModularBody::useNow), which is
-            // what keeps their honest `dist` 0 in this file.
             nb.useNow();
             nb.dumpTrace(out);
             out << "}\n";
-            // The nav-string sidecar for new-only bodies too (B24-select,
-            // INTENT S11.106): the info/nav readouts of a COMPOSED body are
-            // now a product surface (it is selectable), and they had no
-            // observable at all - the loop above only reaches names the old
-            // tree carries. Same bridge, same methods, no OLD counterpart.
             ModularObject bridge;
             bridge.body = &nb;
             navout << nb.getEnglishName()
@@ -1285,32 +990,6 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
                    << "\n  NEW inf: " << bridge.getInfoString(navigation) << "\n";
         });
     }
-    // Quadruplet (minimal set separating translation / common rotation /
-    // hop-accumulated rotation): identity, down-hop, up-hop, up-then-down.
-    // + Pluto/Charon (INTENT 11.34 orientation set: the loudest declared
-    // parent-obliquity case, 115.60deg - tilt pieces needed for the
-    // convention checker even while the branch is invisible; lastJD stays
-    // fresh through recursiveTranslationUpdate).
-    // Earth/Moon/Sun/Pluto/Charon = the 11.34 orientation set; the 7
-    // rot_pole_ra planets (Mercury..Neptune) added for the B28 bit-identical
-    // gate (INTENT 11.67): their self-hop `tilt` + raw obliquity/ascendingNode
-    // are the projection-free, B30-immune readout of the frame conversion.
-    // Iapetus (B14 pilot, INTENT 11.68): the first candidate for an
-    // absolute_pole declaration on a NON-system-centered parent (Saturn). Its
-    // self-hop `tilt` + the Saturn parent hop in the same chain are the
-    // pieces the moon-absolute-pole harness composes; measuring it directly
-    // closes B28's untested non-system-centered-parent case (S11.67 item 2).
-    // Iapetus (Saturn, prograde, no periodic W) is the clean B14-W0 discriminator;
-    // Proteus (Neptune, prograde) and Puck (Uranus, RETROGRADE W_dot) exercise the
-    // rot_pole_w0 -> offset conversion across the sign conventions (S11.79(a)).
-    // Janus + Prometheus (Saturn, B14-sat6 S11.75(b)): the pole-axis + W0
-    // meridian discriminators for the widened 6 non-cluster garbage-tilt moons -
-    // Janus carries periodic pole+W nutation (S2 angle), Prometheus is pure
-    // secular; both prograde. Instrument only (changes what dual_dump emits).
-    // B14-periode (S11.86(d)/S11.87(e)): the FULL 20 pole-landed moons are hopped
-    // so the dumped re.period rate observable covers the complete edited scope -
-    // every corrected rot_periode is verifiable to its IAU 8640/Wdot value, and
-    // Iapetus (unedited) + Venus/planets stay ULP-0 (the commutator control).
     for (const char *name : {"Earth", "Moon", "Sun", "Mercury", "Venus", "Mars",
                              "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Charon",
                              "Iapetus", "Proteus", "Puck", "Janus", "Prometheus",

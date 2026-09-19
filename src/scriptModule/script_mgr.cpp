@@ -340,9 +340,6 @@ void ScriptMgr::update(int delta_time)
 			} else {
 				// script done
 				DataDir = "";
-				// the queue ran out: the natural end, the one moment an opener never
-				// closed is a fact (terminateScript audits before `script action end`
-				// discards the structure) and stale `#!` tails may be cleared
 				naturalEnd = true;
 				commander->terminateScript();
 				naturalEnd = false;

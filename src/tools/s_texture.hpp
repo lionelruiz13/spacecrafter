@@ -259,21 +259,8 @@ public:
 	static void willRead(const std::string &_textureName);
 	// Release every big textures which have not been querried with getBigTexture() for 2 frames
 	static void update();
-	//! Drain every texture container this class defers releases into, and drop
-	//! the mipmap pipelines. CALLED FROM ~Context, and only from there: each
-	//! container hands resources back to a Context-owned manager (a Texture its
-	//! staging sub-allocation, a texRecap its temporary mipmap Sets), so it is
-	//! bound to the window where those managers are alive. Called from main()
-	//! after app.reset() - where it used to be - it releases into destroyed
-	//! managers and the process dies at exit (INTENT 5.57).
 	static void forceUnload();
 
-	//! Stop and join the asynchronous big-texture loader thread. MUST run while
-	//! the Context buffer managers it writes into are still alive (before app
-	//! teardown): the loader's final quickLoadCache copy targets Context staging
-	//! memory, so joining only after app.reset() (as forceUnload does) races the
-	//! loader against freed buffers (shutdown SIGSEGV in bigTextureLoader).
-	//! Idempotent - forceUnload() calls it again harmlessly.
 	static void stopBigTextureLoader();
 	// Release memory of every unused big textures, might have side effect
 	static void releaseUnusedMemory();
@@ -283,15 +270,6 @@ public:
 	static void recordTransfer(VkCommandBuffer cmd);
 	// Display information about active big textures
 	static void debugBigTexture();
-	//! THE BIG-TEXTURE TABLE AS AN OBSERVABLE (B34 preload, INTENT S11.132).
-	//! One JSON array, `{"name","w","h","acquired","ready","lifetime"}` per
-	//! record, in list order. This is the table `preload()` writes into - a
-	//! preload's whole effect is "a record for this texture exists, is acquired,
-	//! and carries the requested lifetime" - and until now it had no readout at
-	//! all except debugBigTexture(), which has zero callers and writes to the
-	//! DEBUG log. Read-only and side-effect-free BY CONSTRUCTION: it must not
-	//! call getBigTexture(), which acquires and refreshes lifetimes - an
-	//! instrument that performs the act it reports is not an instrument.
 	static void dumpBigTextures(std::ostream &out);
 	// Setup cache path for textures, also enable use of cache
 	static void loadCache(const std::string &path, bool _cacheTexture);
@@ -366,9 +344,6 @@ private:
 	static std::atomic<int16_t> textureQueueSize; // Expected number of elements in textureQueue
 };
 
-// Big-texture mapping helpers (moved from experimentalModule/ModularBody.hpp -
-// they are s_texture utilities, not body concepts). Build a bitfield of which
-// big textures are ready, then TEX(num, name) picks big-or-base per texture.
 #define TM(num, name) auto tex##num = name.getBigTexture()
 #define TB(num) ((tex##num != nullptr) << num)
 

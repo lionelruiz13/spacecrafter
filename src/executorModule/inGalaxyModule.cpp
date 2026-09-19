@@ -127,9 +127,6 @@ void InGalaxyModule::draw(int delta_time)
 
 	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 
-	// Dual-path (S2b): the rule (which selections the old pointer still owns
-	// in the modular phase) is Core::needOldSelectionPointer - one authority
-	// for the four executor draw sites (I2).
 	if (core->needOldSelectionPointer())
 		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 
@@ -143,11 +140,6 @@ void InGalaxyModule::draw(int delta_time)
 	core->starNav->draw(core->navigation, core->projection, false);
 	core->dsoNav->draw(core->navigation, core->projection);
 	core->cloudNav->draw(core->navigation, core->projection);
-	// Draw twin of the Executor::update fix (6.9 draw-half): the new path
-	// draws in EVERY executor mode - its "in galaxy" is reference-chain
-	// state (G2), not an executor mode. After all galaxy content, mirroring
-	// the solar module's bodies-after-sky order (self-gated on the modular
-	// phase; the old path draws no system content here).
 	core->ssystemFactory->drawExperimental();
 	//core->postDraw();
 }

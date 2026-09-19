@@ -188,10 +188,6 @@ bool CoreLink::oortGetFlagShow() const {
 
 void CoreLink::oortSetFlagShow(bool b) {
 	core->oort->setFlagShow(b);
-	// B5 S6.9 pilot: one operator concept "show the oort" drives BOTH cloud
-	// draws (I2 - the new modular oort mirrors the old cloud's flag through this
-	// single command choke point). Only meaningful when the modular oort exists
-	// (flag_experimental_oort); harmless otherwise.
 	OortModule::show = b;
 }
 
@@ -558,17 +554,10 @@ std::string CoreLink::getPlanetsPosition() const {
 	return core->ssystemFactory->getPlanetsPosition();
 }
 
-// ---------------------------------------------------------------------------
-// B33 READBACK ONLY (INTENT S11.108(f) / S11.131). See the header for what it
-// is for. Const, side-effect-free, called only from the dump channel.
-// ---------------------------------------------------------------------------
 void CoreLink::dumpControlSurface(std::ostream &out) const
 {
 	const auto prec = out.precision();
 	const Camera *cam = Camera::instance;
-	// The camera's own answer to each readout, in the GETTER's units -- the
-	// same conversions observerMoveTo does in the write direction, so the two
-	// halves of the seam are one convention (I2).
 	const Vec3f place = cam ? cam->getPlace() : Vec3f(0, 0, 0);
 	const double camLat = place[1] * (180.0 / M_PI);
 	const double camLon = place[0] * (180.0 / M_PI);
@@ -594,9 +583,6 @@ void CoreLink::dumpControlSurface(std::ostream &out) const
 	    << ",\"altitude\":{\"reported\":" << observatoryGetAltitude()
 	    << ",\"old\":" << core->observatory->getAltitude()
 	    << ",\"new\":" << camAlt << "}"
-	    // heading is the member F12 already landed (S11.118(f)) -- carried here
-	    // as the class's own positive control: on the delivered binary this row
-	    // behaves exactly like the four below it.
 	    << ",\"heading\":{\"reported\":" << getHeading()
 	    << ",\"old\":" << core->navigation->getHeading()
 	    << ",\"new\":" << camHeading << "}"
@@ -615,12 +601,6 @@ void CoreLink::dumpControlSurface(std::ostream &out) const
 std::string CoreLink::tcpGetPosition() const {
 	char tmp[512];
 	memset(tmp, '\0', 512);
-	// B33 (S11.118 for the heading, S11.131 for the place): every field here
-	// was a SECOND reader going straight to the old Observer/Navigator, so the
-	// TCP position query and the `moveto` command would have reported different
-	// places the moment the paths diverge - and `camera action descend` makes
-	// them diverge with one shipped command. One authority per readout (I2):
-	// the getters read the path that draws, and this asks them.
 	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;",
 		observatoryGetLatitude(), observatoryGetLongitude(),
 		observatoryGetAltitude(), core->timeMgr->getJDay(),
@@ -1188,10 +1168,6 @@ bool CoreLink::cameraTransitionToBody(const std::string& name){
 }
 
 bool CoreLink::cameraSetFollowRotation(const std::string& name, bool value){
-	// The name is FORWARDED since B4 (S11.111): the old path still ignores it
-	// (its follow-rotation flag is manager-wide), the new path scopes it to the
-	// named anchor. Dropping it here was why the command's documented `name`
-	// argument had no effect anywhere.
 	return core->ssystemFactory->cameraSetFollowRotation(name, value);
 }
 
@@ -1275,10 +1251,6 @@ bool CoreLink::saveSolarSystem(const std::string &filename) {
 
 namespace {
 
-// What a session needs from the application, supplied by the object that has
-// all of it. Every method is the OWNING authority for its datum rather than a
-// convenience wrapper over another path - b31-design S3.4(e)'s "read the model
-// that draws", applied at the only place where following it is a choice.
 class SessionHost : public SessionFile::Host {
 public:
 	SessionHost(CoreLink &link, Core &core, TimeMgr &time)
@@ -1286,11 +1258,6 @@ public:
 
 	double getJDay() const override { return time.getJDay(); }
 	void setJDay(double jd) override { time.setJDay(jd); }
-	// getTimeSpeedRaw, not getTimeSpeed: the latter reports 0 while any time
-	// lock is held, which is the rate time IS running at and not the one the
-	// operator set. A session records what was set - restoring 0 into a scene
-	// holding no lock would silently freeze it. (The lock itself is
-	// script-engine state, which D36 keeps out.)
 	double getTimeSpeed() const override { return time.getTimeSpeedRaw(); }
 	void setTimeSpeed(double speed) override { time.setTimeSpeed(speed); }
 	bool getTimePaused() const override { return time.getTimePause(); }
@@ -1307,32 +1274,17 @@ public:
 	void setTracking(bool on) override { core.setFlagTracking(on); }
 
 	bool warpToBody(const std::string &name) override {
-		// Refuse BEFORE moving anything: setHomePlanet on a name nothing
-		// declares leaves the observer where it was, but has already queued an
-		// ObserverEvent and restarted the trails, and the caller would have no
-		// way to tell that from success.
 		if (!ModularBody::findBodyOnce(name))
 			return false;
 		core.setHomePlanet(name);
-		// Confirmed on the path that DRAWS (B33): the camera's reference IS the
-		// observer, and the old home-planet name is a second answer to the same
-		// question.
 		return Camera::instance && Camera::instance->getReferenceBody() &&
 		       Camera::instance->getReferenceBody()->getEnglishName() == name;
 	}
 
 	void moveObserverTo(double latDeg, double lonDeg, double altMetres) override {
-		// The one seam that moves both paths. Duration 0: a session describes a
-		// settled state, and an eased arrival would make the restore's own
-		// result depend on when the next frame lands (D32).
 		link.observerMoveTo(latDeg, lonDeg, altMetres, 0);
 	}
 
-	// zoomTo, not setFov: `zoom fov X duration 0` is the command an operator
-	// uses and it is the one that sticks - the projector keeps an AIM fov that
-	// the per-frame mirror re-applies over a bare setFov (measured: the
-	// restored scene came back at the launch fov of 180 with setFov, and at 45
-	// with this). Duration 0: a session describes a settled state.
 	void setFov(double degrees) override { link.zoomTo(degrees, 0.f); }
 	void setSkyLock(bool locked) override { core.setFlagLockSkyPosition(locked); }
 
@@ -1582,9 +1534,6 @@ void CoreLink::starGalaxyLoadCatalog(const std::string &filename) {
 	core->starGalaxy->loadCatalog(filename);
 }
 
-// The read halves of three setters that had none on this facade. Each manager
-// already owned the value; the session save is the first caller that needs to
-// ASK for it (b31-design S2 rows E4/E5, INTENT S11.129).
 const Vec3f &CoreLink::skyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj)
 {
 	return core->skyDisplayMgr->getColor(nameObj);

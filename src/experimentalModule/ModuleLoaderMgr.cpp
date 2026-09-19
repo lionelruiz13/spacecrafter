@@ -91,9 +91,6 @@ void ModuleLoaderMgr::loadModule(BodyModuleType type, ModularBody *target, std::
         else
             target->slot(ModularBody::slotID[slot], loader->load(target, params));
     } else {
-        // A deduced/requested module with no capable loader must be VISIBLE:
-        // silently skipping was defect INTENT.md 5.4 (OJM/RING deduced but
-        // unregistered - bodies quietly lost their mesh).
         cLog::get()->write("No loader available for module type '" + std::string(defaultModuleName[static_cast<uint8_t>(type)]) + "' requested by body '" + target->getEnglishName() + "'", LOG_TYPE::L_WARNING);
     }
 }

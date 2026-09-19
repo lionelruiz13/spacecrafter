@@ -14,9 +14,6 @@ bool AtmosphereEnv::update(ModularBody *body, const Vec3f &cameraLocalPos,
     state.insideAtmosphere = altitudeM <= body->envParams.limSup;
     state.allowMeteors = state.insideAtmosphere && state.atmosphereUserFlag;
     state.atmosphereActive = state.allowMeteors && altitudeM < body->envParams.limInf;
-    // Photometric mirror (computed by the engine's async computeColor from
-    // the previous frame's inputs - same phase relationship as the old
-    // executor, which reads them in update() before the next computeColor).
     Atmosphere *engine = EnvironmentManager::instance->getAtmosphereEngine();
     state.worldAdaptationLuminance = engine->getWorldAdaptationLuminance();
     state.atmosphereIntensity = engine->getIntensity();

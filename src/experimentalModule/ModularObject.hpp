@@ -10,17 +10,6 @@ public:
     ModularObject() = default;
     explicit ModularObject(ModularBody *b) : body(b) {}
 
-    // OWNERSHIP (I5), and why it is refcounted rather than borrowed.
-    // A selection outlives the call that made it, so the bridge cannot be a
-    // temporary; and no tree owns it (the old path's Object borrows a Body
-    // owned by ProtoSystem, the new path has no such per-body slot). It is
-    // therefore owned by the Object/ObjectBaseP refcount - the mechanism
-    // ObjectBase::retain/release exists for, with StarWrapperBase
-    // (hip_star_wrapper.hpp:67-73) as the in-tree precedent for the
-    // delete-at-zero form. The BODY is NOT owned: `body` is a ModularBodyPtr,
-    // i.e. destruction-NOTIFIED (redirected to the parent when its body is
-    // removed, nulled only at final teardown), which is what makes the bridge
-    // outlive its subject safely.
     virtual void retain() override {
         ++refCount;
     }
@@ -42,10 +31,6 @@ public:
 
     virtual float getMag(const Navigator *nav) const override;
 
-    // UI/scripting compatibility surface (G11) - the queries CoreLink and the
-    // selection/pointer paths consume. All are Camera-based conversions of the
-    // body's observed position (the new-path idiom of this file), not
-    // Navigator-based like the old Body.
     virtual void getAltAz(const Navigator *nav, double *alt, double *az) const override;
     virtual void getRaDeValue(const Navigator *nav, double *ra, double *de) const override;
     virtual Vec3f getRGB() const override;
@@ -63,19 +48,6 @@ private:
     // never see retain/release, so this stays 0 and nothing is deleted.
     int refCount = 0;
 
-    // Single authority (I2) for the alt/az REPORTING convention at this object
-    // surface. The old path exposed azimuth in the "N=0, E=90" convention and
-    // applied the conversion at EACH reporting site (Body::getAltAz body.cpp:381,
-    // getInfoString body.cpp:341, getShortInfoNavString body.cpp:431 - the old
-    // path itself duplicated it). Camera::observedPosToAltAz returns the RAW
-    // Camera-frame az, whose zero differs from the old raw frame by -pi/2
-    // [measured: harness/b9_azconv.py -> az_old = pi/2 - az_raw over 234/234
-    // non-degenerate bodies at <=3e-5deg], so the conversion that reproduces the
-    // old report is az = pi/2 - az_raw (mod 2pi) - NOT the 3pi-az of the old raw->
-    // report step (that constant is frame-specific to the old raw frame; S11.4
-    // flagged exactly this, S11.60). getAltAz / getInfoString /
-    // getShortInfoNavString all route here so the convention cannot desync.
-    // Returns (alt, az) with az in the old-path convention.
     std::pair<double, double> altAz() const;
 };
 

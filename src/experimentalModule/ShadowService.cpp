@@ -12,18 +12,8 @@
 #include "ojmModule/ojm.hpp"
 #include <cstring>
 
-// Shadow constants (SHADOW_LOCAL_SIZE, SHADOW_RADIUS_TOLERANCE,
-// SHADOW_INVALIDATING_ANGLE, MAX_RADIUS_HARD_LIMIT) come from context.hpp -
-// the existing single authority, shared with the old path by design: they are
-// cache tolerances and workgroup geometry, not path policy (shadow-paths.md
-// A2.5/A2.10 for what each guards).
-
 bool ShadowService::enabled = false; // initialized from config (app.cpp seam)
 
-// Coverage-over compositing on the R8 silhouette target:
-// c' = c_src + c_dst * (1 - c_src), i.e. 1 - T_src*T_dst - transmissions of
-// independent occluders multiply, exactly. Opaque fragments (c_src = 1)
-// saturate regardless of overlap order.
 static const VkPipelineColorBlendAttachmentState BLEND_COVERAGE_OVER {
     VK_TRUE,
     VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR, VK_BLEND_OP_ADD,
@@ -44,14 +34,6 @@ void ShadowService::ensureInit(Renderer &_renderer)
     const uint32_t res = context.shadowRes;
     maxRadius = std::min(res / 2, MAX_RADIUS_HARD_LIMIT + 2U) - 1U; // old bank sizing (context.cpp:76)
 
-    // Service-owned blurred-layer array (R8; layers = caster budget). The
-    // silhouette scratch reuses context.shadowShape/renderShadowShape (shared
-    // serially within the recording window - never concurrently).
-    // R8G8 since the two-channel rework (2026-07-18 [vixy: umbra/antumbra]):
-    // R = mean sun-occlusion coverage (the historical channel, bit-preserved),
-    // G = exact full-occlusion fraction (true umbra: sun entirely behind the
-    // silhouette). u <= c always (min <= mean), which is what keeps the
-    // receiver composition bounded (receivedShadows.glsl).
     const uint8_t budget = context.maxShadowCast;
     layers = std::make_unique<Texture>(vkmgr, TextureInfo{
         .width=(int) res, .height=(int) res, .nbChannels=2,
@@ -61,12 +43,6 @@ void ShadowService::ensureInit(Renderer &_renderer)
         .name="New-path projected shadows"});
     layers->use();
 
-    // Contracts. Trace = the old traceLayout (vertex mat3 UBO) - ONE handle
-    // shared by both silhouette families (set 0), so slot traceSets bind
-    // either family interchangeably (the traceLayout-sharing pattern,
-    // PipelineFamily.hpp SetContract block). Annulus adds its texture as a
-    // separate set 1 (module-owned - a layout-invariant split: slot-owned
-    // vs module-owned data never share a Set).
     SetContractDesc traceContract;
     traceContract.name = "shadowTraceMat";
     traceContract.bindings = {{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT}};
@@ -119,14 +95,6 @@ void ShadowService::ensureInit(Renderer &_renderer)
     ring.passes.push_back(std::move(ringPass));
     ringFamily = renderer->allocateFamily(std::move(ring));
 
-    // SELF_DEPTH pass (OJM wave, 2026-07-16): depth-only render of the
-    // nominated body's geometry into context.shadowBuffer through
-    // renderSelfShadow - the old shadowTrace pipeline (bodyShader.cpp:410-426)
-    // as a registry family: same vert (the mat3 trace contract - traceHandle
-    // SHARED, one matrix contract for every geometry word), cull with
-    // reversed front face (the old setFrontFace note: "prefer culling the
-    // back face, this doesn't work for thin surface"), depth GREATER via the
-    // registry's SELF_SHADOW profile, no fragment stage.
     PipelineFamilyDesc self;
     self.name = "SHADOW_SELF";
     self.vertex = context.ojmVertexArray.get();
@@ -189,10 +157,6 @@ void ShadowService::release()
     if (Context::instance->helper)
         Context::instance->helper->setPreFrameRecorder(nullptr);
     slots.clear();      // Sets + SharedBuffers while managers are alive
-    // createView returns RAW views - the caller owns destruction (the S5
-    // comment "views die with the Texture" was wrong: Texture::createView
-    // tracks nothing; 8 ImageViews leaked to vkDestroyDevice object-tracking
-    // on every shutdown that had initialized the service - found 2026-07-16).
     for (VkImageView v : layerViews)
         vkDestroyImageView(VulkanMgr::instance->refDevice, v, nullptr);
     layerViews.clear();
@@ -228,18 +192,8 @@ void ShadowService::beginFrame(uint8_t frameIdx)
 int ShadowService::acquire(ModularBody *caster, const BodyModule *source, float radiusPx,
                            const Vec3f &lightDir, bool *reused)
 {
-    // Floor the penumbra at 1 px BEFORE keying/filter math: within-body pairs
-    // legitimately request smooth = 0 (sharp ring shadows), and the disc
-    // filter below computes sqrtf(rq - i*i) up to i = radius >= 1 - with
-    // rq < 1 that is sqrtf(negative) = NaN into the offsets (a latent class
-    // of the old drawShadower math, unreachable while every caster was a
-    // distant body; the within-body path makes it reachable). Flooring keeps
-    // the cache key consistent with what is actually produced.
     if (radiusPx < 1.f)
         radiusPx = 1.f;
-    // Ported drawShadower scan (draw_helper.cpp:491-538): matchLevel
-    // 1 = free slot, 2 = same (caster, source) pair (radius/light moved -
-    // re-render), 3 = same pair within tolerances (cache hit).
     uint8_t matchLevel = 0;
     int idx = -1;
     const int count = static_cast<int>(slots.size());
@@ -270,9 +224,6 @@ int ShadowService::acquire(ModularBody *caster, const BodyModule *source, float 
         }
     }
     if (idx < 0) {
-        // Pool exhausted. Callers acquire in occlusion order, so the dropped
-        // shadow is the least significant one - the structured replacement of
-        // the old "shadow shapes are mostly unpredictible" slot steal.
         if (!exhaustedLogged) {
             exhaustedLogged = true;
             VulkanMgr::instance->putLog("ShadowService: caster budget exhausted - least significant shadows dropped this frame (increase max_shadow_cast)", LogType::WARNING);
@@ -285,9 +236,6 @@ int ShadowService::acquire(ModularBody *caster, const BodyModule *source, float 
         *reused = true;
         return idx;
     }
-    // (Re)assignment: the blur pipeline for this radius must be resident
-    // before the layer can be produced (C3: never wait - old parity is the
-    // global shadow_ready gate; per-key readiness is strictly finer).
     int radius = static_cast<int>(radiusPx);
     if (radius < 1)
         radius = 1;
@@ -302,10 +250,6 @@ int ShadowService::acquire(ModularBody *caster, const BodyModule *source, float 
     s.lightDir = lightDir;
     s.used = true;
     s.radius = radius;
-    // Disc-filter descriptor (old submit-side math, draw_helper.cpp:463-471).
-    // pixelCount carries the x255 of the blur's quantized reads (each texel
-    // contributes round(value*255) to the integer accumulator - EXACT for
-    // the 0/255 G1 values, 8-bit-exact for G8 grading).
     auto &u = **s.uniform;
     int pixelCount = 0;
     const float rq = radiusPx * radiusPx;
@@ -314,9 +258,6 @@ int ShadowService::acquire(ModularBody *caster, const BodyModule *source, float 
         pixelCount += tmp;
         u.offsets[i].v = tmp;
     }
-    // fullCount as exact INTEGER (the float pixelCount loses ulps above 2^24
-    // at large radii - fine for the mean division, fatal for the equality
-    // test the umbra channel rides on).
     const int full = (pixelCount * 4 + 1) * 255;
     u.pixelCount = static_cast<float>(full);
     u.fullCount = full;
@@ -361,23 +302,8 @@ std::unique_ptr<Set> ShadowService::makeAnnulusTexSet(Texture &tex)
 
 void ShadowService::record(VkCommandBuffer cmd, uint8_t frameIdx)
 {
-    // Layout transition UNCONDITIONALLY at first record (old notInitialized
-    // pattern): the array's descriptor is statically bound by every MESH set
-    // (binding 3) even when shadows are off - an UNDEFINED-layout image
-    // behind a SHADER_READ_ONLY descriptor is a validation error at the
-    // first mesh draw, jobs or not.
     if (!layersInitialized) {
         layers->use(cmd, Implicit::LAYOUT);
-        // Same first-record obligation for the self-shadow depth: the OJM
-        // shadowed row statically samples it (binding 3) even on frames
-        // where only RECEIVING is active (selfShadowOn = 0) - an
-        // UNDEFINED-layout image behind that descriptor is a validation
-        // error at the first such draw. The old path never hit this: its
-        // CoI coupled receiving and self-shadowing, so the pass had always
-        // rendered (and transitioned) before any sampling. Explicit barrier
-        // (not Texture::use): the texture's own aspect is DEPTH-only, but a
-        // barrier on a D24S8 image must name BOTH aspects
-        // (VUID-VkImageMemoryBarrier-image-03320).
         VkImageMemoryBarrier depthInit {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr,
             0, VK_ACCESS_SHADER_READ_BIT,
             VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
@@ -443,9 +369,6 @@ void ShadowService::record(VkCommandBuffer cmd, uint8_t frameIdx)
                 break;
             }
             case Job::Kind::OPAQUE_OJM: {
-                // Same family and matrix contract as OPAQUE_MESH (Ojm and
-                // ObjL share the vertex layout); only the geometry supplier
-                // differs - Ojm::drawShadow binds its own buffers.
                 const FamilyBound bound = renderer->bindIn(shapeFamily, PassKind::SHADOW_SHAPE, cmd);
                 if (bound.layout) {
                     bound.layout->bindSet(cmd, *s.traceSet);

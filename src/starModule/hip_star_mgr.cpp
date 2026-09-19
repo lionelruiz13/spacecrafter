@@ -1397,17 +1397,10 @@ void HipStarMgr::readFileVariableStar()
 	fileIn.close();
 }
 
-// ---------------------------------------------------------------------------
-// READBACK ONLY (INTENT S5.63 / S11.130). See the header for what it is for.
-// Const, side-effect-free, called only from the dump channel.
-// ---------------------------------------------------------------------------
 void HipStarMgr::dumpTrace(std::ostream &out) const
 {
 	const auto prec = out.precision();
 	out << std::setprecision(17);
-	// HOW MANY STARS THE OLD PATH ACTUALLY DREW last frame -- the single most
-	// direct answer to "is the restored sky the same sky?". Both buffers are
-	// written because preDraw fills one while draw consumes the other.
 	out << "{\"nbStarsToDraw\":[" << nbStarsToDraw[0] << ',' << nbStarsToDraw[1] << ']'
 	    << ",\"drawIdx\":" << static_cast<int>(drawIdx)
 	    << ",\"lastMaxSearchLevel\":" << last_max_search_level

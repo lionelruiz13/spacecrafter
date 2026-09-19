@@ -96,11 +96,6 @@ public:
 	 * set the observer's anchor point and updates it if it is found, does nothing otherwise
 	 */
 
-	//! THE TRAVEL'S INPUTS, as moveTo() computed them - the five values that
-	//! decide where a travel LANDS, beside the new registry's own five
-	//! (CameraAnchors::getTravelStart and siblings, S11.246). READ ONLY: every
-	//! one is a const read of a member this class already keeps, no old-path
-	//! line changes, and nothing here is called by the old path itself.
 	bool isTravelling() const {
 		return moving;
 	}

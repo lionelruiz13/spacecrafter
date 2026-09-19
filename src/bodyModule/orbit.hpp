@@ -330,13 +330,6 @@ private:
  */
 class BinaryOrbit : public Orbit {
 public:
-	//! secondaryName optionally DECLARES which body's orbit must be wired in as
-	//! the secondary (setSecondaryOrbit) once that body is loaded. Without a
-	//! wired secondary this orbit returns the BARYCENTER position, not the
-	//! primary's - a silent position error of ratio*|secondary offset|
-	//! (Earth/Moon: ~4700 km). The old path wires it name-hardcoded
-	//! (solarsystem.cpp SolarSystem::addBody); the new path wires it from this
-	//! declaration (ModularSystem::loadBody). Empty = caller wires manually.
 	BinaryOrbit(std::unique_ptr<Orbit> barycenter, double ratio, const std::string &secondaryName = "");
 
 	virtual ~BinaryOrbit();

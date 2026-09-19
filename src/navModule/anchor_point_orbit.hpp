@@ -43,10 +43,6 @@ public :
 
 	AnchorPointOrbit() = delete;
 
-	//! The anchor OWNS its orbit: nothing else in the creator chain does, and
-	//! the orbit must outlive every update() call this anchor will ever make
-	//! (ledger Sec.5.133 - the previous signature took a raw pointer that the
-	//! caller had already let die).
 	AnchorPointOrbit(std::unique_ptr<Orbit> orbit, const TimeMgr * timeMgr, const Body * parent, Vec3d orbitCenter = Vec3d(0,0,0)) noexcept;
 
 	AnchorPointOrbit(const AnchorPointOrbit &) = delete;

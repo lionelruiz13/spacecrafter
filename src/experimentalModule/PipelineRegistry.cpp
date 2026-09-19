@@ -30,34 +30,6 @@
 #include <thread>
 #include <deque>
 
-// ============================================================================
-// Pipeline-family registry - implementation of the Renderer registry surface
-// (contract: PipelineFamily.hpp + Renderer.hpp; design: INTENT.md 10.3,
-// converged 2026-07-12 at plan approval).
-//
-// INTERIM WORK DOMAIN (explicit divergence, reconciled in INTENT.md 12):
-// the S8/G5 work domain (Taskable pools) is the S4 track and does not exist
-// yet. Lazy variant builds therefore run on a dedicated builder thread here,
-// and publication is an atomic ready-flag (release-store by the builder,
-// acquire-load in bind()) instead of a render-chain task. This preserves the
-// observable contract (bind never blocks, base always resident, builds off
-// the frame path - C3) with one machinery divergence: publication ordering
-// is per-slot instead of chain-serialized, which is sufficient while slots
-// are write-once (built exactly once, never swapped). The S4 port replaces
-// the queue+thread with work-domain tasks and the ready-flag with a publish
-// task; config-driven REBUILDS (publish-swap of an already-ready slot) must
-// NOT be implemented on this interim - they need the chain ordering.
-// Precedent for concurrent pipeline builds: the 4-thread shadow pipeline
-// build + pipelineCache concurrent use (context.cpp, INTENT.md 10.3.3).
-//
-// Entry lifetime: entries are application-lifetime; release() only
-// decrements the refcount and reclamation is deferred (dedup by name means a
-// re-allocation reuses the entry; a handle can never dangle). This is the
-// conservative superset of the header's "lifetime = union of live handles" -
-// revisit only if registry pressure ever materializes (uint8 index space,
-// 255 entries).
-// ============================================================================
-
 namespace {
 
 const char *passName(PassKind pass) {
@@ -86,10 +58,6 @@ struct PassEntry {
                                       // deque = stable addresses for builder
 };
 
-// Batching service state of one batched family (BatchDesc engaged) - the
-// generalized portage of the old HaloContext (halo.cpp): persistent staging
-// ring ping-ponged in two halves per frame, device vertex buffer mirroring
-// it, flushes recorded at the per-body command-buffer boundaries.
 struct BatchState {
     std::unique_ptr<VertexBuffer> vertex;
     SubBuffer staging {};
@@ -100,9 +68,6 @@ struct BatchState {
     uint16_t stride;
     uint32_t capacity;          // instances per half (BatchDesc contract)
     bool overflowLogged = false;
-    // Service-side per-family resources (halo: the batch texture; a family
-    // without one leaves them empty). Generalize when the second textured
-    // batched family (HINT/TAIL) lands.
     std::unique_ptr<s_texture> tex;
     s_texture *boundTex = nullptr;
     std::unique_ptr<Set> set;
@@ -120,11 +85,6 @@ struct FamilyEntry {
                                    // providable - masked out of every request
     uint16_t refs = 0;
     bool misroutedLogged[static_cast<size_t>(PassKind::NB_PASS_KIND)] = {};
-    // Pass declared but disabled at allocation (base build failed - shader
-    // absent/broken). Distinguished so the first-bind log names the REAL
-    // cause instead of a phantom trait-routing defect (the failure must
-    // self-name - a "bound in undeclared pass" message sent the diagnosis
-    // toward trait routing when the cause was an undeployed shader file).
     bool disabled[static_cast<size_t>(PassKind::NB_PASS_KIND)] = {};
 };
 
@@ -146,36 +106,13 @@ struct BuildJob {
 struct Registry {
     std::deque<SetContractEntry> contracts;
     std::deque<FamilyEntry> families;
-    // VertexArrays of Renderer-owned service families (halo, later hint/
-    // trace): the family desc references them (I5), so they live here -
-    // released by releaseRegistry() while the buffer managers are alive.
     std::vector<std::unique_ptr<VertexArray>> servicePatterns;
-    // Descriptor-pool aggregation (INTENT 10.3 decision 5): pools are sized
-    // from the contracts they serve. Counters aggregate arraySize *
-    // expectedSets per descriptor type over all allocated contracts.
     uint32_t aggSets = 0;
     uint32_t aggUniform = 0, aggDynUniform = 0, aggTexture = 0;
     uint32_t aggStorageBuf = 0, aggStorageImg = 0, aggSampledImg = 0;
     std::vector<std::unique_ptr<SetMgr>> pools;
     uint32_t poolRemaining = 0; // set-count budget left on pools.back()
-    // Descriptor types pools.back() was CREATED with. The aggregate grows as
-    // contracts are allocated - a pool made before a contract introduced a
-    // type cannot serve that contract (found live: the S1-era pool had no
-    // SAMPLED_IMAGE; the S5 blur contract added it; allocSet handed out the
-    // old pool -> AllocateDescriptorSets-WrongType). Coverage is re-checked
-    // per allocSet, not assumed from creation order.
     uint32_t poolTypeMask = 0;
-    // ...and the per-type COUNTS pools.back() was created with. Same defect
-    // class as poolTypeMask, one dimension over (B12, INTENT S11.123): the
-    // mask says the pool KNOWS a type, never that it has ENOUGH of it. Pools
-    // are sized from the aggregate AT CREATION, so the first contract to
-    // allocate a set fixes the first pool's per-type budget - and the first
-    // body loaded is the Sun, whose STAR_SURFACE contract wants ONE texture.
-    // Every later 6-texture layered set then came out of a 4-texture pool:
-    // measured as WARNING-VkDescriptorSetAllocateInfo-descriptorCount
-    // ("allocate 6 ... this pool only has 4 ... will fail on others") - a
-    // portability failure, not a warning to tolerate. Checked per allocSet
-    // exactly like the type mask.
     uint32_t poolCapUniform = 0, poolCapDynUniform = 0, poolCapTexture = 0;
     uint32_t poolCapStorageBuf = 0, poolCapStorageImg = 0, poolCapSampledImg = 0;
     // Interim work domain (see file header).
@@ -209,16 +146,6 @@ struct Registry {
     }
     ~Registry() {
         stop();
-        // FamilyEntry batch Sets are pool-allocated temporaries (allocSet:
-        // new Set(..., *pools.back(), ..., temporary=true)); ~Set -> uninit ->
-        // mgr.destroySet() dereferences that SetMgr. `pools` is declared AFTER
-        // `families`, so reverse-declaration member teardown destroys the pools
-        // FIRST -> the batch Sets then call destroySet() on a dead SetMgr
-        // (found live: shutdown SIGSEGV in SetMgr::destroySet, garbage handle).
-        // Tear families down here, while their pools are still alive - the same
-        // invariant releaseRegistry() already keeps for the Renderer-owned pool
-        // Sets (pointerSet/shadow), applied to the batch Sets it cannot reach
-        // because they live inside `families`.
         families.clear();
     }
 };
@@ -232,17 +159,6 @@ Registry &registry()
     return *reg;
 }
 
-// ---- TAIL instanced batch (row 12) --------------------------------------
-// Renderer-owned replacement for the old Tail::global singleton (tail.cpp):
-// shared cone/strip geometry + a primitive-restart index built once, per-tail
-// instances (Renderer::TailInstance) accumulated per frame and drawn with ONE
-// vkCmdDrawIndexed. The PIPELINE lives in the registry (a normal family, so
-// the C3 degradation + spec-8 injection are free); only the batch RESOURCES
-// are file-static here - the same division the halo/hint families keep (handle
-// on the Renderer, buffers off the frame path). The GPU buffers are released
-// in Renderer::releaseRegistry() (managers still alive), NOT at static
-// teardown (that is the shutdown-SIGSEGV class, S11.15d). Geometry constants
-// are the old tail.cpp macros verbatim.
 namespace {
 constexpr int NB_MAX_TAILS = 1024;
 constexpr int NB_TAIL_LINES = 16;
@@ -270,9 +186,6 @@ struct TailBatch {
 TailBatch tailBatch;
 } // namespace
 
-// Build one pipeline variant of a family pass. Runs on the registration
-// path (base variants, synchronous) or the builder thread (lazy variants) -
-// reads only immutable-after-allocation state (FamilyEntry::desc, layout).
 std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey key)
 {
     Context &context = *Context::instance;
@@ -288,23 +201,10 @@ std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey
             subpass = PASS_MULTISAMPLE_DEPTH;
             break;
         case PassKind::SELF_SHADOW:
-            // Header profile: depth GREATER, dynamic viewport (variable-size
-            // targets). Validated against the old shadowTrace pipeline
-            // (bodyShader.cpp:410-426) at S5 - state profile matches; old
-            // additionally set setFrontFace(), carried by the family's
-            // reverseFrontFace when its first client lands.
             render = context.renderSelfShadow.get();
             dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
             break;
         case PassKind::SHADOW_SHAPE:
-            // Dynamic viewport: the old shadowShape pipeline baked
-            // frameShadow->makeViewport() (shadowRes^2) - a fixed viewport at
-            // SCREEN size here would rasterize the silhouette wrong. The
-            // recording service sets viewport/scissor at pass begin
-            // (resolution is a D5 parameter, not a bake-time constant).
-            // Target: the R8 coverage pass (typed silhouettes - the family's
-            // FixedState carries the coverage-over blend; the old stencil
-            // REPLACE ops are gone with the binary target).
             render = context.renderShadowShape.get();
             dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
             break;
@@ -333,9 +233,6 @@ std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey
             p->setDepthStencilMode(VK_TRUE, VK_TRUE, VK_COMPARE_OP_GREATER);
             break;
         case PassKind::SHADOW_SHAPE:
-            // Depth explicitly off; coverage is written as COLOR (the
-            // family's frag + blend state), not stencil - the typed R8
-            // target carries graded transmission, which a stencil cannot.
             p->setDepthStencilMode();
             break;
         default:
@@ -366,20 +263,10 @@ std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey
         vkmgr.putLog("PipelineRegistry: no shader row for '" + f.desc.name + "' " + passName(pass) + " variant " + std::to_string(key), LogType::ERROR);
         return nullptr;
     }
-    // Specialization constants are applied to every stage; entries a stage's
-    // SPIR-V doesn't declare are ignored by specification, which keeps this
-    // uniform (the old path applied them selectively per stage).
     auto bindStage = [&p, &f, key](const std::string &file) {
         if (file.empty())
             return;
         p->bindShader(file);
-        // Global projection mode (INTENT 11.33): spec-const 8 is the
-        // custom_project.glsl dispatch - registry-injected so EVERY family
-        // inherits the mainline multi-mode mechanism without declaring it
-        // (single authority; a family supplying id 8 itself wins - skip).
-        // Launch-constant (Context::projectionType, config-parsed at App
-        // init - the old path's 52 per-pipeline sites share the precondition);
-        // stages whose SPIR-V doesn't declare id 8 ignore the entry.
         if (std::none_of(f.desc.specValues.begin(), f.desc.specValues.end(),
                          [](const SpecConstant &sv) { return sv.constantId == 8; })) {
             const uint32_t mode = static_cast<uint32_t>(Context::projectionType);
@@ -449,9 +336,6 @@ void Registry::builderLoop()
     }
 }
 
-// Drop one variant bit for fallback: the reserved NO_DEPTH bit drops first
-// (a forced-depth fallback is the old ringed-body behavior), then declared
-// axes by dropPriority - HIGHER drops first (VariantAxis contract).
 VariantKey dropOneBit(const FamilyEntry &f, VariantKey key)
 {
     if (key & VARIANT_NO_DEPTH)
@@ -487,16 +371,10 @@ VariantSlot *findSlot(PassEntry &pe, VariantKey key)
     return nullptr;
 }
 
-// Core of bind(): resolve the best resident variant for (family, pass),
-// enqueue missing builds, bind the pipeline. Shared by Renderer::bind (module
-// path) and the batching service flush.
 FamilyBound resolveAndBind(Registry &r, FamilyEntry &f, PassKind pass, VkCommandBuffer cmd, VariantKey wanted)
 {
     PassEntry &pe = f.passes[static_cast<size_t>(pass)];
     if (!pe.desc) {
-        // Either a trait-routing defect (hooks are only invoked within their
-        // matching pass kind) or a pass disabled at allocation (base build
-        // failed). Log once per (family, pass) with the real cause, no-op.
         if (!f.misroutedLogged[static_cast<size_t>(pass)]) {
             f.misroutedLogged[static_cast<size_t>(pass)] = true;
             if (f.disabled[static_cast<size_t>(pass)])
@@ -547,13 +425,6 @@ uint32_t typeBit(VkDescriptorType type)
 
 void createPool(Registry &r)
 {
-    // Each pool is sized from the CURRENT aggregate of allocated contracts -
-    // it always covers the layouts it serves (INTENT 10.3 decision 5 /
-    // 11.1 structural fix; coverage re-checked per allocSet since the
-    // aggregate grows - see poolTypeMask). Growth = one more aggregate-sized
-    // pool. expectedSets is the sizing contract: a client exceeding it
-    // exhausts the budget visibly (allocation failure at a named site),
-    // never silently.
     const uint32_t sets = std::max(r.aggSets, 16u);
     r.pools.push_back(std::make_unique<SetMgr>(*VulkanMgr::instance, sets,
         r.aggUniform, r.aggTexture, r.aggStorageBuf, r.aggStorageImg,
@@ -571,10 +442,6 @@ void createPool(Registry &r)
     r.poolCapSampledImg = r.aggSampledImg;
 }
 
-// Per-SET descriptor need of a contract, by type (arraySize summed over the
-// bindings of that type). The pool-coverage question is per set, not
-// aggregate: vkAllocateDescriptorSets fails when ONE set exceeds what the pool
-// holds, whatever the total budget says.
 struct SetNeed {
     uint32_t uniform = 0, dynUniform = 0, texture = 0;
     uint32_t storageBuf = 0, storageImg = 0, sampledImg = 0;
@@ -707,9 +574,6 @@ SetContract Renderer::globalUboContract() const
         }
     }
     if (Context::instance->layouts.empty()) {
-        // Precondition: UBOCam inserted the global layout at layouts.front()
-        // (ubo_cam.cpp) - family allocation happens at module-loading time,
-        // after Core init; reaching this is an initialization-order defect.
         VulkanMgr::instance->putLog("PipelineRegistry: globalUboContract before UBOCam exists", LogType::ERROR);
         return {};
     }
@@ -737,10 +601,6 @@ PipelineFamily Renderer::allocateFamily(PipelineFamilyDesc &&desc)
         return {};
     }
     if (desc.kind == PipelineFamilyDesc::Kind::COMPUTE) {
-        // COMPUTE bank (S5/G7, INTENT 10.3 open 4): integer-keyed variants,
-        // key = spec constant 0. The bank lives in passes[0] (no PassKind
-        // applies to compute; slot 0 is the container, desc stays null so
-        // graphics bind() misroutes loudly if pointed here).
         r.families.emplace_back();
         FamilyEntry &f = r.families.back();
         f.desc = std::move(desc);
@@ -803,9 +663,6 @@ PipelineFamily Renderer::allocateFamily(PipelineFamilyDesc &&desc)
         pe.variants.emplace_back(0);
         pe.variants.back().pipeline = buildVariant(f, pd.pass, 0); // base-sync
         if (!pe.variants.back().pipeline || pe.variants.back().pipeline->get() == VK_NULL_HANDLE) {
-            // Base MUST be resident (base-always-ready, C3) - a family whose
-            // base fails to build cannot honor bind(); disable the pass so
-            // bind() reports the misroute instead of binding a null pipeline.
             VulkanMgr::instance->putLog("PipelineRegistry: BASE build failed for family '" + f.desc.name + "' pass " + passName(pd.pass) + " (shader '" + pd.shaderTable.front().shaders.vert + "'/'" + pd.shaderTable.front().shaders.frag + "') - pass disabled", LogType::ERROR);
             pe.desc = nullptr;
             pe.variants.clear();
@@ -815,9 +672,6 @@ PipelineFamily Renderer::allocateFamily(PipelineFamilyDesc &&desc)
         pe.variants.back().ready.store(true, std::memory_order_release);
     }
     if (f.desc.batch) {
-        // Batching service (BatchDesc contract): staging ring in two halves
-        // (the old HaloContext scheme - 3 frames in flight over 2 halves is
-        // the shipped old-path guarantee, ported unchanged).
         Context &context = *Context::instance;
         f.batch = std::make_unique<BatchState>();
         f.batch->stride = f.desc.batch->instanceStride;
@@ -861,10 +715,6 @@ void Renderer::batchBegin()
             b.boundTex = b.tex.get();
         }
     }
-    // SUN_HALO (row 14) is a non-batch family: bind its big-halo texture here,
-    // at frame start (after recordTransfer's upload), exactly once - same
-    // deferral as the batched halo above. getTexture() in the frame task is the
-    // established pattern (the halo binds the same way).
     if (sunHaloSet && sunHaloTex && !sunHaloTexBound) {
         sunHaloSet->bindTexture(sunHaloTex->getTexture(), 0);
         sunHaloTexBound = true;
@@ -990,14 +840,6 @@ void Renderer::ensureHintFamily()
     if (hintFamily)
         return;
     auto &r = registry();
-    // Hint circle as a batched service family - the dissolution of the
-    // DrawHelper DRAW_HINT_POS seam entry (the last Renderer borrow of that
-    // class; the halo half was dissolved at S1). Same occlusion contract,
-    // same mechanism as the halo now: flush at the per-body boundaries.
-    // LINE_LIST instead of the old LINE_STRIP: strips of separate circles
-    // would connect across circles in one batched draw; segments batch
-    // freely. Per-vertex color replaces the old per-draw push constant
-    // (colors vary per body - a push constant cannot batch them).
     auto pattern = std::make_unique<VertexArray>(*VulkanMgr::instance, Context::instance->ojmAlignment);
     pattern->createBindingEntry(6 * sizeof(float));
     pattern->addInput(VK_FORMAT_R32G32_SFLOAT);       // pos (render px)
@@ -1027,9 +869,6 @@ void Renderer::drawHint(const std::pair<float, float> &pos, const Vec4f &color)
     ensureHintFamily(); // first-use fallback; normally built at init()
     if (!hintFamily)
         return;
-    // Circle shape: Hints::computeHintsAt stays the single authority
-    // (radius/facets identical to the old path by construction) - it dies
-    // with the old path by moving into this service then.
     float strip[(Hints::nbrFacets + 1) * 2];
     float *stripPtr = strip;
     const int points = Hints::computeHintsAt(VulkanMgr::instance->rectToRender(pos), stripPtr);
@@ -1055,9 +894,6 @@ void Renderer::ensureTailFamily()
     TailBatch &t = tailBatch;
     Context &context = *Context::instance;
     if (!t.built) {
-        // Vertex format = the old TailContext pattern verbatim (tail.cpp:60-71):
-        // binding 0 = shared geometry {vec3 normal, float timeOffset} at vertex
-        // rate; binding 1 = the per-tail instance (8 vec3) at instance rate.
         auto pattern = std::make_unique<VertexArray>(*VulkanMgr::instance);
         pattern->createBindingEntry(4 * sizeof(float));
         pattern->addInput(VK_FORMAT_R32G32B32_SFLOAT); // normal
@@ -1068,12 +904,6 @@ void Renderer::ensureTailFamily()
         t.geometry = pattern->createBuffer(0, NB_TAIL_VERTICES, context.globalBuffer.get());
         t.instance = pattern->createBuffer(1, NB_MAX_TAILS, context.globalBuffer.get());
         t.index = context.indexBufferMgr->acquireBuffer(NB_TAIL_INDICES * sizeof(uint16_t));
-        // Pipeline family = the old TailContext pipeline (tail.cpp:104-116):
-        // push fov, spec-8 projection type (registry-injected, S11.33),
-        // TRIANGLE_STRIP + primitive restart (stripBreaks), cull, NO depth
-        // (setDepthStencilMode()), blend SRC_ALPHA (EntityCore ctor default).
-        // NO descriptor set - the tail shader has none. body_tail.{vert,frag}.spv
-        // reused VERBATIM.
         PipelineFamilyDesc desc;
         desc.name = "TAIL";
         desc.vertex = pattern.get();
@@ -1094,9 +924,6 @@ void Renderer::ensureTailFamily()
         t.built = true;
     }
     if (t.built && !t.geometryUploaded) {
-        // Shared geometry + index built ONCE (old TailContext ctor, tail.cpp:
-        // 74-102). Retried until the staging has room (tiny: 321 verts + 672
-        // idx); flushTails gates on geometryUploaded so nothing draws meanwhile.
         auto *vptr = context.transfer->planCopy<TailVertex>(t.geometry->get());
         auto *iptr = context.transfer->planCopy<uint16_t>(t.index);
         if (!vptr || !iptr)
@@ -1129,9 +956,6 @@ void Renderer::ensureTailFamily()
 
 void Renderer::beginTailDraw()
 {
-    // Fresh command buffer, depth-less COLOR (mirrors beginTrailDraw): the tail
-    // is depth-less (old setDepthStencilMode() off), no bucket. Flush pending
-    // batched content (the last body's halos) before the tails.
     Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
     nextCommandBuffer();
     batchFlush();
@@ -1188,13 +1012,6 @@ void Renderer::ensurePointerFamily()
     if (pointerFamily)
         return;
     auto &r = registry();
-    // Old ObjectBase pointer, OBJECT_BODY case, ported verbatim: 4 POINT_LIST
-    // vertices {vec2 corner pos (render px), float motif index 1..4}; the
-    // geometry shader expands each into a 20x20 px textured bracket
-    // (object_base_pointer.geom - shaders REUSED, visual parity by
-    // construction). States = the old pipeline's effective states:
-    // blend SRC_ALPHA (EntityCore ctor default, never overridden), cull off
-    // (default cullMode 0), depth off (setDepthStencilMode() defaults).
     auto pattern = std::make_unique<VertexArray>(*VulkanMgr::instance, Context::instance->ojmAlignment);
     pattern->createBindingEntry(3 * sizeof(float));
     pattern->addInput(VK_FORMAT_R32G32_SFLOAT); // corner position (render px)
@@ -1278,15 +1095,6 @@ void Renderer::recordPointer()
     vkCmdDraw(cmd, 4, 1, 0, 0);
 }
 
-// ---- SUN_HALO service (row 14): the old Sun big halo -----------------------
-// The old Sun owned pipelineBigHalo + descriptorSetBigHalo + haloCmds[3]
-// (static secondary command buffers). Here the pipeline is a registry family,
-// the uniforms/set/vertex are Renderer-owned, and the draw is RECORDED live
-// into the frame command buffer (the S1 note: "static cmd buffers dissolve
-// into frame-task recording"). sun_big_halo.{vert,geom,frag}.spv reused
-// VERBATIM. cam_block.glsl puts the global UBO at set 1, so globalUboContract
-// goes SECOND in desc.sets (the old bindSets({descriptorSetBigHalo, uboSet})
-// order); the local set (tex + 4 uniforms) is set 0.
 void Renderer::ensureSunHaloFamily()
 {
     if (sunHaloFamily)
@@ -1351,19 +1159,11 @@ void Renderer::setSunHaloTexture(const std::string &texName, const std::string &
     ensureSunHaloFamily();
     if (!sunHaloFamily || texName.empty())
         return;
-    // Old Sun::setBigHalo (body_sun.cpp:109-121): existing path+file, else let
-    // s_texture resolve it against the standard texture paths. PNG_SOLID like
-    // the old load type.
     const std::string full = path + texName;
     if (CallSystem::fileExist(full))
         sunHaloTex = std::make_unique<s_texture>(full, TEX_LOAD_TYPE_PNG_SOLID);
     else
         sunHaloTex = std::make_unique<s_texture>(texName, TEX_LOAD_TYPE_PNG_SOLID);
-    // Bind DEFERRED to frame start (batchBegin), NOT here: getTexture() at
-    // load time creates the image UNINITIALIZED (no transfer cmd) and captures
-    // a black view that never refreshes (the halo service has the same deferral
-    // - setHaloTexture stashes, batchBegin rebinds after recordTransfer's
-    // upload). Binding here left farHalo black (measured, INTENT S11.44).
     sunHaloTexBound = false;
 }
 
@@ -1373,9 +1173,6 @@ void Renderer::drawSunHalo(const std::pair<float, float> &pos, const Vec3f &colo
     ensureSunHaloFamily();
     if (!sunHaloFamily || !sunHaloTex || !sunHaloTexBound)
         return; // no texture, or not yet bound+uploaded (bound at frame start,
-                // batchBegin) - old: if (isVisible && tex_big_halo)
-    // Per-frame vertex (screenPos in render px - old screenPosF = screenPos,
-    // MVP2D maps px->NDC). planCopy is staging: skip the frame if it's full (C3).
     auto *v = static_cast<std::pair<float, float> *>(
         Context::instance->transfer->planCopy(sunHaloVertex->get()));
     if (!v)
@@ -1400,18 +1197,10 @@ void Renderer::releaseRegistry()
 {
     if (!reg)
         return;
-    // Called from the START of Context::~Context - every manager is alive:
-    // release the staging SubBuffers properly, then drop the whole registry
-    // (pipelines, layouts, pools, service patterns, builder thread), and the
-    // Renderer-owned service resources (pointer, shadow) that depend on the
-    // managers (shadow Sets live in registry pools - release BEFORE reg).
     shadow.release();
     pointerSet.reset();
     pointerTex.reset();
     pointerVertex.reset();
-    // SUN_HALO service (row 14): Set lives in a registry pool (release before
-    // reg); uniforms/vertex/texture depend on live managers (uniformMgr,
-    // globalBuffer, texture cache). Family handle decremented while reg alive.
     sunHaloSet.reset();
     sunHaloTex.reset();
     sunHaloVertex.reset();
@@ -1424,9 +1213,6 @@ void Renderer::releaseRegistry()
         if (f.batch && f.batch->pData)
             Context::instance->stagingMgr->releaseBuffer(f.batch->staging);
     }
-    // TAIL batch buffers (Renderer-owned, off the registry): release to their
-    // BufferMgrs HERE, while every manager is alive - a static teardown would
-    // touch a dead globalBuffer/indexBufferMgr (the shutdown-SIGSEGV class).
     if (tailBatch.index.buffer != VK_NULL_HANDLE)
         Context::instance->indexBufferMgr->releaseBuffer(tailBatch.index);
     tailBatch.geometry.reset();  // ~VertexBuffer releases to globalBuffer
@@ -1465,9 +1251,6 @@ Pipeline *Renderer::peek(const PipelineFamily &family, PassKind pass, VariantKey
     PassEntry &pe = f.passes[static_cast<size_t>(pass)];
     if (!pe.desc)
         return nullptr; // undeclared/disabled pass - bind()'s logging path owns the message
-    // Same normalization as resolveAndBind, then EXACT-or-nothing: peek is for
-    // layout-invariant per-shape multi-pipeline recording (Renderer.hpp), and
-    // a fallback row bound mid-record would switch shaders invisibly.
     wanted &= (f.axisMask & ~f.undefinedMask)
             | ((pass == PassKind::COLOR) ? VARIANT_NO_DEPTH : 0);
     if (providableKey(f, *pe.desc, wanted) != wanted)
@@ -1526,9 +1309,6 @@ Set *Renderer::allocSet(const PipelineFamily &family, uint8_t setIndex)
     uint32_t needed = 0;
     for (const auto &b : e.desc.bindings)
         needed |= typeBit(b.type);
-    // A pool serves this contract only if it knows every type AND holds enough
-    // of each for ONE set (poolCap* note above - the aggregate at creation is
-    // the first allocator's, not this contract's).
     const SetNeed n = perSetNeed(e.desc);
     const bool tooSmall = n.uniform > r.poolCapUniform
                        || n.dynUniform > r.poolCapDynUniform

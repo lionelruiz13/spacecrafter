@@ -162,10 +162,6 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	cardinals_points = std::make_unique<Cardinals>();
 	meteors = std::make_unique<MeteorMgr>(10, 60);
 	landscape = new Landscape();
-	// Environment layer wiring (S8): the factory is constructed before the
-	// shared engines exist - wire them once all three are alive. The
-	// landscape engine is re-seated at every swap (setLandscape/
-	// loadLandscape), I5.
 	ssystemFactory->wireEnvironment(milky_way.get(), atmosphere.get(), tone_converter);
 	ssystemFactory->setEnvironmentLandscape(landscape);
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
@@ -281,12 +277,6 @@ void Core::setFlagAstronomical(bool a)
 //! Load core data and initialize with default values
 void Core::init(const InitParser& conf)
 {
-	// The seam recorder's arming, read ONCE and LOGGED (D12: an acting
-	// non-default is never silent). Environment and not config, and not a
-	// command: the instrument has to be running before the FIRST frame of the
-	// transition it measures, and a command that armed it would itself be one
-	// frame late; a config key would put a measurement-only switch into the
-	// operator's surface. Contract in core.hpp above `struct SeamStep`.
 	if (firstTime) {
 		const char *seamEnv = std::getenv("SC_SEAM_RECORD");
 		seamRecording = (seamEnv && *seamEnv && std::string(seamEnv) != "0");
@@ -413,31 +403,10 @@ void Core::init(const InitParser& conf)
 	deselect();
 	setHomePlanet("Earth");
 	navigation->setFlagTraking(0);
-	// ---- D15(d): init/reinit INITIALIZES the camera state (S11.150) --------
-	// [vixy 2026-08-26]: *"Structural parity is required here, init/reinit must
-	// initialize the state, which now include the freeMode and config.ini must
-	// enable to configure it. The default config.ini value is attached=True"*.
-	// This line used to be `navigation->setFlagLockEquPos(0)` -- a force-reset of
-	// the OLD flag alone. Old had no config channel because it had no state to
-	// configure; the new-path Camera does (`skyLocked`/`lockedSkyRot`, freeMode),
-	// which is why the answer OVERRODE the standing "no key" recommendation.
-	//
-	// Read with findEntry first, NOT with the parser's own missing-key path:
-	// InitParser::getBoolean returns FALSE for an absent key (init_parser.cpp
-	// :164-178), so `attached` would read false -- free flight at startup -- in
-	// every fielded config.ini, none of which carries the key (D9: the installed
-	// field is frozen; the schema addition in CheckConfig only reaches a user
-	// file when the version string moves). The DEFAULTS ARE TODAY'S BEHAVIOUR:
-	// attached (not free) and the lock off, so no default acts here.
-	// The 3-argument getBoolean is deliberately not used: it writes an
-	// L_WARNING on every call, fired or not (S5.77's startup-noise class).
 	const bool attached = conf.findEntry(std::string(SCS_NAVIGATION) + ":" + SCK_ATTACHED)
 	                      ? conf.getBoolean(SCS_NAVIGATION, SCK_ATTACHED) : true;
 	const bool lockSky = conf.findEntry(std::string(SCS_NAVIGATION) + ":" + SCK_FLAG_LOCK_SKY_POSITION)
 	                     ? conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_LOCK_SKY_POSITION) : false;
-	// D12 + S2(f): a configured value that ACTS at startup says so, names what
-	// it did, and names the way back. Silence is reserved for the values that
-	// change nothing.
 	if (Camera::instance) {
 		Camera::instance->setFreeMode(!attached);
 		if (!attached)
@@ -474,11 +443,6 @@ void Core::init(const InitParser& conf)
 
 		oort->populate(conf.getInt("rendering","oort_elements"));
 		oort->build();
-		// B5 S6.9 content-migration PILOT: also instantiate the oort as a modular
-		// body at the SolarSystem floor (the [vixy] mapping rule). Gated OFF by
-		// default (flag_experimental_oort) so the shipped tree - and the b5
-		// collapse/AoI legs its cloud extent would perturb - stay unchanged;
-		// enabled only for the pilot A/B. Shares the old cloud's count + color.
 		if (conf.getBoolean("rendering", "flag_experimental_oort", false))
 			ssystemFactory->createExperimentalOort(conf.getInt("rendering","oort_elements"),
 				Utility::strToVec3f(conf.getStr(SCS_COLOR, SCK_OORT_COLOR)));
@@ -631,16 +595,9 @@ void Core::init(const InitParser& conf)
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_VERTICAL_LINE));
 	cardinals_points->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CARDINAL_POINTS));
 
-	// The four display-scaling keys go in as ONE read: they are governed by one
-	// rule - ownership is FORMAT-SCOPED (S11.154(b), config.ini for a legacy
-	// system, the modular file for a modular one) - and which of the two applies
-	// is not this level's business (I1).
 	ssystemFactory->initDisplayScaling(
 		conf.getBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED), conf.getDouble(SCS_VIEWING, SCK_MOON_SCALE),
 		conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED),  conf.getDouble(SCS_VIEWING, SCK_SUN_SCALE));
-	// ...and the machine-owned composed twins are written only now: a twin must
-	// reproduce the legacy load it came from, and the display scaling that load
-	// produces is the config value the line above has just applied (S11.154(c)).
 	ssystemFactory->generatePendingTwins();
 
 	oort->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
@@ -703,10 +660,6 @@ void Core::syncPlanetGridSkyState()
 	// New-path only: in the old phase Body::drawPlanetGrid does its own poll.
 	if (!ssystemFactory->drawModularSystem)
 		return;
-	// The planet-grid tropic/polar circles are keyed to the corresponding
-	// sky-line flags (deliberate: they show obliquity directly). Old read both
-	// the show flag AND the color from the sky manager each draw
-	// (body.cpp:1257-1258, 1263-1264); reproduce that read here, once per frame.
 	ssystemFactory->setPlanetGridTropicPolar(
 		skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC),
 		skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR),
@@ -860,17 +813,8 @@ void Core::ssystemDualDump(const std::string& file)
 		// CoreLink owns most of those getters, so CoreLink writes it (I1).
 		out << ",\"control\":";
 		CoreLink::instance->dumpControlSurface(out);
-		// B34's ramp member (S11.133): the PER-STEP record of the interactive
-		// ramps. Core owns it because Core::updateMove is where the step is
-		// computed and where both paths' authorities are in scope at once.
 		out << ",\"ramp\":";
 		dumpRampTrace(out);
-		// F121 (S11.245): the PER-FRAME record of BOTH engines' shared state,
-		// filled in-process at the one point in the frame where both have
-		// advanced. Same home and same reason as `ramp` above -- Core is where
-		// both paths' authorities are in scope at once -- and read through this
-		// same command because a ring makes the dump's own 195-714 frame
-		// latency (S11.241(d)) bound only WHEN the history is read.
 		out << ",\"seam\":";
 		dumpSeamTrace(out);
 	});
@@ -878,10 +822,6 @@ void Core::ssystemDualDump(const std::string& file)
 
 void Core::restoreViewOffset(double offset, bool armed)
 {
-	// The scalar through the one sink (it clamps, and it reaches both paths),
-	// then the latch on both. NB for the caller: setViewOffset RE-AIMS the old
-	// navigator to InitViewPos, so a restore must do this BEFORE it puts the
-	// old view direction back, not after.
 	setViewOffset(offset);
 	navigation->setViewOffsetTransition(armed ? 1.f : 0.f);
 	if (Camera::instance)
@@ -895,18 +835,11 @@ const Vec3d& Core::getSkyVision() const
 
 void Core::restoreSkyVision(const Vec3d& localVision)
 {
-	// The order is the point. Matrices from the restored observer and date,
-	// THEN the direction (which rebuilds the equatorial and precessed vectors
-	// on those matrices), THEN the view matrices the projector is handed.
 	navigation->updateTransformMatrices(observatory.get(), timeMgr->getJDay());
 	navigation->restoreVision(localVision);
 	navigation->updateViewMat(projection->getFov());
 }
 
-// ---------------------------------------------------------------------------
-// READBACK ONLY (INTENT S5.63 / S11.130). See the header for what it is for.
-// Const, side-effect-free, called only from the dump channel.
-// ---------------------------------------------------------------------------
 void Core::dumpOldViewState(std::ostream &out) const
 {
 	const auto prec = out.precision();
@@ -918,11 +851,6 @@ void Core::dumpOldViewState(std::ostream &out) const
 	projection->dumpTrace(out);
 	out << ",\"stars\":";
 	hip_stars->dumpTrace(out);
-	// What Core itself owns and the three above cannot see: the two inputs to
-	// the star pipeline's per-frame photometry, and the refraction pre-pass
-	// gate. `atmosphere->getFlagShow() && FlagAtmosphericRefraction` is the
-	// exact expression the star draw is handed (solarSystemModule.cpp:298), so
-	// the readback reports the DECISION and not two facts about it.
 	out << ",\"tone\":{\"worldAdaptationLuminance\":" << atmosphere->getWorldAdaptationLuminance()
 	    << ",\"adaptLuminanceProbe\":" << tone_converter->adaptLuminance(1.f)
 	    << ",\"atmosphereIntensity\":" << atmosphere->getIntensity()
@@ -937,11 +865,6 @@ void Core::dumpOldViewState(std::ostream &out) const
 	out.precision(prec);
 }
 
-//! Both-paths mirror of the equatorial-mount sky-lock (old flag_lock_equ_pos).
-//! Single source for `flag lock_sky_position` AND the turn/drag unlock sites
-//! (all route Core::setFlagLockSkyPosition): old navigation flag + new-path
-//! Camera sky-lock, kept in lockstep by construction (INTENT 11.58, the
-//! zoomToBothPaths/dragView both-paths precedent).
 void Core::setFlagLockSkyPosition(bool b)
 {
 	navigation->setFlagLockEquPos(b);
@@ -949,22 +872,6 @@ void Core::setFlagLockSkyPosition(bool b)
 		Camera::instance->setSkyLock(b);
 }
 
-//! B33 (S11.108(f), the F12 template S11.118(f)): the sky lock of the path that
-//! DRAWS. Its setter above is dual (S11.58), and since S11.150 EVERY write site
-//! routes through it.
-//! ~~SUPERSEDED 2026-08-26 (S11.150), kept because it states what was true and
-//! why the fix needed a decision: "FOUR shipped sites write the old flag alone
-//! and are not this seam ... The four write sites are recorded, not mirrored:
-//! making them dual changes what the sky does in a shipped scene, and one of
-//! them is suspended."~~ The suspension was D15(c) and it is ANSWERED [vixy
-//! 2026-08-26]: *"Continual tracking must be preserved and smooth - it
-//! replicate the body tracking function of advanced telescopes. Without this,
-//! it's hard to impossible to properly observe a body while the time continue
-//! to tick."* So the four (selectObject/selectType ENABLE, autoZoomOut x2
-//! DISABLE) are mirrored, and the toggle defect this comment described -- the
-//! flag command reading 1 while nothing holds the sky, computing `!1` and
-//! writing 0 to both, S11.129's `flag satellites` shape one layer up -- is gone
-//! with them.
 bool Core::getFlagLockSkyPosition(void)
 {
 	if (!getExperimentalPath() || !Camera::instance)
@@ -1111,11 +1018,6 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
-		// Both trees, old first (B24-select, INTENT S11.106): the old
-		// resolver still answers every name it knows, so old-body selection
-		// is unchanged by construction; a name only the new tree carries
-		// (composed bodies, B24) now resolves through the ModularObject
-		// bridge instead of selecting nothing (S11.97(d)).
 		selectObject(ssystemFactory->searchObjectByEnglishName(id));
 
 	} else if (type=="nebula") {
@@ -1153,23 +1055,6 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 	}
 
 	if (selected_object) {
-		// D15(c) [vixy 2026-08-26]: *"Continual tracking must be preserved and
-		// smooth - it replicate the body tracking function of advanced
-		// telescopes"* => both flags of this transition reach BOTH paths
-		// (S11.150). Old-side values are unchanged (setFlagLockSkyPosition
-		// writes navigation->setFlagLockEquPos(1); setFlagTracking(false)
-		// writes navigation->setFlagTraking(0)) -- the change is the mirror.
-		// The tracking clear is mirrored HERE and not merely recorded because
-		// the lock mirror alone is INERT at this site: Camera's sky-lock is
-		// dormant while `target` is set (Camera::update), so leaving the old-
-		// only setFlagTraking(0) would hold `Camera::target` and the new path
-		// would keep tracking while old holds the sky (MEASURED pre-change:
-		// camera.tracked='Mars' with old flagTraking 0, S11.150).
-		// Reachability of this site, since it is not the obvious one: the
-		// `planet`/`star`/`nebula`/`hp` branches above go through
-		// selectObject(Object), which clears tracking itself -- unless the
-		// object is ALREADY selected, where that overload returns early. So
-		// this fires on a RE-select of the tracked body.
 		if (navigation->getFlagTraking())
 			setFlagLockSkyPosition(true);
 
@@ -1217,20 +1102,6 @@ bool Core::findAndSelect(const Vec3d& pos)
 //! Find and select an object near given screen position
 bool Core::findAndSelect(int x, int y)
 {
-	// New route (B24-select, INTENT S11.106) asked FIRST since D26
-	// (S11.113(e), [vixy]: "Fable rec option 1" - the visible composed child
-	// TAKES the click when it lands ON the child). It answers only for bodies
-	// the old tree cannot see, and only when the click is on the child's own
-	// drawn disc or within the pick tolerance of its centre - the S11.106(d)
-	// two-tier rule, now extended ACROSS the old/new seam instead of stopping
-	// at it. Everywhere else it returns nothing and old picking decides
-	// exactly as before, so the default-object UX (click anywhere on the
-	// parent's disc -> parent) is untouched off the child's pixels.
-	// Before D26 this ran only after cleverFind declined, which made a rover
-	// drawn on its moon's disc permanently unselectable by pointer
-	// (S11.106(e), measured). The pick happens in the new path's screen frame,
-	// which is why the position goes down as window pixels rather than as the
-	// old equatorial ray.
 	Object obj = ssystemFactory->searchNewOnlyObjectAt(x, y);
 	if (!obj) {
 		Vec3d v;
@@ -1388,15 +1259,6 @@ Object Core::cleverFind(int x, int y) const
 	return cleverFind(v);
 }
 
-// Both-paths fov mirror (INTENT S11.40 / S11.15c residual). The OLD projection
-// eases its own fov; the NEW-path fov authority is ModularBody::halfFov, driven
-// through Camera::setHalfFov and read as Renderer clipping_fov.z
-// (Renderer.cpp:107/118). coreLink::zoomTo already mirrors scripted/UI `zoom
-// fov` (verified reaching the setter, S11.40); auto-zoom drove projection->zoomTo
-// DIRECTLY, so `zoom auto in/out` desynced the two paths (the S11.19 A/B
-// confound). Mirror at the target: same fov, same duration - the OLD path is
-// unchanged (the projection call below), the Camera eases to the same target.
-// AXIS/moon_scale seam precedent (both-paths, old behavior untouched).
 void Core::zoomToBothPaths(double aim_fov, float move_duration)
 {
 	projection->zoomTo(aim_fov, move_duration);
@@ -1414,30 +1276,8 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 	if (!navigation->getFlagTraking()) {
 		navigation->setFlagTraking(true);
 		navigation->moveTo(selected_object.getEarthEquPos(navigation), move_duration, false, 1);
-		// NEW path (B17): a commanded view move arms the offset -- mirror the old
-		// navigator->moveTo (zooming_mode != -1) that arms view_offset_transition
-		// (navigator.cpp:73-78). The Camera's per-frame tracking lookTo does NOT
-		// arm (old's per-frame tracking holds equ_vision without a moveTo), so
-		// the arm is these discrete moveTo sites only -- the offset stays armed
-		// (sticky) until a zoom-out-to-init disarms it (autoZoomOut, below).
 		if (Camera::instance) {
 			Camera::instance->armViewOffset(true);
-			// NEW path (S5.100; AUTHORISED S11.233(d) [vixy]: *"yes, same as
-			// for any kind of tracking in spacecrafter"*): this command starts
-			// the DRAWN path's tracking beside old's setFlagTraking(true)
-			// above. The dual setter Core::setFlagTracking cannot be used at
-			// this site -- it moves old with getAutoMoveDuration() where this
-			// site passes its own move_duration, and changing the OLD path's
-			// move duration is forbidden by construction (S11.52(b)) -- so the
-			// Camera call is made here, with the SAME expression the dual
-			// setter uses (Core::setFlagTracking, below) so the two tracking
-			// entries cannot drift apart (I2).
-			// D15(c) [vixy]: *"Continual tracking must be preserved and smooth
-			// - it replicate the body tracking function of advanced
-			// telescopes"*. Before this line the path that DRAWS zoomed to a
-			// 0.0023 deg field aimed at empty sky while old followed the body:
-			// 99.0336 deg apart, the drawn path's Mars frozen and not even
-			// evaluated (MEASURED on the pre binary, artifacts/f114/gaps_pre).
 			Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
 		}
 		manual_move_duration = move_duration;
@@ -1477,34 +1317,10 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 				// Need to go to init fov/direction
 				zoomToBothPaths(InitFov, move_duration);
 				navigation->moveTo(InitViewPos, move_duration, true, -1);
-				// D15(c), S11.150: both-paths, like the fov and the offset
-				// beside them. Old-side identical (setFlagTracking(false) ->
-				// setFlagTraking(0); setFlagLockSkyPosition(false) ->
-				// setFlagLockEquPos(0)). The DISABLE half is the one that
-				// fires under SHIPPED usage: `flag lock_sky_position on` then
-				// an unzoom-to-init left old drifting while the drawn path
-				// kept holding the sky (MEASURED 18.0493 deg vs 0.0000 deg,
-				// 131 182 px>32 against a 0 px floor).
 				setFlagTracking(false);
 				setFlagLockSkyPosition(false);
-				// NEW path (B17): zoom-out-to-init disarms the view offset -- the
-				// old view_offset_transition ramp-to-0 (navigator.cpp:76-77, the
-				// zooming_mode==-1 branch this -1 move sets).
 				if (Camera::instance) {
 					Camera::instance->armViewOffset(false);
-					// NEW path (S5.101; AUTHORISED S11.233(d), the same word): re-aim
-					// the DRAWN view to the init direction, as old's moveTo above
-					// does -- same vector (Core::InitViewPos), same duration. The
-					// frame conversion is the one loadCamera performs for
-					// init_view_pos at startup, REUSED at its one home
-					// (Camera::oldLocalToLocal, ssystem_factory.cpp the other
-					// caller). Eased over move_duration by the dome-comfort law
-					// instead of old's c = coef^4 (navigator.cpp:73): the END state
-					// is the parity target, the ramp is the perceptual class (B34,
-					// S11.92). Placed AFTER setFlagTracking(false) on purpose --
-					// while Camera::target is set, update() re-plans the aim every
-					// frame (Camera.cpp, the tracking lookTo) and would overwrite
-					// this plan on the next frame.
 					Camera::instance->lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration);
 				}
 				return;
@@ -1545,9 +1361,6 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 	// view_offset_transition ramp-to-0, navigator.cpp:76-77).
 	if (Camera::instance) {
 		Camera::instance->armViewOffset(false);
-		// NEW path (S5.101) -- the same re-aim as the manual branch above,
-		// at the branch old re-aims from with the same InitViewPos and the
-		// same move_duration. One conversion home (Camera::oldLocalToLocal).
 		Camera::instance->lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration);
 	}
 }
@@ -1738,11 +1551,6 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZODIAC,Utility::strToVec3f(conf.getStr(section,SCK_ZODIAC_COLOR)));
 
 	{
-		// B5 S6.9 pilot DUAL SEAM (F0, S11.102(e3)): the colour scheme's oort
-		// colour drives BOTH clouds, exactly as `flag oort` drives both shows
-		// (CoreLink::oortSetFlagShow, plus the init mirror above). One value,
-		// read once, delivered to the two draws. Only meaningful when the
-		// modular oort exists (flag_experimental_oort); harmless otherwise.
 		const Vec3f oortColor = Utility::strToVec3f(conf.getStr(section,SCK_OORT_COLOR));
 		oort->setColor(oortColor);
 		OortModule::cloudColor = oortColor;
@@ -2015,11 +1823,6 @@ void Core::dragView(int x1, int y1, int x2, int y2)
 	setFlagLockSkyPosition(false);
 }
 
-// The old path's half of the ramp instrument (INTENT S11.133). EXACTLY the pair
-// `Navigator::updateMove` reads and writes (navigator.cpp:186-189): the vision
-// vector of the ACTIVE mount, in spherical coordinates. Read through the
-// navigator's own const getters, so no old-path source is touched at all -- the
-// S11.130 `oldView` readback precedent, one layer smaller.
 static void rampVisionAzAlt(const Navigator *nav, double &az, double &alt)
 {
 	Utility::rectToSphe(&az, &alt,
@@ -2030,11 +1833,6 @@ static void rampVisionAzAlt(const Navigator *nav, double &az, double &alt)
 //! Increment/decrement smoothly the vision field and position
 void Core::updateMove(int delta_time)
 {
-	// ---- ramp instrument, BEFORE half (INTENT S11.133; readback only) -----
-	// `active` is read before the scaling block below, which rewrites the
-	// magnitudes but never the zero/non-zero state, so this is the same
-	// predicate either side of it. The release row is the frame after the last
-	// active one: a key-up must be OBSERVED, not inferred from an absent row.
 	const bool rampActive = (vzm.deltaAz != 0 || vzm.deltaAlt != 0
 	                      || vzm.deltaFov != 0 || vzm.deltaHeight != 0);
 	const bool rampRecord = rampActive || rampWasActive;
@@ -2089,16 +1887,6 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaHeight!=0) {
 		observatory->multAltitude(vzm.deltaHeight);
-		// DUAL SEAM (B21 unification, INTENT S11.71 finding / S11.72(c) residual):
-		// the interactive altitude ramp reaches the new path through its ONE
-		// descent authority (Camera::multAlt -> Camera::descend, view-directed
-		// near / last-selected far / legacy radial when anchored) instead of a
-		// second altitude geometry (I2). Before this line the ramp was OLD-PATH
-		// ONLY - Camera::multAlt had zero callers, so holding the raise/lower
-		// input moved the old observer and left the rendered new-path camera
-		// exactly where it was. The COEFFICIENT is the caller's own
-		// (Core::raiseHeight/lowerHeight, 1.01/0.99): the step FEEL is untouched,
-		// only the mechanism is unified.
 		if (Camera::instance)
 			Camera::instance->multAlt(vzm.deltaHeight);
 	}
@@ -2114,21 +1902,6 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaAz != 0 || vzm.deltaAlt != 0) {
 		navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
-		// DUAL SEAM (B34's interactive VIEW ramp, INTENT S11.133 - the row's
-		// last member). Before this line the arrow keys turned the OLD
-		// navigator and left the drawn camera exactly where it was
-		// (S11.108(b2), measured: old 73 777 px>32, new az/alt bit-identical).
-		// The SAME two numbers go to both paths: Camera::lookRel is the exact
-		// counterpart of Navigator::updateMove and carries old's convention,
-		// old's pole clamp and old's zero/zero guard (the argument, the sign
-		// derivation and its measurement are AT that function). The argument
-		// ORDER is (deltaAlt, deltaAz) there and (deltaAz, deltaAlt) here -
-		// the pre-existing spelling of the one other caller, Core::dragView.
-		// duration 0 because old's ramp has NO acceleration and NO
-		// deceleration: the magnitude is recomputed from `depl` every frame
-		// and only the sign survives, so a held key is a constant rate and a
-		// release is an instant stop. A smoothing plan would ease in at the
-		// press and keep moving after the key-up.
 		if (Camera::instance)
 			Camera::instance->lookRel(vzm.deltaAlt, vzm.deltaAz, 0);
 		std::ostringstream oss;
@@ -2198,18 +1971,6 @@ void Core::dumpRampTrace(std::ostream &out) const
 	out.precision(prec);
 }
 
-// ---------------------------------------------------------------------------
-// THE SEAM RECORDER (INTENT S11.245, F121). Contract, anchor and cost in
-// core.hpp above `struct SeamStep`. READBACK ONLY: this function reads both
-// engines and writes nothing but its own ring.
-// ---------------------------------------------------------------------------
-
-//! The angle between two directions, in degrees, on the branch [0, 180].
-//! Written from the normalised dot product rather than from atan2(|a^b|, a.b)
-//! because the quantity of interest here is a NEAR-ZERO angle and both forms
-//! have the same conditioning there, while this one needs no cross product;
-//! the clamp is what keeps acos defined when the two are the same vector to
-//! the last bit, which is the case this instrument is built to report.
 static double seamAngleDeg(const Vec3d &a, const Vec3d &b)
 {
 	const double la = a.length(), lb = b.length();
@@ -2245,13 +2006,6 @@ void Core::recordSeamStep(int delta_time)
 {
 	if (!seamRecording)
 		return;
-	// ---- TRAVEL INSTALLS: the inputs, on the edge ------------------------
-	// Polled rather than pushed, so this function keeps its READBACK-ONLY
-	// contract and neither registry gains a line that knows a recorder exists.
-	// The new registry's counter sees every install (including the
-	// zero-duration one `transition_to target point` performs, which is the
-	// command that decides where the NEXT travel starts from); old's flag sees
-	// only the travels that raise `moving`.
 	if (ssystemFactory) {
 		if (const CameraAnchors *ca = ssystemFactory->readCameraAnchors()) {
 			const unsigned int seq = ca->getTravelSeq();
@@ -2285,9 +2039,6 @@ void Core::recordSeamStep(int delta_time)
 
 	Camera *cam = Camera::instance;
 	if (!cam) {
-		// No camera: the record still goes in, with the old half filled and
-		// every new-path field zero. An absent row would be indistinguishable
-		// from a frame the recorder did not run (S11.132(a)'s fiction).
 		s.viewAngleAbs = s.viewAngleLocal = -1.;
 		s.headingOldDeg = navigation->getHeading();
 		s.flags = (navigation->getFlagAutoMove() ? 1u : 0u)
@@ -2304,24 +2055,12 @@ void Core::recordSeamStep(int delta_time)
 	s.zoomSrcNew = cam->getZoomSrcHalfFov();
 	s.zoomDstNew = cam->getZoomDstHalfFov();
 
-	// ---- VIEW DIRECTION, channel 1: the root-aligned inertial frame -----
-	// Old's eye forward is -(row 2 of mat_helio_to_eye): for a rotation R
-	// mapping helio -> eye, the vector R sends to the eye's -z is -(R row 2).
-	// The camera publishes exactly that quantity in the same frame
-	// (Camera::update -> lastAbsFwd), which is the pairing F114 measured at a
-	// 1.7e-06 deg floor (S11.235(d)).
 	{
 		const Mat4d &he = navigation->getHelioToEyeMat();
 		const Vec3d oldFwd(-he.r[2], -he.r[6], -he.r[10]);
 		const Vec3f &nf = cam->getAbsFwd();
 		s.viewAngleAbs = seamAngleDeg(oldFwd, Vec3d(nf[0], nf[1], nf[2]));
 	}
-	// ---- VIEW DIRECTION, channel 2: the acting (zenith) frame -----------
-	// Old's `local_vision` is x=South, y=East, z=Up; the camera's acting frame
-	// is x=East, y=North, z=Up, and the ONE home of that conversion is
-	// Camera::oldLocalToLocal (S5.101). Independent of channel 1 because it
-	// does not pass through the placement or the reference chain -- so the two
-	// together separate a view error from a placement error.
 	{
 		const Vec3f ol = Camera::oldLocalToLocal(Vec3f(navigation->getLocalVision()));
 		const Vec3f nl = cam->getForwardLocal();
@@ -2379,9 +2118,6 @@ void Core::recordSeamStep(int delta_time)
 	++seamTotal;
 }
 
-// The ring, chronological. `dropped` is what a capture longer than the ring
-// lost, so a truncated trace says so instead of looking like a short one --
-// the ramp instrument's own convention, for the same reason.
 void Core::dumpSeamTrace(std::ostream &out) const
 {
 	const auto prec = out.precision();
@@ -2588,9 +2324,6 @@ static inline MatchTol matchTolerancesFor(OBJECT_TYPE t) {
     switch (t) {
         case OBJECT_STAR:          return { 0.30, 0.15f }; // very tight for stars
         case OBJECT_BODY:          return { 0.10, 0.50f }; // planets/satellites
-        // A new-path-only body (composed, B24-select S11.106) is a body: same
-        // tolerance. Without this it fell to the 1 arcsec default, which would
-        // call two distinct composed bodies closer than that ONE object.
         case OBJECT_MODULAR:       return { 0.10, 0.50f };
         case OBJECT_NEBULA:        return { 5.00, 0.50f }; // extended objects
         case OBJECT_STAR_CLUSTER:  return { 5.00, 0.50f };
@@ -2710,9 +2443,6 @@ bool Core::selectObject(const Object &obj)
 				recordActionCallback("select " + selected_object.getEnglishName());
 			break;
 		case OBJECT_BODY:
-		// A new-path-only body (composed, B24) is a body in every user-visible
-		// sense: same selection semantics, same recorded command. The factory
-		// seam routes it to the tree that owns it (INTENT S11.106).
 		case OBJECT_MODULAR:
 			ssystemFactory->setSelected(selected_object);
 			// potentially record this action
@@ -2820,11 +2550,6 @@ void Core::setViewOffset(double offset)
 	if (offset < -0.5) off = -0.5;
 	if (offset > 0.5)  off =  0.5;
 
-	// S2(f): view_offset is a fraction of the fov radius; values outside
-	// [-0.5,0.5] are rejected (clamped). Old clamped SILENTLY -- report the
-	// rejection with the applied value + valid domain so the operator can fix
-	// the config/command. Screen-identical to old (the clamped value is the
-	// same), a diagnostic only.
 	if (off != offset)
 		cLog::get()->write("view_offset " + std::to_string(offset)
 			+ " out of range [-0.5,0.5] (fraction of fov radius); applied "
@@ -2836,11 +2561,6 @@ void Core::setViewOffset(double offset)
 	// adjust view direction (if tracking, should be corrected before render)
 	navigation->setLocalVision(InitViewPos);
 
-	// NEW path (B17, S11.79(c)): the SAME clamped scalar lands on the Camera.
-	// Core::setViewOffset is the ONE sink both S2(c) channels ([navigation]
-	// view_offset at startup + `set zoom_offset <v>` at runtime, R11) funnel
-	// into, so both reach the new path through this single authority (I2); the
-	// clamp above is that authority's, not duplicated in the Camera.
 	if (Camera::instance)
 		Camera::instance->setViewOffset(off);
 }

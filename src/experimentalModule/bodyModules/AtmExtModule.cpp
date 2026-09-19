@@ -8,12 +8,6 @@
 #include "experimentalModule/ModularBody.hpp"
 #include <cmath>
 
-// ATM_EXT family - port of the old AtmExt::_dataSet pipelines
-// (atm_ext.cpp:12-65) onto the registry. All four shader stages REUSED
-// VERBATIM; the family's own contract is the ONLY set (the atm shaders are
-// self-contained - no cam_block; adding the global UBO set would diverge
-// from the verbatim .spv for nothing). NO_DEPTH rides the reserved variant
-// bit (replaces the old prebuilt pipelineNoDepth clone).
 static const PipelineFamily &atmExtFamily()
 {
     static PipelineFamily family = []() -> PipelineFamily {
@@ -38,21 +32,6 @@ static const PipelineFamily &atmExtFamily()
         color.pass = PassKind::COLOR;
         color.shaderTable = {{0, {.vert = "atm.vert.spv", .tesc = "atm.tesc.spv",
                                   .tese = "atm.tese.spv", .frag = "atm.frag.spv"}}};
-        // Old fixed state, verbatim (atm_ext.cpp:23-34): SRC_ALPHA blend with
-        // MAX blend op (brighten-only), cull + reversed winding (tessellated),
-        // PATCH_LIST(3), vertex entries 1 (texcoord) + 2 (normal) stripped.
-        // DEPTH: test ON, WRITE OFF (INTENT 5.33 - the one divergence from the
-        // old pipeline state, which wrote depth only because it used the
-        // EntityCore default). This shell is a TRANSLUCENT brighten-only glow
-        // (BMT_TRANSLUCENT, MAX blend): it composites OVER what is behind it
-        // and occludes nothing, so writing its own depth can only be wrong.
-        // Measured consequence of the write: on Earth the shell stands at
-        // atmosphere_radius_factor * scaledRadius = 1.03 * 6378.14 km and its
-        // depth is the LAST thing written in the parent's merged bucket, so it
-        // was a 191.34 km wall killing every grounded body below it - taller
-        // than the proxy shell (5.29) and than any terrain (5.30) it was
-        // hiding. The module's own header always stated the contract as
-        // "depth-tested", never depth-writing (I1).
         color.state.blend = BLEND_SRC_ALPHA;
         color.state.blend.colorBlendOp = VK_BLEND_OP_MAX;
         color.state.depthWrite = false;
@@ -107,12 +86,6 @@ void AtmExtModule::drawShell(Renderer &renderer, ModularBody *body, const Mat4f 
         return;
     const float scaledRadius = body->getScaledRadius();
     const float distance = body->getDistanceToObserver();
-    // Old gate, translated (body.cpp:1183-1184):
-    // - screen_sz > 10 px: old px = screenSize * viewportHeight (the verified
-    //   halo formula, INTENT 11.19a) = screenSize * 2 * viewportRadius;
-    // - full angular size > 2 deg, from the BODY radius (not boundingRadius -
-    //   the shell itself must not feed its own gate);
-    // - observer outside the shell by 1%.
     if (body->getScreenSize() * 2.f * ModularBody::getViewportRadius() <= 10.f)
         return;
     const float squaredDistance = distance * distance;
@@ -154,8 +127,5 @@ void AtmExtModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 
 void AtmExtModule::drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Reachable only at extreme fisheye fovs (>~180deg: 2deg angular can sit
-    // below the 16px near-regime floor) - the old path drew the shell there
-    // through its noDepth pipeline; same fallback semantics as BasicMesh.
     drawShell(renderer, body, mat, VARIANT_NO_DEPTH);
 }

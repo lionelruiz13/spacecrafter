@@ -208,9 +208,6 @@ void StellarSystemModule::draw(int delta_time)
 	core->syncPlanetGridSkyState();
 	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
-	// Dual-path (S2b): the rule (which selections the old pointer still owns
-	// in the modular phase) is Core::needOldSelectionPointer - one authority
-	// for the four executor draw sites (I2).
 	if (core->needOldSelectionPointer())
 		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 

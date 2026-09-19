@@ -89,13 +89,6 @@ public:
 
 	void setLocalVision(const Vec3d& _pos);
 
-	//! Put the view direction back to an exact recorded value, with the
-	//! equatorial and precessed vectors rebuilt from the transforms in force
-	//! NOW. This is `setLocalVision` without its view-offset compensation:
-	//! that compensation is what an AIM owes a live offset, and a restore is
-	//! not an aim - it asserts a state that already had the offset in it.
-	//! Only a session restore uses it (INTENT S5.63 / S11.130); every other
-	//! caller of the old path is unchanged.
 	void restoreVision(const Vec3d& _localVision);
 
 	//! Return the observer heliocentric position
@@ -211,12 +204,6 @@ public:
 		return view_offset;
 	}
 
-	//! The old path has no view-offset LATCH: its arming ramp is a side effect
-	//! of an aim (updateVisionVector drives it from the move's zoom mode), so
-	//! there is no way to assert "armed" without also moving the view. A
-	//! restore has to assert exactly that and nothing else (D32 makes the latch
-	//! a saved condition and its ramp a motion that snaps), which is what this
-	//! is for. Restore-only (INTENT S11.130); no other caller.
 	void setViewOffsetTransition(float t) {
 		view_offset_transition = t;
 	}
@@ -224,29 +211,12 @@ public:
 		return view_offset_transition;
 	}
 
-	//! ---- READBACK ONLY, the F121 seam recorder's old half (INTENT S11.245) --
-	//! Three const, side-effect-free members over state this class already
-	//! holds; the ONE caller is `Core::recordSeamStep`, which compares this
-	//! navigator against the new-path `Camera` once per frame. `dumpTrace`
-	//! below already publishes all three, but only at dump time, and the
-	//! subject of the comparison is the INTERVAL between two dumps -- so the
-	//! recorder needs them per frame, and reading a member is what it needs.
-	//! No old-path behaviour is touched (S11.52(b): the baseline is unchanged
-	//! by construction, and a getter cannot change it).
-	//! Is a view auto-move (the `moveTo` transition) in flight?
 	int getFlagAutoMove() const {
 		return flag_auto_move;
 	}
-	//! The auto-move's progress coefficient, 0 at the start and 1 at arrival.
-	//! The old law's own clock: `updateVisionVector` slerps at c(move.coef),
-	//! so this is the parameter every old easing is a function of.
 	double getMoveCoef() const {
 		return move.coef;
 	}
-	//! Is a heading ramp (`changeHeading`) in flight? The new path has no
-	//! counterpart of the 5 s ramp `AnchorManager::transitionToBody` starts
-	//! (S11.141 records the divergence), so this is the channel that says
-	//! whether the old path alone is turning.
 	int getFlagChangeHeading() const {
 		return flag_change_heading;
 	}
@@ -261,15 +231,6 @@ public:
 
 	void alignUpVectorTo(const Mat4d& rot, double duration);
 
-	//! READBACK ONLY (INTENT S5.63 / S11.130) -- writes this navigator's whole
-	//! view state as one JSON object onto the dual-path dump channel.
-	//! What it is FOR: the old path draws the star field, the milky way and the
-	//! nebulae from THIS object, and until this existed nothing outside could
-	//! ask it what view it was drawing from -- so a restored scene whose sky
-	//! differed from the saved one could not be attributed to a field. It is a
-	//! const observer of already-computed state: it computes nothing, caches
-	//! nothing and is called only by the dump channel, so the old render path
-	//! is unchanged by construction (S11.52(b)).
 	void dumpTrace(std::ostream &out) const;
 
 private:

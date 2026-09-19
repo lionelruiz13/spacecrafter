@@ -58,20 +58,7 @@ void Executor::draw(int delta_time)
 void Executor::update(int delta_time)
 {
     currentMode->update(delta_time);
-    // The experimental path updates in EVERY executor mode: its "in galaxy /
-    // in universe" is reference-chain state (G2), not an executor mode. When
-    // this ran only through the solar/stellar modules, an altitude-driven
-    // mode flip (the dual-routed moveto) froze the new camera mid-cascade
-    // (INTENT 11.36 scene-E mw_out2). Retires with the executors.
     core->ssystemFactory->updateExperimental(delta_time, core->timeMgr.get());
-    // THE SEAM RECORDER'S ANCHOR (INTENT S11.245, F121). This line is the ONE
-    // point in the frame where BOTH engines have advanced for the SAME frame:
-    // the executor mode above ran the whole old path (observer, navigator,
-    // projector auto-zoom, Core::updateMove) and updateExperimental just ran
-    // Camera::update. Anywhere earlier one of the two halves is a frame stale,
-    // and a stale half is indistinguishable from the divergence the recorder
-    // exists to measure. Reads both, writes only its own ring, and returns on
-    // a bool test when SC_SEAM_RECORD is unset (core.hpp, `struct SeamStep`).
     core->recordSeamStep(delta_time);
 }
 

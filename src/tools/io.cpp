@@ -64,11 +64,6 @@ std::string toString(const T& t) //ServerSocket
 
 /* Warning values */
 #define LOT_OF_CLIENTS 		32 //Limit of simulated clients considered large and untested
-// The parenthesis said "must be larger than the messages that can be sent by
-// the server". That requirement is RETIRED (S5.73): the server no longer sends
-// through this buffer, so the size answers one question only - how much can be
-// received in one read. It was never enforced anyway; an answer too big for it
-// was not truncated, it was written past the end.
 #define SMALL_BUFFER_SIZE 	512 //Receive buffer size considered dangerously small
 #define BIG_BUFFER_SIZE 	1048576 //Buffer size considered unnecessarily large
 
@@ -350,10 +345,6 @@ std::string ServerSocket::getInput()
 	if(lock(inputting) == IO_NO_ERROR) {
 		std::string data;
 		if(inputQueue.empty()) {
-			// The caller has drained its batch. Whatever the application
-			// produces from here on was asked for by nobody on a socket - a
-			// script, the TUI, a keypress - so it must not be attributed to
-			// the last client that happened to speak.
 			servingClient = 0;
 			servingId = 0;
 			servingHttp = false;
@@ -380,10 +371,6 @@ void ServerSocket::setOutput(std::string data)
 			cLog::get()->write("ServerSocket data setOutput too big", LOG_TYPE::L_WARNING);
 			data.resize(MAX_BUFFER);
 		}
-		// The answer is stamped with the request being served, not with
-		// "whoever is subscribed when it goes out": the queue can be drained
-		// several passes later, and by then the connection may be somebody
-		// else's (S5.47, I5).
 		outputQueue.push(ClientMessage{servingClient, servingId, data});
 		unlock(outputting);
 	}
@@ -391,9 +378,6 @@ void ServerSocket::setOutput(std::string data)
 
 void ServerSocket::sendDiagnostic(const std::string &data)
 {
-	// One diagnostic is one record, so a line break inside it would frame as
-	// two. Folded to spaces rather than dropped: what the engine said is what
-	// the subscriber reads, and the log keeps the original either way.
 	std::string line = data;
 	for (char &c : line)
 		if (c == '\n' || c == '\r')
@@ -401,12 +385,6 @@ void ServerSocket::sendDiagnostic(const std::string &data)
 	if (line.size() > MAX_BUFFER)
 		line.resize(MAX_BUFFER); //An answer's clamp, and for the same reason
 	if(lock(outputting) == IO_NO_ERROR) {
-		// Addressed to nobody in particular: `deliverDiagnostic` reads the
-		// subscription table on the server thread, which is the thread that
-		// owns it. Queued even when nobody has subscribed - the queue is
-		// drained on every pass of the server loop, so an unread diagnostic
-		// costs one string and no growth, and testing the table here would be
-		// a read of the server thread's state from the application's.
 		outputQueue.push(ClientMessage{0, 0, line, false, true});
 		unlock(outputting);
 	}
@@ -614,15 +592,6 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 				command = replace(command, "+", " "); //Decodes spaces
 				command = replace(command, "%3A", ":"); //Decodes ":"
 				printf("COMMAND : \"%s\"\n", command.c_str());
-				// The HTTP connection is closed a few lines below, so this
-				// request's id will no longer match its slot by the time an
-				// answer exists: the answer then falls back to the feedback
-				// subscribers, which is where it went before S5.47. Nothing
-				// here needs to say so - deliver() reads it off the slot.
-				// Queued through the HTTP door: the application must be able to
-				// tell this from a control line, because this connection is
-				// closed four lines below (INTENT 11.187 - HTTP is mapped, not
-				// wired: the command carries no origin at all).
 				pushRequest(client, command, true); //Adds the string to the input queue
 				broadcast(clientIp(client) + CLIENT_SEPARATOR2 + "HTTP" + CLIENT_SEPARATOR1 + command + '\n'); //Sends the string to all clients
 			}
@@ -693,23 +662,9 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 			answer = "REQUEST ERROR";
 		send(clientSocketTab[client], answer); //Send the answer to the client
 	} else
-	// The DEDICATED diagnostic link, opt-in [vixy 2026-08-31: "feedback about
-	// tcp sent back ... through the tcp link dedicated for scedit"]. It is a
-	// new verb rather than a second port because a port is config surface a
-	// dome operator would have to be told about, and because a verb costs
-	// exactly nothing to a connection that never sends it: everything below
-	// this point is reached only by a client that asked for it by name.
-	// $LOG is NOT reused - see the argument at ServerSocket::sendDiagnostic.
-	// The prefix cannot collide with the two verbs above ($NOTICE, $LOG), and
-	// this verb is deliberately absent from the $NOTICE reply: that reply is
-	// itself bytes on masterput's wire (INTENT 11.188).
 	if(string.substr(0, 5) == "$DIAG") { //DIAG command
 		const char *answer;
 		if(string.substr(5, 2) == "ON") { //DIAGON
-			// Subscribing twice is not an error: the answer states the state
-			// the connection is now in, which is what a client asking again
-			// wants to know. ($LOG answers "REQUEST ERROR" to a repeat; that
-			// is its behaviour and INTENT 5.72's row, and it is not touched.)
 			clientDiagTab[client] = true;
 			answer = "$DIAGON ok: this connection now receives every diagnostic the engine "
 			         "produces about a command read on the control socket, one record per "
@@ -727,12 +682,6 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 	}
 }
 
-//! Queue a request together with the connection it arrived on.
-//! The lock is not a detail added for the origin: the push runs on the server
-//! thread and `getInput`'s pop runs on the application thread, and until now
-//! only the pop side took `inputting` - i.e. a std::string was being
-//! constructed in a queue another thread could be popping from. The routing
-//! this fix installs reads what was pushed, so the queue has to be sound.
 void ServerSocket::pushRequest(unsigned int client, const std::string &data, bool http)
 {
 	if(lock(inputting) == IO_NO_ERROR) {
@@ -758,25 +707,14 @@ void ServerSocket::checkDataToSend()
 	}
 }
 
-//! One answer, to the connection that asked for it and to the feedback
-//! subscribers (S5.47). Before this, an answer had only the second half, so a
-//! client that asked and did not subscribe was answered into nothing - the
-//! string was popped off the queue all the same, which is why the app's log
-//! carried no warning either.
 void ServerSocket::deliver(const ClientMessage &out)
 {
-	// The connection that asked, if it is still that same connection: a slot
-	// is freed on disconnect and handed to the next client, and the next
-	// client must not be given an answer it never asked for (I5).
 	int target = -1;
 	if(out.id != 0 && out.client < maxClients
 	   && clientSocketTab[out.client] != NULL
 	   && clientIdTab[out.client] == out.id)
 		target = (int)out.client;
 
-	// The message, once, and sized by itself: `setOutput` allows an answer of
-	// up to MAX_BUFFER bytes and this adds one more, so it does not fit in a
-	// `tcp_buffer_in_size` buffer and never had to (S5.73).
 	const std::string message = out.data + '\n';
 
 	unsigned int recipients = 0;
@@ -784,10 +722,6 @@ void ServerSocket::deliver(const ClientMessage &out)
 		send(clientSocketTab[target], message.c_str());
 		recipients++;
 	}
-	// The feedback channel is unchanged: a client that subscribed with $LOGON
-	// is a control room watching what every operator asks, and it keeps
-	// receiving exactly what it received before. The addressee is excluded so
-	// that a client which is both issuer and subscriber gets one copy.
 	recipients += broadcast(message, target);
 
 	if(recipients == 0)
@@ -797,12 +731,6 @@ void ServerSocket::deliver(const ClientMessage &out)
 		                   LOG_TYPE::L_WARNING);
 }
 
-//! One diagnostic, to the connections that asked for diagnostics and to no
-//! other connection. This is the whole of what INTENT 11.186(c) added to the
-//! wire: it touches `clientDiagTab` and never `clientBroadcastTab`, so a
-//! connection that did not send $DIAGON receives exactly the bytes it received
-//! before this existed - which is the boundary, proven by measurement rather
-//! than argued (harness/f69_feedback.py leg iv).
 void ServerSocket::deliverDiagnostic(const ClientMessage &out)
 {
 	const std::string message = out.data + '\n';

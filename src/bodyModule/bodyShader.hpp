@@ -37,9 +37,6 @@
 
 //
 #include "tools/vecmath.hpp"
-// globalVertProj/globalFrag moved to the new path (single authority - the
-// MESH family draws with the same shaders); this include edge dies with the
-// old path (INTENT.md 12 retirement map, re-home 2026-07-12).
 #include "experimentalModule/meshModules/bodyShaderInterface.hpp"
 
 enum SHADER_USE {
