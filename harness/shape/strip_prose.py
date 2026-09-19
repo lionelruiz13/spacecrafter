@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # Mechanical half of the comment pass (INTENT S2.1 G12 (S6)): delete every full-line
 # comment BLOCK of >= MIN lines that an AGENT wrote: every line blamed to a 'Claude*' author
-# AND absent from the file at BASE (blame names the last toucher, not the writer). A block
-# holding one human line, a licence, or a tool directive is left whole. Blank lines go only where a deleted block leaves a hole.
+# AND absent from the file at BASE (blame names the last toucher, not the writer). Human and
+# legacy lines inside a mixed block stay; a licence protects its whole block, a TODO its line. Blank lines go only where a deleted block leaves a hole.
 # Files must be unmodified against <rev> (blame lines are matched by index).
 #   usage (code repo root): strip_prose.py <rev> <file ...>      MIN=3 by default (env)
 # What it deletes stays in git at <rev>; codeident.py proves no code token moved.
 import os, re, subprocess, sys, unicodedata
 
 MIN = int(os.environ.get('MIN', '3'))
+EXEMPT = [e for e in os.environ.get('EXEMPT', '').split(',') if e]   # commits whose comments are contracts, not prose
 
 BASE = os.environ.get('BASE', '4dfe7bb3')      # the owner's last state before any agent commit
 
@@ -29,17 +30,20 @@ def legacy_skeletons(path):                     # comment text that pre-dates th
 
 def agent_wrote(author, line, legacy):          # blame names the LAST TOUCHER: an agent's re-encoding pass is not authorship
     return (author or '').startswith('Claude') and not (len(skel(line)) >= 8 and skel(line) in legacy)
-KEEP = re.compile(r'copyright|licen[cs]e|fall.?through|NOLINT|clang-format|IWYU|TODO|FIXME', re.I)
+LICENCE = re.compile(r'copyright|licen[cs]e', re.I)
+TODO = re.compile(r'TODO|FIXME|NOLINT|clang-format|IWYU', re.I)   # tool directives are 1-2 line comments, below MIN anyway
 rev = sys.argv[1]
 total = 0
 for p in sys.argv[2:]:
     bl = subprocess.run(['git', 'blame', '--line-porcelain', rev, '--', p], capture_output=True).stdout.decode('utf-8', 'surrogateescape')
-    authors, a = [], None
+    authors, a, sha = [], None, ''
     for l in bl.split('\n'):
-        if l.startswith('author '):
+        if re.match(r'[0-9a-f]{40} ', l):
+            sha = l[:40]
+        elif l.startswith('author '):
             a = l[7:]
-        elif l.startswith('\t'):
-            authors.append(a)
+        elif l.startswith('\t'):       # a line written by an EXEMPT commit (the contract pass) counts as human
+            authors.append('exempt' if any(sha.startswith(e) for e in EXEMPT) else a)
     lines = open(p, encoding='utf-8', errors='surrogateescape', newline='').read().split('\n')   # newline='': CRLF files stay CRLF
     if len(lines) - 1 != len(authors) and len(lines) != len(authors):
         print(f'SKIP {p}: modified against {rev} ({len(lines)} lines vs {len(authors)} blamed)'); continue
@@ -62,10 +66,17 @@ for p in sys.argv[2:]:
         j = i
         while j < len(lines) and is_c[j]:
             j += 1
-        blk = range(i, j)
-        if (j - i >= MIN and all(k < len(authors) and agent_wrote(authors[k], lines[k], legacy) for k in blk)
-                and not any(KEEP.search(lines[k]) for k in blk)):
-            drop.update(blk)
+        # inside one comment run, drop each maximal sub-run of >= MIN agent-written lines; human and
+        # legacy lines stay where they are. A licence protects the whole run; a TODO protects its line.
+        if not any(LICENCE.search(lines[k]) for k in range(i, j)):
+            k = i
+            while k < j:
+                m = k
+                while m < j and m < len(authors) and agent_wrote(authors[m], lines[m], legacy) and not TODO.search(lines[m]):
+                    m += 1
+                if m - k >= MIN:
+                    drop.update(range(k, m))
+                k = max(m, k + 1)
         i = j
     out, after_drop = [], False     # spacing is touched ONLY where a deleted block leaves a hole
     for k, l in enumerate(lines):

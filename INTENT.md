@@ -1158,6 +1158,8 @@ Ordered by priority-to-the-refactoring; each entry = observation + where to look
 
 253. **THREE OWNER RULINGS (2026-09-19, verbatim): ONE RESPONSIBLE PER MODE — Projector on the old path, Camera on the new, "like everything about the space"; the GATING is its own responsibility in its own removable wiring class; `velocityScaling` is the one law of every interactive mover (+ his planned cubic joystick response) — SUPERSEDES §11.250(d)(4) "inform both paths" (that IS two managers) and marks the zoom / mount stopgaps of §11.251 as temporary; G12 gains (S8); open design question: the sky is still drawn through the old Projector/Navigator on the new path** (Claude Fable 5.1, session 33) → INTENT/11.253.md
 
+254. **THE DEDUPLICATION WORK MAP — header contract pass done (`97e9c380` + `42b908cc`; module comment/code 0.10; 75 headers, codeident 0 FAIL re-run by the supervisor); five agent harvests of every second manager the deleted prose named (~280 items) stored RAW in `claude/s33-second-managers.md`; four classes derived (two engines side by side · legacy law ported beside the still-compiled original · duplication INSIDE the new path = the real targets · value held twice); the wiring class's request table (11 informations, old / new responsible, today's dual writers)** (Claude Fable 5.1, session 33) → INTENT/11.254.md
+
 *Maintenance marker (2026-08-09, Fable): append the NEXT §11 stub directly above this line — §11's numbered list ends HERE, not at the file tail. Stubs 128–138 accreted inside §13.C for six tasks because no boundary was named at the append site; relocated back 2026-08-09 as a pure line move (multiset-verified), recorded §11.140(h).*
 
 ## 12. Module completion plan — full replacement surface (approved 2026-07-12)
