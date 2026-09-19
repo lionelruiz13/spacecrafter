@@ -28,33 +28,27 @@
 #include <string>
 #include "scriptModule/script_origin.hpp"
 
-//! The `#!` channel: error feedback written into the script file, at the end of the faulty line
-//! Contract: the tail of a line from its first `#!` belongs to the engine, everything before it is never touched
-//! Writes are batched per file at script end, bytes and line endings preserved; a failed write degrades to the log
+//! Write error feedback into the script file, at the end of the faulty line
+//! The tail of a line from its first #! belongs to the engine, the rest is never touched
 class ScriptAnnotator {
 public:
-	//! Record a diagnostic for the line `at` names. Several diagnostics for
-	//! one line are joined with "; ". Ignored when `at` is invalid (no file).
+	//! Record a diagnostic for the line at names, ignored when at is invalid
 	void note(const ScriptOrigin &at, const std::string &message);
-	//! A line that carried a `#!` tail when it was dispatched: candidate for
-	//! clearing at a natural end if no diagnostic names it.
+	//! Record a line carrying a #! tail, cleared at a natural end if nothing names it
 	void saw(const ScriptOrigin &at);
-	//! Write every pending annotation to its file (see the contract above),
-	//! clear stale tails when `naturalEnd`, then forget everything.
+	//! Write the pending annotations, clear stale tails when naturalEnd
 	void flush(bool naturalEnd);
 
-	//! Byte offset of the first `#!` at or after the first `#` outside quotes; std::string::npos when none
+	//! Return the byte offset of the #! tail, std::string::npos when none
 	static std::size_t annotationBegin(const std::string &line);
 	static bool hasAnnotation(const std::string &line) { return annotationBegin(line) != std::string::npos; }
-	//! The line with its machine tail (and the blanks before it) removed.
 	static std::string withoutAnnotation(const std::string &line);
-	//! The line with `message` as its machine tail, replacing any present.
 	static std::string withAnnotation(const std::string &line, const std::string &message);
 
 private:
 	struct LineNote {
-		std::string text;      //!< the raw line as loaded, for the changed-since-load check
-		std::string message;   //!< "" = seen with a tail, no diagnostic (clear candidate)
+		std::string text;      //!< Raw line as loaded
+		std::string message;   //!< "" = seen with a tail, no diagnostic
 	};
 	//! file -> line number -> note
 	std::map<std::string, std::map<unsigned, LineNote>> files_;

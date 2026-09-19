@@ -43,8 +43,8 @@
 #include "navModule/anchor_manager.hpp"
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/ModularBodyPtr.hpp"
-#include "experimentalModule/CameraAnchors.hpp" // new-path named anchors (B4)
-#include "experimentalModule/bodyModules/StarModule.hpp" // sun-scale halo seam (S11.44)
+#include "experimentalModule/CameraAnchors.hpp"
+#include "experimentalModule/bodyModules/StarModule.hpp"
 #include "experimentalModule/bodyModules/HintModule.hpp"
 #include "experimentalModule/bodyModules/AxisModule.hpp"
 #include "experimentalModule/bodyModules/RingModule.hpp"
@@ -59,8 +59,8 @@ class MilkyWay;
 class Atmosphere;
 class Landscape;
 class ToneReproductor;
-struct EnvironmentState;       // experimentalModule/EnvironmentModule.hpp
-struct AtmosphereComputeInput; // atmosphereModule/atmosphere.hpp
+struct EnvironmentState;
+struct AtmosphereComputeInput;
 
 /**
  * \file ssystem_factory.hpp
@@ -83,18 +83,15 @@ public:
 
     void loadCamera(const InitParser &conf);
 
-    // Dump the same-frame transform state of both body paths as JSON lines; freeze time before calling
-    // extraHeader appends whole members (,"key":value) of its own to the header object
+    // Dump the body transforms as JSON lines, freeze time before calling
     void dumpTracePaths(const std::string &file,
                         const std::function<void(std::ostream &)> &extraHeader = {});
-    // ALTERNATE swaps the drawn path every second (comparison only); call once at init, before the first draw
     enum class RenderPathMode { NEW, OLD, ALTERNATE };
+    // Call once at init, before the first draw
     void setRenderPathMode(RenderPathMode mode) {
         drawModularSystem = (mode != RenderPathMode::OLD);
         pathPinned = (mode != RenderPathMode::ALTERNATE);
     }
-    //! Script-settable rendered-path selection (flag experimental_path):
-    //! pins old (false) / new (true) path and stops the A/B auto-toggle.
     void setExperimentalPath(bool newPath) {
         drawModularSystem = newPath;
         pathPinned = true;
@@ -102,22 +99,18 @@ public:
     bool getExperimentalPath() const {
         return drawModularSystem;
     }
-    // Warp the Camera onto the named body; no-op when the new tree has no such body
+    // Warp the Camera to the named body, no-op if unknown
     void syncCameraReference(const std::string &name);
 
-    // Called once by Core, after it creates the shared engines
+    // Call once, after the shared engines are created
     void wireEnvironment(MilkyWay *milky, Atmosphere *atmosphere, ToneReproductor *eye);
-    // Landscape engine re-seat - called by Core at every landscape swap
-    // (setLandscape/loadLandscape; I5).
+    // Call at every landscape swap
     void setEnvironmentLandscape(Landscape *landscape);
-    // Atmosphere user-flag mirror (old BodyDecor::setAtmosphereState sites).
     void setEnvironmentAtmosphereFlag(bool b);
-    // Aggregated per-frame state (valid after update()) - the BodyDecor
-    // gate replacement for modular-phase consumers (searchAround, meteors).
+    // Valid after update()
     const EnvironmentState &getEnvironmentState() const;
-    // Input of Atmosphere::computeColor, built in update()
+    // Valid after update()
     const AtmosphereComputeInput &getEnvironmentAtmosphereInput() const;
-    // Environment draws of the modular phase, at their positions in the frame
     void drawEnvironmentBackdrop();
     void drawEnvironmentSky();
 
@@ -141,13 +134,13 @@ public:
                         : ModularBody::findBodyOnce(englishName);
 	}
 
-	//! Set selected object; any object which is not a body clears the body selection
+	//! Set selected object, a non-body clears the body selection
 	void setSelected(const Object &obj);
 
-    //! Resolve a body name across both body trees, the old tree first; Object() when neither knows it
+    //! Return Object() when no body has this name
     Object searchObjectByEnglishName(const std::string &englishName) const;
 
-    //! Pick at window pixels (x, y) among the bodies only the new tree carries; Object() otherwise
+    //! Pick at window pixels, return Object() if none
     Object searchNewOnlyObjectAt(int x, int y) const;
 
     //! Get base planets display limit in pixels
@@ -171,7 +164,6 @@ public:
         return ssystem->getMoon();
     }
 
-	// [merge] script-variable helpers (theirs' feature): distance/magnitude of the selected object.
 	double getSelectedDistance(const Navigator * nav) const {
 		Vec3d pos = ssystemSelected->getSelected().getObsJ2000Pos(nav);
 		return pos.length();
@@ -182,14 +174,14 @@ public:
 
     void setFlagLightTravelTime(bool b) {
 		ssystemDisplay->setFlagLightTravelTime(b);
-		ModularBody::flagLightTravelTime = b; // dual-path: both paths must model the same light
+		ModularBody::flagLightTravelTime = b;
 	}
 
     bool getFlagLightTravelTime(void) const {
         return ssystemDisplay->getFlagLightTravelTime();
     }
 
-    //! Restart every trail from scratch (the display flag is setFlagTrails)
+    //! Restart every trail, the display flag is setFlagTrails
     void startTrails(bool b);
 
     void setFlagMoonScale(bool b) {
@@ -231,13 +223,11 @@ public:
         return ssystem->getSunScale();
     }
 
-    //! Apply the display scaling of config.ini, without transition
-    //! A body declared by a modular system file keeps the scale of that file instead
+    //! Apply the config.ini display scaling, without transition
     void initDisplayScaling(bool flagMoonScale, double moonScale,
                             bool flagSunScale, double sunScale);
 
-    //! Write the machine-owned composed twin of every legacy system loaded so far
-    //! Call after initDisplayScaling: a twin must carry the configured display scale
+    //! Call after initDisplayScaling
     void generatePendingTwins();
 
 	void setFlagClouds(bool b) {
@@ -292,16 +282,15 @@ public:
 
 	void setFlagAxis(bool b) {
         currentSystem->setFlagAxis(b);
-        AxisModule::show = b; // both-paths seam, like setFlagHints
-        PlanetGridModule::show = b; // the planet grid has no flag of its own
+        AxisModule::show = b;
+        PlanetGridModule::show = b; // The planet grid has no flag of its own
     }
 
-    // Colors shared by the grid of every body; new path only
+    // Shared by the grid of every body
     void setPlanetGridColor(const Vec3f &meridian, const Vec3f &parallel) {
         PlanetGridModule::setColors(meridian, parallel);
     }
 
-    // Pushed each frame by Core::syncPlanetGridSkyState from the tropic and polar-circle sky lines
     void setPlanetGridTropicPolar(bool showTropics, bool showPolarCircles,
                                   const Vec3f &tropic, const Vec3f &polarCircle) {
         PlanetGridModule::setTropicPolar(showTropics, showPolarCircles, tropic, polarCircle);
@@ -309,7 +298,7 @@ public:
 
 	void setFlagHints(bool b) {
         ssystemSelected->setFlagHints(b);
-        HintModule::show = b; // both-paths seam, like setFlagLightTravelTime
+        HintModule::show = b;
     }
 
     void setFlagIsolateSelected(bool b) {ssystemSelected->setFlagIsolateSelected(b);}
@@ -318,13 +307,11 @@ public:
 
 	void setFlagPlanetsOrbits(bool b) {
         ssystemSelected->setFlagPlanetsOrbits(b);
-        OrbitModule::setGlobalPlanets(b); // both-paths seam (bumps the override generation)
+        OrbitModule::setGlobalPlanets(b);
     }
 
 	void setFlagPlanetsOrbits(const std::string &_name, bool b) {
         ssystemSelected->setFlagPlanetsOrbits(_name, b);
-        // New-path per-name (findBody is static; exception-on-miss, tolerate it
-        // like the old searchByEnglishName null return).
         try {
             if (ModularBody *body = ModularBody::findBody(_name))
                 body->setFlagOrbit(b);
@@ -345,8 +332,6 @@ public:
 
 	void createTexSkin(const std::string &name, const std::string &texName) {
         ssystemTex->createTexSkin(name, texName);
-        // New-path mirror (S6 Textures seam): contract parity with old
-        // Body::createTexSkin - creating/replacing never activates.
         try {
             if (ModularBody *body = ModularBody::findBody(name))
                 body->createTexSkin(texName);
@@ -359,7 +344,7 @@ public:
 
 	void setFlagSatellitesOrbits(bool b) {
         ssystemSelected->setFlagSatellitesOrbits(b);
-        OrbitModule::setGlobalSatellites(b); // both-paths seam
+        OrbitModule::setGlobalSatellites(b);
     }
 
 	bool getFlagSatellitesOrbits(void) const {
@@ -377,7 +362,7 @@ public:
         }
     }
 
-    // New path only; returns false when no such body exists
+    // Return false when no such body exists
     bool setBodyDatumRadius(const std::string &englishName, double km);
     bool setBodyGroundRadius(const std::string &englishName, double km);
 
@@ -411,7 +396,7 @@ public:
     }
 
 	void setScale(float scale) {
-        ModularBody::haloScale = scale; // both-paths seam (old Body::object_scale)
+        ModularBody::haloScale = scale;
         ssystemScale->setScale(scale);
     }
 
@@ -481,8 +466,6 @@ public:
     }
 
 	void modelRingInit(int low, int medium, int high) {
-        // Both-paths seam (setFlagHints idiom): the new-path RingModule LOD
-        // slice counts mirror the same config values the old Ring gets.
         RingModule::setLodSlices(low, medium, high);
         currentSystem->modelRingInit(low, medium, high);
     }
@@ -511,7 +494,7 @@ public:
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 
-	//! New-path frame update (camera + environment), called by Executor::update in every executor mode
+	//! Update the Camera and the environment; every executor mode must call it
 	void updateExperimental(int delta_time, const TimeMgr* timeMgr);
 
 	void bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const {
@@ -526,24 +509,19 @@ public:
 	          const ToneReproductor* eye,
 	          bool drawHomePlanet );
 
-	//! New-path frame draw, called by the draw of every executor mode; draws nothing unless the new path is drawn
 	//! Must run inside the PASS_BACKGROUND window of the frame
 	void drawExperimental();
 
-	//! Instantiate the oort cloud as a modular body under the "Solar" node; no-op when that node is absent
+	//! Create the oort cloud under the "Solar" node, no-op if absent
 	void createExperimentalOort(unsigned int nbr, const Vec3f &color);
 	inline bool hasExperimentalOort() const { return experimentalOortInstantiated; }
 
 	void addBody(stringHash_t &param);
 
-    //! Re-read the current system of the camera from its data file
-    //! Date, camera pose, reference, tracked and selected bodies are kept, re-seated by name
-    //! Returns false when the current system has no data file
+    //! Return false when the current system has no data file
     bool reloadCurrentSystem();
 
-    //! Write the current system of the camera to a composed system file
-    //! filename empty = its own composed file, else a file name (.ini by default) in the same directory
-    //! Refuses a path separator and the .disabled twin name: nothing is written
+    //! Save to its own composed file when filename is empty; refuse a path separator
     bool saveCurrentSystem(const std::string &filename);
 
     void preloadBody(stringHash_t &param);
@@ -554,8 +532,7 @@ public:
         return currentSystem->removeBody(name);
     }
 
-    //! Drop every body a script added at runtime; name = home planet of the observer
-    //! Returns false when nothing was cleared (e.g. the observer stands on a supplemental body)
+    //! name = home planet of the observer, return false when nothing was cleared
     bool removeSupplementalBodies(const std::string &name);
 
 	Object searchByNamesI18(const std::string &planetNameI18n) const {
@@ -584,9 +561,9 @@ public:
 
 	void setDefaultBodyColor(const std::string& halo, const std::string& label, const std::string& orbit, const std::string& trail) {
         ssystemColor->setDefaultBodyColor(halo, label, orbit, trail);
-        HintModule::defaultLabelColor = Utility::strToVec3f(label); // both-paths seam
-        OrbitModule::defaultColor = Utility::strToVec3f(orbit);     // both-paths seam
-        TrailModule::defaultColor = Utility::strToVec3f(trail);     // both-paths seam
+        HintModule::defaultLabelColor = Utility::strToVec3f(label);
+        OrbitModule::defaultColor = Utility::strToVec3f(orbit);
+        TrailModule::defaultColor = Utility::strToVec3f(trail);
     }
 
 	std::string getPlanetHashString() {
@@ -598,7 +575,7 @@ public:
     }
 
 	void setSizeLimit(float scale) {
-        ModularBody::haloSizeLimit = scale; // both-paths seam (old Body::object_size_limit)
+        ModularBody::haloSizeLimit = scale;
         ssystemScale->setSizeLimit(scale);
     }
 
@@ -649,7 +626,6 @@ public:
         currentSystem->getAnchorManager()->displayAnchor();
     }
 
-    //! Read-only views of the two travel registries (trace harness); not owned
     const AnchorManager *readAnchorManager() const {
         return currentSystem->getAnchorManager().get();
     }
@@ -657,7 +633,6 @@ public:
         return cameraAnchors.get();
     }
 
-    // The camera commands below drive both registries (AnchorManager, CameraAnchors); true when either acted
     bool cameraAddAnchor(stringHash_t& param) {
         const bool oldOk = currentSystem->getAnchorManager()->addAnchor(param);
         const bool newOk = cameraAnchors->add(param);
@@ -674,11 +649,10 @@ public:
 		const bool oldOk = currentSystem->getAnchorManager()->switchToAnchor(name);
 		const bool newOk = camera ? cameraAnchors->switchTo(name, *camera) : false;
 		if (oldOk && !newOk)
-			syncCameraReference(name); // anchor known to the AnchorManager only
+			syncCameraReference(name);
 		return oldOk || newOk;
 	}
 
-    // Travels: both registries must refuse the same cases, the script `wait` rides the returned verdict
     bool cameraMoveToPoint(double x, double y, double z){
 		const bool oldOk = currentSystem->getAnchorManager()->setCurrentAnchorPos(Vec3d(x,y,z));
 		const bool newOk = camera
@@ -717,7 +691,6 @@ public:
         return oldOk || newOk;
     }
 
-    //! The AnchorManager flag is manager-wide (name ignored); CameraAnchors scopes it to the named anchor
     bool cameraSetFollowRotation(const std::string &name, bool value){
 		const bool oldOk = currentSystem->getAnchorManager()->setFollowRotation(value);
 		const bool newOk = camera ? cameraAnchors->setFollowRotation(name, value, *camera) : false;
@@ -748,7 +721,7 @@ public:
     bool switchToAnchor(const std::string& anchorName) {
         bool ret = currentSystem->getAnchorManager()->switchToAnchor(anchorName);
         if (ret)
-            syncCameraReference(anchorName); // dual-path: observer body change must reach the new Camera
+            syncCameraReference(anchorName);
         return ret;
     }
 
@@ -771,15 +744,15 @@ public:
     void addSystem(const std::string &name, const std::string &file);
 
     void loadGalacticSystem(const std::string &path, const std::string &file);
-    //! Instantiate one galactic.ini section; section = its [header], to name a rejected section
+    //! Load one galactic.ini section; section = its [header], for error reports
     void loadSystem(const std::string &path, stringHash_t &params, const std::string &section);
     std::unique_ptr<ProtoSystem> &createSystem(const std::string &mode);
     void createModularSystem(const std::string &name, const std::string &filename, const Vec3d &pos);
-    //! Composed file of a system node (node = name of the ModularSystem), relative to ~/.spacecrafter
+    //! Return a path relative to ~/.spacecrafter
     static std::string composedPathOf(const std::string &node) {
         return "modularSystem/" + node + ".ini";
     }
-    //! Machine-owned twin of the same node: rewritten at every legacy load, never a save target
+    //! Rewritten at every legacy load, never a save target
     static std::string composedTwinPathOf(const std::string &node) {
         return composedPathOf(node) + ".disabled";
     }
@@ -810,40 +783,35 @@ public:
         ssystem->setHaloSize(f);
     }
 
-    //! True when the new path draws the bodies; both defaults must match setRenderPathMode(NEW)
     bool drawModularSystem = true;
-    // Set by createExperimentalOort; while true the old oort is not drawn in the modular phase
     bool experimentalOortInstantiated = false;
-    // false = the drawn path swaps every second
     bool pathPinned = true;
 private:
-    //! New-path half of a Moon/Sun display-scale command
     static void commandDisplayScale(const char *bodyName, float scale) {
         if (ModularBody *body = ModularBody::findBody(bodyName))
             body->setScaling(scale);
     }
-    //! New-path half of the Sun halo size, derived from the state of ssystem
     void mirrorSunHaloSize() {
         StarModule::setSunHaloSize(ssystem->getFlagSunScale()
             ? 200.f + ssystem->getSunScale() * 40.f : 200.f);
     }
-    //! True when the body was declared by a composed system file; false for an unknown body
+    //! Return false for an unknown body
     static bool fileOwnsDisplayScale(const char *bodyName) {
         const ModularBody *body = ModularBody::findBody(bodyName);
         return body && body->isComposedDeclared();
     }
     void initBodyDisplayScale(const char *bodyName, const char *configKey,
                               bool flag, double value);
-    //! Log once that a live config.ini display scale is overridden by the file owning the body
+    //! Log once that the file owning the body overrides config.ini
     void announceDeprecatedScale(const char *bodyName, const char *configKey,
                                  bool flag, double value);
-    //! Re-apply the display scaling of config.ini on a rebuilt tree, without transition
+    //! Re-apply the config.ini display scaling on a rebuilt tree
     void restoreDisplayScaling();
     //! Select current system
     void selectSystem();
-    // {legacy file, twin path} of the twins not written yet, in load order
+    // {legacy file, twin path}, in load order
     std::vector<std::pair<std::string, std::string>> pendingTwins;
-    // True once generatePendingTwins ran: a twin is then written as soon as its system is loaded
+    // True once generatePendingTwins ran
     bool twinsUnblocked = false;
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
     std::unique_ptr<SolarSystemColor> ssystemColor;
@@ -852,14 +820,13 @@ private:
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
     std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
 
-    // Tree root. Keep declared before camera, cameraAnchors and environment: ModularBodyPtr holders release first
+    // Keep declared before camera, cameraAnchors and environment: they release first
     std::unique_ptr<ModularSystem> universe;
-    ModularSystem *milkyway; // handle into the tree (universe's INNER child)
+    ModularSystem *milkyway; // Not owned, INNER child of universe
     std::unique_ptr<ProtoSystem> galacticSystem;
     std::shared_ptr<AnchorManager> galacticAnchorMgr;
 
-    // Modular systems live IN the tree (milkyway's INNER children - G2);
-    // handles by name for the factory's system surface.
+    // Not owned, INNER children of milkyway
     std::map<std::string, ModularSystem *> modularSystemOf;
     std::map<std::string, std::unique_ptr<ProtoSystem>> systems;
     std::map<std::string, Vec3d> systemOffsets;
@@ -872,8 +839,7 @@ private:
     TimeMgr *timeMgr;
     std::unique_ptr<Camera> camera;
     std::unique_ptr<CameraAnchors> cameraAnchors;
-    // Environment aggregation authority (created by wireEnvironment - the
-    // shared engines don't exist yet at factory construction).
+    // Null until wireEnvironment
     std::unique_ptr<EnvironmentManager> environment;
 
     ProtoSystem * currentSystem;

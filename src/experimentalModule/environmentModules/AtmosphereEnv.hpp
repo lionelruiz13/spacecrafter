@@ -5,12 +5,11 @@
 
 class Atmosphere;
 
-// From-ground atmosphere of a body with has_atmosphere=true, drawn by the app's Atmosphere engine
-// The engine is reached through EnvironmentManager::instance, wired after this member is built
+// Draw the atmosphere seen from the ground
 class AtmosphereEnv : public EnvironmentModule {
 public:
     AtmosphereEnv() = default;
-    // Sets the atmosphere gates and copies the engine's photometric outputs into state
+    // Copy the photometric outputs of the engine into state
     bool update(ModularBody *body, const Vec3f &cameraLocalPos,
                 float deltaTime, EnvironmentState &state) override;
     void drawSky(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;

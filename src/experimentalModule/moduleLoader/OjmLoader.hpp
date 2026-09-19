@@ -3,8 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
-// OJM slot: bids on model_name + type=Artificial (any other model_name is BasicMeshLoader's named ObjL)
-// Scales the body radius by the model's own radius (0 on load failure: never drawn) and disables the body's halo
+// Bid on model_name with type=Artificial, load rescales the body
 class OjmLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

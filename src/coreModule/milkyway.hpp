@@ -68,17 +68,15 @@ public:
 	virtual ~MilkyWay();
 
 	//! draws the sphere and the texture associated to the Milkyway.
-	//! Legacy entry: derives the matrix from the navigator (old path).
 	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay);
 
-	//! Zodiacal placement inputs, supplied by the caller; valid = false -> simple time-rotation placement
+	//! valid = false -> simple time-rotation placement
 	struct ZodiacalInput {
-		Vec3d sunDirEye;         // unit, observer->sun direction, eye frame
-		Vec3d eclipticNormalEye; // unit, home-body orbit-plane normal, eye frame
+		Vec3d sunDirEye;         // Unit vector
+		Vec3d eclipticNormalEye; // Unit vector
 		bool valid = false;
 	};
 
-	//! Draw from j2000ToEye, the rotation mapping J2000 (equatorial) directions to the eye frame
 	void drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double julianDay,
 	             const ZodiacalInput &zodiacalIn);
 	void drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double julianDay);

@@ -3,7 +3,6 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
-// HINT slot: no gate here, hint=false suppresses the request in the deduction (a bid of 0 would warn "no loader")
 class HintLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

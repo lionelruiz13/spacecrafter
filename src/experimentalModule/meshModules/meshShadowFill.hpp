@@ -6,11 +6,9 @@
 #include "bodyShaderInterface.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
-// Receiver-side fills of the shadow block: ONLY nbShadowingBodies + shadowingBodies, sibling fields are the module's
-// self = the RECEIVING module (pass this): the entries it produced itself on its own body are skipped
+// Fill the shadowing bodies only, with self the receiving module
 
-// Eye-space receivers: entries copied verbatim (rows already receiver-folded
-// by the selection - ModularSystem::computeShadows).
+// For eye-space receivers, entries are copied as is
 template <typename Block>
 inline void fillPlainShadows(SharedBuffer<Block> &frag, ModularBody *body, const BodyModule *self)
 {
@@ -35,8 +33,8 @@ inline void fillPlainShadows(SharedBuffer<Block> &frag, ModularBody *body, const
     }
 }
 
-// Model-space receivers: rows and clip folded per entry through MV = model -> eye (radius/oblateness scale included)
-// radius = the span of the fragment's model-space unit (finalRadius for the ray-march unit sphere, body radius for OJM)
+// For model-space receivers, fold rows and clip through MV = model -> eye
+// With radius the model unit span (finalRadius for ray-march, body radius for OJM)
 template <typename Block>
 inline void fillFoldedShadows(SharedBuffer<Block> &frag, ModularBody *body,
                               const Mat4f &MV, float radius, const BodyModule *self)

@@ -3,9 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
-// MESH slot, layered disc: outbids BasicMeshLoader when tex_night / tex_normal / tex_heightmap comes with tex_map
-// Mid family and row picked from the textures and the ini type (Moon: heightmap first; else night, normal, heightmap)
-// rayCapable = normal && heightmap; ray row NIGHT when night && specular
+// Bid on tex_map with tex_night, tex_normal or tex_heightmap
 class LayeredMeshLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

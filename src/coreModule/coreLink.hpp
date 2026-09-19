@@ -445,7 +445,7 @@ public:
 	void constellationSetColorLine(const Vec3f& v);
 	//! Set constellation color 3D
 	void constellationSetColor(const Vec3f& v);
-	//! Get constellation color 3D (starLines) - the read half of the above.
+	//! Get constellation color 3D
 	const Vec3f &constellationGetColor() const;
 	//! Get constellation names color
 	Vec3f constellationGetColorNames() const;
@@ -510,14 +510,13 @@ public:
 
 	void initialSolarSystemBodies();
 
-	//! Camera and date are kept; false when the current system has no data file
+	//! Return false when the current system has no data file
 	bool reloadSolarSystem();
 
-	//! filename empty = own composed file of the system; false when nothing was written
+	//! Save to its own composed file when filename is empty
 	bool saveSolarSystem(const std::string &filename);
 
-	//! Session file, explicit only: nothing calls these at startup or shutdown
-	//! cmds = the command surface, owner of the names and read/write halves of the bulk value rows
+	//! Explicit only: nothing calls these at startup or shutdown
 	bool sessionSave(const std::string &filename, SessionFile::CommandSurface *cmds);
 	bool sessionLoad(const std::string &filename, SessionFile::CommandSurface *cmds);
 
@@ -548,7 +547,7 @@ public:
 	//! Get flag for displaying Planets Axis
 	bool planetsGetFlagAxis() const;
 
-	//! Push the sky-manager colors to the new-path planet grid (GRID_EQUATORIAL = meridian, LINE_EQUATOR = parallel)
+	//! Push the sky grid colors to the planet grid
 	void planetsSyncGridColor();
 
 
@@ -586,7 +585,7 @@ public:
 
 	void planetSetColor(const std::string& englishName, const std::string& color, Vec3f c) const;
 
-	//! Returns false when no such body exists
+	//! Return false when no such body exists
 	bool planetSetDatumRadius(const std::string& englishName, double km) const;
 	bool planetSetGroundRadius(const std::string& englishName, double km) const;
 
@@ -792,7 +791,6 @@ public:
 		return true;
 	}
 
-	//! The four place getters report the path that draws, without clamp (the clamps live in the Observer setters)
 	double observatoryGetLatitude() const {
 		double lat, lon, alt;
 		if (drawnPlace(lat, lon, alt))
@@ -807,7 +805,7 @@ public:
 		return core->observatory->getLongitude();
 	}
 
-	//! Same readout, normalised to [-180,180)
+	//! Return the longitude within [-180,180)
 	double observatoryGetLongitudeForDisplay() const {
 		double lat, lon, alt;
 		if (drawnPlace(lat, lon, alt))
@@ -860,8 +858,6 @@ public:
 		return core->observatory->getHomeBody();
 	}
 
-	// [merge] Wrappers kept for theirs' lunar-eclipse skyline feature: experimental's
-	// D1=ours CoreLink lacks them, so forward to experimental's ssystemFactory getters.
 	std::shared_ptr<Body> ssystemFactoryGetEarth() const {
 		return core->ssystemFactory->getEarth();
 	}
@@ -869,7 +865,6 @@ public:
 		return core->ssystemFactory->getMoon();
 	}
 
-	// [merge] script-variable getters (theirs' feature); adapted current* -> experimental's direct pointers.
 	double getSelectedDistance() const {
 		return core->ssystemFactory->getSelectedDistance(core->navigation);
 	}
@@ -879,14 +874,13 @@ public:
 	double getCurrentModule() const {
 		return double(core->getFlagIngalaxy());
 	}
-	void starGalaxyLoadCatalog(const std::string &filename); // defined in coreLink.cpp (StarGalaxy incomplete in this header)
+	void starGalaxyLoadCatalog(const std::string &filename);
 
-	//! New path only
 	void cameraSetFreeMode(bool b) {
 		Camera::instance->setFreeMode(b);
 	}
 
-	//! Multiply the altitude: coef<1 descends, coef>1 ascends. New path only
+	//! Multiply the altitude by coef, coef < 1 descends
 	void cameraDescend(float coef) {
 		Camera::instance->multAlt(coef);
 	}
@@ -968,7 +962,7 @@ public:
 	bool atmosphereGetFlag() const;
 	//! Set atmosphere fade duration in s
 	void atmosphereSetFadeDuration(float f);
-	//! Get atmosphere fade duration in s - the read half of the above.
+	//! Get atmosphere fade duration in s
 	float atmosphereGetFadeDuration() const;
 	//! Set default atmosphere fade duration
 	void atmosphereSetDefaultFadeDuration();
@@ -997,8 +991,7 @@ public:
 	//! set environment rotation around observer
 	void setHeading(double heading, int duration=0) {
 		core->navigation->changeHeading(heading, duration);
-		// duration is ms here; the camera plans in seconds (smoothed with the
-		// constant-min-acceleration law)
+		// duration is in ms, the Camera takes seconds
 		Camera::instance->setHeading(heading*M_PI/180, duration*0.001f);
 	}
 
@@ -1006,7 +999,7 @@ public:
 		core->navigation->setDefaultHeading();
 	}
 
-	//! Environment rotation around observer on the path that draws, in degrees within [-180, 180]
+	//! Get environment rotation around observer, in degrees within [-180, 180]
 	double getHeading() const {
 		if (!core->getExperimentalPath())
 			return core->navigation->getHeading();
@@ -1028,7 +1021,6 @@ public:
 		return (core->getFlagTracking());
 	}
 
-	//! One row {"reported", "old", "new"} per readout of the query half, in the units of its getter (trace harness)
 	void dumpControlSurface(std::ostream &out) const;
 
     CoreLink(std::shared_ptr<Core> _core) {

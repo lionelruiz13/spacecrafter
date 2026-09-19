@@ -27,22 +27,19 @@
 #include <string>
 
 enum class ScriptChannel {
-	NONE = 0,  //!< no channel identified: UI, joypad, pipe, HTTP query, nested or engine-made command
-	FILE,     //!< a line of a script file: `file` + `line` say which one
-	TCP,       //!< a line read on the control socket: `connection` says which
-	           //!< connection sent it
+	NONE = 0,  //!< UI, joypad, pipe, HTTP query, nested or engine-made command
+	FILE,     //!< A line of a script file
+	TCP,       //!< A line read on the control socket
 };
 
-//! Where a command line came from, carried up to executeCommand so a diagnostic is reported at the line which caused it
-//! Build one with fromFile / fromTcp
+//! Where a command line came from; build one with fromFile / fromTcp
 struct ScriptOrigin {
 	ScriptChannel channel = ScriptChannel::NONE;
-	std::string file;      //!< FILE only: full path of the script file, "" = no file
-	unsigned line = 0;     //!< FILE only: 1-based physical line in `file`, 0 = none
-	std::string text;      //!< the raw line (line ending stripped by getline, a CR of a CRLF file kept)
-	unsigned connection = 0; //!< TCP only: the connection id the line was read on, 0 = unknown
+	std::string file;      //!< FILE only, full path
+	unsigned line = 0;     //!< FILE only, 1-based, 0 = none
+	std::string text;      //!< Raw line, the CR of a CRLF file is kept
+	unsigned connection = 0; //!< TCP only, 0 = unknown
 
-	//! A line of a script file, at its physical line number.
 	static ScriptOrigin fromFile(const std::string &file, unsigned line, const std::string &text) {
 		ScriptOrigin o;
 		o.channel = ScriptChannel::FILE;
@@ -51,7 +48,6 @@ struct ScriptOrigin {
 		o.text = text;
 		return o;
 	}
-	//! A line read on the control socket, from the connection `id` (io.hpp).
 	static ScriptOrigin fromTcp(unsigned id, const std::string &text) {
 		ScriptOrigin o;
 		o.channel = ScriptChannel::TCP;
@@ -60,17 +56,16 @@ struct ScriptOrigin {
 		return o;
 	}
 
-	//! Gate of the `#!` writer only: this origin names a line of a file (never true for TCP); a log line asks where()
+	//! Return true only for a line of a file, never for TCP
 	bool valid() const { return channel == ScriptChannel::FILE && !file.empty() && line != 0; }
-	//! The raw line without its line ending, for every reader which shows the line
+	//! Return text without its line ending
 	std::string lineText() const {
 		std::string s = text;
 		while (!s.empty() && (s.back() == '\r' || s.back() == '\n'))
 			s.pop_back();
 		return s;
 	}
-	//! How a log line names this origin: "file:line", "tcp#<id>", or "" when
-	//! there is nothing to name.
+	//! Return "file:line", "tcp#<id>" or ""
 	std::string where() const {
 		if (valid())
 			return file + ":" + std::to_string(line);

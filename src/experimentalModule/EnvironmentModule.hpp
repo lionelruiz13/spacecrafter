@@ -2,54 +2,48 @@
 #define ENVIRONMENT_MODULE_HPP_
 
 #include "tools/vecmath.hpp"
-#include "atmosphereModule/atmosphere_commun.hpp" // ATMOSPHERE_MODEL (3-line enum header)
+#include "atmosphereModule/atmosphere_commun.hpp"
 
 class ModularBody;
 class Renderer;
 
 // Altitude thresholds of the environment of a body, in meters
 struct BodyEnvironmentParams {
-    float limInf = 40000.f;       // below: atmosphere drawn (when user flag on)
-    float limSup = 80000.f;       // below: inside the atmosphere zone
-    float limLandscape = 10000.f; // below: grounded attachment (landscape)
+    float limInf = 40000.f;       // Atmosphere drawn below
+    float limSup = 80000.f;       // Inside the atmosphere below
+    float limLandscape = 10000.f; // Landscape drawn below
     bool hasAtmosphere = false;
     ATMOSPHERE_MODEL model = ATMOSPHERE_MODEL::NONE_MODEL;
 };
 
-// Per-frame aggregate of the active members: reset by the manager, filled by their update(), then read by everyone
+// Reset by the manager each frame, then filled by the update() of the active members
 struct EnvironmentState {
-    float worldAdaptationLuminance = 3.75f; // old no-atmosphere baseline
+    float worldAdaptationLuminance = 3.75f; // Value without atmosphere
     float skyBrightness = 0;
-    float atmosphereIntensity = 0; // fade-weighted; eclipse dimming included
-    bool atmosphereUserFlag = false; // input: the user's atmosphere intent, broadcast by the manager
-    bool insideAtmosphere = false; // below limSup with hasAtmosphere
-    bool atmosphereActive = false; // atmosphere actually drawn: insideAtmosphere && atmosphereUserFlag && below limInf
-    bool drawLandscape = false;    // below limLandscape (grounded attachment)
-    bool drawBody = true;          // !drawLandscape, set by the manager
-    bool allowMeteors = false;     // insideAtmosphere && userFlag (the
-                                   // sky_brightness < 0.1 half stays at the
-                                   // meteor consumer, as in the old executor)
+    float atmosphereIntensity = 0; // Eclipse dimming included
+    bool atmosphereUserFlag = false; // Input, broadcast by the manager
+    bool insideAtmosphere = false;
+    bool atmosphereActive = false; // insideAtmosphere && atmosphereUserFlag && below limInf
+    bool drawLandscape = false;
+    bool drawBody = true;          // !drawLandscape
+    bool allowMeteors = false;     // The sky brightness test stays at the consumer
 };
 
-// Rendering which depends on where the camera is relative to a body: milkyway, from-ground atmosphere, landscape...
-// Active for every body of the chain reference -> root; grounded members only while the camera is anchored on the body.
 class EnvironmentModule {
 public:
     virtual ~EnvironmentModule() = default;
-    // Camera entered the space this environment covers: raise resource priorities, never load synchronously
+    // Raise resource priorities, never load synchronously
     virtual void enter(ModularBody *body) {}
-    // Camera left: lower priorities; the lowest LoD stays resident so re-entry always has something drawable
+    // Lower priorities, the lowest LoD must stay resident
     virtual void leave(ModularBody *body) {}
-    // Per frame while active: contribute to state. cameraLocalPos in AU, only its length is meaningful; deltaTime in s
-    // Return true when no update is required until the next enter()
+    // cameraLocalPos in AU, only its length is meaningful; return true to stop updates until enter()
     virtual bool update(ModularBody *body, const Vec3f &cameraLocalPos,
                         float deltaTime, EnvironmentState &state) {
         return true;
     }
-    // Drawn before the sky content and every body (milkyway, zodiacal light). mat = frame of body -> eye,
-    // valid for orientation only when body is above the current system
+    // Draw before the sky and the bodies; mat orientation is valid only above the current system
     virtual void drawBackdrop(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
-    // Drawn after the bodies (from-ground atmosphere, landscape, fog); same mat
+    // Draw after the bodies, same mat
     virtual void drawSky(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
 };
 

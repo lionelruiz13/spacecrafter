@@ -6,19 +6,16 @@
 
 class VertexBuffer;
 
-// Rotation-axis line of a body (near component), depth-tested in the body's slice so its own disc hides it
 class AxisModule : public BodyModule {
 public:
-    // Ctor/dtor out-of-line: unique_ptr<VertexBuffer> needs the complete type
-    // (the inline ctor's exception path instantiates the member destructor).
+    // Out-of-line, unique_ptr<VertexBuffer> needs the complete type
     AxisModule();
     ~AxisModule();
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
 
-    static bool show; // Global axis visibility (setFlagAxis)
+    static bool show;
 protected:
-    // Lazy 2-vertex line buffer, persistently mapped at pPos
-    std::unique_ptr<VertexBuffer> line;
+    std::unique_ptr<VertexBuffer> line; // created lazily, mapped at pPos
     Vec3f *pPos = nullptr;
 };
 

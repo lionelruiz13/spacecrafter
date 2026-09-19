@@ -85,12 +85,10 @@ public:
     void nextTick();
     void initShadowStructures();
 
-    // Register the release of resources taken from the managers of this Context; for holders outliving the body tree
-    // Runs at the start of ~Context, in reverse registration order, every manager still alive; never from a frame path
+    // Register a release to run at the start of ~Context, in reverse order
     static void onManagerTeardown(std::function<void()> release);
 
-    // Block until every queued draw is recorded and every submitted frame is completed on the GPU
-    // Precondition for releasing what a frame in flight may reference; commanded paths only, never per frame
+    // Block until every submitted frame is completed on the GPU, never per frame
     void quiesceFrames();
 
     static Context *instance;
@@ -118,10 +116,8 @@ public:
     std::unique_ptr<Texture> starColorAttachment;
     std::unique_ptr<Texture> shadow;
     std::unique_ptr<Texture> shadowBuffer; // For self-shadowing
-    std::unique_ptr<Texture> shadowTrace; // For shadow projection (old path: binary stencil)
-    std::unique_ptr<Texture> shadowShape; // New-path typed silhouette target: R8 coverage
-                                          // (graded light TRANSMISSION - opaque mesh writes 1,
-                                          // ring writes texture alpha; ShadowService)
+    std::unique_ptr<Texture> shadowTrace; // For shadow projection
+    std::unique_ptr<Texture> shadowShape; // R8 silhouette coverage, for shadow projection
     std::vector<VkImageView> shadowView;
     ShadowData *shadowData;
     ComputePipeline *shadowPipelines;

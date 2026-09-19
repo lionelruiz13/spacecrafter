@@ -4,8 +4,7 @@
 #include <cmath>
 #include <ostream>
 
-// JSON-legal number for the dump channels: a finite value is written exactly as `out << v`,
-// a non-finite one as the quoted token "nan", "inf" or "-inf" so the line stays parsable and the value is kept
+// Write a non-finite value as "nan", "inf" or "-inf" so the JSON stays parsable
 template<typename T>
 struct JNum { T v; };
 
@@ -19,7 +18,6 @@ inline std::ostream &operator<<(std::ostream &out, JNum<T> n)
     return out << ((n.v > 0) ? "\"inf\"" : "\"-inf\"");
 }
 
-//! Deduction helper: `out << jn(x)` reads as `out << x` plus the guarantee.
 template<typename T>
 inline JNum<T> jn(T v) { return JNum<T>{v}; }
 

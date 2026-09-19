@@ -29,9 +29,8 @@ public:
     float distanceToReference() const;
     //! Calculate velocity scaling factor for camera movements
     float velocityScaling(float deltaTime) const;
-    // Serialize the observer state as one JSON object (trace harness)
     void dumpTrace(std::ostream &out) const;
-    // Session state; anything in flight is saved settled. The reference body is restored by the caller (a warp)
+    // The reference body is restored by the caller
     void saveSession(ModularSystemFormat::Section &out) const;
     void restoreSession(const ModularSystemFormat::Section &in);
     // Change the reference body without moving
@@ -56,19 +55,18 @@ public:
         return Vec3f(v[1], -v[0], v[2]);
     }
 
-    // Change the mount, keeping the current view exactly
     void setMount(CameraMount m);
     inline void toggleMount() {
         setMount((mount == CameraMount::ALTAZ) ? CameraMount::EQUATORIAL : CameraMount::ALTAZ);
     }
 
-    // Hold the view fixed in the equatorial frame of the reference; dormant while tracking, during a view plan and in freeMode
+    // Hold the view in the equatorial frame, dormant while tracking or in freeMode
     void setSkyLock(bool b);
     inline bool getSkyLock() const {
         return skyLocked;
     }
 
-    // Readbacks for the trace harness
+    // For the trace harness
     inline Vec3f getViewParams() const {
         return Vec3f(alt, az, heading);
     }
@@ -123,41 +121,35 @@ public:
             moveRel({0, 0, static_cast<float>(alt)}, delay);
         }
     }
-    // Multiply the altitude by coef; in free flight, along the view ray (body) or toward the selected body (system)
     void multAlt(float coef);
     // pos = (longitude, latitude, altitude in AU), in both modes
     void moveTo(const Vec3f &pos, float duration = 0, bool calculateDuration = false);
 
-    // viewRotation() = Z(heading+pi) * X(pi/2-alt) * Z(az-pi/2) * fold(); every inverse is derived from it
+    // viewRotation() = Z(heading+pi) * X(pi/2-alt) * Z(az-pi/2) * fold()
     Mat4f fold() const;
     Mat4f viewRotation() const;
-    // Rotation applied downstream of the view (placement + surface fold)
     Mat4f placementRotation() const;
 
-    // Shift of the dome centre as a fraction of its radius; render-only, inert until armed
+    // In dome radius, inert until armed
     void setViewOffset(double offset);
     inline double getViewOffset() const {
         return viewOffset;
     }
-    // Armed by a commanded view move, disarmed by the zoom-out to the initial view
     void armViewOffset(bool armed);
-    // armViewOffset with the transition landed
     void restoreViewOffsetLatch(bool armed);
 
-    // Observed (eye) frame -> the frame the view acts on: zenith frame when anchored, body frame in freeMode
+    // Local = zenith frame when anchored, body frame in freeMode
     inline Vec3f observedToLocalPos(const Vec3f &observedPos) const {
         return renderViewRotation().transpose().multiplyWithoutTranslation(observedPos);
     }
-    // Observed frame -> equatorial frame of the reference, rotation only (the origin stays at the observer)
+    // Equ = rotation only, Local = origin at the centre of the reference
     Vec3f observedToBodyEquPos(const Vec3f &observedPos) const;
-    // Same, with the origin at the centre of the reference (inverse of viewMat)
     Vec3f observedToBodyLocalPos(const Vec3f &observedPos) const;
-    // (ra, de) of an observed position, as seen from the observer
     std::pair<float, float> observedPosToRaDe(const Vec3f &observedPos) const;
     inline std::pair<float, float> observedPosToAltAz(const Vec3f &observedPos) const {
         Vec3f direction = observedToLocalPos(observedPos);
         std::pair<float, float> ret;
-        if (direction[0] == 0 && direction[1] == 0) { // was x+y==0, see RaDe
+        if (direction[0] == 0 && direction[1] == 0) {
             ret.first = std::copysign(M_PI_2, direction[2]);
             ret.second = 0;
         } else {
@@ -177,7 +169,6 @@ public:
     inline ModularBody *getTrackedBody() const {
         return target;
     }
-    // Re-seat the reference on the object which replaced it (system reload): nothing moves
     inline void rebindReference(ModularBody *dst) {
         reference = dst;
     }
@@ -189,15 +180,12 @@ public:
     }
     void setHalfFov(float halfFov, float duration = 0.5);
 
-    // Position of the eye from the centre of the reference, in its equatorial frame
+    // In the equatorial frame of the reference, or of body
     Vec3f getReferenceRelativePosition() const;
-    // Same, in the equatorial frame of body
     Vec3f positionRelativeTo(const ModularBody *body) const;
-    // Position of the eye in the root frame
     Vec3d getRootPosition() const;
-    // Inverse of getReferenceRelativePosition; holdView keeps the composed orientation
+    // Inverses of getReferenceRelativePosition and moveTo
     void placeAt(const Vec3f &pos, bool holdView);
-    // Inverse of moveTo: (longitude, latitude, altitude in AU), in both modes
     Vec3f getPlace() const;
 
     // Compatibility methods, only work while not in freeMode
@@ -217,15 +205,13 @@ public:
     // This disallow using multiple cameras, but multiple cameras can't be used simultaneously anyway
     static Camera *instance;
 private:
-    // Zenith frame -> equatorial frame of the reference
     Vec3f localToBodyEqu(Vec3f v) const;
-    // (longitude, latitude, distance) <-> position from the centre of the reference: the one conversion between both
+    // (longitude, latitude, distance) <-> position from the reference centre
     static inline Vec3f posePart(float lon, float lat, float dist) {
         const float cl = std::cos(lat);
         return Vec3f(dist * cl * std::sin(lon), -dist * cl * std::cos(lon),
                      dist * std::sin(lat));
     }
-    // At the centre the angles parametrize nothing: lonAt0/latAt0 are returned
     static inline Vec3f posePartToPose(const Vec3f &p, float lonAt0, float latAt0) {
         const float d = p.length();
         if (d == 0.f)
@@ -248,23 +234,18 @@ private:
         coef = (coef > 0.5) ? 4*(1-coef) : 4*coef;
         return coef / zoomDuration;
     }
-    // Deduce (heading, alt, az) giving totalRot under the current modes, mount and placement; drops the view plans
     void recoverParams(const Mat4f &totalRot);
-    // Advance the view/heading smoothing plans (constant-min-acceleration law)
     void advanceView(float deltaTime);
-    // viewRotation() with the view offset
     Mat4f renderViewRotation() const;
-    // Eye <- equatorial frame of the reference, from the current parameters
+    // Eye <- equatorial frame of the reference
     Mat4f viewMat() const;
     Mat4f viewOffsetEyeRotation() const;
-    // Advance the view-offset transition (old view_offset_transition ramp).
     void advanceViewOffset(float deltaTime);
     inline float effectiveViewOffset() const {
         return static_cast<float>(viewOffset) * viewOffsetTransition;
     }
-    // Current forward direction in the PARAM frame (post-fold), from alt/az
     Vec3f paramForward() const;
-    // The frame draw, serialized on the render chain with the publish tasks
+    // Serialized on the render chain with the publish tasks
     class FrameDrawTask : public Task {
     public:
         virtual void start(Taskable *target) override;
@@ -275,26 +256,23 @@ private:
     ModularBodyPtr reference;
     ModularBodyPtr target;
     ModularSystem *system; // Determined on construction and update
-    // View plan: rotate viewFrom about viewAxis, accelerating until viewT1 then decelerating until viewT
-    Vec3f viewFrom;        // path start direction (unit, param frame)
-    Vec3f viewAxis;        // rotation axis (unit, param frame)
-    float viewAngle = 0;   // total planned angle from viewFrom (signed = 0..)
-    float viewT1 = 0;      // acceleration phase end
-    float viewT = 0;       // plan duration; 0 = no plan
+    // View plan: rotate viewFrom about viewAxis (param frame), accelerating until viewT1
+    Vec3f viewFrom;
+    Vec3f viewAxis;
+    float viewAngle = 0;
+    float viewT1 = 0;
+    float viewT = 0; // 0 = no plan
     float viewTimer = 0;
-    float viewV0 = 0;      // velocity at plan start (rad/s along the path)
-    float viewA = 0;       // phase-1 acceleration (signed)
-    // Heading 1-D plan, same law
+    float viewV0 = 0; // In rad/s along the path
+    float viewA = 0;
     float hdgTarget = 0, hdgT1 = 0, hdgT = 0, hdgTimer = 0, hdgV0 = 0, hdgA = 0, hdgFrom = 0;
     float alt = 0;
     float az = 0;
     float heading = 0;
-    // Latitude the fold was derived with
-    float foldLat = 0;
+    float foldLat = 0; // Latitude the fold was derived with
     CameraMount mount = CameraMount::ALTAZ;
     bool skyLocked = false;
-    // viewRotation*placementRotation captured when the sky lock engaged
-    Mat4f lockedSkyRot;
+    Mat4f lockedSkyRot; // viewRotation*placementRotation when the sky lock engaged
     double viewOffset = 0;
     float viewOffsetTransition = 0;
     bool viewOffsetArmed = false;

@@ -8,19 +8,16 @@ class Renderer;
 class PipelineLayout;
 
 struct TraceInfo {           // push-constant block of body_depth_trace.vert
-    Mat4f ModelViewMatrix;   // offset 0
-    Vec3f clipping_fov;      // offset 64 (the ORBIT range this frame)
-    float planetScaledRadius;// offset 76
-    float planetOneMinusOblateness; // offset 80
+    Mat4f ModelViewMatrix;
+    Vec3f clipping_fov;      // of the ORBIT depth range
+    float planetScaledRadius;
+    float planetOneMinusOblateness;
 };
 
-// TRACE prepass: a body's solid geometry writes its own depth under the orbit-union depth range
-// (Renderer::getOrbitDepthBucket), so the orbit line, depth-tested in the same range, vanishes behind it
+// Trace prepass, bodies write depth to hide the orbit lines
 namespace TraceFamily {
-    // Disc-hole family of sphere bodies (ojmVertexArray, triangle list, position-only)
     const PipelineFamily &sphere();
-    // Ring-annulus family (triangle strip, position-only)
-    // ringVertex = the ring module's VertexArray, read at first request only; application-lifetime
+    // Read ringVertex at first call only, it must stay valid
     const PipelineFamily &ring(VertexArray *ringVertex);
 }
 

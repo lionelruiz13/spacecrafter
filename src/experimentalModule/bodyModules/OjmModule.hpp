@@ -13,11 +13,10 @@ struct ojmGeom;
 struct ojmLight;
 struct ojmShadowBlock;
 
-// BODY of an arbitrary 3D model (type=artificial + model_name): per-shape materials, Phong lighting, self-shadow
-// Any other type with model_name is a named ObjL of the MESH family
+// Draw a body from a 3D model (type=artificial + model_name)
 class OjmModule : public BodyModule {
 public:
-    // A model that failed to load stays !isLoaded() forever and draws nothing
+    // A model which failed to load is never drawn
     OjmModule(std::shared_ptr<Ojm> model);
     ~OjmModule();
     virtual uint32_t getTraits() const override {
@@ -31,18 +30,17 @@ public:
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual bool isLoaded() override;
 protected:
-    // Shared draw body of draw/drawNoDepth (variant bit is the only delta).
     void drawInternal(Renderer &renderer, ModularBody *body, const Mat4f &mat, VariantKey base);
-    std::shared_ptr<Ojm> model; // shared resource (Ojm::load recycler)
+    std::shared_ptr<Ojm> model;
     std::unique_ptr<Set> setPlain;
     std::unique_ptr<Set> setShadow;
     SharedBuffer<ojmVert> uVert;
     SharedBuffer<ojmGeom> uGeom;
     SharedBuffer<ojmLight> uLight;        // plain rows, binding 2
     SharedBuffer<ojmShadowBlock> uShadow; // shadowed rows, binding 2
-    Mat4f selfShadowMat;        // the nomination's matrix (consumption copy)
-    bool selfShadowActive = false; // frame-scoped (BodyModule.hpp contract)
-    bool bound = false;         // set bindings done at first successful load
+    Mat4f selfShadowMat;
+    bool selfShadowActive = false; // frame-scoped
+    bool bound = false;         // sets bound at first successful load
 };
 
 #endif /* end of include guard: OJM_MODULE_HPP_ */

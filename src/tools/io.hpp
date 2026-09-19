@@ -81,13 +81,13 @@ Updated on 17/05/2016
 #define DEBUG_SEPARATOR3 				" | " //Third error in the debug
 
 
-//! A line of protocol with the connection it belongs to: the slot and the id this slot held (slots are reused)
+//! A line of protocol and the connection it belongs to
 struct ClientMessage {
-	unsigned int client = 0;	//!< index in clientSocketTab
-	unsigned int id = 0;		//!< connection id, 0 = no connection asked for this
+	unsigned int client = 0;	//!< Index in clientSocketTab
+	unsigned int id = 0;		//!< Connection id, 0 = none
 	std::string data;
-	bool http = false;			//!< input only: came in by an HTTP ?command= query, its connection is already closed
-	bool diag = false;			//!< output only: a diagnostic, for the $DIAGON subscribers and nobody else
+	bool http = false;			//!< Input only, its connection is already closed
+	bool diag = false;			//!< Output only, for the $DIAGON subscribers
 };
 
 class ServerSocket {
@@ -105,16 +105,14 @@ public:
 	void stats();
 
 	// transfer incoming data from TCP/IP inside the program
-	// Latches the connection being served until it returns empty
-	// getInput, setOutput and sendDiagnostic are for the application update thread only
+	// getInput, setOutput and sendDiagnostic: application update thread only
 	std::string getInput();
-	// Connection id of the line getInput just returned, 0 when nothing is being served
+	// Return 0 when nothing is being served
 	unsigned int servingConnection() const { return servingId; }
 	bool servingIsHttp() const { return servingHttp; }
-	// transfer of internal data outside the program: to the connection being served and to the $LOGON subscribers
+	// transfer of internal data outside the program
 	void setOutput(std::string data);
-	// Send one diagnostic record (clamped to MAX_BUFFER, line breaks folded) to the $DIAGON subscribers only
-	// The traffic of a connection which did not ask for diagnostics must stay byte-identical
+	// Send one diagnostic to the $DIAGON subscribers only
 	void sendDiagnostic(const std::string &data);
 
 private:
@@ -149,9 +147,9 @@ private:
 	TCPsocket serverSocket; //Server listening socket
 	SDLNet_SocketSet socketSet; //Socket monitoring table
 	TCPsocket* clientSocketTab; //Client sockets table
-	bool* clientBroadcastTab; //Feedback request table ($LOGON: the log/answer feed)
-	bool* clientDiagTab; //Diagnostic request table ($DIAGON), cleared on disconnect
-	unsigned int* clientIdTab; //Connection id per slot (0 = free); never reused
+	bool* clientBroadcastTab; //Feedback request table ($LOGON)
+	bool* clientDiagTab; //Diagnostic request table ($DIAGON)
+	unsigned int* clientIdTab; //Connection id per slot, 0 = free
 	unsigned int lastClientId; //Last id handed out
 
 	/* Thread variables */
@@ -169,9 +167,9 @@ private:
 	std::queue<ClientMessage> outputQueue; //Output queue
 	SDL_mutex *inputting; //Input queue mutex
 	SDL_mutex *outputting; //Mutex of the output queue
-	unsigned int servingClient; //Request being served, latched by getInput; application thread only
+	unsigned int servingClient; //Slot being served, application thread only
 	unsigned int servingId;
-	bool servingHttp;			//!< that request came in through the HTTP door
+	bool servingHttp;
 
 	/* Initialization function and code */
 	int init(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Initialization function called by the constructors
@@ -186,11 +184,11 @@ private:
 	bool computeString(unsigned int client, std::string string); //Chain processing function
 	bool computeHttp(unsigned int client, std::string string);//HTTP request processing function (BETA)
 	void computeNormalString(unsigned int client, std::string string);//Normal request processing function
-	void pushRequest(unsigned int client, const std::string &data, bool http = false); //Queues a request with the connection it came from, and the door it came in by
+	void pushRequest(unsigned int client, const std::string &data, bool http = false); //Queue a request with its connection
 	void checkDataToSend(); //Sending function of data received from the application
-	void deliver(const ClientMessage &out); //Sends one answer where it belongs
-	void deliverDiagnostic(const ClientMessage &out); //Sends one diagnostic to the $DIAGON subscribers, if any
-	int broadcast(const std::string &data, int excludeClient = -1); //To the $LOGON subscribers but the slot already served
+	void deliver(const ClientMessage &out); //Send one answer to its connection
+	void deliverDiagnostic(const ClientMessage &out);
+	int broadcast(const std::string &data, int excludeClient = -1); //Function of broadcasting to the clients
 	int close(unsigned int client); //Function to close the client socket
 
 	/* FFactoring or assistance functions */

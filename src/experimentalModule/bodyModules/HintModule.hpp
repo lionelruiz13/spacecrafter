@@ -6,14 +6,13 @@
 
 class s_font;
 
-// Circle marker + name label at the body's screenPos (far component: 2D screen space, no depth)
+// Draw the circle and name label at the body's screenPos
 class HintModule : public BodyModule {
 public:
     HintModule(const Vec3f &labelColor) :
         BodyModule(BodyModuleType::HINT), labelColor(labelColor),
         authoredLabelColor(labelColor) {}
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
-    // Answers the LABEL channel only; the base no-op handles every other channel
     bool getColor(BodyColorType type, Vec3f &out) const override {
         if (type != BodyColorType::LABEL)
             return false;
@@ -32,20 +31,19 @@ public:
             labelColor = c;
     }
 
-    // The fader only advances at draw (a far component gets no update): settle it when the body is unhidden
+    // Settle the fader, as it only advances at draw
     virtual void resumeAfterHidden(ModularBody *body) override {
         fader.reset(show);
     }
 
     // Label font, not owned
     static void setFont(s_font *font);
-    static bool show; // Global hint visibility (setFlagHints)
-    // Label color of a body whose data gives none (config planet_names_color)
-    static Vec3f defaultLabelColor;
+    static bool show;
+    static Vec3f defaultLabelColor; // config planet_names_color
 protected:
-    LinearFader fader; // per-body, target = show
+    LinearFader fader; // target = show
     Vec3f labelColor;
-    Vec3f authoredLabelColor; // what the DATA gave it (baseline of a saved color change)
+    Vec3f authoredLabelColor; // as given by the data
     static s_font *hintFont;
 };
 

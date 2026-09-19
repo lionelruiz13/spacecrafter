@@ -3,7 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
-// ORBIT slot, the orbit LINE (OrbitLoader loads the orbit COORDINATE functions); routed to the orbitComponents list
+// Load the orbit line, not the orbit (see OrbitLoader)
 class OrbitLineLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

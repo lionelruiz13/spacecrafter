@@ -3,7 +3,7 @@
 
 constexpr double WARP_PRECISION = 1e-8;
 
-//! Newton steps each iterative position solver advances per call, from the seed of the previous call
+//! Newton steps per call, seeded by the previous call
 constexpr int ITERATIVE_STEPS_PER_CALL = 2;
 
 class IterativeHyp
@@ -38,8 +38,7 @@ public:
 		sh = sinh(H);
 	}
 
-	//! Update the position with ITERATIVE_STEPS_PER_CALL iterations - Precision
-	//! depends on time step and on how stale the seed (H, ch, sh) is
+	//! Update the position with ITERATIVE_STEPS_PER_CALL iterations - Precision depends on time step
 	Vec3d operator()(double dt, const Vec3d &d1, const Vec3d &d2)
 	{
 		for (int i = 0; i < ITERATIVE_STEPS_PER_CALL; ++i) {
@@ -95,8 +94,7 @@ public:
 		s = sin(H);
 	}
 
-	//! Update the position with ITERATIVE_STEPS_PER_CALL iterations - Precision
-	//! depends on time step and on how stale the seed (H, c, s) is
+	//! Update the position with ITERATIVE_STEPS_PER_CALL iterations - Precision depends on time step
 	Vec3d operator()(double dt, const Vec3d &d1, const Vec3d &d2) {
 		double M = fmod(n*dt,2*M_PI);
 		if (M < 0.0)

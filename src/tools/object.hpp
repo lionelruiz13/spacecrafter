@@ -37,8 +37,7 @@ class Projector;
 class s_texture;
 class ObjectBase;
 
-//! A counted handle on an ObjectBase: retains rep while it points at it, and its assignment can destroy the rep dropped
-//! Nothing may store a raw ObjectBase*: hold an Object or an ObjectBaseP
+//! Counted handle on an ObjectBase; never store a raw ObjectBase*
 class Object {
 public:
 	Object();
@@ -106,7 +105,7 @@ public:
 	static void initTextures();
 	static void deleteTextures();
 
-	//! Raw view of the rep as T, or nullptr; valid only while this Object still holds it
+	//! Return the rep as T or nullptr, valid only while this Object holds it
 	template<class T>
 	T *as() const {
 		return dynamic_cast<T *>(rep);

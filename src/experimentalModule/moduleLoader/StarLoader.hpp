@@ -3,8 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
-// StarModule (CUSTOM): bids on STAR bodies with tex_big_halo only, so the explicit GRID load is never contested
-// Hands the big_halo texture to the Renderer's SUN_HALO service; far component
+// Bid on isStar() with tex_big_halo
 class StarLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

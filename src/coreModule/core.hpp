@@ -167,7 +167,6 @@ public:
 		setSkyLanguage(initialvalue.initial_skyLocale);
 	}
 
-	// [merge] theirs' subtitle SRT-locale feature (command side).
 	void setInitialSrtLocale() {
 		setSrtLanguage(initialvalue.initial_srtLocale);
 	}
@@ -196,11 +195,9 @@ public:
 	//! @return The name of the locale (e.g fr)
 	std::string getSkyLanguage();
 
-	// [merge] theirs' SRT (subtitle) language, command side; stores/returns the locale.
 	void setSrtLanguage(const std::string& newSrtLocaleName) { srtLanguage = newSrtLocaleName; }
 	std::string getSrtLanguage() { return srtLanguage; }
 
-	// [merge] theirs' init_fov script command support.
 	void setInitFov(double f) { InitFov = f; }
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -221,12 +218,12 @@ public:
 		return navigation->getFlagTraking();
 	}
 
-	//! Set whether sky position is to be locked, on both paths
+	//! Set whether sky position is to be locked
 	void setFlagLockSkyPosition(bool b);
-	//! Get whether sky position is locked, on the path that draws
+	//! Get whether sky position is locked
 	bool getFlagLockSkyPosition(void);
 
-	//! Set current mount type, on both paths (defined in core.cpp: this header does not see the Camera)
+	//! Set current mount type
 	void setMountMode(MOUNT_MODE m);
 	//! Get current mount type
 	MOUNT_MODE getMountMode(void) {
@@ -332,8 +329,6 @@ public:
 		return selected_object;
 	}
 
-	//! Whether the old path must draw the selection pointer this frame
-	//! Body pointers are drawn by the new path when it draws; star/nebula pointers always stay here
 	bool needOldSelectionPointer() const {
 		if (!selected_object || !object_pointer_visibility)
 			return false;
@@ -351,8 +346,6 @@ public:
 	void deselect(void);
 
 	//! Set whether a pointer is to be drawn over selected object.
-	//! Single choke point for the flag - mirrors to the new path's pointer
-	//! service (Renderer::showPointer); defined in core.cpp for that reason.
 	void setFlagSelectedObjectPointer(bool b);
 
 	std::string getSelectedPlanetEnglishName() const;
@@ -413,77 +406,63 @@ public:
 	void preloadSolarSystemBody(stringHash_t& param);
 	void removeSolarSystemBody(const std::string& name);
 	void removeSupplementalSolarSystemBodies();
-	// Dump the state of both body paths to file (trace harness)
 	void ssystemDualDump(const std::string& file);
 
-	//! Local direction the navigator aims the stars, the milky way and the nebulae at
+	//! Return the local direction the navigator aims the sky at
 	const Vec3d& getSkyVision() const;
 
-	//! Session restore of that direction; the transforms are recomputed from the observer and the date first
+	//! Session restore only
 	void restoreSkyVision(const Vec3d& localVision);
 
-	//! Session restore of the view offset on both paths, with its arming latch landed
+	//! Session restore only
 	void restoreViewOffset(double offset, bool armed);
 
-	//! Navigator, observer, projector and star view state as one JSON object (trace harness)
 	void dumpOldViewState(std::ostream &out) const;
 
-	//! One row per updateMove frame with an interactive ramp active, plus the first frame after it stops
+	//! One row per updateMove frame while an interactive ramp is active
 	struct RampStep {
-		unsigned int frame;			//!< `Core::updateMove` call index (gaps are visible)
-		int deltaTime;				//!< ms handed to `Core::updateMove`
-		double fov, fovAfter;		//!< OLD projector fov (deg), before/after
-		double halfFov, halfFovAfter;	//!< the DRAWN fov authority `ModularBody::halfFov` (rad)
-		double dAz, dAlt, dFov, dHeight;	//!< the per-frame steps AFTER the ramp law
-		double coefAz, coefAlt;		//!< the joypad-axis coefficients that scaled them
-		//! OLD: the vision vector's spherical coordinates in the ACTIVE mount's
-		//! frame -- exactly the pair `Navigator::updateMove` reads and writes.
+		unsigned int frame;
+		int deltaTime;				//!< In ms
+		double fov, fovAfter;		//!< In degrees
+		double halfFov, halfFovAfter;	//!< In radians
+		double dAz, dAlt, dFov, dHeight;
+		double coefAz, coefAlt;
 		double oldAz, oldAlt, oldAzAfter, oldAltAfter;
-		//! NEW: `Camera`'s own view parameters (its convention: az = -lng and
-		//! alt = -lat of the forward direction in the param frame).
 		double newAz, newAlt, newAzAfter, newAltAfter;
 		bool active;				//!< false on the release row
 	};
-	//! The ring, chronological, as one JSON object.
 	void dumpRampTrace(std::ostream &out) const;
 
-	//! One row per frame, taken once the navigator and the Camera have both advanced; armed by SC_SEAM_RECORD
+	//! One row per frame, armed by SC_SEAM_RECORD
 	struct SeamStep {
-		unsigned int frame;		//!< recorder call index (gaps are visible)
-		int deltaTime;			//!< ms the frame advanced
-		double jd;				//!< the frame's simulation date
-		//! Projector fov and its target (deg, full angle); Camera half fov, zoom source and target (rad)
+		unsigned int frame;
+		int deltaTime;			//!< In ms
+		double jd;
+		//! fov in degrees (full angle), halfFov and zoom in radians
 		double fovOld, aimFovOld, halfFovNew, zoomSrcNew, zoomDstNew;
-		//! Angle between the two forward directions (deg): in the root frame / in the acting frame
-		double viewAngleAbs, viewAngleLocal;
-		double posDelta;		//!< |observer heliocentric position - Camera root position|, AU
+		double viewAngleAbs, viewAngleLocal;	//!< In degrees
+		double posDelta;		//!< In AU
 		double headingOldDeg, headingNewRad;
-		double dLonDeg, dLatDeg, dAltMetres;	//!< observer place minus Camera::getPlace()
-		double moveCoefOld;		//!< auto-move coefficient of the navigator
-		float viewTNew, hdgTNew, zoomTNew, moveTNew;	//!< plan timers of the Camera
-		//! 1 old auto-move, 2 old heading ramp, 4 old tracking, 8 Camera tracks a body, 16 tracked bodies name-equal,
-		//! 32 old home planet == Camera reference (by name), 64 Camera in free mode
+		double dLonDeg, dLatDeg, dAltMetres;
+		double moveCoefOld;
+		float viewTNew, hdgTNew, zoomTNew, moveTNew;
 		unsigned int flags;
 	};
-	//! One travel as its registry was handed it, captured on the install edge (root AU, JD)
-	//! An old install of zero duration never raises `moving` and is not seen
+	//! One travel, captured when it is installed
 	struct SeamTravel {
-		unsigned int frame;		//!< recorder call index of the edge
-		int engine;				//!< 0 = old AnchorManager, 1 = new CameraAnchors
-		double jd;				//!< the frame's simulation date at the edge
-		double start[3];		//!< the travel's origin, ROOT AU
-		double dir[3];			//!< unit direction
-		double distance;		//!< length travelled along `dir`, AU
-		double startTime;		//!< JD the law starts at
-		double endTime;			//!< JD the law lands at
+		unsigned int frame;
+		int engine;				//!< 0 = AnchorManager, 1 = CameraAnchors
+		double jd;
+		double start[3];		//!< In AU, root frame
+		double dir[3];			//!< Unit vector
+		double distance;		//!< In AU
+		double startTime;		//!< In JD
+		double endTime;			//!< In JD
 	};
-	//! The ring, chronological, as one JSON object -- written into the
-	//! dual-path dump beside `ramp`.
 	void dumpSeamTrace(std::ostream &out) const;
-	//! Pin the rendered body path (flag experimental_path)
 	void setExperimentalPath(bool newPath);
 	bool getExperimentalPath() const;
-	//! Startup path selection, call once at init: "new", "old" or "alternate", anything else is refused with a log line
+	//! Call once at init; mode = "new", "old" or "alternate"
 	void setRenderPathMode(const std::string &mode);
 
 	//! set flag to display generic Hint or specific DSO type
@@ -585,8 +564,7 @@ private:
 
 	void applyClippingPlanes(float clipping_min, float clipping_max);
 
-	//! Push the tropic / polar-circle sky-line flags and colors to the new-path planet grid
-	//! Once per frame, before the modular system draws
+	//! Call once per frame, before the modular system draws
 	void syncPlanetGridSkyState();
 
 	//! Callback to record actions
@@ -620,28 +598,27 @@ private:
 	//! Ring: an overflow keeps the last rows
 	static constexpr unsigned int RAMP_TRACE_CAPACITY = 2048;
 	std::vector<RampStep> rampTrace;
-	unsigned int rampWrite = 0;		//!< next slot
-	unsigned int rampTotal = 0;		//!< records ever written
-	unsigned int rampFrame = 0;		//!< `updateMove` call index
-	bool rampWasActive = false;		//!< to emit the release row
+	unsigned int rampWrite = 0;
+	unsigned int rampTotal = 0;
+	unsigned int rampFrame = 0;
+	bool rampWasActive = false;
 
-	//! Ring: an overflow keeps the last rows; allocated on the first record
+	//! Same ring, allocated on the first record
 	static constexpr unsigned int SEAM_TRACE_CAPACITY = 16384;
 	std::vector<SeamStep> seamTrace;
-	unsigned int seamWrite = 0;		//!< next slot
-	unsigned int seamTotal = 0;		//!< records ever written
-	unsigned int seamFrame = 0;		//!< recorder call index
-	bool seamRecording = false;		//!< armed by SC_SEAM_RECORD at init
+	unsigned int seamWrite = 0;
+	unsigned int seamTotal = 0;
+	unsigned int seamFrame = 0;
+	bool seamRecording = false;
 	//! List, not a ring: an overflow drops the latest installs
 	static constexpr unsigned int SEAM_TRAVEL_CAPACITY = 64;
 	std::vector<SeamTravel> seamTravels;
-	unsigned int seamTravelTotal = 0;	//!< installs seen, kept or dropped
-	unsigned int lastTravelSeqNew = 0;	//!< new registry's install counter
-	bool lastTravelMovingOld = false;	//!< old registry's in-flight flag
-	//! Copy one registry's install record into `seamTravels`.
+	unsigned int seamTravelTotal = 0;
+	unsigned int lastTravelSeqNew = 0;
+	bool lastTravelMovingOld = false;
 	void recordSeamTravel(int engine, double jd, const Vec3d &start,
 	                      const Vec3d &dir, double distance, double t0, double t1);
-	//! Called by Executor::update (a friend) at the end of the frame update; returns at once when not armed
+	//! Call at the end of the frame update, no-op when not armed
 	void recordSeamStep(int delta_time);
 
 	// initialize CoreFont class
@@ -725,7 +702,7 @@ private:
 	bool predictibleRendering = false;  // Whether the rendered frames must be strictly reproductible (ex : recording sequence) or not (ex : realtime use)
 	ViewZoomMove vzm;					// var for ViewZoomMove
 	float InitFov;						// Default viewing FOV
-	std::string srtLanguage;			// [merge] current SRT (subtitle) locale (theirs' feature)
+	std::string srtLanguage;
 	Vec3d InitViewPos;					// Default viewing direction
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)

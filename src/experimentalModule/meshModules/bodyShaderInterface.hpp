@@ -3,7 +3,7 @@
 
 #include "tools/vecmath.hpp"
 
-// std140 UBO layouts of the body shaders: field ORDER and TYPES are GPU-visible, never reorder without the shaders
+// std140 layouts, never reorder a field without the shaders
 
 struct globalVertProj {
 	Mat4f ModelViewMatrix;
@@ -15,7 +15,7 @@ struct globalVertProj {
 	float planetOneMinusOblateness;
 };
 
-// Occluder feed of the legacy body shaders only; the modular path draws with meshFrag
+// For the legacy body shaders only
 struct globalFrag {
 	Vec3f MoonPosition1;
 	float MoonRadius1;
@@ -28,105 +28,97 @@ struct globalFrag {
 	float SunHalfAngle;
 };
 
-// = the shaders' MAX_SHADOW_CASTERS array size; the orchestration truncates its occlusion-ordered list to it
+// Must match MAX_SHADOW_CASTERS of the shaders
 #define MAX_SHADOW_CASTERS_PER_RECEIVER 8
 
-// Binding 1 of bodyMesh.frag and of the mid families (bodyTes*.frag, bodyLayered*.frag): the shadow receive block
+// Must match binding 1 of bodyMesh.frag, bodyTes*.frag and bodyLayered*.frag
 struct meshFrag {
 	int nbShadowingBodies;
 	int _pad[3];
 	struct ShadowingBody {
-		Vec4f posRadius;      // xy = caster center in sun-frame (rel. receiver), z = disc radius, w unused
-		Vec4f absorbtionIdx;  // rgb = TRANSMISSION absorption aT (solid 1; rings = material), w = layer index
-		Vec4f clip;           // eye-space half-space gate: apply iff dot(P, xyz) + w <= 0
-		                      // ((0,0,0,-1) = always)
-		// Sun-frame projection rows of THIS entry, receiver-folded:
-		// shadowPos = (dot(row0.xyz, P) + row0.w, dot(row1.xyz, P) + row1.w)
-		Vec4f row0, row1;
-		Vec4f glow;           // rgb = refraction glow gR (umbra-only chroma), w unused
+		Vec4f posRadius;      // xy = caster center in sun-frame, z = disc radius
+		Vec4f absorbtionIdx;  // rgb = absorption, w = layer index
+		Vec4f clip;           // eye-space, apply if dot(P, xyz) + w <= 0
+		Vec4f row0, row1;     // sun-frame projection rows
+		Vec4f glow;
 	} shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
 };
 
-// Binding 2 of the MESH_TES family. TesParam = [min_tes_lvl, max_tes_lvl, altimetry_level];
-// the tese displaces by 0.01*TesParam[2]*heightmap
+// Must match binding 2 of the MESH_TES family
 struct meshTescGeom {
-	Vec3i TesParam;
+	Vec3i TesParam; // [min_tes_lvl, max_tes_lvl, altimetry_level]
 	int _pad;
 };
 
-// Binding 0 of the MESH_RAYMARCH family (VERTEX|FRAGMENT): bodyRayMarch.frag re-declares it, add any field there too
-// ModelViewMatrix = bodyMat * zrot(axisRotation) * scale(1,1,oneMinusOblateness), i.e. without the +PI/2 of
-// computeBodyToSurface(): the ray-march reconstructs the texture longitude from atan(y,x)
+// Must match binding 0 of MESH_RAYMARCH and bodyRayMarch.frag
 struct rayMarchVert {
-	Mat4f ModelViewMatrix;
-	float WorldToModelMatrix[12]; // std140 mat3 (3 vec4-padded columns); fill via Mat4f::setMat3 = transpose of m's linear part
-	float zNear;                  // renderer.getClippingFov()[0]
-	float zRange;                 // [1] - [0]
-	float fov;                    // [2]
-	float radius;                 // finalRadius = min(r*(1+altimetryFactor), distance - r/64)
+	Mat4f ModelViewMatrix;        // without the +PI/2 of computeBodyToSurface()
+	float WorldToModelMatrix[12]; // std140 mat3, fill via Mat4f::setMat3
+	float zNear;
+	float zRange;
+	float fov;
+	float radius;                 // finalRadius, altimetry headroom included
 };
 
-// Binding 1 of the MESH_RAYMARCH family; entries folded by fillFoldedShadows so that shadowPos lands in eye-space AU
+// Must match binding 1 of MESH_RAYMARCH, fill with fillFoldedShadows
 struct rayMarchFrag {
-	Vec3f lightDirection;        // body-local, sun -> body: normalize(m^T * (bodyPos - lightPos))
-	float sinSunAngle;           // 2*starRadius/|bodyPos - lightPos|, guard max(x, 1e-6)
+	Vec3f lightDirection;        // body-local, sun -> body
+	float sinSunAngle;
 	float heightMapDepthLevel;   // altimetryCoef = radius/finalRadius
 	float heightMapDepth;        // altimetryFactor * altimetryCoef
 	float squaredHeightMapDepthLevel;
-	float sunDeviation;          // sin(atmosphere_sun_deviation deg)
-	Vec3f atmColor;              // atmosphere_ambient_r/g/b
-	float atmDeviation;          // sin(atmosphere_ambient_deviation deg)
+	float sunDeviation;
+	Vec3f atmColor;
+	float atmDeviation;
 	int nbShadowingBodies;
 	int _pad[3];
 	meshFrag::ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
 };
 
-// std140 mirror of bodyRing.vert binding 0. Field order/types = GPU layout.
+// Must match binding 0 of bodyRing.vert
 struct bodyRingVert {
-	Mat4f ModelViewMatrix;         // near-list matrix (spin-folded; ring is axisymmetric)
+	Mat4f ModelViewMatrix;
 	Mat4f ModelViewMatrixInverse;
 	Vec3f clipping_fov;
-	float RingScale;               // body scaling factor mc
-	Vec3f PlanetPosition;          // eye-space body center (planet-shine input)
+	float RingScale;
+	Vec3f PlanetPosition;          // eye-space
 	float SunnySideUp;             // observer above/below ring plane
 	Vec3f LightDirection;          // eye-space, body -> sun, normalized
-	float fadingFactor;            // asteroid cross-fade; 100000 while there is no asteroid variant
+	float fadingFactor;            // 100000 while there is no asteroid variant
 };
 
-// std140 mirror of bodyRing.frag binding 1 - the receive block (disc-receiver
-// idiom: entries unfolded, eye-space P).
+// Must match binding 1 of bodyRing.frag
 struct bodyRingFrag {
 	int nbShadowingBodies;
 	int _pad[3];
 	meshFrag::ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
 };
 
-// std140 mirror of body_artificial.vert binding 0 set 2; fill via Mat4f::setMat3 of the eye-space model matrix
+// Must match binding 0 set 2 of body_artificial.vert
 struct ojmVert {
-	float NormalMatrix[12]; // std140 mat3
+	float NormalMatrix[12]; // std140 mat3, fill via Mat4f::setMat3
 };
 
-// std140 mirror of body_artificial.vert/geom binding 1 set 2 (artGeom).
+// Must match binding 1 set 2 of body_artificial.vert/geom
 struct ojmGeom {
 	Mat4f ModelViewMatrix;  // eye model matrix * scaling(radius)
 	Vec3f clipping_fov;
 	float _pad;
 };
 
-// std140 mirror of body_artificial_tex/notex.frag binding 2 set 2 (LightInfo): the PLAIN rows' light block
+// Must match binding 2 set 2 of body_artificial_tex/notex.frag
 struct ojmLight {
-	Vec3f Position;  // light position in eye coords
+	Vec3f Position;  // in eye coords
 	float _p0;
-	Vec3f Intensity; // A,D,S intensity
+	Vec3f Intensity; // A,D,S
 	float _p1;
 };
 
-// std140 mirror of ojmShadowTex/Notex.frag binding 2 set 2: the SHADOWED rows' block
-// ShadowMatrix must be the very value used for the SELF_DEPTH pass
+// Must match binding 2 set 2 of ojmShadowTex/Notex.frag
 struct ojmShadowBlock {
-	float ShadowMatrix[12]; // std140 mat3: model -> sun-frame NDC
-	float ModelMatrix[12];  // std140 mat3: model -> eye (rotation+scale)
-	Vec3f ModelPosition;    // eye-space body center
+	float ShadowMatrix[12]; // model -> sun-frame NDC, same as the SELF_DEPTH pass
+	float ModelMatrix[12];  // mat3 model -> eye
+	Vec3f ModelPosition;    // eye-space
 	float _p0;
 	Vec3f lightDirection;   // eye-space, direction light travels
 	float _p1;

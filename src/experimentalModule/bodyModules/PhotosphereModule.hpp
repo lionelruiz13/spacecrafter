@@ -11,8 +11,7 @@
 #include <memory>
 class ObjL;
 
-// MESH slot of a STAR: an emitting, limb-darkened disc where a planet holds a BasicMesh
-// Takes the slot by loader bid (PhotosphereLoader outbids BasicMeshLoader on isStar()); casts and receives no shadow
+// Draw the limb-darkened disc of a star, without any shadow
 class PhotosphereModule : public BodyModule {
 public:
     PhotosphereModule(ObjL *mesh, const std::string &texturePath);
@@ -28,8 +27,6 @@ public:
     virtual void switchTexSkin(bool use) override;
     bool getSkinUse(bool &out) const override { out = colorMap.isSkinUsed(); return true; }
 private:
-    // The one binding site (mirrors BasicMesh::bindColor; the set contract is
-    // this family's, which is why the binding cannot live in the shared map).
     void bindColor(Texture &color);
     void fillVert(ModularBody *body, const Mat4f &mat);
     bool loaded = false;

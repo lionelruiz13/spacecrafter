@@ -8,30 +8,27 @@
 
 class VertexBuffer;
 
-// Historical path of a body: parent-relative positions accumulated over sim time, drawn as a fading depth-less polyline
-// In no regime list: swept every frame by ModularSystem::drawTrails, so an off-screen body keeps recording
-// Recording is gated by the display FLAG (off = history discarded), independently of the body's visibility
+// Record and draw the path of a body, from ModularSystem::drawTrails
 class TrailModule : public BodyModule {
 public:
     TrailModule(const Vec3f &color, int maxTrail, double deltaTrail);
     ~TrailModule();
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual bool update(ModularBody *body, float scaledRadius) override;
-    // Answers the TRAIL channel only; the base no-op handles every other channel
     virtual void setColor(BodyColorType type, const Vec3f &c) override {
         if (type == BodyColorType::TRAIL || type == BodyColorType::ALL)
             color = c;
     }
     virtual void dumpState(std::ostream &out) const override;
 
-    // true = fresh restart from the body's current position; false = stop recording
+    // Restart from the current position if record, else stop recording
     void startTrail(bool record);
 
     struct TrailPoint {
-        Vec3f pos;   // parent-relative (root-aligned), drawn in the parent frame
-        double jd;   // sim time of the sample
+        Vec3f pos;   // parent-relative
+        double jd;
     };
-    // Per-name override, holds until the next global toggle; enabling restarts the trail
+    // Override by name until the next global toggle, restart if enabled
     virtual void setShown(bool b) override;
     bool getColor(BodyColorType type, Vec3f &out) const override {
         if (type != BodyColorType::TRAIL)
@@ -49,7 +46,7 @@ public:
     int getShownOverride() const override {
         return (overrideGen == flagGeneration) ? nameOverride : -1;
     }
-    // The accumulated trail is session content: saved and restored whole, not re-derived
+    // For saving and restoring the trail whole
     const std::vector<TrailPoint> &getPoints() const { return points; }
     void restorePoints(std::vector<TrailPoint> &&pts) {
         points = std::move(pts);
@@ -58,47 +55,39 @@ public:
             lastJD = points.front().jd;
     }
 
-    // A hidden body is not swept: settle the fader and re-evaluate the missed samples through the body's orbit
-    // Without an evaluable orbit, falls back to a logged fresh start
+    // Settle the fader and re-evaluate the missed samples from the orbit
     virtual void resumeAfterHidden(ModularBody *body) override;
 
-    // Global master: a toggle bumps the generation, staling every per-name override
     static void setGlobalShow(bool b) { show = b; ++flagGeneration; }
-    // False -> the whole trail phase is skipped (no sweep, no accumulation)
+    // Return false if the whole trail phase can be skipped
     static bool anyActive() { return show || activeCount > 0; }
 
-    static bool show; // global display master (setFlagTrails)
+    static bool show;
     static uint32_t flagGeneration; // bumped by every global toggle
-    static int activeCount; // modules with a live fader (phase-gate input)
-    // Trail color of a body whose data gives none (config object_trails_color)
-    static Vec3f defaultColor;
+    static int activeCount; // modules with a live fader
+    static Vec3f defaultColor; // config object_trails_color
 protected:
-    // Effective visibility target for THIS body this frame (per-name override
-    // while live, else the global master).
+    // Return the per-name override while live, else the global master
     bool wantShown(ModularBody *body) const;
-    // Append the body's current parent-relative position at its sim time (deltaTrail cadence, maxTrail cap and window)
+    // Append the current position, at deltaTrail cadence
     void accumulate(ModularBody *body);
-    // The fresh start of every re-enable path: discard the history, restart at the body's current position
     void resetTrail();
 
-    std::vector<TrailPoint> points; // NEWEST FIRST (index 0 = brightest)
+    std::vector<TrailPoint> points; // newest first
     LinearFader fader;
     Vec3f color;
-    Vec3f authoredColor;   // what the DATA gave it (baseline of a saved color change)
+    Vec3f authoredColor;   // as given by the data
     double lastJD = 0;      // sim time of the last appended point
-    // Driven by the display flag (wantShown), not by the fader nor by the body's visibility
-    bool recording = false;
+    bool recording = false; // follows the display flag, not the visibility
     bool firstPoint = true; // pending fresh start
-    // Entries into accumulate() since construction (trace harness)
-    uint64_t accumulateCount = 0;
+    uint64_t accumulateCount = 0; // for dumpState
     int maxTrail = 1460;    // point cap + time window in deltaTrail units
     double deltaTrail = 1;  // sampling period in sim days
 
-    bool live = false;         // this module currently counts in activeCount
+    bool live = false;         // counted in activeCount
     int8_t nameOverride = -1;  // -1 follow master, 0/1 forced
-    uint32_t overrideGen = 0;  // flagGeneration at which the override was set
+    uint32_t overrideGen = 0;
 
-    // GPU line buffer (maxTrail vec3), refilled each drawn frame from `points`.
     std::unique_ptr<VertexBuffer> line;
 };
 

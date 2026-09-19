@@ -5,13 +5,12 @@
 #include "tools/object_base.hpp"
 #include <utility>
 
-// ObjectBase view of a ModularBody for the selection, the info strings and the UI queries; positions from the Camera
+// ObjectBase view of a ModularBody, positions come from the Camera
 class ModularObject : public ObjectBase {
 public:
     ModularObject() = default;
     explicit ModularObject(ModularBody *b) : body(b) {}
 
-    // Owned by its reference count, deleted at zero; body is not owned, it is redirected when the body is removed
     virtual void retain() override {
         ++refCount;
     }
@@ -39,18 +38,15 @@ public:
     virtual double getCloseFov(const Navigator *nav) const override;
     virtual double getSatellitesFov(const Navigator *nav) const override;
     virtual double getParentSatellitesFov(const Navigator *nav) const override;
-    // Radius in pixels of a circle containing the body on screen (consumed by
-    // the pointer drawing, among others).
+    // Return the radius in pixels of a circle containing the body on screen
     virtual float getOnScreenSize(const Projector *prj, const Navigator *nav = NULL, bool orb_only = false) override;
 
     ModularBodyPtr body;
 
 private:
-    // Stack-allocated bridges (the dual_dump instrument builds one per body)
-    // never see retain/release, so this stays 0 and nothing is deleted.
-    int refCount = 0;
+    int refCount = 0; // Stays 0 when stack-allocated, which is then never deleted
 
-    // (alt, az) with az in the reported convention (N=0, E=90); every alt/az report of this class goes through it
+    // Return (alt, az) with N=0, E=90
     std::pair<double, double> altAz() const;
 };
 

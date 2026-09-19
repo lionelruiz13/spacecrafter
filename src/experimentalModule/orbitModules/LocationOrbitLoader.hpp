@@ -4,8 +4,7 @@
 #include "tools/utility.hpp"
 #include "tools/log.hpp"
 
-// coord_func=location_orbit: a surface point that turns with its parent BY ITSELF, so never with the grounded relation
-// No loaded parent -> nullptr (every parameter is the parent's); never throw, that would select the default loader
+// Return nullptr on failure, a throw would select the default loader
 class LocationOrbitLoader : public OrbitLoader {
     virtual std::unique_ptr<Orbit> load(std::map<std::string, std::string> &params) override {
         ModularBody *parent = ModularBody::findBodyOnce(params["parent"]);

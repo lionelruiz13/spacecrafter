@@ -6,19 +6,18 @@
 class MilkyWay;
 class ToneReproductor;
 
-// Milky way backdrop (+ zodiacal light) of the galaxy root body, drawn by the app's MilkyWay engine
-// The iris/standard texture selection is the manager's, not this member's
+// Draw the milky way and the zodiacal light
 class MilkyWayEnv : public EnvironmentModule {
 public:
     MilkyWayEnv(MilkyWay *engine, ToneReproductor *eye) : engine(engine), eye(eye) {}
     bool update(ModularBody *body, const Vec3f &cameraLocalPos,
                 float deltaTime, EnvironmentState &state) override {
-        return false; // continuous: draw reads live fader/intensity state
+        return false; // draw reads the live fader/intensity state
     }
-    // mat = root-aligned frame -> eye; only its rotation is used
+    // Only use the rotation of mat
     void drawBackdrop(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
 private:
-    MilkyWay *engine; // app-lifetime (Core shared_ptr member) - outlives this
+    MilkyWay *engine; // not owned, outlives this
     ToneReproductor *eye;
 };
 

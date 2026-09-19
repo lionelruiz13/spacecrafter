@@ -9,9 +9,7 @@
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
 
-// surface_point: a point in the parent's SURFACE frame; co-rotation comes from the grounded fold, never from this orbit
-// Keys (degrees/km): orbit_lon, orbit_lat, orbit_alt = km above the parent's datum surface
-// Optional linear ascent, all three together: orbit_alt_end (km), orbit_ascent_start (JD), orbit_ascent_duration (days)
+// Point in the parent's surface frame, needs the grounded relation
 class SurfacePointOrbit : public Orbit {
 public:
     SurfacePointOrbit(ModularBody *parent, Vec3d direction,
@@ -23,8 +21,7 @@ public:
     {
     }
 
-    // Round-trips the DATA keys (degrees/km), not the derived AU state -
-    // the save is a data-surface serialization (ell_orbit precedent).
+    // Save the data keys (degrees/km), not the derived AU state
     virtual std::string saveOrbit() const override
     {
         std::ostringstream os;
@@ -40,7 +37,7 @@ public:
         return os.str();
     }
 
-    // Reads the parent's UNSCALED datum at every evaluation; display scaling is ModularBody::getDisplayEclipticPos()'s
+    // Use the unscaled datum of the parent
     virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const override
     {
         ModularBody *p = parent;
@@ -59,7 +56,6 @@ public:
         v[2] = direction[2] * r;
     }
 private:
-    // Destruction-notified; a parent replaced by name redirects this orbit to the replacement
     const ModularBodyPtr parent;
     const Vec3d direction; // unit vector in the parent's surface frame
     const double tStart;   // JD

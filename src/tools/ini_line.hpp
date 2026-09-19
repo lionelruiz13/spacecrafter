@@ -3,22 +3,19 @@
 
 #include <string>
 
-// Line grammar of the `.ini` body/system/anchor family, for every reader of it; section semantics stay with the caller
-// '#' comments to the end of the line, blanks are insignificant, an entry splits at the first '='
-// Reading only: nothing may write into a legacy file what an older parser cannot read
+// Line grammar shared by every reader of the .ini body/system/anchor files
 namespace IniLine {
 
 enum class Kind {
-    EMPTY,      // blank or comment-only: nothing to do
-    SECTION,    // '[header]' - `key` holds the header text, `value` is cleared
-    ENTRY,      // 'key = value' - both trimmed, `key` never empty
-    MALFORMED,  // non-empty, no '=' - `key` holds the offending text
+    EMPTY,      // Blank or comment-only
+    SECTION,    // '[header]', key holds the header text
+    ENTRY,      // 'key = value', both trimmed
+    MALFORMED,  // No '=', key holds the offending text
 };
 
-// The family's comment character, named once for every reader and writer; no other character is accepted
 constexpr char COMMENT_CHAR = '#';
 
-// [begin, end) byte offsets of the value inside the raw line, for a writer which keeps the rest of the line as it is
+// [begin, end) byte offsets of the value inside the raw line
 struct Span {
     std::size_t begin = 0, end = 0;
 };
@@ -30,7 +27,6 @@ inline bool isBlank(char c)
     return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 }
 
-// Shrink [b, e) over `s` until neither end is a blank.
 inline void trimRange(const std::string &s, std::size_t &b, std::size_t &e)
 {
     while (b < e && isBlank(s[b]))
@@ -48,13 +44,10 @@ inline void trim(std::string &s)
 
 } // namespace impl
 
-// Classify one raw file line. Nothing is consumed: `line` is read in place, so
-// the offsets `valueSpan` reports index the caller's own string.
+// Classify one raw line, valueSpan indexes line itself
 inline Kind read(const std::string &line, std::string &key, std::string &value,
                  Span *valueSpan = nullptr)
 {
-    // The significant content of the line: everything before a comment, blanks
-    // stripped off both ends. Every offset below is into `line` itself.
     std::size_t b = 0, e = line.find(COMMENT_CHAR);
     if (e == std::string::npos)
         e = line.size();

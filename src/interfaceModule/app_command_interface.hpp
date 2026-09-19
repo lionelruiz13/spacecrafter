@@ -65,8 +65,7 @@ public:
 	void deleteVar();
 	int executeCommand(const std::string &commandline);
 	int executeCommand(const std::string &command, uint64_t &wait);
-	//! With the origin of the line: its diagnostics are reported at that line and handed to the `#!` channel
-	//! Without origin (the two overloads above) the diagnostics go to the log only
+	//! Report the diagnostics at the line origin names, not only to the log
 	int executeCommand(const std::string &command, uint64_t &wait, const ScriptOrigin &origin);
 
 	void initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::shared_ptr<SpaceDate> _spaceDate, std::shared_ptr<SaveScreenInterface> _saveScreenInterface);
@@ -147,7 +146,7 @@ private:
 	SCD_NAMES parseCommandSet(const std::string& setName);
 	int executeCommandStatus();
 
-	//! SessionFile::CommandSurface: the names which exist, what they read and how to write them
+	//! SessionFile::CommandSurface
 	void forEachFlag(const std::function<void(const std::string &, bool)> &emit) const override;
 	void forEachValue(const std::function<void(const std::string &, const std::string &)> &emit) const override;
 	void forEachColor(const std::function<void(const std::string &, const Vec3f &)> &emit) const override;
@@ -156,12 +155,11 @@ private:
 	bool applyColorByName(const std::string &name, const Vec3f &value) override;
 	void countNames(int &flags, int &values, int &colors) const override;
 
-	//! Read half of the flag / `set` / `color` surfaces; false = this name has no read half
+	//! Return false when this name has no read half
 	bool readFlag(FLAG_NAMES flagName, bool &value) const;
 	bool readValue(SCD_NAMES name, std::string &value) const;
 	bool readColor(COLORCOMMAND_NAMES name, Vec3f &value) const;
-	//! The write half of `color`, extracted so a restore drives the same code
-	//! the command does (I2). `index` is used by `star_table` alone.
+	//! index is used by star_table alone
 	void applyColor(COLORCOMMAND_NAMES name, const Vec3f &value, int index);
 	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval);
 	bool setFlag(const std::string &name, const std::string &value, bool &newval);
@@ -195,17 +193,16 @@ private:
 	LoadPriority waitPriority = LoadPriority::ACTIVE;
 	std::unique_ptr<IfSwap> ifSwap; 	// management of multiple if statements
 	std::string debug_message;			//!< for 'executeCommand' error details
-	ScriptOrigin currentOrigin;			//!< where the command being executed came from; invalid off-script
-	bool loopOpen = false;				//!< a `struct loop <n>` is open, whatever n made it do
-	ScriptOrigin loopOpener;			//!< where that loop was opened
-	//! To the script log with the line quoted, and to the `#!` channel when `at` names a file line
+	ScriptOrigin currentOrigin;			//!< Invalid off-script
+	bool loopOpen = false;
+	ScriptOrigin loopOpener;
+	//! Log the error, and annotate the script when at names a file line
 	void reportScriptError(const ScriptOrigin &at, const std::string &what);
-	//! Log prefix of currentOrigin: "<file>:<line>: ", "tcp#<id>: ", or "" for every other origin
+	//! Return "<file>:<line>: ", "tcp#<id>: " or ""
 	std::string originTag() const;
-	//! The executing line as ScriptAnnotator would rewrite it with message; empty when the origin names no line
+	//! Return the executing line annotated with message, empty if no line
 	std::string errorLine(const std::string &message) const;
-	//! Send `$DIAG|<origin>|<message>|<subject>` to the $DIAGON subscribers, only when `at` is a TCP origin
-	//! `at` = origin of the command reported on (not always currentOrigin), subject = the line it is about
+	//! Send $DIAG|<origin>|<message>|<subject>, only when at is a TCP origin
 	void sendFeedback(const ScriptOrigin &at, const std::string &message,
 	                  const std::string &subject);
 
