@@ -1,0 +1,39 @@
+leg=n2 out=/home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2
+1789805429.754 >> timerate rate 0
+1789805430.554 >> deselect
+1789805432.755 >> date jday 2461234.0
+1789805433.555 >> meteors zhr 0
+1789805436.755 >> set home_planet Triton
+1789805437.956 >> select planet Triton pointer off
+1789805441.156 >> flag track_object on
+1789805442.857 >> zoom fov 180 duration 0
+1789805443.857 >> moveto lat 0 lon 0 alt 700000 duration 0
+1789805444.557 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f0_new.png
+N2 f0 lit_disc=104 lit_frame=7616
+1789805445.659 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f1_new.png
+N2 f1 lit_disc=104 lit_frame=7616
+1789805446.740 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f2_new.png
+N2 f2 lit_disc=104 lit_frame=7616
+1789805447.823 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f3_new.png
+N2 f3 lit_disc=104 lit_frame=7616
+1789805448.905 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f4_new.png
+N2 f4 lit_disc=104 lit_frame=7616
+1789805449.989 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f5_new.png
+N2 f5 lit_disc=104 lit_frame=7616
+1789805451.068 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f6_new.png
+N2 f6 lit_disc=104 lit_frame=7616
+1789805452.147 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f7_new.png
+N2 f7 lit_disc=104 lit_frame=7616
+1789805453.226 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f8_new.png
+N2 f8 lit_disc=104 lit_frame=7616
+1789805454.307 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/f9_new.png
+N2 f9 lit_disc=104 lit_frame=7616
+1789805467.389 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/settled_new.png
+1789805469.979 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/n2_dump.json
+N2 settled lit_disc=104  dist=2052.6 km datumR=1352.6 km screenSize=0.458014399 routing={'far': 1, 'near': 2, 'grounded': 0, 'in': 0, 'orbit': 1, 'trail': 0, 'tail': 0}
+1789805472.686 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/n2_end_new.png
+1789805475.279 >> flag experimental_path off
+1789805477.979 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/mutant_n2/n2_end_old.png
+1789805480.530 >> flag experimental_path on
+N2 end old=0 new=104
+done

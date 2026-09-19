@@ -282,6 +282,42 @@ elif LEG == "fov":
                      RESULTS["rungs"][-1]["body"]["screenSize"],
                      old["lit_disc"], new["lit_disc"]), flush=True)
     send(s, "zoom fov 180 duration 0", 1.0)
+elif LEG == "n2":
+    # N2's `loaded` latch, on a body that was NEVER drawn: `loaded` is written
+    # only inside drawLoaded, so a body whose screenSize never passed the early
+    # gate still has it false.  Jump INSIDE 2R and grab as fast as the channel
+    # allows.  The discriminator is illumination-INDEPENDENT on purpose: not the
+    # level of any frame but a STEP between two consecutive ones (measured
+    # afterwards by f123_frames.py), because the prediction is "visible for the
+    # texture-load frames, then gone in one".  Triton: radius 1352.6 km
+    # [~/.spacecrafter/ssystem.ini:1774], unscaled, so the band is
+    # [1352.6, 2705.2) km and altitude 700 km sits in it (screenSize ~0.46
+    # against the 0.2 close-range gate).
+    preamble(s)
+    send(s, "set home_planet Triton", 3.0)
+    send(s, "select planet Triton pointer off", 1.0)
+    send(s, "flag track_object on", 3.0)
+    send(s, "zoom fov 180 duration 0", 1.5)
+    send(s, "moveto lat 0 lon 0 alt 700000 duration 0", 0.8)
+    for i in range(10):
+        RESULTS["rungs"].append({"rung": "f%d" % i, "t": time.time(),
+                                 "new": measure(shot(s, "f%d_new" % i, 0.5))})
+        r = RESULTS["rungs"][-1]["new"]
+        print("N2 f%d lit_disc=%s lit_frame=%s" % (i, r["lit_disc"], r["lit_frame"]),
+              flush=True)
+    time.sleep(10)
+    RESULTS["rungs"].append({"rung": "settled", "new": measure(shot(s, "settled_new"))})
+    b = dump(s, "n2_dump", 2.0)
+    RESULTS["rungs"].append({"rung": "dump", "body": rec(b, "Triton")})
+    print("N2 settled lit_disc=%s  dist=%.1f km datumR=%.1f km screenSize=%s routing=%s"
+          % (RESULTS["rungs"][-2]["new"]["lit_disc"],
+             RESULTS["rungs"][-1]["body"]["dist_km"],
+             RESULTS["rungs"][-1]["body"]["scaledDatumRadius_km"],
+             RESULTS["rungs"][-1]["body"]["screenSize"],
+             RESULTS["rungs"][-1]["body"]["routing"]), flush=True)
+    old, new = both_paths(s, "n2_end")
+    RESULTS["rungs"].append({"rung": "end", "old": old, "new": new})
+    print("N2 end old=%s new=%s" % (old["lit_disc"], new["lit_disc"]), flush=True)
 elif LEG == "earth":
     preamble(s)
     anchor_on(s, "Earth")
