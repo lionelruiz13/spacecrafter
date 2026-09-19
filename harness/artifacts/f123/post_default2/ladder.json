@@ -1,0 +1,153 @@
+{
+ "leg": "default",
+ "jd": 2461234.0,
+ "rungs": [
+  {
+   "rung": "t0",
+   "t": 1789804129.6596143,
+   "new": {
+    "png": "t0_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3299202,
+    "mean_disc": 54.815384982766716
+   }
+  },
+  {
+   "rung": "t1",
+   "t": 1789804131.4482415,
+   "new": {
+    "png": "t1_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3200073,
+    "mean_disc": 104.82230217545312
+   }
+  },
+  {
+   "rung": "t2",
+   "t": 1789804133.2295833,
+   "new": {
+    "png": "t2_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3200115,
+    "mean_disc": 104.82713386240438
+   }
+  },
+  {
+   "rung": "t3",
+   "t": 1789804135.0177875,
+   "new": {
+    "png": "t3_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3200119,
+    "mean_disc": 104.83410677470967
+   }
+  },
+  {
+   "rung": "t4",
+   "t": 1789804136.805885,
+   "new": {
+    "png": "t4_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3200126,
+    "mean_disc": 104.83958321725079
+   }
+  },
+  {
+   "rung": "t5",
+   "t": 1789804138.589331,
+   "new": {
+    "png": "t5_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3200154,
+    "mean_disc": 104.84782176089915
+   }
+  },
+  {
+   "rung": "settled",
+   "new": {
+    "png": "settled_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3200284,
+    "mean_disc": 104.9392974552054
+   }
+  },
+  {
+   "rung": "default",
+   "aa1": {
+    "png": "aa1_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3296421,
+    "mean_disc": 183.91345947193722
+   },
+   "aa2": {
+    "png": "aa2_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3296421,
+    "mean_disc": 183.91345947193722
+   },
+   "old": {
+    "png": "def_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3296435,
+    "mean_disc": 183.91271123705513
+   },
+   "new": {
+    "png": "def_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3296421,
+    "mean_disc": 183.91345947193722
+   },
+   "body": {
+    "dist_km": 6378.215366281255,
+    "scaledDatumRadius_km": 6378.140253190728,
+    "boundingRadius_km": 6569.484186723152,
+    "screenSize": 2,
+    "scaling": 1,
+    "scalingTarget": 1,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 3,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 1,
+     "tail": 0
+    }
+   }
+  }
+ ]
+}

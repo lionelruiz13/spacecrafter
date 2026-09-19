@@ -1,0 +1,22 @@
+=== F123 run 'post_moon1' ===
+wall clock start : 2026-09-19 09:51:08 CEST
+leg              : moon1
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : f22f9278ccf03167e05f5ea8ec5e5ea8
+binary mtime     : 2026-09-19 09:39:32.717391109 +0200
+[post_moon1] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[post_moon1] gpu: free 29382 MiB / used 2725 / total 32607 ; need 6144 MiB (Sec.11.238)
+[post_moon1] clear to launch
+--- canary --no-scene (exit 0) ---
+fingerprint: 32 members -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260919-095109/fingerprint.json
+
+=== CANARY VERDICT: exit 0  (0 fail, 0 note; scene arm NOT run)
+    fingerprint green -- but the photometric member is the one 2026-08-29 needed: run without --no-scene before trusting a measurement.
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=323226
+tcp up after 6x2s
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+wall clock end   : 2026-09-19 09:54:16 CEST

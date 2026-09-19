@@ -1,0 +1,72 @@
+leg=fov out=/home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov
+1789804610.030 >> timerate rate 0
+1789804610.830 >> deselect
+1789804613.031 >> date jday 2461234.0
+1789804613.831 >> meteors zhr 0
+1789804617.031 >> set home_planet Moon
+1789804618.732 >> select planet Moon pointer off
+1789804622.932 >> flag track_object on
+1789804625.133 >> zoom fov 180 duration 0
+1789804627.833 >> moveto lat 0 lon 0 alt 12000000 duration 0
+1789804629.534 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal0.json
+1789804632.238 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal0_new.png
+1789804634.842 >> flag experimental_path off
+1789804637.542 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal0_old.png
+1789804640.129 >> flag experimental_path on
+CAL lon=  0  dist=20687.0 km  old.lit_disc=0  new.lit_disc=0
+1789804642.829 >> moveto lat 0 lon 90 alt 12000000 duration 0
+1789804644.530 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal90.json
+1789804647.234 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal90_new.png
+1789804649.821 >> flag experimental_path off
+1789804652.522 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal90_old.png
+1789804655.110 >> flag experimental_path on
+CAL lon= 90  dist=20687.0 km  old.lit_disc=3  new.lit_disc=16
+1789804657.810 >> moveto lat 0 lon 180 alt 12000000 duration 0
+1789804659.510 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal180.json
+1789804662.214 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal180_new.png
+1789804664.790 >> flag experimental_path off
+1789804667.490 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal180_old.png
+1789804670.074 >> flag experimental_path on
+CAL lon=180  dist=20687.0 km  old.lit_disc=125626  new.lit_disc=125629
+1789804672.774 >> moveto lat 0 lon 270 alt 12000000 duration 0
+1789804674.474 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal270.json
+1789804677.179 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal270_new.png
+1789804679.770 >> flag experimental_path off
+1789804682.470 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_cal270_old.png
+1789804685.063 >> flag experimental_path on
+CAL lon=270  dist=20687.0 km  old.lit_disc=105738  new.lit_disc=105576
+CALIBRATED lon=180 (old lit_disc 125626 of 125663)
+1789804687.263 >> moveto lat 0 lon 180 alt 9000000 duration 0
+1789804689.964 >> zoom fov 180 duration 0
+1789804691.664 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a9000_f180.json
+1789804694.368 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a9000_f180_new.png
+1789804696.964 >> flag experimental_path off
+1789804699.665 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a9000_f180_old.png
+1789804702.252 >> flag experimental_path on
+FOV alt=9000000 fov=180 dist=17687.0 screenSize=0.334050089 old=125629 new=125629
+1789804704.452 >> moveto lat 0 lon 180 alt 9000000 duration 0
+1789804707.153 >> zoom fov 60 duration 0
+1789804708.853 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a9000_f60.json
+1789804711.557 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a9000_f60_new.png
+1789804714.133 >> flag experimental_path off
+1789804716.834 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a9000_f60_old.png
+1789804719.435 >> flag experimental_path on
+FOV alt=9000000 fov=60 dist=17687.0 screenSize=1.0021503 old=125629 new=125629
+1789804721.635 >> moveto lat 0 lon 180 alt 8000000 duration 0
+1789804724.335 >> zoom fov 180 duration 0
+1789804726.036 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a8000_f180.json
+1789804728.740 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a8000_f180_new.png
+1789804731.323 >> flag experimental_path off
+1789804734.023 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a8000_f180_old.png
+1789804736.611 >> flag experimental_path on
+FOV alt=8000000 fov=180 dist=16687.0 screenSize=0.356364578 old=125629 new=125629
+1789804738.811 >> moveto lat 0 lon 180 alt 8000000 duration 0
+1789804741.511 >> zoom fov 60 duration 0
+1789804743.212 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a8000_f60.json
+1789804745.916 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a8000_f60_new.png
+1789804748.513 >> flag experimental_path off
+1789804751.214 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/post_fov/fv_a8000_f60_old.png
+1789804753.788 >> flag experimental_path on
+FOV alt=8000000 fov=60 dist=16687.0 screenSize=1.0690937 old=125629 new=125629
+1789804754.989 >> zoom fov 180 duration 0
+done

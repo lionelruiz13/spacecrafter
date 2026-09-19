@@ -708,6 +708,15 @@ baseline.
 **B1 / B2 / B3, the architectural lines** — Vixy-paced by design. **The exclusion is weaker than
 it was**: round-3 R21 retired the *"unless the content census says otherwise"* escape this map
 used to lean on, so what carries them now is the pacing argument alone.
+**[B3 STATE LINE, 2026-09-19, §11.248 (F123), code `8e065ce4`]** ONE piece of B3's residue left it
+today and it did NOT move the architectural line: the §11.97(e)/§11.100(g)(ii) surface-regime hole
+— a body drawing NOTHING between one and two of its own scaled radii — was minted as **§5.161**
+and closed by implementing the owner's own ruling of 2026-07-26 (§11.113(c)(ii)). It was fixed as a
+DEFECT, not as a step of B3: no depth prefill, no `SurfaceModule`, no pipeline capability, one
+private helper inside `ModularBody`. The pacing argument for B3 itself is untouched. What this
+closes on the map is an invisibility, not a line: a ruled defect parked on an owner-paced row
+inherits that row's invisibility and is reached by no sweep (§11.247(d)3), which is why the
+tester met it on 2026-09-18 and the ledger had held its mechanism since 2026-07-24.
 **Perfect parity on interactive free-flight residuals** — ≤2.3 m per toggle accepted with
 structure (§11.154(a)); the usage-path model covers his interactive use.
 **§5.20** — `linearOrbit`'s swapped lerp weights: no construction site on EITHER path, so it is
