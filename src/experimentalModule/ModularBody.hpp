@@ -613,17 +613,14 @@ public:
                             for (auto &module : nearComponents)
                                 module->draw(renderer, this, matrix);
                         } else {
+                            // The depth clear stays OUTSIDE the selection: the
+                            // bucket is this body's whatever it ends up drawing,
+                            // exactly as before, so a body that draws nothing
+                            // here leaves the frame's depth partition unchanged.
                             renderer.clearDepth(distance, boundingRadius);
-                            if (distance < scaledRadius) {
-                                for (auto &module : inComponents)
+                            if (const auto *components = closeRangeComponents())
+                                for (auto *module : *components)
                                     module->draw(renderer, this, matrix);
-                            } else if (distance < scaledRadius * BODY_SURFACE_HEIGHT) {
-                                for (auto &module : groundedComponents)
-                                    module->draw(renderer, this, matrix);
-                            } else {
-                                for (auto &module : nearComponents)
-                                    module->draw(renderer, this, matrix);
-                            }
                         }
                     } else {
                         // far (2D behind body) BEFORE the range is set, exactly
@@ -2096,8 +2093,13 @@ private:
 
     std::vector<BodyModule *> farComponents; // 2D behind body, SKIP above BODY_CLOSE_RANGE_BOUNDING_SIZE, update NEVER called
     std::vector<BodyModule *> nearComponents; // Drawn above BODY_EARLY_VISIBILITY_BOUNDING_SIZE and distance > scaledRadius * BODY_SURFACE_HEIGHT
-    std::vector<BodyModule *> groundedComponents; // Drawn if distance <= scaledRadius * BODY_SURFACE_HEIGHT
+    std::vector<BodyModule *> groundedComponents; // Drawn if distance <= scaledRadius * BODY_SURFACE_HEIGHT and a surface is loaded
     std::vector<BodyModule *> inComponents; // Draw if distance <= scaledRadius
+    // WHICH of the three lists above the close range draws - ONE selection,
+    // consumed by BOTH draw ladders (draw() here and drawLoaded() in the .cpp),
+    // so the two can no longer disagree about it. nullptr = none of them.
+    // Definition and reasons: ModularBody.cpp, above drawLoaded.
+    const std::vector<BodyModule *> *closeRangeComponents();
     // -1 when no module in the list carries a live override.
     static inline int firstOverride(const std::vector<BodyModule *> &list) {
         for (auto *m : list) {

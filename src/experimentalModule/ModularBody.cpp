@@ -7,6 +7,7 @@
 #include "ModularBodyPtr.hpp"
 #include "ModularSystem.hpp"
 #include "EnvironmentManager.hpp"
+#include "Camera.hpp" // closeRangeComponents: WHICH body the environment state is about
 #include "RenderChain.hpp"
 #include "bodyModules/TrailModule.hpp" // startTrail: the fresh-restart seam's callee
 #include "tools/log.hpp"
@@ -684,6 +685,64 @@ void ModularBody::updateReach()
     areaOfInfluence = aoi;
 }
 
+// THE close-range regime selection - one manager, two consumers (draw() in the
+// header and drawLoaded() below). It used to be two managers of one decision,
+// and the hole was the VALUE of their disagreement (INTENT S5.161, S11.248):
+// draw() sent the band [scaledRadius, 2*scaledRadius) to groundedComponents,
+// which NO legacy loader ever fills - addGroundedComponent has exactly one
+// caller, ModuleLoader::reroute's composed-format `relation =` key - so every
+// shipped body drew NOTHING there (measured: the Moon gone below 17 374 km at
+// the shipped x5 scale, Earth gone below 12 756 km, S11.97(e), S11.105
+// BLOCKER 1, S11.131(g)1), while drawLoaded() sent the same band to
+// nearComponents and drew it, which is why a body drawn for the first time is
+// visible for its texture-load frames and then vanishes in one.
+//
+// THE RULE IS THE OWNER'S, quoted [vixy 2026-07-26, S11.113(c)]: the surface
+// is used "when loaded and relevant by altitude or zooming, the outer version
+// otherwise", and "Outer always drawn if no grounded module" - "a defect to
+// close". "No grounded module" and "not loaded yet" take the same branch, and
+// the load state is read LIVE here, never latched at load or at first use
+// ((c)(iv)); the loop below is over an EMPTY vector for every shipped body, so
+// today it costs nothing and the day a SurfaceModule exists it is already
+// right.
+//
+// nullptr = this body draws no surface at all in the close range. That is the
+// HOME BODY under its own landscape, and it is the old path's rule verbatim:
+// Body::skipDrawingThisBody = !drawHomePlanet && observatory->isOnBody(this)
+// (body.cpp:1223-1226) with drawHomePlanet = BodyDecor::canDrawBody(), i.e.
+// altitude >= limLandscape (body_decor.cpp:28-39). The new path's answer to
+// that same question ALREADY EXISTS at its own anchor - EnvironmentState::
+// drawBody, produced by EnvironmentManager::update (:107) from the landscape
+// member's own altitude test - so it is CONSUMED here and NOT re-derived: one
+// producer, one stored copy, a second consumer beside the picker's
+// (core.cpp:1295). Re-deriving it from envParams.limLandscape and `distance`
+// would have been three lines and a SECOND manager of a decision that already
+// has one. Without this clause, closing the hole would put the home body's
+// mesh into the DEFAULT view, where an observer standing on Earth sits at
+// 6378.215 km - inside the band - and where the two paths agree today only
+// because two different rules both hide it.
+const std::vector<BodyModule *> *ModularBody::closeRangeComponents()
+{
+    // Camera INSIDE the body: deliberately untouched - the ruling's words do
+    // not cover it, and inComponents is empty for every shipped body too (the
+    // old path draws the body there, ModularBody draws nothing: recorded, not
+    // fixed here).
+    if (distance < scaledRadius)
+        return &inComponents;
+    if (EnvironmentManager::instance && Camera::instance
+            && !EnvironmentManager::instance->getState().drawBody
+            && Camera::instance->getReferenceBody() == this)
+        return nullptr;
+    if (distance < scaledRadius * BODY_SURFACE_HEIGHT) {
+        bool surfaceReady = !groundedComponents.empty();
+        for (auto *module : groundedComponents)
+            surfaceReady &= module->isLoaded();
+        if (surfaceReady)
+            return &groundedComponents;
+    }
+    return &nearComponents;
+}
+
 void ModularBody::drawLoaded(Renderer &renderer)
 {
     loaded = true;
@@ -704,23 +763,21 @@ void ModularBody::drawLoaded(Renderer &renderer)
             renderer.clearDepth(distance, boundingRadius);
             for (auto &module : farComponents)
                 module->draw(renderer, this, mat);
-            if (distance < scaledRadius) {
-                for (auto &module : inComponents) {
+            const auto * const components = closeRangeComponents();
+            if (components) {
+                for (auto *module : *components) {
                     if (module->isLoaded()) {
                         module->draw(renderer, this, matrix);
                     } else
                         loaded = false;
                 }
-                for (auto &module : nearComponents)
+            }
+            // `loaded` means "every module of this body is ready", so the near
+            // list still gates it when this regime did not draw it (the in list
+            // is polled by the tail below, for every branch).
+            if (components != &nearComponents) {
+                for (auto *module : nearComponents)
                     loaded &= module->isLoaded();
-                return;
-            } else {
-                for (auto &module : nearComponents) {
-                    if (module->isLoaded()) {
-                        module->draw(renderer, this, matrix);
-                    } else
-                        loaded = false;
-                }
             }
         }
     } else {
