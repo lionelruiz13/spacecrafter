@@ -498,10 +498,33 @@ static Vec3d positionAtDateReconverged(const ModularBody *body, double atJd, dou
 bool CameraAnchors::installTravel(Anchor &place, const Vec3d &targetRoot, double travelDays, double jd)
 {
     ModularBody *body = place.body;
-    // The travel starts where the place IS at this date, not where it was last
-    // drawn: an anchor body is hidden, so its position is at its last use.
-    body->useNow();
-    const Vec3d start = body->getCachedRootPosition();
+    // The travel starts where the place IS AT THIS DATE, read from the place's
+    // own motion law - NOT from the per-frame position cache.
+    //
+    // [FIXED 2026-09-19, S11.246. The cache is the wrong authority HERE, and
+    // it was measured wrong: an owned anchor body is parked under the tree
+    // ROOT, which the loaded system's update walk never visits, so
+    // publishParkedFrame never runs there and the D8 use-site barrier REFUSES
+    // every useNow() on such a body (S11.226's precondition) - it says so once
+    // in the log and leaves `eclipticPos` at the ZERO VECTOR. The position
+    // becomes right only as a side effect of the camera REFERENCING the place,
+    // because the reference body is the update walk's own entry point, and
+    // that is a frame later. So a `move_to` issued in the SAME frame as the
+    // `transition_to target point` that created the place - which is exactly
+    // how the shipped internal/fly_to_selected.sts issues it, with no `wait`
+    // between the two lines - started its travel FROM THE ROOT ORIGIN, and the
+    // two engines ended 147 000 km apart around the Moon (INTENT S5.157).
+    // The law, the target and the standoff were never the difference: measured
+    // identical to 0.000 km and 108 687.000 km on all four arms.
+    //
+    // getPositionAtDate IS the place's law, evaluated at the command's date -
+    // the same authority old reads when it takes `getHeliocentricEclipticPos()`
+    // off the anchor it just placed, with no publication step in between. It
+    // is also the call this file ALREADY uses, one function below, to find
+    // where the TARGET will be, through the same re-convergence wrapper that
+    // keeps an iterative solver's Newton seed at the frame's own date
+    // (S11.117). Same inputs into the same law.]
+    const Vec3d start = positionAtDateReconverged(body, jd, jd);
     Vec3d direction = targetRoot - start;
     const double distance = direction.length();
     if (distance > 0)
@@ -631,8 +654,11 @@ bool CameraAnchors::travelToBody(const std::string &bodyName, double seconds, do
     const double travelDays = seconds / (24 * 60 * 60);
     // Aim at where the body WILL BE when the travel lands (old :477).
     const Vec3d targetPos = positionAtDateReconverged(target, jd + travelDays, jd);
-    place->body->useNow();
-    const Vec3d start = place->body->getCachedRootPosition();
+    // Where the place IS at this date, from its own law - see installTravel's
+    // note (S11.246): the per-frame cache this line used to read is the zero
+    // vector for a place created in this same frame, and the travel then began
+    // at the root origin.
+    const Vec3d start = positionAtDateReconverged(place->body, jd, jd);
     Vec3d direction = targetPos - start;
     const double gap = direction.length();
     if (gap > 0)
