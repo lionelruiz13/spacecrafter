@@ -1178,7 +1178,7 @@ if [ -n "${HARNESS_REPO}" ]; then
     BASELINE_DANGLING=$(printf '%s' "${BASELINE_DANGLING_LIST}" | grep -c '^' || true)
     echo "Cross-repo: ${N_TRAILER} distinct 'Code: ... @ <sha>' trailer(s) in the harness range;"
     echo "            those pointing into the rewritten code range are remapped in the SAME"
-    echo "            harness pass. Harness *.md citing code shas is repointed in E."
+    echo "            harness pass. File citations, other refs and declared outside homes: step E."
     if [ "${BASELINE_DANGLING}" -gt 0 ]; then
         echo
         echo "            ${BASELINE_DANGLING} of them ALREADY point at commits no branch reaches --"
@@ -1527,6 +1527,31 @@ fi
 #     keeps the drawer out of the rewrite's reach. Anyone widening it must
 #     exclude `sha-maps/**` and `harness/artifacts/**` first.
 #
+#   HARNESS, LIVE NON-.md CARRIERS [2026-09-19, after the run that left
+#     `harness/shape/writers.py` citing a commit no branch reaches]: tracked TEXT
+#     files OUTSIDE the evidence drawers -- tools and their headers. The F119
+#     refusal stands, and it is kept BY PATH: `sha-maps/**`, `harness/artifacts/**`,
+#     any `archive/` drawer and every `*.tsv` are never read for this. Each such
+#     hit is printed WITH ITS LINE, as on the code side, before the y/N.
+#
+#   REFS [same date -- that run left `refs/review/headers` on the old name of the
+#     commit it marked]: filter-branch moves only the branch it walks. Every OTHER
+#     ref of either repo whose target is a rewritten commit -- another branch, a
+#     lightweight tag, a custom namespace -- is repointed under the same y/N, its
+#     old value checked, with a reflog entry. `refs/original/*` (filter-branch's
+#     own backup of the old tips) and `refs/stash` are left alone. An annotated
+#     tag or a detached worktree HEAD cannot be moved from here: REPORTED, with
+#     the command.
+#
+#   ALSO: files outside the pair that cite its commits, one absolute path per
+#     line in `sha-maps/also.txt` (a file, or a directory read recursively).
+#     Same y/N. They belong to no repository of the pair, so nothing is committed
+#     for them; the maps stay their record.
+#
+#   RESIDUAL: after the apply every home above is read again, and whatever still
+#     names a rewritten commit is LISTED above the publish lines -- a reference
+#     this tool cannot reach must at least not be silent.
+#
 #   CODE: every tracked TEXT file (`git grep -I`, so binaries are skipped).
 #     Measured at the same moment: the code tree's citation carriers are nine
 #     files spanning SIX extensions -- .hpp .cpp .py .sts .md .json -- with
@@ -1565,6 +1590,29 @@ declare -A TOK_NEW=(); declare -A TOK_AMBIG=()
 # so its expected-set test must be able to read an EMPTY touched set.
 declare -A TOUCHED_FILES=(); declare -A TOUCHED_CODE=()
 MD_FILES=(); mapfile -t MD_FILES < <(git -C "${MD_REPO}" ls-files -- '*.md' 2>/dev/null || true)
+# Live non-.md carriers of the harness: evidence is excluded by path (scope note above).
+LIVE_FILES=()
+if [ -n "${HARNESS_REPO}" ]; then
+    mapfile -t LIVE_FILES < <(git -C "${MD_REPO}" grep -lIE '\b[0-9a-f]{7,40}\b' -- . \
+        ':(exclude)*.md' ':(exclude)*.tsv' ':(exclude)sha-maps' ':(exclude)harness/artifacts' \
+        ':(exclude,glob)**/archive/**' 2>/dev/null || true)
+fi
+# Homes outside the pair, declared in sha-maps/also.txt ('#' starts a comment).
+ALSO_FILES=()
+if [ -f "${MD_REPO}/sha-maps/also.txt" ]; then
+    while IFS= read -r p || [ -n "${p}" ]; do
+        p="${p%%#*}"; p="${p#"${p%%[![:space:]]*}"}"; p="${p%"${p##*[![:space:]]}"}"
+        [ -n "${p}" ] || continue
+        if [ -d "${p}" ]; then
+            while IFS= read -r f; do ALSO_FILES+=("${f}"); done \
+                < <(grep -rlIE '\b[0-9a-f]{7,40}\b' "${p}" 2>/dev/null || true)
+        elif [ -f "${p}" ]; then
+            ALSO_FILES+=("${p}")
+        else
+            echo "  (sha-maps/also.txt names '${p}', which does not exist here -- skipped.)"
+        fi
+    done < "${MD_REPO}/sha-maps/also.txt"
+fi
 
 # The token table, built ONCE from the map's old side. The per-token bash
 # `map_lookup` this step used to call is a full read of the map file per token:
@@ -1588,8 +1636,8 @@ resolve_tokens_from() {                 # reads tokens on stdin
 }
 
 if [ -s "${MERGED}" ]; then
-    if [ "${#MD_FILES[@]}" -gt 0 ]; then
-        (cd "${MD_REPO}" && grep -hoE '\b[0-9a-f]{7,40}\b' "${MD_FILES[@]}" 2>/dev/null | sort -u || true) \
+    if [ "$(( ${#MD_FILES[@]} + ${#LIVE_FILES[@]} ))" -gt 0 ]; then
+        (cd "${MD_REPO}" && grep -hoE '\b[0-9a-f]{7,40}\b' "${MD_FILES[@]}" "${LIVE_FILES[@]}" 2>/dev/null | sort -u || true) \
             > "${WORK}/md.tokens"
         sha_resolve_tokens "${WORK}/merged.tbl" "${WORK}/md.tokens" > "${WORK}/md.resolved"
         resolve_tokens_from < "${WORK}/md.resolved"
@@ -1610,15 +1658,86 @@ if [ -s "${MERGED}" ] && [ -n "${HARNESS_REPO}" ]; then
     done < "${WORK}/code.resolved"
 fi
 
-if [ "${#TOK_NEW[@]}" -eq 0 ] && [ "${#CODE_TOK_NEW[@]}" -eq 0 ]; then
-    echo "No tracked-file reference to a rewritten commit -- both repos are consistent."
+declare -A ALSO_TOK_NEW=(); declare -A ALSO_TOK_AMBIG=()
+if [ -s "${MERGED}" ] && [ "${#ALSO_FILES[@]}" -gt 0 ]; then
+    (grep -hoE '\b[0-9a-f]{7,40}\b' "${ALSO_FILES[@]}" 2>/dev/null | sort -u || true) > "${WORK}/also.tokens"
+    sha_resolve_tokens "${WORK}/merged.tbl" "${WORK}/also.tokens" > "${WORK}/also.resolved"
+    while read -r tok full; do
+        [ -n "${tok}" ] || continue
+        if [ "${full}" = "AMBIG" ]; then ALSO_TOK_AMBIG["${tok}"]=1; continue; fi
+        [ -n "${OLD_NEW[${full}]:-}" ] || continue
+        ALSO_TOK_NEW["${tok}"]="${OLD_NEW[${full}]:0:${#tok}}"
+    done < "${WORK}/also.resolved"
+fi
+
+# Refs that still name a rewritten commit. STALE_REFS: "<repo>|<ref>|<old>|<new>", repointable;
+# REF_REPORT: what cannot be moved from here, each with its command.
+STALE_REFS=(); REF_REPORT=()
+collect_stale_refs() {
+    local repo=$1 obj peeled ref wt head
+    while IFS='|' read -r obj peeled ref; do
+        case "${ref}" in refs/original/*|refs/stash) continue ;; esac
+        if [ -n "${OLD_NEW[${obj}]:-}" ]; then
+            STALE_REFS+=("${repo}|${ref}|${obj}|${OLD_NEW[${obj}]}")
+        elif [ -n "${peeled}" ] && [ -n "${OLD_NEW[${peeled}]:-}" ]; then
+            REF_REPORT+=("annotated tag ${ref#refs/tags/} in ${repo} names ${peeled:0:8}, now ${OLD_NEW[${peeled}]:0:8} -- re-tag by hand")
+        fi
+    done < <(git -C "${repo}" for-each-ref --format='%(objectname)|%(*objectname)|%(refname)')
+    wt=""
+    while IFS= read -r line; do
+        case "${line}" in
+            "worktree "*) wt="${line#worktree }" ;;
+            "HEAD "*)     head="${line#HEAD }" ;;
+            detached)
+                if [ -n "${OLD_NEW[${head}]:-}" ]; then
+                    REF_REPORT+=("detached worktree ${wt} stands on ${head:0:8}, now ${OLD_NEW[${head}]:0:8} -- git -C ${wt} checkout --detach ${OLD_NEW[${head}]:0:8}")
+                fi ;;
+        esac
+    done < <(git -C "${repo}" worktree list --porcelain)
+}
+if [ -s "${MERGED}" ]; then
+    collect_stale_refs "${CODE_REPO}"
+    [ -n "${HARNESS_REPO}" ] && collect_stale_refs "${HARNESS_REPO}"
+fi
+REFS_MOVED=0
+
+if [ "${#TOK_NEW[@]}" -eq 0 ] && [ "${#CODE_TOK_NEW[@]}" -eq 0 ] && [ "${#ALSO_TOK_NEW[@]}" -eq 0 ] \
+   && [ "${#STALE_REFS[@]}" -eq 0 ]; then
+    echo "No reference to a rewritten commit in a tracked file, a ref or a declared outside home."
 else
     if [ "${#TOK_NEW[@]}" -gt 0 ]; then
         echo "HARNESS ${MD_REPO} -- tracked *.md:"
         for tok in "${!TOK_NEW[@]}"; do
+            [ "${#MD_FILES[@]}" -gt 0 ] || break
             while IFS= read -r loc; do
                 echo "    ${loc}  (${tok} -> ${TOK_NEW[${tok}]})"
             done < <(cd "${MD_REPO}" && grep -nwF "${tok}" "${MD_FILES[@]}" 2>/dev/null | cut -d: -f1,2 || true)
+        done
+        echo
+        if [ "${#LIVE_FILES[@]}" -gt 0 ]; then
+            echo "HARNESS ${MD_REPO} -- live non-.md files (evidence drawers excluded), each hit with its line:"
+            for tok in "${!TOK_NEW[@]}"; do
+                while IFS= read -r loc; do
+                    echo "    ${loc}"; echo "        ^ ${tok} -> ${TOK_NEW[${tok}]}"
+                done < <(cd "${MD_REPO}" && grep -nwF "${tok}" "${LIVE_FILES[@]}" /dev/null 2>/dev/null | cut -c1-140 || true)
+            done
+            echo
+        fi
+    fi
+    if [ "${#ALSO_TOK_NEW[@]}" -gt 0 ]; then
+        echo "OUTSIDE THE PAIR (sha-maps/also.txt), each hit with its line -- repointed, never committed:"
+        for tok in "${!ALSO_TOK_NEW[@]}"; do
+            while IFS= read -r loc; do
+                echo "    ${loc}"; echo "        ^ ${tok} -> ${ALSO_TOK_NEW[${tok}]}"
+            done < <(grep -nwF "${tok}" "${ALSO_FILES[@]}" /dev/null 2>/dev/null | cut -c1-160 || true)
+        done
+        echo
+    fi
+    if [ "${#STALE_REFS[@]}" -gt 0 ]; then
+        echo "REFS still naming a rewritten commit (the rewrite moves only the branch it walks):"
+        for r in "${STALE_REFS[@]}"; do
+            IFS='|' read -r rrepo rref rold rnew <<< "${r}"
+            echo "    ${rrepo}  ${rref}  ${rold:0:8} -> ${rnew:0:8}"
         done
         echo
     fi
@@ -1632,7 +1751,7 @@ else
         done
         echo
     fi
-    NAMBIG=$(( ${#TOK_AMBIG[@]} + ${#CODE_TOK_AMBIG[@]} ))
+    NAMBIG=$(( ${#TOK_AMBIG[@]} + ${#CODE_TOK_AMBIG[@]} + ${#ALSO_TOK_AMBIG[@]} ))
     if [ "${NAMBIG}" -gt 0 ]; then
         echo "  (${NAMBIG} token(s) prefix more than one rewritten commit -- skipped,"
         echo "   repoint those by hand.)"
@@ -1640,7 +1759,7 @@ else
     fi
     APPLY=n
     if [ -t 0 ]; then
-        read -r -p "Repoint these in BOTH working trees (uncommitted, review before commit)? [y/N] " APPLY
+        read -r -p "Repoint these -- files in BOTH working trees (uncommitted, review before commit), refs, outside homes? [y/N] " APPLY
     else
         echo "  (non-interactive shell: proposing only, nothing applied.)"
     fi
@@ -1652,7 +1771,26 @@ else
                     # \b so a token is never matched inside a longer hex run
                     sed -i -E "s/\\b${tok}\\b/${new}/g" "${MD_REPO}/${f}"
                     TOUCHED_FILES["${f}"]=1
-                done < <(cd "${MD_REPO}" && grep -lwF "${tok}" "${MD_FILES[@]}" 2>/dev/null || true)
+                done < <(cd "${MD_REPO}" && grep -lwF "${tok}" "${MD_FILES[@]}" "${LIVE_FILES[@]}" /dev/null 2>/dev/null || true)
+            done
+            for tok in "${!ALSO_TOK_NEW[@]}"; do
+                new="${ALSO_TOK_NEW[${tok}]}"
+                while IFS= read -r f; do
+                    if [ -w "${f}" ]; then
+                        sed -i -E "s/\\b${tok}\\b/${new}/g" "${f}"
+                    else
+                        echo "    NOT WRITABLE by $(id -un), repoint by hand: ${f}  (${tok} -> ${new})"
+                    fi
+                done < <(grep -lwF "${tok}" "${ALSO_FILES[@]}" /dev/null 2>/dev/null || true)
+            done
+            for r in "${STALE_REFS[@]}"; do
+                IFS='|' read -r rrepo rref rold rnew <<< "${r}"
+                if git -C "${rrepo}" update-ref --create-reflog \
+                       -m "supervised-by.sh: the same commit under its rewritten name" "${rref}" "${rnew}" "${rold}"; then
+                    REFS_MOVED=$((REFS_MOVED + 1))
+                else
+                    echo "    COULD NOT move ${rref} in ${rrepo} -- repoint by hand: git -C ${rrepo} update-ref ${rref} ${rnew:0:8}"
+                fi
             done
             for tok in "${!CODE_TOK_NEW[@]}"; do
                 new="${CODE_TOK_NEW[${tok}]}"
@@ -1663,7 +1801,8 @@ else
             done
             echo
             echo "Repointed ${#TOK_NEW[@]} harness citation(s) across ${#TOUCHED_FILES[@]} file(s)" \
-                 "and ${#CODE_TOK_NEW[@]} code citation(s) across ${#TOUCHED_CODE[@]} file(s)."
+                 "and ${#CODE_TOK_NEW[@]} code citation(s) across ${#TOUCHED_CODE[@]} file(s);" \
+                 "${REFS_MOVED}/${#STALE_REFS[@]} ref(s) moved; ${#ALSO_TOK_NEW[@]} citation(s) in declared outside homes."
             ;;
         *)  echo "Not applied. Re-run and answer y, or repoint by hand from the list above." ;;
     esac
@@ -1809,6 +1948,41 @@ COMMITMSG
     fi
 fi
 echo "----------------------------------------------------------------------"
+
+# --- what is still stale ------------------------------------------------------
+# Read AGAIN, after the apply and the commits: the proposal above says what the
+# tool meant to do, this says what is true now. Homes it cannot move are listed
+# with their command; anything else still citing a rewritten commit is listed
+# by file. Silence here means every known home resolves.
+if [ -s "${MERGED}" ]; then
+    echo
+    for line in "${REF_REPORT[@]}"; do echo "STILL STALE (cannot be moved from here): ${line}"; done
+    STALE_REFS=(); REF_REPORT=()
+    collect_stale_refs "${CODE_REPO}"
+    [ -n "${HARNESS_REPO}" ] && collect_stale_refs "${HARNESS_REPO}"
+    for r in "${STALE_REFS[@]}"; do
+        IFS='|' read -r rrepo rref rold rnew <<< "${r}"
+        echo "STILL STALE: ref ${rref} in ${rrepo} names ${rold:0:8} (now ${rnew:0:8})"
+    done
+    residual_files() {                  # <label> <dir-or-empty> <file...>
+        local label=$1 dir=$2; shift 2
+        [ "$#" -gt 0 ] || return 0
+        (cd "${dir:-/}" && grep -hoE '\b[0-9a-f]{7,40}\b' "$@" /dev/null 2>/dev/null | sort -u || true) > "${WORK}/res.tokens"
+        sha_resolve_tokens "${WORK}/merged.tbl" "${WORK}/res.tokens" > "${WORK}/res.resolved"
+        while read -r tok full; do
+            [ -n "${tok}" ] && [ "${full}" != "AMBIG" ] && [ -n "${OLD_NEW[${full}]:-}" ] || continue
+            while IFS= read -r f; do
+                echo "STILL STALE: ${label} ${f} cites ${tok} (now ${OLD_NEW[${full}]:0:${#tok}})"
+            done < <(cd "${dir:-/}" && grep -lwF "${tok}" "$@" /dev/null 2>/dev/null || true)
+        done < "${WORK}/res.resolved"
+    }
+    residual_files "harness" "${MD_REPO}" "${MD_FILES[@]}" "${LIVE_FILES[@]}"
+    residual_files "outside" "" "${ALSO_FILES[@]}"
+    if [ -n "${HARNESS_REPO}" ]; then
+        mapfile -t RES_CODE < <(git -C "${CODE_REPO}" grep -lIE '\b[0-9a-f]{7,40}\b' -- . 2>/dev/null || true)
+        residual_files "code" "${CODE_REPO}" "${RES_CODE[@]}"
+    fi
+fi
 
 echo
 if [ "${UNPAIRED_TOTAL}" -gt 0 ]; then

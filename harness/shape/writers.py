@@ -5,7 +5,7 @@
 #   usage: writers.py <rev> <Class> <header path> <source path>
 # Heuristic, no compiler: regex on comment-stripped text. Blind to writes through
 # a non-member call, through a reference/pointer alias, and to fields written only
-# by another class. Positive control: at 8e065ce4, Camera `target` must list both
+# by another class. Positive control: at 75a73e78, Camera `target` must list both
 # trackBody and rebindTarget.
 import re, subprocess, sys, collections
 

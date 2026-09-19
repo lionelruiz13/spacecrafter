@@ -1,0 +1,7 @@
+# Homes OUTSIDE the repo pair that cite its commits by sha (supervised-by.sh step E, scope note ALSO).
+# One absolute path per line, a file or a directory read recursively; '#' starts a comment.
+# They are repointed under the same y/N as the tracked files and are never committed: they belong to
+# no repository of the pair, and the maps in this directory stay their record of old -> new.
+/home/claude/shared/QUEUE.md
+/home/claude/shared/QUEUE
+/home/claude/shared/miss-ledger.md

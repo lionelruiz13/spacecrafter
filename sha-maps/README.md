@@ -25,9 +25,18 @@ damage rather than this run's own work.
 ## Why the files exist
 
 A rewrite gives every touched commit a new sha. The script repoints citations in
-tracked `*.md`, and that is all it can reach. It does not reach the git history
-of those same files, the shared notes, this repository's archive drawer, or
-anything in the owner's own trees. Those citations stay valid only if the old
+tracked `*.md`, and that is all it can reach **[WIDENED 2026-09-19, INTENT
+S11.259 -- the sentence above was the scope until the run of that day left four
+homes stale: since then the same y/N also repoints (1) the harness's LIVE non-.md
+text files, the evidence drawers excluded by path (`sha-maps/**`,
+`harness/artifacts/**`, any `archive/`, every `*.tsv`); (2) every other git REF of
+either repository that names a rewritten commit (`refs/original/*` and `refs/stash`
+excepted; an annotated tag or a detached worktree is reported with its command);
+(3) the files listed in `also.txt` beside this README -- homes OUTSIDE the pair,
+repointed and never committed. It then reads every home again and lists what is
+STILL STALE. Regression fixture: `harness/supervised_by_fixture.sh`.]** It does
+not reach the git history of those same files, this repository's archive drawer,
+or anything in the owner's own trees that `also.txt` does not name. Those citations stay valid only if the old
 sha remains RESOLVABLE, and after a garbage collection nothing but a map can
 resolve it.
 
