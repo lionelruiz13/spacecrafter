@@ -14,29 +14,22 @@ class Renderer;
 class ModularBody;
 class ModularSystem;
 namespace ModularSystemFormat {
-class Section;
+    class Section;
 }
 
-// Two complementary viewing systems [vixy: 2026-07-12]: both are the SAME
-// parametrization family around a different trust axis - ALTAZ references the
-// zenith (center-of-body -> observer, lat/lon dependent), EQUATORIAL
-// references the axis orthogonal to the equatorial circle (astronomical
-// relevance). Implementation: one mount fold F in the view composition
-// (identity vs X(pi/2-lat)); under EQUATORIAL the placement's latitude term
-// cancels algebraically (F*X(lat-pi/2)=I), so latitude moves leave the sky
-// fixed and longitude acts as hour-angle - the astronomically correct
-// behavior falls out of the composition.
 enum class CameraMount : uint8_t {
-    ALTAZ,
-    EQUATORIAL,
+    ALTAZ, // horizontal coordinate system
+    EQUATORIAL, // equatorial coordinate system
 };
 
 class Camera {
 public:
     Camera(ModularBody *reference, float longitude, float latitude, float altitude);
-    // Return the distance to the reference in AU (relative to datum_radius, the
-    // altitude zero-point). Feeds the altitude readout and `moveto altitude`.
+    // Return the distance to the reference (minus datum_radius) in AU
     float distanceToReference() const;
+    //! Calculate velocity scaling factor for camera movements
+    float velocityScaling(float deltaTime) const;
+    // Return the normalized speed factor
     // The shared PROXIMITY-FACTOR authority (B10 iv-b, S5.2): the base the
     // interactive movers (multAlt / moveRelLon / moveRelLat) multiply, measured
     // to the CLOSEST REACHABLE position (ground_radius), NOT the datum. When
@@ -49,7 +42,6 @@ public:
     // Dual-path trace harness (INTENT.md 11.14): serialize the full observer
     // state (reference, pose, modes, halfFov) as one JSON object.
     void dumpTrace(std::ostream &out) const;
-    // Change the reference body without moving
     // b31-design S2 group B, through the session file (SessionFile.hpp): this
     // camera's own state, written into and read back from one section. The
     // camera writes it because the camera OWNS it -- a save that asked the
@@ -67,34 +59,23 @@ public:
     // environment enter/leave edges have subscribers.
     void saveSession(ModularSystemFormat::Section &out) const;
     void restoreSession(const ModularSystemFormat::Section &in);
+    // Change the reference body without moving
     void switchToBody(ModularBody *dst);
-    // Change the reference body
+    // Change the reference body without accomodation
     void warpToBody(ModularBody *dst);
     void update(double jd, float deltaTime);
     void draw(Renderer &renderer);
     void setBoundToSurface(bool b);
     void setFreeMode(bool b);
 
-    // View moves are SMOOTHED with constant minimal acceleration (two
-    // quadratic phases, equal |a|, velocity-continuous retarget) - the
-    // dome-comfort law [vixy: 2026-07-12: smallest motion sickness projected
-    // into a half-sphere dome viewed from inside]. duration <= 0 snaps.
-    // isMaxDuration scales the duration with angle/pi (old Rotator semantics).
+    // Set the view with constant-acceleration smoothing
+    // isMaxDuration true  -> smallest constant-acceleration for furthest rotation
+    // isMaxDuration false -> smallest constant-acceleration for this rotation
     void lookTo(const Vec3f &direction, float duration = 1, bool isMaxDuration = false);
     void lookTo(float _alt, float _az, float duration = 1, bool isMaxDuration = false);
-    // The `init_view_pos` FRAME CONVERSION, and the ONE home of it (I2, S5.101).
-    // old expresses a local direction as x=South, y=East, z=Up (the observer's
-    // getRotLocalToEquatorialFixed = Z(-lon)*Y(90-lat)); this camera's local
-    // frame is x=East, y=North, z=Up (the placement fold in Camera::update puts
-    // the pole at +y). The same components in the two frames are a 90 deg roll
-    // about the zenith -- measured as the 89.9943 deg init-view differential
-    // (harness 2026-07-12) -- so a direction crossing the seam is converted:
-    // (x,y,z)_old -> (y,-x,z)_camera.
-    // TWO callers, and that is the whole reason this is a function rather than
-    // the expression it was: SSystemFactory::loadCamera (init_view_pos, read
-    // from config at startup) and Core::autoZoomOut (the SAME vector, held as
-    // Core::InitViewPos, re-aimed by `zoom auto initial` -- S5.101). A second
-    // written copy is a pending silent desync, not a duplication of style.
+    void lookRel(float deltaAlt, float deltaAz, float duration = 1, bool isMaxDuration = false);
+
+    // TODO move out or make unnecessary
     static inline Vec3f oldLocalToLocal(const Vec3f &v) {
         return Vec3f(v[1], -v[0], v[2]);
     }
@@ -108,13 +89,12 @@ public:
     // deceleration, so a smoothing plan would ease in at the press and keep
     // moving after the release). See Camera.cpp for the sign derivation and the
     // measured float32 reason the snap assigns instead of round-tripping.
-    void lookRel(float deltaAlt, float deltaAz, float duration = 1, bool isMaxDuration = false);
 
     // Change the mount, keeping the current view exactly (deduce-identical-
     // view primitive). ALTAZ params are alt/az; EQUATORIAL params are DE/HA.
     void setMount(CameraMount m);
-    inline CameraMount getMount() const {
-        return mount;
+    inline void toggleMount() {
+        setMount((mount == CameraMount::ALTAZ) ? CameraMount::EQUATORIAL : CameraMount::ALTAZ);
     }
 
     // Sky-lock (old flag_lock_equ_pos, the "equatorial-mount sky-lock"): hold
@@ -252,20 +232,7 @@ public:
     // ModularBody); anchored stays the legacy radial altitude there. coef<1
     // descends, coef>1 ascends; floored only OUTWARD (coef>1) so takeoff from
     // height 0 is always possible.
-    inline void multAlt(float coef) {
-        descend(coef);
-    }
-    // View-directed free descent (B21, S11.72), the single altitude-geometry
-    // authority behind multAlt and the `camera action descend` command. In
-    // free flight "down" points along the VIEW RAY when the reference is a body
-    // (toward the surface point under the screen centre, Q6/A18) and toward the
-    // LAST SELECTED body when the reference is a system (far/galactic, R6
-    // S11.70(e)); anchored keeps the legacy radial altitude. Rides B10's
-    // proximityFactor() and composes with update()'s R4 ground clamp -- it
-    // changes only the descent DIRECTION, never when a reference transition
-    // fires (dispatch S2 carve-out). Defined in Camera.cpp (complete
-    // ModularBody: getObservedPosition/getSelected/isSystem).
-    void descend(float coef);
+    void multAlt(float coef);
     // Target is the legacy spherical triple (lon, lat, altitude-in-AU) in
     // BOTH modes - moveto is the legacy positioning surface and must stay
     // meaningful in free flight (2(c): one control surface, both modes).
@@ -465,10 +432,6 @@ public:
     inline void rebindReference(ModularBody *dst) {
         reference = dst;
     }
-    // Same for the tracked body (nullptr = stop tracking).
-    inline void rebindTarget(ModularBody *dst) {
-        target = dst;
-    }
     inline ModularSystem *getCurrentSystem() const {
         return system;
     }
@@ -476,37 +439,6 @@ public:
         return freeMode;
     }
     void setHalfFov(float halfFov, float duration = 0.5);
-    // The interactive ZOOM ramp's sink (B34, INTENT S11.133): put the drawn fov
-    // at `halfFov` NOW, exactly as `Projector::changeFov` puts the old fov there
-    // now. It is NOT `setHalfFov(x, 0)`: with a zoom plan in flight that call
-    // RE-PLANS rather than applying, and with duration 0 the re-plan never lands
-    // at all (`zoomDuration` becomes 0 before `update()` can run the block), so
-    // the drawn fov would freeze while old's ramped on. Old writes its fov under
-    // an in-flight auto-zoom too and lets the plan overwrite it on the next
-    // frame; this reproduces that -- the value lands now, any plan keeps its own
-    // schedule. Same clamp as setHalfFov (the two share the class's fov range).
-    void setHalfFovNow(float halfFov);
-    // IDENTICAL-FIRST, THE FOV (INTENT S11.245, F121): the OLD projector is
-    // the SINGLE AUTHORITY on the field of view while the two paths run side
-    // by side, and this is how the drawn fov consumes it -- once per frame,
-    // from `Projector::fov`, with any in-flight zoom plan of this class
-    // DROPPED rather than raced.
-    //
-    // Why a single authority and not two matched easings [derived, I2]: the
-    // two are not two easings of one law but two FAMILIES. Old interpolates
-    // the fov LINEARLY with a one-sided cubic ease
-    // (Projector::updateAutoZoom); this class interpolates it GEOMETRICALLY
-    // with a symmetric two-phase ease (setHalfFov + update). They agree at
-    // both endpoints and nowhere between: MEASURED on `zoom fov 30 duration
-    // 3`, the two fields are up to 49.2 deg apart mid-ramp, and on `zoom
-    // delta_fov -60` -- where old snaps and this class ramps over its own
-    // 0.5 s DEFAULT -- 59.8 deg, i.e. the whole commanded step. Two
-    // interpolators made equal by care would be a resynchronisation awaiting
-    // the next divergence; one authority cannot drift.
-    //
-    // The CLEAN phase (the authority moving INTO this class, and this call
-    // disappearing with the old projector) is not this: it is the owner's.
-    void followFov(float halfFov);
 
     // ---- WHERE THE OBSERVER IS, as a vector (B4(iv), S11.141) -------------
     // The scripted transitions ask a question the spherical triple cannot

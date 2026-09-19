@@ -481,34 +481,9 @@ void Camera::switchToBody(ModularBody *dst)
 void Camera::warpToBody(ModularBody *dst)
 {
     dst->useNow(); // becoming the reference is a use - see switchToBody
-    if (!freeMode) {
-        // Anchored warp = old home-planet semantics: same lat/lon/ALTITUDE
-        // over the new body (altitude preserved, never the center distance -
-        // a stale center distance can sit inside the new body or far above
-        // it, and it desynchronizes every consumer until the next moveto).
-        distance = dst->getAltitudeReference()
-                 + (distance - reference->getAltitudeReference());
-    }
-    // Keep the same ABSOLUTE sky direction across the reference change (Q2/A11,
-    // INTENT 11.61): capture the eye orientation and the inter-frame rotation
-    // against the OLD reference, then recover (alt,az,heading) under dst so the
-    // composed view reproduces the SAME orientation in the common inertial frame
-    // as the reference frame rotates under it. Same `calculateSwitchCompensation`
-    // switchToBody uses; the difference is warpToBody ALSO teleports the observer
-    // (lat/lon/altitude re-based above) - position and look direction are
-    // orthogonal. Done DIRECTLY (recoverParams once), NOT through switchToBody's
-    // setFreeMode/setBoundToSurface round-trip: those toggles rewrite longitude
-    // by getAxisRotation and, with the reference changing mid-toggle, would
-    // subtract dst's axis rotation from a longitude that added the old body's -
-    // corrupting the observer's location warpToBody must keep exact.
-    const Mat4f comp = reference->calculateSwitchCompensation(dst);
-    const Mat4f R = viewRotation().multiplyFast(placementRotation()).multiplyFast(comp);
-    if (skyLocked) // hold the same ABSOLUTE equatorial orientation across the switch
-        lockedSkyRot = lockedSkyRot.multiplyFast(comp);
     reference->leaveEnvironment();
     reference = dst;
     reference->enterEnvironment();
-    recoverParams(R);
     if (dst->isSystem()) // same no-surface rule as switchToBody
         setBoundToSurface(false);
 }
@@ -1099,35 +1074,6 @@ void Camera::setHalfFov(float halfFov, float duration)
     }
 }
 
-// See the header: the interactive zoom ramp's sink, the immediate half of
-// setHalfFov with no re-planning.
-void Camera::setHalfFovNow(float halfFov)
-{
-    if (halfFov < minHalfFov) {
-        halfFov = minHalfFov;
-    } else if (halfFov > maxHalfFov) {
-        halfFov = maxHalfFov;
-    }
-    ModularBody::setHalfFov(halfFov); // maintains cullHalfFov (INTENT 11.33)
-}
-
-// IDENTICAL-FIRST, THE FOV. See the header for the reason this is a follow
-// and not a matched easing. Two things happen here and both are needed:
-// the value lands NOW (setHalfFovNow's semantics, which keeps cullHalfFov,
-// INTENT 11.33), and any zoom plan this class is holding is DROPPED -- with
-// the plan alive, update() would overwrite this value on the same frame
-// (Camera::update's zoom block runs after Core::updateMove) and the follow
-// would be inert. Dropping it is what makes every existing caller of
-// setHalfFov(x, duration) harmless without touching one of them: their plan
-// is created and then abandoned on the next frame, and the fov they asked
-// for still arrives, because the OLD projector was given the same target and
-// the same duration at the same seam.
-void Camera::followFov(float halfFov)
-{
-    zoomDuration = 0;
-    setHalfFovNow(halfFov);
-}
-
 void Camera::setAltitude(double altitude)
 {
     distance = altitude/(1000*AU)+reference->getAltitudeReference();
@@ -1510,4 +1456,13 @@ void Camera::dumpTrace(std::ostream &out) const
     for (int i = 0; i < 16; ++i)
         out << jn(lastDispatchedMat.r[i]) << ((i < 15) ? "," : "");
     out << "]}";
+}
+
+float Camera::velocityScaling(float deltaTime) const
+{
+    const float minSpeed = MIN_MOVEMENT_SPEED * reference->getScaledRadius();
+    float velocity = distanceToReference();
+    if (velocity < minSpeed)
+        velocity = minSpeed;
+    return velocity * deltaTime;
 }

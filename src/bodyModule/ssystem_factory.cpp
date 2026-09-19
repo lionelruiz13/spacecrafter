@@ -981,7 +981,7 @@ bool SSystemFactory::reloadCurrentSystem()
     // display_scale and the rebuild has just read it (D31, by construction).
     restoreDisplayScaling();
     if (!trackedName.empty())
-        camera->rebindTarget(ModularBody::findBodyOnce(trackedName));
+        camera->trackBody(ModularBody::findBodyOnce(trackedName));
     if (!selectedName.empty())
         newSelectedBody = ModularBody::findBodyOnce(selectedName);
     cLog::get()->write("System '" + system->getEnglishName() + "' reloaded (observer state kept)",

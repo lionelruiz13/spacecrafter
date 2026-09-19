@@ -180,6 +180,18 @@ struct ModularBodyCreateInfo {
 
 //! Minimal size of the system on screen for showing orbiting bodies, in pixels
 constexpr int SYSTEM_VISIBILITY_SUBSYSTEM_SIZE = 16;
+//! Minimal size of the body (bounding) on screen for showing the outer BodyModule without full shadowing (only fast/approximate shadowing) nor Grounded ModularBody, in pixels
+constexpr int BODY_EARLY_VISIBILITY_BOUNDING_SIZE = 2;
+//! Minimal size of the body (bounding) on screen for showing the body normally in pixels
+constexpr int BODY_FULL_VISIBILITY_BOUNDING_SIZE = 16;
+//! Minimal size of the body (bounding) on screen for considering higher-resolution resources (texture above 1 Mio, high-resolution ojm/ojml)
+constexpr int BODY_BIG_TEXTURE_BOUNDING_SIZE = 256;
+//! Minimal speed while under the area of influence of a body, in body_radius/s
+constexpr double MIN_MOVEMENT_SPEED = 0.125;
+//! Minimal distance to the center of the body for showing surface BodyModule, in multiple of body radius
+//! Surface BodyModule are designed on the assumption that proximity reduce the visible surface and change several assumptions
+constexpr double BODY_SURFACE_HEIGHT = 2;
+
 //! Width (in the same on-screen px units as SYSTEM_VISIBILITY_SUBSYSTEM_SIZE)
 //! of the resolved<->dot cross-fade band above the collapse threshold: over
 //! [T, T+band) the nested system's interior fades IN while its star-proxy dot
@@ -190,93 +202,7 @@ constexpr int SYSTEM_VISIBILITY_SUBSYSTEM_SIZE = 16;
 //! apparent size, a narrow transition derived from the threshold rather than
 //! an independent magic number), NOT a tuned value. Do not tune it here.
 constexpr float SYSTEM_COLLAPSE_CROSSFADE_BAND = SYSTEM_VISIBILITY_SUBSYSTEM_SIZE / 2.f;
-// ---- The G4 regime gates (INTENT S5.54) ------------------------------------
-// All five are the SAME unit: the body's bounding-sphere DIAMETER on screen, in
-// PIXELS. They are the single authority; nothing gates on a screenSize literal
-// any more. The draw path compares in screenSize units, so each has a derived
-// companion below (ModularBody::earlyVisibilityGate() and friends), recomputed
-// from the current viewport by setViewportRadius - the gates' only writer, so
-// they cannot desync from it (I3).
-//
-// PIXELS and not a fraction of the half-FOV, DERIVED and not chosen:
-//  - G4 says "compute only what the observer can distinguish". What an observer
-//    distinguishes is pixels; a fraction of the half-FOV is not a perceptual
-//    quantity. b12-design.md's regime criterion, "smallest added structure
-//    >= 1 px", is the same criterion spelled out.
-//  - Every OTHER member of this family already converts. The sibling in this
-//    very block, SYSTEM_VISIBILITY_SUBSYSTEM_SIZE, is consumed as
-//    `px = (theta/halfFov)*2*viewportRadius; if (px >= SIZE)`
-//    (ModularSystem.cpp). So do the orbit-bucket gate (Renderer.cpp, "10 px
-//    full diameter (absolute)"), the atmosphere gate (AtmExtModule, 10 px), the
-//    ring gate (RingModule) and drawHalo's screen_r - whose comment records
-//    that the un-doubled form was a BUG. The old path, which is the parity
-//    baseline, is absolute px throughout (Sun::getSet's 180 px, needOrbitDepth's
-//    10 px).
-//  - D5 spans 1k-8k screens. Under fraction-intent the 16 px full-visibility
-//    gate is 65 px at 8k: the same body drawn as a surface on a 2k dome would
-//    be halo-only on an 8k one. More resolution, less drawn - the inverse of
-//    what G4 asks for. Under px-intent a body's regime is a property of what
-//    the observer can see, which is what both G4 and D5 require.
-//
-// VALUES: these are the shipped fraction literals (0.0015 / 0.004 / 0.008 /
-// 0.2) re-expressed in the pixels they mean at the 2048-wide render they were
-// frozen at, so behaviour at 2048 is unchanged by the respelling - that is the
-// point of respelling rather than retuning. NOTE the discrepancy this makes
-// visible, and do not silently repair it: the two constants that carried NAMES
-// said 2 px and 16 px. The full-visibility gate matches (16/2048 = 0.0078,
-// shipped as 0.008), but the early-visibility one does NOT - the shipped gate
-// is 3.07 px, not 2. Which value is right is a product question about when a
-// body stops being a dot; it is recorded as a VETO POINT for Vixy (S11.127),
-// not decided here. Changing any of these moves every body's regime in every
-// scene, so a change owes the before/after scene battery.
-//! Below this the body is a halo only: the outer BodyModule draws without
-//! shadows and without grounded ModularBody.
-constexpr float BODY_EARLY_VISIBILITY_BOUNDING_SIZE = 3.072f;
-//! Below this the body needs no depth bucket of its own (Renderer's depth-range
-//! partitioning, D1/D2/D3). PRECONDITION, stated at Renderer::clearDepth and
-//! preserved here BY CONSTRUCTION rather than by coincidence: this gate is
-//! strictly below BODY_FULL_VISIBILITY_BOUNDING_SIZE, so every body that draws
-//! with depth is in the frame's notable list. As fractions the two did not keep
-//! that order across resolutions (0.008 vs 0.004 inverts above ~4k) - a real
-//! consequence of px-intent, and the reason this one converts with the family.
-constexpr float BODY_DEPTH_BUCKET_BOUNDING_SIZE = 8.192f;
-//! Below this (and above early) the body draws in the DEPTH-LESS mid band -
-//! its surface through drawNoDepth, no depth slice (INTENT S5.52). Above it the
-//! body gets its own depth slice and the full near/grounded/in ladder.
-constexpr float BODY_FULL_VISIBILITY_BOUNDING_SIZE = 16.384f;
-//! Above this the body is CLOSE: the near/grounded/in substitution ladder
-//! engages (ModularBody::draw) and far components stop drawing.
-constexpr float BODY_CLOSE_RANGE_BOUNDING_SIZE = 409.6f;
-//! Above this a mesh binds the FULL level of its colour map instead of the
-//! reduced one (LayeredMesh, BasicMesh, PhotosphereModule).
-//! DELIBERATELY a separate constant from BODY_CLOSE_RANGE_BOUNDING_SIZE though
-//! equal today: they are two concepts (which representation the body is drawn
-//! with vs which texture level it samples), and S5.53(b) has an open question
-//! about THIS one alone - the old path swaps level at 180 px diameter
-//! (Sun::getSet) and this path at 409.6, so between those sizes an A/B compares
-//! two different textures. Merging them would make that question unanswerable
-//! without moving the regime ladder too.
-constexpr float BODY_BIG_TEXTURE_BOUNDING_SIZE = 409.6f;
-//! Minimal speed while under the area of influence of a body, in body_radius/s
-constexpr double MIN_MOVEMENT_SPEED = 0.125;
-//! Anti-stuck escape floor for the interactive proximity factor (S5.18 defect,
-//! B10 scope iv-b), as a FRACTION OF BODY RADIUS. Radius-relative on purpose:
-//! it stays defined when ground_radius == 0 (an enterable body's centre), where
-//! a ground_radius-relative epsilon would vanish. Floors the OUTWARD interactive
-//! step (Camera::proximityFactor) so height 0 is never a fixed point in any
-//! direction (multAlt / moveRelLon / moveRelLat) -- the reported "stuck at the
-//! surface, can't take off" defect.
-//! ---- VALUE SUSPENDED FOR VIXY (B10 carve-out (a)) ----
-//! 1e-6*radius ~= 6.4 m on Earth is a DEFENSIBLE PLACEHOLDER, not a chosen
-//! value: it escapes geometrically within ~1-2 s of held input without making
-//! surface navigation unusable. It is deliberately NOT MIN_MOVEMENT_SPEED's
-//! 0.125 (~=797 km on Earth -- an AoI-traversal floor, a different concept and a
-//! different unit: a speed, body_radius/s). Open question for Vixy: is the
-//! anti-stuck floor the same constant as MIN_MOVEMENT_SPEED (then re-unit and
-//! re-value it) or a distinct one (as landed here)? Do not treat 1e-6 as final.
-constexpr double ANTISTUCK_ESCAPE_FLOOR = 1e-6;
-//! Minimal distance to the center of the body for showing surface BodyModule, in multiple of body radius
-constexpr double BODY_SURFACE_HEIGHT = 2;
+
 //! Maximal sizeof a texture to be considered negligible (lazy)
 constexpr size_t MAX_LAZY_TEXTURE_SIZE = 4*1024*1024;
 constexpr int MAIN_SELF_SHADOWING_RESOLUTION = 8192;
@@ -329,6 +255,8 @@ enum class BodyRelation {
     INNER,
 };
 
+constexpr int HIDDEN_SHIFT = 3;
+
 // EXTRA iterations of the multi-frame iterative position solve that restore
 // convergence when a frozen body is USED again [vixy, S11.76(b) verbatim:
 // "recomputed with 4 extra iterations"]. ONE authority for every consumer of the
@@ -337,11 +265,11 @@ enum class BodyRelation {
 // Vixy-specified, so it must not be spelled twice.
 constexpr int RESUME_EXTRA_ITERATIONS = 4;
 
-// hide()/show() translate between a relation and its hidden variant by +-3.
-static_assert(static_cast<int>(BodyRelation::GROUNDED) == static_cast<int>(BodyRelation::HIDDEN_GROUNDED) + 3 &&
-              static_cast<int>(BodyRelation::ORBITING) == static_cast<int>(BodyRelation::HIDDEN_ORBITING) + 3 &&
-              static_cast<int>(BodyRelation::INNER) == static_cast<int>(BodyRelation::HIDDEN_INNER) + 3,
-              "hide()/show() map relations by +-3 - keep the enum halves aligned");
+// hide()/show() translate between a relation and its hidden variant by +-HIDDEN_SHIFT.
+static_assert(static_cast<int>(BodyRelation::GROUNDED) == static_cast<int>(BodyRelation::HIDDEN_GROUNDED) + HIDDEN_SHIFT &&
+              static_cast<int>(BodyRelation::ORBITING) == static_cast<int>(BodyRelation::HIDDEN_ORBITING) + HIDDEN_SHIFT &&
+              static_cast<int>(BodyRelation::INNER) == static_cast<int>(BodyRelation::HIDDEN_INNER) + HIDDEN_SHIFT,
+              "hide()/show() map relations by +-HIDDEN_SHIFT - keep the enum halves aligned");
 
 enum class BodyModuleType : unsigned char;
 
