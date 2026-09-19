@@ -10,39 +10,8 @@
 #include <memory>
 class ObjL;
 
-// ATMOSPHERE slot - the FROM-SPACE atmosphere rim shell around a body
-// (port of the old AtmExt, atm_ext.{hpp,cpp} - row 13). Decision 2026-07-11:
-// the two things the old path called "atmosphere" split - this per-body rim
-// is a BodyModule; the from-ground sky (+ BodyDecor visibility logic) is an
-// EnvironmentModule concern (S8). One word, two features, two homes.
-//
-// Shaders atm.{vert,tesc,tese,frag} REUSED VERBATIM (self-contained UBO +
-// gradient sampler, no cam_block - POINTER precedent: parity by
-// construction). Blend = SRC_ALPHA with colorBlendOp MAX (brighten-only
-// compositing over the disc). Drawn as nearComponent AFTER the disc in the
-// body's depth slice, depth-TESTED and depth-WRITE-FREE (INTENT 5.33): a
-// translucent brighten-only shell composites over whatever is behind it and
-// occludes nothing, so it must not leave its own surface in the bucket's
-// depth. It stands radiusFactor*scaledRadius up (191.34 km on Earth) and,
-// being the LAST thing drawn in the parent's near list, its depth write was
-// killing every grounded body below that height - taller than the proxy
-// shell (5.29) and than any terrain (5.30). The one deliberate divergence
-// from the old pipeline state, which wrote depth only by inheriting the
-// EntityCore default (atm_ext.cpp:16 never calls setDepthStencilMode).
-//
-// PARITY LANDMINES (verified on old source, do not "fix"):
-// - the shell receives NO shadow/eclipse input (atm.* have zero shadow
-//   uniforms) - a from-space lunar-eclipse umbra does NOT dim the rim;
-// - `flag atmosphere` does NOT gate it (that flag reaches only the ground
-//   sky dome) - gating is per-body data + the size thresholds below;
-// - atmAlpha stays 1 (the old "Apply fader here" TODO is kept as-is).
-//
-// Old gate (body.cpp drawAtmExt), translated to new-path units in draw():
-//   screen_sz > 10 px && full angular size > 2 deg
-//   && distance > radius * radiusFactor * 1.01
-// Deduction rule mirrors the old parse precondition exactly (protosystem.cpp
-// 865-871): (has_atmosphere || atmosphere_lim_landscape present) &&
-// atmosphere_ext_model non-empty.
+// From-space atmosphere rim shell: a near component drawn after the disc, depth-tested, without depth write
+// Receives no shadow; not gated by `flag atmosphere`, only by the per-body data and the size thresholds
 class AtmExtModule : public BodyModule {
 public:
     // gradientPath = resolved atmosphere_ext_model texture path; radiusFactor = atmosphere_radius_factor

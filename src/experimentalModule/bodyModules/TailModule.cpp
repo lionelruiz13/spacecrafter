@@ -48,7 +48,7 @@ Vec3f TailModule::orbitPositionAtDate(ModularBody *body, double jd)
 
 bool TailModule::update(ModularBody *body, float scaledRadius)
 {
-    boundingRadius = scaledRadius; // the tail never inflates the body bound (it
+    boundingRadius = scaledRadius; // the tail never inflates the body bound
     const float r = (body->getObservedPosition() - ModularBody::getLightPosition()).length();
     const Vec2f comaTail = comaDiameterAndTailLengthAU(r);
     // Old gate (tail.cpp:151): coma wider than the tail is long -> no tail.

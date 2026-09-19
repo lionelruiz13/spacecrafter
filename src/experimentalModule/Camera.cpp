@@ -83,13 +83,6 @@ Mat4f Camera::viewMat() const
 {
     // Z body_axis
     // X statique, Y et Z bougent avec alt/az
-    // (The 2026 Moon-divergence note that lived here is resolved: the delta was
-    //  EMB wiring + per-hop tilts + this longitude sign - INTENT.md 11.14,
-    //  harness/predict.py carries the measurements.)
-    // renderViewRotation() == viewRotation() unless the B17 view offset is
-    // active (armed + non-zero); the offset is a render-only pitch (see
-    // Camera.hpp) applied downstream of tracking / sky-lock, exactly as old
-    // applied it in the navigator stage below those.
     Mat4f mat{renderViewRotation()};
     if (freeMode) {
         mat.multiplyTranslation(position);
@@ -439,7 +432,7 @@ void Camera::update(double jd, float deltaTime)
             lockedSkyRot = viewRotation().multiplyFast(placementRotation());
     }
     const Mat4f mat = viewMat();
-    lastDispatchedMat = mat; // harness: dump what actually ran (INTENT 11.14a)
+    lastDispatchedMat = mat; // harness: dump what actually ran
     {
         const Mat4f absMat = mat.multiplyFast(reference->accumulatedBodyToBodyPos(jd));
         lastAbsFwd = Vec3f(-absMat.r[2], -absMat.r[6], -absMat.r[10]);

@@ -103,7 +103,7 @@ void Renderer::beginBodyDraw()
 
 void Renderer::endBodyDraw()
 {
-    batchFlush(); // trailing batched content into the last cmd: drawn after
+    batchFlush(); // trailing batched content goes into the last cmd
     recordPointer(); // after the trailing flush: the selection pointer draws
                      // on top of everything (old path drew it after the whole
                      // system, depth-less - same final order)
@@ -115,7 +115,7 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
 {
     Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
     nextCommandBuffer();
-    batchFlush(); // per-body boundary: previous bodies' batched content lands
+    batchFlush(); // per-body boundary: flush the batched content of the previous bodies
     while (bucketIdx + 1 < depthBuckets.size() && zCenter < depthBuckets[bucketIdx].znear)
         ++bucketIdx;
     if (bucketIdx < depthBuckets.size()

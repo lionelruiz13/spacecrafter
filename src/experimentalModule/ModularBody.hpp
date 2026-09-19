@@ -193,25 +193,7 @@ public:
     // The only registration path (with createChildSystem). rel is a visible relation: hidden is entered through hide()
     ModularBody *createChild(ModularBodyCreateInfo &info, BodyRelation rel = BodyRelation::ORBITING);
     ModularSystem *createChildSystem(ModularBodyCreateInfo &info, BodyRelation rel = BodyRelation::INNER);
-    // The boolean representation of this body is whether it is visible or not -
-    // i.e. whether it belongs to the drawn/pickable surface at all. HIDDEN is
-    // part of that answer (B4, S11.111): the BodyRelation block above states
-    // that a hidden body is "outside every update/draw walk by construction",
-    // and that held only through isVisible, which dispatchUpdate's preUpdate
-    // OVERWRITES for the camera's own reference body - a hidden body CAN be the
-    // reference (INTENT 11.36), and then it re-entered both the draw sweep and
-    // the pick sweep. Unreachable before B4 (nothing hid the reference);
-    // reachable now that an anchor point IS a hidden reference body - and a
-    // radius-0 reference produces a NaN halo (drawHaloCore's cmag *=
-    // 0.5*rmag/screen_r with screen_r == 0) and a zero-size pick candidate at
-    // the screen centre.
-    // B39 (S11.117) asks `renderHidden` instead of `relation`: `relation` is the
-    // DECLARED value and answers only for the node that was hidden, while the
-    // question here is the EFFECTIVE one - a body hidden by NESTING (D23:
-    // "hiding a body implicitly hide his child body as a side effect of
-    // nesting") is equally outside the rendered universe while its own declared
-    // flag must not move. Measured pre-fix: the selection pointer on Io under a
-    // hidden Jupiter drew 137 px, against 138 px with the parent shown.
+    // The boolean representation of this body is whether it is visible or not
     inline operator bool() const {
         return isVisible & isBodyVisible & !renderHidden;
     }
@@ -479,10 +461,6 @@ public:
         lastJD = jd;
         if (boundToSurface) {
             // Maybe don't inline this unfrequent case
-            // Exact inverse of the fold in transformParentToBodyPos
-            // (PARENT spin, see there): [spin | spin*ecl]^-1 = [spin^-1 | -ecl]
-            // `ecl` is the DRAWN offset (D21) - the down-hop applies that one,
-            // so the up-hop must undo that one.
             const Vec3f ecl = getDisplayEclipticPos();
             auto tmp = parent->computeSurfaceToBody();
             tmp.r[12] -= ecl[0];
@@ -991,10 +969,6 @@ public:
         return !uncached;
     }
     // Return true if this body has the STAR bit set, meaning it emit light.
-    // ILLUMINATION ONLY since the D27 split (S11.113(f), [vixy]: "Split
-    // light_source and primary flags, the first one for light purpose and the
-    // second one for isStar() purpose minus light source") - every consumer that
-    // asks a STRUCTURAL question about the body now asks isPrimary() instead.
     inline bool isStar() const {
         return (bodyType & BodyType::STAR) == BodyType::STAR;
     }
@@ -1020,11 +994,6 @@ public:
         return !isNotIsolated;
     }
     // Return true if this body is at the center of his system
-    // (2026-07-17 fix: the loop tested THIS body's eclipticPos at every
-    // level - loop-invariant, ancestors never examined - so an ecl==0 body
-    // parented to an OFF-CENTER parent (script-reachable: a pedagogical
-    // construct parked at a planet center, the R1 generality 2 relies on)
-    // read as system-centered and lost its ancestors' tilt participation.)
     inline bool isSystemCentered() const {
         const ModularBody *body = this;
         while (body->isNotIsolated) {
@@ -1317,11 +1286,6 @@ private:
     bool surfaceLockedAttitude = false;
 
     // Global datas
-    // Light state is CURRENT-SYSTEM-scoped: updateSystem writes the system's
-    // star; a nested system draw (ModularSystem::drawNested) saves it, runs
-    // with ITS star, and restores before the enclosing system's remaining
-    // bodies. Starless systems leave it untouched (their bodies don't read it
-    // outside the delegation path).
     static Vec3f lightPosition; // Observer-local light source position
     static float lightDistance; // Observer-local light source distance
     static float lightSize;     // Light source radius

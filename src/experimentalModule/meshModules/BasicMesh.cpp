@@ -68,7 +68,7 @@ void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
     const FamilyBound bound = renderer.bind(family);
     if (!bound.layout)
-        return; // pass unavailable (base build failed, e.g. shader file not
+        return; // pass unavailable (base build failed)
     mesh->bind(renderer);
     vert->ModelViewMatrix = mat;
     vert->NormalMatrix = mat.inverseUntranslated().transpose();

@@ -1172,7 +1172,7 @@ void Renderer::drawSunHalo(const std::pair<float, float> &pos, const Vec3f &colo
 {
     ensureSunHaloFamily();
     if (!sunHaloFamily || !sunHaloTex || !sunHaloTexBound)
-        return; // no texture, or not yet bound+uploaded (bound at frame start,
+        return; // no texture, or not yet bound and uploaded
     auto *v = static_cast<std::pair<float, float> *>(
         Context::instance->transfer->planCopy(sunHaloVertex->get()));
     if (!v)

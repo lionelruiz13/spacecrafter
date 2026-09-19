@@ -194,17 +194,6 @@ private:
 	int close(unsigned int client); //Function to close the client socket
 
 	/* FFactoring or assistance functions */
-	//! Send ONE message to one client. The message is the caller's own, and
-	//! its length is bounded by itself.
-	//! INTENT S5.73: every sender used to `strcpy` its message into `buffer`
-	//! first, and `buffer` is the RECEIVE buffer - `tcp_buffer_in_size` bytes,
-	//! 1024 in the shipped config. An answer is clamped to `MAX_BUFFER` = 1024
-	//! by `setOutput` and then sent as `data + '\n' + '\0'`, i.e. L + 2 bytes,
-	//! so an answer of 1023 bytes or more wrote past the end of a buffer whose
-	//! size answers a different question. Nothing here truncated anything, so
-	//! nothing about what a client receives changes: the size rule is still
-	//! `strlen + 1` (the terminator is part of the message - that is how a
-	//! client frames it), only the storage is now the message's own.
 	int send(TCPsocket client, const char *data);
 	int resetThread(); //Fonction qui redemarre le thread de traiement quand il est inactif
 	int killThread(); //Function that kills the processing thread when it is inactive

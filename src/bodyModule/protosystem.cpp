@@ -109,15 +109,6 @@ void ProtoSystem::load(Object &obj)
 }
 
 // Init and load the solar system data
-// DELIBERATELY NOT on the shared `.ini` line grammar (tools/ini_line.hpp), which
-// every OTHER reader of this file family now uses (INTENT S5.38/S5.39/D29). This
-// is the OLD path: the frozen comparison baseline every parity measurement is
-// taken against (S11.52(b)), so it must keep reading exactly what it has always
-// read, whitespace quirks included. Measured consequence of the asymmetry on the
-// shipped ssystem.ini: nine values are parsed differently by the two readers and
-// NONE of them changes a number - seven whitespace-only, two trailing comments,
-// all `strtod`-inert, plus `[Sedna]`'s '='-less line which both readers discard
-// (S11.115). Retire this reader with the old path, never before it.
 void ProtoSystem::load(const std::string& planetfile)
 {
 	stringHash_t bodyParams;
@@ -596,20 +587,6 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		                     Utility::strToDouble(param["orbit_y"]),
 		                     Utility::strToDouble(param["orbit_z"]));
 	} else if (funcname == "location_orbit") {
-		// No parent, no orbit - the SECOND site of the class this function's own
-		// "no orbit, no body" guard below already closes (INTENT S5.50 /
-		// S11.124(h)), found at S5.141 / S11.219 and measured here: `parent` is
-		// a null shared_ptr whenever str_parent == "none" (:531 leaves it so),
-		// and the next line dereferenced it - rc 139 on `body action load ...
-		// coord_func location_orbit parent none`, faulting frame
-		// ProtoSystem::addBody at this line, reached through
-		// SSystemFactory::addBody:829 BEFORE the experimental path's loadBody at
-		// :836, which is why this site hides the new path's twin defect.
-		// It cannot fall through to the guard below: every parameter of the
-		// orbit IS the parent, so there is nothing to build and nothing to
-		// degrade to. The line is its own because the guard below says "invalid
-		// coord_func", which is not what happened - the coord_func is valid and
-		// the declaration is incomplete.
 		if (!parent) {
 			cLog::get()->write("Body '" + englishName + "': coord_func = location_orbit needs a parent body "
 				"to sit on and turn with - the parent's radius, sidereal day and spin phase ARE this "
@@ -639,22 +616,6 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		}
 	}
 
-	// No orbit, no body. Every branch above either built one or returned -
-	// except the chain-of-responsibility fall-through just above, which logged
-	// and then carried ON with nullptr, while the very next statement
-	// dereferences it for ell_orbit and Body's update path dereferences it
-	// every frame. That is why a script pushing `coord_func = surface_point`
-	// (an orbit family only the experimental path knows) took the whole app
-	// down (INTENT S5.50). Skipping the body is what this path can honestly do
-	// with a declaration it cannot satisfy, and it costs nothing the author
-	// asked for: the push channel feeds BOTH paths from one map
-	// (SSystemFactory::addBody calls this, then the experimental loadBody), so
-	// the body still gets its chance there - which is where a surface_point
-	// body was meant to land in the first place.
-	// The valid values are spelled out rather than asked of the chain because
-	// no OrbitCreator exposes the keyword it handles; that duplicates their
-	// knowledge (the same duplication CameraAnchors' anchor diagnostic carries)
-	// and is named here rather than left silent.
 	if (orb == nullptr) {
 		cLog::get()->write("Body '" + englishName + "': could not build an orbit from coord_func = '"
 			+ funcname + "'. This body is NOT added to the old render path. Valid values here are "

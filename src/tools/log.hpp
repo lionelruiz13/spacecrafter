@@ -110,12 +110,6 @@ public:
 	*  \brief Set the Debug state
 	*  \param debugging : desired Debug state (true or false)
 	*/
-	//! Turning the console on is the moment the console becomes a reachable
-	//! sink for the open-time rotation report, which was written to the log
-	//! file long before this value was known (main.cpp:220 vs :268), so the
-	//! report is pushed here - once, whoever turns it on and whenever.  This is
-	//! also where the console's fate stops being unknown, which is what lets
-	//! rotateForBudget stop buffering for it.
 	void setDebug(bool debugging) {
 		debugDecided = true;
 		isDebug = debugging;

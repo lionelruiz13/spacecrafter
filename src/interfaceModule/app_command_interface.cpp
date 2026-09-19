@@ -2891,12 +2891,6 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 			scriptInterface->defaultSpeed();
 		} else
 			debug_message = "command_script : unknown parameter from 'speed' argument";
-		// Return HERE: without it the speed change is applied and the command
-		// then falls into the "missing action argument" error below, so a
-		// command that WORKED reports failure - and executeCommandStatus() skips
-		// recordCommand() on failure, silently dropping `script speed ...` from
-		// every recorded show (INTENT S11.108 rider). The bogus-value leg keeps
-		// its own diagnostic, which the fall-through used to overwrite.
 		return executeCommandStatus();
 	}
 

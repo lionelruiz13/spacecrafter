@@ -203,9 +203,6 @@ void SolarSystemModule::draw(int delta_time)
 
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene
-	// Dual-path (S2b): the rule (which selections the old pointer still owns
-	// in the modular phase) is Core::needOldSelectionPointer - one authority
-	// for the four executor draw sites (I2).
 	if (core->needOldSelectionPointer())
 		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 

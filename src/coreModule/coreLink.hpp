@@ -782,19 +782,6 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Observatory---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	//! The place the path that DRAWS is at, in the legacy triple's units
-	//! (degrees, degrees, metres) -- the READ half of the seam observerMoveTo
-	//! writes, with the same two conversions in the other direction (I2).
-	//! Answers only when the NEW path is the drawn one and a camera exists;
-	//! otherwise the old Observer IS the drawn place and each getter below
-	//! returns its own authority untouched, conventions included.
-	//! Precision note, measured and not hidden: the camera holds the place as
-	//! `float` radians and a `float` AU distance, so a drawn-path readout is
-	//! quantised to that grid -- 0.10 m of altitude and 1.3e-6deg of latitude at
-	//! the shipped Marseille place. That is the resolution the drawn observer
-	//! ACTUALLY has; the old double carried more digits about a place that is
-	//! not the one on screen (S11.130(f)'s rule, mirrored: report the value at
-	//! the precision its owner has).
 	bool drawnPlace(double &latDeg, double &lonDeg, double &altMetres) const {
 		if (!core->getExperimentalPath() || !Camera::instance)
 			return false;
@@ -1001,16 +988,6 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Navigation -------------
 	////////////////////////////////////////////////////////////////////////////////
-	//! B33 (S11.108(f), the F12 template S11.118(f)): the zoom/centre offset of
-	//! the path that DRAWS, as the fraction of the dome radius both authorities
-	//! store it as (no conversion -- Core::setViewOffset is the ONE sink and it
-	//! hands the SAME clamped scalar to both, so the units are one unit).
-	//! This member is LATENT and says so: no shipped channel writes one path's
-	//! offset without the other (the sink since S11.92, the session restore
-	//! since S11.130(e)), so today the fix cannot change an observable -- it
-	//! stops the readout from BECOMING wrong the moment a channel does, which
-	//! is the whole reason the class is being closed rather than patched. Its
-	//! divergence has to be injected to be checked, and it was.
 	double getViewOffset() const {
 		if (!core->getExperimentalPath() || !Camera::instance)
 			return core->navigation->getViewOffset();

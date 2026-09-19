@@ -122,7 +122,7 @@ Context::~Context()
         hooks.back()();
         hooks.pop_back();
     }
-    renderer.releaseRegistry(); // pipeline-family registry teardown needs live
+    renderer.releaseRegistry(); // the registry teardown needs live managers
     s_texture::forceUnload();
     instance = nullptr;
     helper.reset();

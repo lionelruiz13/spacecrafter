@@ -5,31 +5,6 @@
 #include "tools/translator.hpp"
 #include <sstream>
 
-// TRANSLATION, and why every msgid below is copied rather than written (S5.111,
-// S11.209). Old is the comparison baseline (S11.52(b)), so the label this path
-// prints must be the label the old path prints, byte for byte: the msgids here
-// are `Body::getInfoString` / `getShortInfoString` / `getShortInfoNavString`'s
-// own (body.cpp:331-435), and NOT ONE of them is authored here.
-//
-// The reason is mechanical, not stylistic. `_()` is NOT gettext: it is
-// `Translator::translateUTF8` (tools/translator.cpp:45), a std::map loaded from
-// `<localeDir>/<lang>.txt` with IDENTITY FALLBACK for a key it does not hold.
-// That catalogue is INSTALLED FIELD DATA (`~/.spacecrafter/language/fr.txt`),
-// frozen by D9 and shipped from another repository - this file cannot add a key
-// to it. So a msgid that is old's answers exactly as old answers, and a msgid
-// that is NOT old's answers in English forever, silently. Copying is the only
-// form of this change that can work.
-//
-// Five of the ten distinct msgids are in fr.txt today ("Magnitude: ", "RA/DE: ",
-// "Alt/Az: ", "Distance: ", "AU"); the other five ("SA ", " GHA ", " LHA ",
-// " Az/Alt/coA: ", " Day length: ") fall through to English - AND SO DO OLD'S,
-// through the same five keys. Wrapping them changes nothing observable today
-// and is still required: the day the catalogue gains one of those keys, the two
-// paths must move together, which is what having ONE msgid per label buys (I2).
-//
-// The separators are deliberately NOT wrapped - `" / "`, `"@"`, `"/"`, `" LPA "`,
-// `"00h00m00s"`, `"24h00m00s"` - because old does not wrap them either.
-
 namespace {
 inline double wrap2pi(double a)
 {
