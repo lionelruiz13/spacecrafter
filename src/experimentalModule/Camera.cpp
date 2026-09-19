@@ -53,25 +53,6 @@ Vec3f Camera::getPlace() const
     return Vec3f(place[0], place[1], position.length() - reference->getAltitudeReference());
 }
 
-// Shared proximity-factor authority (B10 iv-b, S5.2). Base measured to the
-// ground (ground_radius), NOT the datum: == distanceToReference() for every
-// default (ground==datum) body, so bit-identical to today until the two radii
-// differ. Uses the SAME `distance` member as distanceToReference (legacy
-// free-mode velocity parity); the geometric ground barrier is enforced
-// separately by update()'s free-mode descent clamp on `position`. The floor is
-// radius-relative (stays defined at an enterable body's centre) and applies to
-// the outward/escape step only (S5.18).
-float Camera::proximityFactor(bool escaping) const
-{
-    float p = distance - reference->getScaledGroundRadius();
-    if (escaping) {
-        const float floor = static_cast<float>(ANTISTUCK_ESCAPE_FLOOR) * reference->getScaledRadius();
-        if (p < floor)
-            p = floor;
-    }
-    return p;
-}
-
 // ---- View composition authority (see Camera.hpp) ---------------------------
 
 Mat4f Camera::fold() const
@@ -1045,6 +1026,8 @@ void Camera::setHalfFov(float halfFov, float duration)
             zoomDuration = duration;
             srcHalfFov = ModularBody::halfFov;
             dstHalfFov = halfFov;
+            if (duration == 0) // Snap, even against a zoom in flight the other way
+                ModularBody::setHalfFov(halfFov);
         } else {
             // Already zooming, current fov and inertia must be preserved
             const float oldCoefVelocity = calculateZoomCoefVelocity();
@@ -1096,11 +1079,11 @@ void Camera::setAltitude(double altitude)
 // coef>1 ascends. The along-axis step is multiplicative on the vertical's
 // length (ground proximity near, distance-to-selected far), so it mirrors the
 // legacy natural altitude control on both ends.
-void Camera::descend(float coef)
+void Camera::multAlt(float coef)
 {
     if (!freeMode) {
         // Anchored: legacy proximity-scaled radial altitude (unchanged).
-        moveRel({0, 0, proximityFactor(coef > 1.f) * (coef - 1)});
+        moveRel({0, 0, velocityScaling(1) * (coef - 1)});
         return;
     }
     // FAR / galactic: the reference is a system (no landable surface
@@ -1140,16 +1123,8 @@ void Camera::descend(float coef)
     float alt = len - g;                  // live radial altitude above the ground
     if (alt < 0.f) alt = 0.f;
     if (coef >= 1.f) {
-        // ASCEND: back off along the view ray (reverse of the descent). The step
-        // is proportional to the LIVE altitude and FLOORED to
-        // ANTISTUCK_ESCAPE_FLOOR*radius so takeoff from height 0 is ALWAYS
-        // possible -- the S5.18 anti-stuck rule B10 enforces on every OUTWARD
-        // step (proximityFactor's escape floor), restored here on live geometry.
-        float step = (coef - 1.f) * alt;
-        const float floor = static_cast<float>(ANTISTUCK_ESCAPE_FLOOR)
-                          * reference->getScaledRadius();
-        if (step < floor)
-            step = floor;
+        // Ascend along the view ray, never slower than MIN_MOVEMENT_SPEED so height 0 is escapable
+        const float step = (coef - 1.f) * std::max(alt, static_cast<float>(MIN_MOVEMENT_SPEED) * reference->getScaledRadius());
         moveEyeRel({0, 0, -step});        // eye +z = backward along the ray = up
         return;
     }

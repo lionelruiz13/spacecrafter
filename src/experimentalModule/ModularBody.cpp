@@ -45,9 +45,7 @@ float ModularBody::viewportRadius = 1;
 // setViewportRadius is consistent with the radius read there - not
 // meaningful, but not a different kind of not-meaningful.
 float ModularBody::earlyVisibilityScreenSize = BODY_EARLY_VISIBILITY_BOUNDING_SIZE / 2.f;
-float ModularBody::depthBucketScreenSize = BODY_DEPTH_BUCKET_BOUNDING_SIZE / 2.f;
 float ModularBody::fullVisibilityScreenSize = BODY_FULL_VISIBILITY_BOUNDING_SIZE / 2.f;
-float ModularBody::closeRangeScreenSize = BODY_CLOSE_RANGE_BOUNDING_SIZE / 2.f;
 float ModularBody::bigTextureScreenSize = BODY_BIG_TEXTURE_BOUNDING_SIZE / 2.f;
 std::vector<ModularBody *> ModularBody::notableBody;
 float ModularBody::deltaTime = 0;
@@ -748,7 +746,7 @@ void ModularBody::drawLoaded(Renderer &renderer)
     loaded = true;
     const auto matrix = mat.multiplyFast(computeBodyToSurface()); // TODO Fix ojml ?
     if (screenSize > fullVisibilityGate()) {
-        if (screenSize < closeRangeGate()) {
+        if (screenSize < 0.2) {
             // far BEFORE clearDepth - hint behind the disc (see draw())
             for (auto &module : farComponents)
                 module->draw(renderer, this, mat);
@@ -916,9 +914,7 @@ void ModularBody::setViewportRadius(float halfRenderWidthPx)
     viewportRadius = halfRenderWidthPx;
     const float px2ss = 1.f / (2.f * halfRenderWidthPx);
     earlyVisibilityScreenSize = BODY_EARLY_VISIBILITY_BOUNDING_SIZE * px2ss;
-    depthBucketScreenSize = BODY_DEPTH_BUCKET_BOUNDING_SIZE * px2ss;
     fullVisibilityScreenSize = BODY_FULL_VISIBILITY_BOUNDING_SIZE * px2ss;
-    closeRangeScreenSize = BODY_CLOSE_RANGE_BOUNDING_SIZE * px2ss;
     bigTextureScreenSize = BODY_BIG_TEXTURE_BOUNDING_SIZE * px2ss;
 }
 

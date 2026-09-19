@@ -1181,14 +1181,10 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
     // with the render width, which is a claim only an observable can carry.
     out << ",\"gates\":{\"viewportRadius\":" << ModularBody::getViewportRadius()
         << ",\"px\":{\"early\":" << BODY_EARLY_VISIBILITY_BOUNDING_SIZE
-        << ",\"depthBucket\":" << BODY_DEPTH_BUCKET_BOUNDING_SIZE
         << ",\"full\":" << BODY_FULL_VISIBILITY_BOUNDING_SIZE
-        << ",\"close\":" << BODY_CLOSE_RANGE_BOUNDING_SIZE
         << ",\"bigTexture\":" << BODY_BIG_TEXTURE_BOUNDING_SIZE
         << "},\"screenSize\":{\"early\":" << ModularBody::earlyVisibilityGate()
-        << ",\"depthBucket\":" << ModularBody::depthBucketGate()
         << ",\"full\":" << ModularBody::fullVisibilityGate()
-        << ",\"close\":" << ModularBody::closeRangeGate()
         << ",\"bigTexture\":" << ModularBody::bigTextureGate()
         << "}}";
     // The big-texture table (B34 preload, S11.132): what `body action preload`

@@ -29,16 +29,6 @@ public:
     float distanceToReference() const;
     //! Calculate velocity scaling factor for camera movements
     float velocityScaling(float deltaTime) const;
-    // Return the normalized speed factor
-    // The shared PROXIMITY-FACTOR authority (B10 iv-b, S5.2): the base the
-    // interactive movers (multAlt / moveRelLon / moveRelLat) multiply, measured
-    // to the CLOSEST REACHABLE position (ground_radius), NOT the datum. When
-    // `escaping` (an OUTWARD/lateral step, i.e. away from the ground) the result
-    // is floored to ANTISTUCK_ESCAPE_FLOOR*radius so height 0 is never a fixed
-    // point in any direction -- the S5.18 "stuck at the surface" defect. Inward
-    // steps are NOT floored (the free-mode descent clamp in update() stops them
-    // at ground_radius, R4 stop-and-hold).
-    float proximityFactor(bool escaping) const;
     // Dual-path trace harness (INTENT.md 11.14): serialize the full observer
     // state (reference, pose, modes, halfFov) as one JSON object.
     void dumpTrace(std::ostream &out) const;
@@ -200,10 +190,7 @@ public:
     }
     inline void moveRelLon(float lon, float delay = 0) {
         if (freeMode) {
-            // Lateral free-flight velocity ~ proximity to the ground (S5.2);
-            // floored (escaping=true) -- lateral is never descent, so it must
-            // stay escapable at height 0.
-            lon *= proximityFactor(true) * 5.f;
+            lon *= velocityScaling(1) * 5.f;
             moveEyeRel({lon, 0, 0}, delay);
         } else {
             moveRel({lon, 0, 0}, delay);
@@ -211,7 +198,7 @@ public:
     }
     inline void moveRelLat(float lat, float delay = 0) {
         if (freeMode) {
-            lat *= proximityFactor(true) * 5.f;
+            lat *= velocityScaling(1) * 5.f;
             moveEyeRel({0, lat, 0}, delay);
         } else {
             moveRel({0, lat, 0}, delay);
@@ -226,12 +213,7 @@ public:
             moveRel({0, 0, static_cast<float>(alt)}, delay);
         }
     }
-    // Natural altitude control (S5.2 iv): a multiplier on the proximity to the
-    // vertical the observer descends along. Free-flight geometry (view ray near
-    // / last-selected far) lives in descend() (Camera.cpp, needs the complete
-    // ModularBody); anchored stays the legacy radial altitude there. coef<1
-    // descends, coef>1 ascends; floored only OUTWARD (coef>1) so takeoff from
-    // height 0 is always possible.
+    // Multiply the altitude by coef; in free flight, along the view ray (body) or toward the selected body (system)
     void multAlt(float coef);
     // Target is the legacy spherical triple (lon, lat, altitude-in-AU) in
     // BOTH modes - moveto is the legacy positioning surface and must stay

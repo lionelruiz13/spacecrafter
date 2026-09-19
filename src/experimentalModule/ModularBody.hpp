@@ -462,7 +462,7 @@ public:
             updateCache();       // module/radius part + a fresh updateReach()
         else
             updateReach();       // AoI tracks the current jd every frame (S11.62, B15)
-        if (screenSize > depthBucketGate())
+        if (screenSize > 0.004)
             notableBody.push_back(this);
     }
 
@@ -527,7 +527,7 @@ public:
                 if (loaded) {
                     const auto matrix = mat.multiplyFast(computeBodyToSurface());
                     if (screenSize > fullVisibilityGate()) {
-                        if (screenSize < closeRangeGate()) {
+                        if (screenSize < 0.2) {
                             // far (2D behind body) BEFORE clearDepth: the
                             // helper segment carrying them is positioned at
                             // the clearDepth boundary, ahead of this body's
@@ -2019,7 +2019,7 @@ private:
     // TODO create an optimized std::string for limited set
     std::vector<std::unique_ptr<BodyModule>> components; // Reference every BodyModule of this ModularBody by name
 
-    std::vector<BodyModule *> farComponents; // 2D behind body, SKIP above BODY_CLOSE_RANGE_BOUNDING_SIZE, update NEVER called
+    std::vector<BodyModule *> farComponents; // 2D behind body, SKIP above screenSize 0.2, update NEVER called
     std::vector<BodyModule *> nearComponents; // Drawn above BODY_EARLY_VISIBILITY_BOUNDING_SIZE and distance > scaledRadius * BODY_SURFACE_HEIGHT
     std::vector<BodyModule *> groundedComponents; // Drawn if distance <= scaledRadius * BODY_SURFACE_HEIGHT and a surface is loaded
     std::vector<BodyModule *> inComponents; // Draw if distance <= scaledRadius
@@ -2301,9 +2301,7 @@ private:
     // (drawHalo's screen_r form), so gate_screenSize = gate_px / (2*vr).
     // Derived, never authored: the px constants are the authority (I2).
     static float earlyVisibilityScreenSize;
-    static float depthBucketScreenSize;
     static float fullVisibilityScreenSize;
-    static float closeRangeScreenSize;
     static float bigTextureScreenSize;
 public:
     inline static float getViewportRadius() {
@@ -2318,14 +2316,8 @@ public:
     inline static float earlyVisibilityGate() {
         return earlyVisibilityScreenSize;
     }
-    inline static float depthBucketGate() {
-        return depthBucketScreenSize;
-    }
     inline static float fullVisibilityGate() {
         return fullVisibilityScreenSize;
-    }
-    inline static float closeRangeGate() {
-        return closeRangeScreenSize;
     }
     inline static float bigTextureGate() {
         return bigTextureScreenSize;

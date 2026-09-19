@@ -604,8 +604,7 @@ void CoreLink::dumpControlSurface(std::ostream &out) const
 	    << ",\"old\":" << core->navigation->getViewOffset()
 	    << ",\"new\":" << (cam ? cam->getViewOffset() : 0.) << "}"
 	    << ",\"mount\":{\"reported\":\"" << mnt(core->getMountMode() == Core::MOUNT_ALTAZIMUTAL)
-	    << "\",\"old\":\"" << mnt(core->navigation->getViewingMode() == Navigator::VIEW_HORIZON)
-	    << "\",\"new\":\"" << mnt(!cam || cam->getMount() == CameraMount::ALTAZ) << "\"}"
+	    << "\",\"old\":\"" << mnt(core->navigation->getViewingMode() == Navigator::VIEW_HORIZON) << "\"}"
 	    << ",\"skyLock\":{\"reported\":" << b(core->getFlagLockSkyPosition())
 	    << ",\"old\":" << b(core->navigation->getFlagLockEquPos() != 0)
 	    << ",\"new\":" << b(cam && cam->getSkyLock()) << "}"

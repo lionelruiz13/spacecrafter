@@ -957,7 +957,7 @@ public:
 	//! driver of the view-directed descent: multAlt/moveRelAlt are UI-key-only
 	//! (B10 finding, S11.71).
 	void cameraDescend(float coef) {
-		Camera::instance->descend(coef);
+		Camera::instance->multAlt(coef);
 	}
 
 	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
