@@ -1,0 +1,21 @@
+leg=armC out=/home/claude/spacecrafter/claude/harness/artifacts/f122/armC
+1789799193.047 >> timerate rate 0
+1789799193.747 >> deselect
+1789799197.448 >> select planet Moon pointer off
+1789799202.648 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 955 moon_selected
+1789799205.854 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 1148 script_start
+1789799207.060 >> script action play filename /home/claude/spacecrafter/claude/harness/f122_scripts/armC.sts
+1789799232.261 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 2731 script_done
+1789799241.476 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 3284 after_heading_tail
+1789799243.694 >> flag experimental_path off
+1789799246.895 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f122/armC/end_oldpath.png
+1789799249.095 >> flag experimental_path on
+1789799252.295 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f122/armC/end_newpath.png
+1789799255.496 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 4126 end
+1789799262.717 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f122/armC/final.json
+done

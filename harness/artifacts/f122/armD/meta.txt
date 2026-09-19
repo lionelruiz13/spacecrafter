@@ -1,0 +1,25 @@
+=== F122 run 'armD' ===
+wall clock start : 2026-09-19 08:27:52 CEST
+driver           : f122_drive.py   leg=armD
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : bc176a2f12e18757f354f53b002df8f5
+binary mtime     : 2026-09-19 08:15:04.705058708 +0200
+seam recorder    : SC_SEAM_RECORD=1 (armed)
+[armD] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[armD] gpu: free 30294 MiB / used 1813 / total 32607 ; need 6144 MiB (Sec.11.238)
+[armD] clear to launch
+--- canary --no-scene (exit 0) ---
+fingerprint: 32 members -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260919-082753/fingerprint.json
+
+=== CANARY VERDICT: exit 0  (0 fail, 0 note; scene arm NOT run)
+    fingerprint green -- but the photometric member is the one 2026-08-29 needed: run without --no-scene before trusting a measurement.
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=171274
+tcp up after 6x2s
+driver exit=0
+D8 'has not published a position frame' lines : 9
+  of which name temp_point                    : 1
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+wall clock end   : 2026-09-19 08:29:32 CEST

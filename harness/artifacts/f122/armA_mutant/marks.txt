@@ -1,0 +1,5 @@
+947 moon_selected
+1139 script_start
+2698 script_done
+3138 after_heading_tail
+3291 end

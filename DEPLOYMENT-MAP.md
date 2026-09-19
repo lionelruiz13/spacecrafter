@@ -579,6 +579,16 @@ travel registries **156 000 km** at the end of the shipped `fly_to_selected.sts`
 OLD-ONLY transitions found and unmeasured (§5.158), `Core::panView` **+31°** (§5.71), `moveto`
 **55.3 m** (§5.68). The FOV half of the class is CLOSED: one authority, code `2f9e6da7`,
 59.83° → 6.8e-06°.
+State (2026-09-19, §11.246, F122): the TRAVEL half is CLOSED too — **§5.157 FIXED**, code
+`ef2029d9`. The two registries were handed the same target (0.000 km), the same standoff
+(108 687.000 km) and the same dates; only the START differed, and the new path's was exactly
+`[0,0,0]` because a `move_to` issued in the same frame as the `transition_to target point`
+before it read a place the D8 barrier had refused to publish. On the tester's own act the two
+engines go from **146 899 km to 7.12e-08 AU** apart and the two drawn frames from **362 686 to
+1 210** differing pixels. NEW and NOT fixed: **§5.159** — that refusal leaves nine bodies of a
+default launch permanently at the zero vector, and §11.226(b) and §11.111(d) read it opposite
+ways, so it is a SHAPE question before it is an edit. Still open in this class: §5.155,
+§5.156, §5.158, §5.71, §5.68, and the near-body disappearance (still not reached).
 **§5.131's riders** — the `|| exit` (D-6).
 **§5.88** — the catalogue-load diagnostic (D-5).
 **§5.144** — the 8–12 h discriminating leg (a cache that has not filled, or a leak: +68.3 MB/h

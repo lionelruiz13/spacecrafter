@@ -1,0 +1,17 @@
+leg=armA out=/home/claude/spacecrafter/claude/harness/artifacts/f122/armA_mutant
+1789799887.281 >> timerate rate 0
+1789799887.982 >> deselect
+1789799891.682 >> select planet Moon pointer off
+1789799896.883 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 947 moon_selected
+1789799900.088 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 1139 script_start
+1789799901.294 >> script action play filename /home/claude/spacecrafter/claude/harness/f122_scripts/armA.sts
+1789799926.495 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 2698 script_done
+1789799935.710 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 3138 after_heading_tail
+1789799938.927 >> body action dual_dump filename /home/claude/sc-f122/marks/mark.json
+MARK 3291 end
+1789799946.144 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f122/armA_mutant/final.json
+done
