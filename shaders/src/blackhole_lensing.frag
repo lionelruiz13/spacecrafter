@@ -9,6 +9,7 @@ layout(binding=1) uniform LensData {
 layout(input_attachment_index=0, binding=2) uniform subpassInput ScenePixel;
 
 layout(location=0) out vec4 FragColor;
+layout(constant_id=0) const bool LensingEnabled = true;
 
 vec2 sceneUv(vec2 pixel, vec2 viewport)
 {
@@ -17,6 +18,10 @@ vec2 sceneUv(vec2 pixel, vec2 viewport)
 
 void main()
 {
+    if (!LensingEnabled) {
+        FragColor = subpassLoad(ScenePixel);
+        return;
+    }
     vec2 viewport = ViewportActive.xy;
     vec4 unmodified = subpassLoad(ScenePixel);
     bool lensEnabled = ViewportActive.z > 0.5;
@@ -55,6 +60,8 @@ void main()
     vec2 sourceUv = sceneUv(sourcePixel, viewport);
 
     vec4 lensed = texture(Scene, sourceUv);
-    float magnification = 1.0 + 0.14 * exp(-pow((radius - einsteinRadius) / max(shadowRadius * 0.12, 1.0), 2.0));
-    FragColor = mix(unmodified, vec4(lensed.rgb * magnification, lensed.a), distortionFade);
+    float magnification = 1.0 + 0.14 * distortionFade * exp(-pow((radius - einsteinRadius) / max(shadowRadius * 0.12, 1.0), 2.0));
+    // The coordinate displacement already fades to zero at the boundary.
+    // Mixing colors with the original image would expose an unwarped ghost.
+    FragColor = vec4(lensed.rgb * magnification, lensed.a);
 }

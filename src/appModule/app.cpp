@@ -347,6 +347,13 @@ void App::initVulkan(InitParser &conf)
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
 	                              VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
 	context.render->pushLayer();
+	// PASS_BLACKHOLE_DISK_LENS
+	context.render->bindColor(finalColorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	context.render->addDependencyFrom(PASS_LENS, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+	                                  VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+	context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+	                                  VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_UNIFORM_READ_BIT, false);
+	context.render->pushLayer();
 	// PASS_FOREGROUND
 	context.render->bindColor(finalColorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	// Sync with resolve

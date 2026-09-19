@@ -1,4 +1,5 @@
 #include "tools/draw_helper.hpp"
+#include "appModule/blackhole_lensing.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "tools/s_texture.hpp"
@@ -433,6 +434,7 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
     }
     player->recordUpdate(cmd);
     s_texture::recordTransfer(cmd);
+    BlackHoleLensing::recordTransfer(cmd);
     if (s_font::tileMap)
 		s_font::tileMap->uploadChanges(cmd, Implicit::SRC_LAYOUT);
     Context::instance->transfers[lastFrameIdx]->copy(cmd);

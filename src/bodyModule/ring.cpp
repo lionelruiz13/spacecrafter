@@ -60,11 +60,10 @@
 
 double Ring::fadingFactor = 40*120;
 
-Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init, bool _emissive)
+Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init)
 	:radius_min(radius_min),radius_max(radius_max)
 {
 	init = _init;
-	emissive = _emissive;
 	tex = std::make_unique<s_texture>(texname, TEX_LOAD_TYPE_PNG_ALPHA, true);
 }
 
@@ -121,18 +120,14 @@ void Ring::createSC_context()
 	vertex->addInput(VK_FORMAT_R32_SFLOAT);
 
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
-	pipeline->setCullMode(!emissive);
+	pipeline->setCullMode(true);
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	pipeline->bindVertex(*vertex);
 	pipeline->bindShader("ring_planet.vert.spv");
 	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	// Set specialization constant for projection type (constant_id = 8)
 	pipeline->setSpecializedConstant(8, Context::projectionType);
-	pipeline->bindShader(emissive ? "blackhole_ring.frag.spv" : "ring_planet.frag.spv");
-	if (emissive) {
-		pipeline->setBlendMode(BLEND_ADD);
-		pipeline->setDepthStencilMode(VK_TRUE, VK_FALSE);
-	}
+	pipeline->bindShader("ring_planet.frag.spv");
 	pipeline->build();
 
 	pipelineDepthTrace = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, BodyShader::getShaderDepthTrace()->layout);
@@ -151,9 +146,6 @@ void Ring::createSC_context()
 	uniform = std::make_unique<SharedBuffer<RingUniform>>(*context.uniformMgr);
 	set->bindUniform(uniform, 0);
 	set->bindTexture(tex->getTexture(), 1);
-
-	if (emissive)
-		return;
 
 	ojmlAsteroid = std::make_unique<OjmL>(AppSettings::Instance()->getModel3DDir()+"sat_ice.ojm");
 	bufferAsteroid = ojmlAsteroid->getVertexBuffer();

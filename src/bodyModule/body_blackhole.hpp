@@ -15,6 +15,7 @@
 #include "bodyModule/body.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
+
 class Pipeline;
 class PipelineLayout;
 class Set;
@@ -25,7 +26,6 @@ class s_texture;
 struct BlackHoleVisual {
     Vec3f diskColor = Vec3f(1.0f, 0.31f, 0.045f);
     Vec3f photonColor = Vec3f(1.0f, 0.86f, 0.42f);
-    Vec3f lensColor = Vec3f(0.70f, 0.12f, 0.025f);
     float diskIntensity = 1.0f;
     float turbulence = 1.0f;
     float lensingStrength = 1.0f;
@@ -72,52 +72,21 @@ protected:
     virtual void drawPlanetGrid(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat) override;
 
 private:
-    struct DiskUniform {
-        Mat4f ModelViewMatrix;
-        Vec3f clipping_fov;
-        float RingScale;
-        float fadingFactor;
-    };
-
-    struct DiskVisualUniform {
-        Vec3f diskColor;
-        float diskIntensity;
-        Vec3f photonColor;
-        float turbulence;
-    };
-
     struct HorizonUniform {
         Mat4f ModelViewMatrix;
         Vec3f clipping_fov;
         float HorizonRadius;
     };
 
-    struct OverlayUniform {
-        Vec4f photonColorAndEventRadius;
-        Vec4f lensColorAndStrength;
-        Vec4f controls;
-    };
-
-    void createDiskContext();
     void createHorizonContext();
-    void createOverlayContext(float viewportHeight);
-    void buildDiskMesh();
     void buildHorizonMesh();
-    void drawDisk(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat, double screen_sz);
+    void drawDisk(const Projector* prj, const Mat4d& mat);
     void drawHorizon(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat);
-    void drawOverlay(VkCommandBuffer cmd, double screen_sz);
+    void submitLensing(const Projector* prj, const Mat4d& mat, double screen_sz);
 
     std::unique_ptr<s_texture> diskTex;
     double diskInnerRadius;
     double diskOuterRadius;
-
-    std::unique_ptr<VertexArray> diskVertex;
-    std::unique_ptr<VertexBuffer> diskBuffer;
-    std::unique_ptr<PipelineLayout> diskLayout;
-    std::unique_ptr<Pipeline> diskPipeline;
-    std::unique_ptr<Set> diskSet;
-    std::unique_ptr<SharedBuffer<DiskUniform>> diskUniform;
-    std::unique_ptr<SharedBuffer<DiskVisualUniform>> diskVisualUniform;
 
     std::unique_ptr<VertexArray> horizonVertex;
     std::unique_ptr<VertexBuffer> horizonBuffer;
@@ -125,15 +94,6 @@ private:
     std::unique_ptr<Pipeline> horizonPipeline;
     std::unique_ptr<Set> horizonSet;
     std::unique_ptr<SharedBuffer<HorizonUniform>> horizonUniform;
-
-    std::unique_ptr<VertexArray> overlayVertex;
-    std::unique_ptr<VertexBuffer> overlayBuffer;
-    std::unique_ptr<PipelineLayout> overlayLayout;
-    std::unique_ptr<Pipeline> overlayPipeline;
-    std::unique_ptr<Set> overlaySet;
-    std::unique_ptr<SharedBuffer<float>> overlayRmag;
-    std::unique_ptr<SharedBuffer<OverlayUniform>> overlayUniform;
-    std::pair<float, float> *overlayScreenPos = nullptr;
 
     float diskScale = 1.f;
     bool diskEnabled = true;

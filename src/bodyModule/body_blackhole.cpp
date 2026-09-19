@@ -10,9 +10,9 @@
  */
 
 #include "bodyModule/body_blackhole.hpp"
+#include "bodyModule/blackhole_trajectory_lut.hpp"
 
 #include "bodyModule/body_color.hpp"
-#include "bodyModule/halo.hpp"
 #include "bodyModule/orbit_3d.hpp"
 #include "bodyModule/trail.hpp"
 #include "appModule/blackhole_lensing.hpp"
@@ -32,10 +32,6 @@
 #include <cmath>
 
 namespace {
-constexpr int DISK_SLICES = 256;
-constexpr int DISK_STACKS = 12;
-constexpr int DISK_STRIP_VERTICES = (DISK_SLICES + 1) * 2;
-constexpr int DISK_VERTEX_FLOATS = 4;
 constexpr int HORIZON_SLICES = 64;
 constexpr int HORIZON_STACKS = 32;
 constexpr int HORIZON_STRIP_VERTICES = (HORIZON_SLICES + 1) * 2;
@@ -125,9 +121,9 @@ void BlackHole::drawOrbit(VkCommandBuffer, VkCommandBuffer, const Observer*, con
 
 Set &BlackHole::getSet(float)
 {
-    if (!overlaySet)
-        createOverlayContext(VulkanMgr::instance->getScreenRect().extent.height);
-    return *overlaySet;
+    if (!horizonSet)
+        createHorizonContext();
+    return *horizonSet;
 }
 
 bool BlackHole::hasRings()
@@ -145,18 +141,18 @@ void BlackHole::drawHints(const Navigator*, const Projector*)
 
 void BlackHole::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator*, const Mat4d& mat, float screen_sz, bool)
 {
-    if (!diskEnabled && !visual.distortionEnabled)
+    if (!diskEnabled && (!visual.distortionEnabled || visual.lensingStrength <= 0.f))
         drawHorizon(cmd, prj, mat);
     if (!diskEnabled)
-        drawOverlay(cmd, screen_sz);
+        submitLensing(prj, mat, screen_sz);
 }
 
 void BlackHole::drawRings(VkCommandBuffer cmd, const Projector* prj, const Observer*, const Mat4d& mat, double screen_sz, Vec3f&, Vec3f&, float)
 {
-    if (!visual.distortionEnabled)
+    if (!visual.distortionEnabled || visual.lensingStrength <= 0.f)
         drawHorizon(cmd, prj, mat);
-    drawDisk(cmd, prj, mat, screen_sz);
-    drawOverlay(cmd, screen_sz);
+    submitLensing(prj, mat, screen_sz);
+    drawDisk(prj, mat);
 }
 
 void BlackHole::drawHalo(const Navigator*, const Projector*, const ToneReproductor*)
@@ -169,76 +165,6 @@ void BlackHole::drawAxis(VkCommandBuffer, const Projector*, const Mat4d&)
 
 void BlackHole::drawPlanetGrid(VkCommandBuffer, const Projector*, const Mat4d&)
 {
-}
-
-void BlackHole::createDiskContext()
-{
-    VulkanMgr &vkmgr = *VulkanMgr::instance;
-    Context &context = *Context::instance;
-
-    diskLayout = std::make_unique<PipelineLayout>(vkmgr);
-    diskLayout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
-    diskLayout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
-    diskLayout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2);
-    diskLayout->buildLayout();
-    diskLayout->setGlobalPipelineLayout(context.layouts.front().get());
-    diskLayout->build();
-
-    diskVertex = std::make_unique<VertexArray>(vkmgr);
-    diskVertex->createBindingEntry(DISK_VERTEX_FLOATS * sizeof(float));
-    diskVertex->addInput(VK_FORMAT_R32G32_SFLOAT);
-    diskVertex->addInput(VK_FORMAT_R32_SFLOAT);
-    diskVertex->addInput(VK_FORMAT_R32_SFLOAT);
-    buildDiskMesh();
-
-    diskSet = std::make_unique<Set>(vkmgr, *context.setMgr, diskLayout.get(), -1, false, true);
-    diskUniform = std::make_unique<SharedBuffer<DiskUniform>>(*context.uniformMgr);
-    diskVisualUniform = std::make_unique<SharedBuffer<DiskVisualUniform>>(*context.uniformMgr);
-    diskSet->bindUniform(diskUniform, 0);
-    diskSet->bindTexture(diskTex->getTexture(), 1);
-    diskSet->bindUniform(diskVisualUniform, 2);
-
-    diskPipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, diskLayout.get());
-    diskPipeline->setCullMode(false);
-    diskPipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
-    diskPipeline->setBlendMode(BLEND_ADD);
-    diskPipeline->setDepthStencilMode(VK_TRUE, VK_FALSE);
-    diskPipeline->bindVertex(*diskVertex);
-    diskPipeline->bindShader("blackhole_disk.vert.spv");
-    diskPipeline->setSpecializedConstant(7, context.isFloat64Supported);
-    diskPipeline->setSpecializedConstant(8, Context::projectionType);
-    diskPipeline->bindShader("blackhole_ring.frag.spv");
-    diskPipeline->build("Black hole disk");
-}
-
-void BlackHole::buildDiskMesh()
-{
-    diskBuffer = diskVertex->createBuffer(0, DISK_STACKS * DISK_STRIP_VERTICES, Context::instance->globalBuffer.get());
-    float *data = static_cast<float *>(Context::instance->transfer->planCopy(diskBuffer->get()));
-
-    const double rSize = diskOuterRadius - diskInnerRadius;
-    for (int i = 0; i < DISK_STACKS; ++i) {
-        const double texR0 = static_cast<double>(i) / DISK_STACKS;
-        const double texR1 = static_cast<double>(i + 1) / DISK_STACKS;
-        const double r0 = diskInnerRadius + rSize * texR0;
-        const double r1 = diskInnerRadius + rSize * texR1;
-
-        for (int j = 0; j <= DISK_SLICES; ++j) {
-            const double angle = static_cast<double>(j) / DISK_SLICES;
-            const double theta = angle * 2.0 * M_PI;
-            const double c = cos(theta);
-            const double s = sin(theta);
-
-            *(data++) = static_cast<float>(r0 * c);
-            *(data++) = static_cast<float>(r0 * s);
-            *(data++) = static_cast<float>(texR0);
-            *(data++) = static_cast<float>(angle);
-            *(data++) = static_cast<float>(r1 * c);
-            *(data++) = static_cast<float>(r1 * s);
-            *(data++) = static_cast<float>(texR1);
-            *(data++) = static_cast<float>(angle);
-        }
-    }
 }
 
 void BlackHole::createHorizonContext()
@@ -272,6 +198,7 @@ void BlackHole::createHorizonContext()
     horizonPipeline->setSpecializedConstant(8, Context::projectionType);
     horizonPipeline->bindShader("blackhole_horizon.frag.spv");
     horizonPipeline->build("Black hole horizon");
+
 }
 
 void BlackHole::buildHorizonMesh()
@@ -296,29 +223,34 @@ void BlackHole::buildHorizonMesh()
     }
 }
 
-void BlackHole::drawDisk(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat, double)
+void BlackHole::drawDisk(const Projector* prj, const Mat4d& mat)
 {
     if (!diskEnabled)
         return;
-    if (!diskPipeline)
-        createDiskContext();
-    if (!diskPipeline || diskPipeline->get() == VK_NULL_HANDLE)
+
+    const bool distorted = visual.distortionEnabled && visual.lensingStrength > 0.f;
+    const double unitRadius = distorted
+        ? radius * blackhole::diskRadiusCalibration * visual.lensingStrength
+        : radius;
+    if (unitRadius <= 0.0)
         return;
-
-    diskUniform->get().ModelViewMatrix = mat.convert();
-    diskUniform->get().clipping_fov = prj->getClippingFov();
-    diskUniform->get().RingScale = diskScale;
-    diskUniform->get().fadingFactor = 100000.f;
-    diskVisualUniform->get().diskColor = visual.diskColor;
-    diskVisualUniform->get().diskIntensity = visual.diskIntensity;
-    diskVisualUniform->get().photonColor = visual.photonColor;
-    diskVisualUniform->get().turbulence = visual.turbulence;
-
-    diskPipeline->bind(cmd);
-    diskLayout->bindSets(cmd, {*diskSet, *Context::instance->uboSet});
-    diskBuffer->bind(cmd);
-    for (int i = 0; i < DISK_STACKS; ++i)
-        vkCmdDraw(cmd, DISK_STRIP_VERTICES, 1, i * DISK_STRIP_VERTICES, 0);
+    const Vec3d camera = -(mat * Vec3d(0.0, 0.0, 0.0)) / unitRadius;
+    Vec3d x = mat.multiplyWithoutTranslation(Vec3d(1.0, 0.0, 0.0));
+    Vec3d y = mat.multiplyWithoutTranslation(Vec3d(0.0, 1.0, 0.0));
+    x.normalize();
+    y.normalize();
+    const Vec3f viewport = prj->getViewportFloatCenter();
+    BlackHoleLensing::DiskModel model;
+    // A negative capture radius explicitly selects undistorted rays.
+    model.camera = Vec4f(camera[0], camera[1], camera[2],
+                        distorted ? std::max(1.0, radius * blackhole::diskRadiusCalibration / unitRadius) : -1.0);
+    model.diskX = Vec4f(x[0], x[1], x[2], diskInnerRadius * diskScale / unitRadius);
+    model.diskY = Vec4f(y[0], y[1], y[2], diskOuterRadius * diskScale / unitRadius);
+    model.projection = Vec4f(viewport[0], VulkanMgr::instance->getScreenRect().extent.height - viewport[1],
+                            viewport[2], prj->getClippingFov()[2]);
+    model.diskColor = Vec4f(visual.diskColor[0], visual.diskColor[1], visual.diskColor[2], visual.diskIntensity);
+    model.photonColor = Vec4f(visual.photonColor[0], visual.photonColor[1], visual.photonColor[2], visual.turbulence);
+    BlackHoleLensing::submitDiskModel(model, diskTex->getTexture(), camera.length() * unitRadius);
 }
 
 void BlackHole::drawHorizon(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat)
@@ -339,46 +271,31 @@ void BlackHole::drawHorizon(VkCommandBuffer cmd, const Projector* prj, const Mat
         vkCmdDraw(cmd, HORIZON_STRIP_VERTICES, 1, i * HORIZON_STRIP_VERTICES, 0);
 }
 
-void BlackHole::createOverlayContext(float viewportHeight)
+void BlackHole::submitLensing(const Projector* prj, const Mat4d& mat, double screen_sz)
 {
-    VulkanMgr &vkmgr = *VulkanMgr::instance;
-    Context &context = *Context::instance;
+    Vec3d centerProjected;
+    prj->projectCustom(Vec3d(0.0, 0.0, 0.0), centerProjected, mat);
 
-    overlayVertex = std::make_unique<VertexArray>(vkmgr, sizeof(Vec2f));
-    overlayVertex->createBindingEntry(sizeof(Vec2f));
-    overlayVertex->addInput(VK_FORMAT_R32G32_SFLOAT);
-    overlayBuffer = overlayVertex->createBuffer(0, 1, context.tinyMgr.get());
-    overlayScreenPos = static_cast<std::pair<float, float> *>(context.tinyMgr->getPtr(overlayBuffer->get()));
-
-    overlayLayout = std::make_unique<PipelineLayout>(vkmgr);
-    overlayLayout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0);
-    overlayLayout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-    overlayLayout->buildLayout();
-    overlayLayout->setGlobalPipelineLayout(context.layouts.front().get());
-    overlayLayout->build();
-
-    overlaySet = std::make_unique<Set>(vkmgr, *context.setMgr, overlayLayout.get());
-    overlayRmag = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
-    overlayUniform = std::make_unique<SharedBuffer<OverlayUniform>>(*context.uniformMgr);
-    overlaySet->bindUniform(overlayRmag, 0);
-    overlaySet->bindUniform(overlayUniform, 1);
-
-    overlayPipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, overlayLayout.get());
-    overlayPipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
-    overlayPipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
-    overlayPipeline->bindVertex(*overlayVertex);
-    overlayPipeline->bindShader("blackhole_overlay.vert.spv");
-    overlayPipeline->bindShader("blackhole_overlay.geom.spv");
-    overlayPipeline->bindShader("blackhole_overlay.frag.spv");
-    overlayPipeline->setSpecializedConstant(0, viewportHeight);
-    overlayPipeline->build("Black hole overlay");
-}
-
-void BlackHole::drawOverlay(VkCommandBuffer, double screen_sz)
-{
-    const float outerRadius = diskEnabled ? static_cast<float>(diskOuterRadius * diskScale) : static_cast<float>(radius);
-    const float eventRadius = std::max(5.f, static_cast<float>(screen_sz) * static_cast<float>(radius) / std::max(outerRadius, 0.000001f) * 0.90f);
+    const Vec3d samples[6] = {
+        Vec3d( radius, 0.0, 0.0), Vec3d(-radius, 0.0, 0.0),
+        Vec3d(0.0,  radius, 0.0), Vec3d(0.0, -radius, 0.0),
+        Vec3d(0.0, 0.0,  radius), Vec3d(0.0, 0.0, -radius)
+    };
+    float eventRadius = 0.f;
+    for (const Vec3d &sample : samples) {
+        Vec3d projected;
+        prj->projectCustom(sample, projected, mat);
+        const float dx = static_cast<float>(projected[0] - centerProjected[0]);
+        const float dy = static_cast<float>(projected[1] - centerProjected[1]);
+        eventRadius = std::max(eventRadius, std::sqrt(dx * dx + dy * dy));
+    }
+    if (eventRadius < 1.f) {
+        const float outerRadius = diskEnabled ? static_cast<float>(diskOuterRadius * diskScale) : static_cast<float>(radius);
+        eventRadius = static_cast<float>(screen_sz) * static_cast<float>(radius)
+                    / std::max(outerRadius, 0.000001f);
+    }
+    eventRadius = std::max(5.f, eventRadius);
 
     BlackHoleLensing::submit(Vec2f(screenPos.first, screenPos.second), eventRadius,
-                             visual.lensingStrength, visual.distortionEnabled);
+                             visual.lensingStrength, visual.distortionEnabled && visual.lensingStrength > 0.f);
 }

@@ -814,8 +814,6 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 				blackHoleVisual.diskColor = Utility::strToVec3f(param["blackhole_disk_color"]);
 			if (!param["blackhole_photon_color"].empty())
 				blackHoleVisual.photonColor = Utility::strToVec3f(param["blackhole_photon_color"]);
-			if (!param["blackhole_lens_color"].empty())
-				blackHoleVisual.lensColor = Utility::strToVec3f(param["blackhole_lens_color"]);
 			blackHoleVisual.diskIntensity = Utility::strToFloat(param["blackhole_disk_intensity"], 1.f);
 			blackHoleVisual.turbulence = Utility::strToFloat(param["blackhole_turbulence"], 1.f);
 			blackHoleVisual.lensingStrength = Utility::strToFloat(param["blackhole_lensing"], 1.f);
