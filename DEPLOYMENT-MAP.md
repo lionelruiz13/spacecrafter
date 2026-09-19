@@ -589,6 +589,12 @@ engines go from **146 899 km to 7.12e-08 AU** apart and the two drawn frames fro
 default launch permanently at the zero vector, and §11.226(b) and §11.111(d) read it opposite
 ways, so it is a SHAPE question before it is an edit. Still open in this class: §5.155,
 §5.156, §5.158, §5.71, §5.68, and the near-body disappearance (still not reached).
+State (2026-09-19, F122's acceptance, supervisor): NEW, measured from F122's own dumps and NOT
+attributed — **§5.160**: for about the first second after launch (57–60 frames) the two observers
+stand up to **1.40e-04 AU** apart on every run, the control included. And the near-body
+disappearance is NOT unattributed (§11.247(d)3): it is the surface-regime hole of §11.97(e) /
+§11.105, RULED at §11.113(c)(ii) (*"Outer always drawn if no grounded module"*), with no row of
+its own until the next task mints one.
 **§5.131's riders** — the `|| exit` (D-6).
 **§5.88** — the catalogue-load diagnostic (D-5).
 **§5.144** — the 8–12 h discriminating leg (a cache that has not filled, or a leak: +68.3 MB/h
