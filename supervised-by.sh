@@ -1701,6 +1701,25 @@ if [ -s "${MERGED}" ]; then
 fi
 REFS_MOVED=0
 
+# make_writable <file>: the pair is shared between two OS users through a common group, and a file
+# created without group write is the usual reason a repoint cannot land. The missing bit is first
+# given by the operator's own chmod (it works when they own the file), then by `sudo chmod g+w`
+# (said before it runs; only on a terminal). Returns 1, and says so, when neither worked -- the
+# residual pass then lists the citation as STILL STALE instead of the run dying mid-apply.
+make_writable() {
+    local f=$1
+    [ -w "${f}" ] && return 0
+    chmod u+w,g+w -- "${f}" 2>/dev/null || true
+    [ -w "${f}" ] && return 0
+    if command -v sudo >/dev/null 2>&1 && [ -t 0 ]; then
+        echo "    ${f} is not writable by $(id -un): sudo chmod g+w"
+        sudo chmod g+w -- "${f}" || true
+    fi
+    [ -w "${f}" ] && return 0
+    echo "    NOT WRITABLE by $(id -un), repoint by hand: ${f}"
+    return 1
+}
+
 if [ "${#TOK_NEW[@]}" -eq 0 ] && [ "${#CODE_TOK_NEW[@]}" -eq 0 ] && [ "${#ALSO_TOK_NEW[@]}" -eq 0 ] \
    && [ "${#STALE_REFS[@]}" -eq 0 ]; then
     echo "No reference to a rewritten commit in a tracked file, a ref or a declared outside home."
@@ -1769,6 +1788,7 @@ else
                 new="${TOK_NEW[${tok}]}"
                 while IFS= read -r f; do
                     # \b so a token is never matched inside a longer hex run
+                    make_writable "${MD_REPO}/${f}" || continue
                     sed -i -E "s/\\b${tok}\\b/${new}/g" "${MD_REPO}/${f}"
                     TOUCHED_FILES["${f}"]=1
                 done < <(cd "${MD_REPO}" && grep -lwF "${tok}" "${MD_FILES[@]}" "${LIVE_FILES[@]}" /dev/null 2>/dev/null || true)
@@ -1776,11 +1796,8 @@ else
             for tok in "${!ALSO_TOK_NEW[@]}"; do
                 new="${ALSO_TOK_NEW[${tok}]}"
                 while IFS= read -r f; do
-                    if [ -w "${f}" ]; then
-                        sed -i -E "s/\\b${tok}\\b/${new}/g" "${f}"
-                    else
-                        echo "    NOT WRITABLE by $(id -un), repoint by hand: ${f}  (${tok} -> ${new})"
-                    fi
+                    make_writable "${f}" || continue
+                    sed -i -E "s/\\b${tok}\\b/${new}/g" "${f}"
                 done < <(grep -lwF "${tok}" "${ALSO_FILES[@]}" /dev/null 2>/dev/null || true)
             done
             for r in "${STALE_REFS[@]}"; do
@@ -1795,6 +1812,7 @@ else
             for tok in "${!CODE_TOK_NEW[@]}"; do
                 new="${CODE_TOK_NEW[${tok}]}"
                 while IFS= read -r f; do
+                    make_writable "${CODE_REPO}/${f}" || continue
                     sed -i -E "s/\\b${tok}\\b/${new}/g" "${CODE_REPO}/${f}"
                     TOUCHED_CODE["${f}"]=1
                 done < <(git -C "${CODE_REPO}" grep -lwIF "${tok}" -- . 2>/dev/null || true)

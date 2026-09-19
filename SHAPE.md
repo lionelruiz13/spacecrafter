@@ -100,10 +100,12 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
   may run in parallel in one tree if none commits, builds or stashes; the supervisor verifies,
   builds and commits. Every task prompt binds G12 and names `spacecrafter.owner-shape` as the form.
 
-## 7. State at the close of session 33 (main tree: code `a594b31a`, pushed by the owner after his trailer rewrite)
-PENDING FOR THE OWNER TO TAKE: code `4d91b795`, branch `s33-relocate`, worktree `/home/claude/sc-s33/tree` - the
-reference-change fix of 11.258 (gate `harness/s33_refchange.py`). The main tree's `src/` files and `HEAD` are owned by
-OS user `foxy` since his 21:47 checkout: a session running as `claude` cannot write them, and does not work around it.
+## 7. State at the close of session 33 (code branch `main` @ `6c3d0ed6`; `a594b31a` and below pushed by the owner, `6c3d0ed6` not pushed)
+The code branch is `main` since 2026-09-19 (owner; `master-beta` stays where it stood). The reference-change fix of
+11.258 is ON `main` (`6c3d0ed6`, gate `harness/s33_refchange.py` ALL PASS on the main-tree binary). Both trees and
+`~/shared` are shared between OS users `claude` and `foxy` through group `claude`: group-writable, setgid directories,
+`core.sharedRepository=group` (11.260) - if a file is not writable, fix the cause and report it, never work around it.
+After any history rewrite by the owner (`supervised-by.sh`): re-read HEADs, resolve old shas through `sha-maps/`.
 Done: compiles again at the five seams of his `8ce65acc` (`78455b88`); agent prose out (`3c5952ad`,
 `b57d0642`); header what-for lines back and thinned to his form (`a49df0f1`, `57102bf4`).
 Work map: `s33-second-managers.md` (about 280 second managers, raw) + `INTENT/11.254.md` (four

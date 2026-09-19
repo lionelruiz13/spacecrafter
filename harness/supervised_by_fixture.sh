@@ -41,6 +41,7 @@ printf '%s\tevidence\n' "${OLD1}"             > record.tsv
 echo "queue entry read at ${OLD2:0:8}"        > "${T}/outside/Q.md"
 printf '# outside homes\n%s\n%s/missing\n' "${T}/outside" "${T}" > sha-maps/also.txt
 git ${H} add -A; git ${H} commit -q -m "harness base"; git remote add origin "${T}/harness.git"; git push -q -u origin CC-harness
+chmod 444 tool.py "${T}/outside/Q.md"            # read-only to their own owner -> the tool must restore the bit itself (the sudo arm needs a second user: NOT reached here)
 echo more >> README.md; git ${C} commit -q -a --author='Claude Fable 5.1 <c@x>' -m "harness agent commit
 
 Code: master-beta @ ${OLD2:0:8}
@@ -66,11 +67,11 @@ grep -q "detached worktree ${T}/wt" "${T}/run.log" && ok "detached worktree REPO
 git for-each-ref refs/original | grep -q . && ok "refs/original backup untouched" || ko "refs/original missing"
 cd claude
 grep -q "${NEW1:0:8}" README.md && grep -q "${NEW2:0:10}" README.md && ok "*.md repointed (both prefix lengths)" || ko "*.md not repointed: $(cat README.md)"
-grep -q "${NEW1:0:8}" tool.py        && ok "live non-.md file repointed (tool.py)" || ko "tool.py not repointed: $(cat tool.py)"
+grep -q "${NEW1:0:8}" tool.py        && ok "live non-.md file repointed although read-only (tool.py)" || ko "tool.py not repointed: $(cat tool.py)"
 grep -q "${OLD1:0:8}" harness/artifacts/evidence.txt && ok "evidence drawer untouched (harness/artifacts)" || ko "EVIDENCE REWRITTEN: harness/artifacts"
 grep -q "${OLD1:0:8}" drawer/archive/manifest.json   && ok "evidence drawer untouched (archive/)"          || ko "EVIDENCE REWRITTEN: archive/"
 grep -q "${OLD1}" record.tsv                         && ok "evidence untouched (*.tsv)"                    || ko "EVIDENCE REWRITTEN: *.tsv"
-grep -q "${NEW2:0:8}" "${T}/outside/Q.md"            && ok "outside home repointed (sha-maps/also.txt)"    || ko "outside home not repointed: $(cat "${T}/outside/Q.md")"
+grep -q "${NEW2:0:8}" "${T}/outside/Q.md"            && ok "outside home repointed although read-only (sha-maps/also.txt)"    || ko "outside home not repointed: $(cat "${T}/outside/Q.md")"
 grep -q "missing', which does not exist" "${T}/run.log" && ok "missing outside path reported, not fatal" || ko "missing outside path not reported"
 [ -z "$(git status --porcelain)" ] && ok "harness tree clean after the closing commit" || ko "harness tree dirty: $(git status --porcelain | head -3 | tr '\n' ' ')"
 git log -1 --format='%an|%B' | grep -q "^Vixy|" && git log -1 --format=%B | grep -q "^Code: master-beta @ " && ok "closing commit by the supervisor, with its Code: trailer" || ko "no closing commit by the supervisor with a Code: trailer"

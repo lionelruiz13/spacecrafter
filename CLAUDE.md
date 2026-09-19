@@ -5,7 +5,15 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
 
 ## Two repositories, one tree
 
-- **Code**: `/home/claude/spacecrafter` — branch `master-beta` (PRs → `2023-master`).
+- **Code**: `/home/claude/spacecrafter` — branch **`main`** [vixy 2026-09-19: *"main branch is
+  the new normal"*, §11.260]. `master-beta` was the working branch until that day (PRs →
+  `2023-master`) and stays where it stood; harness trailers read `Code: main @ <sha>` from
+  then on, older `Code: master-beta @ …` trailers stay valid (`supervised-by.sh
+  --branch-alias=master-beta=main` judges them against `main`).
+- **Two OS users share both trees** (`claude` = the sessions, `foxy` = the owner, who is in
+  group `claude`): everything is group `claude`, group-writable, directories setgid, git
+  `core.sharedRepository=group` (§11.260). A file that is not group-writable is a defect to
+  fix at its cause, never to work around; a permission boundary is reported, not bypassed.
 - **Reasoning/harness**: `/home/claude/spacecrafter/claude` — its OWN git repo, orphan
   branch `CC-harness`, same GitHub remote. Nested; the code repo ignores `claude/`.
 - **Conventions** (full form in `claude/README.md`): every harness commit carries a
