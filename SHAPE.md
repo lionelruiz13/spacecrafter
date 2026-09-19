@@ -1,7 +1,8 @@
 # SHAPE.md - how this code must be shaped, how that is checked, and how to rebuild the understanding
 
 Derived view, written 2026-09-19 (session 33, Claude Fable 5.1) on the owner's request that the
-understanding be reconstructible by any later session or dispatched agent. The ledger wins on
+understanding be reconstructible by any later session or dispatched agent; tested the same day by a
+cold reader given nothing else (`INTENT/11.257.md`), its gaps fixed here. The ledger wins on
 divergence: rules = `INTENT.md` section 2.1 **G12 (S1)-(S9)**; derivations and the owner's words
 verbatim = `INTENT/11.249.md` ... `INTENT/11.255.md`; open work = section 13.B rows **B42-B46**.
 This file is the index and the operating manual; it states nothing those do not.
@@ -89,12 +90,14 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `d5d5128b`.
   after in the message; net lines negative; the harness gate that covers it named, or "not reached".
 - ACCEPTING A DELIVERY: behaviour evidence AND shape - net code lines, deleted/added, comment form,
   manager count. A delivery that only adds is a finding to explain, not a default.
-- AT EVERY SESSION CLOSE: `review.sh status` in the report to him (what waits, shape at both ends).
+- AT EVERY SESSION CLOSE: `review.sh status` in the report to him (what waits, shape at both ends);
+  its last line counts the source files changed OUTSIDE the header scope - when it is not zero, say
+  which `.cpp` carry the change (`ALL=1 review.sh status` lists them).
 - EXECUTORS: Fable only (owner, 2026-09-19): agent type `claude`, model `fable`. Disjoint file sets
   may run in parallel in one tree if none commits, builds or stashes; the supervisor verifies,
   builds and commits. Every task prompt binds G12 and names `spacecrafter.owner-shape` as the form.
 
-## 7. State at the close of session 33 (code `d5d5128b`, not pushed)
+## 7. State at the close of session 33 (code `70c43418`, not pushed)
 Done: compiles again at the five seams of his `9872651b` (`ab38b2cc`); agent prose out (`78c1e3be`,
 `42b908cc`); header what-for lines back and thinned to his form (`97e9c380`, `d5d5128b`).
 Work map: `s33-second-managers.md` (about 280 second managers, raw) + `INTENT/11.254.md` (four
@@ -105,10 +108,36 @@ baseline literals 0.004 / 0.2; movers take `velocityScaling(1)`; interactive zoo
 `setHalfFov(x, 0)`; `setMountMode` informs both engines - the last two are stopgaps until B42.
 Not verified: zoom feed; regime boundaries at his 2 / 16 / 256 px; gates predicted red are listed
 in 11.251(b). Only `b21_keypath_run.sh` was run on the rebuilt binary (ALL PASS).
-Next, in order: B45 instruments -> B42 wiring class (request + query table to him BEFORE building)
--> B44 movers -> B43 duplication inside the new path -> B46 shape at acceptance.
+Next, in order, and why: **B45** instruments first (nothing run so far reaches the movers, the zoom
+or the regime boundaries; a structural change needs its instruments before it) -> **B42** wiring
+class (the request + query table goes to him BEFORE building) -> **B44** movers (its callers are
+the dual-writer seams B42 reshapes; four points are NOT ruled: `DECISIONS_PENDING.md` section 14)
+-> **B43** duplication inside the new path -> **B46** shape numbers assembled by a script.
+No task section is minted yet in `fable-dispatch.md` for B42-B46: mint it, with its PREMISES block,
+before any dispatch (section 0b step 2). Sessions COMMIT in their own name and NEVER PUSH.
 
-## 8. Reading order for a cold session
+## 8. Terms a cold reader will meet
+- **Vixy = the owner = Calvin Ruiz** (git author); `[vixy: date]` tags his words in the ledger.
+- **The two paths and how the running one is decided**: old path = `src/bodyModule` + Navigator /
+  Observer / Projector; new path = `src/experimentalModule` + `Camera`. The MODE is
+  `SSystemFactory::drawModularSystem` (`ssystem_factory.hpp`: `setRenderPathMode`, `pathPinned`,
+  read through `getExperimentalPath()` / `Core::getExperimentalPath()`); default = new path, pinned;
+  `flag experimental_path on|off` pins one; `~/.spacecrafter/beta_features.ini` `[dual_path]
+  render_path = alternate` makes it alternate (harness README, top).
+- **Manager / second manager**: whoever holds or writes an information; a discrepancy between two
+  elements that CAN exist means a second manager (INTENT 11.247, `~/shared/QUEUE/Q-85.md`).
+- **RA = responsibility anchor**: the place where the necessary information is, so where a thing is
+  managed (`~/shared/asi-harness/requirements/RA-MODEL.md`). **I1-I9**: the owner's programming
+  invariants (interface = what-for, single authority, push not poll, tell don't ask, non-owning
+  references, rework at the earliest, as-if rule, no second artifact, enumerate at the anchor) -
+  they arrive in the session's system prompt; origin `~/shared/others/Principes.txt`.
+- **Seam**: a function in `Core` / `CoreLink` / `SSystemFactory` that drives both paths.
+- **Q-nn**: cross-project queue, `~/shared/QUEUE.md` (heads) and `~/shared/QUEUE/Q-nn.md`.
+- **xkey**: the harness's synthetic-key injector (dead on this host); **the b21 pattern**:
+  `harness/b21_keypath_run.sh` - the app under gdb on a FIFO, the driver calls the functions the
+  input path calls. **F<n> / B<n> / §5.n / §11.n**: task, open-item, defect and journal ids of the ledger.
+
+## 9. Reading order for a cold session
 `CLAUDE.md` (auto-loaded) -> this file -> `INTENT.md` G12 and rows B42-B46 -> the entry files
 11.249-11.255 for whatever the task touches -> `s33-second-managers.md` for the work map ->
 `harness/shape/review.sh status` to see what the owner has not read yet.

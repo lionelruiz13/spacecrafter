@@ -42,6 +42,8 @@ status)
     [ "$n" = 0 ] && exit 0
     echo; g log --reverse --format='  %h %ad %<(16,trunc)%an %s' --date=short "$REF..HEAD" -- "${SCOPE[@]}" | cut -c1-140
     echo; g diff --stat=110 "$REF" HEAD -- "${SCOPE[@]}" | tail -26
+    out=$(g diff --name-only "$REF" HEAD -- src shaders | /usr/bin/grep -c -v -E '\.(hpp|h)$')
+    [ "${ALL:-0}" = 1 ] || echo "outside this scope: $out other source file(s) changed (ALL=1 $0 status)"
     echo; echo "module shape, read -> HEAD:"
     ( cd "$ROOT" && python3 "$SHAPE/ratio.py" "$(g rev-parse --short "$REF")" | head -1 && python3 "$SHAPE/ratio.py" HEAD | head -1 ) | sed 's/^/  /'
     ;;
