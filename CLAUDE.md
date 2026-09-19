@@ -30,10 +30,33 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   ledger wins on divergence.
 - `claude/harness/` — verification scripts (`b*_run.sh`, `SC_BIN` overridable,
   default `../../build-claude/src/spacecrafter`); `claude/harness/README.md` for use.
+- `claude/SHAPE.md` — READ IT BEFORE TOUCHING CODE: how the code must be shaped (INTENT §2.1
+  G12 (S1)–(S9), owner-ruled 2026-09-19), the owner's form measured, the shape instruments
+  (`claude/harness/shape/`), the procedures, the state and the order of the open work
+  (§13 B42–B46). The owner's own module, as the form to write in, is checked out read-only at
+  `/home/claude/spacecrafter.owner-shape` (code `4dfe7bb3`). Work map of the deduplication:
+  `claude/s33-second-managers.md` + `claude/INTENT/11.254.md`.
+- `claude/harness/shape/review.sh` — the OWNER'S REVIEW QUEUE (code-repo ref
+  `refs/review/headers`): what he has not read yet. Sessions never move the mark; every
+  session close reports `review.sh status` to him.
 
 ## Standing rules (reasons in INTENT.md / README.md)
 
-- Old render path = comparison baseline, unchanged by construction; parity per
+- **Code shape (G12) — fires at every code edit, every dispatch, every acceptance.** Never
+  implement directly: every method NAME of the class against the intent, then the functions
+  manipulating the members concerned, read from a current checkout; then use / extend
+  minimally / build. One implementation per EFFECT, one entry point per INTENT (two intents
+  over one law stay two functions; an alias goes). The owner's declared names and values ARE
+  the ruling — consume them, never build beside them and ask. One responsible per MODE: old
+  path = Projector / Navigator / Observer, new path = Camera, the gating in a wiring class of
+  its own — never "inform both". Every duplication has a reason: recover it before touching it.
+  A comment is a what-for, ONE line, verb first, only where the name does not carry it; no
+  history, provenance, measurements or ledger references in code — git is code's archive, the
+  ledger holds derivations. Accept a delivery on behaviour AND shape (net code lines,
+  deleted/added, manager count); one that only adds is a finding to explain. Executors:
+  Fable only (agent type `claude`, model `fable`).
+- Old render path = comparison baseline, unchanged by construction **= everything in the old
+  path is gated by the old path [vixy 2026-09-19, §11.253]**; parity per
   §11.52(b) (perceptual, conditioned on old being physically exact).
 - Data values (poles, W0, physical constants): NEVER from recall — cited fetch only
   (§11.51(d) red line). Loaded data = `~/.spacecrafter/ssystem.ini` (ISO-8859).

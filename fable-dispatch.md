@@ -507,6 +507,22 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 **Trigger phrasing (reuse verbatim):** *"Dispatch round: run a supervised dispatch
 session per claude/fable-dispatch.md §0b."*
 
+**SHAPE BINDING [owner-ruled 2026-09-19, session 33 — INTENT §2.1 G12, §11.249–§11.255;
+operating manual `claude/SHAPE.md`; it OVERRIDES the steps below wherever they differ].**
+(a) **Executors are Fable**: agent type `claude`, model `fable` — the `opus-xhigh`
+definition is no longer dispatched (kept, not deleted; step 1's md5 assert and step 3's
+executor name are superseded by this line). Disjoint file sets may run in parallel in one
+tree when no agent commits, builds or stashes; the supervisor verifies, builds, commits.
+(b) **Every task section and prompt binds G12** and names
+`/home/claude/spacecrafter.owner-shape` as the form to write in; a task states the
+MANAGER COUNT of each information it touches, before and after (S7), and a fix that needs
+the shape to move is a STOP that goes to the owner. (c) **Step 4 accepts on behaviour AND
+shape**: net code lines, deleted/added, comment form (`harness/shape/form.py`), manager
+count (`harness/shape/writers.py`); a comment-only change is proven by
+`harness/shape/codeident.py`, RE-RUN BY THE SUPERVISOR; a delivery that only adds is a
+finding to explain. (d) **Step 5 reports `harness/shape/review.sh status`** to the owner:
+his review queue is decoupled from the sessions, and only he moves its mark.
+
 1. **Warm-up**: both trees clean + note HEADs; binary exists at code HEAD; re-read this
    file's update notes AND the §13 rows of the candidate tasks (this file is a view —
    §13 + the cited entries win). After any discontinuity, re-verify state before
