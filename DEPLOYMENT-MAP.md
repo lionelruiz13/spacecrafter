@@ -577,10 +577,10 @@ measured per frame for the first time: `look_at` **107.66°** apart AT REST (§5
 tracking entry a **56–65°** transient (§5.156, a veto point — the fix costs D15(c)), the two
 travel registries **156 000 km** at the end of the shipped `fly_to_selected.sts` (§5.157), five
 OLD-ONLY transitions found and unmeasured (§5.158), `Core::panView` **+31°** (§5.71), `moveto`
-**55.3 m** (§5.68). The FOV half of the class is CLOSED: one authority, code `2f9e6da7`,
+**55.3 m** (§5.68). The FOV half of the class is CLOSED: one authority, code `cfea62e7`,
 59.83° → 6.8e-06°.
 State (2026-09-19, §11.246, F122): the TRAVEL half is CLOSED too — **§5.157 FIXED**, code
-`ef2029d9`. The two registries were handed the same target (0.000 km), the same standoff
+`b21a9908`. The two registries were handed the same target (0.000 km), the same standoff
 (108 687.000 km) and the same dates; only the START differed, and the new path's was exactly
 `[0,0,0]` because a `move_to` issued in the same frame as the `transition_to target point`
 before it read a place the D8 barrier had refused to publish. On the tester's own act the two
@@ -708,7 +708,7 @@ baseline.
 **B1 / B2 / B3, the architectural lines** — Vixy-paced by design. **The exclusion is weaker than
 it was**: round-3 R21 retired the *"unless the content census says otherwise"* escape this map
 used to lean on, so what carries them now is the pacing argument alone.
-**[B3 STATE LINE, 2026-09-19, §11.248 (F123), code `8e065ce4`]** ONE piece of B3's residue left it
+**[B3 STATE LINE, 2026-09-19, §11.248 (F123), code `75a73e78`]** ONE piece of B3's residue left it
 today and it did NOT move the architectural line: the §11.97(e)/§11.100(g)(ii) surface-regime hole
 — a body drawing NOTHING between one and two of its own scaled radii — was minted as **§5.161**
 and closed by implementing the owner's own ruling of 2026-07-26 (§11.113(c)(ii)). It was fixed as a
@@ -756,8 +756,8 @@ one line-range citation that existed (`doc/developer-entry.md`, into the T4 tier
 false before this regeneration and now names the section instead.
 
 **Compile stamp.** Regenerated wholesale **2026-09-18** by Claude Opus 5 (task F120, recorded at
-INTENT §11.243) under the predecessor's own maintenance clause, at code `master-beta @ 52efbfa1`
-and harness `CC-harness @ 4cfa64d`. The predecessor — 855 lines, md5 `3c7350ce…`, compiled
+INTENT §11.243) under the predecessor's own maintenance clause, at code `master-beta @ 7a37e3be`
+and harness `CC-harness @ 1c2c5cf`. The predecessor — 855 lines, md5 `3c7350ce…`, compiled
 2026-08-29 and last amended 2026-09-13 — is byte-exact at
 `claude/DEPLOYMENT-MAP/archive/2026-09-18-predecessor.md`. The item-by-item correspondence between
 the two files is `claude/harness/artifacts/f120/disposition.tsv` (71 rows, one per predecessor

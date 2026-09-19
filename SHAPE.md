@@ -49,10 +49,10 @@ the code repo at `4dfe7bb3`; recreate: `git worktree add --detach --no-checkout 
 | headers | code lines per full-line comment | functions commented | blocks of 1 / 2 / 3+ lines | length median / p90 |
 |---|---|---|---|---|
 | his, 22 files | 9.0 | 21 % | 107 / 2 / 4 | 43 / 86 |
-| code `d5d5128b`, 68 files | 9.2 | 25 % | 369 / 10 / 2 | 47 / 77 |
+| code `57102bf4`, 68 files | 9.2 | 25 % | 369 / 10 / 2 | 47 / 77 |
 One line, verb first ("Return ...", "Update ...", "Draw ..."), on about one member in five; what it
 carries is a unit, a precondition, a caller responsibility, an ownership or thread rule. Module
-comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `d5d5128b`.
+comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
 
 ## 5. Instruments (`harness/shape/`, run from the CODE repo root) - what each proves and what it cannot
 - `review.sh` - the owner's REVIEW QUEUE: `status` / `show` / `added` / `commits` / `done [commit]` /
@@ -65,7 +65,7 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `d5d5128b`.
   Regex, no compiler: blind to writes through a non-member call, an alias, another class. A
   forwarder is usually the HEALTHY form (S2); intent is in the name, the tool cannot see it.
 - `trio_census.py [-v]` - every call into Projector / Navigator / Observer outside the module (668
-  at `d5d5128b`, 124 methods): the query surface of the wiring class (B42).
+  at `57102bf4`, 124 methods): the query surface of the wiring class (B42).
 - `form.py` - the table of section 4. `clones.py` - literal text clones (measures TEXT only).
 - `strip_prose.py <rev> <files>` - deletes agent-written comment runs of >= MIN (3) lines.
   `codeident.py <rev> [files]` - proof of a comment-only change: code tokens and preprocessor
@@ -97,9 +97,9 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `d5d5128b`.
   may run in parallel in one tree if none commits, builds or stashes; the supervisor verifies,
   builds and commits. Every task prompt binds G12 and names `spacecrafter.owner-shape` as the form.
 
-## 7. State at the close of session 33 (code `70c43418`, not pushed)
-Done: compiles again at the five seams of his `9872651b` (`ab38b2cc`); agent prose out (`78c1e3be`,
-`42b908cc`); header what-for lines back and thinned to his form (`97e9c380`, `d5d5128b`).
+## 7. State at the close of session 33 (code `a594b31a`, not pushed)
+Done: compiles again at the five seams of his `8ce65acc` (`78455b88`); agent prose out (`3c5952ad`,
+`b57d0642`); header what-for lines back and thinned to his form (`a49df0f1`, `57102bf4`).
 Work map: `s33-second-managers.md` (about 280 second managers, raw) + `INTENT/11.254.md` (four
 classes, the wiring class's request table). NOT targets: laws ported beside a still-compiled
 original (they leave with the old path); `draw` / `drawLoaded` (his optimization pair).

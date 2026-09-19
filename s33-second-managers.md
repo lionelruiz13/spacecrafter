@@ -1,13 +1,13 @@
 # Second managers named by the deleted prose - five raw agent harvests (session 33, 2026-09-19)
 
-Companion of INTENT 11.254 (the ledger wins on divergence). Five Claude Fable agent reports, copied from their transcripts by script and UNINTERPRETED: each read the pre-strip headers at code `ab38b2cc` and listed every place where the prose itself said one information or one decision is managed twice. `[code]` = the agent confirmed it in the source. Nothing here was fixed. Non-ASCII characters of the reports are kept as written.
+Companion of INTENT 11.254 (the ledger wins on divergence). Five Claude Fable agent reports, copied from their transcripts by script and UNINTERPRETED: each read the pre-strip headers at code `78455b88` and listed every place where the prose itself said one information or one decision is managed twice. `[code]` = the agent confirmed it in the source. Nothing here was fixed. Non-ASCII characters of the reports are kept as written.
 
 
 ---
 
 ## HARVEST: seam - seam + tools headers (core, coreLink, ssystem_factory, navigator, io, log...)
 
-All 18 files pass `python3 claude/harness/shape/codeident.py 78c1e3be <18 files>` (18 file(s), 0 FAIL): code tokens and preprocessor lines identical, every human comment line kept. The ASCII gate (`f70_ascii.py gate`) also passes and no added line exceeds 121 characters. Nothing was committed, built or staged; no other file was touched.
+All 18 files pass `python3 claude/harness/shape/codeident.py 3c5952ad <18 files>` (18 file(s), 0 FAIL): code tokens and preprocessor lines identical, every human comment line kept. The ASCII gate (`f70_ascii.py gate`) also passes and no added line exceeds 121 characters. Nothing was committed, built or staged; no other file was touched.
 
 One procedure deviation: in `src/tools/log.hpp` the edits were applied by a python exact-string replace (each string asserted unique) instead of the Edit tool. The other 17 files used Edit.
 
@@ -285,11 +285,11 @@ Format: information/decision -> each manager (file:member). Entries marked "(cod
 
 ## HARVEST: services - CameraAnchors, SessionFile, ShadowService, Environment*, ModularSystemFormat, ModuleLoader, ModularObject, ModularBodyPtr
 
-All 11 headers in src/experimentalModule/ now carry their contract comments, comments only, and all 11 PASS `python3 claude/harness/shape/codeident.py 78c1e3be <files>` (11 file(s), 0 FAIL, exit 0). `f70_ascii.py gate` PASS, 0 non-ASCII bytes, and no added line over 120 characters. A grep of the added lines found no INTENT/S/B/F/Q/A/D/I references, vixy tags, dates, "measured", "old path" or "parity". Nothing was built, committed, staged or stashed, and no other file was touched.
+All 11 headers in src/experimentalModule/ now carry their contract comments, comments only, and all 11 PASS `python3 claude/harness/shape/codeident.py 3c5952ad <files>` (11 file(s), 0 FAIL, exit 0). `f70_ascii.py gate` PASS, 0 non-ASCII bytes, and no added line over 120 characters. A grep of the added lines found no INTENT/S/B/F/Q/A/D/I references, vixy tags, dates, "measured", "old path" or "parity". Nothing was built, committed, staged or stashed, and no other file was touched.
 
 ## 1. Per file
 
-`+/-` are raw diff lines against 78c1e3be. A rewritten comment counts as +1 -1. A trailing comment added to a code line counts as +1 -1 of that code line, with identical tokens.
+`+/-` are raw diff lines against 3c5952ad. A rewritten comment counts as +1 -1. A trailing comment added to a code line counts as +1 -1 of that code line, with identical tokens.
 
 | File | Comment-only lines | Diff | codeident |
 |---|---|---|---|
@@ -466,7 +466,7 @@ Format: information or decision -> the managers. "[code]" marks items I confirme
 
 ## HARVEST: render - Renderer, ModularSystem, BodyModule, PipelineFamily, RenderChain, ResourceHub, ProjectionTransfer
 
-All 7 files PASS `python3 claude/harness/shape/codeident.py 78c1e3be <files>` (7 file(s), 0 FAIL). Nothing committed or built, and no other file touched. Added lines are pure ASCII, at most 120 characters, and a scan of the diff found none of the forbidden content. Net +76 comment lines over 563 code lines, about 1 per 7.4. Paths are under `/home/claude/spacecrafter/src/experimentalModule/`.
+All 7 files PASS `python3 claude/harness/shape/codeident.py 3c5952ad <files>` (7 file(s), 0 FAIL). Nothing committed or built, and no other file touched. Added lines are pure ASCII, at most 120 characters, and a scan of the diff found none of the forbidden content. Net +76 comment lines over 563 code lines, about 1 per 7.4. Paths are under `/home/claude/spacecrafter/src/experimentalModule/`.
 
 ## 1. Per file
 | File | Comment lines added | codeident summary line |
@@ -739,7 +739,7 @@ FILE: /home/claude/spacecrafter/src/experimentalModule/ModularBody.hpp (comments
 
 ## 1. Result
 - Comment-only lines 177 -> 258 (net +81; about 100 what-for lines written, 19 agent history/ledger lines removed or folded). Added density = 1 comment line per 13.2 code lines (1066 code lines, unchanged).
-- `python3 claude/harness/shape/codeident.py 78c1e3be src/experimentalModule/ModularBody.hpp` ->
+- `python3 claude/harness/shape/codeident.py 3c5952ad src/experimentalModule/ModularBody.hpp` ->
   `PASS src/experimentalModule/ModularBody.hpp: lines 1302 -> 1375, comment lines 177 -> 258, human/legacy comment lines kept 111/111` / `1 file(s), 0 FAIL`
 - Also checked: 0 non-ASCII bytes, `f70_ascii.py gate` PASS, 0 forbidden-content hits (INTENT/Sx.y/Bn/Fn/Dn/In/vixy/measured/dates/row n/parity) in anything I wrote, 2 lines at 121 chars, rest <= 120 (the three pre-existing long trailing comments on orbit/trail/tailComponents only lost their "(row N)").
 - Owner lines restored verbatim where the strip had taken them with an agent block: "Draw this body if it is visible", "Use cached informations from last update" (transformParentToBody), "Create a new child body. If a body with the same englishName exists, it is replaced by this one.", "Get the distance reference for the altitude", "Find a better reference body, return nullptr if this body is the best one", "This value should be set before calling update", "Relations".
@@ -814,7 +814,7 @@ Loader: legacy vs composed
 
 ## 1. Per file
 
-All 38 headers with deleted lines in the five directories were edited, comments only. `python3 claude/harness/shape/codeident.py 78c1e3be <38 files>` ends with `38 file(s), 0 FAIL`.
+All 38 headers with deleted lines in the five directories were edited, comments only. `python3 claude/harness/shape/codeident.py 3c5952ad <38 files>` ends with `38 file(s), 0 FAIL`.
 
 - **Added lines:** no non-ASCII bytes, no line over 120 characters, no INTENT/S/B/F/Q/D references, no tags, no dates, no "measured" or parity wording.
 - **Human comments:** none touched. The only one in scope is BasicMesh's include-guard comment, kept 1/1.
@@ -823,7 +823,7 @@ All 38 headers with deleted lines in the five directories were edited, comments 
 
 Table columns:
 - **Net** is the net change in comment lines, as reported by codeident.
-- **+/-** is the `git diff --numstat` against 78c1e3be where I ran it. The minus side counts agent 1-2 line history comments that I rewrote or deleted, all blamed to Claude.
+- **+/-** is the `git diff --numstat` against 3c5952ad where I ran it. The minus side counts agent 1-2 line history comments that I rewrote or deleted, all blamed to Claude.
 - A dash means no numstat was taken after the final trims.
 
 Files under `src/experimentalModule/`:
