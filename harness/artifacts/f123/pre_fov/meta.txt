@@ -1,0 +1,22 @@
+=== F123 run 'pre_fov' ===
+wall clock start : 2026-09-19 09:33:02 CEST
+leg              : fov
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 00a73121c0b4a3611c4108c7c611ee45
+binary mtime     : 2026-09-19 08:41:58.081243750 +0200
+[pre_fov] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[pre_fov] gpu: free 29406 MiB / used 2701 / total 32607 ; need 6144 MiB (Sec.11.238)
+[pre_fov] clear to launch
+--- canary --no-scene (exit 0) ---
+fingerprint: 32 members -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260919-093302/fingerprint.json
+
+=== CANARY VERDICT: exit 0  (0 fail, 0 note; scene arm NOT run)
+    fingerprint green -- but the photometric member is the one 2026-08-29 needed: run without --no-scene before trusting a measurement.
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=296821
+tcp up after 6x2s
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+wall clock end   : 2026-09-19 09:35:57 CEST

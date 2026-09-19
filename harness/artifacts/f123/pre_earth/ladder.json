@@ -1,0 +1,212 @@
+{
+ "leg": "earth",
+ "jd": 2461234.0,
+ "rungs": [
+  {
+   "rung": "cal",
+   "lon": 0,
+   "alt_m": 3000000,
+   "body": {
+    "dist_km": 9378.14027403852,
+    "scaledDatumRadius_km": 6378.140253190728,
+    "boundingRadius_km": 6569.484186723152,
+    "screenSize": 0.494088471,
+    "scaling": 1,
+    "scalingTarget": 1,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 3,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 1,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "e3_cal0_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125628,
+    "disc_px": 125629,
+    "lit_frame": 795991,
+    "mean_disc": 163.4746993130567
+   },
+   "new": {
+    "png": "e3_cal0_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 194,
+    "disc_px": 125629,
+    "lit_frame": 11995,
+    "mean_disc": 3.7466428929626123
+   }
+  },
+  {
+   "rung": "cal",
+   "lon": 90,
+   "alt_m": 3000000,
+   "body": {
+    "dist_km": 9378.14027403852,
+    "scaledDatumRadius_km": 6378.140253190728,
+    "boundingRadius_km": 6569.484186723152,
+    "screenSize": 0.494088471,
+    "scaling": 1,
+    "scalingTarget": 1,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 3,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 1,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "e3_cal90_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 19792,
+    "disc_px": 125629,
+    "lit_frame": 254146,
+    "mean_disc": 20.491590317522228
+   },
+   "new": {
+    "png": "e3_cal90_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 109,
+    "disc_px": 125629,
+    "lit_frame": 3949,
+    "mean_disc": 0.10615383390777607
+   }
+  },
+  {
+   "rung": "cal",
+   "lon": 180,
+   "alt_m": 3000000,
+   "body": {
+    "dist_km": 9378.14027403852,
+    "scaledDatumRadius_km": 6378.140253190728,
+    "boundingRadius_km": 6569.484186723152,
+    "screenSize": 0.494088471,
+    "scaling": 1,
+    "scalingTarget": 1,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 3,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 1,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "e3_cal180_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 0,
+    "disc_px": 125629,
+    "lit_frame": 3398,
+    "mean_disc": 11.31732322950911
+   },
+   "new": {
+    "png": "e3_cal180_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 239,
+    "disc_px": 125629,
+    "lit_frame": 6065,
+    "mean_disc": 3.747263768715822
+   }
+  },
+  {
+   "rung": "cal",
+   "lon": 270,
+   "alt_m": 3000000,
+   "body": {
+    "dist_km": 9378.14027403852,
+    "scaledDatumRadius_km": 6378.140253190728,
+    "boundingRadius_km": 6569.484186723152,
+    "screenSize": 0.494088471,
+    "scaling": 1,
+    "scalingTarget": 1,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 3,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 1,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "e3_cal270_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 1682,
+    "disc_px": 125629,
+    "lit_frame": 188889,
+    "mean_disc": 14.103248453780576
+   },
+   "new": {
+    "png": "e3_cal270_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 110,
+    "disc_px": 125629,
+    "lit_frame": 16001,
+    "mean_disc": 0.10927413256493325
+   }
+  },
+  {
+   "rung": 3000000,
+   "lon": 0,
+   "alt_m": 3000000,
+   "body": {
+    "dist_km": 9378.14027403852,
+    "scaledDatumRadius_km": 6378.140253190728,
+    "boundingRadius_km": 6569.484186723152,
+    "screenSize": 0.494088471,
+    "scaling": 1,
+    "scalingTarget": 1,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 3,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 1,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "e3_a3000_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125628,
+    "disc_px": 125629,
+    "lit_frame": 795991,
+    "mean_disc": 163.4746993130567
+   },
+   "new": {
+    "png": "e3_a3000_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 194,
+    "disc_px": 125629,
+    "lit_frame": 11995,
+    "mean_disc": 3.7466428929626123
+   }
+  }
+ ],
+ "lon": 0
+}

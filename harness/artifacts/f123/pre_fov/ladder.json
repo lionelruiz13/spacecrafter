@@ -1,0 +1,339 @@
+{
+ "leg": "fov",
+ "jd": 2461234.0,
+ "rungs": [
+  {
+   "rung": "cal",
+   "lon": 0,
+   "alt_m": 12000000,
+   "body": {
+    "dist_km": 20687.00023256072,
+    "scaledDatumRadius_km": 8687.00025388806,
+    "boundingRadius_km": 8860.739839194199,
+    "screenSize": 0.281791627,
+    "scaling": 5,
+    "scalingTarget": 5,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 2,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 0,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "fv_cal0_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 0,
+    "disc_px": 125629,
+    "lit_frame": 4836,
+    "mean_disc": 3.5422553709732627
+   },
+   "new": {
+    "png": "fv_cal0_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 0,
+    "disc_px": 125629,
+    "lit_frame": 4787,
+    "mean_disc": 3.5434175230241425
+   }
+  },
+  {
+   "rung": "cal",
+   "lon": 90,
+   "alt_m": 12000000,
+   "body": {
+    "dist_km": 20687.00023256072,
+    "scaledDatumRadius_km": 8687.00025388806,
+    "boundingRadius_km": 8860.739839194199,
+    "screenSize": 0.281791627,
+    "scaling": 5,
+    "scalingTarget": 5,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 2,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 0,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "fv_cal90_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 3,
+    "disc_px": 125629,
+    "lit_frame": 22010,
+    "mean_disc": 4.341951301053101
+   },
+   "new": {
+    "png": "fv_cal90_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 16,
+    "disc_px": 125629,
+    "lit_frame": 21765,
+    "mean_disc": 4.353341983140836
+   }
+  },
+  {
+   "rung": "cal",
+   "lon": 180,
+   "alt_m": 12000000,
+   "body": {
+    "dist_km": 20687.00023256072,
+    "scaledDatumRadius_km": 8687.00025388806,
+    "boundingRadius_km": 8860.739839194199,
+    "screenSize": 0.281791627,
+    "scaling": 5,
+    "scalingTarget": 5,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 2,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 0,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "fv_cal180_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125626,
+    "disc_px": 125629,
+    "lit_frame": 259639,
+    "mean_disc": 163.2617070899235
+   },
+   "new": {
+    "png": "fv_cal180_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 259394,
+    "mean_disc": 163.24956021300815
+   }
+  },
+  {
+   "rung": "cal",
+   "lon": 270,
+   "alt_m": 12000000,
+   "body": {
+    "dist_km": 20687.00023256072,
+    "scaledDatumRadius_km": 8687.00025388806,
+    "boundingRadius_km": 8860.739839194199,
+    "screenSize": 0.281791627,
+    "scaling": 5,
+    "scalingTarget": 5,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 2,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 0,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "fv_cal270_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 105738,
+    "disc_px": 125629,
+    "lit_frame": 196739,
+    "mean_disc": 80.62007975865446
+   },
+   "new": {
+    "png": "fv_cal270_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 105576,
+    "disc_px": 125629,
+    "lit_frame": 196442,
+    "mean_disc": 80.5323213589219
+   }
+  },
+  {
+   "rung": "alt9000_fov180",
+   "lon": 180,
+   "alt_m": 9000000,
+   "fov": 180,
+   "body": {
+    "dist_km": 17687.00030147165,
+    "scaledDatumRadius_km": 8687.00025388806,
+    "boundingRadius_km": 8860.739839194199,
+    "screenSize": 0.334050089,
+    "scaling": 5,
+    "scalingTarget": 5,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 2,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 0,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "fv_a9000_f180_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 364301,
+    "mean_disc": 169.53345167119056
+   },
+   "new": {
+    "png": "fv_a9000_f180_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 364126,
+    "mean_disc": 169.59553924651155
+   }
+  },
+  {
+   "rung": "alt9000_fov60",
+   "lon": 180,
+   "alt_m": 9000000,
+   "fov": 60,
+   "body": {
+    "dist_km": 17687.00030147165,
+    "scaledDatumRadius_km": 8687.00025388806,
+    "boundingRadius_km": 8860.739839194199,
+    "screenSize": 1.0021503,
+    "scaling": 5,
+    "scalingTarget": 5,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 2,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 0,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "fv_a9000_f60_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3239721,
+    "mean_disc": 174.68347276504628
+   },
+   "new": {
+    "png": "fv_a9000_f60_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3239973,
+    "mean_disc": 174.40247076709994
+   }
+  },
+  {
+   "rung": "alt8000_fov180",
+   "lon": 180,
+   "alt_m": 8000000,
+   "fov": 180,
+   "body": {
+    "dist_km": 16687.00107243131,
+    "scaledDatumRadius_km": 8687.00025388806,
+    "boundingRadius_km": 8860.739839194199,
+    "screenSize": 0.356364578,
+    "scaling": 5,
+    "scalingTarget": 5,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 2,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 0,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "fv_a8000_f180_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 414094,
+    "mean_disc": 170.9759450445359
+   },
+   "new": {
+    "png": "fv_a8000_f180_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 7640,
+    "disc_px": 125629,
+    "lit_frame": 12088,
+    "mean_disc": 12.616330624298529
+   }
+  },
+  {
+   "rung": "alt8000_fov60",
+   "lon": 180,
+   "alt_m": 8000000,
+   "fov": 60,
+   "body": {
+    "dist_km": 16687.00107243131,
+    "scaledDatumRadius_km": 8687.00025388806,
+    "boundingRadius_km": 8860.739839194199,
+    "screenSize": 1.0690937,
+    "scaling": 5,
+    "scalingTarget": 5,
+    "visible": true,
+    "routing": {
+     "far": 1,
+     "near": 2,
+     "grounded": 0,
+     "in": 0,
+     "orbit": 1,
+     "trail": 0,
+     "tail": 0
+    }
+   },
+   "old": {
+    "png": "fv_a8000_f60_old.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 125629,
+    "disc_px": 125629,
+    "lit_frame": 3299033,
+    "mean_disc": 175.5805745488701
+   },
+   "new": {
+    "png": "fv_a8000_f60_new.png",
+    "w": 2048,
+    "h": 2048,
+    "lit_disc": 3084,
+    "disc_px": 125629,
+    "lit_frame": 66319,
+    "mean_disc": 15.383327098042649
+   }
+  }
+ ],
+ "lon": 180
+}

@@ -1,0 +1,46 @@
+leg=earth out=/home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth
+1789802929.529 >> timerate rate 0
+1789802930.329 >> deselect
+1789802932.529 >> date jday 2461234.0
+1789802933.330 >> meteors zhr 0
+1789802936.530 >> set home_planet Earth
+1789802938.230 >> select planet Earth pointer off
+1789802942.431 >> flag track_object on
+1789802944.631 >> zoom fov 180 duration 0
+1789802947.332 >> moveto lat 0 lon 0 alt 3000000 duration 0
+1789802949.032 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal0.json
+1789802951.736 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal0_new.png
+1789802954.344 >> flag experimental_path off
+1789802957.044 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal0_old.png
+1789802959.635 >> flag experimental_path on
+CAL lon=  0  dist=9378.1 km  old.lit_disc=125628  new.lit_disc=194
+1789802962.336 >> moveto lat 0 lon 90 alt 3000000 duration 0
+1789802964.036 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal90.json
+1789802966.740 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal90_new.png
+1789802969.332 >> flag experimental_path off
+1789802972.033 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal90_old.png
+1789802974.626 >> flag experimental_path on
+CAL lon= 90  dist=9378.1 km  old.lit_disc=19792  new.lit_disc=109
+1789802977.326 >> moveto lat 0 lon 180 alt 3000000 duration 0
+1789802979.027 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal180.json
+1789802981.731 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal180_new.png
+1789802984.322 >> flag experimental_path off
+1789802987.022 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal180_old.png
+1789802989.616 >> flag experimental_path on
+CAL lon=180  dist=9378.1 km  old.lit_disc=0  new.lit_disc=239
+1789802992.316 >> moveto lat 0 lon 270 alt 3000000 duration 0
+1789802994.017 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal270.json
+1789802996.721 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal270_new.png
+1789802999.315 >> flag experimental_path off
+1789803002.016 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_cal270_old.png
+1789803004.610 >> flag experimental_path on
+CAL lon=270  dist=9378.1 km  old.lit_disc=1682  new.lit_disc=110
+CALIBRATED lon=0 (old lit_disc 125628 of 125663)
+1789803007.311 >> moveto lat 0 lon 0 alt 3000000 duration 0
+1789803009.011 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_a3000.json
+1789803011.715 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_a3000_new.png
+1789803014.308 >> flag experimental_path off
+1789803017.008 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_earth/e3_a3000_old.png
+1789803019.602 >> flag experimental_path on
+RUNG alt=  3000000 m  dist=    9378.1 km  screenSize=0.494088471  routing={'far': 1, 'near': 3, 'grounded': 0, 'in': 0, 'orbit': 1, 'trail': 1, 'tail': 0}  old.lit_disc=125628  new.lit_disc=194
+done

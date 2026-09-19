@@ -1,0 +1,81 @@
+leg=moon5 out=/home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5
+1789802498.007 >> timerate rate 0
+1789802498.808 >> deselect
+1789802501.008 >> date jday 2461234.0
+1789802501.809 >> meteors zhr 0
+1789802505.009 >> set home_planet Moon
+1789802506.709 >> select planet Moon pointer off
+1789802510.910 >> flag track_object on
+1789802513.110 >> zoom fov 180 duration 0
+1789802515.811 >> moveto lat 0 lon 0 alt 12000000 duration 0
+1789802517.511 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal0.json
+1789802520.216 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal0_new.png
+1789802522.818 >> flag experimental_path off
+1789802525.518 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal0_old.png
+1789802528.100 >> flag experimental_path on
+CAL lon=  0  dist=20687.0 km  old.lit_disc=0  new.lit_disc=0
+1789802530.801 >> moveto lat 0 lon 90 alt 12000000 duration 0
+1789802532.501 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal90.json
+1789802535.205 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal90_new.png
+1789802537.793 >> flag experimental_path off
+1789802540.494 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal90_old.png
+1789802543.087 >> flag experimental_path on
+CAL lon= 90  dist=20687.0 km  old.lit_disc=3  new.lit_disc=16
+1789802545.787 >> moveto lat 0 lon 180 alt 12000000 duration 0
+1789802547.487 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal180.json
+1789802550.192 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal180_new.png
+1789802552.779 >> flag experimental_path off
+1789802555.480 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal180_old.png
+1789802558.070 >> flag experimental_path on
+CAL lon=180  dist=20687.0 km  old.lit_disc=125626  new.lit_disc=125629
+1789802560.770 >> moveto lat 0 lon 270 alt 12000000 duration 0
+1789802562.471 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal270.json
+1789802565.175 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal270_new.png
+1789802567.768 >> flag experimental_path off
+1789802570.469 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_cal270_old.png
+1789802573.045 >> flag experimental_path on
+CAL lon=270  dist=20687.0 km  old.lit_disc=105738  new.lit_disc=105576
+CALIBRATED lon=180 (old lit_disc 125626 of 125663)
+1789802575.746 >> moveto lat 0 lon 180 alt 12000000 duration 0
+1789802577.446 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a12000.json
+1789802580.150 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a12000_new.png
+1789802582.743 >> flag experimental_path off
+1789802585.444 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a12000_old.png
+1789802588.038 >> flag experimental_path on
+RUNG alt= 12000000 m  dist=   20687.0 km  screenSize=0.281791627  routing={'far': 1, 'near': 2, 'grounded': 0, 'in': 0, 'orbit': 1, 'trail': 0, 'tail': 0}  old.lit_disc=125626  new.lit_disc=125629
+1789802590.738 >> moveto lat 0 lon 180 alt 9000000 duration 0
+1789802592.439 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a9000.json
+1789802595.143 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a9000_new.png
+1789802597.737 >> flag experimental_path off
+1789802600.438 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a9000_old.png
+1789802603.033 >> flag experimental_path on
+RUNG alt=  9000000 m  dist=   17687.0 km  screenSize=0.334050089  routing={'far': 1, 'near': 2, 'grounded': 0, 'in': 0, 'orbit': 1, 'trail': 0, 'tail': 0}  old.lit_disc=125629  new.lit_disc=125629
+1789802605.734 >> moveto lat 0 lon 180 alt 8700000 duration 0
+1789802607.434 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a8700.json
+1789802610.138 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a8700_new.png
+1789802612.734 >> flag experimental_path off
+1789802615.435 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a8700_old.png
+1789802618.030 >> flag experimental_path on
+RUNG alt=  8700000 m  dist=   17387.0 km  screenSize=0.340427011  routing={'far': 1, 'near': 2, 'grounded': 0, 'in': 0, 'orbit': 1, 'trail': 0, 'tail': 0}  old.lit_disc=125629  new.lit_disc=125629
+1789802620.730 >> moveto lat 0 lon 180 alt 8670000 duration 0
+1789802622.431 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a8670.json
+1789802625.135 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a8670_new.png
+1789802627.727 >> flag experimental_path off
+1789802630.427 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a8670_old.png
+1789802633.022 >> flag experimental_path on
+RUNG alt=  8670000 m  dist=   17357.0 km  screenSize=0.341078967  routing={'far': 1, 'near': 2, 'grounded': 0, 'in': 0, 'orbit': 1, 'trail': 0, 'tail': 0}  old.lit_disc=125629  new.lit_disc=7637
+1789802635.722 >> moveto lat 0 lon 180 alt 8000000 duration 0
+1789802637.423 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a8000.json
+1789802640.127 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a8000_new.png
+1789802642.719 >> flag experimental_path off
+1789802645.420 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a8000_old.png
+1789802647.997 >> flag experimental_path on
+RUNG alt=  8000000 m  dist=   16687.0 km  screenSize=0.356364578  routing={'far': 1, 'near': 2, 'grounded': 0, 'in': 0, 'orbit': 1, 'trail': 0, 'tail': 0}  old.lit_disc=125629  new.lit_disc=7640
+1789802650.698 >> moveto lat 0 lon 180 alt 5000000 duration 0
+1789802652.398 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a5000.json
+1789802655.102 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a5000_new.png
+1789802657.686 >> flag experimental_path off
+1789802660.387 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_moon5/m5_a5000_old.png
+1789802662.984 >> flag experimental_path on
+RUNG alt=  5000000 m  dist=   13687.0 km  screenSize=0.448273599  routing={'far': 1, 'near': 2, 'grounded': 0, 'in': 0, 'orbit': 1, 'trail': 0, 'tail': 0}  old.lit_disc=125629  new.lit_disc=7649
+done

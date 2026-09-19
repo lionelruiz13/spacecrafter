@@ -1,0 +1,28 @@
+leg=default out=/home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default
+1789803049.820 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/t0_new.png
+TRANSIENT t0 lit_disc=125629 lit_frame=3299114
+1789803051.585 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/t1_new.png
+TRANSIENT t1 lit_disc=125629 lit_frame=3191532
+1789803053.361 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/t2_new.png
+TRANSIENT t2 lit_disc=125629 lit_frame=3191564
+1789803055.144 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/t3_new.png
+TRANSIENT t3 lit_disc=125629 lit_frame=3191590
+1789803056.928 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/t4_new.png
+TRANSIENT t4 lit_disc=125629 lit_frame=3191599
+1789803058.710 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/t5_new.png
+TRANSIENT t5 lit_disc=125629 lit_frame=3191642
+1789803081.792 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/settled_new.png
+SETTLED lit_disc=125629
+1789803083.383 >> timerate rate 0
+1789803084.183 >> deselect
+1789803086.383 >> date jday 2461234.0
+1789803087.184 >> meteors zhr 0
+1789803092.884 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/aa1_new.png
+1789803095.986 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/aa2_new.png
+1789803099.088 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/def_new.png
+1789803101.688 >> flag experimental_path off
+1789803104.389 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/def_old.png
+1789803106.989 >> flag experimental_path on
+1789803109.189 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f123/pre_default/def_dump.json
+DEFAULT aa1=125629 aa2=125629 old=125629 new=125629 dist=6378.215 km
+done
