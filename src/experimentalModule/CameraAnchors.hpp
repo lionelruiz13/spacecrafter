@@ -193,6 +193,35 @@ public:
         return moving;
     }
 
+    //! THE TRAVEL'S INPUTS, as installTravel received them - the five values
+    //! that decide where a travel LANDS (S11.246). Read-only, for the seam
+    //! recorder: old's AnchorManager keeps the same five in its own members,
+    //! so the pair is what discriminates "the two laws disagree" from "the two
+    //! laws were handed different inputs". Kept unconditionally (five doubles
+    //! and two vectors written once per travel install, which a show performs
+    //! a handful of times) rather than behind the recorder's own flag, so the
+    //! values exist whether or not anything is watching - D11's denominator is
+    //! per FRAME and this is per INSTALL.
+    inline const Vec3d &getTravelStart() const {
+        return travelStart;
+    }
+    inline const Vec3d &getTravelDirection() const {
+        return travelDirection;
+    }
+    inline double getTravelDistance() const {
+        return travelDistance;
+    }
+    inline double getTravelStartTime() const {
+        return travelStartTime;
+    }
+    //! The last INSTALL's own arrival date. Not `travelArrival`: that member is
+    //! the in-flight flag's retirement date and a zero-duration install never
+    //! writes it, so reading it would report the previous travel's landing for
+    //! the command that just placed a point.
+    inline double getTravelEndTime() const {
+        return travelEndTime;
+    }
+
     //! Name of the anchor the camera was last switched to through this class
     //! ("" if none). Not a poll of the camera: the camera can leave an anchor by
     //! other means (set home_planet, free-flight escalation), and this reports
@@ -253,6 +282,22 @@ private:
     //! `arrivalTime`); the trajectory itself lives in the anchor body's orbit.
     bool moving = false;
     double travelArrival = 0;
+    //! The last travel's INPUTS, as installTravel computed them (S11.246's
+    //! discriminator - the accessors above say why). Not state the travel
+    //! reads back: the law itself lives in the anchor body's orbit and owns
+    //! its own copy, so these are a record and never a second authority.
+    Vec3d travelStart{};
+    Vec3d travelDirection{};
+    double travelDistance = 0;
+    double travelStartTime = 0;
+    double travelEndTime = 0;
+    //! Install counter - the seam recorder's edge, so an install that never
+    //! sets `moving` (a zero-duration place) is still seen exactly once.
+    unsigned int travelSeq = 0;
+public:
+    inline unsigned int getTravelSeq() const {
+        return travelSeq;
+    }
 };
 
 #endif /* end of include guard: CAMERA_ANCHORS_HPP_ */

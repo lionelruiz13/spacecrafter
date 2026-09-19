@@ -2281,10 +2281,57 @@ static double seamAngleDeg(const Vec3d &a, const Vec3d &b)
 	return std::acos(c) * (180. / M_PI);
 }
 
+void Core::recordSeamTravel(int engine, double jd, const Vec3d &start,
+                            const Vec3d &dir, double distance, double t0, double t1)
+{
+	++seamTravelTotal;
+	if (seamTravels.size() >= SEAM_TRAVEL_CAPACITY)
+		return; // the count above is what says a later install was dropped
+	SeamTravel t{};
+	t.frame = seamFrame;
+	t.engine = engine;
+	t.jd = jd;
+	for (int i = 0; i < 3; ++i) {
+		t.start[i] = start[i];
+		t.dir[i] = dir[i];
+	}
+	t.distance = distance;
+	t.startTime = t0;
+	t.endTime = t1;
+	seamTravels.push_back(t);
+}
+
 void Core::recordSeamStep(int delta_time)
 {
 	if (!seamRecording)
 		return;
+	// ---- TRAVEL INSTALLS: the inputs, on the edge ------------------------
+	// Polled rather than pushed, so this function keeps its READBACK-ONLY
+	// contract and neither registry gains a line that knows a recorder exists.
+	// The new registry's counter sees every install (including the
+	// zero-duration one `transition_to target point` performs, which is the
+	// command that decides where the NEXT travel starts from); old's flag sees
+	// only the travels that raise `moving`.
+	if (ssystemFactory) {
+		if (const CameraAnchors *ca = ssystemFactory->readCameraAnchors()) {
+			const unsigned int seq = ca->getTravelSeq();
+			if (seq != lastTravelSeqNew) {
+				lastTravelSeqNew = seq;
+				recordSeamTravel(1, timeMgr->getJDay(), ca->getTravelStart(),
+					ca->getTravelDirection(), ca->getTravelDistance(),
+					ca->getTravelStartTime(), ca->getTravelEndTime());
+			}
+		}
+		if (const AnchorManager *am = ssystemFactory->readAnchorManager()) {
+			const bool mv = am->isTravelling();
+			if (mv && !lastTravelMovingOld) {
+				recordSeamTravel(0, timeMgr->getJDay(), am->getTravelStart(),
+					am->getTravelDirection(), am->getTravelDistance(),
+					am->getTravelStartTime(), am->getTravelEndTime());
+			}
+			lastTravelMovingOld = mv;
+		}
+	}
 	SeamStep s{};
 	s.frame = seamFrame++;
 	s.deltaTime = delta_time;
@@ -2406,6 +2453,22 @@ void Core::dumpSeamTrace(std::ostream &out) const
 	    << ",\"total\":" << seamTotal
 	    << ",\"dropped\":" << (seamTotal > SEAM_TRACE_CAPACITY ? seamTotal - SEAM_TRACE_CAPACITY : 0)
 	    << ",\"frames\":" << seamFrame
+	    << ",\"travelsSeen\":" << seamTravelTotal
+	    << ",\"travels\":[";
+	for (unsigned int i = 0; i < seamTravels.size(); ++i) {
+		const SeamTravel &t = seamTravels[i];
+		out << (i ? "," : "")
+		    << "{\"frame\":" << t.frame
+		    << ",\"engine\":" << t.engine
+		    << ",\"jd\":" << t.jd
+		    << ",\"start\":[" << t.start[0] << ',' << t.start[1] << ',' << t.start[2]
+		    << "],\"dir\":[" << t.dir[0] << ',' << t.dir[1] << ',' << t.dir[2]
+		    << "],\"distance\":" << t.distance
+		    << ",\"startTime\":" << t.startTime
+		    << ",\"endTime\":" << t.endTime
+		    << '}';
+	}
+	out << "]"
 	    << ",\"steps\":[";
 	for (unsigned int i = 0; i < n; ++i) {
 		const SeamStep &s = seamTrace[(first + i) % SEAM_TRACE_CAPACITY];

@@ -584,6 +584,33 @@ public:
 		//! 64 camera in free mode.
 		unsigned int flags;
 	};
+	//! ONE TRAVEL INSTALL, as the registry that installed it was handed it.
+	//! The per-frame record above says WHERE the two engines are; this says
+	//! WHAT EACH WAS TOLD, and the pair is what separates "the two travel laws
+	//! disagree" from "the two laws were given different inputs" (S11.246).
+	//! The five members are the same five on both sides by construction --
+	//! old keeps them in `AnchorManager` (startPosition, direction,
+	//! distanceToTavel, startTime, arrivalTime) and the new registry now keeps
+	//! the same five (CameraAnchors::getTravelStart and siblings) -- so a
+	//! reader differences them term for term with no frame conversion: both
+	//! are ROOT/heliocentric AU, both dates are JD.
+	//! Captured by `recordSeamStep` on the install EDGE, which keeps the
+	//! recorder READBACK-ONLY: it polls the new registry's install counter and
+	//! the old one's `moving` flag and copies what it finds. The old side has
+	//! no counter (adding one would be a write to the comparison baseline), so
+	//! a zero-duration old install -- which never raises `moving` -- is not
+	//! seen; the new side's counter sees every install, and the asymmetry is
+	//! reported rather than papered over.
+	struct SeamTravel {
+		unsigned int frame;		//!< recorder call index of the edge
+		int engine;				//!< 0 = old AnchorManager, 1 = new CameraAnchors
+		double jd;				//!< the frame's simulation date at the edge
+		double start[3];		//!< the travel's origin, ROOT AU
+		double dir[3];			//!< unit direction
+		double distance;		//!< length travelled along `dir`, AU
+		double startTime;		//!< JD the law starts at
+		double endTime;			//!< JD the law lands at
+	};
 	//! The ring, chronological, as one JSON object -- written into the
 	//! dual-path dump beside `ramp`.
 	void dumpSeamTrace(std::ostream &out) const;
@@ -755,6 +782,18 @@ private:
 	unsigned int seamTotal = 0;		//!< records ever written
 	unsigned int seamFrame = 0;		//!< recorder call index
 	bool seamRecording = false;		//!< armed by SC_SEAM_RECORD at init
+	//! Travel installs (see SeamTravel above). A LIST, not a ring: a show
+	//! performs a handful of travels, and the first ones are the interesting
+	//! ones, so an overflow drops the LATEST and says how many -- the opposite
+	//! of the frame ring's policy, and deliberately so.
+	static constexpr unsigned int SEAM_TRAVEL_CAPACITY = 64;
+	std::vector<SeamTravel> seamTravels;
+	unsigned int seamTravelTotal = 0;	//!< installs seen, kept or dropped
+	unsigned int lastTravelSeqNew = 0;	//!< new registry's install counter
+	bool lastTravelMovingOld = false;	//!< old registry's in-flight flag
+	//! Copy one registry's install record into `seamTravels`.
+	void recordSeamTravel(int engine, double jd, const Vec3d &start,
+	                      const Vec3d &dir, double distance, double t0, double t1);
 	//! Write one record for this frame. Called from `Executor::update` (a
 	//! friend) after BOTH engines have advanced; returns immediately when the
 	//! recorder is not armed.

@@ -535,6 +535,17 @@ bool CameraAnchors::installTravel(Anchor &place, const Vec3d &targetRoot, double
         place.params["y"] = au(landing[1]);
         place.params["z"] = au(landing[2]);
     }
+    // The inputs this travel was handed, recorded before the flag flips: the
+    // seam recorder reads them beside old's own five (S11.246). A zero-duration
+    // travel is recorded too - it never sets `moving`, but it is the command
+    // that PLACES a point, and where it placed it is exactly what the next
+    // travel's `start` will be.
+    travelStart = start;
+    travelDirection = direction;
+    travelDistance = distance;
+    travelStartTime = jd;
+    travelEndTime = jd + ((travelDays > 0) ? travelDays : 0);
+    ++travelSeq;
     if (travelDays > 0) {
         moving = true;
         travelArrival = jd + travelDays;

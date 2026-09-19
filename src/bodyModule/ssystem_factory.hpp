@@ -875,6 +875,19 @@ public:
         currentSystem->getAnchorManager()->displayAnchor();
     }
 
+    //! READ-ONLY view of the two travel registries, for the seam recorder
+    //! (S11.246). This class is where the two already meet - every travel seam
+    //! below drives both from one declaration - so asking IT for both halves
+    //! keeps the recorder a reader of the seam's owner rather than a second
+    //! place that knows how to find either registry (I1). Neither pointer is
+    //! owned; nothing on this path writes.
+    const AnchorManager *readAnchorManager() const {
+        return currentSystem->getAnchorManager().get();
+    }
+    const CameraAnchors *readCameraAnchors() const {
+        return cameraAnchors.get();
+    }
+
     // ---- Anchor surface: DUAL since B4 (S11.111) ---------------------------
     // Each of the four seams below drives BOTH registries from the same
     // declaration: the old AnchorManager (unchanged - it keeps serving old-path
