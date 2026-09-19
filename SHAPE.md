@@ -86,6 +86,9 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
 - A COMMENT-ONLY PASS: `strip_prose.py` or hand edits -> `codeident.py <rev>` 0 FAIL, run by the
   supervisor and not only by the agent -> build -> `f70_ascii.py gate` -> commit. An intended FAIL
   (restoring his wording on a line an agent had extended) is named in the commit message.
+- WHEN A FUNCTION'S BODY CHANGES (yours or the owner's): enumerate its CALLERS - they are the affected
+  space, and no compiler error names them; for each line of execution name the gate that reaches it or
+  write "not reached" (11.258: a primitive that silently carried a composition broke three callers).
 - A DEDUPLICATION COMMIT: one information per commit; `writers.py` (or the manager list) before and
   after in the message; net lines negative; the harness gate that covers it named, or "not reached".
 - ACCEPTING A DELIVERY: behaviour evidence AND shape - net code lines, deleted/added, comment form,
@@ -97,7 +100,10 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
   may run in parallel in one tree if none commits, builds or stashes; the supervisor verifies,
   builds and commits. Every task prompt binds G12 and names `spacecrafter.owner-shape` as the form.
 
-## 7. State at the close of session 33 (code `a594b31a`, not pushed)
+## 7. State at the close of session 33 (main tree: code `a594b31a`, pushed by the owner after his trailer rewrite)
+PENDING FOR THE OWNER TO TAKE: code `4d91b795`, branch `s33-relocate`, worktree `/home/claude/sc-s33/tree` - the
+reference-change fix of 11.258 (gate `harness/s33_refchange.py`). The main tree's `src/` files and `HEAD` are owned by
+OS user `foxy` since his 21:47 checkout: a session running as `claude` cannot write them, and does not work around it.
 Done: compiles again at the five seams of his `8ce65acc` (`78455b88`); agent prose out (`3c5952ad`,
 `b57d0642`); header what-for lines back and thinned to his form (`a49df0f1`, `57102bf4`).
 Work map: `s33-second-managers.md` (about 280 second managers, raw) + `INTENT/11.254.md` (four
