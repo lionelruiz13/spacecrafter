@@ -861,7 +861,7 @@ void SSystemFactory::syncCameraReference(const std::string &name)
 {
     if (ModularBody *body = ModularBody::findBody(name)) {
         if (camera)
-            camera->warpToBody(body);
+            camera->relocateToBody(body);
     } else {
         cLog::get()->write("New path has no body '" + name + "' to re-reference the camera on", LOG_TYPE::L_WARNING);
     }

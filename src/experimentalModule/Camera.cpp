@@ -371,6 +371,13 @@ void Camera::placeAt(const Vec3f &pos, bool holdView)
         recoverParams(R);
 }
 
+void Camera::relocateToBody(ModularBody *dst)
+{
+    const Vec3f place = getPlace();
+    warpToBody(dst);
+    moveTo(place);
+}
+
 void Camera::update(double jd, float deltaTime)
 {
     ModularBody::deltaTime = deltaTime * 1000.f;

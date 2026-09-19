@@ -325,7 +325,7 @@ bool CameraAnchors::switchTo(const std::string &name, Camera &camera)
     Anchor *anchor = find(name);
     if (!anchor) {
         if (ModularBody *body = ModularBody::findBody(name)) {
-            camera.warpToBody(body);
+            camera.relocateToBody(body);
             currentName = name;
             return true;
         }
@@ -344,7 +344,7 @@ bool CameraAnchors::switchTo(const std::string &name, Camera &camera)
             "tree (its coordinates are AU from the universe centre). Attach to a body or an "
             "orbit anchor to navigate inside a system again.", LOG_TYPE::L_INFO);
     }
-    camera.warpToBody(anchor->body);
+    camera.relocateToBody(anchor->body);
     if (anchor->ownsBody) {
         camera.setBoundToSurface(false);
     } else if (anchor->declaresFollowRotation) {

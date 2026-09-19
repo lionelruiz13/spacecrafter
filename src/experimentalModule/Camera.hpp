@@ -37,6 +37,8 @@ public:
     void switchToBody(ModularBody *dst);
     // Change the reference body without accomodation
     void warpToBody(ModularBody *dst);
+    // Change the reference body, keeping longitude, latitude and altitude
+    void relocateToBody(ModularBody *dst);
     void update(double jd, float deltaTime);
     void draw(Renderer &renderer);
     void setBoundToSurface(bool b);
