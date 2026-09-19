@@ -36,6 +36,54 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-19, supervising session 32 — LovelyFoxDev, THE SEAM CONTINUED: F122
+first]:** trigger = the §0b verbatim line PLUS one owner sentence: *"You can use fable agent ("claude" agent
+defaults to it and, I think, inherit from the system prompt) where deeper analysis or more global understanding
+is required."* Open at **Saturday 07:53 CEST** (`date` 07:53:25 at the first probe) — the owner's DEEP window
+(prompt part 06), and the day he reads the code himself (§11.244(a)4). Warm-up (every value from the command
+beside it, Q-67): both trees CLEAN at open, code `2f9e6da7` / harness `5d798b2` — no owner write since the
+session-31 close; unpushed **3 code / 17 harness**; definition-drift MATCH (`8e364a3a`); binary `9e545fef`
+current (0 `src/` files newer; `ldd` 0 not found, by the mint's premise line at 08:03); SAME BOOT as last night
+(2026-09-18 20:59:16, cookie `.RQNGV3`), `xdpyinfo` 2444x1332; canary `--no-scene` **exit 0, 0 fail, 0 note**
+07:54:15 → 07:54:17 (`artifacts/f56/canary/20260919-075415`; `rdp.estab_3389 = 2`, recorded never gated);
+config/ssystem md5 pristine (`03fbee59`/`545a51ef`); no engine by comm/exe/port (`sc_instances.sh --assert`),
+port 7805 free; GPU 1876 MiB used / 30231 free; RAM **53 GiB available of 59**, `-j24`; next free §11 **246**
+after §11.245 (live ∪ archive, `max+1`). `~/shared/QUEUE.md` read WHOLE at open (84 heads, two pages — the
+first read stopped at line 204 of 242 and said so). Instrument baselines at open (run 07:53–07:54): scan
+**298/369/148** · pair-check **261/236/25/130** · D 36 · D2 12 · I 93 · I2 38 · M 98 — to the digit of the
+session-31 post-commit read. Live `### F` **2 → 0** by **archival pass 24** at OPEN (update-s30 + F120/F121,
+191 lines = 88 + 50 + 51 + the doubled separator; manifest `2026-09-19-pass24`, pre-md5 `9b9064b4` at `5d798b2`
+reproduced from disk by the tool, from disk by an independent reconstruction script, AND equal to the git blob
+of the pre-move commit; `f7782f2`; **nothing carried**) **→ 1** by the mint below. **§11.245 READ IN FULL by the
+supervisor at this open** — owed since F121's acceptance, which said *"NOT READ IN FULL … supervisor capacity"*;
+nothing in it contradicts the endorsements, and the full read is what produced the two findings below.
+QUEUE CONSUMPTION (the session-31 close's list): (1) pass 24 — DONE; (2) the seam, continued, most visible
+first → **F122** (§5.157, the tester's own act). **TWO FINDINGS AT THE MINT, from reading the two registries
+beside the tester's script [read, not measured]:** (i) §5.157's row opposes a *"straight travel"* to a
+*"logistic profile"* and `CameraAnchors.cpp:28-33` says its speed curve is *"old's, transcribed"* — the law is a
+PORT, the two standoff computations have ONE form, so 93.5° around the Moon is a START divergence and not
+arithmetic; (ii) **F121's attribution by elimination never ran the arm that matters**: the script's three
+`camera action` lines carry NO `wait` between them (`move_to` right behind `transition_to target point`; the
+last `transition_to target body` issued while the 3 s travel is in flight), its isolation leg separated them by
+dumps, and the 1.0038 AU transient it left unattributed is about one Earth–Sun distance — an eye at the root
+origin for a frame. F122 is therefore cut as ISOLATE-THE-ADJACENCY-THEN-FIX, and its fix shape is argued as
+*the same inputs into the same law*, NOT `followFov`'s per-frame consumption (the new design's point is one
+position authority with no per-frame writer). **Tasks 2–3 are minted AFTER F122's acceptance** (its engine
+commits move the line numbers their premises would pin): the near-body disappearance with the non-reproduced
+*"moon wasn't visible at all"*; the interactive inputs (keys, mouse, joypad) the TCP harness cannot see.
+**ONE QUESTION PUT TO THE OWNER, in the session's text, non-blocking, before the first dispatch:** last night's
+engine-fix authorization said *"with this dispatch session"*; this morning's trigger is READ as continuing it on
+the same terms (identical-first, one change per commit, §5.155/§5.156 untouched without his word) — an ACTING
+DEFAULT, logged (D12), veto-open. DISPATCHER DEFECTS BEFORE THE FIRST DISPATCH, all caught before a commit:
+(i) a PROBE — `echo "tool_exit=$?"` behind a pipe reports `tail`'s status, not the tool's; never cited, the
+reconstruction stands on three digests; (ii) a PROBE — the ledger instruments read through `tail` lost their
+summary lines; re-read from the head; (iii) a PREMISE the instrument REFUSED — a grep pattern holding
+`shared_ptr<…>` reads as a redirect to `premise_check.py`'s deny-list; caught by the MINT gate (29 PASS, 1
+FAIL), rewritten bracket-free, 30 of 30. Remotes: 3 / 17 unpushed at open; the owner pushes at the end of each
+week [vixy 2026-09-12].
+
+---
+
 **Update [Claude Fable 5.1 2026-09-18, supervising session 31 — LovelyFoxDev, the DEPLOYMENT-MAP round: F120
 first]:** trigger = the §0b verbatim line PLUS one owner sentence: *"Update or rewrite the DEPLOYMENT-MAP.md to
 keep it focused on what remains now for deployment."* Open at **Friday 21:19 CEST** — a weekday evening, the
@@ -540,6 +588,64 @@ at open (`3c38b05`); live below: the session-28 mints **F107** (§11.225(j2)/(j3
 constructor seeds every body at JD 0; no delivered engine change), **F108** (§5.115's fix: uniform bounded
 retention, eight launches, every channel, a compiled constant), **F109** (A15's residual step removed on
 L1's word — the attributed halo floor α-scaled).** **Session-29 round (2026-09-12): F110 §11.234 · F113 WITHDRAWN (§11.233(b) correction; ids never reused) · F114 §11.235 · F115 §11.236 · F116 §11.237 · F112 §11.238 · F111 §11.239 — archival pass 22 (update-s28 + the seven) DONE at the session-30 open (`a0b18a7`); live below: the session-30 mints **F117** (the DSO layer on the new path — a design note on the owner's direction, no engine line), **F118** (the trail walker's engine leg — a latency measurement, no delivered engine change), **F119** (the rewrite's code-tree citation class — the scedit pins first, then the tool).** **Session-28 round (2026-09-11/12): F107 §11.229 · F108 §11.230 · F109 §11.231 (a STOP, endorsed — the residual is the instrument's) — three for three DELIVERED and accepted; §5.149–§5.152 minted at acceptances; archival pass 21 (update-s27 + F107–F109) DEFERRED to the next open.** **Session-29 (2026-09-12, Saturday, the owner present): archival pass 21 DONE at open (`43b0ffc`); the owner's rewrite + push ran mid-warm-up and his replies are §11.232 (a part-time intern without an LLM starts on `master-beta` THIS WEEK — "consolidated first"); live below, dispatch order **F110 → F113 → F114 → F112 → F111** (his second message, §11.233, re-cut the round): **F110** (the intern's first day rehearsed by hand — `doc/developer-entry.md` followed literally from a plain clone on Linux), **F113** (§5.142's fix on his word — the uniform pool to 1 GiB, the D13 reading measured), **F114** (§5.100 + §5.101 on his word — `zoom auto in` tracks and `zoom auto initial` re-aims on the drawn path), **F112** (launch preconditions that see what they guard — the exe-identity instance probe in ONE home for 42 copy-pasted sites, and a GPU-headroom gate derived from the app's init sequence after the 2026-09-12 VRAM red), **F111** (§5.150's fix — the orbit-line sampler gets its own seed, the old path's `batchLastE` shape).** **[12:5x: F113 WITHDRAWN before dispatch (§11.233(b) correction); **F115** (§5.142's ROOT — the uniform consumers censused field by field on both paths, redundancy on three axes, the per-body requirement derived, a proposal with arithmetic; no engine change) and **F116** (§5.115's SIZE bound — 1 GiB total across the five channels, within-session rotation reusing F108's window) minted; order **F110 → F114 → F115 → F116 → F112 → F111**.]** **Session-29 round (2026-09-12): F110 §11.234 · F114 §11.235 · F115 §11.236 · F116 §11.237 · F112 §11.238 · F111 §11.239 — six for six DELIVERED and accepted; F113 WITHDRAWN before dispatch (record kept); §5.153 minted, B41 opened; archival pass 22 (update-s28 + F110/F113/F114/F115/F116/F112/F111) DEFERRED to the next open.**
+
+---
+
+### F122 — THE GO-TO'S 156 000 KM: THE ADJACENCY ARM THAT F121'S ELIMINATION NEVER RAN — §5.157, the main tester's own act (WIN+^ → `internal/fly_to_selected.sts`), the most visible red F121 left (§11.245(e)(f)(h)4): at rest after the script the two engines stand 1.0436e-03 AU apart, 93.5° around the Moon, and the star field is drawn for one observer while the bodies are drawn for the other [M–L, **ENGINE FIXES identical-first ON THE SUPERVISOR'S READING** of this morning's trigger as continuing §11.244(b)(4) — last night's sentence said *"with this dispatch session"*, so this is an ACTING DEFAULT, logged (D12), put to the owner in the session's text before the dispatch and veto-open; code under `src/` within the boundary below + harness; FUNCTIONAL launches (`f116_assert.sh` + `--no-scene` canary PER LAUNCH) and ONE FULL canary after the last engine commit; **the owner reads the code himself TODAY** — every commit is a page of his reading path: one change each, the reason and the measured before/after in the message; veto points §3]
+
+**Why now / mandate:** §11.244(b)(3)–(4) (the METHOD: identical to the old path first, clean after; the MANDATE to fix), the session-31 close's queue item (2), and §5.157's row. F121 measured the symptom and named a line; it did not find the mechanism, and the supervisor's reading at this mint says its attribution stands on an arm it never ran.
+
+**The reading the mint stands on [READ at the mint at code `2f9e6da7`, each site a premise line; NOTHING here is measured in a running engine]:** (1) **§5.157's row mis-describes HEAD**: it opposes *"a date-based straight travel"* to *"a `TravelOrbit` logistic profile"*, and `CameraAnchors.cpp:28-33` says of its own curve *"The SPEED CURVE is old's, transcribed, including both of its measured quirks"* — the logistic on `x = 25f-5` IS old's `getTravelPosition`, ported. The law is a PORT, not a deliberate divergence, so the identity test on it must read the FLOOR, not a predicted residual. (2) **The two standoff computations have ONE form**: old `AnchorManager::moveTo` (`anchor_manager.cpp:444-486`: the target at the ARRIVAL date, `direction = normalize(target - start)`, `radius + alt/AU` or five radii) against new `CameraAnchors::travelToBody` (`CameraAnchors.cpp:592-637`: the same, on `getScaledRadius`). BOTH land ON the start→target line. Two observers at about the same distance from the Moon and 93.5° apart around it therefore came in along lines 93.5° apart — a START (or target-date) divergence, not standoff arithmetic. (3) **F121 left the signature unattributed** (§11.245(e), last paragraph): the position channel reads **1.0038 AU** on the `transition_to target point` frame — about one Earth–Sun distance, i.e. one of the two eyes reading as the ROOT ORIGIN on that frame. (4) **THE ELIMINATION MISSED AN ARM**: the script's lines 20–26 carry its three `camera action` commands with NO `wait` between them (two `wait` in lines 17–19, none in 20–26 — both premise lines): `move_to target body` is issued right behind `transition_to target point`, and `transition_to target body` is issued while the 3 s travel is STILL IN FLIGHT. F121's isolation leg (`point_attr`) put a dump between the commands — it measured each transition ALONE, never `move_to` alone, and never the ADJACENCY. *"By elimination it belongs to the one remaining line"* holds only if the lines do not interact (the cross-project guard Q-74: at *"what survives is Z"*, find the missing arm before stating).
+**[derived, UNMEASURED — hypotheses to REGISTER and then refute or hold, never to assume; they are not exclusive]:** **H-start** — one registry reads its `start` before the freshly created point's position is published (new: `place->body->useNow()` + `getCachedRootPosition()`, `CameraAnchors.cpp:623-624`; old: `currentAnchor->getHeliocentricEclipticPos()`, `anchor_manager.cpp:466`), so its approach line leaves from the origin; THEN the 93.5° must equal the Sun–Moon–Earth angle at the leg's date — a number computable from a dump's own positions BEFORE the place channels are looked at. **H-inflight** — the third command rebinds to the body MID-TRAVEL and the two registries treat a transition-while-moving differently (old's `moving` guard at `:446` is on `moveTo`; what either `transitionToBody` does while `moving` is UNREAD on both sides). **H-date** — the two read "now" from different places (old `timeMgr->getJDay()` inside `moveTo`; new receives `jd` from the forwarding site `ssystem_factory.hpp:933`); `timerate rate 1`, so expected small.
+
+**Mandate, in THIS order — each step leaves something the owner can read:** (1) **PREDICTIONS FIRST**, committed before any launch: per hypothesis, which channel, which frame, what size; the Sun–Moon–Earth angle at the leg's JD. (2) **ISOLATE BY ARMS, per frame, the recorder armed** (`SC_SEAM_RECORD=1`, `harness/f121_run.sh`): **A** the travel ALONE from a SETTLED point anchor (≥ 2 s of frames after `transition_to target point`, then `move_to`, then rest past arrival); **B** the ADJACENT pair (`transition_to target point` + `move_to` in one script step, rest); **C** the FULL triple as the script issues it; **D** the script itself BY NAME, the reference. For each arm: the position channel during and at rest, both view channels, the place readouts with their two conventions undone (§11.245(l)3 — +90.000000° at a point anchor, 174.77° at a body anchor, neither a displacement). What DISCRIMINATES is each registry's install-time record — `start`, `direction`, the target position and its date, the arrival date — so if the recorder lacks them, extend it (a dump member or a one-shot line, the executor's choice, argued; OFF by default, D11), and show the extension RED on a mutant (a perturbed `start`) before it is trusted. (3) **ATTRIBUTE**: the mechanism named with its site, and WHICH engine stands in the wrong place. The old path is the baseline by definition — but if it is OLD that reads a stale start, that is a recorded OLD defect, §11.52(b) forbids porting it, and the decision is the owner's: **STOP with the numbers**. (4) **FIX, IDENTICAL-FIRST, one commit per fix.** [derived — the supervisor's reading, veto-open] F121's single-authority form was the right root for the fov because its two interpolators were two LAWS over one scalar. Here the law is ALREADY one function transcribed, and the new path's position authority is the place's ORBIT (`CameraAnchors.cpp:20-26`: *"one position authority, no per-frame write"*). So the root shape is **THE SAME INPUTS INTO THE SAME LAW** (start, target date, standoff, clock, ordering/publication) — NOT a per-frame consumption of old's travelled anchor, which would add a per-frame writer to a design whose point is to have none and would be thrown away with the old registry. If the measurement shows the inputs CANNOT be made equal at a decision-free site, **STOP and say so with the numbers — do not fall back to per-frame consumption silently.** Each fix is proved RED → FLOOR on the tester's script (position at the order of the 4.2e-08 AU floor at rest; the root-frame view channel at the order of its 1.44e-05° floor at rest, tracking on), every other row of F121's `census_fov` unchanged. (5) **THE DISCORDANCE F121 LEFT**: *"the moon wasn't visible at all"* [the tester, §11.244(a)4] was NOT reproduced (the Moon centred on both paths). After the fix, the two end frames again, one per drawn path; AND an explicit list of what the harness run does not share with the tester's (projection mode, fov, screen geometry, which build he ran) — unknowns NAMED for the owner, no guess. (6) **THE LEDGER, same commits**: §11.246 entry + stub; §5.157 flips if fixed (back-marker + the §0.5 row-flip grep); WHATEVER THE OUTCOME, correction markers at the row's *"straight travel … logistic profile"* sentence and at its *"ATTRIBUTED BY ELIMINATION"* — and at §11.245(f)'s consequence paragraph — both homes, same commit; `DEPLOYMENT-MAP.md`'s state line by id, `harness/f120_ids.py` green after.
+
+**Boundaries:** code: `src/experimentalModule/CameraAnchors.*` and `Camera.*`; the forwarding sites (`src/bodyModule/ssystem_factory.*`, `src/coreModule/coreLink.*`); the recorder (`core.cpp`'s `recordSeamStep` and its dump member); `const` READ accessors on the old side where one is missing (`src/navModule/anchor_manager.*`, `navigator.hpp`) — anything else under `src/` is argued in the report BEFORE it is touched. **THE OLD PATH'S BEHAVIOUR DOES NOT CHANGE** (§11.52(b); the old-path legs of the FULL canary are the proof). §5.155 and §5.156 are the owner's word and §5.158 is another task: NOT this one. Already-accepted deliberate divergences (§11.141: the zero-duration guard in `TravelOrbit`; the 5 s heading ramp the new path deliberately lacks, §11.245(h)6) enter the identity test as PREDICTED residuals with their ledger pointer, never reverted (§11.244(f), the owner's verdict still owed). Code committed FIRST, harness with `Code: master-beta @ <sha>`; `git -C <explicit path>`, absolute paths (Q-72); builds `make -C /home/claude/spacecrafter/build-claude -j24` after `LC_ALL=C free -g` (≥ 16 GiB available); every tool whose text you parse runs under `LC_ALL=C` (the host is fr_FR); no `run_in_background`; a checkpoint commit after EVERY fix and the WIP line with it — an abort loses at most one fix. **The owner may be working in the same trees today: re-read both HEADs before every commit; a HEAD you did not write is a STOP, not a rebase.**
+
+**Discriminating checks:** (a) the predictions file committed BEFORE the first measuring run; (b) arms A–D in `harness/artifacts/f122/`, the table showing WHICH arm carries the 1.0e-03 AU and which reads the floor — either way it discriminates; (c) the recorder extension, if any, red on its mutant; (d) every fix: RED before, FLOOR after, all other rows unchanged (`f121_seam.py --diff` CRASHES on `.gz` — a known rider: fix it in the harness first, or diff uncompressed and say so); (e) the FULL canary `harness/f56_canary.sh` exit 0, 12/12 in band after the last engine commit; (f) D14 gate `python3 claude/harness/f70_ascii.py gate` green; (g) scan / pair-check at the prompt's baseline, deltas explained.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; `:2` per HOST-EVENTS 2026-09-18 (the SECOND entry of that date: one banked geometry 2444x1332, Ubuntu 26.04 LTS, the binary rebuilt on it), same boot since; canary `--no-scene` exit 0 before the first launch.
+
+```
+PREMISES
+# per-round variables — refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --short=8 HEAD => 2f9e6da7
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 9e545fef
+ldd build-claude/src/spacecrafter | /usr/bin/grep -c 'not found' => 0
+python3 -c "import os,re;print(max(int(m.group(1)) for d in ['claude/INTENT','claude/INTENT/archive'] for f in os.listdir(d) for m in [re.match(r'11\.(\d+)\.md',f)] if m)+1)" => 246
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md => 1
+# the two travel registries and their one declaration, re-resolved at HEAD (content drift = abort)
+/usr/bin/grep -n 'moveToBody(bodyName, time, alt)' src/bodyModule/ssystem_factory.hpp | cut -d: -f1 => 931
+/usr/bin/grep -n 'cameraAnchors->travelToBody(bodyName, time, alt, \*camera, timeMgr->getJDay())' src/bodyModule/ssystem_factory.hpp | cut -d: -f1 => 933
+/usr/bin/grep -n '^bool AnchorManager::moveTo(std::shared_ptr' src/navModule/anchor_manager.cpp | cut -d: -f1 | tr '\n' ' ' => 444 
+/usr/bin/grep -n '^bool AnchorManager::moveToBody' src/navModule/anchor_manager.cpp | cut -d: -f1 => 488
+/usr/bin/grep -n '^bool CameraAnchors::travelToBody' src/experimentalModule/CameraAnchors.cpp | cut -d: -f1 => 592
+/usr/bin/grep -n '^bool CameraAnchors::installTravel' src/experimentalModule/CameraAnchors.cpp | cut -d: -f1 => 498
+/usr/bin/grep -n '^bool CameraAnchors::transitionToPoint\|^bool CameraAnchors::transitionToBody' src/experimentalModule/CameraAnchors.cpp | cut -d: -f1 | tr '\n' ' ' => 639 682 
+/usr/bin/grep -c "The SPEED CURVE is old's, transcribed" src/experimentalModule/CameraAnchors.cpp => 1
+/usr/bin/grep -c 'a zzz control phrase that is not there' src/experimentalModule/CameraAnchors.cpp => 0
+# the tester's act: the script's identity and the adjacency of its three camera actions (the zero beside its control)
+md5sum ~/.spacecrafter/scripts/internal/fly_to_selected.sts | cut -c1-8 => 10665ae4
+/usr/bin/grep -n '^ *camera action\|^wait\|^moveto' ~/.spacecrafter/scripts/internal/fly_to_selected.sts | cut -d' ' -f1-4 | tr '\n' ';' => 17:wait duration 1;18:moveto altitude 20000000 duration;19:wait duration 3;20:camera action transition_to target;22:  camera action;24:  camera action;26:camera action transition_to target;
+sed -n '20,26p' ~/.spacecrafter/scripts/internal/fly_to_selected.sts | /usr/bin/grep -c '^wait' => 0
+sed -n '17,19p' ~/.spacecrafter/scripts/internal/fly_to_selected.sts | /usr/bin/grep -c '^wait' => 2
+# the instrument F121 delivered, the ledger's rows, the clean slate
+/usr/bin/grep -c 'recordSeamStep' src/coreModule/core.cpp => 1
+/usr/bin/grep -n 'Camera::instance->followFov' src/coreModule/core.cpp | cut -d: -f1 => 2224
+/usr/bin/grep -c 'SC_SEAM_RECORD' src/coreModule/core.cpp => 3
+test -x claude/harness/f121_run.sh -a -f claude/harness/f121_drive.py -a -f claude/harness/f121_seam.py -a -x claude/harness/f116_assert.sh && echo ok => ok
+test -d claude/harness/artifacts/f121/script_pre -a -d claude/harness/artifacts/f121/point_attr && echo ok => ok
+python3 claude/intent_resolve.py 5.157 11.245 11.111 11.141 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 0
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 1
+/usr/bin/grep -c '^157\. \*\*The two SCRIPTED-TRAVEL registries' claude/INTENT.md => 1
+/usr/bin/grep -c '^| B4 ' claude/INTENT.md => 1
+/usr/bin/grep -c 'BANK_DIMS="2444x1332"' claude/harness/f56_canary.sh => 1
+test -e claude/harness/artifacts/f122 ; echo $? => 1
+```
+
+**DoD:** the predictions committed before the runs; arms A–D measured per frame with the table that says which arm carries the divergence; the mechanism NAMED with its site and its engine; every fix its own commit with before/after in the message and RED → FLOOR in the artifacts, or a STOP with the numbers and the reason it is the owner's; the two end frames after the last fix and the named unknowns of the tester's setup; the FULL canary 12/12 after the last engine commit; §11.246 entry + stub, the flip or the STOP at §5.157, the correction markers at both homes, the map's state line; both trees clean. **A PARTIAL DELIVERY IS A DELIVERY**: the attribution alone, proved by the arms, is worth landing — the owner reads today, and a named mechanism is what his reading can use.
+**WIP:** —
 
 ---
 
