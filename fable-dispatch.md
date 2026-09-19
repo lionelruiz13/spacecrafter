@@ -645,7 +645,7 @@ test -e claude/harness/artifacts/f122 ; echo $? => 1
 ```
 
 **DoD:** the predictions committed before the runs; arms A–D measured per frame with the table that says which arm carries the divergence; the mechanism NAMED with its site and its engine; every fix its own commit with before/after in the message and RED → FLOOR in the artifacts, or a STOP with the numbers and the reason it is the owner's; the two end frames after the last fix and the named unknowns of the tester's setup; the FULL canary 12/12 after the last engine commit; §11.246 entry + stub, the flip or the STOP at §5.157, the correction markers at both homes, the map's state line; both trees clean. **A PARTIAL DELIVERY IS A DELIVERY**: the attribution alone, proved by the arms, is worth landing — the owner reads today, and a named mechanism is what his reading can use.
-**WIP:** —
+**WIP:** 2026-09-19 08:2x — checkpoint 1: recorder extended with `seam.travels` (both registries' travel INPUTS: start, direction, distance, the two dates), code `0c3fefd5`, binary `bc176a2f`, D14 gate PASS; harness arms A-D written (`f122_run.sh`, `f122_drive.py`, `f122_scripts/arm{A,B,C}.sts`, `f122_travels.py`), `f121_seam.py --diff` `.gz` rider FIXED at its one home; `artifacts/f122/prediction.txt` committed BEFORE any launch. NEXT: the mutant pair, then arms A-D.
 
 ---
 

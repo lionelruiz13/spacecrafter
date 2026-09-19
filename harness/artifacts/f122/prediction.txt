@@ -1,0 +1,164 @@
+F122 PREDICTIONS -- committed 2026-09-19 08:19 CEST, BEFORE the first
+measuring launch of this task (harness commit precedes every f122_run.sh call;
+`date` pasted above from the call made before this file was written).
+
+Task: INTENT S5.157 -- the two scripted-travel registries leave the observer
+1.0436e-03 AU (156 000 km) apart at the end of internal/fly_to_selected.sts,
+93.52 deg of longitude around the Moon. F121 attributed that to `camera action
+move_to target body` BY ELIMINATION over commands it ran ALONE, separated by
+dumps; the script issues its three camera lines with NO wait between them, so
+the ADJACENCY was never run and `move_to` was never run in isolation either.
+
+Binary under test: bc176a2f (code 0c3fefd5) -- 2f9e6da7 + the S11.246 recorder
+extension (`seam.travels`, one record per travel INSTALL per registry).
+Reference numbers quoted below are F121's, measured on 9e545fef.
+
+--------------------------------------------------------------------------
+0. WHAT I READ IN THE SOURCE BEFORE PREDICTING  [observed, not measured]
+--------------------------------------------------------------------------
+L1. The two standoff computations have ONE form, confirming the mint's reading
+    (2). Old `AnchorManager::moveTo` (anchor_manager.cpp:444-486): target =
+    body->getPositionAtDate(jd+time); direction = normalize(target - start);
+    distanceToTavel = |target - start - direction*(radius + alt/AU)|. New
+    `CameraAnchors::travelToBody` (CameraAnchors.cpp:592-637): the same three
+    steps on getScaledRadius(). Both land ON the start->target line.
+L2. The SPEED CURVE is old's transcribed (CameraAnchors.cpp:28-33 and its
+    logistic on x = 25f-5), so the mint's reading (1) holds: S5.157's row text
+    ("a date-based straight travel" vs "a TravelOrbit logistic profile") is
+    WRONG about HEAD and a correction marker is owed whatever else happens.
+L3. THE TRAVEL'S ORIGIN IS READ FROM THE PLACE'S CACHED POSITION, TWICE:
+    `travelToBody:623-624` (`place->body->useNow()`, then
+    `getCachedRootPosition()`) and again inside `installTravel:503-504`. Old
+    reads `currentAnchor->getHeliocentricEclipticPos()` (:466), which an
+    AnchorPoint returns from its own member, with no publication step.
+L4. S11.143(j) MEASURED THIS EXACT SCRIPT, PLAYED AS A SHOW IN REAL TIME, at
+    code 7a44af3e (2026-08-09): the two paths agreed on where the observer
+    ended up to 2.625e-08 AU, 5/5. So either something regressed between
+    2026-08-09 and 2026-09-18, or f33_field.py did not reproduce the adjacency
+    (it drives the command channel, one command per round trip, which lands
+    each in its OWN frame). PREDICTED: the second -- see A3.
+L5. `ModularBody::useNow()` can REFUSE (ModularBody.cpp:492-521, S11.226): if
+    the parent has never published a frame for its parked children, the use is
+    refused, the body KEEPS THE ZERO VECTOR, and a warning naming the body is
+    written ONCE. A FIXED_POINT anchor body is created under the tree root
+    (CameraAnchors.cpp:235) and hidden, so it is a parked child.
+L6. `ModularBody::setOrbit` CLEARS the D8 memo (`evaluatedJD = -inf`,
+    ModularBody.cpp:236). So the "installTravel's second useNow() is a no-op
+    because the first one stamped the memo" mechanism is REFUTED AT SOURCE
+    before any run. Registered here because it was my first reading.
+
+--------------------------------------------------------------------------
+1. HYPOTHESES, each with the channel that decides it
+--------------------------------------------------------------------------
+H-start  The two registries are handed DIFFERENT travel origins, and that --
+         not the law and not the standoff -- is the whole divergence.
+H-inflight  The third command (`transition_to target body`, issued while the
+         3 s travel is in flight) changes where an engine ends up.
+H-date   The two read "now" from different places.
+H-standoff  The two standoff computations differ in size.
+
+--------------------------------------------------------------------------
+2. THE ARM TABLE -- PREDICTED BEFORE THE RUNS
+--------------------------------------------------------------------------
+Channel: `posDelta` (|old observer helio - camera root position|, AU) at REST
+after everything settles, from the per-frame ring; and the paired install
+record from `seam.travels`.
+
+  arm  what it is                      posDelta at rest   |start_old-start_new|
+  A    travel alone, point SETTLED      <= 1e-05 AU        <= 1e-06 AU
+       (one `wait duration 2` added)    [FLOOR]            [equal]
+  B    the ADJACENT pair                 5e-04 .. 2e-03     >= 0.9 AU
+  C    the adjacent TRIPLE               within 1e-04 of B  >= 0.9 AU
+  D    the tester's script by name       within 1e-04 of C  >= 0.9 AU
+
+P1  THE DIVERGENCE IS CARRIED BY THE ADJACENCY, NOT BY THE TRAVEL COMMAND.
+    A reads the floor and B does not. If A also reads ~1e-03, H-start is
+    refuted in this form and the travel command carries it alone -- which
+    would vindicate F121's elimination and refute this task's mint.
+P2  new's `start` in arms B/C/D IS THE ROOT ORIGIN: |start_new| <= 1e-06 AU,
+    while |start_old| is of order 1 AU (the observer's heliocentric distance).
+    This is the sharp form: not "the starts differ" but "one of them is zero".
+P3  H-inflight CARRIES NOTHING: |posDelta_C - posDelta_B| <= 1e-04 AU.
+P4  H-date is SMALL: |startTime_old - startTime_new| <= 1e-06 d (0.09 s) and
+    the same for endTime, on every arm including A.
+P5  H-standoff is SMALL ONCE THE STARTS AGREE: on arm A,
+    |distance_old - distance_new| <= 1e-06 AU. On B/C/D the distances differ
+    by about the difference of the two gaps, i.e. of order 1 AU, which is a
+    CONSEQUENCE of P2 and not an independent finding.
+
+--------------------------------------------------------------------------
+3. THE ANGLE IDENTITY -- the prediction that makes P2 an explanation
+--------------------------------------------------------------------------
+P6  If P2 holds, the two eyes end at the same distance from the Moon but along
+    lines that differ by the angle subtended AT THE MOON between the root
+    origin (the Sun, on this data -- S11.143(b) measured Sun/SolarSystem/
+    MilkyWay all at ecl [0,0,0]) and old's start. So:
+
+        predicted separation = angle( Moon - start_old , Moon - 0 )
+
+    computed FROM THE DUMP'S OWN POSITIONS at the leg's own JD, and it must
+    equal the measured place-longitude separation (F121: 93.52 deg) to within
+    5 deg. The residual allowed is the Moon's own motion during the 3 s travel
+    plus the difference between the two standoff radii.
+P7  The chord then follows: |eye_old - eye_new| = 2*R*sin(theta/2) with
+    R = scaledRadius + 100000 km. F121 measured 156 000 km against its own
+    2*100000*sin(46.76) = 145 700 km estimate; with R = 1737 + 100000 =
+    101 737 km the same formula gives 148 200 km, still 5 % short, so P7 is
+    predicted to hold only to 10 % and the residual is NOT claimed as
+    understood.
+P8  The SIM DATE of my runs is ~9.5 h later than F121's (its legs ran
+    2026-09-18 22:50-23:23; mine run 2026-09-19 morning, and the app starts at
+    the host clock). The Moon moves ~13 deg/day, so I predict D's separation
+    to land within 10 deg of 93.52 and NOT to reproduce it to the digit. A run
+    that reproduced 93.52 exactly would mean the date does not enter, which
+    would REFUTE the geometric reading above.
+
+--------------------------------------------------------------------------
+4. THE MECHANISM, three candidate sites -- the measurement chooses
+--------------------------------------------------------------------------
+M1  THE D8 REFUSAL (L5): `temp_point` is created in the same frame it is used,
+    its parent has published no parked-child frame YET, `useNow()` refuses and
+    the body keeps the zero vector. DISCRIMINATOR, pre-registered and counted
+    by f122_run.sh on every arm: the log line "Position of 'temp_point' was
+    used, but its parent ... has not published a position frame". PREDICTED
+    PRESENT on B/C/D and ABSENT on A if M1 is the site; the count is printed
+    on every arm either way, so a zero is a reading and not a silence.
+M2  THE READ-BEFORE-PUBLISH: `installTravel` reads `start` at :504 BEFORE
+    `setOrbit` at :523, so for `transition_to point` the start is the point's
+    position under its PREVIOUS law -- a freshly created point's still_orbit at
+    (0,0,0), i.e. the origin. That is harmless for a zero-duration travel (the
+    endpoint is absolute) but it is what the NEXT command reads if nothing
+    republishes in between.
+M3  NEITHER: the point is published correctly in-frame and the origin comes
+    from somewhere else entirely. Then P2 fails and the `seam.travels` record
+    says where the 1 AU actually is.
+
+--------------------------------------------------------------------------
+5. THE INSTRUMENT'S OWN CONTROL
+--------------------------------------------------------------------------
+P9  The `seam.travels` channel is shown ABLE TO FAIL before it is trusted: arm
+    A is run on the delivered binary and on a MUTANT whose `installTravel`
+    perturbs `start` by +1e-03 AU on x. PREDICTED: new's recorded `start[0]`
+    moves by exactly 1.000e-03 and its endpoint with it, old's record is
+    bit-unchanged, and `posDelta` at rest moves from its floor to ~1e-03 AU.
+    A channel that cannot be made to fail has not been shown to read anything.
+P10 f122_travels.py REFUSES a dump from a binary without the extension
+    (measured before this file was committed, on F121's script_pre artifact:
+    "no seam.travels -- the binary predates S11.246's recorder extension").
+
+--------------------------------------------------------------------------
+6. WHAT I EXPECT TO BE WRONG  (registered so a surprise is visible)
+--------------------------------------------------------------------------
+W1  The supervisor's mint reads the 1.0038 AU transient as "an eye at the root
+    origin FOR A FRAME". I predict it is not for a frame: it is the START of a
+    3 s travel, so the origin is where the new eye BEGINS and the whole
+    trajectory is wrong, not one frame of it. The decay to 1e-03 over ~0.9 s
+    that F121 recorded is then the logistic arriving (at f = 0.3 the curve is
+    99.3 % of the way), not a transient settling.
+W2  I predict F121's own isolation leg is NOT wrong: `transition_to target
+    point` measured alone really does move neither eye (8.80e-08 AU). The
+    elimination failed not because a measurement was wrong but because the
+    isolated form of a command is not the form the script issues.
+W3  I expect arm A to be clean and therefore that the FIX does not belong in
+    the travel command at all. If instead A is dirty, the fix is in
+    `travelToBody` and this prediction is refuted.

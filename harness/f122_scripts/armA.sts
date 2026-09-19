@@ -1,0 +1,15 @@
+# F122 ARM A -- the travel ALONE, from a SETTLED point anchor.
+# internal/fly_to_selected.sts's own preamble and its own two camera lines,
+# with ONE line added: a `wait duration 2` between the point transition and
+# the travel, so the two land in DIFFERENT frames. A is the control for B:
+# the two files differ by that one line and by nothing else.
+body action preload name selected
+timerate rate 1
+flag track_object on
+audio filename lift-off.wav action play
+wait duration 1
+moveto altitude 20000000 duration 3
+wait duration 3
+camera action transition_to target point name Space
+wait duration 2
+camera action move_to target body body_name selected duration 3 altitude 100000

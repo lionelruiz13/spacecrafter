@@ -1,0 +1,15 @@
+# F122 ARM C -- the ADJACENT TRIPLE: arm B plus the third camera line, issued
+# while the 3 s travel is STILL IN FLIGHT. Differs from armB.sts by exactly
+# one added line, and from internal/fly_to_selected.sts by exactly one thing:
+# the shipped file selects the altitude through `struct if body_selected`,
+# which with a body selected takes the 100000 branch written literally here.
+body action preload name selected
+timerate rate 1
+flag track_object on
+audio filename lift-off.wav action play
+wait duration 1
+moveto altitude 20000000 duration 3
+wait duration 3
+camera action transition_to target point name Space
+camera action move_to target body body_name selected duration 3 altitude 100000
+camera action transition_to target body name selected

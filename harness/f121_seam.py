@@ -38,6 +38,15 @@ FLAGBITS = [(1, "oldAutoMove"), (2, "oldHdgRamp"), (4, "oldTracking"),
 
 
 def openmaybegz(p):
+    # [FIXED 2026-09-19, F122 -- the rider F121 reported at its own acceptance:
+    # `--diff` CRASHED on the committed `.gz` dumps. The cause was HERE and not
+    # in `diff`, which does go through this function: a path that already ENDS
+    # in `.gz` passes the os.path.exists test and was handed to plain open(),
+    # which reads gzip bytes as text. Fixed at the one home every reader of
+    # this dump uses (I2), so `--diff a.json.gz b.json.gz` and the bare-name
+    # form both work.]
+    if p.endswith(".gz"):
+        return gzip.open(p, "rt")
     if os.path.exists(p):
         return open(p)
     return gzip.open(p + ".gz", "rt")

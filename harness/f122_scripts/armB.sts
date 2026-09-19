@@ -1,0 +1,13 @@
+# F122 ARM B -- the ADJACENT PAIR, as the shipped script issues it: the travel
+# is issued right behind the point transition, with NO wait between them, so
+# both are executed in the SAME frame by the script interpreter.
+# Differs from armA.sts by exactly one removed line (`wait duration 2`).
+body action preload name selected
+timerate rate 1
+flag track_object on
+audio filename lift-off.wav action play
+wait duration 1
+moveto altitude 20000000 duration 3
+wait duration 3
+camera action transition_to target point name Space
+camera action move_to target body body_name selected duration 3 altitude 100000
