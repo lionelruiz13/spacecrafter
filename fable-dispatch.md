@@ -82,6 +82,66 @@ summary lines; re-read from the head; (iii) a PREMISE the instrument REFUSED —
 FAIL), rewritten bracket-free, 30 of 30. Remotes: 3 / 17 unpushed at open; the owner pushes at the end of each
 week [vixy 2026-09-12].
 
+**Round outcome (session 32 close, 2026-09-19 — every time in this note is pasted `date` output or a commit's clock read AFTER the
+commit; the close commit's own clock is the stamp):** F122 → **§11.246** + code **`0c3fefd5`** + **`ef2029d9`** (the go-to's
+156 000 km was a travel that STARTED AT THE SUN: same target, same standoff (108 687.000 km), same dates, one transcribed law — and a
+new-path `start` of exactly `[0,0,0]`, because `move_to` in the same frame as the `transition_to target point` before it read a place
+the D8 barrier had refused to publish; ONE `wait` is the difference between the floor and 9.83e-04 AU — **the adjacency arm F121's
+elimination never ran was the whole defect**; fixed at the one read, 9.82e-04 → 7.12e-08 AU at rest and, by the supervisor's
+recomputation, ZERO frames above 1e-06 AU from the install on; §5.157 FIXED, §5.159 minted — nine root-parked bodies at the zero
+vector, a SHAPE question) · F123 → **§11.248** + code **`8e065ce4`** (the near-body disappearance: ALREADY attributed in the ledger
+and ALREADY ruled by the owner on 2026-07-26, with no row of its own; measured in a 30 km bracket around the predicted 17 374.0 km,
+linear in the display scale, fov-independent; itself TWO MANAGERS of one decision, `draw` against `drawLoaded`; fixed by ONE private
+selection both consume, the home-body rule consumed at its anchor with nothing plumbed; the DEFAULT VIEW unchanged to the pixel;
+§5.161 minted and FIXED the same day) — **two for two delivered AND supervisor-verified same session**, each headline recomputed from
+the raw records or the committed frames by an independent script, to the digit. Code `2f9e6da7 → 8e065ce4` (three commits), binary
+`9e545fef → bc176a2f → 00a73121 → f22f9278`, harness `5d798b2 →` this close. FULL canary 12/12, every delta 0.0, TWICE (08:44 on
+`00a73121`, 10:00 on `f22f9278`). SUPERVISOR ACTS: pass 24 (`f7782f2`); the mints (`4c35e1a`, `d13775e`); §11.247, the owner's three
+messages (`6ec0ea0`); two acceptances (`c804809` with §5.160 minted, `245db37`); a read-only Fable `claude` agent on the owner's
+offer (the near-body analysis, force-added `harness/artifacts/f123/analysis-2026-09-19.md`); an addendum to a RUNNING executor
+(the shape freeze + the manager count, answered at §11.246(g)); this close; in `~/shared`: **Q-85 NEW** (inexpressibility is a side
+effect of placement, not a strategy; a discrepancy that CAN exist is itself the finding — owner-stated, correcting Q-73 §6; his
+answer to the question put back recorded the same hour), Q-73 / Q-74 ×2 / Q-67 deltas, one miss-ledger line. OWNER EVENTS
+IN-SESSION: three messages (§11.247), all acted on the same hour; **QUESTION 1 read as answered** (*"worked on, as intended"* =
+the acting default NOT-WRONG); **QUESTION 2 NEVER ANSWERED** — F123's engine fix stands on his own 2026-07-26 ruling under an
+acting default, one revertible commit, §3 [Y44]. HOST: same boot throughout; ~20 engine launches in the round (F122's nine,
+F123's eleven) + two FULL canaries; the field pair `03fbee59`/`545a51ef` in == out on each. SUPERVISOR TALLY: **nine dispatcher
+defects** (2 value, 7 structure), one reaching a delivery AS A READING POINTER and caught there: `$?` read behind a pipe — AND
+REPEATED ten minutes after being written into this note; instrument summaries lost through `tail`; a premise pattern the deny-list
+refused (caught by the MINT gate); *"08:56"* typed from memory into a scratch note; **§11.141 cited for the travel port, which is
+§11.143** — copied from §11.245(h)6, never opened, *a premise that RESOLVES is not a premise that is RIGHT* (caught by F122's
+executor reading it); `^141\. ` / `^159\. ` patterns matching the §5 register AND the §11 stubs, twice in ten minutes; a
+`drawBody` probe matching every body class's method; **two fix SHAPES chosen for one class in two consecutive mints, neither
+derived from a responsibility model** (the owner's diagnosis applied to the dispatcher, §11.247(d)2); and the root of the round's
+second task — **F121's mint called a thrice-measured, owner-RULED defect "unattributed"** (miss-ledger, 2026-09-19). EXECUTOR REPORT
+DEFECTS reaching a record: three (F122: *"D 36→36"* on a tree that reads 37, and a mutant run AFTER its instrument had been used,
+unflagged; F123: a WIP tail stale by one commit; its estimated "09:33" was self-reported). EXECUTOR criterion-integrity instances:
+**≥ 20** (F122: the arm ladder differing by ONE line per arm; `|start_new|` predicted and found EXACTLY zero; the geometry closed to
+the printed digit by an overdetermined solve; its own contaminated run caught by its own mutant's signature; P6 refuted as its OWN
+prediction's wrong subtraction; a wrong citation reported rather than silently substituted; the shape freeze honoured where it could
+see the cleaner structure. F123: presence asserted, never a diff; the sub-solar longitude calibrated in-run rather than recalled;
+the §5 row minted BEFORE the fix existed; **a 374 620-pixel "fix effect" exposed as a SUNRISE by a second launch of the same
+binary**; three lines that would have been a second manager, refused). Instruments after the last delivery: scan **303/376/149** ·
+pair-check **264/239/25/133** · D 38 · D2 12 · I 96 · I2 40 · M 100 (the supervisor's own share: +1 entry, +1 pair, +1 inline stub,
+I +1 = `11.247 {"state":["DONE"]}` — an uppercased title quoting the owner's *"done"*, benign). Archival pass 25 (update-s31 +
+F122/F123, live `### F` 2 → 0) DEFERRED to the next open. **NO THIRD DISPATCH, said rather than implied:** two engine-changing
+deliveries verified to this standard, plus three owner messages acted on in-session, are what this supervisor context carries; an
+unverified third would sit in the code he is reading. **NEXT-ROUND QUEUE, in order:** (1) pass 25 at open; (2) **F124, ready to
+mint — THE INPUTS THE SOCKET CANNOT SEE, AND WHAT ONLY A FRAME-INDEXED CHANNEL CAN**: keys by XTEST (`harness/xkey.c` still
+compiles after the 26.04 upgrade although `X11/extensions/XTest.h` is ABSENT — it declares its own prototype; `xdotool`/`xte`/
+`ydotool`/`wtype` and python `Xlib`/`evdev` ABSENT; pointer MOTION undrivable on this Xwayland (`f25_drag.py`'s header) and the
+joypad uninjectable (`/dev/uinput` closed to this account) — all measured 08:06–08:07 today), **§5.160** (the launch second,
+1.40e-04 AU, unattributed), N5's parent-off-screen child gate (the Callisto leg; zero ledger hits for `isChildVisible`), N2's
+flash and (D)1's in-flight window through the seam ring — F123 proved a socket screenshot cannot see them; AND F122's lesson as a
+standing constraint: **a parity leg over the socket is an isolated-arm measurement unless it PLAYS A FILE**; (3) §5.158's five
+old-only transitions + the heading ramp's unresolved 180°; (4) one S rider: the §11.245 stub twin still owed, the five stale
+back-markers of the session-31 queue, the WIP tail above; (5) the 37 dangling code-tree citations + a standing gate; (6) the
+canary's coverage members; (7) `premise_check.py`: refuse a zero-expectation line without its control, AND a way to premise a
+citation's TITLE rather than its existence; the locale sweep (Q-69); (8) the older queue (DSO slices on his reading, §5.154, the
+fold leg, B41, the (g) tail). ON HIS WORD ONLY: §5.155 · §5.156 · §5.159 · the travel's two computations (§11.246(g)) · the five
+`S11.141` comments in `CameraAnchors.cpp` · the camera-inside band and the `loaded` latch (§11.248(h)1, (l)3). Every MINT from now
+on carries the manager-count clause (§11.247(e)) [derived, unratified — his to strike].
+
 ---
 
 **Update [Claude Fable 5.1 2026-09-18, supervising session 31 — LovelyFoxDev, the DEPLOYMENT-MAP round: F120
@@ -725,6 +785,47 @@ md5sum claude/harness/artifacts/f123/analysis-2026-09-19.md | cut -c1-8 => f1a1a
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-32 decision items (2026-09-19, Saturday morning — THE SEAM CONTINUED: F122 · F123, two for two delivered and supervisor-verified same session; you were PRESENT and reading the code in parallel: three messages, verbatim at §11.247).** Q-70's shape: one decision per node, its held set at the node. The executors' own lists are §11.246(g)(k) and §11.248(h).
+
+  ```
+  YOURS — two engine commits landed on ACTING DEFAULTS; each is ONE revertible commit, never pushed
+  [Y43] F122 · `ef2029d9` ─ the go-to's travel now reads its START from the place's own law instead of a per-frame
+        cache that was the zero vector (CameraAnchors.cpp, +32 -6). Your "worked on, as intended" was READ as: not-wrong.
+        To strike it: `git revert ef2029d9`. Old path untouched by diff.
+  [Y44] F123 · `8e065ce4` ─ YOUR ruling of 2026-07-26 ("Outer always drawn if no grounded module") implemented as ONE
+        private selection, `ModularBody::closeRangeComponents()`, consumed by `draw` AND `drawLoaded` (they were two
+        managers of one decision). B3 is YOUR line on the map and the question was put twice and never answered.
+        Held set: +80 -21 in ModularBody.{hpp,cpp} only; one new `#include "Camera.hpp"` in the .cpp (the helper names
+        WHICH body through the camera's reference — the same authority EnvironmentManager was handed); default view
+        0 px changed; canary 12/12. To strike it: `git revert 8e065ce4`.
+  YOURS — SHAPE, found by the round and left alone because you are reading it
+  [Y45] §5.159 ─ a body parked under the tree ROOT never gets a position: nine bodies of a default launch sit at the
+        zero vector until something references them. §11.226(b) calls the refusal correct; §11.111(d) puts fixed
+        points in the root frame by design — two of the ledger's own readings, opposite. Rider: `useNow()` returns a
+        bool that every caller discards — the refusal never reaches the consumer that depends on it.
+  [Y46] §11.246(g) ─ the travel's definition is STILL two computations kept equal (manager count 2): a divergence stays
+        expressible. Next inputs that could differ, ranked: the standoff radius (`getRadius()` vs `getScaledRadius()`),
+        the target at the arrival date, the place's position, the clock read twice in one statement.
+  [Y47] §11.248(h)1, (l)3 ─ camera INSIDE a body: new draws nothing, old draws the body (your ruling's words do not
+        reach that band). And `ModularBody::loaded` is still a latch, where §11.113(c)(iv) says regime selection reads
+        LIVE load state — half-honoured now; removing the latch is its own decision.
+  [Y48] §11.248(h)2 ─ the experimental-oort pilot tuned its 50 AU radius AGAINST the hole (ssystem_factory.cpp:560-569):
+        with the hole closed its onset moves 100 AU -> 50 AU. No shipped scene changes (the flag defaults off).
+  YOURS — small, on your word
+  [Y49] five comments in CameraAnchors.cpp cite "S11.141" (star-name catalogues) for the travel port, which is S11.143
+        (:5, :90, :459, :758, :785). Not touched while you read that file. Say when.
+  [Y50] the manager-count clause (every identical-first fix states, per variable it touches, how many sites MANAGE it
+        before and after, and may not raise the count silently) — derived from your diagnosis, UNRATIFIED; it rode both
+        of today's tasks and is set to ride every mint. Yours to strike or reword. Cross-project: Q-85.
+  FOR YOUR TESTER — one question, because the harness cannot observe it
+  [Y51] "the moon wasn't visible at all" is STILL not reproduced (Moon centred on both paths, before and after both
+        fixes). What differs from the harness is unknown and not guessed: which BUILD he ran; his projection mode and
+        dome geometry; his fov; whether `moon_scaled` was on; whether the Moon was his selection when he pressed WIN+^;
+        and whether he meant DURING the flight or after it (§11.246(f)).
+  ANSWERED THIS ROUND — [Y30] (§5.157, the go-to): FIXED, §11.246. Still yours from session 31: §5.155 (which azimuth
+        convention `look_at` means), §5.156 (snap like old vs D15(c)'s smooth tracking), §11.244(f)'s tension.
+  ```
 
 - **Session-31 decision items (2026-09-18, Friday evening — the DEPLOYMENT-MAP / DUAL-CAMERA-SEAM round: F120 · F121, two for two delivered and supervisor-verified same session; you were PRESENT: four messages, verbatim at §11.244, and the round was re-cut three times on them). Q-70's shape: one decision per node, its held set at the node, anchors by id and symbol. The executors' own veto lists are §11.243(k) and §11.245(k); read order for Saturday is [F1].**
 
