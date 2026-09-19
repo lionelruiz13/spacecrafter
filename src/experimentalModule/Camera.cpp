@@ -726,7 +726,7 @@ void Camera::setAltitude(double altitude)
 void Camera::multAlt(float coef)
 {
     if (!freeMode) {
-        // Anchored: legacy proximity-scaled radial altitude (unchanged).
+        // Anchored: radial altitude
         moveRel({0, 0, velocityScaling(1) * (coef - 1)});
         return;
     }
