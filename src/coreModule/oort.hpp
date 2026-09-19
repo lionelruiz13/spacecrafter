@@ -46,8 +46,10 @@ class Pipeline;
 class PipelineLayout;
 class Set;
 
+//! Fresh generator with the frozen seed of the oort cloud, so every cloud is point-identical; one per populate loop
 std::mt19937 oortRng() noexcept;
 
+//! Draw one point of the oort cloud in heliocentric-ecliptic AU (three draws from rng)
 Vec3f oortSamplePoint(std::mt19937 &rng) noexcept;
 
 class Oort {

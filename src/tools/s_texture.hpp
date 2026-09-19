@@ -259,8 +259,10 @@ public:
 	static void willRead(const std::string &_textureName);
 	// Release every big textures which have not been querried with getBigTexture() for 2 frames
 	static void update();
+	// Drain every deferred-release container and drop the mipmap pipelines; call from ~Context only (managers still alive)
 	static void forceUnload();
 
+	// Stop and join the big-texture loader thread; must run while the Context buffer managers are alive. Idempotent
 	static void stopBigTextureLoader();
 	// Release memory of every unused big textures, might have side effect
 	static void releaseUnusedMemory();
@@ -270,6 +272,7 @@ public:
 	static void recordTransfer(VkCommandBuffer cmd);
 	// Display information about active big textures
 	static void debugBigTexture();
+	// Big-texture table as one JSON array {"name","w","h","acquired","ready","lifetime"}; acquires and refreshes nothing
 	static void dumpBigTextures(std::ostream &out);
 	// Setup cache path for textures, also enable use of cache
 	static void loadCache(const std::string &path, bool _cacheTexture);
@@ -344,6 +347,7 @@ private:
 	static std::atomic<int16_t> textureQueueSize; // Expected number of elements in textureQueue
 };
 
+// TM/TB build a bitfield of which big textures are ready, then TEX(num, name) picks big-or-base per texture
 #define TM(num, name) auto tex##num = name.getBigTexture()
 #define TB(num) ((tex##num != nullptr) << num)
 

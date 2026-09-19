@@ -3,6 +3,7 @@
 
 constexpr double WARP_PRECISION = 1e-8;
 
+//! Newton steps each iterative position solver advances per call, from the seed of the previous call
 constexpr int ITERATIVE_STEPS_PER_CALL = 2;
 
 class IterativeHyp

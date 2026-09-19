@@ -3,6 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
+// TRAIL slot: no gate here (the deduction's); routed to the trailComponents list
 class TrailLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

@@ -85,8 +85,12 @@ public:
     void nextTick();
     void initShadowStructures();
 
+    // Register the release of resources taken from the managers of this Context; for holders outliving the body tree
+    // Runs at the start of ~Context, in reverse registration order, every manager still alive; never from a frame path
     static void onManagerTeardown(std::function<void()> release);
 
+    // Block until every queued draw is recorded and every submitted frame is completed on the GPU
+    // Precondition for releasing what a frame in flight may reference; commanded paths only, never per frame
     void quiesceFrames();
 
     static Context *instance;

@@ -8,10 +8,13 @@
 class ModularSystem : public ModularBody {
 public:
     ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info);
+    // Children deregister from sortedSystemBodies on destruction: destroy them while the members still exist
     ~ModularSystem() override {
         clearChildren();
     }
 
+    // Destroy and rebuild every content body from the source file, at the current date; false if there is no file
+    // Waits for the frames in flight. Holders of the old bodies re-seat them by name (see SSystemFactory)
     bool reloadSystem();
     // Whether this system has a data file behind it (see reloadSystem).
     inline bool hasSystemFile() const {
@@ -25,12 +28,20 @@ public:
     }
     // Load a system
     void loadSystem(const std::string &filename);
+    // Composed format: a section with type=<module family> is a module of the earlier node named by body=, else a node
     void loadComposedSystem(const std::string &filename);
+    // Write the composed equivalent of a loaded legacy file from its live bodies; loading it must reproduce that load
     void generateComposedTwin(const std::string &legacyFilename, const std::string &outPath);
+    // Write the declared bodies of this system (hidden included, nested systems excluded) to a composed file
+    // An existing file is edited, never rebuilt: only missing declarations and loader annotations are added
+    // Which files may be written is the caller's decision (SSystemFactory::saveCurrentSystem). false = nothing written
     bool saveSystem(const std::string &outPath);
+    // origin = the declaring section when its file is writable (composed), annotated in place with the diagnostics
+    // supplemental = pushed at runtime rather than loaded from a file
     void loadBody(std::map<std::string, std::string> &param,
                   ModularSystemFormat::Section *origin = nullptr,
                   bool supplemental = false);
+    // Remove the supplemental bodies of this system's own content, hidden included; true if anything was removed
     bool removeSupplementalBodies();
     void startTrails(bool record);
     // Update this system
@@ -42,6 +53,8 @@ public:
     void drawOrbits(Renderer &renderer);
     void drawTrails(Renderer &renderer);
     void drawTails(Renderer &renderer);
+    // Draw this system as an entry of an enclosing system (camera outside): its content when large enough on screen,
+    // else the halo of its star. No shadows inside
     void drawNested(Renderer &renderer);
     void drawStarProxy(Renderer &renderer);
     // Internally used by ModularBody to inform the creation of body in this system
@@ -49,6 +62,7 @@ public:
         sortedSystemBodies.push_back(body);
         needCleanUp = true;
     }
+    // Internally used by ModularBody to inform the destruction of body in this system; absent is legal (hidden body)
     inline void removeBody(ModularBody *body) {
         auto ptr = sortedSystemBodies.data();
         auto const end = ptr + sortedSystemBodies.size();
@@ -61,6 +75,7 @@ public:
             ++ptr;
         }
     }
+    // Take a hidden body out of the drawn and pickable list without destroying it; no-op if absent
     inline void unregisterBody(ModularBody *body) {
         for (auto it = sortedSystemBodies.begin(); it != sortedSystemBodies.end(); ++it) {
             if (*it == body) {
@@ -77,6 +92,7 @@ public:
     }
     // Find the body at the given normalized screen position (in range [-1, 1])
     ModularBody *findBodyAt(const std::pair<float, float> &screenPos) const;
+    // nullptr for a starless system (star == this is the internal "unassigned" and must not leak)
     inline ModularBody *getSystemStar() const {
         return (star == this) ? nullptr : static_cast<ModularBody *>(star);
     }
@@ -87,6 +103,7 @@ public:
         return static_cast<ModularSystem *>(body);
     }
 private:
+    // Decide which bodies shadow which and fill the receivedShadows of each drawn receiver; runs at drawSystem start
     void computeShadows(Renderer &renderer);
     void loadDeclaredModule(std::map<std::string, std::string> &params, const std::string &header,
                             const std::map<std::string, std::map<std::string, std::string>> &nodeParams,
@@ -103,6 +120,7 @@ private:
     std::vector<ModularBody *> sortedSystemBodies;
     ModularBodyPtr star; // Star of the system
     std::string systemFilename;
+    // The composed file as parsed, every line in order: the base saveSystem edits. Empty after a legacy load
     std::vector<ModularSystemFormat::Section> loadedSections;
     // Which reader systemFilename belongs to (reloadSystem dispatch):
     // false = legacy loadSystem, true = composed loadComposedSystem.

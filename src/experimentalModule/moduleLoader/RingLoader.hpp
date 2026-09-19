@@ -3,6 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
+// RING slot (RingModule): bids on tex_ring, the key the deduction uses
 class RingLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

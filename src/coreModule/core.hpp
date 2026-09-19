@@ -221,9 +221,9 @@ public:
 		return navigation->getFlagTraking();
 	}
 
-	//! Set whether sky position is to be locked. Both-paths mirror (defined in
-	//! core.cpp): old navigation flag + new-path Camera sky-lock (INTENT 11.58).
+	//! Set whether sky position is to be locked, on both paths
 	void setFlagLockSkyPosition(bool b);
+	//! Get whether sky position is locked, on the path that draws
 	bool getFlagLockSkyPosition(void);
 
 	//! Set current mount type, on both paths (defined in core.cpp: this header does not see the Camera)
@@ -332,6 +332,8 @@ public:
 		return selected_object;
 	}
 
+	//! Whether the old path must draw the selection pointer this frame
+	//! Body pointers are drawn by the new path when it draws; star/nebula pointers always stay here
 	bool needOldSelectionPointer() const {
 		if (!selected_object || !object_pointer_visibility)
 			return false;
@@ -411,17 +413,22 @@ public:
 	void preloadSolarSystemBody(stringHash_t& param);
 	void removeSolarSystemBody(const std::string& name);
 	void removeSupplementalSolarSystemBodies();
-	// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
+	// Dump the state of both body paths to file (trace harness)
 	void ssystemDualDump(const std::string& file);
 
+	//! Local direction the navigator aims the stars, the milky way and the nebulae at
 	const Vec3d& getSkyVision() const;
 
+	//! Session restore of that direction; the transforms are recomputed from the observer and the date first
 	void restoreSkyVision(const Vec3d& localVision);
 
+	//! Session restore of the view offset on both paths, with its arming latch landed
 	void restoreViewOffset(double offset, bool armed);
 
+	//! Navigator, observer, projector and star view state as one JSON object (trace harness)
 	void dumpOldViewState(std::ostream &out) const;
 
+	//! One row per updateMove frame with an interactive ramp active, plus the first frame after it stops
 	struct RampStep {
 		unsigned int frame;			//!< `Core::updateMove` call index (gaps are visible)
 		int deltaTime;				//!< ms handed to `Core::updateMove`
@@ -440,19 +447,26 @@ public:
 	//! The ring, chronological, as one JSON object.
 	void dumpRampTrace(std::ostream &out) const;
 
+	//! One row per frame, taken once the navigator and the Camera have both advanced; armed by SC_SEAM_RECORD
 	struct SeamStep {
 		unsigned int frame;		//!< recorder call index (gaps are visible)
 		int deltaTime;			//!< ms the frame advanced
 		double jd;				//!< the frame's simulation date
+		//! Projector fov and its target (deg, full angle); Camera half fov, zoom source and target (rad)
 		double fovOld, aimFovOld, halfFovNew, zoomSrcNew, zoomDstNew;
+		//! Angle between the two forward directions (deg): in the root frame / in the acting frame
 		double viewAngleAbs, viewAngleLocal;
-		double posDelta;
+		double posDelta;		//!< |observer heliocentric position - Camera root position|, AU
 		double headingOldDeg, headingNewRad;
-		double dLonDeg, dLatDeg, dAltMetres;
-		double moveCoefOld;
-		float viewTNew, hdgTNew, zoomTNew, moveTNew;
+		double dLonDeg, dLatDeg, dAltMetres;	//!< observer place minus Camera::getPlace()
+		double moveCoefOld;		//!< auto-move coefficient of the navigator
+		float viewTNew, hdgTNew, zoomTNew, moveTNew;	//!< plan timers of the Camera
+		//! 1 old auto-move, 2 old heading ramp, 4 old tracking, 8 Camera tracks a body, 16 tracked bodies name-equal,
+		//! 32 old home planet == Camera reference (by name), 64 Camera in free mode
 		unsigned int flags;
 	};
+	//! One travel as its registry was handed it, captured on the install edge (root AU, JD)
+	//! An old install of zero duration never raises `moving` and is not seen
 	struct SeamTravel {
 		unsigned int frame;		//!< recorder call index of the edge
 		int engine;				//!< 0 = old AnchorManager, 1 = new CameraAnchors
@@ -466,10 +480,10 @@ public:
 	//! The ring, chronological, as one JSON object -- written into the
 	//! dual-path dump beside `ramp`.
 	void dumpSeamTrace(std::ostream &out) const;
-	//! Pin the rendered body path (flag experimental_path): old/new selection
-	//! replacing the A/B auto-toggle once used.
+	//! Pin the rendered body path (flag experimental_path)
 	void setExperimentalPath(bool newPath);
 	bool getExperimentalPath() const;
+	//! Startup path selection, call once at init: "new", "old" or "alternate", anything else is refused with a log line
 	void setRenderPathMode(const std::string &mode);
 
 	//! set flag to display generic Hint or specific DSO type
@@ -571,6 +585,8 @@ private:
 
 	void applyClippingPlanes(float clipping_min, float clipping_max);
 
+	//! Push the tropic / polar-circle sky-line flags and colors to the new-path planet grid
+	//! Once per frame, before the modular system draws
 	void syncPlanetGridSkyState();
 
 	//! Callback to record actions
@@ -601,6 +617,7 @@ private:
 	// Increment/decrement smoothly the vision field and position
 	void updateMove(int delta_time);
 
+	//! Ring: an overflow keeps the last rows
 	static constexpr unsigned int RAMP_TRACE_CAPACITY = 2048;
 	std::vector<RampStep> rampTrace;
 	unsigned int rampWrite = 0;		//!< next slot
@@ -608,12 +625,14 @@ private:
 	unsigned int rampFrame = 0;		//!< `updateMove` call index
 	bool rampWasActive = false;		//!< to emit the release row
 
+	//! Ring: an overflow keeps the last rows; allocated on the first record
 	static constexpr unsigned int SEAM_TRACE_CAPACITY = 16384;
 	std::vector<SeamStep> seamTrace;
 	unsigned int seamWrite = 0;		//!< next slot
 	unsigned int seamTotal = 0;		//!< records ever written
 	unsigned int seamFrame = 0;		//!< recorder call index
 	bool seamRecording = false;		//!< armed by SC_SEAM_RECORD at init
+	//! List, not a ring: an overflow drops the latest installs
 	static constexpr unsigned int SEAM_TRAVEL_CAPACITY = 64;
 	std::vector<SeamTravel> seamTravels;
 	unsigned int seamTravelTotal = 0;	//!< installs seen, kept or dropped
@@ -622,6 +641,7 @@ private:
 	//! Copy one registry's install record into `seamTravels`.
 	void recordSeamTravel(int engine, double jd, const Vec3d &start,
 	                      const Vec3d &dir, double distance, double t0, double t1);
+	//! Called by Executor::update (a friend) at the end of the frame update; returns at once when not armed
 	void recordSeamStep(int delta_time);
 
 	// initialize CoreFont class

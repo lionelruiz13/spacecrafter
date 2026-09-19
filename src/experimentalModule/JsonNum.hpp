@@ -4,6 +4,8 @@
 #include <cmath>
 #include <ostream>
 
+// JSON-legal number for the dump channels: a finite value is written exactly as `out << v`,
+// a non-finite one as the quoted token "nan", "inf" or "-inf" so the line stays parsable and the value is kept
 template<typename T>
 struct JNum { T v; };
 

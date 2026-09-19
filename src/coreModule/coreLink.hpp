@@ -510,10 +510,14 @@ public:
 
 	void initialSolarSystemBodies();
 
+	//! Camera and date are kept; false when the current system has no data file
 	bool reloadSolarSystem();
 
+	//! filename empty = own composed file of the system; false when nothing was written
 	bool saveSolarSystem(const std::string &filename);
 
+	//! Session file, explicit only: nothing calls these at startup or shutdown
+	//! cmds = the command surface, owner of the names and read/write halves of the bulk value rows
 	bool sessionSave(const std::string &filename, SessionFile::CommandSurface *cmds);
 	bool sessionLoad(const std::string &filename, SessionFile::CommandSurface *cmds);
 
@@ -544,6 +548,7 @@ public:
 	//! Get flag for displaying Planets Axis
 	bool planetsGetFlagAxis() const;
 
+	//! Push the sky-manager colors to the new-path planet grid (GRID_EQUATORIAL = meridian, LINE_EQUATOR = parallel)
 	void planetsSyncGridColor();
 
 
@@ -581,6 +586,7 @@ public:
 
 	void planetSetColor(const std::string& englishName, const std::string& color, Vec3f c) const;
 
+	//! Returns false when no such body exists
 	bool planetSetDatumRadius(const std::string& englishName, double km) const;
 	bool planetSetGroundRadius(const std::string& englishName, double km) const;
 
@@ -799,6 +805,7 @@ public:
 		return true;
 	}
 
+	//! The four place getters report the path that draws, without clamp (the clamps live in the Observer setters)
 	double observatoryGetLatitude() const {
 		double lat, lon, alt;
 		if (drawnPlace(lat, lon, alt))
@@ -813,6 +820,7 @@ public:
 		return core->observatory->getLongitude();
 	}
 
+	//! Same readout, normalised to [-180,180)
 	double observatoryGetLongitudeForDisplay() const {
 		double lat, lon, alt;
 		if (drawnPlace(lat, lon, alt))
@@ -886,10 +894,12 @@ public:
 	}
 	void starGalaxyLoadCatalog(const std::string &filename); // defined in coreLink.cpp (StarGalaxy incomplete in this header)
 
+	//! New path only
 	void cameraSetFreeMode(bool b) {
 		Camera::instance->setFreeMode(b);
 	}
 
+	//! Multiply the altitude: coef<1 descends, coef>1 ascends. New path only
 	void cameraDescend(float coef) {
 		Camera::instance->multAlt(coef);
 	}
@@ -1019,6 +1029,7 @@ public:
 		core->navigation->setDefaultHeading();
 	}
 
+	//! Environment rotation around observer on the path that draws, in degrees within [-180, 180]
 	double getHeading() const {
 		if (!core->getExperimentalPath())
 			return core->navigation->getHeading();
@@ -1040,6 +1051,7 @@ public:
 		return (core->getFlagTracking());
 	}
 
+	//! One row {"reported", "old", "new"} per readout of the query half, in the units of its getter (trace harness)
 	void dumpControlSurface(std::ostream &out) const;
 
     CoreLink(std::shared_ptr<Core> _core) {

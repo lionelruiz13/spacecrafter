@@ -3,6 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
+// ATMOSPHERE slot (AtmExtModule): bids on atmosphere_ext_model; the has-atmosphere precondition is the deduction's
 class AtmExtLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

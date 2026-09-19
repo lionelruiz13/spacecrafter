@@ -28,6 +28,9 @@
 #include <string>
 #include "scriptModule/script_origin.hpp"
 
+//! The `#!` channel: error feedback written into the script file, at the end of the faulty line
+//! Contract: the tail of a line from its first `#!` belongs to the engine, everything before it is never touched
+//! Writes are batched per file at script end, bytes and line endings preserved; a failed write degrades to the log
 class ScriptAnnotator {
 public:
 	//! Record a diagnostic for the line `at` names. Several diagnostics for
@@ -40,6 +43,7 @@ public:
 	//! clear stale tails when `naturalEnd`, then forget everything.
 	void flush(bool naturalEnd);
 
+	//! Byte offset of the first `#!` at or after the first `#` outside quotes; std::string::npos when none
 	static std::size_t annotationBegin(const std::string &line);
 	static bool hasAnnotation(const std::string &line) { return annotationBegin(line) != std::string::npos; }
 	//! The line with its machine tail (and the blanks before it) removed.

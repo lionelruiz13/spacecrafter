@@ -11,6 +11,8 @@
 #include <memory>
 class ObjL;
 
+// Layered disc (tex_night / tex_normal / tex_heightmap): mid regime on MESH_TES or MESH_LAYERED, row picked at load
+// Close regime (rayCapable, observer near): MESH_RAYMARCH, per-pixel relief + terrain self-shadow
 class LayeredMesh : public BodyModule {
 public:
     struct Config {
@@ -35,23 +37,25 @@ public:
     }
     virtual bool isLoaded() override;
     virtual void preload(ModularBody *body, int keepFrames) override;
+    // boundingRadius includes the heightmap displacement headroom; the altimetry level is live, re-read each update
     virtual bool update(ModularBody *body, float scaledRadius) override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) override;
-    // Row-8 TRACE prepass: the layered disc cuts its orbit-hole exactly like
-    // BasicMesh (shared sphere-trace family, TraceFamily.hpp).
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
+    // The skin replaces the DAY layer only
     virtual void createTexSkin(const std::string &texName) override;
     virtual void switchTexSkin(bool use) override;
     bool getSkinUse(bool &out) const override { out = skinUse; return true; }
 private:
     float altimetryLevel() const; // moonClass? moon : planet level (shared BodyTesselation seam)
-    // The bound day-layer texture (old tex_current): the skin when active AND
-    // resident (a loading s_texture is an uninitialized descriptor), else day.
+    // The bound day-layer texture: the skin when active AND resident
+    // (a loading s_texture is an uninitialized descriptor), else day
     s_texture &dayTex() { return skinBound ? *skinTexture : day; }
+    // To call at every draw entry: any skin transition (on/off, load completion, replace) forces both Sets to rebind
     void refreshSkinState();
     void fillVert(Renderer &renderer, ModularBody *body, const Mat4f &mat);
+    // Rebind a whole Set; big = per-slot big texture in binding order (null = the s_texture's base level)
     void rebind(bool ray, Texture *const *big);
     void drawMid(Renderer &renderer, ModularBody *body, const Mat4f &mat, uint16_t wanted, bool low);
     void drawRay(Renderer &renderer, ModularBody *body, const Mat4f &mat);
@@ -66,6 +70,7 @@ private:
     s_texture day;
     std::unique_ptr<s_texture> skinTexture;
     std::unique_ptr<s_texture> night, specular, normal, heightmap;
+    // Textures in the binding order of each family; null = slot absent (day bound as a never-sampled placeholder)
     s_texture *midSlots[5];
     uint8_t midSlotCount;
     uint8_t midFirstBinding;

@@ -63,8 +63,11 @@ enum class LOG_FILE : char {
 // From VulkanMgr
 enum class LogType : unsigned char;
 
+//! Log files kept per channel: the current launch plus LOG_RETENTION_LAUNCHES-1 numbered archives
 constexpr int LOG_RETENTION_LAUNCHES = 8;
 
+//! Total bytes of all channels (live files + archives); when crossed, the channel holding the most bytes rotates
+//! Both are compiled constants: the channels are opened before the config is parsed
 constexpr std::uintmax_t LOG_RETENTION_BYTES = 1024u * 1024u * 1024u;
 
 class cLog {
@@ -136,8 +139,10 @@ public:
 
 	void close();
 
+	//! Open <LogfilePath>.log for one channel, rotating the previous launches first
 	void openLog(const LOG_FILE& fichier, const std::string& LogfilePath);
 
+	//! Write the rotation report of every opened channel to INTERNAL; call once, when all the channels are open
 	void reportOpenLog();
 
 	void setDirectory(const std::string &directory) {
@@ -153,10 +158,13 @@ private:
 		std::ofstream file;
 		//! <path>.log, <path>.1.log ... relative to logDirectory.
 		std::string path;
+		//! Bytes written into the live file since it was opened, counted by writeLocked
 		std::uintmax_t live = 0;
+		//! Bytes held by the numbered archives, taken at open and at each rotation
 		std::uintmax_t archived = 0;
 	};
 
+	//! What one rotation did, for its caller to report
 	struct RotationRecord {
 		bool rotated = false;
 		std::string deleted;
@@ -168,20 +176,23 @@ private:
 	std::mutex writeMutex;
 	std::map<const LOG_FILE, Channel> logFile;
 	std::string logDirectory = "";
+	//! Sum of live + archived over the open channels: the quantity LOG_RETENTION_BYTES bounds
 	std::uintmax_t budgetUsed = 0;
 
 	void writeConsole(const std::string&, const LOG_TYPE&);
+	//! Delete what falls out of the window, shift the archives up, move the live file to <path>.1.log
 	RotationRecord rotate(const std::string& LogfilePath);
-	//! The open-time D12 line, and the legacy-pile line when there is a pile.
+	//! Report the open-time rotation, and the legacy dated script logs when there are some
 	void reportOpen(const std::string& LogfilePath, const RotationRecord& rec);
+	//! write() with writeMutex already held; the budget is checked by the caller, never from here
 	void writeLocked(const std::string& texte, const LOG_TYPE& type, const LOG_FILE& fichier);
-	//! The bound acting: rotate the channel holding the most bytes, open a
-	//! fresh live file for it, and write the one D12 line that says so.
+	//! Rotate the channel holding the most bytes, open a fresh live file for it and log it
 	void rotateForBudget();
 	void reportOpenLogConsole();
 	//! One line per channel opened (plus one per legacy pile found), kept for
 	//! the lifetime of the process: both sinks are served from this one text.
 	std::vector<std::string> openReport;
+	//! Same for the in-session rotations which happen before setDebug tells whether the console is a sink
 	std::vector<std::string> budgetReport;
 	bool openReportLogged = false;
 	bool openReportOnConsole = false;

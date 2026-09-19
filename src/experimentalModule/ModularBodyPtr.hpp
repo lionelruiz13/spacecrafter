@@ -15,6 +15,7 @@ public:
         ref.push_back(this);
     }
     ModularBodyPtr(ModularBody *body);
+    // A copy registers itself as one more holder
     inline ModularBodyPtr(const ModularBodyPtr &other) : ModularBodyPtr(other.ptr) {}
     ~ModularBodyPtr();
 
@@ -37,12 +38,14 @@ public:
     void operator=(nullptr_t);
     void operator=(ModularBody *body);
 
+    // Redirect every holder of from to to (the selection follows); to == nullptr only at final teardown of the root
     static void redirect(ModularBody *from, ModularBody *to);
 protected:
     ModularBody *ptr;
-    static std::vector<ModularBodyPtr *> ref;
+    static std::vector<ModularBodyPtr *> ref; // every live holder
 };
 
+// Holder which selects the body it points to, and deselects the one it leaves
 class ModularBodySelector : public ModularBodyPtr {
 public:
     ~ModularBodySelector();

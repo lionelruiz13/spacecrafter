@@ -3,6 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
+// Custom slot "GRID": never deduced, installed for planet_grid=true through loadModule's explicit slot parameter
 class GridLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

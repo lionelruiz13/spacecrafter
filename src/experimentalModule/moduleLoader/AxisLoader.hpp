@@ -3,6 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
+// AXIS slot: no gate here, the deduction requests it for every body with a mesh
 class AxisLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

@@ -4,7 +4,6 @@
 #include <cstdint>
 
 //! @brief The level of prioritisation of a resource
-//! (Moved from ModularBody.hpp - it is a resource concept, not a body one.)
 enum class ResourcePriority : uint8_t {
     UNLOADED, // No resources acquired: explicitly unloaded, or owned by an inner ModularBody (or child of it) while the camera is outside its area of influence
     LAZY, // Only minimal resources shall be loaded, in background (default)

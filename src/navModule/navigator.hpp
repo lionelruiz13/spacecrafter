@@ -89,6 +89,7 @@ public:
 
 	void setLocalVision(const Vec3d& _pos);
 
+	//! setLocalVision without the view-offset compensation (session restore only)
 	void restoreVision(const Vec3d& _localVision);
 
 	//! Return the observer heliocentric position
@@ -204,6 +205,7 @@ public:
 		return view_offset;
 	}
 
+	//! Assert the arming of the view offset (0 or 1) without moving the view (session restore only)
 	void setViewOffsetTransition(float t) {
 		view_offset_transition = t;
 	}
@@ -214,6 +216,7 @@ public:
 	int getFlagAutoMove() const {
 		return flag_auto_move;
 	}
+	//! Progress of the auto move, 0 at the start and 1 at arrival
 	double getMoveCoef() const {
 		return move.coef;
 	}
@@ -231,6 +234,7 @@ public:
 
 	void alignUpVectorTo(const Mat4d& rot, double duration);
 
+	//! Write the whole view state as one JSON object (trace harness)
 	void dumpTrace(std::ostream &out) const;
 
 private:

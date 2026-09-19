@@ -26,13 +26,13 @@ public:
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) override;
     virtual void drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
+    // The skin replaces the color map only, under the rules of SkinnableColorMap
     virtual void createTexSkin(const std::string &texName) override;
     virtual void switchTexSkin(bool use) override;
     bool getSkinUse(bool &out) const override { out = colorMap.isSkinUsed(); return true; }
     void invalidate();
 private:
-    // One rebind site for every binding-state change (was 3 copy-pasted
-    // blocks; the skin state would have made it 5).
+    // The one rebind site of every binding-state change
     void bindColor(Texture &color);
     bool loaded = false;
     ObjL *mesh;
@@ -40,8 +40,7 @@ private:
     PipelineFamily family; // MESH family handle (MeshFamilies::meshNormal)
     std::unique_ptr<Set> set; // allocated from the family's contract pools (Renderer::allocSet)
     SharedBuffer<globalVertProj> vert;
-    SharedBuffer<meshFrag> frag; // Gen-2 receiver data (was globalFrag - the
-                                 // retired Gen-1 LUT feed, shadow-paths.md B4)
+    SharedBuffer<meshFrag> frag; // shadow receiver data
 };
 
 #endif /* end of include guard: BASIC_MESH_HPP_ */

@@ -6,14 +6,14 @@
 
 class s_font;
 
+// Circle marker + name label at the body's screenPos (far component: 2D screen space, no depth)
 class HintModule : public BodyModule {
 public:
     HintModule(const Vec3f &labelColor) :
         BodyModule(BodyModuleType::HINT), labelColor(labelColor),
         authoredLabelColor(labelColor) {}
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
-    // Runtime label-color seam (old Body::setColor "label"). Self-selects on
-    // the LABEL channel; the base no-op handles every other channel.
+    // Answers the LABEL channel only; the base no-op handles every other channel
     bool getColor(BodyColorType type, Vec3f &out) const override {
         if (type != BodyColorType::LABEL)
             return false;
@@ -32,19 +32,20 @@ public:
             labelColor = c;
     }
 
+    // The fader only advances at draw (a far component gets no update): settle it when the body is unhidden
     virtual void resumeAfterHidden(ModularBody *body) override {
         fader.reset(show);
     }
 
+    // Label font, not owned
     static void setFont(s_font *font);
-    static bool show; // Global hint visibility (old setFlagHints)
-    // Default label color (config planet_names_color) - wired at the
-    // SSystemFactory::setDefaultBodyColor seam, like the old BodyColor default.
+    static bool show; // Global hint visibility (setFlagHints)
+    // Label color of a body whose data gives none (config planet_names_color)
     static Vec3f defaultLabelColor;
 protected:
-    LinearFader fader; // per-body, 2000 ms default = old hint_fader
-    Vec3f labelColor; // Per-body label color (old BodyColor::getLabel)
-    Vec3f authoredLabelColor; // what the DATA gave it (D30's delta baseline)
+    LinearFader fader; // per-body, target = show
+    Vec3f labelColor;
+    Vec3f authoredLabelColor; // what the DATA gave it (baseline of a saved color change)
     static s_font *hintFont;
 };
 

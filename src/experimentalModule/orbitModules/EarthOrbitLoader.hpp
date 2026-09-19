@@ -1,3 +1,5 @@
+// emb_special is the Earth-Moon BARYCENTER: the secondary's orbit is subtracted, weighted by the lunar mass fraction
+// The secondary is wired by name when that body loads (ModularSystem::loadBody); binary_secondary overrides "Moon"
 class EarthOrbitLoader : public OrbitLoader {
     virtual std::unique_ptr<Orbit> load(std::map<std::string, std::string> &params) override {
         auto it = params.find("binary_secondary");

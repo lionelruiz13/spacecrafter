@@ -3,30 +3,16 @@
 
 #include <cmath>
 
-// Radial projection transfer - the new path's single CPU authority for the
-// per-mode screen mapping (INTENT 11.33). EXACT mirror of the GPU dispatch
-// (shaders/src/custom_project.glsl, spec-const 8) and of the old-path CPU
-// forms (projector.cpp per-mode projectCustom + invertAllspherePolynomial):
-// CPU screenPos and GPU discs must land on the SAME transfer, or every
-// screenPos consumer (halo, hint, pointer, label anchor - the 11.19 parity
-// layer) drifts off its body under non-fisheye modes.
-//
-// All four modes are radially symmetric around the view axis: NDC radius r
-// as a function of the normalized center angle thn = theta/halfFov (theta =
-// angle from the -z view axis, radians; GPU clipping_fov.z == halfFov):
-//   FISHEYE   r = thn                                  [custom_project.glsl:9]
-//   ALLSPHERE r = poly(thn*1200)/1200                  [custom_project.glsl:25]
-//   EKISOLID  = FISHEYE (mainline TODO, aliased there) [custom_project.glsl:48]
-//   ASPHERIC  r = tan(theta/2)/tan(halfFov/2)          [custom_project.glsl:55]
-// Mode source: Context::projectionType (config video/projection_type,
-// parsed once at app init - LAUNCH-CONSTANT, the same precondition the old
-// path's 52 per-pipeline spec-constant sites rely on; a runtime change
-// would need the registry's rebuild+publish-swap path, out of scope).
+// Radial projection transfer of each mode, on the CPU; must equal shaders/src/custom_project.glsl (spec-const 8)
+// r = NDC radius, thn = theta/halfFov, theta = angle from the -z view axis in radians
+//   FISHEYE r = thn | ALLSPHERE r = poly(thn*1200)/1200 | EKISOLID = FISHEYE | ASPHERIC r = tan(theta/2)/tan(halfFov/2)
+// The mode (Context::projectionType) is constant after launch
 namespace ProjectionTransfer {
 
 // projector.hpp ProjectionType values (== Context::projectionType).
 enum : int { FISHEYE = 0, ALLSPHERE = 1, EKISOLID = 2, ASPHERIC = 3 };
 
+//! Allsphere distortion polynomial and its derivative: x = thn*1200, output = r*1200. Same as custom_project.glsl
 inline double allspherePoly(double x) {
 	return (((((((((-1.553958085e-26*x + 1.430207232e-22)*x -4.958391394e-19)*x + 8.938737084e-16)*x -9.39081162e-13)*x + 5.979121144e-10)*x -2.293161246e-7)*x + 4.995598119e-5)*x -5.508786926e-3)*x + 1.665135788)*x + 6.526610628e-2;
 }
@@ -46,6 +32,7 @@ inline float radius(int mode, float thn, float halfFov) {
 	}
 }
 
+//! dr/dthn at thn = 0: the small-angle slope, for use around the view center
 inline float slope0(int mode, float halfFov) {
 	switch (mode) {
 		case ALLSPHERE:
@@ -57,6 +44,7 @@ inline float slope0(int mode, float halfFov) {
 	}
 }
 
+//! Inverse transfer: normalized angle whose NDC radius is r
 inline double angleNorm(int mode, double r, double halfFov) {
 	switch (mode) {
 		case ALLSPHERE: {
@@ -76,6 +64,7 @@ inline double angleNorm(int mode, double r, double halfFov) {
 	}
 }
 
+//! Normalized angle of the screen-disc edge (r == 1): the visibility-cone bound, never below the visible edge
 inline float edgeAngleNorm(int mode, float halfFov) {
 	return (mode == ALLSPHERE)
 		? static_cast<float>(angleNorm(ALLSPHERE, 1., halfFov)) : 1.f;

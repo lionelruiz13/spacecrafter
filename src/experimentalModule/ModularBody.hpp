@@ -20,11 +20,9 @@
 #include <map>
 #include <vector>
 
-// (TEXMAP*/TEX big-texture mapping macros moved to tools/s_texture.hpp -
-//  they are texture utilities, not body concepts.)
+class BodyTesselation;
 
-class BodyTesselation; // both-paths tesselation seam (see setTesselation)
-
+// Structural nature of a body, not a feature taxonomy: features live in BodyModule slots
 enum class BodyType : unsigned char {
     VOID,
     ANCHOR, // Simplest type, just an anchor
@@ -37,16 +35,19 @@ enum class BodyType : unsigned char {
     STAR = 0x40, // A body who emit light
 };
 
+// Analytic model of the spin phase (`sidereal_time` key): picked by the data, never by the name of the body
 enum class SiderealTimeModel : unsigned char {
-    GENERIC,
-    EARTH_APPARENT,
+    GENERIC, // (jd - epoch) / period spin
+    EARTH_APPARENT, // Apparent sidereal time (nutation)
 };
 
+// Surface-lighting/tessellation lineage a layered mesh is built on (`surface_model` key)
 enum class SurfaceModel : unsigned char {
-    PLANET,
-    LUNAR,
+    PLANET, // night/specular/bump combinations
+    LUNAR, // tessellated heightmap displacement, no night side
 };
 
+// Trail sample count when neither `trail_length` nor a legacy `type` supplies one
 constexpr int TRAIL_LENGTH_DEFAULT = 60;
 
 enum ModularBodyTraits {
@@ -63,6 +64,8 @@ inline constexpr BodyType operator&(BodyType t1, BodyType t2)
 class ModularSystem;
 class Translator;
 
+//! datumRadius/groundRadius not authored: the ctor resolves it to `radius` for a body, 0 for a ModularSystem
+//! Negative so that any authored value (>= 0) wins
 constexpr float NAV_RADIUS_UNSET = -1.f;
 
 struct ModularBodyCreateInfo {
@@ -72,6 +75,8 @@ struct ModularBodyCreateInfo {
     Vec3f haloColor;
     float albedo;
     float radius;
+    // Navigation radii in AU. datumRadius = the radius where the altitude of the observer is zero
+    // groundRadius = the radius free flight cannot descend past. Both 0 = enterable body
     float datumRadius = NAV_RADIUS_UNSET;
     float groundRadius = NAV_RADIUS_UNSET;
     float oblateness; // Not universal - only for pure spherical body modules (so, single-shape body ?) - may provide immense optimisation and quality
@@ -82,7 +87,10 @@ struct ModularBodyCreateInfo {
     SiderealTimeModel siderealTimeModel = SiderealTimeModel::GENERIC;
     SurfaceModel surfaceModel = SurfaceModel::PLANET;
     int trailLength = TRAIL_LENGTH_DEFAULT;
+    // Declared by the composed format, where `type` no longer decides identity. Set by ModularSystem::loadBody only;
+    // a module loader asks the body, never which file was parsed
     bool composedDeclaration = false;
+    // This body is what its subsystem orbits, whether or not it shines (`primary` key, legacy `type = Sun|Star`)
     bool primary = false;
 
     // Deprecated
@@ -103,7 +111,7 @@ constexpr double MIN_MOVEMENT_SPEED = 0.125;
 //! Minimal distance to the center of the body for showing surface BodyModule, in multiple of body radius
 //! Surface BodyModule are designed on the assumption that proximity reduce the visible surface and change several assumptions
 constexpr double BODY_SURFACE_HEIGHT = 2;
-
+//! Width in pixels, above SYSTEM_VISIBILITY_SUBSYSTEM_SIZE, where a nested system cross-fades with its star proxy
 constexpr float SYSTEM_COLLAPSE_CROSSFADE_BAND = SYSTEM_VISIBILITY_SUBSYSTEM_SIZE / 2.f;
 
 //! Maximal sizeof a texture to be considered negligible (lazy)
@@ -136,8 +144,9 @@ constexpr int SECONDARY_SELF_SHADOWING_RESOLUTION = 2048;
 // - Brightness (only if it's a star)
 // - Projected shadow absorbtion (ex : earth's projected shadow is {0.0, 1.0, 1.0})
 
-// ResourcePriority moved to ResourceHub.hpp (resource-layer concept, I2).
-
+// Which ownership list of the parent holds a body. GROUNDED = bound to the surface of the parent, ORBITING = satellite,
+// INNER = inside the volume of the parent, shown only while the camera is inside the AoI of the parent
+// HIDDEN_* = the same body parked by hide(): still owned by the parent, outside every update/draw walk
 enum class BodyRelation {
     HIDDEN_GROUNDED,
     HIDDEN_ORBITING,
@@ -148,7 +157,7 @@ enum class BodyRelation {
 };
 
 constexpr int HIDDEN_SHIFT = 3;
-
+// Extra runs of the iterative position solve when a frozen body is used again (useNow, TrailModule::resumeAfterHidden)
 constexpr int RESUME_EXTRA_ITERATIONS = 4;
 
 // hide()/show() translate between a relation and its hidden variant by +-HIDDEN_SHIFT.
@@ -170,6 +179,7 @@ class ModularBody {
     // For environment chain aggregation (member lists, satellite selection)
     friend class EnvironmentManager;
 public:
+    // Virtual for the polymorphic ownership of children only: update/draw dispatch stays non-virtual
     virtual ~ModularBody();
     // For emplace_back
     ModularBody(ModularBody *parent, ModularBodyCreateInfo &info);
@@ -179,6 +189,8 @@ public:
     ModularBody &operator=(const ModularBody &) = delete;
     ModularBody &operator=(ModularBody &&) = delete;
 
+    // Create a new child body. If a body with the same englishName exists, it is replaced by this one.
+    // The only registration path (with createChildSystem). rel is a visible relation: hidden is entered through hide()
     ModularBody *createChild(ModularBodyCreateInfo &info, BodyRelation rel = BodyRelation::ORBITING);
     ModularSystem *createChildSystem(ModularBodyCreateInfo &info, BodyRelation rel = BodyRelation::INNER);
     // The boolean representation of this body is whether it is visible or not -
@@ -203,6 +215,7 @@ public:
     inline operator bool() const {
         return isVisible & isBodyVisible & !renderHidden;
     }
+    // This body was hidden, or an ancestor was: what the render side asks (isHiddenDeclared is this body alone)
     inline bool isRenderHidden() const {
         return renderHidden;
     }
@@ -220,6 +233,7 @@ public:
     void recursiveUpdate(double jd, const Mat4f &matLocalToBody);
     // Update the cached values
     void updateCache();
+    // Recompute subsystemRadius and areaOfInfluence from the current positions: they track jd every frame
     void updateReach();
     // Inform that all childs are no longer visible
     void setChildNoLongerVisible();
@@ -272,8 +286,7 @@ public:
         } else {
             float f;
             if (projectionMode == ProjectionTransfer::FISHEYE) {
-                // The main case (INTENT 11.33): byte-for-byte the historical
-                // fast path -- non-fisheye modes must not tax it.
+                // The main case: non-fisheye modes must not tax it
                 f = (rq > distance * 1e-5f)
                     ? acos(-mat.r[14]/distance) / (rq * halfFov)
                     : 1.f / (distance * halfFov);
@@ -291,11 +304,13 @@ public:
         if (uncached)
             updateCache();       // module/radius part + a fresh updateReach()
         else
-            updateReach();       // AoI tracks the current jd every frame (S11.62, B15)
+            updateReach();       // AoI tracks the current jd every frame
         if (screenSize > 0.004)
             notableBody.push_back(this);
     }
 
+    // Spin phase about the polar axis at jd, in radians (re.offset is stored in degrees)
+    // Takes jd so that a use site evaluates it fresh: the axisRotation cache is only current for an updated body
     inline double computeAxisRotation(double jd) const {
         if (surfaceLockedAttitude)
             return re.offset * (M_PI / 180);
@@ -318,6 +333,7 @@ public:
 
     // Not inlined because unfrequently called, almost a copy-paste of the loaded test with load-checking before each module draw
     void drawLoaded(Renderer &renderer);
+    // Draw this body if it is visible
     inline void draw(Renderer &renderer) {
         if (*this) {
             if (screenSize > earlyVisibilityGate()) {
@@ -354,6 +370,9 @@ public:
         }
     }
 
+    // Evaluate the orbit at jd (light-travel retarded from the cached distance) and hop down into the position frame
+    // Position frames are root-aligned: a hop is a pure translation, plus the PARENT spin for a boundToSurface body
+    // A NaN distance must never reach jd: it freezes the Kepler solver
     inline void transformParentToBodyPos(double jd, Mat4f &mat_local_to_body) {
         evaluatedJD = jd;
         if (flagLightTravelTime && distance == distance) {
@@ -367,17 +386,16 @@ public:
         } else {
             orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
         }
-        ++evalCount; // instrument (B39): "the position code RAN", see the member
+        ++evalCount; // instrument, see the member
         eclipticPos = tmp;
         lastJD = jd;
         if (boundToSurface)
             mat_local_to_body = mat_local_to_body.multiplyFast(parent->computeBodyToSurface());
         mat_local_to_body.multiplyTranslation(getDisplayEclipticPos());
-        // Cache the position frame for the ORBIT pass (row 8): correct for
-        // every body regardless of visibility (see the member comment).
         matLocalToBodyPos = mat_local_to_body;
     }
 
+    // Rotation from the position frame of this body (root-aligned) to its own equatorial frame: own tilt only
     inline Mat4f computeBodyPosToBody(double jd) const {
         return Mat4f::xzrotation(
             re.obliquity,
@@ -392,6 +410,9 @@ public:
         );
     }
 
+    // Accumulated equatorial frame <-> root-aligned: the ONE equatorial frame of both the observer and the mesh
+    // Own tilt always, the tilt of an ancestor unless it is system-centered; stops after a boundToSurface ancestor
+    // No ancestor with re.absoluteTiltFrame (tilt authored in the root frame)
     inline Mat4f accumulatedBodyToBodyPos(double jd) const {
         Mat4f ret = computeBodyToBodyPos(jd);
         if (!boundToSurface && !re.absoluteTiltFrame) {
@@ -406,8 +427,6 @@ public:
     }
     inline Mat4f accumulatedBodyPosToBody(double jd) const {
         Mat4f ret = computeBodyPosToBody(jd);
-        // absoluteTiltFrame (B28, S11.67): see accumulatedBodyToBodyPos above -
-        // root-aligned tilt takes no ancestor factor; inert on current data.
         if (!boundToSurface && !re.absoluteTiltFrame) {
             for (const ModularBody *b = parent; b && b->isNotIsolated; b = b->parent) {
                 if (!b->isSystemCentered())
@@ -418,10 +437,9 @@ public:
         }
         return ret;
     }
+    // Same from the lastJD of each node, for use outside the update walk where no uniform frame jd exists
     inline Mat4f accumulatedBodyPosToBody() const {
         Mat4f ret = computeBodyPosToBody(lastJD);
-        // absoluteTiltFrame (B28, S11.67): root-aligned tilt, no ancestor
-        // factor; inert on current data (see accumulatedBodyToBodyPos).
         if (!boundToSurface && !re.absoluteTiltFrame) {
             for (const ModularBody *b = parent; b && b->isNotIsolated; b = b->parent) {
                 if (!b->isSystemCentered())
@@ -433,14 +451,16 @@ public:
         return ret;
     }
 
+    // Use cached informations from last update
     inline void transformParentToBody(Mat4f &mat_local_to_body) const {
         if (boundToSurface) // PARENT spin - see transformParentToBodyPos
             mat_local_to_body = mat_local_to_body.multiplyFast(parent->computeBodyToSurface());
-        mat_local_to_body.multiplyTranslation(getDisplayEclipticPos()); // D21, see there
+        mat_local_to_body.multiplyTranslation(getDisplayEclipticPos());
     }
 
+    // Evaluate the orbit at jd and hop up: exact inverse of transformParentToBodyPos
     inline void transformBodyToParent(double jd, Mat4f &mat_local_to_body) {
-        evaluatedJD = jd; // see transformParentToBodyPos (B39 barrier stamp)
+        evaluatedJD = jd; // see transformParentToBodyPos
         // Same retardation + NaN barrier + absurd-date clamp as
         // transformParentToBodyPos (the up-hop must mirror the down-hop).
         if (flagLightTravelTime && distance == distance) {
@@ -454,7 +474,7 @@ public:
         } else {
             orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
         }
-        ++evalCount; // instrument (B39): "the position code RAN", see the member
+        ++evalCount; // instrument, see the member
         eclipticPos = tmp;
         lastJD = jd;
         if (boundToSurface) {
@@ -478,8 +498,8 @@ public:
     inline void transformBodyToParent(Mat4f &mat_local_to_body) const {
         if (boundToSurface) {
             // Maybe don't inline this unfrequent case
-            // PARENT spin - see transformParentToBodyPos (B24 fold fix)
-            const Vec3f ecl = getDisplayEclipticPos(); // D21, see the fresh twin
+            // PARENT spin - see transformParentToBodyPos
+            const Vec3f ecl = getDisplayEclipticPos();
             auto tmp = parent->computeSurfaceToBody();
             tmp.r[12] -= ecl[0];
             tmp.r[13] -= ecl[1];
@@ -490,6 +510,7 @@ public:
         }
     }
 
+    // Position hop + visibility test: full update if visible, else translation-only refresh of the subtree
     inline void selectiveUpdate(double jd, Mat4f mat_local_to_parent) {
         transformParentToBodyPos(jd, mat_local_to_parent);
         preUpdate(jd, mat_local_to_parent);
@@ -513,6 +534,7 @@ public:
         }
     }
 
+    // Keep eclipticPos, mat translation and distance current in an invisible subtree; no rotation nor module update
     inline void recursiveTranslationUpdate(double jd, Mat4f frame) {
         transformParentToBodyPos(jd, frame);
         mat.r[12] = frame.r[12];
@@ -532,12 +554,14 @@ public:
         publishParkedFrame(jd, frame);
     }
 
+    // Hidden children are not ticked: publish the flat position frame of this node, useNow recomputes them in it
     inline void publishParkedFrame(double jd, const Mat4f &flat) {
         if (hiddenBodies.empty())
             return;
         parkedChildFrame = flat;
         parkedFramePublished = true;
     }
+    // Exact element equality: NaN != NaN (a corrupted frame is never memoized), -0 == 0
     static inline bool sameFrame(const Mat4f &a, const Mat4f &b) {
         for (int i = 0; i < 16; ++i) {
             if (!(a.r[i] == b.r[i]))
@@ -545,7 +569,11 @@ public:
         }
         return true;
     }
+    // Call before using the position of a body (script fetch, warp, selection): a hidden body is recomputed here,
+    // with RESUME_EXTRA_ITERATIONS extra solves if it was frozen, at most once per (currentJD, parent frame)
+    // Return false when its parent never published a frame: nothing refreshed, the position stays unevaluated
     bool useNow();
+    // Bring spin phase and reach to jd for a consumer outside the draw walk (the camera reference while not visible)
     inline void refreshFrameState(double jd) {
         axisRotation = computeAxisRotation(jd);
         updateReach();
@@ -576,28 +604,32 @@ public:
     inline const Orbit *getOrbit() const {
         return orbit.get();
     }
+    //! Replace the motion law of this body, returning the previous one alive. The orbit is the only position authority:
+    //! never write a position beside it. Unwires it first if the BinaryOrbit of the parent references it as secondary
     std::unique_ptr<Orbit> setOrbit(std::unique_ptr<Orbit> newOrbit);
+    //! Position in the ROOT frame at any date: sum of the raw orbit of each hop (a GROUNDED hop is not folded)
+    //! Evaluates the orbit of every ancestor: never from inside a position evaluation, see getCachedRootPosition
     Vec3d getPositionAtDate(double jd) const;
-    //! Current parent-relative position (root-aligned VSOP87). Client: the
-    //! ORBIT module's center-notch (old Body::get_ecliptic_pos()).
+    //! Current parent-relative position (root-aligned VSOP87): the MODEL position
     inline const Vec3f &getEclipticPos() const {
         return eclipticPos;
     }
+    //! Where the DRAWN chain places this body: eclipticPos, times inheritedScaling for a grounded child
     inline Vec3f getDisplayEclipticPos() const {
         return boundToSurface ? eclipticPos * inheritedScaling : eclipticPos;
     }
+    //! Position in the ROOT frame from the cached eclipticPos of each hop: evaluates no orbit (same GROUNDED limit)
     inline Vec3d getCachedRootPosition() const {
         Vec3d p{};
         for (const ModularBody *b = this; b->parent; b = b->parent)
             p += Vec3d(b->eclipticPos[0], b->eclipticPos[1], b->eclipticPos[2]);
         return p;
     }
-    //! Orbit visualization period in days (old re.sidereal_period, the
-    //! orbit-line draw gate); 0 = still orbit (no orbit line).
+    //! Orbit visualization period in days; 0 = still orbit (no orbit line)
     inline double getSiderealPeriod() const {
         return re.sidereal_period;
     }
-    //! Last evaluation jd of this body (client: ORBIT sampling epoch).
+    //! Last evaluation jd of this body, light-travel retarded
     inline double getLastJD() const {
         return lastJD;
     }
@@ -619,11 +651,10 @@ public:
     inline const Vec3f &getShadowAbsorbtion() const {
         return shadowAbsorbtion;
     }
-    //! The body's spin-phase analytic model (B27 A1). Read by the twin generator
-    //! (generateComposedTwin) to materialize the sidereal_time capability key.
     inline SiderealTimeModel getSiderealTimeModel() const {
         return siderealTimeModel;
     }
+    // Received-shadow state of this frame, empty when not a receiver. Gate on ShadowService::enabled too: may be stale
     inline const ReceivedShadows &getReceivedShadows() const {
         return receivedShadows;
     }
@@ -631,6 +662,7 @@ public:
         radius = _radius;
         uncached = true;
     }
+    // Raw navigation radii in AU; like setRadius, the scaled values follow at the next update of this body
     inline void setDatumRadius(float _datumRadius) {
         datumRadius = _datumRadius;
         uncached = true;
@@ -642,11 +674,13 @@ public:
     inline void setHaloEnabled(bool enabled) {
         isHaloEnabled = enabled;
     }
+    // Command a display scale: animated, the scaled radii follow frame by frame through update()
     inline void setScaling(float _scale) {
         scalingTarget = _scale;
         scaling = _scale;
         uncached = true;
     }
+    //! Put this body AT a display scale with no transition, cache refreshed now (loader, state-preserving reload)
     inline void restoreScaling(float _scale) {
         scalingTarget = _scale;
         scaling.set(_scale, 0.f);
@@ -661,6 +695,7 @@ public:
         for (auto *m : trailComponents)
             m->setShown(b);
     }
+    // Restart whatever trail is being recorded from here (perspective change); not a display override
     void startTrail(bool record);
     inline void createTexSkin(const std::string &texName) {
         for (auto &m : components)
@@ -672,6 +707,7 @@ public:
             if (m)
                 m->switchTexSkin(use);
     }
+    // HALO is owned by the body, the LABEL/ORBIT/TRAIL channels by their modules
     inline void setColor(BodyColorType type, const Vec3f &c) {
         if (type == BodyColorType::HALO || type == BodyColorType::ALL)
             haloColor = c;
@@ -679,8 +715,6 @@ public:
             if (m)
                 m->setColor(type, c);
     }
-    // Default halo color seam (old BodyColor::defaultHalo). The LABEL/ORBIT/
-    // TRAIL module defaults are module statics set at the same factory seam.
     static inline void setDefaultHaloColor(const Vec3f &c) { defaultHaloColor = c; }
     static inline const Vec3f &getDefaultHaloColor() { return defaultHaloColor; }
     inline bool getColor(BodyColorType type, Vec3f &out) const {
@@ -704,19 +738,19 @@ public:
         return false;
     }
     inline bool isHiddenDeclared() const { return relation < BodyRelation::GROUNDED; }
+    // The display scale last commanded, not the value the ramp is passing through
     inline float getScalingTarget() const { return scalingTarget; }
+    //! The factor this body is DRAWN with: every scaled radius is X * this, nothing multiplies by `scaling` directly
     inline float getDisplayScaling() const {
         return static_cast<float>(scaling) * inheritedScaling;
     }
     //! The dilation this body inherits from its parent (1 unless it is a
     //! grounded child of a display-scaled body). Instrument + ledger channel.
     inline float getInheritedScaling() const { return inheritedScaling; }
-    // The RAW nav radii, in AU, before `scaling` multiplies them. The scaled
-    // products already had getters; the ledger needs what the operator set.
+    // The RAW nav radii, in AU, before the display scaling multiplies them
     inline float getDatumRadiusRaw() const { return datumRadius; }
     inline float getGroundRadiusRaw() const { return groundRadius; }
-    // Is the created skin the one being drawn (S2 row D7's scalar half)? False
-    // when no module in this body owns a skin at all.
+    // Is the created skin the one being drawn? False when no module of this body owns a skin
     inline bool getSkinUse() const {
         bool v = false;
         for (auto &m : components)
@@ -727,9 +761,9 @@ public:
     // The per-body ORBIT / TRAIL visibility override: -1 = follows the master.
     inline int getOrbitOverride() const { return firstOverride(orbitComponents); }
     inline int getTrailOverride() const { return firstOverride(trailComponents); }
-    //! The TRAIL modules of this body, for the one consumer that needs the
-    //! accumulated points themselves (S2 row D10's carve-out).
+    //! The TRAIL modules of this body, for the session file which saves the accumulated points themselves
     inline const std::vector<BodyModule *> &getTrailComponents() const { return trailComponents; }
+    // What the DATA gave this body: the baseline the session records operator changes against
     struct AuthoredState {
         Vec3f haloColor {0.f, 0.f, 0.f};
         float datumRadius = 0.f;
@@ -737,6 +771,7 @@ public:
         bool hidden = false;
     };
     inline const AuthoredState &getAuthored() const { return authoredState; }
+    // Snapshot it: by the ctor, and by the loader once it has finished writing into the body
     inline void captureAuthoredState() {
         authoredState.haloColor = haloColor;
         authoredState.datumRadius = datumRadius;
@@ -752,6 +787,7 @@ public:
 	inline float getRotObliquity(void) const {
 		return re.obliquity;
 	}
+	//! `axial_tilt` key in DEGREES, display only (planet grid); getRotObliquity is in radians and drives the rotation
 	inline float getAxialTilt(void) const {
 		return re.axialTilt;
 	}
@@ -775,6 +811,7 @@ public:
     bool hide();
     // Show this body, return true if it was hidden before this call
     bool show();
+    // Pull the big content of the near and in components in before it is needed; keepFrames = its lifetime in frames
     inline void preload(int keepFrames) {
         ++preloadCount; // instrument: "the seam reached THIS body" (see the member)
         for (auto &module : nearComponents) {
@@ -787,9 +824,9 @@ public:
     inline const std::pair<float, float> &getScreenPos() const {
         return screenPos;
     }
-    // Dual-path trace harness (INTENT.md 11.14): serialize this body's
-    // NEW-path transform state as one JSON object (no newline). Read-only.
+    // Serialize the transform state of this body as one JSON object, no newline (trace harness)
     void dumpTrace(std::ostream &out) const;
+    // Same for each hop from this body up to the isolated root: cached ecl/lastJD and the up, down, tilt, spin matrices
     void dumpHops(std::ostream &out) const;
     inline const Vec3f &getHaloColor() const {
         return haloColor;
@@ -822,6 +859,7 @@ public:
         lightDistance = lightPosition.length();
         lightSize = scaledRadius;
     }
+    // Get the distance reference for the altitude (datum_radius, scaled)
     inline float getAltitudeReference() const {
         return scaledDatumRadius;
     }
@@ -836,6 +874,8 @@ public:
             fn(*b.second);
         }
     }
+    // Find a better reference body, return nullptr if this body is the best one, or while uncached
+    // observerDistance = the distance of the CALLER to this body: this->distance is zeroed by visibility transitions
     inline ModularBody *findBetterReference(const float observerDistance) {
         if (uncached)
             return nullptr;
@@ -859,6 +899,7 @@ public:
     static inline bool exists(const std::string &englishName) {
         return bodyReference.count(englishName);
     }
+    // Find a body by name, nullptr if it doesn't exist. A miss is expected to be exceptional (it pays an exception)
     static inline ModularBody *findBody(const std::string &englishName) {
         if (!(lastFit && lastFit->englishName == englishName)) {
             try {
@@ -879,11 +920,15 @@ public:
     }
     // Slow (O(n) complexity over body count)
     static ModularBody *findBodyNameI18n(const std::string &nameI18);
+    // Bodies large enough on screen to need a depth bucket this frame: cleared by dispatchUpdate, filled by update()
     static inline std::vector<ModularBody *> &drainNotableBodies() {
         return notableBody;
     }
+    // This value should be set before calling update, through setHalfFov
     static float halfFov;
+    // ProjectionTransfer mode, mirror of Context::projectionType, set once when SSystemFactory is constructed
     static int projectionMode;
+    // Angle whose PROJECTED radius is the edge of the screen disc: what preUpdate culls against
     static float cullHalfFov;
     static void setHalfFov(float hf) {
         halfFov = hf;
@@ -893,16 +938,21 @@ public:
         projectionMode = mode;
         setHalfFov(halfFov);
     }
+    // Set through SSystemFactory: setFlagLightTravelTime, setScale, setSizeLimit
     static bool flagLightTravelTime;
     static float haloScale;
     static float haloSizeLimit;
+    // Brightness multiplier of every halo: 1 except inside the cross-fade band of ModularSystem::drawNested, its owner
     static float drawAlpha;
+    // Keep the memory of this body alive while work-domain tasks reference it. Non-atomic: pin() and unpin() are legal
+    // ONLY inside render-chain tasks (RenderChain.hpp); a worker transfers its hold into the publish task
     inline void pin() {
         ++pins;
     }
     // Unpin; if this body was parked for destruction (removed from the tree
     // while pinned) and this was the last pin, destruction happens now.
     void unpin();
+    // distance == 0 means NOT evaluated (setChildNoLongerVisible zeroes it), never "at zero distance"
     inline bool isInAreaOfInfluence() const {
         return distance > 0 && distance <= areaOfInfluence;
     }
@@ -933,8 +983,7 @@ public:
     inline float getDistanceToObserver() const {
         return distance;
     }
-    // Harness/diagnostic accessors (INTENT 11.36 scene E instrument): the
-    // reference-transition inputs, observable from the camera dump.
+    // Readbacks for the trace harness: the reference-transition inputs
     inline float getAreaOfInfluence() const {
         return areaOfInfluence;
     }
@@ -949,23 +998,24 @@ public:
     inline bool isStar() const {
         return (bodyType & BodyType::STAR) == BodyType::STAR;
     }
+    // Return true if this body is what its subsystem orbits, whether or not it shines
     inline bool isPrimary() const {
         return primary;
     }
+    // Mass-instanced small body, EXEMPT from inter-body shadowing (`shadow_exempt` key)
     inline bool isMinorBody() const {
         return bodyType == BodyType::MINOR_BODY;
     }
-    // The declared surface-lighting lineage (B27 A6, `surface_model`).
     inline SurfaceModel getSurfaceModel() const {
         return surfaceModel;
     }
-    // The declared trail sample count (B27 A7, `trail_length`).
     inline int getTrailLength() const {
         return trailLength;
     }
     inline bool isComposedDeclared() const {
         return composedDeclaration;
     }
+    // Return true if this body is a system: the isolation root, whatever its bodyType says
     inline bool isSystem() const {
         return !isNotIsolated;
     }
@@ -985,10 +1035,12 @@ public:
         return !body->isNotIsolated;
     }
 
+    // Camera reference transition hooks, empty: the enter/leave edges are owned by the chain diff of EnvironmentManager
     inline void enterEnvironment() {
     }
     inline void leaveEnvironment() {
     }
+    // grounded = active only while the camera is anchored on this body; else while it is on the reference chain
     inline void addEnvironment(std::unique_ptr<EnvironmentModule> &&module, bool grounded) {
         (grounded ? groundedEnvironment : environment).push_back(std::move(module));
     }
@@ -1008,6 +1060,7 @@ public:
     double getSiderealDay(void) const {
         return re.period;
     }
+    // In degrees
     double getSiderealTime(double jd) const {
         if (siderealTimeModel == SiderealTimeModel::EARTH_APPARENT)
             return get_apparent_sidereal_time(jd);
@@ -1027,6 +1080,7 @@ public:
             return nullptr;
         return components[slot.id].get();
     }
+    // Takes ownership. Erases the routing of the REPLACED module only: the new module routed itself during load
     void slot(StringID slotID, std::unique_ptr<BodyModule> &&module)
     {
         if (components.size() <= slotID.id) {
@@ -1045,6 +1099,7 @@ public:
     static StringIDCluster slotID;
     static Tracer tracer;
 private:
+    //! Pushed by the updateCache of the parent to its grounded children; marks the child uncached on change only
     inline void setInheritedScaling(float f) {
         if (inheritedScaling != f) {
             inheritedScaling = f;
@@ -1055,6 +1110,7 @@ private:
     std::vector<BodyModuleType> deduceBodyModuleList(std::map<std::string, std::string> &param);
     void select();
     void deselect();
+    // Halo law, inputs parameterized for ModularSystem::drawStarProxy (its star). screen_r = disc diameter in px
     inline void drawHaloCore(Renderer &renderer, const float mag, const float screen_r, const Vec3f &color, const bool satelliteRules) {
         const float fov_deg = halfFov * (360.f / M_PI); // = old prj->getFov()
         float fov_q = (fov_deg > 60.f) ? 60.f : fov_deg; // halo.cpp:111-113
@@ -1106,13 +1162,14 @@ private:
     // Identity
     std::string englishName;
     std::string nameI18;
-
+    // The parameter map this body was declared with, as handed to the loader: what a save writes back
+    // Empty for an engine-minted body (camera anchor, system node), which a save skips. Runtime overrides never edit it
     std::map<std::string, std::string> declaredParams;
-
+    // Loaded at runtime: what `body action clear` drops. A replacement keeps the value of the body it replaces
     bool supplemental = false;
+    uint32_t preloadCount = 0; // instrument: entries into preload()
 
-    uint32_t preloadCount = 0;
-
+    // Relations - `relation` says which list of the parent owns this body
     ModularBody *parent;
     BodyRelation relation = BodyRelation::ORBITING; // meaningless for parentless roots
     std::vector<std::unique_ptr<ModularBody>> groundedBodies;
@@ -1129,6 +1186,7 @@ private:
         default:                     return hiddenBodies;
         }
     }
+    // Hidden excluded. A walk which hands a frame down iterates the lists itself: grounded receive the surface frame
     template<class F>
     inline void forEachVisibleChild(F &&fn) {
         for (auto &c : groundedBodies) fn(*c);
@@ -1141,8 +1199,12 @@ private:
         innerBodies.clear();
         hiddenBodies.clear();
     }
+    // Register a fresh child into the sorted list of the system owning THIS body (a nested system: the one of its host)
     void registerToSystem(ModularBody *child);
+    // The system whose sorted list holds this body, nullptr for a parentless root
     ModularSystem *owningSystem() const;
+    // The ONE writer of renderHidden and of the membership of this subtree in the sorted list of the owning system
+    // From ancestorHidden and the declared relation of each node; called by hide(), show() and createChild*
     void propagateRenderHidden(bool ancestorHidden);
     std::vector<std::unique_ptr<EnvironmentModule>> groundedEnvironment;
     std::vector<std::unique_ptr<EnvironmentModule>> environment;
@@ -1155,6 +1217,7 @@ private:
     std::vector<BodyModule *> nearComponents; // Drawn above BODY_EARLY_VISIBILITY_BOUNDING_SIZE and distance > scaledRadius * BODY_SURFACE_HEIGHT
     std::vector<BodyModule *> groundedComponents; // Drawn if distance <= scaledRadius * BODY_SURFACE_HEIGHT and a surface is loaded
     std::vector<BodyModule *> inComponents; // Draw if distance <= scaledRadius
+    // Which of near/grounded/in components the close range draws, nullptr = none. For both draw() and drawLoaded()
     const std::vector<BodyModule *> *closeRangeComponents();
     // -1 when no module in the list carries a live override.
     static inline int firstOverride(const std::vector<BodyModule *> &list) {
@@ -1165,9 +1228,9 @@ private:
         }
         return -1;
     }
-    std::vector<BodyModule *> orbitComponents; // Orbit lines (row 8): drawn in the system-level orbit pass (ModularSystem::drawOrbits), not a screen-size regime
-    std::vector<BodyModule *> trailComponents; // Trail lines (row 9): swept every frame by the system-level trail pass (ModularSystem::drawTrails) so accumulation continues while invisible, not a screen-size regime
-    std::vector<BodyModule *> tailComponents; // Comet tails (row 12): instanced batch swept as a system phase (ModularSystem::drawTails) so update() ticks and the batch flushes once, not a screen-size regime
+    std::vector<BodyModule *> orbitComponents; // Orbit lines: drawn in the system-level orbit pass (ModularSystem::drawOrbits), not a screen-size regime
+    std::vector<BodyModule *> trailComponents; // Trail lines: swept every frame by the system-level trail pass (ModularSystem::drawTrails) so accumulation continues while invisible, not a screen-size regime
+    std::vector<BodyModule *> tailComponents; // Comet tails: instanced batch swept as a system phase (ModularSystem::drawTails) so update() ticks and the batch flushes once, not a screen-size regime
     // std::list<std::shared_ptr<BodyOrbitModule>> orbitalComponents; // Components drawing lines between bodies
     // std::list<std::shared_ptr<EnvironmentModule>> environmentComponents; // Component defining the environment
 
@@ -1177,39 +1240,47 @@ private:
 
     // Cached data (may deprecate)
     Mat4f mat; // Matrix defining this body regarding to the observer
+    // Position frame of this body (root-aligned): rotation = the eye frame of the reference, translation = eye position
+    // Set on EVERY position update, visible or not, unlike `mat` whose rotation is stale out of the cone:
+    // every site which assigns `mat` or its translation assigns this too
     Mat4f matLocalToBodyPos = Mat4f::identity();
+    // Flat position frame the hidden children of this node are computed in (publishParkedFrame -> useNow)
     Mat4f parkedChildFrame = Mat4f::identity();
-    bool parkedFramePublished = false;
-    bool unservedLogged = false;
+    bool parkedFramePublished = false; // Never cleared. False = never visited by a walk, useNow can't serve its children
+    bool unservedLogged = false; // useNow reports an unserved use once per body
     Vec3f eclipticPos;
     std::pair<float, float> screenPos;
-    float halfAngularSize = 0; // 0 until first update (uninit class, INTENT 5.16/11.28c/11.32)
-    float screenSize = 0; // Ratio of the screen taken by this body; 0 until
-    float distance = 0;
+    float halfAngularSize = 0; // 0 until first update
+    float screenSize = 0; // Ratio of the screen taken by this body; 0 until first update
+    float distance = 0; // To the observer; 0 = not evaluated (see isInAreaOfInfluence)
     float axisRotation = 0;
+    // X * getDisplayScaling(), written by updateCache only
     float scaledRadius = 0;
     float scaledDatumRadius = 0;
     float scaledGroundRadius = 0;
     float rmag;
     float cmag;
-    double lastJD = 0;
+    double lastJD = 0; // jd of the last orbit evaluation, light-travel retarded
+    // Un-retarded frame jd of the last position evaluation, -1 = never. With evaluatedFrame, the memo key of useNow
     double evaluatedJD = -1;
-    Mat4f evaluatedFrame = Mat4f::identity();
+    Mat4f evaluatedFrame = Mat4f::identity(); // Parent frame of the last useNow refresh, written by useNow only
+    // Instrument: runs of transformParentToBodyPos + transformBodyToParent(jd), the only writers of eclipticPos/lastJD
     uint32_t evalCount = 0;
 
     // Halo system
     Vec3f haloColor;
     float albedo;					// Body albedo
-
+    // Per-channel absorption of the shadow this body PROJECTS (`shadow_color` key), applied by the receiver's shader
     Vec3f shadowAbsorbtion;
 
     // Navigation and visibility
     ASmooth<AsyncHub, float, 5.f> scaling;
-    float scalingTarget = 1.f;   // what setScaling was last told (D32's settled value)
+    float scalingTarget = 1.f;   // what setScaling was last told
+    // Dilation inherited from the scaled parent this body stands on (1 unless grounded), never folded into `scaling`
     float inheritedScaling = 1.f;
-    AuthoredState authoredState; // what the DATA gave this body (D30's delta baseline)
+    AuthoredState authoredState;
     float radius;
-    // Raw (unscaled) navigation radii, both defaulting to `radius` (B10 S5.2).
+    // Raw (unscaled) navigation radii, both defaulting to `radius`.
     // See ModularBodyCreateInfo for the datum/ground roles.
     float datumRadius;
     float groundRadius;
@@ -1221,18 +1292,15 @@ private:
     float one_minus_oblateness;
     float solLocalDay;			//time of a sideral day in this planet
     uint8_t pointerCount = 0; // Number of pointer pointing this object
-    int pins = 0;
+    int pins = 0; // Work-domain pin count (see pin), separate from pointerCount which counts UI pointers
     bool parked = false; // Removed from tree while pinned; destroyed at last unpin
     BodyType bodyType;
     SiderealTimeModel siderealTimeModel = SiderealTimeModel::GENERIC;
     SurfaceModel surfaceModel = SurfaceModel::PLANET;
-    // Trail sample count (B27 A7, `trail_length` key), consumed by TrailLoader.
     int trailLength = TRAIL_LENGTH_DEFAULT;
-    // Declaring format (D14 S11.79(h)). See ModularBodyCreateInfo.
     bool composedDeclaration = false;
-    // Structural primacy (B27 Tier B, `primary` key). See ModularBodyCreateInfo;
-    // read through isPrimary(), never directly.
-    bool primary = false;
+    bool primary = false; // read through isPrimary(), never directly
+    // Hidden itself or through an ancestor. Written by propagateRenderHidden only; the declared value is `relation`
     bool renderHidden = false;
     bool isHaloEnabled;
     bool isVisible = false;
@@ -1245,6 +1313,7 @@ private:
     bool uncached = true; // Determine whether this body require any update
     bool loaded = false; // Determine whether all nearComponents and inComponents are fully loaded
     bool boundToSurface = false; // Hot-path cache of (relation == GROUNDED) - written by createChild* only
+    // Static in the surface frame of the parent, only re.offset. Set by the loader: grounded and no authored rot_periode
     bool surfaceLockedAttitude = false;
 
     // Global datas
@@ -1261,8 +1330,9 @@ private:
     static std::map<std::string, ModularBody *> bodyReference;
     static std::vector<ModularBody *> notableBody;
     static Vec3f defaultHaloColor;
-    static std::shared_ptr<BodyTesselation> bodyTesselation; // both-paths seam (setTesselation)
-    static float viewportRadius;
+    static std::shared_ptr<BodyTesselation> bodyTesselation;
+    static float viewportRadius; // HALF the render width in px. Written by setViewportRadius ONLY (the gates derive)
+    // The px gates (BODY_*_BOUNDING_SIZE) in screenSize units: gate_px / (2 * viewportRadius)
     static float earlyVisibilityScreenSize;
     static float fullVisibilityScreenSize;
     static float bigTextureScreenSize;
@@ -1270,8 +1340,7 @@ public:
     inline static float getViewportRadius() {
         return viewportRadius;
     }
-    // The ONE writer of the viewport radius (I3): it recomputes every derived
-    // gate, so there is no state in which the gates disagree with the viewport.
+    // The ONE writer of the viewport radius: it recomputes every derived gate
     static void setViewportRadius(float halfRenderWidthPx);
     inline static float earlyVisibilityGate() {
         return earlyVisibilityScreenSize;
@@ -1282,9 +1351,12 @@ public:
     inline static float bigTextureGate() {
         return bigTextureScreenSize;
     }
+    // Frame clock in MILLISECONDS (animations, not a simulation dt), set by Camera::update before any body update
     static float deltaTime;
+    // Simulated date of the frame, written once per frame by dispatchUpdate; 0 before the first frame. Read by useNow
     static double currentJD;
 
+    // Shared object whose values are animated by its owner outside this module: hold the pointer, never copy the values
     static void setTesselation(std::shared_ptr<BodyTesselation> t) {
         bodyTesselation = std::move(t);
     }
@@ -1292,6 +1364,7 @@ public:
         return bodyTesselation;
     }
 
+    // nullptr when none. Maintained by select()/deselect(), which only ModularBodySelector may call
     static inline ModularBody *getSelected() {
         return selectedBody;
     }

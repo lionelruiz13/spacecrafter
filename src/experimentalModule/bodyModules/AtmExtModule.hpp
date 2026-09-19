@@ -45,8 +45,7 @@ class ObjL;
 // atmosphere_ext_model non-empty.
 class AtmExtModule : public BodyModule {
 public:
-    // gradientPath = resolved atmosphere_ext_model texture path;
-    // radiusFactor = atmosphere_radius_factor (default 1.05, old parity).
+    // gradientPath = resolved atmosphere_ext_model texture path; radiusFactor = atmosphere_radius_factor
     AtmExtModule(ObjL *mesh, const std::string &gradientPath, float radiusFactor);
     virtual ~AtmExtModule();
     virtual uint32_t getTraits() const override {
@@ -55,11 +54,13 @@ public:
     virtual bool isLoaded() override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
+    // boundingRadius includes the shell: it is what reserves depth-slice room for it
     virtual bool update(ModularBody *body, float scaledRadius) override {
         boundingRadius = scaledRadius * radiusFactor;
         return true;
     }
 
+    // std140 layout of binding 0 of atm.vert/tesc/tese/frag: field order and types are GPU-visible
     struct atmExtUBO {
         Mat4f ModelViewMatrix;
         Vec3f sunPos;

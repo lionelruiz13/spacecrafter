@@ -13,8 +13,11 @@ struct ojmGeom;
 struct ojmLight;
 struct ojmShadowBlock;
 
+// BODY of an arbitrary 3D model (type=artificial + model_name): per-shape materials, Phong lighting, self-shadow
+// Any other type with model_name is a named ObjL of the MESH family
 class OjmModule : public BodyModule {
 public:
+    // A model that failed to load stays !isLoaded() forever and draws nothing
     OjmModule(std::shared_ptr<Ojm> model);
     ~OjmModule();
     virtual uint32_t getTraits() const override {
@@ -30,7 +33,7 @@ public:
 protected:
     // Shared draw body of draw/drawNoDepth (variant bit is the only delta).
     void drawInternal(Renderer &renderer, ModularBody *body, const Mat4f &mat, VariantKey base);
-    std::shared_ptr<Ojm> model; // shared resource (Ojm::load recycler, D6)
+    std::shared_ptr<Ojm> model; // shared resource (Ojm::load recycler)
     std::unique_ptr<Set> setPlain;
     std::unique_ptr<Set> setShadow;
     SharedBuffer<ojmVert> uVert;

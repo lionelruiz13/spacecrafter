@@ -5,11 +5,13 @@
 #include "tools/object_base.hpp"
 #include <utility>
 
+// ObjectBase view of a ModularBody for the selection, the info strings and the UI queries; positions from the Camera
 class ModularObject : public ObjectBase {
 public:
     ModularObject() = default;
     explicit ModularObject(ModularBody *b) : body(b) {}
 
+    // Owned by its reference count, deleted at zero; body is not owned, it is redirected when the body is removed
     virtual void retain() override {
         ++refCount;
     }
@@ -48,6 +50,7 @@ private:
     // never see retain/release, so this stays 0 and nothing is deleted.
     int refCount = 0;
 
+    // (alt, az) with az in the reported convention (N=0, E=90); every alt/az report of this class goes through it
     std::pair<double, double> altAz() const;
 };
 

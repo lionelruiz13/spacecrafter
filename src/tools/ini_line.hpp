@@ -3,6 +3,9 @@
 
 #include <string>
 
+// Line grammar of the `.ini` body/system/anchor family, for every reader of it; section semantics stay with the caller
+// '#' comments to the end of the line, blanks are insignificant, an entry splits at the first '='
+// Reading only: nothing may write into a legacy file what an older parser cannot read
 namespace IniLine {
 
 enum class Kind {
@@ -12,10 +15,10 @@ enum class Kind {
     MALFORMED,  // non-empty, no '=' - `key` holds the offending text
 };
 
-// The family's comment character, named once so no reader and no writer has to
-// spell it again (the veto point above: '#' and nothing else).
+// The family's comment character, named once for every reader and writer; no other character is accepted
 constexpr char COMMENT_CHAR = '#';
 
+// [begin, end) byte offsets of the value inside the raw line, for a writer which keeps the rest of the line as it is
 struct Span {
     std::size_t begin = 0, end = 0;
 };

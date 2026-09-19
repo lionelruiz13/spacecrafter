@@ -11,15 +11,20 @@ class VertexBuffer;
 class Set;
 template<typename> class SharedBuffer;
 
+// Oort-cloud point cloud, a body at the SolarSystem floor (near component, depth-less, alpha-blended)
+// Low edge gated by the body's scaledRadius regime, far edge by the collapse of its node
 class OortModule : public BodyModule {
 public:
     OortModule(unsigned int nbr, const Vec3f &color);
     ~OortModule();
+    // Reports the cloud extent as boundingRadius: the body must stay visible from inside the cloud
     virtual bool update(ModularBody *body, float scaledRadius) override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
+    // Same render as draw(): the cloud must not blink out at the far edge of the regime band
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
 
     static bool show;
+    // Static because a single oort exists; seeded by the ctor, then written by Core::setColorScheme
     static Vec3f cloudColor;
 private:
     void render(Renderer &renderer, const Mat4f &mat);

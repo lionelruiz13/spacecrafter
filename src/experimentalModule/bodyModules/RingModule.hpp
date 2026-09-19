@@ -13,8 +13,11 @@ template <typename T> class SharedBuffer;
 struct bodyRingVert;
 struct bodyRingFrag;
 
+// Planetary ring, near-only: casts its transparency-graded shadow, receives shadows, cuts the orbit lines behind it
+// update() reports boundingRadius = the scaled outer radius: the body's screenSize is ring-inclusive
 class RingModule : public BodyModule {
 public:
+    // Radii in AU, unscaled; tex = radial strip, alpha = opacity, OUTER edge at u=0
     RingModule(std::unique_ptr<s_texture> tex, float innerRadius, float outerRadius,
                const Vec3f &shadowColor);
     ~RingModule();
@@ -25,6 +28,7 @@ public:
     virtual bool isLoaded() override;
     virtual bool update(ModularBody *body, float scaledRadius) override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
+    // The family has no NO_DEPTH variant and the base no-op would hide the ring: drawn with forced depth
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override {
         draw(renderer, body, mat);
     }
@@ -42,12 +46,12 @@ protected:
     std::unique_ptr<Set> set;    // RING family set 0
     std::unique_ptr<SharedBuffer<bodyRingVert>> uVert;
     std::unique_ptr<SharedBuffer<bodyRingFrag>> uFrag;
-    // Six LOD/half strips (old Ring lowUP..highDOWN); lazily built.
+    // Three LODs x the UP/DOWN half facing the observer; lazily built
     std::unique_ptr<Ring2D> strips[6];
     float innerRadius;
     float outerRadius;
     float mc = 1;                // body scaling factor (update)
-    Vec3f shadowColor;           // material absorbtion (D8 key or derived {0.7})
+    Vec3f shadowColor;           // material absorbtion (ring_shadow_color)
     bool loaded = false;
     static Vec3i lodSlices;      // config seam (setLodSlices)
 };

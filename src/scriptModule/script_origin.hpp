@@ -27,12 +27,14 @@
 #include <string>
 
 enum class ScriptChannel {
-	NONE = 0,  //!< no channel identified: the UI/TUI, a joypad binding, the
-	FILE,      //!< a line of a script file: `file` + `line` say which one
+	NONE = 0,  //!< no channel identified: UI, joypad, pipe, HTTP query, nested or engine-made command
+	FILE,     //!< a line of a script file: `file` + `line` say which one
 	TCP,       //!< a line read on the control socket: `connection` says which
 	           //!< connection sent it
 };
 
+//! Where a command line came from, carried up to executeCommand so a diagnostic is reported at the line which caused it
+//! Build one with fromFile / fromTcp
 struct ScriptOrigin {
 	ScriptChannel channel = ScriptChannel::NONE;
 	std::string file;      //!< FILE only: full path of the script file, "" = no file
@@ -58,7 +60,9 @@ struct ScriptOrigin {
 		return o;
 	}
 
+	//! Gate of the `#!` writer only: this origin names a line of a file (never true for TCP); a log line asks where()
 	bool valid() const { return channel == ScriptChannel::FILE && !file.empty() && line != 0; }
+	//! The raw line without its line ending, for every reader which shows the line
 	std::string lineText() const {
 		std::string s = text;
 		while (!s.empty() && (s.back() == '\r' || s.back() == '\n'))

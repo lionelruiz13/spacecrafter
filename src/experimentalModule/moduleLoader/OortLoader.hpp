@@ -3,6 +3,7 @@
 
 #include "experimentalModule/ModuleLoader.hpp"
 
+// Custom slot "OORT": bids only on the oort=true marker, every other CUSTOM body stays GridLoader's or StarLoader's
 class OortLoader : public ModuleLoader {
 public:
     virtual uint8_t isLikely(ModularBody *target, std::map<std::string, std::string> &params) const override;

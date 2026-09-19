@@ -6,6 +6,9 @@
 #include "bodyShaderInterface.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
+// Receiver-side fills of the shadow block: ONLY nbShadowingBodies + shadowingBodies, sibling fields are the module's
+// self = the RECEIVING module (pass this): the entries it produced itself on its own body are skipped
+
 // Eye-space receivers: entries copied verbatim (rows already receiver-folded
 // by the selection - ModularSystem::computeShadows).
 template <typename Block>
@@ -17,7 +20,7 @@ inline void fillPlainShadows(SharedBuffer<Block> &frag, ModularBody *body, const
         int nb = 0;
         for (const auto &e : received.entries) {
             if (e.caster == body && e.source == self)
-                continue; // own silhouette (header block)
+                continue; // own silhouette
             f.shadowingBodies[nb].posRadius = Vec4f(e.pos.first, e.pos.second, e.size, 0);
             f.shadowingBodies[nb].absorbtionIdx = Vec4f(e.absorbtion[0], e.absorbtion[1], e.absorbtion[2], e.layerIdx);
             f.shadowingBodies[nb].clip = e.clip;
@@ -32,6 +35,8 @@ inline void fillPlainShadows(SharedBuffer<Block> &frag, ModularBody *body, const
     }
 }
 
+// Model-space receivers: rows and clip folded per entry through MV = model -> eye (radius/oblateness scale included)
+// radius = the span of the fragment's model-space unit (finalRadius for the ray-march unit sphere, body radius for OJM)
 template <typename Block>
 inline void fillFoldedShadows(SharedBuffer<Block> &frag, ModularBody *body,
                               const Mat4f &MV, float radius, const BodyModule *self)
@@ -49,7 +54,7 @@ inline void fillFoldedShadows(SharedBuffer<Block> &frag, ModularBody *body,
         int nb = 0;
         for (const auto &e : received.entries) {
             if (e.caster == body && e.source == self)
-                continue; // own silhouette (header block)
+                continue; // own silhouette
             f.shadowingBodies[nb].posRadius = Vec4f(e.pos.first, e.pos.second, e.size, 0);
             f.shadowingBodies[nb].absorbtionIdx = Vec4f(e.absorbtion[0], e.absorbtion[1], e.absorbtion[2], e.layerIdx);
             f.shadowingBodies[nb].clip = foldRow(e.clip);

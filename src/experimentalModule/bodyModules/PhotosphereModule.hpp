@@ -11,6 +11,8 @@
 #include <memory>
 class ObjL;
 
+// MESH slot of a STAR: an emitting, limb-darkened disc where a planet holds a BasicMesh
+// Takes the slot by loader bid (PhotosphereLoader outbids BasicMeshLoader on isStar()); casts and receives no shadow
 class PhotosphereModule : public BodyModule {
 public:
     PhotosphereModule(ObjL *mesh, const std::string &texturePath);

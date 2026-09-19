@@ -101,6 +101,8 @@ public:
     DrawHelper();
     ~DrawHelper();
 
+    //! Stop and join the worker thread, draining the queued draws; idempotent
+    //! Must run before the pipelines those draws bind and the preFrameRecorder are destroyed
     void stop();
 
     template <typename T>
@@ -117,7 +119,9 @@ public:
     void endNebulaDraw();
     void nextFrame();
     VkResult acquireNextFrame();
+    //! Wait until the worker has compiled and submitted the frame recorded under frameIdx; no timeout
     void waitFrame(unsigned char frameIdx);
+    //! Wait until the worker has consumed every queued command and really completed every frame; observing only
     void waitAllFrames();
     void submitFrame(unsigned char frameIdx, unsigned char lastFrameIdx);
     void setPlayer(VideoPlayer *_player) {player = _player;}
@@ -137,6 +141,8 @@ public:
     }
     //! Sumbit shadowing body
     uint8_t drawShadower(Body *target, float radius);
+    //! Hook invoked in submit() on the helper thread, with the primary cmd of the frame outside any render pass
+    //! One consumer (ShadowService); nullptr clears. Set before first use
     void setPreFrameRecorder(std::function<void(VkCommandBuffer, unsigned char)> recorder) {
         preFrameRecorder = std::move(recorder);
     }

@@ -44,7 +44,8 @@
 #define SCS_ASTRO                            "astro"
 #define SCS_INIT_LOCATION                    "init_location"
 
-#define SCS_BETA_DUAL_PATH                   "dual_path"
+// beta_features.ini only: a key here disappears with its experiment and must never enter the config.ini key set
+#define SCS_BETA_DUAL_PATH                  "dual_path"
 #define SCK_BETA_RENDER_PATH                 "render_path"
 
 // SCK_Y mean Spacecfrater Key Y
@@ -303,7 +304,8 @@
 #define SCK_VIEWING_MODE                    "viewing_mode"
 #define SCK_ZOOM_SPEED                      "zoom_speed"
 #define SCK_STALL_RADIUS_UNIT               "stall_radius_unit"
-#define SCK_ATTACHED                        "attached"
+// attached = negation of Camera::freeMode; a key for Camera::boundToSurface must not reuse this spelling
+#define SCK_ATTACHED                      "attached"
 #define SCK_FLAG_LOCK_SKY_POSITION          "flag_lock_sky_position"
 #define SCK_FLAG_STARS                      "flag_stars"
 #define SCK_FLAG_STAR_NAME                  "flag_star_name"
