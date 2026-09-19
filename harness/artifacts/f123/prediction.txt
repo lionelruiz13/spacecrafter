@@ -1,0 +1,126 @@
+F123 PREDICTIONS -- committed 2026-09-19 09:17:41 CEST, BEFORE the first launch
+of this task.  Nothing had been run when this file was written: no engine, no
+build, no screenshot.  Code HEAD ef2029d9, binary md5 00a73121.
+
+Every number below is derived from a CITED file read at this HEAD; none is
+recalled.  The derivations and their inputs:
+
+  radius(Moon)   = 1737.4 km      [~/.spacecrafter/ssystem.ini:130]
+  halo(Moon)     = false          [ssystem.ini:132]
+  radius(Earth)  = 6378.14 km     [ssystem.ini:91]
+  moon_scale     = 5              [~/.spacecrafter/config.ini:240]
+  flag_moon_scaled = true         [config.ini:221]
+  projection     = FISHEYE        [config.ini:39]
+  init_fov       = 180            [config.ini:257]
+  render_size    = 2048           [config.ini:38]  => viewportRadius 1024
+  BODY_SURFACE_HEIGHT = 2         [src/experimentalModule/ModularBody.hpp:279]
+  closeRangeScreenSize = 409.6/(2*viewportRadius) = 0.2
+                                  [ModularBody.cpp:857-866, :873]
+  screenSize = halfAngularSize/halfFov   [ModularBody.hpp:477]
+  halfAngularSize = atan(b/sqrt(d^2-b^2)) = asin(b/d) for d>b
+                                  [ModularBody.hpp:441, :465]
+  b (bounding) = scaledRadius*1.02 for the Moon (altimetryLevel 2)
+                                  [LayeredMesh.cpp:167-169; the F121 artifact
+                                   dumps b=5.92303877e-05 AU against
+                                   scaledDatumRadius 5.80690103e-05 AU]
+  altitude is counted from scaledDatumRadius  [ModularBody.hpp:1550-1552]
+  limLandscape default = 10000 m  [EnvironmentModule.hpp:64]
+
+DERIVED GEOMETRY (the numbers the runs must hit or refute):
+  Moon x5: scaledRadius 8687.0 km, b 8860.7 km,
+           grounded band  8687.0 km <= dist < 17374.0 km,
+           close-range gate reached at dist = b/sin(18 deg) = 28674 km,
+           so the gate is reached FIRST and the hole opens exactly at
+           dist < 17374.0 km  <=>  altitude < 8687.0 km.
+  Moon x1: scaledRadius 1737.4 km, b 1772.1 km,
+           hole at dist < 3474.8 km <=> altitude < 1737.4 km
+           (close-range gate at 5734 km, again reached first).
+  Earth  : scaledRadius 6378.14 km, hole at dist < 12756.28 km
+           <=> altitude < 6378.14 km.  At 3000 km altitude dist = 9378.14 km,
+           INSIDE the hole -- the scene INTENT/11.105 BLOCKER 1 measured.
+
+-----------------------------------------------------------------------------
+P1  THRESHOLD, Moon x5, NEW drawn path.  The Moon is DRAWN for dumped
+    dist > 17374.0 km and ABSENT for dist < 17374.0 km.  On the altitude
+    ladder 12000 / 9000 / 8700 / 8670 / 8000 / 5000 km (metres to the command)
+    the first three are PRESENT and the last three ABSENT.  The boundary sits
+    between the 8700 km rung (dist 17387 km) and the 8670 km rung (dist
+    17357 km) -- a 30 km bracket around the predicted 17374.0 km.
+
+P2  ALL AT ONCE, not progressive.  No rung shows a partial disc: the whole
+    body (mesh + atmosphere shell + hint + halo) leaves in ONE step.  Refuted
+    if any rung shows a bitten/partial disc, which would implicate the depth
+    range (M4) instead of the regime ladder.
+
+P3  OLD drawn path, SAME rungs: the Moon is PRESENT at EVERY rung, including
+    the three below the threshold.  Old's only visibility rule is
+    screen_sz > 2 px and isVisible, forced true when distance <= radius
+    [body.cpp:1060-1068, 1123-1153].
+
+P4  FOV INDEPENDENCE below the crossover.  At render width 2048 the crossover
+    is a FULL fov of 300 deg, which the camera cannot reach (halfFov clamp
+    3.05 rad).  So at altitude 8000 km the Moon stays ABSENT at fov 60 as at
+    fov 180, and at 9000 km it stays PRESENT at both.  Zooming in does NOT
+    bring the body back.
+
+P5  SCALE, x1 ladder (`flag moon_scaled off`, settle waited by MEASUREMENT,
+    S5.109): the threshold re-bases to dist 3474.8 km.  On the altitude
+    ladder 3000 / 2000 / 1800 / 1700 / 1000 km: PRESENT, PRESENT, PRESENT,
+    ABSENT, ABSENT.  Linear in the display scale -- the single cleanest A/B.
+
+P6  EARTH at 3000 km altitude: ABSENT on the new path, PRESENT on the old.
+    (S11.105 measured 357 lit px > 32 of 4 194 304 there against 3 299 770 in
+    the ray regime.)
+
+P7  THE DEFAULT VIEW, standing on Earth, TODAY (before any edit): the observer
+    sits at dist = 6378.14 km + 75 m, i.e. INSIDE the grounded band, and
+    screenSize = pi/halfFov = 2.0 >> 0.2, so `draw` routes Earth to
+    groundedComponents and draws NOTHING of it.  The OLD path draws nothing
+    either, for its own reason (altitude 75 m < limLandscape 10 km:
+    skipDrawingThisBody, body.cpp:1223-1226).  So the two paths AGREE in the
+    default view today -- by coincidence of two different rules, which is why
+    closing the hole without the home-body rule would break it.
+
+P8  THE LAUNCH FLASH (N2's `loaded` latch, in the DEFAULT view).  `loaded` is
+    written only inside drawLoaded, and drawLoaded's close-range branch has NO
+    grounded test: it draws nearComponents.  So for the frames between the
+    first draw and the moment every near module reports isLoaded, the default
+    view DRAWS Earth's near components, and then loses them in one frame.
+    PREDICTED: on the pre-fix binary an early capture (first seconds after the
+    port opens) differs from the settled capture by more than the A/A floor.
+    CONFIDENCE LOW on the magnitude: the ray shell clamps finalRadius to
+    min(R*(1+a), distance - R/64) [LayeredMesh.cpp:256], which is NEGATIVE at
+    the surface, so the mesh may draw nothing visible even while dispatched.
+    Both readings kept; the run decides.
+
+P9  MANAGER COUNT of "which component list draws at close range", BEFORE:
+    exactly 2 -- ModularBody::draw (ModularBody.hpp:617-626, in/grounded/near)
+    and ModularBody::drawLoaded (ModularBody.cpp:707-724, in/near, no grounded
+    branch at all).  Nothing else selects: ModuleLoader routes, updateCache
+    sizes, preload pulls, dumpTrace counts.  AFTER the fix: 1.
+
+P10 THE MUTANT.  With the helper restored to "grounded in the band whatever it
+    holds", the post-fix ladder reads the PRE-fix values digit for digit (Moon
+    absent below 17374 km on the new path, present on the old).  If it does
+    not, the instrument is not reading the helper's decision.
+
+P11 THE FULL CANARY after the engine commit: exit 0, 12/12 in band.  The
+    canary's scene IS the default view, so a home-body clause that fails to
+    bite would red it -- this is a real gate here, not a formality.
+
+P12 THE EXPERIMENTAL-OORT PILOT (`flag_experimental_oort`, default false,
+    absent from the shipped config.ini) uses the hole as its own visibility
+    gate: ssystem_factory.cpp:562-569 pegs the cloud's radius at 50 AU so that
+    "the cloud (a NEAR component) is hidden for observer distance < this".
+    Inside 50 AU the routing is inComponents (untouched by this fix), so the
+    fix moves the cloud's onset from 100 AU to 50 AU IF the pilot is enabled.
+    Nothing in the shipped tree instantiates it, so no shipped scene changes.
+    NOT measured (would need the pilot flag); recorded as a consequence.
+
+-----------------------------------------------------------------------------
+WHAT WOULD FALSIFY THE WHOLE READING (M1 is not the mechanism):
+  - the Moon absent on the OLD path too at the same rungs, or
+  - the threshold not scaling with moon_scale, or
+  - a progressive bite instead of a step, or
+  - the dumped `routing.grounded` non-zero for the Moon.
+Any one of those sends the diagnosis back to M2/M4 and the fix does not land.

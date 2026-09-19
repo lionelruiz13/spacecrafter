@@ -694,7 +694,7 @@ md5sum claude/harness/artifacts/f123/analysis-2026-09-19.md | cut -c1-8 => f1a1a
 ```
 
 **DoD:** the predictions committed before the runs; the presence ladder pre and post on both drawn paths, ×5 and ×1, plus Earth at 3000 km and the default view; the managers counted before and after; the fix ONE commit with before/after in its message — or a STOP with the numbers and whose decision it is; the mutant BEFORE the instrument is trusted green; the FULL canary 12/12 after the engine commit; §11.248 entry + stub, the hole's OWN §5 row (minted and, if fixed, flipped), the four back-markers, the map's state line; both trees clean. **A PARTIAL DELIVERY IS A DELIVERY**: the reproduction with its measured threshold and the row alone are worth landing — the owner reads today.
-**WIP:** —
+**WIP:** 2026-09-19 09:17 — gate 21/21 PASS + prose premises verified (harness d13775e, `:2` 2444x1332, boot 20:59:16, no engine, scan 301/372/149 pair 263/238/25/132 D37 D2 12 I95 I2 37 M98). P1–P12 written to `harness/artifacts/f123/prediction.txt` BEFORE any launch. Manager census read (2: `ModularBody.hpp:617-626`, `ModularBody.cpp:707-724`). NEXT: build the f123 runner/driver, scout launch, then the pre-fix ladders.
 
 ---
 
