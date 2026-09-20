@@ -6532,3 +6532,46 @@ click handlers themselves (dead channel), the VIEW path (`turn*`, `dragView`,
 `lookRel`), `Core::findAndSelect(int,int)` (leg S not built), the "already zooming"
 branch of `Camera::setHalfFov`, both fov clamps, every timed mover plan (no input
 can reach one: `DURATION_COMMAND` 0.1 truncates to `int` 0).
+
+## F125 - the gates the owner's cleanup was predicted to redden: what each does now (`f125_*.py`; `f23_b33_inject.py`, `f18_gate.py`, `f18_midband.py` edited) - INTENT 11.263 / row B45 item (2) / 11.251(b), 2026-09-20
+
+**What for.** His cleanup (`8ce65acc`, compile fix `78455b88`) deleted dump members
+(`gates.*.depthBucket|close`, `control.mount.new`) and moved constants (early / full /
+bigTexture 3.072 / 16.384 / 409.6 -> 2 / 16 / 256 px; the mover floor 1e-6 R -> 0.125 R).
+11.251(b) PREDICTED which gates go red and ran none. Each was run as found, classified,
+and only then touched. A re-baselined expectation is DERIVED from his header, never
+pasted from a run: `f125_constants.owner_constant("BODY_...")` reads `ModularBody.hpp`.
+
+**Run** - everything goes through F124's runner, unchanged; the label `../f125/<label>`
+lands the records in `artifacts/f125/<label>/`, and `f125_adapt.py` lets it run a plain
+socket driver (it drops the gdb arguments unless `--gdb`) and appends GPU memory and
+`free -g` to `meta.txt`:
+
+    bash f124_run.sh ../f125/<label> f125_adapt.py [--poke '<gdb cmd>'] [--gdb] <driver.py> [args]
+    F121_LEG=census bash f121_run.sh ../f125/<label> f121_drive.py   # then:
+    python3 f125_fovlaw.py artifacts/f125/<label>/final.json
+
+| gate | state since F125 | able to fail by |
+|---|---|---|
+| `f23_b33_inject.py` | RE-POINTED: the mount row's `new` member is `camera.mount` (the camera's own `dumpTrace`); the gdb print reads the member, `Camera::getMount` is gone. **Red as found at HEAD and LEFT red: `M1_reported`, `pin_twice`** - `Core::getMountMode` reads the navigator in both modes since `78455b88`, so the mount readout no longer follows the path that draws (B33's mount half). Expected green again when B42 gives the mount one responsible per mode. | `F23_PERTURB=withhold-mount` (the `setMount` injection withheld): `M1_diverged` goes red |
+| F121 seam census, fov channel | it never had an assert; `f125_fovlaw.py` is one: each zoom plan of the seam ring is replayed on the run's own dt with the two laws written from the source (projector: linear, one-sided cubic, float32 `coef`; Camera: geometric, two-phase). `law_old` / `law_new` / `rest_at_floor` PASS and `RESID_*_separation` PASS = the seam is red for the predicted reason and no other. **`RESID_*` going red after B42 is the sign of the fix.** | the banked `artifacts/f121/census_fov` (the follow-fix binary): 4 FAIL, 0 PASS |
+| `f18_gate.py` | RE-BASELINED: gate = `BODY_EARLY_VISIBILITY_BOUNDING_SIZE` from the header, points at gate x 3.50/3.072 and x 2.70/3.072; new verdict arm `FAIL-gate-not-the-declared-constant` (dump `gates.px.early` against the header) | `--poke 'set var ModularBody::earlyVisibilityScreenSize = 0.0015'`: `FAIL-present-empty` |
+| `f18_midband.py` (+ `f18_disc.py`) | RE-BASELINED: the band is his early / full constants over the run's render width (header `gates.viewportRadius`) | `--poke 'set var ModularBody::earlyVisibilityScreenSize = 0.00390625'`: `f18_disc.py` VERDICT=RED |
+| `f125_regime.py` (new) | WHERE the regimes switch, no pixel read: gdb hit counts of `Renderer::clearDepth` (full) and of the near modules' `drawNoDepth` (mid band) for one body at x0.95 0.98 1.02 1.05 of each constant, and `bigTextures[].acquired` for the third | `--perturb early=3.072` (the engine's static moved through gdb): the early check goes red |
+| `b10_cmd.py` | GREEN as found, untouched. It issues every radius command from altitude 0; `f125_radius.py` shows the same command STALE from above the datum (INTENT 5.162): the gate does not reach that state. | not re-shown (untouched) |
+
+**Pitfalls, each one paid for.** (1) gdb refuses `break *Class::virtualMember`
+("Cannot reference virtual member function"): break at the load address (nm offset +
+the runtime base from `info address`), where the arguments are still in registers.
+(2) A breakpoint with a condition and a huge `ignore` count never stops and still
+counts its condition-true hits: `info breakpoints` is the counter. (3) The projector's
+`auto_zoom.coef` and `.speed` are `float`: a plan whose dt sum lands exactly on its
+duration ends one frame later than double arithmetic says - replay in float32.
+(4) A gate that dies on a `KeyError` prints no FAIL line: `f124_run.sh`'s summary then
+shows only the PASS lines above the crash - read `driver exit` and `drive.log`.
+
+**Not run, left as found** (census, INTENT 11.263 (C)): `f34_convention.py:482` and
+`f40_inverse.py:380` restate the deleted `1e-6` floor, non-binding in their scene
+(2000 km over Earth, above 0.125 R = 797 km); `f18_level.py` adapts by itself (it reads
+the gate from the dump); `b12_photosphere.py`, `b12_cost.py`, `b5_ladder.py` name the old
+values in comments only; `b10_cmd_gdb_run.sh` and `b10_cmd_run.sh` call `pkill -f`.

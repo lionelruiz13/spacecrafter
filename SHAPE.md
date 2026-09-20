@@ -121,14 +121,38 @@ or the regime boundaries; a structural change needs its instruments before it) -
 class (the request + query table goes to him BEFORE building) -> **B44** movers (its callers are
 the dual-writer seams B42 reshapes; four points are NOT ruled: `DECISIONS_PENDING.md` section 14)
 -> **B43** duplication inside the new path -> **B46** shape numbers assembled by a script.
-No task section is minted yet in `fable-dispatch.md` for B42-B46: mint it, with its PREMISES block,
-before any dispatch (section 0b step 2). Sessions COMMIT in their own name and NEVER PUSH.
+Sessions COMMIT in their own name and NEVER PUSH.
+
+### 7b. After session 34 (2026-09-20; code `main` @ `6c3d0ed6` UNCHANGED - record `INTENT/11.264.md`)
+- **B45 has its instruments.** Item (1): `harness/f124_run.sh` (generic FIFO runner) + `f124_legs.py`, legs Z / L /
+  A / M / D on both pinned paths, a 60-row coverage map in `INTENT/11.261.md`. Item (2): the predicted-red gates
+  run and classified (`INTENT/11.263.md`); `f125_constants.py` is where a gate reads his constants from; NEVER
+  paste an observed value back as an expectation. NOT built: leg S (`Core::findAndSelect`), the VIEW path.
+- **B42: the page is with the owner - `claude/b42-wiring-table.md`. NOTHING IS BUILT until he answers it.**
+  THE FACT TO CARRY: at HEAD the SKY is still drawn through Projector / Navigator in BOTH modes, ungated
+  (`src/executorModule/solarSystemModule.cpp`); "inform both" is what keeps it right on the new path. His
+  sentence (*"the Projector/Navigator/Observer are old path, the Camera is the new path"*) is the TARGET, not
+  a description of the code - session 33 wrote it down as a fact. So: QUERIES BEFORE REQUESTS, frame matrices first.
+- **What the instruments found** (rows 5.162-5.172, nothing fixed): the anchored descent goes under the datum
+  (his floor applied inward, 5.163); one key tap on a timed zoom leaves sky and bodies 23 deg of fov apart at
+  rest (5.166, the stopgap feed); a stale base and an unclamped pole in the lateral movers; the mount readout
+  reports the navigator in both modes (5.170); a radius command deferred while the body is not `visible` (5.162).
+- **Instruments that compare both engines inside ONE run** (F124's legs, `f125_fovlaw.py`, `f23`, `f18_disc`)
+  hold only while both engines are informed: when B42 lands they become run-against-run across two pinned launches.
+- DISPATCHING IN PARALLEL, learned the hard way: one writer per shared file (agents write only their own entry
+  file, checkpoint state in its first lines); assert the ALLOCATED entry number, not the next free one; do not
+  edit a tracked file after telling an agent the tree is clean; a boundary must not forbid what the mandate asks
+  (that is how a fourth runner came to exist); re-read the prompt's reading order against the mandate's own order.
+- Next without the owner, harness only: leg S and the VIEW legs; retire the three older FIFO runners onto
+  `f124_run.sh` (and make a crashed gate print FAIL, 5.172); the dig of 5.162; B46's assembling script.
 
 ## 8. Terms a cold reader will meet
 - **Vixy = the owner = Calvin Ruiz** (git author); `[vixy: date]` tags his words in the ledger.
 - **The two paths and how the running one is decided**: old path = `src/bodyModule` + Navigator /
   Observer / Projector; new path = `src/experimentalModule` + `Camera`. The MODE is
-  `SSystemFactory::drawModularSystem` (`ssystem_factory.hpp`: `setRenderPathMode`, `pathPinned`,
+  `SSystemFactory::drawModularSystem` (`src/bodyModule/ssystem_factory.hpp` - a seam class living in
+  the old path's directory; resolve any bare filename with `git ls-files '*name'`, never compose its
+  directory: `solarSystemModule.cpp` is under `src/executorModule/`): `setRenderPathMode`, `pathPinned`,
   read through `getExperimentalPath()` / `Core::getExperimentalPath()`); default = new path, pinned;
   `flag experimental_path on|off` pins one; `~/.spacecrafter/beta_features.ini` `[dual_path]
   render_path = alternate` makes it alternate (harness README, top).

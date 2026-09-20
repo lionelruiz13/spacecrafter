@@ -1,0 +1,73 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag landscape off
+>> flag atmosphere off
+>> flag star_twinkle off
+>> flag stars off
+>> flag show_fps off
+>> flag planet_names off
+>> flag planet_orbits off
+>> flag object_trails off
+>> flag constellation_drawing off
+>> flag constellation_art off
+>> flag cardinal_points off
+>> flag milky_way off
+>> flag nebulae off
+>> set home_planet Earth
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> select planet Mars pointer off
+>> flag track_object on
+>> timerate rate 0
+>> zoom fov 60 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/ref.json
+PASS declared_early_is_what_the_app_reports  header 2 px, dump gates.px {'early': 2, 'full': 16, 'bigTexture': 256}
+PASS declared_full_is_what_the_app_reports  header 16 px, dump gates.px {'early': 2, 'full': 16, 'bigTexture': 256}
+PASS declared_big_is_what_the_app_reports  header 256 px, dump gates.px {'early': 2, 'full': 16, 'bigTexture': 256}
+>> zoom fov 1.407970448 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/early_x0.95.json
+### early_x0.95 wanted    1.900 px measured    1.900 px -> below-early  (clearDepth 0, drawNoDepth 0, 10 probes armed)
+>> zoom fov 1.364869312 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/early_x0.98.json
+### early_x0.98 wanted    1.960 px measured    1.960 px -> below-early  (clearDepth 0, drawNoDepth 0, 10 probes armed)
+>> zoom fov 1.311345026 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/early_x1.02.json
+### early_x1.02 wanted    2.040 px measured    2.040 px -> mid  (clearDepth 0, drawNoDepth 548, 10 probes armed)
+>> zoom fov 1.273878025 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/early_x1.05.json
+### early_x1.05 wanted    2.100 px measured    2.100 px -> mid  (clearDepth 0, drawNoDepth 548, 10 probes armed)
+>> zoom fov 0.175996306 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/full_x0.95.json
+### full_x0.95  wanted   15.200 px measured   15.200 px -> mid  (clearDepth 0, drawNoDepth 548, 10 probes armed)
+>> zoom fov 0.170608664 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/full_x0.98.json
+### full_x0.98  wanted   15.680 px measured   15.680 px -> mid  (clearDepth 0, drawNoDepth 548, 10 probes armed)
+>> zoom fov 0.163918128 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/full_x1.02.json
+### full_x1.02  wanted   16.320 px measured   16.320 px -> full  (clearDepth 274, drawNoDepth 0, 10 probes armed)
+>> zoom fov 0.159234753 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/full_x1.05.json
+### full_x1.05  wanted   16.800 px measured   16.800 px -> full  (clearDepth 274, drawNoDepth 0, 10 probes armed)
+>> zoom fov 0.010999769 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/big_x0.95.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/big_x0.95_settled.json
+### big_x0.95   wanted  243.200 px measured  243.200 px -> acquired []
+>> zoom fov 0.010663042 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/big_x0.98.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/big_x0.98_settled.json
+### big_x0.98   wanted  250.880 px measured  250.880 px -> acquired []
+>> zoom fov 0.010244883 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/big_x1.02.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/big_x1.02_settled.json
+### big_x1.02   wanted  261.120 px measured  261.120 px -> acquired ['textures/bodies/mars.jpg', 'textures/bodies/mars_normal.jpg']
+>> zoom fov 0.009952172 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/big_x1.05.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G11_regime/big_x1.05_settled.json
+### big_x1.05   wanted  268.800 px measured  268.800 px -> acquired ['textures/bodies/mars.jpg', 'textures/bodies/mars_normal.jpg']
+>> zoom fov 180 duration 0
+PASS probes_armed_and_clean  every point armed its 10 breakpoints and gdb reported no error
+PASS early_switches_at_the_declared_2_px  regimes at x0.95 0.98 1.02 1.05 = ['below-early', 'below-early', 'mid', 'mid']: the switch lies in (1.960, 2.040) px
+PASS full_switches_at_the_declared_16_px  regimes at x0.95 0.98 1.02 1.05 = ['mid', 'mid', 'full', 'full']: the switch lies in (15.680, 16.320) px
+PASS big_texture_acquired_at_the_declared_256_px  acquired at x0.95 0.98 1.02 1.05 = [False, False, True, True] (['textures/bodies/mars.jpg', 'textures/bodies/mars_normal.jpg'])
+
+ALL PASS

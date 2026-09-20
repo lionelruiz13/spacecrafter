@@ -1,0 +1,210 @@
+{
+ "body": "Mars",
+ "perturb": "none",
+ "points": [
+  {
+   "gate": "early",
+   "factor": 0.95,
+   "wanted_px": 1.9,
+   "measured_px": 1.899999975424,
+   "bigTextures": [],
+   "clearDepth": 0,
+   "drawNoDepth": 0,
+   "armed": 10,
+   "handshake": true,
+   "gdb_said": [],
+   "regime": "below-early"
+  },
+  {
+   "gate": "early",
+   "factor": 0.98,
+   "wanted_px": 1.96,
+   "measured_px": 1.959999799296,
+   "bigTextures": [],
+   "clearDepth": 0,
+   "drawNoDepth": 0,
+   "armed": 10,
+   "handshake": true,
+   "gdb_said": [],
+   "regime": "below-early"
+  },
+  {
+   "gate": "early",
+   "factor": 1.02,
+   "wanted_px": 2.04,
+   "measured_px": 2.039999961088,
+   "bigTextures": [],
+   "clearDepth": 0,
+   "drawNoDepth": 548,
+   "armed": 10,
+   "handshake": true,
+   "gdb_said": [],
+   "regime": "mid"
+  },
+  {
+   "gate": "early",
+   "factor": 1.05,
+   "wanted_px": 2.1,
+   "measured_px": 2.10000013312,
+   "bigTextures": [],
+   "clearDepth": 0,
+   "drawNoDepth": 548,
+   "armed": 10,
+   "handshake": true,
+   "gdb_said": [],
+   "regime": "mid"
+  },
+  {
+   "gate": "full",
+   "factor": 0.95,
+   "wanted_px": 15.2,
+   "measured_px": 15.19999981568,
+   "bigTextures": [],
+   "clearDepth": 0,
+   "drawNoDepth": 548,
+   "armed": 10,
+   "handshake": true,
+   "gdb_said": [],
+   "regime": "mid"
+  },
+  {
+   "gate": "full",
+   "factor": 0.98,
+   "wanted_px": 15.68,
+   "measured_px": 15.67999840256,
+   "bigTextures": [],
+   "clearDepth": 0,
+   "drawNoDepth": 548,
+   "armed": 10,
+   "handshake": true,
+   "gdb_said": [],
+   "regime": "mid"
+  },
+  {
+   "gate": "full",
+   "factor": 1.02,
+   "wanted_px": 16.32,
+   "measured_px": 16.32000159744,
+   "bigTextures": [],
+   "clearDepth": 274,
+   "drawNoDepth": 0,
+   "armed": 10,
+   "handshake": true,
+   "gdb_said": [],
+   "regime": "full"
+  },
+  {
+   "gate": "full",
+   "factor": 1.05,
+   "wanted_px": 16.8,
+   "measured_px": 16.80000114688,
+   "bigTextures": [],
+   "clearDepth": 274,
+   "drawNoDepth": 0,
+   "armed": 10,
+   "handshake": true,
+   "gdb_said": [],
+   "regime": "full"
+  },
+  {
+   "gate": "big",
+   "factor": 0.95,
+   "wanted_px": 243.2,
+   "measured_px": 243.199997952,
+   "bigTextures": [],
+   "acquired": []
+  },
+  {
+   "gate": "big",
+   "factor": 0.98,
+   "wanted_px": 250.88,
+   "measured_px": 250.879973376,
+   "bigTextures": [],
+   "acquired": []
+  },
+  {
+   "gate": "big",
+   "factor": 1.02,
+   "wanted_px": 261.12,
+   "measured_px": 261.119995904,
+   "bigTextures": [
+    {
+     "name": "textures/bodies/mars.jpg",
+     "w": 16384,
+     "h": 8192,
+     "acquired": true,
+     "ready": true,
+     "lifetime": 90
+    },
+    {
+     "name": "textures/bodies/mars_normal.jpg",
+     "w": 8192,
+     "h": 4096,
+     "acquired": true,
+     "ready": true,
+     "lifetime": 90
+    }
+   ],
+   "acquired": [
+    "textures/bodies/mars.jpg",
+    "textures/bodies/mars_normal.jpg"
+   ]
+  },
+  {
+   "gate": "big",
+   "factor": 1.05,
+   "wanted_px": 268.8,
+   "measured_px": 268.800018432,
+   "bigTextures": [
+    {
+     "name": "textures/bodies/mars.jpg",
+     "w": 16384,
+     "h": 8192,
+     "acquired": true,
+     "ready": true,
+     "lifetime": 90
+    },
+    {
+     "name": "textures/bodies/mars_normal.jpg",
+     "w": 8192,
+     "h": 4096,
+     "acquired": true,
+     "ready": true,
+     "lifetime": 90
+    }
+   ],
+   "acquired": [
+    "textures/bodies/mars.jpg",
+    "textures/bodies/mars_normal.jpg"
+   ]
+  }
+ ],
+ "width": 2048.0,
+ "gates_reported": {
+  "viewportRadius": 1024,
+  "px": {
+   "early": 2,
+   "full": 16,
+   "bigTexture": 256
+  },
+  "screenSize": {
+   "early": 0.0009765625,
+   "full": 0.0078125,
+   "bigTexture": 0.125
+  }
+ },
+ "ref_screenSize": 2.17703764e-05,
+ "boundingRadius": 2.3615843e-05,
+ "probed_functions": [
+  "AtmExtModule::drawNoDepth",
+  "BasicMesh::drawNoDepth",
+  "BodyModule::drawNoDepth",
+  "LayeredMesh::drawNoDepth",
+  "OjmModule::drawNoDepth",
+  "OortModule::drawNoDepth",
+  "PhotosphereModule::drawNoDepth",
+  "Renderer::clearDepth",
+  "RingModule::drawNoDepth",
+  "StarModule::drawNoDepth"
+ ]
+}

@@ -36,6 +36,10 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
 ---
 
+**Update [Claude Fable 5.1 2026-09-20, supervising session 34 — LovelyFoxDev, THE INSTRUMENTS ROUND; the first dispatch under G12]:** trigger = the §0b verbatim line plus the owner's sentence on Fable agents. Open Sunday 09:31 CEST, OUTSIDE his deep window: the round was built to run through his silence. Session 33 left no note here (its state is `SHAPE.md` section 7) and no section for B42-B46. Warm-up, the mint, every acceptance and the supervisor's eight defects: **§11.264**. MINTED in one commit (`b01a672`): **F124** (B45 item 1), **F125** (B45 item 2), **F126** (B42's table, nothing built) — premise gate 20/0, 21/0, 17/0, every expectation filled by script from its command and read before the gate. F124 and F126 ran IN PARALLEL in one tree (disjoint files, one engine user); F125 after F124. Executors: agent type `claude`, model `fable`; NO agent committed, built or stashed; each wrote only its own entry file, with its checkpoint state in that file's first lines; the supervisor wrote `INTENT.md` and this file. Two choices the parallel run forced: a section asserts that its ALLOCATED entry number is free (the *next free* number is a race); one writer per shared file.
+
+**Round outcome (session 34 close, 2026-09-20):** F124 → **§11.261** · F126 → **§11.262** + `claude/b42-wiring-table.md` · F125 → **§11.263** — three for three delivered AND supervisor-verified the same session, headlines recomputed from the raw records by independent scripts, to the digit. Code `main` @ `6c3d0ed6` UNCHANGED, binary `13910b38` unchanged: **the owner's review queue did not move.** Rows minted §5.162-§5.172; rows B42 / B44 / B45 marked; five back-markers where the ledger had worded his ruling on the sky as a fact about the code. **REMAINING DISPATCHABLE SET: EMPTY until he answers the page** — B42's build waits on `b42-wiring-table.md` question 1; B44 on `DECISIONS_PENDING.md` section 14 (M1 now has its number); B43 edits code and follows them; B45 item (3) is his. Dispatchable WITHOUT him, harness only: leg S (`Core::findAndSelect` — the tester's *"nothing seems selectable"* is still undriven) and the VIEW-path legs on `f124_run.sh`; the runner reduction; the dig of §5.162's mechanism; B46's assembling script. **Archival pass 25 (update-s31 + update-s32 + F122 / F123) DEFERRED to the next open**; F124-F126 join it then. Host: a `java` process of the owner held 27 GiB from about 09:30; no task built, and all 29 recorded engine launches (15 of F124 + 14 of F125, counted from their `meta.txt` files - a first version of this sentence said 44, a number typed from memory) succeeded beside it.
+
 **Update [Claude Fable 5.1 2026-09-19, supervising session 32 — LovelyFoxDev, THE SEAM CONTINUED: F122
 first]:** trigger = the §0b verbatim line PLUS one owner sentence: *"You can use fable agent ("claude" agent
 defaults to it and, I think, inherit from the system prompt) where deeper analysis or more global understanding
@@ -866,7 +870,7 @@ python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhe
 ```
 
 **DoD:** predictions before runs; the census; every named gate run and classified (i)-(iv) with its evidence; re-baselines derived, never re-banked; retirements recorded; the veto-open list; the entry file `11.263.md`; nothing committed, nothing under `src/` touched. **A PARTIAL DELIVERY IS A DELIVERY.**
-**WIP:** 2026-09-20 — MINTED (session 34), not dispatched.
+**WIP:** 2026-09-20 — MINTED (session 34). DISPATCHED 10:50 after F124's acceptance (gate 21/0 at the mint and at the dispatch). DELIVERED, PARTIAL → **§11.263**. **ACCEPTED 2026-09-20 (supervisor, Claude Fable 5.1), after the `date` call of 11:56:26.** BY MY OWN HAND: **§11.263 READ IN FULL**; no engine, no gdb left; code tree clean at `6c3d0ed6`, binary `13910b38`, field pair pristine, the user scripts directory back to its 8 entries; ZERO commits by the agent; write set as bounded (5 new `f125_*` files, 3 gate scripts +42 -14, `README.md` +43 -0); D14 PASS. THE ORDER from the records' clocks: predictions 11:03:39, first launch 11:04:21; the regime gate's able-to-fail 11:22 before its trusted run 11:27, one driver md5; field pair MATCH=yes 28 of 28. **THE THREE MODIFIED GATES READ AS DIFFS — the check that matters for a re-baseline: every new expectation is DERIVED** (`owner_constant(...)` read from `ModularBody.hpp`; the band over the run's own render width; `mount.new` re-pointed to `camera.mount`), NONE is an observed value pasted back; `f125_constants.py` read (32 lines) and shown to exit loud on a name that is not declared. **THE MOST SURPRISING CLAIM RECOMPUTED FROM THE RAW DUMPS by the supervisor's own script: §5.162 is narrower than the supervisor had minted it three hours earlier** — stale from 10 km and 2000 km above, landed and moving at -12.5005 km, `visible` False / True in 7 of 7 — back-marked on the row. ENDORSED with their arguments: no runner written (`f124_run.sh` unmodified, an adapter instead — the boundary conflict of F124 not repeated); G4 / G10 judged from source and said so; G6 / G7 not run (`pkill -f` in their runners, the owner's processes on the host); `--poke` added after the trusted runs, disclosed with both md5s; two WRONG predictions and one refuted hypothesis reported as such — a delivery that says where it was wrong is the one whose greens can be believed. **A SUPERVISOR DEFECT its gate caught: the prompt said *clean at dispatch* and the supervisor edited its own tracked running record two minutes later**; reported, judged non-load-bearing, with the counterfactual. MINTED: §5.170 (mount readout, a second cause), §5.171 (two thresholds that were one — the owner's), §5.172 (a gate that dies prints no FAIL). NOT REACHED: `f34` C5 / `f40` L4, `f18_level`, `b10_nav`, `b10_cmd_gdb`; no second render width.
 
 ### F126 — THE WIRING CLASS, BEFORE IT IS BUILT: the request table and the query table the owner rules on, re-derived from the code — row B42 [M-L, **ANALYSIS ONLY — NOTHING IS BUILT, `src/` is read-only, no launch, no build, the agent commits nothing**; runs in PARALLEL with F124 (disjoint files, no engine); executor = agent type `claude`, model `fable`; entry number ALLOCATED: §11.262]
 
@@ -941,6 +945,36 @@ python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhe
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-34 decision items (2026-09-20, Sunday — THE INSTRUMENTS ROUND: F124 · F126 · F125, three for three delivered and supervisor-verified the same session; NOTHING under `src/` moved, so your review queue is exactly where you left it).** Full record §11.264; every item below is reversible or is a question.
+
+  ```
+  YOURS — ONE PAGE, and nothing is built until you answer it
+  [Y52] B42 · `claude/b42-wiring-table.md` — the wiring class's tables, DERIVED FROM THE CODE. The fact that decides the
+        design: at HEAD the SKY is still drawn through Projector / Navigator in BOTH modes; "inform both" is what keeps
+        it right on the new path. So: QUERIES BEFORE REQUESTS, the frame matrices first. Nine questions, each with a
+        default and its reason; question 1 (the order) decides the rest. Three shapes measured, none chosen.
+        The ledger had written your sentence on the sky as a FACT about the code. It was the target. Back-marked.
+  YOURS — what the new instruments found in the movers and the zoom (nothing fixed; B44 / B42 are your designs)
+  [Y53] §5.163 · the anchored descent goes UNDER THE DATUM: 10 km -> 2.4997 -> -5.0004 -> -12.5005 km in three
+        `multAlt(0.99)`; step 7.5001 km = MIN_MOVEMENT_SPEED x R x 0.01, applied INWARD too, no anchored clamp.
+        Reachable today by `camera action descend`. Old observer: 9.9 / 9.801 / 9.703.
+  [Y54] §5.166 · one zoom-key tap during a timed zoom: projector rests at 20.0000 deg, Camera at 43.28 / 43.71 —
+        sky and bodies 23 deg apart AT REST, a 13.34 deg jump in one frame. The stopgap feed; B42 removes it.
+        A CANDIDATE for the tester's "everything doesn't move at the same speed, on zoom" — not shown to be it.
+  [Y55] DECISIONS_PENDING section 14, M1 has its NUMBER: the per-call step is identical at dt 10 and dt 40, so speed
+        follows the frame rate — 750 km/s at 100 fps, 187.5 at 25 fps, both engines.
+  [Y56] §5.171 · bigTexture (256 px) and the `0.2` literal (409.6 px at width 2048) were ONE threshold and are TWO.
+        The input to your re-ruling of the two un-named literals (B45 item 3). Also §5.164 (stale base in free
+        flight), §5.165 (latitude passes the pole), §5.170 (the mount readout reports the navigator in both modes).
+  YOURS — three wordings / rules to fold, none urgent
+  [Y57] `CLAUDE.md`: "a file that is not group-writable is a defect" also flags git's own 0444 objects.
+  [Y58] Section 0 step 6 (executors commit and write the WIP line) against SHAPE BINDING (a) (no agent commits):
+        this round each agent kept its checkpoint state in the first lines of its OWN entry file. Keep, or rule.
+  [Y59] Two harness reductions owed, mine to do if you want them: the three older FIFO runners retire onto
+        `f124_run.sh`; and the premise filler used at this mint (0 premise defects against 1-17 in earlier rounds)
+        is kept as evidence only (`harness/artifacts/s34/`) — say if it should become a tool.
+  ```
 
 - **Session-32 decision items (2026-09-19, Saturday morning — THE SEAM CONTINUED: F122 · F123, two for two delivered and supervisor-verified same session; you were PRESENT and reading the code in parallel: three messages, verbatim at §11.247).** Q-70's shape: one decision per node, its held set at the node. The executors' own lists are §11.246(g)(k) and §11.248(h).
 

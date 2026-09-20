@@ -1,0 +1,109 @@
+ssystem.ini md5 in = 545a51ef76294891579a1fc2fe13792b
+config.ini  md5 in = 03fbee59bc3ec506c58f0a3f1e1d73df
+1789897582.616 >> flag experimental_path on
+1789897583.816 >> date jday 2461233.5
+1789897585.016 >> timerate rate 0
+1789897585.817 >> flag landscape off
+1789897586.617 >> flag atmosphere off
+1789897587.417 >> flag star_twinkle off
+1789897588.218 >> flag stars off
+1789897589.018 >> flag show_fps off
+1789897589.819 >> flag planet_names off
+1789897590.619 >> flag planet_orbits off
+1789897591.419 >> flag object_trails off
+1789897592.219 >> flag constellation_drawing off
+1789897593.020 >> flag constellation_art off
+1789897593.820 >> flag cardinal_points off
+1789897594.620 >> flag milky_way off
+1789897595.421 >> flag nebulae off
+1789897598.621 >> set home_planet Earth
+1789897600.821 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1789897602.022 >> select planet Mars pointer off
+1789897610.222 >> flag track_object on
+1789897611.422 >> timerate rate 0
+1789897614.623 >> zoom fov 60.0 duration 0
+1789897617.323 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_atf_engine_gate/mars_ref.json
+1789897620.525 >> zoom fov 0.47290 duration 0
+1789897623.226 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_atf_engine_gate/mars_geom.json
+### Mars: fov 0.4729 -> screenSize 0.00276215398 in_band=True
+1789897624.427 >> body name Mars color halo r 0 g 0 b 0
+1789897627.128 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_atf_engine_gate/mars_new.png
+1789897629.328 >> flag experimental_path off
+1789897632.029 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_atf_engine_gate/mars_old.png
+1789897634.229 >> flag experimental_path on
+1789897636.930 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_atf_engine_gate/mars_new_b.png
+1789897638.130 >> flag track_object off
+1789897640.330 >> zoom fov 180 duration 0
+ssystem.ini md5 out = 545a51ef76294891579a1fc2fe13792b MATCH= True
+config.ini  md5 out = 03fbee59bc3ec506c58f0a3f1e1d73df MATCH= True
+{
+  "Mars": {
+    "ref_fov": 60.0,
+    "ref": {
+      "screenSize": 2.17703764e-05,
+      "screen": [
+        2.19787296e-07,
+        1.3736706e-08
+      ],
+      "dist": 2.07175732,
+      "boundingRadius": 2.3615843e-05,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "ATMOSPHERE"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "fov": 0.47290308960533234,
+    "geom": {
+      "screenSize": 0.00276215398,
+      "screen": [
+        2.78858897e-05,
+        1.74286811e-06
+      ],
+      "dist": 2.07175732,
+      "boundingRadius": 2.3615843e-05,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "ATMOSPHERE"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "in_band": true,
+    "wanted_screenSize": 0.0027621358640099515
+  },
+  "md5_ok": true
+}

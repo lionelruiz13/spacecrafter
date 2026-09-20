@@ -1,0 +1,36 @@
+=== F124 run '../f125/G1_f23_atf_withhold_mount' ===
+wall clock start : 2026-09-20 11:33:37 CEST
+driver           : f125_adapt.py --gdb f23_b33_inject.py
+driver md5       : 7e95162d84fc939774ff7dba2791a8de
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 13910b38281e073d3d5baf641c2ef441
+binary mtime     : 2026-09-19 23:11:54.181058975 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[../f125/G1_f23_atf_withhold_mount] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[../f125/G1_f23_atf_withhold_mount] gpu: free 26999 MiB / used 5108 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=784974
+launch wall clock: 2026-09-20 11:33:38 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 784991 
+--- host load, before the driver ---
+$ nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader
+9441 MiB, 32607 MiB
+$ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              59          48           3           0           8          10
+Swap:              0           0           0
+adapted driver   : f23_b33_inject.py  (md5 398174f53c4a6f1809849871a423e694)
+--- host load, after the driver ---
+$ nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader
+9455 MiB, 32607 MiB
+$ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              59          47           3           0           8          11
+Swap:              0           0           0
+driver exit=1
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[../f125/G1_f23_atf_withhold_mount-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-20 11:34:43 CEST

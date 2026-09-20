@@ -1,0 +1,271 @@
+ssystem.ini md5 in = 545a51ef76294891579a1fc2fe13792b
+config.ini  md5 in = 03fbee59bc3ec506c58f0a3f1e1d73df
+1789897274.027 >> flag experimental_path on
+1789897275.227 >> date jday 2461233.5
+1789897276.427 >> timerate rate 0
+1789897277.228 >> flag landscape off
+1789897278.028 >> flag atmosphere off
+1789897278.829 >> flag star_twinkle off
+1789897279.629 >> flag stars off
+1789897280.429 >> flag show_fps off
+1789897281.230 >> flag planet_names off
+1789897282.030 >> flag planet_orbits off
+1789897282.830 >> flag object_trails off
+1789897283.631 >> flag constellation_drawing off
+1789897284.431 >> flag constellation_art off
+1789897285.231 >> flag cardinal_points off
+1789897286.032 >> flag milky_way off
+1789897286.832 >> flag nebulae off
+1789897290.033 >> set home_planet Earth
+1789897292.233 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1789897293.433 >> select planet Sun pointer off
+1789897301.633 >> flag track_object on
+1789897302.834 >> timerate rate 0
+1789897306.034 >> zoom fov 60.0 duration 0
+1789897308.734 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/sun_ref.json
+1789897311.936 >> zoom fov 179.00000 duration 0
+1789897314.637 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/sun_geom.json
+### Sun: fov 179.0000 -> screenSize 0.00292981113 in_band=True
+1789897315.839 >> body name Sun color halo r 0 g 0 b 0
+1789897318.539 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/sun_new.png
+1789897320.739 >> flag experimental_path off
+1789897323.440 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/sun_old.png
+1789897325.640 >> flag experimental_path on
+1789897328.340 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/sun_new_b.png
+1789897329.541 >> flag track_object off
+1789897330.741 >> select planet Mars pointer off
+1789897338.941 >> flag track_object on
+1789897340.142 >> timerate rate 0
+1789897343.342 >> zoom fov 60.0 duration 0
+1789897346.042 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/mars_ref.json
+1789897349.244 >> zoom fov 0.47290 duration 0
+1789897351.944 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/mars_geom.json
+### Mars: fov 0.4729 -> screenSize 0.00276215398 in_band=True
+1789897353.145 >> body name Mars color halo r 0 g 0 b 0
+1789897355.846 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/mars_new.png
+1789897358.046 >> flag experimental_path off
+1789897360.746 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/mars_old.png
+1789897362.947 >> flag experimental_path on
+1789897365.647 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/mars_new_b.png
+1789897366.847 >> flag track_object off
+1789897368.048 >> select planet Jupiter pointer off
+1789897376.248 >> flag track_object on
+1789897377.448 >> timerate rate 0
+1789897380.649 >> zoom fov 60.0 duration 0
+1789897383.349 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/jupiter_ref.json
+1789897386.550 >> zoom fov 5.48785 duration 0
+1789897389.251 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/jupiter_geom.json
+### Jupiter: fov 5.4878 -> screenSize 0.00276213512 in_band=True
+1789897390.453 >> body name Jupiter color halo r 0 g 0 b 0
+1789897393.153 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/jupiter_new.png
+1789897395.353 >> flag experimental_path off
+1789897398.053 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/jupiter_old.png
+1789897400.254 >> flag experimental_path on
+1789897402.954 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G9_f18midband_rebased/jupiter_new_b.png
+1789897404.154 >> flag track_object off
+1789897406.355 >> zoom fov 180 duration 0
+ssystem.ini md5 out = 545a51ef76294891579a1fc2fe13792b MATCH= True
+config.ini  md5 out = 03fbee59bc3ec506c58f0a3f1e1d73df MATCH= True
+{
+  "Sun": {
+    "ref_fov": 60.0,
+    "ref": {
+      "screenSize": 0.00874060299,
+      "screen": [
+        1.47257509e-07,
+        -1.2297582e-07
+      ],
+      "dist": 1.01658893,
+      "boundingRadius": 0.00465247268,
+      "visible": true,
+      "routing": {
+        "far": 2,
+        "near": 2,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 0,
+        "trail": 0,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "CUSTOM"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "fov": 179.0,
+    "geom": {
+      "screenSize": 0.00292981113,
+      "screen": [
+        4.93600645e-08,
+        -4.12209502e-08
+      ],
+      "dist": 1.01658893,
+      "boundingRadius": 0.00465247268,
+      "visible": true,
+      "routing": {
+        "far": 2,
+        "near": 2,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 0,
+        "trail": 0,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "CUSTOM"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "in_band": true,
+    "wanted_screenSize": 0.0027621358640099515
+  },
+  "Mars": {
+    "ref_fov": 60.0,
+    "ref": {
+      "screenSize": 2.17703764e-05,
+      "screen": [
+        2.19787296e-07,
+        1.3736706e-08
+      ],
+      "dist": 2.07175732,
+      "boundingRadius": 2.3615843e-05,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "ATMOSPHERE"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "fov": 0.47290308960533234,
+    "geom": {
+      "screenSize": 0.00276215398,
+      "screen": [
+        2.78858897e-05,
+        1.74286811e-06
+      ],
+      "dist": 2.07175732,
+      "boundingRadius": 2.3615843e-05,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "ATMOSPHERE"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "in_band": true,
+    "wanted_screenSize": 0.0027621358640099515
+  },
+  "Jupiter": {
+    "ref_fov": 60.0,
+    "ref": {
+      "screenSize": 0.000252636353,
+      "screen": [
+        -1.90751962e-07,
+        3.32680486e-07
+      ],
+      "dist": 6.2661643,
+      "boundingRadius": 0.000828888791,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "RING"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "fov": 5.487847783850138,
+    "geom": {
+      "screenSize": 0.00276213512,
+      "screen": [
+        -2.08553752e-06,
+        -2.86761428e-06
+      ],
+      "dist": 6.2661643,
+      "boundingRadius": 0.000828888791,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "RING"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "in_band": true,
+    "wanted_screenSize": 0.0027621358640099515
+  },
+  "md5_ok": true
+}

@@ -1,0 +1,26 @@
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD
+git rev-parse --short=8 HEAD
+git status --porcelain | wc -l
+md5sum build-claude/src/spacecrafter | cut -c1-8
+find src -type f -newer build-claude/src/spacecrafter | wc -l
+ldd build-claude/src/spacecrafter | /usr/bin/grep -c 'not found'
+test ! -e claude/INTENT/11.261.md -a ! -e claude/INTENT/archive/11.261.md && echo free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md
+# the field pair, pristine (asserted in == out around every launch)
+md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' '
+# the mover surface at HEAD (content drift = abort)
+/usr/bin/grep -n 'float velocityScaling(float deltaTime) const;' src/experimentalModule/Camera.hpp | cut -d: -f1
+/usr/bin/grep -c 'velocityScaling(1)' src/experimentalModule/Camera.hpp
+/usr/bin/grep -c 'velocityScaling(1)' src/experimentalModule/Camera.cpp
+/usr/bin/grep -n 'void multAlt(float coef);' src/experimentalModule/Camera.hpp | cut -d: -f1
+/usr/bin/grep -n 'constexpr double MIN_MOVEMENT_SPEED = 0.125;' src/experimentalModule/ModularBody.hpp | cut -d: -f1
+# the input path's entry points
+/usr/bin/grep -n -E 'void updateMove\(int delta_time\);|void zoomIn\(int\);|void zoomOut\(int\);|bool findAndSelect\(int x, int y\);' src/coreModule/core.hpp | cut -d: -f1 | tr '\n' ' '
+# the pattern to extend, the first standing gate, the launch guards
+test -x claude/harness/b21_keypath_run.sh -a -f claude/harness/b21_keypath.py -a -f claude/harness/b10_cmd_gdb.py -a -f claude/harness/s33_refchange.py && echo ok
+test -x claude/harness/f56_canary.sh -a -x claude/harness/sc_instances.sh && echo ok
+command -v gdb
+# the ledger entries the task stands on (the zero beside its control)
+python3 claude/intent_resolve.py 11.251 11.253 11.257 11.258 2>&1 | /usr/bin/grep -c 'resolves nowhere'
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere'

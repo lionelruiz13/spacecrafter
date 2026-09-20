@@ -1,0 +1,7 @@
+== artifacts/f121/census_fov/final.json.gz: 9433 frames, 4 zoom plan(s) ==
+FAIL plan0[f1149-1388]_new_has_a_plan  the Camera ran no plan on this window
+FAIL plan1[f1920-2159]_new_has_a_plan  the Camera ran no plan on this window
+FAIL plan2[f2690-2869]_new_has_a_plan  the Camera ran no plan on this window
+FAIL plan3[f3400-3578]_new_has_a_plan  the Camera ran no plan on this window
+
+4 FAILS: plan0[f1149-1388]_new_has_a_plan, plan1[f1920-2159]_new_has_a_plan, plan2[f2690-2869]_new_has_a_plan, plan3[f3400-3578]_new_has_a_plan

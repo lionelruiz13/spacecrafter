@@ -1,0 +1,135 @@
+{
+  "Mars": {
+    "screenSize": 0.00276215398,
+    "fov": 0.47290308960533234,
+    "verdict": "RED",
+    "disc_ratio_new_over_old": 0.0,
+    "noise_floor_max": 0,
+    "new": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 2.828,
+        "sum": 0,
+        "mean": 0.0,
+        "npx": 25,
+        "nonzero": 0
+      },
+      "centre_rgb": [
+        0,
+        0,
+        0
+      ],
+      "centre_row_sumRGB": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "row_max": 0,
+      "row_nonzero": 0,
+      "win17_nonzero": 0,
+      "win17_max": 0,
+      "brightest_offset_xy_val": null
+    },
+    "old": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 2.828,
+        "sum": 4747,
+        "mean": 189.88,
+        "npx": 25,
+        "nonzero": 24
+      },
+      "centre_rgb": [
+        151,
+        104,
+        60
+      ],
+      "centre_row_sumRGB": [
+        0,
+        0,
+        177,
+        283,
+        354,
+        315,
+        190,
+        37,
+        0,
+        0,
+        0
+      ],
+      "row_max": 354,
+      "row_nonzero": 6,
+      "win17_nonzero": 70,
+      "win17_max": 392,
+      "brightest_offset_xy_val": [
+        -1,
+        -1,
+        392
+      ]
+    },
+    "new_b": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 2.828,
+        "sum": 0,
+        "mean": 0.0,
+        "npx": 25,
+        "nonzero": 0
+      },
+      "centre_rgb": [
+        0,
+        0,
+        0
+      ],
+      "centre_row_sumRGB": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "row_max": 0,
+      "row_nonzero": 0,
+      "win17_nonzero": 0,
+      "win17_max": 0,
+      "brightest_offset_xy_val": null
+    }
+  }
+}
+
+Mars       ss=0.002762 fov=0.473 VERDICT=RED        disc_ratio=0.0000 new_disc=0 old_disc=4747 new_row_max=0 old_row_max=354 floor=0

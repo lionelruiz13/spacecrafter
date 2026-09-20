@@ -1,0 +1,28 @@
+=== F121 run '../f125/G2_census' ===
+wall clock start : 2026-09-20 11:05:13 CEST
+driver           : f121_drive.py
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 13910b38281e073d3d5baf641c2ef441
+binary mtime     : 2026-09-19 23:11:54.181058975 +0200
+seam recorder    : SC_SEAM_RECORD=1 (armed)
+[../f125/G2_census] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[../f125/G2_census] gpu: free 27071 MiB / used 5036 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=773852
+tcp up after 6x2s
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+armed line in app log: 1
+wall clock end   : 2026-09-20 11:08:14 CEST
+--- host load, before the launch ---
+5035 MiB, 32607 MiB
+               total        used        free      shared  buff/cache   available
+Mem:              59          40          11           0           8          18
+Swap:              0           0           0
+--- host load, after the run ---
+5561 MiB, 32607 MiB
+               total        used        free      shared  buff/cache   available
+Mem:              59          40          11           0           8          18
+Swap:              0           0           0

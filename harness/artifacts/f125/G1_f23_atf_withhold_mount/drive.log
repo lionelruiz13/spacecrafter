@@ -1,0 +1,32 @@
+>> flag experimental_path on
+>> timerate rate 0
+>> date jday 2461233.5
+>> flag atmosphere off
+>> flag landscape off
+>> set zoom_offset 0.3
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G1_f23_atf_withhold_mount/v1.json
+-- v1: offset {"reported": 0.3, "old": 0.3, "new": 0.3} mount {"reported": "equatorial", "old": "equatorial", "new": "equatorial"}
+PASS V1_agreed  `set zoom_offset 0.3` -> reported 0.3, old 0.3, new 0.3
+PASS M0_agreed  mount reported equatorial, old equatorial, new equatorial (both from [navigation] viewing_mode)
+PASS inject  gdb wrote the DRAWN path's two authorities directly
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G1_f23_atf_withhold_mount/v2.json
+-- v2: offset {"reported": 0.15, "old": 0.3, "new": 0.15} mount {"reported": "equatorial", "old": "equatorial", "new": "equatorial"}
+PASS V2_diverged  the two authorities are apart: old 0.3, drawn 0.15
+PASS V2_reported  the readout follows the path that draws: 0.15 (a binary that reads the old authority says 0.3)
+FAIL M1_diverged  the two mounts are apart: old equatorial, drawn equatorial
+FAIL M1_reported  the mount readout follows the path that draws: equatorial (old authority says equatorial)
+>> flag experimental_path off
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G1_f23_atf_withhold_mount/v3_off0.json
+-- v3_off0: offset {"reported": 0.3, "old": 0.3, "new": 0.15} mount {"reported": "equatorial", "old": "equatorial", "new": "equatorial"}
+>> flag experimental_path on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G1_f23_atf_withhold_mount/v3_on0.json
+-- v3_on0: offset {"reported": 0.15, "old": 0.3, "new": 0.15} mount {"reported": "equatorial", "old": "equatorial", "new": "equatorial"}
+>> flag experimental_path off
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G1_f23_atf_withhold_mount/v3_off1.json
+-- v3_off1: offset {"reported": 0.3, "old": 0.3, "new": 0.15} mount {"reported": "equatorial", "old": "equatorial", "new": "equatorial"}
+>> flag experimental_path on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G1_f23_atf_withhold_mount/v3_on1.json
+-- v3_on1: offset {"reported": 0.15, "old": 0.3, "new": 0.15} mount {"reported": "equatorial", "old": "equatorial", "new": "equatorial"}
+PASS pin_twice  `flag experimental_path off/on` flips BOTH readouts back and forth, on both entries of the pair, the second from the state the first left
+
+2 FAILS

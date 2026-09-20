@@ -1,0 +1,82 @@
+1789897480.697 >> flag experimental_path on
+1789897481.897 >> date jday 2461233.5
+1789897483.098 >> timerate rate 0
+1789897483.698 >> flag landscape off
+1789897484.298 >> flag atmosphere off
+1789897484.899 >> flag star_twinkle off
+1789897485.499 >> flag stars off
+1789897486.100 >> flag show_fps off
+1789897486.700 >> flag planet_names off
+1789897487.300 >> flag planet_orbits off
+1789897487.901 >> flag object_trails off
+1789897488.501 >> flag constellation_drawing off
+1789897489.101 >> flag constellation_art off
+1789897489.702 >> flag cardinal_points off
+1789897490.302 >> flag milky_way off
+1789897490.902 >> flag nebulae off
+1789897494.103 >> set home_planet Earth
+1789897496.303 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1789897497.503 >> select planet Mars pointer off
+1789897505.704 >> flag track_object on
+1789897506.904 >> timerate rate 0
+1789897508.105 >> body name Mars color halo r 0 g 0 b 0
+1789897511.305 >> zoom fov 60.0 duration 0
+1789897514.005 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G8_f18gate_atf_engine_gate/ref.json
+1789897517.208 >> zoom fov 1.174006 duration 0
+1789897519.909 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G8_f18gate_atf_engine_gate/present_geom.json
+1789897522.612 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G8_f18gate_atf_engine_gate/present.png
+### present: fov 1.17401 px 2.279 disc_sum 0
+1789897525.909 >> zoom fov 1.521860 duration 0
+1789897528.610 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G8_f18gate_atf_engine_gate/absent_geom.json
+1789897531.312 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G8_f18gate_atf_engine_gate/absent.png
+### absent: fov 1.52186 px 1.758 disc_sum 0
+1789897533.601 >> zoom fov 180 duration 0
+{
+  "width_arg": 2048,
+  "body": "Mars",
+  "gates_reported": {
+    "viewportRadius": 1024,
+    "px": {
+      "early": 2,
+      "full": 16,
+      "bigTexture": 256
+    },
+    "screenSize": {
+      "early": 0.00150000001,
+      "full": 0.0078125,
+      "bigTexture": 0.125
+    }
+  },
+  "gate_px_predicted": 2.0,
+  "ref_screenSize": 2.17703764e-05,
+  "points": {
+    "present": {
+      "fov": 1.174005987634615,
+      "wanted_px": 2.2786458333333335,
+      "screenSize": 0.00111262,
+      "measured_px": 2.27864576,
+      "disc_sum": 0,
+      "disc_nonzero": 0,
+      "shape": [
+        2048,
+        2048
+      ]
+    },
+    "absent": {
+      "fov": 1.5218596136004268,
+      "wanted_px": 1.7578125,
+      "screenSize": 0.00085830671,
+      "measured_px": 1.75781214208,
+      "disc_sum": 0,
+      "disc_nonzero": 0,
+      "shape": [
+        2048,
+        2048
+      ]
+    }
+  },
+  "absent_over_present": null,
+  "gate_px_reported": 2,
+  "verdict": "FAIL-present-empty",
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

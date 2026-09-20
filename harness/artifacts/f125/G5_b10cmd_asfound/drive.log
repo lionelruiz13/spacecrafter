@@ -1,0 +1,68 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> body action load name CmdTest radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 900 orbit_y 0 orbit_z 0
+>> set home_planet CmdTest
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_default_a0.json
+>> body name CmdTest datum_radius 0
+>> body name CmdTest ground_radius 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_enter_scaled.json
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_enter_a0.json
+>> moveto altitude 100000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_enter_a100k.json
+>> body name CmdTest datum_radius 6000
+>> body name CmdTest ground_radius 6000
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_restore_scaled.json
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_restore_a0.json
+>> body name CmdTest ground_radius 6012
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_clear_scaled.json
+>> camera action free_mode state on
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_clear_f_desc1.json
+>> moveto altitude 100000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_clear_f_asc1.json
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_clear_f_desc2.json
+>> moveto altitude 100000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_clear_f_asc2.json
+>> camera action free_mode state off
+>> body name CmdTest datum_radius -5
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_neg.json
+>> body name NoSuchBody datum_radius 100
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c1_missing.json
+>> body action load name CmdScript radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 0 orbit_y 900 orbit_z 0
+>> set home_planet CmdScript
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c2_default_a0.json
+>> script action play filename b10_cmd_script.sts
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c2_script_scaled.json
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G5_b10cmd_asfound/b10c_c2_script_a0.json
+
+==== B10-cmd numeric layer ====
+scaled datum/ground km: default=(6000.000054450096,6000.000054450096) enter=(0.0,0.0) restore=(6000.000054450096,6000.000054450096) clear=(6000.000054450096,6011.9998681301295)
+[PASS] scalar_default_solid: datum=6000.000054450096 ground=6000.000054450096 (expect ~6000.0)
+[PASS] scalar_command_enter: datum=0.0 ground=0.0 (expect ~0 after command)
+[PASS] scalar_command_restore: datum=6000.000054450096 ground=6000.000054450096 (expect ~6000.0 after reverse command)
+[PASS] scalar_command_clearance: datum=6000.000054450096 ground=6011.9998681301295 (expect datum~6000.0 ground~6012.0)
+anchored moveto-alt-0 distance km: default=6000.000 enter=0.000 restore=6000.000
+[PASS] behav_default_surface: 6000.000 km (expect ~6000.0, surface)
+[PASS] behav_command_centre: 0.000 km (expect ~0, CENTRE - command made it enterable)
+[PASS] behav_command_restore: 6000.000 km (expect ~6000.0, surface restored)
+free clearance |pos| km: desc1=6012.000 asc1=6100.000 desc2=6012.000 asc2=6100.000
+[PASS] clear_hold1: desc1=6012.000 (expect hold ~6012.0)
+[PASS] clear_escape1: asc1=6100.000 (expect escape ~6100.0, above clamp 6012.0)
+[PASS] clear_hold2: desc2=6012.000 (expect hold ~6012.0, 2nd entry)
+[PASS] clear_escape2: asc2=6100.000 (expect escape ~6100.0, above clamp 6012.0, 2nd)
+[PASS] neg_refused: datum after `datum_radius -5` = 6000.000054450096 (expect UNCHANGED ~6000.0, refused)
+[PASS] missing_no_crash: app answered after missing-body command (no crash)
+CHANNEL2 script: scaled default=(6000.000054450096,6000.000054450096) after=(0.0,0.0) moveto-alt-0 default=6000.000 after=0.000
+[PASS] script_scalar_enter: datum=0.0 ground=0.0 (expect ~0 via SCRIPT channel)
+[PASS] script_behav_centre: default=6000.000 after=0.000 (expect surface->centre via SCRIPT)
+
+==== B10-cmd: ALL PASS ====

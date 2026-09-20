@@ -1,0 +1,14 @@
+>> flag experimental_path on
+>> timerate rate 0
+>> date jday 2461233.5
+>> flag atmosphere off
+>> flag landscape off
+>> set zoom_offset 0.3
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/G1_f23_asfound/v1.json
+-- v1: offset {"reported": 0.3, "old": 0.3, "new": 0.3} mount {"reported": "equatorial", "old": "equatorial"}
+PASS V1_agreed  `set zoom_offset 0.3` -> reported 0.3, old 0.3, new 0.3
+Traceback (most recent call last):
+  File "/home/claude/spacecrafter/claude/harness/f23_b33_inject.py", line 114, in <module>
+    check("M0_agreed", c["mount"]["reported"] == c["mount"]["old"] == c["mount"]["new"],
+                                                                      ~~~~~~~~~~^^^^^^^
+KeyError: 'new'

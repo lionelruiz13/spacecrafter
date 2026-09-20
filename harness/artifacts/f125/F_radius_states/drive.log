@@ -1,0 +1,25 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> body action load name RadT radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 900 orbit_y 0 orbit_z 0
+>> set home_planet RadT
+>> moveto lat 0 lon 0 alt 10000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/F_radius_states/above_before.json
+>> body name RadT ground_radius 6050
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/F_radius_states/above_after.json
+STALE above    commanded 6050 km from altitude 9.9998 km: scaled ground 6000.000 -> 6000.000 km, refCached True -> False
+>> camera action descend coef 0.99
+>> camera action descend coef 0.99
+>> camera action descend coef 0.99
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/F_radius_states/under_before.json
+>> body name RadT ground_radius 6100
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/F_radius_states/under_after.json
+MOVED under    commanded 6100 km from altitude -12.5005 km: scaled ground 6050.000 -> 6100.000 km, refCached True -> True
+>> moveto lat 0 lon 0 alt 2000000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/F_radius_states/back_up_same_value.json
+NOTE  back above the datum, no new command: scaled ground 6100.000 km, refCached True, altitude 2000.0002 km
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/F_radius_states/back_up_before.json
+>> body name RadT ground_radius 6150
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/../f125/F_radius_states/back_up_after.json
+STALE back_up  commanded 6150 km from altitude 2000.0002 km: scaled ground 6100.000 -> 6100.000 km, refCached True -> False
+=== control state `above` DID NOT MOVE: scene not reached

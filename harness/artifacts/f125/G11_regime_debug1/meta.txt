@@ -1,0 +1,36 @@
+=== F124 run '../f125/G11_regime_debug1' ===
+wall clock start : 2026-09-20 11:17:01 CEST
+driver           : f125_adapt.py --gdb f125_regime.py
+driver md5       : 7e95162d84fc939774ff7dba2791a8de
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 13910b38281e073d3d5baf641c2ef441
+binary mtime     : 2026-09-19 23:11:54.181058975 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[../f125/G11_regime_debug1] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[../f125/G11_regime_debug1] gpu: free 26833 MiB / used 5274 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=779156
+launch wall clock: 2026-09-20 11:17:02 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 779175 
+--- host load, before the driver ---
+$ nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader
+9512 MiB, 32607 MiB
+$ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              59          47           3           0           8          11
+Swap:              0           0           0
+adapted driver   : f125_regime.py  (md5 93a6d1b7b53771d8e64407f90ff4de1d)
+--- host load, after the driver ---
+$ nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader
+10395 MiB, 32607 MiB
+$ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              59          47           3           0           8          11
+Swap:              0           0           0
+driver exit=1
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[../f125/G11_regime_debug1-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-20 11:21:29 CEST

@@ -357,3 +357,10 @@ You ruled `velocityScaling` the one law of every interactive mover, and named yo
 - **M3 - free-mode `moveTo`.** Your baseline subtracts `position` (cartesian) from the target; the agents made the target the (longitude, latitude, altitude) triple in BOTH modes through `posePart` (INTENT §11.36 called the baseline a frame mismatch). `moveTo` going back to a forwarder over `moveRel` has to pick one. `[Fable default]` the triple in both modes, as one conversion feeding `moveRel`.
 - **M4 - where the cubic goes.** The joystick input (`joypad_controller.cpp`, `Core`'s `vzm`) is shared by both paths and outside the module: cubing it there changes the old path, against "everything in the old path is gated by the old path". `[Fable default]` inside the Camera's interactive entry, new path only. And: is the cubic mine to implement, or yours?
 
+
+## 15. The wiring class (2026-09-20, Claude Fable 5.1 - full record INTENT §11.262; ledger row §13.B B42)
+
+Your ruling: one responsible per mode, the gating in a class of its own. Before building it, the tables you asked to see first are on ONE page, derived from the code: **`claude/b42-wiring-table.md`**.
+- **What decides the design.** At HEAD the sky is still drawn through Projector / Navigator in both modes; informing both engines is what keeps it right on the new path. So a request can lose its second write only when the last shared reader of that information is answered by the Camera: queries before requests, the frame matrices first.
+- **Nine questions**, each on the page with its premise, a default and the reason: the order; the scope of "everything about the space"; the screen; the projection law on the new path; the hand-over at a mode switch; who holds the mode (the name is yours); requests with no responsible in the running mode; the comparators; `toggleMountMode` / `dragView` asking the mount.
+- **Three shapes measured, none chosen** (a forwarder per method; an accessor per information; an interface with two implementations). `[Fable default]` none: nothing is built until question 1 is answered.

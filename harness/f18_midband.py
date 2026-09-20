@@ -3,7 +3,7 @@
 
 The row's own discriminating check, generalised off the Sun: for each target
 body the driver FINDS the fov that puts it inside the mid band
-(0.0015 < screenSize <= 0.008 - the band where ModularBody::draw takes the
+(early < screenSize <= full, the owner's 2 / 16 px over the render width - where ModularBody::draw takes the
 nearComponents -> drawNoDepth() branch and issues NO clearDepth), suppresses
 that body's additive halo so the disc is what the pixels show, and captures the
 same scene on both paths.
@@ -26,11 +26,22 @@ os.makedirs(OUT, exist_ok=True)
 SSY = os.path.expanduser("~/.spacecrafter/ssystem.ini")
 CFG = os.path.expanduser("~/.spacecrafter/config.ini")
 
+# The band is the owner's two declared constants over the run's own render width (the dump
+# header's gates.viewportRadius); 0.0015 / 0.008 stood here while they were 3.072 / 16.384 px.
 # Geometric middle of the band - as far from both gates as the log scale allows,
 # so a small fov error cannot push the sample out of the regime under test.
-BAND_LO, BAND_HI = 0.0015, 0.008
-WANTED = (BAND_LO * BAND_HI) ** 0.5      # 0.003464
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from f125_constants import owner_constant
+BAND_PX = (owner_constant("BODY_EARLY_VISIBILITY_BOUNDING_SIZE"),
+           owner_constant("BODY_FULL_VISIBILITY_BOUNDING_SIZE"))
 REF_FOV = 60.0
+
+
+def band(path):
+    """(BAND_LO, BAND_HI, WANTED) in screenSize units, for the width this run renders at."""
+    width = 2.0 * json.loads(open(path).readline())["gates"]["viewportRadius"]
+    lo, hi = BAND_PX[0] / width, BAND_PX[1] / width
+    return lo, hi, (lo * hi) ** 0.5
 
 
 def md5(p):
@@ -109,7 +120,9 @@ for target in TARGETS:
     send(s, "flag track_object on", 8)
     send(s, "timerate rate 0", 1)
     send(s, f"zoom fov {REF_FOV} duration 0", 3)
-    g0 = geom(dump(s, f"{tag}_ref"), target)
+    ref = dump(s, f"{tag}_ref")
+    BAND_LO, BAND_HI, WANTED = band(ref)
+    g0 = geom(ref, target)
     if not g0 or not g0.get("screenSize"):
         RESULT[target] = {"error": "no geometry at reference fov", "ref": g0}
         continue

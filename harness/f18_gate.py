@@ -10,15 +10,16 @@ The observable is the EARLY gate, because it is the one with a large, binary
 consequence: below it the body draws no surface at all (halo/hint only), above
 it the surface appears. Two fov points per width bracket the predicted gate:
 
-    PRESENT  point at 3.50 px predicted diameter  -> surface must be drawn
-    ABSENT   point at 2.70 px predicted diameter  -> surface must be absent
+    PRESENT  point at gate x 3.50/3.072 predicted diameter -> surface must be drawn
+    ABSENT   point at gate x 2.70/3.072 predicted diameter -> surface must be absent
+    gate = BODY_EARLY_VISIBILITY_BOUNDING_SIZE, read from ModularBody.hpp (2 px since the
+    owner's cleanup, 3.072 before it: INTENT 11.263; the points were 3.50 / 2.70 px then)
 
-  px-intent   (the change under test): gate at 3.072 px at EVERY width, so
+  px-intent   (the change under test): gate at the same px at EVERY width, so
               PRESENT/ABSENT at both widths.
   fraction-intent (what shipped): the gate is a constant screenSize, so it sits
-              at 3.072 px only at 2048 and at 1.536 px at 1024 - the ABSENT
-              point at 1024 (2.70 px, i.e. screenSize 0.0026 > 0.0015) would
-              show a surface. That is the failure this can show.
+              at its px value only at 2048 and at half of it at 1024 - the ABSENT
+              point at 1024 would show a surface. That is the failure this can show.
 
 The halo is suppressed, so what the disc window holds is the surface alone. The
 app's own reported gate (dump header `gates`, §5.54) is read back and asserted
@@ -36,8 +37,12 @@ BODY = sys.argv[3] if len(sys.argv) > 3 else "Mars"
 os.makedirs(OUT, exist_ok=True)
 SSY = os.path.expanduser("~/.spacecrafter/ssystem.ini")
 
-PRESENT_PX, ABSENT_PX = 3.50, 2.70
-GATE_PX_PREDICTED = 3.072
+# The gate is the owner's declared constant and the two points bracket it by the ratios the
+# first spelling used (3.50 / 3.072 above, 2.70 / 3.072 below): nothing here is a pasted run.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from f125_constants import owner_constant
+GATE_PX_PREDICTED = owner_constant("BODY_EARLY_VISIBILITY_BOUNDING_SIZE")
+PRESENT_PX, ABSENT_PX = GATE_PX_PREDICTED * 3.50 / 3.072, GATE_PX_PREDICTED * 2.70 / 3.072
 REF_FOV = 60.0
 
 
@@ -134,7 +139,10 @@ p, a = res["points"]["present"], res["points"]["absent"]
 # chosen.
 ratio = (a["disc_sum"] / p["disc_sum"]) if p["disc_sum"] else None
 res["absent_over_present"] = ratio
-res["verdict"] = ("FAIL-present-empty" if not p["disc_sum"] else
+reported = (h0.get("gates") or {}).get("px", {}).get("early")
+res["gate_px_reported"] = reported
+res["verdict"] = ("FAIL-gate-not-the-declared-constant" if reported != GATE_PX_PREDICTED else
+                  "FAIL-present-empty" if not p["disc_sum"] else
                   "GREEN" if ratio <= 0.10 else
                   "FAIL-absent-drew" if ratio >= 0.5 else "AMBIGUOUS")
 res["ssystem_md5"] = hashlib.md5(open(SSY, "rb").read()).hexdigest()

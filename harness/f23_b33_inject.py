@@ -59,6 +59,9 @@ def control(sock, tag, pause=2.0):
     with open(f"{OUT}/{tag}.json") as f:
         hdr = json.loads(_clean(f.readline()))
     c = hdr["control"]
+    # The control surface's mount row lost its `new` member with `Camera::getMount`
+    # (INTENT 11.251(a)(4)): the camera's own dumpTrace is the surviving authority.
+    c["mount"]["new"] = hdr["camera"]["mount"]
     print(f"-- {tag}: offset {json.dumps(c['viewOffset'])} "
           f"mount {json.dumps(c['mount'])}", flush=True)
     return c
@@ -124,11 +127,15 @@ oldmount = c["mount"]["old"]
 # leg then passed VACUOUSLY on two equal values, which is why M1_reported now
 # requires the divergence it is reporting about.
 want_mount = "equatorial" if oldmount == "altaz" else "altaz"
+# F23_PERTURB=withhold-mount leaves the camera's mount alone: M1_diverged must go red.
+WITHHOLD = os.environ.get("F23_PERTURB") == "withhold-mount"
 ok = gdb_inject([
     "call (void) Camera::instance->setViewOffset(0.15)",
+] + ([] if WITHHOLD else [
     f"call (void) Camera::instance->setMount((CameraMount){0 if want_mount == 'altaz' else 1})",
+]) + [
     "print Camera::instance->getViewOffset()",
-    "print (int)Camera::instance->getMount()",
+    "print (int)Camera::instance->mount",
 ], "F23_INJECTED")
 check("inject", ok, "gdb wrote the DRAWN path's two authorities directly")
 

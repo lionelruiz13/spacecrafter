@@ -1,0 +1,23 @@
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD
+git rev-parse --short=8 HEAD
+git status --porcelain | wc -l
+md5sum build-claude/src/spacecrafter | cut -c1-8
+find src -type f -newer build-claude/src/spacecrafter | wc -l
+ldd build-claude/src/spacecrafter | /usr/bin/grep -c 'not found'
+test ! -e claude/INTENT/11.262.md -a ! -e claude/INTENT/archive/11.262.md && echo free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md
+# the query surface, re-measured at HEAD
+python3 claude/harness/shape/trio_census.py | tail -3 | cut -d: -f1,2 | tr '\n' ';'
+# the request table's index and the raw work map
+/usr/bin/grep -c '^      | ' claude/INTENT/11.254.md
+md5sum claude/s33-second-managers.md | cut -c1-8
+# the seam classes and the mode anchor - the factory lives under src/bodyModule
+git ls-files 'src/*ssystem_factory.hpp' src/coreModule/core.hpp src/coreModule/coreLink.hpp | tr '\n' ' '
+/usr/bin/grep -n -E 'void setRenderPathMode\(RenderPathMode mode\)|bool getExperimentalPath\(\) const' src/bodyModule/ssystem_factory.hpp | cut -d: -f1 | tr '\n' ' '
+test -f claude/harness/shape/writers.py -a -f claude/harness/shape/trio_census.py && echo ok
+# the owner's form, read-only
+git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD
+# the ledger entries the task stands on (the zero beside its control)
+python3 claude/intent_resolve.py 11.253 11.254 11.255 2>&1 | /usr/bin/grep -c 'resolves nowhere'
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere'

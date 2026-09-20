@@ -1,0 +1,82 @@
+{
+ "rows": [
+  {
+   "state": "above",
+   "commanded_km": 6050,
+   "moved": false,
+   "before": {
+    "ground_km": 6000.000054450096,
+    "datum_km": 6000.000054450096,
+    "refCached": true,
+    "reference": "RadT",
+    "altitude_km": 9.999753369180086,
+    "relation": 4,
+    "visible": false
+   },
+   "after": {
+    "ground_km": 6000.000054450096,
+    "datum_km": 6000.000054450096,
+    "refCached": false,
+    "reference": "RadT",
+    "altitude_km": 9.999753369180086,
+    "relation": 4,
+    "visible": false
+   }
+  },
+  {
+   "state": "under",
+   "commanded_km": 6100,
+   "moved": true,
+   "before": {
+    "ground_km": 6049.999911414556,
+    "datum_km": 6000.000054450096,
+    "refCached": true,
+    "reference": "RadT",
+    "altitude_km": -12.500508062299847,
+    "relation": 4,
+    "visible": true
+   },
+   "after": {
+    "ground_km": 6099.999768379015,
+    "datum_km": 6000.000054450096,
+    "refCached": true,
+    "reference": "RadT",
+    "altitude_km": -12.500508062299847,
+    "relation": 4,
+    "visible": true
+   }
+  },
+  {
+   "state": "back_up",
+   "commanded_km": 6150,
+   "moved": false,
+   "before": {
+    "ground_km": 6099.999768379015,
+    "datum_km": 6000.000054450096,
+    "refCached": true,
+    "reference": "RadT",
+    "altitude_km": 2000.0001991193847,
+    "relation": 4,
+    "visible": false
+   },
+   "after": {
+    "ground_km": 6099.999768379015,
+    "datum_km": 6000.000054450096,
+    "refCached": false,
+    "reference": "RadT",
+    "altitude_km": 2000.0001991193847,
+    "relation": 4,
+    "visible": false
+   }
+  }
+ ],
+ "back_up_same_value": {
+  "ground_km": 6099.999768379015,
+  "datum_km": 6000.000054450096,
+  "refCached": true,
+  "reference": "RadT",
+  "altitude_km": 2000.0001991193847,
+  "relation": 4,
+  "visible": false
+ }
+}

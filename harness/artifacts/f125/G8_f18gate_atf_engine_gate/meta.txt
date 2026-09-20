@@ -1,0 +1,37 @@
+=== F124 run '../f125/G8_f18gate_atf_engine_gate' ===
+wall clock start : 2026-09-20 11:44:12 CEST
+driver           : f125_adapt.py --poke set var ModularBody::earlyVisibilityScreenSize = 0.0015 f18_gate.py 2048 Mars
+driver md5       : 11d2417070e847e75d4fadf66e5387b5
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 13910b38281e073d3d5baf641c2ef441
+binary mtime     : 2026-09-19 23:11:54.181058975 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[../f125/G8_f18gate_atf_engine_gate] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[../f125/G8_f18gate_atf_engine_gate] gpu: free 27168 MiB / used 4939 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=789625
+launch wall clock: 2026-09-20 11:44:13 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 789642 
+--- host load, before the driver ---
+$ nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader
+9273 MiB, 32607 MiB
+$ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              59          48           2           0           8          10
+Swap:              0           0           0
+adapted driver   : f18_gate.py 2048 Mars (md5 5e59ffe8e6ee8279671e4f332eb0dcdb)
+PERTURBED RUN    : gdb poke ['set var ModularBody::earlyVisibilityScreenSize = 0.0015'] (handshake True); gdb said ['    at ../sysdeps/unix/sysv/linux/ioctl.c:36', 'â\x9a\xa0ï¸\x8f warning: 36\t../sysdeps/unix/sysv/linux/ioctl.c: Aucun fichier ou dossier de ce nom', '(gdb) (gdb) F125POKE', '(gdb) Continuing.']
+--- host load, after the driver ---
+$ nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader
+9273 MiB, 32607 MiB
+$ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              59          47           3           0           8          11
+Swap:              0           0           0
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[../f125/G8_f18gate_atf_engine_gate-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-20 11:45:42 CEST

@@ -1,0 +1,28 @@
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD
+git rev-parse --short=8 HEAD
+git status --porcelain | wc -l
+md5sum build-claude/src/spacecrafter | cut -c1-8
+find src -type f -newer build-claude/src/spacecrafter | wc -l
+ldd build-claude/src/spacecrafter | /usr/bin/grep -c 'not found'
+test ! -e claude/INTENT/11.263.md -a ! -e claude/INTENT/archive/11.263.md && echo free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md
+# the field pair, pristine
+md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' '
+# the owner's constants and the two un-named literals at HEAD (content drift = abort)
+/usr/bin/grep -n -E '^constexpr int BODY_(EARLY_VISIBILITY_BOUNDING_SIZE = 2|FULL_VISIBILITY_BOUNDING_SIZE = 16|BIG_TEXTURE_BOUNDING_SIZE = 256);' src/experimentalModule/ModularBody.hpp | cut -d: -f1 | tr '\n' ' '
+/usr/bin/grep -n -E 'if \(screenSize . 0\.(004|2)\)' src/experimentalModule/ModularBody.hpp | cut -d: -f1 | tr '\n' ' '
+/usr/bin/grep -n 'constexpr double MIN_MOVEMENT_SPEED = 0.125;' src/experimentalModule/ModularBody.hpp | cut -d: -f1
+# what his edit deleted (zeros), beside a control that must not be zero
+/usr/bin/grep -rl -E 'followFov|setHalfFovNow|ANTISTUCK_ESCAPE_FLOOR|proximityFactor' src | wc -l
+/usr/bin/grep -c 'void setHalfFov(float halfFov, float duration = 0.5);' src/experimentalModule/Camera.hpp
+# the gates named predicted-red, and the launch guards
+test -x claude/harness/f121_run.sh -a -f claude/harness/f121_seam.py -a -f claude/harness/f121_drive.py && echo ok
+test -x claude/harness/f23_b33_inject_run.sh -a -f claude/harness/f23_b33_inject.py && echo ok
+test -x claude/harness/b10_run.sh -a -x claude/harness/b10_cmd_gdb_run.sh -a -x claude/harness/b3_ladder_run.sh && echo ok
+test -x claude/harness/f56_canary.sh -a -x claude/harness/sc_instances.sh && echo ok
+# his edit and the compile fix, reachable from HEAD
+git merge-base --is-ancestor 8ce65acc HEAD && git merge-base --is-ancestor 78455b88 HEAD && echo ancestors
+# the ledger entries the task stands on (the zero beside its control)
+python3 claude/intent_resolve.py 11.250 11.251 11.257 2>&1 | /usr/bin/grep -c 'resolves nowhere'
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere'

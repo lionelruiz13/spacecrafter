@@ -1,0 +1,66 @@
+leg=census out=/home/claude/spacecrafter/claude/harness/artifacts/f121/../f125/G2_census
+1789895134.886 >> timerate rate 0
+1789895135.587 >> deselect
+1789895139.287 >> select planet Mars pointer off
+1789895144.488 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 947 base
+1789895144.892 >> zoom auto in duration 4
+1789895148.093 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 1163 zoom_auto_in
+1789895157.299 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 1716 zoom_auto_in_done
+1789895157.706 >> zoom auto initial duration 4
+1789895160.906 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 1932 zoom_auto_initial
+1789895170.115 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 2485 zoom_auto_initial_done
+1789895170.524 >> zoom fov 30 duration 3
+1789895173.724 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 2701 zoom_fov_30_d3
+1789895181.934 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 3194 zoom_fov_30_done
+1789895182.347 >> zoom fov 180 duration 3
+1789895185.547 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 3411 zoom_fov_180_d3
+1789895193.760 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 3903 zoom_delta_fov
+1789895194.174 >> zoom delta_fov -60
+1789895200.374 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 4300 zoom_delta_fov_done
+1789895201.589 >> zoom fov 180 duration 0
+1789895204.790 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 4565 track_on
+1789895205.206 >> flag track_object on
+1789895214.407 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 5142 track_on_done
+1789895215.626 >> flag track_object off
+1789895220.826 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 5527 moveto_alt_d3
+1789895221.246 >> moveto altitude 20000000 duration 3
+1789895229.447 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 6046 moveto_alt_done
+1789895232.671 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 6239 moveto_latlon_d3
+1789895233.093 >> moveto lat 45 lon 30 duration 3
+1789895241.293 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 6756 moveto_latlon_done
+1789895244.518 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 6950 look_at_d3
+1789895244.942 >> look_at azimuth 90 altitude 30 duration 3
+1789895253.142 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 7467 look_at_done
+1789895256.369 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 7661 panview_d3
+1789895256.796 >> look_at delta_azimuth 40 delta_altitude 10 duration 3
+1789895264.996 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 8179 panview_done
+1789895268.226 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 8372 heading_d3
+1789895268.657 >> heading azimuth 40 duration 3
+1789895276.857 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 8890 heading_done
+1789895278.091 >> heading azimuth 0 duration 0
+1789895281.291 >> body action dual_dump filename /home/claude/sc-f121/marks/mark.json
+MARK 9156 end
+1789895288.531 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/../f125/G2_census/final.json
+done
