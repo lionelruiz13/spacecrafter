@@ -772,6 +772,146 @@ md5sum claude/harness/artifacts/f123/analysis-2026-09-19.md | cut -c1-8 => f1a1a
 **DoD:** the predictions committed before the runs; the presence ladder pre and post on both drawn paths, ×5 and ×1, plus Earth at 3000 km and the default view; the managers counted before and after; the fix ONE commit with before/after in its message — or a STOP with the numbers and whose decision it is; the mutant BEFORE the instrument is trusted green; the FULL canary 12/12 after the engine commit; §11.248 entry + stub, the hole's OWN §5 row (minted and, if fixed, flipped), the four back-markers, the map's state line; both trees clean. **A PARTIAL DELIVERY IS A DELIVERY**: the reproduction with its measured threshold and the row alone are worth landing — the owner reads today.
 **WIP:** 2026-09-19 10:08 — DELIVERED (this line's earlier stamp said "09:33", an ESTIMATE written as a time where the commit's own clock says 09:37:27 — Q-67's class, reported in §11.248(i)4 rather than quietly corrected). CHECKPOINT 2 was the measurement, landed before any engine line. Predictions committed at harness `e56442d`. Five pre-fix launches on `00a73121`, all gates green, field pair in==out on each: `pre_moon5` (threshold bracketed at (17357.0, 17387.0] km around the predicted 17374.0 — old 125629 at every rung, new 125629→7637 in one step), `pre_moon1` (3537.4 present / 3437.4 absent, around 3474.8), `pre_earth` (3000 km alt: old 125628, new 194), `pre_fov` (absent at fov 60 as at 180), `pre_default` (A/A floor **0 px>8**, def_new vs def_old 2144 px>8, dist 6378.215 km = inside the band). §5.161 MINTED open. THEN: code `75a73e78` (one selection, `ModularBody::closeRangeComponents()`, both ladders consuming it; manager count 2→1), mutant `6ddfe80b` reproducing the pre-fix column digit for digit, five post launches on `f22f9278` (every rung present, Earth back at 3000 km, default view **0 px>8** before vs after on both paths against a 0 floor in-run AND cross-launch, old path bit-identical), FULL canary `20260919-100019` **exit 0, 12/12, every delta 0.0**. §11.248 + stub, §5.161 FLIPPED, four back-markers + B3's residue + the map's B3 state line, `f120_ids` 5/5. NOT reached: N2, N5, (D)1 — §11.248(h)4. **[STALE BY ONE COMMIT, said at acceptance: the N2 leg landed AFTER this line was written (`4975b5e`, a null with a stated detection limit, §11.248(h)4); N5 and (D)1 remain not reached.]** **ACCEPTED 2026-09-19 (supervisor, Claude Fable 5.1), after the `date` call of 10:17:40.** BY MY OWN HAND: **§11.248 READ IN FULL**; ONE engine commit + four harness commits, all authored `Claude Opus 5` with the right trailers, nothing pushed; the engine commit touches `ModularBody.{hpp,cpp}` ONLY (+80 −21), **zero files under `src/navModule`, `src/bodyModule`, `src/coreModule`**; binary `f22f9278` = HEAD; the predictions commit `e56442d` stamped 09:18:44 against a first launch at 09:21:13 (`pre_moon5/meta.txt`); **the mutant (09:39:40, `6ddfe80b`) ran BEFORE the first post-fix launch (09:43:03, `f22f9278`)** — the order F122 missed, kept here; FULL canary `20260919-100019` exit 0, 12/12 by its own log; `f120_ids.py` 5/5, D14 PASS; §5.161 minted and flipped, stub 248, the four back-markers each at its home, B3's row annotated; the instruments on the delivered tree read 303/376/149 · 264/239/25/133 · D 38 · D2 12 · I 96 · I2 40 · M 100 — **to the digit of the report** (the F122 lesson, kept). **THE HEADLINE RECOUNTED FROM THE COMMITTED FRAMES by an independent script**: lit pixels in the centred r=200 disc at the 8 670 km rung — new **7 637 before → 125 629 after**, old 125 629, and new 125 629 at 8 700 km before; the DEFAULT VIEW pre vs post **0 px>8, maxdiff 0 on BOTH drawn paths**, new-vs-old 2 144 — every figure to the digit. **THE FIX READ AS A DIFF, with two points checked by reading rather than taken:** (1) `drawLoaded` lost an early `return` in the camera-INSIDE branch, a branch the section said to leave — NEUTRAL: the tail it used to skip only re-polls `inComponents` for `loaded`, which that branch's own loop had already polled (pre-patch tail read at `b21a9908`); (2) the helper names WHICH body through `Camera::instance->getReferenceBody()` — NOT a second manager: `EnvironmentManager::update` computes its state about `reference`, the camera's reference handed to it, so it is one authority read at two sites; **the residual, mine and unmeasured: a reference switch BETWEEN the two reads inside one frame, and a reference that is a grounded CHILD of the landscape's body (composed format only) — neither examined.** ENDORSED with their arguments: (i)1 (no dump member — the branch is derivable, and a second engine commit was not the authorization), (i)2 (the ladder by `set home_planet` + `moveto`, the DUMPED distance as its axis, rather than through F122's travel), (i)3, (i)5; **the P8 catch is the delivery's best moment** — 374 620 px>8 that looked like the fix's effect was a sunrise over an unpinned clock, exposed by a second launch of the same binary. THE SHAPE FREEZE HELD: one private helper, one `#include` in the `.cpp`, nothing wider; no STOP fired, and the home-body state needed no plumbing (two singletons the file could already reach). **MANAGER COUNT 2 → 1** for the close-range selection; 1 → 1 for the home-body decision (consumers 1 → 2). TWO EXECUTOR RECORD DEFECTS, both self-reported or trivial: the estimated "09:33" (its own (i)4), and this line's stale tail. **NEWLY THE OWNER'S, from this delivery:** the experimental-oort pilot tuned its 50 AU radius AGAINST the hole (`ssystem_factory.cpp:560-569`) — its onset moves 100 AU → 50 AU, no shipped scene affected (the flag defaults off); the camera-inside band draws nothing on new where old draws the body; the `loaded` latch survives (§11.113(c)(iv) half-honoured).
 
+### F124 — THE INPUT PATH HAS NO INSTRUMENT: gdb legs on the b21 pattern for the zoom feed, the lateral movers, the free-ascent floor, the anchored `multAlt` and the dt-dependence of all of them — row B45 item (1) as extended by §11.257(c)(5) [M, **HARNESS ONLY — nothing under `src/` is edited, nothing is built, the agent commits nothing** (SHAPE BINDING (a): it shares the tree with F126); engine launches are EXCLUSIVE to this task while it runs; executor = agent type `claude`, model `fable`; entry number ALLOCATED: §11.261]
+
+**Why now / mandate:** row B45 (*"a structural change needs its instruments first"*), §11.251(b) (what the compile fix left NOT REACHED: the ascent floor, the lateral movers, the anchored `multAlt`, the zoom feed — the xkey channel delivers 0 steps on this host), §11.257(c)(5), and the rule §11.258 added after a changed primitive broke three callers no gate reached: *for each line of execution name the gate that reaches it, or write "not reached"*. B42 (the wiring class) and B44 (the movers) both reshape exactly these lines; whatever they change is judged against what THIS task records. Q-84's guard binds: enumerate TRANSITIONS, not only states — a steady-state harness cannot see what has no value at rest.
+
+**Manager count (S7):** this task touches no information of the code — 0 before, 0 after, by construction. **A leg that cannot be built without editing `src/` is a STOP**, reported with the reason.
+
+**Mandate, in THIS order:** (1) **PREDICTIONS FIRST**, written at the top of the entry file before any launch, from reading the code at HEAD: per leg, what the new path does, what the old path does, the expected delta. The STATED deltas of §11.251(a)(2) — the floor at 0.125 R where 1e-6 R stood, both ways where it was outward only, the base datum-relative — are PREDICTED RESIDUALS: give their magnitude from the attributed cause, so that the run can confirm the cause and not merely a number. For dt: the movers take `velocityScaling(1)`, not `velocityScaling(deltaTime)` — say what that predicts for displacement per SECOND at two frame times. (2) **THE COVERAGE MAP**: from `Core::updateMove(int)` and the key / joystick handlers down to the `Camera` and to the old trio, every function reached, as a table — each row marked with the leg that reaches it, or *"not reached"* with why (`Camera::toggleMount` has no caller: that is a legitimate "not reached"). (3) **BUILD THE LEGS BY EXTENDING WHAT EXISTS** — the harness obeys S4 too: read `b21_keypath.py`, `b21_keypath_run.sh` and `b10_cmd_gdb.py` first; one driver with legs as parameters, not a parallel driver beside them; say in the report what you reused and what you could not. Each leg drives the function the INPUT PATH calls (never the `Camera` directly — the seam is the subject), on BOTH pinned paths (`flag experimental_path on|off`), and reads both engines through the dump channels that exist. Legs: **Z** zoom feed (`Core::zoomIn` / `zoomOut` + `updateMove`): does the Camera's fov land where the projector's does, AND mid-ramp; **L** lateral movers, anchored and free; **A** the free near-field ascent floor, both directions across it; **M** the anchored `multAlt`; **D** each of Z / L / A / M at two `delta_time` values; **S**, only if capacity remains: `Core::findAndSelect(int x, int y)` on a pixel where a body is drawn, both paths, on the default view and after `set home_planet Moon` — the tester's *"nothing seems selectable"* (§11.258(f)(1)) was never driven, the pointer channel being as dead as the key channel; this leg is the supervisor's extension under the row's what-for, logged as an acting default (D12), veto-open. (4) **EACH LEG SHOWN ABLE TO FAIL BEFORE IT IS TRUSTED GREEN** — by a gdb-side perturbation (a call withheld from one engine, a member poked), NOT by a mutant binary: no agent builds this round, and a mutated `src/` would contaminate F126's reading. The order matters (F122's mutant ran after its instrument had been used). (5) **MEASURE, DO NOT FIX.** A red that was not predicted is ROUTED — reported with its numbers — never re-banked, widened or mitigated (Q-83). A defect found is a §5 row CANDIDATE in the report; the supervisor mints rows (single writer of `INTENT.md`).
+
+**Boundaries:** WRITES ONLY: new files `claude/harness/f124_*`, a section appended to `claude/harness/README.md`, records under `claude/harness/artifacts/f124/` (git-ignored: name in the report the ones to force-add), and `claude/INTENT/11.261.md`. NOT yours: `INTENT.md`, this file, `DECISIONS_PENDING.md`, anything under `src/` or `build-claude/`. **No commit, no build, no stash, no `run_in_background`.** Checkpoint state lives in the FIRST LINES of your entry file (this file's WIP line is the supervisor's this round — two agents share the tree). Launch discipline: `--no-scene` canary exit 0 before the first launch; `sc_instances.sh --assert` before every launch; every measurement a FRESH launch; config / ssystem md5 in == out asserted around each; display per `HOST-EVENTS` 2026-09-18; `LC_ALL=C` on every tool whose text you parse; absolute paths, `git -C <explicit path>` (Q-72). Every number in the report beside the command that produced it (Q-67).
+
+**Discriminating checks:** (a) the predictions' mtime before the first launch's; (b) per leg, the able-to-fail record BEFORE the first trusted run; (c) the coverage map has no unmarked row; (d) the field pair in == out on every launch; (e) D14 gate green (`python3 claude/harness/f70_ascii.py gate`) — new harness source is pure ASCII.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states; same boot as the prompt states.
+
+```
+PREMISES
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD => main
+git rev-parse --short=8 HEAD => 6c3d0ed6
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 13910b38
+find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
+ldd build-claude/src/spacecrafter | /usr/bin/grep -c 'not found' => 0
+test ! -e claude/INTENT/11.261.md -a ! -e claude/INTENT/archive/11.261.md && echo free => free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md => 5
+# the field pair, pristine (asserted in == out around every launch)
+md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' ' => 03fbee59 545a51ef
+# the mover surface at HEAD (content drift = abort)
+/usr/bin/grep -n 'float velocityScaling(float deltaTime) const;' src/experimentalModule/Camera.hpp | cut -d: -f1 => 31
+/usr/bin/grep -c 'velocityScaling(1)' src/experimentalModule/Camera.hpp => 2
+/usr/bin/grep -c 'velocityScaling(1)' src/experimentalModule/Camera.cpp => 1
+/usr/bin/grep -n 'void multAlt(float coef);' src/experimentalModule/Camera.hpp | cut -d: -f1 => 126
+/usr/bin/grep -n 'constexpr double MIN_MOVEMENT_SPEED = 0.125;' src/experimentalModule/ModularBody.hpp | cut -d: -f1 => 101
+# the input path's entry points
+/usr/bin/grep -n -E 'void updateMove\(int delta_time\);|void zoomIn\(int\);|void zoomOut\(int\);|bool findAndSelect\(int x, int y\);' src/coreModule/core.hpp | cut -d: -f1 | tr '\n' ' ' => 289 290 307 596
+# the pattern to extend, the first standing gate, the launch guards
+test -x claude/harness/b21_keypath_run.sh -a -f claude/harness/b21_keypath.py -a -f claude/harness/b10_cmd_gdb.py -a -f claude/harness/s33_refchange.py && echo ok => ok
+test -x claude/harness/f56_canary.sh -a -x claude/harness/sc_instances.sh && echo ok => ok
+command -v gdb => /usr/bin/gdb
+# the ledger entries the task stands on (the zero beside its control)
+python3 claude/intent_resolve.py 11.251 11.253 11.257 11.258 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 0
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 1
+```
+
+**DoD:** predictions before runs; the coverage map; legs Z / L / A / M / D on both paths, each shown able to fail first; every stated delta of §11.251(a)(2) confirmed WITH its cause or reported as not confirmed; unpredicted reds routed; the entry file `11.261.md`; the README section; nothing committed, nothing under `src/` touched. **A PARTIAL DELIVERY IS A DELIVERY**: two legs with their coverage rows beat five without.
+**WIP:** 2026-09-20 — MINTED (session 34), not dispatched.
+
+### F125 — THE GATES PREDICTED RED BY THE OWNER'S CLEANUP, RUN FOR THE FIRST TIME: confirm each red is red FOR THE PREDICTED REASON, then re-baseline on his constants or retire with a record — row B45 item (2) [M, **HARNESS ONLY — nothing under `src/` is edited, nothing is built, the agent commits nothing**; dispatched AFTER F124's acceptance (both need the engine exclusively); executor = agent type `claude`, model `fable`; entry number ALLOCATED: §11.263]
+
+**Why now / mandate:** row B45 item (2) and §11.251(b): *"PREDICTED RED, not run"* — F121's seam census (the two fov laws differ mid-ramp again), `f23_b33_inject.py` M0 / M1 (reads the deleted `mount.new`), any gate asserting `gates.px.depthBucket|close`, B10's anti-stuck values, and the regime boundaries now at his 2 / 16 / 256 px where 3.072 / 16.384 / 409.6 stood. A prediction that was never run is an unverified cause model: a gate red for ANOTHER reason would today be read as "expected". Item (3) of the row — the two un-named literals `0.004` / `0.2` — is the OWNER'S to re-rule and is not this task's.
+
+**Manager count (S7):** no information of the code is touched — 0 before, 0 after. **A gate that can only go green by editing `src/` is a STOP.**
+
+**Mandate, in THIS order:** (1) **PREDICTIONS FIRST**, at the top of the entry file before any launch: per gate, from its source and from his edit (`git show 8ce65acc`, `78455b88`): red or green, at WHICH assert, with what value. (2) **THE CENSUS**: every harness script that reads a dump member his edit deleted or a constant it changed — by grep over `claude/harness/`, listed with file:line; the supervisor's first grep was over-inclusive (`b39_hidden.py b39_scenes.py f18_disc.py f23_b33_control.py f23_b33_inject.py f24_b34_seams.py f38_analyze.py f38_config.sh`), yours is the precise one. (3) **RUN each**, fresh launch. For the regime boundaries: a POSITIVE measurement of where early / full / bigTexture switch, against his constants — not only the absence of an assert failure. (4) **CLASSIFY, one of four, with the evidence**: (i) red for the predicted reason, subject still exists -> RE-BASELINE, the expected values DERIVED in the script from his constants (S5: his declared values are the ruling) — never the observed output pasted back as the expectation: a re-banked gate certifies whatever is; (ii) subject deleted by him -> re-point to the surviving authority where one exists (`f23`'s mount member reads the camera's `dumpTrace`, §11.251(c)(2)), else RETIRE with a record of what it guarded and what guards that now, or *"nothing"*; (iii) red for an UNPREDICTED reason -> a finding: routed, the gate left as found (Q-83); (iv) GREEN where red was predicted -> also a finding: the cause model is wrong, say which part. (5) **AFTER re-baselining, each surviving gate shown able to fail** (input-side or gdb-side perturbation; no mutant binary). (6) Gates that stand on `0.004` / `0.2` are baselined to the ACTING DEFAULT of §11.251(a)(5), marked veto-open in the script, and LISTED in the report for the owner.
+
+**Boundaries:** WRITES ONLY: the gate scripts under `claude/harness/` that the census names (they are the subject), new files `claude/harness/f125_*`, `claude/harness/README.md` where a retired or re-pointed gate is documented, records under `claude/harness/artifacts/f125/`, and `claude/INTENT/11.263.md`. NOT yours: `INTENT.md`, this file, `DECISIONS_PENDING.md`, `src/`, `build-claude/`, F124's `f124_*` files (read them, extend nothing in them without saying so). **No commit, no build, no stash, no `run_in_background`.** Checkpoint state in the first lines of your entry file. Launch discipline as F124's. Data values only from a cited file (`~/.spacecrafter/ssystem.ini` is ISO-8859: `/usr/bin/grep` or Read).
+
+**Discriminating checks:** (a) predictions before the first launch; (b) every re-baselined expectation traceable to a constant in `ModularBody.hpp` or to a record of his edit, none to an observed run; (c) each surviving gate's able-to-fail record; (d) field pair in == out on every launch; (e) D14 gate green.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: F124 ACCEPTED (its WIP line says so); harness HEAD as the prompt states.
+
+```
+PREMISES
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD => main
+git rev-parse --short=8 HEAD => 6c3d0ed6
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 13910b38
+find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
+ldd build-claude/src/spacecrafter | /usr/bin/grep -c 'not found' => 0
+test ! -e claude/INTENT/11.263.md -a ! -e claude/INTENT/archive/11.263.md && echo free => free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md => 5
+# the field pair, pristine
+md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' ' => 03fbee59 545a51ef
+# the owner's constants and the two un-named literals at HEAD (content drift = abort)
+/usr/bin/grep -n -E '^constexpr int BODY_(EARLY_VISIBILITY_BOUNDING_SIZE = 2|FULL_VISIBILITY_BOUNDING_SIZE = 16|BIG_TEXTURE_BOUNDING_SIZE = 256);' src/experimentalModule/ModularBody.hpp | cut -d: -f1 | tr '\n' ' ' => 95 97 99
+/usr/bin/grep -n -E 'if \(screenSize . 0\.(004|2)\)' src/experimentalModule/ModularBody.hpp | cut -d: -f1 | tr '\n' ' ' => 279 313
+/usr/bin/grep -n 'constexpr double MIN_MOVEMENT_SPEED = 0.125;' src/experimentalModule/ModularBody.hpp | cut -d: -f1 => 101
+# what his edit deleted (zeros), beside a control that must not be zero
+/usr/bin/grep -rl -E 'followFov|setHalfFovNow|ANTISTUCK_ESCAPE_FLOOR|proximityFactor' src | wc -l => 0
+/usr/bin/grep -c 'void setHalfFov(float halfFov, float duration = 0.5);' src/experimentalModule/Camera.hpp => 1
+# the gates named predicted-red, and the launch guards
+test -x claude/harness/f121_run.sh -a -f claude/harness/f121_seam.py -a -f claude/harness/f121_drive.py && echo ok => ok
+test -x claude/harness/f23_b33_inject_run.sh -a -f claude/harness/f23_b33_inject.py && echo ok => ok
+test -x claude/harness/b10_run.sh -a -x claude/harness/b10_cmd_gdb_run.sh -a -x claude/harness/b3_ladder_run.sh && echo ok => ok
+test -x claude/harness/f56_canary.sh -a -x claude/harness/sc_instances.sh && echo ok => ok
+# his edit and the compile fix, reachable from HEAD
+git merge-base --is-ancestor 8ce65acc HEAD && git merge-base --is-ancestor 78455b88 HEAD && echo ancestors => ancestors
+# the ledger entries the task stands on (the zero beside its control)
+python3 claude/intent_resolve.py 11.250 11.251 11.257 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 0
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 1
+```
+
+**DoD:** predictions before runs; the census; every named gate run and classified (i)-(iv) with its evidence; re-baselines derived, never re-banked; retirements recorded; the veto-open list; the entry file `11.263.md`; nothing committed, nothing under `src/` touched. **A PARTIAL DELIVERY IS A DELIVERY.**
+**WIP:** 2026-09-20 — MINTED (session 34), not dispatched.
+
+### F126 — THE WIRING CLASS, BEFORE IT IS BUILT: the request table and the query table the owner rules on, re-derived from the code — row B42 [M-L, **ANALYSIS ONLY — NOTHING IS BUILT, `src/` is read-only, no launch, no build, the agent commits nothing**; runs in PARALLEL with F124 (disjoint files, no engine); executor = agent type `claude`, model `fable`; entry number ALLOCATED: §11.262]
+
+**Why now / mandate:** row B42: *"The request table goes to the owner before the class is built."* His ruling verbatim at §11.253(a); what it rules at (b); the answered first question at §11.255(b)(d)(2) — on the new path NOTHING reads Projector / Navigator / Observer, the sky reads the Camera, so the class is mostly a QUERY surface (668 calls, 124 methods, `trio_census.py`). §11.254(d) holds a REQUEST table of 11 informations — a derived index over agent harvests of DELETED PROSE, never re-derived from the code. His deep window is Saturday morning: the page this task produces is what he rules on then.
+
+**Manager count (S7):** this task CHANGES none and REPORTS all: per information of the table, who manages it today (the writers, by `writers.py` and by reading) and who would after.
+
+**Mandate:** (1) **THE REQUEST SURFACE, from the code at HEAD, then DIFFED against §11.254(d)** (derivation-diff: reading the table only validates its self-consistency): every site outside `src/experimentalModule` that writes an information about the space into either engine; per information: old responsible, new responsible, today's dual writers with file:line. Every delta with the ledger's table is reported as a delta, neither silently adopted nor silently dropped. (2) **THE QUERY SURFACE**: `trio_census.py -v`; per method: which information it reads; which `Camera` member answers it today — S4 in his order: EVERY method name of `Camera` against the intent first, then the functions manipulating the members concerned — or NONE (the gap list: what the new path cannot answer yet); and whether the CALLER is the old path proper (it keeps its direct call: it IS the old path) or shared code (the wiring class's caller). **Classify callers PER FILE, not per directory**: measured at the mint, `SSystemFactory` — one of the three seam classes — lives in `src/bodyModule/`, the directory §11.255(d)(2) counts wholesale as *"the old path proper"*. (3) **THE MODE**: who decides it, and every site that reads it (`getExperimentalPath` and whatever else) — those gating sites ARE the wiring class's present, scattered form; count them, by file. (4) **THE HAND-OVER at a mode switch** (`render_path = alternate`): what state crosses today, where, and what does not. (5) **THE PAGE FOR THE OWNER** — `claude/b42-wiring-table.md`: he reads by NAMES first and his cost is the distance between the informations he needs (Q-70: the reader's working set, not density): the table, the counts, the gaps, then the questions the code does NOT answer, each premise-shaped with a default and its reason. Where the shape is a choice — 124 forwarding methods is a lot of code, and his rule is *"unless it's more code than it's worth"* — give the alternatives MEASURED (methods, call sites moved, lines estimated), and do not choose. His declared names are the ruling (S5): propose no name he has not used without saying it is yours.
+
+**Boundaries:** WRITES ONLY: `claude/b42-wiring-table.md`, `claude/INTENT/11.262.md`, raw outputs under `claude/harness/artifacts/f126/`. `src/` and `/home/claude/spacecrafter.owner-shape` are READ-ONLY; no launch, no build, no commit, no stash. F124 runs in the same tree and writes under `claude/harness/`: a file you did not write is not yours to touch. Checkpoint state in the first lines of your entry file. Every count beside its command (Q-67); where a regex instrument is blind (`writers.py`: writes through a non-member call, an alias, another class — `SHAPE.md` section 5), say so at the number.
+
+**Discriminating checks:** (a) the request table's diff against §11.254(d), both directions; (b) the query table's method total equals the census's at HEAD, no method unclassified; (c) ten rows the supervisor picks at random re-derived by hand at acceptance; (d) the page stands alone — a reader given only it and the code can check any row.
+
+**Preconditions (checkable, §0.7):** the PREMISES block is the gate; prose: harness HEAD as the prompt states.
+
+```
+PREMISES
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD => main
+git rev-parse --short=8 HEAD => 6c3d0ed6
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 13910b38
+find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
+ldd build-claude/src/spacecrafter | /usr/bin/grep -c 'not found' => 0
+test ! -e claude/INTENT/11.262.md -a ! -e claude/INTENT/archive/11.262.md && echo free => free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md => 5
+# the query surface, re-measured at HEAD
+python3 claude/harness/shape/trio_census.py | tail -3 | cut -d: -f1,2 | tr '\n' ';' => Projector: 39 methods, 242 calls;Navigator: 46 methods, 226 calls;Observer: 39 methods, 200 calls;
+# the request table's index and the raw work map
+/usr/bin/grep -c '^      | ' claude/INTENT/11.254.md => 12
+md5sum claude/s33-second-managers.md | cut -c1-8 => 7e08324f
+# the seam classes and the mode anchor - the factory lives under src/bodyModule
+git ls-files 'src/*ssystem_factory.hpp' src/coreModule/core.hpp src/coreModule/coreLink.hpp | tr '\n' ' ' => src/bodyModule/ssystem_factory.hpp src/coreModule/core.hpp src/coreModule/coreLink.hpp
+/usr/bin/grep -n -E 'void setRenderPathMode\(RenderPathMode mode\)|bool getExperimentalPath\(\) const' src/bodyModule/ssystem_factory.hpp | cut -d: -f1 | tr '\n' ' ' => 91 99
+test -f claude/harness/shape/writers.py -a -f claude/harness/shape/trio_census.py && echo ok => ok
+# the owner's form, read-only
+git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD => 4dfe7bb3
+# the ledger entries the task stands on (the zero beside its control)
+python3 claude/intent_resolve.py 11.253 11.254 11.255 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 0
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 1
+```
+
+**DoD:** the request table with its diff; the query table, every method classified, the gap list; the mode's readers counted; the hand-over described from the code; the owner's page; the entry file `11.262.md`; nothing built, nothing committed.
+**WIP:** 2026-09-20 — MINTED (session 34), not dispatched.
+
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
