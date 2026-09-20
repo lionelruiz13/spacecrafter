@@ -1,0 +1,19 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+PASS gdb_reaches_the_UI_object  `this` of UI::updateTimeouts, the per-frame UI call
+>> zoom fov 60 duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/atf_Z/Z_start.json
+-- Z_start          drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 60.000002 old 60.000000
+PASS Z_start_both_at_60  projector 60.000000, camera 60.000002 deg
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/atf_Z/Z_pert.json
+-- Z_pert           drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 60.000002 old 59.000000
+FAIL Z_at_rest_new_equals_old  projector 59.000000 camera 60.000002 deg
+
+=== ABLE-TO-FAIL leg Z: RED as it must be: Z_at_rest_new_equals_old ===

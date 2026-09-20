@@ -1,0 +1,33 @@
+src/bodyModule/ssystem_factory.cpp	676	SSystemFactory::addBody	getCurrentSystem	Claude Opus
+src/bodyModule/ssystem_factory.cpp	684	SSystemFactory::removeSupplementalBodies	getCurrentSystem	Claude Opus
+src/bodyModule/ssystem_factory.cpp	693	SSystemFactory::startTrails	getCurrentSystem	Claude Opus
+src/bodyModule/ssystem_factory.cpp	733	SSystemFactory::searchNewOnlyObjectAt	getCurrentSystem	Claude Opus
+src/bodyModule/ssystem_factory.cpp	747	SSystemFactory::reloadCurrentSystem	getCurrentSystem	Claude Opus
+src/bodyModule/ssystem_factory.cpp	750	SSystemFactory::reloadCurrentSystem	getReferenceBody	Claude Opus
+src/bodyModule/ssystem_factory.cpp	751	SSystemFactory::reloadCurrentSystem	getTrackedBody	Claude Opus
+src/bodyModule/ssystem_factory.cpp	770	SSystemFactory::reloadCurrentSystem	getReferenceBody	Claude Opus
+src/bodyModule/ssystem_factory.cpp	787	SSystemFactory::saveCurrentSystem	getCurrentSystem	Claude Opus
+src/bodyModule/ssystem_factory.cpp	923	SSystemFactory::dumpTracePaths	dumpTrace	Claude Fable
+src/coreModule/core.cpp	879	Core::getFlagLockSkyPosition	getSkyLock	Claude Opus
+src/coreModule/core.cpp	1836	Core::updateMove	getViewParams	Claude Opus
+src/coreModule/core.cpp	1915	Core::updateMove	getViewParams	Claude Opus
+src/coreModule/core.cpp	2043	Core::recordSeamStep	getZoomSrcHalfFov	Claude Opus
+src/coreModule/core.cpp	2044	Core::recordSeamStep	getZoomDstHalfFov	Claude Opus
+src/coreModule/core.cpp	2049	Core::recordSeamStep	getAbsFwd	Claude Opus
+src/coreModule/core.cpp	2054	Core::recordSeamStep	getForwardLocal	Claude Opus
+src/coreModule/core.cpp	2062	Core::recordSeamStep	getRootPosition	Claude Opus
+src/coreModule/core.cpp	2068	Core::recordSeamStep	getHeading	Claude Opus
+src/coreModule/core.cpp	2070	Core::recordSeamStep	getPlace	Claude Opus
+src/coreModule/core.cpp	2080	Core::recordSeamStep	getPlanTimers	Claude Opus
+src/coreModule/core.cpp	2087	Core::recordSeamStep	getTrackedBody	Claude Opus
+src/coreModule/core.cpp	2088	Core::recordSeamStep	getReferenceBody	Claude Opus
+src/coreModule/core.cpp	2099	Core::recordSeamStep	isFreeMode	Claude Opus
+src/coreModule/coreLink.cpp	561	CoreLink::dumpControlSurface	getPlace	Claude Opus
+src/coreModule/coreLink.cpp	566	CoreLink::dumpControlSurface	getHeading	Claude Opus
+src/coreModule/coreLink.cpp	591	CoreLink::dumpControlSurface	getViewOffset	Claude Opus
+src/coreModule/coreLink.cpp	596	CoreLink::dumpControlSurface	getSkyLock	Claude Opus
+src/coreModule/coreLink.cpp	1280	CoreLink::saveSolarSystem	getReferenceBody	Claude Opus
+src/coreModule/coreLink.cpp	1281	CoreLink::saveSolarSystem	getReferenceBody	Claude Opus
+src/coreModule/coreLink.hpp	787	(inline, see header)	getPlace	Claude Opus
+src/coreModule/coreLink.hpp	988	(inline, see header)	getViewOffset	Claude Opus
+src/coreModule/coreLink.hpp	1006	(inline, see header)	getHeading	Claude Opus

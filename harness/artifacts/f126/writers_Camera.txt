@@ -1,0 +1,54 @@
+Camera @ HEAD: 46 fields, 77 member functions (overloads merged by name)
+-- managers per field: functions that write it DIRECTLY --
+   7  longitude              moveRel moveTo placeAt setBoundToSurface setFreeMode setLongitude update
+   7  position               moveRel moveTo placeAt restoreSession setBoundToSurface setFreeMode update
+   6  distance               moveRel moveTo placeAt setAltitude setFreeMode update
+   6  latitude               moveRel moveTo placeAt setFreeMode setLatitude update
+   5  alt                    advanceView lookRel lookTo recoverParams update
+   5  az                     advanceView lookRel lookTo recoverParams update
+   5  viewT                  advanceView lookRel lookTo recoverParams restoreSession
+   4  foldLat                placeAt recoverParams restoreSession update
+   4  hdgT                   advanceView recoverParams restoreSession setHeading
+   4  heading                advanceView moveHeading recoverParams setHeading
+   4  lockedSkyRot           restoreSession setSkyLock switchToBody update
+   3  moveDuration           moveRel restoreSession update
+   3  reference              rebindReference switchToBody warpToBody
+   3  zoomDuration           restoreSession setHalfFov update
+   2  deltaPosition          moveRel restoreSession
+   2  hdgTarget              moveHeading setHeading
+   2  hdgTimer               advanceView setHeading
+   2  target                 restoreSession trackBody
+   2  viewAxis               lookTo update
+   2  viewFrom               lookTo update
+   2  viewOffsetArmed        armViewOffset restoreViewOffsetLatch
+   2  viewOffsetTransition   advanceViewOffset restoreViewOffsetLatch
+   2  viewTimer              advanceView lookTo
+   2  zoomTimer              setHalfFov update
+   1  boundToSurface         setBoundToSurface
+   1  dstHalfFov             setHalfFov
+   1  frameDrawTask          draw
+   1  freeMode               setFreeMode
+   1  hdgFrom                setHeading
+   1  hdgV0                  setHeading
+   1  lastAbsFwd             update
+   1  lastDispatchedMat      update
+   1  mount                  setMount
+   1  skyLocked              setSkyLock
+   1  srcHalfFov             setHalfFov
+   1  system                 update
+   1  viewA                  lookTo
+   1  viewAngle              lookTo
+   1  viewOffset             setViewOffset
+   1  viewT1                 lookTo
+   1  viewV0                 lookTo
+-- same direct writer set (>= 2 functions) --
+  {reference}: rebindReference warpToBody
+-- forwarders: one statement, its effect is entirely another member's --
+  getForwardLocal -> fold paramForward
+  moveEyeRel -> moveRel observedToLocalPos
+  observedToBodyEquPos -> localToBodyEqu renderViewRotation
+  observedToBodyLocalPos -> localToBodyEqu observedToBodyEquPos
+  observedToLocalPos -> renderViewRotation
+  renderViewRotation -> viewOffsetEyeRotation viewRotation
+  toggleMount -> setMount
+  viewRotation -> fold

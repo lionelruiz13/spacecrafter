@@ -1,0 +1,54 @@
+src/bodyModule/ssystem_factory.cpp	132	SSystemFactory::loadCamera	setBoundToSurface	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	133	SSystemFactory::loadCamera	setFreeMode	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	134	SSystemFactory::loadCamera	warpToBody	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	135	SSystemFactory::loadCamera	moveTo	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	139	SSystemFactory::loadCamera	trackBody	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	142	SSystemFactory::loadCamera	setMount	Claude Fable
+src/bodyModule/ssystem_factory.cpp	144	SSystemFactory::loadCamera	setHeading	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	145	SSystemFactory::loadCamera	setHalfFov	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	148	SSystemFactory::loadCamera	lookTo	Claude Opus
+src/bodyModule/ssystem_factory.cpp	260	SSystemFactory::changeSystem	switchToBody	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	267	SSystemFactory::changeSystem	switchToBody	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	646	SSystemFactory::drawExperimental	draw	Claude Fable
+src/bodyModule/ssystem_factory.cpp	666	SSystemFactory::updateExperimental	update	Claude Fable
+src/bodyModule/ssystem_factory.cpp	766	SSystemFactory::reloadCurrentSystem	rebindReference	Claude Opus
+src/bodyModule/ssystem_factory.cpp	776	SSystemFactory::reloadCurrentSystem	trackBody	Calvin Ruiz
+src/bodyModule/ssystem_factory.cpp	864	SSystemFactory::syncCameraReference	relocateToBody	Claude Fable
+src/coreModule/backup_mgr.cpp	53	CoreBackup::loadBackup	setHalfFov	Claude Opus
+src/coreModule/core.cpp	411	Core::init	setFreeMode	Claude Opus
+src/coreModule/core.cpp	828	Core::restoreViewOffset	restoreViewOffsetLatch	Claude Opus
+src/coreModule/core.cpp	872	Core::setFlagLockSkyPosition	setSkyLock	Claude Opus
+src/coreModule/core.cpp	886	Core::setMountMode	setMount	Claude Fable
+src/coreModule/core.cpp	1254	Core::zoomToBothPaths	setHalfFov	Claude Opus
+src/coreModule/core.cpp	1268	Core::autoZoomIn	armViewOffset	Claude Opus
+src/coreModule/core.cpp	1269	Core::autoZoomIn	trackBody	Claude Opus
+src/coreModule/core.cpp	1311	Core::autoZoomOut	armViewOffset	Claude Opus
+src/coreModule/core.cpp	1312	Core::autoZoomOut	lookTo	Claude Opus
+src/coreModule/core.cpp	1351	Core::autoZoomOut	armViewOffset	Claude Opus
+src/coreModule/core.cpp	1352	Core::autoZoomOut	lookTo	Claude Opus
+src/coreModule/core.cpp	1808	Core::dragView	lookRel	Calvin Ruiz
+src/coreModule/core.cpp	1809	Core::dragView	trackBody	Calvin Ruiz
+src/coreModule/core.cpp	1879	Core::updateMove	multAlt	Claude Opus
+src/coreModule/core.cpp	1885	Core::updateMove	setHalfFov	Claude Fable
+src/coreModule/core.cpp	1894	Core::updateMove	lookRel	Claude Opus
+src/coreModule/core.cpp	2494	Core::setFlagTracking	trackBody	Calvin Ruiz
+src/coreModule/core.cpp	2498	Core::setFlagTracking	trackBody	Calvin Ruiz
+src/coreModule/core.cpp	2501	Core::setFlagTracking	armViewOffset	Claude Opus
+src/coreModule/core.cpp	2548	Core::setViewOffset	setViewOffset	Claude Opus
+src/coreModule/core.cpp	2633	Core::lookAnchor	armViewOffset	Claude Opus
+src/coreModule/coreLink.hpp	313	(inline, see header)	setHalfFov	Calvin Ruiz
+src/coreModule/coreLink.hpp	329	(inline, see header)	setHalfFov	Calvin Ruiz
+src/coreModule/coreLink.hpp	376	(inline, see header)	lookTo	Calvin Ruiz
+src/coreModule/coreLink.hpp	377	(inline, see header)	armViewOffset	Claude Opus
+src/coreModule/coreLink.hpp	837	(inline, see header)	setLatitude	Calvin Ruiz
+src/coreModule/coreLink.hpp	842	(inline, see header)	setLongitude	Calvin Ruiz
+src/coreModule/coreLink.hpp	850	(inline, see header)	setAltitude	Calvin Ruiz
+src/coreModule/coreLink.hpp	880	(inline, see header)	setFreeMode	Claude Fable
+src/coreModule/coreLink.hpp	885	(inline, see header)	multAlt	Claude Fable
+src/coreModule/coreLink.hpp	890	(inline, see header)	moveTo	Calvin Ruiz
+src/coreModule/coreLink.hpp	896	(inline, see header)	moveRelLon	Calvin Ruiz
+src/coreModule/coreLink.hpp	901	(inline, see header)	moveRelLat	Calvin Ruiz
+src/coreModule/coreLink.hpp	906	(inline, see header)	moveRelAlt	Calvin Ruiz
+src/coreModule/coreLink.hpp	941	(inline, see header)	moveHeading	Calvin Ruiz
+src/coreModule/coreLink.hpp	995	(inline, see header)	setHeading	Claude Fable
+src/coreModule/coreLink.hpp	1017	(inline, see header)	lookTo	Calvin Ruiz

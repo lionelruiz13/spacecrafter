@@ -1,0 +1,37 @@
+dumpTracePaths	Navigator	getHelioToEyeMat	src/bodyModule/ssystem_factory.cpp:914	const Mat4d &h = navigation->getHelioToEyeMat();
+dumpTracePaths	Navigator	getLocalVision	src/bodyModule/ssystem_factory.cpp:919	const Vec3d &lv = navigation->getLocalVision();
+dumpOldViewState	Navigator	dumpTrace	src/coreModule/core.cpp:847	navigation->dumpTrace(out);
+dumpOldViewState	Observer	dumpTrace	src/coreModule/core.cpp:849	observatory->dumpTrace(out);
+dumpOldViewState	Projector	dumpTrace	src/coreModule/core.cpp:851	projection->dumpTrace(out);
+rampVisionAzAlt	Navigator	getViewingMode	src/coreModule/core.cpp:1817	(nav->getViewingMode() == Navigator::VIEW_EQUATOR) ? nav->getEquVision()
+rampVisionAzAlt	Navigator	getEquVision	src/coreModule/core.cpp:1817	(nav->getViewingMode() == Navigator::VIEW_EQUATOR) ? nav->getEquVision()
+rampVisionAzAlt	Navigator	getLocalVision	src/coreModule/core.cpp:1818	: nav->getLocalVision());
+updateMove(ramp record)	Projector	getFov	src/coreModule/core.cpp:1832	step.fov = projection->getFov();
+updateMove(ramp record)	Projector	getFov	src/coreModule/core.cpp:1911	step.fovAfter = projection->getFov();
+recordSeamStep	Projector	getFov	src/coreModule/core.cpp:2023	s.fovOld = projection->getFov();          // degrees, full angle
+recordSeamStep	Projector	getAimFov	src/coreModule/core.cpp:2024	s.aimFovOld = projection->getAimFov();    // degrees; == fov when not zooming
+recordSeamStep	Navigator	getHeading	src/coreModule/core.cpp:2031	s.headingOldDeg = navigation->getHeading();
+recordSeamStep	Navigator	getFlagAutoMove	src/coreModule/core.cpp:2032	s.flags = (navigation->getFlagAutoMove() ? 1u : 0u)
+recordSeamStep	Navigator	getFlagChangeHeading	src/coreModule/core.cpp:2033	| (navigation->getFlagChangeHeading() ? 2u : 0u)
+recordSeamStep	Navigator	getFlagTraking	src/coreModule/core.cpp:2034	| (navigation->getFlagTraking() ? 4u : 0u);
+recordSeamStep	Navigator	getMoveCoef	src/coreModule/core.cpp:2035	s.moveCoefOld = navigation->getMoveCoef();
+recordSeamStep	Navigator	getHelioToEyeMat	src/coreModule/core.cpp:2047	const Mat4d &he = navigation->getHelioToEyeMat();
+recordSeamStep	Navigator	getLocalVision	src/coreModule/core.cpp:2053	const Vec3f ol = Camera::oldLocalToLocal(Vec3f(navigation->getLocalVision()));
+recordSeamStep	Navigator	getObserverHelioPos	src/coreModule/core.cpp:2061	const Vec3d oldPos = navigation->getObserverHelioPos();
+recordSeamStep	Navigator	getHeading	src/coreModule/core.cpp:2067	s.headingOldDeg = navigation->getHeading();
+recordSeamStep	Observer	getLongitude	src/coreModule/core.cpp:2071	s.dLonDeg = observatory->getLongitude() - place[0] * (180. / M_PI);
+recordSeamStep	Observer	getLatitude	src/coreModule/core.cpp:2072	s.dLatDeg = observatory->getLatitude() - place[1] * (180. / M_PI);
+recordSeamStep	Observer	getAltitude	src/coreModule/core.cpp:2073	s.dAltMetres = observatory->getAltitude()
+recordSeamStep	Navigator	getMoveCoef	src/coreModule/core.cpp:2078	s.moveCoefOld = navigation->getMoveCoef();
+recordSeamStep	Observer	getHomePlanetEnglishName	src/coreModule/core.cpp:2092	&& ref->getEnglishName() == observatory->getHomePlanetEnglishName();
+recordSeamStep	Navigator	getFlagAutoMove	src/coreModule/core.cpp:2093	s.flags = (navigation->getFlagAutoMove() ? 1u : 0u)
+recordSeamStep	Navigator	getFlagChangeHeading	src/coreModule/core.cpp:2094	| (navigation->getFlagChangeHeading() ? 2u : 0u)
+recordSeamStep	Navigator	getFlagTraking	src/coreModule/core.cpp:2095	| (navigation->getFlagTraking() ? 4u : 0u)
+dumpControlSurface	Observer	getLatitude	src/coreModule/coreLink.cpp:575	<< ",\"old\":" << core->observatory->getLatitude()
+dumpControlSurface	Observer	getLongitude	src/coreModule/coreLink.cpp:578	<< ",\"old\":" << core->observatory->getLongitude()
+dumpControlSurface	Observer	getLongitudeForDisplay	src/coreModule/coreLink.cpp:581	<< ",\"old\":" << core->observatory->getLongitudeForDisplay()
+dumpControlSurface	Observer	getAltitude	src/coreModule/coreLink.cpp:584	<< ",\"old\":" << core->observatory->getAltitude()
+dumpControlSurface	Navigator	getHeading	src/coreModule/coreLink.cpp:587	<< ",\"old\":" << core->navigation->getHeading()
+dumpControlSurface	Navigator	getViewOffset	src/coreModule/coreLink.cpp:590	<< ",\"old\":" << core->navigation->getViewOffset()
+dumpControlSurface	Navigator	getViewingMode	src/coreModule/coreLink.cpp:593	<< "\",\"old\":\"" << mnt(core->navigation->getViewingMode() == Navigator::VIEW_HORIZON) << "\"}"
+dumpControlSurface	Navigator	getFlagLockEquPos	src/coreModule/coreLink.cpp:595	<< ",\"old\":" << b(core->navigation->getFlagLockEquPos() != 0)

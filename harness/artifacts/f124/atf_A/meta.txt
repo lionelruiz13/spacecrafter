@@ -1,0 +1,21 @@
+=== F124 run 'atf_A' ===
+wall clock start : 2026-09-20 10:12:05 CEST
+driver           : f124_legs.py --leg A --pin on --perturb withhold-new
+driver md5       : 3b4b3ab99b7eaa29873f0bca0f2ed0d6
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 13910b38281e073d3d5baf641c2ef441
+binary mtime     : 2026-09-19 23:11:54.181058975 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[atf_A] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[atf_A] gpu: free 27124 MiB / used 4983 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=742655
+launch wall clock: 2026-09-20 10:12:05 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 742672 
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[atf_A-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-20 10:13:13 CEST

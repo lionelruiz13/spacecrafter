@@ -1,0 +1,49 @@
+read	src/executorModule/solarSystemModule.cpp:161	if (core->ssystemFactory->drawModularSystem) {
+read	src/executorModule/solarSystemModule.cpp:183	if (core->ssystemFactory->drawModularSystem)
+read	src/executorModule/solarSystemModule.cpp:190	if (!(core->ssystemFactory->drawModularSystem && core->ssystemFactory->hasExperimentalOort()))
+read	src/executorModule/solarSystemModule.cpp:216	if ((core->ssystemFactory->drawModularSystem
+read	src/executorModule/solarSystemModule.cpp:225	if (core->ssystemFactory->drawModularSystem) {
+read	src/executorModule/solarSystemModule.cpp:272	if (core->ssystemFactory->drawModularSystem)
+read	src/executorModule/stellarSystemModule.cpp:167	if (core->ssystemFactory->drawModularSystem) {
+read	src/executorModule/stellarSystemModule.cpp:192	if (core->ssystemFactory->drawModularSystem)
+read	src/executorModule/stellarSystemModule.cpp:220	if ((core->ssystemFactory->drawModularSystem
+read	src/executorModule/stellarSystemModule.cpp:227	if (core->ssystemFactory->drawModularSystem) {
+read	src/executorModule/stellarSystemModule.cpp:275	if (core->ssystemFactory->drawModularSystem)
+write-forward	src/appModule/app.cpp:591	core->setRenderPathMode(betaConf.getStr(SCS_BETA_DUAL_PATH,
+read	src/coreModule/coreLink.hpp:785	if (!core->getExperimentalPath() || !Camera::instance)
+read	src/coreModule/coreLink.hpp:986	if (!core->getExperimentalPath() || !Camera::instance)
+read	src/coreModule/coreLink.hpp:1004	if (!core->getExperimentalPath())
+read	src/coreModule/coreLink.cpp:572	<< "{\"drawnPath\":\"" << (core->getExperimentalPath() ? "new" : "old") << "\""
+read	src/coreModule/core.cpp:661	if (!ssystemFactory->drawModularSystem)
+read	src/coreModule/core.cpp:877	if (!getExperimentalPath() || !Camera::instance)
+decl	src/coreModule/core.cpp:889	void Core::setExperimentalPath(bool newPath)
+write-forward	src/coreModule/core.cpp:891	ssystemFactory->setExperimentalPath(newPath);
+decl	src/coreModule/core.cpp:894	void Core::setRenderPathMode(const std::string &mode)
+write-forward	src/coreModule/core.cpp:897	ssystemFactory->setRenderPathMode(SSystemFactory::RenderPathMode::NEW);
+write-forward	src/coreModule/core.cpp:899	ssystemFactory->setRenderPathMode(SSystemFactory::RenderPathMode::OLD);
+write-forward	src/coreModule/core.cpp:901	ssystemFactory->setRenderPathMode(SSystemFactory::RenderPathMode::ALTERNATE);
+decl	src/coreModule/core.cpp:908	bool Core::getExperimentalPath() const
+accessor	src/coreModule/core.cpp:910	return ssystemFactory->getExperimentalPath();
+read	src/coreModule/core.cpp:1152	ssystemFactory->drawModularSystem ? ssystemFactory->getEnvironmentState().drawBody
+read	src/coreModule/core.hpp:335	if (!ssystemFactory->drawModularSystem)
+decl	src/coreModule/core.hpp:463	void setExperimentalPath(bool newPath);
+decl	src/coreModule/core.hpp:464	bool getExperimentalPath() const;
+decl	src/coreModule/core.hpp:466	void setRenderPathMode(const std::string &mode);
+decl	src/bodyModule/ssystem_factory.hpp:89	enum class RenderPathMode { NEW, OLD, ALTERNATE };
+decl	src/bodyModule/ssystem_factory.hpp:91	void setRenderPathMode(RenderPathMode mode) {
+write	src/bodyModule/ssystem_factory.hpp:92	drawModularSystem = (mode != RenderPathMode::OLD);
+write	src/bodyModule/ssystem_factory.hpp:93	pathPinned = (mode != RenderPathMode::ALTERNATE);
+decl	src/bodyModule/ssystem_factory.hpp:95	void setExperimentalPath(bool newPath) {
+write	src/bodyModule/ssystem_factory.hpp:96	drawModularSystem = newPath;
+write	src/bodyModule/ssystem_factory.hpp:97	pathPinned = true;
+decl	src/bodyModule/ssystem_factory.hpp:99	bool getExperimentalPath() const {
+accessor	src/bodyModule/ssystem_factory.hpp:100	return drawModularSystem;
+member	src/bodyModule/ssystem_factory.hpp:786	bool drawModularSystem = true;
+member	src/bodyModule/ssystem_factory.hpp:788	bool pathPinned = true;
+read	src/bodyModule/ssystem_factory.cpp:632	if (drawModularSystem) {
+read	src/bodyModule/ssystem_factory.cpp:643	if (!drawModularSystem)
+read	src/bodyModule/ssystem_factory.cpp:659	if (!pathPinned) // flag experimental_path stops the A/B alternation
+write	src/bodyModule/ssystem_factory.cpp:660	drawModularSystem = !drawModularSystem;
+read	src/bodyModule/ssystem_factory.cpp:670	environment->update(*camera, timeMgr->getJDay(), delta_time/1000.f, drawModularSystem);
+read	src/interfaceModule/app_command_interface.cpp:719	value = stcore->getExperimentalPath();
+write-forward	src/interfaceModule/app_command_interface.cpp:1191	stcore->setExperimentalPath(newval);

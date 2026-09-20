@@ -1,0 +1,87 @@
+src/bodyModule/ssystem_factory.cpp:132|da858612c|Calvin Ruiz|camera->setBoundToSurface(true);
+src/bodyModule/ssystem_factory.cpp:133|da858612c|Calvin Ruiz|camera->setFreeMode(false);
+src/bodyModule/ssystem_factory.cpp:134|da858612c|Calvin Ruiz|camera->warpToBody(home);
+src/bodyModule/ssystem_factory.cpp:135|da858612c|Calvin Ruiz|camera->moveTo(lonLatAlt);
+src/bodyModule/ssystem_factory.cpp:139|da858612c|Calvin Ruiz|camera->trackBody(nullptr);
+src/bodyModule/ssystem_factory.cpp:142|96a1b896f|Claude Fable|camera->setMount(conf.getStr(SCS_NAVIGATION, SCK_VIEWING_MODE) == "equator"
+src/bodyModule/ssystem_factory.cpp:144|da858612c|Calvin Ruiz|camera->setHeading(conf.getDouble(SCS_NAVIGATION, SCK_HEADING) * (M_PI/180));
+src/bodyModule/ssystem_factory.cpp:145|da858612c|Calvin Ruiz|camera->setHalfFov(conf.getDouble(SCS_NAVIGATION, SCK_INIT_FOV) * (M_PI/360), 0);
+src/bodyModule/ssystem_factory.cpp:148|35a025a6c|Claude Opus|camera->lookTo(Camera::oldLocalToLocal(v), 0);
+src/bodyModule/ssystem_factory.cpp:260|da858612c|Calvin Ruiz|camera->switchToBody(ModularBody::findBodyOnce("SolarSystem"));
+src/bodyModule/ssystem_factory.cpp:267|da858612c|Calvin Ruiz|camera->switchToBody(ModularBody::findBodyOnce(mode + "System"));
+src/bodyModule/ssystem_factory.cpp:646|14931a180|Claude Fable|camera->draw(Context::instance->renderer);
+src/bodyModule/ssystem_factory.cpp:666|3c87a51d2|Claude Fable|camera->update(timeMgr->getJDay(), delta_time/1000.f);
+src/bodyModule/ssystem_factory.cpp:676|0674d517f|Claude Opus|camera->getCurrentSystem()->loadBody(param, nullptr, true);
+src/bodyModule/ssystem_factory.cpp:684|d88f5be2f|Claude Opus|camera->getCurrentSystem()->removeSupplementalBodies();
+src/bodyModule/ssystem_factory.cpp:693|d88f5be2f|Claude Opus|if (ModularSystem *system = camera->getCurrentSystem())
+src/bodyModule/ssystem_factory.cpp:733|2c611b029|Claude Opus|ModularSystem *system = camera->getCurrentSystem();
+src/bodyModule/ssystem_factory.cpp:747|107d4c725|Claude Opus|ModularSystem *system = camera->getCurrentSystem();
+src/bodyModule/ssystem_factory.cpp:750|107d4c725|Claude Opus|const std::string referenceName = camera->getReferenceBody()->getEnglishName();
+src/bodyModule/ssystem_factory.cpp:751|107d4c725|Claude Opus|ModularBody *tracked = camera->getTrackedBody();
+src/bodyModule/ssystem_factory.cpp:766|107d4c725|Claude Opus|camera->rebindReference(body);
+src/bodyModule/ssystem_factory.cpp:770|107d4c725|Claude Opus|+ camera->getReferenceBody()->getEnglishName()
+src/bodyModule/ssystem_factory.cpp:776|8ce65acc6|Calvin Ruiz|camera->trackBody(ModularBody::findBodyOnce(trackedName));
+src/bodyModule/ssystem_factory.cpp:787|5a8881ffe|Claude Opus|ModularSystem *system = camera->getCurrentSystem();
+src/bodyModule/ssystem_factory.cpp:864|6c3d0ed6c|Claude Fable|camera->relocateToBody(body);
+src/bodyModule/ssystem_factory.cpp:923|fc38db321|Claude Fable|camera->dumpTrace(out);
+src/coreModule/backup_mgr.cpp:53|4776a96eb|Claude Opus|Camera::instance->setHalfFov(mBackup.fov * M_PI / 360);
+src/coreModule/core.cpp:411|29465185a|Claude Opus|Camera::instance->setFreeMode(!attached);
+src/coreModule/core.cpp:828|42ec495ad|Claude Opus|Camera::instance->restoreViewOffsetLatch(armed);
+src/coreModule/core.cpp:872|b664f07c8|Claude Opus|Camera::instance->setSkyLock(b);
+src/coreModule/core.cpp:879|9770649f1|Claude Opus|return Camera::instance->getSkyLock();
+src/coreModule/core.cpp:886|78455b88d|Claude Fable|Camera::instance->setMount((m==MOUNT_ALTAZIMUTAL) ? CameraMount::ALTAZ : CameraMount::EQUATORIAL);
+src/coreModule/core.cpp:1254|3542f7388|Claude Opus|Camera::instance->setHalfFov(aim_fov * M_PI / 360, move_duration);
+src/coreModule/core.cpp:1268|e94286282|Claude Opus|Camera::instance->armViewOffset(true);
+src/coreModule/core.cpp:1269|35a025a6c|Claude Opus|Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
+src/coreModule/core.cpp:1311|e94286282|Claude Opus|Camera::instance->armViewOffset(false);
+src/coreModule/core.cpp:1312|35a025a6c|Claude Opus|Camera::instance->lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration);
+src/coreModule/core.cpp:1351|e94286282|Claude Opus|Camera::instance->armViewOffset(false);
+src/coreModule/core.cpp:1352|35a025a6c|Claude Opus|Camera::instance->lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration);
+src/coreModule/core.cpp:1808|da858612c|Calvin Ruiz|Camera::instance->lookRel(alt1-alt2, az2-az1, 0);
+src/coreModule/core.cpp:1809|da858612c|Calvin Ruiz|Camera::instance->trackBody(nullptr);
+src/coreModule/core.cpp:1836|dc95d0de4|Claude Opus|const Vec3f p = Camera::instance->getViewParams();
+src/coreModule/core.cpp:1879|f4dd61f95|Claude Opus|Camera::instance->multAlt(vzm.deltaHeight);
+src/coreModule/core.cpp:1885|78455b88d|Claude Fable|Camera::instance->setHalfFov(projection->getFov() * M_PI / 360, 0);
+src/coreModule/core.cpp:1894|d9de42ac3|Claude Opus|Camera::instance->lookRel(vzm.deltaAlt, vzm.deltaAz, 0);
+src/coreModule/core.cpp:1915|dc95d0de4|Claude Opus|const Vec3f p = Camera::instance->getViewParams();
+src/coreModule/core.cpp:2043|923823b6c|Claude Opus|s.zoomSrcNew = cam->getZoomSrcHalfFov();
+src/coreModule/core.cpp:2044|923823b6c|Claude Opus|s.zoomDstNew = cam->getZoomDstHalfFov();
+src/coreModule/core.cpp:2049|923823b6c|Claude Opus|const Vec3f &nf = cam->getAbsFwd();
+src/coreModule/core.cpp:2054|923823b6c|Claude Opus|const Vec3f nl = cam->getForwardLocal();
+src/coreModule/core.cpp:2062|923823b6c|Claude Opus|const Vec3d newPos = cam->getRootPosition();
+src/coreModule/core.cpp:2068|923823b6c|Claude Opus|s.headingNewRad = cam->getHeading();
+src/coreModule/core.cpp:2070|923823b6c|Claude Opus|const Vec3f place = cam->getPlace(); // (lon rad, lat rad, altitude AU)
+src/coreModule/core.cpp:2080|923823b6c|Claude Opus|const Vec4f t = cam->getPlanTimers();
+src/coreModule/core.cpp:2087|923823b6c|Claude Opus|const ModularBody *tracked = cam->getTrackedBody();
+src/coreModule/core.cpp:2088|923823b6c|Claude Opus|const ModularBody *ref = cam->getReferenceBody();
+src/coreModule/core.cpp:2099|923823b6c|Claude Opus|| (cam->isFreeMode() ? 64u : 0u);
+src/coreModule/core.cpp:2494|da858612c|Calvin Ruiz|Camera::instance->trackBody(nullptr);
+src/coreModule/core.cpp:2498|da858612c|Calvin Ruiz|Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
+src/coreModule/core.cpp:2501|e94286282|Claude Opus|Camera::instance->armViewOffset(true);
+src/coreModule/core.cpp:2548|e94286282|Claude Opus|Camera::instance->setViewOffset(off);
+src/coreModule/core.cpp:2633|e94286282|Claude Opus|Camera::instance->armViewOffset(true);
+src/coreModule/coreLink.cpp:561|93d83ebda|Claude Opus|const Vec3f place = cam ? cam->getPlace() : Vec3f(0, 0, 0);
+src/coreModule/coreLink.cpp:566|93d83ebda|Claude Opus|double camHeading = cam ? cam->getHeading() * (180.0 / M_PI) : 0.;
+src/coreModule/coreLink.cpp:591|93d83ebda|Claude Opus|<< ","new":" << (cam ? cam->getViewOffset() : 0.) << "}"
+src/coreModule/coreLink.cpp:596|93d83ebda|Claude Opus|<< ","new":" << b(cam && cam->getSkyLock()) << "}"
+src/coreModule/coreLink.cpp:1280|59bbeaa66|Claude Opus|return Camera::instance && Camera::instance->getReferenceBody() &&
+src/coreModule/coreLink.cpp:1281|59bbeaa66|Claude Opus|Camera::instance->getReferenceBody()->getEnglishName() == name;
+src/coreModule/coreLink.hpp:313|da858612c|Calvin Ruiz|Camera::instance->setHalfFov(aim_fov*M_PI/360, move_duration);
+src/coreModule/coreLink.hpp:329|da858612c|Calvin Ruiz|Camera::instance->setHalfFov(f*M_PI/360);
+src/coreModule/coreLink.hpp:376|da858612c|Calvin Ruiz|Camera::instance->lookTo(alt*M_PI/180, az*M_PI/180, time);
+src/coreModule/coreLink.hpp:377|e94286282|Claude Opus|Camera::instance->armViewOffset(true);
+src/coreModule/coreLink.hpp:787|9770649f1|Claude Opus|const Vec3f p = Camera::instance->getPlace();
+src/coreModule/coreLink.hpp:837|da858612c|Calvin Ruiz|Camera::instance->setLatitude(l);
+src/coreModule/coreLink.hpp:842|da858612c|Calvin Ruiz|Camera::instance->setLongitude(l);
+src/coreModule/coreLink.hpp:850|da858612c|Calvin Ruiz|Camera::instance->setAltitude(l);
+src/coreModule/coreLink.hpp:880|3c87a51d2|Claude Fable|Camera::instance->setFreeMode(b);
+src/coreModule/coreLink.hpp:885|78455b88d|Claude Fable|Camera::instance->multAlt(coef);
+src/coreModule/coreLink.hpp:890|da858612c|Calvin Ruiz|Camera::instance->moveTo({static_cast<float>(lon*M_PI/180), static_cast<float>(lat*M_PI/180), static_cast<floa
+src/coreModule/coreLink.hpp:896|da858612c|Calvin Ruiz|Camera::instance->moveRelLon(lon*M_PI/180, delay/1000.f);
+src/coreModule/coreLink.hpp:901|da858612c|Calvin Ruiz|Camera::instance->moveRelLat(lat*M_PI/180, delay/1000.f);
+src/coreModule/coreLink.hpp:906|da858612c|Calvin Ruiz|Camera::instance->moveRelAlt(alt, delay/1000.f);
+src/coreModule/coreLink.hpp:941|da858612c|Calvin Ruiz|Camera::instance->moveHeading(f*M_PI/180);
+src/coreModule/coreLink.hpp:988|9770649f1|Claude Opus|return Camera::instance->getViewOffset();
+src/coreModule/coreLink.hpp:995|96a1b896f|Claude Fable|Camera::instance->setHeading(heading*M_PI/180, duration*0.001f);
+src/coreModule/coreLink.hpp:1006|f1151c637|Claude Opus|double h = Camera::instance->getHeading() * (180.0 / M_PI);
+src/coreModule/coreLink.hpp:1017|da858612c|Calvin Ruiz|Camera::instance->lookTo(_pos, 0);

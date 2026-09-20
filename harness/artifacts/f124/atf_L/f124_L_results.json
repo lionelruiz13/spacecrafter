@@ -1,0 +1,61 @@
+{
+ "leg": "L",
+ "pin": "on",
+ "perturb": "withhold-new",
+ "states": [
+  {
+   "tag": "L_anch",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 199.99996548855015,
+   "alt_old": 200.0,
+   "alt_reported": 199.99996548855015,
+   "lon_new": 0,
+   "lon_old": 0,
+   "lat_new": 0,
+   "lat_old": 1e-06,
+   "dist_member_km": 6200.000021233268,
+   "pos_km": [
+    -504309.5120669175,
+    -47375.28095714784,
+    -477329.6527725116
+   ],
+   "fov_old": 180,
+   "fov_new": 180.00000495094017,
+   "aim_old": 180,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "L_anch_lon",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 199.99996548855015,
+   "alt_old": 200.0,
+   "alt_reported": 199.99996548855015,
+   "lon_new": 0,
+   "lon_old": 1,
+   "lat_new": 0,
+   "lat_old": 1e-06,
+   "dist_member_km": 6200.000021233268,
+   "pos_km": [
+    -504309.5120669175,
+    -47375.28095714784,
+    -477329.6527725116
+   ],
+   "fov_old": 180,
+   "fov_new": 180.00000495094017,
+   "aim_old": 180,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  }
+ ],
+ "notes": [],
+ "fails": [
+  "L_anchored_lon_new_equals_old"
+ ]
+}

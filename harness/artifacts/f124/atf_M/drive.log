@@ -1,0 +1,20 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+PASS gdb_reaches_the_UI_object  `this` of UI::updateTimeouts, the per-frame UI call
+>> moveto lat 0.0 lon 0.0 alt 2000000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/atf_M/M_high.json
+-- M_high           drawn=new free=False alt new 2000.0002 old 2000.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS M_high_scene  want 2000.0 km on both, free=False, drawn=new: new 2000.0002 old 2000.0000 free=False drawn=new ref=DescB
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/atf_M/M_high_s1.json
+-- M_high_s1        drawn=new free=False alt new 2000.0002 old 2020.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+FAIL M_high_s1_new_follows_its_law  new 2000.0002 -> 2000.0002 km, law says 2020.0002 (|d| 2.00e+01)
+FAIL M_high_s1_new_equals_old  new 2000.0002 old 2020.0000 km |d| 2.00e+01
+
+=== ABLE-TO-FAIL leg M: RED as it must be: M_high_s1_new_equals_old ===

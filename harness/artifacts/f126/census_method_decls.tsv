@@ -1,0 +1,124 @@
+Projector	getFov	55	const	src/coreModule/projector.hpp:114	double
+Projector	getMatProjectionOrtho2D	27	const	src/coreModule/projector.hpp:290	Mat4f
+Projector	getClippingFov	23	const	src/coreModule/projector.hpp:300	Vec3f
+Projector	printGravity180	19	const	src/coreModule/projector.hpp:284	void
+Projector	getViewportHeight	17	const	src/coreModule/projector.hpp:98	int
+Projector	projectLocal	15	const	src/coreModule/projector.hpp:223	inline bool
+Projector	projectEarthEqu	10	const	src/coreModule/projector.hpp:163	inline bool
+Projector	setClippingPlanes	7	non-const	src/coreModule/projector.hpp:138	void
+Projector	unprojectEarthEqu	6	const	src/coreModule/projector.hpp:184	inline void
+Projector	getMatJ2000ToEye	5	const	src/coreModule/projector.hpp:307	Mat4f
+Projector	getViewportWidth	5	const	src/coreModule/projector.hpp:95	int
+Projector	getViewportRadius	4	const	src/coreModule/projector.hpp:83	double
+Projector	getMatEarthEquToEye	4	const	src/coreModule/projector.hpp:310	Mat4f
+Projector	projectLocalCheck	4	const	src/coreModule/projector.hpp:227	inline bool
+Projector	updateAutoZoom	4	non-const	src/coreModule/projector.hpp:133	void
+Projector	setModelViewMatrices	4	non-const	src/coreModule/projector.hpp:151	void
+Projector	getMatLocalToEye	3	const	src/coreModule/projector.hpp:304	Mat4f
+Projector	setFov	3	non-const	src/coreModule/projector.hpp:112	void
+Projector	projectCustom	2	both	src/coreModule/projector.hpp:258;src/coreModule/projector.hpp:261;src/coreModule/projector.hpp:266;src/coreModule/projector.hpp:271	bool | return ( | return ( | v1, win1, mat) &&
+Projector	projectJ2000LineCheck	2	const	src/coreModule/projector.hpp:201	inline bool
+Projector	zoomTo	2	non-const	src/coreModule/projector.hpp:136	void
+Projector	unprojectLocal	2	const	src/coreModule/projector.hpp:231	inline void
+Projector	getAimFov	2	const	src/coreModule/projector.hpp:126	double
+Projector	getViewportCenter	2	const	src/coreModule/projector.hpp:76	Vec3d
+Projector	unprojectNormalizedLocal	1	const	src/coreModule/projector.hpp:235	inline void
+Projector	getClippingPlanes	1	const	src/coreModule/projector.hpp:139	void
+Projector	projectJ2000Check	1	const	src/coreModule/projector.hpp:197	inline bool
+Projector	getViewport	1	const	src/coreModule/projector.hpp:101	const Vec4i&
+Projector	getViewportFloatCenter	1	const	src/coreModule/projector.hpp:79	Vec3f
+Projector	applyViewport	1	const	src/coreModule/projector.hpp:106	void
+Projector	dumpTrace	1	const	src/coreModule/projector.hpp:314	void
+Projector	changeFov	1	non-const	src/coreModule/projector.hpp:130	void
+Projector	setMaxFov	1	non-const	src/coreModule/projector.hpp:119	void
+Projector	projectJ2000	1	const	src/coreModule/projector.hpp:193	inline bool
+Projector	getCursorPosEqu	1	const	src/coreModule/projector.hpp:278	Vec3d
+Projector	projectCustomCheck	1	const	src/coreModule/projector.hpp:260;src/coreModule/projector.hpp:265	bool | bool
+Projector	getMatProjection	1	const	src/coreModule/projector.hpp:295	Mat4d
+Projector	unprojectViewport	1	const	src/coreModule/projector.hpp:288	StelGeom::ConvexS
+Projector	projectDomeFixed	1	const	src/coreModule/projector.hpp:245	inline bool
+Navigator	getHelioToEyeMat	29	const	src/navModule/navigator.hpp:144	const Mat4d&
+Navigator	earthEquToLocal	21	const	src/navModule/navigator.hpp:104	Vec3d
+Navigator	getObserverHelioPos	16	const	src/navModule/navigator.hpp:96	Vec3d
+Navigator	updateTransformMatrices	13	non-const	src/navModule/navigator.hpp:55	void
+Navigator	helioToEarthPosEqu	11	const	src/navModule/navigator.hpp:134	Vec3d
+Navigator	j2000ToEarthEqu	10	const	src/navModule/navigator.hpp:119	Vec3d
+Navigator	getLocalToEyeMat	8	const	src/navModule/navigator.hpp:153	const Mat4d&
+Navigator	getJ2000ToEyeMat	7	const	src/navModule/navigator.hpp:159	const Mat4d&
+Navigator	getLocalVision	6	const	src/navModule/navigator.hpp:86	const Vec3d&
+Navigator	getFlagTraking	6	const	src/navModule/navigator.hpp:68	int
+Navigator	moveTo	6	non-const	src/navModule/navigator.hpp:62	void
+Navigator	getHeading	6	const	src/navModule/navigator.hpp:193	double
+Navigator	helioToLocal	5	const	src/navModule/navigator.hpp:124	Vec3d
+Navigator	getEarthEquToEyeMat	5	const	src/navModule/navigator.hpp:147	const Mat4d&
+Navigator	getDomeFixedMat	5	const	src/navModule/navigator.hpp:163	const Mat4d&
+Navigator	setFlagTraking	4	non-const	src/navModule/navigator.hpp:65	void
+Navigator	setLocalVision	4	non-const	src/navModule/navigator.hpp:90	void
+Navigator	getViewingMode	4	const	src/navModule/navigator.hpp:176	VIEWING_MODE_TYPE
+Navigator	updateMove	4	non-const	src/navModule/navigator.hpp:171	void
+Navigator	update	4	non-const	src/navModule/navigator.hpp:231	void
+Navigator	updateVisionVector	4	non-const	src/navModule/navigator.hpp:56	void
+Navigator	getEarthEquToEyeMatFixed	4	const	src/navModule/navigator.hpp:150	const Mat4d&
+Navigator	geTdomeMat	4	const	src/navModule/navigator.hpp:167	const Mat4d&
+Navigator	earthEquToJ2000	3	const	src/navModule/navigator.hpp:114	Vec3d
+Navigator	getPrecEquVision	3	const	src/navModule/navigator.hpp:83	const Vec3d&
+Navigator	setViewingMode	3	non-const	src/navModule/navigator.hpp:174	void
+Navigator	setHeading	3	non-const	src/navModule/navigator.hpp:180	void
+Navigator	updateViewMat	2	non-const	src/navModule/navigator.hpp:59	void
+Navigator	setDefaultHeading	2	non-const	src/navModule/navigator.hpp:184;src/navModule/navigator.hpp:188	void | void
+Navigator	getFlagLockEquPos	2	const	src/navModule/navigator.hpp:74	int
+Navigator	getFlagAutoMove	2	const	src/navModule/navigator.hpp:216	int
+Navigator	getFlagChangeHeading	2	const	src/navModule/navigator.hpp:223	int
+Navigator	getMoveCoef	2	const	src/navModule/navigator.hpp:220	double
+Navigator	getViewOffset	2	const	src/navModule/navigator.hpp:204	double
+Navigator	changeHeading	2	non-const	src/navModule/navigator.hpp:228	void
+Navigator	helioToEarthEqu	2	const	src/navModule/navigator.hpp:129	Vec3d
+Navigator	setViewOffsetTransition	1	non-const	src/navModule/navigator.hpp:209	void
+Navigator	restoreVision	1	non-const	src/navModule/navigator.hpp:93	void
+Navigator	dumpTrace	1	const	src/navModule/navigator.hpp:237	void
+Navigator	setFlagLockEquPos	1	non-const	src/navModule/navigator.hpp:71	void
+Navigator	getEquVision	1	const	src/navModule/navigator.hpp:79	const Vec3d&
+Navigator	setViewOffset	1	non-const	src/navModule/navigator.hpp:201	void
+Navigator	lookAt	1	non-const	src/navModule/navigator.hpp:233	bool
+Navigator	localToEarthEqu	1	const	src/navModule/navigator.hpp:99	Vec3d
+Navigator	earthPosEquToHelio	1	const	src/navModule/navigator.hpp:139	Vec3d
+Navigator	alignUpVectorTo	1	non-const	src/navModule/navigator.hpp:235	void
+Observer	getAltitude	32	const	src/navModule/observer.hpp:131	double
+Observer	getHomeBody	20	const	src/navModule/observer.hpp:66	std::shared_ptr<Body>
+Observer	isOnBody	14	const	src/navModule/observer.hpp:59;src/navModule/observer.hpp:61	bool | bool
+Observer	getLatitude	12	const	src/navModule/observer.hpp:114	double
+Observer	getHeliocentricPosition	11	const	src/navModule/observer.hpp:81	Vec3d
+Observer	isEarth	11	const	src/navModule/observer.hpp:74	bool
+Observer	setAltitude	11	non-const	src/navModule/observer.hpp:128	void
+Observer	getLongitude	10	const	src/navModule/observer.hpp:124	double
+Observer	get	9	NOT-DECLARED		
+Observer	setLongitude	9	non-const	src/navModule/observer.hpp:119	void
+Observer	setAnchorPoint	7	non-const	src/navModule/observer.hpp:53	void
+Observer	setLatitude	6	non-const	src/navModule/observer.hpp:102	void
+Observer	getHomePlanetEnglishName	5	const	src/navModule/observer.hpp:69	std::string
+Observer	update	5	non-const	src/navModule/observer.hpp:188	void
+Observer	getObserverCenterPoint	4	const	src/navModule/observer.hpp:78	Vec3d
+Observer	getRotEquatorialToVsop87	4	const	src/navModule/observer.hpp:92	Mat4d
+Observer	isSun	3	const	src/navModule/observer.hpp:75	bool
+Observer	setEyeRelativeMode	2	non-const	src/navModule/observer.hpp:199	void
+Observer	getLongitudeForDisplay	2	const	src/navModule/observer.hpp:125	double
+Observer	moveTo	2	non-const	src/navModule/observer.hpp:165;src/navModule/observer.hpp:169	void | void
+Observer	getEyeRelativeMode	2	const	src/navModule/observer.hpp:202	inline bool
+Observer	getAnchorPoint	2	const	src/navModule/observer.hpp:55	std::shared_ptr<AnchorPoint>
+Observer	reset	1	NOT-DECLARED		
+Observer	load	1	non-const	src/navModule/observer.hpp:99	void
+Observer	dumpTrace	1	const	src/navModule/observer.hpp:214	void
+Observer	multAltitude	1	non-const	src/navModule/observer.hpp:136	void
+Observer	getDefaultLatitude	1	non-const	src/navModule/observer.hpp:140	double
+Observer	getDefaultLongitude	1	non-const	src/navModule/observer.hpp:144	double
+Observer	getDefaultAltitude	1	non-const	src/navModule/observer.hpp:148	double
+Observer	moveRelLon	1	non-const	src/navModule/observer.hpp:156	void
+Observer	moveRelLat	1	non-const	src/navModule/observer.hpp:153	void
+Observer	moveRelAlt	1	non-const	src/navModule/observer.hpp:159	void
+Observer	setConf	1	non-const	src/navModule/observer.hpp:97	void
+Observer	setQuaternionMode	1	non-const	src/navModule/observer.hpp:191	void
+Observer	getQuaternionMode	1	const	src/navModule/observer.hpp:194	bool
+Observer	transfo4d	1	NOT-DECLARED		
+Observer	getDistanceFromCenter	1	const	src/navModule/observer.hpp:84	double
+Observer	getRotLocalToEquatorial	1	const	src/navModule/observer.hpp:89	Mat4d
+Observer	setRelRotation	1	non-const	src/navModule/observer.hpp:185	void

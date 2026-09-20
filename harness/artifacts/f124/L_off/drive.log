@@ -1,0 +1,49 @@
+>> flag experimental_path off
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+PASS gdb_reaches_the_UI_object  `this` of UI::updateTimeouts, the per-frame UI call
+>> moveto lat 0.0 lon 0.0 alt 200000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/L_off/L_anch.json
+-- L_anch           drawn=old free=False alt new 200.0000 old 200.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS L_anch_scene  want 200.0 km on both, free=False, drawn=old: new 200.0000 old 200.0000 free=False drawn=old ref=DescB
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/L_off/L_anch_lon.json
+-- L_anch_lon       drawn=old free=False alt new 200.0000 old 200.0000 km | lon new -1.00000 old -1.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS L_anchored_lon_new_equals_old  UI::moveLon(1): longitude new -1.000000 deg, old -1.000000 deg
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/L_off/L_anch_lat.json
+-- L_anch_lat       drawn=old free=False alt new 200.0000 old 200.0000 km | lon new -1.00000 old -1.00000 | lat new -1.00000 old -1.00000 | fov new 180.000005 old 180.000000
+PASS L_anchored_lat_new_equals_old  UI::moveLat(1): latitude new -1.000000 deg, old -1.000000 deg
+>> moveto lat -89.5 lon 0.0 alt 200000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/L_off/L_pole.json
+-- L_pole           drawn=old free=False alt new 200.0000 old 200.0000 km | lon new 0.00000 old 0.00000 | lat new -89.50000 old -89.50000 | fov new 180.000005 old 180.000000
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/L_off/L_pole_s1.json
+-- L_pole_s1        drawn=old free=False alt new 200.0000 old 200.0000 km | lon new 0.00000 old 0.00000 | lat new -90.50000 old -90.00000 | fov new 180.000005 old 180.000000
+PASS RESID_L_new_latitude_passes_the_pole  from -89.50: old -90.00000 (clamped), new -90.50000 (not clamped)
+>> moveto lat 0.0 lon 0.0 alt 200000 duration 0
+>> camera action free_mode state on
+>> select planet DescB
+>> flag track_object on
+>> moveto lat 0.0 lon 0.0 alt 200000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/L_off/L_free.json
+-- L_free           drawn=old free=True alt new 200.0000 old 200.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS L_free_scene  want 200.0 km on both, free=True, drawn=old: new 200.0000 old 200.0000 free=True drawn=old ref=DescB
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/L_off/L_free_s1.json
+-- L_free_s1        drawn=old free=True alt new 200.3456 old 200.0000 km | lon new -0.60482 old 1.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS L_free_step_is_x_5_velocityScaling  UI::moveLon(1) free at 200 km: |d position| 65.450 km, law x(rad) x 5 x floor = 65.450 km; old longitude +1.00000 deg
+>> camera action free_mode state off
+>> moveto lat 0.0 lon 0.0 alt 2000000 duration 0
+>> camera action free_mode state on
+>> moveto lat 0.0 lon 0.0 alt 200000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/L_off/L_stale.json
+-- L_stale          drawn=old free=True alt new 200.0000 old 200.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS L_stale_scene  want 200.0 km on both, free=True, drawn=old: new 200.0000 old 200.0000 free=True drawn=old ref=DescB
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/L_off/L_stale_s1.json
+-- L_stale_s1       drawn=old free=True alt new 202.4561 old 200.0000 km | lon new -1.61248 old 1.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_L_free_base_is_the_stale_distance_member  free at a LIVE 200 km after entering free mode at 2000 km: |d position| 174.533 km; stale base predicts 174.533, live base 65.450; `distance` member reads 8000.0 km
+
+=== leg L pin off: ALL PASS ===

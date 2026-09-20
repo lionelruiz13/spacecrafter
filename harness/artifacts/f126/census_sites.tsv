@@ -1,0 +1,668 @@
+Observer	get	src/appModule/app.cpp	172	observatory	executor = std::make_unique<Executor>(core, observatory.get());
+Observer	reset	src/appModule/app.cpp	246	observatory	observatory.reset();
+Projector	unprojectNormalizedLocal	src/atmosphereModule/atmosphere.cpp	238	prj	in.prj->unprojectNormalizedLocal(x_val, y_val, point);
+Projector	getClippingFov	src/bodyModule/atm_ext.cpp	103	prj	uniform->clipping_fov = prj->getClippingFov();
+Projector	getClippingFov	src/bodyModule/axis.cpp	58	prj	pushData.clipping_fov = prj->getClippingFov();
+Projector	projectCustom	src/bodyModule/axis.cpp	81	prj	prj->projectCustom(v, win, mat);
+Projector	projectCustom	src/bodyModule/axis.cpp	85	prj	prj->projectCustom(v*-1000, win2, mat);
+Navigator	getObserverHelioPos	src/bodyModule/body.cpp	331	nav	oss << _("Magnitude: ") << computeMagnitude(nav->getObserverHelioPos()) << std::endl;
+Navigator	earthEquToLocal	src/bodyModule/body.cpp	339	nav	Vec3d localPos = nav->earthEquToLocal(equPos);
+Navigator	getObserverHelioPos	src/bodyModule/body.cpp	367	nav	oss << "  " << _("Magnitude: ") << computeMagnitude(nav->getObserverHelioPos());
+Navigator	earthEquToLocal	src/bodyModule/body.cpp	379	nav	Vec3d local_pos = nav->earthEquToLocal(equPos);
+Observer	getLatitude	src/bodyModule/body.cpp	398	observatory	double latitude = observatory->getLatitude();
+Observer	getLongitude	src/bodyModule/body.cpp	411	observatory	Le = observatory->getLongitude();
+Navigator	earthEquToLocal	src/bodyModule/body.cpp	429	nav	Vec3d local_pos = nav->earthEquToLocal(equPos);
+Navigator	helioToEarthPosEqu	src/bodyModule/body.cpp	495	nav	return nav->helioToEarthPosEqu(v);		// this is earth equatorial but centered
+Navigator	getObserverHelioPos	src/bodyModule/body.cpp	502	nav	- nav->getObserverHelioPos());
+Navigator	getObserverHelioPos	src/bodyModule/body.cpp	672	nav	return computeMagnitude(nav->getObserverHelioPos());
+Projector	getFov	src/bodyModule/body.cpp	679	prj	return angularSize * (180./M_PI) /prj->getFov()*prj->getViewportHeight();
+Projector	getViewportHeight	src/bodyModule/body.cpp	679	prj	return angularSize * (180./M_PI) /prj->getFov()*prj->getViewportHeight();
+Projector	getFov	src/bodyModule/body.cpp	695	prj	return atanf(rad/sqrt(temp))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+Projector	getViewportHeight	src/bodyModule/body.cpp	695	prj	return atanf(rad/sqrt(temp))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+Projector	getFov	src/bodyModule/body.cpp	913	prj	const double halfFov = prj->getFov() * (M_PI / 360);
+Projector	getFov	src/bodyModule/body.cpp	934	prj	const double halfFov = prj->getFov() * (M_PI / 360);
+Projector	getFov	src/bodyModule/body.cpp	969	prj	const double halfFov = prj->getFov() * (M_PI / 360);
+Navigator	getHelioToEyeMat	src/bodyModule/body.cpp	990	nav	eye_sun = nav->getHelioToEyeMat().getTranslation();
+Navigator	getHelioToEyeMat	src/bodyModule/body.cpp	1026	nav	mat = nav->getHelioToEyeMat() * mat;
+Navigator	getHelioToEyeMat	src/bodyModule/body.cpp	1030	nav	parent_mat = nav->getHelioToEyeMat() * parent_mat;
+Navigator	getHelioToEyeMat	src/bodyModule/body.cpp	1038	nav	eye_sun = (nav->getHelioToEyeMat() * p->mat_local_to_parent).getTranslation();
+Projector	getFov	src/bodyModule/body.cpp	1050	prj	ang_dist = 300.f*atan(get_ecliptic_pos().length()/getEarthEquPos(nav).length())/prj->getFov();
+Projector	getFov	src/bodyModule/body.cpp	1059	prj	const double halfFov = prj->getFov() * (M_PI / 360);
+Projector	getClippingFov	src/bodyModule/body.cpp	1215	prj	depthTraceInfo pdata {mat.convert(), prj->getClippingFov(), _radius, (float) one_minus_oblateness};
+Observer	isOnBody	src/bodyModule/body.cpp	1225	observatory	return !drawHomePlanet && observatory->isOnBody(this);
+Observer	isOnBody	src/bodyModule/body.cpp	1319	obs	return isVisibleOnScreen() || obs->isOnBody(this);
+Projector	getClippingFov	src/bodyModule/body_artificial.cpp	136	prj	uProj->clipping_fov = prj->getClippingFov();
+Projector	getClippingFov	src/bodyModule/body_artificial.cpp	189	prj	depthTraceInfo pdata {mat.convert(), prj->getClippingFov(), (float) radius, (float) one_minus_oblateness};
+Projector	getFov	src/bodyModule/body_bigbody.cpp	278	prj	return atanf(rad/sqrt(temp))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+Projector	getViewportHeight	src/bodyModule/body_bigbody.cpp	278	prj	return atanf(rad/sqrt(temp))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+Projector	getClippingFov	src/bodyModule/body_bigbody.cpp	353	prj	uGlobalVertProj->get().clipping_fov = prj->getClippingFov();
+Navigator	getHelioToEyeMat	src/bodyModule/body_bigbody.cpp	365	nav	tmp = nav->getHelioToEyeMat() * (*iter)->get_heliocentric_ecliptic_pos();
+Observer	getHeliocentricPosition	src/bodyModule/body_bigbody.cpp	424	obs	const double observerDistanceToBody = (get_heliocentric_ecliptic_pos() - obs->getHeliocentricPosition(CoreLink::instance->getJDay())).length();
+Projector	getClippingFov	src/bodyModule/body_bigbody.cpp	672	prj	auto clipping_fov = prj->getClippingFov();
+Navigator	getHelioToEyeMat	src/bodyModule/body_moon.cpp	317	nav	uMoonFrag->get().MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
+Navigator	getHelioToEyeMat	src/bodyModule/body_moon.cpp	329	nav	uGlobalFrag->get().MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
+Projector	getClippingFov	src/bodyModule/body_moon.cpp	336	prj	uGlobalVertProj->get().clipping_fov = prj->getClippingFov();
+Projector	getFov	src/bodyModule/body_moon.cpp	348	prj	if (prj->getFov()>30) {
+Observer	isOnBody	src/bodyModule/body_moon.cpp	350	observatory	if (observatory->isOnBody() && !observatory->isOnBody(parent.get()) && parent != observatory->getHomeBody()->get_parent() && getEarthEquPos(nav).length() > 1) {
+Observer	isOnBody	src/bodyModule/body_moon.cpp	350	observatory	if (observatory->isOnBody() && !observatory->isOnBody(parent.get()) && parent != observatory->getHomeBody()->get_parent() && getEarthEquPos(nav).length() > 1) {
+Observer	getHomeBody	src/bodyModule/body_moon.cpp	350	observatory	if (observatory->isOnBody() && !observatory->isOnBody(parent.get()) && parent != observatory->getHomeBody()->get_parent() && getEarthEquPos(nav).length() > 1) {
+Observer	isOnBody	src/bodyModule/body_moon.cpp	355	observatory	if ( !observatory->isOnBody() ) {
+Projector	getClippingFov	src/bodyModule/body_moon.cpp	416	prj	auto clipping_fov = prj->getClippingFov();
+Projector	getClippingFov	src/bodyModule/body_smallbody.cpp	205	prj	uGlobalVertProj->get().clipping_fov = prj->getClippingFov();
+Observer	isOnBody	src/bodyModule/body_star.cpp	76	observatory	if (!drawHomePlanet && observatory->isOnBody(this)) {
+Navigator	getObserverHelioPos	src/bodyModule/body_sun.cpp	173	nav	float rmag = big_halo_size/2/sqrt(nav->getObserverHelioPos().length());
+Projector	getFov	src/bodyModule/body_sun.cpp	231	prj	isVisible = (acos(-eye_planet[2] / distance) * (360 / M_PI) / prj->getFov() < (1 + big_halo_size / prj->getViewportRadius()));
+Projector	getViewportRadius	src/bodyModule/body_sun.cpp	231	prj	isVisible = (acos(-eye_planet[2] / distance) * (360 / M_PI) / prj->getFov() < (1 + big_halo_size / prj->getViewportRadius()));
+Observer	isOnBody	src/bodyModule/body_sun.cpp	239	observatory	if (!drawHomePlanet && observatory->isOnBody(this)) {
+Projector	getClippingFov	src/bodyModule/body_sun.cpp	324	prj	*uclipping_fov = prj->getClippingFov();
+Projector	getMatLocalToEye	src/bodyModule/body_trace.cpp	122	prj	auto tmp = prj->getMatLocalToEye();
+Projector	getFov	src/bodyModule/halo.cpp	111	prj	float fov_q = prj->getFov();
+Navigator	getObserverHelioPos	src/bodyModule/halo.cpp	115	nav	rmag = sqrtf(eye->adaptLuminance((expf(-0.92103f*(body->computeMagnitude(nav->getObserverHelioPos()) + 12.12331f)) * 108064.73f) * fov_q)) * 30.f * Body::object
+Projector	getFov	src/bodyModule/halo.cpp	118	prj	if (prj->getFov()>60) rmag=rmag/25; // usefull when going there
+Navigator	getObserverHelioPos	src/bodyModule/halo.cpp	126	nav	if (body->computeMagnitude(nav->getObserverHelioPos())>0.) cmag=rmag*rmag/1.44f;
+Navigator	getObserverHelioPos	src/bodyModule/halo.cpp	129	nav	if (body->computeMagnitude(nav->getObserverHelioPos())>6.5f) cmag=cmag*rmag*rmag/1.44f;
+Projector	printGravity180	src/bodyModule/hints.cpp	73	prj	prj->printGravity180(body->planet_name_font, body->screenPos.first, body->screenPos.second, body->getSkyLabel(nav), Color,/*1,*/ tmp, tmp);
+Projector	getFov	src/bodyModule/orbit_2d.cpp	60	prj	pushData.fov = prj->getFov() * (M_PI / 360.f);
+Projector	getClippingFov	src/bodyModule/orbit_3d.cpp	50	prj	} pushGeom {mat.convert(), prj->getClippingFov()};
+Projector	getClippingFov	src/bodyModule/planet_grid.cpp	282	prj	matData.clipping_fov = prj->getClippingFov();
+Observer	getHomeBody	src/bodyModule/protosystem.cpp	332	observatory	auto home_Body = observatory->getHomeBody().get();
+Projector	getClippingFov	src/bodyModule/ring.cpp	266	prj	uniform->get().clipping_fov = prj->getClippingFov();
+Projector	getFov	src/bodyModule/solarsystem_display.cpp	231	prj	Tail::beginDraw(prj->getFov());
+Projector	getClippingPlanes	src/bodyModule/solarsystem_display.cpp	237	prj	prj->getClippingPlanes(&backup.znear, &backup.zfar);
+Projector	setClippingPlanes	src/bodyModule/solarsystem_display.cpp	242	prj	prj->setClippingPlanes(dbiter->znear, dbiter->zfar);
+Projector	setClippingPlanes	src/bodyModule/solarsystem_display.cpp	274	prj	prj->setClippingPlanes(dbiter->znear, dbiter->zfar);
+Projector	setClippingPlanes	src/bodyModule/solarsystem_display.cpp	281	prj	prj->setClippingPlanes(backup.znear, backup.zfar);
+Projector	setClippingPlanes	src/bodyModule/solarsystem_display.cpp	285	prj	prj->setClippingPlanes(dbiter->znear, dbiter->zfar);
+Projector	setClippingPlanes	src/bodyModule/solarsystem_display.cpp	303	prj	prj->setClippingPlanes(std::max(orbitBucket.znear, 0.00000001), orbitBucket.zfar);
+Observer	isOnBody	src/bodyModule/solarsystem_display.cpp	329	observatory	if (!observatory->isOnBody(body))
+Projector	setClippingPlanes	src/bodyModule/solarsystem_display.cpp	338	prj	prj->setClippingPlanes(backup.znear, backup.zfar);  // Restore old clipping planes
+Observer	getHeliocentricPosition	src/bodyModule/solarsystem_display.cpp	346	obs	const Vec3d home_pos(obs->getHeliocentricPosition(date));
+Observer	getHeliocentricPosition	src/bodyModule/solarsystem_display.cpp	368	obs	const Vec3d home_pos(obs->getHeliocentricPosition(date));
+Observer	getObserverCenterPoint	src/bodyModule/ssystem_factory.cpp	593	observatory	auto pos = observatory->getObserverCenterPoint();
+Navigator	getHelioToEyeMat	src/bodyModule/ssystem_factory.cpp	914	navigation	const Mat4d &h = navigation->getHelioToEyeMat();
+Navigator	getLocalVision	src/bodyModule/ssystem_factory.cpp	919	navigation	const Vec3d &lv = navigation->getLocalVision();
+Navigator	getHelioToEyeMat	src/bodyModule/tail.cpp	173	nav	Vec3f initialDirection = nav->getHelioToEyeMat().multiplyWithoutTranslation(cachedExpansionInitial);
+Navigator	getHelioToEyeMat	src/bodyModule/tail.cpp	174	nav	Vec3f directionCorrection = nav->getHelioToEyeMat().multiplyWithoutTranslation(cachedExpansionCorrection);
+Projector	getMatEarthEquToEye	src/bodyModule/trail.cpp	112	prj	} cstData {nbPos, prj->getMatEarthEquToEye(), trail_fader.getInterstate()};
+Navigator	helioToEarthPosEqu	src/bodyModule/trail.cpp	142	nav	tp.point = nav->helioToEarthPosEqu(v);
+Navigator	helioToEarthPosEqu	src/coreModule/TullyWrapper.hpp	65	nav	auto tmp = nav->helioToEarthPosEqu(pos);
+Navigator	earthEquToJ2000	src/coreModule/TullyWrapper.hpp	70	nav	return nav->earthEquToJ2000(getEarthEquPos(nav));
+Projector	setFov	src/coreModule/backup_mgr.cpp	51	projection	core->projection->setFov(mBackup.fov); //setFov(mBackup.fov);
+Projector	getFov	src/coreModule/backup_mgr.cpp	67	projection	mBackup.fov = core->projection->getFov(); //getFov();
+Observer	getHomePlanetEnglishName	src/coreModule/backup_mgr.cpp	68	observatory	mBackup.home_planet_name=core->observatory->getHomePlanetEnglishName();
+Projector	projectLocal	src/coreModule/cardinals.cpp	82	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	82	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	86	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	86	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	90	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	90	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	94	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	94	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	98	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	98	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	100	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	100	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	104	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	104	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	106	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	106	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	110	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	110	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	112	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	112	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	116	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	116	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+Projector	projectLocal	src/coreModule/cardinals.cpp	118	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+Projector	printGravity180	src/coreModule/cardinals.cpp	118	prj	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+Projector	projectJ2000LineCheck	src/coreModule/constellation.cpp	126	prj	if (prj->projectJ2000LineCheck( gettemp1,startemp1, gettemp2,startemp2)) {
+Projector	getMatJ2000ToEye	src/coreModule/constellation.cpp	157	prj	Utility::rectToSphe(&az, &alt, prj->getMatJ2000ToEye() * XYZname);
+Projector	getFov	src/coreModule/constellation.cpp	159	prj	alt *= (180*180/M_PI)/prj->getFov();
+Projector	projectJ2000Check	src/coreModule/constellation.cpp	180	prj	if( (tabB[i] = prj->projectJ2000Check(art_vertex[i],tabV[i]) || (nav->getPrecEquVision().dot(art_vertex[i])>0.9)) )
+Navigator	getPrecEquVision	src/coreModule/constellation.cpp	180	nav	if( (tabB[i] = prj->projectJ2000Check(art_vertex[i],tabV[i]) || (nav->getPrecEquVision().dot(art_vertex[i])>0.9)) )
+Projector	projectJ2000LineCheck	src/coreModule/constellation.cpp	310	prj	if (prj->projectJ2000LineCheck(points->at(j),pt1,points->at(j+1),pt2)) {
+Observer	get	src/coreModule/core.cpp	104	observatory	ssystemFactory = new SSystemFactory(observatory.get(), navigation, timeMgr.get());
+Observer	load	src/coreModule/core.cpp	396	observatory	observatory->load(conf, SCS_INIT_LOCATION);
+Observer	setEyeRelativeMode	src/coreModule/core.cpp	397	observatory	observatory->setEyeRelativeMode(false);
+Navigator	setFlagTraking	src/coreModule/core.cpp	405	navigation	navigation->setFlagTraking(0);
+Navigator	setLocalVision	src/coreModule/core.cpp	432	navigation	navigation->setLocalVision(Vec3f(1,1e-05,0.2));
+Observer	get	src/coreModule/core.cpp	482	observatory	ssystemFactory->computePositions(timeMgr->getJDay(), observatory.get());
+Navigator	updateTransformMatrices	src/coreModule/core.cpp	485	navigation	navigation->updateTransformMatrices(observatory.get(), timeMgr->getJDay());
+Observer	get	src/coreModule/core.cpp	485	observatory	navigation->updateTransformMatrices(observatory.get(), timeMgr->getJDay());
+Navigator	updateViewMat	src/coreModule/core.cpp	486	navigation	navigation->updateViewMat(projection->getFov());
+Projector	getFov	src/coreModule/core.cpp	486	projection	navigation->updateViewMat(projection->getFov());
+Navigator	setViewingMode	src/coreModule/core.cpp	508	navigation	if (tmpstr=="equator") 	navigation->setViewingMode(Navigator::VIEW_EQUATOR);
+Navigator	setViewingMode	src/coreModule/core.cpp	510	navigation	if (tmpstr=="horizon") navigation->setViewingMode(Navigator::VIEW_HORIZON);
+Projector	setFov	src/coreModule/core.cpp	518	projection	projection->setFov(InitFov);
+Navigator	setHeading	src/coreModule/core.cpp	521	navigation	navigation->setHeading(heading);
+Navigator	setDefaultHeading	src/coreModule/core.cpp	522	navigation	navigation->setDefaultHeading(heading);
+Projector	getViewport	src/coreModule/core.cpp	622	projection	uboCam->setViewport(projection->getViewport());
+Projector	getClippingFov	src/coreModule/core.cpp	623	projection	uboCam->setClippingFov(projection->getClippingFov());
+Projector	getViewportFloatCenter	src/coreModule/core.cpp	624	projection	uboCam->setViewportCenter(projection->getViewportFloatCenter());
+Projector	getMatProjectionOrtho2D	src/coreModule/core.cpp	625	projection	uboCam->setMVP2D(projection->getMatProjectionOrtho2D());
+Projector	setClippingPlanes	src/coreModule/core.cpp	653	projection	projection->setClippingPlanes(clipping_min ,clipping_max);
+Projector	applyViewport	src/coreModule/core.cpp	655	projection	projection->applyViewport();
+Observer	isOnBody	src/coreModule/core.cpp	672	observatory	if (!observatory->isOnBody())
+Observer	getHomeBody	src/coreModule/core.cpp	676	observatory	atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
+Observer	isSun	src/coreModule/core.cpp	685	observatory	if (observatory->isSun()) {
+Observer	isEarth	src/coreModule/core.cpp	690	observatory	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite()){
+Observer	getHomeBody	src/coreModule/core.cpp	690	observatory	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite()){
+Observer	getHomeBody	src/coreModule/core.cpp	691	observatory	setLandscape(observatory->getHomeBody()->getEnglishName());
+Observer	getHomeBody	src/coreModule/core.cpp	699	observatory	if (observatory->getHomeBody()->isSatellite())
+Observer	isEarth	src/coreModule/core.cpp	703	observatory	if (observatory->isEarth())
+Observer	getAltitude	src/coreModule/core.cpp	706	observatory	bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()); //, observatory->getSpacecraft());
+Observer	getHomeBody	src/coreModule/core.cpp	706	observatory	bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()); //, observatory->getSpacecraft());
+Observer	getHomeBody	src/coreModule/core.cpp	707	observatory	std::cout << "Body : " << observatory->getHomeBody()->getEnglishName() << " Landscape : " << landscape->getName() << std::endl;
+Observer	isOnBody	src/coreModule/core.cpp	738	observatory	if (!observatory->isOnBody())		return;
+Observer	getHomeBody	src/coreModule/core.cpp	744	observatory	if (observatory->getHomeBody()->isSatellite() && landscape->getName() == "moon") {
+Observer	isSun	src/coreModule/core.cpp	751	observatory	if (observatory->isSun() &&  landscape->getName() == "sun") {
+Observer	isEarth	src/coreModule/core.cpp	758	observatory	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite() && landscape->getName() == observatory->getHomeBody()->getEnglishName()) {
+Observer	getHomeBody	src/coreModule/core.cpp	758	observatory	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite() && landscape->getName() == observatory->getHomeBody()->getEnglishName()) {
+Observer	getHomeBody	src/coreModule/core.cpp	758	observatory	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite() && landscape->getName() == observatory->getHomeBody()->getEnglishName()) {
+Observer	isEarth	src/coreModule/core.cpp	765	observatory	if (observatory->isEarth() && landscape->getName() == initialvalue.initial_landscapeName) {
+Navigator	setViewOffsetTransition	src/coreModule/core.cpp	826	navigation	navigation->setViewOffsetTransition(armed ? 1.f : 0.f);
+Navigator	getLocalVision	src/coreModule/core.cpp	833	navigation	return navigation->getLocalVision();
+Navigator	updateTransformMatrices	src/coreModule/core.cpp	838	navigation	navigation->updateTransformMatrices(observatory.get(), timeMgr->getJDay());
+Observer	get	src/coreModule/core.cpp	838	observatory	navigation->updateTransformMatrices(observatory.get(), timeMgr->getJDay());
+Navigator	restoreVision	src/coreModule/core.cpp	839	navigation	navigation->restoreVision(localVision);
+Navigator	updateViewMat	src/coreModule/core.cpp	840	navigation	navigation->updateViewMat(projection->getFov());
+Projector	getFov	src/coreModule/core.cpp	840	projection	navigation->updateViewMat(projection->getFov());
+Navigator	dumpTrace	src/coreModule/core.cpp	847	navigation	navigation->dumpTrace(out);
+Observer	dumpTrace	src/coreModule/core.cpp	849	observatory	observatory->dumpTrace(out);
+Projector	dumpTrace	src/coreModule/core.cpp	851	projection	projection->dumpTrace(out);
+Navigator	setFlagLockEquPos	src/coreModule/core.cpp	870	navigation	navigation->setFlagLockEquPos(b);
+Navigator	getFlagLockEquPos	src/coreModule/core.cpp	878	navigation	return navigation->getFlagLockEquPos();
+Navigator	setViewingMode	src/coreModule/core.cpp	884	navigation	navigation->setViewingMode((m==MOUNT_ALTAZIMUTAL) ? Navigator::VIEW_HORIZON : Navigator::VIEW_EQUATOR);
+Observer	getHomeBody	src/coreModule/core.cpp	931	observatory	std::shared_ptr<Body> p = observatory->getHomeBody();
+Observer	getHomePlanetEnglishName	src/coreModule/core.cpp	946	observatory	ssystemFactory->removeSupplementalBodies(observatory->getHomePlanetEnglishName());
+Observer	getHomePlanetEnglishName	src/coreModule/core.cpp	961	observatory	return observatory->getHomePlanetEnglishName();
+Navigator	getFlagTraking	src/coreModule/core.cpp	1046	navigation	if (navigation->getFlagTraking())
+Observer	isOnBody	src/coreModule/core.cpp	1058	observatory	if (!observatory->isOnBody())
+Observer	getAltitude	src/coreModule/core.cpp	1061	observatory	bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
+Observer	getHomeBody	src/coreModule/core.cpp	1061	observatory	bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
+Projector	unprojectEarthEqu	src/coreModule/core.cpp	1096	projection	projection->unprojectEarthEqu(x, y, v);
+Projector	getFov	src/coreModule/core.cpp	1140	projection	float fov_around = projection->getFov()/std::min(projection->getViewportWidth(), projection->getViewportHeight()) * 30.f;
+Projector	getViewportWidth	src/coreModule/core.cpp	1140	projection	float fov_around = projection->getFov()/std::min(projection->getViewportWidth(), projection->getViewportHeight()) * 30.f;
+Projector	getViewportHeight	src/coreModule/core.cpp	1140	projection	float fov_around = projection->getFov()/std::min(projection->getViewportWidth(), projection->getViewportHeight()) * 30.f;
+Projector	projectEarthEqu	src/coreModule/core.cpp	1143	projection	projection->projectEarthEqu(v, winpos);
+Observer	get	src/coreModule/core.cpp	1151	observatory	temp = ssystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object,
+Navigator	earthEquToJ2000	src/coreModule/core.cpp	1167	navigation	Vec3d p = navigation->earthEquToJ2000(v);
+Projector	projectEarthEqu	src/coreModule/core.cpp	1202	projection	projection->projectEarthEqu((*iter).getEarthEquPos(navigation), winpos);
+Projector	unprojectEarthEqu	src/coreModule/core.cpp	1246	projection	projection->unprojectEarthEqu(x,y,v);
+Projector	zoomTo	src/coreModule/core.cpp	1252	projection	projection->zoomTo(aim_fov, move_duration);
+Navigator	getFlagTraking	src/coreModule/core.cpp	1264	navigation	if (!navigation->getFlagTraking()) {
+Navigator	setFlagTraking	src/coreModule/core.cpp	1265	navigation	navigation->setFlagTraking(true);
+Navigator	moveTo	src/coreModule/core.cpp	1266	navigation	navigation->moveTo(selected_object.getEarthEquPos(navigation), move_duration, false, 1);
+Projector	getFov	src/coreModule/core.cpp	1279	projection	float newfov = projection->getFov()*0.5f;
+Projector	getFov	src/coreModule/core.cpp	1285	projection	if (satfov>0.0 && projection->getFov()*0.9>satfov)
+Projector	getFov	src/coreModule/core.cpp	1289	projection	if (projection->getFov()>closefov)
+Projector	getFov	src/coreModule/core.cpp	1303	projection	float newfov = projection->getFov()*2.f;
+Navigator	moveTo	src/coreModule/core.cpp	1307	navigation	navigation->moveTo(InitViewPos, move_duration, true, -1);
+Projector	getFov	src/coreModule/core.cpp	1327	projection	if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
+Projector	getFov	src/coreModule/core.cpp	1337	projection	if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
+Navigator	moveTo	src/coreModule/core.cpp	1344	navigation	navigation->moveTo(InitViewPos, move_duration, true, -1);
+Navigator	getHeading	src/coreModule/core.cpp	1644	navigation	conf.setDouble (SCS_NAVIGATION, SCK_HEADING, navigation->getHeading());
+Observer	getHomeBody	src/coreModule/core.cpp	1664	observatory	conf.setStr(SCS_INIT_LOCATION , SCK_HOME_PLANET, observatory->getHomeBody()->getEnglishName());
+Projector	unprojectEarthEqu	src/coreModule/core.cpp	1689	projection	projection->unprojectEarthEqu(x,y,v);
+Projector	unprojectEarthEqu	src/coreModule/core.cpp	1698	projection	projection->unprojectEarthEqu(x, y,v);
+Navigator	getViewingMode	src/coreModule/core.cpp	1798	navigation	if (navigation->getViewingMode()==Navigator::VIEW_HORIZON) {
+Projector	unprojectLocal	src/coreModule/core.cpp	1799	projection	projection->unprojectLocal(x2, y2, tempvec2);
+Projector	unprojectLocal	src/coreModule/core.cpp	1800	projection	projection->unprojectLocal(x1, y1, tempvec1);
+Projector	unprojectEarthEqu	src/coreModule/core.cpp	1802	projection	projection->unprojectEarthEqu(x2, y2, tempvec2);
+Projector	unprojectEarthEqu	src/coreModule/core.cpp	1803	projection	projection->unprojectEarthEqu(x1, y1, tempvec1);
+Navigator	updateMove	src/coreModule/core.cpp	1807	navigation	navigation->updateMove(az2-az1, alt1-alt2, projection->getFov());
+Projector	getFov	src/coreModule/core.cpp	1807	projection	navigation->updateMove(az2-az1, alt1-alt2, projection->getFov());
+Navigator	getViewingMode	src/coreModule/core.cpp	1817	nav	(nav->getViewingMode() == Navigator::VIEW_EQUATOR) ? nav->getEquVision()
+Navigator	getEquVision	src/coreModule/core.cpp	1817	nav	(nav->getViewingMode() == Navigator::VIEW_EQUATOR) ? nav->getEquVision()
+Navigator	getLocalVision	src/coreModule/core.cpp	1818	nav	: nav->getLocalVision());
+Projector	getFov	src/coreModule/core.cpp	1832	projection	step.fov = projection->getFov();
+Projector	getFov	src/coreModule/core.cpp	1844	projection	double depl=vzm.move_speed*delta_time*projection->getFov();
+Projector	getFov	src/coreModule/core.cpp	1845	projection	double deplzoom=vzm.zoom_speed*delta_time*projection->getFov();
+Projector	getFov	src/coreModule/core.cpp	1868	projection	if (vzm.deltaFov<-0.15*projection->getFov()) vzm.deltaFov = -0.15*projection->getFov();
+Projector	getFov	src/coreModule/core.cpp	1868	projection	if (vzm.deltaFov<-0.15*projection->getFov()) vzm.deltaFov = -0.15*projection->getFov();
+Observer	multAltitude	src/coreModule/core.cpp	1877	observatory	observatory->multAltitude(vzm.deltaHeight);
+Projector	changeFov	src/coreModule/core.cpp	1883	projection	projection->changeFov(vzm.deltaFov);
+Projector	getFov	src/coreModule/core.cpp	1885	projection	Camera::instance->setHalfFov(projection->getFov() * M_PI / 360, 0);
+Navigator	updateMove	src/coreModule/core.cpp	1892	navigation	navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
+Projector	getFov	src/coreModule/core.cpp	1892	projection	navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
+Navigator	updateMove	src/coreModule/core.cpp	1900	navigation	navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
+Projector	getFov	src/coreModule/core.cpp	1900	projection	navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
+Projector	getFov	src/coreModule/core.cpp	1911	projection	step.fovAfter = projection->getFov();
+Projector	getFov	src/coreModule/core.cpp	2023	projection	s.fovOld = projection->getFov();          // degrees, full angle
+Projector	getAimFov	src/coreModule/core.cpp	2024	projection	s.aimFovOld = projection->getAimFov();    // degrees; == fov when not zooming
+Navigator	getHeading	src/coreModule/core.cpp	2031	navigation	s.headingOldDeg = navigation->getHeading();
+Navigator	getFlagAutoMove	src/coreModule/core.cpp	2032	navigation	s.flags = (navigation->getFlagAutoMove() ? 1u : 0u)
+Navigator	getFlagChangeHeading	src/coreModule/core.cpp	2033	navigation	| (navigation->getFlagChangeHeading() ? 2u : 0u)
+Navigator	getFlagTraking	src/coreModule/core.cpp	2034	navigation	| (navigation->getFlagTraking() ? 4u : 0u);
+Navigator	getMoveCoef	src/coreModule/core.cpp	2035	navigation	s.moveCoefOld = navigation->getMoveCoef();
+Navigator	getHelioToEyeMat	src/coreModule/core.cpp	2047	navigation	const Mat4d &he = navigation->getHelioToEyeMat();
+Navigator	getLocalVision	src/coreModule/core.cpp	2053	navigation	const Vec3f ol = Camera::oldLocalToLocal(Vec3f(navigation->getLocalVision()));
+Navigator	getObserverHelioPos	src/coreModule/core.cpp	2061	navigation	const Vec3d oldPos = navigation->getObserverHelioPos();
+Navigator	getHeading	src/coreModule/core.cpp	2067	navigation	s.headingOldDeg = navigation->getHeading();
+Observer	getLongitude	src/coreModule/core.cpp	2071	observatory	s.dLonDeg = observatory->getLongitude() - place[0] * (180. / M_PI);
+Observer	getLatitude	src/coreModule/core.cpp	2072	observatory	s.dLatDeg = observatory->getLatitude() - place[1] * (180. / M_PI);
+Observer	getAltitude	src/coreModule/core.cpp	2073	observatory	s.dAltMetres = observatory->getAltitude()
+Navigator	getMoveCoef	src/coreModule/core.cpp	2078	navigation	s.moveCoefOld = navigation->getMoveCoef();
+Observer	getHomePlanetEnglishName	src/coreModule/core.cpp	2092	observatory	&& ref->getEnglishName() == observatory->getHomePlanetEnglishName();
+Navigator	getFlagAutoMove	src/coreModule/core.cpp	2093	navigation	s.flags = (navigation->getFlagAutoMove() ? 1u : 0u)
+Navigator	getFlagChangeHeading	src/coreModule/core.cpp	2094	navigation	| (navigation->getFlagChangeHeading() ? 2u : 0u)
+Navigator	getFlagTraking	src/coreModule/core.cpp	2095	navigation	| (navigation->getFlagTraking() ? 4u : 0u)
+Navigator	setFlagTraking	src/coreModule/core.cpp	2492	navigation	navigation->setFlagTraking(0);
+Navigator	getFlagTraking	src/coreModule/core.cpp	2495	navigation	} else if ( !navigation->getFlagTraking()) {
+Navigator	moveTo	src/coreModule/core.cpp	2496	navigation	navigation->moveTo(selected_object.getEarthEquPos(navigation), getAutoMoveDuration());
+Navigator	setFlagTraking	src/coreModule/core.cpp	2497	navigation	navigation->setFlagTraking(1);
+Navigator	setViewOffset	src/coreModule/core.cpp	2542	navigation	navigation->setViewOffset(off);
+Navigator	setLocalVision	src/coreModule/core.cpp	2545	navigation	navigation->setLocalVision(InitViewPos);
+Navigator	moveTo	src/coreModule/core.cpp	2630	navigation	navigation->moveTo(navigation->helioToEarthPosEqu(observatory->getObserverCenterPoint()), duration);
+Navigator	helioToEarthPosEqu	src/coreModule/core.cpp	2630	navigation	navigation->moveTo(navigation->helioToEarthPosEqu(observatory->getObserverCenterPoint()), duration);
+Observer	getObserverCenterPoint	src/coreModule/core.cpp	2630	observatory	navigation->moveTo(navigation->helioToEarthPosEqu(observatory->getObserverCenterPoint()), duration);
+Navigator	getFlagTraking	src/coreModule/core.hpp	218	navigation	return navigation->getFlagTraking();
+Navigator	getViewingMode	src/coreModule/core.hpp	230	navigation	return ((navigation->getViewingMode()==Navigator::VIEW_HORIZON) ? MOUNT_ALTAZIMUTAL : MOUNT_EQUATORIAL);
+Navigator	moveTo	src/coreModule/core.hpp	241	navigation	navigation->moveTo( selected_object.getEarthEquPos(navigation), auto_move_duration);
+Navigator	updateMove	src/coreModule/core.hpp	247	navigation	navigation->updateMove(delta_az, delta_alt, projection->getFov(), duration);
+Projector	getFov	src/coreModule/core.hpp	247	projection	navigation->updateMove(delta_az, delta_alt, projection->getFov(), duration);
+Observer	get	src/coreModule/core.hpp	373	observatory	return selected_object.getShortInfoNavString(navigation, timeMgr.get(), observatory.get());
+Observer	getLatitude	src/coreModule/coreLink.cpp	575	observatory	<< ",\"old\":" << core->observatory->getLatitude()
+Observer	getLongitude	src/coreModule/coreLink.cpp	578	observatory	<< ",\"old\":" << core->observatory->getLongitude()
+Observer	getLongitudeForDisplay	src/coreModule/coreLink.cpp	581	observatory	<< ",\"old\":" << core->observatory->getLongitudeForDisplay()
+Observer	getAltitude	src/coreModule/coreLink.cpp	584	observatory	<< ",\"old\":" << core->observatory->getAltitude()
+Navigator	getHeading	src/coreModule/coreLink.cpp	587	navigation	<< ",\"old\":" << core->navigation->getHeading()
+Navigator	getViewOffset	src/coreModule/coreLink.cpp	590	navigation	<< ",\"old\":" << core->navigation->getViewOffset()
+Navigator	getViewingMode	src/coreModule/coreLink.cpp	593	navigation	<< "\",\"old\":\"" << mnt(core->navigation->getViewingMode() == Navigator::VIEW_HORIZON) << "\"}"
+Navigator	getFlagLockEquPos	src/coreModule/coreLink.cpp	595	navigation	<< ",\"old\":" << b(core->navigation->getFlagLockEquPos() != 0)
+Projector	zoomTo	src/coreModule/coreLink.hpp	312	projection	core->projection->zoomTo(aim_fov, move_duration);
+Projector	getFov	src/coreModule/coreLink.hpp	318	projection	return core->projection->getFov();
+Projector	getAimFov	src/coreModule/coreLink.hpp	323	projection	return core->projection->getAimFov();
+Projector	setFov	src/coreModule/coreLink.hpp	328	projection	core->projection->setFov(f);
+Projector	setMaxFov	src/coreModule/coreLink.hpp	334	projection	core->projection->setMaxFov(f);
+Navigator	lookAt	src/coreModule/coreLink.hpp	378	navigation	return core->navigation->lookAt(az, alt, time);
+Observer	getLatitude	src/coreModule/coreLink.hpp	798	observatory	return core->observatory->getLatitude();
+Observer	getLongitude	src/coreModule/coreLink.hpp	805	observatory	return core->observatory->getLongitude();
+Observer	getLongitudeForDisplay	src/coreModule/coreLink.hpp	813	observatory	return core->observatory->getLongitudeForDisplay();
+Observer	getAltitude	src/coreModule/coreLink.hpp	820	observatory	return core->observatory->getAltitude();
+Observer	getDefaultLatitude	src/coreModule/coreLink.hpp	824	observatory	return core->observatory->getDefaultLatitude();
+Observer	getDefaultLongitude	src/coreModule/coreLink.hpp	828	observatory	return core->observatory->getDefaultLongitude();
+Observer	getDefaultAltitude	src/coreModule/coreLink.hpp	832	observatory	return core->observatory->getDefaultAltitude();
+Observer	setLatitude	src/coreModule/coreLink.hpp	836	observatory	core->observatory->setLatitude(l);
+Observer	setLongitude	src/coreModule/coreLink.hpp	841	observatory	core->observatory->setLongitude(l);
+Observer	setAltitude	src/coreModule/coreLink.hpp	849	observatory	core->observatory->setAltitude(l);
+Observer	getHomePlanetEnglishName	src/coreModule/coreLink.hpp	854	observatory	return core->observatory->getHomePlanetEnglishName();
+Observer	getHomeBody	src/coreModule/coreLink.hpp	858	observatory	return core->observatory->getHomeBody();
+Observer	moveTo	src/coreModule/coreLink.hpp	889	observatory	core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
+Observer	moveRelLon	src/coreModule/coreLink.hpp	895	observatory	core->observatory->moveRelLon(lon, delay);
+Observer	moveRelLat	src/coreModule/coreLink.hpp	900	observatory	core->observatory->moveRelLat(lat, delay);
+Observer	moveRelAlt	src/coreModule/coreLink.hpp	905	observatory	core->observatory->moveRelAlt(alt, delay);
+Observer	setConf	src/coreModule/coreLink.hpp	910	observatory	core->observatory->setConf(conf,section);
+Observer	getObserverCenterPoint	src/coreModule/coreLink.hpp	914	observatory	std::cout << core->observatory->getObserverCenterPoint() << std::endl;
+Observer	setQuaternionMode	src/coreModule/coreLink.hpp	918	observatory	core->observatory->setQuaternionMode(mode);
+Observer	getQuaternionMode	src/coreModule/coreLink.hpp	922	observatory	return core->observatory->getQuaternionMode();
+Observer	setEyeRelativeMode	src/coreModule/coreLink.hpp	926	observatory	core->observatory->setEyeRelativeMode(mode);
+Observer	getEyeRelativeMode	src/coreModule/coreLink.hpp	935	observatory	return core->observatory->getEyeRelativeMode();
+Navigator	setHeading	src/coreModule/coreLink.hpp	940	navigation	core->navigation->setHeading(core->navigation->getHeading() + f);
+Navigator	getHeading	src/coreModule/coreLink.hpp	940	navigation	core->navigation->setHeading(core->navigation->getHeading() + f);
+Navigator	getViewOffset	src/coreModule/coreLink.hpp	987	navigation	return core->navigation->getViewOffset();
+Navigator	changeHeading	src/coreModule/coreLink.hpp	993	navigation	core->navigation->changeHeading(heading, duration);
+Navigator	setDefaultHeading	src/coreModule/coreLink.hpp	999	navigation	core->navigation->setDefaultHeading();
+Navigator	getHeading	src/coreModule/coreLink.hpp	1005	navigation	return core->navigation->getHeading();
+Navigator	getLocalVision	src/coreModule/coreLink.hpp	1012	navigation	return core->navigation->getLocalVision();
+Navigator	setLocalVision	src/coreModule/coreLink.hpp	1016	navigation	core->navigation->setLocalVision(_pos);
+Navigator	getLocalToEyeMat	src/coreModule/fog.cpp	133	nav	drawEnv(nav->getLocalToEyeMat().convert());
+Projector	getFov	src/coreModule/illuminate_mgr.cpp	200	prj	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
+Projector	getFov	src/coreModule/illuminate_mgr.cpp	200	prj	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
+Projector	getViewportWidth	src/coreModule/illuminate_mgr.cpp	200	prj	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
+Projector	getViewportHeight	src/coreModule/illuminate_mgr.cpp	200	prj	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
+Navigator	getPrecEquVision	src/coreModule/illuminate_mgr.cpp	201	nav	illuminateGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f);
+Projector	getMatJ2000ToEye	src/coreModule/illuminate_mgr.cpp	217	prj	auto tmp1 = prj->getMatJ2000ToEye();
+Navigator	getLocalToEyeMat	src/coreModule/landscape.cpp	271	nav	drawEnv(nav->getLocalToEyeMat().convert());
+Navigator	helioToEarthEqu	src/coreModule/meteor.cpp	126	nav	Vec3d sun_dir = nav->helioToEarthEqu( Vec3d(0,0,0) );
+Navigator	localToEarthEqu	src/coreModule/meteor.cpp	150	nav	obs = nav->localToEarthEqu(Vec3d(0,0,EARTH_RADIUS));
+Observer	transfo4d	src/coreModule/meteor.cpp	151	obs	obs.transfo4d(mmat.transpose());
+Projector	getFov	src/coreModule/meteor.cpp	221	proj	rmag = rmag/powf(proj->getFov(),0.85f)*50.f;
+Navigator	earthEquToLocal	src/coreModule/meteor.cpp	294	nav	spos = nav->earthEquToLocal( spos );
+Navigator	earthEquToLocal	src/coreModule/meteor.cpp	295	nav	epos = nav->earthEquToLocal( epos );
+Projector	projectLocalCheck	src/coreModule/meteor.cpp	299	proj	int t1 = proj->projectLocalCheck(spos/1216, start);  // 1216 is to scale down under 1 for desktop version
+Projector	projectLocalCheck	src/coreModule/meteor.cpp	300	proj	int t2 = proj->projectLocalCheck(epos/1216, end);
+Navigator	earthEquToLocal	src/coreModule/meteor.cpp	314	nav	posi = nav->earthEquToLocal( posi );
+Projector	projectLocal	src/coreModule/meteor.cpp	316	proj	proj->projectLocal(posi/1216, intpos);
+Navigator	helioToEarthEqu	src/coreModule/meteor_mgr.cpp	42	nav	Vec3d sun_dir = nav->helioToEarthEqu( Vec3d(0,0,0) );
+Navigator	getObserverHelioPos	src/coreModule/milkyway.cpp	197	nav	Vec3d forward = -nav->getObserverHelioPos();
+Navigator	getHelioToEyeMat	src/coreModule/milkyway.cpp	201	nav	Mat4d h2e = nav->getHelioToEyeMat();
+Navigator	getJ2000ToEyeMat	src/coreModule/milkyway.cpp	208	nav	drawEnv(eye, nav->getJ2000ToEyeMat(), julianDay, zi);
+Navigator	j2000ToEarthEqu	src/coreModule/nebula.cpp	228	nav	Vec3d equPos = nav->j2000ToEarthEqu(XYZ);
+Navigator	earthEquToLocal	src/coreModule/nebula.cpp	246	nav	Vec3d localPos = nav->earthEquToLocal(equPos);
+Projector	getMatJ2000ToEye	src/coreModule/nebula.cpp	336	prj	Context::instance->helper->beginNebulaDraw(prj->getMatJ2000ToEye());
+Projector	getViewportHeight	src/coreModule/nebula.cpp	359	prj	float minZoom = prj->getViewportHeight()/75.;
+Projector	getViewportHeight	src/coreModule/nebula.cpp	360	prj	float maxZoom = prj->getViewportHeight()/10.;
+Projector	printGravity180	src/coreModule/nebula.cpp	418	prj	prj->printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);
+Projector	printGravity180	src/coreModule/nebula.cpp	422	prj	prj->printGravity180(nebulaFont, XY[0]-shift-40, XY[1]+-shift-40, credit, Color, 0, 0);
+Navigator	j2000ToEarthEqu	src/coreModule/nebula.hpp	85	nav	return nav->j2000ToEarthEqu(XYZ);
+Projector	getViewportHeight	src/coreModule/nebula.hpp	153	prj	return m_angular_size * (180./M_PI) * (prj->getViewportHeight()/prj->getFov());
+Projector	getFov	src/coreModule/nebula.hpp	153	prj	return m_angular_size * (180./M_PI) * (prj->getViewportHeight()/prj->getFov());
+Projector	projectJ2000	src/coreModule/nebula.hpp	161	prj	prj->projectJ2000(XYZ, XY);
+Projector	getFov	src/coreModule/nebula_mgr.cpp	175	prj	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
+Projector	getFov	src/coreModule/nebula_mgr.cpp	175	prj	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
+Projector	getViewportWidth	src/coreModule/nebula_mgr.cpp	175	prj	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
+Projector	getViewportHeight	src/coreModule/nebula_mgr.cpp	175	prj	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
+Navigator	getPrecEquVision	src/coreModule/nebula_mgr.cpp	176	nav	nebGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
+Projector	getFov	src/coreModule/nebula_mgr.cpp	182	prj	const float size_limit = 5.0 * (M_PI/180.0) * (prj->getFov()/prj->getViewportHeight());
+Projector	getViewportHeight	src/coreModule/nebula_mgr.cpp	182	prj	const float size_limit = 5.0 * (M_PI/180.0) * (prj->getFov()/prj->getViewportHeight());
+Navigator	getHelioToEyeMat	src/coreModule/oort.cpp	147	nav	*uMat = nav->getHelioToEyeMat().convert();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	208	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatLocalToEye	src/coreModule/skyDisplay.cpp	226	prj	*uMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
+Projector	getMatEarthEquToEye	src/coreModule/skyDisplay.cpp	226	prj	*uMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
+Navigator	earthEquToLocal	src/coreModule/skyDisplay.cpp	369	nav	Vec3d localPos = nav->earthEquToLocal(equPos);
+Projector	getFov	src/coreModule/skyDisplay.cpp	428	prj	double fov = prj->getFov() / 360.f;
+Navigator	earthEquToLocal	src/coreModule/skyDisplay.cpp	437	nav	Vec3d localPos = nav->earthEquToLocal(equPos);
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	459	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	494	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	531	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	561	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getCursorPosEqu	src/coreModule/skyDisplay.cpp	596	prj	Vec3d equPos = prj->getCursorPosEqu(x, y);
+Projector	getFov	src/coreModule/skyDisplay.cpp	601	prj	double fov = prj->getFov() / 360.f;
+Navigator	earthEquToLocal	src/coreModule/skyDisplay.cpp	610	nav	Vec3d localPos = nav->earthEquToLocal(equPos);
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	632	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	669	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	709	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	742	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Navigator	earthEquToLocal	src/coreModule/skyDisplay.cpp	781	nav	Vec3d localPos = nav->earthEquToLocal(equPos);
+Navigator	earthEquToLocal	src/coreModule/skyDisplay.cpp	792	nav	localPos = nav->earthEquToLocal(oldEquPos);
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	851	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	931	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Navigator	earthEquToLocal	src/coreModule/skyDisplay.cpp	952	nav	Vec3d localPos = nav->earthEquToLocal(equPos);
+Navigator	earthEquToLocal	src/coreModule/skyDisplay.cpp	963	nav	localPos = nav->earthEquToLocal(oldEquPos);
+Projector	getMatProjectionOrtho2D	src/coreModule/skyDisplay.cpp	1022	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatEarthEquToEye	src/coreModule/skygrid.cpp	228	prj	*uMat = prj->getMatEarthEquToEye();
+Projector	getMatEarthEquToEye	src/coreModule/skygrid.cpp	231	prj	*uMat = prj->getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(M_PI/180));
+Projector	getMatJ2000ToEye	src/coreModule/skygrid.cpp	234	prj	*uMat = prj->getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(M_PI/180))*Mat4f::yrotation(-61.8717*(M_PI/180))*Mat4f::zrotation(55.5*(M_PI/180));
+Projector	getMatLocalToEye	src/coreModule/skygrid.cpp	237	prj	*uMat = prj->getMatLocalToEye();
+Projector	getMatProjectionOrtho2D	src/coreModule/skygrid.cpp	249	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Observer	getAltitude	src/coreModule/skyline.cpp	201	observatory	if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+Observer	getHomeBody	src/coreModule/skyline.cpp	201	observatory	if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+Observer	isEarth	src/coreModule/skyline.cpp	266	observatory	if (!(observatory->isEarth())) return;
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	320	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Observer	getLatitude	src/coreModule/skyline.cpp	388	observatory	inclination=(90.0-abs(observatory->getLatitude()))*M_PI/180.;
+Observer	isEarth	src/coreModule/skyline.cpp	467	observatory	if (!(observatory->isEarth()))return;
+Observer	getLongitude	src/coreModule/skyline.cpp	483	observatory	longitude=observatory->getLongitude();
+Observer	isEarth	src/coreModule/skyline.cpp	613	observatory	if (!(observatory->isEarth())) return;
+Observer	getLatitude	src/coreModule/skyline.cpp	620	observatory	latitude=(observatory->getLatitude()*M_PI/180)+M_PI/2;
+Observer	getLongitude	src/coreModule/skyline.cpp	621	observatory	double longitude=(observatory->getLongitude()*M_PI/180);
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	650	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Observer	isEarth	src/coreModule/skyline.cpp	678	observatory	if (!(observatory->isEarth())) return;
+Observer	getLatitude	src/coreModule/skyline.cpp	685	observatory	latitude=(observatory->getLatitude()*M_PI/180)+M_PI/2;
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	712	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	803	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	865	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Observer	getAltitude	src/coreModule/skyline.cpp	927	observatory	if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+Observer	getHomeBody	src/coreModule/skyline.cpp	927	observatory	if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	975	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	1036	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Observer	isOnBody	src/coreModule/skyline.cpp	1099	observatory	if (!observatory->isOnBody())
+Observer	getHomeBody	src/coreModule/skyline.cpp	1103	observatory	if ( (observatory->getHomeBody()->isSatellite()) || observatory->isSun()) return;
+Observer	isSun	src/coreModule/skyline.cpp	1103	observatory	if ( (observatory->getHomeBody()->isSatellite()) || observatory->isSun()) return;
+Observer	getAltitude	src/coreModule/skyline.cpp	1106	observatory	if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+Observer	getHomeBody	src/coreModule/skyline.cpp	1106	observatory	if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+Observer	getHomeBody	src/coreModule/skyline.cpp	1115	observatory	inclination=observatory->getHomeBody()->getAxialTilt()*M_PI/180.;
+Observer	isOnBody	src/coreModule/skyline.cpp	1239	observatory	if (!observatory->isOnBody())
+Observer	getRotEquatorialToVsop87	src/coreModule/skyline.cpp	1246	observatory	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
+Observer	isEarth	src/coreModule/skyline.cpp	1248	observatory	bool draw_labels = (observatory->isEarth() && font);
+Projector	projectEarthEqu	src/coreModule/skyline.cpp	1254	prj	bool prev_on_screen = prj->projectEarthEqu(point,pt1);
+Projector	projectEarthEqu	src/coreModule/skyline.cpp	1260	prj	const bool on_screen = prj->projectEarthEqu(point,pt2);
+Observer	isEarth	src/coreModule/skyline.cpp	1332	observatory	if (observatory->isEarth()) {
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	1341	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Observer	isOnBody	src/coreModule/skyline.cpp	1375	observatory	if (!observatory->isOnBody())
+Observer	isEarth	src/coreModule/skyline.cpp	1378	observatory	if(!(observatory->isEarth())) return;
+Observer	getRotEquatorialToVsop87	src/coreModule/skyline.cpp	1385	observatory	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
+Projector	projectEarthEqu	src/coreModule/skyline.cpp	1396	prj	prev_on_screen = prj->projectEarthEqu(point,pt1);
+Projector	projectEarthEqu	src/coreModule/skyline.cpp	1402	prj	const bool on_screen = prj->projectEarthEqu(point,pt2);
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	1442	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	1531	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	1629	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Projector	getMatProjectionOrtho2D	src/coreModule/skyline.cpp	1671	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Navigator	helioToLocal	src/coreModule/skyline.cpp	1745	nav	Vec3d shadow_local = nav->helioToLocal(shadow_pos_helio);
+Navigator	getHelioToEyeMat	src/coreModule/starLines.cpp	352	nav	Mat4f matrix=nav->getHelioToEyeMat().convert();
+Projector	getMatJ2000ToEye	src/coreModule/starLines.cpp	367	prj	Mat4f matrix= prj-> getMatJ2000ToEye()*Mat4f::xrotation(-M_PI_2);
+Navigator	helioToEarthPosEqu	src/coreModule/tully.cpp	478	nav	auto tmp = nav->helioToEarthPosEqu(pos);
+Projector	printGravity180	src/coreModule/tully.cpp	490	prj	prj->printGravity180(font, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
+Navigator	getHelioToEyeMat	src/coreModule/tully.cpp	503	nav	Mat4f matrix= nav->getHelioToEyeMat().convert();
+Navigator	getObserverHelioPos	src/coreModule/tully.cpp	504	nav	camPos = nav->getObserverHelioPos();
+Navigator	helioToEarthPosEqu	src/coreModule/tully.cpp	571	nav	pos = nav->helioToEarthPosEqu(pos);
+Projector	projectEarthEqu	src/coreModule/tully.cpp	574	prj	prj->projectEarthEqu(pos, screenposd);
+Navigator	j2000ToEarthEqu	src/coreModule/tullyWrapper.cpp	29	nav	const Vec3d equatorial_pos = nav->j2000ToEarthEqu(j2000_pos);
+Navigator	earthEquToLocal	src/coreModule/tullyWrapper.cpp	49	nav	Utility::rectToSphe(&az,&alt,nav->earthEquToLocal(equatorial_pos));
+Navigator	getHelioToEyeMat	src/coreModule/volumObj3D.cpp	267	nav	Mat4f mat = nav->getHelioToEyeMat().convert() * model;
+Projector	getClippingFov	src/coreModule/volumObj3D.cpp	284	prj	transform->clipping_fov = prj->getClippingFov();
+Projector	getFov	src/coreModule/volumObj3D.cpp	297	prj	inTransform->fov = prj->getFov()*M_PI/360;
+Navigator	getHelioToEyeMat	src/coreModule/volumObj3D.cpp	311	nav	Mat4f mat = nav->getHelioToEyeMat().convert() * model;
+Projector	getFov	src/coreModule/volumObj3D.cpp	339	prj	inTransform->fov = prj->getFov()*M_PI/360;
+Navigator	getHelioToEyeMat	src/coreModule/volumObj3D.cpp	350	nav	Mat4f mat = nav->getHelioToEyeMat().convert() * model;
+Projector	getClippingFov	src/coreModule/volumObj3D.cpp	353	prj	transform->clipping_fov = prj->getClippingFov();
+Observer	getAltitude	src/executorModule/executor.hpp	68	observer	updateMode(observer->getAltitude());
+Observer	getAltitude	src/executorModule/inGalaxyModule.cpp	57	observer	if (observer->getAltitude() < minAltToGoDown) {
+Observer	setAltitude	src/executorModule/inGalaxyModule.cpp	59	observer	observer->setAltitude(maxAltToGoUp);
+Observer	getAltitude	src/executorModule/inGalaxyModule.cpp	61	observer	if (observer->getAltitude() > maxAltToGoUp) {
+Observer	setAltitude	src/executorModule/inGalaxyModule.cpp	63	observer	observer->setAltitude(minAltToGoDown);
+Observer	update	src/executorModule/inGalaxyModule.cpp	80	observer	observer->update(delta_time);
+Navigator	update	src/executorModule/inGalaxyModule.cpp	82	navigation	core->navigation->update(delta_time);
+Navigator	updateTransformMatrices	src/executorModule/inGalaxyModule.cpp	90	navigation	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
+Navigator	updateVisionVector	src/executorModule/inGalaxyModule.cpp	92	navigation	core->navigation->updateVisionVector(delta_time, core->selected_object);
+Projector	updateAutoZoom	src/executorModule/inGalaxyModule.cpp	94	projection	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
+Projector	setModelViewMatrices	src/executorModule/inGalaxyModule.cpp	105	projection	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+Navigator	getEarthEquToEyeMat	src/executorModule/inGalaxyModule.cpp	105	navigation	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+Navigator	getEarthEquToEyeMatFixed	src/executorModule/inGalaxyModule.cpp	106	navigation	core->navigation->getEarthEquToEyeMatFixed(),
+Navigator	getHelioToEyeMat	src/executorModule/inGalaxyModule.cpp	107	navigation	core->navigation->getHelioToEyeMat(),
+Navigator	getLocalToEyeMat	src/executorModule/inGalaxyModule.cpp	108	navigation	core->navigation->getLocalToEyeMat(),
+Navigator	getJ2000ToEyeMat	src/executorModule/inGalaxyModule.cpp	109	navigation	core->navigation->getJ2000ToEyeMat(),
+Navigator	geTdomeMat	src/executorModule/inGalaxyModule.cpp	110	navigation	core->navigation->geTdomeMat(),
+Navigator	getDomeFixedMat	src/executorModule/inGalaxyModule.cpp	111	navigation	core->navigation->getDomeFixedMat());
+Observer	getAltitude	src/executorModule/inGalaxyModule.cpp	113	observer	ScreenFaderInterludeEvent::UP, maxAltToGoUp/2.0,maxAltToGoUp, observer->getAltitude());
+Navigator	getObserverHelioPos	src/executorModule/inGalaxyModule.cpp	121	navigation	core->starNav->computePosition(core->navigation->getObserverHelioPos());
+Navigator	getObserverHelioPos	src/executorModule/inGalaxyModule.cpp	122	navigation	core->cloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+Navigator	getObserverHelioPos	src/executorModule/inGalaxyModule.cpp	123	navigation	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+Observer	getAltitude	src/executorModule/inGalaxyModule.cpp	138	observer	core->dso3d->draw(observer->getAltitude(), core->projection, core->navigation);
+Observer	getAltitude	src/executorModule/inSandBoxModule.cpp	57	observer	if (observer->getAltitude() < minAltToGoDown) {
+Observer	setAltitude	src/executorModule/inSandBoxModule.cpp	59	observer	observer->setAltitude(maxAltToGoUp);
+Observer	getAltitude	src/executorModule/inSandBoxModule.cpp	61	observer	if (observer->getAltitude() > maxAltToGoUp) {
+Observer	setAltitude	src/executorModule/inSandBoxModule.cpp	63	observer	observer->setAltitude(minAltToGoDown);
+Observer	update	src/executorModule/inSandBoxModule.cpp	80	observer	observer->update(delta_time);
+Observer	getAltitude	src/executorModule/inSandBoxModule.cpp	108	observer	ScreenFaderInterludeEvent::UP, maxAltToGoUp/2.0,maxAltToGoUp, observer->getAltitude());
+Observer	setAltitude	src/executorModule/inUniverseModule.cpp	55	observer	observer->setAltitude(minAltToGoDown);
+Observer	update	src/executorModule/inUniverseModule.cpp	73	observer	observer->update(delta_time);
+Navigator	update	src/executorModule/inUniverseModule.cpp	74	navigation	core->navigation->update(delta_time);
+Navigator	updateTransformMatrices	src/executorModule/inUniverseModule.cpp	76	navigation	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
+Navigator	updateVisionVector	src/executorModule/inUniverseModule.cpp	78	navigation	core->navigation->updateVisionVector(delta_time, core->selected_object);
+Projector	updateAutoZoom	src/executorModule/inUniverseModule.cpp	80	projection	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
+Projector	setModelViewMatrices	src/executorModule/inUniverseModule.cpp	90	projection	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+Navigator	getEarthEquToEyeMat	src/executorModule/inUniverseModule.cpp	90	navigation	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+Navigator	getEarthEquToEyeMatFixed	src/executorModule/inUniverseModule.cpp	91	navigation	core->navigation->getEarthEquToEyeMatFixed(),
+Navigator	getHelioToEyeMat	src/executorModule/inUniverseModule.cpp	92	navigation	core->navigation->getHelioToEyeMat(),
+Navigator	getLocalToEyeMat	src/executorModule/inUniverseModule.cpp	93	navigation	core->navigation->getLocalToEyeMat(),
+Navigator	getJ2000ToEyeMat	src/executorModule/inUniverseModule.cpp	94	navigation	core->navigation->getJ2000ToEyeMat(),
+Navigator	geTdomeMat	src/executorModule/inUniverseModule.cpp	95	navigation	core->navigation->geTdomeMat(),
+Navigator	getDomeFixedMat	src/executorModule/inUniverseModule.cpp	96	navigation	core->navigation->getDomeFixedMat());
+Observer	getAltitude	src/executorModule/inUniverseModule.cpp	98	observer	ScreenFaderInterludeEvent::DOWN, minAltToGoDown,1.3*minAltToGoDown, observer->getAltitude());
+Navigator	getObserverHelioPos	src/executorModule/inUniverseModule.cpp	106	navigation	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+Observer	getAltitude	src/executorModule/inUniverseModule.cpp	115	observer	core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
+Observer	getAltitude	src/executorModule/inUniverseModule.cpp	119	observer	core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
+Observer	setAltitude	src/executorModule/inUniverseModule.cpp	138	observer	observer->setAltitude(maxAltToGoUp);
+Observer	getAltitude	src/executorModule/solarSystemModule.cpp	73	observer	if (observer->getAltitude() < maxAltToGoUp)
+Observer	setAltitude	src/executorModule/solarSystemModule.cpp	74	observer	observer->setAltitude(observer->getAltitude() *1.E6);
+Observer	getAltitude	src/executorModule/solarSystemModule.cpp	74	observer	observer->setAltitude(observer->getAltitude() *1.E6);
+Observer	update	src/executorModule/solarSystemModule.cpp	104	observer	observer->update(delta_time);
+Navigator	update	src/executorModule/solarSystemModule.cpp	106	navigation	core->navigation->update(delta_time);
+Navigator	updateTransformMatrices	src/executorModule/solarSystemModule.cpp	114	navigation	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
+Navigator	updateVisionVector	src/executorModule/solarSystemModule.cpp	116	navigation	core->navigation->updateVisionVector(delta_time, core->selected_object);
+Projector	updateAutoZoom	src/executorModule/solarSystemModule.cpp	118	projection	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
+Navigator	helioToLocal	src/executorModule/solarSystemModule.cpp	127	navigation	Vec3d sunPos = core->navigation->helioToLocal(temp);
+Navigator	helioToLocal	src/executorModule/solarSystemModule.cpp	131	navigation	Vec3d moonPos = core->navigation->helioToLocal(moon);
+Projector	setModelViewMatrices	src/executorModule/solarSystemModule.cpp	135	projection	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+Navigator	getEarthEquToEyeMat	src/executorModule/solarSystemModule.cpp	135	navigation	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+Navigator	getEarthEquToEyeMatFixed	src/executorModule/solarSystemModule.cpp	136	navigation	core->navigation->getEarthEquToEyeMatFixed(),
+Navigator	getHelioToEyeMat	src/executorModule/solarSystemModule.cpp	137	navigation	core->navigation->getHelioToEyeMat(),
+Navigator	getLocalToEyeMat	src/executorModule/solarSystemModule.cpp	138	navigation	core->navigation->getLocalToEyeMat(),
+Navigator	getJ2000ToEyeMat	src/executorModule/solarSystemModule.cpp	139	navigation	core->navigation->getJ2000ToEyeMat(),
+Navigator	geTdomeMat	src/executorModule/solarSystemModule.cpp	140	navigation	core->navigation->geTdomeMat(),
+Navigator	getDomeFixedMat	src/executorModule/solarSystemModule.cpp	141	navigation	core->navigation->getDomeFixedMat());
+Observer	getAltitude	src/executorModule/solarSystemModule.cpp	191	observer	core->oort->draw(observer->getAltitude(), core->navigation);
+Observer	getAltitude	src/executorModule/solarSystemModule.cpp	195	observatory	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+Observer	get	src/executorModule/solarSystemModule.cpp	197	observatory	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
+Observer	getLatitude	src/executorModule/solarSystemModule.cpp	236	observer	core->cardinals_points->draw(core->projection, observer->getLatitude());
+Observer	getLatitude	src/executorModule/solarSystemModule.cpp	277	observer	core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
+Observer	getAltitude	src/executorModule/solarSystemModule.cpp	277	observer	core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
+Observer	getAltitude	src/executorModule/solarSystemModule.cpp	279	observatory	core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), co
+Observer	getObserverCenterPoint	src/executorModule/stellarSystemModule.cpp	75	observer	center = observer->getObserverCenterPoint();
+Observer	update	src/executorModule/stellarSystemModule.cpp	101	observer	observer->update(delta_time);
+Navigator	update	src/executorModule/stellarSystemModule.cpp	103	navigation	core->navigation->update(delta_time);
+Observer	getAltitude	src/executorModule/stellarSystemModule.cpp	105	observatory	if (core->selected_object && core->observatory->getAltitude() <= 7.91706e+08){
+Observer	getAltitude	src/executorModule/stellarSystemModule.cpp	111	observatory	if (core->selected_object && core->observatory->getAltitude() >= 7.91706e+08){
+Navigator	updateTransformMatrices	src/executorModule/stellarSystemModule.cpp	126	navigation	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
+Navigator	updateVisionVector	src/executorModule/stellarSystemModule.cpp	128	navigation	core->navigation->updateVisionVector(delta_time, core->selected_object);
+Projector	updateAutoZoom	src/executorModule/stellarSystemModule.cpp	130	projection	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
+Navigator	helioToLocal	src/executorModule/stellarSystemModule.cpp	138	navigation	Vec3d sunPos = core->navigation->helioToLocal(ProtoSystem::getCenterPos());
+Navigator	helioToLocal	src/executorModule/stellarSystemModule.cpp	142	navigation	Vec3d moonPos = core->navigation->helioToLocal(moon);
+Projector	setModelViewMatrices	src/executorModule/stellarSystemModule.cpp	145	projection	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+Navigator	getEarthEquToEyeMat	src/executorModule/stellarSystemModule.cpp	145	navigation	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+Navigator	getEarthEquToEyeMatFixed	src/executorModule/stellarSystemModule.cpp	146	navigation	core->navigation->getEarthEquToEyeMatFixed(),
+Navigator	getHelioToEyeMat	src/executorModule/stellarSystemModule.cpp	147	navigation	core->navigation->getHelioToEyeMat(),
+Navigator	getLocalToEyeMat	src/executorModule/stellarSystemModule.cpp	148	navigation	core->navigation->getLocalToEyeMat(),
+Navigator	getJ2000ToEyeMat	src/executorModule/stellarSystemModule.cpp	149	navigation	core->navigation->getJ2000ToEyeMat(),
+Navigator	geTdomeMat	src/executorModule/stellarSystemModule.cpp	150	navigation	core->navigation->geTdomeMat(),
+Navigator	getDomeFixedMat	src/executorModule/stellarSystemModule.cpp	151	navigation	core->navigation->getDomeFixedMat());
+Observer	get	src/executorModule/stellarSystemModule.cpp	204	observatory	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
+Observer	getLatitude	src/executorModule/stellarSystemModule.cpp	238	observer	core->cardinals_points->draw(core->projection, observer->getLatitude());
+Observer	getLatitude	src/executorModule/stellarSystemModule.cpp	280	observer	core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
+Observer	getAltitude	src/executorModule/stellarSystemModule.cpp	280	observer	core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
+Observer	getAltitude	src/executorModule/stellarSystemModule.cpp	282	observatory	core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), co
+Navigator	j2000ToEarthEqu	src/inGalaxyModule/Star3DWrapper.cpp	29	nav	const Vec3d equatorial_pos = nav->j2000ToEarthEqu(j2000_pos);
+Navigator	earthEquToLocal	src/inGalaxyModule/Star3DWrapper.cpp	41	nav	Utility::rectToSphe(&az,&alt,nav->earthEquToLocal(equatorial_pos));
+Navigator	helioToEarthPosEqu	src/inGalaxyModule/Star3DWrapper.hpp	71	nav	tmp = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * tmp);
+Navigator	earthEquToJ2000	src/inGalaxyModule/Star3DWrapper.hpp	76	nav	return nav->earthEquToJ2000(getEarthEquPos(nav));
+Projector	getFov	src/inGalaxyModule/cloudNavigator.cpp	154	prj	const float coef = 2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+Projector	getViewportHeight	src/inGalaxyModule/cloudNavigator.cpp	154	prj	const float coef = 2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+Navigator	getHelioToEyeMat	src/inGalaxyModule/cloudNavigator.cpp	215	nav	draw(nav->getHelioToEyeMat().convert(), prj);
+Projector	getClippingFov	src/inGalaxyModule/cloudNavigator.cpp	223	prj	*uclipping_fov = prj->getClippingFov();
+Navigator	helioToEarthPosEqu	src/inGalaxyModule/dso3d.cpp	229	nav	pos = nav->helioToEarthPosEqu(posXYZ);
+Projector	projectEarthEqu	src/inGalaxyModule/dso3d.cpp	232	prj	prj->projectEarthEqu(pos, screenposd);
+Projector	printGravity180	src/inGalaxyModule/dso3d.cpp	234	prj	prj->printGravity180(font, screenposd[0], screenposd[1], nameDso3d[i], color, 4,4);
+Navigator	getHelioToEyeMat	src/inGalaxyModule/dso3d.cpp	242	nav	uGeom->get().Mat = nav->getHelioToEyeMat().convert();
+Navigator	getObserverHelioPos	src/inGalaxyModule/dso3d.cpp	243	nav	uGeom->get().camPos = nav->getObserverHelioPos();
+Projector	getFov	src/inGalaxyModule/dsoNavigator.cpp	190	prj	const float coef = 2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+Projector	getViewportHeight	src/inGalaxyModule/dsoNavigator.cpp	190	prj	const float coef = 2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+Navigator	getHelioToEyeMat	src/inGalaxyModule/dsoNavigator.cpp	329	nav	Mat4f mat = nav->getHelioToEyeMat().convert();
+Projector	getClippingFov	src/inGalaxyModule/dsoNavigator.cpp	331	prj	*uclipping_fov = prj->getClippingFov();
+Navigator	getHelioToEyeMat	src/inGalaxyModule/starGalaxy.cpp	211	nav	Mat4f mat = nav->getHelioToEyeMat().convert();
+Projector	getClippingFov	src/inGalaxyModule/starGalaxy.cpp	213	prj	global->clipping_fov = prj->getClippingFov();
+Projector	getFov	src/inGalaxyModule/starGalaxy.cpp	214	prj	float tmp = opacityAdjustment / mat.getTranslation().length() / prj->getFov();
+Navigator	helioToEarthPosEqu	src/inGalaxyModule/starNavigator.cpp	567	nav	auto tmp = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * star->posXYZ);
+Projector	printGravity180	src/inGalaxyModule/starNavigator.cpp	580	prj	prj->printGravity180(font, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
+Navigator	getHelioToEyeMat	src/inGalaxyModule/starNavigator.cpp	597	nav	matrix = Mat4f::scaling(1e-6) * nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+Navigator	getHelioToEyeMat	src/inGalaxyModule/starNavigator.cpp	599	nav	matrix = nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+Navigator	helioToEarthPosEqu	src/inGalaxyModule/starNavigator.cpp	617	nav	spos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)*spos)*1E-6;
+Navigator	helioToEarthPosEqu	src/inGalaxyModule/starNavigator.cpp	619	nav	spos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)*spos);
+Projector	projectEarthEqu	src/inGalaxyModule/starNavigator.cpp	621	prj	prj->projectEarthEqu(spos, screenposd);
+Projector	projectCustomCheck	src/inGalaxyModule/starViewer.cpp	126	prj	if (!prj->projectCustomCheck(v3fNull, screenPos, mat, (int)(screen_size*2)))
+Projector	getClippingFov	src/inGalaxyModule/starViewer.cpp	129	prj	(*uVert)->clipping_fov = prj->getClippingFov();
+Projector	getViewportWidth	src/mediaModule/image.cpp	148	prj	vieww = prj->getViewportWidth();
+Projector	getViewportHeight	src/mediaModule/image.cpp	149	prj	viewh = prj->getViewportHeight();
+Projector	getViewportCenter	src/mediaModule/image.cpp	151	prj	Vec3d center = prj->getViewportCenter();
+Navigator	getLocalToEyeMat	src/mediaModule/image.cpp	688	nav	mat = nav->getLocalToEyeMat();
+Navigator	getDomeFixedMat	src/mediaModule/image.cpp	693	nav	mat = nav->getDomeFixedMat();
+Navigator	getJ2000ToEyeMat	src/mediaModule/image.cpp	698	nav	mat = nav->getJ2000ToEyeMat();
+Navigator	getEarthEquToEyeMat	src/mediaModule/image.cpp	703	nav	mat = nav->getEarthEquToEyeMat();
+Projector	getMatProjectionOrtho2D	src/mediaModule/image.cpp	765	prj	Mat4f MVP = prj->getMatProjectionOrtho2D();
+Navigator	getLocalToEyeMat	src/mediaModule/image.cpp	1006	nav	uVert.matrix = (nav->getLocalToEyeMat() * rotationMatrix).convert();
+Projector	getClippingFov	src/mediaModule/image.cpp	1007	prj	uVert.clipping_fov = prj->getClippingFov();
+Projector	getClippingFov	src/mediaModule/image.cpp	1051	prj	uVert.clipping_fov = prj->getClippingFov();
+Navigator	getJ2000ToEyeMat	src/mediaModule/vr360.cpp	189	nav	uniform->mat = (nav->getJ2000ToEyeMat() *
+Observer	getEyeRelativeMode	src/navModule/anchor_manager.cpp	284	observer	if (observer->getEyeRelativeMode()) {
+Observer	getHeliocentricPosition	src/navModule/anchor_manager.cpp	286	observer	const Vec3d center = observer->getHeliocentricPosition(timeMgr->getJDay());
+Observer	getDistanceFromCenter	src/navModule/anchor_manager.cpp	290	observer	double bestFit = observer->getDistanceFromCenter();
+Observer	setAnchorPoint	src/navModule/anchor_manager.cpp	299	observer	observer->setAnchorPoint(currentAnchor);
+Observer	getAltitude	src/navModule/anchor_manager.cpp	323	observer	if(followRotation && observer->getAltitude() > radius * rotationMultiplierCondition * AU *1000.0){
+Observer	getAltitude	src/navModule/anchor_manager.cpp	329	observer	if(!followRotation && observer->getAltitude() < radius * rotationMultiplierCondition * AU *1000.0){
+Observer	setLongitude	src/navModule/anchor_manager.cpp	339	observer	observer->setLongitude(observer->getLongitude() + correction);
+Observer	getLongitude	src/navModule/anchor_manager.cpp	339	observer	observer->setLongitude(observer->getLongitude() + correction);
+Observer	setAnchorPoint	src/navModule/anchor_manager.cpp	368	observer	observer->setAnchorPoint(it->second);
+Navigator	earthPosEquToHelio	src/navModule/anchor_manager.cpp	381	navigator	currentAnchor = std::make_shared<AnchorPointObservatory>(navigator->earthPosEquToHelio(selection.getEarthEquPos(navigator)));
+Observer	setAnchorPoint	src/navModule/anchor_manager.cpp	383	observer	observer->setAnchorPoint(currentAnchor);
+Observer	getHeliocentricPosition	src/navModule/anchor_manager.cpp	531	observer	Vec3d obsPos = observer->getHeliocentricPosition(timeMgr->getJDay());
+Observer	getRotLocalToEquatorial	src/navModule/anchor_manager.cpp	532	observer	Mat4d obsLocalToEquatorial = observer->getRotLocalToEquatorial(timeMgr->getJDay());
+Observer	getRotEquatorialToVsop87	src/navModule/anchor_manager.cpp	533	observer	Mat4d obsEquatorialToVsop87 = observer->getRotEquatorialToVsop87();
+Observer	setAltitude	src/navModule/anchor_manager.cpp	535	observer	observer->setAltitude(0);
+Observer	setAnchorPoint	src/navModule/anchor_manager.cpp	542	observer	observer->setAnchorPoint(currentAnchor);
+Observer	setAnchorPoint	src/navModule/anchor_manager.cpp	564	observer	observer->setAnchorPoint(targetBody);
+Observer	setAltitude	src/navModule/anchor_manager.cpp	571	observer	observer->setAltitude(alt);
+Observer	setLatitude	src/navModule/anchor_manager.cpp	572	observer	observer->setLatitude(0);
+Observer	setLongitude	src/navModule/anchor_manager.cpp	581	observer	observer->setLongitude(-90);
+Navigator	updateTransformMatrices	src/navModule/anchor_manager.cpp	582	navigator	navigator->updateTransformMatrices(observer, timeMgr->getJDay());
+Observer	getHeliocentricPosition	src/navModule/anchor_manager.cpp	583	observer	posLower = observer->getHeliocentricPosition(timeMgr->getJDay());
+Observer	setLongitude	src/navModule/anchor_manager.cpp	585	observer	observer->setLongitude(90);
+Navigator	updateTransformMatrices	src/navModule/anchor_manager.cpp	586	navigator	navigator->updateTransformMatrices(observer, timeMgr->getJDay());
+Observer	getHeliocentricPosition	src/navModule/anchor_manager.cpp	587	observer	posUpper = observer->getHeliocentricPosition(timeMgr->getJDay());
+Observer	setLongitude	src/navModule/anchor_manager.cpp	604	observer	observer->setLongitude(lower);
+Navigator	updateTransformMatrices	src/navModule/anchor_manager.cpp	605	navigator	navigator->updateTransformMatrices(observer, timeMgr->getJDay());
+Observer	getHeliocentricPosition	src/navModule/anchor_manager.cpp	606	observer	posLower = observer->getHeliocentricPosition(timeMgr->getJDay());
+Observer	setLongitude	src/navModule/anchor_manager.cpp	608	observer	observer->setLongitude(upper);
+Navigator	updateTransformMatrices	src/navModule/anchor_manager.cpp	609	navigator	navigator->updateTransformMatrices(observer, timeMgr->getJDay());
+Observer	getHeliocentricPosition	src/navModule/anchor_manager.cpp	610	observer	posUpper = observer->getHeliocentricPosition(timeMgr->getJDay());
+Observer	setLongitude	src/navModule/anchor_manager.cpp	628	observer	observer->setLongitude(longitude);
+Observer	setLatitude	src/navModule/anchor_manager.cpp	637	observer	observer->setLatitude(lower);
+Navigator	updateTransformMatrices	src/navModule/anchor_manager.cpp	638	navigator	navigator->updateTransformMatrices(observer, timeMgr->getJDay());
+Observer	getHeliocentricPosition	src/navModule/anchor_manager.cpp	639	observer	posLower = observer->getHeliocentricPosition(timeMgr->getJDay());
+Observer	setLatitude	src/navModule/anchor_manager.cpp	641	observer	observer->setLatitude(upper);
+Navigator	updateTransformMatrices	src/navModule/anchor_manager.cpp	642	navigator	navigator->updateTransformMatrices(observer, timeMgr->getJDay());
+Observer	getHeliocentricPosition	src/navModule/anchor_manager.cpp	643	observer	posUpper = observer->getHeliocentricPosition(timeMgr->getJDay());
+Observer	setLatitude	src/navModule/anchor_manager.cpp	658	observer	observer->setLatitude( (lower+upper)/2 );
+Navigator	setHeading	src/navModule/anchor_manager.cpp	666	navigator	navigator->setHeading(-angle);
+Navigator	changeHeading	src/navModule/anchor_manager.cpp	669	navigator	navigator->changeHeading(0, 5000);
+Observer	getAltitude	src/navModule/anchor_manager.cpp	724	observer	os << "alt " << observer->getAltitude() << std::endl;
+Observer	getLongitude	src/navModule/anchor_manager.cpp	725	observer	os << "lon " << observer->getLongitude() << std::endl;
+Observer	getLatitude	src/navModule/anchor_manager.cpp	726	observer	os << "lat " << observer->getLatitude() << std::endl;
+Navigator	getLocalVision	src/navModule/anchor_manager.cpp	729	navigator	Vec3d vision = navigator->getLocalVision();
+Observer	setAnchorPoint	src/navModule/anchor_manager.cpp	774	observer	observer->setAnchorPoint(anchor);
+Observer	setAltitude	src/navModule/anchor_manager.cpp	776	observer	observer->setAltitude(stod(anchorParams["alt"]));
+Observer	setLongitude	src/navModule/anchor_manager.cpp	777	observer	observer->setLongitude(stod(anchorParams["lon"]));
+Observer	setLatitude	src/navModule/anchor_manager.cpp	778	observer	observer->setLatitude(stod(anchorParams["lat"]));
+Navigator	setLocalVision	src/navModule/anchor_manager.cpp	785	navigator	navigator->setLocalVision(vision);
+Navigator	alignUpVectorTo	src/navModule/anchor_manager.cpp	813	navigator	navigator->alignUpVectorTo(rot, duration);
+Observer	getAnchorPoint	src/navModule/anchor_manager.cpp	830	observer	auto srcAnchor = observer->getAnchorPoint();
+Observer	getRotEquatorialToVsop87	src/navModule/anchor_manager.cpp	833	observer	srcMat = observer->getRotEquatorialToVsop87();
+Observer	getLongitude	src/navModule/anchor_manager.cpp	835	observer	auto longitude = observer->getLongitude() + lastCorrection;
+Observer	setAnchorPoint	src/navModule/anchor_manager.cpp	837	observer	observer->setAnchorPoint(currentAnchor);
+Observer	setRelRotation	src/navModule/anchor_manager.cpp	848	observer	observer->setRelRotation(quaternion);
+Observer	moveTo	src/navModule/anchor_manager.cpp	849	observer	observer->moveTo({1, 0, 0, 0}, 10000, true);
+Observer	getAnchorPoint	src/navModule/anchor_manager.cpp	851	observer	auto tmp = dynamic_cast<AnchorPointBody *>(observer->getAnchorPoint().get());
+Observer	setLongitude	src/navModule/anchor_manager.cpp	854	observer	observer->setLongitude(longitude - lastCorrection);
+Navigator	updateTransformMatrices	src/navModule/anchor_manager.cpp	855	navigator	navigator->updateTransformMatrices(observer, lastUpdate);
+Navigator	getHelioToEyeMat	src/ojmModule/ojm_mgr.cpp	156	nav	view = nav->getHelioToEyeMat().convert();
+Projector	getMatProjection	src/ojmModule/ojm_mgr.cpp	158	prj	proj = prj->getMatProjection().convert();
+Projector	getFov	src/starModule/hip_star_mgr.cpp	633	prj	float rolloff = -rmap.Map(prj->getFov());
+Projector	getFov	src/starModule/hip_star_mgr.cpp	659	prj	mag_converter->setFov(prj->getFov());
+Projector	unprojectViewport	src/starModule/hip_star_mgr.cpp	792	prj	const GeodesicSearchResult* geodesic_search_result = grid->search(prj->unprojectViewport(),max_search_level);
+Projector	getFov	src/starModule/hip_star_mgr.cpp	794	prj	mag_converter->setFov(prj->getFov());
+Projector	printGravity180	src/starModule/hip_star_mgr.cpp	919	prj	prj->printGravity180(font, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
+Navigator	j2000ToEarthEqu	src/starModule/hip_star_wrapper.cpp	42	nav	const Vec3d equatorial_pos = nav->j2000ToEarthEqu(j2000_pos);
+Navigator	earthEquToLocal	src/starModule/hip_star_wrapper.cpp	54	nav	Utility::rectToSphe(&az,&alt,nav->earthEquToLocal(equatorial_pos));
+Navigator	j2000ToEarthEqu	src/starModule/hip_star_wrapper.cpp	108	nav	const Vec3d equatorial_pos = nav->j2000ToEarthEqu(j2000_pos);
+Navigator	earthEquToLocal	src/starModule/hip_star_wrapper.cpp	137	nav	Utility::rectToSphe(&az,&alt,nav->earthEquToLocal(equatorial_pos));
+Navigator	j2000ToEarthEqu	src/starModule/hip_star_wrapper.cpp	206	nav	Vec3d equatorial_pos = nav->j2000ToEarthEqu(j2000_pos);
+Observer	getLongitude	src/starModule/hip_star_wrapper.cpp	219	observatory	Le = observatory->getLongitude();
+Navigator	earthEquToLocal	src/starModule/hip_star_wrapper.cpp	236	nav	Vec3d local_pos = nav->earthEquToLocal(equatorial_pos);
+Navigator	j2000ToEarthEqu	src/starModule/hip_star_wrapper.hpp	90	nav	return nav->j2000ToEarthEqu(getObsJ2000Pos(nav));
+Navigator	earthEquToLocal	src/starModule/zone_array.cpp	275	nav	Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+Navigator	j2000ToEarthEqu	src/starModule/zone_array.cpp	275	nav	Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+Projector	projectLocal	src/starModule/zone_array.cpp	291	prj	? prj->projectLocal(local_pos,xy)
+Projector	projectLocalCheck	src/starModule/zone_array.cpp	292	prj	: prj->projectLocalCheck(local_pos,xy)) {
+Navigator	earthEquToLocal	src/starModule/zone_array.cpp	364	nav	Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+Navigator	j2000ToEarthEqu	src/starModule/zone_array.cpp	364	nav	Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+Projector	projectLocal	src/starModule/zone_array.cpp	380	prj	? prj->projectLocal(local_pos,xy)
+Projector	projectLocalCheck	src/starModule/zone_array.cpp	381	prj	: prj->projectLocalCheck(local_pos,xy)) {
+Projector	projectEarthEqu	src/tools/object_base.cpp	212	prj	if (!prj->projectEarthEqu(getEarthEquPos(nav), screenposd))
+Projector	getViewportHeight	src/tools/object_base.cpp	223	prj	float factor = sqrtf(prj->getViewportHeight() / m_fontResolution);
+Projector	getViewportRadius	src/tools/object_base.cpp	234	prj	if (size > prj->getViewportRadius()*.1f)
+Projector	getViewportHeight	src/tools/object_base.cpp	237	prj	float factor = prj->getViewportHeight() / m_fontResolution;
+Projector	getViewportHeight	src/tools/object_base.cpp	266	prj	float factor = prj->getViewportHeight() / m_fontResolution;
+Projector	getViewportRadius	src/tools/s_font.cpp	390	prj	lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
+Projector	getViewportRadius	src/tools/s_font.cpp	394	prj	lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
+Projector	projectDomeFixed	src/tools/s_font.cpp	402	prj	prj->projectDomeFixed(startV, screen);
+Projector	getViewportCenter	src/tools/s_font.cpp	406	prj	Vec3d center = prj->getViewportCenter();
+Projector	getViewportWidth	src/tools/s_font.cpp	415	prj	if(std::max(prj->getViewportWidth(), prj->getViewportHeight() ) > d) return;
+Projector	getViewportHeight	src/tools/s_font.cpp	415	prj	if(std::max(prj->getViewportWidth(), prj->getViewportHeight() ) > d) return;

@@ -1,0 +1,125 @@
+src/bodyModule/ssystem_factory.cpp:34:#include "experimentalModule/Camera.hpp"
+src/bodyModule/ssystem_factory.cpp:44:#include "experimentalModule/Camera.hpp"
+src/bodyModule/ssystem_factory.cpp:132:        camera->setBoundToSurface(true);
+src/bodyModule/ssystem_factory.cpp:133:        camera->setFreeMode(false);
+src/bodyModule/ssystem_factory.cpp:134:        camera->warpToBody(home);
+src/bodyModule/ssystem_factory.cpp:135:        camera->moveTo(lonLatAlt);
+src/bodyModule/ssystem_factory.cpp:137:        camera = std::make_unique<Camera>(home, lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]);
+src/bodyModule/ssystem_factory.cpp:139:    camera->trackBody(nullptr);
+src/bodyModule/ssystem_factory.cpp:141:    // complementary viewing systems (Camera.hpp CameraMount).
+src/bodyModule/ssystem_factory.cpp:142:    camera->setMount(conf.getStr(SCS_NAVIGATION, SCK_VIEWING_MODE) == "equator"
+src/bodyModule/ssystem_factory.cpp:144:    camera->setHeading(conf.getDouble(SCS_NAVIGATION, SCK_HEADING) * (M_PI/180));
+src/bodyModule/ssystem_factory.cpp:145:    camera->setHalfFov(conf.getDouble(SCS_NAVIGATION, SCK_INIT_FOV) * (M_PI/360), 0);
+src/bodyModule/ssystem_factory.cpp:148:        camera->lookTo(Camera::oldLocalToLocal(v), 0);
+src/bodyModule/ssystem_factory.cpp:260:        camera->switchToBody(ModularBody::findBodyOnce("SolarSystem"));
+src/bodyModule/ssystem_factory.cpp:267:        camera->switchToBody(ModularBody::findBodyOnce(mode + "System"));
+src/bodyModule/ssystem_factory.cpp:646:    camera->draw(Context::instance->renderer);
+src/bodyModule/ssystem_factory.cpp:666:    camera->update(timeMgr->getJDay(), delta_time/1000.f);
+src/bodyModule/ssystem_factory.cpp:676:    camera->getCurrentSystem()->loadBody(param, nullptr, true);
+src/bodyModule/ssystem_factory.cpp:684:    camera->getCurrentSystem()->removeSupplementalBodies();
+src/bodyModule/ssystem_factory.cpp:693:        if (ModularSystem *system = camera->getCurrentSystem())
+src/bodyModule/ssystem_factory.cpp:733:    ModularSystem *system = camera->getCurrentSystem();
+src/bodyModule/ssystem_factory.cpp:747:    ModularSystem *system = camera->getCurrentSystem();
+src/bodyModule/ssystem_factory.cpp:750:    const std::string referenceName = camera->getReferenceBody()->getEnglishName();
+src/bodyModule/ssystem_factory.cpp:751:    ModularBody *tracked = camera->getTrackedBody();
+src/bodyModule/ssystem_factory.cpp:766:        camera->rebindReference(body);
+src/bodyModule/ssystem_factory.cpp:770:            + camera->getReferenceBody()->getEnglishName()
+src/bodyModule/ssystem_factory.cpp:776:        camera->trackBody(ModularBody::findBodyOnce(trackedName));
+src/bodyModule/ssystem_factory.cpp:787:    ModularSystem *system = camera->getCurrentSystem();
+src/bodyModule/ssystem_factory.cpp:864:            camera->relocateToBody(body);
+src/bodyModule/ssystem_factory.cpp:923:    camera->dumpTrace(out);
+src/bodyModule/ssystem_factory.hpp:55:class Camera;
+src/bodyModule/ssystem_factory.hpp:102:    // Warp the Camera to the named body, no-op if unknown
+src/bodyModule/ssystem_factory.hpp:497:	//! Update the Camera and the environment; every executor mode must call it
+src/bodyModule/ssystem_factory.hpp:840:    std::unique_ptr<Camera> camera;
+src/coreModule/backup_mgr.cpp:36:#include "experimentalModule/Camera.hpp"
+src/coreModule/backup_mgr.cpp:52:		if (Camera::instance)
+src/coreModule/backup_mgr.cpp:53:			Camera::instance->setHalfFov(mBackup.fov * M_PI / 360);
+src/coreModule/core.cpp:58:#include "experimentalModule/Camera.hpp" // both-paths fov mirror (INTENT 11.40)
+src/coreModule/core.cpp:410:	if (Camera::instance) {
+src/coreModule/core.cpp:411:		Camera::instance->setFreeMode(!attached);
+src/coreModule/core.cpp:827:	if (Camera::instance)
+src/coreModule/core.cpp:828:		Camera::instance->restoreViewOffsetLatch(armed);
+src/coreModule/core.cpp:871:	if (Camera::instance)
+src/coreModule/core.cpp:872:		Camera::instance->setSkyLock(b);
+src/coreModule/core.cpp:877:	if (!getExperimentalPath() || !Camera::instance)
+src/coreModule/core.cpp:879:	return Camera::instance->getSkyLock();
+src/coreModule/core.cpp:885:	if (Camera::instance)
+src/coreModule/core.cpp:886:		Camera::instance->setMount((m==MOUNT_ALTAZIMUTAL) ? CameraMount::ALTAZ : CameraMount::EQUATORIAL);
+src/coreModule/core.cpp:1253:	if (Camera::instance)
+src/coreModule/core.cpp:1254:		Camera::instance->setHalfFov(aim_fov * M_PI / 360, move_duration);
+src/coreModule/core.cpp:1267:		if (Camera::instance) {
+src/coreModule/core.cpp:1268:			Camera::instance->armViewOffset(true);
+src/coreModule/core.cpp:1269:			Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
+src/coreModule/core.cpp:1310:				if (Camera::instance) {
+src/coreModule/core.cpp:1311:					Camera::instance->armViewOffset(false);
+src/coreModule/core.cpp:1312:					Camera::instance->lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration);
+src/coreModule/core.cpp:1350:	if (Camera::instance) {
+src/coreModule/core.cpp:1351:		Camera::instance->armViewOffset(false);
+src/coreModule/core.cpp:1352:		Camera::instance->lookTo(Camera::oldLocalToLocal(Vec3f(InitViewPos)), move_duration);
+src/coreModule/core.cpp:1808:	Camera::instance->lookRel(alt1-alt2, az2-az1, 0);
+src/coreModule/core.cpp:1809:	Camera::instance->trackBody(nullptr);
+src/coreModule/core.cpp:1835:		if (Camera::instance) {
+src/coreModule/core.cpp:1836:			const Vec3f p = Camera::instance->getViewParams();
+src/coreModule/core.cpp:1878:		if (Camera::instance)
+src/coreModule/core.cpp:1879:			Camera::instance->multAlt(vzm.deltaHeight);
+src/coreModule/core.cpp:1884:		if (Camera::instance)
+src/coreModule/core.cpp:1885:			Camera::instance->setHalfFov(projection->getFov() * M_PI / 360, 0);
+src/coreModule/core.cpp:1893:		if (Camera::instance)
+src/coreModule/core.cpp:1894:			Camera::instance->lookRel(vzm.deltaAlt, vzm.deltaAz, 0);
+src/coreModule/core.cpp:1914:		if (Camera::instance) {
+src/coreModule/core.cpp:1915:			const Vec3f p = Camera::instance->getViewParams();
+src/coreModule/core.cpp:2028:	Camera *cam = Camera::instance;
+src/coreModule/core.cpp:2043:	s.zoomSrcNew = cam->getZoomSrcHalfFov();
+src/coreModule/core.cpp:2044:	s.zoomDstNew = cam->getZoomDstHalfFov();
+src/coreModule/core.cpp:2049:		const Vec3f &nf = cam->getAbsFwd();
+src/coreModule/core.cpp:2053:		const Vec3f ol = Camera::oldLocalToLocal(Vec3f(navigation->getLocalVision()));
+src/coreModule/core.cpp:2054:		const Vec3f nl = cam->getForwardLocal();
+src/coreModule/core.cpp:2062:		const Vec3d newPos = cam->getRootPosition();
+src/coreModule/core.cpp:2068:	s.headingNewRad = cam->getHeading();
+src/coreModule/core.cpp:2070:		const Vec3f place = cam->getPlace(); // (lon rad, lat rad, altitude AU)
+src/coreModule/core.cpp:2080:		const Vec4f t = cam->getPlanTimers();
+src/coreModule/core.cpp:2087:		const ModularBody *tracked = cam->getTrackedBody();
+src/coreModule/core.cpp:2088:		const ModularBody *ref = cam->getReferenceBody();
+src/coreModule/core.cpp:2099:		        | (cam->isFreeMode() ? 64u : 0u);
+src/coreModule/core.cpp:2493:		if (Camera::instance)
+src/coreModule/core.cpp:2494:			Camera::instance->trackBody(nullptr);
+src/coreModule/core.cpp:2498:		Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
+src/coreModule/core.cpp:2501:		Camera::instance->armViewOffset(true);
+src/coreModule/core.cpp:2547:	if (Camera::instance)
+src/coreModule/core.cpp:2548:		Camera::instance->setViewOffset(off);
+src/coreModule/core.cpp:2632:	if (Camera::instance)
+src/coreModule/core.cpp:2633:		Camera::instance->armViewOffset(true);
+src/coreModule/coreLink.cpp:560:	const Camera *cam = Camera::instance;
+src/coreModule/coreLink.cpp:561:	const Vec3f place = cam ? cam->getPlace() : Vec3f(0, 0, 0);
+src/coreModule/coreLink.cpp:566:	double camHeading = cam ? cam->getHeading() * (180.0 / M_PI) : 0.;
+src/coreModule/coreLink.cpp:591:	    << ",\"new\":" << (cam ? cam->getViewOffset() : 0.) << "}"
+src/coreModule/coreLink.cpp:596:	    << ",\"new\":" << b(cam && cam->getSkyLock()) << "}"
+src/coreModule/coreLink.cpp:1280:		return Camera::instance && Camera::instance->getReferenceBody() &&
+src/coreModule/coreLink.cpp:1281:		       Camera::instance->getReferenceBody()->getEnglishName() == name;
+src/coreModule/coreLink.hpp:29:#include "experimentalModule/Camera.hpp"
+src/coreModule/coreLink.hpp:313:		Camera::instance->setHalfFov(aim_fov*M_PI/360, move_duration);
+src/coreModule/coreLink.hpp:329:		Camera::instance->setHalfFov(f*M_PI/360);
+src/coreModule/coreLink.hpp:348:	// Camera---------------------------
+src/coreModule/coreLink.hpp:376:		Camera::instance->lookTo(alt*M_PI/180, az*M_PI/180, time);
+src/coreModule/coreLink.hpp:377:		Camera::instance->armViewOffset(true);
+src/coreModule/coreLink.hpp:785:		if (!core->getExperimentalPath() || !Camera::instance)
+src/coreModule/coreLink.hpp:787:		const Vec3f p = Camera::instance->getPlace();
+src/coreModule/coreLink.hpp:837:		Camera::instance->setLatitude(l);
+src/coreModule/coreLink.hpp:842:		Camera::instance->setLongitude(l);
+src/coreModule/coreLink.hpp:850:		Camera::instance->setAltitude(l);
+src/coreModule/coreLink.hpp:880:		Camera::instance->setFreeMode(b);
+src/coreModule/coreLink.hpp:885:		Camera::instance->multAlt(coef);
+src/coreModule/coreLink.hpp:890:		Camera::instance->moveTo({static_cast<float>(lon*M_PI/180), static_cast<float>(lat*M_PI/180), static_cast<float>(alt/(1000*AU))}, duration/1000.f, calculate_duration);
+src/coreModule/coreLink.hpp:896:		Camera::instance->moveRelLon(lon*M_PI/180, delay/1000.f);
+src/coreModule/coreLink.hpp:901:		Camera::instance->moveRelLat(lat*M_PI/180, delay/1000.f);
+src/coreModule/coreLink.hpp:906:		Camera::instance->moveRelAlt(alt, delay/1000.f);
+src/coreModule/coreLink.hpp:941:		Camera::instance->moveHeading(f*M_PI/180);
+src/coreModule/coreLink.hpp:986:		if (!core->getExperimentalPath() || !Camera::instance)
+src/coreModule/coreLink.hpp:988:		return Camera::instance->getViewOffset();
+src/coreModule/coreLink.hpp:994:		// duration is in ms, the Camera takes seconds
+src/coreModule/coreLink.hpp:995:		Camera::instance->setHeading(heading*M_PI/180, duration*0.001f);
+src/coreModule/coreLink.hpp:1006:		double h = Camera::instance->getHeading() * (180.0 / M_PI);
+src/coreModule/coreLink.hpp:1017:		Camera::instance->lookTo(_pos, 0);
+src/mainModule/define_key.hpp:307:// Negation of Camera::freeMode
+src/navModule/anchor_point.hpp:21: * This class is representing a point in space to which the Camera will be attached

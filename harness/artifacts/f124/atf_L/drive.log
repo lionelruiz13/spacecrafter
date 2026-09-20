@@ -1,0 +1,19 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+PASS gdb_reaches_the_UI_object  `this` of UI::updateTimeouts, the per-frame UI call
+>> moveto lat 0.0 lon 0.0 alt 200000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/atf_L/L_anch.json
+-- L_anch           drawn=new free=False alt new 200.0000 old 200.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS L_anch_scene  want 200.0 km on both, free=False, drawn=new: new 200.0000 old 200.0000 free=False drawn=new ref=DescB
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/atf_L/L_anch_lon.json
+-- L_anch_lon       drawn=new free=False alt new 200.0000 old 200.0000 km | lon new 0.00000 old 1.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+FAIL L_anchored_lon_new_equals_old  UI::moveLon(1): longitude new +0.000000 deg, old +1.000000 deg
+
+=== ABLE-TO-FAIL leg L: RED as it must be: L_anchored_lon_new_equals_old ===

@@ -1,0 +1,38 @@
+src/experimentalModule/ModularBody.hpp:1220:    static Vec3f lightPosition; // Observer-local light source position
+src/experimentalModule/ModularBody.hpp:1221:    static float lightDistance; // Observer-local light source distance
+src/experimentalModule/ModularObject.cpp:16:std::string ModularObject::getInfoString(const Navigator *nav) const
+src/experimentalModule/ModularObject.cpp:39:std::string ModularObject::getShortInfoString(const Navigator *nav) const
+src/experimentalModule/ModularObject.cpp:53:std::string ModularObject::getShortInfoNavString(const Navigator *nav, const TimeMgr *timeMgr, const Observer *observatory) const
+src/experimentalModule/ModularObject.cpp:106:Vec3d ModularObject::getEarthEquPos(const Navigator *nav) const
+src/experimentalModule/ModularObject.cpp:112:Vec3d ModularObject::getObsJ2000Pos(const Navigator *nav) const
+src/experimentalModule/ModularObject.cpp:117:float ModularObject::getMag(const Navigator *nav) const
+src/experimentalModule/ModularObject.cpp:133:void ModularObject::getAltAz(const Navigator *nav, double *alt, double *az) const
+src/experimentalModule/ModularObject.cpp:140:void ModularObject::getRaDeValue(const Navigator *nav, double *ra, double *de) const
+src/experimentalModule/ModularObject.cpp:152:double ModularObject::getCloseFov(const Navigator *nav) const
+src/experimentalModule/ModularObject.cpp:158:double ModularObject::getSatellitesFov(const Navigator *nav) const
+src/experimentalModule/ModularObject.cpp:168:double ModularObject::getParentSatellitesFov(const Navigator *nav) const
+src/experimentalModule/ModularObject.cpp:180:float ModularObject::getOnScreenSize(const Projector *prj, const Navigator *nav, bool orb_only)
+src/experimentalModule/SessionFile.cpp:156:    observer.setHeader("observer");
+src/experimentalModule/SessionFile.cpp:161:        observer.appendEntry("sky_vision",
+src/experimentalModule/SessionFile.cpp:440:        if (const std::string *ref = observer->find("reference")) {
+src/experimentalModule/SessionFile.cpp:448:        const std::string *lonS = observer->find("longitude");
+src/experimentalModule/SessionFile.cpp:449:        const std::string *latS = observer->find("latitude");
+src/experimentalModule/SessionFile.cpp:450:        const std::string *altS = observer->find("altitude");
+src/experimentalModule/SessionFile.cpp:456:        if (const std::string *v = observer->find("fov"))
+src/experimentalModule/SessionFile.cpp:458:        if (const std::string *v = observer->find("view_offset")) {
+src/experimentalModule/SessionFile.cpp:459:            const std::string *a = observer->find("view_offset_armed");
+src/experimentalModule/SessionFile.cpp:464:            const std::string *v = observer->find("sky_vision");
+src/experimentalModule/SessionFile.cpp:469:        if (const std::string *v = observer->find("sky_locked"))
+src/experimentalModule/ModularObject.hpp:22:    virtual std::string getInfoString(const Navigator * nav) const override;
+src/experimentalModule/ModularObject.hpp:23:	virtual std::string getShortInfoString(const Navigator *nav) const override;
+src/experimentalModule/ModularObject.hpp:24:    virtual std::string getShortInfoNavString(const Navigator *nav, const TimeMgr * timeMgr, const Observer* observatory) const override;
+src/experimentalModule/ModularObject.hpp:30:    virtual Vec3d getEarthEquPos(const Navigator *nav) const override;
+src/experimentalModule/ModularObject.hpp:31:	virtual Vec3d getObsJ2000Pos(const Navigator *nav) const override;
+src/experimentalModule/ModularObject.hpp:33:    virtual float getMag(const Navigator *nav) const override;
+src/experimentalModule/ModularObject.hpp:35:    virtual void getAltAz(const Navigator *nav, double *alt, double *az) const override;
+src/experimentalModule/ModularObject.hpp:36:    virtual void getRaDeValue(const Navigator *nav, double *ra, double *de) const override;
+src/experimentalModule/ModularObject.hpp:38:    virtual double getCloseFov(const Navigator *nav) const override;
+src/experimentalModule/ModularObject.hpp:39:    virtual double getSatellitesFov(const Navigator *nav) const override;
+src/experimentalModule/ModularObject.hpp:40:    virtual double getParentSatellitesFov(const Navigator *nav) const override;
+src/experimentalModule/ModularObject.hpp:42:    virtual float getOnScreenSize(const Projector *prj, const Navigator *nav = NULL, bool orb_only = false) override;
+src/experimentalModule/ModularSystem.cpp:56:		CASE("Observer", ANCHOR);

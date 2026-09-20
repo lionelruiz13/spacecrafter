@@ -1,0 +1,62 @@
+{
+ "leg": "A",
+ "pin": "on",
+ "perturb": "withhold-new",
+ "states": [
+  {
+   "tag": "A_high",
+   "ref": "DescB",
+   "free": true,
+   "alt_new": 2000.0001991193847,
+   "alt_old": 2000.0,
+   "alt_reported": 2000.0001991193847,
+   "lon_new": 0,
+   "lon_old": 0,
+   "lat_new": 0,
+   "lat_old": 1e-06,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    0.0,
+    8000.000257585457,
+    0.0
+   ],
+   "fov_old": 180,
+   "fov_new": 180.00000495094017,
+   "aim_old": 180,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "A_high_s1",
+   "ref": "DescB",
+   "free": true,
+   "alt_new": 2000.0001991193847,
+   "alt_old": 2020.0,
+   "alt_reported": 2000.0001991193847,
+   "lon_new": 0,
+   "lon_old": 0,
+   "lat_new": 0,
+   "lat_old": 1e-06,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    0.0,
+    8000.000257585457,
+    0.0
+   ],
+   "fov_old": 180,
+   "fov_new": 180.00000495094017,
+   "aim_old": 180,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  }
+ ],
+ "notes": [],
+ "fails": [
+  "A_high_s1_new_follows_its_law",
+  "A_high_s1_new_equals_old"
+ ]
+}

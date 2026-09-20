@@ -1,0 +1,106 @@
+src/atmosphereModule/atmosphere.cpp:42:#include "experimentalModule/ProjectionTransfer.hpp" // per-mode inverse (INTENT 11.33)
+src/atmosphereModule/atmosphere.cpp:241:				const double theta = ProjectionTransfer::angleNorm(
+src/bodyModule/orbit.cpp:28:#include "experimentalModule/ModularBody.hpp"
+src/bodyModule/solarsystem_tex.cpp:30:#include "experimentalModule/ModularBody.hpp"
+src/bodyModule/solarsystem_tex.cpp:42:	ModularBody::setTesselation(bodyTesselation);
+src/bodyModule/ssystem_factory.cpp:43:#include "experimentalModule/ModularSystem.hpp"
+src/bodyModule/ssystem_factory.cpp:45:#include "experimentalModule/ModularObject.hpp"
+src/bodyModule/ssystem_factory.cpp:47:#include "experimentalModule/EnvironmentManager.hpp"
+src/bodyModule/ssystem_factory.cpp:57:    ModularBody::setProjectionMode(Context::projectionType);
+src/bodyModule/ssystem_factory.cpp:130:    ModularBody *home = ModularBody::findBody(conf.getStr(SCS_INIT_LOCATION, SCK_HOME_PLANET));
+src/bodyModule/ssystem_factory.cpp:260:        camera->switchToBody(ModularBody::findBodyOnce("SolarSystem"));
+src/bodyModule/ssystem_factory.cpp:267:        camera->switchToBody(ModularBody::findBodyOnce(mode + "System"));
+src/bodyModule/ssystem_factory.cpp:397:    ModularBody *body = ModularBody::findBody(bodyName);
+src/bodyModule/ssystem_factory.cpp:417:    const ModularBody *body = ModularBody::findBody(bodyName);
+src/bodyModule/ssystem_factory.cpp:443:        if (ModularBody *moon = ModularBody::findBody("Moon"))
+src/bodyModule/ssystem_factory.cpp:447:        if (ModularBody *sun = ModularBody::findBody("Sun"))
+src/bodyModule/ssystem_factory.cpp:701:    if (ModularBody *body = ModularBody::findBodyOnce(param[W_NAME]))
+src/bodyModule/ssystem_factory.cpp:714:                        ? ModularBody::findBodyOnce(obj.getEnglishName())
+src/bodyModule/ssystem_factory.cpp:723:    if (ModularBody *newOnly = ModularBody::findBodyOnce(englishName))
+src/bodyModule/ssystem_factory.cpp:753:    ModularBody *selected = ModularBody::getSelected();
+src/bodyModule/ssystem_factory.cpp:765:    if (ModularBody *body = ModularBody::findBodyOnce(referenceName)) {
+src/bodyModule/ssystem_factory.cpp:776:        camera->trackBody(ModularBody::findBodyOnce(trackedName));
+src/bodyModule/ssystem_factory.cpp:778:        newSelectedBody = ModularBody::findBodyOnce(selectedName);
+src/bodyModule/ssystem_factory.cpp:862:    if (ModularBody *body = ModularBody::findBody(name)) {
+src/bodyModule/ssystem_factory.cpp:874:    if (ModularBody *body = ModularBody::findBody(englishName)) {
+src/bodyModule/ssystem_factory.cpp:883:    if (ModularBody *body = ModularBody::findBody(englishName)) {
+src/bodyModule/ssystem_factory.cpp:925:    cameraAnchors->dumpState(out);
+src/bodyModule/ssystem_factory.cpp:926:    out << ",\"gates\":{\"viewportRadius\":" << ModularBody::getViewportRadius()
+src/bodyModule/ssystem_factory.cpp:930:        << "},\"screenSize\":{\"early\":" << ModularBody::earlyVisibilityGate()
+src/bodyModule/ssystem_factory.cpp:931:        << ",\"full\":" << ModularBody::fullVisibilityGate()
+src/bodyModule/ssystem_factory.cpp:932:        << ",\"bigTexture\":" << ModularBody::bigTextureGate()
+src/bodyModule/ssystem_factory.cpp:945:        ModularBody *nb = ModularBody::findBodyOnce(it->first);
+src/bodyModule/ssystem_factory.cpp:978:        ModularBody::forEach([&, this](ModularBody &nb) {
+src/bodyModule/ssystem_factory.cpp:999:        if (ModularBody *nb = ModularBody::findBodyOnce(name)) {
+src/bodyModule/ssystem_factory.hpp:44:#include "experimentalModule/ModularBody.hpp"
+src/bodyModule/ssystem_factory.hpp:46:#include "experimentalModule/CameraAnchors.hpp"
+src/bodyModule/ssystem_factory.hpp:134:                        : ModularBody::findBodyOnce(englishName);
+src/bodyModule/ssystem_factory.hpp:177:		ModularBody::flagLightTravelTime = b;
+src/bodyModule/ssystem_factory.hpp:251:        if (ModularBody *body = ModularBody::findBody(name)) {
+src/bodyModule/ssystem_factory.hpp:274:        ModularBody *selected = ModularBody::getSelected();
+src/bodyModule/ssystem_factory.hpp:276:            ModularBody::forEach([&](ModularBody &body) {
+src/bodyModule/ssystem_factory.hpp:316:            if (ModularBody *body = ModularBody::findBody(_name))
+src/bodyModule/ssystem_factory.hpp:324:            if (ModularBody *body = ModularBody::findBody(name))
+src/bodyModule/ssystem_factory.hpp:336:            if (ModularBody *body = ModularBody::findBody(name))
+src/bodyModule/ssystem_factory.hpp:359:                ModularBody::forEach([&](ModularBody &b){ b.setColor(t, c); });
+src/bodyModule/ssystem_factory.hpp:360:            else if (ModularBody *body = ModularBody::findBody(englishName))
+src/bodyModule/ssystem_factory.hpp:383:            ModularBody::setDefaultHaloColor(c);
+src/bodyModule/ssystem_factory.hpp:399:        ModularBody::haloScale = scale;
+src/bodyModule/ssystem_factory.hpp:448:        if (ModularBody *body = ModularBody::findBody(name))
+src/bodyModule/ssystem_factory.hpp:530:        if (auto body = ModularBody::findBodyOnce(name))
+src/bodyModule/ssystem_factory.hpp:559:        ModularBody::setTranslator(trans);
+src/bodyModule/ssystem_factory.hpp:578:        ModularBody::haloSizeLimit = scale;
+src/bodyModule/ssystem_factory.hpp:633:        return cameraAnchors.get();
+src/bodyModule/ssystem_factory.hpp:638:        const bool newOk = cameraAnchors->add(param);
+src/bodyModule/ssystem_factory.hpp:644:        const bool newOk = cameraAnchors->remove(name);
+src/bodyModule/ssystem_factory.hpp:650:		const bool newOk = camera ? cameraAnchors->switchTo(name, *camera) : false;
+src/bodyModule/ssystem_factory.hpp:659:			? cameraAnchors->placeCurrentAt(Vec3d(x,y,z), *camera, timeMgr->getJDay()) : false;
+src/bodyModule/ssystem_factory.hpp:666:			? cameraAnchors->travelToPoint(Vec3d(x,y,z), time, *camera, timeMgr->getJDay()) : false;
+src/bodyModule/ssystem_factory.hpp:673:            ? cameraAnchors->travelToBody(bodyName, time, alt, *camera, timeMgr->getJDay()) : false;
+src/bodyModule/ssystem_factory.hpp:684:			? cameraAnchors->transitionToPoint(name, *camera, timeMgr->getJDay()) : false;
+src/bodyModule/ssystem_factory.hpp:690:        const bool newOk = camera ? cameraAnchors->transitionToBody(name, *camera) : false;
+src/bodyModule/ssystem_factory.hpp:696:		const bool newOk = camera ? cameraAnchors->setFollowRotation(name, value, *camera) : false;
+src/bodyModule/ssystem_factory.hpp:712:		cameraAnchors->load(anchorFile);
+src/bodyModule/ssystem_factory.hpp:718:        cameraAnchors->update(timeMgr->getJDay());
+src/bodyModule/ssystem_factory.hpp:791:        if (ModularBody *body = ModularBody::findBody(bodyName))
+src/bodyModule/ssystem_factory.hpp:800:        const ModularBody *body = ModularBody::findBody(bodyName);
+src/coreModule/core.cpp:59:#include "experimentalModule/ModularBody.hpp" // session restore: does this name exist?
+src/coreModule/core.cpp:1269:			Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
+src/coreModule/core.cpp:1833:		step.halfFov = ModularBody::halfFov;
+src/coreModule/core.cpp:1912:		step.halfFovAfter = ModularBody::halfFov;
+src/coreModule/core.cpp:2025:	s.halfFovNew = ModularBody::halfFov;      // radians, half angle
+src/coreModule/core.cpp:2498:		Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
+src/coreModule/coreLink.cpp:28:#include "experimentalModule/SessionFile.hpp" // B31 slice 3
+src/coreModule/coreLink.cpp:29:#include "experimentalModule/ModularBody.hpp"
+src/coreModule/coreLink.cpp:1254:class SessionHost : public SessionFile::Host {
+src/coreModule/coreLink.cpp:1277:		if (!ModularBody::findBodyOnce(name))
+src/coreModule/coreLink.cpp:1310:bool CoreLink::sessionSave(const std::string &filename, SessionFile::CommandSurface *cmds) {
+src/coreModule/coreLink.cpp:1312:	return SessionFile::save(host, cmds, filename);
+src/coreModule/coreLink.cpp:1315:bool CoreLink::sessionLoad(const std::string &filename, SessionFile::CommandSurface *cmds) {
+src/coreModule/coreLink.cpp:1317:	return SessionFile::load(host, cmds, filename);
+src/coreModule/coreLink.hpp:520:	bool sessionSave(const std::string &filename, SessionFile::CommandSurface *cmds);
+src/coreModule/coreLink.hpp:521:	bool sessionLoad(const std::string &filename, SessionFile::CommandSurface *cmds);
+src/interfaceModule/app_command_interface.hpp:40:#include "experimentalModule/SessionFile.hpp"
+src/interfaceModule/app_command_interface.hpp:58:class AppCommandInterface: public NoCopy, public SessionFile::CommandSurface {
+src/navModule/anchor_manager.cpp:174:	anchors.clear();
+src/navModule/anchor_manager.cpp:179:	auto it = anchors.find(name);
+src/navModule/anchor_manager.cpp:180:	if(it != anchors.end()) //name already present in container
+src/navModule/anchor_manager.cpp:190:	anchors.insert(std::pair<std::string, std::shared_ptr<AnchorPoint>>(name, anchor));
+src/navModule/anchor_manager.cpp:196:	for(auto it = anchors.begin(); it != anchors.end(); it++) {
+src/navModule/anchor_manager.cpp:203:			anchors.erase(it);
+src/navModule/anchor_manager.cpp:212:	for(auto it = anchors.begin(); it != anchors.end(); it++) {
+src/navModule/anchor_manager.cpp:364:	auto it = anchors.find(anchorName);
+src/navModule/anchor_manager.cpp:366:	if(it != anchors.end()) {
+src/navModule/anchor_manager.cpp:491:	auto it = anchors.find(bodyName);
+src/navModule/anchor_manager.cpp:493:	if(it == anchors.end())
+src/navModule/anchor_manager.cpp:507:	auto it = anchors.find(name);
+src/navModule/anchor_manager.cpp:509:	if(it == anchors.end()) {
+src/navModule/anchor_manager.cpp:677:	auto it = anchors.find(name);
+src/navModule/anchor_manager.cpp:679:	if(it == anchors.end()) {
+src/navModule/anchor_manager.cpp:710:	for(auto it = anchors.begin(); it != anchors.end() && !stop; it++) {
+src/navModule/anchor_manager.cpp:752:	auto it = anchors.find(anchorParams["name"]);
+src/navModule/anchor_manager.cpp:754:	if(it != anchors.end())
+src/navModule/anchor_manager.cpp:770:	if(it != anchors.end())
+src/navModule/anchor_manager.cpp:771:		anchors.insert(std::pair<std::string, std::shared_ptr<AnchorPoint>>(anchorParams["name"], anchor));
+src/navModule/anchor_manager.cpp:797:	auto it = anchors.find(name);
+src/navModule/anchor_manager.cpp:799:	if(it == anchors.end()){

@@ -1,0 +1,62 @@
+{
+ "leg": "M",
+ "pin": "on",
+ "perturb": "withhold-new",
+ "states": [
+  {
+   "tag": "M_high",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -504309.5120669175,
+    -47375.28095714784,
+    -477329.6527725116
+   ],
+   "fov_old": 180,
+   "fov_new": 180.00000495094017,
+   "aim_old": 180,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "M_high_s1",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.0758553186348275,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -504309.5120669175,
+    -47375.28095714784,
+    -477329.6527725116
+   ],
+   "fov_old": 180,
+   "fov_new": 180.00000495094017,
+   "aim_old": 180,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  }
+ ],
+ "notes": [],
+ "fails": [
+  "M_high_scene",
+  "M_high_s1_new_follows_its_law"
+ ]
+}

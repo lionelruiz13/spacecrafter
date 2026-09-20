@@ -1,0 +1,28 @@
+Observer @ HEAD: 22 fields, 45 member functions (overloads merged by name)
+-- managers per field: functions that write it DIRECTLY --
+   5  flag_move_to           load moveRel moveTo setAltitude update
+   5  longitude              load setAnchorPoint setLongitude setQuaternionMode update
+   4  altitude               load setAltitude setDistanceFromCenter update
+   4  latitude               setAnchorPoint setLatitude setQuaternionMode update
+   3  move_to_mult           moveRel moveTo update
+   2  defaultAltitude        load setConf
+   2  defaultLatitude        load setConf
+   2  defaultLongitude       load setConf
+   2  end_alt                moveRel moveTo
+   2  move_to_coef           moveRel moveTo
+   2  start_alt              moveRel moveTo
+   1  anchor                 setAnchorPoint
+   1  anchorAlt              setAnchorPoint
+   1  end_lat                moveTo
+   1  flag_eye_relative_mode setEyeRelativeMode
+   1  flag_quaternion_mode   setQuaternionMode
+   1  mat_altitude_to_earth_equ setEyeMatrix
+   1  mat_eye_to_helio_untranslated setEyeMatrix
+   1  rel_lon                moveTo
+   1  start_lat              moveTo
+-- same direct writer set (>= 2 functions) --
+-- forwarders: one statement, its effect is entirely another member's --
+  getHeliocentricPosition -> getDistanceFromCenter getRotEquatorialToVsop87 getRotLocalToEquatorial
+  isEarth -> getHomePlanetEnglishName
+  isSun -> getHomePlanetEnglishName
+  moveEyeRel -> moveRel3D

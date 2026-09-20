@@ -1,0 +1,81 @@
+candidate trio calls through a receiver the census does not list (method name declared in a trio header, generic names excluded): 160
+  17 )                      convert                      src/coreModule/fog.cpp:133 src/coreModule/landscape.cpp:271 src/coreModule/milkyway.cpp:245 src/coreModule/oort.cpp:147
+  13 mat                    convert                      src/bodyModule/axis.cpp:57 src/bodyModule/body.cpp:1215 src/bodyModule/body_artificial.cpp:132 src/bodyModule/body_artificial.cpp:189
+  10 coreLink               getHeading                   src/appModule/app.cpp:872 src/appModule/app.cpp:882 src/interfaceModule/app_command_eval.cpp:293 src/interfaceModule/app_command_interface.cpp:2053
+   5 coreLink               setHeading                   src/interfaceModule/app_command_eval.cpp:358 src/interfaceModule/app_command_interface.cpp:2196 src/interfaceModule/app_command_interface.cpp:2580 src/interfaceModule/app_command_interface.cpp:2593
+   4 core                   updateMove                   src/executorModule/inGalaxyModule.cpp:96 src/executorModule/inUniverseModule.cpp:82 src/executorModule/solarSystemModule.cpp:123 src/executorModule/stellarSystemModule.cpp:135
+   4 anchorAlt              isOnBody                     src/navModule/observer.cpp:122 src/navModule/observer.cpp:126 src/navModule/observer.cpp:375 src/navModule/observer.cpp:455
+   4 coreLink               getAimFov                    src/uiModule/ui.cpp:450 src/uiModule/ui.cpp:450 src/uiModule/ui.cpp:453 src/uiModule/ui.cpp:453
+   3 core                   getHomePlanetEnglishName     src/coreModule/coreLink.cpp:319 src/coreModule/coreLink.hpp:657 src/uiModule/ui.cpp:600
+   3 coreLink               setDefaultHeading            src/interfaceModule/app_command_interface.cpp:2196 src/interfaceModule/app_command_interface.cpp:2574 src/uiModule/ui.cpp:220
+   3 coreLink               zoomTo                       src/interfaceModule/app_command_interface.cpp:3317 src/uiModule/ui.cpp:450 src/uiModule/ui.cpp:453
+   3 anchor                 getRotEquatorialToVsop87     src/navModule/anchor_manager.cpp:811 src/navModule/observer.cpp:118 src/navModule/observer.cpp:434
+   3 position               getObserverCenterPoint       src/navModule/navigator.cpp:242 src/navModule/navigator.cpp:256 src/navModule/navigator.cpp:257
+   3 anchor                 isOnBody                     src/navModule/observer.cpp:86 src/navModule/observer.cpp:122 src/navModule/observer.cpp:126
+   3 anchorAlt              getRotEquatorialToVsop87     src/navModule/observer.cpp:371 src/navModule/observer.cpp:437 src/navModule/observer.cpp:451
+   3 mag_converter          setFov                       src/starModule/hip_star_mgr.cpp:659 src/starModule/hip_star_mgr.cpp:794 src/starModule/hip_star_mgr.hpp:427
+   2 one_minus_oblateness))) convert                      src/bodyModule/body_bigbody.cpp:662 src/bodyModule/body_moon.cpp:406
+   2 m                      convert                      src/bodyModule/body_bigbody.cpp:693 src/bodyModule/body_moon.cpp:433
+   2 cam                    getHeading                   src/coreModule/core.cpp:2068 src/coreModule/coreLink.cpp:566
+   2 coreLink               getEyeRelativeMode           src/interfaceModule/app_command_interface.cpp:710 src/uiModule/ui.cpp:600
+   2 coreLink               getViewOffset                src/interfaceModule/app_command_interface.cpp:2113 src/uiModule/ui_tuiconf.cpp:734
+   2 coreLink               lookAt                       src/interfaceModule/app_command_interface.cpp:3213 src/interfaceModule/app_command_interface.cpp:3216
+   2 coreLink               getFov                       src/interfaceModule/app_command_interface.cpp:3319 src/uiModule/ui_tuiconf.cpp:70
+   2 second                 isOnBody                     src/navModule/anchor_manager.cpp:293 src/navModule/anchor_manager.cpp:823
+   2 position               getHeliocentricPosition      src/navModule/navigator.cpp:253 src/navModule/navigator.cpp:254
+   2 position               getDistanceFromCenter        src/navModule/navigator.cpp:256 src/navModule/navigator.cpp:257
+   2 anchor                 getRotLocalToEquatorial      src/navModule/observer.cpp:104 src/navModule/observer.cpp:434
+   2 rotator                moveRel                      src/navModule/observer.cpp:238 src/navModule/observer.cpp:293
+   2 rotator                setRelRotation               src/navModule/observer.cpp:251 src/navModule/observer.cpp:303
+   2 mag_converter          getMaxFov                    src/starModule/hip_star_mgr.cpp:1428 src/starModule/hip_star_mgr.hpp:405
+   1 model                  convert                      src/bodyModule/body_artificial.cpp:138
+   1 completeTransform      convert                      src/bodyModule/planet_grid.cpp:281
+   1 camera                 setHeading                   src/bodyModule/ssystem_factory.cpp:144
+   1 instance               setViewOffset                src/coreModule/core.cpp:2548
+   1 cam                    getViewOffset                src/coreModule/coreLink.cpp:591
+   1 link                   zoomTo                       src/coreModule/coreLink.cpp:1288
+   1 landscape              setRotation                  src/coreModule/coreLink.cpp:1525
+   1 instance               setLatitude                  src/coreModule/coreLink.hpp:837
+   1 instance               setLongitude                 src/coreModule/coreLink.hpp:842
+   1 instance               setAltitude                  src/coreModule/coreLink.hpp:850
+   1 instance               moveRelLon                   src/coreModule/coreLink.hpp:896
+   1 instance               moveRelLat                   src/coreModule/coreLink.hpp:901
+   1 instance               moveRelAlt                   src/coreModule/coreLink.hpp:906
+   1 instance               getViewOffset                src/coreModule/coreLink.hpp:988
+   1 instance               setHeading                   src/coreModule/coreLink.hpp:995
+   1 instance               getHeading                   src/coreModule/coreLink.hpp:1006
+   1 M_PI))                 convert                      src/coreModule/milkyway.cpp:287
+   1 2422))                 convert                      src/coreModule/milkyway.cpp:291
+   1 grdpt                  convert                      src/coreModule/nebula.cpp:127
+   1 this                   applyViewport                src/coreModule/projector.cpp:84
+   1 mat_local_to_eye       convert                      src/coreModule/projector.hpp:305
+   1 mat_j2000_to_eye       convert                      src/coreModule/projector.hpp:308
+   1 mat_earth_equ_to_eye   convert                      src/coreModule/projector.hpp:311
+   1 event                  getAltitude                  src/eventModule/CoreHandler.cpp:33
+   1 coreLink               getQuaternionMode            src/interfaceModule/app_command_interface.cpp:707
+   1 coreLink               setQuaternionMode            src/interfaceModule/app_command_interface.cpp:1177
+   1 coreLink               setEyeRelativeMode           src/interfaceModule/app_command_interface.cpp:1180
+   1 coreLink               getHomePlanetEnglishName     src/interfaceModule/app_command_interface.cpp:2050
+   1 stcore                 setViewOffset                src/interfaceModule/app_command_interface.cpp:2242
+   1 coreLink               setFov                       src/interfaceModule/app_command_interface.cpp:3319
+   1 rotationMatrix)        convert                      src/mediaModule/image.cpp:1006
+   1 currentImg             setRotation                  src/mediaModule/image_mgr.cpp:171
+   1 imageMgr               setRotation                  src/mediaModule/media.hpp:265
+   1 270))                  convert                      src/mediaModule/vr360.cpp:192
+   1 currentAnchor          getRotEquatorialToVsop87     src/navModule/anchor_manager.cpp:847
+   1 body                   getRotEquatorialToVsop87     src/navModule/anchor_point_body.cpp:71
+   1 position               getRotLocalToEquatorial      src/navModule/navigator.cpp:228
+   1 position               getRotLocalToEquatorialFixed src/navModule/navigator.cpp:229
+   1 position               getRotEquatorialToVsop87     src/navModule/navigator.cpp:234
+   1 position               getEyeRelativeMode           src/navModule/navigator.cpp:252
+   1 position               setEyeMatrix                 src/navModule/navigator.cpp:268
+   1 tmp                    isOnBody                     src/navModule/observer.cpp:96
+   1 this                   setLatitude                  src/navModule/observer.cpp:136
+   1 rotator                setRotation                  src/navModule/observer.cpp:298
+   1 anchorAlt              getRotLocalToEquatorial      src/navModule/observer.cpp:437
+   1 instance               setLocalVision               src/navModule/observer.cpp:439
+   1 instance               getLocalVision               src/navModule/observer.cpp:439
+   1 instance               getHomePlanetEnglishName     src/scriptModule/script_mgr.cpp:227
+   1 mag_converter          setMaxFov                    src/starModule/hip_star_mgr.hpp:371
+   1 instance               getEyeRelativeMode           src/uiModule/ui.cpp:931
+   1 core                   setViewOffset                src/uiModule/ui_tuiconf.cpp:891

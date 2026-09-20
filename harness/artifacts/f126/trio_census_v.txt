@@ -1,0 +1,15 @@
+calls into Projector / Navigator / Observer outside the module: 668
+    350  coreModule
+     96  executorModule
+     84  bodyModule
+     60  navModule
+     29  inGalaxyModule
+     21  starModule
+     12  mediaModule
+     11  tools
+      2  appModule
+      2  ojmModule
+      1  atmosphereModule
+Projector: 39 methods, 242 calls: getFov 55, getMatProjectionOrtho2D 27, getClippingFov 23, printGravity180 19, getViewportHeight 17, projectLocal 15, projectEarthEqu 10, setClippingPlanes 7, unprojectEarthEqu 6, getMatJ2000ToEye 5, getViewportWidth 5, getViewportRadius 4, getMatEarthEquToEye 4, projectLocalCheck 4, updateAutoZoom 4, setModelViewMatrices 4, getMatLocalToEye 3, setFov 3, projectCustom 2, projectJ2000LineCheck 2, zoomTo 2, unprojectLocal 2, getAimFov 2, getViewportCenter 2, unprojectNormalizedLocal 1, getClippingPlanes 1, projectJ2000Check 1, getViewport 1, getViewportFloatCenter 1, applyViewport 1, dumpTrace 1, changeFov 1, setMaxFov 1, projectJ2000 1, getCursorPosEqu 1, projectCustomCheck 1, getMatProjection 1, unprojectViewport 1, projectDomeFixed 1
+Navigator: 46 methods, 226 calls: getHelioToEyeMat 29, earthEquToLocal 21, getObserverHelioPos 16, updateTransformMatrices 13, helioToEarthPosEqu 11, j2000ToEarthEqu 10, getLocalToEyeMat 8, getJ2000ToEyeMat 7, getLocalVision 6, getFlagTraking 6, moveTo 6, getHeading 6, helioToLocal 5, getEarthEquToEyeMat 5, getDomeFixedMat 5, setFlagTraking 4, setLocalVision 4, getViewingMode 4, updateMove 4, update 4, updateVisionVector 4, getEarthEquToEyeMatFixed 4, geTdomeMat 4, earthEquToJ2000 3, getPrecEquVision 3, setViewingMode 3, setHeading 3, updateViewMat 2, setDefaultHeading 2, getFlagLockEquPos 2, getFlagAutoMove 2, getFlagChangeHeading 2, getMoveCoef 2, getViewOffset 2, changeHeading 2, helioToEarthEqu 2, setViewOffsetTransition 1, restoreVision 1, dumpTrace 1, setFlagLockEquPos 1, getEquVision 1, setViewOffset 1, lookAt 1, localToEarthEqu 1, earthPosEquToHelio 1, alignUpVectorTo 1
+Observer: 39 methods, 200 calls: getAltitude 32, getHomeBody 20, isOnBody 14, getLatitude 12, getHeliocentricPosition 11, isEarth 11, setAltitude 11, getLongitude 10, get 9, setLongitude 9, setAnchorPoint 7, setLatitude 6, getHomePlanetEnglishName 5, update 5, getObserverCenterPoint 4, getRotEquatorialToVsop87 4, isSun 3, setEyeRelativeMode 2, getLongitudeForDisplay 2, moveTo 2, getEyeRelativeMode 2, getAnchorPoint 2, reset 1, load 1, dumpTrace 1, multAltitude 1, getDefaultLatitude 1, getDefaultLongitude 1, getDefaultAltitude 1, moveRelLon 1, moveRelLat 1, moveRelAlt 1, setConf 1, setQuaternionMode 1, getQuaternionMode 1, transfo4d 1, getDistanceFromCenter 1, getRotLocalToEquatorial 1, setRelRotation 1

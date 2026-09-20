@@ -1,0 +1,41 @@
+Navigator @ HEAD: 37 fields, 49 member functions (overloads merged by name)
+-- managers per field: functions that write it DIRECTLY --
+   4  equ_vision             restoreVision setLocalVision updateMove updateVisionVector
+   4  heading                changeHeading setDefaultHeading setHeading update
+   4  local_vision           restoreVision setLocalVision updateMove updateVisionVector
+   4  prec_equ_vision        restoreVision setLocalVision updateMove updateVisionVector
+   2  flag_auto_move         moveTo updateVisionVector
+   2  flag_change_heading    changeHeading update
+   2  move                   moveTo updateVisionVector
+   2  move_to_mult           changeHeading update
+   2  view_offset_transition setViewOffsetTransition updateVisionVector
+   1  defaultHeading         setDefaultHeading
+   1  end_heading            changeHeading
+   1  flag_lock_equ_pos      setFlagLockEquPos
+   1  flag_traking           setFlagTraking
+   1  heading_vector         updateViewMat
+   1  mat_dome               updateTransformMatrices
+   1  mat_earth_equ_to_eye   updateViewMat
+   1  mat_earth_equ_to_eye_fixed updateViewMat
+   1  mat_earth_equ_to_j2000 updateTransformMatrices
+   1  mat_earth_equ_to_local updateTransformMatrices
+   1  mat_earth_equ_to_local_fixed updateTransformMatrices
+   1  mat_equ_to_vsop87      updateTransformMatrices
+   1  mat_eye_to_local       updateViewMat
+   1  mat_helioToEarthEqu    updateTransformMatrices
+   1  mat_helio_to_eye       updateViewMat
+   1  mat_helio_to_local     updateTransformMatrices
+   1  mat_j2000_to_earth_equ updateTransformMatrices
+   1  mat_j2000_to_eye       updateViewMat
+   1  mat_local_to_earth_equ updateTransformMatrices
+   1  mat_local_to_earth_equ_fixed updateTransformMatrices
+   1  mat_local_to_eye       updateViewMat
+   1  mat_local_to_helio     updateTransformMatrices
+   1  move_to_coef           changeHeading
+   1  start_heading          changeHeading
+   1  view_offset            setViewOffset
+   1  viewing_mode           setViewingMode
+   1  zooming_mode           moveTo
+-- same direct writer set (>= 2 functions) --
+  {equ_vision, local_vision, prec_equ_vision}: restoreVision setLocalVision updateMove
+-- forwarders: one statement, its effect is entirely another member's --

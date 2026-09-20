@@ -1,0 +1,125 @@
+class	method	total	T	G	W	X	S	shared_sites
+Navigator	getHelioToEyeMat	29	9	1	2	4	13	ssystem_factory.cpp:914 core.cpp:2047 inGalaxyModule.cpp:107 inUniverseModule.cpp:92 solarSystemModule.cpp:137 stellarSystemModule.cpp:147 milkyway.cpp:201 starLines.cpp:352 tully.cpp:503 volumObj3D.cpp:267 volumObj3D.cpp:311 volumObj3D.cpp:350 cloudNavigator.cpp:215 dso3d.cpp:242 dsoNavigator.cpp:329 starGalaxy.cpp:211 starNavigator.cpp:597 starNavigator.cpp:599 ojm_mgr.cpp:156 oort.cpp:147
+Navigator	earthEquToLocal	21	3	0	0	0	18	meteor.cpp:294 meteor.cpp:295 meteor.cpp:314 nebula.cpp:246 skyDisplay.cpp:369 skyDisplay.cpp:437 skyDisplay.cpp:610 skyDisplay.cpp:781 skyDisplay.cpp:792 skyDisplay.cpp:952 skyDisplay.cpp:963 tullyWrapper.cpp:49 Star3DWrapper.cpp:41 hip_star_wrapper.cpp:54 hip_star_wrapper.cpp:137 hip_star_wrapper.cpp:236 zone_array.cpp:275 zone_array.cpp:364
+Navigator	getObserverHelioPos	16	8	0	1	4	3	core.cpp:2061 inGalaxyModule.cpp:121 inGalaxyModule.cpp:122 inGalaxyModule.cpp:123 inUniverseModule.cpp:106 milkyway.cpp:197 tully.cpp:504 dso3d.cpp:243
+Navigator	updateTransformMatrices	13	7	0	2	4	0	core.cpp:485 core.cpp:838 inGalaxyModule.cpp:90 inUniverseModule.cpp:76 solarSystemModule.cpp:114 stellarSystemModule.cpp:126
+Navigator	helioToEarthPosEqu	11	2	0	1	0	8	core.cpp:2630 TullyWrapper.hpp:65 tully.cpp:478 tully.cpp:571 Star3DWrapper.hpp:71 dso3d.cpp:229 starNavigator.cpp:567 starNavigator.cpp:617 starNavigator.cpp:619
+Navigator	j2000ToEarthEqu	10	0	0	0	0	10	nebula.cpp:228 nebula.hpp:85 tullyWrapper.cpp:29 Star3DWrapper.cpp:29 hip_star_wrapper.cpp:42 hip_star_wrapper.cpp:108 hip_star_wrapper.cpp:206 hip_star_wrapper.hpp:90 zone_array.cpp:275 zone_array.cpp:364
+Navigator	getLocalToEyeMat	8	0	2	0	4	2	inGalaxyModule.cpp:108 inUniverseModule.cpp:93 solarSystemModule.cpp:138 stellarSystemModule.cpp:148 image.cpp:688 image.cpp:1006 fog.cpp:133 landscape.cpp:271
+Navigator	getJ2000ToEyeMat	7	0	0	0	4	3	inGalaxyModule.cpp:109 inUniverseModule.cpp:94 solarSystemModule.cpp:139 stellarSystemModule.cpp:149 milkyway.cpp:208 image.cpp:698 vr360.cpp:189
+Navigator	getFlagTraking	6	0	0	6	0	0	core.cpp:1046 core.cpp:1264 core.cpp:2034 core.cpp:2095 core.cpp:2495 core.hpp:218
+Navigator	getHeading	6	0	0	6	0	0	core.cpp:1644 core.cpp:2031 core.cpp:2067 coreLink.cpp:587 coreLink.hpp:940 coreLink.hpp:1005
+Navigator	getLocalVision	6	1	0	5	0	0	ssystem_factory.cpp:919 core.cpp:833 core.cpp:1818 core.cpp:2053 coreLink.hpp:1012
+Navigator	moveTo	6	0	0	6	0	0	core.cpp:1266 core.cpp:1307 core.cpp:1344 core.cpp:2496 core.cpp:2630 core.hpp:241
+Navigator	getDomeFixedMat	5	0	0	0	4	1	inGalaxyModule.cpp:111 inUniverseModule.cpp:96 solarSystemModule.cpp:141 stellarSystemModule.cpp:151 image.cpp:693
+Navigator	getEarthEquToEyeMat	5	0	0	0	4	1	inGalaxyModule.cpp:105 inUniverseModule.cpp:90 solarSystemModule.cpp:135 stellarSystemModule.cpp:145 image.cpp:703
+Navigator	helioToLocal	5	0	0	0	4	1	solarSystemModule.cpp:127 solarSystemModule.cpp:131 stellarSystemModule.cpp:138 stellarSystemModule.cpp:142 skyline.cpp:1745
+Navigator	geTdomeMat	4	0	0	0	4	0	inGalaxyModule.cpp:110 inUniverseModule.cpp:95 solarSystemModule.cpp:140 stellarSystemModule.cpp:150
+Navigator	getEarthEquToEyeMatFixed	4	0	0	0	4	0	inGalaxyModule.cpp:106 inUniverseModule.cpp:91 solarSystemModule.cpp:136 stellarSystemModule.cpp:146
+Navigator	getViewingMode	4	0	0	4	0	0	core.cpp:1798 core.cpp:1817 core.hpp:230 coreLink.cpp:593
+Navigator	setFlagTraking	4	0	0	4	0	0	core.cpp:405 core.cpp:1265 core.cpp:2492 core.cpp:2497
+Navigator	setLocalVision	4	1	0	3	0	0	core.cpp:432 core.cpp:2545 coreLink.hpp:1016
+Navigator	update	4	0	0	0	4	0	inGalaxyModule.cpp:82 inUniverseModule.cpp:74 solarSystemModule.cpp:106 stellarSystemModule.cpp:103
+Navigator	updateMove	4	0	0	4	0	0	core.cpp:1807 core.cpp:1892 core.cpp:1900 core.hpp:247
+Navigator	updateVisionVector	4	0	0	0	4	0	inGalaxyModule.cpp:92 inUniverseModule.cpp:78 solarSystemModule.cpp:116 stellarSystemModule.cpp:128
+Navigator	earthEquToJ2000	3	0	0	1	0	2	core.cpp:1167 TullyWrapper.hpp:70 Star3DWrapper.hpp:76
+Navigator	getPrecEquVision	3	0	0	0	0	3	constellation.cpp:180 illuminate_mgr.cpp:201 nebula_mgr.cpp:176
+Navigator	setHeading	3	1	0	2	0	0	core.cpp:521 coreLink.hpp:940
+Navigator	setViewingMode	3	0	0	3	0	0	core.cpp:508 core.cpp:510 core.cpp:884
+Navigator	changeHeading	2	1	0	1	0	0	coreLink.hpp:993
+Navigator	getFlagAutoMove	2	0	0	2	0	0	core.cpp:2032 core.cpp:2093
+Navigator	getFlagChangeHeading	2	0	0	2	0	0	core.cpp:2033 core.cpp:2094
+Navigator	getFlagLockEquPos	2	0	0	2	0	0	core.cpp:878 coreLink.cpp:595
+Navigator	getMoveCoef	2	0	0	2	0	0	core.cpp:2035 core.cpp:2078
+Navigator	getViewOffset	2	0	0	2	0	0	coreLink.cpp:590 coreLink.hpp:987
+Navigator	helioToEarthEqu	2	0	0	0	0	2	meteor.cpp:126 meteor_mgr.cpp:42
+Navigator	setDefaultHeading	2	0	0	2	0	0	core.cpp:522 coreLink.hpp:999
+Navigator	updateViewMat	2	0	0	2	0	0	core.cpp:486 core.cpp:840
+Navigator	alignUpVectorTo	1	1	0	0	0	0	
+Navigator	dumpTrace	1	0	0	1	0	0	core.cpp:847
+Navigator	earthPosEquToHelio	1	1	0	0	0	0	
+Navigator	getEquVision	1	0	0	1	0	0	core.cpp:1817
+Navigator	localToEarthEqu	1	0	0	0	0	1	meteor.cpp:150
+Navigator	lookAt	1	0	0	1	0	0	coreLink.hpp:378
+Navigator	restoreVision	1	0	0	1	0	0	core.cpp:839
+Navigator	setFlagLockEquPos	1	0	0	1	0	0	core.cpp:870
+Navigator	setViewOffset	1	0	0	1	0	0	core.cpp:2542
+Navigator	setViewOffsetTransition	1	0	0	1	0	0	core.cpp:826
+Observer	getAltitude	32	3	0	5	21	3	core.cpp:706 core.cpp:1061 core.cpp:2073 coreLink.cpp:584 coreLink.hpp:820 executor.hpp:68 inGalaxyModule.cpp:57 inGalaxyModule.cpp:61 inGalaxyModule.cpp:113 inGalaxyModule.cpp:138 inSandBoxModule.cpp:57 inSandBoxModule.cpp:61 inSandBoxModule.cpp:108 inUniverseModule.cpp:98 inUniverseModule.cpp:115 inUniverseModule.cpp:119 solarSystemModule.cpp:73 solarSystemModule.cpp:74 solarSystemModule.cpp:191 solarSystemModule.cpp:195 solarSystemModule.cpp:277 solarSystemModule.cpp:279 stellarSystemModule.cpp:105 stellarSystemModule.cpp:111 stellarSystemModule.cpp:280 stellarSystemModule.cpp:282 skyline.cpp:201 skyline.cpp:927 skyline.cpp:1106
+Observer	getHomeBody	20	2	0	13	0	5	core.cpp:676 core.cpp:690 core.cpp:691 core.cpp:699 core.cpp:706 core.cpp:707 core.cpp:744 core.cpp:758 core.cpp:758 core.cpp:931 core.cpp:1061 core.cpp:1664 coreLink.hpp:858 skyline.cpp:201 skyline.cpp:927 skyline.cpp:1103 skyline.cpp:1106 skyline.cpp:1115
+Observer	isOnBody	14	8	0	3	0	3	core.cpp:672 core.cpp:738 core.cpp:1058 skyline.cpp:1099 skyline.cpp:1239 skyline.cpp:1375
+Observer	getLatitude	12	2	0	3	4	3	core.cpp:2072 coreLink.cpp:575 coreLink.hpp:798 solarSystemModule.cpp:236 solarSystemModule.cpp:277 stellarSystemModule.cpp:238 stellarSystemModule.cpp:280 skyline.cpp:388 skyline.cpp:620 skyline.cpp:685
+Observer	getHeliocentricPosition	11	11	0	0	0	0	
+Observer	isEarth	11	0	0	4	0	7	core.cpp:690 core.cpp:703 core.cpp:758 core.cpp:765 skyline.cpp:266 skyline.cpp:467 skyline.cpp:613 skyline.cpp:678 skyline.cpp:1248 skyline.cpp:1332 skyline.cpp:1378
+Observer	setAltitude	11	3	0	1	7	0	coreLink.hpp:849 inGalaxyModule.cpp:59 inGalaxyModule.cpp:63 inSandBoxModule.cpp:59 inSandBoxModule.cpp:63 inUniverseModule.cpp:55 inUniverseModule.cpp:138 solarSystemModule.cpp:74
+Observer	getLongitude	10	4	0	3	0	3	core.cpp:2071 coreLink.cpp:578 coreLink.hpp:805 skyline.cpp:483 skyline.cpp:621 hip_star_wrapper.cpp:219
+Observer	get	9	0	0	7	2	0	app.cpp:172 core.cpp:104 core.cpp:482 core.cpp:485 core.cpp:838 core.cpp:1151 core.hpp:373 solarSystemModule.cpp:197 stellarSystemModule.cpp:204
+Observer	setLongitude	9	8	0	1	0	0	coreLink.hpp:841
+Observer	setAnchorPoint	7	7	0	0	0	0	
+Observer	setLatitude	6	5	0	1	0	0	coreLink.hpp:836
+Observer	getHomePlanetEnglishName	5	0	0	5	0	0	backup_mgr.cpp:68 core.cpp:946 core.cpp:961 core.cpp:2092 coreLink.hpp:854
+Observer	update	5	0	0	0	5	0	inGalaxyModule.cpp:80 inSandBoxModule.cpp:80 inUniverseModule.cpp:73 solarSystemModule.cpp:104 stellarSystemModule.cpp:101
+Observer	getObserverCenterPoint	4	0	0	3	1	0	ssystem_factory.cpp:593 core.cpp:2630 coreLink.hpp:914 stellarSystemModule.cpp:75
+Observer	getRotEquatorialToVsop87	4	2	0	0	0	2	skyline.cpp:1246 skyline.cpp:1385
+Observer	isSun	3	0	0	2	0	1	core.cpp:685 core.cpp:751 skyline.cpp:1103
+Observer	getAnchorPoint	2	2	0	0	0	0	
+Observer	getEyeRelativeMode	2	1	0	1	0	0	coreLink.hpp:935
+Observer	getLongitudeForDisplay	2	0	0	2	0	0	coreLink.cpp:581 coreLink.hpp:813
+Observer	moveTo	2	1	0	1	0	0	coreLink.hpp:889
+Observer	setEyeRelativeMode	2	0	0	2	0	0	core.cpp:397 coreLink.hpp:926
+Observer	dumpTrace	1	0	0	1	0	0	core.cpp:849
+Observer	getDefaultAltitude	1	0	0	1	0	0	coreLink.hpp:832
+Observer	getDefaultLatitude	1	0	0	1	0	0	coreLink.hpp:824
+Observer	getDefaultLongitude	1	0	0	1	0	0	coreLink.hpp:828
+Observer	getDistanceFromCenter	1	1	0	0	0	0	
+Observer	getQuaternionMode	1	0	0	1	0	0	coreLink.hpp:922
+Observer	getRotLocalToEquatorial	1	1	0	0	0	0	
+Observer	load	1	0	0	1	0	0	core.cpp:396
+Observer	moveRelAlt	1	0	0	1	0	0	coreLink.hpp:905
+Observer	moveRelLat	1	0	0	1	0	0	coreLink.hpp:900
+Observer	moveRelLon	1	0	0	1	0	0	coreLink.hpp:895
+Observer	multAltitude	1	0	0	1	0	0	core.cpp:1877
+Observer	reset	1	0	0	1	0	0	app.cpp:246
+Observer	setConf	1	0	0	1	0	0	coreLink.hpp:910
+Observer	setQuaternionMode	1	0	0	1	0	0	coreLink.hpp:918
+Observer	setRelRotation	1	1	0	0	0	0	
+Observer	transfo4d	1	0	0	0	0	1	meteor.cpp:151
+Projector	getFov	55	14	0	23	0	18	backup_mgr.cpp:67 core.cpp:486 core.cpp:840 core.cpp:1140 core.cpp:1279 core.cpp:1285 core.cpp:1289 core.cpp:1303 core.cpp:1327 core.cpp:1337 core.cpp:1807 core.cpp:1832 core.cpp:1844 core.cpp:1845 core.cpp:1868 core.cpp:1868 core.cpp:1885 core.cpp:1892 core.cpp:1900 core.cpp:1911 core.cpp:2023 core.hpp:247 coreLink.hpp:318 constellation.cpp:159 illuminate_mgr.cpp:200 illuminate_mgr.cpp:200 meteor.cpp:221 nebula.hpp:153 nebula_mgr.cpp:175 nebula_mgr.cpp:175 nebula_mgr.cpp:182 skyDisplay.cpp:428 skyDisplay.cpp:601 volumObj3D.cpp:297 volumObj3D.cpp:339 cloudNavigator.cpp:154 dsoNavigator.cpp:190 starGalaxy.cpp:214 hip_star_mgr.cpp:633 hip_star_mgr.cpp:659 hip_star_mgr.cpp:794
+Projector	getMatProjectionOrtho2D	27	0	0	1	0	26	core.cpp:625 skyDisplay.cpp:208 skyDisplay.cpp:459 skyDisplay.cpp:494 skyDisplay.cpp:531 skyDisplay.cpp:561 skyDisplay.cpp:632 skyDisplay.cpp:669 skyDisplay.cpp:709 skyDisplay.cpp:742 skyDisplay.cpp:851 skyDisplay.cpp:931 skyDisplay.cpp:1022 skygrid.cpp:249 skyline.cpp:320 skyline.cpp:650 skyline.cpp:712 skyline.cpp:803 skyline.cpp:865 skyline.cpp:975 skyline.cpp:1036 skyline.cpp:1341 skyline.cpp:1442 skyline.cpp:1531 skyline.cpp:1629 skyline.cpp:1671 image.cpp:765
+Projector	getClippingFov	23	14	0	1	0	8	core.cpp:623 volumObj3D.cpp:284 volumObj3D.cpp:353 cloudNavigator.cpp:223 dsoNavigator.cpp:331 starGalaxy.cpp:213 starViewer.cpp:129 image.cpp:1007 image.cpp:1051
+Projector	printGravity180	19	1	0	0	0	18	cardinals.cpp:82 cardinals.cpp:86 cardinals.cpp:90 cardinals.cpp:94 cardinals.cpp:98 cardinals.cpp:100 cardinals.cpp:104 cardinals.cpp:106 cardinals.cpp:110 cardinals.cpp:112 cardinals.cpp:116 cardinals.cpp:118 nebula.cpp:418 nebula.cpp:422 tully.cpp:490 dso3d.cpp:234 starNavigator.cpp:580 hip_star_mgr.cpp:919
+Projector	getViewportHeight	17	3	0	1	0	13	core.cpp:1140 illuminate_mgr.cpp:200 nebula.cpp:359 nebula.cpp:360 nebula.hpp:153 nebula_mgr.cpp:175 nebula_mgr.cpp:182 cloudNavigator.cpp:154 dsoNavigator.cpp:190 image.cpp:149 object_base.cpp:223 object_base.cpp:237 object_base.cpp:266 s_font.cpp:415
+Projector	projectLocal	15	0	0	0	0	15	cardinals.cpp:82 cardinals.cpp:86 cardinals.cpp:90 cardinals.cpp:94 cardinals.cpp:98 cardinals.cpp:100 cardinals.cpp:104 cardinals.cpp:106 cardinals.cpp:110 cardinals.cpp:112 cardinals.cpp:116 cardinals.cpp:118 meteor.cpp:316 zone_array.cpp:291 zone_array.cpp:380
+Projector	projectEarthEqu	10	0	0	2	0	8	core.cpp:1143 core.cpp:1202 skyline.cpp:1254 skyline.cpp:1260 skyline.cpp:1396 skyline.cpp:1402 tully.cpp:574 dso3d.cpp:232 starNavigator.cpp:621 object_base.cpp:212
+Projector	setClippingPlanes	7	6	0	1	0	0	core.cpp:653
+Projector	unprojectEarthEqu	6	0	0	6	0	0	core.cpp:1096 core.cpp:1246 core.cpp:1689 core.cpp:1698 core.cpp:1802 core.cpp:1803
+Projector	getMatJ2000ToEye	5	0	0	0	0	5	constellation.cpp:157 illuminate_mgr.cpp:217 nebula.cpp:336 skygrid.cpp:234 starLines.cpp:367
+Projector	getViewportWidth	5	0	0	1	0	4	core.cpp:1140 illuminate_mgr.cpp:200 nebula_mgr.cpp:175 image.cpp:148 s_font.cpp:415
+Projector	getMatEarthEquToEye	4	1	0	0	0	3	skyDisplay.cpp:226 skygrid.cpp:228 skygrid.cpp:231
+Projector	getViewportRadius	4	1	0	0	0	3	object_base.cpp:234 s_font.cpp:390 s_font.cpp:394
+Projector	projectLocalCheck	4	0	0	0	0	4	meteor.cpp:299 meteor.cpp:300 zone_array.cpp:292 zone_array.cpp:381
+Projector	setModelViewMatrices	4	0	0	0	4	0	inGalaxyModule.cpp:105 inUniverseModule.cpp:90 solarSystemModule.cpp:135 stellarSystemModule.cpp:145
+Projector	updateAutoZoom	4	0	0	0	4	0	inGalaxyModule.cpp:94 inUniverseModule.cpp:80 solarSystemModule.cpp:118 stellarSystemModule.cpp:130
+Projector	getMatLocalToEye	3	1	0	0	0	2	skyDisplay.cpp:226 skygrid.cpp:237
+Projector	setFov	3	0	0	3	0	0	backup_mgr.cpp:51 core.cpp:518 coreLink.hpp:328
+Projector	getAimFov	2	0	0	2	0	0	core.cpp:2024 coreLink.hpp:323
+Projector	getViewportCenter	2	0	0	0	0	2	image.cpp:151 s_font.cpp:406
+Projector	projectCustom	2	2	0	0	0	0	
+Projector	projectJ2000LineCheck	2	0	0	0	0	2	constellation.cpp:126 constellation.cpp:310
+Projector	unprojectLocal	2	0	0	2	0	0	core.cpp:1799 core.cpp:1800
+Projector	zoomTo	2	0	0	2	0	0	core.cpp:1252 coreLink.hpp:312
+Projector	applyViewport	1	0	0	1	0	0	core.cpp:655
+Projector	changeFov	1	0	0	1	0	0	core.cpp:1883
+Projector	dumpTrace	1	0	0	1	0	0	core.cpp:851
+Projector	getClippingPlanes	1	1	0	0	0	0	
+Projector	getCursorPosEqu	1	0	0	0	0	1	skyDisplay.cpp:596
+Projector	getMatProjection	1	0	0	0	0	1	ojm_mgr.cpp:158
+Projector	getViewport	1	0	0	1	0	0	core.cpp:622
+Projector	getViewportFloatCenter	1	0	0	1	0	0	core.cpp:624
+Projector	projectCustomCheck	1	0	0	0	0	1	starViewer.cpp:126
+Projector	projectDomeFixed	1	0	0	0	0	1	s_font.cpp:402
+Projector	projectJ2000	1	0	0	0	0	1	nebula.hpp:161
+Projector	projectJ2000Check	1	0	0	0	0	1	constellation.cpp:180
+Projector	setMaxFov	1	0	0	1	0	0	coreLink.hpp:334
+Projector	unprojectNormalizedLocal	1	0	1	0	0	0	atmosphere.cpp:238
+Projector	unprojectViewport	1	0	0	0	0	1	hip_star_mgr.cpp:792

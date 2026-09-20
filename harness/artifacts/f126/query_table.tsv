@@ -1,0 +1,125 @@
+class	method	kind	information	answer	member_or_note	total	T	G	W	X	S
+Navigator	updateTransformMatrices	A	frame matrices	-	Camera::update	13	7	0	2	4	0
+Navigator	update	A	view plan advance	-	Camera::update	4	0	0	0	4	0
+Navigator	updateVisionVector	A	view direction (tracking advance)	-	Camera::update	4	0	0	0	4	0
+Navigator	updateViewMat	A	frame matrices	-	Camera::update	2	0	0	2	0	0
+Navigator	dumpTrace	I	-	-	Camera::dumpTrace	1	0	0	1	0	0
+Navigator	getHelioToEyeMat	Q	frame matrix (heliocentric -> eye)	N	ingredients: private viewMat() + the body tree; getRootPosition() gives the place only	29	9	1	2	4	13
+Navigator	earthEquToLocal	Q	frame conversion (equatorial -> local)	P	placementRotation() public; no member converts a vector this way	21	3	0	0	0	18
+Navigator	getObserverHelioPos	Q	place (in the system frame)	P	getRootPosition() / positionRelativeTo(body): other frame (root, body-equatorial)	16	8	0	1	4	3
+Navigator	helioToEarthPosEqu	Q	frame conversion (heliocentric -> equatorial, position)	N		11	2	0	1	0	8
+Navigator	j2000ToEarthEqu	Q	frame conversion (J2000 -> equatorial)	N		10	0	0	0	0	10
+Navigator	getLocalToEyeMat	Q	frame matrix (local -> eye)	P	observedToLocalPos is the inverse applied; renderViewRotation() is private	8	0	2	0	4	2
+Navigator	getJ2000ToEyeMat	Q	frame matrix (J2000 -> eye)	N		7	0	0	0	4	3
+Navigator	getFlagTraking	Q	tracking	C	getTrackedBody() != nullptr	6	0	0	6	0	0
+Navigator	getHeading	Q	heading	C	getHeading() (rad; old is degrees)	6	0	0	6	0	0
+Navigator	getLocalVision	Q	view direction (local)	C	getForwardLocal() - "for the trace harness"; new local = oldLocalToLocal(old local)	6	1	0	5	0	0
+Navigator	getDomeFixedMat	Q	frame matrix (dome, no heading)	N		5	0	0	0	4	1
+Navigator	getEarthEquToEyeMat	Q	frame matrix (equatorial -> eye)	P	viewRotation() * placementRotation()	5	0	0	0	4	1
+Navigator	helioToLocal	Q	frame conversion (heliocentric -> local)	N		5	0	0	0	4	1
+Navigator	geTdomeMat	Q	frame matrix (dome, heading)	N		4	0	0	0	4	0
+Navigator	getEarthEquToEyeMatFixed	Q	frame matrix (equatorial -> eye, fixed)	N		4	0	0	0	4	0
+Navigator	getViewingMode	Q	mount	N	getMount was deleted by the owner (toggleMount: tell, never ask)	4	0	0	4	0	0
+Navigator	earthEquToJ2000	Q	frame conversion (equatorial -> J2000)	N		3	0	0	1	0	2
+Navigator	getPrecEquVision	Q	view direction (equatorial, precessed)	N		3	0	0	0	0	3
+Navigator	getFlagAutoMove	Q	motion plan (view)	P	getPlanTimers()[0] > 0 - "for the trace harness"	2	0	0	2	0	0
+Navigator	getFlagChangeHeading	Q	motion plan (heading)	P	getPlanTimers()[1] > 0 - "for the trace harness"	2	0	0	2	0	0
+Navigator	getFlagLockEquPos	Q	sky lock	C	getSkyLock()	2	0	0	2	0	0
+Navigator	getMoveCoef	Q	motion plan (progress)	N		2	0	0	2	0	0
+Navigator	getViewOffset	Q	view offset	C	getViewOffset()	2	0	0	2	0	0
+Navigator	helioToEarthEqu	Q	frame conversion (heliocentric -> equatorial)	N		2	0	0	0	0	2
+Navigator	earthPosEquToHelio	Q	frame conversion (equatorial -> heliocentric)	N		1	1	0	0	0	0
+Navigator	getEquVision	Q	view direction (equatorial)	P	observedToBodyEquPos applied to the eye forward	1	0	0	1	0	0
+Navigator	localToEarthEqu	Q	frame conversion (local -> equatorial)	P	localToBodyEqu() does it and is private	1	0	0	0	0	1
+Navigator	moveTo	R	view direction (timed)	-	lookTo(dir, duration) / trackBody(body)	6	0	0	6	0	0
+Navigator	setFlagTraking	R	tracking	-	trackBody	4	0	0	4	0	0
+Navigator	setLocalVision	R	view direction (snap)	-	lookTo(dir, 0)	4	1	0	3	0	0
+Navigator	updateMove	R	view direction (relative)	-	lookRel(dAlt, dAz, 0)	4	0	0	4	0	0
+Navigator	setHeading	R	heading	-	setHeading(h, 0) / moveHeading(delta)	3	1	0	2	0	0
+Navigator	setViewingMode	R	mount	-	setMount / toggleMount	3	0	0	3	0	0
+Navigator	changeHeading	R	heading (timed)	-	setHeading(h, duration)	2	1	0	1	0	0
+Navigator	setDefaultHeading	R	heading default	-	none	2	0	0	2	0	0
+Navigator	alignUpVectorTo	R	view roll	-	none	1	1	0	0	0	0
+Navigator	lookAt	R	view direction (alt, az)	-	lookTo(alt, az, duration)	1	0	0	1	0	0
+Navigator	restoreVision	R	view direction (session)	-	restoreSession	1	0	0	1	0	0
+Navigator	setFlagLockEquPos	R	sky lock	-	setSkyLock	1	0	0	1	0	0
+Navigator	setViewOffset	R	view offset	-	setViewOffset	1	0	0	1	0	0
+Navigator	setViewOffsetTransition	R	view offset (latch)	-	restoreViewOffsetLatch	1	0	0	1	0	0
+Observer	update	A	place plan advance	-	Camera::update	5	0	0	0	5	0
+Observer	get	F	-	-	std::shared_ptr::get() on `observatory` - not an Observer method	9	0	0	7	2	0
+Observer	reset	F	-	-	std::shared_ptr::reset() on `observatory` - not an Observer method	1	0	0	1	0	0
+Observer	transfo4d	F	-	-	Vec3d::transfo4d on a local named `obs` (meteor.cpp:151) - not an Observer method	1	0	0	0	0	1
+Observer	dumpTrace	I	-	-	Camera::dumpTrace	1	0	0	1	0	0
+Observer	getAltitude	Q	place (altitude)	C	getPlace()[2] (AU above the reference; old is metres) / distanceToReference()	32	3	0	5	21	3
+Observer	getHomeBody	Q	reference body	P	getReferenceBody() returns ModularBody*, the callers use the old Body type	20	2	0	13	0	5
+Observer	isOnBody	Q	reference body (on a body or not)	P	!isFreeMode() && !getReferenceBody()->isSystem() - composed today in EnvironmentManager.cpp:68	14	8	0	3	0	3
+Observer	getLatitude	Q	place (latitude)	C	getPlace()[1] (rad, both modes) / getLatitude() (anchored only)	12	2	0	3	4	3
+Observer	getHeliocentricPosition	Q	place (in the system frame)	P	getRootPosition() / positionRelativeTo(body): other frame	11	11	0	0	0	0
+Observer	isEarth	Q	reference body	C	getReferenceBody(), name test	11	0	0	4	0	7
+Observer	getLongitude	Q	place (longitude)	C	getPlace()[0] (rad, both modes) / getLongitude() (anchored only)	10	4	0	3	0	3
+Observer	getHomePlanetEnglishName	Q	reference body	C	getReferenceBody()->getEnglishName()	5	0	0	5	0	0
+Observer	getObserverCenterPoint	Q	place (centre of the reference, system frame)	N	a body property on the new path (getCachedRootPosition)	4	0	0	3	1	0
+Observer	getRotEquatorialToVsop87	Q	frame rotation (equatorial -> ecliptic)	N	a body property on the new path	4	2	0	0	0	2
+Observer	isSun	Q	reference body	C	getReferenceBody(), name test	3	0	0	2	0	1
+Observer	getAnchorPoint	Q	anchor	N	CameraAnchors is the new-path counterpart, not the Camera	2	2	0	0	0	0
+Observer	getEyeRelativeMode	Q	eye-relative mode	N	old-path-only concept	2	1	0	1	0	0
+Observer	getLongitudeForDisplay	Q	place (longitude)	C	getPlace()[0], wrapped by the caller (coreLink.hpp:812 does it)	2	0	0	2	0	0
+Observer	getDefaultAltitude	Q	place default	N	config value, not the Camera's	1	0	0	1	0	0
+Observer	getDefaultLatitude	Q	place default	N	config value, not the Camera's	1	0	0	1	0	0
+Observer	getDefaultLongitude	Q	place default	N	config value, not the Camera's	1	0	0	1	0	0
+Observer	getDistanceFromCenter	Q	place (radial distance)	P	distance is private; distanceToReference() + the reference's altitude reference	1	1	0	0	0	0
+Observer	getQuaternionMode	Q	quaternion mode	N	old-path-only concept	1	0	0	1	0	0
+Observer	getRotLocalToEquatorial	Q	frame rotation (local -> equatorial)	P	placementRotation() transposed	1	1	0	0	0	0
+Observer	setAltitude	R	place (altitude)	-	setAltitude(metres)	11	3	0	1	7	0
+Observer	setLongitude	R	place (longitude)	-	setLongitude(deg)	9	8	0	1	0	0
+Observer	setAnchorPoint	R	reference body	-	warpToBody / switchToBody / relocateToBody	7	7	0	0	0	0
+Observer	setLatitude	R	place (latitude)	-	setLatitude(deg)	6	5	0	1	0	0
+Observer	moveTo	R	place (timed)	-	moveTo(lon, lat, alt AU)	2	1	0	1	0	0
+Observer	setEyeRelativeMode	R	eye-relative mode	-	none	2	0	0	2	0	0
+Observer	load	R	place (init from config)	-	SSystemFactory::loadCamera	1	0	0	1	0	0
+Observer	moveRelAlt	R	place (relative)	-	moveRelAlt	1	0	0	1	0	0
+Observer	moveRelLat	R	place (relative)	-	moveRelLat	1	0	0	1	0	0
+Observer	moveRelLon	R	place (relative)	-	moveRelLon	1	0	0	1	0	0
+Observer	multAltitude	R	place (altitude, multiplicative)	-	multAlt	1	0	0	1	0	0
+Observer	setConf	R	place (save to config)	-	none	1	0	0	1	0	0
+Observer	setQuaternionMode	R	quaternion mode	-	none	1	0	0	1	0	0
+Observer	setRelRotation	R	quaternion rotation	-	none	1	1	0	0	0	0
+Projector	setModelViewMatrices	A	frame matrices (navigator -> projector push)	-	old engine internal; Camera::update dispatches its own mat	4	0	0	0	4	0
+Projector	updateAutoZoom	A	fov (zoom plan advance)	-	Camera::update	4	0	0	0	4	0
+Projector	dumpTrace	I	-	-	Camera::dumpTrace	1	0	0	1	0	0
+Projector	getFov	Q	fov	M	ModularBody::halfFov (static, rad, half angle; Camera::setHalfFov / update are its writers; no Camera getter)	55	14	0	23	0	18
+Projector	getMatProjectionOrtho2D	Q	screen	N	viewport-to-clip matrix; nothing in Camera holds the screen	27	0	0	1	0	26
+Projector	getClippingFov	Q	clipping + fov	N	zNear, zFar, fov for GLSL; the new path's depth partition is internal to the module	23	14	0	1	0	8
+Projector	printGravity180	Q	screen (text law)	N	draws text along the dome curvature; a drawing law, not an information	19	1	0	0	0	18
+Projector	getViewportHeight	Q	screen	N		17	3	0	1	0	13
+Projector	projectLocal	Q	projection law (local -> screen)	N	the module projects in shaders; CPU side only ProjectionTransfer's radial law	15	0	0	0	0	15
+Projector	projectEarthEqu	Q	projection law (equatorial -> screen)	N		10	0	0	2	0	8
+Projector	unprojectEarthEqu	Q	inverse law (screen -> equatorial)	P	observedPosToRaDe / observedToBodyEquPos take an EYE direction; screen -> eye is not in Camera	6	0	0	6	0	0
+Projector	getMatJ2000ToEye	Q	frame matrix (J2000 -> eye)	N	needs the reference's accumulated rotation, a ModularBody member	5	0	0	0	0	5
+Projector	getViewportWidth	Q	screen	N		5	0	0	1	0	4
+Projector	getMatEarthEquToEye	Q	frame matrix (equatorial -> eye)	P	viewRotation() * placementRotation(), rotation only, view offset excluded	4	1	0	0	0	3
+Projector	getViewportRadius	Q	screen	N		4	1	0	0	0	3
+Projector	projectLocalCheck	Q	projection law (local -> screen)	N		4	0	0	0	0	4
+Projector	getMatLocalToEye	Q	frame matrix (local -> eye)	P	observedToLocalPos is the inverse applied; renderViewRotation() is private	3	1	0	0	0	2
+Projector	getAimFov	Q	fov (zoom target)	P	getZoomDstHalfFov() - "for the trace harness"; unset until the first timed zoom	2	0	0	2	0	0
+Projector	getViewportCenter	Q	screen	N		2	0	0	0	0	2
+Projector	projectCustom	Q	projection law (given matrix -> screen)	N		2	2	0	0	0	0
+Projector	projectJ2000LineCheck	Q	projection law (J2000 -> screen)	N		2	0	0	0	0	2
+Projector	unprojectLocal	Q	inverse law (screen -> local)	P	observedToLocalPos / observedPosToAltAz take an EYE direction; screen -> eye is not in Camera	2	0	0	2	0	0
+Projector	getClippingPlanes	Q	clipping	N		1	1	0	0	0	0
+Projector	getCursorPosEqu	Q	inverse law (screen -> equatorial)	P	as unprojectEarthEqu	1	0	0	0	0	1
+Projector	getMatProjection	Q	projection matrix	N		1	0	0	0	0	1
+Projector	getViewport	Q	screen	N		1	0	0	1	0	0
+Projector	getViewportFloatCenter	Q	screen	N		1	0	0	1	0	0
+Projector	projectCustomCheck	Q	projection law (given matrix -> screen)	N		1	0	0	0	0	1
+Projector	projectDomeFixed	Q	projection law (dome -> screen)	N		1	0	0	0	0	1
+Projector	projectJ2000	Q	projection law (J2000 -> screen)	N		1	0	0	0	0	1
+Projector	projectJ2000Check	Q	projection law (J2000 -> screen)	N		1	0	0	0	0	1
+Projector	unprojectNormalizedLocal	Q	inverse law (screen -> local)	P	same; atmosphere.cpp:237 already branches on in.prj and uses ProjectionTransfer + eyeToLocal	1	0	1	0	0	0
+Projector	unprojectViewport	Q	inverse law (viewport -> sky cap)	N		1	0	0	0	0	1
+Projector	setClippingPlanes	R	clipping	-	no counterpart	7	6	0	1	0	0
+Projector	setFov	R	fov	-	setHalfFov(x, 0) - NB the owner's pair passes no duration, so the default 0.5 s applies	3	0	0	3	0	0
+Projector	zoomTo	R	fov	-	setHalfFov(x, duration)	2	0	0	2	0	0
+Projector	applyViewport	R	screen	-	no counterpart; called once per frame by Core::applyClippingPlanes	1	0	0	1	0	0
+Projector	changeFov	R	fov (relative)	-	none: today Camera is fed the projector's landed value (core.cpp:1885)	1	0	0	1	0	0
+Projector	setMaxFov	R	fov limit	-	none: Camera::maxHalfFov is a private static with no setter	1	0	0	1	0	0

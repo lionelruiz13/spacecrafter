@@ -1,0 +1,106 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+PASS gdb_reaches_the_UI_object  `this` of UI::updateTimeouts, the per-frame UI call
+>> moveto lat 0.0 lon 0.0 alt 2000000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_high.json
+-- M_high           drawn=new free=False alt new 2000.0002 old 2000.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS M_high_scene  want 2000.0 km on both, free=False, drawn=new: new 2000.0002 old 2000.0000 free=False drawn=new ref=DescB
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_high_s1.json
+-- M_high_s1        drawn=new free=False alt new 2020.0003 old 2020.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS M_high_s1_new_follows_its_law  new 2000.0002 -> 2020.0003 km, law says 2020.0002 (|d| 6.81e-05)
+PASS M_high_s1_old_follows_its_law  old 2000.0000 -> 2020.0000 km, law says 2020.0000
+PASS M_high_s1_new_equals_old  new 2020.0003 old 2020.0000 km |d| 2.50e-04
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_high_s2.json
+-- M_high_s2        drawn=new free=False alt new 2040.2000 old 2040.2000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS M_high_s2_new_follows_its_law  new 2020.0003 -> 2040.2000 km, law says 2040.2002 (|d| 1.98e-04)
+PASS M_high_s2_old_follows_its_law  old 2020.0000 -> 2040.2000 km, law says 2040.2000
+PASS M_high_s2_new_equals_old  new 2040.2000 old 2040.2000 km |d| 3.49e-05
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_high_s3.json
+-- M_high_s3        drawn=new free=False alt new 2060.6023 old 2060.6020 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS M_high_s3_new_follows_its_law  new 2040.2000 -> 2060.6023 km, law says 2060.6020 (|d| 2.59e-04)
+PASS M_high_s3_old_follows_its_law  old 2040.2000 -> 2060.6020 km, law says 2060.6020
+PASS M_high_s3_new_equals_old  new 2060.6023 old 2060.6020 km |d| 2.75e-04
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_button.json
+-- M_button         drawn=new free=False alt new 2019.3902 old 2019.3900 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS M_lower_button_is_x0.98_on_both  one press: new 2060.6023 -> 2019.3902, old 2060.6020 -> 2019.3900 km (x0.98 = 2019.3902); reported altitude was 2060.6023
+>> moveto lat 0.0 lon 0.0 alt 10000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_lowup.json
+-- M_lowup          drawn=new free=False alt new 9.9998 old 10.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS M_lowup_scene  want 10.0 km on both, free=False, drawn=new: new 9.9998 old 10.0000 free=False drawn=new ref=DescB
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_lowup_s1.json
+-- M_lowup_s1       drawn=new free=False alt new 17.4998 old 10.1000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_M_lowup_s1_new_follows_its_law  new 9.9998 -> 17.4998 km, law says 17.4997 (|d| 9.43e-05)
+PASS RESID_M_lowup_s1_old_follows_its_law  old 10.0000 -> 10.1000 km, law says 10.1000
+NOTE M_lowup_s1 residual new-old = +7.3998 km
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_lowup_s2.json
+-- M_lowup_s2       drawn=new free=False alt new 24.9999 old 10.2010 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_M_lowup_s2_new_follows_its_law  new 17.4998 -> 24.9999 km, law says 24.9998 (|d| 9.43e-05)
+PASS RESID_M_lowup_s2_old_follows_its_law  old 10.1000 -> 10.2010 km, law says 10.2010
+NOTE M_lowup_s2 residual new-old = +14.7989 km
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_lowup_s3.json
+-- M_lowup_s3       drawn=new free=False alt new 32.5000 old 10.3030 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_M_lowup_s3_new_follows_its_law  new 24.9999 -> 32.5000 km, law says 32.4999 (|d| 9.43e-05)
+PASS RESID_M_lowup_s3_old_follows_its_law  old 10.2010 -> 10.3030 km, law says 10.3030
+NOTE M_lowup_s3 residual new-old = +22.1970 km
+PASS RESID_M_floor_is_0.125_R  step per call / (coef-1) = 750.009 km, 0.125 x R = 750.000 km
+>> moveto lat 0.0 lon 0.0 alt 10000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_lowdn.json
+-- M_lowdn          drawn=new free=False alt new 9.9998 old 10.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS M_lowdn_scene  want 10.0 km on both, free=False, drawn=new: new 9.9998 old 10.0000 free=False drawn=new ref=DescB
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_lowdn_s1.json
+-- M_lowdn_s1       drawn=new free=False alt new 2.4997 old 9.9000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_M_lowdn_s1_new_follows_its_law  new 9.9998 -> 2.4997 km, law says 2.4998 (|d| 9.43e-05)
+PASS RESID_M_lowdn_s1_old_follows_its_law  old 10.0000 -> 9.9000 km, law says 9.9000
+NOTE M_lowdn_s1 residual new-old = -7.4003 km
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_lowdn_s2.json
+-- M_lowdn_s2       drawn=new free=False alt new -5.0004 old 9.8010 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_M_lowdn_s2_new_follows_its_law  new 2.4997 -> -5.0004 km, law says -5.0003 (|d| 9.43e-05)
+PASS RESID_M_lowdn_s2_old_follows_its_law  old 9.9000 -> 9.8010 km, law says 9.8010
+NOTE M_lowdn_s2 residual new-old = -14.8014 km
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_lowdn_s3.json
+-- M_lowdn_s3       drawn=new free=False alt new -12.5005 old 9.7030 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_M_lowdn_s3_new_follows_its_law  new -5.0004 -> -12.5005 km, law says -12.5004 (|d| 9.43e-05)
+PASS RESID_M_lowdn_s3_old_follows_its_law  old 9.8010 -> 9.7030 km, law says 9.7030
+NOTE M_lowdn_s3 residual new-old = -22.2035 km
+PASS RESID_M_descent_goes_under_the_datum  after 3 descents from 10 km: new -12.5005 km, old 9.7030 km
+>> moveto lat 0.0 lon 0.0 alt 10000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/D_M_lowup40.json
+-- D_M_lowup40      drawn=new free=False alt new 9.9998 old 10.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS D_M_lowup40_scene  want 10.0 km on both, free=False, drawn=new: new 9.9998 old 10.0000 free=False drawn=new ref=DescB
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/D_M_lowup40_s1.json
+-- D_M_lowup40_s1   drawn=new free=False alt new 17.4998 old 10.1000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_D_M_lowup40_s1_new_follows_its_law  new 9.9998 -> 17.4998 km, law says 17.4997 (|d| 9.43e-05)
+PASS RESID_D_M_lowup40_s1_old_follows_its_law  old 10.0000 -> 10.1000 km, law says 10.1000
+NOTE D_M_lowup40_s1 residual new-old = +7.3998 km
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/D_M_lowup40_s2.json
+-- D_M_lowup40_s2   drawn=new free=False alt new 24.9999 old 10.2010 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_D_M_lowup40_s2_new_follows_its_law  new 17.4998 -> 24.9999 km, law says 24.9998 (|d| 9.43e-05)
+PASS RESID_D_M_lowup40_s2_old_follows_its_law  old 10.1000 -> 10.2010 km, law says 10.2010
+NOTE D_M_lowup40_s2 residual new-old = +14.7989 km
+PASS RESID_D_M_step_per_call_ignores_dt  per call 7.5001 km at dt=40 against 7.5001 at dt=10 (ratio 1.00000): per SECOND 187.5 km/s at 25 fps against 750.0 at 100 fps
+>> body name DescB ground_radius 6100
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_refcmd.json
+-- M_refcmd         drawn=new free=False alt new 24.9999 old 10.2010 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+FAIL radius_command_reaches_the_reference_body  `body name DescB ground_radius 6100` while DescB is the Camera's reference, 4 s later: scaled ground 6000.0 km, datum 6000.0 km, reference cache fresh = False
+>> set home_planet Moon
+>> moveto lat 0 lon 0 alt 10000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_moon.json
+-- M_moon           drawn=new free=False alt new 9.9998 old 10.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_moon_s1.json
+-- M_moon_s1        drawn=new free=False alt new 20.8583 old 10.1000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS RESID_M_floor_scales_with_the_body  Moon, scaled datum 8687.0 km, from 9.9998 km: step / (coef-1) / datum = 0.12500 (0.125 if the floor is R's)
+>> set home_planet DescB
+>> moveto lat 0.0 lon 0.0 alt 2000000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/M_on/M_datum.json
+-- M_datum          drawn=new free=False alt new 2000.0002 old 2000.0000 km | lon new 0.00000 old 0.00000 | lat new 0.00000 old 0.00000 | fov new 180.000005 old 180.000000
+PASS M_datum_scene  want 2000.0 km on both, free=False, drawn=new: new 2000.0002 old 2000.0000 free=False drawn=new ref=DescB
+FAIL M_datum_scene_separates_the_two_radii  measured in the dump: scaled ground 6000.0 km, datum 6000.0 km
+
+=== leg M pin on: FAILURES: radius_command_reaches_the_reference_body,M_datum_scene_separates_the_two_radii ===

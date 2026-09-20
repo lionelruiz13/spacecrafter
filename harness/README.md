@@ -6470,3 +6470,65 @@ Haumea 7.13, Juno 1.18. `EllipticalOrbit::eccentricAnomaly` does not fold
 (orbit.cpp:579-581). Shared solver, both render paths, no hide needed - and
 MODELLED ONLY: no (missed, staleness) pair the retention bound allows from the
 harness JD lands in the window.
+
+## F124 - the input path's instrument: gdb legs for the zoom feed, the lateral movers, the free ascent floor, the anchored `multAlt` and their dt (`f124_run.sh`, `f124_legs.py`) - INTENT 11.261 / row B45 item (1) / 11.251(b) / 11.257(c)(5) / 11.258, 2026-09-20
+
+**What for.** The key, pointer and joystick channels deliver nothing on this host
+(11.251(b)), so nothing reached the functions an input runs. These legs call the
+function the INPUT PATH calls - `UI::raiseHeight()`, `UI::lowerHeight()`,
+`UI::zoomIn()`, `UI::moveLon(double)`, then `Core::updateMove(dt)` - inside the
+live process, one application per real frame, and read BOTH engines through
+`body action dual_dump` (header: `camera`, `control`, `oldView`, `ramp`). Never the
+`Camera` directly: the seam is the subject.
+
+**Run** - one leg per call; each fits one 10-minute foreground call:
+
+    bash f124_run.sh <label> f124_legs.py --leg Z|L|A|M [--pin on|off] [--perturb withhold-new]
+
+`--pin` is `flag experimental_path on|off`. Leg D (two `delta_time` values) is the
+`D_*` sub-legs inside M, A and Z; L has no dt on its path. Records land in
+`artifacts/f124/<label>/`: `meta.txt` (binary and DRIVER md5, instance probe, GPU
+gate, field pair in == out), `drive.log`, `f124_<leg>_results.json`, `gdb.log`, one
+dump per step. Exit: the driver's; 2 an engine was live; 3 no GPU room, or a SCENE
+NOT REACHED (the leg stops rather than judge a scene it did not get); 4 the field
+pair changed; 5 an engine was left over.
+
+**Able to fail, first.** `--perturb withhold-new` gives the step to the OLD engine
+alone (`Observer::multAltitude`, `Observer::moveRelLon`, `Projector::changeFov`);
+the leg's `*_new_equals_old` check must go red. Exit 0 = it did; exit 1 = "STAYED
+GREEN - THE LEG IS BLIND". Run it before trusting a green, and again after any edit
+of the driver (each `meta.txt` carries the driver's md5).
+
+**Reading the verdicts.** `PASS` / `FAIL` as everywhere. A check named `RESID_*`
+asserts a PREDICTED RESIDUAL of INTENT 11.261 (P) - the floor at 0.125 R, the
+anchored descent going under the datum, the free lateral step scaled on a stale
+`distance`, the latitude past the pole, the step per call ignoring dt, the two
+engines resting at different fovs after one key step on a zoom plan. GREEN means the
+residual is there with its cause. **Such a check going RED after B42 or B44 is the
+expected sign of the fix, not a regression**: re-baseline it with the argument, do
+not widen it. Two checks are red as found and left so (11.261 (F)1):
+`radius_command_reaches_the_reference_body`, `M_datum_scene_separates_the_two_radii`.
+
+**Made of.** `f124_run.sh` = `f121_run.sh`'s launch asserts + `b21_keypath_run.sh`'s
+gdb on a FIFO, with the DRIVER as a parameter (it runs `b21_keypath.py` unchanged:
+same `<outdir> <gdb_pid> <fifo>` signature); teardown signals this launch's own
+pids, never a name. `f124_legs.py` takes `check`, `send`, `_clean`,
+`gdb_marker_count`, `gdb_inject` from `b21_keypath.py` itself, by AST (that file
+runs its scene at import): change them there and both follow.
+
+**Pitfalls, each one paid for.** (1) A sub-leg that checks its scene but does not
+STOP on a failed check judges numbers from nowhere - `placed()` places and stops.
+(2) A check that prints a value from the COMMAND's text instead of the dump can pass
+vacuously: read the precondition back (`radii()`). (3) `gdb` must not call
+`Core::updateMove` with its own breakpoint armed: `inject()` re-arms per frame and
+deletes before the calls. (4) The inferior is stopped about 4 s per injection and
+the next frame's `delta_time` is that stall: a timed plan (Z2) jumps ahead - give it
+20 s, not 8. (5) `Core::lowerHeight(1)` has no caller in `src/`: the descent
+sub-legs drive it directly and say so; the lower BUTTON is `UI::lowerHeight()`.
+(6) The inline `CoreLink::observerMoveRel*` have no out-of-line copy: not callable.
+
+**Not reached** (the full map is 11.261 (C), 60 rows): the key / wheel / drag /
+click handlers themselves (dead channel), the VIEW path (`turn*`, `dragView`,
+`lookRel`), `Core::findAndSelect(int,int)` (leg S not built), the "already zooming"
+branch of `Camera::setHalfFov`, both fov clamps, every timed mover plan (no input
+can reach one: `DURATION_COMMAND` 0.1 truncates to `int` 0).

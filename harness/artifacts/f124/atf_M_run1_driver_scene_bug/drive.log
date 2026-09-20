@@ -1,0 +1,19 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+PASS gdb_reaches_the_UI_object  `this` of UI::updateTimeouts, the per-frame UI call
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/atf_M/M_high.json
+-- M_high           drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 180.000005 old 180.000000
+FAIL M_high_scene  want 2000.0 km on both, free=False, drawn=on: new 0.0751 old 0.0751 free=False drawn=new
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f124/atf_M/M_high_s1.json
+-- M_high_s1        drawn=new free=False alt new 0.0751 old 0.0759 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 180.000005 old 180.000000
+FAIL M_high_s1_new_follows_its_law  new 0.0751 -> 0.0751 km, law says 7.5751 (|d| 7.50e+00)
+PASS M_high_s1_new_equals_old  new 0.0751 old 0.0759 km |d| 7.51e-04
+
+=== ABLE-TO-FAIL leg M: STAYED GREEN - THE LEG IS BLIND ===
