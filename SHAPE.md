@@ -10,9 +10,14 @@ This file is the index and the operating manual; it states nothing those do not.
 ## 1. What happened, in five lines
 - The owner wrote `src/experimentalModule` alone (reference: code `4dfe7bb3`, the parent of the first
   `Claude*` commit). Agents then grew it 5x in code and 45x in comments. He read it on 2026-09-19.
-- Cause, measured (11.249): every model added without reworking (deleted/added code 0.03-0.17, his
-  4.02). Tasks were accepted on BEHAVIOUR; an added function cannot break a green check, a reworked
-  one can; nothing read the SHAPE, so its decay was silent. The supervisor never read it either.
+- Cause (11.249, dated and corrected by 11.265): every model added beside the structure - Fable 5
+  wrote 49 % of it, mostly with the owner present; 98 % was in place by 2026-08-09. Tasks were
+  accepted on BEHAVIOUR; an added function cannot break a green check, a reworked one can; and the
+  code's SHAPE was no layer's input: those positioned to see it read a text ABOUT the code (report,
+  ledger entry, comment), never the code - 82 deliveries accepted with 18 Reads under `src/`.
+  (11.249's "deleted/added 0.03-0.17 against his 4.02" was wrong twice: it counted the ledger
+  files that once lived in the module - 4.02 is one file-move commit - and del/add does not
+  separate his new-code work from ours. Writer count, comment form and volume do.)
 - The duplication was not text (literal clones 3 %): it was SECOND MANAGERS - the new Camera
   mirroring the old navigator / observer / projector member by member, laws ported beside the
   still-compiled originals, parallel constants built beside the ones he had declared.
@@ -59,7 +64,11 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
   `log`. The mark is the code repo's ref `refs/review/headers`; its reflog is the history of his
   reviews. Headers by default, `ALL=1` for everything. Sessions never move the mark: only he does.
 - `ratio.py <rev> [v]` - module code / comment lines at a revision (trailing comments count as code).
-- `authors.py [path]` - added / deleted code and comment lines per author over the history.
+- `authors.py [path]` - added / deleted code and comment lines per author over the history. PITFALL,
+  paid for (11.265(d)): it counts EVERY file that ever lived under the path; give it C++ pathspecs
+  (`':(glob)src/experimentalModule/**/*.cpp'` and `*.hpp`), and read del/add only on tasks that
+  MODIFY existing code. `harness/f52_strata.py` (11.168) already had the exclusion and both confounds.
+- `timeline.py [--by week|day|commit] [--top N] [paths]` - WHEN the shape moved, per period and author.
 - `writers.py <rev> <Class> <hpp> <cpp>` - which member functions WRITE which field, same-writer
   groups, one-statement forwarders: the detector for his sense of duplication and the S7 count.
   Regex, no compiler: blind to writes through a non-member call, an alias, another class. A
@@ -145,6 +154,19 @@ Sessions COMMIT in their own name and NEVER PUSH.
   (that is how a fourth runner came to exist); re-read the prompt's reading order against the mandate's own order.
 - Next without the owner, harness only: leg S and the VIEW legs; retire the three older FIFO runners onto
   `f124_run.sh` (and make a crashed gate print FAIL, 5.172); the dig of 5.162; B46's assembling script.
+
+### 7c. After session 35 (2026-09-21; the post-mortem - record `INTENT/11.265.md`; code UNCHANGED)
+- WHY IT SURVIVED: shape was no check's input; the checks placed to see it read the checked party's
+  own account. So: accept
+  from `git show` READ IN FULL, answer a question about code by opening the code, and ask a
+  measurement what it says about US before scoring it (11.168 measured this failure and scored PASS).
+- BEFORE BUILDING AN INSTRUMENT, search `harness/` and the ledger for one: S4 applies to us too.
+- Proposed and NOT built (his to rule, 11.265(g)): a code-repo hook rejecting ledger grammar and
+  2+-line comment runs in `src/`; RATCHETS (trio calls from the new path, (field, writer) pairs per
+  class: a count may only go down, an increase needs a `Shape-Exception:` trailer); the method-name
+  list of each touched class pasted into the task's PREMISES block by script.
+- Transcripts are deleted after 30 days by the CLI. Copies: `/home/claude/transcript-preserve/`;
+  tools to read them: `transcript-preserve/work/tx_*.py`. July is NOT recovered.
 
 ## 8. Terms a cold reader will meet
 - **Vixy = the owner = Calvin Ruiz** (git author); `[vixy: date]` tags his words in the ledger.
