@@ -1,0 +1,8 @@
+start 2026-09-21 14:44:28 CEST  free -g available: 53 GiB  binary before: 408b6d2ebe12481586ccfeb1dfbf27d0
+[  5%] Built target planetsephems
+[  6%] Built target iniparser
+[  7%] Building CXX object src/CMakeFiles/spacecrafter.dir/executorModule/inGalaxyModule.cpp.o
+[  8%] Linking CXX executable spacecrafter
+[100%] Built target spacecrafter
+make exit 0
+end 2026-09-21 14:44:35 CEST  binary after: f7a6196590483c33c4dd97789be37f1b

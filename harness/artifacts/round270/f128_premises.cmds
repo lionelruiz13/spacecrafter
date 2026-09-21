@@ -1,0 +1,28 @@
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD
+git rev-parse --short=8 HEAD
+git status --porcelain | wc -l
+md5sum build-claude/src/spacecrafter | cut -c1-8
+find src -type f -newer build-claude/src/spacecrafter | wc -l
+ldd build-claude/src/spacecrafter | /usr/bin/grep -c 'not found'
+test ! -e claude/INTENT/11.267.md -a ! -e claude/INTENT/archive/11.267.md && echo free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md
+# the field pair, pristine (asserted in == out around every launch), and no leftover alternation file
+md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' '
+test ! -e ~/.spacecrafter/beta_features.ini && echo absent
+# what the legs must make visible, as it stands at HEAD (content drift = abort)
+/usr/bin/grep -c 'aboveSystem ? system->getMat() : b->getMat()' src/experimentalModule/EnvironmentManager.cpp
+/usr/bin/grep -n 'core->milky_way->draw' src/executorModule/inGalaxyModule.cpp src/executorModule/solarSystemModule.cpp src/executorModule/stellarSystemModule.cpp | cut -d: -f1,2 | tr '\n' ' '
+/usr/bin/grep -n 'drawEnvironmentBackdrop' src/executorModule/*.cpp | cut -d: -f1,2 | tr '\n' ' '
+/usr/bin/grep -n '\.re = {}' src/bodyModule/ssystem_factory.cpp | cut -d: -f1 | tr '\n' ' '
+/usr/bin/grep -c 'ACP_FN_EXPERIMENTAL_PATH' src/interfaceModule/base_command_interface.hpp
+# the instruments to extend or reuse, the launch guards, the debugger and its symbols
+test -x claude/harness/f124_run.sh -a -x claude/harness/b21_keypath_run.sh -a -f claude/harness/b21_keypath.py -a -f claude/harness/f124_legs.py -a -f claude/harness/b10_cmd_gdb.py && echo ok
+test -f claude/harness/b5_oort.py -a -f claude/harness/b3_ladder.py -a -f claude/harness/b20d_anchored_draw.py -a -f claude/harness/b5_drawhalf.py -a -f claude/harness/s33_symptoms.py && echo ok
+test -x claude/harness/f56_canary.sh -a -x claude/harness/sc_instances.sh -a -f claude/harness/sc_gpu.py && echo ok
+command -v gdb
+file -L build-claude/src/spacecrafter | /usr/bin/grep -c 'with debug_info, not stripped'
+# the analysis the task builds on, and the ledger entries it stands on (the zero beside its control)
+test -f claude/b47-sky-members.md -a -f claude/INTENT/11.266.md && echo ok
+python3 claude/intent_resolve.py 11.265 11.266 11.261 2>&1 | /usr/bin/grep -c 'resolves nowhere'
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere'

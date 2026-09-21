@@ -3,6 +3,11 @@
 For the owner, to rule on. Nothing is built, nothing in `src/` was touched. Code `main` @ `6c3d0ed6`.
 Written 2026-09-21 by a dispatched Claude Fable 5.1 agent (task F127); derivation and raw lists: `claude/INTENT/11.266.md`.
 
+**STATUS after the round of 2026-09-21 (record `claude/INTENT/11.270.md`) - what moved since this page was written:**
+- **Slice 0 LANDED for one layer** (harness, `INTENT/11.267.md`): `bash claude/harness/f128_leg.sh SOL|GAL|TILT` - the milky way alone, per level, old path pinned against new path pinned, and a gdb leg that says whose tilt it follows. Not built: the other layers, the stellar level; the universe level is reached and unjudged.
+- **Slice 1 LANDED** (code `0bc9458d`, `INTENT/11.268.md`): a member of a body above the current system receives its OWNER's matrix. Identical while every `re` is zero (new path bit-identical); with a tilt poked under gdb the milky way now follows the galaxy and no longer the system. Question 9 below is CLOSED by it. Two things it leaves with you: the climb is a file-local `observedMat` in `EnvironmentManager.cpp` (the task's write set stopped there) - its natural home is `ModularBody`, beside `getMat()`; and `MilkyWayEnv.cpp:18` rotates the zodiacal ecliptic normal, a quantity of the SYSTEM's flat frame, with the galaxy's matrix (with the system's before): wrong under any tilt either way - whose member is the zodiacal light?
+- **Slice 2 STOPPED, measured, nothing committed** (`INTENT/11.269.md`): gated exactly as the solar module's, the galaxy-level milky way comes out TURNED BY 139.64 deg on the new path. Above a system your Camera and the old observer do not stand at the same place: 214.72 deg apart in longitude (the old observer's longitude there carries the wall clock of the app's START - `anchor_manager.cpp:835,853-855`; the Camera's is the sidereal time of the script's date) and 8.31 deg in roll. Today it is invisible because the Navigator draws the WHOLE sky at the galaxy and universe levels in both modes. So this page's claim that slice 2 *needs nothing from B42* is REFUTED, and section 8's order changes: **above a system no sky layer can move to the Camera one by one before somebody is responsible for where the observer stands there - question 10, new, below.**
+
 Your words, verbatim (2026-09-21): *"The stars, the milkyway, the landscape, those are dependent on where we are (stars
 drawn while in the solar system, when outside the 3D version is used instead), so they must have been converted into
 EnvironmentModule and use the matrix depending on where they camme from to have the right orientation."* - *"the milkyway
@@ -347,6 +352,18 @@ IN ITS TABLE, NOT SO IN THE CODE: nothing found. CONFIRMED: the star rows of all
    J2000, galactic in one class). Default: ONE member on the reference body, handed both frames, split later only if a
    level needs one without the other. Reason: the legacy draws them together and only in a system; splitting first is
    code nobody asked for.
-9. **The tilt precondition.** Premise: section 5 - the class already applies a system's tilt; only three `.re = {}` literals keep it at zero. Default: slice 1 first (the
+9. **[CLOSED 2026-09-21 by slice 1, code `0bc9458d`]** **The tilt precondition.** Premise: section 5 - the class already applies a system's tilt; only three `.re = {}` literals keep it at zero. Default: slice 1 first (the
    member receives its owner's matrix), so the precondition disappears instead of being written down. Reason: a barrier
    that is a fact about data files fails silently.
+10. **[NEW 2026-09-21, from slice 2's measured STOP] Above a system, WHO PLACES THE OBSERVER?** Premise: at the galaxy
+   level the Camera's rotation and the Navigator's stand 139.64 deg apart (214.72 deg of longitude + 8.31 deg of roll;
+   0.03 deg at the Solar level). Each got there by its own law from the same two commands: the Camera by
+   `findBetterReference` -> `switchToBody`, the old observer by the altitude event and `AnchorManager::selectAnchor`,
+   whose longitude above a system depends on WHEN the program was started (two launches 107 s apart differ visibly).
+   So *identical to the legacy* is, at that level, identical to a wall-clock-dependent picture. Default: none proposed -
+   this is page B42's subject (one responsible per mode) reached from the sky side. What the code allows, for you to
+   choose between: (a) in new mode the galaxy and universe modules read the Camera for their frame matrices (B42's first
+   step) - every layer there follows the Camera at once and slice 2 is then three lines; (b) the legacy's start-clock
+   term is ruled a defect of the old observer and fixed THERE first, after which the two longitudes agree to about
+   0.003 deg on the measured scene [a hypothesis from one scene, not established] and the roll of 8.31 deg remains to be
+   explained; (c) the levels above the system stay wholly on the Navigator until the old path goes. Related: question 6.

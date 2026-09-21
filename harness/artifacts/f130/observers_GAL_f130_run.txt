@@ -1,0 +1,4 @@
+GAL_milky_way/run_20260921-144456/new/base.json  drawn=new  ref=MilkyWay  free=True  MilkyWay.mat|old 139.6368 deg  SolarSystem.mat|old 139.6368 deg  camera.mat|old 139.6368 deg  old lon/lat 150.000/43.300  camera place lon/lat -64.720/43.300
+GAL_milky_way/run_20260921-144456/old/base.json  drawn=old  ref=MilkyWay  free=True  MilkyWay.mat|old 139.6368 deg  SolarSystem.mat|old 139.6368 deg  camera.mat|old 139.6368 deg  old lon/lat 150.000/43.300  camera place lon/lat -64.720/43.300
+GAL_milky_way/run_20260921-144456/new/again.json  drawn=new  ref=MilkyWay  free=True  MilkyWay.mat|old 139.6368 deg  SolarSystem.mat|old 139.6368 deg  camera.mat|old 139.6368 deg  old lon/lat 150.000/43.300  camera place lon/lat -64.720/43.300
+GAL_milky_way/run_20260921-144456/old/again.json  drawn=old  ref=MilkyWay  free=True  MilkyWay.mat|old 139.6368 deg  SolarSystem.mat|old 139.6368 deg  camera.mat|old 139.6368 deg  old lon/lat 150.000/43.300  camera place lon/lat -64.720/43.300

@@ -1,0 +1,11 @@
+image 2048x2048  viewport centre 1024.0 1024.0 radius 1024.0  fov 180.0
+control, no reprojection (whole disc): corr -0.059927
+transpose yflip fwd  overlap_px       corr   rel(lum)  ratio B/A
+False     False -1      3150632   0.183941   1.663189   0.536972
+False     False 1       3150632   0.222299   1.639362   0.540990
+False     True  -1      3150632  -0.111511   1.911932   0.536957
+False     True  1       3150632  -0.110510   1.921482   0.520271
+True      False -1      1674654  -0.090290   1.999471   0.720035
+True      False 1       1674654  -0.101666   1.845178   0.498995
+True      True  -1      1674654   0.997996   0.042650   0.998455
+True      True  1       1674654  -0.036149   1.814263   0.317581

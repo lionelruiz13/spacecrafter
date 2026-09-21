@@ -1,0 +1,35 @@
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD
+git rev-parse --short=8 HEAD
+git status --porcelain | wc -l
+md5sum build-claude/src/spacecrafter | cut -c1-8
+find src -type f -newer build-claude/src/spacecrafter | wc -l
+test ! -e claude/INTENT/11.268.md -a ! -e claude/INTENT/archive/11.268.md && echo free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md
+md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' '
+# THE S4 NAME PASS, INJECTED: every function-like name of each class this task may touch, made by script from the header (a drift = abort). Read each against the intent BEFORE any edit - and still read the header in full.
+python3 claude/harness/shape/names.py src/experimentalModule/EnvironmentManager.hpp
+python3 claude/harness/shape/names.py src/experimentalModule/EnvironmentModule.hpp
+python3 claude/harness/shape/names.py src/experimentalModule/ModularSystem.hpp
+python3 claude/harness/shape/names.py src/experimentalModule/ModularBody.hpp
+# the change site and the header line it makes false
+/usr/bin/grep -n 'aboveSystem ? system->getMat() : b->getMat()' src/experimentalModule/EnvironmentManager.cpp | cut -d: -f1 | tr '\n' ' '
+/usr/bin/grep -n 'mat orientation is valid only above the current system' src/experimentalModule/EnvironmentModule.hpp | cut -d: -f1
+# the hops that exist, the walk that stops at the system, the owner's own cached climb
+/usr/bin/grep -n 'inline void transformBodyToParent(Mat4f &mat_local_to_body) const\|inline Mat4f accumulatedBodyPosToBody() const\|inline const Mat4f &getMatLocalToBodyPos() const\|inline const Mat4f &getMat() const' src/experimentalModule/ModularBody.hpp | cut -d: -f1 | tr '\n' ' '
+/usr/bin/grep -n 'while (body->isNotIsolated)\|^Mat4f ModularBody::calculateSwitchCompensation' src/experimentalModule/ModularBody.cpp | cut -d: -f1 | tr '\n' ' '
+git show 4dfe7bb3:src/experimentalModule/ModularBody.hpp | /usr/bin/grep -c 'calculateSwitchCompensation\|transformBodyToParent(Mat4f'
+# who calls the two draws, and who receives the matrix
+/usr/bin/grep -rn 'environment->drawBackdrop\|environment->drawSky' src | cut -d: -f1,2 | tr '\n' ' '
+/usr/bin/grep -rln 'public EnvironmentModule' src | tr '\n' ' '
+/usr/bin/grep -n '\.re = {}' src/bodyModule/ssystem_factory.cpp | cut -d: -f1 | tr '\n' ' '
+# the owner's form, the shape instruments, the D14 gate
+git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD
+test -f claude/harness/shape/writers.py -a -f claude/harness/shape/form.py -a -f claude/harness/shape/ratio.py -a -f claude/harness/f70_ascii.py && echo ok
+# F128 delivered and accepted: the legs this task is judged on
+md5sum claude/harness/f128_leg.sh claude/harness/f128_legs.py claude/harness/f128_compare.py claude/harness/f124_run.sh | cut -c1-8 | tr '\n' ' '
+python3 -c "import json;[print(s, json.load(open('claude/harness/artifacts/f128/%s_milky_way/floor.json' % s))['threshold_rel'], end=' ') for s in ('SOL','GAL')]"
+ls -d claude/harness/artifacts/f128/SOL_milky_way/floor_20260921-112210/oldA claude/harness/artifacts/f128/SOL_milky_way/floor_20260921-112210/newA claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/oldA claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/newA | wc -l
+# the ledger entries the task stands on (the zero beside its control)
+python3 claude/intent_resolve.py 11.265 11.266 11.267 2>&1 | /usr/bin/grep -c 'resolves nowhere'
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere'

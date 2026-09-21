@@ -1,0 +1,61 @@
+# F130 launches: pids started by the runner, fate by kill -0 at 2026-09-21 14:52:46 CEST
+== GAL_milky_way/run_20260921-144456/old
+GAL_milky_way/run_20260921-144456/old/meta.txt:driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+GAL_milky_way/run_20260921-144456/old/meta.txt:binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+GAL_milky_way/run_20260921-144456/old/meta.txt:binary md5       : f7a6196590483c33c4dd97789be37f1b
+GAL_milky_way/run_20260921-144456/old/meta.txt:binary mtime     : 2026-09-21 14:44:35.674917746 +0200
+GAL_milky_way/run_20260921-144456/old/meta.txt:config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+GAL_milky_way/run_20260921-144456/old/meta.txt:ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+GAL_milky_way/run_20260921-144456/old/meta.txt:gdb pid=966726
+GAL_milky_way/run_20260921-144456/old/meta.txt:engine pid(s) under gdb: 966743 
+GAL_milky_way/run_20260921-144456/old/meta.txt:config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+GAL_milky_way/run_20260921-144456/old/meta.txt:ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+GAL_milky_way/run_20260921-144456/old.runner.txt:driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+GAL_milky_way/run_20260921-144456/old.runner.txt:binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+GAL_milky_way/run_20260921-144456/old.runner.txt:binary md5       : f7a6196590483c33c4dd97789be37f1b
+GAL_milky_way/run_20260921-144456/old.runner.txt:binary mtime     : 2026-09-21 14:44:35.674917746 +0200
+== GAL_milky_way/run_20260921-144456/new
+GAL_milky_way/run_20260921-144456/new/meta.txt:driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+GAL_milky_way/run_20260921-144456/new/meta.txt:binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+GAL_milky_way/run_20260921-144456/new/meta.txt:binary md5       : f7a6196590483c33c4dd97789be37f1b
+GAL_milky_way/run_20260921-144456/new/meta.txt:binary mtime     : 2026-09-21 14:44:35.674917746 +0200
+GAL_milky_way/run_20260921-144456/new/meta.txt:config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+GAL_milky_way/run_20260921-144456/new/meta.txt:ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+GAL_milky_way/run_20260921-144456/new/meta.txt:gdb pid=967033
+GAL_milky_way/run_20260921-144456/new/meta.txt:engine pid(s) under gdb: 967050 
+GAL_milky_way/run_20260921-144456/new/meta.txt:config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+GAL_milky_way/run_20260921-144456/new/meta.txt:ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+GAL_milky_way/run_20260921-144456/new.runner.txt:driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+GAL_milky_way/run_20260921-144456/new.runner.txt:binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+GAL_milky_way/run_20260921-144456/new.runner.txt:binary md5       : f7a6196590483c33c4dd97789be37f1b
+GAL_milky_way/run_20260921-144456/new.runner.txt:binary mtime     : 2026-09-21 14:44:35.674917746 +0200
+== SOL_milky_way/run_20260921-144929/old
+SOL_milky_way/run_20260921-144929/old/meta.txt:driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+SOL_milky_way/run_20260921-144929/old/meta.txt:binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+SOL_milky_way/run_20260921-144929/old/meta.txt:binary md5       : f7a6196590483c33c4dd97789be37f1b
+SOL_milky_way/run_20260921-144929/old/meta.txt:binary mtime     : 2026-09-21 14:44:35.674917746 +0200
+SOL_milky_way/run_20260921-144929/old/meta.txt:config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+SOL_milky_way/run_20260921-144929/old/meta.txt:ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+SOL_milky_way/run_20260921-144929/old/meta.txt:gdb pid=967427
+SOL_milky_way/run_20260921-144929/old/meta.txt:engine pid(s) under gdb: 967444 
+SOL_milky_way/run_20260921-144929/old/meta.txt:config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+SOL_milky_way/run_20260921-144929/old/meta.txt:ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+SOL_milky_way/run_20260921-144929/old.runner.txt:driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+SOL_milky_way/run_20260921-144929/old.runner.txt:binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+SOL_milky_way/run_20260921-144929/old.runner.txt:binary md5       : f7a6196590483c33c4dd97789be37f1b
+SOL_milky_way/run_20260921-144929/old.runner.txt:binary mtime     : 2026-09-21 14:44:35.674917746 +0200
+== SOL_milky_way/run_20260921-144929/new
+SOL_milky_way/run_20260921-144929/new/meta.txt:driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+SOL_milky_way/run_20260921-144929/new/meta.txt:binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+SOL_milky_way/run_20260921-144929/new/meta.txt:binary md5       : f7a6196590483c33c4dd97789be37f1b
+SOL_milky_way/run_20260921-144929/new/meta.txt:binary mtime     : 2026-09-21 14:44:35.674917746 +0200
+SOL_milky_way/run_20260921-144929/new/meta.txt:config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+SOL_milky_way/run_20260921-144929/new/meta.txt:ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+SOL_milky_way/run_20260921-144929/new/meta.txt:gdb pid=967719
+SOL_milky_way/run_20260921-144929/new/meta.txt:engine pid(s) under gdb: 967736 
+SOL_milky_way/run_20260921-144929/new/meta.txt:config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+SOL_milky_way/run_20260921-144929/new/meta.txt:ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+SOL_milky_way/run_20260921-144929/new.runner.txt:driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+SOL_milky_way/run_20260921-144929/new.runner.txt:binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+SOL_milky_way/run_20260921-144929/new.runner.txt:binary md5       : f7a6196590483c33c4dd97789be37f1b
+SOL_milky_way/run_20260921-144929/new.runner.txt:binary mtime     : 2026-09-21 14:44:35.674917746 +0200

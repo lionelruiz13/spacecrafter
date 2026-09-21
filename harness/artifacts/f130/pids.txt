@@ -1,0 +1,11 @@
+# F130: 4 launches, 8 pids (gdb / engine), fate by kill -0 at 2026-09-21 14:52:54 CEST; field pair 03fbee59 / 545a51ef in == out MATCH=yes on all 4 (meta.txt)
+GAL-old pid 966726 gone
+GAL-old pid 966743 gone
+GAL-new pid 967033 gone
+GAL-new pid 967050 gone
+SOL-old pid 967427 gone
+SOL-old pid 967444 gone
+SOL-new pid 967719 gone
+SOL-new pid 967736 gone
+[close] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+sc_instances --assert close exit 0

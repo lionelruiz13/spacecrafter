@@ -1,0 +1,13 @@
+# F130 pre-edit: is the 139.6 deg between the two observers at the galaxy level ONE angle about the z axis of the frame above the system?
+# scan: min over delta of angle(camera.mat 3x3, side(helioToEye 3x3, Rz(delta))), step 0.001 deg around the coarse minimum
+GAL_milky_way/floor_20260921-120507/newA/base.json  Rz*old  min angle 6.0430 deg at delta 220.422 deg
+GAL_milky_way/floor_20260921-120507/newA/base.json  old*Rz  min angle 87.9943 deg at delta 237.316 deg
+GAL_milky_way/floor_20260921-120507/oldA/base.json  Rz*old  min angle 6.0431 deg at delta 220.460 deg
+GAL_milky_way/floor_20260921-120507/oldA/base.json  old*Rz  min angle 87.9828 deg at delta 237.366 deg
+GAL_milky_way/run_20260921-135127/new/base.json  Rz*old  min angle 6.0429 deg at delta 220.422 deg
+GAL_milky_way/run_20260921-135127/new/base.json  old*Rz  min angle 87.9943 deg at delta 237.316 deg
+# two angles: delta about the z axis of the frame above the system (a longitude), rho about the eye axis (a roll); arrays are transposes of the true matrices, so true = Rz_eye(rho) . Old . Rz_frame(delta)
+GAL_milky_way/floor_20260921-120507/newA/base.json  min angle 0.0104 deg at delta(longitude) 214.720 deg, rho(roll) 8.306 deg
+   camera heading 8.3126 deg alt 43.3000 az -115.2795 ; old nav heading 0
+GAL_milky_way/run_20260921-135127/new/base.json  min angle 0.0169 deg at delta(longitude) 214.720 deg, rho(roll) 8.306 deg
+   camera heading 8.3125 deg alt 43.3000 az -115.2795 ; old nav heading 0

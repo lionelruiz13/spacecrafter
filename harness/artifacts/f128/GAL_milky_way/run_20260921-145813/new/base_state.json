@@ -1,0 +1,22 @@
+{
+ "tag": "base",
+ "drawnPath": "new",
+ "reference": "MilkyWay",
+ "freeMode": true,
+ "old_longitude": 150,
+ "jd": 2461233.500014482,
+ "halfFov": 1.57079637,
+ "fov_old": 180,
+ "layer": "milky_way",
+ "pin": "on",
+ "leg": "GAL",
+ "perturb": "none",
+ "engine_said": {
+  "->InGalaxy": 1,
+  "->InUniverse": 0,
+  "InGalaxy->": 0,
+  "InUniverse->": 0
+ },
+ "on_md5": "03fc8e6df0a990b67857a28889627481",
+ "off_md5": "57575a6dc8df70af6b99406732001fb0"
+}

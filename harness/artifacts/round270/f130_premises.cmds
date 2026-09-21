@@ -1,0 +1,32 @@
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD
+git rev-parse --short=8 HEAD
+git status --porcelain | wc -l
+md5sum build-claude/src/spacecrafter | cut -c1-8
+find src -type f -newer build-claude/src/spacecrafter | wc -l
+test ! -e claude/INTENT/11.269.md -a ! -e claude/INTENT/archive/11.269.md && echo free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md
+md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' '
+# THE S4 NAME PASS, INJECTED: every function-like name of each class this task may touch or call, made by script from the header (a drift = abort). Read each against the intent BEFORE any edit - and still read the header in full.
+python3 claude/harness/shape/names.py src/executorModule/inGalaxyModule.hpp
+python3 claude/harness/shape/names.py src/executorModule/solarSystemModule.hpp
+python3 claude/harness/shape/names.py src/bodyModule/ssystem_factory.hpp
+python3 claude/harness/shape/names.py src/experimentalModule/EnvironmentManager.hpp
+# the change site, the precedent, the gate's name, the update that reaches every mode
+/usr/bin/grep -n 'core->milky_way->draw' src/executorModule/inGalaxyModule.cpp | cut -d: -f1
+/usr/bin/grep -c 'drawModularSystem\|drawEnvironmentBackdrop' src/executorModule/inGalaxyModule.cpp
+sed -n '183,186p' src/executorModule/solarSystemModule.cpp | md5sum | cut -c1-8
+/usr/bin/grep -n 'drawEnvironmentBackdrop' src/executorModule/*.cpp | cut -d: -f1,2 | tr '\n' ' '
+/usr/bin/grep -n 'updateExperimental' src/executorModule/executor.cpp | cut -d: -f1
+# F129 landed: an ancestor's member receives its owner's matrix
+/usr/bin/grep -c 'aboveSystem ?' src/experimentalModule/EnvironmentManager.cpp
+# the owner's form, the D14 gate
+git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD
+test -f claude/harness/f70_ascii.py && echo ok
+# F128 delivered and accepted: the legs this task is judged on
+md5sum claude/harness/f128_leg.sh claude/harness/f128_legs.py claude/harness/f128_compare.py claude/harness/f124_run.sh | cut -c1-8 | tr '\n' ' '
+python3 -c "import json;[print(s, json.load(open('claude/harness/artifacts/f128/%s_milky_way/floor.json' % s))['threshold_rel'], end=' ') for s in ('SOL','GAL')]"
+ls -d claude/harness/artifacts/f128/SOL_milky_way/floor_20260921-112210/oldA claude/harness/artifacts/f128/SOL_milky_way/floor_20260921-112210/newA claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/oldA claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/newA | wc -l
+# the ledger entries the task stands on (the zero beside its control)
+python3 claude/intent_resolve.py 11.265 11.266 11.267 11.268 2>&1 | /usr/bin/grep -c 'resolves nowhere'
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere'

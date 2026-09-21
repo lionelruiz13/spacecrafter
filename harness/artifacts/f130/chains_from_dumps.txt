@@ -1,0 +1,13 @@
+SOL_milky_way/floor_20260921-112210/newA/base.json
+  reference Earth freeMode False oldSystem SolarSystem inSystem True
+  chain (reference -> root): Earth -> Sun -> SolarSystem -> MilkyWay -> Universe
+    Earth        bodyType 7 evalCount 2572 lastJD 2461233.500014246
+    Sun          bodyType 64 evalCount 2572 lastJD 2461233.4941431438
+    SolarSystem  bodyType 2 evalCount 0 lastJD 0
+    MilkyWay     bodyType 3 evalCount 0 lastJD 0
+    Universe     bodyType 2 evalCount 0 lastJD 0
+GAL_milky_way/floor_20260921-120507/newA/base.json
+  reference MilkyWay freeMode True oldSystem galactic inSystem False
+  chain (reference -> root): MilkyWay -> Universe
+    MilkyWay     bodyType 3 evalCount 0 lastJD 0
+    Universe     bodyType 2 evalCount 0 lastJD 0

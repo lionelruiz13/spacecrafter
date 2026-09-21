@@ -1,0 +1,22 @@
+{
+ "tag": "again",
+ "drawnPath": "old",
+ "reference": "Earth",
+ "freeMode": false,
+ "old_longitude": 5.366666607307548,
+ "jd": 2461233.5000144816,
+ "halfFov": 1.57079637,
+ "fov_old": 180,
+ "layer": "milky_way",
+ "pin": "off",
+ "leg": "SOL",
+ "perturb": "none",
+ "engine_said": {
+  "->InGalaxy": 0,
+  "->InUniverse": 0,
+  "InGalaxy->": 0,
+  "InUniverse->": 0
+ },
+ "on_md5": "2045fd6cfc2054f62c0de9ef592a26bc",
+ "off_md5": "41e56d122f1c27cd356ee7892470d111"
+}

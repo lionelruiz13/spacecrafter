@@ -1,0 +1,31 @@
+=== F128 leg GAL layer milky_way phase run expect system  2026-09-21 14:44:56 CEST  binary md5 f7a61965 ===
+stored reference: old = /home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/oldA ; new = /home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/newA
+launch old (--pin off): runner exit 0  [7 PASS, 0 FAIL]
+=== F124 run 'GAL_milky_way/run_20260921-144456/old' ===
+--- driver result ---
+-- base       drawn=old ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- again      drawn=old ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+NOTE in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0
+=== leg GAL pin off layer milky_way perturb none expect system: ALL PASS ===
+launch new (--pin on): runner exit 0  [7 PASS, 0 FAIL]
+=== F124 run 'GAL_milky_way/run_20260921-144456/new' ===
+--- driver result ---
+-- base       drawn=new ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- again      drawn=new ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+NOTE in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0
+=== leg GAL pin on layer milky_way perturb none expect system: ALL PASS ===
+PASS cross_pin_old_vs_new_layer_present  energy 1.960e+07 | 1.033e+07
+PASS cross_pin_old_vs_new_path_read_on_both_sides  drawn old | new
+FAIL cross_pin_old_vs_new_identical_at_the_floor  drawn old | new: rel 1.904200 against 0.000000 = 4 x the floor 0.000000 of scene GAL_milky_way (second tier 0.02); ratio 0.52690 corr -0.059927 px8 408322 px32 9148 max delta 51
+FAIL cross_pin_old_vs_new_within_the_2pct_bound  rel 1.904200 against 0.02
+PASS old_vs_stored_old_layer_present  energy 1.960e+07 | 1.960e+07
+PASS old_vs_stored_old_path_read_on_both_sides  drawn old | old
+PASS old_vs_stored_old_identical_at_the_floor  drawn old | old: rel 0.000000 against 0.000000 = 4 x the floor 0.000000 of scene GAL_milky_way (second tier 0.02); ratio 1.00000 corr 1.000000 px8 0 px32 0 max delta 0
+PASS old_vs_stored_old_within_the_2pct_bound  rel 0.000000 against 0.02
+PASS new_vs_stored_new_layer_present  energy 1.960e+07 | 1.033e+07
+PASS new_vs_stored_new_path_read_on_both_sides  drawn new | new
+FAIL new_vs_stored_new_identical_at_the_floor  drawn new | new: rel 1.904200 against 0.000000 = 4 x the floor 0.000000 of scene GAL_milky_way (second tier 0.02); ratio 0.52690 corr -0.059927 px8 408322 px32 9148 max delta 51
+FAIL new_vs_stored_new_within_the_2pct_bound  rel 1.904200 against 0.02
+=== GAL_milky_way: 2 comparison(s) FAILED ===
+records: /home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/run_20260921-144456   end 2026-09-21 14:48:48 CEST
+[f128-GAL-close] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)

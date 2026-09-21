@@ -197,6 +197,30 @@ Sessions COMMIT in their own name and NEVER PUSH.
   tully / what legacy inUniverse draws. The chain still needs a SUPERSESSION rule (nearest owner of
   a family draws; ancestors silent) - the old modes gave it for free. His to rule, with the rest.
 
+### 7d. After the dispatch round of 2026-09-21 (record `INTENT/11.270.md`; code `main` @ `0bc9458d`, NOT pushed)
+- FIRST CODE CHANGE MADE UNDER 11.265's LESSONS, one commit: `0bc9458d` - a member owned by a body above the current
+  system receives its OWNER's matrix (B47 slice 1, his ruling 11.265(n)); code +11 -8, one header comment line made
+  true again; identical while every `re` is zero, the tilt precondition GONE. Entry `INTENT/11.268.md`.
+- THE IDENTITY INSTRUMENT EXISTS FOR ONE LAYER: `bash harness/f128_leg.sh SOL|GAL|TILT [--expect owner|system]`
+  (`INTENT/11.267.md`): layer ON minus OFF per pin, gate = 4 x the MEASURED same-pin floor, stored references for
+  before / after a code change (never `--rebank` to clear a red). SOL's cross-pin check is RED AT HEAD by 0.005283
+  (5.175, a 0.03 deg difference between the two observers): judge a change on the two `*_vs_stored_*` lines. OWED, one
+  line: SOL's able phase must tilt the GALAXY now (the system tilt no longer perturbs, so it prints BLIND).
+- SLICE 2 STOPPED, MEASURED (`INTENT/11.269.md`): ABOVE A SYSTEM THE TWO OBSERVERS STAND 139.64 deg APART (5.178),
+  invisible today because the Navigator draws the whole sky there in both modes. NO sky layer moves to the Camera
+  above the system before he rules who places the observer there (page `b47-sky-members.md`, question 10). And no
+  Camera-positioned layer is ever BIT-identical to a Navigator-positioned one: cross-pin checks are bounded ones.
+- HOW THE ROUND WAS RUN, and what held: the mint is a code-design act - the supervisor reads the code AND THE RECORDS
+  the task stands on (this round's defect: slice 2 was minted without opening F128's stored dumps, which already held
+  both observers' matrices; the executor found the STOP in them in ten minutes); the method-name lists of every class
+  a task may touch are pasted into its PREMISES block by script (`harness/shape/names.py` through
+  `harness/premise_check.py --fill`), and the executor still reads the headers in full; the S4 pass and the prediction
+  are written in the entry with the tree clean BEFORE the first Edit (clock of the write against the mtime of the
+  source); acceptance = `git diff` read in full + the header re-read + shape numbers + a rebuild + every leg re-run by
+  the supervisor; a STOP rule about one's OWN re-runs is written BEFORE they start; an S7 count is taken per
+  INFORMATION and also per FRAME (how many observers draw this level's sky).
+- LAUNCHES UNDER gdb: 1 of about 90 lost a capture (5.177, unattributed): count it at every TILT run.
+
 ## 8. Terms a cold reader will meet
 - **Vixy = the owner = Calvin Ruiz** (git author); `[vixy: date]` tags his words in the ledger.
 - **The two paths and how the running one is decided**: old path = `src/bodyModule` + Navigator /

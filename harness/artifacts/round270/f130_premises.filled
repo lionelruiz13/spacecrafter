@@ -1,0 +1,33 @@
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD => main
+git rev-parse --short=8 HEAD => 0bc9458d
+git status --porcelain | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 408b6d2e
+find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
+test ! -e claude/INTENT/11.269.md -a ! -e claude/INTENT/archive/11.269.md && echo free => free
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md => 9
+md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' ' => 03fbee59 545a51ef
+# THE S4 NAME PASS, INJECTED: every function-like name of each class this task may touch or call, made by script from the header (a drift = abort). Read each against the intent BEFORE any edit - and still read the header in full.
+python3 claude/harness/shape/names.py src/executorModule/inGalaxyModule.hpp => inGalaxyModule.hpp 8: InGalaxyModule ~InGalaxyModule onEnter onExit update draw testValidAltitude defineDownModeAlt
+python3 claude/harness/shape/names.py src/executorModule/solarSystemModule.hpp => solarSystemModule.hpp 10: SolarSystemModule ~SolarSystemModule onEnter onExit update draw testValidAltitude asyncUpdateBegin asyncUpdateEnd asyncUpdateLoop
+python3 claude/harness/shape/names.py src/bodyModule/ssystem_factory.hpp => ssystem_factory.hpp 76: SSystemFactory ~SSystemFactory loadCamera dumpTracePaths setRenderPathMode setExperimentalPath getExperimentalPath syncCameraReference wireEnvironment setEnvironmentLandscape setEnvironmentAtmosphereFlag getEnvironmentState getEnvironmentAtmosphereInput drawEnvironmentBackdrop drawEnvironmentSky getSolarSystem registerFont setSelectedObject setSelected searchObjectByEnglishName searchNewOnlyObjectAt getSizeLimit bodyTraceBodyChange getPlanetsPosition getEarth getMoon getSelectedDistance getSelectedMagnitude setFlagLightTravelTime getFlagLightTravelTime startTrails setFlagMoonScale getFlagMoonScale setFlagSunScale getFlagSunScale setMoonScale getMoonScale setSunScale getSunScale initDisplayScaling generatePendingTwins setFlagClouds getFlag initialSolarSystemBodies setPlanetHidden getPlanetHidden setFlagPlanets getFlagShow setFlagTrails setFlagAxis setPlanetGridColor setPlanetGridTropicPolar setFlagHints setFlagIsolateSelected getFlagIsolateSelected setFlagPlanetsOrbits switchPlanetTexMap getSwitchPlanetTexMap createTexSkin getFlagPlanetsOrbits setFlagSatellitesOrbits getFlagSatellitesOrbits setBodyColor setBodyDatumRadius setBodyGroundRadius getBodyColor setDefaultBodyColor getDefaultBodyColor getHideSatellitesFlag toggleHideSatellites setScale getSunAltitude getSunAzimuth getSelectedAZ getSelectedALT getSelectedStarRA
+python3 claude/harness/shape/names.py src/experimentalModule/EnvironmentManager.hpp => EnvironmentManager.hpp 13: EnvironmentManager ~EnvironmentManager update drawBackdrop drawSky getState setAtmosphereUserFlag getAtmosphereUserFlag setLandscape getAtmosphereInput getAtmosphereEngine notifyBodyDestroyed buildAtmosphereInput
+# the change site, the precedent, the gate's name, the update that reaches every mode
+/usr/bin/grep -n 'core->milky_way->draw' src/executorModule/inGalaxyModule.cpp | cut -d: -f1 => 128
+/usr/bin/grep -c 'drawModularSystem\|drawEnvironmentBackdrop' src/executorModule/inGalaxyModule.cpp => 0
+sed -n '183,186p' src/executorModule/solarSystemModule.cpp | md5sum | cut -c1-8 => 72c68628
+/usr/bin/grep -n 'drawEnvironmentBackdrop' src/executorModule/*.cpp | cut -d: -f1,2 | tr '\n' ' ' => src/executorModule/solarSystemModule.cpp:184 src/executorModule/stellarSystemModule.cpp:193
+/usr/bin/grep -n 'updateExperimental' src/executorModule/executor.cpp | cut -d: -f1 => 61
+# F129 landed: an ancestor's member receives its owner's matrix
+/usr/bin/grep -c 'aboveSystem ?' src/experimentalModule/EnvironmentManager.cpp => 0
+# the owner's form, the D14 gate
+git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD => 4dfe7bb3
+test -f claude/harness/f70_ascii.py && echo ok => ok
+# F128 delivered and accepted: the legs this task is judged on
+md5sum claude/harness/f128_leg.sh claude/harness/f128_legs.py claude/harness/f128_compare.py claude/harness/f124_run.sh | cut -c1-8 | tr '\n' ' ' => 4c57826c df572097 4ddb33e0 1f851de4
+python3 -c "import json;[print(s, json.load(open('claude/harness/artifacts/f128/%s_milky_way/floor.json' % s))['threshold_rel'], end=' ') for s in ('SOL','GAL')]" => SOL 8.366702615266892e-05 GAL 0.0
+ls -d claude/harness/artifacts/f128/SOL_milky_way/floor_20260921-112210/oldA claude/harness/artifacts/f128/SOL_milky_way/floor_20260921-112210/newA claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/oldA claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/newA | wc -l => 4
+# the ledger entries the task stands on (the zero beside its control)
+python3 claude/intent_resolve.py 11.265 11.266 11.267 11.268 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 0
+python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 1
+
