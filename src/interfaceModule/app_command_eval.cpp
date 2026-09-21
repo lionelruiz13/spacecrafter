@@ -21,7 +21,7 @@ static std::string formatNumber(double value) {
 	} else {
 		// Float value, use adaptive precision
 		std::ostringstream oss;
-		oss << std::defaultfloat << value;
+		oss << std::setprecision(15) << value;
 		return oss.str();
 	}
 }
