@@ -1,0 +1,21 @@
+=== F124 run 'TILT_milky_way/run_20260921-133047/old_control' ===
+wall clock start : 2026-09-21 13:33:18 CEST
+driver           : f128_legs.py --leg TILT --layer milky_way --pin off --expect owner
+driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 408b6d2ebe12481586ccfeb1dfbf27d0
+binary mtime     : 2026-09-21 13:26:32.316995785 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[TILT_milky_way/run_20260921-133047/old_control] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[TILT_milky_way/run_20260921-133047/old_control] gpu: free 30551 MiB / used 1556 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=951843
+launch wall clock: 2026-09-21 13:33:18 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 951860 
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[TILT_milky_way/run_20260921-133047/old_control-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-21 13:36:17 CEST

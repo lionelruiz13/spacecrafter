@@ -1,0 +1,30 @@
+=== F128 leg TILT layer milky_way phase run expect owner  2026-09-21 14:12:52 CEST  binary md5 408b6d2e ===
+launch new (--pin on --expect owner): runner exit 0  [16 PASS, 0 FAIL]
+=== F124 run 'TILT_milky_way/run_20260921-141252/new' ===
+--- driver result ---
+-- base       drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- sys        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- rest1      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- gal        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- rest2      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- layer base vs sys   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest1 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs gal   rel 1.52309 corr 0.184043 ratio 0.54792 px8 157358 px32 7964
+-- layer base vs rest2 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+=== leg TILT pin on layer milky_way perturb none expect owner: ALL PASS ===
+launch old_control (--pin off --expect owner): runner exit 0  [16 PASS, 0 FAIL]
+=== F124 run 'TILT_milky_way/run_20260921-141252/old_control' ===
+--- driver result ---
+-- base       drawn=old ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- sys        drawn=old ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- rest1      drawn=old ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- gal        drawn=old ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- rest2      drawn=old ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- layer base vs sys   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest1 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs gal   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest2 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+=== leg TILT pin off layer milky_way perturb none expect owner: ALL PASS ===
+=== TILT --expect owner: PASS (new pin exit 0, old-pin control exit 0) ===
+records: /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/run_20260921-141252   end 2026-09-21 14:18:52 CEST
+[f128-TILT-close] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)

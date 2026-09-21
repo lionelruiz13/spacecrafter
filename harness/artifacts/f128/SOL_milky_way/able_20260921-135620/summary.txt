@@ -1,0 +1,33 @@
+=== F128 leg SOL layer milky_way phase able expect system  2026-09-21 13:56:20 CEST  binary md5 408b6d2e ===
+stored reference: old = /home/claude/spacecrafter/claude/harness/artifacts/f128/SOL_milky_way/floor_20260921-112210/oldA ; new = /home/claude/spacecrafter/claude/harness/artifacts/f128/SOL_milky_way/floor_20260921-112210/newA
+launch new_intensity (--pin on --perturb intensity): runner exit 0  [4 PASS, 0 FAIL]
+=== F124 run 'SOL_milky_way/able_20260921-135620/new_intensity' ===
+--- driver result ---
+NOTE PERTURBED on this pin: set milky_way_intensity 0.25
+-- base       drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- again      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+NOTE in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0
+=== leg SOL pin on layer milky_way perturb intensity expect system: ALL PASS ===
+PASS able_intensity_vs_old_ref_layer_present  energy 1.205e+07 | 5.920e+06
+PASS able_intensity_vs_old_ref_path_read_on_both_sides  drawn old | new
+PASS able_intensity_vs_old_ref_differs  drawn old | new: rel 0.682363 against 0.000084 = 4 x the floor 0.000021 of scene SOL_milky_way (second tier 0.02); ratio 0.49134 corr 0.996695 px8 59019 px32 0 max delta 27
+PASS able_intensity_vs_new_ref_layer_present  energy 1.205e+07 | 5.920e+06
+PASS able_intensity_vs_new_ref_path_read_on_both_sides  drawn new | new
+PASS able_intensity_vs_new_ref_differs  drawn new | new: rel 0.682433 against 0.000084 = 4 x the floor 0.000021 of scene SOL_milky_way (second tier 0.02); ratio 0.49130 corr 0.996694 px8 59075 px32 0 max delta 26
+launch new_tilt (--pin on --perturb tilt-system): runner exit 0  [5 PASS, 0 FAIL]
+=== F124 run 'SOL_milky_way/able_20260921-135620/new_tilt' ===
+--- driver result ---
+NOTE PERTURBED on this pin: ['F128NODE sys=SolarSystem', 'F128RE sys=0.500000', 'F128POKE_sys']
+-- base       drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- again      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+NOTE in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0
+=== leg SOL pin on layer milky_way perturb tilt-system expect system: ALL PASS ===
+PASS able_tilt_vs_old_ref_layer_present  energy 1.205e+07 | 1.205e+07
+PASS able_tilt_vs_old_ref_path_read_on_both_sides  drawn old | new
+FAIL able_tilt_vs_old_ref_differs  drawn old | new: rel 0.005283 against 0.000084 = 4 x the floor 0.000021 of scene SOL_milky_way (second tier 0.02); ratio 1.00007 corr 0.999810 px8 0 px32 0 max delta 2
+PASS able_tilt_vs_new_ref_layer_present  energy 1.205e+07 | 1.205e+07
+PASS able_tilt_vs_new_ref_path_read_on_both_sides  drawn new | new
+FAIL able_tilt_vs_new_ref_differs  drawn new | new: rel 0.000000 against 0.000084 = 4 x the floor 0.000021 of scene SOL_milky_way (second tier 0.02); ratio 1.00000 corr 1.000000 px8 0 px32 0 max delta 0
+=== ABLE-TO-FAIL SOL_milky_way: 2 comparison(s) STAYED GREEN - THE LEG IS BLIND ===
+records: /home/claude/spacecrafter/claude/harness/artifacts/f128/SOL_milky_way/able_20260921-135620   end 2026-09-21 13:59:37 CEST
+[f128-SOL-close] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)

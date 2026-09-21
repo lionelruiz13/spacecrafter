@@ -1,0 +1,85 @@
+{
+ "name": "cross_pin_old_vs_new",
+ "want": "same",
+ "threshold_rel": 0.0,
+ "floor_file": "/home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/floor.json",
+ "metrics": {
+  "energy_a": 19603269.0,
+  "energy_b": 19603269.0,
+  "rel": 0.0,
+  "ratio": 1.0,
+  "corr": 1.0000000000000002,
+  "px8": 0,
+  "px32": 0,
+  "max_delta": 0.0,
+  "a": {
+   "dir": "/home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/run_20260921-140853/old",
+   "tag": "base",
+   "on_md5": "c81bf9f22cc034e3704b760a11bb86fc",
+   "off_md5": "ec2c8c81f8cd04089e6bbfaffd9b0e76",
+   "shape": [
+    2048,
+    2048,
+    3
+   ],
+   "off_lit_gt16": 0,
+   "state": {
+    "tag": "base",
+    "drawnPath": "old",
+    "reference": "MilkyWay",
+    "freeMode": true,
+    "old_longitude": 150,
+    "jd": 2461233.5000144937,
+    "halfFov": 1.57079637,
+    "fov_old": 180,
+    "layer": "milky_way",
+    "pin": "off",
+    "leg": "GAL",
+    "perturb": "none",
+    "engine_said": {
+     "->InGalaxy": 1,
+     "->InUniverse": 0,
+     "InGalaxy->": 0,
+     "InUniverse->": 0
+    },
+    "on_md5": "c81bf9f22cc034e3704b760a11bb86fc",
+    "off_md5": "ec2c8c81f8cd04089e6bbfaffd9b0e76"
+   }
+  },
+  "b": {
+   "dir": "/home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/run_20260921-140853/new",
+   "tag": "base",
+   "on_md5": "e7f8e048c711032ecb6c348fc24a521b",
+   "off_md5": "45ae67a71ce4b337e5bdee697ce71e58",
+   "shape": [
+    2048,
+    2048,
+    3
+   ],
+   "off_lit_gt16": 88,
+   "state": {
+    "tag": "base",
+    "drawnPath": "new",
+    "reference": "MilkyWay",
+    "freeMode": true,
+    "old_longitude": 150,
+    "jd": 2461233.5000142963,
+    "halfFov": 1.57079637,
+    "fov_old": 180,
+    "layer": "milky_way",
+    "pin": "on",
+    "leg": "GAL",
+    "perturb": "none",
+    "engine_said": {
+     "->InGalaxy": 1,
+     "->InUniverse": 0,
+     "InGalaxy->": 0,
+     "InUniverse->": 0
+    },
+    "on_md5": "e7f8e048c711032ecb6c348fc24a521b",
+    "off_md5": "45ae67a71ce4b337e5bdee697ce71e58"
+   }
+  }
+ },
+ "fails": []
+}

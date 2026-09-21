@@ -1,0 +1,15 @@
+EnvironmentManager @ 6c3d0ed6: 15 fields, 11 member functions (overloads merged by name)
+-- managers per field: functions that write it DIRECTLY --
+   1  activeChain            update
+   1  atmInput               buildAtmosphereInput
+   1  atmosphereUserFlag     setAtmosphereUserFlag
+   1  julianDay              update
+   1  lastReference          update
+   1  onBody                 update
+   1  state                  update
+   1  system                 update
+   1  zodiacalEclipticNormalRoot update
+   1  zodiacalSunDirEye      update
+   1  zodiacalValid          update
+-- same direct writer set (>= 2 functions) --
+-- forwarders: one statement, its effect is entirely another member's --

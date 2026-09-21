@@ -1,0 +1,25 @@
+# F129 - every gdb / engine pid started by this task's launches (from each launch's meta.txt), and its fate by kill -0 at 2026-09-21 13:59:54
+951057 gone artifacts/f128/SOL_milky_way/run_20260921-132708/new
+951074 gone artifacts/f128/SOL_milky_way/run_20260921-132708/new
+950771 gone artifacts/f128/SOL_milky_way/run_20260921-132708/old
+950788 gone artifacts/f128/SOL_milky_way/run_20260921-132708/old
+951513 gone artifacts/f128/TILT_milky_way/run_20260921-133047/new
+951530 gone artifacts/f128/TILT_milky_way/run_20260921-133047/new
+951843 gone artifacts/f128/TILT_milky_way/run_20260921-133047/old_control
+951860 gone artifacts/f128/TILT_milky_way/run_20260921-133047/old_control
+952414 gone artifacts/f128/TILT_milky_way/run_20260921-133838/new
+952431 gone artifacts/f128/TILT_milky_way/run_20260921-133838/new
+952765 gone artifacts/f128/TILT_milky_way/run_20260921-133838/old_control
+952782 gone artifacts/f128/TILT_milky_way/run_20260921-133838/old_control
+953201 gone artifacts/f128/TILT_milky_way/run_20260921-134513/new
+953218 gone artifacts/f128/TILT_milky_way/run_20260921-134513/new
+953544 gone artifacts/f128/TILT_milky_way/run_20260921-134513/old_control
+953561 gone artifacts/f128/TILT_milky_way/run_20260921-134513/old_control
+954268 gone artifacts/f128/GAL_milky_way/run_20260921-135127/new
+954285 gone artifacts/f128/GAL_milky_way/run_20260921-135127/new
+953961 gone artifacts/f128/GAL_milky_way/run_20260921-135127/old
+953978 gone artifacts/f128/GAL_milky_way/run_20260921-135127/old
+954742 gone artifacts/f128/SOL_milky_way/able_20260921-135620/new_intensity
+954759 gone artifacts/f128/SOL_milky_way/able_20260921-135620/new_intensity
+955038 gone artifacts/f128/SOL_milky_way/able_20260921-135620/new_tilt
+955055 gone artifacts/f128/SOL_milky_way/able_20260921-135620/new_tilt

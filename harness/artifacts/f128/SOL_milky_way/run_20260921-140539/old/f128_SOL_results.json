@@ -1,0 +1,65 @@
+{
+ "leg": "SOL",
+ "pin": "off",
+ "layer": "milky_way",
+ "perturb": "none",
+ "captures": {
+  "base": {
+   "tag": "base",
+   "drawnPath": "old",
+   "reference": "Earth",
+   "freeMode": false,
+   "old_longitude": 5.366666607307548,
+   "jd": 2461233.5000144937,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "off",
+   "leg": "SOL",
+   "perturb": "none",
+   "engine_said": {
+    "->InGalaxy": 0,
+    "->InUniverse": 0,
+    "InGalaxy->": 0,
+    "InUniverse->": 0
+   },
+   "on_md5": "a422fdb7aa273ee72abbfc7cefb47d42",
+   "off_md5": "8b874ee9470a0da9499a700901a45421"
+  },
+  "again": {
+   "tag": "again",
+   "drawnPath": "old",
+   "reference": "Earth",
+   "freeMode": false,
+   "old_longitude": 5.366666607307548,
+   "jd": 2461233.5000144937,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "off",
+   "leg": "SOL",
+   "perturb": "none",
+   "engine_said": {
+    "->InGalaxy": 0,
+    "->InUniverse": 0,
+    "InGalaxy->": 0,
+    "InUniverse->": 0
+   },
+   "on_md5": "a422fdb7aa273ee72abbfc7cefb47d42",
+   "off_md5": "8b874ee9470a0da9499a700901a45421"
+  }
+ },
+ "notes": [
+  "in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0"
+ ],
+ "in_launch": {
+  "rel": 0.0,
+  "ratio": 1.0,
+  "corr": 1.0,
+  "px8": 0,
+  "px32": 0,
+  "energy_a": 12047760.0,
+  "energy_b": 12047760.0
+ },
+ "fails": []
+}

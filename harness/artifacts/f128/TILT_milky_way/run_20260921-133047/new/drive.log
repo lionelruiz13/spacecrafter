@@ -1,0 +1,74 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> meteors zhr 0
+>> deselect
+>> flag atmosphere off
+>> flag cardinal_points off
+>> flag constellation_drawing off
+>> flag equatorial_grid off
+>> flag landscape off
+>> flag nebulae off
+>> flag oort off
+>> flag star_lines off
+>> flag stars off
+>> flag tully off
+>> flag zodiacal_light off
+>> flag fog off
+>> flag star_twinkle off
+>> flag star_names off
+>> flag planet_names off
+>> flag nebula_names off
+>> flag nebula_hints off
+>> flag bright_nebulae off
+>> flag constellation_art off
+>> flag constellation_names off
+>> flag constellation_boundaries off
+>> flag planet_orbits off
+>> flag object_trails off
+>> flag body_trace off
+>> flag dso_pictograms off
+>> flag show_tui_datetime off
+>> flag show_tui_short_obj_info off
+>> flag show_latlon off
+>> flag azimuthal_grid off
+>> flag ecliptic_grid off
+>> flag galactic_grid off
+>> flag equator_line off
+>> flag ecliptic_line off
+>> flag meridian_line off
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/run_20260921-133047/new/base.json
+>> flag milky_way off
+-- base       drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS base_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_sys_ran_clean  `set var Camera::instance->system->re.obliquity = 0.5`; gdb said ['F128NODE sys=SolarSystem', 'F128RE sys=0.500000', 'F128POKE_sys'] []
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/run_20260921-133047/new/sys.json
+>> flag milky_way off
+-- sys        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS sys_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_sys0_ran_clean  `set var Camera::instance->system->re.obliquity = 0.0`; gdb said ['F128NODE sys0=SolarSystem', 'F128RE sys0=0.000000', 'F128POKE_sys0'] []
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/run_20260921-133047/new/rest1.json
+>> flag milky_way off
+-- rest1      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS rest1_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_gal_ran_clean  `set var Camera::instance->system->parent->re.obliquity = 0.5`; gdb said ['F128NODE gal=MilkyWay', 'F128RE gal=0.500000', 'F128POKE_gal'] []
+>> flag milky_way on
+Traceback (most recent call last):
+  File "/home/claude/spacecrafter/claude/harness/f128_legs.py", line 237, in <module>
+    leg_TILT() if ARGS.leg == "TILT" else leg_level()
+    ~~~~~~~~^^
+  File "/home/claude/spacecrafter/claude/harness/f128_legs.py", line 201, in leg_TILT
+    capture("gal")
+    ~~~~~~~^^^^^^^
+  File "/home/claude/spacecrafter/claude/harness/f128_legs.py", line 90, in capture
+    B.shot(S, OUTP, tag + "_on")
+    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/claude/spacecrafter/claude/harness/b3_ladder.py", line 554, in shot
+    return np.asarray(Image.open(p).convert("RGB"), dtype=np.int16)
+                      ~~~~~~~~~~^^^
+  File "/usr/lib/python3/dist-packages/PIL/Image.py", line 3512, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '/home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/run_20260921-133047/new/gal_on.png'
