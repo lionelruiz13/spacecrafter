@@ -165,6 +165,9 @@ Sessions COMMIT in their own name and NEVER PUSH.
   2+-line comment runs in `src/`; RATCHETS (trio calls from the new path, (field, writer) pairs per
   class: a count may only go down, an increase needs a `Shape-Exception:` trailer); the method-name
   list of each touched class pasted into the task's PREMISES block by script.
+- The asi-harness would NOT have helped, as built or as specified (11.265(h)): it accepts on the
+  report too, and its provenance laws do not scope code out. Its hook layer is what could enforce
+  "no acceptance without Reads of every changed hunk" and "no Edit before the header is read".
 - Transcripts are deleted after 30 days by the CLI. Copies: `/home/claude/transcript-preserve/`;
   tools to read them: `transcript-preserve/work/tx_*.py`. July is NOT recovered.
 
