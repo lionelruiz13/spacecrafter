@@ -76,6 +76,10 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
 - `trio_census.py [-v]` - every call into Projector / Navigator / Observer outside the module (668
   at `57102bf4`, 124 methods): the query surface of the wiring class (B42).
 - `form.py` - the table of section 4. `clones.py` - literal text clones (measures TEXT only).
+- `names.py [--rev <rev>] <header>...` - the S4 name pass INJECTED (11.265(g)5): every function-like name a
+  header declares, one line per header, pasted into a code task's PREMISES block by
+  `harness/premise_check.py --fill <commands file>` (the mint's writer: an expectation is never typed). Regex:
+  blind to macro-made names; overloads count once; never a substitute for reading the header.
 - `strip_prose.py <rev> <files>` - deletes agent-written comment runs of >= MIN (3) lines.
   `codeident.py <rev> [files]` - proof of a comment-only change: code tokens and preprocessor
   lines identical, every comment line a human wrote kept in order. PITFALLS, each one paid for:

@@ -35,6 +35,11 @@ the obvious mutators so a typo'd premise cannot move the tree (a guard against
 accidents, not a security boundary -- the file is under the same write control as
 every other harness script).
 
+`--fill <file>` is the MINT's writer: the file holds the commands (comments and blank
+lines pass through); each is run exactly as the gate runs it and printed as
+`<command> => <observed>`, so an expectation is never typed.  An output the grammar
+cannot carry (several lines, a `=>`, a refused command) is reported, not pasted.
+
 Exit 0 iff every premise line PASSes.  `--list` reports which live sections carry a
 block (a live section without one is the coverage gap the rule forbids).
 `--self-test` runs an in-memory block with one deliberate mismatch and one refused
@@ -123,6 +128,23 @@ def check(lines, label):
     return fails
 
 
+def fill(path):
+    """Print `<command>  =>  <observed stdout>` for every command line of a file."""
+    bad = 0
+    for raw in open(path, encoding="utf-8").read().split("\n"):
+        s = raw.strip()
+        if not s or s.startswith("#"):
+            print(raw)
+            continue
+        state, _, obs = run_line(s, "")
+        if obs.startswith("(refused") or obs.startswith("(timeout") or "\n" in obs or "=>" in obs or obs == REFRESH:
+            bad += 1
+            print("# UNFILLABLE (%s): %s" % (obs.split("\n")[0][:60], s))
+            continue
+        print("%s => %s" % (s, obs))
+    return 1 if bad else 0
+
+
 def self_test():
     lines = [("echo alpha", "alpha"),
              ("echo beta", "gamma"),                       # must FAIL: mismatch
@@ -143,9 +165,12 @@ def main():
     ap.add_argument("--file", default=DEFAULT_FILE, help="the dispatch file (default: fable-dispatch.md)")
     ap.add_argument("--list", action="store_true", help="report which sections carry a PREMISES block")
     ap.add_argument("--self-test", action="store_true")
+    ap.add_argument("--fill", metavar="COMMANDS", help="print a block body: each command line of the file with its observed output pasted")
     a = ap.parse_args()
     if a.self_test:
         return self_test()
+    if a.fill:
+        return fill(a.fill)
     text = open(a.file, encoding="utf-8").read()
     secs = list(sections(text))
     if a.list:
