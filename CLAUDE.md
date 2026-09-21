@@ -3,6 +3,17 @@
 Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INTENT.md`
 (the live ledger). This file is the minimal map to reach them; on divergence they win.
 
+## What the software is for (INTENT §2 — above every constraint; read it before minting or designing anything)
+
+- **R1 potential expansion · R2 the use case: small interactive planetariums.** One person does the session with fewer than
+  a hundred people and follows what exactly these people know and are curious about: no two sessions are predictable, the
+  software must let him adapt to the unknown at any time. IN session only predefined things are usable — typing breaks
+  immersion; OFF session is when content is added, things are modified and what would have been needed is looked at
+  [vixy 2026-09-21, §11.272].
+- **A need's ORIGIN is derived from the SHAPE of that space and from what you know of such places — never asked per user**:
+  predict what the need will end up covering, then place it by the responsibility anchor, so that the structure is ready
+  when the need shows up. That comes BEFORE the name pass of G12.
+
 ## Two repositories, one tree
 
 - **Code**: `/home/claude/spacecrafter` — branch **`main`** [vixy 2026-09-19: *"main branch is

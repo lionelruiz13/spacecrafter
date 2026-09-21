@@ -94,6 +94,10 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
   nothing on this host since the 26.04 upgrade - drive inputs through gdb (the `b21` pattern).
 
 ## 6. Procedures
+- AT A MINT, BEFORE ANYTHING ELSE: the need's ORIGIN (INTENT section 2: roots R1 / R2, consequence (g); 11.272). Derive it from the
+  SHAPE of the space of use - one operator, a public he adapts to, only predefined inputs in session, authoring off session -
+  and from what is known of such places; write what the need will END UP COVERING; place for that coverage by the
+  responsibility anchor. The owner is asked what the shape cannot answer, never what it can.
 - BEFORE WRITING CODE: S4, from a current read. Then S5 (is there a declared name or value?), S9
   (does something that looks redundant have a reason?), S8 (which mode is responsible?).
 - A COMMENT-ONLY PASS: `strip_prose.py` or hand edits -> `codeident.py <rev>` 0 FAIL, run by the
@@ -245,6 +249,6 @@ Sessions COMMIT in their own name and NEVER PUSH.
   input path calls. **F<n> / B<n> / §5.n / §11.n**: task, open-item, defect and journal ids of the ledger.
 
 ## 9. Reading order for a cold session
-`CLAUDE.md` (auto-loaded) -> this file -> `INTENT.md` G12 and rows B42-B46 -> the entry files
+`CLAUDE.md` (auto-loaded) -> this file -> `INTENT.md` section 2 (the two roots, consequences (a)-(g)), then G12 and rows B42-B46 -> the entry files
 11.249-11.255 for whatever the task touches -> `s33-second-managers.md` for the work map ->
 `harness/shape/review.sh status` to see what the owner has not read yet.
