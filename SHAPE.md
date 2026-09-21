@@ -169,7 +169,11 @@ Sessions COMMIT in their own name and NEVER PUSH.
   report too, and its provenance laws do not scope code out. Its hook layer is what could enforce
   "no acceptance without Reads of every changed hunk" and "no Edit before the header is read".
 - Transcripts are deleted after 30 days by the CLI. Copies: `/home/claude/transcript-preserve/`;
-  tools to read them: `transcript-preserve/work/tx_*.py`. July is NOT recovered.
+  tools to read them: `transcript-preserve/work/tx_*.py` (`TX_ROOT` picks the store). July IS recovered
+  (11.265(k)): three stores cover the first prompt to today.
+- A PATTERN OF HIS IS EXTENDED ONLY WITH ITS PRECONDITION: `SSystemFactory` informs both engines of a
+  new BODY (each owns its copy) and gates `draw` by mode; carrying "inform both" to the observer
+  state is what made the second managers. S9 applies before extending, not only before removing.
 
 ## 8. Terms a cold reader will meet
 - **Vixy = the owner = Calvin Ruiz** (git author); `[vixy: date]` tags his words in the ledger.
