@@ -268,6 +268,7 @@ private:
 	AVPacket		*packet;
 	AVPixelFormat targetFormat; // Target format for conversion (YUV420P or YUVA420P)
 
+	// Frame frameUsed-1 is preserved until the next frame is read
 	std::atomic<uint32_t> frameUsed = 0; // Index of the last rendered frame
 	int frameIdxSwap = 0;
 	uint8_t codecDecodeThreads = 0;
