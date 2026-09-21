@@ -171,9 +171,13 @@ Sessions COMMIT in their own name and NEVER PUSH.
 - Transcripts are deleted after 30 days by the CLI. Copies: `/home/claude/transcript-preserve/`;
   tools to read them: `transcript-preserve/work/tx_*.py` (`TX_ROOT` picks the store). July IS recovered
   (11.265(k)): three stores cover the first prompt to today.
-- A PATTERN OF HIS IS EXTENDED ONLY WITH ITS PRECONDITION: `SSystemFactory` informs both engines of a
-  new BODY (each owns its copy) and gates `draw` by mode; carrying "inform both" to the observer
-  state is what made the second managers. S9 applies before extending, not only before removing.
+- WHY SKY AND BODIES CAN DISAGREE (11.265(l)): in new mode ONE frame is drawn by TWO observers - the
+  stars, grids, lines and constellations through Projector / Navigator / Observer (ungated), the
+  bodies, backdrop, atmosphere and landscape through the Camera - each with its own place, fov and
+  easing law, commands forwarded to both. His baseline already forwards (`coreLink.hpp`: zoomTo,
+  lookAt, lat / lon / alt; 30 call sites then, 72 now): a scaffold of the bodies-first draft, never
+  bound per mode, and our one-run parity instruments depend on it. Synchronising two easing laws
+  never makes them one; the binding is B42, QUERIES first. S9 applies before EXTENDING a pattern.
 
 ## 8. Terms a cold reader will meet
 - **Vixy = the owner = Calvin Ruiz** (git author); `[vixy: date]` tags his words in the ledger.
