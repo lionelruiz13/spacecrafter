@@ -519,8 +519,8 @@ executor name are superseded by this line). Disjoint file sets may run in parall
 tree when no agent commits, builds or stashes; the supervisor verifies, builds, commits.
 (b) **Every task section and prompt binds G12** and names
 `/home/claude/spacecrafter.owner-shape` as the form to write in; a task states the
-MANAGER COUNT of each information it touches, before and after (S7), preceded by the need's
-ORIGIN and what it will end up covering (S10, owner-ruled 2026-09-21 - the supervisor writes it
+MANAGER COUNT of each information it touches, before and after (G12 (S7)), preceded by the need's
+ORIGIN and what it will end up covering (G12 (S10), owner-ruled 2026-09-21 - the supervisor writes it
 at the mint, from INTENT section 2 and what is known of the space of use), and a fix that needs
 the shape to move is a STOP that goes to the owner. (c) **Step 4 accepts on behaviour AND
 shape**: net code lines, deleted/added, comment form (`harness/shape/form.py`), manager
