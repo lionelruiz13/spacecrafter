@@ -12,7 +12,8 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   [vixy 2026-09-21, §11.272].
 - **A need's ORIGIN is derived from the SHAPE of that space and from what you know of such places — never asked per user**:
   predict what the need will end up covering, then place it by the responsibility anchor, so that the structure is ready
-  when the need shows up. That comes BEFORE the name pass of G12.
+  when the need shows up. It is G12 (S10), owner-ruled 2026-09-21, and it comes BEFORE the name pass (S4); a capability enters
+  as a COMMAND the operator binds (one-line `.sts`), never as a new hardcoded key: his keyboard is fully allocated (§11.273).
 
 ## Two repositories, one tree
 
@@ -50,7 +51,7 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
 - `claude/harness/` — verification scripts (`b*_run.sh`, `SC_BIN` overridable,
   default `../../build-claude/src/spacecrafter`); `claude/harness/README.md` for use.
 - `claude/SHAPE.md` — READ IT BEFORE TOUCHING CODE: how the code must be shaped (INTENT §2.1
-  G12 (S1)–(S9), owner-ruled 2026-09-19), the owner's form measured, the shape instruments
+  G12 (S1)–(S10), owner-ruled 2026-09-19 / 09-21), the owner's form measured, the shape instruments
   (`claude/harness/shape/`), the procedures, the state and the order of the open work
   (§13 B42–B46). The owner's own module, as the form to write in, is checked out read-only at
   `/home/claude/spacecrafter.owner-shape` (code `4dfe7bb3`). Work map of the deduplication:

@@ -3,7 +3,7 @@
 Derived view, written 2026-09-19 (session 33, Claude Fable 5.1) on the owner's request that the
 understanding be reconstructible by any later session or dispatched agent; tested the same day by a
 cold reader given nothing else (`INTENT/11.257.md`), its gaps fixed here. The ledger wins on
-divergence: rules = `INTENT.md` section 2.1 **G12 (S1)-(S9)**; derivations and the owner's words
+divergence: rules = `INTENT.md` section 2.1 **G12 (S1)-(S10)**; derivations and the owner's words
 verbatim = `INTENT/11.249.md` ... `INTENT/11.255.md`; open work = section 13.B rows **B42-B46**.
 This file is the index and the operating manual; it states nothing those do not.
 
@@ -36,7 +36,8 @@ where the name does not carry it; no history, tags, measurements or ledger refer
 S7 manager count of each touched information, before and after · S8 one responsible per MODE
 (old path = Projector / Navigator / Observer, new path = Camera - no third status), the gating in a
 WIRING class of its own · S9 every duplication has a reason: recover it before touching it; an
-optimal-path + general-fallback pair (`draw` / `drawLoaded`) keeps both paths.
+optimal-path + general-fallback pair (`draw` / `drawLoaded`) keeps both paths · S10 the ORIGIN of the need
+first, before S4: what it will end up covering, read from the shape of the space of use; the supervisor's step.
 
 ## 3. The owner, as far as it bears on the code (11.249(g), 11.250, 11.255; cross-project Q-86, Q-87)
 - He compares everything by EFFECT; words are a projection at his boundary. Resolve his words by
@@ -94,7 +95,7 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
   nothing on this host since the 26.04 upgrade - drive inputs through gdb (the `b21` pattern).
 
 ## 6. Procedures
-- AT A MINT, BEFORE ANYTHING ELSE: the need's ORIGIN (INTENT section 2: roots R1 / R2, consequence (g); 11.272). Derive it from the
+- AT A MINT, BEFORE ANYTHING ELSE (S10, owner-ruled 2026-09-21): the need's ORIGIN (INTENT section 2: roots R1 / R2, consequence (g); 11.272, 11.273). Derive it from the
   SHAPE of the space of use - one operator, a public he adapts to, only predefined inputs in session, authoring off session -
   and from what is known of such places; write what the need will END UP COVERING; place for that coverage by the
   responsibility anchor. The owner is asked what the shape cannot answer, never what it can.
