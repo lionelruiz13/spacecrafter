@@ -187,6 +187,9 @@ Sessions COMMIT in their own name and NEVER PUSH.
   a member is oriented regarding its OWNER (milky way = the galaxy's inside view, landscape = the
   body's landed view). `EnvironmentManager` hands an ancestor the SYSTEM's matrix: right only while
   no system is oriented against its parent - add that capability and this breaks silently.
+  STARS RULED (11.265(o)): the Solar system owns the 2D stars, the galaxy the 3D stars, the universe
+  tully / what legacy inUniverse draws. The chain still needs a SUPERSESSION rule (nearest owner of
+  a family draws; ancestors silent) - the old modes gave it for free. His to rule, with the rest.
 
 ## 8. Terms a cold reader will meet
 - **Vixy = the owner = Calvin Ruiz** (git author); `[vixy: date]` tags his words in the ledger.
