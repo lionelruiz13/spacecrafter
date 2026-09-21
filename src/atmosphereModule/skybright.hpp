@@ -76,7 +76,7 @@ private:
 	float C3;				// Term for moon brightness computation
 	float C4;				// Term for sky brightness computation
 	float SN = 1.f; 		// Snellen Ratio (20/20=1.0, good 20/10=2.0)
-	double m_brightness;
+	double m_brightness = 0.5;
 	double m_default_brightness = 0.5;
 	double ml_brightness;
 
