@@ -196,30 +196,35 @@ void EnvironmentManager::buildAtmosphereInput(Camera &camera, ModularBody *refer
     }
 }
 
+// Return mat of a chain body, climbing from the system where the update walk stops
+static Mat4f observedMat(ModularSystem *system, ModularBody *owner, double jd)
+{
+    if (owner == system || !system->isInSubtreeOf(owner))
+        return owner->getMat();
+    Mat4f flat = system->getMatLocalToBodyPos();
+    for (ModularBody *body = system; body != owner; body = body->getParent())
+        body->transformBodyToParent(flat);
+    return flat.multiplyFast(owner->accumulatedBodyPosToBody(jd));
+}
+
 void EnvironmentManager::drawBackdrop(Renderer &renderer)
 {
     // Root-most first: the milkyway backdrop draws behind everything the
     // frame adds after this call position (old executor order).
-    bool aboveSystem = true;
     for (auto it = activeChain.rbegin(); it != activeChain.rend(); ++it) {
         ModularBody *b = *it;
-        const Mat4f &mat = aboveSystem ? system->getMat() : b->getMat();
+        const Mat4f mat = observedMat(system, b, julianDay);
         for (auto &m : b->environment)
             m->drawBackdrop(renderer, b, mat);
-        if (b == system)
-            aboveSystem = false;
     }
 }
 
 void EnvironmentManager::drawSky(Renderer &renderer)
 {
-    bool aboveSystem = false; // walking ref->root this time
     for (ModularBody *b : activeChain) {
-        const Mat4f &mat = aboveSystem ? system->getMat() : b->getMat();
+        const Mat4f mat = observedMat(system, b, julianDay);
         for (auto &m : b->environment)
             m->drawSky(renderer, b, mat);
-        if (b == system)
-            aboveSystem = true;
     }
     if (onBody && state.drawLandscape) {
         ModularBody *reference = activeChain.front();

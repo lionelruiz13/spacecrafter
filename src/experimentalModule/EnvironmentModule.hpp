@@ -41,7 +41,7 @@ public:
                         float deltaTime, EnvironmentState &state) {
         return true;
     }
-    // Draw before the sky and the bodies; mat orientation is valid only above the current system
+    // Draw before the sky and the bodies; mat defines body regarding to the observer
     virtual void drawBackdrop(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
     // Draw after the bodies, same mat
     virtual void drawSky(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
