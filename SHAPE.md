@@ -178,6 +178,12 @@ Sessions COMMIT in their own name and NEVER PUSH.
   lookAt, lat / lon / alt; 30 call sites then, 72 now): a scaffold of the bodies-first draft, never
   bound per mode, and our one-run parity instruments depend on it. Synchronising two easing laws
   never makes them one; the binding is B42, QUERIES first. S9 applies before EXTENDING a pattern.
+- HIS INTENT FOR THE FRAME (11.265(m), row B47): what depends on WHERE we are - stars, milky way,
+  landscape, atmosphere - is an `EnvironmentModule` member of the body or system it comes from, drawn
+  by the reference-to-root chain with its OWNER's matrix; the executor modes dissolve into that
+  nesting. Built: three wrapper members (milky way, atmosphere, landscape), called from the old mode
+  module. NOT built: the STARS and the rest of the sky - and no row held them until B47. Nothing is
+  dispatched on B47 before he rules who owns each layer and its order against B42.
 
 ## 8. Terms a cold reader will meet
 - **Vixy = the owner = Calvin Ruiz** (git author); `[vixy: date]` tags his words in the ledger.
