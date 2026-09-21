@@ -1,0 +1,14 @@
+$ python3 f128_spread.py clock <GAL captures of the UNPINNED scene>
+11:35:59 drawn new lon 149.403462 deg jd 2461233.5000144932 | +0 s wall, +0.00000 deg, 0.000 arcsec/s  f128/probe_gal_on
+11:45:33 drawn old lon 151.801676 deg jd 2461233.5000144821 | +574 s wall, +2.39821 deg, 15.050 arcsec/s  floor_20260921-114423/oldA
+11:47:20 drawn old lon 152.248730 deg jd 2461233.5000144816 | +681 s wall, +2.84527 deg, 15.040 arcsec/s  floor_20260921-114423/oldB
+11:49:08 drawn new lon 152.699962 deg jd 2461233.5000144816 | +788 s wall, +3.29650 deg, 15.051 arcsec/s  floor_20260921-114423/newA
+11:50:55 drawn new lon 153.147015 deg jd 2461233.5000144816 | +896 s wall, +3.74355 deg, 15.042 arcsec/s  floor_20260921-114423/newB
+$ python3 f128_spread.py pins <the same five>
+new|new    3 pairs: rel min 0.102627 max 0.517091, exactly 0 in 0, max delta 39, max px8 104268
+new|old    6 pairs: rel min 0.103542 max 0.429291, exactly 0 in 0, max delta 35, max px8 72982
+old|old    1 pairs: rel min 0.102718 max 0.102718, exactly 0 in 0, max delta 13, max px8 638
+$ python3 f128_spread.py pins <the GAL captures of the PINNED scene: floor 12:05 + run 12:15 + probe>
+new|new    6 pairs: rel min 0.000000 max 0.000000, exactly 0 in 6, max delta 0, max px8 0
+new|old   12 pairs: rel min 0.000000 max 0.000000, exactly 0 in 12, max delta 0, max px8 0
+old|old    3 pairs: rel min 0.000000 max 0.000000, exactly 0 in 3, max delta 0, max px8 0

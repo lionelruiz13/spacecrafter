@@ -1,0 +1,83 @@
+{
+ "name": "able_tilt_vs_old_ref",
+ "want": "differ",
+ "threshold_rel": 8.366702615266892e-05,
+ "floor_file": "/home/claude/spacecrafter/claude/harness/artifacts/f128/SOL_milky_way/floor.json",
+ "metrics": {
+  "energy_a": 12047754.0,
+  "energy_b": 6601644.0,
+  "rel": 1.5232577480517064,
+  "ratio": 0.5479564074764475,
+  "corr": 0.1839303219121659,
+  "px8": 157366,
+  "px32": 7977,
+  "max_delta": 50.0,
+  "a": {
+   "dir": "/home/claude/spacecrafter/claude/harness/artifacts/f128/SOL_milky_way/floor_20260921-112210/oldA",
+   "tag": "base",
+   "on_md5": "2045fd6cfc2054f62c0de9ef592a26bc",
+   "off_md5": "41e56d122f1c27cd356ee7892470d111",
+   "shape": [
+    2048,
+    2048,
+    3
+   ],
+   "off_lit_gt16": 25,
+   "state": {
+    "tag": "base",
+    "drawnPath": "old",
+    "reference": "Earth",
+    "freeMode": false,
+    "halfFov": 1.57079637,
+    "fov_old": 180,
+    "layer": "milky_way",
+    "pin": "off",
+    "leg": "SOL",
+    "perturb": "none",
+    "engine_said": {
+     "->InGalaxy": 0,
+     "->InUniverse": 0,
+     "InGalaxy->": 0,
+     "InUniverse->": 0
+    },
+    "on_md5": "2045fd6cfc2054f62c0de9ef592a26bc",
+    "off_md5": "41e56d122f1c27cd356ee7892470d111"
+   }
+  },
+  "b": {
+   "dir": "/home/claude/spacecrafter/claude/harness/artifacts/f128/SOL_milky_way/able_20260921-123915/new_tilt",
+   "tag": "base",
+   "on_md5": "74935446e15580e4d63f1de2d968e948",
+   "off_md5": "1f626158a0d657dc93b34394083b4f76",
+   "shape": [
+    2048,
+    2048,
+    3
+   ],
+   "off_lit_gt16": 25,
+   "state": {
+    "tag": "base",
+    "drawnPath": "new",
+    "reference": "Earth",
+    "freeMode": false,
+    "old_longitude": 5.366666607307548,
+    "jd": 2461233.5000144932,
+    "halfFov": 1.57079637,
+    "fov_old": 180,
+    "layer": "milky_way",
+    "pin": "on",
+    "leg": "SOL",
+    "perturb": "tilt-system",
+    "engine_said": {
+     "->InGalaxy": 0,
+     "->InUniverse": 0,
+     "InGalaxy->": 0,
+     "InUniverse->": 0
+    },
+    "on_md5": "74935446e15580e4d63f1de2d968e948",
+    "off_md5": "1f626158a0d657dc93b34394083b4f76"
+   }
+  }
+ },
+ "fails": []
+}

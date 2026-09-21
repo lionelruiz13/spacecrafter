@@ -1,0 +1,23 @@
+$ python3 f128_spread.py pins <every unperturbed SOL-scene capture, tag base: 19 launches>
+#   artifacts/f128/probe_sol_on
+#   artifacts/f128/SOL_milky_way/able_20260921-112838/new_intensity
+#   artifacts/f128/SOL_milky_way/floor_20260921-112210/newA
+#   artifacts/f128/SOL_milky_way/floor_20260921-112210/newB
+#   artifacts/f128/SOL_milky_way/floor_20260921-112210/oldA
+#   artifacts/f128/SOL_milky_way/floor_20260921-112210/oldB
+#   artifacts/f128/SOL_milky_way/run_20260921-114105/new
+#   artifacts/f128/SOL_milky_way/run_20260921-114105/old
+#   artifacts/f128/TILT_milky_way/able_20260921-110248/new_withheld
+#   artifacts/f128/TILT_milky_way/able_20260921-110638/new_withheld
+#   artifacts/f128/TILT_milky_way/able_20260921-121912/new_withheld
+#   artifacts/f128/TILT_milky_way/run_20260921-110947/new
+#   artifacts/f128/TILT_milky_way/run_20260921-110947/old_control
+#   artifacts/f128/TILT_milky_way/run_20260921-111556/new
+#   artifacts/f128/TILT_milky_way/run_20260921-111556/old_control
+#   artifacts/f128/TILT_milky_way/run_20260921-122217/new
+#   artifacts/f128/TILT_milky_way/run_20260921-122217/old_control
+#   artifacts/f128/TILT_milky_way/run_20260921-122823/new
+#   artifacts/f128/TILT_milky_way/run_20260921-122823/old_control
+new|new   66 pairs: rel min 0.000000 max 0.000000, exactly 0 in 66, max delta 0, max px8 0
+new|old   84 pairs: rel min 0.005283 max 0.005283, exactly 0 in 0, max delta 2, max px8 0
+old|old   21 pairs: rel min 0.000000 max 0.000022, exactly 0 in 5, max delta 1, max px8 0

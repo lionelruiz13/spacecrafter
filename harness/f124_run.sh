@@ -6,6 +6,7 @@
 #     driver.py   run as: driver.py <outdir> <gdb_pid> <gdb_fifo> [driver args...]
 #                 (the signature of b21_keypath.py, which this runner can run as is)
 #     SC_BIN      another binary; F124_TIMEOUT the driver's bound in seconds (default 480)
+#     F124_OUT_ROOT  another output root (default artifacts/f124): records land in <root>/<label>
 #
 # What it is made of, and why it exists: the launch asserts are f121_run.sh's (binary md5,
 # the three-channel instance probe, the GPU gate, config.ini AND ssystem.ini md5 in == out,
@@ -19,7 +20,7 @@ LABEL=${1:?label}
 DRIVER=${2:?driver.py}
 shift 2
 BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
-OUT="$HERE/artifacts/f124/$LABEL"
+OUT="${F124_OUT_ROOT:-$HERE/artifacts/f124}/$LABEL"
 mkdir -p "$OUT"; rm -f "$OUT"/*.png "$OUT"/*.json "$OUT"/*.log "$OUT"/gdbin
 META="$OUT/meta.txt"; : > "$META"
 log() { echo "$@" | tee -a "$META"; }

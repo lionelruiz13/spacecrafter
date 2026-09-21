@@ -1,0 +1,81 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> meteors zhr 0
+>> deselect
+>> flag atmosphere off
+>> flag cardinal_points off
+>> flag constellation_drawing off
+>> flag equatorial_grid off
+>> flag landscape off
+>> flag nebulae off
+>> flag oort off
+>> flag star_lines off
+>> flag stars off
+>> flag tully off
+>> flag zodiacal_light off
+>> flag fog off
+>> flag star_twinkle off
+>> flag star_names off
+>> flag planet_names off
+>> flag nebula_names off
+>> flag nebula_hints off
+>> flag bright_nebulae off
+>> flag constellation_art off
+>> flag constellation_names off
+>> flag constellation_boundaries off
+>> flag planet_orbits off
+>> flag object_trails off
+>> flag body_trace off
+>> flag dso_pictograms off
+>> flag show_tui_datetime off
+>> flag show_tui_short_obj_info off
+>> flag show_latlon off
+>> flag azimuthal_grid off
+>> flag ecliptic_grid off
+>> flag galactic_grid off
+>> flag equator_line off
+>> flag ecliptic_line off
+>> flag meridian_line off
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/able_20260921-110638/new_withheld/base.json
+>> flag milky_way off
+-- base       drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS base_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_sys_ran_clean  `set var Camera::instance->system->re.obliquity = 0.0`; gdb said ['F128NODE sys=SolarSystem', 'F128RE sys=0.000000', 'F128POKE_sys'] []
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/able_20260921-110638/new_withheld/sys.json
+>> flag milky_way off
+-- sys        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS sys_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_sys0_ran_clean  `set var Camera::instance->system->re.obliquity = 0.0`; gdb said ['F128NODE sys0=SolarSystem', 'F128RE sys0=0.000000', 'F128POKE_sys0'] []
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/able_20260921-110638/new_withheld/rest1.json
+>> flag milky_way off
+-- rest1      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS rest1_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_gal_ran_clean  `set var Camera::instance->system->parent->re.obliquity = 0.0`; gdb said ['F128NODE gal=MilkyWay', 'F128RE gal=0.000000', 'F128POKE_gal'] []
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/able_20260921-110638/new_withheld/gal.json
+>> flag milky_way off
+-- gal        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS gal_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_gal0_ran_clean  `set var Camera::instance->system->parent->re.obliquity = 0.0`; gdb said ['F128NODE gal0=MilkyWay', 'F128RE gal0=0.000000', 'F128POKE_gal0'] []
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/able_20260921-110638/new_withheld/rest2.json
+>> flag milky_way off
+-- rest2      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS rest2_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS poked_nodes_are_the_system_and_the_galaxy  ['F128NODE sys=SolarSystem', 'F128RE sys=0.000000', 'F128POKE_sys', 'F128NODE gal=MilkyWay', 'F128RE gal=0.000000', 'F128POKE_gal']
+-- layer base vs sys   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest1 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs gal   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest2 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+PASS layer_present  layer energy 1.205e+07
+PASS restoring_the_poke_restores_the_layer  in-launch floor: base vs restored rel 0.00000 / 0.00000
+FAIL TILT_layer_follows_the_SYSTEM_tilt  threshold rel 0.02000 = max(4 x in-launch floor, 0.02); system poked rel 0.00000, galaxy poked rel 0.00000
+PASS TILT_witnesses_present  frame with the layer off = the bodies, which ride the flat chain: 25 px over 16 (want >= 10)
+PASS TILT_sys_poke_moves_nothing_else  frame with the layer off, base vs sys poked: px32 0 px8 0 rel 0.00000 (witness energy 6.526e+03)
+PASS TILT_gal_poke_moves_nothing_else  frame with the layer off, base vs gal poked: px32 0 px8 0 rel 0.00000 (witness energy 6.526e+03)
+
+=== leg TILT pin on layer milky_way perturb withhold-poke expect system: FAILURES: TILT_layer_follows_the_SYSTEM_tilt ===

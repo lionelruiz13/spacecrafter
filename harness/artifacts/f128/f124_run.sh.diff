@@ -1,0 +1,6 @@
+8a9
+> #     F124_OUT_ROOT  another output root (default artifacts/f124): records land in <root>/<label>
+22c23
+< OUT="$HERE/artifacts/f124/$LABEL"
+---
+> OUT="${F124_OUT_ROOT:-$HERE/artifacts/f124}/$LABEL"

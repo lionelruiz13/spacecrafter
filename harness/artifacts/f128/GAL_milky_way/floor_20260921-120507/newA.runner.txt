@@ -1,0 +1,33 @@
+=== F124 run 'GAL_milky_way/floor_20260921-120507/newA' ===
+wall clock start : 2026-09-21 12:08:58 CEST
+driver           : f128_legs.py --leg GAL --layer milky_way --pin on
+driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 13910b38281e073d3d5baf641c2ef441
+binary mtime     : 2026-09-19 23:11:54.181058975 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[GAL_milky_way/floor_20260921-120507/newA] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[GAL_milky_way/floor_20260921-120507/newA] gpu: free 30550 MiB / used 1557 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=928629
+launch wall clock: 2026-09-21 12:08:59 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 928646 
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[GAL_milky_way/floor_20260921-120507/newA-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-21 12:10:54 CEST
+--- driver result ---
+PASS galaxy_level_reached  the engine printed '->InGalaxy' 1 time(s) after `moveto altitude 12000000000000000`
+PASS gdb_pins_the_old_observer_longitude  `set var CoreLink::instance->core._M_ptr->observatory._M_ptr->longitude = 150.0`
+-- base       drawn=new ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS base_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS GAL_reference_is_the_galaxy  Camera reference MilkyWay
+PASS GAL_old_observer_longitude_is_the_scene_s  old observer longitude 150.000000 deg, scene 150.0 (unpinned it reads 5.37 + the sidereal time of the app's start)
+-- again      drawn=new ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS again_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS layer_present  layer energy 1.960e+07 (absent under 1e+05)
+NOTE in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0
+=== leg GAL pin on layer milky_way perturb none expect system: ALL PASS ===

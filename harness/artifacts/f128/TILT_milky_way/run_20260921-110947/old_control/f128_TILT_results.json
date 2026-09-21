@@ -1,0 +1,168 @@
+{
+ "leg": "TILT",
+ "pin": "off",
+ "layer": "milky_way",
+ "perturb": "none",
+ "captures": {
+  "base": {
+   "tag": "base",
+   "drawnPath": "old",
+   "reference": "Earth",
+   "freeMode": false,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "off",
+   "leg": "TILT",
+   "perturb": "none",
+   "engine_said": {
+    "->InGalaxy": 0,
+    "->InUniverse": 0,
+    "InGalaxy->": 0,
+    "InUniverse->": 0
+   },
+   "on_md5": "a422fdb7aa273ee72abbfc7cefb47d42",
+   "off_md5": "8b874ee9470a0da9499a700901a45421"
+  },
+  "sys": {
+   "tag": "sys",
+   "drawnPath": "old",
+   "reference": "Earth",
+   "freeMode": false,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "off",
+   "leg": "TILT",
+   "perturb": "none",
+   "engine_said": {
+    "->InGalaxy": 0,
+    "->InUniverse": 0,
+    "InGalaxy->": 0,
+    "InUniverse->": 0
+   },
+   "on_md5": "a422fdb7aa273ee72abbfc7cefb47d42",
+   "off_md5": "8b874ee9470a0da9499a700901a45421"
+  },
+  "rest1": {
+   "tag": "rest1",
+   "drawnPath": "old",
+   "reference": "Earth",
+   "freeMode": false,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "off",
+   "leg": "TILT",
+   "perturb": "none",
+   "engine_said": {
+    "->InGalaxy": 0,
+    "->InUniverse": 0,
+    "InGalaxy->": 0,
+    "InUniverse->": 0
+   },
+   "on_md5": "a422fdb7aa273ee72abbfc7cefb47d42",
+   "off_md5": "8b874ee9470a0da9499a700901a45421"
+  },
+  "gal": {
+   "tag": "gal",
+   "drawnPath": "old",
+   "reference": "Earth",
+   "freeMode": false,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "off",
+   "leg": "TILT",
+   "perturb": "none",
+   "engine_said": {
+    "->InGalaxy": 0,
+    "->InUniverse": 0,
+    "InGalaxy->": 0,
+    "InUniverse->": 0
+   },
+   "on_md5": "a422fdb7aa273ee72abbfc7cefb47d42",
+   "off_md5": "8b874ee9470a0da9499a700901a45421"
+  },
+  "rest2": {
+   "tag": "rest2",
+   "drawnPath": "old",
+   "reference": "Earth",
+   "freeMode": false,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "off",
+   "leg": "TILT",
+   "perturb": "none",
+   "engine_said": {
+    "->InGalaxy": 0,
+    "->InUniverse": 0,
+    "InGalaxy->": 0,
+    "InUniverse->": 0
+   },
+   "on_md5": "a422fdb7aa273ee72abbfc7cefb47d42",
+   "off_md5": "8b874ee9470a0da9499a700901a45421"
+  }
+ },
+ "notes": [],
+ "tilt": {
+  "value_rad": 0.5,
+  "floor_rel": 0.0,
+  "threshold_rel": 0.02,
+  "rule": "max(4 x in-launch floor, 0.02)",
+  "layer": {
+   "sys": {
+    "rel": 0.0,
+    "ratio": 1.0,
+    "corr": 1.0,
+    "px8": 0,
+    "px32": 0,
+    "energy_a": 12047760.0,
+    "energy_b": 12047760.0
+   },
+   "rest1": {
+    "rel": 0.0,
+    "ratio": 1.0,
+    "corr": 1.0,
+    "px8": 0,
+    "px32": 0,
+    "energy_a": 12047760.0,
+    "energy_b": 12047760.0
+   },
+   "gal": {
+    "rel": 0.0,
+    "ratio": 1.0,
+    "corr": 1.0,
+    "px8": 0,
+    "px32": 0,
+    "energy_a": 12047760.0,
+    "energy_b": 12047760.0
+   },
+   "rest2": {
+    "rel": 0.0,
+    "ratio": 1.0,
+    "corr": 1.0,
+    "px8": 0,
+    "px32": 0,
+    "energy_a": 12047760.0,
+    "energy_b": 12047760.0
+   }
+  },
+  "frame_without_the_layer": {
+   "sys": {
+    "rel": 0.0,
+    "px8": 0,
+    "px32": 0,
+    "energy_a": 6448.0
+   },
+   "gal": {
+    "rel": 0.0,
+    "px8": 0,
+    "px32": 0,
+    "energy_a": 6448.0
+   }
+  }
+ },
+ "fails": []
+}

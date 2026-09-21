@@ -1,0 +1,20 @@
+=== F128 leg TILT layer milky_way phase able expect system  2026-09-21 11:02:48 CEST  binary md5 13910b38 ===
+launch new_withheld (--pin on --expect system --perturb withhold-poke): runner exit 1  [13 PASS, 3 FAIL]
+=== F124 run 'TILT_milky_way/able_20260921-110248/new_withheld' ===
+--- driver result ---
+-- base       drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- sys        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- rest1      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- gal        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- rest2      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+FAIL poked_nodes_are_the_system_and_the_galaxy  []
+-- layer base vs sys   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest1 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs gal   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest2 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+FAIL TILT_layer_follows_the_SYSTEM_tilt  threshold rel 0.02000 = max(4 x in-launch floor, 0.02); system poked rel 0.00000, galaxy poked rel 0.00000
+FAIL TILT_witnesses_present  frame with the layer off (bodies, orbits): energy 6.526e+03
+=== leg TILT pin on layer milky_way perturb withhold-poke expect system: FAILURES: poked_nodes_are_the_system_and_the_galaxy,TILT_layer_follows_the_SYSTEM_tilt,TILT_witnesses_present ===
+=== ABLE-TO-FAIL TILT: RED as it must be with the poke withheld ===
+records: /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/able_20260921-110248   end 2026-09-21 11:05:51 CEST
+[f128-TILT-close] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)

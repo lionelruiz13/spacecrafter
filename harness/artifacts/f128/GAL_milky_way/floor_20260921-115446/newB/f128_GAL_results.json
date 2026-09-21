@@ -1,0 +1,67 @@
+{
+ "leg": "GAL",
+ "pin": "on",
+ "layer": "milky_way",
+ "perturb": "none",
+ "captures": {
+  "base": {
+   "tag": "base",
+   "drawnPath": "new",
+   "reference": "MilkyWay",
+   "freeMode": true,
+   "old_longitude": 150,
+   "jd": 2461233.5000144816,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "on",
+   "leg": "GAL",
+   "perturb": "none",
+   "engine_said": {
+    "->InGalaxy": 1,
+    "->InUniverse": 1,
+    "InGalaxy->": 1,
+    "InUniverse->": 0
+   },
+   "on_md5": "0019e2dcb788c35e5dea08b055a97226",
+   "off_md5": "0019e2dcb788c35e5dea08b055a97226"
+  },
+  "again": {
+   "tag": "again",
+   "drawnPath": "new",
+   "reference": "MilkyWay",
+   "freeMode": true,
+   "old_longitude": 150,
+   "jd": 2461233.5000144816,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "on",
+   "leg": "GAL",
+   "perturb": "none",
+   "engine_said": {
+    "->InGalaxy": 1,
+    "->InUniverse": 1,
+    "InGalaxy->": 1,
+    "InUniverse->": 0
+   },
+   "on_md5": "0019e2dcb788c35e5dea08b055a97226",
+   "off_md5": "0019e2dcb788c35e5dea08b055a97226"
+  }
+ },
+ "notes": [
+  "in-launch repeat of the capture: rel 0.00000 ratio 0.00000 corr 0.000000 px8 0 px32 0"
+ ],
+ "in_launch": {
+  "rel": 0.0,
+  "ratio": 0.0,
+  "corr": 0.0,
+  "px8": 0,
+  "px32": 0,
+  "energy_a": 0.0,
+  "energy_b": 0.0
+ },
+ "fails": [
+  "layer_present"
+ ]
+}

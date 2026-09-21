@@ -1,0 +1,54 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> meteors zhr 0
+>> deselect
+>> flag atmosphere off
+>> flag cardinal_points off
+>> flag constellation_drawing off
+>> flag equatorial_grid off
+>> flag landscape off
+>> flag nebulae off
+>> flag oort off
+>> flag star_lines off
+>> flag stars off
+>> flag tully off
+>> flag zodiacal_light off
+>> flag fog off
+>> flag star_twinkle off
+>> flag star_names off
+>> flag planet_names off
+>> flag nebula_names off
+>> flag nebula_hints off
+>> flag bright_nebulae off
+>> flag constellation_art off
+>> flag constellation_names off
+>> flag constellation_boundaries off
+>> flag planet_orbits off
+>> flag object_trails off
+>> flag body_trace off
+>> flag dso_pictograms off
+>> flag show_tui_datetime off
+>> flag show_tui_short_obj_info off
+>> flag show_latlon off
+>> flag azimuthal_grid off
+>> flag ecliptic_grid off
+>> flag galactic_grid off
+>> flag equator_line off
+>> flag ecliptic_line off
+>> flag meridian_line off
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/probe_sol_on/base.json
+>> flag milky_way off
+-- base       drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS base_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS SOL_reference_is_a_body  reference Earth free=False (the tilt perturbation reads as a sky turn only from a body)
+>> flag milky_way on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/probe_sol_on/again.json
+>> flag milky_way off
+-- again      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS again_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS layer_present  layer energy 1.205e+07 (absent under 1e+05)
+NOTE in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0
+
+=== leg SOL pin on layer milky_way perturb none expect system: ALL PASS ===

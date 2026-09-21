@@ -1,0 +1,71 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> meteors zhr 0
+>> deselect
+>> flag atmosphere off
+>> flag cardinal_points off
+>> flag constellation_drawing off
+>> flag equatorial_grid off
+>> flag landscape off
+>> flag milky_way off
+>> flag nebulae off
+>> flag oort off
+>> flag star_lines off
+>> flag stars off
+>> flag zodiacal_light off
+>> flag fog off
+>> flag star_twinkle off
+>> flag star_names off
+>> flag planet_names off
+>> flag nebula_names off
+>> flag nebula_hints off
+>> flag bright_nebulae off
+>> flag constellation_art off
+>> flag constellation_names off
+>> flag constellation_boundaries off
+>> flag planet_orbits off
+>> flag object_trails off
+>> flag body_trace off
+>> flag dso_pictograms off
+>> flag show_tui_datetime off
+>> flag show_tui_short_obj_info off
+>> flag show_latlon off
+>> flag azimuthal_grid off
+>> flag ecliptic_grid off
+>> flag galactic_grid off
+>> flag equator_line off
+>> flag ecliptic_line off
+>> flag meridian_line off
+>> select planet Sun
+>> flag track_object on
+>> camera action free_mode state on
+>> moveto altitude 12000000000000000 duration 0
+>> flag track_object off
+>> deselect
+PASS galaxy_level_reached  the engine printed '->InGalaxy' 1 time(s) after `moveto altitude 12000000000000000`
+>> select planet Sun
+>> flag track_object on
+>> camera action free_mode state on
+>> moveto altitude 200459146738000 duration 0
+>> moveto altitude 200459146738000 duration 0
+>> flag track_object off
+>> deselect
+PASS universe_level_reached  the engine printed '->InUniverse' 1 time(s) after `moveto altitude 200459146738000`
+PASS gdb_pins_the_old_observer_longitude  `set var CoreLink::instance->core._M_ptr->observatory._M_ptr->longitude = 150.0`
+>> flag tully on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/UNI_tully/probe_on/base.json
+>> flag tully off
+-- base       drawn=new ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 1, 'InGalaxy->': 1, 'InUniverse->': 0}
+PASS base_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS UNI_reference_is_the_galaxy  Camera reference MilkyWay
+PASS UNI_old_observer_longitude_is_the_scene_s  old observer longitude 150.000000 deg, scene 150.0 (unpinned it reads 5.37 + the sidereal time of the app's start)
+>> flag tully on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f128/UNI_tully/probe_on/again.json
+>> flag tully off
+-- again      drawn=new ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 1, 'InGalaxy->': 1, 'InUniverse->': 0}
+PASS again_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS layer_present  layer energy 2.028e+07 (absent under 1e+05)
+NOTE in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0
+
+=== leg UNI pin on layer tully perturb none expect system: ALL PASS ===

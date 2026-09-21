@@ -1,0 +1,12 @@
+$ python3 f128_spread.py sense SOL floor oldA newA
+A|B rel 0.005283 (luminance layers); pixels beyond half a level 21123 (10701 up, 10422 down); mean 0.00007
+B turned 0.01 deg about the centre against itself: rel 0.003751
+B turned 0.02 deg about the centre against itself: rel 0.007313
+B turned 0.05 deg about the centre against itself: rel 0.016884
+B turned 0.10 deg about the centre against itself: rel 0.029768
+B turned 0.50 deg about the centre against itself: rel 0.121812
+B shifted 0.05 px against itself: rel 0.001439
+B shifted 0.10 px against itself: rel 0.002877
+B shifted 0.50 px against itself: rel 0.014387
+B shifted 1.00 px against itself: rel 0.028774
+best small transform of B towards A: none (rel 0.005283)

@@ -1,0 +1,21 @@
+=== F124 run 'probe_sol_on' ===
+wall clock start : 2026-09-21 10:59:16 CEST
+driver           : f128_legs.py --leg SOL --pin on
+driver md5       : 49b38bb6dc707084ce9944464a8ddfd2
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 13910b38281e073d3d5baf641c2ef441
+binary mtime     : 2026-09-19 23:11:54.181058975 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[probe_sol_on] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[probe_sol_on] gpu: free 30530 MiB / used 1577 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=918528
+launch wall clock: 2026-09-21 10:59:16 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 918545 
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[probe_sol_on-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-21 11:00:49 CEST

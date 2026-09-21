@@ -1,0 +1,48 @@
+=== F124 run 'TILT_milky_way/run_20260921-130306/new' ===
+wall clock start : 2026-09-21 13:03:06 CEST
+driver           : f128_legs.py --leg TILT --layer milky_way --pin on --expect owner
+driver md5       : df5720974c2e0bdcc9a6f1ca8a7dd6fd
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 13910b38281e073d3d5baf641c2ef441
+binary mtime     : 2026-09-19 23:11:54.181058975 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[TILT_milky_way/run_20260921-130306/new] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[TILT_milky_way/run_20260921-130306/new] gpu: free 30532 MiB / used 1575 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=939302
+launch wall clock: 2026-09-21 13:03:07 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 939319 
+driver exit=1
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[TILT_milky_way/run_20260921-130306/new-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-21 13:06:06 CEST
+--- driver result ---
+-- base       drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS base_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_sys_ran_clean  `set var Camera::instance->system->re.obliquity = 0.5`; gdb said ['F128NODE sys=SolarSystem', 'F128RE sys=0.500000', 'F128POKE_sys'] []
+-- sys        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS sys_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_sys0_ran_clean  `set var Camera::instance->system->re.obliquity = 0.0`; gdb said ['F128NODE sys0=SolarSystem', 'F128RE sys0=0.000000', 'F128POKE_sys0'] []
+-- rest1      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS rest1_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_gal_ran_clean  `set var Camera::instance->system->parent->re.obliquity = 0.5`; gdb said ['F128NODE gal=MilkyWay', 'F128RE gal=0.500000', 'F128POKE_gal'] []
+-- gal        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS gal_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS gdb_poke_gal0_ran_clean  `set var Camera::instance->system->parent->re.obliquity = 0.0`; gdb said ['F128NODE gal0=MilkyWay', 'F128RE gal0=0.000000', 'F128POKE_gal0'] []
+-- rest2      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+PASS rest2_drawn_path_is_the_pinned_one  pin on -> control.drawnPath = new
+PASS poked_nodes_are_the_system_and_the_galaxy  ['F128NODE sys=SolarSystem', 'F128RE sys=0.500000', 'F128POKE_sys', 'F128NODE gal=MilkyWay', 'F128RE gal=0.500000', 'F128POKE_gal']
+-- layer base vs sys   rel 1.52309 corr 0.184043 ratio 0.54792 px8 157358 px32 7964
+-- layer base vs rest1 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs gal   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest2 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+PASS layer_present  layer energy 1.205e+07
+PASS restoring_the_poke_restores_the_layer  in-launch floor: base vs restored rel 0.000000 / 0.000000
+FAIL TILT_layer_follows_its_OWNER_the_galaxy  system poked rel 1.523095, galaxy poked rel 0.000000; STILL = rel <= 4 x the in-launch floor (base against the restored captures); TURNED = rel > 0.02 (here 0.000000)
+PASS TILT_witnesses_present  frame with the layer off = the bodies, which ride the flat chain: 25 px over 16 (want >= 10)
+PASS TILT_sys_poke_moves_nothing_else  frame with the layer off, base vs sys poked: px32 0 px8 0 rel 0.00000 (witness energy 6.526e+03)
+PASS TILT_gal_poke_moves_nothing_else  frame with the layer off, base vs gal poked: px32 0 px8 0 rel 0.00000 (witness energy 6.526e+03)
+=== leg TILT pin on layer milky_way perturb none expect owner: FAILURES: TILT_layer_follows_its_OWNER_the_galaxy ===

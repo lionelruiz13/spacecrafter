@@ -1,0 +1,19 @@
+=== F128 leg GAL layer milky_way phase able expect system  2026-09-21 12:13:02 CEST  binary md5 13910b38 ===
+stored reference: old = /home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/oldA ; new = /home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-120507/newA
+launch new_intensity (--pin on --perturb intensity): runner exit 0  [7 PASS, 0 FAIL]
+=== F124 run 'GAL_milky_way/able_20260921-121302/new_intensity' ===
+--- driver result ---
+NOTE PERTURBED on this pin: set milky_way_intensity 0.25
+-- base       drawn=new ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- again      drawn=new ref=MilkyWay free=True fov old 180.000 new 180.000 deg said={'->InGalaxy': 1, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+NOTE in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0
+=== leg GAL pin on layer milky_way perturb intensity expect system: ALL PASS ===
+PASS able_intensity_vs_old_ref_layer_present  energy 1.960e+07 | 9.669e+06
+PASS able_intensity_vs_old_ref_path_read_on_both_sides  drawn old | new
+PASS able_intensity_vs_old_ref_differs  drawn old | new: rel 0.678863 against 0.000000 = 4 x the floor 0.000000 of scene GAL_milky_way (second tier 0.02); ratio 0.49323 corr 0.997091 px8 96149 px32 0 max delta 27
+PASS able_intensity_vs_new_ref_layer_present  energy 1.960e+07 | 9.669e+06
+PASS able_intensity_vs_new_ref_path_read_on_both_sides  drawn new | new
+PASS able_intensity_vs_new_ref_differs  drawn new | new: rel 0.678863 against 0.000000 = 4 x the floor 0.000000 of scene GAL_milky_way (second tier 0.02); ratio 0.49323 corr 0.997091 px8 96149 px32 0 max delta 27
+=== ABLE-TO-FAIL GAL_milky_way: every perturbed comparison came out RED as it must ===
+records: /home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/able_20260921-121302   end 2026-09-21 12:15:00 CEST
+[f128-GAL-close] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)

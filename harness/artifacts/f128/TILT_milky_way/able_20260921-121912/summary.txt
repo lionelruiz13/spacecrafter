@@ -1,0 +1,18 @@
+=== F128 leg TILT layer milky_way phase able expect system  2026-09-21 12:19:12 CEST  binary md5 13910b38 ===
+launch new_withheld (--pin on --expect system --perturb withhold-poke): runner exit 1  [15 PASS, 1 FAIL]
+=== F124 run 'TILT_milky_way/able_20260921-121912/new_withheld' ===
+--- driver result ---
+-- base       drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- sys        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- rest1      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- gal        drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- rest2      drawn=new ref=Earth free=False fov old 180.000 new 180.000 deg said={'->InGalaxy': 0, '->InUniverse': 0, 'InGalaxy->': 0, 'InUniverse->': 0}
+-- layer base vs sys   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest1 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs gal   rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+-- layer base vs rest2 rel 0.00000 corr 1.000000 ratio 1.00000 px8 0 px32 0
+FAIL TILT_layer_follows_the_SYSTEM_tilt  system poked rel 0.000000, galaxy poked rel 0.000000; STILL = rel <= 4 x the in-launch floor (base against the restored captures); TURNED = rel > 0.02 (here 0.000000)
+=== leg TILT pin on layer milky_way perturb withhold-poke expect system: FAILURES: TILT_layer_follows_the_SYSTEM_tilt ===
+=== ABLE-TO-FAIL TILT: RED as it must be with the poke withheld ===
+records: /home/claude/spacecrafter/claude/harness/artifacts/f128/TILT_milky_way/able_20260921-121912   end 2026-09-21 12:22:12 CEST
+[f128-TILT-close] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)

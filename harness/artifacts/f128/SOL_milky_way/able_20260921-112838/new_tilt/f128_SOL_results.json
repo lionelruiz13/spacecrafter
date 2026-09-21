@@ -1,0 +1,62 @@
+{
+ "leg": "SOL",
+ "pin": "on",
+ "layer": "milky_way",
+ "perturb": "tilt-system",
+ "captures": {
+  "base": {
+   "tag": "base",
+   "drawnPath": "new",
+   "reference": "Earth",
+   "freeMode": false,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "on",
+   "leg": "SOL",
+   "perturb": "tilt-system",
+   "engine_said": {
+    "->InGalaxy": 0,
+    "->InUniverse": 0,
+    "InGalaxy->": 0,
+    "InUniverse->": 0
+   },
+   "on_md5": "74935446e15580e4d63f1de2d968e948",
+   "off_md5": "1f626158a0d657dc93b34394083b4f76"
+  },
+  "again": {
+   "tag": "again",
+   "drawnPath": "new",
+   "reference": "Earth",
+   "freeMode": false,
+   "halfFov": 1.57079637,
+   "fov_old": 180,
+   "layer": "milky_way",
+   "pin": "on",
+   "leg": "SOL",
+   "perturb": "tilt-system",
+   "engine_said": {
+    "->InGalaxy": 0,
+    "->InUniverse": 0,
+    "InGalaxy->": 0,
+    "InUniverse->": 0
+   },
+   "on_md5": "74935446e15580e4d63f1de2d968e948",
+   "off_md5": "1f626158a0d657dc93b34394083b4f76"
+  }
+ },
+ "notes": [
+  "PERTURBED on this pin: ['F128NODE sys=SolarSystem', 'F128RE sys=0.500000', 'F128POKE_sys']",
+  "in-launch repeat of the capture: rel 0.00000 ratio 1.00000 corr 1.000000 px8 0 px32 0"
+ ],
+ "in_launch": {
+  "rel": 0.0,
+  "ratio": 1.0,
+  "corr": 1.0,
+  "px8": 0,
+  "px32": 0,
+  "energy_a": 6601644.0,
+  "energy_b": 6601644.0
+ },
+ "fails": []
+}

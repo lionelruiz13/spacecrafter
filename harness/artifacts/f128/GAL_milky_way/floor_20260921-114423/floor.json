@@ -1,0 +1,160 @@
+{
+ "scene": "GAL_milky_way",
+ "tag": "base",
+ "pairs": [
+  {
+   "energy_a": 19770540.0,
+   "energy_b": 19812123.0,
+   "rel": 0.10271815213645429,
+   "ratio": 1.0021032809422505,
+   "corr": 0.9912815738433434,
+   "px8": 638,
+   "px32": 0,
+   "max_delta": 13.0,
+   "a": {
+    "dir": "/home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-114423/oldA",
+    "tag": "base",
+    "on_md5": "8fd3b2238a26b418cbaa8c3703529ff5",
+    "off_md5": "ec2c8c81f8cd04089e6bbfaffd9b0e76",
+    "shape": [
+     2048,
+     2048,
+     3
+    ],
+    "off_lit_gt16": 0,
+    "state": {
+     "tag": "base",
+     "drawnPath": "old",
+     "reference": "MilkyWay",
+     "freeMode": true,
+     "halfFov": 1.57079637,
+     "fov_old": 180,
+     "layer": "milky_way",
+     "pin": "off",
+     "leg": "GAL",
+     "perturb": "none",
+     "engine_said": {
+      "->InGalaxy": 1,
+      "->InUniverse": 0,
+      "InGalaxy->": 0,
+      "InUniverse->": 0
+     },
+     "on_md5": "8fd3b2238a26b418cbaa8c3703529ff5",
+     "off_md5": "ec2c8c81f8cd04089e6bbfaffd9b0e76"
+    }
+   },
+   "b": {
+    "dir": "/home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-114423/oldB",
+    "tag": "base",
+    "on_md5": "831cbe1b6d1ce538a3907a0251b68526",
+    "off_md5": "ec2c8c81f8cd04089e6bbfaffd9b0e76",
+    "shape": [
+     2048,
+     2048,
+     3
+    ],
+    "off_lit_gt16": 0,
+    "state": {
+     "tag": "base",
+     "drawnPath": "old",
+     "reference": "MilkyWay",
+     "freeMode": true,
+     "halfFov": 1.57079637,
+     "fov_old": 180,
+     "layer": "milky_way",
+     "pin": "off",
+     "leg": "GAL",
+     "perturb": "none",
+     "engine_said": {
+      "->InGalaxy": 1,
+      "->InUniverse": 0,
+      "InGalaxy->": 0,
+      "InUniverse->": 0
+     },
+     "on_md5": "831cbe1b6d1ce538a3907a0251b68526",
+     "off_md5": "ec2c8c81f8cd04089e6bbfaffd9b0e76"
+    }
+   }
+  },
+  {
+   "energy_a": 19851759.0,
+   "energy_b": 19889934.0,
+   "rel": 0.10262657909415182,
+   "ratio": 1.0019230033973312,
+   "corr": 0.9912927586072958,
+   "px8": 641,
+   "px32": 0,
+   "max_delta": 13.0,
+   "a": {
+    "dir": "/home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-114423/newA",
+    "tag": "base",
+    "on_md5": "4824df4bd7cd9c7e1fbb0ceba57673aa",
+    "off_md5": "45ae67a71ce4b337e5bdee697ce71e58",
+    "shape": [
+     2048,
+     2048,
+     3
+    ],
+    "off_lit_gt16": 88,
+    "state": {
+     "tag": "base",
+     "drawnPath": "new",
+     "reference": "MilkyWay",
+     "freeMode": true,
+     "halfFov": 1.57079637,
+     "fov_old": 180,
+     "layer": "milky_way",
+     "pin": "on",
+     "leg": "GAL",
+     "perturb": "none",
+     "engine_said": {
+      "->InGalaxy": 1,
+      "->InUniverse": 0,
+      "InGalaxy->": 0,
+      "InUniverse->": 0
+     },
+     "on_md5": "4824df4bd7cd9c7e1fbb0ceba57673aa",
+     "off_md5": "45ae67a71ce4b337e5bdee697ce71e58"
+    }
+   },
+   "b": {
+    "dir": "/home/claude/spacecrafter/claude/harness/artifacts/f128/GAL_milky_way/floor_20260921-114423/newB",
+    "tag": "base",
+    "on_md5": "e306deeaef75338c4c6d485fb97b7338",
+    "off_md5": "45ae67a71ce4b337e5bdee697ce71e58",
+    "shape": [
+     2048,
+     2048,
+     3
+    ],
+    "off_lit_gt16": 88,
+    "state": {
+     "tag": "base",
+     "drawnPath": "new",
+     "reference": "MilkyWay",
+     "freeMode": true,
+     "halfFov": 1.57079637,
+     "fov_old": 180,
+     "layer": "milky_way",
+     "pin": "on",
+     "leg": "GAL",
+     "perturb": "none",
+     "engine_said": {
+      "->InGalaxy": 1,
+      "->InUniverse": 0,
+      "InGalaxy->": 0,
+      "InUniverse->": 0
+     },
+     "on_md5": "e306deeaef75338c4c6d485fb97b7338",
+     "off_md5": "45ae67a71ce4b337e5bdee697ce71e58"
+    }
+   }
+  }
+ ],
+ "floor_rel": 0.10271815213645429,
+ "K_FLOOR": 4.0,
+ "REL_BOUND": 0.02,
+ "threshold_rel": 0.41087260854581714,
+ "rule": "threshold_rel = K_FLOOR x max same-pin rel over the pairs; REL_BOUND is the second tier",
+ "fails": []
+}

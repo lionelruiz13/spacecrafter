@@ -6575,3 +6575,99 @@ shows only the PASS lines above the crash - read `driver exit` and `drive.log`.
 (2000 km over Earth, above 0.125 R = 797 km); `f18_level.py` adapts by itself (it reads
 the gate from the dump); `b12_photosphere.py`, `b12_cost.py`, `b5_ladder.py` name the old
 values in comments only; `b10_cmd_gdb_run.sh` and `b10_cmd_run.sh` call `pkill -f`.
+
+## F128 - the identity instrument of row B47: one sky LAYER alone, per LEVEL, old path pinned against new path pinned, and WHOSE tilt an ancestor's member follows (`f128_leg.sh`, `f128_legs.py`, `f128_compare.py`; `f124_run.sh` gained `F124_OUT_ROOT`) - INTENT 11.267 / row B47 slice 0 / 11.265(n)(p) / 11.266(i), 2026-09-21
+
+**What for.** Before a sky layer moves into the body tree (F129: an ancestor's member gets
+its OWNER's matrix; F130: the member chain drawn at the galaxy level), the legacy mode
+module is the oracle. Each leg isolates ONE layer by its own switch (frame with the layer on
+minus frame with it off - what else is drawn cancels, on either path: the `b5_oort.py`
+pattern), and compares the isolated layers across the two pinned paths, or against a STORED
+capture of the same pin (before / after a code change).
+
+**Run** - one command per leg, from anywhere; `SC_BIN=<rebuilt binary>` overrides the binary;
+each call fits one 10-minute foreground call:
+
+    bash f128_leg.sh SOL                      # milky way alone, Solar-system level (landed on Earth)   2 launches, ~3 min
+    bash f128_leg.sh GAL                      # the same at the galaxy level (executor InGalaxy)        2 launches, ~4 min
+    bash f128_leg.sh TILT --expect system     # whose tilt the layer follows: HEAD's behaviour          2 launches, ~6 min
+    bash f128_leg.sh TILT --expect owner      # ... the ruling 11.265(n): RED until F129 lands
+    bash f128_leg.sh SOL|GAL --phase able     # the perturbed runs that MUST come out red (exit 0 = they did)
+    bash f128_leg.sh TILT --phase able        # the poke withheld: must FAIL (exit 0 = it did)
+    bash f128_leg.sh SOL|GAL --phase floor [--rebank]   # same pin twice, both pins (4 launches): floor.json + the stored references
+    bash f128_leg.sh SOL|GAL|UNI --layer <name>         # another layer / level: see LAYERS in f128_legs.py
+
+`run` (the default phase) takes a fresh capture per pin and prints three verdicts:
+`cross_pin_old_vs_new`, `old_vs_stored_old`, `new_vs_stored_new`. The stored references are
+the first capture of each pin of the `floor` phase (`artifacts/f128/<LEG>_<layer>/floor.json`
+names them); `floor` refuses to replace them without `--rebank` - re-bank ONLY on purpose,
+never to make a red go away. Records: `artifacts/f128/<LEG>_<layer>/<phase>_<clock>/`
+(`summary.txt`, one `<name>.runner.txt` and one capture directory per launch with `meta.txt`,
+`drive.log`, `<tag>_state.json`, the PNGs; one JSON per comparison). Exit: 0 every check PASS;
+1 a FAIL; 2 / 3 / 4 / 5 are `f124_run.sh`'s refusals (engine live, no GPU room or SCENE NOT
+REACHED, field pair changed, engine left over) and stop the leg.
+
+**What each leg proves, and what it cannot see.**
+- SOL / GAL: that the ISOLATED layer has the same pixels on both pins, and the same as
+  before. Metric `rel` = sum|A-B| / mean energy (0 identical, 2 disjoint; on the SOL scene a
+  0.01 deg turn reads 0.0038 and a 0.05 px shift 0.0014), beside `ratio` (intensity), `corr`
+  (placement), `px8`, `px32`. Gate = `K_FLOOR` (4) x the MEASURED same-pin floor of that
+  scene; a second, named tier at 2 % is printed beside it and never replaces it. **px32 alone
+  is blind here**: the milky way halved in intensity reads px32 = 0 and rel 0.68.
+  Cannot see: a layer whose switch also switches something else (the milky way's draw call
+  carries the zodiacal light: the scene switches it off); anything the dump does not say -
+  every capture records `control.drawnPath`, the Camera's reference, the old observer's
+  longitude, the jd, and the executor changes the engine printed.
+- TILT: a non-zero `re.obliquity` (0.5 rad) is written through gdb into the CURRENT SYSTEM
+  node (`Camera::instance->system`) and then into the GALAXY node (`...->system->parent`),
+  each restored to 0, each node's `englishName` read back. TURNED = rel > 0.02 against the
+  unpoked capture of the same launch; STILL = rel <= 4 x the in-launch floor (unpoked against
+  restored). `--expect system`: system TURNED, galaxy STILL. `--expect owner`: the reverse.
+  The old pin is the control (both STILL). `TILT_*_poke_moves_nothing_else` compares the
+  frames with the layer OFF (the bodies, which ride the flat chain). The scene keeps the
+  Camera's reference on a BODY: with the system node itself as reference the algebra inverts
+  (the sky stays, the bodies turn). Cannot see: a tilt given by DATA at creation (the three
+  `.re = {}` literals) rather than poked - same code path from `dispatchUpdate` on, but the
+  creation-time consumers of `re` are not exercised.
+
+**State at code `6c3d0ed6` (INTENT 11.267 has the numbers).** TILT `--expect system` PASS,
+`--expect owner` FAIL as predicted (system poked rel 1.523, galaxy poked 0). GAL ALL PASS,
+cross-pin BIT-identical. SOL: before / after green on both pins; the check
+**`cross_pin_old_vs_new_identical_at_the_floor` is RED as found and LEFT red** (rel 0.005283
+against 0.000084; max 2 grey levels, corr 0.99981): not predicted, routed in 11.267 - do not
+widen it. After a code change read SOL as: the two `*_vs_stored_*` checks green, and the
+cross-pin number unchanged or explained.
+
+**Pitfalls, each one paid for.** (1) ABOVE A SYSTEM THE OLD OBSERVER'S LONGITUDE CARRIES THE
+APP'S START CLOCK: `AnchorManager::selectAnchor` cancels a sidereal-time compensation taken at
+startup, when the jd is the actual clock; measured 15.04 arcsec per second of WALL clock
+between launches, jd frozen. The milky way at the galaxy level is drawn by that observer on
+both pins, so two launches of one pin differed by rel 0.10. The scene writes the longitude
+through gdb (`GAL_LON`) and asserts it in the dump; the floor is then exactly 0. (2) `moveto
+lon <x>` without an altitude re-sends the REPORTED altitude, which follows the drawn path
+(1e10 galaxy units on the old pin, 1.2e16 m on the new): it throws the Camera onto the Sun on
+one pin and the old observer into the universe level on the other. (3) There is no `milky_way
+intensity` command: the setter is `set milky_way_intensity <x>` (`s33_symptoms.py`'s
+`milky_way intensity 8` never applied). The able phase caught it: a perturbation that does
+not apply reads "STAYED GREEN - THE LEG IS BLIND". (4) gdb prints after its `(gdb) ` prompt:
+match a marker anywhere in the line. (5) A second `moveto altitude 1.2e16` at the galaxy
+level goes up AGAIN (the threshold there is 1e14): once for the galaxy, twice for the
+universe (`b5_drawhalf.py`). (6) `flag planets_orbits on` draws nothing usable as a witness
+(F111's warning holds): the witnesses are the bodies' points. (7) `f124_run.sh` clears its
+label directory: `f128_leg.sh` stamps every label with the clock, so nothing is overwritten.
+(8) The session's umask is 0022: `f128_leg.sh` sets 0002; a direct `f124_run.sh` call does not.
+
+**Made of.** `f124_run.sh` unchanged but for the output root (`F124_OUT_ROOT`, default
+`artifacts/f124`). `f128_legs.py`: `wait_port` / `send` / `shot` = `b3_ladder.py` (imported);
+`check` / `_clean` / `gdb_marker_count` / `gdb_inject` = `b21_keypath.py` and `reuse` /
+`gdb_errors` / `header_and_bodies` = `f124_legs.py`, by AST (both run a scene at import);
+the frame loader = `f56_starfield.load`. `f128_leg.sh` launches nothing itself.
+
+**Not reached.** A stellar system (data present: `~/.spacecrafter/stellar_systems.ini`,
+`stellar_systems/`; the scripting route that makes the selected anchor other than `Sun`
+before the galaxy-to-down switch, `inGalaxyModule.cpp:156`, was not established); the
+universe level and `tully` (the driver has `--leg UNI` and `--layer tully`: NOT RUN - measure
+the floor first); every other layer of `b47-sky-members.md` section 1: NONE RUN. `LAYERS`
+holds the twelve flags read in `base_command_interface.hpp` for them; a census of which
+remaining layer has a switch (VR360, images, the selection pointer, the person marker, the
+labels) was NOT made.
