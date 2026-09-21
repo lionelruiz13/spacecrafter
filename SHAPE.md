@@ -107,6 +107,9 @@ comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
 - WHEN A FUNCTION'S BODY CHANGES (yours or the owner's): enumerate its CALLERS - they are the affected
   space, and no compiler error names them; for each line of execution name the gate that reaches it or
   write "not reached" (11.258: a primitive that silently carried a composition broke three callers).
+  And for each FIELD whose write changes: every other function that reads or writes it (`writers.py` lists
+  them), for the contract they assume - read with context, never `-U0` (11.276: an index taken N at a time
+  broke a ring whose decoder protects exactly one slot).
 - A DEDUPLICATION COMMIT: one information per commit; `writers.py` (or the manager list) before and
   after in the message; net lines negative; the harness gate that covers it named, or "not reached".
 - ACCEPTING A DELIVERY: behaviour evidence AND shape - net code lines, deleted/added, comment form,
