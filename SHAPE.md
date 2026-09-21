@@ -186,7 +186,9 @@ Sessions COMMIT in their own name and NEVER PUSH.
   dispatched on B47 before he rules who owns the STARS and its order against B42. RULED (11.265(n)):
   a member is oriented regarding its OWNER (milky way = the galaxy's inside view, landscape = the
   body's landed view). `EnvironmentManager` hands an ancestor the SYSTEM's matrix: right only while
-  no system is oriented against its parent - add that capability and this breaks silently.
+  no system is tilted against its parent - and the capability EXISTS (`ModularSystem` inherits `re`,
+  `dispatchUpdate` applies it): three `.re = {}` literals in `ssystem_factory.cpp` keep it zero.
+  THE WORK MAP IS `claude/b47-sky-members.md` (11.266): 25 layers, three classes, nine questions his.
   STARS RULED (11.265(o)): the Solar system owns the 2D stars, the galaxy the 3D stars, the universe
   tully / what legacy inUniverse draws. The chain still needs a SUPERSESSION rule (nearest owner of
   a family draws; ancestors silent) - the old modes gave it for free. His to rule, with the rest.
