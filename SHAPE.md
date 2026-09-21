@@ -183,7 +183,10 @@ Sessions COMMIT in their own name and NEVER PUSH.
   by the reference-to-root chain with its OWNER's matrix; the executor modes dissolve into that
   nesting. Built: three wrapper members (milky way, atmosphere, landscape), called from the old mode
   module. NOT built: the STARS and the rest of the sky - and no row held them until B47. Nothing is
-  dispatched on B47 before he rules who owns each layer and its order against B42.
+  dispatched on B47 before he rules who owns the STARS and its order against B42. RULED (11.265(n)):
+  a member is oriented regarding its OWNER (milky way = the galaxy's inside view, landscape = the
+  body's landed view). `EnvironmentManager` hands an ancestor the SYSTEM's matrix: right only while
+  no system is oriented against its parent - add that capability and this breaks silently.
 
 ## 8. Terms a cold reader will meet
 - **Vixy = the owner = Calvin Ruiz** (git author); `[vixy: date]` tags his words in the ledger.
