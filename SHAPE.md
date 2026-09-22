@@ -62,8 +62,9 @@ carries is a unit, a precondition, a caller responsibility, an ownership or thre
 comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
 HIS FORM IS TWO STATISTICS WITH TWO DRIVERS (11.279(e), 11.280(e), three corpora): the SHARE of
 functions that get a comment follows who reads the header (39-41 % on the library other codebases
-consume, 21-25 % on what he alone consumes); the DENSITY follows the date (1 per 3.6 in 2021, 4.8-4.9
-in 2023, 9.0 in 2026) - a learning gradient in form, so the module row above is his CURRENT form. The
+consume, 21-25 % on what he alone consumes); the DENSITY peaks at the first library he shipped to
+others and falls since (1 per ~16 in 2018, his first program - 3.6 in 2021 - 4.8-4.9 in 2023 - 9.0 in
+2026; 11.281(f)) - a learning gradient in form after the peak, so the module row above is his CURRENT form. The
 library carries class-top blocks of 6+ lines wherever an invariant the declarations cannot carry must
 be stated (18 in 52 headers). A task touching `src/EntityCore` writes in the library's row. Every row
 is ONE-line, verb-first comments for the most part, median 43 characters in every corpus and year;
