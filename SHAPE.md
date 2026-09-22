@@ -120,7 +120,9 @@ the difference is how many members get one, never the form of each.
   And for each FIELD whose write changes: every other function that reads or writes it (`writers.py` lists
   them), for the contract they assume - read with context, never `-U0` (11.276: an index taken N at a time
   broke a ring whose decoder protects exactly one slot).
-- A DEDUPLICATION COMMIT: one information per commit; `writers.py` (or the manager list) before and
+- A DEDUPLICATION COMMIT: one STRUCTURAL change per commit [vixy 2026-09-22, 11.282(e): "one structural
+  change per commit seems to fit my practice better" - small fixes and additions may ride along, a second
+  structural change never does]; `writers.py` (or the manager list) before and
   after in the message; net lines negative; the harness gate that covers it named, or "not reached".
 - ACCEPTING A DELIVERY: behaviour evidence AND shape - net code lines, deleted/added, comment form,
   manager count. A delivery that only adds is a finding to explain, not a default.
