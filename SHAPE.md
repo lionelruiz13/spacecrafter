@@ -60,12 +60,14 @@ the code repo at `4dfe7bb3`; recreate: `git worktree add --detach --no-checkout 
 One line, verb first ("Return ...", "Update ...", "Draw ..."), on about one member in five; what it
 carries is a unit, a precondition, a caller responsibility, an ownership or thread rule. Module
 comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
-HIS FORM DEPENDS ON WHO READS THE HEADER (11.279(e), measured on EntityCore's whole history): the
-library other codebases consume carries twice the module's density and a class-top block of 6+ lines
-wherever an invariant the declarations cannot carry must be stated (18 such blocks in 52 headers); the
-module he alone consumes is the sparse row above. A task touching `src/EntityCore` writes in the
-library's row. Both rows are ONE-line, verb-first comments for the most part; the difference is how
-many members get one, never the form of each.
+HIS FORM IS TWO STATISTICS WITH TWO DRIVERS (11.279(e), 11.280(e), three corpora): the SHARE of
+functions that get a comment follows who reads the header (39-41 % on the library other codebases
+consume, 21-25 % on what he alone consumes); the DENSITY follows the date (1 per 3.6 in 2021, 4.8-4.9
+in 2023, 9.0 in 2026) - a learning gradient in form, so the module row above is his CURRENT form. The
+library carries class-top blocks of 6+ lines wherever an invariant the declarations cannot carry must
+be stated (18 in 52 headers). A task touching `src/EntityCore` writes in the library's row. Every row
+is ONE-line, verb-first comments for the most part, median 43 characters in every corpus and year;
+the difference is how many members get one, never the form of each.
 
 ## 5. Instruments (`harness/shape/`, run from the CODE repo root) - what each proves and what it cannot
 - `review.sh` - the owner's REVIEW QUEUE: `status` / `show` / `added` / `commits` / `done [commit]` /
