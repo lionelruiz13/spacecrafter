@@ -56,9 +56,16 @@ the code repo at `4dfe7bb3`; recreate: `git worktree add --detach --no-checkout 
 |---|---|---|---|---|
 | his, 22 files | 9.0 | 21 % | 107 / 2 / 4 | 43 / 86 |
 | code `57102bf4`, 68 files | 9.2 | 25 % | 369 / 10 / 2 | 47 / 77 |
+| his LIBRARY, `src/EntityCore` at `c9bef5a` (11.279(e)), 52 files | 4.8 | 39 % | 362 / 33 / 52 | 44 / 91 |
 One line, verb first ("Return ...", "Update ...", "Draw ..."), on about one member in five; what it
 carries is a unit, a precondition, a caller responsibility, an ownership or thread rule. Module
 comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
+HIS FORM DEPENDS ON WHO READS THE HEADER (11.279(e), measured on EntityCore's whole history): the
+library other codebases consume carries twice the module's density and a class-top block of 6+ lines
+wherever an invariant the declarations cannot carry must be stated (18 such blocks in 52 headers); the
+module he alone consumes is the sparse row above. A task touching `src/EntityCore` writes in the
+library's row. Both rows are ONE-line, verb-first comments for the most part; the difference is how
+many members get one, never the form of each.
 
 ## 5. Instruments (`harness/shape/`, run from the CODE repo root) - what each proves and what it cannot
 - `review.sh` - the owner's REVIEW QUEUE: `status` / `show` / `added` / `commits` / `done [commit]` /
