@@ -3,7 +3,7 @@
 Derived view, written 2026-09-19 (session 33, Claude Fable 5.1) on the owner's request that the
 understanding be reconstructible by any later session or dispatched agent; tested the same day by a
 cold reader given nothing else (`INTENT/11.257.md`), its gaps fixed here. The ledger wins on
-divergence: rules = `INTENT.md` section 2.1 **G12 (S1)-(S10)**; derivations and the owner's words
+divergence: rules = `INTENT.md` section 2.1 **G12 (S1)-(S11)**; derivations and the owner's words
 verbatim = `INTENT/11.249.md` ... `INTENT/11.255.md`; open work = section 13.B rows **B42-B46**.
 This file is the index and the operating manual; it states nothing those do not.
 
@@ -38,6 +38,9 @@ S7 manager count of each touched information, before and after · S8 one respons
 WIRING class of its own · S9 every duplication has a reason: recover it before touching it; an
 optimal-path + general-fallback pair (`draw` / `drawLoaded`) keeps both paths · S10 the ORIGIN of the need
 first, before S4: what it will end up covering, read from the shape of the space of use; the supervisor's step.
+S11 a check either fails LOUD or does not exist, and a failed check's information is routed to the RESPONSIBLE of
+it in the form decided at its anchor (owner-ruled necessary 2026-09-23, 11.289): a validate-and-continue, a swallowing
+catch, an unlogged default is a silent catch that breaks the propagation his acceptance relies on.
 
 ## 3. The owner, as far as it bears on the code (11.249(g), 11.250, 11.255; cross-project Q-86, Q-87)
 - He compares everything by EFFECT; words are a projection at his boundary. Resolve his words by

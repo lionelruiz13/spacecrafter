@@ -51,7 +51,7 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
 - `claude/harness/` — verification scripts (`b*_run.sh`, `SC_BIN` overridable,
   default `../../build-claude/src/spacecrafter`); `claude/harness/README.md` for use.
 - `claude/SHAPE.md` — READ IT BEFORE TOUCHING CODE: how the code must be shaped (INTENT §2.1
-  G12 (S1)–(S10), owner-ruled 2026-09-19 / 09-21), the owner's form measured, the shape instruments
+  G12 (S1)–(S11), owner-ruled 2026-09-19 / 09-21 / 09-23), the owner's form measured, the shape instruments
   (`claude/harness/shape/`), the procedures, the state and the order of the open work
   (§13 B42–B46). The owner's own module, as the form to write in, is checked out read-only at
   `/home/claude/spacecrafter.owner-shape` (code `4dfe7bb3`). Work map of the deduplication:
@@ -72,7 +72,10 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   its own — never "inform both". Every duplication has a reason: recover it before touching it.
   A comment is a what-for, ONE line, verb first, only where the name does not carry it; no
   history, provenance, measurements or ledger references in code — git is code's archive, the
-  ledger holds derivations. Accept a delivery on behaviour AND shape (net code lines,
+  ledger holds derivations. A check either fails LOUD or does not exist — a validate-and-continue, a
+  swallowing catch, an unlogged default is a silent catch that breaks the propagation his acceptance
+  relies on — and a failed check's information goes to the RESPONSIBLE of it, in the form decided at
+  its anchor (S11, owner-ruled 2026-09-23, §11.289). Accept a delivery on behaviour AND shape (net code lines,
   deleted/added, manager count); one that only adds is a finding to explain. Executors:
   Fable only (agent type `claude`, model `fable`).
 - Old render path = comparison baseline, unchanged by construction **= everything in the old
