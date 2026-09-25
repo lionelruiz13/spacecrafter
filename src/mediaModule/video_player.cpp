@@ -481,7 +481,7 @@ bool VideoPlayer::getNextFrame()
 			return true;
 		}
 	}
-	decoding = false;
+	decoding.store(false, std::memory_order_relaxed);
 	return false;
 }
 
@@ -749,7 +749,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		if (CoreLink::instance->predictibleRendering()) {
 			currentTime += renderDeltaFrame;
 			latency += renderDeltaFrame;
-			while (decoding && frameUsed.load(std::memory_order_relaxed) == frameCached.load(std::memory_order_relaxed))
+			while (decoding.load(std::memory_order_relaxed) && frameUsed.load(std::memory_order_relaxed) == frameCached.load(std::memory_order_relaxed))
 				std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		} else {
 			auto now = std::chrono::steady_clock::now();
@@ -790,7 +790,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				}
 				updateSubtitles();
 			} else if (m_isVideoPlayed) {
-				if (decoding) {
+				if (decoding.load(std::memory_order_relaxed)) {
 					pauseCurrentVideo();
 					waitCacheFull = true;
 				} else {
@@ -896,9 +896,9 @@ void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
 void VideoPlayer::mainloop()
 {
 	std::unique_lock<std::mutex> ulock(mtx);
-	while (decoding) {
+	while (decoding.load(std::memory_order_relaxed)) {
 		getNextVideoFrame();
-		while (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= (MAX_CACHED_FRAMES-1) && decoding)
+		while (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= (MAX_CACHED_FRAMES-1))
 			cv.wait(ulock);
 	}
 }
@@ -906,8 +906,11 @@ void VideoPlayer::mainloop()
 void VideoPlayer::threadTerminate()
 {
 	if (thread.joinable()) {
-		decoding = false;
+		mtx.lock();
+		decoding.store(false, std::memory_order_relaxed);
+		frameCached.store(frameUsed.load(std::memory_order_relaxed), std::memory_order_relaxed);
 		cv.notify_all();
+		mtx.unlock();
 		thread.join();
 	}
 	frameCached.store(0, std::memory_order_relaxed);
@@ -916,11 +919,13 @@ void VideoPlayer::threadTerminate()
 
 void VideoPlayer::threadInterrupt()
 {
-	if (decoding) {
-		frameCached += MAX_CACHED_FRAMES;
+	if (thread.joinable()) {
+		frameCached.fetch_add(MAX_CACHED_FRAMES, std::memory_order_relaxed);
 		mtx.lock();
-	} else if (thread.joinable()) {
-		thread.join();
+		if (!decoding.load(std::memory_order_relaxed)) {
+			mtx.unlock();
+			thread.join();
+		}
 	}
 	frameCached.store(0, std::memory_order_relaxed);
 	frameUsed.store(0, std::memory_order_relaxed);
@@ -933,11 +938,11 @@ void VideoPlayer::threadPlay()
 	latency = -deltaFrame;
 	drawNextFrame = true;
 	this->getNextVideoFrame(); // The first valid frame must be ready
-	if (decoding) {
-		mtx.unlock();
+	if (decoding.load(std::memory_order_relaxed)) {
 		cv.notify_all();
+		mtx.unlock();
 	} else {
-		decoding = true;
+		decoding.store(true, std::memory_order_relaxed);
 		thread = std::thread(&VideoPlayer::mainloop, this);
 	}
 }
