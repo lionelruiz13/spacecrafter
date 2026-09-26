@@ -8,6 +8,7 @@
 
 #include "tools/context.hpp"
 #include "EntityCore/Core/FrameMgr.hpp"
+#include "EntityCore/Core/BufferMgr.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
 #include "EntityCore/Resource/Pipeline.hpp"
 #include "EntityCore/Resource/PipelineLayout.hpp"
@@ -42,20 +43,15 @@ BlackHoleLensing::BlackHoleLensing(const std::vector<std::unique_ptr<Texture>> &
     layout = std::make_unique<PipelineLayout>(vkmgr);
     layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
     layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-    layout->setImageLocation(2, VK_SHADER_STAGE_FRAGMENT_BIT, VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT);
     layout->buildLayout();
     layout->build();
 
     uniform = std::make_unique<SharedBuffer<LensUniform>>(*context.uniformMgr);
     sets.reserve(sceneTextures.size());
-    inputAttachmentInfo.reserve(sceneTextures.size());
     for (const auto &texture : sceneTextures) {
         auto set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, false);
         set->bindTexture(*texture, 0);
         set->bindUniform(uniform, 1);
-        inputAttachmentInfo.push_back({VK_NULL_HANDLE, texture->getView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL});
-        set->getWrites().emplace_back(VkWriteDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, nullptr, VK_NULL_HANDLE, 2, 0, 1,
-            VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, &inputAttachmentInfo.back(), nullptr, nullptr});
         sets.push_back(std::move(set));
     }
 
@@ -95,13 +91,23 @@ void BlackHoleLensing::ensureDiskResources(bool trajectoriesNeeded)
     Context &context = *Context::instance;
     if (trajectoriesNeeded && !trajectoryLut) {
         auto trajectories = blackhole::makeTrajectoryLut();
+        // Texture rounds allocations to 8 bytes internally.  A dedicated
+        // manager makes this LUT's first (and only) suballocation start at 0,
+        // satisfying the 16-byte texel-block alignment of RGBA32F.
+        trajectoryStagingMgr = std::make_unique<BufferMgr>(
+            vkmgr,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            0,
+            trajectories.size() * sizeof(float),
+            "Schwarzschild trajectory staging");
         TextureInfo trajectoryInfo;
         trajectoryInfo.width = blackhole::lutWidth;
         trajectoryInfo.height = blackhole::lutHeight;
         trajectoryInfo.nbChannels = blackhole::lutChannels;
         trajectoryInfo.channelSize = sizeof(float);
         trajectoryInfo.content = trajectories.data();
-        trajectoryInfo.mgr = context.stagingMgr.get();
+        trajectoryInfo.mgr = trajectoryStagingMgr.get();
         trajectoryInfo.format = VK_FORMAT_R32G32B32A32_SFLOAT;
         trajectoryLut = std::make_unique<Texture>(vkmgr, trajectoryInfo);
         trajectoryLut->rename("Schwarzschild trajectory LUT");

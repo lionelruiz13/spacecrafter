@@ -6,7 +6,6 @@ layout(binding=1) uniform LensData {
     vec4 CenterRadiusStrength;
     vec4 ViewportActive;
 };
-layout(input_attachment_index=0, binding=2) uniform subpassInput ScenePixel;
 
 layout(location=0) out vec4 FragColor;
 layout(constant_id=0) const bool LensingEnabled = true;
@@ -19,11 +18,11 @@ vec2 sceneUv(vec2 pixel, vec2 viewport)
 void main()
 {
     if (!LensingEnabled) {
-        FragColor = subpassLoad(ScenePixel);
+        FragColor = texture(Scene, sceneUv(gl_FragCoord.xy, ViewportActive.xy));
         return;
     }
     vec2 viewport = ViewportActive.xy;
-    vec4 unmodified = subpassLoad(ScenePixel);
+    vec4 unmodified = texture(Scene, sceneUv(gl_FragCoord.xy, viewport));
     bool lensEnabled = ViewportActive.z > 0.5;
     bool distortionEnabled = ViewportActive.w > 0.5;
     if (!lensEnabled) {

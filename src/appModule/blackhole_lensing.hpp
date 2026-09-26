@@ -17,6 +17,7 @@
 
 class Pipeline;
 class PipelineLayout;
+class BufferMgr;
 class Set;
 class Texture;
 class VertexArray;
@@ -76,6 +77,9 @@ private:
     std::unique_ptr<PipelineLayout> layout;
     std::unique_ptr<Pipeline> pipeline;
     std::unique_ptr<Pipeline> copyPipeline;
+    // Texture uploads are suballocated in BufferMgr.  RGBA32F copies require
+    // a 16-byte-aligned offset, so the LUT owns its dedicated staging buffer.
+    std::unique_ptr<BufferMgr> trajectoryStagingMgr;
     std::unique_ptr<Texture> trajectoryLut;
     std::unique_ptr<PipelineLayout> lutLayout;
     std::unique_ptr<Pipeline> lutPipeline;
@@ -83,7 +87,6 @@ private:
     std::vector<std::vector<std::unique_ptr<Set>>> lutSets;
     std::unique_ptr<SharedBuffer<LensUniform>> uniform;
     std::vector<std::unique_ptr<Set>> sets;
-    std::vector<VkDescriptorImageInfo> inputAttachmentInfo;
     std::array<int, 3> commands{};
     std::array<int, 3> diskCommands{};
 };
