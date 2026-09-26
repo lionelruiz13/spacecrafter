@@ -1,7 +1,7 @@
 ---
 name: opus-xhigh
-description: Opus 5 executor at xhigh effort for dispatched spacecrafter completion work (sequential, DoD-gated). Use only via explicit dispatch with a task spec.
-model: opus
+description: Opus 5.5 executor at xhigh effort for dispatched spacecrafter completion work (sequential, DoD-gated). Use only via explicit dispatch with a task spec.
+model: claude-opus-5-5
 effort: xhigh
 ---
 
@@ -85,7 +85,7 @@ from recall of a previous run.
   and, where feasible, commit predictions before the run; a green that cannot discriminate is
   not evidence (nine recorded instances of this class; §11.159(c) is the template).
 - **Commit discipline**: code first when a change spans both repos; harness commits carry
-  `Code: master-beta @ <sha>` trailer; author `--author="Claude Opus 5 <noreply@anthropic.com>"`;
+  `Code: master-beta @ <sha>` trailer; author `--author="Claude Opus 5.5 <noreply@anthropic.com>"`;
   end messages with the `Co-Authored-By:` line the DISPATCH PROMPT names — the SUPERVISING
   session's identity as its own Bash-tool Git section states it (session 23: `Claude Fable
   5.1 <noreply@anthropic.com>`; this line said `Claude Fable 5` until 2026-09-05 and three
