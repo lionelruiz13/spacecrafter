@@ -937,8 +937,9 @@ void VideoPlayer::threadPlay()
 	nextFrame = currentTime + deltaFrame;
 	latency = -deltaFrame;
 	drawNextFrame = true;
+	const bool _decoding = decoding.load(std::memory_order_relaxed);
 	this->getNextVideoFrame(); // The first valid frame must be ready
-	if (decoding.load(std::memory_order_relaxed)) {
+	if (_decoding) {
 		cv.notify_all();
 		mtx.unlock();
 	} else {
