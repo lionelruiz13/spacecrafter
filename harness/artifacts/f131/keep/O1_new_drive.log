@@ -1,0 +1,15 @@
+1790454519.968 >> flag experimental_path on
+1790454522.218 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O1_new/pin_check.json
+-- dump pin_check    drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461310.353260 frames=642
+PASS drawn_path_is_the_pinned_one  control.drawnPath = new
+1790454525.474 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O1_new/pre.json
+-- dump pre          drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461310.353298 frames=837
+1790454528.732 >> script action play filename /home/claude/.spacecrafter/scripts/internal/initial_night.sts
+PASS capture_end_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/O1_new/end.png
+1790454546.267 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O1_new/end.json
+-- dump end          drawn=new ref=Earth free=False bound=False old_home=Earth jd=2461310.280285 frames=2078
+PASS capture_late_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/O1_new/late.png
+1790454572.302 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O1_new/late.json
+-- dump late         drawn=new ref=Earth free=False bound=False old_home=Earth jd=2461310.280586 frames=3640
+
+=== obs 1 pin on: SCENE REACHED ===

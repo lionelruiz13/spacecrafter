@@ -1,0 +1,13 @@
+CameraAnchors @ HEAD: 11 fields, 28 member functions (overloads merged by name)
+-- managers per field: functions that write it DIRECTLY --
+   2  moving                 installTravel update
+   1  currentName            switchTo
+   1  travelArrival          installTravel
+   1  travelDirection        installTravel
+   1  travelDistance         installTravel
+   1  travelEndTime          installTravel
+   1  travelSeq              installTravel
+   1  travelStart            installTravel
+   1  travelStartTime        installTravel
+-- same direct writer set (>= 2 functions) --
+-- forwarders: one statement, its effect is entirely another member's --

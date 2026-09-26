@@ -1,0 +1,12 @@
+src/experimentalModule/SessionFile.cpp:441:            if (!ref->empty() && !host.warpToBody(*ref))
+src/experimentalModule/CameraAnchors.cpp:328:            camera.relocateToBody(body);
+src/experimentalModule/CameraAnchors.cpp:347:    camera.relocateToBody(anchor->body);
+src/experimentalModule/CameraAnchors.cpp:349:        camera.setBoundToSurface(false);
+src/experimentalModule/CameraAnchors.cpp:352:        camera.setBoundToSurface(anchor->followRotation);
+src/experimentalModule/CameraAnchors.cpp:370:        camera.setBoundToSurface(value);
+src/bodyModule/ssystem_factory.cpp:132:        camera->setBoundToSurface(true);
+src/bodyModule/ssystem_factory.cpp:134:        camera->warpToBody(home);
+src/bodyModule/ssystem_factory.cpp:260:        camera->switchToBody(ModularBody::findBodyOnce("SolarSystem"));
+src/bodyModule/ssystem_factory.cpp:267:        camera->switchToBody(ModularBody::findBodyOnce(mode + "System"));
+src/bodyModule/ssystem_factory.cpp:766:        camera->rebindReference(body);
+src/bodyModule/ssystem_factory.cpp:864:            camera->relocateToBody(body);

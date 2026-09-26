@@ -1,0 +1,21 @@
+=== F124 run 'O4_ref_old' ===
+wall clock start : 2026-09-26 22:56:23 CEST
+driver           : f131_obs.py --obs 4 --pin off --refuse
+driver md5       : 2b7fe4121e68e9a940047a6a90c7d41a
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : fb30c61c0082a7ceca3bb458f19925ab
+binary mtime     : 2026-09-26 19:18:35.056168252 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[O4_ref_old] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[O4_ref_old] gpu: free 29246 MiB / used 2861 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=500817
+launch wall clock: 2026-09-26 22:56:23 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 500834 
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[O4_ref_old-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-26 22:58:42 CEST

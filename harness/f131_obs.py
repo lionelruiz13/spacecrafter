@@ -9,7 +9,7 @@
 # lat / lon keys as the command their handler runs. Writes shots, dumps (the last one carries the
 # per-frame seam ring armed by SC_SEAM_RECORD) and the launch's logs; judges only that each scene was
 # reached. The criteria of INTENT 11.292 P5 are judged offline on these records.
-import argparse, ast, json, os, shutil, subprocess, sys, time
+import argparse, ast, json, os, shutil, signal, subprocess, sys, time
 from pathlib import Path
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -20,6 +20,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("out"); ap.add_argument("gdbpid", type=int); ap.add_argument("fifo")
 ap.add_argument("--obs", required=True, type=int, choices=[1, 2, 3, 4, 5])
 ap.add_argument("--pin", required=True, choices=["on", "off"])
+ap.add_argument("--refuse", action="store_true", help="send the script's lines, line 38 inside the travel (the lost race)")
 ARGS = ap.parse_args()
 OUT, GDBPID, FIFO = ARGS.out, ARGS.gdbpid, ARGS.fifo
 OUTP = Path(OUT)
@@ -124,7 +125,29 @@ def fly_prefix():
     if hdr["camera"]["selected"] != "Saturn":
         raise SceneNotReached("Saturn not selected")
     milky_way_layer("pre_mw")
-    play(FLY_TO_SELECTED, 22)
+    if ARGS.refuse:
+        fly_refused()
+    else:
+        play(FLY_TO_SELECTED, 22)
+
+
+def fly_refused():
+    """Send fly_to_selected.sts lines 13-38 as commands with its waits, line 38 at 2.9 s: inside the 3 s travel."""
+    send("body action preload name selected", 0.3)
+    send("timerate rate 1", 0.3)
+    send("flag track_object on", 1.0)
+    send("moveto altitude 20000000 duration 3", 3.0)
+    print("%.3f >> lines 21 + 37 in one packet" % time.time(), flush=True)
+    S.sendall(b"camera action transition_to target point name Space\n"
+              b"camera action move_to target body body_name selected duration 3 altitude 200000\n")
+    time.sleep(2.9)
+    print("%.3f >> line 38 at +2.9 s" % time.time(), flush=True)
+    S.sendall(b"camera action transition_to target body name selected\n")
+    time.sleep(17)
+    hdr, _ = dump("refused_check")
+    check("new_registry_refused_line_38", hdr["camera"]["reference"] == "temp_point", "Camera reference = %s" % hdr["camera"]["reference"])
+    if hdr["camera"]["reference"] != "temp_point":
+        raise SceneNotReached("the refused state")
 
 
 def obs2():

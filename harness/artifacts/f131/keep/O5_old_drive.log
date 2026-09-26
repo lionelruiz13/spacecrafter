@@ -1,0 +1,38 @@
+1790456546.782 >> flag experimental_path off
+1790456549.033 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/pin_check.json
+-- dump pin_check    drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461310.376713 frames=661
+PASS drawn_path_is_the_pinned_one  control.drawnPath = old
+1790456552.289 >> date jday 2461233.5
+1790456553.539 >> timerate rate 0
+1790456554.789 >> deselect
+1790456558.040 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/pre.json
+-- dump pre          drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1201
+1790456561.298 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/aim_0.json
+-- dump aim_0        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1397
+1790456563.056 >> zoom fov 90.000000000 duration 0.2
+1790456565.377 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/aim_1.json
+-- dump aim_1        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1642
+1790456567.137 >> zoom fov 135.000000000 duration 0.2
+1790456569.458 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/aim_2.json
+-- dump aim_2        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1886
+1790456571.219 >> zoom fov 67.500000000 duration 0.2
+1790456571.540 >> zoom fov 33.750000000 duration 0.2
+1790456571.860 >> zoom fov 16.875000000 duration 0.2
+1790456574.181 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/aim_5.json
+-- dump aim_5        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=2170
+1790456575.942 >> zoom fov 25.312500000 duration 0.2
+1790456576.262 >> zoom fov 37.968750000 duration 0.2
+1790456576.583 >> zoom fov 56.953125000 duration 0.2
+1790456578.904 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/wheel_done.json
+-- dump wheel_done   drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=2453
+1790456582.166 >> zoom fov 180 duration 0
+PASS capture_cap_rest180_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/cap_rest180.png
+1790456588.198 >> zoom fov 60 duration 3
+PASS capture_cap_mid_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/cap_mid.png
+1790456592.416 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/cap_mid.json
+-- dump cap_mid      drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=3264
+PASS capture_cap_rest60_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/cap_rest60.png
+1790456600.453 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/O5_old/final.json
+-- dump final        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=3746
+
+=== obs 5 pin off: SCENE REACHED ===

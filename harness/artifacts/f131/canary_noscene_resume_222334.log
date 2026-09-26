@@ -1,0 +1,50 @@
+=== F56 ENVIRONMENT CANARY  2026-09-26 22:23:34 CEST  out=/home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260926-222334
+    banked stack: DISPLAY :2 2444x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+
+--- (a) display stack ---
+  host.boot = 2026-09-26 09:37:21
+  host.now_epoch = 1790454214
+  display.target = :2
+  display.expected = :2
+  xauthority.inherited = /run/user/1003/.mutter-Xwaylandauth.PPUKW3
+  xauthority = /run/user/1003/.mutter-Xwaylandauth.PPUKW3
+  display.dimensions = 2444x1332
+  display.screens = 1
+  xdg_runtime_dir = /run/user/1003
+  x11.sockets = X0 X1 X2 X3 
+
+--- (a2) compositor identity ---
+  compositor.cmd_banked = /usr/bin/gnome-shell
+  compositor.owner_uid = 1003
+  compositor.match_cmdline_only = 2
+  compositor.match_owned = 1
+  compositor.pid = 24102
+  compositor.start_epoch = 1790408677
+  compositor.start_iso = 2026-09-26 09:44:37
+  compositor.start_banked = 1790408677
+  xserver.pid = 24607
+  xserver.start_epoch = 1790408678
+  xserver.start_banked = 1790408678
+
+--- (b) GPU ---
+  gpu.query = NVIDIA GeForce RTX 5090, 580.178.04, 3419 MiB, 32607 MiB, 9 %
+  gpu.used_mib = 3419
+  gpu.free_mib = 28688
+  gpu.need_mib = 6144
+
+--- (c) RDP connection state / (d) dispatch method ---
+  rdp.estab_3389 = 2
+  rdp.note = count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+  logind.claude_sessions = 5 6 
+  dispatch.has_logind_session = yes
+  dispatch.wayland_display = wayland-0
+  dispatch.dbus = unix:path=/run/user/1003/bus
+  dispatch.inherited_display = :2
+fingerprint: 32 members -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260926-222334/fingerprint.json
+
+--- cache manifest (standalone) ---
+manifest: 40 files, 687728856 B, aggregate md5 1853bc2aa981b7aa760858c4bc045841  -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260926-222334/cache_manifest.json
+fingerprint: 32 members -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260926-222334/fingerprint.json
+
+=== CANARY VERDICT: exit 0  (0 fail, 0 note; scene arm NOT run)
+    fingerprint green -- but the photometric member is the one 2026-08-29 needed: run without --no-scene before trusting a measurement.
