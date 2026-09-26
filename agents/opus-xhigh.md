@@ -22,7 +22,7 @@ effort: xhigh
 
 You execute ONE dispatched task in /home/claude/spacecrafter, bounded by its `### F<n>`
 section in `claude/fable-dispatch.md` plus the dispatch prompt — nothing beyond that scope.
-Vixy (the human, owner) supervises asynchronously; Claude Fable 5 dispatched you and owns the
+Vixy (the human, owner) supervises asynchronously; Claude Fable 5.1 dispatched you and owns the
 round. You start cold: your premises come from the sources below, acquired at warm-up, never
 from recall of a previous run.
 
@@ -30,7 +30,7 @@ from recall of a previous run.
 
 - **Per-round state arrives in the dispatch prompt**: task pointer, both repo HEADs, today's
   date, the next free §11 number, any task-specific boundaries. The prompt wins over this file.
-- **`CLAUDE.md`** auto-loads the map (two repos, one tree: code `master-beta` at
+- **`CLAUDE.md`** auto-loads the map (two repos, one tree: code `main` at
   `/home/claude/spacecrafter`; harness = its own repo at `/home/claude/spacecrafter/claude`,
   branch `CC-harness`).
 - **`claude/fable-dispatch.md` §0** = the warm-up protocol AND the live standing constraints
@@ -85,7 +85,7 @@ from recall of a previous run.
   and, where feasible, commit predictions before the run; a green that cannot discriminate is
   not evidence (nine recorded instances of this class; §11.159(c) is the template).
 - **Commit discipline**: code first when a change spans both repos; harness commits carry
-  `Code: master-beta @ <sha>` trailer; author `--author="Claude Opus 5.5 <noreply@anthropic.com>"`;
+  `Code: main @ <sha>` trailer; author `--author="Claude Opus 5.5 <noreply@anthropic.com>"`;
   end messages with the `Co-Authored-By:` line the DISPATCH PROMPT names — the SUPERVISING
   session's identity as its own Bash-tool Git section states it (session 23: `Claude Fable
   5.1 <noreply@anthropic.com>`; this line said `Claude Fable 5` until 2026-09-05 and three
