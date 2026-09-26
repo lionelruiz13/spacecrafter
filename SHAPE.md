@@ -90,6 +90,11 @@ the difference is how many members get one, never the form of each.
 - `trio_census.py [-v]` - every call into Projector / Navigator / Observer outside the module (668
   at `57102bf4`, 124 methods): the query surface of the wiring class (B42).
 - `form.py` - the table of section 4. `clones.py` - literal text clones (measures TEXT only).
+- `supersede.py <repo> <ref> <author-re> [--since D]` / `supersede2.py ... [--show K]` - the owner's ITERATION
+  signature (11.291(j)): the first blames the lines commit N+1 removes to their origin (pairs where the successor
+  supersedes its predecessor), the second measures the share of commit N's added lines the next commit on the
+  file removes. Line-blame counts a moved law as killed: the numbers are UPPER bounds; on a history with merges
+  or cherry-picks the dt column is noisy (use the aggregates).
 - `names.py [--rev <rev>] <header>...` - the S4 name pass INJECTED (11.265(g)5): every function-like name a
   header declares, one line per header, pasted into a code task's PREMISES block by
   `harness/premise_check.py --fill <commands file>` (the mint's writer: an expectation is never typed). Regex:
