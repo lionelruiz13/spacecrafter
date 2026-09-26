@@ -197,7 +197,8 @@ private:
 		return formatTime(std::chrono::duration_cast<std::chrono::seconds>(duration));
 	}
 	// returns the new video frame and converts it in the CG memory.
-	void getNextVideoFrame();
+	// Returns true only when a decoded frame was added to the cache.
+	bool getNextVideoFrame();
 	// retrieves the new video frame before conversion
 	bool getNextFrame();
 	// initialization of the class
@@ -278,6 +279,7 @@ private:
 	bool waitCacheFull = false;
 	bool reloop = false;
 	bool drawNextFrame = false; // Draw the next frame, unconditionnally
+	bool decoderDraining = false; // Input reached EOF; retrieve delayed decoder frames.
 	bool hasAlphaChannel = false; // Indicates if the video has an alpha channel (YUVA format / YUV + Alpha_mode)
 	void mainloop();
 	// Stop video thread and drop every pending frames

@@ -82,6 +82,7 @@ VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media), maxText
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
+	decoderDraining = false;
 	hasAlphaChannel = false;
 	targetFormat = AV_PIX_FMT_YUV420P;
 	skipFrame = conf.getBoolean(SCS_IO, SCK_VIDEO_FRAME_SKIP);
@@ -206,6 +207,7 @@ bool VideoPlayer::init()
 	m_isVideoPlayed = false;
 	m_isVideoInPause= false;
 	m_isVideoSeeking = false;
+	decoderDraining = false;
 	#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
 	av_register_all();
 	#endif
@@ -224,6 +226,10 @@ bool VideoPlayer::restartCurrentVideo()
 		return false;
 	threadInterrupt();
 	auto result = av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD);
+	if (result >= 0) {
+		avcodec_flush_buffers(pCodecCtx);
+		decoderDraining = false;
+	}
 	if (audio && playbackSpeedFactor == FixedPointI16_2::one()) // Only rewind audio if normal speed
 		audio->musicRewind();
 	threadPlay();
@@ -481,14 +487,28 @@ bool VideoPlayer::getNextFrame()
 			return true;
 		}
 	}
+
+	// H.264 can retain frames internally, especially when frame threading is
+	// enabled.  Drain those frames once demuxing reaches EOF instead of
+	// treating the video as empty.
+	if (!decoderDraining) {
+		if (avcodec_send_packet(pCodecCtx, nullptr) < 0)
+			return false;
+		decoderDraining = true;
+	}
+	if (avcodec_receive_frame(pCodecCtx, pFrameIn) >= 0)
+		return true;
 	decoding.store(false, std::memory_order_relaxed);
 	return false;
 }
 
 
-void VideoPlayer::getNextVideoFrame()
+bool VideoPlayer::getNextVideoFrame()
 {
-	if (getNextFrame()) {
+	if (!getNextFrame())
+		return false;
+
+	{
 		// Number of textures to copy (3 for YUV, 4 for YUVA)
 		int numTextures = hasAlphaChannel ? 4 : 3;
 
@@ -519,6 +539,7 @@ void VideoPlayer::getNextVideoFrame()
 		frameCached.fetch_add(1, std::memory_order_release);
 		sWrite += std::chrono::steady_clock::now() - sTime;
 	}
+	return true;
 }
 
 
@@ -701,6 +722,7 @@ bool VideoPlayer::seekVideo(int64_t framesToSkip)
 			return false;
 		}
 		avcodec_flush_buffers(pCodecCtx);
+		decoderDraining = false;
 		if (!m_isVideoInPause) {
 			pauseCurrentVideo();
 			waitCacheFull = true;
@@ -936,9 +958,11 @@ void VideoPlayer::threadPlay()
 	currentTime = std::chrono::steady_clock::now();
 	nextFrame = currentTime + deltaFrame;
 	latency = -deltaFrame;
-	drawNextFrame = true;
 	const bool _decoding = decoding.load(std::memory_order_relaxed);
-	this->getNextVideoFrame(); // The first valid frame must be ready
+	// A decoder may need several packets before it can output a frame.  Do not
+	// request an unconditional GPU copy in that case: the corresponding cache
+	// slot has not been initialized yet (notably just after a seek).
+	drawNextFrame = this->getNextVideoFrame();
 	if (_decoding) {
 		cv.notify_all();
 		mtx.unlock();
