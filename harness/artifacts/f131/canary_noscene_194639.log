@@ -1,0 +1,57 @@
+=== F56 ENVIRONMENT CANARY  2026-09-26 19:46:39 CEST  out=/home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260926-194639
+    banked stack: DISPLAY :2 2444x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+
+--- (a) display stack ---
+  host.boot = 2026-09-26 09:37:21
+  host.now_epoch = 1790444799
+  display.target = :2
+  display.expected = :2
+  xauthority.inherited = /run/user/1003/.mutter-Xwaylandauth.PPUKW3
+  xauthority = /run/user/1003/.mutter-Xwaylandauth.PPUKW3
+  display.dimensions = 2444x1332
+  display.screens = 1
+  xdg_runtime_dir = /run/user/1003
+  x11.sockets = X0 X1 X2 X3 
+
+--- (a2) compositor identity ---
+  compositor.cmd_banked = /usr/bin/gnome-shell
+  compositor.owner_uid = 1003
+  compositor.match_cmdline_only = 2
+  compositor.match_owned = 1
+  compositor.pid = 24102
+  compositor.start_epoch = 1790408677
+  compositor.start_iso = 2026-09-26 09:44:37
+  compositor.start_banked = 1789758303
+
+CANARY FAIL [compositor.restarted]
+  WHAT        : the compositor is alive but was started at 1790408677 (2026-09-26 09:44:37), banked 1789758303 (2026-09-18 21:05:03).
+  CONSEQUENCES: a restarted compositor is a NEW stack: §0.5 standing rule is that a stack change (compositor, streamer, headless X, screen power state) means report + re-baseline, and §11.174(j)'s surviving model for the dim era is a LATCHED rendering state whose trigger candidates are exactly events like this one.
+  PREVENTION  : report the restart with its timestamp, then re-bank: re-measure f51_run.sh (six runs is what the ledger's own spread argument used) and edit BANK_COMPOSITOR_START plus, if the numbers moved, the band.
+  xserver.pid = 24607
+  xserver.start_epoch = 1790408678
+  xserver.start_banked = 1789758304
+
+CANARY NOTE [xserver.restarted]
+  the X server serving :2 was started at 1790408678 (2026-09-26 09:44:38), banked 1789758304 -- a restarted server under an unchanged compositor. Recorded, not gated (the compositor member above is the gating one); if this appears without a compositor change, it is a new fact and belongs in the delivery.
+
+--- (b) GPU ---
+  gpu.query = NVIDIA GeForce RTX 5090, 580.178.04, 3823 MiB, 32607 MiB, 10 %
+  gpu.used_mib = 3823
+  gpu.free_mib = 28284
+  gpu.need_mib = 6144
+
+--- (c) RDP connection state / (d) dispatch method ---
+  rdp.estab_3389 = 2
+  rdp.note = count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+  logind.claude_sessions = 5 6 
+  dispatch.has_logind_session = yes
+  dispatch.wayland_display = wayland-0
+  dispatch.dbus = unix:path=/run/user/1003/bus
+  dispatch.inherited_display = :2
+fingerprint: 32 members -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260926-194639/fingerprint.json
+
+--- cache manifest (standalone) ---
+manifest: 41 files, 687714083 B, aggregate md5 4d2f52365c58fa9a6d826f7378ca2cab  -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260926-194639/cache_manifest.json
+fingerprint: 32 members -> /home/claude/spacecrafter/claude/harness/artifacts/f56/canary/20260926-194639/fingerprint.json
+
+=== CANARY VERDICT: exit 2  (1 fail, 1 note; scene arm NOT run)

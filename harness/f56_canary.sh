@@ -150,10 +150,22 @@ BANK_COMPOSITOR_CMD="/usr/bin/gnome-shell"
 #   ~~BANK_COMPOSITOR_START=1789296984~~   # kernel start of pid 18192 = 2026-09-13 12:56:24
 #   ~~BANK_XSERVER_START=1789296984~~      # kernel start of pid 18364 = 2026-09-13 12:56:24
 #   ~~BANK_HOST_BOOT="2026-09-13 09:40:06"~~
-BANK_COMPOSITOR_START=1789758303          # kernel start of pid 30679 = 2026-09-18 21:05:03
+# RETIRED 2026-09-26 (the 2026-09-18 20:59:16 boot ended 2026-09-26 09:37:21; per-boot by design -- the
+#   owner re-provisioned the real logind session on :2 at 09:44:37; sessions 5/6 again, cookie .PPUKW3;
+#   canary 20260926-194639 red on compositor.restarted ALONE, NOTE xserver.restarted, found by the F131
+#   executor at its launch gate and STOPPED on. MEASURED, not copied [fingerprint diff 20260918-222308 vs
+#   20260926-194639, supervisor]: besides the per-boot members, what moved is the run arm (no scene /
+#   cache / concurrency members under --no-scene), the GPU occupancy (1874 -> 3823 MiB used, driver
+#   580.178.04 UNCHANGED, 28284 MiB free) and the cookie NAME (.RQNGV3 -> .PPUKW3, per session, matched
+#   by the glob); display 2444x1332, runtime dir, compositor command, wayland-0 and the session ids are
+#   EQUAL; supervisor, session 39, Saturday):
+#   ~~BANK_COMPOSITOR_START=1789758303~~   # kernel start of pid 30679 = 2026-09-18 21:05:03
+#   ~~BANK_XSERVER_START=1789758304~~      # kernel start of pid 31200 = 2026-09-18 21:05:04
+#   ~~BANK_HOST_BOOT="2026-09-18 20:59:16"~~
+BANK_COMPOSITOR_START=1790408677          # kernel start of pid 24102 = 2026-09-26 09:44:37
 BANK_XSERVER_MATCH="Xwayland :2"
-BANK_XSERVER_START=1789758304             # kernel start of pid 31200 = 2026-09-18 21:05:04
-BANK_HOST_BOOT="2026-09-18 20:59:16"
+BANK_XSERVER_START=1790408678             # kernel start of pid 24607 = 2026-09-26 09:44:38
+BANK_HOST_BOOT="2026-09-26 09:37:21"
 #
 # PHOTOMETRIC BAND -- the reference scene is `f51_run.sh`'s (§11.174(e) names it): the
 # Moon `base` scene at fov 10, the app's own 2048^2 readback, metric = §11.164(c)'s

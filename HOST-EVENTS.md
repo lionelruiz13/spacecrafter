@@ -448,3 +448,32 @@ never rewrite (maintenance invariant). Archival per the standing convention
   the owner's install made buildable — nothing improvised; say the word if the SDL3-based compat
   stack is the one you want banked instead.
 
+- 2026-09-26 09:37–19:54 [measured: supervisor, session 39 (Claude Fable 5.1), at the F131 executor's
+  STOP — every value from the command beside it, Q-67; Saturday evening, the owner present] **A NEW
+  BOOT (the seventh banked), FOUND BY THE EXECUTOR'S LAUNCH GATE AND NOT AT WARM-UP: the supervisor's
+  warm-up checked the display and the engine slot and never ran the canary — a dispatcher defect, now
+  a PREMISES line of F131.** `uptime -s` **2026-09-26 09:37:21** (boot id `79f79392-…`); the owner
+  re-provisioned the real logind session on `:2` at 09:44:37 (`/usr/bin/gnome-shell` pid 24102, uid
+  1003 → `Xwayland :2` pid 24607 at 09:44:38, kernel starts 1790408677 / 1790408678; sessions 5/6 again;
+  cookie `.PPUKW3`; `:2` 2444x1332). (1) Canary `20260926-194639` (`--no-scene`, the executor's, 19:46):
+  exit 2, **FAIL `compositor.restarted` ALONE, NOTE `xserver.restarted`**. Fingerprint diff against the
+  last green run `20260918-222308` [measured, python over the two json]: the per-boot members; the
+  run-arm members absent under `--no-scene` (scene, cache, concurrency); GPU occupancy 1874 → 3823 MiB
+  used (driver 580.178.04 UNCHANGED, 28284 MiB free); the cookie NAME `.RQNGV3` → `.PPUKW3`; display,
+  runtime dir, compositor command, `wayland-0`, session ids EQUAL. (2) RE-BANK of the three per-boot
+  members in one VALUES-block edit, the 09-18 values struck with the argument: `--no-scene` 19:52:00
+  **exit 0**. (3) FULL canary 19:52:03–19:53:49, `20260926-195203`: **exit 1, `photometric.band` FAIL,
+  4/12 in band — AND THE SPLIT IS THE FINDING: the four OLD-path members are in band with delta 0.0
+  (160.142 / 6.603, to the last digit), the eight NEW-path members are out (disc 148.724 vs 165.258,
+  hf 8.377 vs 6.644; dwell frame md5 `a61b48cf` ≠ banked `5215565b`).** The environment is thereby
+  PROVEN by the old path; the drift is CODE ON THE NEW PATH: the last green full run was 2026-09-18
+  22:23 on the binary of `7a37e3be`, 17 commits lie between it and `ee185d4f` (session 33's cleanup
+  `8ce65acc` / `78455b88`, `cfea62e7` *the field of view has one owner again*, `75a73e78`, `6c3d0ed6`,
+  `0bc9458d`, the prose passes, two video commits), and no full canary ran on any of them (F129's
+  acceptance says so). NOT re-banked, band NOT widened: routed as a CODE finding (§5 candidate at
+  F131's acceptance) — the same class as the tester's item 5 if a fov-at-rest difference between the
+  two engines is the cause; the executor measures both fovs. Field pair `03fbee59` / `545a51ef` in ==
+  out; no engine left (`sc_instances.sh` 19:53:49). Decision flag per §11.174(h): whether F131
+  measures on this binary before the drift is attributed is the owner's word; the supervisor's default
+  is yes (F131's measurements are structural, and this drift is on its own list), the bisect right after.
+
