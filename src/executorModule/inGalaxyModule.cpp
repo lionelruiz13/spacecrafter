@@ -38,6 +38,7 @@
 #include "coreModule/starLines.hpp"
 #include "ojmModule/ojm_mgr.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
+#include "starModule/hip_star_mgr.hpp"
 #include "tools/context.hpp"
 #include "tools/draw_helper.hpp"
 
@@ -52,6 +53,8 @@ InGalaxyModule::InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer)
 void InGalaxyModule::onEnter()
 {
 	core->setFlagIngalaxy(MODULE::IN_GALAXY);
+	// Do not carry a star-trace accumulation from another rendering mode.
+	core->currentHipStars->resetTrace();
 	std::cout << "->InGalaxy" << std::endl;
 	//set altitude in CoreExecutorInGalaxy when enter
 	if (observer->getAltitude() < minAltToGoDown) {
@@ -136,7 +139,7 @@ void InGalaxyModule::draw(int delta_time)
 	// transparency.
 	core->currentDso3d->draw(observer->getAltitude(), core->projection, core->navigation);
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
-	core->currentStarNav->draw(core->navigation, core->projection, false);
+	core->currentStarNav->drawTraced(*core->currentHipStars, core->navigation, core->projection);
 	core->currentDsoNav->draw(core->navigation, core->projection);
 	core->currentCloudNav->draw(core->navigation, core->projection);
 	//core->postDraw();

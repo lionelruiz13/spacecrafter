@@ -930,6 +930,9 @@ void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd)
 			case STAR_STORE:
 				// syncReuse->dstDependency(cmd);
 				// syncReuse->resetDependency(cmd, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR);
+				// The previous pass samples the trace texture. Transition it back to
+				// an attachment before loading it for the next accumulated frame.
+				syncReuse->placeBarrier(cmd);
 				renderPassReuse->begin(0, cmd); // 0 is the index of the single FrameMgr created from this renderPass
 				pipelineStarsReuse->bind(cmd);
 				break;
