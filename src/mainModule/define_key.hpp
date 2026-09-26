@@ -109,6 +109,7 @@
 #define SCK_SELF_SHADOW_RESOLUTION          "self_shadow_resolution"
 #define SCK_EXPERIMENTAL_SHADOWS            "experimental_shadows"
 #define SCK_MAX_SHADOW_CAST                 "max_shadow_cast"
+#define SCK_MAX_VRAM                        "max_vram"
 
 #define SCK_SKY_CULTURE                     "sky_culture"
 #define SCK_SKY_LOCALE                      "sky_locale"

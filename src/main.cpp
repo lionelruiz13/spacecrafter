@@ -313,7 +313,7 @@ int main(int argc, const char *argv[])
 		.requiredExtensions={"VK_KHR_timeline_semaphore"}, //.redirectLog=cLog::writeECLog,
 		.cachePath=ini->getUserDir()+"cache/", .logPath=appDir+"log/",
 		.swapchainUsage = static_cast<VkImageUsageFlags>((renderSize <= 0) ? VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT),
-		.chunkSize=256, .forceSwapchainCount=3,
+		.chunkSize=256, .vramOverride=conf.getInt(SCS_RENDERING, SCK_MAX_VRAM), .forceSwapchainCount=3,
 		.enableDebugLayers=conf.getBoolean(SCS_DEBUG, SCK_DEBUG_LAYER), .drawLogs=conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG),
 		.saveLogs=conf.getBoolean(SCS_DEBUG, SCK_WRITE_LOG), .preserveCrashLogs = true,
 		.preferIntegrated=false, .allowOverrides=true, .customReleaseMemory=&s_texture::releaseUnusedMemory
