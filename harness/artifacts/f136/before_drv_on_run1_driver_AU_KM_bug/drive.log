@@ -1,0 +1,25 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+PASS gdb_reaches_the_UI_object  `this` of UI::updateTimeouts, the per-frame UI call
+>> zoom fov 60 duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/before_drv_on/G_start.json
+Traceback (most recent call last):
+  File "/home/claude/spacecrafter/claude/harness/artifacts/f136/f136_drv.py", line 140, in <module>
+    leg()
+    ~~~^^
+  File "/home/claude/spacecrafter/claude/harness/artifacts/f136/f136_drv.py", line 113, in leg
+    send(S, "zoom fov 60 duration 1", 4); fov_pair("G_start", 60.0)
+                                          ~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/claude/spacecrafter/claude/harness/f124_legs.py", line 367, in fov_pair
+    st = state(tag)
+  File "/home/claude/spacecrafter/claude/harness/f124_legs.py", line 74, in state
+    dist_member_km=cam["distance"] * AU_KM, pos_km=[x * AU_KM for x in cam["position"]],
+                                     ^^^^^
+NameError: name 'AU_KM' is not defined

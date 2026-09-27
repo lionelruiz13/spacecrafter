@@ -1,0 +1,37 @@
+{
+ "s0": {
+  "tag": "f4_s0",
+  "newpos": 6200.000021233268,
+  "newalt": 200.00002123326794,
+  "olddist": 6200.00001898582,
+  "ref": "DescB",
+  "free": true
+ },
+ "legC": {
+  "tag": "f4_legC",
+  "newpos": 6190.197815232883,
+  "newalt": 190.19781523288293,
+  "olddist": 6200.00001898582,
+  "ref": "DescB",
+  "free": true
+ },
+ "s1": {
+  "tag": "f4_s1",
+  "newpos": 6200.000021233268,
+  "newalt": 200.00002123326794,
+  "olddist": 6200.00001898582,
+  "ref": "DescB",
+  "free": true
+ },
+ "legK": {
+  "tag": "f4_legK",
+  "newpos": 6190.197815232883,
+  "newalt": 190.19781523288293,
+  "olddist": 6190.197822515637,
+  "ref": "DescB",
+  "free": true
+ },
+ "coef": 0.99,
+ "nstep": 5,
+ "predicted_alt": 190.19800998
+}

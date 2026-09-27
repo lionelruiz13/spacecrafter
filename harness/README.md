@@ -6529,9 +6529,16 @@ sub-legs drive it directly and say so; the lower BUTTON is `UI::lowerHeight()`.
 
 **Not reached** (the full map is 11.261 (C), 60 rows): the key / wheel / drag /
 click handlers themselves (dead channel), the VIEW path (`turn*`, `dragView`,
-`lookRel`), `Core::findAndSelect(int,int)` (leg S not built), the "already zooming"
-branch of `Camera::setHalfFov`, both fov clamps, every timed mover plan (no input
+`lookRel`), `Core::findAndSelect(int,int)` (leg S not built), ~~the "already zooming"
+branch of `Camera::setHalfFov`~~ **[REACHED since code `38ec7199` (F136, INTENT 11.298): leg Z2
+"opposite" - a key step AGAINST a zoom plan - enters it and re-times the plan (36.75 s in the
+scene); before that commit the key step copied the projector's fov into the Camera and the
+branch's XOR was always true]**, both fov clamps, every timed mover plan (no input
 can reach one: `DURATION_COMMAND` 0.1 truncates to `int` 0).
+**Leg Z's per-call factor since `38ec7199`**: the order's magnitude is the DRAWN fov (`Core::drawnFov()`),
+so on the new pin the projector steps by k x (2 x deg(halfFov)) and its own `fovAfter / fov` sits 0.4-0.7
+float ulp off `1 +- k`; the check compares against the drawn fov read from the ring row (`halfFov`) when the
+pin is new, against the projector's when old - the law's input, never a wider tolerance (INTENT 11.298 (c)).
 
 ## F125 - the gates the owner's cleanup was predicted to redden: what each does now (`f125_*.py`; `f23_b33_inject.py`, `f18_gate.py`, `f18_midband.py` edited) - INTENT 11.263 / row B45 item (2) / 11.251(b), 2026-09-20
 

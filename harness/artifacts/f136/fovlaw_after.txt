@@ -1,0 +1,28 @@
+== artifacts/f136/after_census/final.json: 9405 frames, 5 zoom plan(s) ==
+-- plan0[f1134-1372]: old 180.0000 -> 0.0032 deg (cubic plan), new 180.0000 -> 0.0032 deg over 4.000 s, 239 frames
+PASS plan0[f1134-1372]_law_old  projector against its one-sided cubic: max residual 0.0000 deg (first frame a+0)
+PASS plan0[f1134-1372]_law_new  Camera against its geometric two-phase law: max residual 0.0000 deg (first frame a+0)
+PASS RESID_plan0[f1134-1372]_separation  recorded max |old - new| 38.6086 deg, the two laws replayed on this run's dt give 38.6086
+PASS plan0[f1134-1372]_rest_at_floor  30 frames after both plans ended: max |old - new| 9.220e-11 deg
+-- plan1[f1904-2143]: old 0.0032 -> 180.0000 deg (cubic plan), new 0.0032 -> 180.0000 deg over 4.000 s, 240 frames
+PASS plan1[f1904-2143]_law_old  projector against its one-sided cubic: max residual 0.0000 deg (first frame a+0)
+PASS plan1[f1904-2143]_law_new  Camera against its geometric two-phase law: max residual 0.0004 deg (first frame a+0)
+PASS RESID_plan1[f1904-2143]_separation  recorded max |old - new| 36.5337 deg, the two laws replayed on this run's dt give 36.5337
+PASS plan1[f1904-2143]_rest_at_floor  30 frames after both plans ended: max |old - new| 5.009e-06 deg
+-- plan2[f2673-2852]: old 180.0000 -> 30.0000 deg (cubic plan), new 180.0000 -> 30.0000 deg over 3.000 s, 180 frames
+PASS plan2[f2673-2852]_law_old  projector against its one-sided cubic: max residual 0.0000 deg (first frame a+0)
+PASS plan2[f2673-2852]_law_new  Camera against its geometric two-phase law: max residual 0.0000 deg (first frame a+0)
+PASS RESID_plan2[f2673-2852]_separation  recorded max |old - new| 49.2239 deg, the two laws replayed on this run's dt give 49.2239
+PASS plan2[f2673-2852]_rest_at_floor  30 frames after both plans ended: max |old - new| 8.348e-07 deg
+-- plan3[f3382-3561]: old 30.0000 -> 180.0000 deg (cubic plan), new 30.0000 -> 180.0000 deg over 3.000 s, 180 frames
+PASS plan3[f3382-3561]_law_old  projector against its one-sided cubic: max residual 0.0000 deg (first frame a+0)
+PASS plan3[f3382-3561]_law_new  Camera against its geometric two-phase law: max residual 0.0001 deg (first frame a+0)
+PASS RESID_plan3[f3382-3561]_separation  recorded max |old - new| 52.0385 deg, the two laws replayed on this run's dt give 52.0386
+PASS plan3[f3382-3561]_rest_at_floor  30 frames after both plans ended: max |old - new| 5.009e-06 deg
+-- plan4[f4092-4121]: old 180.0000 -> 120.0000 deg (SNAP), new 180.0000 -> 120.0000 deg over 0.500 s, 30 frames
+PASS plan4[f4092-4121]_law_old  projector against its snap: max residual 0.0000 deg (first frame a+0)
+PASS plan4[f4092-4121]_law_new  Camera against its geometric two-phase law: max residual 0.0000 deg (first frame a+0)
+PASS RESID_plan4[f4092-4121]_separation  recorded max |old - new| 59.8109 deg, the two laws replayed on this run's dt give 59.8109
+PASS plan4[f4092-4121]_rest_at_floor  30 frames after both plans ended: max |old - new| 3.339e-06 deg
+
+OK

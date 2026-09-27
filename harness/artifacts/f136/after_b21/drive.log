@@ -1,0 +1,47 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+>> camera action free_mode state on
+>> select planet DescB
+>> flag track_object on
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_b21/f4_s0.json
+-- f4_s0: ref=DescB free=True |pos|=6200.000021 km alt=200.000021 km  old_dist=6200.00001898582
+PASS scene_start  start alt 200.000021 km (want 200.000), freeMode=True
+>> camera action descend coef 0.99
+>> camera action descend coef 0.99
+>> camera action descend coef 0.99
+>> camera action descend coef 0.99
+>> camera action descend coef 0.99
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_b21/f4_legC.json
+-- f4_legC: ref=DescB free=True |pos|=6190.197815 km alt=190.197815 km  old_dist=6200.00001898582
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_b21/f4_s1.json
+-- f4_s1: ref=DescB free=True |pos|=6200.000021 km alt=200.000021 km  old_dist=6200.00001898582
+PASS reset_exact  reset alt 200.000021 vs start 200.000021 km
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_b21/f4_legK_step0.json
+-- f4_legK_step0: ref=DescB free=True |pos|=6197.999958 km alt=197.999958 km  old_dist=6197.999959465087
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_b21/f4_legK_step1.json
+-- f4_legK_step1: ref=DescB free=True |pos|=6196.020030 km alt=196.020030 km  old_dist=6196.020036598033
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_b21/f4_legK_step2.json
+-- f4_legK_step2: ref=DescB free=True |pos|=6194.059699 km alt=194.059699 km  old_dist=6194.059706150772
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_b21/f4_legK_step3.json
+-- f4_legK_step3: ref=DescB free=True |pos|=6192.118966 km alt=192.118966 km  old_dist=6192.118968123307
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_b21/f4_legK_step4.json
+-- f4_legK_step4: ref=DescB free=True |pos|=6190.197815 km alt=190.197815 km  old_dist=6190.197822515637
+PASS gdb_injection_ran  handshake markers F4KEYDONE0..4 seen in gdb.log
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_b21/f4_legK.json
+-- f4_legK: ref=DescB free=True |pos|=6190.197815 km alt=190.197815 km  old_dist=6190.197822515637
+PASS P1_key_equals_command  alt after 10x0.99: command 190.197815 km  key 190.197815 km  |diff| 0.00e+00 km (predicted 190.198010)
+PASS P1b_command_matches_law  command leg 190.197815 vs predicted 190.198010 km
+PASS P4_command_is_new_only  old dist across leg C: 6200.00001898582 -> 6200.00001898582 km (must be unchanged)
+PASS P3_injection_reached_the_sink  old dist across leg K: 6200.00001898582 -> 6190.197822515637 km (want 6190.1980 = the OLD ramp acting)
+PASS P2_new_path_moved  new-path alt across leg K: 200.000021 -> 190.197815 km (pre-fix binary must show NO movement here)
+
+=== ALL PASS ===

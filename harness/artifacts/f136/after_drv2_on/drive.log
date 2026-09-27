@@ -1,0 +1,86 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+PASS gdb_reaches_the_UI_object  `this` of UI::updateTimeouts, the per-frame UI call
+>> zoom fov 60 duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/G_start.json
+-- G_start          drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 60.000002 old 60.000000
+PASS G_start_both_at_60  projector 60.000000, camera 60.000002 deg
+PASS gdb_read_rest60_ran_clean  handshake=True gdb said: []
+GDB rest60 drawModularSystem=1 drawn=60.000001669652114 eq_new=1 eq_old=0 newv=60.000001669652114 projector=60
+PASS P22_drawnFov_bit_exact_rest60  drawModularSystem=1: drawnFov()=60.000001669652114, halfFov x 360/pi=60.000001669652114, projector fov=60, eq_new=1
+>> zoom fov 60 duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R3_reset.json
+-- R3_reset         drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 60.000002 old 60.000000
+PASS R3_reset_both_at_60  projector 60.000000, camera 60.000002 deg
+>> zoom fov 20 duration 20
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R3_tap.json
+-- R3_tap           drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 56.330728 old 24.635713
+NOTE R3 ring tap row: projector 43.4887 -> 43.2056, camera 56.6138 -> 56.3307 deg (dFov -0.283069, dt 10)
+NOTE R3: at the tap projector 24.6357 camera 56.3307 deg, projector auto-zoom True, camera plan 0.000 s
+PASS gdb_read_R3_tap_ran_clean  handshake=True gdb said: []
+GDB R3_tap drawModularSystem=1 drawn=56.330728424872881 eq_new=1 eq_old=0 newv=56.330728424872881 projector=23.626778125762939
+PASS P22_drawnFov_bit_exact_R3_tap  drawModularSystem=1: drawnFov()=56.330728424872881, halfFov x 360/pi=56.330728424872881, projector fov=23.626778125762939, eq_new=1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R3_rest.json
+-- R3_rest          drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 56.330728 old 20.000000
+PASS R3_engines_apart_at_rest  projector 20.0000 camera 56.3307 deg (apart 36.3307): the scene the readout checks need
+PASS gdb_read_R3_rest_ran_clean  handshake=True gdb said: []
+GDB R3_rest drawModularSystem=1 drawn=56.330728424872881 eq_new=1 eq_old=0 newv=56.330728424872881 projector=20
+PASS P22_drawnFov_bit_exact_R3_rest  drawModularSystem=1: drawnFov()=56.330728424872881, halfFov x 360/pi=56.330728424872881, projector fov=20, eq_new=1
+>> zoom delta_fov 5
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R3_after.json
+-- R3_after         drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 61.330727 old 61.330727
+PASS R3_delta_fov_aims_at_the_drawn_fov_plus_delta  drawn 56.3307 (pin on) + 5 = 61.3307; after: projector 61.3307, camera 61.3307 deg
+>> zoom fov 60 duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R5_reset.json
+-- R5_reset         drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 60.000002 old 60.000000
+PASS R5_reset_both_at_60  projector 60.000000, camera 60.000002 deg
+>> zoom fov 20 duration 20
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R5_tap.json
+-- R5_tap           drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 56.336766 old 24.657145
+NOTE R5 ring tap row: projector 43.5013 -> 43.2182, camera 56.6199 -> 56.3368 deg (dFov -0.283099, dt 10)
+NOTE R5: at the tap projector 24.6571 camera 56.3368 deg, projector auto-zoom True, camera plan 0.000 s
+PASS gdb_read_R5_tap_ran_clean  handshake=True gdb said: []
+GDB R5_tap drawModularSystem=1 drawn=56.336766312099172 eq_new=1 eq_old=0 newv=56.336766312099172 projector=23.643760681152344
+PASS P22_drawnFov_bit_exact_R5_tap  drawModularSystem=1: drawnFov()=56.336766312099172, halfFov x 360/pi=56.336766312099172, projector fov=23.643760681152344, eq_new=1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R5_rest.json
+-- R5_rest          drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 56.336766 old 20.000000
+PASS R5_engines_apart_at_rest  projector 20.0000 camera 56.3368 deg (apart 36.3368): the scene the readout checks need
+>> flag manual_zoom on
+>> select planet Sun
+>> zoom auto in manual on duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R5_after.json
+-- R5_after         drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 28.168383 old 28.168383
+PASS R5_auto_zoom_in_manual_aims_at_half_the_drawn_fov  drawn 56.3368 (pin on) x 0.5 = 28.1684; after: projector 28.1684, camera 28.1684 deg
+>> zoom fov 60 duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R4_reset.json
+-- R4_reset         drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 60.000002 old 60.000000
+PASS R4_reset_both_at_60  projector 60.000000, camera 60.000002 deg
+>> zoom fov 20 duration 20
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R4_tap.json
+-- R4_tap           drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 56.334751 old 24.655712
+NOTE R4 ring tap row: projector 43.4971 -> 43.2140, camera 56.6178 -> 56.3348 deg (dFov -0.283089, dt 10)
+NOTE R4: at the tap projector 24.6557 camera 56.3348 deg, projector auto-zoom True, camera plan 0.000 s
+PASS gdb_read_R4_tap_ran_clean  handshake=True gdb said: []
+GDB R4_tap drawModularSystem=1 drawn=56.334751406294018 eq_new=1 eq_old=0 newv=56.334751406294018 projector=23.642542362213135
+PASS P22_drawnFov_bit_exact_R4_tap  drawModularSystem=1: drawnFov()=56.334751406294018, halfFov x 360/pi=56.334751406294018, projector fov=23.642542362213135, eq_new=1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R4_rest.json
+-- R4_rest          drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 56.334751 old 20.000000
+PASS R4_engines_apart_at_rest  projector 20.0000 camera 56.3348 deg (apart 36.3348): the scene the readout checks need
+>> position action save
+>> zoom fov 90 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R4_moved.json
+-- R4_moved         drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 90.000002 old 90.000000
+PASS R4_moved_both_at_90  projector 90.000000, camera 90.000002 deg
+>> position action load
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/after_drv2_on/R4_after.json
+-- R4_after         drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 56.334751 old 56.334751
+PASS R4_saved_fov_is_the_drawn_fov  saved while drawn 56.3348 (pin on), projector 20.0000, camera 56.3348; after `position action load`: projector 56.3348, camera 56.3348 deg
+
+=== f136_drv pin on: ALL PASS ===

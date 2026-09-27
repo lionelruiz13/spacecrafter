@@ -1,0 +1,48 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag atmosphere off
+>> flag fog off
+>> flag landscape off
+>> flag show_fps off
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> set home_planet DescB
+PASS gdb_reaches_the_UI_object  `this` of UI::updateTimeouts, the per-frame UI call
+>> zoom fov 60 duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/before_Z_on/Z_start.json
+-- Z_start          drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 60.000002 old 60.000000
+PASS Z_start_both_at_60  projector 60.000000, camera 60.000002 deg
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/before_Z_on/Z_ramp.json
+-- Z_ramp           drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 55.336557 old 55.336556
+PASS Z_ring_holds_the_dt10_steps  8 active steps at dt=10 in the ramp ring, want 8
+PASS Z_mid_ramp_camera_equals_projector_dt10  worst relative |2 x halfFov - fov| over the steps: 5.26e-08
+PASS Z_per_call_factor_is_5_zoom_speed_dt10  per call x0.9950 in / x1.0050 out; off-law steps: 0
+PASS Z_ring_holds_the_dt40_steps  4 active steps at dt=40 in the ramp ring, want 4
+PASS Z_mid_ramp_camera_equals_projector_dt40  worst relative |2 x halfFov - fov| over the steps: 4.79e-08
+PASS Z_per_call_factor_is_5_zoom_speed_dt40  per call x0.9800 in / x1.0200 out; off-law steps: 0
+PASS Z_at_rest_new_equals_old  projector 55.336556 camera 55.336557 deg
+NOTE max_fov reads 350.0000 deg in the dump (the 0.49 deg stop residual is predicted only if this is 350)
+>> zoom fov 60 duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/before_Z_on/Z2_same_reset.json
+-- Z2_same_reset    drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 60.000002 old 60.000000
+PASS Z2_same_reset_both_at_60  projector 60.000000, camera 60.000002 deg
+>> zoom fov 20 duration 20
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/before_Z_on/Z2_same_tap.json
+-- Z2_same_tap      drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 43.283810 old 24.652846
+NOTE Z2_same: at the tap projector 24.6528 camera 43.2838 deg, projector auto-zoom True, camera plan 0.000 s
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/before_Z_on/Z2_same_rest.json
+-- Z2_same_rest     drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 43.283810 old 20.000000
+PASS RESID_Z2_same_engines_end_apart_at_rest  wheel-style plan 60 -> 20 with one key step In: at rest projector 20.0000, camera 43.2838 deg (apart by 23.2838)
+>> zoom fov 60 duration 1
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/before_Z_on/Z2_opposite_reset.json
+-- Z2_opposite_reset drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 60.000002 old 60.000000
+PASS Z2_opposite_reset_both_at_60  projector 60.000000, camera 60.000002 deg
+>> zoom fov 20 duration 20
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/before_Z_on/Z2_opposite_tap.json
+-- Z2_opposite_tap  drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 43.714587 old 24.649990
+NOTE Z2_opposite: at the tap projector 24.6500 camera 43.7146 deg, projector auto-zoom True, camera plan 0.000 s
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f136/before_Z_on/Z2_opposite_rest.json
+-- Z2_opposite_rest drawn=new free=False alt new 0.0751 old 0.0751 km | lon new 5.36667 old 5.36667 | lat new 43.30000 old 43.30000 | fov new 43.714587 old 20.000000
+PASS RESID_Z2_opposite_engines_end_apart_at_rest  wheel-style plan 60 -> 20 with one key step Out: at rest projector 20.0000, camera 43.7146 deg (apart by 23.7146)
+
+=== leg Z pin on: ALL PASS ===

@@ -1,0 +1,260 @@
+{
+ "driver": "f136_drv",
+ "pin": "on",
+ "before": true,
+ "states": [
+  {
+   "tag": "G_start",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -391794.6167947072,
+    321044.351841992,
+    -477329.6527725116
+   ],
+   "fov_old": 60,
+   "fov_new": 60.000001650313386,
+   "aim_old": 60,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "R3_reset",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -391794.6167947072,
+    321044.351841992,
+    -477329.6527725116
+   ],
+   "fov_old": 60,
+   "fov_new": 60.000001650313386,
+   "aim_old": 60,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "R3_tap",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -391794.6167947072,
+    321044.351841992,
+    -477329.6527725116
+   ],
+   "fov_old": 24.678633213043213,
+   "fov_new": 43.279616676157914,
+   "aim_old": 20,
+   "max_fov": 350,
+   "auto_zoom": true,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "R3_rest",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -391794.6167947072,
+    321044.351841992,
+    -477329.6527725116
+   ],
+   "fov_old": 20,
+   "fov_new": 43.279616676157914,
+   "aim_old": 20,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "R3_after",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -391794.6167947072,
+    321044.351841992,
+    -477329.6527725116
+   ],
+   "fov_old": 25,
+   "fov_new": 25.000000171968562,
+   "aim_old": 25,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "R5_reset",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -391794.6167947072,
+    321044.351841992,
+    -477329.6527725116
+   ],
+   "fov_old": 60,
+   "fov_new": 60.000001650313386,
+   "aim_old": 60,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "R5_tap",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -391794.6167947072,
+    321044.351841992,
+    -477329.6527725116
+   ],
+   "fov_old": 24.67576503753662,
+   "fov_new": 43.279616676157914,
+   "aim_old": 20,
+   "max_fov": 350,
+   "auto_zoom": true,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "R5_rest",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -391794.6167947072,
+    321044.351841992,
+    -477329.6527725116
+   ],
+   "fov_old": 20,
+   "fov_new": 43.279616676157914,
+   "aim_old": 20,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  },
+  {
+   "tag": "R5_after",
+   "ref": "DescB",
+   "free": false,
+   "alt_new": 0.07510427587606683,
+   "alt_old": 0.07510427587606683,
+   "alt_reported": 0.07510427587606683,
+   "lon_new": 5.366666607307548,
+   "lon_old": 5.366666607307548,
+   "lat_new": 43.30000131876876,
+   "lat_old": 43.30000131876876,
+   "dist_member_km": 6000.075152942154,
+   "pos_km": [
+    -391794.6167947072,
+    321044.351841992,
+    -477329.6527725116
+   ],
+   "fov_old": 10,
+   "fov_new": 9.999999713553592,
+   "aim_old": 10,
+   "max_fov": 350,
+   "auto_zoom": false,
+   "zoom_duration": 0,
+   "drawn": "new"
+  }
+ ],
+ "notes": [
+  "R3 ring tap row: projector 43.4971 -> 43.2796, camera 56.6178 -> 43.2796 deg (dFov -0.217486, dt 10)",
+  "R3: at the tap projector 24.6786 camera 43.2796 deg, projector auto-zoom True, camera plan 0.000 s",
+  "R5 ring tap row: projector 43.4971 -> 43.2796, camera 56.6178 -> 43.2796 deg (dFov -0.217486, dt 10)",
+  "R5: at the tap projector 24.6758 camera 43.2796 deg, projector auto-zoom True, camera plan 0.000 s"
+ ],
+ "gdb": [
+  {
+   "tag": "rest60"
+  },
+  {
+   "tag": "R3_tap"
+  },
+  {
+   "tag": "R3_rest"
+  },
+  {
+   "tag": "R5_tap"
+  }
+ ],
+ "fails": [
+  "gdb_read_rest60_ran_clean",
+  "gdb_read_R3_tap_ran_clean",
+  "gdb_read_R3_rest_ran_clean",
+  "R3_delta_fov_aims_at_the_drawn_fov_plus_delta",
+  "gdb_read_R5_tap_ran_clean",
+  "R5_auto_zoom_in_manual_aims_at_half_the_drawn_fov"
+ ]
+}

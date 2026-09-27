@@ -1,0 +1,71 @@
+ModularBody @ HEAD: 109 fields, 160 member functions (overloads merged by name)
+-- managers per field: functions that write it DIRECTLY --
+   8  uncached               invalidateCachedState restoreScaling setDatumRadius setGroundRadius setInheritedScaling setRadius setScaling updateCache
+   3  evaluatedJD            setOrbit transformBodyToParent transformParentToBodyPos
+   3  mat                    recursiveTranslationUpdate recursiveUpdate selectiveUpdate
+   2  distance               preUpdate recursiveTranslationUpdate
+   2  eclipticPos            transformBodyToParent transformParentToBodyPos
+   2  evalCount              transformBodyToParent transformParentToBodyPos
+   2  isChildVisible         preUpdate setChildNoLongerVisible
+   2  isSelected             deselect select
+   2  isVisible              hide preUpdate
+   2  lastJD                 transformBodyToParent transformParentToBodyPos
+   2  pins                   pin unpin
+   2  relation               hide show
+   2  scalingTarget          restoreScaling setScaling
+   2  selectedBody           deselect select
+   1  areaOfInfluence        updateReach
+   1  authoredState          captureAuthoredState
+   1  axisRotation           refreshFrameState
+   1  bigTextureScreenSize   setViewportRadius
+   1  bodyTesselation        setTesselation
+   1  boundingRadius         updateCache
+   1  cmag                   drawHaloCore
+   1  components             slot
+   1  cullHalfFov            setHalfFov
+   1  currentJD              dispatchUpdate
+   1  datumRadius            setDatumRadius
+   1  defaultHaloColor       setDefaultHaloColor
+   1  earlyVisibilityScreenSize setViewportRadius
+   1  fullVisibilityScreenSize setViewportRadius
+   1  groundRadius           setGroundRadius
+   1  halfAngularSize        preUpdate
+   1  halfFov                setHalfFov
+   1  haloColor              setColor
+   1  inheritedScaling       setInheritedScaling
+   1  isBodyVisible          preUpdate
+   1  isHaloEnabled          setHaloEnabled
+   1  lastFit                findBody
+   1  lightDistance          updateAsLightSource
+   1  lightPosition          updateAsLightSource
+   1  lightSize              updateAsLightSource
+   1  loaded                 drawLoaded
+   1  orbit                  setOrbit
+   1  parkedFramePublished   publishParkedFrame
+   1  preloadCount           preload
+   1  projectionMode         setProjectionMode
+   1  radius                 setRadius
+   1  renderHidden           propagateRenderHidden
+   1  rmag                   drawHaloCore
+   1  scaledDatumRadius      updateCache
+   1  scaledGroundRadius     updateCache
+   1  scaledRadius           updateCache
+   1  scaling                setScaling
+   1  screenPos              update
+   1  screenSize             update
+   1  subsystemRadius        updateReach
+   1  translator             setTranslator
+   1  unservedLogged         useNow
+   1  viewportRadius         setViewportRadius
+-- same direct writer set (>= 2 functions) --
+  {mat}: recursiveUpdate selectiveUpdate
+  {pins}: pin unpin
+  {isSelected, selectedBody}: deselect select
+  {eclipticPos, evalCount, evaluatedJD, lastJD}: transformBodyToParent transformParentToBodyPos
+-- forwarders: one statement, its effect is entirely another member's --
+  computeBodyToSurface -> getAxisRotation
+  computeSurfaceToBody -> getAxisRotation
+  drawHalo -> computeMagnitude drawHaloCore isSatellite
+  getOrbitOverride -> firstOverride
+  getTrailOverride -> firstOverride
+  ownsAnyChild -> hasChildren

@@ -1,0 +1,58 @@
+Projector @ HEAD: 28 fields, 74 member functions (overloads merged by name)
+-- managers per field: functions that write it DIRECTLY --
+   2  flag_auto_zoom         updateAutoZoom zoomTo
+   2  zoom_move              updateAutoZoom zoomTo
+   1  fisheye_scale_factor   setFov
+   1  fov                    setFov
+   1  inv_mat_dome           setModelViewMatrices
+   1  inv_mat_dome_fixed     setModelViewMatrices
+   1  inv_mat_earth_equ_to_eye setModelViewMatrices
+   1  inv_mat_earth_equ_to_eye_fixed setModelViewMatrices
+   1  inv_mat_helio_to_eye   setModelViewMatrices
+   1  inv_mat_j2000_to_eye   setModelViewMatrices
+   1  inv_mat_local_to_eye   setModelViewMatrices
+   1  mat_dome               setModelViewMatrices
+   1  mat_dome_fixed         setModelViewMatrices
+   1  mat_earth_equ_to_eye   setModelViewMatrices
+   1  mat_earth_equ_to_eye_fixed setModelViewMatrices
+   1  mat_helio_to_eye       setModelViewMatrices
+   1  mat_j2000_to_eye       setModelViewMatrices
+   1  mat_local_to_eye       setModelViewMatrices
+   1  max_fov                setMaxFov
+   1  vec_viewport           setViewportDisk
+   1  viewport_fov_diameter  setViewportDisk
+   1  viewport_radius        setViewportDisk
+   1  viewport_radius_squared setViewportDisk
+   1  zFar                   setClippingPlanes
+   1  zNear                  setClippingPlanes
+-- same direct writer set (>= 2 functions) --
+  {flag_auto_zoom, zoom_move}: updateAutoZoom zoomTo
+-- forwarders: one statement, its effect is entirely another member's --
+  changeFov -> setFov
+  ekisolidProjectCustom -> fisheyeProjectCustom
+  ekisolidUnproject -> fisheyeUnproject
+  ekisolidUnprojectNormalized -> fisheyeUnprojectNormalized
+  projectCustomCheck -> checkInMask checkInViewport projectCustom
+  projectCustomCheck -> checkInMask checkInViewport projectCustom
+  projectCustomLineCheck -> checkInViewport projectCustom
+  projectDome -> projectCustomFixedFov
+  projectDomeFixed -> projectCustomFixedFov
+  projectEarthEcliptic -> projectCustom
+  projectEarthEqu -> projectCustom
+  projectEarthEquCheck -> projectCustomCheck
+  projectEarthEquFixed -> projectCustom
+  projectEarthEquLineCheck -> projectCustomLineCheck
+  projectHelio -> projectCustom
+  projectHelioCheck -> projectCustomCheck
+  projectHelioLineCheck -> projectCustomLineCheck
+  projectJ2000 -> projectCustom
+  projectJ2000Check -> projectCustomCheck
+  projectJ2000Galactic -> projectCustom
+  projectJ2000LineCheck -> projectCustomLineCheck
+  projectLocal -> projectCustom
+  projectLocalCheck -> projectCustomCheck
+  unprojectEarthEqu -> unproject
+  unprojectHelio -> unproject
+  unprojectJ2000Normalized -> unprojectNormalized
+  unprojectLocal -> unproject
+  unprojectNormalizedLocal -> unprojectNormalized

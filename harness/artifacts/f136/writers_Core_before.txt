@@ -1,0 +1,55 @@
+Core @ WORKTREE: 85 fields, 134 member functions (overloads merged by name)
+-- managers per field: functions that write it DIRECTLY --
+  12  vzm                    init lowerHeight raiseHeight turnDown turnHorizontal turnLeft turnRight turnUp turnVertical updateMove zoomIn zoomOut
+   4  selected_object        removeNebula selectObject selectZodiac unSelect
+   3  skyCultureDir          init loadSkyCulture setSkyCultureDir
+   2  InitFov                init setInitFov
+   2  autoLandscapeMode      loadLandscape testLandscapeCompatibleWithAutoMode
+   2  flagAstronomical       init setFlagAstronomical
+   2  flagNav                init setFlagNav
+   2  old_selected_object    selectObject unSelect
+   1  FlagAtmosphericRefraction init
+   1  FlagEnableMoveKeys     init
+   1  FlagEnableZoomKeys     init
+   1  FlagManualZoom         setFlagManualAutoZoom
+   1  InitViewPos            init
+   1  auto_move_duration     setAutoMoveDuration
+   1  currentModule          setFlagIngalaxy
+   1  firstTime              init
+   1  flagEnableTransition   setFlagEnableTransition
+   1  geodesic_grid          init
+   1  initialvalue           init
+   1  language               setLanguage
+   1  lastTravelMovingOld    recordSeamStep
+   1  lastTravelSeqNew       recordSeamStep
+   1  lightPollutionLimitingMagnitude setLightPollutionLimitingMagnitude
+   1  object_pointer_visibility setFlagSelectedObjectPointer
+   1  predictibleRendering   setPredictibleRendering
+   1  rampFrame              updateMove
+   1  rampTotal              updateMove
+   1  rampTrace              updateMove
+   1  rampWasActive          updateMove
+   1  rampWrite              updateMove
+   1  seamFrame              recordSeamStep
+   1  seamRecording          init
+   1  seamTotal              recordSeamStep
+   1  seamTrace              recordSeamStep
+   1  seamTravelTotal        recordSeamTravel
+   1  seamWrite              recordSeamStep
+   1  selected_body_name     setSelectedBodyName
+   1  skyTranslator          setSkyLanguage
+   1  srtLanguage            setSrtLanguage
+-- same direct writer set (>= 2 functions) --
+  {autoLandscapeMode}: loadLandscape testLandscapeCompatibleWithAutoMode
+  {selected_object}: removeNebula selectZodiac
+  {skyCultureDir}: loadSkyCulture setSkyCultureDir
+  {vzm}: lowerHeight raiseHeight turnDown turnHorizontal turnLeft turnRight turnUp turnVertical zoomIn zoomOut
+  {old_selected_object, selected_object}: selectObject unSelect
+-- forwarders: one statement, its effect is entirely another member's --
+  bindHomePlanet -> setLandscapeToBody
+  getPlanetsSizeLimit -> starGetSizeLimit
+  setInitialLandscapeName -> setLandscape
+  setInitialSkyCulture -> setSkyCultureDir
+  setInitialSkyLocale -> setSkyLanguage
+  setInitialSrtLocale -> setSrtLanguage
+  setSkyCulture -> setSkyCultureDir

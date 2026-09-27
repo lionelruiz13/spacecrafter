@@ -1,0 +1,21 @@
+=== F124 run 'before_drv_on' ===
+wall clock start : 2026-09-27 20:56:45 CEST
+driver           : artifacts/f136/f136_drv.py --pin on --before
+driver md5       : 02a99e849fd5bbfdde7bb218e455a1e8
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 39e769cf8dd89b31403fd4ceb6d57b13
+binary mtime     : 2026-09-27 20:36:58.848542053 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[before_drv_on] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[before_drv_on] gpu: free 27616 MiB / used 4491 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=343321
+launch wall clock: 2026-09-27 20:56:45 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 343338 
+driver exit=1
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[before_drv_on-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-27 20:57:40 CEST
