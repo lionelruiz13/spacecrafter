@@ -1,0 +1,38 @@
+###
+### Fly to selected Body - SpaceCrafter Script
+###
+### Copyright 2022 Lionel RUIZ - lionel.ruiz@live.fr
+###
+### License:
+###
+### For use with LSS systems only
+### The exploitation of this script is restricted to registered users only.
+### http://www.lss-planetariums.info
+###
+# INIT
+body action preload name selected
+timerate rate 1
+flag track_object on
+audio filename dome/lift-off.wav action play
+wait duration 1
+moveto altitude 20000000 duration 3
+wait duration 3
+define balt 100000
+camera action transition_to target point name Space
+struct if body_selected equal 0
+  define balt 400000
+struct if end
+struct if body_selected equal 500
+  define balt 200000
+struct if end
+struct if body_selected equal 600
+  define balt 200000
+struct if end
+struct if body_selected equal 700
+  define balt 150000
+struct if end
+struct if body_selected equal 800
+  define balt 150000
+struct if end
+camera action move_to target body body_name selected duration 3 altitude balt
+camera action transition_to target body name selected

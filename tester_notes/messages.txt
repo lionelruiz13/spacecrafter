@@ -1,0 +1,7 @@
+Si je lance ce script, je ne me retrouve pas à la tombée de la nuit avec les étoiles (avant oui).
+[initial_night.sts]
+Si je sélectionne une planète (Saturne la nuit par exemple) et que je lance ce script, on perd la voie lactée et on ne va pas se placer en orbite autour de la planète.
+[fly_to_selected.sts]
+Enfin, si on est en orbite mais la voie lactée a disparu, des halos colorés apparaissent et saturne est mal éclairée
+Et Saturne est bloquée même si je bouge en latitude et longitude
+Si j'utilise la roulette de la souris pour zoomer et dézoomer, les étoiles bougent avec un temps de retard.

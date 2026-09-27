@@ -1,0 +1,144 @@
+flag subtitle off
+#set zoom_offset 0
+set star_limiting_mag 6.5
+flag eye_relative_mode off
+flag zodiacal_light off
+image action purge
+body_trace target Sun pen on
+flag loxodromy off
+flag orthodromy off
+flag angular_distance off
+flag object_coordinates off
+flag nautical_alt off
+flag nautical_ra off
+flag stars_trace off
+flag milky_way on
+set auto_move_duration 0
+flag planet_orbits off
+image name black filename none.png coordinate_system viewport alpha 0 scale 1 action load
+image name black alpha 1 duration 1
+wait duration 1
+star_lines load asterism_all.fab
+set ambient_light default
+dso action clear
+body mode in_galaxy action clear
+deselect
+timerate rate 1
+flag star_lines off
+moveto alt 0.9E+10 duration 0
+wait duration 0.05
+moveto alt 1.1E+16 duration 0
+wait duration 0.05
+set home_planet Sun
+wait duration 0.05
+moveto alt 0.9E+9 duration 0
+wait duration 0.05
+moveto alt 0.9E+10 duration 0
+wait duration 0.05
+mode jump in_solarsystem body Sun altitude 1.0E+5
+set home_planet Earth
+moveto lat default lon default alt default
+flag show_tui_datetime off
+flag show_tui_short_obj_info off
+zoom auto initial
+set ambient_light default
+set landscape_name default
+set sky_culture default
+set sky_locale default
+body action clear
+body action initial
+body action remove mode in_galaxy name universe
+body action remove mode in_galaxy name Spherical_grid
+body action remove mode in_universe name Spherical_grid
+body action remove mode in_universe name bs1
+body action remove mode in_universe name bs2
+body action remove mode in_universe name multiverse
+#body action load name mwcenter type Comet parent Sun color 0,0,0 halo false lighting false coord_func still_orbit radius 1 albedo 0.0 orbit_x 0.00001 orbit_y 0.00001 orbit_z 0.00001 rot_periode 100000000000
+#body action load name Milkyway type Satellite parent mwcenter model3D true hidden true model_name Milkyway radius 1E5 oblateness 0.0 albedo 0.0 lighting false halo false color 1.0,1.0,1.0 rot_periode 1000000000 tex_map milkyway.png coord_func sun_special
+illuminate action clear
+set milky_way_texture default
+set milky_way_intensity default
+set heading default
+flag nebulae on
+flag bright_nebulae on
+flag body_trace off
+flag constellation_art off
+flag constellation_boundaries off
+flag constellation_names off
+flag constellation_drawing off
+flag circumpolar_circle off
+flag cardinal_points off
+flag azimuthal_grid off
+flag aries_line off
+flag analemma off
+flag analemma_line off
+flag ecliptic_center off
+flag ecliptic_line off
+flag equator_line off
+flag equatorial_grid off
+flag fog off
+flag galactic_grid off
+flag galactic_center off
+flag galactic_pole off
+flag greenwich_line off
+flag lock_sky_position off
+flag meridian_line off
+flag nebula_hints off
+flag nebula_names off
+flag object_trails off
+flag personal off
+flag personeq off
+flag precession_circle off
+flag polar_circle off
+flag star_names off
+flag tropic_lines off
+flag vernal_points off
+flag vertical_line off
+flag zenith_line off
+flag zodiac off
+flag polar_circle off
+flag polar_point off
+body_trace action clear
+flag body_trace off
+planet_scale name Mercury scale 1
+planet_scale name Venus scale 1
+planet_scale name Earth scale 1
+planet_scale name Mars scale 1
+planet_scale name Jupiter scale 1
+planet_scale name Saturn scale 1
+planet_scale name Uranus scale 1
+planet_scale name Neptune scale 1
+flag stars on
+flag planets on
+flag atmosphere on
+flag star_twinkle on
+flag landscape on
+flag planets_axis off
+flag planet_names off
+flag sun_scaled off
+external_viewer filename stopmusic.sh action play
+external_viewer action stop
+date load preset
+wait duration 0.001
+date sun set
+wait duration 0.001
+#case winter
+date relative 0.05
+#case daylight savings
+#date relative -0.95
+set screen_fader 0
+image name black alpha 0 duration 1
+wait duration 1.5
+set auto_move_duration 5
+deselect
+#body name Sun hidden false
+body name Io hidden false
+body name Europa hidden false
+body name Ganymede hidden false
+body name Callisto hidden false
+body name Tethys hidden false
+body name Rhea hidden false
+body name Dione hidden false
+body name Titan hidden false
+body name Iapetus hidden false
+script action end
