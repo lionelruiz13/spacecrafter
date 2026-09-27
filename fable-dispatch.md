@@ -515,10 +515,19 @@ session per claude/fable-dispatch.md §0b."*
 
 **SHAPE BINDING [owner-ruled 2026-09-19, session 33 — INTENT §2.1 G12, §11.249–§11.255;
 operating manual `claude/SHAPE.md`; it OVERRIDES the steps below wherever they differ].**
-(a) **Executors are Fable**: agent type `claude`, model `fable` — the `opus-xhigh`
+(a) ~~**Executors are Fable**: agent type `claude`, model `fable` — the `opus-xhigh`
 definition is no longer dispatched (kept, not deleted; step 1's md5 assert and step 3's
-executor name are superseded by this line). Disjoint file sets may run in parallel in one
-tree when no agent commits, builds or stashes; the supervisor verifies, builds, commits.
+executor name are superseded by this line).~~ **[SUPERSEDED 2026-09-27, owner-ruled, §11.293 —
+his words: *"structure to claude agents, implementation to opus-xhigh instructed to report every
+conflicts with the predictions (that's the signal telling what wasn't as predicted, driving the
+reworks)"*: STRUCTURE tasks (the S4 pass, the predicted shape, a PREDICTIONS block; no code
+written) = agent type `claude`, model `fable`; IMPLEMENTATION tasks = agent type `opus-xhigh`
+(Claude Opus 5.5), whose prompt carries the structure task's PREDICTIONS block and binds it to
+report every conflict with it (CONFIRMED / REFUTED with the observation / NOT REACHED with the
+reason). Step 1's md5 assert is live again; F131 (2026-09-26) was the first opus-xhigh dispatch
+after the 09-19 line, on the owner's call for that round.]** Disjoint file sets may run in
+parallel in one tree when no agent commits, builds or stashes; an implementer ALONE in the tree
+may build (it must, to run its gates) and still commits nothing; the supervisor verifies, builds, commits.
 (b) **Every task section and prompt binds G12** and names
 `/home/claude/spacecrafter.owner-shape` as the form to write in; a task states the
 MANAGER COUNT of each information it touches, before and after (G12 (S7)), preceded by the need's

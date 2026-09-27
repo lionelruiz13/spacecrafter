@@ -477,3 +477,25 @@ never rewrite (maintenance invariant). Archival per the standing convention
   measures on this binary before the drift is attributed is the owner's word; the supervisor's default
   is yes (F131's measurements are structural, and this drift is on its own list), the bisect right after.
 
+- 2026-09-27 12:35–13:58 [measured: supervisor, session 40 (Claude Fable 5.1), at WARM-UP this time —
+  the F131 premise line `f56_canary.sh --no-scene` run before any mint; every value from the command
+  beside it; Sunday, the owner present] **A NEW BOOT (the eighth banked).** `uptime -s`
+  **2026-09-27 12:35:43** (`btime 1790505343`, boot id `42c91301-…`); the owner re-provisioned the
+  real logind session on `:2` at 13:07:37 (`/usr/bin/gnome-shell --mode=ubuntu` pid 25697, uid 1003
+  → `Xwayland :2` pid 26196 at 13:07:38, kernel starts 1790507257 / 1790507258; sessions 5/6 again;
+  cookie `.KKZYV3`; `:2` 2444x1332; foxy's own `gnome-shell` on `:0` is the second cmdline match,
+  filtered by uid). (1) Canary `20260927-135012` (`--no-scene`, 13:50): exit 2, **FAIL
+  `compositor.restarted` ALONE, NOTE `xserver.restarted`**. Fingerprint diff against the last green
+  `--no-scene` run `20260926-222334` [measured, python over the two json]: the per-boot members; GPU
+  occupancy 3419 → 2037 MiB used (driver 580.178.04 UNCHANGED, 30070 MiB free); the cookie NAME
+  `.PPUKW3` → `.KKZYV3`; `host.now_epoch`; display, runtime dir, compositor command, `wayland-0`,
+  session ids EQUAL (32 members both). (2) RE-BANK of the three per-boot members in one VALUES-block
+  edit, the 09-26 values struck with the argument: `--no-scene` 13:56:49 `20260927-135649` **exit 0**.
+  (3) FULL canary 13:56:51–13:58:37, `20260927-135651`: **exit 1, `photometric.band` FAIL, 4/12 in
+  band — THE SAME SPLIT AS 09-26 TO THE DIGIT: old path 160.142 / 6.603 delta 0.0 on both legs; new
+  path 148.716 / 8.377 on all four members (09-26: 148.724 / 8.377)**; dwell frame md5 `71096cd7`
+  (≠ banked `5215565b`, recorded not gated); NOTE `cache.mutated`. This is §5.186 (the free-mode
+  `moveto` on a stale cached radius, F131 row 6) measured on this boot BEFORE slice 5 — the band is
+  NOT re-banked; it is slice 5's gate and this run is its "before". Field pair `03fbee59` / `545a51ef`
+  in == out; no engine left (`sc_instances.sh` 13:58:37).
+

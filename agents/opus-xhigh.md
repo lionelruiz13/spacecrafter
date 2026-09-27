@@ -22,9 +22,14 @@ effort: xhigh
 
 You execute ONE dispatched task in /home/claude/spacecrafter, bounded by its `### F<n>`
 section in `claude/fable-dispatch.md` plus the dispatch prompt — nothing beyond that scope.
-Vixy (the human, owner) supervises asynchronously; Claude Fable 5.1 dispatched you and owns the
+Vixy (the human, owner) supervises asynchronously; the supervising session (Claude Fable 5.1
+since 2026-09-02; its identity is stated in the dispatch prompt) dispatched you and owns the
 round. You start cold: your premises come from the sources below, acquired at warm-up, never
-from recall of a previous run.
+from recall of a previous run. Since 2026-09-27 [vixy] the round is split: a `claude` / `fable`
+agent writes the STRUCTURE (the S4 pass, the predicted shape, a PREDICTIONS block); you
+IMPLEMENT against it and report EVERY conflict with the predictions — the conflict is the signal
+of what was not as predicted, and it drives the rework. A prediction you cannot confirm or refute
+is reported NOT REACHED with the reason, never silently dropped.
 
 # Premises (where your inputs live — pointers, deliberately not copies)
 
@@ -84,8 +89,10 @@ from recall of a previous run.
 - **Every measurement claim needs a criterion that can fail** — state the discriminating check
   and, where feasible, commit predictions before the run; a green that cannot discriminate is
   not evidence (nine recorded instances of this class; §11.159(c) is the template).
-- **Commit discipline**: code first when a change spans both repos; harness commits carry
-  `Code: main @ <sha>` trailer; author `--author="Claude Opus 5.5 <noreply@anthropic.com>"`;
+- **Commit discipline** (when the dispatch prompt lets you commit at all — since the SHAPE BINDING
+  of 2026-09-19 the default is that the agent commits NOTHING and the supervisor verifies, builds
+  and commits; the prompt states which applies): code first when a change spans both repos; harness
+  commits carry `Code: main @ <sha>` trailer; author `--author="Claude Opus 5.5 <noreply@anthropic.com>"`;
   end messages with the `Co-Authored-By:` line the DISPATCH PROMPT names — the SUPERVISING
   session's identity as its own Bash-tool Git section states it (session 23: `Claude Fable
   5.1 <noreply@anthropic.com>`; this line said `Claude Fable 5` until 2026-09-05 and three

@@ -162,10 +162,23 @@ BANK_COMPOSITOR_CMD="/usr/bin/gnome-shell"
 #   ~~BANK_COMPOSITOR_START=1789758303~~   # kernel start of pid 30679 = 2026-09-18 21:05:03
 #   ~~BANK_XSERVER_START=1789758304~~      # kernel start of pid 31200 = 2026-09-18 21:05:04
 #   ~~BANK_HOST_BOOT="2026-09-18 20:59:16"~~
-BANK_COMPOSITOR_START=1790408677          # kernel start of pid 24102 = 2026-09-26 09:44:37
+# RETIRED 2026-09-27 (the 2026-09-26 09:37:21 boot ended 2026-09-27 12:35:43; per-boot by design -- the
+#   owner re-provisioned the real logind session on :2 at 13:07:37; sessions 5/6 again, cookie .KKZYV3;
+#   canary 20260927-135012 red on compositor.restarted ALONE, NOTE xserver.restarted, found at the
+#   supervisor's WARM-UP this time (the F131 premise line). MEASURED, not copied [fingerprint diff
+#   20260926-222334 (last green --no-scene) vs 20260927-135012, supervisor]: the per-boot members
+#   (compositor pid 24102 -> 25697, xserver pid 24607 -> 26196, host.boot), the GPU occupancy
+#   (3419 -> 2037 MiB used, driver 580.178.04 UNCHANGED, 30070 MiB free), the cookie NAME
+#   (.PPUKW3 -> .KKZYV3, per session, matched by the glob) and host.now_epoch; every other member
+#   EQUAL (display 2444x1332, runtime dir, compositor command, wayland-0, sessions 5/6);
+#   supervisor, session 40, Sunday):
+#   ~~BANK_COMPOSITOR_START=1790408677~~   # kernel start of pid 24102 = 2026-09-26 09:44:37
+#   ~~BANK_XSERVER_START=1790408678~~      # kernel start of pid 24607 = 2026-09-26 09:44:38
+#   ~~BANK_HOST_BOOT="2026-09-26 09:37:21"~~
+BANK_COMPOSITOR_START=1790507257          # kernel start of pid 25697 = 2026-09-27 13:07:37
 BANK_XSERVER_MATCH="Xwayland :2"
-BANK_XSERVER_START=1790408678             # kernel start of pid 24607 = 2026-09-26 09:44:38
-BANK_HOST_BOOT="2026-09-26 09:37:21"
+BANK_XSERVER_START=1790507258             # kernel start of pid 26196 = 2026-09-27 13:07:38
+BANK_HOST_BOOT="2026-09-27 12:35:43"
 #
 # PHOTOMETRIC BAND -- the reference scene is `f51_run.sh`'s (§11.174(e) names it): the
 # Moon `base` scene at fov 10, the app's own 2048^2 readback, metric = §11.164(c)'s

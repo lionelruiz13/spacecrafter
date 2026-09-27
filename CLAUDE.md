@@ -76,8 +76,12 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   swallowing catch, an unlogged default is a silent catch that breaks the propagation his acceptance
   relies on — and a failed check's information goes to the RESPONSIBLE of it, in the form decided at
   its anchor (S11, owner-ruled 2026-09-23, §11.289). Accept a delivery on behaviour AND shape (net code lines,
-  deleted/added, manager count); one that only adds is a finding to explain. Executors:
-  Fable only (agent type `claude`, model `fable`).
+  deleted/added, manager count); one that only adds is a finding to explain. Executors
+  [vixy 2026-09-27, §11.293; was "Fable only" from 2026-09-19 to 09-26]: STRUCTURE (the S4
+  pass, the predicted shape, a PREDICTIONS block) = agent type `claude`, model `fable`;
+  IMPLEMENTATION = agent type `opus-xhigh` (Claude Opus 5.5), bound to report EVERY conflict
+  with the predictions — the conflict is the signal of what was not as predicted; it drives
+  the rework.
 - Old render path = comparison baseline, unchanged by construction **= everything in the old
   path is gated by the old path [vixy 2026-09-19, §11.253]**; parity per
   §11.52(b) (perceptual, conditioned on old being physically exact).

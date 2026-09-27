@@ -137,9 +137,13 @@ the difference is how many members get one, never the form of each.
 - AT EVERY SESSION CLOSE: `review.sh status` in the report to him (what waits, shape at both ends);
   its last line counts the source files changed OUTSIDE the header scope - when it is not zero, say
   which `.cpp` carry the change (`ALL=1 review.sh status` lists them).
-- EXECUTORS: Fable only (owner, 2026-09-19): agent type `claude`, model `fable`. Disjoint file sets
-  may run in parallel in one tree if none commits, builds or stashes; the supervisor verifies,
-  builds and commits. Every task prompt binds G12 and names `spacecrafter.owner-shape` as the form.
+- EXECUTORS (owner, 2026-09-27, INTENT 11.293; "Fable only" from 2026-09-19 to 09-26): STRUCTURE = agent
+  type `claude`, model `fable` (the S4 pass, the predicted shape, a PREDICTIONS block, no code written);
+  IMPLEMENTATION = agent type `opus-xhigh` (Claude Opus 5.5), bound to report EVERY conflict with the
+  predictions - the conflict is the signal of what was not as predicted, it drives the rework. Disjoint
+  file sets may run in parallel in one tree if none commits, builds or stashes; an implementer alone in
+  the tree may build; the supervisor verifies, builds and commits. Every task prompt binds G12 and names
+  `spacecrafter.owner-shape` as the form.
 
 ## 7. State at the close of session 33 (code branch `main` @ `6c3d0ed6`; `a594b31a` and below pushed by the owner, `6c3d0ed6` not pushed)
 The code branch is `main` since 2026-09-19 (owner; `master-beta` stays where it stood). The reference-change fix of
