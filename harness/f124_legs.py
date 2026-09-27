@@ -390,7 +390,9 @@ def leg_Z():
         check("Z_mid_ramp_camera_equals_projector_dt%d" % dt, worst < 2e-6,
               "worst relative |2 x halfFov - fov| over the steps: %.2e" % worst)
         k = 5 * ZOOM_SPEED * dt
-        bad = [r for r in rs if abs(r["fovAfter"] / r["fov"] - (1 - k if r["dFov"] < 0 else 1 + k)) > 1e-9]
+        # The order's magnitude is the DRAWN fov (Core::drawnFov): the ring's halfFov on the new pin, the projector's on the old
+        drawn = (lambda r: 2 * math.degrees(r["halfFov"])) if ARGS.pin == "on" else (lambda r: r["fov"])
+        bad = [r for r in rs if abs(r["fovAfter"] / r["fov"] - (1 + (-k if r["dFov"] < 0 else k) * drawn(r) / r["fov"])) > 1e-9]
         check("Z_per_call_factor_is_5_zoom_speed_dt%d" % dt, bool(rs) and not bad,
               "per call x%.4f in / x%.4f out; off-law steps: %d" % (1 - k, 1 + k, len(bad)))
     check("Z_at_rest_new_equals_old", abs(st["fov_new"] - st["fov_old"]) < 1e-3,
