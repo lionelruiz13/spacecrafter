@@ -45,8 +45,15 @@ def send(sock, cmd, pause=0.6):
     sock.settimeout(None); print(">>", cmd, flush=True)
 
 def _clean(ln):
-    return ln.strip().replace('-nan', 'null').replace('nan', 'null') \
-             .replace('-inf', '-1e308').replace('inf', '1e308')
+    import re
+    return re.sub(r'(?<![\w"])(-?)(nan|inf)(?![\w"])', lambda m: 'null' if m.group(2) == 'nan' else m.group(1) + '1e308', ln.strip())
+
+def _clean_test():
+    """Fail loud unless _clean nulls the bare nan / inf tokens and keeps every name that holds them."""
+    got = json.loads(_clean('{"worldAdaptationLuminance": -nan, "name": "Ananke", "zoomCoef": "inf", "v": [nan, inf, -inf]}'))
+    assert got == {"worldAdaptationLuminance": None, "name": "Ananke", "zoomCoef": "inf", "v": [None, 1e308, -1e308]}, got
+
+_clean_test()
 
 def dump(sock, tag, pause=1.5):
     send(sock, f"body action dual_dump filename {OUT}/{tag}.json", pause)

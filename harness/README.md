@@ -6671,3 +6671,86 @@ the floor first); every other layer of `b47-sky-members.md` section 1: NONE RUN.
 holds the twelve flags read in `base_command_interface.hpp` for them; a census of which
 remaining layer has a switch (VR360, images, the selection pointer, the person marker, the
 labels) was NOT made.
+
+## F135 - F131's six legs as re-runnable gates: the tester's observations of 2026-09-26 on both pins from one command (`f131_run.sh`, `f131_analyse.py`; `f131_obs.py` unchanged; `b21_keypath.py:_clean` fixed) - INTENT 11.297 / 11.292 / 5.187, 2026-09-27
+
+**What for.** Each observation of the main tester (`claude/tester-2026-09-26.md`) stays a LEG before
+and after its fix: slices 1-5 are judged on the observation itself, on both pins, by one command, and a
+change that reopens it fails loud. The driver `f131_obs.py` plays the tester's own scripts, the wheel
+and the lat / lon keys (INTENT 11.292 P6); `f131_analyse.py` judges each launch record against a BANK
+of readings taken on the code as it stands.
+
+**Run** - from anywhere; a pin pair is 3-5 min, so `all both` (about 20 min) does not fit one
+10-minute foreground call - run one observation per call:
+
+    bash f131_run.sh 1 both                  # initial_night.sts: the two observers apart, the stars
+    bash f131_run.sh 2|3|4 both              # fly_to_selected.sts as played (the race is won here)
+    bash f131_run.sh 2|3|4 both --refuse     # the lost race forced: line 38 at 2.9 s, inside the travel
+    bash f131_run.sh 5 both                  # the wheel: the two fovs of each frame
+    bash f131_run.sh all on|off|both [--refuse]
+
+`on` = the new path pinned, `off` = the old one, `both` = new then old. The runner runs the
+`--no-scene` canary first (exit 6 = refused, nothing launched), then per pin `f124_run.sh` (instance
+probe, GPU gate, field pair in == out; its refusals stop the run, exit 7), then `f131_analyse.py
+judge` per launch and `cross` across the pins. `SC_BIN` = another binary. Records:
+`artifacts/f131/runs/<clock>/` (`summary.txt` = every verdict line, one directory per launch, the
+canary's). Exit 0 = every gate row PASS, 1 = a gate FAIL.
+
+**Reading the verdicts.** `PASS|FAIL|NOTE <obs> <pin> <criterion> observed=<v> expected=<v> tol=<t>`
+(`<obs>` = `2ref` for the refuse variant; `<pin>` = `x` across the pins). EXPECTED is the BANK, the
+table at the top of `f131_analyse.py`: the readings of the code as it stands - at the start 11.292's,
+on binary `fb30c61c`. The gate therefore detects CHANGE: a slice that changes an observation turns
+exactly its rows red; when the slice's structure task PREDICTED that, re-bank those rows in the BANK
+with the argument written in the ledger - never widen a tolerance (F124's `RESID_*` convention). NOTE
+rows print and never gate: the four criteria 11.292 (d)3 found blind (obs 1 (i) the place numbers,
+obs 2 the total layer energy, obs 3 the halos and the lighting, obs 5 the capture correlations) and
+mechanism witnesses; their `in_tol=` is information only. A record that is missing prints its rows as
+FAIL with `observed=no-record:<file>`, counted by the runner as a lost record (INTENT 5.177: a driver
+that dies must not leave a leg without a verdict).
+
+**What the gate rows see.** obs 1: the ring's view angle and distance between the two observers at
+`late` (the Camera unbound from the ground), the star points of `late.png` and the drawn star buffer.
+obs 2 / 3 / 4: the race on a natural launch (margin within one frame; the ms form, the jd form and the
+outcome agree), the final references, the refusal in the log; obs 2 the milky way's BAND energy (15 px
+median of the luminance layer ON - OFF) end over pre and the drawn observer's orbit; obs 3 Saturn's lit
+area at fov 60 (without rings: 35 % less); obs 4 the drawn observer's turn about Saturn under 20 lon +
+20 lat key commands. obs 5: per wheel window the max |projector fov - 2 x Camera half-fov|, the
+half-path lag, the rest delta. The ring reads BOTH engines on BOTH pins (both are informed): its rows
+cannot tell the pins apart - obs 1's star rows, 2ref's band, 3ref's lit area and 4ref's turn can.
+
+**Able to fail, first.** Two offline checks, no launch, on 11.292's records `artifacts/f131/O*`
+(local, git-ignored): REPLAY - `f131_analyse.py judge <obs> <nat|ref> <new|old> artifacts/f131/<record>`
+with each record's own pin must be all PASS (it is: the methods 11.292 ran by hand, recovered, give
+its numbers to the digit); SWAP - the same with the OTHER pin must FAIL the rows that see the
+observation (obs 1 the two star rows, 2ref the band, 3ref the lit area, 4ref the turns) and must NOT
+fail the ring rows. Re-run both after any edit of the criteria.
+
+**Pitfalls, each one paid for.** (1) OBS 1 DEPENDS ON THE DATE: `date load preset` reads the wall
+clock (`startup_time_mode = Actual`) and the unbound Camera holds its place in Earth's NON-rotating
+frame, so the separation at `late` is A = W(jd) + const. The two `earth_*` rows carry the bank's
+reading to the run's jd by Earth's rotation (period read from the field, `ssystem.ini [earth]
+rot_periode`); once the Camera stays bound, re-bank them as `near 0`. The NEW pin's star rows are
+date-bound as well: 0 stars while the Camera's sky is earlier than the observer's (A in about
+(5, 180) deg, printed as `separation_angle_deg`); A grows 0.5-1.5 deg a day, so in about five months
+the new pin shows stars with the defect intact - re-bank then, with the printed A as the argument.
+(2) The natural race has never been lost on this host (11 of 11 won, each within one frame): a slice
+touching the anchors is judged on `--refuse`. (3) In the refused state the Camera's distance to Saturn
+is float32 noise (+-300 km: a point frozen in float32 root coordinates against Saturn's float32
+place): a note only. (4) The obs 2 refuse band residual is Saturn's own one-grey flicker inside its
+disc between the ON and OFF shots (0.0003 to 0.0024 of the band): see INTENT 11.297. (5) The obs 5
+"burst" clicks leave 0.32 s apart (`b3_ladder.send` waits up to 0.25 s on `recv`): each plan ends
+before the next click, so the Camera's "already zooming" branch is NOT reached; a real burst needs a
+raw `S.sendall`, as `fly_refused` does. (6) `_clean` is borrowed by AST (`f124_legs.py`,
+`f125_regime.py`, `f128_legs.py`, `f131_obs.py`, `f131_analyse.py`): it imports `re` itself, since
+most borrowers do not; its test `_clean_test` runs at every `b21_keypath.py` launch. (7) `judge` is
+read-only; the obs 5 per-frame fov table is the `table` mode, which the runner runs.
+
+**Made of.** `f131_run.sh` over `f124_run.sh` unchanged (`F124_OUT_ROOT`, `SC_SEAM_RECORD=1`, umask
+0002). `f131_analyse.py` = 11.292's analyser moved byte-exact from `artifacts/f131/analyse.py` (md5
+`4feabd3a`), then edited: the BANK, the criteria and the methods 11.292 applied by hand (band split,
+lit area, halo count, turn about Saturn, capture correlations); `_clean` from `b21_keypath.py`
+replaces its private cleaner. `f131_obs.py` (the scenes) is unchanged, md5 `2b7fe412` as 11.292 ran it.
+
+**Not reached.** Row 6 of the page (the Moon 1.70x smaller: the dwell scene of `f51_dwell.py`,
+judged by the FULL canary's photometric band) is OUT of these legs. Not reached either: the joypad lat
+/ lon path, a real wheel burst (pitfall 5), the tester's coloured halos (question T1, routed).
