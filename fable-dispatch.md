@@ -1460,26 +1460,25 @@ bash claude/harness/f56_canary.sh --no-scene >/dev/null 2>&1; echo $? => 0
 PREMISES
 # per-round variables - refreshed by the dispatcher at dispatch, never at mint
 git rev-parse --abbrev-ref HEAD => main
-git rev-parse --short=8 HEAD => ee185d4f
+git rev-parse --short=8 HEAD => fe06d4c3
 git status --porcelain | wc -l => 0
-git -C claude status --porcelain | /usr/bin/grep '^??' | /usr/bin/grep -v 'INTENT/11.29[4-9].md\|INTENT/11.300.md\|harness/f131_analyse.py\|harness/f131_run.sh' | tr '\n' ' ' => ?? video_player_commits.txt
-md5sum build-claude/src/spacecrafter | cut -c1-8 => fb30c61c
+git -C claude status --porcelain | /usr/bin/grep '^??' | /usr/bin/grep -v 'INTENT/11.29[4-9].md\|INTENT/11.30[01].md\|harness/f131_analyse.py\|harness/f131_run.sh' | tr '\n' ' ' => ?? video_player_commits.txt
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 39e769cf
 find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
 test ! -e claude/INTENT/11.298.md -a ! -e claude/INTENT/archive/11.298.md && echo free => free
-/usr/bin/grep -c '^### F' claude/fable-dispatch.md => 17
+/usr/bin/grep -c '^### F' claude/fable-dispatch.md => 18
 git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD => 4dfe7bb3
 test -f claude/SHAPE.md -a -f claude/INTENT/11.293.md -a -f claude/tester-2026-09-26.md -a -f claude/b42-wiring-table.md && echo ok => ok
 python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 1
 # the structure this task implements - refreshed at dispatch, when the entry exists and is accepted
-test -f claude/INTENT/11.294.md && md5sum claude/INTENT/11.294.md | cut -c1-8 => REFRESH-AT-DISPATCH
-/usr/bin/grep -c '^P[0-9][0-9]* |' claude/INTENT/11.294.md => REFRESH-AT-DISPATCH
-/usr/bin/grep -c 'ACCEPTED' claude/fable-dispatch.md => REFRESH-AT-DISPATCH
+test -f claude/INTENT/11.294.md && md5sum claude/INTENT/11.294.md | cut -c1-8 => d7e0046f
+/usr/bin/grep -c '^P[0-9][0-9]* |' claude/INTENT/11.294.md => 25
+/usr/bin/grep -c 'ACCEPTED' claude/fable-dispatch.md => 30
 # the display and the engine slot
 md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' ' => 03fbee59 545a51ef
 test ! -e ~/.spacecrafter/beta_features.ini && echo absent => absent
-bash claude/harness/sc_instances.sh --assert f1132-gate >/dev/null 2>&1; echo $? => REFRESH-AT-DISPATCH
-bash claude/harness/f56_canary.sh --no-scene >/dev/null 2>&1; echo $? => REFRESH-AT-DISPATCH
-
+bash claude/harness/sc_instances.sh --assert f136-gate >/dev/null 2>&1; echo $? => 0
+bash claude/harness/f56_canary.sh --no-scene >/dev/null 2>&1; echo $? => 0
 ```
 
 **DoD:** the slice built as predicted or stopped at the refuted line; every gate run on both pins; every P line judged; the shape numbers; the entry `11.298.md`; the tree building and uncommitted.
