@@ -1,0 +1,33 @@
+=== f131_run.sh 3 both - 2026-09-27 18:51:26 CEST - binary /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter ===
+canary --no-scene exit 0
+launch O3_new: f124_run.sh exit 0, field pair in == out 2/2
+PASS 3 new scene_reached observed=reached expected=reached tol=-
+PASS 3 new race_margin_ms observed=13 expected=9 tol=9
+PASS 3 new race_forms_agree observed=true expected=true tol=-
+PASS 3 new camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 3 new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 3 new refusal_logged observed=false expected=false tol=-
+PASS 3 new saturn_lit_px_z60 observed=915164 expected=915152 tol=1%
+NOTE 3 new halo_px_z60 observed=25 expected=25 tol=10 in_tol=yes
+NOTE 3 new halo_px_full observed=37 expected=37 tol=10 in_tol=yes
+NOTE 3 new lit_mean_luminance observed=134.6801 expected=134.68 tol=2% in_tol=yes
+NOTE 3 new camera_system observed=SolarSystem expected=SolarSystem tol=- in_tol=yes
+NOTE 3 new light_position_au observed=9.457678 expected=9.4577 tol=1% in_tol=yes
+=== 3 new: 7 PASS, 0 FAIL, 5 NOTE ===
+launch O3_old: f124_run.sh exit 0, field pair in == out 2/2
+PASS 3 old scene_reached observed=reached expected=reached tol=-
+PASS 3 old race_margin_ms observed=12 expected=9 tol=9
+PASS 3 old race_forms_agree observed=true expected=true tol=-
+PASS 3 old camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 3 old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 3 old refusal_logged observed=false expected=false tol=-
+PASS 3 old saturn_lit_px_z60 observed=918166 expected=917926 tol=1%
+NOTE 3 old halo_px_z60 observed=22 expected=22 tol=10 in_tol=yes
+NOTE 3 old halo_px_full observed=37 expected=40 tol=10 in_tol=yes
+NOTE 3 old lit_mean_luminance observed=134.1812 expected=134.18 tol=2% in_tol=yes
+NOTE 3 old camera_system observed=SolarSystem expected=SolarSystem tol=- in_tol=yes
+NOTE 3 old light_position_au observed=9.457678 expected=9.4577 tol=1% in_tol=yes
+=== 3 old: 7 PASS, 0 FAIL, 5 NOTE ===
+PASS 3 x lit_px_new_over_old observed=0.9967304 expected=0.99698 tol=0.01
+=== 3 x: 1 PASS, 0 FAIL, 0 NOTE ===
+=== f131_run.sh: 2 launch(es), 15 PASS, 0 FAIL, 10 NOTE, lost records 0 - /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-185126/summary.txt ===

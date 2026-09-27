@@ -1,0 +1,142 @@
+-- GLOB mismatch!
+The following files were added:
+  +/home/claude/sc-bisect-build/src/spacecrafter
+---------------------------------------------
+ Project Spacecrafter
+---------------------------------------------
+-- std::stacktrace: available (extra link library: 'stdc++exp')
+---------------------------------------------
+ Spacecrafter CMAKE
+---------------------------------------------
+-- FFmpeg: libpostproc not found (FFmpeg 8+), building without it
+---------------------------------------------
+ Spacecrafter conclusion
+---------------------------------------------
+
+Build type : RelWithDebInfo
+C compiler: /usr/bin/cc
+C++ compiler: /usr/bin/c++
+System: Linux
+
+C++ version 23
+C flags: 
+C++ flags: 
+---------------------------------------------
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/claude/spacecrafter/build-claude
+[  1%] Built target iniparser
+[  6%] Built target planetsephems
+[  8%] Building CXX object src/CMakeFiles/spacecrafter.dir/appModule/fontFactory.cpp.o
+[  8%] Building CXX object src/CMakeFiles/spacecrafter.dir/appModule/app.cpp.o
+[  9%] Building CXX object src/CMakeFiles/spacecrafter.dir/bodyModule/body_artificial.cpp.o
+[  9%] Building CXX object src/CMakeFiles/spacecrafter.dir/atmosphereModule/atmosphere.cpp.o
+[  9%] Building CXX object src/CMakeFiles/spacecrafter.dir/bodyModule/body.cpp.o
+[ 10%] Building CXX object src/CMakeFiles/spacecrafter.dir/bodyModule/body_bigbody.cpp.o
+[ 11%] Building CXX object src/CMakeFiles/spacecrafter.dir/bodyModule/body_decor.cpp.o
+[ 11%] Building CXX object src/CMakeFiles/spacecrafter.dir/bodyModule/body_moon.cpp.o
+[ 12%] Building CXX object src/CMakeFiles/spacecrafter.dir/bodyModule/orbit.cpp.o
+[ 13%] Building CXX object src/CMakeFiles/spacecrafter.dir/bodyModule/solarsystem_tex.cpp.o
+[ 13%] Building CXX object src/CMakeFiles/spacecrafter.dir/bodyModule/ssystem_factory.cpp.o
+[ 14%] Building CXX object src/CMakeFiles/spacecrafter.dir/bodyModule/tail.cpp.o
+[ 15%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/backup_mgr.cpp.o
+[ 15%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/cardinals.cpp.o
+[ 15%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/constellation.cpp.o
+[ 16%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/constellation_mgr.cpp.o
+[ 16%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/core.cpp.o
+[ 16%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/coreLink.cpp.o
+[ 17%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/fog.cpp.o
+[ 18%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/illuminate_mgr.cpp.o
+[ 18%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/landscape.cpp.o
+[ 18%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/milkyway.cpp.o
+[ 18%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/nebula_mgr.cpp.o
+[ 18%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/skyDisplay.cpp.o
+[ 19%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/skydisplay_mgr.cpp.o
+[ 19%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/skyline.cpp.o
+[ 19%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/tully.cpp.o
+[ 20%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/tullyWrapper.cpp.o
+[ 20%] Building CXX object src/CMakeFiles/spacecrafter.dir/coreModule/ubo_cam.cpp.o
+[ 20%] Building CXX object src/CMakeFiles/spacecrafter.dir/eventModule/AppCommandHandler.cpp.o
+[ 20%] Building CXX object src/CMakeFiles/spacecrafter.dir/eventModule/CoreHandler.cpp.o
+[ 21%] Building CXX object src/CMakeFiles/spacecrafter.dir/eventModule/EventFpsHandler.cpp.o
+[ 21%] Building CXX object src/CMakeFiles/spacecrafter.dir/eventModule/EventSaveScreenHandler.cpp.o
+[ 21%] Building CXX object src/CMakeFiles/spacecrafter.dir/eventModule/EventScreenFaderHandler.cpp.o
+[ 22%] Building CXX object src/CMakeFiles/spacecrafter.dir/eventModule/EventScriptHandler.cpp.o
+[ 22%] Building CXX object src/CMakeFiles/spacecrafter.dir/eventModule/EventVideoHandler.cpp.o
+[ 22%] Building CXX object src/CMakeFiles/spacecrafter.dir/eventModule/event_handler.cpp.o
+[ 22%] Building CXX object src/CMakeFiles/spacecrafter.dir/executorModule/executor.cpp.o
+[ 23%] Building CXX object src/CMakeFiles/spacecrafter.dir/executorModule/inGalaxyModule.cpp.o
+[ 23%] Building CXX object src/CMakeFiles/spacecrafter.dir/executorModule/inPauseModule.cpp.o
+[ 23%] Building CXX object src/CMakeFiles/spacecrafter.dir/executorModule/inSandBoxModule.cpp.o
+[ 24%] Building CXX object src/CMakeFiles/spacecrafter.dir/executorModule/inUniverseModule.cpp.o
+[ 24%] Building CXX object src/CMakeFiles/spacecrafter.dir/executorModule/solarSystemModule.cpp.o
+[ 25%] Building CXX object src/CMakeFiles/spacecrafter.dir/executorModule/stellarSystemModule.cpp.o
+[ 25%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/AsyncHub.cpp.o
+[ 25%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/Camera.cpp.o
+[ 26%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/CameraAnchors.cpp.o
+[ 26%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/EnvironmentManager.cpp.o
+[ 26%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/ModularBody.cpp.o
+[ 27%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/ModularBodyPtr.cpp.o
+[ 27%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/ModularObject.cpp.o
+[ 28%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/ModularSystem.cpp.o
+[ 28%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/ModuleLoader.cpp.o
+[ 29%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/ModuleLoaderMgr.cpp.o
+[ 29%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/PipelineRegistry.cpp.o
+[ 29%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/RenderChain.cpp.o
+[ 30%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/Renderer.cpp.o
+[ 30%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/SessionFile.cpp.o
+[ 30%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/AtmExtModule.cpp.o
+[ 30%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/AxisModule.cpp.o
+[ 31%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/HintModule.cpp.o
+[ 31%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/OjmModule.cpp.o
+[ 32%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/OortModule.cpp.o
+[ 32%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/OrbitModule.cpp.o
+[ 32%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/PhotosphereModule.cpp.o
+[ 33%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/PlanetGridModule.cpp.o
+[ 33%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/RingModule.cpp.o
+[ 33%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/StarModule.cpp.o
+[ 34%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/TailModule.cpp.o
+[ 35%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/bodyModules/TrailModule.cpp.o
+[ 35%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/environmentModules/AtmosphereEnv.cpp.o
+[ 35%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/environmentModules/LandscapeEnv.cpp.o
+[ 36%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/environmentModules/MilkyWayEnv.cpp.o
+[ 36%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/meshModules/BasicMesh.cpp.o
+[ 36%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/meshModules/LayeredMesh.cpp.o
+[ 37%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/AtmExtLoader.cpp.o
+[ 37%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/AxisLoader.cpp.o
+[ 37%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/BasicMeshLoader.cpp.o
+[ 38%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/GridLoader.cpp.o
+[ 38%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/HintLoader.cpp.o
+[ 38%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/LayeredMeshLoader.cpp.o
+[ 39%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/OjmLoader.cpp.o
+[ 39%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/OortLoader.cpp.o
+[ 40%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/OrbitLineLoader.cpp.o
+[ 40%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/PhotosphereLoader.cpp.o
+[ 40%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/RingLoader.cpp.o
+[ 41%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/StarLoader.cpp.o
+[ 41%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/TailLoader.cpp.o
+[ 41%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/moduleLoader/TrailLoader.cpp.o
+[ 42%] Building CXX object src/CMakeFiles/spacecrafter.dir/experimentalModule/modules.cpp.o
+[ 42%] Building CXX object src/CMakeFiles/spacecrafter.dir/inGalaxyModule/Star3DWrapper.cpp.o
+[ 42%] Building CXX object src/CMakeFiles/spacecrafter.dir/inGalaxyModule/starNavigator.cpp.o
+[ 43%] Building CXX object src/CMakeFiles/spacecrafter.dir/interfaceModule/app_command_eval.cpp.o
+[ 43%] Building CXX object src/CMakeFiles/spacecrafter.dir/interfaceModule/app_command_interface.cpp.o
+[ 44%] Building CXX object src/CMakeFiles/spacecrafter.dir/mediaModule/media.cpp.o
+[ 44%] Building CXX object src/CMakeFiles/spacecrafter.dir/mediaModule/text.cpp.o
+[ 45%] Building CXX object src/CMakeFiles/spacecrafter.dir/mediaModule/text_mgr.cpp.o
+[ 45%] Building CXX object src/CMakeFiles/spacecrafter.dir/mediaModule/video_player.cpp.o
+[ 46%] Building CXX object src/CMakeFiles/spacecrafter.dir/mediaModule/vr360.cpp.o
+[ 46%] Building CXX object src/CMakeFiles/spacecrafter.dir/navModule/anchor_creator_cor.cpp.o
+[ 47%] Building CXX object src/CMakeFiles/spacecrafter.dir/navModule/anchor_manager.cpp.o
+[ 48%] Building CXX object src/CMakeFiles/spacecrafter.dir/navModule/observer.cpp.o
+[ 48%] Building CXX object src/CMakeFiles/spacecrafter.dir/scriptModule/script_mgr.cpp.o
+[ 49%] Building CXX object src/CMakeFiles/spacecrafter.dir/starModule/hip_star.cpp.o
+[ 49%] Building CXX object src/CMakeFiles/spacecrafter.dir/starModule/hip_star_mgr.cpp.o
+[ 49%] Building CXX object src/CMakeFiles/spacecrafter.dir/starModule/hip_star_wrapper.cpp.o
+[ 50%] Building CXX object src/CMakeFiles/spacecrafter.dir/starModule/zone_array.cpp.o
+[ 50%] Building CXX object src/CMakeFiles/spacecrafter.dir/uiModule/joypad_controller.cpp.o
+[ 50%] Building CXX object src/CMakeFiles/spacecrafter.dir/tools/draw_helper.cpp.o
+[ 50%] Building CXX object src/CMakeFiles/spacecrafter.dir/uiModule/ui.cpp.o
+[ 50%] Building CXX object src/CMakeFiles/spacecrafter.dir/uiModule/ui_tuiconf.cpp.o
+[ 51%] Linking CXX executable spacecrafter
+[100%] Built target spacecrafter

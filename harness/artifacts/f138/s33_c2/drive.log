@@ -1,0 +1,20 @@
+1790530331.461 >> timerate rate 0
+1790530332.562 >> deselect
+1790530338.862 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/../f138/s33_c2/a_earth.json
+PASS a_earth        ref=Earth  centre distance 6378.2 km | altitude new 75.10 m, old 75.10 m, |delta| 0 m
+1790530343.166 >> set home_planet Moon
+1790530347.466 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/../f138/s33_c2/b_moon.json
+PASS b_moon         ref=Moon   centre distance 8687.1 km | altitude new 75.10 m, old 75.10 m, |delta| 0 m
+1790530350.772 >> moveto alt 100 duration 0
+1790530355.072 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/../f138/s33_c2/c_moon_low.json
+PASS c_moon_low     ref=Moon   centre distance 8687.1 km | altitude new 100.14 m, old 100.00 m, |delta| 0.139 m
+1790530359.380 >> set home_planet Earth
+1790530363.680 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/../f138/s33_c2/d_earth_back.json
+PASS d_earth_back   ref=Earth  centre distance 6378.2 km | altitude new 100.14 m, old 100.00 m, |delta| 0.139 m
+1790530367.989 >> set home_planet Jupiter
+1790530372.290 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/../f138/s33_c2/e_jupiter.json
+PASS e_jupiter      ref=Jupiter centre distance 71492.1 km | altitude new 100.14 m, old 100.00 m, |delta| 0.139 m
+1790530376.599 >> set home_planet Earth
+1790530380.900 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f121/../f138/s33_c2/f_earth_again.json
+PASS f_earth_again  ref=Earth  centre distance 6378.2 km | altitude new 100.14 m, old 100.00 m, |delta| 0.139 m
+=== ALL PASS ===

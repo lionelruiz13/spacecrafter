@@ -1,0 +1,38 @@
+=== f131_run.sh 1 both - 2026-09-27 19:50:35 CEST - binary /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter ===
+canary --no-scene exit 0
+launch O1_new: f124_run.sh exit 0, field pair in == out 2/2
+PASS 1 new scene_reached observed=reached expected=reached tol=-
+PASS 1 new observers_view_apart_late_deg observed=12.44315 expected=12.443 tol=0.02
+PASS 1 new observers_apart_late_km observed=1379.482 expected=1374.455 tol=20
+PASS 1 new star_points_late observed=0 expected=0 tol=10
+PASS 1 new stars_in_drawn_buffer_late observed=0 expected=0 tol=10
+PASS 1 new late_after_sunset_plus_005_d observed=0.0004900012 expected=0.00049 tol=0.002
+NOTE 1 new separation_angle_deg observed=17.1277 expected=17.12584 tol=0.03 in_tol=yes
+NOTE 1 new latitude_reported_deg observed=43.3 expected=43.3 tol=0.01 in_tol=yes
+NOTE 1 new longitude_reported_deg observed=5.366667 expected=5.36667 tol=0.01 in_tol=yes
+NOTE 1 new altitude_reported_m observed=75.10428 expected=75.1 tol=1 in_tol=yes
+NOTE 1 new sky_brightness observed=0.06177848 expected=0.05061 tol=5% in_tol=no
+NOTE 1 new adaptation_luminance observed=580.675 expected=402.549 tol=5% in_tol=no
+NOTE 1 new camera_bound_pre observed=true expected=true tol=- in_tol=yes
+NOTE 1 new camera_bound_late observed=false expected=false tol=- in_tol=yes
+NOTE 1 new sunset_frame_minus_port_s observed=0.218989 expected=0.2 tol=0.5 in_tol=yes
+=== 1 new: 6 PASS, 0 FAIL, 9 NOTE ===
+launch O1_old: f124_run.sh exit 0, field pair in == out 2/2
+PASS 1 old scene_reached observed=reached expected=reached tol=-
+PASS 1 old observers_view_apart_late_deg observed=12.44307 expected=12.44292 tol=0.02
+PASS 1 old observers_apart_late_km observed=1379.609 expected=1374.446 tol=20
+PASS 1 old star_points_late observed=568 expected=565 tol=28
+PASS 1 old stars_in_drawn_buffer_late observed=3320 expected=3320 tol=166
+PASS 1 old late_after_sunset_plus_005_d observed=0.0004897027 expected=0.00049 tol=0.002
+NOTE 1 old separation_angle_deg observed=17.12759 expected=17.12573 tol=0.03 in_tol=yes
+NOTE 1 old latitude_reported_deg observed=43.3 expected=43.3 tol=0.01 in_tol=yes
+NOTE 1 old longitude_reported_deg observed=5.366667 expected=5.36667 tol=0.01 in_tol=yes
+NOTE 1 old altitude_reported_m observed=75 expected=75 tol=1 in_tol=yes
+NOTE 1 old sky_brightness observed=0.011 expected=0.01100 tol=5% in_tol=yes
+NOTE 1 old adaptation_luminance observed=4.72822 expected=4.729 tol=5% in_tol=yes
+NOTE 1 old camera_bound_pre observed=true expected=true tol=- in_tol=yes
+NOTE 1 old camera_bound_late observed=false expected=false tol=- in_tol=yes
+NOTE 1 old sunset_frame_minus_port_s observed=0.2129942 expected=0.2 tol=0.5 in_tol=yes
+=== 1 old: 6 PASS, 0 FAIL, 9 NOTE ===
+=== 1 x: 0 PASS, 0 FAIL, 0 NOTE ===
+=== f131_run.sh: 2 launch(es), 12 PASS, 0 FAIL, 18 NOTE, lost records 0 - /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-195035/summary.txt ===

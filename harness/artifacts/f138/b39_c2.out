@@ -1,0 +1,62 @@
+ACTING DEFAULTS set in the FARM COPY only (D12): query_statistics = true, maximum_fps = 10000
+>> flag experimental_path on
+>> timerate rate 0
+>> date jday 2461233.5
+>> flag landscape off
+>> flag atmosphere off
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> select planet Sun pointer off
+>> flag track_object on
+>> flag track_object off
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/c_A_t0.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/c_A_t1.json
+/home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/stats_A.dat: 3729 frames, 3711 complete, analyzing last 2000
+  EXECUTOR_DRAW      median=  399.54us mean=  393.02us p05=  165.83 p95=  638.30 min=   0.00 max= 1244.73 (n=2000)
+  EXECUTOR_UPDATE    median=  103.47us mean=  101.51us p05=   44.32 p95=  165.45 min=   0.00 max=  206.82 (n=2000)
+  FRAME_ACQUIRE      median=16075.41us mean=16011.31us p05=15344.69 p95=16820.13 min=   0.00 max=19208.78 (n=2000)
+  TOTAL_to_submit    median=16641.70us mean=16651.30us p05=16008.97 p95=17307.18 min=12996.18 max=20583.07 (n=1992)
+>> body name Jupiter hidden true
+>> body name Saturn hidden true
+>> body name Uranus hidden true
+>> body name Neptune hidden true
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/c_B_t0.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/c_B_t1.json
+/home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/stats_B.dat: 5785 frames, 5759 complete, analyzing last 2000
+  EXECUTOR_DRAW      median=  311.95us mean=  337.56us p05=  140.87 p95=  582.09 min=   0.00 max=  771.48 (n=2000)
+  EXECUTOR_UPDATE    median=   72.04us mean=   75.26us p05=   29.17 p95=  137.64 min=   0.00 max=  339.48 (n=2000)
+  FRAME_ACQUIRE      median=16179.49us mean=16098.14us p05=15388.74 p95=16962.25 min=   0.00 max=19043.54 (n=2000)
+  TOTAL_to_submit    median=16633.19us mean=16653.07us p05=15970.04 p95=17384.78 min=13872.50 max=19674.08 (n=1992)
+>> body name Mercury hidden true
+>> body name Venus hidden true
+>> body name Mars hidden true
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/c_C_t0.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/c_C_t1.json
+/home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/stats_C.dat: 7841 frames, 7807 complete, analyzing last 2000
+  EXECUTOR_DRAW      median=  313.47us mean=  333.01us p05=  153.82 p95=  557.36 min=   0.00 max=  791.12 (n=2000)
+  EXECUTOR_UPDATE    median=   66.29us mean=   68.00us p05=   29.24 p95=  121.72 min=   0.00 max=  166.12 (n=2000)
+  FRAME_ACQUIRE      median=16188.33us mean=16112.86us p05=15449.71 p95=16868.98 min=   0.00 max=18636.32 (n=2000)
+  TOTAL_to_submit    median=16639.69us mean=16654.28us p05=16019.37 p95=17320.24 min=13929.92 max=19140.79 (n=1992)
+>> body name Jupiter hidden false
+>> body name Saturn hidden false
+>> body name Uranus hidden false
+>> body name Neptune hidden false
+>> body name Mercury hidden false
+>> body name Venus hidden false
+>> body name Mars hidden false
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/c_A2_t0.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/c_A2_t1.json
+/home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/stats_A2.dat: 10154 frames, 10111 complete, analyzing last 2000
+  EXECUTOR_DRAW      median=  292.41us mean=  335.68us p05=  154.53 p95=  600.54 min=   0.00 max=  817.55 (n=2000)
+  EXECUTOR_UPDATE    median=   88.80us mean=   91.48us p05=   42.59 p95=  153.62 min=   0.00 max=  221.53 (n=2000)
+  FRAME_ACQUIRE      median=16172.56us mean=16093.89us p05=15322.62 p95=16917.43 min=   0.00 max=19000.76 (n=2000)
+  TOTAL_to_submit    median=16649.11us mean=16654.57us p05=15977.53 p95=17378.47 min=14218.43 max=19470.41 (n=1992)
+
+A_default        65.8 fps  EXECUTOR_UPDATE median=  103.47 us p05=   44.32 p95=  165.45 (n=2000)  NOT evaluated 49/120
+B_outer          65.8 fps  EXECUTOR_UPDATE median=   72.04 us p05=   29.17 p95=  137.64 (n=2000)  NOT evaluated 112/120
+C_inner_too      65.8 fps  EXECUTOR_UPDATE median=   66.29 us p05=   29.24 p95=  121.72 (n=2000)  NOT evaluated 117/120
+A2_restored      65.8 fps  EXECUTOR_UPDATE median=   88.80 us p05=   42.59 p95=  153.62 (n=2000)  NOT evaluated 49/120
+B_outer      - A_default =   -31.43 us/frame (-3.14 % of the 1 ms/frame budget)
+C_inner_too  - A_default =   -37.18 us/frame (-3.72 % of the 1 ms/frame budget)
+A2_restored  - A_default =   -14.68 us/frame (-1.47 % of the 1 ms/frame budget)
+
+written /home/claude/spacecrafter/claude/harness/artifacts/f138/b39_c2/b39_cost_farm_result.json

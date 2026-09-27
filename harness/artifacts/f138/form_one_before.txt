@@ -1,0 +1,5 @@
+src/experimentalModule/ModularBody.hpp
+  code lines 1066  full-line comment lines 149 (1 per 7.2)  trailing comments 79
+  functions 235, commented 78 (33%)   fields 208, commented 76 (37%)
+  comment blocks by length {1: 119, 2: 3, 6: 1}   comment length median 50 chars, p90 77
+  first words: [('return', 11), ('minimal', 7), ('update', 7), ('for', 6), ('in', 4), ('the', 3), ('get', 3), ('not', 2), ('draw', 2), ('evaluate', 2)]

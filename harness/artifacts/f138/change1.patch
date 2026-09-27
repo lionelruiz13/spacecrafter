@@ -1,0 +1,29 @@
+diff --git a/src/experimentalModule/ModularBody.hpp b/src/experimentalModule/ModularBody.hpp
+index 78d60ac6..747e3509 100644
+--- a/src/experimentalModule/ModularBody.hpp
++++ b/src/experimentalModule/ModularBody.hpp
+@@ -271,11 +271,7 @@ public:
+             screenPos.first = mat.r[12] * f;
+             screenPos.second = mat.r[13] * f;
+         }
+-        axisRotation = computeAxisRotation(jd);
+-        if (uncached)
+-            updateCache(); // Includes updateReach()
+-        else
+-            updateReach();
++        refreshFrameState(jd);
+         if (screenSize > 0.004)
+             notableBody.push_back(this);
+     }
+@@ -532,7 +528,10 @@ public:
+     bool useNow();
+     inline void refreshFrameState(double jd) {
+         axisRotation = computeAxisRotation(jd);
+-        updateReach();
++        if (uncached)
++            updateCache(); // Includes updateReach()
++        else
++            updateReach();
+     }
+     void resumeModulesAfterHidden();
+ 

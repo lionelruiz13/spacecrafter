@@ -1,0 +1,208 @@
+PASS 1 new scene_reached observed=reached expected=reached tol=-
+PASS 1 new observers_view_apart_late_deg observed=12.44315 expected=12.443 tol=0.02
+PASS 1 new observers_apart_late_km observed=1379.482 expected=1374.455 tol=20
+PASS 1 new star_points_late observed=0 expected=0 tol=10
+PASS 1 new stars_in_drawn_buffer_late observed=0 expected=0 tol=10
+PASS 1 new late_after_sunset_plus_005_d observed=0.0004900012 expected=0.00049 tol=0.002
+NOTE 1 new separation_angle_deg observed=17.1277 expected=17.12584 tol=0.03 in_tol=yes
+NOTE 1 new latitude_reported_deg observed=43.3 expected=43.3 tol=0.01 in_tol=yes
+NOTE 1 new longitude_reported_deg observed=5.366667 expected=5.36667 tol=0.01 in_tol=yes
+NOTE 1 new altitude_reported_m observed=75.10428 expected=75.1 tol=1 in_tol=yes
+NOTE 1 new sky_brightness observed=0.06177848 expected=0.05061 tol=5% in_tol=no
+NOTE 1 new adaptation_luminance observed=580.675 expected=402.549 tol=5% in_tol=no
+NOTE 1 new camera_bound_pre observed=true expected=true tol=- in_tol=yes
+NOTE 1 new camera_bound_late observed=false expected=false tol=- in_tol=yes
+NOTE 1 new sunset_frame_minus_port_s observed=0.218989 expected=0.2 tol=0.5 in_tol=yes
+PASS 1 old scene_reached observed=reached expected=reached tol=-
+PASS 1 old observers_view_apart_late_deg observed=12.44307 expected=12.44292 tol=0.02
+PASS 1 old observers_apart_late_km observed=1379.609 expected=1374.446 tol=20
+PASS 1 old star_points_late observed=568 expected=565 tol=28
+PASS 1 old stars_in_drawn_buffer_late observed=3320 expected=3320 tol=166
+PASS 1 old late_after_sunset_plus_005_d observed=0.0004897027 expected=0.00049 tol=0.002
+NOTE 1 old separation_angle_deg observed=17.12759 expected=17.12573 tol=0.03 in_tol=yes
+NOTE 1 old latitude_reported_deg observed=43.3 expected=43.3 tol=0.01 in_tol=yes
+NOTE 1 old longitude_reported_deg observed=5.366667 expected=5.36667 tol=0.01 in_tol=yes
+NOTE 1 old altitude_reported_m observed=75 expected=75 tol=1 in_tol=yes
+NOTE 1 old sky_brightness observed=0.011 expected=0.01100 tol=5% in_tol=yes
+NOTE 1 old adaptation_luminance observed=4.72822 expected=4.729 tol=5% in_tol=yes
+NOTE 1 old camera_bound_pre observed=true expected=true tol=- in_tol=yes
+NOTE 1 old camera_bound_late observed=false expected=false tol=- in_tol=yes
+NOTE 1 old sunset_frame_minus_port_s observed=0.2129942 expected=0.2 tol=0.5 in_tol=yes
+PASS 2 new scene_reached observed=reached expected=reached tol=-
+PASS 2 new race_margin_ms observed=7 expected=9 tol=9
+PASS 2 new race_forms_agree observed=true expected=true tol=-
+PASS 2 new camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 2 new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 2 new refusal_logged observed=false expected=false tol=-
+PASS 2 new mw_band_pre observed=3400460 expected=3.4005e6 tol=1%
+PASS 2 new mw_band_end_over_pre observed=0.7033631 expected=0.7033 tol=0.01
+PASS 2 new orbit_distance_km observed=260265.7 expected=260265.7 tol=2
+NOTE 2 new mw_total_end_over_pre observed=0.7860344 expected=0.7856 tol=0.02 in_tol=yes
+PASS 2 old scene_reached observed=reached expected=reached tol=-
+PASS 2 old race_margin_ms observed=13 expected=9 tol=9
+PASS 2 old race_forms_agree observed=true expected=true tol=-
+PASS 2 old camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 2 old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 2 old refusal_logged observed=false expected=false tol=-
+PASS 2 old mw_band_pre observed=3400469 expected=3.4005e6 tol=1%
+PASS 2 old mw_band_end_over_pre observed=0.7021037 expected=0.7021 tol=0.01
+PASS 2 old orbit_distance_km observed=260288.8 expected=260288.8 tol=2
+NOTE 2 old mw_total_end_over_pre observed=0.798534 expected=0.7985 tol=0.02 in_tol=yes
+PASS 3 new scene_reached observed=reached expected=reached tol=-
+PASS 3 new race_margin_ms observed=5 expected=9 tol=9
+PASS 3 new race_forms_agree observed=true expected=true tol=-
+PASS 3 new camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 3 new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 3 new refusal_logged observed=false expected=false tol=-
+PASS 3 new saturn_lit_px_z60 observed=915170 expected=915152 tol=1%
+NOTE 3 new halo_px_z60 observed=26 expected=25 tol=10 in_tol=yes
+NOTE 3 new halo_px_full observed=37 expected=37 tol=10 in_tol=yes
+NOTE 3 new lit_mean_luminance observed=134.6791 expected=134.68 tol=2% in_tol=yes
+NOTE 3 new camera_system observed=SolarSystem expected=SolarSystem tol=- in_tol=yes
+NOTE 3 new light_position_au observed=9.457678 expected=9.4577 tol=1% in_tol=yes
+PASS 3 old scene_reached observed=reached expected=reached tol=-
+PASS 3 old race_margin_ms observed=16 expected=9 tol=9
+PASS 3 old race_forms_agree observed=true expected=true tol=-
+PASS 3 old camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 3 old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 3 old refusal_logged observed=false expected=false tol=-
+PASS 3 old saturn_lit_px_z60 observed=918167 expected=917926 tol=1%
+NOTE 3 old halo_px_z60 observed=23 expected=22 tol=10 in_tol=yes
+NOTE 3 old halo_px_full observed=38 expected=40 tol=10 in_tol=yes
+NOTE 3 old lit_mean_luminance observed=134.1818 expected=134.18 tol=2% in_tol=yes
+NOTE 3 old camera_system observed=SolarSystem expected=SolarSystem tol=- in_tol=yes
+NOTE 3 old light_position_au observed=9.457678 expected=9.4577 tol=1% in_tol=yes
+PASS 3 x lit_px_new_over_old observed=0.9967359 expected=0.99698 tol=0.01
+PASS 4 new scene_reached observed=reached expected=reached tol=-
+PASS 4 new race_margin_ms observed=12 expected=9 tol=9
+PASS 4 new race_forms_agree observed=true expected=true tol=-
+PASS 4 new camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 4 new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4 new refusal_logged observed=false expected=false tol=-
+PASS 4 new turn_lon_deg observed=9.872608 expected=9.873 tol=0.1
+PASS 4 new turn_lat_deg observed=10.00001 expected=10 tol=0.1
+NOTE 4 new other_turn_lon_deg observed=80.76586 expected=80.767 tol=1 in_tol=yes
+NOTE 4 new other_turn_lat_deg observed=10.00195 expected=10.002 tol=0.1 in_tol=yes
+NOTE 4 new reported_altitude_before_km observed=199997.7 expected=199997.7 tol=1 in_tol=yes
+PASS 4 old scene_reached observed=reached expected=reached tol=-
+PASS 4 old race_margin_ms observed=14 expected=9 tol=9
+PASS 4 old race_forms_agree observed=true expected=true tol=-
+PASS 4 old camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 4 old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4 old refusal_logged observed=false expected=false tol=-
+PASS 4 old turn_lon_deg observed=10.06861 expected=10.068 tol=0.1
+PASS 4 old turn_lat_deg observed=10.00195 expected=10.002 tol=0.1
+NOTE 4 old reported_altitude_before_km observed=200020.8 expected=200020.8 tol=1 in_tol=yes
+PASS 5 new scene_reached observed=reached expected=reached tol=-
+PASS 5 new wheel_windows observed=9 expected=9 tol=-
+PASS 5 new max_abs_delta_w1_deg observed=26.8089 expected=26.8089 tol=5%
+PASS 5 new max_abs_delta_w2_deg observed=25.0947 expected=25.0518 tol=5%
+PASS 5 new max_abs_delta_w3_deg observed=20.6724 expected=20.1385 tol=5%
+PASS 5 new max_abs_delta_w4_deg observed=10.0693 expected=9.7864 tol=5%
+PASS 5 new max_abs_delta_w5_deg observed=5.0346 expected=4.8932 tol=5%
+PASS 5 new max_abs_delta_w6_deg observed=4.6972 expected=4.6489 tol=5%
+PASS 5 new max_abs_delta_w7_deg observed=6.9841 expected=6.9733 tol=5%
+PASS 5 new max_abs_delta_w8_deg observed=10.5868 expected=10.5868 tol=5%
+PASS 5 new max_abs_delta_w9_deg observed=45.7285 expected=45.7145 tol=5%
+PASS 5 new lag_w1_ms observed=-34 expected=-34 tol=20
+PASS 5 new lag_w2_ms observed=66 expected=67 tol=20
+PASS 5 new lag_w3_ms observed=-34 expected=-33 tol=20
+PASS 5 new lag_w4_ms observed=-33 expected=-33 tol=20
+PASS 5 new lag_w5_ms observed=-33 expected=-33 tol=20
+PASS 5 new lag_w6_ms observed=67 expected=66 tol=20
+PASS 5 new lag_w7_ms observed=67 expected=67 tol=20
+PASS 5 new lag_w8_ms observed=66 expected=66 tol=20
+PASS 5 new lag_w9_ms observed=-650 expected=-650 tol=20
+PASS 5 new rest_delta_w1_deg observed=2.504478e-06 expected=0 tol=1e-4
+PASS 5 new rest_delta_w2_deg observed=3.416227e-07 expected=0 tol=1e-4
+PASS 5 new rest_delta_w5_deg observed=4.270283e-08 expected=0 tol=1e-4
+PASS 5 new rest_delta_w8_deg observed=9.978957e-07 expected=0 tol=1e-4
+PASS 5 new rest_delta_w9_deg observed=1.669652e-06 expected=0 tol=1e-4
+NOTE 5 new frame_dt_median_ms observed=17 expected=17 tol=1 in_tol=yes
+PASS 5 old scene_reached observed=reached expected=reached tol=-
+PASS 5 old wheel_windows observed=9 expected=9 tol=-
+PASS 5 old max_abs_delta_w1_deg observed=26.8089 expected=26.0971 tol=5%
+PASS 5 old max_abs_delta_w2_deg observed=25.0947 expected=24.7940 tol=5%
+PASS 5 old max_abs_delta_w3_deg observed=19.5728 expected=19.5728 tol=5%
+PASS 5 old max_abs_delta_w4_deg observed=9.7864 expected=10.0533 tol=5%
+PASS 5 old max_abs_delta_w5_deg observed=4.8932 expected=4.8932 tol=5%
+PASS 5 old max_abs_delta_w6_deg observed=4.6489 expected=4.6972 tol=5%
+PASS 5 old max_abs_delta_w7_deg observed=7.0458 expected=7.0579 tol=5%
+PASS 5 old max_abs_delta_w8_deg observed=10.5868 expected=10.5868 tol=5%
+PASS 5 old max_abs_delta_w9_deg observed=45.7286 expected=45.7140 tol=5%
+PASS 5 old lag_w1_ms observed=-34 expected=-33 tol=20
+PASS 5 old lag_w2_ms observed=67 expected=67 tol=20
+PASS 5 old lag_w3_ms observed=-33 expected=-33 tol=20
+PASS 5 old lag_w4_ms observed=-33 expected=-34 tol=20
+PASS 5 old lag_w5_ms observed=-33 expected=-33 tol=20
+PASS 5 old lag_w6_ms observed=66 expected=67 tol=20
+PASS 5 old lag_w7_ms observed=67 expected=66 tol=20
+PASS 5 old lag_w8_ms observed=67 expected=66 tol=20
+PASS 5 old lag_w9_ms observed=-651 expected=-650 tol=20
+PASS 5 old rest_delta_w1_deg observed=2.504478e-06 expected=0 tol=1e-4
+PASS 5 old rest_delta_w2_deg observed=3.416227e-07 expected=0 tol=1e-4
+PASS 5 old rest_delta_w5_deg observed=4.270283e-08 expected=0 tol=1e-4
+PASS 5 old rest_delta_w8_deg observed=9.978957e-07 expected=0 tol=1e-4
+PASS 5 old rest_delta_w9_deg observed=1.669652e-06 expected=0 tol=1e-4
+NOTE 5 old frame_dt_median_ms observed=17 expected=17 tol=1 in_tol=yes
+NOTE 5 x band_corr_cap_mid observed=0.9996351 expected=0.9971 tol=0.005 in_tol=yes
+NOTE 5 x stars_corr_cap_mid observed=0.9906655 expected=0.6946 tol=0.1 in_tol=no
+NOTE 5 x band_corr_cap_rest180 observed=0.9998473 expected=0.9998 tol=0.005 in_tol=yes
+NOTE 5 x stars_corr_cap_rest180 observed=0.997171 expected=0.9973 tol=0.1 in_tol=yes
+NOTE 5 x band_corr_cap_rest60 observed=0.9999304 expected=0.9999 tol=0.005 in_tol=yes
+NOTE 5 x stars_corr_cap_rest60 observed=0.9956004 expected=0.9952 tol=0.1 in_tol=yes
+PASS 2ref new scene_reached observed=reached expected=reached tol=-
+PASS 2ref new camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 2ref new refusal_logged observed=true expected=true tol=-
+PASS 2ref new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 2ref new mw_band_pre observed=3400368 expected=3.4005e6 tol=1%
+PASS 2ref new mw_band_end_over_pre observed=0.000356432 expected=0.00027 tol=0.002
+NOTE 2ref new camera_distance_to_saturn_km observed=259940.5 expected=260083.1 tol=400 in_tol=yes
+NOTE 2ref new mw_total_end_over_pre observed=0.1208324 expected=0.1208 tol=0.02 in_tol=yes
+PASS 2ref old scene_reached observed=reached expected=reached tol=-
+PASS 2ref old camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 2ref old refusal_logged observed=true expected=true tol=-
+PASS 2ref old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 2ref old mw_band_pre observed=3400539 expected=3.4005e6 tol=1%
+PASS 2ref old mw_band_end_over_pre observed=0.7018023 expected=0.7018 tol=0.01
+PASS 2ref old orbit_distance_km observed=260314.9 expected=260312 tol=20
+NOTE 2ref old mw_total_end_over_pre observed=0.798442 expected=0.7984 tol=0.02 in_tol=yes
+PASS 3ref new scene_reached observed=reached expected=reached tol=-
+PASS 3ref new camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 3ref new refusal_logged observed=true expected=true tol=-
+PASS 3ref new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 3ref new saturn_lit_px_z60 observed=596075 expected=596064 tol=1%
+NOTE 3ref new halo_px_z60 observed=27 expected=26 tol=10 in_tol=yes
+NOTE 3ref new halo_px_full observed=43 expected=41 tol=10 in_tol=yes
+NOTE 3ref new lit_mean_luminance observed=154.7458 expected=154.75 tol=2% in_tol=yes
+NOTE 3ref new camera_system observed=Universe expected=Universe tol=- in_tol=yes
+NOTE 3ref new light_position_au observed=1.016648 expected=1.0166 tol=1% in_tol=yes
+PASS 3ref old scene_reached observed=reached expected=reached tol=-
+PASS 3ref old camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 3ref old refusal_logged observed=true expected=true tol=-
+PASS 3ref old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 3ref old saturn_lit_px_z60 observed=917926 expected=917926 tol=1%
+NOTE 3ref old halo_px_z60 observed=24 expected=22 tol=10 in_tol=yes
+NOTE 3ref old halo_px_full observed=42 expected=40 tol=10 in_tol=yes
+NOTE 3ref old lit_mean_luminance observed=134.1784 expected=134.18 tol=2% in_tol=yes
+NOTE 3ref old camera_system observed=Universe expected=Universe tol=- in_tol=yes
+NOTE 3ref old light_position_au observed=1.016648 expected=1.0166 tol=1% in_tol=yes
+PASS 4ref new scene_reached observed=reached expected=reached tol=-
+PASS 4ref new camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 4ref new refusal_logged observed=true expected=true tol=-
+PASS 4ref new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4ref new turn_lon_deg observed=0.04182481 expected=0.042 tol=0.2
+PASS 4ref new turn_lat_deg observed=0.04180829 expected=0.042 tol=0.2
+NOTE 4ref new other_turn_lon_deg observed=103.3413 expected=103.342 tol=1 in_tol=yes
+NOTE 4ref new other_turn_lat_deg observed=10.00092 expected=10.001 tol=0.1 in_tol=yes
+NOTE 4ref new other_distance_after_km observed=60268 expected=60268 tol=1 in_tol=yes
+NOTE 4ref new reported_altitude_before_km observed=0 expected=0 tol=1 in_tol=yes
+PASS 4ref old scene_reached observed=reached expected=reached tol=-
+PASS 4ref old camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 4ref old refusal_logged observed=true expected=true tol=-
+PASS 4ref old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4ref old turn_lon_deg observed=10.06857 expected=10.068 tol=0.1
+PASS 4ref old turn_lat_deg observed=10.00194 expected=10.002 tol=0.1
+NOTE 4ref old other_turn_lon_deg observed=29.58993 expected=29.59 tol=1 in_tol=yes
+NOTE 4ref old other_turn_lat_deg observed=5.250162 expected=5.25 tol=1 in_tol=yes
+NOTE 4ref old reported_altitude_before_km observed=200045.2 expected=200049.6 tol=1 in_tol=no

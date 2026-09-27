@@ -1,0 +1,31 @@
+=== f131_run.sh 5 on - 2026-09-27 19:04:23 CEST - binary /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter ===
+canary --no-scene exit 0
+launch O5_new: f124_run.sh exit 0, field pair in == out 2/2
+PASS 5 new scene_reached observed=reached expected=reached tol=-
+PASS 5 new wheel_windows observed=9 expected=9 tol=-
+PASS 5 new max_abs_delta_w1_deg observed=26.0971 expected=26.8089 tol=5%
+PASS 5 new max_abs_delta_w2_deg observed=24.794 expected=25.0518 tol=5%
+PASS 5 new max_abs_delta_w3_deg observed=20.1067 expected=20.1385 tol=5%
+PASS 5 new max_abs_delta_w4_deg observed=9.7667 expected=9.7864 tol=5%
+PASS 5 new max_abs_delta_w5_deg observed=5.0267 expected=4.8932 tol=5%
+PASS 5 new max_abs_delta_w6_deg observed=4.7536 expected=4.6489 tol=5%
+PASS 5 new max_abs_delta_w7_deg observed=6.9733 expected=6.9733 tol=5%
+PASS 5 new max_abs_delta_w8_deg observed=10.6011 expected=10.5868 tol=5%
+PASS 5 new max_abs_delta_w9_deg observed=45.7162 expected=45.7145 tol=5%
+PASS 5 new lag_w1_ms observed=-33 expected=-34 tol=20
+PASS 5 new lag_w2_ms observed=67 expected=67 tol=20
+PASS 5 new lag_w3_ms observed=-34 expected=-33 tol=20
+PASS 5 new lag_w4_ms observed=-33 expected=-33 tol=20
+PASS 5 new lag_w5_ms observed=-34 expected=-33 tol=20
+PASS 5 new lag_w6_ms observed=68 expected=66 tol=20
+PASS 5 new lag_w7_ms observed=68 expected=67 tol=20
+PASS 5 new lag_w8_ms observed=66 expected=66 tol=20
+PASS 5 new lag_w9_ms observed=-650 expected=-650 tol=20
+PASS 5 new rest_delta_w1_deg observed=2.504478e-06 expected=0 tol=1e-4
+PASS 5 new rest_delta_w2_deg observed=3.416227e-07 expected=0 tol=1e-4
+PASS 5 new rest_delta_w5_deg observed=4.270283e-08 expected=0 tol=1e-4
+PASS 5 new rest_delta_w8_deg observed=9.978957e-07 expected=0 tol=1e-4
+PASS 5 new rest_delta_w9_deg observed=1.669652e-06 expected=0 tol=1e-4
+NOTE 5 new frame_dt_median_ms observed=17 expected=17 tol=1 in_tol=yes
+=== 5 new: 25 PASS, 0 FAIL, 1 NOTE ===
+=== f131_run.sh: 1 launch(es), 25 PASS, 0 FAIL, 1 NOTE, lost records 0 - /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-190423/summary.txt ===

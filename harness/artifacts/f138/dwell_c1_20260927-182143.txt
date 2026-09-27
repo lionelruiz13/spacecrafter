@@ -1,0 +1,23 @@
+dwell_settle: drawnPath=new reference=Moon freeMode=True refCached=True refAoI_km=215832.36 camera.distance_km=8687.08 |position|_km=8687.08
+  control.altitude: new=6949675.117625108 old=75.10427587606682 reported=6949675.117625108
+  Moon.new: dist_km=8687.08 scaledDatumRadius_km=1737.40 scaledGroundRadius_km=1737.40 boundingRadius_km=1772.15 scaling=1.00000012 target=1 visible=False screen=[-1.41267467, -1.41575098] screenSize=2
+  Moon.old: dist_km=1737.48 screenSz=2035.8746337890625 visible=False
+dwell_dump_start: drawnPath=new reference=Moon freeMode=True refCached=True refAoI_km=215832.36 camera.distance_km=8687.08 |position|_km=9737.40
+  control.altitude: new=7999999.708009772 old=8000000 reported=7999999.708009772
+  Moon.new: dist_km=9737.40 scaledDatumRadius_km=1737.40 scaledGroundRadius_km=1737.40 boundingRadius_km=1772.15 scaling=1.00000012 target=1 visible=True screen=[6.40464748e-07, -5.00895567e-07] screenSize=2.09718513
+  Moon.old: dist_km=9737.40 screenSz=4209.8935546875 visible=True
+dwell_dump_end: drawnPath=new reference=Moon freeMode=True refCached=True refAoI_km=215832.36 camera.distance_km=8687.08 |position|_km=9737.40
+  control.altitude: new=7999999.708009772 old=8000000 reported=7999999.708009772
+  Moon.new: dist_km=9737.40 scaledDatumRadius_km=1737.40 scaledGroundRadius_km=1737.40 boundingRadius_km=1772.15 scaling=1.00000012 target=1 visible=True screen=[6.40464748e-07, -5.00895567e-07] screenSize=2.09718513
+  Moon.old: dist_km=9737.40 screenSz=4209.8935546875 visible=True
+dwell_dump_old: drawnPath=old reference=Moon freeMode=True refCached=True refAoI_km=215832.36 camera.distance_km=8687.08 |position|_km=9737.40
+  control.altitude: new=7999999.708009772 old=8000000 reported=8000000
+  Moon.new: dist_km=9737.40 scaledDatumRadius_km=1737.40 scaledGroundRadius_km=1737.40 boundingRadius_km=1772.15 scaling=1.00000012 target=1 visible=True screen=[6.40464748e-07, -5.00895567e-07] screenSize=2.09718513
+  Moon.old: dist_km=9737.40 screenSz=4209.8935546875 visible=True
+  trace: scaledDatumRadius_km=5872.413643 scaling=3.38000107 target=1 boundingRadius_km=5989.86 datum/1737.4-scaling=-0.000000
+  trace: scaledDatumRadius_km=3132.356602 scaling=1.80289888 target=1 boundingRadius_km=3195.00 datum/1737.4-scaling=0.000000
+  trace: scaledDatumRadius_km=1842.121064 scaling=1.0602746 target=1 boundingRadius_km=1878.96 datum/1737.4-scaling=-0.000000
+  trace: scaledDatumRadius_km=1737.400266 scaling=1.00000012 target=1 boundingRadius_km=1772.15 datum/1737.4-scaling=0.000000
+  trace: scaledDatumRadius_km=1737.400266 scaling=1.00000012 target=1 boundingRadius_km=1772.15 datum/1737.4-scaling=0.000000
+  trace: samples=5 max|datum_km/1737.4 - scaling|=0.000000 (P12 criterion < 1e-3)
+  f51_dwell.json fails=[] n_samples=2

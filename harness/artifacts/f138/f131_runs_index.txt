@@ -1,0 +1,17 @@
+20260927-184448 === f131_run.sh 1 both - 2026-09-27 18:44:48 CEST - binary / | === f131_run.sh: 2 launch(es), 12 PASS, 0 FAIL, 18 NOTE, lost records 
+20260927-184748 === f131_run.sh 2 both - 2026-09-27 18:47:48 CEST - binary / | === f131_run.sh: 2 launch(es), 18 PASS, 0 FAIL, 2 NOTE, lost records 0
+20260927-185126 === f131_run.sh 3 both - 2026-09-27 18:51:26 CEST - binary / | === f131_run.sh: 2 launch(es), 15 PASS, 0 FAIL, 10 NOTE, lost records 
+20260927-185514 === f131_run.sh 4 both - 2026-09-27 18:55:14 CEST - binary / | === f131_run.sh: 2 launch(es), 16 PASS, 0 FAIL, 4 NOTE, lost records 0
+20260927-185944 === f131_run.sh 5 both - 2026-09-27 18:59:44 CEST - binary / | === f131_run.sh: 2 launch(es), 49 PASS, 1 FAIL, 8 NOTE, lost records 0
+20260927-190423 === f131_run.sh 5 on - 2026-09-27 19:04:23 CEST - binary /ho | === f131_run.sh: 1 launch(es), 25 PASS, 0 FAIL, 1 NOTE, lost records 0
+20260927-190557 === f131_run.sh 2 both --refuse - 2026-09-27 19:05:57 CEST - | === f131_run.sh: 2 launch(es), 13 PASS, 0 FAIL, 3 NOTE, lost records 0
+20260927-190947 === f131_run.sh 3 both --refuse - 2026-09-27 19:09:47 CEST - | === f131_run.sh: 2 launch(es), 10 PASS, 0 FAIL, 10 NOTE, lost records 
+20260927-191426 === f131_run.sh 4 both --refuse - 2026-09-27 19:14:26 CEST - | === f131_run.sh: 2 launch(es), 12 PASS, 0 FAIL, 7 NOTE, lost records 0
+20260927-195035 === f131_run.sh 1 both - 2026-09-27 19:50:35 CEST - binary / | === f131_run.sh: 2 launch(es), 12 PASS, 0 FAIL, 18 NOTE, lost records 
+20260927-195332 === f131_run.sh 2 both - 2026-09-27 19:53:32 CEST - binary / | === f131_run.sh: 2 launch(es), 18 PASS, 0 FAIL, 2 NOTE, lost records 0
+20260927-195713 === f131_run.sh 3 both - 2026-09-27 19:57:13 CEST - binary / | === f131_run.sh: 2 launch(es), 15 PASS, 0 FAIL, 10 NOTE, lost records 
+20260927-200054 === f131_run.sh 4 both - 2026-09-27 20:00:54 CEST - binary / | === f131_run.sh: 2 launch(es), 16 PASS, 0 FAIL, 4 NOTE, lost records 0
+20260927-200532 === f131_run.sh 5 both - 2026-09-27 20:05:32 CEST - binary / | === f131_run.sh: 2 launch(es), 50 PASS, 0 FAIL, 8 NOTE, lost records 0
+20260927-200849 === f131_run.sh 2 both --refuse - 2026-09-27 20:08:49 CEST - | === f131_run.sh: 2 launch(es), 13 PASS, 0 FAIL, 3 NOTE, lost records 0
+20260927-201252 === f131_run.sh 3 both --refuse - 2026-09-27 20:12:52 CEST - | === f131_run.sh: 2 launch(es), 10 PASS, 0 FAIL, 10 NOTE, lost records 
+20260927-201645 === f131_run.sh 4 both --refuse - 2026-09-27 20:16:45 CEST - | === f131_run.sh: 2 launch(es), 12 PASS, 0 FAIL, 7 NOTE, lost records 0

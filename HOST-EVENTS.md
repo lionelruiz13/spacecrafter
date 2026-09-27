@@ -498,4 +498,9 @@ never rewrite (maintenance invariant). Archival per the standing convention
   `moveto` on a stale cached radius, F131 row 6) measured on this boot BEFORE slice 5 — the band is
   NOT re-banked; it is slice 5's gate and this run is its "before". Field pair `03fbee59` / `545a51ef`
   in == out; no engine left (`sc_instances.sh` 13:58:37).
+  → **THE "AFTER", same boot, 20:31:41–20:33:28 [measured: supervisor, `20260927-203141`, on F138's binary
+  `39e769cf` = code `fe06d4c3`]: exit 0, 12/12 IN BAND — new path 165.26 / 6.647 on all four members (delta
+  0.002 / 0.003 from the bank, a NOTE not gated), old path 160.142 / 6.603 delta 0.0. The drift of 09-26 was
+  §5.186 (a free-mode `moveto` on a stale cached radius of the culled Moon), fixed by code, not by a re-bank:
+  the band stands as banked on 2026-08-30. The photometric baseline of this corpus is comparable again.**
 

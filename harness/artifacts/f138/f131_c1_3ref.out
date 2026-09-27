@@ -1,0 +1,28 @@
+=== f131_run.sh 3 both --refuse - 2026-09-27 19:09:47 CEST - binary /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter ===
+canary --no-scene exit 0
+launch O3_ref_new: f124_run.sh exit 0, field pair in == out 2/2
+PASS 3ref new scene_reached observed=reached expected=reached tol=-
+PASS 3ref new camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 3ref new refusal_logged observed=true expected=true tol=-
+PASS 3ref new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 3ref new saturn_lit_px_z60 observed=594741 expected=596064 tol=1%
+NOTE 3ref new halo_px_z60 observed=26 expected=26 tol=10 in_tol=yes
+NOTE 3ref new halo_px_full observed=41 expected=41 tol=10 in_tol=yes
+NOTE 3ref new lit_mean_luminance observed=154.7237 expected=154.75 tol=2% in_tol=yes
+NOTE 3ref new camera_system observed=Universe expected=Universe tol=- in_tol=yes
+NOTE 3ref new light_position_au observed=1.016648 expected=1.0166 tol=1% in_tol=yes
+=== 3ref new: 5 PASS, 0 FAIL, 5 NOTE ===
+launch O3_ref_old: f124_run.sh exit 0, field pair in == out 2/2
+PASS 3ref old scene_reached observed=reached expected=reached tol=-
+PASS 3ref old camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 3ref old refusal_logged observed=true expected=true tol=-
+PASS 3ref old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 3ref old saturn_lit_px_z60 observed=917957 expected=917926 tol=1%
+NOTE 3ref old halo_px_z60 observed=22 expected=22 tol=10 in_tol=yes
+NOTE 3ref old halo_px_full observed=41 expected=40 tol=10 in_tol=yes
+NOTE 3ref old lit_mean_luminance observed=134.1779 expected=134.18 tol=2% in_tol=yes
+NOTE 3ref old camera_system observed=Universe expected=Universe tol=- in_tol=yes
+NOTE 3ref old light_position_au observed=1.016648 expected=1.0166 tol=1% in_tol=yes
+=== 3ref old: 5 PASS, 0 FAIL, 5 NOTE ===
+=== 3ref x: 0 PASS, 0 FAIL, 0 NOTE ===
+=== f131_run.sh: 2 launch(es), 10 PASS, 0 FAIL, 10 NOTE, lost records 0 - /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-190947/summary.txt ===

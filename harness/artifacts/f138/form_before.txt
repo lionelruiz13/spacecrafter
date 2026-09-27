@@ -1,0 +1,20 @@
+OWNER, 4dfe7bb3: 22 headers
+  code lines 1366  full-line comment lines 151 (1 per 9.0)  trailing comments 66
+  functions 295, commented 61 (21%)   fields 220, commented 50 (23%)
+  comment blocks by length {1: 107, 2: 2, 4: 1, 5: 1, 6: 2}   comment length median 43 chars, p90 86
+  first words: [('return', 8), ('update', 7), ('draw', 7), ('minimal', 6), ('get', 4), ('for', 4), ('find', 4), ('calculate', 3), ('the', 3), ('load', 3)]
+NOW, HEAD: 68 headers
+  code lines 3829  full-line comment lines 417 (1 per 9.2)  trailing comments 313
+  functions 852, commented 213 (25%)   fields 856, commented 261 (30%)
+  comment blocks by length {1: 370, 2: 10, 3: 1, 6: 1}   comment length median 47 chars, p90 77
+  first words: [('return', 37), ('draw', 28), ('must', 14), ('for', 12), ('update', 9), ('with', 7), ('in', 7), ('call', 7), ('minimal', 7), ('bid', 7)]
+NOW, only the 21 headers that existed in his state
+  code lines 2147  full-line comment lines 259 (1 per 8.3)  trailing comments 127
+  functions 535, commented 144 (27%)   fields 376, commented 111 (30%)
+  comment blocks by length {1: 220, 2: 6, 3: 1, 6: 1}   comment length median 52 chars, p90 79
+  first words: [('return', 23), ('draw', 13), ('update', 9), ('for', 7), ('minimal', 7), ('in', 6), ('calculate', 4), ('the', 4), ('find', 4), ('may', 3)]
+NOW, the four dense service headers (all agent-created)
+  code lines 275  full-line comment lines 38 (1 per 7.2)  trailing comments 33
+  functions 85, commented 26 (31%)   fields 75, commented 23 (31%)
+  comment blocks by length {1: 36, 2: 1}   comment length median 50 chars, p90 82
+  first words: [('return', 5), ('comment', 2), ('preset', 1), ('set', 1), ('count', 1), ('write', 1), ('report', 1), ('parse', 1), ('lines', 1), ('rewrite', 1)]

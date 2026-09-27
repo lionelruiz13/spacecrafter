@@ -1,0 +1,4 @@
+reference=Earth freeMode=False boundToSurface=True camera.distance_km=6378.215396
+control.altitude new=75.10427587606682 old=75.10427587606682 reported=75.10427587606682 drawnPath=new
+Earth.new scaledDatumRadius_km=6378.140283 scaling=1 visible=True
+NOTE P24 control.altitude.new=75.10427587606682 m: 75 m +- 1 (the prediction)
