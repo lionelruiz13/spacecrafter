@@ -1606,7 +1606,7 @@ PREMISES
 # per-round variables - refreshed by the dispatcher at dispatch, never at mint
 git rev-parse --abbrev-ref HEAD => main
 git rev-parse --short=8 HEAD => ee185d4f
-git diff --stat | tail -1 | tr -s ' ' => 
+git diff --name-only | /usr/bin/grep -v 'src/experimentalModule/ModularBody.hpp\|src/experimentalModule/ModularBody.cpp\|src/experimentalModule/CameraAnchors.cpp' | wc -l => 0
 git -C claude status --porcelain | /usr/bin/grep '^??' | /usr/bin/grep -v 'INTENT/11.29[4-9].md\|INTENT/11.30[01].md\|harness/f131_analyse.py\|harness/f131_run.sh' | tr '\n' ' ' => ?? video_player_commits.txt
 test ! -e claude/INTENT/11.301.md -a ! -e claude/INTENT/archive/11.301.md && echo free => free
 /usr/bin/grep -c '^### F' claude/fable-dispatch.md => 18
