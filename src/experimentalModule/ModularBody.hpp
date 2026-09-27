@@ -271,11 +271,7 @@ public:
             screenPos.first = mat.r[12] * f;
             screenPos.second = mat.r[13] * f;
         }
-        axisRotation = computeAxisRotation(jd);
-        if (uncached)
-            updateCache(); // Includes updateReach()
-        else
-            updateReach();
+        refreshFrameState(jd);
         if (screenSize > 0.004)
             notableBody.push_back(this);
     }
@@ -532,7 +528,10 @@ public:
     bool useNow();
     inline void refreshFrameState(double jd) {
         axisRotation = computeAxisRotation(jd);
-        updateReach();
+        if (uncached)
+            updateCache(); // Includes updateReach()
+        else
+            updateReach();
     }
     void resumeModulesAfterHidden();
 
