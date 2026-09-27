@@ -1,0 +1,24 @@
+1790513940.798 >> flag experimental_path off
+1790513943.048 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-145650/O2_old/pin_check.json
+-- dump pin_check    drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461311.041007 frames=660
+PASS drawn_path_is_the_pinned_one  control.drawnPath = old
+1790513946.311 >> date jday 2461233.5
+1790513947.561 >> select planet Saturn
+1790513950.812 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-145650/O2_old/pre.json
+-- dump pre          drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500052 frames=1127
+PASS saturn_selected  Camera selected = Saturn
+PASS capture_pre_mw_on_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-145650/O2_old/pre_mw_on.png
+1790513956.858 >> flag milky_way off
+PASS capture_pre_mw_off_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-145650/O2_old/pre_mw_off.png
+1790513964.879 >> flag milky_way on
+1790513970.129 >> script action play filename /home/claude/spacecrafter/claude/tester_notes/fly_to_selected.sts
+1790513992.880 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-145650/O2_old/end.json
+-- dump end          drawn=old ref=Saturn free=False bound=False old_home=Saturn jd=2461233.500539 frames=3639
+PASS capture_end_mw_on_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-145650/O2_old/end_mw_on.png
+1790513998.941 >> flag milky_way off
+PASS capture_end_mw_off_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-145650/O2_old/end_mw_off.png
+1790514006.962 >> flag milky_way on
+1790514012.213 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-145650/O2_old/final.json
+-- dump final        drawn=old ref=Saturn free=False bound=False old_home=Saturn jd=2461233.500763 frames=4803
+
+=== obs 2 pin off: SCENE REACHED ===

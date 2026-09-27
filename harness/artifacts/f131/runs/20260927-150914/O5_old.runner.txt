@@ -1,0 +1,36 @@
+=== F124 run 'O5_old' ===
+wall clock start : 2026-09-27 15:10:44 CEST
+driver           : f131_obs.py --obs 5 --pin off
+driver md5       : 2b7fe4121e68e9a940047a6a90c7d41a
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : fb30c61c0082a7ceca3bb458f19925ab
+binary mtime     : 2026-09-26 19:18:35.056168252 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[O5_old] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[O5_old] gpu: free 27161 MiB / used 4946 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=123738
+launch wall clock: 2026-09-27 15:10:44 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 123755 
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[O5_old-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-09-27 15:12:10 CEST
+--- driver result ---
+-- dump pin_check    drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461311.049374 frames=656
+PASS drawn_path_is_the_pinned_one  control.drawnPath = old
+-- dump pre          drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1197
+-- dump aim_0        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1393
+-- dump aim_1        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1639
+-- dump aim_2        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1885
+-- dump aim_5        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=2169
+-- dump wheel_done   drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=2453
+PASS capture_cap_rest180_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_old/cap_rest180.png
+PASS capture_cap_mid_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_old/cap_mid.png
+-- dump cap_mid      drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=3265
+PASS capture_cap_rest60_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_old/cap_rest60.png
+-- dump final        drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=3748
+=== obs 5 pin off: SCENE REACHED ===

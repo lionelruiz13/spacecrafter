@@ -1,0 +1,66 @@
+=== f131_run.sh 5 both - 2026-09-27 15:09:14 CEST - binary /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter ===
+canary --no-scene exit 0
+launch O5_new: f124_run.sh exit 0, field pair in == out 2/2
+PASS 5 new scene_reached observed=reached expected=reached tol=-
+PASS 5 new wheel_windows observed=9 expected=9 tol=-
+PASS 5 new max_abs_delta_w1_deg observed=26.0971 expected=26.8089 tol=5%
+PASS 5 new max_abs_delta_w2_deg observed=25.0005 expected=25.0518 tol=5%
+PASS 5 new max_abs_delta_w3_deg observed=20.1067 expected=20.1385 tol=5%
+PASS 5 new max_abs_delta_w4_deg observed=10.0693 expected=9.7864 tol=5%
+PASS 5 new max_abs_delta_w5_deg observed=4.8553 expected=4.8932 tol=5%
+PASS 5 new max_abs_delta_w6_deg observed=4.7053 expected=4.6489 tol=5%
+PASS 5 new max_abs_delta_w7_deg observed=6.9733 expected=6.9733 tol=5%
+PASS 5 new max_abs_delta_w8_deg observed=10.5868 expected=10.5868 tol=5%
+PASS 5 new max_abs_delta_w9_deg observed=45.7286 expected=45.7145 tol=5%
+PASS 5 new lag_w1_ms observed=-34 expected=-34 tol=20
+PASS 5 new lag_w2_ms observed=66 expected=67 tol=20
+PASS 5 new lag_w3_ms observed=-33 expected=-33 tol=20
+PASS 5 new lag_w4_ms observed=-33 expected=-33 tol=20
+PASS 5 new lag_w5_ms observed=-32 expected=-33 tol=20
+PASS 5 new lag_w6_ms observed=68 expected=66 tol=20
+PASS 5 new lag_w7_ms observed=67 expected=67 tol=20
+PASS 5 new lag_w8_ms observed=68 expected=66 tol=20
+PASS 5 new lag_w9_ms observed=-649 expected=-650 tol=20
+PASS 5 new rest_delta_w1_deg observed=2.504478e-06 expected=0 tol=1e-4
+PASS 5 new rest_delta_w2_deg observed=3.416227e-07 expected=0 tol=1e-4
+PASS 5 new rest_delta_w5_deg observed=4.270283e-08 expected=0 tol=1e-4
+PASS 5 new rest_delta_w8_deg observed=9.978957e-07 expected=0 tol=1e-4
+PASS 5 new rest_delta_w9_deg observed=1.669652e-06 expected=0 tol=1e-4
+NOTE 5 new frame_dt_median_ms observed=17 expected=17 tol=1 in_tol=yes
+=== 5 new: 25 PASS, 0 FAIL, 1 NOTE ===
+launch O5_old: f124_run.sh exit 0, field pair in == out 2/2
+PASS 5 old scene_reached observed=reached expected=reached tol=-
+PASS 5 old wheel_windows observed=9 expected=9 tol=-
+PASS 5 old max_abs_delta_w1_deg observed=26.0971 expected=26.0971 tol=5%
+PASS 5 old max_abs_delta_w2_deg observed=25.0518 expected=24.7940 tol=5%
+PASS 5 old max_abs_delta_w3_deg observed=20.1385 expected=19.5728 tol=5%
+PASS 5 old max_abs_delta_w4_deg observed=9.7864 expected=10.0533 tol=5%
+PASS 5 old max_abs_delta_w5_deg observed=5.0267 expected=4.8932 tol=5%
+PASS 5 old max_abs_delta_w6_deg observed=4.6489 expected=4.6972 tol=5%
+PASS 5 old max_abs_delta_w7_deg observed=6.9733 expected=7.0579 tol=5%
+PASS 5 old max_abs_delta_w8_deg observed=10.5868 expected=10.5868 tol=5%
+PASS 5 old max_abs_delta_w9_deg observed=45.7286 expected=45.7140 tol=5%
+PASS 5 old lag_w1_ms observed=-33 expected=-33 tol=20
+PASS 5 old lag_w2_ms observed=67 expected=67 tol=20
+PASS 5 old lag_w3_ms observed=-33 expected=-33 tol=20
+PASS 5 old lag_w4_ms observed=-33 expected=-34 tol=20
+PASS 5 old lag_w5_ms observed=-34 expected=-33 tol=20
+PASS 5 old lag_w6_ms observed=66 expected=67 tol=20
+PASS 5 old lag_w7_ms observed=67 expected=66 tol=20
+PASS 5 old lag_w8_ms observed=66 expected=66 tol=20
+PASS 5 old lag_w9_ms observed=-650 expected=-650 tol=20
+PASS 5 old rest_delta_w1_deg observed=2.504478e-06 expected=0 tol=1e-4
+PASS 5 old rest_delta_w2_deg observed=3.416227e-07 expected=0 tol=1e-4
+PASS 5 old rest_delta_w5_deg observed=4.270283e-08 expected=0 tol=1e-4
+PASS 5 old rest_delta_w8_deg observed=9.978957e-07 expected=0 tol=1e-4
+PASS 5 old rest_delta_w9_deg observed=1.669652e-06 expected=0 tol=1e-4
+NOTE 5 old frame_dt_median_ms observed=17 expected=17 tol=1 in_tol=yes
+=== 5 old: 25 PASS, 0 FAIL, 1 NOTE ===
+NOTE 5 x band_corr_cap_mid observed=0.9997735 expected=0.9971 tol=0.005 in_tol=yes
+NOTE 5 x stars_corr_cap_mid observed=0.9923118 expected=0.6946 tol=0.1 in_tol=no
+NOTE 5 x band_corr_cap_rest180 observed=0.9998475 expected=0.9998 tol=0.005 in_tol=yes
+NOTE 5 x stars_corr_cap_rest180 observed=0.997128 expected=0.9973 tol=0.1 in_tol=yes
+NOTE 5 x band_corr_cap_rest60 observed=0.9999298 expected=0.9999 tol=0.005 in_tol=yes
+NOTE 5 x stars_corr_cap_rest60 observed=0.9855185 expected=0.9952 tol=0.1 in_tol=yes
+=== 5 x: 0 PASS, 0 FAIL, 6 NOTE ===
+=== f131_run.sh: 2 launch(es), 50 PASS, 0 FAIL, 8 NOTE, lost records 0 - /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/summary.txt ===

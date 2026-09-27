@@ -1,0 +1,75 @@
+1790515454.158 >> flag experimental_path off
+1790515456.408 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/pin_check.json
+-- dump pin_check    drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461311.058519 frames=664
+PASS drawn_path_is_the_pinned_one  control.drawnPath = old
+1790515459.673 >> date jday 2461233.5
+1790515460.923 >> select planet Saturn
+1790515464.173 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/pre.json
+-- dump pre          drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500052 frames=1130
+PASS saturn_selected  Camera selected = Saturn
+PASS capture_pre_mw_on_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/pre_mw_on.png
+1790515470.220 >> flag milky_way off
+PASS capture_pre_mw_off_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/pre_mw_off.png
+1790515478.241 >> flag milky_way on
+1790515483.491 >> body action preload name selected
+1790515484.041 >> timerate rate 1
+1790515484.592 >> flag track_object on
+1790515485.842 >> moveto altitude 20000000 duration 3
+1790515489.092 >> lines 21 + 37 in one packet
+1790515491.993 >> line 38 at +2.9 s
+1790515508.993 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/refused_check.json
+-- dump refused_check drawn=old ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500571 frames=3806
+PASS new_registry_refused_line_38  Camera reference = temp_point
+PASS capture_before_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/before.png
+1790515515.057 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/before.json
+-- dump before       drawn=old ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500642 frames=4172
+1790515518.354 >> moveto delta_lon 0.5 duration 0.1
+1790515519.004 >> moveto delta_lon 0.5 duration 0.1
+1790515519.655 >> moveto delta_lon 0.5 duration 0.1
+1790515520.305 >> moveto delta_lon 0.5 duration 0.1
+1790515520.955 >> moveto delta_lon 0.5 duration 0.1
+1790515521.606 >> moveto delta_lon 0.5 duration 0.1
+1790515522.256 >> moveto delta_lon 0.5 duration 0.1
+1790515522.907 >> moveto delta_lon 0.5 duration 0.1
+1790515523.557 >> moveto delta_lon 0.5 duration 0.1
+1790515524.208 >> moveto delta_lon 0.5 duration 0.1
+1790515524.858 >> moveto delta_lon 0.5 duration 0.1
+1790515525.508 >> moveto delta_lon 0.5 duration 0.1
+1790515526.159 >> moveto delta_lon 0.5 duration 0.1
+1790515526.809 >> moveto delta_lon 0.5 duration 0.1
+1790515527.459 >> moveto delta_lon 0.5 duration 0.1
+1790515528.110 >> moveto delta_lon 0.5 duration 0.1
+1790515528.760 >> moveto delta_lon 0.5 duration 0.1
+1790515529.411 >> moveto delta_lon 0.5 duration 0.1
+1790515530.061 >> moveto delta_lon 0.5 duration 0.1
+1790515530.712 >> moveto delta_lon 0.5 duration 0.1
+PASS capture_after_lon_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/after_lon.png
+1790515536.132 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/after_lon.json
+-- dump after_lon    drawn=old ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500886 frames=5439
+1790515539.440 >> moveto delta_lat 0.5 duration 0.1
+1790515540.091 >> moveto delta_lat 0.5 duration 0.1
+1790515540.741 >> moveto delta_lat 0.5 duration 0.1
+1790515541.391 >> moveto delta_lat 0.5 duration 0.1
+1790515542.042 >> moveto delta_lat 0.5 duration 0.1
+1790515542.692 >> moveto delta_lat 0.5 duration 0.1
+1790515543.343 >> moveto delta_lat 0.5 duration 0.1
+1790515543.993 >> moveto delta_lat 0.5 duration 0.1
+1790515544.643 >> moveto delta_lat 0.5 duration 0.1
+1790515545.294 >> moveto delta_lat 0.5 duration 0.1
+1790515545.944 >> moveto delta_lat 0.5 duration 0.1
+1790515546.595 >> moveto delta_lat 0.5 duration 0.1
+1790515547.245 >> moveto delta_lat 0.5 duration 0.1
+1790515547.895 >> moveto delta_lat 0.5 duration 0.1
+1790515548.546 >> moveto delta_lat 0.5 duration 0.1
+1790515549.196 >> moveto delta_lat 0.5 duration 0.1
+1790515549.847 >> moveto delta_lat 0.5 duration 0.1
+1790515550.497 >> moveto delta_lat 0.5 duration 0.1
+1790515551.147 >> moveto delta_lat 0.5 duration 0.1
+1790515551.798 >> moveto delta_lat 0.5 duration 0.1
+PASS capture_after_lat_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/after_lat.png
+1790515557.220 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/after_lat.json
+-- dump after_lat    drawn=old ref=temp_point free=False bound=False old_home=Saturn jd=2461233.501130 frames=6708
+1790515560.548 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-152131/O4_ref_old/final.json
+-- dump final        drawn=old ref=temp_point free=False bound=False old_home=Saturn jd=2461233.501168 frames=6908
+
+=== obs 4 pin off: SCENE REACHED ===

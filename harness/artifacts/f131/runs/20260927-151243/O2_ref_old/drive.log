@@ -1,0 +1,32 @@
+1790514899.258 >> flag experimental_path off
+1790514901.508 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/O2_ref_old/pin_check.json
+-- dump pin_check    drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461311.052095 frames=660
+PASS drawn_path_is_the_pinned_one  control.drawnPath = old
+1790514904.771 >> date jday 2461233.5
+1790514906.021 >> select planet Saturn
+1790514909.272 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/O2_ref_old/pre.json
+-- dump pre          drawn=old ref=Earth free=False bound=True old_home=Earth jd=2461233.500052 frames=1126
+PASS saturn_selected  Camera selected = Saturn
+PASS capture_pre_mw_on_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/O2_ref_old/pre_mw_on.png
+1790514915.317 >> flag milky_way off
+PASS capture_pre_mw_off_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/O2_ref_old/pre_mw_off.png
+1790514923.339 >> flag milky_way on
+1790514928.589 >> body action preload name selected
+1790514929.139 >> timerate rate 1
+1790514929.690 >> flag track_object on
+1790514930.940 >> moveto altitude 20000000 duration 3
+1790514934.190 >> lines 21 + 37 in one packet
+1790514937.091 >> line 38 at +2.9 s
+1790514954.091 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/O2_ref_old/refused_check.json
+-- dump refused_check drawn=old ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500571 frames=3799
+PASS new_registry_refused_line_38  Camera reference = temp_point
+1790514957.387 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/O2_ref_old/end.json
+-- dump end          drawn=old ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500610 frames=3997
+PASS capture_end_mw_on_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/O2_ref_old/end_mw_on.png
+1790514963.449 >> flag milky_way off
+PASS capture_end_mw_off_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/O2_ref_old/end_mw_off.png
+1790514971.473 >> flag milky_way on
+1790514976.723 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/O2_ref_old/final.json
+-- dump final        drawn=old ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500834 frames=5161
+
+=== obs 2 pin off: SCENE REACHED ===

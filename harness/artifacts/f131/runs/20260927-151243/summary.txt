@@ -1,0 +1,24 @@
+=== f131_run.sh 2 both --refuse - 2026-09-27 15:12:43 CEST - binary /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter ===
+canary --no-scene exit 0
+launch O2_ref_new: f124_run.sh exit 0, field pair in == out 2/2
+PASS 2ref new scene_reached observed=reached expected=reached tol=-
+PASS 2ref new camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 2ref new refusal_logged observed=true expected=true tol=-
+PASS 2ref new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 2ref new mw_band_pre observed=3400113 expected=3.4005e6 tol=1%
+FAIL 2ref new mw_band_end_over_pre observed=0.002379921 expected=0.00027 tol=0.002
+NOTE 2ref new camera_distance_to_saturn_km observed=260225.8 expected=260083.1 tol=400 in_tol=yes
+NOTE 2ref new mw_total_end_over_pre observed=0.1241243 expected=0.1208 tol=0.02 in_tol=yes
+=== 2ref new: 5 PASS, 1 FAIL, 2 NOTE ===
+launch O2_ref_old: f124_run.sh exit 0, field pair in == out 2/2
+PASS 2ref old scene_reached observed=reached expected=reached tol=-
+PASS 2ref old camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 2ref old refusal_logged observed=true expected=true tol=-
+PASS 2ref old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 2ref old mw_band_pre observed=3400649 expected=3.4005e6 tol=1%
+PASS 2ref old mw_band_end_over_pre observed=0.7017655 expected=0.7018 tol=0.01
+PASS 2ref old orbit_distance_km observed=260315.9 expected=260312 tol=20
+NOTE 2ref old mw_total_end_over_pre observed=0.7983692 expected=0.7984 tol=0.02 in_tol=yes
+=== 2ref old: 7 PASS, 0 FAIL, 1 NOTE ===
+=== 2ref x: 0 PASS, 0 FAIL, 0 NOTE ===
+=== f131_run.sh: 2 launch(es), 12 PASS, 1 FAIL, 3 NOTE, lost records 0 - /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151243/summary.txt ===

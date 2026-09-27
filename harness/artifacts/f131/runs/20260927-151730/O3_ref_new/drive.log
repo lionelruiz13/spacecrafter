@@ -1,0 +1,34 @@
+1790515072.980 >> flag experimental_path on
+1790515075.230 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/pin_check.json
+-- dump pin_check    drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461311.054110 frames=664
+PASS drawn_path_is_the_pinned_one  control.drawnPath = new
+1790515078.495 >> date jday 2461233.5
+1790515079.745 >> select planet Saturn
+1790515082.996 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/pre.json
+-- dump pre          drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500052 frames=1130
+PASS saturn_selected  Camera selected = Saturn
+PASS capture_pre_mw_on_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/pre_mw_on.png
+1790515089.049 >> flag milky_way off
+PASS capture_pre_mw_off_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/pre_mw_off.png
+1790515097.069 >> flag milky_way on
+1790515102.320 >> body action preload name selected
+1790515102.870 >> timerate rate 1
+1790515103.421 >> flag track_object on
+1790515104.671 >> moveto altitude 20000000 duration 3
+1790515107.921 >> lines 21 + 37 in one packet
+1790515110.822 >> line 38 at +2.9 s
+1790515127.822 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/refused_check.json
+-- dump refused_check drawn=new ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500571 frames=3822
+PASS new_registry_refused_line_38  Camera reference = temp_point
+PASS capture_end_full_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/end_full.png
+1790515133.890 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/end.json
+-- dump end          drawn=new ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500642 frames=4186
+PASS gdb_light_ran_clean  ModularBody::lightPosition; Camera::instance->system->englishName._M_dataplus._M_p; ModularBody::halfFov
+1790515145.190 >> zoom fov 60 duration 0
+PASS capture_end_z60_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/end_z60.png
+1790515151.211 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/end_z60.json
+-- dump end_z60      drawn=new ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500842 frames=5015
+1790515154.519 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-151730/O3_ref_new/final.json
+-- dump final        drawn=new ref=temp_point free=False bound=False old_home=Saturn jd=2461233.500881 frames=5214
+
+=== obs 3 pin on: SCENE REACHED ===

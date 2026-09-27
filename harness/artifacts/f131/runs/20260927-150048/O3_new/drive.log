@@ -1,0 +1,26 @@
+1790514071.458 >> flag experimental_path on
+1790514073.708 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150048/O3_new/pin_check.json
+-- dump pin_check    drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461311.042512 frames=663
+PASS drawn_path_is_the_pinned_one  control.drawnPath = new
+1790514076.972 >> date jday 2461233.5
+1790514078.222 >> select planet Saturn
+1790514081.472 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150048/O3_new/pre.json
+-- dump pre          drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500052 frames=1129
+PASS saturn_selected  Camera selected = Saturn
+PASS capture_pre_mw_on_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150048/O3_new/pre_mw_on.png
+1790514087.521 >> flag milky_way off
+PASS capture_pre_mw_off_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150048/O3_new/pre_mw_off.png
+1790514095.542 >> flag milky_way on
+1790514100.793 >> script action play filename /home/claude/spacecrafter/claude/tester_notes/fly_to_selected.sts
+PASS capture_end_full_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150048/O3_new/end_full.png
+1790514126.317 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150048/O3_new/end.json
+-- dump end          drawn=new ref=Saturn free=False bound=False old_home=Saturn jd=2461233.500572 frames=3822
+PASS gdb_light_ran_clean  ModularBody::lightPosition; Camera::instance->system->englishName._M_dataplus._M_p; ModularBody::halfFov
+1790514137.611 >> zoom fov 60 duration 0
+PASS capture_end_z60_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150048/O3_new/end_z60.png
+1790514143.632 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150048/O3_new/end_z60.json
+-- dump end_z60      drawn=new ref=Saturn free=False bound=False old_home=Saturn jd=2461233.500772 frames=4650
+1790514146.935 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150048/O3_new/final.json
+-- dump final        drawn=new ref=Saturn free=False bound=False old_home=Saturn jd=2461233.500811 frames=4849
+
+=== obs 3 pin on: SCENE REACHED ===

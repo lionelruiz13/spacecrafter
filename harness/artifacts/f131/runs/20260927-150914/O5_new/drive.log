@@ -1,0 +1,38 @@
+1790514577.481 >> flag experimental_path on
+1790514579.731 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/pin_check.json
+-- dump pin_check    drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461311.048369 frames=664
+PASS drawn_path_is_the_pinned_one  control.drawnPath = new
+1790514582.995 >> date jday 2461233.5
+1790514584.245 >> timerate rate 0
+1790514585.495 >> deselect
+1790514588.746 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/pre.json
+-- dump pre          drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1205
+1790514592.014 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/aim_0.json
+-- dump aim_0        drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1401
+1790514593.784 >> zoom fov 90.000000000 duration 0.2
+1790514596.105 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/aim_1.json
+-- dump aim_1        drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1647
+1790514597.877 >> zoom fov 135.000000000 duration 0.2
+1790514600.198 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/aim_2.json
+-- dump aim_2        drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=1892
+1790514601.974 >> zoom fov 67.500000000 duration 0.2
+1790514602.294 >> zoom fov 33.750000000 duration 0.2
+1790514602.615 >> zoom fov 16.875000000 duration 0.2
+1790514604.936 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/aim_5.json
+-- dump aim_5        drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=2177
+1790514606.712 >> zoom fov 25.312500000 duration 0.2
+1790514607.032 >> zoom fov 37.968750000 duration 0.2
+1790514607.352 >> zoom fov 56.953125000 duration 0.2
+1790514609.673 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/wheel_done.json
+-- dump wheel_done   drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=2461
+1790514612.954 >> zoom fov 180 duration 0
+PASS capture_cap_rest180_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/cap_rest180.png
+1790514618.987 >> zoom fov 60 duration 3
+PASS capture_cap_mid_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/cap_mid.png
+1790514623.203 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/cap_mid.json
+-- dump cap_mid      drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=3272
+PASS capture_cap_rest60_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/cap_rest60.png
+1790514631.259 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20260927-150914/O5_new/final.json
+-- dump final        drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500014 frames=3755
+
+=== obs 5 pin on: SCENE REACHED ===
