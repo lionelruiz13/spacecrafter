@@ -1565,14 +1565,14 @@ git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD => 4dfe7bb
 test -f claude/SHAPE.md -a -f claude/INTENT/11.293.md -a -f claude/tester-2026-09-26.md -a -f claude/b42-wiring-table.md && echo ok => ok
 python3 claude/intent_resolve.py 5.99999 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 1
 # the structure this task implements - refreshed at dispatch, when the entry exists and is accepted
-test -f claude/INTENT/11.296.md && md5sum claude/INTENT/11.296.md | cut -c1-8 => REFRESH-AT-DISPATCH
-/usr/bin/grep -c '^P[0-9][0-9]* |' claude/INTENT/11.296.md => REFRESH-AT-DISPATCH
-/usr/bin/grep -c 'ACCEPTED' claude/fable-dispatch.md => REFRESH-AT-DISPATCH
+test -f claude/INTENT/11.296.md && md5sum claude/INTENT/11.296.md | cut -c1-8 => 6f85283b
+/usr/bin/grep -c '^P[0-9][0-9]* |' claude/INTENT/11.296.md => 27
+/usr/bin/grep -c 'ACCEPTED' claude/fable-dispatch.md => 28
 # the display and the engine slot
 md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' ' => 03fbee59 545a51ef
 test ! -e ~/.spacecrafter/beta_features.ini && echo absent => absent
-bash claude/harness/sc_instances.sh --assert f1134-gate >/dev/null 2>&1; echo $? => REFRESH-AT-DISPATCH
-bash claude/harness/f56_canary.sh --no-scene >/dev/null 2>&1; echo $? => REFRESH-AT-DISPATCH
+bash claude/harness/sc_instances.sh --assert f1134-gate >/dev/null 2>&1; echo $? => 0
+bash claude/harness/f56_canary.sh --no-scene >/dev/null 2>&1; echo $? => 0
 
 ```
 
