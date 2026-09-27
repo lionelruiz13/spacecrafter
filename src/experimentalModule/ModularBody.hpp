@@ -524,7 +524,7 @@ public:
         }
         return true;
     }
-    // Refresh a hidden body for use, return false on failure
+    // Bring a body to the present for a use, return false on failure
     bool useNow();
     inline void refreshFrameState(double jd) {
         axisRotation = computeAxisRotation(jd);

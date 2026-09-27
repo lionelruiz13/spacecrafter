@@ -520,6 +520,7 @@ bool CameraAnchors::travelToBody(const std::string &bodyName, double seconds, do
     const double gap = direction.length();
     if (gap > 0)
         direction.normalize();
+    target->useNow(); // the standoff below reads its radius
     const double standoff = (altitudeKm < 0)
         ? target->getScaledRadius() * 5.0
         : target->getScaledRadius() + altitudeKm / AU;

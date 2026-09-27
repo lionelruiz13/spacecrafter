@@ -301,48 +301,48 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
     return static_cast<ModularSystem *>(body);
 }
 
-// The D8 use-site barrier (S11.76(b)) - see the header for why +4 and why the
-// frame comes from the parent rather than from this body.
+// Take a parked body's frame from its parent: no walk reaches it
 bool ModularBody::useNow()
 {
-    if (!renderHidden || !parent)
-        return true; // the walks still evaluate this body: fresh by construction
-    const bool dateFresh = (evaluatedJD == currentJD);
-    const bool parentServed = parent->useNow();
-    if (!(parent->renderHidden ? parentServed : parent->parkedFramePublished)) {
-        if (!unservedLogged) {
-            unservedLogged = true;
-            cLog::get()->write("Position of '" + englishName + "' was used, but "
-                "its parent '" + parent->englishName + "' has not published a "
-                "position frame for its parked children: the loaded system's "
-                "update walk has not visited '" + parent->englishName
-                + "' since '" + englishName + "' was parked under it, so there "
-                "is no frame to compute '" + englishName + "' in. This use is "
-                "REFUSED: '" + englishName + "' keeps its unevaluated position "
-                "(the zero vector), so its distance, RA/DE, alt/az and magnitude "
-                "stay the degenerate readout instead of becoming a "
-                "plausible-looking wrong one. Two ways to be here: '"
-                + parent->englishName + "' is OUTSIDE that walk and always will "
-                "be (the walk stops at the system node, so anything under the "
-                "universe root is) - then declare '" + englishName + "' under a "
-                "body the loaded system walks; or '" + englishName + "' was "
-                "created or reloaded just now - then the next frame's walk "
-                "publishes and the use after it is served.",
-                LOG_TYPE::L_WARNING);
+    if (renderHidden && parent) {
+        const bool dateFresh = (evaluatedJD == currentJD);
+        const bool parentServed = parent->useNow();
+        if (!(parent->renderHidden ? parentServed : parent->parkedFramePublished)) {
+            if (!unservedLogged) {
+                unservedLogged = true;
+                cLog::get()->write("Position of '" + englishName + "' was used, but "
+                    "its parent '" + parent->englishName + "' has not published a "
+                    "position frame for its parked children: the loaded system's "
+                    "update walk has not visited '" + parent->englishName
+                    + "' since '" + englishName + "' was parked under it, so there "
+                    "is no frame to compute '" + englishName + "' in. This use is "
+                    "REFUSED: '" + englishName + "' keeps its unevaluated position "
+                    "(the zero vector), so its distance, RA/DE, alt/az and magnitude "
+                    "stay the degenerate readout instead of becoming a "
+                    "plausible-looking wrong one. Two ways to be here: '"
+                    + parent->englishName + "' is OUTSIDE that walk and always will "
+                    "be (the walk stops at the system node, so anything under the "
+                    "universe root is) - then declare '" + englishName + "' under a "
+                    "body the loaded system walks; or '" + englishName + "' was "
+                    "created or reloaded just now - then the next frame's walk "
+                    "publishes and the use after it is served.",
+                    LOG_TYPE::L_WARNING);
+            }
+            return false;
         }
-        return false;
+        const Mat4f &parentFlat = parent->renderHidden ? parent->matLocalToBodyPos
+                                                       : parent->parkedChildFrame;
+        const Mat4f frame = boundToSurface
+            ? parentFlat.multiplyFast(parent->accumulatedBodyPosToBody(currentJD))
+            : parentFlat;
+        if (!(dateFresh && sameFrame(frame, evaluatedFrame))) {
+            evaluatedFrame = frame;
+            const int extra = dateFresh ? 0 : RESUME_EXTRA_ITERATIONS;
+            for (int i = 0; i <= extra; ++i)
+                recursiveTranslationUpdate(currentJD, frame);
+        }
     }
-    const Mat4f &parentFlat = parent->renderHidden ? parent->matLocalToBodyPos
-                                                   : parent->parkedChildFrame;
-    const Mat4f frame = boundToSurface
-        ? parentFlat.multiplyFast(parent->accumulatedBodyPosToBody(currentJD))
-        : parentFlat;
-    if (dateFresh && sameFrame(frame, evaluatedFrame))
-        return true; // this date AND this camera frame: already computed, by a use
-    evaluatedFrame = frame;
-    const int extra = dateFresh ? 0 : RESUME_EXTRA_ITERATIONS;
-    for (int i = 0; i <= extra; ++i)
-        recursiveTranslationUpdate(currentJD, frame);
+    refreshFrameState(currentJD);
     return true;
 }
 
