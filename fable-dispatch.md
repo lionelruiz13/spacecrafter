@@ -1262,7 +1262,7 @@ python3 claude/harness/shape/names.py src/experimentalModule/Renderer.hpp => Ren
 ```
 
 **DoD:** the STATUS section on the page (every question with a verdict); the census table; slice 1's S4 pass, predicted diff, manager counts and gate readings; the PREDICTIONS block; the entry file `11.294.md`; `src/` untouched; nothing committed.
-**WIP:** 2026-09-27 — MINTED (round supervisor, Claude Fable 5.1, session 40).
+**WIP:** 2026-09-27 — MINTED (round supervisor, Claude Fable 5.1, session 40). DISPATCHED 14:15 (gate 24 / 0 at the mint 14:13; agent type `claude`, model `fable`; in parallel with F133 / F134 / F135; harness `9ee330a`).
 
 ---
 
@@ -1323,7 +1323,7 @@ test -f claude/harness/f124_run.sh -a -f claude/harness/f124_legs.py && echo ok 
 ```
 
 **DoD:** the two-lines table; M1-M4 verdicts; the Q-F table with the predicted shape argued; the slice's S4 pass, diff, manager counts, gate readings; the PREDICTIONS block in two groups; the entry `11.295.md`; `src/` untouched; nothing committed.
-**WIP:** 2026-09-27 — MINTED (round supervisor, Claude Fable 5.1, session 40).
+**WIP:** 2026-09-27 — MINTED (round supervisor, Claude Fable 5.1, session 40). DISPATCHED 14:15 (gate 27 / 0 at the mint; agent type `claude`, model `fable`; in parallel with F132 / F134 / F135; harness `9ee330a`).
 
 ---
 
@@ -1378,7 +1378,7 @@ test -f claude/harness/f51_run.sh -a -f claude/harness/f51_dwell.py && echo ok =
 ```
 
 **DoD:** the channel table; the writer's effects; the shape argued with the count; the slice's S4 pass, diff, manager counts, gate readings; the PREDICTIONS block; the entry `11.296.md`; `src/` untouched; nothing committed.
-**WIP:** 2026-09-27 — MINTED (round supervisor, Claude Fable 5.1, session 40).
+**WIP:** 2026-09-27 — MINTED (round supervisor, Claude Fable 5.1, session 40). DISPATCHED 14:15 (gate 22 / 0 at the mint; agent type `claude`, model `fable`; in parallel with F132 / F133 / F135; harness `9ee330a`). DELIVERED 14:45 → **§11.296** (171 lines, 27-line block). **ACCEPTED 14:5x by the supervisor, from the entry read in full and the code at HEAD re-read by my own hand** (`Camera.cpp:384` calls `reference->refreshFrameState(jd)` every frame; `refreshFrameState` = spin + reach, `update()`'s tail = spin + `if (uncached) updateCache() else updateReach()` — the omitted branch IS the hole; `useNow`'s early return `fresh by construction` true of the position, false of the cache; `dispatchUpdate:265` gates `update()` on `isVisible`; the anchors' standoff reads the target's `getScaledRadius()` at `:524-525` with no use call; `git log -S`: `refreshFrameState` = `b4105a83` Opus 5, `useNow` = `a62ad5d7` Opus 5). TWO DISPATCHER DEFECTS OF THE MINT, caught by the executor: *"`useNow` is the owner's own name"* — written from RECALL, refuted by `git log -S` (both barrier names are agents'); *"legs A / M unchanged"* — refuted for M (the two §5.162 reds are predicted green: the slice reaches §5.162's exact scene). The two decisions left to me, TAKEN: (i) F138 builds commit 1 (the hook completes `update()`'s tail) and runs its gates, THEN commit 2 (`useNow` ends with it + the anchors' one-line rider) and runs them again — the order keeps P11 / P12 discriminating and gives two clean structural changes; (ii) the S6-violating two-line comment `ModularBody.cpp:304-305` is trimmed to one line without the ledger reference, riding with commit 2. NEW, recorded not minted: (s3/P24) the Camera's constructor reads a COLD datum at load (`core.cpp:399` before `initDisplayScaling` `:598`), overwritten later — F138's P24 check decides whether it is a row; (s6) `get status object` → `computeMagnitude` reads a culled non-selected body's frozen `scaledRadius` with no barrier — a §5 candidate on the readout channel, minted at F138's acceptance if F138 confirms it. F138 waits for the engine (F135) and for F132 / F133 to stop reading `src/`.
 
 ---
 
@@ -1434,7 +1434,7 @@ bash claude/harness/f56_canary.sh --no-scene >/dev/null 2>&1; echo $? => 0
 ```
 
 **DoD:** the runner and the analyser in `harness/`; every leg run on both pins with PASS / FAIL lines; every 11.292 number confirmed or refuted with both values; §5.187 fixed with its test; README section; FORCE_ADD list; the entry `11.297.md`; `src/` untouched; nothing committed.
-**WIP:** 2026-09-27 — MINTED (round supervisor, Claude Fable 5.1, session 40).
+**WIP:** 2026-09-27 — MINTED (round supervisor, Claude Fable 5.1, session 40). DISPATCHED 14:15 (gate 22 / 0 at the mint; agent type `opus-xhigh`, Claude Opus 5.5; the engine's sole user this round until F136; harness `9ee330a`).
 
 ---
 
