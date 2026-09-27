@@ -64,7 +64,7 @@ void CoreBackup::saveBackup()
 	mBackup.longitude=coreLink->observatoryGetLongitude();
 	mBackup.altitude=coreLink->observatoryGetAltitude();
 	// mBackup.pos_name=core->observatory->getName();
-	mBackup.fov = core->projection->getFov(); //getFov();
+	mBackup.fov = core->drawnFov();
 	mBackup.home_planet_name=core->observatory->getHomePlanetEnglishName();
 	mBackup.current_module=core->getFlagIngalaxy();
 }

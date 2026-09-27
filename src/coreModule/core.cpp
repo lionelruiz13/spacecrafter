@@ -910,6 +910,11 @@ bool Core::getExperimentalPath() const
 	return ssystemFactory->getExperimentalPath();
 }
 
+double Core::drawnFov() const
+{
+	return ssystemFactory->drawModularSystem ? ModularBody::halfFov * (360. / M_PI) : projection->getFov();
+}
+
 void Core::preloadSolarSystemBody(stringHash_t& param)
 {
 	auto &name = param["name"];
@@ -1276,17 +1281,17 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 
 	if ( allow_manual_zoom && FlagManualZoom ) {
 		// if manual zoom mode, user can zoom in incrementally
-		float newfov = projection->getFov()*0.5f;
+		float newfov = drawnFov()*0.5f;
 		zoomToBothPaths(newfov, manual_move_duration);
 
 	} else {
 		float satfov = selected_object.getSatellitesFov(navigation);
 
-		if (satfov>0.0 && projection->getFov()*0.9>satfov)
+		if (satfov>0.0 && drawnFov()*0.9>satfov)
 			zoomToBothPaths(satfov, move_duration);
 		else {
 			float closefov = selected_object.getCloseFov(navigation);
-			if (projection->getFov()>closefov)
+			if (drawnFov()>closefov)
 				zoomToBothPaths(closefov, move_duration);
 		}
 	}
@@ -1300,7 +1305,7 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 		// Handle manual unzoom
 		if ( allow_manual_zoom && FlagManualZoom ) {
 			// if manual zoom mode, user can zoom out incrementally
-			float newfov = projection->getFov()*2.f;
+			float newfov = drawnFov()*2.f;
 			if (newfov >= InitFov ) {
 				// Need to go to init fov/direction
 				zoomToBothPaths(InitFov, move_duration);
@@ -1324,7 +1329,7 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 		float satfov = selected_object.getSatellitesFov(navigation);
 
 		// Saturn wasn't untracking from moon issue
-		if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
+		if (satfov>0.0 && drawnFov()<=satfov*0.9 && satfov < .9*InitFov) {
 			zoomToBothPaths(satfov, move_duration);
 			return;
 		}
@@ -1334,7 +1339,7 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 		//    cout << "Unzoom to parent sat fov: " << satfov << endl;
 
 		// Charon wasn't untracking from Pluto issue
-		if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
+		if (satfov>0.0 && drawnFov()<=satfov*0.9 && satfov < .9*InitFov) {
 			zoomToBothPaths(satfov, move_duration);
 			return;
 		}
@@ -1841,8 +1846,9 @@ void Core::updateMove(int delta_time)
 	++rampFrame;
 
 	// the more it is zoomed, the more the mooving speed is low (in angle)
-	double depl=vzm.move_speed*delta_time*projection->getFov();
-	double deplzoom=vzm.zoom_speed*delta_time*projection->getFov();
+	const double fov = drawnFov();
+	double depl=vzm.move_speed*delta_time*fov;
+	double deplzoom=vzm.zoom_speed*delta_time*fov;
 
 	if (vzm.deltaAz<0) {
 		vzm.deltaAz = -vzm.coefAz*depl/30;
@@ -1865,7 +1871,7 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaFov<0) {
 		vzm.deltaFov = -deplzoom*5;
-		if (vzm.deltaFov<-0.15*projection->getFov()) vzm.deltaFov = -0.15*projection->getFov();
+		if (vzm.deltaFov<-0.15*fov) vzm.deltaFov = -0.15*fov;
 	} else {
 		if (vzm.deltaFov>0) {
 			vzm.deltaFov = deplzoom*5;
@@ -1882,7 +1888,7 @@ void Core::updateMove(int delta_time)
 	if (vzm.deltaFov != 0 ) {
 		projection->changeFov(vzm.deltaFov);
 		if (Camera::instance)
-			Camera::instance->setHalfFov(projection->getFov() * M_PI / 360, 0);
+			Camera::instance->setHalfFov(ModularBody::halfFov + vzm.deltaFov * (M_PI / 360.), 0);
 		std::ostringstream oss;
 		oss << "zoom delta_fov " << vzm.deltaFov;
 		if (!recordActionCallback.empty()) recordActionCallback(oss.str());

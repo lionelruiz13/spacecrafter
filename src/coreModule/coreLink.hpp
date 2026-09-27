@@ -315,7 +315,7 @@ public:
 
 	//! Get current FOV (in degree)
 	float getFov() const {
-		return core->projection->getFov();
+		return core->drawnFov();
 	}
 
 	//! If is currently zooming, return the target FOV, otherwise return current FOV

@@ -462,6 +462,8 @@ public:
 	void dumpSeamTrace(std::ostream &out) const;
 	void setExperimentalPath(bool newPath);
 	bool getExperimentalPath() const;
+	//! Return the fov the drawn path uses, in degrees
+	double drawnFov() const;
 	//! Call once at init; mode = "new", "old" or "alternate"
 	void setRenderPathMode(const std::string &mode);
 
