@@ -327,6 +327,14 @@ public:
 		textMgr->textUpdate(name, text);
 	}
 
+	void textUpdate(int delta_time) {
+		textMgr->update(delta_time);
+	}
+
+	void textSetLocation(std::string name, float altitude, bool deltax, float azimuth, bool deltay, float duration) {
+		textMgr->setLocation(name, altitude, deltax, azimuth, deltay, duration);
+	}
+
 	void textDisplay(std::string name , bool displ) {
 		textMgr->textDisplay(name, displ);
 	}

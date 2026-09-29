@@ -41,6 +41,7 @@ Text::Text(const std::string &_name, const std::string &_text, float _altitude, 
 	textFont =_myFont;
 	textAlign = _textAlign;
 	smooth = _textFader;
+	flag_location = 0;
 
 }
 
@@ -48,6 +49,24 @@ Text::Text(const std::string &_name, const std::string &_text, float _altitude, 
 Text::~Text()
 {}
 
+void Text::update(int delta_time)
+{
+	if (flag_location) {
+		my_timer += delta_time; // update local timer
+		if (my_timer < end_time) {
+			altitude = start_altitude + my_timer*x_move; // linear function
+		} else {
+			altitude = end_altitude;
+			flag_location = 0;
+		}
+		if (my_timer < end_time) {
+			azimuth = start_azimuth + my_timer*y_move; // linear function
+		} else {
+			azimuth = end_azimuth;
+			flag_location = 0;
+		}
+	}
+}
 
 void Text::draw(const Projector* prj)
 {
@@ -58,8 +77,40 @@ void Text::draw(const Projector* prj)
 	textFont->printHorizontal(prj, altitude, azimuth, text,textColor, textAlign, true);
 }
 
+void Text::setLocation(float _altitude, bool deltax, float _azimuth, bool deltay, float duration)
+{
+	if (duration<=0) {
+		if (deltax) altitude = _altitude;
+		if (deltay) azimuth = _azimuth;
+		return;
+	}
+	start_altitude = altitude;
+	start_azimuth = azimuth;
+
+	my_timer = 0;// count time elapsed from the beginning of the command
+
+	// only move if changing value
+	if (deltax) end_altitude = _altitude;
+	else end_altitude = altitude;
+
+	if (deltay) end_azimuth = _azimuth;
+	else end_azimuth = azimuth;
+
+	// the new script begin here
+	x_move = end_altitude - start_altitude;
+	y_move = end_azimuth - start_azimuth;
+	if (y_move > 180)
+		y_move = y_move - 360;
+	else if (y_move < -180)
+		y_move = y_move + 360;
+	end_time = int(duration * 1000.f); // movement duration in milliseconds
+	x_move = x_move / (1000.f*duration);
+	y_move = y_move / (1000.f*duration);
+	flag_location = 1;
+}
+
 void Text::textUpdate(const std::string &_text)
 {
 	textFont->clearCache(text);
-	text=_text;
+	text = _text;
 }

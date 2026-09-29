@@ -737,7 +737,10 @@ void App::update(int delta_time)
 	ui->tuiUpdateWidgets();
 	context.stat->capture(Capture::UI_UPDATE);
 
-	if (!scriptMgr->isPaused()) media->imageUpdate(delta_time);
+	if (!scriptMgr->isPaused()) {
+		media->imageUpdate(delta_time);
+		media->textUpdate(delta_time);
+	} 
 	context.stat->capture(Capture::MEDIA_IMAGE_UPDATE);
 
 	media->playerUpdate();

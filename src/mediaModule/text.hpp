@@ -51,6 +51,9 @@ public:
 	Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, s_font *_myFont, const TEXT_ALIGN &_textAlign, const Vec3f &color, bool _textFader);
 	~Text();
 
+	//! update the text's position if it is moving
+	void update(int delta_time);
+
 	//! hide or not the text on the display
 	void setDisplay(bool b) {
 		if (smooth)
@@ -77,6 +80,9 @@ public:
 	//! modify the text's message
 	void textUpdate(const std::string &_text);
 
+	//! modify the text's position
+	void setLocation(float _altitude, bool deltax, float _azimuth, bool deltay, float duration);
+
 	//! displays the text on the screen
 	void draw(const Projector* prj);
 
@@ -91,6 +97,9 @@ private:
 	s_font* textFont;
 	TEXT_ALIGN textAlign;
 	bool fade_out;
+	int my_timer;
+	float start_altitude, start_azimuth, end_altitude, end_azimuth, x_move, y_move, end_time;
+	bool flag_location;
 };
 
 #endif // TEXT_HPP

@@ -2226,13 +2226,22 @@ int AppCommandInterface::commandText()
 		}
 
 		if (argAction==W_UPDATE) {
+			std::string argAltitude = args[W_ALTITUDE];
+			std::string argAzimuth = args[W_AZIMUTH];
+			std::string argDuration = args[W_DURATION];
+
 			media->textNameUpdate(argName+"1", argString);
 			std::string argWrite = args[W_WRITE];
 			if (argWrite == W_TWICE)
-				media->textNameUpdate(argName+"2",argString);
+				media->textNameUpdate(argName+"2", argString);
 			if (argWrite == W_THRICE) {
-				media->textNameUpdate(argName+"2",argString);
-				media->textNameUpdate(argName+"3",argString);
+				media->textNameUpdate(argName+"2", argString);
+				media->textNameUpdate(argName+"3", argString);
+			}
+			if (!argAltitude.empty() || !argAzimuth.empty()) {
+				media->textSetLocation(argName+"1", evalDouble(argAltitude), !argAltitude.empty(),
+		                        evalDouble(argAzimuth), !argAzimuth.empty(),
+		                        evalDouble(argDuration));
 			}
 			return executeCommandStatus();
 		} else if (argAction== W_LOAD) {

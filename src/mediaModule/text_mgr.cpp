@@ -60,6 +60,12 @@ TextMgr::~TextMgr()
 	textFont.clear();
 }
 
+void TextMgr::update(int delta_time)
+{
+	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+		(*iter).second->update(delta_time);
+	}
+}
 
 void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
 {
@@ -165,6 +171,14 @@ void TextMgr::textUpdate(const std::string &name, const std::string &text)
 		cLog::get()->write("Not found to update text named "+name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 }
 
+void TextMgr::setLocation(const std::string &name, float altitude, bool deltax, float azimuth, bool deltay, float duration)
+{
+	auto it = textUsr.find(name);
+	if (it!=textUsr.end())
+		(*it).second->setLocation(altitude, deltax, azimuth, deltay, duration);
+	else
+		cLog::get()->write("Not found to set location text named "+name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+}
 
 void TextMgr::textDisplay(const std::string &name, bool displ)
 {

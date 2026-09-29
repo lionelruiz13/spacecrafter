@@ -90,6 +90,9 @@ public:
 	//! allows to change the text of a text in the container
 	void textUpdate(const std::string &name, const std::string &text);
 
+	//! allows to change the location of a text in the container
+	void setLocation(const std::string &name, float altitude, bool deltax, float azimuth, bool deltay, float duration);
+
 	//! allows to hide a text in the container
 	void textDisplay(const std::string &name, bool displ);
 
