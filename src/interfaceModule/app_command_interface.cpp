@@ -2240,8 +2240,20 @@ int AppCommandInterface::commandText()
 			}
 			if (!argAltitude.empty() || !argAzimuth.empty()) {
 				media->textSetLocation(argName+"1", evalDouble(argAltitude), !argAltitude.empty(),
-		                        evalDouble(argAzimuth), !argAzimuth.empty(),
-		                        evalDouble(argDuration));
+		            evalDouble(argAzimuth), !argAzimuth.empty(),
+		            evalDouble(argDuration));
+				if (argWrite == W_TWICE)
+					media->textSetLocation(argName+"2", evalDouble(argAltitude), !argAltitude.empty(),
+		            	evalDouble(argAzimuth) + 180, !argAzimuth.empty(),
+		            	evalDouble(argDuration));
+				if (argWrite == W_THRICE) {
+					media->textSetLocation(argName+"2", evalDouble(argAltitude), !argAltitude.empty(),
+		                evalDouble(argAzimuth) + 120, !argAzimuth.empty(),
+		                evalDouble(argDuration));
+					media->textSetLocation(argName+"3", evalDouble(argAltitude), !argAltitude.empty(),
+		                evalDouble(argAzimuth) + 240, !argAzimuth.empty(),
+		                evalDouble(argDuration));
+				}
 			}
 			return executeCommandStatus();
 		} else if (argAction== W_LOAD) {
