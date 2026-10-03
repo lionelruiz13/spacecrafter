@@ -159,6 +159,7 @@ private:
 
 	std::unique_ptr<Skylight> sky;
 	std::unique_ptr<Skybright> skyb;
+	AtmosphereProfile profile;
 
 	float world_adaptation_luminance = 0.f;
 	float milkyway_adaptation_luminance = 0.f;

@@ -94,8 +94,9 @@ public:
 		return powf(world_luminance*M_PI*0.0001f,alpha_wa_over_alpha_da) * term2;
 	}
 
-	//! Convert from xyY color system to RGB
-	void xyY_to_RGB(float*) const;
+	//! Convert from xyY color system to RGB. Scotopic correction is for an
+	//! Earth night sky and can be disabled for non-terrestrial atmospheres.
+	void xyY_to_RGB(float*, bool applyScotopicCorrection = true) const;
 
 private:
 	float Lda = 50.f;					// Display luminance adaptation (in cd/m^2)

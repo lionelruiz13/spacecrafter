@@ -29,6 +29,40 @@
 
 enum class ATMOSPHERE_MODEL : char {NONE_MODEL, EARTH_MODEL, VENUS_MODEL, MARS_MODEL};
 
-// enum class SK_COMPUTE_COLOR : char {SK_EARTH_TYPE, SK_VENUS_TYPE, SK_MARS_TYPE};
+// Rendering controls shared by all atmosphere models.  A body selects a
+// profile; the colour and rendering code remains model-agnostic.
+struct AtmosphereProfile {
+	float turbidity = 5.f;
+	float luminanceScale = 1.f;
+	float solarGlareDamping = 0.f;
+	float cieTintX = 0.f;
+	float cieTintY = 0.f;
+	float cieTintStrength = 0.f;
+	bool applyScotopicCorrection = true;
+};
+
+inline AtmosphereProfile getAtmosphereProfile(ATMOSPHERE_MODEL model)
+{
+	switch (model) {
+	case ATMOSPHERE_MODEL::MARS_MODEL: {
+		// Nominal dusty daylight: a dark yellowish-brown sky, with no Earth-like
+		// blue cast away from the Sun. Values are CIE xy chromaticity controls.
+		AtmosphereProfile profile;
+		profile.turbidity = 2.8f;
+		profile.luminanceScale = 0.20f;
+		profile.solarGlareDamping = 0.70f;
+		profile.cieTintX = 0.370f;
+		profile.cieTintY = 0.370f;
+		profile.cieTintStrength = 0.90f;
+		profile.applyScotopicCorrection = false;
+		return profile;
+	}
+	case ATMOSPHERE_MODEL::EARTH_MODEL:
+	case ATMOSPHERE_MODEL::VENUS_MODEL:
+	case ATMOSPHERE_MODEL::NONE_MODEL:
+	default:
+		return {};
+	}
+}
 
 #endif

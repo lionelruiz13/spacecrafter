@@ -78,14 +78,14 @@ void ToneReproductor::setWorldAdaptationLuminance(float _Lwa)
 
 // Convert from xyY color system to RGB according to the adaptation
 // The Y component is in cd/m^2
-void ToneReproductor::xyY_to_RGB(float* color) const
+void ToneReproductor::xyY_to_RGB(float* color, bool applyScotopicCorrection) const
 {
 	// 1. Hue conversion
 	float log10Y = log10f(color[2]);
 	// if log10Y>0.6, photopic vision only (with the cones, colors are seen)
 	// else scotopic vision if log10Y<-2 (with the rods, no colors, everything blue),
 	// else mesopic vision (with rods and cones, transition state)
-	if (log10Y<0.6) {
+	if (applyScotopicCorrection && log10Y<0.6) {
 		// Compute s, ratio between scotopic and photopic vision
 		float s = 0.f;
 		if (log10Y > -2.f) {

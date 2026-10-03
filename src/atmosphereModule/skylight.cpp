@@ -114,6 +114,13 @@ void Skylight::setComputeTypeColor(ATMOSPHERE_MODEL type)
 	}
 }
 
+void Skylight::applyChromaticityProfile(float& x, float& y) const
+{
+	const float strength = profile.cieTintStrength;
+	x = (1.f - strength) * x + strength * profile.cieTintX;
+	y = (1.f - strength) * y + strength * profile.cieTintY;
+}
+
 
 // Compute CIE x and y color components
 inline void Skylight::computeZenithEarthColor()
@@ -163,12 +170,15 @@ inline void Skylight::computeZenithMarsColor()
 	thetas2 = thetas * thetas;
 	thetas3 = thetas2 * thetas;
 	T2 = T * T;
+	// Custom CIE xy fit for suspended Martian dust.  The former offsets
+	// (x=0.46, y=0.41) pushed the RGB conversion into a saturated orange.
+	// These values produce the muted bistre/ochre family seen by rover cameras.
 	zenith_color_x = (0.00166f*thetas3 - 0.00375f*thetas2 + 0.00209f*thetas) * T2 +
 	                 (-0.02903f*thetas3 + 0.06377f*thetas2 - 0.03202f*thetas + 0.00394f) * T +
-	                 ( 0.11693f*thetas3 - 0.21196f*thetas2 + 0.06052f*thetas + 0.46f);
+	                 ( 0.11693f*thetas3 - 0.21196f*thetas2 + 0.06052f*thetas + 0.365f);
 	zenith_color_y = (0.00275f*thetas3 - 0.00610f*thetas2 + 0.00317f*thetas) * T2 +
 	                 (-0.04214f*thetas3 + 0.08970f*thetas2 - 0.04153f*thetas + 0.00516f) * T +
-	                 ( 0.15346f*thetas3 - 0.26756f*thetas2 + 0.06670f*thetas + 0.41f);
+	                 ( 0.15346f*thetas3 - 0.26756f*thetas2 + 0.06670f*thetas + 0.355f);
 }
 
 // Compute the luminance distribution coefficients
@@ -211,6 +221,7 @@ void Skylight::get_xyY_Value(skylight_struct * p)
 	              Ey * cos_dist_sun * cos_dist_sun);
 	p->color[2] = term_Y * (1.f + AY * expf(BY * one_over_cos_zenith_angle)) * (1.f + CY * expf(DY*p->dist_sun) +
 	              EY * cos_dist_sun * cos_dist_sun);
+	applyChromaticityProfile(p->color[0], p->color[1]);
 }
 
 // Compute the sky color at the given position in the CIE color system and store it in p.color
@@ -253,6 +264,7 @@ void Skylight::get_xyY_Valuev(skylight_struct2& p) const
 
 	p.color[2] = term_Y * (1.f + AY * FY)
 	             * (1.f + CY * std::exp(DY*dist_sun) + EY * cos_dist_sun_q);
+	applyChromaticityProfile(p.color[0], p.color[1]);
 
 
 	if (p.color[2] < 0 || p.color[0] < 0 || p.color[1] < 0) {

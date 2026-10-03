@@ -260,7 +260,7 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 		moon_brightness_scoped.set(skyb->getMoonBrightness() * lunar_eclipse_fader); // Reduce moon brightness proportionally to coverage to avoid bright moon during eclipse
 	}
 
-	sky->setParamsv(sun_pos, 5.f);
+	sky->setParamsv(sun_pos, profile.turbidity);
 
 	skyb->setLoc(latitude * M_PI/180., altitude, temperature, relative_humidity);
 	skyb->setSunMoon(moon_pos[2], sun_pos[2]);//, cor_optoma);
@@ -379,9 +379,13 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 			sky->get_xyY_Valuev(b2);
 
 			// Use the Skybright.cpp 's models for brightness which gives better results.
-			b2.color[2] = skyb->getLuminance(moon_pos[0]*b2.pos[0]+moon_pos[1]*b2.pos[1]+
-			                                 moon_pos[2]*b2.pos[2], sun_pos[0]*b2.pos[0]+sun_pos[1]*b2.pos[1]+
-			                                 sun_pos[2]*b2.pos[2], b2.pos[2]); //,cor_optoma);
+			b2.color[2] = profile.luminanceScale * skyb->getLuminance(
+				moon_pos[0]*b2.pos[0]+moon_pos[1]*b2.pos[1]+moon_pos[2]*b2.pos[2],
+				sun_pos[0]*b2.pos[0]+sun_pos[1]*b2.pos[1]+sun_pos[2]*b2.pos[2],
+				b2.pos[2]); //,cor_optoma);
+			const float sunAlignment = std::max(0.f, sun_pos[0]*b2.pos[0] +
+				sun_pos[1]*b2.pos[1] + sun_pos[2]*b2.pos[2]);
+			b2.color[2] *= 1.f - profile.solarGlareDamping * sunAlignment * sunAlignment;
 
 			// Apply blue correction if needed (pre-calculated values)
 			if (total_blue_factor > 0.01f) {
@@ -390,7 +394,7 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 			}
 
 			sum_lum+=b2.color[2];
-			eye->xyY_to_RGB(b2.color);
+			eye->xyY_to_RGB(b2.color, profile.applyScotopicCorrection);
 			pSkyColor[x + y * (SKY_RESOLUTION + 1)].set(atm_intensity*b2.color[0],atm_intensity*b2.color[1],atm_intensity*b2.color[2]);
 		}
 		x_val += (2.f / SKY_RESOLUTION);
@@ -413,4 +417,6 @@ void Atmosphere::draw()
 void Atmosphere::setModel(ATMOSPHERE_MODEL atmModel)
 {
 	sky->setComputeTypeColor(atmModel);
+	profile = getAtmosphereProfile(atmModel);
+	sky->setProfile(profile);
 }

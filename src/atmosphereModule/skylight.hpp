@@ -62,6 +62,7 @@ public:
 
 	// Compute the sky color from varius planet localisation
 	void setComputeTypeColor(ATMOSPHERE_MODEL type);
+	void setProfile(const AtmosphereProfile& value) { profile = value; }
 
 private:
 	float thetas = 0.f;			// angular distance between the zenith and the sun in radian
@@ -89,6 +90,9 @@ private:
 	float term_Y;				// Precomputed term for luminance calculation
 
 	float sun_pos[3];
+	AtmosphereProfile profile;
+
+	void applyChromaticityProfile(float& x, float& y) const;
 
 	// Compute CIE Y (luminance) for zenith in cd/m^2
 	inline void computeZenithLuminance(void);
