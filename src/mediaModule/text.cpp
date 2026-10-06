@@ -99,10 +99,6 @@ void Text::setLocation(float _altitude, bool deltax, float _azimuth, bool deltay
 	// the new script begin here
 	x_move = end_altitude - start_altitude;
 	y_move = end_azimuth - start_azimuth;
-	if (y_move > 180)
-		y_move = y_move - 360;
-	else if (y_move < -180)
-		y_move = y_move + 360;
 	end_time = int(duration * 1000.f); // movement duration in milliseconds
 	x_move = x_move / (1000.f*duration);
 	y_move = y_move / (1000.f*duration);

@@ -2215,28 +2215,29 @@ int AppCommandInterface::commandText()
 
 	std::string argDisplay = args[W_DISPLAY];
 	std::string argString = args[W_STRING];
+	std::string argAzimuth = args[W_AZIMUTH];
+	std::string argAltitude = args[W_ALTITUDE];
 
 	argString = Translator::globalTranslator.translateUTF8(evalString(argString));
 
 	if (!argAction.empty()) {
-		if (argString.empty()) {
-			media->textClear();
-			debug_message = _("Command 'text': argument 'string' needed");
-			return executeCommandStatus();
-		}
 
 		if (argAction==W_UPDATE) {
-			std::string argAltitude = args[W_ALTITUDE];
-			std::string argAzimuth = args[W_AZIMUTH];
+			if (argString.empty() && argAltitude.empty() && argAzimuth.empty()) {
+				debug_message = _("Command 'text': argument 'string' or 'altitude' or 'azimuth' needed to update.");
+				return executeCommandStatus();
+			}
+			
 			std::string argDuration = args[W_DURATION];
-
-			media->textNameUpdate(argName+"1", argString);
 			std::string argWrite = args[W_WRITE];
-			if (argWrite == W_TWICE)
-				media->textNameUpdate(argName+"2", argString);
-			if (argWrite == W_THRICE) {
-				media->textNameUpdate(argName+"2", argString);
-				media->textNameUpdate(argName+"3", argString);
+			if (!argString.empty()) {
+				media->textNameUpdate(argName+"1", argString);
+				if (argWrite == W_TWICE)
+					media->textNameUpdate(argName+"2", argString);
+				if (argWrite == W_THRICE) {
+					media->textNameUpdate(argName+"2", argString);
+					media->textNameUpdate(argName+"3", argString);
+				}
 			}
 			if (!argAltitude.empty() || !argAzimuth.empty()) {
 				media->textSetLocation(argName+"1", evalDouble(argAltitude), !argAltitude.empty(),
@@ -2257,8 +2258,11 @@ int AppCommandInterface::commandText()
 			}
 			return executeCommandStatus();
 		} else if (argAction== W_LOAD) {
-			std::string argAzimuth = args[W_AZIMUTH];
-			std::string argAltitude = args[W_ALTITUDE];
+			if (argString.empty()) {
+				media->textClear();
+				debug_message = _("Command 'text': argument 'string' needed to load.");
+				return executeCommandStatus();
+			}
 			if( !argAzimuth.empty() && !argAltitude.empty()) {
 
 				//creation of parameters
