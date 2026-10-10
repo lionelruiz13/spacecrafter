@@ -19,6 +19,11 @@ usage:
       --seam-after ID:START:COUNT   lines removed right after unit ID (a doubled
                                     separator); recorded in the manifest as seam_tidy
   --dry-run   verify and print the plan, write nothing
+  --source FILE --archive DIR   another maintained file and its drawer (2026-10-10,
+                                QUEUE Q-110: DECISIONS_PENDING.md had no mover, and a
+                                second one would have been the pattern itself); the
+                                unit ids of such a file are section ids whose first
+                                line is a markdown heading, or an update note
 Run from the harness repo root (the directory holding fable-dispatch.md).
 """
 import hashlib
@@ -40,8 +45,14 @@ def parse_spec(s):
 
 
 def main(argv):
+    global SRC, ARCH
     dry = "--dry-run" in argv
     argv = [a for a in argv if a != "--dry-run"]
+    for opt, target in (("--source", "SRC"), ("--archive", "ARCH")):
+        if opt in argv:
+            k = argv.index(opt)
+            globals()[target] = argv[k + 1]
+            del argv[k:k + 2]
     if len(argv) < 4:
         print(__doc__)
         return 2
@@ -76,11 +87,16 @@ def main(argv):
             return 1
         last_end = s + c - 1
 
-    # the unit ids must be the section/note headers they claim
+    # the unit ids must be the section/note headers they claim: the dispatch
+    # file's two id forms keep their exact rule; any other source's unit must
+    # begin on a markdown heading or an update note (a cut inside a unit fails).
     for ident, s, c in units:
         head = lines[s - 1].decode("utf-8", "replace")
-        ok = (ident.startswith("F") and head.startswith(f"### {ident} ")) or \
-             (ident.startswith("update-s") and head.startswith("**Update ["))
+        if SRC == "fable-dispatch.md":
+            ok = (ident.startswith("F") and head.startswith(f"### {ident} ")) or \
+                 (ident.startswith("update-s") and head.startswith("**Update ["))
+        else:
+            ok = head.startswith("#") or head.startswith("**Update")
         if not ok:
             print(f"HEADER MISMATCH for {ident} at line {s}: {head[:80]!r}")
             return 1
