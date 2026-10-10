@@ -527,7 +527,7 @@ git -C claude status --porcelain | /usr/bin/grep '^??' | /usr/bin/grep -v 'INTEN
 md5sum build-claude/src/spacecrafter | cut -c1-8 => 149de3e5
 find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
 test ! -e claude/INTENT/11.314.md -a ! -e claude/INTENT/archive/11.314.md && echo free => free
-/usr/bin/grep -c '^### F' claude/fable-dispatch.md => 2
+/usr/bin/grep -c '^### F140 ' claude/fable-dispatch.md => 1
 # the engine slot and the boot's fingerprint (the ninth boot re-banked at this session's warm-up, HOST-EVENTS; a red here is a STOP to report, never a re-bank by the executor)
 bash claude/harness/sc_instances.sh --assert f140-gate >/dev/null 2>&1; echo $? => 0
 bash claude/harness/f56_canary.sh --no-scene >/dev/null 2>&1; echo $? => 0
