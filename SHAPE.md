@@ -143,7 +143,12 @@ the difference is how many members get one, never the form of each.
   predictions - the conflict is the signal of what was not as predicted, it drives the rework. Disjoint
   file sets may run in parallel in one tree if none commits, builds or stashes; an implementer alone in
   the tree may build; the supervisor verifies, builds and commits. Every task prompt binds G12 and names
-  `spacecrafter.owner-shape` as the form.
+  `spacecrafter.owner-shape` as the form. ROUTING (owner, 2026-10-10, INTENT 11.302; veto-open): by the
+  task's STRUCTURAL-COUPLING LOAD at the mint, never by its label - FOCUSED (input set closed and named,
+  one concern, criteria that can fail) -> `opus-xhigh`, under the owner's system prompt since that day
+  (`claude/agents/deploy.sh`); OPEN-COUPLING (a family's S4 pass, a shape to choose, the owner to model,
+  every mint and acceptance) -> `claude` / `fable`; the split above is the common case
+  (`fable-dispatch.md` section 0b (a) has the rule and the record it was tested on).
 
 ## 7. State at the close of session 33 (code branch `main` @ `6c3d0ed6`; `a594b31a` and below pushed by the owner, `6c3d0ed6` not pushed)
 The code branch is `main` since 2026-09-19 (owner; `master-beta` stays where it stood). The reference-change fix of

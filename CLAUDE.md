@@ -81,7 +81,13 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   pass, the predicted shape, a PREDICTIONS block) = agent type `claude`, model `fable`;
   IMPLEMENTATION = agent type `opus-xhigh` (Claude Opus 5.5), bound to report EVERY conflict
   with the predictions — the conflict is the signal of what was not as predicted; it drives
-  the rework.
+  the rework. ROUTING [vixy 2026-10-10, §11.302; veto-open]: by the task's STRUCTURAL-COUPLING
+  LOAD at the mint, never by its label — FOCUSED (input set closed and named in the section, one
+  concern, criteria that can fail) → `opus-xhigh`, which runs under the OWNER's system prompt
+  since that day (`claude/agents/deploy.sh` generates its projection; the warm-up asserts
+  `deploy.sh --check`); OPEN-COUPLING (the S4 pass over a family, a shape still to choose, the
+  owner to model, every mint and acceptance) → `claude` / `fable`; the structure / implementation
+  split is the common case, not the rule (`fable-dispatch.md` §0b (a)).
 - Old render path = comparison baseline, unchanged by construction **= everything in the old
   path is gated by the old path [vixy 2026-09-19, §11.253]**; parity per
   §11.52(b) (perceptual, conditioned on old being physically exact).

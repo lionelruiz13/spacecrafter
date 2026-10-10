@@ -36,6 +36,8 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
 ---
 
+**Update [Claude Fable 5.1 2026-10-10, supervising session 41 — LovelyFoxDev, Saturday (his deep window), the owner present — THE EXECUTOR UNDER HIS PROMPT, THE ROUTING, `supervised-by.sh --check`; his own trigger, not the §0b line]:** [vixy, verbatim] *"I think we can use Opus 5.5 for dispatch round again, given the decision was made on Opus 5 and they were notable improvements on Opus 5.5 - but there is still a routing to be made, for this decision. Opus is great at focused works, which is what opus-xhigh agent definition does. Maybe you should add the system-prompt.txt as well, to opus-xhigh, before proceeding. Now, what is the most load-bearing work to be made ? (Also, modify the supervised-by.sh script, so that you can use it to check whenever it would succeed or whenever there is an issue it would have caught whenever I call it. ...)"* Record: **§11.302**. Warm-up [measured]: both trees clean at open; code `main` @ `38ec7199`, harness `77a306d`; no owner commit since `fef2fac` (09-27) — section 17 unanswered; `review.sh status`: 3 commits waiting (his mark at `ee185d4f`: `ModularBody.hpp` +6/-7, `core.hpp` +2, `coreLink.hpp` 1/1; 4 source files outside the header scope). NO DISPATCH this session: the executor projection changed under the running session (definitions load at session start, §11.290(c)) and section 17 holds every code slice. LANDED: `supervised-by.sh --check` + `sha-maps/branch-aliases.txt` (harness `9e17c66`; the owner's next run no longer STOPs on `s33-relocate`); `claude/agents/deploy.sh` (the projection = his prompt + bridge + authority; §0b.1's assert superseded); the ROUTING rule in §0b (a), `CLAUDE.md`, `SHAPE.md` (veto-open); the session-39 bisect tree removed. NEXT: his section-17 sentences (§11.302(g) ranks them first); then B48's first leg and B45's VIEW legs as the first Opus tasks under the routing; the archival pass (deferred since session 40) still owed.
+
 **Update [Claude Fable 5.1 2026-09-27, supervising session 40 — LovelyFoxDev, Sunday, the owner present — THE STRUCTURE / IMPLEMENTATION SPLIT; his own trigger]:** [vixy, verbatim] *"Run a dispatch round - structure to claude agents, implementation to opus-xhigh instructed to report every conflicts with the predictions (that's the signal telling what wasn't as predicted, driving the reworks). I have answered some things in DECISIONS_PENDING.md, though not all, if that's not sufficient tell me exactly where to look (for focused work)."* His answers = harness `fef2fac` (13:42): `DECISIONS_PENDING.md` section 14 (the movers) and section 15 (b42 question 1); section 16 untouched. Propagated: **§11.293** (his words verbatim; my reading of each, [derived, veto]; the conflict Q-F between the two rulings; section 17 = the one list of what is still his). Warm-up [measured]: both trees clean at open (harness untracked: `tester_notes/`, `video_player_commits.txt`); code `main` @ `ee185d4f`, binary `fb30c61c` current (0 sources newer); NO engine; **the canary RED at warm-up — the host booted 12:35:43 (eighth boot), found by the premise line F131's STOP put there**; re-banked with the fingerprint diff as the argument (harness `07db2c7`), `--no-scene` exit 0, FULL exit 1 = §5.186 to the digit on this boot (old 4/4 delta 0.0; new 148.716 / 8.377) — slice 5's "before", band untouched. The 09-19 *"Executors: Fable only"* line SUPERSEDED in its three homes by his split (§11.293(e), veto-open: if he meant one round, three one-line reverts). MINTED, entry numbers ALLOCATED: **F132** (11.294, B42 under section 15 — the ruling against the page, the leak / gap census, slice 1 the fov predicted; STRUCTURE, `claude` / `fable`), **F133** (11.295, B44 under section 14 — the sender's conversion, the cubic, Q-F's three shapes; STRUCTURE), **F134** (11.296, slice 5 — the recompute-at-use barrier on the Camera's body-geometry channel; STRUCTURE), **F135** (11.297, slice 0 — F131's six legs as gates + §5.187's line; IMPLEMENTATION, `opus-xhigh`, launches), **F136 / F137 / F138** (11.298-11.300, the implementations of F132 / F133 / F134; `opus-xhigh`, each dispatched after its structure is accepted and its section refreshed). F132-F135 in parallel (three read `src/` and never launch; one launches); F136-F138 sequential. The form of the hand-over is the PREDICTIONS block (§11.293(d)): every line of it comes back CONFIRMED / REFUTED / NOT REACHED, and every deviation beside it — the conflicts are the round's yield.
 
 **Round outcome (session 40 close, 2026-09-27, 23:1x — times are pasted `date` output; the owner present at open, silent from 14:00):** STRUCTURE F132 → **§11.294** · F133 → **§11.295** · F134 → **§11.296** · F139 → **§11.301** — four for four delivered, verified and accepted the same session; HARNESS F135 → **§11.297** (the six legs are gates); IMPLEMENTATION F138 → **§11.300** + code **`4e2aa736` + `fe06d4c3`** (slice 5: the canary's new arm back in band on the boot it was red, 12 / 12) · F136 → **§11.298** + code **`38ec7199`** (the drawn fov's one reader, the readouts, the key-step leak gone; no drawn change) — two for two implemented, verified by the supervisor's own rebuild, canary and s33, committed with the executor as author. HELD ON THE OWNER: **F137** (F-1 / F-2 — the cubic as ruled is 4.3x slower on his field's SENSITIVITY 64000 and kills the view axes), **F140** (the fov slice's shape, one step or two, five names — F139's 26 561-star count decides the shape by cost). Code `ee185d4f → 38ec7199` (three commits); binary `fe5f0c24`; harness `fef2fac →` this close; the owner's review queue: 4 headers (`ModularBody.hpp` +6 / -7, `core.hpp` +2, `coreLink.hpp` 1 / 1, `backup_mgr.cpp`), `review.sh status` in the report. THE CONFLICTS THAT DROVE THE REWORKS (his method, measured on its first day): F132 — slice 1's UBO switch alone is WORSE for a grid-or-band zoom (re-cut: the UBO held, F139 minted); F133 — three lines of the mint refuted from the code (the sign-losing cubic; no held altitude key; the field's SENSITIVITY); F134 → F138 — the constructor's cold read does not exist, `refAoI` at its cap, three stateful modules a reroute could reach; F135 — obs 1 is SEASONAL, the natural band ratio is 0.70 not 0.79, the burst was never one; F139 — the mint's star count off by 8.9x (26 561 visited, on the worker), the one-step slice leaves the constellation lines behind their stars; F136 — L1 ungated so the Camera moves on the old pin too, the "already zooming" branch reached for the first time, the rest gap of a key tap during a zoom GROWS 23 → 36 deg (H6, his, measured). SUPERVISOR DEFECTS ON RECORD: eleven (a barrier name attributed to the owner from recall; "legs A / M unchanged"; "§5.166 closes by construction"; the `:864` attribution; the tester page's RESID gate; the cubic's formula; "keyboard altitude = `vzm.deltaHeight`"; "0.125 / 1.0" without the field's config; the star count; the FORCE_ADD paths resolved against the wrong root; the runner's driver path form) — none reaching a delivery, each caught by an executor or a gate. DISPATCHER DEFECT OF THE HOOK LAYER: the pre-commit hook's `file(1)` reads a `names.py` output that begins with `core` as a core dump — two derivable files left out of F136's records, noted in its list. Archival pass (update-s39 + F131 + this round's delivered sections) DEFERRED to the next open. NEXT: F137 and F140 on his word; H6; the harness items on row B45 (the disc mask, the four `_clean` copies, the burst leg, the KEY form of obs 4).
@@ -532,6 +534,28 @@ reason). Step 1's md5 assert is live again; F131 (2026-09-26) was the first opus
 after the 09-19 line, on the owner's call for that round.]** Disjoint file sets may run in
 parallel in one tree when no agent commits, builds or stashes; an implementer ALONE in the tree
 may build (it must, to run its gates) and still commits nothing; the supervisor verifies, builds, commits.
+**[ROUTING 2026-10-10, owner-stated, session 41, §11.302 — the rule derived, veto-open]:** [vixy,
+verbatim] *"I think we can use Opus 5.5 for dispatch round again, given the decision was made on
+Opus 5 and they were notable improvements on Opus 5.5 - but there is still a routing to be made,
+for this decision. Opus is great at focused works, which is what opus-xhigh agent definition
+does. Maybe you should add the system-prompt.txt as well, to opus-xhigh, before proceeding."*
+The 09-19 restriction was decided on Opus 5's record; the 09-27 split is the COMMON CASE of the
+rule his sentence states [derived, with Q-08's owner ruling "effort tracks structural-information
+load"]: **route by the task's STRUCTURAL-COUPLING LOAD at the mint, never by its label.**
+FOCUSED → `opus-xhigh` (Claude Opus 5.5, xhigh; under the OWNER's system prompt since this date —
+`claude/agents/deploy.sh` generates the projection, step 1 asserts it): the input set is CLOSED and
+NAMED in the section (the files, the functions, a PREDICTIONS block or a bank of readings, the
+gates), ONE concern, a DoD whose criteria can fail; the executor executes, measures and reports
+every conflict — implementations of a predicted structure, harness legs and gates against a stated
+bank, reproductions, a census whose enumeration rule is given, a bounded analysis whose sources are
+listed (F131 was one). OPEN-COUPLING → `claude` / `fable`: the S4 pass over a class family, a shape
+still to be chosen among non-invalidated alternatives, anything that models the OWNER (his intent,
+his form, his words), the mint of a PREDICTIONS block, every acceptance, every edit of the ledger's
+structure. A structure task goes to Opus when its shape is chosen and its sources enumerated; an
+implementation goes to Fable when the manager map must be rebuilt on the way. On the record: F131,
+F135, F136, F138 (Opus — closed sets) and F132–F134, F139 (Fable — shapes to choose) each sit on
+the side the rule puts them. The executor's return message opens with `prompt-window: present`
+(the bridge's gate); step 4 reads it.
 (b) **Every task section and prompt binds G12** and names
 `/home/claude/spacecrafter.owner-shape` as the form to write in; a task states the
 MANAGER COUNT of each information it touches, before and after (G12 (S7)), preceded by the need's
@@ -549,10 +573,15 @@ his review queue is decoupled from the sessions, and only he moves its mark.
    §13 + the cited entries win). After any discontinuity, re-verify state before
    relying on it (the 2026-07-30 OOM left an executor's uncommitted diff in the tree;
    "clean expected" is an expectation, not knowledge). **Definition-drift assert
-   (2026-08-29, §11.161(g)):** `md5sum claude/agents/opus-xhigh.md
+   (2026-08-29, §11.161(g)):** ~~`md5sum claude/agents/opus-xhigh.md
    .claude/agents/opus-xhigh.md` must MATCH — the tracked file is the authority, the
    `.claude` one its deployed projection; on mismatch, regenerate the projection from
-   the authority before any dispatch. **Ledger instruments (2026-09-06, the miss-ledger item — two
+   the authority before any dispatch.~~ **[SUPERSEDED 2026-10-10, §11.302, on the owner's
+   word (the executor runs under his system prompt): `bash claude/agents/deploy.sh --check`
+   must exit 0 — the projection is GENERATED (frontmatter + `/home/claude/shared/system-prompt.txt`
+   + the bridge + the authority's body) and compared byte-exact; on drift, `bash
+   claude/agents/deploy.sh` before any dispatch. The md5 pair is no longer equal by
+   construction, so the old line would always fail.]** **Ledger instruments (2026-09-06, the miss-ledger item — two
    supervisor sessions reached for them under `harness/` from memory of a note that omitted
    the directory):** `cd /home/claude/spacecrafter/claude && python3 intent_backmarker_scan.py .
    && python3 intent_pair_check.py .` — both live at the harness repo ROOT, not under
@@ -593,7 +622,10 @@ his review queue is decoupled from the sessions, and only he moves its mark.
    executor's §0.7 gate (first step). What cannot be a command stays in prose, labelled
    `[derived]`/`[stated]`, and is not a premise the gate abort-tests. A live section
    without a block is a coverage gap the rule forbids (`--list` names it).
-4. **Verify each delivery BEFORE the next dispatch**: read the §11 entry IN FULL;
+4. **Verify each delivery BEFORE the next dispatch**: the return message's FIRST line is
+   `prompt-window: present` (2026-10-10, §11.302 — absent or elsewhere = the executor ran on
+   a projection without the owner's prompt: a dispatcher defect, recorded, the delivery
+   still judged); read the §11 entry IN FULL;
    check trees/commits/authors; check every claimed ledger flip (§5, §13,
    DECISIONS_PENDING) at the ledger; judge every deviation and judgment call — endorse
    with the argument, or escalate to a re-analysis agent on doubt. Harnesses are NOT
