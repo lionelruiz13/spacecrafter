@@ -14,7 +14,6 @@
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
 #include "tools/context.hpp" // quiesceFrames (mid-session release precondition)
-#include "EntityCore/Core/VulkanMgr.hpp"
 
 Vec3f ModularBody::lightPosition;
 float ModularBody::lightDistance;
@@ -29,7 +28,6 @@ Vec3f ModularBody::defaultHaloColor{};
 float ModularBody::haloScale = 1;
 float ModularBody::haloSizeLimit = 9;
 float ModularBody::drawAlpha = 1.f;
-float ModularBody::viewportRadius = 1;
 float ModularBody::earlyVisibilityScreenSize = BODY_EARLY_VISIBILITY_BOUNDING_SIZE / 2.f;
 float ModularBody::fullVisibilityScreenSize = BODY_FULL_VISIBILITY_BOUNDING_SIZE / 2.f;
 float ModularBody::bigTextureScreenSize = BODY_BIG_TEXTURE_BOUNDING_SIZE / 2.f;
@@ -568,13 +566,11 @@ Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
     return diff.multiplyFast(to->accumulatedBodyPosToBody());
 }
 
-void ModularBody::setViewportRadius(float halfRenderWidthPx)
+void ModularBody::updateVisibilityGates()
 {
-    viewportRadius = halfRenderWidthPx;
-    const float px2ss = 1.f / (2.f * halfRenderWidthPx);
-    earlyVisibilityScreenSize = BODY_EARLY_VISIBILITY_BOUNDING_SIZE * px2ss;
-    fullVisibilityScreenSize = BODY_FULL_VISIBILITY_BOUNDING_SIZE * px2ss;
-    bigTextureScreenSize = BODY_BIG_TEXTURE_BOUNDING_SIZE * px2ss;
+    earlyVisibilityScreenSize = Renderer::toScreenSize(BODY_EARLY_VISIBILITY_BOUNDING_SIZE * 0.5f);
+    fullVisibilityScreenSize = Renderer::toScreenSize(BODY_FULL_VISIBILITY_BOUNDING_SIZE * 0.5f);
+    bigTextureScreenSize = Renderer::toScreenSize(BODY_BIG_TEXTURE_BOUNDING_SIZE * 0.5f);
 }
 
 void ModularBody::setTranslator(Translator &_translator)
@@ -582,7 +578,6 @@ void ModularBody::setTranslator(Translator &_translator)
     translator = &_translator;
     for (auto &ref : bodyReference)
         ref.second->nameI18 = _translator.translateUTF8(ref.second->englishName);
-    setViewportRadius(VulkanMgr::instance->getScreenRect().extent.width / 2.f);
 }
 
 std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::string, std::string> &param)

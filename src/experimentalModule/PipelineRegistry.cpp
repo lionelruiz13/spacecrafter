@@ -19,7 +19,7 @@
                                  // SCK_FONT_RESOLUTION_SIZE config authority)
 #include "bodyModule/hints.hpp"  // hint service: computeHintsAt + nbrFacets
                                  // (single authority on the circle shape)
-#include "ModularBody.hpp"       // pointer service: viewportRadius, deltaTime
+#include "ModularBody.hpp"       // pointer and tail services: deltaTime, halfFov
 #include <algorithm>
 #include <atomic>
 #include <cmath>
@@ -1046,16 +1046,17 @@ void Renderer::ensurePointerFamily()
     }
 }
 
-void Renderer::drawPointer(const std::pair<float, float> &pos, float sizePx)
+void Renderer::drawPointer(const std::pair<float, float> &pos, float screenSize)
 {
     if (!showPointer)
         return;
     ensurePointerFamily(); // first-use fallback; normally built at init()
     if (!pointerFamily)
         return;
+    const float sizePx = toPx(screenSize * 2.f);
     // Old suppression rule: a disc above 10% of the viewport radius is
     // distracting to point at (object_base.cpp:221).
-    if (sizePx > ModularBody::getViewportRadius() * 0.1f)
+    if (sizePx > viewportRadius * 0.1f)
         return;
     // Breathing animation; the clock only ticks while a pointer is drawn,
     // like the old static local_time (phase origin is arbitrary either way).

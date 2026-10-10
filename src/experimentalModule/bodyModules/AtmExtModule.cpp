@@ -86,7 +86,7 @@ void AtmExtModule::drawShell(Renderer &renderer, ModularBody *body, const Mat4f 
         return;
     const float scaledRadius = body->getScaledRadius();
     const float distance = body->getDistanceToObserver();
-    if (body->getScreenSize() * 2.f * ModularBody::getViewportRadius() <= 10.f)
+    if (renderer.toPx(body->getScreenSize() * 2.f) <= 10.f)
         return;
     const float squaredDistance = distance * distance;
     const float squaredRadius = scaledRadius * scaledRadius;
@@ -117,7 +117,7 @@ void AtmExtModule::drawShell(Renderer &renderer, ModularBody *body, const Mat4f 
     }
     uniform->atmAlpha = 1; // old "Apply fader here" TODO kept as-is (parity)
     bound.layout->bindSet(renderer, *set);
-    mesh->draw(renderer, body->getScreenSize() * 2.f * ModularBody::getViewportRadius());
+    mesh->draw(renderer, renderer.toPx(body->getScreenSize() * 2.f));
 }
 
 void AtmExtModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)

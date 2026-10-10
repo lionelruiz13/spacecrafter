@@ -31,7 +31,7 @@ void HintModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     const Vec4f color(labelColor[0], labelColor[1], labelColor[2], fader.getInterstate());
     renderer.drawHint(body->getScreenPos(), color);
     const float shift = Hints::hintCircleRadius * 1.2f
-                      + body->getScreenSize() * ModularBody::getViewportRadius();
+                      + renderer.toPx(body->getScreenSize());
     renderer.printGravity(hintFont, body->getScreenPos(), body->getNameI18n(),
                           color, shift, shift);
 }

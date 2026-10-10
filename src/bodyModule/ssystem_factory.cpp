@@ -923,7 +923,7 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
     camera->dumpTrace(out);
     out << ",\"anchors\":";
     cameraAnchors->dumpState(out);
-    out << ",\"gates\":{\"viewportRadius\":" << ModularBody::getViewportRadius()
+    out << ",\"gates\":{\"viewportRadius\":" << Renderer::getViewportRadius()
         << ",\"px\":{\"early\":" << BODY_EARLY_VISIBILITY_BOUNDING_SIZE
         << ",\"full\":" << BODY_FULL_VISIBILITY_BOUNDING_SIZE
         << ",\"bigTexture\":" << BODY_BIG_TEXTURE_BOUNDING_SIZE

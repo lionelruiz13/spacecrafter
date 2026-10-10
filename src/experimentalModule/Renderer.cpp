@@ -14,6 +14,7 @@
 #define CMD_BATCH_SIZE 8
 
 bool Renderer::showPointer = false; // mirrored from Core::object_pointer_visibility
+float Renderer::viewportRadius = 1;
 
 Renderer::Renderer()
 {
@@ -23,6 +24,9 @@ void Renderer::init(ToneReproductor *_eye)
 {
     allocateCommands();
     eye = _eye;
+    const VkRect2D &rect = VulkanMgr::instance->getScreenRect();
+    viewportRadius = std::min(rect.extent.width, rect.extent.height) * 0.5f;
+    ModularBody::updateVisibilityGates();
     ensurePointerFamily();
     ensureHintFamily();
     shadow.ensureInit(*this);
@@ -32,9 +36,8 @@ void Renderer::beginDraw(uint8_t _frameIdx)
 {
     sliceScratch.clear();
     orbitBucket = {0, 0};
-    // Old needOrbitDepth gate is 10 px full diameter (absolute); px =
-    // screenSize * 2 * viewportRadius (the drawHalo screen_r form).
-    const float orbitScreenSize = 5.f / ModularBody::getViewportRadius();
+    // Bodies above 10 px of diameter hide the orbit lines
+    const float orbitScreenSize = toScreenSize(5.f);
     for (ModularBody *body : ModularBody::drainNotableBodies()) {
         if (!*body)
             continue; // old gate: only bodies visible ON SCREEN reserve a slice
@@ -191,14 +194,12 @@ void Renderer::printGravity(s_font *font, const std::pair<float, float> &pos,
         return;
     VulkanMgr &vkmgr = *VulkanMgr::instance;
     const auto px = vkmgr.rectToRender(pos); // same anchor space as drawHint/halo
-    // Viewport geometry from the scissor rect (see header: equals the old
-    // Projector disk-viewport center/radius by construction).
+    // Viewport centre from the scissor rect
     const VkRect2D &rect = vkmgr.getScreenRect();
     const float dx = px.first - (rect.offset.x + rect.extent.width * 0.5f);
     const float dy = px.second - (rect.offset.y + rect.extent.height * 0.5f);
-    const float radius = std::min(rect.extent.width, rect.extent.height) * 0.5f;
     // Too far outside the disk to be visible (old early-out, verbatim rule)
-    if (sqrtf(dx*dx + dy*dy) > radius + font->getStrLen(str))
+    if (sqrtf(dx*dx + dy*dy) > viewportRadius + font->getStrLen(str))
         return;
     const float theta = M_PI + atan2f(dx, dy - 1.f);
     Mat4f mvp = Mat4f::ortho2D(rect.offset.x, rect.offset.x + rect.extent.width,

@@ -179,5 +179,5 @@ double ModularObject::getParentSatellitesFov(const Navigator *nav) const
 
 float ModularObject::getOnScreenSize(const Projector *prj, const Navigator *nav, bool orb_only)
 {
-    return body->getScreenSize() * ModularBody::getViewportRadius();
+    return Renderer::toPx(body->getScreenSize());
 }

@@ -515,10 +515,9 @@ void ModularSystem::drawNested(Renderer &renderer)
 {
     if (!isVisible)
         return;
-    const float px = (distance > subsystemRadius)
-        ? (atanf(subsystemRadius / sqrtf(distance*distance - subsystemRadius*subsystemRadius))
-           / halfFov) * 2.f * getViewportRadius()
-        : 2.f * getViewportRadius();
+    const float px = renderer.toPx((distance > subsystemRadius)
+        ? atanf(subsystemRadius / sqrtf(distance*distance - subsystemRadius*subsystemRadius)) / halfFov * 2.f
+        : 2.f);
     if (px >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) {
         const float savedAlpha = drawAlpha;
         const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAND);
@@ -553,8 +552,7 @@ void ModularSystem::drawStarProxy(Renderer &renderer)
     if (!s)
         return;
     const float mag = -26.73f + 2.5f * log10f(distance * distance);
-    const float starScreenR = (s->getScaledRadius() / (distance * halfFov)) * 2.f * viewportRadius;
-    drawHaloCore(renderer, mag, starScreenR, s->getHaloColor(), false);
+    drawHaloCore(renderer, mag, s->getScaledRadius() / (distance * halfFov), s->getHaloColor(), false);
 }
 
 void ModularSystem::drawSystem(Renderer &renderer)
@@ -570,11 +568,8 @@ void ModularSystem::drawSystem(Renderer &renderer)
     if (ModularBody *sel = ModularBody::getSelected()) {
         if (systemOf(sel) == this && *sel) {
             const auto &p = sel->getScreenPos();
-            if (p.first*p.first + p.second*p.second <= 1.f) {
-                // px full diameter = screenSize * 2 * viewportRadius (the old
-                // getOnScreenSize form - drawHalo screen_r note)
-                renderer.drawPointer(p, sel->getScreenSize() * 2.f * ModularBody::viewportRadius);
-            }
+            if (p.first*p.first + p.second*p.second <= 1.f)
+                renderer.drawPointer(p, sel->getScreenSize());
         }
     }
     renderer.endBodyDraw();
@@ -924,7 +919,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
 
 ModularBody *ModularSystem::findBodyAt(const std::pair<float, float> &searchPos) const
 {
-    const float tol = 30.f / ModularBody::viewportRadius;
+    const float tol = Renderer::toScreenSize(30.f);
     const float tol2 = tol * tol;
     ModularBody *inTolerance = nullptr;
     float biggest = -1.f;

@@ -63,8 +63,8 @@ public:
                      float rmag, float cmag, float radius);
     void setSunHaloTexture(const std::string &texName, const std::string &path);
     void drawHint(const std::pair<float, float> &pos, const Vec4f &color);
-    // Draw on top of everything, at most once per frame. sizePx = diameter in render pixels
-    void drawPointer(const std::pair<float, float> &pos, float sizePx);
+    // Draw on top of everything, at most once per frame, around a disc of this screenSize
+    void drawPointer(const std::pair<float, float> &pos, float screenSize);
     // Only written by Core::setFlagSelectedObjectPointer
     static bool showPointer;
     float adaptLuminance(float world_luminance) const;
@@ -73,6 +73,17 @@ public:
     }
     inline const Vec3f &getClippingFov() const {
         return clippingFov;
+    }
+    // Return half the smaller render extent in px, written by init only
+    inline static float getViewportRadius() {
+        return viewportRadius;
+    }
+    // Convert a length between screenSize units (1 = the viewport radius) and render px
+    inline static float toPx(float screenSize) {
+        return screenSize * viewportRadius;
+    }
+    inline static float toScreenSize(float px) {
+        return px / viewportRadius;
     }
 
     // Allocate from the registration path, never from the frame task
@@ -117,6 +128,7 @@ private:
     void recordPointer();
     void allocateCommands();
     void nextCommandBuffer();
+    static float viewportRadius;
     PipelineFamily haloFamily;
     PipelineFamily hintFamily;
     PipelineFamily pointerFamily;

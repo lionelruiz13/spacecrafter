@@ -1026,8 +1026,9 @@ private:
     std::vector<BodyModuleType> deduceBodyModuleList(std::map<std::string, std::string> &param);
     void select();
     void deselect();
-    // Draw a halo from given inputs, screen_r = disc diameter in px
-    inline void drawHaloCore(Renderer &renderer, const float mag, const float screen_r, const Vec3f &color, const bool satelliteRules) {
+    // Draw a halo from given inputs
+    inline void drawHaloCore(Renderer &renderer, const float mag, const float discScreenSize, const Vec3f &color, const bool satelliteRules) {
+        const float screen_r = renderer.toPx(discScreenSize * 2.f);
         const float fov_deg = halfFov * (360.f / M_PI);
         float fov_q = (fov_deg > 60.f) ? 60.f : fov_deg;
         fov_q = 1.f / (fov_q * fov_q);
@@ -1072,8 +1073,7 @@ private:
         renderer.drawHalo(screenPos, color * cmag, rmag);
     }
     inline void drawHalo(Renderer &renderer) {
-        drawHaloCore(renderer, computeMagnitude(), screenSize * 2.f * viewportRadius,
-                     haloColor, isSatellite());
+        drawHaloCore(renderer, computeMagnitude(), screenSize, haloColor, isSatellite());
     }
     // Identity
     std::string englishName;
@@ -1225,16 +1225,13 @@ private:
     static std::vector<ModularBody *> notableBody;
     static Vec3f defaultHaloColor;
     static std::shared_ptr<BodyTesselation> bodyTesselation;
-    static float viewportRadius; // Half the render width in px, written by setViewportRadius only
     // BODY_*_BOUNDING_SIZE in screenSize units
     static float earlyVisibilityScreenSize;
     static float fullVisibilityScreenSize;
     static float bigTextureScreenSize;
 public:
-    inline static float getViewportRadius() {
-        return viewportRadius;
-    }
-    static void setViewportRadius(float halfRenderWidthPx);
+    // Recompute the gates from the Renderer's viewport radius, pushed by Renderer::init
+    static void updateVisibilityGates();
     inline static float earlyVisibilityGate() {
         return earlyVisibilityScreenSize;
     }
