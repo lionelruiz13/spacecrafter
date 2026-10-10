@@ -2359,7 +2359,19 @@ compositor change AND a different binary (`fa00deae` at `3ccfc6d8` →
 `c8e12950` at `8d41fbe3`). It stays recorded and ungated all the same — a
 cache or driver change can move bytes without moving luminance — but if a
 future stack question needs more resolution than ±1.0 on a mean, this scene
-answers at the byte.
+answers at the byte. **[2026-10-10, F143's acceptance (§11.310), measured on the ninth
+boot: the dwell frame is NO LONGER launch-stable. Four FULL runs of two binaries on one
+boot gave exactly two frame states — `321853ac` (supervisor BEFORE on `fe5f0c24`,
+executor AFTER on `149de3e5`) and `5e807225` (executor BEFORE on `fe5f0c24`, supervisor
+AFTER on `149de3e5`), each state on each binary; the two states differ by 475 918 px (39
+above 3/255, max delta 17), and the dumps of one binary differ between launches at the
+ulp level in 113 of 153 lines (camera matrix, body `mat` / `ecl` / `lastJD`) — a
+frame-timing-dependent easing, not attributed further. So "frame md5 equal across two
+binaries" is NOT a criterion that can fail on its own: pair it with an A/A of the same
+binary (two launches) or discriminate on the dump's `gates` object (17 digits, identical
+in all 24 dumps of F143). The 12 photometric members stayed at the banked centre to the
+printed digit in all four runs; the byte stability of 2026-08-30 / 09-04 belongs to an
+earlier stack and is history, not a target.]**
 
 **Two members are per-boot, and the canary reds after a reboot BY DESIGN.**
 `BANK_COMPOSITOR_START` / `BANK_XSERVER_START` (and `BANK_HOST_BOOT`, and
