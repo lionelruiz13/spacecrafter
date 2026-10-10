@@ -1,0 +1,45 @@
+{
+ "pass": "27",
+ "date": "2026-10-10",
+ "source": "fable-dispatch.md",
+ "pre_md5": "c778be52d1e130524833d2fbd0cc7ec6",
+ "pre_commit": "25b0bf2",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "F143",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F143.md",
+   "line_start": 502,
+   "line_count": 65,
+   "payload_md5": "6f95f72a0c21e0b40c7e1259210dd24c"
+  },
+  {
+   "id": "F141",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F141.md",
+   "line_start": 567,
+   "line_count": 54,
+   "payload_md5": "2d573da570789275a45b9aaaf0c0801a"
+  },
+  {
+   "id": "F142",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F142.md",
+   "line_start": 621,
+   "line_count": 50,
+   "payload_md5": "a0ab558a0b73f5674fb212c6a949de0e"
+  },
+  {
+   "id": "F144",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F144.md",
+   "line_start": 671,
+   "line_count": 51,
+   "payload_md5": "013e975b90229746d65a63bab08f2f39"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}
