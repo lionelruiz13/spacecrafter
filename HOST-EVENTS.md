@@ -504,3 +504,25 @@ never rewrite (maintenance invariant). Archival per the standing convention
   §5.186 (a free-mode `moveto` on a stale cached radius of the culled Moon), fixed by code, not by a re-bank:
   the band stands as banked on 2026-08-30. The photometric baseline of this corpus is comparable again.**
 
+- 2026-10-10 07:33–13:53 [measured: supervisor, session 42 (Claude Fable 5.1), at WARM-UP — the dispatch
+  round's precondition gate (`f56_canary.sh --no-scene`) run before any dispatch; every value from the
+  command beside it; Saturday, the owner present] **A NEW BOOT (the ninth banked).** `uptime -s`
+  **2026-10-10 07:33:26** (`btime 1791610406`, boot id `49818340-…`); the owner re-provisioned the
+  real logind session on `:2` at 07:36:56 (`/usr/bin/gnome-shell --mode=ubuntu` pid 36041, uid 1003
+  → `Xwayland :2` pid 36530 at 07:36:57, kernel starts 1791610616 / 1791610617; sessions 5/6 again;
+  cookie `.GMKWW3`; `:2` 2444x1332; foxy's own `gnome-shell` on `:0` (pid 13354, 07:34:10) is the
+  second cmdline match, filtered by uid, and his session is LIVE this time — GPU 37 % busy). (1) Canary
+  `20261010-134946` (`--no-scene`, 13:49): exit 2, **FAIL `compositor.restarted` ALONE, NOTE
+  `xserver.restarted`**. Fingerprint diff against the last green `--no-scene` run `20260927-135649`
+  [measured, python over the two json]: the per-boot members (compositor pid 25697 → 36041, xserver pid
+  26196 → 36530, host.boot); GPU occupancy 1796 → 4419 MiB used (driver 580.178.04 UNCHANGED, 27691 MiB
+  free); the cookie NAME `.KKZYV3` → `.GMKWW3`; `host.now_epoch`; display, runtime dir, compositor
+  command, `wayland-0`, session ids EQUAL (32 members both). (2) RE-BANK of the three per-boot members in
+  one VALUES-block edit, the 09-27 values struck with the argument: `--no-scene` 13:51:36 `20261010-135136`
+  **exit 0**. (3) FULL canary 13:51:38–13:53:24, `20261010-135138`, on the before-binary `fe5f0c24`
+  (= code `38ec7199`): **exit 0, 12/12 IN BAND — new path 165.26 / 6.647 on all four members (delta
+  0.002 / 0.003 from the bank, the 09-27 20:31 NOTE again), old path 160.142 / 6.603 delta 0.0**; dwell
+  frame md5 `321853ac` (≠ banked `5215565b`, ≠ 09-27's `71096cd7`; recorded, never gated); NOTE
+  `cache.mutated` (1 file). The boot is GREEN on the baseline the round's first code task (F143) compares
+  against. Field pair `03fbee59` / `545a51ef` in == out; no engine left (`sc_instances.sh` 13:53:24).
+

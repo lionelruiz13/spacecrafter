@@ -175,10 +175,23 @@ BANK_COMPOSITOR_CMD="/usr/bin/gnome-shell"
 #   ~~BANK_COMPOSITOR_START=1790408677~~   # kernel start of pid 24102 = 2026-09-26 09:44:37
 #   ~~BANK_XSERVER_START=1790408678~~      # kernel start of pid 24607 = 2026-09-26 09:44:38
 #   ~~BANK_HOST_BOOT="2026-09-26 09:37:21"~~
-BANK_COMPOSITOR_START=1790507257          # kernel start of pid 25697 = 2026-09-27 13:07:37
+#   ~~BANK_COMPOSITOR_START=1790507257~~   # kernel start of pid 25697 = 2026-09-27 13:07:37
+#   ~~BANK_XSERVER_START=1790507258~~      # kernel start of pid 26196 = 2026-09-27 13:07:38
+#   ~~BANK_HOST_BOOT="2026-09-27 12:35:43"~~
+# RETIRED 2026-10-10 (the 2026-09-27 12:35:43 boot ended 2026-10-10 07:33:26, btime 1791610406; per-boot
+#   by design -- the owner re-provisioned the real logind session on :2 at 07:36:56; sessions 5/6 again,
+#   cookie .GMKWW3; canary 20261010-134946 red on compositor.restarted ALONE, NOTE xserver.restarted,
+#   found at the supervisor's WARM-UP (session 42, the dispatch round's precondition gate). MEASURED,
+#   not copied [fingerprint diff 20260927-135649 (last green --no-scene) vs 20261010-134946, supervisor]:
+#   the per-boot members (compositor pid 25697 -> 36041, xserver pid 26196 -> 36530, host.boot), the GPU
+#   occupancy (1796 -> 4419 MiB used, 37 % busy: foxy's own session on :0 is live; driver 580.178.04
+#   UNCHANGED, 27691 MiB free), the cookie NAME (.KKZYV3 -> .GMKWW3, per session, matched by the glob)
+#   and host.now_epoch; every other member EQUAL (display 2444x1332, runtime dir, compositor command,
+#   wayland-0, sessions 5/6; 32 members both); supervisor, session 42, Saturday):
+BANK_COMPOSITOR_START=1791610616          # kernel start of pid 36041 = 2026-10-10 07:36:56
 BANK_XSERVER_MATCH="Xwayland :2"
-BANK_XSERVER_START=1790507258             # kernel start of pid 26196 = 2026-09-27 13:07:38
-BANK_HOST_BOOT="2026-09-27 12:35:43"
+BANK_XSERVER_START=1791610617             # kernel start of pid 36530 = 2026-10-10 07:36:57
+BANK_HOST_BOOT="2026-10-10 07:33:26"
 #
 # PHOTOMETRIC BAND -- the reference scene is `f51_run.sh`'s (§11.174(e) names it): the
 # Moon `base` scene at fov 10, the app's own 2048^2 readback, metric = §11.164(c)'s
