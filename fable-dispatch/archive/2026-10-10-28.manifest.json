@@ -1,0 +1,29 @@
+{
+ "pass": "28",
+ "date": "2026-10-10",
+ "source": "fable-dispatch.md",
+ "pre_md5": "dedb9d4f58e0df63090e7b1a56ad4f78",
+ "pre_commit": "4d84a49",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "forvixy-s40",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s40.md",
+   "line_start": 726,
+   "line_count": 34,
+   "payload_md5": "614dce360121e6e0d2069491fa137cce"
+  },
+  {
+   "id": "forvixy-s39",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s39.md",
+   "line_start": 760,
+   "line_count": 15,
+   "payload_md5": "79709fbc915ffc96cc98717b0bcf7727"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}
