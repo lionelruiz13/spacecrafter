@@ -20,11 +20,18 @@ git ${H} add -A; git ${H} commit -q -m "base"; git remote add origin "${T}/code.
 echo one >> a.txt;  git ${C} commit -q -a --author='Claude Fable 5.1 <c@x>' -m "first agent commit
 
 Co-Authored-By: Claude Fable 5.1 <c@x>"
+DANGLING=$(git rev-parse HEAD)
+# Amend with another committer date: same tree, author date, author and subject, NEW sha -- the
+# first sha is now a commit no branch reaches whose unique fingerprint twin is HEAD (the shape a
+# deleted branch leaves behind, s33-relocate 2026-09-19). A harness commit below cites it.
+GIT_COMMITTER_DATE='2030-01-01T00:00:00' git ${C} commit -q --amend --no-edit
 OLD1=$(git rev-parse HEAD)
 echo two >> a.txt;  git ${C} commit -q -a --author='Claude Fable 5.1 <c@x>' -m "second agent commit
 
 Co-Authored-By: Claude Fable 5.1 <c@x>"
 OLD2=$(git rev-parse HEAD)
+echo three >> a.txt; git ${H} commit -q -a -m "human commit after the agent's"   # unselected DESCENDANT -> re-shaed with its parent, so the map and the prediction must both carry it
+OLD3=$(git rev-parse HEAD)
 git update-ref refs/review/headers "${OLD1}"            # custom namespace   -> must move
 git tag light "${OLD1}"                                 # lightweight tag    -> must move
 git branch side "${OLD1}"                               # another branch     -> must move
@@ -42,11 +49,33 @@ echo "queue entry read at ${OLD2:0:8}"        > "${T}/outside/Q.md"
 printf '# outside homes\n%s\n%s/missing\n' "${T}/outside" "${T}" > sha-maps/also.txt
 git ${H} add -A; git ${H} commit -q -m "harness base"; git remote add origin "${T}/harness.git"; git push -q -u origin CC-harness
 chmod 444 tool.py "${T}/outside/Q.md"            # read-only to their own owner -> the tool must restore the bit itself (the sudo arm needs a second user: NOT reached here)
+echo first >> README.md; git ${H} commit -q -a -m "human harness commit first in range, citing a code commit the run re-shas
+
+Code: master-beta @ ${OLD1:0:8}"             # not selected, no rewritten parent: rebuilt ONLY because its trailer is remapped -- the prediction's third seed
 echo more >> README.md; git ${C} commit -q -a --author='Claude Fable 5.1 <c@x>' -m "harness agent commit
 
 Code: master-beta @ ${OLD2:0:8}
 
 Co-Authored-By: Claude Fable 5.1 <c@x>"
+echo note >> README.md; git ${H} commit -q -a -m "human harness commit citing the dangling sha
+
+Code: master-beta @ ${DANGLING:0:8}"       # pre-existing dangling trailer, unique twin -> repaired in the pass, never selected itself
+
+# ---- first, --check: what it must say about this pair BEFORE anything runs ----
+# Two homes step E can only report (the annotated tag, the detached worktree) are HAND lines, so
+# the verdict is exit 1 with no STOP; the predicted re-sha sets are written for the assertion below.
+cd "${T}/code"; mkdir -p "${T}/pred"
+SUPERVISED_BY_PREDICT_DIR="${T}/pred" ./claude/supervised-by.sh --check --supervisor='Vixy <v@x>' > "${T}/check.log" 2>&1
+RCC=$?
+[ "${RCC}" -eq 1 ] && ok "--check exit 1 (hand repairs predicted)" || { ko "--check exit ${RCC}, want 1"; tail -20 "${T}/check.log"; }
+grep -q '^  STOP' "${T}/check.log" && { ko "--check predicted a STOP on a clean pair"; grep '^  STOP' "${T}/check.log"; } || ok "--check: no STOP predicted"
+grep -q '^  HAND .*annotated tag annotated' "${T}/check.log" && ok "--check: annotated tag predicted as hand repair" || ko "--check: annotated tag not predicted"
+grep -q "^  HAND .*detached worktree ${T}/wt" "${T}/check.log" && ok "--check: detached worktree predicted as hand repair" || ko "--check: detached worktree not predicted"
+grep -q "re-shaed by the rewrite: 3 code commit(s) (2 selected" "${T}/check.log" && ok "--check: 3 code commits re-shaed (2 selected + 1 descendant)" || { ko "--check: re-sha count"; grep 're-shaed' "${T}/check.log"; }
+grep -q "missing', which does not exist" "${T}/check.log" && ok "--check: missing outside path reported" || ko "--check: missing outside path not reported"
+grep -q "repair ${DANGLING:0:8} -> ${OLD1:0:8}" "${T}/check.log" && grep -q '^  note  1 pre-existing dangling' "${T}/check.log" \
+    && ok "--check: the pre-existing dangling trailer predicted repaired to its twin" || { ko "--check: dangling repair not predicted"; grep -i 'dangling\|repair' "${T}/check.log" | head -5; }
+[ -z "$(git status --porcelain)" ] && [ -z "$(git -C claude status --porcelain)" ] && ok "--check touched nothing" || ko "--check left the pair dirty"
 
 # ---- run the tool: supervisor given, "y" to the rewrite, "y" to the repoint ----
 cd "${T}/code"
@@ -65,7 +94,24 @@ done
     && ok "annotated tag left alone and REPORTED" || ko "annotated tag: not reported, or moved"
 grep -q "detached worktree ${T}/wt" "${T}/run.log" && ok "detached worktree REPORTED" || ko "detached worktree not reported"
 git for-each-ref refs/original | grep -q . && ok "refs/original backup untouched" || ko "refs/original missing"
+# The prediction against its one independent oracle: the old side of the map the run wrote.
+# code.tsv carries the repair pairs too (a verbatim superset of repair.tsv, by construction:
+# the pass consults ONE file), so the re-sha set is code.tsv minus repair.tsv.
+MAPDIR=$(ls -d claude/sha-maps/*/ 2>/dev/null | sort | tail -1)
+if [ -n "${MAPDIR}" ] && diff -q <(sort "${T}/pred/code.predicted") <(cut -f1 "${MAPDIR}/code.tsv" | grep -vxFf <(cut -f1 "${MAPDIR}/repair.tsv"; echo NONE) | sort) >/dev/null \
+                     && diff -q <(sort "${T}/pred/harness.predicted") <(cut -f1 "${MAPDIR}/harness.tsv" | sort) >/dev/null; then
+    ok "--check's predicted re-sha sets equal the map's old sides (code $(wc -l < "${MAPDIR}/code.tsv") incl. $(wc -l < "${MAPDIR}/repair.tsv") repair, harness $(wc -l < "${MAPDIR}/harness.tsv"))"
+else
+    ko "--check's predicted re-sha sets differ from the map (${MAPDIR:-no map})"
+    diff <(sort "${T}/pred/code.predicted") <(cut -f1 "${MAPDIR:-/nonexistent}/code.tsv" 2>/dev/null | sort) | head -5
+    diff <(sort "${T}/pred/harness.predicted") <(cut -f1 "${MAPDIR:-/nonexistent}/harness.tsv" 2>/dev/null | sort) | head -5
+fi
+grep -q "^${OLD3}"$'\t' "${MAPDIR:-/nonexistent}/code.tsv" 2>/dev/null && ok "the unselected descendant is in the map" || ko "the unselected descendant ${OLD3:0:8} is not in the map"
+[ "$(grep -c "^${DANGLING}"$'\t'"${NEW1}\$" "${MAPDIR:-/nonexistent}/repair.tsv" 2>/dev/null)" = 1 ] \
+    && ok "repair.tsv: the dangling sha mapped to its twin's NEW name" || { ko "repair.tsv wrong: $(cat "${MAPDIR:-/nonexistent}/repair.tsv" 2>/dev/null | cut -c1-60)"; }
 cd claude
+git log --format=%B | grep -q "^Code: master-beta @ ${NEW1:0:8}$" && ! git log --format=%B | grep -q "${DANGLING:0:8}" \
+    && ok "the dangling trailer was repaired in the message" || ko "the dangling trailer was not repaired: $(git log --format=%B | grep '^Code:' | tr '\n' ' ')"
 grep -q "${NEW1:0:8}" README.md && grep -q "${NEW2:0:10}" README.md && ok "*.md repointed (both prefix lengths)" || ko "*.md not repointed: $(cat README.md)"
 grep -q "${NEW1:0:8}" tool.py        && ok "live non-.md file repointed although read-only (tool.py)" || ko "tool.py not repointed: $(cat tool.py)"
 grep -q "${OLD1:0:8}" harness/artifacts/evidence.txt && ok "evidence drawer untouched (harness/artifacts)" || ko "EVIDENCE REWRITTEN: harness/artifacts"

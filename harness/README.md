@@ -4420,6 +4420,46 @@ and reports what it cannot attribute instead of guessing. NB a dangling pin sile
 window: a range whose left end no branch reaches excludes nothing, so before the pins were
 repointed it attributed 56 references to a commit predating the pin.
 
+## supervised-by.sh -- `--check`, and the standing aliases file (2026-10-10, session 41)
+
+    ./supervised-by.sh --check                  # every STOP and hand repair a run NOW would hit, in the run's order; one verdict, exit 0 = clean
+    ./supervised-by.sh --check --operator=foxy  # the same, judged for the OWNER's access (a session checking on his behalf; default = whoever runs it)
+
+**What it answers.** The owner runs the tool at a consolidation point and met its STOPs one at a
+time, each after a full preview, each costing a repair and a re-run. `--check` runs the SAME gates
+-- the run's own functions (`scan_range`, `unresolvable_trailers`, `malformed_code_trailers`,
+`build_repair_map`), a mode of the one file for the reason the msg-filter is one -- and records
+each answer instead of exiting on it, then adds what a run cannot know before rewriting: the set
+of commits whose sha WILL change (the selected ones and their in-range descendants; the fixture
+holds it against the map a real run writes), the `Code:` prefixes that would read AMBIG at step D,
+the GPG signatures a rebuild would drop, the refs and worktrees step E would move or could only
+report, the carrier files it would edit and whether the OPERATOR can write them (mode bits and
+groups, never `[ -w ]` -- the pair is shared by two users through one group), every directory
+under both `.git` and the two work-tree roots (`filter-branch` creates `.git-rewrite/` at the
+root; git replaces its files by rename), the supervisor string when given. Verdict lines: STOP
+(the run would refuse or abort) · HAND (it would finish and leave this to the operator) · WARN
+(it would do this and say so) · note. Exit 0 only with no STOP and no HAND. Implies `--dry-run`;
+the per-commit listing stays with `--dry-run`. Runtime-only, named: the signed-twin collapse (the
+run's UNPAIRED warning) and the closing commits' expected-set assertion.
+
+**`sha-maps/branch-aliases.txt`** -- `<old>=<new>` per line, `#` comments: the aliases a pair's
+history makes permanent. `master-beta=main` (the 2026-09-19 rename); `s33-relocate=main` (a
+session-33 branch whose commit `4d91b795` moved onto `main` as `6c3d0ed6`, the branch deleted;
+two harness commits of that day cite it -- the run repairs both to the twin). Read at startup,
+validated like a flag; a flag naming the same `<old>` wins. Found by the first `--check`: without
+the file every run of the owner's needed both flags retyped, and the second one nobody knew.
+
+**Two previews widened on the way** (the same-class sweep): step A''' ("citations this run would
+strand") read tracked `*.md` alone where step E has repointed `*.md` + live non-.md + the `also.txt`
+homes since 2026-09-19 -- one enumeration (`enumerate_homes`) serves both now; and it asked about
+the SELECTED commits where the rewrite re-shas their in-range descendants too -- it asks about the
+predicted set now. Step E was never short (it reads the real map); only the preview was.
+
+**Fixture** (`harness/supervised_by_fixture.sh`): runs `--check` first -- exit 1 on two HAND lines
+(the annotated tag, the detached worktree), no STOP, "3 code commit(s) (2 selected" with a human
+commit added on top of the agent's as the unselected descendant -- then the run, then holds the
+predicted sets against the map's old sides and the descendant against the map. ALL PASS 2026-10-10.
+
 ## premise_check.py — every checkable premise of a dispatch section, re-run at three events — fable-dispatch.md §0b.3 / §0.7, 2026-09-05
 
     python3 claude/harness/premise_check.py F91        # one section: every line PASS, or the FAILs in observed-vs-stated form

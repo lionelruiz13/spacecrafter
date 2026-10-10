@@ -273,12 +273,61 @@
 # <new-name> must resolve at startup, so a typo fails immediately instead of
 # quietly reintroducing the substitution this replaced.
 #
+# The aliases a pair's history makes PERMANENT (a renamed branch stays renamed)
+# are read from `<harness>/sha-maps/branch-aliases.txt`, one `<old>=<new>` per
+# line, `#` comments -- the same home and form as `also.txt`, for the same
+# reason: it is a standing fact about this pair, not about one run, and a fact
+# every run needs must not depend on every operator retyping it. A flag names
+# the same <old> wins over the file; both are validated at startup.
+#
+# ---------------------------------------------------------------------------
+# --check: WHAT A RUN WOULD DO, SAID BEFORE THE OPERATOR RUNS IT
+# ---------------------------------------------------------------------------
+# The operator runs this script at a consolidation point and discovers its STOPs
+# one at a time, each after a full preview, each needing a repair and a re-run.
+# Every one of those STOPs is decidable BEFORE the run from a read of the two
+# repositories, and so is most of what the run leaves for hand repair. `--check`
+# asks all of those questions at once, in the run's own order, and answers with
+# one verdict: a run now would STOP (and on what), or would reach the y/N and
+# leave N things to repair by hand (and which), or would run clean. Exit 0 only
+# for the last. It mutates nothing and never prompts (it implies --dry-run).
+#
+# It is a MODE of this file and not a second script, for the reason the
+# msg-filter is: the questions are the run's own functions -- scan_range,
+# unresolvable_trailers, malformed_code_trailers, build_repair_map -- so the
+# check and the run cannot disagree about a gate, only about nothing. What the
+# check adds, the run cannot compute before rewriting:
+#
+#   * the set of commits whose sha WILL change: the selected ones and every
+#     descendant of one inside the range (the --commit-filter leaves every other
+#     commit alone, so this is exact, and the fixture asserts it against the
+#     map a real run writes);
+#   * from that set: the trailer prefixes that would read AMBIG at step D, the
+#     GPG signatures that would be rebuilt away, the refs and worktrees step E
+#     would move or could only report, the citation carriers it would edit;
+#   * what the OPERATOR can write -- judged for `--operator=<user>` (default:
+#     whoever runs the check), never for the invoking user by `[ -w ]`: the two
+#     repositories are shared by two OS users through one group, and a session
+#     checking for the owner must ask about HIS access. Directories under both
+#     `.git` and the repo roots (filter-branch creates `.git-rewrite/` at the
+#     work-tree root; git replaces files by rename, so directories are what
+#     matter there), the carrier files step E edits in place (a file the
+#     operator neither owns nor may write is the `sudo chmod` arm), `sha-maps/`.
+#
+# What stays runtime-only, named rather than implied: the signed-twin collapse
+# (a rebuilt signed commit landing ON an existing unsigned duplicate -- the
+# run's UNPAIRED warning), and the closing commits' expected-set assertion.
+#
 # Usage:
 #   ./supervised-by.sh                        # both repos, @{upstream}..HEAD each
 #   ./supervised-by.sh --code=93a14377..HEAD  # override one side explicitly
 #   ./supervised-by.sh --harness=HEAD~20..HEAD
 #   ./supervised-by.sh --dry-run              # preview only, never prompts
+#   ./supervised-by.sh --check                # every STOP and hand-repair a run now
+#                                             # would hit, one verdict, exit 0 = clean
+#   ./supervised-by.sh --check --operator=foxy   # ... judged for that user's access
 #   ./supervised-by.sh --branch-alias=master-beta=main   # after a branch rename
+#                                             # (standing ones: sha-maps/branch-aliases.txt)
 # ---------------------------------------------------------------------------
 
 set -euo pipefail
@@ -725,6 +774,354 @@ if [ "${1:-}" = "--commit-filter" ]; then
 fi
 
 # ===========================================================================
+# --check: THE REGISTERS, THE OPERATOR'S ACCESS, THE PREDICTIONS
+# (functions only -- MAIN decides when each runs; header section "--check")
+# ===========================================================================
+# Three registers, printed as the verdict. STOP = the run would refuse to start
+# or abort; HAND = it would finish and leave this to the operator's hands; WARN =
+# it would do this and say so (a signature rebuilt away); NOTE = information.
+CHECK_STOP=(); CHECK_HAND=(); CHECK_WARN=(); CHECK_NOTE=()
+check_stop() { CHECK_STOP+=("$*"); }
+check_hand() { CHECK_HAND+=("$*"); }
+check_warn() { CHECK_WARN+=("$*"); }
+check_note() { CHECK_NOTE+=("$*"); }
+
+# check_operator: resolve whose access is judged. Default = the invoking user;
+# a session checking on the owner's behalf names him. The group list is read
+# ONCE here; `id` on an unknown user fails loud.
+OP_GROUPS=""
+check_operator() {
+    [ -n "${OPERATOR}" ] || OPERATOR=$(id -un)
+    OP_GROUPS=" $(id -Gn "${OPERATOR}" 2>/dev/null | tr '\n' ' ') "
+    if [ "${OP_GROUPS}" = "  " ]; then
+        echo "error: --operator=${OPERATOR}: no such user here (id -Gn failed)." >&2; exit 1
+    fi
+    return 0
+}
+
+# writable_by <path> -> 0 if the OPERATOR may write <path>: owner bit when the
+# operator owns it, group bit when the file's group is one of the operator's,
+# other bit otherwise. Never `[ -w ]`: that answers for the invoking user, and
+# the pair is shared between two users through one group.
+writable_by() {
+    local o g m
+    read -r o g m < <(stat -c '%U %G %a' -- "$1" 2>/dev/null) || return 1
+    [ -n "${m}" ] || return 1
+    if [ "${o}" = "${OPERATOR}" ]; then
+        if [ $(( 8#${m} & 8#200 )) -ne 0 ]; then return 0; fi; return 1
+    fi
+    case "${OP_GROUPS}" in
+        *" ${g} "*) if [ $(( 8#${m} & 8#020 )) -ne 0 ]; then return 0; fi; return 1 ;;
+    esac
+    if [ $(( 8#${m} & 8#002 )) -ne 0 ]; then return 0; fi
+    return 1
+}
+# owned_by <path> -> 0 if the operator owns it: make_writable's own chmod then
+# restores a missing bit, so an unwritable OWNED file is the run's to fix.
+owned_by() { [ "$(stat -c '%U' -- "$1" 2>/dev/null)" = "${OPERATOR}" ]; }
+
+# predict_rewritten <repo> <range> <selected-file> <out-file>: the full shas
+# whose object a run would REBUILD -- every selected commit and every commit in
+# the range with a rewritten parent (its mapped parent changes, so its object
+# must). Exact under the --commit-filter, which rebuilds nothing else; the
+# fixture asserts this set against the map a real run writes. `--reverse
+# --topo-order` lists parents before children, so the set is complete when a
+# child is examined; a parent outside the range is never in it, which is what
+# "inside the range" means.
+predict_rewritten() {
+    local repo=$1 range=$2 selfile=$3 out=$4 sha p rest hit
+    local -A SEL=() REW=()
+    while read -r sha; do
+        if [ -n "${sha}" ]; then SEL["${sha}"]=1; fi
+    done < "${selfile}"
+    : > "${out}"
+    while read -r sha rest; do
+        [ -n "${sha}" ] || continue
+        hit=${SEL[${sha}]:-0}
+        if [ "${hit}" = 0 ]; then
+            for p in ${rest}; do
+                if [ -n "${REW[${p}]:-}" ]; then hit=1; break; fi
+            done
+        fi
+        if [ "${hit}" != 0 ]; then REW["${sha}"]=1; printf '%s\n' "${sha}" >> "${out}"; fi
+    done < <(git -C "${repo}" rev-list --reverse --topo-order --parents "${range}")
+    return 0
+}
+
+# trailer_citers <harness-range> <old-sha-file> -> the full sha of every harness
+# commit in the range whose `Code:` trailer names (by prefix) a sha listed in
+# <old-sha-file>. The msg-filter's transform (1) remaps such a trailer whether
+# or not the commit is selected, so its object changes too: these are the
+# harness pass's THIRD seed, beside the selected commits and the descendants.
+trailer_citers() {
+    local range=$1 old=$2 REC SHA BODY LINE
+    [ -s "${old}" ] || return 0
+    while IFS= read -r -d '' REC || [ -n "${REC}" ]; do
+        SHA=${REC%%$'\x02'*}; BODY=${REC#*$'\x02'}
+        while IFS= read -r LINE; do
+            if [[ ${LINE} =~ ^Code:[[:space:]]+[^[:space:]]+[[:space:]]+@[[:space:]]+([0-9a-f]{7,40})[[:space:]]*$ ]]; then
+                if [ "$(grep -c "^${BASH_REMATCH[1]}" "${old}" || true)" -gt 0 ]; then
+                    printf '%s\n' "${SHA}"; break
+                fi
+            fi
+        done <<< "${BODY}"
+    done < <(git -C "${HARNESS_REPO}" log -z --format="%H%x02%B" "${range}")
+    return 0
+}
+
+# predict_ambig <code-rewritten-file> <repair-old-file> <harness-range> ->
+# `<trailer-sha> <n>` per `Code:` sha that prefixes MORE THAN ONE old-side sha
+# of the map the harness pass would consult (this run's re-shaed code commits
+# plus the pre-existing dangling ones it repairs): what map_lookup calls AMBIG
+# and step D STOPs on.
+predict_ambig() {
+    local rew=$1 rep=$2 range=$3 br sha n
+    while read -r br sha; do
+        [ -n "${sha}" ] || continue
+        n=$(cat "${rew}" "${rep}" 2>/dev/null | grep -c "^${sha}" || true)
+        if [ "${n:-0}" -gt 1 ]; then printf '%s %s\n' "${sha}" "${n}"; fi
+    done < <(list_code_trailers "${range}")
+    return 0
+}
+
+# predict_signed <repo> <rewritten-file> -> one line per rebuilt commit that
+# carries a gpgsig header: `commit-tree` cannot write one, so the run rebuilds
+# it UNSIGNED and says so (section 2(f)). `grep -c`, not `grep -q`: -q closes
+# the pipe early and under pipefail the SIGPIPE'd cat-file turns a hit into a
+# miss.
+predict_signed() {
+    local repo=$1 rew=$2 sha
+    while read -r sha; do
+        [ -n "${sha}" ] || continue
+        if [ "$(git -C "${repo}" cat-file commit "${sha}" | grep -c '^gpgsig')" -gt 0 ]; then
+            printf '%s  %s\n' "${sha:0:8}" "$(git -C "${repo}" log -1 --format='%an  %s' "${sha}" | cut -c1-70)"
+        fi
+    done < "${rew}"
+    return 0
+}
+
+# predict_refs <repo> <rewritten-file>: what step E would do to the OTHER refs
+# and the worktrees of <repo> that name a rebuilt commit -- `move <ref>` for a
+# branch, a lightweight tag, a custom namespace (repointed under the y/N);
+# `HAND ...` for what step E can only report. The branch filter-branch walks is
+# moved by filter-branch itself and is not listed.
+predict_refs() {
+    local repo=$1 rew=$2 obj peeled ref line wt head walked
+    local -A REW=()
+    while read -r obj; do
+        if [ -n "${obj}" ]; then REW["${obj}"]=1; fi
+    done < "${rew}"
+    walked=$(git -C "${repo}" symbolic-ref -q HEAD || true)
+    while IFS='|' read -r obj peeled ref; do
+        case "${ref}" in refs/original/*|refs/stash) continue ;; esac
+        [ "${ref}" != "${walked}" ] || continue
+        if [ -n "${REW[${obj}]:-}" ]; then
+            printf 'move %s\n' "${ref}"
+        elif [ -n "${peeled}" ] && [ -n "${REW[${peeled}]:-}" ]; then
+            printf 'HAND annotated tag %s names a rebuilt commit -- re-tag by hand after the run\n' "${ref#refs/tags/}"
+        fi
+    done < <(git -C "${repo}" for-each-ref --format='%(objectname)|%(*objectname)|%(refname)')
+    wt=""; head=""
+    while IFS= read -r line; do
+        case "${line}" in
+            "worktree "*) wt="${line#worktree }" ;;
+            "HEAD "*)     head="${line#HEAD }" ;;
+            detached)
+                if [ -n "${REW[${head}]:-}" ]; then
+                    printf 'HAND detached worktree %s stands on %s -- checkout its new name after the run\n' "${wt}" "${head:0:8}"
+                fi ;;
+        esac
+    done < <(git -C "${repo}" worktree list --porcelain)
+    return 0
+}
+
+# enumerate_homes: the files step E reads for citations -- ONE statement of the
+# scope, consumed by step E and by the check (the scope's reasons are in step
+# E's own header). Sets MD_FILES (harness tracked *.md), LIVE_FILES (harness
+# live non-.md text, the evidence drawers excluded by path) and ALSO_FILES
+# (homes outside the pair, from sha-maps/also.txt; a listed path that does not
+# exist is said, once, to stdout).
+MD_FILES=(); LIVE_FILES=(); ALSO_FILES=(); HOMES_SAID=0
+enumerate_homes() {
+    local p f
+    MD_FILES=(); LIVE_FILES=(); ALSO_FILES=()
+    mapfile -t MD_FILES < <(git -C "${MD_REPO}" ls-files -- '*.md' 2>/dev/null || true)
+    if [ -n "${HARNESS_REPO}" ]; then
+        mapfile -t LIVE_FILES < <(git -C "${MD_REPO}" grep -lIE '\b[0-9a-f]{7,40}\b' -- . \
+            ':(exclude)*.md' ':(exclude)*.tsv' ':(exclude)sha-maps' ':(exclude)harness/artifacts' \
+            ':(exclude,glob)**/archive/**' 2>/dev/null || true)
+    fi
+    if [ -f "${MD_REPO}/sha-maps/also.txt" ]; then
+        while IFS= read -r p || [ -n "${p}" ]; do
+            p="${p%%#*}"; p="${p#"${p%%[![:space:]]*}"}"; p="${p%"${p##*[![:space:]]}"}"
+            [ -n "${p}" ] || continue
+            if [ -d "${p}" ]; then
+                while IFS= read -r f; do ALSO_FILES+=("${f}"); done \
+                    < <(grep -rlIE '\b[0-9a-f]{7,40}\b' "${p}" 2>/dev/null || true)
+            elif [ -f "${p}" ]; then
+                ALSO_FILES+=("${p}")
+            elif [ "${HOMES_SAID}" = 0 ]; then
+                echo "  (sha-maps/also.txt names '${p}', which does not exist here -- skipped.)"
+            fi
+        done < "${MD_REPO}/sha-maps/also.txt"
+    fi
+    HOMES_SAID=1
+    return 0
+}
+
+# check_access: every place a run must be able to WRITE, judged for the
+# operator. Directories under both `.git` dirs and the two work-tree roots
+# (filter-branch creates `.git-rewrite/` at the root; git replaces its own
+# files by rename, so a directory bit is what a rewrite needs there), and the
+# sha-maps drawer. A `.git-rewrite` left by a run that died is a refusal to
+# start, so it is said here too.
+check_access() {
+    local r d n first bad
+    for r in "${CODE_REPO}" ${HARNESS_REPO:+"${HARNESS_REPO}"}; do
+        if ! writable_by "${r}"; then
+            check_stop "access: ${OPERATOR} cannot create .git-rewrite/ in ${r} (the directory is not writable by that user)"
+        fi
+        if [ -e "${r}/.git-rewrite" ]; then
+            check_stop "access: ${r}/.git-rewrite exists -- filter-branch refuses to start; a previous run died, remove it"
+        fi
+        d=$(git -C "${r}" rev-parse --absolute-git-dir)
+        n=0; first=""
+        while IFS= read -r bad; do
+            [ -n "${bad}" ] || continue
+            n=$((n + 1))
+            if [ -z "${first}" ]; then first="${bad}"; fi
+        done < <(find "${d}" -type d 2>/dev/null | while IFS= read -r p; do
+                     if ! writable_by "${p}"; then printf '%s\n' "${p}"; fi
+                 done)
+        if [ "${n}" -gt 0 ]; then
+            check_stop "access: ${n} director(y/ies) under ${d} not writable by ${OPERATOR} (first: ${first}) -- git creates objects and renames refs there"
+        fi
+    done
+    if [ -n "${HARNESS_REPO}" ] && ! writable_by "${HARNESS_REPO}/sha-maps"; then
+        check_stop "access: ${HARNESS_REPO}/sha-maps not writable by ${OPERATOR} -- the run writes its map directory there"
+    fi
+    return 0
+}
+
+# check_carriers <label> <dir-or-empty> <resolved-token-file> <file...>: the
+# files step E would edit in place. One it can write, or one the operator OWNS
+# (make_writable restores the bit), is fine; one the operator neither owns nor
+# may write is the `sudo chmod` arm -- a terminal prompt in the middle of the
+# run, or a STILL STALE line at its end. The containing directory must be
+# writable too: `sed -i` writes a new file and renames it over the old.
+check_carriers() {
+    local label=$1 dir=$2 res=$3; shift 3
+    [ "$#" -gt 0 ] || return 0
+    local tok full f abs
+    local -A SEEN=()
+    while read -r tok full; do
+        [ -n "${tok}" ] && [ "${full}" != "AMBIG" ] || continue
+        while IFS= read -r f; do
+            [ -n "${f}" ] || continue
+            abs="${dir:+${dir}/}${f}"
+            [ -z "${SEEN[${abs}]:-}" ] || continue
+            SEEN["${abs}"]=1
+            if ! writable_by "${abs}" && ! owned_by "${abs}"; then
+                check_hand "access: ${label} carrier ${abs} is neither writable by nor owned by ${OPERATOR} -- step E's sudo arm (fix the bit now: chmod g+w)"
+            fi
+            if ! writable_by "$(dirname "${abs}")"; then
+                check_hand "access: the directory of ${label} carrier ${abs} is not writable by ${OPERATOR} -- sed -i cannot rename the repointed file into it"
+            fi
+        done < <(cd "${dir:-/}" && grep -lwF "${tok}" "$@" /dev/null 2>/dev/null || true)
+    done < "${res}"
+    return 0
+}
+
+# check_supervisor: the string is read at step B and used as the closing
+# commits' author at E' / the closing commit; what can be judged now is judged.
+check_supervisor() {
+    if [ -z "${SUPERVISOR}" ]; then
+        check_note "supervisor: typed at the prompt -- pass --supervisor='Name <mail>' to check it now (the closing commits need a git identity)"
+    elif [[ ${SUPERVISOR} == Supervised-By:* ]]; then
+        check_stop "supervisor: '${SUPERVISOR}' starts with the key -- step B refuses it; give the VALUE only"
+    elif ! [[ ${SUPERVISOR} =~ ^.+\ \<[^\>]+\>$ ]]; then
+        check_hand "supervisor: '${SUPERVISOR}' is not a git identity ('Name <mail>') -- the trailers are written, the closing commits are NOT made (commit by hand)"
+    fi
+    return 0
+}
+
+# build_repair_map <outfile> -- heal trailers ALREADY dangling when this run
+# started, i.e. damage left by an EARLIER rewrite that had no cross-repo step.
+# It reads ${BASELINE_DANGLING_LIST}, captured at step A BEFORE anything was
+# rewritten, and not a fresh dangling_trailers call: by the time this runs the
+# code repo has been re-shaed, so a fresh call also returns every trailer THIS
+# run just invalidated -- which build_map has already mapped, and mapping them
+# twice makes map_lookup report each one AMBIG and aborts the run.
+# Same fingerprint (tree + author-date + author + subject) as
+# build_map, for the same reason: a message-only rewrite preserves all four, so
+# the old sha's twin on the branch is identifiable without trusting anything the
+# rewrite itself wrote. A unique match is repaired; zero or several is REPORTED,
+# never guessed -- a wrong repair is indistinguishable from a right one
+# afterwards, which is precisely the property that forbids guessing here.
+# Sets REPAIRED_N / UNREPAIRABLE_N. Defined here, with the functions, because
+# --check runs it BEFORE step B (where it used to live) on the same list.
+build_repair_map() {
+    local out=$1 br sha fp tree c hits
+    : > "${out}"; REPAIRED_N=0; UNREPAIRABLE_N=0
+    while read -r br sha; do
+        [ -n "${sha}" ] || continue
+        if ! git -C "${CODE_REPO}" rev-parse --verify -q "${sha}^{commit}" >/dev/null 2>&1; then
+            echo "    UNREPAIRABLE ${sha} (object gone -- gc'd; nothing left to match)" >&2
+            UNREPAIRABLE_N=$((UNREPAIRABLE_N + 1)); continue
+        fi
+        fp=$(git -C "${CODE_REPO}" log -1 --format='%T|%at|%ae|%s' "${sha}")
+        tree=${fp%%|*}
+        # An ASSERTION, not a fallback: step A' refuses an unresolvable trailer
+        # branch before any prompt, so reaching this is a broken guard, not a
+        # case to cope with. Coping here is what produced the defect -- the twin
+        # search would run over whatever HEAD points at and its single hit would
+        # be indistinguishable from a correct repair afterwards.
+        local target
+        if ! target=$(resolve_branch_target "${br}"); then
+            echo "STOP: trailer branch '${br}' resolves to no ref and no --branch-alias," >&2
+            echo "      so ${sha} cannot be searched for a twin. Step A' should have" >&2
+            echo "      refused this run before it started; that guard is broken." >&2
+            rollback_all; exit 1
+        fi
+        hits=()
+        while read -r c; do
+            [ -n "${c}" ] || continue
+            [ "$(git -C "${CODE_REPO}" log -1 --format='%T|%at|%ae|%s' "${c}")" = "${fp}" ] && hits+=("${c}")
+        done < <(git -C "${CODE_REPO}" log "${target}" --format='%H %T' | awk -v t="${tree}" '$2==t {print $1}')
+        if [ "${#hits[@]}" -eq 1 ]; then
+            printf '%s\t%s\n' "$(git -C "${CODE_REPO}" rev-parse "${sha}")" "${hits[0]}" >> "${out}"
+            echo "    repair ${sha} -> ${hits[0]:0:8}  ($(git -C "${CODE_REPO}" log -1 --format='%s' "${hits[0]}" | cut -c1-50))"
+            REPAIRED_N=$((REPAIRED_N + 1))
+        else
+            echo "    UNREPAIRABLE ${sha} (${#hits[@]} fingerprint matches on ${target}; repoint by hand)" >&2
+            UNREPAIRABLE_N=$((UNREPAIRABLE_N + 1))
+        fi
+    done < <(printf '%s\n' "${BASELINE_DANGLING_LIST}")
+}
+
+# check_verdict: print the registers and exit by them. Exit 0 ONLY when a run
+# now would reach the y/N and leave nothing to the operator's hands.
+check_verdict() {
+    local l
+    echo
+    echo "=== --check verdict -- judged for operator ${OPERATOR}; nothing was touched ==="
+    for l in "${CHECK_STOP[@]+"${CHECK_STOP[@]}"}"; do echo "  STOP  ${l}"; done
+    for l in "${CHECK_HAND[@]+"${CHECK_HAND[@]}"}"; do echo "  HAND  ${l}"; done
+    for l in "${CHECK_WARN[@]+"${CHECK_WARN[@]}"}"; do echo "  WARN  ${l}"; done
+    for l in "${CHECK_NOTE[@]+"${CHECK_NOTE[@]}"}"; do echo "  note  ${l}"; done
+    if [ "${#CHECK_STOP[@]}" -gt 0 ]; then
+        echo "  VERDICT: a run now would STOP (${#CHECK_STOP[@]} reason(s) above)${CHECK_HAND[@]+ and leave ${#CHECK_HAND[@]} thing(s) to hand repair}."
+        exit 1
+    fi
+    if [ "${#CHECK_HAND[@]}" -gt 0 ]; then
+        echo "  VERDICT: a run now would reach the y/N and leave ${#CHECK_HAND[@]} thing(s) to repair by hand (HAND lines above)."
+        exit 1
+    fi
+    echo "  VERDICT: a run now would reach the y/N with nothing to repair by hand (${#CHECK_WARN[@]} warning(s), ${#CHECK_NOTE[@]} note(s))."
+    exit 0
+}
+
+# ===========================================================================
 # MAIN
 # ===========================================================================
 
@@ -733,6 +1130,7 @@ fi
 # play. It now cannot mean one thing, so it is REFUSED rather than silently
 # reinterpreted -- a changed meaning that still runs is the worst outcome here.
 CODE_RANGE=""; HARNESS_RANGE=""; DRY_RUN=0; NO_COMMIT=0; SUPERVISOR="${SUPERVISOR:-}"
+CHECK=0; OPERATOR=""
 AUTHOR_FIX_MAP=$(mktemp); export AUTHOR_FIX_MAP
 trap 'rm -f "${AUTHOR_FIX_MAP}"' EXIT
 for arg in "$@"; do
@@ -741,6 +1139,12 @@ for arg in "$@"; do
         --harness=*)    HARNESS_RANGE="${arg#*=}" ;;
         --supervisor=*) SUPERVISOR="${arg#*=}" ;;
         --dry-run)      DRY_RUN=1 ;;
+        # --check implies --dry-run: a check that could prompt or mutate is a run.
+        --check)        CHECK=1; DRY_RUN=1 ;;
+        # --operator=<user>: whose ACCESS the check judges. Shape checked here,
+        # existence once the check needs the user's groups (`id` fails loud).
+        --operator=*)   OPERATOR="${arg#*=}"
+                        [ -n "${OPERATOR}" ] || { echo "error: --operator wants a user name." >&2; exit 1; } ;;
         --no-commit)    NO_COMMIT=1 ;;
         # --author-fix=<sha>=<Claude Model Version> : the hand-repair channel for
         # a wildcard author the trailers cannot resolve. Repeatable.
@@ -794,6 +1198,28 @@ else
     CODE_REPO="${HERE}"; HARNESS_REPO=""
 fi
 
+# --- the standing aliases of this pair, from the file beside the sha maps -----
+# Read AFTER the flags and BEFORE validation, and a flag naming the same <old>
+# wins: the file states what is permanently true of this pair's history, the
+# flag what this operator means today. Every entry is validated below exactly
+# as a flag is -- a stale file must fail as loudly as a typo.
+ALIAS_FILE=""; ALIAS_FROM_FILE=""
+if [ -n "${HARNESS_REPO}" ] && [ -f "${HARNESS_REPO}/sha-maps/branch-aliases.txt" ]; then
+    ALIAS_FILE="${HARNESS_REPO}/sha-maps/branch-aliases.txt"
+    while IFS= read -r line || [ -n "${line}" ]; do
+        line="${line%%#*}"; line="${line#"${line%%[![:space:]]*}"}"; line="${line%"${line##*[![:space:]]}"}"
+        [ -n "${line}" ] || continue
+        BAO="${line%%=*}"; BAN="${line#*=}"
+        if [ -z "${BAO}" ] || [ "${BAO}" = "${line}" ] || [ -z "${BAN}" ]; then
+            echo "error: ${ALIAS_FILE} wants <old-branch>=<new-branch> per line, got '${line}'." >&2
+            exit 1
+        fi
+        if [ -z "${BRANCH_ALIAS[${BAO}]:-}" ]; then
+            BRANCH_ALIAS["${BAO}"]="${BAN}"; ALIAS_FROM_FILE="${ALIAS_FROM_FILE} ${BAO}=${BAN}"
+        fi
+    done < "${ALIAS_FILE}"
+fi
+
 # --- validate every --branch-alias target, now that the code repo is known ---
 # Before anything is read, previewed or rewritten. An alias pointing at a branch
 # that does not exist would put the substitution this option replaced straight
@@ -801,7 +1227,10 @@ fi
 for BAO in "${!BRANCH_ALIAS[@]}"; do
     BAN="${BRANCH_ALIAS[${BAO}]}"
     if ! git -C "${CODE_REPO}" rev-parse --verify -q "refs/heads/${BAN}" >/dev/null 2>&1; then
-        echo "error: --branch-alias=${BAO}=${BAN} names no local branch in ${CODE_REPO}." >&2
+        case " ${ALIAS_FROM_FILE} " in
+            *" ${BAO}=${BAN} "*) echo "error: ${ALIAS_FILE}: '${BAO}=${BAN}' names no local branch in ${CODE_REPO}." >&2 ;;
+            *) echo "error: --branch-alias=${BAO}=${BAN} names no local branch in ${CODE_REPO}." >&2 ;;
+        esac
         echo "       Local branches there: $(git -C "${CODE_REPO}" for-each-ref --format='%(refname:short)' refs/heads | tr '\n' ' ')" >&2
         exit 1
     fi
@@ -847,24 +1276,38 @@ fi
 # --dry-run skips it: previewing is read-only, so a dirty tree is no reason to
 # refuse to LOOK. You can always see what a run would do.
 # ---------------------------------------------------------------------------
-if [ "${DRY_RUN}" = 0 ]; then
+# --check asks the same question and records the answer instead of stopping on
+# it: it is the run's FIRST stop, so it is the check's first line.
+if [ "${CHECK}" = 1 ]; then
+    check_operator
+    echo "=== --check: what a run now would do, in the run's order (operator ${OPERATOR}) ==="
+    if [ -n "${ALIAS_FROM_FILE}" ]; then echo "    standing aliases from ${ALIAS_FILE}:${ALIAS_FROM_FILE}"; fi
+    echo
+fi
+if [ "${DRY_RUN}" = 0 ] || [ "${CHECK}" = 1 ]; then
     DIRTY_LIST=""
     for r in "${CODE_REPO}" ${HARNESS_REPO:+"${HARNESS_REPO}"}; do
         # -uall so untracked files inside untracked DIRECTORIES are named one by
         # one; the default collapses them to `dir/`, which hides how much is there.
         o=$(git -C "${r}" status --porcelain --untracked-files=all)
-        [ -n "${o}" ] && DIRTY_LIST+="  ${r}"$'\n'"$(printf '%s' "${o}" | sed 's/^/      /')"$'\n'
+        if [ -n "${o}" ]; then DIRTY_LIST+="  ${r}"$'\n'"$(printf '%s' "${o}" | sed 's/^/      /')"$'\n'; fi
     done
     if [ -n "${DIRTY_LIST}" ]; then
-        echo "STOP: uncommitted work is present. Nothing has been touched." >&2
-        echo >&2
-        printf '%s' "${DIRTY_LIST}" >&2
-        echo >&2
-        echo "  Commit or stash it first. This runs at a consolidation point, so this" >&2
-        echo "  listing IS the consolidation check: '??' entries are files no commit" >&2
-        echo "  would have captured -- the closing 'commit -a' cannot see them either." >&2
-        echo "  (--dry-run still previews; it changes nothing.)" >&2
-        exit 1
+        {
+        echo "STOP: uncommitted work is present. Nothing has been touched."
+        echo
+        printf '%s' "${DIRTY_LIST}"
+        echo
+        echo "  Commit or stash it first. This runs at a consolidation point, so this"
+        echo "  listing IS the consolidation check: '??' entries are files no commit"
+        echo "  would have captured -- the closing 'commit -a' cannot see them either."
+        echo "  (--dry-run still previews; it changes nothing.)"
+        } >&2
+        if [ "${CHECK}" = 1 ]; then
+            check_stop "uncommitted work in the pair ($(printf '%s' "${DIRTY_LIST}" | grep -c '^      ') entr(y/ies) listed above) -- commit or stash it first"
+        else
+            exit 1
+        fi
     fi
 fi
 
@@ -874,7 +1317,7 @@ for r in "${CODE_REPO}" ${HARNESS_REPO:+"${HARNESS_REPO}"}; do
     case "${d}" in /*) ;; *) d="${r}/${d}" ;; esac
     if [ -d "${d}/rebase-merge" ] || [ -d "${d}/rebase-apply" ]; then
         echo "error: a rebase is in progress in ${r}. Finish it, or 'git rebase --abort'." >&2
-        exit 1
+        if [ "${CHECK}" = 1 ]; then check_stop "a rebase is in progress in ${r}"; else exit 1; fi
     fi
 done
 
@@ -969,7 +1412,10 @@ preview() {                        # preview <label> <repo> <range>
     if [ "${#SEL_SHAS[@]}" -eq 0 ]; then
         echo "    nothing selected (${N_DONE} already carry Supervised-By, ${N_OTHER} not Claude-authored)"
     else
-        printf '%s\n' "${SEL_LINE[@]}"
+        # The per-commit listing is the run's review screen; a check wants the
+        # verdict in one screen, so it prints the counts and the actionable
+        # lines (MANUAL, below) and leaves the listing to --dry-run.
+        if [ "${CHECK}" = 0 ]; then printf '%s\n' "${SEL_LINE[@]}"; fi
         echo "    drop=${N_DROP}  drop+keep=${N_BOTH}  keep=${N_KEEP}  bare=${N_BARE}"
         echo "    '*' = author ALSO rewritten, resolved from the wildcard (${N_AUTHORFIX})"
         echo "    untouched: ${N_DONE} already supervised, ${N_OTHER} non-Claude"
@@ -1010,9 +1456,11 @@ fi
 # computed against a substituted target and would look exactly like a good one.
 # It fires under --dry-run too, and exits 1 there: a preview that would lie must
 # not exit 0, or the lie is what gets believed.
+UNJUDGEABLE=0
 if [ -n "${HARNESS_REPO}" ]; then
     UNRES=$(unresolvable_trailers "${HARNESS_RANGE}")
     if [ -n "${UNRES}" ]; then
+        UNJUDGEABLE=1
         {
         echo "STOP: a 'Code:' trailer names a branch this repository cannot resolve."
         echo
@@ -1046,13 +1494,18 @@ if [ -n "${HARNESS_REPO}" ]; then
         printf '%s\n' "${UNRES}" | while read -r br n; do
             echo "    (a) judge them against the renamed branch -- it must already exist:"
             echo "        ./supervised-by.sh --branch-alias=${br}=<the-new-name> ..."
+            echo "        (permanently: a '${br}=<the-new-name>' line in sha-maps/branch-aliases.txt)"
             echo "    (b) or bring the old name back, if it is meant to keep existing:"
             echo "        git -C ${CODE_REPO} branch ${br} <the-new-name>"
         done
         echo
         echo "  Nothing has been touched."
         } >&2
-        exit 1
+        if [ "${CHECK}" = 1 ]; then
+            check_stop "a 'Code:' trailer names a branch that resolves nowhere: $(printf '%s' "${UNRES}" | awk '{printf "%s%s (%s trailer(s))", (NR>1?", ":""), $1, $2}') -- a --branch-alias or a line in sha-maps/branch-aliases.txt; every reachability verdict below is skipped until then"
+        else
+            exit 1
+        fi
     fi
 fi
 
@@ -1101,7 +1554,11 @@ if [ -n "${HARNESS_REPO}" ]; then
         echo
         echo "  Nothing has been touched."
         } >&2
-        exit 1
+        if [ "${CHECK}" = 1 ]; then
+            check_stop "$(printf '%s\n' "${MALFORMED}" | grep -c .) 'Code:' line(s) in the harness range outside the trailer grammar (commits $(printf '%s\n' "${MALFORMED}" | cut -c1-8 | tr '\n' ' ')) -- reword, or narrow the range"
+        else
+            exit 1
+        fi
     fi
 fi
 
@@ -1117,25 +1574,59 @@ fi
 # shas do not exist until step C. "resolves to", never "->", for that reason --
 # an arrow here would read as a promise about a value nothing has computed yet.
 # (The wording is purge-path.sh's, which had this preview from the start.)
+#
+# The set it asks about is the set of commits that WILL be re-shaed -- the
+# selected ones and their descendants inside the range (predict_rewritten) --
+# not the selected ones alone: a descendant's object changes with its parent,
+# and a citation of it breaks exactly the same way. The narrower basis
+# under-counted this preview until 2026-10-10; step E, which reads the real
+# map, was never short.
 PLAN_SHAS=$(mktemp); PLAN_TBL=$(mktemp); PLAN_TOK=$(mktemp); PLAN_RES=$(mktemp)
-printf '%s\n' "${SEL_CODE[@]+"${SEL_CODE[@]}"}" "${SEL_HARNESS[@]+"${SEL_HARNESS[@]}"}" \
-    | grep -E '^[0-9a-f]{40}$' > "${PLAN_SHAS}" || true
+PRED_CODE=$(mktemp); PRED_HARNESS=$(mktemp); PRED_SEL=$(mktemp)
+printf '%s\n' "${SEL_CODE[@]+"${SEL_CODE[@]}"}" | grep -E '^[0-9a-f]{40}$' > "${PRED_SEL}" || true
+predict_rewritten "${CODE_REPO}" "${CODE_RANGE}" "${PRED_SEL}" "${PRED_CODE}"
+# The harness seed is the selected commits PLUS every commit whose `Code:`
+# trailer the pass remaps (it names a code commit re-shaed above): its message
+# changes, so its object does, selected or not. The citers of the pre-existing
+# dangling shas join the seed in the check, once the repair prediction exists.
+PRED_HSEED=$(mktemp)
+if [ -n "${HARNESS_REPO}" ]; then
+    { printf '%s\n' "${SEL_HARNESS[@]+"${SEL_HARNESS[@]}"}" | grep -E '^[0-9a-f]{40}$' || true
+      trailer_citers "${HARNESS_RANGE}" "${PRED_CODE}"; } | sort -u > "${PRED_HSEED}"
+    predict_rewritten "${HARNESS_REPO}" "${HARNESS_RANGE}" "${PRED_HSEED}" "${PRED_HARNESS}"
+fi
+cat "${PRED_CODE}" "${PRED_HARNESS}" > "${PLAN_SHAS}"
+# The resolved tokens per home are kept for the check's carrier census; the
+# EXIT trap removes them with the rest.
+CHK_RES_CODE=$(mktemp); CHK_RES_HARNESS=$(mktemp); CHK_RES_ALSO=$(mktemp)
+CHECK_TMP="${PRED_CODE} ${PRED_HARNESS} ${PRED_SEL} ${PRED_HSEED} ${CHK_RES_CODE} ${CHK_RES_HARNESS} ${CHK_RES_ALSO}"
+trap 'rm -f "${AUTHOR_FIX_MAP}" ${CHECK_TMP}' EXIT
+# The homes are step E's, enumerated by step E's own function: this preview read
+# tracked *.md alone until 2026-10-10, two widenings of step E (2026-09-19: the
+# live non-.md carriers, the outside homes) having never reached it.
+MD_REPO="${HARNESS_REPO:-${CODE_REPO}}"
+enumerate_homes
 if [ -s "${PLAN_SHAS}" ]; then
     sha_prefix_table "${PLAN_SHAS}" "${PLAN_TBL}"
     echo "--- citations this run would strand ------------------------------------"
     PLAN_TOTAL=0
-    for pr in "${CODE_REPO}" ${HARNESS_REPO:+"${HARNESS_REPO}"}; do
-        if [ "${pr}" = "${HARNESS_REPO:-}" ]; then
-            # the same *.md rule step E applies there, and for the same measured
-            # reason: sha-maps/ and harness/artifacts/ are evidence, not trackers.
-            (cd "${pr}" && git ls-files -- '*.md' | tr '\n' '\0' \
-                | xargs -0 grep -hoE '\b[0-9a-f]{7,40}\b' 2>/dev/null | sort -u) > "${PLAN_TOK}" || true
-            WHAT="tracked *.md"
+    for pr in "${CODE_REPO}" ${HARNESS_REPO:+"${HARNESS_REPO}"} ${ALSO_FILES[@]:+outside}; do
+        if [ "${pr}" = "outside" ]; then
+            (grep -hoE '\b[0-9a-f]{7,40}\b' "${ALSO_FILES[@]}" 2>/dev/null | sort -u) > "${PLAN_TOK}" || true
+            WHAT="sha-maps/also.txt homes, ${#ALSO_FILES[@]} file(s)"
+        elif [ "${pr}" = "${HARNESS_REPO:-}" ]; then
+            (cd "${pr}" && grep -hoE '\b[0-9a-f]{7,40}\b' "${MD_FILES[@]}" "${LIVE_FILES[@]}" /dev/null 2>/dev/null | sort -u) > "${PLAN_TOK}" || true
+            WHAT="tracked *.md + live non-.md, evidence drawers excluded"
         else
             git -C "${pr}" grep -hoIE '\b[0-9a-f]{7,40}\b' -- . 2>/dev/null | sort -u > "${PLAN_TOK}" || true
             WHAT="every tracked text file"
         fi
         sha_resolve_tokens "${PLAN_TBL}" "${PLAN_TOK}" > "${PLAN_RES}" || true
+        case "${pr}" in
+            outside)              cp "${PLAN_RES}" "${CHK_RES_ALSO}" ;;
+            "${HARNESS_REPO:-}")  cp "${PLAN_RES}" "${CHK_RES_HARNESS}" ;;
+            *)                    cp "${PLAN_RES}" "${CHK_RES_CODE}" ;;
+        esac
         N_PLAN=$(grep -c . "${PLAN_RES}" || true)
         PLAN_TOTAL=$((PLAN_TOTAL + N_PLAN))
         echo "  ${pr}  (${WHAT}): ${N_PLAN} distinct token(s)"
@@ -1146,13 +1637,17 @@ if [ -s "${PLAN_SHAS}" ]; then
             else
                 echo "      ${t}  resolves to ${r:0:8}, which this run re-shas"
             fi
-            git -C "${pr}" grep -nwIF "${t}" -- . 2>/dev/null | cut -c1-130 | head -3 | sed 's/^/          /' || true
+            if [ "${pr}" = "outside" ]; then
+                grep -nwF "${t}" "${ALSO_FILES[@]}" /dev/null 2>/dev/null | cut -c1-130 | head -3 | sed 's/^/          /' || true
+            else
+                git -C "${pr}" grep -nwIF "${t}" -- . 2>/dev/null | cut -c1-130 | head -3 | sed 's/^/          /' || true
+            fi
         done < "${PLAN_RES}"
     done
     if [ "${PLAN_TOTAL}" = 0 ]; then
         echo "  Nothing cites the commits this run would re-sha."
     else
-        echo "  Step E offers to repoint these, in BOTH repos, under one y/N."
+        echo "  Step E offers to repoint these, in BOTH repos and the outside homes, under one y/N."
     fi
     echo "-----------------------------------------------------------------------"
     echo
@@ -1174,7 +1669,13 @@ if [ -n "${HARNESS_REPO}" ]; then
     # map_lookup called every one of them AMBIG -- so the run STOPped and rolled
     # back on damage it had itself created, in every case where a trailer was
     # dangling beforehand. On this pair that is every run.)
-    BASELINE_DANGLING_LIST=$(dangling_trailers "${HARNESS_RANGE}")
+    # Only when every trailer branch resolves (step A'): an unjudgeable trailer
+    # counts as dangling, and a repair searched against the wrong ref is the
+    # defect A' exists to refuse. The run never gets here otherwise; the check
+    # does, and says the verdict is skipped.
+    if [ "${UNJUDGEABLE}" = 0 ]; then
+        BASELINE_DANGLING_LIST=$(dangling_trailers "${HARNESS_RANGE}")
+    fi
     BASELINE_DANGLING=$(printf '%s' "${BASELINE_DANGLING_LIST}" | grep -c '^' || true)
     echo "Cross-repo: ${N_TRAILER} distinct 'Code: ... @ <sha>' trailer(s) in the harness range;"
     echo "            those pointing into the rewritten code range are remapped in the SAME"
@@ -1189,6 +1690,94 @@ if [ -n "${HARNESS_REPO}" ]; then
         done
     fi
     echo
+fi
+
+# --- --check: the predictions a run cannot make before rewriting, then the --
+# --- verdict (exits). Header section "--check" states what each one is for. --
+if [ "${CHECK}" = 1 ]; then
+    echo "--- --check: predictions --------------------------------------------------"
+    # A. what the preview already left to hand repair: the bare-Claude authors
+    # no co-author resolves (listed by the preview with their --author-fix line).
+    if [ "${M_CODE}" -gt 0 ]; then
+        check_hand "${M_CODE} code commit(s) carry the bare '${WILDCARD_AUTHOR}' author with no resolvable co-author -- --author-fix=<sha>=<identity> each (the preview lists them)"
+    fi
+    if [ "${HARNESS_REPO:+x}" = x ] && [ "${M_HARNESS}" -gt 0 ]; then
+        check_hand "${M_HARNESS} harness commit(s) carry the bare '${WILDCARD_AUTHOR}' author with no resolvable co-author -- --author-fix=<sha>=<identity> each (the preview lists them)"
+    fi
+    if [ "${N_CODE}" -eq 0 ] && [ "${N_HARNESS}" -eq 0 ]; then
+        check_note "nothing to do: no commit selected in either repo -- a run exits 0 before any prompt (the STOPs above, if any, come first)"
+        check_verdict
+    fi
+    # D. the pre-existing dangling trailers: repaired to a unique fingerprint
+    # twin by the same function the run uses, or left to the hands. Their
+    # citers join the harness seed: a repaired trailer is a changed message.
+    CHK_REPAIR=$(mktemp); CHK_REPAIR_OLD=$(mktemp); CHECK_TMP="${CHECK_TMP} ${CHK_REPAIR} ${CHK_REPAIR_OLD}"
+    : > "${CHK_REPAIR}"; : > "${CHK_REPAIR_OLD}"
+    if [ "${UNJUDGEABLE}" = 1 ]; then
+        check_note "reachability verdicts (pre-existing dangling trailers, their repair, the AMBIG test) SKIPPED: a trailer branch resolves nowhere"
+    elif [ "${BASELINE_DANGLING}" -gt 0 ]; then
+        echo "  pre-existing dangling 'Code:' trailers, and what the harness pass would do to each:"
+        build_repair_map "${CHK_REPAIR}" 2>&1 | sed 's/^/  /'
+        # build_repair_map ran in a subshell (the pipe): re-read its counts from the file.
+        REPAIRED_N=$(grep -c . "${CHK_REPAIR}" || true); UNREPAIRABLE_N=$((BASELINE_DANGLING - REPAIRED_N))
+        cut -f1 "${CHK_REPAIR}" > "${CHK_REPAIR_OLD}"
+        if [ "${UNREPAIRABLE_N}" -gt 0 ]; then
+            check_hand "${UNREPAIRABLE_N} of ${BASELINE_DANGLING} pre-existing dangling trailer(s) have no unique fingerprint twin -- repoint by hand after the run (UNREPAIRABLE lines above)"
+        else
+            check_note "${BASELINE_DANGLING} pre-existing dangling trailer(s) repaired to their unique twin in the harness pass (listed above)"
+        fi
+        if [ -s "${CHK_REPAIR_OLD}" ]; then
+            { cat "${PRED_HSEED}"; trailer_citers "${HARNESS_RANGE}" "${CHK_REPAIR_OLD}"; } | sort -u > "${PRED_SEL}"
+            cp "${PRED_SEL}" "${PRED_HSEED}"
+            predict_rewritten "${HARNESS_REPO}" "${HARNESS_RANGE}" "${PRED_HSEED}" "${PRED_HARNESS}"
+        fi
+    fi
+    N_REW_CODE=$(grep -c . "${PRED_CODE}" || true); N_REW_HARNESS=$(grep -c . "${PRED_HARNESS}" || true)
+    echo "  re-shaed by the rewrite: ${N_REW_CODE} code commit(s) (${N_CODE} selected + their in-range descendants), ${N_REW_HARNESS} harness (${N_HARNESS} selected + the trailer citers + descendants)"
+    # The fixture's channel: the predicted sets, written where it says, so it can
+    # hold them against the map a real run then writes -- the prediction's one
+    # independent oracle. Unset in every other use.
+    if [ -n "${SUPERVISED_BY_PREDICT_DIR:-}" ]; then
+        cp "${PRED_CODE}" "${SUPERVISED_BY_PREDICT_DIR}/code.predicted"
+        cp "${PRED_HARNESS}" "${SUPERVISED_BY_PREDICT_DIR}/harness.predicted"
+    fi
+    if [ "${UNJUDGEABLE}" = 0 ] && [ -n "${HARNESS_REPO}" ]; then
+        AMB=$(predict_ambig "${PRED_CODE}" "${CHK_REPAIR_OLD}" "${HARNESS_RANGE}")
+        if [ -n "${AMB}" ]; then
+            check_stop "step D would STOP and roll back: 'Code:' sha(s) prefixing more than one rewritten commit -- $(printf '%s' "${AMB}" | tr '\n' ';')"
+        fi
+    fi
+    # C/D. signatures the rebuild cannot carry.
+    for r in "${CODE_REPO}" ${HARNESS_REPO:+"${HARNESS_REPO}"}; do
+        if [ "${r}" = "${HARNESS_REPO:-}" ]; then pf="${PRED_HARNESS}"; else pf="${PRED_CODE}"; fi
+        SIG=$(predict_signed "${r}" "${pf}")
+        if [ -n "${SIG}" ]; then
+            printf '%s\n' "${SIG}" | sed "s|^|  signed, rebuilt UNSIGNED in ${r}: |"
+            check_warn "$(printf '%s\n' "${SIG}" | grep -c .) GPG-signed commit(s) in ${r} would be rebuilt unsigned (listed above; the run says so again before the push)"
+        fi
+    done
+    # E. refs and worktrees.
+    for r in "${CODE_REPO}" ${HARNESS_REPO:+"${HARNESS_REPO}"}; do
+        if [ "${r}" = "${HARNESS_REPO:-}" ]; then pf="${PRED_HARNESS}"; else pf="${PRED_CODE}"; fi
+        while IFS= read -r line; do
+            [ -n "${line}" ] || continue
+            case "${line}" in
+                "move "*) echo "  step E would move ${line#move } in ${r}" ;;
+                "HAND "*) check_hand "${r}: ${line#HAND }" ;;
+            esac
+        done < <(predict_refs "${r}" "${pf}")
+    done
+    # E. the carriers step E edits in place, judged for the operator.
+    check_carriers "harness" "${MD_REPO}" "${CHK_RES_HARNESS}" "${MD_FILES[@]+"${MD_FILES[@]}"}" "${LIVE_FILES[@]+"${LIVE_FILES[@]}"}"
+    check_carriers "outside" ""           "${CHK_RES_ALSO}"    "${ALSO_FILES[@]+"${ALSO_FILES[@]}"}"
+    if [ -n "${HARNESS_REPO}" ]; then
+        mapfile -t CHK_CODE_FILES < <(git -C "${CODE_REPO}" grep -lIE '\b[0-9a-f]{7,40}\b' -- . 2>/dev/null || true)
+        check_carriers "code" "${CODE_REPO}" "${CHK_RES_CODE}" "${CHK_CODE_FILES[@]+"${CHK_CODE_FILES[@]}"}"
+    fi
+    # The environment: what the operator can write; the string he will type.
+    check_access
+    check_supervisor
+    check_verdict
 fi
 
 if [ "${N_CODE}" -eq 0 ] && [ "${N_HARNESS}" -eq 0 ]; then
@@ -1215,7 +1804,7 @@ export SUPERVISOR
 read -r -p "Rewrite ${N_CODE} code + ${N_HARNESS} harness commit(s)? [y/N] " CONFIRM
 case "${CONFIRM}" in [yY]*) ;; *) echo "aborted."; exit 0 ;; esac
 
-WORK=$(mktemp -d); trap 'rm -rf "${WORK}" "${AUTHOR_FIX_MAP}"' EXIT   # one trap: a
+WORK=$(mktemp -d); trap 'rm -rf "${WORK}" "${AUTHOR_FIX_MAP}" ${CHECK_TMP}' EXIT   # one trap: a
                     # second `trap ... EXIT` REPLACES the first, it does not add.
 # Where --commit-filter records a signature it could not carry over. Exported
 # for the same reason CODE_MAP is: the filter is a separate process, and this is
@@ -1387,58 +1976,8 @@ build_map() {
     return 0
 }
 
-# build_repair_map <outfile> -- heal trailers ALREADY dangling when this run
-# started, i.e. damage left by an EARLIER rewrite that had no cross-repo step.
-# It reads ${BASELINE_DANGLING_LIST}, captured at step A BEFORE anything was
-# rewritten, and not a fresh dangling_trailers call: by the time this runs the
-# code repo has been re-shaed, so a fresh call also returns every trailer THIS
-# run just invalidated -- which build_map has already mapped, and mapping them
-# twice makes map_lookup report each one AMBIG and aborts the run.
-# Same fingerprint (tree + author-date + author + subject) as
-# build_map, for the same reason: a message-only rewrite preserves all four, so
-# the old sha's twin on the branch is identifiable without trusting anything the
-# rewrite itself wrote. A unique match is repaired; zero or several is REPORTED,
-# never guessed -- a wrong repair is indistinguishable from a right one
-# afterwards, which is precisely the property that forbids guessing here.
-# Sets REPAIRED_N / UNREPAIRABLE_N.
-build_repair_map() {
-    local out=$1 br sha fp tree c hits
-    : > "${out}"; REPAIRED_N=0; UNREPAIRABLE_N=0
-    while read -r br sha; do
-        [ -n "${sha}" ] || continue
-        if ! git -C "${CODE_REPO}" rev-parse --verify -q "${sha}^{commit}" >/dev/null 2>&1; then
-            echo "    UNREPAIRABLE ${sha} (object gone -- gc'd; nothing left to match)" >&2
-            UNREPAIRABLE_N=$((UNREPAIRABLE_N + 1)); continue
-        fi
-        fp=$(git -C "${CODE_REPO}" log -1 --format='%T|%at|%ae|%s' "${sha}")
-        tree=${fp%%|*}
-        # An ASSERTION, not a fallback: step A' refuses an unresolvable trailer
-        # branch before any prompt, so reaching this is a broken guard, not a
-        # case to cope with. Coping here is what produced the defect -- the twin
-        # search would run over whatever HEAD points at and its single hit would
-        # be indistinguishable from a correct repair afterwards.
-        local target
-        if ! target=$(resolve_branch_target "${br}"); then
-            echo "STOP: trailer branch '${br}' resolves to no ref and no --branch-alias," >&2
-            echo "      so ${sha} cannot be searched for a twin. Step A' should have" >&2
-            echo "      refused this run before it started; that guard is broken." >&2
-            rollback_all; exit 1
-        fi
-        hits=()
-        while read -r c; do
-            [ -n "${c}" ] || continue
-            [ "$(git -C "${CODE_REPO}" log -1 --format='%T|%at|%ae|%s' "${c}")" = "${fp}" ] && hits+=("${c}")
-        done < <(git -C "${CODE_REPO}" log "${target}" --format='%H %T' | awk -v t="${tree}" '$2==t {print $1}')
-        if [ "${#hits[@]}" -eq 1 ]; then
-            printf '%s\t%s\n' "$(git -C "${CODE_REPO}" rev-parse "${sha}")" "${hits[0]}" >> "${out}"
-            echo "    repair ${sha} -> ${hits[0]:0:8}  ($(git -C "${CODE_REPO}" log -1 --format='%s' "${hits[0]}" | cut -c1-50))"
-            REPAIRED_N=$((REPAIRED_N + 1))
-        else
-            echo "    UNREPAIRABLE ${sha} (${#hits[@]} fingerprint matches on ${target}; repoint by hand)" >&2
-            UNREPAIRABLE_N=$((UNREPAIRABLE_N + 1))
-        fi
-    done < <(printf '%s\n' "${BASELINE_DANGLING_LIST}")
-}
+# build_repair_map is defined with the functions above MAIN: --check calls it
+# before step B exists, on the same BASELINE_DANGLING_LIST step D reads here.
 
 # --- C. code repo first (the direction of the dependency) -------------------
 if [ "${N_CODE}" -gt 0 ]; then
@@ -1583,36 +2122,15 @@ MERGED="${WORK}/merged.map"; : > "${MERGED}"
 [ -s "${WORK}/code.map" ]    && cat "${WORK}/code.map"    >> "${MERGED}"
 [ -s "${WORK}/harness.map" ] && cat "${WORK}/harness.map" >> "${MERGED}"
 
-MD_REPO="${HARNESS_REPO:-${CODE_REPO}}"
 declare -A TOK_NEW=(); declare -A TOK_AMBIG=()
 # Declared here, not inside the `y` branch: the closing commit below is reached
 # whether or not anything was repointed (the sha maps alone can be the reason),
 # so its expected-set test must be able to read an EMPTY touched set.
 declare -A TOUCHED_FILES=(); declare -A TOUCHED_CODE=()
-MD_FILES=(); mapfile -t MD_FILES < <(git -C "${MD_REPO}" ls-files -- '*.md' 2>/dev/null || true)
-# Live non-.md carriers of the harness: evidence is excluded by path (scope note above).
-LIVE_FILES=()
-if [ -n "${HARNESS_REPO}" ]; then
-    mapfile -t LIVE_FILES < <(git -C "${MD_REPO}" grep -lIE '\b[0-9a-f]{7,40}\b' -- . \
-        ':(exclude)*.md' ':(exclude)*.tsv' ':(exclude)sha-maps' ':(exclude)harness/artifacts' \
-        ':(exclude,glob)**/archive/**' 2>/dev/null || true)
-fi
-# Homes outside the pair, declared in sha-maps/also.txt ('#' starts a comment).
-ALSO_FILES=()
-if [ -f "${MD_REPO}/sha-maps/also.txt" ]; then
-    while IFS= read -r p || [ -n "${p}" ]; do
-        p="${p%%#*}"; p="${p#"${p%%[![:space:]]*}"}"; p="${p%"${p##*[![:space:]]}"}"
-        [ -n "${p}" ] || continue
-        if [ -d "${p}" ]; then
-            while IFS= read -r f; do ALSO_FILES+=("${f}"); done \
-                < <(grep -rlIE '\b[0-9a-f]{7,40}\b' "${p}" 2>/dev/null || true)
-        elif [ -f "${p}" ]; then
-            ALSO_FILES+=("${p}")
-        else
-            echo "  (sha-maps/also.txt names '${p}', which does not exist here -- skipped.)"
-        fi
-    done < "${MD_REPO}/sha-maps/also.txt"
-fi
+# The homes, enumerated NOW -- after the rewrite, from the tree the content
+# assertion just proved unchanged -- by the one function that states the scope
+# (MD_FILES, LIVE_FILES, ALSO_FILES; the scope note above is its reason).
+enumerate_homes
 
 # The token table, built ONCE from the map's old side. The per-token bash
 # `map_lookup` this step used to call is a full read of the map file per token:

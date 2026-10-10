@@ -1,0 +1,8 @@
+# The branch aliases this pair's history makes PERMANENT (supervised-by.sh, read at startup;
+# validated like a --branch-alias flag, a flag naming the same <old> wins). One <old>=<new>
+# per line; '#' starts a comment. A 'Code: <old> @ <sha>' trailer is judged against
+# refs/heads/<new>: reachable there, or dangling and repaired to its fingerprint twin.
+master-beta=main
+# s33-relocate: a session-33 branch (2026-09-19) whose one commit 4d91b795 was moved onto
+# main as 6c3d0ed6 and the branch deleted; two harness commits (51ba3c7, 96bf45c) still cite it.
+s33-relocate=main

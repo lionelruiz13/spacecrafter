@@ -34,7 +34,12 @@ either repository that names a rewritten commit (`refs/original/*` and `refs/sta
 excepted; an annotated tag or a detached worktree is reported with its command);
 (3) the files listed in `also.txt` beside this README -- homes OUTSIDE the pair,
 repointed and never committed. It then reads every home again and lists what is
-STILL STALE. Regression fixture: `harness/supervised_by_fixture.sh`.]** It does
+STILL STALE. Regression fixture: `harness/supervised_by_fixture.sh`.]** **[2026-10-10:
+`branch-aliases.txt` beside this README holds the `<old>=<new>` branch aliases the
+pair's history makes permanent (a renamed branch, a deleted one whose commit moved);
+the script reads it at startup, a `--branch-alias` flag for the same `<old>` wins.
+`./supervised-by.sh --check` says, before any run, every STOP and hand repair a run
+now would hit -- one verdict, exit 0 only when clean.]** It does
 not reach the git history of those same files, this repository's archive drawer,
 or anything in the owner's own trees that `also.txt` does not name. Those citations stay valid only if the old
 sha remains RESOLVABLE, and after a garbage collection nothing but a map can
