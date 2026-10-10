@@ -1,0 +1,141 @@
+{
+ "pass": "pass1",
+ "date": "2026-10-10",
+ "source": "DECISIONS_PENDING.md",
+ "pre_md5": "5242109efdbb8a638be4131674b27dfe",
+ "pre_commit": "702c32d",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "updates-2026-07",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/updates-2026-07.md",
+   "line_start": 4,
+   "line_count": 20,
+   "payload_md5": "b2fc644ab7795abe2eea6936f82adf5d"
+  },
+  {
+   "id": "s1",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s1.md",
+   "line_start": 26,
+   "line_count": 52,
+   "payload_md5": "d8cb5a0b24de2d9a5e9c60de468abbf2"
+  },
+  {
+   "id": "s2",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s2.md",
+   "line_start": 78,
+   "line_count": 20,
+   "payload_md5": "eeeb188001a22348d87d15ced1454059"
+  },
+  {
+   "id": "s3",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s3.md",
+   "line_start": 98,
+   "line_count": 43,
+   "payload_md5": "d48722a534790ab1ec2395a532114930"
+  },
+  {
+   "id": "s4",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s4.md",
+   "line_start": 141,
+   "line_count": 10,
+   "payload_md5": "c99cb12b641122c176a8e2cddfe4c217"
+  },
+  {
+   "id": "s5",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s5.md",
+   "line_start": 151,
+   "line_count": 29,
+   "payload_md5": "f8800fc1948f12e3f58f36e8666946dc"
+  },
+  {
+   "id": "s6",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s6.md",
+   "line_start": 180,
+   "line_count": 15,
+   "payload_md5": "75a480ac7adf1c118de7a555ba3f2af8"
+  },
+  {
+   "id": "s7",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s7.md",
+   "line_start": 195,
+   "line_count": 15,
+   "payload_md5": "1970ef2b6e997eef3128d73261728c97"
+  },
+  {
+   "id": "s8",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s8.md",
+   "line_start": 210,
+   "line_count": 10,
+   "payload_md5": "4c077f69982f3fc8ec3abf461552a6a2"
+  },
+  {
+   "id": "s9",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s9.md",
+   "line_start": 220,
+   "line_count": 13,
+   "payload_md5": "549f7ec15336088abd7396afb3b4507e"
+  },
+  {
+   "id": "s10",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s10.md",
+   "line_start": 233,
+   "line_count": 12,
+   "payload_md5": "4c1533285563817e811b20a2f6556cc6"
+  },
+  {
+   "id": "s11",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s11.md",
+   "line_start": 245,
+   "line_count": 15,
+   "payload_md5": "748a3848476eda9db60dd3f71d655bfd"
+  },
+  {
+   "id": "s12",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s12.md",
+   "line_start": 260,
+   "line_count": 75,
+   "payload_md5": "e8311abe6be8968010e4a5a73e7a8364"
+  },
+  {
+   "id": "s13",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s13.md",
+   "line_start": 335,
+   "line_count": 17,
+   "payload_md5": "7ab4c52002c2e7e06c7f3d3f9735618c"
+  },
+  {
+   "id": "s14",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s14.md",
+   "line_start": 352,
+   "line_count": 12,
+   "payload_md5": "0fa6b59fcd59278067671cb670b3b237"
+  },
+  {
+   "id": "s15",
+   "mode": "move",
+   "dest": "DECISIONS_PENDING/archive/s15.md",
+   "line_start": 364,
+   "line_count": 9,
+   "payload_md5": "adad5cfb17112894d52c9d29c538e556"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}

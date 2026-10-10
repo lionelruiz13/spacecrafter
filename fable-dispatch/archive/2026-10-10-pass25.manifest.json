@@ -1,0 +1,189 @@
+{
+ "pass": "pass25",
+ "date": "2026-10-10",
+ "source": "fable-dispatch.md",
+ "pre_md5": "37e343befa52a06b645197f893d67acf",
+ "pre_commit": "702c32d",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "update-s40",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s40.md",
+   "line_start": 41,
+   "line_count": 4,
+   "payload_md5": "95fba3773290aa0aae56823b301b6eb6"
+  },
+  {
+   "id": "update-s39",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s39.md",
+   "line_start": 45,
+   "line_count": 2,
+   "payload_md5": "d181f51187a4fbee6bfc6120fb72ddf9"
+  },
+  {
+   "id": "update-s34",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s34.md",
+   "line_start": 47,
+   "line_count": 4,
+   "payload_md5": "e749b58ff3c85b8bcca4be1ec05d6dfd"
+  },
+  {
+   "id": "update-s32",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s32.md",
+   "line_start": 51,
+   "line_count": 108,
+   "payload_md5": "79cb3f69841bf58889ecf00ccc8a7c06"
+  },
+  {
+   "id": "update-s31",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s31.md",
+   "line_start": 159,
+   "line_count": 127,
+   "payload_md5": "144b94382e904ae38c608f38af52a1ef"
+  },
+  {
+   "id": "F122",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F122.md",
+   "line_start": 724,
+   "line_count": 58,
+   "payload_md5": "032b1e0edf4a6a08129ef92bf4878e2b"
+  },
+  {
+   "id": "F123",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F123.md",
+   "line_start": 782,
+   "line_count": 47,
+   "payload_md5": "b6af1dd6a546a81f23c3ed20665d5c66"
+  },
+  {
+   "id": "F124",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F124.md",
+   "line_start": 829,
+   "line_count": 47,
+   "payload_md5": "e2403c6cc1b4f630178e79d5ab530d52"
+  },
+  {
+   "id": "F125",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F125.md",
+   "line_start": 876,
+   "line_count": 49,
+   "payload_md5": "2ced9ae7d66b5f91da843eb0d43eaea9"
+  },
+  {
+   "id": "F126",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F126.md",
+   "line_start": 925,
+   "line_count": 46,
+   "payload_md5": "01696d61cdfb68eeebb8d4a848fce50d"
+  },
+  {
+   "id": "F127",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F127.md",
+   "line_start": 971,
+   "line_count": 45,
+   "payload_md5": "698eab7f162d3a4fab70e2c7e599b2b0"
+  },
+  {
+   "id": "F128",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F128.md",
+   "line_start": 1016,
+   "line_count": 49,
+   "payload_md5": "f45e884b91cb28ca1685ab30442826f0"
+  },
+  {
+   "id": "F129",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F129.md",
+   "line_start": 1065,
+   "line_count": 60,
+   "payload_md5": "302bef3027d6d4095cf46ce0bb843007"
+  },
+  {
+   "id": "F130",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F130.md",
+   "line_start": 1125,
+   "line_count": 55,
+   "payload_md5": "de32048ffa0163d51f53015eb035cf55"
+  },
+  {
+   "id": "F131",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F131.md",
+   "line_start": 1180,
+   "line_count": 66,
+   "payload_md5": "b284ef0260797a6bc105ed915ecd4bdc"
+  },
+  {
+   "id": "F132",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F132.md",
+   "line_start": 1246,
+   "line_count": 58,
+   "payload_md5": "157a98ab5c428f1fcb0c17f078e250a6"
+  },
+  {
+   "id": "F133",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F133.md",
+   "line_start": 1304,
+   "line_count": 61,
+   "payload_md5": "df4eaf80513cd6a419216e342e38b7f4"
+  },
+  {
+   "id": "F134",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F134.md",
+   "line_start": 1365,
+   "line_count": 55,
+   "payload_md5": "561587833409b4a3092686d12cd538bb"
+  },
+  {
+   "id": "F135",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F135.md",
+   "line_start": 1420,
+   "line_count": 56,
+   "payload_md5": "795a05b68eceb396f624a837c4c82eca"
+  },
+  {
+   "id": "F136",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F136.md",
+   "line_start": 1476,
+   "line_count": 48,
+   "payload_md5": "2e75a7990f5ddc00b14840050ab34d6c"
+  },
+  {
+   "id": "F138",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F138.md",
+   "line_start": 1571,
+   "line_count": 49,
+   "payload_md5": "a1a6a07fa95b9594395d86e49ab76f88"
+  },
+  {
+   "id": "F139",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F139.md",
+   "line_start": 1620,
+   "line_count": 57,
+   "payload_md5": "70f3e74aaf7c658a065c004ae03ccbd9"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}
