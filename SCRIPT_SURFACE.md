@@ -683,3 +683,20 @@ the counts below already say how many lines. And **`fscripts/W17.sts` and
   question — it is the program's to fix (parent §5.125) — but if you were
   planning to adopt a composed file, this is what would change. Status: OPEN,
   FYI. [Measured 2026-09-04, F80.]
+
+- **SS-44** — **Keys are about to become bindable to scripts, on press AND on
+  release — how do you trigger scripts during a session today?** Vixy has
+  designed a command (`script action bind ...`) by which a key runs one script
+  when pressed and another when released, with three lifetimes for such a
+  binding: for good, for the duration of the script that set it, or until it
+  fires once; `-` gives a key its usual behaviour back. The keyboard's own
+  moves (SHIFT + keypad) would become the same kind of binding, so that
+  holding a key moves and releasing it stops, instead of today's one step per
+  press. Before it is built, what the design cannot know is your practice:
+  (a) which keys you press during a show today to start something, and
+  whether any of it should happen on RELEASE rather than on press (a hold-
+  to-preview, a hold-to-move); (b) whether a key you bind for one show must
+  go back to normal by itself when the show ends, or stay as you set it;
+  (c) whether a key pressed while a show script is running should act at
+  once, or wait. Status: OPEN — question to you; no change shipped.
+  (ref: INTENT §11.305, row B49.) [2026-10-10.]
