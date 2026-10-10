@@ -702,17 +702,17 @@ bigTexRecap *s_texture::acquireBigTexture()
         bigTextureThread = std::thread(&s_texture::bigTextureLoader);
     }
 	// There is no bigTexRecap available, create another one
-    for (MemoryQuerry &querry : VulkanMgr::instance->getMemoryManager()->querryMemory()) {
-        if (!(querry.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT))
+    for (MemoryQuerry &query : VulkanMgr::instance->getMemoryManager()->queryMemory()) {
+        if (!(query.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT))
             continue;
-        if (width * height * texture->nbChannels * texture->channelSize * 2 > querry.free - currentAllocation)
+        if (width * height * texture->nbChannels * texture->channelSize * 2 > query.free - currentAllocation)
             releaseUnusedMemory();
         break;
     }
-	for (MemoryQuerry &querry : VulkanMgr::instance->getMemoryManager()->querryMemory()) {
-		if (!(querry.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT))
+    for (MemoryQuerry &query : VulkanMgr::instance->getMemoryManager()->queryMemory()) {
+        if (!(query.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT))
 			continue;
-		while (width * height * texture->nbChannels * texture->channelSize * 2 > querry.free - currentAllocation) {
+        while (width * height * texture->nbChannels * texture->channelSize * 2 > query.free - currentAllocation) {
             bt = acquireBigTexture(width, height);
             if (bt)
                 return bt;
