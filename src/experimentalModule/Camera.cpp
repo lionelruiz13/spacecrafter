@@ -686,42 +686,15 @@ void Camera::setHalfFov(float halfFov, float duration)
     } else if (halfFov > maxHalfFov) {
         halfFov = maxHalfFov;
     }
-    // halfFov now represents the dstFovFactor
-    if (duration + zoomDuration) {
-        if (zoomDuration == 0 || ((halfFov > dstHalfFov) ^ (halfFov > ModularBody::halfFov))) {
-            // Not currently zooming in this direction, simply start a new zoom without initial velocity
-            zoomTimer = 0;
-            zoomDuration = duration;
-            srcHalfFov = ModularBody::halfFov;
-            dstHalfFov = halfFov;
-            if (duration == 0) // Snap, even against a zoom in flight the other way
-                ModularBody::setHalfFov(halfFov);
-        } else {
-            // Already zooming, current fov and inertia must be preserved
-            const float oldCoefVelocity = calculateZoomCoefVelocity();
-            const float oldInertia = std::pow(dstHalfFov/srcHalfFov, oldCoefVelocity);
-            if (duration < zoomDuration - zoomTimer)
-                duration = zoomDuration - zoomTimer;
-            srcHalfFov = ModularBody::halfFov * ModularBody::halfFov / halfFov;
-            dstHalfFov = halfFov;
-            zoomDuration = 2 * duration;
-            zoomTimer = zoomDuration / 2;
-            const float maxNewInertia = std::pow(dstHalfFov/srcHalfFov, calculateZoomCoefVelocity());
-            if (oldInertia < maxNewInertia) {
-                // Accelerate furthermore (maybe to fix)
-                constexpr float delta = 0.5;
-                const float accelerationDuration = (delta * duration - oldCoefVelocity * duration*duration) / (2*delta - oldCoefVelocity * duration);
-                const float decelerationDuration = duration - accelerationDuration;
-                zoomTimer = duration - accelerationDuration * 2;
-                zoomDuration = duration + zoomTimer;
-            } else {
-                // Cut duration to decelerate on time
-                zoomDuration *= maxNewInertia / oldInertia;
-                zoomTimer = zoomDuration / 2;
-            }
-        }
-    } else { // No transition, apply the change immediately
-        ModularBody::setHalfFov(halfFov); // maintains cullHalfFov (INTENT 11.33)
+    if (duration) {
+        if (zoomDuration && halfFov == dstHalfFov)
+            return;
+        zoomTimer = 0;
+        zoomDuration = duration;
+        srcHalfFov = ModularBody::halfFov;
+        dstHalfFov = halfFov;
+    } else if (!zoomDuration) { // A step during a zoom is absorbed by it
+        ModularBody::setHalfFov(halfFov);
     }
 }
 
