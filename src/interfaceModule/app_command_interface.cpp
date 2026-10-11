@@ -4377,6 +4377,24 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 		return executeCommandStatus();
 	}
 
+	if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_HEIGHT) {
+		std::string argValue = args[W_VALUE];
+		if (argValue.empty()) {
+			debug_message = "command 'camera " + argAction + "' : missing value";
+			return executeCommandStatus();
+		}
+		const double value = evalDouble(argValue);
+		if (argAction == W_MOVE_LAT)
+			stcore->moveLat(value);
+		else if (argAction == W_MOVE_LON)
+			stcore->moveLon(value);
+		else if (argAction == W_RAISE_HEIGHT)
+			stcore->raiseHeight(value);
+		else
+			stcore->lowerHeight(value);
+		return executeCommandStatus();
+	}
+
 	if(argAction == W_LIFT_OFF){
 
 		std::string altStr = args[W_ALTITUDE];
