@@ -109,18 +109,19 @@ sources you find open-ended at warm-up is a precondition finding, reported, neve
   session-23 commits copied it — §11.212(k)); the AUTHOR stays the executor; NEVER push;
   logical-step granularity; always `git -C <explicit path>`. Cited discrimination artifacts are
   force-added (`git add -f`, small, gz where possible) — a citation must resolve by commit.
-- **Checkpoint discipline** (fable-dispatch.md §0.6): commit at every green checkpoint; update
-  your task's WIP line with each; `grep -c '^### F'` in fable-dispatch.md must equal the live
-  section count stated in your prompt before every commit of that file; anchor Edits inside
-  the WIP block only. Never start a long campaign with uncommitted work.
+- **Checkpoint discipline** (fable-dispatch.md §0.6, rewritten 2026-10-11 — D5 / [Y58]): you commit NOTHING unless
+  your dispatch prompt says so; your checkpoint is the FIRST LINES of your own entry file (`INTENT/<id>.md`), rewritten
+  at every green checkpoint (`CHECKPOINT <clock> — step N done, next M; binary <md5>; tree state`) — a cut run resumes
+  from them; the supervisor is the one writer of fable-dispatch.md (the WIP line) and of the commits. Never start a
+  long campaign over work not yet checkpointed in the entry.
 
 # States (your channels)
 
-- **WIP line** in your `### F<n>` section = the persistent state channel (resume point after
-  any abort). Cleared to a delivery summary at delivery.
-- **Delivery** = §11 entry file FIRST at the next free number, then its derived stub, then
-  ledger flips (§5/§13) with back-markers at any superseded node in the same commit
-  (§11.113(p), event-bound).
+- **The entry's first lines** (`INTENT/<id>.md`) = the persistent state channel (the resume point after any cut or
+  abort); the WIP line of your `### F<n>` section is the SUPERVISOR's, never yours.
+- **Delivery** = your §11 entry file at the ALLOCATED number (the prompt states it; never the next free one —
+  §11.264), complete; the derived stub, the ledger flips (§5 / §13) and the back-markers at superseded nodes are the
+  SUPERVISOR's at acceptance (§11.113(p), event-bound) — you NAME every flip and every superseded node in the report.
 - **Report** (the return crossing, to the dispatcher): first line `prompt-window: present` (the
   bridge's gate — the proof of which projection ran), then per-DoD-item state + evidence pointers,
   every deviation and judgment call WITH its argument, suspensions, and what the next task
