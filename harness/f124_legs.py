@@ -150,6 +150,10 @@ def lower_calls(dt):   # Core::lowerHeight(1) has no caller in src/: driven dire
     return ["call $core->lowerHeight(1)", "call $core->updateMove(%d)" % dt, "call $core->lowerHeight(0)"]
 
 
+def lateral_calls(axis):   # the UI writes a joystick sample; one updateMove(10) applies and clears it
+    return ["call $ui->move%s(1.0)" % axis, "call $core->updateMove(10)"]
+
+
 def zoom_calls(way, dt):
     if PERT:
         return ["call $core->projection->changeFov(-1.0)"]
@@ -221,6 +225,12 @@ anch_up = lambda a: a + max(a, FLOOR_KM) * UP        # datum-relative `distance`
 anch_dn = lambda a: a + max(a, FLOOR_KM) * DN
 free_up = lambda a: a + max(a, FLOOR_KM) * UP        # live ground altitude, floored outward only
 geo = lambda c: (lambda a: a * c)
+# B44 (F137, INTENT 11.299): one law through the drawn engine, both engines, the step follows dt
+free_dn = lambda a: a + max(a, FLOOR_KM) * DN        # the free descent is floored too
+law40 = lambda a: a + max(a, FLOOR_KM) * 0.04        # dt = 40 ms
+old_dn = lambda a: max(anch_dn(a), 0.0001)           # Observer::setAltitude clamps at 0.1 m
+STEP_DEG = math.degrees(FLOOR_KM * 0.01 / (R_KM + 200.0))   # lateral at 200 km, dt 10: 0.069309 deg
+FREE_STEP_KM = 5.0 * FLOOR_KM * 0.01                 # free lateral at the floor, dt 10: 37.5 km
 
 
 def leg_M():
@@ -229,27 +239,27 @@ def leg_M():
     st = climb("M_high", st, raise_calls(10), 1 if PERT else 3, anch_up, geo(1.01), True)
     if PERT:
         return
-    inject([["call $ui->lowerHeight()"]])
+    inject([["call $ui->lowerHeight()", "call $core->updateMove(10)", "call $ui->stopLowerHeight()"]])
     nx = state("M_button")
-    check("M_lower_button_is_x0.98_on_both", abs(nx["alt_new"] - st["alt_new"] * 0.98) < 0.05
-          and abs(nx["alt_old"] - st["alt_old"] * 0.98) < 0.05,
-          "one press: new %.4f -> %.4f, old %.4f -> %.4f km (x0.98 = %.4f); reported altitude was %.4f"
-          % (st["alt_new"], nx["alt_new"], st["alt_old"], nx["alt_old"], st["alt_new"] * 0.98, st["alt_reported"]))
+    check("M_lower_button_is_one_held_step_on_both", abs(nx["alt_new"] - anch_dn(st["alt_new"])) < TOL_KM
+          and abs(nx["alt_old"] - anch_dn(st["alt_old"])) < TOL_KM,
+          "press + updateMove(10) + release: new %.4f -> %.4f, old %.4f -> %.4f km (law %.4f); reported altitude was %.4f"
+          % (st["alt_new"], nx["alt_new"], st["alt_old"], nx["alt_old"], anch_dn(st["alt_new"]), st["alt_reported"]))
     st = placed("M_lowup", 10.0, False)
     a0 = st["alt_new"]
-    st = climb("M_lowup", st, raise_calls(10), 3, anch_up, geo(1.01), False, "RESID_")
+    st = climb("M_lowup", st, raise_calls(10), 3, anch_up, anch_up, True)
     step10 = (st["alt_new"] - a0) / 3
     check("RESID_M_floor_is_0.125_R", abs(step10 / UP - FLOOR_KM) < 1.0,
           "step per call / (coef-1) = %.3f km, 0.125 x R = %.3f km" % (step10 / UP, FLOOR_KM))
     st = placed("M_lowdn", 10.0, False)
-    st = climb("M_lowdn", st, lower_calls(10), 3, anch_dn, geo(0.99), False, "RESID_")
+    st = climb("M_lowdn", st, lower_calls(10), 3, anch_dn, old_dn, False, "RESID_")
     check("RESID_M_descent_goes_under_the_datum", st["alt_new"] < 0.0 and st["alt_old"] > 0.0,
           "after 3 descents from 10 km: new %.4f km, old %.4f km" % (st["alt_new"], st["alt_old"]))
     st = placed("D_M_lowup40", 10.0, False)
     a0 = st["alt_new"]
-    st = climb("D_M_lowup40", st, raise_calls(40), 2, anch_up, geo(1.01), False, "RESID_")
+    st = climb("D_M_lowup40", st, raise_calls(40), 2, law40, law40, True)
     step40 = (st["alt_new"] - a0) / 2
-    check("RESID_D_M_step_per_call_ignores_dt", abs(step40 / step10 - 1.0) < 1e-3,
+    check("D_M_step_per_call_follows_dt", abs(step40 / step10 - 4.0) < 1e-3,
           "per call %.4f km at dt=40 against %.4f at dt=10 (ratio %.5f): per SECOND %.1f km/s at 25 fps against %.1f at 100 fps"
           % (step40, step10, step40 / step10, step40 * 25, step10 * 100))
     send(S, "body name DescB ground_radius 6100", 4)
@@ -291,28 +301,30 @@ def leg_A():
         return
     st = placed("A_below", 200.0, True)
     a0 = st["alt_new"]
-    st = climb("A_below", st, raise_calls(10), 2, free_up, geo(1.01), False, "RESID_")
+    st = climb("A_below", st, raise_calls(10), 2, free_up, free_up, True)
     step10 = (st["alt_new"] - a0) / 2
     st = placed("A_upcross", 740.0, True)
-    climb("A_upcross", st, raise_calls(10), 4, free_up, geo(1.01), False, "RESID_")
+    climb("A_upcross", st, raise_calls(10), 4, free_up, free_up, True)
     st = placed("A_dncross", 760.0, True)
-    climb("A_dncross", st, lower_calls(10), 4, geo(1.0 + DN), geo(0.99), True)
+    climb("A_dncross", st, lower_calls(10), 4, free_dn, free_dn, True)
     st = placed("A_asym", 200.0, True)
-    st = climb("A_asym_up", st, raise_calls(10), 1, free_up, geo(1.01), False, "RESID_")
-    st = climb("A_asym_dn", st, lower_calls(10), 1, geo(1.0 + DN), geo(0.99), False, "RESID_")
-    check("RESID_A_raise_then_lower_does_not_return", abs(st["alt_new"] - 205.425) < 0.01,
-          "200 -> raise -> lower = %.4f km (predicted 205.425; old %.4f)" % (st["alt_new"], st["alt_old"]))
+    st = climb("A_asym_up", st, raise_calls(10), 1, free_up, free_up, True)
+    st = climb("A_asym_dn", st, lower_calls(10), 1, free_dn, free_dn, True)
+    check("A_raise_then_lower_returns", abs(st["alt_new"] - 200.0) < 0.01 and abs(st["alt_old"] - 200.0) < 0.01,
+          "200 -> raise -> lower = %.4f km (old %.4f); one law both ways" % (st["alt_new"], st["alt_old"]))
     st = placed("D_A_below40", 200.0, True)
     a0 = st["alt_new"]
-    st = climb("D_A_below40", st, raise_calls(40), 2, free_up, geo(1.01), False, "RESID_")
+    st = climb("D_A_below40", st, raise_calls(40), 2, law40, law40, True)
     step40 = (st["alt_new"] - a0) / 2
-    check("RESID_D_A_step_per_call_ignores_dt", abs(step40 / step10 - 1.0) < 1e-3,
+    check("D_A_step_per_call_follows_dt", abs(step40 / step10 - 4.0) < 1e-3,
           "per call %.4f km at dt=40 against %.4f at dt=10 (ratio %.5f)" % (step40, step10, step40 / step10))
     st = placed("A_button", 2000.0, True)
-    inject([["call $ui->lowerHeight()"]])
+    inject([["call $ui->lowerHeight()", "call $core->updateMove(10)", "call $ui->stopLowerHeight()"]])
     nx = state("A_button_s1")
-    note("OBSERVED, no prediction frozen: free lower BUTTON, one press: new %.4f -> %.4f km, old %.4f -> %.4f km"
-         % (st["alt_new"], nx["alt_new"], st["alt_old"], nx["alt_old"]))
+    check("A_lower_button_is_one_held_step_on_both", abs(nx["alt_new"] - free_dn(st["alt_new"])) < TOL_KM
+          and abs(nx["alt_old"] - free_dn(st["alt_old"])) < TOL_KM,
+          "free lower BUTTON, press + updateMove(10) + release: new %.4f -> %.4f km, old %.4f -> %.4f km (law %.4f)"
+          % (st["alt_new"], nx["alt_new"], st["alt_old"], nx["alt_old"], free_dn(st["alt_new"])))
 
 
 def dpos(a, b):
@@ -322,41 +334,41 @@ def dpos(a, b):
 def leg_L():
     scene(); capture_ui()
     st = placed("L_anch", 200.0, False)
-    inject([["call $core->observatory._M_ptr->moveRelLon(1.0, 0)"] if PERT else ["call $ui->moveLon(1.0)"]])
+    inject([["call $core->observatory._M_ptr->moveRelLon(1.0, 0)"] if PERT else lateral_calls("Lon")])
     nx = state("L_anch_lon")
     dn, do = nx["lon_new"] - st["lon_new"], nx["lon_old"] - st["lon_old"]
-    check("L_anchored_lon_new_equals_old", abs(dn - do) < 1e-4 and abs(abs(do) - 1.0) < 1e-4,
-          "UI::moveLon(1): longitude new %+.6f deg, old %+.6f deg" % (dn, do))
+    check("L_anchored_lon_new_equals_old", abs(dn - do) < 1e-5 and abs(abs(do) - STEP_DEG) < 1e-5,
+          "UI::moveLon(1) + updateMove(10): longitude new %+.6f deg, old %+.6f deg (law %.6f)" % (dn, do, STEP_DEG))
     if PERT:
         return
-    inject([["call $ui->moveLat(1.0)"]])
+    inject([lateral_calls("Lat")])
     st, nx = nx, state("L_anch_lat")
     dn, do = nx["lat_new"] - st["lat_new"], nx["lat_old"] - st["lat_old"]
-    check("L_anchored_lat_new_equals_old", abs(dn - do) < 1e-4 and abs(abs(do) - 1.0) < 1e-4,
-          "UI::moveLat(1): latitude new %+.6f deg, old %+.6f deg" % (dn, do))
+    check("L_anchored_lat_new_equals_old", abs(dn - do) < 1e-5 and abs(abs(do) - STEP_DEG) < 1e-5,
+          "UI::moveLat(1) + updateMove(10): latitude new %+.6f deg, old %+.6f deg (law %.6f)" % (dn, do, STEP_DEG))
     sgn = 1.0 if dn > 0 else -1.0
-    place(200.0, lat=89.5 * sgn); st = state("L_pole")
-    inject([["call $ui->moveLat(1.0)"]])
+    place(200.0, lat=89.95 * sgn); st = state("L_pole")
+    inject([lateral_calls("Lat")])
     nx = state("L_pole_s1")
-    check("RESID_L_new_latitude_passes_the_pole", abs(nx["lat_old"] - 90.0 * sgn) < 1e-3 and abs(nx["lat_new"] - 90.5 * sgn) < 1e-3,
+    check("RESID_L_new_latitude_passes_the_pole", abs(nx["lat_old"] - 90.0 * sgn) < 1e-3 and abs(nx["lat_new"] - (89.95 + STEP_DEG) * sgn) < 1e-3,
           "from %.2f: old %.5f (clamped), new %.5f (not clamped)" % (st["lat_new"], nx["lat_old"], nx["lat_new"]))
     place(200.0); free_scene(); st = placed("L_free", 200.0, True)
-    inject([["call $ui->moveLon(1.0)"]])
+    inject([lateral_calls("Lon")])
     nx = state("L_free_s1")
-    want = math.radians(1.0) * 5.0 * FLOOR_KM
+    want = FREE_STEP_KM
     check("L_free_step_is_x_5_velocityScaling", abs(dpos(st, nx) - want) < 0.1,
-          "UI::moveLon(1) free at 200 km: |d position| %.3f km, law x(rad) x 5 x floor = %.3f km; old longitude %+.5f deg"
-          % (dpos(st, nx), want, nx["lon_old"] - st["lon_old"]))
+          "UI::moveLon(1) + updateMove(10) free at 200 km: |d position| %.3f km, law 5 x velocityScaling(0.01) = %.3f km;"
+          " old longitude %+.5f deg" % (dpos(st, nx), want, nx["lon_old"] - st["lon_old"]))
     send(S, "camera action free_mode state off", 1.5)
     place(2000.0)
     send(S, "camera action free_mode state on", 1.5)
     st = placed("L_stale", 200.0, True)
-    inject([["call $ui->moveLon(1.0)"]])
+    inject([lateral_calls("Lon")])
     nx = state("L_stale_s1")
-    stale, live = math.radians(1.0) * 5.0 * 2000.0, want
-    check("RESID_L_free_base_is_the_stale_distance_member", abs(dpos(st, nx) - stale) < 0.5,
-          "free at a LIVE 200 km after entering free mode at 2000 km: |d position| %.3f km; stale base predicts %.3f, live base %.3f;"
-          " `distance` member reads %.1f km" % (dpos(st, nx), stale, live, st["dist_member_km"]))
+    stale, live = 5.0 * 2000.0 * 0.01, want
+    check("L_free_base_is_the_live_distance", abs(dpos(st, nx) - live) < 0.5,
+          "free at a LIVE 200 km after entering free mode at 2000 km: |d position| %.3f km; live base %.3f, stale base would give %.3f;"
+          " `distance` member reads %.1f km" % (dpos(st, nx), live, stale, st["dist_member_km"]))
 
 
 def ring_steps(st, dt):

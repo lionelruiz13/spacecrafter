@@ -147,19 +147,25 @@ k1 = dump(s, "f4_legK")
 
 # ---- verdicts -----------------------------------------------------------
 dC = c1["newalt"]; dK = k1["newalt"]
-check("P1_key_equals_command", abs(dK - dC) < 1e-3,
-      f"alt after 10x{COEF}: command {dC:.6f} km  key {dK:.6f} km  |diff| {abs(dK-dC):.2e} km "
-      f"(predicted {PRED_ALT:.6f})")
+# Re-banked 2026-10-11 at F137's acceptance (INTENT 11.299, the joystick ruling 11.304): the KEY is a
+# held order through the movement control, not the descend command's x0.99 law - per call the step is
+# max(altitude above the datum, 0.125 R) x dt, so below the 750 km floor each lowerHeight(1) +
+# updateMove(30) + lowerHeight(0) step is 22.5 km, linear: 200 -> 87.5 km over NSTEP; the command
+# keeps multAlt (P1b). Tolerance 1e-2 km: the float dt (0.03) and the datum (measured 87.498712).
+PRED_KEY = 200.0 - NSTEP * 750.0 * 0.03
+check("P1_key_follows_the_control", abs(dK - PRED_KEY) < 1e-2,
+      f"alt after {NSTEP} held steps at dt 30: key {dK:.6f} km (predicted {PRED_KEY:.4f}); "
+      f"command {dC:.6f} km keeps its own law (predicted {PRED_ALT:.6f})")
 check("P1b_command_matches_law", abs(dC - PRED_ALT) < 1e-3,
       f"command leg {dC:.6f} vs predicted {PRED_ALT:.6f} km")
 check("P4_command_is_new_only",
       c1["olddist"] is not None and abs(c1["olddist"] - s0["olddist"]) < 1e-3,
       f"old dist across leg C: {s0['olddist']} -> {c1['olddist']} km (must be unchanged)")
-PRED_OLD = GROUND_KM + 200.0 * COEF**NSTEP   # multAltitude scales the ALTITUDE
+PRED_OLD = GROUND_KM + PRED_KEY   # the old observer receives the same held steps (re-banked 2026-10-11, F137)
 check("P3_injection_reached_the_sink",
       k1["olddist"] is not None and abs(k1["olddist"] - PRED_OLD) < 5e-2,
       f"old dist across leg K: {s1['olddist']} -> {k1['olddist']} km "
-      f"(want {PRED_OLD:.4f} = the OLD ramp acting)")
+      f"(want {PRED_OLD:.4f} = the same held steps on the OLD observer)")
 check("P2_new_path_moved", abs(dK - s1["newalt"]) > 1.0,
       f"new-path alt across leg K: {s1['newalt']:.6f} -> {dK:.6f} km "
       f"(pre-fix binary must show NO movement here)")
