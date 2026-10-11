@@ -1,0 +1,305 @@
+1791738452.571 >> flag experimental_path on
+1791738454.822 >> timerate rate 0
+1791738456.072 >> deselect
+1791738457.322 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/L0_landed.json
+-- dump L0_landed      ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=845
+PASS INSTR aoi_transcription_Earth_L0_landed observed=0.0472287735 expected=0.0472287759 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_L0_landed observed=0.998309927 expected=0.99830997 tol=1e-5 rel
+PASS L0 landed_reference observed=Earth expected=Earth tol=-
+PASS L0 landed_bound observed=true expected=true tol=-
+PASS P24 aimed_field observed=Earth expected=Earth tol=-
+NOTE P28 aoi_solar_system_au_landed observed=586.371125 expected=- tol=-
+1791738459.083 >> moveto altitude 8.0E+13 duration 0
+1791738460.333 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P12_534au.json
+-- dump P12_534au      ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=534.820124 AoI(SS)=586.38 dist(SS)=534.82019 old_home=Earth frames=1025
+PASS INSTR aoi_transcription_Earth_P12_534au observed=0.0459078232 expected=0.0459078252 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_P12_534au observed=534.820124 expected=534.82019 tol=1e-5 rel
+PASS P12 reference_P12_534au observed=Earth expected=Earth tol=-
+PASS P12 aimed_P12_534au observed=Earth expected=Earth tol=-
+NOTE P12 distance_to_ss_au observed=534.82019 expected=< 586.38 tol=-
+NOTE P12 system_derived observed=SolarSystem expected=SolarSystem tol=-
+NOTE P12 system_gdb observed=SolarSystem expected=SolarSystem tol=-
+1791738469.097 >> moveto altitude 9.0E+13 duration 0
+1791738470.347 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P11_601au.json
+-- dump P11_601au      ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=601.668666 AoI(SS)=586.381 dist(SS)=601.66864 old_home=Earth frames=1424
+PASS INSTR aoi_transcription_SolarSystem_P11_601au observed=586.380734 expected=586.379761 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_P11_601au observed=601.668666 expected=601.66864 tol=1e-5 rel
+PASS P11 reference_P11_601au observed=SolarSystem expected=SolarSystem tol=-
+PASS P11 aimed_P11_601au observed=Earth expected=Earth tol=-
+PASS P11 free_mode observed=false expected=false tol=-
+PASS P11 bound_unchanged observed=true expected=true tol=-
+NOTE P11 distance_to_ss_au_after observed=601.66864 expected=> 586.38 tol=-
+NOTE P11 system_derived observed=SolarSystem expected=SolarSystem tol=-
+NOTE P11 system_gdb observed=SolarSystem expected=SolarSystem tol=-
+PASS P11 rootpos_radial_step_au observed=0.00277772592 expected=0 tol=0.005 (the no-switch floor; structure: 1e-6)
+NOTE P11 rootpos_class observed=moveto-floor expected=moveto-floor <= 0.005, warp >= 0.1 tol=-
+PASS P11 absfwd_turn_rad observed=1.00734495e-06 expected=0 tol=1e-5
+1791738479.113 >> moveto altitude 8.5E+13 duration 0
+1791738480.363 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P13_568au.json
+-- dump P13_568au      ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=568.188541 AoI(SS)=586.38 dist(SS)=568.188599 old_home=Earth frames=1848
+PASS INSTR aoi_transcription_Earth_P13_568au observed=0.0458370654 expected=0.0458370671 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_P13_568au observed=568.188541 expected=568.188599 tol=1e-5 rel
+PASS P13 reference_P13_568au observed=Earth expected=Earth tol=-
+PASS P13 aimed_P13_568au observed=Earth expected=Earth tol=-
+PASS P13 bound_unchanged observed=true expected=true tol=-
+PASS P13 rootpos_radial_step_au observed=0.00332306158 expected=0 tol=0.005 (the no-switch floor; structure: 1e-6)
+NOTE P13 rootpos_class observed=moveto-floor expected=moveto-floor <= 0.005, warp >= 0.1 tol=-
+PASS P13 absfwd_turn_rad observed=9.98488996e-07 expected=0 tol=1e-5
+1791738482.131 >> body name Pluto hidden false
+1791738484.381 >> moveto altitude 9.0E+13 duration 0
+1791738485.631 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/B0_parked_inside.json
+-- dump B0_parked_inside ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=601.668643 AoI(SS)=689.52 dist(SS)=601.66864 old_home=Earth frames=2164
+PASS P11' reference_B0_parked_inside observed=Earth expected=Earth tol=-
+PASS P11' aimed_B0_parked_inside observed=Earth expected=Earth tol=-
+NOTE P11' aoi_ss_pluto_shown_au observed=689.519643 expected=> 601.669 tol=-
+1791738487.401 >> body name Pluto hidden true
+1791738489.651 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/B1_boundary_in.json
+-- dump B1_boundary_in ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=601.668635 AoI(SS)=586.381 dist(SS)=601.66864 old_home=Earth frames=2405
+PASS INSTR aoi_transcription_SolarSystem_B1_boundary_in observed=586.380733 expected=586.380798 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_B1_boundary_in observed=601.668635 expected=601.66864 tol=1e-5 rel
+PASS P11' reference_B1_boundary_in observed=SolarSystem expected=SolarSystem tol=-
+PASS P11' aimed_B1_boundary_in observed=Earth expected=Earth tol=-
+PASS P11' bound_unchanged observed=true expected=true tol=-
+PASS P11' place_continuous_au observed=7.23742118e-05 expected=0 tol=0.0002 (structure: 1e-6)
+PASS P11' view_turn_rad observed=8.86838199e-07 expected=0 tol=1e-05
+1791738491.423 >> body name Pluto hidden false
+1791738493.674 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/B2_boundary_out.json
+-- dump B2_boundary_out ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=601.668464 AoI(SS)=689.52 dist(SS)=601.668579 old_home=Earth frames=2647
+PASS INSTR aoi_transcription_Earth_B2_boundary_out observed=0.0457679654 expected=0.0457679667 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_B2_boundary_out observed=601.668464 expected=601.668579 tol=1e-5 rel
+PASS P13' reference_B2_boundary_out observed=Earth expected=Earth tol=-
+PASS P13' aimed_B2_boundary_out observed=Earth expected=Earth tol=-
+PASS P13' place_continuous_au observed=0.000174990732 expected=0 tol=0.0002 (structure: 1e-6)
+PASS P13' view_turn_rad observed=1.05577645e-06 expected=0 tol=1e-05
+PASS P11' ring_reference_changes observed=2 expected=2 tol=-
+1791738495.447 >> body name Pluto hidden true
+1791738497.697 >> moveto altitude 9.0E+13 duration 0
+1791738498.947 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P14_0_out.json
+-- dump P14_0_out      ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=601.612831 AoI(SS)=586.381 dist(SS)=601.612854 old_home=Earth frames=2963
+1791738500.726 >> one packet: set home_planet Mars | body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P14_1_same_packet.json
+1791738501.226 >> one packet: body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P14_2_two_frames.json
+-- dump P14_1_same_packet ref=Mars aimed=Mars system=SolarSystem bound=True free=False |root|=601.509677 AoI(SS)=586.381 dist(SS)=601.612854 old_home=Mars frames=3070
+-- dump P14_2_two_frames ref=SolarSystem aimed=Mars system=SolarSystem bound=True free=False |root|=601.509555 AoI(SS)=586.38 dist(SS)=601.509583 old_home=Mars frames=3083
+PASS INSTR p14_dumps_two_frames_apart observed=13 expected=>= 2 tol=-
+NOTE P14 reference_before observed=SolarSystem expected=SolarSystem tol=-
+NOTE P14 reference_same_packet observed=Mars expected=Mars or SolarSystem tol=-
+PASS P14 aimed_within_two_frames observed=Mars expected=Mars tol=-
+PASS P14 reference_P14_2_two_frames observed=SolarSystem expected=SolarSystem tol=-
+NOTE P14 ring_flag32_changes observed=[] expected=- tol=-
+1791738502.777 >> moveto altitude 8.5E+13 duration 0
+1791738504.028 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P14_3_return.json
+-- dump P14_3_return   ref=Mars aimed=Mars system=SolarSystem bound=True free=False |root|=568.187823 AoI(SS)=586.38 dist(SS)=568.187805 old_home=Mars frames=3251
+PASS P14 reference_P14_3_return observed=Mars expected=Mars tol=-
+PASS P14 aimed_P14_3_return observed=Mars expected=Mars tol=-
+1791738505.804 >> moveto altitude 8.5E+13 duration 0
+1791738507.055 >> set home_planet Earth
+1791738508.805 >> moveto lat default lon default alt default
+1791738510.055 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P25_0_landed.json
+-- dump P25_0_landed   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=3613
+1791738511.836 >> set home_planet SolarSystem
+1791738513.586 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P25_1_set.json
+-- dump P25_1_set      ref=SolarSystem aimed=SolarSystem system=SolarSystem bound=True free=False |root|=5.0204108e-10 AoI(SS)=586.371 dist(SS)=5.02041075e-10 old_home=Earth frames=3825
+PASS P25 reference_P25_1_set observed=SolarSystem expected=SolarSystem tol=-
+PASS P25 aimed_P25_1_set observed=SolarSystem expected=SolarSystem tol=-
+1791738516.370 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P25_2_later.json
+-- dump P25_2_later    ref=SolarSystem aimed=SolarSystem system=SolarSystem bound=True free=False |root|=5.0204108e-10 AoI(SS)=586.371 dist(SS)=5.02041075e-10 old_home=Earth frames=3992
+PASS P25 reference_P25_2_later observed=SolarSystem expected=SolarSystem tol=-
+PASS P25 aimed_P25_2_later observed=SolarSystem expected=SolarSystem tol=-
+PASS P25 old_home_unchanged observed=Earth expected=Earth tol=-
+1791738518.151 >> moveto altitude 8.5E+13 duration 0
+1791738519.402 >> set home_planet Earth
+1791738521.152 >> moveto lat default lon default alt default
+1791738522.403 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P26_0_landed.json
+-- dump P26_0_landed   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=4354
+1791738524.187 >> moveto altitude 9.0E+13 duration 3
+1791738525.937 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P26_1_mid.json
+-- dump P26_1_mid      ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=350.98708 AoI(SS)=586.376 dist(SS)=350.987061 old_home=Earth frames=4566
+1791738529.728 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P26_2_after.json
+-- dump P26_2_after    ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=601.668351 AoI(SS)=586.381 dist(SS)=601.668396 old_home=Earth frames=4793
+PASS P26 reference_P26_2_after observed=SolarSystem expected=SolarSystem tol=-
+PASS P26 aimed_P26_2_after observed=Earth expected=Earth tol=-
+PASS P26 ring_reference_changes observed=1 expected=1 tol=-
+NOTE P26 posdelta_largest_step_au observed=0.00579923936 expected=frame 4640; median step 0 tol=-
+PASS P26 posdelta_step_at_switch_au observed=6.69543603e-05 expected=<= 3 x 2.74324e-05 + 0.0002 tol=-
+NOTE P26 switch_frames observed=[[4636,false]] expected=- tol=-
+NOTE P26 camera_distance_after_au observed=601.668396 expected=- tol=-
+1791738531.515 >> moveto altitude 8.5E+13 duration 0
+1791738532.766 >> set home_planet Earth
+1791738534.516 >> moveto lat default lon default alt default
+1791738535.766 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P29_out_0_landed.json
+-- dump P29_out_0_landed ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830991 old_home=Earth frames=5155
+1791738537.559 >> moveto altitude 8.9E+13 duration 0
+1791738544.509 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P29_out_1_parked.json
+-- dump P29_out_1_parked ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=594.98408 AoI(SS)=586.381 dist(SS)=594.98407 old_home=Earth frames=5680
+PASS P29 reference_changes_P29_out observed=1 expected=1 tol=frames 525
+1791738546.304 >> moveto altitude 8.5E+13 duration 0
+1791738547.554 >> set home_planet Earth
+1791738549.305 >> moveto lat default lon default alt default
+1791738550.555 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P29_in_0_landed.json
+-- dump P29_in_0_landed ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=6043
+1791738552.353 >> moveto altitude 8.7E+13 duration 0
+1791738559.304 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P29_in_1_parked.json
+-- dump P29_in_1_parked ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=581.614154 AoI(SS)=586.38 dist(SS)=581.614136 old_home=Earth frames=6568
+PASS P29 reference_changes_P29_in observed=0 expected=0 tol=frames 525
+1791738561.107 >> moveto altitude 8.5E+13 duration 0
+1791738562.358 >> set home_planet Earth
+1791738564.108 >> moveto lat default lon default alt default
+1791738565.358 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_l0.json
+-- dump P28_hidden_l0  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=6931
+1791738567.161 >> moveto altitude 8.500000E+13 duration 0
+1791738568.411 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_p0.json
+-- dump P28_hidden_p0  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=568.244365 AoI(SS)=586.38 dist(SS)=568.244446 old_home=Earth frames=7114
+1791738570.214 >> moveto altitude 8.5E+13 duration 0
+1791738571.464 >> set home_planet Earth
+1791738573.214 >> moveto lat default lon default alt default
+1791738574.465 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_l1.json
+-- dump P28_hidden_l1  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=7477
+1791738576.273 >> moveto altitude 9.000000E+13 duration 0
+1791738577.523 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_p1.json
+-- dump P28_hidden_p1  ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=601.668783 AoI(SS)=586.381 dist(SS)=601.668823 old_home=Earth frames=7661
+NOTE P28 P28_hidden_aoi_ss_au observed=586.380734 expected=- tol=-
+1791738579.328 >> moveto altitude 8.5E+13 duration 0
+1791738580.579 >> set home_planet Earth
+1791738582.329 >> moveto lat default lon default alt default
+1791738583.579 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_l2.json
+-- dump P28_hidden_l2  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=8024
+1791738585.403 >> moveto altitude 8.750000E+13 duration 0
+1791738586.653 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_p2.json
+-- dump P28_hidden_p2  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=584.956567 AoI(SS)=586.38 dist(SS)=584.956604 old_home=Earth frames=8209
+1791738588.462 >> moveto altitude 8.5E+13 duration 0
+1791738589.712 >> set home_planet Earth
+1791738591.463 >> moveto lat default lon default alt default
+1791738592.713 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_l3.json
+-- dump P28_hidden_l3  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=8572
+1791738594.528 >> moveto altitude 8.875000E+13 duration 0
+1791738595.778 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_p3.json
+-- dump P28_hidden_p3  ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=593.312603 AoI(SS)=586.381 dist(SS)=593.312622 old_home=Earth frames=8756
+1791738597.591 >> moveto altitude 8.5E+13 duration 0
+1791738598.842 >> set home_planet Earth
+1791738600.592 >> moveto lat default lon default alt default
+1791738601.843 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_l4.json
+-- dump P28_hidden_l4  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.998309851 old_home=Earth frames=9120
+1791738603.660 >> moveto altitude 8.812500E+13 duration 0
+1791738604.910 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_p4.json
+-- dump P28_hidden_p4  ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=589.134657 AoI(SS)=586.381 dist(SS)=589.134644 old_home=Earth frames=9304
+1791738606.728 >> moveto altitude 8.5E+13 duration 0
+1791738607.978 >> set home_planet Earth
+1791738609.728 >> moveto lat default lon default alt default
+1791738610.979 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_l5.json
+-- dump P28_hidden_l5  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830991 old_home=Earth frames=9668
+1791738612.801 >> moveto altitude 8.781250E+13 duration 0
+1791738614.051 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_p5.json
+-- dump P28_hidden_p5  ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=587.045654 AoI(SS)=586.38 dist(SS)=587.045715 old_home=Earth frames=9852
+1791738615.873 >> moveto altitude 8.5E+13 duration 0
+1791738617.123 >> set home_planet Earth
+1791738618.873 >> moveto lat default lon default alt default
+1791738620.124 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_l6.json
+-- dump P28_hidden_l6  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=10217
+1791738621.948 >> moveto altitude 8.765625E+13 duration 0
+1791738623.199 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_p6.json
+-- dump P28_hidden_p6  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=586.001041 AoI(SS)=586.38 dist(SS)=586.001099 old_home=Earth frames=10401
+1791738625.023 >> moveto altitude 8.5E+13 duration 0
+1791738626.273 >> set home_planet Earth
+1791738628.023 >> moveto lat default lon default alt default
+1791738629.274 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_l7.json
+-- dump P28_hidden_l7  ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.99830997 old_home=Earth frames=10766
+1791738631.102 >> moveto altitude 8.773438E+13 duration 0
+1791738632.353 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_hidden_p7.json
+-- dump P28_hidden_p7  ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=586.523352 AoI(SS)=586.38 dist(SS)=586.523315 old_home=Earth frames=10951
+NOTE P28 P28_hidden_bracket_m observed=[8.765625e+13,8.7734375e+13] expected=six halvings of the start bracket tol=-
+PASS P28 P28_hidden_aoi_between_lo_and_hi observed=586.380734 expected=[586.001, 586.523] tol=-
+NOTE P28 P28_hidden_leave_at_m observed=8.76953125e+13 expected=+-3.91e+10 m tol=-
+1791738634.183 >> body name Pluto hidden false
+1791738636.444 >> moveto altitude 8.5E+13 duration 0
+1791738637.695 >> set home_planet Earth
+1791738639.445 >> moveto lat default lon default alt default
+1791738640.696 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_l0.json
+-- dump P28_pluto_l0   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=689.563 dist(SS)=0.99830997 old_home=Earth frames=11451
+1791738642.527 >> moveto altitude 1.000000E+14 duration 0
+1791738643.777 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_p0.json
+-- dump P28_pluto_p0   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=668.517147 AoI(SS)=689.514 dist(SS)=668.517212 old_home=Earth frames=11636
+1791738645.608 >> moveto altitude 8.5E+13 duration 0
+1791738646.859 >> set home_planet Earth
+1791738648.609 >> moveto lat default lon default alt default
+1791738649.859 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_l1.json
+-- dump P28_pluto_l1   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=689.563 dist(SS)=0.99830997 old_home=Earth frames=12001
+1791738651.695 >> moveto altitude 1.100000E+14 duration 0
+1791738652.945 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_p1.json
+-- dump P28_pluto_p1   ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=735.365816 AoI(SS)=689.509 dist(SS)=735.365662 old_home=Earth frames=12186
+NOTE P28 P28_pluto_aoi_ss_au observed=689.509277 expected=- tol=-
+1791738654.783 >> moveto altitude 8.5E+13 duration 0
+1791738656.034 >> set home_planet Earth
+1791738657.784 >> moveto lat default lon default alt default
+1791738659.034 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_l2.json
+-- dump P28_pluto_l2   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=689.563 dist(SS)=0.99830997 old_home=Earth frames=12551
+1791738660.875 >> moveto altitude 1.050000E+14 duration 0
+1791738662.125 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_p2.json
+-- dump P28_pluto_p2   ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=701.941529 AoI(SS)=689.512 dist(SS)=701.941467 old_home=Earth frames=12737
+1791738663.963 >> moveto altitude 8.5E+13 duration 0
+1791738665.214 >> set home_planet Earth
+1791738666.964 >> moveto lat default lon default alt default
+1791738668.215 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_l3.json
+-- dump P28_pluto_l3   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=689.563 dist(SS)=0.998310089 old_home=Earth frames=13102
+1791738670.076 >> moveto altitude 1.025000E+14 duration 0
+1791738671.326 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_p3.json
+-- dump P28_pluto_p3   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=685.22936 AoI(SS)=689.513 dist(SS)=685.22937 old_home=Earth frames=13289
+1791738673.169 >> moveto altitude 8.5E+13 duration 0
+1791738674.419 >> set home_planet Earth
+1791738676.170 >> moveto lat default lon default alt default
+1791738677.420 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_l4.json
+-- dump P28_pluto_l4   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=689.563 dist(SS)=0.998310089 old_home=Earth frames=13654
+1791738679.267 >> moveto altitude 1.037500E+14 duration 0
+1791738680.518 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_p4.json
+-- dump P28_pluto_p4   ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=693.585383 AoI(SS)=689.513 dist(SS)=693.585388 old_home=Earth frames=13840
+1791738682.366 >> moveto altitude 8.5E+13 duration 0
+1791738683.616 >> set home_planet Earth
+1791738685.367 >> moveto lat default lon default alt default
+1791738686.617 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_l5.json
+-- dump P28_pluto_l5   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=689.563 dist(SS)=0.99831003 old_home=Earth frames=14206
+1791738688.469 >> moveto altitude 1.031250E+14 duration 0
+1791738689.720 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_p5.json
+-- dump P28_pluto_p5   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=689.40731 AoI(SS)=689.513 dist(SS)=689.407288 old_home=Earth frames=14392
+1791738691.579 >> moveto altitude 8.5E+13 duration 0
+1791738692.830 >> set home_planet Earth
+1791738694.580 >> moveto lat default lon default alt default
+1791738695.831 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_l6.json
+-- dump P28_pluto_l6   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=689.563 dist(SS)=0.99831003 old_home=Earth frames=14759
+1791738697.691 >> moveto altitude 1.034375E+14 duration 0
+1791738698.942 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_p6.json
+-- dump P28_pluto_p6   ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=691.496337 AoI(SS)=689.513 dist(SS)=691.496338 old_home=Earth frames=14946
+1791738700.799 >> moveto altitude 8.5E+13 duration 0
+1791738702.049 >> set home_planet Earth
+1791738703.799 >> moveto lat default lon default alt default
+1791738705.050 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_l7.json
+-- dump P28_pluto_l7   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=689.563 dist(SS)=0.99831003 old_home=Earth frames=15312
+1791738706.915 >> moveto altitude 1.032812E+14 duration 0
+1791738708.165 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P28_pluto_p7.json
+-- dump P28_pluto_p7   ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=690.451712 AoI(SS)=689.513 dist(SS)=690.45166 old_home=Earth frames=15499
+NOTE P28 P28_pluto_bracket_m observed=[1.03125e+14,1.0328125e+14] expected=six halvings of the start bracket tol=-
+PASS P28 P28_pluto_aoi_between_lo_and_hi observed=689.509277 expected=[689.407, 690.452] tol=-
+NOTE P28 P28_pluto_leave_at_m observed=1.03203125e+14 expected=+-7.81e+10 m tol=-
+1791738710.028 >> body name Pluto hidden true
+1791738712.278 >> moveto altitude 8.5E+13 duration 0
+1791738713.529 >> set home_planet Earth
+1791738715.279 >> moveto lat default lon default alt default
+1791738716.530 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P23_0_landed.json
+-- dump P23_0_landed   ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998309927 AoI(SS)=586.371 dist(SS)=0.998309851 old_home=Earth frames=16001
+1791738718.396 >> moveto altitude 9.0E+13 duration 0
+1791738719.647 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P23_1_601au.json
+-- dump P23_1_601au    ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=601.668841 AoI(SS)=586.381 dist(SS)=601.668823 old_home=Earth frames=16188
+PASS P23 reference_P23_1_601au observed=SolarSystem expected=SolarSystem tol=-
+PASS P23 aimed_P23_1_601au observed=Earth expected=Earth tol=-
+1791738721.512 >> moveto altitude 1.5E+17 duration 0
+1791738723.763 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P23_2_1e6au.json
+-- dump P23_2_1e6au    ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=1002688.13 AoI(SS)=586.463 dist(SS)=1002688.06 old_home= frames=16435
+PASS P23 reference_P23_2_1e6au observed=SolarSystem expected=SolarSystem tol=-
+PASS P23 aimed_P23_2_1e6au observed=Earth expected=Earth tol=-
+1791738725.631 >> moveto altitude 1.5E+19 duration 0
+1791738727.881 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_ladder_2/P23_3_1e8au.json
+-- dump P23_3_1e8au    ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=100268824 AoI(SS)=586.463 dist(SS)=100268808 old_home= frames=16682
+PASS P23 reference_P23_3_1e8au observed=SolarSystem expected=SolarSystem tol=-
+PASS P23 aimed_P23_3_1e8au observed=Earth expected=Earth tol=-
+NOTE P23 milkyway_distance_maintained observed=0 expected=0 tol=-
+PASS P25 no_sync_warning observed=0 expected=0 tol=-
+
+=== f148 ladder expect after pin on: ALL PASS ===

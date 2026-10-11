@@ -1,0 +1,62 @@
+1791739276.587 >> flag experimental_path on
+PASS INSTR relocate_breakpoint_set observed=true expected=true tol=-
+1791739284.838 >> timerate rate 0
+1791739286.089 >> deselect
+1791739287.339 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N00_pre.json
+-- dump N00_pre        ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.99830904 AoI(SS)=586.371 dist(SS)=0.998309076 old_home=Earth frames=1022
+1791739289.101 >> one packet: moveto alt 0.9E+10 duration 0 | body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N28_a_same_packet.json
+-- dump N28_a_same_packet ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=1.00456587 AoI(SS)=586.371 dist(SS)=0.998309076 old_home=Earth frames=1127
+1791739290.614 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N28_b_after.json
+-- dump N28_b_after    ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=1.00456613 AoI(SS)=586.371 dist(SS)=1.00456619 old_home=Earth frames=1218
+NOTE NIGHT line28_a_same_packet observed=ref=Earth aimed=Earth bound=True dist=0.060203921 old_home=Earth alt_old=9e+09 expected=frame 1127 tol=-
+NOTE NIGHT line28_b_after observed=ref=Earth aimed=Earth bound=True dist=0.060203921 old_home=Earth alt_old=9e+09 expected=frame 1218 tol=-
+1791739292.378 >> one packet: moveto alt 1.1E+16 duration 0 | body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N30_a_same_packet.json
+-- dump N30_a_same_packet ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=73530.5201 AoI(SS)=586.371 dist(SS)=1.00456619 old_home=Earth frames=1324
+1791739293.892 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N30_b_after.json
+-- dump N30_b_after    ref=SolarSystem aimed=Earth system=SolarSystem bound=True free=False |root|=73530.7243 AoI(SS)=586.463 dist(SS)=73530.7188 old_home= frames=1415
+NOTE NIGHT line30_a_same_packet observed=ref=Earth aimed=Earth bound=True dist=73530.4609 old_home=Earth alt_old=1.1e+16 expected=frame 1324 tol=-
+NOTE NIGHT line30_b_after observed=ref=SolarSystem aimed=Earth bound=True dist=73530.7188 old_home= alt_old=1e+10 expected=frame 1415 tol=-
+1791739295.655 >> one packet: set home_planet Sun | body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N32_a_same_packet.json
+-- dump N32_a_same_packet ref=Sun aimed=Sun system=SolarSystem bound=True free=False |root|=73530.7296 AoI(SS)=586.463 dist(SS)=73530.7188 old_home= frames=1521
+1791739297.169 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N32_b_after.json
+-- dump N32_b_after    ref=SolarSystem aimed=Sun system=SolarSystem bound=True free=False |root|=73530.7357 AoI(SS)=586.463 dist(SS)=73530.7344 old_home= frames=1588
+NOTE NIGHT line32_a_same_packet observed=ref=Sun aimed=Sun bound=True dist=73530.7266 old_home= alt_old=1e+10 expected=frame 1521 tol=-
+NOTE NIGHT line32_b_after observed=ref=SolarSystem aimed=Sun bound=True dist=73530.7344 old_home= alt_old=1e+10 expected=frame 1588 tol=-
+1791739298.933 >> one packet: moveto alt 0.9E+9 duration 0 | body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N34_a_same_packet.json
+-- dump N34_a_same_packet ref=SolarSystem aimed=Sun system=SolarSystem bound=True free=False |root|=0.00601612865 AoI(SS)=586.463 dist(SS)=73530.7344 old_home= frames=1694
+1791739300.447 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N34_b_after.json
+-- dump N34_b_after    ref=Sun aimed=Sun system=SolarSystem bound=True free=False |root|=0.00601612815 AoI(SS)=586.371 dist(SS)=0.00601612823 old_home=Earth frames=1784
+NOTE NIGHT line34_a_same_packet observed=ref=SolarSystem aimed=Sun bound=True dist=0.00601612823 old_home= alt_old=9e+08 expected=frame 1694 tol=-
+NOTE NIGHT line34_b_after observed=ref=Sun aimed=Sun bound=True dist=0.00601612823 old_home=Earth alt_old=9e+14 expected=frame 1784 tol=-
+1791739302.214 >> one packet: moveto alt 0.9E+10 duration 0 | body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N36_a_same_packet.json
+-- dump N36_a_same_packet ref=Sun aimed=Sun system=SolarSystem bound=True free=False |root|=0.0648137532 AoI(SS)=586.371 dist(SS)=0.00601612823 old_home=Earth frames=1890
+1791739303.731 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N36_b_after.json
+-- dump N36_b_after    ref=Sun aimed=Sun system=SolarSystem bound=True free=False |root|=0.0648137532 AoI(SS)=586.371 dist(SS)=0.0648137555 old_home=Earth frames=1981
+NOTE NIGHT line36_a_same_packet observed=ref=Sun aimed=Sun bound=True dist=0.0648137555 old_home=Earth alt_old=9e+09 expected=frame 1890 tol=-
+NOTE NIGHT line36_b_after observed=ref=Sun aimed=Sun bound=True dist=0.0648137555 old_home=Earth alt_old=9e+09 expected=frame 1981 tol=-
+1791739305.501 >> one packet: mode jump in_solarsystem body Sun altitude 1.0E+5 | body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N38_a_same_packet.json
+-- dump N38_a_same_packet ref=Sun aimed=Sun system=SolarSystem bound=True free=False |root|=0.00465314181 AoI(SS)=586.371 dist(SS)=0.0648137555 old_home=Sun frames=2088
+1791739307.022 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N38_b_after.json
+-- dump N38_b_after    ref=Sun aimed=Sun system=SolarSystem bound=True free=False |root|=0.00465314181 AoI(SS)=586.371 dist(SS)=0.00465314137 old_home=Sun frames=2174
+NOTE NIGHT line38_a_same_packet observed=ref=Sun aimed=Sun bound=True dist=0.00465314137 old_home=Sun alt_old=100000 expected=frame 2088 tol=-
+NOTE NIGHT line38_b_after observed=ref=Sun aimed=Sun bound=True dist=0.00465314137 old_home=Sun alt_old=100000 expected=frame 2174 tol=-
+1791739308.793 >> one packet: set home_planet Earth | body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N39_a_same_packet.json
+-- dump N39_a_same_packet ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998303021 AoI(SS)=586.371 dist(SS)=0.00465314137 old_home=Earth frames=2281
+1791739310.313 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N39_b_after.json
+-- dump N39_b_after    ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.998301373 AoI(SS)=586.371 dist(SS)=0.998301387 old_home=Earth frames=2372
+NOTE NIGHT line39_a_same_packet observed=ref=Earth aimed=Earth bound=True dist=4.3303924e-05 old_home=Earth alt_old=100000 expected=frame 2281 tol=-
+NOTE NIGHT line39_b_after observed=ref=Earth aimed=Earth bound=True dist=4.3303924e-05 old_home=Earth alt_old=100000 expected=frame 2372 tol=-
+1791739312.084 >> one packet: moveto lat default lon default alt default | body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N40_a_same_packet.json
+-- dump N40_a_same_packet ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.99830904 AoI(SS)=586.371 dist(SS)=0.998301387 old_home=Earth frames=2479
+1791739313.606 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/after_night/N40_b_after.json
+-- dump N40_b_after    ref=Earth aimed=Earth system=SolarSystem bound=True free=False |root|=0.99830904 AoI(SS)=586.371 dist(SS)=0.998309016 old_home=Earth frames=2570
+NOTE NIGHT line40_a_same_packet observed=ref=Earth aimed=Earth bound=True dist=4.26357365e-05 old_home=Earth alt_old=75 expected=frame 2479 tol=-
+NOTE NIGHT line40_b_after observed=ref=Earth aimed=Earth bound=True dist=4.26357365e-05 old_home=Earth alt_old=75 expected=frame 2570 tol=-
+NOTE NIGHT relocate_call_0 observed=Camera::relocateToBody <- SSystemFactory::syncCameraReference <- SSystemFactory::switchToAnchor <- Core::setHomePlanet <- AppCommandInterface::evalCommandSet <- AppCommandInterface::commandSet expected=- tol=-
+NOTE NIGHT relocate_call_1 observed=Camera::relocateToBody <- SSystemFactory::syncCameraReference <- SSystemFactory::switchToAnchor <- SolarSystemModule::onEnter <- EventHandler::handleEvents <- App::startMainLoop expected=- tol=-
+NOTE NIGHT relocate_call_2 observed=Camera::relocateToBody <- SSystemFactory::syncCameraReference <- SSystemFactory::switchToAnchor <- SolarSystemModule::onEnter <- Executor::switchMode <- App::switchMode expected=- tol=-
+NOTE NIGHT relocate_call_3 observed=Camera::relocateToBody <- SSystemFactory::syncCameraReference <- SSystemFactory::switchToAnchor <- Core::setHomePlanet <- AppCommandInterface::commandModeJump <- AppCommandInterface::executeCommand expected=- tol=-
+NOTE NIGHT relocate_call_4 observed=Camera::relocateToBody <- SSystemFactory::syncCameraReference <- SSystemFactory::switchToAnchor <- Core::setHomePlanet <- AppCommandInterface::evalCommandSet <- AppCommandInterface::commandSet expected=- tol=-
+PASS P25 no_sync_warning observed=0 expected=0 tol=-
+
+=== f148 night expect after pin on: ALL PASS ===

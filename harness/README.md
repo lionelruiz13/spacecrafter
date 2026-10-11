@@ -6816,3 +6816,119 @@ replaces its private cleaner. `f131_obs.py` (the scenes) is unchanged, md5 `2b7f
 **Not reached.** Row 6 of the page (the Moon 1.70x smaller: the dwell scene of `f51_dwell.py`,
 judged by the FULL canary's photometric band) is OUT of these legs. Not reached either: the joypad lat
 / lon path, a real wheel burst (pitfall 5), the tester's coloured halos (question T1, routed).
+
+## F148 - the Camera's reference decider read at its crossings: the leave / return at the Solar system's influence, the re-aim, the boundary number, the parks, the climb above the system (`f148_run.sh`, `f148_cross.py`) - INTENT 11.319 / 11.313 (f)(h), 2026-10-11
+
+**What for.** F144's decider (`Camera::followInfluence`, INTENT 11.313) changes the Camera's reference
+by itself at ONE boundary - the Solar system node's area of influence, about 586 AU from the Sun - and
+nothing at the Earth's surface reaches it. These scenes take the Camera there and judge each crossing:
+which body is the reference, which body is aimed, whether the place and the view survive the switch.
+Every reading is judged against the predictions of the binary it runs on (`before` = no decider,
+`after` = 11.313 (h)), so the same command is the BEFORE / AFTER pair.
+
+**Run** - from anywhere; one fresh launch per call:
+
+    bash f148_run.sh <label> ladder before|after        # P11-P14, P23, P25, P26, P28, P29 - 3 min before, 5 min after
+    bash f148_run.sh <label> night after                # initial_night.sts lines 28-40, a dump in each line's packet and after it
+    bash f148_run.sh <label> switch before on [--hold=switch|warp]   # the decider's crossings by hand through gdb (no decider)
+    bash f148_run.sh <label> control before|after       # the free-move walk's switchToBody at Earth's influence
+
+Records: `artifacts/f148/<label>/` (dumps, `drive.log`, the launch's logs) and `<label>.canary.log`.
+A line: `PASS|FAIL|NOTE <P> <criterion> observed=<v> expected=<v> tol=<t>`; `INSTR` lines are the
+instrument's own premises (they FAIL loud when a reading would be fiction). Exit 1 on a FAIL.
+
+**Pitfalls, each one paid for.** (1) `switchToBody` holds the VIEW, not the PLACE: measured on
+`8a5d8fcf`, the Camera keeps its (lat, distance) numbers in the new reference's frame - 0.99 AU at
+Earth's influence (`control`), 244.4-244.6 AU leaving Earth for the Solar system node at 601.5 AU
+(`switch`, two launches), with the view held to 1e-6 rad. `--hold=switch` composes the switch with
+`placeAt(positionRelativeTo(dst), true)`: the place then holds to 7e-5 / 1.6e-4 AU (1-3 float32 ulps at
+600 AU) - the composition the decider builds; `--hold=warp` (`warpToBody` + `placeAt`) holds the place and
+TURNS THE VIEW 1.196 rad: `placeAt`'s view hold is relative to the reference already changed. (2) A position criterion at 600 AU cannot be finer than the float32 floor: `distance` and
+`position` are float32 AU (ulp 6.1e-5 AU at 512-1024 AU); and the ladder's radial-step model, which has
+no pre-switch dump to compare with, reads 2.6e-3 AU WITHOUT any switch (the `moveto` handler re-sends the
+reported lat / lon through degrees) - the ladder classifies against 5e-3 AU, the `switch` scene against
+16 ulps. The decider's own crossings are judged with NO command between their two dumps by moving the
+BOUNDARY across a parked Camera (`body name Pluto hidden false|true`: AoI(SS) 689.5 / 586.4 AU around
+601.6 AU, `P11'` / `P13'`), against 3 ulps (2e-4 AU) and 1e-5 rad; Pluto is hidden again before `P23`
+(shown, 601.6 AU is inside - the first AFTER run read that rung wrong). (3) The Sun sits at the root's origin in this field: the dump's `camera.rootPos` is the Camera
+seen from the Sun (an `INSTR` line asserts |rootPos| = the Solar system node's `dist` at every dump).
+(4) The dump has no `system` field: the driver derives it (the first node of `bodyType` SYSTEM 2 or
+GALAXY 3 up the reference's chain = what the `ModularSystem` constructor builds) and prints the member
+through gdb at two states. gdb.log holds multi-byte lines: seek its BYTE offset, never slice the decoded
+text at it (the first ladder read "gdb-error" for a correct print). (5) Two commands in one packet can
+land in the SAME frame (`P14`'s two dumps read frame 2139 both): the second dump waits 0.5 s and an
+`INSTR` line asserts two frames between them. (6) The seam ring must be armed (`SC_SEAM_RECORD=1`, the
+runner exports it) - the flag-32 count (the Camera's reference == the old home planet) is the per-frame
+trace of the reference while the old home stays fixed; it is BLIND when the old home changes with it or
+is another body (obs 1 lines 30-38: clear on both binaries) - the `night` scene names the reference per
+line instead; a dump with `SC_SEAM_RECORD` is about 6.5 MB. (7) The old executor's level
+logic still writes the Camera on its way DOWN (`SolarSystemModule::onEnter` -> `switchToAnchor("Sun")`
+-> `relocateToBody(Sun)`): the ladder keeps the old observer in the solar level until `P23`, the last
+scene, which climbs it to the galaxy (1.5E+17 m) and the universe (1.5E+19 m); nothing comes down after.
+(8) AoI(Solar system) is computed from the dump's bodies by `ModularBody::updateReach`'s law (visible
+children = `relation >= 3`) and checked against the engine's `refAoI` whenever the reference is Earth or
+the node: 586.38 AU on 2026-10-11, 689.51 AU with Pluto shown.
+
+**Made of.** `f148_run.sh` over `f124_run.sh` unchanged (`F124_OUT_ROOT=artifacts/f148`,
+`F124_TIMEOUT` 1200 s, the `--no-scene` canary and `sc_instances.sh --assert` before the launch);
+`f148_cross.py` borrows `b3_ladder.send` / `wait_port`, `b21_keypath.py`'s `_clean` / `gdb_inject` and
+`f124_legs.py`'s `header_and_bodies` / `gdb_errors` by AST, like `f131_obs.py`; the gdb calls run at the
+entry of one `Core::updateMove` (main thread), `f124_legs.inject`'s safe point.
+
+**Readings (2026-10-11).** BEFORE `8a5d8fcf`: `ladder` ALL PASS (no reference change at any rung).
+AFTER `35efed69` (the decider, INTENT 11.319): `ladder` ALL PASS twice (leave 3.3e-5 / 7.2e-5 AU, return
+1.2e-4 / 1.75e-4 AU, view <= 1.06e-6 rad; the boundary at 8.770E+13 m, 1.0320E+14 m with Pluto shown);
+`night` ALL PASS - the old executor's `relocateToBody(Sun)` fires on the descent of line 34 from the event
+loop (`EventHandler::handleEvents`), AFTER the decider's return, same body. A `--expect after` run
+before the decider is built FAILS by construction.
+
+**Not reached.** The old pin; the decider above the first system (none exists: 11.313 (d7)).
+
+## F150 - the shape of a delivery from one command (`shape/delivery.py`; `shape/decomment.py` the one C++ comment scanner of names.py / writers.py / codeident.py; `shape/writers.py` takes `WORKTREE`; `shape/ratio.py`'s classifier importable and form.py's line rule) - INTENT 11.321 / row B46 / 11.256, 2026-10-11
+
+**What for.** An acceptance judges a delivery on behaviour AND shape (SHAPE.md section 6, fable-dispatch
+section 0b (c)). Until this script the shape's numbers had two hand-derived homes - the executor's shape
+section and the supervisor's acceptance line - and a typed number is the Q-67 channel (11.316.md:143
+re-typed +264 / -79 after its author's own edit had made the commits +265 / -80). One command prints
+them; both paste its block.
+
+**Run** - from anywhere (it works at the code repo root); read-only on both trees:
+
+    python3 claude/harness/shape/delivery.py <base> <head>         # a committed delivery
+    python3 claude/harness/shape/delivery.py <base> [WORKTREE]     # the tree on disk, untracked src/ files included
+    python3 claude/harness/shape/delivery.py <base> <head> --class Projector:src/coreModule/projector.hpp:src/coreModule/projector.cpp
+    python3 claude/harness/shape/delivery.py --self-test           # the two recorded deliveries as oracles (~9 s)
+
+**Reading the block.** Eight sections in a fixed order - the script's header is the authority: (1) per
+file +code -code +comment -comment +blank -blank, ratio.py's `classify` read on git's -U0 hunks (a
+trailing comment is code), the totals beside numstat, net code; (2) names.py BEFORE -> AFTER per touched
+header with the names added / removed; (3) writers.py's (field, writer) pairs per class at both ends and
+each field whose writer set changed (default classes: a touched header AND its same-stem .cpp; `--class`
+replaces them); (4) the added comments' form by form.py's `measure` (which lines are comments: ratio.py's
+rule) and a verb-first share that is an UPPER bound - read the first words printed beside it; (5) the
+ledger-grammar hits in the added lines; (6) the D14 gate - it reads the code repo's TRACKED files ON DISK,
+so the line says whether that tree is <head> - and the delivery's own files read at <head> by the gate's
+partition; (7) ratio.py's module numbers at both ends; (8) review.sh's header scope (new is against <base>,
+not against the owner's mark) and the touched files outside it. Exit 0 whatever the numbers say; 2 = an
+instrument could not produce its section (`ERROR (<section>) ...`) or the tree moved during a WORKTREE run
+(run it again).
+
+**Able to fail, first.** `--self-test` finds each expected value's QUOTE verbatim at its line of INTENT
+11.317 / 11.316 and parses the value from the quote - none is typed apart from it. On a FAIL it computes
+the candidate record-side rules; one that reproduces the record value prints `PASS* ... rule=<the rule>`,
+none prints `FAIL ... cause=UNNAMED` (exit 1). At delivery: 163 PASS / 13 PASS* / 0 FAIL, exit 0 (the
+records measured before a whitespace re-indent; "new" against the review mark; names added to pre-existing
+types; the records' names.py before `decomment.py`, read from harness history at `90cee65`). A FAIL is a
+change of an instrument or of a record. In-memory mutations: a trailing comment counted as comment -> 7
+UNNAMED probe fails (+4 ratio cross-checks); names.py dropping one name -> 34 UNNAMED.
+
+**Pitfalls, each one measured.** (1) Counts taken before 2026-10-11 (11.321's follow-up) with names.py /
+writers.py read `ssystem_factory.hpp` short (78 names of 162; `SSystemFactory` 0 fields) and lost member
+functions in four `.cpp` holding a `'"'` char literal (AppCommandInterface 5 of 91, HipStarMgr 52 of 82,
+ConstellationMgr, ScriptAnnotator): the old two-step comment stripping; `decomment.py` reads C++ in source
+order now - compare an old record with the new block knowing this. (2) The D14 gate
+cannot see the harness repo (`claude/` is ignored by the code repo): a harness file's ASCII check is a
+byte census (`LC_ALL=C /usr/bin/grep -c -P '[\x80-\xff]' <file>`). (3) form.py classes lines by ratio.py's
+`classify` since the same day: SHAPE.md section 4's library row was measured counting 34 `*ptr = ...` code
+lines as comments (4.8 / 39 % then, 5.2 / 37 % now). (4) A class whose .cpp alone changed needs `--class`. (5) A WORKTREE run beside an executor that edits
+can catch a half-written file: the guard says so (exit 2); run it again.

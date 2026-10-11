@@ -29,24 +29,24 @@ reuse(os.path.join(HERE, "b21_keypath.py"), ["_clean"])
 BANK = """
 # obs var pin  criterion                          class check       expected     tol
 1   nat both scene_reached                        gate  eq          reached      -
-1   nat both observers_view_apart_late_deg        gate  earth_view  12.0602      0.02
-1   nat both observers_apart_late_km              gate  earth_chord 1332.33      20
-1   nat new  star_points_late                     gate  near        0            10
+1   nat both observers_view_apart_late_deg        gate  near        1.84e-5      4e-5
+1   nat both observers_apart_late_km              gate  near        4.05         4
+1   nat new  star_points_late                     gate  near        565          28
 1   nat old  star_points_late                     gate  near        565          28
-1   nat new  stars_in_drawn_buffer_late           gate  near        0            10
+1   nat new  stars_in_drawn_buffer_late           gate  near        3320         166
 1   nat old  stars_in_drawn_buffer_late           gate  near        3320         166
 1   nat both late_after_sunset_plus_005_d         gate  near        0.00049      0.002
-1   nat both separation_angle_deg                 note  earth_angle 16.5972      0.03
+1   nat both separation_angle_deg                 note  near        2.52e-5      6e-5
 1   nat both latitude_reported_deg                note  near        43.3         0.01
 1   nat both longitude_reported_deg               note  near        5.36667      0.01
 1   nat new  altitude_reported_m                  note  near        75.10        1
 1   nat old  altitude_reported_m                  note  near        75.00        1
-1   nat new  sky_brightness                       note  rel         0.05061      5%
+1   nat new  sky_brightness                       note  rel         0.01100      5%
 1   nat old  sky_brightness                       note  rel         0.01100      5%
-1   nat new  adaptation_luminance                 note  rel         402.549      5%
+1   nat new  adaptation_luminance                 note  rel         4.728        5%
 1   nat old  adaptation_luminance                 note  rel         4.729        5%
 1   nat both camera_bound_pre                     note  eq          true         -
-1   nat both camera_bound_late                    note  eq          false        -
+1   nat both camera_bound_late                    note  eq          true         -
 1   nat both sunset_frame_minus_port_s            note  near        0.20         0.5
 2   nat both scene_reached                        gate  eq          reached      -
 2   nat both race_margin_ms                       gate  near        9            9

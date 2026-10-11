@@ -1,0 +1,21 @@
+=== F124 run 'after_ladder_2' ===
+wall clock start : 2026-10-11 19:07:12 CEST
+driver           : f148_cross.py --scene ladder --expect after --pin on
+driver md5       : 5771719e32def89dc36b276debd053ad
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 35efed69e62f8948bef66642460b81ad
+binary mtime     : 2026-10-11 19:01:01.834593447 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[after_ladder_2] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[after_ladder_2] gpu: free 30410 MiB / used 1697 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=1094176
+launch wall clock: 2026-10-11 19:07:12 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 1094193 
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[after_ladder_2-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-10-11 19:12:18 CEST

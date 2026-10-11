@@ -1,0 +1,30 @@
+```
+SHAPE afae8573..WORKTREE  (harness/shape/delivery.py)
+(1) lines [ratio.py classify on the -U0 hunks]  +code -code +comment -comment +blank -blank  status file
+      0     2     0     0     0     0  M src/bodyModule/ssystem_factory.cpp
+      1     2     0     0     0     0  M src/bodyModule/ssystem_factory.hpp
+     25     5     0     0     1     0  M src/experimentalModule/Camera.cpp
+      6     8     1     1     0     0  M src/experimentalModule/Camera.hpp
+  total 4 files: +34 -18 (numstat); code +32 -17, comment +1 -1, blank +1 -0; net code +15, net lines +16
+(2) names [names.py]  BEFORE -> AFTER  +added  -removed
+  src/bodyModule/ssystem_factory.hpp 162 -> 162  +[-]  -[-]
+  src/experimentalModule/Camera.hpp 79 -> 79  +[followInfluence]  -[calculateZoomCoefVelocity]
+  total 2 headers: names +1 -1
+(3) writers [writers.py]  class: pairs BEFORE -> AFTER, unchanged; changed field: writers BEFORE -> AFTER
+  Camera: pairs 103 -> 107, unchanged 103
+    aimed: - -> followInfluence rebindReference switchToBody warpToBody
+  SSystemFactory: pairs 18 -> 18, unchanged 18
+(4) form [form.py measure over the added lines]
+  comment lines added: full 1, trailing 0; blocks 1:1 2:0 3+:0; length median 101 p90 101
+  verb-first (upper bound) 1 / 1 blocks; first words: Leave 1
+(5) ledger grammar in the added lines [INTENT|11\.[0-9]|F1[0-9][0-9]|\[observed|\[measured|\[vixy]: 0
+(6) d14 [f70_ascii.py gate]
+  gate PASS (exit 0; it reads the code repo's tracked files on disk; that tree is WORKTREE: yes)
+  delivery files at WORKTREE by its partition: 4 read, 0 non-ASCII (0 CONVERT or unclassified): PASS
+(7) ratio [ratio.py classify, src/experimentalModule .hpp/.cpp]
+  afae8573 files 124 code 13475 comment 889 ratio 0.07
+  WORKTREE files 124 code 13493 comment 889 ratio 0.07
+(8) scope [review.sh]
+  header scope :(glob)src/**/*.hpp :(glob)src/**/*.h: 2 touched (new 0, modified 2, deleted 0, renamed 0)
+  outside it, in the ALL=1 scope src shaders: 2 touched
+```

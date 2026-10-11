@@ -1,0 +1,44 @@
+1791735605.134 >> flag experimental_path on
+1791735607.385 >> timerate rate 0
+1791735608.635 >> deselect
+1791735609.886 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/before_switch/S0_landed.json
+-- dump S0_landed      ref=Earth aimed=absent system=SolarSystem bound=True free=False |root|=0.998313136 AoI(SS)=586.371 dist(SS)=0.998313129 old_home=Earth frames=851
+PASS INSTR aoi_transcription_Earth_S0_landed observed=0.0472138232 expected=0.0472138263 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_S0_landed observed=0.998313136 expected=0.998313129 tol=1e-5 rel
+1791735611.647 >> moveto altitude 9.0E+13 duration 0
+1791735612.897 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/before_switch/S11_0_pre.json
+-- dump S11_0_pre      ref=Earth aimed=absent system=SolarSystem bound=True free=False |root|=601.520069 AoI(SS)=586.381 dist(SS)=601.520081 old_home=Earth frames=1032
+PASS INSTR aoi_transcription_Earth_S11_0_pre observed=0.0457563793 expected=0.045756381 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_S11_0_pre observed=601.520069 expected=601.520081 tol=1e-5 rel
+NOTE P11 distance_to_ss_au_pre observed=601.520081 expected=> 586.381 tol=-
+PASS INSTR gdb_calls_leave_ran_clean observed=handshake=True errors=[] expected=clean tol=-
+1791735621.661 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/before_switch/S11_1_switched.json
+-- dump S11_1_switched ref=SolarSystem aimed=absent system=SolarSystem bound=True free=False |root|=601.612916 AoI(SS)=586.381 dist(SS)=601.612915 old_home=Earth frames=1348
+PASS INSTR aoi_transcription_SolarSystem_S11_1_switched observed=586.380889 expected=586.380859 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_S11_1_switched observed=601.612916 expected=601.612915 tol=1e-5 rel
+PASS P11 reference_switched_by_hand observed=SolarSystem expected=SolarSystem tol=-
+PASS P11 bound_kept observed=true expected=true tol=-
+FAIL P11 rootpos_continuous_au observed=244.577486 expected=0 tol=1e-6
+NOTE P11 rootpos_class observed=WARP expected=float-floor <= 0.000977, warp >= 0.1 tol=-
+NOTE P11 distance_to_ss_au_post observed=601.612915 expected=continuous: 601.520081 tol=-
+NOTE P11 camera_numbers_pre observed=[0.0936660022,0.755727589,601.612915] expected=- tol=-
+NOTE P11 camera_numbers_post observed=[-2.69410372,0.755727589,601.612915] expected=- tol=-
+PASS P11 absfwd_turn_rad observed=8.3220017e-07 expected=0 tol=1e-5
+1791735623.425 >> moveto altitude 8.5E+13 duration 0
+1791735624.676 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/before_switch/S13_0_pre.json
+-- dump S13_0_pre      ref=SolarSystem aimed=absent system=SolarSystem bound=True free=False |root|=568.189868 AoI(SS)=586.38 dist(SS)=568.18988 old_home=Earth frames=1529
+PASS INSTR aoi_transcription_SolarSystem_S13_0_pre observed=586.380312 expected=586.380798 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_S13_0_pre observed=568.189868 expected=568.18988 tol=1e-5 rel
+PASS INSTR gdb_calls_return_ran_clean observed=handshake=True errors=[] expected=clean tol=-
+1791735633.442 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/before_switch/S13_1_switched.json
+-- dump S13_1_switched ref=Earth aimed=absent system=SolarSystem bound=True free=False |root|=568.095921 AoI(SS)=586.38 dist(SS)=568.095886 old_home=Earth frames=1879
+PASS INSTR aoi_transcription_Earth_S13_1_switched observed=0.0458250345 expected=0.0458250381 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_S13_1_switched observed=568.095921 expected=568.095886 tol=1e-5 rel
+PASS P13 reference_switched_by_hand observed=Earth expected=Earth tol=-
+FAIL P13 rootpos_continuous_au observed=231.003747 expected=0 tol=1e-6
+NOTE P13 rootpos_class observed=WARP expected=float-floor <= 0.000977, warp >= 0.1 tol=-
+NOTE P13 distance_to_ss_au observed=[568.18988,568.095886] expected=continuous: equal tol=-
+PASS P13 absfwd_turn_rad observed=9.10069435e-07 expected=0 tol=1e-5
+PASS P25 no_sync_warning observed=0 expected=0 tol=-
+
+=== f148 switch expect before pin on: FAILS: P11:rootpos_continuous_au,P13:rootpos_continuous_au ===

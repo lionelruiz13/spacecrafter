@@ -1,0 +1,28 @@
+--- a/src/experimentalModule/Camera.hpp
++++ b/src/experimentalModule/Camera.hpp
+@@ -231,12 +231,6 @@
+             coef *= 2*coef;
+         return coef;
+     }
+-    // Calculate zoom coefficient velocity (derivated for one second)
+-    inline float calculateZoomCoefVelocity() const {
+-        float coef = zoomTimer / zoomDuration;
+-        coef = (coef > 0.5) ? 4*(1-coef) : 4*coef;
+-        return coef / zoomDuration;
+-    }
+     void recoverParams(const Mat4f &totalRot);
+     void advanceView(float deltaTime);
+     Mat4f renderViewRotation() const;
+@@ -291,9 +285,9 @@
+     float latitude;
+     float distance; // In AU
+     float zoomDuration = 0;
+-    float zoomTimer;
+-    float srcHalfFov;
+-    float dstHalfFov;
++    float zoomTimer = 0;
++    float srcHalfFov = 0;
++    float dstHalfFov = 0;
+     static float minHalfFov;
+     static float maxHalfFov;
+     bool freeMode = false;

@@ -1,0 +1,29 @@
+1791735433.643 >> flag experimental_path on
+1791735435.894 >> timerate rate 0
+1791735437.144 >> deselect
+1791735438.394 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/before_control/C0_landed.json
+-- dump C0_landed      ref=Earth aimed=absent system=SolarSystem bound=True free=False |root|=0.998313331 AoI(SS)=586.371 dist(SS)=0.998313367 old_home=Earth frames=848
+PASS INSTR aoi_transcription_Earth_C0_landed observed=0.0472129247 expected=0.0472129285 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_C0_landed observed=0.998313331 expected=0.998313367 tol=1e-5 rel
+1791735440.156 >> camera action free_mode state on
+1791735442.406 >> moveto altitude 6.0E+9 duration 0
+1791735443.656 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/before_control/C1_inside_a.json
+-- dump C1_inside_a    ref=Earth aimed=absent system=SolarSystem bound=True free=True |root|=0.994096148 AoI(SS)=586.371 dist(SS)=0.99409616 old_home=Earth frames=1165
+1791735445.420 >> moveto altitude 6.5E+9 duration 0
+1791735446.670 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/before_control/C2_inside_b.json
+-- dump C2_inside_b    ref=Earth aimed=absent system=SolarSystem bound=True free=True |root|=0.993816928 AoI(SS)=586.371 dist(SS)=0.993816912 old_home=Earth frames=1345
+PASS INSTR aoi_transcription_Earth_C2_inside_b observed=0.0472128173 expected=0.0472128168 tol=1e-5 rel
+PASS INSTR sun_at_root_origin_C2_inside_b observed=0.993816928 expected=0.993816912 tol=1e-5 rel
+PASS CTRL free_mode_on observed=true expected=true tol=-
+PASS CTRL reference_inside observed=Earth expected=Earth tol=-
+NOTE CTRL earth_aoi_au observed=0.0472128168 expected=- tol=-
+1791735448.435 >> moveto altitude 7.5E+9 duration 0
+1791735449.685 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f148/before_control/C3_outside.json
+-- dump C3_outside     ref=Sun aimed=absent system=SolarSystem bound=True free=True |root|=0.0501770313 AoI(SS)=586.371 dist(SS)=0.050177034 old_home=Earth frames=1526
+PASS CTRL free_walk_left_earth observed=Sun expected=Sun tol=-
+NOTE CTRL switchtobody_rootpos_jump_au observed=0.99260657 expected=continuous: < 1e-6 (float floor at 1 AU ~1e-7) tol=-
+NOTE CTRL camera_distance_to_sun_after_au observed=0.0501770313 expected=continuous: ~1; warp: |position| = 0.050177 tol=-
+NOTE CTRL switchtobody_absfwd_turn_rad observed=5.77119491e-08 expected=< 1e-5 tol=-
+PASS P25 no_sync_warning observed=0 expected=0 tol=-
+
+=== f148 control expect before pin on: ALL PASS ===

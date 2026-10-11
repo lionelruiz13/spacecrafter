@@ -1,0 +1,138 @@
+diff --git a/src/bodyModule/ssystem_factory.cpp b/src/bodyModule/ssystem_factory.cpp
+index c8a91b20..deaba50e 100644
+--- a/src/bodyModule/ssystem_factory.cpp
++++ b/src/bodyModule/ssystem_factory.cpp
+@@ -258,14 +258,12 @@ void SSystemFactory::changeSystem(const std::string &mode)
+ {
+     if (mode == "SolarSystem" || mode == "Sun" || mode == "temp_point") {
+         currentSystem = ssystem.get();
+-        camera->switchToBody(ModularBody::findBodyOnce("SolarSystem"));
+     } else {
+         try {
+             currentSystem = systems.at(mode).get();
+         } catch (...) {
+             currentSystem = createSystem(mode).get();
+         }
+-        camera->switchToBody(ModularBody::findBodyOnce(mode + "System"));
+     }
+     selectSystem();
+ }
+diff --git a/src/bodyModule/ssystem_factory.hpp b/src/bodyModule/ssystem_factory.hpp
+index 4521e607..f5891c69 100644
+--- a/src/bodyModule/ssystem_factory.hpp
++++ b/src/bodyModule/ssystem_factory.hpp
+@@ -726,8 +726,7 @@ public:
+ 
+     bool switchToAnchor(const std::string& anchorName) {
+         bool ret = currentSystem->getAnchorManager()->switchToAnchor(anchorName);
+-        if (ret)
+-            syncCameraReference(anchorName);
++        syncCameraReference(anchorName);
+         return ret;
+     }
+ 
+diff --git a/src/experimentalModule/Camera.cpp b/src/experimentalModule/Camera.cpp
+index 5da9ef78..cb63442c 100644
+--- a/src/experimentalModule/Camera.cpp
++++ b/src/experimentalModule/Camera.cpp
+@@ -20,7 +20,7 @@ float Camera::maxHalfFov = 3.05;
+ static constexpr float VIEW_OFFSET_RAMP_RATE = 2.f;
+ 
+ Camera::Camera(ModularBody *reference, float longitude, float latitude, float altitude) :
+-    reference(reference), longitude(longitude), latitude(latitude), distance(altitude+reference->getAltitudeReference())
++    reference(reference), aimed(reference), longitude(longitude), latitude(latitude), distance(altitude+reference->getAltitudeReference())
+ {
+     instance = this;
+     reference->enterEnvironment();
+@@ -307,12 +307,11 @@ void Camera::switchToBody(ModularBody *dst)
+         lockedSkyRot = lockedSkyRot.multiplyFast(comp);
+     reference->leaveEnvironment();
+     reference = dst;
++    aimed = dst;
+     reference->enterEnvironment();
+     recoverParams(R);
+     setFreeMode(oldFreeMode);
+     setBoundToSurface(oldBoundToSurface);
+-    if (dst->isSystem())
+-        setBoundToSurface(false);
+ }
+ 
+ void Camera::warpToBody(ModularBody *dst)
+@@ -320,9 +319,8 @@ void Camera::warpToBody(ModularBody *dst)
+     dst->useNow(); // becoming the reference is a use - see switchToBody
+     reference->leaveEnvironment();
+     reference = dst;
++    aimed = dst;
+     reference->enterEnvironment();
+-    if (dst->isSystem()) // same no-surface rule as switchToBody
+-        setBoundToSurface(false);
+ }
+ 
+ Vec3f Camera::getReferenceRelativePosition() const
+@@ -451,7 +449,29 @@ void Camera::update(double jd, float deltaTime)
+         // cached member (findBetterReference contract).
+         if (auto newRef = reference->findBetterReference(position.length()))
+             switchToBody(newRef);
++    } else {
++        followInfluence();
++    }
++}
++
++void Camera::followInfluence()
++{
++    ModularBody *dst = system;
++    if (reference->isSystem()) {
++        if (aimed == reference || !reference->isInAreaOfInfluence())
++            return;
++        dst = aimed;
++        for (ModularBody *b = aimed->getParent(); b != reference; b = b->getParent())
++            if (b->isSystem())
++                dst = b;
++    } else if (system->isInAreaOfInfluence()) {
++        return;
+     }
++    ModularBody *const kept = aimed;
++    const Vec3f place = positionRelativeTo(dst);
++    switchToBody(dst);
++    placeAt(place, true);
++    aimed = kept;
+ }
+ 
+ void Camera::draw(Renderer &renderer)
+@@ -913,6 +933,7 @@ void Camera::dumpTrace(std::ostream &out) const
+     const Vec3d rootPos = reference ? getRootPosition() : Vec3d(0, 0, 0);
+     out << std::setprecision(9) << "{\"reference\":\""
+         << (reference ? reference->getEnglishName() : "")
++        << "\",\"aimed\":\"" << (aimed ? aimed->getEnglishName() : "")
+         << "\",\"tracked\":\"" << (target ? target->getEnglishName() : "")
+         << "\",\"freeMode\":"
+         << (freeMode ? "true" : "false") << ",\"boundToSurface\":"
+diff --git a/src/experimentalModule/Camera.hpp b/src/experimentalModule/Camera.hpp
+index a5f96466..75c7bb23 100644
+--- a/src/experimentalModule/Camera.hpp
++++ b/src/experimentalModule/Camera.hpp
+@@ -173,6 +173,7 @@ public:
+     }
+     inline void rebindReference(ModularBody *dst) {
+         reference = dst;
++        aimed = dst;
+     }
+     inline ModularSystem *getCurrentSystem() const {
+         return system;
+@@ -247,6 +248,8 @@ private:
+         return static_cast<float>(viewOffset) * viewOffsetTransition;
+     }
+     Vec3f paramForward() const;
++    // Leave the current system when outside its influence, return toward the aimed body when back inside
++    void followInfluence();
+     // Serialized on the render chain with the publish tasks
+     class FrameDrawTask : public Task {
+     public:
+@@ -256,6 +259,7 @@ private:
+         std::atomic<bool> done{true};
+     } frameDrawTask;
+     ModularBodyPtr reference;
++    ModularBodyPtr aimed;
+     ModularBodyPtr target;
+     ModularSystem *system; // Determined on construction and update
+     // View plan: rotate viewFrom about viewAxis (param frame), accelerating until viewT1
