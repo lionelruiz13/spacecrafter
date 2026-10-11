@@ -2,6 +2,7 @@
 #include "Camera.hpp"
 #include "ModularBody.hpp"
 #include "Renderer.hpp"
+#include "EnvironmentModule.hpp"
 #include "navModule/navigator.hpp" // mat_j2000_to_vsop87 (extern const Mat4d)
 #include "tools/context.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
@@ -46,11 +47,7 @@ void CameraSkyView::update(const Camera &camera, const ModularBody &system)
         * (Mat4d::zrotation(-camera.getLongitude()) * Mat4d::yrotation((90. - lat) * (M_PI / 180.))).transpose();
     eclipticToEye = earthEquToEye * Mat4d::xrotation(23.4392803055555555556*(M_PI/180));
     const Mat4d systemToEye = toMat4d(system.getMat());
-    Mat4d systemRotation = systemToEye;
-    systemRotation.r[3] = systemRotation.r[7] = systemRotation.r[11] = 0;
-    systemRotation.r[12] = systemRotation.r[13] = systemRotation.r[14] = 0;
-    systemRotation.r[15] = 1;
-    j2000ToEye = systemRotation * mat_j2000_to_vsop87;
+    j2000ToEye = EnvironmentModule::rotationOf(system.getMat()) * mat_j2000_to_vsop87;
     galacticToEye = j2000ToEye * Mat4d::zrotation(14.8595*(M_PI/180))*Mat4d::yrotation(-61.8717*(M_PI/180))*Mat4d::zrotation(55.5*(M_PI/180));
     j2000ToLocal = eyeToLocal * j2000ToEye;
     earthEquToLocalMat = eyeToLocal * earthEquToEye;
