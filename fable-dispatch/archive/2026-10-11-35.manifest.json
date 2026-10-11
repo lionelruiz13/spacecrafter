@@ -1,0 +1,21 @@
+{
+ "pass": "35",
+ "date": "2026-10-11",
+ "source": "fable-dispatch.md",
+ "pre_md5": "4d20fde27a718c11b202533681811b0e",
+ "pre_commit": "78e7ebc",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "update-s42",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s42.md",
+   "line_start": 48,
+   "line_count": 1,
+   "payload_md5": "02883efce98311ff074d821bcacd6ad0"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}
