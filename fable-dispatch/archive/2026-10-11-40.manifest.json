@@ -1,0 +1,21 @@
+{
+ "pass": "40",
+ "date": "2026-10-11",
+ "source": "fable-dispatch.md",
+ "pre_md5": "4d1ff6662d405d1fbe1e77d502d1a98d",
+ "pre_commit": "6009d47",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "update-s43",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s43.md",
+   "line_start": 49,
+   "line_count": 1,
+   "payload_md5": "4ebc9444304263cd350be5b657135577"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}
