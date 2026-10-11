@@ -13,6 +13,7 @@
 *
 */
 
+#include <algorithm>
 #include <iostream>
 #include "tools/log.hpp"
 #include "uiModule/joypad_controller.hpp"
@@ -64,9 +65,6 @@ JoypadController::JoypadController(UI * _ui) noexcept
 
 JoypadController::~JoypadController()
 {
-	purge();
-	handleDeal();
-
 	cLog::get()->write("delete JoypadController", LOG_TYPE::L_INFO);
 	SDL_JoystickClose(joystick);
 	joystick = nullptr;
@@ -113,8 +111,8 @@ void JoypadController::init(const std::string &_configName) noexcept
 		actionStr = conf.getStr(model,"AXIS" + std::to_string(i) + "_ALT", actionStr);
 		a.action[1] = getAxisActionFromString(actionStr);
 		a.deadZone = conf.getDouble(model,"AXIS" + std::to_string(i) + "_DEADZONE");
-		a.sensitivity[0] = conf.getDouble(model,"AXIS" + std::to_string(i) + "_SENSITIVITY");
-		a.sensitivity[1] = conf.getDouble(model,"AXIS" + std::to_string(i) + "_SENSITIVITY_ALT", a.sensitivity[0]);
+		if (conf.findEntry(model + ":AXIS" + std::to_string(i) + "_SENSITIVITY"))
+			cLog::get()->write("Joypad: AXIS" + std::to_string(i) + "_SENSITIVITY has no effect, the axis is normalised from AXIS" + std::to_string(i) + "_DEADZONE to the maximal amplitude - remove the line", LOG_TYPE::L_WARNING);
 		a.isStick = conf.getBoolean(model,"AXIS" + std::to_string(i) + "_IS_STICK");
 	}
 
@@ -152,9 +150,6 @@ void JoypadController::init(const std::string &_configName) noexcept
 		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_RIGHT_ALT");
 		hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr,  (nbrButtons+idx)*2+1);
 	}
-
-	purge();
-
 }
 
 /*
@@ -164,10 +159,6 @@ void JoypadController::handle(const SDL_Event &E) noexcept
 {
 
 	switch(E.type) {
-		case SDL_JOYAXISMOTION :
-			handleAxisEvent(E.jaxis);
-			break;
-
 		case SDL_JOYBUTTONUP:
 			handleJoyButtonUp(E.jbutton);
 			break;
@@ -188,18 +179,20 @@ void JoypadController::handle(const SDL_Event &E) noexcept
  */
 void JoypadController::handleDeal() noexcept
 {
-	for (auto &a : axis) {
+	for (int i = 0; i < static_cast<int>(axis.size()); ++i) {
+		auto &a = axis[i];
+		const int value = SDL_JoystickGetAxis(joystick, i);
 		if (a.isStick) {
-			if (abs(a.value) > a.deadZone) {
+			if (abs(value) > a.deadZone) {
 				joy_axis_action axis_action = a.action[mode];
 				if(axis_action.action != nullptr)
-					(ui->*axis_action.action)(((a.value>0)-(a.value<0))*(abs(a.value)-a.deadZone)/(a.sensitivity[mode]-a.deadZone));
+					(ui->*axis_action.action)(((value>0)-(value<0))*std::clamp((abs(value)-a.deadZone)/(SDL_JOYSTICK_AXIS_MAX-a.deadZone), 0., 1.));
 			}
 		} else {
-			if ((a.value + 32768.0) > a.deadZone) {
+			if ((value - SDL_JOYSTICK_AXIS_MIN) > a.deadZone) {
 				joy_axis_action axis_action = a.action[mode];
 				if(axis_action.action != nullptr)
-					(ui->*axis_action.action)((a.value + 32768.0-a.deadZone)/(a.sensitivity[mode]-a.deadZone));
+					(ui->*axis_action.action)(std::clamp((value-SDL_JOYSTICK_AXIS_MIN-a.deadZone)/(SDL_JOYSTICK_AXIS_MAX-SDL_JOYSTICK_AXIS_MIN-a.deadZone), 0., 1.));
 			}
 		}
 	}
@@ -283,16 +276,6 @@ void JoypadController::handleJoyHat(const SDL_JoyHatEvent &E) noexcept
 	HANDLE_HAT_BIT(hat_right);
 	HANDLE_HAT_BIT(hat_up);
 	HANDLE_HAT_BIT(hat_down);
-}
-
-/*
-* resets all controlls to their deault values
-* default is 0 for axis and -32768 for triggers
-*/
-void JoypadController::purge() noexcept
-{
-	for (auto &a : axis)
-		a.value = a.isStick ? 0. : -32768.;
 }
 
 /*

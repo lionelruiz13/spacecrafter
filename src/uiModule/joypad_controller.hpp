@@ -20,7 +20,7 @@
 
 /*
  * The goal of this class is to link spacecrafter's methods to joystick events.
- * It also handle sensitivity and deadzones for the axes
+ * It also handle deadzones for the axes
  *
  * This class handles three types of events :
  *  - axis movement
@@ -111,18 +111,6 @@ public:
 
 private:
 
-	/*
-	 * resets all controlls to their deault values
-	 */
-	void purge() noexcept;
-
-	/*
-	 * Handles value changes from the joypad axis
-	 */
-	void handleAxisEvent(const SDL_JoyAxisEvent &E) noexcept {
-		axis[E.axis].value = E.value;
-	}
-
 	void handleJoyButtonUp(const SDL_JoyButtonEvent &E) noexcept;
 
 
@@ -162,8 +150,6 @@ private:
 
 	struct JoyAxis {
 		joy_axis_action action[2];
-		double sensitivity[2] = {};
-		double value = 0;
 		double deadZone = 0;
 		bool isStick = false;
 	};
