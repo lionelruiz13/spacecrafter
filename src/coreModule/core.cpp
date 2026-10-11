@@ -620,7 +620,9 @@ void Core::uboCamUpdate()
 {
 	uboCam->update();
 	uboCam->setViewport(projection->getViewport());
-	uboCam->setClippingFov(projection->getClippingFov());
+	Vec3f clippingFov = projection->getClippingFov();
+	clippingFov.v[2] = drawnFov() * (M_PI / 360.);
+	uboCam->setClippingFov(clippingFov);
 	uboCam->setViewportCenter(projection->getViewportFloatCenter());
 	uboCam->setMVP2D(projection->getMatProjectionOrtho2D());
 }

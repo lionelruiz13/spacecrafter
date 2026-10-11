@@ -61,6 +61,7 @@ class Landscape;
 class ToneReproductor;
 struct EnvironmentState;
 struct AtmosphereComputeInput;
+struct StarFieldInput;
 
 /**
  * \file ssystem_factory.hpp
@@ -111,6 +112,8 @@ public:
     const EnvironmentState &getEnvironmentState() const;
     // Valid after update()
     const AtmosphereComputeInput &getEnvironmentAtmosphereInput() const;
+    // Valid after update()
+    const StarFieldInput &getEnvironmentStarFieldInput() const;
     void drawEnvironmentBackdrop();
     void drawEnvironmentSky();
 

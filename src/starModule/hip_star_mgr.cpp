@@ -611,7 +611,13 @@ void HipStarMgr::loadSciNames(const std::string& sciNameFile)
 	fclose(snFile);
 }
 
-int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, float radius, float brightness, const Vec3f &color, int variableStarIndex)
+float HipStarMgr::sizeRolloff(float fov) const
+{
+	RangeMap<float> rmap(180, 1, -starSizeLimit, -(starSizeLimit + objectSizeLimit));
+	return -rmap.Map(fov);
+}
+
+int HipStarMgr::drawStar(float rolloff, const Vec3d &XY, float radius, float brightness, const Vec3f &color, int variableStarIndex)
 {
 	if (nbStarsToDraw[drawIdx] >= NBR_MAX_STARS)
 		return -1;
@@ -628,9 +634,6 @@ int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, float radius, flo
 		brightness *= fader;
 	}
 
-	// Roll off star size limit as fov decreases to match planet halo scale
-	RangeMap<float> rmap(180, 1, -starSizeLimit, -(starSizeLimit + objectSizeLimit));
-	float rolloff = -rmap.Map(prj->getFov());
 	radius *= 2.f;
 	if( radius > rolloff )
 		radius = rolloff;
@@ -653,10 +656,10 @@ int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, float radius, flo
 	return 0;
 }
 
-int HipStarMgr::getMaxSearchLevel(const ToneReproductor *eye, const Projector *prj) const
+int HipStarMgr::getMaxSearchLevel(const ToneReproductor *eye, float fov) const
 {
 	int rval = -1;
-	mag_converter->setFov(prj->getFov());
+	mag_converter->setFov(fov);
 	mag_converter->setEye(eye);
 	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
 		const float mag_min = 0.001f*it->second->mag_min;
@@ -774,7 +777,8 @@ int MagConverter::computeRCMag(float mag, const ToneReproductor *eye, float rc_m
 }
 
 //! Draw all the stars
-double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, Navigator* nav, TimeMgr* timeMgr, float altitude, bool atmosphere)
+template<class Frame>
+double HipStarMgr::preDrawWith(const Frame &frame, GeodesicGrid* grid, ToneReproductor* eye, float fov, const StelGeom::ConvexS &cone, TimeMgr* timeMgr, float altitude, bool atmosphere)
 {
 	starNameToDraw.clear();
 	double twinkle_param=1.;
@@ -788,10 +792,10 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		return 0.;
 	vertexData = (float *) Context::instance->stagingMgr->getPtr(staging[drawIdx]);
 
-	int max_search_level = getMaxSearchLevel(eye, prj);
-	const GeodesicSearchResult* geodesic_search_result = grid->search(prj->unprojectViewport(),max_search_level);
+	int max_search_level = getMaxSearchLevel(eye, fov);
+	const GeodesicSearchResult* geodesic_search_result = grid->search(cone,max_search_level);
 
-	mag_converter->setFov(prj->getFov());
+	mag_converter->setFov(fov);
 	mag_converter->setEye(eye);
 
 	// Set temporary static variable for optimization
@@ -828,14 +832,24 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		const bool onlySelected = isolateSelected && !selected_star.empty();
 		int zone=0;
 		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);
+			it->second->draw(zone,true,rcmag_table,frame,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);
 		}
 		for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);
+			it->second->draw(zone,false,rcmag_table,frame,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);
 		}
 
 	}
 	return 1.;
+}
+
+double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, Navigator* nav, TimeMgr* timeMgr, float altitude, bool atmosphere)
+{
+	return preDrawWith(OldStarFrame{prj, nav, this}, grid, eye, prj->getFov(), prj->unprojectViewport(), timeMgr, altitude, atmosphere);
+}
+
+double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, const StarFieldInput &in, TimeMgr* timeMgr, bool atmosphere)
+{
+	return preDrawWith(CameraStarFrame{in.j2000ToLocal, in.law, sizeRolloff(in.fovDeg)}, grid, eye, in.fovDeg, in.cone, timeMgr, in.altitudeM, atmosphere);
 }
 
 double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, TimeMgr* timeMgr, float altitude)

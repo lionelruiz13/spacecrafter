@@ -40,6 +40,8 @@
 #include "EntityCore/Tools/SafeQueue.hpp"
 
 #include "EntityCore/Resource/SharedBuffer.hpp"
+#include "starModule/sphere_geometry.hpp"
+#include "experimentalModule/CameraProjection.hpp"
 
 class Translator;
 class InitParser;
@@ -75,6 +77,15 @@ enum StarSync {
 	STAR_UNINITIALIZED, // Never used until now (thus VK_IMAGE_LAYOUT_UNDEFINED)
 	STAR_CLEAR, // Left in VK_IMAGE_LAYOUT_UNDEFINED after use
 	STAR_STORE // Left in VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL after use
+};
+
+// Snapshot built by StarFieldEnv::update on the main thread, read by the executor's async job
+struct StarFieldInput {
+	float fovDeg = 0;
+	float altitudeM = 0;
+	StelGeom::ConvexS cone{1}; // Visible region in J2000, one half-space
+	Mat4d j2000ToLocal;
+	CameraProjection law;
 };
 
 class MagConverter {
@@ -181,6 +192,8 @@ public:
 
 	//! compute the stars and the star selection indicator if necessary in buffer.
 	virtual double preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, Navigator* nav, TimeMgr* timeMgr, float altitude, bool atmosphere);
+	//! Same from the new path's snapshot
+	double preDraw(GeodesicGrid* grid, ToneReproductor* eye, const StarFieldInput &in, TimeMgr* timeMgr, bool atmosphere);
 
 	//! Translate text.
 	virtual void updateI18n(Translator& trans);
@@ -218,7 +231,7 @@ public:
 
 	//! Gets the maximum search level.
 	//! @todo: add a non-lame description - what is the purpose of the max search level?
-	int getMaxSearchLevel(const ToneReproductor *eye, const Projector *prj) const;
+	int getMaxSearchLevel(const ToneReproductor *eye, float fov) const;
 
 	//! Sets the time it takes for star names to fade and off.
 	//! @param duration the time in seconds.
@@ -437,12 +450,15 @@ public:
 		return flagSciNames;
 	}
 
-	//! Draw a star of specified position, magnitude and color.
-	int drawStar(const Projector *prj, const Vec3d &XY, float radius, float brightness, const Vec3f &color, int variableStarIndex = 0);
+	//! Return the star size limit at this fov in degrees, rolled off to match the planet halo scale
+	float sizeRolloff(float fov) const;
 
-	int drawStar(const Projector *prj, const Vec3d &XY, float radius, float brightness, const Vec3f &color, int variableStarIndex = 0) const {
+	//! Draw a star of specified position, magnitude and color.
+	int drawStar(float rolloff, const Vec3d &XY, float radius, float brightness, const Vec3f &color, int variableStarIndex = 0);
+
+	int drawStar(float rolloff, const Vec3d &XY, float radius, float brightness, const Vec3f &color, int variableStarIndex = 0) const {
 		//! drawStar write to vertexData and nbStarsToDraw, thus it can't be const
-		return const_cast<HipStarMgr *>(this)->drawStar(prj, XY, radius, brightness, color, variableStarIndex);
+		return const_cast<HipStarMgr *>(this)->drawStar(rolloff, XY, radius, brightness, color, variableStarIndex);
 	}
 
 	//! Get the (translated) common name for a star with a specified
@@ -504,6 +520,10 @@ private:
 
 	//! Load all the stars from the files.
 	void load_data(const InitParser &conf);
+
+	//! Compute the stars of both preDraw, placed by frame; fov in degrees, cone in J2000
+	template<class Frame>
+	double preDrawWith(const Frame &frame, GeodesicGrid* grid, ToneReproductor* eye, float fov, const StelGeom::ConvexS &cone, TimeMgr* timeMgr, float altitude, bool atmosphere);
 
 	void drawStarName( Projector* prj );
 

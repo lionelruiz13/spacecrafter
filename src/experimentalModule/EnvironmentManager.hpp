@@ -3,6 +3,7 @@
 
 #include "EnvironmentModule.hpp"
 #include "atmosphereModule/atmosphere.hpp"
+#include "starModule/hip_star_mgr.hpp"
 #include <vector>
 
 class Camera;
@@ -48,6 +49,7 @@ public:
     Vec3d zodiacalSunDirEye;
     Vec3d zodiacalEclipticNormalRoot;
     bool zodiacalValid = false; // If false, the engine falls back to its time rotation
+    StarFieldInput starInput; // Written by StarFieldEnv::update
     static EnvironmentManager *instance;
 private:
     void buildAtmosphereInput(Camera &camera, ModularBody *reference);

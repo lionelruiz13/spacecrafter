@@ -46,6 +46,7 @@
 #include "experimentalModule/ModuleLoaderMgr.hpp"
 #include "experimentalModule/EnvironmentManager.hpp"
 #include "experimentalModule/environmentModules/MilkyWayEnv.hpp"
+#include "experimentalModule/environmentModules/StarFieldEnv.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp" // screenToRect: the click-coordinate authority
 #include "interfaceModule/base_command_interface.hpp" // W_NAME/W_KEEPTIME: the ONE spelling of the command's keys (protosystem.cpp reads the same two)
 #include "tools/utility.hpp"
@@ -821,6 +822,7 @@ void SSystemFactory::wireEnvironment(MilkyWay *milky, Atmosphere *atmosphere, To
 {
     environment = std::make_unique<EnvironmentManager>(milky, atmosphere);
     milkyway->addEnvironment(std::make_unique<MilkyWayEnv>(milky, eye), false);
+    modularSystemOf.at("Solar")->addEnvironment(std::make_unique<StarFieldEnv>(), false);
 }
 
 void SSystemFactory::setEnvironmentLandscape(Landscape *landscape)
@@ -843,6 +845,11 @@ const EnvironmentState &SSystemFactory::getEnvironmentState() const
 const AtmosphereComputeInput &SSystemFactory::getEnvironmentAtmosphereInput() const
 {
     return environment->getAtmosphereInput();
+}
+
+const StarFieldInput &SSystemFactory::getEnvironmentStarFieldInput() const
+{
+    return environment->starInput;
 }
 
 void SSystemFactory::drawEnvironmentBackdrop()

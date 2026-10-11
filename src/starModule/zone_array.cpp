@@ -258,7 +258,8 @@ void ZoneArray1::updateHipIndex(HipIndexStruct hip_index[]) const
 	}
 }
 
-void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
+template<class Frame>
+void ZoneArray1::drawWith(int index,bool is_inside, const float *rcmag_table, const Frame &frame, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
 {
 	auto *const z = getZones() + index;
 	Vec3d xy;
@@ -272,7 +273,7 @@ void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projec
 			continue;
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
-		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+		Vec3d local_pos = frame.toLocal(starJ2000);
 		int mag = s->getMag();
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
@@ -288,9 +289,9 @@ void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projec
 		    Utility::spheToRect(az, alt, local_pos);
 		}
 		if (is_inside
-		        ? prj->projectLocal(local_pos,xy)
-		        : prj->projectLocalCheck(local_pos,xy)) {
-			if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()], s->getVariableStarIndex())) {
+		        ? frame.project(local_pos,xy)
+		        : frame.projectCheck(local_pos,xy)) {
+			if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()], s->getVariableStarIndex())) {
 				break;
 			}
 			if (!isolateSelected) {
@@ -320,6 +321,16 @@ void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projec
 			}
 		}
 	}
+}
+
+void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, const OldStarFrame &frame, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
+{
+	drawWith(index, is_inside, rcmag_table, frame, max_mag_star_name, names_brightness, starNameToDraw, selected_stars, atmosphere, isolateSelected);
+}
+
+void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, const CameraStarFrame &frame, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
+{
+	drawWith(index, is_inside, rcmag_table, frame, max_mag_star_name, names_brightness, starNameToDraw, selected_stars, atmosphere, isolateSelected);
 }
 
 template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
@@ -348,8 +359,8 @@ template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 	nr_of_stars = 0;
 }
 
-template<class Star>
-void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
+template<class Star> template<class Frame>
+void SpecialZoneArray<Star>::drawWith(int index,bool is_inside, const float *rcmag_table, const Frame &frame, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
 {
 	SpecialZoneData<Star> *const z = getZones() + index;
 	Vec3d xy;
@@ -361,7 +372,7 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 	for (const Star *s=z->getStars(); s<end; s++) {
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
-		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+		Vec3d local_pos = frame.toLocal(starJ2000);
 		int mag = s->getMag();
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
@@ -377,9 +388,9 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		    Utility::spheToRect(az, alt, local_pos);
 		}
 		if (is_inside
-		        ? prj->projectLocal(local_pos,xy)
-		        : prj->projectLocalCheck(local_pos,xy)) {
-			if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()])) {
+		        ? frame.project(local_pos,xy)
+		        : frame.projectCheck(local_pos,xy)) {
+			if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()])) {
 				break;
 			}
 			if (!isolateSelected) {
@@ -409,6 +420,18 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 			}
 		}
 	}
+}
+
+template<class Star>
+void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, const OldStarFrame &frame, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
+{
+	drawWith(index, is_inside, rcmag_table, frame, max_mag_star_name, names_brightness, starNameToDraw, selected_stars, atmosphere, isolateSelected);
+}
+
+template<class Star>
+void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, const CameraStarFrame &frame, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
+{
+	drawWith(index, is_inside, rcmag_table, frame, max_mag_star_name, names_brightness, starNameToDraw, selected_stars, atmosphere, isolateSelected);
 }
 
 

@@ -45,6 +45,13 @@ public:
     virtual void drawBackdrop(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
     // Draw after the bodies, same mat
     virtual void drawSky(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
+protected:
+    static Mat4d rotationOf(const Mat4f &mat) {
+        return Mat4d(mat.r[0], mat.r[1], mat.r[2], 0,
+                     mat.r[4], mat.r[5], mat.r[6], 0,
+                     mat.r[8], mat.r[9], mat.r[10], 0,
+                     0, 0, 0, 1);
+    }
 };
 
 #endif /* end of include guard: ENVIRONMENT_MODULE_HPP_ */

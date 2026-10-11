@@ -276,7 +276,10 @@ void SolarSystemModule::asyncUpdateLoop()
     	                          core->ssystemFactory->getMoon()->get_phase(core->ssystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
     	                          core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
     	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
-        core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+        if (core->ssystemFactory->drawModularSystem)
+            core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->ssystemFactory->getEnvironmentStarFieldInput(), core->timeMgr.get(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+        else
+            core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
         core->ssystemFactory->bodyTrace(core->navigation);
         asyncWorkState = false;
     }
