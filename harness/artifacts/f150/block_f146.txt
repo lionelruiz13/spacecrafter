@@ -1,0 +1,143 @@
+```
+SHAPE a7919278..35da9c94  (harness/shape/delivery.py)
+(1) lines [ratio.py classify on the -U0 hunks]  +code -code +comment -comment +blank -blank  status file
+      4     0     0     0     1     0  M src/bodyModule/ssystem_factory.cpp
+      2     0     1     0     0     0  M src/bodyModule/ssystem_factory.hpp
+     14    14     0     0     0     0  M src/coreModule/cardinals.cpp
+      2     2     0     0     0     0  M src/coreModule/cardinals.hpp
+     11    12     0     0     0     0  M src/coreModule/constellation.cpp
+      4     4     0     0     0     0  M src/coreModule/constellation.hpp
+     14    14     0     0     0     0  M src/coreModule/constellation_mgr.cpp
+      6     7     0     0     0     0  M src/coreModule/constellation_mgr.hpp
+      6     0     0     0     1     0  M src/coreModule/core.cpp
+      3     0     1     0     0     0  M src/coreModule/core.hpp
+     12    13     0     0     0     0  M src/coreModule/meteor.cpp
+      3     4     0     0     0     0  M src/coreModule/meteor.hpp
+      8     9     0     0     0     0  M src/coreModule/meteor_mgr.cpp
+      3     4     0     0     0     0  M src/coreModule/meteor_mgr.hpp
+     12    12     0     0     0     0  M src/coreModule/nebula.cpp
+     11     9     0     0     0     0  M src/coreModule/nebula.hpp
+     13    13     0     0     0     0  M src/coreModule/nebula_mgr.cpp
+      2     2     0     0     0     0  M src/coreModule/nebula_mgr.hpp
+     91     0     1     0     3     0  A src/coreModule/oldSkyView.hpp
+     58    59     0     0     0     0  M src/coreModule/skyDisplay.cpp
+     10    11     0     0     0     0  M src/coreModule/skyDisplay.hpp
+     36     0     9     0     4     0  A src/coreModule/skyView.hpp
+      5     5     0     0     0     0  M src/coreModule/skydisplay_mgr.cpp
+      2     4     0     0     0     0  M src/coreModule/skydisplay_mgr.hpp
+      7     7     0     0     0     0  M src/coreModule/skygrid.cpp
+      7     7     0     0     0     0  M src/coreModule/skygrid.hpp
+      2     2     0     0     0     0  M src/coreModule/skygrid_mgr.cpp
+      1     3     0     0     0     0  M src/coreModule/skygrid_mgr.hpp
+    117   117     0     0     0     0  M src/coreModule/skyline.cpp
+     20    20     0     0     0     0  M src/coreModule/skyline.hpp
+      2     2     0     0     0     0  M src/coreModule/skyline_mgr.cpp
+      1     3     0     0     0     0  M src/coreModule/skyline_mgr.hpp
+      3     2     0     0     0     0  M src/executorModule/inGalaxyModule.cpp
+      3     2     0     0     0     0  M src/executorModule/inUniverseModule.cpp
+     10     9     0     0     0     0  M src/executorModule/solarSystemModule.cpp
+     10     9     0     0     0     0  M src/executorModule/stellarSystemModule.cpp
+     17     8     2     0     0     0  M src/experimentalModule/CameraProjection.hpp
+    163     0     3     0    30     0  A src/experimentalModule/CameraSkyView.cpp
+     48     0     2     0     4     0  A src/experimentalModule/CameraSkyView.hpp
+      1     0     0     0     0     0  M src/experimentalModule/EnvironmentManager.cpp
+      5     0     1     0     0     0  M src/experimentalModule/EnvironmentManager.hpp
+     10     5     0     0     1     0  M src/experimentalModule/Renderer.cpp
+      3     0     1     0     0     0  M src/experimentalModule/Renderer.hpp
+      6    18     0     0     0     0  M src/experimentalModule/environmentModules/StarFieldEnv.cpp
+      2     4     0     0     0     0  M src/tools/object.cpp
+      2     3     0     0     0     0  M src/tools/object.hpp
+      8     9     0     0     0     0  M src/tools/object_base.cpp
+      2     1     0     0     0     0  M src/tools/object_base.hpp
+     10     6     0     0     1     0  M src/tools/s_font.cpp
+      2     0     0     0     0     0  M src/tools/s_font.hpp
+  total 50 files: +860 -435 (numstat); code +794 -435, comment +21 -0, blank +45 -0; net code +359, net lines +425
+(2) names [names.py]  BEFORE -> AFTER  +added  -removed
+  src/bodyModule/ssystem_factory.hpp 77 -> 78  +[getEnvironmentSkyView]  -[-]
+  src/coreModule/cardinals.hpp 6 -> 6  +[-]  -[-]
+  src/coreModule/constellation.hpp 43 -> 43  +[-]  -[-]
+  src/coreModule/constellation_mgr.hpp 50 -> 50  +[-]  -[-]
+  src/coreModule/core.hpp 144 -> 145  +[drawnView]  -[-]
+  src/coreModule/meteor.hpp 9 -> 9  +[-]  -[-]
+  src/coreModule/meteor_mgr.hpp 10 -> 10  +[-]  -[-]
+  src/coreModule/nebula.hpp 36 -> 37  +[onScreenSize]  -[-]
+  src/coreModule/nebula_mgr.hpp 44 -> 44  +[-]  -[-]
+  src/coreModule/oldSkyView.hpp absent -> 27  +[OldSkyView projectLocal projectLocalCheck projectEarthEqu projectEarthEquFixed projectEarthEcliptic projectJ2000 projectJ2000Check projectJ2000LineCheck projectJ2000Galactic projectDomeFixed getCursorPosEqu getFov getViewportWidth getViewportHeight getViewportRadius getViewportCenter getMatProjectionOrtho2D printGravity180 getMatLocalToEye getMatJ2000ToEye getMatEarthEquToEye earthEquToLocal localToEarthEqu helioToLocal helioToEarthEqu getPrecEquVision]  -[-]
+  src/coreModule/skyDisplay.hpp 35 -> 35  +[-]  -[-]
+  src/coreModule/skyView.hpp absent -> 27  +[~SkyView projectLocal projectLocalCheck projectEarthEqu projectEarthEquFixed projectEarthEcliptic projectJ2000 projectJ2000Check projectJ2000LineCheck projectJ2000Galactic projectDomeFixed getCursorPosEqu getFov getViewportWidth getViewportHeight getViewportRadius getViewportCenter getMatProjectionOrtho2D printGravity180 getMatLocalToEye getMatJ2000ToEye getMatEarthEquToEye earthEquToLocal localToEarthEqu helioToLocal helioToEarthEqu getPrecEquVision]  -[-]
+  src/coreModule/skydisplay_mgr.hpp 19 -> 19  +[-]  -[-]
+  src/coreModule/skygrid.hpp 22 -> 22  +[-]  -[-]
+  src/coreModule/skygrid_mgr.hpp 17 -> 17  +[-]  -[-]
+  src/coreModule/skyline.hpp 52 -> 52  +[-]  -[-]
+  src/coreModule/skyline_mgr.hpp 20 -> 20  +[-]  -[-]
+  src/experimentalModule/CameraProjection.hpp 1 -> 3  +[projectEye direction]  -[-]
+  src/experimentalModule/CameraSkyView.hpp absent -> 29  +[CameraSkyView update projectLocal projectLocalCheck projectEarthEqu projectEarthEquFixed projectEarthEcliptic projectJ2000 projectJ2000Check projectJ2000LineCheck projectJ2000Galactic projectDomeFixed getCursorPosEqu getFov getViewportWidth getViewportHeight getViewportRadius getViewportCenter getMatProjectionOrtho2D printGravity180 getMatLocalToEye getMatJ2000ToEye getMatEarthEquToEye earthEquToLocal localToEarthEqu helioToLocal helioToEarthEqu getPrecEquVision projectFrom]  -[-]
+  src/experimentalModule/EnvironmentManager.hpp 13 -> 14  +[getSkyView]  -[-]
+  src/experimentalModule/Renderer.hpp 53 -> 54  +[printGravityPx]  -[-]
+  src/tools/object.hpp 24 -> 24  +[-]  -[-]
+  src/tools/object_base.hpp 30 -> 30  +[-]  -[-]
+  src/tools/s_font.hpp 12 -> 12  +[-]  -[-]
+  total 24 headers: names +90 -0
+(3) writers [writers.py]  class: pairs BEFORE -> AFTER, unchanged; changed field: writers BEFORE -> AFTER
+  SSystemFactory: pairs 0 -> 0, unchanged 0
+  Cardinals: pairs 6 -> 6, unchanged 6
+  Constellation: pairs 13 -> 13, unchanged 13
+  ConstellationMgr: pairs 21 -> 21, unchanged 21
+  Core: pairs 65 -> 65, unchanged 65
+  Meteor: pairs 8 -> 8, unchanged 8
+  MeteorMgr: pairs 10 -> 10, unchanged 10
+  Nebula: pairs 12 -> 12, unchanged 12
+  NebulaMgr: pairs 19 -> 19, unchanged 19
+  SkyDisplay: pairs 19 -> 19, unchanged 19
+  SkyPerson: pairs 0 -> 0, unchanged 0
+  SkyNautic: pairs 0 -> 0, unchanged 0
+  SkyCoords: pairs 0 -> 0, unchanged 0
+  SkyMouse: pairs 0 -> 0, unchanged 0
+  SkyAngDist: pairs 0 -> 0, unchanged 0
+  SkyLoxodromy: pairs 0 -> 0, unchanged 0
+  SkyOrthodromy: pairs 0 -> 0, unchanged 0
+  SkyDisplayMgr: pairs 3 -> 3, unchanged 3
+  SkyGrid: pairs 19 -> 19, unchanged 19
+  GridEquatorial: pairs 0 -> 0, unchanged 0
+  GridEcliptic: pairs 0 -> 0, unchanged 0
+  GridAltAzimutal: pairs 0 -> 0, unchanged 0
+  GridGalactic: pairs 0 -> 0, unchanged 0
+  SkyGridMgr: pairs 1 -> 1, unchanged 1
+  SkyLine: pairs 18 -> 18, unchanged 18
+  SkyLine_Pole: pairs 0 -> 0, unchanged 0
+  SkyLine_Zodiac: pairs 4 -> 4, unchanged 4
+  SkyLine_CircumPolar: pairs 2 -> 2, unchanged 2
+  SkyLine_Analemme: pairs 3 -> 3, unchanged 3
+  SkyLine_Galactic_Center: pairs 2 -> 2, unchanged 2
+  SkyLine_Vernal: pairs 2 -> 2, unchanged 2
+  SkyLine_Greenwich: pairs 1 -> 1, unchanged 1
+  SkyLine_Aries: pairs 1 -> 1, unchanged 1
+  SkyLine_Equator: pairs 2 -> 2, unchanged 2
+  SkyLine_Meridian: pairs 2 -> 2, unchanged 2
+  SkyLine_Tropic: pairs 2 -> 2, unchanged 2
+  SkyLine_Ecliptic: pairs 0 -> 0, unchanged 0
+  SkyLine_Precession: pairs 1 -> 1, unchanged 1
+  SkyLine_Vertical: pairs 0 -> 0, unchanged 0
+  SkyLine_Zenith: pairs 0 -> 0, unchanged 0
+  SkyLine_LunarEclipse: pairs 0 -> 0, unchanged 0
+  SkyLineMgr: pairs 1 -> 1, unchanged 1
+  CameraSkyView: pairs absent -> 13, unchanged 0
+  EnvironmentManager: pairs 11 -> 11, unchanged 11
+  Renderer: pairs 25 -> 25, unchanged 25
+  Object: pairs 0 -> 0, unchanged 0
+  ObjectBase: pairs 19 -> 19, unchanged 19
+  s_font: pairs 10 -> 10, unchanged 10
+(4) form [form.py measure over the added lines]
+  comment lines added: full 21, trailing 9; blocks 1:18 2:0 3+:1; length median 56 p90 85
+  verb-first (upper bound) 15 / 19 blocks; first words: Return 9, The 4, Same 2, Valid 1, Project 1, Call 1, Built 1
+(5) ledger grammar in the added lines [INTENT|11\.[0-9]|F1[0-9][0-9]|\[observed|\[measured|\[vixy]: 0
+(6) d14 [f70_ascii.py gate]
+  gate PASS (exit 0; it reads the code repo's tracked files on disk; that tree is 35da9c94: no)
+  delivery files at 35da9c94 by its partition: 50 read, 0 non-ASCII (0 CONVERT or unclassified): PASS
+(7) ratio [ratio.py classify, src/experimentalModule .hpp/.cpp]
+  a7919278 files 122 code 13257 comment 879 ratio 0.07
+  35da9c94 files 124 code 13479 comment 888 ratio 0.07
+(8) scope [review.sh]
+  header scope :(glob)src/**/*.hpp :(glob)src/**/*.h: 24 touched (new 3, modified 21, deleted 0, renamed 0)
+  outside it, in the ALL=1 scope src shaders: 26 touched
+```

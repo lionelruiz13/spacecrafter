@@ -57,9 +57,9 @@ the code repo at `4dfe7bb3`; recreate: `git worktree add --detach --no-checkout 
 `git sparse-checkout set --no-cone src/experimentalModule/` and `git checkout 4dfe7bb3` inside it).
 | headers | code lines per full-line comment | functions commented | blocks of 1 / 2 / 3+ lines | length median / p90 |
 |---|---|---|---|---|
-| his, 22 files | 9.0 | 21 % | 107 / 2 / 4 | 43 / 86 |
-| code `57102bf4`, 68 files | 9.2 | 25 % | 369 / 10 / 2 | 47 / 77 |
-| his LIBRARY, `src/EntityCore` at `c9bef5a` (11.279(e)), 52 files | 4.8 | 39 % | 362 / 33 / 52 | 44 / 91 |
+| his, 22 files | 9.1 | 21 % | 106 / 2 / 4 | 43 / 86 |
+| code `57102bf4`, 68 files | 9.2 | 25 % | 368 / 10 / 2 | 47 / 77 |
+| his LIBRARY, `src/EntityCore` at `c9bef5a` (11.279(e)), 52 files | 5.2 | 37 % | 328 / 33 / 52 | 44 / 92 |
 One line, verb first ("Return ...", "Update ...", "Draw ..."), on about one member in five; what it
 carries is a unit, a precondition, a caller responsibility, an ownership or thread rule. Module
 comment/code: 0.07 his, 0.67 on the morning of 2026-09-19, 0.07 at `57102bf4`.
@@ -72,18 +72,29 @@ library carries class-top blocks of 6+ lines wherever an invariant the declarati
 be stated (18 in 52 headers). A task touching `src/EntityCore` writes in the library's row. Every row
 is ONE-line, verb-first comments for the most part, median 43 characters in every corpus and year;
 the difference is how many members get one, never the form of each.
+[Re-measured 2026-10-11, F150 §11.321 (F3): `form.py` read every `*`-leading CODE line as a comment - 34 `*ptr = ...`
+lines of the library's inline code; its row moved 4.8 / 39 % -> 5.2 / 37 %, his row 9.0 -> 9.1 and the module's 369 -> 368
+blocks by one line each; the other corpora of 11.279-11.281 ("39-41 %", "4.8-4.9 in 2023", 2018 / 2021) are NOT re-measured:
+the gradient stands as a direction, its numbers as pre-fix.]
 
 ## 5. Instruments (`harness/shape/`, run from the CODE repo root) - what each proves and what it cannot
 - `review.sh` - the owner's REVIEW QUEUE: `status` / `show` / `added` / `commits` / `done [commit]` /
   `log`. The mark is the code repo's ref `refs/review/headers`; its reflog is the history of his
   reviews. Headers by default, `ALL=1` for everything. Sessions never move the mark: only he does.
+- `delivery.py <base> [<head>|WORKTREE] [--class C:hpp:cpp]` - the SHAPE block an acceptance and an executor's shape
+  section paste, composed from ratio.py's classify, names.py, writers.py, form.py's measure, review.sh's scope line and
+  the D14 gate; `--self-test` replays the recorded deliveries of INTENT 11.316 / 11.317 from quotes of the records (11.321).
+- `decomment.py` - the ONE C++ comment scanner (source order: literals, `//`, `/* */`) names.py, writers.py and
+  codeident.py read through since 2026-10-11; before it a `//*` comment or a `'"'` char literal swallowed code
+  (`ssystem_factory.hpp` 78 of 162 names, `AppCommandInterface` 5 of 91 member functions): counts recorded before
+  11.321 are undercounts for those files.
 - `ratio.py <rev> [v]` - module code / comment lines at a revision (trailing comments count as code).
 - `authors.py [path]` - added / deleted code and comment lines per author over the history. PITFALL,
   paid for (11.265(d)): it counts EVERY file that ever lived under the path; give it C++ pathspecs
   (`':(glob)src/experimentalModule/**/*.cpp'` and `*.hpp`), and read del/add only on tasks that
   MODIFY existing code. `harness/f52_strata.py` (11.168) already had the exclusion and both confounds.
 - `timeline.py [--by week|day|commit] [--top N] [paths]` - WHEN the shape moved, per period and author.
-- `writers.py <rev> <Class> <hpp> <cpp>` - which member functions WRITE which field, same-writer
+- `writers.py <rev|WORKTREE> <Class> <hpp> <cpp>` - which member functions WRITE which field, same-writer
   groups, one-statement forwarders: the detector for his sense of duplication and the S7 count.
   Regex, no compiler: blind to writes through a non-member call, an alias, another class. A
   forwarder is usually the HEALTHY form (S2); intent is in the name, the tool cannot see it.
@@ -132,8 +143,9 @@ the difference is how many members get one, never the form of each.
   change per commit seems to fit my practice better" - small fixes and additions may ride along, a second
   structural change never does]; `writers.py` (or the manager list) before and
   after in the message; net lines negative; the harness gate that covers it named, or "not reached".
-- ACCEPTING A DELIVERY: behaviour evidence AND shape - net code lines, deleted/added, comment form,
-  manager count. A delivery that only adds is a finding to explain, not a default.
+- ACCEPTING A DELIVERY: behaviour evidence AND shape - the block of `harness/shape/delivery.py <base> <head>`
+  (`WORKTREE` before the commit) PASTED, never re-typed: net code lines, deleted/added, comment form, manager
+  count, the ledger grep, D14, the scope. A delivery that only adds is a finding to explain, not a default.
 - AT EVERY SESSION CLOSE: `review.sh status` in the report to him (what waits, shape at both ends);
   its last line counts the source files changed OUTSIDE the header scope - when it is not zero, say
   which `.cpp` carry the change (`ALL=1 review.sh status` lists them).

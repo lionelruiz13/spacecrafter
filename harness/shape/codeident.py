@@ -7,6 +7,7 @@
 #      human, or present in the file at BASE whoever touched it since (re-encoding is not authorship).
 #   usage (from the code repo root): codeident.py <rev> [path ...]    exit 1 on any FAIL
 import os, re, subprocess, sys, unicodedata
+from decomment import decomment
 
 BASE = os.environ.get('BASE', '4dfe7bb3')      # the owner's last state before any agent commit
 
@@ -33,27 +34,6 @@ if not paths:
 paths = [p for p in paths if re.search(r'\.(hpp|cpp|h|c|glsl|frag|vert|comp|geom|tesc|tese)$', p)]
 
 TOK = re.compile(r'"(?:\\.|[^"\\\n])*"|\'(?:\\.|[^\'\\\n])*\'|[A-Za-z_]\w*|\d[\w.]*|\S')
-
-def decomment(text):   # string/char literals kept verbatim, comments -> one space
-    out, i, n = [], 0, len(text)
-    while i < n:
-        c = text[i]
-        if c in '"\'':
-            j = i + 1
-            while j < n and text[j] != c:
-                j += 2 if text[j] == '\\' else 1
-            out.append(text[i:j + 1]); i = j + 1
-        elif text.startswith('//', i):
-            j = text.find('\n', i); j = n if j < 0 else j
-            while text[j - 1] == '\\' and j < n:          # line-continued // comment
-                j = text.find('\n', j + 1); j = n if j < 0 else j
-            out.append(' '); i = j
-        elif text.startswith('/*', i):
-            j = text.find('*/', i + 2); j = n if j < 0 else j + 2
-            out.append(' '); i = j
-        else:
-            out.append(c); i += 1
-    return ''.join(out)
 
 def is_comment(line):
     s = line.strip()

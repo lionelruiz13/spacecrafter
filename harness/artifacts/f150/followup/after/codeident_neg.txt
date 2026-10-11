@@ -1,0 +1,45 @@
+FAIL src/bodyModule/ssystem_factory.cpp: lines 1005 -> 1012, comment lines 76 -> 76, human/legacy comment lines kept 45/45
+     code tokens differ at #83: ...include "experimentalModule/environmentModules/MilkyWayEnv.hpp" # include "EntityCore/Core/VulkanMgr.hpp" # include "interfaceModule/base_command_interface.hpp" | ...include "experimentalModule/environmentModules/MilkyWayEnv.hpp" # include "experimentalModule/environmentModules/StarFieldEnv.hpp" # include "EntityCore/Core/VulkanMgr.hpp"
+     preprocessor lines differ
+FAIL src/bodyModule/ssystem_factory.hpp: lines 851 -> 854, comment lines 83 -> 84, human/legacy comment lines kept 55/55
+     code tokens differ at #112: ...; struct AtmosphereComputeInput ; class SSystemFactory : public | ...; struct AtmosphereComputeInput ; struct StarFieldInput ; class
+FAIL src/coreModule/core.cpp: lines 2716 -> 2718, comment lines 306 -> 306, human/legacy comment lines kept 290/290
+     code tokens differ at #4961: ...( ) ) ; uboCam - > setClippingFov | ...( ) ) ; Vec3f clippingFov = projection
+FAIL src/executorModule/solarSystemModule.cpp: lines 284 -> 287, comment lines 61 -> 61, human/legacy comment lines kept 60/60
+     code tokens differ at #1892: ..., 40.f ) ; core - > hip_stars | ..., 40.f ) ; if ( core -
+FAIL src/experimentalModule/Camera.cpp: lines 987 -> 960, comment lines 50 -> 45, human/legacy comment lines kept 6/12
+     code tokens differ at #4534: ...} if ( duration + zoomDuration ) { | ...} if ( duration ) { if (
+     6 human/legacy comment line(s) lost or reordered, first: // halfFov now represents the dstFovFactor
+FAIL src/experimentalModule/CameraProjection.hpp: lines 0 -> 31, comment lines 0 -> 2, human/legacy comment lines kept 0/0
+     code tokens differ at #0: ... | ...# ifndef CAMERA_PROJECTION_HPP_ #
+     preprocessor lines differ
+FAIL src/experimentalModule/EnvironmentManager.hpp: lines 66 -> 68, comment lines 7 -> 7, human/legacy comment lines kept 0/0
+     code tokens differ at #14: ...include "atmosphereModule/atmosphere.hpp" # include < vector > class | ...include "atmosphereModule/atmosphere.hpp" # include "starModule/hip_star_mgr.hpp" # include <
+     preprocessor lines differ
+FAIL src/experimentalModule/EnvironmentModule.hpp: lines 50 -> 57, comment lines 7 -> 7, human/legacy comment lines kept 1/1
+     code tokens differ at #197: ...mat ) { } } ; # endif | ...mat ) { } protected : static Mat4d
+FAIL src/experimentalModule/Renderer.cpp: lines 240 -> 242, comment lines 23 -> 22, human/legacy comment lines kept 0/0
+     code tokens differ at #55: ...viewportRadius = 1 ; Renderer : : Renderer | ...viewportRadius = 1 ; Vec2f Renderer : :
+FAIL src/experimentalModule/Renderer.hpp: lines 164 -> 174, comment lines 19 -> 21, human/legacy comment lines kept 1/1
+     code tokens differ at #410: ...; } inline static float toPx ( float | ...; } inline static const Vec2f & getViewportCenter
+FAIL src/experimentalModule/environmentModules/MilkyWayEnv.cpp: lines 22 -> 18, comment lines 0 -> 0, human/legacy comment lines kept 0/0
+     code tokens differ at #35: ...& mat ) { Mat4d rot ( mat | ...& mat ) { const Mat4d rot =
+FAIL src/experimentalModule/environmentModules/StarFieldEnv.cpp: lines 0 -> 33, comment lines 0 -> 1, human/legacy comment lines kept 0/0
+     code tokens differ at #0: ... | ...# include "StarFieldEnv.hpp" #
+     preprocessor lines differ
+FAIL src/experimentalModule/environmentModules/StarFieldEnv.hpp: lines 0 -> 14, comment lines 0 -> 1, human/legacy comment lines kept 0/0
+     code tokens differ at #0: ... | ...# ifndef STAR_FIELD_ENV_HPP_ #
+     preprocessor lines differ
+FAIL src/starModule/hip_star_mgr.cpp: lines 1431 -> 1445, comment lines 148 -> 147, human/legacy comment lines kept 157/158
+     code tokens differ at #4377: ...snFile ) ; } int HipStarMgr : : | ...snFile ) ; } float HipStarMgr : :
+     1 human/legacy comment line(s) lost or reordered, first: // Roll off star size limit as fov decreases to match planet halo scale
+FAIL src/starModule/hip_star_mgr.hpp: lines 589 -> 609, comment lines 153 -> 157, human/legacy comment lines kept 166/166
+     code tokens differ at #79: ..."EntityCore/Tools/SafeQueue.hpp" # include "EntityCore/Resource/SharedBuffer.hpp" class Translator ; class | ..."EntityCore/Tools/SafeQueue.hpp" # include "EntityCore/Resource/SharedBuffer.hpp" # include "starModule/sphere_geometry.hpp" #
+     preprocessor lines differ
+FAIL src/starModule/zone_array.cpp: lines 563 -> 586, comment lines 52 -> 52, human/legacy comment lines kept 58/58
+     code tokens differ at #1579: ...} } } } void ZoneArray1 : : | ...} } } } template < class Frame
+FAIL src/starModule/zone_array.hpp: lines 168 -> 213, comment lines 26 -> 28, human/legacy comment lines kept 28/28
+     code tokens differ at #23: ...include "navModule/navigator.hpp" # include "starModule/hip_star.hpp" # include "starModule/hip_star_mgr.hpp" | ...include "navModule/navigator.hpp" # include "coreModule/projector.hpp" # include "starModule/hip_star.hpp"
+     preprocessor lines differ
+17 file(s), 17 FAIL
+exit=1

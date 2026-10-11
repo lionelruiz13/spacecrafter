@@ -1,0 +1,177 @@
+PASS F146 ratio a7919278: delivery.py "a7919278 files 122 code 13257 comment 879 ratio 0.07" ratio.py "a7919278 files 122 code 13257 comment 879 ratio 0.07"
+PASS F146 ratio 35da9c94: delivery.py "35da9c94 files 124 code 13479 comment 888 ratio 0.07" ratio.py "35da9c94 files 124 code 13479 comment 888 ratio 0.07"
+PASS F146 11.317.md:121 skyView.hpp:+ observed=49 expected=49
+PASS F146 11.317.md:121 oldSkyView.hpp:+ observed=95 expected=95
+PASS F146 11.317.md:121 CameraSkyView.hpp:+ observed=54 expected=54
+PASS F146 11.317.md:121 CameraSkyView.cpp:+ observed=196 expected=196
+PASS F146 11.317.md:121 CameraProjection.hpp:+ observed=19 expected=19
+PASS F146 11.317.md:121 CameraProjection.hpp:- observed=8 expected=8
+PASS F146 11.317.md:121 EnvironmentManager.hpp:+ observed=6 expected=6
+PASS F146 11.317.md:121 EnvironmentManager.cpp:+ observed=1 expected=1
+PASS F146 11.317.md:121 StarFieldEnv.cpp:+ observed=6 expected=6
+PASS F146 11.317.md:121 StarFieldEnv.cpp:- observed=18 expected=18
+PASS F146 11.317.md:121 Renderer.hpp:+ observed=4 expected=4
+PASS F146 11.317.md:121 Renderer.cpp:+ observed=11 expected=11
+PASS F146 11.317.md:121 Renderer.cpp:- observed=5 expected=5
+PASS F146 11.317.md:121 core.hpp:+ observed=4 expected=4
+PASS F146 11.317.md:121 core.cpp:+ observed=7 expected=7
+PASS F146 11.317.md:121 ssystem_factory.hpp:+ observed=3 expected=3
+PASS F146 11.317.md:121 ssystem_factory.cpp:+ observed=5 expected=5
+PASS F146 11.317.md:121 skyline.cpp:+ observed=117 expected=117
+PASS F146 11.317.md:121 skyline.cpp:- observed=117 expected=117
+PASS F146 11.317.md:121 skyDisplay.cpp:+ observed=58 expected=58
+PASS F146 11.317.md:121 skyDisplay.cpp:- observed=59 expected=59
+PASS F146 11.317.md:121 nebula.cpp:+ observed=12 expected=12
+PASS F146 11.317.md:121 nebula.cpp:- observed=12 expected=12
+PASS F146 11.317.md:121 nebula_mgr.cpp:+ observed=13 expected=13
+PASS F146 11.317.md:121 nebula_mgr.cpp:- observed=13 expected=13
+PASS F146 11.317.md:121 constellation.cpp:+ observed=11 expected=11
+PASS F146 11.317.md:121 constellation.cpp:- observed=12 expected=12
+PASS F146 11.317.md:121 constellation_mgr.cpp:+ observed=14 expected=14
+PASS F146 11.317.md:121 constellation_mgr.cpp:- observed=14 expected=14
+PASS F146 11.317.md:121 cardinals.cpp:+ observed=14 expected=14
+PASS F146 11.317.md:121 cardinals.cpp:- observed=14 expected=14
+PASS F146 11.317.md:121 meteor.cpp:+ observed=12 expected=12
+PASS F146 11.317.md:121 meteor.cpp:- observed=13 expected=13
+PASS F146 11.317.md:121 meteor_mgr.cpp:+ observed=8 expected=8
+PASS F146 11.317.md:121 meteor_mgr.cpp:- observed=9 expected=9
+PASS F146 11.317.md:121 object_base.cpp:+ observed=8 expected=8
+PASS F146 11.317.md:121 object_base.cpp:- observed=9 expected=9
+PASS F146 11.317.md:121 object.cpp:+ observed=2 expected=2
+PASS F146 11.317.md:121 object.cpp:- observed=4 expected=4
+PASS F146 11.317.md:121 s_font.cpp:+ observed=11 expected=11
+PASS F146 11.317.md:121 s_font.cpp:- observed=6 expected=6
+PASS F146 11.317.md:121 skyline_mgr.cpp:+ observed=2 expected=2
+PASS F146 11.317.md:121 skyline_mgr.cpp:- observed=2 expected=2
+PASS F146 11.317.md:121 skydisplay_mgr.cpp:+ observed=5 expected=5
+PASS F146 11.317.md:121 skydisplay_mgr.cpp:- observed=5 expected=5
+PASS F146 11.317.md:121 range:skyline skyDisplay nebula nebula_mgr constellation constellation_mgr cardinals meteor meteor_mgr object_base object s_font skyline_mgr skydisplay_mgr observed=(2, 20) expected=(1, 20)
+PASS F146 11.317.md:121 solarSystemModule.cpp:+ observed=10 expected=10
+PASS F146 11.317.md:121 solarSystemModule.cpp:- observed=9 expected=9
+PASS F146 11.317.md:121 stellarSystemModule.cpp:+ observed=10 expected=10
+PASS F146 11.317.md:121 stellarSystemModule.cpp:- observed=9 expected=9
+PASS F146 11.317.md:121 inGalaxyModule.cpp:+ observed=3 expected=3
+PASS F146 11.317.md:121 inGalaxyModule.cpp:- observed=2 expected=2
+PASS F146 11.317.md:121 inUniverseModule.cpp:+ observed=3 expected=3
+PASS F146 11.317.md:121 inUniverseModule.cpp:- observed=2 expected=2
+PASS F146 11.317.md:121 skygrid.cpp:+ observed=7 expected=7
+PASS F146 11.317.md:121 skygrid.cpp:- observed=7 expected=7
+PASS F146 11.317.md:121 skygrid.hpp:+ observed=7 expected=7
+PASS F146 11.317.md:121 skygrid.hpp:- observed=7 expected=7
+PASS F146 11.317.md:121 skygrid_mgr.cpp:+ observed=2 expected=2
+PASS F146 11.317.md:121 skygrid_mgr.cpp:- observed=2 expected=2
+PASS F146 11.317.md:121 skygrid_mgr.hpp:+ observed=1 expected=1
+PASS F146 11.317.md:121 skygrid_mgr.hpp:- observed=3 expected=3
+PASS F146 11.317.md:121 total:+ observed=860 expected=860
+PASS F146 11.317.md:121 total:- observed=435 expected=435
+PASS F146 11.317.md:121 code:+ observed=794 expected=794
+PASS F146 11.317.md:121 code:- observed=435 expected=435
+PASS F146 11.317.md:121 code:net observed=359 expected=359
+PASS F146 11.317.md:121 comment:+ observed=21 expected=21
+PASS F146 11.317.md:121 blank:+ observed=45 expected=45
+PASS F146 11.317.md:121 names:removed observed=0 expected=0
+PASS F146 11.317.md:122 Renderer.hpp:n0 observed=53 expected=53
+PASS F146 11.317.md:122 Renderer.hpp:n1 observed=54 expected=54
+PASS F146 11.317.md:122 EnvironmentManager.hpp:n0 observed=13 expected=13
+PASS F146 11.317.md:122 EnvironmentManager.hpp:n1 observed=14 expected=14
+PASS F146 11.317.md:122 CameraProjection.hpp:n0 observed=1 expected=1
+PASS F146 11.317.md:122 CameraProjection.hpp:n1 observed=3 expected=3
+PASS F146 11.317.md:122 core.hpp:n0 observed=144 expected=144
+PASS F146 11.317.md:122 core.hpp:n1 observed=145 expected=145
+PASS* F146 11.317.md:122 ssystem_factory.hpp:n0 observed=161 expected=77 rule=the record's names.py (90cee65:harness/shape/names.py) stripped /* */ before //, so a //* comment swallowed code - fixed in decomment.py
+PASS* F146 11.317.md:122 ssystem_factory.hpp:n1 observed=162 expected=78 rule=the record's names.py (90cee65:harness/shape/names.py) stripped /* */ before //, so a //* comment swallowed code - fixed in decomment.py
+PASS F146 11.317.md:122 nebula.hpp:n0 observed=36 expected=36
+PASS F146 11.317.md:122 nebula.hpp:n1 observed=37 expected=37
+PASS F146 11.317.md:122 names:unchanged-nongrid observed=13 expected=13
+PASS F146 11.317.md:122 names:grid-unchanged observed=True expected=True
+PASS F146 11.317.md:122 skyView.hpp:n1new observed=27 expected=27
+PASS F146 11.317.md:122 oldSkyView.hpp:n1new observed=27 expected=27
+PASS F146 11.317.md:122 CameraSkyView.hpp:n1new observed=29 expected=29
+PASS F146 11.317.md:122 Projector:identical observed=True expected=True
+PASS F146 11.317.md:150 d14 observed=PASS expected=PASS
+PASS F146 11.317.md:155 files observed=50 expected=50
+PASS F146 11.317.md:155 total:+ observed=860 expected=860
+PASS F146 11.317.md:155 total:- observed=435 expected=435
+PASS F146 11.317.md:155 code:+ observed=794 expected=794
+PASS F146 11.317.md:155 code:- observed=435 expected=435
+PASS F146 11.317.md:155 code:net observed=359 expected=359
+PASS F146 11.317.md:155 names:removed observed=0 expected=0
+PASS* F146 11.317.md:155 scope:new observed=3 expected=4 rule=counted against the owner's review mark refs/review/headers@{2026-10-11 14:30} = ee185d4f, not against <base>
+PASS* F146 11.317.md:155 scope:modified observed=21 expected=20 rule=counted against the owner's review mark refs/review/headers@{2026-10-11 14:30} = ee185d4f, not against <base>
+PASS F140 ratio 2cb05825: delivery.py "2cb05825 files 119 code 13196 comment 879 ratio 0.07" ratio.py "2cb05825 files 119 code 13196 comment 879 ratio 0.07"
+PASS F140 ratio a7919278: delivery.py "a7919278 files 122 code 13257 comment 879 ratio 0.07" ratio.py "a7919278 files 122 code 13257 comment 879 ratio 0.07"
+PASS F140 11.316.md:117 ssystem_factory.cpp:+ observed=7 expected=7
+PASS F140 11.316.md:117 ssystem_factory.cpp:- observed=0 expected=0
+PASS F140 11.316.md:117 ssystem_factory.hpp:+ observed=3 expected=3
+PASS F140 11.316.md:117 ssystem_factory.hpp:- observed=0 expected=0
+PASS F140 11.316.md:117 core.cpp:+ observed=3 expected=3
+PASS F140 11.316.md:117 core.cpp:- observed=1 expected=1
+PASS* F140 11.316.md:117 solarSystemModule.cpp:+ observed=4 expected=3 rule=whitespace-only lines in this file: its git diff --numstat -w row reproduces the record
+PASS* F140 11.316.md:117 solarSystemModule.cpp:- observed=1 expected=0 rule=whitespace-only lines in this file: its git diff --numstat -w row reproduces the record
+PASS F140 11.316.md:117 Camera.cpp:+ observed=9 expected=9
+PASS F140 11.316.md:117 Camera.cpp:- observed=36 expected=36
+PASS F140 11.316.md:117 CameraProjection.hpp:+ observed=31 expected=31
+PASS F140 11.316.md:117 CameraProjection.hpp:- observed=0 expected=0
+PASS F140 11.316.md:117 EnvironmentManager.hpp:+ observed=2 expected=2
+PASS F140 11.316.md:117 EnvironmentManager.hpp:- observed=0 expected=0
+PASS F140 11.316.md:117 EnvironmentModule.hpp:+ observed=7 expected=7
+PASS F140 11.316.md:117 EnvironmentModule.hpp:- observed=0 expected=0
+PASS F140 11.316.md:117 Renderer.cpp:+ observed=8 expected=8
+PASS F140 11.316.md:117 Renderer.cpp:- observed=6 expected=6
+PASS F140 11.316.md:117 Renderer.hpp:+ observed=10 expected=10
+PASS F140 11.316.md:117 Renderer.hpp:- observed=0 expected=0
+PASS F140 11.316.md:117 MilkyWayEnv.cpp:+ observed=1 expected=1
+PASS F140 11.316.md:117 MilkyWayEnv.cpp:- observed=5 expected=5
+PASS F140 11.316.md:117 StarFieldEnv.cpp:+ observed=33 expected=33
+PASS F140 11.316.md:117 StarFieldEnv.cpp:- observed=0 expected=0
+PASS F140 11.316.md:117 StarFieldEnv.hpp:+ observed=14 expected=14
+PASS F140 11.316.md:117 StarFieldEnv.hpp:- observed=0 expected=0
+PASS F140 11.316.md:117 hip_star_mgr.cpp:+ observed=26 expected=26
+PASS F140 11.316.md:117 hip_star_mgr.cpp:- observed=12 expected=12
+PASS F140 11.316.md:117 hip_star_mgr.hpp:+ observed=24 expected=24
+PASS F140 11.316.md:117 hip_star_mgr.hpp:- observed=4 expected=4
+PASS F140 11.316.md:117 zone_array.cpp:+ observed=34 expected=34
+PASS F140 11.316.md:117 zone_array.cpp:- observed=11 expected=11
+PASS F140 11.316.md:117 zone_array.hpp:+ observed=49 expected=49
+PASS F140 11.316.md:117 zone_array.hpp:- observed=4 expected=4
+PASS* F140 11.316.md:117 total:+ observed=265 expected=264 rule=the whitespace-only lines of solarSystemModule.cpp (named above) alone: the record precedes them
+PASS* F140 11.316.md:117 total:- observed=80 expected=79 rule=the whitespace-only lines of solarSystemModule.cpp (named above) alone: the record precedes them
+PASS F140 11.316.md:117 lines:net observed=185 expected=185
+PASS F140 11.316.md:118 EnvironmentModule.hpp:n0 observed=6 expected=6
+PASS F140 11.316.md:118 EnvironmentModule.hpp:n1 observed=7 expected=7
+PASS F140 11.316.md:118 EnvironmentModule.hpp:added observed=['rotationOf'] expected=['rotationOf']
+PASS F140 11.316.md:118 hip_star_mgr.hpp:n0 observed=98 expected=98
+PASS F140 11.316.md:118 hip_star_mgr.hpp:n1 observed=100 expected=100
+PASS F140 11.316.md:118 hip_star_mgr.hpp:added observed=['preDrawWith', 'sizeRolloff'] expected=['preDrawWith', 'sizeRolloff']
+PASS F140 11.316.md:118 zone_array.hpp:n0 observed=17 expected=17
+PASS F140 11.316.md:118 zone_array.hpp:n1 observed=22 expected=22
+PASS F140 11.316.md:118 zone_array.hpp:added observed=['drawWith', 'project', 'projectCheck', 'rolloff', 'toLocal'] expected=['drawWith', 'project', 'projectCheck', 'rolloff', 'toLocal']
+PASS* F140 11.316.md:118 ssystem_factory.hpp:n0 observed=160 expected=76 rule=the record's names.py (90cee65:harness/shape/names.py) stripped /* */ before //, so a //* comment swallowed code - fixed in decomment.py
+PASS* F140 11.316.md:118 ssystem_factory.hpp:n1 observed=161 expected=77 rule=the record's names.py (90cee65:harness/shape/names.py) stripped /* */ before //, so a //* comment swallowed code - fixed in decomment.py
+PASS F140 11.316.md:118 ssystem_factory.hpp:added observed=['getEnvironmentStarFieldInput'] expected=['getEnvironmentStarFieldInput']
+PASS F140 11.316.md:118 Renderer.hpp:n0 observed=51 expected=51
+PASS F140 11.316.md:118 Renderer.hpp:n1 observed=53 expected=53
+PASS F140 11.316.md:118 Renderer.hpp:added observed=['getMvp2D', 'getViewportCenter'] expected=['getMvp2D', 'getViewportCenter']
+PASS F140 11.316.md:118 EnvironmentManager.hpp:both observed=(13, 13) expected=13
+PASS F140 11.316.md:118 Camera.hpp:both observed=(79, 79) expected=79
+PASS F140 11.316.md:118 projector.hpp:both observed=(78, 78) expected=78
+PASS F140 11.316.md:118 navigator.hpp:both observed=(51, 51) expected=51
+PASS F140 11.316.md:118 core.hpp:both observed=(144, 144) expected=144
+PASS F140 11.316.md:118 CameraProjection.hpp:n1new observed=1 expected=1
+PASS F140 11.316.md:118 StarFieldEnv.hpp:n1new observed=2 expected=2
+PASS F140 11.316.md:119 Projector.fov:both observed=(1, 1) expected=1
+PASS F140 11.316.md:119 Camera.zoomDuration:both observed=(3, 3) expected=3
+PASS F140 11.316.md:119 Camera.zoomTimer:both observed=(2, 2) expected=2
+PASS F140 11.316.md:119 Camera.srcHalfFov:both observed=(1, 1) expected=1
+PASS F140 11.316.md:119 Camera.dstHalfFov:both observed=(1, 1) expected=1
+PASS F140 11.316.md:143 files observed=17 expected=17
+PASS* F140 11.316.md:143 total:+ observed=265 expected=264 rule=the whitespace-only lines of solarSystemModule.cpp (named above) alone: the record precedes them
+PASS* F140 11.316.md:143 total:- observed=80 expected=79 rule=the whitespace-only lines of solarSystemModule.cpp (named above) alone: the record precedes them
+PASS F140 11.316.md:143 lines:net observed=185 expected=185
+PASS* F140 11.316.md:143 names:added observed=14 expected=7 rule=names added to the types that existed at <base>: new headers and new classes / structs left out
+PASS F140 11.316.md:143 Projector.fov:both observed=(1, 1) expected=1
+PASS F140 11.316.md:143 ledger observed=0 expected=0
+PASS F140 11.316.md:143 d14 observed=PASS expected=PASS
+PASS F140 11.316.md:143 scope:modified-set observed=['EnvironmentManager.hpp', 'EnvironmentModule.hpp', 'Renderer.hpp', 'hip_star_mgr.hpp', 'ssystem_factory.hpp', 'zone_array.hpp'] expected=['EnvironmentManager.hpp', 'EnvironmentModule.hpp', 'Renderer.hpp', 'hip_star_mgr.hpp', 'ssystem_factory.hpp', 'zone_array.hpp']
+PASS F140 11.316.md:143 scope:new observed=2 expected=2
+self-test: 163 PASS, 13 PASS* (the record reproduced under the named rule on its line), 0 FAIL

@@ -1,0 +1,18 @@
+IDENTICAL ratio_2cb05825.txt md5 f343d145 1 lines
+IDENTICAL ratio_2cb05825_v.txt md5 14ab0132 15 lines
+IDENTICAL ratio_35da9c94.txt md5 870ddbcd 1 lines
+IDENTICAL ratio_35da9c94_v.txt md5 9418f75b 15 lines
+IDENTICAL ratio_HEAD.txt md5 5d40a26f 1 lines
+IDENTICAL ratio_HEAD_v.txt md5 2d024746 15 lines
+IDENTICAL ratio_a7919278.txt md5 1d68746b 1 lines
+IDENTICAL ratio_a7919278_v.txt md5 d69d6a84 15 lines
+IDENTICAL writers_Camera_2cb05825.txt md5 d8659a40 54 lines
+IDENTICAL writers_Camera_HEAD.txt md5 45d9557d 54 lines
+IDENTICAL writers_Camera_a7919278.txt md5 a619d44f 54 lines
+IDENTICAL writers_Projector_2cb05825.txt md5 380bdbaf 58 lines
+IDENTICAL writers_Projector_HEAD.txt md5 8b2b3241 58 lines
+IDENTICAL writers_Projector_a7919278.txt md5 3f3fb1b8 58 lines
+ratio.py at a7919278: a7919278 files 122 code 13257 comment 879 ratio 0.07
+ratio.py at 35da9c94: 35da9c94 files 124 code 13479 comment 888 ratio 0.07
+writers.py HEAD Camera, line 1: Camera @ HEAD: 46 fields, 77 member functions (overloads merged by name)
+writers.py HEAD Projector, line 1: Projector @ HEAD: 28 fields, 74 member functions (overloads merged by name)

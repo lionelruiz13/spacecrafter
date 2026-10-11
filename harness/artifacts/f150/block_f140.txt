@@ -1,0 +1,56 @@
+```
+SHAPE 2cb05825..a7919278  (harness/shape/delivery.py)
+(1) lines [ratio.py classify on the -U0 hunks]  +code -code +comment -comment +blank -blank  status file
+      6     0     0     0     1     0  M src/bodyModule/ssystem_factory.cpp
+      2     0     1     0     0     0  M src/bodyModule/ssystem_factory.hpp
+      3     1     0     0     0     0  M src/coreModule/core.cpp
+      4     1     0     0     0     0  M src/executorModule/solarSystemModule.cpp
+      9    31     0     5     0     0  M src/experimentalModule/Camera.cpp
+     26     0     2     0     3     0  A src/experimentalModule/CameraProjection.hpp
+      2     0     0     0     0     0  M src/experimentalModule/EnvironmentManager.hpp
+      7     0     0     0     0     0  M src/experimentalModule/EnvironmentModule.hpp
+      8     5     0     1     0     0  M src/experimentalModule/Renderer.cpp
+      8     0     2     0     0     0  M src/experimentalModule/Renderer.hpp
+      1     5     0     0     0     0  M src/experimentalModule/environmentModules/MilkyWayEnv.cpp
+     31     0     1     0     1     0  A src/experimentalModule/environmentModules/StarFieldEnv.cpp
+     10     0     1     0     3     0  A src/experimentalModule/environmentModules/StarFieldEnv.hpp
+     23    11     0     1     3     0  M src/starModule/hip_star_mgr.cpp
+     17     4     4     0     3     0  M src/starModule/hip_star_mgr.hpp
+     30    11     0     0     4     0  M src/starModule/zone_array.cpp
+     45     4     2     0     2     0  M src/starModule/zone_array.hpp
+  total 17 files: +265 -80 (numstat); code +232 -73, comment +13 -7, blank +20 -0; net code +159, net lines +185
+(2) names [names.py]  BEFORE -> AFTER  +added  -removed
+  src/bodyModule/ssystem_factory.hpp 76 -> 77  +[getEnvironmentStarFieldInput]  -[-]
+  src/experimentalModule/CameraProjection.hpp absent -> 1  +[project]  -[-]
+  src/experimentalModule/EnvironmentManager.hpp 13 -> 13  +[-]  -[-]
+  src/experimentalModule/EnvironmentModule.hpp 6 -> 7  +[rotationOf]  -[-]
+  src/experimentalModule/Renderer.hpp 51 -> 53  +[getViewportCenter getMvp2D]  -[-]
+  src/experimentalModule/environmentModules/StarFieldEnv.hpp absent -> 2  +[StarFieldEnv update]  -[-]
+  src/starModule/hip_star_mgr.hpp 98 -> 100  +[sizeRolloff preDrawWith]  -[-]
+  src/starModule/zone_array.hpp 17 -> 22  +[toLocal project projectCheck rolloff drawWith]  -[-]
+  total 8 headers: names +14 -0
+(3) writers [writers.py]  class: pairs BEFORE -> AFTER, unchanged; changed field: writers BEFORE -> AFTER
+  SSystemFactory: pairs 0 -> 0, unchanged 0
+  Renderer: pairs 23 -> 25, unchanged 23
+    mvp2D: - -> init
+    viewportCenter: - -> init
+  StarFieldEnv: pairs absent -> 0, unchanged 0
+  MagConverter: pairs 6 -> 6, unchanged 6
+  HipStarMgr: pairs 38 -> 38, unchanged 38
+  ZoneArray: pairs 6 -> 6, unchanged 6
+  SpecialZoneArray: pairs 0 -> 0, unchanged 0
+  ZoneArray1: pairs 0 -> 0, unchanged 0
+(4) form [form.py measure over the added lines]
+  comment lines added: full 13, trailing 7; blocks 1:13 2:0 3+:0; length median 62 p90 96
+  verb-first (upper bound) 10 / 13 blocks; first words: Return 4, The 3, Valid 1, Build 1, Snapshot 1, Same 1, Compute 1, Frame 1
+(5) ledger grammar in the added lines [INTENT|11\.[0-9]|F1[0-9][0-9]|\[observed|\[measured|\[vixy]: 0
+(6) d14 [f70_ascii.py gate]
+  gate PASS (exit 0; it reads the code repo's tracked files on disk; that tree is a7919278: no)
+  delivery files at a7919278 by its partition: 17 read, 0 non-ASCII (0 CONVERT or unclassified): PASS
+(7) ratio [ratio.py classify, src/experimentalModule .hpp/.cpp]
+  2cb05825 files 119 code 13196 comment 879 ratio 0.07
+  a7919278 files 122 code 13257 comment 879 ratio 0.07
+(8) scope [review.sh]
+  header scope :(glob)src/**/*.hpp :(glob)src/**/*.h: 8 touched (new 2, modified 6, deleted 0, renamed 0)
+  outside it, in the ALL=1 scope src shaders: 9 touched
+```

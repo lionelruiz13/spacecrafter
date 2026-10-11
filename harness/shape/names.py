@@ -8,6 +8,7 @@
 # skips names inside function bodies, and reports overloads ONCE (the count is of NAMES).
 # It is a record that the list exists, never a substitute for reading the header.
 import re, subprocess, sys
+from decomment import decomment
 
 KEYWORDS = {'if', 'for', 'while', 'switch', 'return', 'sizeof', 'static_assert', 'alignas',
             'decltype', 'catch', 'defined', 'assert', 'noexcept', 'throw', 'alignof', 'typeid'}
@@ -18,11 +19,7 @@ def text_of(path, rev):
         raw = subprocess.run(['git', 'show', '%s:%s' % (rev, path)], capture_output=True, check=True).stdout
     else:
         raw = open(path, 'rb').read()
-    t = raw.decode('utf-8', 'replace')
-    t = re.sub(r'/\*.*?\*/', ' ', t, flags=re.S)
-    t = re.sub(r'//[^\n]*', '', t)
-    t = re.sub(r'"(\\.|[^"\\])*"', '""', t)
-    t = re.sub(r"'(\\.|[^'\\])'", "' '", t)
+    t = decomment(raw.decode('utf-8', 'replace'), literals=False)
     return re.sub(r'^[ \t]*#[^\n]*(\\\n[^\n]*)*', '', t, flags=re.M)
 
 def name_of(head):

@@ -2,20 +2,19 @@
 # Duplication in the owner's sense (S11.249 update): two functions doing the same
 # thing, one possibly a parametric subset of the other. Text does not show it; the
 # WRITER SET does: for one class, which member functions write which field.
-#   usage: writers.py <rev> <Class> <header path> <source path>
+#   usage: writers.py <rev|WORKTREE> <Class> <header path> <source path>   (WORKTREE: the files on disk)
 # Heuristic, no compiler: regex on comment-stripped text. Blind to writes through
 # a non-member call, through a reference/pointer alias, and to fields written only
 # by another class. Positive control: at 75a73e78, Camera `target` must list both
 # trackBody and rebindTarget.
 import re, subprocess, sys, collections
+from decomment import decomment
 
 rev, cls, hdr, src = sys.argv[1:5]
 
 def show(path):
-    t = subprocess.run(['git', 'show', f'{rev}:{path}'], capture_output=True).stdout.decode('utf-8', 'replace')
-    t = re.sub(r'/\*.*?\*/', ' ', t, flags=re.S)
-    t = re.sub(r'//[^\n]*', '', t)
-    return re.sub(r'"(\\.|[^"\\])*"', '""', t)
+    raw = open(path, 'rb').read() if rev == 'WORKTREE' else subprocess.run(['git', 'show', f'{rev}:{path}'], capture_output=True).stdout
+    return decomment(raw.decode('utf-8', 'replace'), literals=False)
 
 def block(t, i):  # t[i] == '{' -> index just past its matching '}'
     d = 0
