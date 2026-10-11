@@ -34,7 +34,7 @@
 #include <memory>
 
 #include "tools/s_font.hpp"
-#include "coreModule/projector.hpp"
+#include "coreModule/skyView.hpp"
 #include "tools/fader.hpp"
 #include "tools/ScModule.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
@@ -53,7 +53,7 @@ class SkyGrid {
 public:
 	virtual ~SkyGrid();
 
-	void draw(const Projector* prj);
+	void draw(const SkyView &view);
 
 	void setColor(const Vec3f& c) {
 		color = c;
@@ -115,7 +115,7 @@ protected:
 		ALTAZIMUTAL
 	};
 	SKY_GRID_TYPE gtype;
-	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
+	bool (SkyView::*proj_func)(const Vec3d&, Vec3d&) const;
 
 	static unsigned int nbPointsToDraw;
 	static VertexArray *m_dataGL;
@@ -155,7 +155,7 @@ public:
 	               double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 144)
 		:SkyGrid(_nb_meridian, _nb_parallel, _radius, _nb_alt_segment, _nb_azi_segment) {
 		gtype = EQUATORIAL;
-		proj_func = &Projector::projectEarthEqu;
+		proj_func = &SkyView::projectEarthEqu;
 	}
 };
 
@@ -166,7 +166,7 @@ public:
 	             double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 144)
 		:SkyGrid(_nb_meridian, _nb_parallel, _radius, _nb_alt_segment, _nb_azi_segment) {
 		gtype = ECLIPTIC;
-		proj_func = &Projector::projectEarthEcliptic;
+		proj_func = &SkyView::projectEarthEcliptic;
 	}
 };
 
@@ -177,7 +177,7 @@ public:
 	                double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 144)
 		:SkyGrid(_nb_meridian, _nb_parallel, _radius, _nb_alt_segment, _nb_azi_segment) {
 		gtype = ALTAZIMUTAL;
-		proj_func = &Projector::projectLocal;
+		proj_func = &SkyView::projectLocal;
 	}
 };
 
@@ -188,7 +188,7 @@ public:
 	             double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 144)
 		:SkyGrid(_nb_meridian, _nb_parallel, _radius, _nb_alt_segment, _nb_azi_segment) {
 		gtype = GALACTIC;
-		proj_func = &Projector::projectJ2000Galactic;
+		proj_func = &SkyView::projectJ2000Galactic;
 	}
 };
 #endif // __SKYGRID_H__

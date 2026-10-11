@@ -193,7 +193,7 @@ void SolarSystemModule::draw(int delta_time)
 	core->asterisms->draw(core->drawnView());
 	core->starLines->draw(core->projection);
 	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
-	core->skyGridMgr->draw(core->projection);
+	core->skyGridMgr->draw(core->drawnView());
 	core->skyLineMgr->draw(core->drawnView(), core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->drawnView(), core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
 	// Key the new-path planet-grid tropic/polar circles to the sky-line flags

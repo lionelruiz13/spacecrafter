@@ -31,8 +31,6 @@
 
 #include "skygrid.hpp"
 #include "tools/s_font.hpp"
-#include "coreModule/projector.hpp"
-#include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
 #include "tools/no_copy.hpp"
@@ -56,7 +54,7 @@ public:
 	};
 	//The one that will create the objects
 	void Create(SKYGRID_TYPE type_obj);
-	void draw(const Projector* prj);
+	void draw(const SkyView &view);
 	void update(int delta_time);
 
 	//void setFont(float font_size, const std::string& font_name);

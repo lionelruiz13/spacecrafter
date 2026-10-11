@@ -205,7 +205,7 @@ void SkyGrid::recordDraw()
 	}
 }
 
-void SkyGrid::draw(const Projector* prj)
+void SkyGrid::draw(const SkyView &view)
 {
 	if (!fader.getInterstate()) return;
 
@@ -225,16 +225,16 @@ void SkyGrid::draw(const Projector* prj)
 
 	switch (gtype) {
 		case EQUATORIAL:
-			*uMat = prj->getMatEarthEquToEye();
+			*uMat = view.getMatEarthEquToEye();
 			break;
 		case ECLIPTIC :
-			*uMat = prj->getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(M_PI/180));
+			*uMat = view.getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(M_PI/180));
 			break;
 		case GALACTIC :
-			*uMat = prj->getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(M_PI/180))*Mat4f::yrotation(-61.8717*(M_PI/180))*Mat4f::zrotation(55.5*(M_PI/180));
+			*uMat = view.getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(M_PI/180))*Mat4f::yrotation(-61.8717*(M_PI/180))*Mat4f::zrotation(55.5*(M_PI/180));
 			break;
 		case ALTAZIMUTAL :
-			*uMat = prj->getMatLocalToEye();
+			*uMat = view.getMatLocalToEye();
 			break;
 		default:
 			return; //for GCC
@@ -246,10 +246,10 @@ void SkyGrid::draw(const Projector* prj)
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {
 
 		Vec4f Color (color[0],color[1],color[2],fader.getInterstate());
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 
 		for (unsigned int i=1; i<nb_alt_segment-1; ++i) {
-			if ((prj->*proj_func)(alt_points[nm][i], pt1) && (prj->*proj_func)(alt_points[nm][i+1], pt2) ) {
+			if ((view.*proj_func)(alt_points[nm][i], pt1) && (view.*proj_func)(alt_points[nm][i+1], pt2) ) {
 
 				static char str[255];	// TODO use c++ string
 

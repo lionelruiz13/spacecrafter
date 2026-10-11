@@ -200,7 +200,7 @@ void StellarSystemModule::draw(int delta_time)
 	core->asterisms->draw(*core->oldSkyView);
 	core->starLines->draw(core->navigation);
     core->starNav->draw(core->navigation, core->projection, true);
-	core->skyGridMgr->draw(core->projection);
+	core->skyGridMgr->draw(*core->oldSkyView);
 	core->skyLineMgr->draw(*core->oldSkyView, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(*core->oldSkyView, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
 	// Key the new-path planet-grid tropic/polar circles to the sky-line flags
