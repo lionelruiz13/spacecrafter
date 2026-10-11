@@ -376,7 +376,7 @@ python3 claude/harness/shape/names.py src/eventModule/EventScript.hpp => EventSc
 python3 claude/harness/shape/names.py src/eventModule/EventScriptHandler.hpp => EventScriptHandler.hpp 4: EventScriptHandler ~EventScriptHandler handle loopDone
 ```
 
-**WIP:** 2026-10-11 17:5x — MINTED (round supervisor, Claude Fable 5.1, session 44) on F142's accepted block, the owner's C1 / Q2 / Q6 defaults standing (no word since 2026-10-10; each one revert), F137 landed first so this one carries the dedup; NOT dispatched: waits on F148's acceptance and commit (the same tree, both build), its per-round lines (`REFRESH-AT-DISPATCH`) filled then.
+**WIP:** 2026-10-11 17:5x — MINTED (round supervisor, Claude Fable 5.1, session 44) on F142's accepted block, the owner's C1 / Q2 / Q6 defaults standing (no word since 2026-10-10; each one revert), F137 landed first so this one carries the dedup; NOT dispatched: waits on F148's acceptance and commit (the same tree, both build), its per-round lines (`REFRESH-AT-DISPATCH`) filled then. **REFRESHED 2026-10-11 20:5x on F148's acceptance (code `2a0fdbef`, binary `35efed69`, harness `c783650`): the five per-round lines filled by the tool, the REFRESHED-AT-DISPATCH paragraph (F148 landed; the corrected `names.py` / `writers.py`; D5's definition; the re-formed f131 bank); gate 59 PASS / 0 FAIL (`00be4fc` carries the fill; its message's "dispatched" preceded the spawn by one commit). DISPATCHED 20:5x (`opus-xhigh` under the owner's prompt, the regenerated projection), alone in the code tree, the only engine launcher.**
 
 ---
 
