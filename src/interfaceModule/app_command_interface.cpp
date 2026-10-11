@@ -254,6 +254,11 @@ int AppCommandInterface::terminateScript()
 	return executeCommand("script action end");
 }
 
+void AppCommandInterface::scriptEnded()
+{
+	ui->keyBinding().endScript();
+}
+
 int AppCommandInterface::executeCommand(const std::string &commandline )
 {
 	uint64_t delay;
@@ -2875,6 +2880,46 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 		} else if (argAction==W_RELEASE) {
 			if (args[W_LOCK] == W_GLOBAL) {
 				scriptInterface->releaseGlobalLock();
+			}
+		} else if (argAction==W_BIND) {
+			const std::string key = args[W_KEY].empty() ? currentOrigin.key : args[W_KEY];
+			const std::string scope = args[W_SCOPE].empty() ? W_GLOBAL : args[W_SCOPE];
+			std::string script[2] = {args[W_PRESS], args[W_RELEASE]};
+			if (script[0].empty() && script[1].empty())
+				debug_message = "bind: give 'press <script|->', 'release <script|->' or both";
+			else if (key.empty())
+				debug_message = "bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'";
+			else if (scope != W_GLOBAL && scope != W_SCRIPT && scope != W_ONCE)
+				debug_message = "bind: unknown scope '" + scope + "' - write global, script or once";
+			for (std::string &name : script) {
+				if (!debug_message.empty() || name.empty() || name == "-")
+					continue;
+				if (name.size() < 4 || name[name.size()-4] != '.')
+					name = evalString(name);
+				FilePath file(name, FilePath::TFP::SCRIPT);
+				if (file.exist())
+					name = file.toString();
+				else
+					debug_message = "bind: no script '" + name + "' as given, in the running script's directory or in the scripts directory";
+			}
+			const KeyBinding::Scope lifetime = scope == W_SCRIPT ? KeyBinding::Scope::SCRIPT :
+			                                   scope == W_ONCE ? KeyBinding::Scope::ONCE : KeyBinding::Scope::GLOBAL;
+			for (int release = 0; release < 2 && debug_message.empty(); ++release) {
+				if (!script[release].empty())
+					ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
+			}
+			if (!debug_message.empty())
+				reportScriptError(currentOrigin, debug_message);
+			else {
+				std::ostringstream line;
+				line << "script action bind key " << key;
+				if (!script[0].empty())
+					line << " press \"" << script[0] << '"';
+				if (!script[1].empty())
+					line << " release \"" << script[1] << '"';
+				if (!args[W_SCOPE].empty())
+					line << " scope " << args[W_SCOPE];
+				commandline = line.str();
 			}
 		} else
 			debug_message = "command_script : unknown parameter from 'action' argument";

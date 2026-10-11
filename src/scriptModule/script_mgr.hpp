@@ -51,7 +51,7 @@ public:
 	~ScriptMgr();
 
 	//! play a script
-	bool playScript(const std::string &fullFileName);
+	bool playScript(const std::string &fullFileName, const std::string &key = std::string());
 
 	//! place the given script at the begin of the command queue
 	bool addScriptFirst(const std::string & script);

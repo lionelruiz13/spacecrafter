@@ -39,13 +39,16 @@ struct ScriptOrigin {
 	unsigned line = 0;     //!< FILE only, 1-based, 0 = none
 	std::string text;      //!< Raw line, the CR of a CRLF file is kept
 	unsigned connection = 0; //!< TCP only, 0 = unknown
+	std::string key;       //!< FILE only, the key whose binding started the run, "" otherwise
 
-	static ScriptOrigin fromFile(const std::string &file, unsigned line, const std::string &text) {
+	static ScriptOrigin fromFile(const std::string &file, unsigned line, const std::string &text,
+	                             const std::string &key = std::string()) {
 		ScriptOrigin o;
 		o.channel = ScriptChannel::FILE;
 		o.file = file;
 		o.line = line;
 		o.text = text;
+		o.key = key;
 		return o;
 	}
 	static ScriptOrigin fromTcp(unsigned id, const std::string &text) {

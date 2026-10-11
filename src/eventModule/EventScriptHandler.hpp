@@ -49,8 +49,8 @@ public:
     
 protected :
 	ScriptInterface* scriptInterface = nullptr;
-	// Temporary queue to accumulate scripts during event loop
-	std::vector<std::string> pendingScripts;
+	// Temporary queue to accumulate scripts and their trigger keys during event loop
+	std::vector<std::pair<std::string, std::string>> pendingScripts;
 };
 
 #endif // EVENT_SCRIPT_HANDLER_HPP

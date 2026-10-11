@@ -60,13 +60,13 @@ ScriptMgr::~ScriptMgr()
 }
 
 // path is used for loading script assets in one time
-bool ScriptMgr::playScript(const std::string &fullFileName)
+bool ScriptMgr::playScript(const std::string &fullFileName, const std::string &key)
 {
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO);
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 
 
-	if ( script->load(fullFileName, fullFileName.substr(0, fullFileName.find_last_of("/\\") + 1)) ) {
+	if ( script->load(fullFileName, fullFileName.substr(0, fullFileName.find_last_of("/\\") + 1), key) ) {
 		multiplierRate=1;
 		scriptState = ScriptState::PLAY;
 		wait_time = 0;
@@ -124,6 +124,7 @@ void ScriptMgr::cancelScript()
 	repeatLoop = false;
 	waitOnVideo = false;
 	global_lock_count = 0;
+	commander->scriptEnded();
 }
 
 void ScriptMgr::pauseScript()

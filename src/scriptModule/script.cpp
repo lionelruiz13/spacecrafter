@@ -85,18 +85,18 @@ void Script::clean()
 	p2Last = nullptr;
 }
 
-int Script::load(const std::string &script_file, const std::string &script_path )
+int Script::load(const std::string &script_file, const std::string &script_path, const std::string &key)
 {
 	if (pFirst == nullptr) {
 		//cout << "loading script "<< script_file << " when no script is playing" << endl;
-		return loadInternal(script_file, script_path ,ListPosition::first);
+		return loadInternal(script_file, script_path ,ListPosition::first, key);
 	} else {
 		//cout << "loading script " << script_file << " when script is playing" << endl;
-		return loadInternal(script_file, script_path ,ListPosition::second);
+		return loadInternal(script_file, script_path ,ListPosition::second, key);
 	}
 }
 
-int Script::loadInternal(const std::string &script_file,const std::string & script_path , ListPosition wp)
+int Script::loadInternal(const std::string &script_file,const std::string & script_path , ListPosition wp, const std::string &key)
 {
 	//~ printf("s : %s p : %s\n", script_file.c_str() , script_path.c_str() );
 	input_file = new std::ifstream(script_file.c_str());
@@ -116,7 +116,7 @@ int Script::loadInternal(const std::string &script_file,const std::string & scri
 
 		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
 			//cout << "[script.cpp => Line is: " << line << "]"<< endl;
-			token=new Token(line, script_path, ScriptOrigin::fromFile(script_file, lineNo, line));
+			token=new Token(line, script_path, ScriptOrigin::fromFile(script_file, lineNo, line, key));
 			is_script_empty=false;
 			if (wp==ListPosition::first)
 				addFirst(token);

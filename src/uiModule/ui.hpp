@@ -47,6 +47,7 @@ enum S_GUI_VALUE {
 
 #include <memory>
 #include "uiModule/ui_tui.hpp"
+#include "uiModule/key_binding.hpp"
 #include "executorModule/executorModule.hpp"
 #include "tools/draw_helper.hpp"
 //#include "tools/app_settings.hpp"
@@ -110,6 +111,7 @@ public:
 	int handleMove(const std::pair<uint16_t, uint16_t> &newPos);
 	// Handle key press and release
 	int handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VALUE state);
+	KeyBinding &keyBinding() { return binding; }
 
 	// Text UI
 	void initTui();
@@ -407,6 +409,7 @@ private:
 	Vec3f text_tui_root; 							// Color menu text
 
 	uint8_t key_Modifier = 0x00;
+	KeyBinding binding;
 
 	double KeyTimeLeft=0;  							// for shift timeout (seconds)
 

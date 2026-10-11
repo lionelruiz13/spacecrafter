@@ -3385,6 +3385,16 @@ int UI::handleKeysReleased(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::
 			core->zoomOut(0);
 			break;
 
+		case SDL_SCANCODE_KP_2 :
+		case SDL_SCANCODE_KP_8 :
+			core->moveLat(0);
+			break;
+
+		case SDL_SCANCODE_KP_4 :
+		case SDL_SCANCODE_KP_6 :
+			core->moveLon(0);
+			break;
+
 		default:
 			retVal = 1;
 			break;
@@ -3395,6 +3405,10 @@ int UI::handleKeysReleased(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::
 
 int UI::handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VALUE state)
 {
+	if (binding.resolve(key, key_Modifier, state==s_gui::S_GUI_PRESSED)) {
+		RESET_MOD(SUPER);
+		return 1;
+	}
 
 	if (FlagShowTuiMenu) {
 		return handlKkeysOnTui(key, mod, unicode, state);
@@ -3409,52 +3423,5 @@ int UI::handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VA
 		return handleKeyPressed(key, mod, unicode, state);
 	}
 
-	if (state==s_gui::S_GUI_RELEASED) {
-		switch (key) {
-
-			case SDL_SCANCODE_LEFT :
-				core->turnLeft(0);
-				break;
-
-			case SDL_SCANCODE_RIGHT :
-				core->turnRight(0);
-				break;
-
-			case SDL_SCANCODE_UP :
-				if (mod & KMOD_CTRL)
-					core->zoomIn(0);
-				else
-					core->turnUp(0);
-				break;
-
-			case SDL_SCANCODE_DOWN :
-				if(mod & KMOD_CTRL)
-					core->zoomOut(0);
-				else
-					core->turnDown(0);
-				break;
-
-			case SDL_SCANCODE_PAGEUP :
-				core->zoomIn(0);
-				break;
-
-			case SDL_SCANCODE_PAGEDOWN :
-				core->zoomOut(0);
-				break;
-
-			case SDL_SCANCODE_KP_2 :
-			case SDL_SCANCODE_KP_8 :
-				core->moveLat(0);
-				break;
-
-			case SDL_SCANCODE_KP_4 :
-			case SDL_SCANCODE_KP_6 :
-				core->moveLon(0);
-				break;
-
-			default:
-				break;
-		}
-	}
-	return 1;
+	return handleKeysReleased(key, mod, unicode, state);
 }

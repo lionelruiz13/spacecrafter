@@ -67,7 +67,7 @@ public:
 
 	bool addScriptFirst(const std::string& string);
 
-	bool playScript(const std::string& _script);
+	bool playScript(const std::string& _script, const std::string& key = std::string());
 
 	void recordScript(const std::string &script_filename);
 	void recordCommand(const std::string &commandline);

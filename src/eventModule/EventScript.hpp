@@ -33,13 +33,19 @@
 
 class ScriptEvent : public Event {
 public:
-    ScriptEvent(const std::string& _fileName) : Event(E_SCRIPT) {
+    ScriptEvent(const std::string& _fileName, const std::string& _key = std::string()) : Event(E_SCRIPT) {
         fileName = _fileName;
+        key = _key;
     }
     ~ScriptEvent(){};
 
     std::string getFileName() {
         return fileName;
+    }
+
+    //! Return the key that triggered this script, empty when none
+    std::string getKey() const {
+        return key;
     }
 
     virtual std::string toString() const {
@@ -49,6 +55,7 @@ public:
     }
 private:
     std::string fileName;
+    std::string key;
 };
 
 

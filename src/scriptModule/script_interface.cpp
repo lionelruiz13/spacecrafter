@@ -98,8 +98,8 @@ void ScriptInterface::setScriptNbrLoop(int a) {
     scriptMgr->setNbrLoop(a);
 }
 
-bool ScriptInterface::playScript(const std::string& _script) {
-    return scriptMgr->playScript(_script);
+bool ScriptInterface::playScript(const std::string& _script, const std::string& key) {
+    return scriptMgr->playScript(_script, key);
 }
 
 bool ScriptInterface::addScriptFirst(const std::string& _script) {

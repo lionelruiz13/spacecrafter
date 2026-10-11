@@ -71,7 +71,7 @@ public:
 	void printScript();
 
 	//! loads a script file into memory
-	int load(const std::string &script_file, const std::string &script_path );
+	int load(const std::string &script_file, const std::string &script_path, const std::string &key = std::string());
 
 	//! empties the stack of script instructions in memory
 	void clean();
@@ -95,7 +95,7 @@ private:
 	Token *pLast=nullptr;
 	Token *p2First=nullptr;
 	Token *p2Last=nullptr;
-	int loadInternal(const std::string &script_file , const std::string &script_path , ListPosition wp);
+	int loadInternal(const std::string &script_file , const std::string &script_path , ListPosition wp, const std::string &key);
 
 	/* 
 	 * adds the given Token in the queue named pFirst
