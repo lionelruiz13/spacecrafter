@@ -6746,6 +6746,7 @@ of readings taken on the code as it stands.
     bash f131_run.sh 2|3|4 both              # fly_to_selected.sts as played (the race is won here)
     bash f131_run.sh 2|3|4 both --refuse     # the lost race forced: line 38 at 2.9 s, inside the travel
     bash f131_run.sh 5 both                  # the wheel: the two fovs of each frame
+    bash f131_run.sh 6 both                  # the fov slice's pair: the equator LINE over the GRID's equator mid-zoom (F146, INTENT 11.317)
     bash f131_run.sh all on|off|both [--refuse]
 
 `on` = the new path pinned, `off` = the old one, `both` = new then old. The runner runs the
@@ -6754,6 +6755,8 @@ probe, GPU gate, field pair in == out; its refusals stop the run, exit 7), then 
 judge` per launch and `cross` across the pins. `SC_BIN` = another binary. Records:
 `artifacts/f131/runs/<clock>/` (`summary.txt` = every verdict line, one directory per launch, the
 canary's). Exit 0 = every gate row PASS, 1 = a gate FAIL.
+
+**Observation 6** (F146, INTENT 11.317 (2)) reads the fov slice's PAIR: the red equator line's radius over the blue grid's equator ring at `cap_mid` of a 180 -> 60 zoom (gate `near 1.00 +- 0.02`; the rest captures are notes), the ratio read along the hour circle through the line's culmination against the parallels' arithmetic progression, because the line hides the ring exactly where they coincide. Its scene is `look_at azimuth 180 altitude 25`, landscape off, pure colours - NOT O5's zenith, where the equator is out of the field at fov 60. Measured 2026-10-11: new pin 1.397 after step 1 alone, 1.000142 after both steps; old pin 1.000 throughout. The w-rows of observation 5 (`max_abs_delta_w1..w9_deg`, the two engines' separation per wheel window) are banked on the H6 law since F146 and SAMPLE at frame phase: their run-to-run spread on one binary reaches their 5 % band (old w1 25.33 / 26.10 / 26.81 on one law), so a single red w-row is read with a second run before it is a finding (INTENT 11.317 (2), Q3).
 
 **Reading the verdicts.** `PASS|FAIL|NOTE <obs> <pin> <criterion> observed=<v> expected=<v> tol=<t>`
 (`<obs>` = `2ref` for the refuse variant; `<pin>` = `x` across the pins). EXPECTED is the BANK, the

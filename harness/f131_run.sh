@@ -1,7 +1,7 @@
 #!/bin/bash
 # Run F131's legs as gates: launch each leg per pin through f124_run.sh, judge it with f131_analyse.py, print its verdict lines.
 #
-#   bash f131_run.sh <1-5|all> <on|off|both> [--refuse]
+#   bash f131_run.sh <1-6|all> <on|off|both> [--refuse]
 #   on = the new path pinned, off = the old path, both = new then old; --refuse (obs 2-4): the tester's lines sent as commands,
 #   line 38 inside the travel - the lost race, which the natural launch has never reached on this host.
 #
@@ -16,8 +16,8 @@ usage() { sed -n '4,6p' "$0" >&2; exit 2; }
 OBS=$1; PIN=$2; VAR=nat
 if [ $# -eq 3 ]; then [ "$3" = "--refuse" ] || usage; VAR=ref; fi
 case "$OBS" in
-    all) LIST="1 2 3 4 5"; [ "$VAR" = ref ] && LIST="2 3 4" ;;
-    1|5) LIST=$OBS; [ "$VAR" = ref ] && { echo "--refuse applies to obs 2, 3, 4" >&2; exit 2; } ;;
+    all) LIST="1 2 3 4 5 6"; [ "$VAR" = ref ] && LIST="2 3 4" ;;
+    1|5|6) LIST=$OBS; [ "$VAR" = ref ] && { echo "--refuse applies to obs 2, 3, 4" >&2; exit 2; } ;;
     2|3|4) LIST=$OBS ;;
     *) usage ;;
 esac

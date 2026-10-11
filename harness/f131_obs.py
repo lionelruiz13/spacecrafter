@@ -2,7 +2,7 @@
 # F131 - the tester's five observations of 2026-09-26, one scene per observation, per pinned path.
 #
 #   umask 0002; F124_OUT_ROOT=$PWD/artifacts/f131 SC_SEAM_RECORD=1 \
-#     bash f124_run.sh <label> f131_obs.py --obs 1|2|3|4|5 --pin on|off
+#     bash f124_run.sh <label> f131_obs.py --obs 1|2|3|4|5|6 --pin on|off
 #
 # Plays the tester's scripts as his keys play them (`script action play`, the same ScriptMgr::playScript
 # as ui.cpp:2429 / 2536), the wheel as the command that makes the wheel's call (CoreLink::zoomTo), the
@@ -18,7 +18,7 @@ import b3_ladder as B
 
 ap = argparse.ArgumentParser()
 ap.add_argument("out"); ap.add_argument("gdbpid", type=int); ap.add_argument("fifo")
-ap.add_argument("--obs", required=True, type=int, choices=[1, 2, 3, 4, 5])
+ap.add_argument("--obs", required=True, type=int, choices=[1, 2, 3, 4, 5, 6])
 ap.add_argument("--pin", required=True, choices=["on", "off"])
 ap.add_argument("--refuse", action="store_true", help="send the script's lines, line 38 inside the travel (the lost race)")
 ARGS = ap.parse_args()
@@ -33,6 +33,7 @@ NIGHT_JD = 2461233.5        # f128_legs.py: night at the default site, the band 
 FADE = 5.0                  # s after a milky way switch (config fader 2 s)
 MOUSE_ZOOM = 30             # config.ini mouse_zoom, read by ui.cpp:124
 WHEEL_S = 0.2               # the wheel's duration, ui.cpp:450 / 453
+O6_VIEW = (180, 25)         # obs 6 look_at azimuth, altitude (deg): the equator in the field from fov 180 to 60
 LOGDIR = os.path.expanduser("~/.spacecrafter/log")
 
 _src = HERE + "/f124_legs.py"
@@ -209,6 +210,28 @@ def obs5():
     json.dump({"wheel_aims": WHEEL_LOG}, open(OUT + "/wheel_aims.json", "w"), indent=1)
 
 
+def obs6():
+    """Draw the equator line red over the equatorial grid blue, looking south, and capture the zoom 180 -> 60 at rest, mid-ramp and rest."""
+    send("date jday %s" % NIGHT_JD, 1)
+    send("timerate rate 0", 1)
+    send("deselect", 1)
+    send("flag landscape off", 1)
+    send("color property equator_line r 1 g 0 b 0", 0.5)
+    send("color property equator_grid r 0 g 0 b 1", 0.5)
+    send("flag equatorial_grid on", 0.5)
+    send("flag equator_line on", 0.5)
+    send("look_at azimuth %d altitude %d duration 0" % O6_VIEW, 2)
+    send("zoom fov 180 duration 0", 3)
+    hdr, _ = dump("pre")
+    json.dump({"look_at_azimuth_deg": O6_VIEW[0], "look_at_altitude_deg": O6_VIEW[1],
+               "latitude_deg": hdr["control"]["latitude"]["reported"]}, open(OUT + "/o6_scene.json", "w"), indent=1)
+    shot("cap_rest180")
+    send("zoom fov 60 duration 3", 1.2)
+    shot("cap_mid"); dump("cap_mid", 1.0)
+    time.sleep(4)
+    shot("cap_rest60"); dump("final")
+
+
 def copy_logs():
     """Copy the running launch's log channels into the record."""
     for ch in ("spacecrafter", "script"):
@@ -222,7 +245,7 @@ S = B.wait_port(30)
 LOST = None
 try:
     pin()
-    {1: obs1, 2: obs2, 3: obs3, 4: obs4, 5: obs5}[ARGS.obs]()
+    {1: obs1, 2: obs2, 3: obs3, 4: obs4, 5: obs5, 6: obs6}[ARGS.obs]()
     if ARGS.obs in (2, 3, 4):
         dump("final")
 except SceneNotReached as e:

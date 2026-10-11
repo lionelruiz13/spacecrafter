@@ -9,7 +9,7 @@
 import ast, functools, json, math, os, re, sys
 import numpy as np
 from PIL import Image
-from scipy.ndimage import gaussian_filter, maximum_filter, median_filter
+from scipy.ndimage import gaussian_filter, map_coordinates, maximum_filter, median_filter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -135,23 +135,23 @@ BANK = """
 5   nat both scene_reached                        gate  eq          reached      -
 5   nat both wheel_windows                        gate  eq          9            -
 5   nat new  max_abs_delta_w1_deg                 gate  rel         26.8089      5%
-5   nat new  max_abs_delta_w2_deg                 gate  rel         25.0518      5%
-5   nat new  max_abs_delta_w3_deg                 gate  rel         20.1385      5%
+5   nat new  max_abs_delta_w2_deg                 gate  rel         25.0947      5%
+5   nat new  max_abs_delta_w3_deg                 gate  rel         19.5333      5%
 5   nat new  max_abs_delta_w4_deg                 gate  rel         9.7864       5%
-5   nat new  max_abs_delta_w5_deg                 gate  rel         4.8932       5%
+5   nat new  max_abs_delta_w5_deg                 gate  rel         5.1681       5%
 5   nat new  max_abs_delta_w6_deg                 gate  rel         4.6489       5%
-5   nat new  max_abs_delta_w7_deg                 gate  rel         6.9733       5%
-5   nat new  max_abs_delta_w8_deg                 gate  rel         10.5868      5%
+5   nat new  max_abs_delta_w7_deg                 gate  rel         7.0579       5%
+5   nat new  max_abs_delta_w8_deg                 gate  rel         10.5085      5%
 5   nat new  max_abs_delta_w9_deg                 gate  rel         45.7145      5%
-5   nat old  max_abs_delta_w1_deg                 gate  rel         26.0971      5%
-5   nat old  max_abs_delta_w2_deg                 gate  rel         24.7940      5%
-5   nat old  max_abs_delta_w3_deg                 gate  rel         19.5728      5%
-5   nat old  max_abs_delta_w4_deg                 gate  rel         10.0533      5%
-5   nat old  max_abs_delta_w5_deg                 gate  rel         4.8932       5%
-5   nat old  max_abs_delta_w6_deg                 gate  rel         4.6972       5%
-5   nat old  max_abs_delta_w7_deg                 gate  rel         7.0579       5%
-5   nat old  max_abs_delta_w8_deg                 gate  rel         10.5868      5%
-5   nat old  max_abs_delta_w9_deg                 gate  rel         45.7140      5%
+5   nat old  max_abs_delta_w1_deg                 gate  rel         25.3326      5%
+5   nat old  max_abs_delta_w2_deg                 gate  rel         25.1531      5%
+5   nat old  max_abs_delta_w3_deg                 gate  rel         19.5333      5%
+5   nat old  max_abs_delta_w4_deg                 gate  rel         9.7667       5%
+5   nat old  max_abs_delta_w5_deg                 gate  rel         5.1587       5%
+5   nat old  max_abs_delta_w6_deg                 gate  rel         4.6517       5%
+5   nat old  max_abs_delta_w7_deg                 gate  rel         6.9841       5%
+5   nat old  max_abs_delta_w8_deg                 gate  rel         10.5085      5%
+5   nat old  max_abs_delta_w9_deg                 gate  rel         45.7912      5%
 5   nat new  lag_w1_ms                            gate  near        -34          20
 5   nat new  lag_w2_ms                            gate  near        67           20
 5   nat new  lag_w3_ms                            gate  near        -33          20
@@ -182,6 +182,10 @@ BANK = """
 5   nat x    stars_corr_cap_rest180               note  near        0.9973       0.1
 5   nat x    band_corr_cap_rest60                 note  near        0.9999       0.005
 5   nat x    stars_corr_cap_rest60                note  near        0.9952       0.1
+6   nat both scene_reached                        gate  eq          reached      -
+6   nat both line_over_grid_cap_mid               gate  near        1.00         0.02
+6   nat both line_over_grid_cap_rest60            note  near        1.00         0.02
+6   nat both line_over_grid_cap_rest180           note  near        1.00         0.02
 """
 # The bank's `late` frame for the earth rows: its jd and the signed separation (deg) of the two observers about Earth's axis.
 EARTH_BANK = (2461310.2805862916, 16.5972)
@@ -545,6 +549,102 @@ def obs5(d, var, pin):
     return got
 
 
+def runs(profile, thr=60.0, step=0.25, maxlen=8.0):
+    """Return (centre px, weight) of each run of profile above thr no longer than maxlen px: a ray's crossings with thin curves."""
+    above, out, i = profile > thr, [], 0
+    while i < len(profile):
+        if not above[i]:
+            i += 1
+            continue
+        j = i
+        while j < len(profile) and above[j]:
+            j += 1
+        w = profile[i:j] - thr
+        if (j - i) * step <= maxlen:
+            out.append((float((np.arange(i, j) * w).sum() / w.sum()) * step, float(w.sum() * step)))
+        i = j
+    return out
+
+
+def progression(ts):
+    """Fit t = a + d k to crossings that may skip members: the largest spacing keeping the most crossings within 2 px."""
+    ts, best = np.array(sorted(ts)), None
+    for i in range(len(ts)):
+        for j in range(i + 1, len(ts)):
+            if ts[j] - ts[i] < 10:
+                continue
+            k = np.round((ts - ts[i]) / (ts[j] - ts[i]))
+            (a, d), *_ = np.linalg.lstsq(np.vstack([np.ones_like(k), k]).T, ts, rcond=None)
+            key = (int((np.abs(ts - a - d * k) < 2.0).sum()), d)
+            if best is None or key > best[0]:
+                best = (key, float(a), float(d), [int(x) for x in k])
+    return best
+
+
+def view_axis_decs(d):
+    """Return the declinations (deg) of the two engines' view axes in the scene's first dump: {navigator, camera}."""
+    h = load(d, "pre")[0]
+    ev = np.array(h["oldView"]["nav"]["equVision"])
+    m = np.array(h["camera"]["mat"]).reshape(4, 4).T
+    f = m[:3, :3].T @ np.array([0.0, 0.0, -1.0])
+    return {"navigator": math.degrees(math.asin(ev[2] / np.linalg.norm(ev))),
+            "camera": math.degrees(math.asin(f[2] / np.linalg.norm(f)))}
+
+
+@functools.lru_cache(maxsize=None)
+def line_over_grid(d, tag):
+    """Return the equator line's distance from the screen centre over the grid's equator ring's, read along the hour circle
+    through the line's culmination (the fisheye's radius is linear in the angle there, so the grid's parallels, 10 deg apart,
+    cross it as an arithmetic progression). The ring is the member at the drawn frame's equator distance |dec of the view
+    axis|; which engine's frame drew the grid is read from the progression's phase. The ring is placed whether drawn or
+    hidden under a coinciding line (the line draws after the grid)."""
+    rgb, _ = load_png("%s/%s.png" % (d, tag))
+    rgb = rgb.astype(np.float64)
+    red = rgb[..., 0] - np.maximum(rgb[..., 1], rgb[..., 2])
+    blue = rgb[..., 2] - np.maximum(rgb[..., 0], rgb[..., 1])
+    n = red.shape[0]
+    c = (n - 1) / 2.0
+    ys, xs = np.nonzero(red > 60)
+    near = np.argsort(np.hypot(xs - c, ys - c))[:20]
+    u = np.array([xs[near].mean() - c, ys[near].mean() - c])
+    u /= np.linalg.norm(u)
+    t = np.arange(0, n / 2.0, 0.25)
+    def profile(img):
+        best = np.full(t.shape, -1e9)
+        for off in (-2, -1, 0, 1, 2):
+            x, y = c + t * u[0] - off * u[1], c + t * u[1] + off * u[0]
+            best = np.maximum(best, map_coordinates(img, [y, x], order=1, mode="constant", cval=0))
+        return best
+    reds, blues = runs(profile(red)), runs(profile(blue))
+    line = max(reds, key=lambda r: r[1])[0]
+    (inliers, _), a, dd, ks = progression([b[0] for b in blues])
+    phase = (10.0 * a / dd) % 10.0
+    match = {}
+    for engine, dec in view_axis_decs(d).items():
+        miss = (abs(dec) - phase + 5.0) % 10.0 - 5.0
+        match[engine] = (abs(miss), abs(dec), dec)
+    engine = min(match, key=lambda e: match[e][0])
+    k_ring = int(round((match[engine][1] * dd / 10.0 - a) / dd))
+    ring = a + dd * k_ring
+    rec = {"ray": u.tolist(), "red_runs": reds, "blue_runs": blues, "spacing_px": dd, "offset_px": a, "members": ks,
+           "inliers": inliers, "phase_deg": phase, "frames": {e: {"axis_dec_deg": v[2], "phase_miss_deg": v[0]}
+           for e, v in match.items()}, "grid_frame": engine, "ring_member": k_ring, "ring_drawn": k_ring in ks,
+           "line_px": line, "ring_px": ring, "ratio": line / ring}
+    json.dump(rec, open("%s/o6_%s.json" % (d, tag), "w"), indent=1)
+    if match[engine][0] > 1.0 or inliers < 2:
+        raise ValueError("no ring placed: phase %.2f deg matches no engine's axis (%s), %d members" % (
+            phase, ", ".join("%s %.2f" % (e, v[1]) for e, v in match.items()), inliers))
+    return line / ring
+
+
+def obs6(d, var, pin):
+    """Measure observation 6: the equator line against the grid's equator, mid-zoom and at rest."""
+    got = {}
+    for tag in ("cap_mid", "cap_rest60", "cap_rest180"):
+        measure(got, "line_over_grid_" + tag, lambda tag=tag: line_over_grid(d, tag))
+    return got
+
+
 def across(obs, dn, do):
     """Measure the criteria that compare the two pins' records of one leg."""
     got = {}
@@ -605,9 +705,9 @@ def verdicts(obs, var, pin, got):
 
 
 def main(argv):
-    obs_ok = lambda a: a[1] in "12345" and len(a[1]) == 1 and a[2] in ("nat", "ref")
+    obs_ok = lambda a: a[1] in "123456" and len(a[1]) == 1 and a[2] in ("nat", "ref")
     if len(argv) == 5 and argv[0] == "judge" and obs_ok(argv) and argv[3] in ("new", "old"):
-        got = {"1": obs1, "2": obs2, "3": obs3, "4": obs4, "5": obs5}[argv[1]](argv[4], argv[2], argv[3])
+        got = {"1": obs1, "2": obs2, "3": obs3, "4": obs4, "5": obs5, "6": obs6}[argv[1]](argv[4], argv[2], argv[3])
         measure(got, "scene_reached", lambda: scene(argv[4]))
         return 1 if verdicts(argv[1], argv[2], argv[3], got) else 0
     if len(argv) == 5 and argv[0] == "cross" and obs_ok(argv):
