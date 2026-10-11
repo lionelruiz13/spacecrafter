@@ -88,10 +88,14 @@ def main(argv):
         last_end = s + c - 1
 
     # the unit ids must be the section/note headers they claim: the dispatch
-    # file's three id forms keep their exact rule (a task section F<n>, a session
-    # note update-s<n>, a section-3 "For Vixy" block forvixy-s<n> whose first line
-    # is its "- **Session-<n> " bullet -- the open residue of such a block is
-    # EXTRACTED into the live list before the body leaves, 2026-10-10, Q-110);
+    # file's id forms keep their rule (a task section F<n>, a session note
+    # update-s<n>, a section-3 "For Vixy" block forvixy-<slug> whose first line is
+    # its "- **" bullet -- the open residue of such a block is EXTRACTED into the
+    # live list before the body leaves, 2026-10-10, Q-110; a section-1 index run-on
+    # index-<slug> starting on its own emphasised line; a protocol body
+    # protocol-<slug> from sections 0 / 0b, split onto its own lines by a prior
+    # modification commit -- its head is whatever that split left, so the manifest
+    # carries it and the dispatcher answers for the cut);
     # any other source's unit must begin on a markdown heading or an update note
     # (a cut inside a unit fails).
     for ident, s, c in units:
@@ -99,7 +103,9 @@ def main(argv):
         if SRC == "fable-dispatch.md":
             ok = (ident.startswith("F") and head.startswith(f"### {ident} ")) or \
                  (ident.startswith("update-s") and head.startswith("**Update [")) or \
-                 (ident.startswith("forvixy-s") and head.startswith(f"- **Session-{ident[9:]} "))
+                 (ident.startswith("forvixy-") and head.startswith("- **")) or \
+                 (ident.startswith("index-") and head.startswith("*")) or \
+                 ident.startswith("protocol-")
         else:
             ok = head.startswith("#") or head.startswith("**Update")
         if not ok:
