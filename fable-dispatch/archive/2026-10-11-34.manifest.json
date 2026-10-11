@@ -1,0 +1,36 @@
+{
+ "pass": "34",
+ "date": "2026-10-11",
+ "source": "fable-dispatch.md",
+ "pre_md5": "8c667c4219c1f6c61381fd85a07c4045",
+ "pre_commit": "b1b6928",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [
+  {
+   "removed_after_unit": "F140",
+   "lines": [
+    "",
+    "---",
+    ""
+   ],
+   "positions_pre": [
+    368,
+    369,
+    370
+   ],
+   "reason": "the moved unit sat between two --- separators; removing it leaves them doubled (pass-13..19 precedent)."
+  }
+ ],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "F140",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F140.md",
+   "line_start": 296,
+   "line_count": 72,
+   "payload_md5": "8de44a8fd44cd37906c6c0db9fba297d"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}

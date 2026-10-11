@@ -420,7 +420,7 @@ def leg_Z():
              % (tag, tap["fov_old"], tap["fov_new"], tap["auto_zoom"], tap["zoom_duration"]))
         time.sleep(24)
         rest = state(tag + "_rest")
-        check("RESID_%s_engines_end_apart_at_rest" % tag, abs(rest["fov_old"] - 20.0) < 1e-3 and abs(rest["fov_new"] - 20.0) > 1.0,
+        check("%s_engines_rest_together" % tag, abs(rest["fov_old"] - 20.0) < 1e-3 and abs(rest["fov_new"] - rest["fov_old"]) < 1e-4,
               "wheel-style plan 60 -> 20 with one key step %s: at rest projector %.4f, camera %.4f deg (apart by %.4f)"
               % (way, rest["fov_old"], rest["fov_new"], abs(rest["fov_new"] - rest["fov_old"])))
 
