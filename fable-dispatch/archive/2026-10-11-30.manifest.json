@@ -1,0 +1,533 @@
+{
+ "pass": "30",
+ "date": "2026-10-11",
+ "source": "fable-dispatch.md",
+ "pre_md5": "ff604bed2b0c43ef3c600455a13b850f",
+ "pre_commit": "e74f850",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "forvixy-s34",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s34.md",
+   "line_start": 857,
+   "line_count": 30,
+   "payload_md5": "b928071c3d8eeae725446623e6849f52"
+  },
+  {
+   "id": "forvixy-s32",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s32.md",
+   "line_start": 887,
+   "line_count": 41,
+   "payload_md5": "4415d7b064f8efcb6965c6eb4f113f68"
+  },
+  {
+   "id": "forvixy-s31",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s31.md",
+   "line_start": 928,
+   "line_count": 94,
+   "payload_md5": "837312c0bcde316b6e705014b1985519"
+  },
+  {
+   "id": "forvixy-s30",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s30.md",
+   "line_start": 1022,
+   "line_count": 105,
+   "payload_md5": "ea6f70f5347775df32ab7c00e22fa334"
+  },
+  {
+   "id": "forvixy-s29",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s29.md",
+   "line_start": 1127,
+   "line_count": 2,
+   "payload_md5": "30c2ac98f78f004250afa66f11207a80"
+  },
+  {
+   "id": "forvixy-f110",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-f110.md",
+   "line_start": 1129,
+   "line_count": 181,
+   "payload_md5": "daf36a3237970a775d1b706d2520e0d5"
+  },
+  {
+   "id": "forvixy-s28",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s28.md",
+   "line_start": 1310,
+   "line_count": 124,
+   "payload_md5": "cae734971ec1291bd2e97e8e6f1bb3a8"
+  },
+  {
+   "id": "forvixy-s27",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s27.md",
+   "line_start": 1434,
+   "line_count": 129,
+   "payload_md5": "47088f419f2d49ce84acb40c7da4d45a"
+  },
+  {
+   "id": "forvixy-s26",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s26.md",
+   "line_start": 1563,
+   "line_count": 104,
+   "payload_md5": "74f13b779607a8ba42ade047105e4d76"
+  },
+  {
+   "id": "forvixy-s25",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s25.md",
+   "line_start": 1667,
+   "line_count": 97,
+   "payload_md5": "8e58089b33c9f674b385069fd0a19d40"
+  },
+  {
+   "id": "forvixy-s24",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s24.md",
+   "line_start": 1764,
+   "line_count": 72,
+   "payload_md5": "829752d34837f9f8702bcbddb31395ba"
+  },
+  {
+   "id": "forvixy-s23",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s23.md",
+   "line_start": 1836,
+   "line_count": 83,
+   "payload_md5": "74cdcba9a61ed5bf8a058c953732a89e"
+  },
+  {
+   "id": "forvixy-rename",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-rename.md",
+   "line_start": 1919,
+   "line_count": 21,
+   "payload_md5": "c5c62913bc6edefef1cc35e961052334"
+  },
+  {
+   "id": "forvixy-s22",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s22.md",
+   "line_start": 1940,
+   "line_count": 55,
+   "payload_md5": "6486aad23918ed2b74f4f25c489d388c"
+  },
+  {
+   "id": "forvixy-s21",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s21.md",
+   "line_start": 1995,
+   "line_count": 101,
+   "payload_md5": "99071b0130d13b907d8c673bdaeae2f4"
+  },
+  {
+   "id": "forvixy-s20",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s20.md",
+   "line_start": 2096,
+   "line_count": 65,
+   "payload_md5": "128d69e4c2a49a12f870d267d12469df"
+  },
+  {
+   "id": "forvixy-s19",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s19.md",
+   "line_start": 2161,
+   "line_count": 99,
+   "payload_md5": "fa72b9900576d0b14d99a937d2fcd490"
+  },
+  {
+   "id": "forvixy-s18",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s18.md",
+   "line_start": 2260,
+   "line_count": 85,
+   "payload_md5": "3c634e5ee64a21c02defa90a4d79b606"
+  },
+  {
+   "id": "forvixy-s17",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s17.md",
+   "line_start": 2345,
+   "line_count": 55,
+   "payload_md5": "3e60af6c5ef3c90c20495198363650bb"
+  },
+  {
+   "id": "forvixy-s17-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s17-veto.md",
+   "line_start": 2400,
+   "line_count": 12,
+   "payload_md5": "56eb7fa1896a04090752ebeb624f5a7a"
+  },
+  {
+   "id": "forvixy-s17-equalize",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s17-equalize.md",
+   "line_start": 2412,
+   "line_count": 12,
+   "payload_md5": "9b71d9e935555a36248d7065cf168f81"
+  },
+  {
+   "id": "forvixy-s16",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s16.md",
+   "line_start": 2424,
+   "line_count": 43,
+   "payload_md5": "c72973030490c191bc21304e40dba430"
+  },
+  {
+   "id": "forvixy-s16-equalize",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s16-equalize.md",
+   "line_start": 2467,
+   "line_count": 12,
+   "payload_md5": "0db4de8953aba4362e3376b4abd2af29"
+  },
+  {
+   "id": "forvixy-s15",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s15.md",
+   "line_start": 2479,
+   "line_count": 38,
+   "payload_md5": "a002eafbc1c0f62a723b8945f0c4981e"
+  },
+  {
+   "id": "forvixy-s15-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s15-veto.md",
+   "line_start": 2517,
+   "line_count": 13,
+   "payload_md5": "0bd58ee344e115df4a47821ef7b3a738"
+  },
+  {
+   "id": "forvixy-s15-equalize",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s15-equalize.md",
+   "line_start": 2530,
+   "line_count": 12,
+   "payload_md5": "ff7ce4e5bc342bcda40afd4d38d7dbbe"
+  },
+  {
+   "id": "forvixy-s15-awareness",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s15-awareness.md",
+   "line_start": 2542,
+   "line_count": 42,
+   "payload_md5": "3ad36ef78ea6ee594f9fe92424aa5478"
+  },
+  {
+   "id": "forvixy-s14-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s14-veto.md",
+   "line_start": 2584,
+   "line_count": 17,
+   "payload_md5": "ca3f5419ce3c90d7b44a81872c4cebdb"
+  },
+  {
+   "id": "forvixy-s14-awareness",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s14-awareness.md",
+   "line_start": 2601,
+   "line_count": 9,
+   "payload_md5": "6fb8df41c0c025e6b707fdd270ec08c6"
+  },
+  {
+   "id": "forvixy-s13-still-open",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s13-still-open.md",
+   "line_start": 2610,
+   "line_count": 3,
+   "payload_md5": "ea50f5eb89a21ff716491a9f47589320"
+  },
+  {
+   "id": "forvixy-deployment-map",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-deployment-map.md",
+   "line_start": 2613,
+   "line_count": 10,
+   "payload_md5": "3d7087d29e65b882470317c0405e09fb"
+  },
+  {
+   "id": "forvixy-s13",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s13.md",
+   "line_start": 2623,
+   "line_count": 38,
+   "payload_md5": "dd7bad766a6401f18d9fa3db007e44a1"
+  },
+  {
+   "id": "forvixy-s13-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s13-veto.md",
+   "line_start": 2661,
+   "line_count": 12,
+   "payload_md5": "f9df538ef4a9d40172b5a856975530c5"
+  },
+  {
+   "id": "forvixy-s13-awareness",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s13-awareness.md",
+   "line_start": 2673,
+   "line_count": 9,
+   "payload_md5": "fcfe6446f0889f7944addd9aab20d555"
+  },
+  {
+   "id": "forvixy-s13-equalize",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s13-equalize.md",
+   "line_start": 2682,
+   "line_count": 28,
+   "payload_md5": "a185e569215ec709c3e5d3854cdf96ef"
+  },
+  {
+   "id": "forvixy-s12-data",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s12-data.md",
+   "line_start": 2710,
+   "line_count": 62,
+   "payload_md5": "2ae90d59728643ffbd96b9cbea948f21"
+  },
+  {
+   "id": "forvixy-s12-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s12-veto.md",
+   "line_start": 2772,
+   "line_count": 12,
+   "payload_md5": "383224b60b204e1a8167cac08dd93dad"
+  },
+  {
+   "id": "forvixy-s11-data",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s11-data.md",
+   "line_start": 2784,
+   "line_count": 36,
+   "payload_md5": "34f93390f412dd1b27d9d1dd76239477"
+  },
+  {
+   "id": "forvixy-s11-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s11-veto.md",
+   "line_start": 2820,
+   "line_count": 18,
+   "payload_md5": "a5b9143f30d29e08f87a66f9028ec451"
+  },
+  {
+   "id": "forvixy-s10-data",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s10-data.md",
+   "line_start": 2838,
+   "line_count": 41,
+   "payload_md5": "3f94c2561d7d2267b051e67dfa18697a"
+  },
+  {
+   "id": "forvixy-s10-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s10-veto.md",
+   "line_start": 2879,
+   "line_count": 10,
+   "payload_md5": "e694910b898d049a2c0b498d58f1fbc7"
+  },
+  {
+   "id": "forvixy-s10-awareness",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s10-awareness.md",
+   "line_start": 2889,
+   "line_count": 24,
+   "payload_md5": "07b31948d9a56c1fe1b58f8e81b5e0f4"
+  },
+  {
+   "id": "forvixy-decision-batches",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-decision-batches.md",
+   "line_start": 2913,
+   "line_count": 36,
+   "payload_md5": "4eb33e43641c72369257545564ea141d"
+  },
+  {
+   "id": "forvixy-s4-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s4-veto.md",
+   "line_start": 2949,
+   "line_count": 8,
+   "payload_md5": "bf9e644a85759a4a3e58ba4418eb7b7a"
+  },
+  {
+   "id": "forvixy-5-49",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-5-49.md",
+   "line_start": 2957,
+   "line_count": 6,
+   "payload_md5": "c57cdb44283d5478d1d39cc7c3f13e2a"
+  },
+  {
+   "id": "forvixy-s5-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s5-veto.md",
+   "line_start": 2963,
+   "line_count": 8,
+   "payload_md5": "42173c4e6d289bc7e4dc697abdc707e4"
+  },
+  {
+   "id": "forvixy-b12-content",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-b12-content.md",
+   "line_start": 2971,
+   "line_count": 6,
+   "payload_md5": "8d2e61761efcc4cd21e462d04cd9fbd1"
+  },
+  {
+   "id": "forvixy-a40",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-a40.md",
+   "line_start": 2977,
+   "line_count": 11,
+   "payload_md5": "a04c42944277607d053d6111932cfe39"
+  },
+  {
+   "id": "forvixy-5-60",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-5-60.md",
+   "line_start": 2988,
+   "line_count": 4,
+   "payload_md5": "2cd1d4269447115880eff1239348a6af"
+  },
+  {
+   "id": "forvixy-s6-decision",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s6-decision.md",
+   "line_start": 2992,
+   "line_count": 9,
+   "payload_md5": "23d6e024411913827b1c7deb779bee0c"
+  },
+  {
+   "id": "forvixy-s7-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s7-veto.md",
+   "line_start": 3001,
+   "line_count": 11,
+   "payload_md5": "097e9cb14cad42a2f98daf38ac934687"
+  },
+  {
+   "id": "forvixy-s7-rows",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s7-rows.md",
+   "line_start": 3012,
+   "line_count": 10,
+   "payload_md5": "ac8e763a86df1ee4b069e7a496592c8c"
+  },
+  {
+   "id": "forvixy-b31-s7",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-b31-s7.md",
+   "line_start": 3022,
+   "line_count": 7,
+   "payload_md5": "b5a27b54465ca50188cf415f1c6fc6e5"
+  },
+  {
+   "id": "forvixy-5-62",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-5-62.md",
+   "line_start": 3029,
+   "line_count": 5,
+   "payload_md5": "4b185e047c0ce43453029e8785782dec"
+  },
+  {
+   "id": "forvixy-host-note",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-host-note.md",
+   "line_start": 3034,
+   "line_count": 12,
+   "payload_md5": "1ad1b5cb4acd4c1c5159b65c17ae3f79"
+  },
+  {
+   "id": "forvixy-s8-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s8-veto.md",
+   "line_start": 3046,
+   "line_count": 13,
+   "payload_md5": "41b8d7e9e000cb0c8f83ce0f785f42ca"
+  },
+  {
+   "id": "forvixy-s8-rows",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s8-rows.md",
+   "line_start": 3059,
+   "line_count": 7,
+   "payload_md5": "bde71604bfa53b54dff4ddf51e1e4243"
+  },
+  {
+   "id": "forvixy-s8-awareness",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s8-awareness.md",
+   "line_start": 3066,
+   "line_count": 7,
+   "payload_md5": "305e7e9002fdae72ec882e3679ff84c4"
+  },
+  {
+   "id": "forvixy-b31-s8",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-b31-s8.md",
+   "line_start": 3073,
+   "line_count": 6,
+   "payload_md5": "5acecd686c1dd0d3d11eea24b9db22ac"
+  },
+  {
+   "id": "forvixy-b33-closed",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-b33-closed.md",
+   "line_start": 3079,
+   "line_count": 6,
+   "payload_md5": "562684151a92f31dd1bec627e0be42a9"
+  },
+  {
+   "id": "forvixy-s9-veto",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s9-veto.md",
+   "line_start": 3085,
+   "line_count": 15,
+   "payload_md5": "138854cb8148edbbe4d27911882df9c0"
+  },
+  {
+   "id": "forvixy-s9-rows",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s9-rows.md",
+   "line_start": 3100,
+   "line_count": 7,
+   "payload_md5": "f2474d2799589b04139ddde63b4a75fa"
+  },
+  {
+   "id": "forvixy-s9-awareness",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-s9-awareness.md",
+   "line_start": 3107,
+   "line_count": 13,
+   "payload_md5": "f80facdad9211871f5265dfc6b18c202"
+  },
+  {
+   "id": "forvixy-b34-closed",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-b34-closed.md",
+   "line_start": 3120,
+   "line_count": 8,
+   "payload_md5": "eea462a010690c9ecf6b85917f7f2feb"
+  },
+  {
+   "id": "forvixy-get-status",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/forvixy-get-status.md",
+   "line_start": 3128,
+   "line_count": 4,
+   "payload_md5": "a5d9a054d38f09bf6b1dcf429e38d05e"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}
