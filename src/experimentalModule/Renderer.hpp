@@ -78,6 +78,14 @@ public:
     inline static float getViewportRadius() {
         return viewportRadius;
     }
+    // Return the centre of the render rect in px, written by init only
+    inline static const Vec2f &getViewportCenter() {
+        return viewportCenter;
+    }
+    // Return the 2D projection of the render rect in px, written by init only
+    inline static const Mat4f &getMvp2D() {
+        return mvp2D;
+    }
     // Convert a length between screenSize units (1 = the viewport radius) and render px
     inline static float toPx(float screenSize) {
         return screenSize * viewportRadius;
@@ -129,6 +137,8 @@ private:
     void allocateCommands();
     void nextCommandBuffer();
     static float viewportRadius;
+    static Vec2f viewportCenter;
+    static Mat4f mvp2D;
     PipelineFamily haloFamily;
     PipelineFamily hintFamily;
     PipelineFamily pointerFamily;

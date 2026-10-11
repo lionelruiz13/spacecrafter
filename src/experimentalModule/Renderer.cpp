@@ -15,6 +15,8 @@
 
 bool Renderer::showPointer = false; // mirrored from Core::object_pointer_visibility
 float Renderer::viewportRadius = 1;
+Vec2f Renderer::viewportCenter;
+Mat4f Renderer::mvp2D;
 
 Renderer::Renderer()
 {
@@ -26,6 +28,9 @@ void Renderer::init(ToneReproductor *_eye)
     eye = _eye;
     const VkRect2D &rect = VulkanMgr::instance->getScreenRect();
     viewportRadius = std::min(rect.extent.width, rect.extent.height) * 0.5f;
+    viewportCenter = Vec2f(rect.offset.x + rect.extent.width * 0.5f, rect.offset.y + rect.extent.height * 0.5f);
+    mvp2D = Mat4f::ortho2D(rect.offset.x, rect.offset.x + rect.extent.width,
+                           rect.offset.y, rect.offset.y + rect.extent.height);
     ModularBody::updateVisibilityGates();
     ensurePointerFamily();
     ensureHintFamily();
@@ -194,16 +199,13 @@ void Renderer::printGravity(s_font *font, const std::pair<float, float> &pos,
         return;
     VulkanMgr &vkmgr = *VulkanMgr::instance;
     const auto px = vkmgr.rectToRender(pos); // same anchor space as drawHint/halo
-    // Viewport centre from the scissor rect
-    const VkRect2D &rect = vkmgr.getScreenRect();
-    const float dx = px.first - (rect.offset.x + rect.extent.width * 0.5f);
-    const float dy = px.second - (rect.offset.y + rect.extent.height * 0.5f);
+    const float dx = px.first - viewportCenter[0];
+    const float dy = px.second - viewportCenter[1];
     // Too far outside the disk to be visible (old early-out, verbatim rule)
     if (sqrtf(dx*dx + dy*dy) > viewportRadius + font->getStrLen(str))
         return;
     const float theta = M_PI + atan2f(dx, dy - 1.f);
-    Mat4f mvp = Mat4f::ortho2D(rect.offset.x, rect.offset.x + rect.extent.width,
-                               rect.offset.y, rect.offset.y + rect.extent.height);
+    Mat4f mvp = mvp2D;
     mvp = mvp * Mat4f::translation(Vec3f(px.first, px.second, 0));
     mvp = mvp * Mat4f::rotation(Vec3f(0, 0, -1), -theta);
     mvp = mvp * Mat4f::translation(Vec3f(xshift, -yshift, 0));
