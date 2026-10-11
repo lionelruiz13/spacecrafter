@@ -561,9 +561,6 @@ python3 claude/harness/shape/names.py src/experimentalModule/Camera.hpp => Camer
 
 ---
 
-
----
-
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
 - **B1/S4 + B2 + riding rows** (D4 surface streaming, RING asteroid, INSTANCED
