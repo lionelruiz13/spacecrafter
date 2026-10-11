@@ -175,16 +175,16 @@ SkyLine_Pole::SkyLine_Pole(SKY_LINE_POLE_TYPE _line_pole_type, double _radius = 
 	switch (line_pole_type) {
 		case CIRCLE_POLE:
 		case POINT_POLE:
-			proj_func = &Projector::projectEarthEqu;
+			proj_func = &SkyView::projectEarthEqu;
 			break;
 		case ECLIPTIC_POLE:
-			proj_func = &Projector::projectEarthEcliptic;
+			proj_func = &SkyView::projectEarthEcliptic;
 			break;
 		case GALACTIC_POLE:
-			proj_func = &Projector::projectJ2000Galactic;
+			proj_func = &SkyView::projectJ2000Galactic;
 			break;
 		default :
-			proj_func = &Projector::projectEarthEqu;
+			proj_func = &SkyView::projectEarthEqu;
 	}
 }
 
@@ -192,7 +192,7 @@ SkyLine_Pole::~SkyLine_Pole()
 {
 }
 
-void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Pole::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -211,8 +211,8 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 		Utility::spheToRect((float)i/(50)*2.f*M_PI,radius*M_PI/180.f, circlep[i]);
 	}
 	for (int i=0; i < 50; i++) {
-		bool p1_valid = (prj->*proj_func)(circlep[i], pt1);
-		bool p2_valid = (prj->*proj_func)(circlep[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(circlep[i], pt1);
+		bool p2_valid = (view.*proj_func)(circlep[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
@@ -221,8 +221,8 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 		Utility::spheToRect((float)i/(50)*2.f*M_PI, -radius*M_PI/180.f,circlep[i]);
 	}
 	for (int i=0; i < 50; i++) {
-		bool p1_valid = (prj->*proj_func)(circlep[i], pt1);
-		bool p2_valid = (prj->*proj_func)(circlep[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(circlep[i], pt1);
+		bool p2_valid = (view.*proj_func)(circlep[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
@@ -251,7 +251,7 @@ SkyLine_Zodiac::SkyLine_Zodiac(double _radius , unsigned int _nb_segment ):
 	zod[7]="CAPRICORNUS";
 	zod[8]=" AQUARIUS";
 	zod[9]="    PISCES";
-	proj_func = &Projector::projectEarthEqu;
+	proj_func = &SkyView::projectEarthEqu;
 	derivation=0;
 }
 
@@ -259,7 +259,7 @@ SkyLine_Zodiac::~SkyLine_Zodiac()
 {
 }
 
-void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Zodiac::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 	// TODO change this condition
@@ -281,8 +281,8 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 			Utility::spheToRect(atan2(sin(alpha), sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+M_PI/2.0, asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)), punts[j+4]);
 		}
 		for (int j=0; j<8; j++) {
-			bool p1_valid = (prj->*proj_func)(punts[j], pt1);
-			bool p2_valid = (prj->*proj_func)(punts[j+1], pt2);
+			bool p1_valid = (view.*proj_func)(punts[j], pt1);
+			bool p2_valid = (view.*proj_func)(punts[j+1], pt2);
 			if (p1_valid || p2_valid) {
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
@@ -297,8 +297,8 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 		Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+M_PI/2.0,asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
 	}
 	for (int i=0; i < 48; i++) {
-		bool p1_valid = (prj->*proj_func)(punts[i], pt1);
-		bool p2_valid = (prj->*proj_func)(punts[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(punts[i], pt1);
+		bool p2_valid = (view.*proj_func)(punts[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
@@ -317,7 +317,7 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 				// TODO: center labels
 				oss << zod[((i-2)/4)+1] << "\xc2\xb0";
 
-				Mat4f MVP = prj->getMatProjectionOrtho2D();
+				Mat4f MVP = view.getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI_2-angle );
 
@@ -333,8 +333,8 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 		Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+M_PI/2.0,asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
 	}
 	for (int i=0; i < 48; i++) {
-		bool p1_valid = (prj->*proj_func)(punts[i], pt1);
-		bool p2_valid = (prj->*proj_func)(punts[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(punts[i], pt1);
+		bool p2_valid = (view.*proj_func)(punts[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
@@ -352,7 +352,7 @@ SkyLine_CircumPolar::SkyLine_CircumPolar(double _radius = 1., unsigned int _nb_s
 	SkyLine(_radius, _nb_segment)
 {
 	inclination =0;
-	proj_func = &Projector::projectEarthEqu;
+	proj_func = &SkyView::projectEarthEqu;
 	Mat4f rotation = Mat4f::xrotation(inclination*M_PI/180.f);
 
 	// Points to draw along the circle
@@ -374,7 +374,7 @@ SkyLine_CircumPolar::~SkyLine_CircumPolar()
 	punts = nullptr;
 }
 
-void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_CircumPolar::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
@@ -395,14 +395,14 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 				points[j+nb_segment+1] *= radius;
 			}
 
-			bool p1_valid = (prj->*proj_func)(points[nb_segment+1+i], pt1);
-			bool p2_valid = (prj->*proj_func)(points[nb_segment+1+i+1], pt2);
+			bool p1_valid = (view.*proj_func)(points[nb_segment+1+i], pt1);
+			bool p2_valid = (view.*proj_func)(points[nb_segment+1+i+1], pt2);
 			if(p1_valid || p2_valid) {
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
 
-			p1_valid = (prj->*proj_func)(points[i], pt1);
-			p2_valid = (prj->*proj_func)(points[i+1], pt2);
+			p1_valid = (view.*proj_func)(points[i], pt1);
+			p2_valid = (view.*proj_func)(points[i+1], pt2);
 			if(p1_valid || p2_valid) {
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
@@ -424,13 +424,13 @@ SkyLine_Analemme::SkyLine_Analemme(SKY_LINE_ANALEMME_TYPE _line_analemme_type = 
 	line_analemme_type = _line_analemme_type;
 	switch (line_analemme_type) {
 		case ANALEMMALINE:
-			proj_func = &Projector::projectEarthEqu;
+			proj_func = &SkyView::projectEarthEqu;
 			break;
 		case ANALEMMA:
-			proj_func = &Projector::projectEarthEquFixed;
+			proj_func = &SkyView::projectEarthEquFixed;
 			break;
 		default :
-			proj_func = &Projector::projectEarthEqu;
+			proj_func = &SkyView::projectEarthEqu;
 	}
 	float tmp_ana_ad[93] = {
 		90.7365,91.1986,91.6318,92.0298,92.3875,92.7002,92.9632,93.173,93.3276,93.4268,93.4721,93.4663,93.4124,
@@ -461,7 +461,7 @@ SkyLine_Analemme::~SkyLine_Analemme()
 {
 }
 
-void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Analemme::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 	if (!(observatory->isEarth()))return;
@@ -491,8 +491,8 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 
 
 	for (int i=0; i < 92; i++) {
-		bool p1_valid = (prj->*proj_func)(analemma[i], pt1);
-		bool p2_valid = (prj->*proj_func)(analemma[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(analemma[i], pt1);
+		bool p2_valid = (view.*proj_func)(analemma[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
@@ -509,7 +509,7 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 SkyLine_Galactic_Center::SkyLine_Galactic_Center( double _radius = 1., unsigned int _nb_segment = 48):
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectJ2000Galactic;
+	proj_func = &SkyView::projectJ2000Galactic;
 	inclination=0*M_PI/180.;
 	derivation = 90*M_PI/180.;
 }
@@ -518,7 +518,7 @@ SkyLine_Galactic_Center::~SkyLine_Galactic_Center()
 {
 }
 
-void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Galactic_Center::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -535,8 +535,8 @@ void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, co
 			Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+(j*M_PI),asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
 		}
 		for (int i=0; i < 48; i++) {
-			bool p1_valid = (prj->*proj_func)(punts[i], pt1);
-			bool p2_valid = (prj->*proj_func)(punts[i+1], pt2);
+			bool p1_valid = (view.*proj_func)(punts[i], pt1);
+			bool p2_valid = (view.*proj_func)(punts[i+1], pt2);
 			if (p1_valid || p2_valid) {
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
@@ -554,7 +554,7 @@ void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, co
 SkyLine_Vernal::SkyLine_Vernal( double _radius = 1., unsigned int _nb_segment = 48):
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectEarthEqu;
+	proj_func = &SkyView::projectEarthEqu;
 	inclination=0*M_PI/180.;
 	derivation = 90*M_PI/180.;
 }
@@ -563,7 +563,7 @@ SkyLine_Vernal::~SkyLine_Vernal()
 {
 }
 
-void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Vernal::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -580,8 +580,8 @@ void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeM
 			Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+(j*M_PI),asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
 		}
 		for (int i=0; i < 48; i++) {
-			bool p1_valid = (prj->*proj_func)(punts[i], pt1);
-			bool p2_valid = (prj->*proj_func)(punts[i+1], pt2);
+			bool p1_valid = (view.*proj_func)(punts[i], pt1);
+			bool p2_valid = (view.*proj_func)(punts[i+1], pt2);
 			if (p1_valid || p2_valid) {
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
@@ -600,14 +600,14 @@ void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeM
 SkyLine_Greenwich::SkyLine_Greenwich(double _radius = 1., unsigned int _nb_segment = 48) :
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectEarthEquFixed;
+	proj_func = &SkyView::projectEarthEquFixed;
 }
 
 SkyLine_Greenwich::~SkyLine_Greenwich()
 {
 }
 
-void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Greenwich::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 	if (!(observatory->isEarth())) return;
@@ -623,8 +623,8 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 		Utility::spheToRect(-2*longitude,(float)i/59*(2*M_PI),punts[i]);
 	}
 	for (int i=0; i < 59; i++) {
-		bool p1_valid = (prj->*proj_func)(punts[i], pt1);
-		bool p2_valid = (prj->*proj_func)(punts[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(punts[i], pt1);
+		bool p2_valid = (view.*proj_func)(punts[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
@@ -634,8 +634,8 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 	Utility::spheToRect(-2*longitude,(((46.0/59.f)*2*M_PI)+(1*latitude)) ,punt[1]);
 
 	//TODO all this for a single text ?????
-	bool p1_valid = (prj->*proj_func)(punt[1],pt1);
-	bool p2_valid = (prj->*proj_func)(punt[0],pt2);
+	bool p1_valid = (view.*proj_func)(punt[1],pt1);
+	bool p2_valid = (view.*proj_func)(punt[0],pt2);
 	if (p1_valid || p2_valid) {
 		const double dx = pt2[0]-pt1[0];
 		const double dy = pt2[1]-pt1[1];
@@ -647,7 +647,7 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 			angle *= -1;
 		}
 
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle );
 
@@ -665,14 +665,14 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 SkyLine_Aries::SkyLine_Aries(double _radius = 1., unsigned int _nb_segment = 48) :
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectEarthEqu;
+	proj_func = &SkyView::projectEarthEqu;
 }
 
 SkyLine_Aries::~SkyLine_Aries()
 {
 }
 
-void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Aries::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 	if (!(observatory->isEarth())) return;
@@ -687,8 +687,8 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 		Utility::spheToRect(0,(float)i/59*(2*M_PI),punts[i]);
 	}
 	for (int i=0; i < 59; i++) {
-		bool p1_valid = (prj->*proj_func)(punts[i], pt1);
-		bool p2_valid = (prj->*proj_func)(punts[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(punts[i], pt1);
+		bool p2_valid = (view.*proj_func)(punts[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
@@ -696,8 +696,8 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 	Utility::spheToRect(0,(((45.0/59.f)*2*M_PI)+(1*latitude)) ,punt[0]);
 	Utility::spheToRect(0,(((46.0/59.f)*2*M_PI)+(1*latitude)) ,punt[1]);
 
-	bool p1_valid = (prj->*proj_func)(punt[1],pt1);
-	bool p2_valid = (prj->*proj_func)(punt[0],pt2);
+	bool p1_valid = (view.*proj_func)(punt[1],pt1);
+	bool p2_valid = (view.*proj_func)(punt[0],pt2);
 	if (p1_valid || p2_valid) {
 		const double dx = pt2[0]-pt1[0];
 		const double dy = pt2[1]-pt1[1];
@@ -709,7 +709,7 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 			angle *= -1;
 		}
 
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle );
 
@@ -727,7 +727,7 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 SkyLine_Meridian::SkyLine_Meridian(double _radius = 1., unsigned int _nb_segment = 48):
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectLocal;
+	proj_func = &SkyView::projectLocal;
 	inclination = 90;
 
 	Mat4f rotation = Mat4f::xrotation(inclination*M_PI/180.f);
@@ -747,7 +747,7 @@ SkyLine_Meridian::~SkyLine_Meridian()
 	points = nullptr;
 }
 
-void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Meridian::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -766,8 +766,8 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 		if ((internalNav) || (internalAstronomical)) {
 			inclination=70*M_PI/180.;
 
-			bool p1_valid = (prj->*proj_func)(points[nb_segment+1+i], pt1);
-			bool p2_valid = (prj->*proj_func)(points[nb_segment+1+i+1], pt2);
+			bool p1_valid = (view.*proj_func)(points[nb_segment+1+i], pt1);
+			bool p2_valid = (view.*proj_func)(points[nb_segment+1+i+1], pt2);
 			if(p1_valid || p2_valid) {
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
@@ -800,7 +800,7 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 						tickl = 1.0;
 					}
 
-					Mat4f MVP = prj->getMatProjectionOrtho2D();
+					Mat4f MVP = view.getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
@@ -818,8 +818,8 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 			}
 		}
 
-		bool p1_valid = (prj->*proj_func)(points[i], pt1);
-		bool p2_valid = (prj->*proj_func)(points[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(points[i], pt1);
+		bool p2_valid = (view.*proj_func)(points[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			const double dx = pt1[0]-pt2[0];
 			const double dy = pt1[1]-pt2[1];
@@ -862,7 +862,7 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 				angle += M_PI;
 			}
 
-			Mat4f MVP = prj->getMatProjectionOrtho2D();
+			Mat4f MVP = view.getMatProjectionOrtho2D();
 			TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
@@ -891,13 +891,13 @@ SkyLine_Equator::SkyLine_Equator(SKY_LINE_EQUATOR_LINE _line_equator_type, doubl
 
 	switch (line_equator_type) {
 		case EQUATOR :
-			proj_func = &Projector::projectEarthEqu;
+			proj_func = &SkyView::projectEarthEqu;
 			break;
 		case GALACTIC_EQUATOR :
-			proj_func = &Projector::projectJ2000Galactic;
+			proj_func = &SkyView::projectJ2000Galactic;
 			break;
 		default :
-			proj_func = &Projector::projectEarthEqu;
+			proj_func = &SkyView::projectEarthEqu;
 	}
 
 	inclination=0.;
@@ -918,7 +918,7 @@ SkyLine_Equator::~SkyLine_Equator()
 	points = nullptr;
 }
 
-void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Equator::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -944,8 +944,8 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 		if ((internalNav) || (internalAstronomical)) {
 			inclination=70*M_PI/180.;
 
-			bool p1_valid = (prj->*proj_func)(points[nb_segment+1+i], pt1);
-			bool p2_valid = (prj->*proj_func)(points[nb_segment+1+i+1], pt2);
+			bool p1_valid = (view.*proj_func)(points[nb_segment+1+i], pt1);
+			bool p2_valid = (view.*proj_func)(points[nb_segment+1+i+1], pt2);
 			if(p1_valid || p2_valid) {
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
@@ -972,7 +972,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 					else
 						oss << " " << ((i)/(nb_segment/24)+1)%24 << "h   " << (24-((i)/(nb_segment/24)+1)%24)*15 << "\xc2\xb0";
 
-					Mat4f MVP = prj->getMatProjectionOrtho2D();
+					Mat4f MVP = view.getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
@@ -987,8 +987,8 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 			}
 		}
 
-		bool p1_valid = (prj->*proj_func)(points[i], pt1);
-		bool p2_valid = (prj->*proj_func)(points[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(points[i], pt1);
+		bool p2_valid = (view.*proj_func)(points[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			const double dx = pt1[0]-pt2[0];
 			const double dy = pt1[1]-pt2[1];
@@ -1033,7 +1033,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 					else oss << (i+1)/(2*4) << "h";
 				}
 
-				Mat4f MVP = prj->getMatProjectionOrtho2D();
+				Mat4f MVP = view.getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
@@ -1074,7 +1074,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 SkyLine_Tropic::SkyLine_Tropic(double _radius = 1., unsigned int _nb_segment = 48):
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectEarthEqu;
+	proj_func = &SkyView::projectEarthEqu;
 	points = new Vec3f[3*nb_segment+3];
 	inclination=0;
 	Mat4f rotation = Mat4f::xrotation(inclination*M_PI/180.f);
@@ -1091,7 +1091,7 @@ SkyLine_Tropic::~SkyLine_Tropic()
 	points = nullptr;
 }
 
-void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Tropic::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -1122,8 +1122,8 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 		}
 
 		// Draw equator
-		bool p1_valid = (prj->*proj_func)(points[i], pt1);
-		bool p2_valid = (prj->*proj_func)(points[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(points[i], pt1);
+		bool p2_valid = (view.*proj_func)(points[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
@@ -1151,8 +1151,8 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 		}
 
 		// Draw North tropic
-		p1_valid = (prj->*proj_func)(points[nb_segment+1+i], pt1);
-		p2_valid = (prj->*proj_func)(points[nb_segment+1+i+1], pt2);
+		p1_valid = (view.*proj_func)(points[nb_segment+1+i], pt1);
+		p2_valid = (view.*proj_func)(points[nb_segment+1+i+1], pt2);
 		if(p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
@@ -1180,8 +1180,8 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 		}
 
 		// Draw South tropic
-		p1_valid = (prj->*proj_func)(points[2*nb_segment+2+i], pt1);
-		p2_valid = (prj->*proj_func)(points[2*nb_segment+2+i+1], pt2);
+		p1_valid = (view.*proj_func)(points[2*nb_segment+2+i], pt1);
+		p2_valid = (view.*proj_func)(points[2*nb_segment+2+i+1], pt2);
 		if(p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
@@ -1224,7 +1224,7 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 SkyLine_Ecliptic::SkyLine_Ecliptic(double _radius = 1., unsigned int _nb_segment = 48):
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectJ2000;
+	proj_func = &SkyView::projectJ2000;
 	inclination = 23.4392803055555555556;  //useless ?
 }
 
@@ -1232,7 +1232,7 @@ SkyLine_Ecliptic::~SkyLine_Ecliptic()
 {
 }
 
-void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Ecliptic::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -1251,13 +1251,13 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 	const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 2.68*M_PI/6) : 0.0;
 	Vec3d point(radius*cos(corr),radius*sin(corr),0.0);
 	point.transfo4d(m);
-	bool prev_on_screen = prj->projectEarthEqu(point,pt1);
+	bool prev_on_screen = view.projectEarthEqu(point,pt1);
 
 	for (unsigned int i=1; i<365+1; ++i) {
 		const double phi = corr+2*i*M_PI/365;
 		Vec3d point(radius*cos(phi),radius*sin(phi),0.0);
 		point.transfo4d(m);
-		const bool on_screen = prj->projectEarthEqu(point,pt2);
+		const bool on_screen = view.projectEarthEqu(point,pt2);
 		if (on_screen || prev_on_screen) {
 			const double dx = pt2[0]-pt1[0];
 			const double dy = pt2[1]-pt1[1];
@@ -1338,7 +1338,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 						oss << month[ (i+15)/30 ];
 				}
 
-				Mat4f MVP = prj->getMatProjectionOrtho2D();
+				Mat4f MVP = view.getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI_2-angle );
 
@@ -1362,14 +1362,14 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 SkyLine_Precession::SkyLine_Precession(double _radius = 1., unsigned int _nb_segment = 48):
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectJ2000;
+	proj_func = &SkyView::projectJ2000;
 }
 
 SkyLine_Precession::~SkyLine_Precession()
 {
 }
 
-void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Precession::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 	if (!observatory->isOnBody())
@@ -1393,13 +1393,13 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 
 		Vec3d point(radius*cos(corr),radius*sin(corr),pole*radius*2.3213f);
 		point.transfo4d(m);
-		prev_on_screen = prj->projectEarthEqu(point,pt1);
+		prev_on_screen = view.projectEarthEqu(point,pt1);
 
 		for (unsigned int i=0; i<104+1; ++i) {
 			const double phi = corr+2*(i-0.5)*M_PI/104;
 			Vec3d point(radius*cos(phi),radius*sin(phi),pole*radius*2.3213f);
 			point.transfo4d(m);
-			const bool on_screen = prj->projectEarthEqu(point,pt2);
+			const bool on_screen = view.projectEarthEqu(point,pt2);
 			if (on_screen || prev_on_screen) {
 				const double dx = pt2[0]-pt1[0];
 				const double dy = pt2[1]-pt1[1];
@@ -1439,7 +1439,7 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 						}
 					}
 
-					Mat4f MVP = prj->getMatProjectionOrtho2D();
+					Mat4f MVP = view.getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 					if (pole==1) TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 					if (pole==-1) TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle );
@@ -1472,7 +1472,7 @@ SkyLine_Vertical::SkyLine_Vertical(double _radius = 1., unsigned int _nb_segment
 	SkyLine(_radius, _nb_segment)
 {
 	circlep = new Vec3f[nb_segment+1];
-	proj_func = &Projector::projectLocal;
+	proj_func = &SkyView::projectLocal;
 }
 
 SkyLine_Vertical::~SkyLine_Vertical()
@@ -1481,7 +1481,7 @@ SkyLine_Vertical::~SkyLine_Vertical()
 	circlep = nullptr;
 }
 
-void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Vertical::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -1495,8 +1495,8 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 	}
 
 	for (unsigned int i=0; i < nb_segment; i++) {
-		bool p1_valid = (prj->*proj_func)(circlep[i], pt1);
-		bool p2_valid = (prj->*proj_func)(circlep[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(circlep[i], pt1);
+		bool p2_valid = (view.*proj_func)(circlep[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
@@ -1528,7 +1528,7 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 			}
 			angle *= -1;
 
-			Mat4f MVP = prj->getMatProjectionOrtho2D();
+			Mat4f MVP = view.getMatProjectionOrtho2D();
 			TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI+angle );
 
@@ -1553,7 +1553,7 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 SkyLine_Zenith::SkyLine_Zenith(double _radius = 1., unsigned int _nb_segment = 48):
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectLocal;
+	proj_func = &SkyView::projectLocal;
 }
 
 SkyLine_Zenith::~SkyLine_Zenith()
@@ -1561,7 +1561,7 @@ SkyLine_Zenith::~SkyLine_Zenith()
 
 }
 
-void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_Zenith::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -1578,14 +1578,14 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 	}
 
 	for (int i=0; i < 50; i++) {
-		bool p1_valid = (prj->*proj_func)(circlep[i], pt1);
-		bool p2_valid = (prj->*proj_func)(circlep[i+1], pt2);
+		bool p1_valid = (view.*proj_func)(circlep[i], pt1);
+		bool p2_valid = (view.*proj_func)(circlep[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 		}
-		p1_valid = (prj->*proj_func)(circlen[i], pt1);
-		p2_valid = (prj->*proj_func)(circlen[i+1], pt2);
+		p1_valid = (view.*proj_func)(circlen[i], pt1);
+		p2_valid = (view.*proj_func)(circlen[i+1], pt2);
 		if (p1_valid || p2_valid) {
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
@@ -1595,15 +1595,15 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 	Utility::spheToRect((float)37.5/(50)*2.f*M_PI, 0.993f*M_PI-M_PI_2,punts[1]);
 	Utility::spheToRect(0,0.992f*M_PI-M_PI_2,punts[2]);
 
-	bool p1_valid = (prj->*proj_func)(punts[0], pt1);
-	bool p2_valid = (prj->*proj_func)(punts[1], pt2);
+	bool p1_valid = (view.*proj_func)(punts[0], pt1);
+	bool p2_valid = (view.*proj_func)(punts[1], pt2);
 	if (p1_valid || p2_valid) {
 
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 
-	p1_valid = (prj->*proj_func)(circlen[0], pt1);
-	p2_valid = (prj->*proj_func)(circlen[25], pt2);
+	p1_valid = (view.*proj_func)(circlen[0], pt1);
+	p2_valid = (view.*proj_func)(circlen[25], pt2);
 	if (p1_valid || p2_valid) {
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
@@ -1611,8 +1611,8 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 	Utility::spheToRect(0.98*M_PI, M_PI_2,punts[0]);
 	Utility::spheToRect(M_PI, M_PI_2,punts[1]);
 
-	p1_valid = (prj->*proj_func)(punts[0], pt1);
-	p2_valid = (prj->*proj_func)(punts[1], pt2);
+	p1_valid = (view.*proj_func)(punts[0], pt1);
+	p2_valid = (view.*proj_func)(punts[1], pt2);
 	if (p1_valid || p2_valid) {
 		const double dx = pt2[0]-pt1[0];
 		const double dy = pt2[1]-pt1[1];
@@ -1626,7 +1626,7 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		std::ostringstream oss;
 		oss << "Z";
 
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 0 );
 
@@ -1638,14 +1638,14 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 	Utility::spheToRect(0, -(0.992f*M_PI-M_PI_2),punts[2]);
 
 
-	p1_valid = (prj->*proj_func)(punts[0], pt1);
-	p2_valid = (prj->*proj_func)(punts[1], pt2);
+	p1_valid = (view.*proj_func)(punts[0], pt1);
+	p2_valid = (view.*proj_func)(punts[1], pt2);
 	if (p1_valid || p2_valid) {
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 
-	p1_valid = (prj->*proj_func)(circlep[25], pt1);
-	p2_valid = (prj->*proj_func)(circlep[0], pt2);
+	p1_valid = (view.*proj_func)(circlep[25], pt1);
+	p2_valid = (view.*proj_func)(circlep[0], pt2);
 	if (p1_valid || p2_valid) {
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
@@ -1653,8 +1653,8 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 	Utility::spheToRect(0.98*M_PI, -M_PI_2,punts[0]);
 	Utility::spheToRect(M_PI, -M_PI_2,punts[1]);
 
-	p1_valid = (prj->*proj_func)(punts[0], pt1);
-	p2_valid = (prj->*proj_func)(punts[1], pt2);
+	p1_valid = (view.*proj_func)(punts[0], pt1);
+	p2_valid = (view.*proj_func)(punts[1], pt2);
 	if (p1_valid || p2_valid) {
 		const double dx = pt2[0]-pt1[0];
 		const double dy = pt2[1]-pt1[1];
@@ -1668,7 +1668,7 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		std::ostringstream oss;
 		oss << "N";
 
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 0 );
 
@@ -1686,14 +1686,14 @@ SkyLine_LunarEclipse::SkyLine_LunarEclipse(SKY_LINE_LUNAR_ECLIPSE_TYPE _eclipse_
 	SkyLine(_radius, _nb_segment), eclipse_type(_eclipse_type)
 {
 	// Use local projection since we calculate in local coordinates
-	proj_func = &Projector::projectLocal;
+	proj_func = &SkyView::projectLocal;
 }
 
 SkyLine_LunarEclipse::~SkyLine_LunarEclipse()
 {
 }
 
-void SkyLine_LunarEclipse::draw(const Projector *prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLine_LunarEclipse::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
 
@@ -1742,7 +1742,7 @@ void SkyLine_LunarEclipse::draw(const Projector *prj, const Navigator *nav, cons
 	Vec3d shadow_pos_helio = shadow_pos_geo + earthPos_helio;
 
 	// Transform shadow position to local coordinates (with same parallax effect as Moon)
-	Vec3d shadow_local = nav->helioToLocal(shadow_pos_helio);
+	Vec3d shadow_local = view.helioToLocal(shadow_pos_helio);
 	double shadow_local_len = shadow_local.length();
 	if (shadow_local_len < 1e-10) {
 		vecDrawPos.clear();
@@ -1805,7 +1805,7 @@ void SkyLine_LunarEclipse::draw(const Projector *prj, const Navigator *nav, cons
 		Vec3d circle_point = shadow_center * cos_radius + offset * sin_radius;
 
 		// Project the point
-		bool current_valid = (prj->*proj_func)(circle_point, pt1);
+		bool current_valid = (view.*proj_func)(circle_point, pt1);
 		// Draw line if one of the points is valid (to avoid gaps)
 		// but only if it's not the first point (since the first point has no previous point to connect to)
 		if (i > 0 && (current_valid || prev_valid)) {

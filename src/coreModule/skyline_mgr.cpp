@@ -34,10 +34,10 @@ SkyLineMgr::SkyLineMgr()
 	SkyLine::createSC_context();
 }
 
-void SkyLineMgr::draw(const Projector* prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+void SkyLineMgr::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-		it->second->draw(prj, nav, timeMgr, observatory);
+		it->second->draw(view, timeMgr, observatory);
 	}
 }
 

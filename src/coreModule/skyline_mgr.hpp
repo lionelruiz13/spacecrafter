@@ -31,8 +31,6 @@
 
 #include "skyline.hpp"
 #include "tools/s_font.hpp"
-#include "coreModule/projector.hpp"
-#include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/core_common.hpp"
@@ -48,7 +46,7 @@ public:
 	};
 
 	void Create(SKYLINE_TYPE a);
-	void draw(const Projector* prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 	void update(int delta_time);
 
 	//void setFont(float font_size, const std::string& font_name);

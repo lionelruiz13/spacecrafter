@@ -119,10 +119,11 @@ void InUniverseModule::draw(int delta_time)
 		core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
 	}
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
-	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
+	core->skyDisplayMgr->drawPerson(*core->oldSkyView);
 	core->starGalaxy->draw(core->navigation, core->projection);
 	if (core->needOldSelectionPointer())
-		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
+		core->selected_object.drawPointer(delta_time, *core->oldSkyView, core->selected_object.getEarthEquPos(core->navigation),
+		                                  core->selected_object.getOnScreenSize(core->projection, core->navigation));
 	core->dsoNav->draw(core->navigation, core->projection);
 	core->ssystemFactory->drawExperimental();
 	//core->postDraw();

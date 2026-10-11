@@ -13,18 +13,29 @@ struct CameraProjection {
     float radius = 0, cx = 0, cy = 0; // Screen disc, in render px
     // Return false when the point falls outside the screen disc
     bool project(const Vec3d &local, Vec3d &win) const {
-        win = localToEye.multiplyWithoutTranslation(local);
-        const double depth = win.length();
-        const double rq = std::sqrt(win[0] * win[0] + win[1] * win[1]);
+        return projectEye(localToEye.multiplyWithoutTranslation(local), win);
+    }
+    // Same from eye space; win[2] = 0, the CPU sky draws 2D overlays without depth
+    bool projectEye(const Vec3d &eye, Vec3d &win) const {
+        const double depth = eye.length();
+        const double rq = std::sqrt(eye[0] * eye[0] + eye[1] * eye[1]);
         if (rq == 0) {
-            const bool front = win[2] < 0;
-            win.set(cx, cy, depth);
-            return front;
+            win.set(cx, cy, 0);
+            return eye[2] < 0;
         }
-        const float r = ProjectionTransfer::radius(mode, std::acos(-win[2] / depth) / halfFov, halfFov);
+        const float r = ProjectionTransfer::radius(mode, std::acos(-eye[2] / depth) / halfFov, halfFov);
         const double f = r * radius / rq;
-        win.set(cx + win[0] * f, cy + win[1] * f, depth);
+        win.set(cx + eye[0] * f, cy + eye[1] * f, 0);
         return r <= 1;
+    }
+    // Return the eye direction of the screen disc point (x, y), in disc radii from the centre
+    Vec3d direction(double x, double y) const {
+        const double len = std::sqrt(x * x + y * y);
+        if (len == 0)
+            return Vec3d(0, 0, -1);
+        const double theta = ProjectionTransfer::angleNorm(mode, len, halfFov) * halfFov;
+        const double s = std::sin(theta) / len;
+        return Vec3d(x * s, y * s, -std::cos(theta));
     }
 };
 

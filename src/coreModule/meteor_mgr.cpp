@@ -25,21 +25,20 @@
  */
 
 #include "coreModule/meteor_mgr.hpp"
-#include "coreModule/projector.hpp"
-#include "navModule/navigator.hpp"
+#include "coreModule/skyView.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
 #define MAX_METEOR 4096
 
-static int getCurrentDayOfYear(Navigator* nav) {
+static int getCurrentDayOfYear(const SkyView &view) {
 	// get current day of year (0-365) from navigator
 	// based on current date and time in navigator
 	// and the position of the sun in equatorial coordinates
 	// (day 0 = Jan 1)
 
 	double equ_rotation; // rotation needed to align with path of earth
-	Vec3d sun_dir = nav->helioToEarthEqu( Vec3d(0,0,0) );
+	Vec3d sun_dir = view.helioToEarthEqu( Vec3d(0,0,0) );
 
 	Mat4d tmat = Mat4d::xrotation(-23.45f*M_PI/180.f);  // ecliptical tilt
 	sun_dir.transfo4d(tmat);  // convert to ecliptical coordinates
@@ -70,10 +69,10 @@ MeteorMgr::~MeteorMgr()
 	Context::instance->indexBufferMgr->releaseBuffer(index);
 }
 
-void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time)
+void MeteorMgr::update(const SkyView &view, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time)
 {
 	// get current day of year (0-365) from navigator
-	currentDayOfYear = getCurrentDayOfYear(nav);
+	currentDayOfYear = getCurrentDayOfYear(view);
 
 	// step through and update all active meteors and delete all inactive meteors too
 	for (auto iter = m_activeMeteor.begin(); iter != m_activeMeteor.end(); ) {
@@ -115,7 +114,7 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 		// start new meteor based on ZHR time probability
 		double prob = (double)rand()/((double)RAND_MAX+1);
 		if ( ZHR > 0 && prob < ((double)ZHR*zhr_to_wsr*(double)delta_time/1000.0f/(double)mpf) ) {
-			auto m = std::make_unique<Meteor>(proj, nav, eye, max_velocity);
+			auto m = std::make_unique<Meteor>(view, eye, max_velocity);
 			m_activeMeteor.push_back(std::move(m));
 			mlaunch++;
 		}
@@ -167,14 +166,14 @@ void MeteorMgr::createSC_context()
 	}
 }
 
-void MeteorMgr::draw(Projector *proj, Navigator* nav)
+void MeteorMgr::draw(const SkyView &view)
 {
 	Context &context = *Context::instance;
 
 	int nbMeteor = 0;
 	float *data = (float *) context.transfer->beginPlanCopy(MAX_METEOR * 3 * (6 * sizeof(float)));
 	for (auto& iter : m_activeMeteor) {
-    	if (iter->draw(proj, nav, data))
+    	if (iter->draw(view, data))
 			++nbMeteor;
 	}
 	if (nbMeteor > MAX_METEOR)

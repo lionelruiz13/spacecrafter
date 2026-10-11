@@ -33,8 +33,7 @@
 #include <memory>
 
 #include "tools/s_font.hpp"
-#include "coreModule/projector.hpp"
-#include "navModule/navigator.hpp"
+#include "coreModule/skyView.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/fader.hpp"
 #include "tools/translator.hpp"
@@ -42,6 +41,7 @@
 #include "tools/ScModule.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
+class Observer;
 class VertexArray;
 class VertexBuffer;
 class Pipeline;
@@ -55,7 +55,7 @@ public:
 	//! Create and precompute positions
 	SkyLine( double _radius = 1., unsigned int _nb_segment = 48);
 	virtual ~SkyLine();
-	virtual void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory) = 0;
+	virtual void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory) = 0;
 	void setColor(const Vec3f& c) {
 		color = c;
 
@@ -103,7 +103,7 @@ protected:
 	double radius;
 	unsigned int nb_segment;
 	Vec3f color;
-	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
+	bool (SkyView::*proj_func)(const Vec3d&, Vec3d&) const;
 	LinearFader fader;
 	bool internalNav;
 	bool internalAstronomical;
@@ -146,7 +146,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Pole(SKY_LINE_POLE_TYPE _line_pole_type, double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Pole();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	SKY_LINE_POLE_TYPE line_pole_type;
@@ -160,7 +160,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Zodiac(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Zodiac();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable Vec3f punts[49];
@@ -178,7 +178,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_CircumPolar(double _radius, unsigned int _nb_segment);
 	virtual ~SkyLine_CircumPolar();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable double inclination;
@@ -198,7 +198,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Analemme(SKY_LINE_ANALEMME_TYPE _line_analemme_type, double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Analemme();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	SKY_LINE_ANALEMME_TYPE line_analemme_type;
@@ -217,7 +217,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Galactic_Center( double _radius , unsigned int _nb_segment);
 	virtual ~SkyLine_Galactic_Center();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable float alpha,delta;
@@ -233,7 +233,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Vernal(double _radius , unsigned int _nb_segment);
 	virtual ~SkyLine_Vernal();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable float alpha,delta;
@@ -249,7 +249,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Greenwich(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Greenwich();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable Vec3f punts[60];
@@ -265,7 +265,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Aries(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Aries();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable Vec3f punts[60];
@@ -285,7 +285,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Equator(SKY_LINE_EQUATOR_LINE _line_equator_type, double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Equator();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	SKY_LINE_EQUATOR_LINE line_equator_type;
@@ -300,7 +300,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Meridian(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Meridian();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable Vec3f* points;
@@ -313,7 +313,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Tropic(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Tropic();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable Vec3f* points;
@@ -328,7 +328,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Ecliptic(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Ecliptic();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable Mat4d m;
@@ -344,7 +344,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Precession(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Precession();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable Mat4d m;
@@ -360,7 +360,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Vertical(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Vertical();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable Vec3f* circlep;
@@ -375,7 +375,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_Zenith(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Zenith();
-	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	mutable Vec3f circlep[51];
@@ -395,7 +395,7 @@ public:
 	//! Create and precompute positions of a SkyLine
 	SkyLine_LunarEclipse(SKY_LINE_LUNAR_ECLIPSE_TYPE _eclipse_type, double _radius, unsigned int _nb_segment);
 	virtual ~SkyLine_LunarEclipse();
-	void draw(const Projector *prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+	void draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory);
 
 private:
 	SKY_LINE_LUNAR_ECLIPSE_TYPE eclipse_type;

@@ -25,8 +25,7 @@
 
 #include "tools/object_base.hpp"
 #include "tools/object.hpp"
-#include "coreModule/projector.hpp"
-#include "navModule/navigator.hpp"
+#include "coreModule/skyView.hpp"
 #include "tools/utility.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/context.hpp"
@@ -204,12 +203,12 @@ void ObjectBase::setFontResolution(int fontResolution)
 }
 
 // Draw a nice animated pointer around the object
-void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigator * nav)
+void ObjectBase::drawPointer(int delta_time, const SkyView &view, const Vec3d &earthEquPos, float onScreenSize)
 {
 	Vec3d screenposd;
 	local_time += delta_time;
 	// Compute 2D pos and return if outside screen
-	if (!prj->projectEarthEqu(getEarthEquPos(nav), screenposd))
+	if (!view.projectEarthEqu(earthEquPos, screenposd))
 		return;
 
 	Context &context = *Context::instance;
@@ -220,7 +219,7 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 			//SET UNIFORM
 			uGeom->get().matRotation = Mat4f::zrotation((float)local_time/750.);
 			// factor for resolution size
-			float factor = sqrtf(prj->getViewportHeight() / m_fontResolution);
+			float factor = sqrtf(view.getViewportHeight() / m_fontResolution);
 			uGeom->get().radius = 13.f * factor;
 			*uColor = getRGB();
 
@@ -229,12 +228,12 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 		}
 		case OBJECT_BODY:
 		case OBJECT_NEBULA: {
-			float size = getOnScreenSize(prj, nav, false);
+			float size = onScreenSize;
 			// If object is large enough, no need for distracting pointer
-			if (size > prj->getViewportRadius()*.1f)
+			if (size > view.getViewportRadius()*.1f)
 				return;
 			size += 20.f + 10.f*sin(0.002f * local_time);
-			float factor = prj->getViewportHeight() / m_fontResolution;
+			float factor = view.getViewportHeight() / m_fontResolution;
 			size *= sqrtf(factor);
 			Vec2f screenpos(screenposd[0], screenposd[1]);
 			float *data = (float *) context.transfer->planCopy(vertexPointer->get());
@@ -263,7 +262,7 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 
 			//SET UNIFORM
 			uGeom->get().matRotation = Mat4f::zrotation((float)local_time/750.);
-			float factor = prj->getViewportHeight() / m_fontResolution;
+			float factor = view.getViewportHeight() / m_fontResolution;
 			uGeom->get().radius = 13.f * sqrtf(factor);
 			*uColor = getRGB();
 

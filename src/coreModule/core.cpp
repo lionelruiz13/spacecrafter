@@ -100,6 +100,7 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	atmosphere = std::make_shared<Atmosphere>();
 	timeMgr = std::make_shared<TimeMgr>();
 	navigation = new Navigator();
+	oldSkyView = std::make_unique<OldSkyView>(projection, navigation);
 	observatory = _observatory;
 	ssystemFactory = new SSystemFactory(observatory.get(), navigation, timeMgr.get());
 	nebulas = std::make_unique<NebulaMgr>();
@@ -218,6 +219,7 @@ Core::~Core()
 	selected_object = Object();
 	old_selected_object = Object();
 	delete bodyDecor;
+	oldSkyView.reset();
 	delete navigation;
 	delete projection;
 	// delete asterisms;
@@ -915,6 +917,11 @@ bool Core::getExperimentalPath() const
 double Core::drawnFov() const
 {
 	return ssystemFactory->drawModularSystem ? ModularBody::halfFov * (360. / M_PI) : projection->getFov();
+}
+
+const SkyView &Core::drawnView() const
+{
+	return ssystemFactory->drawModularSystem ? ssystemFactory->getEnvironmentSkyView() : *oldSkyView;
 }
 
 double Core::drawnVelocityScaling(float dt) const

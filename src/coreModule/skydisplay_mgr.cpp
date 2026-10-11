@@ -35,18 +35,18 @@ SkyDisplayMgr::SkyDisplayMgr()
 	SkyDisplay::createSC_context();
 }
 
-void SkyDisplayMgr::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+void SkyDisplayMgr::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-		it->second->draw(prj, nav, equPos, oldEquPos);
+		it->second->draw(view, equPos, oldEquPos);
 	}
 }
 
-void SkyDisplayMgr::drawPerson(const Projector *prj,const Navigator *nav)
+void SkyDisplayMgr::drawPerson(const SkyView &view)
 {
 	if ((personAL!=nullptr) && (personEQ!=nullptr)) {
-		personAL->draw(prj,nav);
-		personEQ->draw(prj,nav);
+		personAL->draw(view);
+		personEQ->draw(view);
 	}
 }
 

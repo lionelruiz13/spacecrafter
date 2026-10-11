@@ -30,8 +30,6 @@
 #include <string>
 
 #include "skyDisplay.hpp"
-#include "coreModule/projector.hpp"
-#include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
 #include "tools/no_copy.hpp"
@@ -51,8 +49,8 @@ public:
 	//The one that will create the
 	void Create(SKYDISPLAY_NAME nameObj);
 	void build();
-	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
-	void drawPerson(const Projector *prj,const Navigator *nav);
+	void draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos);
+	void drawPerson(const SkyView &view);
 	void clear(SKYDISPLAY_NAME nameObj);
 	void loadData(SKYDISPLAY_NAME nameObj, const std::string& filename);
 	void loadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr);

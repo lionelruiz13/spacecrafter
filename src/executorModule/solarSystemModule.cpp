@@ -186,16 +186,16 @@ void SolarSystemModule::draw(int delta_time)
 		core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
-	core->nebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->nebulas->draw(core->drawnView(), core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
 	if (!(core->ssystemFactory->drawModularSystem && core->ssystemFactory->hasExperimentalOort()))
 		core->oort->draw(observer->getAltitude(), core->navigation);
 	core->illuminates->draw(core->projection, core->navigation);
-	core->asterisms->draw(core->projection, core->navigation);
+	core->asterisms->draw(core->drawnView());
 	core->starLines->draw(core->projection);
 	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
 	core->skyGridMgr->draw(core->projection);
-	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
-	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
+	core->skyLineMgr->draw(core->drawnView(), core->timeMgr.get(), core->observatory.get());
+	core->skyDisplayMgr->draw(core->drawnView(), core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
 	// Key the new-path planet-grid tropic/polar circles to the sky-line flags
 	// (LINE_TROPIC / LINE_CIRCLE_POLAR) just read above (INTENT S11.57, B23).
 	core->syncPlanetGridSkyState();
@@ -204,10 +204,11 @@ void SolarSystemModule::draw(int delta_time)
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene
 	if (core->needOldSelectionPointer())
-		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
+		core->selected_object.drawPointer(delta_time, core->drawnView(), core->selected_object.getEarthEquPos(core->navigation),
+		                                  core->selected_object.getOnScreenSize(core->projection, core->navigation));
 
 	// Update meteors
-	core->meteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
+	core->meteors->update(core->drawnView(), core->timeMgr.get(), core->tone_converter, delta_time);
 
 	// removed the condition && atmosphere->getFlagShow() so that you can have some by atmosphere
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
@@ -217,7 +218,7 @@ void SolarSystemModule::draw(int delta_time)
 	         ? core->ssystemFactory->getEnvironmentState().allowMeteors
 	         : core->bodyDecor->canDrawMeteor())
 	    && (core->sky_brightness<0.1))
-		core->meteors->draw(core->projection, core->navigation);
+		core->meteors->draw(core->drawnView());
 
     Context::instance->helper->nextDraw(PASS_FOREGROUND);
 	// Dual-path (S8): atmosphere + landscape (+fog) - same engines, gates
@@ -233,7 +234,7 @@ void SolarSystemModule::draw(int delta_time)
 	}
 	}
 
-	core->cardinals_points->draw(core->projection, observer->getLatitude());
+	core->cardinals_points->draw(core->drawnView(), observer->getLatitude());
 }
 
 bool SolarSystemModule::testValidAltitude(double altitude)

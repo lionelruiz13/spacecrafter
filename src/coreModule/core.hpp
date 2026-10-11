@@ -63,6 +63,7 @@
 //#include "coreModule/ubo_cam.hpp"
 #include "navModule/anchor_manager.hpp"
 #include "navModule/navigator.hpp"
+#include "coreModule/oldSkyView.hpp"
 #include "navModule/observer.hpp"
 //#include "ojmModule/ojm_mgr.hpp"
 #include <iosfwd>
@@ -470,6 +471,8 @@ public:
 	bool getExperimentalPath() const;
 	//! Return the fov the drawn path uses, in degrees
 	double drawnFov() const;
+	//! Return the view the drawn path's sky layers are drawn through
+	const SkyView &drawnView() const;
 	//! Return the drawn path's movement step over dt seconds, in AU
 	double drawnVelocityScaling(float dt) const;
 	//! Return the drawn observer's distance to the centre of its reference, in AU
@@ -663,6 +666,7 @@ private:
 	Observer *obsInGalaxy;			//observer that should be used in InGalaxy mode
 	Observer *ObsInUnivers;			//observer that should be used in InUnivers mode
 	Projector * projection;				// Manage the projection mode and matrix
+	std::unique_ptr<OldSkyView> oldSkyView;	// The old path's sky view over projection and navigation
 	Object selected_object;			// The selected object
 	Object old_selected_object;		// The old selected object
 	std::shared_ptr<HipStarMgr> hip_stars;		// Manage the hipparcos stars

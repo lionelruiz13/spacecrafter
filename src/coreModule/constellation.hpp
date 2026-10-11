@@ -95,10 +95,10 @@ public:
 		englishName = name;
 	}
 
-	void drawName(s_font * constfont,const  Projector* prj) const;
-	void drawBoundary(const Projector* prj, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity, bool singleSelected);
-	void drawLines(const Projector* prj, std::vector<float> &vLinesPos, std::vector<float> &vLinesColor);
-	void drawArt(const Projector* prj, const Navigator* nav, std::vector<float> &vecPos, std::vector<float> &vecTex);
+	void drawName(s_font * constfont, const SkyView &view) const;
+	void drawBoundary(const SkyView &view, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity, bool singleSelected);
+	void drawLines(const SkyView &view, std::vector<float> &vLinesPos, std::vector<float> &vLinesColor);
+	void drawArt(const SkyView &view, std::vector<float> &vecPos, std::vector<float> &vecTex);
 
 	void update(int delta_time);
 

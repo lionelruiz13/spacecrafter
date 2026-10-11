@@ -40,6 +40,7 @@
 
 class VertexArray;
 class Projector;
+class SkyView;
 class Texture;
 class Pipeline;
 class TileMap;
@@ -84,6 +85,7 @@ public:
 	//! display a text parallel to the horizon in altitude azimuth
 	//! cache indicates whether to keep the text in memory
 	void printHorizontal(const Projector *prj, float altitude, float azimuth, const std::string &str, const Vec4f &texColor, TEXT_ALIGN textPos, bool cache);
+	void printHorizontal(const SkyView &view, float altitude, float azimuth, const std::string &str, const Vec4f &texColor, TEXT_ALIGN textPos, bool cache);
 	//! remove text s from cache, after which it may be overwritten by any further print* call which occur before the final submission of the current frame
 	void clearCache(const std::string& s);
 	//! remove every texts from font cache, after which it may be overwritten by any further print* call which occur before the final submission of the current frame

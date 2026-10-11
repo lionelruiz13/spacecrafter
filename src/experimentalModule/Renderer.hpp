@@ -120,6 +120,10 @@ public:
     void printGravity(s_font *font, const std::pair<float, float> &pos,
                       const std::string &str, const Vec4f &color,
                       float xshift, float yshift);
+    // Same at (x, y) in render px
+    void printGravityPx(s_font *font, float x, float y,
+                        const std::string &str, const Vec4f &color,
+                        float xshift, float yshift);
 
     // Call first in Context::~Context, while every manager is alive
     void releaseRegistry();

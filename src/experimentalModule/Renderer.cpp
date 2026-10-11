@@ -195,18 +195,24 @@ void Renderer::printGravity(s_font *font, const std::pair<float, float> &pos,
                             const std::string &str, const Vec4f &color,
                             float xshift, float yshift)
 {
+    const auto px = VulkanMgr::instance->rectToRender(pos); // same anchor space as drawHint/halo
+    printGravityPx(font, px.first, px.second, str, color, xshift, yshift);
+}
+
+void Renderer::printGravityPx(s_font *font, float x, float y,
+                              const std::string &str, const Vec4f &color,
+                              float xshift, float yshift)
+{
     if (!font || str.empty())
         return;
-    VulkanMgr &vkmgr = *VulkanMgr::instance;
-    const auto px = vkmgr.rectToRender(pos); // same anchor space as drawHint/halo
-    const float dx = px.first - viewportCenter[0];
-    const float dy = px.second - viewportCenter[1];
+    const float dx = x - viewportCenter[0];
+    const float dy = y - viewportCenter[1];
     // Too far outside the disk to be visible (old early-out, verbatim rule)
     if (sqrtf(dx*dx + dy*dy) > viewportRadius + font->getStrLen(str))
         return;
     const float theta = M_PI + atan2f(dx, dy - 1.f);
     Mat4f mvp = mvp2D;
-    mvp = mvp * Mat4f::translation(Vec3f(px.first, px.second, 0));
+    mvp = mvp * Mat4f::translation(Vec3f(x, y, 0));
     mvp = mvp * Mat4f::rotation(Vec3f(0, 0, -1), -theta);
     mvp = mvp * Mat4f::translation(Vec3f(xshift, -yshift, 0));
     mvp = mvp * Mat4f::scaling(Vec3f(1, -1, 1));

@@ -29,8 +29,7 @@
 #include <vector>
 #include "coreModule/constellation.hpp"
 #include "starModule/hip_star_mgr.hpp"
-#include "navModule/navigator.hpp"
-#include "coreModule/projector.hpp"
+#include "coreModule/skyView.hpp"
 #include "tools/s_font.hpp"
 #include "tools/log.hpp"
 
@@ -99,7 +98,7 @@ bool Constellation::read(const std::string& record, HipStarMgr * _VouteCeleste)
 
 //! Draw the lines for the Constellation using the coords of the stars
 //! (optimized for use thru the class ConstellationMgr only)
-void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPos, std::vector<float> &vLinesColor)
+void Constellation::drawLines(const SkyView &view, std::vector<float> &vLinesPos, std::vector<float> &vLinesColor)
 {
 	if (!line_fader.getInterstate()) return;
 
@@ -123,7 +122,7 @@ void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPo
 			else
 				det=M_PI/2.;
 			Utility::spheToRect(rat,det, gettemp2);
-			if (prj->projectJ2000LineCheck( gettemp1,startemp1, gettemp2,startemp2)) {
+			if (view.projectJ2000LineCheck( gettemp1,startemp1, gettemp2,startemp2)) {
 
 				vLinesPos.push_back(startemp1[0]);
 				vLinesPos.push_back(startemp1[1]);
@@ -147,23 +146,23 @@ void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPo
 
 
 //! Draw the name
-void Constellation::drawName(s_font *constfont, const Projector* prj) const
+void Constellation::drawName(s_font *constfont, const SkyView &view) const
 {
 	if (!name_fader.getInterstate())
 		return;
 	Vec4f Color(labelColor[0], labelColor[1], labelColor[2], name_fader.getInterstate());
 	// prj->printGravity180(constfont, XYname[0], XYname[1], nameI18, Color, -constfont->getStrLen(nameI18)/2, 0);
 	float az, alt;
-	Utility::rectToSphe(&az, &alt, prj->getMatJ2000ToEye() * XYZname);
+	Utility::rectToSphe(&az, &alt, view.getMatJ2000ToEye() * XYZname);
 	alt += M_PI_2;
-	alt *= (180*180/M_PI)/prj->getFov();
+	alt *= (180*180/M_PI)/view.getFov();
 	if (alt < 90.f)
-		constfont->printHorizontal(prj, std::min(90.f - alt, 80.f), az*180.f/M_PI-90.f, nameI18, Color, TEXT_ALIGN::CENTER, true);
+		constfont->printHorizontal(view, std::min(90.f - alt, 80.f), az*180.f/M_PI-90.f, nameI18, Color, TEXT_ALIGN::CENTER, true);
 }
 
 
 //! Draw the art texture, optimized function to be called thru a constellation manager only
-void Constellation::drawArt(const Projector* prj, const Navigator* nav, std::vector<float> &vecPos, std::vector<float> &vecTex)
+void Constellation::drawArt(const SkyView &view, std::vector<float> &vecPos, std::vector<float> &vecTex)
 {
 	float intensity = art_fader.getInterstate();
 
@@ -177,7 +176,7 @@ void Constellation::drawArt(const Projector* prj, const Navigator* nav, std::vec
 		bool onScreen = false;
 
 		for (int i = 0; i < tailleTab; i++) {
-			if( (tabB[i] = prj->projectJ2000Check(art_vertex[i],tabV[i]) || (nav->getPrecEquVision().dot(art_vertex[i])>0.9)) )
+			if( (tabB[i] = view.projectJ2000Check(art_vertex[i],tabV[i]) || (view.getPrecEquVision().dot(art_vertex[i])>0.9)) )
 				onScreen = true;
 		}
 
@@ -291,7 +290,7 @@ void Constellation::update(int delta_time)
 }
 
 //! Draw the Constellation lines
-void Constellation::drawBoundary(const Projector* prj, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity, bool singleSelected)
+void Constellation::drawBoundary(const SkyView &view, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity, bool singleSelected)
 {
 	if (!boundary_fader.getInterstate()) return;
 
@@ -307,7 +306,7 @@ void Constellation::drawBoundary(const Projector* prj, std::vector<float> &vBoun
 		else points = sharedBoundarySegments[i];
 
 		for (j=0; j<points->size()-1; j += 2) {
-			if (prj->projectJ2000LineCheck(points->at(j),pt1,points->at(j+1),pt2)) {
+			if (view.projectJ2000LineCheck(points->at(j),pt1,points->at(j+1),pt2)) {
 
 				vBoundariesPos.push_back(pt1[0]);
 				vBoundariesPos.push_back(pt1[1]);

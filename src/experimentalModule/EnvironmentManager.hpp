@@ -4,6 +4,7 @@
 #include "EnvironmentModule.hpp"
 #include "atmosphereModule/atmosphere.hpp"
 #include "starModule/hip_star_mgr.hpp"
+#include "CameraSkyView.hpp"
 #include <vector>
 
 class Camera;
@@ -40,6 +41,10 @@ public:
     inline const AtmosphereComputeInput &getAtmosphereInput() const {
         return atmInput;
     }
+    // Built by update() on the main thread, read by the sky layers and the star snapshot
+    inline const CameraSkyView &getSkyView() const {
+        return skyView;
+    }
     inline Atmosphere *getAtmosphereEngine() const {
         return atmosphere;
     }
@@ -55,6 +60,7 @@ private:
     void buildAtmosphereInput(Camera &camera, ModularBody *reference);
     EnvironmentState state;
     AtmosphereComputeInput atmInput;
+    CameraSkyView skyView;
     std::vector<ModularBody *> activeChain; // Chain of the last update
     std::vector<ModularBody *> newChain;    // Scratch, avoid per-frame alloc
     MilkyWay *milky;

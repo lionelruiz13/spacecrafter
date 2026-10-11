@@ -43,6 +43,7 @@ void EnvironmentManager::update(Camera &camera, double jd, float deltaTime, bool
     julianDay = jd;
     ModularBody *reference = camera.getReferenceBody();
     system = camera.getCurrentSystem();
+    skyView.update(camera, *system);
     // 1. Active chain + member edges on the diff (single edge authority).
     newChain.clear();
     for (ModularBody *b = reference; b; b = b->getParent())

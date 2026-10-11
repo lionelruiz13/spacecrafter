@@ -32,7 +32,7 @@
 
 #include "coreModule/constellation_mgr.hpp"
 #include "coreModule/constellation.hpp"
-#include "coreModule/projector.hpp"
+#include "coreModule/skyView.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "starModule/hip_star.hpp"
 #include "tools/utility.hpp"
@@ -377,17 +377,17 @@ void ConstellationMgr::setCurrentStates()
 	setLabelColor(labelColor);
 }
 
-void ConstellationMgr::draw(const Projector * prj,const Navigator * nav)
+void ConstellationMgr::draw(const SkyView &view)
 {
 	Context &context = *Context::instance;
 	FrameMgr &frame = *context.frame[context.frameIdx];
 	VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_BACKGROUND);
 
 	submitSomething = false;
-	drawLines(cmd, prj);
-	drawBoundaries(cmd, prj);
-	drawNames(prj);
-	drawArt(cmd, prj, nav);
+	drawLines(cmd, view);
+	drawBoundaries(cmd, view);
+	drawNames(view);
+	drawArt(cmd, view);
 	frame.compile(cmd);
 	if (submitSomething) {
 		frame.toExecute(cmd, PASS_BACKGROUND);
@@ -395,7 +395,7 @@ void ConstellationMgr::draw(const Projector * prj,const Navigator * nav)
 }
 
 //! Draw constellations art textures
-void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const Projector * prj, const Navigator * nav)
+void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const SkyView &view)
 {
 	Context &context = *Context::instance;
 	std::vector < Constellation * >::const_iterator iter;
@@ -411,7 +411,7 @@ void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const Projector * prj, cons
 	push.color = getArtColor();
 
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
-		(*iter)->drawArt(prj, nav, vecPos, vecTex);
+		(*iter)->drawArt(view, vecPos, vecTex);
 
 		if (vecPos.size()==0)
 			continue;
@@ -443,14 +443,14 @@ void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const Projector * prj, cons
 }
 
 //! Draw constellations lines
-void ConstellationMgr::drawLines(VkCommandBuffer &cmd, const Projector * prj)
+void ConstellationMgr::drawLines(VkCommandBuffer &cmd, const SkyView &view)
 {
 	std::vector<float> vLinesPos;
 	std::vector<float> vLinesColor;
 
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
-		(*iter)->drawLines(prj, vLinesPos, vLinesColor);
+		(*iter)->drawLines(view, vLinesPos, vLinesColor);
 	}
 
 	if (vLinesPos.size()==0)
@@ -471,14 +471,14 @@ void ConstellationMgr::drawLines(VkCommandBuffer &cmd, const Projector * prj)
 }
 
 //! Draw constellations lines
-void ConstellationMgr::drawBoundaries(VkCommandBuffer &cmd, const Projector * prj)
+void ConstellationMgr::drawBoundaries(VkCommandBuffer &cmd, const SkyView &view)
 {
 	std::vector<float> vBoundariesPos;
 	std::vector<float> vBoundariesIntensity;
 
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
-		(*iter)->drawBoundary(prj, vBoundariesPos,vBoundariesIntensity, singleSelected);
+		(*iter)->drawBoundary(view, vBoundariesPos,vBoundariesIntensity, singleSelected);
 	}
 
 	if (vBoundariesPos.size()==0)
@@ -496,13 +496,13 @@ void ConstellationMgr::drawBoundaries(VkCommandBuffer &cmd, const Projector * pr
 }
 
 //! Draw the names of all the constellations
-void ConstellationMgr::drawNames(const Projector * prj)
+void ConstellationMgr::drawNames(const SkyView &view)
 {
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++) {
 		// Check if in the field of view
 		// if (prj->projectJ2000Check((*iter)->getObsJ2000Pos(), const_cast<Vec3d&>((*iter)->getXYname())))
-		(*iter)->drawName(font, prj);
+		(*iter)->drawName(font, view);
 	}
 }
 

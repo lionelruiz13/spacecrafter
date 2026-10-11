@@ -31,8 +31,7 @@
 #include <memory>
 
 #include "tools/object_base.hpp"
-#include "coreModule/projector.hpp"
-#include "navModule/navigator.hpp"
+#include "coreModule/oldSkyView.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/s_font.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
@@ -142,7 +141,7 @@ public:
 	}
 
 	static void createSC_context();
-	static void beginDraw(const Projector* prj);
+	static void beginDraw(const SkyView &view);
 	static void endDraw();
 
 	//! Used by draw_helper
@@ -150,15 +149,15 @@ public:
 
 	//! Return the radius of a circle containing the object on screen
 	float getOnScreenSize(const Projector* prj, const Navigator * nav = nullptr, bool orb_only = false) {
-		return m_angular_size * (180./M_PI) * (prj->getViewportHeight()/prj->getFov());
+		return onScreenSize(OldSkyView(prj, nav));
 	}
 
 	float getAngularSize() const {
 		return m_angular_size;
 	}
 
-	void setXY(const Projector *prj) {
-		prj->projectJ2000(XYZ, XY);
+	void setXY(const SkyView &view) {
+		view.projectJ2000(XYZ, XY);
 	}
 
 	static void setHintsBrightness(float _hintsBrightness) {
@@ -201,11 +200,14 @@ public:
 
 	static const float dsoRadius;	// Define commun scale radius for DSO
 
-	void drawTex(const Projector* prj, const Navigator * nav, ToneReproductor* eye, double sky_brightness, bool flagBright);
-	void drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont);
-	void drawHint(const Projector* prj, const Navigator * nav, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r);
+	void drawTex(const SkyView &view, ToneReproductor* eye, double sky_brightness, bool flagBright);
+	void drawName(const SkyView &view, const Vec3f &labelColor, s_font *nebulaFont);
+	void drawHint(const SkyView &view, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r);
 private:
 	nebula_type getDsoType( std::string type);
+	float onScreenSize(const SkyView &view) const {
+		return m_angular_size * (180./M_PI) * (view.getViewportHeight()/view.getFov());
+	}
 
 	std::string englishName;		// English name
 	std::string nameI18;			// translated englishName

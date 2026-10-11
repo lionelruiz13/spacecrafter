@@ -39,8 +39,7 @@
 
 class HipStarMgr;
 class Constellation;
-class Projector;
-class Navigator;
+class SkyView;
 class s_font;
 class Translator;
 class VertexArray;
@@ -55,7 +54,7 @@ public:
 	~ConstellationMgr();
 
 	//! Draw constellation lines, art, names and boundaries if activated
-	void draw(const Projector* prj, const Navigator* nav);
+	void draw(const SkyView &view);
 
 	//! Update faders
 	void update(int delta_time);
@@ -205,10 +204,10 @@ public:
 
 private:
 	bool loadBoundaries(const std::string& conCatFile);
-	void drawLines(VkCommandBuffer &cmd, const Projector * prj);
-	void drawArt(VkCommandBuffer &cmd, const Projector * prj,const  Navigator * nav);
-	void drawNames(const Projector * prj);
-	void drawBoundaries(VkCommandBuffer &cmd, const Projector* prj);
+	void drawLines(VkCommandBuffer &cmd, const SkyView &view);
+	void drawArt(VkCommandBuffer &cmd, const SkyView &view);
+	void drawNames(const SkyView &view);
+	void drawBoundaries(VkCommandBuffer &cmd, const SkyView &view);
 	void setSelectedConst(Constellation* c);
 
 	Constellation* isStarIn(const Object &s) const;

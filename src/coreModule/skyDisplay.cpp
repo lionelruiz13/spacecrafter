@@ -33,8 +33,7 @@
 #include "tools/log.hpp"
 
 #include "tools/s_font.hpp"
-#include "coreModule/projector.hpp"
-#include "navModule/navigator.hpp"
+#include "coreModule/skyView.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 #include "coreModule/coreLink.hpp"
@@ -65,13 +64,13 @@ SkyDisplay::SkyDisplay(PROJECTION_TYPE _ptype)
 	createLocalResources();
 	switch (ptype) {
 		case AL:
-			proj_func = &Projector::projectLocal;
+			proj_func = &SkyView::projectLocal;
 			break;
 		case EQ:
-			proj_func = &Projector::projectEarthEqu;
+			proj_func = &SkyView::projectEarthEqu;
 			break;
 		default:
-			proj_func = &Projector::projectLocal;
+			proj_func = &SkyView::projectLocal;
 			break;
 	}
 }
@@ -186,7 +185,7 @@ VkCommandBuffer SkyDisplay::getCommand()
 }
 
 //a optimize
-void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
+void SkyDisplay::draw_text(const SkyView &view)
 {
 	for (int i = -9; i < 10; i++) {
 		std::ostringstream oss;
@@ -194,7 +193,7 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 		Utility::spheToRect(aperson - 0.31415926, (i - 0.0001) * grad2rad, pt3);
 		Utility::spheToRect(aperson - 0.31415926 + 0.01, (i - 0.0001) * grad2rad, pt4);
 		//test if pt3,pt4 is displayable and transmit to pt1,pt2 its position
-		if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+		if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
 			double angle;
 			const double dx = pt1[0] - pt2[0];
 			const double dy = pt1[1] - pt2[1];
@@ -205,7 +204,7 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 				angle *= -1;
 			if (i == -9)
 				angle += 3.1415926;
-			Mat4f MVP = prj->getMatProjectionOrtho2D();
+			Mat4f MVP = view.getMatProjectionOrtho2D();
 			//sequence of position transformations from the coordinates of pt1
 			Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
@@ -217,13 +216,13 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 	}
 }
 
-void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+void SkyDisplay::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (fader.isZero() || m_dataSize <= 0) {
 		return;
 	}
 	uFrag->get().fader = fader;
-	*uMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
+	*uMat = (ptype == AL) ? view.getMatLocalToEye() : view.getMatEarthEquToEye();
 	Context::instance->frame[Context::instance->frameIdx]->toExecute(getCommand(), PASS_MULTISAMPLE_DEPTH);
 }
 
@@ -348,7 +347,7 @@ void SkyPerson::loadString(const std::string& message)
 SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 {}
 
-void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+void SkyNautic::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (fader.isZero())
 		return;
@@ -366,7 +365,7 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	direction = tempRA * rad2deg;
 	if (ptype == AL) {
 		// calculate alt az position
-		Vec3d localPos = nav->earthEquToLocal(equPos);
+		Vec3d localPos = view.earthEquToLocal(equPos);
 		Utility::rectToSphe(&tempRA, &tempDE, localPos);
 		tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
 		if (tempRA > M_PI * 2)
@@ -407,16 +406,16 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	}
 	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 
-	SkyDisplay::draw(prj,nav);
+	SkyDisplay::draw(view);
 
-	draw_text(prj, nav);
+	draw_text(view);
 }
 
 SkyCoords::SkyCoords() : SkyDisplay(PROJECTION_TYPE::AL)
 {
 }
 
-void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPos)
+void SkyCoords::draw(const SkyView &view, Vec3d equPos, Vec3d oldPos)
 {
 	if (fader.isZero())
 		return;
@@ -425,7 +424,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 
 	double tempDE, tempRA;
 	float alt, az, aza, alta, ra, dec, mn;
-	double fov = prj->getFov() / 360.f;
+	double fov = view.getFov() / 360.f;
 	Utility::rectToSphe(&tempRA, &tempDE, equPos);
 	// calculate ra dec
 	ra = tempRA * rad2deg;
@@ -434,7 +433,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	ra = ra * 24. / 360.;
 	dec = tempDE * rad2deg;
 	// calculate alt az position
-	Vec3d localPos = nav->earthEquToLocal(equPos);
+	Vec3d localPos = view.earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
 	if (tempRA > M_PI * 2)
@@ -446,7 +445,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	alta = (tempDE - (0.05 * fov * 2)) * rad2deg;
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
-	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
 		double angle;
 		const double dx = pt1[0] - pt2[0];
 		const double dy = pt1[1] - pt2[1];
@@ -456,7 +455,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (pt1[0] < pt2[0])
 			angle *= -1;
 		std::ostringstream oss;
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
@@ -481,7 +480,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	alta = tempDE * rad2deg;
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
-	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
 		double angle;
 		const double dx = pt1[0] - pt2[0];
 		const double dy = pt1[1] - pt2[1];
@@ -491,7 +490,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (pt1[0] < pt2[0])
 			angle *= -1;
 		std::ostringstream oss;
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		//sequence of position transformations from punts coordinates
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
@@ -518,7 +517,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	alta = (tempDE + (0.1 * fov * 2)) * rad2deg;
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
-	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
 		double angle;
 		const double dx = pt1[0] - pt2[0];
 		const double dy = pt1[1] - pt2[1];
@@ -528,7 +527,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (pt1[0] < pt2[0])
 			angle *= -1;
 		std::ostringstream oss;
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
@@ -548,7 +547,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
 
-	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
 		double angle;
 		const double dx = pt1[0] - pt2[0];
 		const double dy = pt1[1] - pt2[1];
@@ -558,7 +557,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (pt1[0] < pt2[0])
 			angle *= -1;
 		std::ostringstream oss;
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
@@ -585,7 +584,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 SkyMouse::SkyMouse() : SkyDisplay(PROJECTION_TYPE::AL)
 {}
 
-void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldPos)
+void SkyMouse::draw(const SkyView &view, Vec3d _equPos, Vec3d _oldPos)
 {
 	if (fader.isZero())
 		return;
@@ -593,12 +592,12 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	Vec4f colorT (color[0], color[1], color[2], fader);
 	int x,y;
 	SDL_GetMouseState(&x,&y);
-	Vec3d equPos = prj->getCursorPosEqu(x, y);
+	Vec3d equPos = view.getCursorPosEqu(x, y);
 	bool orientation = CoreLink::instance->skyDisplayMgrCheckDraw();
 
 	double tempDE, tempRA;
 	float alt, az, aza, alta, ra, dec, mn;
-	double fov = prj->getFov() / 360.f;
+	double fov = view.getFov() / 360.f;
 	Utility::rectToSphe(&tempRA, &tempDE, equPos);
 	// calculate ra dec
 	ra = tempRA * rad2deg;
@@ -607,7 +606,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	ra = ra * 24. / 360.;
 	dec = tempDE * rad2deg;
 	// calculate alt az position
-	Vec3d localPos = nav->earthEquToLocal(equPos);
+	Vec3d localPos = view.earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
 	if (tempRA > M_PI * 2)
@@ -619,7 +618,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	alta = (tempDE - (0.05 * fov * 2)) * rad2deg;
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
-	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
 		double angle;
 		const double dx = pt1[0] - pt2[0];
 		const double dy = pt1[1] - pt2[1];
@@ -629,7 +628,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		if (pt1[0] < pt2[0])
 			angle *= -1;
 		std::ostringstream oss;
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		if (orientation)
@@ -656,7 +655,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	alta = tempDE * rad2deg;
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
-	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
 		double angle;
 		const double dx = pt1[0] - pt2[0];
 		const double dy = pt1[1] - pt2[1];
@@ -666,7 +665,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		if (pt1[0] < pt2[0])
 			angle *= -1;
 		std::ostringstream oss;
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		if (orientation)
@@ -696,7 +695,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	alta = (tempDE + (0.1 * fov * 2)) * rad2deg;
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
-	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
 		double angle;
 		const double dx = pt1[0] - pt2[0];
 		const double dy = pt1[1] - pt2[1];
@@ -706,7 +705,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		if (pt1[0] < pt2[0])
 			angle *= -1;
 		std::ostringstream oss;
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		if (orientation)
@@ -729,7 +728,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
 
-	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
 		double angle;
 		const double dx = pt1[0] - pt2[0];
 		const double dy = pt1[1] - pt2[1];
@@ -739,7 +738,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		if (pt1[0] < pt2[0])
 			angle *= -1;
 		std::ostringstream oss;
-		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		Mat4f MVP = view.getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		if (orientation)
@@ -768,7 +767,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
 {}
 
-void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+void SkyAngDist::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (fader.isZero()) {
 		return;
@@ -778,7 +777,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
 	// for Selected position
 	// calculate alt az position
-	Vec3d localPos = nav->earthEquToLocal(equPos);
+	Vec3d localPos = view.earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
 	if (tempRA > M_PI * 2)
@@ -789,7 +788,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 
 	// for Old position
 	// calculate alt az position
-	localPos = nav->earthEquToLocal(oldEquPos);
+	localPos = view.earthEquToLocal(oldEquPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
 	if (tempRA > M_PI * 2)
@@ -829,7 +828,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	}
 	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 
-	SkyDisplay::draw(prj,nav);
+	SkyDisplay::draw(view);
 
 	// Text
 	float ang, mn, sec;
@@ -837,8 +836,8 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	Utility::spheToRect(az1, alt1, pt3);
 	Utility::spheToRect(az2, alt2, pt4);
 
-	(prj->*proj_func)(pt3, pt1);
-	(prj->*proj_func)(pt4, pt2);
+	(view.*proj_func)(pt3, pt1);
+	(view.*proj_func)(pt4, pt2);
 	double angle;
 	const double dx = pt1[0] - pt2[0];
 	const double dy = pt1[1] - pt2[1];
@@ -848,9 +847,9 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	if (pt1[0] < pt2[0])
 		angle *= -1;
 	std::ostringstream oss;
-	Mat4f MVP = prj->getMatProjectionOrtho2D();
+	Mat4f MVP = view.getMatProjectionOrtho2D();
 	//localPos = nav->earthEquToLocal(pt5);
-	(prj->*proj_func)(pt5, pt0);
+	(view.*proj_func)(pt5, pt0);
 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 	if (truncf(ang) >= 1) {
@@ -873,7 +872,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::EQ)
 {}
 
-void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+void SkyLoxodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (fader.isZero() || (equPos == oldEquPos)) {
 		return;
@@ -896,9 +895,9 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	Utility::spheToRect(ra1, de1, pt3);
 	Utility::spheToRect(ra2, de2, pt4);
 	Utility::spheToRect(ram, dem, pt5);
-	(prj->*proj_func)(pt3, pt1);
-	(prj->*proj_func)(pt4, pt2);
-	(prj->*proj_func)(pt5, pt0);
+	(view.*proj_func)(pt3, pt1);
+	(view.*proj_func)(pt4, pt2);
+	(view.*proj_func)(pt5, pt0);
 	double angle;
 	const double dx = pt1[0] - pt2[0];
 	const double dy = pt1[1] - pt2[1];
@@ -924,11 +923,11 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	}
 	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 
-	SkyDisplay::draw(prj,nav);
+	SkyDisplay::draw(view);
 
 	//draw_text(prj, nav);
 	std::ostringstream oss;
-	Mat4f MVP = prj->getMatProjectionOrtho2D();
+	Mat4f MVP = view.getMatProjectionOrtho2D();
 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), 3 * pi_div_2 - angle);
 	oss << truncf(distM) << " nmi"; // for km *1.85185
@@ -939,7 +938,7 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::AL)
 {}
 
-void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+void SkyOrthodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (fader.isZero()) {
 		return;
@@ -949,7 +948,7 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
 	// for Selected position
 	// calculate alt az position
-	Vec3d localPos = nav->earthEquToLocal(equPos);
+	Vec3d localPos = view.earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
 	if (tempRA > M_PI * 2)
@@ -960,7 +959,7 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 
 	// for Old position
 	// calculate alt az position
-	localPos = nav->earthEquToLocal(oldEquPos);
+	localPos = view.earthEquToLocal(oldEquPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
 	if (tempRA > M_PI * 2)
@@ -1000,7 +999,7 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	}
 	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 
-	SkyDisplay::draw(prj,nav);
+	SkyDisplay::draw(view);
 
 	// Text
 	float ang;
@@ -1008,8 +1007,8 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	Utility::spheToRect(az1, alt1, pt3);
 	Utility::spheToRect(az2, alt2, pt4);
 
-	(prj->*proj_func)(pt3, pt1);
-	(prj->*proj_func)(pt4, pt2);
+	(view.*proj_func)(pt3, pt1);
+	(view.*proj_func)(pt4, pt2);
 	double angle;
 	const double dx = pt1[0] - pt2[0];
 	const double dy = pt1[1] - pt2[1];
@@ -1019,9 +1018,9 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	if (pt1[0] < pt2[0])
 		angle *= -1;
 	std::ostringstream oss;
-	Mat4f MVP = prj->getMatProjectionOrtho2D();
+	Mat4f MVP = view.getMatProjectionOrtho2D();
 	//localPos = nav->earthEquToLocal(pt5);
-	(prj->*proj_func)(pt5, pt0);
+	(view.*proj_func)(pt5, pt0);
 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 	oss << truncf(ang * 60) << " nmi"; // for km *1.85185

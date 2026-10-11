@@ -154,7 +154,7 @@ void NebulaMgr::removeSupplementalNebulae()
 }
 
 // Draw all the Nebulae
-void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproductor* eye, double sky_brightness)
+void NebulaMgr::draw(const SkyView &view, ToneReproductor* eye, double sky_brightness)
 {
 	if (fader.isZero()) return;
 
@@ -172,44 +172,44 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 	// Find the star zones which are in the screen
 	// FOV is currently measured vertically, so need to adjust for wide screens
 	// TODO: projector should probably use largest measurement itself
-	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
-	nebGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
+	float max_fov = std::max( view.getFov(), view.getFov()*view.getViewportWidth()/view.getViewportHeight());
+	nebGrid.intersect(view.getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
 
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	// Print all the stars of all the selected zones
 	// speed up the computation of n->getOnScreenSize(prj, nav)>5:
-	const float size_limit = 5.0 * (M_PI/180.0) * (prj->getFov()/prj->getViewportHeight());
+	const float size_limit = 5.0 * (M_PI/180.0) * (view.getFov()/view.getViewportHeight());
 	// Vec3d win;
 
 	float *data = (float *) Context::instance->transfer->beginPlanCopy(vertexHint->get().size);
 	nbDraw = 0;
-	Nebula::beginDraw(prj);
+	Nebula::beginDraw(view);
 	for (const auto &n : nebGrid) {
 		// improve performance by skipping if too small to see
 		if ( n->getAngularSize()>size_limit|| (hintsFader && n->getMag() <= getMaxMagHints())) {
 			// Refactor this by refactoring projectJ2000 and his dependencies
 			//prj->projectJ2000(n->XYZ_, win);
-			n->setXY(prj);
+			n->setXY(view);
 
 			if (n->getAngularSize()>size_limit) {
-				n->drawTex(prj, nav, eye, sky_brightness, flagBright);
+				n->drawTex(view, eye, sky_brightness, flagBright);
 			}
 
 			if (textFader) {
 				if (isolateSelected) {
 					const std::string nebula_name = n->getNameI18n();
 					if (selected_nebulas.count(nebula_name)) {
-						n->drawName(prj, labelColor, font);
+						n->drawName(view, labelColor, font);
 					}
 				} else
-					n->drawName(prj, labelColor, font);
+					n->drawName(view, labelColor, font);
 			}
 
 			//~ cout << "drawhint " << n->getEnglishName() << endl;
 			if ( n->getAngularSize()<size_limit && nbDraw < MAX_HINT) {
 				if (!displaySpecificHint)
-					n->drawHint(prj, nav, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());
+					n->drawHint(view, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());
 				else {
 					bool displayPicto = false;
 					if (isolateSelected) {
@@ -219,16 +219,16 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 					}
 					else
 						displayPicto = true;
-					n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());
+					n->drawHint(view, data, nbDraw, displayPicto, circleColor, getPictoSize());
 				}
 			}
 		}
 	}
 	Nebula::endDraw();
-	drawAllHint(prj);
+	drawAllHint(view);
 }
 
-void NebulaMgr::drawAllHint(const Projector* prj)
+void NebulaMgr::drawAllHint(const SkyView &view)
 {
 	Context &context = *Context::instance;
 	context.transfer->endPlanCopy(vertexHint->get(), nbDraw * 4 * (7 * sizeof(float)));

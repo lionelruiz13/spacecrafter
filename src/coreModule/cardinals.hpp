@@ -35,7 +35,7 @@
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
 
-class Projector;
+class SkyView;
 class s_font;
 class Translator;
 
@@ -45,7 +45,7 @@ public:
 	Cardinals(float _radius = 1.);
 	virtual ~Cardinals();
 
-	void draw(const Projector* prj, double latitude, bool gravityON = false) const;
+	void draw(const SkyView &view, double latitude, bool gravityON = false) const;
 
 	void translateLabels(Translator& trans);  // for i18n
 

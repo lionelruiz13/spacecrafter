@@ -43,8 +43,7 @@ which are generally not at the apex of the Earth's way, such as the Perseids sho
 #include <cstdlib>
 #include "coreModule/meteor.hpp"
 //#include "tools/fmath.hpp"
-#include "coreModule/projector.hpp"
-#include "navModule/navigator.hpp"
+#include "coreModule/skyView.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 
 // meteor showers through the year {ra de zhr}
@@ -113,7 +112,7 @@ void Meteor::clear()
 	radiant = baseRadiant;
 }
 
-Meteor::Meteor(Projector *proj, Navigator* nav, ToneReproductor* eye, double v)
+Meteor::Meteor(const SkyView &view, ToneReproductor* eye, double v)
 {
 	//  velocity = 11+(double)rand()/((double)RAND_MAX+1)*v;  // abs range 11-72 km/s
 	velocity=v;
@@ -123,7 +122,7 @@ Meteor::Meteor(Projector *proj, Navigator* nav, ToneReproductor* eye, double v)
 	// determine meteor model view matrix (want z in dir of travel of earth, z=0 at center of earth)
 	// meteor life is so short, no need to recalculate
 	double equ_rotation; // rotation needed to align with path of earth
-	Vec3d sun_dir = nav->helioToEarthEqu( Vec3d(0,0,0) );
+	Vec3d sun_dir = view.helioToEarthEqu( Vec3d(0,0,0) );
 
 	Mat4d tmat = Mat4d::xrotation(-23.45f*M_PI/180.f);  // ecliptical tilt
 	sun_dir.transfo4d(tmat);  // convert to ecliptical coordinates
@@ -147,7 +146,7 @@ Meteor::Meteor(Projector *proj, Navigator* nav, ToneReproductor* eye, double v)
 	double angle = (double)rand()/((double)RAND_MAX+1)*2*M_PI;
 
 	// find observer position in meteor coordinate system
-	obs = nav->localToEarthEqu(Vec3d(0,0,EARTH_RADIUS));
+	obs = view.localToEarthEqu(Vec3d(0,0,EARTH_RADIUS));
 	obs.transfo4d(mmat.transpose());
 
 	// set meteor start x,y
@@ -218,7 +217,7 @@ Meteor::Meteor(Projector *proj, Navigator* nav, ToneReproductor* eye, double v)
 	// Compute the equivalent star luminance for a 5 arc min circle and convert it
 	// in function of the eye adaptation
 	rmag = eye->adaptLuminance(term1);
-	rmag = rmag/powf(proj->getFov(),0.85f)*50.f;
+	rmag = rmag/powf(view.getFov(),0.85f)*50.f;
 
 	// if size of star is too small (blink) we put its size to 1.2 --> no more blink
 	// And we compensate the difference of brighteness with cmag
@@ -277,7 +276,7 @@ bool Meteor::update(int delta_time)
 
 
 // returns true if drawn
-bool Meteor::draw(Projector *proj, Navigator* nav, float *&data) //ce prototype va changer
+bool Meteor::draw(const SkyView &view, float *&data) //ce prototype va changer
 {
 	if (!alive) return(false);
 
@@ -291,13 +290,13 @@ bool Meteor::draw(Projector *proj, Navigator* nav, float *&data) //ce prototype 
 	epos.transfo4d(mmat);
 
 	// convert to local and correct for earth radius [since equ and local coordinates use same 0 point!]
-	spos = nav->earthEquToLocal( spos );
-	epos = nav->earthEquToLocal( epos );
+	spos = view.earthEquToLocal( spos );
+	epos = view.earthEquToLocal( epos );
 	spos[2] -= EARTH_RADIUS;
 	epos[2] -= EARTH_RADIUS;
 
-	int t1 = proj->projectLocalCheck(spos/1216, start);  // 1216 is to scale down under 1 for desktop version
-	int t2 = proj->projectLocalCheck(epos/1216, end);
+	int t1 = view.projectLocalCheck(spos/1216, start);  // 1216 is to scale down under 1 for desktop version
+	int t2 = view.projectLocalCheck(epos/1216, end);
 
 	// don't draw if not visible (but may come into view)
 	if ( t1 + t2 == 0 ) return false; // return false because not drawn
@@ -311,9 +310,9 @@ bool Meteor::draw(Projector *proj, Navigator* nav, float *&data) //ce prototype 
 	Vec3d posi = pos_internal;
 	posi[2] = position[2] + (pos_train[2] - position[2])/2;
 	posi.transfo4d(mmat);
-	posi = nav->earthEquToLocal( posi );
+	posi = view.earthEquToLocal( posi );
 	posi[2] -= EARTH_RADIUS;
-	proj->projectLocal(posi/1216, intpos);
+	view.projectLocal(posi/1216, intpos);
 
 	*(data++) = end[0];
 	*(data++) = end[1];

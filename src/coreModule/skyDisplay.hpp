@@ -36,8 +36,7 @@
 
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
-class Projector;
-class Navigator;
+class SkyView;
 class ToneReproductor;
 class Translator;
 class s_font;
@@ -57,7 +56,7 @@ public:
 	SkyDisplay(PROJECTION_TYPE ptype);
 	virtual ~SkyDisplay();
 
-	virtual void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
+	virtual void draw(const SkyView &view, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
 
 	void setColor(const Vec3f& c) {
 		uFrag->get().color = color = c;
@@ -103,8 +102,8 @@ protected:
 	VkCommandBuffer getCommand();
 	Vec3f color;
 	double aperson;
-	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
-	void draw_text(const Projector *prj,const Navigator *nav);
+	bool (SkyView::*proj_func)(const Vec3d&, Vec3d&) const;
+	void draw_text(const SkyView &view);
 	ALinearFader fader;
 	Vec3d pt0, pt1, pt2, pt3, pt4, pt5;
 
@@ -150,7 +149,7 @@ public:
 	SkyNautic(PROJECTION_TYPE ptype);
 	~SkyNautic() {};
 
-	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
+	void draw(const SkyView &view, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
 
 private:
 };
@@ -161,7 +160,7 @@ public:
 	SkyCoords();
 	~SkyCoords() {};
 
-	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
+	void draw(const SkyView &view, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
 
 private:
 };
@@ -171,7 +170,7 @@ public:
 	SkyMouse();
 	~SkyMouse() {};
 
-	void draw(const Projector *prj,const Navigator *nav, Vec3d _equPos= Vec3f(0,0,0), Vec3d _oldEquPos= Vec3f(0,0,0));
+	void draw(const SkyView &view, Vec3d _equPos= Vec3f(0,0,0), Vec3d _oldEquPos= Vec3f(0,0,0));
 
 private:
 };
@@ -182,7 +181,7 @@ public:
 	SkyAngDist();
 	~SkyAngDist() {};
 
-	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
+	void draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos);
 
 private:
 };
@@ -192,7 +191,7 @@ public:
 	SkyLoxodromy();
 	~SkyLoxodromy() {};
 
-	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
+	void draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos);
 
 private:
 };
@@ -202,7 +201,7 @@ public:
 	SkyOrthodromy();
 	~SkyOrthodromy() {};
 
-	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
+	void draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos);
 
 private:
 };

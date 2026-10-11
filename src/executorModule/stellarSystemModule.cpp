@@ -195,24 +195,25 @@ void StellarSystemModule::draw(int delta_time)
 		core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
-	core->nebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->nebulas->draw(*core->oldSkyView, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
 	core->illuminates->draw(core->projection, core->navigation);
-	core->asterisms->draw(core->projection, core->navigation);
+	core->asterisms->draw(*core->oldSkyView);
 	core->starLines->draw(core->navigation);
     core->starNav->draw(core->navigation, core->projection, true);
 	core->skyGridMgr->draw(core->projection);
-	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
-	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
+	core->skyLineMgr->draw(*core->oldSkyView, core->timeMgr.get(), core->observatory.get());
+	core->skyDisplayMgr->draw(*core->oldSkyView, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
 	// Key the new-path planet-grid tropic/polar circles to the sky-line flags
 	// (LINE_TROPIC / LINE_CIRCLE_POLAR) just read above (INTENT S11.57, B23).
 	core->syncPlanetGridSkyState();
 	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	if (core->needOldSelectionPointer())
-		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
+		core->selected_object.drawPointer(delta_time, *core->oldSkyView, core->selected_object.getEarthEquPos(core->navigation),
+		                                  core->selected_object.getOnScreenSize(core->projection, core->navigation));
 
 	// Update meteors
-	core->meteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
+	core->meteors->update(*core->oldSkyView, core->timeMgr.get(), core->tone_converter, delta_time);
 
 	// retire la condition && atmosphere->getFlagShow() de sorte a pouvoir en avoir par atmosphere tenue
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
@@ -221,7 +222,7 @@ void StellarSystemModule::draw(int delta_time)
 	         ? core->ssystemFactory->getEnvironmentState().allowMeteors
 	         : core->bodyDecor->canDrawMeteor())
 	    && (core->sky_brightness<0.1))
-		core->meteors->draw(core->projection, core->navigation);
+		core->meteors->draw(*core->oldSkyView);
 
     Context::instance->helper->nextDraw(PASS_FOREGROUND);
 	if (core->ssystemFactory->drawModularSystem) {
@@ -235,7 +236,7 @@ void StellarSystemModule::draw(int delta_time)
 	}
 	}
 
-	core->cardinals_points->draw(core->projection, observer->getLatitude());
+	core->cardinals_points->draw(*core->oldSkyView, observer->getLatitude());
 }
 
 bool StellarSystemModule::testValidAltitude(double altitude)

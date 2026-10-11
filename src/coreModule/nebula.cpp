@@ -331,9 +331,9 @@ void Nebula::createSC_context()
 	pipeline->build();
 }
 
-void Nebula::beginDraw(const Projector* prj)
+void Nebula::beginDraw(const SkyView &view)
 {
-	Context::instance->helper->beginNebulaDraw(prj->getMatJ2000ToEye());
+	Context::instance->helper->beginNebulaDraw(view.getMatJ2000ToEye());
 }
 
 void Nebula::endDraw()
@@ -347,7 +347,7 @@ PipelineLayout *Nebula::initDraw(VkCommandBuffer cmd)
 	return layout;
 }
 
-void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, double sky_brightness, bool flagBright)
+void Nebula::drawTex(const SkyView &view, ToneReproductor* eye, double sky_brightness, bool flagBright)
 {
 	if (!texture || m_hidden || !m_selected) return;
 
@@ -355,9 +355,9 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 	float ad_lum=eye->adaptLuminance(luminance);
 
 	float color = 1;
-	float nebulaScreenSize = getOnScreenSize(prj,nav);
-	float minZoom = prj->getViewportHeight()/75.;
-	float maxZoom = prj->getViewportHeight()/10.;
+	float nebulaScreenSize = onScreenSize(view);
+	float minZoom = view.getViewportHeight()/75.;
+	float maxZoom = view.getViewportHeight()/10.;
 
 	if (flagBright && sky_brightness < 0.011 && ( nebulaScreenSize < maxZoom) && (nebulaScreenSize > minZoom)) {
 	       // fade the nebula while zooming
@@ -378,10 +378,10 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 	Context::instance->helper->draw(&drawData);
 }
 
-void Nebula::drawHint(const Projector* prj, const Navigator * nav, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r)
+void Nebula::drawHint(const SkyView &view, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r)
 {
 	if (m_hidden || !m_selected) return;
-	if (2.f/getOnScreenSize(prj, nav)<0.1) return;
+	if (2.f/onScreenSize(view)<0.1) return;
 
 	++nbDraw;
 	struct VertexInput {
@@ -405,21 +405,21 @@ void Nebula::drawHint(const Projector* prj, const Navigator * nav, float *&data,
 	}
 }
 
-void Nebula::drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont)
+void Nebula::drawName(const SkyView &view, const Vec3f &labelColor, s_font *nebulaFont)
 {
 	if (m_hidden || !m_selected) return;
 
 	Vec4f Color(labelColor[0], labelColor[1], labelColor[2], hintsBrightness);
-	float size = getOnScreenSize(prj);
+	float size = onScreenSize(view);
 	float shift = 8.f + size/2.f;
 
 	std::string nebulaname = getNameI18n();
 
-	prj->printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);
+	view.printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);
 
 	// draw image credit, if it fits easily
 	if (credit != "" && size > nebulaFont->getStrLen(credit)) {
-		prj->printGravity180(nebulaFont, XY[0]-shift-40, XY[1]+-shift-40, credit, Color, 0, 0);
+		view.printGravity180(nebulaFont, XY[0]-shift-40, XY[1]+-shift-40, credit, Color, 0, 0);
 	}
 }
 

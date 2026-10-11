@@ -38,8 +38,7 @@
 #include "EntityCore/SubBuffer.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
-class Projector;
-class Navigator;
+class SkyView;
 class VertexArray;
 class VertexBuffer;
 class Pipeline;
@@ -67,9 +66,9 @@ public:
 	};
 
 	//! update positions
-	void update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time);
+	void update(const SkyView &view, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time);
 	// Draw the meteors
-	void draw(Projector *proj, Navigator* nav);
+	void draw(const SkyView &view);
 
 	void createRadiant(int day, const Vec3f newRadiant);
 

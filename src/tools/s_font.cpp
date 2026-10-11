@@ -28,7 +28,7 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "tools/draw_helper.hpp"
-#include "coreModule/projector.hpp"
+#include "coreModule/oldSkyView.hpp"
 #include "EntityCore/Resource/TileMap.hpp"
 
 std::vector<renderedString_struct> s_font::tempCache, s_font::tempCache2;
@@ -359,6 +359,11 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 //! Draw text with baseline more or less parallel with horizon
 void s_font::printHorizontal(const Projector *prj, float altitude, float azimuth, const std::string& str, const Vec4f &texColor, TEXT_ALIGN testPos, bool cache)
 {
+	printHorizontal(OldSkyView(prj, nullptr), altitude, azimuth, str, texColor, testPos, cache);
+}
+
+void s_font::printHorizontal(const SkyView &view, float altitude, float azimuth, const std::string& str, const Vec4f &texColor, TEXT_ALIGN testPos, bool cache)
+{
 	if (str.empty()) return;
 	// Get rendered texture
 	renderedString_struct rendering;
@@ -387,11 +392,11 @@ void s_font::printHorizontal(const Projector *prj, float altitude, float azimuth
 	switch (testPos) {
 		case TEXT_ALIGN::LEFT : angle = 0; break;
 		case TEXT_ALIGN::RIGHT :
-			lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
+			lCercle = 2.f*M_PI*view.getViewportRadius() * (90.f-altitude)/90.f;
 			angle = 360.f * rendering.textureW / lCercle;
 			break;
 		case TEXT_ALIGN::CENTER:
-			lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
+			lCercle = 2.f*M_PI*view.getViewportRadius() * (90.f-altitude)/90.f;
 			angle = 360.f * rendering.textureW / lCercle / 2.f; //because center
 			break;
 		default: angle = 0; break;
@@ -399,11 +404,11 @@ void s_font::printHorizontal(const Projector *prj, float altitude, float azimuth
 
 	Vec3d startV, screen;
 	Utility::spheToRect(-(azimuth-angle)*M_PI/180., altitude*M_PI/180., startV);
-	prj->projectDomeFixed(startV, screen);
+	view.projectDomeFixed(startV, screen);
 	float x = screen[0];
 	float y = screen[1];
 
-	Vec3d center = prj->getViewportCenter();
+	Vec3d center = view.getViewportCenter();
 	float radius = center[2];
 	float dx = x - center[0];
 	float dy = y - center[1];
@@ -412,7 +417,7 @@ void s_font::printHorizontal(const Projector *prj, float altitude, float azimuth
 	if(radius > 0) {
 		if (d > radius + rendering.stringH) return;
 	} else {
-		if(std::max(prj->getViewportWidth(), prj->getViewportHeight() ) > d) return;
+		if(std::max(view.getViewportWidth(), view.getViewportHeight() ) > d) return;
 	}
 
 	float theta = M_PI + atan2f(dx, dy - 1);

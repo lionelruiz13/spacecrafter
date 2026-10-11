@@ -39,6 +39,7 @@ class Navigator;
 class TimeMgr;
 class Observer;
 class Projector;
+class SkyView;
 class s_texture;
 class VertexArray;
 class VertexBuffer;
@@ -57,7 +58,7 @@ public:
 	virtual void release() {}
 
 	//! draws the pointer of the selected object according to its type.
-	void drawPointer(int delta_time, const Projector* prj, const Navigator *nav);
+	void drawPointer(int delta_time, const SkyView &view, const Vec3d &earthEquPos, float onScreenSize);
 
 	//! Write I18n information about the object in string.
 	virtual std::string getInfoString(const Navigator * nav) const = 0;

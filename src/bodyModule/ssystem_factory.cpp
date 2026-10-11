@@ -852,6 +852,11 @@ const StarFieldInput &SSystemFactory::getEnvironmentStarFieldInput() const
     return environment->starInput;
 }
 
+const SkyView &SSystemFactory::getEnvironmentSkyView() const
+{
+    return environment->getSkyView();
+}
+
 void SSystemFactory::drawEnvironmentBackdrop()
 {
     if (environment)

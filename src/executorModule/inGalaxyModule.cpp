@@ -128,10 +128,11 @@ void InGalaxyModule::draw(int delta_time)
 	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 
 	if (core->needOldSelectionPointer())
-		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
+		core->selected_object.drawPointer(delta_time, *core->oldSkyView, core->selected_object.getEarthEquPos(core->navigation),
+		                                  core->selected_object.getOnScreenSize(core->projection, core->navigation));
 
 	//drawing lines without activating the depth buffer.
-	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
+	core->skyDisplayMgr->drawPerson(*core->oldSkyView);
 	core->starLines->draw(core->navigation);
 
 	// transparency.

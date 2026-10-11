@@ -68,7 +68,7 @@ public:
 	void removeSupplementalNebulae();
 
 	//! Draw all the DSO
-	void draw(const Projector *prj, const Navigator *nav, ToneReproductor *eye, double sky_brightness);
+	void draw(const SkyView &view, ToneReproductor *eye, double sky_brightness);
 
 	//! search deepskyObject by name M83, NGC 1123, IC1234 ...
 	//! \return a object
@@ -230,7 +230,7 @@ protected:
 	bool initTexPicto();
 	//void createShaderHint();
 	void createSC_context();
-	void drawAllHint(const Projector* prj);
+	void drawAllHint(const SkyView &view);
 
 private:
 	bool loadDeepskyObjectFromCat(const std::string& cat); //!< load DSO with reading file cat

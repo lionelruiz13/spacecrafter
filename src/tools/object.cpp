@@ -139,11 +139,9 @@ bool Object::operator==(const Object &o) const
 // 	rep->update();
 // }
 
-void Object::drawPointer(int delta_time,
-                          const Projector *prj,
-                          const Navigator *nav)
+void Object::drawPointer(int delta_time, const SkyView &view, const Vec3d &earthEquPos, float onScreenSize)
 {
-	rep->drawPointer(delta_time,prj,nav);
+	rep->drawPointer(delta_time, view, earthEquPos, onScreenSize);
 }
 
 std::string Object::getInfoString(const Navigator *nav) const

@@ -30,8 +30,7 @@
 #include <array>
 #include <vector>
 
-class Projector;
-class Navigator;
+class SkyView;
 class ToneReproductor;
 
 // // all in km - altitudes make up meteor range
@@ -43,10 +42,10 @@ class ToneReproductor;
 class Meteor {
 
 public:
-	Meteor( Projector *proj, Navigator *nav, ToneReproductor* eye, double v);
+	Meteor(const SkyView &view, ToneReproductor* eye, double v);
 	virtual ~Meteor();
 	bool update(int delta_time);  // update position
-	bool draw(Projector *proj, Navigator* nav, float *&data);		// Draw the meteor
+	bool draw(const SkyView &view, float *&data);		// Draw the meteor
 	bool isAlive(void);          // see if burned out yet
 	static void createRadiant(int day, const Vec3f newRadiant) {
 		radiant[(day-1) % 366] = newRadiant;
