@@ -258,14 +258,12 @@ void SSystemFactory::changeSystem(const std::string &mode)
 {
     if (mode == "SolarSystem" || mode == "Sun" || mode == "temp_point") {
         currentSystem = ssystem.get();
-        camera->switchToBody(ModularBody::findBodyOnce("SolarSystem"));
     } else {
         try {
             currentSystem = systems.at(mode).get();
         } catch (...) {
             currentSystem = createSystem(mode).get();
         }
-        camera->switchToBody(ModularBody::findBodyOnce(mode + "System"));
     }
     selectSystem();
 }

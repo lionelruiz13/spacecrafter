@@ -173,6 +173,7 @@ public:
     }
     inline void rebindReference(ModularBody *dst) {
         reference = dst;
+        aimed = dst;
     }
     inline ModularSystem *getCurrentSystem() const {
         return system;
@@ -247,6 +248,8 @@ private:
         return static_cast<float>(viewOffset) * viewOffsetTransition;
     }
     Vec3f paramForward() const;
+    // Leave the current system when outside its influence, return toward the aimed body when back inside
+    void followInfluence();
     // Serialized on the render chain with the publish tasks
     class FrameDrawTask : public Task {
     public:
@@ -256,6 +259,7 @@ private:
         std::atomic<bool> done{true};
     } frameDrawTask;
     ModularBodyPtr reference;
+    ModularBodyPtr aimed;
     ModularBodyPtr target;
     ModularSystem *system; // Determined on construction and update
     // View plan: rotate viewFrom about viewAxis (param frame), accelerating until viewT1

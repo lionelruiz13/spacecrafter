@@ -20,7 +20,7 @@ float Camera::maxHalfFov = 3.05;
 static constexpr float VIEW_OFFSET_RAMP_RATE = 2.f;
 
 Camera::Camera(ModularBody *reference, float longitude, float latitude, float altitude) :
-    reference(reference), longitude(longitude), latitude(latitude), distance(altitude+reference->getAltitudeReference())
+    reference(reference), aimed(reference), longitude(longitude), latitude(latitude), distance(altitude+reference->getAltitudeReference())
 {
     instance = this;
     reference->enterEnvironment();
@@ -307,12 +307,11 @@ void Camera::switchToBody(ModularBody *dst)
         lockedSkyRot = lockedSkyRot.multiplyFast(comp);
     reference->leaveEnvironment();
     reference = dst;
+    aimed = dst;
     reference->enterEnvironment();
     recoverParams(R);
     setFreeMode(oldFreeMode);
     setBoundToSurface(oldBoundToSurface);
-    if (dst->isSystem())
-        setBoundToSurface(false);
 }
 
 void Camera::warpToBody(ModularBody *dst)
@@ -320,9 +319,8 @@ void Camera::warpToBody(ModularBody *dst)
     dst->useNow(); // becoming the reference is a use - see switchToBody
     reference->leaveEnvironment();
     reference = dst;
+    aimed = dst;
     reference->enterEnvironment();
-    if (dst->isSystem()) // same no-surface rule as switchToBody
-        setBoundToSurface(false);
 }
 
 Vec3f Camera::getReferenceRelativePosition() const
@@ -451,7 +449,29 @@ void Camera::update(double jd, float deltaTime)
         // cached member (findBetterReference contract).
         if (auto newRef = reference->findBetterReference(position.length()))
             switchToBody(newRef);
+    } else {
+        followInfluence();
     }
+}
+
+void Camera::followInfluence()
+{
+    ModularBody *dst = system;
+    if (reference->isSystem()) {
+        if (aimed == reference || !reference->isInAreaOfInfluence())
+            return;
+        dst = aimed;
+        for (ModularBody *b = aimed->getParent(); b != reference; b = b->getParent())
+            if (b->isSystem())
+                dst = b;
+    } else if (system->isInAreaOfInfluence()) {
+        return;
+    }
+    ModularBody *const kept = aimed;
+    const Vec3f place = positionRelativeTo(dst);
+    switchToBody(dst);
+    placeAt(place, true);
+    aimed = kept;
 }
 
 void Camera::draw(Renderer &renderer)
@@ -913,6 +933,7 @@ void Camera::dumpTrace(std::ostream &out) const
     const Vec3d rootPos = reference ? getRootPosition() : Vec3d(0, 0, 0);
     out << std::setprecision(9) << "{\"reference\":\""
         << (reference ? reference->getEnglishName() : "")
+        << "\",\"aimed\":\"" << (aimed ? aimed->getEnglishName() : "")
         << "\",\"tracked\":\"" << (target ? target->getEnglishName() : "")
         << "\",\"freeMode\":"
         << (freeMode ? "true" : "false") << ",\"boundToSurface\":"

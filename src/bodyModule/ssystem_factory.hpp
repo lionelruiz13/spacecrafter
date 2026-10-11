@@ -726,8 +726,7 @@ public:
 
     bool switchToAnchor(const std::string& anchorName) {
         bool ret = currentSystem->getAnchorManager()->switchToAnchor(anchorName);
-        if (ret)
-            syncCameraReference(anchorName);
+        syncCameraReference(anchorName);
         return ret;
     }
 
