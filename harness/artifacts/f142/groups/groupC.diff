@@ -1,0 +1,194 @@
+diff --git a/src/eventModule/EventScript.hpp b/src/eventModule/EventScript.hpp
+index fcbc1328..9ca5f2a2 100644
+--- a/src/eventModule/EventScript.hpp
++++ b/src/eventModule/EventScript.hpp
+@@ -33,8 +33,9 @@
+ 
+ class ScriptEvent : public Event {
+ public:
+-    ScriptEvent(const std::string& _fileName) : Event(E_SCRIPT) {
++    ScriptEvent(const std::string& _fileName, const std::string& _key = std::string()) : Event(E_SCRIPT) {
+         fileName = _fileName;
++        key = _key;
+     }
+     ~ScriptEvent(){};
+ 
+@@ -42,6 +43,11 @@ public:
+         return fileName;
+     }
+ 
++    //! Return the key that triggered this script, empty when none
++    std::string getKey() const {
++        return key;
++    }
++
+     virtual std::string toString() const {
+         std::ostringstream os;
+         os << Event::toString() << " FileName : " << fileName << std::endl;
+@@ -49,6 +55,7 @@ public:
+     }
+ private:
+     std::string fileName;
++    std::string key;
+ };
+ 
+ 
+diff --git a/src/eventModule/EventScriptHandler.cpp b/src/eventModule/EventScriptHandler.cpp
+index 918b1a08..b85f22b3 100644
+--- a/src/eventModule/EventScriptHandler.cpp
++++ b/src/eventModule/EventScriptHandler.cpp
+@@ -32,7 +32,7 @@ void EventScriptHandler::handle(const Event* e, Executor *executor)
+ {
+ 	ScriptEvent * event = (ScriptEvent *)e;
+ 	// Accumulate in temporary queue instead of adding immediately
+-	pendingScripts.push_back(event->getFileName());
++	pendingScripts.push_back({event->getFileName(), event->getKey()});
+ }
+ 
+ void EventScriptHandler::loopDone()
+@@ -40,7 +40,7 @@ void EventScriptHandler::loopDone()
+ 	// If there are pending scripts, add them now from last to first to preserve execution order
+ 	if (!pendingScripts.empty()) {
+ 		for (auto it = pendingScripts.rbegin(); it != pendingScripts.rend(); ++it) {
+-			scriptInterface->playScript(*it);
++			scriptInterface->playScript(it->first, it->second);
+ 		}
+ 		pendingScripts.clear();
+ 	}
+diff --git a/src/eventModule/EventScriptHandler.hpp b/src/eventModule/EventScriptHandler.hpp
+index be73ddad..799286d2 100644
+--- a/src/eventModule/EventScriptHandler.hpp
++++ b/src/eventModule/EventScriptHandler.hpp
+@@ -49,8 +49,8 @@ public:
+     
+ protected :
+ 	ScriptInterface* scriptInterface = nullptr;
+-	// Temporary queue to accumulate scripts during event loop
+-	std::vector<std::string> pendingScripts;
++	// Temporary queue to accumulate scripts and their trigger keys during event loop
++	std::vector<std::pair<std::string, std::string>> pendingScripts;
+ };
+ 
+ #endif // EVENT_SCRIPT_HANDLER_HPP
+\ No newline at end of file
+diff --git a/src/scriptModule/script.cpp b/src/scriptModule/script.cpp
+index 62880367..a144152a 100644
+--- a/src/scriptModule/script.cpp
++++ b/src/scriptModule/script.cpp
+@@ -85,18 +85,18 @@ void Script::clean()
+ 	p2Last = nullptr;
+ }
+ 
+-int Script::load(const std::string &script_file, const std::string &script_path )
++int Script::load(const std::string &script_file, const std::string &script_path, const std::string &key)
+ {
+ 	if (pFirst == nullptr) {
+ 		//cout << "loading script "<< script_file << " when no script is playing" << endl;
+-		return loadInternal(script_file, script_path ,ListPosition::first);
++		return loadInternal(script_file, script_path ,ListPosition::first, key);
+ 	} else {
+ 		//cout << "loading script " << script_file << " when script is playing" << endl;
+-		return loadInternal(script_file, script_path ,ListPosition::second);
++		return loadInternal(script_file, script_path ,ListPosition::second, key);
+ 	}
+ }
+ 
+-int Script::loadInternal(const std::string &script_file,const std::string & script_path , ListPosition wp)
++int Script::loadInternal(const std::string &script_file,const std::string & script_path , ListPosition wp, const std::string &key)
+ {
+ 	//~ printf("s : %s p : %s\n", script_file.c_str() , script_path.c_str() );
+ 	input_file = new std::ifstream(script_file.c_str());
+@@ -116,7 +116,7 @@ int Script::loadInternal(const std::string &script_file,const std::string & scri
+ 
+ 		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
+ 			//cout << "[script.cpp => Line is: " << line << "]"<< endl;
+-			token=new Token(line, script_path, ScriptOrigin::fromFile(script_file, lineNo, line));
++			token=new Token(line, script_path, ScriptOrigin::fromFile(script_file, lineNo, line, key));
+ 			is_script_empty=false;
+ 			if (wp==ListPosition::first)
+ 				addFirst(token);
+diff --git a/src/scriptModule/script.hpp b/src/scriptModule/script.hpp
+index 67f6e32e..bd976f9b 100644
+--- a/src/scriptModule/script.hpp
++++ b/src/scriptModule/script.hpp
+@@ -71,7 +71,7 @@ public:
+ 	void printScript();
+ 
+ 	//! loads a script file into memory
+-	int load(const std::string &script_file, const std::string &script_path );
++	int load(const std::string &script_file, const std::string &script_path, const std::string &key = std::string());
+ 
+ 	//! empties the stack of script instructions in memory
+ 	void clean();
+@@ -95,7 +95,7 @@ private:
+ 	Token *pLast=nullptr;
+ 	Token *p2First=nullptr;
+ 	Token *p2Last=nullptr;
+-	int loadInternal(const std::string &script_file , const std::string &script_path , ListPosition wp);
++	int loadInternal(const std::string &script_file , const std::string &script_path , ListPosition wp, const std::string &key);
+ 
+ 	/* 
+ 	 * adds the given Token in the queue named pFirst
+diff --git a/src/scriptModule/script_interface.cpp b/src/scriptModule/script_interface.cpp
+index 460ac7db..85b1a5eb 100644
+--- a/src/scriptModule/script_interface.cpp
++++ b/src/scriptModule/script_interface.cpp
+@@ -98,8 +98,8 @@ void ScriptInterface::setScriptNbrLoop(int a) {
+     scriptMgr->setNbrLoop(a);
+ }
+ 
+-bool ScriptInterface::playScript(const std::string& _script) {
+-    return scriptMgr->playScript(_script);
++bool ScriptInterface::playScript(const std::string& _script, const std::string& key) {
++    return scriptMgr->playScript(_script, key);
+ }
+ 
+ bool ScriptInterface::addScriptFirst(const std::string& _script) {
+diff --git a/src/scriptModule/script_interface.hpp b/src/scriptModule/script_interface.hpp
+index d086f70a..19bc3821 100644
+--- a/src/scriptModule/script_interface.hpp
++++ b/src/scriptModule/script_interface.hpp
+@@ -67,7 +67,7 @@ public:
+ 
+ 	bool addScriptFirst(const std::string& string);
+ 
+-	bool playScript(const std::string& _script);
++	bool playScript(const std::string& _script, const std::string& key = std::string());
+ 
+ 	void recordScript(const std::string &script_filename);
+ 	void recordCommand(const std::string &commandline);
+diff --git a/src/scriptModule/script_mgr.hpp b/src/scriptModule/script_mgr.hpp
+index c0744213..0f802905 100644
+--- a/src/scriptModule/script_mgr.hpp
++++ b/src/scriptModule/script_mgr.hpp
+@@ -51,7 +51,7 @@ public:
+ 	~ScriptMgr();
+ 
+ 	//! play a script
+-	bool playScript(const std::string &fullFileName);
++	bool playScript(const std::string &fullFileName, const std::string &key = std::string());
+ 
+ 	//! place the given script at the begin of the command queue
+ 	bool addScriptFirst(const std::string & script);
+diff --git a/src/scriptModule/script_origin.hpp b/src/scriptModule/script_origin.hpp
+index d09d54e6..76521a3b 100644
+--- a/src/scriptModule/script_origin.hpp
++++ b/src/scriptModule/script_origin.hpp
+@@ -39,13 +39,16 @@ struct ScriptOrigin {
+ 	unsigned line = 0;     //!< FILE only, 1-based, 0 = none
+ 	std::string text;      //!< Raw line, the CR of a CRLF file is kept
+ 	unsigned connection = 0; //!< TCP only, 0 = unknown
++	std::string key;       //!< FILE only, the key whose binding started the run, "" otherwise
+ 
+-	static ScriptOrigin fromFile(const std::string &file, unsigned line, const std::string &text) {
++	static ScriptOrigin fromFile(const std::string &file, unsigned line, const std::string &text,
++	                             const std::string &key = std::string()) {
+ 		ScriptOrigin o;
+ 		o.channel = ScriptChannel::FILE;
+ 		o.file = file;
+ 		o.line = line;
+ 		o.text = text;
++		o.key = key;
+ 		return o;
+ 	}
+ 	static ScriptOrigin fromTcp(unsigned id, const std::string &text) {

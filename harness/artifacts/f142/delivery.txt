@@ -1,0 +1,57 @@
+```
+SHAPE 2a0fdbef..WORKTREE  (harness/shape/delivery.py)
+(1) lines [ratio.py classify on the -U0 hunks]  +code -code +comment -comment +blank -blank  status file
+      6     1     1     0     1     0  M src/eventModule/EventScript.hpp
+      2     2     0     0     0     0  M src/eventModule/EventScriptHandler.cpp
+      1     1     1     1     0     0  M src/eventModule/EventScriptHandler.hpp
+     44     0     0     0     1     0  M src/interfaceModule/app_command_interface.cpp
+      1     0     1     0     0     0  M src/interfaceModule/app_command_interface.hpp
+      6     0     0     0     0     0  M src/interfaceModule/base_command_interface.hpp
+      5     5     0     0     0     0  M src/scriptModule/script.cpp
+      2     2     0     0     0     0  M src/scriptModule/script.hpp
+      2     2     0     0     0     0  M src/scriptModule/script_interface.cpp
+      1     1     0     0     0     0  M src/scriptModule/script_interface.hpp
+      3     2     0     0     0     0  M src/scriptModule/script_mgr.cpp
+      1     1     0     0     0     0  M src/scriptModule/script_mgr.hpp
+      4     1     0     0     0     0  M src/scriptModule/script_origin.hpp
+    157     0    23     0     9     0  U src/uiModule/key_binding.cpp
+     29     0    26     0     7     0  U src/uiModule/key_binding.hpp
+     13    39     0     0     2     9  M src/uiModule/ui.cpp
+      3     0     0     0     0     0  M src/uiModule/ui.hpp
+  total 17 files: +352 -67 (numstat); code +280 -57, comment +52 -1, blank +20 -9; net code +223, net lines +285
+(2) names [names.py]  BEFORE -> AFTER  +added  -removed
+  src/eventModule/EventScript.hpp 4 -> 5  +[getKey]  -[-]
+  src/eventModule/EventScriptHandler.hpp 4 -> 4  +[-]  -[-]
+  src/interfaceModule/app_command_interface.hpp 93 -> 94  +[scriptEnded]  -[-]
+  src/interfaceModule/base_command_interface.hpp 0 -> 0  +[-]  -[-]
+  src/scriptModule/script.hpp 16 -> 16  +[-]  -[-]
+  src/scriptModule/script_interface.hpp 35 -> 35  +[-]  -[-]
+  src/scriptModule/script_mgr.hpp 36 -> 36  +[-]  -[-]
+  src/scriptModule/script_origin.hpp 5 -> 5  +[-]  -[-]
+  src/uiModule/key_binding.hpp absent -> 5  +[bind resolve endScript parse name]  -[-]
+  src/uiModule/ui.hpp 92 -> 93  +[keyBinding]  -[-]
+  total 10 headers: names +8 -0
+(3) writers [writers.py]  class: pairs BEFORE -> AFTER, unchanged; changed field: writers BEFORE -> AFTER
+  EventScriptHandler: pairs 1 -> 1, unchanged 1
+  AppCommandInterface: pairs 84 -> 85, unchanged 84
+    commandline: commandFlag commandTimerate executeCommand setFlag -> commandFlag commandScript commandTimerate executeCommand setFlag
+  Token: pairs 0 -> 0, unchanged 0
+  Script: pairs 14 -> 14, unchanged 14
+  ScriptInterface: pairs 2 -> 2, unchanged 2
+  ScriptMgr: pairs 42 -> 42, unchanged 42
+  KeyBinding: pairs absent -> 1, unchanged 0
+  UI: pairs 70 -> 70, unchanged 70
+(4) form [form.py measure over the added lines]
+  comment lines added: full 52, trailing 3; blocks 1:8 2:0 3+:2; length median 56 p90 77
+  verb-first (upper bound) 8 / 10 blocks; first words: (none) 2, Return 1, Temporary 1, Tell 1, Name 1, Hold 1, Register 1, Run 1, Drop 1
+(5) ledger grammar in the added lines [INTENT|11\.[0-9]|F1[0-9][0-9]|\[observed|\[measured|\[vixy]: 0
+(6) d14 [f70_ascii.py gate]
+  gate PASS (exit 0; it reads the code repo's tracked files on disk; that tree is WORKTREE: yes)
+  delivery files at WORKTREE by its partition: 17 read, 0 non-ASCII (0 CONVERT or unclassified): PASS
+(7) ratio [ratio.py classify, src/experimentalModule .hpp/.cpp]
+  2a0fdbef files 124 code 13493 comment 889 ratio 0.07
+  WORKTREE files 124 code 13493 comment 889 ratio 0.07
+(8) scope [review.sh]
+  header scope :(glob)src/**/*.hpp :(glob)src/**/*.h: 10 touched (new 1, modified 9, deleted 0, renamed 0)
+  outside it, in the ALL=1 scope src shaders: 7 touched
+```

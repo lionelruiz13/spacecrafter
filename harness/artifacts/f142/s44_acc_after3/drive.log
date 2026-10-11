@@ -1,0 +1,54 @@
+PASS A bind_accepted observed=no error expected=no error line
+PASS A P17_bound_script_runs observed=load a 1, run a 1 expected=1, 1
+PASS A P17_native_M08_not_run observed=0 expected=0
+PASS B bind_accepted observed=no error expected=no error line
+PASS B bind_accepted observed=no error expected=no error line
+NOTE B deltaLat_after_release observed=F142VZM KP_8 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=1 deltaLon=0 expected=-
+PASS B P18_press_identity_release observed=load rs 1, load rp 0 expected=1, 0
+PASS C bind_accepted observed=no error expected=no error line
+PASS C P19_repeat_bound_swallowed_unbound_twice observed=load a 1, load M08 0, load M01 2 expected=load a 1, load M08 0, load M01 2
+PASS D bind_accepted observed=no error expected=no error line
+PASS D bind_accepted observed=no error expected=no error line
+PASS D P20_dash_restores_native observed=load M08 1, load a 0 expected=load M08 1, load a 0
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E P21_star_dash_empties_every_chain observed=load M08 1, load M01 1, bound 0 expected=load M08 1, load M01 1, bound 0
+PASS E P21_specific_bind_after observed=load a 1, load M08 0 expected=load a 1, load M08 0
+PASS F bind_accepted observed=no error expected=no error line
+PASS F bind_accepted observed=no error expected=no error line
+PASS F P22_once_then_global observed=['a', 'b'] expected=['a', 'b']
+PASS G bind_accepted observed=no error expected=no error line
+PASS G show_started observed=True expected=True
+PASS G P23_script_scope_lives_to_the_show_end observed=c 1 at 48703, show end at 53710, M09 after end 1, M09 before 0 expected=c 1 before the show end, M09 1 after, 0 before
+PASS H bind_accepted observed=no error expected=no error line
+PASS H show_started observed=True expected=True
+NOTE H timestamps_ms observed={'show_1': 56513, 'h': 57211, 'show_2': 57211, 'show_3': 62227} expected=-
+PASS H P24_bound_lines_first_then_the_show_wait_cut observed=h-show_1 698, show_2-h 0, show_2-show_1 698 expected=show_1 < h <= show_2, show_2-h <= 50 ms, show_2-show_1 < 4500 ms
+PASS I bind_accepted observed=no error expected=no error line
+NOTE I tcp_key_omitted_lines observed=["script tcp#1: bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8' [script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once]", "Error executing tcp#1: script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once #! bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'"] expected=-
+PASS I P25_key_omitted_is_the_trigger_key observed=load i 1, load d 1 expected=1, 1
+PASS I P25_key_omitted_over_tcp_is_an_error observed=error lines 2, load d 0, load M09 1 expected=a tcp#-tagged error naming the key, load d 0, load M09 1
+NOTE J error_lines[key KP_8] observed=["script tcp#1: bind: give 'press <script|->', 'release <script|->' or both [script action bind key KP_8]", "Error executing tcp#1: script action bind key KP_8 #! bind: give 'press <script|->', 'release <script|->' or both"] expected=-
+NOTE J error_lines[key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never] observed=["script tcp#1: bind: unknown scope 'never' - write global, script or once [script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never]", "Error executing tcp#1: script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never #! bind: unknown scope 'never' - write global, script or once"] expected=-
+NOTE J error_lines[key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts] observed=["script tcp#1: unknown key 'NO_SUCH': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8, or * for every key [script action bind key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts]", "Error executing tcp#1: script action bind key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts #! unknown key 'NO_SUCH': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8, or * for every key"] expected=-
+NOTE J error_lines[key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts] observed=["script tcp#1: bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory [script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts]", "Error executing tcp#1: script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts #! bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory"] expected=-
+PASS J P26_one_tagged_error_line_each observed=[1, 1, 1, 1] expected=[1, 1, 1, 1], each tcp#-tagged
+PASS J P26_nothing_stored observed=load M08 1, load a 0 expected=1, 0
+PASS J P26_file_line_tag_and_annotation observed=["script /home/claude/spacecrafter/claude/harness/artifacts/f142/run/j.sts:1: bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory [script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts]"] | script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts #! bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory expected=one error tagged j.sts:1, a #! tail in j.sts
+PASS K bind_accepted observed=no error expected=no error line
+PASS K bind_accepted observed=no error expected=no error line
+PASS K P27_global_discards_the_pending_once observed=load b 2, load a 0 expected=load b 2, load a 0
+PASS L bind_accepted observed=no error expected=no error line
+PASS L P28_super_plane_binding_consumes_super observed=load a 1, load M11 0, load M01 1 expected=load a 1, load M11 0, load M01 1
+PASS M bind_accepted observed=no error expected=no error line
+NOTE M recorded_bind_lines observed=['script action bind key SHIFT+KP_8 release "/home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts" scope once'] expected=-
+PASS M P29_recorded_with_the_explicit_key observed=['script action bind key SHIFT+KP_8 release "/home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts" scope once'], load d 1 expected=one bind line carrying key SHIFT+KP_8, load d 1
+NOTE N reading observed=22 log lines, 24 state lines -> /home/claude/spacecrafter/claude/harness/artifacts/f142/s44_acc_after3/N_reading.txt expected=-
+PASS N P30_control_identical_to_before observed=identical, 46 lines expected=identical to /home/claude/spacecrafter/claude/harness/artifacts/f142/before3/N_reading.txt
+NOTE - diag_records_received observed=11 expected=-
+
+=== ALL PASS ===

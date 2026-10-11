@@ -1,0 +1,48 @@
+PASS A bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE A native observed=load M08 1, load a 0 expected=-
+PASS B bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS B bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE B deltaLat_after_release observed=F142VZM KP_8 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0 expected=-
+NOTE B native observed=load rs 0, load rp 0 expected=-
+PASS C bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE C native observed=load a 0, load M08 2, load M01 2 expected=-
+PASS D bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS D bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE D native observed=load M08 1, load a 0 expected=-
+PASS E bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS E bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS E bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS E bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS E bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS E bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE E native_1 observed=load M08 1, load M01 1, bound 0 expected=-
+NOTE E native_2 observed=load a 0, load M08 1 expected=-
+PASS F bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS F bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE F native observed=loads [], load M08 2 expected=-
+PASS G bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS G show_started observed=True expected=True
+NOTE G native observed=c 0 at None, show end at 53721, M09 after end 1, M09 before 1 expected=-
+PASS H bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS H show_started observed=True expected=True
+NOTE H timestamps_ms observed={'show_1': 56535, 'h': None, 'show_2': 57405, 'show_3': 62227} expected=-
+PASS I bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE I tcp_key_omitted_lines observed=["Error executing tcp#1: script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once #! command_script : unknown parameter from 'action' argument"] expected=-
+NOTE I native observed=load i 0, load d 0, load M08 1 expected=-
+NOTE J error_lines[key KP_8] observed=["Error executing tcp#1: script action bind key KP_8 #! command_script : unknown parameter from 'action' argument"] expected=-
+NOTE J error_lines[key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never] observed=["Error executing tcp#1: script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never #! command_script : unknown parameter from 'action' argument"] expected=-
+NOTE J error_lines[key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts] observed=["Error executing tcp#1: script action bind key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts #! command_script : unknown parameter from 'action' argument"] expected=-
+NOTE J error_lines[key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts] observed=["Error executing tcp#1: script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts #! command_script : unknown parameter from 'action' argument"] expected=-
+NOTE J native observed=refused 4 of 4, load M08 1, j.sts tail False expected=-
+PASS K bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+PASS K bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE K native observed=load b 0, load a 0, load M08 2 expected=-
+PASS L bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE L native observed=load a 0, load M11 1, load M01 1 expected=-
+PASS M bind_refused_unknown_action observed=True expected=command_script : unknown parameter from 'action' argument
+NOTE M recorded_bind_lines observed=[] expected=-
+NOTE M native observed=bind lines recorded 0, load d 0 expected=-
+NOTE N reading observed=22 log lines, 24 state lines -> /home/claude/spacecrafter/claude/harness/artifacts/f142/before3/N_reading.txt expected=-
+NOTE - diag_records_received observed=42 expected=-
+
+=== ALL PASS ===

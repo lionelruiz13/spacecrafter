@@ -1,0 +1,429 @@
+diff --git a/src/eventModule/EventScript.hpp b/src/eventModule/EventScript.hpp
+index fcbc1328..9ca5f2a2 100644
+--- a/src/eventModule/EventScript.hpp
++++ b/src/eventModule/EventScript.hpp
+@@ -33,8 +33,9 @@
+ 
+ class ScriptEvent : public Event {
+ public:
+-    ScriptEvent(const std::string& _fileName) : Event(E_SCRIPT) {
++    ScriptEvent(const std::string& _fileName, const std::string& _key = std::string()) : Event(E_SCRIPT) {
+         fileName = _fileName;
++        key = _key;
+     }
+     ~ScriptEvent(){};
+ 
+@@ -42,6 +43,11 @@ public:
+         return fileName;
+     }
+ 
++    //! Return the key that triggered this script, empty when none
++    std::string getKey() const {
++        return key;
++    }
++
+     virtual std::string toString() const {
+         std::ostringstream os;
+         os << Event::toString() << " FileName : " << fileName << std::endl;
+@@ -49,6 +55,7 @@ public:
+     }
+ private:
+     std::string fileName;
++    std::string key;
+ };
+ 
+ 
+diff --git a/src/eventModule/EventScriptHandler.cpp b/src/eventModule/EventScriptHandler.cpp
+index 918b1a08..b85f22b3 100644
+--- a/src/eventModule/EventScriptHandler.cpp
++++ b/src/eventModule/EventScriptHandler.cpp
+@@ -32,7 +32,7 @@ void EventScriptHandler::handle(const Event* e, Executor *executor)
+ {
+ 	ScriptEvent * event = (ScriptEvent *)e;
+ 	// Accumulate in temporary queue instead of adding immediately
+-	pendingScripts.push_back(event->getFileName());
++	pendingScripts.push_back({event->getFileName(), event->getKey()});
+ }
+ 
+ void EventScriptHandler::loopDone()
+@@ -40,7 +40,7 @@ void EventScriptHandler::loopDone()
+ 	// If there are pending scripts, add them now from last to first to preserve execution order
+ 	if (!pendingScripts.empty()) {
+ 		for (auto it = pendingScripts.rbegin(); it != pendingScripts.rend(); ++it) {
+-			scriptInterface->playScript(*it);
++			scriptInterface->playScript(it->first, it->second);
+ 		}
+ 		pendingScripts.clear();
+ 	}
+diff --git a/src/eventModule/EventScriptHandler.hpp b/src/eventModule/EventScriptHandler.hpp
+index be73ddad..799286d2 100644
+--- a/src/eventModule/EventScriptHandler.hpp
++++ b/src/eventModule/EventScriptHandler.hpp
+@@ -49,8 +49,8 @@ public:
+     
+ protected :
+ 	ScriptInterface* scriptInterface = nullptr;
+-	// Temporary queue to accumulate scripts during event loop
+-	std::vector<std::string> pendingScripts;
++	// Temporary queue to accumulate scripts and their trigger keys during event loop
++	std::vector<std::pair<std::string, std::string>> pendingScripts;
+ };
+ 
+ #endif // EVENT_SCRIPT_HANDLER_HPP
+\ No newline at end of file
+diff --git a/src/interfaceModule/app_command_interface.cpp b/src/interfaceModule/app_command_interface.cpp
+index bd606833..19bf7a51 100644
+--- a/src/interfaceModule/app_command_interface.cpp
++++ b/src/interfaceModule/app_command_interface.cpp
+@@ -254,6 +254,11 @@ int AppCommandInterface::terminateScript()
+ 	return executeCommand("script action end");
+ }
+ 
++void AppCommandInterface::scriptEnded()
++{
++	ui->keyBinding().endScript();
++}
++
+ int AppCommandInterface::executeCommand(const std::string &commandline )
+ {
+ 	uint64_t delay;
+@@ -2876,6 +2881,46 @@ int AppCommandInterface::commandScript(uint64_t &wait)
+ 			if (args[W_LOCK] == W_GLOBAL) {
+ 				scriptInterface->releaseGlobalLock();
+ 			}
++		} else if (argAction==W_BIND) {
++			const std::string key = args[W_KEY].empty() ? currentOrigin.key : args[W_KEY];
++			const std::string scope = args[W_SCOPE].empty() ? W_GLOBAL : args[W_SCOPE];
++			std::string script[2] = {args[W_PRESS], args[W_RELEASE]};
++			if (script[0].empty() && script[1].empty())
++				debug_message = "bind: give 'press <script|->', 'release <script|->' or both";
++			else if (key.empty())
++				debug_message = "bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'";
++			else if (scope != W_GLOBAL && scope != W_SCRIPT && scope != W_ONCE)
++				debug_message = "bind: unknown scope '" + scope + "' - write global, script or once";
++			for (std::string &name : script) {
++				if (!debug_message.empty() || name.empty() || name == "-")
++					continue;
++				if (name.size() < 4 || name[name.size()-4] != '.')
++					name = evalString(name);
++				FilePath file(name, FilePath::TFP::SCRIPT);
++				if (file.exist())
++					name = file.toString();
++				else
++					debug_message = "bind: no script '" + name + "' as given, in the running script's directory or in the scripts directory";
++			}
++			const KeyBinding::Scope lifetime = scope == W_SCRIPT ? KeyBinding::Scope::SCRIPT :
++			                                   scope == W_ONCE ? KeyBinding::Scope::ONCE : KeyBinding::Scope::GLOBAL;
++			for (int release = 0; release < 2 && debug_message.empty(); ++release) {
++				if (!script[release].empty())
++					ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
++			}
++			if (!debug_message.empty())
++				reportScriptError(currentOrigin, debug_message);
++			else {
++				std::ostringstream line;
++				line << "script action bind key " << key;
++				if (!script[0].empty())
++					line << " press \"" << script[0] << '"';
++				if (!script[1].empty())
++					line << " release \"" << script[1] << '"';
++				if (!args[W_SCOPE].empty())
++					line << " scope " << args[W_SCOPE];
++				commandline = line.str();
++			}
+ 		} else
+ 			debug_message = "command_script : unknown parameter from 'action' argument";
+ 		return executeCommandStatus();
+diff --git a/src/interfaceModule/app_command_interface.hpp b/src/interfaceModule/app_command_interface.hpp
+index b774f755..93329072 100644
+--- a/src/interfaceModule/app_command_interface.hpp
++++ b/src/interfaceModule/app_command_interface.hpp
+@@ -62,6 +62,8 @@ public:
+ 	~AppCommandInterface();
+ 
+ 	int terminateScript();
++	//! Tell the key bindings the script execution ended
++	void scriptEnded();
+ 	void deleteVar();
+ 	int executeCommand(const std::string &commandline);
+ 	int executeCommand(const std::string &command, uint64_t &wait);
+diff --git a/src/interfaceModule/base_command_interface.hpp b/src/interfaceModule/base_command_interface.hpp
+index 3edcbbac..77b60374 100644
+--- a/src/interfaceModule/base_command_interface.hpp
++++ b/src/interfaceModule/base_command_interface.hpp
+@@ -322,6 +322,12 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
+ #define W_ACQUIRE					"acquire"
+ #define W_RELEASE					"release"
+ #define W_GLOBAL					"global"
++#define W_BIND						"bind"
++#define W_KEY						"key"
++#define W_PRESS						"press"
++#define W_SCOPE						"scope"
++#define W_ONCE						"once"
++#define W_SCRIPT					"script"
+ 
+ // name of the arguments maps appCommandInit
+ //CommandsNames
+diff --git a/src/scriptModule/script.cpp b/src/scriptModule/script.cpp
+index 62880367..a144152a 100644
+--- a/src/scriptModule/script.cpp
++++ b/src/scriptModule/script.cpp
+@@ -85,18 +85,18 @@ void Script::clean()
+ 	p2Last = nullptr;
+ }
+ 
+-int Script::load(const std::string &script_file, const std::string &script_path )
++int Script::load(const std::string &script_file, const std::string &script_path, const std::string &key)
+ {
+ 	if (pFirst == nullptr) {
+ 		//cout << "loading script "<< script_file << " when no script is playing" << endl;
+-		return loadInternal(script_file, script_path ,ListPosition::first);
++		return loadInternal(script_file, script_path ,ListPosition::first, key);
+ 	} else {
+ 		//cout << "loading script " << script_file << " when script is playing" << endl;
+-		return loadInternal(script_file, script_path ,ListPosition::second);
++		return loadInternal(script_file, script_path ,ListPosition::second, key);
+ 	}
+ }
+ 
+-int Script::loadInternal(const std::string &script_file,const std::string & script_path , ListPosition wp)
++int Script::loadInternal(const std::string &script_file,const std::string & script_path , ListPosition wp, const std::string &key)
+ {
+ 	//~ printf("s : %s p : %s\n", script_file.c_str() , script_path.c_str() );
+ 	input_file = new std::ifstream(script_file.c_str());
+@@ -116,7 +116,7 @@ int Script::loadInternal(const std::string &script_file,const std::string & scri
+ 
+ 		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
+ 			//cout << "[script.cpp => Line is: " << line << "]"<< endl;
+-			token=new Token(line, script_path, ScriptOrigin::fromFile(script_file, lineNo, line));
++			token=new Token(line, script_path, ScriptOrigin::fromFile(script_file, lineNo, line, key));
+ 			is_script_empty=false;
+ 			if (wp==ListPosition::first)
+ 				addFirst(token);
+diff --git a/src/scriptModule/script.hpp b/src/scriptModule/script.hpp
+index 67f6e32e..bd976f9b 100644
+--- a/src/scriptModule/script.hpp
++++ b/src/scriptModule/script.hpp
+@@ -71,7 +71,7 @@ public:
+ 	void printScript();
+ 
+ 	//! loads a script file into memory
+-	int load(const std::string &script_file, const std::string &script_path );
++	int load(const std::string &script_file, const std::string &script_path, const std::string &key = std::string());
+ 
+ 	//! empties the stack of script instructions in memory
+ 	void clean();
+@@ -95,7 +95,7 @@ private:
+ 	Token *pLast=nullptr;
+ 	Token *p2First=nullptr;
+ 	Token *p2Last=nullptr;
+-	int loadInternal(const std::string &script_file , const std::string &script_path , ListPosition wp);
++	int loadInternal(const std::string &script_file , const std::string &script_path , ListPosition wp, const std::string &key);
+ 
+ 	/* 
+ 	 * adds the given Token in the queue named pFirst
+diff --git a/src/scriptModule/script_interface.cpp b/src/scriptModule/script_interface.cpp
+index 460ac7db..85b1a5eb 100644
+--- a/src/scriptModule/script_interface.cpp
++++ b/src/scriptModule/script_interface.cpp
+@@ -98,8 +98,8 @@ void ScriptInterface::setScriptNbrLoop(int a) {
+     scriptMgr->setNbrLoop(a);
+ }
+ 
+-bool ScriptInterface::playScript(const std::string& _script) {
+-    return scriptMgr->playScript(_script);
++bool ScriptInterface::playScript(const std::string& _script, const std::string& key) {
++    return scriptMgr->playScript(_script, key);
+ }
+ 
+ bool ScriptInterface::addScriptFirst(const std::string& _script) {
+diff --git a/src/scriptModule/script_interface.hpp b/src/scriptModule/script_interface.hpp
+index d086f70a..19bc3821 100644
+--- a/src/scriptModule/script_interface.hpp
++++ b/src/scriptModule/script_interface.hpp
+@@ -67,7 +67,7 @@ public:
+ 
+ 	bool addScriptFirst(const std::string& string);
+ 
+-	bool playScript(const std::string& _script);
++	bool playScript(const std::string& _script, const std::string& key = std::string());
+ 
+ 	void recordScript(const std::string &script_filename);
+ 	void recordCommand(const std::string &commandline);
+diff --git a/src/scriptModule/script_mgr.cpp b/src/scriptModule/script_mgr.cpp
+index 2052d483..0f2a543d 100644
+--- a/src/scriptModule/script_mgr.cpp
++++ b/src/scriptModule/script_mgr.cpp
+@@ -60,13 +60,13 @@ ScriptMgr::~ScriptMgr()
+ }
+ 
+ // path is used for loading script assets in one time
+-bool ScriptMgr::playScript(const std::string &fullFileName)
++bool ScriptMgr::playScript(const std::string &fullFileName, const std::string &key)
+ {
+ 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO);
+ 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+ 
+ 
+-	if ( script->load(fullFileName, fullFileName.substr(0, fullFileName.find_last_of("/\\") + 1)) ) {
++	if ( script->load(fullFileName, fullFileName.substr(0, fullFileName.find_last_of("/\\") + 1), key) ) {
+ 		multiplierRate=1;
+ 		scriptState = ScriptState::PLAY;
+ 		wait_time = 0;
+@@ -124,6 +124,7 @@ void ScriptMgr::cancelScript()
+ 	repeatLoop = false;
+ 	waitOnVideo = false;
+ 	global_lock_count = 0;
++	commander->scriptEnded();
+ }
+ 
+ void ScriptMgr::pauseScript()
+diff --git a/src/scriptModule/script_mgr.hpp b/src/scriptModule/script_mgr.hpp
+index c0744213..0f802905 100644
+--- a/src/scriptModule/script_mgr.hpp
++++ b/src/scriptModule/script_mgr.hpp
+@@ -51,7 +51,7 @@ public:
+ 	~ScriptMgr();
+ 
+ 	//! play a script
+-	bool playScript(const std::string &fullFileName);
++	bool playScript(const std::string &fullFileName, const std::string &key = std::string());
+ 
+ 	//! place the given script at the begin of the command queue
+ 	bool addScriptFirst(const std::string & script);
+diff --git a/src/scriptModule/script_origin.hpp b/src/scriptModule/script_origin.hpp
+index d09d54e6..76521a3b 100644
+--- a/src/scriptModule/script_origin.hpp
++++ b/src/scriptModule/script_origin.hpp
+@@ -39,13 +39,16 @@ struct ScriptOrigin {
+ 	unsigned line = 0;     //!< FILE only, 1-based, 0 = none
+ 	std::string text;      //!< Raw line, the CR of a CRLF file is kept
+ 	unsigned connection = 0; //!< TCP only, 0 = unknown
++	std::string key;       //!< FILE only, the key whose binding started the run, "" otherwise
+ 
+-	static ScriptOrigin fromFile(const std::string &file, unsigned line, const std::string &text) {
++	static ScriptOrigin fromFile(const std::string &file, unsigned line, const std::string &text,
++	                             const std::string &key = std::string()) {
+ 		ScriptOrigin o;
+ 		o.channel = ScriptChannel::FILE;
+ 		o.file = file;
+ 		o.line = line;
+ 		o.text = text;
++		o.key = key;
+ 		return o;
+ 	}
+ 	static ScriptOrigin fromTcp(unsigned id, const std::string &text) {
+diff --git a/src/uiModule/ui.cpp b/src/uiModule/ui.cpp
+index 7bf7daa5..185323e4 100644
+--- a/src/uiModule/ui.cpp
++++ b/src/uiModule/ui.cpp
+@@ -3385,6 +3385,16 @@ int UI::handleKeysReleased(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::
+ 			core->zoomOut(0);
+ 			break;
+ 
++		case SDL_SCANCODE_KP_2 :
++		case SDL_SCANCODE_KP_8 :
++			core->moveLat(0);
++			break;
++
++		case SDL_SCANCODE_KP_4 :
++		case SDL_SCANCODE_KP_6 :
++			core->moveLon(0);
++			break;
++
+ 		default:
+ 			retVal = 1;
+ 			break;
+@@ -3395,6 +3405,10 @@ int UI::handleKeysReleased(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::
+ 
+ int UI::handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VALUE state)
+ {
++	if (binding.resolve(key, key_Modifier, state==s_gui::S_GUI_PRESSED)) {
++		RESET_MOD(SUPER);
++		return 1;
++	}
+ 
+ 	if (FlagShowTuiMenu) {
+ 		return handlKkeysOnTui(key, mod, unicode, state);
+@@ -3409,52 +3423,5 @@ int UI::handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VA
+ 		return handleKeyPressed(key, mod, unicode, state);
+ 	}
+ 
+-	if (state==s_gui::S_GUI_RELEASED) {
+-		switch (key) {
+-
+-			case SDL_SCANCODE_LEFT :
+-				core->turnLeft(0);
+-				break;
+-
+-			case SDL_SCANCODE_RIGHT :
+-				core->turnRight(0);
+-				break;
+-
+-			case SDL_SCANCODE_UP :
+-				if (mod & KMOD_CTRL)
+-					core->zoomIn(0);
+-				else
+-					core->turnUp(0);
+-				break;
+-
+-			case SDL_SCANCODE_DOWN :
+-				if(mod & KMOD_CTRL)
+-					core->zoomOut(0);
+-				else
+-					core->turnDown(0);
+-				break;
+-
+-			case SDL_SCANCODE_PAGEUP :
+-				core->zoomIn(0);
+-				break;
+-
+-			case SDL_SCANCODE_PAGEDOWN :
+-				core->zoomOut(0);
+-				break;
+-
+-			case SDL_SCANCODE_KP_2 :
+-			case SDL_SCANCODE_KP_8 :
+-				core->moveLat(0);
+-				break;
+-
+-			case SDL_SCANCODE_KP_4 :
+-			case SDL_SCANCODE_KP_6 :
+-				core->moveLon(0);
+-				break;
+-
+-			default:
+-				break;
+-		}
+-	}
+-	return 1;
++	return handleKeysReleased(key, mod, unicode, state);
+ }
+diff --git a/src/uiModule/ui.hpp b/src/uiModule/ui.hpp
+index 25504261..602d780c 100644
+--- a/src/uiModule/ui.hpp
++++ b/src/uiModule/ui.hpp
+@@ -47,6 +47,7 @@ enum S_GUI_VALUE {
+ 
+ #include <memory>
+ #include "uiModule/ui_tui.hpp"
++#include "uiModule/key_binding.hpp"
+ #include "executorModule/executorModule.hpp"
+ #include "tools/draw_helper.hpp"
+ //#include "tools/app_settings.hpp"
+@@ -110,6 +111,7 @@ public:
+ 	int handleMove(const std::pair<uint16_t, uint16_t> &newPos);
+ 	// Handle key press and release
+ 	int handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VALUE state);
++	KeyBinding &keyBinding() { return binding; }
+ 
+ 	// Text UI
+ 	void initTui();
+@@ -407,6 +409,7 @@ private:
+ 	Vec3f text_tui_root; 							// Color menu text
+ 
+ 	uint8_t key_Modifier = 0x00;
++	KeyBinding binding;
+ 
+ 	double KeyTimeLeft=0;  							// for shift timeout (seconds)
+ 

@@ -1,0 +1,105 @@
+diff --git a/src/interfaceModule/app_command_interface.cpp b/src/interfaceModule/app_command_interface.cpp
+index bd606833..b566db12 100644
+--- a/src/interfaceModule/app_command_interface.cpp
++++ b/src/interfaceModule/app_command_interface.cpp
+@@ -254,6 +254,11 @@ int AppCommandInterface::terminateScript()
+ 	return executeCommand("script action end");
+ }
+ 
++void AppCommandInterface::scriptEnded()
++{
++	ui->keyBinding().endScript();
++}
++
+ int AppCommandInterface::executeCommand(const std::string &commandline )
+ {
+ 	uint64_t delay;
+@@ -2876,6 +2881,46 @@ int AppCommandInterface::commandScript(uint64_t &wait)
+ 			if (args[W_LOCK] == W_GLOBAL) {
+ 				scriptInterface->releaseGlobalLock();
+ 			}
++		} else if (argAction==W_BIND) {
++			const std::string key = args[W_KEY];
++			const std::string scope = args[W_SCOPE].empty() ? W_GLOBAL : args[W_SCOPE];
++			std::string script[2] = {args[W_PRESS], args[W_RELEASE]};
++			if (script[0].empty() && script[1].empty())
++				debug_message = "bind: give 'press <script|->', 'release <script|->' or both";
++			else if (key.empty())
++				debug_message = "bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'";
++			else if (scope != W_GLOBAL && scope != W_SCRIPT && scope != W_ONCE)
++				debug_message = "bind: unknown scope '" + scope + "' - write global, script or once";
++			for (std::string &name : script) {
++				if (!debug_message.empty() || name.empty() || name == "-")
++					continue;
++				if (name.size() < 4 || name[name.size()-4] != '.')
++					name = evalString(name);
++				FilePath file(name, FilePath::TFP::SCRIPT);
++				if (file.exist())
++					name = file.toString();
++				else
++					debug_message = "bind: no script '" + name + "' as given, in the running script's directory or in the scripts directory";
++			}
++			const KeyBinding::Scope lifetime = scope == W_SCRIPT ? KeyBinding::Scope::SCRIPT :
++			                                   scope == W_ONCE ? KeyBinding::Scope::ONCE : KeyBinding::Scope::GLOBAL;
++			for (int release = 0; release < 2 && debug_message.empty(); ++release) {
++				if (!script[release].empty())
++					ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
++			}
++			if (!debug_message.empty())
++				reportScriptError(currentOrigin, debug_message);
++			else {
++				std::ostringstream line;
++				line << "script action bind key " << key;
++				if (!script[0].empty())
++					line << " press \"" << script[0] << '"';
++				if (!script[1].empty())
++					line << " release \"" << script[1] << '"';
++				if (!args[W_SCOPE].empty())
++					line << " scope " << args[W_SCOPE];
++				commandline = line.str();
++			}
+ 		} else
+ 			debug_message = "command_script : unknown parameter from 'action' argument";
+ 		return executeCommandStatus();
+diff --git a/src/interfaceModule/app_command_interface.hpp b/src/interfaceModule/app_command_interface.hpp
+index b774f755..93329072 100644
+--- a/src/interfaceModule/app_command_interface.hpp
++++ b/src/interfaceModule/app_command_interface.hpp
+@@ -62,6 +62,8 @@ public:
+ 	~AppCommandInterface();
+ 
+ 	int terminateScript();
++	//! Tell the key bindings the script execution ended
++	void scriptEnded();
+ 	void deleteVar();
+ 	int executeCommand(const std::string &commandline);
+ 	int executeCommand(const std::string &command, uint64_t &wait);
+diff --git a/src/interfaceModule/base_command_interface.hpp b/src/interfaceModule/base_command_interface.hpp
+index 3edcbbac..77b60374 100644
+--- a/src/interfaceModule/base_command_interface.hpp
++++ b/src/interfaceModule/base_command_interface.hpp
+@@ -322,6 +322,12 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
+ #define W_ACQUIRE					"acquire"
+ #define W_RELEASE					"release"
+ #define W_GLOBAL					"global"
++#define W_BIND						"bind"
++#define W_KEY						"key"
++#define W_PRESS						"press"
++#define W_SCOPE						"scope"
++#define W_ONCE						"once"
++#define W_SCRIPT					"script"
+ 
+ // name of the arguments maps appCommandInit
+ //CommandsNames
+diff --git a/src/scriptModule/script_mgr.cpp b/src/scriptModule/script_mgr.cpp
+index 2052d483..8fe8e774 100644
+--- a/src/scriptModule/script_mgr.cpp
++++ b/src/scriptModule/script_mgr.cpp
+@@ -124,6 +124,7 @@ void ScriptMgr::cancelScript()
+ 	repeatLoop = false;
+ 	waitOnVideo = false;
+ 	global_lock_count = 0;
++	commander->scriptEnded();
+ }
+ 
+ void ScriptMgr::pauseScript()

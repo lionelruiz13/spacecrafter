@@ -6932,3 +6932,36 @@ byte census (`LC_ALL=C /usr/bin/grep -c -P '[\x80-\xff]' <file>`). (3) form.py c
 `classify` since the same day: SHAPE.md section 4's library row was measured counting 34 `*ptr = ...` code
 lines as comments (4.8 / 39 % then, 5.2 / 37 % now). (4) A class whose .cpp alone changed needs `--class`. (5) A WORKTREE run beside an executor that edits
 can catch a half-written file: the guard says so (exit 2); run it again.
+
+## F149 - the key leg: key-bound scripts read where the event loop sends a key, 14 cases on both phases of a change (`f142_keys_run.sh`, `f142_keys.py`) - INTENT 11.320 / 11.312 (h) / row B49, 2026-10-11
+
+**Use.** `bash f142_keys_run.sh <label> --phase before|after [--baseline <label of a before run>]` - one fresh
+launch through `f124_run.sh` (its asserts: binary md5, the instance probe, the GPU gate, `config.ini` /
+`ssystem.ini` md5 in == out, teardown by its own pids; `F124_OUT_ROOT=artifacts/f142`, `F124_TIMEOUT=900`);
+records under `artifacts/f142/<label>/`: `drive.log` (one `PASS|FAIL|NOTE <case> <criterion> observed= expected=`
+line per check), `gdb.log`, `meta.txt`, `N_reading.txt`, `diag.txt` / `tcp_rx.txt`, `readings.json`. About 1 min 45 s.
+
+**What it does.** A key event is injected where the event loop sends it: SIGINT, `break UI::handleInputs`,
+`set $ui = this`, `set var $ui->key_Modifier = <plane>` (the planes READ from `ui.hpp`'s MODIFIER enum),
+`call $ui->handleKeys(SDL_SCANCODE_<K>, 0, 0, s_gui::S_GUI_PRESSED|RELEASED)`, resume. Bindings, shows and markers
+go over TCP 7805 with ABSOLUTE fixture paths under `artifacts/f142/run/` (rewritten each run; the field's script
+directory is never written); a second connection subscribes `$DIAGON`. The reading is
+`~/.spacecrafter/log/script.log` between TCP markers (`define f142_mark_<case>_<n> 1`), plus for cases B and N the
+view / place orders (`Core::vzm`) printed by gdb after each key call - the script log cannot see a stop, the order
+can. Cases A-N are 11.312 (h)'s; N (the control) is widened to the ten keys of the native release switch.
+`before` checks that every bind line is refused as an unknown action and records the natives; `after` judges
+P17-P30 and compares N line by line with the `before` record (timestamps and the marker counter stripped).
+
+**Able to fail.** On the engine without the `bind` action (`before3`, binary `35efed69`) the after-criteria of
+A, B, C, E (second half), F, G, I, J (file tag), K, L and M read the wrong value (bound script 0, native script
+run, no `#!` tail, no recorded bind line); D, E (first half) and J (nothing stored) are judged against an
+installed binding in the same case. N reads identical across two `before` launches (A/A, md5 `521b5c3a`).
+
+**Pitfalls, each one measured.** (1) gdb prefixes printf output with `(gdb) `: never anchor a match at `^`.
+(2) Every TCP record ends `\n\0`: strip the NULs before splitting, or every record after the first is dropped.
+(3) Each injection stalls the engine ~0.5 s and that stall is the next frame's `delta_time`: a show's `wait` runs
+down during it - the show cases press within its first wait. (4) Two key events of one injection queue their
+scripts in one frame and `EventScriptHandler::loopDone` plays them in reverse, so the LOAD lines read in reverse
+order and the executed lines in press order: a case that judges order presses in separate injections. (5) A
+release binding on a key whose native press starts a held order replaces the native stop (11.305 (g)): case B
+sends `camera action move_lat value 0` after its release.
