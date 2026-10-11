@@ -2914,9 +2914,9 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 				std::ostringstream line;
 				line << "script action bind key " << key;
 				if (!script[0].empty())
-					line << " press \"" << script[0] << '"';
+					line << " press \"" << args[W_PRESS] << '"';
 				if (!script[1].empty())
-					line << " release \"" << script[1] << '"';
+					line << " release \"" << args[W_RELEASE] << '"';
 				if (!args[W_SCOPE].empty())
 					line << " scope " << args[W_SCOPE];
 				commandline = line.str();
