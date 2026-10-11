@@ -1,0 +1,774 @@
+{
+ "pinned_md5": "a18fdc67e651e165f5dfc9d54337114e",
+ "post_M1_md5": "cd7059eb8b9f9810ef28b655db12c797",
+ "units": [
+  {
+   "id": "forvixy-s34",
+   "kind": "forvixy",
+   "start": 857,
+   "count": 30,
+   "first": "- **Session-34 decision items (2026-09-20, Sunday — THE INSTRUMENTS ROUND: F124 · F126 · F125, three for three delivered and supervisor-verified the same session; NOTHING under `src/` moved, so your review queue is exactly where you left it).** Full record §11.264; every item below is reversible or is a question.",
+   "last": "",
+   "bytes": 3004,
+   "md5": "b928071c3d8eeae725446623e6849f52"
+  },
+  {
+   "id": "forvixy-s32",
+   "kind": "forvixy",
+   "start": 887,
+   "count": 41,
+   "first": "- **Session-32 decision items (2026-09-19, Saturday morning — THE SEAM CONTINUED: F122 · F123, two for two delivered and supervisor-verified same session; you were PRESENT and reading the code in parallel: three messages, verbatim at §11.247).** Q-70's shape: one decision per node, its held set at the node. The executors' own lists are §11.246(g)(k) and §11.248(h).",
+   "last": "",
+   "bytes": 4225,
+   "md5": "4415d7b064f8efcb6965c6eb4f113f68"
+  },
+  {
+   "id": "forvixy-s31",
+   "kind": "forvixy",
+   "start": 928,
+   "count": 94,
+   "first": "- **Session-31 decision items (2026-09-18, Friday evening — the DEPLOYMENT-MAP / DUAL-CAMERA-SEAM round: F120 · F121, two for two delivered and supervisor-verified same session; you were PRESENT: four messages, verbatim at §11.244, and the round was re-cut three times on them). Q-70's shape: one decision per node, its held set at the node, anchors by id and symbol. The executors' own veto lists are §11.243(k) and §11.245(k); read order for Saturday is [F1].**",
+   "last": "",
+   "bytes": 9105,
+   "md5": "837312c0bcde316b6e705014b1985519"
+  },
+  {
+   "id": "forvixy-s30",
+   "kind": "forvixy",
+   "start": 1022,
+   "count": 105,
+   "first": "- **Session-30 decision items (2026-09-13, Sunday — the DSO-DESIGN / TRAIL-WALKER / REWRITE-CLASS round: F117 · F118 · F119, three for three delivered and supervisor-verified same session; ZERO engine lines — F119's one code commit is six grammar pins and the gate's record). You were absent by design (your Sunday window): nothing was asked in-session, every open choice is here in Q-70's shape — one decision per node, its held set at the node, anchors by ID and symbol. The executors' own veto lists are §11.240(m), §11.241(h), §11.242(n); the supervisor's mint decisions are in each acceptance.**",
+   "last": "",
+   "bytes": 10660,
+   "md5": "ea6f70f5347775df32ab7c00e22fa334"
+  },
+  {
+   "id": "forvixy-s29",
+   "kind": "forvixy",
+   "start": 1127,
+   "count": 2,
+   "first": "- **Session-29 decision items (2026-09-12, Saturday — the INTERN'S-FIRST-DAY / ZOOM-TRACKING / UNIFORM-ROOT / LOG-BOUND / LAUNCH-PRECONDITIONS / SAMPLER-SEED round: F110 · F114 · F115 · F116 · F112 · F111, six for six delivered and supervisor-verified same session; F113 WITHDRAWN before dispatch on your correction). You were present: your messages are §11.232 (three answers) and §11.233 (with its correction block), and the round was re-cut twice on them. Q-70's shape: one decision per node, its held set at the node, anchors by ID and symbol. The F110 executor opened this block with [Y5]–[Y9]; [Y10]–[Y16] and the three lists after them are the supervisor's at close.**",
+   "last": "",
+   "bytes": 690,
+   "md5": "30c2ac98f78f004250afa66f11207a80"
+  },
+  {
+   "id": "forvixy-f110",
+   "kind": "forvixy",
+   "start": 1129,
+   "count": 181,
+   "first": "- **F110 — THE INTERN'S ENTRY PATH, FOLLOWED BY HAND. Three gaps only you can fill, quoted from",
+   "last": "",
+   "bytes": 14155,
+   "md5": "daf36a3237970a775d1b706d2520e0d5"
+  },
+  {
+   "id": "forvixy-s28",
+   "kind": "forvixy",
+   "start": 1310,
+   "count": 124,
+   "first": "- **Session-28 decision items (2026-09-11/12, the SEED-STALENESS / LOG-RETENTION / RESIDUAL-STEP round —",
+   "last": "",
+   "bytes": 9643,
+   "md5": "cae734971ec1291bd2e97e8e6f1bb3a8"
+  },
+  {
+   "id": "forvixy-s27",
+   "kind": "forvixy",
+   "start": 1434,
+   "count": 129,
+   "first": "- **Session-27 decision items (2026-09-07, the SATURDAY-TOOL / TWO-STEP-SOLVER / DUMP-CHANNEL round —",
+   "last": "",
+   "bytes": 10222,
+   "md5": "47088f419f2d49ce84acb40c7da4d45a"
+  },
+  {
+   "id": "forvixy-s26",
+   "kind": "forvixy",
+   "start": 1563,
+   "count": 104,
+   "first": "- **Session-26 decision items (2026-09-07, the NULL-PARENT / PARKED-READOUT / SYSTEM-SWITCH /",
+   "last": "",
+   "bytes": 8281,
+   "md5": "74f13b779607a8ba42ade047105e4d76"
+  },
+  {
+   "id": "forvixy-s25",
+   "kind": "forvixy",
+   "start": 1667,
+   "count": 97,
+   "first": "- **Session-25 decision items (2026-09-06, the OFFSET-FRAME / LOCATION-ORBIT / SECOND-SOAK round —",
+   "last": "",
+   "bytes": 9117,
+   "md5": "8e58089b33c9f674b385069fd0a19d40"
+  },
+  {
+   "id": "forvixy-s24",
+   "kind": "forvixy",
+   "start": 1764,
+   "count": 72,
+   "first": "- **Session-24 decision items (2026-09-06, the ENGINE-AND-SOAK round — F91 · F94 · F95, three",
+   "last": "",
+   "bytes": 6501,
+   "md5": "829752d34837f9f8702bcbddb31395ba"
+  },
+  {
+   "id": "forvixy-s23",
+   "kind": "forvixy",
+   "start": 1836,
+   "count": 83,
+   "first": "- **Session-23 decision items (2026-09-05, the READINESS round — your line *\"renamed main",
+   "last": "",
+   "bytes": 7455,
+   "md5": "74cdcba9a61ed5bf8a058c953732a89e"
+  },
+  {
+   "id": "forvixy-rename",
+   "kind": "forvixy",
+   "start": 1919,
+   "count": 21,
+   "first": "- **THE RENAME, WHEN YOU WANT IT: ELEVEN ORDERED ACTS AND FOUR LINES TO EDIT",
+   "last": "",
+   "bytes": 1566,
+   "md5": "c5c62913bc6edefef1cc35e961052334"
+  },
+  {
+   "id": "forvixy-s22",
+   "kind": "forvixy",
+   "start": 1940,
+   "count": 55,
+   "first": "- **Session-22 decision items (2026-09-05, the REFERENCE round — kept short on your",
+   "last": "",
+   "bytes": 4560,
+   "md5": "6486aad23918ed2b74f4f25c489d388c"
+  },
+  {
+   "id": "forvixy-s21",
+   "kind": "forvixy",
+   "start": 1995,
+   "count": 101,
+   "first": "- **Session-21 decision items (2026-09-04, the desktop round — canary / stellar",
+   "last": "    `Windows size is` in the applog is the REQUESTED size, `Swapchain :` the truth.",
+   "bytes": 8198,
+   "md5": "99071b0130d13b907d8c673bdaeae2f4"
+  },
+  {
+   "id": "forvixy-s20",
+   "kind": "forvixy",
+   "start": 2096,
+   "count": 65,
+   "first": "- **Session-20 decision items (2026-09-01, the anchors/corpus/bad-script round):**",
+   "last": "",
+   "bytes": 4853,
+   "md5": "128d69e4c2a49a12f870d267d12469df"
+  },
+  {
+   "id": "forvixy-s19",
+   "kind": "forvixy",
+   "start": 2161,
+   "count": 99,
+   "first": "- **Session-19 decision items (2026-08-31, the provenance/ASCII round):**",
+   "last": "",
+   "bytes": 7130,
+   "md5": "fa72b9900576d0b14d99a937d2fcd490"
+  },
+  {
+   "id": "forvixy-s18",
+   "kind": "forvixy",
+   "start": 2260,
+   "count": 85,
+   "first": "- **Session-18 decision items (2026-08-31, the scedit round on TravellingFoxDev):**",
+   "last": "    to the strict-credit v2 package that owns it.",
+   "bytes": 6305,
+   "md5": "3c634e5ee64a21c02defa90a4d79b606"
+  },
+  {
+   "id": "forvixy-s17",
+   "kind": "forvixy",
+   "start": 2345,
+   "count": 55,
+   "first": "- **Session-17 decision items (2026-08-30, F56–F60 / §11.176–§11.180):**",
+   "last": "    other cost curve.",
+   "bytes": 4257,
+   "md5": "3e60af6c5ef3c90c20495198363650bb"
+  },
+  {
+   "id": "forvixy-s17-veto",
+   "kind": "forvixy",
+   "start": 2400,
+   "count": 12,
+   "first": "- **Session-17 veto points (implemented-and-live, each cheap to reverse;",
+   "last": "  shipped command belongs in the registry).",
+   "bytes": 903,
+   "md5": "56eb7fa1896a04090752ebeb624f5a7a"
+  },
+  {
+   "id": "forvixy-s17-equalize",
+   "kind": "forvixy",
+   "start": 2412,
+   "count": 12,
+   "first": "- **Session-17 equalization items (facts, no decision asked):** the register's",
+   "last": "",
+   "bytes": 821,
+   "md5": "9b71d9e935555a36248d7065cf168f81"
+  },
+  {
+   "id": "forvixy-s16",
+   "kind": "forvixy",
+   "start": 2424,
+   "count": 43,
+   "first": "- **Session-16 decision items (2026-08-30, F53–F55 / §11.170–172 + the conversation → §11.169/§11.173, §5.114/§5.115):**",
+   "last": "    structural, not yet written as clauses).",
+   "bytes": 3505,
+   "md5": "c72973030490c191bc21304e40dba430"
+  },
+  {
+   "id": "forvixy-s16-equalize",
+   "kind": "forvixy",
+   "start": 2467,
+   "count": 12,
+   "first": "- **Session-16 equalization items (facts, no decision asked):** the tester model +",
+   "last": "",
+   "bytes": 857,
+   "md5": "0db4de8953aba4362e3376b4abd2af29"
+  },
+  {
+   "id": "forvixy-s15",
+   "kind": "forvixy",
+   "start": 2479,
+   "count": 38,
+   "first": "- **Session-15 decision items (2026-08-29/30, F48–F52 / §11.164–168):**",
+   "last": "    new path — no shipped surface shows both).",
+   "bytes": 2797,
+   "md5": "a002eafbc1c0f62a723b8945f0c4981e"
+  },
+  {
+   "id": "forvixy-s15-veto",
+   "kind": "forvixy",
+   "start": 2517,
+   "count": 13,
+   "first": "- **Session-15 veto points (implemented-and-live, each cheap to reverse;",
+   "last": "  2026-07-25 marker was already yours-compliant).",
+   "bytes": 968,
+   "md5": "0bd58ee344e115df4a47821ef7b3a738"
+  },
+  {
+   "id": "forvixy-s15-equalize",
+   "kind": "forvixy",
+   "start": 2530,
+   "count": 12,
+   "first": "- **Session-15 equalization items (facts, no decision asked):**",
+   "last": "    introduction is a pure addition), not as deletion events.",
+   "bytes": 861,
+   "md5": "ff7ce4e5bc342bcda40afd4d38d7dbbe"
+  },
+  {
+   "id": "forvixy-s15-awareness",
+   "kind": "forvixy",
+   "start": 2542,
+   "count": 42,
+   "first": "- **Session-15 awareness, no action needed:** §11.158's two denominators",
+   "last": "    tester-sourced, so past answers are not evidence against this routing.",
+   "bytes": 3055,
+   "md5": "3ad36ef78ea6ee594f9fe92424aa5478"
+  },
+  {
+   "id": "forvixy-s14-veto",
+   "kind": "forvixy",
+   "start": 2584,
+   "count": 17,
+   "first": "- **Session-14 veto points (implemented-and-live, each cheap to reverse;",
+   "last": "  reverses it (the archived predecessor restores by copy).**",
+   "bytes": 1285,
+   "md5": "ca3f5419ce3c90d7b44a81872c4cebdb"
+  },
+  {
+   "id": "forvixy-s14-awareness",
+   "kind": "forvixy",
+   "start": 2601,
+   "count": 9,
+   "first": "- **Session-14 awareness, no action needed**: §5.110 (six `#selected_*`",
+   "last": "  (measured, unattributed, §11.157(g)).",
+   "bytes": 658,
+   "md5": "6fb8df41c0c025e6b707fdd270ec08c6"
+  },
+  {
+   "id": "forvixy-s13-still-open",
+   "kind": "forvixy",
+   "start": 2610,
+   "count": 3,
+   "first": "- **STILL OPEN from session 13**: the §5.100/§5.101 authorization question",
+   "last": "  D21 vs the 2026-07-18 extent contract).",
+   "bytes": 196,
+   "md5": "ea50f5eb89a21ff716491a9f47589320"
+  },
+  {
+   "id": "forvixy-deployment-map",
+   "kind": "forvixy",
+   "start": 2613,
+   "count": 10,
+   "first": "- **THE DEPLOYMENT MAP (2026-08-29, on your request → §11.162):**",
+   "last": "",
+   "bytes": 619,
+   "md5": "3d7087d29e65b882470317c0405e09fb"
+  },
+  {
+   "id": "forvixy-s13",
+   "kind": "forvixy",
+   "start": 2623,
+   "count": 38,
+   "first": "- **Session-13 decision items (2026-08-26, F37–F40 / §11.149–§11.153):**",
+   "last": "    outside the dump for such a body (instrument-grade vs live defect)?",
+   "bytes": 2907,
+   "md5": "dd7bad766a6401f18d9fa3db007e44a1"
+  },
+  {
+   "id": "forvixy-s13-veto",
+   "kind": "forvixy",
+   "start": 2661,
+   "count": 12,
+   "first": "- **Session-13 veto points (implemented-and-live, each cheap to reverse;",
+   "last": "  it).",
+   "bytes": 836,
+   "md5": "f9df538ef4a9d40172b5a856975530c5"
+  },
+  {
+   "id": "forvixy-s13-awareness",
+   "kind": "forvixy",
+   "start": 2673,
+   "count": 9,
+   "first": "- **Session-13 awareness, no action needed:** §5.99 (b39_star's whole-frame",
+   "last": "",
+   "bytes": 570,
+   "md5": "fcfe6446f0889f7944addd9aab20d555"
+  },
+  {
+   "id": "forvixy-s13-equalize",
+   "kind": "forvixy",
+   "start": 2682,
+   "count": 28,
+   "first": "- **Session-13, F37/§11.149 — TWO THINGS TO EQUALIZE ON, both about facts rather",
+   "last": "",
+   "bytes": 2163,
+   "md5": "a185e569215ec709c3e5d3854cdf96ef"
+  },
+  {
+   "id": "forvixy-s12-data",
+   "kind": "forvixy",
+   "start": 2710,
+   "count": 62,
+   "first": "- **Session-12 decision data (2026-08-09, F34/§11.144 + F35/§11.145 +",
+   "last": "    abort vs named-default-and-log (D12) vs refuse-to-start, yours).",
+   "bytes": 4474,
+   "md5": "2ae90d59728643ffbd96b9cbea948f21"
+  },
+  {
+   "id": "forvixy-s12-veto",
+   "kind": "forvixy",
+   "start": 2772,
+   "count": 12,
+   "first": "- **Session-12 veto points (implemented-and-live, each cheap to reverse;",
+   "last": "  (§11.145(c)(d)).",
+   "bytes": 834,
+   "md5": "383224b60b204e1a8167cac08dd93dad"
+  },
+  {
+   "id": "forvixy-s11-data",
+   "kind": "forvixy",
+   "start": 2784,
+   "count": 36,
+   "first": "- **Session-11 decision data (2026-08-09, F31/§11.141 + F32/§11.142 + F33/§11.143):**",
+   "last": "    per HIP, last wins — one-name-per-star intended?). Rows carry what's owed.",
+   "bytes": 2556,
+   "md5": "34f93390f412dd1b27d9d1dd76239477"
+  },
+  {
+   "id": "forvixy-s11-veto",
+   "kind": "forvixy",
+   "start": 2820,
+   "count": 18,
+   "first": "- **Session-11 veto points (all implemented-and-live, each cheap to reverse;",
+   "last": "  local untestability is not a mint criterion.",
+   "bytes": 1327,
+   "md5": "a5b9143f30d29e08f87a66f9028ec451"
+  },
+  {
+   "id": "forvixy-s10-data",
+   "kind": "forvixy",
+   "start": 2838,
+   "count": 41,
+   "first": "- **Session-10 decision data (2026-08-09, F30/§11.140 + F28/§11.138 — every",
+   "last": "    is fixed; whether/how a too-long answer should be MARKED is yours.",
+   "bytes": 3032,
+   "md5": "3f94c2561d7d2267b051e67dfa18697a"
+  },
+  {
+   "id": "forvixy-s10-veto",
+   "kind": "forvixy",
+   "start": 2879,
+   "count": 10,
+   "first": "- **Session-10 veto points (all implemented-and-live, each cheap to reverse;",
+   "last": "  (§11.140(h)).",
+   "bytes": 707,
+   "md5": "e694910b898d049a2c0b498d58f1fbc7"
+  },
+  {
+   "id": "forvixy-s10-awareness",
+   "kind": "forvixy",
+   "start": 2889,
+   "count": 24,
+   "first": "- **New awareness rows, no action needed now: §5.74** (`search` returns no star",
+   "last": "  vs expectation-wrong — discriminated in the final tester pass, state-stamped.",
+   "bytes": 1849,
+   "md5": "07b31948d9a56c1fe1b58f8e81b5e0f4"
+  },
+  {
+   "id": "forvixy-decision-batches",
+   "kind": "forvixy",
+   "start": 2913,
+   "count": 36,
+   "first": "- **Decision batches waiting**: §11.96(e)(1–6) + §11.98(f)(i–iii) (oort/§6.9 plan);",
+   "last": "  install dir.",
+   "bytes": 2832,
+   "md5": "4eb33e43641c72369257545564ea141d"
+  },
+  {
+   "id": "forvixy-s4-veto",
+   "kind": "forvixy",
+   "start": 2949,
+   "count": 8,
+   "first": "- **Session-4 veto points (2026-07-30 — all implemented-and-live, each cheap to",
+   "last": "  itself on the next write, §11.119(a)).",
+   "bytes": 630,
+   "md5": "bf9e644a85759a4a3e58ba4418eb7b7a"
+  },
+  {
+   "id": "forvixy-5-49",
+   "kind": "forvixy",
+   "start": 2957,
+   "count": 6,
+   "first": "- **NEW §5.49 (F14, §11.120(j)) — your eye when convenient, no urgency:** the",
+   "last": "  test it owes is stated in the row; fixing it is user-visible semantics = yours.",
+   "bytes": 501,
+   "md5": "c57cdb44283d5478d1d39cc7c3f13e2a"
+  },
+  {
+   "id": "forvixy-s5-veto",
+   "kind": "forvixy",
+   "start": 2963,
+   "count": 8,
+   "first": "- **Session-5 veto points (2026-07-31 — all implemented-and-live, each cheap to",
+   "last": "  scale = model parameter of the procedural field, not a solar datum.",
+   "bytes": 629,
+   "md5": "42173c4e6d289bc7e4dc697abdc707e4"
+  },
+  {
+   "id": "forvixy-b12-content",
+   "kind": "forvixy",
+   "start": 2971,
+   "count": 6,
+   "first": "- **B12 content-slice decisions (recorded NOT blocking; needed only before the",
+   "last": "  that module can be built — the one of the four with a hard ordering).",
+   "bytes": 473,
+   "md5": "8d2e61761efcc4cd21e462d04cd9fbd1"
+  },
+  {
+   "id": "forvixy-a40",
+   "kind": "forvixy",
+   "start": 2977,
+   "count": 11,
+   "first": "- **NEW A40 (F19, §11.126(g)(l)) — the session-6 round's one open decision, and it",
+   "last": "  pacing.",
+   "bytes": 831,
+   "md5": "a04c42944277607d053d6111932cfe39"
+  },
+  {
+   "id": "forvixy-5-60",
+   "kind": "forvixy",
+   "start": 2988,
+   "count": 4,
+   "first": "- **NEW §5.60 (F17, §11.125(e)) — device-limit policy, D13-flavored, no urgency:**",
+   "last": "  yours; recorded, not designed.",
+   "bytes": 283,
+   "md5": "2cd1d4269447115880eff1239348a6af"
+  },
+  {
+   "id": "forvixy-s6-decision",
+   "kind": "forvixy",
+   "start": 2992,
+   "count": 9,
+   "first": "- **Session-6 supervisor decision (recorded as a veto point; cheap to reverse as",
+   "last": "  per-commit and each carries its argument at the site.",
+   "bytes": 713,
+   "md5": "23d6e024411913827b1c7deb779bee0c"
+  },
+  {
+   "id": "forvixy-s7-veto",
+   "kind": "forvixy",
+   "start": 3001,
+   "count": 11,
+   "first": "- **Session-7 veto points (2026-08-01 — all implemented-and-live, each cheap to",
+   "last": "  §4.2's own instruction — §11.129(h)).",
+   "bytes": 878,
+   "md5": "097e9cb14cad42a2f98daf38ac934687"
+  },
+  {
+   "id": "forvixy-s7-rows",
+   "kind": "forvixy",
+   "start": 3012,
+   "count": 10,
+   "first": "- **NEW decidable rows from session 7 (all recorded in §13.A / §5, none blocking a",
+   "last": "  changes what a shipped script's pause does mid-show; semantics = yours).",
+   "bytes": 844,
+   "md5": "ac8e763a86df1ee4b069e7a496592c8c"
+  },
+  {
+   "id": "forvixy-b31-s7",
+   "kind": "forvixy",
+   "start": 3022,
+   "count": 7,
+   "first": "- **B31 STATUS after session 7 — no dispatchable remainder:** slices 3+4 landed",
+   "last": "  §5.63 closes B31.",
+   "bytes": 531,
+   "md5": "b5a27b54465ca50188cf415f1c6fc6e5"
+  },
+  {
+   "id": "forvixy-5-62",
+   "kind": "forvixy",
+   "start": 3029,
+   "count": 5,
+   "first": "- **Awareness, no action needed: §5.62** (a same-binary mid-band disc ratio shifted",
+   "last": "  RESTORED side and varies restore-to-restore).",
+   "bytes": 380,
+   "md5": "4b185e047c0ce43453029e8785782dec"
+  },
+  {
+   "id": "forvixy-host-note",
+   "kind": "forvixy",
+   "start": 3034,
+   "count": 12,
+   "first": "- **Host note — CORRECTED [vixy 2026-07-31] (§11.121(m) + §11.122(n) carry the",
+   "last": "  concurrent launcher. Nothing left for you to decide here.",
+   "bytes": 927,
+   "md5": "1ad1b5cb4acd4c1c5159b65c17ae3f79"
+  },
+  {
+   "id": "forvixy-s8-veto",
+   "kind": "forvixy",
+   "start": 3046,
+   "count": 13,
+   "first": "- **Session-8 veto points (2026-08-01 — all implemented-and-live, each cheap to",
+   "last": "  would be a NEW user-visible rule, stated not invented).",
+   "bytes": 1031,
+   "md5": "41b8d7e9e000cb0c8f83ce0f785f42ca"
+  },
+  {
+   "id": "forvixy-s8-rows",
+   "kind": "forvixy",
+   "start": 3059,
+   "count": 7,
+   "first": "- **NEW decidable rows from session 8 (recorded, none blocking):** **§5.65**",
+   "last": "  D5/D6-adjacent call; the fix itself is one field width).",
+   "bytes": 545,
+   "md5": "bde71604bfa53b54dff4ddf51e1e4243"
+  },
+  {
+   "id": "forvixy-s8-awareness",
+   "kind": "forvixy",
+   "start": 3066,
+   "count": 7,
+   "first": "- **Session-8 awareness, no action needed:** **§5.66** (`look_at`'s camera half and",
+   "last": "  clamps nothing — a write-half asymmetry every `moveto` already has).",
+   "bytes": 575,
+   "md5": "305e7e9002fdae72ec882e3679ff84c4"
+  },
+  {
+   "id": "forvixy-b31-s8",
+   "kind": "forvixy",
+   "start": 3073,
+   "count": 6,
+   "first": "- **B31 STATUS after session 8 — T1 MET, the session feature is functionally",
+   "last": "  (D34's unanswered half)**. Answering D21+D28+C4 closes B31.",
+   "bytes": 475,
+   "md5": "5acecd686c1dd0d3d11eea24b9db22ac"
+  },
+  {
+   "id": "forvixy-b33-closed",
+   "kind": "forvixy",
+   "start": 3079,
+   "count": 6,
+   "first": "- **B33 CLOSED (session 8) — two of its four last members were lying on SHIPPED",
+   "last": "  setter).",
+   "bytes": 419,
+   "md5": "562684151a92f31dd1bec627e0be42a9"
+  },
+  {
+   "id": "forvixy-s9-veto",
+   "kind": "forvixy",
+   "start": 3085,
+   "count": 15,
+   "first": "- **Session-9 veto points (2026-08-02 — all implemented-and-live, each cheap to",
+   "last": "  alternative was a 345×-larger epsilon = a user-visible stopping altitude.",
+   "bytes": 1208,
+   "md5": "138854cb8148edbbe4d27911882df9c0"
+  },
+  {
+   "id": "forvixy-s9-rows",
+   "kind": "forvixy",
+   "start": 3100,
+   "count": 7,
+   "first": "- **NEW decidable rows from session 9 (recorded, none blocking):** **§5.70** (the",
+   "last": "  every shipped delivery).",
+   "bytes": 518,
+   "md5": "f2474d2799589b04139ddde63b4a75fa"
+  },
+  {
+   "id": "forvixy-s9-awareness",
+   "kind": "forvixy",
+   "start": 3107,
+   "count": 13,
+   "first": "- **Session-9 awareness, no action needed:** **§5.71** (`Core::panView` — the turn",
+   "last": "  with measured per-body A/A floors (Sun 0 / Jupiter 0.10 % / Mars 0.57 %).",
+   "bytes": 1050,
+   "md5": "f80facdad9211871f5265dfc6b18c202"
+  },
+  {
+   "id": "forvixy-b34-closed",
+   "kind": "forvixy",
+   "start": 3120,
+   "count": 8,
+   "first": "- **B34 CLOSED (session 9, F25/§11.133) — the mandate's escape hatch was never",
+   "last": "  and §5.71.",
+   "bytes": 584,
+   "md5": "eea462a010690c9ecf6b85917f7f2feb"
+  },
+  {
+   "id": "forvixy-get-status",
+   "kind": "forvixy",
+   "start": 3128,
+   "count": 4,
+   "first": "- **`get status position` is now a working read-only channel** (F27, §11.135) for",
+   "last": "  instead of two.",
+   "bytes": 262,
+   "md5": "a5d9a054d38f09bf6b1dcf429e38d05e"
+  },
+  {
+   "id": "index-f0-f95",
+   "kind": "index",
+   "start": 459,
+   "count": 37,
+   "first": "*Derived index (regenerable from `fable-dispatch/archive/`): sections **F0–F36 all",
+   "last": "unanswered).*",
+   "bytes": 2994,
+   "md5": "3e59f0d340032e85cf68316b09ca9e2f"
+  },
+  {
+   "id": "index-s25-s42",
+   "kind": "index",
+   "start": 496,
+   "count": 22,
+   "first": "**Session-25 round (2026-09-06): F96 §11.216 · F97 §11.217 (in part — the",
+   "last": "L1's word — the attributed halo floor α-scaled).** **Session-29 round (2026-09-12): F110 §11.234 · F113 WITHDRAWN (§11.233(b) correction; ids never reused) · F114 §11.235 · F115 §11.236 · F116 §11.237 · F112 §11.238 · F111 §11.239 — archival pass 22 (update-s28 + the seven) DONE at the session-30 open (`a0b18a7`); live below: the session-30 mints **F117** (the DSO layer on the new path — a design note on the owner's direction, no engine line), **F118** (the trail walker's engine leg — a latency measurement, no delivered engine change), **F119** (the rewrite's code-tree citation class — the scedit pins first, then the tool).** **Session-28 round (2026-09-11/12): F107 §11.229 · F108 §11.230 · F109 §11.231 (a STOP, endorsed — the residual is the instrument's) — three for three DELIVERED and accepted; §5.149–§5.152 minted at acceptances; archival pass 21 (update-s27 + F107–F109) DEFERRED to the next open.** **Session-29 (2026-09-12, Saturday, the owner present): archival pass 21 DONE at open (`43b0ffc`); the owner's rewrite + push ran mid-warm-up and his replies are §11.232 (a part-time intern without an LLM starts on `master-beta` THIS WEEK — \"consolidated first\"); live below, dispatch order **F110 → F113 → F114 → F112 → F111** (his second message, §11.233, re-cut the round): **F110** (the intern's first day rehearsed by hand — `doc/developer-entry.md` followed literally from a plain clone on Linux), **F113** (§5.142's fix on his word — the uniform pool to 1 GiB, the D13 reading measured), **F114** (§5.100 + §5.101 on his word — `zoom auto in` tracks and `zoom auto initial` re-aims on the drawn path), **F112** (launch preconditions that see what they guard — the exe-identity instance probe in ONE home for 42 copy-pasted sites, and a GPU-headroom gate derived from the app's init sequence after the 2026-09-12 VRAM red), **F111** (§5.150's fix — the orbit-line sampler gets its own seed, the old path's `batchLastE` shape).** **[12:5x: F113 WITHDRAWN before dispatch (§11.233(b) correction); **F115** (§5.142's ROOT — the uniform consumers censused field by field on both paths, redundancy on three axes, the per-body requirement derived, a proposal with arithmetic; no engine change) and **F116** (§5.115's SIZE bound — 1 GiB total across the five channels, within-session rotation reusing F108's window) minted; order **F110 → F114 → F115 → F116 → F112 → F111**.]** **Session-29 round (2026-09-12): F110 §11.234 · F114 §11.235 · F115 §11.236 · F116 §11.237 · F112 §11.238 · F111 §11.239 — six for six DELIVERED and accepted; F113 WITHDRAWN before dispatch (record kept); §5.153 minted, B41 opened; archival pass 22 (update-s28 + F110/F113/F114/F115/F116/F112/F111) DEFERRED to the next open.** **Sessions 31–40 (2026-09-18 → 09-27): F122 §11.246 · F123 §11.247 · F124 §11.261 · F125 §11.263 · F126 §11.262 · F127 §11.266 · F128 §11.267 · F129 §11.268 · F130 §11.269 · F131 §11.292 · F132 §11.294 · F133 §11.295 · F134 §11.296 · F135 §11.297 · F136 §11.298 · F138 §11.300 · F139 §11.301 — all DELIVERED and accepted; archival pass 25 DONE 2026-10-10 (`63f82cb`, with the session notes 31, 32, 34, 39, 40) on the owner's finding that the pass had been deferred twice (Q-110). Live below: **F143** (minted 2026-10-10, §11.310 allocated — the viewport radius to the Renderer, §5.189; FOCUSED, Opus), **F141** (minted 2026-10-10, §11.311 allocated — B44 under the joystick ruling, STRUCTURE, Fable), **F142** (minted 2026-10-10, §11.312 allocated — B49 key-bound scripts, STRUCTURE, Fable), **F144** (minted 2026-10-10, §11.313 allocated — the Camera's reference decider under Q-B's law, STRUCTURE, Fable), **F140** (minted 2026-10-10, §11.314 allocated — the fov slice on F139's ratified block + H6, Opus, after F143) and F137 (HELD on the owner, re-structured under his joystick ruling of 2026-10-10, §11.304, before it can run).** **Session-42 round (2026-10-10, the owner's word, the first round with every executor under his prompt): F143 §11.310 (code `9e0ca53c`, Opus) · F141 §11.311 · F142 §11.312 · F144 §11.313 (Fable max, structure) — four for four DELIVERED and accepted; cut once by the API session limit at ~14:25 and resumed at 17:42 in their own contexts; §5.190–§5.192 minted at the acceptances, the §5.189 reach and §11.308(b) corrected; archival pass 27 (F143 / F141 / F142 / F144) in the commit right after the acceptances. Live below: F140 (dispatched on F143's acceptance), F137 (to refresh on F141's block), the implementations of F142 and F144 to mint on their blocks.** **F140 STOPPED at reading 18:21 (§11.314, nothing mutated; the mint's contradiction, endorsed) → F145 minted (step 2's structure, Fable) and dispatched ~18:45 beside F137 (refreshed on F141's block, Opus, the defaults built); F140 HELD until F145's block.** **Night 10 → 11 (the owner's reset): F137 §11.299 (code `34202cf2` + `bbe278b2` + `2cb05825`, three structural changes) · F145 §11.315 — both DELIVERED and accepted; pass 29 (F137 / F145) right after. Live: F140 (HELD on the delivery-unit word, §3 D1'). To mint on their blocks: F142's implementation (C1 / Q2 / Q6 his), F144's (H2 / H3 / H8 his), F140's refresh (D1').**",
+   "bytes": 7376,
+   "md5": "0121c1e60dcf2640d9e84a771db05a97"
+  },
+  {
+   "id": "protocol-iso8859",
+   "kind": "protocol",
+   "start": 73,
+   "count": 23,
+   "first": "   - Loaded data `~/.spacecrafter/ssystem.ini` is ISO-8859 and untracked — the Bash",
+   "last": "     `python3 harness/f70_ascii.py gate`. CLAUDE.md carries the clean rule.]**",
+   "bytes": 1719,
+   "md5": "4e271bcc73328b72ac0bcc062fb299be"
+  },
+  {
+   "id": "protocol-instance-assert",
+   "kind": "protocol",
+   "start": 119,
+   "count": 11,
+   "first": "   - **Concurrent-instance assert (2026-07-31, §11.121(m)):** before each measurement",
+   "last": "     positively mapped both ways (decoy 1 / without 0). **[BLIND TO STAGING BINARIES — measured 2026-09-12, F109 §11.231(j2): all three homes of the probe (`f26_epoch.sh:46`, `f27_reply.py:107`, `f56_canary.sh:470`) test `comm == \"spacecrafter\"` EXACTLY, and a staging binary's `comm` is its own basename (`sc_f109_iso`, `spacecrafter-pre`…), so the probe read 0 with two staging instances live and holding port 7805; every task that measured a `sc_f*` binary ran it blind. Until the exe-identity probe lands (next round, S): before a launch ALSO assert that no process holds port 7805 (`ss -ltnp`) and that no `/proc/<pid>/exe` resolves under a `sc-f*`/`sc_*` path.]** **[LANDED 2026-09-12, F112 §11.238 — the probe has ONE home, and the bracket before this one is history: before each measurement launch run `bash claude/harness/sc_instances.sh --assert <label>` (exit 2 = an engine is live; exit 4 = the probe could not run, a STOP) or `harness/f116_assert.sh <label>`, which adds the GPU gate `python3 claude/harness/sc_gpu.py --need bank` (exit 3 = not enough room; it reads `BANK_GPU_NEED_MIB` = 6144 MiB of FREE memory from `f56_canary.sh`'s VALUES block, derived from the app's own init log, and names every holder through `nvidia-smi -q -d PIDS` — `--query-compute-apps` is blind to graphics-only holders). In Python `from sc_instances import no_instance`, or nothing: `f96_offset.no_instance()` and five sibling functions already delegate. The criterion is the UNION of three channels, each covering the others' blind spot: `comm` (world-readable — the only cross-ACCOUNT channel — blind to any rename), `/proc/<pid>/exe` (sees copies and renames, never a command line; EACCES across accounts under `ptrace_scope=1`, measured 0 of 578), TCP 7805 (an engine that answers whatever its file is called). THE RESIDUAL is a renamed engine of ANOTHER uid with no server up — say so rather than claim coverage. Never `pkill -f` (§11.231(j)); `sc_instances.py --kill` signals by pid. The 2026-09-12 VRAM red is a GATE on BOTH canary arms now (`gpu.headroom`, FAIL exit 3 below the need); a `used <= N` line is the wrong shape — it refused a host with 27 GB free. The live map: a renamed engine read 0 by the old form and 2 by the probe (the engine is a two-process tree) — §11.238(n).]**",
+   "bytes": 3119,
+   "md5": "c64a72c8b6b7f55458bf94b218f66894"
+  },
+  {
+   "id": "protocol-session-env",
+   "kind": "protocol",
+   "start": 131,
+   "count": 24,
+   "first": "   - **Session-environment hazards (2026-08-09, F28/F30, §11.138/§11.140(i)):**",
+   "last": "     (measured working) or an explicit poll-and-kill watchdog.",
+   "bytes": 1814,
+   "md5": "3eb956991351998afb2facfea3ab518b"
+  },
+  {
+   "id": "protocol-display-arch",
+   "kind": "protocol",
+   "start": 161,
+   "count": 18,
+   "first": "   - **Display architecture is part of the instrument (2026-07-31, §11.122(o) +",
+   "last": "     re-baseline.",
+   "bytes": 1373,
+   "md5": "d017b963cde60f5731b6e08b3ab81832"
+  },
+  {
+   "id": "protocol-canary",
+   "kind": "protocol",
+   "start": 188,
+   "count": 18,
+   "first": "   - **ENVIRONMENT CANARY (2026-08-30, §11.176; enumerated §0.7 precondition per",
+   "last": "     The shared `~/.spacecrafter/cache` is WATCHED, not isolated (`f56_manifest.py`).",
+   "bytes": 1426,
+   "md5": "96795fb1e6377febe519032fa88bc95e"
+  },
+  {
+   "id": "protocol-backmarker",
+   "kind": "protocol",
+   "start": 231,
+   "count": 11,
+   "first": "   - **Back-marker at the write (2026-08-29, §11.161(g), RA-MODEL E18/E55):** any",
+   "last": "     informs its dependents).",
+   "bytes": 814,
+   "md5": "660e733fbef32c4e983fb99ed0f8c673"
+  },
+  {
+   "id": "protocol-routing",
+   "kind": "protocol",
+   "start": 295,
+   "count": 35,
+   "first": "(a) ~~**Executors are Fable**: agent type `claude`, model `fable` — the `opus-xhigh`",
+   "last": "(the bridge's gate); step 4 reads it.",
+   "bytes": 3325,
+   "md5": "bcbf277bf03c3bbb1273527e555d2488"
+  },
+  {
+   "id": "protocol-supersession-template",
+   "kind": "protocol",
+   "start": 439,
+   "count": 14,
+   "first": "~~**Supersession-block TEMPLATE** (the executor's standing definition is stale — every",
+   "last": "of what a prompt had to carry while the definition was stale.]**",
+   "bytes": 1152,
+   "md5": "8d6ff2806b7063f766857ad7731e5fd3"
+  },
+  {
+   "id": "protocol-drift-assert",
+   "kind": "protocol",
+   "start": 348,
+   "count": 11,
+   "first": "   **Definition-drift assert",
+   "last": "   construction, so the old line would always fail.]**",
+   "bytes": 898,
+   "md5": "930a72ae6d97e1bdb19856e9aeeaaafa"
+  }
+ ],
+ "seams": [
+  {
+   "after": "protocol-supersession-template",
+   "start": 453,
+   "count": 1,
+   "line": ""
+  }
+ ]
+}
