@@ -1,0 +1,96 @@
+{
+ "pass": "32",
+ "date": "2026-10-11",
+ "source": "fable-dispatch.md",
+ "pre_md5": "d0a6b8cb20ebf646d4ab24a8cce7ef56",
+ "pre_commit": "c28ad19",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [
+  {
+   "removed_after_unit": "protocol-supersession-template",
+   "lines": [
+    ""
+   ],
+   "positions_pre": [
+    453
+   ],
+   "reason": "the moved unit sat between two --- separators; removing it leaves them doubled (pass-13..19 precedent)."
+  }
+ ],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "protocol-iso8859",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-iso8859.md",
+   "line_start": 73,
+   "line_count": 23,
+   "payload_md5": "4e271bcc73328b72ac0bcc062fb299be"
+  },
+  {
+   "id": "protocol-instance-assert",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-instance-assert.md",
+   "line_start": 119,
+   "line_count": 11,
+   "payload_md5": "c64a72c8b6b7f55458bf94b218f66894"
+  },
+  {
+   "id": "protocol-session-env",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-session-env.md",
+   "line_start": 131,
+   "line_count": 24,
+   "payload_md5": "3eb956991351998afb2facfea3ab518b"
+  },
+  {
+   "id": "protocol-display-arch",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-display-arch.md",
+   "line_start": 161,
+   "line_count": 18,
+   "payload_md5": "d017b963cde60f5731b6e08b3ab81832"
+  },
+  {
+   "id": "protocol-canary",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-canary.md",
+   "line_start": 188,
+   "line_count": 18,
+   "payload_md5": "96795fb1e6377febe519032fa88bc95e"
+  },
+  {
+   "id": "protocol-backmarker",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-backmarker.md",
+   "line_start": 231,
+   "line_count": 11,
+   "payload_md5": "660e733fbef32c4e983fb99ed0f8c673"
+  },
+  {
+   "id": "protocol-routing",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-routing.md",
+   "line_start": 295,
+   "line_count": 35,
+   "payload_md5": "bcbf277bf03c3bbb1273527e555d2488"
+  },
+  {
+   "id": "protocol-drift-assert",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-drift-assert.md",
+   "line_start": 348,
+   "line_count": 11,
+   "payload_md5": "930a72ae6d97e1bdb19856e9aeeaaafa"
+  },
+  {
+   "id": "protocol-supersession-template",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-supersession-template.md",
+   "line_start": 439,
+   "line_count": 14,
+   "payload_md5": "8d6ff2806b7063f766857ad7731e5fd3"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}

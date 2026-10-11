@@ -70,29 +70,6 @@ departure is an addition.
    - Fresh-launch precondition for measurements; config/ssystem md5 in==out asserted
      (pristine pair as of compile date: `03fbee59` / `545a51ef`).
    - **Encoding:** the Bash `grep` wrapper (ugrep `-I`) skips every file holding non-UTF-8 bytes in silence, so a 0-hit there proves nothing - since F70 only `~/.spacecrafter/ssystem.ini`, `doc/superscript.sts` and the EXCLUDE rows of `harness/f70_partition.tsv` hold such bytes: use `/usr/bin/grep` or Read on them, `LC_ALL=C` for a byte class (`CLAUDE.md`'s encoding hazards (1)-(5) are the authority; §11.188(k), §11.189(a)).
-   - Loaded data `~/.spacecrafter/ssystem.ini` is ISO-8859 and untracked — the Bash
-     `grep` wrapper silently excludes it; use `/usr/bin/grep` or Read.
-     **[CORRECTED 2026-08-31, F67 executor finding + supervisor measurement: the
-     wrapper is ugrep with `-I` — ANY file holding non-UTF-8 bytes is classed binary
-     and skipped silently, tracked or not; `src/interfaceModule/app_command_interface.cpp`
-     is ~~the one~~ **[CORRECTED 2026-08-31, F69 §11.188(k): ONE OF TWO — the `.hpp`
-     of the same name is ISO-8859 as well (18 non-ASCII bytes, already so at
-     `dd815ab3~1`); census over all 505 tracked regular files under `src/` finds
-     exactly those two]** such file among 500 tracked `src/` files,
-     `doc/superscript.sts` another
-     (11 hits without `-I`, none with). `/usr/bin/grep` or Read on every ISO-8859 file.
-     CLAUDE.md (one file: the code-tree path is a link to `claude/CLAUDE.md`) carries
-     the corrected rule.]**
-     **[SUPERSEDED IN PART 2026-08-31, F70 §11.189(a) — post-D14 state: every
-     tracked CONVERT-set file is pure ASCII (code `cb521cf1`+`71ef30ac`); the
-     wrapper hazard survives ONLY in `~/.spacecrafter/ssystem.ini`,
-     `doc/superscript.sts` and the EXCLUDE rows of `harness/f70_partition.tsv`.
-     The "ISO-8859 file(s) in src/" DIAGNOSIS was wrong both times: the
-     `app_command_interface` pair were UTF-8 with one stray 0xA7 each —
-     whole-file Latin-1 decoding mojibakes such files. SECOND hazard, same
-     class: `grep -P '[\x80-\xff]'` under a UTF-8 locale matches code points,
-     not bytes — `LC_ALL=C` for byte classes. D14 standing gate:
-     `python3 harness/f70_ascii.py gate`. CLAUDE.md carries the clean rule.]**
    - Cost claims use the **1 ms/frame** denominator (§2.0 D11). Acting defaults are
      LOGGED (§2.0 D12). Actionable diagnostics per §2(f).
    - **Anchor-first enumeration (owner mechanism, 2026-09-01, §11.193):** a task
@@ -116,66 +93,13 @@ departure is an addition.
      host's safe `-j` from live `free -g`/`nproc` (24 at open, 52 GiB avail); use
      THAT number, the "12" above is the state of one earlier session, not a rule.]**
    - **Concurrent-instance assert, before each measurement launch:** `bash claude/harness/sc_instances.sh --assert <label>` (exit 2 an engine is live, 4 the probe could not run = a STOP) or `harness/f116_assert.sh <label>` (+ the GPU gate, exit 3) - because concurrent sessions share `~/.spacecrafter` and an md5 re-assert cannot see a concurrent launcher; the criterion is the UNION of `comm`, `/proc/<pid>/exe` and TCP 7805, each covering another's blind spot (residual, said and not claimed: a renamed engine of another uid with no server up); on a hit: record it, wait it out, launch fresh; never `pkill -f` (§11.238).
-   - **Concurrent-instance assert (2026-07-31, §11.121(m)):** before each measurement
-     launch, assert no other spacecrafter process exists — ANY account: the observed
-     confound is INTRA-account (concurrent claude sessions/agents share
-     `~/.spacecrafter`), so md5 re-asserts alone do not cover a concurrent launcher.
-     On hit: record it, wait it out, launch fresh. F8's `b7h3_host.log`
-     batch-boundary check is the precedent instrument. **Instrument superseded
-     2026-08-02 (F26, §11.134(b)):** the stock `f18_run.sh`-style pattern is BLIND
-     to out-of-tree binaries AND any `pgrep -f <path>` self-matches the wrapper
-     (measured: 3 reported with nothing running). Use the `/proc/<pid>/comm` probe
-     (`f26_epoch.sh`; Python port in `f27_reply.py`) — covers every account,
-     positively mapped both ways (decoy 1 / without 0). **[BLIND TO STAGING BINARIES — measured 2026-09-12, F109 §11.231(j2): all three homes of the probe (`f26_epoch.sh:46`, `f27_reply.py:107`, `f56_canary.sh:470`) test `comm == "spacecrafter"` EXACTLY, and a staging binary's `comm` is its own basename (`sc_f109_iso`, `spacecrafter-pre`…), so the probe read 0 with two staging instances live and holding port 7805; every task that measured a `sc_f*` binary ran it blind. Until the exe-identity probe lands (next round, S): before a launch ALSO assert that no process holds port 7805 (`ss -ltnp`) and that no `/proc/<pid>/exe` resolves under a `sc-f*`/`sc_*` path.]** **[LANDED 2026-09-12, F112 §11.238 — the probe has ONE home, and the bracket before this one is history: before each measurement launch run `bash claude/harness/sc_instances.sh --assert <label>` (exit 2 = an engine is live; exit 4 = the probe could not run, a STOP) or `harness/f116_assert.sh <label>`, which adds the GPU gate `python3 claude/harness/sc_gpu.py --need bank` (exit 3 = not enough room; it reads `BANK_GPU_NEED_MIB` = 6144 MiB of FREE memory from `f56_canary.sh`'s VALUES block, derived from the app's own init log, and names every holder through `nvidia-smi -q -d PIDS` — `--query-compute-apps` is blind to graphics-only holders). In Python `from sc_instances import no_instance`, or nothing: `f96_offset.no_instance()` and five sibling functions already delegate. The criterion is the UNION of three channels, each covering the others' blind spot: `comm` (world-readable — the only cross-ACCOUNT channel — blind to any rename), `/proc/<pid>/exe` (sees copies and renames, never a command line; EACCES across accounts under `ptrace_scope=1`, measured 0 of 578), TCP 7805 (an engine that answers whatever its file is called). THE RESIDUAL is a renamed engine of ANOTHER uid with no server up — say so rather than claim coverage. Never `pkill -f` (§11.231(j)); `sc_instances.py --kill` signals by pid. The 2026-09-12 VRAM red is a GATE on BOTH canary arms now (`gpu.headroom`, FAIL exit 3 below the need); a `used <= N` line is the wrong shape — it refused a host with 27 GB free. The live map: a renamed engine read 0 by the old form and 2 by the probe (the engine is a two-process tree) — §11.238(n).]**
    - **Session environment:** the display target, the auth path and the session's shape are PER-HOST and PER-BOOT - read `HOST-EVENTS.md`'s latest entries for this host and run `xdpyinfo` before the first launch, because an inherited `DISPLAY` / `XAUTHORITY` can name another uid's or a dead display; `timeout -s KILL` bounds nothing in this session type (measured, §11.140(i)): use plain `timeout` or a poll-and-kill watchdog.
-   - **Session-environment hazards (2026-08-09, F28/F30, §11.138/§11.140(i)):**
-     (a) the inherited `XAUTHORITY` belongs to another uid — every display refuses;
-     ~~`export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)`~~
-     **[SUPERSEDED 2026-08-29, F43 §11.157(f): the host rebooted 2026-08-27 and
-     claude has NO login session — the stack is a REBUILT headless GNOME/Xwayland
-     under `XDG_RUNTIME_DIR=/tmp/rt-claude`, verified against the recorded
-     values (Meta-0 2448x1332@59.96, GPU-real, Swapchain/Rect per §11.106);
-     `export XAUTHORITY=/tmp/rt-claude/.mutter-Xwaylandauth.*` until a real
-     login session exists; if the auth file is gone (another reboot), STOP and
-     report rather than improvise a new stack silently]** with
-     `DISPLAY=:2` (forced, not defaulted — the inherited `DISPLAY=:0` makes
-     `${DISPLAY:-:2}` keep the wrong one), verify `xdpyinfo` BEFORE the first
-     launch (full note `harness/README.md`). The stack is rebuilt-not-inherited:
-     a candidate variable for any A/A floor vs pre-2026-08-27 baselines.
-     **[SUPERSEDED AS STANDING VALUES 2026-09-01 (F74 executor report — the
-     bullet's `/tmp/rt-claude` + `:2` are the DESKTOP's pre-reboot era and do
-     not exist on this laptop): display target, auth path and session shape
-     are PER-HOST AND PER-BOOT — `HOST-EVENTS.md` is the authority, read its
-     latest entries for the current host before any launch; `xdpyinfo` before
-     the first launch remains the invariant part of this bullet.]**
-     (b) `timeout -s KILL` bounds NOTHING
-     in this session type (measured: rc=124 only after the child's full run;
-     mechanism unattributed, signal-mask hypothesis refuted) — use plain `timeout`
-     (measured working) or an explicit poll-and-kill watchdog.
    - **§5.109 hazard (2026-08-29, F43):** `moveto … alt` counts from the
      DISPLAY-scaled datum, snapped once — never `flag moon_scaled off; sleep N;
      moveto`; wait the scale settle BY MEASUREMENT (`scaling`==`scalingTarget`
      in the dump) and assert the observer's radius (band checks pass on both
      values).
    - **The display stack is part of the instrument:** we render on our own session (the real `:2`, per HOST-EVENTS) while the owner's RDP relay is view-only and CPU-coupled to what we draw, and the cadence is the config cap (`maximum_fps = 144`, measured [144.0, 146.4] fps, §11.159) - so trust counter RATIOS and in-run A/B only, never absolute fps labels or cross-session cadence, and a stack change (compositor, streamer, X server, screen power) means report + re-baseline.
-   - **Display architecture is part of the instrument (2026-07-31, §11.122(o) +
-     §11.123(o)/(o2)):** claude renders on his OWN headless GNOME/Xwayland `:2`
-     (GPU-real; the harness default); Vixy's remmina/RDP relay is view-only and its
-     CPU is coupled to what WE draw. The "161.3 fps" cadence label is UNATTRIBUTED
-     among three clocks that all fail to match it exactly (config `maximum_fps = 144`,
-     `:2` virtual monitor 59.96, panel 164.5) — ~~sharpest hypothesis: the dwell's
-     "20 s" denominator was nominal and the true cadence is EXACTLY the config cap
-     (§11.123(o2), H1; discriminating check owed by the next cadence-touching task:
-     wall-clock-bracketed counter reads). Until settled:~~ **[DISCHARGED 2026-08-29,
-     F45 §11.159(k7), accepted by this item's owner: 4392 frames over a [30.0,
-     30.5] s bracket = [144.0, 146.4] fps, 4× reproduced ⇒ H1 CONFIRMED on the
-     CURRENT (post-reboot, F43-rebuilt) stack — cadence = the config cap. The
-     historical "161.3" label is permanently unattributable: its stack was
-     destroyed by the 2026-08-27 reboot (§11.121(m)'s retroactive shape).]**
-     Standing: trust counter RATIOS and
-     in-run A/B only; never absolute fps labels, never cross-session cadence; a
-     stack change (compositor, streamer, headless X, screen power state) ⇒ report +
-     re-baseline.
    - **Environment-fault mitigations are OWNER VETO ITEMS (2026-08-30, §11.174(h),
      owner-stated: *"If the F43 agent reported the failure over mitigating it, I
      would have corrected it"*):** any improvised substitute for missing host
@@ -185,24 +109,6 @@ departure is an addition.
      the mitigation may differ in preconditions the verification surface does
      not reach (*"different path doesn't certify same preconditions"* [vixy]).
    - **ENVIRONMENT CANARY before any measuring launch** (`harness/f56_canary.sh`: full, ~100 s, for photometric tasks; `--no-scene`, seconds, otherwise; §11.176) - because a host change that reaches the instrument reaches every number taken on it: a non-zero exit is a STOP and a report (§11.174(h)), never a mitigation or a widened band; a re-bank is one VALUES-block edit WITH its argument, and the bank is PER-BOOT on the real `:2` session, so a red after a reboot is the protocol (§11.199); the band's values live in that VALUES block, not here; §11.104(d)'s numbers are targets only on a canary-passed stack; A/A floors are per scene (374 px star field, 28 px Moon frame); the shared `~/.spacecrafter/cache` is WATCHED (`f56_manifest.py`).
-   - **ENVIRONMENT CANARY (2026-08-30, §11.176; enumerated §0.7 precondition per
-     §11.175(e)):** before any measuring launch, run `harness/f56_canary.sh` (full,
-     ~100 s, for photometric tasks; `--no-scene`, seconds, otherwise). Non-zero exit
-     = STOP and report per §11.174(h) — never mitigate silently, never widen the band
-     to make a run pass (re-banking is one VALUES-block edit WITH an argument; ~~the
-     :2/:4 canonical-display fork is the OWNER's, §11.174(f)~~ **[FORK CLOSED
-     2026-09-04, F79 §11.199: the substitute died with `/tmp`; the owner ruled
-     "Real session on :2"; the fingerprint is re-banked on that session and the
-     bank is PER-BOOT by design — a red after a reboot is the protocol, never a
-     fault to mitigate]**). Band on `:2`:
-     165.258/6.644 new · 160.142/6.603 old, ±1.0/±0.15 **[REPRODUCED A THIRD WAY
-     2026-09-04, F79: 72/72 members, spread 0.000, across a compositor change AND a
-     binary change; dwell frame md5 `5215565b` byte-identical — recorded, never gated]**.
-     §11.104(d)'s numbers are
-     TARGETS AGAIN, but only on a canary-passed stack (§11.164(l)(2) refuted at its
-     node); 61.431/42.476 stay non-targets — the canary refuses them by construction.
-     A/A floors are PER SCENE (374 px = star field; 28 px = Moon frame, cross-epoch).
-     The shared `~/.spacecrafter/cache` is WATCHED, not isolated (`f56_manifest.py`).
    - **`/tmp` IS SESSION-LIFETIME, THREE TREES CARRY, SSH KEEPS `:2` (2026-09-04,
      owner-stated, session 21; cross-project record `~/shared/QUEUE.md` Q-61):**
      (1) *"/tmp get cleared at the end of the session — nothing tell when it will
@@ -228,17 +134,6 @@ departure is an addition.
      Vulkan layer, rendering paths) → Vixy's recall. The stratigraphy is
      §11.161(b).
    - **Back-marker at the write (§11.161(g), RA-MODEL E18/E55):** an entry that supersedes, refutes or corrects ANOTHER entry's claim places the §11.113(p) back-marker at the superseded node IN THE SAME COMMIT, and a §13 row's state flip greps the §5 register for the references it stales in that commit - because the write is the one moment its author holds both ends (I3: the state's owner informs its dependents), and every stale reference measured sat on the non-working side (§11.180).
-   - **Back-marker at the write (2026-08-29, §11.161(g), RA-MODEL E18/E55):** any
-     entry that supersedes/refutes/corrects ANOTHER entry's claim carries the
-     §11.113(p) back-marker at the superseded node IN THE SAME COMMIT — every
-     executor prompt binds this; ~~the §11.156(g) five are the recovery backlog,
-     queued~~ **[PAID 2026-08-29, F49 §11.165]**. **Row-flip extension
-     [2026-08-30, F60 acceptance, from §11.180's finding that every stale
-     reference sits on the NON-working side]:** when a §13 row's state flips
-     (delivered/closed/delegated), grep the §5 register for references to that
-     row IN THE SAME COMMIT and annotate any the flip stales — the write is the
-     one moment the flip's author holds both ends (I3: the state's owner
-     informs its dependents).
 6. Abort-tolerance discipline (the reason this file exists):
    - Commit code + harness at **every green checkpoint** (small commits, normal
      trailer discipline: code first, harness carries `Code: <branch> @ <short-sha>`).
@@ -292,41 +187,6 @@ session per claude/fable-dispatch.md §0b."*
 **SHAPE BINDING [owner-ruled 2026-09-19, session 33 — INTENT §2.1 G12, §11.249–§11.255;
 operating manual `claude/SHAPE.md`; it OVERRIDES the steps below wherever they differ].**
 (a) **Executors are routed by STRUCTURAL-COUPLING LOAD at the mint, never by label** [vixy 2026-10-10, §11.302; the 2026-09-27 structure / implementation split, §11.293, is its common case]: FOCUSED (the input set closed and named in the section, one concern, criteria that can fail) → `opus-xhigh` (Claude Opus 5.5 under the owner's system prompt; step 1 asserts `deploy.sh --check`), bound to report every conflict with the predictions; OPEN-COUPLING (an S4 pass over a family, a shape still to choose, modelling the owner, a PREDICTIONS mint, every acceptance, an edit of the ledger's structure) → `claude` / `fable` - because Opus is strongest on focused work and the conflicts it reports against the predictions are the signal that drives the rework [vixy]. Disjoint file sets may run in parallel in one tree when no agent commits, builds or stashes; an implementer ALONE in the tree may build and still commits nothing; the supervisor verifies, builds, commits. The return opens with `prompt-window: present` (step 4 reads it). The owner's words and the record the rule was tested on (F131-F139): `fable-dispatch/archive/protocol-routing.md`, §11.302.
-(a) ~~**Executors are Fable**: agent type `claude`, model `fable` — the `opus-xhigh`
-definition is no longer dispatched (kept, not deleted; step 1's md5 assert and step 3's
-executor name are superseded by this line).~~ **[SUPERSEDED 2026-09-27, owner-ruled, §11.293 —
-his words: *"structure to claude agents, implementation to opus-xhigh instructed to report every
-conflicts with the predictions (that's the signal telling what wasn't as predicted, driving the
-reworks)"*: STRUCTURE tasks (the S4 pass, the predicted shape, a PREDICTIONS block; no code
-written) = agent type `claude`, model `fable`; IMPLEMENTATION tasks = agent type `opus-xhigh`
-(Claude Opus 5.5), whose prompt carries the structure task's PREDICTIONS block and binds it to
-report every conflict with it (CONFIRMED / REFUTED with the observation / NOT REACHED with the
-reason). Step 1's md5 assert is live again; F131 (2026-09-26) was the first opus-xhigh dispatch
-after the 09-19 line, on the owner's call for that round.]** Disjoint file sets may run in
-parallel in one tree when no agent commits, builds or stashes; an implementer ALONE in the tree
-may build (it must, to run its gates) and still commits nothing; the supervisor verifies, builds, commits.
-**[ROUTING 2026-10-10, owner-stated, session 41, §11.302 — the rule derived, veto-open]:** [vixy,
-verbatim] *"I think we can use Opus 5.5 for dispatch round again, given the decision was made on
-Opus 5 and they were notable improvements on Opus 5.5 - but there is still a routing to be made,
-for this decision. Opus is great at focused works, which is what opus-xhigh agent definition
-does. Maybe you should add the system-prompt.txt as well, to opus-xhigh, before proceeding."*
-The 09-19 restriction was decided on Opus 5's record; the 09-27 split is the COMMON CASE of the
-rule his sentence states [derived, with Q-08's owner ruling "effort tracks structural-information
-load"]: **route by the task's STRUCTURAL-COUPLING LOAD at the mint, never by its label.**
-FOCUSED → `opus-xhigh` (Claude Opus 5.5, xhigh; under the OWNER's system prompt since this date —
-`claude/agents/deploy.sh` generates the projection, step 1 asserts it): the input set is CLOSED and
-NAMED in the section (the files, the functions, a PREDICTIONS block or a bank of readings, the
-gates), ONE concern, a DoD whose criteria can fail; the executor executes, measures and reports
-every conflict — implementations of a predicted structure, harness legs and gates against a stated
-bank, reproductions, a census whose enumeration rule is given, a bounded analysis whose sources are
-listed (F131 was one). OPEN-COUPLING → `claude` / `fable`: the S4 pass over a class family, a shape
-still to be chosen among non-invalidated alternatives, anything that models the OWNER (his intent,
-his form, his words), the mint of a PREDICTIONS block, every acceptance, every edit of the ledger's
-structure. A structure task goes to Opus when its shape is chosen and its sources enumerated; an
-implementation goes to Fable when the manager map must be rebuilt on the way. On the record: F131,
-F135, F136, F138 (Opus — closed sets) and F132–F134, F139 (Fable — shapes to choose) each sit on
-the side the rule puts them. The executor's return message opens with `prompt-window: present`
-(the bridge's gate); step 4 reads it.
 (b) **Every task section and prompt binds G12** and names
 `/home/claude/spacecrafter.owner-shape` as the form to write in; a task states the
 MANAGER COUNT of each information it touches, before and after (G12 (S7)), preceded by the need's
@@ -345,17 +205,6 @@ his review queue is decoupled from the sessions, and only he moves its mark.
    relying on it (the 2026-07-30 OOM left an executor's uncommitted diff in the tree;
    "clean expected" is an expectation, not knowledge).
    **Definition-drift assert:** `bash claude/agents/deploy.sh --check` must exit 0 - the executor's deployed projection is GENERATED from its authority + the owner's agent prompt + the bridge and compared byte-exact, because a drifted definition silently changes every executor; on drift run `bash claude/agents/deploy.sh` before any dispatch (§11.302).
-   **Definition-drift assert
-   (2026-08-29, §11.161(g)):** ~~`md5sum claude/agents/opus-xhigh.md
-   .claude/agents/opus-xhigh.md` must MATCH — the tracked file is the authority, the
-   `.claude` one its deployed projection; on mismatch, regenerate the projection from
-   the authority before any dispatch.~~ **[SUPERSEDED 2026-10-10, §11.302, on the owner's
-   word (the executor runs under his system prompt): `bash claude/agents/deploy.sh --check`
-   must exit 0 — the projection is GENERATED (frontmatter + `/home/claude/shared/system-prompt-agent.txt`,
-   the AGENT form of his prompt — the orchestrator-only part dropped, the agent preamble appended,
-   same day — + the bridge + the authority's body) and compared byte-exact; on drift, `bash
-   claude/agents/deploy.sh` before any dispatch. The md5 pair is no longer equal by
-   construction, so the old line would always fail.]**
    **Ledger instruments (2026-09-06, the miss-ledger item — two
    supervisor sessions reached for them under `harness/` from memory of a note that omitted
    the directory):** `cd /home/claude/spacecrafter/claude && python3 intent_backmarker_scan.py .
@@ -435,21 +284,6 @@ his review queue is decoupled from the sessions, and only he moves its mark.
    endorsements, anything newly Vixy's, the remaining dispatchable set. **The previous
    session's note archives in the same close (2026-10-10, Q-110): its state is in the new
    note or in §11; two notes live is one too many.**
-
-~~**Supersession-block TEMPLATE** (the executor's standing definition is stale — every
-prompt carries this, values refreshed): intent authority =
-`/home/claude/spacecrafter/claude/INTENT.md`, expanded entries `claude/INTENT/<id>.md`
-(NO `src/experimentalModule/INTENT.md`, NO §12, NO `dispatch-2026-07-19.md`); delivery
-record = §11 entry at the next free number ⟨N⟩ + §13/§5 flips + this file's WIP line at
-every checkpoint; today's date ⟨date⟩; `claude/` is its own repo — code committed
-first, harness carries `Code: master-beta @ <sha>`; memory-bounded builds per §0.5;
-no `run_in_background`; both HEADs stated ⟨code, harness⟩.~~
-**[SUPERSEDED 2026-08-29, session 15 warm-up — the era this template served is CLOSED
-per §0b.1 + §11.161(g): the standing definition is RA-reprojected (tracked authority
-`claude/agents/opus-xhigh.md`, md5-guarded projection), so prompts carry per-round
-variables only (HEADs, date, next §11 number, task pointer, live `### F` count, task
-boundaries). Struck-not-deleted: the variable list above remains the historical record
-of what a prompt had to carry while the definition was stale.]**
 
 ---
 
