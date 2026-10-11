@@ -38,7 +38,7 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 longer a pass deferred to the next open: a task section leaves this file IN its acceptance
 commit (§0b step 4 — `harness/fd_archive_pass.py`, one unit, the same commit as the
 acceptance), a session note leaves when the next one is written (§0b step 5), and §1's
-derived index gains its one line. "Deferred to the next open" twice is how sixteen delivered
+derived index names nothing that grows (since pass 31, 2026-10-11: its one sentence is regenerable from the archive listing). "Deferred to the next open" twice is how sixteen delivered
 sections and five notes were live on 2026-10-10. The reason, his: the attention needed is on
 the OPEN units; a closed one on the live surface is a cost every reader pays — closure without
 departure is an addition.
@@ -277,7 +277,7 @@ his review queue is decoupled from the sessions, and only he moves its mark.
    the following header as anchor context (F13, F18); anchor inside the WIP block,
    never across the section boundary. **Then the section LEAVES (2026-10-10, Q-110): the
    acceptance commit carries its archival (`python3 harness/fd_archive_pass.py <pass> <date>
-   <pre-commit> F<n>:<start>:<count>`) and §1's index its one line — closure without
+   <pre-commit> F<n>:<start>:<count>`) and §1's index needs no line (since 2026-10-11 its sentence is regenerable from the archive listing) — closure without
    departure is an addition.**
 5. **Close**: refresh section 3 (For Vixy) with new veto points/decisions, append the
    round outcome to the session update note, commit, and report to Vixy: deliveries,
