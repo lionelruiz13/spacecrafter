@@ -135,15 +135,6 @@ departure is an addition.
      §11.161(b).
    - **Back-marker at the write (§11.161(g), RA-MODEL E18/E55):** an entry that supersedes, refutes or corrects ANOTHER entry's claim places the §11.113(p) back-marker at the superseded node IN THE SAME COMMIT, and a §13 row's state flip greps the §5 register for the references it stales in that commit - because the write is the one moment its author holds both ends (I3: the state's owner informs its dependents), and every stale reference measured sat on the non-working side (§11.180).
 6. **Abort-tolerance (the reason this file exists: a cut run is an abort, never a suspend, so it must resume from what is on disk):** an executor commits nothing unless its dispatch prompt says so (§0b (a)); it keeps its checkpoint state in the FIRST LINES of its own entry file (`INTENT/<id>.md`), refreshed at every green checkpoint, and a cut run resumes from there. The supervisor is the one writer of this file and of the commits: it verifies and commits each delivery (code first; the harness commit carries `Code: <branch> @ <short-sha>`), keeps the task's WIP line, and never starts a long verification campaign over uncommitted work. Delivery = the §11 entry (the file first, then its stub) + the §13 / §5 flips + the acceptance commit.
-6. Abort-tolerance discipline (the reason this file exists):
-   - Commit code + harness at **every green checkpoint** (small commits, normal
-     trailer discipline: code first, harness carries `Code: <branch> @ <short-sha>`).
-   - Update the task's **WIP line** in this file at each checkpoint (one line: date,
-     checkpoint reached, next step); clear it at delivery. Commit the WIP update with
-     the checkpoint — an uncommitted WIP line protects nothing.
-   - Never start a long verification campaign with uncommitted work.
-   - Delivery = INTENT §11 entry (file + stub) + §13 row flip + harness commit, as
-     usual. An abort before recording ⇒ the successor resumes at the last checkpoint.
 7. **Precondition gate (owner-stated 2026-08-30, §11.175) — the LAST warm-up act; nothing
    mutates before it passes.** **FIRST STEP (2026-09-05, §0b.3's PREMISES block): run
    `python3 claude/harness/premise_check.py <ID>` from anywhere — every line of the

@@ -1,0 +1,21 @@
+{
+ "pass": "38",
+ "date": "2026-10-11",
+ "source": "fable-dispatch.md",
+ "pre_md5": "852b30193e1e8b364611fb84d2e5ab30",
+ "pre_commit": "4feab47",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "protocol-abort-tolerance",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/protocol-abort-tolerance.md",
+   "line_start": 138,
+   "line_count": 9,
+   "payload_md5": "e4d887bb5cc6d8d16d449c8a4ec140e5"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}
