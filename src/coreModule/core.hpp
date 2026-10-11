@@ -288,8 +288,14 @@ public:
 	void turnDown(int);
 	void zoomIn(int);
 	void zoomOut(int);
-	void raiseHeight(int);
-	void lowerHeight(int);
+	void raiseHeight(double);
+	void lowerHeight(double);
+	void moveLat(double);
+	void moveLon(double);
+	// Set a joystick sample in [-1, 1], cleared by the frame that applies it
+	void joystickLat(double);
+	void joystickLon(double);
+	void joystickHeight(double);
 
 	// Analogic viewing direction functions
 	void turnHorizontal(float);
@@ -464,6 +470,10 @@ public:
 	bool getExperimentalPath() const;
 	//! Return the fov the drawn path uses, in degrees
 	double drawnFov() const;
+	//! Return the drawn path's movement step over dt seconds, in AU
+	double drawnVelocityScaling(float dt) const;
+	//! Return the drawn observer's distance to the centre of its reference, in AU
+	double drawnDistanceFromCenter() const;
 	//! Call once at init; mode = "new", "old" or "alternate"
 	void setRenderPathMode(const std::string &mode);
 
@@ -559,9 +569,11 @@ public:
 private:
 	void zoomToBothPaths(double aim_fov, float move_duration);
 	struct ViewZoomMove {
-		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
+		double deltaAlt=0, deltaAz=0, deltaFov=0, deltaHeight=0;	// View movement
 		double move_speed, zoom_speed;		// Speed of movement and zooming
 		double coefAlt=1, coefAz=1; // Coefficient applied to deltaAlt and deltaAz, used for joystick axis
+		double deltaLat=0, deltaLon=0;	// Place movement
+		double joyLat=0, joyLon=0, joyHeight=0;	// Joystick samples, added to the held orders for one frame
 	};
 
 	void applyClippingPlanes(float clipping_min, float clipping_max);

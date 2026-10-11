@@ -915,6 +915,19 @@ double Core::drawnFov() const
 	return ssystemFactory->drawModularSystem ? ModularBody::halfFov * (360. / M_PI) : projection->getFov();
 }
 
+double Core::drawnVelocityScaling(float dt) const
+{
+	if (ssystemFactory->drawModularSystem)
+		return Camera::instance->velocityScaling(dt);
+	const double minSpeed = observatory->isOnBody() ? MIN_MOVEMENT_SPEED * observatory->getHomeBody()->getRadius() : 0;
+	return std::max(observatory->getAltitude() / (1000 * AU), minSpeed) * dt;
+}
+
+double Core::drawnDistanceFromCenter() const
+{
+	return ssystemFactory->drawModularSystem ? Camera::instance->getReferenceRelativePosition().length() : observatory->getDistanceFromCenter();
+}
+
 void Core::preloadSolarSystemBody(stringHash_t& param)
 {
 	auto &name = param["name"];
@@ -1785,14 +1798,45 @@ void Core::zoomOut(int s)
 	if (FlagEnableZoomKeys) vzm.deltaFov = (s!=0);
 }
 
-void Core::raiseHeight(int s)
+void Core::raiseHeight(double s)
 {
-	vzm.deltaHeight = 1.01*(s!=0);
+	if (s)
+		vzm.deltaHeight = s;
+	else if (vzm.deltaHeight > 0)
+		vzm.deltaHeight = 0;
 }
 
-void Core::lowerHeight(int s)
+void Core::lowerHeight(double s)
 {
-	vzm.deltaHeight = 0.99*(s!=0);
+	if (s)
+		vzm.deltaHeight = -s;
+	else if (vzm.deltaHeight < 0)
+		vzm.deltaHeight = 0;
+}
+
+void Core::moveLat(double s)
+{
+	vzm.deltaLat = s;
+}
+
+void Core::moveLon(double s)
+{
+	vzm.deltaLon = s;
+}
+
+void Core::joystickLat(double x)
+{
+	vzm.joyLat = x;
+}
+
+void Core::joystickLon(double x)
+{
+	vzm.joyLon = x;
+}
+
+void Core::joystickHeight(double x)
+{
+	vzm.joyHeight = x;
 }
 
 //! Make the first screen position correspond to the second (useful for mouse dragging)
@@ -1827,7 +1871,9 @@ static void rampVisionAzAlt(const Navigator *nav, double &az, double &alt)
 void Core::updateMove(int delta_time)
 {
 	const bool rampActive = (vzm.deltaAz != 0 || vzm.deltaAlt != 0
-	                      || vzm.deltaFov != 0 || vzm.deltaHeight != 0);
+	                      || vzm.deltaFov != 0 || vzm.deltaHeight != 0
+	                      || vzm.deltaLat != 0 || vzm.deltaLon != 0
+	                      || vzm.joyLat != 0 || vzm.joyLon != 0 || vzm.joyHeight != 0);
 	const bool rampRecord = rampActive || rampWasActive;
 	RampStep step{};
 	if (rampRecord) {
@@ -1879,10 +1925,31 @@ void Core::updateMove(int delta_time)
 		}
 	}
 
-	if (vzm.deltaHeight!=0) {
-		observatory->multAltitude(vzm.deltaHeight);
-		if (Camera::instance)
-			Camera::instance->multAlt(vzm.deltaHeight);
+	const double lat = std::clamp(vzm.deltaLat + vzm.joyLat, -1., 1.);
+	const double lon = std::clamp(vzm.deltaLon + vzm.joyLon, -1., 1.);
+	const double height = std::clamp(vzm.deltaHeight + vzm.joyHeight, -1., 1.);
+	vzm.joyLat = vzm.joyLon = vzm.joyHeight = 0;
+	if (lat || lon || height) {
+		const double step = drawnVelocityScaling(delta_time / 1000.f);
+		const double distance = drawnDistanceFromCenter();
+		// Give no lateral step at the centre of the reference, where no direction exists
+		const double angle = (distance > 0) ? step / distance : 0;
+		if (lat) {
+			observatory->moveRelLat(lat * lat * lat * angle * (180 / M_PI), 0);
+			if (Camera::instance)
+				Camera::instance->moveRelLat(lat * lat * lat * angle, 0);
+		}
+		if (lon) {
+			observatory->moveRelLon(lon * lon * lon * angle * (180 / M_PI), 0);
+			if (Camera::instance)
+				Camera::instance->moveRelLon(lon * lon * lon * angle, 0);
+		}
+		if (height) {
+			const double metres = height * height * height * step * (1000 * AU);
+			observatory->moveRelAlt(metres, 0);
+			if (Camera::instance)
+				Camera::instance->moveRelAlt(metres, 0);
+		}
 	}
 
 	if (vzm.deltaFov != 0 ) {

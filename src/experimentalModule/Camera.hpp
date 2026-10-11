@@ -100,7 +100,7 @@ public:
     }
     inline void moveRelLon(float lon, float delay = 0) {
         if (freeMode) {
-            lon *= velocityScaling(1) * 5.f;
+            lon *= position.length() * 5.f;
             moveEyeRel({lon, 0, 0}, delay);
         } else {
             moveRel({lon, 0, 0}, delay);
@@ -108,7 +108,7 @@ public:
     }
     inline void moveRelLat(float lat, float delay = 0) {
         if (freeMode) {
-            lat *= velocityScaling(1) * 5.f;
+            lat *= position.length() * 5.f;
             moveEyeRel({0, lat, 0}, delay);
         } else {
             moveRel({0, lat, 0}, delay);

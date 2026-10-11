@@ -56,9 +56,6 @@
 #include "EntityCore/Resource/TileMap.hpp"
 #include "EntityCore/SubTexture.hpp"
 
-static const double CoeffMultAltitude = 0.02;
-static const double DURATION_COMMAND = 0.1;
-
 #define ANY_MOD(modifier) (key_Modifier & (modifier))
 #define ALL_MOD(modifier) ((key_Modifier & (modifier)) == (modifier))
 #define SET_MOD(modifier) key_Modifier |= modifier
@@ -589,9 +586,9 @@ void UI::moveLat(double x)
 {
 	if (x>0) this->executeCommand("add y -1"); else this->executeCommand("add y 1");
 		if (fabs(coreLink->getHeading())>90)
-			coreLink->observerMoveRelLat(x,DURATION_COMMAND);
+			core->joystickLat(x);
 		else
-			coreLink->observerMoveRelLat(-x,DURATION_COMMAND);
+			core->joystickLat(-x);
 }
 
 void UI::moveLon(double x)
@@ -599,28 +596,24 @@ void UI::moveLon(double x)
 	if (x>0) this->executeCommand("add z 1"); else this->executeCommand("add z -1");
 	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName() || coreLink->getEyeRelativeMode())
 	  	if (fabs(coreLink->getHeading())>90)
-			coreLink->observerMoveRelLon(-x,DURATION_COMMAND);
+			core->joystickLon(-x);
 		else
-			coreLink->observerMoveRelLon(x,DURATION_COMMAND);
+			core->joystickLon(x);
 	else
 		if (fabs(coreLink->getHeading())>90)
-			coreLink->observerMoveRelLon(x,DURATION_COMMAND);
+			core->joystickLon(x);
 		else
-			coreLink->observerMoveRelLon(-x,DURATION_COMMAND);
+			core->joystickLon(-x);
 }
 
 void UI::lowerHeight(double x)
 {
-	double latimem = coreLink->observatoryGetAltitude();
-	latimem = -latimem*(CoeffMultAltitude*x);
-	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
+	core->joystickHeight(-x);
 }
 
 void UI::raiseHeight(double x)
 {
-	double latimem = coreLink->observatoryGetAltitude();
-	latimem = latimem*(CoeffMultAltitude*x);
-	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
+	core->joystickHeight(x);
 }
 
 void UI::handleJoyAddStick()
@@ -719,7 +712,7 @@ void UI::zoomOut()
 
 void UI::lowerHeight()
 {
-	lowerHeight(1);
+	core->lowerHeight(1);
 }
 
 void UI::speedDecrease()
@@ -2600,7 +2593,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case SHIFT:
-					this->executeCommand("moveto delta_lat -0.5 duration 0.1");
+					core->moveLat(-1);
 					break;
 				case CTRL:
 					this->executeCommand("add r -1");
@@ -2656,7 +2649,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					RESET_MOD(SUPER);
 					break;
 				case SHIFT:
-					this->executeCommand("moveto delta_lon -0.5 duration 0.1");
+					core->moveLon(-1);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S04.sts");
@@ -2714,8 +2707,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					RESET_MOD(SUPER);
 					break;
 				case SHIFT:
-					this->executeCommand("moveto delta_lon 0.5 duration 0.1");
-					//core->moveRelLonObserver(0.5,DURATION_COMMAND);  //longitude , duration
+					core->moveLon(1);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S06.sts");
@@ -2771,7 +2763,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					RESET_MOD(SUPER);
 					break;
 				case SHIFT:
-					this->executeCommand("moveto delta_lat 0.5 duration 0.1");
+					core->moveLat(1);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S08.sts");
@@ -3448,6 +3440,16 @@ int UI::handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VA
 
 			case SDL_SCANCODE_PAGEDOWN :
 				core->zoomOut(0);
+				break;
+
+			case SDL_SCANCODE_KP_2 :
+			case SDL_SCANCODE_KP_8 :
+				core->moveLat(0);
+				break;
+
+			case SDL_SCANCODE_KP_4 :
+			case SDL_SCANCODE_KP_6 :
+				core->moveLon(0);
 				break;
 
 			default:

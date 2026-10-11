@@ -29,7 +29,7 @@ Camera::Camera(ModularBody *reference, float longitude, float latitude, float al
 
 float Camera::distanceToReference() const
 {
-   return distance - reference->getAltitudeReference();
+   return (freeMode ? position.length() : distance) - reference->getAltitudeReference();
 }
 
 Vec3f Camera::getPlace() const
