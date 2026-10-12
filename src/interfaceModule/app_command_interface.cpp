@@ -2270,9 +2270,9 @@ int AppCommandInterface::commandText()
 				textParam.string = argString;
 				textParam.azimuth = evalDouble(argAzimuth);
 				textParam.altitude = evalDouble(argAltitude);
-				textParam.fontSize = args[W_SIZE];
-				if (!textParam.fontSize.empty())
-					std::transform(textParam.fontSize.begin(), textParam.fontSize.end(),textParam.fontSize.begin(), ::toupper);
+				if (!args[W_FONT].empty())
+					textParam.fontName = FilePath(args[W_FONT], FilePath::TFP::FONTS);
+				textParam.fontSize = evalInt(args[W_SIZE]);
 				textParam.textAlign = args[W_ALIGN];
 				if (!textParam.textAlign.empty())
 					std::transform(textParam.textAlign.begin(), textParam.textAlign.end(),textParam.textAlign.begin(), ::toupper);
@@ -3667,7 +3667,6 @@ int AppCommandInterface::commandFont()
 
 	if (!fileName.empty()) {
 		FilePath myFile  = FilePath(fileName, FilePath::TFP::FONTS);
-		std::cout << myFile.toString() << std::endl;
 			if (myFile) {
 				fontFactory->updateFont(targetName, myFile.toString(), args[W_SIZE]);
 

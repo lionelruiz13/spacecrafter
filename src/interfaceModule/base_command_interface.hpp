@@ -90,6 +90,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_CLEAR                     "clear"
 #define W_VALUE                     "value"
 #define W_DISPLAY                   "display"
+#define W_FONT                      "font"
 #define W_SIZE                      "size"
 #define W_STATUS                    "status"
 #define W_POSITION                  "position"

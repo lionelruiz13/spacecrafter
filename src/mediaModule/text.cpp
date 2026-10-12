@@ -31,14 +31,14 @@
 #include "mediaModule/text.hpp"
 
 
-Text::Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, s_font* _myFont, const TEXT_ALIGN &_textAlign,  const Vec3f &color, bool _textFader)
+Text::Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, std::unique_ptr<s_font> _myFont, const TEXT_ALIGN &_textAlign,  const Vec3f &color, bool _textFader)
 {
 	name= _name;
 	text= _text;
 	altitude= _altitude;
 	azimuth= _azimuth;
 	textColor = color;
-	textFont =_myFont;
+	textFont = std::move(_myFont);
 	textAlign = _textAlign;
 	smooth = _textFader;
 	flag_location = 0;

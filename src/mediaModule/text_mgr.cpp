@@ -74,42 +74,12 @@ void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
 		textUsr.erase(it);
 
 	//set font size
-	FONT_SIZE textSize = FONT_SIZE::T_MEDIUM;
-	if (!textParam.fontSize.empty()) {
-		auto it = strToFontSize.find(textParam.fontSize);
-		if (it!=strToFontSize.end())
-			textSize=strToFontSize[textParam.fontSize];
-		else
-			cLog::get()->write("text size was not recognized", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-	}
-
+	int textSize = mFontSize;
+	if (textParam.fontSize>0)
+		textSize=textParam.fontSize;
 	//set font
-	s_font *tmp;
-	switch (textSize) {
-		case FONT_SIZE::T_XX_SMALL:
-			tmp = textFont[0].get();
-			break;
-		case FONT_SIZE::T_X_SMALL:
-			tmp = textFont[1].get();
-			break;
-		case FONT_SIZE::T_SMALL:
-			tmp = textFont[2].get();
-			break;
-		case FONT_SIZE::T_MEDIUM:
-			tmp = textFont[3].get();
-			break;
-		case FONT_SIZE::T_LARGE:
-			tmp = textFont[4].get();
-			break;
-		case FONT_SIZE::T_X_LARGE:
-			tmp = textFont[5].get();
-			break;
-		case FONT_SIZE::T_XX_LARGE:
-			tmp = textFont[6].get();
-			break;
-		default:
-			return;
-	}
+	const std::string& fontName = textParam.fontName.empty() ? mFontName : textParam.fontName;
+	std::unique_ptr<s_font> font = std::make_unique<s_font>(textSize, fontName);
 
 	//set align
 	TEXT_ALIGN textAlign = TEXT_ALIGN::LEFT;
@@ -128,7 +98,7 @@ void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
 	else
 		color = defaultTextColor;
 
-	std::unique_ptr token  = std::make_unique<Text>(name, textParam.string, textParam.altitude, textParam.azimuth, tmp, textAlign, color, textParam.fader);
+	std::unique_ptr token  = std::make_unique<Text>(name, textParam.string, textParam.altitude, textParam.azimuth, std::move(font), textAlign, color, textParam.fader);
 	textUsr[name]=std::move(token);
 }
 
@@ -230,7 +200,8 @@ void TextMgr::draw(const Projector* prj)
 void TextMgr::updateFont(double size, const std::string& fontName)
 {
 	this->clearCache();
-	this->clear();
+	mFontName = fontName;
+	mFontSize = size;
 	for(int i=0; i<NB_MAX_SIZE; i++)
 		textFont[i]->rebuild(size+2*(i-3), fontName);
 }

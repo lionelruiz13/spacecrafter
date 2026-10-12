@@ -48,7 +48,7 @@
  */
 class Text {
 public:
-	Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, s_font *_myFont, const TEXT_ALIGN &_textAlign, const Vec3f &color, bool _textFader);
+	Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, std::unique_ptr<s_font> _myFont, const TEXT_ALIGN &_textAlign, const Vec3f &color, bool _textFader);
 	~Text();
 
 	//! update the text's position if it is moving
@@ -94,7 +94,7 @@ private:
 	float azimuth;
 	bool smooth;
 	ALinearFader fader;
-	s_font* textFont;
+	std::unique_ptr<s_font> textFont;
 	TEXT_ALIGN textAlign;
 	bool fade_out;
 	int my_timer;

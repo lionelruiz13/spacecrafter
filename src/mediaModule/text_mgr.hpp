@@ -61,7 +61,8 @@ struct TEXT_MGR_PARAM {
 	std::string string;
 	float altitude;
 	float azimuth;
-	std::string fontSize;
+	int fontSize;
+	std::string fontName;
 	std::string textAlign;
 	Vec3f color;
 	bool useColor;
