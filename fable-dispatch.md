@@ -299,19 +299,21 @@ his review queue is decoupled from the sessions, and only he moves its mark.
 
 **Preconditions (checkable, §0.7):** the PREMISES block (the per-round lines REFRESHED at dispatch after F151's acceptance); F135 ACCEPTED (`archive/F135.md`, 11.297); F137 and F149 LANDED (the key path as built: the premises' grep lines); this boot's canary green at the mint.
 
+**REFRESHED AT DISPATCH (2026-10-13 23:2x, session 45, on code `9d461bd5`, binary `81664e4e`, harness `7ed6b45`):** (a) F151 LANDED (`f571664e` + `9d461bd5`): `AppCommandInterface::scriptEnded()` is now the one home of a run's end (text, music, images, the if / loop state) and `UI::init` reaches it through `cancelScript` — no mover, no draw path, no reference law touched; your `--no-scene` canary line is the same boot's. (b) F151 extended `f142_keys.py` (md5 `87e6f213`): the injection form you borrow moved — `inject` is at `:190`, `keys` at `:218`, the `set var $ui->key_Modifier` / `call $ui->handleKeys(SDL_SCANCODE_...)` lines at `:223–224` (the mandate's ":195–210" reads `:215–230` now); the leg has 15 cases, case O LAST (it re-initialises the engine through HOME) — you touch none of it (`f142_keys.py` is NOT in your WRITES). (c) Never give an engine fixture an absolute image path outside `~/.spacecrafter/<dir>/` — it ABORTS the engine (§5.203, found by F151's first pre run); your leg loads no image. (d) `f131_run.sh 4 both` was last accepted at F148 / F149 (16 PASS each); its rows are the ones your `nat` / `ref` re-runs must reproduce. (e) F151 removed three lines from `UI::init`, so every `ui.cpp` line the mandate's prose cites below `:262` reads THREE LESS now — the movers `:2593 / :2649 / :2707 / :2763`, the stops `:3387 / :3392`, the event loop's two `handleKeys` calls `:898 / :902`, `handleKeys` itself `:3393–` (the block carries the pasted values; the prose's numbers are the mint's). (f) The owner is absent: every question goes into your entry.
+
 ```
 PREMISES
 # per-round variables - REFRESH-AT-DISPATCH (this task runs after F151's acceptance and commit: the binary it banks on is the round's)
 git rev-parse --abbrev-ref HEAD => main
-git rev-parse --short=8 HEAD => REFRESH-AT-DISPATCH
+git rev-parse --short=8 HEAD => 9d461bd5
 git status --porcelain | wc -l => 0
-git -C claude status --porcelain | /usr/bin/grep '^??' | /usr/bin/grep -v 'INTENT/11.32[234].md' | tr '\n' ' ' => REFRESH-AT-DISPATCH
-md5sum build-claude/src/spacecrafter | cut -c1-8 => REFRESH-AT-DISPATCH
+git -C claude status --porcelain | /usr/bin/grep '^??' | /usr/bin/grep -v 'INTENT/11.32[234].md' | tr '\n' ' ' => 
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 81664e4e
 find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
 test ! -e claude/INTENT/11.323.md -a ! -e claude/INTENT/archive/11.323.md && echo free => free
 /usr/bin/grep -c '^### F152 ' claude/fable-dispatch.md => 1
 git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD => 4dfe7bb3
-test -e claude/fable-dispatch/archive/F151.md && echo accepted => REFRESH-AT-DISPATCH
+test -e claude/fable-dispatch/archive/F151.md && echo accepted => accepted
 # the engine slot, the boot's fingerprint (a red here is a STOP to report, never a re-bank by the executor), the field pair, the display
 bash claude/harness/sc_instances.sh --assert f152-gate >/dev/null 2>&1; echo $? => 0
 bash claude/harness/f56_canary.sh --no-scene >/dev/null 2>&1; echo $? => 0
@@ -320,23 +322,24 @@ test ! -e ~/.spacecrafter/beta_features.ini && echo absent => absent
 DISPLAY=:2 LC_ALL=C xdpyinfo 2>/dev/null | /usr/bin/grep -m1 dimensions | tr -s ' ' => dimensions: 2444x1332 pixels (646x352 millimeters)
 LC_ALL=C /usr/bin/grep -c '^enable_tcp *= *true\|^tcp_port_in *= *7805' ~/.spacecrafter/config.ini => 2
 # the instruments this leg extends, pinned; the COMMAND rows it must leave unchanged
-md5sum claude/harness/f131_run.sh claude/harness/f131_obs.py claude/harness/f131_analyse.py claude/harness/f124_run.sh claude/harness/f124_legs.py claude/harness/b21_keypath.py claude/harness/f142_keys.py | cut -c1-8 | tr '\n' ' ' => 027fc459 229f3e69 7ed9e618 1f851de4 27543164 98c32c6a beafbd80
+md5sum claude/harness/f131_run.sh claude/harness/f131_obs.py claude/harness/f131_analyse.py claude/harness/f124_run.sh claude/harness/f124_legs.py claude/harness/b21_keypath.py claude/harness/f142_keys.py | cut -c1-8 | tr '\n' ' ' => 027fc459 229f3e69 7ed9e618 1f851de4 27543164 98c32c6a 87e6f213
 /usr/bin/grep -c '^4 ' claude/harness/f131_analyse.py => 29
 /usr/bin/grep -n 'moveto delta_lon 0.5 duration 0.1\|moveto delta_lat 0.5 duration 0.1' claude/harness/f131_obs.py | cut -d: -f1 | tr '\n' ' ' => 173 177
 /usr/bin/grep -n '^def obs4\|^def fly_prefix\|^def fly_refused\|^def gdb_print\|^def dump\|^def send' claude/harness/f131_obs.py | cut -d: -f1 | tr '\n' ' ' => 50 55 99 120 135 169
 /usr/bin/grep -n 'reuse(HERE + "/b21_keypath.py"' claude/harness/f131_obs.py | cut -d: -f1 => 42
 /usr/bin/grep -n 'VAR=nat\|VAR=ref' claude/harness/f131_run.sh | cut -d: -f1 | tr '\n' ' ' => 16 17
 /usr/bin/grep -n 'break Core::updateMove' claude/harness/f124_legs.py | cut -d: -f1 | tr '\n' ' ' => 126
-/usr/bin/grep -n 'set var $ui->key_Modifier\|call $ui->handleKeys(SDL_SCANCODE_' claude/harness/f142_keys.py | cut -d: -f1 | tr '\n' ' ' => 203 204
+/usr/bin/grep -n 'set var $ui->key_Modifier\|call $ui->handleKeys(SDL_SCANCODE_' claude/harness/f142_keys.py | cut -d: -f1 | tr '\n' ' ' => 223 224 549 550 551
+/usr/bin/grep -n '^def inject\|^def keys' claude/harness/f142_keys.py | cut -d: -f1 | tr '\n' ' ' => 190 218
 test -f claude/harness/artifacts/f131/FORCE_ADD.txt && echo ok => ok
 /usr/bin/grep -c '^## F' claude/harness/README.md => 85
 /usr/bin/grep -n '^## F135 ' claude/harness/README.md | cut -d: -f1 => 6734
 # the key path as built (F137 + F149): the four movers at press, the two stops in handleKeysReleased, the held slot applied by the frame; the command form the keys no longer disguise as
-/usr/bin/grep -n 'core->moveLat(\|core->moveLon(' src/uiModule/ui.cpp | tr -s '\t' ' ' | tr '\n' ';' => 2596: core->moveLat(-1);;2652: core->moveLon(-1);;2710: core->moveLon(1);;2766: core->moveLat(1);;3390: core->moveLat(0);;3395: core->moveLon(0);;
+/usr/bin/grep -n 'core->moveLat(\|core->moveLon(' src/uiModule/ui.cpp | tr -s '\t' ' ' | tr '\n' ';' => 2593: core->moveLat(-1);;2649: core->moveLon(-1);;2707: core->moveLon(1);;2763: core->moveLat(1);;3387: core->moveLat(0);;3392: core->moveLon(0);;
 /usr/bin/grep -n 'void moveLat(double);\|void moveLon(double);\|void updateMove(int delta_time);' src/coreModule/core.hpp | tr -s '\t' ' ' | tr '\n' ' ' => 294: void moveLat(double); 295: void moveLon(double); 613: void updateMove(int delta_time);
 /usr/bin/grep -c 'moveto delta_l' src/uiModule/ui.cpp => 0
 sed -n '78,85p' src/uiModule/ui.hpp | tr -s '\t ' ' ' | tr '\n' ' ' => */ enum MODIFIER {  NONE = 0x00,  CTRL = 0x01,  KWIN = 0x02,  SUPER= 0x04,  SHIFT= 0x08,  ALT = 0x10
-/usr/bin/grep -n 'handleKeys(E.key.keysym.scancode' src/uiModule/ui.cpp | cut -d: -f1 | tr '\n' ' ' => 901 905
+/usr/bin/grep -n 'handleKeys(E.key.keysym.scancode' src/uiModule/ui.cpp | cut -d: -f1 | tr '\n' ' ' => 898 902
 # the predictions' source (11.311 P33) and the rows this leg answers
 python3 claude/intent_resolve.py 11.311 11.297 11.292 5.184 11.299 11.320 11.306 2>&1 | /usr/bin/grep -c 'resolves nowhere' => 0
 /usr/bin/grep -c '^P33 ' claude/INTENT/11.311.md => 1
