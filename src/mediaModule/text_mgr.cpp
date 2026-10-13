@@ -74,9 +74,13 @@ void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
 		textUsr.erase(it);
 
 	//set font size
-	int textSize = mFontSize;
-	if (textParam.fontSize>0)
-		textSize=textParam.fontSize;
+	double textSize = mFontSize;
+	if (const auto* customSize = std::get_if<double>(&textParam.fontSize)) {
+		textSize = *customSize;
+	} else if (const auto* preset = std::get_if<FONT_SIZE>(&textParam.fontSize)) {
+		const int presetOffset = static_cast<int>(*preset) - static_cast<int>(FONT_SIZE::T_MEDIUM);
+		textSize += 2*presetOffset;
+	}
 	//set font
 	const std::string& fontName = textParam.fontName.empty() ? mFontName : textParam.fontName;
 	std::unique_ptr<s_font> font = std::make_unique<s_font>(textSize, fontName);

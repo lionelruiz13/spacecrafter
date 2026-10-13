@@ -2272,7 +2272,30 @@ int AppCommandInterface::commandText()
 				textParam.altitude = evalDouble(argAltitude);
 				if (!args[W_FONT].empty())
 					textParam.fontName = FilePath(args[W_FONT], FilePath::TFP::FONTS);
-				textParam.fontSize = evalInt(args[W_SIZE]);
+				if (!args[W_SIZE].empty()) {
+					std::string fontSizeName = args[W_SIZE];
+					std::transform(fontSizeName.begin(), fontSizeName.end(), fontSizeName.begin(), ::toupper);
+					static const std::map<std::string, FONT_SIZE> fontSizePresets = {
+						{"XX_SMALL", FONT_SIZE::T_XX_SMALL},
+						{"X_SMALL", FONT_SIZE::T_X_SMALL},
+						{"SMALL", FONT_SIZE::T_SMALL},
+						{"MEDIUM", FONT_SIZE::T_MEDIUM},
+						{"LARGE", FONT_SIZE::T_LARGE},
+						{"X_LARGE", FONT_SIZE::T_X_LARGE},
+						{"XX_LARGE", FONT_SIZE::T_XX_LARGE}
+					};
+					auto preset = fontSizePresets.find(fontSizeName);
+					if (preset != fontSizePresets.end()) {
+						textParam.fontSize = preset->second;
+					} else {
+						double customSize = evalDouble(args[W_SIZE]);
+						if (customSize <= 0) {
+							debug_message = "Command 'text': size must be a positive number or a font size preset.";
+							return executeCommandStatus();
+						}
+						textParam.fontSize = customSize;
+					}
+				}
 				textParam.textAlign = args[W_ALIGN];
 				if (!textParam.textAlign.empty())
 					std::transform(textParam.textAlign.begin(), textParam.textAlign.end(),textParam.textAlign.begin(), ::toupper);

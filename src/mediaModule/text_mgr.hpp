@@ -28,6 +28,7 @@
 
 #include <map>
 #include <memory>
+#include <variant>
 
 #include "tools/s_font.hpp"
 #include "tools/fader.hpp"
@@ -61,7 +62,7 @@ struct TEXT_MGR_PARAM {
 	std::string string;
 	float altitude;
 	float azimuth;
-	int fontSize;
+	std::variant<std::monostate, FONT_SIZE, double> fontSize;
 	std::string fontName;
 	std::string textAlign;
 	Vec3f color;
