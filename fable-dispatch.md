@@ -243,7 +243,12 @@ his review queue is decoupled from the sessions, and only he moves its mark.
    (Q-89's class — a text about the code consumed as the code — here the DISPATCHER's own text): every
    STRUCTURAL CLAIM a mandate makes about the code — a caller count, a reader list, an entry point, a
    function's existence or deadness, a site that "does X" — is a PREMISES line (`grep -c` / `grep -n`
-   with the pasted output), never prose alone; the filler takes the command. A claim that cannot be a
+   with the pasted output), never prose alone; the filler takes the command. **[2026-10-13, session 45, F151's
+   instance: THE SAME FOR EVERY CLAIM ABOUT THE FIELD the task's reach stands on — a script's lines, an ini's keys, a
+   texture's presence: F151's P6 / P7 predicted a false error "at the next natural end (`initial.sts`)" in prose, the
+   field's `initial.sts:17` is `script action end` and masked it, and the executor had to build a second leg to reach the
+   observable; `tail -1 ~/.spacecrafter/scripts/internal/initial.sts => script action end` would have pinned the claim at
+   the mint. A text about the field consumed as the field is Q-67's class on data (its instance of 2026-10-13).]** A claim that cannot be a
    command is written `[derived, unchecked]` so the executor's S4 pass verifies it first. The reason:
    the executor is bound to abort on a broken premise, so a claim that is NOT a premise is the one
    breakage that propagates silently into the shape it builds.]** **[Same day, F140's STOP (§11.314): a
