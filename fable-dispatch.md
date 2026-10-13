@@ -366,7 +366,7 @@ ls claude/harness/artifacts/f142/s44_acc_after3/N_reading.txt claude/harness/art
 /usr/bin/grep -c '^## F' claude/harness/README.md => 85
 ```
 
-**WIP:** 2026-10-13 21:5x — MINTED (round supervisor, Claude Fable 5.1, session 45) on §5.191's row and 11.320 (10); the owner silent since 2026-10-10 (the row's "his to order" read as the sequencing clause; one revert); the reach correction (one-frame `if` / multi-frame `loop`) is the mint's reading of `script_mgr.cpp:306` and `:4756`, to be confirmed by the executor from the code. NOT yet dispatched.
+**WIP:** 2026-10-13 21:5x — MINTED (round supervisor, Claude Fable 5.1, session 45) on §5.191's row and 11.320 (10); the owner silent since 2026-10-10 (the row's "his to order" read as the sequencing clause; one revert); the reach correction (one-frame `if` / multi-frame `loop`) is the mint's reading of `script_mgr.cpp:306` and `:4756`, to be confirmed by the executor from the code. **DISPATCHED 2026-10-13 22:0x (`opus-xhigh` under the owner's prompt, projection CURRENT at warm-up; gate 42 / 42 at the mint, re-run by the executor as its first step), alone in the code tree, the only engine launcher; F153 beside it read-only; harness `321741f`.**
 
 ---
 
@@ -491,7 +491,7 @@ md5sum claude/INTENT/11.320.md claude/INTENT/11.312.md claude/INTENT/11.305.md c
 /usr/bin/grep -n 'joystick button -> action' claude/INTENT/11.312.md claude/INTENT/11.320.md | cut -d: -f1,2 | tr '\n' ' ' => claude/INTENT/11.312.md:49 claude/INTENT/11.320.md:187
 ```
 
-**WIP:** 2026-10-13 21:5x — MINTED (round supervisor, Claude Fable 5.1, session 45) on 11.320 (10) Q14 and the session-44 note's dispatchable set ("a structure pass first"); the finding at the mint: the joystick ALREADY has an authorable binding layer (`joypad.ini`'s `command(...)` lists, press only, all shows alike) — the structure task must price what the registry adds over it, and the question whether a button is a KEY of 11.305 is the owner's. NOT yet dispatched.
+**WIP:** 2026-10-13 21:5x — MINTED (round supervisor, Claude Fable 5.1, session 45) on 11.320 (10) Q14 and the session-44 note's dispatchable set ("a structure pass first"); the finding at the mint: the joystick ALREADY has an authorable binding layer (`joypad.ini`'s `command(...)` lists, press only, all shows alike) — the structure task must price what the registry adds over it, and the question whether a button is a KEY of 11.305 is the owner's. **DISPATCHED 2026-10-13 22:0x (`fable-asi-max`, read-only on the code tree, beside F151; gate 31 / 31 at the mint; harness `321741f`).**
 
 ---
 
