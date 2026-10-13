@@ -257,6 +257,13 @@ int AppCommandInterface::terminateScript()
 void AppCommandInterface::scriptEnded()
 {
 	ui->keyBinding().endScript();
+	media->textClear();
+	media->audioMusicHalt();
+	media->imageDropAllNoPersistent();
+	swapCommand = false;
+	ifSwap->reset();
+	loopOpen = false;
+	loopOpener = ScriptOrigin();
 }
 
 int AppCommandInterface::executeCommand(const std::string &commandline )
@@ -2841,13 +2848,6 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 	if (!argAction.empty()) {
 		if (argAction==W_END) {
 			scriptInterface->cancelScript();
-			media->textClear();
-			media->audioMusicHalt();
-			media->imageDropAllNoPersistent();
-			swapCommand = false;
-			ifSwap->reset();
-			loopOpen = false;
-			loopOpener = ScriptOrigin();
 		} else if (argAction==W_PLAY && !filen.empty()) {
 			std::string file_with_path = FilePath(filen, FilePath::TFP::SCRIPT);
 			if( !scriptInterface->playScript(file_with_path) ) {

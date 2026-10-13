@@ -257,9 +257,6 @@ void UI::init(const InitParser& conf)
 	CallSystem::killAllPidFrom("mplayer");
 
 	scriptInterface->cancelScript();
-	media->textClear();
-	media->audioMusicHalt();
-	media->imageDropAllNoPersistent();
 
 }
 
