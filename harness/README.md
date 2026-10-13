@@ -6965,3 +6965,22 @@ scripts in one frame and `EventScriptHandler::loopDone` plays them in reverse, s
 order and the executed lines in press order: a case that judges order presses in separate injections. (5) A
 release binding on a key whose native press starts a held order replaces the native stop (11.305 (g)): case B
 sends `camera action move_lat value 0` after its release.
+
+**Case O (F151, INTENT 11.322) - what a script's end leaves behind, read on two end paths through `UI::init`; it
+runs LAST (`App::init` resets the engine).** The show `run/o.sts` (rewritten each run) puts up a text, an image and a
+looping music (`run/o.wav`, one second of silence, generated), then opens `struct if 1` (line 5, an accepting branch)
+and `struct loop 20` (line 6) whose first pass is `wait duration 10`: the commander's if / loop state is stale only
+inside a loop's FIRST pass (`ScriptMgr::initIterator` drops the `struct loop end` the first pass already executed)
+and inside an open `if`. O1, 2 s in: ONE gdb stop prints the commander's `loopOpen`, `loopOpener.line`,
+`swapCommand`, `ifSwap`'s opener count and `Media`'s text count, image count and music state (`F151O pre|post` lines
+in `gdb.log`; a `unique_ptr` is read through its one member, `*(T**)&p`, because gdb finds `_M_head_impl`
+ambiguous), presses and releases HOME on plane NONE, prints them again. O2: plays `o.sts` again and sends
+`configuration action load` over TCP - the same `UI::init` with no `script action end` after it, so `startup.sts`'s
+NATURAL end reports every opener left behind. Criteria: the setup (both phases), media cleared on HOME, the if /
+loop state reset on HOME, and after either path no `never closed` error at `o.sts` and no `#!` tail in it. Able to
+fail: on `c444d249` (`s45_f151_pre2`) HOME leaves `loopOpen 1 at line 6, ifOpeners 1`, and O2 writes two false
+errors (`o.sts:5`, `:6`) and two `#!` tails into `o.sts`; after HOME the error itself stays invisible on this field
+because `internal/initial.sts` ends with `script action end`, whose W_END list reset the state before any natural end,
+which is why O2 exists. Pitfall, measured: an `image action load` with an absolute path outside
+`~/.spacecrafter/<dir>/` ABORTS the engine (`s_texture::getCacheEntryName` underflows, `std::out_of_range` on the
+loader thread), so the image is the field's `textures/n_genrc.png`, read in place.

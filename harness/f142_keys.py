@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-# F149 key leg - the 14 cases A-N of INTENT 11.312 (h) on the b21 pattern, in one fresh launch.
+# F149 key leg - the 14 cases A-N of INTENT 11.312 (h) on the b21 pattern, in one fresh launch;
+# case O (F151, INTENT 11.322) last: what a script's end leaves behind, read after HOME and after
+# `configuration action load` inside an open `struct if` and a loop's first pass.
 #
 #   f142_keys_run.sh <label> --phase before|after [--baseline <label of a before run>]
 #
@@ -11,7 +13,7 @@
 # `before` records the engine without the bind action (each bind line refused, the native
 # defaults) and case N's reading; `after` judges P17-P30 and diffs case N against `--baseline`.
 # Output: one `PASS|FAIL|NOTE <case> <criterion> observed= expected=` line per check.
-import argparse, json, os, re, select, signal, socket, sys, time
+import argparse, json, os, re, select, signal, socket, sys, time, wave
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ap = argparse.ArgumentParser()
@@ -62,6 +64,24 @@ def fixtures():
     for n, text in files.items():
         with open("%s/%s.sts" % (RUN, n), "w") as f:
             f.write(text + "\n")
+    write_o()
+    with wave.open(RUN + "/o.wav", "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(22050); w.writeframes(b"\x00\x00" * 22050)
+
+
+# Case O's show: line 5 opens an accepting `struct if`, line 6 a loop whose first pass outlasts the key.
+O_IF, O_LOOP = 5, 6
+# Show a field texture, read in place: an absolute image path outside ~/.spacecrafter/<dir>/ aborts the engine.
+O_IMAGE = os.path.expanduser("~/.spacecrafter/textures/n_genrc.png")
+
+
+def write_o():
+    with open(RUN + "/o.sts", "w") as f:
+        f.write("\n".join(["define f142_o 1", "text action load name f142o string F151O azimuth 0 altitude 45",
+                           "image action load name f142o filename %s" % O_IMAGE,
+                           "audio action play filename %s/o.wav loop on" % RUN,
+                           "struct if 1", "struct loop 20", "wait duration 10", "struct loop end", "struct if end",
+                           "define f142_o_end 1"]) + "\n")
 
 
 # ---- the script log ------------------------------------------------------------------------
@@ -491,10 +511,89 @@ def case_N():
               if diff is not None else "identical, %d lines" % len(reading), "identical to " + base)
 
 
+# ---- case O (INTENT 11.322): what a script's end leaves behind, on two end paths through UI::init ----
+IFS = "(*(IfSwap**)&$c->ifSwap)"   # read a unique_ptr through its one member: gdb finds _M_head_impl ambiguous
+OSTATE = [("loopOpen", "%d", "$c->loopOpen"), ("loopOpenerLine", "%u", "$c->loopOpener.line"),
+          ("swapCommand", "%d", "$c->swapCommand"),
+          ("ifOpeners", "%d", "(int)(%s->m_openers._M_impl._M_finish - %s->m_openers._M_impl._M_start)" % (IFS, IFS)),
+          ("texts", "%lu", "(*(TextMgr**)&$m->textMgr)->textUsr._M_t._M_impl._M_node_count"),
+          ("images", "%lu", "(*(ImageMgr**)&$m->imageMgr)->active_images._M_impl._M_node._M_size"),
+          ("musicPlaying", "%d", "(*(Audio**)&$m->audio)->music_isPlaying"),
+          ("audioState", "%d", "(int)(*(Audio**)&$m->audio)->state")]
+
+
+def ostate(tag):
+    """Return the gdb line that prints the commander's if / loop state and Media's three contents."""
+    return 'printf "F151O %s %s\\n", %s' % (tag, " ".join("%s=%s" % (n, f) for n, f, _ in OSTATE),
+                                            ", ".join(e for _, _, e in OSTATE))
+
+
+def unclosed(text):
+    return [msg for _, ty, msg in entries(text) if ty == "Error" and "o.sts:" in msg and "never closed" in msg]
+
+
+def play_o():
+    write_o()
+    since = logsize()
+    tcp("script action play filename %s/o.sts" % RUN)
+    ok = wait_log(since, r"Execute_command define f142_o 1", 10)
+    check("O", "show_started", ok, ok, True)
+    time.sleep(2.0)
+
+
+def case_O():
+    reset(); m = mark("O")
+    play_o()
+    l1 = logsize()
+    since = inject(["set $c = $ui->app->commander._M_ptr", "set $m = $ui->media._M_ptr", ostate("pre"),
+                    "set var $ui->key_Modifier = %d" % PLANE["NONE"],
+                    "call $ui->handleKeys(SDL_SCANCODE_HOME, 0, 0, s_gui::S_GUI_PRESSED)",
+                    "call $ui->handleKeys(SDL_SCANCODE_HOME, 0, 0, s_gui::S_GUI_RELEASED)", ostate("post")], timeout=120)
+    with open(GDBLOG, "rb") as f:
+        f.seek(since)
+        st = {tag: {k: int(v) for k, v in (kv.split("=") for kv in rest.split())}
+              for tag, rest in re.findall(r"F151O (pre|post) (.*)$", f.read().decode("latin-1"), re.M)}
+    home_ended = wait_log(l1, r"Execute_command script action end", 30)
+    time.sleep(1.0)
+    t1, o1 = logtext(l1), open(RUN + "/o.sts").read()
+    mark("O2")
+    play_o()
+    l2 = logsize()
+    tcp("configuration action load", 30)
+    load_ended = wait_log(l2, r"End of script\s*$", 30)
+    time.sleep(1.0)
+    t2, o2 = logtext(l2), open(RUN + "/o.sts").read()
+    READ["O"] = logtext(m)
+    pre, post = st.get("pre", {}), st.get("post", {})
+    u1, u2 = unclosed(t1), unclosed(t2)
+    tails1, tails2 = [l for l in o1.splitlines() if "#!" in l], [l for l in o2.splitlines() if "#!" in l]
+    note("O", "state_pre", pre); note("O", "state_post_HOME", post)
+    note("O", "unclosed_after_HOME", u1); note("O", "o_sts_tails_after_HOME", tails1)
+    note("O", "unclosed_after_configuration_load", u2); note("O", "o_sts_tails_after_configuration_load", tails2)
+    g = lambda d, k: d.get(k, -1)
+    check("O", "setup_if_open_loop_first_pass_media_up", g(pre, "loopOpen") == 1 and g(pre, "loopOpenerLine") == O_LOOP
+          and g(pre, "ifOpeners") == 1 and g(pre, "texts") >= 1 and g(pre, "images") >= 1 and g(pre, "musicPlaying") == 1,
+          pre, "loopOpen 1, loopOpenerLine %d, ifOpeners 1, texts >= 1, images >= 1, musicPlaying 1" % O_LOOP)
+    if AFTER:
+        check("O", "P7_media_cleared_on_HOME", g(post, "texts") == 0 and g(post, "images") == 0
+              and g(post, "musicPlaying") == 0, "texts %s, images %s, musicPlaying %s" % (
+                  g(post, "texts"), g(post, "images"), g(post, "musicPlaying")), "0, 0, 0")
+        check("O", "P7_if_loop_state_reset_on_HOME", g(post, "loopOpen") == 0 and g(post, "loopOpenerLine") == 0
+              and g(post, "ifOpeners") == 0 and g(post, "swapCommand") == 0,
+              "loopOpen %s at line %s, ifOpeners %s, swapCommand %s" % (
+                  g(post, "loopOpen"), g(post, "loopOpenerLine"), g(post, "ifOpeners"), g(post, "swapCommand")),
+              "loopOpen 0 at line 0, ifOpeners 0, swapCommand 0")
+        check("O", "P7_no_false_unclosed_after_HOME", home_ended and not u1 and not tails1,
+              "initial.sts ended %s, errors %s, tails %s" % (home_ended, u1, tails1), "ended, no error at o.sts, no #! tail")
+        check("O", "P7_no_false_unclosed_after_configuration_load", load_ended and not u2 and not tails2,
+              "startup.sts ended %s, errors %s, tails %s" % (load_ended, u2, tails2), "ended, no error at o.sts, no #! tail")
+
+
 fixtures()
 D.sendall(b"$DIAGON\n"); time.sleep(1.0); drain()
 tcp("timerate rate 0")
-for c in (case_A, case_B, case_C, case_D, case_E, case_F, case_G, case_H, case_I, case_J, case_K, case_L, case_M, case_N):
+for c in (case_A, case_B, case_C, case_D, case_E, case_F, case_G, case_H, case_I, case_J, case_K, case_L, case_M, case_N,
+          case_O):
     c()
 reset()
 mark("END")
