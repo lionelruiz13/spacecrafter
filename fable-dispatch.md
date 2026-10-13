@@ -348,7 +348,7 @@ python3 claude/intent_resolve.py 11.311 11.297 11.292 5.184 11.299 11.320 11.306
 md5sum claude/INTENT/11.311.md claude/INTENT/11.297.md | cut -c1-8 | tr '\n' ' ' => f58a634a dff9d0ee
 ```
 
-**WIP:** 2026-10-13 21:5x — MINTED (round supervisor, Claude Fable 5.1, session 45) on 11.311 P33 and the session-44 note's dispatchable set; the per-round lines REFRESH-AT-DISPATCH by construction (runs after F151's acceptance: the engine slot and the binary are F151's until then). NOT yet dispatched.
+**WIP:** 2026-10-13 21:5x — MINTED (round supervisor, Claude Fable 5.1, session 45) on 11.311 P33 and the session-44 note's dispatchable set; the per-round lines REFRESH-AT-DISPATCH by construction (runs after F151's acceptance: the engine slot and the binary are F151's until then). **REFRESHED 2026-10-13 23:2x on F151's acceptance (code `9d461bd5`, binary `81664e4e`, harness `7ed6b45`): the per-round lines filled by the tool, the four lines F151 moved (the driver's md5 and injection lines; `ui.cpp`'s movers and event-loop calls three lines up — two shifts the first refresh missed and the gate caught), the REFRESHED-AT-DISPATCH paragraph (a)–(f); gate 38 / 38 (`a287e94`). DISPATCHED 23:3x (`opus-xhigh` under the owner's prompt), the only launcher, the only writer in the harness tree.**
 
 ---
 
