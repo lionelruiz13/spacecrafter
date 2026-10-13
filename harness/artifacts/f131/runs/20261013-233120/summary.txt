@@ -1,0 +1,28 @@
+=== f131_run.sh 4 both - 2026-10-13 23:31:20 CEST - binary /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter ===
+canary --no-scene exit 0
+launch O4_new: f124_run.sh exit 0, field pair in == out 2/2
+PASS 4 new scene_reached observed=reached expected=reached tol=-
+PASS 4 new race_margin_ms observed=2 expected=9 tol=9
+PASS 4 new race_forms_agree observed=true expected=true tol=-
+PASS 4 new camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 4 new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4 new refusal_logged observed=false expected=false tol=-
+PASS 4 new turn_lon_deg observed=9.872631 expected=9.873 tol=0.1
+PASS 4 new turn_lat_deg observed=10 expected=10 tol=0.1
+NOTE 4 new other_turn_lon_deg observed=80.76527 expected=80.767 tol=1 in_tol=yes
+NOTE 4 new other_turn_lat_deg observed=10.00195 expected=10.002 tol=0.1 in_tol=yes
+NOTE 4 new reported_altitude_before_km observed=199993.1 expected=199997.7 tol=1 in_tol=no
+=== 4 new: 8 PASS, 0 FAIL, 3 NOTE ===
+launch O4_old: f124_run.sh exit 0, field pair in == out 2/2
+PASS 4 old scene_reached observed=reached expected=reached tol=-
+PASS 4 old race_margin_ms observed=0 expected=9 tol=9
+PASS 4 old race_forms_agree observed=true expected=true tol=-
+PASS 4 old camera_reference_final observed=Saturn expected=Saturn tol=-
+PASS 4 old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4 old refusal_logged observed=false expected=false tol=-
+PASS 4 old turn_lon_deg observed=10.06859 expected=10.068 tol=0.1
+PASS 4 old turn_lat_deg observed=10.00194 expected=10.002 tol=0.1
+NOTE 4 old reported_altitude_before_km observed=200020.8 expected=200020.8 tol=1 in_tol=yes
+=== 4 old: 8 PASS, 0 FAIL, 1 NOTE ===
+=== 4 x: 0 PASS, 0 FAIL, 0 NOTE ===
+=== f131_run.sh: 2 launch(es), 16 PASS, 0 FAIL, 4 NOTE, lost records 0 - /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20261013-233120/summary.txt ===

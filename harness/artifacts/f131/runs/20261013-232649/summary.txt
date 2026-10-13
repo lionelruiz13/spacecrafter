@@ -1,0 +1,42 @@
+=== f131_run.sh 4 both --refuse --key - 2026-10-13 23:26:49 CEST - binary /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter ===
+canary --no-scene exit 0
+launch O4_refkey_new: f124_run.sh exit 0, field pair in == out 2/2
+PASS 4refkey new scene_reached observed=reached expected=reached tol=-
+PASS 4refkey new camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 4refkey new refusal_logged observed=true expected=true tol=-
+PASS 4refkey new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4refkey new lon_per_call_deg observed=0 expected=0 tol=1e-6
+PASS 4refkey new lat_per_call_deg observed=0 expected=0 tol=1e-6
+PASS 4refkey new other_lon_per_call_deg observed=0 expected=0 tol=1e-6
+PASS 4refkey new other_lat_per_call_deg observed=0 expected=0 tol=1e-6
+PASS 4refkey new turn_lon_deg observed=0.02649818 expected=0.03 tol=0.2
+PASS 4refkey new turn_lat_deg observed=0.02681856 expected=0.03 tol=0.2
+PASS 4refkey new old_altitude_held_km observed=0 expected=0 tol=0.001
+NOTE 4refkey new other_turn_lon_deg observed=0.121368 expected=0.12 tol=0.1 in_tol=yes
+NOTE 4refkey new other_turn_lat_deg observed=0.1214019 expected=0.12 tol=0.1 in_tol=yes
+NOTE 4refkey new other_distance_after_km observed=260313.3 expected=260313.4 tol=10 in_tol=yes
+NOTE 4refkey new old_altitude_after_km observed=200045.3 expected=200049.6 tol=10 in_tol=yes
+NOTE 4refkey new reported_altitude_before_km observed=0 expected=0 tol=1 in_tol=yes
+NOTE 4refkey new log_lines_during_lon_drive observed=0 expected=0 tol=0 in_tol=yes
+=== 4refkey new: 11 PASS, 0 FAIL, 6 NOTE ===
+launch O4_refkey_old: f124_run.sh exit 0, field pair in == out 2/2
+PASS 4refkey old scene_reached observed=reached expected=reached tol=-
+PASS 4refkey old camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 4refkey old refusal_logged observed=true expected=true tol=-
+PASS 4refkey old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4refkey old lon_per_call_deg observed=0.44031 expected=0.440307 tol=1e-5
+PASS 4refkey old lat_per_call_deg observed=0.44031 expected=0.440307 tol=1e-5
+PASS 4refkey old other_lon_per_call_deg observed=0.4403081 expected=0.440307 tol=1e-5
+PASS 4refkey old other_lat_per_call_deg observed=0.4403116 expected=0.440307 tol=1e-5
+PASS 4refkey old turn_lon_deg observed=8.815804 expected=8.8149 tol=0.1
+PASS 4refkey old turn_lat_deg observed=8.807048 expected=8.807 tol=0.1
+PASS 4refkey old old_altitude_held_km observed=0 expected=0 tol=0.001
+NOTE 4refkey old other_turn_lon_deg observed=0.02649818 expected=0.03 tol=0.2 in_tol=yes
+NOTE 4refkey old other_turn_lat_deg observed=0.02681856 expected=0.03 tol=0.2 in_tol=yes
+NOTE 4refkey old other_distance_after_km observed=260255.8 expected=260250 tol=400 in_tol=yes
+NOTE 4refkey old old_altitude_after_km observed=200053 expected=200049.6 tol=10 in_tol=yes
+NOTE 4refkey old reported_altitude_before_km observed=200053 expected=200049.6 tol=10 in_tol=yes
+NOTE 4refkey old log_lines_during_lon_drive observed=0 expected=0 tol=0 in_tol=yes
+=== 4refkey old: 11 PASS, 0 FAIL, 6 NOTE ===
+=== 4refkey x: 0 PASS, 0 FAIL, 0 NOTE ===
+=== f131_run.sh: 2 launch(es), 22 PASS, 0 FAIL, 12 NOTE, lost records 0 - /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20261013-232649/summary.txt ===

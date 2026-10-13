@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Judge the records of f131_obs.py against the banked readings: one PASS / FAIL / NOTE line per criterion.
-#   f131_analyse.py judge <obs> <nat|ref> <new|old> <record dir>              the criteria of one launch
-#   f131_analyse.py cross <obs> <nat|ref> <new record dir> <old record dir>   the criteria across the two pins
+#   f131_analyse.py judge <obs> <nat|ref|key|refkey> <new|old> <record dir>   the criteria of one launch (key, refkey: obs 4)
+#   f131_analyse.py cross <obs> <nat|ref|key|refkey> <new dir> <old dir>      the criteria across the two pins
 #   f131_analyse.py state <dir> <tag>                                         one dump as the criteria read it
 #   f131_analyse.py ring <dir> <tag> [a] [b]                                  the seam ring of a dump, frames a..b
 #   f131_analyse.py table <record dir>                                        write the record's per-frame fov table (obs 5)
@@ -132,6 +132,62 @@ BANK = """
 4   ref old  other_turn_lat_deg                   note  near        5.250        1
 4   ref new  reported_altitude_before_km          note  near        0.0          1
 4   ref old  reported_altitude_before_km          note  near        200049.6     1
+4   key both scene_reached                        gate  eq          reached      -
+4   key both race_margin_ms                       gate  near        9            9
+4   key both race_forms_agree                     gate  eq          true         -
+4   key both camera_reference_final               gate  eq          Saturn       -
+4   key both old_home_final                       gate  eq          Saturn       -
+4   key both refusal_logged                       gate  eq          false        -
+4   key new  lon_per_call_deg                     gate  near        0.4402817    1e-5
+4   key new  lat_per_call_deg                     gate  near        0.4402817    1e-5
+4   key new  other_lon_per_call_deg               gate  near        0.4402817    1e-6
+4   key new  other_lat_per_call_deg               gate  near        0.4402817    1e-6
+4   key old  lon_per_call_deg                     gate  near        0.4402935    1e-6
+4   key old  lat_per_call_deg                     gate  near        0.4402935    1e-6
+4   key old  other_lon_per_call_deg               gate  near        0.4402935    1e-5
+4   key old  other_lat_per_call_deg               gate  near        0.4402935    1e-5
+4   key new  turn_lon_deg                         gate  near        8.6940       0.1
+4   key new  turn_lat_deg                         gate  near        8.8056       0.1
+4   key old  turn_lon_deg                         gate  near        8.8147       0.1
+4   key old  turn_lat_deg                         gate  near        8.8067       0.1
+4   key both old_altitude_held_km                 gate  near        0            0.001
+4   key new  other_turn_lon_deg                   note  near        8.8144       0.1
+4   key new  other_turn_lat_deg                   note  near        8.8065       0.1
+4   key old  other_turn_lon_deg                   note  near        8.6942       0.1
+4   key old  other_turn_lat_deg                   note  near        8.8059       0.1
+4   key new  other_distance_after_km              note  near        260288.8     2
+4   key old  other_distance_after_km              note  near        260265.7     2
+4   key both old_altitude_after_km                note  near        200020.8     1
+4   key new  reported_altitude_before_km          note  near        199997.7     1
+4   key old  reported_altitude_before_km          note  near        200020.8     1
+4   key both log_lines_during_lon_drive           note  near        0            0
+4   refkey both scene_reached                     gate  eq          reached      -
+4   refkey both camera_reference_final            gate  eq          temp_point   -
+4   refkey both refusal_logged                    gate  eq          true         -
+4   refkey both old_home_final                    gate  eq          Saturn       -
+4   refkey new  lon_per_call_deg                  gate  near        0            1e-6
+4   refkey new  lat_per_call_deg                  gate  near        0            1e-6
+4   refkey new  other_lon_per_call_deg            gate  near        0            1e-6
+4   refkey new  other_lat_per_call_deg            gate  near        0            1e-6
+4   refkey old  lon_per_call_deg                  gate  near        0.440307     1e-5
+4   refkey old  lat_per_call_deg                  gate  near        0.440307     1e-5
+4   refkey old  other_lon_per_call_deg            gate  near        0.440307     1e-5
+4   refkey old  other_lat_per_call_deg            gate  near        0.440307     1e-5
+4   refkey new  turn_lon_deg                      gate  near        0.03         0.2
+4   refkey new  turn_lat_deg                      gate  near        0.03         0.2
+4   refkey old  turn_lon_deg                      gate  near        8.8149       0.1
+4   refkey old  turn_lat_deg                      gate  near        8.8070       0.1
+4   refkey both old_altitude_held_km              gate  near        0            0.001
+4   refkey new  other_turn_lon_deg                note  near        0.12         0.1
+4   refkey new  other_turn_lat_deg                note  near        0.12         0.1
+4   refkey old  other_turn_lon_deg                note  near        0.03         0.2
+4   refkey old  other_turn_lat_deg                note  near        0.03         0.2
+4   refkey new  other_distance_after_km           note  near        260313.4     10
+4   refkey old  other_distance_after_km           note  near        260250       400
+4   refkey both old_altitude_after_km             note  near        200049.6     10
+4   refkey new  reported_altitude_before_km       note  near        0.0          1
+4   refkey old  reported_altitude_before_km       note  near        200049.6     10
+4   refkey both log_lines_during_lon_drive        note  near        0            0
 5   nat both scene_reached                        gate  eq          reached      -
 5   nat both wheel_windows                        gate  eq          9            -
 5   nat new  max_abs_delta_w1_deg                 gate  rel         26.8089      5%
@@ -190,6 +246,8 @@ BANK = """
 # The bank's `late` frame for the earth rows: its jd and the signed separation (deg) of the two observers about Earth's axis.
 EARTH_BANK = (2461310.2805862916, 16.5972)
 REFUSAL = "a scripted travel is in flight"
+VARIANTS = {"nat": "", "ref": "ref", "key": "key", "refkey": "refkey"}   # variant -> its suffix in a verdict line's <obs>
+NATURAL = ("nat", "key")                                                 # the variants that play the tester's script (the race)
 
 
 class Missing(str):
@@ -488,7 +546,7 @@ def fly(d, var):
     measure(got, "camera_reference_final", lambda: fin()["camera"]["reference"])
     measure(got, "old_home_final", lambda: fin()["oldView"]["observer"]["homePlanet"])
     measure(got, "refusal_logged", lambda: refused(d))
-    if var == "nat":
+    if var in NATURAL:
         measure(got, "race_margin_ms", lambda: race(d)["dt0_plus_S"] - 3000)
         measure(got, "race_forms_agree", lambda: bool(
             race(d)["predicted_accept_ms_form"] == race(d)["predicted_accept_jd_form"]
@@ -521,8 +579,35 @@ def obs3(d, var, pin):
     return got
 
 
+@functools.lru_cache(maxsize=None)
+def key_frames(d, key):
+    """Count the frames the key drive held <key> for, as its gdb log printed them."""
+    n = len(re.findall(r"F131KEY %s call \d+ old=" % key, open(d + "/gdb.log", errors="replace").read()))
+    if not n:
+        raise ValueError("no F131KEY %s frame in gdb.log" % key)
+    return n
+
+
+def step_per_frame(d, axis, key, a, b, engine):
+    """Return one engine's own longitude or latitude change (deg) between dumps a and b, per frame <key> was held."""
+    own = lambda tag: load(d, tag)[0]["control"]["longitude" if axis == "lon" else "latitude"][engine]
+    return ((own(b) - own(a) + 180.0) % 360.0 - 180.0) / key_frames(d, key)
+
+
+def old_altitude_km(d, tag):
+    """Return the old observer's altitude (km) in dump <tag>."""
+    return load(d, tag)[0]["control"]["altitude"]["old"] / 1000.0
+
+
+def log_lines_between(d, first, last):
+    """Count the engine log lines written strictly between the first line naming <first> and the next naming <last>."""
+    ln = open(d + "/log_spacecrafter.txt", errors="replace").read().splitlines()
+    i = next(k for k, s in enumerate(ln) if first in s)
+    return next(k for k in range(i + 1, len(ln)) if last in ln[k]) - i - 1
+
+
 def obs4(d, var, pin):
-    """Measure observation 4: how far each observer turns about Saturn under the lat / lon keys."""
+    """Measure observation 4: how far each observer turns about Saturn under the lat / lon keys, and each engine's own step per held frame."""
     got = fly(d, var)
     drawn = 1 if pin == "new" else 0
     other = 1 - drawn
@@ -533,6 +618,14 @@ def obs4(d, var, pin):
     measure(got, "other_turn_lat_deg", lambda: turn(p("after_lon", other), p("after_lat", other)))
     measure(got, "other_distance_after_km", lambda: float(np.linalg.norm(p("after_lat", other))) * AU)
     measure(got, "reported_altitude_before_km", lambda: places(d, "before")[2]["control"]["altitude"]["reported"] / 1000.0)
+    engine = ("old", "new")
+    for axis, key, a, b in (("lon", "KP_6", "before", "after_lon"), ("lat", "KP_8", "after_lon", "after_lat")):
+        for who, k in (("", drawn), ("other_", other)):
+            measure(got, "%s%s_per_call_deg" % (who, axis),
+                    lambda axis=axis, key=key, a=a, b=b, k=k: step_per_frame(d, axis, key, a, b, engine[k]))
+    measure(got, "old_altitude_held_km", lambda: max(abs(old_altitude_km(d, t) - old_altitude_km(d, "before")) for t in ("after_lon", "after_lat")))
+    measure(got, "old_altitude_after_km", lambda: old_altitude_km(d, "after_lat"))
+    measure(got, "log_lines_during_lon_drive", lambda: log_lines_between(d, "before.json", "after_lon.png"))
     return got
 
 
@@ -681,7 +774,7 @@ def fmt(v):
 
 def verdicts(obs, var, pin, got):
     """Print one line per banked row of (obs, var, pin) and return the number of gate FAILs."""
-    label = obs + ("ref" if var == "ref" else "")
+    label = obs + VARIANTS[var]
     jd, count = got.get("_carry_jd"), {"PASS": 0, "FAIL": 0, "NOTE": 0}
     for name, cls, check, exp, tol in bank().get((obs, var, pin), []):
         o, shown = got.get(name, Missing("unmeasured")), exp
@@ -705,7 +798,7 @@ def verdicts(obs, var, pin, got):
 
 
 def main(argv):
-    obs_ok = lambda a: a[1] in "123456" and len(a[1]) == 1 and a[2] in ("nat", "ref")
+    obs_ok = lambda a: a[1] in "123456" and len(a[1]) == 1 and a[2] in VARIANTS and (a[2] in ("nat", "ref") or a[1] == "4")
     if len(argv) == 5 and argv[0] == "judge" and obs_ok(argv) and argv[3] in ("new", "old"):
         got = {"1": obs1, "2": obs2, "3": obs3, "4": obs4, "5": obs5, "6": obs6}[argv[1]](argv[4], argv[2], argv[3])
         measure(got, "scene_reached", lambda: scene(argv[4]))

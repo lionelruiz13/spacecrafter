@@ -1,26 +1,31 @@
 #!/bin/bash
 # Run F131's legs as gates: launch each leg per pin through f124_run.sh, judge it with f131_analyse.py, print its verdict lines.
 #
-#   bash f131_run.sh <1-6|all> <on|off|both> [--refuse]
+#   bash f131_run.sh <1-6|all> <on|off|both> [--refuse] [--key]
 #   on = the new path pinned, off = the old path, both = new then old; --refuse (obs 2-4): the tester's lines sent as commands,
-#   line 38 inside the travel - the lost race, which the natural launch has never reached on this host.
+#   line 38 inside the travel - the lost race, which the natural launch has never reached on this host; --key (obs 4): the
+#   lat / lon keys held through UI::handleKeys (SHIFT+KP_6 / KP_8), not the commands they sent on 2026-09-26.
 #
 # SC_BIN another binary (read by f124_run.sh). Records: artifacts/f131/runs/<clock>/: canary/ and canary.log, one directory
-# per launch O<obs>[_ref]_<new|old>/ (meta.txt, drive.log, dumps, shots, logs), <label>.runner.txt, summary.txt (every line).
+# per launch O<obs>[_ref|_key|_refkey]_<new|old>/ (meta.txt, drive.log, dumps, shots, logs), <label>.runner.txt, summary.txt.
 # Exit: 0 every gate row PASS; 1 a gate FAIL (a lost record is one); 2 usage; 6 the environment canary refused, nothing
 # launched; 7 f124_run.sh refused a launch (engine live, no GPU room, field pair changed, engine left over) - the run stops.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-usage() { sed -n '4,6p' "$0" >&2; exit 2; }
-[ $# -eq 2 ] || [ $# -eq 3 ] || usage
-OBS=$1; PIN=$2; VAR=nat
-if [ $# -eq 3 ]; then [ "$3" = "--refuse" ] || usage; VAR=ref; fi
+usage() { sed -n '4,7p' "$0" >&2; exit 2; }
+[ $# -ge 2 ] && [ $# -le 4 ] || usage
+OBS=$1; PIN=$2; REF=""; KEY=""
+for a in "${@:3}"; do
+    case "$a" in --refuse) REF=ref ;; --key) KEY=key ;; *) usage ;; esac
+done
+VAR=${REF}${KEY}; VAR=${VAR:-nat}
 case "$OBS" in
     all) LIST="1 2 3 4 5 6"; [ "$VAR" = ref ] && LIST="2 3 4" ;;
-    1|5|6) LIST=$OBS; [ "$VAR" = ref ] && { echo "--refuse applies to obs 2, 3, 4" >&2; exit 2; } ;;
+    1|5|6) LIST=$OBS; [ -n "$REF" ] && { echo "--refuse applies to obs 2, 3, 4" >&2; exit 2; } ;;
     2|3|4) LIST=$OBS ;;
     *) usage ;;
 esac
+[ -n "$KEY" ] && [ "$OBS" != 4 ] && { echo "--key applies to obs 4" >&2; exit 2; }
 case "$PIN" in on) PINS=on ;; off) PINS=off ;; both) PINS="on off" ;; *) usage ;; esac
 
 umask 0002
@@ -39,8 +44,8 @@ say "canary --no-scene exit $CRC"
 
 LAUNCHES=0
 for o in $LIST; do
-    SUF=""; EXTRA=""
-    [ "$VAR" = ref ] && { SUF="_ref"; EXTRA="--refuse"; }
+    SUF=""; [ "$VAR" != nat ] && SUF="_$VAR"
+    EXTRA="${REF:+--refuse} ${KEY:+--key}"
     NEWDIR=""; OLDDIR=""
     for p in $PINS; do
         side=new; [ "$p" = off ] && side=old

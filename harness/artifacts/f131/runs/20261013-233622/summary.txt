@@ -1,0 +1,27 @@
+=== f131_run.sh 4 both --refuse - 2026-10-13 23:36:22 CEST - binary /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter ===
+canary --no-scene exit 0
+launch O4_ref_new: f124_run.sh exit 0, field pair in == out 2/2
+PASS 4ref new scene_reached observed=reached expected=reached tol=-
+PASS 4ref new camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 4ref new refusal_logged observed=true expected=true tol=-
+PASS 4ref new old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4ref new turn_lon_deg observed=0.04182481 expected=0.042 tol=0.2
+PASS 4ref new turn_lat_deg observed=0.04563728 expected=0.042 tol=0.2
+NOTE 4ref new other_turn_lon_deg observed=103.341 expected=103.342 tol=1 in_tol=yes
+NOTE 4ref new other_turn_lat_deg observed=10.00093 expected=10.001 tol=0.1 in_tol=yes
+NOTE 4ref new other_distance_after_km observed=60268 expected=60268 tol=1 in_tol=yes
+NOTE 4ref new reported_altitude_before_km observed=0 expected=0 tol=1 in_tol=yes
+=== 4ref new: 6 PASS, 0 FAIL, 4 NOTE ===
+launch O4_ref_old: f124_run.sh exit 0, field pair in == out 2/2
+PASS 4ref old scene_reached observed=reached expected=reached tol=-
+PASS 4ref old camera_reference_final observed=temp_point expected=temp_point tol=-
+PASS 4ref old refusal_logged observed=true expected=true tol=-
+PASS 4ref old old_home_final observed=Saturn expected=Saturn tol=-
+PASS 4ref old turn_lon_deg observed=10.06855 expected=10.068 tol=0.1
+PASS 4ref old turn_lat_deg observed=10.00194 expected=10.002 tol=0.1
+NOTE 4ref old other_turn_lon_deg observed=29.59029 expected=29.59 tol=1 in_tol=yes
+NOTE 4ref old other_turn_lat_deg observed=5.250212 expected=5.25 tol=1 in_tol=yes
+NOTE 4ref old reported_altitude_before_km observed=200047.9 expected=200049.6 tol=1 in_tol=no
+=== 4ref old: 6 PASS, 0 FAIL, 3 NOTE ===
+=== 4ref x: 0 PASS, 0 FAIL, 0 NOTE ===
+=== f131_run.sh: 2 launch(es), 12 PASS, 0 FAIL, 7 NOTE, lost records 0 - /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20261013-233622/summary.txt ===

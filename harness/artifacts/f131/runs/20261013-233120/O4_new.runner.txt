@@ -1,0 +1,36 @@
+=== F124 run 'O4_new' ===
+wall clock start : 2026-10-13 23:31:23 CEST
+driver           : f131_obs.py --obs 4 --pin on
+driver md5       : d165cbf32e17da504bd573103405a474
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : 81664e4e8da21c0dc0eae2982fb5567a
+binary mtime     : 2026-10-13 22:39:13.558090890 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[O4_new] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[O4_new] gpu: free 31050 MiB / used 1057 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=1439357
+launch wall clock: 2026-10-13 23:31:23 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 1439374 
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[O4_new-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-10-13 23:33:36 CEST
+--- driver result ---
+-- dump pin_check    drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461327.397061 frames=664
+PASS drawn_path_is_the_pinned_one  control.drawnPath = new
+-- dump pre          drawn=new ref=Earth free=False bound=True old_home=Earth jd=2461233.500052 frames=1130
+PASS saturn_selected  Camera selected = Saturn
+PASS capture_pre_mw_on_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20261013-233120/O4_new/pre_mw_on.png
+PASS capture_pre_mw_off_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20261013-233120/O4_new/pre_mw_off.png
+PASS capture_before_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20261013-233120/O4_new/before.png
+-- dump before       drawn=new ref=Saturn free=False bound=False old_home=Saturn jd=2461233.500572 frames=3821
+PASS capture_after_lon_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20261013-233120/O4_new/after_lon.png
+-- dump after_lon    drawn=new ref=Saturn free=False bound=False old_home=Saturn jd=2461233.500816 frames=5093
+PASS capture_after_lat_written  /home/claude/spacecrafter/claude/harness/artifacts/f131/runs/20261013-233120/O4_new/after_lat.png
+-- dump after_lat    drawn=new ref=Saturn free=False bound=False old_home=Saturn jd=2461233.501061 frames=6359
+-- dump final        drawn=new ref=Saturn free=False bound=False old_home=Saturn jd=2461233.501100 frames=6560
+=== obs 4 pin on: SCENE REACHED ===

@@ -2,14 +2,15 @@
 # F131 - the tester's five observations of 2026-09-26, one scene per observation, per pinned path.
 #
 #   umask 0002; F124_OUT_ROOT=$PWD/artifacts/f131 SC_SEAM_RECORD=1 \
-#     bash f124_run.sh <label> f131_obs.py --obs 1|2|3|4|5|6 --pin on|off
+#     bash f124_run.sh <label> f131_obs.py --obs 1|2|3|4|5|6 --pin on|off [--refuse] [--key]
 #
 # Plays the tester's scripts as his keys play them (`script action play`, the same ScriptMgr::playScript
 # as ui.cpp:2429 / 2536), the wheel as the command that makes the wheel's call (CoreLink::zoomTo), the
-# lat / lon keys as the command their handler runs. Writes shots, dumps (the last one carries the
-# per-frame seam ring armed by SC_SEAM_RECORD) and the launch's logs; judges only that each scene was
-# reached. The criteria of INTENT 11.292 P5 are judged offline on these records.
-import argparse, ast, json, os, shutil, signal, subprocess, sys, time
+# lat / lon keys as the command their handler ran when he played them (`moveto delta_lon|delta_lat`), or
+# with --key (obs 4) as the keys themselves: SHIFT+KP_6 / KP_8 held through UI::handleKeys inside one gdb
+# stop. Writes shots, dumps (the last one carries the per-frame seam ring armed by SC_SEAM_RECORD) and the
+# launch's logs; judges only that each scene was reached. The criteria are judged offline on these records.
+import argparse, ast, json, os, re, shutil, signal, subprocess, sys, time
 from pathlib import Path
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -21,7 +22,10 @@ ap.add_argument("out"); ap.add_argument("gdbpid", type=int); ap.add_argument("fi
 ap.add_argument("--obs", required=True, type=int, choices=[1, 2, 3, 4, 5, 6])
 ap.add_argument("--pin", required=True, choices=["on", "off"])
 ap.add_argument("--refuse", action="store_true", help="send the script's lines, line 38 inside the travel (the lost race)")
+ap.add_argument("--key", action="store_true", help="obs 4: hold SHIFT+KP_6 / KP_8 through UI::handleKeys, not the commands")
 ARGS = ap.parse_args()
+if ARGS.key and ARGS.obs != 4:
+    ap.error("--key applies to obs 4")
 OUT, GDBPID, FIFO = ARGS.out, ARGS.gdbpid, ARGS.fifo
 OUTP = Path(OUT)
 GDBLOG = OUT + "/gdb.log"
@@ -34,13 +38,15 @@ FADE = 5.0                  # s after a milky way switch (config fader 2 s)
 MOUSE_ZOOM = 30             # config.ini mouse_zoom, read by ui.cpp:124
 WHEEL_S = 0.2               # the wheel's duration, ui.cpp:450 / 453
 O6_VIEW = (180, 25)         # obs 6 look_at azimuth, altitude (deg): the equator in the field from fov 180 to 60
+KEY_CALLS = 20              # obs 4 --key: frames of 10 ms the key is held, as many as the command form's key events
 LOGDIR = os.path.expanduser("~/.spacecrafter/log")
 
 _src = HERE + "/f124_legs.py"
 _node = next(n for n in ast.parse(open(_src).read()).body if isinstance(n, ast.FunctionDef) and n.name == "reuse")
 exec(compile(ast.Module([_node], []), _src, "exec"), globals())
 reuse(HERE + "/b21_keypath.py", ["check", "_clean", "gdb_marker_count", "gdb_inject"])
-reuse(_src, ["gdb_errors", "header_and_bodies"])
+reuse(_src, ["gdb_errors", "header_and_bodies", "inject", "capture_ui"])
+STEP = [0]                  # count the stops f124_legs.inject marks
 
 
 class SceneNotReached(Exception):
@@ -166,17 +172,45 @@ def obs3():
     shot("end_z60"); dump("end_z60")
 
 
+def hold(key, order, member):
+    """Hold SHIFT+<key> through UI::handleKeys inside ONE stop at a real Core::updateMove: press, KEY_CALLS frames of 10 ms, release."""
+    since = os.path.getsize(GDBLOG)
+    mark = "F131KEY " + key
+    calls = ['printf "%s rest %%g\\n", $core->vzm.%s' % (mark, order),
+             "set var $ui->key_Modifier = SHIFT",
+             "call $ui->handleKeys(SDL_SCANCODE_%s, 0, 0, s_gui::S_GUI_PRESSED)" % key,
+             'printf "%s held %%g\\n", $core->vzm.%s' % (mark, order)]
+    for i in range(1, KEY_CALLS + 1):
+        calls += ["call $core->updateMove(10)",
+                  'printf "%s call %d old=%%.12f camera=%%.9f\\n", $core->observatory._M_ptr->%s, Camera::instance->%s'
+                  % (mark, i, member, member)]
+    calls += ["call $ui->handleKeys(SDL_SCANCODE_%s, 0, 0, s_gui::S_GUI_RELEASED)" % key,
+              "set var $ui->key_Modifier = NONE",
+              'printf "%s released %%g\\n", $core->vzm.%s' % (mark, order)]
+    ok = inject([calls])
+    with open(GDBLOG, "rb") as f:
+        f.seek(since)
+        txt = f.read().decode("latin-1")
+    orders = re.findall(r"%s (rest|held|released) (\S+)" % mark, txt)
+    n = len(re.findall(r"%s call \d+ old=" % mark, txt))
+    check("key_%s_held_in_one_stop" % key, ok and orders == [("rest", "0"), ("held", "1"), ("released", "0")] and n == KEY_CALLS,
+          "order %s, %d frames printed (want rest 0, held 1, released 0, %d frames)" % (orders, n, KEY_CALLS))
+
+
 def obs4():
     fly_prefix()
+    if ARGS.key:
+        capture_ui()
     shot("before"); dump("before")
-    for _ in range(20):
-        send("moveto delta_lon 0.5 duration 0.1", 0.4)
-    time.sleep(2)
-    shot("after_lon"); dump("after_lon")
-    for _ in range(20):
-        send("moveto delta_lat 0.5 duration 0.1", 0.4)
-    time.sleep(2)
-    shot("after_lat"); dump("after_lat")
+    for key, order, member, command, tag in (("KP_6", "deltaLon", "longitude", "moveto delta_lon 0.5 duration 0.1", "after_lon"),
+                                             ("KP_8", "deltaLat", "latitude", "moveto delta_lat 0.5 duration 0.1", "after_lat")):
+        if ARGS.key:
+            hold(key, order, member)
+        else:
+            for _ in range(20):
+                send(command, 0.4)
+            time.sleep(2)
+        shot(tag); dump(tag)
 
 
 def wheel(factor, clicks, gap):
