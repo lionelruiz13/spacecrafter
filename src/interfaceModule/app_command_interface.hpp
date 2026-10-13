@@ -62,7 +62,7 @@ public:
 	~AppCommandInterface();
 
 	int terminateScript();
-	//! Tell the key bindings the script execution ended
+	//! Clear what the ended script left behind
 	void scriptEnded();
 	void deleteVar();
 	int executeCommand(const std::string &commandline);
