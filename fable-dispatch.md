@@ -431,7 +431,7 @@ ls claude/harness/artifacts/f142/s45_acc_after/N_reading.txt claude/harness/arti
 /usr/bin/grep -n '^## F149' claude/harness/README.md | cut -d: -f1 => 6940
 ```
 
-**WIP:** 2026-10-14 07:5x — MINTED (round supervisor, Claude Fable 5.1, session 46) on 11.324 (j) and the owner's rulings 11.325 (reading B, veto-open: B' / C named in section 3).
+**WIP:** 2026-10-14 07:5x — MINTED (round supervisor, Claude Fable 5.1, session 46) on 11.324 (j) and the owner's rulings 11.325 (reading B, veto-open: B' / C named in section 3). **DISPATCHED 07:51 (`opus-xhigh` under the owner's prompt, projection CURRENT at warm-up; the gate 53 / 53 at the mint, re-run by the executor as its first step), alone in the engine's build tree, the only engine launcher; F155 beside it inside `util/scedit/`; harness `03d6251`.**
 
 ---
 
@@ -498,7 +498,7 @@ cat util/scedit/.gitignore | tr '\n' ' ' => build/
 /usr/bin/grep -n '^- \*\*SS-44\*\*' claude/SCRIPT_SURFACE.md | cut -d: -f1 => 687
 ```
 
-**WIP:** 2026-10-14 07:5x — MINTED (round supervisor, Claude Fable 5.1, session 46) on 11.299 F6 and the session-45 dispatchable set; parallel to F154 by disjoint files.
+**WIP:** 2026-10-14 07:5x — MINTED (round supervisor, Claude Fable 5.1, session 46) on 11.299 F6 and the session-45 dispatchable set; parallel to F154 by disjoint files. **DISPATCHED 07:51 (`opus-xhigh` under the owner's prompt; the gate 26 / 26 at the mint, re-run by the executor first), inside `util/scedit/` with its own build tree, no engine; harness `03d6251`.**
 
 ---
 
