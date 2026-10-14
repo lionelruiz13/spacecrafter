@@ -148,9 +148,7 @@ public:
 		waitOnVideo = b;
 	}
 
-	void setIsVideoPlayed(bool b) {
-		isVideoPlayed = b;
-	}
+	void setIsVideoPlayed(bool b);
 
 	void setFlagSkipPause(bool b) {
 		flagSkipPause = b;

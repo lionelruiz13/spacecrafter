@@ -75,6 +75,19 @@ Audio::~Audio()
 	cLog::get()->write("Audio support end", LOG_TYPE::L_INFO);
 }
 
+double Audio::getAudioDurationSeconds(const std::string& filename)
+{
+	AVFormatContext *formatContext = nullptr;
+	if (avformat_open_input(&formatContext, filename.c_str(), nullptr, nullptr) < 0)
+		return 0.0;
+	avformat_find_stream_info(formatContext, nullptr);
+
+    double duration = formatContext->duration > 0 ? formatContext->duration / (double)AV_TIME_BASE : 0.0;
+
+    avformat_close_input(&formatContext);
+	std::cout << "Audio::getAudioDurationSeconds: " << filename << " duration: " << duration << " seconds" << std::endl;
+    return duration;
+}
 
 void Audio::musicLoad(const std::string& filename, bool _loop)
 {
@@ -90,6 +103,7 @@ void Audio::musicLoad(const std::string& filename, bool _loop)
 		music_isPlaying = false;
 		music_name = filename;
 		elapsed_seconds=0.0;
+		duration = getAudioDurationSeconds(filename);
 		loop = _loop;
 		state = A_STATE::V_NONE;
 	} else {
@@ -135,6 +149,9 @@ void Audio::update(int delta_time)
 		return;
 	}
 	elapsed_seconds += delta_time/1000.f;
+	if (!loop && elapsed_seconds > duration) {
+		this->musicHalt();
+	}
 }
 
 // sychronize with elapsed time no longer starts playback if paused or disabled

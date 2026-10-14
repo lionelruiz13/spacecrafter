@@ -41,6 +41,10 @@
 #include <SDL2/SDL_mixer.h>
 #include "tools/no_copy.hpp"
 
+extern "C"
+{
+	#include <libavformat/avformat.h>
+}
 
 //! enumeration of playback states of an audio file
 enum class A_STATE: char { V_NONE, // file not loaded
@@ -99,6 +103,8 @@ public:
 	void musicDrop();
 	//! makes a jump to the desired position, expressed in seconds.
 	void musicJump(float secondJump);
+	//! returns the duration of the audio file in seconds.
+	double getAudioDurationSeconds(const std::string& filename);
 
 private:
 	int master_volume;				//!< sound manager output volume
@@ -110,6 +116,7 @@ private:
 	bool isDriverReady;					//!< indicates if the software can use the audio driver
 	A_STATE state = A_STATE::V_NONE;	//!< Status of the music file
 	bool loop;							//!< Is the stream running in a loop ?
+	double duration;						//!< duration of the audio file in seconds
 
 };
 

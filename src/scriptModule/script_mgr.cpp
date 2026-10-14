@@ -158,10 +158,13 @@ void ScriptMgr::fasterSpeed()
 	if (multiplierRate==1)
 		media->audioMusicMute();
 
-	if (multiplierRate>=256)
+	if (multiplierRate>=8)
 		return;
 
 	multiplierRate *=2;
+	if (isVideoPlayed) {
+		media->playerSetSpeed(multiplierRate);
+	}
 }
 
 void ScriptMgr::slowerSpeed()
@@ -176,6 +179,9 @@ void ScriptMgr::slowerSpeed()
 		media->audioMusicSync();
 		media->audioMusicResume();
 	}
+	if (isVideoPlayed) {
+		media->playerSetSpeed(multiplierRate);
+	}
 }
 
 void ScriptMgr::defaultSpeed()
@@ -183,6 +189,9 @@ void ScriptMgr::defaultSpeed()
 	multiplierRate = 1;
 	media->audioMusicSync();
 	media->audioMusicResume();
+	if (isVideoPlayed) {
+		media->playerSetSpeed(multiplierRate);
+	}
 }
 
 std::string ScriptMgr::getRecordDate()
@@ -290,7 +299,6 @@ void ScriptMgr::update(int delta_time)
 	 * case of video is playing and scriptMgr should wait on it :
 	 * so next if must be false*/
 	if (scriptState==ScriptState::PLAY && !(isVideoPlayed && waitOnVideo) ) {
-
 	    wait_time -= delta_time;
 		if (wait_time < 0) {
 			if (commander->isInterrupted())
@@ -385,4 +393,12 @@ bool ScriptMgr::playStartupScript()
 {
 	std::string CDIR = AppSettings::Instance()->getScriptDir() + "fscripts/";
 	return playScript(CDIR + "startup.sts");
+}
+
+void ScriptMgr::setIsVideoPlayed(bool b)
+{
+	isVideoPlayed = b;
+	if (isVideoPlayed) {
+		media->playerSetSpeed(multiplierRate);
+	}
 }
