@@ -1,0 +1,10 @@
+camera action move_lat value 1
+camera action move_lon value -0.5
+camera action raise_height value 0
+camera action lower_height value 0.25
+script action bind key SHIFT+KP_8 press foo.sts release - scope once
+script action bind press bar.sts scope script
+script action bind key * press - release -
+script action bind key CTRL+F1 release baz.sts scope global
+camera action save filename myview
+script action play filename intro.sts

@@ -1,0 +1,21 @@
+{
+  "command": "camera",
+  "completable": [
+    "true"
+  ],
+  "default": "absent -> no",
+  "default_literal": null,
+  "doc": "On `action follow_rotation`, whether the view turns with the body: write exactly the word true for yes.",
+  "kind": "key",
+  "name": "value",
+  "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar -- the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here.",
+  "present": true,
+  "required": "false",
+  "source": "app_command_interface.cpp:4606-4610 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,243)",
+  "value_docs": {},
+  "value_domain": "string compared literally against \"true\"",
+  "values": [
+    "true",
+    "anything else = no"
+  ]
+}

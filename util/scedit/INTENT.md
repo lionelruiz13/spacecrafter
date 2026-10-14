@@ -617,6 +617,13 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-10-14] F155 stopped at its BEFORE: `anchor_gate` has been red since
+  2026-09-18 (code `923823b6`), and a grammar edit must move the fragments and
+  the file pin with it.** Dispatch task F155 (`claude/fable-dispatch.md`),
+  executor run; nothing written to the code tree, the grammar is still
+  `4594ac69`. Parent **§11.327** holds the derivation, the measurements (the
+  gate's tally per commit, the fragment-equality and one-pin probes) and the
+  proposal for the re-dispatch; this line indexes it.
 - **[2026-09-04a] The second contract exists, and writing it from the loader
   found that 8% of the field data reaches nothing.** Dispatch task F80
   (`claude/fable-dispatch.md`), executor run, after one §0.7 ABORT the same day

@@ -1,0 +1,8 @@
+# anchor_gate tally per commit: tests/anchor_gate.py's own run() with its WORKTREE side read from the commit (gate_at.py); grammar files = HEAD's (unchanged since 564ec489); recorded expectation: clean 6836 / moved 359 / declared 3 / _meta 86
+564ec489 {'clean': 6836, 'moved': 359, 'not-at-head(declared)': 3, 'skipped(_meta)': 86} hard=0
+923823b6 {'clean': 6775, 'moved': 420, 'not-at-head(declared)': 3, 'skipped(_meta)': 86} hard=0
+75a73e78 {'clean': 6757, 'moved': 438, 'not-at-head(declared)': 3, 'skipped(_meta)': 86} hard=0
+78455b88 {'GONE': 2, 'clean': 6644, 'moved': 549, 'not-at-head(declared)': 3, 'skipped(_meta)': 86} hard=2
+b57d0642 {'GONE': 64, 'clean': 2130, 'moved': 5001, 'not-at-head(declared)': 3, 'skipped(_meta)': 86} hard=64
+f571664e {'GONE': 158, 'clean': 2457, 'moved': 4579, 'not-at-head(declared)': 4, 'skipped(_meta)': 86} hard=158
+9d461bd5 {'GONE': 158, 'clean': 2457, 'moved': 4579, 'not-at-head(declared)': 4, 'skipped(_meta)': 86} hard=158

@@ -1,0 +1,52 @@
+{
+  "command": "script",
+  "completable": [
+    "acquire",
+    "cancelrecord",
+    "default",
+    "end",
+    "faster",
+    "pause",
+    "play",
+    "record",
+    "release",
+    "resume",
+    "slower"
+  ],
+  "default": "absent -> `speed` is used instead; both absent -> \"command_'script' : missing action argument\"; an unknown value -> \"command_script : unknown parameter from 'action' argument\"",
+  "default_literal": null,
+  "doc": "What to do.",
+  "kind": "key",
+  "name": "action",
+  "notes": "",
+  "present": true,
+  "required": "conditional",
+  "source": "app_command_interface.cpp:2962, 2966-3011 (W_ACTION=\"action\" base_command_interface.hpp:81; W_END=\"end\" :157, W_PLAY=\"play\" :158, W_RECORD=\"record\" :84, W_CANCEL=\"cancelrecord\" :159, W_PAUSE=\"pause\" :160, W_RESUME=\"resume\" :168, W_FASTER=\"faster\" :161, W_SLOWER=\"slower\" :162, W_DEFAULT=\"default\" :143, W_ACQUIRE=\"acquire\" :322, W_RELEASE=\"release\" :323)",
+  "value_docs": {
+    "acquire": "take the global lock (only with `lock global`)",
+    "cancelrecord": "stop recording and throw the recording away",
+    "default": "run the script at its normal speed",
+    "end": "stop the running script and clear what it put on screen: texts, music and every non-permanent picture",
+    "faster": "run the script faster",
+    "pause": "hold the running script where it is",
+    "play": "start the script named by `filename`",
+    "record": "start writing every command that follows into the file named by `filename`",
+    "release": "give the global lock back (only with `lock global`)",
+    "resume": "let a held script go on",
+    "slower": "run the script slower"
+  },
+  "value_domain": "enumerated",
+  "values": [
+    "end",
+    "play",
+    "record",
+    "cancelrecord",
+    "pause",
+    "resume",
+    "faster",
+    "slower",
+    "default",
+    "acquire",
+    "release"
+  ]
+}
