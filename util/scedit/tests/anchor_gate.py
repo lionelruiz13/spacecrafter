@@ -33,7 +33,7 @@ records pinned by their own `code` / `merged` fields -- the fragments' 384
 see, so half of that record is invisible here and moving the other half would
 be I2's silent desync. `_meta.anchor_pin` is the pin of everything else.
 
-Run: python3 tests/anchor_gate.py [--record]   (ctest target `anchor_gate`)
+Run: python3 tests/anchor_gate.py [--record [--why TEXT]]   (ctest target `anchor_gate`)
 """
 import json, os, re, subprocess, sys, collections, difflib
 
@@ -116,13 +116,15 @@ CAND     = re.compile(r'(?<![\d])' + r':(' + LINELIST + r')')
 HEADRX   = re.compile(r'([A-Za-z0-9_./+-]*[A-Za-z0-9_+-])(\s*)$')
 FILERX   = re.compile(r'[A-Za-z0-9_./+-]*[A-Za-z0-9_+-]\.[A-Za-z][A-Za-z0-9]*$')
 ELEM     = re.compile(r'(\d+)(\s*-\s*)?(\d+)?')
+# Read the commit a reference names for itself, right after its line list.
+OWNPIN   = re.compile(r'\s*@\s*([0-9a-f]{7,40})\b')
 
 class Tok:
-    __slots__ = ("start", "end", "kind", "head", "listtext", "elems", "file", "flat", "lspan")
+    __slots__ = ("start", "end", "kind", "head", "listtext", "elems", "file", "flat", "lspan", "pin")
     def __init__(self, start, end, kind, head, listtext, elems):
         self.start, self.end, self.kind = start, end, kind
         self.head, self.listtext, self.elems = head, listtext, elems
-        self.file = self.flat = None
+        self.file = self.flat = self.pin = None
     def __repr__(self):
         return "<%s %s %s -> %s>" % (self.kind, self.head, self.listtext, self.file)
 
@@ -164,143 +166,8 @@ def tokenize(s):
             elems.append((a, b, em.start(), em.end()))
         t = Tok(hstart, m.end(), kind, head, m.group(1), elems)
         t.lspan = (m.start(1), m.end(1))
-        if kind == "FILE":
-            cur = flat = head
-        t.file = head if kind == "FILE" else cur
-        t.flat = head if kind == "FILE" else flat
-        toks.append(t)
-    return toks
-
-def walk(o, p=""):
-    if isinstance(o, dict):
-        for k, v in o.items():
-            yield from walk(v, p + "." + k)
-    elif isinstance(o, list):
-        for i, v in enumerate(o):
-            yield from walk(v, p + "[%d]" % i)
-    elif isinstance(o, str):
-        yield p, o
-
-def load(path, rev=None):
-    if rev is None:
-        return json.load(open(os.path.join(REPO, path), encoding="utf-8"))
-    b = blob(rev, path)
-    return None if b is None else json.loads(b)
-
-# --------------------------------------------------------------------------
-# 2. FILE RESOLUTION  (a bare basename -> its repo path)
-# --------------------------------------------------------------------------
-SUBMODULE = "src/EntityCore"
-# The anchor's file component is part of the anchor: a mis-spelled path whose
-# referent is unambiguous at the pin is RESOLVED here, and every such row is
-# stated in the delivery.  (F75 boundary: this is the sweep's job; changing an
-# anchor's CONTENT is not.)
-RESPELL = {"tools/utility.hpp": "src/tools/utility.hpp"}
-
-_index = None
-def repo_index():
-    global _index
-    if _index is None:
-        files = git("ls-files").decode().split()
-        by_base = collections.defaultdict(list)
-        for f in files:
-            by_base[os.path.basename(f)].append(f)
-        _index = (set(files), by_base)
-    return _index
-
-def resolve_file(name):
-    """-> (repo_path, how) or (None, reason)."""
-    files, by_base = repo_index()
-    if name in RESPELL:
-        return RESPELL[name], "respelled"
-    if name in files:
-        return name, "repo-relative"
-    if "/" not in name:
-        c = by_base.get(name, [])
-        if len(c) == 1:
-            return c[0], "bare-basename"
-        if len(c) > 1:
-            return None, "ambiguous-basename(%d)" % len(c)
-        return None, "unknown-basename"
-    # a path that is not tracked: maybe it is inside the submodule
-    if name.startswith(SUBMODULE + "/"):
-        return name, "submodule"
-    return None, "untracked-path"
-
-# --------------------------------------------------------------------------
-# 1. THE ANCHOR GRAMMAR
-#
-# Every occurrence of ':' followed by a digit is a CANDIDATE.  Three classes,
-# decided by what sits immediately before the colon:
-#
-#   FILE    glued  `app_command_interface.cpp:3958`      -- names its own file
-#   SYMBOL  glued  `parseCommand:141`, `executeCommand :191-302`
-#                  -- a function name, not a file: the line is in the string's
-#                     CURRENT file (the last FILE anchor seen, else the string's
-#                     implicit default)
-#   LOOSE   not glued to a name  `... + :335`, `(:2479-2530)`, `/:3511`
-#                  -- a continuation inheriting the current file
-#
-# and one NON-anchor class that must never be touched:
-#
-#   TIME    a DIGIT immediately before the colon  `00:00:00`, `23:59`
-#
-# A line list is `N`, `N-M`, or either of those repeated after commas
-# (`3923, 3927, 3931, 3935`).  Every element is an independent reference.
-# --------------------------------------------------------------------------
-LINELIST = r'\d+(?:\s*-\s*\d+)?(?:\s*,\s*\d+(?:\s*-\s*\d+)?)*'
-CAND     = re.compile(r'(?<![\d])' + r':(' + LINELIST + r')')
-HEADRX   = re.compile(r'([A-Za-z0-9_./+-]*[A-Za-z0-9_+-])(\s*)$')
-FILERX   = re.compile(r'[A-Za-z0-9_./+-]*[A-Za-z0-9_+-]\.[A-Za-z][A-Za-z0-9]*$')
-ELEM     = re.compile(r'(\d+)(\s*-\s*)?(\d+)?')
-
-class Tok:
-    __slots__ = ("start", "end", "kind", "head", "listtext", "elems", "file", "flat", "lspan")
-    def __init__(self, start, end, kind, head, listtext, elems):
-        self.start, self.end, self.kind = start, end, kind
-        self.head, self.listtext, self.elems = head, listtext, elems
-        self.file = self.flat = None
-    def __repr__(self):
-        return "<%s %s %s -> %s>" % (self.kind, self.head, self.listtext, self.file)
-
-def tokenize(s):
-    """Return the anchor tokens of one string, in order, with `file` filled in
-    from the string's own left context.  `file` is None for a token whose file
-    could not be determined -- reported, never guessed.
-
-    INHERITANCE IS PARENTHESIS-SCOPED, and it has to be.  A parenthesis is how
-    this file writes a SUB-anchor: `app_command_interface.cpp:1887 (W_INDEX=
-    "index", base_command_interface.hpp:131) -> applyColor CC_STAR_TABLE :1708`
-    -- the `:1708` belongs to app_command_interface.cpp, not to the header the
-    parenthesis happened to mention last.  Reading it flat put 89 references
-    past the end of a file that was never their file; the out-of-range count is
-    what made the bug visible, which is why a shape the parser cannot read is a
-    reported residual rather than a skipped one."""
-    toks, cur, flat, stack = [], None, None, []
-    for m in CAND.finditer(s):
-        i = m.start()
-        for ch in s[(toks[-1].end if toks else 0):i]:
-            if ch == "(":
-                stack.append(cur)
-            elif ch == ")" and stack:
-                cur = stack.pop()
-        hm = HEADRX.search(s[:i])
-        if hm and not hm.group(2):
-            head = hm.group(1)
-            if head[-1:].isdigit():
-                continue                      # TIME literal: 00:00, 23:59
-            kind = "FILE" if FILERX.search(head) else "SYMBOL"
-            hstart = i - len(head)
-        elif hm and hm.group(2) and FILERX.search(hm.group(1)):
-            head, kind, hstart = hm.group(1), "FILE", i - len(hm.group(2)) - len(hm.group(1))
-        else:
-            head, kind, hstart = None, "LOOSE", i
-        elems = []
-        for em in ELEM.finditer(m.group(1)):
-            a = int(em.group(1)); b = int(em.group(3)) if em.group(3) else None
-            elems.append((a, b, em.start(), em.end()))
-        t = Tok(hstart, m.end(), kind, head, m.group(1), elems)
-        t.lspan = (m.start(1), m.end(1))
+        pm = OWNPIN.match(s, m.end())
+        t.pin = pm.group(1) if pm else None
         if kind == "FILE":
             cur = flat = head
         t.file = head if kind == "FILE" else cur
@@ -545,7 +412,7 @@ def sub_commit(rev):
 def classify_any(pin, repo_path, n, how, head="HEAD"):
     """classify() with the submodule routed to its own repository."""
     if how == "submodule":
-        a, b = sub_commit(pin), sub_commit("HEAD")
+        a, b = sub_commit(pin), sub_commit("HEAD" if head in ("HEAD", WORKTREE) else head)
         if not a or not b:
             return ("no-file", None, None, None)
         rel = repo_path[len(SUBMODULE) + 1:]
@@ -564,13 +431,61 @@ def classify_any(pin, repo_path, n, how, head="HEAD"):
 # separates them. The SENTENCE separates them -- the aliases block is in
 # app_command_init.cpp -- so the reading is recorded here, keyed by the JSON
 # path and the token's position, both of which survive a sweep of the numbers.
-# One row. If a second is ever needed, it belongs here beside this one and not
+# If a second is ever needed, it belongs here beside this one and not
 # in a heuristic.
 # --------------------------------------------------------------------------
 FILE_OVERRIDES = {
     (".families.commands.flyto.registration", 2): "src/interfaceModule/app_command_init.cpp",
     (".commands.flyto.registration", 2):          "src/interfaceModule/app_command_init.cpp",
+    # Read each as the file its sentence names, where the content rules pick another.
+    (".families.commands.image.args.persistent.source", 2): "src/interfaceModule/app_command_interface.cpp",
+    (".commands.image.args.persistent.source", 2):          "src/interfaceModule/app_command_interface.cpp",
+    (".argument_token_vocabulary.literal_keys_without_token[3]", 2): "src/coreModule/landscape.cpp",
+    (".argument_token_vocabulary.literal_keys_without_token[3]", 5): "src/coreModule/landscape.cpp",
+    (".parse_model._source", 5):                 "src/scriptModule/script_mgr.cpp",
+    (".lint_seeds[12].rule", 3):                 "fscripts/panorama5.sts",
+    (".keys.orbit_bounding_radius.notes", 1):    "src/experimentalModule/ModularSystem.cpp",
 }
+
+# --------------------------------------------------------------------------
+# 7. THE POINTERS WITH NO COLON -- resolved by derivation, at the same pin
+# --------------------------------------------------------------------------
+HEADER_FILE = "src/interfaceModule/base_command_interface.hpp"
+
+def handler_range(rev, handler):
+    """Derive a command's `lines` at `rev`: the first line of every function its
+    `handler` field names to the last one's closing brace; None unless each is
+    defined exactly once."""
+    ls = lines_at(rev, DEFAULT_FILE)
+    lo = hi = None
+    for name in re.findall(r'[A-Za-z_]\w*', handler or "") if ls else []:
+        defs = [i for i, l in enumerate(ls, 1)
+                if re.match(r'[A-Za-z_][^;(]*\bAppCommandInterface::%s\s*\(' % name, l)]
+        end = next((j for j in range(defs[0], len(ls) + 1) if ls[j - 1].startswith("}")),
+                   None) if len(defs) == 1 else None
+        if end is None:
+            return None
+        lo, hi = min(lo or defs[0], defs[0]), max(hi or end, end)
+    return None if lo is None else "%d-%d" % (lo, hi)
+
+def define_lines(rev, macro, spelling):
+    """Derive a token's `header_line` at `rev`: the line defining `macro` as
+    `spelling`, or the list of them for a spelling defined twice; None if none."""
+    ls = lines_at(rev, HEADER_FILE) or []
+    rx = re.compile(r'\s*#define\s+%s\s+"%s"' % (re.escape(macro), re.escape(spelling)))
+    found = [i for i, l in enumerate(ls, 1) if rx.match(l)]
+    return (found[0] if len(found) == 1 else found) if found else None
+
+def colonless(g, cmds):
+    """Yield (field, entry, stored value, derivation) for every pointer with no colon."""
+    for name, e in cmds.items():
+        for f in ("lines", "handler_body_lines"):
+            if isinstance(e, dict) and f in e:
+                yield f, name, e[f], (lambda rev, h=e.get("handler"): handler_range(rev, h))
+    for tok, spec in g.get("argument_token_vocabulary", {}).get("tokens", {}).items():
+        if isinstance(spec, dict) and "header_line" in spec:
+            yield ("header_line", tok, spec["header_line"],
+                   (lambda rev, m=spec.get("macro", ""), t=tok: define_lines(rev, m, t)))
 
 # --------------------------------------------------------------------------
 # THE GATE
@@ -616,6 +531,7 @@ def run():
                          else r'\.commands\.([A-Za-z0-9_]+)\.', jp)
             handler = cmds.get(m.group(1), {}).get("handler") if m else None
             for ti, t in enumerate(toks):
+                tpin = t.pin or pin
                 if (jp, ti) in FILE_OVERRIDES:
                     rp, how = FILE_OVERRIDES[(jp, ti)], "repo-relative"
                 elif t.kind == "FILE":
@@ -628,31 +544,31 @@ def run():
                                     % (path, jp, t.file))
                         tally["UNRESOLVED"] += len(t.elems); continue
                 else:
-                    rp, how, basis, _ev = disambiguate(t, pin, s, handler)
+                    rp, how, basis, _ev = disambiguate(t, tpin, s, handler)
                     if rp is None:
                         if marked:
                             tally["not-at-head(declared)"] += len(t.elems); continue
                         hard.append("%s %s: bare `:%s` -- no candidate file resolves "
-                                    "it at %s" % (path, jp, t.listtext, pin[:8]))
+                                    "it at %s" % (path, jp, t.listtext, tpin[:8]))
                         tally["UNRESOLVED"] += len(t.elems); continue
                 for a, b, _, _ in t.elems:
                     # 1. at its own pin -- the check that cannot rot
                     for n in (a, b):
                         if n is None:
                             continue
-                        v = classify_any(pin, rp, n, how, head=WORKTREE)[0]
+                        v = classify_any(tpin, rp, n, how, head=WORKTREE)[0]
                         if v in ("no-file", "out-of-range"):
                             if marked:
                                 break
                             hard.append("%s %s: %s:%d does not exist at the pin %s (%s)"
-                                        % (path, jp, rp, n, pin[:8], v))
+                                        % (path, jp, rp, n, tpin[:8], v))
                             tally["AT-PIN-BROKEN"] += 1
                             break
                     else:
                         # 2. the HEAD mapping, reported
-                        v = classify_any(pin, rp, a, how, head=WORKTREE)[0]
+                        v = classify_any(tpin, rp, a, how, head=WORKTREE)[0]
                         if b is not None:
-                            v2 = classify_any(pin, rp, b, how, head=WORKTREE)[0]
+                            v2 = classify_any(tpin, rp, b, how, head=WORKTREE)[0]
                             OK = ("clean", "moved", "d14", "d14-moved")
                             v = ("clean" if v == v2 == "clean" else
                                  ("moved" if v in OK and v2 in OK else
@@ -671,7 +587,23 @@ def run():
                         continue
                     if marked:
                         tally["not-at-head(declared)"] += 1
+        for field, key, stored, derive in colonless(g, cmds):
+            at_pin = derive(pin)
+            if at_pin != stored:
+                hard.append("%s %s of %s: %r is not its derivation at the pin %s (%r)"
+                            % (path, field, key, stored, pin[:8], at_pin))
+                tally[field + ":AT-PIN-BROKEN"] += 1
+                continue
+            now = derive(WORKTREE)
+            if now is None:
+                hard.append("%s %s of %s: %r can no longer be derived at HEAD"
+                            % (path, field, key, stored))
+            tally[field + (":clean" if now == stored else ":GONE" if now is None else ":moved")] += 1
     return tally, hard
+
+def counts(text):
+    """Keep a record's count lines: its comment lines carry the argument, not the state."""
+    return [l for l in text.split("\n") if l and not l.startswith("#")]
 
 def main():
     tally, hard = run()
@@ -683,13 +615,15 @@ def main():
         lines.append("%-24s %d" % (k, tally[k]))
     got = "\n".join(lines) + "\n"
     if "--record" in sys.argv:
-        open(EXPECTED, "w").write(got)
-        print(got, end="")
+        why = sys.argv[sys.argv.index("--why") + 1].split("\n") if "--why" in sys.argv else []
+        rec = "\n".join(lines[:4] + ["# Why: " + w for w in why] + lines[4:]) + "\n"
+        open(EXPECTED, "w").write(rec)
+        print(rec, end="")
         return 0
     for h in hard:
         print("FAIL  " + h)
     want = open(EXPECTED).read() if os.path.exists(EXPECTED) else ""
-    if got != want:
+    if counts(got) != counts(want):
         print("FAIL  counts differ from tests/anchor-expected.txt")
         print("--- recorded ---\n%s--- got ---\n%s" % (want, got))
         return 1
