@@ -10,7 +10,7 @@ $ scedit --doc dso3d z_reflection
   "notes": "DEFECT (out of scope, recorded not fixed): the key is looked up and the comparison result is discarded ('it->second == \"true\";' is a statement with no effect), so z_reflection is always false. A doc line would describe behaviour the code does not have -- left null and flagged.",
   "present": true,
   "required": "false",
-  "source": "src/inGalaxyModule/dsoNavigator.cpp:304-306",
+  "source": "src/inGalaxyModule/dsoNavigator.cpp:299-301",
   "value_docs": {},
   "value_domain": "read but never used",
   "values": []
@@ -25,10 +25,10 @@ $ scedit --doc suntrace sun
   "doc": null,
   "kind": "key",
   "name": "sun",
-  "notes": "SUSPECTED TYPO, recorded not fixed: line 1633 reads `bodyTraceBodyChange(args[W_SUN])` -- the VALUE of a key spelled 'sun' -- while the other two branches of the same handler pass the literal token `W_SUN` (:1809, :1813). Under the code as written, `suntrace pen on` does not switch the trail to the Sun. Doc left null because the two readings (an undocumented body-name key, or a mis-typed literal) have opposite meanings for the editor's user.",
+  "notes": "SUSPECTED TYPO, recorded not fixed: line 1633 reads `bodyTraceBodyChange(args[W_SUN])` -- the VALUE of a key spelled 'sun' -- while the other two branches of the same handler pass the literal token `W_SUN` (:1705, :1709). Under the code as written, `suntrace pen on` does not switch the trail to the Sun. Doc left null because the two readings (an undocumented body-name key, or a mis-typed literal) have opposite meanings for the editor's user.",
   "present": true,
   "required": "false",
-  "source": "app_command_interface.cpp:1796 -> src/coreModule/coreLink.cpp:1130-1135 -> src/bodyModule/protosystem.cpp:468-475",
+  "source": "app_command_interface.cpp:1692 -> src/coreModule/coreLink.cpp:1109-1114 -> src/bodyModule/protosystem.cpp:459-466",
   "value_docs": {},
   "value_domain": "string (a body name)",
   "values": []
@@ -47,7 +47,7 @@ $ scedit --doc flag stars
   "notes": "",
   "present": true,
   "required": "",
-  "source": "app_command_init.cpp:187 (FN_STARS); base_command_interface.hpp:456; app_command_interface.cpp:1073-1075 -> src/coreModule/coreLink.hpp:168 -> src/coreModule/coreLink.cpp:650-653 (hip_stars->setFlagShow and starNav->setFlagStars)",
+  "source": "app_command_init.cpp:172 (FN_STARS); base_command_interface.hpp:456; app_command_interface.cpp:999-1001 -> src/coreModule/coreLink.hpp:168 -> src/coreModule/coreLink.cpp:629-632 (hip_stars->setFlagShow and starNav->setFlagStars)",
   "value_docs": {},
   "value_domain": "",
   "values": []
@@ -68,7 +68,7 @@ $ scedit --doc set atmosphere_fade_duration
   "notes": "",
   "present": true,
   "required": "false",
-  "source": "app_command_interface.cpp:2318 -> src/coreModule/coreLink.hpp:1038-1043 (\"Set atmosphere fade duration in s\"); registration app_command_init.cpp:302, spelling base_command_interface.hpp:551",
+  "source": "app_command_interface.cpp:2200 -> src/coreModule/coreLink.hpp:953-958 (\"Set atmosphere fade duration in s\"); registration app_command_init.cpp:287, spelling base_command_interface.hpp:551",
   "value_docs": {},
   "value_domain": "number(evalDouble) or the word \"default\" - $-variable substitution possible",
   "values": [
@@ -93,7 +93,7 @@ $ scedit --doc div
     "notes": "",
     "present": true,
     "required": "true",
-    "source": "app_command_interface.cpp:4703-4709 -> src/interfaceModule/app_command_eval.cpp:176-179, 202-218 (f_div = x/y, :10)",
+    "source": "app_command_interface.cpp:4593-4599 -> src/interfaceModule/app_command_eval.cpp:176-179, 202-218 (f_div = x/y, :10)",
     "value_docs": {},
     "value_domain": "number, or the name of another variable",
     "values": []
@@ -101,7 +101,7 @@ $ scedit --doc div
   "keys": [],
   "kind": "command",
   "name": "div",
-  "registration": "app_command_init.cpp:116 (ACP_CN_DIV = \"div\", base_command_interface.hpp:370) -- the same enum value as `divide`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling"
+  "registration": "app_command_init.cpp:104 (ACP_CN_DIV = \"div\", base_command_interface.hpp:370) -- the same enum value as `divide`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling"
 }
 exit 0
 $ scedit --doc zomo
