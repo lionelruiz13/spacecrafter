@@ -1,0 +1,82 @@
+inputs 1807 {'model3D': 1129, 'textures': 678}
+five-character extensions 25 ['.jpeg', '.meta']
+cache t-* files 27
+SELF-CHECK abort replica PASS THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 65)
+REL today: OK both 1807 of 1807 | non-OK []
+REL SELF-CHECK the 27 cache names among today's getCacheName outputs: PASS found 27 of 27 missing []
+REL stated | entry diffs 1807 | cache-name diffs 1807 | of which a field cache file 44
+   entry ('model3D/2planets/2planets.mtl', 'm/2planets/2planets', 'model3D/2planets/2planets')
+   entry ('model3D/2planets/2planets.obj', 'm/2planets/2planets', 'model3D/2planets/2planets')
+   entry ('model3D/2planets/2planets.ojm', 'm/2planets/2planets', 'model3D/2planets/2planets')
+   cache ('model3D/2planets/2planets.mtl', 'm-2planets-2planets.dat', 'model3D-2planets-2planets.dat')
+   cache ('model3D/2planets/2planets.obj', 'm-2planets-2planets.dat', 'model3D-2planets-2planets.dat')
+   cache ('model3D/2planets/2planets.ojm', 'm-2planets-2planets.dat', 'model3D-2planets-2planets.dat')
+   FIELD ('textures/bodies/deimos.jpg', 't-bodies-deimos.dat', 'textures-bodies-deimos.dat')
+   FIELD ('textures/bodies/deimos.png', 't-bodies-deimos.dat', 'textures-bodies-deimos.dat')
+   FIELD ('textures/bodies/earth.jpg', 't-bodies-earth.dat', 'textures-bodies-earth.dat')
+REL proposed_G1 | entry diffs 0 | cache-name diffs 31 | of which a field cache file 0
+   cache ('model3D/Curiosity/tex/MSL_Shadow.png.meta', 'm-Curiosity-tex-MSL_Shadow.png.mdat', 'm-Curiosity-tex-MSL_Shadow.png..dat')
+   cache ('model3D/Curiosity/tex/MSL_Shadow2.png.meta', 'm-Curiosity-tex-MSL_Shadow2.png.mdat', 'm-Curiosity-tex-MSL_Shadow2.png..dat')
+   cache ('model3D/Curiosity/tex/parts_AO.png.meta', 'm-Curiosity-tex-parts_AO.png.mdat', 'm-Curiosity-tex-parts_AO.png..dat')
+REL proposed_G2 | entry diffs 0 | cache-name diffs 0 | of which a field cache file 0
+ABS today: OK both 1807 of 1807 | non-OK []
+ABS SELF-CHECK the 27 cache names among today's getCacheName outputs: PASS found 27 of 27 missing []
+ABS stated | entry diffs 0 | cache-name diffs 31 | of which a field cache file 0
+   cache ('/home/claude/.spacecrafter/model3D/Curiosity/tex/MSL_Shadow.png.meta', 'm-Curiosity-tex-MSL_Shadow.png.mdat', 'm-Curiosity-tex-MSL_Shadow.png..dat')
+   cache ('/home/claude/.spacecrafter/model3D/Curiosity/tex/MSL_Shadow2.png.meta', 'm-Curiosity-tex-MSL_Shadow2.png.mdat', 'm-Curiosity-tex-MSL_Shadow2.png..dat')
+   cache ('/home/claude/.spacecrafter/model3D/Curiosity/tex/parts_AO.png.meta', 'm-Curiosity-tex-parts_AO.png.mdat', 'm-Curiosity-tex-parts_AO.png..dat')
+ABS proposed_G1 | entry diffs 0 | cache-name diffs 31 | of which a field cache file 0
+   cache ('/home/claude/.spacecrafter/model3D/Curiosity/tex/MSL_Shadow.png.meta', 'm-Curiosity-tex-MSL_Shadow.png.mdat', 'm-Curiosity-tex-MSL_Shadow.png..dat')
+   cache ('/home/claude/.spacecrafter/model3D/Curiosity/tex/MSL_Shadow2.png.meta', 'm-Curiosity-tex-MSL_Shadow2.png.mdat', 'm-Curiosity-tex-MSL_Shadow2.png..dat')
+   cache ('/home/claude/.spacecrafter/model3D/Curiosity/tex/parts_AO.png.meta', 'm-Curiosity-tex-parts_AO.png.mdat', 'm-Curiosity-tex-parts_AO.png..dat')
+ABS proposed_G2 | entry diffs 0 | cache-name diffs 0 | of which a field cache file 0
+PROBES  name | rule: entry-status entry | cache-status cache
+  /media/stick/img.png                             today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 20) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 20)
+  /media/stick/img.png                             stated       OK    media/stick/img              OK    media-stick-img.dat
+  /media/stick/img.png                             proposed_G1  OK    media/stick/img              OK    media-stick-img.dat
+  /media/stick/img.png                             proposed_G2  OK    media/stick/img              OK    media-stick-img.dat
+  /mnt/stick/img.png                               today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 18) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 18)
+  /mnt/stick/img.png                               stated       OK    mnt/stick/img                OK    mnt-stick-img.dat
+  /mnt/stick/img.png                               proposed_G1  OK    mnt/stick/img                OK    mnt-stick-img.dat
+  /mnt/stick/img.png                               proposed_G2  OK    mnt/stick/img                OK    mnt-stick-img.dat
+  /home/x/.spacecrafter                            today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 21) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 21)
+  /home/x/.spacecrafter                            stated       OK    home/x/.spacecra             OK    home-x-.spacecra.dat
+  /home/x/.spacecrafter                            proposed_G1  OK    home/x/.spacecra             OK    home-x-.spacecra.dat
+  /home/x/.spacecrafter                            proposed_G2  OK    home/x/.spacecra             OK    home-x-.spacecrafdat
+  /home/x/.spacecrafter/foo.png                    today        THROW basic_string::substr: __pos (which is 18446744073709551614) > this->size() (which is 29) THROW basic_string::substr: __pos (which is 18446744073709551614) > this->size() (which is 29)
+  /home/x/.spacecrafter/foo.png                    stated       OK    foo                          OK    foo.dat
+  /home/x/.spacecrafter/foo.png                    proposed_G1  OK    foo                          OK    foo.dat
+  /home/x/.spacecrafter/foo.png                    proposed_G2  OK    foo                          OK    foo.dat
+  foo.png                                          today        THROW basic_string::substr: __pos (which is 18446744073709551614) > this->size() (which is 7) THROW basic_string::substr: __pos (which is 18446744073709551614) > this->size() (which is 7)
+  foo.png                                          stated       OK    foo                          OK    foo.dat
+  foo.png                                          proposed_G1  OK    foo                          OK    foo.dat
+  foo.png                                          proposed_G2  OK    foo                          OK    foo.dat
+  a/b.png                                          today        OK    a/b                          OK    a-b.dat
+  a/b.png                                          stated       OK    a/b                          OK    a-b.dat
+  a/b.png                                          proposed_G1  OK    a/b                          OK    a-b.dat
+  a/b.png                                          proposed_G2  OK    a/b                          OK    a-b.dat
+  textures/bodies/earth.jpg                        today        OK    t/bodies/earth               OK    t-bodies-earth.dat
+  textures/bodies/earth.jpg                        stated       OK    textures/bodies/earth        OK    textures-bodies-earth.dat
+  textures/bodies/earth.jpg                        proposed_G1  OK    t/bodies/earth               OK    t-bodies-earth.dat
+  textures/bodies/earth.jpg                        proposed_G2  OK    t/bodies/earth               OK    t-bodies-earth.dat
+  /home/claude/.spacecrafter/textures/bodies/earth.jpg today        OK    t/bodies/earth               OK    t-bodies-earth.dat
+  /home/claude/.spacecrafter/textures/bodies/earth.jpg stated       OK    t/bodies/earth               OK    t-bodies-earth.dat
+  /home/claude/.spacecrafter/textures/bodies/earth.jpg proposed_G1  OK    t/bodies/earth               OK    t-bodies-earth.dat
+  /home/claude/.spacecrafter/textures/bodies/earth.jpg proposed_G2  OK    t/bodies/earth               OK    t-bodies-earth.dat
+  /t/bodies/earth.jpg                              today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 19) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 19)
+  /t/bodies/earth.jpg                              stated       OK    t/bodies/earth               OK    t-bodies-earth.dat
+  /t/bodies/earth.jpg                              proposed_G1  OK    t/bodies/earth               OK    t-bodies-earth.dat
+  /t/bodies/earth.jpg                              proposed_G2  OK    t/bodies/earth               OK    t-bodies-earth.dat
+  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 65) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 65)
+  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png stated       OK    home/claude/spacecrafter/claude/harness/artifacts/f142/run/o OK    home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
+  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png proposed_G1  OK    home/claude/spacecrafter/claude/harness/artifacts/f142/run/o OK    home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
+  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png proposed_G2  OK    home/claude/spacecrafter/claude/harness/artifacts/f142/run/o OK    home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
+  /home/claude/.spacecrafter/textures/n_genrc.png  today        OK    t/n_genrc                    OK    t-n_genrc.dat
+  /home/claude/.spacecrafter/textures/n_genrc.png  stated       OK    t/n_genrc                    OK    t-n_genrc.dat
+  /home/claude/.spacecrafter/textures/n_genrc.png  proposed_G1  OK    t/n_genrc                    OK    t-n_genrc.dat
+  /home/claude/.spacecrafter/textures/n_genrc.png  proposed_G2  OK    t/n_genrc                    OK    t-n_genrc.dat
+  model3D/Maven/tex/foil_n_2.png.jpeg              today        OK    m/Maven/tex/foil_n_2.png.    OK    m-Maven-tex-foil_n_2.png.jdat
+  model3D/Maven/tex/foil_n_2.png.jpeg              stated       OK    model3D/Maven/tex/foil_n_2.png. OK    model3D-Maven-tex-foil_n_2.png..dat
+  model3D/Maven/tex/foil_n_2.png.jpeg              proposed_G1  OK    m/Maven/tex/foil_n_2.png.    OK    m-Maven-tex-foil_n_2.png..dat
+  model3D/Maven/tex/foil_n_2.png.jpeg              proposed_G2  OK    m/Maven/tex/foil_n_2.png.    OK    m-Maven-tex-foil_n_2.png.jdat
+=== ORACLE SELF-CHECKS PASS ===
