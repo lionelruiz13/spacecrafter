@@ -655,7 +655,7 @@ ls claude/harness/f75/ 2>/dev/null | wc -l => 3
 /usr/bin/grep -n '^## F75' claude/harness/README.md | cut -d: -f1 => 3154
 ```
 
-**WIP:** 2026-10-14 08:2x — MINTED (round supervisor, Claude Fable 5.1, session 46) on F155's STOP (11.327) and §5.207, F75's method; parallel to F154 by disjoint files; the grammar words (F155's content) follow in their own task once this lands.
+**WIP:** 2026-10-14 08:2x — MINTED (round supervisor, Claude Fable 5.1, session 46) on F155's STOP (11.327) and §5.207, F75's method; parallel to F154 by disjoint files; the grammar words (F155's content) follow in their own task once this lands. **DISPATCHED 08:23 (`opus-xhigh` under the owner's prompt; the gate 25 / 25 at the mint, re-run by the executor first), inside `util/scedit/` with its own build tree `build-f158/`, the pin fixed at `9d461bd5` by `git show`; harness `1cf3257`.**
 
 ---
 
