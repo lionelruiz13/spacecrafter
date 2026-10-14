@@ -401,7 +401,7 @@ git rev-parse --short=8 HEAD => 6a331fd5
 git status --porcelain | /usr/bin/grep -v 'util/scedit/' | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => bb3d8b5f
 find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
-test ! -e claude/INTENT/11.330.md -a ! -e claude/INTENT/archive/11.330.md && echo free => free
+/usr/bin/grep -c '^CHECKPOINT 2026-10-14 09:01 - STOPPED at step (2)' claude/INTENT/11.330.md => 1
 /usr/bin/grep -c '^### F157 ' claude/fable-dispatch.md => 1
 git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD => 4dfe7bb3
 test -e claude/INTENT/11.329.md -a -e claude/fable-dispatch/archive/F154.md && echo present => present
