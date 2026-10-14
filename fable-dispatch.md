@@ -445,7 +445,7 @@ python3 claude/harness/shape/names.py src/tools/s_texture.hpp | cut -d: -f1 => s
 /usr/bin/grep -c '^## F' claude/harness/README.md => 85
 ```
 
-**WIP:** 2026-10-14 08:1x — MINTED (round supervisor, Claude Fable 5.1, session 46) on §5.203's row and the owner's ruling of this morning (§11.329, D15); waits on F154's acceptance (the same driver, the engine slot); F156 follows it.
+**WIP:** 2026-10-14 08:1x — MINTED (round supervisor, Claude Fable 5.1, session 46) on §5.203's row and the owner's ruling of this morning (§11.329, D15); waits on F154's acceptance (the same driver, the engine slot); F156 follows it. **DISPATCHED 08:50 after F154's acceptance (`opus-xhigh` under the owner's prompt; the per-round lines refreshed to code `6a331fd5` / binary `bb3d8b5f` / driver `a02fe710`, the gate 41 / 41), alone in the engine's build tree, the only engine launcher; F158 beside it inside `util/scedit/`; harness `6f2e5af`.**
 
 ---
 
