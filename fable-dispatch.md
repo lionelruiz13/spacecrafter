@@ -364,7 +364,7 @@ md5sum claude/harness/f142_keys.py | cut -c1-8 => 0b904df7
 /usr/bin/grep -c '^## F' claude/harness/README.md => 85
 ```
 
-**WIP:** 2026-10-14 07:5x — MINTED (round supervisor, Claude Fable 5.1, session 46) on §5.204's row and 11.322 (10); waits on F154's acceptance (the same driver); the owner's section-3 item 5.204 unanswered — built by I6's default, one revert. **08:0x: F157 (§5.203, the owner's SUPPORT of this morning, §11.329) goes BEFORE this task on the shared driver — an engine-killing defect reachable in session outranks a latent double end; this section's per-round lines refresh after F157's acceptance.**
+**WIP:** 2026-10-14 07:5x — MINTED (round supervisor, Claude Fable 5.1, session 46) on §5.204's row and 11.322 (10); waits on F154's acceptance (the same driver); the owner's section-3 item 5.204 unanswered — built by I6's default, one revert. **08:0x: F157 (§5.203, the owner's SUPPORT of this morning, §11.329) goes BEFORE this task on the shared driver — an engine-killing defect reachable in session outranks a latent double end; this section's per-round lines refresh after F157's acceptance.** **DISPATCHED 10:07 after F157's acceptance (`opus-xhigh` under the owner's prompt; the per-round lines refreshed to code `3d34d33e` / binary `4368404c` / driver `0b904df7`, the gate 32 / 32), alone in both trees, the only engine launcher; harness `19b06b4`.**
 
 ---
 
