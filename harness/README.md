@@ -6945,7 +6945,7 @@ can catch a half-written file: the guard says so (exit 2); run it again.
 
 **Use.** `bash f142_keys_run.sh <label> --phase before|after [--baseline <label of a before run>]` - one fresh
 launch through `f124_run.sh` (its asserts: binary md5, the instance probe, the GPU gate, `config.ini` /
-`ssystem.ini` md5 in == out, teardown by its own pids; `F124_OUT_ROOT=artifacts/f142`, `F124_TIMEOUT=900`);
+`ssystem.ini` md5 in == out, teardown by its own pids; `F124_OUT_ROOT=artifacts/f142`, `F124_TIMEOUT=500` since F156 — a hang must end inside the Bash tool's 600 s window);
 records under `artifacts/f142/<label>/`: `drive.log` (one `PASS|FAIL|NOTE <case> <criterion> observed= expected=`
 line per check), `gdb.log`, `meta.txt`, `N_reading.txt`, `diag.txt` / `tcp_rx.txt`, `readings.json`. About 1 min 45 s.
 
@@ -7043,3 +7043,21 @@ keyed on `.spacecrafter/` alone renames every field cache file (F157's first run
 `bb3d8b5f` HUNG in case X (`s46_f157_pre`: the main thread in `syscall ()` at every interrupt, no signal - INTENT
 11.316 D8's class) and ran to the driver's 900 s bound, longer than a 600 s tool window: pass `F124_TIMEOUT=500` so a
 hang ends inside it, keep the hung record, re-run under a new label.
+
+**Case AE (F156, INTENT 11.328) - an explicit `script action end` LINE ends the run once; it runs after AD and before O.**
+The fixture `run/ae.sts` is two lines (`define f156_ae 1`, `script action end`), played over TCP while `script action
+record filename run/recae.sts` is on; between the markers AE / AE2 the reading counts the script log's `ScriptMgr: script
+end`, `Execute_command script action end` and `End of script` lines (`end_lines`, which also takes a start pattern), lists
+any `(Error)` or `script annotation:` line, and counts the recording's `script action end` lines. AE2 plays `show.sts` and
+sends `script action end` over TCP: a TCP line executes in `App::updateFromSharedData`, after `ScriptMgr::update`'s drain,
+never inside it - the control, 1 / 1 / 0 on any binary. Case O gains the same count on the HOME path, from
+`internal/initial.sts:17`'s `Execute_command script action end` to the end of O1's window. Two NOTE lines print
+`FilePath::scriptPath` in one gdb stop right after each end (every command re-fixes that static at its entry, so the read
+must come before the next TCP line). Criteria: the setup (the line before the end ran), the TCP control, and after: 1 / 1 /
+0 with no error or annotation line, one recorded end line, O's 1 / 1 / 0. Able to fail: on `4368404c` (`s46_f156_pre`,
+`pre2`) the drain runs W_END, finds the cleaned queue at its next `getFirst` (`End of script`) and ends the run AGAIN
+through `terminateScript`: 2 / 2 / 1 in AE and on O's HOME path, `script action end` twice in the recording, and
+`FilePath::scriptPath` reads `scripts/` after the explicit end (the run directory after the TCP end); from F156's change
+(`b27dc477`, `s46_f156_post`, `post2`: ALL PASS, 96 / 0) 1 / 1 / 0, one recorded line, the run directory after both
+ends. Since this case, `^PASS [A-O] ` counts 50 (O carries eight checks) and a full run 96 PASS. Pitfall: cases X and O
+end scripts too - a count per end is read inside its own case's window, never over the run.

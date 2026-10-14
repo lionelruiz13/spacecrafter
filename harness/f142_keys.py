@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # F149 key leg - the 14 cases A-N of INTENT 11.312 (h) on the b21 pattern, in one fresh launch;
 # cases P-AD (F154, INTENT 11.326): the joystick's buttons and hat on a virtual device attached at start;
+# case AE (F156, INTENT 11.328), before O: an explicit `script action end` line ends the run once;
 # case O (F151, INTENT 11.322) last: what a script's end leaves behind, read after HOME and after
 # `configuration action load` inside an open `struct if` and a loop's first pass.
 #
@@ -65,6 +66,7 @@ def fixtures():
     files.update({n: "define f154_%s 1" % n for n in ("p", "q", "r", "s", "u", "v", "vr", "w", "yr", "z")})
     files["x"] = "script action bind key BUTTON2 press %s/c.sts scope script" % RUN
     files["y"] = "script action bind release %s/yr.sts scope once" % RUN
+    files["ae"] = "define f156_ae 1\nscript action end"
     for n, text in files.items():
         with open("%s/%s.sts" % (RUN, n), "w") as f:
             f.write(text + "\n")
@@ -257,6 +259,30 @@ def press(k, plane="NONE"):
 
 def wait_end(since, timeout=40):
     return wait_log(since, r"ScriptMgr: script end", timeout)
+
+
+END_LINES = (r"ScriptMgr: script end", r"Execute_command script action end", r"End of script")
+
+
+def end_lines(text, start=None):
+    """Count each of END_LINES in text, from its first line matching start when given."""
+    msgs = [msg for _, _, msg in entries(text)]
+    if start is not None:
+        msgs = msgs[next((i for i, msg in enumerate(msgs) if re.match(start + r"\s*$", msg)), len(msgs)):]
+    return [sum(1 for msg in msgs if re.match(p + r"\s*$", msg)) for p in END_LINES]
+
+
+def end_text(n):
+    return "script end %d, Execute_command script action end %d, End of script %d" % tuple(n)
+
+
+def script_path(tag):
+    """Return FilePath's script directory, read in one gdb stop: every command re-fixes it at its entry."""
+    since = inject(['printf "F156FP %s %%s\\n", FilePath::scriptPath._M_dataplus._M_p' % tag])
+    with open(GDBLOG, "rb") as f:
+        f.seek(since)
+        m = re.search(r"F156FP %s (.*)$" % tag, f.read().decode("latin-1"), re.M)
+    return m.group(1) if m else None
 
 
 def reset():
@@ -932,6 +958,40 @@ def case_AD():
           "load p %d, list %s" % (loads(t, "p"), listed(t, "BUTTON3")), "load p 1, list [0, 0]")
 
 
+# ---- case AE (F156, INTENT 11.328): an explicit `script action end` line ends the run once ------------
+def case_AE():
+    reset(); m = mark("AE")
+    rec = "%s/recae.sts" % RUN
+    tcp("script action record filename %s" % rec)
+    s = logsize()
+    tcp("script action play filename %s/ae.sts" % RUN)
+    ended = wait_end(s)
+    time.sleep(1.0)
+    fp = script_path("AE")
+    tcp("script action cancelrecord")
+    m2 = mark("AE2")
+    show("AE")
+    tcp("script action end")   # a TCP line runs after the drain, never inside it: the control
+    time.sleep(1.0)
+    fp2 = script_path("AE2")
+    m3 = mark("AE3")
+    t, t2 = logtext(m, m2), logtext(m2, m3); READ["AE"] = logtext(m, m3)
+    n, n2 = end_lines(t), end_lines(t2)
+    recorded = [l.strip() for l in open(rec)].count("script action end") if os.path.exists(rec) else None
+    other = [msg for _, ty, msg in entries(t) if ty == "Error" or msg.startswith("script annotation")]
+    ran = len(re.findall(r"Execute_command define f156_ae 1\s*$", t, re.M))
+    note("AE", "end_lines_explicit", end_text(n)); note("AE", "end_lines_tcp", end_text(n2))
+    note("AE", "recorded_end_lines", recorded); note("AE", "error_or_annotation_lines", other)
+    note("AE", "filepath_script_path_after_explicit_end", fp); note("AE", "filepath_script_path_after_tcp_end", fp2)
+    check("AE", "setup_the_line_before_the_end_ran", ended and ran == 1, "ended %s, define f156_ae ran %d" % (ended, ran),
+          "ended, 1")
+    check("AE", "tcp_end_runs_once_control", n2 == [1, 1, 0], end_text(n2), end_text([1, 1, 0]))
+    if AFTER:
+        check("AE", "P3_explicit_end_runs_once", n == [1, 1, 0] and not other, "%s, error / annotation lines %s" % (
+            end_text(n), other), end_text([1, 1, 0]) + ", none")
+        check("AE", "recorded_end_line_once", recorded == 1, recorded, 1)
+
+
 # ---- case O (INTENT 11.322): what a script's end leaves behind, on two end paths through UI::init ----
 IFS = "(*(IfSwap**)&$c->ifSwap)"   # read a unique_ptr through its one member: gdb finds _M_head_impl ambiguous
 OSTATE = [("loopOpen", "%d", "$c->loopOpen"), ("loopOpenerLine", "%u", "$c->loopOpener.line"),
@@ -977,6 +1037,7 @@ def case_O():
     home_ended = wait_log(l1, r"Execute_command script action end", 30)
     time.sleep(1.0)
     t1, o1 = logtext(l1), open(RUN + "/o.sts").read()
+    home = end_lines(t1, r"Execute_command script action end")   # from initial.sts:17's line
     mark("O2")
     play_o()
     l2 = logsize()
@@ -991,6 +1052,7 @@ def case_O():
     note("O", "state_pre", pre); note("O", "state_post_HOME", post)
     note("O", "unclosed_after_HOME", u1); note("O", "o_sts_tails_after_HOME", tails1)
     note("O", "unclosed_after_configuration_load", u2); note("O", "o_sts_tails_after_configuration_load", tails2)
+    note("O", "end_lines_from_initial_sts_end", end_text(home))
     g = lambda d, k: d.get(k, -1)
     check("O", "setup_if_open_loop_first_pass_media_up", g(pre, "loopOpen") == 1 and g(pre, "loopOpenerLine") == O_LOOP
           and g(pre, "ifOpeners") == 1 and g(pre, "texts") >= 1 and g(pre, "images") >= 1 and g(pre, "musicPlaying") == 1,
@@ -1008,6 +1070,7 @@ def case_O():
               "initial.sts ended %s, errors %s, tails %s" % (home_ended, u1, tails1), "ended, no error at o.sts, no #! tail")
         check("O", "P7_no_false_unclosed_after_configuration_load", load_ended and not u2 and not tails2,
               "startup.sts ended %s, errors %s, tails %s" % (load_ended, u2, tails2), "ended, no error at o.sts, no #! tail")
+        check("O", "P4_initial_sts_explicit_end_runs_once", home == [1, 1, 0], end_text(home), end_text([1, 1, 0]))
 
 
 fixtures()
@@ -1016,7 +1079,7 @@ tcp("timerate rate 0")
 joy_setup()
 for c in (case_A, case_B, case_C, case_D, case_E, case_F, case_G, case_H, case_I, case_J, case_K, case_L, case_M, case_N,
           case_P, case_Q, case_R, case_S, case_T, case_U, case_V, case_W, case_X, case_Y, case_Z, case_AA, case_AB,
-          case_AC, case_AD, case_O):
+          case_AC, case_AD, case_AE, case_O):
     c()
 reset()
 mark("END")

@@ -1,0 +1,7 @@
+make : on entre dans le répertoire « /home/claude/spacecrafter/build-claude »
+[  5%] Built target planetsephems
+[  5%] Built target iniparser
+[  6%] Building CXX object src/CMakeFiles/spacecrafter.dir/scriptModule/script_mgr.cpp.o
+[  7%] Linking CXX executable spacecrafter
+[100%] Built target spacecrafter
+make : on quitte le répertoire « /home/claude/spacecrafter/build-claude »

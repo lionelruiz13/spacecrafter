@@ -1,0 +1,23 @@
+```
+SHAPE 08ca1697..WORKTREE  (harness/shape/delivery.py)
+(1) lines [ratio.py classify on the -U0 hunks]  +code -code +comment -comment +blank -blank  status file
+      1     1     0     0     0     0  M src/scriptModule/script_mgr.cpp
+  total 1 files: +1 -1 (numstat); code +1 -1, comment +0 -0, blank +0 -0; net code +0, net lines +0
+(2) names [names.py]  BEFORE -> AFTER  +added  -removed
+  total 0 headers: names +0 -0
+(3) writers [writers.py]  class: pairs BEFORE -> AFTER, unchanged; changed field: writers BEFORE -> AFTER
+  no class (no touched header with its same-stem .cpp touched; --class names one)
+(4) form [form.py measure over the added lines]
+  comment lines added: full 0, trailing 0; blocks 1:0 2:0 3+:0; length median 0 p90 0
+  verb-first (upper bound) 0 / 0 blocks; first words: -
+(5) ledger grammar in the added lines [INTENT|11\.[0-9]|F1[0-9][0-9]|\[observed|\[measured|\[vixy]: 0
+(6) d14 [f70_ascii.py gate]
+  gate PASS (exit 0; it reads the code repo's tracked files on disk; that tree is WORKTREE: yes)
+  delivery files at WORKTREE by its partition: 1 read, 0 non-ASCII (0 CONVERT or unclassified): PASS
+(7) ratio [ratio.py classify, src/experimentalModule .hpp/.cpp]
+  08ca1697 files 124 code 13493 comment 889 ratio 0.07
+  WORKTREE files 124 code 13493 comment 889 ratio 0.07
+(8) scope [review.sh]
+  header scope :(glob)src/**/*.hpp :(glob)src/**/*.h: 0 touched (new 0, modified 0, deleted 0, renamed 0)
+  outside it, in the ALL=1 scope src shaders: 1 touched
+```
