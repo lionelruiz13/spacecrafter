@@ -519,34 +519,6 @@ void UI::setFlagShowTuiMenu(const bool flag)
 	FlagShowTuiMenu = flag;
 }
 
-void UI::handleJoyHat(SDL_JoyHatEvent E)
-{
-	// Movement of a hat We must therefore use the field jhat
-	//printf("Movement of the cap %d of the joystick %d\n",E.jhat.hat,E.jhat.which);
-	switch (E.value) {
-		case SDL_HAT_CENTERED:
-			core->turnUp(0);
-			core->turnRight(0);
-			core->turnDown(0);
-			core->turnLeft(0);
-			break;
-		case SDL_HAT_DOWN :
-			core->turnDown(1);
-			break;
-		case SDL_HAT_LEFT :
-			core->turnLeft(1);
-			break;
-		case SDL_HAT_RIGHT :
-			core->turnRight(1);
-			break;
-		case SDL_HAT_UP :
-			core->turnUp(1);
-			break;
-		default:
-			break;
-	}
-}
-
 void UI::moveMouseAlt(double x)
 {
 	// This is rotation
@@ -3402,7 +3374,7 @@ int UI::handleKeysReleased(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::
 
 int UI::handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VALUE state)
 {
-	if (binding.resolve(key, key_Modifier, state==s_gui::S_GUI_PRESSED)) {
+	if (binding.resolve({KeyBinding::Source::KEY, key}, key_Modifier, state==s_gui::S_GUI_PRESSED)) {
 		RESET_MOD(SUPER);
 		return 1;
 	}

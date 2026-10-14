@@ -20,6 +20,11 @@
 #include "uiModule/ui.hpp"
 #include "tools/app_settings.hpp"
 
+using Source = KeyBinding::Source;
+
+// Name each hat direction, in hat_event order
+static const char *const HAT_DIRECTIONS[] = {"UP", "DOWN", "LEFT", "RIGHT"};
+
 //splits a string in a vector
 static void split(std::string str, std::string splitBy, std::vector<std::string>& tokens)
 {
@@ -80,6 +85,32 @@ JoypadController::~JoypadController()
 	hatValues = nullptr;
 }
 
+std::string JoypadController::name(const KeyBinding::Base &base)
+{
+	if (base.first == Source::BUTTON)
+		return "BUTTON" + std::to_string(base.second);
+	return "HAT" + std::to_string(base.second / 4) + "_" + HAT_DIRECTIONS[base.second % 4];
+}
+
+bool JoypadController::parse(const std::string &token, KeyBinding::Base &base)
+{
+	const std::size_t digit = token.find_first_of("0123456789");
+	const int number = digit == std::string::npos ? 0 : std::atoi(token.substr(digit, 3).c_str());
+	if (number > UINT8_MAX)
+		return false;
+	if (name({Source::BUTTON, number}) == token) {
+		base = {Source::BUTTON, number};
+		return true;
+	}
+	for (int index = 4 * number; index < 4 * number + 4; ++index) {
+		if (name({Source::HAT, index}) == token) {
+			base = {Source::HAT, index};
+			return true;
+		}
+	}
+	return false;
+}
+
 /*
  * Loads configuration from _configName (ini file)
  */
@@ -117,38 +148,20 @@ void JoypadController::init(const std::string &_configName) noexcept
 	}
 
 	for (int i = 0; i < nbrButtons; i++) {
-		std::string actionStr = conf.getStr(model,"BUTTON" + std::to_string(i));
+		std::string actionStr = conf.getStr(model, name({Source::BUTTON, i}));
 		buttonActions[i] = getButtonActionFromString(actionStr, i*2);
-		actionStr = conf.getStr(model,"BUTTON" + std::to_string(i) + "_ALT");
+		actionStr = conf.getStr(model, name({Source::BUTTON, i}) + "_ALT");
 		buttonAltActions[i] = actionStr.empty() ? buttonActions[i] : getButtonActionFromString(actionStr, i*2+1);
 	}
 
 	for(int i = 0; i < nbrHats; i++) {
 		hatValues[i] = 0;
-
-		int idx = i*4 + (int)(hat_event::hat_down);
-		std::string actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_DOWN");
-		hatActions[idx] = getButtonActionFromString(actionStr, (nbrButtons+idx)*2);
-		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_DOWN_ALT");
-		hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr, (nbrButtons+idx)*2+1);
-
-		idx = i*4 + (int)(hat_event::hat_up);
-		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_UP");
-		hatActions[idx] = getButtonActionFromString(actionStr,  (nbrButtons+idx)*2);
-		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_UP_ALT");
-		hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr,  (nbrButtons+idx)*2+1);
-
-		idx = i*4 + (int)(hat_event::hat_left);
-		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_LEFT");
-		hatActions[idx] = getButtonActionFromString(actionStr,  (nbrButtons+idx)*2);
-		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_LEFT_ALT");
-		hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr,  (nbrButtons+idx)*2+1);
-
-		idx = i*4 + (int)(hat_event::hat_right);
-		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_RIGHT");
-		hatActions[idx] = getButtonActionFromString(actionStr,  (nbrButtons+idx)*2);
-		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_RIGHT_ALT");
-		hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr,  (nbrButtons+idx)*2+1);
+		for (int idx = i*4; idx < i*4 + 4; idx++) {
+			std::string actionStr = conf.getStr(model, name({Source::HAT, idx}));
+			hatActions[idx] = getButtonActionFromString(actionStr, (nbrButtons+idx)*2);
+			actionStr = conf.getStr(model, name({Source::HAT, idx}) + "_ALT");
+			hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr, (nbrButtons+idx)*2+1);
+		}
 	}
 }
 
@@ -200,6 +213,8 @@ void JoypadController::handleDeal() noexcept
 
 void JoypadController::handleJoyButtonUp(const SDL_JoyButtonEvent &E) noexcept
 {
+	if (ui->keyBinding().resolve({Source::BUTTON, E.button}, NONE, false))
+		return;
 	joy_button_action button_action = (mode ? buttonAltActions : buttonActions)[E.button];
 	if(button_action.onReleaseAction != nullptr)
 		(ui->*button_action.onReleaseAction)();
@@ -210,6 +225,8 @@ void JoypadController::handleJoyButtonUp(const SDL_JoyButtonEvent &E) noexcept
  */
 void JoypadController::handleJoyButtonDown(const SDL_JoyButtonEvent &E) noexcept
 {
+	if (ui->keyBinding().resolve({Source::BUTTON, E.button}, NONE, true))
+		return;
 	int idx = E.button*2+mode;
 	if(isCommand(idx)) {
 		for(std::string command : buttonCommand[idx]) {
@@ -225,7 +242,7 @@ void JoypadController::handleJoyButtonDown(const SDL_JoyButtonEvent &E) noexcept
 }
 
 #define HANDLE_HAT_BIT(flag) \
-if (diff & HAT_BIT(flag)) { \
+if ((diff & HAT_BIT(flag)) && !ui->keyBinding().resolve({Source::HAT, int(hat_event::flag)+4*E.hat}, NONE, value & HAT_BIT(flag))) { \
 	if (value & HAT_BIT(flag)) { \
 		if (hat_action[int(hat_event::flag)+4*E.hat].onPressAction) \
 			(ui->*hat_action[int(flag)+4*E.hat].onPressAction)(); \
@@ -343,7 +360,7 @@ joy_button_action JoypadController::getButtonActionFromString(std::string &actio
 	action.onPressAction = nullptr;
 	action.onReleaseAction = nullptr;
 
-	if(actionStr[actionStr.size()-1] == ')') { // It's a command
+	if(!actionStr.empty() && actionStr[actionStr.size()-1] == ')') { // It's a command
 
 		if(buttonNumber == -1)
 			return action;

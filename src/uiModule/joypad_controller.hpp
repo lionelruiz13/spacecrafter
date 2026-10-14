@@ -43,6 +43,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "uiModule/key_binding.hpp"
 // #include "tools/app_settings.hpp"
 
 #ifndef _JOYPAD_CONTROLLER_HPP_
@@ -108,6 +109,11 @@ public:
 	inline void setMode(bool value) {
 		mode = value;
 	}
+
+	// Return the ini key naming this button or hat direction
+	static std::string name(const KeyBinding::Base &base);
+	// Return in base the button or hat direction an upper-case ini key names, false for any other token
+	static bool parse(const std::string &token, KeyBinding::Base &base);
 
 private:
 

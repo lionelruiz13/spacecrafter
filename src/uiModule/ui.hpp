@@ -134,9 +134,6 @@ public:
 		FlagNumberPrint = _value;
 	}
 
-	//! handle Joystick Hat
-	void handleJoyHat(SDL_JoyHatEvent E);
-
 	void handleInputs();
 
 	void moveMouseAlt(double x);

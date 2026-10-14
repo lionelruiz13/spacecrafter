@@ -28,22 +28,24 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <SDL2/SDL_scancode.h>
 
 // Hold the scripts bound on the press and the release of keys, looked up before the native handlers
 class KeyBinding {
 public:
 	enum class Scope : char {GLOBAL, SCRIPT, ONCE};
+	enum class Source : char {KEY, BUTTON, HAT};
+	// Name a scancode, a joystick button or a hat direction by its index within its source
+	using Base = std::pair<Source, int>;
 
 	// Register a script, empty for the default, on one event of a key; false with the reason for an unknown key
 	bool bind(const std::string &key, bool release, const std::string &script, Scope scope, std::string &reason);
 	// Run the live binding of this event and return true; false means the default
-	bool resolve(SDL_Scancode key, uint8_t plane, bool pressed);
+	bool resolve(Base base, uint8_t plane, bool pressed);
 	// Drop every script-scoped binding, the execution ended
 	void endScript();
 
 private:
-	using Key = std::pair<SDL_Scancode, uint8_t>;
+	using Key = std::pair<Base, uint8_t>;
 	struct Entry {
 		std::string script;
 		Scope scope;
@@ -56,7 +58,7 @@ private:
 	static std::string name(const Key &key);
 
 	std::map<Key, std::vector<Entry>> chains[2];	// press, release; the key "*" is SDL_SCANCODE_UNKNOWN
-	std::map<SDL_Scancode, Held> held;
+	std::map<Base, Held> held;
 };
 
 #endif // _KEY_BINDING_HPP_

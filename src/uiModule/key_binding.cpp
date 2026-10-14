@@ -24,12 +24,14 @@
 #include <algorithm>
 #include <cctype>
 #include <iterator>
+#include <SDL2/SDL_scancode.h>
 #include "uiModule/key_binding.hpp"
+#include "uiModule/joypad_controller.hpp"
 #include "uiModule/ui.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScript.hpp"
 
-static const std::pair<SDL_Scancode, uint8_t> ANY_KEY{SDL_SCANCODE_UNKNOWN, NONE};
+static const std::pair<KeyBinding::Base, uint8_t> ANY_KEY{{KeyBinding::Source::KEY, SDL_SCANCODE_UNKNOWN}, NONE};
 
 // Name each base key by its SDL_SCANCODE_ suffix and each modifier by its MODIFIER identifier
 #define KEY(x) {#x, SDL_SCANCODE_##x}
@@ -85,7 +87,8 @@ bool KeyBinding::bind(const std::string &token, bool release, const std::string 
 	Key key;
 	if (!parse(token, key)) {
 		reason = "unknown key '" + token + "': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name "
-		         "without SDL_SCANCODE_, such as SHIFT+KP_8, or * for every key";
+		         "without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, "
+		         "no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key";
 		return false;
 	}
 	auto &events = chains[release];
@@ -102,10 +105,10 @@ bool KeyBinding::bind(const std::string &token, bool release, const std::string 
 	return true;
 }
 
-bool KeyBinding::resolve(SDL_Scancode key, uint8_t plane, bool pressed)
+bool KeyBinding::resolve(Base base, uint8_t plane, bool pressed)
 {
-	auto press = held.find(key);
-	if (pressed && press != held.end())
+	auto press = held.find(base);
+	if (pressed && press != held.end() && base.first == Source::KEY)
 		return press->second.taken;
 	if (!pressed) {
 		if (press == held.end())
@@ -114,7 +117,7 @@ bool KeyBinding::resolve(SDL_Scancode key, uint8_t plane, bool pressed)
 		held.erase(press);
 	}
 	auto &events = chains[!pressed];
-	auto chain = events.find({key, plane});
+	auto chain = events.find({base, plane});
 	if (chain == events.end())
 		chain = events.find(ANY_KEY);
 	bool taken = false;
@@ -126,12 +129,12 @@ bool KeyBinding::resolve(SDL_Scancode key, uint8_t plane, bool pressed)
 				events.erase(chain);
 		}
 		if (!top.script.empty()) {
-			EventRecorder::getInstance()->queue(new ScriptEvent(top.script, name({key, plane})));
+			EventRecorder::getInstance()->queue(new ScriptEvent(top.script, name({base, plane})));
 			taken = true;
 		}
 	}
 	if (pressed)
-		held[key] = {plane, taken};
+		held[base] = {plane, taken};
 	return taken;
 }
 
@@ -155,6 +158,10 @@ bool KeyBinding::parse(const std::string &token, Key &key)
 	}
 	std::string rest = token;
 	std::transform(rest.begin(), rest.end(), rest.begin(), ::toupper);
+	if (JoypadController::parse(rest, key.first)) {
+		key.second = NONE;
+		return true;
+	}
 	uint8_t plane = NONE;
 	for (std::size_t plus = rest.find('+'); plus != std::string::npos; plus = rest.find('+')) {
 		const std::string prefix = rest.substr(0, plus);
@@ -167,7 +174,7 @@ bool KeyBinding::parse(const std::string &token, Key &key)
 	}
 	for (const auto &scancode : SCANCODES) {
 		if (rest == scancode.name) {
-			key = {scancode.code, plane};
+			key = {{Source::KEY, scancode.code}, plane};
 			return true;
 		}
 	}
@@ -176,13 +183,15 @@ bool KeyBinding::parse(const std::string &token, Key &key)
 
 std::string KeyBinding::name(const Key &key)
 {
+	if (key.first.first != Source::KEY)
+		return JoypadController::name(key.first);
 	std::string token;
 	for (const auto &m : MODIFIERS) {
 		if (key.second & m.plane)
 			token += std::string(m.name) + "+";
 	}
 	for (const auto &scancode : SCANCODES) {
-		if (scancode.code == key.first)
+		if (scancode.code == key.first.second)
 			return token + scancode.name;
 	}
 	return std::string();
