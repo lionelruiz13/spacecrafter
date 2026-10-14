@@ -1,0 +1,22 @@
+{
+  "command": "camera",
+  "completable": [
+    "true"
+  ],
+  "default": "on `follow_rotation`: absent -> no; on `move_lat`, `move_lon`, `raise_height` and `lower_height`: absent -> \"command 'camera <action>' : missing value\"",
+  "default_literal": null,
+  "doc": "On `action follow_rotation`, whether the view turns with the body: write exactly the word true for yes; on the four held moves (`move_lat`, `move_lon`, `raise_height`, `lower_height`), how fast to keep moving.",
+  "kind": "key",
+  "name": "value",
+  "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar -- the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here. On `move_lat`, `move_lon`, `raise_height` and `lower_height` the number is an order HELD until the next one on its axis: each frame the engine adds the joystick's push to it, keeps the sum within -1 to 1 and moves by its cube (src/coreModule/core.cpp:1937-1962), so a number beyond the bounds acts as the bound; `raise_height` and `lower_height` share ONE order, the later replacing the earlier, `value 0` on one of them stops only its own direction, and with no range check a negative number on either moves the other way (src/coreModule/core.cpp:1810-1824).",
+  "present": true,
+  "required": "conditional",
+  "source": "app_command_interface.cpp:4496-4500 (follow_rotation), :4426-4431 (move_lat, move_lon, raise_height, lower_height) -> src/coreModule/core.cpp:1810-1834, 1937-1962 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,239)",
+  "value_docs": {},
+  "value_domain": "on `follow_rotation`: string compared literally against \"true\"; on `move_lat`, `move_lon`, `raise_height` and `lower_height`: number(evalDouble) -- $-variable substitution possible",
+  "values": [
+    "true",
+    "anything else = no",
+    "<number> (on move_lat, move_lon, raise_height, lower_height)"
+  ]
+}

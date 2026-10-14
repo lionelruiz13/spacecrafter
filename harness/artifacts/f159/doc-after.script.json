@@ -1,0 +1,206 @@
+{
+  "alias_of": null,
+  "args": {
+    "action": {
+      "completable": [
+        "acquire",
+        "bind",
+        "cancelrecord",
+        "default",
+        "end",
+        "faster",
+        "pause",
+        "play",
+        "record",
+        "release",
+        "resume",
+        "slower"
+      ],
+      "default": "absent -> `speed` is used instead; both absent -> \"command_'script' : missing action argument\"; an unknown value -> \"command_script : unknown parameter from 'action' argument\"",
+      "default_literal": null,
+      "doc": "What to do.",
+      "notes": "",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2844, 2848-2926 (W_ACTION=\"action\" base_command_interface.hpp:81; W_END=\"end\" :153, W_PLAY=\"play\" :154, W_RECORD=\"record\" :84, W_CANCEL=\"cancelrecord\" :155, W_PAUSE=\"pause\" :156, W_RESUME=\"resume\" :164, W_FASTER=\"faster\" :157, W_SLOWER=\"slower\" :158, W_DEFAULT=\"default\" :139, W_ACQUIRE=\"acquire\" :322, W_RELEASE=\"release\" :323, W_BIND=\"bind\" :325)",
+      "value_docs": {
+        "acquire": "take the global lock (only with `lock global`)",
+        "bind": "make a key run a script when it is pressed, released or both: `key` names the key, `press` and `release` the scripts, `scope` how long the binding lasts",
+        "cancelrecord": "stop recording and throw the recording away",
+        "default": "run the script at its normal speed",
+        "end": "stop the running script and clear what it put on screen: texts, music and every non-permanent picture",
+        "faster": "run the script faster",
+        "pause": "hold the running script where it is",
+        "play": "start the script named by `filename`",
+        "record": "start writing every command that follows into the file named by `filename`",
+        "release": "give the global lock back (only with `lock global`)",
+        "resume": "let a held script go on",
+        "slower": "run the script slower"
+      },
+      "value_domain": "enumerated",
+      "values": [
+        "end",
+        "play",
+        "record",
+        "cancelrecord",
+        "pause",
+        "resume",
+        "faster",
+        "slower",
+        "default",
+        "acquire",
+        "release",
+        "bind"
+      ]
+    },
+    "filename": {
+      "completable": [],
+      "default": "absent or empty with `action play` -> the line falls through to \"command_script : unknown parameter from 'action' argument\"",
+      "default_literal": null,
+      "doc": "The script file to play, or the file to record into.",
+      "notes": "Sharp edge: the name is treated as a VARIABLE and evaluated only when it does NOT look like it already has a three-letter extension - the test is 'shorter than 4 characters, or the fourth character from the end is not a dot' (:2846-2847). On `action play` the file is looked for in the script folder and the folder it is found in becomes the script path used by later commands (:2852-2857).",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2845-2847, 2851-2860 (W_FILENAME=\"filename\" base_command_interface.hpp:79)",
+      "value_docs": {},
+      "value_domain": "string, sometimes evaluated - see notes",
+      "values": []
+    },
+    "key": {
+      "completable": [],
+      "default": "absent -> inside a script started by a key binding, that key; anywhere else -> \"bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'\"; a token the engine cannot read -> \"unknown key '<key>': write [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key\"",
+      "default_literal": null,
+      "doc": "The key, joystick button or hat direction that runs the scripts; left out inside a script a key started, that key.",
+      "notes": "The modifiers are part of the key: SHIFT+KP_8 and KP_8 are two keys, each with its own bindings (src/uiModule/key_binding.cpp:165-177 @ 52568219).",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2885, 2890-2891, 2909 -> src/uiModule/key_binding.cpp:89-91, 155-180 @ 52568219 (W_KEY=\"key\", base_command_interface.hpp:326)",
+      "value_docs": {},
+      "value_domain": "a key token, in any case: [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_ (such as SHIFT+KP_8), the modifiers accepted in any order; a joystick button or hat direction as BUTTON<n> or HAT<n>_<UP|DOWN|LEFT|RIGHT>, with no modifier and no _ALT; or * for every key",
+      "values": []
+    },
+    "lock": {
+      "completable": [
+        "global"
+      ],
+      "default": "absent or any other value with `action acquire`/`action release` -> nothing happens and the command still reports SUCCESS",
+      "default_literal": null,
+      "doc": "Takes or gives back the lock that keeps two scripts from running at once.",
+      "notes": "Only read on the `acquire` and `release` paths (:2876-2883); on every other action it is ignored.",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2877, 2881 (W_LOCK=\"lock\" base_command_interface.hpp:321, W_GLOBAL=\"global\" :324)",
+      "value_docs": {
+        "global": "the one lock shared by every script"
+      },
+      "value_domain": "enumerated",
+      "values": [
+        "global"
+      ]
+    },
+    "press": {
+      "completable": [],
+      "default": "absent -> the key's press binding is left as it is; `press` and `release` both absent -> \"bind: give 'press <script|->', 'release <script|->' or both\"; a name found in neither directory -> \"bind: no script '<name>' as given, in the running script's directory or in the scripts directory\"",
+      "default_literal": null,
+      "doc": "The script to run when the key is pressed, or - for no script, so that the key does what it does by default.",
+      "notes": "",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2887-2889, 2894-2904, 2907-2909 (W_PRESS=\"press\", base_command_interface.hpp:327)",
+      "value_docs": {
+        "-": "no script: the key does its own action"
+      },
+      "value_domain": "a script name, evaluated as a variable unless it ends in a three-letter extension and looked for in the running script's directory or in the scripts directory; or -",
+      "values": [
+        "<script name>",
+        "-"
+      ]
+    },
+    "release": {
+      "completable": [],
+      "default": "absent -> the key's release binding is left as it is; `press` and `release` both absent -> \"bind: give 'press <script|->', 'release <script|->' or both\"; a name found in neither directory -> \"bind: no script '<name>' as given, in the running script's directory or in the scripts directory\"",
+      "default_literal": null,
+      "doc": "The script to run when the key is released, or - for no script, so that the key does what it does by default.",
+      "notes": "The release that runs is the one bound to the key as it was PRESSED: press SHIFT+KP_8, let go of SHIFT, then of KP_8, and the release of SHIFT+KP_8 runs (src/uiModule/key_binding.cpp:113-118 @ 52568219). The same word is also a value of `action`, which gives the global lock back.",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2887-2889, 2894-2904, 2907-2909 (W_RELEASE=\"release\", base_command_interface.hpp:323)",
+      "value_docs": {
+        "-": "no script: the key does its own action"
+      },
+      "value_domain": "a script name, evaluated as a variable unless it ends in a three-letter extension and looked for in the running script's directory or in the scripts directory; or -",
+      "values": [
+        "<script name>",
+        "-"
+      ]
+    },
+    "scope": {
+      "completable": [
+        "global",
+        "once",
+        "script"
+      ],
+      "default": "absent -> global; any other word -> \"bind: unknown scope '<scope>' - write global, script or once\"",
+      "default_literal": null,
+      "doc": "How long the binding lasts: until the next global binding, until the running script ends, or until it has run once.",
+      "notes": "",
+      "present": true,
+      "required": "false",
+      "source": "app_command_interface.cpp:2886, 2892-2893, 2905-2906, 257-259 -> src/uiModule/key_binding.cpp:94-104, 125-130, 141-151 @ 52568219 (W_SCOPE=\"scope\", W_GLOBAL=\"global\", W_SCRIPT=\"script\", W_ONCE=\"once\": base_command_interface.hpp:328,324,330,329)",
+      "value_docs": {
+        "global": "replace every binding of this key and event with this one (with key *, every key's bindings of that event); it stays until the next global binding",
+        "once": "stack it on the key's binding until it has run once, then remove it",
+        "script": "stack it on the key's binding until the running script ends, then remove it"
+      },
+      "value_domain": "enumerated",
+      "values": [
+        "global",
+        "script",
+        "once"
+      ]
+    },
+    "speed": {
+      "completable": [
+        "default",
+        "faster",
+        "slower"
+      ],
+      "default": "absent -> `action` must be given instead; an unknown value -> \"command_script : unknown parameter from 'speed' argument\"",
+      "default_literal": null,
+      "doc": "Change how fast the running script goes, without an `action`.",
+      "notes": "Only read when no `action` is written: the action block always returns (:2926).",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2929-2939 (W_SPEED=\"speed\" base_command_interface.hpp:159)",
+      "value_docs": {
+        "default": "back to the normal speed",
+        "faster": "run faster",
+        "slower": "run slower"
+      },
+      "value_domain": "enumerated",
+      "values": [
+        "faster",
+        "slower",
+        "default"
+      ]
+    }
+  },
+  "args_complete": true,
+  "args_source": "",
+  "doc": "Start, stop, pause or speed up a script, or record what is being done into a new script.",
+  "family": null,
+  "key_grammar": null,
+  "keys": [
+    "action",
+    "filename",
+    "key",
+    "lock",
+    "press",
+    "release",
+    "scope",
+    "speed"
+  ],
+  "kind": "command",
+  "name": "script",
+  "registration": "app_command_init.cpp:81 (ACP_CN_SCRIPT = \"script\", base_command_interface.hpp:382)"
+}

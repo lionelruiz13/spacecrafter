@@ -1,0 +1,108 @@
+[  1%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_tokenizer.cpp.o
+[  3%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_document.cpp.o
+[  3%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_docindex.cpp.o
+[  5%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_sscheck.cpp.o
+[  5%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_grammar.cpp.o
+[  7%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_screen.dir/src/ftxui/screen/box.cpp.o
+[  7%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_docjson.cpp.o
+[  8%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_check.cpp.o
+[  9%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_screen.dir/src/ftxui/screen/color.cpp.o
+[ 10%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_screen.dir/src/ftxui/screen/color_info.cpp.o
+[ 11%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_screen.dir/src/ftxui/screen/screen.cpp.o
+[ 12%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_screen.dir/src/ftxui/screen/string.cpp.o
+[ 13%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_screen.dir/src/ftxui/screen/terminal.cpp.o
+[ 14%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_editcore.cpp.o
+[ 15%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_tcpclient.cpp.o
+[ 16%] Building CXX object CMakeFiles/scedit_core.dir/src/sc_mcp.cpp.o
+[ 17%] Linking CXX static library libftxui_screen.a
+[ 17%] Built target ftxui_screen
+[ 18%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/automerge.cpp.o
+[ 19%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/blink.cpp.o
+[ 20%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/bold.cpp.o
+[ 21%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/hyperlink.cpp.o
+[ 22%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/border.cpp.o
+[ 23%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/box_helper.cpp.o
+[ 24%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/canvas.cpp.o
+[ 25%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/clear_under.cpp.o
+[ 26%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/color.cpp.o
+[ 27%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/composite_decorator.cpp.o
+[ 28%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/dbox.cpp.o
+[ 29%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/dim.cpp.o
+[ 30%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/flex.cpp.o
+[ 31%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/flexbox.cpp.o
+[ 32%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/flexbox_config.cpp.o
+[ 34%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/flexbox_helper.cpp.o
+[ 35%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/focus.cpp.o
+[ 36%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/frame.cpp.o
+[ 37%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/gauge.cpp.o
+[ 38%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/graph.cpp.o
+[ 39%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/gridbox.cpp.o
+[ 40%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/hbox.cpp.o
+[ 41%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/inverted.cpp.o
+[ 43%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/linear_gradient.cpp.o
+[ 43%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/node.cpp.o
+[ 44%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/node_decorator.cpp.o
+[ 45%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/paragraph.cpp.o
+[ 46%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/reflect.cpp.o
+[ 49%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/size.cpp.o
+[ 49%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/scroll_indicator.cpp.o
+[ 49%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/separator.cpp.o
+[ 50%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/spinner.cpp.o
+[ 51%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/strikethrough.cpp.o
+[ 52%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/table.cpp.o
+[ 53%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/text.cpp.o
+[ 54%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/underlined.cpp.o
+[ 55%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/underlined_double.cpp.o
+[ 56%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/util.cpp.o
+[ 57%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_dom.dir/src/ftxui/dom/vbox.cpp.o
+[ 58%] Linking CXX static library libscedit_core.a
+[ 58%] Built target scedit_core
+[ 60%] Building CXX object CMakeFiles/scedit_parse_oracle_test.dir/tests/parse_oracle_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/scedit_tokenizer_test.dir/tests/tokenizer_test.cpp.o
+[ 61%] Building CXX object CMakeFiles/scedit_editcore_test.dir/tests/editcore_test.cpp.o
+[ 62%] Building CXX object CMakeFiles/scedit_roundtrip_test.dir/tests/roundtrip_test.cpp.o
+[ 63%] Building CXX object CMakeFiles/scedit_tcpclient_test.dir/tests/tcpclient_test.cpp.o
+[ 64%] Linking CXX static library libftxui_dom.a
+[ 64%] Built target ftxui_dom
+[ 65%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/button.cpp.o
+[ 67%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/animation.cpp.o
+[ 68%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/catch_event.cpp.o
+[ 69%] Linking CXX executable scedit_parse_oracle_test
+[ 70%] Linking CXX executable scedit_roundtrip_test
+[ 70%] Built target scedit_parse_oracle_test
+[ 71%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/checkbox.cpp.o
+[ 72%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/collapsible.cpp.o
+[ 73%] Linking CXX executable scedit_tokenizer_test
+[ 73%] Built target scedit_roundtrip_test
+[ 74%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/component.cpp.o
+[ 74%] Built target scedit_tokenizer_test
+[ 75%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/component_options.cpp.o
+[ 76%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/container.cpp.o
+[ 77%] Linking CXX executable scedit_tcpclient_test
+[ 78%] Linking CXX executable scedit_editcore_test
+[ 78%] Built target scedit_tcpclient_test
+[ 79%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/dropdown.cpp.o
+[ 79%] Built target scedit_editcore_test
+[ 80%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/event.cpp.o
+[ 81%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/hoverable.cpp.o
+[ 82%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/input.cpp.o
+[ 83%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/loop.cpp.o
+[ 84%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/maybe.cpp.o
+[ 85%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/menu.cpp.o
+[ 86%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/modal.cpp.o
+[ 87%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/radiobox.cpp.o
+[ 88%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/renderer.cpp.o
+[ 89%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/resizable_split.cpp.o
+[ 90%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/screen_interactive.cpp.o
+[ 91%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/slider.cpp.o
+[ 92%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/terminal_input_parser.cpp.o
+[ 93%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/util.cpp.o
+[ 94%] Building CXX object third_party/ftxui/CMakeFiles/ftxui_component.dir/src/ftxui/component/window.cpp.o
+[ 95%] Linking CXX static library libftxui_component.a
+[ 95%] Built target ftxui_component
+[ 96%] Building CXX object CMakeFiles/scedit_tui.dir/src/sc_tui.cpp.o
+[ 97%] Linking CXX static library libscedit_tui.a
+[ 97%] Built target scedit_tui
+[ 98%] Building CXX object CMakeFiles/scedit.dir/src/main.cpp.o
+[100%] Linking CXX executable scedit
+[100%] Built target scedit

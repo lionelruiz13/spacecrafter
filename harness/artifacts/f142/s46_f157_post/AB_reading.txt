@@ -1,0 +1,16 @@
+(Info) Execute_command define f142_mark_AB_# 1
+(Info) Execute_command deselect
+(Info) Execute_command media action stop
+(Info) Execute_command define a 1
+(Info) Execute_command zoom auto initial
+(Info) Execute_command define b 1
+F142VZM BUTTON1 P deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM BUTTON1 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM BUTTON3 P deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM BUTTON3 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM BUTTON7 P deltaAlt=0 deltaAz=0 deltaFov=-1 deltaLat=0 deltaLon=0
+F142VZM BUTTON7 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM HAT0 UP deltaAlt=1 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM HAT0 CENTERED deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM HAT0 LEFTUP deltaAlt=1 deltaAz=-1 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM HAT0 CENTERED deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0

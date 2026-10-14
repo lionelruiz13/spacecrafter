@@ -1,0 +1,27 @@
+FAIL  counts differ from tests/anchor-expected.txt
+--- recorded ---
+# anchor_gate record -- counts, not a silencer (README, Verification).
+# Edited deliberately: a count that moves means the ENGINE moved under
+# the grammar's citations, and somebody has to look at what.
+# Regenerate with: python3 tests/anchor_gate.py --record
+# Why: 2026-10-14, F158 (claude/INTENT/11.331.md): the pin MOVED to main @ 9d461bd5 in all six files; every reference re-resolved by content
+# Why: and the 162 that did not resolve read by hand (claude/harness/f75/read_table_f158.json): 145 of the 158 GONE re-anchored, 13 declared;
+# Why: lines / handler_body_lines / header_line derived and gated at the same pin; a reference's own @ <sha> honoured. Was: GONE 158, clean 2457, moved 4579, declared 4.
+clean                    7180
+handler_body_lines:clean 2
+header_line:clean        238
+lines:clean              127
+not-at-head(declared)    18
+skipped(_meta)           86
+--- got ---
+# anchor_gate record -- counts, not a silencer (README, Verification).
+# Edited deliberately: a count that moves means the ENGINE moved under
+# the grammar's citations, and somebody has to look at what.
+# Regenerate with: python3 tests/anchor_gate.py --record
+clean                    7280
+handler_body_lines:clean 2
+header_line:clean        248
+lines:clean              127
+not-at-head(declared)    18
+skipped(_meta)           86
+

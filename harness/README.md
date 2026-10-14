@@ -3214,6 +3214,8 @@ string map the sweep applied and `verify` reads back.
 
 **Round mode (F158, 2026-10-14, INTENT 11.331): moving the pin.** `f75_anchors.py <verb> --round f158` - `pins` READS each file's `_meta.anchor_pin` (and a reference's own `@ <sha>`) instead of recovering history (history dates when a string last changed: eleven commits for sc-grammar.json, not the tree its numbers are numbers of); `map` resolves every reference exactly as `anchor_gate.run()` does, its HEAD side at the round's NAMED target by `git show` (never the working tree: another task may edit the engine meanwhile), writes `f75/<round>/anchor_map.json` and the GONE table, and lists every inherited-file token whose written context names another file than the one chosen; `read-table-check` (every non-resolving reference has its row in `f75/read_table_<round>.json`, every row is used, every new line is in range); `sweep [--only a,b] [--dry]` (both halves, text-level, and the two colon-less classes `lines` / `header_line` written from the gate's own resolvers); `verify` (byte proof by inversion from the gz record); `flips` (every inherited-file token re-read at the new pin must name the file the map read). **Measured gotcha: a pin move re-runs the gate's content-scored file disambiguation on other text** - F158's first sweep flipped four readings (two loud ties, two silent), and three readings had been wrong since F75 / F80; the fix is a `FILE_OVERRIDES` row in the gate, never a heuristic. Five scedit record gates print anchors (`ui_selftest`, `lint_rules`, `history_list`, `check_json`, `doc_queries`): a sweep re-records them, and the criterion is digit-stripped identity. The gate itself runs at every acceptance whose stat touches `src/` (`fable-dispatch.md` section 0b step 4; 1.5 s, no build).
 
+**Adding words (F159, 2026-10-14, INTENT 11.332): a word the engine gained enters the grammar at the pin, in both halves.** The fragment first (`grammar/args/unit-N.json`, the unit of the command's handler), then the merged file, field-identical (`checkFragments`); the vocabulary token (macro, `header_line` = its `#define` at the pin, role, units) in the merged file only. Every new `file:line` is READ at the pin (`git diff <pin> HEAD -- <file>` empty = HEAD's lines); a file that moved since the pin is cited with its own `@ <sha>` - without it the gate reads the number at the pin, where it is another line (F159's decoy: `moved 2`). Every element of a line list carries its `:` - a number after a parenthetical label without one is invisible to the gate. Before `--record`: the plain gate must show 0 hard fails and only the count line, and the writer set must not touch a cited file (run F155's `artifacts/f155/gate_at.py HEAD` beside it: same tally = no contamination); `--record` writes ONLY the `--why` lines it is given, so pass the existing ones through (`grep '^# Why: '`) and add one. The five record gates print anchors, not command words: a new key's `doc` reaches `doc_queries` only through `--search`'s `total_matches` (scope `all`, key pages), so a word of `constellation lines colour` in a new key doc reds it - F159's decoy.
+
 ---
 
 ## F76 — the shipped corpus, dispositioned (`f76_corpus.py`, `f76_live.py`)
@@ -7019,3 +7021,25 @@ unknown return type read as `int`): cast `(short)`; (3) a hand-built press leave
 an SDL press can show whether SDL synthesises a release at a detach (it does, through the door: `s46_f154_post`). Not
 measured, F153's reading of SDL kept as the form: AD's press and release go in SEPARATE stops - two
 `SDL_JoystickSetVirtualButton` writes between two `SDL_JoystickUpdate` calls would collapse into no event.
+
+**Case O's image and the cache-key oracle (F157, INTENT 11.330).** Case O's image is again GENERATED and named by an
+ABSOLUTE path outside `~/.spacecrafter/`: `run/o.png` (4 x 4 RGBA, opaque white), written by the fixture writer beside
+`o.wav` - the form a show on a stick uses (INTENT D15: every path is accepted). On `bb3d8b5f` and every earlier binary
+the engine ABORTS at O's image line (`s46_f157_pre2/gdb.log`: `basic_string::substr: __pos (which is
+18446744073709551615) > this->size() (which is 65)`, SIGABRT on the loader thread; the driver then dies on a broken pipe
+and the run's END tail is not reached), so the field-texture substitute of case O's paragraph above holds for those
+binaries only; from F157's change on (`4368404c`, `s46_f157_post`: ALL PASS, 90 / 0) the absolute image loads. The key
+itself is checked WITHOUT the engine: `artifacts/f157/cachekey_oracle.py` replicates `s_texture::getCacheEntryName` /
+`getCacheName` on bytes with `std::string`'s throws over every file under `~/.spacecrafter/{textures,model3D,media}`
+(1807), in the form the engine composes (`textures/<x>`, relative to the curdir) and the absolute in-tree form;
+self-checks: F151's abort message to the byte, the cache directory's 27 `t-*.dat` names all among today's outputs;
+gates: today's entry key and cache file name unchanged on all 1807 x 2 (P2), the outside probes keep their leading `/`
+(cache file `_...`) and equal no in-tree key (P3 / P4). `artifacts/f157/cachekey_cpp.sh` then extracts the two
+functions from the code repo's HEAD and worktree (and `CallSystem::isAbsolute`), compiles them standalone and compares
+their output byte-exact with the oracle's tables: the replica checked against the compiled code, because the leg sees
+a renamed key only when a big texture loads (its coarse check is the cache listing, `ls ~/.spacecrafter/cache | grep
+'^t-' | md5sum`, `fb63700e`). Pitfalls, each measured: (1) in-tree texture names are RELATIVE (`textures/<x>`): a rule
+keyed on `.spacecrafter/` alone renames every field cache file (F157's first run, its STOP); (2) one launch on
+`bb3d8b5f` HUNG in case X (`s46_f157_pre`: the main thread in `syscall ()` at every interrupt, no signal - INTENT
+11.316 D8's class) and ran to the driver's 900 s bound, longer than a 600 s tool window: pass `F124_TIMEOUT=500` so a
+hang ends inside it, keep the hung record, re-run under a new label.

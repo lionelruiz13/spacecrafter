@@ -71,12 +71,17 @@ def fixtures():
     write_o()
     with wave.open(RUN + "/o.wav", "wb") as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(22050); w.writeframes(b"\x00\x00" * 22050)
+    import struct, zlib
+    chunk = lambda kind, data: struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
+    with open(O_IMAGE, "wb") as f:   # 4 x 4 RGBA, opaque white
+        f.write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 4, 4, 8, 6, 0, 0, 0))
+                + chunk(b"IDAT", zlib.compress((b"\x00" + b"\xff" * 16) * 4)) + chunk(b"IEND", b""))
 
 
 # Case O's show: line 5 opens an accepting `struct if`, line 6 a loop whose first pass outlasts the key.
 O_IF, O_LOOP = 5, 6
-# Show a field texture, read in place: an absolute image path outside ~/.spacecrafter/<dir>/ aborts the engine.
-O_IMAGE = os.path.expanduser("~/.spacecrafter/textures/n_genrc.png")
+# Show a generated image by an absolute path outside ~/.spacecrafter/: every path is accepted (INTENT D15).
+O_IMAGE = RUN + "/o.png"
 
 
 def write_o():

@@ -1,0 +1,9 @@
+extracted: today.inc 28 lines, after.inc 26 lines, isabsolute.inc 4 lines
+sources: HEAD 52568219, worktree s_texture.cpp md5 eeceee4e
+REL compiled today vs oracle today: IDENTICAL (1807 rows, md5 d1649b5c)
+REL compiled after vs oracle proposed_G2: IDENTICAL (1807 rows, md5 d1649b5c)
+ABS compiled today vs oracle today: IDENTICAL (1807 rows, md5 0163198e)
+ABS compiled after vs oracle proposed_G2: IDENTICAL (1807 rows, md5 0163198e)
+PROBES compiled today vs oracle today: IDENTICAL (12 rows, md5 8c62b2e3)
+PROBES compiled after vs oracle proposed_G2: IDENTICAL (12 rows, md5 8a7972b4)
+=== COMPILED CROSS-CHECK PASS ===

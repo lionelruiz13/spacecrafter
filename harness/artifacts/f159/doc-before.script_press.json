@@ -1,0 +1,7 @@
+{
+  "command": "script",
+  "did_you_mean": null,
+  "error": "unknown-name",
+  "message": "'script' has no key or family name 'press'",
+  "vocabulary": "the argument keys of 'script' (4 extracted, the file claims the list is complete)"
+}

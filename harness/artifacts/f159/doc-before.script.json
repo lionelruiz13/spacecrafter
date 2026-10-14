@@ -1,0 +1,125 @@
+{
+  "alias_of": null,
+  "args": {
+    "action": {
+      "completable": [
+        "acquire",
+        "cancelrecord",
+        "default",
+        "end",
+        "faster",
+        "pause",
+        "play",
+        "record",
+        "release",
+        "resume",
+        "slower"
+      ],
+      "default": "absent -> `speed` is used instead; both absent -> \"command_'script' : missing action argument\"; an unknown value -> \"command_script : unknown parameter from 'action' argument\"",
+      "default_literal": null,
+      "doc": "What to do.",
+      "notes": "",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2844, 2848-2926 (W_ACTION=\"action\" base_command_interface.hpp:81; W_END=\"end\" :153, W_PLAY=\"play\" :154, W_RECORD=\"record\" :84, W_CANCEL=\"cancelrecord\" :155, W_PAUSE=\"pause\" :156, W_RESUME=\"resume\" :164, W_FASTER=\"faster\" :157, W_SLOWER=\"slower\" :158, W_DEFAULT=\"default\" :139, W_ACQUIRE=\"acquire\" :322, W_RELEASE=\"release\" :323)",
+      "value_docs": {
+        "acquire": "take the global lock (only with `lock global`)",
+        "cancelrecord": "stop recording and throw the recording away",
+        "default": "run the script at its normal speed",
+        "end": "stop the running script and clear what it put on screen: texts, music and every non-permanent picture",
+        "faster": "run the script faster",
+        "pause": "hold the running script where it is",
+        "play": "start the script named by `filename`",
+        "record": "start writing every command that follows into the file named by `filename`",
+        "release": "give the global lock back (only with `lock global`)",
+        "resume": "let a held script go on",
+        "slower": "run the script slower"
+      },
+      "value_domain": "enumerated",
+      "values": [
+        "end",
+        "play",
+        "record",
+        "cancelrecord",
+        "pause",
+        "resume",
+        "faster",
+        "slower",
+        "default",
+        "acquire",
+        "release"
+      ]
+    },
+    "filename": {
+      "completable": [],
+      "default": "absent or empty with `action play` -> the line falls through to \"command_script : unknown parameter from 'action' argument\"",
+      "default_literal": null,
+      "doc": "The script file to play, or the file to record into.",
+      "notes": "Sharp edge: the name is treated as a VARIABLE and evaluated only when it does NOT look like it already has a three-letter extension - the test is 'shorter than 4 characters, or the fourth character from the end is not a dot' (:2846-2847). On `action play` the file is looked for in the script folder and the folder it is found in becomes the script path used by later commands (:2852-2857).",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2845-2847, 2851-2860 (W_FILENAME=\"filename\" base_command_interface.hpp:79)",
+      "value_docs": {},
+      "value_domain": "string, sometimes evaluated - see notes",
+      "values": []
+    },
+    "lock": {
+      "completable": [
+        "global"
+      ],
+      "default": "absent or any other value with `action acquire`/`action release` -> nothing happens and the command still reports SUCCESS",
+      "default_literal": null,
+      "doc": "Takes or gives back the lock that keeps two scripts from running at once.",
+      "notes": "Only read on the `acquire` and `release` paths (:2876-2883); on every other action it is ignored.",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2877, 2881 (W_LOCK=\"lock\" base_command_interface.hpp:321, W_GLOBAL=\"global\" :324)",
+      "value_docs": {
+        "global": "the one lock shared by every script"
+      },
+      "value_domain": "enumerated",
+      "values": [
+        "global"
+      ]
+    },
+    "speed": {
+      "completable": [
+        "default",
+        "faster",
+        "slower"
+      ],
+      "default": "absent -> `action` must be given instead; an unknown value -> \"command_script : unknown parameter from 'speed' argument\"",
+      "default_literal": null,
+      "doc": "Change how fast the running script goes, without an `action`.",
+      "notes": "Only read when no `action` is written: the action block always returns (:2926).",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:2929-2939 (W_SPEED=\"speed\" base_command_interface.hpp:159)",
+      "value_docs": {
+        "default": "back to the normal speed",
+        "faster": "run faster",
+        "slower": "run slower"
+      },
+      "value_domain": "enumerated",
+      "values": [
+        "faster",
+        "slower",
+        "default"
+      ]
+    }
+  },
+  "args_complete": true,
+  "args_source": "",
+  "doc": "Start, stop, pause or speed up a script, or record what is being done into a new script.",
+  "family": null,
+  "key_grammar": null,
+  "keys": [
+    "action",
+    "filename",
+    "lock",
+    "speed"
+  ],
+  "kind": "command",
+  "name": "script",
+  "registration": "app_command_init.cpp:81 (ACP_CN_SCRIPT = \"script\", base_command_interface.hpp:382)"
+}

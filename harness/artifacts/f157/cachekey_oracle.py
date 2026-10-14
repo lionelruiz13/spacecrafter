@@ -9,10 +9,13 @@
 # STATED = the rule of fable-dispatch F157 / INTENT 11.329 (c)1: a name containing ".spacecrafter/" keeps today's key;
 # any other name -> its whole path, leading '/' dropped, unabbreviated, the four-character cut; cache name = entry with
 # '/' -> '-' plus ".dat".
-# PROPOSED = today's key wherever today returns one; where today throws: an absolute name without ".spacecrafter/" ->
-# its whole path minus the leading '/', unabbreviated; a name with no directory component -> the file name; the same
-# four-character cut. Cache name in two forms: G1 = entry + ".dat" (the stated composition), G2 = today's three-character
-# form on the same slice.
+# PROPOSED = the CORRECTED rule of the re-minted F157 (second run), replicating cacheSlice + the two cuts of
+# s_texture.cpp as built: a name containing ".spacecrafter/" -> the part after it, a RELATIVE name -> itself, in both the
+# first directory component abbreviated to its first letter; an ABSOLUTE name without ".spacecrafter/" -> itself whole,
+# its leading '/' KEPT (CallSystem::isAbsolute = std::filesystem::path::is_absolute, on POSIX "starts with '/'"); a
+# name with no '/' -> itself; the entry = the slice cut by four. Cache name in two forms: G2 (built) = the slice cut by
+# three + "dat", G1 (not built, P8's control) = entry + ".dat"; in both a leading '/' -> '_', every other '/' -> '-'.
+# (The first run's PROPOSED dropped the leading '/': its record is stop/.)
 # Inputs: every file under ~/.spacecrafter/{textures,model3D,media}, in two forms - REL as the engine composes them
 # (AppSettings' directories are relative to the curdir ~/.spacecrafter: "textures/<x>") and ABS
 # ("<home>/.spacecrafter/<dir>/<x>", the mandate's form).
@@ -107,25 +110,29 @@ def stated_entry(name):
 
 
 def proposed_slice(name):
-    p = name.find(SPC)
-    if p >= 0:
-        return abbreviate(name[p + 14:])
-    if name.startswith(b"/"):
-        return name[1:]
-    return abbreviate(name)
+    pos = find(name, SPC)
+    if pos == NPOS and name.startswith(b"/"):
+        return name
+    rel = name if pos == NPOS else substr(name, u(pos + 14))
+    slash = find(rel, b"/")
+    return rel if slash == NPOS else rel[:1] + substr(rel, slash)
 
 
 def proposed_entry(name):
     return cut4(proposed_slice(name))
 
 
+def file_form(f):
+    return ((b"_" + f[1:]) if f[:1] == b"/" else f).replace(b"/", b"-")
+
+
 def dash_dat(entry):
-    return entry.replace(b"/", b"-") + b".dat"
+    return file_form(entry + b".dat")
 
 
 def g2(name):
-    s = proposed_slice(name).replace(b"/", b"-")
-    return substr(s, 0, u(len(s) - 3)) + b"dat"
+    s = proposed_slice(name)
+    return file_form(substr(s, 0, u(len(s) - 3)) + b"dat")
 
 
 RULES = {
@@ -228,6 +235,45 @@ def main():
             (se, e), (sc, c) = run(fe, n), run(fc, n)
             p("  %-48s %-12s %-5s %-28s %-5s %s" % (show(n), rule, se, show(e), sc, show(c)))
     p("=== ORACLE SELF-CHECKS %s ===" % ("PASS" if ok_all else "FAIL"))
+
+    # P2 on the built form: every in-tree key unchanged, both functions, both name forms
+    p2 = all(b[1] == a[1] and b[2] == a[2] for form in ("REL", "ABS")
+             for b, a in zip(tables[(form, "today")], tables[(form, "proposed_G2")]))
+    p("=== P2 proposed_G2 entry / cache-name diffs 0 / 0 in REL and ABS %s ===" % ("PASS" if p2 else "FAIL"))
+
+    # P3 / P4 on the built form: the mandate's seven probes and case O's fixture key with no throw; an outside name
+    # keeps its leading '/' in the entry and writes it '_' in the file; no probe key equals an in-tree key
+    fe, fc = RULES["proposed_G2"]
+    tree = [r for form in ("REL", "ABS") for r in tables[(form, "proposed_G2")]]
+    tree_e, tree_c = {e for _, (_, e), _ in tree}, {c for _, _, (_, c) in tree}
+    seven = [b"/media/stick/img.png", b"/mnt/stick/img.png", b"/t/bodies/earth.jpg", b"/home/x/.spacecrafter",
+             b"/home/x/.spacecrafter/foo.png", b"foo.png", b"a/b.png", o_png]
+    p34 = True
+    for n in seven:
+        (se, e), (sc, c) = run(fe, n), run(fc, n)
+        outside = n.startswith(b"/") and SPC not in n
+        ok = se == sc == "OK" and (not outside or (e[:1] == b"/" and c[:1] == b"_")) \
+            and e not in tree_e and c not in tree_c and not c.startswith(b"-")
+        p34 &= ok
+        p("P3/P4 %-5s %-66s entry %-58s file %s" % ("PASS" if ok else "FAIL", show(n), show(e), show(c)))
+    slash = sorted(show(e) for e in tree_e if e.startswith(b"/"))
+    dash = sorted(show(c) for c in tree_c if c.startswith(b"-"))
+    p("P3 in-tree entry keys starting with '/':", len(slash), slash[:3], "| in-tree cache names starting with '-':",
+      len(dash), dash[:3])
+    p34 &= not slash and not dash
+    p("=== P3/P4 probes %s ===" % ("PASS" if p34 else "FAIL"))
+
+    # the inputs, one name per line, for the compiled cross-check (cachekey_cpp.sh)
+    for form, names in (("REL", [r for _, r in files]), ("ABS", [DATA + r for _, r in files]), ("PROBES", probes)):
+        assert not any(b"\n" in n or b"\t" in n for n in names)
+        with open(os.path.join(OUT, "inputs_%s.txt" % form), "wb") as f:
+            f.write(b"".join(n + b"\n" for n in names))
+    for rule, (fe, fc) in RULES.items():
+        with open(os.path.join(OUT, "%s_PROBES.tsv" % rule), "wb") as f:
+            for n in probes:
+                (se, e), (sc, c) = run(fe, n), run(fc, n)
+                f.write(b"\t".join([n, se.encode(), e, sc.encode(), c]) + b"\n")
+    ok_all &= p2 and p34
     text = "\n".join(out) + "\n"
     with open(os.path.join(OUT, "oracle_run.txt"), "w") as f:
         f.write(text)

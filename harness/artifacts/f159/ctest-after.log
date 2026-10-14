@@ -1,0 +1,43 @@
+Test project /home/claude/spacecrafter/util/scedit/build-f159
+      Start  1: tokenizer
+ 1/19 Test  #1: tokenizer ........................   Passed    0.00 sec
+      Start  2: parse_oracle
+ 2/19 Test  #2: parse_oracle .....................   Passed    0.34 sec
+      Start  3: editcore
+ 3/19 Test  #3: editcore .........................   Passed    5.68 sec
+      Start  4: roundtrip
+ 4/19 Test  #4: roundtrip ........................   Passed    0.25 sec
+      Start  5: ui_selftest
+ 5/19 Test  #5: ui_selftest ......................   Passed    1.87 sec
+      Start  6: seed_gate
+ 6/19 Test  #6: seed_gate ........................   Passed    0.07 sec
+      Start  7: lint_rules
+ 7/19 Test  #7: lint_rules .......................   Passed    0.05 sec
+      Start  8: history_list
+ 8/19 Test  #8: history_list .....................   Passed    0.19 sec
+      Start  9: check_json
+ 9/19 Test  #9: check_json .......................   Passed    0.05 sec
+      Start 10: doc_queries
+10/19 Test #10: doc_queries ......................   Passed    0.92 sec
+      Start 11: mcp_protocol
+11/19 Test #11: mcp_protocol .....................   Passed    4.94 sec
+      Start 12: tcp_client
+12/19 Test #12: tcp_client .......................   Passed    6.78 sec
+      Start 13: pty_keys
+13/19 Test #13: pty_keys .........................   Passed   10.68 sec
+      Start 14: anchor_gate
+14/19 Test #14: anchor_gate ......................   Passed    1.51 sec
+      Start 15: corpus_gate
+15/19 Test #15: corpus_gate ......................   Passed    0.07 sec
+      Start 16: shipped_corpus_gate
+16/19 Test #16: shipped_corpus_gate ..............   Passed    3.47 sec
+      Start 17: ss_lint_rules
+17/19 Test #17: ss_lint_rules ....................   Passed    0.05 sec
+      Start 18: ss_corpus_gate
+18/19 Test #18: ss_corpus_gate ...................   Passed    0.05 sec
+      Start 19: field_corpus_gate
+19/19 Test #19: field_corpus_gate ................   Passed    0.07 sec
+
+100% tests passed, 0 tests failed out of 19
+
+Total Test time (real) =  37.06 sec

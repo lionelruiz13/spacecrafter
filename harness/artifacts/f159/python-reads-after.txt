@@ -1,0 +1,19 @@
+script: halves differ in [] | action values 12, completable == values True, value_docs 12 | args ['action', 'filename', 'key', 'lock', 'press', 'release', 'scope', 'speed'] | branches 1 ['action bind']
+   script.key: required 'conditional', fields ['default', 'doc', 'notes', 'required', 'source', 'value']
+   script.press: required 'conditional', fields ['completable', 'default', 'doc', 'required', 'source', 'value', 'value_docs', 'values']
+   script.release: required 'conditional', fields ['completable', 'default', 'doc', 'notes', 'required', 'source', 'value', 'value_docs', 'values']
+   script.scope: required False, fields ['completable', 'default', 'doc', 'required', 'source', 'value', 'value_docs', 'values']
+camera: halves differ in [] | action values 17, completable == values True, value_docs 17 | args ['action', 'altitude', 'body', 'body_name', 'coef', 'coord_func', 'duration', 'filename', 'follow_rotation', 'name', 'orbit_center_x', 'orbit_center_y', 'orbit_center_z', 'parent', 'state', 'target', 'type', 'value', 'x', 'y', 'z'] | branches 20 ['action move_lat', 'action move_lon', 'action raise_height', 'action lower_height']
+   camera.value: required 'conditional', fields ['completable', 'default', 'doc', 'notes', 'required', 'source', 'value', 'values']
+vocabulary: tokens 248, _expected_count 248, both_roles 9, release {'role': 'both', 'key_units': [2], 'value_units': [2]}, _source 'W_* defines, base_command_interface.hpp:78-330'
+   move_lat      {'macro': 'W_MOVE_LAT', 'header_line': 249, 'role': 'value', 'value_units': [4]}
+   move_lon      {'macro': 'W_MOVE_LON', 'header_line': 250, 'role': 'value', 'value_units': [4]}
+   raise_height  {'macro': 'W_RAISE_HEIGHT', 'header_line': 251, 'role': 'value', 'value_units': [4]}
+   lower_height  {'macro': 'W_LOWER_HEIGHT', 'header_line': 252, 'role': 'value', 'value_units': [4]}
+   bind          {'macro': 'W_BIND', 'header_line': 325, 'role': 'value', 'value_units': [2]}
+   key           {'macro': 'W_KEY', 'header_line': 326, 'role': 'key', 'key_units': [2]}
+   press         {'macro': 'W_PRESS', 'header_line': 327, 'role': 'key', 'key_units': [2]}
+   scope         {'macro': 'W_SCOPE', 'header_line': 328, 'role': 'key', 'key_units': [2]}
+   once          {'macro': 'W_ONCE', 'header_line': 329, 'role': 'value', 'value_units': [2]}
+   script        {'macro': 'W_SCRIPT', 'header_line': 330, 'role': 'value', 'value_units': [2]}
+expected_counts {'commands': 63, 'flags': 97, 'set_names': 43, 'color_names': 46, 'obsolete_tokens': 7, 'reserved_variables': 24, 'font_targets': 10} | amended lines 9 | anchor_pin main @ 9d461bd5

@@ -1,0 +1,402 @@
+000000010755: (Info ): ScriptMgr: script end
+000000011070: (Info ): End of loading SC
+000000011097: (Info ): ScriptMgr: script end
+000000011099: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000011099: (Info ): Execute_command deselect
+000000011099: (Info ): Execute_command deselect
+000000011099: (Info ): Execute_command timerate rate 1
+000000011099: (Info ): Execute_command flag subtitle off
+000000011099: (Info ): End of script
+000000011100: (Info ): Execute_command script action end
+000000011100: (Info ): ScriptMgr: script end
+000000020898: (Info ): Execute_command timerate rate 0
+000000023409: (Info ): Execute_command script action bind key * press - release -
+000000023809: (Info ): Execute_command define f142_mark_A_1 1
+000000024209: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000024918: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000024918: (Info ): Execute_command define f142_a 1
+000000024918: (Info ): End of script
+000000024918: (Info ): Execute_command script action end
+000000024918: (Info ): ScriptMgr: script end
+000000026098: (Info ): Execute_command script action bind key * press - release -
+000000026514: (Info ): Execute_command define f142_mark_B_2 1
+000000026914: (Info ): Execute_command script action bind key SHIFT+KP_8 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rs.sts
+000000027314: (Info ): Execute_command script action bind key KP_8 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rp.sts
+000000028261: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rs.sts
+000000028261: (Info ): Execute_command define f142_rs 1
+000000028261: (Info ): End of script
+000000028261: (Info ): Execute_command script action end
+000000028261: (Info ): ScriptMgr: script end
+000000029416: (Info ): Execute_command camera action move_lat value 0
+000000029816: (Info ): Execute_command script action bind key * press - release -
+000000030216: (Info ): Execute_command define f142_mark_C_3 1
+000000030616: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000031337: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000031337: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000031337: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000031337: (Info ): Execute_command define f142_a 1
+000000031337: (Info ): Execute_command set milky_way_texture milkyways/mw01.png 
+000000031498: (Info ): Execute_command set milky_way_intensity 1.0
+000000031498: (Info ): Execute_command flag nebulae off
+000000031498: (Info ): Execute_command flag bright_nebulae off
+000000031498: (Info ): Execute_command flag stars on
+000000031498: (Info ): Execute_command flag planets on
+000000031498: (Info ): Execute_command flag atmosphere off
+000000031498: (Info ): Execute_command flag landscape off
+000000031498: (Info ): Execute_command set milky_way_texture milkyways/mw01.png 
+000000031498: (Info ): Execute_command set milky_way_intensity 1.0
+000000031498: (Info ): Execute_command flag nebulae off
+000000031498: (Info ): Execute_command flag bright_nebulae off
+000000031498: (Info ): Execute_command flag stars on
+000000031498: (Info ): Execute_command flag planets on
+000000031498: (Info ): Execute_command flag atmosphere off
+000000031498: (Info ): Execute_command flag landscape off
+000000031498: (Info ): End of script
+000000031498: (Info ): Execute_command script action end
+000000031498: (Info ): ScriptMgr: script end
+000000032505: (Info ): Execute_command script action bind key * press - release -
+000000032922: (Info ): Execute_command define f142_mark_D_4 1
+000000033321: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000033721: (Info ): Execute_command script action bind key KP_8 press -
+000000034433: (Info ): ScriptMgr: load scripts/fscripts/M08.sts
+000000034433: (Info ): Execute_command set milky_way_texture milkyways/mw08.png 
+000000034614: (Info ): Execute_command set milky_way_intensity 1.0
+000000034614: (Info ): Execute_command flag nebulae off
+000000034614: (Info ): Execute_command flag bright_nebulae off
+000000034614: (Info ): Execute_command flag stars off
+000000034614: (Info ): Execute_command flag planets off
+000000034614: (Info ): Execute_command flag atmosphere off
+000000034614: (Info ): Execute_command flag landscape off
+000000034614: (Info ): End of script
+000000034614: (Info ): Execute_command script action end
+000000034614: (Info ): ScriptMgr: script end
+000000035620: (Info ): Execute_command script action bind key * press - release -
+000000036019: (Info ): Execute_command define f142_mark_E_5 1
+000000036420: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000036820: (Info ): Execute_command script action bind key KP_1 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000037220: (Info ): Execute_command script action bind key KP_8 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rp.sts
+000000037620: (Info ): Execute_command script action bind key * press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/c.sts scope once
+000000038019: (Info ): Execute_command script action bind key * press - release -
+000000038420: (Info ): Execute_command define f142_mark_E1_6 1
+000000039141: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000039141: (Info ): ScriptMgr: load scripts/fscripts/M08.sts
+000000039141: (Info ): Execute_command set milky_way_texture milkyways/mw08.png 
+000000039141: (Info ): Execute_command set milky_way_intensity 1.0
+000000039141: (Info ): Execute_command flag nebulae off
+000000039141: (Info ): Execute_command flag bright_nebulae off
+000000039141: (Info ): Execute_command flag stars off
+000000039141: (Info ): Execute_command flag planets off
+000000039141: (Info ): Execute_command flag atmosphere off
+000000039141: (Info ): Execute_command flag landscape off
+000000039141: (Info ): Execute_command set milky_way_texture milkyways/mw01.png 
+000000039302: (Info ): Execute_command set milky_way_intensity 1.0
+000000039302: (Info ): Execute_command flag nebulae off
+000000039302: (Info ): Execute_command flag bright_nebulae off
+000000039302: (Info ): Execute_command flag stars on
+000000039302: (Info ): Execute_command flag planets on
+000000039302: (Info ): Execute_command flag atmosphere off
+000000039302: (Info ): Execute_command flag landscape off
+000000039302: (Info ): End of script
+000000039302: (Info ): Execute_command script action end
+000000039302: (Info ): ScriptMgr: script end
+000000040325: (Info ): Execute_command define f142_mark_E2_7 1
+000000040726: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000041440: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000041440: (Info ): Execute_command define f142_a 1
+000000041440: (Info ): End of script
+000000041440: (Info ): Execute_command script action end
+000000041440: (Info ): ScriptMgr: script end
+000000042621: (Info ): Execute_command script action bind key * press - release -
+000000043022: (Info ): Execute_command define f142_mark_F_8 1
+000000043421: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000043821: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope once
+000000044543: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000044543: (Info ): Execute_command define f142_a 1
+000000044543: (Info ): End of script
+000000044543: (Info ): Execute_command script action end
+000000044543: (Info ): ScriptMgr: script end
+000000046044: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000046044: (Info ): Execute_command define f142_b 1
+000000046044: (Info ): End of script
+000000046044: (Info ): Execute_command script action end
+000000046044: (Info ): ScriptMgr: script end
+000000047225: (Info ): Execute_command script action bind key * press - release -
+000000047625: (Info ): Execute_command define f142_mark_G_9 1
+000000048024: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/g.sts
+000000048425: (Info ): Execute_command script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000048425: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000048442: (Info ): Execute_command define f142_show_1 1
+000000048442: (Info ): Execute_command wait duration 5
+000000049147: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/g.sts
+000000049147: (Info ): Execute_command script action bind key KP_9 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/c.sts scope script
+000000049147: (Info ): Execute_command define f142_show_2 1
+000000049147: (Info ): Execute_command wait duration 5
+000000050648: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/c.sts
+000000050649: (Info ): Execute_command define f142_c 1
+000000050649: (Info ): Execute_command define f142_show_3 1
+000000050649: (Info ): Execute_command wait duration 5
+000000055663: (Info ): Execute_command define f142_show_4 1
+000000055663: (Info ): End of script
+000000055663: (Info ): Execute_command script action end
+000000055663: (Info ): ScriptMgr: script end
+000000056057: (Info ): ScriptMgr: load scripts/fscripts/M09.sts
+000000056057: (Info ): Execute_command set milky_way_texture milkyways/mw09.png 
+000000056298: (Info ): Execute_command set milky_way_intensity 1.0
+000000056298: (Info ): Execute_command flag nebulae off
+000000056298: (Info ): Execute_command flag bright_nebulae off
+000000056298: (Info ): Execute_command flag stars off
+000000056298: (Info ): Execute_command flag planets off
+000000056298: (Info ): Execute_command flag atmosphere off
+000000056298: (Info ): Execute_command flag landscape off
+000000056298: (Info ): End of script
+000000056298: (Info ): Execute_command script action end
+000000056298: (Info ): ScriptMgr: script end
+000000057238: (Info ): Execute_command script action bind key * press - release -
+000000057638: (Info ): Execute_command define f142_mark_H_10 1
+000000058038: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/h.sts
+000000058438: (Info ): Execute_command script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000058438: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000058454: (Info ): Execute_command define f142_show_1 1
+000000058454: (Info ): Execute_command wait duration 5
+000000059159: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/h.sts
+000000059159: (Info ): Execute_command define f142_h 1
+000000059159: (Info ): Execute_command define f142_show_2 1
+000000059159: (Info ): Execute_command wait duration 5
+000000064173: (Info ): Execute_command define f142_show_3 1
+000000064173: (Info ): Execute_command wait duration 5
+000000069174: (Info ): Execute_command define f142_show_4 1
+000000069174: (Info ): End of script
+000000069174: (Info ): Execute_command script action end
+000000069174: (Info ): ScriptMgr: script end
+000000069257: (Info ): Execute_command script action bind key * press - release -
+000000069657: (Info ): Execute_command define f142_mark_I_11 1
+000000070057: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/i.sts
+000000070772: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/i.sts
+000000070772: (Info ): Execute_command script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once
+000000070772: (Info ): End of script
+000000070772: (Info ): Execute_command script action end
+000000070772: (Info ): ScriptMgr: script end
+000000072273: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts
+000000072273: (Info ): Execute_command define f142_d 1
+000000072273: (Info ): End of script
+000000072273: (Info ): Execute_command script action end
+000000072273: (Info ): ScriptMgr: script end
+000000073455: (Info ): Execute_command define f142_mark_I2_12 1
+000000073855: (Info ): Execute_command script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once
+000000073855: (Error): script tcp#1: bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8' [script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once]
+000000073855: (Debug): Error executing tcp#1: script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once #! bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'
+000000074577: (Info ): ScriptMgr: load scripts/fscripts/M09.sts
+000000074577: (Info ): Execute_command set milky_way_texture milkyways/mw09.png 
+000000074577: (Info ): Execute_command set milky_way_intensity 1.0
+000000074577: (Info ): Execute_command flag nebulae off
+000000074577: (Info ): Execute_command flag bright_nebulae off
+000000074577: (Info ): Execute_command flag stars off
+000000074577: (Info ): Execute_command flag planets off
+000000074577: (Info ): Execute_command flag atmosphere off
+000000074577: (Info ): Execute_command flag landscape off
+000000074577: (Info ): End of script
+000000074577: (Info ): Execute_command script action end
+000000074577: (Info ): ScriptMgr: script end
+000000075757: (Info ): Execute_command script action bind key * press - release -
+000000076157: (Info ): Execute_command define f142_mark_J_13 1
+000000076557: (Info ): Execute_command script action bind key KP_8
+000000076557: (Error): script tcp#1: bind: give 'press <script|->', 'release <script|->' or both [script action bind key KP_8]
+000000076557: (Debug): Error executing tcp#1: script action bind key KP_8 #! bind: give 'press <script|->', 'release <script|->' or both
+000000076957: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never
+000000076957: (Error): script tcp#1: bind: unknown scope 'never' - write global, script or once [script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never]
+000000076957: (Debug): Error executing tcp#1: script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never #! bind: unknown scope 'never' - write global, script or once
+000000077357: (Info ): Execute_command script action bind key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000077357: (Error): script tcp#1: unknown key 'NO_SUCH': write [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key [script action bind key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts]
+000000077357: (Debug): Error executing tcp#1: script action bind key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts #! unknown key 'NO_SUCH': write [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key
+000000077758: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts
+000000077758: (Error): script tcp#1: bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory [script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts]
+000000077758: (Debug): Error executing tcp#1: script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts #! bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory
+000000078481: (Info ): ScriptMgr: load scripts/fscripts/M08.sts
+000000078481: (Info ): Execute_command set milky_way_texture milkyways/mw08.png 
+000000078662: (Info ): Execute_command set milky_way_intensity 1.0
+000000078662: (Info ): Execute_command flag nebulae off
+000000078662: (Info ): Execute_command flag bright_nebulae off
+000000078662: (Info ): Execute_command flag stars off
+000000078662: (Info ): Execute_command flag planets off
+000000078662: (Info ): Execute_command flag atmosphere off
+000000078662: (Info ): Execute_command flag landscape off
+000000078662: (Info ): End of script
+000000078662: (Info ): Execute_command script action end
+000000078662: (Info ): ScriptMgr: script end
+000000079668: (Info ): Execute_command script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/j.sts
+000000079668: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/j.sts
+000000079685: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts
+000000079685: (Error): script /home/claude/spacecrafter/claude/harness/artifacts/f142/run/j.sts:1: bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory [script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts]
+000000079685: (Debug): Error executing /home/claude/spacecrafter/claude/harness/artifacts/f142/run/j.sts:1: script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts #! bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory
+000000079685: (Info ): End of script
+000000079685: (Info ): Execute_command script action end
+000000079685: (Info ): ScriptMgr: script end
+000000079686: (Info ): script annotation: '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/j.sts' rewritten - 1 '#!' line(s) written, 0 cleared
+000000080070: (Info ): Execute_command script action bind key * press - release -
+000000080468: (Info ): Execute_command define f142_mark_K_14 1
+000000080868: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope once
+000000081268: (Info ): Execute_command script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000081984: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000081984: (Info ): Execute_command define f142_b 1
+000000081984: (Info ): End of script
+000000081984: (Info ): Execute_command script action end
+000000081984: (Info ): ScriptMgr: script end
+000000083485: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000083485: (Info ): Execute_command define f142_b 1
+000000083485: (Info ): End of script
+000000083485: (Info ): Execute_command script action end
+000000083485: (Info ): ScriptMgr: script end
+000000084666: (Info ): Execute_command script action bind key * press - release -
+000000085066: (Info ): Execute_command define f142_mark_L_15 1
+000000085466: (Info ): Execute_command script action bind key SUPER+KP_1 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000086196: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000086196: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000086196: (Info ): Execute_command define f142_a 1
+000000086196: (Info ): Execute_command set milky_way_texture milkyways/mw01.png 
+000000086357: (Info ): Execute_command set milky_way_intensity 1.0
+000000086357: (Info ): Execute_command flag nebulae off
+000000086357: (Info ): Execute_command flag bright_nebulae off
+000000086357: (Info ): Execute_command flag stars on
+000000086357: (Info ): Execute_command flag planets on
+000000086357: (Info ): Execute_command flag atmosphere off
+000000086357: (Info ): Execute_command flag landscape off
+000000086357: (Info ): End of script
+000000086357: (Info ): Execute_command script action end
+000000086357: (Info ): ScriptMgr: script end
+000000087363: (Info ): Execute_command script action bind key * press - release -
+000000087763: (Info ): Execute_command define f142_mark_M_16 1
+000000088180: (Info ): Execute_command script action bind key SHIFT+KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/i.sts
+000000088579: (Info ): Execute_command script action record filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rec.sts
+000000088580: (Info ): ScriptMgr::Now recording actions to file: /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rec.sts
+000000089290: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/i.sts
+000000089290: (Info ): Execute_command script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once
+000000089290: (Debug): RECORD: script action bind key SHIFT+KP_8 release "/home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts" scope once
+000000089290: (Info ): End of script
+000000089290: (Info ): Execute_command script action end
+000000089290: (Info ): ScriptMgr: script end
+000000089290: (Debug): RECORD: script action end
+000000090791: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts
+000000090791: (Info ): Execute_command define f142_d 1
+000000090791: (Debug): RECORD: define f142_d 1
+000000090791: (Info ): End of script
+000000090791: (Info ): Execute_command script action end
+000000090791: (Info ): ScriptMgr: script end
+000000090791: (Debug): RECORD: script action end
+000000091975: (Info ): Execute_command script action cancelrecord
+000000091975: (Info ): ScriptMgr::Script recording stopped.
+000000092375: (Info ): Execute_command script action bind key * press - release -
+000000092775: (Info ): Execute_command define f142_mark_N_17 1
+000000093923: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000093923: (Info ): ScriptMgr: load scripts/fscripts/M08.sts
+000000093923: (Info ): Execute_command set milky_way_texture milkyways/mw08.png 
+000000094064: (Info ): Execute_command set milky_way_intensity 1.0
+000000094064: (Info ): Execute_command flag nebulae off
+000000094064: (Info ): Execute_command flag bright_nebulae off
+000000094064: (Info ): Execute_command flag stars off
+000000094064: (Info ): Execute_command flag planets off
+000000094064: (Info ): Execute_command flag atmosphere off
+000000094064: (Info ): Execute_command flag landscape off
+000000094064: (Info ): Execute_command set milky_way_texture milkyways/mw01.png 
+000000094064: (Info ): Execute_command set milky_way_intensity 1.0
+000000094064: (Info ): Execute_command flag nebulae off
+000000094064: (Info ): Execute_command flag bright_nebulae off
+000000094064: (Info ): Execute_command flag stars on
+000000094064: (Info ): Execute_command flag planets on
+000000094064: (Info ): Execute_command flag atmosphere off
+000000094064: (Info ): Execute_command flag landscape off
+000000094064: (Info ): End of script
+000000094064: (Info ): Execute_command script action end
+000000094064: (Info ): ScriptMgr: script end
+000000096086: (Info ): Execute_command script action bind key * press - release -
+000000096486: (Info ): Execute_command define f142_mark_P_18 1
+000000096887: (Info ): Execute_command script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000097666: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000097666: (Info ): Execute_command define f154_p 1
+000000097666: (Info ): End of script
+000000097666: (Info ): Execute_command script action end
+000000097666: (Info ): ScriptMgr: script end
+000000098788: (Info ): Execute_command script action bind key * press - release -
+000000099187: (Info ): Execute_command define f142_mark_Q_19 1
+000000099587: (Info ): Execute_command script action bind key BUTTON3 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/q.sts
+000000100306: (Info ): Execute_command zoom auto initial
+000000100306: (Info ): Execute_command define b 1
+000000101484: (Info ): Execute_command define f142_mark_Q2_20 1
+000000102209: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/q.sts
+000000102209: (Info ): Execute_command define f154_q 1
+000000102209: (Info ): End of script
+000000102209: (Info ): Execute_command script action end
+000000102209: (Info ): ScriptMgr: script end
+000000103386: (Info ): Execute_command script action bind key * press - release -
+000000103786: (Info ): Execute_command define f142_mark_R_21 1
+000000104186: (Info ): Execute_command script action bind key BUTTON3 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/r.sts
+000000104922: (Info ): Execute_command zoom auto initial
+000000104922: (Info ): Execute_command define b 1
+000000104922: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/r.sts
+000000104922: (Info ): Execute_command define f154_r 1
+000000104922: (Info ): End of script
+000000104922: (Info ): Execute_command script action end
+000000104922: (Info ): ScriptMgr: script end
+000000106093: (Info ): Execute_command script action bind key * press - release -
+000000106493: (Info ): Execute_command define f142_mark_S_22 1
+000000106893: (Info ): Execute_command script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/s.sts
+000000107622: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/s.sts
+000000107622: (Info ): Execute_command define f154_s 1
+000000107622: (Info ): End of script
+000000107622: (Info ): Execute_command script action end
+000000107622: (Info ): ScriptMgr: script end
+000000109125: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/s.sts
+000000109125: (Info ): Execute_command define f154_s 1
+000000109125: (Info ): End of script
+000000109125: (Info ): Execute_command script action end
+000000109125: (Info ): ScriptMgr: script end
+000000110286: (Info ): Execute_command script action bind key * press - release -
+000000110686: (Info ): Execute_command define f142_mark_T_23 1
+000000111086: (Info ): Execute_command script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000111502: (Info ): Execute_command script action bind key BUTTON3 press -
+000000112227: (Info ): Execute_command zoom auto initial
+000000112227: (Info ): Execute_command define b 1
+000000113397: (Info ): Execute_command script action bind key * press - release -
+000000113797: (Info ): Execute_command define f142_mark_U_24 1
+000000114197: (Info ): Execute_command script action bind key BUTTON7 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/u.sts
+000000114969: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/u.sts
+000000114969: (Info ): Execute_command define f154_u 1
+000000114969: (Info ): End of script
+000000114969: (Info ): Execute_command script action end
+000000114969: (Info ): ScriptMgr: script end
+000000116091: (Info ): Execute_command script action bind key * press - release -
+000000116506: (Info ): Execute_command define f142_mark_V_25 1
+000000116906: (Info ): Execute_command script action bind key HAT0_UP press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/v.sts release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/vr.sts
+000000117649: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/v.sts
+000000117649: (Info ): Execute_command define f154_v 1
+000000117649: (Info ): End of script
+000000117649: (Info ): Execute_command script action end
+000000117649: (Info ): ScriptMgr: script end
+000000118804: (Info ): Execute_command define f142_mark_V2_26 1
+000000119549: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/vr.sts
+000000119549: (Info ): Execute_command define f154_vr 1
+000000119549: (Info ): End of script
+000000119549: (Info ): Execute_command script action end
+000000119549: (Info ): ScriptMgr: script end
+000000120703: (Info ): Execute_command script action bind key * press - release -
+000000121103: (Info ): Execute_command define f142_mark_W_27 1
+000000121503: (Info ): Execute_command script action bind key HAT0_LEFT press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/w.sts
+000000122251: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/w.sts
+000000122251: (Info ): Execute_command define f154_w 1
+000000122251: (Info ): End of script
+000000122251: (Info ): Execute_command script action end
+000000122251: (Info ): ScriptMgr: script end
+000000124906: (Info ): Execute_command script action bind key * press - release -
+000000125306: (Info ): Execute_command define f142_mark_X_28 1
+000000125707: (Info ): Execute_command script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/x.sts
+000000126107: (Info ): Execute_command script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000126107: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000126125: (Info ): Execute_command define f142_show_1 1
+000000126125: (Info ): Execute_command wait duration 5
+000000126840: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/x.sts
+000000126841: (Info ): Execute_command script action bind key BUTTON2 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/c.sts scope script
+000000126841: (Info ): Execute_command define f142_show_2 1
+000000126841: (Info ): Execute_command wait duration 5
+000000128341: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/c.sts
+000000128342: (Info ): Execute_command define f142_c 1
+000000128342: (Info ): Execute_command define f142_show_3 1
+000000128342: (Info ): Execute_command wait duration 5

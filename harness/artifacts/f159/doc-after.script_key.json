@@ -1,0 +1,16 @@
+{
+  "command": "script",
+  "completable": [],
+  "default": "absent -> inside a script started by a key binding, that key; anywhere else -> \"bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'\"; a token the engine cannot read -> \"unknown key '<key>': write [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key\"",
+  "default_literal": null,
+  "doc": "The key, joystick button or hat direction that runs the scripts; left out inside a script a key started, that key.",
+  "kind": "key",
+  "name": "key",
+  "notes": "The modifiers are part of the key: SHIFT+KP_8 and KP_8 are two keys, each with its own bindings (src/uiModule/key_binding.cpp:165-177 @ 52568219).",
+  "present": true,
+  "required": "conditional",
+  "source": "app_command_interface.cpp:2885, 2890-2891, 2909 -> src/uiModule/key_binding.cpp:89-91, 155-180 @ 52568219 (W_KEY=\"key\", base_command_interface.hpp:326)",
+  "value_docs": {},
+  "value_domain": "a key token, in any case: [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_ (such as SHIFT+KP_8), the modifiers accepted in any order; a joystick button or hat direction as BUTTON<n> or HAT<n>_<UP|DOWN|LEFT|RIGHT>, with no modifier and no _ALT; or * for every key",
+  "values": []
+}

@@ -1,0 +1,12 @@
+/media/stick/img.png	OK	/media/stick/img	OK	_media-stick-img.dat
+/mnt/stick/img.png	OK	/mnt/stick/img	OK	_mnt-stick-img.dat
+/home/x/.spacecrafter	OK	/home/x/.spacecra	OK	_home-x-.spacecrafdat
+/home/x/.spacecrafter/foo.png	OK	foo	OK	foo.dat
+foo.png	OK	foo	OK	foo.dat
+a/b.png	OK	a/b	OK	a-b.dat
+textures/bodies/earth.jpg	OK	t/bodies/earth	OK	t-bodies-earth.dat
+/home/claude/.spacecrafter/textures/bodies/earth.jpg	OK	t/bodies/earth	OK	t-bodies-earth.dat
+/t/bodies/earth.jpg	OK	/t/bodies/earth	OK	_t-bodies-earth.dat
+/home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png	OK	/home/claude/spacecrafter/claude/harness/artifacts/f142/run/o	OK	_home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
+/home/claude/.spacecrafter/textures/n_genrc.png	OK	t/n_genrc	OK	t-n_genrc.dat
+model3D/Maven/tex/foil_n_2.png.jpeg	OK	m/Maven/tex/foil_n_2.png.	OK	m-Maven-tex-foil_n_2.png.jdat

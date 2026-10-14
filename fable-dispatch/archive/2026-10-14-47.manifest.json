@@ -1,0 +1,29 @@
+{
+ "pass": "47",
+ "date": "2026-10-14",
+ "source": "fable-dispatch.md",
+ "pre_md5": "f0598c27eded5c0e41ba13be80a51572",
+ "pre_commit": "6e868ae",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads and seam-tidy lines re-inserted at recorded positions in ascending order reproduce pre_md5); re-verified from disk after the write",
+ "seam_tidy": [],
+ "kept_live": [],
+ "units": [
+  {
+   "id": "F157",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F157.md",
+   "line_start": 371,
+   "line_count": 93,
+   "payload_md5": "ef7fbfffd9a9b5752c6dab62e36f05b5"
+  },
+  {
+   "id": "F159",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F159.md",
+   "line_start": 468,
+   "line_count": 67,
+   "payload_md5": "8b6e47a4aa16db9c5f3af2bbe994c49f"
+  }
+ ],
+ "instrument": "harness/fd_archive_pass.py"
+}

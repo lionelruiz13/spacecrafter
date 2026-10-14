@@ -1,0 +1,13 @@
+ranges whose span grew across the F158 move with a common end line: 11 (distinct referents 8)
+of which a branch opener / function header sits inside the new range beyond its first line: 8
+sc-grammar.json | .families.flags.names[74].source | log.cpp | 117-127 | 251-323 | 62 | '}' | 2
+sc-grammar.json | .families.commands.script.args.action.source | app_command_interface.cpp | 2966-3011 | 2848-2926 | 33 | 'return executeCommandStatus();' | 1
+unit-2.json | .commands.script.args.action.source | app_command_interface.cpp | 2966-3011 | 2848-2926 | 33 | 'return executeCommandStatus();' | 1
+sc-grammar.json | .families.commands.camera.args.coef.source | app_command_interface.cpp | 4544-4550 | 4416-4440 | 18 | 'return executeCommandStatus();' | 2
+unit-4.json | .commands.camera.args.coef.source | app_command_interface.cpp | 4544-4550 | 4416-4440 | 18 | 'return executeCommandStatus();' | 2
+sc-grammar.json | .families.commands.camera.branches[9].source | app_command_interface.cpp | 4539-4551 | 4415-4441 | 14 | '}' | 2
+unit-4.json | .commands.camera.branches[9].source | app_command_interface.cpp | 4539-4551 | 4415-4441 | 14 | '}' | 2
+ss-grammar.json | .keys.orbit_period.notes | orbit_creator_cor.cpp | 182-186 | 185-201 | 12 | '}' | 0
+sc-grammar.json | .lint_seeds[11].rule | app_command_interface.cpp | 291-303 | 247-267 | 8 | '}' | 1
+ss-grammar.json | .families.coord_func.source[0] | protosystem.cpp | 561-618 | 552-617 | 8 | '}' | 0
+sc-grammar.json | .families.flags.names[74].source | log.hpp | 99-105 | 108-119 | 5 | '}' | 0

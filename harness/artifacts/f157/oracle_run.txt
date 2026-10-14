@@ -33,16 +33,16 @@ ABS proposed_G2 | entry diffs 0 | cache-name diffs 0 | of which a field cache fi
 PROBES  name | rule: entry-status entry | cache-status cache
   /media/stick/img.png                             today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 20) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 20)
   /media/stick/img.png                             stated       OK    media/stick/img              OK    media-stick-img.dat
-  /media/stick/img.png                             proposed_G1  OK    media/stick/img              OK    media-stick-img.dat
-  /media/stick/img.png                             proposed_G2  OK    media/stick/img              OK    media-stick-img.dat
+  /media/stick/img.png                             proposed_G1  OK    /media/stick/img             OK    _media-stick-img.dat
+  /media/stick/img.png                             proposed_G2  OK    /media/stick/img             OK    _media-stick-img.dat
   /mnt/stick/img.png                               today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 18) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 18)
   /mnt/stick/img.png                               stated       OK    mnt/stick/img                OK    mnt-stick-img.dat
-  /mnt/stick/img.png                               proposed_G1  OK    mnt/stick/img                OK    mnt-stick-img.dat
-  /mnt/stick/img.png                               proposed_G2  OK    mnt/stick/img                OK    mnt-stick-img.dat
+  /mnt/stick/img.png                               proposed_G1  OK    /mnt/stick/img               OK    _mnt-stick-img.dat
+  /mnt/stick/img.png                               proposed_G2  OK    /mnt/stick/img               OK    _mnt-stick-img.dat
   /home/x/.spacecrafter                            today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 21) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 21)
   /home/x/.spacecrafter                            stated       OK    home/x/.spacecra             OK    home-x-.spacecra.dat
-  /home/x/.spacecrafter                            proposed_G1  OK    home/x/.spacecra             OK    home-x-.spacecra.dat
-  /home/x/.spacecrafter                            proposed_G2  OK    home/x/.spacecra             OK    home-x-.spacecrafdat
+  /home/x/.spacecrafter                            proposed_G1  OK    /home/x/.spacecra            OK    _home-x-.spacecra.dat
+  /home/x/.spacecrafter                            proposed_G2  OK    /home/x/.spacecra            OK    _home-x-.spacecrafdat
   /home/x/.spacecrafter/foo.png                    today        THROW basic_string::substr: __pos (which is 18446744073709551614) > this->size() (which is 29) THROW basic_string::substr: __pos (which is 18446744073709551614) > this->size() (which is 29)
   /home/x/.spacecrafter/foo.png                    stated       OK    foo                          OK    foo.dat
   /home/x/.spacecrafter/foo.png                    proposed_G1  OK    foo                          OK    foo.dat
@@ -65,12 +65,12 @@ PROBES  name | rule: entry-status entry | cache-status cache
   /home/claude/.spacecrafter/textures/bodies/earth.jpg proposed_G2  OK    t/bodies/earth               OK    t-bodies-earth.dat
   /t/bodies/earth.jpg                              today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 19) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 19)
   /t/bodies/earth.jpg                              stated       OK    t/bodies/earth               OK    t-bodies-earth.dat
-  /t/bodies/earth.jpg                              proposed_G1  OK    t/bodies/earth               OK    t-bodies-earth.dat
-  /t/bodies/earth.jpg                              proposed_G2  OK    t/bodies/earth               OK    t-bodies-earth.dat
+  /t/bodies/earth.jpg                              proposed_G1  OK    /t/bodies/earth              OK    _t-bodies-earth.dat
+  /t/bodies/earth.jpg                              proposed_G2  OK    /t/bodies/earth              OK    _t-bodies-earth.dat
   /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png today        THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 65) THROW basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 65)
   /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png stated       OK    home/claude/spacecrafter/claude/harness/artifacts/f142/run/o OK    home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
-  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png proposed_G1  OK    home/claude/spacecrafter/claude/harness/artifacts/f142/run/o OK    home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
-  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png proposed_G2  OK    home/claude/spacecrafter/claude/harness/artifacts/f142/run/o OK    home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
+  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png proposed_G1  OK    /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o OK    _home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
+  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png proposed_G2  OK    /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o OK    _home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
   /home/claude/.spacecrafter/textures/n_genrc.png  today        OK    t/n_genrc                    OK    t-n_genrc.dat
   /home/claude/.spacecrafter/textures/n_genrc.png  stated       OK    t/n_genrc                    OK    t-n_genrc.dat
   /home/claude/.spacecrafter/textures/n_genrc.png  proposed_G1  OK    t/n_genrc                    OK    t-n_genrc.dat
@@ -80,3 +80,14 @@ PROBES  name | rule: entry-status entry | cache-status cache
   model3D/Maven/tex/foil_n_2.png.jpeg              proposed_G1  OK    m/Maven/tex/foil_n_2.png.    OK    m-Maven-tex-foil_n_2.png..dat
   model3D/Maven/tex/foil_n_2.png.jpeg              proposed_G2  OK    m/Maven/tex/foil_n_2.png.    OK    m-Maven-tex-foil_n_2.png.jdat
 === ORACLE SELF-CHECKS PASS ===
+=== P2 proposed_G2 entry / cache-name diffs 0 / 0 in REL and ABS PASS ===
+P3/P4 PASS  /media/stick/img.png                                               entry /media/stick/img                                           file _media-stick-img.dat
+P3/P4 PASS  /mnt/stick/img.png                                                 entry /mnt/stick/img                                             file _mnt-stick-img.dat
+P3/P4 PASS  /t/bodies/earth.jpg                                                entry /t/bodies/earth                                            file _t-bodies-earth.dat
+P3/P4 PASS  /home/x/.spacecrafter                                              entry /home/x/.spacecra                                          file _home-x-.spacecrafdat
+P3/P4 PASS  /home/x/.spacecrafter/foo.png                                      entry foo                                                        file foo.dat
+P3/P4 PASS  foo.png                                                            entry foo                                                        file foo.dat
+P3/P4 PASS  a/b.png                                                            entry a/b                                                        file a-b.dat
+P3/P4 PASS  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.png  entry /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o file _home-claude-spacecrafter-claude-harness-artifacts-f142-run-o.dat
+P3 in-tree entry keys starting with '/': 0 [] | in-tree cache names starting with '-': 0 []
+=== P3/P4 probes PASS ===

@@ -1,0 +1,394 @@
+{
+  "alias_of": null,
+  "args": {
+    "action": {
+      "completable": [
+        "align_with",
+        "create",
+        "descend",
+        "drop",
+        "follow_rotation",
+        "free_mode",
+        "lift_off",
+        "load",
+        "move_to",
+        "rotate",
+        "save",
+        "switch",
+        "transition_to"
+      ],
+      "default": "absent -> \"command 'camera' : action argument\"; present with any other word -> \"command 'camera' : missing name\" when no `name` was given, else \"command 'camera' : unknown action argument\"",
+      "default_literal": null,
+      "doc": "What to do with the point of view; every other key on the line depends on this word.",
+      "notes": "",
+      "present": true,
+      "required": "true",
+      "source": "app_command_interface.cpp:4233, 4236-4239, 4241, 4252, 4276, 4311, 4375, 4390, 4405, 4415, 4443, 4466-4506 (W_ROTATE=\"rotate\", W_ALIGN_WITH=\"align_with\", W_TRANSITION_TO=\"transition_to\", W_MOVE_TO=\"move_to\", W_SAVE=\"save\", W_LOAD=\"load\", W_FREE_MODE=\"free_mode\", W_DESCEND=\"descend\", W_LIFT_OFF=\"lift_off\", W_CREATE=\"create\", W_DROP=\"drop\", W_SWITCH=\"switch\", W_FOLLOW_ROTATION=\"follow_rotation\": base_command_interface.hpp:151,248,247,246,144,103,242,243,245,222,152,225,241)",
+      "value_docs": {
+        "align_with": "tilt the view so that the named place's own up direction becomes yours, over `duration` seconds",
+        "create": "declare a new named place the view can be attached to",
+        "descend": "go down towards, or up away from, what you are looking at",
+        "drop": "forget a named place",
+        "follow_rotation": "say whether the view turns with the body it is attached to",
+        "free_mode": "switch free flight on or off",
+        "lift_off": "climb to a given height and then detach the view from the body",
+        "load": "put the view back where such a file says",
+        "move_to": "travel to a point of space or to a body, over `duration`",
+        "rotate": "turn the view towards the place you are standing on, over `duration` seconds",
+        "save": "write where the view is, and when, into a file",
+        "switch": "attach the view to a named place",
+        "transition_to": "change what the view is attached to, without travelling: either the place you stand right now, or a body"
+      },
+      "value_domain": "enumerated",
+      "values": [
+        "rotate",
+        "align_with",
+        "transition_to",
+        "move_to",
+        "save",
+        "load",
+        "free_mode",
+        "descend",
+        "lift_off",
+        "create",
+        "drop",
+        "switch",
+        "follow_rotation"
+      ]
+    },
+    "altitude": {
+      "completable": [],
+      "default": "on `move_to target body`: absent -> stop at five times the body's own radius; on `lift_off`: absent -> \"command 'camera lift_off' : missing altitude\"",
+      "default_literal": null,
+      "doc": "On `move_to`, how high above the body to stop, in kilometres; on `lift_off`, the height to climb to, in whatever unit the `moveto` command reads (see notes).",
+      "notes": "On `lift_off` the value is not used directly: it is written into a `moveto altitude <value> duration <duration>` line (:4459), i.e. it becomes the `moveto` command's own altitude argument (unit 3).",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4354, 4358-4361 (move_to body), 4390, 4393-4396, 4404 (lift_off) -> src/navModule/anchor_manager.cpp:475 ('alt/AU', with AU in kilometres, src/tools/sc_const.hpp:45) (W_ALTITUDE=\"altitude\", base_command_interface.hpp:175)",
+      "value_docs": {},
+      "value_domain": "number(evalDouble) -- $-variable substitution possible; kilometres on `move_to target body` [derived: the value is divided by AU, and AU is declared in kilometres]",
+      "values": []
+    },
+    "body": {
+      "completable": [],
+      "default": "absent -> \"command 'align_with' : missing body\"",
+      "default_literal": null,
+      "doc": "On `action align_with`, the name of the place (declared with `action create`, of the kind that follows a body) whose up direction the view should take.",
+      "notes": "Despite the key name it is looked up among the declared PLACES, not among the bodies, and the place must be one that follows a body; otherwise the log says \"anchor not found\" / \"wrong anchor type\" and the command reports \"error align_with_body body\".",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4254-4258, 4267 -> src/coreModule/coreLink.cpp:1178-1180 -> src/navModule/anchor_manager.cpp:793-816 (W_BODY=\"body\", base_command_interface.hpp:220)",
+      "value_docs": {},
+      "value_domain": "string",
+      "values": []
+    },
+    "body_name": {
+      "completable": [
+        "default",
+        "selected"
+      ],
+      "default": "absent -> \"command 'move_to body' : missing a body_name or time\"",
+      "default_literal": null,
+      "doc": "On `action move_to target body`, which body to travel to.",
+      "notes": "As with `body` above, the name is looked up among the declared PLACES that follow a body (src/navModule/anchor_manager.cpp:491-497), so only bodies that have such a place declared can be travelled to.",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4346-4352, 4359-4361 -> src/coreModule/coreLink.cpp:1140-1150 -> src/navModule/anchor_manager.cpp:488-501 (W_BODYNAME=\"body_name\", base_command_interface.hpp:304)",
+      "value_docs": {
+        "default": "the Earth",
+        "selected": "the body currently selected"
+      },
+      "value_domain": "string",
+      "values": [
+        "<place name that follows a body>",
+        "selected",
+        "default"
+      ]
+    },
+    "coef": {
+      "completable": [],
+      "default": "absent -> \"command 'camera descend' : missing coef\"",
+      "default_literal": null,
+      "doc": "On `action descend`, how much closer to go: less than 1 goes down, more than 1 goes up (0.5 halves the distance, 2 doubles it).",
+      "notes": "What it goes down towards depends on where you are: the ground under the view ray when a body is close, the last selected body when you are out among the systems (src/experimentalModule/Camera.cpp:728-742). New drawing path only.",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4416-4440 -> src/coreModule/coreLink.hpp:883-886 -> src/experimentalModule/Camera.cpp:726-742 (W_COEF=\"coef\", base_command_interface.hpp:244)",
+      "value_docs": {},
+      "value_domain": "number(evalDouble) -- $-variable substitution possible",
+      "values": []
+    },
+    "coord_func": {
+      "completable": [],
+      "default": "absent -> no orbit can be built and the place is not created",
+      "default_literal": null,
+      "doc": "On `action create` with type orbit, which kind of orbit describes the movement.",
+      "notes": "The orbit's own numbers are the same keys a body's orbit uses (INTENT S5 item 4) -- see `flagged`.",
+      "present": true,
+      "required": "false",
+      "source": "src/experimentalModule/CameraAnchors.cpp:106-116",
+      "value_docs": {},
+      "value_domain": "string -- the orbit-kind names of the stellar-system-file grammar",
+      "values": []
+    },
+    "duration": {
+      "completable": [],
+      "default": "on `rotate`: absent -> 2 seconds; on `align_with`: absent -> 0 (immediate); on `move_to target point`: absent -> the jump is immediate; on `move_to target body`: absent -> \"command 'move_to body' : missing a body_name or time\"; on `lift_off`: absent -> 3 seconds",
+      "default_literal": null,
+      "doc": "How long the movement takes, in seconds.",
+      "notes": "On both `move_to` forms the script ALSO waits: the delay before the next command is set to this many seconds (:4337, :4366 -- evalInt(value) x 1000 milliseconds, so a fractional duration is cut down to whole seconds for the wait but not for the movement). The travel itself is measured in simulated time: the seconds are divided by 86400 and the arrival is that many days later on the simulation clock (src/navModule/anchor_manager.cpp:430, 464).",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4247-4248 (rotate), 4216-4221 (align_with), 4280, 4289-4294 (move_to point), 4303-4305, 4315-4322 (move_to body), 4391, 4398-4400 (lift_off) (W_DURATION=\"duration\", base_command_interface.hpp:102)",
+      "value_docs": {},
+      "value_domain": "number(evalDouble) -- $-variable substitution possible",
+      "values": []
+    },
+    "filename": {
+      "completable": [],
+      "default": "on `action save`: absent -> the name 'anchor' (src/coreModule/coreLink.hpp:371); on `action load`: absent -> \"command 'camera load' : missing file name\"",
+      "default_literal": null,
+      "doc": "The file to write the view into, or to read it back from.",
+      "notes": "The file written holds the place's declaration plus your height, longitude, latitude, the date and the direction you look in (src/navModule/anchor_manager.cpp:722-733). DEFECT, recorded not fixed: the folder 'anchors/' is prepended TWICE on both paths (src/coreModule/coreLink.cpp:65 and src/bodyModule/ssystem_factory.hpp:740; likewise :72 and :744), so the file actually used is anchors/anchors/<name>, relative to the folder the program was started in.",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4378-4383 (save), 4347-4354 (load) -> src/coreModule/coreLink.cpp:63-71 -> src/bodyModule/ssystem_factory.hpp:739-745 -> src/navModule/anchor_manager.cpp:696-740 (write), 742-791 (read)",
+      "value_docs": {},
+      "value_domain": "string (a file name)",
+      "values": []
+    },
+    "follow_rotation": {
+      "completable": [],
+      "default": "absent -> the place does not declare it",
+      "default_literal": null,
+      "doc": "On `action create` with type body, whether the place turns with the body.",
+      "notes": "",
+      "present": true,
+      "required": "false",
+      "source": "src/experimentalModule/CameraAnchors.cpp:275-279",
+      "value_docs": {},
+      "value_domain": "boolean(flag grammar)",
+      "values": []
+    },
+    "name": {
+      "completable": [],
+      "default": "absent -> the four forms that need it are refused with \"command 'camera' : missing name\", which is ALSO what an unknown action reports",
+      "default_literal": null,
+      "doc": "The name of a place the view can be attached to (its own name, not a body's).",
+      "notes": "On `action transition_to target body` the same key means a BODY name instead (:4293) -- the only place in this handler where it does.",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4234, 4293, 4466-4469, 4481, 4489, 4500 (W_NAME=\"name\", base_command_interface.hpp:89)",
+      "value_docs": {},
+      "value_domain": "string",
+      "values": []
+    },
+    "orbit_center_x": {
+      "completable": [],
+      "default": "absent -> the place is not created",
+      "default_literal": null,
+      "doc": "On `action create` with type orbit and no parent, the centre of the orbit: first coordinate, in astronomical units.",
+      "notes": "",
+      "present": true,
+      "required": "false",
+      "source": "src/navModule/anchor_creator_cor.cpp:139-150; src/experimentalModule/CameraAnchors.cpp:183-203",
+      "value_docs": {},
+      "value_domain": "number (std::stod)",
+      "values": []
+    },
+    "orbit_center_y": {
+      "completable": [],
+      "default": "absent -> the place is not created",
+      "default_literal": null,
+      "doc": "On `action create` with type orbit and no parent, the centre of the orbit: second coordinate, in astronomical units.",
+      "notes": "",
+      "present": true,
+      "required": "false",
+      "source": "src/navModule/anchor_creator_cor.cpp:140-150; src/experimentalModule/CameraAnchors.cpp:183-203",
+      "value_docs": {},
+      "value_domain": "number (std::stod)",
+      "values": []
+    },
+    "orbit_center_z": {
+      "completable": [],
+      "default": "absent -> the place is not created",
+      "default_literal": null,
+      "doc": "On `action create` with type orbit and no parent, the centre of the orbit: third coordinate, in astronomical units.",
+      "notes": "",
+      "present": true,
+      "required": "false",
+      "source": "src/navModule/anchor_creator_cor.cpp:141-150; src/experimentalModule/CameraAnchors.cpp:183-203",
+      "value_docs": {},
+      "value_domain": "number (std::stod)",
+      "values": []
+    },
+    "parent": {
+      "completable": [],
+      "default": "absent -> the orbit must instead be given a centre with orbit_center_x/y/z",
+      "default_literal": null,
+      "doc": "On `action create` with type orbit, the body the orbit goes around.",
+      "notes": "",
+      "present": true,
+      "required": "false",
+      "source": "src/navModule/anchor_creator_cor.cpp:137-160; src/experimentalModule/CameraAnchors.cpp:181-215",
+      "value_docs": {},
+      "value_domain": "string (a body english name)",
+      "values": []
+    },
+    "state": {
+      "completable": [],
+      "default": "absent -> \"command 'camera free_mode' : missing state\"",
+      "default_literal": null,
+      "doc": "On `action free_mode`, whether free flight is on.",
+      "notes": "Same silent-off class as `flag`: a typo means 'off' with no diagnostic. New drawing path only.",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4406-4412 -> src/coreModule/coreLink.hpp:879-881 (W_STATE=\"state\", base_command_interface.hpp:146)",
+      "value_docs": {},
+      "value_domain": "boolean(flag grammar)",
+      "values": [
+        "on-forms per Utility::isTrue = free flight on",
+        "ANYTHING ELSE = off, silently"
+      ]
+    },
+    "target": {
+      "completable": [
+        "body",
+        "point"
+      ],
+      "default": "absent -> \"command 'camera' : missing target\" (rotate: \"missing target\"; transition_to and move_to: their own message); present with any other word -> \"command 'transition_to' : unknown target arg\" / \"command 'camera' : unknown target arg\"",
+      "default_literal": null,
+      "doc": "What the action acts on.",
+      "notes": "ON `action rotate` THE VALUE IS NOT USED: it must be non-empty, but the movement always goes to the place you are standing on -- Core::lookAnchor ignores its name argument (the per-name branch is commented out, src/coreModule/core.cpp:2709-2719).",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4242-4246 (rotate), 4233-4238, 4240, 4248 (transition_to), 4269-4276, 4301 (move_to) (W_TARGET=\"target\", W_POINT=\"point\", W_BODY=\"body\": base_command_interface.hpp:123,221,220)",
+      "value_docs": {
+        "body": "a body: named by `name` on `transition_to`, by `body_name` on `move_to`",
+        "point": "on `transition_to`: the exact place you are standing right now becomes a named place called temp_point; on `move_to`: the point given by `x`, `y` and `z`"
+      },
+      "value_domain": "enumerated | string, depending on `action`",
+      "values": [
+        "point",
+        "body",
+        "<place name> (on action rotate)"
+      ]
+    },
+    "type": {
+      "completable": [
+        "body",
+        "observatory",
+        "orbit",
+        "point"
+      ],
+      "default": "absent -> the place is not created; both registries log what was expected",
+      "default_literal": null,
+      "doc": "On `action create`, what kind of place is being declared.",
+      "notes": "",
+      "present": true,
+      "required": "true",
+      "source": "src/navModule/anchor_creator_cor.cpp:31, 58, 88, 121 (old registry) and src/experimentalModule/CameraAnchors.cpp:79-104 (new registry)",
+      "value_docs": {
+        "body": "a place attached to the body named by body_name",
+        "observatory": "a fixed place, given by x, y and z (the same thing as point for the newer drawing path)",
+        "orbit": "a place that follows an orbit, around parent or around the fixed point orbit_center_x/y/z",
+        "point": "a fixed place, given by x, y and z"
+      },
+      "value_domain": "enumerated",
+      "values": [
+        "point",
+        "observatory",
+        "body",
+        "orbit"
+      ]
+    },
+    "value": {
+      "completable": [
+        "true"
+      ],
+      "default": "absent -> no",
+      "default_literal": null,
+      "doc": "On `action follow_rotation`, whether the view turns with the body: write exactly the word true for yes.",
+      "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar -- the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here.",
+      "present": true,
+      "required": "false",
+      "source": "app_command_interface.cpp:4496-4500 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,239)",
+      "value_docs": {},
+      "value_domain": "string compared literally against \"true\"",
+      "values": [
+        "true",
+        "anything else = no"
+      ]
+    },
+    "x": {
+      "completable": [],
+      "default": "absent -> \"command 'move_to point' : missing a coordinate\"",
+      "default_literal": null,
+      "doc": "On `action move_to target point`, where to go: the first coordinate, counted from the Sun.",
+      "notes": "The three numbers are a position in the heliocentric ecliptic frame (src/navModule/anchor_manager.cpp:387-395, 405-442). The unit is NOT stated on this path: astronomical units is [derived] from two facts about the same frame -- the km->AU divisor applied to `altitude` beside it (src/navModule/anchor_manager.cpp:475, with AU declared in kilometres at src/tools/sc_const.hpp:45), and the new-path anchor code, which says 'a fixed point x/y/z in AU' of the same coordinates (src/experimentalModule/CameraAnchors.cpp:100). On `action create` the same three spellings are read again downstream, for a fixed place (see the downstream keys).",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4321, 4326-4336 -> src/navModule/anchor_manager.cpp:387-395, 405-442 (W_X=\"x\", base_command_interface.hpp:300)",
+      "value_docs": {},
+      "value_domain": "number(evalDouble) -- $-variable substitution possible; astronomical units",
+      "values": []
+    },
+    "y": {
+      "completable": [],
+      "default": "absent -> \"command 'move_to point' : missing a coordinate\"",
+      "default_literal": null,
+      "doc": "On `action move_to target point`, where to go: the second coordinate, counted from the Sun.",
+      "notes": "",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4322, 4326-4336 (W_Y=\"y\", base_command_interface.hpp:301)",
+      "value_docs": {},
+      "value_domain": "number(evalDouble) -- $-variable substitution possible; astronomical units",
+      "values": []
+    },
+    "z": {
+      "completable": [],
+      "default": "absent -> \"command 'move_to point' : missing a coordinate\"",
+      "default_literal": null,
+      "doc": "On `action move_to target point`, where to go: the third coordinate, counted from the Sun.",
+      "notes": "",
+      "present": true,
+      "required": "conditional",
+      "source": "app_command_interface.cpp:4323, 4326-4336 (W_Z=\"z\", base_command_interface.hpp:302)",
+      "value_docs": {},
+      "value_domain": "number(evalDouble) -- $-variable substitution possible; astronomical units",
+      "values": []
+    }
+  },
+  "args_complete": false,
+  "args_source": "",
+  "doc": "Move the point of view about the universe: name a place, go to it, turn towards a body, or fly up from where you stand.",
+  "family": null,
+  "key_grammar": null,
+  "keys": [
+    "action",
+    "altitude",
+    "body",
+    "body_name",
+    "coef",
+    "coord_func",
+    "duration",
+    "filename",
+    "follow_rotation",
+    "name",
+    "orbit_center_x",
+    "orbit_center_y",
+    "orbit_center_z",
+    "parent",
+    "state",
+    "target",
+    "type",
+    "value",
+    "x",
+    "y",
+    "z"
+  ],
+  "kind": "command",
+  "name": "camera",
+  "registration": "app_command_init.cpp:44 (ACP_CN_CAMERA = \"camera\", base_command_interface.hpp:339); alias app_command_init.cpp:105 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:340)"
+}

@@ -1,0 +1,28 @@
+{
+  "command": "script",
+  "completable": [
+    "global",
+    "once",
+    "script"
+  ],
+  "default": "absent -> global; any other word -> \"bind: unknown scope '<scope>' - write global, script or once\"",
+  "default_literal": null,
+  "doc": "How long the binding lasts: until the next global binding, until the running script ends, or until it has run once.",
+  "kind": "key",
+  "name": "scope",
+  "notes": "",
+  "present": true,
+  "required": "false",
+  "source": "app_command_interface.cpp:2886, 2892-2893, 2905-2906, 257-259 -> src/uiModule/key_binding.cpp:94-104, 125-130, 141-151 @ 52568219 (W_SCOPE=\"scope\", W_GLOBAL=\"global\", W_SCRIPT=\"script\", W_ONCE=\"once\": base_command_interface.hpp:328,324,330,329)",
+  "value_docs": {
+    "global": "replace every binding of this key and event with this one (with key *, every key's bindings of that event); it stays until the next global binding",
+    "once": "stack it on the key's binding until it has run once, then remove it",
+    "script": "stack it on the key's binding until the running script ends, then remove it"
+  },
+  "value_domain": "enumerated",
+  "values": [
+    "global",
+    "script",
+    "once"
+  ]
+}

@@ -1,0 +1,67 @@
+```
+SHAPE 6a331fd5..WORKTREE  (harness/shape/delivery.py)
+(1) lines [ratio.py classify on the -U0 hunks]  +code -code +comment -comment +blank -blank  status file
+     16    20     1     0     1     0  M src/tools/s_texture.cpp
+      3     3     0     0     0     0  M util/scedit/README.md
+    247   247     0     0     0     0  M util/scedit/grammar/args/unit-1.json
+    348   284     0     0     0     0  M util/scedit/grammar/args/unit-2.json
+    258   258     0     0     0     0  M util/scedit/grammar/args/unit-3.json
+    244   236     0     0     0     0  M util/scedit/grammar/args/unit-4.json
+   1585  1368     0     0     0     0  M util/scedit/grammar/sc-grammar.json
+    412   412     0     0     0     0  M util/scedit/grammar/ss-grammar.json
+      8     3     0     0     0     0  M util/scedit/tests/anchor-expected.txt
+     80   142     0     0     5     9  M util/scedit/tests/anchor_gate.py
+      1     1     0     0     0     0  M util/scedit/tests/check-json-expected.txt
+      7     7     0     0     0     0  M util/scedit/tests/doc-expected.txt
+      1     1     0     0     0     0  M util/scedit/tests/history-expected.txt
+      1     1     0     0     0     0  M util/scedit/tests/lint-expected.txt
+     10    10     0     0     0     0  M util/scedit/tests/ui-selftest-expected.txt
+  total 15 files: +3228 -3002 (numstat); code +3221 -2993, comment +1 -0, blank +6 -9; net code +228, net lines +226
+(2) names [names.py]  BEFORE -> AFTER  +added  -removed
+  total 0 headers: names +0 -0
+(3) writers [writers.py]  class: pairs BEFORE -> AFTER, unchanged; changed field: writers BEFORE -> AFTER
+  no class (no touched header with its same-stem .cpp touched; --class names one)
+(4) form [form.py measure over the added lines]
+  comment lines added: full 1, trailing 0; blocks 1:1 2:0 3+:0; length median 51 p90 51
+  verb-first (upper bound) 1 / 1 blocks; first words: Return 1
+(5) ledger grammar in the added lines [INTENT|11\.[0-9]|F1[0-9][0-9]|\[observed|\[measured|\[vixy]: 26
+  util/scedit/grammar/args/unit-2.json:2598  INTENT
+  util/scedit/grammar/args/unit-4.json:445  INTENT
+  util/scedit/grammar/args/unit-4.json:674  INTENT
+  util/scedit/grammar/args/unit-4.json:721  INTENT
+  util/scedit/grammar/sc-grammar.json:16  F158
+  util/scedit/grammar/sc-grammar.json:17  F159
+  util/scedit/grammar/sc-grammar.json:109  INTENT
+  util/scedit/grammar/sc-grammar.json:112  [vixy
+  util/scedit/grammar/sc-grammar.json:116  INTENT
+  util/scedit/grammar/sc-grammar.json:135  [vixy
+  util/scedit/grammar/sc-grammar.json:1174  INTENT
+  util/scedit/grammar/sc-grammar.json:5873  INTENT
+  util/scedit/grammar/sc-grammar.json:7471  INTENT
+  util/scedit/grammar/sc-grammar.json:8804  INTENT
+  util/scedit/grammar/sc-grammar.json:8926  [measured
+  util/scedit/grammar/sc-grammar.json:8930  [measured
+  util/scedit/grammar/sc-grammar.json:11037  INTENT
+  util/scedit/grammar/sc-grammar.json:11064  [measured
+  util/scedit/grammar/sc-grammar.json:11133  INTENT
+  util/scedit/grammar/sc-grammar.json:11141  [vixy
+  util/scedit/grammar/sc-grammar.json:11142  INTENT
+  util/scedit/grammar/ss-grammar.json:187  INTENT
+  util/scedit/grammar/ss-grammar.json:1408  11.1
+  util/scedit/grammar/ss-grammar.json:1509  [vixy
+  util/scedit/grammar/ss-grammar.json:2021  [vixy
+  util/scedit/tests/anchor-expected.txt:5  F158
+(6) d14 [f70_ascii.py gate]
+  gate PASS (exit 0; it reads the code repo's tracked files on disk; that tree is WORKTREE: yes)
+  delivery files at WORKTREE by its partition: 15 read, 4 non-ASCII (0 CONVERT or unclassified): PASS
+    util/scedit/tests/check-json-expected.txt utf8 EXCLUDE
+    util/scedit/tests/history-expected.txt utf8 EXCLUDE
+    util/scedit/tests/lint-expected.txt utf8 EXCLUDE
+    util/scedit/tests/ui-selftest-expected.txt utf8 EXCLUDE
+(7) ratio [ratio.py classify, src/experimentalModule .hpp/.cpp]
+  6a331fd5 files 124 code 13493 comment 889 ratio 0.07
+  WORKTREE files 124 code 13493 comment 889 ratio 0.07
+(8) scope [review.sh]
+  header scope :(glob)src/**/*.hpp :(glob)src/**/*.h: 0 touched (new 0, modified 0, deleted 0, renamed 0)
+  outside it, in the ALL=1 scope src shaders: 1 touched
+```

@@ -1,0 +1,34 @@
+Create JoypadController
+Joypad: model name Virtual Controller detected
+Joypad: no config detected switching to default
+Init_parser def_str joy_default:AXIS0_ALT
+Joypad: AXIS0_SENSITIVITY has no effect, the axis is normalised from AXIS0_DEADZONE to the maximal amplitude - remove the line
+Init_parser def_str joy_default:AXIS1_ALT
+Joypad: AXIS1_SENSITIVITY has no effect, the axis is normalised from AXIS1_DEADZONE to the maximal amplitude - remove the line
+Init_parser def_str joy_default:AXIS2_ALT
+Joypad: AXIS2_SENSITIVITY has no effect, the axis is normalised from AXIS2_DEADZONE to the maximal amplitude - remove the line
+Init_parser def_str joy_default:AXIS3_ALT
+Joypad: AXIS3_SENSITIVITY has no effect, the axis is normalised from AXIS3_DEADZONE to the maximal amplitude - remove the line
+Init_parser def_str joy_default:AXIS4_ALT
+Joypad: AXIS4_SENSITIVITY has no effect, the axis is normalised from AXIS4_DEADZONE to the maximal amplitude - remove the line
+Init_parser def_str joy_default:AXIS5_ALT
+Joypad: AXIS5_SENSITIVITY has no effect, the axis is normalised from AXIS5_DEADZONE to the maximal amplitude - remove the line
+Init_parser can't find the configuration key "joy_default:BUTTON0_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON1_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON2_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON3_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON4_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON5_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON6_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON7_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON8_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON9_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON11_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON12_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON13_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON14_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:BUTTON15_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:HAT0_UP_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:HAT0_DOWN_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:HAT0_LEFT_ALT", default empty string returned
+Init_parser can't find the configuration key "joy_default:HAT0_RIGHT_ALT", default empty string returned

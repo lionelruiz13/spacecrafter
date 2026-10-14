@@ -1,0 +1,21 @@
+{
+  "command": "script",
+  "completable": [],
+  "default": "absent -> the key's press binding is left as it is; `press` and `release` both absent -> \"bind: give 'press <script|->', 'release <script|->' or both\"; a name found in neither directory -> \"bind: no script '<name>' as given, in the running script's directory or in the scripts directory\"",
+  "default_literal": null,
+  "doc": "The script to run when the key is pressed, or - for no script, so that the key does what it does by default.",
+  "kind": "key",
+  "name": "press",
+  "notes": "",
+  "present": true,
+  "required": "conditional",
+  "source": "app_command_interface.cpp:2887-2889, 2894-2904, 2907-2909 (W_PRESS=\"press\", base_command_interface.hpp:327)",
+  "value_docs": {
+    "-": "no script: the key does its own action"
+  },
+  "value_domain": "a script name, evaluated as a variable unless it ends in a three-letter extension and looked for in the running script's directory or in the scripts directory; or -",
+  "values": [
+    "<script name>",
+    "-"
+  ]
+}

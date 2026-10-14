@@ -1,0 +1,1349 @@
+(Info ): Log retention (spacecrafter.log): the previous launch is now spacecrafter.1.log, now using 8 of the last 8 launches, deleted log/spacecrafter.7.log (112052 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (script.log): the previous launch is now script.1.log, now using 8 of the last 8 launches, deleted log/script.7.log (482574 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (script.log): 34 legacy dated log file(s) of the pre-rotation layout are present (script-*.log, 5802574 bytes in total). They are never written, read or deleted by this build and the 8-launch window does not cover them: delete them by hand if you want the space back.
+(Info ): Log retention (tcp.log): the previous launch is now tcp.1.log, now using 8 of the last 8 launches, deleted log/tcp.7.log (0 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (shader.log): the previous launch is now shader.1.log, now using 8 of the last 8 launches, deleted log/shader.7.log (0 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+(Info ): Log retention (vulkan.log): the previous launch is now vulkan.1.log, now using 8 of the last 8 launches, deleted log/vulkan.7.log (163558 bytes, the launch that fell outside the window). The window is the compiled constant LOG_RETENTION_LAUNCHES = 8 in src/tools/log.hpp: no config.ini key sets it, so keeping more or fewer launches means changing that line and rebuilding.
+=================================================================
+(Info ): Welcome to spacecrafter
+(Info ): Version : spacecrafter 2026.07.11 - Vulkan Edition 2026
+(Info ):  Copyright (c) 2014-2020 Association Sirius, LSS team et al.
+ Copyright (c) 2012-2014 LSS team et al.
+ Copyright (c) 2003-2011 Digitalis Education Solutions, Inc. et al.
+ Copyright (c) 2000-2008 Fabien Chereau et al.
+ http://lss-planetariums.info
+=================================================================
+(Info ): system name = Linux
+node name   = LovelyFoxDev
+release     = 7.0.0-38-generic
+version     = #38-Ubuntu SMP PREEMPT_DYNAMIC Fri Sep  4 09:10:14 UTC 2026
+machine     = x86_64
+=================================================================
+(Info ): Memory information
+Total ram 63579144192
+Free  ram 37109030912
+Shared ram 266829824
+Buffer ram 621649920
+Total swap 0
+Free  swap 0
+=================================================================
+(Info ): Check home directory ok
+Check audio subdirectory ok
+Check fonts subdirectory ok
+Check ftp subdirectory ok
+Check landscapes subdirectory ok
+Check log subdirectory ok
+Check screenshot subdirectory ok
+Check scripts subdirectory ok
+Check pictures subdirectory ok
+Check textures subdirectory ok
+Check vframes subdirectory ok
+Check videos subdirectory ok
+Check media subdirectory ok
+Check vr360 subdirectory ok
+Check www subdirectory ok
+Check sky_cultures subdirectory ok
+Check model3D subdirectory ok
+Check language subdirectory ok
+
+(Info ): Lock file is /tmp/spacecrafter.lock
+(Info ): My getpid() is 1594725
+(Info ): Saved getpid is : 1590884
+(Info ): CONFIG DIR: /home/claude/.spacecrafter/
+(Info ): ROOT   DIR: /usr/local/share/spacecrafter/
+(Info ): LOCALE DIR: /usr/local/share/locale/
+(Info ): config.ini is up to date
+000000000000: =================================================================
+000000000067: (Info ): SDL init oki !
+000000000170: (Info ): Windows size is 1024x1024px
+000000000170: (Info ): Video driver is  x11
+000000000170: (Info ): SDL_GetNumVideoDisplays(): 1
+000000000170: (Info ): SDL_GetNumDisplayModes:  32
+000000000170: (Info ): Mode 0 bpp 24 SDL_PIXELFORMAT_RGB888 2444 1332
+000000000170: (Info ): Mode 1 bpp 24 SDL_PIXELFORMAT_RGB888 2048 1152
+000000000170: (Info ): Mode 2 bpp 24 SDL_PIXELFORMAT_RGB888 1920 1200
+000000000170: (Info ): Mode 3 bpp 24 SDL_PIXELFORMAT_RGB888 1920 1080
+000000000170: (Info ): Mode 4 bpp 24 SDL_PIXELFORMAT_RGB888 1680 1050
+000000000170: (Info ): Mode 5 bpp 24 SDL_PIXELFORMAT_RGB888 1600 1200
+000000000170: (Info ): Mode 6 bpp 24 SDL_PIXELFORMAT_RGB888 1600 900
+000000000170: (Info ): Mode 7 bpp 24 SDL_PIXELFORMAT_RGB888 1440 1080
+000000000170: (Info ): Mode 8 bpp 24 SDL_PIXELFORMAT_RGB888 1440 900
+000000000170: (Info ): Mode 9 bpp 24 SDL_PIXELFORMAT_RGB888 1400 1050
+000000000170: (Info ): Mode 10 bpp 24 SDL_PIXELFORMAT_RGB888 1368 768
+000000000170: (Info ): Mode 11 bpp 24 SDL_PIXELFORMAT_RGB888 1280 1024
+000000000170: (Info ): Mode 12 bpp 24 SDL_PIXELFORMAT_RGB888 1280 960
+000000000170: (Info ): Mode 13 bpp 24 SDL_PIXELFORMAT_RGB888 1280 800
+000000000170: (Info ): Mode 14 bpp 24 SDL_PIXELFORMAT_RGB888 1280 720
+000000000170: (Info ): Mode 15 bpp 24 SDL_PIXELFORMAT_RGB888 1152 864
+000000000170: (Info ): Mode 16 bpp 24 SDL_PIXELFORMAT_RGB888 1152 720
+000000000170: (Info ): Mode 17 bpp 24 SDL_PIXELFORMAT_RGB888 1024 768
+000000000170: (Info ): Mode 18 bpp 24 SDL_PIXELFORMAT_RGB888 1024 576
+000000000170: (Info ): Mode 19 bpp 24 SDL_PIXELFORMAT_RGB888 960 600
+000000000170: (Info ): Mode 20 bpp 24 SDL_PIXELFORMAT_RGB888 928 580
+000000000170: (Info ): Mode 21 bpp 24 SDL_PIXELFORMAT_RGB888 864 486
+000000000170: (Info ): Mode 22 bpp 24 SDL_PIXELFORMAT_RGB888 800 600
+000000000170: (Info ): Mode 23 bpp 24 SDL_PIXELFORMAT_RGB888 800 500
+000000000170: (Info ): Mode 24 bpp 24 SDL_PIXELFORMAT_RGB888 768 480
+000000000170: (Info ): Mode 25 bpp 24 SDL_PIXELFORMAT_RGB888 720 480
+000000000170: (Info ): Mode 26 bpp 24 SDL_PIXELFORMAT_RGB888 720 400
+000000000170: (Info ): Mode 27 bpp 24 SDL_PIXELFORMAT_RGB888 640 480
+000000000170: (Info ): Mode 28 bpp 24 SDL_PIXELFORMAT_RGB888 640 400
+000000000170: (Info ): Mode 29 bpp 24 SDL_PIXELFORMAT_RGB888 640 350
+000000000170: (Info ): Mode 30 bpp 24 SDL_PIXELFORMAT_RGB888 320 240
+000000000170: (Info ): Mode 31 bpp 24 SDL_PIXELFORMAT_RGB888 320 200
+000000000171: =================================================================
+000000000344: (Warn.): Init_parser def_str video:projection
+000000000344: (Info ): Projection mode: FISHEYE (type=0)
+000000000344: (Warn.): Init_parser def_str video:rear_projection
+000000000344: (Info ): Rear projection: false (enabled=0)
+000000000344: (Info ): Initializing Vulkan...
+000000000441: (Info ): Finalizing Vulkan initialization...
+000000000745: (Info ): Vulkan initialization completed
+000000000757: (Info ): Audio initialization successful
+000000000803: (Info ): Generating EquiSphere took : 27ms
+000000000861: (Info ): System 'MilkyWay' uses centre-relative navigation by class default (datum_radius = ground_radius = 0): free-mode altitude is measured from its centre and free descent reaches the centre. To override, set datum_radius/ground_radius in data or run 'body name MilkyWay datum_radius <km>'.
+000000000863: (Info ): Loading body Sun
+000000000863: (Debug): Body 'Sun': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000865: (Info ): Loading body Mercury
+000000000865: (Debug): Body 'Mercury': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000867: (Info ): Loading body Venus
+000000000867: (Debug): Body 'Venus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000870: (Info ): Loading body Earth
+000000000870: (Debug): Body 'Earth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000877: (Info ): Loading body Moon
+000000000877: (Debug): Body 'Moon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000878: (Info ): Adding Moon to Earth binary orbit.
+000000000878: (Info ): Loading body Mars
+000000000878: (Debug): Body 'Mars': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000879: (Info ): Loading body Phobos
+000000000879: (Debug): Body 'Phobos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000882: (Info ): Loading object Phobos
+000000000882: (Info ): Succesfull loading model3D Phobos
+000000000882: (Info ): Loading body Deimos
+000000000882: (Debug): Body 'Deimos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000883: (Info ): Loading object Deimos
+000000000883: (Info ): Succesfull loading model3D Deimos
+000000000883: (Info ): Loading body Jupiter
+000000000883: (Debug): Body 'Jupiter': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000885: (Info ): Loading body Metis
+000000000885: (Debug): Body 'Metis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): Loading body Adrastea
+000000000885: (Debug): Body 'Adrastea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Amalthea
+000000000885: (Debug): Body 'Amalthea': rot_pole_w0 (IAU W0=231.67 deg, from the ICRF-equator node) converted to rot_rotation_offset 258.121552 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000885: (Info ): Loading body Thebe
+000000000885: (Debug): Body 'Thebe': rot_pole_w0 (IAU W0=8.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 29.457403 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Io
+000000000885: (Debug): Body 'Io': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): Loading body Europa
+000000000885: (Debug): Body 'Europa': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): Loading body Ganymede
+000000000885: (Debug): Body 'Ganymede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): Loading body Callisto
+000000000885: (Debug): Body 'Callisto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): Loading body Himalia
+000000000885: (Debug): Body 'Himalia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Elara
+000000000885: (Debug): Body 'Elara': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Carme
+000000000885: (Debug): Body 'Carme': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Pasiphae
+000000000885: (Debug): Body 'Pasiphae': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Lysithea
+000000000885: (Debug): Body 'Lysithea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Ananke
+000000000885: (Debug): Body 'Ananke': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Sinope
+000000000885: (Debug): Body 'Sinope': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Leda
+000000000885: (Debug): Body 'Leda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Saturn
+000000000885: (Debug): Body 'Saturn': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000885: (Info ): Loading body Pan
+000000000885: (Debug): Body 'Pan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000000885: (Info ): Loading body Daphnis
+000000000885: (Debug): Body 'Daphnis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000885: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000000885: (Info ): Loading body Prometheus
+000000000885: (Debug): Body 'Prometheus': rot_pole_w0 (IAU W0=296.14 deg, from the ICRF-equator node) converted to rot_rotation_offset 256.175446 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Pandora
+000000000885: (Debug): Body 'Pandora': rot_pole_w0 (IAU W0=162.92 deg, from the ICRF-equator node) converted to rot_rotation_offset 122.955437 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000885: (Info ): Loading body Epimetheus
+000000000885: (Debug): Body 'Epimetheus': rot_pole_w0 (IAU W0=293.87 deg, from the ICRF-equator node) converted to rot_rotation_offset 254.618652 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000885: (Info ): s_texture: already in cache textures/bodies/asteroid.png
+000000000885: (Info ): Loading body Janus
+000000000885: (Debug): Body 'Janus': rot_pole_w0 (IAU W0=58.83 deg, from the ICRF-equator node) converted to rot_rotation_offset 18.439495 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000885: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000885: (Info ): Loading body Titan
+000000000885: (Debug): Body 'Titan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): s_texture: already in cache textures/bodies/atm_gradient3.png
+000000000886: (Info ): Loading body Mimas
+000000000886: (Debug): Body 'Mimas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Enceladus
+000000000886: (Debug): Body 'Enceladus': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Dione
+000000000886: (Debug): Body 'Dione': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Tethys
+000000000886: (Debug): Body 'Tethys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Rhea
+000000000886: (Debug): Body 'Rhea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Hyperion
+000000000886: (Debug): Body 'Hyperion': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Warn.): Body 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000000886: (Info ): Loading body Iapetus
+000000000886: (Debug): Body 'Iapetus': rot_pole_w0 (IAU W0=355.2 deg, from the ICRF-equator node) converted to rot_rotation_offset 261.467072 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): Loading body Telesto
+000000000886: (Debug): Body 'Telesto': rot_pole_w0 (IAU W0=56.88 deg, from the ICRF-equator node) converted to rot_rotation_offset 24.588358 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Helene
+000000000886: (Debug): Body 'Helene': rot_pole_w0 (IAU W0=245.12 deg, from the ICRF-equator node) converted to rot_rotation_offset 205.606384 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Uranus
+000000000886: (Debug): Body 'Uranus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Juliet
+000000000886: (Debug): Body 'Juliet': rot_pole_w0 (IAU W0=302.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 307.635773 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Portia
+000000000886: (Debug): Body 'Portia': rot_pole_w0 (IAU W0=25.03 deg, from the ICRF-equator node) converted to rot_rotation_offset 30.123623 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Rosalind
+000000000886: (Debug): Body 'Rosalind': rot_pole_w0 (IAU W0=314.90 deg, from the ICRF-equator node) converted to rot_rotation_offset 319.999634 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Belinda
+000000000886: (Debug): Body 'Belinda': rot_pole_w0 (IAU W0=297.46 deg, from the ICRF-equator node) converted to rot_rotation_offset 302.530396 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Puck
+000000000886: (Debug): Body 'Puck': rot_pole_w0 (IAU W0=91.24 deg, from the ICRF-equator node) converted to rot_rotation_offset 96.381638 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Miranda
+000000000886: (Debug): Body 'Miranda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Ariel
+000000000886: (Debug): Body 'Ariel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Umbriel
+000000000886: (Debug): Body 'Umbriel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Titania
+000000000886: (Debug): Body 'Titania': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Oberon
+000000000886: (Debug): Body 'Oberon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Caliban
+000000000886: (Debug): Body 'Caliban': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Sycorax
+000000000886: (Debug): Body 'Sycorax': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Prospero
+000000000886: (Debug): Body 'Prospero': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Setebos
+000000000886: (Debug): Body 'Setebos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Neptune
+000000000886: (Debug): Body 'Neptune': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).
+000000000886: (Info ): Loading body Naiad
+000000000886: (Debug): Body 'Naiad': rot_pole_w0 (IAU W0=254.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 230.775604 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Thalassa
+000000000886: (Debug): Body 'Thalassa': rot_pole_w0 (IAU W0=102.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 77.728737 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Despina
+000000000886: (Debug): Body 'Despina': rot_pole_w0 (IAU W0=306.51 deg, from the ICRF-equator node) converted to rot_rotation_offset 282.446777 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Galatea
+000000000886: (Debug): Body 'Galatea': rot_pole_w0 (IAU W0=258.09 deg, from the ICRF-equator node) converted to rot_rotation_offset 234.041214 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Larissa
+000000000886: (Debug): Body 'Larissa': rot_pole_w0 (IAU W0=179.41 deg, from the ICRF-equator node) converted to rot_rotation_offset 155.537094 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000886: (Info ): Loading body Proteus
+000000000886: (Debug): Body 'Proteus': rot_pole_w0 (IAU W0=93.38 deg, from the ICRF-equator node) converted to rot_rotation_offset 69.711334 deg (ecliptic node; the azimuth the texture's centre column is drawn at).
+000000000886: (Info ): Loading body Triton
+000000000886: (Debug): Body 'Triton': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Info ): Loading body Neried
+000000000887: (Debug): Body 'Neried': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000887: (Info ): Loading body Halimede
+000000000887: (Debug): Body 'Halimede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000887: (Info ): Loading body Sao
+000000000887: (Debug): Body 'Sao': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000887: (Info ): Loading body Laomedeia
+000000000887: (Debug): Body 'Laomedeia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000887: (Info ): Loading body Psamathe
+000000000887: (Debug): Body 'Psamathe': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000887: (Info ): Loading body Neso
+000000000887: (Debug): Body 'Neso': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000887: (Info ): Loading body Ceres
+000000000887: (Debug): Body 'Ceres': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Info ): Loading body Pallas
+000000000887: (Debug): Body 'Pallas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000887: (Info ): Loading body Juno
+000000000887: (Debug): Body 'Juno': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Warn.): Body 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000000887: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000887: (Info ): Loading body Vesta
+000000000887: (Debug): Body 'Vesta': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000887: (Warn.): Body 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).
+000000000898: (Info ): Loading object Vesta
+000000000898: (Warn.): Performance Issue : Too many vertices for 'model3D/Vesta/Vesta_1L.ojm' (Keep Below 4 000)
+000000000898: (Info ): Succesfull loading model3D Vesta
+000000000898: (Info ): Loading body Pluto
+000000000898: (Debug): Body 'Pluto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): Loading body Charon
+000000000898: (Debug): Body 'Charon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): Loading body Nix
+000000000898: (Debug): Body 'Nix': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000898: (Info ): Loading body Hydra_
+000000000898: (Debug): Body 'Hydra_': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000898: (Info ): Loading body Styx
+000000000898: (Debug): Body 'Styx': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000898: (Info ): Loading body Kerberos
+000000000898: (Debug): Body 'Kerberos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000898: (Info ): Loading body Eris
+000000000898: (Debug): Body 'Eris': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000898: (Info ): Loading body Haumea
+000000000898: (Debug): Body 'Haumea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000898: (Info ): Loading body Namaka
+000000000898: (Debug): Body 'Namaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000898: (Info ): Loading body Hiiaka
+000000000898: (Debug): Body 'Hiiaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000898: (Info ): Loading body Makemake
+000000000898: (Debug): Body 'Makemake': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Warn.): Ignoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.
+000000000898: (Info ): Loading body Sedna
+000000000898: (Debug): Body 'Sedna': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000898: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000898: (Info ): Loading body Arrokoth
+000000000898: (Debug): Body 'Arrokoth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000902: (Info ): Loading object Arrokoth
+000000000902: (Info ): Succesfull loading model3D Arrokoth
+000000000902: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000902: (Info ): Loading body Solar_System
+000000000902: (Debug): Body 'Solar_System': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000902: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000902: (Info ): Loading body Goldilocks_Zone
+000000000902: (Debug): Body 'Goldilocks_Zone': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).
+000000000902: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000000902: (Info ): (system SolarSystem loaded)
+000000000902: =================================================================
+000000001097: (Info ): s_texture: already in cache textures/volum_cloud.png
+000000002495: (Info ): SkyGridMgr creating GRID_EQUATORIAL
+000000002495: (Info ): SkyGridMgr creating GRID_ECLIPTIC
+000000002495: (Info ): SkyGridMgr creating GRID_GALACTIC
+000000002495: (Info ): SkyGridMgr creating GRID_ALTAZIMUTAL
+000000002495: (Info ): SkyLineMgr creating LINE_CIRCLE_POLAR
+000000002495: (Info ): SkyLineMgr creating LINE_POINT_POLAR
+000000002495: (Info ): SkyLineMgr creating LINE LINE_ECLIPTIC_POLE
+000000002495: (Info ): SkyLineMgr creating LINE LINE_GALACTIC_POLE
+000000002495: (Info ): SkyLineMgr creating LINE_ANALEMMA
+000000002495: (Info ): SkyLineMgr creating LINE_ANALEMMALINE
+000000002495: (Info ): SkyLineMgr creating LINE_CIRCUMPOLAR
+000000002495: (Info ): SkyLineMgr creating LINE LINE_GALACTIC_CENTER
+000000002495: (Info ): SkyLineMgr creating LINE_VERNAL
+000000002495: (Info ): SkyLineMgr creating LINE_GREENWICH
+000000002495: (Info ): SkyLineMgr creating LINE_ARIES
+000000002495: (Info ): SkyLineMgr creating LINE_EQUATOR
+000000002495: (Info ): SkyLineMgr creating LINE_GALACTIC_EQUATOR
+000000002496: (Info ): SkyLineMgr creating LINE_MERIDIAN
+000000002496: (Info ): SkyLineMgr creating LINE_TROPIC
+000000002496: (Info ): SkyLineMgr creating LINE_MERIDIAN
+000000002496: (Info ): SkyLineMgr creating LINE_PRECESSION
+000000002496: (Info ): SkyLineMgr creating LINE_VERTICAL
+000000002496: (Info ): SkyLineMgr creating LINE_ZODIAC
+000000002496: (Info ): SkyLineMgr creating LINE_ZENITH
+000000002497: (Info ): SkyDisplayMgr creating SkyPersonAL
+000000002497: (Info ): SkyDisplayMgr creating SkyPersonEQ
+000000002497: (Info ): SkyDisplayMgr creating SkyNauticAL
+000000002497: (Info ): SkyDisplayMgr creating SkyNauticEQ
+000000002497: (Info ): SkyDisplayMgr creating SkyObjCoords
+000000002498: (Info ): SkyDisplayMgr creating SkyMouseCoords
+000000002498: (Info ): SkyDisplayMgr creating SkyAngDist
+000000002498: (Info ): SkyDisplayMgr creating SkyLoxodromy
+000000002498: (Info ): SkyDisplayMgr creating SkyOrthodromy
+000000002498: (Info ): Landscape generic created
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002498: (Warn.): Init_parser can't find the configuration key "info:name", default empty string returned
+000000002534: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002535: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002535: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002536: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002536: (Info ): s_font: loading font fonts/DejaVuSansMono-Bold.ttf
+000000002536: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002536: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002536: (Info ): s_font: loading font fonts/DejaVuSans.ttf
+000000002536: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002536: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002536: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002536: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002537: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002537: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002537: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002537: (Info ): s_font: loading font fonts/DejaVuSans-Bold.ttf
+000000002538: (Info ): s_texture: already in cache textures/planethalo.png
+000000002538: (Info ): (solar system) default textures loaded
+000000002538: (Info ): Loading new Stellar System object... Sun
+000000002538: (Info ): s_texture: already in cache textures/bodies/sun.jpg
+000000002541: (Info ): s_texture: already in cache textures/big_halo.png
+000000002542: (Info ): Loading new Stellar System object... Mercury
+000000002542: (Info ): s_texture: already in cache textures/bodies/mercury.jpg
+000000002542: (Info ): Loading new Stellar System object... Venus
+000000002542: (Info ): s_texture: already in cache textures/bodies/venus.jpg
+000000002542: (Info ): Loading new Stellar System object... Earth
+000000002542: (Info ): Creating Earth orbit...
+000000002542: (Info ): s_texture: already in cache textures/bodies/earth.jpg
+000000002542: (Info ): s_texture: already in cache textures/bodies/earth_normal.jpg
+000000002542: (Info ): s_texture: already in cache textures/bodies/earth_alti.png
+000000002542: (Info ): s_texture: already in cache textures/bodies/earth_night.jpg
+000000002542: (Info ): s_texture: already in cache textures/bodies/earth_specular.png
+000000002542: (Info ): Loading new Stellar System object... Moon
+000000002542: (Info ): s_texture: already in cache textures/bodies/moon.jpg
+000000002542: (Info ): s_texture: already in cache textures/bodies/moon_normal.jpg
+000000002542: (Info ): s_texture: already in cache textures/bodies/moon_alti.jpg
+000000002542: (Info ): Adding Moon to Earth binary orbit.
+000000002542: (Info ): Loading new Stellar System object... Mars
+000000002542: (Info ): s_texture: already in cache textures/bodies/mars.jpg
+000000002543: (Info ): s_texture: already in cache textures/bodies/mars_normal.jpg
+000000002543: (Info ): s_texture: already in cache textures/bodies/mars_alti.jpg
+000000002543: (Info ): Loading new Stellar System object... Phobos
+000000002543: (Info ): s_texture: already in cache textures/bodies/phobos.jpg
+000000002543: (Info ): Loading new Stellar System object... Deimos
+000000002543: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000002543: (Info ): Loading new Stellar System object... Jupiter
+000000002543: (Info ): s_texture: already in cache textures/bodies/jupiter.png
+000000002543: (Info ): s_texture: already in cache textures/bodies/jupiter_rings.png
+000000002543: (Info ): Loading new Stellar System object... Metis
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Adrastea
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Amalthea
+000000002543: (Info ): s_texture: already in cache textures/bodies/amalthea.png
+000000002543: (Info ): Loading new Stellar System object... Thebe
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Io
+000000002543: (Info ): s_texture: already in cache textures/bodies/io.png
+000000002543: (Info ): s_texture: already in cache textures/bodies/io_night.png
+000000002543: (Info ): Loading new Stellar System object... Europa
+000000002543: (Info ): s_texture: already in cache textures/bodies/europa.png
+000000002543: (Info ): Loading new Stellar System object... Ganymede
+000000002543: (Info ): s_texture: already in cache textures/bodies/ganymede.png
+000000002543: (Info ): Loading new Stellar System object... Callisto
+000000002543: (Info ): s_texture: already in cache textures/bodies/callisto.png
+000000002543: (Info ): Loading new Stellar System object... Himalia
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Elara
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Carme
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Pasiphae
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Lysithea
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Ananke
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Sinope
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Leda
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Saturn
+000000002543: (Info ): s_texture: already in cache textures/bodies/saturn.jpg
+000000002543: (Info ): s_texture: already in cache textures/bodies/saturn_rings_radial.png
+000000002543: (Info ): Loading new Stellar System object... Pan
+000000002543: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000002543: (Info ): Loading new Stellar System object... Daphnis
+000000002543: (Info ): s_texture: already in cache textures/bodies/deimos.jpg
+000000002543: (Info ): Loading new Stellar System object... Prometheus
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Pandora
+000000002543: (Info ): s_texture: already in cache textures/bodies/asteroid.png
+000000002543: (Info ): Loading new Stellar System object... Epimetheus
+000000002543: (Info ): s_texture: already in cache textures/bodies/asteroid.png
+000000002543: (Info ): Loading new Stellar System object... Janus
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002543: (Info ): Loading new Stellar System object... Titan
+000000002543: (Info ): s_texture: already in cache textures/bodies/titan.png
+000000002543: (Info ): Loading new Stellar System object... Mimas
+000000002543: (Info ): s_texture: already in cache textures/bodies/mimas.png
+000000002543: (Info ): Loading new Stellar System object... Enceladus
+000000002543: (Info ): s_texture: already in cache textures/bodies/enceladus.png
+000000002543: (Info ): Loading new Stellar System object... Dione
+000000002543: (Info ): s_texture: already in cache textures/bodies/dione.png
+000000002543: (Info ): Loading new Stellar System object... Tethys
+000000002543: (Info ): s_texture: already in cache textures/bodies/tethys.png
+000000002543: (Info ): Loading new Stellar System object... Rhea
+000000002543: (Info ): s_texture: already in cache textures/bodies/rhea.png
+000000002543: (Info ): Loading new Stellar System object... Hyperion
+000000002543: (Info ): s_texture: already in cache textures/bodies/hyperion.png
+000000002543: (Info ): Loading new Stellar System object... Iapetus
+000000002543: (Info ): s_texture: already in cache textures/bodies/iapetus.png
+000000002543: (Info ): s_texture: already in cache textures/bodies/moon_normal.png
+000000002543: (Info ): s_texture: already in cache textures/bodies/iapetus_alti.png
+000000002543: (Info ): Loading new Stellar System object... Telesto
+000000002543: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Helene
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Uranus
+000000002544: (Info ): s_texture: already in cache textures/bodies/uranus.png
+000000002544: (Info ): s_texture: already in cache textures/bodies/uranusring.png
+000000002544: (Info ): Loading new Stellar System object... Juliet
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Portia
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Rosalind
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Belinda
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Puck
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Miranda
+000000002544: (Info ): s_texture: already in cache textures/bodies/miranda.png
+000000002544: (Info ): Loading new Stellar System object... Ariel
+000000002544: (Info ): s_texture: already in cache textures/bodies/ariel.png
+000000002544: (Info ): Loading new Stellar System object... Umbriel
+000000002544: (Info ): s_texture: already in cache textures/bodies/umbriel.png
+000000002544: (Info ): Loading new Stellar System object... Titania
+000000002544: (Info ): s_texture: already in cache textures/bodies/titania.png
+000000002544: (Info ): Loading new Stellar System object... Oberon
+000000002544: (Info ): s_texture: already in cache textures/bodies/oberon.png
+000000002544: (Info ): Loading new Stellar System object... Caliban
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Sycorax
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Prospero
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Setebos
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Neptune
+000000002544: (Info ): s_texture: already in cache textures/bodies/neptune.png
+000000002544: (Info ): s_texture: already in cache textures/bodies/neptune_rings.png
+000000002544: (Info ): Loading new Stellar System object... Naiad
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Thalassa
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Despina
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Galatea
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Larissa
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Proteus
+000000002544: (Info ): s_texture: already in cache textures/bodies/proteus.png
+000000002544: (Info ): Loading new Stellar System object... Triton
+000000002544: (Info ): s_texture: already in cache textures/bodies/triton.png
+000000002544: (Info ): Loading new Stellar System object... Neried
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Halimede
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Sao
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Laomedeia
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Psamathe
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Neso
+000000002544: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002544: (Info ): Loading new Stellar System object... Ceres
+000000002544: (Info ): s_texture: already in cache textures/bodies/ceres.jpg
+000000002545: (Info ): Loading new Stellar System object... Pallas
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Juno
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Vesta
+000000002545: (Info ): s_texture: already in cache textures/bodies/vesta.jpg
+000000002545: (Info ): Loading new Stellar System object... Pluto
+000000002545: (Info ): s_texture: already in cache textures/bodies/pluto.png
+000000002545: (Info ): Loading new Stellar System object... Charon
+000000002545: (Info ): s_texture: already in cache textures/bodies/charon.png
+000000002545: (Info ): Loading new Stellar System object... Nix
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Hydra_
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Styx
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Kerberos
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Eris
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Haumea
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Namaka
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Hiiaka
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Makemake
+000000002545: (Info ): s_texture: already in cache textures/bodies/makemake.jpg
+000000002545: (Info ): Loading new Stellar System object... Sedna
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Arrokoth
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Solar_System
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): Loading new Stellar System object... Goldilocks_Zone
+000000002545: (Info ): s_texture: already in cache textures/bodies/generic.png
+000000002545: (Info ): s_texture: already in cache textures/bodies/goldilocks_zone.png
+000000002545: (Info ): (solar system loaded)
+000000002545: =================================================================
+000000002545: (Info ): Reading fileAnchor anchor.ini
+000000002545: (Info ): CameraAnchors: reading anchor file anchor.ini
+000000002545: (Info ): CameraAnchors: 10 anchor(s) declared from anchor.ini
+000000002545: (Info ): AnchorManager:: initFirtAnchor to Earth
+000000002545: (Info ): (solar system loaded)
+000000002545: =================================================================
+000000002545: (Info ): (system DarkStarSystem loaded)
+000000002545: =================================================================
+000000002545: (Info ): (solar system loaded)
+000000002545: =================================================================
+000000002545: (Info ): (system ProximaSystem loaded)
+000000002545: =================================================================
+000000002545: (Info ): (solar system loaded)
+000000002545: =================================================================
+000000002545: (Info ): (system TolimanSystem loaded)
+000000002545: =================================================================
+000000002545: (Info ): (solar system loaded)
+000000002545: =================================================================
+000000002545: (Info ): (system SiriusSystem loaded)
+000000002545: =================================================================
+000000002545: (Info ): (solar system loaded)
+000000002545: =================================================================
+000000002545: (Info ): (system 51PegSystem loaded)
+000000002545: =================================================================
+000000002545: (Info ): (solar system loaded)
+000000002545: =================================================================
+000000002545: (Info ): (system KeidSystem loaded)
+000000002545: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system Trappist1System loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system Kepler16System loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system HelixDwarfSystem loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system M57DwarfSystem loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system M1PulsarSystem loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system M27DwarfSystem loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system NGC2392DwarfSystem loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system CapellaSystem loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system VegaSystem loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system ArcturusSystem loaded)
+000000002546: =================================================================
+000000002546: (Info ): (solar system loaded)
+000000002546: =================================================================
+000000002546: (Info ): (system AntaresSystem loaded)
+000000002546: =================================================================
+000000002546: (Info ): Loading star data...
+000000002546: (Info ): Loading catalog stars_0_0v0_5.cat
+000000002546: (Info ): stars_0_0v0_5.cat:0:0:0:2
+000000002546: (Info ): stars:  4964
+000000002546: (Info ): Loading catalog stars_1_0v0_5.cat
+000000002546: (Info ): stars_1_0v0_5.cat:1:0:0:2
+000000002546: (Info ): stars:  21597
+000000002546: (Info ): Loading catalog stars_2_0v0_8.cat
+000000002546: (Info ): Loading catalog stars_3_1v0_4.cat
+000000002546: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_04", default empty string returned
+000000002546: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_05", default empty string returned
+000000002546: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_06", default empty string returned
+000000002546: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_07", default empty string returned
+000000002546: (Warn.): Init_parser can't find the configuration key "stars:cat_file_name_08", default empty string returned
+000000002546: (Info ): finished, max_geodesic_level: 1
+000000002546: =================================================================
+000000002546: (Info ): s_texture: already in cache textures/star16x16.png
+000000002546: (Info ): Loading NGC data... 
+000000002687: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000002687: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000002687: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000002956: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003036: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003096: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003217: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003217: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003538: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003740: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000003961: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000004407: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000004712: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005263: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005263: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005263: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005263: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000005304: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006022: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006166: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006288: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006289: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006309: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006330: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006351: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006372: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006433: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006433: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006658: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006699: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006699: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006699: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000006699: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000007291: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000007353: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008313: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008395: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008497: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008538: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008682: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008682: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000008989: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000009194: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000009337: (Info ): s_texture: already in cache textures/nebulae/placeholder.png
+000000010113: (Info ): Nebula: 407 items loaded, 1 dropped
+000000010140: (Info ): Landscape generic created
+000000010140: (Warn.): Init_parser def_double observatory:fog_alt_angle
+000000010140: (Warn.): Init_parser def_double observatory:fog_angle_shift
+000000010141: (Warn.): Init_parser def_str observatory:night_texture
+000000010141: (Warn.): Init_parser can't find the configuration key "observatory:limited_shade", default empty string returned
+000000010141: (Warn.): Init_parser def_bool observatory:texture
+000000010141: (Warn.): Init_parser def_double observatory:rotate_z
+000000010141: (Warn.): Init_parser def_double observatory:top_altitude
+000000010141: (Warn.): Init_parser def_double observatory:base_altitude
+000000010141: (Info ): Landscape Spherical observatory created
+000000010202: (Info ): Starmanager, loading text catalogue hip2007.txt
+000000010321: (Info ): HyperCubes : 2366
+Cubes      : 12451
+Stars      : 117957
+000000010323: (Debug): StarLines cat asterism.txt
+000000010323: (Debug): StarLines stars readed 5044
+000000010324: (Info ): s_texture: already in cache textures/milkyway.png
+000000010324: (Debug): Milkyway: no irisMilky define
+000000010407: (Warn.): Init_parser def_bool rendering:flag_experimental_oort
+000000010526: (Info ): Tully catalog successfully loaded: number of items 30432
+000000010700: (Info ): s_texture: already in cache textures/pointer_planet.png
+000000010702: (Info ): Sky locale is fr
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010702: (Info ): s_font: rebuild font succes
+000000010706: (Info ): Composed twin of ssystem.ini generated at modularSystem/SolarSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_starwobble.ini generated at modularSystem/DarkStarSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_proxima.ini generated at modularSystem/ProximaSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_alphacen.ini generated at modularSystem/TolimanSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_sirius.ini generated at modularSystem/SiriusSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_51peg.ini generated at modularSystem/51PegSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_40eri.ini generated at modularSystem/KeidSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_trappist1.ini generated at modularSystem/Trappist1System.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_kepler16.ini generated at modularSystem/Kepler16System.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/HelixDwarfSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M57DwarfSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M1PulsarSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M27DwarfSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/NGC2392DwarfSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_capella.ini generated at modularSystem/CapellaSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_vega.ini generated at modularSystem/VegaSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_arcturus.ini generated at modularSystem/ArcturusSystem.ini.disabled
+000000010706: (Info ): Composed twin of ./stellar_systems/system_antares.ini generated at modularSystem/AntaresSystem.ini.disabled
+000000010708: (Error): UI: ERROR - Failed to acquire texture data for icons
+000000010708: (Info ): Landscape : observatory
+000000010710: (Info ): StarLines read Data scripts/internal/asterism_all.fab
+000000010710: (Info ): Sky locale is fr
+000000010738: (Info ): Localizing TUI for locale: system
+000000010739: (Info ): Localizing TUI for locale: system
+000000010753: (Info ): VR360 loading ojml sphere
+000000010753: (Info ): VR360 actived
+000000010753: (Info ): VR360 loading ojml cube
+000000010753: (Info ): VR360 actived
+000000011052: (Info ): buffer TCP size 1024
+000000011053: (Info ): Memory information
+Total ram 63579144192
+Free  ram 28836237312
+Shared ram 266993664
+Buffer ram 621674496
+Total swap 0
+Free  swap 0
+000000011053: =================================================================
+000000011053: (Info ): End of loading SC
+000000011053: =================================================================
+000000011053: (Info ): Application locale is fr
+000000011053: (Info ): Localizing TUI for locale: fr
+000000011054: (Info ): s_texture: already in cache textures/milkyway.png
+000000011054: (Info ): Sky locale is fr
+000000011055: (Info ): Read daykeymode as <calendar>
+000000011055: (Error): UI: ERROR - Failed to acquire texture data for icons
+000000011055: (Info ): Landscape : observatory
+000000011057: (Info ): StarLines read Data scripts/internal/asterism_all.fab
+000000011057: (Info ): Sky locale is fr
+000000011077: (Info ): Localizing TUI for locale: fr
+000000011077: (Info ): Media::playerPlayStop
+000000011077: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA
+000000011077: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000011077: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): s_font: rebuild font succes
+000000011078: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000011079: (Debug): Asynchronously loaded OjmL "model3D/Arrokoth/Arrokoth_2M.ojm"
+000000011079: (Debug): Asynchronously loaded OjmL "model3D/Arrokoth/Arrokoth_3H.ojm"
+000000011079: (Debug): Asynchronously loaded OjmL "model3D/Vesta/Vesta_2M.ojm"
+000000011079: (Debug): Asynchronously loaded OjmL "model3D/Vesta/Vesta_3H.ojm"
+000000011079: (Debug): Asynchronously loaded OjmL "model3D/Deimos/Deimos_2M.ojm"
+000000011079: (Debug): Asynchronously loaded OjmL "model3D/Phobos/Phobos_2M.ojm"
+000000011157: (Debug): Asynchronously loaded OjmL "model3D/Deimos/Deimos_3H.ojm"
+000000011157: (Debug): Asynchronously loaded OjmL "model3D/Phobos/Phobos_3H.ojm"
+000000020894: (Info ): get tcp : timerate rate 0
+000000022369: (Info ): Create JoypadController
+000000022370: (Info ): Joypad: model name Virtual Controller detected
+000000022370: (Warn.): Joypad: no config detected switching to default
+000000022370: (Warn.): Init_parser def_str joy_default:AXIS0_ALT
+000000022370: (Warn.): Joypad: AXIS0_SENSITIVITY has no effect, the axis is normalised from AXIS0_DEADZONE to the maximal amplitude - remove the line
+000000022370: (Warn.): Init_parser def_str joy_default:AXIS1_ALT
+000000022370: (Warn.): Joypad: AXIS1_SENSITIVITY has no effect, the axis is normalised from AXIS1_DEADZONE to the maximal amplitude - remove the line
+000000022370: (Warn.): Init_parser def_str joy_default:AXIS2_ALT
+000000022370: (Warn.): Joypad: AXIS2_SENSITIVITY has no effect, the axis is normalised from AXIS2_DEADZONE to the maximal amplitude - remove the line
+000000022370: (Warn.): Init_parser def_str joy_default:AXIS3_ALT
+000000022370: (Warn.): Joypad: AXIS3_SENSITIVITY has no effect, the axis is normalised from AXIS3_DEADZONE to the maximal amplitude - remove the line
+000000022370: (Warn.): Init_parser def_str joy_default:AXIS4_ALT
+000000022370: (Warn.): Joypad: AXIS4_SENSITIVITY has no effect, the axis is normalised from AXIS4_DEADZONE to the maximal amplitude - remove the line
+000000022370: (Warn.): Init_parser def_str joy_default:AXIS5_ALT
+000000022370: (Warn.): Joypad: AXIS5_SENSITIVITY has no effect, the axis is normalised from AXIS5_DEADZONE to the maximal amplitude - remove the line
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON0_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON1_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON2_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON3_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON4_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON5_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON6_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON7_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON8_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON9_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON11_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON12_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON13_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON14_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON15_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_UP_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_DOWN_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_LEFT_ALT", default empty string returned
+000000022370: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_RIGHT_ALT", default empty string returned
+000000023400: (Info ): get tcp : script action bind key * press - release -
+000000023801: (Info ): get tcp : define f142_mark_A_1 1
+000000024200: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000024913: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000026090: (Info ): get tcp : script action bind key * press - release -
+000000026507: (Info ): get tcp : define f142_mark_B_2 1
+000000026908: (Info ): get tcp : script action bind key SHIFT+KP_8 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rs.sts
+000000027307: (Info ): get tcp : script action bind key KP_8 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rp.sts
+000000028254: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rs.sts
+000000029410: (Info ): get tcp : camera action move_lat value 0
+000000029810: (Info ): get tcp : script action bind key * press - release -
+000000030209: (Info ): get tcp : define f142_mark_C_3 1
+000000030609: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000031330: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000031330: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000031330: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000031491: (Info ): s_texture: already in cache scripts/fscripts/milkyways/mw01.png
+000000032498: (Info ): get tcp : script action bind key * press - release -
+000000032916: (Info ): get tcp : define f142_mark_D_4 1
+000000033314: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000033714: (Info ): get tcp : script action bind key KP_8 press -
+000000034425: (Info ): ScriptMgr: load scripts/fscripts/M08.sts
+000000035613: (Info ): get tcp : script action bind key * press - release -
+000000036013: (Info ): get tcp : define f142_mark_E_5 1
+000000036413: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000036814: (Info ): get tcp : script action bind key KP_1 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000037212: (Info ): get tcp : script action bind key KP_8 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rp.sts
+000000037613: (Info ): get tcp : script action bind key * press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/c.sts scope once
+000000038013: (Info ): get tcp : script action bind key * press - release -
+000000038413: (Info ): get tcp : define f142_mark_E1_6 1
+000000039134: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000039134: (Info ): ScriptMgr: load scripts/fscripts/M08.sts
+000000039134: (Info ): s_texture: already in cache scripts/fscripts/milkyways/mw08.png
+000000040318: (Info ): get tcp : define f142_mark_E2_7 1
+000000040718: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000041432: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000042615: (Info ): get tcp : script action bind key * press - release -
+000000043015: (Info ): get tcp : define f142_mark_F_8 1
+000000043415: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000043816: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope once
+000000044535: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000046037: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000047217: (Info ): get tcp : script action bind key * press - release -
+000000047617: (Info ): get tcp : define f142_mark_G_9 1
+000000048017: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/g.sts
+000000048417: (Info ): get tcp : script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000048417: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000049140: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/g.sts
+000000050641: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/c.sts
+000000056048: (Info ): ScriptMgr: load scripts/fscripts/M09.sts
+000000057232: (Info ): get tcp : script action bind key * press - release -
+000000057633: (Info ): get tcp : define f142_mark_H_10 1
+000000058032: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/h.sts
+000000058433: (Info ): get tcp : script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000058433: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000059151: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/h.sts
+000000069250: (Info ): get tcp : script action bind key * press - release -
+000000069650: (Info ): get tcp : define f142_mark_I_11 1
+000000070036: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/i.sts
+000000070761: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/i.sts
+000000072261: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts
+000000073443: (Info ): get tcp : define f142_mark_I2_12 1
+000000073844: (Info ): get tcp : script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once
+000000074565: (Info ): ScriptMgr: load scripts/fscripts/M09.sts
+000000074565: (Info ): s_texture: already in cache scripts/fscripts/milkyways/mw09.png
+000000075746: (Info ): get tcp : script action bind key * press - release -
+000000076146: (Info ): get tcp : define f142_mark_J_13 1
+000000076545: (Info ): get tcp : script action bind key KP_8
+000000076947: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never
+000000077345: (Info ): get tcp : script action bind key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000077746: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts
+000000078469: (Info ): ScriptMgr: load scripts/fscripts/M08.sts
+000000079656: (Info ): get tcp : script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/j.sts
+000000079656: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/j.sts
+000000080056: (Info ): get tcp : script action bind key * press - release -
+000000080456: (Info ): get tcp : define f142_mark_K_14 1
+000000080857: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope once
+000000081256: (Info ): get tcp : script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000081973: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000083473: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/b.sts
+000000084654: (Info ): get tcp : script action bind key * press - release -
+000000085054: (Info ): get tcp : define f142_mark_L_15 1
+000000085454: (Info ): get tcp : script action bind key SUPER+KP_1 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000086184: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000086184: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts
+000000087367: (Info ): get tcp : script action bind key * press - release -
+000000087769: (Info ): get tcp : define f142_mark_M_16 1
+000000088168: (Info ): get tcp : script action bind key SHIFT+KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/i.sts
+000000088567: (Info ): get tcp : script action record filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/rec.sts
+000000089278: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/i.sts
+000000090780: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts
+000000091965: (Info ): get tcp : script action cancelrecord
+000000092363: (Info ): get tcp : script action bind key * press - release -
+000000092764: (Info ): get tcp : define f142_mark_N_17 1
+000000093890: (Info ): ScriptMgr: load scripts/fscripts/M01.sts
+000000093890: (Info ): ScriptMgr: load scripts/fscripts/M08.sts
+000000094010: (Info ): s_texture: already in cache scripts/fscripts/milkyways/mw01.png
+000000096066: (Info ): get tcp : script action bind key * press - release -
+000000096466: (Info ): get tcp : define f142_mark_P_18 1
+000000096867: (Info ): get tcp : script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000097654: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000098776: (Info ): get tcp : script action bind key * press - release -
+000000099175: (Info ): get tcp : define f142_mark_Q_19 1
+000000099575: (Info ): get tcp : script action bind key BUTTON3 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/q.sts
+000000101471: (Info ): get tcp : define f142_mark_Q2_20 1
+000000102195: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/q.sts
+000000103372: (Info ): get tcp : script action bind key * press - release -
+000000103774: (Info ): get tcp : define f142_mark_R_21 1
+000000104172: (Info ): get tcp : script action bind key BUTTON3 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/r.sts
+000000104908: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/r.sts
+000000106084: (Info ): get tcp : script action bind key * press - release -
+000000106483: (Info ): get tcp : define f142_mark_S_22 1
+000000106885: (Info ): get tcp : script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/s.sts
+000000107608: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/s.sts
+000000109109: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/s.sts
+000000110287: (Info ): get tcp : script action bind key * press - release -
+000000110686: (Info ): get tcp : define f142_mark_T_23 1
+000000111086: (Info ): get tcp : script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000111487: (Info ): get tcp : script action bind key BUTTON3 press -
+000000113381: (Info ): get tcp : script action bind key * press - release -
+000000113782: (Info ): get tcp : define f142_mark_U_24 1
+000000114182: (Info ): get tcp : script action bind key BUTTON7 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/u.sts
+000000114930: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/u.sts
+000000116083: (Info ): get tcp : script action bind key * press - release -
+000000116483: (Info ): get tcp : define f142_mark_V_25 1
+000000116884: (Info ): get tcp : script action bind key HAT0_UP press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/v.sts release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/vr.sts
+000000117632: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/v.sts
+000000118788: (Info ): get tcp : define f142_mark_V2_26 1
+000000119531: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/vr.sts
+000000120685: (Info ): get tcp : script action bind key * press - release -
+000000121085: (Info ): get tcp : define f142_mark_W_27 1
+000000121485: (Info ): get tcp : script action bind key HAT0_LEFT press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/w.sts
+000000122234: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/w.sts
+000000124890: (Info ): get tcp : script action bind key * press - release -
+000000125289: (Info ): get tcp : define f142_mark_X_28 1
+000000125689: (Info ): get tcp : script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/x.sts
+000000126089: (Info ): get tcp : script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000126089: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/show.sts
+000000126825: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/x.sts
+000000128325: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/c.sts
+000000134904: (Info ): get tcp : script action bind key * press - release -
+000000135304: (Info ): get tcp : define f142_mark_Y_29 1
+000000135703: (Info ): get tcp : script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/y.sts
+000000136104: (Info ): get tcp : script action record filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/recy.sts
+000000136829: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/y.sts
+000000138006: (Info ): get tcp : define f142_mark_Y2_30 1
+000000138730: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/yr.sts
+000000139908: (Info ): get tcp : script action cancelrecord
+000000140307: (Info ): get tcp : script action bind key * press - release -
+000000140707: (Info ): get tcp : define f142_mark_Z_31 1
+000000141108: (Info ): get tcp : script action bind key * press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts
+000000141842: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts
+000000143331: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts
+000000144512: (Info ): get tcp : define f142_mark_Z2_32 1
+000000144913: (Info ): get tcp : script action bind key * press - release -
+000000146815: (Info ): get tcp : script action bind key * press - release -
+000000147214: (Info ): get tcp : define f142_mark_AA_33 1
+000000147614: (Info ): get tcp : script action bind key BUTTON press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts
+000000148014: (Info ): get tcp : script action bind key HAT0_NORTH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts
+000000148414: (Info ): get tcp : script action bind key BUTTON3_ALT press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts
+000000148815: (Info ): get tcp : script action bind key CTRL+BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts
+000000149214: (Info ): get tcp : script action bind key ALT+BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts
+000000151118: (Info ): get tcp : script action bind key * press - release -
+000000151519: (Info ): get tcp : define f142_mark_AB_34 1
+000000152411: (Info ): Media::playerPlayStop
+000000154415: (Info ): get tcp : script action bind key * press - release -
+000000154818: (Info ): get tcp : define f142_mark_AC_35 1
+000000155215: (Info ): get tcp : script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000155947: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000157457: (Info ): delete JoypadController
+000000158546: (Info ): Create JoypadController
+000000158546: (Info ): Joypad: model name Virtual Controller detected
+000000158546: (Warn.): Joypad: no config detected switching to default
+000000158546: (Warn.): Init_parser def_str joy_default:AXIS0_ALT
+000000158546: (Warn.): Joypad: AXIS0_SENSITIVITY has no effect, the axis is normalised from AXIS0_DEADZONE to the maximal amplitude - remove the line
+000000158546: (Warn.): Init_parser def_str joy_default:AXIS1_ALT
+000000158546: (Warn.): Joypad: AXIS1_SENSITIVITY has no effect, the axis is normalised from AXIS1_DEADZONE to the maximal amplitude - remove the line
+000000158546: (Warn.): Init_parser def_str joy_default:AXIS2_ALT
+000000158546: (Warn.): Joypad: AXIS2_SENSITIVITY has no effect, the axis is normalised from AXIS2_DEADZONE to the maximal amplitude - remove the line
+000000158546: (Warn.): Init_parser def_str joy_default:AXIS3_ALT
+000000158546: (Warn.): Joypad: AXIS3_SENSITIVITY has no effect, the axis is normalised from AXIS3_DEADZONE to the maximal amplitude - remove the line
+000000158546: (Warn.): Init_parser def_str joy_default:AXIS4_ALT
+000000158546: (Warn.): Joypad: AXIS4_SENSITIVITY has no effect, the axis is normalised from AXIS4_DEADZONE to the maximal amplitude - remove the line
+000000158546: (Warn.): Init_parser def_str joy_default:AXIS5_ALT
+000000158546: (Warn.): Joypad: AXIS5_SENSITIVITY has no effect, the axis is normalised from AXIS5_DEADZONE to the maximal amplitude - remove the line
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON0_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON1_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON2_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON3_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON4_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON5_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON6_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON7_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON8_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON9_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON11_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON12_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON13_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON14_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON15_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_UP_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_DOWN_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_LEFT_ALT", default empty string returned
+000000158546: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_RIGHT_ALT", default empty string returned
+000000159958: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000161134: (Info ): get tcp : define f142_mark_AC2_36 1
+000000161534: (Info ): get tcp : script action bind key BUTTON3 release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/r.sts
+000000162254: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000163763: (Info ): delete JoypadController
+000000163763: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/r.sts
+000000164852: (Info ): Create JoypadController
+000000164853: (Info ): Joypad: model name Virtual Controller detected
+000000164853: (Warn.): Joypad: no config detected switching to default
+000000164853: (Warn.): Init_parser def_str joy_default:AXIS0_ALT
+000000164853: (Warn.): Joypad: AXIS0_SENSITIVITY has no effect, the axis is normalised from AXIS0_DEADZONE to the maximal amplitude - remove the line
+000000164853: (Warn.): Init_parser def_str joy_default:AXIS1_ALT
+000000164853: (Warn.): Joypad: AXIS1_SENSITIVITY has no effect, the axis is normalised from AXIS1_DEADZONE to the maximal amplitude - remove the line
+000000164853: (Warn.): Init_parser def_str joy_default:AXIS2_ALT
+000000164853: (Warn.): Joypad: AXIS2_SENSITIVITY has no effect, the axis is normalised from AXIS2_DEADZONE to the maximal amplitude - remove the line
+000000164853: (Warn.): Init_parser def_str joy_default:AXIS3_ALT
+000000164853: (Warn.): Joypad: AXIS3_SENSITIVITY has no effect, the axis is normalised from AXIS3_DEADZONE to the maximal amplitude - remove the line
+000000164853: (Warn.): Init_parser def_str joy_default:AXIS4_ALT
+000000164853: (Warn.): Joypad: AXIS4_SENSITIVITY has no effect, the axis is normalised from AXIS4_DEADZONE to the maximal amplitude - remove the line
+000000164853: (Warn.): Init_parser def_str joy_default:AXIS5_ALT
+000000164853: (Warn.): Joypad: AXIS5_SENSITIVITY has no effect, the axis is normalised from AXIS5_DEADZONE to the maximal amplitude - remove the line
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON0_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON1_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON2_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON3_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON4_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON5_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON6_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON7_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON8_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON9_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON11_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON12_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON13_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON14_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:BUTTON15_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_UP_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_DOWN_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_LEFT_ALT", default empty string returned
+000000164853: (Warn.): Init_parser can't find the configuration key "joy_default:HAT0_RIGHT_ALT", default empty string returned
+000000165932: (Info ): get tcp : script action bind key * press - release -
+000000166330: (Info ): get tcp : define f142_mark_AD_37 1
+000000166731: (Info ): get tcp : script action bind key BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000167452: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/p.sts
+000000170137: (Info ): get tcp : script action bind key * press - release -
+000000170537: (Info ): get tcp : define f142_mark_O_38 1
+000000170938: (Info ): get tcp : script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.sts
+000000170938: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.sts
+000000170975: (Debug): Audio::musicPlay play /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.wav
+000000173925: (Info ): Application locale is fr
+000000173925: (Info ): Localizing TUI for locale: fr
+000000173926: (Info ): s_texture: already in cache textures/milkyway.png
+000000173926: (Info ): Sky locale is fr
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173926: (Info ): s_font: rebuild font succes
+000000173927: (Info ): Read daykeymode as <calendar>
+000000173927: (Error): UI: ERROR - Failed to acquire texture data for icons
+000000173927: (Info ): Landscape : observatory
+000000173928: (Info ): StarLines read Data scripts/internal/asterism_all.fab
+000000173929: (Info ): Sky locale is fr
+000000173953: (Debug): Audio::musicHalt /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.wav
+000000173953: (Info ): Localizing TUI for locale: fr
+000000173953: (Info ): Media::playerPlayStop
+000000173953: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA
+000000173953: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173953: (Info ): s_font: rebuild font succes
+000000173954: (Info ): s_font: rebuild font succes
+000000173954: (Info ): s_font: rebuild font succes
+000000173954: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000173979: (Info ): ScriptMgr: load scripts/internal/initial.sts
+000000173979: (Info ): Media::playerPlayStop
+000000173986: (Debug): Audio::musicHalt /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.wav
+000000173986: (Debug): Audio::musicHalt /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.wav
+000000175034: (Info ): get tcp : define f142_mark_O2_39 1
+000000175453: (Info ): get tcp : script action play filename /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.sts
+000000175453: (Info ): ScriptMgr: load /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.sts
+000000175488: (Debug): Another music was played ...  /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.wav
+000000175488: (Debug): Audio::musicDrop /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.wav
+000000175488: (Debug): Audio::musicPlay play /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.wav
+000000177852: (Info ): get tcp : configuration action load
+000000177853: (Info ): Application locale is fr
+000000177853: (Info ): Localizing TUI for locale: fr
+000000177854: (Info ): s_texture: already in cache textures/milkyway.png
+000000177854: (Info ): Sky locale is fr
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177855: (Info ): s_font: rebuild font succes
+000000177856: (Info ): Read daykeymode as <calendar>
+000000177856: (Error): UI: ERROR - Failed to acquire texture data for icons
+000000177856: (Info ): Landscape : observatory
+000000177858: (Info ): StarLines read Data scripts/internal/asterism_all.fab
+000000177859: (Info ): Sky locale is fr
+000000177895: (Debug): Audio::musicHalt /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.wav
+000000177895: (Info ): Localizing TUI for locale: fr
+000000177896: (Info ): Media::playerPlayStop
+000000177896: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA
+000000177896: (Warn.): SkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): s_font: rebuild font succes
+000000177896: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000177898: (Debug): Audio::musicHalt /home/claude/spacecrafter/claude/harness/artifacts/f142/run/o.wav
+000000179240: (Info ): get tcp : script action bind key * press - release -
+000000179640: (Info ): get tcp : define f142_mark_END_40 1

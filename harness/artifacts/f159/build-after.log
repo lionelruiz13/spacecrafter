@@ -1,0 +1,11 @@
+[  7%] Built target ftxui_screen
+[ 18%] Built target scedit_core
+[ 20%] Built target scedit_tokenizer_test
+[ 22%] Built target scedit_parse_oracle_test
+[ 24%] Built target scedit_editcore_test
+[ 27%] Built target scedit_tcpclient_test
+[ 28%] Built target scedit_roundtrip_test
+[ 70%] Built target ftxui_dom
+[ 95%] Built target ftxui_component
+[ 97%] Built target scedit_tui
+[100%] Built target scedit

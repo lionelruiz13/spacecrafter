@@ -1,0 +1,317 @@
+sc-grammar.json | .families.commands.camera.args.action.source | src/interfaceModule/app_command_interface.cpp:4425 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+sc-grammar.json | .families.commands.camera.args.action.source | src/interfaceModule/base_command_interface.hpp:249 @ 9d461bd5 | clean
+    first: #define W_MOVE_LAT                  "move_lat"
+sc-grammar.json | .families.commands.camera.args.action.source | src/interfaceModule/base_command_interface.hpp:250 @ 9d461bd5 | clean
+    first: #define W_MOVE_LON                  "move_lon"
+sc-grammar.json | .families.commands.camera.args.action.source | src/interfaceModule/base_command_interface.hpp:251 @ 9d461bd5 | clean
+    first: #define W_RAISE_HEIGHT              "raise_height"
+sc-grammar.json | .families.commands.camera.args.action.source | src/interfaceModule/base_command_interface.hpp:252 @ 9d461bd5 | clean
+    first: #define W_LOWER_HEIGHT              "lower_height"
+sc-grammar.json | .families.commands.camera.args.value.source | src/interfaceModule/app_command_interface.cpp:4426-4431 @ 9d461bd5 | clean
+    first: std::string argValue = args[W_VALUE];
+    last:  const double value = evalDouble(argValue);
+sc-grammar.json | .families.commands.camera.args.value.source | src/coreModule/core.cpp:1810-1834 @ 9d461bd5 | clean
+    first: void Core::raiseHeight(double s)
+    last:  }
+sc-grammar.json | .families.commands.camera.args.value.source | src/coreModule/core.cpp:1937-1962 @ 9d461bd5 | clean
+    first: const double lat = std::clamp(vzm.deltaLat + vzm.joyLat, -1., 1.);
+    last:  }
+sc-grammar.json | .families.commands.camera.args.value.notes | src/coreModule/core.cpp:1937-1962 @ 9d461bd5 | clean
+    first: const double lat = std::clamp(vzm.deltaLat + vzm.joyLat, -1., 1.);
+    last:  }
+sc-grammar.json | .families.commands.camera.args.value.notes | src/coreModule/core.cpp:1810-1824 @ 9d461bd5 | clean
+    first: void Core::raiseHeight(double s)
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[10].source | src/interfaceModule/app_command_interface.cpp:4425-4441 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[11].source | src/interfaceModule/app_command_interface.cpp:4425-4441 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[12].source | src/interfaceModule/app_command_interface.cpp:4425-4441 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[13].source | src/interfaceModule/app_command_interface.cpp:4425-4441 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[14].source | src/interfaceModule/app_command_interface.cpp:4443-4464 @ 9d461bd5 | clean
+    first: if(argAction == W_LIFT_OFF){
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[15].source | src/interfaceModule/app_command_interface.cpp:4471-4477 @ 9d461bd5 | clean
+    first: if (argAction == W_CREATE) {
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[16].source | src/interfaceModule/app_command_interface.cpp:4479-4485 @ 9d461bd5 | clean
+    first: if (argAction == W_DROP) {
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[16].source | src/experimentalModule/CameraAnchors.cpp:287-300 @ 9d461bd5 | clean
+    first: bool CameraAnchors::remove(const std::string &name)
+    last:  ModularBody *body = it->body;
+sc-grammar.json | .families.commands.camera.branches[17].source | src/interfaceModule/app_command_interface.cpp:4487-4493 @ 9d461bd5 | clean
+    first: if (argAction == W_SWITCH) {
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[18].source | src/interfaceModule/app_command_interface.cpp:4495-4504 @ 9d461bd5 | clean
+    first: if(argAction == W_FOLLOW_ROTATION){
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[19].effect | src/interfaceModule/app_command_interface.cpp:4466 @ 9d461bd5 | clean
+    first: if (argName.empty()) {
+sc-grammar.json | .families.commands.camera.branches[19].source | src/interfaceModule/app_command_interface.cpp:4466-4469 @ 9d461bd5 | clean
+    first: if (argName.empty()) {
+    last:  }
+sc-grammar.json | .families.commands.camera.branches[19].source | src/interfaceModule/app_command_interface.cpp:4506 @ 9d461bd5 | clean
+    first: debug_message = "command 'camera' : unknown action argument";
+sc-grammar.json | .families.commands.script.args.action.source | src/interfaceModule/base_command_interface.hpp:325 @ 9d461bd5 | clean
+    first: #define W_BIND						"bind"
+sc-grammar.json | .families.commands.script.args.key.source | src/interfaceModule/app_command_interface.cpp:2885 @ 9d461bd5 | clean
+    first: const std::string key = args[W_KEY].empty() ? currentOrigin.key : args[W_KEY];
+sc-grammar.json | .families.commands.script.args.key.source | src/interfaceModule/app_command_interface.cpp:2890-2891 @ 9d461bd5 | clean
+    first: else if (key.empty())
+    last:  debug_message = "bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'k
+sc-grammar.json | .families.commands.script.args.key.source | src/interfaceModule/app_command_interface.cpp:2909 @ 9d461bd5 | clean
+    first: ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
+sc-grammar.json | .families.commands.script.args.key.source | src/uiModule/key_binding.cpp:89-91 @ 52568219 | clean
+    first: reason = "unknown key '" + token + "': write [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name "
+    last:  "no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key";
+sc-grammar.json | .families.commands.script.args.key.source | src/uiModule/key_binding.cpp:155-180 @ 52568219 | clean
+    first: if (token == "*") {
+    last:  }
+sc-grammar.json | .families.commands.script.args.key.source | src/interfaceModule/base_command_interface.hpp:326 @ 9d461bd5 | clean
+    first: #define W_KEY						"key"
+sc-grammar.json | .families.commands.script.args.key.notes | src/uiModule/key_binding.cpp:165-177 @ 52568219 | clean
+    first: uint8_t plane = NONE;
+    last:  key = {{Source::KEY, scancode.code}, plane};
+sc-grammar.json | .families.commands.script.args.press.source | src/interfaceModule/app_command_interface.cpp:2887-2889 @ 9d461bd5 | clean
+    first: std::string script[2] = {args[W_PRESS], args[W_RELEASE]};
+    last:  debug_message = "bind: give 'press <script|->', 'release <script|->' or both";
+sc-grammar.json | .families.commands.script.args.press.source | src/interfaceModule/app_command_interface.cpp:2894-2904 @ 9d461bd5 | clean
+    first: for (std::string &name : script) {
+    last:  }
+sc-grammar.json | .families.commands.script.args.press.source | src/interfaceModule/app_command_interface.cpp:2907-2909 @ 9d461bd5 | clean
+    first: for (int release = 0; release < 2 && debug_message.empty(); ++release) {
+    last:  ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
+sc-grammar.json | .families.commands.script.args.press.source | src/interfaceModule/base_command_interface.hpp:327 @ 9d461bd5 | clean
+    first: #define W_PRESS						"press"
+sc-grammar.json | .families.commands.script.args.release.source | src/interfaceModule/app_command_interface.cpp:2887-2889 @ 9d461bd5 | clean
+    first: std::string script[2] = {args[W_PRESS], args[W_RELEASE]};
+    last:  debug_message = "bind: give 'press <script|->', 'release <script|->' or both";
+sc-grammar.json | .families.commands.script.args.release.source | src/interfaceModule/app_command_interface.cpp:2894-2904 @ 9d461bd5 | clean
+    first: for (std::string &name : script) {
+    last:  }
+sc-grammar.json | .families.commands.script.args.release.source | src/interfaceModule/app_command_interface.cpp:2907-2909 @ 9d461bd5 | clean
+    first: for (int release = 0; release < 2 && debug_message.empty(); ++release) {
+    last:  ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
+sc-grammar.json | .families.commands.script.args.release.source | src/interfaceModule/base_command_interface.hpp:323 @ 9d461bd5 | clean
+    first: #define W_RELEASE					"release"
+sc-grammar.json | .families.commands.script.args.release.notes | src/uiModule/key_binding.cpp:113-118 @ 52568219 | clean
+    first: if (!pressed) {
+    last:  }
+sc-grammar.json | .families.commands.script.args.scope.source | src/interfaceModule/app_command_interface.cpp:2886 @ 9d461bd5 | clean
+    first: const std::string scope = args[W_SCOPE].empty() ? W_GLOBAL : args[W_SCOPE];
+sc-grammar.json | .families.commands.script.args.scope.source | src/interfaceModule/app_command_interface.cpp:2892-2893 @ 9d461bd5 | clean
+    first: else if (scope != W_GLOBAL && scope != W_SCRIPT && scope != W_ONCE)
+    last:  debug_message = "bind: unknown scope '" + scope + "' - write global, script or once";
+sc-grammar.json | .families.commands.script.args.scope.source | src/interfaceModule/app_command_interface.cpp:2905-2906 @ 9d461bd5 | clean
+    first: const KeyBinding::Scope lifetime = scope == W_SCRIPT ? KeyBinding::Scope::SCRIPT :
+    last:  scope == W_ONCE ? KeyBinding::Scope::ONCE : KeyBinding::Scope::GLOBAL;
+sc-grammar.json | .families.commands.script.args.scope.source | src/interfaceModule/app_command_interface.cpp:257-259 @ 9d461bd5 | clean
+    first: void AppCommandInterface::scriptEnded()
+    last:  ui->keyBinding().endScript();
+sc-grammar.json | .families.commands.script.args.scope.source | src/uiModule/key_binding.cpp:94-104 @ 52568219 | clean
+    first: auto &events = chains[release];
+    last:  events[key] = {{script, scope}};
+sc-grammar.json | .families.commands.script.args.scope.source | src/uiModule/key_binding.cpp:125-130 @ 52568219 | clean
+    first: const Entry top = chain->second.back();
+    last:  }
+sc-grammar.json | .families.commands.script.args.scope.source | src/uiModule/key_binding.cpp:141-151 @ 52568219 | clean
+    first: void KeyBinding::endScript()
+    last:  }
+sc-grammar.json | .families.commands.script.args.scope.source | src/interfaceModule/base_command_interface.hpp:328 @ 9d461bd5 | clean
+    first: #define W_SCOPE						"scope"
+sc-grammar.json | .families.commands.script.args.scope.source | src/interfaceModule/base_command_interface.hpp:324 @ 9d461bd5 | clean
+    first: #define W_GLOBAL					"global"
+sc-grammar.json | .families.commands.script.args.scope.source | src/interfaceModule/base_command_interface.hpp:330 @ 9d461bd5 | clean
+    first: #define W_SCRIPT					"script"
+sc-grammar.json | .families.commands.script.args.scope.source | src/interfaceModule/base_command_interface.hpp:329 @ 9d461bd5 | clean
+    first: #define W_ONCE						"once"
+sc-grammar.json | .families.commands.script.branches[0].source | src/interfaceModule/app_command_interface.cpp:2884-2923 @ 9d461bd5 | clean
+    first: } else if (argAction==W_BIND) {
+    last:  }
+sc-grammar.json | .families.commands.script.notes[4] | src/interfaceModule/app_command_interface.cpp:2914-2922 @ 9d461bd5 | clean
+    first: std::ostringstream line;
+    last:  commandline = line.str();
+sc-grammar.json | .families.commands.script.notes[5] | src/uiModule/key_binding.cpp:99-104 @ 52568219 | clean
+    first: if (key == ANY_KEY)
+    last:  events[key] = {{script, scope}};
+sc-grammar.json | .families.commands.script.notes[5] | src/uiModule/key_binding.cpp:119-122 @ 52568219 | clean
+    first: auto &events = chains[!pressed];
+    last:  chain = events.find(ANY_KEY);
+sc-grammar.json | .argument_token_vocabulary._source | src/interfaceModule/base_command_interface.hpp:78-330 @ 9d461bd5 | clean
+    first: #define W_ALIGN                     "align"
+    last:  #define W_SCRIPT					"script"
+sc-grammar.json | .argument_token_vocabulary._count_note | src/interfaceModule/base_command_interface.hpp:78-330 @ 9d461bd5 | clean
+    first: #define W_ALIGN                     "align"
+    last:  #define W_SCRIPT					"script"
+sc-grammar.json | .argument_token_vocabulary.both_roles.release | src/interfaceModule/app_command_interface.cpp:2887 @ 9d461bd5 | clean
+    first: std::string script[2] = {args[W_PRESS], args[W_RELEASE]};
+sc-grammar.json | .argument_token_vocabulary.both_roles.release | src/interfaceModule/app_command_interface.cpp:2880 @ 9d461bd5 | clean
+    first: } else if (argAction==W_RELEASE) {
+sc-grammar.json | .argument_token_vocabulary.cross_family_reuse[9] | src/interfaceModule/base_command_interface.hpp:330 @ 9d461bd5 | clean
+    first: #define W_SCRIPT					"script"
+sc-grammar.json | .argument_token_vocabulary.cross_family_reuse[9] | src/interfaceModule/app_command_interface.cpp:2892 @ 9d461bd5 | clean
+    first: else if (scope != W_GLOBAL && scope != W_SCRIPT && scope != W_ONCE)
+sc-grammar.json | .argument_token_vocabulary.cross_family_reuse[9] | src/interfaceModule/app_command_interface.cpp:2905 @ 9d461bd5 | clean
+    first: const KeyBinding::Scope lifetime = scope == W_SCRIPT ? KeyBinding::Scope::SCRIPT :
+sc-grammar.json | .argument_token_vocabulary.literal_keys_without_token[8] | src/interfaceModule/app_command_interface.cpp:2895 @ 9d461bd5 | clean
+    first: if (!debug_message.empty() || name.empty() || name == "-")
+sc-grammar.json | .argument_token_vocabulary.literal_keys_without_token[8] | src/interfaceModule/app_command_interface.cpp:2909 @ 9d461bd5 | clean
+    first: ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
+sc-grammar.json | .argument_token_vocabulary.literal_keys_without_token[8] | src/uiModule/key_binding.cpp:155 @ 52568219 | clean
+    first: if (token == "*") {
+unit-2.json | .commands.script.args.action.source | src/interfaceModule/base_command_interface.hpp:325 @ 9d461bd5 | clean
+    first: #define W_BIND						"bind"
+unit-2.json | .commands.script.args.key.source | src/interfaceModule/app_command_interface.cpp:2885 @ 9d461bd5 | clean
+    first: const std::string key = args[W_KEY].empty() ? currentOrigin.key : args[W_KEY];
+unit-2.json | .commands.script.args.key.source | src/interfaceModule/app_command_interface.cpp:2890-2891 @ 9d461bd5 | clean
+    first: else if (key.empty())
+    last:  debug_message = "bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'k
+unit-2.json | .commands.script.args.key.source | src/interfaceModule/app_command_interface.cpp:2909 @ 9d461bd5 | clean
+    first: ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
+unit-2.json | .commands.script.args.key.source | src/uiModule/key_binding.cpp:89-91 @ 52568219 | clean
+    first: reason = "unknown key '" + token + "': write [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name "
+    last:  "no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key";
+unit-2.json | .commands.script.args.key.source | src/uiModule/key_binding.cpp:155-180 @ 52568219 | clean
+    first: if (token == "*") {
+    last:  }
+unit-2.json | .commands.script.args.key.source | src/interfaceModule/base_command_interface.hpp:326 @ 9d461bd5 | clean
+    first: #define W_KEY						"key"
+unit-2.json | .commands.script.args.key.notes | src/uiModule/key_binding.cpp:165-177 @ 52568219 | clean
+    first: uint8_t plane = NONE;
+    last:  key = {{Source::KEY, scancode.code}, plane};
+unit-2.json | .commands.script.args.press.source | src/interfaceModule/app_command_interface.cpp:2887-2889 @ 9d461bd5 | clean
+    first: std::string script[2] = {args[W_PRESS], args[W_RELEASE]};
+    last:  debug_message = "bind: give 'press <script|->', 'release <script|->' or both";
+unit-2.json | .commands.script.args.press.source | src/interfaceModule/app_command_interface.cpp:2894-2904 @ 9d461bd5 | clean
+    first: for (std::string &name : script) {
+    last:  }
+unit-2.json | .commands.script.args.press.source | src/interfaceModule/app_command_interface.cpp:2907-2909 @ 9d461bd5 | clean
+    first: for (int release = 0; release < 2 && debug_message.empty(); ++release) {
+    last:  ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
+unit-2.json | .commands.script.args.press.source | src/interfaceModule/base_command_interface.hpp:327 @ 9d461bd5 | clean
+    first: #define W_PRESS						"press"
+unit-2.json | .commands.script.args.release.source | src/interfaceModule/app_command_interface.cpp:2887-2889 @ 9d461bd5 | clean
+    first: std::string script[2] = {args[W_PRESS], args[W_RELEASE]};
+    last:  debug_message = "bind: give 'press <script|->', 'release <script|->' or both";
+unit-2.json | .commands.script.args.release.source | src/interfaceModule/app_command_interface.cpp:2894-2904 @ 9d461bd5 | clean
+    first: for (std::string &name : script) {
+    last:  }
+unit-2.json | .commands.script.args.release.source | src/interfaceModule/app_command_interface.cpp:2907-2909 @ 9d461bd5 | clean
+    first: for (int release = 0; release < 2 && debug_message.empty(); ++release) {
+    last:  ui->keyBinding().bind(key, release, script[release] == "-" ? "" : script[release], lifetime, debug_message);
+unit-2.json | .commands.script.args.release.source | src/interfaceModule/base_command_interface.hpp:323 @ 9d461bd5 | clean
+    first: #define W_RELEASE					"release"
+unit-2.json | .commands.script.args.release.notes | src/uiModule/key_binding.cpp:113-118 @ 52568219 | clean
+    first: if (!pressed) {
+    last:  }
+unit-2.json | .commands.script.args.scope.source | src/interfaceModule/app_command_interface.cpp:2886 @ 9d461bd5 | clean
+    first: const std::string scope = args[W_SCOPE].empty() ? W_GLOBAL : args[W_SCOPE];
+unit-2.json | .commands.script.args.scope.source | src/interfaceModule/app_command_interface.cpp:2892-2893 @ 9d461bd5 | clean
+    first: else if (scope != W_GLOBAL && scope != W_SCRIPT && scope != W_ONCE)
+    last:  debug_message = "bind: unknown scope '" + scope + "' - write global, script or once";
+unit-2.json | .commands.script.args.scope.source | src/interfaceModule/app_command_interface.cpp:2905-2906 @ 9d461bd5 | clean
+    first: const KeyBinding::Scope lifetime = scope == W_SCRIPT ? KeyBinding::Scope::SCRIPT :
+    last:  scope == W_ONCE ? KeyBinding::Scope::ONCE : KeyBinding::Scope::GLOBAL;
+unit-2.json | .commands.script.args.scope.source | src/interfaceModule/app_command_interface.cpp:257-259 @ 9d461bd5 | clean
+    first: void AppCommandInterface::scriptEnded()
+    last:  ui->keyBinding().endScript();
+unit-2.json | .commands.script.args.scope.source | src/uiModule/key_binding.cpp:94-104 @ 52568219 | clean
+    first: auto &events = chains[release];
+    last:  events[key] = {{script, scope}};
+unit-2.json | .commands.script.args.scope.source | src/uiModule/key_binding.cpp:125-130 @ 52568219 | clean
+    first: const Entry top = chain->second.back();
+    last:  }
+unit-2.json | .commands.script.args.scope.source | src/uiModule/key_binding.cpp:141-151 @ 52568219 | clean
+    first: void KeyBinding::endScript()
+    last:  }
+unit-2.json | .commands.script.args.scope.source | src/interfaceModule/base_command_interface.hpp:328 @ 9d461bd5 | clean
+    first: #define W_SCOPE						"scope"
+unit-2.json | .commands.script.args.scope.source | src/interfaceModule/base_command_interface.hpp:324 @ 9d461bd5 | clean
+    first: #define W_GLOBAL					"global"
+unit-2.json | .commands.script.args.scope.source | src/interfaceModule/base_command_interface.hpp:330 @ 9d461bd5 | clean
+    first: #define W_SCRIPT					"script"
+unit-2.json | .commands.script.args.scope.source | src/interfaceModule/base_command_interface.hpp:329 @ 9d461bd5 | clean
+    first: #define W_ONCE						"once"
+unit-2.json | .commands.script.branches[0].source | src/interfaceModule/app_command_interface.cpp:2884-2923 @ 9d461bd5 | clean
+    first: } else if (argAction==W_BIND) {
+    last:  }
+unit-2.json | .commands.script.notes[4] | src/interfaceModule/app_command_interface.cpp:2914-2922 @ 9d461bd5 | clean
+    first: std::ostringstream line;
+    last:  commandline = line.str();
+unit-2.json | .commands.script.notes[5] | src/uiModule/key_binding.cpp:99-104 @ 52568219 | clean
+    first: if (key == ANY_KEY)
+    last:  events[key] = {{script, scope}};
+unit-2.json | .commands.script.notes[5] | src/uiModule/key_binding.cpp:119-122 @ 52568219 | clean
+    first: auto &events = chains[!pressed];
+    last:  chain = events.find(ANY_KEY);
+unit-4.json | .commands.camera.args.action.source | src/interfaceModule/app_command_interface.cpp:4425 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+unit-4.json | .commands.camera.args.action.source | src/interfaceModule/base_command_interface.hpp:249 @ 9d461bd5 | clean
+    first: #define W_MOVE_LAT                  "move_lat"
+unit-4.json | .commands.camera.args.action.source | src/interfaceModule/base_command_interface.hpp:250 @ 9d461bd5 | clean
+    first: #define W_MOVE_LON                  "move_lon"
+unit-4.json | .commands.camera.args.action.source | src/interfaceModule/base_command_interface.hpp:251 @ 9d461bd5 | clean
+    first: #define W_RAISE_HEIGHT              "raise_height"
+unit-4.json | .commands.camera.args.action.source | src/interfaceModule/base_command_interface.hpp:252 @ 9d461bd5 | clean
+    first: #define W_LOWER_HEIGHT              "lower_height"
+unit-4.json | .commands.camera.args.value.source | src/interfaceModule/app_command_interface.cpp:4426-4431 @ 9d461bd5 | clean
+    first: std::string argValue = args[W_VALUE];
+    last:  const double value = evalDouble(argValue);
+unit-4.json | .commands.camera.args.value.source | src/coreModule/core.cpp:1810-1834 @ 9d461bd5 | clean
+    first: void Core::raiseHeight(double s)
+    last:  }
+unit-4.json | .commands.camera.args.value.source | src/coreModule/core.cpp:1937-1962 @ 9d461bd5 | clean
+    first: const double lat = std::clamp(vzm.deltaLat + vzm.joyLat, -1., 1.);
+    last:  }
+unit-4.json | .commands.camera.args.value.notes | src/coreModule/core.cpp:1937-1962 @ 9d461bd5 | clean
+    first: const double lat = std::clamp(vzm.deltaLat + vzm.joyLat, -1., 1.);
+    last:  }
+unit-4.json | .commands.camera.args.value.notes | src/coreModule/core.cpp:1810-1824 @ 9d461bd5 | clean
+    first: void Core::raiseHeight(double s)
+    last:  }
+unit-4.json | .commands.camera.branches[10].source | src/interfaceModule/app_command_interface.cpp:4425-4441 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+    last:  }
+unit-4.json | .commands.camera.branches[11].source | src/interfaceModule/app_command_interface.cpp:4425-4441 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+    last:  }
+unit-4.json | .commands.camera.branches[12].source | src/interfaceModule/app_command_interface.cpp:4425-4441 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+    last:  }
+unit-4.json | .commands.camera.branches[13].source | src/interfaceModule/app_command_interface.cpp:4425-4441 @ 9d461bd5 | clean
+    first: if (argAction == W_MOVE_LAT || argAction == W_MOVE_LON || argAction == W_RAISE_HEIGHT || argAction == W_LOWER_
+    last:  }
+unit-4.json | .commands.camera.branches[14].source | src/interfaceModule/app_command_interface.cpp:4443-4464 @ 9d461bd5 | clean
+    first: if(argAction == W_LIFT_OFF){
+    last:  }
+unit-4.json | .commands.camera.branches[15].source | src/interfaceModule/app_command_interface.cpp:4471-4477 @ 9d461bd5 | clean
+    first: if (argAction == W_CREATE) {
+    last:  }
+unit-4.json | .commands.camera.branches[16].source | src/interfaceModule/app_command_interface.cpp:4479-4485 @ 9d461bd5 | clean
+    first: if (argAction == W_DROP) {
+    last:  }
+unit-4.json | .commands.camera.branches[16].source | src/experimentalModule/CameraAnchors.cpp:287-300 @ 9d461bd5 | clean
+    first: bool CameraAnchors::remove(const std::string &name)
+    last:  ModularBody *body = it->body;
+unit-4.json | .commands.camera.branches[17].source | src/interfaceModule/app_command_interface.cpp:4487-4493 @ 9d461bd5 | clean
+    first: if (argAction == W_SWITCH) {
+    last:  }
+unit-4.json | .commands.camera.branches[18].source | src/interfaceModule/app_command_interface.cpp:4495-4504 @ 9d461bd5 | clean
+    first: if(argAction == W_FOLLOW_ROTATION){
+    last:  }
+unit-4.json | .commands.camera.branches[19].effect | src/interfaceModule/app_command_interface.cpp:4466 @ 9d461bd5 | clean
+    first: if (argName.empty()) {
+unit-4.json | .commands.camera.branches[19].source | src/interfaceModule/app_command_interface.cpp:4466-4469 @ 9d461bd5 | clean
+    first: if (argName.empty()) {
+    last:  }
+unit-4.json | .commands.camera.branches[19].source | src/interfaceModule/app_command_interface.cpp:4506 @ 9d461bd5 | clean
+    first: debug_message = "command 'camera' : unknown action argument";
+NEW references: 120

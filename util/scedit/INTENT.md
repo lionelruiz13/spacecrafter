@@ -617,6 +617,19 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-10-14c] The ten spellings the engine has and the grammar lacked are in
+  it, both halves, at the pin.** Dispatch task F159 (`claude/fable-dispatch.md`),
+  executor run; nothing committed by the executor. `bind` (a value of `script
+  action`, with its four keys `key` / `press` / `release` / `scope` and a
+  `branches` entry) and `move_lat` / `move_lon` / `raise_height` /
+  `lower_height` (values of `camera action`, four `branches`, `value`
+  documented for them) entered `grammar/args/unit-2.json` / `unit-4.json`
+  first, then the merged file; the vocabulary 238 -> 248, `release` both a
+  value and a key; 100 new references, all clean, six at their own pin
+  (`key_binding.cpp` moved since the pin); `anchor-expected.txt` re-recorded
+  with its argument; no record gate prints a new word, so no other record
+  moved. Parent **INTENT 11.332** holds the derivation and the measurements;
+  this line indexes it.
 - **[2026-10-14b] The anchors resolve at one pin again, `main @ 9d461bd5`, and
   the gate now sees all three pointer classes.** Dispatch task F158
   (`claude/fable-dispatch.md`), executor run; nothing committed by the executor.
