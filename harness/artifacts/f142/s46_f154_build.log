@@ -1,0 +1,13 @@
+make : on entre dans le répertoire « /home/claude/spacecrafter/build-claude »
+[  1%] Built target iniparser
+[  5%] Built target planetsephems
+[  6%] Building CXX object src/CMakeFiles/spacecrafter.dir/appModule/app.cpp.o
+[  7%] Building CXX object src/CMakeFiles/spacecrafter.dir/interfaceModule/app_command_interface.cpp.o
+[  7%] Building CXX object src/CMakeFiles/spacecrafter.dir/eventModule/EventVideoHandler.cpp.o
+[  8%] Building CXX object src/CMakeFiles/spacecrafter.dir/uiModule/joypad_controller.cpp.o
+[  8%] Building CXX object src/CMakeFiles/spacecrafter.dir/uiModule/key_binding.cpp.o
+[  8%] Building CXX object src/CMakeFiles/spacecrafter.dir/uiModule/ui.cpp.o
+[  8%] Building CXX object src/CMakeFiles/spacecrafter.dir/uiModule/ui_tuiconf.cpp.o
+[  9%] Linking CXX executable spacecrafter
+[100%] Built target spacecrafter
+make : on quitte le répertoire « /home/claude/spacecrafter/build-claude »

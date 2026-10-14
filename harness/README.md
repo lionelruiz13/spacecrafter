@@ -6988,3 +6988,32 @@ because `internal/initial.sts` ends with `script action end`, whose W_END list r
 which is why O2 exists. Pitfall, measured: an `image action load` with an absolute path outside
 `~/.spacecrafter/<dir>/` ABORTS the engine (`s_texture::getCacheEntryName` underflows, `std::out_of_range` on the
 loader thread), so the image is the field's `textures/n_genrc.png`, read in place.
+
+**Cases P-AD (F154, INTENT 11.326) - the joystick's buttons and hat as bindings; run order A-N, P-AD, O (O stays
+last).** At start ONE gdb stop attaches a virtual device (`SDL_JoystickAttachVirtual(1, 6, 16, 1)`: 16 buttons so the
+field's `[joy_default]` BUTTON0-15 are read whole, 1 hat), opens it as `$js`, sets EVERY axis to its rest read from the
+ini (`AXISn_IS_STICK`: a stick 0, a trigger `SDL_JOYSTICK_AXIS_MIN` from SDL's header) and mallocs one `SDL_Event`
+(`$ev`); criteria: index 0 (`JoypadController` opens joystick 0), `Joypad: no config detected switching to default` in
+`log/spacecrafter.log` (about 1.1 s; 0.5 s for a re-attach), the axes printed back at rest; `ATT_reading.txt` keeps the
+attach's `Joypad` / `joy_default:` lines (P7: the four `HAT0_<D>_ALT` warnings in enum order UP DOWN LEFT RIGHT, the rest
+identical to `--baseline`'s). A button or hat event is HANDED to the door the b21 way - `$ev->type`
+(`SDL_JOYBUTTONDOWN|UP`, `SDL_JOYHATMOTION`, names gdb knows), `jbutton.button` or `jhat.hat` / `jhat.value` (the
+`SDL_HAT_*` bits read from `SDL_joystick.h`, never typed), `call $ui->joypadController->handle(*$ev)`, with
+`set var $ui->joypadController->mode = 0|1` in the same stop where a case needs a plane (`UI::handleDeal` rewrites
+it every frame, so it holds for the stop only); the natives' expectations are the field ini's lists (`BUTTON1`-`3`),
+the native pairs read as `Core::vzm` after each event. P-Z judge the press / release / scope / `*` / recording
+semantics on BUTTON3, BUTTON2, BUTTON7 and the hat; AA five refused tokens (each reason must name `BUTTON3`, `HAT0_UP`
+and `_ALT` outside the echoed token); AB is the control (`AB_reading.txt`, line by line against `--baseline`, as N);
+AC detaches with a bound button held by a hand-built press and re-attaches (the next press must not be swallowed),
+then presses through SDL and detaches again (NOTE: a `load r` there = SDL synthesised the release through the door);
+AD presses and releases through `SDL_JoystickSetVirtualButton` and real frames only. Able to fail: on `81664e4e`
+(`s46_f154_pre3`, A/A `pre4`: AB `a664776d`, ATT `0b913d7c` identical) every bind on a button token is refused and
+every P-AD criterion but T's, Z's second half and AA's "nothing stored" (judged against an installed binding) reads
+the ini's action instead; P7 reads DOWN UP LEFT RIGHT. Pitfalls, each measured: (1) the GAMECONTROLLER-type virtual
+device starts axes 4 and 5 at -32768, and the field's AXIS4 is a stick (`move_lat`): reset only the triggers (F137's
+recipe) and `UI::moveLat` runs every frame (9305 `add y 1` lines in one run, case N red) - hence every axis to its rest
+and the run-wide `no_axis_command_over_the_run` check; (2) `(int)SDL_JoystickGetAxis(...)` prints -32768 as 32768 (an
+unknown return type read as `int`): cast `(short)`; (3) a hand-built press leaves SDL's own button state up, so only
+an SDL press can show whether SDL synthesises a release at a detach (it does, through the door: `s46_f154_post`). Not
+measured, F153's reading of SDL kept as the form: AD's press and release go in SEPARATE stops - two
+`SDL_JoystickSetVirtualButton` writes between two `SDL_JoystickUpdate` calls would collapse into no event.

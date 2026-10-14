@@ -1,0 +1,125 @@
+NOTE - joystick_start_axes observed=[('open', 'a0=0 a1=0 a2=0 a3=0 a4=-32768 a5=-32768'), ('rest', 'a0=0 a1=0 a2=-32768 a3=0 a4=0 a5=-32768')] expected=-
+PASS - joystick_start_index_0_controller_built_axes_at_rest observed=index 0, built True, 1.1 s, a0=0 a1=0 a2=-32768 a3=0 a4=0 a5=-32768 expected=index 0, `Joypad: no config detected switching to default`, every axis at its ini rest
+NOTE ATT attach_seconds observed=1.1 expected=-
+NOTE ATT ini_read observed=lists ['BUTTON1', 'BUTTON10', 'BUTTON10_ALT', 'BUTTON2', 'BUTTON3'], the axes set to their rest {0: 0, 1: 0, 2: -32768, 3: 0, 4: 0, 5: -32768} expected=-
+PASS ATT P7_init_reads_the_hat_in_enum_order observed=['UP', 'DOWN', 'LEFT', 'RIGHT'] expected=['UP', 'DOWN', 'LEFT', 'RIGHT']
+PASS ATT P7_every_other_init_line_identical_in_order observed=34 / 34 lines, the non-hat lines True, the same set True expected=identical to /home/claude/spacecrafter/claude/harness/artifacts/f142/s46_f154_pre3/ATT_reading.txt
+PASS A bind_accepted observed=no error expected=no error line
+PASS A P17_bound_script_runs observed=load a 1, run a 1 expected=1, 1
+PASS A P17_native_M08_not_run observed=0 expected=0
+PASS B bind_accepted observed=no error expected=no error line
+PASS B bind_accepted observed=no error expected=no error line
+NOTE B deltaLat_after_release observed=F142VZM KP_8 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=1 deltaLon=0 expected=-
+PASS B P18_press_identity_release observed=load rs 1, load rp 0 expected=1, 0
+PASS C bind_accepted observed=no error expected=no error line
+PASS C P19_repeat_bound_swallowed_unbound_twice observed=load a 1, load M08 0, load M01 2 expected=load a 1, load M08 0, load M01 2
+PASS D bind_accepted observed=no error expected=no error line
+PASS D bind_accepted observed=no error expected=no error line
+PASS D P20_dash_restores_native observed=load M08 1, load a 0 expected=load M08 1, load a 0
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E bind_accepted observed=no error expected=no error line
+PASS E P21_star_dash_empties_every_chain observed=load M08 1, load M01 1, bound 0 expected=load M08 1, load M01 1, bound 0
+PASS E P21_specific_bind_after observed=load a 1, load M08 0 expected=load a 1, load M08 0
+PASS F bind_accepted observed=no error expected=no error line
+PASS F bind_accepted observed=no error expected=no error line
+PASS F P22_once_then_global observed=['a', 'b'] expected=['a', 'b']
+PASS G bind_accepted observed=no error expected=no error line
+PASS G show_started observed=True expected=True
+PASS G P23_script_scope_lives_to_the_show_end observed=c 1 at 50647, show end at 55661, M09 after end 1, M09 before 0 expected=c 1 before the show end, M09 1 after, 0 before
+PASS H bind_accepted observed=no error expected=no error line
+PASS H show_started observed=True expected=True
+NOTE H timestamps_ms observed={'show_1': 58458, 'h': 59157, 'show_2': 59157, 'show_3': 64171} expected=-
+PASS H P24_bound_lines_first_then_the_show_wait_cut observed=h-show_1 699, show_2-h 0, show_2-show_1 699 expected=show_1 < h <= show_2, show_2-h <= 50 ms, show_2-show_1 < 4500 ms
+PASS I bind_accepted observed=no error expected=no error line
+NOTE I tcp_key_omitted_lines observed=["script tcp#1: bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8' [script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once]", "Error executing tcp#1: script action bind release /home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts scope once #! bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'"] expected=-
+PASS I P25_key_omitted_is_the_trigger_key observed=load i 1, load d 1 expected=1, 1
+PASS I P25_key_omitted_over_tcp_is_an_error observed=error lines 2, load d 0, load M09 1 expected=a tcp#-tagged error naming the key, load d 0, load M09 1
+NOTE J error_lines[key KP_8] observed=["script tcp#1: bind: give 'press <script|->', 'release <script|->' or both [script action bind key KP_8]", "Error executing tcp#1: script action bind key KP_8 #! bind: give 'press <script|->', 'release <script|->' or both"] expected=-
+NOTE J error_lines[key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never] observed=["script tcp#1: bind: unknown scope 'never' - write global, script or once [script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never]", "Error executing tcp#1: script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts scope never #! bind: unknown scope 'never' - write global, script or once"] expected=-
+NOTE J error_lines[key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts] observed=["script tcp#1: unknown key 'NO_SUCH': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key [script action bind key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts]", "Error executing tcp#1: script action bind key NO_SUCH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/a.sts #! unknown key 'NO_SUCH': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key"] expected=-
+NOTE J error_lines[key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts] observed=["script tcp#1: bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory [script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts]", "Error executing tcp#1: script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts #! bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory"] expected=-
+PASS J P26_one_tagged_error_line_each observed=[1, 1, 1, 1] expected=[1, 1, 1, 1], each tcp#-tagged
+PASS J P26_nothing_stored observed=load M08 1, load a 0 expected=1, 0
+PASS J P26_file_line_tag_and_annotation observed=["script /home/claude/spacecrafter/claude/harness/artifacts/f142/run/j.sts:1: bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory [script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts]"] | script action bind key KP_8 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts #! bind: no script '/home/claude/spacecrafter/claude/harness/artifacts/f142/run/missing.sts' as given, in the running script's directory or in the scripts directory expected=one error tagged j.sts:1, a #! tail in j.sts
+PASS K bind_accepted observed=no error expected=no error line
+PASS K bind_accepted observed=no error expected=no error line
+PASS K P27_global_discards_the_pending_once observed=load b 2, load a 0 expected=load b 2, load a 0
+PASS L bind_accepted observed=no error expected=no error line
+PASS L P28_super_plane_binding_consumes_super observed=load a 1, load M11 0, load M01 1 expected=load a 1, load M11 0, load M01 1
+PASS M bind_accepted observed=no error expected=no error line
+NOTE M recorded_bind_lines observed=['script action bind key SHIFT+KP_8 release "/home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts" scope once'] expected=-
+PASS M P29_recorded_with_the_explicit_key observed=['script action bind key SHIFT+KP_8 release "/home/claude/spacecrafter/claude/harness/artifacts/f142/run/d.sts" scope once'], load d 1 expected=one bind line carrying key SHIFT+KP_8, load d 1
+NOTE N reading observed=22 log lines, 24 state lines -> /home/claude/spacecrafter/claude/harness/artifacts/f142/s46_f154_post/N_reading.txt expected=-
+PASS N P30_control_identical_to_before observed=identical, 46 lines expected=identical to /home/claude/spacecrafter/claude/harness/artifacts/f142/s46_f154_pre3/N_reading.txt
+PASS P bind_accepted observed=no error expected=no error line
+PASS P P18_press_runs_the_script_not_the_list observed=load p 1, run p 1, list [0, 0] expected=load p 1, run p 1, list [0, 0]
+PASS Q bind_accepted observed=no error expected=no error line
+PASS Q P19_release_on_a_command_button observed=press: list [1, 1], load q 0 | release: load q 1, list [0, 0] expected=press: list [1, 1], load q 0 | release: load q 1
+PASS R bind_accepted observed=no error expected=no error line
+PASS R P20_one_release_chain_whatever_the_mode observed=load r 1, run r 1 expected=1, 1
+PASS S bind_accepted observed=no error expected=no error line
+PASS S P21_one_binding_on_both_sets observed=load s 2, run s 2, list [0, 0] expected=2, 2, list [0, 0]
+PASS T bind_accepted observed=no error expected=no error line
+PASS T bind_accepted observed=no error expected=no error line
+PASS T P22_dash_restores_the_list observed=list [1, 1], load p 0 expected=list [1, 1], load p 0
+PASS U bind_accepted observed=no error expected=no error line
+NOTE U orders observed=['F142VZM BUTTON7 P deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0', 'F142VZM BUTTON7 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0'] expected=-
+PASS U P23_native_press_suppressed_native_release_runs observed=load u 1, deltaFov after press / release [0.0, 0.0] expected=load u 1, [0, 0]
+PASS V bind_accepted observed=no error expected=no error line
+NOTE V orders observed=['F142VZM HAT0 UP deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0', 'F142VZM HAT0 CENTERED deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0'] expected=-
+PASS V P24_hat_press_and_release_edges observed=UP: load v 1, vr 0 | CENTERED: load vr 1, v 0 | deltaAlt [0.0, 0.0] expected=UP: v 1, vr 0 | CENTERED: vr 1, v 0 | [0, 0]
+PASS W bind_accepted observed=no error expected=no error line
+NOTE W orders observed=['F142VZM HAT0 LEFTUP deltaAlt=1 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0', 'F142VZM HAT0 CENTERED deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0'] expected=-
+PASS W P25_diagonal_two_edges observed=load w 1, LEFTUP deltaAlt / deltaAz [1.0, 0.0], CENTERED [0.0, 0.0] expected=load w 1, LEFTUP [1, 0], CENTERED [0, 0]
+PASS X bind_accepted observed=no error expected=no error line
+PASS X show_started observed=True expected=True
+PASS X P26_script_scope_on_a_button_dies_with_the_show observed=x 1, c 1 at 128336, show end at 133340, BUTTON2 list during [0], after [1] expected=c 1 before the show end, the BUTTON2 list 0 during, 1 after
+PASS Y bind_accepted observed=no error expected=no error line
+NOTE Y recorded_bind_lines observed=['script action bind key BUTTON3 release "/home/claude/spacecrafter/claude/harness/artifacts/f142/run/yr.sts" scope once'] expected=-
+PASS Y P27_key_omitted_names_the_button_recorded_explicitly observed=press: y 1, yr 0 | release: yr 1 | ['script action bind key BUTTON3 release "/home/claude/spacecrafter/claude/harness/artifacts/f142/run/yr.sts" scope once'] expected=press: y 1, yr 0 | release: yr 1 | [script action bind key BUTTON3 release "/home/claude/spacecrafter/claude/harness/artifacts/f142/run/yr.sts" scope once]
+PASS Z bind_accepted observed=no error expected=no error line
+PASS Z P28_star_catches_a_button_and_a_key observed=load z 2, list [0, 0], load M01 0 expected=load z 2, list [0, 0], load M01 0
+PASS Z P28_star_dash_restores_the_list observed=load z 0, list [1, 1] expected=load z 0, list [1, 1]
+NOTE AA error_lines[BUTTON] observed=["script tcp#1: unknown key 'BUTTON': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key [script action bind key BUTTON press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts]"] expected=-
+NOTE AA error_lines[HAT0_NORTH] observed=["script tcp#1: unknown key 'HAT0_NORTH': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key [script action bind key HAT0_NORTH press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts]"] expected=-
+NOTE AA error_lines[BUTTON3_ALT] observed=["script tcp#1: unknown key 'BUTTON3_ALT': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key [script action bind key BUTTON3_ALT press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts]"] expected=-
+NOTE AA error_lines[CTRL+BUTTON3] observed=["script tcp#1: unknown key 'CTRL+BUTTON3': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key [script action bind key CTRL+BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts]"] expected=-
+NOTE AA error_lines[ALT+BUTTON3] observed=["script tcp#1: unknown key 'ALT+BUTTON3': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key [script action bind key ALT+BUTTON3 press /home/claude/spacecrafter/claude/harness/artifacts/f142/run/z.sts]"] expected=-
+PASS AA P29_one_tagged_error_each_naming_the_button_forms observed=[True, True, True, True, True] expected=5 x True: one tcp#-tagged error line, its reason naming BUTTON3, HAT0_UP and _ALT
+PASS AA P29_nothing_stored observed=load z 0, list [1, 1] expected=load z 0, list [1, 1]
+NOTE AB reading observed=6 log lines, 10 state lines -> /home/claude/spacecrafter/claude/harness/artifacts/f142/s46_f154_post/AB_reading.txt expected=-
+PASS AB P30_control_identical_to_before observed=identical, 16 lines expected=identical to /home/claude/spacecrafter/claude/harness/artifacts/f142/s46_f154_pre3/AB_reading.txt
+PASS AC bind_accepted observed=no error expected=no error line
+PASS - joystick_AC1_detached observed=True expected=`delete JoypadController`
+NOTE - joystick_AC1_axes observed=[('open', 'a0=0 a1=0 a2=0 a3=0 a4=-32768 a5=-32768'), ('rest', 'a0=0 a1=0 a2=-32768 a3=0 a4=0 a5=-32768')] expected=-
+PASS - joystick_AC1_index_0_controller_built_axes_at_rest observed=index 0, built True, 0.5 s, a0=0 a1=0 a2=-32768 a3=0 a4=0 a5=-32768 expected=index 0, `Joypad: no config detected switching to default`, every axis at its ini rest
+PASS AC P31_press_after_a_replug_not_swallowed observed=load p 2 expected=2
+PASS AC bind_accepted observed=no error expected=no error line
+PASS - joystick_AC2_detached observed=True expected=`delete JoypadController`
+NOTE AC sdl_release_at_detach observed=SDL press: load p 1 | at the detach: load r 1, app log ['delete JoypadController'] expected=-
+NOTE - joystick_AC2_axes observed=[('open', 'a0=0 a1=0 a2=0 a3=0 a4=-32768 a5=-32768'), ('rest', 'a0=0 a1=0 a2=-32768 a3=0 a4=0 a5=-32768')] expected=-
+PASS - joystick_AC2_index_0_controller_built_axes_at_rest observed=index 0, built True, 0.5 s, a0=0 a1=0 a2=-32768 a3=0 a4=0 a5=-32768 expected=index 0, `Joypad: no config detected switching to default`, every axis at its ini rest
+PASS AD bind_accepted observed=no error expected=no error line
+NOTE AD pump observed=list [0, 0], load p 1 expected=-
+PASS AD P32_virtual_button_reaches_the_door_through_the_pump observed=load p 1, list [0, 0] expected=load p 1, list [0, 0]
+PASS O show_started observed=True expected=True
+PASS O show_started observed=True expected=True
+NOTE O state_pre observed={'loopOpen': 1, 'loopOpenerLine': 6, 'swapCommand': 0, 'ifOpeners': 1, 'texts': 1, 'images': 1, 'musicPlaying': 1, 'audioState': 2} expected=-
+NOTE O state_post_HOME observed={'loopOpen': 0, 'loopOpenerLine': 0, 'swapCommand': 0, 'ifOpeners': 0, 'texts': 0, 'images': 0, 'musicPlaying': 0, 'audioState': 3} expected=-
+NOTE O unclosed_after_HOME observed=[] expected=-
+NOTE O o_sts_tails_after_HOME observed=[] expected=-
+NOTE O unclosed_after_configuration_load observed=[] expected=-
+NOTE O o_sts_tails_after_configuration_load observed=[] expected=-
+PASS O setup_if_open_loop_first_pass_media_up observed={'loopOpen': 1, 'loopOpenerLine': 6, 'swapCommand': 0, 'ifOpeners': 1, 'texts': 1, 'images': 1, 'musicPlaying': 1, 'audioState': 2} expected=loopOpen 1, loopOpenerLine 6, ifOpeners 1, texts >= 1, images >= 1, musicPlaying 1
+PASS O P7_media_cleared_on_HOME observed=texts 0, images 0, musicPlaying 0 expected=0, 0, 0
+PASS O P7_if_loop_state_reset_on_HOME observed=loopOpen 0 at line 0, ifOpeners 0, swapCommand 0 expected=loopOpen 0 at line 0, ifOpeners 0, swapCommand 0
+PASS O P7_no_false_unclosed_after_HOME observed=initial.sts ended True, errors [], tails [] expected=ended, no error at o.sts, no #! tail
+PASS O P7_no_false_unclosed_after_configuration_load observed=startup.sts ended True, errors [], tails [] expected=ended, no error at o.sts, no #! tail
+PASS - no_axis_command_over_the_run observed=0 expected=0
+NOTE - diag_records_received observed=21 expected=-
+
+=== ALL PASS ===

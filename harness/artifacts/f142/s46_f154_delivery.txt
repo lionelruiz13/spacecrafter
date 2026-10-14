@@ -1,0 +1,33 @@
+```
+SHAPE 9d461bd5..WORKTREE  (harness/shape/delivery.py)
+(1) lines [ratio.py classify on the -U0 hunks]  +code -code +comment -comment +blank -blank  status file
+     40    24     1     0     4     4  M src/uiModule/joypad_controller.cpp
+      3     0     2     0     1     0  M src/uiModule/joypad_controller.hpp
+     19    10     0     0     0     0  M src/uiModule/key_binding.cpp
+      5     4     1     0     0     0  M src/uiModule/key_binding.hpp
+      1    26     0     2     0     1  M src/uiModule/ui.cpp
+      0     1     0     1     0     1  M src/uiModule/ui.hpp
+  total 6 files: +77 -74 (numstat); code +68 -65, comment +4 -3, blank +5 -6; net code +3, net lines +3
+(2) names [names.py]  BEFORE -> AFTER  +added  -removed
+  src/uiModule/joypad_controller.hpp 14 -> 16  +[name parse]  -[-]
+  src/uiModule/key_binding.hpp 5 -> 5  +[-]  -[-]
+  src/uiModule/ui.hpp 93 -> 92  +[-]  -[handleJoyHat]
+  total 3 headers: names +2 -1
+(3) writers [writers.py]  class: pairs BEFORE -> AFTER, unchanged; changed field: writers BEFORE -> AFTER
+  JoypadController: pairs 7 -> 7, unchanged 7
+  KeyBinding: pairs 1 -> 1, unchanged 1
+  UI: pairs 70 -> 70, unchanged 70
+(4) form [form.py measure over the added lines]
+  comment lines added: full 4, trailing 1; blocks 1:4 2:0 3+:0; length median 57 p90 100
+  verb-first (upper bound) 4 / 4 blocks; first words: Name 2, Return 2
+(5) ledger grammar in the added lines [INTENT|11\.[0-9]|F1[0-9][0-9]|\[observed|\[measured|\[vixy]: 0
+(6) d14 [f70_ascii.py gate]
+  gate PASS (exit 0; it reads the code repo's tracked files on disk; that tree is WORKTREE: yes)
+  delivery files at WORKTREE by its partition: 6 read, 0 non-ASCII (0 CONVERT or unclassified): PASS
+(7) ratio [ratio.py classify, src/experimentalModule .hpp/.cpp]
+  9d461bd5 files 124 code 13493 comment 889 ratio 0.07
+  WORKTREE files 124 code 13493 comment 889 ratio 0.07
+(8) scope [review.sh]
+  header scope :(glob)src/**/*.hpp :(glob)src/**/*.h: 3 touched (new 0, modified 3, deleted 0, renamed 0)
+  outside it, in the ALL=1 scope src shaders: 3 touched
+```

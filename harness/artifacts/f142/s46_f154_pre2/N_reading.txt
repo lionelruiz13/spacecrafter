@@ -1,0 +1,46 @@
+(Info) Execute_command define f142_mark_N_# 1
+(Info) ScriptMgr: load scripts/fscripts/M01.sts
+(Info) ScriptMgr: load scripts/fscripts/M08.sts
+(Info) Execute_command set milky_way_texture milkyways/mw08.png 
+(Info) Execute_command set milky_way_intensity 1.0
+(Info) Execute_command flag nebulae off
+(Info) Execute_command flag bright_nebulae off
+(Info) Execute_command flag stars off
+(Info) Execute_command flag planets off
+(Info) Execute_command flag atmosphere off
+(Info) Execute_command flag landscape off
+(Info) Execute_command set milky_way_texture milkyways/mw01.png 
+(Info) Execute_command set milky_way_intensity 1.0
+(Info) Execute_command flag nebulae off
+(Info) Execute_command flag bright_nebulae off
+(Info) Execute_command flag stars on
+(Info) Execute_command flag planets on
+(Info) Execute_command flag atmosphere off
+(Info) Execute_command flag landscape off
+(Info) End of script
+(Info) Execute_command script action end
+(Info) ScriptMgr: script end
+F142VZM KP_8 P deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM KP_8 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM KP_1 P deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM KP_1 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM UP P deltaAlt=1 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM UP R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM PAGEUP P deltaAlt=0 deltaAz=0 deltaFov=-1 deltaLat=0 deltaLon=0
+F142VZM PAGEUP R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM LEFT P deltaAlt=0 deltaAz=-1 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM LEFT R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM RIGHT P deltaAlt=0 deltaAz=1 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM RIGHT R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM DOWN P deltaAlt=-1 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM DOWN R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM PAGEDOWN P deltaAlt=0 deltaAz=0 deltaFov=1 deltaLat=0 deltaLon=0
+F142VZM PAGEDOWN R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM KP_8 P deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=1 deltaLon=0
+F142VZM KP_8 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM KP_2 P deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=-1 deltaLon=0
+F142VZM KP_2 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM KP_4 P deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=-1
+F142VZM KP_4 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0
+F142VZM KP_6 P deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=1
+F142VZM KP_6 R deltaAlt=0 deltaAz=0 deltaFov=0 deltaLat=0 deltaLon=0

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # F149 key leg - the 14 cases A-N of INTENT 11.312 (h) on the b21 pattern, in one fresh launch;
+# cases P-AD (F154, INTENT 11.326): the joystick's buttons and hat on a virtual device attached at start;
 # case O (F151, INTENT 11.322) last: what a script's end leaves behind, read after HOME and after
 # `configuration action load` inside an open `struct if` and a loop's first pass.
 #
@@ -61,6 +62,9 @@ def fixtures():
     files["j"] = "script action bind key KP_8 press %s/missing.sts" % RUN
     files["show"] = "\n".join(["define f142_show_1 1", "wait duration 5", "define f142_show_2 1", "wait duration 5",
                                "define f142_show_3 1", "wait duration 5", "define f142_show_4 1"])
+    files.update({n: "define f154_%s 1" % n for n in ("p", "q", "r", "s", "u", "v", "vr", "w", "yr", "z")})
+    files["x"] = "script action bind key BUTTON2 press %s/c.sts scope script" % RUN
+    files["y"] = "script action bind release %s/yr.sts scope once" % RUN
     for n, text in files.items():
         with open("%s/%s.sts" % (RUN, n), "w") as f:
             f.write(text + "\n")
@@ -215,6 +219,18 @@ def inject(cmds, timeout=60):
 VZM = "deltaAlt deltaAz deltaFov deltaLat deltaLon".split()
 
 
+def vzm_print(tag):
+    """Return the gdb line that prints Core::vzm's five orders after the event named tag."""
+    return 'printf "F142VZM %s %s\\n", %s' % (tag, " ".join("%s=%%g" % v for v in VZM),
+                                            ", ".join("$ui->core._M_ptr->vzm.%s" % v for v in VZM))
+
+
+def vzm_read(since):
+    with open(GDBLOG, "rb") as f:
+        f.seek(since)
+        return re.findall(r"F142VZM .*$", f.read().decode("latin-1"), re.M)   # gdb prefixes "(gdb) "
+
+
 def keys(seq, vzm=False, settle=1.0):
     """seq: (scancode suffix, 'P'|'R', plane name or None = keep key_Modifier as it is)."""
     cmds = []
@@ -224,15 +240,10 @@ def keys(seq, vzm=False, settle=1.0):
         cmds.append("call $ui->handleKeys(SDL_SCANCODE_%s, 0, 0, s_gui::S_GUI_%s)"
                     % (k, "PRESSED" if ev == "P" else "RELEASED"))
         if vzm:
-            cmds.append('printf "F142VZM %s %s %s\\n", %s' % (k, ev, " ".join("%s=%%g" % v for v in VZM),
-                        ", ".join("$ui->core._M_ptr->vzm.%s" % v for v in VZM)))
+            cmds.append(vzm_print("%s %s" % (k, ev)))
     since = inject(cmds)
     time.sleep(settle)
-    if vzm:
-        with open(GDBLOG, "rb") as f:
-            f.seek(since)
-            return re.findall(r"F142VZM .*$", f.read().decode("latin-1"), re.M)   # gdb prefixes "(gdb) "
-    return []
+    return vzm_read(since) if vzm else []
 
 
 def press(k, plane="NONE"):
@@ -496,19 +507,424 @@ def case_N():
         seq += [(k, "P", "SHIFT"), (k, "R", "NONE")]
     v = keys(seq, vzm=True, settle=2.0)
     t = logtext(m); READ["N"] = t
-    msgs = [re.sub(r"f142_mark_N_\d+", "f142_mark_N_#", "(%s) %s" % (ty, msg)) for _, ty, msg in entries(t)]
+    control("N", t, v)
+
+
+def control(case, t, v):
+    """Write a control case's reading and judge it identical, line by line, to the --baseline run's."""
+    msgs = [re.sub(r"f142_mark_%s_\d+" % case, "f142_mark_%s_#" % case, "(%s) %s" % (ty, msg)) for _, ty, msg in entries(t)]
     reading = msgs + v
-    with open(OUT + "/N_reading.txt", "w") as f:
+    with open("%s/%s_reading.txt" % (OUT, case), "w") as f:
         f.write("\n".join(reading) + "\n")
-    note("N", "reading", "%d log lines, %d state lines -> %s/N_reading.txt" % (len(msgs), len(v), OUT))
+    note(case, "reading", "%d log lines, %d state lines -> %s/%s_reading.txt" % (len(msgs), len(v), OUT, case))
     if AFTER:
-        base = os.path.join(HERE, "artifacts", "f142", ARGS.baseline, "N_reading.txt")
+        base = os.path.join(HERE, "artifacts", "f142", ARGS.baseline, "%s_reading.txt" % case)
         want = open(base).read().splitlines() if ARGS.baseline and os.path.exists(base) else None
         diff = None if want is None else next((i for i, (a, b) in enumerate(zip(reading, want)) if a != b),
                                               None if len(reading) == len(want) else min(len(reading), len(want)))
-        check("N", "P30_control_identical_to_before", want is not None and diff is None,
+        check(case, "P30_control_identical_to_before", want is not None and diff is None,
               "first differing line %s: %s" % (diff, reading[diff] if diff is not None and diff < len(reading) else "")
               if diff is not None else "identical, %d lines" % len(reading), "identical to " + base)
+
+
+# ---- the joystick (F154, INTENT 11.326): cases P-AD on a virtual device ------------------------
+# The device is attached once at start from gdb (F137's recipe): SDL_JoystickAttachVirtual(1, 6, 16, 1), 16
+# buttons so the field's [joy_default] BUTTON0-15 are read whole; JoypadController opens joystick 0, so the
+# index must be 0. An event is HANDED to the door the b21 way: an SDL_Event malloc'ed once in the engine,
+# filled and passed to JoypadController::handle in the stop, `mode` set in the same stop when a case needs
+# it (UI::handleDeal rewrites it from the engine every frame). AC's second half and AD go through
+# SDL_JoystickSetVirtualButton and real frames instead. The natives are read from the field's ini and the
+# hat bits from SDL's header, never typed here.
+APPLOG = os.path.expanduser("~/.spacecrafter/log/spacecrafter.log")
+JOYINI = os.path.expanduser("~/.spacecrafter/joypad.ini")
+SDL_JOY_H = "/usr/include/SDL2/SDL_joystick.h"
+
+
+def joy_default():
+    section, keys_ = None, {}
+    for line in open(JOYINI, encoding="latin-1"):
+        line = line.strip()
+        if line.startswith("["):
+            section = line.strip("[]")
+        elif section == "joy_default" and "=" in line:
+            k, v = line.split("=", 1)
+            keys_[k.strip()] = v.strip()
+    return keys_
+
+
+INI = joy_default()
+LIST = {k: re.findall(r'"([^"]*)"', v) for k, v in INI.items() if v.startswith("command(")}
+STICK = {int(k[4:-9]): v.lower() == "true" for k, v in INI.items() if re.match(r"AXIS\d+_IS_STICK$", k)}
+SDLH = open(SDL_JOY_H).read()
+HAT = {}
+for _n, _v in re.findall(r"^#define SDL_HAT_(\w+)\s+(.+?)\s*$", SDLH, re.M):
+    _bits = re.findall(r"SDL_HAT_(\w+)", _v)
+    HAT[_n] = HAT[_bits[0]] | HAT[_bits[1]] if _bits else int(_v, 16)
+AXIS_MIN = int(re.search(r"^#define SDL_JOYSTICK_AXIS_MIN\s+(-?\d+)", SDLH, re.M).group(1))
+# Every axis at rest from the first frame: a stick at 0, a trigger at AXIS_MIN - the device does not start there
+# (axis 4, a stick in the field's ini, read as a full deflection at the attach: move_lat every frame).
+REST = {a: 0 if stick else AXIS_MIN for a, stick in STICK.items()}
+if len(HAT) != 9 or not LIST.get("BUTTON3") or sorted(REST) != list(range(6)):
+    sys.exit("FAIL - joystick_inputs_read observed=hats %s lists %s axes %s expected=9 SDL_HAT_ values, "
+             "[joy_default] BUTTON3 a command list, AXIS0-5_IS_STICK" % (HAT, sorted(LIST), REST))
+JOY = {"ok": False}
+# an Sint16 read through `(int)` loses its sign (-32768 prints 32768): give gdb the declared return type
+AXES = " ".join("a%d=%%d" % a for a in sorted(REST)), ", ".join("(short)SDL_JoystickGetAxis($js, %d)" % a for a in sorted(REST))
+
+
+def applog(a):
+    with open(APPLOG, "rb") as f:
+        f.seek(a)
+        return f.read().decode("latin-1")
+
+
+def wait_applog(since, pattern, timeout=20.0):
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        if re.search(pattern, applog(since), re.M):
+            return True
+        time.sleep(0.1)
+    return False
+
+
+def joylines(since):
+    return [msg for _, _, msg in entries(applog(since)) if "Joypad" in msg or "joy_default:" in msg]
+
+
+def attach(tag, first=False):
+    """Attach the virtual device; True when it is index 0 and the engine built its controller on it."""
+    since, t0 = os.path.getsize(APPLOG), time.time()
+    cmds = ["set $jidx = (int)SDL_JoystickAttachVirtual(1, 6, 16, 1)", 'printf "F154JIDX %s=%%d\\n", $jidx' % tag,
+            "set $js = (void *)SDL_JoystickOpen($jidx)", 'printf "F154AXES %s open %s\\n", %s' % ((tag,) + AXES)]
+    cmds += ["call (int)SDL_JoystickSetVirtualAxis($js, %d, %d)" % (a, v) for a, v in sorted(REST.items())]
+    if first:
+        cmds += ["set $ev = (SDL_Event *)(void *)malloc(sizeof(SDL_Event))", "call (void *)memset($ev, 0, sizeof(SDL_Event))"]
+    g = inject(cmds)
+    built = wait_applog(since, r"Joypad: no config detected switching to default", 20)
+    secs = time.time() - t0
+    time.sleep(0.5)
+    inject(['printf "F154AXES %s rest %s\\n", %s' % ((tag,) + AXES)])
+    with open(GDBLOG, "rb") as f:
+        f.seek(g)
+        txt = f.read().decode("latin-1")
+    m = re.search(r"F154JIDX %s=(-?\d+)" % tag, txt)
+    index = int(m.group(1)) if m else None
+    axes = re.findall(r"F154AXES %s (open|rest) (.*)$" % tag, txt, re.M)
+    note("-", "joystick_%s_axes" % tag, axes)
+    rest = dict(axes).get("rest", "")
+    JOY["ok"] = index == 0 and built and rest == " ".join("a%d=%d" % kv for kv in sorted(REST.items()))
+    check("-", "joystick_%s_index_0_controller_built_axes_at_rest" % tag, JOY["ok"], "index %s, built %s, %.1f s, %s" % (
+        index, built, secs, rest), "index 0, `Joypad: no config detected switching to default`, every axis at its ini rest")
+    return joylines(since), secs
+
+
+def detach(tag):
+    since = os.path.getsize(APPLOG)
+    inject(["call (int)SDL_JoystickDetachVirtual($jidx)", "call (void)SDL_JoystickClose($js)"])
+    gone = wait_applog(since, r"delete JoypadController", 20)
+    time.sleep(0.5)
+    JOY["ok"] = False
+    check("-", "joystick_%s_detached" % tag, gone, gone, "`delete JoypadController`")
+    return joylines(since)
+
+
+def jb(n, ev, mode=None):
+    return ("B", n, ev, mode)
+
+
+def jh(value, mode=None):
+    return ("H", value, None, mode)
+
+
+def jpress(n, mode=None):
+    return [jb(n, "P", mode), jb(n, "R")]
+
+
+def joy(seq, vzm=False, settle=1.0):
+    """seq: jb(button, 'P'|'R', mode) / jh(SDL_HAT_ suffix, mode); mode None = keep the controller's."""
+    cmds = []
+    for kind, what, ev, mode in seq:
+        if mode is not None:
+            cmds.append("set var $ui->joypadController->mode = %d" % mode)
+        if kind == "B":
+            cmds += ["set var $ev->type = SDL_JOYBUTTON%s" % ("DOWN" if ev == "P" else "UP"),
+                     "set var $ev->jbutton.button = %d" % what]
+        else:
+            cmds += ["set var $ev->type = SDL_JOYHATMOTION", "set var $ev->jhat.hat = 0",
+                     "set var $ev->jhat.value = %d" % HAT[what]]
+        cmds.append("call $ui->joypadController->handle(*$ev)")
+        if vzm:
+            cmds.append(vzm_print("BUTTON%d %s" % (what, ev) if kind == "B" else "HAT0 %s" % what))
+    since = inject(cmds)
+    time.sleep(settle)
+    return vzm_read(since) if vzm else []
+
+
+def sdl_button(n, value, settle=1.0):
+    """Set the virtual button in SDL and let real frames pump it: no gdb call of the door."""
+    inject(["call (int)SDL_JoystickSetVirtualButton($js, %d, %d)" % (n, value)])
+    time.sleep(settle)
+
+
+def orders(line):
+    return {k: float(v) for k, v in re.findall(r"(\w+)=(-?[0-9.]+(?:e[-+]?\d+)?)", line)}
+
+
+def ran(text, cmd):
+    return len(re.findall(r"Execute_command %s\s*$" % re.escape(cmd), text, re.M))
+
+
+def listed(text, key):
+    """How many times each command of the ini's list for key ran."""
+    return [ran(text, c) for c in LIST[key]]
+
+
+def runs4(text, name):
+    return len(re.findall(r"Execute_command define f154_%s 1\s*$" % re.escape(name), text, re.M))
+
+
+def joycase(case):
+    if not JOY["ok"]:
+        check(case, "controller_present", False, "no controller on the virtual device", "attached at index 0")
+    return JOY["ok"]
+
+
+def joy_setup():
+    lines, secs = attach("start", first=True)
+    with open(OUT + "/ATT_reading.txt", "w") as f:
+        f.write("\n".join(lines) + "\n")
+    note("ATT", "attach_seconds", "%.1f" % secs)
+    note("ATT", "ini_read", "lists %s, the axes set to their rest %s" % (sorted(LIST), REST))
+    hats = [h for l in lines for h in re.findall(r'"joy_default:HAT0_(\w+)_ALT"', l)]
+    check("ATT", "P7_init_reads_the_hat_in_enum_order", hats == ["UP", "DOWN", "LEFT", "RIGHT"], hats,
+          ["UP", "DOWN", "LEFT", "RIGHT"])
+    base = os.path.join(HERE, "artifacts", "f142", ARGS.baseline, "ATT_reading.txt")
+    if ARGS.baseline and os.path.exists(base):
+        want = open(base).read().splitlines()
+        rest = lambda ls: [l for l in ls if "HAT0_" not in l]
+        check("ATT", "P7_every_other_init_line_identical_in_order", rest(lines) == rest(want) and sorted(lines) == sorted(want),
+              "%d / %d lines, the non-hat lines %s, the same set %s" % (len(lines), len(want), rest(lines) == rest(want),
+                                                                       sorted(lines) == sorted(want)), "identical to " + base)
+    else:
+        note("ATT", "P7_baseline", "no ATT_reading.txt under --baseline '%s'" % ARGS.baseline)
+
+
+def case_P():
+    if not joycase("P"): return
+    reset(); m = mark("P")
+    bind("P", "key BUTTON3 press %s/p.sts" % RUN)
+    joy(jpress(3))
+    t = logtext(m); READ["P"] = t
+    obs = "load p %d, run p %d, list %s" % (loads(t, "p"), runs4(t, "p"), listed(t, "BUTTON3"))
+    check("P", "P18_press_runs_the_script_not_the_list", loads(t, "p") == 1 and runs4(t, "p") == 1
+          and listed(t, "BUTTON3") == [0, 0], obs, "load p 1, run p 1, list [0, 0]")
+
+
+def case_Q():
+    if not joycase("Q"): return
+    reset(); m = mark("Q")
+    bind("Q", "key BUTTON3 release %s/q.sts" % RUN)
+    joy([jb(3, "P")])
+    m2 = mark("Q2")
+    joy([jb(3, "R")])
+    t1, t2 = logtext(m, m2), logtext(m2); READ["Q"] = logtext(m)
+    obs = "press: list %s, load q %d | release: load q %d, list %s" % (listed(t1, "BUTTON3"), loads(t1, "q"),
+                                                                       loads(t2, "q"), listed(t2, "BUTTON3"))
+    check("Q", "P19_release_on_a_command_button", listed(t1, "BUTTON3") == [1, 1] and loads(t1, "q") == 0
+          and loads(t2, "q") == 1 and listed(t2, "BUTTON3") == [0, 0], obs, "press: list [1, 1], load q 0 | release: load q 1")
+
+
+def case_R():
+    if not joycase("R"): return
+    reset(); m = mark("R")
+    bind("R", "key BUTTON3 release %s/r.sts" % RUN)
+    joy([jb(3, "P", 0), jb(3, "R", 1)])
+    t = logtext(m); READ["R"] = t
+    check("R", "P20_one_release_chain_whatever_the_mode", loads(t, "r") == 1 and runs4(t, "r") == 1,
+          "load r %d, run r %d" % (loads(t, "r"), runs4(t, "r")), "1, 1")
+
+
+def case_S():
+    if not joycase("S"): return
+    reset(); m = mark("S")
+    bind("S", "key BUTTON3 press %s/s.sts" % RUN)
+    joy([jb(3, "P", 1), jb(3, "R")])
+    joy([jb(3, "P", 0), jb(3, "R")])
+    t = logtext(m); READ["S"] = t
+    check("S", "P21_one_binding_on_both_sets", loads(t, "s") == 2 and runs4(t, "s") == 2 and listed(t, "BUTTON3") == [0, 0],
+          "load s %d, run s %d, list %s" % (loads(t, "s"), runs4(t, "s"), listed(t, "BUTTON3")), "2, 2, list [0, 0]")
+
+
+def case_T():
+    if not joycase("T"): return
+    reset(); m = mark("T")
+    bind("T", "key BUTTON3 press %s/p.sts" % RUN)
+    bind("T", "key BUTTON3 press -")
+    joy(jpress(3))
+    t = logtext(m); READ["T"] = t
+    check("T", "P22_dash_restores_the_list", listed(t, "BUTTON3") == [1, 1] and loads(t, "p") == 0,
+          "list %s, load p %d" % (listed(t, "BUTTON3"), loads(t, "p")), "list [1, 1], load p 0")
+
+
+def case_U():
+    if not joycase("U"): return
+    reset(); m = mark("U")
+    bind("U", "key BUTTON7 press %s/u.sts" % RUN)
+    v = joy([jb(7, "P"), jb(7, "R")], vzm=True)
+    t = logtext(m); READ["U"] = t
+    fov = [orders(l).get("deltaFov") for l in v]
+    note("U", "orders", v)
+    check("U", "P23_native_press_suppressed_native_release_runs", loads(t, "u") == 1 and fov == [0, 0],
+          "load u %d, deltaFov after press / release %s" % (loads(t, "u"), fov), "load u 1, [0, 0]")
+
+
+def case_V():
+    if not joycase("V"): return
+    reset(); m = mark("V")
+    bind("V", "key HAT0_UP press %s/v.sts release %s/vr.sts" % (RUN, RUN))
+    v1 = joy([jh("UP")], vzm=True)
+    m2 = mark("V2")
+    v2 = joy([jh("CENTERED")], vzm=True)
+    t1, t2 = logtext(m, m2), logtext(m2); READ["V"] = logtext(m)
+    alt = [orders(l).get("deltaAlt") for l in v1 + v2]
+    note("V", "orders", v1 + v2)
+    check("V", "P24_hat_press_and_release_edges", loads(t1, "v") == 1 and loads(t1, "vr") == 0 and loads(t2, "vr") == 1
+          and loads(t2, "v") == 0 and alt == [0, 0],
+          "UP: load v %d, vr %d | CENTERED: load vr %d, v %d | deltaAlt %s" % (loads(t1, "v"), loads(t1, "vr"),
+                                                                               loads(t2, "vr"), loads(t2, "v"), alt),
+          "UP: v 1, vr 0 | CENTERED: vr 1, v 0 | [0, 0]")
+
+
+def case_W():
+    if not joycase("W"): return
+    reset(); m = mark("W")
+    bind("W", "key HAT0_LEFT press %s/w.sts" % RUN)
+    v1 = joy([jh("LEFTUP")], vzm=True)
+    v2 = joy([jh("CENTERED")], vzm=True)
+    t = logtext(m); READ["W"] = t
+    o1, o2 = (orders(v1[0]) if v1 else {}), (orders(v2[0]) if v2 else {})
+    note("W", "orders", v1 + v2)
+    got = [o1.get("deltaAlt"), o1.get("deltaAz"), o2.get("deltaAlt"), o2.get("deltaAz")]
+    check("W", "P25_diagonal_two_edges", loads(t, "w") == 1 and got == [1, 0, 0, 0],
+          "load w %d, LEFTUP deltaAlt / deltaAz %s, CENTERED %s" % (loads(t, "w"), got[:2], got[2:]),
+          "load w 1, LEFTUP [1, 0], CENTERED [0, 0]")
+
+
+def case_X():
+    if not joycase("X"): return
+    reset(); m = mark("X")
+    bind("X", "key BUTTON3 press %s/x.sts" % RUN)
+    s = show("X")
+    joy(jpress(3))
+    joy(jpress(2))
+    ended = wait_end(s)
+    m2 = logsize()
+    joy(jpress(2))
+    t, during, tail = logtext(m), logtext(m, m2), logtext(m2); READ["X"] = t
+    t_end, t_c = first_ms(t, r"ScriptMgr: script end"), first_ms(t, r"load \S*/c\.sts$")
+    obs = "x %d, c %d at %s, show end at %s, BUTTON2 list during %s, after %s" % (
+        loads(t, "x"), loads(t, "c"), t_c, t_end, listed(during, "BUTTON2"), listed(tail, "BUTTON2"))
+    check("X", "P26_script_scope_on_a_button_dies_with_the_show", ended and t_c is not None and t_end is not None
+          and t_c < t_end and loads(t, "c") == 1 and listed(during, "BUTTON2") == [0] and listed(tail, "BUTTON2") == [1],
+          obs, "c 1 before the show end, the BUTTON2 list 0 during, 1 after")
+
+
+def case_Y():
+    if not joycase("Y"): return
+    reset(); m = mark("Y")
+    rec = "%s/recy.sts" % RUN
+    bind("Y", "key BUTTON3 press %s/y.sts" % RUN)
+    tcp("script action record filename %s" % rec)
+    joy([jb(3, "P")])
+    m2 = mark("Y2")
+    joy([jb(3, "R")])
+    tcp("script action cancelrecord")
+    t1, t2 = logtext(m, m2), logtext(m2); READ["Y"] = logtext(m)
+    lines = [l.rstrip("\n") for l in open(rec)] if os.path.exists(rec) else []
+    binds = [l for l in lines if "action bind" in l]
+    want = 'script action bind key BUTTON3 release "%s/yr.sts" scope once' % RUN
+    note("Y", "recorded_bind_lines", binds)
+    check("Y", "P27_key_omitted_names_the_button_recorded_explicitly", loads(t1, "y") == 1 and loads(t1, "yr") == 0
+          and loads(t2, "yr") == 1 and binds == [want], "press: y %d, yr %d | release: yr %d | %s" % (
+              loads(t1, "y"), loads(t1, "yr"), loads(t2, "yr"), binds), "press: y 1, yr 0 | release: yr 1 | [%s]" % want)
+
+
+def case_Z():
+    if not joycase("Z"): return
+    reset(); m = mark("Z")
+    bind("Z", "key * press %s/z.sts" % RUN)
+    joy(jpress(3))
+    keys(press("KP_1"))
+    m2 = mark("Z2")
+    reset()
+    joy(jpress(3))
+    t1, t2 = logtext(m, m2), logtext(m2); READ["Z"] = logtext(m)
+    check("Z", "P28_star_catches_a_button_and_a_key", loads(t1, "z") == 2 and listed(t1, "BUTTON3") == [0, 0]
+          and loads(t1, "M01") == 0, "load z %d, list %s, load M01 %d" % (loads(t1, "z"), listed(t1, "BUTTON3"), loads(t1, "M01")),
+          "load z 2, list [0, 0], load M01 0")
+    check("Z", "P28_star_dash_restores_the_list", loads(t2, "z") == 0 and listed(t2, "BUTTON3") == [1, 1],
+          "load z %d, list %s" % (loads(t2, "z"), listed(t2, "BUTTON3")), "load z 0, list [1, 1]")
+
+
+def case_AA():
+    if not joycase("AA"): return
+    reset(); m = mark("AA")
+    rows = []
+    for tok in ("BUTTON", "HAT0_NORTH", "BUTTON3_ALT", "CTRL+BUTTON3", "ALT+BUTTON3"):
+        errs = [msg for _, ty, msg in entries(tcp("script action bind key %s press %s/z.sts" % (tok, RUN))) if ty == "Error"]
+        note("AA", "error_lines[%s]" % tok, errs)
+        # the reason alone: neither the quoted token nor the line's echo can carry the forms
+        reason = errs[0][:errs[0].rfind(" [")].replace("'%s'" % tok, "") if len(errs) == 1 else ""
+        rows.append(len(errs) == 1 and "tcp#" in errs[0] and all(f in reason for f in ("BUTTON3", "HAT0_UP", "_ALT")))
+    joy(jpress(3))
+    t = logtext(m); READ["AA"] = t
+    check("AA", "P29_one_tagged_error_each_naming_the_button_forms", all(rows), rows,
+          "5 x True: one tcp#-tagged error line, its reason naming BUTTON3, HAT0_UP and _ALT")
+    check("AA", "P29_nothing_stored", loads(t, "z") == 0 and listed(t, "BUTTON3") == [1, 1],
+          "load z %d, list %s" % (loads(t, "z"), listed(t, "BUTTON3")), "load z 0, list [1, 1]")
+
+
+def case_AB():
+    if not joycase("AB"): return
+    reset(); m = mark("AB")
+    seq = [jb(1, "P", 0), jb(1, "R")] + jpress(3) + jpress(7) + [jh("UP"), jh("CENTERED"), jh("LEFTUP"), jh("CENTERED")]
+    v = joy(seq, vzm=True, settle=2.0)
+    t = logtext(m); READ["AB"] = t
+    control("AB", t, v)
+
+
+def case_AC():
+    if not joycase("AC"): return
+    reset(); m = mark("AC")
+    bind("AC", "key BUTTON3 press %s/p.sts" % RUN)
+    joy([jb(3, "P")])
+    detach("AC1")
+    attach("AC1")
+    if not joycase("AC"): return
+    joy(jpress(3))
+    t = logtext(m)
+    check("AC", "P31_press_after_a_replug_not_swallowed", loads(t, "p") == 2, "load p %d" % loads(t, "p"), "2")
+    # a button SDL saw pressed, then the detach: does SDL hand the door a release?
+    m2 = mark("AC2")
+    bind("AC", "key BUTTON3 release %s/r.sts" % RUN)
+    sdl_button(3, 1)
+    lines = detach("AC2")
+    t2 = logtext(m2); READ["AC"] = logtext(m)
+    note("AC", "sdl_release_at_detach", "SDL press: load p %d | at the detach: load r %d, app log %s" % (
+        loads(t2, "p"), loads(t2, "r"), [l for l in lines if "Joypad event" in l or "JoypadController" in l]))
+    attach("AC2")
+
+
+def case_AD():
+    if not joycase("AD"): return
+    reset(); m = mark("AD")
+    bind("AD", "key BUTTON3 press %s/p.sts" % RUN)
+    sdl_button(3, 1)
+    sdl_button(3, 0)
+    t = logtext(m); READ["AD"] = t
+    note("AD", "pump", "list %s, load p %d" % (listed(t, "BUTTON3"), loads(t, "p")))
+    check("AD", "P32_virtual_button_reaches_the_door_through_the_pump", loads(t, "p") == 1 and listed(t, "BUTTON3") == [0, 0],
+          "load p %d, list %s" % (loads(t, "p"), listed(t, "BUTTON3")), "load p 1, list [0, 0]")
 
 
 # ---- case O (INTENT 11.322): what a script's end leaves behind, on two end paths through UI::init ----
@@ -592,12 +1008,17 @@ def case_O():
 fixtures()
 D.sendall(b"$DIAGON\n"); time.sleep(1.0); drain()
 tcp("timerate rate 0")
+joy_setup()
 for c in (case_A, case_B, case_C, case_D, case_E, case_F, case_G, case_H, case_I, case_J, case_K, case_L, case_M, case_N,
-          case_O):
+          case_P, case_Q, case_R, case_S, case_T, case_U, case_V, case_W, case_X, case_Y, case_Z, case_AA, case_AB,
+          case_AC, case_AD, case_O):
     c()
 reset()
 mark("END")
 drain()
+# the virtual device at rest moves nothing: UI::moveLat / moveLon write `add y|z` each frame an axis is deflected
+AXIS_CMDS = len(re.findall(r"Execute_command add [yz] ", logtext(0)))
+check("-", "no_axis_command_over_the_run", AXIS_CMDS == 0, AXIS_CMDS, 0)
 diag = [l for l in "".join(RX).replace("\x00", "").splitlines() if l.startswith("$DIAG")]   # each record ends "\n\0"
 with open(OUT + "/tcp_rx.txt", "w") as f:
     f.write("".join(RX))
