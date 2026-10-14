@@ -1,0 +1,6 @@
+  unit-1.json      strings  243 (distinct  226)  fields {'lines': 16, 'handler_body_lines': 1}  pin master-beta @ b45d3b58 -> main @ 9d461bd5
+  unit-2.json      strings  264 (distinct  264)  fields {'lines': 15}  pin master-beta @ b45d3b58 -> main @ 9d461bd5
+  unit-3.json      strings  243 (distinct  243)  fields {'lines': 15}  pin master-beta @ b45d3b58 -> main @ 9d461bd5
+  unit-4.json      strings  217 (distinct  215)  fields {'lines': 16}  pin master-beta @ b45d3b58 -> main @ 9d461bd5
+  ss-grammar.json  strings  411 (distinct  363)  fields {}  pin master-beta @ 8d41fbe3 -> main @ 9d461bd5
+WRITTEN; record /home/claude/spacecrafter/claude/harness/f75/f158/rewrites.json

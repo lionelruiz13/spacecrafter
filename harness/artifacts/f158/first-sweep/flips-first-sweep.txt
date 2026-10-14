@@ -1,0 +1,7 @@
+(first sweep, FILE_OVERRIDES as F75 left it: 2 rows)
+inherited-file tokens re-read at the new pin: 1261; reading changed: 4
+  sc-grammar.json .families.commands.image.args.persistent.source ti=2 :262  was src/interfaceModule/app_command_interface.cpp  now None
+  sc-grammar.json .argument_token_vocabulary.literal_keys_without_token[3] ti=2 :203  was src/coreModule/landscape.cpp  now src/interfaceModule/app_command_interface.cpp
+  unit-2.json .commands.image.args.persistent.source ti=2 :262  was src/interfaceModule/app_command_interface.cpp  now None
+  ss-grammar.json .keys.orbit_bounding_radius.notes ti=1 :1001  was src/interfaceModule/app_command_interface.cpp  now src/bodyModule/protosystem.cpp
+flips check: FAIL

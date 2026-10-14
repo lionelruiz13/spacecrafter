@@ -1,0 +1,2 @@
+  sc-grammar.json  strings 1172 (distinct 1153)  fields {'lines': 65, 'handler_body_lines': 1, 'header_line': 238}  pin master-beta @ b45d3b58 -> main @ 9d461bd5
+WRITTEN; record /home/claude/spacecrafter/claude/harness/f75/f158/rewrites.json

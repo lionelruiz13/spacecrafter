@@ -146,6 +146,9 @@ the gradient stands as a direction, its numbers as pre-fix.]
 - ACCEPTING A DELIVERY: behaviour evidence AND shape - the block of `harness/shape/delivery.py <base> <head>`
   (`WORKTREE` before the commit) PASTED, never re-typed: net code lines, deleted/added, comment form, manager
   count, the ledger grep, D14, the scope. A delivery that only adds is a finding to explain, not a default.
+  And when the stat touches `src/`: `python3 util/scedit/tests/anchor_gate.py` from the code root (1.5 s) - the scedit
+  grammar's citations into the engine; exit 0, or the acceptance re-anchors / re-records with the argument in the same
+  commit (`fable-dispatch.md` section 0b step 4, 2026-10-14; the gate was red for 26 days unseen - INTENT 5.207).
 - AT EVERY SESSION CLOSE: `review.sh status` in the report to him (what waits, shape at both ends);
   its last line counts the source files changed OUTSIDE the header scope - when it is not zero, say
   which `.cpp` carry the change (`ALL=1 review.sh status` lists them).

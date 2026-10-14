@@ -1,0 +1,5 @@
+corrections of RESOLVING references (class X): 0 rows, 0 references
+read table: 96 rows; referents needing a row 96 (references 162); missing 0; unused 0
+  by action (referents): {'lines': 87, 'keep': 1, 'notathead': 7, 'unmark': 1}
+  by action (references): {'lines': 147, 'keep': 1, 'notathead': 13, 'unmark': 1}
+read-table check: PASS

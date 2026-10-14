@@ -1,0 +1,4 @@
+156c156
+<       "message": "'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; -- census S3.8, app_command_interface.cpp:1964 era)",
+---
+>       "message": "'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; -- census S3.8, app_command_interface.cpp:1853 era)",

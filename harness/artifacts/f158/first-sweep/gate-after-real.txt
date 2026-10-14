@@ -1,0 +1,25 @@
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.image.args.persistent.source: bare `:262` -- no candidate file resolves it at 9d461bd5
+FAIL  util/scedit/grammar/args/unit-2.json .commands.image.args.persistent.source: bare `:262` -- no candidate file resolves it at 9d461bd5
+FAIL  counts differ from tests/anchor-expected.txt
+--- recorded ---
+# anchor_gate record -- counts, not a silencer (README, Verification).
+# Edited deliberately: a count that moves means the ENGINE moved under
+# the grammar's citations, and somebody has to look at what.
+# Regenerate with: python3 tests/anchor_gate.py --record
+clean                    6836
+moved                    359
+not-at-head(declared)    3
+skipped(_meta)           86
+--- got ---
+# anchor_gate record -- counts, not a silencer (README, Verification).
+# Edited deliberately: a count that moves means the ENGINE moved under
+# the grammar's citations, and somebody has to look at what.
+# Regenerate with: python3 tests/anchor_gate.py --record
+UNRESOLVED               2
+clean                    7179
+handler_body_lines:clean 2
+header_line:clean        238
+lines:clean              127
+not-at-head(declared)    17
+skipped(_meta)           86
+

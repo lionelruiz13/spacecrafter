@@ -1,0 +1,40 @@
+51c51
+< | engine: app_command_interface.cpp:4055-4081 (W_LOAD="load", W_CURRENT="current", W_PRESET="preset"
+---
+> | engine: app_command_interface.cpp:3964-3990 (W_LOAD="load", W_CURRENT="current", W_PRESET="preset"
+70c70
+< | engine: app_command_interface.cpp:2355-2358 -> src/coreModule/coreLink.hpp:207-208 (starSetScale)
+---
+> | engine: app_command_interface.cpp:2237-2240 -> src/coreModule/coreLink.hpp:207-208 (starSetScale)
+127c127
+< | engine: app_command_interface.cpp:1796 -> src/coreModule/coreLink.cpp:1130-1135 -> src/bodyModule/
+---
+> | engine: app_command_interface.cpp:1692 -> src/coreModule/coreLink.cpp:1109-1114 -> src/bodyModule/
+165c165
+< | engine: app_command_init.cpp:66 (ACP_CN_MEDIA = "media", base_command_interface.hpp:357)
+---
+> | engine: app_command_init.cpp:66 (ACP_CN_MEDIA = "media", base_command_interface.hpp:363)
+266c266
+< | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:350)
+---
+> | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:356)
+341c341
+< | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:350)
+---
+> | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:356)
+368c368
+< | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:350)
+---
+> | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:356)
+396c396
+< | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:350)
+---
+> | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:356)
+424c424
+< | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:350)
+---
+> | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:356)
+452c452
+< | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:350)
+---
+> | engine: app_command_init.cpp:59 (ACP_CN_FLAG = "flag", base_command_interface.hpp:356)

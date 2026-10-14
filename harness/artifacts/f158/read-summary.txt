@@ -1,0 +1,673 @@
+--------------------------------------------------------------------------------------------------------------
+src/bodyModule/ssystem_factory.hpp:263-272 @ b45d3b58  x1  [sc-grammar]
+   end   263 gone   -> None  | // THESE FOUR ARE THE COMMAND SEAMS (`flag moon_scaled`, `moon_scale`, and
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   272 moved  -> 196   | }
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.flags.names[51].source: ...nd_interface.cpp:1058-1060 -> src/coreModule/coreLink.hpp:484-485 -> src/coreModule/coreLink.cpp:1223-1225 -> src/bodyModule/ssystem_factory.hpp:263-272...
+--------------------------------------------------------------------------------------------------------------
+src/bodyModule/ssystem_factory.hpp:263-268 @ b45d3b58  x1  [sc-grammar]
+   end   263 gone   -> None  | // THESE FOUR ARE THE COMMAND SEAMS (`flag moon_scaled`, `moon_scale`, and
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   268 gone   -> None  | // a command, so it has its own entry point: initDisplayScaling.
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.flags.names[51].notes: ...Off puts the scale back to 1; the new path animates the change over about 5 s (ssystem_factory.hpp:263-268)....
+--------------------------------------------------------------------------------------------------------------
+src/bodyModule/ssystem_factory.hpp:477-478 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end   477 gone   -> None  | // New-path mirror (S6 Textures seam): contract parity with old
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   478 gone   -> None  | // Body::createTexSkin - creating/replacing never activates.
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.body.args.skin_tex.notes: ...Creating or replacing the alternative picture never activates it (src/bodyModule/ssystem_factory.hpp:477-478). An unknown body name is a silent no-o...
+   cited .commands.body.args.skin_tex.notes: ...Creating or replacing the alternative picture never activates it (src/bodyModule/ssystem_factory.hpp:477-478). An unknown body name is a silent no-o...
+--------------------------------------------------------------------------------------------------------------
+src/bodyModule/ssystem_factory.hpp:515-526 @ b45d3b58  x4  [sc-grammar,unit-4]
+   end   515 gone   -> None  | // Runtime per-body navigation-radius seam (B10 S5.2, S11.79(e) D9key):
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   526 moved  -> 372   | bool setBodyDatumRadius(const std::string &englishName, double km);
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.body.args.datum_radius.source: ...app_command_interface.cpp:4271-4284 -> src/coreModule/coreLink.cpp:1459-1461 -> src/bodyModule/ssystem_factory.hpp:515-526 (W_DATUM_RADIUS="datum_radius", base_co...
+   cited .families.commands.body.args.ground_radius.source: ...app_command_interface.cpp:4286-4299 -> src/coreModule/coreLink.cpp:1463-1465 -> src/bodyModule/ssystem_factory.hpp:515-526 (W_GROUND_RADIUS="ground_radius", base_...
+   cited .commands.body.args.datum_radius.source: ...app_command_interface.cpp:4271-4284 -> src/coreModule/coreLink.cpp:1459-1461 -> src/bodyModule/ssystem_factory.hpp:515-526 (W_DATUM_RADIUS="datum_radius", base_co...
+   (+1 more citing paths: source)
+--------------------------------------------------------------------------------------------------------------
+src/bodyModule/ssystem_factory.hpp:743-765 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end   743 gone   -> None  | //! Write the observer's current system to a composed system file (B31
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   765 moved  -> 531   | bool saveCurrentSystem(const std::string &filename);
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.body.args.filename.source: ...app_command_interface.cpp:4121-4122 (model), 4025 (save), 4033 (dual_dump), 4039 (screenshot) -> src/bodyModule/ssystem_factory.hpp:743-765 (save contract), src/bodyModule/ssystem...
+   cited .commands.body.args.filename.source: ...app_command_interface.cpp:4121-4122 (model), 4025 (save), 4033 (dual_dump), 4039 (screenshot) -> src/bodyModule/ssystem_factory.hpp:743-765 (save contract), src/bodyModule/ssystem...
+--------------------------------------------------------------------------------------------------------------
+src/bodyModule/ssystem_factory.hpp:756-765 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end   756 gone   -> None  | //! WHAT IT REFUSES, and why the refusals are here rather than in the writer:
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   765 moved  -> 531   | bool saveCurrentSystem(const std::string &filename);
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.body.args.filename.notes: ..., or the machine-owned `.disabled` twin name, is refused with an explanatory log line and nothing is written (src/bodyModule/ssystem_factory.hpp:756-765)....
+   cited .commands.body.args.filename.notes: ..., or the machine-owned `.disabled` twin name, is refused with an explanatory log line and nothing is written (src/bodyModule/ssystem_factory.hpp:756-765)....
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/backup_mgr.cpp:59-73 @ b45d3b58  x2  [sc-grammar,unit-3]
+   end    59 gone   -> None  | // THE WRITE HALF OF THE BOOKMARK (B34, F24). It used to be
+             enclosing loadBackup; at pin def [(47, 77)]; at 9d461bd5 def [(47, 58)]
+   end    73 moved  -> 54    | coreLink->observerMoveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBack
+             enclosing loadBackup; at pin def [(47, 77)]; at 9d461bd5 def [(47, 58)]
+   cited .families.commands.position.notes[2]: ...The place is read from, and restored to, the path that actually draws (src/coreModule/backup_mgr.cpp:59-73, 82-90) -- the same seam `moveto` uses....
+   cited .commands.position.notes[2]: ...The place is read from, and restored to, the path that actually draws (src/coreModule/backup_mgr.cpp:59-73, 82-90) -- the same seam `moveto` uses....
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/backup_mgr.cpp:82-90 @ b45d3b58  x2  [sc-grammar,unit-3]
+   end    82 gone   -> None  | // THE READ HALF (B33 S11.131(f) -> B34, F24): the bookmark records the place
+             enclosing saveBackup; at pin def [(79, 95)]; at 9d461bd5 def [(60, 70)]
+   end    90 moved  -> 65    | mBackup.altitude=coreLink->observatoryGetAltitude();
+             enclosing saveBackup; at pin def [(79, 95)]; at 9d461bd5 def [(60, 70)]
+   cited .families.commands.position.notes[2]: ...The place is read from, and restored to, the path that actually draws (src/coreModule/backup_mgr.cpp:59-73, 82-90) -- the same seam `moveto` uses....
+   cited .commands.position.notes[2]: ...The place is read from, and restored to, the path that actually draws (src/coreModule/backup_mgr.cpp:59-73, 82-90) -- the same seam `moveto` uses....
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/cardinals.cpp:78-94 @ b45d3b58  x1  [sc-grammar]
+   end    78 clean  -> 78    | float shift = font->getStrLen(sNorth)/2;
+             enclosing draw; at pin def [(55, 120)]; at 9d461bd5 def [(55, 120)]
+   end    94 gone   -> None  | if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shif
+             enclosing draw; at pin def [(55, 120)]; at 9d461bd5 def [(55, 120)]
+   cited .families.font_targets.names[3].source: ...handed over at core.cpp:204 (cardinals_points->registerFont); the four letters are printed in Cardinals::draw cardinals.cpp:78-94, with the intercardinal pairs added at ...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/cardinals.cpp:82-94 @ b45d3b58  x1  [sc-grammar]
+   end    82 gone   -> None  | if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shif
+             enclosing draw; at pin def [(55, 120)]; at 9d461bd5 def [(55, 120)]
+   end    94 gone   -> None  | if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shif
+             enclosing draw; at pin def [(55, 120)]; at 9d461bd5 def [(55, 120)]
+   cited .families.color_names.names[5].source: ... case app_command_interface.cpp:1831 -> coreLink.cpp:283-285 -> Cardinals::draw cardinals.cpp:73 (colour) and cardinals.cpp:82-94 (the four letters)...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/cardinals.cpp:95-118 @ b45d3b58  x2  [sc-grammar]
+   end    95 clean  -> 95    | if ((internalNav) || (internalAstronomical)) {
+             enclosing draw; at pin def [(55, 120)]; at 9d461bd5 def [(55, 120)]
+   end   118 gone   -> None  | if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shif
+             enclosing draw; at pin def [(55, 120)]; at 9d461bd5 def [(55, 120)]
+   cited .families.color_names.names[5].notes: ...In navigation and astronomical modes the same colour also carries the in-between markings drawn at cardinals.cpp:95-118....
+   cited .families.font_targets.names[3].source: ...); the four letters are printed in Cardinals::draw cardinals.cpp:78-94, with the intercardinal pairs added at cardinals.cpp:95-118 in navigation and astronomical modes...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/constellation.cpp:150-161 @ b45d3b58  x2  [sc-grammar]
+   end   150 gone   -> None  | void Constellation::drawName(s_font *constfont, const Projector* prj) const
+             enclosing drawName; at pin def [(150, 162)]; at 9d461bd5 def [(149, 161)]
+   end   161 gone   -> None  | constfont->printHorizontal(prj, std::min(90.f - alt, 80.f), az*180.f/M_PI-90.f, nameI18, C
+             enclosing drawName; at pin def [(150, 162)]; at 9d461bd5 def [(149, 161)]
+   cited .families.color_names.names[2].source: ...1-1073 -> ConstellationMgr::setLabelColor constellation_mgr.cpp:165-172 -> printed by Constellation::drawName constellation.cpp:150-161...
+   cited .families.font_targets.names[2].source: ...tFactory.cpp:45; font handed over at core.cpp:203 (asterisms->registerFont); drawn by Constellation::drawName constellation.cpp:150-161...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/core.cpp:1092-1097 @ b45d3b58  x2  [sc-grammar,unit-3]
+   end  1092 gone   -> None  | // Both trees, old first (B24-select, INTENT S11.106): the old
+             enclosing selectObject; at pin def [(1074, 1159), (2360, 2443)]; at 9d461bd5 def [(1018, 1081), (2455, 2530)]
+   end  1097 moved  -> 1036  | selectObject(ssystemFactory->searchObjectByEnglishName(id));
+             enclosing selectObject; at pin def [(1074, 1159), (2360, 2443)]; at 9d461bd5 def [(1018, 1081), (2455, 2530)]
+   cited .families.commands.select.args.planet.notes: ...Names are matched against both body trees, the old one first (src/coreModule/core.cpp:1092-1097)....
+   cited .commands.select.args.planet.notes: ...Names are matched against both body trees, the old one first (src/coreModule/core.cpp:1092-1097)....
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/core.cpp:2523-2534 @ b45d3b58  x2  [sc-grammar,unit-2]
+   end  2523 moved  -> 2610  | void Core::setViewOffset(double offset)
+             enclosing setViewOffset; at pin def [(2523, 2554)]; at 9d461bd5 def [(2610, 2631)]
+   end  2534 gone   -> None  | // the config/command. Screen-identical to old (the clamped value is the
+             enclosing setViewOffset; at pin def [(2523, 2554)]; at 9d461bd5 def [(2610, 2631)]
+   cited .families.set_names.names[33].source: ...d_interface.cpp:2372 -> src/coreModule/core.hpp:270-271 ("set zoom/center offset (percent of fov radius)") -> src/coreModule/core.cpp:2523-2534; registration app_command_init.cpp:335,...
+   cited .commands.set.args.zoom_offset.source: ...d_interface.cpp:2372 -> src/coreModule/core.hpp:270-271 ("set zoom/center offset (percent of fov radius)") -> src/coreModule/core.cpp:2523-2534; registration app_command_init.cpp:335,...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/core.hpp:170-173 @ b45d3b58  x2  [sc-grammar,unit-2]
+   end   170 gone   -> None  | // [merge] theirs' subtitle SRT-locale feature (command side).
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   173 clean  -> 173   | }
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.set_names.names[18].source: ...app_command_interface.cpp:2350 -> src/coreModule/core.hpp:199-200 (setSrtLanguage) and :170-173; registration app_command_init.cpp:320,...
+   cited .commands.set.args.srt_locale.source: ...app_command_interface.cpp:2350 -> src/coreModule/core.hpp:199-200 (setSrtLanguage) and :170-173; registration app_command_init.cpp:320,...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/core.hpp:199-200 @ b45d3b58  x2  [sc-grammar,unit-2]
+   end   199 gone   -> None  | // [merge] theirs' SRT (subtitle) language, command side; stores/returns the locale.
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   200 moved  -> 199   | void setSrtLanguage(const std::string& newSrtLocaleName) { srtLanguage = newSrtLocaleName;
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.set_names.names[18].source: ...app_command_interface.cpp:2350 -> src/coreModule/core.hpp:199-200 (setSrtLanguage) and :170-173; registra...
+   cited .commands.set.args.srt_locale.source: ...app_command_interface.cpp:2350 -> src/coreModule/core.hpp:199-200 (setSrtLanguage) and :170-173; registra...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/core.hpp:203-204 @ b45d3b58  x2  [sc-grammar,unit-2]
+   end   203 gone   -> None  | // [merge] theirs' init_fov script command support.
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   204 moved  -> 202   | void setInitFov(double f) { InitFov = f; }
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.set_names.names[42].source: ...app_command_interface.cpp:2383 -> src/coreModule/core.hpp:203-204 (stores InitFov, src/coreModule/core.hp...
+   cited .commands.set.args.init_fov.source: ...app_command_interface.cpp:2383 -> src/coreModule/core.hpp:203-204 (stores InitFov, src/coreModule/core.hp...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/core.hpp:224-226 @ b45d3b58  x1  [sc-grammar]
+   end   224 gone   -> None  | //! Set whether sky position is to be locked. Both-paths mirror (defined in
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   226 moved  -> 223   | void setFlagLockSkyPosition(bool b);
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.flags.names[75].source: ...d_init.cpp:208 (FN_LOCK_SKY_POSITION); base_command_interface.hpp:477; app_command_interface.cpp:1202-1204 -> src/coreModule/core.hpp:224-226 -> src/coreModule/core.cpp:921-926...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/core.hpp:510-512 @ b45d3b58  x1  [sc-grammar]
+   end   510 gone   -> None  | //! Pin the rendered body path (flag experimental_path): old/new selection
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   512 moved  -> 470   | void setExperimentalPath(bool newPath);
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.flags.names[92].source: ...d_init.cpp:225 (FN_EXPERIMENTAL_PATH); base_command_interface.hpp:495; app_command_interface.cpp:1274-1277 -> src/coreModule/core.hpp:510-512 -> src/coreModule/core.cpp:960-963 (ssy...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/coreLink.hpp:836-852 @ b45d3b58  x2  [sc-grammar,unit-3]
+   end   836 moved  -> 793   | 
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   852 gone   -> None  | //! the camera is not at (the setter asymmetry is recorded, not fixed).
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.moveto.notes[2]: ...the move starts from is the place the drawn path reports, which is not always the one the old observer holds (src/coreModule/coreLink.hpp:836-852): after a `camera action descend`, `del...
+   cited .commands.moveto.notes[2]: ...the move starts from is the place the drawn path reports, which is not always the one the old observer holds (src/coreModule/coreLink.hpp:836-852): after a `camera action descend`, `del...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/coreLink.hpp:850-852 @ b45d3b58  x2  [sc-grammar,unit-3]
+   end   850 gone   -> None  | //! No clamp is added here: old's +-90deg latitude clamp and its 0.1 m altitude
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   852 gone   -> None  | //! the camera is not at (the setter asymmetry is recorded, not fixed).
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.moveto.notes[3]: ...ver goes below 0.1 metre of height (src/navModule/observer.cpp:61-64), the camera clamps nothing (recorded in src/coreModule/coreLink.hpp:850-852, not a thing this command decides)....
+   cited .commands.moveto.notes[3]: ...ver goes below 0.1 metre of height (src/navModule/observer.cpp:61-64), the camera clamps nothing (recorded in src/coreModule/coreLink.hpp:850-852, not a thing this command decides)....
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/coreLink.hpp:943-950 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end   943 gone   -> None  | //! New-path camera free-flight mode. Closes the INTENT S2(c)/S11.19c
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   950 moved  -> 881   | }
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.camera.args.state.source: ...app_command_interface.cpp:4530-4536 -> src/coreModule/coreLink.hpp:943-950 (W_STATE="state", base_command_interfac...
+   cited .commands.camera.args.state.source: ...app_command_interface.cpp:4530-4536 -> src/coreModule/coreLink.hpp:943-950 (W_STATE="state", base_command_interfac...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/coreLink.hpp:952-961 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end   952 gone   -> None  | //! View-directed free descent (B21, S11.72): drive Camera::descend, the
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   961 moved  -> 886   | }
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.camera.args.coef.source: ...app_command_interface.cpp:4544-4550 -> src/coreModule/coreLink.hpp:952-961 -> src/experimentalModule/Camera.cpp:10...
+   cited .commands.camera.args.coef.source: ...app_command_interface.cpp:4544-4550 -> src/coreModule/coreLink.hpp:952-961 -> src/experimentalModule/Camera.cpp:10...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/nebula.cpp:350-379 @ b45d3b58  x1  [sc-grammar]
+   end   350 gone   -> None  | void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, dou
+             enclosing drawTex; at pin def [(350, 379)]; at 9d461bd5 def [(350, 379)]
+   end   379 clean  -> 379   | }
+             enclosing drawTex; at pin def [(350, 379)]; at 9d461bd5 def [(350, 379)]
+   cited .families.flags.names[71].source: ...nd_interface.cpp:1182-1184 -> src/coreModule/coreLink.hpp:751-752 -> src/coreModule/nebula_mgr.hpp:155-158 -> src/coreModule/nebula.cpp:350-379...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/nebula.cpp:381-406 @ b45d3b58  x1  [sc-grammar]
+   end   381 gone   -> None  | void Nebula::drawHint(const Projector* prj, const Navigator * nav, float *&data, int &nbDr
+             enclosing drawHint; at pin def [(381, 406)]; at 9d461bd5 def [(381, 406)]
+   end   406 clean  -> 406   | }
+             enclosing drawHint; at pin def [(381, 406)]; at 9d461bd5 def [(381, 406)]
+   cited .families.flags.names[83].source: ... src/coreModule/core.hpp:520-521 -> src/coreModule/core.cpp:668-670 -> src/coreModule/nebula_mgr.hpp:119-122, nebula.cpp:381-406...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/nebula.cpp:408-418 @ b45d3b58  x2  [sc-grammar]
+   end   408 gone   -> None  | void Nebula::drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont)
+             enclosing drawName; at pin def [(408, 424)]; at 9d461bd5 def [(408, 424)]
+   end   418 gone   -> None  | prj->printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);
+             enclosing drawName; at pin def [(408, 424)]; at 9d461bd5 def [(408, 424)]
+   cited .families.color_names.names[39].source: ...9 -> NebulaMgr::setLabelColor nebula_mgr.hpp:110-112, used at nebula_mgr.cpp:203 and :206 -> Nebula::drawName nebula.cpp:408-418...
+   cited .families.font_targets.names[6].source: ...core.cpp:192 and again at core.cpp:202, and to dso3d at core.cpp:193; the name is printed in Nebula::drawName nebula.cpp:408-418...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/nebula_mgr.cpp:203 @ b45d3b58  x1  [sc-grammar]
+   end   203 gone   -> None  | n->drawName(prj, labelColor, font);
+             enclosing draw; at pin def [(157, 229)]; at 9d461bd5 def [(157, 229)]
+   cited .families.color_names.names[39].source: ...ommand_interface.cpp:1867 -> coreLink.cpp:927-929 -> NebulaMgr::setLabelColor nebula_mgr.hpp:110-112, used at nebula_mgr.cpp:203 and :206 -> Nebula::drawName nebula.cpp...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/nebula_mgr.cpp:206 @ b45d3b58  x1  [sc-grammar]
+   end   206 gone   -> None  | n->drawName(prj, labelColor, font);
+             enclosing draw; at pin def [(157, 229)]; at 9d461bd5 def [(157, 229)]
+   cited .families.color_names.names[39].source: ...67 -> coreLink.cpp:927-929 -> NebulaMgr::setLabelColor nebula_mgr.hpp:110-112, used at nebula_mgr.cpp:203 and :206 -> Nebula::drawName nebula.cpp:408-418...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/nebula_mgr.cpp:211-222 @ b45d3b58  x1  [sc-grammar]
+   end   211 clean  -> 211   | if (!displaySpecificHint)
+             enclosing draw; at pin def [(157, 229)]; at 9d461bd5 def [(157, 229)]
+   end   222 gone   -> None  | n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());
+             enclosing draw; at pin def [(157, 229)]; at 9d461bd5 def [(157, 229)]
+   cited .families.color_names.names[40].notes: ... branch draws the per-type pictogram with the object's own neb_color instead (nebula.cpp:395-399, selected at nebula_mgr.cpp:211-222)....
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/nebula_mgr.cpp:212 @ b45d3b58  x1  [sc-grammar]
+   end   212 gone   -> None  | n->drawHint(prj, nav, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());
+             enclosing draw; at pin def [(157, 229)]; at 9d461bd5 def [(157, 229)]
+   cited .families.color_names.names[40].source: ...mmand_interface.cpp:1868 -> coreLink.cpp:930-932 -> NebulaMgr::setCircleColor nebula_mgr.hpp:130-132, used at nebula_mgr.cpp:212 and :222 -> Nebula::drawHint nebula.cpp...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/nebula_mgr.cpp:222 @ b45d3b58  x1  [sc-grammar]
+   end   222 gone   -> None  | n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());
+             enclosing draw; at pin def [(157, 229)]; at 9d461bd5 def [(157, 229)]
+   cited .families.color_names.names[40].source: ...8 -> coreLink.cpp:930-932 -> NebulaMgr::setCircleColor nebula_mgr.hpp:130-132, used at nebula_mgr.cpp:212 and :222 -> Nebula::drawHint nebula.cpp:401-404...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:189-218 @ b45d3b58  x2  [sc-grammar]
+   end   189 gone   -> None  | void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
+             enclosing draw_text; at pin def [(189, 218)]; at 9d461bd5 def [(188, 217)]
+   end   218 moved  -> 217   | }
+             enclosing draw_text; at pin def [(189, 218)]; at 9d461bd5 def [(188, 217)]
+   cited .families.flags.names[40].source: ...:1020-1021 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:190-194 (SkyNautic, AL) -> src/coreModule/skyDisplay.cpp:351-413,189-218...
+   cited .families.color_names.names[31].source: ...c(AL) built at skydisplay_mgr.cpp:191, drawn skyDisplay.cpp:351-413, figures printed by SkyDisplay::draw_text skyDisplay.cpp:189-218...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:220-228 @ b45d3b58  x1  [sc-grammar]
+   end   220 gone   -> None  | void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldE
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   end   228 moved  -> 227   | }
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.color_names.names[29].source: ...-> SkyPerson(AL) built at skydisplay_mgr.cpp:177, ctor skyDisplay.cpp:237, drawn by the base SkyDisplay::draw skyDisplay.cpp:220-228...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:226 @ b45d3b58  x5  [sc-grammar,unit-1]
+   end   226 gone   -> None  | *uMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.commands.personal.notes[0]: ...l-to-eye matrix (src/coreModule/skydisplay_mgr.cpp:176-179 creates SKY_PERSONAL as SkyPerson(SkyDisplay::AL); src/coreModule/skyDisplay.cpp:226 chooses getMatLocalToEye for AL). `pers...
+   cited .families.commands.personeq.notes[0]: ...l-to-eye matrix (src/coreModule/skydisplay_mgr.cpp:183-186 creates SKY_PERSONEQ as SkyPerson(SkyDisplay::EQ); src/coreModule/skyDisplay.cpp:226)....
+   cited .families.color_names.names[30].source: ...eLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyPerson(EQ) built at skydisplay_mgr.cpp:184; frame chosen at skyDisplay.cpp:226...
+   (+2 more citing paths: notes[0])
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:351-413 @ b45d3b58  x4  [sc-grammar]
+   end   351 gone   -> None  | void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEq
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   end   413 moved  -> 412   | }
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.flags.names[40].source: ...:1020-1021 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:190-194 (SkyNautic, AL) -> src/coreModule/skyDisplay.cpp:351-413,189-218...
+   cited .families.flags.names[41].source: ...:1024-1025 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:196-200 (SkyNautic, EQ) -> src/coreModule/skyDisplay.cpp:351-413...
+   cited .families.color_names.names[31].source: ...859 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyNautic(AL) built at skydisplay_mgr.cpp:191, drawn skyDisplay.cpp:351-413, figures printed by SkyDisplay::draw_te...
+   (+1 more citing paths: source)
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:419-582 @ b45d3b58  x2  [sc-grammar]
+   end   419 gone   -> None  | void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPo
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   end   582 moved  -> 581   | }
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.flags.names[42].source: ....cpp:1028-1029 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:202-206 (SkyCoords) -> src/coreModule/skyDisplay.cpp:419-582...
+   cited .families.color_names.names[33].source: ...pp:1861 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyCoords built at skydisplay_mgr.cpp:203, drawn skyDisplay.cpp:419-582...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:419-1031 @ b45d3b58  x1  [sc-grammar]
+   end   419 gone   -> None  | void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPo
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   end  1031 moved  -> 1030  | }
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.font_targets.names[9].source: ...s the object and mouse coordinate readouts and the angular-distance / loxodromy / orthodromy figures drawn in skyDisplay.cpp:419-1031...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:588-766 @ b45d3b58  x2  [sc-grammar]
+   end   588 gone   -> None  | void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldP
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   end   766 moved  -> 765   | }
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.flags.names[43].source: ...e.cpp:1032-1033 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:208-212 (SkyMouse) -> src/coreModule/skyDisplay.cpp:588-766...
+   cited .families.color_names.names[34].source: ...cpp:1862 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyMouse built at skydisplay_mgr.cpp:209, drawn skyDisplay.cpp:588-766, pointer read at skyDisplay.cpp:594-596...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:594-596 @ b45d3b58  x1  [sc-grammar]
+   end   594 moved  -> 593   | int x,y;
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   end   596 gone   -> None  | Vec3d equPos = prj->getCursorPosEqu(x, y);
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.color_names.names[34].source: ...isplay_mgr.cpp:142 -> SkyMouse built at skydisplay_mgr.cpp:209, drawn skyDisplay.cpp:588-766, pointer read at skyDisplay.cpp:594-596...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:771-871 @ b45d3b58  x1  [sc-grammar]
+   end   771 gone   -> None  | void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldE
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   end   871 moved  -> 870   | }
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.flags.names[44].source: ...cpp:1036-1037 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:214-218 (SkyAngDist) -> src/coreModule/skyDisplay.cpp:771-871...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:876-937 @ b45d3b58  x1  [sc-grammar]
+   end   876 gone   -> None  | void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d ol
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   end   937 moved  -> 936   | }
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.flags.names[45].source: ...p:1040-1041 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:220-224 (SkyLoxodromy) -> src/coreModule/skyDisplay.cpp:876-937...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyDisplay.cpp:942-1031 @ b45d3b58  x1  [sc-grammar]
+   end   942 gone   -> None  | void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d o
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   end  1031 moved  -> 1030  | }
+             enclosing draw; at pin def [(220, 228), (351, 413), (419, 582), (588, 766), (771, 871), (876, 937), (942, 1031)]; at 9d461bd5 def [(219, 227), (350, 412), (418, 581), (587, 765), (770, 870), (875, 936), (941, 1030)]
+   cited .families.flags.names[46].source: ...:1044-1045 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:226-230 (SkyOrthodromy) -> src/coreModule/skyDisplay.cpp:942-1031...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:195-234 @ b45d3b58  x8  [sc-grammar]
+   end   195 gone   -> None  | void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr,
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end   234 clean  -> 234   | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[28].source: ...ce.cpp:956-957 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:289 (CIRCLE_POLE, 66.5) -> skyline.cpp:195-234...
+   cited .families.flags.names[29].source: ...rface.cpp:960-961 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:296 (POINT_POLE, 89) -> skyline.cpp:195-234...
+   cited .families.flags.names[30].source: ...ce.cpp:964-965 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:303 (ECLIPTIC_POLE, 89) -> skyline.cpp:180-182,195-234...
+   (+5 more citing paths: source)
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:262-346 @ b45d3b58  x1  [sc-grammar]
+   end   262 gone   -> None  | void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMg
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end   346 clean  -> 346   | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.color_names.names[28].source: ...-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Zodiac built at skyline_mgr.cpp:415 and skyline.cpp:239-256, drawn skyline.cpp:262-346: twelve cross-rungs at skyline.cpp:277-...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:377-416 @ b45d3b58  x1  [sc-grammar]
+   end   377 gone   -> None  | void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const TimeMgr* t
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end   416 clean  -> 416   | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[24].source: ...RCLE); base_command_interface.hpp:426; app_command_interface.cpp:944-945 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:377-416 (SkyLine_CircumPolar; radius follows yo...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:427 @ b45d3b58  x1  [sc-grammar]
+   end   427 gone   -> None  | proj_func = &Projector::projectEarthEqu;
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[34].notes: ...The ANALEMMALINE half uses the rotating equatorial frame (projectEarthEqu, skyline.cpp:427) with longitude 0 and a date term T (sk...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:464-504 @ b45d3b58  x2  [sc-grammar]
+   end   464 gone   -> None  | void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const TimeMgr* time
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end   504 clean  -> 504   | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[34].source: ...LINE); base_command_interface.hpp:436; app_command_interface.cpp:980-981 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:421-434,464-504 (SkyLine_Analemme ANALEMMALINE)...
+   cited .families.color_names.names[24].source: ...-154 -> SkyLine_Analemme(ANALEMMA) built at skyline_mgr.cpp:322, 93-point table at skyline.cpp:421-458, drawn skyline.cpp:464-504 through the branch at skyline.cpp:482-4...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:521-549 @ b45d3b58  x3  [sc-grammar]
+   end   521 gone   -> None  | void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, const TimeMg
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end   549 clean  -> 549   | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[33].notes: ...SkyLine_Vernal::draw (skyline.cpp:566-593) and SkyLine_Galactic_Center::draw (skyline.cpp:521-549) are the same code line for line; the o...
+   cited .families.color_names.names[22].source: ...kyline_mgr.cpp:144-154 -> SkyLine_Galactic_Center built at skyline_mgr.cpp:343 and skyline.cpp:509-515, drawn skyline.cpp:521-549 as two loops 180 degrees apart (the +j*...
+   cited .families.color_names.names[23].notes: ...The maths is the same as galactic_center's (skyline.cpp:566-593 versus :521-549); only the projection differs (skyline....
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:557 @ b45d3b58  x1  [sc-grammar]
+   end   557 gone   -> None  | proj_func = &Projector::projectEarthEqu;
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.color_names.names[23].notes: ...he maths is the same as galactic_center's (skyline.cpp:566-593 versus :521-549); only the projection differs (skyline.cpp:557). No text....
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:566-593 @ b45d3b58  x3  [sc-grammar]
+   end   566 gone   -> None  | void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMg
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end   593 clean  -> 593   | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[33].notes: ...SkyLine_Vernal::draw (skyline.cpp:566-593) and SkyLine_Galactic_Center::draw (sky...
+   cited .families.color_names.names[23].source: ...-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Vernal built at skyline_mgr.cpp:350 and skyline.cpp:554-560, drawn skyline.cpp:566-593...
+   cited .families.color_names.names[23].notes: ...The maths is the same as galactic_center's (skyline.cpp:566-593 versus :521-549); only the projection d...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:610-660 @ b45d3b58  x1  [sc-grammar]
+   end   610 gone   -> None  | void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const TimeMgr* tim
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end   660 clean  -> 660   | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.color_names.names[26].source: ...4 -> skyline_mgr.cpp:144-154 -> SkyLine_Greenwich built at skyline_mgr.cpp:357 and skyline.cpp:600-604, drawn skyline.cpp:610-660 with the literal 'GM' printed at skylin...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:675-722 @ b45d3b58  x1  [sc-grammar]
+   end   675 gone   -> None  | void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end   722 clean  -> 722   | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.color_names.names[27].source: ...2-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Aries built at skyline_mgr.cpp:364 and skyline.cpp:665-669, drawn skyline.cpp:675-722 with the literal 'Aries' printed at sky...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:750-881 @ b45d3b58  x1  [sc-grammar]
+   end   750 gone   -> None  | void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const TimeMgr* time
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end   881 clean  -> 881   | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.color_names.names[16].source: ...44 -> skyline_mgr.cpp:144-154 -> SkyLine_Meridian built at skyline_mgr.cpp:378 and skyline.cpp:727-742, drawn skyline.cpp:750-881 with the altitude figures at skyline.cp...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:921-1069 @ b45d3b58  x2  [sc-grammar]
+   end   921 gone   -> None  | void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeM
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end  1069 clean  -> 1069  | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[20].source: ...LINE); base_command_interface.hpp:422; app_command_interface.cpp:924-925 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:887-901,921-1069 (SkyLine_Equator EQUATOR)...
+   cited .families.color_names.names[13].source: ...Color skyline_mgr.cpp:144-154 -> SkyLine_Equator, built at skyline_mgr.cpp:366 and skyline.cpp:887-913, drawn skyline.cpp:921-1069 with the hour labels at skyline.cpp:101...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:1094-1218 @ b45d3b58  x1  [sc-grammar]
+   end  1094 gone   -> None  | void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMg
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end  1218 clean  -> 1218  | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[25].source: ...INES); base_command_interface.hpp:427; app_command_interface.cpp:940-941 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1094-1218 (SkyLine_Tropic; circles at the body's ...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:1235-1355 @ b45d3b58  x1  [sc-grammar]
+   end  1235 gone   -> None  | void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* time
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end  1355 clean  -> 1355  | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.color_names.names[15].source: ...41 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Ecliptic built at skyline_mgr.cpp:422, drawn skyline.cpp:1235-1355, month names translated at skyline.cpp:...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:1372-1440 @ b45d3b58  x1  [sc-grammar]
+   end  1372 gone   -> None  | void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const TimeMgr* ti
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end  1440 clean  -> 1440  | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[23].source: ...RCLE); base_command_interface.hpp:425; app_command_interface.cpp:936-937 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1372-1440 (SkyLine_Precession)...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:1372-1464 @ b45d3b58  x1  [sc-grammar]
+   end  1372 gone   -> None  | void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const TimeMgr* ti
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end  1464 clean  -> 1464  | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.color_names.names[41].source: ... -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Precession built at skyline_mgr.cpp:394, drawn skyline.cpp:1372-1464 with the year labels at skyline.cpp:142...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:1484-1548 @ b45d3b58  x1  [sc-grammar]
+   end  1484 gone   -> None  | void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const TimeMgr* time
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end  1548 clean  -> 1548  | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.color_names.names[38].source: ... -> skyline_mgr.cpp:144-154 -> SkyLine_Vertical built at skyline_mgr.cpp:400 and skyline.cpp:1471-1476, drawn skyline.cpp:1484-1548 with the height figures at skyline.cpp:...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:1564-1681 @ b45d3b58  x2  [sc-grammar]
+   end  1564 gone   -> None  | void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMg
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end  1681 clean  -> 1681  | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[27].source: ...LINE); base_command_interface.hpp:429; app_command_interface.cpp:952-953 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1564-1681 (SkyLine_Zenith; labels at lines 1627 a...
+   cited .families.color_names.names[17].source: ...1843 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Zenith built at skyline_mgr.cpp:408, drawn skyline.cpp:1564-1681: two small rings of about 1.3 degrees r...
+--------------------------------------------------------------------------------------------------------------
+src/coreModule/skyline.cpp:1696-1820 @ b45d3b58  x3  [sc-grammar]
+   end  1696 gone   -> None  | void SkyLine_LunarEclipse::draw(const Projector *prj, const Navigator *nav, const TimeMgr*
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   end  1820 clean  -> 1820  | }
+             enclosing draw; at pin def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]; at 9d461bd5 def [(195, 234), (262, 346), (377, 416), (464, 504), (521, 549), (566, 593), (610, 660), (675, 722), (750, 881), (921, 1069), (1094, 1218), (1235, 1355), (1372, 1464), (1484, 1548), (1564, 1681), (1696, 1820)]
+   cited .families.flags.names[95].source: ... app_command_interface.cpp:996-997 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.hpp:388-403 -> src/coreModule/skyline.cpp:1696-1820 (umbra radius, lines 1761-1766)...
+   cited .families.flags.names[96].source: ...pp_command_interface.cpp:1000-1001 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.hpp:388-403 -> src/coreModule/skyline.cpp:1696-1820 (penumbra radius, lines 1767-1773)...
+   cited .families.color_names.names[44].source: ...:144-154; the target class SkyLine_LunarEclipse(UMBRA) exists (factory case skyline_mgr.cpp:427-433, geometry skyline.cpp:1696-1820, umbra radius skyline.cpp:1761-1766) bu...
+--------------------------------------------------------------------------------------------------------------
+src/executorModule/solarSystemModule.cpp:210 @ b45d3b58  x1  [sc-grammar]
+   end   210 gone   -> None  | core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEar
+             enclosing draw; at pin def [(181, 252)]; at 9d461bd5 def [(178, 238)]
+   cited .families.flags.names[44].notes: ...The two ends are the current and the previous selection, passed in at src/executorModule/solarSystemModule.cpp:210 and stellarSystemModule.cpp:205....
+--------------------------------------------------------------------------------------------------------------
+src/executorModule/solarSystemModule.cpp:298 @ b45d3b58  x1  [sc-grammar]
+   end   298 gone   -> None  | core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core
+             enclosing asyncUpdateLoop; at pin def [(280, 303)]; at 9d461bd5 def [(266, 288)]
+   cited .families.flags.names[59].source: ...eLink.hpp:1052-1053 -> src/coreModule/coreLink.cpp:480-482 -> src/executorModule/stellarSystemModule.cpp:285, solarSystemModule.cpp:298...
+--------------------------------------------------------------------------------------------------------------
+src/executorModule/stellarSystemModule.cpp:205 @ b45d3b58  x1  [sc-grammar]
+   end   205 gone   -> None  | core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEar
+             enclosing draw; at pin def [(186, 242)]; at 9d461bd5 def [(186, 240)]
+   cited .families.flags.names[44].notes: ...nds are the current and the previous selection, passed in at src/executorModule/solarSystemModule.cpp:210 and stellarSystemModule.cpp:205....
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/BodyModule.hpp:49 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end    49 gone   -> None  | // (`body name X color <halo|label|orbit|trail|all> value r,g,b`).
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.body.notes[5]: ...o engine-side comments spell the colour form as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 and :264), but the handler reads `color...
+   cited .commands.body.notes[5]: ...o engine-side comments spell the colour form as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 and :264), but the handler reads `color...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/BodyModule.hpp:264 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end   264 gone   -> None  | // `body name X color <label|orbit|trail|all> value r,g,b`). Each color
+             enclosing parseBodyColorType; at pin def [(50, 57)]; at 9d461bd5 def [(38, 45)]
+   cited .families.commands.body.notes[5]: ...as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 and :264), but the handler reads `color_value` (...
+   cited .commands.body.notes[5]: ...as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 and :264), but the handler reads `color_value` (...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/Camera.cpp:1057-1082 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end  1057 gone   -> None  | void Camera::descend(float coef)
+             enclosing descend; at pin def [(1057, 1129)]; at 9d461bd5 def []
+   end  1082 moved  -> 742   | }
+             enclosing descend; at pin def [(1057, 1129)]; at 9d461bd5 def []
+   cited .families.commands.camera.args.coef.source: ...app_command_interface.cpp:4544-4550 -> src/coreModule/coreLink.hpp:952-961 -> src/experimentalModule/Camera.cpp:1057-1082 (W_COEF="coef", base_command_interface....
+   cited .commands.camera.args.coef.source: ...app_command_interface.cpp:4544-4550 -> src/coreModule/coreLink.hpp:952-961 -> src/experimentalModule/Camera.cpp:1057-1082 (W_COEF="coef", base_command_interface....
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/CameraAnchors.cpp:243-285 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end   243 gone   -> None  | // orbit_* keys), so the anchor's own params ARE the orbit params - the same
+             enclosing buildBody; at pin def [(195, 296)]; at 9d461bd5 def [(138, 226)]
+   end   285 moved  -> 215   | }
+             enclosing buildBody; at pin def [(195, 296)]; at 9d461bd5 def [(138, 226)]
+   cited .families.commands.camera.args.parent.source: ...src/navModule/anchor_creator_cor.cpp:137-160; src/experimentalModule/CameraAnchors.cpp:243-285...
+   cited .commands.camera.args.parent.source: ...src/navModule/anchor_creator_cor.cpp:137-160; src/experimentalModule/CameraAnchors.cpp:243-285...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/CameraAnchors.cpp:251-273 @ b45d3b58  x6  [sc-grammar,unit-4]
+   end   251 gone   -> None  | // exists - the centre is a FIXED_POINT anchor body and the orbiting
+             enclosing buildBody; at pin def [(195, 296)]; at 9d461bd5 def [(138, 226)]
+   end   273 moved  -> 203   | parent = createAnchorBody(centerName, root, centerParams);
+             enclosing buildBody; at pin def [(195, 296)]; at 9d461bd5 def [(138, 226)]
+   cited .families.commands.camera.args.orbit_center_x.source: ...src/navModule/anchor_creator_cor.cpp:139-150; src/experimentalModule/CameraAnchors.cpp:251-273...
+   cited .families.commands.camera.args.orbit_center_y.source: ...src/navModule/anchor_creator_cor.cpp:140-150; src/experimentalModule/CameraAnchors.cpp:251-273...
+   cited .families.commands.camera.args.orbit_center_z.source: ...src/navModule/anchor_creator_cor.cpp:141-150; src/experimentalModule/CameraAnchors.cpp:251-273...
+   (+3 more citing paths: source)
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/ModularBody.cpp:794-797 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end   794 gone   -> None  | // tex_ring alone doesn't create rings. Deliberate suppression lives HERE,
+             enclosing deduceBodyModuleList; at pin def [(790, 890)]; at 9d461bd5 def [(583, 623)]
+   end   797 moved  -> 586   | if (param.count("tex_ring") && Utility::strToBool(param["rings"], false))
+             enclosing deduceBodyModuleList; at pin def [(790, 890)]; at 9d461bd5 def [(583, 623)]
+   cited .families.commands.body.args.tex_ring.source: ...app_command_interface.cpp:4159 -> src/bodyModule/protosystem.cpp:813-817 (old path) and src/experimentalModule/ModularBody.cpp:794-797 + src/experimentalModule/moduleLoader/R...
+   cited .commands.body.args.tex_ring.source: ...app_command_interface.cpp:4159 -> src/bodyModule/protosystem.cpp:813-817 (old path) and src/experimentalModule/ModularBody.cpp:794-797 + src/experimentalModule/moduleLoader/R...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/ModularSystem.cpp:773-778 @ 8d41fbe3  x1  [ss-grammar]
+   end   773 gone   -> None  | ? (atanf(subsystemRadius / sqrtf(distance*distance - subsystemRadius*subsystemRadius))
+             enclosing drawNested; at pin def [(742, 814)]; at 9d461bd5 def [(514, 547)]
+   end   778 moved  -> 523   | const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAN
+             enclosing drawNested; at pin def [(742, 814)]; at 9d461bd5 def [(514, 547)]
+   cited .keys.parent.notes: ...Order matters: a parent must appear EARLIER in the file (ModularSystem.cpp:773-778 resolves by name against what is loaded...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/ModularSystem.cpp:1301-1310 @ 8d41fbe3  x1  [ss-grammar]
+   end  1301 moved  -> 830   | if (!relDecl.empty() && !param["bound_to_surface"].empty()
+             enclosing drawSystem; at pin def [(838, 885)]; at 9d461bd5 def [(558, 578)]
+   end  1310 gone   -> None  | // Provenance, resolved BEFORE the body is created because createChild's
+             enclosing drawSystem; at pin def [(838, 885)]; at 9d461bd5 def [(558, 578)]
+   cited .keys.relation.notes: ...eaks downgrade (D13). Declaring it AND a disagreeing bound_to_surface is a diagnosed conflict, explicit wins (ModularSystem.cpp:1301-1310)....
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/ModularSystem.cpp:1615-1626 @ 8d41fbe3  x2  [ss-grammar]
+   end  1615 gone   -> None  | // A value in the module-family vocabulary (ModuleLoaderMgr's own enum,
+             enclosing loadComposedSystem; at pin def [(1582, 1649)]; at 9d461bd5 def [(987, 1026)]
+   end  1626 moved  -> 1003  | const BodyModuleType famType =
+             enclosing loadComposedSystem; at pin def [(1582, 1649)]; at 9d461bd5 def [(987, 1026)]
+   cited .regimes.composed.section_kinds.module: ...nd its `type =` names the module FAMILY, not a body type. The presence of `body =` is the ONLY discriminator (src/experimentalModule/ModularSystem.cpp:1615-1626)....
+   cited .keys.body.notes: ...D16 RATIFIED. The `type=` disambiguator (ModularSystem.cpp:1615-1626). NEW-FORMAT ONLY (D13)....
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/ModularSystem.cpp:2036 @ 8d41fbe3  x1  [ss-grammar]
+   end  2036 gone   -> None  | // above reads param["sidereal_time"] through std::map::operator[], which
+             enclosing applyHardcodedContent; at pin def [(2019, 2063)]; at 9d461bd5 def [(1284, 1295)]
+   cited .keys.sidereal_time.source[1]: ...src/experimentalModule/ModularSystem.cpp:2036...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/SessionFile.hpp:211 @ b45d3b58  x2  [sc-grammar,unit-1]
+   end   211 gone   -> None  | constexpr const char *DIRECTORY = "sessions";
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.session.args.filename.notes: ... with an explanatory log line and nothing is written or loaded (SessionFile.cpp:45-57, DIRECTORY = "sessions" SessionFile.hpp:211). The handler's own comment states the ...
+   cited .commands.session.args.filename.notes: ... with an explanatory log line and nothing is written or loaded (SessionFile.cpp:45-57, DIRECTORY = "sessions" SessionFile.hpp:211). The handler's own comment states the ...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/ShadowService.hpp:110-121 @ b45d3b58  x1  [sc-grammar]
+   end   110 gone   -> None  | // enabled: the new-path shadow switch. Initialized from the same config key
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   121 gone   -> None  | static bool enabled;
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.flags.names[91].source: ...DOWS); base_command_interface.hpp:494; app_command_interface.cpp:1280-1289 -> src/tools/context.hpp:199-200 + src/experimentalModule/ShadowService.hpp:110-121 -> src/experimentalModule/ModularSystem...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:52 @ 8d41fbe3  x1  [ss-grammar]
+   end    52 gone   -> None  | // it). Reading it from the body instead of re-reading `params["type"]` here
+             enclosing load; at pin def [(24, 95)]; at 9d461bd5 def [(24, 88)]
+   cited .keys.type.source[8]: ...src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:52...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/moduleLoader/RingLoader.cpp:8-45 @ b45d3b58  x2  [sc-grammar,unit-4]
+   end     8 clean  -> 8     | uint8_t RingLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &para
+             enclosing isLikely; at pin def [(8, 13)]; at 9d461bd5 def [(8, 13)]
+   end    45 gone   -> None  | // ~3 px < the old 5-px cutoff (body.cpp:1132).
+             enclosing load; at pin def [(20, 48)]; at 9d461bd5 def [(20, 38)]
+   cited .families.commands.body.args.tex_ring.source: ...159 -> src/bodyModule/protosystem.cpp:813-817 (old path) and src/experimentalModule/ModularBody.cpp:794-797 + src/experimentalModule/moduleLoader/RingLoader.cpp:8-45 (new path)...
+   cited .commands.body.args.tex_ring.source: ...159 -> src/bodyModule/protosystem.cpp:813-817 (old path) and src/experimentalModule/ModularBody.cpp:794-797 + src/experimentalModule/moduleLoader/RingLoader.cpp:8-45 (new path)...
+--------------------------------------------------------------------------------------------------------------
+src/experimentalModule/orbitModules/LocationOrbitLoader.hpp:3 @ 8d41fbe3  x1  [ss-grammar]
+   end     3 gone   -> None  | auto parent = ModularBody::findBody(params["parent"]);
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .keys.parent.source[6] (MARKED): ...src/experimentalModule/orbitModules/LocationOrbitLoader.hpp:3 [NOT AT HEAD: at the pin this line read...
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_init.cpp:99-111 @ b45d3b58  x1  [sc-grammar]
+   end    99 gone   -> None  | // The reverse map names ONE spelling per command - the canonical one - and
+             enclosing initialiseCommandsName; at pin def [(37, 129)]; at 9d461bd5 def [(37, 114)]
+   end   111 moved  -> 99    | for (auto it = m_commands.begin(); it != m_commands.end(); ++it) {
+             enclosing initialiseCommandsName; at pin def [(37, 129)]; at 9d461bd5 def [(37, 114)]
+   cited .parse_model.recording_alias_loss: ...0|1>` from m_flags_ToString (app_command_interface.cpp:476-478). The map itself is now built CANONICAL-FIRST (app_command_init.cpp:99-111, aliases added after :112-118), so a fu...
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.cpp:1266-1284 @ b45d3b58  x1  [sc-grammar]
+   end  1266 moved  -> 1192  | coreLink->setEyeRelativeMode(newval);
+             enclosing setFlag; at pin def [(450, 465), (467, 482), (800, 1296)]; at 9d461bd5 def [(408, 423), (425, 440), (741, 1217)]
+   end  1284 gone   -> None  | // every reachable value, since the only values the old branch could
+             enclosing setFlag; at pin def [(450, 465), (467, 482), (800, 1296)]; at 9d461bd5 def [(408, 423), (425, 440), (741, 1217)]
+   cited .lint_seeds[6].source: ...census S3.8 (:1266-1284, :4200-4314)...
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.cpp:1281-1285 @ b45d3b58  x1  [sc-grammar]
+   end  1281 gone   -> None  | // New path: PLAIN on/off - the old XOR-against-default is a defect
+             enclosing setFlag; at pin def [(450, 465), (467, 482), (800, 1296)]; at 9d461bd5 def [(408, 423), (425, 440), (741, 1217)]
+   end  1285 gone   -> None  | // produce are 0 and the default itself.
+             enclosing setFlag; at pin def [(450, 465), (467, 482), (800, 1296)]; at 9d461bd5 def [(408, 423), (425, 440), (741, 1217)]
+   cited .families.flags.names[91].notes: ...The case comment (app_command_interface.cpp:1281-1285) records that the old XOR-against-defau...
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.cpp:1475-1477 @ b45d3b58  x2  [sc-grammar,unit-1]
+   end  1475 gone   -> None  | // `filename` is optional on save (absent = the default session name) and on
+             enclosing commandSession; at pin def [(1472, 1489)]; at 9d461bd5 def [(1371, 1385)]
+   end  1477 gone   -> None  | // have to name it twice.
+             enclosing commandSession; at pin def [(1472, 1489)]; at 9d461bd5 def [(1371, 1385)]
+   cited .families.commands.session.args.filename.notes: ...RY = "sessions" SessionFile.hpp:211). The handler's own comment states the optionality on both save and load (:1475-1477)....
+   cited .commands.session.args.filename.notes: ...RY = "sessions" SessionFile.hpp:211). The handler's own comment states the optionality on both save and load (:1475-1477)....
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.cpp:1877-1880 @ b45d3b58  x2  [sc-grammar]
+   end  1877 gone   -> None  | //! What is this colour NOW? The read half of `applyColor`, and the session's
+             enclosing applyColor; at pin def [(1823, 1875)]; at 9d461bd5 def [(1716, 1768)]
+   end  1880 gone   -> None  | //! returning false rather than by reporting a guess.
+             enclosing applyColor; at pin def [(1823, 1875)]; at 9d461bd5 def [(1716, 1768)]
+   cited .families.color_names.names[42].notes: ...he colour they were given. It is also the only colour besides star_table with no getter anywhere in the tree (app_command_interface.cpp:1877-1880), so a saved session cannot read it bac...
+   cited .families.color_names.names[43].notes: ...ble value 1,0,0` silently repaints the bluest stars red. This is the only colour with no getter at any level (app_command_interface.cpp:1877-1880)....
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.cpp:2971 @ b45d3b58  x2  [sc-grammar,unit-2]
+   end  2971 gone   -> None  | media->imageDropAllNoPersistent();
+             enclosing commandScript; at pin def [(2960, 3035)]; at 9d461bd5 def [(2842, 2944)]
+   cited .families.commands.image.args.persistent.source: ...SISTENT="persistent" base_command_interface.hpp:180); `script action end` drops every non-persistent picture (:2971)...
+   cited .commands.image.args.persistent.source: ...SISTENT="persistent" base_command_interface.hpp:180); `script action end` drops every non-persistent picture (:2971)...
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.cpp:2972 @ b45d3b58  x2  [sc-grammar,unit-3]
+   end  2972 gone   -> None  | swapCommand = false;
+             enclosing commandScript; at pin def [(2960, 3035)]; at 9d461bd5 def [(2842, 2944)]
+   cited .families.commands.comment.notes[2]: ...te belongs to the interface, not to the file: it is cleared at construction (:73) and by `script action end` (:2972, unit 2), and reaching the end of a scr...
+   cited .commands.comment.notes[2]: ...te belongs to the interface, not to the file: it is cleared at construction (:73) and by `script action end` (:2972, unit 2), and reaching the end of a scr...
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.cpp:2973 @ b45d3b58  x1  [sc-grammar]
+   end  2973 gone   -> None  | ifSwap->reset();
+             enclosing commandScript; at pin def [(2960, 3035)]; at 9d461bd5 def [(2842, 2944)]
+   cited .parse_model.if_structure (MARKED): ...ipped region still pops - which is what makes nesting work. The stack is cleared only by `script action end` (:2973), which the end of every script runs (t...
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.cpp:3024-3029 @ b45d3b58  x2  [sc-grammar,unit-2]
+   end  3024 gone   -> None  | // Return HERE: without it the speed change is applied and the command
+             enclosing commandScript; at pin def [(2960, 3035)]; at 9d461bd5 def [(2842, 2944)]
+   end  3029 gone   -> None  | // its own diagnostic, which the fall-through used to overwrite.
+             enclosing commandScript; at pin def [(2960, 3035)]; at 9d461bd5 def [(2842, 2944)]
+   cited .families.commands.script.notes[2]: ...The comment at :3024-3029 records why the `speed` branch returns:...
+   cited .commands.script.notes[2]: ...The comment at :3024-3029 records why the `speed` branch returns:...
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.cpp:4200-4314 @ b45d3b58  x1  [sc-grammar]
+   end  4200 gone   -> None  | // Harness A/B visual comparison (INTENT.md 11.19a): the offscreen
+             enclosing commandBody; at pin def [(4110, 4312)]; at 9d461bd5 def [(4019, 4191)]
+   end  4314 moved  -> 4193  | int AppCommandInterface::commandFont()
+             enclosing commandFont; at pin def [(4314, 4349)]; at 9d461bd5 def [(4193, 4228)]
+   cited .lint_seeds[6].source: ...census S3.8 (:1266-1284, :4200-4314)...
+--------------------------------------------------------------------------------------------------------------
+src/interfaceModule/app_command_interface.hpp:185-187 @ b45d3b58  x2  [sc-grammar,unit-1]
+   end   185 gone   -> None  | //! The write half of `color`, extracted so a restore drives the same code
+             enclosing None; at pin def []; at 9d461bd5 def []
+   end   187 moved  -> 165   | void applyColor(COLORCOMMAND_NAMES name, const Vec3f &value, int index);
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .families.commands.color.args.index.notes: ...s nothing (hip_star_mgr.cpp:133-135). It is read and evaluated for EVERY colour name; the other 45 ignore it (app_command_interface.hpp:185-187 records star_table as the one taking an...
+   cited .commands.color.args.index.notes: ...s nothing (hip_star_mgr.cpp:133-135). It is read and evaluated for EVERY colour name; the other 45 ignore it (app_command_interface.hpp:185-187 records star_table as the one taking an...
+--------------------------------------------------------------------------------------------------------------
+src/starModule/hip_star_mgr.cpp:828-834 @ b45d3b58  x1  [sc-grammar]
+   end   828 moved  -> 832   | const bool onlySelected = isolateSelected && !selected_star.empty();
+             enclosing preDraw; at pin def [(777, 839)]; at 9d461bd5 def [(845, 848), (850, 853)]
+   end   834 gone   -> None  | it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNa
+             enclosing preDraw; at pin def [(777, 839)]; at 9d461bd5 def [(845, 848), (850, 853)]
+   cited .families.flags.names[56].source: ...nd_interface.cpp:1093-1095 -> src/coreModule/coreLink.hpp:441-442 -> src/starModule/hip_star_mgr.hpp:282-290, hip_star_mgr.cpp:828-834 -> src/starModule/zone_array.cpp:296-32...
+--------------------------------------------------------------------------------------------------------------
+src/starModule/zone_array.cpp:293 @ b45d3b58  x1  [sc-grammar]
+   end   293 gone   -> None  | if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::col
+             enclosing draw; at pin def [(261, 323), (352, 412)]; at 9d461bd5 def [(326, 329), (331, 334), (426, 429), (432, 435)]
+   cited .families.color_names.names[43].source: ... color_table[128] declared hip_star_mgr.cpp:104; every star is drawn with color_table[its own shade index] at zone_array.cpp:293 and :382 and hip_star_wrapper.hpp:93...
+--------------------------------------------------------------------------------------------------------------
+src/starModule/zone_array.cpp:382 @ b45d3b58  x1  [sc-grammar]
+   end   382 gone   -> None  | if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::col
+             enclosing draw; at pin def [(261, 323), (352, 412)]; at 9d461bd5 def [(326, 329), (331, 334), (426, 429), (432, 435)]
+   cited .families.color_names.names[43].source: ...red hip_star_mgr.cpp:104; every star is drawn with color_table[its own shade index] at zone_array.cpp:293 and :382 and hip_star_wrapper.hpp:93...
+--------------------------------------------------------------------------------------------------------------
+src/tools/ini_line.hpp:16 @ 8d41fbe3  x2  [ss-grammar]
+   end    16 gone   -> None  | //   - a '#' starts a comment that runs to the end of the line, anywhere on it;
+             enclosing None; at pin def []; at 9d461bd5 def []
+   cited .regimes.legacy.comment_rule: ... rest of the .ini family goes through tools/ini_line.hpp, which treats '#' as a comment ANYWHERE on the line (ini_line.hpp:16) -- so a mid-line '#' in a legacy file ...
+   cited .regimes.composed.comment_rule: ...A '#' starts a comment anywhere on the line (src/tools/ini_line.hpp:16)....

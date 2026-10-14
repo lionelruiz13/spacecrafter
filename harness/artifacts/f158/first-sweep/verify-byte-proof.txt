@@ -1,0 +1,7 @@
+  sc-grammar.json  undone: strings 1173 fields {'lines': 65, 'handler_body_lines': 1, 'header_line': 238} -> bytes vs 9d461bd5: IDENTICAL
+  unit-1.json      undone: strings  243 fields {'lines': 16, 'handler_body_lines': 1}   -> bytes vs 9d461bd5: IDENTICAL
+  unit-2.json      undone: strings  264 fields {'lines': 15}                            -> bytes vs 9d461bd5: IDENTICAL
+  unit-3.json      undone: strings  243 fields {'lines': 15}                            -> bytes vs 9d461bd5: IDENTICAL
+  unit-4.json      undone: strings  217 fields {'lines': 16}                            -> bytes vs 9d461bd5: IDENTICAL
+  ss-grammar.json  undone: strings  411 fields {}                                       -> bytes vs 9d461bd5: IDENTICAL
+BYTE PROOF: PASS

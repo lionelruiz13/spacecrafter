@@ -1,0 +1,179 @@
+FAIL  util/scedit/grammar/sc-grammar.json .parse_model.recording_alias_loss: src/interfaceModule/app_command_init.cpp:99-111 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.body.args.filename.source: src/bodyModule/ssystem_factory.hpp:743-765 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.body.args.filename.notes: src/bodyModule/ssystem_factory.hpp:756-765 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.body.args.skin_tex.notes: src/bodyModule/ssystem_factory.hpp:477-478 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.body.args.tex_ring.source: src/experimentalModule/ModularBody.cpp:794-797 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.body.args.tex_ring.source: src/experimentalModule/moduleLoader/RingLoader.cpp:8-45 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.body.args.datum_radius.source: src/bodyModule/ssystem_factory.hpp:515-526 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.body.args.ground_radius.source: src/bodyModule/ssystem_factory.hpp:515-526 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.body.notes[5]: src/experimentalModule/BodyModule.hpp:49 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.body.notes[5]: src/experimentalModule/BodyModule.hpp:264 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.camera.args.state.source: src/coreModule/coreLink.hpp:943-950 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.camera.args.coef.source: src/coreModule/coreLink.hpp:952-961 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.camera.args.coef.source: src/experimentalModule/Camera.cpp:1057-1082 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.camera.args.parent.source: src/experimentalModule/CameraAnchors.cpp:243-285 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.camera.args.orbit_center_x.source: src/experimentalModule/CameraAnchors.cpp:251-273 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.camera.args.orbit_center_y.source: src/experimentalModule/CameraAnchors.cpp:251-273 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.camera.args.orbit_center_z.source: src/experimentalModule/CameraAnchors.cpp:251-273 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.color.args.index.notes: src/interfaceModule/app_command_interface.hpp:185-187 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.image.args.persistent.source: src/interfaceModule/app_command_interface.cpp:2971 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.moveto.notes[2]: src/coreModule/coreLink.hpp:836-852 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.moveto.notes[3]: src/coreModule/coreLink.hpp:850-852 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.personal.notes[0]: src/coreModule/skyDisplay.cpp:226 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.personeq.notes[0]: src/coreModule/skyDisplay.cpp:226 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.position.notes[2]: src/coreModule/backup_mgr.cpp:59-73, 82-90 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.position.notes[2]: src/coreModule/backup_mgr.cpp:59-73, 82-90 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.script.notes[2]: src/interfaceModule/app_command_interface.cpp:3024-3029 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.session.args.filename.notes: src/experimentalModule/SessionFile.hpp:211 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.session.args.filename.notes: src/interfaceModule/app_command_interface.cpp:1475-1477 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.select.args.planet.notes: src/coreModule/core.cpp:1092-1097 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.commands.comment.notes[2]: src/interfaceModule/app_command_interface.cpp:2972 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[20].source: src/coreModule/skyline.cpp:887-901,921-1069 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[23].source: src/coreModule/skyline.cpp:1372-1440 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[24].source: src/coreModule/skyline.cpp:377-416 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[25].source: src/coreModule/skyline.cpp:1094-1218 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[27].source: src/coreModule/skyline.cpp:1564-1681 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[28].source: src/coreModule/skyline.cpp:195-234 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[29].source: src/coreModule/skyline.cpp:195-234 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[30].source: src/coreModule/skyline.cpp:180-182,195-234 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[31].source: src/coreModule/skyline.cpp:183-185,195-234 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[33].notes: src/coreModule/skyline.cpp:566-593 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[33].notes: src/coreModule/skyline.cpp:521-549 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[34].source: src/coreModule/skyline.cpp:421-434,464-504 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[34].notes: src/coreModule/skyline.cpp:427 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[40].source: src/coreModule/skyDisplay.cpp:351-413,189-218 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[40].source: src/coreModule/skyDisplay.cpp:351-413,189-218 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[41].source: src/coreModule/skyDisplay.cpp:351-413 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[42].source: src/coreModule/skyDisplay.cpp:419-582 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[43].source: src/coreModule/skyDisplay.cpp:588-766 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[44].source: src/coreModule/skyDisplay.cpp:771-871 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[44].notes: src/executorModule/solarSystemModule.cpp:210 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[44].notes: src/executorModule/stellarSystemModule.cpp:205 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[45].source: src/coreModule/skyDisplay.cpp:876-937 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[46].source: src/coreModule/skyDisplay.cpp:942-1031 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[51].source: src/bodyModule/ssystem_factory.hpp:263-272 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[51].notes: src/bodyModule/ssystem_factory.hpp:263-268 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[56].source: src/starModule/hip_star_mgr.cpp:828-834 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[59].source: src/executorModule/solarSystemModule.cpp:298 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[71].source: src/coreModule/nebula.cpp:350-379 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[75].source: src/coreModule/core.hpp:224-226 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[83].source: src/coreModule/nebula.cpp:381-406 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[91].source: src/experimentalModule/ShadowService.hpp:110-121 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[91].notes: src/interfaceModule/app_command_interface.cpp:1281-1285 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[92].source: src/coreModule/core.hpp:510-512 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[95].source: src/coreModule/skyline.cpp:1696-1820 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.flags.names[96].source: src/coreModule/skyline.cpp:1696-1820 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.set_names.names[18].source: src/coreModule/core.hpp:199-200 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.set_names.names[18].source: src/coreModule/core.hpp:170-173 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.set_names.names[33].source: src/coreModule/core.cpp:2523-2534 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.set_names.names[42].source: src/coreModule/core.hpp:203-204 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[2].source: src/coreModule/constellation.cpp:150-161 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[5].source: src/coreModule/cardinals.cpp:82-94 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[5].notes: src/coreModule/cardinals.cpp:95-118 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[13].source: src/coreModule/skyline.cpp:921-1069 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[15].source: src/coreModule/skyline.cpp:1235-1355 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[16].source: src/coreModule/skyline.cpp:750-881 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[17].source: src/coreModule/skyline.cpp:1564-1681 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[18].source: src/coreModule/skyline.cpp:195-234 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[19].source: src/coreModule/skyline.cpp:195-234 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[20].source: src/coreModule/skyline.cpp:195-234 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[21].source: src/coreModule/skyline.cpp:195-234 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[22].source: src/coreModule/skyline.cpp:521-549 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[23].source: src/coreModule/skyline.cpp:566-593 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[23].notes: src/coreModule/skyline.cpp:566-593 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[23].notes: src/coreModule/skyline.cpp:521-549 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[23].notes: src/coreModule/skyline.cpp:557 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[24].source: src/coreModule/skyline.cpp:464-504 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[26].source: src/coreModule/skyline.cpp:610-660 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[27].source: src/coreModule/skyline.cpp:675-722 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[28].source: src/coreModule/skyline.cpp:262-346 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[29].source: src/coreModule/skyDisplay.cpp:220-228 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[30].source: src/coreModule/skyDisplay.cpp:226 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[31].source: src/coreModule/skyDisplay.cpp:351-413 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[31].source: src/coreModule/skyDisplay.cpp:189-218 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[32].source: src/coreModule/skyDisplay.cpp:351-413 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[33].source: src/coreModule/skyDisplay.cpp:419-582 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[34].source: src/coreModule/skyDisplay.cpp:588-766 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[34].source: src/coreModule/skyDisplay.cpp:594-596 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[38].source: src/coreModule/skyline.cpp:1484-1548 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[39].source: src/coreModule/nebula_mgr.cpp:203 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[39].source: src/coreModule/nebula_mgr.cpp:206 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[39].source: src/coreModule/nebula.cpp:408-418 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[40].source: src/coreModule/nebula_mgr.cpp:212 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[40].source: src/coreModule/nebula_mgr.cpp:222 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[40].notes: src/coreModule/nebula_mgr.cpp:211-222 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[41].source: src/coreModule/skyline.cpp:1372-1464 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[42].notes: src/interfaceModule/app_command_interface.cpp:1877-1880 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[43].source: src/starModule/zone_array.cpp:293 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[43].source: src/starModule/zone_array.cpp:382 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[43].notes: src/interfaceModule/app_command_interface.cpp:1877-1880 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.color_names.names[44].source: src/coreModule/skyline.cpp:1696-1820 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.font_targets.names[2].source: src/coreModule/constellation.cpp:150-161 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.font_targets.names[3].source: src/coreModule/cardinals.cpp:78-94 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.font_targets.names[3].source: src/coreModule/cardinals.cpp:95-118 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.font_targets.names[6].source: src/coreModule/nebula.cpp:408-418 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .families.font_targets.names[9].source: src/coreModule/skyDisplay.cpp:419-1031 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .lint_seeds[6].source: src/interfaceModule/app_command_interface.cpp:1266-1284 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/sc-grammar.json .lint_seeds[6].source: src/interfaceModule/app_command_interface.cpp:4200-4314 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-1.json .commands.session.args.filename.notes: src/experimentalModule/SessionFile.hpp:211 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-1.json .commands.session.args.filename.notes: src/interfaceModule/app_command_interface.cpp:1475-1477 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-1.json .commands.personal.notes[0]: src/coreModule/skyDisplay.cpp:226 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-1.json .commands.personeq.notes[0]: src/coreModule/skyDisplay.cpp:226 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-1.json .commands.color.args.index.notes: src/interfaceModule/app_command_interface.hpp:185-187 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-2.json .commands.set.args.srt_locale.source: src/coreModule/core.hpp:199-200 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-2.json .commands.set.args.srt_locale.source: src/coreModule/core.hpp:170-173 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-2.json .commands.set.args.zoom_offset.source: src/coreModule/core.cpp:2523-2534 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-2.json .commands.set.args.init_fov.source: src/coreModule/core.hpp:203-204 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-2.json .commands.script.notes[2]: src/interfaceModule/app_command_interface.cpp:3024-3029 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-2.json .commands.image.args.persistent.source: src/interfaceModule/app_command_interface.cpp:2971 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-3.json .commands.select.args.planet.notes: src/coreModule/core.cpp:1092-1097 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-3.json .commands.comment.notes[2]: src/interfaceModule/app_command_interface.cpp:2972 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-3.json .commands.position.notes[2]: src/coreModule/backup_mgr.cpp:59-73, 82-90 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-3.json .commands.position.notes[2]: src/coreModule/backup_mgr.cpp:59-73, 82-90 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-3.json .commands.moveto.notes[2]: src/coreModule/coreLink.hpp:836-852 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-3.json .commands.moveto.notes[3]: src/coreModule/coreLink.hpp:850-852 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.body.args.filename.source: src/bodyModule/ssystem_factory.hpp:743-765 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.body.args.filename.notes: src/bodyModule/ssystem_factory.hpp:756-765 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.body.args.skin_tex.notes: src/bodyModule/ssystem_factory.hpp:477-478 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.body.args.tex_ring.source: src/experimentalModule/ModularBody.cpp:794-797 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.body.args.tex_ring.source: src/experimentalModule/moduleLoader/RingLoader.cpp:8-45 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.body.args.datum_radius.source: src/bodyModule/ssystem_factory.hpp:515-526 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.body.args.ground_radius.source: src/bodyModule/ssystem_factory.hpp:515-526 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.body.notes[5]: src/experimentalModule/BodyModule.hpp:49 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.body.notes[5]: src/experimentalModule/BodyModule.hpp:264 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.camera.args.state.source: src/coreModule/coreLink.hpp:943-950 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.camera.args.coef.source: src/coreModule/coreLink.hpp:952-961 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.camera.args.coef.source: src/experimentalModule/Camera.cpp:1057-1082 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.camera.args.parent.source: src/experimentalModule/CameraAnchors.cpp:243-285 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.camera.args.orbit_center_x.source: src/experimentalModule/CameraAnchors.cpp:251-273 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.camera.args.orbit_center_y.source: src/experimentalModule/CameraAnchors.cpp:251-273 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/args/unit-4.json .commands.camera.args.orbit_center_z.source: src/experimentalModule/CameraAnchors.cpp:251-273 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/ss-grammar.json .regimes.legacy.comment_rule: src/tools/ini_line.hpp:16 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/ss-grammar.json .regimes.composed.comment_rule: src/tools/ini_line.hpp:16 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/ss-grammar.json .regimes.composed.section_kinds.module: src/experimentalModule/ModularSystem.cpp:1615-1626 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/ss-grammar.json .keys.body.notes: src/experimentalModule/ModularSystem.cpp:1615-1626 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/ss-grammar.json .keys.parent.notes: src/experimentalModule/ModularSystem.cpp:773-778 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/ss-grammar.json .keys.relation.notes: src/experimentalModule/ModularSystem.cpp:1301-1310 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/ss-grammar.json .keys.sidereal_time.source[1]: src/experimentalModule/ModularSystem.cpp:2036 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  util/scedit/grammar/ss-grammar.json .keys.type.source[8]: src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:52 no longer exists at HEAD and carries no [NOT AT HEAD] marker
+FAIL  counts differ from tests/anchor-expected.txt
+--- recorded ---
+# anchor_gate record -- counts, not a silencer (README, Verification).
+# Edited deliberately: a count that moves means the ENGINE moved under
+# the grammar's citations, and somebody has to look at what.
+# Regenerate with: python3 tests/anchor_gate.py --record
+clean                    6836
+moved                    359
+not-at-head(declared)    3
+skipped(_meta)           86
+--- got ---
+# anchor_gate record -- counts, not a silencer (README, Verification).
+# Edited deliberately: a count that moves means the ENGINE moved under
+# the grammar's citations, and somebody has to look at what.
+# Regenerate with: python3 tests/anchor_gate.py --record
+GONE                     158
+clean                    2457
+moved                    4579
+not-at-head(declared)    4
+skipped(_meta)           86
+

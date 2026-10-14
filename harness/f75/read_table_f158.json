@@ -1,0 +1,2004 @@
+[
+ {
+  "repo": "fscripts/panorama5.sts",
+  "elem": "97-98",
+  "pin": "b45d3b58",
+  "cls": "K",
+  "action": "keep",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .lint_seeds[12].rule"
+  ],
+  "at_pin": [
+   "(no line 97: past the end of the file at the pin)",
+   "(no line 98: past the end of the file at the pin)"
+  ],
+  "reason": "MIS-READ SINCE F75: the `:97-98` of lint_seeds[12] continues fscripts/panorama5.sts (field data, the two siblings declare it); the resolver read it in app_command_interface.cpp (R0 only). Number kept, declared by its string's marker"
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "263-272",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[51].source"
+  ],
+  "at_pin": [
+   "// THESE FOUR ARE THE COMMAND SEAMS (`flag moon_scaled`, `moon_scale`, and",
+   "}"
+  ],
+  "reason": "the seam comment block and setFlagMoonScale at the pin; the comment left (3c5952ad); setFlagMoonScale is 193-196",
+  "new": "193-196",
+  "at_to": [
+   "void setFlagMoonScale(bool b) {",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "263-268",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[51].notes"
+  ],
+  "at_pin": [
+   "// THESE FOUR ARE THE COMMAND SEAMS (`flag moon_scaled`, `moon_scale`, and",
+   "// a command, so it has its own entry point: initDisplayScaling."
+  ],
+  "reason": "a pure comment heading the four display-scale seams; it left (3c5952ad); the note's subject (`flag moon_scaled off` puts the scale back to 1) is setFlagMoonScale, the function it introduced, 193-196; the note's 5 s figure is not visible in these lines (commandDisplayScale -> setScaling)",
+  "new": "193-196",
+  "at_to": [
+   "void setFlagMoonScale(bool b) {",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "477-478",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.body.args.skin_tex.notes",
+   "unit-4.json .commands.body.args.skin_tex.notes"
+  ],
+  "at_pin": [
+   "// New-path mirror (S6 Textures seam): contract parity with old",
+   "// Body::createTexSkin - creating/replacing never activates."
+  ],
+  "reason": "the comment inside createTexSkin introducing the new-path mirror; it left (57102bf4); the try block it introduced is 341-344",
+  "new": "341-344",
+  "at_to": [
+   "try {",
+   "} catch (...) {}"
+  ]
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "515-526",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 4,
+  "cited_by": [
+   "sc-grammar.json .families.commands.body.args.datum_radius.source",
+   "sc-grammar.json .families.commands.body.args.ground_radius.source",
+   "unit-4.json .commands.body.args.datum_radius.source",
+   "unit-4.json .commands.body.args.ground_radius.source"
+  ],
+  "at_pin": [
+   "// Runtime per-body navigation-radius seam (B10 S5.2, S11.79(e) D9key):",
+   "bool setBodyDatumRadius(const std::string &englishName, double km);"
+  ],
+  "reason": "the navigation-radius seam comment and setBodyDatumRadius; the comment became the one-line what-for at 371 (3c5952ad); the declaration is 372",
+  "new": "371-372",
+  "at_to": [
+   "// Return false when no such body exists",
+   "bool setBodyDatumRadius(const std::string &englishName, double km);"
+  ]
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "743-765",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.body.args.filename.source",
+   "unit-4.json .commands.body.args.filename.source"
+  ],
+  "at_pin": [
+   "//! Write the observer's current system to a composed system file (B31",
+   "bool saveCurrentSystem(const std::string &filename);"
+  ],
+  "reason": "the save contract comment and saveCurrentSystem; the comment became the one-line what-for at 530 (3c5952ad); the declaration is 531",
+  "new": "530-531",
+  "at_to": [
+   "//! Save to its own composed file when filename is empty; refuse a path separator",
+   "bool saveCurrentSystem(const std::string &filename);"
+  ]
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "756-765",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.body.args.filename.notes",
+   "unit-4.json .commands.body.args.filename.notes"
+  ],
+  "at_pin": [
+   "//! WHAT IT REFUSES, and why the refusals are here rather than in the writer:",
+   "bool saveCurrentSystem(const std::string &filename);"
+  ],
+  "reason": "the refusal paragraph of the same comment and saveCurrentSystem; the what-for at 530 keeps the path-separator half; the .disabled refusal is implemented in saveCurrentSystem's body in the .cpp (present at 9d461bd5); the declaration is 531",
+  "new": "530-531",
+  "at_to": [
+   "//! Save to its own composed file when filename is empty; refuse a path separator",
+   "bool saveCurrentSystem(const std::string &filename);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/backup_mgr.cpp",
+  "elem": "59-73",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.position.notes[2]",
+   "unit-3.json .commands.position.notes[2]"
+  ],
+  "at_pin": [
+   "// THE WRITE HALF OF THE BOOKMARK (B34, F24). It used to be",
+   "coreLink->observerMoveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);"
+  ],
+  "reason": "the write-half comment and the observerMoveTo restore call; the comment left (3c5952ad); the call is 54",
+  "new": "54",
+  "at_to": [
+   "coreLink->observerMoveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/backup_mgr.cpp",
+  "elem": "82-90",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.position.notes[2]",
+   "unit-3.json .commands.position.notes[2]"
+  ],
+  "at_pin": [
+   "// THE READ HALF (B33 S11.131(f) -> B34, F24): the bookmark records the place",
+   "mBackup.altitude=coreLink->observatoryGetAltitude();"
+  ],
+  "reason": "the read-half comment and the three observatoryGet* reads; the comment left (3c5952ad); the reads are 63-65",
+  "new": "63-65",
+  "at_to": [
+   "mBackup.latitude=coreLink->observatoryGetLatitude();",
+   "mBackup.altitude=coreLink->observatoryGetAltitude();"
+  ]
+ },
+ {
+  "repo": "src/coreModule/cardinals.cpp",
+  "elem": "78-94",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.font_targets.names[3].source"
+  ],
+  "at_pin": [
+   "float shift = font->getStrLen(sNorth)/2;",
+   "if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);"
+  ],
+  "reason": "the four cardinal letters printed in Cardinals::draw; the print calls rewritten in place, prj -> view (29e93df9); same lines",
+  "new": "78-94",
+  "at_to": [
+   "float shift = font->getStrLen(sNorth)/2;",
+   "if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/cardinals.cpp",
+  "elem": "82-94",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[5].source"
+  ],
+  "at_pin": [
+   "if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);",
+   "if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);"
+  ],
+  "reason": "the four letters' print calls, rewritten in place prj -> view (29e93df9); same lines",
+  "new": "82-94",
+  "at_to": [
+   "if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);",
+   "if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/cardinals.cpp",
+  "elem": "95-118",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[5].notes",
+   "sc-grammar.json .families.font_targets.names[3].source"
+  ],
+  "at_pin": [
+   "if ((internalNav) || (internalAstronomical)) {",
+   "if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);"
+  ],
+  "reason": "the intercardinal block, its print calls rewritten in place prj -> view (29e93df9); same lines",
+  "new": "95-118",
+  "at_to": [
+   "if ((internalNav) || (internalAstronomical)) {",
+   "if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/constellation.cpp",
+  "elem": "150-161",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[2].source",
+   "sc-grammar.json .families.font_targets.names[2].source"
+  ],
+  "at_pin": [
+   "void Constellation::drawName(s_font *constfont, const Projector* prj) const",
+   "constfont->printHorizontal(prj, std::min(90.f - alt, 80.f), az*180.f/M_PI-90.f, nameI18, Color, TEXT_ALIGN::CENTER, true);"
+  ],
+  "reason": "Constellation::drawName from its def line to the printHorizontal call; the signature and the view calls rewritten (29e93df9), one line up",
+  "new": "149-160",
+  "at_to": [
+   "void Constellation::drawName(s_font *constfont, const SkyView &view) const",
+   "constfont->printHorizontal(view, std::min(90.f - alt, 80.f), az*180.f/M_PI-90.f, nameI18, Color, TEXT_ALIGN::CENTER, true);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/core.cpp",
+  "elem": "1092-1097",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.select.args.planet.notes",
+   "unit-3.json .commands.select.args.planet.notes"
+  ],
+  "at_pin": [
+   "// Both trees, old first (B24-select, INTENT S11.106): the old",
+   "selectObject(ssystemFactory->searchObjectByEnglishName(id));"
+  ],
+  "reason": "the both-trees comment and the selectObject(searchObjectByEnglishName) statement; the comment left (3c5952ad); the statement is 1036",
+  "new": "1036",
+  "at_to": [
+   "selectObject(ssystemFactory->searchObjectByEnglishName(id));"
+  ]
+ },
+ {
+  "repo": "src/coreModule/core.cpp",
+  "elem": "2523-2534",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.set_names.names[33].source",
+   "unit-2.json .commands.set.args.zoom_offset.source"
+  ],
+  "at_pin": [
+   "void Core::setViewOffset(double offset)",
+   "// the config/command. Screen-identical to old (the clamped value is the"
+  ],
+  "reason": "Core::setViewOffset from its def through the clamp and the comment that introduced the out-of-range report; the comment left (3c5952ad); def through the report is 2610-2621",
+  "new": "2610-2621",
+  "at_to": [
+   "void Core::setViewOffset(double offset)",
+   "+ std::to_string(off), LOG_TYPE::L_WARNING);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "170-173",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.set_names.names[18].source",
+   "unit-2.json .commands.set.args.srt_locale.source"
+  ],
+  "at_pin": [
+   "// [merge] theirs' subtitle SRT-locale feature (command side).",
+   "}"
+  ],
+  "reason": "a merge comment and setInitialSrtLocale; the comment left (57102bf4); the function is 171-173",
+  "new": "171-173",
+  "at_to": [
+   "void setInitialSrtLocale() {",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "199-200",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.set_names.names[18].source",
+   "unit-2.json .commands.set.args.srt_locale.source"
+  ],
+  "at_pin": [
+   "// [merge] theirs' SRT (subtitle) language, command side; stores/returns the locale.",
+   "void setSrtLanguage(const std::string& newSrtLocaleName) { srtLanguage = newSrtLocaleName; }"
+  ],
+  "reason": "a merge comment and setSrtLanguage; the comment left (57102bf4); the function is 199",
+  "new": "199",
+  "at_to": [
+   "void setSrtLanguage(const std::string& newSrtLocaleName) { srtLanguage = newSrtLocaleName; }"
+  ]
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "203-204",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.set_names.names[42].source",
+   "unit-2.json .commands.set.args.init_fov.source"
+  ],
+  "at_pin": [
+   "// [merge] theirs' init_fov script command support.",
+   "void setInitFov(double f) { InitFov = f; }"
+  ],
+  "reason": "a merge comment and setInitFov; the comment left (57102bf4); the function is 202",
+  "new": "202",
+  "at_to": [
+   "void setInitFov(double f) { InitFov = f; }"
+  ]
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "224-226",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[75].source"
+  ],
+  "at_pin": [
+   "//! Set whether sky position is to be locked. Both-paths mirror (defined in",
+   "void setFlagLockSkyPosition(bool b);"
+  ],
+  "reason": "the doc comment and setFlagLockSkyPosition; the comment became the one-line what-for at 222 (a49df0f1); the declaration is 223",
+  "new": "222-223",
+  "at_to": [
+   "//! Set whether sky position is to be locked",
+   "void setFlagLockSkyPosition(bool b);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "510-512",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[92].source"
+  ],
+  "at_pin": [
+   "//! Pin the rendered body path (flag experimental_path): old/new selection",
+   "void setExperimentalPath(bool newPath);"
+  ],
+  "reason": "the doc comment and setExperimentalPath; the comment left (a49df0f1); the declaration is 470",
+  "new": "470",
+  "at_to": [
+   "void setExperimentalPath(bool newPath);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/coreLink.hpp",
+  "elem": "836-852",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.moveto.notes[2]",
+   "unit-3.json .commands.moveto.notes[2]"
+  ],
+  "at_pin": [
+   "",
+   "//! the camera is not at (the setter asymmetry is recorded, not fixed)."
+  ],
+  "reason": "a pure comment heading the observer place readouts; it left (3c5952ad); the note's subject (the place a move starts from is the drawn path's) is the readout it introduced, observatoryGetLatitude asking drawnPlace, 794-799",
+  "new": "794-799",
+  "at_to": [
+   "double observatoryGetLatitude() const {",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/coreLink.hpp",
+  "elem": "850-852",
+  "pin": "b45d3b58",
+  "cls": "D",
+  "action": "notathead",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.moveto.notes[3]",
+   "unit-3.json .commands.moveto.notes[3]"
+  ],
+  "at_pin": [
+   "//! No clamp is added here: old's +-90deg latitude clamp and its 0.1 m altitude",
+   "//! the camera is not at (the setter asymmetry is recorded, not fixed)."
+  ],
+  "reason": "the note cites the RECORD itself (recorded in ...): the no-clamp paragraph of that comment; it left (3c5952ad) and no line of coreLink.hpp says it at 9d461bd5",
+  "marker": "the comment that recorded it left the code"
+ },
+ {
+  "repo": "src/coreModule/coreLink.hpp",
+  "elem": "943-950",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.camera.args.state.source",
+   "unit-4.json .commands.camera.args.state.source"
+  ],
+  "at_pin": [
+   "//! New-path camera free-flight mode. Closes the INTENT S2(c)/S11.19c",
+   "}"
+  ],
+  "reason": "the free-flight comment and cameraSetFreeMode; the comment left (3c5952ad); the function is 879-881",
+  "new": "879-881",
+  "at_to": [
+   "void cameraSetFreeMode(bool b) {",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/coreLink.hpp",
+  "elem": "952-961",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.camera.args.coef.source",
+   "unit-4.json .commands.camera.args.coef.source"
+  ],
+  "at_pin": [
+   "//! View-directed free descent (B21, S11.72): drive Camera::descend, the",
+   "}"
+  ],
+  "reason": "the descent comment and cameraDescend; the comment became the one-line what-for at 883 (3c5952ad); the function is 884-886 and now calls Camera::multAlt (78455b88 renamed Camera::descend)",
+  "new": "883-886",
+  "at_to": [
+   "//! Multiply the altitude by coef, coef < 1 descends",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/nebula.cpp",
+  "elem": "350-379",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[71].source"
+  ],
+  "at_pin": [
+   "void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, double sky_brightness, bool flagBright)",
+   "}"
+  ],
+  "reason": "the whole function Nebula::drawTex (def line .. closing brace) is 350-379 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "350-379",
+  "at_to": [
+   "void Nebula::drawTex(const SkyView &view, ToneReproductor* eye, double sky_brightness, bool flagBright)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/nebula.cpp",
+  "elem": "381-406",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[83].source"
+  ],
+  "at_pin": [
+   "void Nebula::drawHint(const Projector* prj, const Navigator * nav, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r)",
+   "}"
+  ],
+  "reason": "the whole function Nebula::drawHint (def line .. closing brace) is 381-406 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "381-406",
+  "at_to": [
+   "void Nebula::drawHint(const SkyView &view, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/nebula.cpp",
+  "elem": "408-418",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[39].source",
+   "sc-grammar.json .families.font_targets.names[6].source"
+  ],
+  "at_pin": [
+   "void Nebula::drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont)",
+   "prj->printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);"
+  ],
+  "reason": "Nebula::drawName from its def line to the printGravity180 call; signature and calls rewritten in place prj -> view (29e93df9); same lines",
+  "new": "408-418",
+  "at_to": [
+   "void Nebula::drawName(const SkyView &view, const Vec3f &labelColor, s_font *nebulaFont)",
+   "view.printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "203",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[39].source"
+  ],
+  "at_pin": [
+   "n->drawName(prj, labelColor, font);"
+  ],
+  "reason": "the drawName call, its first argument prj -> view (29e93df9); same line",
+  "new": "203",
+  "at_to": [
+   "n->drawName(view, labelColor, font);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "206",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[39].source"
+  ],
+  "at_pin": [
+   "n->drawName(prj, labelColor, font);"
+  ],
+  "reason": "the drawName call, its first argument prj -> view (29e93df9); same line",
+  "new": "206",
+  "at_to": [
+   "n->drawName(view, labelColor, font);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "211-222",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[40].notes"
+  ],
+  "at_pin": [
+   "if (!displaySpecificHint)",
+   "n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());"
+  ],
+  "reason": "the drawHint branch, its two calls rewritten prj, nav -> view (29e93df9); same lines",
+  "new": "211-222",
+  "at_to": [
+   "if (!displaySpecificHint)",
+   "n->drawHint(view, data, nbDraw, displayPicto, circleColor, getPictoSize());"
+  ]
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "212",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[40].source"
+  ],
+  "at_pin": [
+   "n->drawHint(prj, nav, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());"
+  ],
+  "reason": "the drawHint call, prj, nav -> view (29e93df9); same line",
+  "new": "212",
+  "at_to": [
+   "n->drawHint(view, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());"
+  ]
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "222",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[40].source"
+  ],
+  "at_pin": [
+   "n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());"
+  ],
+  "reason": "the drawHint call, prj, nav -> view (29e93df9); same line",
+  "new": "222",
+  "at_to": [
+   "n->drawHint(view, data, nbDraw, displayPicto, circleColor, getPictoSize());"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "189-218",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[31].source",
+   "sc-grammar.json .families.flags.names[40].source"
+  ],
+  "at_pin": [
+   "void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)",
+   "}"
+  ],
+  "reason": "the whole function SkyDisplay::draw_text (def line .. closing brace) is 188-217 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "188-217",
+  "at_to": [
+   "void SkyDisplay::draw_text(const SkyView &view)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "220-228",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[29].source"
+  ],
+  "at_pin": [
+   "void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ],
+  "reason": "the whole function SkyDisplay::draw (def line .. closing brace) is 219-227 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "219-227",
+  "at_to": [
+   "void SkyDisplay::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "226",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 5,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[30].source",
+   "sc-grammar.json .families.commands.personal.notes[0]",
+   "sc-grammar.json .families.commands.personeq.notes[0]",
+   "unit-1.json .commands.personal.notes[0]",
+   "unit-1.json .commands.personeq.notes[0]"
+  ],
+  "at_pin": [
+   "*uMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();"
+  ],
+  "reason": "the uMat choice (getMatLocalToEye for AL, getMatEarthEquToEye otherwise), prj -> view (29e93df9), one line up",
+  "new": "225",
+  "at_to": [
+   "*uMat = (ptype == AL) ? view.getMatLocalToEye() : view.getMatEarthEquToEye();"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "351-413",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 4,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[31].source",
+   "sc-grammar.json .families.color_names.names[32].source",
+   "sc-grammar.json .families.flags.names[40].source",
+   "sc-grammar.json .families.flags.names[41].source"
+  ],
+  "at_pin": [
+   "void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ],
+  "reason": "the whole function SkyNautic::draw (def line .. closing brace) is 350-412 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "350-412",
+  "at_to": [
+   "void SkyNautic::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "419-1031",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.font_targets.names[9].source"
+  ],
+  "at_pin": [
+   "void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPos)",
+   "}"
+  ],
+  "reason": "SkyCoords::draw through SkyOrthodromy::draw (five draw functions), each signature rewritten (29e93df9), one line up; same span",
+  "new": "418-1030",
+  "at_to": [
+   "void SkyCoords::draw(const SkyView &view, Vec3d equPos, Vec3d oldPos)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "419-582",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[33].source",
+   "sc-grammar.json .families.flags.names[42].source"
+  ],
+  "at_pin": [
+   "void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPos)",
+   "}"
+  ],
+  "reason": "the whole function SkyCoords::draw (def line .. closing brace) is 418-581 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "418-581",
+  "at_to": [
+   "void SkyCoords::draw(const SkyView &view, Vec3d equPos, Vec3d oldPos)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "588-766",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[34].source",
+   "sc-grammar.json .families.flags.names[43].source"
+  ],
+  "at_pin": [
+   "void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldPos)",
+   "}"
+  ],
+  "reason": "the whole function SkyMouse::draw (def line .. closing brace) is 587-765 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "587-765",
+  "at_to": [
+   "void SkyMouse::draw(const SkyView &view, Vec3d _equPos, Vec3d _oldPos)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "594-596",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[34].source"
+  ],
+  "at_pin": [
+   "int x,y;",
+   "Vec3d equPos = prj->getCursorPosEqu(x, y);"
+  ],
+  "reason": "SkyMouse::draw's pointer read (SDL_GetMouseState then getCursorPosEqu), prj -> view (29e93df9), one line up",
+  "new": "593-595",
+  "at_to": [
+   "int x,y;",
+   "Vec3d equPos = view.getCursorPosEqu(x, y);"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "771-871",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[44].source"
+  ],
+  "at_pin": [
+   "void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ],
+  "reason": "the whole function SkyAngDist::draw (def line .. closing brace) is 770-870 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "770-870",
+  "at_to": [
+   "void SkyAngDist::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "876-937",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[45].source"
+  ],
+  "at_pin": [
+   "void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ],
+  "reason": "the whole function SkyLoxodromy::draw (def line .. closing brace) is 875-936 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "875-936",
+  "at_to": [
+   "void SkyLoxodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "942-1031",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[46].source"
+  ],
+  "at_pin": [
+   "void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ],
+  "reason": "the whole function SkyOrthodromy::draw (def line .. closing brace) is 941-1030 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "941-1030",
+  "at_to": [
+   "void SkyOrthodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "195-234",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 8,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[18].source",
+   "sc-grammar.json .families.color_names.names[19].source",
+   "sc-grammar.json .families.color_names.names[20].source",
+   "sc-grammar.json .families.color_names.names[21].source",
+   "sc-grammar.json .families.flags.names[28].source",
+   "sc-grammar.json .families.flags.names[29].source",
+   "sc-grammar.json .families.flags.names[30].source",
+   "sc-grammar.json .families.flags.names[31].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Pole::draw (def line .. closing brace) is 195-234 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "195-234",
+  "at_to": [
+   "void SkyLine_Pole::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "262-346",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[28].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Zodiac::draw (def line .. closing brace) is 262-346 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "262-346",
+  "at_to": [
+   "void SkyLine_Zodiac::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "377-416",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[24].source"
+  ],
+  "at_pin": [
+   "void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_CircumPolar::draw (def line .. closing brace) is 377-416 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "377-416",
+  "at_to": [
+   "void SkyLine_CircumPolar::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "427",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[34].notes"
+  ],
+  "at_pin": [
+   "proj_func = &Projector::projectEarthEqu;"
+  ],
+  "reason": "the ANALEMMALINE frame choice proj_func = &...::projectEarthEqu, Projector -> SkyView (29e93df9); same line",
+  "new": "427",
+  "at_to": [
+   "proj_func = &SkyView::projectEarthEqu;"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "464-504",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[24].source",
+   "sc-grammar.json .families.flags.names[34].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Analemme::draw (def line .. closing brace) is 464-504 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "464-504",
+  "at_to": [
+   "void SkyLine_Analemme::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "521-549",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 3,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[22].source",
+   "sc-grammar.json .families.color_names.names[23].notes",
+   "sc-grammar.json .families.flags.names[33].notes"
+  ],
+  "at_pin": [
+   "void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Galactic_Center::draw (def line .. closing brace) is 521-549 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "521-549",
+  "at_to": [
+   "void SkyLine_Galactic_Center::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "557",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[23].notes"
+  ],
+  "at_pin": [
+   "proj_func = &Projector::projectEarthEqu;"
+  ],
+  "reason": "SkyLine_Vernal's frame choice proj_func = &...::projectEarthEqu, Projector -> SkyView (29e93df9); same line",
+  "new": "557",
+  "at_to": [
+   "proj_func = &SkyView::projectEarthEqu;"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "566-593",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 3,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[23].notes",
+   "sc-grammar.json .families.color_names.names[23].source",
+   "sc-grammar.json .families.flags.names[33].notes"
+  ],
+  "at_pin": [
+   "void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Vernal::draw (def line .. closing brace) is 566-593 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "566-593",
+  "at_to": [
+   "void SkyLine_Vernal::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "610-660",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[26].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Greenwich::draw (def line .. closing brace) is 610-660 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "610-660",
+  "at_to": [
+   "void SkyLine_Greenwich::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "675-722",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[27].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Aries::draw (def line .. closing brace) is 675-722 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "675-722",
+  "at_to": [
+   "void SkyLine_Aries::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "750-881",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[16].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Meridian::draw (def line .. closing brace) is 750-881 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "750-881",
+  "at_to": [
+   "void SkyLine_Meridian::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "921-1069",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[13].source",
+   "sc-grammar.json .families.flags.names[20].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Equator::draw (def line .. closing brace) is 921-1069 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "921-1069",
+  "at_to": [
+   "void SkyLine_Equator::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1094-1218",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[25].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Tropic::draw (def line .. closing brace) is 1094-1218 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "1094-1218",
+  "at_to": [
+   "void SkyLine_Tropic::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1235-1355",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[15].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Ecliptic::draw (def line .. closing brace) is 1235-1355 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "1235-1355",
+  "at_to": [
+   "void SkyLine_Ecliptic::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1372-1440",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[23].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "SkyLine_Precession::draw from its def to the end of its circle loop; the signature rewritten (29e93df9); same lines",
+  "new": "1372-1440",
+  "at_to": [
+   "void SkyLine_Precession::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1372-1464",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[41].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Precession::draw (def line .. closing brace) is 1372-1464 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "1372-1464",
+  "at_to": [
+   "void SkyLine_Precession::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1484-1548",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[38].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Vertical::draw (def line .. closing brace) is 1484-1548 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "1484-1548",
+  "at_to": [
+   "void SkyLine_Vertical::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1564-1681",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[17].source",
+   "sc-grammar.json .families.flags.names[27].source"
+  ],
+  "at_pin": [
+   "void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_Zenith::draw (def line .. closing brace) is 1564-1681 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "1564-1681",
+  "at_to": [
+   "void SkyLine_Zenith::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1696-1820",
+  "pin": "b45d3b58",
+  "cls": "F",
+  "action": "lines",
+  "refs": 3,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[44].source",
+   "sc-grammar.json .families.flags.names[95].source",
+   "sc-grammar.json .families.flags.names[96].source"
+  ],
+  "at_pin": [
+   "void SkyLine_LunarEclipse::draw(const Projector *prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ],
+  "reason": "the whole function SkyLine_LunarEclipse::draw (def line .. closing brace) is 1696-1820 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "new": "1696-1820",
+  "at_to": [
+   "void SkyLine_LunarEclipse::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/executorModule/solarSystemModule.cpp",
+  "elem": "210",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[44].notes"
+  ],
+  "at_pin": [
+   "core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(c"
+  ],
+  "reason": "the skyDisplayMgr->draw call passing the current and the previous selection; its view argument rewritten (29e93df9), 12 lines up",
+  "new": "198",
+  "at_to": [
+   "core->skyDisplayMgr->draw(core->drawnView(), core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation))"
+  ]
+ },
+ {
+  "repo": "src/executorModule/solarSystemModule.cpp",
+  "elem": "298",
+  "pin": "b45d3b58",
+  "cls": "S",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[59].source"
+  ],
+  "at_pin": [
+   "core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), co"
+  ],
+  "reason": "the star preDraw call SPLIT by path (c2d24732): the new path's call at 281, the old one, re-indented, at 283; the if/else holding both is 280-283",
+  "new": "280-283",
+  "at_to": [
+   "if (core->ssystemFactory->drawModularSystem)",
+   "core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), co"
+  ]
+ },
+ {
+  "repo": "src/executorModule/stellarSystemModule.cpp",
+  "elem": "205",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[44].notes"
+  ],
+  "at_pin": [
+   "core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(c"
+  ],
+  "reason": "the skyDisplayMgr->draw call passing the current and the previous selection; its view argument rewritten (29e93df9); same line",
+  "new": "205",
+  "at_to": [
+   "core->skyDisplayMgr->draw(*core->oldSkyView, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation))"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/BodyModule.hpp",
+  "elem": "49",
+  "pin": "b45d3b58",
+  "cls": "D",
+  "action": "notathead",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.body.notes[5]",
+   "unit-4.json .commands.body.notes[5]"
+  ],
+  "at_pin": [
+   "// (`body name X color <halo|label|orbit|trail|all> value r,g,b`)."
+  ],
+  "reason": "the note cites the two engine COMMENTS themselves (two engine-side comments spell ...); this one left (3c5952ad); no comment of BodyModule.hpp spells the form at 9d461bd5",
+  "marker": "the comment that spelled the colour form left the code"
+ },
+ {
+  "repo": "src/experimentalModule/BodyModule.hpp",
+  "elem": "264",
+  "pin": "b45d3b58",
+  "cls": "D",
+  "action": "notathead",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.body.notes[5]",
+   "unit-4.json .commands.body.notes[5]"
+  ],
+  "at_pin": [
+   "// `body name X color <label|orbit|trail|all> value r,g,b`). Each color"
+  ],
+  "reason": "same note, the second comment; it left (3c5952ad)",
+  "marker": "the comment that spelled the colour form left the code"
+ },
+ {
+  "repo": "src/experimentalModule/Camera.cpp",
+  "elem": "1057-1082",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.camera.args.coef.source",
+   "unit-4.json .commands.camera.args.coef.source"
+  ],
+  "at_pin": [
+   "void Camera::descend(float coef)",
+   "}"
+  ],
+  "reason": "Camera::descend RENAMED Camera::multAlt (78455b88); from its def to the end of the system-reference branch, its comments left; 726-742",
+  "new": "726-742",
+  "at_to": [
+   "void Camera::multAlt(float coef)",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/CameraAnchors.cpp",
+  "elem": "243-285",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.camera.args.parent.source",
+   "unit-4.json .commands.camera.args.parent.source"
+  ],
+  "at_pin": [
+   "// orbit_* keys), so the anchor's own params ARE the orbit params - the same",
+   "}"
+  ],
+  "reason": "the orbit-anchor parent resolution block; its comments left (3c5952ad); the code is 181-215",
+  "new": "181-215",
+  "at_to": [
+   "ModularBody *parent = nullptr;",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/CameraAnchors.cpp",
+  "elem": "251-273",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 6,
+  "cited_by": [
+   "sc-grammar.json .families.commands.camera.args.orbit_center_x.source",
+   "sc-grammar.json .families.commands.camera.args.orbit_center_y.source",
+   "sc-grammar.json .families.commands.camera.args.orbit_center_z.source",
+   "unit-4.json .commands.camera.args.orbit_center_x.source",
+   "unit-4.json .commands.camera.args.orbit_center_y.source",
+   "unit-4.json .commands.camera.args.orbit_center_z.source"
+  ],
+  "at_pin": [
+   "// exists - the centre is a FIXED_POINT anchor body and the orbiting",
+   "parent = createAnchorBody(centerName, root, centerParams);"
+  ],
+  "reason": "the parentless orbit-centre branch; its comment left (3c5952ad); the code is 183-203",
+  "new": "183-203",
+  "at_to": [
+   "if (anchor.params[\"orbit_center_x\"].empty() || anchor.params[\"orbit_center_y\"].empty()",
+   "parent = createAnchorBody(centerName, root, centerParams);"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/ModularBody.cpp",
+  "elem": "794-797",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.body.args.tex_ring.source",
+   "unit-4.json .commands.body.args.tex_ring.source"
+  ],
+  "at_pin": [
+   "// tex_ring alone doesn't create rings. Deliberate suppression lives HERE,",
+   "if (param.count(\"tex_ring\") && Utility::strToBool(param[\"rings\"], false))"
+  ],
+  "reason": "the tex_ring comment and the rings test in deduceBodyModuleList; the comment left (3c5952ad); the test is 586",
+  "new": "586",
+  "at_to": [
+   "if (param.count(\"tex_ring\") && Utility::strToBool(param[\"rings\"], false))"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/ModularSystem.cpp",
+  "elem": "773-778",
+  "pin": "8d41fbe3",
+  "cls": "X",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "ss-grammar.json .keys.parent.notes"
+  ],
+  "at_pin": [
+   "? (atanf(subsystemRadius / sqrtf(distance*distance - subsystemRadius*subsystemRadius))",
+   "const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAND);"
+  ],
+  "reason": "MIS-ANCHORED AT ITS OWN PIN: at 8d41fbe3 these lines compute a subsystem's on-screen size, not the parent lookup the note states (resolves by name against what is loaded, then at 1063-1072 there); the subject at 9d461bd5 is loadBody's parent resolution, 678-687 (default parent, findBody, the warning when not found). Routed",
+  "new": "678-687",
+  "at_to": [
+   "ModularBody *parent = this;",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/ModularSystem.cpp",
+  "elem": "1301-1310",
+  "pin": "8d41fbe3",
+  "cls": "C",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "ss-grammar.json .keys.relation.notes"
+  ],
+  "at_pin": [
+   "if (!relDecl.empty() && !param[\"bound_to_surface\"].empty()",
+   "// Provenance, resolved BEFORE the body is created because createChild's"
+  ],
+  "reason": "the relation / bound_to_surface conflict diagnostic; the comment after it left (3c5952ad); the diagnostic block is 830-838",
+  "new": "830-838",
+  "at_to": [
+   "if (!relDecl.empty() && !param[\"bound_to_surface\"].empty()",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/ModularSystem.cpp",
+  "elem": "1615-1626",
+  "pin": "8d41fbe3",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "ss-grammar.json .keys.body.notes",
+   "ss-grammar.json .regimes.composed.section_kinds.module"
+  ],
+  "at_pin": [
+   "// A value in the module-family vocabulary (ModuleLoaderMgr's own enum,",
+   "const BodyModuleType famType ="
+  ],
+  "reason": "the D16 type= comment and the isFamily / famType declaration it introduced; the comment left (3c5952ad); the two lines are 1002-1003. The note's sentence is ROUTED: the code discriminates by the type VALUE (moduleTypeFromName), `body =` only flags a mistyped family",
+  "new": "1002-1003",
+  "at_to": [
+   "bool isFamily;",
+   "const BodyModuleType famType ="
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/ModularSystem.cpp",
+  "elem": "2036",
+  "pin": "8d41fbe3",
+  "cls": "C",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "ss-grammar.json .keys.sidereal_time.source[1]"
+  ],
+  "at_pin": [
+   "// above reads param[\"sidereal_time\"] through std::map::operator[], which"
+  ],
+  "reason": "a comment line explaining the sidereal_time emptiness test; it left (3c5952ad); the test it explained (find, then end or empty) is 1289-1290",
+  "new": "1289-1290",
+  "at_to": [
+   "const auto siderealIt = param.find(\"sidereal_time\");",
+   "if (siderealIt == param.end() || siderealIt->second.empty())"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/SessionFile.hpp",
+  "elem": "211",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.session.args.filename.notes",
+   "unit-1.json .commands.session.args.filename.notes"
+  ],
+  "at_pin": [
+   "constexpr const char *DIRECTORY = \"sessions\";"
+  ],
+  "reason": "DIRECTORY = \"sessions\", moved up with a trailing what-for comment; 57",
+  "new": "57",
+  "at_to": [
+   "constexpr const char *DIRECTORY = \"sessions\"; // Relative to the working directory, created by save"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/ShadowService.hpp",
+  "elem": "110-121",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[91].source"
+  ],
+  "at_pin": [
+   "// enabled: the new-path shadow switch. Initialized from the same config key",
+   "static bool enabled;"
+  ],
+  "reason": "the class head through the static enabled switch; the comments left (3c5952ad); 18-23",
+  "new": "18-23",
+  "at_to": [
+   "class ShadowService {",
+   "static bool enabled; // experimental_shadows config key"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp",
+  "elem": "52",
+  "pin": "8d41fbe3",
+  "cls": "C",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "ss-grammar.json .keys.type.source[8]"
+  ],
+  "at_pin": [
+   "// it). Reading it from the body instead of re-reading `params[\"type\"]` here"
+  ],
+  "reason": "a comment line on reading the surface model from the body; it left (3c5952ad); the statement it introduced, cfg.moonClass from getSurfaceModel, is 48",
+  "new": "48",
+  "at_to": [
+   "cfg.moonClass = (target->getSurfaceModel() == SurfaceModel::LUNAR);"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/moduleLoader/RingLoader.cpp",
+  "elem": "8-45",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.body.args.tex_ring.source",
+   "unit-4.json .commands.body.args.tex_ring.source"
+  ],
+  "at_pin": [
+   "uint8_t RingLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const",
+   "// ~3 px < the old 5-px cutoff (body.cpp:1132)."
+  ],
+  "reason": "isLikely, isLoaderOf and load up to the near-only routing comment; the comments left (3c5952ad); the routing they explained, addNearComponent, is 36; 8-36",
+  "new": "8-36",
+  "at_to": [
+   "uint8_t RingLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const",
+   "addNearComponent(target, ring.get());"
+  ]
+ },
+ {
+  "repo": "src/experimentalModule/orbitModules/LocationOrbitLoader.hpp",
+  "elem": "3",
+  "pin": "8d41fbe3",
+  "cls": "U",
+  "action": "unmark",
+  "refs": 1,
+  "cited_by": [
+   "ss-grammar.json .keys.parent.source[6]"
+  ],
+  "at_pin": [
+   "auto parent = ModularBody::findBody(params[\"parent\"]);"
+  ],
+  "reason": "DECLARED by F119 because the pin could not move; the construct (the read of the parent key) is at the new pin: ModularBody *parent = findBodyOnce(params parent), 10 (01adbb30 gave it the nullptr check). Marker removed: its claim would be false at the new pin",
+  "new": "10",
+  "at_to": [
+   "ModularBody *parent = ModularBody::findBodyOnce(params[\"parent\"]);"
+  ]
+ },
+ {
+  "repo": "src/interfaceModule/app_command_init.cpp",
+  "elem": "99-111",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .parse_model.recording_alias_loss"
+  ],
+  "at_pin": [
+   "// The reverse map names ONE spelling per command - the canonical one - and",
+   "for (auto it = m_commands.begin(); it != m_commands.end(); ++it) {"
+  ],
+  "reason": "the canonical-first comment and the reverse-map loop; the comment left (3c5952ad); the loop is 99-101",
+  "new": "99-101",
+  "at_to": [
+   "for (auto it = m_commands.begin(); it != m_commands.end(); ++it) {",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "1266-1284",
+  "pin": "b45d3b58",
+  "cls": "X",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .lint_seeds[6].source"
+  ],
+  "at_pin": [
+   "coreLink->setEyeRelativeMode(newval);",
+   "// every reachable value, since the only values the old branch could"
+  ],
+  "reason": "MIS-ANCHORED AT ITS OWN PIN: at b45d3b58 these are setFlag's switch cases, not the single-pair read of the seed's rule (the census cites commandFlag reading args.begin()); commandFlag is 1343-1361 at b45d3b58 and 1251-1269 at 9d461bd5. Routed",
+  "new": "1251-1269",
+  "at_to": [
+   "int AppCommandInterface::commandFlag()",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "1281-1285",
+  "pin": "b45d3b58",
+  "cls": "D",
+  "action": "notathead",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[91].notes"
+  ],
+  "at_pin": [
+   "// New path: PLAIN on/off - the old XOR-against-default is a defect",
+   "// produce are 0 and the default itself."
+  ],
+  "reason": "the note cites the case COMMENT itself (the case comment records ...); it left (3c5952ad); the plain assignment it explained stays",
+  "marker": "the case comment left the code"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "1475-1477",
+  "pin": "b45d3b58",
+  "cls": "D",
+  "action": "notathead",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.session.args.filename.notes",
+   "unit-1.json .commands.session.args.filename.notes"
+  ],
+  "at_pin": [
+   "// `filename` is optional on save (absent = the default session name) and on",
+   "// have to name it twice."
+  ],
+  "reason": "the note cites the handler's own COMMENT (the handler's own comment states ...); it left (3c5952ad)",
+  "marker": "the handler comment left the code"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "1877-1880",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[42].notes",
+   "sc-grammar.json .families.color_names.names[43].notes"
+  ],
+  "at_pin": [
+   "//! What is this colour NOW? The read half of `applyColor`, and the session's",
+   "//! returning false rather than by reporting a guess."
+  ],
+  "reason": "readColor's doc comment; it left (3c5952ad); the note's subject (the two colours with no getter answer false) is the two false returns, 1905-1908",
+  "new": "1905-1908",
+  "at_to": [
+   "case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR:",
+   "return false;   // no read half exists at any level"
+  ]
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "2971",
+  "pin": "b45d3b58",
+  "cls": "S",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.image.args.persistent.source",
+   "unit-2.json .commands.image.args.persistent.source"
+  ],
+  "at_pin": [
+   "media->imageDropAllNoPersistent();"
+  ],
+  "reason": "the W_END branch's imageDropAllNoPersistent moved into scriptEnded (f571664e), reached from cancelScript on every end path; 262",
+  "new": "262",
+  "at_to": [
+   "media->imageDropAllNoPersistent();"
+  ]
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "2972",
+  "pin": "b45d3b58",
+  "cls": "S",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.comment.notes[2]",
+   "unit-3.json .commands.comment.notes[2]"
+  ],
+  "at_pin": [
+   "swapCommand = false;"
+  ],
+  "reason": "the W_END branch's swapCommand reset moved into scriptEnded (f571664e); 263",
+  "new": "263",
+  "at_to": [
+   "swapCommand = false;"
+  ]
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "2973",
+  "pin": "b45d3b58",
+  "cls": "S",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .parse_model.if_structure"
+  ],
+  "at_pin": [
+   "ifSwap->reset();"
+  ],
+  "reason": "the W_END branch's ifSwap reset moved into scriptEnded (f571664e); 264. Sat in a MARKED string, so the gate counted it declared",
+  "new": "264",
+  "at_to": [
+   "ifSwap->reset();"
+  ]
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "3024-3029",
+  "pin": "b45d3b58",
+  "cls": "D",
+  "action": "notathead",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.script.notes[2]",
+   "unit-2.json .commands.script.notes[2]"
+  ],
+  "at_pin": [
+   "// Return HERE: without it the speed change is applied and the command",
+   "// its own diagnostic, which the fall-through used to overwrite."
+  ],
+  "reason": "the note cites the COMMENT itself (the comment at ... records why); it left (b57d0642)",
+  "marker": "the comment left the code, the return it explained stays"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "4200-4314",
+  "pin": "b45d3b58",
+  "cls": "X",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .lint_seeds[6].source"
+  ],
+  "at_pin": [
+   "// Harness A/B visual comparison (INTENT.md 11.19a): the offscreen",
+   "int AppCommandInterface::commandFont()"
+  ],
+  "reason": "MIS-ANCHORED AT ITS OWN PIN: at b45d3b58 these lines run from commandBody's screenshot branch into commandFont, not the single-pair arithmetic handlers the census cites; define .. sinus are 4647-4763 at b45d3b58 and 4537-4653 at 9d461bd5. Routed",
+  "new": "4537-4653",
+  "at_to": [
+   "int AppCommandInterface::commandDefine()",
+   "}"
+  ]
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.hpp",
+  "elem": "185-187",
+  "pin": "b45d3b58",
+  "cls": "C",
+  "action": "lines",
+  "refs": 2,
+  "cited_by": [
+   "sc-grammar.json .families.commands.color.args.index.notes",
+   "unit-1.json .commands.color.args.index.notes"
+  ],
+  "at_pin": [
+   "//! The write half of `color`, extracted so a restore drives the same code",
+   "void applyColor(COLORCOMMAND_NAMES name, const Vec3f &value, int index);"
+  ],
+  "reason": "applyColor's doc comment and declaration; the comment became the one-line what-for at 164 (index is used by star_table alone, 57102bf4); the declaration is 165",
+  "new": "164-165",
+  "at_to": [
+   "//! index is used by star_table alone",
+   "void applyColor(COLORCOMMAND_NAMES name, const Vec3f &value, int index);"
+  ]
+ },
+ {
+  "repo": "src/scriptModule/script_mgr.cpp",
+  "elem": "479",
+  "pin": "b45d3b58",
+  "cls": "X",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .parse_model._source"
+  ],
+  "at_pin": [
+   "(no line 479: past the end of the file at the pin)"
+  ],
+  "reason": "MIS-READ SINCE F75: parse_model._source's `script_mgr.cpp:81-107 + :335` (73cc7b80) named commander->terminateScript() in script_mgr.cpp; the resolver read the bare number in app_command_interface.cpp and F75 moved it there (335 -> 479), so at b45d3b58 it is past the end of script_mgr.cpp (401 lines). The subject, the natural end's terminateScript call, is 345 at 9d461bd5. Routed",
+  "new": "345",
+  "at_to": [
+   "commander->terminateScript();"
+  ]
+ },
+ {
+  "repo": "src/starModule/hip_star_mgr.cpp",
+  "elem": "828-834",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.flags.names[56].source"
+  ],
+  "at_pin": [
+   "const bool onlySelected = isolateSelected && !selected_star.empty();",
+   "it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);"
+  ],
+  "reason": "the onlySelected test and the two zone-draw loops, their prj, nav arguments -> frame (c2d24732); 832-838",
+  "new": "832-838",
+  "at_to": [
+   "const bool onlySelected = isolateSelected && !selected_star.empty();",
+   "it->second->draw(zone,false,rcmag_table,frame,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);"
+  ]
+ },
+ {
+  "repo": "src/starModule/zone_array.cpp",
+  "elem": "293",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[43].source"
+  ],
+  "at_pin": [
+   "if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()], s->getVariableStarIndex())) {"
+  ],
+  "reason": "the drawStar call with color_table[BV index] (inside zones), prj -> frame.rolloff() (c2d24732); 294",
+  "new": "294",
+  "at_to": [
+   "if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()], s->getVariableStarIndex())) {"
+  ]
+ },
+ {
+  "repo": "src/starModule/zone_array.cpp",
+  "elem": "382",
+  "pin": "b45d3b58",
+  "cls": "M",
+  "action": "lines",
+  "refs": 1,
+  "cited_by": [
+   "sc-grammar.json .families.color_names.names[43].source"
+  ],
+  "at_pin": [
+   "if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()])) {"
+  ],
+  "reason": "the drawStar call with color_table[BV index] (border zones), prj -> frame.rolloff() (c2d24732); 393",
+  "new": "393",
+  "at_to": [
+   "if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()])) {"
+  ]
+ },
+ {
+  "repo": "src/tools/ini_line.hpp",
+  "elem": "16",
+  "pin": "8d41fbe3",
+  "cls": "D",
+  "action": "notathead",
+  "refs": 2,
+  "cited_by": [
+   "ss-grammar.json .regimes.composed.comment_rule",
+   "ss-grammar.json .regimes.legacy.comment_rule"
+  ],
+  "at_pin": [
+   "//   - a '#' starts a comment that runs to the end of the line, anywhere on it;"
+  ],
+  "reason": "the cited line stated the rule '#' starts a comment anywhere on the line; the grammar comment left (3c5952ad); line 16 at 9d461bd5 is COMMENT_CHAR, which grounds the character but not the anywhere; the rule is implemented in another file",
+  "marker": "the grammar comment left the header, the rule lives in the reader"
+ }
+]

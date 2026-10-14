@@ -1,0 +1,2 @@
+PREDICTED (written before the run, 11.331 (7)): clean 7181 / declared 17 / skipped(_meta) 86 / lines:clean 127 / handler_body_lines:clean 2 / header_line:clean 238 / no GONE, no moved, 0 hard
+08:56:12

@@ -1,0 +1,2 @@
+PASS: 0 non-ASCII bytes across the CONVERT set (981 files matched by CONVERT rows); 278 EXCLUDE files carry non-ASCII by design.
+D14 gate exit=0

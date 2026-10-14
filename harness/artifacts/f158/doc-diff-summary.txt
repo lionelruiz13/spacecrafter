@@ -1,0 +1,2 @@
+queries: 587; queries whose answer changed: 575; changed lines: 1220; changed lines NOT numbers/markers only: 0
+changed lines by JSON field: {'source': 862, 'registration': 40, 'notes': 244, 'home_planet': 4, 'selected': 2, 'default': 44, '?': 2, 'preset': 2, 'midnight': 2, 'constellation': 2, 'media': 2, 'object': 2, 'planets_position': 2, 'position': 2, 'auto': 4, 'zodiac': 2, 'pause': 2}

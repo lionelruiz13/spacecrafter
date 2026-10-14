@@ -1,0 +1,7 @@
+ROUND f158: the source pin of every reference is its file's `_meta.anchor_pin`, or the `@ <sha>` the reference carries itself
+  sc-grammar.json   1340 strings at b45d3b58; own-pinned tokens: 4 {'2fe14699': 4}
+  unit-1.json        268 strings at b45d3b58; own-pinned tokens: 0 {}
+  unit-2.json        304 strings at b45d3b58; own-pinned tokens: 0 {}
+  unit-3.json        272 strings at b45d3b58; own-pinned tokens: 0 {}
+  unit-4.json        245 strings at b45d3b58; own-pinned tokens: 0 {}
+  ss-grammar.json    499 strings at 8d41fbe3; own-pinned tokens: 0 {}

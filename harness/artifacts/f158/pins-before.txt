@@ -1,0 +1,41 @@
+== sc-grammar.json : 1346 anchor strings
+     a8d4aeb8  same-path  1082
+     73cc7b80  same-path   145
+     51cd2eaa  same-path    62
+     fd8fdd91  same-path    20
+     a8d4aeb8  moved-path    14
+     4141317a  same-path     6
+     fd8fdd91  moved-path     5
+     41088a54  same-path     5
+     b12c8cdd  same-path     4
+     f3773bda  same-path     2
+     c43070db  same-path     1
+== unit-1.json : 274 anchor strings
+     a8d4aeb8  same-path   195
+     15927a11  same-path    52
+     a8d4aeb8  moved-path    12
+     fd8fdd91  same-path    10
+     fd8fdd91  moved-path     5
+== unit-2.json : 311 anchor strings
+     a8d4aeb8  same-path   263
+     091713cd  same-path    40
+     fd8fdd91  same-path     8
+== unit-3.json : 278 anchor strings
+     a8d4aeb8  same-path   235
+     091713cd  same-path    42
+     fd8fdd91  same-path     1
+== unit-4.json : 256 anchor strings
+     a8d4aeb8  same-path   211
+     8e62cfd9  same-path    40
+     a8d4aeb8  moved-path     2
+     fd8fdd91  same-path     1
+     4141317a  same-path     1
+     41088a54  same-path     1
+== ss-grammar.json : 510 anchor strings
+     962774d1  same-path   281
+     e1bdafa9  same-path   168
+     962774d1  moved-path    51
+     e1bdafa9  moved-path     9
+     564ec489  same-path     1
+
+-> /home/claude/spacecrafter/claude/harness/f75/f158/history-pins/pins.json

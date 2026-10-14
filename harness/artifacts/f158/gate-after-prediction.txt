@@ -1,0 +1,1 @@
+PREDICTED (written before the run, 2026-10-14 09:02:10): clean 7180 / not-at-head(declared) 18 / skipped(_meta) 86 / lines:clean 127 / handler_body_lines:clean 2 / header_line:clean 238 / no GONE, no moved, no UNRESOLVED, no AT-PIN-BROKEN, 0 hard

@@ -1,0 +1,48 @@
+scedit grammar: /home/claude/spacecrafter/util/scedit/grammar/sc-grammar.json
+  ok      commands: registered 63 == expected 63
+  ok      commands: pre-table literals == 2 (comment, uncomment)
+  ok      commands: 4 alias entries, each naming a canonical command and carrying no argument data of its own
+  ok      commands: every entry carries a `registration` source anchor
+  ok      commands: every entry carries a `doc` slot (C6)
+  ok      commands: every entry answers `args_complete`
+  note    commands with extracted args: 47; args_complete:false: 2; keys sourced from a family: 1
+  ok      flags: count 97 == expected 97
+  ok      flags: every entry is a name or carries one
+  ok      flags: all names unique
+  ok      flags: 97 object entries, all carrying doc/source
+  ok      set_names: count 43 == expected 43
+  ok      set_names: every entry is a name or carries one
+  ok      set_names: all names unique
+  ok      set_names: 43 object entries, all carrying doc/value/default/required/source
+  ok      color_names: count 46 == expected 46
+  ok      color_names: every entry is a name or carries one
+  ok      color_names: all names unique
+  ok      color_names: 46 object entries, all carrying doc/source
+  ok      font_targets: 10 object entries, all carrying doc/source
+  ok      obsolete_tokens: count 7 == expected 7
+  ok      obsolete_tokens: every entry is a name or carries one
+  ok      obsolete_tokens: all names unique
+  ok      reserved_variables: count 24 == expected 24
+  ok      reserved_variables: every entry is a name or carries one
+  ok      reserved_variables: all names unique
+  ok      font_targets: count 10 == expected 10
+  ok      font_targets: every entry is a name or carries one
+  ok      font_targets: all names unique
+  ok      subfamily of 'color' exists
+  ok      subfamily of 'flag' exists
+  ok      subfamily of 'font' exists
+  ok      subfamily of 'set' exists
+  ok      args_source of 'set' names an existing family
+  ok      argument tokens: count 238 == expected 238
+  ok      argument tokens: every spelling carries a role
+  ok      argument tokens: every role is one of key|value|both|engine_internal|unreferenced
+  ok      completable: every bare-token value is offered or excluded with a reason
+  ok      completable: nothing offered or excluded that the value domain does not hold
+  ok      default_value: every literal names where it was read
+  note    120 specs carry `completable` (304 values offered, 11 excluded with a reason); 60 specs carry a `default_value` literal
+  ok      lint_seeds: ids unique
+  ok      fragments: all 4 unit files present (found 4)
+  ok      fragments: 62 command entries (found 62)
+  FAIL    fragments: every fact identical in the merged file (differs: body_trace.lines and 265 more)
+GRAMMAR INVALID
+seed gate exit=1

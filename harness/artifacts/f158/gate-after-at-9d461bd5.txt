@@ -1,0 +1,6 @@
+clean                    7180
+handler_body_lines:clean 2
+header_line:clean        238
+lines:clean              127
+not-at-head(declared)    18
+skipped(_meta)           86

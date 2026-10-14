@@ -693,8 +693,560 @@ def cmd_verify():
     return ok
 
 
+# --------------------------------------------------------------------------
+# 13. MOVING THE PIN (F158, 2026-10-14; parent INTENT 11.331)
+#
+# After F75 a string's pin is no longer its HISTORY: every reference outside
+# `_meta` is a citation AT its file's `_meta.anchor_pin` (that is where the gate
+# reads it), and `cmd_pins` above dates sc-grammar.json's strings to eleven
+# grammar commits (measured 2026-10-14, artifacts/f158/pins-before.txt) -- when
+# a STRING last changed, not which tree its numbers are numbers of. So in a
+# ROUND the source pin is READ the way the gate reads it (`file_pin`, and a
+# reference's own `@ <sha>`, `Tok.pin`), and the target is a NAMED commit,
+# never HEAD or the working tree: another task may be editing the engine while
+# the sweep runs (F154 did, during F158).
+#
+# A round moves THREE pointer classes to one pin: the `file:line` references
+# (content-mapped, as above, the hand-read rest in the round's read table) and
+# the two colon-less classes, `lines` / `handler_body_lines` and the
+# vocabulary's `header_line`, which are DERIVED at the target by the gate's own
+# resolvers (`handler_range`, `define_lines`) -- the sweep writes what the gate
+# will check, from the gate's function, so the two cannot disagree (I2).
+#
+# One row per round; the next pin move adds a row and changes nothing else.
+# --------------------------------------------------------------------------
+import anchor_gate as AG                                   # noqa: E402
+
+ROUNDS = {
+    "f158": dict(
+        to="9d461bd5", label="main @ 9d461bd5",
+        out=os.path.join(OUT, "f158"),
+        read_table=os.path.join(OUT, "read_table_f158.json"),
+        amended=(
+            "2026-10-14 (F158): the anchor pin MOVES to main @ 9d461bd5 (from "
+            "master-beta @ b45d3b58; ss-grammar.json from master-beta @ 8d41fbe3), "
+            "the same commit for every pointer class in the six contract files: every "
+            "`file:line` reference outside `_meta` re-resolved by content, the ones "
+            "whose text left the engine read by hand (re-anchored where the construct "
+            "moved, `[NOT AT HEAD]` with its own `@ <sha>` where it left; table "
+            "claude/harness/f75/read_table_f158.json); and the two classes no gate "
+            "saw, the commands' `lines` (with `handler_body_lines`) and the "
+            "vocabulary's `header_line`, derived at the pin from `handler` and "
+            "`macro` and gated by `anchor_gate`, which also reads a reference's own "
+            "`@ <sha>` now. `_meta` keeps its own pins (`code`, `merged`, `seeded`). "
+            "Parent INTENT 11.331, scedit journal 2026-10-14b.")),
+}
+
+def opt(name, default=None):
+    return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else default
+
+def jload(path):
+    """Read a round record as written, or as committed (gz)."""
+    import gzip
+    return json.load(open(path) if os.path.exists(path) else gzip.open(path + ".gz", "rt"))
+
+def the_round():
+    return ROUNDS[opt("--round")]
+
+def load_read_table(R):
+    if not os.path.exists(R["read_table"]):
+        return {}
+    rows = json.load(open(R["read_table"]))
+    rt = {}
+    for row in rows:
+        k = (row["repo"], row["elem"], row["pin"])
+        if k in rt:
+            raise SystemExit("read table: two rows for one referent %r" % (k,))
+        rt[k] = row
+    return rt
+
+def cmds_of(path, g):
+    return g["families"]["commands"] if path == MERGED else g.get("commands", {})
+
+def _combine(va, vb):
+    # the gate's rule for a range (anchor_gate.run), verbatim in effect
+    OK = ("clean", "moved", "d14", "d14-moved")
+    if vb is None:
+        return va
+    return ("clean" if va == vb == "clean" else
+            ("moved" if va in OK and vb in OK else (va if va not in OK else vb)))
+
+def _gate_verdict(raw, marked):
+    if raw == "clean":
+        return "clean"
+    if raw in ("moved", "d14", "d14-moved"):
+        return "moved"
+    return "declared" if marked else {"gone": "GONE", "unresolved": "UNRESOLVED",
+                                      "at-pin-broken": "AT-PIN-BROKEN"}[raw]
+
+def round_rows(R, paths=None):
+    """Every `file:line` reference of the contract files, resolved exactly as
+    anchor_gate.run() resolves it, its HEAD side read at the round's target."""
+    to = R["to"]
+    res = {}
+    for path in (paths or TARGETS):
+        pin0 = AG.file_pin(path)
+        g = load(path)
+        cmds = cmds_of(path, g)
+        rows = []
+        for jp, s in walk(g):
+            if jp.startswith("._meta"):
+                continue
+            toks = tokenize(s)
+            if not toks:
+                continue
+            marked = bool(AG.MARKER.search(s))
+            m = re.match(r'\.families\.commands\.([A-Za-z0-9_]+)\.' if path == MERGED
+                         else r'\.commands\.([A-Za-z0-9_]+)\.', jp)
+            handler = cmds.get(m.group(1), {}).get("handler") if m else None
+            for ti, t in enumerate(toks):
+                pin = t.pin or pin0
+                if (jp, ti) in FILE_OVERRIDES:
+                    rp, how = FILE_OVERRIDES[(jp, ti)], "repo-relative"
+                elif t.kind == "FILE":
+                    rp, how = resolve_file(t.file)
+                else:
+                    rp, how, _b, _e = disambiguate(t, pin, s, handler)
+                ems = list(ELEM.finditer(t.listtext))
+                for ei, (a, b, _, _) in enumerate(t.elems):
+                    row = dict(jp=jp, ti=ti, ei=ei, pin=pin, own=bool(t.pin), kind=t.kind,
+                               file=t.file, repo=rp, how=how, marked=marked,
+                               elem=ems[ei].group(0), old=[a, b],
+                               override=(jp, ti) in FILE_OVERRIDES,
+                               written=(resolve_file(t.file)[0]
+                                        if t.kind != "FILE" and t.file else None))
+                    if rp is None:
+                        row["raw"] = "unresolved"
+                    else:
+                        vs = [classify_any(pin, rp, n, how, head=to) if n is not None else None
+                              for n in (a, b)]
+                        if any(v and v[0] in ("no-file", "out-of-range") for v in vs):
+                            row["raw"] = "at-pin-broken"
+                        else:
+                            row["raw"] = _combine(vs[0][0], vs[1][0] if vs[1] else None)
+                            row["new"] = [vs[0][1], vs[1][1] if vs[1] else None]
+                            row["text"] = [vs[0][2], vs[1][2] if vs[1] else None]
+                    row["verdict"] = _gate_verdict(row["raw"], marked)
+                    rows.append(row)
+        res[path] = rows
+    return res
+
+def round_fields(R, rev):
+    """The two colon-less classes: stored value vs the gate's derivation at `rev`."""
+    out = []
+    for path in [MERGED] + FRAGS:
+        g = load(path)
+        for name, e in cmds_of(path, g).items():
+            if not isinstance(e, dict):
+                continue
+            for f in ("lines", "handler_body_lines"):
+                if f in e:
+                    out.append(dict(path=path, field=f, key=name, old=e[f],
+                                    new=AG.handler_range(rev, e["handler"])))
+    for tok, spec in load(MERGED)["argument_token_vocabulary"]["tokens"].items():
+        if isinstance(spec, dict) and "header_line" in spec:
+            out.append(dict(path=MERGED, field="header_line", key=tok, macro=spec["macro"],
+                            old=spec["header_line"],
+                            new=AG.define_lines(rev, spec["macro"], tok)))
+    return out
+
+def round_pins():
+    R = the_round()
+    print("ROUND %s: the source pin of every reference is its file's `_meta.anchor_pin`,"
+          " or the `@ <sha>` the reference carries itself" % opt("--round"))
+    allp = {}
+    for path in TARGETS:
+        pin0 = AG.file_pin(path)
+        own = []
+        n = 0
+        for jp, s in walk(load(path)):
+            if jp.startswith("._meta"):
+                continue
+            toks = tokenize(s)
+            n += bool(toks)
+            own += [(jp, ti, t.pin) for ti, t in enumerate(toks) if t.pin]
+        allp[path] = dict(file_pin=pin0, strings=n, own=own)
+        print("  %-16s %5d strings at %s; own-pinned tokens: %d %s" % (
+            path.split("/")[-1], n, pin0, len(own),
+            dict(collections.Counter(p for _, _, p in own))))
+    os.makedirs(R["out"], exist_ok=True)
+    json.dump(allp, open(os.path.join(R["out"], "pins.json"), "w"), indent=1)
+
+def round_map():
+    R = the_round()
+    res = round_rows(R)
+    os.makedirs(R["out"], exist_ok=True)
+    json.dump(res, open(os.path.join(R["out"], "anchor_map.json"), "w"))
+    grand = collections.Counter()
+    print("ROUND %s: every reference from its pin to %s (git show, never the tree)" % (opt("--round"), R["to"]))
+    for path, rows in res.items():
+        c = collections.Counter(r["verdict"] for r in rows)
+        grand.update(c)
+        print("  %-16s %5d  %s" % (path.split("/")[-1], len(rows), dict(sorted(c.items()))))
+    print("  %-16s %5d  %s" % ("TOTAL", sum(grand.values()), dict(sorted(grand.items()))))
+    hidden = [(p, r) for p, rows in res.items() for r in rows
+              if r["marked"] and not r["own"] and r["raw"] not in ("clean", "moved", "d14", "d14-moved")]
+    print("  in a MARKED string without its own pin, not resolving (the gate counts them declared): %d" % len(hidden))
+    for p, r in hidden:
+        print("     %s %s %s:%s raw=%s" % (p.split("/")[-1], r["jp"], r["repo"], r["elem"], r["raw"]))
+    # A content rule that overrides the file the sentence's own context names is
+    # a reading to check by eye (F158 found two wrong since F75 and F80).
+    ovr = [(p, r) for p, rows in res.items() for r in rows
+           if r["written"] and r["written"] != r["repo"] and not r["override"]]
+    print("  inherited-file tokens whose written context names another file than the one chosen: %d" % len(ovr))
+    for p, r in ovr:
+        print("     %s %s ti=%d :%s written=%s chosen=%s" % (p.split("/")[-1], r["jp"], r["ti"],
+              r["elem"], r["written"], r["repo"]))
+    # the GONE table, both texts, one row per reference
+    gone = []
+    for p, rows in res.items():
+        for r in rows:
+            if r["own"] or r["raw"] in ("clean", "moved", "d14", "d14-moved"):
+                continue
+            if r["raw"] == "unresolved" and r["marked"]:
+                continue
+            ls_pin = lines_at(r["pin"], r["repo"]) if r["repo"] else None
+            ls_to = lines_at(R["to"], r["repo"]) if r["repo"] else None
+            a, b = r["old"]
+            gone.append(dict(contract=p, jp=r["jp"], ti=r["ti"], ei=r["ei"], repo=r["repo"],
+                             elem=r["elem"], pin=r["pin"], raw=r["raw"], marked=r["marked"],
+                             at_pin=ls_pin[a - 1:(b or a)] if ls_pin else None,
+                             at_to_same_numbers=ls_to[a - 1:(b or a)] if ls_to and a <= len(ls_to) else None,
+                             enclosing_at_pin=enclosing_symbol(r["pin"], r["repo"], a) if r["repo"] else None))
+    out = opt("--gone", os.path.join(R["out"], "gone.json"))
+    json.dump(gone, open(out, "w"), indent=1)
+    refs = collections.Counter((g["repo"], g["elem"], g["pin"]) for g in gone)
+    print("  GONE references: %d over %d distinct referents -> %s" % (len(gone), len(refs), out))
+    byfile = collections.Counter(g["repo"] for g in gone)
+    for f, n in byfile.most_common():
+        print("     %4d  %s" % (n, f))
+    return res
+
+def round_check():
+    """Every unresolving reference has its read-table row, and every row is used."""
+    R = the_round()
+    rt = load_read_table(R)
+    res = jload(os.path.join(R["out"], "anchor_map.json"))
+    need, used, corr = collections.Counter(), set(), collections.Counter()
+    for p, rows in res.items():
+        for r in rows:
+            k = (r["repo"], r["elem"], r["pin"])
+            if r["own"] or r["raw"] in ("clean", "moved", "d14", "d14-moved"):
+                # a resolving reference is read only to CORRECT it (class X)
+                if not r["own"] and k in rt and rt[k].get("cls") == "X":
+                    corr[k] += 1; used.add(k)
+                continue
+            if r["raw"] == "unresolved" and r["marked"]:
+                continue
+            need[k] += 1
+            if k in rt:
+                used.add(k)
+    print("corrections of RESOLVING references (class X): %d rows, %d references"
+          % (len(corr), sum(corr.values())))
+    missing = [k for k in need if k not in rt]
+    unused = [k for k in rt if k not in used]
+    acts = collections.Counter(rt[k]["action"] for k in used)
+    refs = collections.Counter()
+    for k in used:
+        refs[rt[k]["action"]] += need[k]
+    print("read table: %d rows; referents needing a row %d (references %d); missing %d; unused %d"
+          % (len(rt), len(need), sum(need.values()), len(missing), len(unused)))
+    print("  by action (referents): %s" % dict(acts))
+    print("  by action (references): %s" % dict(refs))
+    for k in missing[:40]:
+        print("  MISSING %s:%s @ %s (%d refs)" % (k[0], k[1], k[2], need[k]))
+    for k in unused:
+        print("  UNUSED  %s:%s @ %s" % k)
+    # a re-anchored row must land on a line that exists at the target
+    bad = 0
+    for k in used:
+        row = rt[k]
+        if row["action"] in ("lines", "unmark"):
+            ls = lines_at(R["to"], k[0])
+            for em in ELEM.finditer(row["new"]):
+                for n in (em.group(1), em.group(3)):
+                    if n and not (1 <= int(n) <= len(ls)):
+                        bad += 1
+                        print("  OUT OF RANGE at %s: %s:%s" % (R["to"], k[0], n))
+            if not row.get("reason"):
+                bad += 1
+                print("  NO REASON %s:%s" % k[:2])
+        elif row["action"] == "notathead":
+            if re.search(r':\d|@\s*[0-9a-f]{7}', row["marker"]):
+                bad += 1
+                print("  MARKER CARRIES AN ANCHOR %s:%s" % k[:2])
+    print("read-table check: %s" % ("PASS" if not missing and not unused and not bad else "FAIL"))
+    return not missing and not unused and not bad
+
+UNMARK = re.compile(r'\s*\[NOT AT HEAD: [^\]]+\]')
+
+def round_rewrite(s, rows_of, rt):
+    """-> new string. A token carrying its own `@ <sha>` is not touched: its
+    numbers are numbers OF that commit. A token with a declared element keeps
+    ALL its numbers and gains the pin they are numbers of."""
+    toks = tokenize(s)
+    out, last = [], 0
+    for ti, t in enumerate(toks):
+        if t.pin:
+            continue
+        rows = rows_of(ti)
+        acts = [rt.get((r["repo"], r["elem"], r["pin"])) for r in rows]
+        lo, hi = t.lspan
+        pieces, cur, marker, unmark = [], 0, None, False
+        declared = [a for a in acts if a and a["action"] == "notathead"]
+        for ei, em in enumerate(ELEM.finditer(t.listtext)):
+            r, row, etext = rows[ei], acts[ei], em.group(0)
+            pieces.append(t.listtext[cur:em.start()])
+            if declared:
+                pieces.append(etext)
+            elif row and row["action"] == "lines":
+                pieces.append(row["new"])
+            elif row and row["action"] == "unmark":
+                pieces.append(row["new"]); unmark = True
+            elif row and row["action"] == "keep":
+                pieces.append(etext)
+            elif r["raw"] in ("clean", "moved", "d14", "d14-moved"):
+                a, b = r["new"]
+                pieces.append(str(a) + (em.group(2) + str(b) if em.group(3) else ""))
+            elif r["raw"] == "unresolved" and r["marked"]:
+                pieces.append(etext)
+            else:
+                raise SystemExit("UNREAD reference %s:%s @ %s (%s) -- read it first"
+                                 % (r["repo"], etext, r["pin"], r["raw"]))
+            cur = em.end()
+        if declared:
+            if len(set(d["marker"] for d in declared)) != 1:
+                raise SystemExit("two markers on one token: %r" % t.listtext)
+            marker = " @ %s [NOT AT HEAD: %s]" % (rows[0]["pin"][:8], declared[0]["marker"])
+        pieces.append(t.listtext[cur:])
+        out.append(s[last:lo]); out.append("".join(pieces)); last = hi
+        if marker:
+            out.append(s[last:t.end]); out.append(marker); last = t.end
+        if unmark:
+            mm = UNMARK.match(s, t.end)
+            if not mm:
+                raise SystemExit("unmark: no marker after %r" % t.listtext)
+            out.append(s[last:t.end]); last = mm.end()
+    out.append(s[last:])
+    return "".join(out)
+
+JSTR = re.compile(r'"(?:[^"\\]|\\.)*"')
+
+def _replace_strings(text, rewrites):
+    """Single pass over the JSON string literals: no rewrite can feed another."""
+    n = [0]
+    def sub(m):
+        lit = m.group(0)
+        if text[m.end():m.end() + 1] == ":" or text[m.end():m.end() + 2] == " :":
+            return lit                                   # a key, never an anchor string
+        v = json.loads(lit)
+        if v not in rewrites:
+            return lit
+        if json.dumps(v, ensure_ascii=False) != lit:
+            raise SystemExit("a literal not in json.dumps form: %s" % lit[:80])
+        n[0] += 1
+        return json.dumps(rewrites[v], ensure_ascii=False)
+    return JSTR.sub(sub, text), n[0]
+
+FIELDRX = {
+    "lines": re.compile(r'("lines": ")(\d+-\d+)(")'),
+    "handler_body_lines": re.compile(r'("handler_body_lines": ")(\d+-\d+)(")'),
+    "header_line": re.compile(r'("((?:[^"\\]|\\.)*)": \{\s*"macro": "(W_\w+)",\s*"header_line": )(\d+|\[[\d,\s]*\])'),
+}
+
+def _fmt_lines(old_text, new):
+    """Write `new` (an int or a list of ints) in the layout `old_text` has."""
+    nums = re.findall(r'\d+', old_text)
+    new = new if isinstance(new, list) else [new]
+    if len(nums) != len(new):
+        raise SystemExit("header_line arity changed: %s -> %r" % (old_text, new))
+    it = iter(new)
+    return re.sub(r'\d+', lambda m: str(next(it)), old_text)
+
+def _replace_fields(path, text, fields, inverse=False):
+    """Single pass per field class. `lines` / `handler_body_lines` are keyed by
+    their old value (a function of the entry: checked); `header_line` by the
+    token whose object it sits in."""
+    n = collections.Counter()
+    mine = [f for f in fields if f["path"] == path]
+    for fld in ("lines", "handler_body_lines"):
+        mp = {}
+        for f in mine:
+            if f["field"] != fld:
+                continue
+            a, b = (f["new"], f["old"]) if inverse else (f["old"], f["new"])
+            if mp.setdefault(a, b) != b:
+                raise SystemExit("%s: %s %s maps to two values" % (path, fld, a))
+        def sub(m, mp=mp, fld=fld):
+            if m.group(2) not in mp:
+                raise SystemExit("%s: %s %s has no derivation row" % (path, fld, m.group(2)))
+            n[fld] += 1
+            return m.group(1) + mp[m.group(2)] + m.group(3)
+        text = FIELDRX[fld].sub(sub, text)
+    hl = {f["key"]: f for f in mine if f["field"] == "header_line"}
+    if hl:
+        def subh(m):
+            tok = json.loads('"%s"' % m.group(2))
+            if tok not in hl:
+                return m.group(0)
+            f = hl[tok]
+            n["header_line"] += 1
+            return m.group(1) + _fmt_lines(m.group(4), f["old"] if inverse else f["new"])
+        text = FIELDRX["header_line"].sub(subh, text)
+    return text, n
+
+def _label(text):
+    m = re.search(r'"anchor_pin": "([^"]*?) -- ', text)
+    if not m or len(re.findall(r'"anchor_pin": "', text)) != 1:
+        raise SystemExit("anchor_pin: not exactly one line")
+    return m
+
+def round_sweep():
+    R = the_round()
+    dry = "--dry" in sys.argv
+    only = opt("--only")
+    paths = [p for p in TARGETS if not only or p.split("/")[-1] in only.split(",")]
+    res = jload(os.path.join(R["out"], "anchor_map.json"))
+    rt = load_read_table(R)
+    recf = os.path.join(R["out"], "rewrites.json")
+    rec = (jload(recf) if os.path.exists(recf) or os.path.exists(recf + ".gz")
+           else {"strings": {}, "fields": [], "labels": {}, "amended": None})
+    fields = [f for f in round_fields(R, R["to"]) if f["path"] in paths]
+    for f in fields:
+        if f["new"] is None:
+            raise SystemExit("no derivation at %s for %s %s" % (R["to"], f["field"], f["key"]))
+    for path in paths:
+        by = collections.defaultdict(list)
+        for r in res[path]:
+            by[(r["jp"], r["ti"])].append(r)
+        for k in by:
+            by[k].sort(key=lambda r: r["ei"])
+        strmap = {}
+        for jp, s in walk(load(path)):
+            if jp.startswith("._meta") or not tokenize(s):
+                continue
+            new = round_rewrite(s, lambda ti, jp=jp: by[(jp, ti)], rt)
+            if new != s:
+                if strmap.setdefault(s, new) != new or rec["strings"].setdefault(s, new) != new:
+                    raise SystemExit("CONTENT COLLISION: one string, two rewrites\n%r" % s)
+        full = os.path.join(REPO, path)
+        raw = open(full, encoding="utf-8").read()
+        out, ns = _replace_strings(raw, strmap)
+        out, nf = _replace_fields(path, out, fields)
+        m = _label(out)
+        rec["labels"][path] = [m.group(1), R["label"]]
+        out = out[:m.start(1)] + R["label"] + out[m.end(1):]
+        if path == MERGED:
+            if json.dumps(json.loads(out), indent=2, ensure_ascii=False) + "\n" != out:
+                raise SystemExit("the merged file no longer round-trips; refusing the JSON-level append")
+            g = json.loads(out)
+            g["_meta"]["amended"].append(R["amended"])
+            rec["amended"] = R["amended"]
+            out = json.dumps(g, indent=2, ensure_ascii=False) + "\n"
+        json.loads(out)
+        print("  %-16s strings %4d (distinct %4d)  fields %s  pin %s -> %s" % (
+            path.split("/")[-1], ns, len(strmap), dict(nf), rec["labels"][path][0], R["label"]))
+        if not dry:
+            open(full, "w", encoding="utf-8").write(out)
+    rec["fields"] = [f for f in rec["fields"] if f["path"] not in paths] + fields
+    if not dry:
+        json.dump(rec, open(recf, "w"), indent=1)
+    print("%s; record %s" % ("DRY" if dry else "WRITTEN", recf))
+
+def round_verify():
+    """The byte proof by INVERSION, from the record the sweep wrote: undo the
+    pin label, the amended line, the fields and the strings, and every file must
+    be byte-identical to its committed self at the round's target."""
+    R = the_round()
+    rec = jload(os.path.join(R["out"], "rewrites.json"))
+    inverse = {}
+    for old, new in rec["strings"].items():
+        if inverse.setdefault(new, old) != old:
+            raise SystemExit("inverse is not a function: %r" % new)
+    ok = True
+    for path in TARGETS:
+        cur = open(os.path.join(REPO, path), encoding="utf-8").read()
+        was = blob(R["to"], path)
+        undone = cur
+        if path == MERGED and rec.get("amended"):
+            g = json.loads(undone)
+            am = g["_meta"]["amended"]
+            if am[-1] != rec["amended"]:
+                raise SystemExit("the amended line is not the last one")
+            g["_meta"]["amended"] = am[:-1]
+            undone = json.dumps(g, indent=2, ensure_ascii=False) + "\n"
+        if path in rec["labels"]:
+            m = _label(undone)
+            if m.group(1) != rec["labels"][path][1]:
+                raise SystemExit("%s: label %r is not the swept one" % (path, m.group(1)))
+            undone = undone[:m.start(1)] + rec["labels"][path][0] + undone[m.end(1):]
+        undone, nf = _replace_fields(path, undone, rec["fields"], inverse=True)
+        undone, ns = _replace_strings(undone, inverse)
+        same = undone == was
+        ok &= same
+        print("  %-16s undone: strings %4d fields %-40s -> bytes vs %s: %s" % (
+            path.split("/")[-1], ns, dict(nf), R["to"], "IDENTICAL" if same else "DIFFER"))
+        if not same:
+            for a, b in zip(undone.split("\n"), was.split("\n")):
+                if a != b:
+                    print("     was : %s" % b[:150]); print("     undo: %s" % a[:150]); break
+    print("BYTE PROOF: %s" % ("PASS" if ok else "FAIL"))
+    return ok
+
+def round_flips():
+    """After a sweep: every inherited-file token re-read at the NEW pin with its
+    NEW number must name the same file as the map read at the old pin. Moving
+    the pin re-runs the content rules (anchor_gate.disambiguate) on other text,
+    so a reading can change with no number of its own moving (F158: four did)."""
+    R = the_round()
+    res = jload(os.path.join(R["out"], "anchor_map.json"))
+    n, flips = 0, []
+    for path in TARGETS:
+        g = load(path)
+        cmds = cmds_of(path, g)
+        by = collections.defaultdict(list)
+        for r in res[path]:
+            by[(r["jp"], r["ti"])].append(r)
+        pin0 = AG.file_pin(path)
+        for jp, s in walk(g):
+            if jp.startswith("._meta"):
+                continue
+            m = re.match(r'\.families\.commands\.([A-Za-z0-9_]+)\.' if path == MERGED
+                         else r'\.commands\.([A-Za-z0-9_]+)\.', jp)
+            handler = cmds.get(m.group(1), {}).get("handler") if m else None
+            for ti, t in enumerate(tokenize(s)):
+                if t.kind == "FILE" or (jp, ti) in FILE_OVERRIDES:
+                    continue
+                n += 1
+                rp = disambiguate(t, t.pin or pin0, s, handler)[0]
+                old = by.get((jp, ti))
+                if not old or rp != old[0]["repo"]:
+                    flips.append((path.split("/")[-1], jp, ti, t.listtext,
+                                  old[0]["repo"] if old else None, rp))
+    print("inherited-file tokens re-read at the new pin: %d; reading changed: %d" % (n, len(flips)))
+    for f in flips:
+        print("  %s %s ti=%d :%s  was %s  now %s" % f)
+    print("flips check: %s" % ("PASS" if not flips else "FAIL"))
+    return not flips
+
+def round_fields_report():
+    """The two colon-less classes BEFORE a sweep: stored vs derived at the old
+    pin, the merge sha and the target."""
+    R = the_round()
+    for rev in [opt("--at")] if opt("--at") else [AG.file_pin(MERGED), "b12c8cdd", R["to"]]:
+        rows = round_fields(R, rev)
+        c = collections.Counter((f["field"], "equal" if f["old"] == f["new"] else
+                                 ("underivable" if f["new"] is None else "differ")) for f in rows)
+        print("at %s: %s" % (rev, dict(sorted(c.items()))))
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "shapes"
-    {"shapes": cmd_shapes, "pins": cmd_pins, "map": cmd_map,
-     "default-check": cmd_default_check, "sweep": cmd_sweep,
-     "read-table-check": cmd_read_table_check, "verify": cmd_verify}[cmd]()
+    if "--round" in sys.argv:
+        {"pins": round_pins, "map": round_map, "read-table-check": round_check,
+         "sweep": round_sweep, "verify": round_verify, "fields": round_fields_report,
+         "flips": round_flips}[cmd]()
+    else:
+        {"shapes": cmd_shapes, "pins": cmd_pins, "map": cmd_map,
+         "default-check": cmd_default_check, "sweep": cmd_sweep,
+         "read-table-check": cmd_read_table_check, "verify": cmd_verify}[cmd]()

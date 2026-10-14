@@ -1,0 +1,842 @@
+[
+ {
+  "repo": "src/interfaceModule/app_command_init.cpp",
+  "elem": "99-111",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "2973",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "743-765",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "756-765",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "477-478",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/ModularBody.cpp",
+  "elem": "794-797",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/moduleLoader/RingLoader.cpp",
+  "elem": "8-45",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "515-526",
+  "pin": "b45d3b58",
+  "refs": 4,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/BodyModule.hpp",
+  "elem": "49",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/BodyModule.hpp",
+  "elem": "264",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/coreLink.hpp",
+  "elem": "943-950",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/coreLink.hpp",
+  "elem": "952-961",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/Camera.cpp",
+  "elem": "1057-1082",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/CameraAnchors.cpp",
+  "elem": "243-285",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/CameraAnchors.cpp",
+  "elem": "251-273",
+  "pin": "b45d3b58",
+  "refs": 6,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.hpp",
+  "elem": "185-187",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "2971",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/coreLink.hpp",
+  "elem": "836-852",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/coreLink.hpp",
+  "elem": "850-852",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "226",
+  "pin": "b45d3b58",
+  "refs": 5,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/backup_mgr.cpp",
+  "elem": "59-73",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/backup_mgr.cpp",
+  "elem": "82-90",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "3024-3029",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/SessionFile.hpp",
+  "elem": "211",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "1475-1477",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/core.cpp",
+  "elem": "1092-1097",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "2972",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "921-1069",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "function",
+  "qname": "SkyLine_Equator::draw",
+  "new": "921-1069",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Equator::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1372-1440",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "377-416",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLine_CircumPolar::draw",
+  "new": "377-416",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_CircumPolar::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1094-1218",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLine_Tropic::draw",
+  "new": "1094-1218",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Tropic::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1564-1681",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "function",
+  "qname": "SkyLine_Zenith::draw",
+  "new": "1564-1681",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Zenith::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "195-234",
+  "pin": "b45d3b58",
+  "refs": 8,
+  "kind": "function",
+  "qname": "SkyLine_Pole::draw",
+  "new": "195-234",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Pole::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "566-593",
+  "pin": "b45d3b58",
+  "refs": 3,
+  "kind": "function",
+  "qname": "SkyLine_Vernal::draw",
+  "new": "566-593",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Vernal::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "521-549",
+  "pin": "b45d3b58",
+  "refs": 3,
+  "kind": "function",
+  "qname": "SkyLine_Galactic_Center::draw",
+  "new": "521-549",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Galactic_Center::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "464-504",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "function",
+  "qname": "SkyLine_Analemme::draw",
+  "new": "464-504",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Analemme::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "427",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "351-413",
+  "pin": "b45d3b58",
+  "refs": 4,
+  "kind": "function",
+  "qname": "SkyNautic::draw",
+  "new": "350-412",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+  "at_to": "void SkyNautic::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "189-218",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "function",
+  "qname": "SkyDisplay::draw_text",
+  "new": "188-217",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)",
+  "at_to": "void SkyDisplay::draw_text(const SkyView &view)"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "419-582",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "function",
+  "qname": "SkyCoords::draw",
+  "new": "418-581",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPos)",
+  "at_to": "void SkyCoords::draw(const SkyView &view, Vec3d equPos, Vec3d oldPos)"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "588-766",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "function",
+  "qname": "SkyMouse::draw",
+  "new": "587-765",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldPos)",
+  "at_to": "void SkyMouse::draw(const SkyView &view, Vec3d _equPos, Vec3d _oldPos)"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "771-871",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyAngDist::draw",
+  "new": "770-870",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+  "at_to": "void SkyAngDist::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)"
+ },
+ {
+  "repo": "src/executorModule/solarSystemModule.cpp",
+  "elem": "210",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/executorModule/stellarSystemModule.cpp",
+  "elem": "205",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "876-937",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLoxodromy::draw",
+  "new": "875-936",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+  "at_to": "void SkyLoxodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "942-1031",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyOrthodromy::draw",
+  "new": "941-1030",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+  "at_to": "void SkyOrthodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)"
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "263-272",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/bodyModule/ssystem_factory.hpp",
+  "elem": "263-268",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/starModule/hip_star_mgr.cpp",
+  "elem": "828-834",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/executorModule/solarSystemModule.cpp",
+  "elem": "298",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/nebula.cpp",
+  "elem": "350-379",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "Nebula::drawTex",
+  "new": "350-379",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, double sky_brightness, bool flagBright)",
+  "at_to": "void Nebula::drawTex(const SkyView &view, ToneReproductor* eye, double sky_brightness, bool flagBright)"
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "224-226",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/nebula.cpp",
+  "elem": "381-406",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "Nebula::drawHint",
+  "new": "381-406",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void Nebula::drawHint(const Projector* prj, const Navigator * nav, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r)",
+  "at_to": "void Nebula::drawHint(const SkyView &view, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r)"
+ },
+ {
+  "repo": "src/experimentalModule/ShadowService.hpp",
+  "elem": "110-121",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "1281-1285",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "510-512",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1696-1820",
+  "pin": "b45d3b58",
+  "refs": 3,
+  "kind": "function",
+  "qname": "SkyLine_LunarEclipse::draw",
+  "new": "1696-1820",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_LunarEclipse::draw(const Projector *prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_LunarEclipse::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "199-200",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "170-173",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/core.cpp",
+  "elem": "2523-2534",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/core.hpp",
+  "elem": "203-204",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/constellation.cpp",
+  "elem": "150-161",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/cardinals.cpp",
+  "elem": "82-94",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/cardinals.cpp",
+  "elem": "95-118",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1235-1355",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLine_Ecliptic::draw",
+  "new": "1235-1355",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Ecliptic::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "750-881",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLine_Meridian::draw",
+  "new": "750-881",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Meridian::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "557",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "610-660",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLine_Greenwich::draw",
+  "new": "610-660",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Greenwich::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "675-722",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLine_Aries::draw",
+  "new": "675-722",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Aries::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "262-346",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLine_Zodiac::draw",
+  "new": "262-346",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Zodiac::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "220-228",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyDisplay::draw",
+  "new": "219-227",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
+  "at_to": "void SkyDisplay::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "594-596",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1484-1548",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLine_Vertical::draw",
+  "new": "1484-1548",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Vertical::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "203",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "206",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/nebula.cpp",
+  "elem": "408-418",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "212",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "222",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/nebula_mgr.cpp",
+  "elem": "211-222",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyline.cpp",
+  "elem": "1372-1464",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "function",
+  "qname": "SkyLine_Precession::draw",
+  "new": "1372-1464",
+  "first_line_removed_by": [
+   "29e93df9"
+  ],
+  "at_pin": "void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
+  "at_to": "void SkyLine_Precession::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "1877-1880",
+  "pin": "b45d3b58",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/starModule/zone_array.cpp",
+  "elem": "293",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/starModule/zone_array.cpp",
+  "elem": "382",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/cardinals.cpp",
+  "elem": "78-94",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/coreModule/skyDisplay.cpp",
+  "elem": "419-1031",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "1266-1284",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/interfaceModule/app_command_interface.cpp",
+  "elem": "4200-4314",
+  "pin": "b45d3b58",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/tools/ini_line.hpp",
+  "elem": "16",
+  "pin": "8d41fbe3",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/ModularSystem.cpp",
+  "elem": "1615-1626",
+  "pin": "8d41fbe3",
+  "refs": 2,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/orbitModules/LocationOrbitLoader.hpp",
+  "elem": "3",
+  "pin": "8d41fbe3",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/ModularSystem.cpp",
+  "elem": "773-778",
+  "pin": "8d41fbe3",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/ModularSystem.cpp",
+  "elem": "1301-1310",
+  "pin": "8d41fbe3",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/ModularSystem.cpp",
+  "elem": "2036",
+  "pin": "8d41fbe3",
+  "refs": 1,
+  "kind": "manual"
+ },
+ {
+  "repo": "src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp",
+  "elem": "52",
+  "pin": "8d41fbe3",
+  "refs": 1,
+  "kind": "manual"
+ }
+]

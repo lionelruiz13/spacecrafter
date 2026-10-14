@@ -1,0 +1,12 @@
+# anchor_gate record -- counts, not a silencer (README, Verification).
+# Edited deliberately: a count that moves means the ENGINE moved under
+# the grammar's citations, and somebody has to look at what.
+# Regenerate with: python3 tests/anchor_gate.py --record
+clean                    7180
+handler_body_lines:clean 2
+header_line:clean        238
+lines:clean              127
+not-at-head(declared)    18
+skipped(_meta)           86
+anchor gate: every reference resolves at its pin, and its HEAD state is the recorded one
+real gate exit=0

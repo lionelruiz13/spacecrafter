@@ -1,0 +1,51 @@
+ROUND f158: every reference from its pin to 9d461bd5 (git show, never the tree)
+  sc-grammar.json   3993  {'AT-PIN-BROKEN': 1, 'GONE': 117, 'clean': 1481, 'declared': 6, 'moved': 2388}
+  unit-1.json        555  {'GONE': 5, 'clean': 184, 'moved': 366}
+  unit-2.json        879  {'GONE': 6, 'clean': 324, 'moved': 549}
+  unit-3.json        631  {'GONE': 6, 'clean': 167, 'moved': 458}
+  unit-4.json        611  {'GONE': 16, 'clean': 205, 'moved': 390}
+  ss-grammar.json    529  {'GONE': 8, 'clean': 94, 'declared': 1, 'moved': 426}
+  TOTAL             7198  {'AT-PIN-BROKEN': 1, 'GONE': 158, 'clean': 2455, 'declared': 7, 'moved': 4577}
+  in a MARKED string without its own pin, not resolving (the gate counts them declared): 3
+     sc-grammar.json .parse_model.if_structure src/interfaceModule/app_command_interface.cpp:2973 raw=gone
+     sc-grammar.json .lint_seeds[12].rule fscripts/panorama5.sts:97-98 raw=at-pin-broken
+     ss-grammar.json .keys.parent.source[6] src/experimentalModule/orbitModules/LocationOrbitLoader.hpp:3 raw=gone
+  inherited-file tokens whose written context names another file than the one chosen: 6
+     sc-grammar.json .parse_model._source ti=22 :2760 written=src/tools/utility.hpp chosen=src/interfaceModule/app_command_interface.cpp
+     sc-grammar.json .parse_model._source ti=23 :4157-4159 written=src/tools/utility.hpp chosen=src/interfaceModule/app_command_interface.cpp
+     sc-grammar.json .parse_model._source ti=24 :4193-4194 written=src/tools/utility.hpp chosen=src/interfaceModule/app_command_interface.cpp
+     sc-grammar.json .parse_model._source ti=25 :4906 written=src/tools/utility.hpp chosen=src/interfaceModule/app_command_interface.cpp
+     sc-grammar.json .families.commands.print.notes[0] ti=1 :2138 written=src/tools/utility.hpp chosen=src/interfaceModule/app_command_interface.cpp
+     unit-1.json .commands.print.notes[0] ti=1 :2138 written=src/tools/utility.hpp chosen=src/interfaceModule/app_command_interface.cpp
+  GONE references: 162 over 96 distinct referents -> /home/claude/spacecrafter/claude/harness/artifacts/f158/gone.json
+       35  src/coreModule/skyline.cpp
+       21  src/coreModule/skyDisplay.cpp
+       14  src/interfaceModule/app_command_interface.cpp
+       12  src/bodyModule/ssystem_factory.hpp
+        8  src/coreModule/coreLink.hpp
+        8  src/experimentalModule/CameraAnchors.cpp
+        8  src/coreModule/core.hpp
+        5  src/coreModule/nebula_mgr.cpp
+        5  src/experimentalModule/ModularSystem.cpp
+        4  src/experimentalModule/BodyModule.hpp
+        4  src/coreModule/backup_mgr.cpp
+        4  src/coreModule/core.cpp
+        4  src/coreModule/nebula.cpp
+        4  src/coreModule/cardinals.cpp
+        2  src/experimentalModule/ModularBody.cpp
+        2  src/experimentalModule/moduleLoader/RingLoader.cpp
+        2  src/experimentalModule/Camera.cpp
+        2  src/interfaceModule/app_command_interface.hpp
+        2  src/experimentalModule/SessionFile.hpp
+        2  src/executorModule/solarSystemModule.cpp
+        2  src/coreModule/constellation.cpp
+        2  src/starModule/zone_array.cpp
+        2  src/tools/ini_line.hpp
+        1  src/scriptModule/script_mgr.cpp
+        1  src/interfaceModule/app_command_init.cpp
+        1  src/executorModule/stellarSystemModule.cpp
+        1  src/starModule/hip_star_mgr.cpp
+        1  src/experimentalModule/ShadowService.hpp
+        1  fscripts/panorama5.sts
+        1  src/experimentalModule/orbitModules/LocationOrbitLoader.hpp
+        1  src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp

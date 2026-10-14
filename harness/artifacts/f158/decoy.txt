@@ -1,0 +1,6 @@
+no decoy                           {'clean': 7180, 'handler_body_lines:clean': 2, 'header_line:clean': 238, 'lines:clean': 127, 'not-at-head(declared)': 18, 'skipped(_meta)': 86} hard=0
+1 line inserted at app_command_interface.cpp:100 {'clean': 4509, 'handler_body_lines:moved': 2, 'header_line:clean': 238, 'lines:moved': 127, 'moved': 2671, 'not-at-head(declared)': 18, 'skipped(_meta)': 86} hard=0
+1 line inserted at base_command_interface.hpp:77 {'clean': 6034, 'handler_body_lines:clean': 2, 'header_line:moved': 238, 'lines:clean': 127, 'moved': 1146, 'not-at-head(declared)': 18, 'skipped(_meta)': 86} hard=0
+1 line inserted at app_command_interface.cpp:4700 {'clean': 7107, 'handler_body_lines:clean': 2, 'header_line:clean': 238, 'lines:clean': 121, 'lines:moved': 6, 'moved': 73, 'not-at-head(declared)': 18, 'skipped(_meta)': 86} hard=0
+record comment line changed   -> exit 0
+record one count changed      -> exit 1

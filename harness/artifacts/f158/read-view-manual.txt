@@ -1,0 +1,2847 @@
+====================================================================================================
+src/bodyModule/ssystem_factory.hpp:263-272 @ b45d3b58 x1
+  P  263   GONE     // THESE FOUR ARE THE COMMAND SEAMS (`flag moon_scaled`, `moon_scale`, and
+  P  264   GONE     // their Sun twins): an operator asked for a size, and the new path's half
+  P  265   GONE     // animates over the ASmooth's 5 s. What config.ini says at startup is NOT
+  P  266   GONE     // one of them - display-scaling ownership is FORMAT-SCOPED (S11.154(b)) and
+  P  267   GONE     // only the config READ knows a value came from config.ini rather than from
+  P  268   GONE     // a command, so it has its own entry point: initDisplayScaling.
+  P  269 ->  193     void setFlagMoonScale(bool b) {
+  P  270 ->  194         ssystem->setFlagMoonScale(b);
+  P  271 ->  195         commandDisplayScale("Moon", b ? ssystem->getMoonScale() : 1.f);
+  P  272 ->  196     }
+  ---- at 9d461bd5, around the surviving lines 193..196
+  T  189  
+  T  190      //! Restart every trail, the display flag is setFlagTrails
+  T  191      void startTrails(bool b);
+  T  192  
+  T  193      void setFlagMoonScale(bool b) {
+  T  194          ssystem->setFlagMoonScale(b);
+  T  195          commandDisplayScale("Moon", b ? ssystem->getMoonScale() : 1.f);
+  T  196      }
+  T  197  
+  T  198      bool getFlagMoonScale(void) const {
+  T  199          return ssystem->getFlagMoonScale();
+====================================================================================================
+src/bodyModule/ssystem_factory.hpp:263-268 @ b45d3b58 x1
+  P  263   GONE     // THESE FOUR ARE THE COMMAND SEAMS (`flag moon_scaled`, `moon_scale`, and
+  P  264   GONE     // their Sun twins): an operator asked for a size, and the new path's half
+  P  265   GONE     // animates over the ASmooth's 5 s. What config.ini says at startup is NOT
+  P  266   GONE     // one of them - display-scaling ownership is FORMAT-SCOPED (S11.154(b)) and
+  P  267   GONE     // only the config READ knows a value came from config.ini rather than from
+  P  268   GONE     // a command, so it has its own entry point: initDisplayScaling.
+  ~P263: 198(0.33) bool getFlagMoonScale(void) const {  234(0.33) bool flagSunScale, double sunScale);  218(0.32) float getMoonScale(void) const {
+  ~P268: 236(0.54) //! Call after initDisplayScaling  225(0.40) commandDisplayScale("Sun", f);  215(0.40) commandDisplayScale("Moon", f);
+====================================================================================================
+src/bodyModule/ssystem_factory.hpp:477-478 @ b45d3b58 x2
+  P  477   GONE         // New-path mirror (S6 Textures seam): contract parity with old
+  P  478   GONE         // Body::createTexSkin - creating/replacing never activates.
+  ~P477: 232(0.36) //! Apply the config.ini display scaling, without transition  136(0.36) //! Set selected planet by english name or "" to select none  21(0.34) * See the TRADEMARKS file for free open project usage requir
+  ~P478: 760(0.43) //! Rewritten at every legacy load, never a save target  343(0.40) body->createTexSkin(texName);  339(0.39) void createTexSkin(const std::string &name, const std::strin
+====================================================================================================
+src/bodyModule/ssystem_factory.hpp:515-526 @ b45d3b58 x4
+  P  515   GONE     // Runtime per-body navigation-radius seam (B10 S5.2, S11.79(e) D9key):
+  P  516   GONE     // `body name <X> datum_radius|ground_radius <km>` sets, at runtime, the SAME
+  P  517   GONE     // two scalars the ssystem.ini keys carry. NEW-PATH ONLY - there is no
+  P  518   GONE     // old-path datum/ground concept (the split scalars replaced the retired
+  P  519   GONE     // `solid` flag, S11.71), so unlike setBodyColor there is nothing to mirror.
+  P  520   GONE     // Value in km (the data-key unit); converted to AU with the loader's own
+  P  521   GONE     // factor (ModularSystem.cpp:842) - the km->AU only, scaling stays the single
+  P  522   GONE     // updateCache authority (I2). Returns false when no such body exists
+  P  523   GONE     // (findBody is nullptr-on-miss) - the S2(f) diagnostic hook. Defined
+  P  524   GONE     // out-of-line (needs AU from sc_const.hpp; keeping it out of this header
+  P  525   GONE     // avoids pulling sc_const's pow10 into <cmath>-less translation units).
+  P  526 ->  372     bool setBodyDatumRadius(const std::string &englishName, double km);
+  ---- at 9d461bd5, around the surviving lines 372..372
+  T  368          }
+  T  369      }
+  T  370  
+  T  371      // Return false when no such body exists
+  T  372      bool setBodyDatumRadius(const std::string &englishName, double km);
+  T  373      bool setBodyGroundRadius(const std::string &englishName, double km);
+  T  374  
+  T  375  	const Vec3f getBodyColor(const std::string &englishName, const std::string& colorName) const {
+====================================================================================================
+src/bodyModule/ssystem_factory.hpp:743-765 @ b45d3b58 x2
+  P  743   GONE     //! Write the observer's current system to a composed system file (B31
+  P  744   GONE     //! slice 2, `body action save`). The system-scope sibling of
+  P  745   GONE     //! reloadCurrentSystem, and the route is Vixy's own [S11.51(a)]: "save a
+  P  746   GONE     //! system on-the-fly as well by targeting without the .disabled or under a
+  P  747   GONE     //! different name from scripts". A body a script pushed into the live tree
+  P  748   GONE     //! becomes ordinary authored data this way - loaded by the ordinary loader
+  P  749   GONE     //! at the next launch, with the identity every authored body already has
+  P  750   GONE     //! (b31-design S4.1: no new identity key).
+  P  751   GONE     //! `filename` empty = this system's OWN composed file (the one an enabled
+  P  752   GONE     //! composed file is read from, i.e. the twin's name without `.disabled`) -
+  P  753   GONE     //! the plain "make this session's system the one that loads next time".
+  P  754   GONE     //! Otherwise a file NAME (not a path) in the same directory; `.ini` is
+  P  755   GONE     //! appended when it carries no extension.
+  P  756   GONE     //! WHAT IT REFUSES, and why the refusals are here rather than in the writer:
+  P  757   GONE     //! this is the seam that owns file placement and the .ini/.ini.disabled
+  P  758   GONE     //! ownership split, so it is the level that can tell a user file from the
+  P  759   GONE     //! machine's and from the frozen legacy corpus. A path separator (the
+  P  760   GONE     //! legacy `ssystem.ini` and every other file of the install are outside this
+  P  761   GONE     //! directory, and they are READ-ONLY forever - D35, S2.0 D13) and the
+  P  762   GONE     //! `.disabled` twin name (machine-owned: the next legacy load would
+  P  763   GONE     //! overwrite the save without a word) are both refused with a S2(f)
+  P  764   GONE     //! diagnostic and nothing is written.
+  P  765 ->  531     bool saveCurrentSystem(const std::string &filename);
+  ---- at 9d461bd5, around the surviving lines 531..531
+  T  527      //! Return false when the current system has no data file
+  T  528      bool reloadCurrentSystem();
+  T  529  
+  T  530      //! Save to its own composed file when filename is empty; refuse a path separator
+  T  531      bool saveCurrentSystem(const std::string &filename);
+  T  532  
+  T  533      void preloadBody(stringHash_t &param);
+  T  534  
+====================================================================================================
+src/bodyModule/ssystem_factory.hpp:756-765 @ b45d3b58 x2
+  P  756   GONE     //! WHAT IT REFUSES, and why the refusals are here rather than in the writer:
+  P  757   GONE     //! this is the seam that owns file placement and the .ini/.ini.disabled
+  P  758   GONE     //! ownership split, so it is the level that can tell a user file from the
+  P  759   GONE     //! machine's and from the frozen legacy corpus. A path separator (the
+  P  760   GONE     //! legacy `ssystem.ini` and every other file of the install are outside this
+  P  761   GONE     //! directory, and they are READ-ONLY forever - D35, S2.0 D13) and the
+  P  762   GONE     //! `.disabled` twin name (machine-owned: the next legacy load would
+  P  763   GONE     //! overwrite the save without a word) are both refused with a S2(f)
+  P  764   GONE     //! diagnostic and nothing is written.
+  P  765 ->  531     bool saveCurrentSystem(const std::string &filename);
+  ---- at 9d461bd5, around the surviving lines 531..531
+  T  527      //! Return false when the current system has no data file
+  T  528      bool reloadCurrentSystem();
+  T  529  
+  T  530      //! Save to its own composed file when filename is empty; refuse a path separator
+  T  531      bool saveCurrentSystem(const std::string &filename);
+  T  532  
+  T  533      void preloadBody(stringHash_t &param);
+  T  534  
+====================================================================================================
+src/coreModule/backup_mgr.cpp:59-73 @ b45d3b58 x2
+  P   59   GONE 		// THE WRITE HALF OF THE BOOKMARK (B34, F24). It used to be
+  P   60   GONE 		// `observatory->moveTo` - the old observer alone - so `position load`
+  P   61   GONE 		// did not move the path that draws, while the fov two lines up was
+  P   62   GONE 		// mirrored long ago (S11.45 T7). observerMoveTo is the dual seam that
+  P   63   GONE 		// every other place-restoring caller already uses (I2), so the camera
+  P   64   GONE 		// lands where the bookmark was taken and the old observer follows.
+  P   65   GONE 		// ASYMMETRY, stated because it is real and is NOT fixed here (S5.68):
+  P   66   GONE 		// the two setters are dual but not equivalent - old clamps latitude to
+  P   67   GONE 		// +-90deg, maps exactly 0 to 1e-6 and floors altitude at 0.1 m; the camera
+  P   68   GONE 		// clamps nothing. A bookmark taken at a clamped value therefore restores
+  P   69   GONE 		// the CAMERA exactly (the read half now reports the camera's own place,
+  P   70   GONE 		// so the round trip closes on the drawn path) and the old observer to
+  P   71   GONE 		// its clamped image of it - the same asymmetry every `moveto` already
+  P   72   GONE 		// has, not one this seam introduces.
+  P   73 ->   54 		coreLink->observerMoveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
+  ---- at 9d461bd5, around the surviving lines 54..54
+  T   50  		core->timeMgr->setJDay(mBackup.jday);
+  T   51  		core->projection->setFov(mBackup.fov); //setFov(mBackup.fov);
+  T   52  		if (Camera::instance)
+  T   53  			Camera::instance->setHalfFov(mBackup.fov * M_PI / 360);
+  T   54  		coreLink->observerMoveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
+  T   55  	}
+  T   56  	core->setHomePlanet(mBackup.home_planet_name);
+  T   57  	core->setFlagIngalaxy(mBackup.current_module);
+====================================================================================================
+src/coreModule/backup_mgr.cpp:82-90 @ b45d3b58 x2
+  P   82   GONE 	// THE READ HALF (B33 S11.131(f) -> B34, F24): the bookmark records the place
+  P   83   GONE 	// the operator is LOOKING FROM, which is the drawn path's - these three
+  P   84   GONE 	// getters ask which path draws and answer for it. Folded WITH the restore
+  P   85   GONE 	// above and not before it: reading the drawn place while restoring into the
+  P   86   GONE 	// old observer alone would have been strictly worse than the coherent
+  P   87   GONE 	// old->old round trip it replaced, which is why F23 refused the read alone.
+  P   88 ->   63 	mBackup.latitude=coreLink->observatoryGetLatitude();
+  P   89 ->   64 	mBackup.longitude=coreLink->observatoryGetLongitude();
+  P   90 ->   65 	mBackup.altitude=coreLink->observatoryGetAltitude();
+  ---- at 9d461bd5, around the surviving lines 63..65
+  T   59  
+  T   60  void CoreBackup::saveBackup()
+  T   61  {
+  T   62  	mBackup.jday=core->timeMgr->getJDay();
+  T   63  	mBackup.latitude=coreLink->observatoryGetLatitude();
+  T   64  	mBackup.longitude=coreLink->observatoryGetLongitude();
+  T   65  	mBackup.altitude=coreLink->observatoryGetAltitude();
+  T   66  	// mBackup.pos_name=core->observatory->getName();
+  T   67  	mBackup.fov = core->drawnFov();
+  T   68  	mBackup.home_planet_name=core->observatory->getHomePlanetEnglishName();
+====================================================================================================
+src/coreModule/cardinals.cpp:78-94 @ b45d3b58 x1
+  P   78 ->   78 	float shift = font->getStrLen(sNorth)/2;
+  P   79 ->   79 
+  P   80 ->   80 	// N for North
+  P   81 ->   81 	pos.set(-1.f, 0.f, 0.12f);
+  P   82   GONE 	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+  P   83 ->   83 
+  P   84 ->   84 	// S for South
+  P   85 ->   85 	pos.set(1.f, 0.f, 0.12f);
+  P   86   GONE 	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+  P   87 ->   87 
+  P   88 ->   88 	// E for East
+  P   89 ->   89 	pos.set(0.f, 1.f, 0.12f);
+  P   90   GONE 	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+  P   91 ->   91 
+  P   92 ->   92 	// W for West
+  P   93 ->   93 	pos.set(0.f, -1.f, 0.12f);
+  P   94   GONE 	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+  ---- at 9d461bd5, around the surviving lines 78..93
+  T   74  	Vec3f pos;
+  T   75  	Vec3d xy;
+  T   76  
+  T   77  
+  T   78  	float shift = font->getStrLen(sNorth)/2;
+  T   79  
+  T   80  	// N for North
+  T   81  	pos.set(-1.f, 0.f, 0.12f);
+  T   82  	if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+  T   83  
+  T   84  	// S for South
+  T   85  	pos.set(1.f, 0.f, 0.12f);
+  T   86  	if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+  T   87  
+  T   88  	// E for East
+  T   89  	pos.set(0.f, 1.f, 0.12f);
+  T   90  	if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+  T   91  
+  T   92  	// W for West
+  T   93  	pos.set(0.f, -1.f, 0.12f);
+  T   94  	if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+  T   95  	if ((internalNav) || (internalAstronomical)) {
+  T   96  		// NW
+====================================================================================================
+src/coreModule/cardinals.cpp:82-94 @ b45d3b58 x1
+  P   82   GONE 	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+  P   83 ->   83 
+  P   84 ->   84 	// S for South
+  P   85 ->   85 	pos.set(1.f, 0.f, 0.12f);
+  P   86   GONE 	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+  P   87 ->   87 
+  P   88 ->   88 	// E for East
+  P   89 ->   89 	pos.set(0.f, 1.f, 0.12f);
+  P   90   GONE 	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+  P   91 ->   91 
+  P   92 ->   92 	// W for West
+  P   93 ->   93 	pos.set(0.f, -1.f, 0.12f);
+  P   94   GONE 	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+  ---- at 9d461bd5, around the surviving lines 83..93
+  T   79  
+  T   80  	// N for North
+  T   81  	pos.set(-1.f, 0.f, 0.12f);
+  T   82  	if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+  T   83  
+  T   84  	// S for South
+  T   85  	pos.set(1.f, 0.f, 0.12f);
+  T   86  	if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+  T   87  
+  T   88  	// E for East
+  T   89  	pos.set(0.f, 1.f, 0.12f);
+  T   90  	if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+  T   91  
+  T   92  	// W for West
+  T   93  	pos.set(0.f, -1.f, 0.12f);
+  T   94  	if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+  T   95  	if ((internalNav) || (internalAstronomical)) {
+  T   96  		// NW
+====================================================================================================
+src/coreModule/cardinals.cpp:95-118 @ b45d3b58 x2
+  P   95 ->   95 	if ((internalNav) || (internalAstronomical)) {
+  P   96 ->   96 		// NW
+  P   97 ->   97 		pos.set(-0.715f, -0.685f, 0.13f);
+  P   98   GONE 		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+  P   99 ->   99 		pos.set(-0.685f, -0.715f, 0.13f);
+  P  100   GONE 		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+  P  101 ->  101 
+  P  102 ->  102 		// SE
+  P  103 ->  103 		pos.set(0.715f, 0.685f, 0.13f);
+  P  104   GONE 		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+  P  105 ->  105 		pos.set(0.685f, 0.715f, 0.13f);
+  P  106   GONE 		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+  P  107 ->  107 
+  P  108 ->  108 		// NE
+  P  109 ->  109 		pos.set(-0.685f, 0.715f, 0.13f);
+  P  110   GONE 		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+  P  111 ->  111 		pos.set(-0.715f, 0.685f, 0.13f);
+  P  112   GONE 		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+  P  113 ->  113 
+  P  114 ->  114 		// SW
+  P  115 ->  115 		pos.set(0.715f, -0.685f, 0.13f);
+  P  116   GONE 		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+  P  117 ->  117 		pos.set(0.685f, -0.715f, 0.13f);
+  P  118   GONE 		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+  ---- at 9d461bd5, around the surviving lines 95..117
+  T   91  
+  T   92  	// W for West
+  T   93  	pos.set(0.f, -1.f, 0.12f);
+  T   94  	if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+  T   95  	if ((internalNav) || (internalAstronomical)) {
+  T   96  		// NW
+  T   97  		pos.set(-0.715f, -0.685f, 0.13f);
+  T   98  		if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+  T   99  		pos.set(-0.685f, -0.715f, 0.13f);
+  T  100  		if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+  T  101  
+  T  102  		// SE
+  T  103  		pos.set(0.715f, 0.685f, 0.13f);
+  T  104  		if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+  T  105  		pos.set(0.685f, 0.715f, 0.13f);
+  T  106  		if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+  T  107  
+  T  108  		// NE
+  T  109  		pos.set(-0.685f, 0.715f, 0.13f);
+  T  110  		if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
+  T  111  		pos.set(-0.715f, 0.685f, 0.13f);
+  T  112  		if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
+  T  113  
+  T  114  		// SW
+  T  115  		pos.set(0.715f, -0.685f, 0.13f);
+  T  116  		if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
+  T  117  		pos.set(0.685f, -0.715f, 0.13f);
+  T  118  		if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
+  T  119  	}
+  T  120  }
+====================================================================================================
+src/coreModule/constellation.cpp:150-161 @ b45d3b58 x2
+  P  150   GONE void Constellation::drawName(s_font *constfont, const Projector* prj) const
+  P  151 ->  150 {
+  P  152 ->  151 	if (!name_fader.getInterstate())
+  P  153 ->  152 		return;
+  P  154 ->  153 	Vec4f Color(labelColor[0], labelColor[1], labelColor[2], name_fader.getInterstate());
+  P  155 ->  154 	// prj->printGravity180(constfont, XYname[0], XYname[1], nameI18, Color, -constfont->getStrLen(nameI18)/2, 0)
+  P  156 ->  155 	float az, alt;
+  P  157   GONE 	Utility::rectToSphe(&az, &alt, prj->getMatJ2000ToEye() * XYZname);
+  P  158 ->  157 	alt += M_PI_2;
+  P  159   GONE 	alt *= (180*180/M_PI)/prj->getFov();
+  P  160 ->  159 	if (alt < 90.f)
+  P  161   GONE 		constfont->printHorizontal(prj, std::min(90.f - alt, 80.f), az*180.f/M_PI-90.f, nameI18, Color, TEXT_ALIGN::
+  ---- at 9d461bd5, around the surviving lines 150..159
+  T  146  
+  T  147  
+  T  148  //! Draw the name
+  T  149  void Constellation::drawName(s_font *constfont, const SkyView &view) const
+  T  150  {
+  T  151  	if (!name_fader.getInterstate())
+  T  152  		return;
+  T  153  	Vec4f Color(labelColor[0], labelColor[1], labelColor[2], name_fader.getInterstate());
+  T  154  	// prj->printGravity180(constfont, XYname[0], XYname[1], nameI18, Color, -constfont->getStrLen(nameI18)/2, 0)
+  T  155  	float az, alt;
+  T  156  	Utility::rectToSphe(&az, &alt, view.getMatJ2000ToEye() * XYZname);
+  T  157  	alt += M_PI_2;
+  T  158  	alt *= (180*180/M_PI)/view.getFov();
+  T  159  	if (alt < 90.f)
+  T  160  		constfont->printHorizontal(view, std::min(90.f - alt, 80.f), az*180.f/M_PI-90.f, nameI18, Color, TEXT_ALIGN:
+  T  161  }
+  T  162  
+====================================================================================================
+src/coreModule/core.cpp:1092-1097 @ b45d3b58 x2
+  P 1092   GONE 		// Both trees, old first (B24-select, INTENT S11.106): the old
+  P 1093   GONE 		// resolver still answers every name it knows, so old-body selection
+  P 1094   GONE 		// is unchanged by construction; a name only the new tree carries
+  P 1095   GONE 		// (composed bodies, B24) now resolves through the ModularObject
+  P 1096   GONE 		// bridge instead of selecting nothing (S11.97(d)).
+  P 1097 -> 1036 		selectObject(ssystemFactory->searchObjectByEnglishName(id));
+  ---- at 9d461bd5, around the surviving lines 1036..1036
+  T 1032  		// hip_stars->setSelected(selected_object);
+  T 1033  		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
+  T 1034  
+  T 1035  	} else if (type=="planet") {
+  T 1036  		selectObject(ssystemFactory->searchObjectByEnglishName(id));
+  T 1037  
+  T 1038  	} else if (type=="nebula") {
+  T 1039  		selectObject(nebulas->search(id));
+====================================================================================================
+src/coreModule/core.cpp:2523-2534 @ b45d3b58 x2
+  P 2523 -> 2610 void Core::setViewOffset(double offset)
+  P 2524 -> 2611 {
+  P 2525 -> 2612 	double off = offset;
+  P 2526 -> 2613 
+  P 2527 -> 2614 	// Error checking for allowed limits
+  P 2528 -> 2615 	if (offset < -0.5) off = -0.5;
+  P 2529 -> 2616 	if (offset > 0.5)  off =  0.5;
+  P 2530 -> 2617 
+  P 2531   GONE 	// S2(f): view_offset is a fraction of the fov radius; values outside
+  P 2532   GONE 	// [-0.5,0.5] are rejected (clamped). Old clamped SILENTLY -- report the
+  P 2533   GONE 	// rejection with the applied value + valid domain so the operator can fix
+  P 2534   GONE 	// the config/command. Screen-identical to old (the clamped value is the
+  ---- at 9d461bd5, around the surviving lines 2610..2617
+  T 2606  	hip_stars->setObjectSizeLimit(f);
+  T 2607  }
+  T 2608  
+  T 2609  // set zoom/center offset (percent of fov radius)
+  T 2610  void Core::setViewOffset(double offset)
+  T 2611  {
+  T 2612  	double off = offset;
+  T 2613  
+  T 2614  	// Error checking for allowed limits
+  T 2615  	if (offset < -0.5) off = -0.5;
+  T 2616  	if (offset > 0.5)  off =  0.5;
+  T 2617  
+  T 2618  	if (off != offset)
+  T 2619  		cLog::get()->write("view_offset " + std::to_string(offset)
+  T 2620  			+ " out of range [-0.5,0.5] (fraction of fov radius); applied "
+====================================================================================================
+src/coreModule/core.hpp:170-173 @ b45d3b58 x2
+  P  170   GONE 	// [merge] theirs' subtitle SRT-locale feature (command side).
+  P  171 ->  171 	void setInitialSrtLocale() {
+  P  172 ->  172 		setSrtLanguage(initialvalue.initial_srtLocale);
+  P  173 ->  173 	}
+  ---- at 9d461bd5, around the surviving lines 171..173
+  T  167  		//printf("Locale %s\n",initialvalue.initial_skyLocale.c_str());
+  T  168  		setSkyLanguage(initialvalue.initial_skyLocale);
+  T  169  	}
+  T  170  
+  T  171  	void setInitialSrtLocale() {
+  T  172  		setSrtLanguage(initialvalue.initial_srtLocale);
+  T  173  	}
+  T  174  
+  T  175  	//! Get the I18 available sky culture names
+  T  176  	std::string getSkyCultureListI18() const;
+====================================================================================================
+src/coreModule/core.hpp:199-200 @ b45d3b58 x2
+  P  199   GONE 	// [merge] theirs' SRT (subtitle) language, command side; stores/returns the locale.
+  P  200 ->  199 	void setSrtLanguage(const std::string& newSrtLocaleName) { srtLanguage = newSrtLocaleName; }
+  ---- at 9d461bd5, around the surviving lines 199..199
+  T  195  	//! Get the current sky language used for sky object labels
+  T  196  	//! @return The name of the locale (e.g fr)
+  T  197  	std::string getSkyLanguage();
+  T  198  
+  T  199  	void setSrtLanguage(const std::string& newSrtLocaleName) { srtLanguage = newSrtLocaleName; }
+  T  200  	std::string getSrtLanguage() { return srtLanguage; }
+  T  201  
+  T  202  	void setInitFov(double f) { InitFov = f; }
+====================================================================================================
+src/coreModule/core.hpp:203-204 @ b45d3b58 x2
+  P  203   GONE 	// [merge] theirs' init_fov script command support.
+  P  204 ->  202 	void setInitFov(double f) { InitFov = f; }
+  ---- at 9d461bd5, around the surviving lines 202..202
+  T  198  
+  T  199  	void setSrtLanguage(const std::string& newSrtLocaleName) { srtLanguage = newSrtLocaleName; }
+  T  200  	std::string getSrtLanguage() { return srtLanguage; }
+  T  201  
+  T  202  	void setInitFov(double f) { InitFov = f; }
+  T  203  
+  T  204  	///////////////////////////////////////////////////////////////////////////////////////
+  T  205  	// Navigation
+====================================================================================================
+src/coreModule/core.hpp:224-226 @ b45d3b58 x1
+  P  224   GONE 	//! Set whether sky position is to be locked. Both-paths mirror (defined in
+  P  225   GONE 	//! core.cpp): old navigation flag + new-path Camera sky-lock (INTENT 11.58).
+  P  226 ->  223 	void setFlagLockSkyPosition(bool b);
+  ---- at 9d461bd5, around the surviving lines 223..223
+  T  219  		return navigation->getFlagTraking();
+  T  220  	}
+  T  221  
+  T  222  	//! Set whether sky position is to be locked
+  T  223  	void setFlagLockSkyPosition(bool b);
+  T  224  	//! Get whether sky position is locked
+  T  225  	bool getFlagLockSkyPosition(void);
+  T  226  
+====================================================================================================
+src/coreModule/core.hpp:510-512 @ b45d3b58 x1
+  P  510   GONE 	//! Pin the rendered body path (flag experimental_path): old/new selection
+  P  511   GONE 	//! replacing the A/B auto-toggle once used.
+  P  512 ->  470 	void setExperimentalPath(bool newPath);
+  ---- at 9d461bd5, around the surviving lines 470..470
+  T  466  		double startTime;		//!< In JD
+  T  467  		double endTime;			//!< In JD
+  T  468  	};
+  T  469  	void dumpSeamTrace(std::ostream &out) const;
+  T  470  	void setExperimentalPath(bool newPath);
+  T  471  	bool getExperimentalPath() const;
+  T  472  	//! Return the fov the drawn path uses, in degrees
+  T  473  	double drawnFov() const;
+====================================================================================================
+src/coreModule/coreLink.hpp:836-852 @ b45d3b58 x2
+  P  836 ->  793 
+  P  837   GONE 	//! B33 (S11.108(f), the F12 template S11.118(f)): the observer place
+  P  838   GONE 	//! readouts ask WHICH PATH DRAWS. Their setters have been dual since the
+  P  839   GONE 	//! camera existed (observerMoveTo / observatorySetLatitude & co), so the two
+  P  840   GONE 	//! authorities agree until something moves ONE of them -- and one shipped
+  P  841   GONE 	//! command does exactly that: `camera action descend` is new-path-only by
+  P  842   GONE 	//! design (the old path's free navigation is the anchor-point observatory,
+  P  843   GONE 	//! there is nothing to mirror), as is free flight. Measured: two
+  P  844   GONE 	//! `camera action descend coef 0.5` leave the old observer at 75 m and the
+  P  845   GONE 	//! camera at 18.50 m. Everything that derives a target from these getters --
+  P  846   GONE 	//! `moveto` with any absent component, `moveto multiply_alt`/`delta_alt`,
+  P  847   GONE 	//! `mode jump ... altitude +-x`, the joypad height axis, the TUI location
+  P  848   GONE 	//! callback -- then computes it from a place nothing is drawing from, and
+  P  849   GONE 	//! writes it to BOTH paths, i.e. teleports the drawn observer.
+  P  850   GONE 	//! No clamp is added here: old's +-90deg latitude clamp and its 0.1 m altitude
+  P  851   GONE 	//! floor live in its SETTER, and a readout that clamps would report a place
+  P  852   GONE 	//! the camera is not at (the setter asymmetry is recorded, not fixed).
+  ---- at 9d461bd5, around the surviving lines 793..793
+  T  789  		latDeg = p[1] * (180.0 / M_PI);
+  T  790  		altMetres = static_cast<double>(p[2]) * (1000.0 * AU);
+  T  791  		return true;
+  T  792  	}
+  T  793  
+  T  794  	double observatoryGetLatitude() const {
+  T  795  		double lat, lon, alt;
+  T  796  		if (drawnPlace(lat, lon, alt))
+====================================================================================================
+src/coreModule/coreLink.hpp:850-852 @ b45d3b58 x2
+  P  850   GONE 	//! No clamp is added here: old's +-90deg latitude clamp and its 0.1 m altitude
+  P  851   GONE 	//! floor live in its SETTER, and a readout that clamps would report a place
+  P  852   GONE 	//! the camera is not at (the setter asymmetry is recorded, not fixed).
+  ~P850: 893(0.41) //! Move to relative latitude where home planet is fixed.  730(0.38) //! Get maximum magnitude at which nebulae hints are display  728(0.38) //! Set maximum magnitude at which nebulae hints are display
+  ~P852: 744(0.44) //! Get whether to draw the names for the selected stars or   742(0.44) //! Set whether to draw the names for the selected stars or   440(0.44) //! Get whether to draw the names for the selected stars or 
+====================================================================================================
+src/coreModule/coreLink.hpp:943-950 @ b45d3b58 x2
+  P  943   GONE 	//! New-path camera free-flight mode. Closes the INTENT S2(c)/S11.19c
+  P  944   GONE 	//! reachability defect (setFreeMode had no command route - the whole
+  P  945   GONE 	//! reference-transition layer was unreachable dynamically). New-path
+  P  946   GONE 	//! capability: the old path's free navigation is the anchor-point
+  P  947   GONE 	//! observatory, there is nothing to mirror.
+  P  948 ->  879 	void cameraSetFreeMode(bool b) {
+  P  949 ->  880 		Camera::instance->setFreeMode(b);
+  P  950 ->  881 	}
+  ---- at 9d461bd5, around the surviving lines 879..881
+  T  875  		return double(core->getFlagIngalaxy());
+  T  876  	}
+  T  877  	void starGalaxyLoadCatalog(const std::string &filename);
+  T  878  
+  T  879  	void cameraSetFreeMode(bool b) {
+  T  880  		Camera::instance->setFreeMode(b);
+  T  881  	}
+  T  882  
+  T  883  	//! Multiply the altitude by coef, coef < 1 descends
+  T  884  	void cameraDescend(float coef) {
+====================================================================================================
+src/coreModule/coreLink.hpp:952-961 @ b45d3b58 x2
+  P  952   GONE 	//! View-directed free descent (B21, S11.72): drive Camera::descend, the
+  P  953   GONE 	//! altitude-geometry authority (view ray near / last-selected body far).
+  P  954   GONE 	//! coef<1 descends, coef>1 ascends. New-path only -- the old-path free
+  P  955   GONE 	//! navigation is the anchor-point observatory, there is nothing to mirror
+  P  956   GONE 	//! (same seam as cameraSetFreeMode). This is the ONLY command-reachable
+  P  957   GONE 	//! driver of the view-directed descent: multAlt/moveRelAlt are UI-key-only
+  P  958   GONE 	//! (B10 finding, S11.71).
+  P  959 ->  884 	void cameraDescend(float coef) {
+  P  960   GONE 		Camera::instance->descend(coef);
+  P  961 ->  886 	}
+  ---- at 9d461bd5, around the surviving lines 884..886
+  T  880  		Camera::instance->setFreeMode(b);
+  T  881  	}
+  T  882  
+  T  883  	//! Multiply the altitude by coef, coef < 1 descends
+  T  884  	void cameraDescend(float coef) {
+  T  885  		Camera::instance->multAlt(coef);
+  T  886  	}
+  T  887  
+  T  888  	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
+  T  889  		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
+====================================================================================================
+src/coreModule/nebula.cpp:408-418 @ b45d3b58 x2
+  P  408   GONE void Nebula::drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont)
+  P  409 ->  409 {
+  P  410 ->  410 	if (m_hidden || !m_selected) return;
+  P  411 ->  411 
+  P  412 ->  412 	Vec4f Color(labelColor[0], labelColor[1], labelColor[2], hintsBrightness);
+  P  413   GONE 	float size = getOnScreenSize(prj);
+  P  414 ->  414 	float shift = 8.f + size/2.f;
+  P  415 ->  415 
+  P  416 ->  416 	std::string nebulaname = getNameI18n();
+  P  417 ->  417 
+  P  418   GONE 	prj->printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);
+  ---- at 9d461bd5, around the surviving lines 409..417
+  T  405  	}
+  T  406  }
+  T  407  
+  T  408  void Nebula::drawName(const SkyView &view, const Vec3f &labelColor, s_font *nebulaFont)
+  T  409  {
+  T  410  	if (m_hidden || !m_selected) return;
+  T  411  
+  T  412  	Vec4f Color(labelColor[0], labelColor[1], labelColor[2], hintsBrightness);
+  T  413  	float size = onScreenSize(view);
+  T  414  	float shift = 8.f + size/2.f;
+  T  415  
+  T  416  	std::string nebulaname = getNameI18n();
+  T  417  
+  T  418  	view.printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);
+  T  419  
+  T  420  	// draw image credit, if it fits easily
+====================================================================================================
+src/coreModule/nebula_mgr.cpp:203 @ b45d3b58 x1
+  P  203   GONE 						n->drawName(prj, labelColor, font);
+  ~P203: 206(0.90) n->drawName(view, labelColor, font);  203(0.90) n->drawName(view, labelColor, font);  196(0.45) n->drawTex(view, eye, sky_brightness, flagBright);
+  ~P203: 206(0.90) n->drawName(view, labelColor, font);  203(0.90) n->drawName(view, labelColor, font);  196(0.45) n->drawTex(view, eye, sky_brightness, flagBright);
+====================================================================================================
+src/coreModule/nebula_mgr.cpp:206 @ b45d3b58 x1
+  P  206   GONE 					n->drawName(prj, labelColor, font);
+  ~P206: 206(0.90) n->drawName(view, labelColor, font);  203(0.90) n->drawName(view, labelColor, font);  196(0.45) n->drawTex(view, eye, sky_brightness, flagBright);
+  ~P206: 206(0.90) n->drawName(view, labelColor, font);  203(0.90) n->drawName(view, labelColor, font);  196(0.45) n->drawTex(view, eye, sky_brightness, flagBright);
+====================================================================================================
+src/coreModule/nebula_mgr.cpp:211-222 @ b45d3b58 x1
+  P  211 ->  211 				if (!displaySpecificHint)
+  P  212   GONE 					n->drawHint(prj, nav, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());
+  P  213 ->  213 				else {
+  P  214 ->  214 					bool displayPicto = false;
+  P  215 ->  215 					if (isolateSelected) {
+  P  216 ->  216 						const std::string nebula_name = n->getNameI18n();
+  P  217 ->  217 						if (selected_nebulas.count(nebula_name))
+  P  218 ->  218 							displayPicto = true;
+  P  219 ->  219 					}
+  P  220 ->  220 					else
+  P  221 ->  221 						displayPicto = true;
+  P  222   GONE 					n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());
+  ---- at 9d461bd5, around the surviving lines 211..221
+  T  207  			}
+  T  208  
+  T  209  			//~ cout << "drawhint " << n->getEnglishName() << endl;
+  T  210  			if ( n->getAngularSize()<size_limit && nbDraw < MAX_HINT) {
+  T  211  				if (!displaySpecificHint)
+  T  212  					n->drawHint(view, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());
+  T  213  				else {
+  T  214  					bool displayPicto = false;
+  T  215  					if (isolateSelected) {
+  T  216  						const std::string nebula_name = n->getNameI18n();
+  T  217  						if (selected_nebulas.count(nebula_name))
+  T  218  							displayPicto = true;
+  T  219  					}
+  T  220  					else
+  T  221  						displayPicto = true;
+  T  222  					n->drawHint(view, data, nbDraw, displayPicto, circleColor, getPictoSize());
+  T  223  				}
+  T  224  			}
+====================================================================================================
+src/coreModule/nebula_mgr.cpp:212 @ b45d3b58 x1
+  P  212   GONE 					n->drawHint(prj, nav, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());
+  ~P212: 212(0.94) n->drawHint(view, data, nbDraw, displaySpecificHint, circleC  222(0.87) n->drawHint(view, data, nbDraw, displayPicto, circleColor, g  206(0.41) n->drawName(view, labelColor, font);
+  ~P212: 212(0.94) n->drawHint(view, data, nbDraw, displaySpecificHint, circleC  222(0.87) n->drawHint(view, data, nbDraw, displayPicto, circleColor, g  206(0.41) n->drawName(view, labelColor, font);
+====================================================================================================
+src/coreModule/nebula_mgr.cpp:222 @ b45d3b58 x1
+  P  222   GONE 					n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());
+  ~P222: 222(0.94) n->drawHint(view, data, nbDraw, displayPicto, circleColor, g  212(0.87) n->drawHint(view, data, nbDraw, displaySpecificHint, circleC  206(0.42) n->drawName(view, labelColor, font);
+  ~P222: 222(0.94) n->drawHint(view, data, nbDraw, displayPicto, circleColor, g  212(0.87) n->drawHint(view, data, nbDraw, displaySpecificHint, circleC  206(0.42) n->drawName(view, labelColor, font);
+====================================================================================================
+src/coreModule/skyDisplay.cpp:226 @ b45d3b58 x5
+  P  226   GONE 	*uMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
+  ~P226: 225(0.87) *uMat = (ptype == AL) ? view.getMatLocalToEye() : view.getMa  1021(0.38) Mat4f MVP = view.getMatProjectionOrtho2D();  930(0.38) Mat4f MVP = view.getMatProjectionOrtho2D();
+  ~P226: 225(0.87) *uMat = (ptype == AL) ? view.getMatLocalToEye() : view.getMa  1021(0.38) Mat4f MVP = view.getMatProjectionOrtho2D();  930(0.38) Mat4f MVP = view.getMatProjectionOrtho2D();
+====================================================================================================
+src/coreModule/skyDisplay.cpp:419-1031 @ b45d3b58 x1
+  P  419   GONE void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPos)
+  P  420 ->  419 {
+  P  421 ->  420 	if (fader.isZero())
+  P  422 ->  421 		return;
+  P  423 ->  422 
+  P  424 ->  423 	Vec4f colorT (color[0], color[1], color[2], fader);
+  P  425 ->  424 
+  P  426 ->  425 	double tempDE, tempRA;
+  P  427 ->  426 	float alt, az, aza, alta, ra, dec, mn;
+  P  428   GONE 	double fov = prj->getFov() / 360.f;
+  P  429 ->  428 	Utility::rectToSphe(&tempRA, &tempDE, equPos);
+  P  430 ->  429 	// calculate ra dec
+  P  431 ->  430 	ra = tempRA * rad2deg;
+  P  432 ->  431 	if (ra < 0)
+  P  433 ->  432 		ra = 360. + ra;
+  P  434 ->  433 	ra = ra * 24. / 360.;
+  P  435 ->  434 	dec = tempDE * rad2deg;
+  P  436 ->  435 	// calculate alt az position
+  P  437   GONE 	Vec3d localPos = nav->earthEquToLocal(equPos);
+  P  438 ->  437 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  P  439 ->  438 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  P  440 ->  439 	if (tempRA > M_PI * 2)
+  P  441 ->  440 		tempRA -= M_PI * 2;
+  P  442 ->  441 	az = (tempRA)*rad2deg;
+  P  443 ->  442 	alt = tempDE * rad2deg;
+  P  444 ->  443 	aza = (M_PI - tempRA - (0.1 * fov)) * rad2deg;
+  P  445 ->  444 	// ALT
+  P  446 ->  445 	alta = (tempDE - (0.05 * fov * 2)) * rad2deg;
+  P  447 ->  446 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  P  448 ->  447 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  P  449   GONE 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+  P  450 ->  449 		double angle;
+  P  451 ->  450 		const double dx = pt1[0] - pt2[0];
+  P  452 ->  451 		const double dy = pt1[1] - pt2[1];
+  P  453 ->  452 		const double dq = dx * dx + dy * dy;
+  P  454 ->  453 		const double d = sqrt(dq);
+  P  455 ->  454 		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  P  456 ->  455 		if (pt1[0] < pt2[0])
+  P  457 ->  456 			angle *= -1;
+  P  458 ->  457 		std::ostringstream oss;
+  P  459   GONE 		Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  460 ->  459 		//sequence of position transformations from the coordinates of punts
+  P  461 ->  460 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  P  462 ->  461 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P  463 ->  462 		oss << "alt:";
+  P  464 ->  463 		if (alt < 0.) {
+  P  465 ->  464 			alt = -alt;
+  P  466 ->  465 			oss << "-";
+  P  467 ->  466 		}
+  P  468 ->  467 		else
+  P  469 ->  468 			oss << "+";
+  P  470 ->  469 		if (alt < 10.)
+  P  471 ->  470 			oss << "0";
+  P  472 ->  471 		oss << truncf(alt) << "\xc2\xb0";
+  P  473 ->  472 		mn = truncf((alt - truncf(alt)) * 60);
+  P  474 ->  473 		if (mn < 10)
+  P  475 ->  474 			oss << "0";
+  P  476 ->  475 		oss << mn << "'";
+  P  477 ->  476 		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  478 ->  477 		oss.clear();
+  P  479 ->  478 	}
+  P  480 ->  479 	// AZ
+  P  481 ->  480 	alta = tempDE * rad2deg;
+  P  482 ->  481 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  P  483 ->  482 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  P  484   GONE 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+  P  485 ->  484 		double angle;
+  P  486 ->  485 		const double dx = pt1[0] - pt2[0];
+  P  487 ->  486 		const double dy = pt1[1] - pt2[1];
+  P  488 ->  487 		const double dq = dx * dx + dy * dy;
+  P  489 ->  488 		const double d = sqrt(dq);
+  P  490 ->  489 		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  P  491 ->  490 		if (pt1[0] < pt2[0])
+  P  492 ->  491 			angle *= -1;
+  P  493 ->  492 		std::ostringstream oss;
+  P  494   GONE 		Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  495 ->  494 		//sequence of position transformations from punts coordinates
+  P  496 ->  495 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  P  497 ->  496 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P  498 ->  497 		oss << "az :";
+  P  499 ->  498 		if (az < 0.) {
+  P  500 ->  499 			az = -az;
+  P  501 ->  500 			oss << "-";
+  P  502 ->  501 		}
+  P  503 ->  502 		else
+  P  504 ->  503 			oss << "+";
+  P  505 ->  504 		if (az < 100.)
+  P  506 ->  505 			oss << "0";
+  P  507 ->  506 		if (az < 10.)
+  P  508 ->  507 			oss << "0";
+  P  509 ->  508 		oss << truncf(az) << "\xc2\xb0";
+  P  510 ->  509 		mn = truncf((az - truncf(az)) * 60);
+  P  511 ->  510 		if (mn < 10)
+  P  512 ->  511 			oss << "0";
+  P  513 ->  512 		oss << mn << "'";
+  P  514 ->  513 		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  515 ->  514 		oss.clear();
+  P  516 ->  515 	}
+  P  517 ->  516 	// RA
+  P  518 ->  517 	alta = (tempDE + (0.1 * fov * 2)) * rad2deg;
+  P  519 ->  518 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  P  520 ->  519 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  P  521   GONE 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+  P  522 ->  521 		double angle;
+  P  523 ->  522 		const double dx = pt1[0] - pt2[0];
+  P  524 ->  523 		const double dy = pt1[1] - pt2[1];
+  P  525 ->  524 		const double dq = dx * dx + dy * dy;
+  P  526 ->  525 		const double d = sqrt(dq);
+  P  527 ->  526 		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  P  528 ->  527 		if (pt1[0] < pt2[0])
+  P  529 ->  528 			angle *= -1;
+  P  530 ->  529 		std::ostringstream oss;
+  P  531   GONE 		Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  532 ->  531 		//sequence of position transformations from the coordinates of punts
+  P  533 ->  532 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  P  534 ->  533 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P  535 ->  534 		oss << "ra :";
+  P  536 ->  535 		if (ra < 10.)
+  P  537 ->  536 			oss << "0";
+  P  538 ->  537 		oss << truncf(ra) << "h";
+  P  539 ->  538 		mn = truncf((ra - truncf(ra)) * 60);
+  P  540 ->  539 		if (mn < 10)
+  P  541 ->  540 			oss << "0";
+  P  542 ->  541 		oss << mn << "m";
+  P  543 ->  542 		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  544 ->  543 		oss.clear();
+  P  545 ->  544 	}
+  P  546 ->  545 	// DEC
+  P  547 ->  546 	alta = (tempDE + (0.05 * fov * 2)) * rad2deg;
+  P  548 ->  547 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  P  549 ->  548 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  P  550 ->  549 
+  P  551   GONE 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+  P  552 ->  551 		double angle;
+  P  553 ->  552 		const double dx = pt1[0] - pt2[0];
+  P  554 ->  553 		const double dy = pt1[1] - pt2[1];
+  P  555 ->  554 		const double dq = dx * dx + dy * dy;
+  P  556 ->  555 		const double d = sqrt(dq);
+  P  557 ->  556 		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  P  558 ->  557 		if (pt1[0] < pt2[0])
+  P  559 ->  558 			angle *= -1;
+  P  560 ->  559 		std::ostringstream oss;
+  P  561   GONE 		Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  562 ->  561 		//sequence of position transformations from the coordinates of punts
+  P  563 ->  562 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  P  564 ->  563 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P  565 ->  564 		oss << "dec:";
+  P  566 ->  565 		if (dec < 0.) {
+  P  567 ->  566 			dec = -dec;
+  P  568 ->  567 			oss << "-";
+  P  569 ->  568 		}
+  P  570 ->  569 		else
+  P  571 ->  570 			oss << "+";
+  P  572 ->  571 		if (dec < 10.)
+  P  573 ->  572 			oss << "0";
+  P  574 ->  573 		oss << truncf(dec) << "\xc2\xb0";
+  P  575 ->  574 		mn = truncf((dec - truncf(dec)) * 60);
+  P  576 ->  575 		if (mn < 10)
+  P  577 ->  576 			oss << "0";
+  P  578 ->  577 		oss << mn << "'";
+  P  579 ->  578 		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  580 ->  579 		oss.clear();
+  P  581 ->  580 	}
+  P  582 ->  581 }
+  P  583 ->  582 
+  P  584 ->  583 
+  P  585 ->  584 SkyMouse::SkyMouse() : SkyDisplay(PROJECTION_TYPE::AL)
+  P  586 ->  585 {}
+  P  587 ->  586 
+  P  588   GONE void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldPos)
+  P  589 ->  588 {
+  P  590 ->  589 	if (fader.isZero())
+  P  591 ->  590 		return;
+  P  592 ->  591 
+  P  593 ->  592 	Vec4f colorT (color[0], color[1], color[2], fader);
+  P  594 ->  593 	int x,y;
+  P  595 ->  594 	SDL_GetMouseState(&x,&y);
+  P  596   GONE 	Vec3d equPos = prj->getCursorPosEqu(x, y);
+  P  597 ->  596 	bool orientation = CoreLink::instance->skyDisplayMgrCheckDraw();
+  P  598 ->  597 
+  P  599 ->  598 	double tempDE, tempRA;
+  P  600 ->  599 	float alt, az, aza, alta, ra, dec, mn;
+  P  601   GONE 	double fov = prj->getFov() / 360.f;
+  P  602 ->  601 	Utility::rectToSphe(&tempRA, &tempDE, equPos);
+  P  603 ->  602 	// calculate ra dec
+  P  604 ->  603 	ra = tempRA * rad2deg;
+  P  605 ->  604 	if (ra < 0)
+  P  606 ->  605 		ra = 360. + ra;
+  P  607 ->  606 	ra = ra * 24. / 360.;
+  P  608 ->  607 	dec = tempDE * rad2deg;
+  P  609 ->  608 	// calculate alt az position
+  P  610   GONE 	Vec3d localPos = nav->earthEquToLocal(equPos);
+  P  611 ->  610 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  P  612 ->  611 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  P  613 ->  612 	if (tempRA > M_PI * 2)
+  P  614 ->  613 		tempRA -= M_PI * 2;
+  P  615 ->  614 	az = (tempRA)*rad2deg;
+  P  616 ->  615 	alt = tempDE * rad2deg;
+  P  617 ->  616 	aza = (M_PI - tempRA - (0.1 * fov)) * rad2deg;
+  P  618 ->  617 	// ALT
+  P  619 ->  618 	alta = (tempDE - (0.05 * fov * 2)) * rad2deg;
+  P  620 ->  619 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  P  621 ->  620 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  P  622   GONE 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+  P  623 ->  622 		double angle;
+  P  624 ->  623 		const double dx = pt1[0] - pt2[0];
+  P  625 ->  624 		const double dy = pt1[1] - pt2[1];
+  P  626 ->  625 		const double dq = dx * dx + dy * dy;
+  P  627 ->  626 		const double d = sqrt(dq);
+  P  628 ->  627 		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  P  629 ->  628 		if (pt1[0] < pt2[0])
+  P  630 ->  629 			angle *= -1;
+  P  631 ->  630 		std::ostringstream oss;
+  P  632   GONE 		Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  633 ->  632 		//sequence of position transformations from the coordinates of punts
+  P  634 ->  633 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  P  635 ->  634 		if (orientation)
+  P  636 ->  635 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+  P  637 ->  636 		else
+  P  638 ->  637 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P  639 ->  638 		oss << "alt:";
+  P  640 ->  639 		if (alt < 0.) {
+  P  641 ->  640 			alt = -alt;
+  P  642 ->  641 			oss << "-";
+  P  643 ->  642 		} else
+  P  644 ->  643 			oss << "+";
+  P  645 ->  644 		if (alt < 10.)
+  P  646 ->  645 			oss << "0";
+  P  647 ->  646 		oss << truncf(alt) << "\xc2\xb0";
+  P  648 ->  647 		mn = truncf((alt - truncf(alt)) * 60);
+  P  649 ->  648 		if (mn < 10)
+  P  650 ->  649 			oss << "0";
+  P  651 ->  650 		oss << mn << "'";
+  P  652 ->  651 		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  653 ->  652 		oss.clear();
+  P  654 ->  653 	}
+  P  655 ->  654 	// AZ
+  P  656 ->  655 	alta = tempDE * rad2deg;
+  P  657 ->  656 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  P  658 ->  657 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  P  659   GONE 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+  P  660 ->  659 		double angle;
+  P  661 ->  660 		const double dx = pt1[0] - pt2[0];
+  P  662 ->  661 		const double dy = pt1[1] - pt2[1];
+  P  663 ->  662 		const double dq = dx * dx + dy * dy;
+  P  664 ->  663 		const double d = sqrt(dq);
+  P  665 ->  664 		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  P  666 ->  665 		if (pt1[0] < pt2[0])
+  P  667 ->  666 			angle *= -1;
+  P  668 ->  667 		std::ostringstream oss;
+  P  669   GONE 		Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  670 ->  669 		//sequence of position transformations from the coordinates of punts
+  P  671 ->  670 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  P  672 ->  671 		if (orientation)
+  P  673 ->  672 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+  P  674 ->  673 		else
+  P  675 ->  674 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P  676 ->  675 		oss << "az :";
+  P  677 ->  676 		if (az < 0.) {
+  P  678 ->  677 			az = -az;
+  P  679 ->  678 			oss << "-";
+  P  680 ->  679 		}
+  P  681 ->  680 		else
+  P  682 ->  681 			oss << "+";
+  P  683 ->  682 		if (az < 100.)
+  P  684 ->  683 			oss << "0";
+  P  685 ->  684 		if (az < 10.)
+  P  686 ->  685 			oss << "0";
+  P  687 ->  686 		oss << truncf(az) << "\xc2\xb0";
+  P  688 ->  687 		mn = truncf((az - truncf(az)) * 60);
+  P  689 ->  688 		if (mn < 10)
+  P  690 ->  689 			oss << "0";
+  P  691 ->  690 		oss << mn << "'";
+  P  692 ->  691 		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  693 ->  692 		oss.clear();
+  P  694 ->  693 	}
+  P  695 ->  694 	// RA
+  P  696 ->  695 	alta = (tempDE + (0.1 * fov * 2)) * rad2deg;
+  P  697 ->  696 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  P  698 ->  697 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  P  699   GONE 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+  P  700 ->  699 		double angle;
+  P  701 ->  700 		const double dx = pt1[0] - pt2[0];
+  P  702 ->  701 		const double dy = pt1[1] - pt2[1];
+  P  703 ->  702 		const double dq = dx * dx + dy * dy;
+  P  704 ->  703 		const double d = sqrt(dq);
+  P  705 ->  704 		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  P  706 ->  705 		if (pt1[0] < pt2[0])
+  P  707 ->  706 			angle *= -1;
+  P  708 ->  707 		std::ostringstream oss;
+  P  709   GONE 		Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  710 ->  709 		//sequence of position transformations from the coordinates of punts
+  P  711 ->  710 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  P  712 ->  711 		if (orientation)
+  P  713 ->  712 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+  P  714 ->  713 		else
+  P  715 ->  714 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P  716 ->  715 		oss << "ra :";
+  P  717 ->  716 		if (ra < 10.)
+  P  718 ->  717 			oss << "0";
+  P  719 ->  718 		oss << truncf(ra) << "h";
+  P  720 ->  719 		mn = truncf((ra - truncf(ra)) * 60);
+  P  721 ->  720 		if (mn < 10)
+  P  722 ->  721 			oss << "0";
+  P  723 ->  722 		oss << mn << "m";
+  P  724 ->  723 		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  725 ->  724 		oss.clear();
+  P  726 ->  725 	}
+  P  727 ->  726 	// DEC
+  P  728 ->  727 	alta = (tempDE + (0.05 * fov * 2)) * rad2deg;
+  P  729 ->  728 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  P  730 ->  729 	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  P  731 ->  730 
+  P  732   GONE 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+  P  733 ->  732 		double angle;
+  P  734 ->  733 		const double dx = pt1[0] - pt2[0];
+  P  735 ->  734 		const double dy = pt1[1] - pt2[1];
+  P  736 ->  735 		const double dq = dx * dx + dy * dy;
+  P  737 ->  736 		const double d = sqrt(dq);
+  P  738 ->  737 		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  P  739 ->  738 		if (pt1[0] < pt2[0])
+  P  740 ->  739 			angle *= -1;
+  P  741 ->  740 		std::ostringstream oss;
+  P  742   GONE 		Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  743 ->  742 		//sequence of position transformations from the coordinates of punts
+  P  744 ->  743 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  P  745 ->  744 		if (orientation)
+  P  746 ->  745 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+  P  747 ->  746 		else
+  P  748 ->  747 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P  749 ->  748 		oss << "dec:";
+  P  750 ->  749 		if (dec < 0.) {
+  P  751 ->  750 			dec = -dec;
+  P  752 ->  751 			oss << "-";
+  P  753 ->  752 		}
+  P  754 ->  753 		else
+  P  755 ->  754 			oss << "+";
+  P  756 ->  755 		if (dec < 10.)
+  P  757 ->  756 			oss << "0";
+  P  758 ->  757 		oss << truncf(dec) << "\xc2\xb0";
+  P  759 ->  758 		mn = truncf((dec - truncf(dec)) * 60);
+  P  760 ->  759 		if (mn < 10)
+  P  761 ->  760 			oss << "0";
+  P  762 ->  761 		oss << mn << "'";
+  P  763 ->  762 		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  764 ->  763 		oss.clear();
+  P  765 ->  764 	}
+  P  766 ->  765 }
+  P  767 ->  766 
+  P  768 ->  767 SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
+  P  769 ->  768 {}
+  P  770 ->  769 
+  P  771   GONE void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+  P  772 ->  771 {
+  P  773 ->  772 	if (fader.isZero()) {
+  P  774 ->  773 		return;
+  P  775 ->  774 	}
+  P  776 ->  775 
+  P  777 ->  776 	Vec4f colorT (color[0], color[1], color[2], fader);
+  P  778 ->  777 	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
+  P  779 ->  778 	// for Selected position
+  P  780 ->  779 	// calculate alt az position
+  P  781   GONE 	Vec3d localPos = nav->earthEquToLocal(equPos);
+  P  782 ->  781 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  P  783 ->  782 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  P  784 ->  783 	if (tempRA > M_PI * 2)
+  P  785 ->  784 		tempRA -= M_PI * 2;
+  P  786 ->  785 	alt1 = tempDE;
+  P  787 ->  786 	az1 = M_PI - tempRA;
+  P  788 ->  787 	// end of calculate alt az position
+  P  789 ->  788 
+  P  790 ->  789 	// for Old position
+  P  791 ->  790 	// calculate alt az position
+  P  792   GONE 	localPos = nav->earthEquToLocal(oldEquPos);
+  P  793 ->  792 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  P  794 ->  793 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  P  795 ->  794 	if (tempRA > M_PI * 2)
+  P  796 ->  795 		tempRA -= M_PI * 2;
+  P  797 ->  796 	alt2 = tempDE;
+  P  798 ->  797 	az2 = M_PI - tempRA;
+  P  799 ->  798 	// end of calculate alt az position
+  P  800 ->  799 	if ((az2 - az1) > M_PI)
+  P  801 ->  800 		az1 += 2 * M_PI;
+  P  802 ->  801 	if ((az1 - az2) > M_PI)
+  P  803 ->  802 		az2 += 2 * M_PI;
+  P  804 ->  803 
+  P  805 ->  804 	// Draw orthodromy
+  P  806 ->  805 	clear();
+  P  807 ->  806 	Utility::spheToRect(az1, alt1, pt1);
+  P  808 ->  807 	int npoints = 21;
+  P  809 ->  808 	float delta = (az1 - az2) / (npoints - 1);
+  P  810 ->  809 	for (int i = 0; i < npoints; i++) {
+  P  811 ->  810 		*(dataSky++) = pt1;
+  P  812 ->  811 		++dataSkySize;
+  P  813 ->  812 
+  P  814 ->  813 		azt = az1 - delta * i;
+  P  815 ->  814 		if (az1-az2 != 0)
+  P  816 ->  815 		  altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1
+  P  817 ->  816         else
+  P  818 ->  817 		  altt = M_PI/2.;
+  P  819 ->  818 		Utility::spheToRect(azt, altt, pt1);
+  P  820 ->  819 		if (i == 12)
+  P  821 ->  820 			pt5 = pt1;
+  P  822 ->  821 		*(dataSky++) = pt1;
+  P  823 ->  822 		++dataSkySize;
+  P  824 ->  823 	}
+  P  825 ->  824 
+  P  826 ->  825 	if (m_dataSize != dataSkySize) {
+  P  827 ->  826 		m_dataSize = dataSkySize;
+  P  828 ->  827 		build();
+  P  829 ->  828 	}
+  P  830 ->  829 	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
+  P  831 ->  830 
+  P  832   GONE 	SkyDisplay::draw(prj,nav);
+  P  833 ->  832 
+  P  834 ->  833 	// Text
+  P  835 ->  834 	float ang, mn, sec;
+  P  836 ->  835 	ang = acos(sin(alt1) * sin(alt2) + cos(alt1) * cos(alt2) * cos(az2 - az1)) * rad2deg;
+  P  837 ->  836 	Utility::spheToRect(az1, alt1, pt3);
+  P  838 ->  837 	Utility::spheToRect(az2, alt2, pt4);
+  P  839 ->  838 
+  P  840   GONE 	(prj->*proj_func)(pt3, pt1);
+  P  841   GONE 	(prj->*proj_func)(pt4, pt2);
+  P  842 ->  841 	double angle;
+  P  843 ->  842 	const double dx = pt1[0] - pt2[0];
+  P  844 ->  843 	const double dy = pt1[1] - pt2[1];
+  P  845 ->  844 	const double dq = dx * dx + dy * dy;
+  P  846 ->  845 	const double d = sqrt(dq);
+  P  847 ->  846 	angle = acos((pt1[1] - pt2[1]) / (d + 0.000001));
+  P  848 ->  847 	if (pt1[0] < pt2[0])
+  P  849 ->  848 		angle *= -1;
+  P  850 ->  849 	std::ostringstream oss;
+  P  851   GONE 	Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  852 ->  851 	//localPos = nav->earthEquToLocal(pt5);
+  P  853   GONE 	(prj->*proj_func)(pt5, pt0);
+  P  854 ->  853 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
+  P  855 ->  854 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P  856 ->  855 	if (truncf(ang) >= 1) {
+  P  857 ->  856 		oss << truncf(ang) << "\xc2\xb0";
+  P  858 ->  857 		mn = truncf((ang - truncf(ang)) * 60);
+  P  859 ->  858 		if (mn < 10)
+  P  860 ->  859 			oss << "0";
+  P  861 ->  860 		oss << mn << "'";
+  P  862 ->  861 	} else {
+  P  863 ->  862 		oss << truncf(ang * 60) << "'";
+  P  864 ->  863 		sec = truncf((ang * 60 - truncf(ang * 60)) * 60);
+  P  865 ->  864 		if (sec < 10)
+  P  866 ->  865 			oss << "0";
+  P  867 ->  866 		oss << sec << "\"";
+  P  868 ->  867 	}
+  P  869 ->  868 	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  870 ->  869 	oss.clear();
+  P  871 ->  870 }
+  P  872 ->  871 
+  P  873 ->  872 SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::EQ)
+  P  874 ->  873 {}
+  P  875 ->  874 
+  P  876   GONE void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+  P  877 ->  876 {
+  P  878 ->  877 	if (fader.isZero() || (equPos == oldEquPos)) {
+  P  879 ->  878 		return;
+  P  880 ->  879 	}
+  P  881 ->  880 	Vec4f colorT (color[0], color[1], color[2], fader);
+  P  882 ->  881 	double de1, ra1, de2, ra2, dem, ram;
+  P  883 ->  882 	// for Old position
+  P  884 ->  883 	Utility::rectToSphe(&ra1, &de1, oldEquPos);
+  P  885 ->  884 	// for Selected position
+  P  886 ->  885 	Utility::rectToSphe(&ra2, &de2, equPos);
+  P  887 ->  886 	if ((ra2 - ra1) > M_PI)
+  P  888 ->  887 		ra1 += 2 * M_PI;
+  P  889 ->  888 	if ((ra1 - ra2) > M_PI)
+  P  890 ->  889 		ra2 += 2 * M_PI;
+  P  891 ->  890 	float distM, Rv;
+  P  892 ->  891 	ram = (ra1 + ra2) / 2;
+  P  893 ->  892 	dem = (de1 + de2) / 2;
+  P  894 ->  893 	Rv = atan((ra2 - ra1) * cos(dem) / (de2 - de1 + 0.00001));
+  P  895 ->  894 	distM = fabs((de2 - de1) / cos(Rv) * rad2deg * 60);
+  P  896 ->  895 	Utility::spheToRect(ra1, de1, pt3);
+  P  897 ->  896 	Utility::spheToRect(ra2, de2, pt4);
+  P  898 ->  897 	Utility::spheToRect(ram, dem, pt5);
+  P  899   GONE 	(prj->*proj_func)(pt3, pt1);
+  P  900   GONE 	(prj->*proj_func)(pt4, pt2);
+  P  901   GONE 	(prj->*proj_func)(pt5, pt0);
+  P  902 ->  901 	double angle;
+  P  903 ->  902 	const double dx = pt1[0] - pt2[0];
+  P  904 ->  903 	const double dy = pt1[1] - pt2[1];
+  P  905 ->  904 	const double dq = dx * dx + dy * dy;
+  P  906 ->  905 	const double d = sqrt(dq);
+  P  907 ->  906 	angle = acos((pt1[1] - pt2[1]) / (d + 0.000001));
+  P  908 ->  907 	if (pt1[0] < pt2[0])
+  P  909 ->  908 		angle *= -1;
+  P  910 ->  909 	clear();
+  P  911 ->  910 	for (int j = 0; (pi_div_2 - fabs(de1 * (10 - j) / 10 + de2 * j / 10)) > 0.001; j++) {
+  P  912 ->  911 		Utility::spheToRect((ra1 * (10 - j) / 10 + ra2 * j / 10), (de1 * (10 - j) / 10 + de2 * j / 10), pt1);
+  P  913 ->  912 		*(dataSky++) = pt1;
+  P  914 ->  913 		++dataSkySize;
+  P  915 ->  914 
+  P  916 ->  915 		Utility::spheToRect((ra1 * (9 - j) / 10 + ra2 * (j + 1) / 10), (de1 * (9 - j) / 10 + de2 * (j + 1) / 10), pt
+  P  917 ->  916 		*(dataSky++) = pt2;
+  P  918 ->  917 		++dataSkySize;
+  P  919 ->  918 	}
+  P  920 ->  919 
+  P  921 ->  920 	if (m_dataSize != dataSkySize) {
+  P  922 ->  921 		m_dataSize = dataSkySize;
+  P  923 ->  922 		build();
+  P  924 ->  923 	}
+  P  925 ->  924 	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
+  P  926 ->  925 
+  P  927   GONE 	SkyDisplay::draw(prj,nav);
+  P  928 ->  927 
+  P  929 ->  928 	//draw_text(prj, nav);
+  P  930 ->  929 	std::ostringstream oss;
+  P  931   GONE 	Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P  932 ->  931 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
+  P  933 ->  932 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), 3 * pi_div_2 - angle);
+  P  934 ->  933 	oss << truncf(distM) << " nmi"; // for km *1.85185
+  P  935 ->  934 	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P  936 ->  935 	oss.clear();
+  P  937 ->  936 }
+  P  938 ->  937 
+  P  939 ->  938 SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::AL)
+  P  940 ->  939 {}
+  P  941 ->  940 
+  P  942   GONE void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+  P  943 ->  942 {
+  P  944 ->  943 	if (fader.isZero()) {
+  P  945 ->  944 		return;
+  P  946 ->  945 	}
+  P  947 ->  946 
+  P  948 ->  947 	Vec4f colorT (color[0], color[1], color[2], fader);
+  P  949 ->  948 	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
+  P  950 ->  949 	// for Selected position
+  P  951 ->  950 	// calculate alt az position
+  P  952   GONE 	Vec3d localPos = nav->earthEquToLocal(equPos);
+  P  953 ->  952 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  P  954 ->  953 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  P  955 ->  954 	if (tempRA > M_PI * 2)
+  P  956 ->  955 		tempRA -= M_PI * 2;
+  P  957 ->  956 	alt1 = tempDE;
+  P  958 ->  957 	az1 = M_PI - tempRA;
+  P  959 ->  958 	// end of calculate alt az position
+  P  960 ->  959 
+  P  961 ->  960 	// for Old position
+  P  962 ->  961 	// calculate alt az position
+  P  963   GONE 	localPos = nav->earthEquToLocal(oldEquPos);
+  P  964 ->  963 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  P  965 ->  964 	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  P  966 ->  965 	if (tempRA > M_PI * 2)
+  P  967 ->  966 		tempRA -= M_PI * 2;
+  P  968 ->  967 	alt2 = tempDE;
+  P  969 ->  968 	az2 = M_PI - tempRA;
+  P  970 ->  969 	// end of calculate alt az position
+  P  971 ->  970 	if ((az2 - az1) > M_PI)
+  P  972 ->  971 		az1 += 2 * M_PI;
+  P  973 ->  972 	if ((az1 - az2) > M_PI)
+  P  974 ->  973 		az2 += 2 * M_PI;
+  P  975 ->  974 
+  P  976 ->  975 	// Draw orthodromy
+  P  977 ->  976 	clear();
+  P  978 ->  977 	Utility::spheToRect(az1, alt1, pt1);
+  P  979 ->  978 	int npoints = 21;
+  P  980 ->  979 	float delta = (az1 - az2) / (npoints - 1);
+  P  981 ->  980 	for (int i = 0; i < npoints; i++) {
+  P  982 ->  981 		*(dataSky++) = pt1;
+  P  983 ->  982 		++dataSkySize;
+  P  984 ->  983 
+  P  985 ->  984 		azt = az1 - delta * i;
+  P  986 ->  985 		if (az1-az2 != 0)
+  P  987 ->  986 		  altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1
+  P  988 ->  987 		else
+  P  989 ->  988 		  altt = M_PI/2.;
+  P  990 ->  989 		Utility::spheToRect(azt, altt, pt1);
+  P  991 ->  990 		if (i == 12)
+  P  992 ->  991 			pt5 = pt1;
+  P  993 ->  992 		*(dataSky++) = pt1;
+  P  994 ->  993 		++dataSkySize;
+  P  995 ->  994 	}
+  P  996 ->  995 
+  P  997 ->  996 	if (m_dataSize != dataSkySize) {
+  P  998 ->  997 		m_dataSize = dataSkySize;
+  P  999 ->  998 		build();
+  P 1000 ->  999 	}
+  P 1001 -> 1000 	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
+  P 1002 -> 1001 
+  P 1003   GONE 	SkyDisplay::draw(prj,nav);
+  P 1004 -> 1003 
+  P 1005 -> 1004 	// Text
+  P 1006 -> 1005 	float ang;
+  P 1007 -> 1006 	ang = acos(sin(alt1) * sin(alt2) + cos(alt1) * cos(alt2) * cos(az2 - az1)) * rad2deg;
+  P 1008 -> 1007 	Utility::spheToRect(az1, alt1, pt3);
+  P 1009 -> 1008 	Utility::spheToRect(az2, alt2, pt4);
+  P 1010 -> 1009 
+  P 1011   GONE 	(prj->*proj_func)(pt3, pt1);
+  P 1012   GONE 	(prj->*proj_func)(pt4, pt2);
+  P 1013 -> 1012 	double angle;
+  P 1014 -> 1013 	const double dx = pt1[0] - pt2[0];
+  P 1015 -> 1014 	const double dy = pt1[1] - pt2[1];
+  P 1016 -> 1015 	const double dq = dx * dx + dy * dy;
+  P 1017 -> 1016 	const double d = sqrt(dq);
+  P 1018 -> 1017 	angle = acos((pt1[1] - pt2[1]) / (d + 0.000001));
+  P 1019 -> 1018 	if (pt1[0] < pt2[0])
+  P 1020 -> 1019 		angle *= -1;
+  P 1021 -> 1020 	std::ostringstream oss;
+  P 1022   GONE 	Mat4f MVP = prj->getMatProjectionOrtho2D();
+  P 1023 -> 1022 	//localPos = nav->earthEquToLocal(pt5);
+  P 1024   GONE 	(prj->*proj_func)(pt5, pt0);
+  P 1025 -> 1024 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
+  P 1026 -> 1025 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  P 1027 -> 1026 	oss << truncf(ang * 60) << " nmi"; // for km *1.85185
+  P 1028 -> 1027 	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  P 1029 -> 1028 	oss.clear();
+  P 1030 -> 1029 
+  P 1031 -> 1030 }
+  ---- at 9d461bd5, around the surviving lines 419..1030
+  T  415  {
+  T  416  }
+  T  417  
+  T  418  void SkyCoords::draw(const SkyView &view, Vec3d equPos, Vec3d oldPos)
+  T  419  {
+  T  420  	if (fader.isZero())
+  T  421  		return;
+  T  422  
+  T  423  	Vec4f colorT (color[0], color[1], color[2], fader);
+  T  424  
+  T  425  	double tempDE, tempRA;
+  T  426  	float alt, az, aza, alta, ra, dec, mn;
+  T  427  	double fov = view.getFov() / 360.f;
+  T  428  	Utility::rectToSphe(&tempRA, &tempDE, equPos);
+  T  429  	// calculate ra dec
+  T  430  	ra = tempRA * rad2deg;
+  T  431  	if (ra < 0)
+  T  432  		ra = 360. + ra;
+  T  433  	ra = ra * 24. / 360.;
+  T  434  	dec = tempDE * rad2deg;
+  T  435  	// calculate alt az position
+  T  436  	Vec3d localPos = view.earthEquToLocal(equPos);
+  T  437  	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  T  438  	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  T  439  	if (tempRA > M_PI * 2)
+  T  440  		tempRA -= M_PI * 2;
+  T  441  	az = (tempRA)*rad2deg;
+  T  442  	alt = tempDE * rad2deg;
+  T  443  	aza = (M_PI - tempRA - (0.1 * fov)) * rad2deg;
+  T  444  	// ALT
+  T  445  	alta = (tempDE - (0.05 * fov * 2)) * rad2deg;
+  T  446  	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  T  447  	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  T  448  	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
+  T  449  		double angle;
+  T  450  		const double dx = pt1[0] - pt2[0];
+  T  451  		const double dy = pt1[1] - pt2[1];
+  T  452  		const double dq = dx * dx + dy * dy;
+  T  453  		const double d = sqrt(dq);
+  T  454  		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  T  455  		if (pt1[0] < pt2[0])
+  T  456  			angle *= -1;
+  T  457  		std::ostringstream oss;
+  T  458  		Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  459  		//sequence of position transformations from the coordinates of punts
+  T  460  		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  T  461  		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T  462  		oss << "alt:";
+  T  463  		if (alt < 0.) {
+  T  464  			alt = -alt;
+  T  465  			oss << "-";
+  T  466  		}
+  T  467  		else
+  T  468  			oss << "+";
+  T  469  		if (alt < 10.)
+  T  470  			oss << "0";
+  T  471  		oss << truncf(alt) << "\xc2\xb0";
+  T  472  		mn = truncf((alt - truncf(alt)) * 60);
+  T  473  		if (mn < 10)
+  T  474  			oss << "0";
+  T  475  		oss << mn << "'";
+  T  476  		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  477  		oss.clear();
+  T  478  	}
+  T  479  	// AZ
+  T  480  	alta = tempDE * rad2deg;
+  T  481  	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  T  482  	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  T  483  	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
+  T  484  		double angle;
+  T  485  		const double dx = pt1[0] - pt2[0];
+  T  486  		const double dy = pt1[1] - pt2[1];
+  T  487  		const double dq = dx * dx + dy * dy;
+  T  488  		const double d = sqrt(dq);
+  T  489  		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  T  490  		if (pt1[0] < pt2[0])
+  T  491  			angle *= -1;
+  T  492  		std::ostringstream oss;
+  T  493  		Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  494  		//sequence of position transformations from punts coordinates
+  T  495  		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  T  496  		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T  497  		oss << "az :";
+  T  498  		if (az < 0.) {
+  T  499  			az = -az;
+  T  500  			oss << "-";
+  T  501  		}
+  T  502  		else
+  T  503  			oss << "+";
+  T  504  		if (az < 100.)
+  T  505  			oss << "0";
+  T  506  		if (az < 10.)
+  T  507  			oss << "0";
+  T  508  		oss << truncf(az) << "\xc2\xb0";
+  T  509  		mn = truncf((az - truncf(az)) * 60);
+  T  510  		if (mn < 10)
+  T  511  			oss << "0";
+  T  512  		oss << mn << "'";
+  T  513  		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  514  		oss.clear();
+  T  515  	}
+  T  516  	// RA
+  T  517  	alta = (tempDE + (0.1 * fov * 2)) * rad2deg;
+  T  518  	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  T  519  	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  T  520  	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
+  T  521  		double angle;
+  T  522  		const double dx = pt1[0] - pt2[0];
+  T  523  		const double dy = pt1[1] - pt2[1];
+  T  524  		const double dq = dx * dx + dy * dy;
+  T  525  		const double d = sqrt(dq);
+  T  526  		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  T  527  		if (pt1[0] < pt2[0])
+  T  528  			angle *= -1;
+  T  529  		std::ostringstream oss;
+  T  530  		Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  531  		//sequence of position transformations from the coordinates of punts
+  T  532  		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  T  533  		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T  534  		oss << "ra :";
+  T  535  		if (ra < 10.)
+  T  536  			oss << "0";
+  T  537  		oss << truncf(ra) << "h";
+  T  538  		mn = truncf((ra - truncf(ra)) * 60);
+  T  539  		if (mn < 10)
+  T  540  			oss << "0";
+  T  541  		oss << mn << "m";
+  T  542  		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  543  		oss.clear();
+  T  544  	}
+  T  545  	// DEC
+  T  546  	alta = (tempDE + (0.05 * fov * 2)) * rad2deg;
+  T  547  	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  T  548  	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  T  549  
+  T  550  	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
+  T  551  		double angle;
+  T  552  		const double dx = pt1[0] - pt2[0];
+  T  553  		const double dy = pt1[1] - pt2[1];
+  T  554  		const double dq = dx * dx + dy * dy;
+  T  555  		const double d = sqrt(dq);
+  T  556  		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  T  557  		if (pt1[0] < pt2[0])
+  T  558  			angle *= -1;
+  T  559  		std::ostringstream oss;
+  T  560  		Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  561  		//sequence of position transformations from the coordinates of punts
+  T  562  		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  T  563  		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T  564  		oss << "dec:";
+  T  565  		if (dec < 0.) {
+  T  566  			dec = -dec;
+  T  567  			oss << "-";
+  T  568  		}
+  T  569  		else
+  T  570  			oss << "+";
+  T  571  		if (dec < 10.)
+  T  572  			oss << "0";
+  T  573  		oss << truncf(dec) << "\xc2\xb0";
+  T  574  		mn = truncf((dec - truncf(dec)) * 60);
+  T  575  		if (mn < 10)
+  T  576  			oss << "0";
+  T  577  		oss << mn << "'";
+  T  578  		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  579  		oss.clear();
+  T  580  	}
+  T  581  }
+  T  582  
+  T  583  
+  T  584  SkyMouse::SkyMouse() : SkyDisplay(PROJECTION_TYPE::AL)
+  T  585  {}
+  T  586  
+  T  587  void SkyMouse::draw(const SkyView &view, Vec3d _equPos, Vec3d _oldPos)
+  T  588  {
+  T  589  	if (fader.isZero())
+  T  590  		return;
+  T  591  
+  T  592  	Vec4f colorT (color[0], color[1], color[2], fader);
+  T  593  	int x,y;
+  T  594  	SDL_GetMouseState(&x,&y);
+  T  595  	Vec3d equPos = view.getCursorPosEqu(x, y);
+  T  596  	bool orientation = CoreLink::instance->skyDisplayMgrCheckDraw();
+  T  597  
+  T  598  	double tempDE, tempRA;
+  T  599  	float alt, az, aza, alta, ra, dec, mn;
+  T  600  	double fov = view.getFov() / 360.f;
+  T  601  	Utility::rectToSphe(&tempRA, &tempDE, equPos);
+  T  602  	// calculate ra dec
+  T  603  	ra = tempRA * rad2deg;
+  T  604  	if (ra < 0)
+  T  605  		ra = 360. + ra;
+  T  606  	ra = ra * 24. / 360.;
+  T  607  	dec = tempDE * rad2deg;
+  T  608  	// calculate alt az position
+  T  609  	Vec3d localPos = view.earthEquToLocal(equPos);
+  T  610  	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  T  611  	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  T  612  	if (tempRA > M_PI * 2)
+  T  613  		tempRA -= M_PI * 2;
+  T  614  	az = (tempRA)*rad2deg;
+  T  615  	alt = tempDE * rad2deg;
+  T  616  	aza = (M_PI - tempRA - (0.1 * fov)) * rad2deg;
+  T  617  	// ALT
+  T  618  	alta = (tempDE - (0.05 * fov * 2)) * rad2deg;
+  T  619  	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  T  620  	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  T  621  	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
+  T  622  		double angle;
+  T  623  		const double dx = pt1[0] - pt2[0];
+  T  624  		const double dy = pt1[1] - pt2[1];
+  T  625  		const double dq = dx * dx + dy * dy;
+  T  626  		const double d = sqrt(dq);
+  T  627  		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  T  628  		if (pt1[0] < pt2[0])
+  T  629  			angle *= -1;
+  T  630  		std::ostringstream oss;
+  T  631  		Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  632  		//sequence of position transformations from the coordinates of punts
+  T  633  		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  T  634  		if (orientation)
+  T  635  			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+  T  636  		else
+  T  637  			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T  638  		oss << "alt:";
+  T  639  		if (alt < 0.) {
+  T  640  			alt = -alt;
+  T  641  			oss << "-";
+  T  642  		} else
+  T  643  			oss << "+";
+  T  644  		if (alt < 10.)
+  T  645  			oss << "0";
+  T  646  		oss << truncf(alt) << "\xc2\xb0";
+  T  647  		mn = truncf((alt - truncf(alt)) * 60);
+  T  648  		if (mn < 10)
+  T  649  			oss << "0";
+  T  650  		oss << mn << "'";
+  T  651  		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  652  		oss.clear();
+  T  653  	}
+  T  654  	// AZ
+  T  655  	alta = tempDE * rad2deg;
+  T  656  	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  T  657  	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  T  658  	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
+  T  659  		double angle;
+  T  660  		const double dx = pt1[0] - pt2[0];
+  T  661  		const double dy = pt1[1] - pt2[1];
+  T  662  		const double dq = dx * dx + dy * dy;
+  T  663  		const double d = sqrt(dq);
+  T  664  		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  T  665  		if (pt1[0] < pt2[0])
+  T  666  			angle *= -1;
+  T  667  		std::ostringstream oss;
+  T  668  		Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  669  		//sequence of position transformations from the coordinates of punts
+  T  670  		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  T  671  		if (orientation)
+  T  672  			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+  T  673  		else
+  T  674  			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T  675  		oss << "az :";
+  T  676  		if (az < 0.) {
+  T  677  			az = -az;
+  T  678  			oss << "-";
+  T  679  		}
+  T  680  		else
+  T  681  			oss << "+";
+  T  682  		if (az < 100.)
+  T  683  			oss << "0";
+  T  684  		if (az < 10.)
+  T  685  			oss << "0";
+  T  686  		oss << truncf(az) << "\xc2\xb0";
+  T  687  		mn = truncf((az - truncf(az)) * 60);
+  T  688  		if (mn < 10)
+  T  689  			oss << "0";
+  T  690  		oss << mn << "'";
+  T  691  		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  692  		oss.clear();
+  T  693  	}
+  T  694  	// RA
+  T  695  	alta = (tempDE + (0.1 * fov * 2)) * rad2deg;
+  T  696  	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  T  697  	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  T  698  	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
+  T  699  		double angle;
+  T  700  		const double dx = pt1[0] - pt2[0];
+  T  701  		const double dy = pt1[1] - pt2[1];
+  T  702  		const double dq = dx * dx + dy * dy;
+  T  703  		const double d = sqrt(dq);
+  T  704  		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  T  705  		if (pt1[0] < pt2[0])
+  T  706  			angle *= -1;
+  T  707  		std::ostringstream oss;
+  T  708  		Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  709  		//sequence of position transformations from the coordinates of punts
+  T  710  		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  T  711  		if (orientation)
+  T  712  			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+  T  713  		else
+  T  714  			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T  715  		oss << "ra :";
+  T  716  		if (ra < 10.)
+  T  717  			oss << "0";
+  T  718  		oss << truncf(ra) << "h";
+  T  719  		mn = truncf((ra - truncf(ra)) * 60);
+  T  720  		if (mn < 10)
+  T  721  			oss << "0";
+  T  722  		oss << mn << "m";
+  T  723  		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  724  		oss.clear();
+  T  725  	}
+  T  726  	// DEC
+  T  727  	alta = (tempDE + (0.05 * fov * 2)) * rad2deg;
+  T  728  	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+  T  729  	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+  T  730  
+  T  731  	if (((view.*proj_func)(pt3, pt1)) && ((view.*proj_func)(pt4, pt2))) {
+  T  732  		double angle;
+  T  733  		const double dx = pt1[0] - pt2[0];
+  T  734  		const double dy = pt1[1] - pt2[1];
+  T  735  		const double dq = dx * dx + dy * dy;
+  T  736  		const double d = sqrt(dq);
+  T  737  		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+  T  738  		if (pt1[0] < pt2[0])
+  T  739  			angle *= -1;
+  T  740  		std::ostringstream oss;
+  T  741  		Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  742  		//sequence of position transformations from the coordinates of punts
+  T  743  		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+  T  744  		if (orientation)
+  T  745  			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+  T  746  		else
+  T  747  			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T  748  		oss << "dec:";
+  T  749  		if (dec < 0.) {
+  T  750  			dec = -dec;
+  T  751  			oss << "-";
+  T  752  		}
+  T  753  		else
+  T  754  			oss << "+";
+  T  755  		if (dec < 10.)
+  T  756  			oss << "0";
+  T  757  		oss << truncf(dec) << "\xc2\xb0";
+  T  758  		mn = truncf((dec - truncf(dec)) * 60);
+  T  759  		if (mn < 10)
+  T  760  			oss << "0";
+  T  761  		oss << mn << "'";
+  T  762  		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  763  		oss.clear();
+  T  764  	}
+  T  765  }
+  T  766  
+  T  767  SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
+  T  768  {}
+  T  769  
+  T  770  void SkyAngDist::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)
+  T  771  {
+  T  772  	if (fader.isZero()) {
+  T  773  		return;
+  T  774  	}
+  T  775  
+  T  776  	Vec4f colorT (color[0], color[1], color[2], fader);
+  T  777  	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
+  T  778  	// for Selected position
+  T  779  	// calculate alt az position
+  T  780  	Vec3d localPos = view.earthEquToLocal(equPos);
+  T  781  	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  T  782  	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  T  783  	if (tempRA > M_PI * 2)
+  T  784  		tempRA -= M_PI * 2;
+  T  785  	alt1 = tempDE;
+  T  786  	az1 = M_PI - tempRA;
+  T  787  	// end of calculate alt az position
+  T  788  
+  T  789  	// for Old position
+  T  790  	// calculate alt az position
+  T  791  	localPos = view.earthEquToLocal(oldEquPos);
+  T  792  	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  T  793  	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  T  794  	if (tempRA > M_PI * 2)
+  T  795  		tempRA -= M_PI * 2;
+  T  796  	alt2 = tempDE;
+  T  797  	az2 = M_PI - tempRA;
+  T  798  	// end of calculate alt az position
+  T  799  	if ((az2 - az1) > M_PI)
+  T  800  		az1 += 2 * M_PI;
+  T  801  	if ((az1 - az2) > M_PI)
+  T  802  		az2 += 2 * M_PI;
+  T  803  
+  T  804  	// Draw orthodromy
+  T  805  	clear();
+  T  806  	Utility::spheToRect(az1, alt1, pt1);
+  T  807  	int npoints = 21;
+  T  808  	float delta = (az1 - az2) / (npoints - 1);
+  T  809  	for (int i = 0; i < npoints; i++) {
+  T  810  		*(dataSky++) = pt1;
+  T  811  		++dataSkySize;
+  T  812  
+  T  813  		azt = az1 - delta * i;
+  T  814  		if (az1-az2 != 0)
+  T  815  		  altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1
+  T  816          else
+  T  817  		  altt = M_PI/2.;
+  T  818  		Utility::spheToRect(azt, altt, pt1);
+  T  819  		if (i == 12)
+  T  820  			pt5 = pt1;
+  T  821  		*(dataSky++) = pt1;
+  T  822  		++dataSkySize;
+  T  823  	}
+  T  824  
+  T  825  	if (m_dataSize != dataSkySize) {
+  T  826  		m_dataSize = dataSkySize;
+  T  827  		build();
+  T  828  	}
+  T  829  	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
+  T  830  
+  T  831  	SkyDisplay::draw(view);
+  T  832  
+  T  833  	// Text
+  T  834  	float ang, mn, sec;
+  T  835  	ang = acos(sin(alt1) * sin(alt2) + cos(alt1) * cos(alt2) * cos(az2 - az1)) * rad2deg;
+  T  836  	Utility::spheToRect(az1, alt1, pt3);
+  T  837  	Utility::spheToRect(az2, alt2, pt4);
+  T  838  
+  T  839  	(view.*proj_func)(pt3, pt1);
+  T  840  	(view.*proj_func)(pt4, pt2);
+  T  841  	double angle;
+  T  842  	const double dx = pt1[0] - pt2[0];
+  T  843  	const double dy = pt1[1] - pt2[1];
+  T  844  	const double dq = dx * dx + dy * dy;
+  T  845  	const double d = sqrt(dq);
+  T  846  	angle = acos((pt1[1] - pt2[1]) / (d + 0.000001));
+  T  847  	if (pt1[0] < pt2[0])
+  T  848  		angle *= -1;
+  T  849  	std::ostringstream oss;
+  T  850  	Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  851  	//localPos = nav->earthEquToLocal(pt5);
+  T  852  	(view.*proj_func)(pt5, pt0);
+  T  853  	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
+  T  854  	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T  855  	if (truncf(ang) >= 1) {
+  T  856  		oss << truncf(ang) << "\xc2\xb0";
+  T  857  		mn = truncf((ang - truncf(ang)) * 60);
+  T  858  		if (mn < 10)
+  T  859  			oss << "0";
+  T  860  		oss << mn << "'";
+  T  861  	} else {
+  T  862  		oss << truncf(ang * 60) << "'";
+  T  863  		sec = truncf((ang * 60 - truncf(ang * 60)) * 60);
+  T  864  		if (sec < 10)
+  T  865  			oss << "0";
+  T  866  		oss << sec << "\"";
+  T  867  	}
+  T  868  	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  869  	oss.clear();
+  T  870  }
+  T  871  
+  T  872  SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::EQ)
+  T  873  {}
+  T  874  
+  T  875  void SkyLoxodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)
+  T  876  {
+  T  877  	if (fader.isZero() || (equPos == oldEquPos)) {
+  T  878  		return;
+  T  879  	}
+  T  880  	Vec4f colorT (color[0], color[1], color[2], fader);
+  T  881  	double de1, ra1, de2, ra2, dem, ram;
+  T  882  	// for Old position
+  T  883  	Utility::rectToSphe(&ra1, &de1, oldEquPos);
+  T  884  	// for Selected position
+  T  885  	Utility::rectToSphe(&ra2, &de2, equPos);
+  T  886  	if ((ra2 - ra1) > M_PI)
+  T  887  		ra1 += 2 * M_PI;
+  T  888  	if ((ra1 - ra2) > M_PI)
+  T  889  		ra2 += 2 * M_PI;
+  T  890  	float distM, Rv;
+  T  891  	ram = (ra1 + ra2) / 2;
+  T  892  	dem = (de1 + de2) / 2;
+  T  893  	Rv = atan((ra2 - ra1) * cos(dem) / (de2 - de1 + 0.00001));
+  T  894  	distM = fabs((de2 - de1) / cos(Rv) * rad2deg * 60);
+  T  895  	Utility::spheToRect(ra1, de1, pt3);
+  T  896  	Utility::spheToRect(ra2, de2, pt4);
+  T  897  	Utility::spheToRect(ram, dem, pt5);
+  T  898  	(view.*proj_func)(pt3, pt1);
+  T  899  	(view.*proj_func)(pt4, pt2);
+  T  900  	(view.*proj_func)(pt5, pt0);
+  T  901  	double angle;
+  T  902  	const double dx = pt1[0] - pt2[0];
+  T  903  	const double dy = pt1[1] - pt2[1];
+  T  904  	const double dq = dx * dx + dy * dy;
+  T  905  	const double d = sqrt(dq);
+  T  906  	angle = acos((pt1[1] - pt2[1]) / (d + 0.000001));
+  T  907  	if (pt1[0] < pt2[0])
+  T  908  		angle *= -1;
+  T  909  	clear();
+  T  910  	for (int j = 0; (pi_div_2 - fabs(de1 * (10 - j) / 10 + de2 * j / 10)) > 0.001; j++) {
+  T  911  		Utility::spheToRect((ra1 * (10 - j) / 10 + ra2 * j / 10), (de1 * (10 - j) / 10 + de2 * j / 10), pt1);
+  T  912  		*(dataSky++) = pt1;
+  T  913  		++dataSkySize;
+  T  914  
+  T  915  		Utility::spheToRect((ra1 * (9 - j) / 10 + ra2 * (j + 1) / 10), (de1 * (9 - j) / 10 + de2 * (j + 1) / 10), pt
+  T  916  		*(dataSky++) = pt2;
+  T  917  		++dataSkySize;
+  T  918  	}
+  T  919  
+  T  920  	if (m_dataSize != dataSkySize) {
+  T  921  		m_dataSize = dataSkySize;
+  T  922  		build();
+  T  923  	}
+  T  924  	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
+  T  925  
+  T  926  	SkyDisplay::draw(view);
+  T  927  
+  T  928  	//draw_text(prj, nav);
+  T  929  	std::ostringstream oss;
+  T  930  	Mat4f MVP = view.getMatProjectionOrtho2D();
+  T  931  	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
+  T  932  	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), 3 * pi_div_2 - angle);
+  T  933  	oss << truncf(distM) << " nmi"; // for km *1.85185
+  T  934  	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T  935  	oss.clear();
+  T  936  }
+  T  937  
+  T  938  SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::AL)
+  T  939  {}
+  T  940  
+  T  941  void SkyOrthodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)
+  T  942  {
+  T  943  	if (fader.isZero()) {
+  T  944  		return;
+  T  945  	}
+  T  946  
+  T  947  	Vec4f colorT (color[0], color[1], color[2], fader);
+  T  948  	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
+  T  949  	// for Selected position
+  T  950  	// calculate alt az position
+  T  951  	Vec3d localPos = view.earthEquToLocal(equPos);
+  T  952  	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  T  953  	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  T  954  	if (tempRA > M_PI * 2)
+  T  955  		tempRA -= M_PI * 2;
+  T  956  	alt1 = tempDE;
+  T  957  	az1 = M_PI - tempRA;
+  T  958  	// end of calculate alt az position
+  T  959  
+  T  960  	// for Old position
+  T  961  	// calculate alt az position
+  T  962  	localPos = view.earthEquToLocal(oldEquPos);
+  T  963  	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+  T  964  	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+  T  965  	if (tempRA > M_PI * 2)
+  T  966  		tempRA -= M_PI * 2;
+  T  967  	alt2 = tempDE;
+  T  968  	az2 = M_PI - tempRA;
+  T  969  	// end of calculate alt az position
+  T  970  	if ((az2 - az1) > M_PI)
+  T  971  		az1 += 2 * M_PI;
+  T  972  	if ((az1 - az2) > M_PI)
+  T  973  		az2 += 2 * M_PI;
+  T  974  
+  T  975  	// Draw orthodromy
+  T  976  	clear();
+  T  977  	Utility::spheToRect(az1, alt1, pt1);
+  T  978  	int npoints = 21;
+  T  979  	float delta = (az1 - az2) / (npoints - 1);
+  T  980  	for (int i = 0; i < npoints; i++) {
+  T  981  		*(dataSky++) = pt1;
+  T  982  		++dataSkySize;
+  T  983  
+  T  984  		azt = az1 - delta * i;
+  T  985  		if (az1-az2 != 0)
+  T  986  		  altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1
+  T  987  		else
+  T  988  		  altt = M_PI/2.;
+  T  989  		Utility::spheToRect(azt, altt, pt1);
+  T  990  		if (i == 12)
+  T  991  			pt5 = pt1;
+  T  992  		*(dataSky++) = pt1;
+  T  993  		++dataSkySize;
+  T  994  	}
+  T  995  
+  T  996  	if (m_dataSize != dataSkySize) {
+  T  997  		m_dataSize = dataSkySize;
+  T  998  		build();
+  T  999  	}
+  T 1000  	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
+  T 1001  
+  T 1002  	SkyDisplay::draw(view);
+  T 1003  
+  T 1004  	// Text
+  T 1005  	float ang;
+  T 1006  	ang = acos(sin(alt1) * sin(alt2) + cos(alt1) * cos(alt2) * cos(az2 - az1)) * rad2deg;
+  T 1007  	Utility::spheToRect(az1, alt1, pt3);
+  T 1008  	Utility::spheToRect(az2, alt2, pt4);
+  T 1009  
+  T 1010  	(view.*proj_func)(pt3, pt1);
+  T 1011  	(view.*proj_func)(pt4, pt2);
+  T 1012  	double angle;
+  T 1013  	const double dx = pt1[0] - pt2[0];
+  T 1014  	const double dy = pt1[1] - pt2[1];
+  T 1015  	const double dq = dx * dx + dy * dy;
+  T 1016  	const double d = sqrt(dq);
+  T 1017  	angle = acos((pt1[1] - pt2[1]) / (d + 0.000001));
+  T 1018  	if (pt1[0] < pt2[0])
+  T 1019  		angle *= -1;
+  T 1020  	std::ostringstream oss;
+  T 1021  	Mat4f MVP = view.getMatProjectionOrtho2D();
+  T 1022  	//localPos = nav->earthEquToLocal(pt5);
+  T 1023  	(view.*proj_func)(pt5, pt0);
+  T 1024  	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
+  T 1025  	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+  T 1026  	oss << truncf(ang * 60) << " nmi"; // for km *1.85185
+  T 1027  	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+  T 1028  	oss.clear();
+  T 1029  
+  T 1030  }
+  T 1031  
+====================================================================================================
+src/coreModule/skyDisplay.cpp:594-596 @ b45d3b58 x1
+  P  594 ->  593 	int x,y;
+  P  595 ->  594 	SDL_GetMouseState(&x,&y);
+  P  596   GONE 	Vec3d equPos = prj->getCursorPosEqu(x, y);
+  ---- at 9d461bd5, around the surviving lines 593..594
+  T  589  	if (fader.isZero())
+  T  590  		return;
+  T  591  
+  T  592  	Vec4f colorT (color[0], color[1], color[2], fader);
+  T  593  	int x,y;
+  T  594  	SDL_GetMouseState(&x,&y);
+  T  595  	Vec3d equPos = view.getCursorPosEqu(x, y);
+  T  596  	bool orientation = CoreLink::instance->skyDisplayMgrCheckDraw();
+  T  597  
+====================================================================================================
+src/coreModule/skyline.cpp:427 @ b45d3b58 x1
+  P  427   GONE 			proj_func = &Projector::projectEarthEqu;
+  ~P427: 1077(0.82) proj_func = &SkyView::projectEarthEqu;  900(0.82) proj_func = &SkyView::projectEarthEqu;  894(0.82) proj_func = &SkyView::projectEarthEqu;
+  ~P427: 1077(0.82) proj_func = &SkyView::projectEarthEqu;  900(0.82) proj_func = &SkyView::projectEarthEqu;  894(0.82) proj_func = &SkyView::projectEarthEqu;
+====================================================================================================
+src/coreModule/skyline.cpp:557 @ b45d3b58 x1
+  P  557   GONE 	proj_func = &Projector::projectEarthEqu;
+  ~P557: 1077(0.82) proj_func = &SkyView::projectEarthEqu;  900(0.82) proj_func = &SkyView::projectEarthEqu;  894(0.82) proj_func = &SkyView::projectEarthEqu;
+  ~P557: 1077(0.82) proj_func = &SkyView::projectEarthEqu;  900(0.82) proj_func = &SkyView::projectEarthEqu;  894(0.82) proj_func = &SkyView::projectEarthEqu;
+====================================================================================================
+src/coreModule/skyline.cpp:1372-1440 @ b45d3b58 x1
+  P 1372   GONE void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observe
+  P 1373 -> 1373 {
+  P 1374 -> 1374 	if (!fader.getInterstate()) return;
+  P 1375 -> 1375 	if (!observatory->isOnBody())
+  P 1376 -> 1376 		return;
+  P 1377 -> 1377 
+  P 1378 -> 1378 	if(!(observatory->isEarth())) return;
+  P 1379 -> 1379 
+  P 1380 -> 1380 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
+  P 1381 -> 1381 
+  P 1382 -> 1382 	// StateGL::enable(GL_BLEND);
+  P 1383 -> 1383 	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+  P 1384 -> 1384 
+  P 1385 -> 1385 	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
+  P 1386 -> 1386 	draw_labels = (font != nullptr);
+  P 1387 -> 1387 
+  P 1388 -> 1388 	const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 2.68*M_PI/6) : 0.0;
+  P 1389 -> 1389 
+  P 1390 -> 1390 	bool prev_on_screen;
+  P 1391 -> 1391 
+  P 1392 -> 1392 	for(int pole=1; pole>=-1; pole-=2) {
+  P 1393 -> 1393 
+  P 1394 -> 1394 		Vec3d point(radius*cos(corr),radius*sin(corr),pole*radius*2.3213f);
+  P 1395 -> 1395 		point.transfo4d(m);
+  P 1396   GONE 		prev_on_screen = prj->projectEarthEqu(point,pt1);
+  P 1397 -> 1397 
+  P 1398 -> 1398 		for (unsigned int i=0; i<104+1; ++i) {
+  P 1399 -> 1399 			const double phi = corr+2*(i-0.5)*M_PI/104;
+  P 1400 -> 1400 			Vec3d point(radius*cos(phi),radius*sin(phi),pole*radius*2.3213f);
+  P 1401 -> 1401 			point.transfo4d(m);
+  P 1402   GONE 			const bool on_screen = prj->projectEarthEqu(point,pt2);
+  P 1403 -> 1403 			if (on_screen || prev_on_screen) {
+  P 1404 -> 1404 				const double dx = pt2[0]-pt1[0];
+  P 1405 -> 1405 				const double dy = pt2[1]-pt1[1];
+  P 1406 -> 1406 				const double dq = dx*dx+dy*dy;
+  P 1407 -> 1407 
+  P 1408 -> 1408 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
+  P 1409 -> 1409 
+  P 1410 -> 1410 				if((i+2) % 4 == 0) {
+  P 1411 -> 1411 					const double d = sqrt(dq);
+  P 1412 -> 1412 					double angle;
+  P 1413 -> 1413 
+  P 1414 -> 1414 					angle = acos((pt1[1]-pt2[1])/d);
+  P 1415 -> 1415 					if ( pt1[0] < pt2[0] ) {
+  P 1416 -> 1416 						angle *= -1;
+  P 1417 -> 1417 					}
+  P 1418 -> 1418 
+  P 1419 -> 1419 					// draw text label
+  P 1420 -> 1420 					std::ostringstream oss;
+  P 1421 -> 1421 
+  P 1422 -> 1422 					// TODO: center labels
+  P 1423 -> 1423 					if (pole==1) {
+  P 1424 -> 1424 						if ((i>52) && (i<100)) {
+  P 1425 -> 1425 							oss << "-" << ((i-48) / 4)*1000;
+  P 1426 -> 1426 						}
+  P 1427 -> 1427 						if (i<48) {
+  P 1428 -> 1428 							oss << "+" << ((52-i) / 4)*1000;
+  P 1429 -> 1429 						}
+  P 1430 -> 1430 						if (i>100) {
+  P 1431 -> 1431 							oss << "+13000";
+  P 1432 -> 1432 						}
+  P 1433 -> 1433 					} else {
+  P 1434 -> 1434 						if ((i>=48) && (i<100)) {
+  P 1435 -> 1435 							oss << "+" << 13000-((i-48) / 4)*1000;
+  P 1436 -> 1436 						}
+  P 1437 -> 1437 						if (i<48) {
+  P 1438 -> 1438 							oss << "-" << 13000-((52-i) / 4)*1000;
+  P 1439 -> 1439 						}
+  P 1440 -> 1440 					}
+  ---- at 9d461bd5, around the surviving lines 1373..1440
+  T 1369  {
+  T 1370  }
+  T 1371  
+  T 1372  void SkyLine_Precession::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)
+  T 1373  {
+  T 1374  	if (!fader.getInterstate()) return;
+  T 1375  	if (!observatory->isOnBody())
+  T 1376  		return;
+  T 1377  
+  T 1378  	if(!(observatory->isEarth())) return;
+  T 1379  
+  T 1380  	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
+  T 1381  
+  T 1382  	// StateGL::enable(GL_BLEND);
+  T 1383  	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+  T 1384  
+  T 1385  	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
+  T 1386  	draw_labels = (font != nullptr);
+  T 1387  
+  T 1388  	const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 2.68*M_PI/6) : 0.0;
+  T 1389  
+  T 1390  	bool prev_on_screen;
+  T 1391  
+  T 1392  	for(int pole=1; pole>=-1; pole-=2) {
+  T 1393  
+  T 1394  		Vec3d point(radius*cos(corr),radius*sin(corr),pole*radius*2.3213f);
+  T 1395  		point.transfo4d(m);
+  T 1396  		prev_on_screen = view.projectEarthEqu(point,pt1);
+  T 1397  
+  T 1398  		for (unsigned int i=0; i<104+1; ++i) {
+  T 1399  			const double phi = corr+2*(i-0.5)*M_PI/104;
+  T 1400  			Vec3d point(radius*cos(phi),radius*sin(phi),pole*radius*2.3213f);
+  T 1401  			point.transfo4d(m);
+  T 1402  			const bool on_screen = view.projectEarthEqu(point,pt2);
+  T 1403  			if (on_screen || prev_on_screen) {
+  T 1404  				const double dx = pt2[0]-pt1[0];
+  T 1405  				const double dy = pt2[1]-pt1[1];
+  T 1406  				const double dq = dx*dx+dy*dy;
+  T 1407  
+  T 1408  				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
+  T 1409  
+  T 1410  				if((i+2) % 4 == 0) {
+  T 1411  					const double d = sqrt(dq);
+  T 1412  					double angle;
+  T 1413  
+  T 1414  					angle = acos((pt1[1]-pt2[1])/d);
+  T 1415  					if ( pt1[0] < pt2[0] ) {
+  T 1416  						angle *= -1;
+  T 1417  					}
+  T 1418  
+  T 1419  					// draw text label
+  T 1420  					std::ostringstream oss;
+  T 1421  
+  T 1422  					// TODO: center labels
+  T 1423  					if (pole==1) {
+  T 1424  						if ((i>52) && (i<100)) {
+  T 1425  							oss << "-" << ((i-48) / 4)*1000;
+  T 1426  						}
+  T 1427  						if (i<48) {
+  T 1428  							oss << "+" << ((52-i) / 4)*1000;
+  T 1429  						}
+  T 1430  						if (i>100) {
+  T 1431  							oss << "+13000";
+  T 1432  						}
+  T 1433  					} else {
+  T 1434  						if ((i>=48) && (i<100)) {
+  T 1435  							oss << "+" << 13000-((i-48) / 4)*1000;
+  T 1436  						}
+  T 1437  						if (i<48) {
+  T 1438  							oss << "-" << 13000-((52-i) / 4)*1000;
+  T 1439  						}
+  T 1440  					}
+  T 1441  
+  T 1442  					Mat4f MVP = view.getMatProjectionOrtho2D();
+  T 1443  					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
+====================================================================================================
+src/executorModule/solarSystemModule.cpp:210 @ b45d3b58 x1
+  P  210   GONE 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navi
+  ~P210: 198(0.90) core->skyDisplayMgr->draw(core->drawnView(), core->selected_  207(0.56) core->selected_object.drawPointer(delta_time, core->drawnVie  283(0.53) core->hip_stars->preDraw(core->geodesic_grid, core->tone_con
+  ~P210: 198(0.90) core->skyDisplayMgr->draw(core->drawnView(), core->selected_  207(0.56) core->selected_object.drawPointer(delta_time, core->drawnVie  283(0.53) core->hip_stars->preDraw(core->geodesic_grid, core->tone_con
+====================================================================================================
+src/executorModule/solarSystemModule.cpp:298 @ b45d3b58 x1
+  P  298   GONE         core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation
+  ~P298: 283(1.00) core->hip_stars->preDraw(core->geodesic_grid, core->tone_con  281(0.79) core->hip_stars->preDraw(core->geodesic_grid, core->tone_con  195(0.75) core->hip_stars->draw(core->geodesic_grid, core->tone_conver
+  ~P298: 283(1.00) core->hip_stars->preDraw(core->geodesic_grid, core->tone_con  281(0.79) core->hip_stars->preDraw(core->geodesic_grid, core->tone_con  195(0.75) core->hip_stars->draw(core->geodesic_grid, core->tone_conver
+====================================================================================================
+src/executorModule/stellarSystemModule.cpp:205 @ b45d3b58 x1
+  P  205   GONE 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navi
+  ~P205: 205(0.90) core->skyDisplayMgr->draw(*core->oldSkyView, core->selected_  283(0.53) core->hip_stars->preDraw(core->geodesic_grid, core->tone_con  209(0.53) core->ssystemFactory->draw(core->projection, core->navigatio
+  ~P205: 205(0.90) core->skyDisplayMgr->draw(*core->oldSkyView, core->selected_  283(0.53) core->hip_stars->preDraw(core->geodesic_grid, core->tone_con  209(0.53) core->ssystemFactory->draw(core->projection, core->navigatio
+====================================================================================================
+src/experimentalModule/BodyModule.hpp:49 @ b45d3b58 x2
+  P   49   GONE // (`body name X color <halo|label|orbit|trail|all> value r,g,b`).
+  ~P49: 96(0.40) // Draw a trace for orbit tracing  47(0.33) // A draw hook is only called if its trait is declared  98(0.32) // A module answers for what it owns, a getter returns false
+  ~P49: 96(0.40) // Draw a trace for orbit tracing  47(0.33) // A draw hook is only called if its trait is declared  98(0.32) // A module answers for what it owns, a getter returns false
+====================================================================================================
+src/experimentalModule/BodyModule.hpp:264 @ b45d3b58 x2
+  P  264   GONE     // `body name X color <label|orbit|trail|all> value r,g,b`). Each color
+  ~P264: 96(0.38) // Draw a trace for orbit tracing  42(0.32) if (name == "trail") return BodyColorType::TRAIL;  41(0.32) if (name == "orbit") return BodyColorType::ORBIT;
+  ~P264: 96(0.38) // Draw a trace for orbit tracing  42(0.32) if (name == "trail") return BodyColorType::TRAIL;  41(0.32) if (name == "orbit") return BodyColorType::ORBIT;
+====================================================================================================
+src/experimentalModule/Camera.cpp:1057-1082 @ b45d3b58 x2
+  P 1057   GONE void Camera::descend(float coef)
+  P 1058 ->  727 {
+  P 1059 ->  728     if (!freeMode) {
+  P 1060   GONE         // Anchored: legacy proximity-scaled radial altitude (unchanged).
+  P 1061   GONE         moveRel({0, 0, proximityFactor(coef > 1.f) * (coef - 1)});
+  P 1062 ->  731         return;
+  P 1063 ->  732     }
+  P 1064   GONE     // FAR / galactic: the reference is a system (no landable surface
+  P 1065   GONE     // underfoot) => aim at the LAST SELECTED body (R6 S11.70(e)). d is sel's
+  P 1066   GONE     // centre in the eye frame; moveEyeRel maps it so the observer steps by
+  P 1067   GONE     // (1-coef)*|d| TOWARD sel for coef<1 (descend) and away for coef>1
+  P 1068   GONE     // (ascend) -- multiplicative on the distance to sel, mirroring the near
+  P 1069   GONE     // case's multiplicative-on-altitude feel. The existing distance-driven
+  P 1070   GONE     // reference transition (findBetterReference, update()) then captures the
+  P 1071   GONE     // body and the near-field view-ray descent takes over -- B21 changes only
+  P 1072   GONE     // the descent DIRECTION, never WHEN a transition fires (dispatch S2).
+  P 1073 ->  733     if (reference->isSystem()) {
+  P 1074 ->  734         if (ModularBody *sel = ModularBody::getSelected()) {
+  P 1075 ->  735             const Vec3f d = sel->getObservedPosition();
+  P 1076 ->  736             if (d.lengthSquared() > 0.f) {
+  P 1077 ->  737                 moveEyeRel(d * (coef - 1));
+  P 1078 ->  738                 return;
+  P 1079 ->  739             }
+  P 1080 ->  740         }
+  P 1081 ->  741         // No selection / degenerate: fall through to the view-ray step.
+  P 1082 ->  742     }
+  ---- at 9d461bd5, around the surviving lines 727..742
+  T  723      distance = altitude/(1000*AU)+reference->getAltitudeReference();
+  T  724  }
+  T  725  
+  T  726  void Camera::multAlt(float coef)
+  T  727  {
+  T  728      if (!freeMode) {
+  T  729          // Anchored: radial altitude
+  T  730          moveRel({0, 0, velocityScaling(1) * (coef - 1)});
+  T  731          return;
+  T  732      }
+  T  733      if (reference->isSystem()) {
+  T  734          if (ModularBody *sel = ModularBody::getSelected()) {
+  T  735              const Vec3f d = sel->getObservedPosition();
+  T  736              if (d.lengthSquared() > 0.f) {
+  T  737                  moveEyeRel(d * (coef - 1));
+  T  738                  return;
+  T  739              }
+  T  740          }
+  T  741          // No selection / degenerate: fall through to the view-ray step.
+  T  742      }
+  T  743      const Vec3f C = viewMat().getTranslation();
+  T  744      const float g = reference->getScaledGroundRadius();
+  T  745      const float len = C.length();
+====================================================================================================
+src/experimentalModule/CameraAnchors.cpp:243-285 @ b45d3b58 x2
+  P  243   GONE     // orbit_* keys), so the anchor's own params ARE the orbit params - the same
+  P  244   GONE     // keys the loaders read for ssystem.ini bodies.
+  P  245 ->  181     ModularBody *parent = nullptr;
+  P  246 ->  182     if (anchor.params["parent"].empty()) {
+  P  247   GONE         // The parentless form of the old grammar: an orbit around an arbitrary
+  P  248   GONE         // CENTER given in AU (anchor.ini's `orbit_autour_point`). Preserved, not
+  P  249   GONE         // retired: the requirement it serves is "an orbit centred on a place
+  P  250   GONE         // rather than on a body". Expressed with the machinery that already
+  P  251   GONE         // exists - the centre is a FIXED_POINT anchor body and the orbiting
+  P  252   GONE         // anchor is its child - so there is no second notion of orbit centre.
+  P  253 ->  183         if (anchor.params["orbit_center_x"].empty() || anchor.params["orbit_center_y"].empty()
+  P  254 ->  184                 || anchor.params["orbit_center_z"].empty()) {
+  P  255 ->  185             cLog::get()->write("Anchor '" + anchor.name + "': an orbit anchor needs either "
+  P  256 ->  186                 "parent = <body> (orbit around that body) or the three orbit_center_x/y/z "
+  P  257 ->  187                 "coordinates in AU (orbit around a fixed place). This anchor is NOT created. "
+  P  258 ->  188                 "To fix: add one of the two.", LOG_TYPE::L_ERROR);
+  P  259 ->  189             return false;
+  P  260 ->  190         }
+  P  261 ->  191         const std::string centerName = anchor.name + " (orbit centre)";
+  P  262 ->  192         if (ModularBody::exists(centerName)) {
+  P  263 ->  193             cLog::get()->write("Anchor '" + anchor.name + "': the implicit orbit-centre body '"
+  P  264 ->  194                 + centerName + "' name is already taken. This anchor is NOT created. To fix: "
+  P  265 ->  195                 "rename the anchor.", LOG_TYPE::L_ERROR);
+  P  266 ->  196             return false;
+  P  267 ->  197         }
+  P  268 ->  198         stringHash_t centerParams;
+  P  269 ->  199         centerParams["coord_func"] = "still_orbit";
+  P  270 ->  200         centerParams["orbit_x"] = anchor.params["orbit_center_x"];
+  P  271 ->  201         centerParams["orbit_y"] = anchor.params["orbit_center_y"];
+  P  272 ->  202         centerParams["orbit_z"] = anchor.params["orbit_center_z"];
+  P  273 ->  203         parent = createAnchorBody(centerName, root, centerParams);
+  P  274 ->  204         if (!parent)
+  P  275 ->  205             return false;
+  P  276 ->  206     } else {
+  P  277 ->  207         parent = ModularBody::findBody(anchor.params["parent"]);
+  P  278 ->  208         if (!parent) {
+  P  279 ->  209             cLog::get()->write("Anchor '" + anchor.name + "': parent = '" + anchor.params["parent"]
+  P  280 ->  210                 + "' is not a loaded body, so the orbit has nothing to orbit around. This anchor "
+  P  281 ->  211                 "is NOT created. To fix: name a loaded body, or use orbit_center_x/y/z to orbit "
+  P  282 ->  212                 "a fixed place instead.", LOG_TYPE::L_ERROR);
+  P  283 ->  213             return false;
+  P  284 ->  214         }
+  P  285 ->  215     }
+  ---- at 9d461bd5, around the surviving lines 181..215
+  T  177          anchor.body = body;
+  T  178          anchor.ownsBody = true;
+  T  179          return true;
+  T  180      }
+  T  181      ModularBody *parent = nullptr;
+  T  182      if (anchor.params["parent"].empty()) {
+  T  183          if (anchor.params["orbit_center_x"].empty() || anchor.params["orbit_center_y"].empty()
+  T  184                  || anchor.params["orbit_center_z"].empty()) {
+  T  185              cLog::get()->write("Anchor '" + anchor.name + "': an orbit anchor needs either "
+  T  186                  "parent = <body> (orbit around that body) or the three orbit_center_x/y/z "
+  T  187                  "coordinates in AU (orbit around a fixed place). This anchor is NOT created. "
+  T  188                  "To fix: add one of the two.", LOG_TYPE::L_ERROR);
+  T  189              return false;
+  T  190          }
+  T  191          const std::string centerName = anchor.name + " (orbit centre)";
+  T  192          if (ModularBody::exists(centerName)) {
+  T  193              cLog::get()->write("Anchor '" + anchor.name + "': the implicit orbit-centre body '"
+  T  194                  + centerName + "' name is already taken. This anchor is NOT created. To fix: "
+  T  195                  "rename the anchor.", LOG_TYPE::L_ERROR);
+  T  196              return false;
+  T  197          }
+  T  198          stringHash_t centerParams;
+  T  199          centerParams["coord_func"] = "still_orbit";
+  T  200          centerParams["orbit_x"] = anchor.params["orbit_center_x"];
+  T  201          centerParams["orbit_y"] = anchor.params["orbit_center_y"];
+  T  202          centerParams["orbit_z"] = anchor.params["orbit_center_z"];
+  T  203          parent = createAnchorBody(centerName, root, centerParams);
+  T  204          if (!parent)
+  T  205              return false;
+  T  206      } else {
+  T  207          parent = ModularBody::findBody(anchor.params["parent"]);
+  T  208          if (!parent) {
+  T  209              cLog::get()->write("Anchor '" + anchor.name + "': parent = '" + anchor.params["parent"]
+  T  210                  + "' is not a loaded body, so the orbit has nothing to orbit around. This anchor "
+  T  211                  "is NOT created. To fix: name a loaded body, or use orbit_center_x/y/z to orbit "
+  T  212                  "a fixed place instead.", LOG_TYPE::L_ERROR);
+  T  213              return false;
+  T  214          }
+  T  215      }
+  T  216      ModularBody *body = createAnchorBody(anchor.name, parent, anchor.params);
+  T  217      if (!body) {
+  T  218          // The implicit centre, if we just made one, has no anchor left to serve.
+====================================================================================================
+src/experimentalModule/CameraAnchors.cpp:251-273 @ b45d3b58 x6
+  P  251   GONE         // exists - the centre is a FIXED_POINT anchor body and the orbiting
+  P  252   GONE         // anchor is its child - so there is no second notion of orbit centre.
+  P  253 ->  183         if (anchor.params["orbit_center_x"].empty() || anchor.params["orbit_center_y"].empty()
+  P  254 ->  184                 || anchor.params["orbit_center_z"].empty()) {
+  P  255 ->  185             cLog::get()->write("Anchor '" + anchor.name + "': an orbit anchor needs either "
+  P  256 ->  186                 "parent = <body> (orbit around that body) or the three orbit_center_x/y/z "
+  P  257 ->  187                 "coordinates in AU (orbit around a fixed place). This anchor is NOT created. "
+  P  258 ->  188                 "To fix: add one of the two.", LOG_TYPE::L_ERROR);
+  P  259 ->  189             return false;
+  P  260 ->  190         }
+  P  261 ->  191         const std::string centerName = anchor.name + " (orbit centre)";
+  P  262 ->  192         if (ModularBody::exists(centerName)) {
+  P  263 ->  193             cLog::get()->write("Anchor '" + anchor.name + "': the implicit orbit-centre body '"
+  P  264 ->  194                 + centerName + "' name is already taken. This anchor is NOT created. To fix: "
+  P  265 ->  195                 "rename the anchor.", LOG_TYPE::L_ERROR);
+  P  266 ->  196             return false;
+  P  267 ->  197         }
+  P  268 ->  198         stringHash_t centerParams;
+  P  269 ->  199         centerParams["coord_func"] = "still_orbit";
+  P  270 ->  200         centerParams["orbit_x"] = anchor.params["orbit_center_x"];
+  P  271 ->  201         centerParams["orbit_y"] = anchor.params["orbit_center_y"];
+  P  272 ->  202         centerParams["orbit_z"] = anchor.params["orbit_center_z"];
+  P  273 ->  203         parent = createAnchorBody(centerName, root, centerParams);
+  ---- at 9d461bd5, around the surviving lines 183..203
+  T  179          return true;
+  T  180      }
+  T  181      ModularBody *parent = nullptr;
+  T  182      if (anchor.params["parent"].empty()) {
+  T  183          if (anchor.params["orbit_center_x"].empty() || anchor.params["orbit_center_y"].empty()
+  T  184                  || anchor.params["orbit_center_z"].empty()) {
+  T  185              cLog::get()->write("Anchor '" + anchor.name + "': an orbit anchor needs either "
+  T  186                  "parent = <body> (orbit around that body) or the three orbit_center_x/y/z "
+  T  187                  "coordinates in AU (orbit around a fixed place). This anchor is NOT created. "
+  T  188                  "To fix: add one of the two.", LOG_TYPE::L_ERROR);
+  T  189              return false;
+  T  190          }
+  T  191          const std::string centerName = anchor.name + " (orbit centre)";
+  T  192          if (ModularBody::exists(centerName)) {
+  T  193              cLog::get()->write("Anchor '" + anchor.name + "': the implicit orbit-centre body '"
+  T  194                  + centerName + "' name is already taken. This anchor is NOT created. To fix: "
+  T  195                  "rename the anchor.", LOG_TYPE::L_ERROR);
+  T  196              return false;
+  T  197          }
+  T  198          stringHash_t centerParams;
+  T  199          centerParams["coord_func"] = "still_orbit";
+  T  200          centerParams["orbit_x"] = anchor.params["orbit_center_x"];
+  T  201          centerParams["orbit_y"] = anchor.params["orbit_center_y"];
+  T  202          centerParams["orbit_z"] = anchor.params["orbit_center_z"];
+  T  203          parent = createAnchorBody(centerName, root, centerParams);
+  T  204          if (!parent)
+  T  205              return false;
+  T  206      } else {
+====================================================================================================
+src/experimentalModule/ModularBody.cpp:794-797 @ b45d3b58 x2
+  P  794   GONE     // tex_ring alone doesn't create rings. Deliberate suppression lives HERE,
+  P  795   GONE     // not in RingLoader::isLikely - a 0 bid on a deduced module fires the
+  P  796   GONE     // missing-loader warning (the hint=false lesson, 11.19).
+  P  797 ->  586     if (param.count("tex_ring") && Utility::strToBool(param["rings"], false))
+  ---- at 9d461bd5, around the surviving lines 586..586
+  T  582  
+  T  583  std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::string, std::string> &param)
+  T  584  {
+  T  585      std::vector<BodyModuleType> ret;
+  T  586      if (param.count("tex_ring") && Utility::strToBool(param["rings"], false))
+  T  587          ret.push_back(BodyModuleType::RING);
+  T  588      if (param.count("tex_map"))
+  T  589          ret.push_back(BodyModuleType::MESH);
+====================================================================================================
+src/experimentalModule/ModularSystem.cpp:773-778 @ 8d41fbe3 x1
+  P  773   GONE         ? (atanf(subsystemRadius / sqrtf(distance*distance - subsystemRadius*subsystemRadius))
+  P  774   GONE            / halfFov) * 2.f * getViewportRadius()
+  P  775   GONE         : 2.f * getViewportRadius();
+  P  776 ->  521     if (px >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) {
+  P  777 ->  522         const float savedAlpha = drawAlpha;
+  P  778 ->  523         const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAND);
+  ---- at 9d461bd5, around the surviving lines 521..523
+  T  517          return;
+  T  518      const float px = renderer.toPx((distance > subsystemRadius)
+  T  519          ? atanf(subsystemRadius / sqrtf(distance*distance - subsystemRadius*subsystemRadius)) / halfFov * 2.f
+  T  520          : 2.f);
+  T  521      if (px >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) {
+  T  522          const float savedAlpha = drawAlpha;
+  T  523          const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAND);
+  T  524          const float t = inBand
+  T  525              ? (px - SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) / SYSTEM_COLLAPSE_CROSSFADE_BAND
+  T  526              : 1.f; // above the band: full resolved, drawAlpha stays savedAlpha
+====================================================================================================
+src/experimentalModule/ModularSystem.cpp:1301-1310 @ 8d41fbe3 x1
+  P 1301 ->  830         if (!relDecl.empty() && !param["bound_to_surface"].empty()
+  P 1302 ->  831                 && (legacyRel == BodyRelation::GROUNDED) != (rel == BodyRelation::GROUNDED)) {
+  P 1303 ->  832             diagnose(origin, "bound_to_surface", "contradicted-by-relation",
+  P 1304 ->  833                 "Body '" + englishName + "': relation = '" + relDecl
+  P 1305 ->  834                 + "' disagrees with bound_to_surface = '" + param["bound_to_surface"]
+  P 1306 ->  835                 + "'. The explicit relation wins; remove bound_to_surface to silence this "
+  P 1307 ->  836                 "(the two keys declare the same thing - keep one).", LOG_TYPE::L_ERROR);
+  P 1308 ->  837         }
+  P 1309 ->  838     }
+  P 1310   GONE     // Provenance, resolved BEFORE the body is created because createChild's
+  ---- at 9d461bd5, around the surviving lines 830..838
+  T  826                  + (legacyRel == BodyRelation::GROUNDED ? "grounded" : "orbiting")
+  T  827                  + "' (from bound_to_surface). To fix: set relation to one of the valid values, "
+  T  828                  "or remove it to keep the bound_to_surface-derived default.", LOG_TYPE::L_ERROR);
+  T  829          }
+  T  830          if (!relDecl.empty() && !param["bound_to_surface"].empty()
+  T  831                  && (legacyRel == BodyRelation::GROUNDED) != (rel == BodyRelation::GROUNDED)) {
+  T  832              diagnose(origin, "bound_to_surface", "contradicted-by-relation",
+  T  833                  "Body '" + englishName + "': relation = '" + relDecl
+  T  834                  + "' disagrees with bound_to_surface = '" + param["bound_to_surface"]
+  T  835                  + "'. The explicit relation wins; remove bound_to_surface to silence this "
+  T  836                  "(the two keys declare the same thing - keep one).", LOG_TYPE::L_ERROR);
+  T  837          }
+  T  838      }
+  T  839      if (ModularBody *replaced = ModularBody::findBodyOnce(englishName))
+  T  840          supplemental = replaced->supplemental;
+  T  841      ModularBody *body = parent->createChild(createInfo, rel);
+====================================================================================================
+src/experimentalModule/ModularSystem.cpp:1615-1626 @ 8d41fbe3 x2
+  P 1615   GONE         // A value in the module-family vocabulary (ModuleLoaderMgr's own enum,
+  P 1616   GONE         // I2) declares a BodyModule OF that family; anything else declares a
+  P 1617   GONE         // ModularBody node - the value is then the body-type (`BODY`, a legacy
+  P 1618   GONE         // Planet/Moon/Sun carried transitionally on the node until B27/B25-emit
+  P 1619   GONE         // materializes capability keys, or absent), read by loadBody exactly as
+  P 1620   GONE         // the legacy loader reads it. The two `type=` roles never collide: a
+  P 1621   GONE         // module section names its node with `body=`, a node never does - the
+  P 1622   GONE         // presence of that binding disambiguates a mistyped family (S2(f)),
+  P 1623   GONE         // never a value guess across the composed/legacy namespaces (kept
+  P 1624   GONE         // distinct by which loader runs, S11.79(j)).
+  P 1625 -> 1002         bool isFamily;
+  P 1626 -> 1003         const BodyModuleType famType =
+  ---- at 9d461bd5, around the surviving lines 1002..1003
+  T  998      for (auto &section : loadedSections) {
+  T  999          if (section.isPreamble())
+  T 1000              continue;
+  T 1001          stringHash_t params = section.params();
+  T 1002          bool isFamily;
+  T 1003          const BodyModuleType famType =
+  T 1004              ModuleLoaderMgr::moduleTypeFromName(params["type"], isFamily);
+  T 1005          if (isFamily) {
+  T 1006              loadDeclaredModule(params, section.getHeader(), nodeParams, famType, &section);
+====================================================================================================
+src/experimentalModule/ModularSystem.cpp:2036 @ 8d41fbe3 x1
+  P 2036   GONE         // above reads param["sidereal_time"] through std::map::operator[], which
+  ~P2036: 1124(0.47) node["sidereal_time"] = "earth_apparent";  1289(0.45) const auto siderealIt = param.find("sidereal_time");  784(0.41) .siderealTimeModel=parseSiderealTimeModel(param["sidereal_ti
+  ~P2036: 1124(0.47) node["sidereal_time"] = "earth_apparent";  1289(0.45) const auto siderealIt = param.find("sidereal_time");  784(0.41) .siderealTimeModel=parseSiderealTimeModel(param["sidereal_ti
+====================================================================================================
+src/experimentalModule/SessionFile.hpp:211 @ b45d3b58 x2
+  P  211   GONE constexpr const char *DIRECTORY = "sessions";
+  ~P211: 56(0.83) constexpr const char *DEFAULT_NAME = "session";  57(0.62) constexpr const char *DIRECTORY = "sessions"; // Relative to  58(0.45) constexpr int FORMAT_VERSION = 1; // load refuses any other 
+  ~P211: 56(0.83) constexpr const char *DEFAULT_NAME = "session";  57(0.62) constexpr const char *DIRECTORY = "sessions"; // Relative to  58(0.45) constexpr int FORMAT_VERSION = 1; // load refuses any other 
+====================================================================================================
+src/experimentalModule/ShadowService.hpp:110-121 @ b45d3b58 x1
+  P  110   GONE // enabled: the new-path shadow switch. Initialized from the same config key
+  P  111   GONE // as the old path (experimental_shadows) for A/B parity; toggled PLAINLY by
+  P  112   GONE // the flag command (the old XOR quirk is a defect, not reproduced). Default
+  P  113   GONE // convergence point: shadow-paths.md D3.
+  P  114   GONE // ============================================================================
+  P  115 ->   18 class ShadowService {
+  P  116 ->   19 public:
+  P  117 ->   20     ShadowService();
+  P  118 ->   21     ~ShadowService();
+  P  119 ->   22 
+  P  120   GONE     // New-path shadow switch (see header block).
+  P  121   GONE     static bool enabled;
+  ---- at 9d461bd5, around the surviving lines 18..22
+  T   14  class Texture;
+  T   15  template <typename T> class SharedBuffer;
+  T   16  
+  T   17  // Produce one blurred shadow layer per (caster body, projecting module)
+  T   18  class ShadowService {
+  T   19  public:
+  T   20      ShadowService();
+  T   21      ~ShadowService();
+  T   22  
+  T   23      static bool enabled; // experimental_shadows config key
+  T   24  
+  T   25      void beginFrame(uint8_t frameIdx);
+====================================================================================================
+src/experimentalModule/moduleLoader/LayeredMeshLoader.cpp:52 @ 8d41fbe3 x1
+  P   52   GONE     // it). Reading it from the body instead of re-reading `params["type"]` here
+  ~P52: 28(0.36) const std::string &modelName = params["model_name"];  77(0.34) // Atmosphere-ambient params of the ray-march lighting (old   39(0.33) cfg.day = params["tex_map"];
+  ~P52: 28(0.36) const std::string &modelName = params["model_name"];  77(0.34) // Atmosphere-ambient params of the ray-march lighting (old   39(0.33) cfg.day = params["tex_map"];
+====================================================================================================
+src/experimentalModule/moduleLoader/RingLoader.cpp:8-45 @ b45d3b58 x2
+  P    8 ->    8 uint8_t RingLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const
+  P    9 ->    9 {
+  P   10 ->   10     if (params["tex_ring"].empty())
+  P   11 ->   11         return 0;
+  P   12 ->   12     return 16; // slot-uncontested convention (AtmExtLoader/BasicMeshLoader)
+  P   13 ->   13 }
+  P   14 ->   14 
+  P   15 ->   15 bool RingLoader::isLoaderOf(BodyModule *module) const
+  P   16 ->   16 {
+  P   17 ->   17     return dynamic_cast<RingModule*>(module);
+  P   18 ->   18 }
+  P   19 ->   19 
+  P   20 ->   20 std::unique_ptr<BodyModule> RingLoader::load(ModularBody *target, std::map<std::string, std::string> &params)
+  P   21 ->   21 {
+  P   22 ->   22     // Old parse parity (protosystem.cpp ring block): radii in km -> AU (the
+  P   23 ->   23     // loadBody radius convention), texture PNG_ALPHA + mipmaps (ring.cpp:67).
+  P   24 ->   24     const float inner = Utility::strToFloat(params["ring_inner_size"]) / static_cast<float>(AU);
+  P   25 ->   25     const float outer = Utility::strToFloat(params["ring_outer_size"]) / static_cast<float>(AU);
+  P   26 ->   26     if (!(inner > 0 && outer > inner)) {
+  P   27 ->   27         cLog::get()->write("RingLoader: invalid ring radii for body '" + target->getEnglishName() + "' (ring_i
+  P   28 ->   28         return nullptr;
+  P   29 ->   29     }
+  P   30   GONE     // ring_shadow_color: the D8-resolved ADDITIVE data key [vixy 2026-07-17]
+  P   31   GONE     // - a color key parameterises (expands), the dead ring_shadow gate key
+  P   32   GONE     // stays retired (a gate forecloses: a non-casting ring cannot cast on
+  P   33   GONE     // the planet's moons). Default = the derived old-parity constant
+  P   34   GONE     // ({0.7} == mix(1.0, 0.3, alpha) under the S5 change of variable).
+  P   35 ->   30     const Vec3f shadowColor = params["ring_shadow_color"].empty()
+  P   36 ->   31         ? Vec3f(0.7f, 0.7f, 0.7f)
+  P   37 ->   32         : Utility::strToVec3f(params["ring_shadow_color"]);
+  P   38 ->   33     auto ring = std::make_unique<RingModule>(
+  P   39 ->   34         std::make_unique<s_texture>(params["tex_ring"], TEX_LOAD_TYPE_PNG_ALPHA, true),
+  P   40 ->   35         inner, outer, shadowColor);
+  P   41   GONE     // NEAR-ONLY routing (2026-07-18 correction; RingModule.hpp header block):
+  P   42   GONE     // the earlier near+far routing double-drew in the 0.008-0.2 screenSize
+  P   43   GONE     // band (ModularBody::draw runs BOTH lists there) and far modules never
+  P   44   GONE     // receive update(). Near membership covers the drawNoDepth band down to
+  P   45   GONE     // ~3 px < the old 5-px cutoff (body.cpp:1132).
+  ---- at 9d461bd5, around the surviving lines 8..35
+  T    4  #include "tools/utility.hpp"
+  T    5  #include "tools/sc_const.hpp"
+  T    6  #include "tools/log.hpp"
+  T    7  
+  T    8  uint8_t RingLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const
+  T    9  {
+  T   10      if (params["tex_ring"].empty())
+  T   11          return 0;
+  T   12      return 16; // slot-uncontested convention (AtmExtLoader/BasicMeshLoader)
+  T   13  }
+  T   14  
+  T   15  bool RingLoader::isLoaderOf(BodyModule *module) const
+  T   16  {
+  T   17      return dynamic_cast<RingModule*>(module);
+  T   18  }
+  T   19  
+  T   20  std::unique_ptr<BodyModule> RingLoader::load(ModularBody *target, std::map<std::string, std::string> &params)
+  T   21  {
+  T   22      // Old parse parity (protosystem.cpp ring block): radii in km -> AU (the
+  T   23      // loadBody radius convention), texture PNG_ALPHA + mipmaps (ring.cpp:67).
+  T   24      const float inner = Utility::strToFloat(params["ring_inner_size"]) / static_cast<float>(AU);
+  T   25      const float outer = Utility::strToFloat(params["ring_outer_size"]) / static_cast<float>(AU);
+  T   26      if (!(inner > 0 && outer > inner)) {
+  T   27          cLog::get()->write("RingLoader: invalid ring radii for body '" + target->getEnglishName() + "' (ring_i
+  T   28          return nullptr;
+  T   29      }
+  T   30      const Vec3f shadowColor = params["ring_shadow_color"].empty()
+  T   31          ? Vec3f(0.7f, 0.7f, 0.7f)
+  T   32          : Utility::strToVec3f(params["ring_shadow_color"]);
+  T   33      auto ring = std::make_unique<RingModule>(
+  T   34          std::make_unique<s_texture>(params["tex_ring"], TEX_LOAD_TYPE_PNG_ALPHA, true),
+  T   35          inner, outer, shadowColor);
+  T   36      addNearComponent(target, ring.get());
+  T   37      return ring;
+  T   38  }
+====================================================================================================
+src/experimentalModule/orbitModules/LocationOrbitLoader.hpp:3 @ 8d41fbe3 x1
+  P    3   GONE         auto parent = ModularBody::findBody(params["parent"]);
+  ~P3: 10(0.87) ModularBody *parent = ModularBody::findBodyOnce(params["pare  32(0.42) Utility::strToDouble(params["orbit_alt"]),  31(0.42) Utility::strToDouble(params["orbit_lat"]),
+  ~P3: 10(0.87) ModularBody *parent = ModularBody::findBodyOnce(params["pare  32(0.42) Utility::strToDouble(params["orbit_alt"]),  31(0.42) Utility::strToDouble(params["orbit_lat"]),
+====================================================================================================
+src/interfaceModule/app_command_init.cpp:99-111 @ b45d3b58 x1
+  P   99   GONE 	// The reverse map names ONE spelling per command - the canonical one - and
+  P  100   GONE 	// is built from the registrations above and from nothing else. `emplace`
+  P  101   GONE 	// keeps the first name it sees per enum: until 2026-08-31 this loop ran
+  P  102   GONE 	// over the whole map INCLUDING the aliases, and `camera` beat `flyto` only
+  P  103   GONE 	// because 'c' < 'f' in std::map order; registering `div` would have made
+  P  104   GONE 	// `div` the canonical spelling of SC_DIVIDE the same way. The canonical
+  P  105   GONE 	// name is a decision, not an accident of sort order, so the aliases are
+  P  106   GONE 	// added AFTER this loop and can never be chosen here. Measured 2026-08-31:
+  P  107   GONE 	// the map has NO consumer at this revision (a recording writes the line as
+  P  108   GONE 	// typed - ScriptMgr::recordCommand; only `flag` toggles are re-serialised,
+  P  109   GONE 	// from m_flags_ToString), so this is the contract for the exploitation the
+  P  110   GONE 	// member was kept for, not a change of behaviour.
+  P  111 ->   99 	for (auto it = m_commands.begin(); it != m_commands.end(); ++it) {
+  ---- at 9d461bd5, around the surviving lines 99..99
+  T   95  	m_commands[ACP_CN_TRANSITION] = SC_COMMAND::SC_TRANSITION;
+  T   96  	m_commands[ACP_CN_WAIT] = SC_COMMAND::SC_WAIT;
+  T   97  	m_commands[ACP_CN_ZOOM] = SC_COMMAND::SC_ZOOMR;
+  T   98  
+  T   99  	for (auto it = m_commands.begin(); it != m_commands.end(); ++it) {
+  T  100          m_commandsToString.emplace(it->second, it->first);
+  T  101      }
+  T  102  
+====================================================================================================
+src/interfaceModule/app_command_interface.cpp:1266-1284 @ b45d3b58 x1
+  P 1266 -> 1192 			coreLink->setEyeRelativeMode(newval);
+  P 1267 -> 1193 			break;
+  P 1268 -> 1194 		case FLAG_NAMES::FN_SKIP_PAUSE:
+  P 1269 -> 1195 			scriptInterface->setSkipPauseDisabled(newval);
+  P 1270 -> 1196 			break;
+  P 1271 -> 1197 		case FLAG_NAMES::FN_IMAGE_COMPRESSION_LOSS:
+  P 1272 -> 1198 			saveScreenInterface->setImageCompressionLoss(newval);
+  P 1273 -> 1199 			break;
+  P 1274 -> 1200 		case FLAG_NAMES::FN_EXPERIMENTAL_PATH :
+  P 1275 -> 1201 			// Rendered-path selection (old/new), replacing the A/B time-toggle
+  P 1276 -> 1202 			// once used [vixy: 2026-07-12] - plain semantics, script-driven.
+  P 1277 -> 1203 			stcore->setExperimentalPath(newval);
+  P 1278 -> 1204 			break;
+  P 1279 -> 1205 
+  P 1280 -> 1206 		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS :
+  P 1281   GONE 			// New path: PLAIN on/off - the old XOR-against-default is a defect
+  P 1282   GONE 			// (no-op when the config default is false), not reproduced
+  P 1283   GONE 			// (shadow-paths.md A3.2/B1). Assignment and the old XOR agree for
+  P 1284   GONE 			// every reachable value, since the only values the old branch could
+  ---- at 9d461bd5, around the surviving lines 1192..1206
+  T 1188  		case FLAG_NAMES::FN_QUATERNION_MODE:
+  T 1189  			coreLink->setQuaternionMode(newval);
+  T 1190  			break;
+  T 1191  		case FLAG_NAMES::FN_EYE_RELATIVE_MODE:
+  T 1192  			coreLink->setEyeRelativeMode(newval);
+  T 1193  			break;
+  T 1194  		case FLAG_NAMES::FN_SKIP_PAUSE:
+  T 1195  			scriptInterface->setSkipPauseDisabled(newval);
+  T 1196  			break;
+  T 1197  		case FLAG_NAMES::FN_IMAGE_COMPRESSION_LOSS:
+  T 1198  			saveScreenInterface->setImageCompressionLoss(newval);
+  T 1199  			break;
+  T 1200  		case FLAG_NAMES::FN_EXPERIMENTAL_PATH :
+  T 1201  			// Rendered-path selection (old/new), replacing the A/B time-toggle
+  T 1202  			// once used [vixy: 2026-07-12] - plain semantics, script-driven.
+  T 1203  			stcore->setExperimentalPath(newval);
+  T 1204  			break;
+  T 1205  
+  T 1206  		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS :
+  T 1207  			Context::instance->experimental_shadows =
+  T 1208  				newval ? Context::instance->default_experimental_shadows : 0;
+  T 1209  			ShadowService::enabled = newval;
+====================================================================================================
+src/interfaceModule/app_command_interface.cpp:1281-1285 @ b45d3b58 x1
+  P 1281   GONE 			// New path: PLAIN on/off - the old XOR-against-default is a defect
+  P 1282   GONE 			// (no-op when the config default is false), not reproduced
+  P 1283   GONE 			// (shadow-paths.md A3.2/B1). Assignment and the old XOR agree for
+  P 1284   GONE 			// every reachable value, since the only values the old branch could
+  P 1285   GONE 			// produce are 0 and the default itself.
+  ~P1281: 3652(0.41) // If the file is not found, default to the original srt nam  3732(0.40) // If the file is not found, default to the original audio n  3306(0.39) // Absolute path or relative to current working directory
+  ~P1285: 2157(0.45) // in case we just hit set  14(0.44) * This program is distributed in the hope that it will be us  410(0.44) //test name if exist and get his value
+====================================================================================================
+src/interfaceModule/app_command_interface.cpp:1475-1477 @ b45d3b58 x2
+  P 1475   GONE 	// `filename` is optional on save (absent = the default session name) and on
+  P 1476   GONE 	// load, for the same reason: an operator who keeps one preset should not
+  P 1477   GONE 	// have to name it twice.
+  ~P1475: 3732(0.45) // If the file is not found, default to the original audio n  3652(0.42) // If the file is not found, default to the original srt nam  331(0.41) // The same one rendering as the funnel's, from the same fun
+  ~P1477: 3309(0.55) // Relative to script path  3967(0.54) // set date to current date  4021(0.51) //share management
+====================================================================================================
+src/interfaceModule/app_command_interface.cpp:1877-1880 @ b45d3b58 x2
+  P 1877   GONE //! What is this colour NOW? The read half of `applyColor`, and the session's
+  P 1878   GONE //! only way to record S2 row E5. Two of the 46 have no getter at ANY level -
+  P 1879   GONE //! the on-dome text colour and the star colour table - and they say so by
+  P 1880   GONE //! returning false rather than by reporting a guess.
+  ~P1877: 419(0.39) //fix newval dans les cas ou il vaut on ou off, toggle sera   3712(0.38) // We test if a file of language exists  3632(0.38) // We test if a file of language exists
+  ~P1880: 1908(0.44) return false;   // no read half exists at any level  1906(0.44) return false;   // no read half exists at any level  1597(0.42) // drop all nebulae that are not in the original config file
+====================================================================================================
+src/interfaceModule/app_command_interface.cpp:2971 @ b45d3b58 x2
+  P 2971   GONE 			media->imageDropAllNoPersistent();
+  ~P2971: 262(1.00) media->imageDropAllNoPersistent();  3011(0.79) media->imageDropAll();  3138(0.76) media->imageSetPersistent(true);
+  ~P2971: 262(1.00) media->imageDropAllNoPersistent();  3011(0.79) media->imageDropAll();  3138(0.76) media->imageSetPersistent(true);
+====================================================================================================
+src/interfaceModule/app_command_interface.cpp:2972 @ b45d3b58 x2
+  P 2972   GONE 			swapCommand = false;
+  ~P2972: 4748(1.00) swapCommand = false;  3243(1.00) swapCommand = false;  263(1.00) swapCommand = false;
+  ~P2972: 4748(1.00) swapCommand = false;  3243(1.00) swapCommand = false;  263(1.00) swapCommand = false;
+====================================================================================================
+src/interfaceModule/app_command_interface.cpp:2973 @ b45d3b58 x1
+  P 2973   GONE 			ifSwap->reset();
+  ~P2973: 264(1.00) ifSwap->reset();  75(1.00) ifSwap->reset();  4662(0.74) if (!ifSwap->revert())
+  ~P2973: 264(1.00) ifSwap->reset();  75(1.00) ifSwap->reset();  4662(0.74) if (!ifSwap->revert())
+====================================================================================================
+src/interfaceModule/app_command_interface.cpp:3024-3029 @ b45d3b58 x2
+  P 3024   GONE 		// Return HERE: without it the speed change is applied and the command
+  P 3025   GONE 		// then falls into the "missing action argument" error below, so a
+  P 3026   GONE 		// command that WORKED reports failure - and executeCommandStatus() skips
+  P 3027   GONE 		// recordCommand() on failure, silently dropping `script speed ...` from
+  P 3028   GONE 		// every recorded show (INTENT S11.108 rider). The bogus-value leg keeps
+  P 3029   GONE 		// its own diagnostic, which the fall-through used to overwrite.
+  ~P3024: 15(0.42) * but WITHOUT ANY WARRANTY; without even the implied warrant  2813(0.41) // test argDisplay in independent command  1908(0.40) return false;   // no read half exists at any level
+  ~P3029: 3971(0.40) // TODO: should this record as the actual date used?  3652(0.38) // If the file is not found, default to the original srt nam  4071(0.38) // Delete an existing object, but only if was added by a scr
+====================================================================================================
+src/interfaceModule/app_command_interface.cpp:4200-4314 @ b45d3b58 x1
+  P 4200   GONE 			// Harness A/B visual comparison (INTENT.md 11.19a): the offscreen
+  P 4201   GONE 			// render (render_size) never reaches the window on headless X
+  P 4202   GONE 			// (swapchain acquire timeout) - external grabs see black; this
+  P 4203   GONE 			// rides the app's own readback. Written ~1 frame later, async.
+  P 4204 -> 4092 			stapp->takeScreenshot(args[W_FILENAME]);
+  P 4205 -> 4093 		} else {
+  P 4206 -> 4094 			debug_message = "command 'body' : unknown action argument";
+  P 4207 -> 4095 		}
+  P 4208 -> 4096 		return executeCommandStatus();
+  P 4209 -> 4097 	}
+  P 4210 -> 4098 
+  P 4211 -> 4099 	//stock management
+  P 4212 -> 4100 	if (!argName.empty() ) {
+  P 4213 -> 4101 
+  P 4214 -> 4102 		//under hidden case
+  P 4215 -> 4103 		std::string argHidden = args[W_HIDDEN];
+  P 4216 -> 4104 		if (!argHidden.empty()) {
+  P 4217 -> 4105 			if (Utility::isTrue(argHidden)) {
+  P 4218 -> 4106 				coreLink->setPlanetHidden(args[W_NAME], true);
+  P 4219 -> 4107 			} else if (Utility::isFalse(argHidden)) {
+  P 4220 -> 4108 				coreLink->setPlanetHidden(args[W_NAME], false);
+  P 4221 -> 4109 			} else if (argHidden == W_TOGGLE) {
+  P 4222 -> 4110 				coreLink->setPlanetHidden(args[W_NAME], !coreLink->getPlanetHidden(args[W_NAME]));
+  P 4223 -> 4111 			} else
+  P 4224 -> 4112 				debug_message = _("Command 'body': unknown hidden value");
+  P 4225 -> 4113 			return executeCommandStatus();
+  P 4226 -> 4114 		}
+  P 4227 -> 4115 
+  P 4228 -> 4116 		//under case orbit
+  P 4229 -> 4117 		std::string argOrbit = args[W_ORBIT];
+  P 4230 -> 4118 		if (!argOrbit.empty()) {
+  P 4231 -> 4119 			if (Utility::isTrue(argOrbit)) {
+  P 4232 -> 4120 				coreLink->planetsSetFlagOrbits(args[W_NAME], true);
+  P 4233 -> 4121 			} else if (Utility::isFalse(argOrbit)) {
+  P 4234 -> 4122 				coreLink->planetsSetFlagOrbits(args[W_NAME], false);
+  P 4235 -> 4123 			} else
+  P 4236 -> 4124 				debug_message = _("Command 'body': unknown orbit value");
+  P 4237 -> 4125 			return executeCommandStatus();
+  P 4238 -> 4126 		}
+  P 4239 -> 4127 
+  P 4240 -> 4128 
+  P 4241 -> 4129 		std::string argColor = args[W_COLOR];
+  P 4242 -> 4130 		if (!argColor.empty()) {
+  P 4243 -> 4131 			//std::cout << "I receive a color info for " << argName << std::endl;
+  P 4244 -> 4132 			//color management
+  P 4245 -> 4133 			Vec3f Vcolor;
+  P 4246 -> 4134 			std::string argR= args[W_R];
+  P 4247 -> 4135 			std::string argG= args[W_G];
+  P 4248 -> 4136 			std::string argB= args[W_B];
+  P 4249 -> 4137 			std::string argColorValue = args[W_COLOR_VALUE];
+  P 4250 -> 4138 			//std::cout << "RGB: " << argR << " " << argG << " " << argB << std::endl;
+  P 4251 -> 4139 			AppCommandColor testColor(Vcolor, debug_message, argColorValue, argR, argG, argB);
+  P 4252 -> 4140 			if (!testColor) {
+  P 4253 -> 4141 				//std::cout << "Error color " << debug_message << std::endl;
+  P 4254 -> 4142 				return executeCommandStatus();
+  P 4255 -> 4143 			}
+  P 4256 -> 4144 
+  P 4257 -> 4145 			//std::cout << "News read : " << argColor << " " << Vcolor  << std::endl;
+  P 4258 -> 4146 			coreLink->planetSetColor(argName, argColor, Vcolor);
+  P 4259 -> 4147 			return executeCommandStatus();
+  P 4260 -> 4148 		}
+  P 4261 -> 4149 
+  P 4262   GONE 		// Runtime navigation-radius seam (B10 S5.2, S11.79(e) D9key): set a
+  P 4263   GONE 		// body's datum_radius / ground_radius scalar at runtime, in km (the
+  P 4264   GONE 		// data-key unit). The COMMAND word order matches the DATA keys
+  P 4265   GONE 		// (datum/ground FIRST) - Q12's `radius datum`/`radius ground` word order
+  P 4266   GONE 		// was rejected by D9key. Routes through the SAME per-body scalar the
+  P 4267   GONE 		// loader feeds (scaling stays the single updateCache authority, I2);
+  P 4268   GONE 		// new-path concept only, so no old-path mirror. S2(f) diagnostics: a
+  P 4269   GONE 		// negative value or an unknown body logs the valid domain + fallback
+  P 4270   GONE 		// (value unchanged) + fix action, and does NOT reach the setter.
+  P 4271 -> 4150 		std::string argDatumRadius = args[W_DATUM_RADIUS];
+  P 4272 -> 4151 		if (!argDatumRadius.empty()) {
+  P 4273 -> 4152 			double km = evalDouble(argDatumRadius);
+  P 4274 -> 4153 			if (km < 0.0) {
+  P 4275 -> 4154 				debug_message = _("Command 'body' datum_radius: value must be >= 0 km "
+  P 4276 -> 4155 					"(0 = enterable/transparent body, the body radius = solid surface, "
+  P 4277 -> 4156 					"radius*1.002 = terrain clearance). datum_radius unchanged; reissue "
+  P 4278 -> 4157 					"with a non-negative km value.");
+  P 4279 -> 4158 			} else if (!coreLink->planetSetDatumRadius(argName, km)) {
+  P 4280 -> 4159 				debug_message = _("Command 'body' datum_radius: no body named '") + argName
+  P 4281 -> 4160 					+ _("'. datum_radius unchanged; load the body first ('body action load').");
+  P 4282 -> 4161 			}
+  P 4283 -> 4162 			return executeCommandStatus();
+  P 4284 -> 4163 		}
+  P 4285 -> 4164 
+  P 4286 -> 4165 		std::string argGroundRadius = args[W_GROUND_RADIUS];
+  P 4287 -> 4166 		if (!argGroundRadius.empty()) {
+  P 4288 -> 4167 			double km = evalDouble(argGroundRadius);
+  P 4289 -> 4168 			if (km < 0.0) {
+  P 4290 -> 4169 				debug_message = _("Command 'body' ground_radius: value must be >= 0 km "
+  P 4291 -> 4170 					"(0 = enterable body, descend to the centre; the body radius = solid "
+  P 4292 -> 4171 					"floor; radius*1.002 = terrain clearance). ground_radius unchanged; "
+  P 4293 -> 4172 					"reissue with a non-negative km value.");
+  P 4294 -> 4173 			} else if (!coreLink->planetSetGroundRadius(argName, km)) {
+  P 4295 -> 4174 				debug_message = _("Command 'body' ground_radius: no body named '") + argName
+  P 4296 -> 4175 					+ _("'. ground_radius unchanged; load the body first ('body action load').");
+  P 4297 -> 4176 			}
+  P 4298 -> 4177 			return executeCommandStatus();
+  P 4299 -> 4178 		}
+  P 4300 -> 4179 
+  P 4301 -> 4180 		debug_message = _("Command 'body': case name unknown argument");
+  P 4302 -> 4181 		return executeCommandStatus();
+  P 4303 -> 4182 	}
+  P 4304 -> 4183 
+  P 4305 -> 4184 	if (!args[W_TESSELATION].empty()) {
+  P 4306 -> 4185 		coreLink->planetTesselation(args[W_TESSELATION], evalInt(args[W_VALUE]));
+  P 4307 -> 4186 		return executeCommandStatus();
+  P 4308 -> 4187 	}
+  P 4309 -> 4188 
+  P 4310 -> 4189 	debug_message = _("Command 'body': unknown argument");
+  P 4311 -> 4190 	return executeCommandStatus();
+  P 4312 -> 4191 }
+  P 4313 -> 4192 
+  P 4314 -> 4193 int AppCommandInterface::commandFont()
+  ---- at 9d461bd5, around the surviving lines 4092..4193
+  T 4088  		} else if (argAction == "dual_dump") {
+  T 4089  			// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
+  T 4090  			stcore->ssystemDualDump(args[W_FILENAME]);
+  T 4091  		} else if (argAction == "screenshot") {
+  T 4092  			stapp->takeScreenshot(args[W_FILENAME]);
+  T 4093  		} else {
+  T 4094  			debug_message = "command 'body' : unknown action argument";
+  T 4095  		}
+  T 4096  		return executeCommandStatus();
+  T 4097  	}
+  T 4098  
+  T 4099  	//stock management
+  T 4100  	if (!argName.empty() ) {
+  T 4101  
+  T 4102  		//under hidden case
+  T 4103  		std::string argHidden = args[W_HIDDEN];
+  T 4104  		if (!argHidden.empty()) {
+  T 4105  			if (Utility::isTrue(argHidden)) {
+  T 4106  				coreLink->setPlanetHidden(args[W_NAME], true);
+  T 4107  			} else if (Utility::isFalse(argHidden)) {
+  T 4108  				coreLink->setPlanetHidden(args[W_NAME], false);
+  T 4109  			} else if (argHidden == W_TOGGLE) {
+  T 4110  				coreLink->setPlanetHidden(args[W_NAME], !coreLink->getPlanetHidden(args[W_NAME]));
+  T 4111  			} else
+  T 4112  				debug_message = _("Command 'body': unknown hidden value");
+  T 4113  			return executeCommandStatus();
+  T 4114  		}
+  T 4115  
+  T 4116  		//under case orbit
+  T 4117  		std::string argOrbit = args[W_ORBIT];
+  T 4118  		if (!argOrbit.empty()) {
+  T 4119  			if (Utility::isTrue(argOrbit)) {
+  T 4120  				coreLink->planetsSetFlagOrbits(args[W_NAME], true);
+  T 4121  			} else if (Utility::isFalse(argOrbit)) {
+  T 4122  				coreLink->planetsSetFlagOrbits(args[W_NAME], false);
+  T 4123  			} else
+  T 4124  				debug_message = _("Command 'body': unknown orbit value");
+  T 4125  			return executeCommandStatus();
+  T 4126  		}
+  T 4127  
+  T 4128  
+  T 4129  		std::string argColor = args[W_COLOR];
+  T 4130  		if (!argColor.empty()) {
+  T 4131  			//std::cout << "I receive a color info for " << argName << std::endl;
+  T 4132  			//color management
+  T 4133  			Vec3f Vcolor;
+  T 4134  			std::string argR= args[W_R];
+  T 4135  			std::string argG= args[W_G];
+  T 4136  			std::string argB= args[W_B];
+  T 4137  			std::string argColorValue = args[W_COLOR_VALUE];
+  T 4138  			//std::cout << "RGB: " << argR << " " << argG << " " << argB << std::endl;
+  T 4139  			AppCommandColor testColor(Vcolor, debug_message, argColorValue, argR, argG, argB);
+  T 4140  			if (!testColor) {
+  T 4141  				//std::cout << "Error color " << debug_message << std::endl;
+  T 4142  				return executeCommandStatus();
+  T 4143  			}
+  T 4144  
+  T 4145  			//std::cout << "News read : " << argColor << " " << Vcolor  << std::endl;
+  T 4146  			coreLink->planetSetColor(argName, argColor, Vcolor);
+  T 4147  			return executeCommandStatus();
+  T 4148  		}
+  T 4149  
+  T 4150  		std::string argDatumRadius = args[W_DATUM_RADIUS];
+  T 4151  		if (!argDatumRadius.empty()) {
+  T 4152  			double km = evalDouble(argDatumRadius);
+  T 4153  			if (km < 0.0) {
+  T 4154  				debug_message = _("Command 'body' datum_radius: value must be >= 0 km "
+  T 4155  					"(0 = enterable/transparent body, the body radius = solid surface, "
+  T 4156  					"radius*1.002 = terrain clearance). datum_radius unchanged; reissue "
+  T 4157  					"with a non-negative km value.");
+  T 4158  			} else if (!coreLink->planetSetDatumRadius(argName, km)) {
+  T 4159  				debug_message = _("Command 'body' datum_radius: no body named '") + argName
+  T 4160  					+ _("'. datum_radius unchanged; load the body first ('body action load').");
+  T 4161  			}
+  T 4162  			return executeCommandStatus();
+  T 4163  		}
+  T 4164  
+  T 4165  		std::string argGroundRadius = args[W_GROUND_RADIUS];
+  T 4166  		if (!argGroundRadius.empty()) {
+  T 4167  			double km = evalDouble(argGroundRadius);
+  T 4168  			if (km < 0.0) {
+  T 4169  				debug_message = _("Command 'body' ground_radius: value must be >= 0 km "
+  T 4170  					"(0 = enterable body, descend to the centre; the body radius = solid "
+  T 4171  					"floor; radius*1.002 = terrain clearance). ground_radius unchanged; "
+  T 4172  					"reissue with a non-negative km value.");
+  T 4173  			} else if (!coreLink->planetSetGroundRadius(argName, km)) {
+  T 4174  				debug_message = _("Command 'body' ground_radius: no body named '") + argName
+  T 4175  					+ _("'. ground_radius unchanged; load the body first ('body action load').");
+  T 4176  			}
+  T 4177  			return executeCommandStatus();
+  T 4178  		}
+  T 4179  
+  T 4180  		debug_message = _("Command 'body': case name unknown argument");
+  T 4181  		return executeCommandStatus();
+  T 4182  	}
+  T 4183  
+  T 4184  	if (!args[W_TESSELATION].empty()) {
+  T 4185  		coreLink->planetTesselation(args[W_TESSELATION], evalInt(args[W_VALUE]));
+  T 4186  		return executeCommandStatus();
+  T 4187  	}
+  T 4188  
+  T 4189  	debug_message = _("Command 'body': unknown argument");
+  T 4190  	return executeCommandStatus();
+  T 4191  }
+  T 4192  
+  T 4193  int AppCommandInterface::commandFont()
+  T 4194  {
+  T 4195  	std::string fileName = args[W_FILENAME];
+  T 4196  	std::string targetName = args[W_TARGET];
+====================================================================================================
+src/interfaceModule/app_command_interface.hpp:185-187 @ b45d3b58 x2
+  P  185   GONE 	//! The write half of `color`, extracted so a restore drives the same code
+  P  186   GONE 	//! the command does (I2). `index` is used by `star_table` alone.
+  P  187 ->  165 	void applyColor(COLORCOMMAND_NAMES name, const Vec3f &value, int index);
+  ---- at 9d461bd5, around the surviving lines 165..165
+  T  161  	bool readFlag(FLAG_NAMES flagName, bool &value) const;
+  T  162  	bool readValue(SCD_NAMES name, std::string &value) const;
+  T  163  	bool readColor(COLORCOMMAND_NAMES name, Vec3f &value) const;
+  T  164  	//! index is used by star_table alone
+  T  165  	void applyColor(COLORCOMMAND_NAMES name, const Vec3f &value, int index);
+  T  166  	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval);
+  T  167  	bool setFlag(const std::string &name, const std::string &value, bool &newval);
+  T  168  	double evalDouble(const std::string &var);
+====================================================================================================
+src/starModule/hip_star_mgr.cpp:828-834 @ b45d3b58 x1
+  P  828 ->  832 		const bool onlySelected = isolateSelected && !selected_star.empty();
+  P  829 ->  833 		int zone=0;
+  P  830 ->  834 		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
+  P  831   GONE 			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selecte
+  P  832 ->  836 		}
+  P  833 ->  837 		for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
+  P  834   GONE 			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  select
+  ---- at 9d461bd5, around the surviving lines 832..837
+  T  828  			int x = (int)((maxMagStarName-mag_min)/k);
+  T  829  			if (x > 0)
+  T  830  				max_mag_star_name = x;
+  T  831  		}
+  T  832  		const bool onlySelected = isolateSelected && !selected_star.empty();
+  T  833  		int zone=0;
+  T  834  		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
+  T  835  			it->second->draw(zone,true,rcmag_table,frame,max_mag_star_name,names_brightness, starNameToDraw,  selected_
+  T  836  		}
+  T  837  		for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
+  T  838  			it->second->draw(zone,false,rcmag_table,frame,max_mag_star_name,names_brightness, starNameToDraw,  selected
+  T  839  		}
+  T  840  
+====================================================================================================
+src/starModule/zone_array.cpp:293 @ b45d3b58 x1
+  P  293   GONE 			if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBV
+  ~P293: 294(0.95) if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*m  393(0.84) if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*m  412(0.43) Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75
+  ~P293: 294(0.95) if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*m  393(0.84) if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*m  412(0.43) Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75
+====================================================================================================
+src/starModule/zone_array.cpp:382 @ b45d3b58 x1
+  P  382   GONE 			if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBV
+  ~P382: 393(0.94) if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*m  294(0.84) if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*m  412(0.49) Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75
+  ~P382: 393(0.94) if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*m  294(0.84) if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*m  412(0.49) Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75
+====================================================================================================
+src/tools/ini_line.hpp:16 @ 8d41fbe3 x2
+  P   16   GONE //   - a '#' starts a comment that runs to the end of the line, anywhere on it;
+  ~P16: 6(0.40) // Line grammar shared by every reader of the .ini body/syst  47(0.31) // Classify one raw line, valueSpan indexes line itself  13(0.31) MALFORMED,  // No '=', key holds the offending text
+  ~P16: 6(0.40) // Line grammar shared by every reader of the .ini body/syst  47(0.31) // Classify one raw line, valueSpan indexes line itself  13(0.31) MALFORMED,  // No '=', key holds the offending text

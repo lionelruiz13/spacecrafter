@@ -1,0 +1,23 @@
+ANCHOR SHAPES (all five files), token = one `:<line-list>` occurrence
+    2506  FILE                        ...h its three anchors - script.cpp:117, sc
+    2172  FILE|range                  ...app_command_interface.cpp:1180-2109
+     607  LOOSE|no-file               ...he WHOLE map - dso3d (:1681, :1
+     279  LOOSE|range|no-file         ...`keep_time` in place (:4193-4194), a
+     272  FILE|range|comma-list       ...face.cpp:4663-4669 -> src/interfaceModule/app_command_ev
+     267  LOOSE                       ...ript_mgr.cpp:81-107 + :479 (in
+     238  FILE|comma-list             ...app_command_interface.cpp:3633, 3652
+      98  LOOSE|range                 ...5-192; executeCommand :312-446; se
+      19  LOOSE|comma-list|no-file    ...e date is left alone (:4088, 4092, 4096, 4100 -- 
+       5  SYMBOL|range|no-file        ...ed before tokenizing (parseCommand:151-155) --
+       5  SYMBOL|no-file              ...ad: the entry points (other_args_uses:4160) an
+       2  LOOSE|range|comma-list|no-file  ... real time backwards (:3502-3503, 3535-3536).
+    6470  TOTAL tokens
+    7284  TOTAL references (a comma element and a range are one each)
+
+PER FILE (tokens by class)
+  sc-grammar.json                              {'FILE': 2889, 'LOOSE': 681, 'SYMBOL': 9}
+  unit-1.json                                  {'FILE': 395, 'LOOSE': 101}
+  unit-2.json                                  {'FILE': 568, 'LOOSE': 233}
+  unit-3.json                                  {'FILE': 391, 'LOOSE': 133}
+  unit-4.json                                  {'FILE': 412, 'LOOSE': 121, 'SYMBOL': 1}
+  ss-grammar.json                              {'FILE': 533, 'LOOSE': 3}

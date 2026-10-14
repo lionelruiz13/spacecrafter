@@ -617,6 +617,17 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-10-14b] The anchors resolve at one pin again, `main @ 9d461bd5`, and
+  the gate now sees all three pointer classes.** Dispatch task F158
+  (`claude/fable-dispatch.md`), executor run; nothing committed by the executor.
+  Every `file:line` outside `_meta` re-resolved by content in all six contract
+  files (the 158 GONE read by hand: 145 re-anchored, 13 declared `[NOT AT HEAD]`,
+  table `claude/harness/f75/read_table_f158.json`); `lines` / `header_line`
+  derived at the pin and gated; a reference's own `@ <sha>` honoured; seven
+  `FILE_OVERRIDES` readings, because moving the pin re-runs the content rules.
+  Five record gates print anchors and their records are re-recorded by the
+  supervisor (artifacts). Parent **INTENT 11.331** holds the derivation and the
+  measurements; this line indexes it.
 - **[2026-10-14] F155 stopped at its BEFORE: `anchor_gate` has been red since
   2026-09-18 (code `923823b6`), and a grammar edit must move the fragments and
   the file pin with it.** Dispatch task F155 (`claude/fable-dispatch.md`),
