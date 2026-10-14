@@ -1245,33 +1245,31 @@ void s_texture::loadCache(const std::string &path, bool _cacheTexture)
     }
 }
 
+// Return the name the two cache names are cut from
+static std::string cacheSlice(const std::string &name)
+{
+    const auto pos = name.find(".spacecrafter/");
+    if (pos == std::string::npos && CallSystem::isAbsolute(name))
+        return name;
+    const std::string rel = (pos == std::string::npos) ? name : name.substr(pos + 14);
+    const auto slash = rel.find('/');
+    return (slash == std::string::npos) ? rel : rel.front() + rel.substr(slash);
+}
+
 std::string s_texture::getCacheName(const std::string &name)
 {
-    auto p1 = name.find(".spacecrafter/")+14;
-    if (p1 == 13)
-        p1 = 0;
-    const auto p2 = name.find_first_of('/', p1) - 1;
-    std::string filename = name.substr();
-    filename = name.substr(p2, name.size() - p2);
-    filename.front() = name[p1];
-    for (char &c : filename) {
-        if (c == '/')
-            c = '-';
-    }
-    memcpy(filename.data() + filename.size() - 3, "dat", 3);
+    const std::string slice = cacheSlice(name);
+    std::string filename = slice.substr(0, slice.size() - 3) + "dat";
+    if (filename.front() == '/')
+        filename.front() = '_';
+    std::replace(filename.begin(), filename.end(), '/', '-');
     return filename;
 }
 
 std::string s_texture::getCacheEntryName(const std::string &name)
 {
-    auto p1 = name.find(".spacecrafter/")+14;
-    if (p1 == 13)
-        p1 = 0;
-    const auto p2 = name.find_first_of('/', p1) - 1;
-    std::string filename = name.substr();
-    filename = name.substr(p2, name.size() - p2 - 4);
-    filename.front() = name[p1];
-    return filename;
+    const std::string slice = cacheSlice(name);
+    return slice.substr(0, slice.size() - 4);
 }
 
 std::string s_texture::getCacheName(bigTexRecap *tex)
