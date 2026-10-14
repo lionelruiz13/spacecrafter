@@ -86,7 +86,7 @@ bool KeyBinding::bind(const std::string &token, bool release, const std::string 
 {
 	Key key;
 	if (!parse(token, key)) {
-		reason = "unknown key '" + token + "': write [CTRL+][SHIFT+][KWIN+][SUPER+][ALT+] then an SDL scancode name "
+		reason = "unknown key '" + token + "': write [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name "
 		         "without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, "
 		         "no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key";
 		return false;
