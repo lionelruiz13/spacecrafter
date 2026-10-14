@@ -303,7 +303,7 @@ void ScriptMgr::update(int delta_time)
 
 		auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(400);
 
-		while (wait_time==0) {
+		while (wait_time==0 && scriptState == ScriptState::PLAY) {
 			std::string comd;
 
 			ScriptOrigin origin;
