@@ -526,7 +526,7 @@ ls util/scedit/build-f158/scedit >/dev/null 2>&1 && echo built => built
 /usr/bin/grep -c '^- \*\*\[2026' claude/util/scedit/INTENT.md => 29
 ```
 
-**WIP:** 2026-10-14 09:2x — MINTED (round supervisor, Claude Fable 5.1, session 46) on 11.327 (4)2 and F158's acceptance; parallel to F157 by disjoint files.
+**WIP:** 2026-10-14 09:2x — MINTED (round supervisor, Claude Fable 5.1, session 46) on 11.327 (4)2 and F158's acceptance; parallel to F157 by disjoint files. **DISPATCHED 09:25 (`opus-xhigh` under the owner's prompt; the gate 27 / 27 at the mint), inside `util/scedit/` with its own build tree `build-f159/`, no engine; F157's second run beside it; harness `63eec01`.**
 
 ---
 
