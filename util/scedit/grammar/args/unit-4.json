@@ -526,8 +526,8 @@
         "action": {
           "doc": "What to do with the point of view; every other key on the line depends on this word.",
           "value": "enumerated",
-          "values": ["rotate", "align_with", "transition_to", "move_to", "save", "load", "free_mode", "descend", "lift_off", "create", "drop", "switch", "follow_rotation"],
-          "completable": ["align_with", "create", "descend", "drop", "follow_rotation", "free_mode", "lift_off", "load", "move_to", "rotate", "save", "switch", "transition_to"],
+          "values": ["rotate", "align_with", "transition_to", "move_to", "save", "load", "free_mode", "descend", "move_lat", "move_lon", "raise_height", "lower_height", "lift_off", "create", "drop", "switch", "follow_rotation"],
+          "completable": ["align_with", "create", "descend", "drop", "follow_rotation", "free_mode", "lift_off", "load", "lower_height", "move_lat", "move_lon", "move_to", "raise_height", "rotate", "save", "switch", "transition_to"],
           "value_docs": {
             "rotate": "turn the view towards the place you are standing on, over `duration` seconds",
             "align_with": "tilt the view so that the named place's own up direction becomes yours, over `duration` seconds",
@@ -537,6 +537,10 @@
             "load": "put the view back where such a file says",
             "free_mode": "switch free flight on or off",
             "descend": "go down towards, or up away from, what you are looking at",
+            "move_lat": "keep moving in latitude at the speed `value` gives, -1 to 1 (the sign is the direction), until the next `move_lat`; `value 0` stops",
+            "move_lon": "keep moving in longitude at the speed `value` gives, -1 to 1 (the sign is the direction), until the next `move_lon`; `value 0` stops",
+            "raise_height": "keep rising at the speed `value` gives, 0 to 1, until the next height order; `value 0` stops a rise",
+            "lower_height": "keep descending at the speed `value` gives, 0 to 1, until the next height order; `value 0` stops a descent",
             "lift_off": "climb to a given height and then detach the view from the body",
             "create": "declare a new named place the view can be attached to",
             "drop": "forget a named place",
@@ -545,7 +549,7 @@
           },
           "default": "absent -> \"command 'camera' : action argument\"; present with any other word -> \"command 'camera' : missing name\" when no `name` was given, else \"command 'camera' : unknown action argument\"",
           "required": true,
-          "source": "app_command_interface.cpp:4233, 4236-4239, 4241, 4252, 4276, 4311, 4375, 4390, 4405, 4415, 4443, 4466-4506 (W_ROTATE=\"rotate\", W_ALIGN_WITH=\"align_with\", W_TRANSITION_TO=\"transition_to\", W_MOVE_TO=\"move_to\", W_SAVE=\"save\", W_LOAD=\"load\", W_FREE_MODE=\"free_mode\", W_DESCEND=\"descend\", W_LIFT_OFF=\"lift_off\", W_CREATE=\"create\", W_DROP=\"drop\", W_SWITCH=\"switch\", W_FOLLOW_ROTATION=\"follow_rotation\": base_command_interface.hpp:151,248,247,246,144,103,242,243,245,222,152,225,241)"
+          "source": "app_command_interface.cpp:4233, 4236-4239, 4241, 4252, 4276, 4311, 4375, 4390, 4405, 4415, 4425, 4443, 4466-4506 (W_ROTATE=\"rotate\", W_ALIGN_WITH=\"align_with\", W_TRANSITION_TO=\"transition_to\", W_MOVE_TO=\"move_to\", W_SAVE=\"save\", W_LOAD=\"load\", W_FREE_MODE=\"free_mode\", W_DESCEND=\"descend\", W_MOVE_LAT=\"move_lat\", W_MOVE_LON=\"move_lon\", W_RAISE_HEIGHT=\"raise_height\", W_LOWER_HEIGHT=\"lower_height\", W_LIFT_OFF=\"lift_off\", W_CREATE=\"create\", W_DROP=\"drop\", W_SWITCH=\"switch\", W_FOLLOW_ROTATION=\"follow_rotation\": base_command_interface.hpp:151,248,247,246,144,103,242,243,249,250,251,252,245,222,152,225,241)"
         },
         "name": {
           "doc": "The name of a place the view can be attached to (its own name, not a body's).",
@@ -637,14 +641,14 @@
           "notes": "What it goes down towards depends on where you are: the ground under the view ray when a body is close, the last selected body when you are out among the systems (src/experimentalModule/Camera.cpp:728-742). New drawing path only."
         },
         "value": {
-          "doc": "On `action follow_rotation`, whether the view turns with the body: write exactly the word true for yes.",
-          "value": "string compared literally against \"true\"",
-          "values": ["true", "anything else = no"],
+          "doc": "On `action follow_rotation`, whether the view turns with the body: write exactly the word true for yes; on the four held moves (`move_lat`, `move_lon`, `raise_height`, `lower_height`), how fast to keep moving.",
+          "value": "on `follow_rotation`: string compared literally against \"true\"; on `move_lat`, `move_lon`, `raise_height` and `lower_height`: number(evalDouble) -- $-variable substitution possible",
+          "values": ["true", "anything else = no", "<number> (on move_lat, move_lon, raise_height, lower_height)"],
           "completable": ["true"],
-          "default": "absent -> no",
-          "required": false,
-          "source": "app_command_interface.cpp:4496-4500 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,239)",
-          "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar -- the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here."
+          "default": "on `follow_rotation`: absent -> no; on `move_lat`, `move_lon`, `raise_height` and `lower_height`: absent -> \"command 'camera <action>' : missing value\"",
+          "required": "conditional",
+          "source": "app_command_interface.cpp:4496-4500 (follow_rotation), :4426-4431 (move_lat, move_lon, raise_height, lower_height) -> src/coreModule/core.cpp:1810-1834, 1937-1962 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,239)",
+          "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar -- the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here. On `move_lat`, `move_lon`, `raise_height` and `lower_height` the number is an order HELD until the next one on its axis: each frame the engine adds the joystick's push to it, keeps the sum within -1 to 1 and moves by its cube (src/coreModule/core.cpp:1937-1962), so a number beyond the bounds acts as the bound; `raise_height` and `lower_height` share ONE order, the later replacing the earlier, `value 0` on one of them stops only its own direction, and with no range check a negative number on either moves the other way (src/coreModule/core.cpp:1810-1824)."
         },
         "type": {
           "doc": "On `action create`, what kind of place is being declared.",
@@ -680,6 +684,10 @@
         {"selector": "action load", "requires": ["filename"], "optional": [], "effect": "read such a file back; failure gives \"error loading CameraAnchor\"", "source": "app_command_interface.cpp:4390-4403"},
         {"selector": "action free_mode", "requires": ["state"], "optional": [], "effect": "switch free flight on or off", "source": "app_command_interface.cpp:4405-4413"},
         {"selector": "action descend", "requires": ["coef"], "optional": [], "effect": "go down towards, or up away from, what you look at", "source": "app_command_interface.cpp:4415-4441"},
+        {"selector": "action move_lat", "requires": ["value"], "optional": [], "effect": "keep moving in latitude at that speed (-1 to 1) until the next `move_lat`, `value 0` stops; a missing value gives \"command 'camera move_lat' : missing value\"", "source": "app_command_interface.cpp:4425-4441"},
+        {"selector": "action move_lon", "requires": ["value"], "optional": [], "effect": "keep moving in longitude at that speed (-1 to 1) until the next `move_lon`, `value 0` stops; a missing value gives \"command 'camera move_lon' : missing value\"", "source": "app_command_interface.cpp:4425-4441"},
+        {"selector": "action raise_height", "requires": ["value"], "optional": [], "effect": "keep rising at that speed (0 to 1) until the next height order, `value 0` stops a rise; a missing value gives \"command 'camera raise_height' : missing value\"", "source": "app_command_interface.cpp:4425-4441"},
+        {"selector": "action lower_height", "requires": ["value"], "optional": [], "effect": "keep descending at that speed (0 to 1) until the next height order, `value 0` stops a descent; a missing value gives \"command 'camera lower_height' : missing value\"", "source": "app_command_interface.cpp:4425-4441"},
         {"selector": "action lift_off", "requires": ["altitude"], "optional": ["duration"], "effect": "queue three commands in front of the script: climb to that height, wait, then detach the view; duration defaults to 3", "source": "app_command_interface.cpp:4443-4464"},
         {"selector": "action create", "requires": ["name", "type"], "optional": ["x", "y", "z", "body_name", "parent", "orbit_center_x", "orbit_center_y", "orbit_center_z", "follow_rotation", "coord_func"], "effect": "declare a new named place in both registries; failure gives \"error creating CameraAnchor\"", "source": "app_command_interface.cpp:4471-4477"},
         {"selector": "action drop", "requires": ["name"], "optional": [], "effect": "forget that place (refused while the view is attached to it); failure gives \"error drop CameraAnchor\"", "source": "app_command_interface.cpp:4479-4485 -> src/experimentalModule/CameraAnchors.cpp:287-300"},

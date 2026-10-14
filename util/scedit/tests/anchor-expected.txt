@@ -5,9 +5,10 @@
 # Why: 2026-10-14, F158 (claude/INTENT/11.331.md): the pin MOVED to main @ 9d461bd5 in all six files; every reference re-resolved by content
 # Why: and the 162 that did not resolve read by hand (claude/harness/f75/read_table_f158.json): 145 of the 158 GONE re-anchored, 13 declared;
 # Why: lines / handler_body_lines / header_line derived and gated at the same pin; a reference's own @ <sha> honoured. Was: GONE 158, clean 2457, moved 4579, declared 4.
-clean                    7180
+# Why: 2026-10-14, F159 (claude/INTENT/11.332.md): the ten engine spellings entered both halves at the same pin - 100 new references, all clean (script 32 + 32, camera 14 + 14, vocabulary 8; six carry their own @ 52568219, key_binding.cpp having moved since the pin) and 10 new header_line. Was: clean 7180, header_line:clean 238.
+clean                    7280
 handler_body_lines:clean 2
-header_line:clean        238
+header_line:clean        248
 lines:clean              127
 not-at-head(declared)    18
 skipped(_meta)           86

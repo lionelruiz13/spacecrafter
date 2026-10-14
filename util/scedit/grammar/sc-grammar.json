@@ -13,7 +13,8 @@
       "2026-08-31 (F65): parse_model.comments.machine_tail gains its EXECUTES-ONLY clause (a `#!` on a line the script layer never dispatched is neither written nor cleared by the engine), with its three anchors - script.cpp:117, script_annotator.cpp:130, sc_editcore.cpp:306 - and the measured instance (F63 F.sts:1). comments.script_layer's anchor corrected 114 -> 117 in the same pass: engine 2b8ec034 moved that line and three scedit-side citations of it went stale at once. Families, counts and every seed byte-untouched (the seed gate proves it).",
       "2026-08-31 (F71, scedit/INTENT.md S5 items 11 and 12 plus the flags/colours/font doc passes): `default_value`+`default_value_source` on 60 arg specs, read at source under a stated criterion (harness/f71_defaults.py) -- typing the literal must be EQUIVALENT to omitting the key AND must not teach a vocabulary the engine lacks, which is why `camera value` has none. `completable`+`completable_excluded` on all 120 specs with a value domain, ending the bare-token guess and naming five entries that guess got wrong. families.flags / color_names / font_targets converted to the D7 v2 object shape with a doc line and source chain per name (153 names). The `font` family check is ARMED (FontFactory::updateFont read: closed, case-sensitive, ten members). SOURCE ANCHOR PIN, stated because it bit this task: every per-spec `source` line number without an explicit `@ <sha>` resolves at the `merged` sha b12c8cdd, NOT at HEAD -- app_command_interface.cpp is 4747 -> 4888 lines since. Anchors written by F71 carry their own sha. [SUPERSEDED 2026-09-01, F75: the anchors resolve at HEAD again. The pin is now `_meta.anchor_pin` and it is master-beta @ 54a2b844; the `@ <sha>` form survives only on a reference whose pin must deviate from the file's, and after this sweep that is only the `[NOT AT HEAD]` rows. This sentence is kept, not deleted: it is the record of the state F71 left and F75 closed.]",
       "2026-09-01 (F75): every engine anchor OUTSIDE `_meta` re-resolved against code 54a2b844 and rewritten to the line that holds the text it was written against; the pin becomes ONE file-level fact, `_meta.anchor_pin`, and the 60 per-string `@ d64fd437` pins fold into it. 6663 references swept (the 69 inside `_meta` are NOT: that block is a measurement record taken at `code`, whose 384 accounting rows carry their line as a bare integer no `file:line` parser can see, so moving half of it is I2's silent desync). Six referents were re-anchored BY READING and four carry `[NOT AT HEAD]` because their referent left the file or the file is not in this tree - the table and its reasons are in `claude/harness/f75_anchors.py` (READ_TABLE). A ctest, `anchor_gate`, now reds when the engine moves under them.",
-      "2026-10-14 (F158): the anchor pin MOVES to main @ 9d461bd5 (from master-beta @ b45d3b58; ss-grammar.json from master-beta @ 8d41fbe3), the same commit for every pointer class in the six contract files: every `file:line` reference outside `_meta` re-resolved by content, the ones whose text left the engine read by hand (re-anchored where the construct moved, `[NOT AT HEAD]` with its own `@ <sha>` where it left; table claude/harness/f75/read_table_f158.json); and the two classes no gate saw, the commands' `lines` (with `handler_body_lines`) and the vocabulary's `header_line`, derived at the pin from `handler` and `macro` and gated by `anchor_gate`, which also reads a reference's own `@ <sha>` now. `_meta` keeps its own pins (`code`, `merged`, `seeded`). Parent INTENT 11.331, scedit journal 2026-10-14b."
+      "2026-10-14 (F158): the anchor pin MOVES to main @ 9d461bd5 (from master-beta @ b45d3b58; ss-grammar.json from master-beta @ 8d41fbe3), the same commit for every pointer class in the six contract files: every `file:line` reference outside `_meta` re-resolved by content, the ones whose text left the engine read by hand (re-anchored where the construct moved, `[NOT AT HEAD]` with its own `@ <sha>` where it left; table claude/harness/f75/read_table_f158.json); and the two classes no gate saw, the commands' `lines` (with `handler_body_lines`) and the vocabulary's `header_line`, derived at the pin from `handler` and `macro` and gated by `anchor_gate`, which also reads a reference's own `@ <sha>` now. `_meta` keeps its own pins (`code`, `merged`, `seeded`). Parent INTENT 11.331, scedit journal 2026-10-14b.",
+      "2026-10-14 (F159): the ten spellings the engine has and this file lacked enter it, written at main @ 9d461bd5 -- `bind`, a value of `script action`, with its four keys `key` / `press` / `release` / `scope` and a `branches` entry (the key reader's lines cited at their own pin, that file having moved since); `move_lat` / `move_lon` / `raise_height` / `lower_height`, values of `camera action`, with four `branches` and `value` documented for them; the vocabulary 238 -> 248, `release` now both a value and a key. `script` and `camera` moved in grammar/args/unit-2.json and unit-4.json first. Parent INTENT 11.332, scedit journal 2026-10-14c."
     ],
     "merge_provenance": {
       "units": {
@@ -1201,6 +1202,10 @@
               "load",
               "free_mode",
               "descend",
+              "move_lat",
+              "move_lon",
+              "raise_height",
+              "lower_height",
               "lift_off",
               "create",
               "drop",
@@ -1216,7 +1221,11 @@
               "free_mode",
               "lift_off",
               "load",
+              "lower_height",
+              "move_lat",
+              "move_lon",
               "move_to",
+              "raise_height",
               "rotate",
               "save",
               "switch",
@@ -1231,6 +1240,10 @@
               "load": "put the view back where such a file says",
               "free_mode": "switch free flight on or off",
               "descend": "go down towards, or up away from, what you are looking at",
+              "move_lat": "keep moving in latitude at the speed `value` gives, -1 to 1 (the sign is the direction), until the next `move_lat`; `value 0` stops",
+              "move_lon": "keep moving in longitude at the speed `value` gives, -1 to 1 (the sign is the direction), until the next `move_lon`; `value 0` stops",
+              "raise_height": "keep rising at the speed `value` gives, 0 to 1, until the next height order; `value 0` stops a rise",
+              "lower_height": "keep descending at the speed `value` gives, 0 to 1, until the next height order; `value 0` stops a descent",
               "lift_off": "climb to a given height and then detach the view from the body",
               "create": "declare a new named place the view can be attached to",
               "drop": "forget a named place",
@@ -1239,7 +1252,7 @@
             },
             "default": "absent -> \"command 'camera' : action argument\"; present with any other word -> \"command 'camera' : missing name\" when no `name` was given, else \"command 'camera' : unknown action argument\"",
             "required": true,
-            "source": "app_command_interface.cpp:4233, 4236-4239, 4241, 4252, 4276, 4311, 4375, 4390, 4405, 4415, 4443, 4466-4506 (W_ROTATE=\"rotate\", W_ALIGN_WITH=\"align_with\", W_TRANSITION_TO=\"transition_to\", W_MOVE_TO=\"move_to\", W_SAVE=\"save\", W_LOAD=\"load\", W_FREE_MODE=\"free_mode\", W_DESCEND=\"descend\", W_LIFT_OFF=\"lift_off\", W_CREATE=\"create\", W_DROP=\"drop\", W_SWITCH=\"switch\", W_FOLLOW_ROTATION=\"follow_rotation\": base_command_interface.hpp:151,248,247,246,144,103,242,243,245,222,152,225,241)"
+            "source": "app_command_interface.cpp:4233, 4236-4239, 4241, 4252, 4276, 4311, 4375, 4390, 4405, 4415, 4425, 4443, 4466-4506 (W_ROTATE=\"rotate\", W_ALIGN_WITH=\"align_with\", W_TRANSITION_TO=\"transition_to\", W_MOVE_TO=\"move_to\", W_SAVE=\"save\", W_LOAD=\"load\", W_FREE_MODE=\"free_mode\", W_DESCEND=\"descend\", W_MOVE_LAT=\"move_lat\", W_MOVE_LON=\"move_lon\", W_RAISE_HEIGHT=\"raise_height\", W_LOWER_HEIGHT=\"lower_height\", W_LIFT_OFF=\"lift_off\", W_CREATE=\"create\", W_DROP=\"drop\", W_SWITCH=\"switch\", W_FOLLOW_ROTATION=\"follow_rotation\": base_command_interface.hpp:151,248,247,246,144,103,242,243,249,250,251,252,245,222,152,225,241)"
           },
           "name": {
             "doc": "The name of a place the view can be attached to (its own name, not a body's).",
@@ -1367,19 +1380,20 @@
             "notes": "What it goes down towards depends on where you are: the ground under the view ray when a body is close, the last selected body when you are out among the systems (src/experimentalModule/Camera.cpp:728-742). New drawing path only."
           },
           "value": {
-            "doc": "On `action follow_rotation`, whether the view turns with the body: write exactly the word true for yes.",
-            "value": "string compared literally against \"true\"",
+            "doc": "On `action follow_rotation`, whether the view turns with the body: write exactly the word true for yes; on the four held moves (`move_lat`, `move_lon`, `raise_height`, `lower_height`), how fast to keep moving.",
+            "value": "on `follow_rotation`: string compared literally against \"true\"; on `move_lat`, `move_lon`, `raise_height` and `lower_height`: number(evalDouble) -- $-variable substitution possible",
             "values": [
               "true",
-              "anything else = no"
+              "anything else = no",
+              "<number> (on move_lat, move_lon, raise_height, lower_height)"
             ],
             "completable": [
               "true"
             ],
-            "default": "absent -> no",
-            "required": false,
-            "source": "app_command_interface.cpp:4496-4500 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,239)",
-            "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar -- the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here."
+            "default": "on `follow_rotation`: absent -> no; on `move_lat`, `move_lon`, `raise_height` and `lower_height`: absent -> \"command 'camera <action>' : missing value\"",
+            "required": "conditional",
+            "source": "app_command_interface.cpp:4496-4500 (follow_rotation), :4426-4431 (move_lat, move_lon, raise_height, lower_height) -> src/coreModule/core.cpp:1810-1834, 1937-1962 (W_VALUE=\"value\", W_TRUE=\"true\": base_command_interface.hpp:91,239)",
+            "notes": "SHARP EDGE: this is the only boolean of the unit that is NOT read with the usual on/1/true grammar -- the test is an exact string comparison against `true`, so `on`, `1` and `TRUE` all mean NO here. On `move_lat`, `move_lon`, `raise_height` and `lower_height` the number is an order HELD until the next one on its axis: each frame the engine adds the joystick's push to it, keeps the sum within -1 to 1 and moves by its cube (src/coreModule/core.cpp:1937-1962), so a number beyond the bounds acts as the bound; `raise_height` and `lower_height` share ONE order, the later replacing the earlier, `value 0` on one of them stops only its own direction, and with no range check a negative number on either moves the other way (src/coreModule/core.cpp:1810-1824)."
           },
           "type": {
             "doc": "On `action create`, what kind of place is being declared.",
@@ -1561,6 +1575,42 @@
             "optional": [],
             "effect": "go down towards, or up away from, what you look at",
             "source": "app_command_interface.cpp:4415-4441"
+          },
+          {
+            "selector": "action move_lat",
+            "requires": [
+              "value"
+            ],
+            "optional": [],
+            "effect": "keep moving in latitude at that speed (-1 to 1) until the next `move_lat`, `value 0` stops; a missing value gives \"command 'camera move_lat' : missing value\"",
+            "source": "app_command_interface.cpp:4425-4441"
+          },
+          {
+            "selector": "action move_lon",
+            "requires": [
+              "value"
+            ],
+            "optional": [],
+            "effect": "keep moving in longitude at that speed (-1 to 1) until the next `move_lon`, `value 0` stops; a missing value gives \"command 'camera move_lon' : missing value\"",
+            "source": "app_command_interface.cpp:4425-4441"
+          },
+          {
+            "selector": "action raise_height",
+            "requires": [
+              "value"
+            ],
+            "optional": [],
+            "effect": "keep rising at that speed (0 to 1) until the next height order, `value 0` stops a rise; a missing value gives \"command 'camera raise_height' : missing value\"",
+            "source": "app_command_interface.cpp:4425-4441"
+          },
+          {
+            "selector": "action lower_height",
+            "requires": [
+              "value"
+            ],
+            "optional": [],
+            "effect": "keep descending at that speed (0 to 1) until the next height order, `value 0` stops a descent; a missing value gives \"command 'camera lower_height' : missing value\"",
+            "source": "app_command_interface.cpp:4425-4441"
           },
           {
             "selector": "action lift_off",
@@ -5651,10 +5701,12 @@
               "slower",
               "default",
               "acquire",
-              "release"
+              "release",
+              "bind"
             ],
             "completable": [
               "acquire",
+              "bind",
               "cancelrecord",
               "default",
               "end",
@@ -5677,11 +5729,12 @@
               "slower": "run the script slower",
               "default": "run the script at its normal speed",
               "acquire": "take the global lock (only with `lock global`)",
-              "release": "give the global lock back (only with `lock global`)"
+              "release": "give the global lock back (only with `lock global`)",
+              "bind": "make a key run a script when it is pressed, released or both: `key` names the key, `press` and `release` the scripts, `scope` how long the binding lasts"
             },
             "default": "absent -> `speed` is used instead; both absent -> \"command_'script' : missing action argument\"; an unknown value -> \"command_script : unknown parameter from 'action' argument\"",
             "required": "conditional",
-            "source": "app_command_interface.cpp:2844, 2848-2926 (W_ACTION=\"action\" base_command_interface.hpp:81; W_END=\"end\" :153, W_PLAY=\"play\" :154, W_RECORD=\"record\" :84, W_CANCEL=\"cancelrecord\" :155, W_PAUSE=\"pause\" :156, W_RESUME=\"resume\" :164, W_FASTER=\"faster\" :157, W_SLOWER=\"slower\" :158, W_DEFAULT=\"default\" :139, W_ACQUIRE=\"acquire\" :322, W_RELEASE=\"release\" :323)"
+            "source": "app_command_interface.cpp:2844, 2848-2926 (W_ACTION=\"action\" base_command_interface.hpp:81; W_END=\"end\" :153, W_PLAY=\"play\" :154, W_RECORD=\"record\" :84, W_CANCEL=\"cancelrecord\" :155, W_PAUSE=\"pause\" :156, W_RESUME=\"resume\" :164, W_FASTER=\"faster\" :157, W_SLOWER=\"slower\" :158, W_DEFAULT=\"default\" :139, W_ACQUIRE=\"acquire\" :322, W_RELEASE=\"release\" :323, W_BIND=\"bind\" :325)"
           },
           "filename": {
             "doc": "The script file to play, or the file to record into.",
@@ -5708,6 +5761,67 @@
             "source": "app_command_interface.cpp:2877, 2881 (W_LOCK=\"lock\" base_command_interface.hpp:321, W_GLOBAL=\"global\" :324)",
             "notes": "Only read on the `acquire` and `release` paths (:2876-2883); on every other action it is ignored."
           },
+          "key": {
+            "doc": "The key, joystick button or hat direction that runs the scripts; left out inside a script a key started, that key.",
+            "value": "a key token, in any case: [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_ (such as SHIFT+KP_8), the modifiers accepted in any order; a joystick button or hat direction as BUTTON<n> or HAT<n>_<UP|DOWN|LEFT|RIGHT>, with no modifier and no _ALT; or * for every key",
+            "default": "absent -> inside a script started by a key binding, that key; anywhere else -> \"bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'\"; a token the engine cannot read -> \"unknown key '<key>': write [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key\"",
+            "required": "conditional",
+            "source": "app_command_interface.cpp:2885, 2890-2891, 2909 -> src/uiModule/key_binding.cpp:89-91, 155-180 @ 52568219 (W_KEY=\"key\", base_command_interface.hpp:326)",
+            "notes": "The modifiers are part of the key: SHIFT+KP_8 and KP_8 are two keys, each with its own bindings (src/uiModule/key_binding.cpp:165-177 @ 52568219)."
+          },
+          "press": {
+            "doc": "The script to run when the key is pressed, or - for no script, so that the key does what it does by default.",
+            "value": "a script name, evaluated as a variable unless it ends in a three-letter extension and looked for in the running script's directory or in the scripts directory; or -",
+            "values": [
+              "<script name>",
+              "-"
+            ],
+            "completable": [],
+            "value_docs": {
+              "-": "no script: the key does its own action"
+            },
+            "default": "absent -> the key's press binding is left as it is; `press` and `release` both absent -> \"bind: give 'press <script|->', 'release <script|->' or both\"; a name found in neither directory -> \"bind: no script '<name>' as given, in the running script's directory or in the scripts directory\"",
+            "required": "conditional",
+            "source": "app_command_interface.cpp:2887-2889, 2894-2904, 2907-2909 (W_PRESS=\"press\", base_command_interface.hpp:327)"
+          },
+          "release": {
+            "doc": "The script to run when the key is released, or - for no script, so that the key does what it does by default.",
+            "value": "a script name, evaluated as a variable unless it ends in a three-letter extension and looked for in the running script's directory or in the scripts directory; or -",
+            "values": [
+              "<script name>",
+              "-"
+            ],
+            "completable": [],
+            "value_docs": {
+              "-": "no script: the key does its own action"
+            },
+            "default": "absent -> the key's release binding is left as it is; `press` and `release` both absent -> \"bind: give 'press <script|->', 'release <script|->' or both\"; a name found in neither directory -> \"bind: no script '<name>' as given, in the running script's directory or in the scripts directory\"",
+            "required": "conditional",
+            "source": "app_command_interface.cpp:2887-2889, 2894-2904, 2907-2909 (W_RELEASE=\"release\", base_command_interface.hpp:323)",
+            "notes": "The release that runs is the one bound to the key as it was PRESSED: press SHIFT+KP_8, let go of SHIFT, then of KP_8, and the release of SHIFT+KP_8 runs (src/uiModule/key_binding.cpp:113-118 @ 52568219). The same word is also a value of `action`, which gives the global lock back."
+          },
+          "scope": {
+            "doc": "How long the binding lasts: until the next global binding, until the running script ends, or until it has run once.",
+            "value": "enumerated",
+            "values": [
+              "global",
+              "script",
+              "once"
+            ],
+            "completable": [
+              "global",
+              "once",
+              "script"
+            ],
+            "value_docs": {
+              "global": "replace every binding of this key and event with this one (with key *, every key's bindings of that event); it stays until the next global binding",
+              "script": "stack it on the key's binding until the running script ends, then remove it",
+              "once": "stack it on the key's binding until it has run once, then remove it"
+            },
+            "default": "absent -> global; any other word -> \"bind: unknown scope '<scope>' - write global, script or once\"",
+            "required": false,
+            "source": "app_command_interface.cpp:2886, 2892-2893, 2905-2906, 257-259 -> src/uiModule/key_binding.cpp:94-104, 125-130, 141-151 @ 52568219 (W_SCOPE=\"scope\", W_GLOBAL=\"global\", W_SCRIPT=\"script\", W_ONCE=\"once\": base_command_interface.hpp:328,324,330,329)"
+          },
           "speed": {
             "doc": "Change how fast the running script goes, without an `action`.",
             "value": "enumerated",
@@ -5732,6 +5846,20 @@
             "notes": "Only read when no `action` is written: the action block always returns (:2926)."
           }
         },
+        "branches": [
+          {
+            "selector": "action bind",
+            "requires": [],
+            "optional": [
+              "key",
+              "press",
+              "release",
+              "scope"
+            ],
+            "effect": "bind scripts to a key's press and release; at least one of press / release, else \"bind: give 'press <script|->', 'release <script|->' or both\"; key may be left out only inside a script a key started; any refusal goes to reportScriptError",
+            "source": "app_command_interface.cpp:2884-2923"
+          }
+        ],
         "exclusive_groups": [
           [
             "action",
@@ -5743,7 +5871,9 @@
           "`action record` and `action cancelrecord` set recordable = 0 (:2861, :2864) so the command itself never appears in the file being recorded.",
           "`action pause` on a script that is ALREADY paused, or when skip-pause is on, falls into the pause-or-resume branch and RESUMES it instead (:2865-2869).",
           "The comment at :3024-3029 @ b45d3b58 [NOT AT HEAD: the comment left the code, the return it explained stays] records why the `speed` branch returns: without it a working `script speed ...` reported failure and was dropped from every recorded show (INTENT S11.108 rider).",
-          "This is one of the three commands in the sweep that take the `wait` parameter (with `wait` and `zoom` in units 1 and 3)."
+          "This is one of the three commands in the sweep that take the `wait` parameter (with `wait` and `zoom` in units 1 and 3).",
+          "`action bind` writes its own line for the recorder (:2914-2922): `script action bind key <key>` with the key as written or, when it was left out, the token of the key that started the script; then `press \"<name>\"` and `release \"<name>\"` as written, and `scope <scope>` only when it was written.",
+          "With `scope global`, `-` removes the key's own binding of that event, so a binding on `*` then answers the key (src/uiModule/key_binding.cpp:99-104, 119-122 @ 52568219)."
         ],
         "flagged": []
       },
@@ -8790,10 +8920,10 @@
     }
   },
   "argument_token_vocabulary": {
-    "_source": "W_* defines, base_command_interface.hpp:78-324",
+    "_source": "W_* defines, base_command_interface.hpp:78-330",
     "_status": "ROLES ASSIGNED 2026-08-04 by the four sweep units. `tokens` is now an object keyed by SPELLING (was: an array of the same 238 spellings): each entry names the engine macro, the header line it is defined on, and the role(s) the units observed, with the unit numbers as the citation. `role` is \"key\" | \"value\" | \"both\" | \"unreferenced\". \"unreferenced\" means: no use anywhere in the tree outside base_command_interface.hpp, measured tree-wide by unit 4 - the spelling exists only as a #define. Roles are observations over the four handler ranges (app_command_interface.cpp in full), NOT a claim about downstream files.",
-    "_expected_count": 238,
-    "_count_note": "238 = every W_* #define in base_command_interface.hpp:78-324, all with distinct spellings [measured]. 232 of them carry a role from the sweep; the remaining 6 are exactly the unreferenced set below. The seed gate re-derives this count from the data.",
+    "_expected_count": 248,
+    "_count_note": "248 = every distinct spelling of the W_* #defines in base_command_interface.hpp:78-330 [measured at main @ 9d461bd5 - 253 defines, five spellings defined twice, see `_duplicate_defines`]. 232 of them carry a role from the 2026-08-04 sweep and 10 from F159's read of the two handlers (2026-10-14); the remaining 6 are exactly the unreferenced set below. The seed gate re-derives this count from the data.",
     "_duplicate_defines": "same spelling defined twice in the header: size(80,93), increment(86,145), decrement(87,144), loop(169,284), ogg(266,280)",
     "_retired_from_never_referenced_set": {
       "_what_for": "The census (claude/capability-surface.md S3.8) listed W_* tokens it believed were never referenced. Two of them are LIVE and are retired from that set here; the other six are confirmed dead by a tree-wide grep (unit 4).",
@@ -10234,6 +10364,38 @@
           4
         ]
       },
+      "move_lat": {
+        "macro": "W_MOVE_LAT",
+        "header_line": 249,
+        "role": "value",
+        "value_units": [
+          4
+        ]
+      },
+      "move_lon": {
+        "macro": "W_MOVE_LON",
+        "header_line": 250,
+        "role": "value",
+        "value_units": [
+          4
+        ]
+      },
+      "raise_height": {
+        "macro": "W_RAISE_HEIGHT",
+        "header_line": 251,
+        "role": "value",
+        "value_units": [
+          4
+        ]
+      },
+      "lower_height": {
+        "macro": "W_LOWER_HEIGHT",
+        "header_line": 252,
+        "role": "value",
+        "value_units": [
+          4
+        ]
+      },
       "r": {
         "macro": "W_R",
         "header_line": 253,
@@ -10793,7 +10955,10 @@
       "release": {
         "macro": "W_RELEASE",
         "header_line": 323,
-        "role": "value",
+        "role": "both",
+        "key_units": [
+          2
+        ],
         "value_units": [
           2
         ]
@@ -10801,6 +10966,54 @@
       "global": {
         "macro": "W_GLOBAL",
         "header_line": 324,
+        "role": "value",
+        "value_units": [
+          2
+        ]
+      },
+      "bind": {
+        "macro": "W_BIND",
+        "header_line": 325,
+        "role": "value",
+        "value_units": [
+          2
+        ]
+      },
+      "key": {
+        "macro": "W_KEY",
+        "header_line": 326,
+        "role": "key",
+        "key_units": [
+          2
+        ]
+      },
+      "press": {
+        "macro": "W_PRESS",
+        "header_line": 327,
+        "role": "key",
+        "key_units": [
+          2
+        ]
+      },
+      "scope": {
+        "macro": "W_SCOPE",
+        "header_line": 328,
+        "role": "key",
+        "key_units": [
+          2
+        ]
+      },
+      "once": {
+        "macro": "W_ONCE",
+        "header_line": 329,
+        "role": "value",
+        "value_units": [
+          2
+        ]
+      },
+      "script": {
+        "macro": "W_SCRIPT",
+        "header_line": 330,
         "role": "value",
         "value_units": [
           2
@@ -10815,7 +11028,8 @@
       "auto": "KEY on `zoom` (:3345); VALUE of `media subtitlename`/`audioname` (:3631, :3711), and downstream the value of `body purge`. [units 3/4]",
       "body": "KEY on `select` (:3193), `mode` (:3545) and `camera action align_with` (:4254); VALUE of `target` on `camera action transition_to`/`move_to` (:4292, :4345) - and `body` is also a registered COMMAND name. [units 3/4]",
       "jump": "KEY on `mode` (:3541); VALUE of `media action` (:3818). [unit 3]",
-      "keep_time": "KEY on `body` (:4085-4086, and the handler REWRITES it in place before forwarding); VALUE of `date` (unit 3). [units 3/4]"
+      "keep_time": "KEY on `body` (:4085-4086, and the handler REWRITES it in place before forwarding); VALUE of `date` (unit 3). [units 3/4]",
+      "release": "KEY on `script action bind` (:2887); VALUE of `script action` (:2880). [unit 2]"
     },
     "same_spelling_two_commands": [
       "rotation - KEY of `landscape` (:2648) and of `image` (:3068), two unrelated meanings. [unit 2]",
@@ -10832,7 +11046,8 @@
       "`position` (W_POSITION) is a COMMAND name used as a KEY of `media` (:3592) and as a VALUE of `get status` (unit 1). [units 1/3]",
       "`subtitle` is a KEY on `media` (:3685, :3836) and also one of the 97 FLAG names - the media path even switches that flag on (:3678). [unit 3]",
       "`comment` (W_COMMENT) is a KEY of `struct` (:4722) and, same spelling, a pre-table COMMAND name (:312). `print` (W_PRINT) and `loop` (W_LOOP) are KEYS of `struct` (:4768, :4732) whose spellings are also a registered COMMAND name and a `media`/`audio` key. [units 1/2/3/4]",
-      "`personal`, `personeq`, `body_trace`, `landscape`, `zodiac` are command or flag names that also appear as argument spellings; the families are disjoint namespaces in the engine, so the same word means different things by position."
+      "`personal`, `personeq`, `body_trace`, `landscape`, `zodiac` are command or flag names that also appear as argument spellings; the families are disjoint namespaces in the engine, so the same word means different things by position.",
+      "`script` (W_SCRIPT, base_command_interface.hpp:330) is a COMMAND name used as a VALUE of `scope` on `script action bind` (app_command_interface.cpp:2892, 2905). [unit 2]"
     ],
     "engine_written_never_authored": [
       "NONE (\"NONE\", base_command_interface.hpp:138) - external_viewer's internal sentinel for 'no program chosen' (:2454, :2495). Never a token an author writes. [unit 2]",
@@ -10846,7 +11061,8 @@
       "landscape `landing` is compared against the bare literals \"0\"/\"1\" and the characters '0'/'1' (:2643, :2659-2662). [unit 2]",
       "text and image build internal names by appending the bare literals \"1\", \"2\", \"3\" to the author's `name` (:2703-2705, :2771-2782). [unit 2]",
       "the whole downstream vocabularies of `body action load` (the stellar-system-file grammar, scedit/INTENT.md S5 item 4) and of `camera action create` (the anchor registries) - both deferred, which is what `args_complete: false` on those two commands records. [unit 4]",
-      "unit 3's range (3096-3944) contains NO bare-string key at all: all 93 `args[...]` reads there use a W_* macro [measured]."
+      "unit 3's range (3096-3944) contains NO bare-string key at all: all 93 `args[...]` reads there use a W_* macro [measured].",
+      "script action bind: `press` and `release` compare the bare literal \"-\" for no script (app_command_interface.cpp:2895, 2909), and downstream the key reader compares the bare literal \"*\" for every key (src/uiModule/key_binding.cpp:155 @ 52568219). [unit 2]"
     ]
   },
   "lint_seeds": [
