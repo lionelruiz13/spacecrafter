@@ -414,6 +414,7 @@ public:
 	void removeSolarSystemBody(const std::string& name);
 	void removeSupplementalSolarSystemBodies();
 	void ssystemDualDump(const std::string& file);
+	bool ssystemScreenRecord(const std::string& file);
 
 	//! Return the local direction the navigator aims the sky at
 	const Vec3d& getSkyVision() const;

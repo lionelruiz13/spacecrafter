@@ -53,6 +53,7 @@ void Executor::draw(int delta_time)
     currentMode->draw(delta_time);
     Context::instance->helper->nextDraw(PASS_FOREGROUND);
     core->media->imageDraw(core->navigation, core->projection);
+    core->ssystemFactory->recordScreenFrame(delta_time, core->projection);
 }
 
 void Executor::update(int delta_time)

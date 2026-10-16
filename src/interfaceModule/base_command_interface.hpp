@@ -328,6 +328,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_SCOPE						"scope"
 #define W_ONCE						"once"
 #define W_SCRIPT					"script"
+#define W_SCREEN_RECORD				"screen_record"
 
 // name of the arguments maps appCommandInit
 //CommandsNames

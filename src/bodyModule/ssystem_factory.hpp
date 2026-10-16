@@ -27,6 +27,7 @@
 
 #include <memory>
 #include <functional>
+#include <fstream>
 
 #include "tools/no_copy.hpp"
 #include "bodyModule/solarsystem.hpp"
@@ -88,6 +89,10 @@ public:
     // Dump the body transforms as JSON lines, freeze time before calling
     void dumpTracePaths(const std::string &file,
                         const std::function<void(std::ostream &)> &extraHeader = {});
+    // Restart the screen record on file, "" stops it; false if file cannot open
+    bool recordScreen(const std::string &file, const Projector *prj);
+    // Call once per frame after every draw, no-op unless recording
+    void recordScreenFrame(int delta_time, const Projector *prj);
     enum class RenderPathMode { NEW, OLD, ALTERNATE };
     // Call once at init, before the first draw
     void setRenderPathMode(RenderPathMode mode) {
@@ -851,6 +856,8 @@ private:
     bool inSystem = true;
     Object selected_object;
     ModularBodySelector newSelectedBody;
+    std::ofstream screenRecord;
+    unsigned int screenRecordFrame = 0;
 };
 
 #endif

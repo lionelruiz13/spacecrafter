@@ -271,6 +271,8 @@ public:
 	}
 
 	void dumpTrace(std::ostream &out) const;
+	const std::pair<float, float> &getScreenPos() const { return screenPos; }
+	bool isInFov() const { return isVisible; }
 
 	const std::shared_ptr<Body> get_parent(void) const {
 		return parent;

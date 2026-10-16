@@ -824,6 +824,11 @@ void Core::ssystemDualDump(const std::string& file)
 	});
 }
 
+bool Core::ssystemScreenRecord(const std::string& file)
+{
+	return ssystemFactory->recordScreen(file, projection);
+}
+
 void Core::restoreViewOffset(double offset, bool armed)
 {
 	setViewOffset(offset);

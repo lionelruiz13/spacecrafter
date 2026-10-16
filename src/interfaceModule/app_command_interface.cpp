@@ -4088,6 +4088,19 @@ int AppCommandInterface::commandBody()
 		} else if (argAction == "dual_dump") {
 			// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
 			stcore->ssystemDualDump(args[W_FILENAME]);
+		} else if (argAction == W_SCREEN_RECORD) {
+			std::string argState = args[W_STATE];
+			if (Utility::isTrue(argState)) {
+				if (args[W_FILENAME].empty())
+					debug_message = "command 'body screen_record' : missing filename";
+				else if (!stcore->ssystemScreenRecord(args[W_FILENAME]))
+					debug_message = "command 'body screen_record' : cannot open " + args[W_FILENAME];
+			} else if (Utility::isFalse(argState))
+				stcore->ssystemScreenRecord("");
+			else if (argState.empty())
+				debug_message = "command 'body screen_record' : missing state";
+			else
+				debug_message = "command 'body screen_record' : unknown state value";
 		} else if (argAction == "screenshot") {
 			stapp->takeScreenshot(args[W_FILENAME]);
 		} else {

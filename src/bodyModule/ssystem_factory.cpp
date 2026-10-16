@@ -633,6 +633,18 @@ void SSystemFactory::draw(Projector *prj, const Navigator *nav, const Observer *
     } else {
         bodytrace->draw(prj, nav);
         ssystemDisplay->draw(prj, nav, observatory, eye, drawHomePlanet);
+        if (screenRecord.is_open() && getFlagShow()) {
+            const Vec3d c = prj->getViewportCenter();
+            screenRecord << std::setprecision(9);
+            for (auto it = currentSystem->beginSorted(); it != currentSystem->endSorted(); ++it) {
+                Body &body = **it;
+                if (body.isInFov())
+                    screenRecord << "B\to\t" << body.getEnglishName() << '\t'
+                                 << (body.getScreenPos().first - c[0]) / c[2] << '\t'
+                                 << (body.getScreenPos().second - c[1]) / c[2] << '\t'
+                                 << body.get_angular_size(prj, nav) / prj->getFov() << '\n';
+            }
+        }
     }
 }
 
@@ -1012,4 +1024,41 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
             out << "}\n";
         }
     }
+}
+
+bool SSystemFactory::recordScreen(const std::string &file, const Projector *prj)
+{
+    screenRecord.close();
+    screenRecordFrame = 0;
+    if (file.empty())
+        return true;
+    screenRecord.open(file);
+    if (!screenRecord.is_open())
+        return false;
+    const Vec3d c = prj->getViewportCenter();
+    const VkRect2D &r = VulkanMgr::instance->getScreenRect();
+    screenRecord << "#\tscreen_record\t1\n#\tB\tengine(o|n)\tname\tx\ty\tsize\n"
+                 << "#\tF\tframe\tdt_ms\tjd\tdrawn(o|n)\tfov_old_deg\thalf_fov_new_rad\n"
+                 << "#\tviewport\tprojector\t" << c[0] << '\t' << c[1] << '\t' << c[2]
+                 << "\trenderer\t" << Renderer::getViewportCenter()[0] << '\t'
+                 << Renderer::getViewportCenter()[1] << '\t' << Renderer::getViewportRadius()
+                 << "\tscissor\t" << r.offset.x << '\t' << r.offset.y << '\t'
+                 << r.extent.width << '\t' << r.extent.height << '\n';
+    return true;
+}
+
+void SSystemFactory::recordScreenFrame(int delta_time, const Projector *prj)
+{
+    if (!screenRecord.is_open())
+        return;
+    screenRecord << std::setprecision(9);
+    ModularBody::forEach([this](ModularBody &body) {
+        if (body)
+            screenRecord << "B\tn\t" << body.getEnglishName() << '\t' << body.getScreenPos().first
+                         << '\t' << body.getScreenPos().second << '\t' << body.getScreenSize() << '\n';
+    });
+    screenRecord << "F\t" << screenRecordFrame++ << '\t' << delta_time << '\t'
+                 << std::setprecision(17) << timeMgr->getJDay() << '\t'
+                 << (drawModularSystem ? 'n' : 'o') << '\t' << prj->getFov() << '\t'
+                 << ModularBody::halfFov << '\n' << std::flush;
 }
