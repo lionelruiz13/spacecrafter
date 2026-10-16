@@ -295,6 +295,71 @@ his review queue is decoupled from the sessions, and only he moves its mark.
 
 ---
 
+### F161 — THE SCEDIT GRAMMAR IN PHASE WITH F160: the spelling `body action screen_record state on|off filename <f>` in both halves (the merged `grammar/sc-grammar.json` and the fragment `grammar/args/unit-4.json`), its anchors carrying `@ eb92459f` (the engine gained the lines AFTER the file pin `main @ 9d461bd5`), the vocabulary token `W_SCREEN_RECORD` at its header line, the anchor record re-recorded with its argument, the five record gates checked, scedit's own ledger given the value-check gap F162 measured; FOCUSED → `opus-xhigh`, `util/scedit` only, its own build tree, NO engine launch (the supervisor's campaign launches beside you)
+
+**Why now / mandate:** F160 landed the engine's spelling (code `eb92459f`, the branch `app_command_interface.cpp:4091-4103`, the macro `base_command_interface.hpp:331`; `INTENT/11.334.md` (2)); the grammar is a derived contract of the engine and its gate is bound to every `src/`-touching acceptance (§0b step 4, SHAPE §6) — a spelling the engine has and the grammar lacks is the F155 / F159 class (§11.332). F159 is the model: its (1a) measured the file's forms and its (1b) placed each addition in them; this task does the same for ONE action value with ONE new key on `body`. Today F162's scene (`claude/harness/screen_scene.sts`) draws 8 `scedit --check` diagnostics, all `'state' is not an argument of command 'body'`.
+
+**The ORIGIN of the need (S10):** an author typing `body action screen_record` in scedit must get the completion, the doc line and the refusals the engine gives (`missing state`, `missing filename`, `cannot open <f>`, `unknown state value`); the grammar's citations must resolve at their pin so the gate sees the engine move again (I3 at the instrument). And F162 measured (§11.335 (c)) that `--check` tests argument KEYS, never a command's VALUE against its enumerated domain, and that `--rules` does not list that as unarmed — an S11 instance at the instrument (a check that does not exist must say so): this task RECORDS it in scedit's own ledger; it does not build the check (a scedit design slice, the owner's to order).
+
+**Mandate, in THIS order:** (0) warm-up, the PREMISES gate (`python3 claude/harness/premise_check.py F161`), READ IN FULL: `INTENT/11.332.md` (F159's (1a) forms and (1b) table — the method), `INTENT/11.334.md` (2) and (13) (F160's edit: the exact lines; the full diff), `INTENT/11.335.md` (c) (the scene's check and the value-check gap), `util/scedit/README.md` :35-52 and :587-805 (the halves, the seed gate, the record gates), `util/scedit/INTENT.md` section 5 (the ledger's row form), `sc-grammar.json` `_meta` whole, `families.commands.body` whole, `families.commands.camera.args.state` (the state form), `argument_token_vocabulary` whole, `grammar/args/unit-4.json` `commands.body`, `tests/anchor_gate.py` header (the per-reference pin: ` @ <sha>` right after the line list), `tests/anchor-expected.txt`. (1) The (1a)/(1b) pass written in the entry BEFORE the edit: every form the addition takes, read from the file. (2) The edit, both halves identically (`checkFragments`): `body.args.action`: `values` +1 in ENGINE order (after `dual_dump`, before `screenshot` — the engine's branch order, `:4088` / `:4091` / `:4104`), `completable` (sorted) +1, `value_docs` +1 (one line: the per-frame screen record of every drawn body — a development tool; the file's form in one clause, pointer `claude/harness/README.md` F160), `source` += the macro `W_SCREEN_RECORD="screen_record" :331 @ eb92459f`; `body.args.state` NEW spec in `camera.args.state`'s form: `doc` "On `action screen_record`, whether the record runs: on starts it on `filename`, off stops it", `value` boolean(flag grammar), `values` = ["on-forms per Utility::isTrue = start", "off-forms per Utility::isFalse = stop", "ANYTHING ELSE = refused \"command 'body screen_record' : unknown state value\""], `completable` [], `default` "absent -> \"command 'body screen_record' : missing state\"", `required` "conditional", `source` `app_command_interface.cpp:4092-4103 @ eb92459f`; `body.args.filename`: `default` += "on `action screen_record state on`: absent -> refused \"missing filename\"; a file that cannot be opened -> \"cannot open <f>\"; `state off` ignores it", `source` += `:4094-4097 @ eb92459f`; `body.branches` +1 after `action dual_dump`: selector `action screen_record`, `requires: ["state"]`, `optional: ["filename"]`, effect = "start (state on, filename required) or stop (state off) the per-frame screen record; refused: missing state, missing filename, cannot open <f>, unknown state value", source `app_command_interface.cpp:4091-4103 @ eb92459f`; `body.notes` +1 (the file's form: INTENT 11.333 (d), one sentence); `body.flagged`: the existing item names the two bare literals — `screen_record` has a token: leave the item, add nothing; vocabulary: token `W_SCREEN_RECORD` at `header_line` 331 `@ eb92459f`, role value, `_expected_count` 248 -> 249, `tokens` kept ordered by header_line; `literal_keys_without_token` unchanged; `_meta.amended` +1 dated line without a `:<digit>` in it. (3) `python3 tests/anchor_gate.py` from the code root: every new reference CLEAN at its own pin; the counts re-recorded `--record --why "<argument>"`; `ctest --test-dir util/scedit/build 2>&1 | tail -3` 19 / 19 (predict first which record gate, if any, prints a new word — F159 measured none for a value addition; re-record digit-only ONLY what the measurement shows); `util/scedit/build/scedit --check` on F162's scene substituted (`python3 -I claude/harness/screen_drive.py <tmp> --pin on --dry-run` writes `<tmp>/scene.sts`): 0 diagnostics. (4) scedit's ledger `util/scedit/INTENT.md`: ONE row in section 5, in the file's own row form, recording §11.335 (c)'s measurement — `--check` does not compare a command's value against its enumerated domain (`body action dual_dumpx`, `zoom auto inx`, `timerate rate zero`, `moveto lat defaultx` all pass) and `--rules` does not list that as unarmed — with the pointer to 11.335 (c); if `--rules`' list is a DATA table the check reads, add the unarmed value rule to it and say so; if it is code, record only. (5) The entry `INTENT/11.336.md` (checkpoint line first; the (1a)/(1b) tables; the gate's before / after pasted; the check's output pasted); the report.
+
+**PREDICTIONS (the supervisor's; judge every line, report every conflict):**
+```
+PREDICTIONS
+P1  | shape      | body.args.action: values 10 -> 11 (engine order), completable 10 -> 11 (sorted), value_docs +1, source + the macro; both halves byte-identical on the body subtree | check: the python counts; checkFragments | if refuted: state which half differs and why
+P2  | shape      | body.args.state: a NEW spec in camera.args.state's form (doc, value, values, completable [], default, required "conditional", source @ eb92459f) | check: the spec pasted | if refuted (a bare "on|off" value with no refusal text): the engine's three refusals are the domain - rework
+P3  | shape      | body.branches 21 -> 22, ONE entry after action dual_dump; body.notes +1; body.flagged unchanged | check: the counts | if refuted: state
+P4  | shape      | vocabulary: ONE token W_SCREEN_RECORD, header_line 331 @ eb92459f, role value; _expected_count 248 -> 249; tokens 248 -> 249, ordered | check: the python counts; the gate | if refuted: state
+P5  | behaviour  | anchor_gate.py: every new reference clean at its pin (the eb92459f ones at eb92459f, the rest at the file pin); re-recorded once with the argument; exit 0 | check: the gate's output before / after | if refuted (a gone reference): STOP - report
+P6  | non-change | ctest 19 / 19; NO record file re-recorded (no record gate prints a body action word or a state key) | check: ctest; git status | if refuted: name the gate and re-record digit-only with the argument
+P7  | behaviour  | scedit --check on F162's substituted scene: 0 diagnostics (8 before) | check: the output | if refuted: the key is not registered the way the parser reads it - state which form the parser expects
+P8  | shape      | util/scedit/INTENT.md: ONE new row in section 5, the file's form; no other change there | check: git diff | if refuted: state
+P9  | non-change | git diff --stat touches ONLY util/scedit/grammar/sc-grammar.json, util/scedit/grammar/args/unit-4.json, util/scedit/tests/anchor-expected.txt, util/scedit/INTENT.md (+ record files only under P6's rule); nothing under src/, claude/harness/ | check: git status | if refuted: the task crossed its boundary
+```
+
+**Boundaries:** WRITES — `util/scedit/grammar/sc-grammar.json`, `util/scedit/grammar/args/unit-4.json`, `util/scedit/tests/anchor-expected.txt`, `util/scedit/INTENT.md` (one row), the five record files only under P6's rule, `claude/INTENT/11.336.md`, `claude/harness/artifacts/f161/**`. NOT: `src/**`, `claude/harness/**` except artifacts, `README.md` of either repo; no engine launch (the supervisor's campaign has the engine slot — `sc_instances.sh` may report a live engine that is NOT yours: do not wait for it, do not kill it, launch nothing); no commit; scedit's own build tree only.
+
+**STOP conditions:** a premise fails; a `gone` reference after the edit; `checkFragments` cannot be made to agree; the parser needs a form the grammar's schema does not carry (state it, build nothing beyond).
+
+**Discriminating checks:** (a) P1–P9; (b) the (1a)/(1b) tables; (c) the gate before / after pasted; (d) ctest's last line; (e) `scedit --check` on the scene: the 8 lines before, 0 after, pasted; (f) `git diff --stat`.
+
+**Preconditions (checkable, §0.7):** the PREMISES block.
+
+```
+PREMISES
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD => main
+git rev-parse --short=8 HEAD => 8a0f1bc9
+git status --porcelain | wc -l => 0
+git -C claude status --porcelain | wc -l => 0
+/usr/bin/grep -c '^### F161 ' claude/fable-dispatch.md => 1
+ls claude/INTENT | /usr/bin/grep -c '^11\.336\.md$' => 0
+test -e claude/INTENT/11.334.md -a -e claude/INTENT/11.335.md -a -e claude/fable-dispatch/archive/F160.md -a -e claude/fable-dispatch/archive/F162.md && echo present => present
+bash claude/agents/deploy.sh --check >/dev/null 2>&1; echo $? => 0
+# the engine's spelling, at the lines the grammar will cite with @ eb92459f (eb92459f inserted them; 8a0f1bc9 touched no cited file)
+git log --format=%h -1 -- src/interfaceModule/app_command_interface.cpp => eb92459f
+git log --format=%h -1 -- src/interfaceModule/base_command_interface.hpp => eb92459f
+/usr/bin/grep -n 'W_SCREEN_RECORD' src/interfaceModule/app_command_interface.cpp src/interfaceModule/base_command_interface.hpp | cut -d: -f1,2 | tr '\n' ' ' => src/interfaceModule/app_command_interface.cpp:4091 src/interfaceModule/base_command_interface.hpp:331
+sed -n '4091,4103p' src/interfaceModule/app_command_interface.cpp | tr -s '\t ' ' ' | tr '\n' ';' => } else if (argAction == W_SCREEN_RECORD) {; std::string argState = args[W_STATE];; if (Utility::isTrue(argState)) {; if (args[W_FILENAME].empty()); debug_message = "command 'body screen_record' : missing filename";; else if (!stcore->ssystemScreenRecord(args[W_FILENAME])); debug_message = "command 'body screen_record' : cannot open " + args[W_FILENAME];; } else if (Utility::isFalse(argState)); stcore->ssystemScreenRecord("");; else if (argState.empty()); debug_message = "command 'body screen_record' : missing state";; else; debug_message = "command 'body screen_record' : unknown state value";;
+sed -n '331p' src/interfaceModule/base_command_interface.hpp | tr -s '\t ' ' ' => #define W_SCREEN_RECORD "screen_record"
+/usr/bin/grep -n "command 'body screen_record'" src/interfaceModule/app_command_interface.cpp | cut -d: -f1 | tr '\n' ' ' => 4095 4097 4101 4103
+/usr/bin/grep -n 'argAction == "dual_dump"\|argAction == "screenshot"' src/interfaceModule/app_command_interface.cpp | cut -d: -f1 | tr '\n' ' ' => 4088 4104
+# the grammar's state before: body action values, the vocabulary count, the pin, the gate, the record, the tests
+python3 -c "import json;g=json.load(open('util/scedit/grammar/sc-grammar.json'));a=g['families']['commands']['body']['args']['action'];print(len(a['values']),len(a['completable']),len(g['families']['commands']['body']['branches']),'state' in g['families']['commands']['body']['args'],g['argument_token_vocabulary']['_expected_count'],len(g['argument_token_vocabulary']['tokens']))" => 10 10 21 False 248 248
+python3 -c "import json;b=json.load(open('util/scedit/grammar/args/unit-4.json'))['commands']['body'];print(len(b['args']['action']['values']),len(b['branches']),'state' in b['args'])" => 10 21 False
+python3 -c "import json;print(json.load(open('util/scedit/grammar/sc-grammar.json'))['_meta']['anchor_pin'][:22])" => main @ 9d461bd5 -- eve
+python3 util/scedit/tests/anchor_gate.py >/dev/null 2>&1; echo $? => 0
+md5sum util/scedit/tests/anchor-expected.txt | cut -c1-8 => 2f86d20a
+ctest --test-dir util/scedit/build 2>&1 | tail -3 | head -1 | tr -s ' ' => 100% tests passed, 0 tests failed out of 19
+test -x util/scedit/build/scedit && echo present => present
+# the scene the task checks at the end (F162's), and its diagnostics today
+python3 -I claude/harness/screen_drive.py /tmp/f161mint --pin on --dry-run >/dev/null 2>&1; util/scedit/build/scedit --check /tmp/f161mint/scene.sts 2>&1 | /usr/bin/grep -c "'state' is not an argument of command 'body'" => 8
+```
+
+**WIP line:** minted 2026-10-16 09:5x (session 47) — not yet dispatched.
+
+---
+
 ---
 
 ---
