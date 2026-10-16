@@ -333,7 +333,7 @@ PREMISES
 git rev-parse --abbrev-ref HEAD => main
 git rev-parse --short=8 HEAD => c4b1b7f8
 git status --porcelain | wc -l => 0
-git -C claude rev-parse --short=8 HEAD => REFRESH-AT-DISPATCH
+git -C claude status --porcelain | wc -l => 0
 md5sum build-claude/src/spacecrafter | cut -c1-8 => b27dc477
 find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
 /usr/bin/grep -c '^### F160 ' claude/fable-dispatch.md => 1
@@ -400,7 +400,7 @@ LC_ALL=C /usr/bin/grep -c '^name *= *[A-Za-z0-9_-]* *$' ~/.spacecrafter/ssystem.
 md5sum util/scedit/tests/anchor-expected.txt | cut -c1-8 => 65b5d680
 ```
 
-**WIP line:** minted 2026-10-16 08:5x (session 47) — not yet dispatched.
+**WIP line:** minted 2026-10-16 08:5x (session 47); DISPATCHED 08:5x (opus-xhigh, the only engine launcher; F162 beside it, no launch).
 
 ---
 
@@ -436,7 +436,7 @@ P7  | shape      | the three files are pure ASCII (D14 gate green on the harness
 PREMISES
 # per-round variables - refreshed by the dispatcher at dispatch, never at mint
 git rev-parse --abbrev-ref HEAD => main
-git -C claude rev-parse --short=8 HEAD => REFRESH-AT-DISPATCH
+git -C claude status --porcelain | wc -l => 0
 /usr/bin/grep -c '^### F162 ' claude/fable-dispatch.md => 1
 ls claude/INTENT | /usr/bin/grep -c '^11\.335\.md$' => 0
 test -e claude/INTENT/11.333.md && echo present => present
@@ -460,7 +460,7 @@ test -x util/scedit/build/scedit && echo present => present
 /usr/bin/grep -n '^## F150 ' claude/harness/README.md | cut -d: -f1 => 6895
 ```
 
-**WIP line:** minted 2026-10-16 08:5x (session 47) — not yet dispatched.
+**WIP line:** minted 2026-10-16 08:5x (session 47); DISPATCHED 08:5x (opus-xhigh, harness only, NO launch, parallel to F160).
 
 ---
 
