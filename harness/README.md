@@ -7061,3 +7061,30 @@ through `terminateScript`: 2 / 2 / 1 in AE and on O's HOME path, `script action 
 (`b27dc477`, `s46_f156_post`, `post2`: ALL PASS, 96 / 0) 1 / 1 / 0, one recorded line, the run directory after both
 ends. Since this case, `^PASS [A-O] ` counts 50 (O carries eight checks) and a full run 96 PASS. Pitfall: cases X and O
 end scripts too - a count per end is read inside its own case's window, never over the run.
+
+## F162 - the screen record's reader, the campaign scene and its driver (`screen_record.py`, `screen_scene.sts`, `screen_drive.py`) - INTENT 11.335 / 11.333 (d) (f), 2026-10-16
+
+**What for.** `body action screen_record` (F160, INTENT 11.333) streams every drawn body, every frame, raw: its screen position in the Vulkan axes and its angular size, both normalized to the viewport radius, for each engine that computed it. The record is never summarised in the engine. These three files are what reads it and what drives the campaign: `screen_record.py` turns raw lines into ordered tables (run against run, within one run, each trajectory's continuity), with the frame, jd, both fovs and the drawn path beside every delta, so a delta can be dug at once; `screen_scene.sts` is the campaign's seven phases; `screen_drive.py` plays them on one pinned path and judges the files.
+
+**Run** - the reader, from anywhere (stdlib only):
+
+    python3 -I screen_record.py summary <rec>
+    python3 -I screen_record.py motion  <rec> [--engine o|n] [--k 8] [--top 10] [--all OUT.tsv|-]
+    python3 -I screen_record.py within  <rec> [--all OUT.tsv|-]                       # o - n of one old-pinned record
+    python3 -I screen_record.py compare <recA> <recB> [--engine-a n] [--engine-b o] [--align time|frame] [--all OUT.tsv|-]
+    python3 -I screen_record.py --self-test
+
+The campaign, one pin per call (records in `artifacts/screen/<label>/`):
+
+    cd claude/harness && umask 0002 && bash f124_run.sh ../screen/<label> f125_adapt.py screen_drive.py --pin on|off [--scene FILE]
+    python3 -I screen_drive.py <outdir> --pin on|off --dry-run      # the scene file and the sequence, no socket
+
+**Reading the tables.** Units sit in the column names: `[r]` the viewport radius, `[px]` through the header's renderer radius, `[ms]`, `[d]` (jd), `[deg]` / `[rad]` (each engine's own fov unit). Every body is a row, ordered worst first; no row is dropped on its value. motion's step listings are cut by RANK (`--top`) and their title says how many of how many; `--all` writes every row raw (`-` = stdout). `motion`: JUMP = a step > k x that body's median step, and the same rule on |dsize| = SIZE-JUMP; NONFINITE = a NaN / inf raw value; `absent_frames` = the frames a body skipped between its first and last. `compare --align time` pairs each frame of A with the frame of B nearest in elapsed engine time (the prefix sum of `dt_ms`, the frame's own dt included), ties to the earlier, accepted within the larger of the two dts. Unpaired frames are listed, never dropped. Index alignment is `--align frame`.
+
+**The scene.** P0 `rest` (jd 2461233.5, time frozen, fov 180), P1 `fov` (180 -> 20 -> 180 in 3 s each), P2 `track` (Saturn selected and tracked, `zoom auto in` / `out`), P3 `lateral` (`moveto delta_lon 20` / `delta_lat 10`), P4 `altitude` (`moveto alt 20000000`, then the field's `moveto lat default lon default alt default`), P5 `time` (`timerate rate 86400`), P6 `reference` (home planet Moon, then Earth). `@OUT@` is replaced by the absolute outdir. Each `state on` opens its phase file and closes the previous one; `state off` closes the last, then `dual_dump ... end.json` is the sentinel. Total wait: 49 s; commands with no wait between them run in the same frame (F118 above).
+
+**The driver's checks.** Every phase file exists, was written by this run, loads, and holds a frame; every F line's drawn tag is the pin's (on = n, off = o); a new-pinned record has no o line and an old-pinned one both engines; the sentinel parses (`dumpread`) and its `control.drawnPath` is the pin's. It reads the phase files, the sentinel and the poll's bound (waits + 60 s) from the scene, and it refuses (exit 2, nothing sent) a scene it cannot bound, an outdir holding whitespace, or a previous run's phase files. Exit 0 / 1 (a FAIL) / 2 / 3 (the sentinel never came).
+
+**Able to fail, first.** `--self-test` writes a synthetic record pair from the format (two engines, 6 frames: Saturn jumps at frame 3, Mars is missing from n at frame 4, the Moon's size steps at frame 2; a copy at dt 8) and asserts the four functions' rows, P3's alignment (frame 8 at 7 ms meets frame 7 at 8 ms) and seven refused records with their line numbers. Its first run was red on a real defect (empty one-side rows). Five one-line mutants (index alignment, no frame-index check, no JUMP flag, no unclosed-frame check, no engine-tag check) each turn exactly their rows red (INTENT 11.335 (b)).
+
+**Pitfalls, each one measured.** (1) `scedit --check` tests argument keys, flag names / values and set names, NOT command values: `body action dual_dumpx`, `zoom auto inx`, `timerate rate zero` and `moveto lat defaultx` all pass it. Attest such values from the field. (2) The D14 gate reads the code repo's tracked files only; for the harness, census the bytes (`LC_ALL=C /usr/bin/grep -c -P '[\x80-\xff]'`). (3) The format's header lines are REQUIRED by the reader (`# B` / `# F` column names, `# viewport` with 15 fields): a record that lacks them is refused at its first data line, with the line number. (4) A label is used once: the runner removes `*.json` but not `*.tsv`, so the driver refuses an outdir that holds a previous run's phase files.

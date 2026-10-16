@@ -1,0 +1,54 @@
+# screen_scene.sts - the screen record campaign's phases (INTENT 11.333 (f); F162, INTENT 11.335).
+# @OUT@ = the absolute output directory: screen_drive.py writes <outdir>/scene.sts and plays it.
+# One record file per phase: each `state on` opens its file and closes the previous one.
+# P0 rest
+date jday 2461233.5
+timerate rate 0
+flag track_object off
+zoom fov 180 duration 0
+wait duration 1
+body action screen_record state on filename @OUT@/rest.tsv
+wait duration 3
+# P1 fov
+body action screen_record state on filename @OUT@/fov.tsv
+zoom fov 20 duration 3
+wait duration 4
+zoom fov 180 duration 3
+wait duration 4
+# P2 track
+body action screen_record state on filename @OUT@/track.tsv
+select planet Saturn pointer off
+flag track_object on
+wait duration 1
+zoom auto in
+wait duration 6
+zoom auto out
+wait duration 6
+flag track_object off
+deselect
+# P3 lateral
+body action screen_record state on filename @OUT@/lateral.tsv
+moveto delta_lon 20 duration 2
+wait duration 3
+moveto delta_lat 10 duration 2
+wait duration 3
+# P4 altitude
+body action screen_record state on filename @OUT@/altitude.tsv
+moveto alt 20000000 duration 3
+wait duration 4
+moveto lat default lon default alt default
+wait duration 4
+# P5 time
+body action screen_record state on filename @OUT@/time.tsv
+timerate rate 86400
+wait duration 3
+timerate rate 0
+wait duration 1
+# P6 reference
+body action screen_record state on filename @OUT@/reference.tsv
+set home_planet Moon
+wait duration 3
+set home_planet Earth
+wait duration 3
+body action screen_record state off
+body action dual_dump filename @OUT@/end.json
