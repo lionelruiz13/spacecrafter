@@ -633,18 +633,6 @@ void SSystemFactory::draw(Projector *prj, const Navigator *nav, const Observer *
     } else {
         bodytrace->draw(prj, nav);
         ssystemDisplay->draw(prj, nav, observatory, eye, drawHomePlanet);
-        if (screenRecord.is_open() && getFlagShow()) {
-            const Vec3d c = prj->getViewportCenter();
-            screenRecord << std::setprecision(9);
-            for (auto it = currentSystem->beginSorted(); it != currentSystem->endSorted(); ++it) {
-                Body &body = **it;
-                if (body.isInFov())
-                    screenRecord << "B\to\t" << body.getEnglishName() << '\t'
-                                 << (body.getScreenPos().first - c[0]) / c[2] << '\t'
-                                 << (body.getScreenPos().second - c[1]) / c[2] << '\t'
-                                 << body.get_angular_size(prj, nav) / prj->getFov() << '\n';
-            }
-        }
     }
 }
 
@@ -674,6 +662,7 @@ void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr*
 
 void SSystemFactory::updateExperimental(int delta_time, const TimeMgr* timeMgr)
 {
+    screenRecordDt += delta_time;
     camera->update(timeMgr->getJDay(), delta_time/1000.f);
     // Environment aggregation - after the camera (chain state fresh);
     // engine writes only when the modular phase is the drawing one.
@@ -1030,6 +1019,7 @@ bool SSystemFactory::recordScreen(const std::string &file, const Projector *prj)
 {
     screenRecord.close();
     screenRecordFrame = 0;
+    screenRecordDt = 0;
     if (file.empty())
         return true;
     screenRecord.open(file);
@@ -1047,18 +1037,30 @@ bool SSystemFactory::recordScreen(const std::string &file, const Projector *prj)
     return true;
 }
 
-void SSystemFactory::recordScreenFrame(int delta_time, const Projector *prj)
+void SSystemFactory::recordScreenFrame(const Projector *prj)
 {
     if (!screenRecord.is_open())
         return;
     screenRecord << std::setprecision(9);
+    if (inSystem && getFlagShow()) {
+        const Vec3d c = prj->getViewportCenter();
+        for (auto it = currentSystem->beginSorted(); it != currentSystem->endSorted(); ++it) {
+            Body &body = **it;
+            if (body.isInFov())
+                screenRecord << "B\to\t" << body.getEnglishName() << '\t'
+                             << (body.getScreenPos().first - c[0]) / c[2] << '\t'
+                             << (body.getScreenPos().second - c[1]) / c[2] << '\t'
+                             << body.get_angular_size(prj, navigation) / prj->getFov() << '\n';
+        }
+    }
     ModularBody::forEach([this](ModularBody &body) {
         if (body)
             screenRecord << "B\tn\t" << body.getEnglishName() << '\t' << body.getScreenPos().first
                          << '\t' << body.getScreenPos().second << '\t' << body.getScreenSize() << '\n';
     });
-    screenRecord << "F\t" << screenRecordFrame++ << '\t' << delta_time << '\t'
+    screenRecord << "F\t" << screenRecordFrame++ << '\t' << screenRecordDt << '\t'
                  << std::setprecision(17) << timeMgr->getJDay() << '\t'
                  << (drawModularSystem ? 'n' : 'o') << '\t' << prj->getFov() << '\t'
                  << ModularBody::halfFov << '\n' << std::flush;
+    screenRecordDt = 0;
 }
