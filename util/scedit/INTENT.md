@@ -601,6 +601,29 @@ notes.*
     deliberately: it belongs to whoever can also decide whether the vendored
     FTXUI target should be excluded from the flags, which is a build-shape
     call rather than a defect. S.
+21. **`--check` does not test a VALUE against the domain the contract
+    declares, and `--rules` does not say so** [measured 2026-10-16, F162,
+    parent INTENT 11.335 (c); recorded at F161, parent INTENT 11.336] --
+    `body action dual_dumpx`, `zoom auto inx`, `timerate rate zero` and
+    `moveto lat defaultx` all pass `--check` (F162's injected misspellings:
+    the keys, a command name and a flag value were caught, these four
+    values were not), and so do `body action screen_recordx` and `body
+    action screen_record state onn` (F161's control,
+    `claude/harness/artifacts/f161/control-check.txt`).
+    The checker tests argument keys (`unknown-parameter`), the flag family's
+    names and on/off values (`silent-off-value`) and set names; it never
+    tests a key's value against the `values` / `completable` domain its
+    spec declares. `--rules` lists no value rule, armed or unarmed: its
+    unarmed list is CODE (`src/sc_check.cpp` `unarmedRules`, four lines, all
+    the argument-key half of `unknown-parameter`), not a data table, so
+    nothing was added there. A check that does not exist and does not say
+    so is an S11 instance at the instrument. What the data already offers a
+    value rule: a REFUSING boolean states its refusal in `default` (body
+    `hidden` / `orbit` / `state`, body_trace and suntrace `pen`), a SILENT
+    one carries an `ANYTHING ELSE` entry in `values` (five specs), an open
+    domain says so in `value` (`coord_func`). Recorded, not built: the
+    rule, its `--rules` line and its zero-false-positive pass over the
+    corpora (C3) are a scedit design slice, the owner's to order.
 9. ~~**superscript.sts doc-mining pass**~~ **DONE 2026-08-04 (journal
    2026-08-04g; gated). Residue: S-NP-1 suspended for Vixy; 6
    code-consistent doc answers queued for post-FTXUI grammar merge.**
