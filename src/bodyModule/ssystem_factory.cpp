@@ -1017,14 +1017,16 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
 
 bool SSystemFactory::recordScreen(const std::string &file, const Projector *prj)
 {
-    screenRecord.close();
+    if (file.empty()) {
+        screenRecord.close();
+        return true;
+    }
+    std::ofstream next(file);
+    if (!next.is_open())
+        return false;
+    screenRecord = std::move(next);
     screenRecordFrame = 0;
     screenRecordDt = 0;
-    if (file.empty())
-        return true;
-    screenRecord.open(file);
-    if (!screenRecord.is_open())
-        return false;
     const Vec3d c = prj->getViewportCenter();
     const VkRect2D &r = VulkanMgr::instance->getScreenRect();
     screenRecord << "#\tscreen_record\t1\n#\tB\tengine(o|n)\tname\tx\ty\tsize\n"
