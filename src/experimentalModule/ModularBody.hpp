@@ -491,6 +491,7 @@ public:
 
     // Keep an invisible subtree positioned
     inline void recursiveTranslationUpdate(double jd, Mat4f frame) {
+        isVisible = false;
         transformParentToBodyPos(jd, frame);
         mat.r[12] = frame.r[12];
         mat.r[13] = frame.r[13];
