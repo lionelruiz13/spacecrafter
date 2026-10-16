@@ -1,0 +1,165 @@
+=== F160 leg, pin off, out /home/claude/spacecrafter/claude/harness/artifacts/f160/acc2_off, judge only ===
+NOTE field: 90 body names in ~/.spacecrafter/ssystem.ini
+PASS rest_header  4 '#' lines; first three = 11.333 (d)'s tokens; viewport line {'projector': (1024.0, 1024.0, 1024.0), 'renderer': (1024.0, 1024.0, 1024.0), 'scissor': (0.0, 0.0, 2048.0, 2048.0)}
+PASS rest_grammar  195 F lines, 0 line(s) out of the grammar
+PASS rest_frames_consecutive  first 0 last 194, breaks []
+PASS rest_dt_positive  dt min 15 max 19; dt <= 0 at []
+PASS rest_fps_under_cap  frames / sum(dt) = 195 / 3250 ms = 60.00 fps (cap 144; the cadence is the host's)
+PASS rest_names  19500 B lines, 69 distinct names; not in ssystem.ini: []
+PASS rest_pos_within_antipode  |pos| <= pi / half-fov of its engine; beyond: none
+PASS rest_size_positive  size <= 0: []
+PASS rest_unique_per_frame  (frame, engine, name) twice: []
+PASS rest_drawn_is_the_pin  drawn field ['o'] (expected o); engines in B lines ['n', 'o']
+PASS rest_both_engines_every_frame  frames lacking an o or an n line: 0 []
+NOTE rest engine n: 64 bodies, 64-64 per frame: Adrastea Amalthea Ananke Ariel Belinda Caliban Callisto Carme Daphnis Deimos Despina Dione Earth Elara Enceladus Epimetheus Europa Galatea Ganymede Halimede Helene Himalia Hyperion Iapetus Io Janus Juliet Laomedeia Larissa Leda Lysithea Metis Mimas Miranda Naiad Neptune Neried Neso Oberon Pan Pandora Pasiphae Phobos Portia Prometheus Prospero Proteus Psamathe Puck Rhea Rosalind Sao Saturn Setebos Sinope Sycorax Telesto Tethys Thalassa Thebe Titan Titania Triton Umbriel
+NOTE rest engine o: 36 bodies, 36-36 per frame: Charon Daphnis Despina Dione Enceladus Epimetheus Galatea Halimede Helene Hydra_ Hyperion Iapetus Janus Kerberos Laomedeia Larissa Mimas Naiad Neptune Neried Neso Nix Pan Pandora Prometheus Proteus Psamathe Rhea Sao Saturn Styx Telesto Tethys Thalassa Titan Triton
+PASS zoom_header  4 '#' lines; first three = 11.333 (d)'s tokens; viewport line {'projector': (1024.0, 1024.0, 1024.0), 'renderer': (1024.0, 1024.0, 1024.0), 'scissor': (0.0, 0.0, 2048.0, 2048.0)}
+PASS zoom_grammar  306 F lines, 0 line(s) out of the grammar
+PASS zoom_frames_consecutive  first 0 last 305, breaks []
+PASS zoom_dt_positive  dt min 14 max 19; dt <= 0 at []
+PASS zoom_fps_under_cap  frames / sum(dt) = 306 / 5100 ms = 60.00 fps (cap 144; the cadence is the host's)
+PASS zoom_names  20531 B lines, 69 distinct names; not in ssystem.ini: []
+PASS zoom_pos_within_antipode  |pos| <= pi / half-fov of its engine; beyond: none
+PASS zoom_size_positive  size <= 0: []
+PASS zoom_unique_per_frame  (frame, engine, name) twice: []
+PASS zoom_drawn_is_the_pin  drawn field ['o'] (expected o); engines in B lines ['n', 'o']
+NOTE zoom engine n: 64 bodies, 58-64 per frame: Adrastea Amalthea Ananke Ariel Belinda Caliban Callisto Carme Daphnis Deimos Despina Dione Earth Elara Enceladus Epimetheus Europa Galatea Ganymede Halimede Helene Himalia Hyperion Iapetus Io Janus Juliet Laomedeia Larissa Leda Lysithea Metis Mimas Miranda Naiad Neptune Neried Neso Oberon Pan Pandora Pasiphae Phobos Portia Prometheus Prospero Proteus Psamathe Puck Rhea Rosalind Sao Saturn Setebos Sinope Sycorax Telesto Tethys Thalassa Thebe Titan Titania Triton Umbriel
+NOTE zoom engine o: 36 bodies, 0-36 per frame: Charon Daphnis Despina Dione Enceladus Epimetheus Galatea Halimede Helene Hydra_ Hyperion Iapetus Janus Kerberos Laomedeia Larissa Mimas Naiad Neptune Neried Neso Nix Pan Pandora Prometheus Proteus Psamathe Rhea Sao Saturn Styx Telesto Tethys Thalassa Titan Triton
+PASS keep_header  4 '#' lines; first three = 11.333 (d)'s tokens; viewport line {'projector': (1024.0, 1024.0, 1024.0), 'renderer': (1024.0, 1024.0, 1024.0), 'scissor': (0.0, 0.0, 2048.0, 2048.0)}
+PASS keep_grammar  225 F lines, 0 line(s) out of the grammar
+PASS keep_frames_consecutive  first 0 last 224, breaks []
+PASS keep_dt_positive  dt min 14 max 19; dt <= 0 at []
+PASS keep_fps_under_cap  frames / sum(dt) = 225 / 3750 ms = 60.00 fps (cap 144; the cadence is the host's)
+PASS keep_names  13050 B lines, 58 distinct names; not in ssystem.ini: []
+PASS keep_pos_within_antipode  |pos| <= pi / half-fov of its engine; beyond: none
+PASS keep_size_positive  size <= 0: []
+PASS keep_unique_per_frame  (frame, engine, name) twice: []
+PASS keep_drawn_is_the_pin  drawn field ['o'] (expected o); engines in B lines ['n']
+NOTE keep engine n: 58 bodies, 58-58 per frame: Adrastea Amalthea Ananke Ariel Belinda Caliban Callisto Carme Daphnis Deimos Despina Dione Earth Elara Enceladus Epimetheus Europa Galatea Ganymede Halimede Helene Himalia Hyperion Iapetus Io Janus Juliet Larissa Leda Lysithea Metis Mimas Miranda Naiad Oberon Pan Pandora Pasiphae Phobos Portia Prometheus Prospero Proteus Puck Rhea Rosalind Sao Setebos Sinope Sycorax Telesto Tethys Thalassa Thebe Titan Titania Triton Umbriel
+PASS refused_file_absent  none.tsv must not exist
+PASS rest_still  max frame-to-frame |dx|,|dy|,|dsize| <= 1e-06 over 100 bodies x engines; above: 
+PASS rest_present_every_frame  bodies not in every frame: 
+PASS zoom_fov_span  first / last fov_old 180 / 20 deg, half_fov_new 1.57079637 / 0.17453292 rad (expected 180 / 20, pi/2 / pi/18)
+FAIL zoom_no_frozen_n  bodies whose x, y AND size stay bit-identical across a frame pair where their engine's fov changed (stale screen values), frozen pairs / fov-changing pairs: Adrastea 181/181, Amalthea 181/181, Ananke 181/181, Ariel 181/181, Belinda 181/181, Caliban 181/181, Callisto 181/181, Carme 181/181, Daphnis 151/181, Deimos 181/181, Despina 144/181, Dione 151/181, Elara 181/181, Enceladus 151/181, Epimetheus 151/181, Europa 181/181, Galatea 144/181, Ganymede 181/181, Halimede 144/181, Helene 151/181, Himalia 181/181, Hyperion 151/181, Iapetus 151/181, Io 181/181, Janus 151/181, Juliet 181/181, Larissa 144/181, Leda 181/181, Lysithea 181/181, Metis 181/181, Mimas 151/181, Miranda 181/181, Naiad 144/181, Oberon 181/181, Pan 151/181, Pandora 151/181, Pasiphae 181/181, Phobos 181/181, Portia 181/181, Prometheus 151/181, Prospero 181/181, Proteus 144/181, Puck 181/181, Rhea 151/181, Rosalind 181/181, Sao 144/181, Setebos 181/181, Sinope 181/181, Sycorax 181/181, Telesto 151/181, Tethys 151/181, Thalassa 144/181, Thebe 181/181, Titan 151/181, Titania 181/181, Triton 144/181, Umbriel 181/181
+FAIL zoom_size_x_fov_n  spread <= 0.001; above: ['Adrastea', 'Amalthea', 'Ananke', 'Ariel', 'Belinda', 'Caliban', 'Callisto', 'Carme', 'Daphnis', 'Deimos', 'Despina', 'Dione', 'Elara', 'Enceladus', 'Epimetheus', 'Europa', 'Galatea', 'Ganymede', 'Halimede', 'Helene', 'Himalia', 'Hyperion', 'Iapetus', 'Io', 'Janus', 'Juliet', 'Larissa', 'Leda', 'Lysithea', 'Metis', 'Mimas', 'Miranda', 'Naiad', 'Oberon', 'Pan', 'Pandora', 'Pasiphae', 'Phobos', 'Portia', 'Prometheus', 'Prospero', 'Proteus', 'Puck', 'Rhea', 'Rosalind', 'Sao', 'Setebos', 'Sinope', 'Sycorax', 'Telesto', 'Tethys', 'Thalassa', 'Thebe', 'Titan', 'Titania', 'Triton', 'Umbriel']
+PASS zoom_pos_nondecreasing_n  |pos| decreased while the fov shrank: []
+NOTE zoom n Adrastea c 1.16727e-08 spread 8 |pos| 0.317416->0.317416 maxdec 0
+NOTE zoom n Amalthea c 8.51997e-08 spread 8 |pos| 0.317386->0.317386 maxdec 0
+NOTE zoom n Ananke c 1.71593e-08 spread 8 |pos| 0.327313->0.327313 maxdec 0
+NOTE zoom n Ariel c 2.07066e-07 spread 8 |pos| 0.773528->0.773528 maxdec 0
+NOTE zoom n Belinda c 1.21612e-08 spread 8 |pos| 0.773509->0.773509 maxdec 0
+NOTE zoom n Caliban c 1.07475e-08 spread 8 |pos| 0.77465->0.77465 maxdec 0
+NOTE zoom n Callisto c 2.80088e-06 spread 8 |pos| 0.317749->0.317749 maxdec 0
+NOTE zoom n Carme c 1.771e-08 spread 8 |pos| 0.31181->0.31181 maxdec 0
+NOTE zoom n Daphnis c 5.74116e-09 spread 6.97 |pos| 0.885042->0.999461 maxdec 0
+NOTE zoom n Deimos c 3.22354e-08 spread 8 |pos| 0.291522->0.291522 maxdec 0
+NOTE zoom n Despina c 1.67139e-08 spread 6.48 |pos| 0.830543->0.999602 maxdec 0
+NOTE zoom n Dione c 4.01913e-07 spread 6.97 |pos| 0.884865->0.99926 maxdec 0
+NOTE zoom n Earth c 3.14159 spread 1.07e-07 |pos| 2->18 maxdec -8.7e-06
+NOTE zoom n Elara c 4.60231e-08 spread 8 |pos| 0.314651->0.314651 maxdec 0
+NOTE zoom n Enceladus c 1.79017e-07 spread 6.97 |pos| 0.884955->0.999362 maxdec 0
+NOTE zoom n Epimetheus c 4.16296e-08 spread 6.97 |pos| 0.885002->0.999416 maxdec 0
+NOTE zoom n Europa c 1.82829e-06 spread 8 |pos| 0.317316->0.317316 maxdec 0
+NOTE zoom n Galatea c 1.78429e-08 spread 6.48 |pos| 0.830547->0.999608 maxdec 0
+NOTE zoom n Ganymede c 3.07259e-06 spread 8 |pos| 0.317148->0.317148 maxdec 0
+NOTE zoom n Halimede c 7.02392e-09 spread 6.48 |pos| 0.829005->0.997751 maxdec 0
+NOTE zoom n Helene c 1.2918e-08 spread 6.97 |pos| 0.885129->0.999559 maxdec 0
+NOTE zoom n Himalia c 9.88214e-08 spread 8 |pos| 0.318669->0.318669 maxdec 0
+NOTE zoom n Hyperion c 1.01651e-07 spread 6.97 |pos| 0.88502->0.999436 maxdec 0
+NOTE zoom n Iapetus c 5.20968e-07 spread 6.97 |pos| 0.884053->0.998343 maxdec 0
+NOTE zoom n Io c 2.12715e-06 spread 8 |pos| 0.317403->0.317403 maxdec 0
+NOTE zoom n Janus c 6.3874e-08 spread 6.97 |pos| 0.884944->0.999349 maxdec 0
+NOTE zoom n Juliet c 1.50226e-08 spread 8 |pos| 0.773528->0.773528 maxdec 0
+NOTE zoom n Larissa c 1.78433e-08 spread 6.48 |pos| 0.830542->0.999601 maxdec 0
+NOTE zoom n Leda c 5.78882e-09 spread 8 |pos| 0.320317->0.320317 maxdec 0
+NOTE zoom n Lysithea c 1.41824e-08 spread 8 |pos| 0.322347->0.322347 maxdec 0
+NOTE zoom n Metis c 2.33495e-08 spread 8 |pos| 0.317414->0.317414 maxdec 0
+NOTE zoom n Mimas c 1.42512e-07 spread 6.97 |pos| 0.885016->0.999431 maxdec 0
+NOTE zoom n Miranda c 8.43411e-08 spread 8 |pos| 0.773514->0.773514 maxdec 0
+NOTE zoom n Naiad c 3.83965e-08 spread 6.48 |pos| 0.830544->0.999604 maxdec 0
+NOTE zoom n Oberon c 2.72347e-07 spread 8 |pos| 0.773592->0.773592 maxdec 0
+NOTE zoom n Pan c 1.72257e-08 spread 6.97 |pos| 0.884971->0.99938 maxdec 0
+NOTE zoom n Pandora c 2.94267e-08 spread 6.97 |pos| 0.884955->0.999362 maxdec 0
+NOTE zoom n Pasiphae c 4.82955e-08 spread 8 |pos| 0.313096->0.313096 maxdec 0
+NOTE zoom n Phobos c 5.71678e-08 spread 8 |pos| 0.291548->0.291548 maxdec 0
+NOTE zoom n Portia c 1.96727e-08 spread 8 |pos| 0.77351->0.77351 maxdec 0
+NOTE zoom n Prometheus c 3.08572e-08 spread 6.97 |pos| 0.884994->0.999406 maxdec 0
+NOTE zoom n Prospero c 2.15612e-08 spread 8 |pos| 0.772647->0.772647 maxdec 0
+NOTE zoom n Proteus c 4.69803e-08 spread 6.48 |pos| 0.83054->0.999598 maxdec 0
+NOTE zoom n Puck c 2.75419e-08 spread 8 |pos| 0.77351->0.77351 maxdec 0
+NOTE zoom n Rhea c 5.48154e-07 spread 6.97 |pos| 0.885139->0.999569 maxdec 0
+NOTE zoom n Rosalind c 1.03729e-08 spread 8 |pos| 0.773509->0.773509 maxdec 0
+NOTE zoom n Sao c 4.97567e-09 spread 6.48 |pos| 0.830603->0.999675 maxdec 0
+NOTE zoom n Setebos c 2.142e-08 spread 8 |pos| 0.776534->0.776534 maxdec 0
+NOTE zoom n Sinope c 4.76641e-08 spread 8 |pos| 0.316652->0.316652 maxdec 0
+NOTE zoom n Sycorax c 2.14754e-08 spread 8 |pos| 0.775385->0.775385 maxdec 0
+NOTE zoom n Telesto c 8.61386e-09 spread 6.97 |pos| 0.885011->0.999425 maxdec 0
+NOTE zoom n Tethys c 3.80146e-07 spread 6.97 |pos| 0.884998->0.999411 maxdec 0
+NOTE zoom n Thalassa c 9.03456e-09 spread 6.48 |pos| 0.830543->0.999602 maxdec 0
+NOTE zoom n Thebe c 5.83822e-09 spread 8 |pos| 0.317362->0.317362 maxdec 0
+NOTE zoom n Titan c 1.90195e-06 spread 6.97 |pos| 0.884914->0.999316 maxdec 0
+NOTE zoom n Titania c 2.82178e-07 spread 8 |pos| 0.773594->0.773594 maxdec 0
+NOTE zoom n Triton c 3.05489e-07 spread 6.48 |pos| 0.830572->0.999637 maxdec 0
+NOTE zoom n Umbriel c 2.09141e-07 spread 8 |pos| 0.773544->0.773544 maxdec 0
+PASS zoom_law_on_spans_n  the same law on every body's own present run (>= 5 shrinking pairs, none frozen): 7 runs, failing []
+NOTE zoom span n Earth frames 0-305 (181 shrinking) c 3.14159 spread 1.07e-07 maxdec -8.7e-06
+NOTE zoom span n Laomedeia frames 0-86 (36 shrinking) c 4.71217e-09 spread 7.11e-08 maxdec -0.000104
+NOTE zoom span n Neptune frames 0-87 (37 shrinking) c 1.42135e-05 spread 8.8e-08 maxdec -0.000104
+NOTE zoom span n Neried frames 0-86 (36 shrinking) c 3.83697e-08 spread 6.65e-08 maxdec -0.000104
+NOTE zoom span n Neso frames 0-86 (36 shrinking) c 6.85357e-09 spread 9.32e-08 maxdec -0.000104
+NOTE zoom span n Psamathe frames 0-86 (36 shrinking) c 4.54717e-09 spread 7.26e-08 maxdec -0.000104
+NOTE zoom span n Saturn frames 0-80 (30 shrinking) c 0.000100633 spread 1.01e-07 maxdec -0.000111
+PASS zoom_no_frozen_o  bodies whose x, y AND size stay bit-identical across a frame pair where their engine's fov changed (stale screen values), frozen pairs / fov-changing pairs: 
+NOTE zoom_whole_zoom_o not reached: 0 bodies present in all 306 frames, 180 shrinking pairs
+PASS zoom_law_on_spans_o  the same law on every body's own present run (>= 5 shrinking pairs, none frozen): 36 runs, failing []
+NOTE zoom span o Charon frames 0-69 (18 shrinking) c 1.31384e-05 spread 9.98e-10 maxdec -0.0108
+NOTE zoom span o Daphnis frames 0-59 (8 shrinking) c 6.57888e-07 spread 2.18e-09 maxdec -0.0127
+NOTE zoom span o Despina frames 0-63 (12 shrinking) c 1.91528e-06 spread 8.48e-09 maxdec -0.0119
+NOTE zoom span o Dione frames 0-59 (8 shrinking) c 4.60558e-05 spread 3.07e-09 maxdec -0.0127
+NOTE zoom span o Enceladus frames 0-59 (8 shrinking) c 2.05138e-05 spread 5.83e-09 maxdec -0.0127
+NOTE zoom span o Epimetheus frames 0-59 (8 shrinking) c 4.7704e-06 spread 2.67e-09 maxdec -0.0127
+NOTE zoom span o Galatea frames 0-63 (12 shrinking) c 2.04464e-06 spread 7.7e-09 maxdec -0.0119
+NOTE zoom span o Halimede frames 0-63 (12 shrinking) c 8.04882e-07 spread 1.93e-09 maxdec -0.0119
+NOTE zoom span o Helene frames 0-59 (8 shrinking) c 1.48029e-06 spread 1.1e-09 maxdec -0.0127
+NOTE zoom span o Hydra_ frames 0-69 (18 shrinking) c 2.52578e-06 spread 5.11e-09 maxdec -0.0108
+NOTE zoom span o Hyperion frames 0-59 (8 shrinking) c 1.16483e-05 spread 1.03e-09 maxdec -0.0127
+NOTE zoom span o Iapetus frames 0-59 (8 shrinking) c 5.91075e-05 spread 1.78e-09 maxdec -0.0127
+NOTE zoom span o Janus frames 0-59 (8 shrinking) c 7.31942e-06 spread 1.91e-09 maxdec -0.0127
+NOTE zoom span o Kerberos frames 0-69 (18 shrinking) c 2.21559e-07 spread 6.55e-09 maxdec -0.0108
+NOTE zoom span o Laomedeia frames 0-63 (12 shrinking) c 5.39975e-07 spread 2.54e-09 maxdec -0.0119
+NOTE zoom span o Larissa frames 0-63 (12 shrinking) c 2.0447e-06 spread 7.29e-09 maxdec -0.0119
+NOTE zoom span o Mimas frames 0-59 (8 shrinking) c 1.63307e-05 spread 5.34e-09 maxdec -0.0127
+NOTE zoom span o Naiad frames 0-63 (12 shrinking) c 4.39991e-06 spread 3.19e-09 maxdec -0.0119
+NOTE zoom span o Neptune frames 0-63 (12 shrinking) c 0.000640938 spread 2.36e-09 maxdec -0.0119
+NOTE zoom span o Neried frames 0-63 (12 shrinking) c 4.39684e-06 spread 3.18e-09 maxdec -0.0119
+NOTE zoom span o Neso frames 0-63 (12 shrinking) c 7.85362e-07 spread 1.95e-09 maxdec -0.012
+NOTE zoom span o Nix frames 0-69 (18 shrinking) c 2.03834e-06 spread 8.13e-09 maxdec -0.0108
+NOTE zoom span o Pan frames 0-59 (8 shrinking) c 1.97392e-06 spread 8.16e-09 maxdec -0.0127
+NOTE zoom span o Pandora frames 0-59 (8 shrinking) c 3.37205e-06 spread 2.84e-09 maxdec -0.0127
+NOTE zoom span o Prometheus frames 0-59 (8 shrinking) c 3.53597e-06 spread 3.24e-09 maxdec -0.0127
+NOTE zoom span o Proteus frames 0-63 (12 shrinking) c 5.38355e-06 spread 2.68e-09 maxdec -0.0119
+NOTE zoom span o Psamathe frames 0-63 (12 shrinking) c 5.21067e-07 spread 2.49e-09 maxdec -0.0119
+NOTE zoom span o Rhea frames 0-59 (8 shrinking) c 6.28138e-05 spread 1.69e-09 maxdec -0.0127
+NOTE zoom span o Sao frames 0-63 (12 shrinking) c 5.7017e-07 spread 2.45e-09 maxdec -0.0119
+NOTE zoom span o Saturn frames 0-59 (8 shrinking) c 0.00495643 spread 2.19e-09 maxdec -0.0127
+NOTE zoom span o Styx frames 0-69 (18 shrinking) c 2.21558e-07 spread 7.22e-09 maxdec -0.0108
+NOTE zoom span o Telesto frames 0-59 (8 shrinking) c 9.87075e-07 spread 1.72e-09 maxdec -0.0127
+NOTE zoom span o Tethys frames 0-59 (8 shrinking) c 4.35616e-05 spread 3.61e-09 maxdec -0.0127
+NOTE zoom span o Thalassa frames 0-63 (12 shrinking) c 1.03528e-06 spread 1.03e-09 maxdec -0.0119
+NOTE zoom span o Titan frames 0-59 (8 shrinking) c 0.0002116 spread 6.97e-09 maxdec -0.0127
+NOTE zoom span o Triton frames 0-63 (12 shrinking) c 3.50065e-05 spread 4.09e-09 maxdec -0.0119
+PASS sentinel  end.json header parsed, gates {'viewportRadius': 1024, 'px': {'early': 2, 'full': 16, 'bigTexture': 256}, 'screenSize': {'early': 0.0009765625, 'full': 0.0078125, 'bigTexture': 0.125}}
+PASS viewport_agree  sentinel / renderer / projector radius (1024, 1024.0, 1024.0), centers ((1024.0, 1024.0), (1024.0, 1024.0)), scissor (0.0, 0.0, 2048.0, 2048.0): one disc, centered, filling the render rect
+NOTE viewport radius sentinel / renderer / projector = (1024, 1024.0, 1024.0), centers projector / renderer = ((1024.0, 1024.0), (1024.0, 1024.0)), scissor (0.0, 0.0, 2048.0, 2048.0) (the render rect is the host's, not the config's screen_w: 2048 here for screen_w 1024)
+PASS refusals_logged  script.log occurrences {'no_state': 1, 'no_filename': 2, 'bad_value': 1, 'no_open': 1} (expected no_state >= 1, no_filename >= 2 with the keep phase's, bad_value >= 1, no_open >= 1 (sent))
+PASS unopenable_creates_nothing  the engine did not create the missing directory
+NOTE log line: 000000035524: (Debug): Error executing tcp#1: body action screen_record #! command 'body screen_record' : missing state
+NOTE log line: 000000036791: (Debug): Error executing tcp#1: body action screen_record state on #! command 'body screen_record' : missing filename
+NOTE log line: 000000038040: (Debug): Error executing tcp#1: body action screen_record state maybe filename /home/claude/spacecrafter/claude/harness/artifacts/f160/acc2_off/none.tsv #! command 'body screen_record' : unknown state value
+NOTE log line: 000000039290: (Debug): Error executing tcp#1: body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/acc2_off/no_such_dir/none.tsv #! command 'body screen_record' : cannot open /home/claude/space
+PASS record_untouched_by_refusals  rest.tsv / zoom.tsv (size, mtime) before {'rest.tsv': [1029484, 1792136261.7784517], 'zoom.tsv': [1092627, 1792136266.8784058]} after {'rest.tsv': [1029484, 1792136261.7784517], 'zoom.tsv': [1092627, 1792136266.8784058]} the three refusals
+PASS record_runs_across_refusal  keep.tsv: 150 frames at fov [20.0] then 75 at fov 90 - the fov 90 command came AFTER the refused `state on`
+PASS ring_crosscheck  rest.tsv's 195 F lines (dt, jd, fov_old, half_fov_new) found as a contiguous run of the ring's 2322 steps at [890] (ring frames [890])
+PASS cost_ratio  fps record ON (rest.tsv, fov 180) 59.987 over 191 frames / record OFF (ring tail, fov 180, preceded by fov 90.0) 60.000 over 192 frames = 0.9998 (P10: >= 0.9)
+NOTE cost: per-frame period ON 16.670 ms / OFF 16.667 ms against D11's 1 ms; the cadence is capped at 144 fps, so a ratio near 1 bounds the record's cost by the cap's slack, it does not measure it
+=== 2 FAIL: ['zoom_no_frozen_n', 'zoom_size_x_fov_n'] ===

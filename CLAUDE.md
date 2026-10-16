@@ -117,6 +117,11 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   need `-P`, or bash `$'[\x80-\xff]'` quoting (the shell expands the bytes), or a
   Python byte census. The Bash-tool wrapper (ugrep) DOES parse the escape — which
   is why the literal form looks right there and lies under `/usr/bin/grep`.
+  (6) This host's locale is FRENCH (`fr_FR`): under it `awk` parses `9.25e-08` as `9` with NO
+  error — the decimal point is a comma, the parse stops at the `.` — and so do `sort -g` and
+  `printf '%f'`; an executor's range check PASSED on truncated numbers (§11.334 (10), 2026-10-16).
+  `LC_ALL=C` on every shell-side numeric read or comparison; Python's `float()` is locale-free
+  (cross-project: `~/shared/QUEUE.md` Q-111).
 - Suspended-for-Vixy items: work on them is blocked by protocol, not dependencies.
 - Corrections propagate forward only (`spacecrafter-data` → future deliveries); the
   installed field is frozen — backward compatibility is forced (§2.0 D9).

@@ -526,3 +526,15 @@ never rewrite (maintenance invariant). Archival per the standing convention
   `cache.mutated` (1 file). The boot is GREEN on the baseline the round's first code task (F143) compares
   against. Field pair `03fbee59` / `545a51ef` in == out; no engine left (`sc_instances.sh` 13:53:24).
 
+
+- 2026-10-16 08:30–09:40 [measured: supervisor, session 47 (Claude Fable 5.1), from F160's leg on its executor's four
+  launches and the supervisor's two, §11.334 (5) / (10); canary `--no-scene` `20261016-083020` exit 0 at open — the
+  same boot as 2026-10-10, the ninth] **TWO HOST FACTS EVERY px OR fps EXPECTATION MUST READ FROM A RUN, NEVER FROM
+  `config.ini`:** (1) the CADENCE on this boot is **~60 fps** (59.98–60.01 over 195–306 frames, dt 14–20 ms) under
+  `maximum_fps = 144` — F131's seam ring of 2026-10-13 already read 53.65 fps (median dt 17 ms); §0.5's "measured
+  [144.0, 146.4] fps, §11.159" is an earlier stack's number (bracketed there today); the change's date is unrecorded
+  (between 2026-08-30 and 2026-10-13); the display stack sets the cadence, the config only caps it. (2) the RENDER RECT
+  is **2048 × 2048** (scissor 0 0 2048 2048; viewport radius 1024, both centers (1024, 1024); projector, renderer and
+  sentinel agree) for `screen_w = screen_h = 1024` — F131's dumps of 10-13 already read `viewportRadius` 1024; a
+  stable host property. A supervisor derived 512 and 144 from the config at F160's mint and both bands failed on the
+  first run: the config is not the instrument (Q-89's class, the text consumed as the thing).

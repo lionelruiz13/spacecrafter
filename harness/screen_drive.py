@@ -92,10 +92,8 @@ def judge(path, pin, t0):
                                                             lines["o"], lines["n"]), flush=True)
     check(name + "_loaded_and_holds_a_frame", len(rec.frames) > 0, "%d frames, indices consecutive from 0 (load)" % len(rec.frames))
     check(name + "_drawn_tag_is_the_pin", not other, "tag %s expected; other on frames %s" % (TAG[pin], screen_record._ranges(other)))
-    if pin == "on":
-        check(name + "_new_pin_has_no_o_line", lines["o"] == 0, "%d o lines" % lines["o"])
-    else:
-        check(name + "_old_pin_has_both_engines", lines["o"] > 0 and lines["n"] > 0, "o %d n %d" % (lines["o"], lines["n"]))
+    # Both engines compute on both pins (INTENT 11.334 (1)); a phase whose old cone is empty throughout says so here
+    check(name + "_both_engines_recorded", lines["o"] > 0 and lines["n"] > 0, "o %d n %d" % (lines["o"], lines["n"]))
 
 
 def main():
