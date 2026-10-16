@@ -3,7 +3,8 @@
 # the grammar's citations, and somebody has to look at what.
 # Regenerate with: python3 tests/anchor_gate.py --record
 # Why: F160 (INTENT 11.334): 13 lines inserted in app_command_interface.cpp after :4090 (the body action screen_record branch) and one macro after base_command_interface.hpp:330 shift 993 anchors + 35 line ranges to moved; no reference gone
-clean                    6287
+# Why: 2026-10-16, F161 (claude/INTENT/11.336.md): body action screen_record entered both halves (its key state, the two filename refusals, a branch, a note on the record's form) - 18 new references, all clean, each read at its own pin (eb92459f for the interface files, 8a0f1bc9 for src/bodyModule/ssystem_factory.cpp, 9d461bd5 for W_STATE); the vocabulary token W_SCREEN_RECORD is NOT added (header_line is derived at the file pin only). Was: clean 6287.
+clean                    6305
 handler_body_lines:clean 2
 header_line:clean        248
 lines:clean              92

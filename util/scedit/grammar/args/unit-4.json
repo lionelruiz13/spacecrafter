@@ -161,8 +161,8 @@
         "action": {
           "doc": "What to do; every other key on the line depends on this word.",
           "value": "enumerated",
-          "values": ["load", "remove", "clear", "drop", "initial", "reload", "save", "preload", "dual_dump", "screenshot"],
-          "completable": ["clear", "drop", "dual_dump", "initial", "load", "preload", "reload", "remove", "save", "screenshot"],
+          "values": ["load", "remove", "clear", "drop", "initial", "reload", "save", "preload", "dual_dump", "screen_record", "screenshot"],
+          "completable": ["clear", "drop", "dual_dump", "initial", "load", "preload", "reload", "remove", "save", "screen_record", "screenshot"],
           "value_docs": {
             "load": "Add an object. With `mode` it adds a three-dimensional model file (see `mode`); without it, it adds a body to the star system, described by the same keys a system data file uses.",
             "remove": "Remove one three-dimensional model, by `name`, from the scene named by `mode` (this value is only read on the model path).",
@@ -173,11 +173,12 @@
             "save": "Write the current system to a system file, so that the bodies a script pushed in this session are ordinary data at the next start.",
             "preload": "Fetch a body's big picture files into memory now, so that arriving there later does not stall (see `keep_time` and `purge`).",
             "dual_dump": "Development tool: write a machine-readable record of both drawing paths' state to a file.",
+            "screen_record": "Development tool: from `state on` to `state off`, write every frame, for every body a drawing path counts as drawn, its screen position and its size into a text file (format: claude/harness/README.md, section F160).",
             "screenshot": "Take a picture of the screen through the program's own capture path (development tool)."
           },
           "default": "absent -> the command tries the `skin_use`/`skin_tex` forms, then the `name` form, then `tesselation`; present with any other word -> \"command 'body' : unknown action argument\"",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4022, 4028-4044 (model path), 3989-4044 (system path) (W_ACTION=\"action\", W_LOAD=\"load\", W_REMOVE=\"remove\", ACP_CN_CLEAR=\"clear\", W_DROP=\"drop\", W_INITIAL=\"initial\", W_RELOAD=\"reload\", W_SAVE=\"save\", W_PRELOAD=\"preload\": base_command_interface.hpp:81,103,296,341,152,196,313,144,312)",
+          "source": "app_command_interface.cpp:4022, 4028-4044 (model path), 3989-4044 (system path) (W_ACTION=\"action\", W_LOAD=\"load\", W_REMOVE=\"remove\", ACP_CN_CLEAR=\"clear\", W_DROP=\"drop\", W_INITIAL=\"initial\", W_RELOAD=\"reload\", W_SAVE=\"save\", W_PRELOAD=\"preload\": base_command_interface.hpp:81,103,296,341,152,196,313,144,312; W_SCREEN_RECORD=\"screen_record\": base_command_interface.hpp:331 @ eb92459f)",
           "notes": "\"dual_dump\" (:4088) and \"screenshot\" (:4091) are bare string literals with no W_* token -- harness routes, kept in the surface because they are reachable from any script."
         },
         "name": {
@@ -213,9 +214,9 @@
         "filename": {
           "doc": "The file to read or write, depending on the action.",
           "value": "string",
-          "default": "on the model form: absent -> the built name is \"/.ojm\" and no model is found; on `action save`: absent -> this system's own file; on `action dual_dump`: absent -> /tmp/dual_trace.json; on `action screenshot`: absent -> an automatic name <base>-YY.MM.DD-HH.MM.SS.png",
+          "default": "on the model form: absent -> the built name is \"/.ojm\" and no model is found; on `action save`: absent -> this system's own file; on `action dual_dump`: absent -> /tmp/dual_trace.json; on `action screenshot`: absent -> an automatic name <base>-YY.MM.DD-HH.MM.SS.png; on `action screen_record state on`: absent -> refused \"command 'body screen_record' : missing filename\", a file that cannot be opened -> refused \"command 'body screen_record' : cannot open <filename>\" (see `state`); `state off` does not read it",
           "required": "conditional",
-          "source": "app_command_interface.cpp:4030-4031 (model), 4025 (save), 4033 (dual_dump), 4039 (screenshot) -> src/bodyModule/ssystem_factory.hpp:530-531 (save contract), src/bodyModule/ssystem_factory.cpp:903 (dump default), src/appModule/save_screen_interface.cpp:146-154, 347-361 (screenshot default)",
+          "source": "app_command_interface.cpp:4030-4031 (model), 4025 (save), 4033 (dual_dump), 4039 (screenshot), :4094-4097 @ eb92459f (screen_record) -> src/bodyModule/ssystem_factory.hpp:530-531 (save contract), src/bodyModule/ssystem_factory.cpp:903 (dump default), src/appModule/save_screen_interface.cpp:146-154, 347-361 (screenshot default)",
           "notes": "MODEL FORM: the value is a FOLDER name; the file read is <value>/<value>.ojm inside the models directory (:4031 + src/tools/file_path.cpp:114-144, TFP::MODEL3D). SAVE FORM: a file NAME, not a path -- a name containing a path separator, or the machine-owned `.disabled` twin name, is refused with an explanatory log line and nothing is written (src/bodyModule/ssystem_factory.hpp:530-531)."
         },
         "pos_x": {"doc": "Where to put the three-dimensional model, left-right.", "value": "number(evalDouble) -- $-variable substitution possible", "default": "absent -> 0", "default_value": "0", "default_value_source": "app_command_interface.cpp:4032 (unguarded args[] lookup) -> app_command_eval.cpp:116-133 -> src/tools/utility.cpp:399-406 (strToDouble catches and returns default_value 0, utility.hpp:143)", "required": false, "source": "app_command_interface.cpp:4032 -> src/coreModule/coreLink.cpp:614-616 -> src/ojmModule/ojm_mgr.cpp:71-76 (W_POSX=\"pos_x\", base_command_interface.hpp:293)", "notes": "No unit is stated in the code -- see `flagged`."},
@@ -273,6 +274,16 @@
           "required": false,
           "source": "app_command_interface.cpp:4085-4086 (kt = strToInt(kt,10) * stapp->getTargetFps()) -> src/bodyModule/protosystem.cpp:998-999 and src/bodyModule/ssystem_factory.cpp:700-701 -> src/bodyModule/body.cpp:1310-1315 -> src/tools/s_texture.hpp:280-284 (W_KEEPTIME=\"keep_time\", base_command_interface.hpp:288)",
           "notes": "C1-relevant: the handler REWRITES this entry of the map in place (seconds x the target frame rate = frames) before forwarding, so the value the downstream reads is never the value the line wrote. The old path converts it again with std::stoi (src/bodyModule/protosystem.cpp:999), which is why the rewrite must leave a number there."
+        },
+        "state": {
+          "doc": "On `action screen_record`, whether the record runs: on starts it on `filename`, off stops it.",
+          "value": "boolean(flag grammar)",
+          "values": ["on-forms per Utility::isTrue = start the record on `filename`", "off-forms per Utility::isFalse = stop the record"],
+          "completable": [],
+          "default": "absent -> \"command 'body screen_record' : missing state\"; present with any other value -> \"command 'body screen_record' : unknown state value\"",
+          "required": "conditional",
+          "source": "app_command_interface.cpp:4092-4103 @ eb92459f (W_STATE=\"state\", base_command_interface.hpp:146)",
+          "notes": "`state on` ends a running record before it opens the new file (src/bodyModule/ssystem_factory.cpp:1020-1027 @ 8a0f1bc9): a file that cannot be opened is refused AND leaves no record running, while the other three refusals (missing state, unknown state value, missing filename) leave a running record as it was."
         },
         "hidden": {
           "doc": "Stop drawing this body and everything that turns around it (yes), or draw them again (no).",
@@ -424,6 +435,7 @@
         {"selector": "action save", "requires": ["action"], "optional": ["filename"], "effect": "write the current system to a system file; failure gives \"Command 'body': the current system could not be saved\"", "source": "app_command_interface.cpp:4081-4083"},
         {"selector": "action preload", "requires": ["action"], "optional": ["name", "keep_time", "purge"], "effect": "fetch the body's big pictures now and keep them for a while", "source": "app_command_interface.cpp:4084-4087"},
         {"selector": "action dual_dump", "requires": ["action"], "optional": ["filename"], "effect": "write the development trace file", "source": "app_command_interface.cpp:4088-4090"},
+        {"selector": "action screen_record", "requires": ["action", "state"], "optional": ["filename"], "effect": "start the per-frame screen record on `filename` (state on) or stop it (state off); refused with \"command 'body screen_record' : missing state\", \"command 'body screen_record' : unknown state value\", \"command 'body screen_record' : missing filename\" or \"command 'body screen_record' : cannot open <filename>\"", "source": "app_command_interface.cpp:4091-4103 @ eb92459f"},
         {"selector": "action screenshot", "requires": ["action"], "optional": ["filename"], "effect": "take a picture of the screen", "source": "app_command_interface.cpp:4091-4092"},
         {"selector": "no action, name present, hidden present", "requires": ["name", "hidden"], "optional": [], "effect": "hide or show that body and its satellites", "source": "app_command_interface.cpp:4103-4114"},
         {"selector": "no action, name present, orbit present", "requires": ["name", "orbit"], "optional": [], "effect": "draw or stop drawing that body's orbit line", "source": "app_command_interface.cpp:4117-4126"},
@@ -439,7 +451,8 @@
         "A `mode` value outside the three words with a valid system `action` silently takes the SYSTEM path (the test at :4028 fails and `mode` is then never looked at again) -- e.g. `body mode in_galaxie action clear` removes every script-added BODY instead of the models of a scene.",
         "DEFECT, recorded not fixed, same class as unit 1's `color`: on the r/g/b path the colour helper writes its range errors into a BY-VALUE copy of debug_message (src/interfaceModule/app_command_color.cpp:58-59), so `body name X color halo r 2 g 0 b 0` changes nothing, reports success and is recorded. The hex and rgb-word paths set the message on the reference and do reach the script (src/interfaceModule/app_command_color.cpp:98-105, 112-119).",
         "C1-relevant: this is the handler that WRITES into the parsed map (`path` :4066, `tex_ring` :4068, `keep_time` :4085-4086) and then forwards the whole map (:4069, :4087). A tool that models 'the keys of this line' must not read them back from the downstream side.",
-        "DOC-vs-CODE divergence recorded, code wins: two engine-side comments spell the colour form as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 @ b45d3b58 [NOT AT HEAD: the comment that spelled the colour form left the code] and :264 @ b45d3b58 [NOT AT HEAD: the comment that spelled the colour form left the code]), but the handler reads `color_value` (:4137) -- `value` on a `body` line means the tesselation number and nothing else (:4185). An author following the header comment would silently set no colour."
+        "DOC-vs-CODE divergence recorded, code wins: two engine-side comments spell the colour form as `body name X color <halo|label|orbit|trail|all> value r,g,b` (src/experimentalModule/BodyModule.hpp:49 @ b45d3b58 [NOT AT HEAD: the comment that spelled the colour form left the code] and :264 @ b45d3b58 [NOT AT HEAD: the comment that spelled the colour form left the code]), but the handler reads `color_value` (:4137) -- `value` on a `body` line means the tesselation number and nothing else (:4185). An author following the header comment would silently set no colour.",
+        "`action screen_record` writes a tab-separated text file: four header lines beginning with `#` (the format version, the columns of the `B` and `F` lines, the viewport geometry of the projector, the renderer and the scissor), then for every frame drawn one `B` line per body a drawing path counts as drawn (`o` old or `n` new, the English name, x and y in the Vulkan axes and the size, 1 being the viewport radius) and one `F` line that closes the frame (its number from 0, the engine time consumed since the previous `F` line in ms, the jd, the path drawn, the old fov in degrees and the new half-fov in radians), flushed at each `F` line (src/bodyModule/ssystem_factory.cpp:665, 1030-1036, 1040-1066 @ 8a0f1bc9; claude/INTENT/11.333.md (d))."
       ],
       "flagged": [
         "body downstream vocabulary (`action load` without `mode`): the forwarded map is read by the stellar-system-file body grammar (src/bodyModule/protosystem.cpp:499-813 and the new path's loaders), which is INTENT S5 item 4's own deliverable -- the second contract file. Enumerating it here would duplicate that authority (I2). Recorded instead: the entry points (other_args_uses:4069) and the four keys the immediate downstream names before anything else (name, parent, coord_func, type). SCOPE DECISION, for the supervisor to confirm or reverse.",
