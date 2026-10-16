@@ -2,9 +2,8 @@
 # Edited deliberately: a count that moves means the ENGINE moved under
 # the grammar's citations, and somebody has to look at what.
 # Regenerate with: python3 tests/anchor_gate.py --record
-# Why: The screen record's cannot-open fix (ssystem_factory.cpp recordScreen: open first, swap on success; +8 -6 lines at :1020) shifts F161's anchors below it to moved; none gone
-GONE                     2
-clean                    6299
+# Why: The cannot-open fix d8007599 rewrote recordScreen's opening (ssystem_factory.cpp:1018-1030): the state note re-anchored there, its text brought to the new semantics; the lines below shifted to moved
+clean                    6301
 handler_body_lines:clean 2
 header_line:clean        248
 lines:clean              92

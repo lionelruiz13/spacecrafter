@@ -283,7 +283,7 @@
           "default": "absent -> \"command 'body screen_record' : missing state\"; present with any other value -> \"command 'body screen_record' : unknown state value\"",
           "required": "conditional",
           "source": "app_command_interface.cpp:4092-4103 @ eb92459f (W_STATE=\"state\", base_command_interface.hpp:146)",
-          "notes": "`state on` ends a running record before it opens the new file (src/bodyModule/ssystem_factory.cpp:1020-1027 @ 8a0f1bc9): a file that cannot be opened is refused AND leaves no record running, while the other three refusals (missing state, unknown state value, missing filename) leave a running record as it was."
+          "notes": "`state on` replaces a running record only once the new file is open (src/bodyModule/ssystem_factory.cpp:1018-1030 @ d8007599): a file that cannot be opened is refused with the running record intact, like the other three refusals (missing state, unknown state value, missing filename) - before d8007599 it closed the running record first."
         },
         "hidden": {
           "doc": "Stop drawing this body and everything that turns around it (yes), or draw them again (no).",
