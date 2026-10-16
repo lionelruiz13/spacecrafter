@@ -339,9 +339,9 @@ def judge(out, pin):
     counts = {k: logtxt.count(m) for k, m in MSG.items()}
     unopenable = "no_open" in snap.get("sent", [])
     check("refusals_logged", counts["no_state"] >= 1 and counts["bad_value"] >= 1 and counts["no_filename"] >= 2
-          and (counts["no_open"] >= 1 or not unopenable),
-          "script.log occurrences %s (expected no_state >= 1, no_filename >= 2 with the keep phase's, bad_value >= 1, "
-          "no_open >= 1 %s)" % (counts, "(sent)" if unopenable else "(NOT sent by this run's drive)"))
+          and (counts["no_open"] >= 2 or not unopenable),
+          "script.log occurrences %s (expected no_state >= 1, no_filename >= 2 and no_open >= 2 with the keep phase's, "
+          "bad_value >= 1 %s)" % (counts, "(sent)" if unopenable else "(NOT sent by this run's drive)"))
     if unopenable:
         check("unopenable_creates_nothing", not os.path.exists(os.path.join(out, "no_such_dir")),
               "the engine did not create the missing directory")
@@ -359,7 +359,7 @@ def judge(out, pin):
         ok = (first90 is not None and first90 > 0 and len(set(fovs[:first90])) == 1
               and all(near(v, 90.0) for v in fovs[first90:]))
         check("record_runs_across_refusal", ok, "keep.tsv: %d frames at fov %s then %s at fov 90 - the fov 90 command came "
-              "AFTER the refused `state on`" % (first90 or 0, sorted(set(fovs[:first90 or 0])),
+              "AFTER the two refused `state on` (missing filename, unopenable file)" % (first90 or 0, sorted(set(fovs[:first90 or 0])),
                                                 (len(fovs) - first90) if first90 is not None else 0))
     if rest:
         judge_cost(rest, 90.0, seam)
@@ -389,6 +389,7 @@ def drive(out, pin):
     snap["after"] = stat()
     send(S, "body action screen_record state on filename %s/keep.tsv" % out, 1)
     send(S, "body action screen_record state on", 1)
+    send(S, "body action screen_record state on filename %s/no_such_dir/none2.tsv" % out, 1)
     send(S, "zoom fov 90 duration 0", 1)
     send(S, "body action screen_record state off", 1)
     send(S, "zoom fov 180 duration 0", 4)

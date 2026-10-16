@@ -1,0 +1,44 @@
+-- scene /home/claude/spacecrafter/claude/harness/screen_scene.sts -> /home/claude/spacecrafter/claude/harness/artifacts/screen/camp_off/scene.sts (@OUT@ left: 0)
+-- phases 7: rest.tsv fov.tsv track.tsv lateral.tsv altitude.tsv time.tsv reference.tsv
+-- sentinel /home/claude/spacecrafter/claude/harness/artifacts/screen/camp_off/end.json; bound 109.0 s = the scene's waits 49.0 s + 60 s
+>> flag experimental_path off
+>> script action play filename /home/claude/spacecrafter/claude/harness/artifacts/screen/camp_off/scene.sts
+>> shutdown action now
+PASS sentinel_reached  /home/claude/spacecrafter/claude/harness/artifacts/screen/camp_off/end.json after 53.1 s (bound 109.0 s)
+PASS sentinel_drawn_path_is_the_pin  control.drawnPath = old
+PASS rest.tsv_written_by_this_run  mtime 1792136885.4, run start 1792136879.1
+-- rest.tsv: 180 frames, 3000.0 ms, B lines o 6480 n 11520
+PASS rest.tsv_loaded_and_holds_a_frame  180 frames, indices consecutive from 0 (load)
+PASS rest.tsv_drawn_tag_is_the_pin  tag o expected; other on frames -
+PASS rest.tsv_both_engines_recorded  o 6480 n 11520
+PASS fov.tsv_written_by_this_run  mtime 1792136893.4, run start 1792136879.1
+-- fov.tsv: 480 frames, 8000.0 ms, B lines o 2982 n 27905
+PASS fov.tsv_loaded_and_holds_a_frame  480 frames, indices consecutive from 0 (load)
+PASS fov.tsv_drawn_tag_is_the_pin  tag o expected; other on frames -
+PASS fov.tsv_both_engines_recorded  o 2982 n 27905
+PASS track.tsv_written_by_this_run  mtime 1792136906.5, run start 1792136879.1
+-- track.tsv: 772 frames, 13028.0 ms, B lines o 17550 n 19573
+PASS track.tsv_loaded_and_holds_a_frame  772 frames, indices consecutive from 0 (load)
+PASS track.tsv_drawn_tag_is_the_pin  tag o expected; other on frames -
+PASS track.tsv_both_engines_recorded  o 17550 n 19573
+PASS lateral.tsv_written_by_this_run  mtime 1792136912.5, run start 1792136879.1
+-- lateral.tsv: 361 frames, 6016.0 ms, B lines o 17899 n 16321
+PASS lateral.tsv_loaded_and_holds_a_frame  361 frames, indices consecutive from 0 (load)
+PASS lateral.tsv_drawn_tag_is_the_pin  tag o expected; other on frames -
+PASS lateral.tsv_both_engines_recorded  o 17899 n 16321
+PASS altitude.tsv_written_by_this_run  mtime 1792136920.5, run start 1792136879.1
+-- altitude.tsv: 481 frames, 8018.0 ms, B lines o 22136 n 23571
+PASS altitude.tsv_loaded_and_holds_a_frame  481 frames, indices consecutive from 0 (load)
+PASS altitude.tsv_drawn_tag_is_the_pin  tag o expected; other on frames -
+PASS altitude.tsv_both_engines_recorded  o 22136 n 23571
+PASS time.tsv_written_by_this_run  mtime 1792136924.5, run start 1792136879.1
+-- time.tsv: 240 frames, 3999.0 ms, B lines o 9648 n 15865
+PASS time.tsv_loaded_and_holds_a_frame  240 frames, indices consecutive from 0 (load)
+PASS time.tsv_drawn_tag_is_the_pin  tag o expected; other on frames -
+PASS time.tsv_both_engines_recorded  o 9648 n 15865
+PASS reference.tsv_written_by_this_run  mtime 1792136930.5, run start 1792136879.1
+-- reference.tsv: 357 frames, 6006.0 ms, B lines o 13029 n 23025
+PASS reference.tsv_loaded_and_holds_a_frame  357 frames, indices consecutive from 0 (load)
+PASS reference.tsv_drawn_tag_is_the_pin  tag o expected; other on frames -
+PASS reference.tsv_both_engines_recorded  o 13029 n 23025
+=== screen_drive pin off: ALL PASS ===
