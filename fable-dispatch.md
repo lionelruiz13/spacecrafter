@@ -295,6 +295,125 @@ his review queue is decoupled from the sessions, and only he moves its mark.
 
 ---
 
+### F163 — THE STALE SATELLITES OF A CULLED PARENT (§5.211): a member of a culled subtree is not visible — `recursiveTranslationUpdate` clears `isVisible` on every frame it runs, so no body is ever drawn or recorded from a stale flag at a frozen screen position; ONE line in the owner's module (`src/experimentalModule/ModularBody.hpp`), judged by F160's leg (`zoom_no_frozen_n` GREEN on both pins) and by the campaign's time phase; FOCUSED → `opus-xhigh`, the ONLY engine launcher of the round (F161 and F164 run beside you and launch nothing)
+
+**Why now / mandate:** §5.211 (INTENT.md, the row): 32 moons of Jupiter / Uranus / Mars and 23-27 of Saturn / Neptune hold bit-identical screen values across a 180 → 20 zoom with `operator bool` true, and under running time (`timerate rate 86400`) their new-engine positions sit 1.8-2 viewport radii from the old engine's (§11.337 (b) time). Mechanism (11.334 (6)1, read in the code): a culled parent hands its children `recursiveTranslationUpdate` only (`ModularBody.hpp:493-507`: position, `distance`, the parked frame — never `preUpdate`'s flags nor `update`'s screen values), and the culling branch clears the children's `isVisible` only on the TRANSITION `wasChildVisible && !isChildVisible` (`:226-237`, `setChildNoLongerVisible` `ModularBody.cpp:486-495`), so a child whose `isVisible` became true by any other path (the entry path is UNTRACED — a dig is part of this task) keeps it while its parent is culled, and `draw` (`:304`) and the record read the stale flag. The owner's module: the change is the MINIMAL structural one (the channel closed, not its output corrected) and is reported as his to strike.
+
+**The ORIGIN of the need (S10):** a culled subsystem (under 0.3 × halfFov) is one the audience cannot resolve: its members are not drawn — that is the owner's own rule (`isChildVisible`), and `setChildNoLongerVisible` is his statement of it on the transition. The record showed the rule holds only on the transition; the invariant it names ("members of a culled subtree are not visible") must hold on EVERY frame the subtree is culled — which is exactly the frames `recursiveTranslationUpdate` runs. Coverage: every culled subtree at every fov, every entry path (a flag set at launch, during a deep zoom, by a hide / unhide, by a reference change): one place, the function that IS "keep an invisible subtree positioned".
+
+**Mandate, in THIS order:** (0) warm-up, the PREMISES gate (`python3 claude/harness/premise_check.py F163`), READ IN FULL: `claude/SHAPE.md`; `INTENT/11.334.md` (6)1 and (14); `INTENT/11.337.md` (b) time and (d); §5.211 and §5.159 (INTENT.md rows); `src/experimentalModule/ModularBody.hpp` :180-280 (the flags, `preUpdate`, `update`), :460-520 (`selectiveUpdate`, `recursiveTranslationUpdate`, `publishParkedFrame`), :1100-1116 (`forEachVisibleChild`), :1200-1215 (the members); `ModularBody.cpp` :255-300 (`dispatchUpdate`), :480-530 (`setChildNoLongerVisible`, `hide`), :640-660 (`dumpTrace`'s `visible`); `ModularSystem.cpp` :505-525 (the reader at :516); the owner's form `/home/claude/spacecrafter.owner-shape/src/experimentalModule/ModularBody.hpp` (the same functions at `4dfe7bb3`: what he wrote, what was added since). (1) The S4 pass in the entry BEFORE the edit: every READER of `isVisible` (PREMISES: 7 in the hpp, 4 in the cpp, 1 in ModularSystem.cpp) judged — does any depend on a culled child's `isVisible` staying true? (`forEachVisibleChild` iterates the lists, not the flag; `dispatchUpdate` :263 reads the ROOT's; `drawNested` :516; `useNow`; the selection `findBodyAt`); and the ENTRY PATH of the stale true: how did Jupiter's moons get `isVisible = true` at launch with Jupiter's subsystem under 0.3 × halfFov — read `preUpdate`'s order (`isChildVisible = (halfAngularSize > 0.3*halfFov)` uses the PREVIOUS frame's `halfAngularSize`, :227) and the members' initial values (`halfAngularSize` at construction; `halfFov` before the first `setHalfFov`); state the path or NOT TRACED with what a gdb read would need. (2) The edit per P1. (3) Build (`make -C /home/claude/spacecrafter/build-claude -j24 2>&1 | tail -3`), the D14 gate, the anchor gate before / after (paste; a `gone` = STOP; no re-record — the supervisor's). (4) The leg on both pins: `cd /home/claude/spacecrafter/claude/harness && umask 0002 && SC_SEAM_RECORD=1 bash f124_run.sh ../f160/f163_on f125_adapt.py f160_leg.py --pin on` and `--pin off` (`f163_off`): P3. (5) ONE campaign run on the old pin: `umask 0002 && SC_SEAM_RECORD=1 bash /home/claude/spacecrafter/claude/harness/f124_run.sh ../screen/f163_off f125_adapt.py screen_drive.py --pin off`, then `python3 -I claude/harness/screen_record.py within <out>/time.tsv` and `within <out>/rest.tsv` against the accepted `artifacts/screen/camp_off/within_time.txt` / `within_rest.txt`: P4, P5. (6) The entry `INTENT/11.338.md` (checkpoint line first; the S4 table; the `git diff`; the leg's PASS / FAIL counts per pin; the within tables' worst rows before / after); the report.
+
+**PREDICTIONS (the supervisor's; judge every line, report every conflict):**
+```
+PREDICTIONS
+P1  | shape      | ONE line added in ModularBody.hpp's recursiveTranslationUpdate (:493-507): `isVisible = false;` as its first statement (isBodyVisible untouched: operator bool is isVisible & isBodyVisible & !renderHidden), NO comment (the function's own line "Keep an invisible subtree positioned" carries it); names.py 161 -> 161; net +1 code line in the module; nothing else in src/ | check: git diff; names.py | if refuted (a second site, a call to setChildNoLongerVisible per frame, a change in preUpdate): explain why the one line does not close the channel - the reason is the finding
+P2  | non-change | setChildNoLongerVisible untouched (it also zeroes `distance` on the transition - the parked-frame publication and the D8 barrier keep their semantics); recursiveTranslationUpdate still refreshes distance and the parked frame | check: the diff | if refuted: STOP
+P3  | behaviour  | F160's leg: `zoom_no_frozen_n` and `zoom_size_x_fov_n` GREEN on both pins (49 PASS / 0 FAIL each, the new engine's zoom bodies per frame fall from 60-64 to the fresh set only); every other line as at acceptance (47 PASS); the self-test still names its four planted defects | check: drive.log per pin | if refuted (a frozen body remains): name it and its parent - its entry path is a second channel; if a formerly fresh body is now ABSENT at rest (a planet, not a moon): the predicate reached a visible subtree - STOP
+P4  | behaviour  | the campaign's time phase on the old pin: Halimede / Elara / Carme / Himalia / Leda / Pasiphae (§11.337 (b) time, 1.8-2 r apart) are NO LONGER in the new engine's set (their parents culled at fov 180) - the within worst row for bodies in both sets falls to the G3 floor (<= 2e-4 r at fov 180); the one-side-only list loses the stale satellites and keeps Earth (n) and Pluto's five (o) | check: within_time.txt before / after | if refuted: report the rows
+P5  | non-change | the rest phase: every body present in both sets before and after has the SAME values to 9 digits (the fix removes bodies, it moves none); Saturn's moons (fresh at fov 180 in the accepted record - its rest table holds them with both engines) stay present and identical | check: within_rest.txt before / after; a per-body diff of the two rest records | if refuted (a body moved): STOP - the line changed a visible subtree
+P6  | shape      | the S4 table: every reader of isVisible listed with its verdict (needs stale-true: none expected); the entry path of the stale true stated or NOT TRACED with the gdb read it needs | check: the entry | if a reader needs a culled child's isVisible true: STOP, report
+P7  | non-change | anchor gate: ModularBody.hpp is cited by the grammar at most through `[NOT AT HEAD]` declared references - the gate's verdict pasted before / after; no `gone` | check: the gate | if moved counts rise: say so, re-record nothing
+P8  | cost       | none measurable: one store per culled child per frame; the leg's cost_ratio unchanged | check: the leg | if refuted: report
+```
+
+**Boundaries:** WRITES — CODE: `src/experimentalModule/ModularBody.hpp` (ONE line); HARNESS: `claude/INTENT/11.338.md`, `claude/harness/artifacts/f163/**` (+ the runner's side records under `artifacts/f160/f163_*`, `artifacts/screen/f163_off`). NOT: any other `src/` file (a second site needed = STOP and report), `util/scedit/**`, `claude/harness/*.py` (the leg and the reader are read-only for you), `README.md`, `INTENT.md`, `fable-dispatch.md`. You build; you commit nothing; you are the ONLY engine launcher (F161 and F164 launch nothing); absolute paths (Q-72); `LC_ALL=C` on any shell-side numeric read (CLAUDE.md hazard (6)); no `run_in_background`; foreground calls under 10 minutes.
+
+**STOP conditions:** a premise fails; a reader of `isVisible` needs a culled child's flag true; a frozen body survives the fix (a second channel); a visible subtree's body disappears at rest (the predicate overreached); a `gone` anchor; the runner refuses a launch.
+
+**Discriminating checks:** (a) P1–P8; (b) the diff pasted (one line); (c) delivery.py's block (`python3 claude/harness/shape/delivery.py 8a0f1bc9 WORKTREE`); (d) the leg's PASS / FAIL counts per pin, the self-test; (e) the two within tables' worst rows before / after, the per-body rest diff; (f) the anchor gate; (g) `sc_instances.sh --assert f163-end` exit 0.
+
+**Preconditions (checkable, §0.7):** the PREMISES block.
+
+```
+PREMISES
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD => main
+git rev-parse --short=8 HEAD => 8a0f1bc9
+git status --porcelain | /usr/bin/grep -v 'util/scedit/' | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => 2a0459a1
+find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
+/usr/bin/grep -c '^### F163 ' claude/fable-dispatch.md => 1
+ls claude/INTENT | /usr/bin/grep -c '^11\.338\.md$' => 0
+test -e claude/INTENT/11.334.md -a -e claude/INTENT/11.337.md -a -e claude/harness/f160_leg.py -a -e claude/harness/screen_drive.py && echo present => present
+git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD => 4dfe7bb3
+bash claude/agents/deploy.sh --check >/dev/null 2>&1; echo $? => 0
+# the engine slot, the boot, the field pair
+bash claude/harness/sc_instances.sh --assert f163-gate >/dev/null 2>&1; echo $? => 0
+bash claude/harness/f56_canary.sh --no-scene >/dev/null 2>&1; echo $? => 0
+md5sum ~/.spacecrafter/config.ini ~/.spacecrafter/ssystem.ini | cut -c1-8 | tr '\n' ' ' => 03fbee59 545a51ef
+# the mechanism's sites (every structural claim of the mandate is a line here)
+/usr/bin/grep -n 'inline void recursiveTranslationUpdate\|inline void selectiveUpdate\|inline void preUpdate\|void setChildNoLongerVisible();' src/experimentalModule/ModularBody.hpp | cut -d: -f1 | tr '\n' ' ' => 210 212 469 493
+sed -n '493,499p' src/experimentalModule/ModularBody.hpp | tr -s '\t ' ' ' | tr '\n' ';' => inline void recursiveTranslationUpdate(double jd, Mat4f frame) {; transformParentToBodyPos(jd, frame);; mat.r[12] = frame.r[12];; mat.r[13] = frame.r[13];; mat.r[14] = frame.r[14];; matLocalToBodyPos = frame;; distance = frame.getTranslation().length();;
+sed -n '226,237p' src/experimentalModule/ModularBody.hpp | tr -s '\t ' ' ' | tr '\n' ';' => bool wasChildVisible = isChildVisible;; isChildVisible = (halfAngularSize > 0.3*halfFov);; halfAngularSize = atanf(subsystemRadius / sqrt(squaredDistance - subsystemRadius*subsystemRadius));; const float tmp = cullHalfFov + halfAngularSize;; if (tmp <= M_PI && (-preUpdate.r[14] < cos(tmp) * distance)) {; isVisible = false;; if (wasChildVisible); setChildNoLongerVisible();; return;; } else if (wasChildVisible && !isChildVisible); setChildNoLongerVisible();; } else {;
+/usr/bin/grep -n '^void ModularBody::setChildNoLongerVisible' src/experimentalModule/ModularBody.cpp | cut -d: -f1 => 486
+sed -n '486,495p' src/experimentalModule/ModularBody.cpp | tr -s '\t ' ' ' | tr '\n' ';' => void ModularBody::setChildNoLongerVisible();{; forEachVisibleChild([](ModularBody &c) {; if (c.isChildVisible); c.setChildNoLongerVisible();; c.distance = 0;; c.isVisible = false;; });; isChildVisible = false;;};
+/usr/bin/grep -n 'bool isVisible = false;\|bool isBodyVisible = true;\|bool isChildVisible = false;' src/experimentalModule/ModularBody.hpp | cut -d: -f1 | tr '\n' ' ' => 1206 1207 1208
+/usr/bin/grep -n 'inline operator bool() const' src/experimentalModule/ModularBody.hpp | cut -d: -f1 => 186
+/usr/bin/grep -c 'isVisible' src/experimentalModule/ModularBody.hpp => 7
+/usr/bin/grep -c 'isVisible' src/experimentalModule/ModularBody.cpp => 4
+/usr/bin/grep -rln '\bisVisible\b' src/experimentalModule --include=*.hpp --include=*.cpp | tr '\n' ' ' => src/experimentalModule/ModularBody.hpp src/experimentalModule/ModularSystem.cpp src/experimentalModule/ModularBody.cpp
+python3 claude/harness/shape/names.py src/experimentalModule/ModularBody.hpp | cut -d' ' -f2 => 161:
+# the two gates: the leg's frozen check red today, the campaign's time phase (a fingerprint row of the accepted within table: columns 0 and 7)
+/usr/bin/grep -c '^FAIL zoom_no_frozen_n' claude/harness/artifacts/f160/acc2_on/judge.log => 1
+/usr/bin/grep -c '^FAIL zoom_no_frozen_n' claude/harness/artifacts/f160/acc2_off/judge.log => 1
+python3 -c "import csv;rows=[r for r in csv.reader(open('claude/harness/artifacts/screen/camp_off/within_time.txt'),delimiter='\t') if r and r[0]=='Halimede'];print(rows[0][0],rows[0][7][:6])" => Halimede 0.0159
+```
+
+**WIP line:** minted 2026-10-16 10:0x (session 47); DISPATCHED 10:07 (opus-xhigh; F161 / F163 / F164 in parallel on disjoint file sets, F163 the only engine launcher).
+
+---
+
+### F164 — THE READER'S THREE LIMITS, found by the first campaign (§11.337 (c)): (a) `compare --align jd` for records where time runs (elapsed engine time differs by the dt jitter between runs: 2 ms = 0.7 deg of sky at 86400x), (b) `motion`'s JUMP rule given a floor at the record's own precision and a median over non-zero steps (a still body flags every sub-ulp step `inf` today), (c) `compare` reporting, beside the strict worst, the delta minimized over a +-1 frame window (a command boundary puts two runs one frame apart) — `claude/harness/screen_record.py` only, self-test extended, the campaign's records re-read; FOCUSED → `opus-xhigh`, harness only, NO LAUNCH
+
+**Why now / mandate:** §11.337 (b)-(c): three deltas the first campaign reported were the reader's — Mercury 0.0089 r at `time` frame 162 (jd 2.9 min apart between the runs at the aligned frame), `o Ariel` 5.3e-7 r steps flagged JUMP over a zero median in `altitude`, Helene 0.29 r at `altitude` frame 240 and Titan 0.107 r at `reference` frame 177 (the frame a `moveto` / `set home_planet` starts, one frame apart between runs). Each hid a real reading under a false one; the owner's rule for this instrument is that the exploitation summarizes without hiding — a flag that fires on nothing hides the ones that fire on something.
+
+**The ORIGIN of the need (S10):** the reader compares two runs that share a SCENE but not a CLOCK: the engine's time base (dt) jitters per frame, simulated time (jd) runs or not, and a script's command lands on the frame edge the run's cadence gives it. The alignment key must be the quantity the compared values depend on: under frozen time, elapsed engine time; under running time, jd (the sky's position is a function of jd); at a command boundary, the nearest of three frames. And a flag's threshold must be the instrument's precision, never a statistic that can be zero.
+
+**Mandate, in THIS order:** (0) warm-up, the PREMISES gate (`python3 claude/harness/premise_check.py F164`), READ IN FULL: `INTENT/11.335.md` (b) (the reader's readings and judgment calls J1-J5), `INTENT/11.337.md` (b) altitude / time / reference and (c), `claude/harness/screen_record.py` whole, `claude/harness/README.md` section F162 (the supervisor lands your text changes there — give them in the entry). (1) `align(ra, rb, "jd")`: pair A's frame with the B frame of nearest jd (ties to the earlier), accepted within the larger of the two runs' |jd step| at that frame; `--align time|frame|jd`; and `compare` PRINTS, in its header rows, whether jd varies in either record (max jd - min jd > 0) and, when it does and the alignment is `time`, a `note` row saying `--align jd` is the key for a running clock (no silent switch: the user chooses). (2) `motion`: a floor `--floor 1e-6` (the record's precision at 9 digits on values of order 1; stated in the column title) under which no step is a JUMP whatever the median, and the median taken over the NON-ZERO steps of that body (the per-body table shows both the median and the floor); `step/median` stays raw; a body whose every step is under the floor shows `-` as its flag count. (3) `compare`: beside `dpos[r]` (strict, same aligned frame) a `dpos_w1[r]` = the minimum over B's frames j-1, j, j+1 of the delta (and its frame), the per-body table ordered by the STRICT worst still, both printed; `within` unchanged (one run, no phase). (4) `--self-test` extended: a jd-running pair whose elapsed differs by 2 ms and whose jd matches at a shifted frame aligns by jd and not by time; a still body with one 5e-7 step flags nothing under the floor and `JUMP` above it; a one-frame-shifted copy of a stepping record gives `dpos_w1` 0 where `dpos` is the step; exit 0 pasted; mutants for the three (each turns exactly its rows red). (5) Re-read the campaign's records with the new reader, no launch: `compare camp_on/time.tsv camp_off/time.tsv --align jd` (Mercury's worst row), `motion camp_off/altitude.tsv` (Ariel's flags), `compare camp_on/altitude.tsv camp_off/altitude.tsv` (Helene's `dpos_w1`) — the three rows before / after pasted in the entry. (6) The entry `INTENT/11.339.md` (checkpoint line first; the README paragraph text for the supervisor under `## README section (to land)`); the report.
+
+**PREDICTIONS (the supervisor's; judge every line, report every conflict):**
+```
+PREDICTIONS
+P1  | behaviour  | time phase, --align jd: Mercury's worst run-against-run dpos falls from 0.0089 r to <= 2e-4 r (the G3 floor + the stale-satellite rows untouched, which stay at 1.8-2 r: they are the engine's, §5.211) | check: the row before / after | if refuted: the jd key is not the sky's clock here - state why
+P2  | behaviour  | altitude, motion o: Ariel (and every Uranus moon) shows 0 JUMP under the 1e-6 floor; the bodies that really step (the travel's) keep their flags | check: the table before / after | if refuted: state
+P3  | behaviour  | altitude, compare: Helene's dpos 0.29 r at frame 240 keeps its strict value and shows dpos_w1 <= 1e-3 r (the frame after the boundary matches); reference: Titan 0.107 at 177 the same | check: the rows | if refuted (dpos_w1 still large): the runs differ by more than a frame there - a finding, report it
+P4  | shape      | screen_record.py 500 -> <= 580 lines; stdlib only; python3 -I; every existing self-test row still green; the three mutants red; no row hidden by the floor (the floor flags, it never drops) | check: the self-test; wc -l | if refuted (> 580): state what the lines carry
+P5  | non-change | summary / within unchanged in output on the campaign's records (byte-identical stdout before / after for within camp_off/rest.tsv) | check: a diff of the two outputs | if refuted: state
+P6  | non-change | no launch; nothing under src/ or util/; only screen_record.py and your entry written; D14 byte census 0 on both | check: git status; the census | if refuted: boundary crossed
+```
+
+**Boundaries:** WRITES — `claude/harness/screen_record.py`, `claude/INTENT/11.339.md`, `claude/harness/artifacts/f164/**`. NOT: `src/**`, `util/**`, `README.md` (your text goes in the entry), `screen_drive.py`, `screen_scene.sts`, `f160_leg.py`, `INTENT.md`, `fable-dispatch.md`; NO engine launch (F163 has the engine slot: `sc_instances.sh` may report a live engine that is not yours - do not wait, do not touch); no commit; absolute paths (Q-72); `LC_ALL=C` on any shell-side numeric read (CLAUDE.md hazard (6)).
+
+**STOP conditions:** a premise fails; a change needs the record FORMAT to change (it does not: every key is already in the F line); the jd key is ambiguous on a record (jd constant: fall back loudly to time, never silently).
+
+**Discriminating checks:** (a) P1–P6; (b) the self-test output; (c) the three before / after rows; (d) `git status --porcelain` (only your files); (e) the byte census.
+
+**Preconditions (checkable, §0.7):** the PREMISES block.
+
+```
+PREMISES
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD => main
+git -C claude status --porcelain | wc -l => 0
+/usr/bin/grep -c '^### F164 ' claude/fable-dispatch.md => 1
+ls claude/INTENT | /usr/bin/grep -c '^11\.339\.md$' => 0
+test -e claude/INTENT/11.335.md -a -e claude/INTENT/11.337.md -a -e claude/harness/screen_record.py && echo present => present
+# the reader as accepted, its self-test, and the records the three limits were found on
+md5sum claude/harness/screen_record.py | cut -c1-8 => 85e9049e
+wc -l < claude/harness/screen_record.py => 500
+python3 -I claude/harness/screen_record.py --self-test >/dev/null 2>&1; echo $? => 0
+/usr/bin/grep -n 'def motion\|def compare\|def align\|def _rel\|def _median\|flag = lambda' claude/harness/screen_record.py | cut -d: -f1 | tr '\n' ' ' => 128 133 199 213 294 315
+ls claude/harness/artifacts/screen/camp_on/time.tsv claude/harness/artifacts/screen/camp_off/time.tsv claude/harness/artifacts/screen/camp_on/altitude.tsv claude/harness/artifacts/screen/camp_off/altitude.tsv claude/harness/artifacts/screen/camp_off/reference.tsv | wc -l => 5
+# fingerprint rows of the accepted tables (columns 0, 7 and 17 of the per-body row named; the JUMP count of the altitude motion table)
+python3 -c "import csv;rows=[r for r in csv.reader(open('claude/harness/artifacts/screen/camp_on/vs_off_time.txt'),delimiter='\t') if r and r[0]=='Mercury'];print(rows[0][0],rows[0][7][:6],rows[0][17])" => Mercury 0.0076 162
+python3 -c "import csv;rows=[r for r in csv.reader(open('claude/harness/artifacts/screen/camp_on/vs_off_altitude.txt'),delimiter='\t') if r and r[0]=='Helene'];print(rows[0][0],rows[0][7][:6],rows[0][17])" => Helene 0.2315 240
+/usr/bin/grep -c 'JUMP' claude/harness/artifacts/screen/camp_off/motion_altitude.txt => 615
+```
+
+**WIP line:** minted 2026-10-16 10:0x (session 47); DISPATCHED 10:07 (opus-xhigh; F161 / F163 / F164 in parallel on disjoint file sets, F163 the only engine launcher).
+
+---
+
 ### F161 — THE SCEDIT GRAMMAR IN PHASE WITH F160: the spelling `body action screen_record state on|off filename <f>` in both halves (the merged `grammar/sc-grammar.json` and the fragment `grammar/args/unit-4.json`), its anchors carrying `@ eb92459f` (the engine gained the lines AFTER the file pin `main @ 9d461bd5`), the vocabulary token `W_SCREEN_RECORD` at its header line, the anchor record re-recorded with its argument, the five record gates checked, scedit's own ledger given the value-check gap F162 measured; FOCUSED → `opus-xhigh`, `util/scedit` only, its own build tree, NO engine launch (the supervisor's campaign launches beside you)
 
 **Why now / mandate:** F160 landed the engine's spelling (code `eb92459f`, the branch `app_command_interface.cpp:4091-4103`, the macro `base_command_interface.hpp:331`; `INTENT/11.334.md` (2)); the grammar is a derived contract of the engine and its gate is bound to every `src/`-touching acceptance (§0b step 4, SHAPE §6) — a spelling the engine has and the grammar lacks is the F155 / F159 class (§11.332). F159 is the model: its (1a) measured the file's forms and its (1b) placed each addition in them; this task does the same for ONE action value with ONE new key on `body`. Today F162's scene (`claude/harness/screen_scene.sts`) draws 8 `scedit --check` diagnostics, all `'state' is not an argument of command 'body'`.
