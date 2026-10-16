@@ -356,7 +356,7 @@ test -x util/scedit/build/scedit && echo present => present
 python3 -I claude/harness/screen_drive.py /tmp/f161mint --pin on --dry-run >/dev/null 2>&1; util/scedit/build/scedit --check /tmp/f161mint/scene.sts 2>&1 | /usr/bin/grep -c "'state' is not an argument of command 'body'" => 8
 ```
 
-**WIP line:** minted 2026-10-16 09:5x (session 47) — not yet dispatched.
+**WIP line:** minted 2026-10-16 09:5x (session 47); DISPATCHED 09:57 (opus-xhigh, util/scedit only, no launch; the supervisor's campaign and digs beside it).
 
 ---
 
