@@ -165,7 +165,7 @@ void StellarSystemModule::update(int delta_time)
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
 
-    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio});
+    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio, observer->getHeliocentricVelocity()});
 
     // Update faders
 	core->currentSkyGridMgr->update(delta_time);
@@ -273,7 +273,7 @@ void StellarSystemModule::asyncUpdateLoop()
 								  data.earthPos_helio, data.moonPos_helio,
 								  observer->getLatitude(), observer->getAltitude(),
     	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
-        core->currentHipStars->preDraw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->currentAtmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+        core->currentHipStars->preDraw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr.get(), core->observatory->getAltitude(), core->currentAtmosphere->getFlagShow() && core->FlagAtmosphericRefraction, core->FlagLightAberration, data.observerVelocity);
         core->currentSsystemFactory->bodyTrace(core->navigation);
         asyncWorkState = false;
     }

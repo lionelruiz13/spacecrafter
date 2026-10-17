@@ -188,7 +188,7 @@ public:
 	void resetTrace();
 
 	//! compute the stars and the star selection indicator if necessary in buffer.
-	virtual double preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, Navigator* nav, TimeMgr* timeMgr, float altitude, bool atmosphere);
+	virtual double preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, Navigator* nav, TimeMgr* timeMgr, float altitude, bool atmosphere, bool lightAberration, const Vec3d& observerVelocity);
 
 	//! Translate text.
 	virtual void updateI18n(Translator& trans);
