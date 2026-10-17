@@ -290,6 +290,67 @@ his review queue is decoupled from the sessions, and only he moves its mark.
 
 *Derived index (regenerable, never authoritative): every task section not live below has left this file - `ls fable-dispatch/archive/F*.md` lists them, each naming its §11 record in its own header line; F113 was WITHDRAWN before dispatch and keeps its section as the record; F61-F64 (the session-18 scedit round) left no section, their records are `util/scedit/INTENT.md` and `harness/README.md`; the per-round lines that grew here are `fable-dispatch/archive/index-f0-f95.md` and `index-s25-s42.md`.*
 
+### F165 — BODY COMMANDS DISPATCHED TO THE FACTORY, NOT THROUGH CORE / CORELINK (row B50, owner-ruled 2026-10-17, INTENT 11.340 update): `AppCommandInterface::commandBody` reaches `SSystemFactory` directly for the 16 calls whose forwarders have no other caller; the 14 forwarders leave (Core -4 names, CoreLink -10); the factory holds the Projector; defaults D1 / D2 veto-open. FOCUSED (input set closed below, one concern, criteria that fail) -> `opus-xhigh` under the owner's prompt. **MINTED 2026-10-17, NOT DISPATCHED: his go after the veto window on D1 / D2.**
+
+**Why now / mandate:** his words (11.340 update): *"dispatching body commands to the factory itself rather than core is cleaner, it makes following and reworking the chain easier because the coupling are more visible and there is only one ssystemFactory anyway, and if that changes it is better to make another class routing it than to aggregate responsibilities into core. Because as of now, core have more than one responsibility while each class should have only one."* The census (11.340 update, measured): `commandBody` = `app_command_interface.cpp:4019-4204`, 186 lines, 13 actions, 23 distinct calls (28 occurrences), every one a Core (5) or CoreLink (18) forwarder; 14 have no caller but `commandBody`; 9 stay this slice.
+
+**The ORIGIN of the need (S10):** the command interface is the operator's whole surface IN session (INTENT section 2, R2: only predefined things are usable); a family's handler reaching its module directly is what makes a command's chain followable and reworkable; Core routing commands is a second responsibility on the class that owns the frame. What it will end up covering: every `commandX` family, module by module (his sentence is general); body first because its dead-end forwarders are the most numerous (14); `ojmMgr`'s trio and the five shared forwarders follow when their callers move.
+
+**Mandate, in THIS order:** (0) warm-up + the PREMISES gate (`python3 claude/harness/premise_check.py F165`); READ IN FULL: `claude/SHAPE.md`; `INTENT/11.340.md` (d) and the update; `src/interfaceModule/app_command_interface.cpp:4019-4204`; the 14 forwarders' definitions (`core.cpp:805-830, 945-969`; `coreLink.cpp:1240-1251, 1320-1326, 1379-1386, 1406-1416, 1494-1496`); `src/bodyModule/ssystem_factory.hpp` WHOLE - the S4 pass: every method name against the 16 calls, which factory method each lands on BY NAME (`addBody preloadBody removeBody saveCurrentSystem reloadCurrentSystem setBodyGroundRadius setBodyDatumRadius setBodyColor createTexSkin setPlanetHidden getPlanetHidden planetTesselation getSwitchPlanetTexMap recordScreen`), stated before any edit; `core.hpp:126-135, 573-700` (the friends, the private raw pointer `:680`), `core.cpp:85-110` (the Projector built at `:93` before the factory at `:105`); `app.cpp:160-170` (the interface's construction `:166`); `app_command_interface.hpp:55-70, 170-180`. (1) THE SHAPE - (a) **D1** `Core` gains ONE accessor returning the factory, named in the owner's getter form against the class's names (the executor states the name it chose and why, against the existing names); the interface gains a `SSystemFactory *` member set at construction from `stcore`; NO new friend. (b) The factory gains `const Projector *projection` set at construction (`SSystemFactory(Observer*, Navigator*, TimeMgr*, const Projector*)`, `core.cpp:105` passes `projection`); `recordScreen(file)` reads the member; `recordScreenFrame(dt, prj)` keeps its parameter (it runs inside `draw`, which receives it). (c) The 16 calls go to the factory: `preloadBody` resolves `selected` / `home_planet` itself (`getSelected()`, `observatory`); `removeBody` refuses the home planet (returns false, the interface words `debug_message` - S11) and **D2** the interface calls `stcore->unSelect()` first when the selection is that body (the selection is Core's); `getSwitchPlanetTexMap`'s `selected` likewise into the factory. (d) The 14 forwarders leave with their declarations. (2) Build (`make -C build-claude -j24`), D14, `writers.py`, `names.py` on the four headers before / after (before: core.hpp 146, coreLink.hpp 338, ssystem_factory.hpp 164, app_command_interface.hpp 94). (3) The anchor gate BEFORE the commit: the 60 of the grammar's 757 anchors into `app_command_interface.cpp` that fall inside the span re-resolved by content, the record re-recorded with `--why` (the existing lines passed back + one), both halves, ctest 19 / 19. (4) The harness scripts that send `body` commands: list which action each of the 12 (`b16 b19 b7_hunt f106_pair f122 f123 f12 f16 x2 f18 x2 f19`) sends and which of the 16 moved calls it reaches; run those; the F160 leg on both pins (`screen_record` through the new route). (5) Commit NOTHING (the supervisor commits); write `INTENT/11.341.md` with the conflict report (every prediction CONFIRMED / REFUTED / NOT REACHED, every deviation).
+
+**PREDICTIONS (the supervisor's; judge every line, report every conflict):**
+```
+PREDICTIONS
+P1  | shape      | Core: -4 names (ssystemScreenRecord addSolarSystemBody preloadSolarSystemBody removeSolarSystemBody), +1 accessor, 146 -> 143; the friend list unchanged (core.hpp:127-135) | check: names.py core.hpp; grep -c 'friend class' = 8 | if a friend was added: D1 refuted - say why the accessor could not be consumed
+P2  | shape      | CoreLink: -10 names (saveSolarSystem reloadSolarSystem planetSetGroundRadius planetSetDatumRadius planetSetColor planetCreateTexSkin setPlanetHidden getPlanetHidden planetTesselation planetGetSwitchTexMap), +0, 338 -> 328; each name 0 hits in src/ | check: names.py coreLink.hpp; grep per name | if a name survives: its caller named (the census missed one - say where)
+P3  | shape      | SSystemFactory: +1 member (the Projector), +1 ctor parameter, recordScreen loses its parameter; preloadBody and removeBody gain the relocated logic (<= 10 lines together); names 164 -> 164 | check: names.py ssystem_factory.hpp | if more names: each named with its reason
+P4  | shape      | AppCommandInterface: +1 member, +0 methods, 94 -> 94; in the span `ssystemFactory->` = 16 occurrences, `stcore->` / `coreLink->` = 28 - 16 + (D2's unSelect) | check: grep -c in 4019-4204 after | if different: the list of calls
+P5  | shape      | net code lines <= -40 (14 forwarders' bodies + declarations gone; the relocated logic smaller than what it replaces) | check: delivery.py | if net >= 0: the delivery only added - explain each addition
+P6  | non-change | every other commandX untouched; the UI / TUI callers of the 5 shared forwarders untouched; the old path's classes untouched; files touched = core.hpp/.cpp, coreLink.hpp/.cpp, ssystem_factory.hpp/.cpp, app_command_interface.hpp/.cpp (+ app.cpp only if the accessor is consumed there) | check: git diff --stat | if another file: say why
+P7  | behaviour  | F160 leg 0 FAIL both pins (screen_record through the new route; the leg's refusals unchanged in wording); every body-sending harness script that reaches a moved call passes as before | check: the leg; the scripts' own verdicts | if a FAIL: the route or the relocation, named
+P8  | behaviour  | `body action remove name <home planet>` refused with the message and nothing removed; `body action remove name <selected body>` unselects then removes, as today | check: a TCP leg or the existing script that sends remove | if refuted: D2's split is wrong - say which half
+P9  | shape      | anchor gate: no GONE after the re-anchoring; the record re-recorded once with --why; ctest 19 / 19; the gate run before the commit | check: the gate's verdict pasted before / after | if GONE remains: list them
+P10 | shape      | manager count (S7): "who routes a body command to its module" 3 (interface, Core, CoreLink) -> 1 (interface -> factory) for the 16 calls; 2 for the 7 staying, stated as staying | check: the S7 table in 11.341 | if different: the table
+```
+
+**Boundaries:** WRITES - CODE: `src/coreModule/core.hpp`, `core.cpp`, `coreLink.hpp`, `coreLink.cpp`, `src/bodyModule/ssystem_factory.hpp`, `ssystem_factory.cpp`, `src/interfaceModule/app_command_interface.hpp`, `app_command_interface.cpp`, `src/appModule/app.cpp` only if D1's accessor is consumed there; GRAMMAR: `util/scedit/grammar/args/unit-4.json`, `util/scedit/grammar/sc-grammar.json`, `util/scedit/tests/anchor-expected.txt` (re-anchoring only, no text change unless a cited line's meaning moved); HARNESS: `claude/INTENT/11.341.md`, `claude/harness/artifacts/f165/**`. NOT: Projector / Navigator / Observer, `src/experimentalModule/`, the other command families, `uiModule/`, `ojmMgr`.
+
+**STOP conditions:** a premise fails; D1's accessor cannot be consumed without a friend; one of the 14 forwarders turns out to have a caller (the census wrong - report, do not delete); the relocation of `preload` / `remove` needs Core state the factory lacks beyond the selection and `observatory`; a GONE anchor that cannot be re-anchored by content; a body-sending harness script red; a shape the mandate did not predict is needed (the STOP goes to the owner, never built).
+
+**Discriminating checks:** P1-P10; the diff in full; `delivery.py`; `names.py` x 4; `writers.py`; the gate before / after; the leg both pins; the scripts' verdicts.
+
+**Preconditions (checkable, §0.7):** the PREMISES block - per-round values refreshed by the dispatcher at dispatch; measured at the mint (2026-10-17, HEAD `ee49d67f`):
+
+```
+PREMISES
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint
+git rev-parse --abbrev-ref HEAD => main
+git rev-parse --short=8 HEAD => ee49d67f
+git status --porcelain | /usr/bin/grep -v 'util/scedit/' | wc -l => 0
+md5sum build-claude/src/spacecrafter | cut -c1-8 => c1944927
+find src -type f -newer build-claude/src/spacecrafter | wc -l => 0
+/usr/bin/grep -c '^### F165 ' claude/fable-dispatch.md => 1
+ls claude/INTENT | /usr/bin/grep -c '^11\.341\.md$' => 0
+git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD => 4dfe7bb3
+bash claude/agents/deploy.sh --check >/dev/null 2>&1; echo $? => 0
+# the census's sites (every structural claim of the mandate is a line here)
+awk '/::commandBody\(/{s=NR} s&&/^}/{print s"-"NR; exit}' src/interfaceModule/app_command_interface.cpp => 4019-4204
+sed -n '4019,4204p' src/interfaceModule/app_command_interface.cpp | /usr/bin/grep -o 'stcore->[A-Za-z]*\|coreLink->[A-Za-z]*' | wc -l => 28
+/usr/bin/grep -c 'stcore->ssystemFactory\|core->ssystemFactory' src/interfaceModule/app_command_interface.cpp => 0
+/usr/bin/grep -n 'SSystemFactory\* ssystemFactory;' src/coreModule/core.hpp | cut -d: -f1 => 680
+/usr/bin/grep -n 'friend class' src/coreModule/core.hpp | cut -d: -f1 | tr '\n' ' ' => 127 128 129 130 131 132 134 135
+/usr/bin/grep -n 'projection = new Projector\|ssystemFactory = new SSystemFactory' src/coreModule/core.cpp | cut -d: -f1 | tr '\n' ' ' => 93 105
+/usr/bin/grep -n 'std::shared_ptr.Core. stcore;' src/interfaceModule/app_command_interface.hpp | cut -d: -f1 => 173
+/usr/bin/grep -n 'commander = std::make_shared.AppCommandInterface.(' src/appModule/app.cpp | cut -d: -f1 => 166
+/usr/bin/grep -c 'bool recordScreen(const std::string &file, const Projector \*prj);' src/bodyModule/ssystem_factory.hpp => 1
+for n in ssystemScreenRecord addSolarSystemBody preloadSolarSystemBody removeSolarSystemBody; do /usr/bin/grep -c "Core::$n(" src/coreModule/core.cpp; done | tr '\n' ' ' => 1 1 1 1
+for n in saveSolarSystem reloadSolarSystem planetSetGroundRadius planetSetDatumRadius planetSetColor planetCreateTexSkin setPlanetHidden getPlanetHidden planetTesselation planetGetSwitchTexMap; do /usr/bin/grep -c "CoreLink::$n(" src/coreModule/coreLink.cpp; done | tr '\n' ' ' => 1 1 1 1 1 1 1 1 1 1
+python3 claude/harness/shape/names.py src/coreModule/core.hpp | cut -d' ' -f2 => 146:
+python3 claude/harness/shape/names.py src/coreModule/coreLink.hpp | cut -d' ' -f2 => 338:
+python3 claude/harness/shape/names.py src/bodyModule/ssystem_factory.hpp | cut -d' ' -f2 => 164:
+python3 claude/harness/shape/names.py src/interfaceModule/app_command_interface.hpp | cut -d' ' -f2 => 94:
+```
+
 ---
 
 ---
@@ -329,6 +390,37 @@ his review queue is decoupled from the sessions, and only he moves its mark.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-48 decision items (2026-10-17, Friday — YOUR REVIEW OF THE MORNING: point 1 landed as code `17f99498` + grammar `ee49d67f`, leg 0 FAIL both pins; point 3 ruled, F165 minted and NOT dispatched; point 2 agreed, its fork open. Each default below is BUILT unless you say otherwise; one sentence each.)**
+
+  ```
+  YOURS — ONE LIST (held set per node; the entry's section in brackets)
+  THE RECORD'S DT [11.340 (b)]:
+    LANDED    the F line's dt = the frame's delta_time as SSystemFactory::draw received it (your words; no sum, no member).
+    RESIDUAL  App::update multiplies the UPDATE's dt by the script fast-forward (x2..x256), App::draw gets the raw frame time
+              (app.cpp:764 vs :1001) - under fast-forward the engine consumed rate x dt_ms; jd carries the clock. Default: as landed,
+              declared (README, grammar, 11.333). Alternatives if you want 11.333 (d)'s "as the engine consumed it" kept: a
+              one-frame hold in the factory (one writer, one reader, no accumulation) or App handing the engine dt to the draw
+              chain (which also fast-forwards the pointer and the meteors).
+  POINT 2, THE MOVERS [11.340 (c)] - nothing built until you answer:
+    NAMES     moveLat / moveLon / moveAlt (the script line, per axis, held) + moveInteractive(const Vec3f &) (the devices' line,
+              (lon, lat, alt) in [-1, 1]) - Core 7 -> 4 methods; raise_height / lower_height command spellings -> move_alt
+              signed (6 days old, not in the field); joypad.ini's raise_height / lower_height action strings STAY (D9).
+    FORK      the interactive request's lifetime: today a one-frame sample (handleDeal calls only outside the dead zone, silence =
+              stop); I3 form = the UI composes the vector each frame and pushes it ON CHANGE, the zero included -> a plain held
+              state. Default: the I3 form. Sum of the two lines (a show's held move + the stick add; current) vs replace-while-
+              active. Default: sum. The hardcoded SHIFT + keypad path stays on the held slot (= a bound move_lat value +-1).
+  F165, BODY COMMANDS TO THE FACTORY [11.340 update; row B50] - MINTED, dispatched on your go:
+    D1        the interface reaches the factory through ONE accessor on Core (one member exposed, readable at the call) rather
+              than a seventh friend (friendship exposes all of Core and hides what is reached). Default: the accessor.
+    D2        removeSolarSystemBody's two guards split: the unselect stays Core's (the interface calls unSelect first), the
+              home-planet refusal moves into SSystemFactory::removeBody (false; the interface words the message). Default: so.
+    SCOPE     14 forwarders die, 9 stay (Core's ssystemDualDump; five shared with the UI / another family; the ojmMgr trio).
+              Your sentence read as general: every commandX family to its module, body first. Say if body-only was meant.
+  THE HOST [HOST-EVENTS 2026-10-17]:
+    1 Hz      one old-pin leg run starved by the swapchain acquire (43 timeouts a second apart), screen not blanked, idle-delay 0,
+              trigger unidentified; the control six minutes later clean. The 08-31 class, second manifestation. FYI, no decision.
+  ```
+
 - **Session-47 decision items (2026-10-16, Friday — THE ROUND YOUR IDEA OPENED: the per-frame screen record is in the engine and in the harness, its first campaign ran on both pins, the deltas are classified, two corrections landed / are landing. Each default below is BUILT unless you say otherwise; one sentence each.)**
 
   ```
@@ -343,7 +435,9 @@ his review queue is decoupled from the sessions, and only he moves its mark.
     SIZE      each engine's own quantity, RAW: the new engine's bounding radius (rings included), the old's body radius (5.213) —
               which radius "the angular size of the body" names for the record and the gates is yours.
     DT        the engine's consumed time since the previous frame line (the update's, fast-forward included), reset at state on.
+              [2026-10-17: SUPERSEDED by your review - the frame's delta_time as the draw received it; 11.340 (b), session-48 list]
     HOOK      one site: recordScreenFrame at the end of Executor::draw, the old walk guarded by inSystem && getFlagShow().
+              [2026-10-17: SUPERSEDED by your review - private, the last line of SSystemFactory::draw; code 17f99498]
     CANNOT    F161 found that `state on <unopenable>` CLOSED the running record before failing (11.336 F1): FIXED `d8007599`
     OPEN      (open first, replace on success - a refusal changes nothing); the leg judges it. Say if the closing was the intent.
   THE FIRST CAMPAIGN'S FINDINGS [11.337, 5.211-5.217]:
