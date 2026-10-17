@@ -91,8 +91,6 @@ public:
                         const std::function<void(std::ostream &)> &extraHeader = {});
     // Restart the screen record on file, "" stops it; false if file cannot open
     bool recordScreen(const std::string &file, const Projector *prj);
-    // Call once per frame after every draw, no-op unless recording
-    void recordScreenFrame(const Projector *prj);
     enum class RenderPathMode { NEW, OLD, ALTERNATE };
     // Call once at init, before the first draw
     void setRenderPathMode(RenderPathMode mode) {
@@ -516,7 +514,7 @@ public:
         ssystemDisplay->computePreDraw(prj, nav);
     }
 
-	void draw(Projector * prj, const Navigator * nav, const Observer* observatory,
+	void draw(int delta_time, Projector * prj, const Navigator * nav, const Observer* observatory,
 	          const ToneReproductor* eye,
 	          bool drawHomePlanet );
 
@@ -819,6 +817,8 @@ private:
     void restoreDisplayScaling();
     //! Select current system
     void selectSystem();
+    // Write the frame's screen record, no-op unless recording
+    void recordScreenFrame(int delta_time, const Projector *prj);
     // {legacy file, twin path}, in load order
     std::vector<std::pair<std::string, std::string>> pendingTwins;
     // True once generatePendingTwins ran
@@ -858,7 +858,6 @@ private:
     ModularBodySelector newSelectedBody;
     std::ofstream screenRecord;
     unsigned int screenRecordFrame = 0;
-    int screenRecordDt = 0; // Engine time consumed since the last frame line, in ms
 };
 
 #endif

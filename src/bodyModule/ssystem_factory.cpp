@@ -626,7 +626,7 @@ void SSystemFactory::leaveSystem()
     }
 }
 
-void SSystemFactory::draw(Projector *prj, const Navigator *nav, const Observer *observatory, const ToneReproductor *eye, bool drawHomePlanet)
+void SSystemFactory::draw(int delta_time, Projector *prj, const Navigator *nav, const Observer *observatory, const ToneReproductor *eye, bool drawHomePlanet)
 {
     if (drawModularSystem) {
         drawExperimental();
@@ -634,6 +634,7 @@ void SSystemFactory::draw(Projector *prj, const Navigator *nav, const Observer *
         bodytrace->draw(prj, nav);
         ssystemDisplay->draw(prj, nav, observatory, eye, drawHomePlanet);
     }
+    recordScreenFrame(delta_time, prj);
 }
 
 // Contract + rationale: ssystem_factory.hpp (drawExperimental).
@@ -662,7 +663,6 @@ void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr*
 
 void SSystemFactory::updateExperimental(int delta_time, const TimeMgr* timeMgr)
 {
-    screenRecordDt += delta_time;
     camera->update(timeMgr->getJDay(), delta_time/1000.f);
     // Environment aggregation - after the camera (chain state fresh);
     // engine writes only when the modular phase is the drawing one.
@@ -1026,7 +1026,6 @@ bool SSystemFactory::recordScreen(const std::string &file, const Projector *prj)
         return false;
     screenRecord = std::move(next);
     screenRecordFrame = 0;
-    screenRecordDt = 0;
     const Vec3d c = prj->getViewportCenter();
     const VkRect2D &r = VulkanMgr::instance->getScreenRect();
     screenRecord << "#\tscreen_record\t1\n#\tB\tengine(o|n)\tname\tx\ty\tsize\n"
@@ -1039,7 +1038,7 @@ bool SSystemFactory::recordScreen(const std::string &file, const Projector *prj)
     return true;
 }
 
-void SSystemFactory::recordScreenFrame(const Projector *prj)
+void SSystemFactory::recordScreenFrame(int delta_time, const Projector *prj)
 {
     if (!screenRecord.is_open())
         return;
@@ -1060,9 +1059,8 @@ void SSystemFactory::recordScreenFrame(const Projector *prj)
             screenRecord << "B\tn\t" << body.getEnglishName() << '\t' << body.getScreenPos().first
                          << '\t' << body.getScreenPos().second << '\t' << body.getScreenSize() << '\n';
     });
-    screenRecord << "F\t" << screenRecordFrame++ << '\t' << screenRecordDt << '\t'
+    screenRecord << "F\t" << screenRecordFrame++ << '\t' << delta_time << '\t'
                  << std::setprecision(17) << timeMgr->getJDay() << '\t'
                  << (drawModularSystem ? 'n' : 'o') << '\t' << prj->getFov() << '\t'
                  << ModularBody::halfFov << '\n' << std::flush;
-    screenRecordDt = 0;
 }

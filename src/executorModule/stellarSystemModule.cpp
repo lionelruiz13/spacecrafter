@@ -206,7 +206,7 @@ void StellarSystemModule::draw(int delta_time)
 	// Key the new-path planet-grid tropic/polar circles to the sky-line flags
 	// (LINE_TROPIC / LINE_CIRCLE_POLAR) just read above (INTENT S11.57, B23).
 	core->syncPlanetGridSkyState();
-	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	core->ssystemFactory->draw(delta_time, core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	if (core->needOldSelectionPointer())
 		core->selected_object.drawPointer(delta_time, *core->oldSkyView, core->selected_object.getEarthEquPos(core->navigation),

@@ -199,7 +199,7 @@ void SolarSystemModule::draw(int delta_time)
 	// Key the new-path planet-grid tropic/polar circles to the sky-line flags
 	// (LINE_TROPIC / LINE_CIRCLE_POLAR) just read above (INTENT S11.57, B23).
 	core->syncPlanetGridSkyState();
-	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	core->ssystemFactory->draw(delta_time, core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene
