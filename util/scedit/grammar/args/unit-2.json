@@ -3,7 +3,7 @@
  "_meta": {
   "unit": 2,
   "code": "master-beta @ b12c8cdd",
-  "anchor_pin": "main @ 9d461bd5 -- every `file:line` anchor in this fragment OUTSIDE `_meta` resolves at this commit; `code` above stays the pin of this `_meta` block's own measurements (handler_range, args_bracket, accounting), which are NOT swept.",
+  "anchor_pin": "main @ de42ac4d -- every `file:line` anchor in this fragment OUTSIDE `_meta` resolves at this commit; `code` above stays the pin of this `_meta` block's own measurements (handler_range, args_bracket, accounting), which are NOT swept.",
   "handler_range": "app_command_interface.cpp:2110-3095",
   "commands_in_unit": 15,
   "args_bracket_expected": 101,
@@ -2511,8 +2511,8 @@
      "value": "a key token, in any case: [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_ (such as SHIFT+KP_8), the modifiers accepted in any order; a joystick button or hat direction as BUTTON<n> or HAT<n>_<UP|DOWN|LEFT|RIGHT>, with no modifier and no _ALT; or * for every key",
      "default": "absent -> inside a script started by a key binding, that key; anywhere else -> \"bind: 'key' omitted outside a script started by a key binding - write 'key <key>', such as 'key SHIFT+KP_8'\"; a token the engine cannot read -> \"unknown key '<key>': write [CTRL+][KWIN+][SUPER+][SHIFT+][ALT+] then an SDL scancode name without SDL_SCANCODE_, such as SHIFT+KP_8; a joystick button or hat direction as BUTTON3 or HAT0_UP, no prefix and no _ALT (a binding serves both sets of the joystick's ini); or * for every key\"",
      "required": "conditional",
-     "source": "app_command_interface.cpp:2885, 2890-2891, 2909 -> src/uiModule/key_binding.cpp:89-91, 155-180 @ 52568219 (W_KEY=\"key\", base_command_interface.hpp:326)",
-     "notes": "The modifiers are part of the key: SHIFT+KP_8 and KP_8 are two keys, each with its own bindings (src/uiModule/key_binding.cpp:165-177 @ 52568219)."
+     "source": "app_command_interface.cpp:2885, 2890-2891, 2909 -> src/uiModule/key_binding.cpp:89-91, 155-180 @ a4d261fe (W_KEY=\"key\", base_command_interface.hpp:326)",
+     "notes": "The modifiers are part of the key: SHIFT+KP_8 and KP_8 are two keys, each with its own bindings (src/uiModule/key_binding.cpp:165-177 @ a4d261fe)."
     },
     "press": {
      "doc": "The script to run when the key is pressed, or - for no script, so that the key does what it does by default.",
@@ -2543,7 +2543,7 @@
      "default": "absent -> the key's release binding is left as it is; `press` and `release` both absent -> \"bind: give 'press <script|->', 'release <script|->' or both\"; a name found in neither directory -> \"bind: no script '<name>' as given, in the running script's directory or in the scripts directory\"",
      "required": "conditional",
      "source": "app_command_interface.cpp:2887-2889, 2894-2904, 2907-2909 (W_RELEASE=\"release\", base_command_interface.hpp:323)",
-     "notes": "The release that runs is the one bound to the key as it was PRESSED: press SHIFT+KP_8, let go of SHIFT, then of KP_8, and the release of SHIFT+KP_8 runs (src/uiModule/key_binding.cpp:113-118 @ 52568219). The same word is also a value of `action`, which gives the global lock back."
+     "notes": "The release that runs is the one bound to the key as it was PRESSED: press SHIFT+KP_8, let go of SHIFT, then of KP_8, and the release of SHIFT+KP_8 runs (src/uiModule/key_binding.cpp:113-118 @ a4d261fe). The same word is also a value of `action`, which gives the global lock back."
     },
     "scope": {
      "doc": "How long the binding lasts: until the next global binding, until the running script ends, or until it has run once.",
@@ -2561,7 +2561,7 @@
      },
      "default": "absent -> global; any other word -> \"bind: unknown scope '<scope>' - write global, script or once\"",
      "required": false,
-     "source": "app_command_interface.cpp:2886, 2892-2893, 2905-2906, 257-259 -> src/uiModule/key_binding.cpp:94-104, 125-130, 141-151 @ 52568219 (W_SCOPE=\"scope\", W_GLOBAL=\"global\", W_SCRIPT=\"script\", W_ONCE=\"once\": base_command_interface.hpp:328,324,330,329)"
+     "source": "app_command_interface.cpp:2886, 2892-2893, 2905-2906, 257-259 -> src/uiModule/key_binding.cpp:94-104, 125-130, 141-151 @ a4d261fe (W_SCOPE=\"scope\", W_GLOBAL=\"global\", W_SCRIPT=\"script\", W_ONCE=\"once\": base_command_interface.hpp:328,324,330,329)"
     },
     "speed": {
      "doc": "Change how fast the running script goes, without an `action`.",
@@ -2598,7 +2598,7 @@
     "The comment at :3024-3029 @ b45d3b58 [NOT AT HEAD: the comment left the code, the return it explained stays] records why the `speed` branch returns: without it a working `script speed ...` reported failure and was dropped from every recorded show (INTENT S11.108 rider).",
     "This is one of the three commands in the sweep that take the `wait` parameter (with `wait` and `zoom` in units 1 and 3).",
     "`action bind` writes its own line for the recorder (:2914-2922): `script action bind key <key>` with the key as written or, when it was left out, the token of the key that started the script; then `press \"<name>\"` and `release \"<name>\"` as written, and `scope <scope>` only when it was written.",
-    "With `scope global`, `-` removes the key's own binding of that event, so a binding on `*` then answers the key (src/uiModule/key_binding.cpp:99-104, 119-122 @ 52568219)."
+    "With `scope global`, `-` removes the key's own binding of that event, so a binding on `*` then answers the key (src/uiModule/key_binding.cpp:99-104, 119-122 @ a4d261fe)."
    ],
    "flagged": []
   },

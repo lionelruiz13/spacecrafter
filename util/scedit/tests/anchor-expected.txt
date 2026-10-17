@@ -2,9 +2,9 @@
 # Edited deliberately: a count that moves means the ENGINE moved under
 # the grammar's citations, and somebody has to look at what.
 # Regenerate with: python3 tests/anchor_gate.py --record
-# Why: The cannot-open fix d8007599 rewrote recordScreen's opening (ssystem_factory.cpp:1018-1030): the state note re-anchored there, its text brought to the new semantics; the lines below shifted to moved
-# Why: The review correction 17f99498 moved the record into SSystemFactory::draw and removed the dt sum (ssystem_factory.cpp:665 gone): the body note re-anchored on the draw, the header lines and recordScreenFrame at 17f99498, its text brought to the frame's dt; the state note re-anchored at 17f99498 (1018-1028)
-# Why: The fast-forward fix cc0841d2 moved the multiplier from App::update to the frame loop (app.cpp:763-764 gone, two lines added at :998-999): the three anchors into app.cpp between them (867-868, 870-884, 939) shifted to moved, nothing gone; the screen_record notes' text follows (the engine's consumed time, both halves), their anchors unchanged
+# Why: The cannot-open fix c44e4caf rewrote recordScreen's opening (ssystem_factory.cpp:1018-1030): the state note re-anchored there, its text brought to the new semantics; the lines below shifted to moved
+# Why: The review correction 4213d4e8 moved the record into SSystemFactory::draw and removed the dt sum (ssystem_factory.cpp:665 gone): the body note re-anchored on the draw, the header lines and recordScreenFrame at 4213d4e8, its text brought to the frame's dt; the state note re-anchored at 4213d4e8 (1018-1028)
+# Why: The fast-forward fix a6114395 moved the multiplier from App::update to the frame loop (app.cpp:763-764 gone, two lines added at :998-999): the three anchors into app.cpp between them (867-868, 870-884, 939) shifted to moved, nothing gone; the screen_record notes' text follows (the engine's consumed time, both halves), their anchors unchanged
 clean                    6313
 handler_body_lines:clean 2
 header_line:clean        248
