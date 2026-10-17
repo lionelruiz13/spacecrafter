@@ -32,7 +32,7 @@ instrument could not produce its section (`ERROR (<section>) ...`) or the tree m
 the candidate record-side rules; one that reproduces the record value prints `PASS* ... rule=<the rule>`,
 none prints `FAIL ... cause=UNNAMED` (exit 1). At delivery: 163 PASS / 13 PASS* / 0 FAIL, exit 0 (the
 records measured before a whitespace re-indent; "new" against the review mark; names added to pre-existing
-types; the records' names.py before `decomment.py`, read from harness history at `90cee65`). A FAIL is a
+types; the records' names.py before `decomment.py`, read from harness history at `736d30e`). A FAIL is a
 change of an instrument or of a record. In-memory mutations: a trailing comment counted as comment -> 7
 UNNAMED probe fails (+4 ratio cross-checks); names.py dropping one name -> 34 UNNAMED.
 

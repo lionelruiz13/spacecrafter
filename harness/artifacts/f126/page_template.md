@@ -1,6 +1,6 @@
 # B42 - the wiring class, before it is built: what the code says today
 
-For the owner, to rule on. Nothing is built, nothing in `src/` was touched. Code `main` @ `6c3d0ed6`.
+For the owner, to rule on. Nothing is built, nothing in `src/` was touched. Code `main` @ `47b348bf`.
 Written 2026-09-20 by a dispatched Claude Fable 5.1 agent (task F126); derivation and raw lists: `claude/INTENT/11.262.md`.
 
 Your ruling, verbatim (2026-09-19): *"FOV - like everything about the space, only Projector is responsible for fov when
@@ -272,7 +272,7 @@ for the reference body (it names their helper `syncCameraReference`, which write
 sites; the frame step; the start-up pair; every old-only request except `cameraDescend` / `cameraSetFreeMode`; free
 flight as an information of its own; eye-relative and quaternion modes; that 16 of the 42 pairs are yours. In the ledger
 and not so in the code: `Core::restoreSkyVision` is listed among functions that "drive BOTH engines" - it writes the
-Navigator only; the raw harvest says `syncCameraReference -> Camera::warpToBody` - since `6c3d0ed6` it is `relocateToBody`;
+Navigator only; the raw harvest says `syncCameraReference -> Camera::warpToBody` - since `47b348bf` it is `relocateToBody`;
 row B42's "68 call sites, ~33 Camera members" - the code has 87 Camera call lines and 43 distinct members outside the module.
 Confirmed as written: the four gated readers, the four fov functions, the place and heading rows, sky lock, mount.
 

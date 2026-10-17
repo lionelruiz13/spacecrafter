@@ -403,7 +403,7 @@ CAMERA = ('src/experimentalModule/Camera.hpp', 'src/experimentalModule/Camera.cp
 # The recorded deliveries: (name, base, head, entry, classes, review-mark date, [(line, quote, probes)]). Every expected
 # value is PARSED from its quote, and the quote is first found verbatim at its entry line: no value is typed twice.
 ORACLES = [
-    ('F146', 'a7919278', '35da9c94', '11.317', dict(Projector=PROJECTOR), (148, '2026-10-11 14:3x', '2026-10-11 14:30'), [
+    ('F146', 'fd4d9f01', '5bdabc7d', '11.317', dict(Projector=PROJECTOR), (148, '2026-10-11 14:3x', '2026-10-11 14:30'), [
         (121, 'new `skyView.hpp` 49, `oldSkyView.hpp` 95, `CameraSkyView.hpp` 54, `.cpp` 196',
          ['skyView.hpp:+', 'oldSkyView.hpp:+', 'CameraSkyView.hpp:+', 'CameraSkyView.cpp:+']),
         (121, '`CameraProjection.hpp` +19 / -8', ['CameraProjection.hpp:+', 'CameraProjection.hpp:-']),
@@ -447,7 +447,7 @@ ORACLES = [
         (155, '0 functions removed', ['names:removed']),
         (155, 'the header queue gains the 4 new headers + 20 retyped', ['scope:new', 'scope:modified']),
     ]),
-    ('F140', '2cb05825', 'a7919278', '11.316', dict(Projector=PROJECTOR, Camera=CAMERA), (135, '2026-10-11 10:5x', '2026-10-11 10:50'), [
+    ('F140', '93b9f55e', 'fd4d9f01', '11.316', dict(Projector=PROJECTOR, Camera=CAMERA), (135, '2026-10-11 10:5x', '2026-10-11 10:50'), [
         (117, '`ssystem_factory.cpp` 7 / 0, `ssystem_factory.hpp` 3 / 0, `core.cpp` 3 / 1',
          ['ssystem_factory.cpp:+', 'ssystem_factory.cpp:-', 'ssystem_factory.hpp:+', 'ssystem_factory.hpp:-', 'core.cpp:+', 'core.cpp:-']),
         (117, '`solarSystemModule.cpp` 3 / 0', ['solarSystemModule.cpp:+', 'solarSystemModule.cpp:-']),
@@ -654,7 +654,7 @@ def cause(R, p, exp, mark, ws):  # Return the named rule under which the record'
     return None
 
 
-RECORD_NAMES = '90cee65:harness/shape/names.py'
+RECORD_NAMES = '736d30e:harness/shape/names.py'
 
 
 def record_text_count(name, rev):  # Count today's names on the text the records' names.py saw; None where both texts give the same names

@@ -140,7 +140,7 @@
    "//! WHAT IT REFUSES, and why the refusals are here rather than in the writer:",
    "bool saveCurrentSystem(const std::string &filename);"
   ],
-  "reason": "the refusal paragraph of the same comment and saveCurrentSystem; the what-for at 530 keeps the path-separator half; the .disabled refusal is implemented in saveCurrentSystem's body in the .cpp (present at 9d461bd5); the declaration is 531",
+  "reason": "the refusal paragraph of the same comment and saveCurrentSystem; the what-for at 530 keeps the path-separator half; the .disabled refusal is implemented in saveCurrentSystem's body in the .cpp (present at de42ac4d); the declaration is 531",
   "new": "530-531",
   "at_to": [
    "//! Save to its own composed file when filename is empty; refuse a path separator",
@@ -204,7 +204,7 @@
    "float shift = font->getStrLen(sNorth)/2;",
    "if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);"
   ],
-  "reason": "the four cardinal letters printed in Cardinals::draw; the print calls rewritten in place, prj -> view (29e93df9); same lines",
+  "reason": "the four cardinal letters printed in Cardinals::draw; the print calls rewritten in place, prj -> view (5e56a1eb); same lines",
   "new": "78-94",
   "at_to": [
    "float shift = font->getStrLen(sNorth)/2;",
@@ -225,7 +225,7 @@
    "if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);",
    "if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);"
   ],
-  "reason": "the four letters' print calls, rewritten in place prj -> view (29e93df9); same lines",
+  "reason": "the four letters' print calls, rewritten in place prj -> view (5e56a1eb); same lines",
   "new": "82-94",
   "at_to": [
    "if (view.projectLocal(pos,xy)) view.printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);",
@@ -247,7 +247,7 @@
    "if ((internalNav) || (internalAstronomical)) {",
    "if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);"
   ],
-  "reason": "the intercardinal block, its print calls rewritten in place prj -> view (29e93df9); same lines",
+  "reason": "the intercardinal block, its print calls rewritten in place prj -> view (5e56a1eb); same lines",
   "new": "95-118",
   "at_to": [
    "if ((internalNav) || (internalAstronomical)) {",
@@ -269,7 +269,7 @@
    "void Constellation::drawName(s_font *constfont, const Projector* prj) const",
    "constfont->printHorizontal(prj, std::min(90.f - alt, 80.f), az*180.f/M_PI-90.f, nameI18, Color, TEXT_ALIGN::CENTER, true);"
   ],
-  "reason": "Constellation::drawName from its def line to the printHorizontal call; the signature and the view calls rewritten (29e93df9), one line up",
+  "reason": "Constellation::drawName from its def line to the printHorizontal call; the signature and the view calls rewritten (5e56a1eb), one line up",
   "new": "149-160",
   "at_to": [
    "void Constellation::drawName(s_font *constfont, const SkyView &view) const",
@@ -461,7 +461,7 @@
    "//! No clamp is added here: old's +-90deg latitude clamp and its 0.1 m altitude",
    "//! the camera is not at (the setter asymmetry is recorded, not fixed)."
   ],
-  "reason": "the note cites the RECORD itself (recorded in ...): the no-clamp paragraph of that comment; it left (3c5952ad) and no line of coreLink.hpp says it at 9d461bd5",
+  "reason": "the note cites the RECORD itself (recorded in ...): the no-clamp paragraph of that comment; it left (3c5952ad) and no line of coreLink.hpp says it at de42ac4d",
   "marker": "the comment that recorded it left the code"
  },
  {
@@ -522,7 +522,7 @@
    "void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, double sky_brightness, bool flagBright)",
    "}"
   ],
-  "reason": "the whole function Nebula::drawTex (def line .. closing brace) is 350-379 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function Nebula::drawTex (def line .. closing brace) is 350-379 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "350-379",
   "at_to": [
    "void Nebula::drawTex(const SkyView &view, ToneReproductor* eye, double sky_brightness, bool flagBright)",
@@ -543,7 +543,7 @@
    "void Nebula::drawHint(const Projector* prj, const Navigator * nav, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r)",
    "}"
   ],
-  "reason": "the whole function Nebula::drawHint (def line .. closing brace) is 381-406 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function Nebula::drawHint (def line .. closing brace) is 381-406 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "381-406",
   "at_to": [
    "void Nebula::drawHint(const SkyView &view, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r)",
@@ -565,7 +565,7 @@
    "void Nebula::drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont)",
    "prj->printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);"
   ],
-  "reason": "Nebula::drawName from its def line to the printGravity180 call; signature and calls rewritten in place prj -> view (29e93df9); same lines",
+  "reason": "Nebula::drawName from its def line to the printGravity180 call; signature and calls rewritten in place prj -> view (5e56a1eb); same lines",
   "new": "408-418",
   "at_to": [
    "void Nebula::drawName(const SkyView &view, const Vec3f &labelColor, s_font *nebulaFont)",
@@ -585,7 +585,7 @@
   "at_pin": [
    "n->drawName(prj, labelColor, font);"
   ],
-  "reason": "the drawName call, its first argument prj -> view (29e93df9); same line",
+  "reason": "the drawName call, its first argument prj -> view (5e56a1eb); same line",
   "new": "203",
   "at_to": [
    "n->drawName(view, labelColor, font);"
@@ -604,7 +604,7 @@
   "at_pin": [
    "n->drawName(prj, labelColor, font);"
   ],
-  "reason": "the drawName call, its first argument prj -> view (29e93df9); same line",
+  "reason": "the drawName call, its first argument prj -> view (5e56a1eb); same line",
   "new": "206",
   "at_to": [
    "n->drawName(view, labelColor, font);"
@@ -624,7 +624,7 @@
    "if (!displaySpecificHint)",
    "n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());"
   ],
-  "reason": "the drawHint branch, its two calls rewritten prj, nav -> view (29e93df9); same lines",
+  "reason": "the drawHint branch, its two calls rewritten prj, nav -> view (5e56a1eb); same lines",
   "new": "211-222",
   "at_to": [
    "if (!displaySpecificHint)",
@@ -644,7 +644,7 @@
   "at_pin": [
    "n->drawHint(prj, nav, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());"
   ],
-  "reason": "the drawHint call, prj, nav -> view (29e93df9); same line",
+  "reason": "the drawHint call, prj, nav -> view (5e56a1eb); same line",
   "new": "212",
   "at_to": [
    "n->drawHint(view, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());"
@@ -663,7 +663,7 @@
   "at_pin": [
    "n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());"
   ],
-  "reason": "the drawHint call, prj, nav -> view (29e93df9); same line",
+  "reason": "the drawHint call, prj, nav -> view (5e56a1eb); same line",
   "new": "222",
   "at_to": [
    "n->drawHint(view, data, nbDraw, displayPicto, circleColor, getPictoSize());"
@@ -684,7 +684,7 @@
    "void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)",
    "}"
   ],
-  "reason": "the whole function SkyDisplay::draw_text (def line .. closing brace) is 188-217 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyDisplay::draw_text (def line .. closing brace) is 188-217 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "188-217",
   "at_to": [
    "void SkyDisplay::draw_text(const SkyView &view)",
@@ -705,7 +705,7 @@
    "void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
    "}"
   ],
-  "reason": "the whole function SkyDisplay::draw (def line .. closing brace) is 219-227 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyDisplay::draw (def line .. closing brace) is 219-227 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "219-227",
   "at_to": [
    "void SkyDisplay::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
@@ -729,7 +729,7 @@
   "at_pin": [
    "*uMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();"
   ],
-  "reason": "the uMat choice (getMatLocalToEye for AL, getMatEarthEquToEye otherwise), prj -> view (29e93df9), one line up",
+  "reason": "the uMat choice (getMatLocalToEye for AL, getMatEarthEquToEye otherwise), prj -> view (5e56a1eb), one line up",
   "new": "225",
   "at_to": [
    "*uMat = (ptype == AL) ? view.getMatLocalToEye() : view.getMatEarthEquToEye();"
@@ -752,7 +752,7 @@
    "void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
    "}"
   ],
-  "reason": "the whole function SkyNautic::draw (def line .. closing brace) is 350-412 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyNautic::draw (def line .. closing brace) is 350-412 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "350-412",
   "at_to": [
    "void SkyNautic::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
@@ -773,7 +773,7 @@
    "void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPos)",
    "}"
   ],
-  "reason": "SkyCoords::draw through SkyOrthodromy::draw (five draw functions), each signature rewritten (29e93df9), one line up; same span",
+  "reason": "SkyCoords::draw through SkyOrthodromy::draw (five draw functions), each signature rewritten (5e56a1eb), one line up; same span",
   "new": "418-1030",
   "at_to": [
    "void SkyCoords::draw(const SkyView &view, Vec3d equPos, Vec3d oldPos)",
@@ -795,7 +795,7 @@
    "void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPos)",
    "}"
   ],
-  "reason": "the whole function SkyCoords::draw (def line .. closing brace) is 418-581 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyCoords::draw (def line .. closing brace) is 418-581 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "418-581",
   "at_to": [
    "void SkyCoords::draw(const SkyView &view, Vec3d equPos, Vec3d oldPos)",
@@ -817,7 +817,7 @@
    "void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldPos)",
    "}"
   ],
-  "reason": "the whole function SkyMouse::draw (def line .. closing brace) is 587-765 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyMouse::draw (def line .. closing brace) is 587-765 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "587-765",
   "at_to": [
    "void SkyMouse::draw(const SkyView &view, Vec3d _equPos, Vec3d _oldPos)",
@@ -838,7 +838,7 @@
    "int x,y;",
    "Vec3d equPos = prj->getCursorPosEqu(x, y);"
   ],
-  "reason": "SkyMouse::draw's pointer read (SDL_GetMouseState then getCursorPosEqu), prj -> view (29e93df9), one line up",
+  "reason": "SkyMouse::draw's pointer read (SDL_GetMouseState then getCursorPosEqu), prj -> view (5e56a1eb), one line up",
   "new": "593-595",
   "at_to": [
    "int x,y;",
@@ -859,7 +859,7 @@
    "void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
    "}"
   ],
-  "reason": "the whole function SkyAngDist::draw (def line .. closing brace) is 770-870 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyAngDist::draw (def line .. closing brace) is 770-870 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "770-870",
   "at_to": [
    "void SkyAngDist::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
@@ -880,7 +880,7 @@
    "void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
    "}"
   ],
-  "reason": "the whole function SkyLoxodromy::draw (def line .. closing brace) is 875-936 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLoxodromy::draw (def line .. closing brace) is 875-936 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "875-936",
   "at_to": [
    "void SkyLoxodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
@@ -901,7 +901,7 @@
    "void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)",
    "}"
   ],
-  "reason": "the whole function SkyOrthodromy::draw (def line .. closing brace) is 941-1030 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyOrthodromy::draw (def line .. closing brace) is 941-1030 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "941-1030",
   "at_to": [
    "void SkyOrthodromy::draw(const SkyView &view, Vec3d equPos, Vec3d oldEquPos)",
@@ -929,7 +929,7 @@
    "void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Pole::draw (def line .. closing brace) is 195-234 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Pole::draw (def line .. closing brace) is 195-234 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "195-234",
   "at_to": [
    "void SkyLine_Pole::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -950,7 +950,7 @@
    "void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Zodiac::draw (def line .. closing brace) is 262-346 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Zodiac::draw (def line .. closing brace) is 262-346 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "262-346",
   "at_to": [
    "void SkyLine_Zodiac::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -971,7 +971,7 @@
    "void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_CircumPolar::draw (def line .. closing brace) is 377-416 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_CircumPolar::draw (def line .. closing brace) is 377-416 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "377-416",
   "at_to": [
    "void SkyLine_CircumPolar::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -991,7 +991,7 @@
   "at_pin": [
    "proj_func = &Projector::projectEarthEqu;"
   ],
-  "reason": "the ANALEMMALINE frame choice proj_func = &...::projectEarthEqu, Projector -> SkyView (29e93df9); same line",
+  "reason": "the ANALEMMALINE frame choice proj_func = &...::projectEarthEqu, Projector -> SkyView (5e56a1eb); same line",
   "new": "427",
   "at_to": [
    "proj_func = &SkyView::projectEarthEqu;"
@@ -1012,7 +1012,7 @@
    "void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Analemme::draw (def line .. closing brace) is 464-504 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Analemme::draw (def line .. closing brace) is 464-504 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "464-504",
   "at_to": [
    "void SkyLine_Analemme::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1035,7 +1035,7 @@
    "void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Galactic_Center::draw (def line .. closing brace) is 521-549 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Galactic_Center::draw (def line .. closing brace) is 521-549 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "521-549",
   "at_to": [
    "void SkyLine_Galactic_Center::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1055,7 +1055,7 @@
   "at_pin": [
    "proj_func = &Projector::projectEarthEqu;"
   ],
-  "reason": "SkyLine_Vernal's frame choice proj_func = &...::projectEarthEqu, Projector -> SkyView (29e93df9); same line",
+  "reason": "SkyLine_Vernal's frame choice proj_func = &...::projectEarthEqu, Projector -> SkyView (5e56a1eb); same line",
   "new": "557",
   "at_to": [
    "proj_func = &SkyView::projectEarthEqu;"
@@ -1077,7 +1077,7 @@
    "void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Vernal::draw (def line .. closing brace) is 566-593 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Vernal::draw (def line .. closing brace) is 566-593 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "566-593",
   "at_to": [
    "void SkyLine_Vernal::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1098,7 +1098,7 @@
    "void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Greenwich::draw (def line .. closing brace) is 610-660 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Greenwich::draw (def line .. closing brace) is 610-660 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "610-660",
   "at_to": [
    "void SkyLine_Greenwich::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1119,7 +1119,7 @@
    "void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Aries::draw (def line .. closing brace) is 675-722 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Aries::draw (def line .. closing brace) is 675-722 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "675-722",
   "at_to": [
    "void SkyLine_Aries::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1140,7 +1140,7 @@
    "void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Meridian::draw (def line .. closing brace) is 750-881 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Meridian::draw (def line .. closing brace) is 750-881 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "750-881",
   "at_to": [
    "void SkyLine_Meridian::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1162,7 +1162,7 @@
    "void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Equator::draw (def line .. closing brace) is 921-1069 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Equator::draw (def line .. closing brace) is 921-1069 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "921-1069",
   "at_to": [
    "void SkyLine_Equator::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1183,7 +1183,7 @@
    "void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Tropic::draw (def line .. closing brace) is 1094-1218 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Tropic::draw (def line .. closing brace) is 1094-1218 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "1094-1218",
   "at_to": [
    "void SkyLine_Tropic::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1204,7 +1204,7 @@
    "void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Ecliptic::draw (def line .. closing brace) is 1235-1355 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Ecliptic::draw (def line .. closing brace) is 1235-1355 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "1235-1355",
   "at_to": [
    "void SkyLine_Ecliptic::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1225,7 +1225,7 @@
    "void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "SkyLine_Precession::draw from its def to the end of its circle loop; the signature rewritten (29e93df9); same lines",
+  "reason": "SkyLine_Precession::draw from its def to the end of its circle loop; the signature rewritten (5e56a1eb); same lines",
   "new": "1372-1440",
   "at_to": [
    "void SkyLine_Precession::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1246,7 +1246,7 @@
    "void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Precession::draw (def line .. closing brace) is 1372-1464 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Precession::draw (def line .. closing brace) is 1372-1464 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "1372-1464",
   "at_to": [
    "void SkyLine_Precession::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1267,7 +1267,7 @@
    "void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Vertical::draw (def line .. closing brace) is 1484-1548 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Vertical::draw (def line .. closing brace) is 1484-1548 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "1484-1548",
   "at_to": [
    "void SkyLine_Vertical::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1289,7 +1289,7 @@
    "void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_Zenith::draw (def line .. closing brace) is 1564-1681 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_Zenith::draw (def line .. closing brace) is 1564-1681 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "1564-1681",
   "at_to": [
    "void SkyLine_Zenith::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1312,7 +1312,7 @@
    "void SkyLine_LunarEclipse::draw(const Projector *prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)",
    "}"
   ],
-  "reason": "the whole function SkyLine_LunarEclipse::draw (def line .. closing brace) is 1696-1820 at 9d461bd5; 29e93df9 (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
+  "reason": "the whole function SkyLine_LunarEclipse::draw (def line .. closing brace) is 1696-1820 at de42ac4d; 5e56a1eb (the frame-thread sky layers drawn through one SkyView) rewrote its first line",
   "new": "1696-1820",
   "at_to": [
    "void SkyLine_LunarEclipse::draw(const SkyView &view, const TimeMgr* timeMgr, const Observer* observatory)",
@@ -1332,7 +1332,7 @@
   "at_pin": [
    "core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(c"
   ],
-  "reason": "the skyDisplayMgr->draw call passing the current and the previous selection; its view argument rewritten (29e93df9), 12 lines up",
+  "reason": "the skyDisplayMgr->draw call passing the current and the previous selection; its view argument rewritten (5e56a1eb), 12 lines up",
   "new": "198",
   "at_to": [
    "core->skyDisplayMgr->draw(core->drawnView(), core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation))"
@@ -1351,7 +1351,7 @@
   "at_pin": [
    "core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), co"
   ],
-  "reason": "the star preDraw call SPLIT by path (c2d24732): the new path's call at 281, the old one, re-indented, at 283; the if/else holding both is 280-283",
+  "reason": "the star preDraw call SPLIT by path (7464c08c): the new path's call at 281, the old one, re-indented, at 283; the if/else holding both is 280-283",
   "new": "280-283",
   "at_to": [
    "if (core->ssystemFactory->drawModularSystem)",
@@ -1371,7 +1371,7 @@
   "at_pin": [
    "core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(c"
   ],
-  "reason": "the skyDisplayMgr->draw call passing the current and the previous selection; its view argument rewritten (29e93df9); same line",
+  "reason": "the skyDisplayMgr->draw call passing the current and the previous selection; its view argument rewritten (5e56a1eb); same line",
   "new": "205",
   "at_to": [
    "core->skyDisplayMgr->draw(*core->oldSkyView, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation))"
@@ -1391,7 +1391,7 @@
   "at_pin": [
    "// (`body name X color <halo|label|orbit|trail|all> value r,g,b`)."
   ],
-  "reason": "the note cites the two engine COMMENTS themselves (two engine-side comments spell ...); this one left (3c5952ad); no comment of BodyModule.hpp spells the form at 9d461bd5",
+  "reason": "the note cites the two engine COMMENTS themselves (two engine-side comments spell ...); this one left (3c5952ad); no comment of BodyModule.hpp spells the form at de42ac4d",
   "marker": "the comment that spelled the colour form left the code"
  },
  {
@@ -1516,7 +1516,7 @@
    "? (atanf(subsystemRadius / sqrtf(distance*distance - subsystemRadius*subsystemRadius))",
    "const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAND);"
   ],
-  "reason": "MIS-ANCHORED AT ITS OWN PIN: at 8d41fbe3 these lines compute a subsystem's on-screen size, not the parent lookup the note states (resolves by name against what is loaded, then at 1063-1072 there); the subject at 9d461bd5 is loadBody's parent resolution, 678-687 (default parent, findBody, the warning when not found). Routed",
+  "reason": "MIS-ANCHORED AT ITS OWN PIN: at 8d41fbe3 these lines compute a subsystem's on-screen size, not the parent lookup the note states (resolves by name against what is loaded, then at 1063-1072 there); the subject at de42ac4d is loadBody's parent resolution, 678-687 (default parent, findBody, the warning when not found). Routed",
   "new": "678-687",
   "at_to": [
    "ModularBody *parent = this;",
@@ -1722,7 +1722,7 @@
    "coreLink->setEyeRelativeMode(newval);",
    "// every reachable value, since the only values the old branch could"
   ],
-  "reason": "MIS-ANCHORED AT ITS OWN PIN: at b45d3b58 these are setFlag's switch cases, not the single-pair read of the seed's rule (the census cites commandFlag reading args.begin()); commandFlag is 1343-1361 at b45d3b58 and 1251-1269 at 9d461bd5. Routed",
+  "reason": "MIS-ANCHORED AT ITS OWN PIN: at b45d3b58 these are setFlag's switch cases, not the single-pair read of the seed's rule (the census cites commandFlag reading args.begin()); commandFlag is 1343-1361 at b45d3b58 and 1251-1269 at de42ac4d. Routed",
   "new": "1251-1269",
   "at_to": [
    "int AppCommandInterface::commandFlag()",
@@ -1800,7 +1800,7 @@
   "at_pin": [
    "media->imageDropAllNoPersistent();"
   ],
-  "reason": "the W_END branch's imageDropAllNoPersistent moved into scriptEnded (f571664e), reached from cancelScript on every end path; 262",
+  "reason": "the W_END branch's imageDropAllNoPersistent moved into scriptEnded (91e9c914), reached from cancelScript on every end path; 262",
   "new": "262",
   "at_to": [
    "media->imageDropAllNoPersistent();"
@@ -1820,7 +1820,7 @@
   "at_pin": [
    "swapCommand = false;"
   ],
-  "reason": "the W_END branch's swapCommand reset moved into scriptEnded (f571664e); 263",
+  "reason": "the W_END branch's swapCommand reset moved into scriptEnded (91e9c914); 263",
   "new": "263",
   "at_to": [
    "swapCommand = false;"
@@ -1839,7 +1839,7 @@
   "at_pin": [
    "ifSwap->reset();"
   ],
-  "reason": "the W_END branch's ifSwap reset moved into scriptEnded (f571664e); 264. Sat in a MARKED string, so the gate counted it declared",
+  "reason": "the W_END branch's ifSwap reset moved into scriptEnded (91e9c914); 264. Sat in a MARKED string, so the gate counted it declared",
   "new": "264",
   "at_to": [
    "ifSwap->reset();"
@@ -1877,7 +1877,7 @@
    "// Harness A/B visual comparison (INTENT.md 11.19a): the offscreen",
    "int AppCommandInterface::commandFont()"
   ],
-  "reason": "MIS-ANCHORED AT ITS OWN PIN: at b45d3b58 these lines run from commandBody's screenshot branch into commandFont, not the single-pair arithmetic handlers the census cites; define .. sinus are 4647-4763 at b45d3b58 and 4537-4653 at 9d461bd5. Routed",
+  "reason": "MIS-ANCHORED AT ITS OWN PIN: at b45d3b58 these lines run from commandBody's screenshot branch into commandFont, not the single-pair arithmetic handlers the census cites; define .. sinus are 4647-4763 at b45d3b58 and 4537-4653 at de42ac4d. Routed",
   "new": "4537-4653",
   "at_to": [
    "int AppCommandInterface::commandDefine()",
@@ -1919,7 +1919,7 @@
   "at_pin": [
    "(no line 479: past the end of the file at the pin)"
   ],
-  "reason": "MIS-READ SINCE F75: parse_model._source's `script_mgr.cpp:81-107 + :335` (73cc7b80) named commander->terminateScript() in script_mgr.cpp; the resolver read the bare number in app_command_interface.cpp and F75 moved it there (335 -> 479), so at b45d3b58 it is past the end of script_mgr.cpp (401 lines). The subject, the natural end's terminateScript call, is 345 at 9d461bd5. Routed",
+  "reason": "MIS-READ SINCE F75: parse_model._source's `script_mgr.cpp:81-107 + :335` (73cc7b80) named commander->terminateScript() in script_mgr.cpp; the resolver read the bare number in app_command_interface.cpp and F75 moved it there (335 -> 479), so at b45d3b58 it is past the end of script_mgr.cpp (401 lines). The subject, the natural end's terminateScript call, is 345 at de42ac4d. Routed",
   "new": "345",
   "at_to": [
    "commander->terminateScript();"
@@ -1939,7 +1939,7 @@
    "const bool onlySelected = isolateSelected && !selected_star.empty();",
    "it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);"
   ],
-  "reason": "the onlySelected test and the two zone-draw loops, their prj, nav arguments -> frame (c2d24732); 832-838",
+  "reason": "the onlySelected test and the two zone-draw loops, their prj, nav arguments -> frame (7464c08c); 832-838",
   "new": "832-838",
   "at_to": [
    "const bool onlySelected = isolateSelected && !selected_star.empty();",
@@ -1959,7 +1959,7 @@
   "at_pin": [
    "if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()], s->getVariableStarIndex())) {"
   ],
-  "reason": "the drawStar call with color_table[BV index] (inside zones), prj -> frame.rolloff() (c2d24732); 294",
+  "reason": "the drawStar call with color_table[BV index] (inside zones), prj -> frame.rolloff() (7464c08c); 294",
   "new": "294",
   "at_to": [
    "if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()], s->getVariableStarIndex())) {"
@@ -1978,7 +1978,7 @@
   "at_pin": [
    "if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()])) {"
   ],
-  "reason": "the drawStar call with color_table[BV index] (border zones), prj -> frame.rolloff() (c2d24732); 393",
+  "reason": "the drawStar call with color_table[BV index] (border zones), prj -> frame.rolloff() (7464c08c); 393",
   "new": "393",
   "at_to": [
    "if (hip_star_mgr.drawStar(frame.rolloff(),xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()])) {"
@@ -1998,7 +1998,7 @@
   "at_pin": [
    "//   - a '#' starts a comment that runs to the end of the line, anywhere on it;"
   ],
-  "reason": "the cited line stated the rule '#' starts a comment anywhere on the line; the grammar comment left (3c5952ad); line 16 at 9d461bd5 is COMMENT_CHAR, which grounds the character but not the anywhere; the rule is implemented in another file",
+  "reason": "the cited line stated the rule '#' starts a comment anywhere on the line; the grammar comment left (3c5952ad); line 16 at de42ac4d is COMMENT_CHAR, which grounds the character but not the anywhere; the rule is implemented in another file",
   "marker": "the grammar comment left the header, the rule lives in the reader"
  }
 ]

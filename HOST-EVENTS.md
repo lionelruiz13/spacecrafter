@@ -467,9 +467,9 @@ never rewrite (maintenance invariant). Archival per the standing convention
   (160.142 / 6.603, to the last digit), the eight NEW-path members are out (disc 148.724 vs 165.258,
   hf 8.377 vs 6.644; dwell frame md5 `a61b48cf` ≠ banked `5215565b`).** The environment is thereby
   PROVEN by the old path; the drift is CODE ON THE NEW PATH: the last green full run was 2026-09-18
-  22:23 on the binary of `7a37e3be`, 17 commits lie between it and `ee185d4f` (session 33's cleanup
-  `8ce65acc` / `78455b88`, `cfea62e7` *the field of view has one owner again*, `75a73e78`, `6c3d0ed6`,
-  `0bc9458d`, the prose passes, two video commits), and no full canary ran on any of them (F129's
+  22:23 on the binary of `7a37e3be`, 17 commits lie between it and `20ad3ef5` (session 33's cleanup
+  `8ce65acc` / `78455b88`, `cfea62e7` *the field of view has one owner again*, `75a73e78`, `47b348bf`,
+  `160b3e87`, the prose passes, two video commits), and no full canary ran on any of them (F129's
   acceptance says so). NOT re-banked, band NOT widened: routed as a CODE finding (§5 candidate at
   F131's acceptance) — the same class as the tester's item 5 if a fov-at-rest difference between the
   two engines is the cause; the executor measures both fovs. Field pair `03fbee59` / `545a51ef` in ==
@@ -499,7 +499,7 @@ never rewrite (maintenance invariant). Archival per the standing convention
   NOT re-banked; it is slice 5's gate and this run is its "before". Field pair `03fbee59` / `545a51ef`
   in == out; no engine left (`sc_instances.sh` 13:58:37).
   → **THE "AFTER", same boot, 20:31:41–20:33:28 [measured: supervisor, `20260927-203141`, on F138's binary
-  `39e769cf` = code `fe06d4c3`]: exit 0, 12/12 IN BAND — new path 165.26 / 6.647 on all four members (delta
+  `39e769cf` = code `0d151c8b`]: exit 0, 12/12 IN BAND — new path 165.26 / 6.647 on all four members (delta
   0.002 / 0.003 from the bank, a NOTE not gated), old path 160.142 / 6.603 delta 0.0. The drift of 09-26 was
   §5.186 (a free-mode `moveto` on a stale cached radius of the culled Moon), fixed by code, not by a re-bank:
   the band stands as banked on 2026-08-30. The photometric baseline of this corpus is comparable again.**
@@ -520,7 +520,7 @@ never rewrite (maintenance invariant). Archival per the standing convention
   command, `wayland-0`, session ids EQUAL (32 members both). (2) RE-BANK of the three per-boot members in
   one VALUES-block edit, the 09-27 values struck with the argument: `--no-scene` 13:51:36 `20261010-135136`
   **exit 0**. (3) FULL canary 13:51:38–13:53:24, `20261010-135138`, on the before-binary `fe5f0c24`
-  (= code `38ec7199`): **exit 0, 12/12 IN BAND — new path 165.26 / 6.647 on all four members (delta
+  (= code `2fccb470`): **exit 0, 12/12 IN BAND — new path 165.26 / 6.647 on all four members (delta
   0.002 / 0.003 from the bank, the 09-27 20:31 NOTE again), old path 160.142 / 6.603 delta 0.0**; dwell
   frame md5 `321853ac` (≠ banked `5215565b`, ≠ 09-27's `71096cd7`; recorded, never gated); NOTE
   `cache.mutated` (1 file). The boot is GREEN on the baseline the round's first code task (F143) compares
@@ -539,7 +539,7 @@ never rewrite (maintenance invariant). Archival per the standing convention
   stable host property. A supervisor derived 512 and 144 from the config at F160's mint and both bands failed on the
   first run: the config is not the instrument (Q-89's class, the text consumed as the thing).
 - 2026-10-17 10:13–10:14 [measured: supervisor, session 48 (Claude Fable 5.1), the F160 leg on binary `c1944927` = code
-  `17f99498`, run `harness/artifacts/f160/rv2_off`, start 10:13:17] **SWAPCHAIN ACQUIRE AT 1 Hz FOR A WHOLE RUN, SCREEN
+  `4213d4e8`, run `harness/artifacts/f160/rv2_off`, start 10:13:17] **SWAPCHAIN ACQUIRE AT 1 Hz FOR A WHOLE RUN, SCREEN
   NOT BLANKED.** `vkAcquireNextImageKHR` (20 ms timeout, `app.cpp:803-813`: `App::draw` returns, nothing drawn) timed out
   on nearly every iteration from 10.6 s to the end: **43** `Timeout for swapchain acquire` WARNINGs one second apart in
   that launch's vulkan log (`vulkan.2.log` at 10:14:11, before later launches rotated it; the flag re-arms at each

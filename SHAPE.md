@@ -165,9 +165,9 @@ the gradient stands as a direction, its numbers as pre-fix.]
   every mint and acceptance) -> `claude` / `fable`; the split above is the common case
   (`fable-dispatch.md` section 0b (a) has the rule and the record it was tested on).
 
-## 7. State at the close of session 33 (code branch `main` @ `6c3d0ed6`; `a594b31a` and below pushed by the owner, `6c3d0ed6` not pushed)
+## 7. State at the close of session 33 (code branch `main` @ `47b348bf`; `a594b31a` and below pushed by the owner, `47b348bf` not pushed)
 The code branch is `main` since 2026-09-19 (owner; `master-beta` stays where it stood). The reference-change fix of
-11.258 is ON `main` (`6c3d0ed6`, gate `harness/s33_refchange.py` ALL PASS on the main-tree binary). Both trees and
+11.258 is ON `main` (`47b348bf`, gate `harness/s33_refchange.py` ALL PASS on the main-tree binary). Both trees and
 `~/shared` are shared between OS users `claude` and `foxy` through group `claude`: group-writable, setgid directories,
 `core.sharedRepository=group` (11.260) - if a file is not writable, fix the cause and report it, never work around it.
 After any history rewrite by the owner (`supervised-by.sh`): re-read HEADs, resolve old shas through `sha-maps/`.
@@ -188,7 +188,7 @@ the dual-writer seams B42 reshapes; four points are NOT ruled: `DECISIONS_PENDIN
 -> **B43** duplication inside the new path -> **B46** shape numbers assembled by a script.
 Sessions COMMIT in their own name and NEVER PUSH.
 
-### 7b. After session 34 (2026-09-20; code `main` @ `6c3d0ed6` UNCHANGED - record `INTENT/11.264.md`)
+### 7b. After session 34 (2026-09-20; code `main` @ `47b348bf` UNCHANGED - record `INTENT/11.264.md`)
 - **B45 has its instruments.** Item (1): `harness/f124_run.sh` (generic FIFO runner) + `f124_legs.py`, legs Z / L /
   A / M / D on both pinned paths, a 60-row coverage map in `INTENT/11.261.md`. Item (2): the predicted-red gates
   run and classified (`INTENT/11.263.md`); `f125_constants.py` is where a gate reads his constants from; NEVER
@@ -249,8 +249,8 @@ Sessions COMMIT in their own name and NEVER PUSH.
   tully / what legacy inUniverse draws. The chain still needs a SUPERSESSION rule (nearest owner of
   a family draws; ancestors silent) - the old modes gave it for free. His to rule, with the rest.
 
-### 7d. After the dispatch round of 2026-09-21 (record `INTENT/11.270.md`; code `main` @ `0bc9458d`, NOT pushed)
-- FIRST CODE CHANGE MADE UNDER 11.265's LESSONS, one commit: `0bc9458d` - a member owned by a body above the current
+### 7d. After the dispatch round of 2026-09-21 (record `INTENT/11.270.md`; code `main` @ `160b3e87`, NOT pushed)
+- FIRST CODE CHANGE MADE UNDER 11.265's LESSONS, one commit: `160b3e87` - a member owned by a body above the current
   system receives its OWNER's matrix (B47 slice 1, his ruling 11.265(n)); code +11 -8, one header comment line made
   true again; identical while every `re` is zero, the tilt precondition GONE. Entry `INTENT/11.268.md`.
 - THE IDENTITY INSTRUMENT EXISTS FOR ONE LAYER: `bash harness/f128_leg.sh SOL|GAL|TILT [--expect owner|system]`

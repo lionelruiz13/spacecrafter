@@ -1,8 +1,8 @@
 # INTENT §11.267
 
-CHECKPOINT (F128 executor, 2026-09-21 11:10): gate 23 PASS / 0 FAIL at code `main` @ `6c3d0ed6`, harness `CC-harness` @ `1207e09`, binary md5 `13910b38`. Reading order (1)-(8) done. PREDICTIONS WRITTEN BELOW, NO LAUNCH YET. Next: the minimal `f124_run.sh` extension (output root), the driver `harness/f128_legs.py`, the `--no-scene` canary, then the first launch (a scene probe, not a verdict).
+CHECKPOINT (F128 executor, 2026-09-21 11:10): gate 23 PASS / 0 FAIL at code `main` @ `47b348bf`, harness `CC-harness` @ `5493045`, binary md5 `13910b38`. Reading order (1)-(8) done. PREDICTIONS WRITTEN BELOW, NO LAUNCH YET. Next: the minimal `f124_run.sh` extension (output root), the driver `harness/f128_legs.py`, the `--no-scene` canary, then the first launch (a scene probe, not a verdict).
 
-## PREDICTIONS - written from the code at `6c3d0ed6` BEFORE the first launch (mandate item 1)
+## PREDICTIONS - written from the code at `47b348bf` BEFORE the first launch (mandate item 1)
 
 Read for them, in full: `EnvironmentManager.cpp`; `MilkyWayEnv.cpp` / `.hpp`; `milkyway.cpp:187-300` (`draw`, both `drawEnv`); `ModularBody.cpp:239-302` (`recursiveUpdate`, `dispatchUpdate`); `ModularBody.hpp:343-469` (the frame hops, `computeBodyPosToBody`, the two `accumulated*`); `Camera.cpp:82-96` (`viewMat`) and `:425-455` (the `dispatchUpdate` call); `ModularSystem.cpp:139-143` (constructor: `isNotIsolated = false`) and `:561-583` (`drawSystem`); `ssystem_factory.cpp:77-110, 295-311, 629-647, 820-824`; `solarSystemModule.cpp:125-237`; `inGalaxyModule.cpp:44-160`; `coreLink.cpp:560-575`; `rotation_elements.hpp`.
 

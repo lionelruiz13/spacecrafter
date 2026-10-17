@@ -10,11 +10,11 @@
       COST: template policy (free) for the star field, the interface for the eight other layers (< 50 us, ~90
       declarations, Projector implementing it); the star field alone closes row 5 but leaves the constellation LINES
       behind their stars -> both steps in one delivery (my default) or the star field first; FIVE NAMES yours.
-      F136 LANDED (code 38ec7199: the reader, the readouts, the leak - no drawn change); F140 waits on this.
+      F136 LANDED (code 2fccb470: the reader, the readouts, the leak - no drawn change); F140 waits on this.
   H6 MEASURED after F136: a key tap during a timed zoom now rests the Camera at ITS OWN value (the jump gone, the
       rest gap 23 -> 36 deg; a step AGAINST the plan re-times it to 36.75 s through the never-reached branch) -
       the ONE open item on the key-zoom line; F136 is one commit to revert if you want the tap kept as it was.
-  SLICE 5 LANDED (code 4e2aa736 + fe06d4c3): the canary's new arm back in band on the boot it was red, by code.
+  SLICE 5 LANDED (code 618cf046 + 0d151c8b): the canary's new arm back in band on the boot it was red, by code.
   Q-F (NEW): where does the SENDER get the immediate-movement law — R1 the Camera's (your words; the 5.184 class in
       relative form on the old observer) · R2 each engine on its own (the old has none: old pin unchanged) · R3 through
       the B42 gate, two implementations (my default; F133 argued it from the code; B44 = B42's first client).

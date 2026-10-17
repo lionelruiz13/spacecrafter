@@ -1,4 +1,4 @@
-# F126 - the request surface, derived from the code at `main` @ `6c3d0ed6` BEFORE reading INTENT 11.254(d)
+# F126 - the request surface, derived from the code at `main` @ `47b348bf` BEFORE reading INTENT 11.254(d)
 
 Written 2026-09-20 by the F126 executor while the 12 table rows of 11.254(d) and the `seam` / `services`
 harvest sections were still unread (derivation-diff order). Sources: `camera_writes_outside.tsv` (54 Camera

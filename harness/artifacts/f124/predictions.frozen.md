@@ -5,12 +5,12 @@ CHECKPOINT (F124 executor; update these lines at every checkpoint - the successo
 - next: freeze the predictions copy -> coverage map -> build `harness/f124_legs.py` + `f124_run.sh` by extending the b21 pattern -> `--no-scene` canary -> able-to-fail per leg -> trusted runs.
 - files written so far: this file only. Nothing committed, nothing built, nothing under `src/` touched.
 
-261. **F124 - THE INPUT PATH'S INSTRUMENT (row B45 item (1) as extended by §11.257(c)(5)).** (2026-09-20, Claude Fable 5.1, executor of F124 under session 34; code `main` @ `6c3d0ed6`, binary md5 `13910b38`, harness `CC-harness` @ `b01a672`. HARNESS ONLY: nothing under `src/` edited, nothing built, nothing committed by the executor.)
+261. **F124 - THE INPUT PATH'S INSTRUMENT (row B45 item (1) as extended by §11.257(c)(5)).** (2026-09-20, Claude Fable 5.1, executor of F124 under session 34; code `main` @ `47b348bf`, binary md5 `13910b38`, harness `CC-harness` @ `5f341af`. HARNESS ONLY: nothing under `src/` edited, nothing built, nothing committed by the executor.)
 
 ## (P) PREDICTIONS - written from the code at HEAD BEFORE ANY LAUNCH
 
 Frozen copy (mtime evidence for discriminating check (a)): `harness/artifacts/f124/predictions.frozen.md`.
-Every law below was READ at `6c3d0ed6`, file and line beside it. Magnitudes are arithmetic on those laws
+Every law below was READ at `47b348bf`, file and line beside it. Magnitudes are arithmetic on those laws
 (the command that produced them is in the executor's report); the scene is the b21 one: a synthetic
 body `DescB radius 6000` (km), so R = 6000 km and the floor 0.125 R = 750 km. R is RE-READ from the
 dump at run time; the predictions are stated in R so that a different scaled radius re-scales them.

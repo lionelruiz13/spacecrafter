@@ -641,10 +641,10 @@ notes.*
 ## 6. Journal (append-only)
 
 - **[2026-10-17b] The screen_record note reads the engine's consumed time again, both
-  halves, at `main @ cc0841d2`.** Supervisor's own edit (Claude Fable 5.1, session 48),
-  grammar commit `ee3dd0ac`. The owner ruled the same day that the script fast-forward is
+  halves, at `main @ a6114395`.** Supervisor's own edit (Claude Fable 5.1, session 48),
+  grammar commit `4005fb6a`. The owner ruled the same day that the script fast-forward is
   as-if the time elapsed faster for everything the frame does; the engine's frame loop now
-  applies the multiplier once for the update and the draw (`cc0841d2`), so `body.notes[6]`'s
+  applies the multiplier once for the update and the draw (`a6114395`), so `body.notes[6]`'s
   dt clause of the morning ("the frame's delta_time as the draw received it - a script
   fast-forward multiplies the update's dt, not this one") is replaced by "the engine's
   consumed time of the frame in ms - the script fast-forward applied once by the frame loop
@@ -654,13 +654,13 @@ notes.*
   the two existing Why lines passed back + one; gate exit 0; ctest 19 / 19. Parent
   **INTENT 11.340** update 2 and (h); this line indexes it.
 - **[2026-10-17] The screen_record notes follow the owner's review correction, both
-  halves, at `main @ 17f99498`.** Supervisor's own edit (Claude Fable 5.1, session 48),
-  grammar commit `ee49d67f`. `body.notes[6]`: the F line's dt is the frame's
+  halves, at `main @ 4213d4e8`.** Supervisor's own edit (Claude Fable 5.1, session 48),
+  grammar commit `6a85f1f8`. `body.notes[6]`: the F line's dt is the frame's
   `delta_time` as the draw received it (a script fast-forward multiplies the update's
   dt, not it); the record is written at the end of `SSystemFactory::draw`, so
   `in_galaxy` / `in_universe` write no line; citation `ssystem_factory.cpp:629-638,
-  1029-1037, 1041-1066 @ 17f99498` (the old `:665`, the dt sum, is gone from the
-  engine). `state.notes` re-anchored `:1018-1028 @ 17f99498` (recordScreen lost its
+  1029-1037, 1041-1066 @ 4213d4e8` (the old `:665`, the dt sum, is gone from the
+  engine). `state.notes` re-anchored `:1018-1028 @ 4213d4e8` (recordScreen lost its
   reset line). Gate before the record: counts only (clean 6301 -> 6316, moved
   997 -> 982, no GONE); `--record --why` with the existing line passed back + one new;
   gate after exit 0; ctest 19 / 19. Parent **INTENT 11.340** holds the derivation;
@@ -678,7 +678,7 @@ notes.*
   with its argument; no record gate prints a new word, so no other record
   moved. Parent **INTENT 11.332** holds the derivation and the measurements;
   this line indexes it.
-- **[2026-10-14b] The anchors resolve at one pin again, `main @ 9d461bd5`, and
+- **[2026-10-14b] The anchors resolve at one pin again, `main @ de42ac4d`, and
   the gate now sees all three pointer classes.** Dispatch task F158
   (`claude/fable-dispatch.md`), executor run; nothing committed by the executor.
   Every `file:line` outside `_meta` re-resolved by content in all six contract

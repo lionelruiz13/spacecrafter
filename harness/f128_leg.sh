@@ -16,7 +16,7 @@
 #   run    (default) a fresh capture per pin: old against new, and each against the stored
 #          reference of the SAME pin (before / after a code change). Exit 0 = every check PASS.
 # TILT: run = the new pin judged under --expect, the old pin as control (2 launches);
-#       able = the poke withheld (must FAIL). `--expect owner` is red at 6c3d0ed6 by prediction.
+#       able = the poke withheld (must FAIL). `--expect owner` is red at 47b348bf by prediction.
 set -u
 umask 0002
 HERE="$(cd "$(dirname "$0")" && pwd)"

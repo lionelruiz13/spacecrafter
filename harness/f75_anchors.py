@@ -719,11 +719,11 @@ import anchor_gate as AG                                   # noqa: E402
 
 ROUNDS = {
     "f158": dict(
-        to="9d461bd5", label="main @ 9d461bd5",
+        to="de42ac4d", label="main @ de42ac4d",
         out=os.path.join(OUT, "f158"),
         read_table=os.path.join(OUT, "read_table_f158.json"),
         amended=(
-            "2026-10-14 (F158): the anchor pin MOVES to main @ 9d461bd5 (from "
+            "2026-10-14 (F158): the anchor pin MOVES to main @ de42ac4d (from "
             "master-beta @ b45d3b58; ss-grammar.json from master-beta @ 8d41fbe3), "
             "the same commit for every pointer class in the six contract files: every "
             "`file:line` reference outside `_meta` re-resolved by content, the ones "
