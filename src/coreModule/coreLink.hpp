@@ -899,6 +899,10 @@ public:
 	void atmosphericRefractionSetFlag(bool b);
 	//! Get flag for activating atmospheric refraction correction
 	bool atmosphericRefractionGetFlag() const;
+	//! Set flag for activating velocity-dependent light aberration
+	void lightAberrationSetFlag(bool b);
+	//! Get flag for activating velocity-dependent light aberration
+	bool lightAberrationGetFlag() const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Navigation -------------

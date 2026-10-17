@@ -469,6 +469,16 @@ bool CoreLink::atmosphericRefractionGetFlag() const {
 	return core->FlagAtmosphericRefraction;
 }
 
+//! Set flag for activating velocity-dependent light aberration
+void CoreLink::lightAberrationSetFlag(bool b) {
+	core->FlagLightAberration = b;
+}
+
+//! Get flag for activating velocity-dependent light aberration
+bool CoreLink::lightAberrationGetFlag() const {
+	return core->FlagLightAberration;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Time---------------------------
 ////////////////////////////////////////////////////////////////////////////////

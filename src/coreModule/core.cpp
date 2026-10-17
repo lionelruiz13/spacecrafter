@@ -326,6 +326,7 @@ void Core::init(const InitParser& conf)
 	flagAstronomical = conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
 	setFlagAstronomical(flagAstronomical);
 	FlagAtmosphericRefraction = conf.getBoolean(SCS_VIEWING,SCK_FLAG_ATMOSPHERIC_REFRACTION);
+	FlagLightAberration = conf.getBoolean(SCS_VIEWING, SCK_FLAG_LIGHT_ABERRATION);
 
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);
 	currentIlluminates.applyToAll(&IlluminateMgr::setDefaultSize, conf.getDouble(SCS_STARS, SCK_ILLUMINATE_SIZE));
@@ -1631,6 +1632,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_TROPIC_LINES, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, currentSsystemFactory->getFlagMoonScale());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, currentSsystemFactory->getFlagSunScale());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_LIGHT_ABERRATION, FlagLightAberration);
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_INTENSITY, currentAsterisms->getArtIntensity());
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_FADE_DURATION, currentAsterisms->getArtFadeDuration());
 	conf.setDouble(SCS_VIEWING, SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE, getLightPollutionLimitingMagnitude());
