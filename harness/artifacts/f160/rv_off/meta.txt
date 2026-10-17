@@ -1,0 +1,24 @@
+=== F124 run '../f160/rv_off' ===
+wall clock start : 2026-10-17 09:58:51 CEST
+driver           : f125_adapt.py f160_leg.py --pin off
+driver md5       : 11d2417070e847e75d4fadf66e5387b5
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : c19449277f7a11c5be95e388c6290e58
+binary mtime     : 2026-10-17 09:54:11.646741450 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[../f160/rv_off] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[../f160/rv_off] gpu: free 74 MiB / used 32033 / total 32607 ; need 6144 MiB (Sec.11.238)
+[../f160/rv_off] NOT ENOUGH GPU MEMORY TO LAUNCH -- free 74 MiB against a need of 6144 MiB
+[../f160/rv_off] the holders, NOT unloaded (Sec.11.174(h) -- an environment fault is reported, never mitigated here):
+    13193    C       30104 MiB  uid 997   ollama     /usr/local/lib/ollama/llama-server
+    39193    C+G       572 MiB  uid 1003  claude     /usr/libexec/gnome-remote-desktop-daemon
+    7433     G         397 MiB  uid 1000  foxy       /usr/bin/gnome-shell
+    45686    G         202 MiB  uid 1000  foxy       /opt/Pulsar/pulsar --type=gpu-process --field-trial-handle=1373838826335630638
+    136594   G         196 MiB  uid 1000  foxy       /snap/firefox/9057/usr/lib/firefox/firefox
+    38598    G         142 MiB  uid 1003  claude     /usr/bin/gnome-shell
+    9458     G          92 MiB  uid 1000  foxy       /snap/discord/314/usr/share/discord/Discord --type=gpu-process --disable-secco
+    129394   C+G        54 MiB  uid 1000  foxy       /usr/bin/nautilus
+    8078     G           8 MiB  uid 1000  foxy       /usr/bin/Xwayland
+    39253    G           8 MiB  uid 1003  claude     /usr/bin/Xwayland
+[../f160/rv_off] the application allocates 512 + 160 + 1280 MiB dedicated and then a 256 MiB chunk before any window exists; on 2026-09-12 it died at that chunk with 1591 MiB available (HOST-EVENTS 2026-09-12).
+ABORT: not enough GPU headroom to launch

@@ -1,0 +1,85 @@
+=== F160 leg, pin off, out /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off, drive + judge ===
+>> date jday 2461233.5
+>> timerate rate 0
+>> flag experimental_path off
+>> zoom fov 180 duration 0
+>> body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off/rest.tsv
+>> body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off/zoom.tsv
+>> zoom fov 20 duration 3
+>> body action screen_record state off
+>> body action screen_record
+>> body action screen_record state on
+>> body action screen_record state maybe filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off/none.tsv
+>> body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off/no_such_dir/none.tsv
+>> body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off/keep.tsv
+>> body action screen_record state on
+>> body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off/no_such_dir/none2.tsv
+>> zoom fov 90 duration 0
+>> body action screen_record state off
+>> zoom fov 180 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off/end.json
+NOTE sentinel end.json 1144532 bytes after 1.0 s
+>> shutdown action now
+NOTE field: 90 body names in ~/.spacecrafter/ssystem.ini
+PASS rest_header  4 '#' lines; first three = 11.333 (d)'s tokens; viewport line {'projector': (1024.0, 1024.0, 1024.0), 'renderer': (1024.0, 1024.0, 1024.0), 'scissor': (0.0, 0.0, 2048.0, 2048.0)}
+PASS rest_grammar  3 F lines, 0 line(s) out of the grammar
+PASS rest_frames_consecutive  first 0 last 2, breaks []
+PASS rest_dt_positive  dt min 21 max 21; dt <= 0 at []
+PASS rest_fps_under_cap  frames / sum(dt) = 3 / 63 ms = 47.62 fps (cap 144; the cadence is the host's)
+PASS rest_names  204 B lines, 37 distinct names; not in ssystem.ini: []
+PASS rest_pos_within_antipode  |pos| <= pi / half-fov of its engine; beyond: none
+PASS rest_size_positive  size <= 0: []
+PASS rest_unique_per_frame  (frame, engine, name) twice: []
+PASS rest_drawn_is_the_pin  drawn field ['o'] (expected o); engines in B lines ['n', 'o']
+PASS rest_both_engines_every_frame  frames lacking an o or an n line: 0 []
+NOTE rest engine n: 32 bodies, 32-32 per frame: Daphnis Despina Dione Earth Enceladus Epimetheus Galatea Halimede Helene Hyperion Iapetus Janus Laomedeia Larissa Mimas Naiad Neptune Neried Neso Pan Pandora Prometheus Proteus Psamathe Rhea Sao Saturn Telesto Tethys Thalassa Titan Triton
+NOTE rest engine o: 36 bodies, 36-36 per frame: Charon Daphnis Despina Dione Enceladus Epimetheus Galatea Halimede Helene Hydra_ Hyperion Iapetus Janus Kerberos Laomedeia Larissa Mimas Naiad Neptune Neried Neso Nix Pan Pandora Prometheus Proteus Psamathe Rhea Sao Saturn Styx Telesto Tethys Thalassa Titan Triton
+PASS zoom_header  4 '#' lines; first three = 11.333 (d)'s tokens; viewport line {'projector': (1024.0, 1024.0, 1024.0), 'renderer': (1024.0, 1024.0, 1024.0), 'scissor': (0.0, 0.0, 2048.0, 2048.0)}
+PASS zoom_grammar  5 F lines, 0 line(s) out of the grammar
+PASS zoom_frames_consecutive  first 0 last 4, breaks []
+PASS zoom_dt_positive  dt min 21 max 21; dt <= 0 at []
+PASS zoom_fps_under_cap  frames / sum(dt) = 5 / 105 ms = 47.62 fps (cap 144; the cadence is the host's)
+PASS zoom_names  72 B lines, 37 distinct names; not in ssystem.ini: []
+PASS zoom_pos_within_antipode  |pos| <= pi / half-fov of its engine; beyond: none
+PASS zoom_size_positive  size <= 0: []
+PASS zoom_unique_per_frame  (frame, engine, name) twice: []
+PASS zoom_drawn_is_the_pin  drawn field ['o'] (expected o); engines in B lines ['n', 'o']
+NOTE zoom engine n: 32 bodies, 1-32 per frame: Daphnis Despina Dione Earth Enceladus Epimetheus Galatea Halimede Helene Hyperion Iapetus Janus Laomedeia Larissa Mimas Naiad Neptune Neried Neso Pan Pandora Prometheus Proteus Psamathe Rhea Sao Saturn Telesto Tethys Thalassa Titan Triton
+NOTE zoom engine o: 36 bodies, 0-36 per frame: Charon Daphnis Despina Dione Enceladus Epimetheus Galatea Halimede Helene Hydra_ Hyperion Iapetus Janus Kerberos Laomedeia Larissa Mimas Naiad Neptune Neried Neso Nix Pan Pandora Prometheus Proteus Psamathe Rhea Sao Saturn Styx Telesto Tethys Thalassa Titan Triton
+PASS keep_header  4 '#' lines; first three = 11.333 (d)'s tokens; viewport line {'projector': (1024.0, 1024.0, 1024.0), 'renderer': (1024.0, 1024.0, 1024.0), 'scissor': (0.0, 0.0, 2048.0, 2048.0)}
+PASS keep_grammar  5 F lines, 0 line(s) out of the grammar
+PASS keep_frames_consecutive  first 0 last 4, breaks []
+PASS keep_dt_positive  dt min 21 max 21; dt <= 0 at []
+PASS keep_fps_under_cap  frames / sum(dt) = 5 / 105 ms = 47.62 fps (cap 144; the cadence is the host's)
+PASS keep_names  5 B lines, 1 distinct names; not in ssystem.ini: []
+PASS keep_pos_within_antipode  |pos| <= pi / half-fov of its engine; beyond: none
+PASS keep_size_positive  size <= 0: []
+PASS keep_unique_per_frame  (frame, engine, name) twice: []
+PASS keep_drawn_is_the_pin  drawn field ['o'] (expected o); engines in B lines ['n']
+NOTE keep engine n: 1 bodies, 1-1 per frame: Earth
+PASS refused_file_absent  none.tsv must not exist
+PASS rest_still  max frame-to-frame |dx|,|dy|,|dsize| <= 1e-06 over 68 bodies x engines; above: 
+PASS rest_present_every_frame  bodies not in every frame: 
+PASS zoom_fov_span  first / last fov_old 180 / 20 deg, half_fov_new 1.57079637 / 0.17453292 rad (expected 180 / 20, pi/2 / pi/18)
+PASS zoom_no_frozen_n  bodies whose x, y AND size stay bit-identical across a frame pair where their engine's fov changed (stale screen values), frozen pairs / fov-changing pairs: 
+PASS zoom_size_x_fov_n  spread <= 0.001; above: []
+PASS zoom_pos_nondecreasing_n  |pos| decreased while the fov shrank: []
+NOTE zoom n Earth c 3.14159 spread 9.09e-08 |pos| 2->18 maxdec -0.461
+FAIL zoom_law_on_spans_n  the same law on every body's own present run (>= 5 shrinking pairs, none frozen): 0 runs, failing []
+PASS zoom_no_frozen_o  bodies whose x, y AND size stay bit-identical across a frame pair where their engine's fov changed (stale screen values), frozen pairs / fov-changing pairs: 
+NOTE zoom_whole_zoom_o not reached: 0 bodies present in all 5 frames, 4 shrinking pairs
+FAIL zoom_law_on_spans_o  the same law on every body's own present run (>= 5 shrinking pairs, none frozen): 0 runs, failing []
+PASS sentinel  end.json header parsed, gates {'viewportRadius': 1024, 'px': {'early': 2, 'full': 16, 'bigTexture': 256}, 'screenSize': {'early': 0.0009765625, 'full': 0.0078125, 'bigTexture': 0.125}}
+PASS viewport_agree  sentinel / renderer / projector radius (1024, 1024.0, 1024.0), centers ((1024.0, 1024.0), (1024.0, 1024.0)), scissor (0.0, 0.0, 2048.0, 2048.0): one disc, centered, filling the render rect
+NOTE viewport radius sentinel / renderer / projector = (1024, 1024.0, 1024.0), centers projector / renderer = ((1024.0, 1024.0), (1024.0, 1024.0)), scissor (0.0, 0.0, 2048.0, 2048.0) (the render rect is the host's, not the config's screen_w: 2048 here for screen_w 1024)
+PASS refusals_logged  script.log occurrences {'no_state': 1, 'no_filename': 2, 'bad_value': 1, 'no_open': 2} (expected no_state >= 1, no_filename >= 2 and no_open >= 2 with the keep phase's, bad_value >= 1 (sent))
+PASS unopenable_creates_nothing  the engine did not create the missing directory
+NOTE log line: 000000035499: (Debug): Error executing tcp#1: body action screen_record #! command 'body screen_record' : missing state
+NOTE log line: 000000036747: (Debug): Error executing tcp#1: body action screen_record state on #! command 'body screen_record' : missing filename
+NOTE log line: 000000038002: (Debug): Error executing tcp#1: body action screen_record state maybe filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off/none.tsv #! command 'body screen_record' : unknown state value
+NOTE log line: 000000039233: (Debug): Error executing tcp#1: body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv2_off/no_such_dir/none.tsv #! command 'body screen_record' : cannot open /home/claude/spacec
+PASS record_untouched_by_refusals  rest.tsv / zoom.tsv (size, mtime) before {'rest.tsv': [11019, 1792224826.9664197], 'zoom.tsv': [4229, 1792224831.976372]} after {'rest.tsv': [11019, 1792224826.9664197], 'zoom.tsv': [4229, 1792224831.976372]} the three refusals
+PASS record_runs_across_refusal  keep.tsv: 4 frames at fov [20.0] then 1 at fov 90 - the fov 90 command came AFTER the two refused `state on` (missing filename, unopenable file)
+FAIL ring_crosscheck  rest.tsv's 3 F lines (dt, jd, fov_old, half_fov_new) found as a contiguous run of the ring's 1938 steps at [506, 507, 508] (ring frames [506, 507, 508])
+FAIL cost_ratio  windows under 1.5 s: on 0 frames, off 153 frames
+=== 4 FAIL: ['zoom_law_on_spans_n', 'zoom_law_on_spans_o', 'ring_crosscheck', 'cost_ratio'] ===

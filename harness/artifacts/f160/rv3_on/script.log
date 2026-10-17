@@ -1,0 +1,36 @@
+000000010212: (Info ): ScriptMgr: script end
+000000010529: (Info ): End of loading SC
+000000010554: (Info ): ScriptMgr: script end
+000000010555: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000010555: (Info ): Execute_command deselect
+000000010555: (Info ): Execute_command deselect
+000000010555: (Info ): Execute_command timerate rate 1
+000000010555: (Info ): Execute_command flag subtitle off
+000000010555: (Info ): End of script
+000000010555: (Info ): Execute_command script action end
+000000010555: (Info ): ScriptMgr: script end
+000000019870: (Info ): Execute_command date jday 2461233.5
+000000021118: (Info ): Execute_command timerate rate 0
+000000022370: (Info ): Execute_command flag experimental_path on
+000000023620: (Info ): Execute_command zoom fov 180 duration 0
+000000025870: (Info ): Execute_command body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/rest.tsv
+000000029119: (Info ): Execute_command body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/zoom.tsv
+000000029970: (Info ): Execute_command zoom fov 20 duration 3
+000000034219: (Info ): Execute_command body action screen_record state off
+000000035470: (Info ): Execute_command body action screen_record
+000000035470: (Debug): Error executing tcp#1: body action screen_record #! command 'body screen_record' : missing state
+000000036720: (Info ): Execute_command body action screen_record state on
+000000036720: (Debug): Error executing tcp#1: body action screen_record state on #! command 'body screen_record' : missing filename
+000000037970: (Info ): Execute_command body action screen_record state maybe filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/none.tsv
+000000037970: (Debug): Error executing tcp#1: body action screen_record state maybe filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/none.tsv #! command 'body screen_record' : unknown state value
+000000039219: (Info ): Execute_command body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/no_such_dir/none.tsv
+000000039219: (Debug): Error executing tcp#1: body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/no_such_dir/none.tsv #! command 'body screen_record' : cannot open /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/no_such_dir/none.tsv
+000000040470: (Info ): Execute_command body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/keep.tsv
+000000041721: (Info ): Execute_command body action screen_record state on
+000000041721: (Debug): Error executing tcp#1: body action screen_record state on #! command 'body screen_record' : missing filename
+000000042970: (Info ): Execute_command body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/no_such_dir/none2.tsv
+000000042970: (Debug): Error executing tcp#1: body action screen_record state on filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/no_such_dir/none2.tsv #! command 'body screen_record' : cannot open /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/no_such_dir/none2.tsv
+000000044219: (Info ): Execute_command zoom fov 90 duration 0
+000000045471: (Info ): Execute_command body action screen_record state off
+000000046726: (Info ): Execute_command zoom fov 180 duration 0
+000000050975: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f160/rv3_on/end.json

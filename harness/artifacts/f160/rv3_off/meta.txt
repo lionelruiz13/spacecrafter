@@ -1,0 +1,36 @@
+=== F124 run '../f160/rv3_off' ===
+wall clock start : 2026-10-17 10:18:11 CEST
+driver           : f125_adapt.py f160_leg.py --pin off
+driver md5       : 11d2417070e847e75d4fadf66e5387b5
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : c19449277f7a11c5be95e388c6290e58
+binary mtime     : 2026-10-17 09:54:11.646741450 +0200
+display          : DISPLAY=:2  dimensions: 2444x1332 pixels (646x352 millimeters)
+[../f160/rv3_off] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+[../f160/rv3_off] gpu: free 30041 MiB / used 2066 / total 32607 ; need 6144 MiB (Sec.11.238)
+config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+gdb pid=181293
+launch wall clock: 2026-10-17 10:18:11 CEST
+tcp up after 6x2s
+engine pid(s) under gdb: 181310 
+--- host load, before the driver ---
+$ nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader
+6349 MiB, 32607 MiB
+$ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              59          19          13           1          27          39
+Swap:              0           0           0
+adapted driver   : f160_leg.py --pin off (md5 add2e55133157be8e5bc7ee5bf9ca8a6)
+--- host load, after the driver ---
+$ nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader
+2036 MiB, 32607 MiB
+$ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              59          12          20           0          27          46
+Swap:              0           0           0
+driver exit=0
+config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+[../f160/rv3_off-after] no spacecrafter engine: 0 hits by comm, exe and port 7805 (Sec.11.238)
+wall clock end   : 2026-10-17 10:19:14 CEST

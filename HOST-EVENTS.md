@@ -538,3 +538,20 @@ never rewrite (maintenance invariant). Archival per the standing convention
   sentinel agree) for `screen_w = screen_h = 1024` — F131's dumps of 10-13 already read `viewportRadius` 1024; a
   stable host property. A supervisor derived 512 and 144 from the config at F160's mint and both bands failed on the
   first run: the config is not the instrument (Q-89's class, the text consumed as the thing).
+- 2026-10-17 10:13–10:14 [measured: supervisor, session 48 (Claude Fable 5.1), the F160 leg on binary `c1944927` = code
+  `17f99498`, run `harness/artifacts/f160/rv2_off`, start 10:13:17] **SWAPCHAIN ACQUIRE AT 1 Hz FOR A WHOLE RUN, SCREEN
+  NOT BLANKED.** `vkAcquireNextImageKHR` (20 ms timeout, `app.cpp:803-813`: `App::draw` returns, nothing drawn) timed out
+  on nearly every iteration from 10.6 s to the end: **43** `Timeout for swapchain acquire` WARNINGs one second apart in
+  that launch's vulkan log (`vulkan.2.log` at 10:14:11, before later launches rotated it; the flag re-arms at each
+  success, so one WARNING = one starvation episode = one drawn frame per second). The UPDATES ran on: the seam ring 1938
+  steps, 1000 / 21 ms = 47.6 per second (each iteration spent the 20 ms timeout), NO `Frame stall` (the watchdog measures
+  updates). The record saw it as 3 / 5 / 5 drawn frames per phase, every dt = 21 ms, both engines on each (the record
+  itself correct). State read at 10:2x on the claude session: `ScreenSaver.GetActive` false, `idle-delay` **0** (the
+  08-31 trigger — screensaver active — is OFF on this host now), `IdleHint` / `LockedHint` no; the user journal holds one
+  line in 10:05–10:20; the TRIGGER IS UNIDENTIFIED. Discriminating control at 10:18:11 (`rv3_off`, same binary, same
+  pin): 1 benign startup timeout, 195 F lines at 60.00 fps, ring cross-check PASS, leg 0 FAIL; `rv2_on` (10:10) and
+  `rv3_on` (10:19) clean too. Class = the 2026-08-31 entry's compositor-side throttling of the `:2` output, a SECOND
+  manifestation (draw starvation under a live update loop, not 1000 ms stalls). CONSEQUENCE: a leg whose frame counts
+  fail with every F line at dt ≈ 21 reads the launch's vulkan log for the acquire WARNINGs before blaming the binary;
+  `f124_run.sh` carries no probe for this state (the F67 wake step lives in `f67_tcp_live.py` only, moot at
+  `idle-delay` 0) — candidate: count the WARNINGs at the run's close and print a NOTE naming the starvation.

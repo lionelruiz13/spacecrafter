@@ -640,6 +640,18 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-10-17] The screen_record notes follow the owner's review correction, both
+  halves, at `main @ 17f99498`.** Supervisor's own edit (Claude Fable 5.1, session 48),
+  grammar commit `ee49d67f`. `body.notes[6]`: the F line's dt is the frame's
+  `delta_time` as the draw received it (a script fast-forward multiplies the update's
+  dt, not it); the record is written at the end of `SSystemFactory::draw`, so
+  `in_galaxy` / `in_universe` write no line; citation `ssystem_factory.cpp:629-638,
+  1029-1037, 1041-1066 @ 17f99498` (the old `:665`, the dt sum, is gone from the
+  engine). `state.notes` re-anchored `:1018-1028 @ 17f99498` (recordScreen lost its
+  reset line). Gate before the record: counts only (clean 6301 -> 6316, moved
+  997 -> 982, no GONE); `--record --why` with the existing line passed back + one new;
+  gate after exit 0; ctest 19 / 19. Parent **INTENT 11.340** holds the derivation;
+  this line indexes it.
 - **[2026-10-14c] The ten spellings the engine has and the grammar lacked are in
   it, both halves, at the pin.** Dispatch task F159 (`claude/fable-dispatch.md`),
   executor run; nothing committed by the executor. `bind` (a value of `script
