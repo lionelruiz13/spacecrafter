@@ -554,4 +554,6 @@ never rewrite (maintenance invariant). Archival per the standing convention
   manifestation (draw starvation under a live update loop, not 1000 ms stalls). CONSEQUENCE: a leg whose frame counts
   fail with every F line at dt ≈ 21 reads the launch's vulkan log for the acquire WARNINGs before blaming the binary;
   `f124_run.sh` carries no probe for this state (the F67 wake step lives in `f67_tcp_live.py` only, moot at
-  `idle-delay` 0) — candidate: count the WARNINGs at the run's close and print a NOTE naming the starvation.
+  `idle-delay` 0) — candidate: count the WARNINGs at the run's close and print a NOTE naming the starvation. [vixy, the same
+  hour: *"maybe it was due to what I was doing on my side"* — the trigger candidate is his own desktop activity at 10:13; the
+  journal holds no trace of it, so it stays a candidate, not a recorded cause.]

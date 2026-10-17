@@ -351,6 +351,50 @@ python3 claude/harness/shape/names.py src/bodyModule/ssystem_factory.hpp | cut -
 python3 claude/harness/shape/names.py src/interfaceModule/app_command_interface.hpp | cut -d' ' -f2 => 94:
 ```
 
+### F166 — THE PLACE MOVERS' ENTRY: `moveAlt(double)` AND `moveInteractive(const Vec3f &)` — THE STRUCTURE PREDICTED FROM THE CODE (row B44's entry surface under the owner's review of 2026-10-17, INTENT 11.340 (c) + update 2 §4): two lines into `Core` — the script line (per-axis held orders) and the devices' line (one normalized Vec3f told each frame while non-null, the null once when it stops) — where the devices' vector is composed, how it is scheduled (Tickable vs continuous), what the joystick's and the keypad's actions become, the command spellings. OPEN-COUPLING (a shape still to choose) -> agent `claude`, model `fable`; analysis only, code UNCHANGED, no build, no launch. **MINTED 2026-10-17, NOT DISPATCHED: his go.**
+
+**Why now / mandate:** his words (11.340 (a)): *"raiseHeight and lowerHeight, why not moveAlt instead ? Also, why joystick* actions, while it is not necessarily joystick-related but rather interactive movement, so moveInteractive, with a Vec3f as the normalized movement request, would be more consistent between keyboard and joystick and/or R2/L2 which are smooth actions ?"* — and on the fork (11.340 update 2): *"the cleaner form is to tell the movement each frame when non-null, and tell the null whenever movement stops. The general case, no action, is cheap, and the interactive movement which can change at every frame is continuously updated, this can actually use the Tickable system to be cheap when movement starts and naturally stop scheduling when it became null, or null-like (dead zone for the joystick), unless continuously updating is cheaper which might be possible given there is a bounded number of input sources (one joypad controller and one keyboard) and it's cheap."* The supervisor's derivation to start from, not to repeat: 11.340 (c). The sum of the two lines stands (not contested); the SHIFT + keypad path stays on the held slot unless the pass finds otherwise.
+
+**The ORIGIN of the need (S10, the supervisor's):** one operator moving the place live, in the dark, with whatever is in hand — a stick (2D, analog), the triggers (1D each), keys (±1) — and tomorrow a second stick or a touch surface; the request is a VECTOR by nature and device-independent in form, so the entry takes the vector and the device knowledge stays at the device; a show (the script line) holds a move without a hand, per axis, because a command or a binding addresses one axis. The idle case — nobody moving — is the common one and must cost nothing: that is what the owner's Tickable form buys.
+
+**Mandate, in THIS order:** (0) §0 warm-up in its read-only form, the PREMISES gate (`python3 claude/harness/premise_check.py F166`); READ IN FULL: `claude/SHAPE.md`; `INTENT/11.340.md` (c) and update 2; `INTENT/11.293.md` (a) and (c) (his 2026-09-27 words: the keyboard line goes through scripts; the sender converts an order into a per-frame command carrying dt); `INTENT/11.304.md` (the joystick ruling: read each frame, normalised, cubic, the movement control); `INTENT/11.311.md` (F141's structure — the held / sampled slots as built); `src/coreModule/core.hpp:285-299, 573-581`; `core.cpp:1815-1854` (the seven setters), `:1885-1967` (`updateMove`); `src/uiModule/ui.hpp:140-170`, `ui.cpp:554-586` (the axis actions and their heading flips — the device-to-world mapping), `:602-625, 682-685` (the button actions), `:2558-2740, 3352-3366` (SHIFT + keypad press / release); `src/uiModule/joypad_controller.cpp:193-212` (`handleDeal`: the action called only outside the dead zone — the absence of a call is today's stop), `:300-348` (axis action strings), `:386-424` (button action strings); `src/interfaceModule/app_command_interface.cpp:4438-4455` and `base_command_interface.hpp:249-252` (the four commands); `src/experimentalModule/Camera.hpp:97-128` (the `moveRel` family and its freeMode branch); `src/navModule/observer.hpp:150-180`; `src/EntityCore/Executor/Tickable.hpp`, `TickMgr.hpp`, `AFader.hpp`, `ASmooth.hpp` (the owner's Tickable form and its two instances — `GlobalTickMgr`); `util/scedit/grammar/args/unit-4.json` (the `camera action` values `move_lat move_lon raise_height lower_height`, F159). (1) THE S4 PASS: every method name of `Core`'s mover family, of `UI`'s movement actions and of `JoypadController` against the two lines (the lists pasted from `names.py`, a verdict per name). (2) THE SHAPE, predicted with files, +/- lines and the manager count before / after: (a) `Core::moveAlt(double)` replaces the pair (the directional stop becomes last-writer, as lat / lon are; `turnLeft/Right/Up/Down` untouched — the VIEW); (b) `Core::moveInteractive(const Vec3f &)` replaces the three joystick setters — held until the next call, no per-frame clearing (the caller guarantees the null); `vzm`'s six place doubles -> two vectors; `updateMove` sums, clamps, cubes per axis as now, then the two engines' relative movers (one `Observer::moveRel(lat, lon, alt, 0)` call on the old side — `observer.hpp:162` — is a change at the SENDER, not in the old path: in or out, argued; the Camera's three wrappers with the freeMode branch stay — B44 M2 is his); (c) **Q1 WHERE the devices' vector is composed** — `UI` (it owns both devices and the heading flips), `JoypadController` (it reads the axes), or a small class of its own; priced in lines, managers, files; (d) **Q2 HOW it is scheduled** — the owner's two forms: a `Tickable<GlobalTickMgr>` that starts ticking when any source's request becomes non-null, tells `moveInteractive(v)` each tick and tells the null then stops when every source is null-like (the dead zone), versus the per-frame `UI::handleDeal` (already per frame while a controller is connected) composing and telling every frame including the zero — "unless continuously updating is cheaper": price both (what a tick costs — the list insertion / removal — against one call per frame), predict which, veto-open; (e) **Q3** the keyboard's devices: the SHIFT + keypad path on the held slot (= a bound `move_lat value ±1`) — confirmed or folded into the vector, with the reason; the joystick BUTTONS `raise_height` / `lower_height` (press / release pairs `UI::raiseHeight()` / `stopRaiseHeight()`) -> `moveAlt(±1)` / `moveAlt(0)` or the vector — predicted; (f) **Q4** the field: `joypad.ini`'s `raise_height` / `lower_height` axis action strings STAY (D9) as the device side — `UI::raiseHeight(x)` / `lowerHeight(x)` write +x / -x into the alt component; (g) **Q5** the command spellings: `camera action move_alt value <v>` signed replaces `raise_height | lower_height` (2cb05825, not in the field) — the grammar's values, `branches`, `value` doc in both halves, F159's anchors; (h) the manager table (S7): "the operator's movement request" — today two slots x three axes in Core plus the per-device decomposition in `UI`; after: two vectors, the composition at Q1's home. (3) A fenced **PREDICTIONS** block for the implementation (shape + behaviour): Core 7 -> 4 names; `vzm` 6 -> 2 members; the per-frame displacement IDENTICAL for identical inputs (the instrument named: F124's legs L / M / A on both pins, `f124_legs.py`, or the ramp record — the structure says which reaches the place movers); the stick's feel unchanged at identical deflection; press / release of the keypad identical; the idle cost: zero calls per frame when nothing moves (under the Tickable form) or one (under the continuous form) — stated as the measurable it is. (4) The entry `INTENT/11.342.md` with everything above; the supervisor accepts and mints the implementation (`opus-xhigh`).
+
+**Boundaries:** WRITES ONLY: `claude/INTENT/11.342.md`; scratch under `claude/harness/artifacts/f166/**`. NOT yours: anything under `src/` (READ-ONLY; `git status --porcelain` on the code tree EMPTY at your close), the grammar, the dispatch file.
+
+**STOP conditions:** a premise fails; a reading of the owner's words that the code contradicts (quote both, state the question); `GlobalTickMgr` unreachable from where the composition would live (report the actual reach before predicting); a device whose request is not a component of one Vec3f.
+
+**Discriminating checks:** (a) the S4 pass names every method of the three classes against the two lines; (b) Q1 and Q2 priced, each alternative with lines / managers / files; (c) the manager table with counts; (d) the PREDICTIONS block in the grammar of this file (P<n> | shape|behaviour | claim | check | if refuted); (e) every number from a command run by your hand.
+
+**Preconditions (checkable, §0.7):** the PREMISES block — measured at the mint (2026-10-17, code HEAD `ee49d67f` + the uncommitted frame-loop edit of app.cpp; refreshed by the dispatcher at dispatch):
+
+```
+PREMISES
+# per-round variables - refreshed by the dispatcher at dispatch, never at mint (READ-ONLY task: no binary, no display, no engine line)
+git rev-parse --abbrev-ref HEAD => main
+git status --porcelain | /usr/bin/grep -v 'util/scedit/' | wc -l => 0
+test ! -e claude/INTENT/11.342.md -a ! -e claude/INTENT/archive/11.342.md && echo free => free
+/usr/bin/grep -c '^### F166 ' claude/fable-dispatch.md => 1
+git -C /home/claude/spacecrafter.owner-shape rev-parse --short=8 HEAD => 4dfe7bb3
+# the movers as they stand (every structural claim of the mandate is a line here)
+/usr/bin/grep -n 'void raiseHeight(double);\|void moveLat(double);\|void joystickLat(double);\|void joystickHeight(double);' src/coreModule/core.hpp | cut -d: -f1 | tr '\n' ' ' => 292 294 297 299
+/usr/bin/grep -n 'double joyLat=0, joyLon=0, joyHeight=0;\|double deltaLat=0, deltaLon=0;' src/coreModule/core.hpp | cut -d: -f1 | tr '\n' ' ' => 579 580
+/usr/bin/grep -n '^void Core::raiseHeight\|^void Core::joystickHeight\|^void Core::updateMove' src/coreModule/core.cpp | cut -d: -f1 | tr '\n' ' ' => 1815 1851 1885
+/usr/bin/grep -n 'vzm.joyLat = vzm.joyLon = vzm.joyHeight = 0;' src/coreModule/core.cpp | cut -d: -f1 => 1945
+/usr/bin/grep -n 'void JoypadController::handleDeal() noexcept' src/uiModule/joypad_controller.cpp | cut -d: -f1 => 193
+/usr/bin/grep -n '^void UI::moveLat(double x)\|^void UI::raiseHeight(double x)\|^void UI::raiseHeight()\|^void UI::stopRaiseHeight()' src/uiModule/ui.cpp | cut -d: -f1 | tr '\n' ' ' => 554 583 602 622
+/usr/bin/grep -n 'core->moveLat(-1);\|core->moveLat(1);\|core->moveLat(0);\|core->moveLon(0);' src/uiModule/ui.cpp | cut -d: -f1 | tr '\n' ' ' => 2565 2735 3359 3364
+/usr/bin/grep -n 'argAction == W_MOVE_LAT || argAction == W_MOVE_LON' src/interfaceModule/app_command_interface.cpp | cut -d: -f1 => 4438
+/usr/bin/grep -n 'W_RAISE_HEIGHT\|W_LOWER_HEIGHT\|W_MOVE_LAT\|W_MOVE_LON' src/interfaceModule/base_command_interface.hpp | cut -d: -f1 | tr '\n' ' ' => 249 250 251 252
+/usr/bin/grep -c 'raise_height' util/scedit/grammar/sc-grammar.json => 14
+/usr/bin/grep -rl 'raise_height' util/scedit/grammar/args/ | tr '\n' ' ' => util/scedit/grammar/args/unit-4.json
+/usr/bin/grep -c 'Tickable.GlobalTickMgr.' src/EntityCore/Executor/ASmooth.hpp src/EntityCore/Executor/AFader.hpp | tr '\n' ' ' => src/EntityCore/Executor/ASmooth.hpp:1 src/EntityCore/Executor/AFader.hpp:1
+/usr/bin/grep -n 'inline void moveRelLon\|inline void moveRelLat\|inline void moveRelAlt\|void moveRel(const Vec3f' src/experimentalModule/Camera.hpp | cut -d: -f1 | tr '\n' ' ' => 97 101 109 118
+/usr/bin/grep -n 'void moveRel(double lat, double lon, double alt' src/navModule/observer.hpp | cut -d: -f1 => 162
+python3 claude/harness/shape/names.py src/coreModule/core.hpp | cut -d' ' -f2 => 146:
+python3 claude/harness/shape/names.py src/uiModule/ui.hpp | cut -d' ' -f2 => 92:
+python3 claude/harness/shape/names.py src/uiModule/joypad_controller.hpp | cut -d' ' -f2 => 16:
+```
+
 ---
 
 ---
@@ -396,26 +440,22 @@ python3 claude/harness/shape/names.py src/interfaceModule/app_command_interface.
   YOURS — ONE LIST (held set per node; the entry's section in brackets)
   THE RECORD'S DT [11.340 (b)]:
     LANDED    the F line's dt = the frame's delta_time as SSystemFactory::draw received it (your words; no sum, no member).
-    RESIDUAL  App::update multiplies the UPDATE's dt by the script fast-forward (x2..x256), App::draw gets the raw frame time
-              (app.cpp:764 vs :1001) - under fast-forward the engine consumed rate x dt_ms; jd carries the clock. Default: as landed,
-              declared (README, grammar, 11.333). Alternatives if you want 11.333 (d)'s "as the engine consumed it" kept: a
-              one-frame hold in the factory (one writer, one reader, no accumulation) or App handing the engine dt to the draw
-              chain (which also fast-forwards the pointer and the meteors).
+    RULED     (same day, 11.340 update 2) fast-forward is as-if the time elapsed faster for everything the frame does: App's loop
+              hands the fast-forwarded dt to the draw too; the F line's dt is the engine's consumed time again, no sum, no member.
   POINT 2, THE MOVERS [11.340 (c)] - nothing built until you answer:
     NAMES     moveLat / moveLon / moveAlt (the script line, per axis, held) + moveInteractive(const Vec3f &) (the devices' line,
               (lon, lat, alt) in [-1, 1]) - Core 7 -> 4 methods; raise_height / lower_height command spellings -> move_alt
               signed (6 days old, not in the field); joypad.ini's raise_height / lower_height action strings STAY (D9).
-    FORK      the interactive request's lifetime: today a one-frame sample (handleDeal calls only outside the dead zone, silence =
-              stop); I3 form = the UI composes the vector each frame and pushes it ON CHANGE, the zero included -> a plain held
-              state. Default: the I3 form. Sum of the two lines (a show's held move + the stick add; current) vs replace-while-
-              active. Default: sum. The hardcoded SHIFT + keypad path stays on the held slot (= a bound move_lat value +-1).
+    RULED     (same day, 11.340 update 2) tell the movement each frame while non-null, tell the null once when it stops (dead zone =
+              null-like); the Tickable system as the scheduling form, or continuous update if cheaper (bounded sources). Sum of
+              the two lines stands; the SHIFT + keypad path stays on the held slot. -> F166, structure first.
   F165, BODY COMMANDS TO THE FACTORY [11.340 update; row B50] - MINTED, dispatched on your go:
     D1        the interface reaches the factory through ONE accessor on Core (one member exposed, readable at the call) rather
               than a seventh friend (friendship exposes all of Core and hides what is reached). Default: the accessor.
     D2        removeSolarSystemBody's two guards split: the unselect stays Core's (the interface calls unSelect first), the
               home-planet refusal moves into SSystemFactory::removeBody (false; the interface words the message). Default: so.
     SCOPE     14 forwarders die, 9 stay (Core's ssystemDualDump; five shared with the UI / another family; the ojmMgr trio).
-              Your sentence read as general: every commandX family to its module, body first. Say if body-only was meant.
+              Your sentence read as general: every commandX family to its module, body first. CONFIRMED the same day (Q-112).
   THE HOST [HOST-EVENTS 2026-10-17]:
     1 Hz      one old-pin leg run starved by the swapchain acquire (43 timeouts a second apart), screen not blanked, idle-delay 0,
               trigger unidentified; the control six minutes later clean. The 08-31 class, second manifestation. FYI, no decision.

@@ -640,6 +640,19 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-10-17b] The screen_record note reads the engine's consumed time again, both
+  halves, at `main @ cc0841d2`.** Supervisor's own edit (Claude Fable 5.1, session 48),
+  grammar commit `ee3dd0ac`. The owner ruled the same day that the script fast-forward is
+  as-if the time elapsed faster for everything the frame does; the engine's frame loop now
+  applies the multiplier once for the update and the draw (`cc0841d2`), so `body.notes[6]`'s
+  dt clause of the morning ("the frame's delta_time as the draw received it - a script
+  fast-forward multiplies the update's dt, not this one") is replaced by "the engine's
+  consumed time of the frame in ms - the script fast-forward applied once by the frame loop
+  to the update and the draw alike"; the citation unchanged (`ssystem_factory.cpp` did not
+  move). The gate went red on counts only: three anchors into `app.cpp` (867-868, 870-884,
+  939) shifted clean -> moved between the two edited sites, nothing gone; re-recorded with
+  the two existing Why lines passed back + one; gate exit 0; ctest 19 / 19. Parent
+  **INTENT 11.340** update 2 and (h); this line indexes it.
 - **[2026-10-17] The screen_record notes follow the owner's review correction, both
   halves, at `main @ 17f99498`.** Supervisor's own edit (Claude Fable 5.1, session 48),
   grammar commit `ee49d67f`. `body.notes[6]`: the F line's dt is the frame's
