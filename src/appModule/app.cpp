@@ -760,8 +760,6 @@ void App::updateFromSharedData()
 
 void App::update(int delta_time)
 {
-	// change time rate if needed to fast forward scripts
-	delta_time *= scriptMgr->getMuliplierRate();
 	// run command from a running script
 	scriptMgr->update(delta_time);
 	context.stat->capture(Capture::SCRIPT_UPDATE);
@@ -995,10 +993,12 @@ void App::startMainLoop()
 			SDL_WaitEvent(NULL);
 		} else {
 			deltaTime = internalFPS->beginFrame();
+			// The script fast-forward speeds up everything the frame does, the draw included
+			const int engineDeltaTime = deltaTime * scriptMgr->getMuliplierRate();
 
 			context.stat->capture(Capture::FRAME_START);
-			this->update(deltaTime);		// And update the motions and data
-			this->draw(deltaTime);			// Do the drawings!
+			this->update(engineDeltaTime);		// And update the motions and data
+			this->draw(engineDeltaTime);			// Do the drawings!
 
 			internalFPS->endFrame();
 		}
