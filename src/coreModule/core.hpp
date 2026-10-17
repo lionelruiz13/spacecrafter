@@ -638,6 +638,7 @@ private:
 	bool FlagEnableZoomKeys;
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
+	bool FlagLightAberration = false;
 	bool flagNav = false; 				// define the NAV version edition
 	bool flagAstronomical = false; 		// define the astronomical version edition
 	bool FlagManualZoom;				// Define whether auto zoom can go further

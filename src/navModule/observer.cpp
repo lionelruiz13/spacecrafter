@@ -342,6 +342,22 @@ bool Observer::isSun() const {
 // for moving observer position gradually
 void Observer::update(int delta_time)
 {
+	// Measure the complete observer motion, including movement of its anchor.
+	// Keep this in the heliocentric ecliptic frame so renderers can transform it
+	// to their own coordinate system before applying light aberration.
+	const Vec3d currentHeliocentricPosition = getHeliocentricPosition(CoreLink::instance->getJDay());
+	if (hasPreviousHeliocentricPosition && previousPositionDeltaTime > 0) {
+		heliocentricVelocity = (currentHeliocentricPosition - previousHeliocentricPosition)
+		                       * (1000.0 / previousPositionDeltaTime);
+	} else {
+		heliocentricVelocity = Vec3d(0., 0., 0.);
+	}
+	previousHeliocentricPosition = currentHeliocentricPosition;
+	// The position observed at the beginning of the next update results from
+	// the movement performed with this update's duration.
+	previousPositionDeltaTime = delta_time;
+	hasPreviousHeliocentricPosition = true;
+
 	rotator.update(delta_time, true);
 	if (flag_move_to) {
 		auto inter_move_to_mult = move_to_mult;
@@ -505,6 +521,11 @@ void Observer::setEyeRelativeMode(bool mode)
 
 void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
 {
+	// An anchor change is a reference-frame switch, not a physical velocity.
+	// Ignore the discontinuity on the next frame.
+	hasPreviousHeliocentricPosition = false;
+	previousPositionDeltaTime = 0;
+	heliocentricVelocity = Vec3d(0., 0., 0.);
 	if (flag_eye_relative_mode) {
 		anchorAlt = std::move(_anchor);
 		setDistanceFromCenter(getDistanceFromCenter());
