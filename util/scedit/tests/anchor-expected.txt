@@ -3,11 +3,12 @@
 # the grammar's citations, and somebody has to look at what.
 # Regenerate with: python3 tests/anchor_gate.py --record
 # Why: The cannot-open fix d8007599 rewrote recordScreen's opening (ssystem_factory.cpp:1018-1030): the state note re-anchored there, its text brought to the new semantics; the lines below shifted to moved
-clean                    6301
+# Why: The review correction 17f99498 moved the record into SSystemFactory::draw and removed the dt sum (ssystem_factory.cpp:665 gone): the body note re-anchored on the draw, the header lines and recordScreenFrame at 17f99498, its text brought to the frame's dt; the state note re-anchored at 17f99498 (1018-1028)
+clean                    6316
 handler_body_lines:clean 2
 header_line:clean        248
 lines:clean              92
 lines:moved              35
-moved                    997
+moved                    982
 not-at-head(declared)    18
 skipped(_meta)           86
