@@ -78,6 +78,12 @@ public:
 	//! returns the position of the observer in the sun coordinate system
 	Vec3d getHeliocentricPosition(double JD)const;
 
+	//! Return the observer velocity in heliocentric ecliptic coordinates (AU/s).
+	//! The value is measured from the displacement between two rendered frames.
+	Vec3d getHeliocentricVelocity() const {
+		return heliocentricVelocity;
+	}
+
 	//! returns the distance: center of the planet and altitude of the observer
 	double getDistanceFromCenter(void) const;
 	//! changes the altitude to match the distance between the center of the planet and the desired observer
@@ -233,6 +239,11 @@ private:
 
 	Mat4d mat_altitude_to_earth_equ; // observer altitude to anchor equatorial
 	Mat4d mat_eye_to_helio_untranslated;
+
+	Vec3d previousHeliocentricPosition;
+	Vec3d heliocentricVelocity;
+	bool hasPreviousHeliocentricPosition = false;
+	int previousPositionDeltaTime = 0;
 };
 
 #endif // _OBSERVER_H_

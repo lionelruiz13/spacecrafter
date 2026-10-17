@@ -75,10 +75,13 @@ public:
 	unsigned int getNrOfStars(void) const {
 		return nr_of_stars;
 	}
+	unsigned int getNrOfZones(void) const {
+		return nr_of_zones;
+	}
 	virtual void updateHipIndex(HipIndexStruct hip_index[]) const {};
 	virtual void searchAround(int index,const Vec3d &v,double cos_lim_fov, std::vector<ObjectBaseP > &result) = 0;
 
-	virtual void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars, bool atmosphere, bool isolateSelected) const = 0;
+	virtual void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars, bool atmosphere, bool lightAberration, const Vec3d& observerVelocity, bool isolateSelected) const = 0;
 
 	bool isInitialized(void) const {
 		return (nr_of_zones>0);
@@ -127,7 +130,7 @@ private:
 	#endif
 	void scaleAxis(void) override;
 	void searchAround(int index,const Vec3d &v,double cos_lim_fov, std::vector<ObjectBaseP > &result) override;
-	void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars, bool atmosphere, bool isolateSelected) const override;
+	void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars, bool atmosphere, bool lightAberration, const Vec3d& observerVelocity, bool isolateSelected) const override;
 };
 
 template<class Star> void SpecialZoneArray<Star>::scaleAxis(void)
@@ -158,7 +161,7 @@ public:
 	Star1 *star(int hip) {
 		return getStarPtr(hip);
 	}
-	virtual void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars, bool atmosphere, bool isolateSelected) const override;
+	virtual void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars, bool atmosphere, bool lightAberration, const Vec3d& observerVelocity, bool isolateSelected) const override;
 private:
 	void updateHipIndex(HipIndexStruct hip_index[]) const override;
 };

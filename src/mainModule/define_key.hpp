@@ -277,6 +277,7 @@
 #define SCK_FLAG_MOON_SCALED                "flag_moon_scaled"
 #define SCK_FLAG_SUN_SCALED                 "flag_sun_scaled"
 #define SCK_FLAG_ATMOSPHERIC_REFRACTION     "flag_atmospheric_refraction"
+#define SCK_FLAG_LIGHT_ABERRATION           "flag_light_aberration"
 #define SCK_MOON_SCALE                      "moon_scale"
 #define SCK_SUN_SCALE                       "sun_scale"
 #define SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE      "light_pollution_limiting_magnitude"

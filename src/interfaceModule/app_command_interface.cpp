@@ -1034,6 +1034,12 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 			coreLink->atmosphericRefractionSetFlag(newval);
 			break;
+		case FLAG_NAMES::FN_LIGHT_ABERRATION :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->lightAberrationGetFlag();
+
+			coreLink->lightAberrationSetFlag(newval);
+			break;
 		case FLAG_NAMES::FN_QUATERNION_MODE:
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->getQuaternionMode();
