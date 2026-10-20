@@ -319,7 +319,6 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_CN_BODY_TRACE                           "body_trace"
 #define ACP_CN_BODY                                 "body"
 #define ACP_CN_CAMERA                               "camera"
-#define ACP_CN_FLYTO                                "flyto"
 #define ACP_CN_CLEAR                                "clear"
 #define ACP_CN_COLOR                                "color"
 #define ACP_CN_CONFIGURATION                        "configuration"
