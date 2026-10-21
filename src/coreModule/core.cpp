@@ -1215,10 +1215,10 @@ Object Core::cleverFind(int x, int y) const
 }
 
 //! Go and zoom to the selected object.
-void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
+void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale)
 {
 	float manual_move_duration;
-
+	
 	if (!selected_object) return;
 
 	if (!navigation->getFlagTraking()) {
@@ -1229,19 +1229,19 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 		// faster zoom in manual zoom mode once object is centered
 		manual_move_duration = move_duration*.66f;
 	}
-
+	
 	if ( allow_manual_zoom && FlagManualZoom ) {
 		// if manual zoom mode, user can zoom in incrementally
 		float newfov = projection->getFov()*0.5f;
 		projection->zoomTo(newfov, manual_move_duration);
-
+		
 	} else {
 		float satfov = selected_object.getSatellitesFov(navigation);
 
 		if (satfov>0.0 && projection->getFov()*0.9>satfov)
 			projection->zoomTo(satfov, move_duration);
 		else {
-			float closefov = selected_object.getCloseFov(navigation);
+			float closefov = selected_object.getCloseFov(navigation, scale);
 			if (projection->getFov()>closefov)
 				projection->zoomTo(closefov, move_duration);
 		}

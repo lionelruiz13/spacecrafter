@@ -282,7 +282,7 @@ public:
 	}
 
 	//! Go and zoom temporarily to the selected object.
-	void autoZoomIn(float move_duration = 1.f, bool allow_manual_zoom = 1);
+	void autoZoomIn(float move_duration = 1.f, bool allow_manual_zoom = 1, double scale = 4.0);
 
 	//! Unzoom to the previous position
 	void autoZoomOut(float move_duration = 1.f, bool full = 0, bool allow_manual_zoom = 0);

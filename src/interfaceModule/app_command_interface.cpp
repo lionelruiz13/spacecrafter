@@ -2862,6 +2862,7 @@ int AppCommandInterface::commandZoom(uint64_t &wait)
 	double duration = Utility::strToPosDouble(args[W_DURATION]);
 	std::string argAuto = args[W_AUTO];
 	std::string argManual = args[W_MANUAL];
+	std::string argScale = args[W_SCALE];
 
 	if (!argAuto.empty()) {
 		// auto zoom using specified or default duration
@@ -2873,7 +2874,12 @@ int AppCommandInterface::commandZoom(uint64_t &wait)
 		} else if (argAuto==W_INITIAL  ) stcore->autoZoomOut(duration, 1, 0);
 		else if (Utility::isTrue(argManual)) {
 			stcore->autoZoomIn(duration, 1);  // have to explicity allow possible manual zoom
-		} else stcore->autoZoomIn(duration, 0);
+		} else  {
+			double scale = 4;
+			if (!argScale.empty())
+				scale = evalDouble(argScale);
+			stcore->autoZoomIn(duration, 0, scale);
+		}
 
 	} else if (args[W_FOV]!="") {
 		// zoom to specific field of view

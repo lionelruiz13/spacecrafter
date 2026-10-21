@@ -160,7 +160,7 @@ public:
 
 	std::string getShortInfoString(const Navigator * nav) const;
 	std::string getShortInfoNavString(const Navigator * nav, const TimeMgr * timeMgr, const Observer* observatory) const;
-	double getCloseFov(const Navigator * nav) const;
+	double getCloseFov(const Navigator * nav, double scale) const;
 	double getSatellitesFov(const Navigator * nav) const;
 	double getParentSatellitesFov(const Navigator * nav) const;
 	float getMag(const Navigator * nav) const override {

@@ -219,9 +219,9 @@ ObjectBaseP Object::getBrightestStarInConstellation() const
 	return rep->getBrightestStarInConstellation();
 }
 
-double Object::getCloseFov(const Navigator *nav) const
+double Object::getCloseFov(const Navigator *nav, double scale) const
 {
-	return rep->getCloseFov(nav);
+	return rep->getCloseFov(nav, scale);
 }
 
 double Object::getSatellitesFov(const Navigator *nav) const

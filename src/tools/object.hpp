@@ -93,7 +93,7 @@ public:
 
 	// only needed for AutoZoomIn/Out, whatever this is:
 	//! Return the best FOV in degree to use for a close view of the object
-	double getCloseFov(const Navigator *nav) const;
+	double getCloseFov(const Navigator *nav, double scale) const;
 	//! Return the best FOV in degree to use for a global view
 	//! of the object satellite system (if there are satellites)
 	double getSatellitesFov(const Navigator *nav) const;

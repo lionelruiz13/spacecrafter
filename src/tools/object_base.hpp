@@ -98,7 +98,7 @@ public:
 	virtual ObjectBaseP getBrightestStarInConstellation() const;
 
 	//! Return the best FOV in degree to use for a close view of the object
-	virtual double getCloseFov(const Navigator *nav) const {
+	virtual double getCloseFov(const Navigator *nav, double scale) const {
 		return 10.;
 	}
 

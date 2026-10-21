@@ -89,7 +89,7 @@ public:
 	Vec3d getObsJ2000Pos(const Navigator *nav = nullptr) const {
 		return XYZ;
 	}
-	double getCloseFov(const Navigator * nav = nullptr) const;
+	double getCloseFov(const Navigator * nav = nullptr, double scale = 4.0) const;
 
 	//! Return the apparent magnitude for DSO object
 	float getMag(const Navigator * nav = nullptr) const {
