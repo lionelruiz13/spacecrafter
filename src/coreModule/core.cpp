@@ -330,6 +330,9 @@ void Core::init(const InitParser& conf)
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);
 	currentIlluminates.applyToAll(&IlluminateMgr::setDefaultSize, conf.getDouble(SCS_STARS, SCK_ILLUMINATE_SIZE));
 
+	dsoZoomScale = conf.getDouble(SCS_NAVIGATION, SCK_DSO_ZOOM, 4.0);
+	bodyZoomScale = conf.getDouble(SCS_NAVIGATION, SCK_BODY_ZOOM, 4.0);
+
 	// Start splash with no fonts due to font collection delays
 	if (firstTime) {
 		// Init the solar system first
@@ -1220,6 +1223,13 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale)
 	float manual_move_duration;
 	
 	if (!selected_object) return;
+	if (scale < 0.0) {
+		switch (selected_object.getType()) {
+			case OBJECT_NEBULA: scale = dsoZoomScale; break;
+			case OBJECT_BODY: scale = bodyZoomScale; break;
+			default: scale = 4.0; break;
+		}
+	}
 
 	if (!navigation->getFlagTraking()) {
 		navigation->setFlagTraking(true);

@@ -2875,10 +2875,10 @@ int AppCommandInterface::commandZoom(uint64_t &wait)
 		else if (Utility::isTrue(argManual)) {
 			stcore->autoZoomIn(duration, 1);  // have to explicity allow possible manual zoom
 		} else  {
-			double scale = 4;
-			if (!argScale.empty())
-				scale = evalDouble(argScale);
-			stcore->autoZoomIn(duration, 0, scale);
+			if (argScale.empty())
+				stcore->autoZoomIn(duration, 0);
+			else
+				stcore->autoZoomIn(duration, 0, evalDouble(argScale));
 		}
 
 	} else if (args[W_FOV]!="") {

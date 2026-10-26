@@ -282,7 +282,7 @@ public:
 	}
 
 	//! Go and zoom temporarily to the selected object.
-	void autoZoomIn(float move_duration = 1.f, bool allow_manual_zoom = 1, double scale = 4.0);
+	void autoZoomIn(float move_duration = 1.f, bool allow_manual_zoom = 1, double scale = -1.0);
 
 	//! Unzoom to the previous position
 	void autoZoomOut(float move_duration = 1.f, bool full = 0, bool allow_manual_zoom = 0);
@@ -651,6 +651,8 @@ private:
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)
 	int selected_body_name=999;
 	int language = 0;
+	double dsoZoomScale = 4.0;
+	double bodyZoomScale = 4.0;
 
 	InitialValue initialvalue;			// variable used to remember various string indicators in use
 };

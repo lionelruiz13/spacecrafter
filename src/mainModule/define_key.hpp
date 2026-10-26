@@ -300,6 +300,8 @@
 #define SCK_VIEW_OFFSET                     "view_offset"
 #define SCK_VIEWING_MODE                    "viewing_mode"
 #define SCK_ZOOM_SPEED                      "zoom_speed"
+#define SCK_DSO_ZOOM                        "dso_zoom"
+#define SCK_BODY_ZOOM                       "body_zoom"
 #define SCK_STALL_RADIUS_UNIT               "stall_radius_unit"
 #define SCK_FLAG_STARS                      "flag_stars"
 #define SCK_FLAG_STAR_NAME                  "flag_star_name"

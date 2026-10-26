@@ -442,7 +442,7 @@ std::string Body::getShortInfoNavString(const Navigator * nav, const TimeMgr * t
 
 double Body::getCloseFov(const Navigator* nav, double scale) const
 {
-	return atanf(radius*2.f/getEarthEquPos(nav).length())*180./M_PI * 4;
+	return atanf(radius*2.f/getEarthEquPos(nav).length())*180./M_PI * (180/scale);
 }
 
 double Body::getSatellitesFov(const Navigator * nav) const
