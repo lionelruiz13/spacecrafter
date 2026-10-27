@@ -272,6 +272,14 @@ public:
 		return auto_move_duration;
 	}
 
+	void setDsoZoomScale(double degrees) {
+		dsoZoomScale = degrees;
+	}
+	
+	void setBodyZoomScale(double degrees) {
+		bodyZoomScale = degrees;
+	}
+
 	//! Set initial field of view
 	void setInitFov(double f) {
 		InitFov = f;

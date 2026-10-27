@@ -1770,6 +1770,20 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(setValue)); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(setValue)); break;
 		case SCD_NAMES::APP_INIT_FOV: stcore->setInitFov(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_DSO_ZOOM:
+			if (evalDouble(setValue) <= 0.0 || evalDouble(setValue) > 180.0) {
+				debug_message = "command_'set': dso_zoom must be greater than 0 and at most 180 degrees";
+				return executeCommandStatus();
+			}
+			stcore->setDsoZoomScale(evalDouble(setValue));
+			break;
+		case SCD_NAMES::APP_BODY_ZOOM:
+			if (evalDouble(setValue) <= 0.0 || evalDouble(setValue) > 180.0) {
+				debug_message = "command_'set': body_zoom must be greater than 0 and at most 180 degrees";
+				return executeCommandStatus();
+			}
+			stcore->setBodyZoomScale(evalDouble(setValue));
+			break;
 		case SCD_NAMES::APP_FLAG_NONE:
 						debug_message = "command_'set': unknown argument";
 						//for (const auto&i : args )

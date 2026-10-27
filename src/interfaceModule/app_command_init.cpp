@@ -319,6 +319,8 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	m_set[ACP_SC_DATETIME_DISPLAY_POSITION] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
 	m_set[ACP_SC_DATETIME_DISPLAY_NUMBER] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
 	m_set[ACP_SC_INIT_FOV] = SCD_NAMES::APP_INIT_FOV;
+	m_set[ACP_SC_DSO_ZOOM] = SCD_NAMES::APP_DSO_ZOOM;
+	m_set[ACP_SC_BODY_ZOOM] = SCD_NAMES::APP_BODY_ZOOM;
 
 	for (auto it = m_set.begin(); it != m_set.end(); ++it) {
         m_setToString.emplace(it->second, it->first);
