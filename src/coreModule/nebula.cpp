@@ -294,7 +294,7 @@ std::string Nebula::getShortInfoNavString(const Navigator*, const TimeMgr * time
 
 double Nebula::getCloseFov(const Navigator*, double scale) const
 {
-	return m_angular_size * 180./M_PI * (180/scale);
+	return m_angular_size * 180./M_PI * (360/scale);
 }
 
 

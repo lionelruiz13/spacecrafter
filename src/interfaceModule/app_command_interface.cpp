@@ -2884,7 +2884,12 @@ int AppCommandInterface::commandZoom(uint64_t &wait)
 
 		if (argAuto==W_OUT) {
 			if (Utility::isTrue(argManual)) stcore->autoZoomOut(duration, 0, 1);
-			else stcore->autoZoomOut(duration, 0, 0);
+			else {
+				if (argScale.empty())
+					stcore->autoZoomOut(duration, 0, 0);
+				else
+					stcore->autoZoomOut(duration, 0, 0, evalDouble(argScale));
+			}
 		} else if (argAuto==W_INITIAL  ) stcore->autoZoomOut(duration, 1, 0);
 		else if (Utility::isTrue(argManual)) {
 			stcore->autoZoomIn(duration, 1);  // have to explicity allow possible manual zoom

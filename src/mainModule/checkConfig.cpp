@@ -409,8 +409,8 @@ void CheckConfig::checkNavigationSettings()
 	tmpSettings[SCK_VIEW_OFFSET]="0";
 	tmpSettings[SCK_VIEWING_MODE]="equator";
 	tmpSettings[SCK_ZOOM_SPEED]="0.0001";
-	tmpSettings[SCK_DSO_ZOOM]="4";
-	tmpSettings[SCK_BODY_ZOOM]="4";
+	tmpSettings[SCK_DSO_ZOOM]="45";
+	tmpSettings[SCK_BODY_ZOOM]="45";
 	tmpSettings[SCK_STALL_RADIUS_UNIT]= "5.0";
 
 	sectionSettings.push_back(SCS_NAVIGATION );

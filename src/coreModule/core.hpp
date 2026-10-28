@@ -293,7 +293,7 @@ public:
 	void autoZoomIn(float move_duration = 1.f, bool allow_manual_zoom = 1, double scale = -1.0);
 
 	//! Unzoom to the previous position
-	void autoZoomOut(float move_duration = 1.f, bool full = 0, bool allow_manual_zoom = 0);
+	void autoZoomOut(float move_duration = 1.f, bool full = 0, bool allow_manual_zoom = 0, double scale = -1.0);
 
 	//! Set whether auto zoom can go further than normal
 	void setFlagManualAutoZoom(bool b) {

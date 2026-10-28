@@ -1227,7 +1227,7 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale)
 		switch (selected_object.getType()) {
 			case OBJECT_NEBULA: scale = dsoZoomScale; break;
 			case OBJECT_BODY: scale = bodyZoomScale; break;
-			default: scale = 4.0; break;
+			default: scale = 45.0; break;
 		}
 	}
 
@@ -1248,9 +1248,9 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale)
 	} else {
 		float satfov = selected_object.getSatellitesFov(navigation);
 
-		if (satfov>0.0 && projection->getFov()*0.9>satfov)
+		if (satfov>0.0 && projection->getFov()*0.9>satfov) {
 			projection->zoomTo(satfov, move_duration);
-		else {
+		} else {
 			float closefov = selected_object.getCloseFov(navigation, scale);
 			if (projection->getFov()>closefov)
 				projection->zoomTo(closefov, move_duration);
@@ -1260,7 +1260,7 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale)
 
 
 //! Unzoom and go to the init position
-void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
+void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom, double scale)
 {
 	if (selected_object && !full) {
 		// Handle manual unzoom
@@ -1280,6 +1280,19 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 				projection->zoomTo(newfov, manual_move_duration);
 				return;
 			}
+		}
+
+		if (scale < 0.0) {
+			switch (selected_object.getType()) {
+				case OBJECT_NEBULA: scale = dsoZoomScale; break;
+				case OBJECT_BODY: scale = bodyZoomScale; break;
+				default: scale = 45.0; break;
+			}
+		}	
+		float closefov = selected_object.getCloseFov(navigation, scale);
+		if (projection->getFov()<closefov) {
+			projection->zoomTo(closefov, move_duration);
+			return;
 		}
 
 		// If the selected object has satellites, unzoom to satellites view unless specified otherwise
