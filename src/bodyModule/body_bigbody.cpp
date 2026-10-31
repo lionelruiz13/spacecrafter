@@ -422,7 +422,8 @@ void BigBody::update(int delta_time, const Navigator* nav, const TimeMgr* timeMg
 void BigBody::drawRings(VkCommandBuffer cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
     const double observerDistanceToBody = (get_heliocentric_ecliptic_pos() - obs->getHeliocentricPosition(CoreLink::instance->getJDay())).length();
-	rings->draw(cmd, prj, observerDistanceToBody, mat,screen_sz,_lightDirection,_planetPosition,planetRadius);
+	rings->draw(cmd, prj, observerDistanceToBody, mat, screen_sz, _lightDirection,
+	            _planetPosition, aberrationBetaEye, planetRadius);
 }
 
 void BigBody::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
@@ -660,6 +661,7 @@ void BigBody::drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, co
     float finalRadius = std::min(radius * (1 + altimetryFactor), mat.getTranslation().length() - radius/64);
     auto m = mat * Mat4d::zrotation(M_PI/180*axis_rotation);
     vert.ModelViewMatrix = (m * Mat4d::scaling(Vec3d(1, 1, one_minus_oblateness))).convert();
+    vert.aberrationBeta.set(aberrationBetaEye[0], aberrationBetaEye[1], aberrationBetaEye[2], 0.f);
     {
         auto m2 = m.transpose();
         m2.setMat3(vert.WorldToModelMatrix);

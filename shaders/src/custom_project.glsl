@@ -315,3 +315,34 @@ vec4 custom_project2DNoMV(vec3 win, float fov)
 		default: return fisheye2DCustomNoMV(win, fov);
 	}
 }
+
+// Relativistic aberration in eye coordinates. Only the apparent direction is
+// transformed: the original distance is retained for clipping and depth.
+vec3 lightAberrationPosition(vec3 position, vec3 beta)
+{
+	float distance = length(position);
+	float betaSquared = dot(beta, beta);
+	if (distance < 1e-12 || betaSquared < 1e-12)
+		return position;
+
+	vec3 direction = position / distance;
+	float gamma = inversesqrt(1.0 - betaSquared);
+	float directionAlongBeta = dot(direction, beta);
+	float denominator = 1.0 + directionAlongBeta;
+	vec3 refracted = (direction / gamma + beta
+	                 + beta * (gamma / (gamma + 1.0) * directionAlongBeta))
+	                / denominator;
+	return normalize(refracted) * distance;
+}
+
+vec4 custom_projectAberrated(vec3 invec, mat4 ModelViewMatrix, vec3 clipping_fov, vec3 beta)
+{
+	vec3 eyePosition = vec3(ModelViewMatrix * vec4(invec, 1.0));
+	return custom_projectNoMV(lightAberrationPosition(eyePosition, beta), clipping_fov);
+}
+
+vec4 custom_project2DAberrated(vec4 invec, mat4 ModelViewMatrix, float fov, vec3 beta)
+{
+	vec3 eyePosition = vec3(ModelViewMatrix * invec);
+	return custom_project2DNoMV(lightAberrationPosition(eyePosition, beta), fov);
+}

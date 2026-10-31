@@ -94,6 +94,7 @@ struct VolumObj3D::Shared {
 
         // External View
         for (int i = 0; i < PS_IN; ++i) {
+            layout[i].setGlobalPipelineLayout(context.layouts.front().get());
             layout[i].setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, 0);
             pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
             pipeline[i].setTessellationState(3);
@@ -116,6 +117,7 @@ struct VolumObj3D::Shared {
         int center[2] = {screenRect.offset.x+radius2, abs(screenRect.offset.y)+radius2};
         radius2 *= radius2;
         for (int i = PS_IN; i < PS_COUNT; ++i) {
+            layout[i].setGlobalPipelineLayout(context.layouts.front().get());
             layout[i].setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
             pipeline[i].setFrontFace();
             pipeline[i].bindVertex(inVertexArray);
@@ -287,7 +289,7 @@ void VolumObj3D::draw(const Navigator * nav, const Projector* prj)
         transform->clipping_fov = prj->getClippingFov();
 
         shared->pipeline[selected].bind(cmd);
-        shared->layout[selected].bindSet(cmd, *set);
+        shared->layout[selected].bindSets(cmd, {*context.uboSet, *set});
         shared->vertex->bind(cmd);
         vkCmdBindIndexBuffer(cmd, shared->index.buffer, shared->index.offset, VK_INDEX_TYPE_UINT16);
         vkCmdDrawIndexed(cmd, 3*2*6, 1, 0, 0, 0);
@@ -301,7 +303,7 @@ void VolumObj3D::draw(const Navigator * nav, const Projector* prj)
         inCamCoord = camCoord;
 
         shared->pipeline[selected | PS_IN].bind(cmd);
-        shared->layout[selected | PS_IN].bindSet(cmd, *inSet);
+        shared->layout[selected | PS_IN].bindSets(cmd, {*context.uboSet, *inSet});
         shared->obj->bind(cmd);
         shared->obj->draw(cmd, 1024);
     }
@@ -341,7 +343,7 @@ void VolumObj3D::drawInside(const Navigator * nav, const Projector* prj)
 
     inTransform->fov = prj->getFov()*M_PI/360;
     shared->pipeline[selected | PS_IN].bind(cmd);
-    shared->layout[selected | PS_IN].bindSet(cmd, *inSet);
+    shared->layout[selected | PS_IN].bindSets(cmd, {*context.uboSet, *inSet});
     shared->obj->bind(cmd);
     shared->obj->draw(cmd, 1024);
     context.frame[context.frameIdx]->compile(cmd);
@@ -360,7 +362,7 @@ Mat4f VolumObj3D::drawExternal(const Navigator * nav, const Projector* prj)
 void VolumObj3D::recordVolumetricObject(VkCommandBuffer cmd)
 {
     shared->pipeline[selected].bind(cmd);
-    shared->layout[selected].bindSet(cmd, *set);
+    shared->layout[selected].bindSets(cmd, {*context.uboSet, *set});
     shared->vertex->bind(cmd);
     vkCmdBindIndexBuffer(cmd, shared->index.buffer, shared->index.offset, VK_INDEX_TYPE_UINT16);
     vkCmdDrawIndexed(cmd, 3*2*6, 1, 0, 0, 0);

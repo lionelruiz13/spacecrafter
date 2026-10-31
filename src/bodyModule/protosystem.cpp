@@ -1064,13 +1064,13 @@ void ProtoSystem::selectSystem()
 	currentCenterPos = centerPos;
 }
 
-void ProtoSystem::computeDraw(const Projector *prj, const Navigator *nav)
+void ProtoSystem::computeDraw(const Projector *prj, const Navigator *nav, const Vec3d& aberrationBetaEye)
 {
 	mainBody = nullptr;
 	if (Context::experimental_shadows && Context::shadow_ready) {
 		float highestImportance = 0;
 		for (Body *body : renderedBodies) {
-			body->computeDraw(prj, nav);
+			body->computeDraw(prj, nav, aberrationBetaEye);
 			if (body->getImportance() > highestImportance) {
 				highestImportance = body->getImportance();
 				mainBody = body;
@@ -1078,7 +1078,7 @@ void ProtoSystem::computeDraw(const Projector *prj, const Navigator *nav)
 		}
 	} else {
 		for (Body *body : renderedBodies) {
-			body->computeDraw(prj, nav);
+			body->computeDraw(prj, nav, aberrationBetaEye);
 		}
 	}
 	if (sortedRenderedBodies.size() < 2)

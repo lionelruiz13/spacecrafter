@@ -68,6 +68,7 @@ DsoNavigator::DsoNavigator(ObjLMgr *objLMgr)
     memcpy(context.transfer->planCopy(index), tmp, 3*2*6*sizeof(uint16_t));
 
     layout = std::make_unique<PipelineLayout>(vkmgr);
+    layout->setGlobalPipelineLayout(context.layouts.front().get());
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 1);
     layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, 2);
@@ -154,7 +155,7 @@ void DsoNavigator::build()
     VkCommandBuffer &cmd = cmds[context.frameIdx];
     context.frame[context.frameIdx]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
     pipeline->bind(cmd);
-    layout->bindSet(cmd, *set);
+    layout->bindSets(cmd, {*context.uboSet, *set});
     VertexArray::bind(cmd, {vertex.get(), instance.get()});
     vkCmdBindIndexBuffer(cmd, index.buffer, index.offset, VK_INDEX_TYPE_UINT16);
     vkCmdDrawIndexed(cmd, 3*2*6, instanceCount, 0, 0, 0);

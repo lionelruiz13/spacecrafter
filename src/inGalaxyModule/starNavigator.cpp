@@ -30,6 +30,7 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
+#include "navModule/light_aberration.hpp"
 #include "inGalaxyModule/Star3DWrapper.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "coreModule/coreLink.hpp"
@@ -633,7 +634,8 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj, bool scali
 	this->drawStarName(prj);
 }
 
-void StarNavigator::drawTraced(HipStarMgr& traceMgr, const Navigator *nav, const Projector *prj) noexcept
+void StarNavigator::drawTraced(HipStarMgr& traceMgr, const Navigator *nav, const Projector *prj,
+                               bool lightAberration, const Vec3d& observerVelocity) noexcept
 {
 	std::vector<ScreenStarData> tracedStars;
 	if (!starsFader) {
@@ -641,6 +643,10 @@ void StarNavigator::drawTraced(HipStarMgr& traceMgr, const Navigator *nav, const
 		return;
 	}
 	tracedStars.reserve(std::min(listGlobalStarVisible.size(), static_cast<size_t>(NBR_MAX_STARS)));
+	const Vec3d aberrationBetaEarthEqu = lightAberration
+	    ? nav->getEarthEquToEyeMat().transpose().multiplyWithoutTranslation(
+	          LightAberration::makeEyeBeta(observerVelocity, nav))
+	    : Vec3d(0., 0., 0.);
 
 	for (const auto* star : listGlobalStarVisible) {
 		if (!star->show)
@@ -666,8 +672,10 @@ void StarNavigator::drawTraced(HipStarMgr& traceMgr, const Navigator *nav, const
 			continue;
 
 		Vec3d screen;
-		const Vec3f earthEqu = nav->helioToEarthPosEqu(
+		Vec3d earthEqu = nav->helioToEarthPosEqu(
 			Mat4f::xrotation(-M_PI_2 - 23.4392803055555555556 * M_PI / 180) * position) * 1e-6;
+		if (lightAberration)
+			earthEqu = LightAberration::applyToPosition(earthEqu, aberrationBetaEarthEqu);
 		if (!prj->projectEarthEqu(earthEqu, screen))
 			continue;
 

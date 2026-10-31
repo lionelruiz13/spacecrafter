@@ -10,6 +10,25 @@
 // Fisheye = 0, Allsphere = 1, Ekisolid = 2, Aspheric = 3
 layout(constant_id = 8) const int projectionType = 0;
 
+#ifdef LIGHT_ABERRATION_PROJECTION
+vec3 aberrateAdvancedPosition(vec3 position)
+{
+	float distance = length(position);
+	vec3 beta = light_aberration_beta.xyz;
+	float betaSquared = dot(beta, beta);
+	if (distance < 1e-12 || betaSquared < 1e-12)
+		return position;
+
+	vec3 direction = position / distance;
+	float gamma = inversesqrt(1.0 - betaSquared);
+	float alongBeta = dot(direction, beta);
+	vec3 refracted = (direction / gamma + beta
+	                  + beta * (gamma / (gamma + 1.0) * alongBeta))
+	                 / (1.0 + alongBeta);
+	return normalize(refracted) * distance;
+}
+#endif
+
 // ================================ FISHEYE =================================
 vec4 fisheyeProjectAdvanced(vec4 invec, vec3 clipping_fov)
 {
@@ -18,6 +37,9 @@ vec4 fisheyeProjectAdvanced(vec4 invec, vec3 clipping_fov)
 	float fov=clipping_fov[2];
 
 	vec4 win = Mat * invec;
+#ifdef LIGHT_ABERRATION_PROJECTION
+	win.xyz = aberrateAdvancedPosition(win.xyz);
+#endif
     float rq1 = win.x*win.x+win.y*win.y;
 	float depth = sqrt(rq1 + win.z*win.z);
 
@@ -52,6 +74,9 @@ vec4 allsphereProjectAdvanced(vec4 invec, vec3 clipping_fov)
 	float fov=clipping_fov[2];
 
 	vec4 win = Mat * invec;
+#ifdef LIGHT_ABERRATION_PROJECTION
+	win.xyz = aberrateAdvancedPosition(win.xyz);
+#endif
     float rq1 = win.x*win.x+win.y*win.y;
 	float depth = sqrt(rq1 + win.z*win.z);
 
@@ -100,6 +125,9 @@ vec4 asphericProjectAdvanced(vec4 invec, vec3 clipping_fov)
 	float fov=clipping_fov[2];
 
 	vec4 win = Mat * invec;
+#ifdef LIGHT_ABERRATION_PROJECTION
+	win.xyz = aberrateAdvancedPosition(win.xyz);
+#endif
     float rq1 = win.x*win.x+win.y*win.y;
 	float depth = sqrt(rq1 + win.z*win.z);
 	float tanHalfFovOver2 = tan(fov * 0.5); // fov already in radians / 2

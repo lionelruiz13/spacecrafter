@@ -85,7 +85,8 @@ public:
 	 */
 	void draw(const Navigator * nav, const Projector* prj, bool scaling) noexcept;
 	//! Draw through HipStarMgr's persistent framebuffer (stars_trace mode).
-	void drawTraced(HipStarMgr& traceMgr, const Navigator *nav, const Projector *prj) noexcept;
+	void drawTraced(HipStarMgr& traceMgr, const Navigator *nav, const Projector *prj,
+	                bool lightAberration, const Vec3d& observerVelocity) noexcept;
 	void drawRaw(const Mat4f &matrix) const noexcept;
 	/*! /fn
 	 * \brief calculates the stars to display from the structure

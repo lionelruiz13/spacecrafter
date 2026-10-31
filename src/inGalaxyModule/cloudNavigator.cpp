@@ -68,6 +68,7 @@ CloudNavigator::CloudNavigator(const std::string &filename)
     texture = std::make_unique<s_texture>("volum_cloud.png", TEX_LOAD_TYPE_PNG_SOLID, true, 0, 256, 1);
 
     layout = std::make_unique<PipelineLayout>(vkmgr);
+    layout->setGlobalPipelineLayout(context.layouts.front().get());
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 1);
     layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, 2);
@@ -225,7 +226,7 @@ void CloudNavigator::draw(const Mat4f &mat, const Projector* prj)
     FrameMgr &frame = *context.frame[context.frameIdx];
     auto &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
     pipeline->bind(cmd);
-    layout->bindSet(cmd, *set);
+    layout->bindSets(cmd, {*context.uboSet, *set});
     VertexArray::bind(cmd, {vertex.get(), instance.get()});
     vkCmdBindIndexBuffer(cmd, index.buffer, index.offset, VK_INDEX_TYPE_UINT16);
     vkCmdDrawIndexed(cmd, 3*2*6, instanceCount, 0, 0, 0);

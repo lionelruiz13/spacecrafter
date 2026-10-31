@@ -188,7 +188,7 @@ public:
     static Vec3d getCenterPos() {return currentCenterPos;}
 
     // Call computeDraw on all visible bodies and sort them
-    void computeDraw(const Projector *prj, const Navigator *nav);
+    void computeDraw(const Projector *prj, const Navigator *nav, const Vec3d& aberrationBetaEye);
 
     inline Body *getCenterOfInterest() const {
         return mainBody;

@@ -15,6 +15,6 @@ layout (binding=0, set=1) uniform uMat {
 
 void main(void)
 {
-	gl_Position = custom_project2D(Position, ModelViewMatrix, main_clipping_fov[2]);
+	gl_Position = custom_project2DAberrated(Position, ModelViewMatrix, main_clipping_fov[2], light_aberration_beta.xyz);
 	gl_PointSize = 1.5;
 }

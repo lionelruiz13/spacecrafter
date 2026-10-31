@@ -47,7 +47,7 @@ void main()
     TexCoord = VertexTexCoord;
     Normal = normalize(NormalMatrix * VertexNormal);
     Position = VertexPosition;
-	glPosition = custom_project(VertexPosition, ModelViewMatrix, clipping_fov);
+	glPosition = custom_projectAberrated(VertexPosition, ModelViewMatrix, clipping_fov, light_aberration_beta.xyz);
 
     //~ gl_Position = MVP * vec4(VertexPosition,1.0);
     // gl_Position = MVP * posToFisheye(VertexPosition);

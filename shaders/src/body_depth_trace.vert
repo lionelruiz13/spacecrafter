@@ -2,6 +2,7 @@
 
 layout (push_constant) uniform depthTraceInfo {
 	mat4 ModelViewMatrix;
+	vec4 aberrationBeta;
 	vec3 clipping_fov;
 	float planetScaledRadius;
 	float planetOneMinusOblateness;
@@ -15,5 +16,5 @@ void main()
 {
 	vec3 pos = position * planetScaledRadius;
 	pos.z *= planetOneMinusOblateness;
-	gl_Position = custom_project(pos, ModelViewMatrix, clipping_fov);
+	gl_Position = custom_projectAberrated(pos, ModelViewMatrix, clipping_fov, aberrationBeta.xyz);
 }
