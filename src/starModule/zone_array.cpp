@@ -22,40 +22,7 @@
 //#include "spacecrafter.hpp"
 #include "coreModule/projector.hpp"
 #include "starModule/zone_array.hpp"
-#include "tools/sc_const.hpp"
-
-namespace {
-
-// Relativistic refraction of an incoming light ray by observer motion.
-// observerVelocity is expressed in heliocentric ecliptic coordinates (AU/s).
-Vec3d applyLightAberration(const Vec3d& localDirection, const Vec3d& observerVelocity, const Navigator *nav)
-{
-	Vec3d beta = mat_vsop87_to_j2000.multiplyWithoutTranslation(observerVelocity)
-	             * (AU / SPEED_OF_LIGHT);
-	beta = nav->earthEquToLocal(nav->j2000ToEarthEqu(beta));
-
-	// SpaceCrafter navigation is not constrained by relativity and can exceed
-	// c. Map the raw speed continuously into the valid relativistic interval;
-	// unlike a hard clamp, this retains changes in the measured speed.
-	const double rawBetaSquared = beta.lengthSquared();
-	if (rawBetaSquared < 1e-24)
-		return localDirection;
-	beta /= std::sqrt(1.0 + rawBetaSquared);
-
-	double betaSquared = beta.lengthSquared();
-
-	Vec3d direction = localDirection;
-	direction.normalize();
-	const double gamma = 1.0 / std::sqrt(1.0 - betaSquared);
-	const double denominator = 1.0 + direction.dot(beta);
-	Vec3d refracted = (direction / gamma + beta
-	                  + beta * (gamma / (gamma + 1.0) * direction.dot(beta)))
-	                 / denominator;
-	refracted.normalize();
-	return refracted;
-}
-
-}
+#include "navModule/light_aberration.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
@@ -308,7 +275,8 @@ void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projec
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
 		if (lightAberration)
-			local_pos = applyLightAberration(local_pos, observerVelocity, nav);
+			local_pos = LightAberration::applyToDirection(
+				local_pos, LightAberration::makeLocalBeta(observerVelocity, nav));
 		int mag = s->getMag();
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
@@ -399,7 +367,8 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
 		if (lightAberration)
-			local_pos = applyLightAberration(local_pos, observerVelocity, nav);
+			local_pos = LightAberration::applyToDirection(
+				local_pos, LightAberration::makeLocalBeta(observerVelocity, nav));
 		int mag = s->getMag();
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {

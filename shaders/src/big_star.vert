@@ -21,5 +21,5 @@ void main()
 {
     fragTime = time;
     fPosition = position;
-    gl_Position = custom_project(position * radius, ModelViewMatrix, clipping_fov);
+    gl_Position = custom_projectAberrated(position * radius, ModelViewMatrix, clipping_fov, light_aberration_beta.xyz);
 }

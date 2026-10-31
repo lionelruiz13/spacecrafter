@@ -21,6 +21,6 @@ layout (location=1) out vec4 Position;
 
 void main()
 {
-	Position = custom_project(position, ModelViewMatrix, vec3(main_clipping_fov));
+	Position = custom_projectAberrated(position, ModelViewMatrix, vec3(main_clipping_fov), light_aberration_beta.xyz);
     TexCoord = texcoord;
 }

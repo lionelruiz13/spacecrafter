@@ -166,6 +166,7 @@ typedef Vec3i ivec3;
 
 struct depthTraceInfo {
 	mat4 ModelViewMatrix;
+	Vec4f aberrationBeta;
 	vec3 clipping_fov;
 	float planetScaledRadius;
 	float planetOneMinusOblateness;
@@ -245,6 +246,7 @@ typedef struct {
 
 struct ShadowVert {
 	mat4 ModelViewMatrix;
+	Vec4f aberrationBeta;
 	// mat3 ShadowMatrix;
 	float WorldToModelMatrix[12];
 	// vec3 lightDirection; // Light direction in world coordinates

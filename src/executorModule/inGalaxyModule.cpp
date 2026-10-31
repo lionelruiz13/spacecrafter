@@ -139,7 +139,8 @@ void InGalaxyModule::draw(int delta_time)
 	// transparency.
 	core->currentDso3d->draw(observer->getAltitude(), core->projection, core->navigation);
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
-	core->currentStarNav->drawTraced(*core->currentHipStars, core->navigation, core->projection);
+	core->currentStarNav->drawTraced(*core->currentHipStars, core->navigation, core->projection,
+	                                core->FlagLightAberration, observer->getHeliocentricVelocity());
 	core->currentDsoNav->draw(core->navigation, core->projection);
 	core->currentCloudNav->draw(core->navigation, core->projection);
 	//core->postDraw();

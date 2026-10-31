@@ -12,6 +12,7 @@ layout (location=1) in float texcoord;
 
 layout (binding=0) uniform globalProj {
 	mat4 ModelViewMatrix;
+	vec4 aberrationBeta;
 	// mat3 ShadowMatrix;
 	mat3 WorldToModelMatrix;
 	// vec3 lightDirection; // Light direction in world coordinates
@@ -45,7 +46,7 @@ void main()
 	viewDirection = normalize(WorldToModelMatrix * pos.xyz);
 
 	// Use custom projection with specialization constant
-	vec4 projected = custom_projectNoMV(pos.xyz, vec3(zNear, zNear + zRange, fov));
+	vec4 projected = custom_projectNoMV(lightAberrationPosition(pos.xyz, aberrationBeta.xyz), vec3(zNear, zNear + zRange, fov));
 	side = mix(-1, -0.2, (texcoord < 0.5));
 	gl_Position = projected;
 }

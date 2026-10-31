@@ -9,6 +9,7 @@ layout(binding=2) uniform DiskModel {
     vec4 Projection;   // framebuffer center, viewport radius, half FOV
     vec4 DiskColor;    // rgb, intensity
     vec4 PhotonColor;  // rgb, turbulence
+    vec4 AberrationBeta; // apparent-to-physical ray conversion
 };
 layout(constant_id=8) const int projectionType = 0;
 layout(location=0) out vec4 FragColor;
@@ -111,6 +112,20 @@ vec3 eyeRay()
     return vec3(xy * (sin(theta) / max(r, 1e-8)), -cos(theta));
 }
 
+vec3 physicalRay(vec3 apparentRay)
+{
+    vec3 inverseBeta = -AberrationBeta.xyz;
+    float betaSquared = dot(inverseBeta, inverseBeta);
+    if (betaSquared < 1e-12)
+        return apparentRay;
+    float gamma = inversesqrt(1.0 - betaSquared);
+    float alongBeta = dot(apparentRay, inverseBeta);
+    vec3 refracted = (apparentRay / gamma + inverseBeta
+                      + inverseBeta * (gamma / (gamma + 1.0) * alongBeta))
+                     / (1.0 + alongBeta);
+    return normalize(refracted);
+}
+
 vec4 diskEmission(vec3 point)
 {
     float radius = length(point);
@@ -149,7 +164,7 @@ void main()
     // The common scene pass owns the shadow with or without an accretion disk.
     // This pass contributes only premultiplied disk emission/opacity.
     FragColor = vec4(0.0);
-    vec3 ray = eyeRay();
+    vec3 ray = physicalRay(eyeRay());
     if (Camera.w < 0.0) {
         FragColor = undistortedDisk(ray);
         return;

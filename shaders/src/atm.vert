@@ -9,6 +9,7 @@ layout (location=1) out vec2 eyePos;
 // All positions are relative to the camera (camPos is at origin) - without projection
 layout (binding=0) uniform ubo {
    mat4 ModelViewMatrix;
+   vec4 aberrationBeta;
    vec3 sunPos;
    float planetRadius; // 1.0  ;
    vec3 bodyPos;
@@ -25,5 +26,5 @@ void main()
     Position.z *= planetOneMinusOblateness;
     Position = vec3(ModelViewMatrix * vec4(Position, 1));
     pos = Position;
-    eyePos = custom_project2DNoMV(Position, clipping_fov[2]).xy;
+    eyePos = custom_project2DNoMV(lightAberrationPosition(Position, aberrationBeta.xyz), clipping_fov[2]).xy;
 }

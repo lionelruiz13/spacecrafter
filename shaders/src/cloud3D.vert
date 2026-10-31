@@ -4,14 +4,15 @@
 #version 420
 #extension GL_ARB_shader_storage_buffer_object : require
 
-layout (binding=0) uniform proj {
+layout (set=1, binding=0) uniform proj {
     mat4 ModelViewMatrix;
 };
 
-layout (binding=1) uniform fov {
+layout (set=1, binding=1) uniform fov {
     vec3 clipping_fov;
 };
 
+#include <cam_block_only.glsl>
 #include <custom_project.glsl>
 
 layout (location=0) in vec3 position;
@@ -34,7 +35,7 @@ void main()
     positionOut = pos;
     colorOut = color;
     invmodelOut = invmodel;
-    gl_Position = custom_projectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, 3.1415926));
+    gl_Position = custom_projectNoMV(lightAberrationPosition(pos, light_aberration_beta.xyz), vec3(clipping_fov.x, clipping_fov.y, 3.1415926));
     visible = int(gl_Position.z >= 0.);
     outLodFactor = lodFactor;
 }

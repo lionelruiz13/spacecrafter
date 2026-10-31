@@ -56,7 +56,7 @@ public:
 	// Get the magnitude for an observer at pos obs_pos in the heliocentric coordinate (in AU)
 	virtual float computeMagnitude(const Vec3d obs_pos) const;
 
-	virtual void computeDraw(const Projector* prj, const Navigator * nav) override;
+	virtual void computeDraw(const Projector* prj, const Navigator * nav, const Vec3d& aberrationBetaEye) override;
 
 
 	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye,

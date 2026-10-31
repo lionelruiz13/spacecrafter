@@ -20,7 +20,7 @@ layout (location=2) patch out vec4 colorOut;
 layout (location=3) patch out mat4 invModelOut;
 layout (location=7) patch out float lodFactorOut;
 
-layout (binding=1) uniform fov {
+layout (set=1, binding=1) uniform fov {
     vec3 clipping_fov;
 };
 

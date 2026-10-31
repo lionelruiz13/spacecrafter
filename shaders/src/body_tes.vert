@@ -39,8 +39,8 @@ void main()
 
 	PositionOut = Position;
 	Position *= planetScaledRadius;
-	glPosition = vec4(vec2(custom_project2D(vec4(Position, 1), ModelViewMatrix, clipping_fov[2])),
-		vec2(custom_project2D(vec4(Position * (1. + TesParam[2]), 1), ModelViewMatrix, clipping_fov[2])));
+	glPosition = vec4(vec2(custom_project2DAberrated(vec4(Position, 1), ModelViewMatrix, clipping_fov[2], light_aberration_beta.xyz)),
+		vec2(custom_project2DAberrated(vec4(Position * (1. + TesParam[2]), 1), ModelViewMatrix, clipping_fov[2], light_aberration_beta.xyz)));
 	TexCoord = texcoord;
 	Normal = normal;
 }

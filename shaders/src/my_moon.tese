@@ -51,7 +51,7 @@ void main()
     vec2 TexCoord = TexCoordIn[0]*gl_TessCoord.x+
                     TexCoordIn[1]*gl_TessCoord.y+
                     TexCoordIn[2]*gl_TessCoord.z;
-    gl_Position = custom_project(position * planetScaledRadius * (1.0+texture(heightmapTexture,TexCoord).x * coeffHeightMap), ModelViewMatrix, clipping_fov);
+    gl_Position = custom_projectAberrated(position * planetScaledRadius * (1.0+texture(heightmapTexture,TexCoord).x * coeffHeightMap), ModelViewMatrix, clipping_fov, light_aberration_beta.xyz);
     position = vec3(ModelViewMatrix * vec4(position * planetRadius, 1));
     PositionOut = position;
     TexCoordOut = TexCoord;

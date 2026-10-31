@@ -6,6 +6,7 @@ layout (location=0) out vec4 color;
 // All positions are relative to the camera (camPos is at origin) - without projection
 layout (binding=0) uniform ubo {
     mat4 ModelViewMatrix;
+    vec4 aberrationBeta;
     vec3 sunPos;
     float planetRadius; // 1.0  ;
     vec3 bodyPos;

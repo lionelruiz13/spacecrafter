@@ -186,7 +186,8 @@ void SolarSystemModule::draw(int delta_time)
 	core->currentMilkyWay->draw(core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr->getJulian());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
-	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0,
+	                           core->FlagLightAberration, observer->getHeliocentricVelocity());
 	core->currentOort->draw(observer->getAltitude(), core->navigation);
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
@@ -251,7 +252,8 @@ void SolarSystemModule::asyncUpdateLoop()
     AsyncUpdateData data;
     threadQueue.acquire();
     while (threadQueue.pop(data)) {
-        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation);
+        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation,
+                                                    core->FlagLightAberration, data.observerVelocity);
         core->currentAtmosphere->computeColor(core->timeMgr->getJDay(), data.sunPos, data.moonPos,
     	                          core->currentSsystemFactory->getMoon()->get_phase(data.earthPos_helio),
     	                          core->currentToneConverter.get(), core->projection,

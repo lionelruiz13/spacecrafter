@@ -28,6 +28,7 @@ struct UBOData {
 	float time; 				// offset 116 (4 bytes)
 	float _pad1;				// offset 120 (4 bytes)
 	float _pad2;				// offset 124 (4 bytes)
+	Vec4f light_aberration_beta; // offset 128 (16 bytes), eye coordinates
 };
 
 class UBOCam {
@@ -66,6 +67,10 @@ public:
 
 	void setAmbientLight(float _ambient) {
 		UBOdata->ambient = _ambient;
+	}
+
+	void setLightAberrationBeta(const Vec3f& beta) {
+		UBOdata->light_aberration_beta.set(beta[0], beta[1], beta[2], 0.f);
 	}
 
 	float getAmbientLight() {

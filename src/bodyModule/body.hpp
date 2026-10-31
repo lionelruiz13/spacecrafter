@@ -198,7 +198,7 @@ public:
 	float computeMagnitude(const Navigator * nav) const;
 
 	// calculates all the elements necessary to prepare the draw
-	virtual void computeDraw(const Projector* prj, const Navigator* nav);
+	virtual void computeDraw(const Projector* prj, const Navigator* nav, const Vec3d& aberrationBetaEye);
 
 	// Screen position computation functions - one per projection type
 	void fisheyeComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance);
@@ -609,7 +609,9 @@ protected:
 	std::unique_ptr<Set> bigSet;
 
 	Vec3f eye_sun;
+	Vec3f physicalEyePlanet;
 	Vec3f eye_planet;
+	Vec3f aberrationBetaEye;
 	SHADER_USE myShader = SHADER_UNDEFINED;  			// the name of the shader used for his display
 	drawState_t *drawState;		// State for draw, include Pipeline and PipelineLayout
 	ShadowDescriptor *shadow = nullptr;

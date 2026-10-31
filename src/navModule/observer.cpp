@@ -27,6 +27,7 @@
 #include <string>
 #include <cstdlib>
 #include <algorithm>
+#include <cmath>
 #include "bodyModule/body.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
@@ -40,6 +41,7 @@
 #include "eventModule/CoreEvent.hpp"
 #include "mainModule/define_key.hpp"
 #include "coreModule/coreLink.hpp"
+#include "coreModule/time_mgr.hpp"
 
 // Slowdown factor used for eye relative movements
 constexpr double eyeMoveDivisor = 1*1000*AU;
@@ -346,13 +348,20 @@ void Observer::update(int delta_time)
 	// Keep this in the heliocentric ecliptic frame so renderers can transform it
 	// to their own coordinate system before applying light aberration.
 	const Vec3d currentHeliocentricPosition = getHeliocentricPosition(CoreLink::instance->getJDay());
-	if (hasPreviousHeliocentricPosition && previousPositionDeltaTime > 0) {
+	const double timeSpeed = CoreLink::instance->timeGetSpeed();
+	// Aberration is supported with simulation time paused (0) or flowing normally
+	// (JD_SECOND = 1x); other playback rates are intentionally disabled.
+	const bool timeRateSupported = timeSpeed == 0.
+	                               || std::abs(timeSpeed - JD_SECOND) <= JD_SECOND * 1e-6;
+	if (hasPreviousHeliocentricPosition && previousPositionDeltaTime > 0
+	        && timeRateSupported && previousTimeRateSupported) {
 		heliocentricVelocity = (currentHeliocentricPosition - previousHeliocentricPosition)
 		                       * (1000.0 / previousPositionDeltaTime);
 	} else {
 		heliocentricVelocity = Vec3d(0., 0., 0.);
 	}
 	previousHeliocentricPosition = currentHeliocentricPosition;
+	previousTimeRateSupported = timeRateSupported;
 	// The position observed at the beginning of the next update results from
 	// the movement performed with this update's duration.
 	previousPositionDeltaTime = delta_time;

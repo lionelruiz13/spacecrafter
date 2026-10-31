@@ -8,11 +8,11 @@ layout (location=0) in vec3 direction;
 
 layout (location=0) out vec4 fragColor;
 
-layout (binding=1) uniform ubo {
+layout (set=1, binding=1) uniform ubo {
     vec3 camCoord; // Position of the camera in the volumetric object in [0, 1]
 };
 
-layout (binding=2) uniform sampler3D colorTexture;
+layout (set=1, binding=2) uniform sampler3D colorTexture;
 
 layout(constant_id=0) const float colorScale = 2;
 layout(constant_id=1) const bool z_reflection = false;

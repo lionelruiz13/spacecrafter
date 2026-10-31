@@ -9,6 +9,7 @@
 layout (binding=0, set=0) uniform ubo {
 	mat4 ModelViewMatrix;
 	mat4 ModelViewMatrixInverse;
+	vec4 aberrationBeta;
 	vec3 clipping_fov;
 	float RingScale;
 	vec3 PlanetPosition;
@@ -46,7 +47,7 @@ void main()
 
 	NdotL = clamp(16.0*dot(vec3(0.0, 0.0, 1.0-2.0*SunnySideUp), modelLight), -1.0, 1.0);
 
-	vec4 outPos = custom_project(Position3D*RingScale, ModelViewMatrix, clipping_fov);
+	vec4 outPos = custom_projectAberrated(Position3D*RingScale, ModelViewMatrix, clipping_fov, aberrationBeta.xyz);
 	// fading depend on how close we are, thus on z value
 	fading = min(1, (outPos.z * (clipping_fov[1] - clipping_fov[0]) + clipping_fov[0]) * clipping_fov[2] * fadingFactor);
 	gl_Position = outPos;

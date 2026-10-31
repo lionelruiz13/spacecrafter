@@ -372,8 +372,9 @@ public:
         ssystem->bodyTraceGetAltAz(nav, alt, az);
     }
 
-	void computePreDraw(const Projector * prj, const Navigator * nav) {
-        ssystemDisplay->computePreDraw(prj, nav);
+	void computePreDraw(const Projector * prj, const Navigator * nav,
+	                    bool lightAberration, const Vec3d& observerVelocity) {
+		ssystemDisplay->computePreDraw(prj, nav, lightAberration, observerVelocity);
     }
 
 	void draw(Projector * prj, const Navigator * nav, const Observer* observatory,

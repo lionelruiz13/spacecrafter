@@ -26,6 +26,6 @@ void main()
 {
 	//~ gl_Position = ModelViewProjectionMatrix * vec4(position, 1.0);
 	vec3 Position =position * planetScaledRadius;
-	gl_Position = custom_project(Position, ModelViewMatrix, clipping_fov);
+	gl_Position = custom_projectAberrated(Position, ModelViewMatrix, clipping_fov, light_aberration_beta.xyz);
     TexCoord = texcoord;
 }

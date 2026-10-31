@@ -269,7 +269,8 @@ void InSandBoxModule::draw(int delta_time)
 
 
 	//! solarSystem
-	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0,
+	                           core->FlagLightAberration, observer->getHeliocentricVelocity());
 	core->currentOort->draw(observer->getAltitude(), core->navigation);
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
@@ -323,7 +324,8 @@ void InSandBoxModule::asyncUpdateLoop()
     AsyncUpdateData data;
     threadQueue.acquire();
     while (threadQueue.pop(data)) {
-        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation);
+        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation,
+                                                    core->FlagLightAberration, data.observerVelocity);
 
 		// Compute the moon phase only if it exists
         float moonPhase = 0.0f;

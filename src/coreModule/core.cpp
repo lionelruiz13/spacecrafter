@@ -34,6 +34,7 @@
 #include "navModule/anchor_manager.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
+#include "navModule/light_aberration.hpp"
 #include "appModule/space_date.hpp"
 #include "appModule/fontFactory.hpp"
 #include "bodyModule/body_decor.hpp"
@@ -731,6 +732,10 @@ void Core::uboCamUpdate()
 	uboCam->setClippingFov(projection->getClippingFov());
 	uboCam->setViewportCenter(projection->getViewportFloatCenter());
 	uboCam->setMVP2D(projection->getMatProjectionOrtho2D());
+	const Vec3d aberrationBetaEye = FlagLightAberration
+		? LightAberration::makeEyeBeta(observatory->getHeliocentricVelocity(), navigation)
+		: Vec3d(0., 0., 0.);
+	uboCam->setLightAberrationBeta(aberrationBetaEye.convert());
 }
 
 std::string Core::getSkyCulture() const {

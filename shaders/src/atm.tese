@@ -8,6 +8,7 @@ layout (location=0) out vec3 eyePos;
 // All positions are relative to the camera (camPos is at origin) - without projection
 layout (binding=0) uniform ubo {
     mat4 ModelViewMatrix;
+    vec4 aberrationBeta;
     vec3 sunPos;
     float planetRadius; // 1.0  ;
     vec3 bodyPos;
@@ -27,5 +28,5 @@ void main()
                   (gl_TessCoord.z * position[2]);
 
     eyePos = pos;
-    gl_Position = custom_projectNoMV(pos, clipping_fov);
+    gl_Position = custom_projectNoMV(lightAberrationPosition(pos, aberrationBeta.xyz), clipping_fov);
 }

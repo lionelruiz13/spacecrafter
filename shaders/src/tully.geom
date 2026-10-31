@@ -23,6 +23,7 @@ layout (binding=0, set=1) uniform ubo {
 };
 
 #include <cam_block_only.glsl>
+#define LIGHT_ABERRATION_PROJECTION
 #include <custom_project_advanced.glsl>
 
 void main()

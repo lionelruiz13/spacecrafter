@@ -224,9 +224,9 @@ void Sun::createSunShader()
 }
 
 // Draw the Sun and all the related infos : name, circle etc..
-void Sun::computeDraw(const Projector* prj, const Navigator * nav)
+void Sun::computeDraw(const Projector* prj, const Navigator * nav, const Vec3d& aberrationBetaEye)
 {
-    Body::computeDraw(prj, nav);
+    Body::computeDraw(prj, nav, aberrationBetaEye);
     if (!isVisible)
         isVisible = (acos(-eye_planet[2] / distance) * (360 / M_PI) / prj->getFov() < (1 + big_halo_size / prj->getViewportRadius()));
 }

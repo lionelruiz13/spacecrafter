@@ -31,6 +31,7 @@
 #include "bodyModule/body.hpp"
 #include "navModule/observer.hpp"
 #include "coreModule/projector.hpp"
+#include "navModule/light_aberration.hpp"
 #include "coreModule/coreLink.hpp"
 #include "tools/s_font.hpp"
 #include "../planetsephems/sideral_time.h"
@@ -984,8 +985,9 @@ void Body::asphericComputeScreenPos(const Projector* prj, const Vec3d &eye_plane
 }
 
 
-void Body::computeDraw(const Projector* prj, const Navigator* nav)
+void Body::computeDraw(const Projector* prj, const Navigator* nav, const Vec3d& aberrationBeta)
 {
+	aberrationBetaEye = aberrationBeta;
 	eye_sun = nav->getHelioToEyeMat().getTranslation();
 
 	mat = mat_local_to_parent;
@@ -1028,14 +1030,15 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
 	parent_mat = nav->getHelioToEyeMat() * parent_mat;
 
-    eye_planet = mat.getTranslation();
+    physicalEyePlanet = mat.getTranslation();
+    eye_planet = LightAberration::applyToPosition(physicalEyePlanet, aberrationBeta);
 
-    lightDirection = eye_sun - eye_planet;
+    lightDirection = eye_sun - physicalEyePlanet;
     sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Sun radius!
     for (p = parent.get(); p; p = p->getParent()) {
         if (p->getBodyType() == SUN) {
             eye_sun = (nav->getHelioToEyeMat() * p->mat_local_to_parent).getTranslation();
-            lightDirection = eye_sun - eye_planet;
+            lightDirection = eye_sun - physicalEyePlanet;
             float sun_radius = p->radius;
             sun_half_angle = atan2(sun_radius, sqrt(lightDirection.lengthSquared() - sun_radius*sun_radius));
             break;
@@ -1211,7 +1214,8 @@ void Body::drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, con
                 break;
             default:;
         }
-        depthTraceInfo pdata {mat.convert(), prj->getClippingFov(), _radius, (float) one_minus_oblateness};
+        depthTraceInfo pdata {mat.convert(), Vec4f(aberrationBetaEye[0], aberrationBetaEye[1], aberrationBetaEye[2], 0.f),
+                              prj->getClippingFov(), _radius, (float) one_minus_oblateness};
         BodyShader::getShaderDepthTrace()->layout->pushConstant(cmdBodyDepth, 0, &pdata);
         currentObj->draw(cmdBodyDepth, 1);
     }
@@ -1283,7 +1287,9 @@ void Body::drawAtmExt(VkCommandBuffer cmd, const Projector *prj, const Navigator
      && distance > radius * atmosphereParams->atmosphereRadiusFactor * 1.01) { // Avoid graphical glitch when too close of the atmosphere
         if (!atmExt) // AtmExt creation is fast AND never grouped
             atmExt = std::make_unique<AtmExt>(this, currentObj, atmosphereParams->tableAtmosphere);
-        atmExt->draw(cmd, prj, nav, mat, eye_sun, eye_planet, one_minus_oblateness, Vec2i(bodyTesselation->getMinTesLevel(), bodyTesselation->getMaxTesLevel()), radius, radius * atmosphereParams->atmosphereRadiusFactor, screen_sz, depthTest);
+        atmExt->draw(cmd, prj, nav, mat, eye_sun, physicalEyePlanet, aberrationBetaEye,
+                     one_minus_oblateness, Vec2i(bodyTesselation->getMinTesLevel(), bodyTesselation->getMaxTesLevel()),
+                     radius, radius * atmosphereParams->atmosphereRadiusFactor, screen_sz, depthTest);
     }
 }
 

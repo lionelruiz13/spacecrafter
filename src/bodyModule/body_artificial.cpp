@@ -186,7 +186,8 @@ void Artificial::bindShadows(const ShadowRenderData &renderData)
 void Artificial::drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj)
 {
     if (isVisibleOnScreen()) {
-        depthTraceInfo pdata {mat.convert(), prj->getClippingFov(), (float) radius, (float) one_minus_oblateness};
+        depthTraceInfo pdata {mat.convert(), Vec4f(aberrationBetaEye[0], aberrationBetaEye[1], aberrationBetaEye[2], 0.f),
+                              prj->getClippingFov(), (float) radius, (float) one_minus_oblateness};
         BodyShader::getShaderDepthTrace()->layout->pushConstant(cmdBodyDepth, 0, &pdata);
         obj3D->drawShadow(cmdBodyDepth);
     }
