@@ -42,7 +42,7 @@ void main()
 	Position0.x =position.x * planetScaledRadius;
 	Position0.y =position.y * planetScaledRadius;
 	Position0.z =position.z * planetScaledRadius * planetOneMinusOblateness;
-	gl_Position = custom_project(Position0, ModelViewMatrix, clipping_fov);
+	gl_Position = custom_projectAberrated(Position0, ModelViewMatrix, clipping_fov, light_aberration_beta.xyz);
 
     //Light
 	vec3 positionL = planetRadius * position ;

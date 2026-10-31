@@ -29,6 +29,7 @@
 #include "bodyModule/tail.hpp"
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
+#include "navModule/light_aberration.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/context.hpp"
 #include "tools/draw_helper.hpp"
@@ -63,14 +64,18 @@ void SolarSystemDisplay::changeSystem(ProtoSystem * _ssystem) {
         ssystem->setSolarSystemDisplay(this);
 }
 
-void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator * nav)
+void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator * nav,
+                                        bool lightAberration, const Vec3d& observerVelocity)
 {
 	if (!getFlagShow())
 		return; // 0;
 
     // Compute each Body distance to the observer and
     // sort all body from the furthest to the closest to the observer
-    ssystem->computeDraw(prj, nav);
+    const Vec3d aberrationBetaEye = lightAberration
+        ? LightAberration::makeEyeBeta(observerVelocity, nav)
+        : Vec3d(0., 0., 0.);
+    ssystem->computeDraw(prj, nav, aberrationBetaEye);
 
     auto tmp = ssystem->getCenterOfInterest();
     if (tmp != mainBody) {

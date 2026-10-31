@@ -31,6 +31,7 @@
 #include "tools/s_texture.hpp"
 #include "tools/s_font.hpp"
 #include "navModule/navigator.hpp"
+#include "navModule/light_aberration.hpp"
 #include "tools/translator.hpp"
 #include "tools/log.hpp"
 
@@ -154,7 +155,8 @@ void NebulaMgr::removeSupplementalNebulae()
 }
 
 // Draw all the Nebulae
-void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproductor* eye, double sky_brightness)
+void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproductor* eye, double sky_brightness,
+                     bool lightAberration, const Vec3d& observerVelocity)
 {
 	if (fader.isZero()) return;
 
@@ -173,7 +175,11 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 	// FOV is currently measured vertically, so need to adjust for wide screens
 	// TODO: projector should probably use largest measurement itself
 	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
-	nebGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
+	const Vec3d aberrationBetaEye = lightAberration
+		? LightAberration::makeEyeBeta(observerVelocity, nav) : Vec3d(0., 0., 0.);
+	const Vec3d aberrationBetaJ2000 = nav->getJ2000ToEyeMat().transpose().multiplyWithoutTranslation(aberrationBetaEye);
+	const double aberrationAngle = std::asin(std::min(1.0, aberrationBetaEye.length()));
+	nebGrid.intersect(nav->getPrecEquVision(), std::min(M_PI, max_fov*M_PI/180.f*1.2f + aberrationAngle));
 
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
@@ -190,7 +196,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 		if ( n->getAngularSize()>size_limit|| (hintsFader && n->getMag() <= getMaxMagHints())) {
 			// Refactor this by refactoring projectJ2000 and his dependencies
 			//prj->projectJ2000(n->XYZ_, win);
-			n->setXY(prj);
+			n->setXY(prj, LightAberration::applyToPosition(n->XYZ_, aberrationBetaJ2000));
 
 			if (n->getAngularSize()>size_limit) {
 				n->drawTex(prj, nav, eye, sky_brightness, flagBright);

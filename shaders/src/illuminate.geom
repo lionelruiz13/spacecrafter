@@ -23,6 +23,7 @@ layout (location=1) out vec3 texColorOut;
 layout (push_constant) uniform ubo {
     mat4 Mat; // ModelViewMatrix
 };
+#define LIGHT_ABERRATION_PROJECTION
 #include <custom_project_advanced.glsl>
 
 // maximal squared distance accepted

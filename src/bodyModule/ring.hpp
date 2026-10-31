@@ -70,7 +70,9 @@ public:
 	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init);
 	~Ring(void);
 
-	void draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
+	void draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,
+	          double screen_sz, Vec3f& lightDirection, Vec3f& planetPosition,
+	          const Vec3f& aberrationBeta, float planetRadius);
 
 	void drawDepthTrace(VkCommandBuffer cmd, VkPipelineLayout layout);
 
@@ -113,6 +115,7 @@ private:
 	struct RingUniform {
 		Mat4f ModelViewMatrix;
 		Mat4f ModelViewMatrixInverse;
+		Vec4f aberrationBeta;
 		Vec3f clipping_fov;
 		float RingScale;
 		Vec3f PlanetPosition;

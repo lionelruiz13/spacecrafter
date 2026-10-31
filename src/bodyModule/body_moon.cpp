@@ -404,6 +404,7 @@ void Moon::drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, const
     float finalRadius = std::min(radius * (1 + altimetryFactor), mat.getTranslation().length() - radius/64);
     auto m = mat * Mat4d::zrotation(M_PI/180*axis_rotation);
     vert.ModelViewMatrix = (m * Mat4d::scaling(Vec3d(1, 1, one_minus_oblateness))).convert();
+    vert.aberrationBeta.set(aberrationBetaEye[0], aberrationBetaEye[1], aberrationBetaEye[2], 0.f);
     {
         auto m2 = m.transpose();
         m2.setMat3(vert.WorldToModelMatrix);

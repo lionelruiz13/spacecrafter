@@ -16,14 +16,15 @@ layout (location=1) out vec3 texCoordOut;
 layout (location=2) out flat vec4 colorOut;
 layout (location=3) out flat float lodFactorOut;
 
-layout (binding=1) uniform fov {
+layout (set=1, binding=1) uniform fov {
     vec3 clipping_fov;
 };
 
-layout (binding=2) uniform uproj {
+layout (set=1, binding=2) uniform uproj {
     mat4 camRotToLocal; // Inverse rotation of ModelViewMatrix
 };
 
+#include <cam_block_only.glsl>
 #include <custom_project.glsl>
 
 void main(void)
@@ -32,6 +33,6 @@ void main(void)
     texCoordOut = texCoord[0]*gl_TessCoord[0] + texCoord[1]*gl_TessCoord[1] + texCoord[2]*gl_TessCoord[2];
     colorOut = color;
     lodFactorOut = lodFactor;
-    gl_Position = custom_projectNoMV(Position, clipping_fov);
+    gl_Position = custom_projectNoMV(lightAberrationPosition(Position, light_aberration_beta.xyz), clipping_fov);
     direction = vec3(invModel * vec4(normalize(vec3(camRotToLocal * vec4(Position, 0.))), 0.)); // Use of mat4 as mat3 due to the nvidia bug of mat3 in the vulkan implementation
 }

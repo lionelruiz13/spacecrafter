@@ -68,7 +68,8 @@ public:
 	void removeSupplementalNebulae();
 
 	//! Draw all the DSO
-	void draw(const Projector *prj, const Navigator *nav, ToneReproductor *eye, double sky_brightness);
+	void draw(const Projector *prj, const Navigator *nav, ToneReproductor *eye, double sky_brightness,
+	          bool lightAberration, const Vec3d& observerVelocity);
 
 	//! search deepskyObject by name M83, NGC 1123, IC1234 ...
 	//! \return a object

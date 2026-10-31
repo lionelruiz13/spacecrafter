@@ -3,6 +3,7 @@
 layout (binding=0, set=0) uniform ubo {
 	mat4 ModelViewMatrix;
 	mat4 ModelViewMatrixInverse;
+	vec4 aberrationBeta;
 	vec3 clipping_fov;
 	float RingScale;
 	vec3 PlanetPosition;
@@ -38,5 +39,5 @@ void main(void)
 	vec3 modelLight = vec3(ModelViewMatrixInverse * vec4(LightDirection,1.0));
 	NdotL = clamp(16.0*dot(vec3(0.0, 0.0, fma(SunnySideUp, -2.0, 1.0)), modelLight), -1.0, 1.0);
 
-	gl_Position = custom_project(Position3D*RingScale, ModelViewMatrix, clipping_fov);
+	gl_Position = custom_projectAberrated(Position3D*RingScale, ModelViewMatrix, clipping_fov, aberrationBeta.xyz);
 }

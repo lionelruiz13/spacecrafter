@@ -39,6 +39,7 @@ public:
         Vec4f projection;
         Vec4f diskColor;
         Vec4f photonColor;
+        Vec4f aberrationBeta;
     };
     static void submitDiskModel(const DiskModel &model, Texture &density, double distance);
     static void recordTransfer(VkCommandBuffer cmd);

@@ -36,5 +36,5 @@ void main()
     Normal = normalize( mat3(NormalMatrix) * VertexNormal);
     Position = vec3( ModelViewMatrix * vec4(VertexPosition,1.0) );
 
-    gl_Position = custom_project(VertexPosition, ModelViewMatrix, vec3(main_clipping_fov));
+    gl_Position = custom_projectAberrated(VertexPosition, ModelViewMatrix, vec3(main_clipping_fov), light_aberration_beta.xyz);
 }

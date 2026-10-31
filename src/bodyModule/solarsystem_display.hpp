@@ -26,6 +26,7 @@
 #define _SOLARSYSTEM_DISPLAY_
 
 #include <vector>
+#include "tools/vecmath.hpp"
 
 class ProtoSystem;
 class Projector;
@@ -55,7 +56,8 @@ public:
 
     void changeSystem(ProtoSystem * _ssystem);
 
-	void computePreDraw(const Projector * prj, const Navigator * nav);
+	void computePreDraw(const Projector * prj, const Navigator * nav,
+	                    bool lightAberration, const Vec3d& observerVelocity);
 
     //! Draw the shadows so they can be used when drawing the main body
     void drawShadow(Projector * prj, const Navigator * nav);
