@@ -92,10 +92,14 @@ AtmExt::~AtmExt()
 {
 }
 
-void AtmExt::draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, const Vec3f &sunPos, const Vec3f &bodyPos, float planetOneMinusOblateness, const Vec2i &TesParam, float radius, float atmRadius, float screen_sz, bool depthTest)
+void AtmExt::draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat,
+                  const Vec3f &sunPos, const Vec3f &bodyPos, const Vec3f &aberrationBeta,
+                  float planetOneMinusOblateness, const Vec2i &TesParam, float radius,
+                  float atmRadius, float screen_sz, bool depthTest)
 {
     if (enabled) {
         uniform->ModelViewMatrix = mat;
+        uniform->aberrationBeta.set(aberrationBeta[0], aberrationBeta[1], aberrationBeta[2], 0.f);
         uniform->sunPos = sunPos;
         uniform->planetRadius = radius;
         uniform->bodyPos = bodyPos;

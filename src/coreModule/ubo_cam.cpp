@@ -13,6 +13,7 @@ UBOCam::UBOCam() : UBOdata(*Context::instance->uniformMgr)
 {
 	UBOdata->time = 0.00;
 	UBOdata->ambient = 0.03;
+	UBOdata->light_aberration_beta.set(0.f, 0.f, 0.f, 0.f);
 	Context::instance->layouts.insert(Context::instance->layouts.begin(), std::make_unique<PipelineLayout>(*VulkanMgr::instance));
 	globalLayout = Context::instance->layouts.front().get();
 	globalLayout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0);

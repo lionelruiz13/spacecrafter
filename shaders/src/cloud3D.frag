@@ -10,7 +10,7 @@ layout (location=3) in float lodFactor;
 
 layout (location=0) out vec4 fragColor;
 
-layout (binding=3) uniform sampler3D mapTexture;
+layout (set=1, binding=3) uniform sampler3D mapTexture;
 
 layout (constant_id=0) const float maxlod = 8;
 layout (constant_id=1) const float minlod = 0;

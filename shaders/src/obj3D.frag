@@ -10,8 +10,8 @@ layout (location=2) in vec3 data; // {texOffset, coefScale, lod}
 
 layout (location=0) out vec4 fragColor;
 
-layout (binding=3) uniform sampler3D mapTexture;
-layout (binding=4) uniform sampler2D colorTexture;
+layout (set=1, binding=3) uniform sampler3D mapTexture;
+layout (set=1, binding=4) uniform sampler2D colorTexture;
 
 layout (constant_id=0) const float maxlod = 8;
 layout (constant_id=1) const float texScale = 1;

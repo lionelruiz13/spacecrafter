@@ -244,6 +244,7 @@ private:
 	Vec3d heliocentricVelocity;
 	bool hasPreviousHeliocentricPosition = false;
 	int previousPositionDeltaTime = 0;
+	bool previousTimeRateSupported = false;
 };
 
 #endif // _OBSERVER_H_
