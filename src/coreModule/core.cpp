@@ -1218,18 +1218,11 @@ Object Core::cleverFind(int x, int y) const
 }
 
 //! Go and zoom to the selected object.
-void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale)
+void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale, bool defaultScale)
 {
 	float manual_move_duration;
 	
 	if (!selected_object) return;
-	if (scale < 0.0) {
-		switch (selected_object.getType()) {
-			case OBJECT_NEBULA: scale = dsoZoomScale; break;
-			case OBJECT_BODY: scale = bodyZoomScale; break;
-			default: scale = 45.0; break;
-		}
-	}
 
 	if (!navigation->getFlagTraking()) {
 		navigation->setFlagTraking(true);
@@ -1248,9 +1241,19 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale)
 	} else {
 		float satfov = selected_object.getSatellitesFov(navigation);
 
-		if (satfov>0.0 && projection->getFov()*0.9>satfov) {
+		if (satfov>0.0 && projection->getFov()*0.9>satfov && scale < 0 && !defaultScale) {
 			projection->zoomTo(satfov, move_duration);
 		} else {
+			if (scale < 0.0) {
+				if (defaultScale) {
+					switch (selected_object.getType()) {
+						case OBJECT_NEBULA: scale = dsoZoomScale; break;
+						case OBJECT_BODY: scale = bodyZoomScale; break;
+						default: scale = 45.0; break;
+					}
+				} else
+					scale = 45.0;
+			}
 			float closefov = selected_object.getCloseFov(navigation, scale);
 			if (projection->getFov()>closefov)
 				projection->zoomTo(closefov, move_duration);
@@ -1260,7 +1263,7 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale)
 
 
 //! Unzoom and go to the init position
-void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom, double scale)
+void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom, double scale, bool defaultScale)
 {
 	if (selected_object && !full) {
 		// Handle manual unzoom
@@ -1282,17 +1285,19 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom, d
 			}
 		}
 
-		if (scale < 0.0) {
-			switch (selected_object.getType()) {
-				case OBJECT_NEBULA: scale = dsoZoomScale; break;
-				case OBJECT_BODY: scale = bodyZoomScale; break;
-				default: scale = 45.0; break;
+		if (scale > 0.0 || defaultScale) {
+			if (defaultScale) {
+				switch (selected_object.getType()) {
+					case OBJECT_NEBULA: scale = dsoZoomScale; break;
+					case OBJECT_BODY: scale = bodyZoomScale; break;
+					default: scale = 45.0; break;
+				}
 			}
-		}	
-		float closefov = selected_object.getCloseFov(navigation, scale);
-		if (projection->getFov()<closefov) {
-			projection->zoomTo(closefov, move_duration);
-			return;
+			float closefov = selected_object.getCloseFov(navigation, scale);
+			if (projection->getFov()<closefov) {
+				projection->zoomTo(closefov, move_duration);
+				return;
+			}
 		}
 
 		// If the selected object has satellites, unzoom to satellites view unless specified otherwise
