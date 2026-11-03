@@ -278,7 +278,10 @@ void Media::playerRestart()
 
 void Media::playerJump(float deltaTime)
 {
-	player->jumpInCurrentVideo(deltaTime);
+	if (player->isVideoPlayed())
+		player->jumpInCurrentVideo(deltaTime);
+	else if (!audioRedirected)
+		audio->musicJumpRelative(deltaTime);
 }
 
 void Media::playerInvertflow()

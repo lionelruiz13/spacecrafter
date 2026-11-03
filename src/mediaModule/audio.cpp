@@ -177,7 +177,23 @@ void Audio::musicJump(float secondJump)
 {
 	if (!music_loaded)	return;
 	cLog::get()->write("Audio::musicJump "+ music_name, LOG_TYPE::L_DEBUG );
-	Mix_SetMusicPosition(secondJump);
+	if (Mix_SetMusicPosition(secondJump) == 0)
+		elapsed_seconds = secondJump;
+	else
+		cLog::get()->write("Error Mix_SetMusicPosition: " + std::string(Mix_GetError()), LOG_TYPE::L_WARNING);
+}
+
+void Audio::musicJumpRelative(float deltaSeconds)
+{
+	if (!music_loaded)	return;
+	double targetSeconds = elapsed_seconds + deltaSeconds;
+	if (targetSeconds < 0.0)
+		targetSeconds = 0.0;
+	if (duration > 0.0 && targetSeconds >= duration) {
+		musicHalt();
+		return;
+	}
+	musicJump(static_cast<float>(targetSeconds));
 }
 
 

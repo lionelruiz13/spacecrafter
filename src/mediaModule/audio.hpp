@@ -103,6 +103,8 @@ public:
 	void musicDrop();
 	//! makes a jump to the desired position, expressed in seconds.
 	void musicJump(float secondJump);
+	//! makes a relative jump from the tracked playback position.
+	void musicJumpRelative(float deltaSeconds);
 	//! returns the duration of the audio file in seconds.
 	double getAudioDurationSeconds(const std::string& filename);
 
