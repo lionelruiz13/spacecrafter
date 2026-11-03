@@ -1344,6 +1344,17 @@ double CoreLink::getCurrentModule() const {
 	return double(core->getFlagIngalaxy());
 }
 
+std::string CoreLink::getCurrentModuleName() const {
+    switch (core->getFlagIngalaxy()) {
+        case SOLAR_SYSTEM:   return "in_solarsystem";
+        case IN_GALAXY:      return "in_galaxy";
+        case IN_UNIVERSE:    return "in_universe";
+        case STELLAR_SYSTEM: return "in_stellarsystem";
+        case IN_SANDBOX:     return "in_sandbox";
+    }
+    return {};
+}
+
 void CoreLink::bodySetFlagIsolateSelected(bool b) {
 	core->currentSsystemFactory->setFlagIsolateSelected(b);
 }

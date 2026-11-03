@@ -621,6 +621,8 @@ public:
 	// get the current module
 	double getCurrentModule() const;
 
+	std::string getCurrentModuleName() const;
+
 	//! Set whether to draw the names for the selected planet or every planet
 	void bodySetFlagIsolateSelected(bool b);
 	//! Get whether to draw the names for the selected planet or every planet

@@ -228,6 +228,7 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 		sR.record_elapsed_time = 0;
 		sR.rec_file << "# Spacecrafter "<< AppSettings::Instance()->getVersion() << std::endl;
 		sR.rec_file << "# Script recorded "<< this->getRecordDate() << std::endl << "#" << std::endl;
+		sR.rec_file << "mode jump " << CoreLink::instance->getCurrentModuleName() << " body " << CoreLink::instance->getObserverHomePlanetEnglishName() << " altitude " << CoreLink::instance->getSelectedALT() << std::endl;
 		sR.rec_file << "set home_planet " << CoreLink::instance->getObserverHomePlanetEnglishName() << std::endl;
 		sR.rec_file << "moveto lat " << CoreLink::instance->observatoryGetLatitude() << " lon " << CoreLink::instance->observatoryGetLongitude() << " alt " << CoreLink::instance->observatoryGetAltitude() << " duration 0" << std::endl;
 		sR.rec_file << "date utc " << CoreLink::instance->getDateYear() << ":" << CoreLink::instance->getDateMonth() << ":" << CoreLink::instance->getDateDay() << "T" << CoreLink::instance->getDateHour() << ":" << CoreLink::instance->getDateMinute() << ":" << CoreLink::instance->getDateSecond() << std::endl;
