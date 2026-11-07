@@ -379,6 +379,7 @@ void CheckConfig::checkViewingSettings()
 	tmpSettings[SCK_FLAG_SUN_SCALED] = "false";
 	tmpSettings[SCK_FLAG_ATMOSPHERIC_REFRACTION] = "false";
 	tmpSettings[SCK_FLAG_LIGHT_ABERRATION] = "false";
+	tmpSettings[SCK_LIGHT_ABERRATION_SPEED_SCALE] = "1";
 	tmpSettings[SCK_MOON_SCALE] = "5";
 	tmpSettings[SCK_SUN_SCALE] = "5";
 	tmpSettings[SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE] = "6.5";

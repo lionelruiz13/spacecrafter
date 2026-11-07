@@ -116,7 +116,7 @@ vec3 physicalRay(vec3 apparentRay)
 {
     vec3 inverseBeta = -AberrationBeta.xyz;
     float betaSquared = dot(inverseBeta, inverseBeta);
-    if (betaSquared < 1e-12)
+    if (betaSquared < 1e-12 || betaSquared >= 1.0)
         return apparentRay;
     float gamma = inversesqrt(1.0 - betaSquared);
     float alongBeta = dot(apparentRay, inverseBeta);

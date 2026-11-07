@@ -147,7 +147,7 @@ void SolarSystemModule::update(int delta_time)
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
 
-    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio, observer->getHeliocentricVelocity()});
+    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio, core->getLightAberrationVelocity()});
 	// std::future<void> a = std::async(std::launch::async, &SolarSystemModule::ssystemComputePreDraw, this);
 	// std::future<void> b = std::async(std::launch::async, &SolarSystemModule::atmosphereComputeColor, this, sunPos, moonPos);
 	// std::future<void> c = std::async(std::launch::async, &SolarSystemModule::hipStarMgrPreDraw, this);
@@ -187,7 +187,7 @@ void SolarSystemModule::draw(int delta_time)
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0,
-	                           core->FlagLightAberration, observer->getHeliocentricVelocity());
+	                           core->FlagLightAberration, core->getLightAberrationVelocity());
 	core->currentOort->draw(observer->getAltitude(), core->navigation);
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);

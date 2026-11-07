@@ -11,16 +11,11 @@ namespace LightAberration {
 
 inline Vec3d makeBeta(const Vec3d& observerVelocity, const Mat4d& velocityToTargetFrame)
 {
-	Vec3d beta = velocityToTargetFrame.multiplyWithoutTranslation(observerVelocity)
+	const Vec3d beta = velocityToTargetFrame.multiplyWithoutTranslation(observerVelocity)
 	             * (AU / SPEED_OF_LIGHT);
-
-	// SpaceCrafter navigation is not constrained by relativity and can exceed
-	// c. Keep the existing continuous mapping until superluminal behaviour is
-	// explicitly decided.
-	const double rawBetaSquared = beta.lengthSquared();
-	if (rawBetaSquared < 1e-24)
+	const double betaSquared = beta.lengthSquared();
+	if (!std::isfinite(betaSquared) || betaSquared >= 1.0)
 		return Vec3d(0., 0., 0.);
-	beta /= std::sqrt(1.0 + rawBetaSquared);
 	return beta;
 }
 
@@ -35,10 +30,9 @@ inline Vec3d makeLocalBeta(const Vec3d& observerVelocity, const Navigator *nav)
 	             * (AU / SPEED_OF_LIGHT);
 	beta = nav->earthEquToLocal(nav->j2000ToEarthEqu(beta));
 
-	const double rawBetaSquared = beta.lengthSquared();
-	if (rawBetaSquared < 1e-24)
+	const double betaSquared = beta.lengthSquared();
+	if (!std::isfinite(betaSquared) || betaSquared >= 1.0)
 		return Vec3d(0., 0., 0.);
-	beta /= std::sqrt(1.0 + rawBetaSquared);
 	return beta;
 }
 

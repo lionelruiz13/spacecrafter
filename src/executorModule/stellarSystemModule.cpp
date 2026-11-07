@@ -165,7 +165,7 @@ void StellarSystemModule::update(int delta_time)
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
 
-    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio, observer->getHeliocentricVelocity()});
+    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio, core->getLightAberrationVelocity()});
 
     // Update faders
 	core->currentSkyGridMgr->update(delta_time);
@@ -201,14 +201,14 @@ void StellarSystemModule::draw(int delta_time)
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0,
-	                           core->FlagLightAberration, observer->getHeliocentricVelocity());
+	                           core->FlagLightAberration, core->getLightAberrationVelocity());
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
 	core->currentStarLines->draw(core->navigation);
 	// StarNavigator uses the same persistence framebuffer as the normal sky
 	// stars, so stars_trace works in this mode too.
     core->currentStarNav->drawTraced(*core->currentHipStars, core->navigation, core->projection,
-                                    core->FlagLightAberration, observer->getHeliocentricVelocity());
+                                    core->FlagLightAberration, core->getLightAberrationVelocity());
 	core->currentSkyGridMgr->draw(core->projection, core->observatory.get());
 	core->currentSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->currentSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
