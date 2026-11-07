@@ -16,7 +16,7 @@ vec3 aberrateAdvancedPosition(vec3 position)
 	float distance = length(position);
 	vec3 beta = light_aberration_beta.xyz;
 	float betaSquared = dot(beta, beta);
-	if (distance < 1e-12 || betaSquared < 1e-12)
+	if (distance < 1e-12 || betaSquared < 1e-12 || betaSquared >= 1.0)
 		return position;
 
 	vec3 direction = position / distance;

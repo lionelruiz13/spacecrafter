@@ -322,7 +322,7 @@ vec3 lightAberrationPosition(vec3 position, vec3 beta)
 {
 	float distance = length(position);
 	float betaSquared = dot(beta, beta);
-	if (distance < 1e-12 || betaSquared < 1e-12)
+	if (distance < 1e-12 || betaSquared < 1e-12 || betaSquared >= 1.0)
 		return position;
 
 	vec3 direction = position / distance;

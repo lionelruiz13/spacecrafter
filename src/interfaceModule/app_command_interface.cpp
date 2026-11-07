@@ -1790,6 +1790,18 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 			}
 			stcore->setBodyZoomScale(evalDouble(setValue));
 			break;
+		case SCD_NAMES::APP_LIGHT_ABERRATION_SPEED_SCALE:
+			if (!stcore->setLightAberrationSpeedScale(evalDouble(setValue))) {
+				debug_message = "command_'set': light_aberration_speed_scale must be finite and nonnegative";
+				return executeCommandStatus();
+			}
+			break;
+		case SCD_NAMES::APP_LIGHT_ABERRATION_MAX_SPEED:
+			if (!stcore->setLightAberrationMaxSpeed(evalDouble(setValue))) {
+				debug_message = "command_'set': light_aberration_max_speed must be finite and greater than zero";
+				return executeCommandStatus();
+			}
+			break;
 		case SCD_NAMES::APP_FLAG_NONE:
 						debug_message = "command_'set': unknown argument";
 						//for (const auto&i : args )
