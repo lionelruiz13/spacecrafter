@@ -179,7 +179,7 @@ void InSandBoxModule::update(int delta_time)
 											core->navigation->geTdomeMat(),
 											core->navigation->getDomeFixedMat());
 
-    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio, observer->getHeliocentricVelocity()});
+    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio, core->getLightAberrationVelocity()});
 
     // Update faders
 	core->currentSkyGridMgr->update(delta_time);
@@ -270,7 +270,7 @@ void InSandBoxModule::draw(int delta_time)
 
 	//! solarSystem
 	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0,
-	                           core->FlagLightAberration, observer->getHeliocentricVelocity());
+	                           core->FlagLightAberration, core->getLightAberrationVelocity());
 	core->currentOort->draw(observer->getAltitude(), core->navigation);
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);

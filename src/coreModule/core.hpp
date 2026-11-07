@@ -478,6 +478,10 @@ public:
 
 	// MAJ de l'UBO uboCam
 	void uboCamUpdate();
+	bool setLightAberrationSpeedScale(double scale);
+	bool setLightAberrationMaxSpeed(double maxSpeedInC);
+	double getLightAberrationSpeedScale() const { return lightAberrationSpeedScale; }
+	Vec3d getLightAberrationVelocity() const;
 
 	void setFlagNav(bool a);
 
@@ -647,6 +651,8 @@ private:
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
 	bool FlagLightAberration = false;
+	double lightAberrationSpeedScale = 1.0;
+	bool lightAberrationWasSuperluminal = false;
 	bool flagNav = false; 				// define the NAV version edition
 	bool flagAstronomical = false; 		// define the astronomical version edition
 	bool FlagManualZoom;				// Define whether auto zoom can go further
