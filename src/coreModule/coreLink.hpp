@@ -606,6 +606,12 @@ public:
 	//return the Selected star DE
 	double getSelectedStarDE() const;
 
+	//return the Selected star ALT
+	double getSelectedStarALT() const;
+
+	//return the Selected star AZ
+	double getSelectedStarAZ() const;
+
 	double getDateYear() const;
 	double getDateMonth() const;
 	double getDateDay() const;

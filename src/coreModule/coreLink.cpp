@@ -1332,6 +1332,14 @@ double CoreLink::getSelectedStarDE() const {
 	return core->currentSsystemFactory->getSelectedStarDE(core->navigation);
 }
 
+double CoreLink::getSelectedStarALT() const {
+	return core->currentSsystemFactory->getSelectedStarALT(core->navigation);
+}
+
+double CoreLink::getSelectedStarAZ() const {
+	return core->currentSsystemFactory->getSelectedStarAZ(core->navigation);
+}
+
 int CoreLink::getLanguage() const {
 	return double(core->getLanguage());
 }
