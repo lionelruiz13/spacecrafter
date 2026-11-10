@@ -136,6 +136,21 @@ void CoreBackup::saveBackup()
 	" module=" << modulestr << std::endl;
 }
 
+void CoreBackup::saveDateBackup()
+{
+	mDateBackup = core->timeMgr->getJDay();
+	mHasDateBackup = true;
+}
+
+bool CoreBackup::loadDateBackup()
+{
+	if (!mHasDateBackup)
+		return false;
+
+	core->timeMgr->setJDay(mDateBackup);
+	return true;
+}
+
 void CoreBackup::saveGridState()
 {
 	core->currentSkyGridMgr->saveState(skyGridSave);

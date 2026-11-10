@@ -3417,6 +3417,17 @@ int AppCommandInterface::commandDomemasters()
 
 int AppCommandInterface::commandDate()
 {
+	std::string argAction = args[W_ACTION];
+	if (argAction == W_SAVE) {
+		coreBackup->saveDateBackup();
+		return executeCommandStatus();
+	}
+	if (argAction == W_LOAD) {
+		if (!coreBackup->loadDateBackup())
+			debug_message = _("Command 'date': no saved date to restore");
+		return executeCommandStatus();
+	}
+
 	//case of jday
 	std::string argJday = args[W_JDAY];
 	if (!argJday.empty() ) {

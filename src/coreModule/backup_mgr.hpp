@@ -64,6 +64,8 @@ public:
 	~CoreBackup();
 	void loadBackup();
 	void saveBackup();
+	void saveDateBackup();
+	bool loadDateBackup();
 
 	// Setter pour le callback de switch de mode
 	void setSwitchModeCallback(std::function<void(const std::string&)> callback) {
@@ -84,6 +86,8 @@ public:
 
 private:
 	BackupWorkspace mBackup;
+	double mDateBackup = 0.0;
+	bool mHasDateBackup = false;
 	SkyGridSave	skyGridSave;
 	SkyDisplaySave skyDisplaySave;
 	SkyLineSave skyLineSave;
