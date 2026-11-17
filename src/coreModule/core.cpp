@@ -24,6 +24,7 @@
  */
 
 #include <algorithm>
+#include <cmath>
 #include "coreModule/core.hpp"
 #include "tools/utility.hpp"
 #include "tools/init_parser.hpp"
@@ -1254,8 +1255,14 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom, double scale,
 				} else
 					scale = 45.0;
 			}
-			float closefov = selected_object.getCloseFov(navigation, scale);
-			if (projection->getFov()>closefov)
+			double closefov = selected_object.getCloseFov(navigation, scale);
+			if (defaultScale) {
+				while (std::llround(projection->getFov() * 1e6) <= std::llround(closefov * 1e6) && scale < 180) {
+					scale = std::min(scale * 2, 180.0);
+					closefov = selected_object.getCloseFov(navigation, scale);
+				}
+			}
+			if (projection->getFov() > closefov)
 				projection->zoomTo(closefov, move_duration);
 		}
 	}
@@ -1300,23 +1307,25 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom, d
 			}
 		}
 
-		// If the selected object has satellites, unzoom to satellites view unless specified otherwise
-		float satfov = selected_object.getSatellitesFov(navigation);
-
-		// Saturn wasn't untracking from moon issue
-		if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
-			projection->zoomTo(satfov, move_duration);
-			return;
-		}
-
-		// If the selected object is part of a Planet subsystem (other than sun), unzoom to subsystem view
-		satfov = selected_object.getParentSatellitesFov(navigation);
-		//    cout << "Unzoom to parent sat fov: " << satfov << endl;
-
-		// Charon wasn't untracking from Pluto issue
-		if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
-			projection->zoomTo(satfov, move_duration);
-			return;
+		if (!defaultScale) {
+			// If the selected object has satellites, unzoom to satellites view unless specified otherwise
+			float satfov = selected_object.getSatellitesFov(navigation);
+		
+			// Saturn wasn't untracking from moon issue
+			if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
+				projection->zoomTo(satfov, move_duration);
+				return;
+			}
+	
+			// If the selected object is part of a Planet subsystem (other than sun), unzoom to subsystem view
+			satfov = selected_object.getParentSatellitesFov(navigation);
+			//    cout << "Unzoom to parent sat fov: " << satfov << endl;
+	
+			// Charon wasn't untracking from Pluto issue
+			if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
+				projection->zoomTo(satfov, move_duration);
+				return;
+			}
 		}
 	}
 	//  cout << "Unzoom to initfov\n";

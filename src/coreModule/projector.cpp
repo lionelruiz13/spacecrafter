@@ -39,7 +39,7 @@
 
 
 Projector::Projector(const int width, const int height, double _fov)
-	:fov(1.0), min_fov(0.0001), max_fov(350),
+	:fov(1.0), min_fov(0.00001), max_fov(350),
 	 zNear(0.1), zFar(10000),
 	 flag_auto_zoom(0)
 {

@@ -2300,7 +2300,10 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					if (core->getFlagManualAutoZoom()) this->executeCommand("zoom auto out manual 1");
-					else this->executeCommand("zoom auto initial");
+					else {
+						event = new ScriptEvent( IDIR+"internal/zoom_out.sts");
+						EventRecorder::getInstance()->queue(event);
+					}
 					break;
 				case SUPER:
 					event = new ScriptEvent( IDIR+"internal/zoom.sts");
@@ -2325,7 +2328,10 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					if(core->getFlagManualAutoZoom()) this->executeCommand("zoom auto in manual 1");
-					else this->executeCommand("zoom auto in");
+					else {
+						event = new ScriptEvent( IDIR+"internal/zoom_in.sts");
+						EventRecorder::getInstance()->queue(event);
+					}
 					break;
 				case SUPER:
 					this->executeCommand("zoom auto out");
