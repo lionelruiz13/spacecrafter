@@ -168,103 +168,98 @@ void Constellation::drawArt(const Projector* prj, const Navigator* nav, std::vec
 	float intensity = art_fader.getInterstate();
 
 	if (art_tex && intensity) {
-		int tailleTab = 9;
-		// bool tabB[tailleTab];
-		std::vector<bool> tabB (tailleTab, false);
+		{
+		struct ArtPatch {
+				int topLeft;
+				int topRight;
+				int bottomLeft;
+				int bottomRight;
+				float u0;
+				float v0;
+				float u1;
+				float v1;
+			};
 
-		// Vec3d tabV[tailleTab];
-		std::vector<Vec3d> tabV (tailleTab, v3dNull);
-		bool onScreen = false;
+			const ArtPatch patches[] = {
+				{0, 1, 3, 2, 0.0f, 0.0f, 0.5f, 0.5f},
+				{1, 4, 2, 5, 0.5f, 0.0f, 1.0f, 0.5f},
+				{3, 2, 8, 7, 0.0f, 0.5f, 0.5f, 1.0f},
+				{2, 5, 7, 6, 0.5f, 0.5f, 1.0f, 1.0f}
+			};
+			constexpr int subdivisions = 2;
 
-		for (int i = 0; i < tailleTab; i++) {
-			if( (tabB[i] = prj->projectJ2000Check(art_vertex[i],tabV[i]) || (nav->getPrecEquVision().dot(art_vertex[i])>0.9)) )
-				onScreen = true;
-		}
+			auto interpolate = [](const Vec3d& topLeft, const Vec3d& topRight,
+				                    const Vec3d& bottomLeft, const Vec3d& bottomRight,
+			                    float u, float v) {
+				return topLeft * ((1.0f - u) * (1.0f - v))
+				     + topRight * (u * (1.0f - v))
+				     + bottomLeft * ((1.0f - u) * v)
+				     + bottomRight * (u * v);
+			};
 
-		if(onScreen) {
+			for (const ArtPatch& patch : patches) {
+				for (int y = 0; y < subdivisions; ++y) {
+					for (int x = 0; x < subdivisions; ++x) {
+						const float u0 = static_cast<float>(x) / subdivisions;
+						const float u1 = static_cast<float>(x + 1) / subdivisions;
+						const float v0 = static_cast<float>(y) / subdivisions;
+						const float v1 = static_cast<float>(y + 1) / subdivisions;
 
-			if ((tabB[0] || tabB[1] || tabB[2] || tabB[3]) && (tabV[0][2]<1 && tabV[1][2]<1 && tabV[2][2]<1 && tabV[3][2]<1)) {
+						const Vec3d skyTopLeft = interpolate(art_vertex[patch.topLeft], art_vertex[patch.topRight], art_vertex[patch.bottomLeft], art_vertex[patch.bottomRight], u0, v0);
+						const Vec3d skyTopRight = interpolate(art_vertex[patch.topLeft], art_vertex[patch.topRight], art_vertex[patch.bottomLeft], art_vertex[patch.bottomRight], u1, v0);
+						const Vec3d skyBottomLeft = interpolate(art_vertex[patch.topLeft], art_vertex[patch.topRight], art_vertex[patch.bottomLeft], art_vertex[patch.bottomRight], u0, v1);
+						const Vec3d skyBottomRight = interpolate(art_vertex[patch.topLeft], art_vertex[patch.topRight], art_vertex[patch.bottomLeft], art_vertex[patch.bottomRight], u1, v1);
 
-				vecTex.push_back(0.5);
-				vecTex.push_back(0);
-				vecTex.push_back(0.5);
-				vecTex.push_back(0.5);
-				vecTex.push_back(0);
-				vecTex.push_back(0);
-				vecTex.push_back(0);
-				vecTex.push_back(0.5);
 
-				vecPos.push_back(tabV[1][0]);
-				vecPos.push_back(tabV[1][1]);
-				vecPos.push_back(tabV[2][0]);
-				vecPos.push_back(tabV[2][1]);
-				vecPos.push_back(tabV[0][0]);
-				vecPos.push_back(tabV[0][1]);
-				vecPos.push_back(tabV[3][0]);
-				vecPos.push_back(tabV[3][1]);
-			}
+						Vec3d screenTopLeft, screenTopRight;
+						Vec3d screenBottomLeft, screenBottomRight;
+						prj->projectJ2000(skyTopLeft, screenTopLeft);
+						prj->projectJ2000(skyTopRight, screenTopRight);
+						prj->projectJ2000(skyBottomLeft, screenBottomLeft);
+						prj->projectJ2000(skyBottomRight, screenBottomRight);
+						const Vec3d skyCenter = interpolate(art_vertex[patch.topLeft], art_vertex[patch.topRight], art_vertex[patch.bottomLeft], art_vertex[patch.bottomRight], (u0 + u1) * 0.5f, (v0 + v1) * 0.5f);
+						Vec3d screenCenter;
+						const bool centerVisible = prj->projectJ2000Check(skyCenter, screenCenter)
+							|| nav->getPrecEquVision().dot(skyCenter) > 0.9;
+						const double minX = std::min({screenTopLeft[0], screenTopRight[0], screenBottomLeft[0], screenBottomRight[0], screenCenter[0]});
+						const double maxX = std::max({screenTopLeft[0], screenTopRight[0], screenBottomLeft[0], screenBottomRight[0], screenCenter[0]});
+						const double minY = std::min({screenTopLeft[1], screenTopRight[1], screenBottomLeft[1], screenBottomRight[1], screenCenter[1]});
+						const double maxY = std::max({screenTopLeft[1], screenTopRight[1], screenBottomLeft[1], screenBottomRight[1], screenCenter[1]});
+						const Vec4i& viewport = prj->getViewport();
+						const bool overlapsViewport = maxX >= viewport[0]
+							&& minX <= viewport[0] + viewport[2]
+							&& maxY >= viewport[1]
+							&& minY <= viewport[1] + viewport[3];
+						const bool allInFront = screenTopLeft[2] < 1.0 && screenTopRight[2] < 1.0
+							&& screenBottomLeft[2] < 1.0 && screenBottomRight[2] < 1.0
+							&& screenCenter[2] < 1.0;
+						if ((!overlapsViewport && !centerVisible) || !allInFront)
+							continue;
 
-			if ((tabB[1] || tabB[4] || tabB[5] || tabB[2]) && (tabV[1][2]<1 && tabV[4][2]<1 && tabV[5][2]<1 && tabV[2][2]<1)) {
+						const float texU0 = patch.u0 + (patch.u1 - patch.u0) * u0;
+						const float texU1 = patch.u0 + (patch.u1 - patch.u0) * u1;
+						const float texV0 = patch.v0 + (patch.v1 - patch.v0) * v0;
+						const float texV1 = patch.v0 + (patch.v1 - patch.v0) * v1;
 
-				vecTex.push_back(1);
-				vecTex.push_back(0);
-				vecTex.push_back(1);
-				vecTex.push_back(0.5);
-				vecTex.push_back(0.5);
-				vecTex.push_back(0);
-				vecTex.push_back(0.5);
-				vecTex.push_back(0.5);
-
-				vecPos.push_back(tabV[4][0]);
-				vecPos.push_back(tabV[4][1]);
-				vecPos.push_back(tabV[5][0]);
-				vecPos.push_back(tabV[5][1]);
-				vecPos.push_back(tabV[1][0]);
-				vecPos.push_back(tabV[1][1]);
-				vecPos.push_back(tabV[2][0]);
-				vecPos.push_back(tabV[2][1]);
-			}
-
-			if ((tabB[2] || tabB[5] || tabB[6] || tabB[7]) && (tabV[2][2]<1 && tabV[5][2]<1 && tabV[6][2]<1 && tabV[7][2]<1)) {
-
-				vecTex.push_back(1);
-				vecTex.push_back(0.5);
-				vecTex.push_back(1);
-				vecTex.push_back(1);
-				vecTex.push_back(0.5);
-				vecTex.push_back(0.5);
-				vecTex.push_back(0.5);
-				vecTex.push_back(1);
-
-				vecPos.push_back(tabV[5][0]);
-				vecPos.push_back(tabV[5][1]);
-				vecPos.push_back(tabV[6][0]);
-				vecPos.push_back(tabV[6][1]);
-				vecPos.push_back(tabV[2][0]);
-				vecPos.push_back(tabV[2][1]);
-				vecPos.push_back(tabV[7][0]);
-				vecPos.push_back(tabV[7][1]);
-
-			}
-			if ((tabB[3] || tabB[2] || tabB[7] || tabB[8]) && (tabV[3][2]<1 && tabV[2][2]<1 && tabV[7][2]<1 && tabV[8][2]<1)) {
-
-				vecTex.push_back(0.5);
-				vecTex.push_back(0.5);
-				vecTex.push_back(0.5);
-				vecTex.push_back(1);
-				vecTex.push_back(0);
-				vecTex.push_back(0.5);
-				vecTex.push_back(0);
-				vecTex.push_back(1);
-
-				vecPos.push_back(tabV[2][0]);
-				vecPos.push_back(tabV[2][1]);
-				vecPos.push_back(tabV[7][0]);
-				vecPos.push_back(tabV[7][1]);
-				vecPos.push_back(tabV[3][0]);
-				vecPos.push_back(tabV[3][1]);
-				vecPos.push_back(tabV[8][0]);
-				vecPos.push_back(tabV[8][1]);
+						// The geometry shader expects top-right, bottom-right, top-left, bottom-left.
+						vecPos.push_back(static_cast<float>(screenTopRight[0]));
+						vecPos.push_back(static_cast<float>(screenTopRight[1]));
+						vecTex.push_back(texU1);
+						vecTex.push_back(texV0);
+						vecPos.push_back(static_cast<float>(screenBottomRight[0]));
+						vecPos.push_back(static_cast<float>(screenBottomRight[1]));
+						vecTex.push_back(texU1);
+						vecTex.push_back(texV1);
+						vecPos.push_back(static_cast<float>(screenTopLeft[0]));
+						vecPos.push_back(static_cast<float>(screenTopLeft[1]));
+						vecTex.push_back(texU0);
+						vecTex.push_back(texV0);
+						vecPos.push_back(static_cast<float>(screenBottomLeft[0]));
+						vecPos.push_back(static_cast<float>(screenBottomLeft[1]));
+						vecTex.push_back(texU0);
+						vecTex.push_back(texV1);
+					}
+				}
 			}
 		}
 	}
