@@ -114,6 +114,7 @@ private:
 	//uint32_t videoTex[3];	//!< indicates which YUV textures are used for display
 	bool isAlive;		//!< activate the class
 	bool fullScreen; 	//!< indicates the way to display the image
+	bool lastFullScreen = true;
 	bool skipping = false;		//!< initializes the variable defining if we skip fading or not
 	ParabolicFader fader;
 	bool disable_fader = false;

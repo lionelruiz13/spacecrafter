@@ -130,23 +130,36 @@ void ViewPort::draw(double heading)
 		value_fader = 1;
 	uFrag->get().fader = value_fader;
 
-	if (heading != lastHeading) {
+	if (heading != lastHeading || fullScreen != lastFullScreen) {
 		lastHeading = heading;
+		lastFullScreen = fullScreen;
 		heading = heading * (3.1415926f / 180.f);
-		float viewportPoints[8] = {-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
-		float viewportTex[8] =    { 0.0,  1.0, 1.0,  1.0,  0.0, 0.0, 1.0, 0.0};
+		float fullPoints[8] = {-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
+		float fullTex[8] =    { 0.0,  1.0, 1.0,  1.0,  0.0, 0.0, 1.0, 0.0};
+		float halfPoints[16] = {-1.0, -1.0, 1.0, -1.0,
+		                        -1.f, 0.f, 1.f, 0.f,
+		                        -1.f, 0.f, 1.f, 0.f,
+		                        -1.0, 1.0, 1.0, 1.0};
+		float halfTex[16] =    { 0.0,  1.0, 1.0,  1.0,
+		                         0.f, 0.5f, 1.f, 0.5f,
+		                         1.f, 0.5f, 0.f, 0.5f,
+		                         1.0, 1.0, 0.0, 1.f};
+		float *viewportPoints = fullScreen ? fullPoints : halfPoints;
+		float *viewportTex = fullScreen ? fullTex : halfTex;
+		const int firstVertex = fullScreen ? 0 : 4;
+		const int vertexCount = fullScreen ? 4 : 8;
 		float c = cos(heading);
 		float s = sin(heading);
-		for (int i = 0; i < 4; ++i) {
+		for (int i = 0; i < vertexCount; ++i) {
 			float x = viewportPoints[i*2] * c - viewportPoints[i*2+1] * s;
 			float y = viewportPoints[i*2] * s + viewportPoints[i*2+1] * c;
 			viewportPoints[i*2] = x;
 			viewportPoints[i*2+1] = y;
 		}
 
-		float *data = (float *) Context::instance->transfer->planCopy(vertex->get(), 0, 16*sizeof(float));
-		vertex->fillEntry(2, 4, viewportPoints, data);
-		vertex->fillEntry(2, 4, viewportTex, data + 2);
+		float *data = (float *) Context::instance->transfer->planCopy(vertex->get(), firstVertex * 4 * sizeof(float), vertexCount * 4 * sizeof(float));
+		vertex->fillEntry(2, vertexCount, viewportPoints, data);
+		vertex->fillEntry(2, vertexCount, viewportTex, data + 2);
 	}
 
 	const int frameIdx = Context::instance->frameIdx;
