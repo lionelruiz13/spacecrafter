@@ -16,8 +16,10 @@ layout (triangle_strip, max_vertices = 3) out;
 //entrées - sorties du pipeline
 layout (location=0) in vec2 TexCoordIn[3];
 layout (location=1) in vec4 pos[3];
+layout (location=2) in float HorizonAltitudeIn[3];
 
 layout (location=0) out vec2 TexCoord;
+layout (location=1) out float HorizonAltitude;
 
 // maximal distance accepted
 #define TOLERANCE 0.6
@@ -31,6 +33,7 @@ void main(void)
 		for (int i =0; i<3; i++) {
 			gl_Position = pos[i];
 			TexCoord = TexCoordIn[i];
+			HorizonAltitude = HorizonAltitudeIn[i];
 			EmitVertex();
 		}
 		EndPrimitive();	

@@ -141,6 +141,8 @@ protected:
 	struct frag {
 		float sky_brightness;
 		float fader;
+		float fisheye;
+		float padding;
 	};
 	std::unique_ptr<SharedBuffer<frag>> uFrag;
 	std::unique_ptr<VertexBuffer> vertex;

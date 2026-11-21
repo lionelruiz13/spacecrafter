@@ -20,9 +20,13 @@ layout (location=1)in vec2 texcoord;
 
 layout (location=0) out vec2 TexCoord;
 layout (location=1) out vec4 Position;
+layout (location=2) out float HorizonAltitude;
 
 void main()
 {
     Position = custom_project(position, ModelViewMatrix, vec3(main_clipping_fov));
     TexCoord = texcoord;
+    // Fisheye vertices below the horizon carry a negative texture coordinate.
+    // The image-side horizon vertices are shifted slightly down in the mesh.
+    HorizonAltitude = texcoord.x < 0.0 ? position.z : max(position.z, 0.0);
 }

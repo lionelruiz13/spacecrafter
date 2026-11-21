@@ -279,6 +279,8 @@ void Landscape::draw(const Projector* prj, const Navigator* nav)
 	}
 	uFrag->get().sky_brightness = fmin(sky_brightness,1.0);
 	uFrag->get().fader = fader;
+	uFrag->get().fisheye = format == L_FISHEYE ? 1.0f : 0.0f;
+	uFrag->get().padding = 0.0f;
 	*uMV = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
 
 	fog->draw(prj,nav);
@@ -301,6 +303,7 @@ void Landscape::destroySC_context()
 
 LandscapeFisheye::LandscapeFisheye(float _radius) : Landscape(_radius)
 {
+	format = L_FISHEYE;
 	rotate_z = 0;
 }
 
@@ -459,6 +462,7 @@ void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, 
 	// t goes from -1.0/+1.0 at z = -radius/+radius (linear along longitudes)
 	// cannot use triangle fan on texturing (s coord. at top/bottom tip varies)
 	const int imax = stacks;
+	const double horizonOverlap = 0.01;
 
 	// draw intermediate stacks as quad strips
 	for (i = 0,cos_sin_rho_p=cos_sin_rho,rho=0.0; i < imax; ++i,cos_sin_rho_p+=2,rho+=drho) {
@@ -467,28 +471,25 @@ void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, 
 			x = -cos_sin_theta_p[1] * cos_sin_rho_p[3];
 			y = cos_sin_theta_p[0] * cos_sin_rho_p[3];
 			z = cos_sin_rho_p[2];
-			if (z>=0) {
-				nbr++;
-				z=z-0.01; //TODO magic number to export
-
-				*(data++) = x*radius;
-				*(data++) = y*radius;
-				*(data++) = z*radius;
-				*(data++) = FisheyeTexCoordFastS((rho + drho)/texture_fov,cos_sin_theta_p[0],-cos_sin_theta_p[1]);
-				*(data++) = FisheyeTexCoordFastT((rho + drho)/texture_fov,cos_sin_theta_p[0],-cos_sin_theta_p[1]);
-			}
+			bool belowHorizon = z < 0;
+			nbr++;
+			if (!belowHorizon) z -= horizonOverlap;
+			*(data++) = x*radius;
+			*(data++) = y*radius;
+			*(data++) = z*radius;
+			*(data++) = belowHorizon ? -1.0f : FisheyeTexCoordFastS((rho + drho)/texture_fov,cos_sin_theta_p[0],-cos_sin_theta_p[1]);
+			*(data++) = belowHorizon ? -1.0f : FisheyeTexCoordFastT((rho + drho)/texture_fov,cos_sin_theta_p[0],-cos_sin_theta_p[1]);
 			x = -cos_sin_theta_p[1] * cos_sin_rho_p[1];
 			y = cos_sin_theta_p[0] * cos_sin_rho_p[1];
 			z = cos_sin_rho_p[0];
-			if (z>=0) {
-				nbr++;
-				z=z-0.01; //TODO magic number to export
-				*(data++) = x*radius;
-				*(data++) = y*radius;
-				*(data++) = z*radius;
-				*(data++) = FisheyeTexCoordFastS(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
-				*(data++) = FisheyeTexCoordFastT(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
-			}
+			belowHorizon = z < 0;
+			nbr++;
+			if (!belowHorizon) z -= horizonOverlap;
+			*(data++) = x*radius;
+			*(data++) = y*radius;
+			*(data++) = z*radius;
+			*(data++) = belowHorizon ? -1.0f : FisheyeTexCoordFastS(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
+			*(data++) = belowHorizon ? -1.0f : FisheyeTexCoordFastT(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
 		}
 	}
 	nbVertex = nbr;
